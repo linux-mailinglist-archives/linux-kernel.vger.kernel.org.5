@@ -1,172 +1,232 @@
-Return-Path: <linux-kernel+bounces-4798-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-4801-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57480818233
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 08:25:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE857818237
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 08:25:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D910C1F264A5
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 07:25:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 662631F23D5D
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Dec 2023 07:25:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 657BEC13E;
-	Tue, 19 Dec 2023 07:24:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Ngbu+k1q"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E2B3125B5;
+	Tue, 19 Dec 2023 07:25:14 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3729A882A
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 07:24:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-5533ca9cc00so2957894a12.2
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Dec 2023 23:24:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702970695; x=1703575495; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=UlhGozfg7dmxL6emSh7I25mqheijAutqkIGD6E3t8e0=;
-        b=Ngbu+k1qT7SNnMNpVuElrCkHYXkgQd9G+puHuCBrNFasfjgqdVEj98VYksBdwEvdXb
-         yl4F9pe8a6Qqr0xhQMkAMTgvyIxziy7D/8xO3hMDXAPtr+bArgFYCblggMB3jUCY4khM
-         JWd7X0tmUU9uWlpq5h6TfgtG0H7o2lF7GNeXZ9t0VUbdCyvc+oyET1RyreTfljUzop/U
-         jjjl/qXMyonJMsp5MeKsS8JY8DuEHwOxCeUPyTOQJKI0sMW1y2E6/w2KYT5ZytwYnv5H
-         /+p+8vgULhay6pN15U9akhVj2eaXIGADzMaobGpey0KxMv+ZGmOtojy7wVPXQdpO7G7V
-         dt+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702970695; x=1703575495;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UlhGozfg7dmxL6emSh7I25mqheijAutqkIGD6E3t8e0=;
-        b=o74tYx6KYm/0MdOHCmrTZaG+4JIIR/QzTt2oP0rn1226fAEEbSQUjTRaHG5HUNUalV
-         EAtUdoLrrXhEPkwmyKOv0+t40yH6Fz5p2/mwCabJU5tQmL2ozXfRpigOOZJWLNZ3O7Nl
-         aVJQYVD7ZErZByslCTih4Kg5dOllsi3ZAjiqVGUoajaiDZ9WetPBNuYw964H2A8Uoy8G
-         R1k+IkQOOYqkatOXQVhGECtyqj2krpIJy2pq0Wkafd7wMV+xSKb9ASUO8o4OgXbmVsyA
-         V2zuZFrAtZaJ7kjzzqhfg1IwgEbDuTJKu0yf+RbW5A1KLuorKhyMzLTabKqrSobgkYcZ
-         SIVA==
-X-Gm-Message-State: AOJu0YxTZoid1/dQlhCTHfXBlqbwjfntvSvxK8VBwWujSZ5jQTE8/bTc
-	HBflfJhKO3VjFXk+GqfAc5kobA==
-X-Google-Smtp-Source: AGHT+IGJrB1GS5Ds3Q//fBV9ifKcGRVUKGPJGkcEg6RUjoC9qIuQy8apORhMr/6zGO/JfJuDOCXC8A==
-X-Received: by 2002:a50:c011:0:b0:551:9caa:fac6 with SMTP id r17-20020a50c011000000b005519caafac6mr7563009edb.45.1702970695406;
-        Mon, 18 Dec 2023 23:24:55 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id x9-20020aa7cd89000000b0055289f60e3bsm4634626edv.79.2023.12.18.23.24.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Dec 2023 23:24:54 -0800 (PST)
-Message-ID: <92eb5f85-1241-429c-aca9-7a6a17f19ae5@linaro.org>
-Date: Tue, 19 Dec 2023 08:24:51 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1961511C88
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 07:25:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.17])
+	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4SvSqH3x7Nz1Q6Wg;
+	Tue, 19 Dec 2023 15:23:55 +0800 (CST)
+Received: from kwepemm000007.china.huawei.com (unknown [7.193.23.189])
+	by mail.maildlp.com (Postfix) with ESMTPS id 78C9E1A0173;
+	Tue, 19 Dec 2023 15:25:08 +0800 (CST)
+Received: from [10.174.185.210] (10.174.185.210) by
+ kwepemm000007.china.huawei.com (7.193.23.189) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 19 Dec 2023 15:25:07 +0800
+Subject: Re: [bug report] GICv4.1: vSGI remains pending across the guest reset
+To: Marc Zyngier <maz@kernel.org>, Oliver Upton <oliver.upton@linux.dev>
+CC: James Morse <james.morse@arm.com>, Suzuki K Poulose
+	<suzuki.poulose@arm.com>, Zenghui Yu <yuzenghui@huawei.com>, Catalin Marinas
+	<catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Jean-Philippe
+ Brucker <jean-philippe@linaro.org>, "moderated list:ARM SMMU DRIVERS"
+	<linux-arm-kernel@lists.infradead.org>, <kvmarm@lists.linux.dev>, open list
+	<linux-kernel@vger.kernel.org>, "wanghaibin.wang@huawei.com"
+	<wanghaibin.wang@huawei.com>
+References: <7e7f2c0c-448b-10a9-8929-4b8f4f6e2a32@huawei.com>
+ <87a5q983zc.wl-maz@kernel.org>
+From: Kunkun Jiang <jiangkunkun@huawei.com>
+Message-ID: <bb4984d2-ed80-ba97-0f58-b45db4f0ff32@huawei.com>
+Date: Tue, 19 Dec 2023 15:24:55 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 1/9] dt-bindings: net: starfive,jh7110-dwmac: Drop
- redundant reset description
+In-Reply-To: <87a5q983zc.wl-maz@kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-To: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Emil Renner Berthing <kernel@esmil.dk>,
- Samin Guo <samin.guo@starfivetech.com>,
- Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
- <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- Hal Feng <hal.feng@starfivetech.com>,
- Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
- <sboyd@kernel.org>, Alexandre Torgue <alexandre.torgue@foss.st.com>,
- Jose Abreu <joabreu@synopsys.com>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Richard Cochran <richardcochran@gmail.com>,
- Giuseppe Cavallaro <peppe.cavallaro@st.com>
-Cc: netdev@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
- linux-clk@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org, kernel@collabora.com
-References: <20231218214451.2345691-1-cristian.ciocaltea@collabora.com>
- <20231218214451.2345691-2-cristian.ciocaltea@collabora.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231218214451.2345691-2-cristian.ciocaltea@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemm000007.china.huawei.com (7.193.23.189)
 
-On 18/12/2023 22:44, Cristian Ciocaltea wrote:
-> The reset description items are already provided by the referenced
-> snps,dwmac.yaml schema, hence replace them with the necessary
-> {min,max}Items.
-> 
-> Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+Hi Marc and Oliver,
+
+On 2023/12/17 19:26, Marc Zyngier wrote:
+> On Thu, 14 Dec 2023 12:13:57 +0000,
+> Kunkun Jiang <jiangkunkun@huawei.com> wrote:
+>> Hi list,
+>>
+>> We have observed on GICv4.1 systems that, after a guest reset, the
+>> secondary VCPU would receive an IPI_CPU_STOP accidently and failed to
+>> come online eventually.
+>>
+>> | Guest User-space
+> Guest userspace????
+Sorry. The formatting is a bit messy.
+|            Guest                               User-space
+|
+|  reset (with a vSGI pending in the
+|  hardware) [0]
+|
+|                                     disable the distributor (write 0
+|                                     into GICD_CTLR) [1]
+|
+|                                     clear pending status (write 0 into
+|                                     GICR_ISPENDR0 for each RD) [2]
+|
+|  disable the distributor (write 0
+|  into GICD_CTLR) [3]
+|
+|  enable the distributor with ARE,
+|  Group1 and nASSGIreq [4]
+>> |
+>> | reset (with a vSGI pending in the
+>> | hardware) [0]
+>> |
+>> | disable the distributor (write 0
+>> | into GICD_CTLR) [1]
+>> |
+>> | clear pending status (write 0 into
+>> | GICR_ISPENDR0 for each RD) [2]
+> This cannot clear the pending bits. Writing 0 to any of the
+> ISPEND/ICPEND registers is effectively a NOP.
+>
+> If you want to remove the pending SGIs, you need to write a bunch of
+> 1s to ICPENDR0.
+>
+>> |
+>> | disable the distributor (write 0
+>> | into GICD_CTLR) [3]
+>> |
+>> | enable the distributor with ARE,
+>> | Group1 and nASSGIreq [4]
+>>
+>> The problem is that even if user-space tries to disable the distributor
+> I don't understand what userspace does here. Why is it significant
+> that it is an EL0 access? I don't know of any SW doing that, but even
+> if it existed, this should make no difference.
+>
+>> and clear pending bits for all SGIs, we don't actually propogate it into
+>> HW (we only record it via vgic_dist->{enabled, nassgireq} and
+>> vgic_irq->pending_latch) and the vSGI remains pending across the guest
+>> reset.
+>>
+>> And when we're at [4], all vSGI's vgic_irq->hw are *true* and
+>> vgic_v4_enable_vsgis() becomes a nop.. That's not good.
+>>
+>> The following solution can solve the problem. Not sure if this is a good
+>> solution.Sent out early for suggestions or solutions.
+>>
+>> diff --git a/arch/arm64/kvm/vgic/vgic-mmio-v3.c
+>> b/arch/arm64/kvm/vgic/vgic-mmio-v3.c
+>> index 89117ba2528a..3678ab33f5b9 100644
+>> --- a/arch/arm64/kvm/vgic/vgic-mmio-v3.c
+>> +++ b/arch/arm64/kvm/vgic/vgic-mmio-v3.c
+>> @@ -374,6 +374,10 @@ static int vgic_v3_uaccess_write_pending(struct
+>> kvm_vcpu *vcpu,
+>>               irq->pending_latch = true;
+>>               vgic_queue_irq_unlock(vcpu->kvm, irq, flags);
+>>           } else {
+>> +             if (irq->hw && vgic_irq_is_sgi(irq->intid))
+>> +                 irq_set_irqchip_state(irq->host_irq,
+>> +                              IRQCHIP_STATE_PENDING,
+>> +                              false);
+>>               irq->pending_latch = false;
+>>               raw_spin_unlock_irqrestore(&irq->irq_lock, flags);
+>>           }
+>>
+> But this has *nothing* to do with the guest. This is the *host*
+> userspace performing a write to the redistributor view, which has
+> different semantics. Which is why your earlier description made no
+> sense to me.
+>
+> I think the problem is slightly larger than what you describe. A write
+> to ISPENDR0 should be propagated to the ITS for any values of the
+> latch, just like this happens on enabling HW-backed SGIs.
+>
+> Can you please give this a go?
+I have given it a go. I tested reseting the guest 100 times in succession,
+and the problem did not occur again.
+
+Thanks,
+Kunkun Jiang
+> Thanks,
+>
+> 	M.
+>
+> >From 9932d74392d969057e84bc3c18bd15f1769b6211 Mon Sep 17 00:00:00 2001
+> From: Marc Zyngier <maz@kernel.org>
+> Date: Sun, 17 Dec 2023 11:15:09 +0000
+> Subject: [PATCH] KVM: arm64: vgic-v4: Restore pending state on host userspace
+>   write
+>
+> When the VMM writes to ISPENDR0 to set the state pending state of
+> an SGI, we fail to convey this to the HW if this SGI is already
+> backed by a GICv4.1 vSGI.
+>
+> This is a bit of a corner case, as this would only occur if the
+> vgic state is changed on an already running VM, but this can
+> apparently happen across a guest reset driven by the VMM.
+>
+> Fix this by always writing out the pending_latch value to the
+> HW, and reseting it to false.
+>
+> Reported-by: Kunkun Jiang <jiangkunkun@huawei.com>
+> Signed-off-by: Marc Zyngier <maz@kernel.org>
+> Link: https://lore.kernel.org/r/7e7f2c0c-448b-10a9-8929-4b8f4f6e2a32@huawei.com
 > ---
->  .../devicetree/bindings/net/starfive,jh7110-dwmac.yaml       | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/net/starfive,jh7110-dwmac.yaml b/Documentation/devicetree/bindings/net/starfive,jh7110-dwmac.yaml
-> index 5e7cfbbebce6..d90cb82c1424 100644
-> --- a/Documentation/devicetree/bindings/net/starfive,jh7110-dwmac.yaml
-> +++ b/Documentation/devicetree/bindings/net/starfive,jh7110-dwmac.yaml
-> @@ -55,9 +55,8 @@ properties:
->      maxItems: 3
->  
->    resets:
-> -    items:
-> -      - description: MAC Reset signal.
-> -      - description: AHB Reset signal.
-> +    minItems: 2
-> +    maxItems: 2
-
-Why changing only resets, but not reset-names?
-
-Best regards,
-Krzysztof
-
+>   arch/arm64/kvm/vgic/vgic-mmio-v3.c | 27 +++++++++++++++++----------
+>   1 file changed, 17 insertions(+), 10 deletions(-)
+>
+> diff --git a/arch/arm64/kvm/vgic/vgic-mmio-v3.c b/arch/arm64/kvm/vgic/vgic-mmio-v3.c
+> index a764b0ab8bf9..2533f264b954 100644
+> --- a/arch/arm64/kvm/vgic/vgic-mmio-v3.c
+> +++ b/arch/arm64/kvm/vgic/vgic-mmio-v3.c
+> @@ -365,19 +365,26 @@ static int vgic_v3_uaccess_write_pending(struct kvm_vcpu *vcpu,
+>   		struct vgic_irq *irq = vgic_get_irq(vcpu->kvm, vcpu, intid + i);
+>   
+>   		raw_spin_lock_irqsave(&irq->irq_lock, flags);
+> -		if (test_bit(i, &val)) {
+> -			/*
+> -			 * pending_latch is set irrespective of irq type
+> -			 * (level or edge) to avoid dependency that VM should
+> -			 * restore irq config before pending info.
+> -			 */
+> -			irq->pending_latch = true;
+> -			vgic_queue_irq_unlock(vcpu->kvm, irq, flags);
+> -		} else {
+> +
+> +		/*
+> +		 * pending_latch is set irrespective of irq type
+> +		 * (level or edge) to avoid dependency that VM should
+> +		 * restore irq config before pending info.
+> +		 */
+> +		irq->pending_latch = test_bit(i, &val);
+> +
+> +		if (irq->hw && vgic_irq_is_sgi(irq->intid)) {
+> +			irq_set_irqchip_state(irq->host_irq,
+> +					      IRQCHIP_STATE_PENDING,
+> +					      irq->pending_latch);
+>   			irq->pending_latch = false;
+> -			raw_spin_unlock_irqrestore(&irq->irq_lock, flags);
+>   		}
+>   
+> +		if (irq->pending_latch)
+> +			vgic_queue_irq_unlock(vcpu->kvm, irq, flags);
+> +		else
+> +			raw_spin_unlock_irqrestore(&irq->irq_lock, flags);
+> +
+>   		vgic_put_irq(vcpu->kvm, irq);
+>   	}
+>   
 
