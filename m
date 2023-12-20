@@ -1,128 +1,118 @@
-Return-Path: <linux-kernel+bounces-7642-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7643-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC12181AB24
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 00:40:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A70E781AB28
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 00:42:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 70FC528232F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 23:40:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D8DDF1C2333B
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 23:42:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41AB44AF64;
-	Wed, 20 Dec 2023 23:40:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 135304B133;
+	Wed, 20 Dec 2023 23:42:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="hakddRLq"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XtuGwkoR"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ot1-f41.google.com (mail-ot1-f41.google.com [209.85.210.41])
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C57145C09
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 23:40:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ot1-f41.google.com with SMTP id 46e09a7af769-6d9f4eed60eso124261a34.1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 15:40:19 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C3754B13D
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 23:42:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6d9344f30caso158459b3a.1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 15:42:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1703115618; x=1703720418; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1703115753; x=1703720553; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=UT9ddCwESgsBoC0klthrCGoZVKiU2GhW3IYmRpWSVN4=;
-        b=hakddRLqIxBqscujWUaIheFFI1t5+YhWYJr9fd2/1GNQEpsHdHPQjqkgYHYLy25pIQ
-         U6x3mDdOdvwSLBgFVTnREr8yUNL8j254i+Cv0B8UmIAVRJb/Qeel3DfMr0zUVc+aqjhy
-         llq6gjyQzvtbr8uxhl8oMcCcUQSQPB4e4thuLZIhh9ftRw3BCOSIZsGmTbruQkgOUk+n
-         Mhk9z+9En4uxzyy2NCplegfJuGvMlEc4F0YVjq9y+/krTTEeLGJOl7yxhU7QgcGP5ogr
-         Lpqz/TzAPvsN/IzDQhHxr/wgxfBRC8dzFUr8p73ggEaBrgLy0grcKSW6Jnj6GNmDlGX6
-         qtVw==
+        bh=+JRk2JvA7cqmexFlms98ZkMMf7aYZ8QwDwKEHx8vdwk=;
+        b=XtuGwkoRTRIk6nC6qxHyQcx/2URzwcoEnI4shuBwefi+p1JirtuRljA4qKIbUlG4BM
+         sWK/iq2qa+ATicbGR41sukuhh/5qHISsE9nidrnbVDEoQ6c1UUkbBqIjiVvBn/uN3IGO
+         NPZLY5/NTlsk8h6xdmfkG9jZOlDelolHYfPUHtUD5yYFO2deJsn2ZDCcTwxu9GKQ17VY
+         cpATF1VR+ssvabRLnL8eTnjsQKTPdidY9ZuaRlAjg0zF2hmD3NmetquW5DTkGgAJbp+Q
+         GYz7sLJ4xKu2guOQW+fAYGWOn1tiYmpvS6na9yFVeA7F+jH1lwLykHRJstFVYH4lredw
+         pR/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703115618; x=1703720418;
+        d=1e100.net; s=20230601; t=1703115753; x=1703720553;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=UT9ddCwESgsBoC0klthrCGoZVKiU2GhW3IYmRpWSVN4=;
-        b=Q7H0oZkM+WRXKB88nTSZWC2smXIOeiltBXlQBnhdEE7O8QG2GL3QGnF7Ub+/oiOMQL
-         CkeMB/mgek0Rs0NeqrXr8Mbc/rwxJPM7YyOhfanKfCTzrqlxFoIUoAOaJVkjzh7fAHPh
-         U9qn6CWbClIQYfObQ+USwzr2s1Te4fylKhzqdixHNUXykeBWw7Y8RlqAgo8rJhAMXUh0
-         X6qXuLD9ahJrNfrohyQpI8XTkgZJ5H7kMmyH9xhvowho3QuzvS9A2jR/V9AqDN0kSQS8
-         K8r3Iv6a0irbFv84CflIHtCkoWv3NAAHK2C4FfUM8MuvUGCQxdzU39pcFkyXDkCk3iru
-         cARw==
-X-Gm-Message-State: AOJu0YxnBmoAdYeMJnwk5UKFl7oRqUZH1teW5FeN/l4qumgDHuAZ1+JL
-	czzu21jT+FMGCu5TKv4NGuHhswT4fHmXd3kkdvFtPOecJb/U6hrUvc4=
-X-Google-Smtp-Source: AGHT+IFl1yH9HmEtW/GRt/3W2yqcGB7F1oFfk9bZiSKJ12kXycsrXzJ5TDlaI7WhVRoyr+AHA0ljXKlr1IzXq/x2Slk=
-X-Received: by 2002:a05:6830:18c2:b0:6d9:f031:4e76 with SMTP id
- v2-20020a05683018c200b006d9f0314e76mr20116594ote.69.1703115618088; Wed, 20
- Dec 2023 15:40:18 -0800 (PST)
+        bh=+JRk2JvA7cqmexFlms98ZkMMf7aYZ8QwDwKEHx8vdwk=;
+        b=dmNC1eu5iIXaMOaR/aOzbsv4R8mP+j0HL0TH4T74Y6VmUiOIVH/CB0lHHSb+sYx8nM
+         xjU1d+tffSCL+vIN/HdNPsWlXe6O/PYcXByeGif9kvpaTnOKJL/gOPqFWpDIE6g+RbJt
+         X844Ykp9o8FrM6pnR2KI8zfZnNl1na+xvOi/n3o8vvH0YH4SPsU5yEVbJ0nC6WeBFBIN
+         fDbd8z4k7AAQ8aD5D0FQBntfeveG9m1Q/4ojtrXcLe4Y4urMArcPmPM0Vih8ZcKGUlr5
+         65i44qkvH9j+LMPOjelAYArLuNMbaZR7Bp3PGr7KJDlVwa25R3ptJ8iVzHta5P+64uix
+         RjbA==
+X-Gm-Message-State: AOJu0YyeL8SnESJFr9qQj2P4WxAiHVYaVPky3X8GKwkcP/jkfuAx3z3S
+	lSJDMAtowebJMaj41SdWZ81TERqgif8g04//nXg=
+X-Google-Smtp-Source: AGHT+IHNgg1j1HVSr9t2rXxcVOYERtXGUq0kvxnvedw/WKO898si7UTckjxNqiQnpURGR3oilhMqYQtGm9uwANeCR+4=
+X-Received: by 2002:aa7:880e:0:b0:6d9:30b4:3247 with SMTP id
+ c14-20020aa7880e000000b006d930b43247mr4182832pfo.18.1703115753386; Wed, 20
+ Dec 2023 15:42:33 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <202312191507.348721d2-oliver.sang@intel.com> <20231219095821.GAZYFpPUSKexZAcl05@fat_crate.local>
- <CAHk-=wimbX8UF6ECo53Hm4Vz0tCC7jjN9e3tEhZfoEtsxyfU-A@mail.gmail.com>
- <87013f74-5828-4bef-848b-ffedde8e86f5@citrix.com> <CAHk-=wh=z-aXw6o8Hi9SiC5-vwP403-ZpDHUOXdXmLbaG93dvQ@mail.gmail.com>
- <CAHk-=whfpRxuucUL1oguRivq0e7JSxNWC2p_6gvKriNTHmr0UQ@mail.gmail.com>
-In-Reply-To: <CAHk-=whfpRxuucUL1oguRivq0e7JSxNWC2p_6gvKriNTHmr0UQ@mail.gmail.com>
-From: Sami Tolvanen <samitolvanen@google.com>
-Date: Wed, 20 Dec 2023 15:39:40 -0800
-Message-ID: <CABCJKud8PG_ho79it34JxHG07n_Kbe9SLeBkEJwMYP_kS80D_g@mail.gmail.com>
-Subject: Re: [linus:master] [x86/entry] be5341eb0d: WARNING:CPU:#PID:#at_int80_emulation
-To: Linus Torvalds <torvalds@linuxfoundation.org>
-Cc: Andrew Cooper <andrew.cooper3@citrix.com>, Borislav Petkov <bp@alien8.de>, 
-	kernel test robot <oliver.sang@intel.com>, Thomas Gleixner <tglx@linutronix.de>, oe-lkp@lists.linux.dev, 
-	lkp@intel.com, linux-kernel@vger.kernel.org, 
-	Dave Hansen <dave.hansen@linux.intel.com>, 
-	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>, xen-devel@lists.xenproject.org
+References: <20231220054123.1266001-1-maskray@google.com>
+In-Reply-To: <20231220054123.1266001-1-maskray@google.com>
+From: Yang Shi <shy828301@gmail.com>
+Date: Wed, 20 Dec 2023 15:42:21 -0800
+Message-ID: <CAHbLzkpZomZBHVkSpCiK-hZUoZi4x2N6MB=PtFj-cBHOVhYs7Q@mail.gmail.com>
+Subject: Re: [PATCH] mm: remove VM_EXEC requirement for THP eligibility
+To: Fangrui Song <maskray@google.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org, 
+	Song Liu <songliubraving@fb.com>, Miaohe Lin <linmiaohe@huawei.com>, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 19, 2023 at 3:15=E2=80=AFPM Linus Torvalds
-<torvalds@linuxfoundation.org> wrote:
+On Tue, Dec 19, 2023 at 9:41=E2=80=AFPM Fangrui Song <maskray@google.com> w=
+rote:
 >
-> On Tue, 19 Dec 2023 at 12:17, Linus Torvalds
-> <torvalds@linuxfoundation.org> wrote:
-> >
-> > That said, I still think that just getting rid of this horrid special
-> > case for posix timers is the right thing, and we should just remove
-> > that SYS_NI() alias thing entirely.
+> Commit e6be37b2e7bd ("mm/huge_memory.c: add missing read-only THP
+> checking in transparent_hugepage_enabled()") introduced the VM_EXEC
+> requirement, which is not strictly needed.
 >
-> IOW, something like the attached patch.
+> lld's default --rosegment option and GNU ld's -z separate-code option
+> (default on Linux/x86 since binutils 2.31) create a read-only PT_LOAD
+> segment without the PF_X flag, which should be eligible for THP.
 >
-> It's not extensively tested, but hey, the diffstat looks nice:
->
->   arch/arm64/include/asm/syscall_wrapper.h |  4 ---
->   arch/riscv/include/asm/syscall_wrapper.h |  5 ----
->   arch/s390/include/asm/syscall_wrapper.h  | 13 +--------
->   arch/x86/include/asm/syscall_wrapper.h   | 34 +++---------------------
->   kernel/sys_ni.c                          | 14 ++++++++++
->   kernel/time/posix-stubs.c                | 45 -------------------------=
--------
->   6 files changed, 19 insertions(+), 96 deletions(-)
->
-> and it builds in at least a *couple* of configurations, including with
-> CONFIG_POSIX_TIMERS disabled.
->
-> I did *not* check whether it might fix the warning, since I doubt my
-> user space would even boot without that posix timer support (actually,
-> honestly, because I'm just lazy and "it _looks_ fine to me" was the
-> main real thing).
+> Certain architectures support medium and large code models, where
+> .lrodata may be placed in a separate read-only PT_LOAD segment, which
+> should be eligible for THP as well.
 
-I tested the patch with the 0-day bot reproducer and it does fix the
-warning. My usual arm64 and riscv configs also seem to build and boot
-just fine.
+Yeah, it doesn't have to be VM_EXEC. The original implementation was
+restricted to VM_EXEC to minimize the blast radius and the targe use
+case is for large text segments. Out of curiosity, did you see any
+noticeable improvement with this change?
 
-> But that SYS_NI() thing really does deserve to die, as it was purely
-> used as a hack for some random timer system calls.
 >
-> Comments?
-
-Removing the SYS_NI bits is definitely a cleaner solution. Looks good to me=
-.
-
-Reviewed-by: Sami Tolvanen <samitolvanen@google.com>
-Tested-by: Sami Tolvanen <samitolvanen@google.com>
-
-Sami
+> Signed-off-by: Fangrui Song <maskray@google.com>
+> ---
+>  include/linux/huge_mm.h | 1 -
+>  1 file changed, 1 deletion(-)
+>
+> diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
+> index fa0350b0812a..4c9e67e9000f 100644
+> --- a/include/linux/huge_mm.h
+> +++ b/include/linux/huge_mm.h
+> @@ -126,7 +126,6 @@ static inline bool file_thp_enabled(struct vm_area_st=
+ruct *vma)
+>         inode =3D vma->vm_file->f_inode;
+>
+>         return (IS_ENABLED(CONFIG_READ_ONLY_THP_FOR_FS)) &&
+> -              (vma->vm_flags & VM_EXEC) &&
+>                !inode_is_open_for_write(inode) && S_ISREG(inode->i_mode);
+>  }
+>
+> --
+> 2.43.0.472.g3155946c3a-goog
+>
 
