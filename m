@@ -1,201 +1,148 @@
-Return-Path: <linux-kernel+bounces-6693-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6694-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64ED0819C28
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 11:08:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C9403819C2D
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 11:09:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2510B28884A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 10:08:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 08DA51C25A63
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 10:09:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D60D210EA;
-	Wed, 20 Dec 2023 10:04:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1035838DDB;
+	Wed, 20 Dec 2023 10:04:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aQLC9OH+"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Yv+RQcju"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B90C37168;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A70DA21106
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 10:04:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1703066674;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fIGeUN2dP3Kfk2DN6cUDjpJQQIxLf4/llr+ahmqgJ9o=;
+	b=Yv+RQcjuLb2BJamig3paboquwHlChBpfeW31UR7j/WCEqrwgHMAGwOhCTN1glOPiDNqtzL
+	w7OLuAWOR/Hkiub+S7MBKxApBBdbPI46WVzX0Yv+Ev+1PnDf6cfHSi4ox9eze9PcvnUt2z
+	umtpBWB5njpDo7phX01ewvr427F1dOY=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-371-MZjr-7LVPD-4eoRcMCQdwA-1; Wed, 20 Dec 2023 05:04:31 -0500
+X-MC-Unique: MZjr-7LVPD-4eoRcMCQdwA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 86329101A52A;
+	Wed, 20 Dec 2023 10:04:30 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.39.195.169])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 8BFAB51D5;
 	Wed, 20 Dec 2023 10:04:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a234938c7f3so420645166b.2;
-        Wed, 20 Dec 2023 02:04:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703066666; x=1703671466; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=xo74soNljverk8yFjfcngHp54jiGSyRdl/CMYKZLSI8=;
-        b=aQLC9OH+rmRK3yvB90n18Lo3q5J1EDZCWEcclbtchgEHqJLdZPv8l/8YCESNIhLs26
-         kCnmfalR0o8LaCbp5XmcpJ1uATRjFgTtyDAKjfYH0xZPjopsY7A2950zdIvQ7t8rjrx+
-         eKQqjWmlD5BdQb3iyAEkY+GRQJ+6a4tlfnW/Y/+v7r8U52VD210D5xjg3zIjbmEdBLdF
-         RFFcJ4/+yEZr4vDmqdNdu9F5TJkMiROse1kqizVq+vYdv4iFzqvTJ7wQ7XnVINmmUt3e
-         0nMH1WLQJ432frMyNLhAVZaMkYfdqfMNI3Wu0c4MwUkdt3anGyBQIt0q3E1CgLgvBA6b
-         Qg1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703066666; x=1703671466;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xo74soNljverk8yFjfcngHp54jiGSyRdl/CMYKZLSI8=;
-        b=wImb69MGnokPNFnTYHA+Vokx3wpLwWiJ4VRfIDWeO2lqbAGBBll5ZU/qwkn1jQhSCo
-         ZteVSyUYS2oFvyuDbaf4f4iIsZAepenEs8CcGJy1TlD3vZ0OR6LiGSGh6XkNrHU8WcEW
-         I+1lZVgbgEXIuxbNUprNwD2d9eVoquHKY0bjnlOc8og9d+xHT3hcbRRgnH87J8OLOQ3g
-         HyusORSchqhllZw9yr0m48+/H72mkKLFjrLYaaeuuFfqoeB+BgLhdxJ+Gl6G2Z083NyG
-         QaYU/KRkJtJKvnrDU1kg7aEAXBpbjHj27noz9/ggXJmDl/O3q0D/oCQ0oEmikv8L4Ee8
-         Gx1Q==
-X-Gm-Message-State: AOJu0YyXE+rKKudkGCy+1hlx3wcOmk/hKD9S90lZzAN6rNHENKaJjIVR
-	lOtDPLGgjqkJs4+PLhT3F3Y=
-X-Google-Smtp-Source: AGHT+IGp97+TDVdFU4Qtm6hQG4zmUJjYn5JikcWIlc9ztFcaY2M0fuGNgAmeK59IbJwRVfq7eEJnWg==
-X-Received: by 2002:a17:906:b74c:b0:a23:6276:b196 with SMTP id fx12-20020a170906b74c00b00a236276b196mr1900677ejb.63.1703066665629;
-        Wed, 20 Dec 2023 02:04:25 -0800 (PST)
-Received: from tom-HP-ZBook-Fury-15-G7-Mobile-Workstation (net-188-217-59-229.cust.vodafonedsl.it. [188.217.59.229])
-        by smtp.gmail.com with ESMTPSA id n11-20020a17090673cb00b00a268b2ed7a9sm881590ejl.184.2023.12.20.02.04.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Dec 2023 02:04:25 -0800 (PST)
-Date: Wed, 20 Dec 2023 11:04:23 +0100
-From: Tommaso Merciai <tomm.merciai@gmail.com>
-To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc: linuxfancy@googlegroups.com, martin.hecht@avnet.eu,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/4] media: i2c: alvium: inline set_frame_interval
- into s_frame_interval
-Message-ID: <ZYK8J9ahkngbI5py@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
-References: <20231220085609.2595732-1-tomm.merciai@gmail.com>
- <20231220085609.2595732-4-tomm.merciai@gmail.com>
- <20231220091413.GH29638@pendragon.ideasonboard.com>
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+	Kingdom.
+	Registered in England and Wales under Company Registration No. 3798903
+From: David Howells <dhowells@redhat.com>
+In-Reply-To: <ZXxUx_nh4HNTaDJx@codewreck.org>
+References: <ZXxUx_nh4HNTaDJx@codewreck.org> <20231213152350.431591-1-dhowells@redhat.com> <20231215-einziehen-landen-94a63dd17637@brauner>
+To: Dominique Martinet <asmadeus@codewreck.org>
+Cc: dhowells@redhat.com, Christian Brauner <brauner@kernel.org>,
+    Jeff Layton <jlayton@kernel.org>, Steve French <smfrench@gmail.com>,
+    Matthew Wilcox <willy@infradead.org>,
+    Marc Dionne <marc.dionne@auristor.com>,
+    Paulo Alcantara <pc@manguebit.com>,
+    Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
+    Eric Van Hensbergen <ericvh@kernel.org>,
+    Ilya Dryomov <idryomov@gmail.com>, linux-cachefs@redhat.com,
+    linux-afs@lists.infradead.org, linux-cifs@vger.kernel.org,
+    linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+    v9fs@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+    linux-mm@kvack.org, netdev@vger.kernel.org,
+    linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 00/39] netfs, afs, 9p: Delegate high-level I/O to netfslib
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231220091413.GH29638@pendragon.ideasonboard.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1384978.1703066666.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date: Wed, 20 Dec 2023 10:04:26 +0000
+Message-ID: <1384979.1703066666@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
 
-Hi Laurent,
-Thanks for your review.
+Dominique Martinet <asmadeus@codewreck.org> wrote:
 
-On Wed, Dec 20, 2023 at 11:14:13AM +0200, Laurent Pinchart wrote:
-> Hi Tommaso,
-> 
-> Thank you for the patch.
-> 
-> On Wed, Dec 20, 2023 at 09:56:08AM +0100, Tommaso Merciai wrote:
-> > Inline alvium_set_frame_interval() into alvium_s_frame_interval().
-> > The alvium_set_frame_interval() is called once only, by
-> > alvium_s_frame_interval(). The latter is a thin wrapper around the
-> > former. Inline the function in its caller to make the code more
-> > readable.
-> > 
-> > Signed-off-by: Tommaso Merciai <tomm.merciai@gmail.com>
-> > ---
-> > Changes Since v1:
-> >  - Now this commit is the 3/4 of the series
-> >  - Fixed commit body as suggested by LPinchart
-> > 
-> >  drivers/media/i2c/alvium-csi2.c | 51 ++++++++++++---------------------
-> >  1 file changed, 19 insertions(+), 32 deletions(-)
-> > 
-> > diff --git a/drivers/media/i2c/alvium-csi2.c b/drivers/media/i2c/alvium-csi2.c
-> > index a9ff6cc97cff..b234d74454bf 100644
-> > --- a/drivers/media/i2c/alvium-csi2.c
-> > +++ b/drivers/media/i2c/alvium-csi2.c
-> > @@ -1660,14 +1660,26 @@ static int alvium_g_frame_interval(struct v4l2_subdev *sd,
-> >  	return 0;
-> >  }
-> >  
-> > -static int alvium_set_frame_interval(struct alvium_dev *alvium,
-> > -				     struct v4l2_subdev_frame_interval *fi,
-> > -				     u64 *req_fr)
-> > +static int alvium_s_frame_interval(struct v4l2_subdev *sd,
-> > +				   struct v4l2_subdev_state *sd_state,
-> > +				   struct v4l2_subdev_frame_interval *fi)
-> >  {
-> > +	struct alvium_dev *alvium = sd_to_alvium(sd);
-> >  	struct device *dev = &alvium->i2c_client->dev;
-> > +	u64 req_fr = ALVIUM_DEFAULT_FR_HZ;
-> 
-> No need to initialize the variable. With this fixed,
+> I'll go back to dhowell's tree to finally test 9p a bit,
+> sorry for lack of involvement just low on time all around.
 
-Perfect, thanks I will drop this in v3.
+I've rebased my tree on -rc6 rather than linux-next for Christian to pull.
 
-Regards,
-Tommaso
+Ganesha keeps falling over:
 
-> 
-> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> 
-> >  	u64 dft_fr, min_fr, max_fr;
-> >  	int ret;
-> >  
-> > +	/*
-> > +	 * FIXME: Implement support for V4L2_SUBDEV_FORMAT_TRY, using the V4L2
-> > +	 * subdev active state API.
-> > +	 */
-> > +	if (fi->which != V4L2_SUBDEV_FORMAT_ACTIVE)
-> > +		return -EINVAL;
-> > +
-> > +	if (alvium->streaming)
-> > +		return -EBUSY;
-> > +
-> >  	if (fi->interval.denominator == 0)
-> >  		return -EINVAL;
-> >  
-> > @@ -1682,41 +1694,16 @@ static int alvium_set_frame_interval(struct alvium_dev *alvium,
-> >  	dev_dbg(dev, "fi->interval.denominator = %d\n",
-> >  		fi->interval.denominator);
-> >  
-> > -	*req_fr = (u64)((fi->interval.denominator * USEC_PER_SEC) /
-> > +	req_fr = (u64)((fi->interval.denominator * USEC_PER_SEC) /
-> >  		       fi->interval.numerator);
-> >  
-> > -	if (*req_fr >= max_fr && *req_fr <= min_fr)
-> > -		*req_fr = dft_fr;
-> > +	if (req_fr >= max_fr && req_fr <= min_fr)
-> > +		req_fr = dft_fr;
-> >  
-> >  	alvium->frame_interval.numerator = fi->interval.numerator;
-> >  	alvium->frame_interval.denominator = fi->interval.denominator;
-> >  
-> > -	return 0;
-> > -}
-> > -
-> > -static int alvium_s_frame_interval(struct v4l2_subdev *sd,
-> > -				   struct v4l2_subdev_state *sd_state,
-> > -				   struct v4l2_subdev_frame_interval *fi)
-> > -{
-> > -	struct alvium_dev *alvium = sd_to_alvium(sd);
-> > -	u64 req_fr = ALVIUM_DEFAULT_FR_HZ;
-> > -	int ret;
-> > -
-> > -	/*
-> > -	 * FIXME: Implement support for V4L2_SUBDEV_FORMAT_TRY, using the V4L2
-> > -	 * subdev active state API.
-> > -	 */
-> > -	if (fi->which != V4L2_SUBDEV_FORMAT_ACTIVE)
-> > -		return -EINVAL;
-> > -
-> > -	if (alvium->streaming)
-> > -		return -EBUSY;
-> > -
-> > -	ret = alvium_set_frame_interval(alvium, fi, &req_fr);
-> > -	if (!ret)
-> > -		ret = alvium_set_frame_rate(alvium, req_fr);
-> > -
-> > -	return ret;
-> > +	return alvium_set_frame_rate(alvium, req_fr);
-> >  }
-> >  
-> >  static int alvium_enum_mbus_code(struct v4l2_subdev *sd,
-> 
-> -- 
-> Regards,
-> 
-> Laurent Pinchart
+[root@carina build]# valgrind ./ganesha.nfsd -L /var/log/ganesha/ganesha.l=
+og -f /etc/ganesha/ganesha.conf -N NIV_EVENT -F
+=3D=3D38960=3D=3D Memcheck, a memory error detector
+=3D=3D38960=3D=3D Copyright (C) 2002-2022, and GNU GPL'd, by Julian Seward=
+ et al.
+=3D=3D38960=3D=3D Using Valgrind-3.22.0 and LibVEX; rerun with -h for copy=
+right info
+=3D=3D38960=3D=3D Command: ./ganesha.nfsd -L /var/log/ganesha/ganesha.log =
+-f /etc/ganesha/ganesha.conf -N NIV_EVENT -F
+=3D=3D38960=3D=3D =
+
+=3D=3D38960=3D=3D Thread 138:
+=3D=3D38960=3D=3D Invalid read of size 4
+=3D=3D38960=3D=3D    at 0x4DC32D6: pthread_cond_signal@@GLIBC_2.3.2 (pthre=
+ad_cond_signal.c:41)
+=3D=3D38960=3D=3D    by 0x489700C: sync_cb (fsal_helper.c:1837)
+=3D=3D38960=3D=3D    by 0x49D79DF: mdc_read_super_cb (mdcache_file.c:559)
+=3D=3D38960=3D=3D    by 0x49D7AC5: mdc_read_cb (mdcache_file.c:582)
+=3D=3D38960=3D=3D    by 0x7B4B81F: vfs_read2 (file.c:1317)
+=3D=3D38960=3D=3D    by 0x49D7BCF: mdcache_read2 (mdcache_file.c:617)
+=3D=3D38960=3D=3D    by 0x4897173: fsal_read (fsal_helper.c:1849)
+=3D=3D38960=3D=3D    by 0x4A10FD4: _9p_read (9p_read.c:134)
+=3D=3D38960=3D=3D    by 0x4A0A024: _9p_process_buffer (9p_interpreter.c:18=
+1)
+=3D=3D38960=3D=3D    by 0x4A09DCB: _9p_tcp_process_request (9p_interpreter=
+.c:133)
+=3D=3D38960=3D=3D    by 0x48CE182: _9p_execute (9p_dispatcher.c:315)
+=3D=3D38960=3D=3D    by 0x48CE508: _9p_worker_run (9p_dispatcher.c:412)
+=3D=3D38960=3D=3D  Address 0x24 is not stack'd, malloc'd or (recently) fre=
+e'd
+=3D=3D38960=3D=3D =
+
+=3D=3D38960=3D=3D =
+
+=3D=3D38960=3D=3D Process terminating with default action of signal 11 (SI=
+GSEGV): dumping core
+=3D=3D38960=3D=3D  Access not within mapped region at address 0x24
+=3D=3D38960=3D=3D    at 0x4DC32D6: pthread_cond_signal@@GLIBC_2.3.2 (pthre=
+ad_cond_signal.c:41)
+=3D=3D38960=3D=3D    by 0x489700C: sync_cb (fsal_helper.c:1837)
+=3D=3D38960=3D=3D    by 0x49D79DF: mdc_read_super_cb (mdcache_file.c:559)
+=3D=3D38960=3D=3D    by 0x49D7AC5: mdc_read_cb (mdcache_file.c:582)
+=3D=3D38960=3D=3D    by 0x7B4B81F: vfs_read2 (file.c:1317)
+=3D=3D38960=3D=3D    by 0x49D7BCF: mdcache_read2 (mdcache_file.c:617)
+=3D=3D38960=3D=3D    by 0x4897173: fsal_read (fsal_helper.c:1849)
+=3D=3D38960=3D=3D    by 0x4A10FD4: _9p_read (9p_read.c:134)
+=3D=3D38960=3D=3D    by 0x4A0A024: _9p_process_buffer (9p_interpreter.c:18=
+1)
+=3D=3D38960=3D=3D    by 0x4A09DCB: _9p_tcp_process_request (9p_interpreter=
+.c:133)
+=3D=3D38960=3D=3D    by 0x48CE182: _9p_execute (9p_dispatcher.c:315)
+=3D=3D38960=3D=3D    by 0x48CE508: _9p_worker_run (9p_dispatcher.c:412)
+
+David
+
 
