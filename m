@@ -1,118 +1,132 @@
-Return-Path: <linux-kernel+bounces-7093-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7094-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FA3D81A190
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 15:55:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E9C081A193
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 15:57:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4D4BD287BC9
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 14:55:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9D6031C2329E
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 14:57:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A53B53E47F;
-	Wed, 20 Dec 2023 14:55:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="wTEIP8Gk"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DC623D985;
+	Wed, 20 Dec 2023 14:57:20 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+Received: from mail-oa1-f43.google.com (mail-oa1-f43.google.com [209.85.160.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6404C3D97F
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 14:55:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-54c79968ffbso6521346a12.3
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 06:55:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703084139; x=1703688939; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=CkImlzYfE+JGucnDuYdZCwAqWDnn1ZRuOvIb2guMhPs=;
-        b=wTEIP8GkRyeS6BThqr3qMMYRaUyri+NCJfJc0Boq4iLZ6NunyuEY8kr5+olN7oaJPt
-         RDcHYK8PbvtHcPsXDPwzPLsjO4P1/RBqxC3/kYfT9a8tdXaK4x0BQ+WzfPr1zDQD1Ibn
-         ZKZA8f9F3GRUoUwQ7TjjWBpRJEjBooc/WbwXZNObyyUkLCf6aAlIKniJYWKy8zn707Y+
-         0ZRrb9Gk72YtAj6VHLGTN+SUVy/vRPtUhoyQOWaDbgBVJhqfqC5NVchmRI+2xjKopIsr
-         kcVgIrExYvEgn0Ar34NZensAwfd2FgHkmCFsH6id1MGceHA/53QPppLja5qK1bVWf3Cg
-         xUIg==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCFDB3D972;
+	Wed, 20 Dec 2023 14:57:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oa1-f43.google.com with SMTP id 586e51a60fabf-2041426d274so28571fac.0;
+        Wed, 20 Dec 2023 06:57:18 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703084139; x=1703688939;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=CkImlzYfE+JGucnDuYdZCwAqWDnn1ZRuOvIb2guMhPs=;
-        b=fyT1KKym7Nt2K+8HBDA0cXCLidW7UcanR/2+PiCOT+CnPn7WNo4XCQGXTbMZFGSmWv
-         dj6ceGebfK/kDStVxCQm1e9PlohwDDQEQbn3NJtmbHxyBSIk67VP53gxD8k/IlkZxK/S
-         wyX622CUsGZGcNoYGsORGoiaeBzAbu2WzbEp++vuODk0b8TlBIdpx5iZrQKpeyqnf1fq
-         LrUQHj6BPuy6KY55htkIxGctGfRUOyNmvuvHu2Q0725SZyy7Ddl/dpuXYjyZ24jVkpzP
-         VLaLZ4ZjB07qKJJ2WcZHmSCoDPaAp5vexxesThws0HBpKkdSZmulZRakd45QOePaSTxg
-         qXHw==
-X-Gm-Message-State: AOJu0Yy5pdOXSlx1BVqB7sBupNHcBsW94p4r7eqF0utM7MJdK8m9ySIe
-	F5b2nhyBD8KEjZS3qE+96NcHZ6vMroTtmG4OqPAP62bW
-X-Google-Smtp-Source: AGHT+IG1Ks4wdEB/SN4dWC+RYTPYaI5oKlUpPYa0GZKPSU0Hg5Qnfg0VCNgPNyyWbKp7h/Yzh1i7jA==
-X-Received: by 2002:a17:907:ea5:b0:a26:854b:22ae with SMTP id ho37-20020a1709070ea500b00a26854b22aemr1777099ejc.64.1703084139470;
-        Wed, 20 Dec 2023 06:55:39 -0800 (PST)
-Received: from puffmais.c.googlers.com.com (61.134.90.34.bc.googleusercontent.com. [34.90.134.61])
-        by smtp.gmail.com with ESMTPSA id ay10-20020a170907900a00b00a2699127f98sm437926ejc.87.2023.12.20.06.55.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Dec 2023 06:55:39 -0800 (PST)
-From: =?UTF-8?q?Andr=C3=A9=20Draszik?= <andre.draszik@linaro.org>
-To: linux-kernel@vger.kernel.org,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Mathieu Poirier <mathieu.poirier@linaro.org>,
-	devicetree@vger.kernel.org
-Cc: Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH] dt-bindings: ignore paths outside kernel for DT_SCHEMA_FILES
-Date: Wed, 20 Dec 2023 14:55:37 +0000
-Message-ID: <20231220145537.2163811-1-andre.draszik@linaro.org>
-X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
+        d=1e100.net; s=20230601; t=1703084238; x=1703689038;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mvXXV7WAMWDWeQwnxROTImAzvvpI6U5xTz6U6+Bk+6k=;
+        b=cGJTa9nlE4/XwR4DWl1W/ZRkGVD6beS7ul1mY32lJ8C3/6fgtSVS6fXUH0zM9HH8+z
+         abhMcGmSIkKg93/2NCxpwGHXBLMffZbe6e+ofuwGhCcIeCFh+P1AjwKr8SlHMAHbL3C4
+         WDKftj9ZkhH4V1dcsAeAaBONWFyeF6Ten9bIPJx5JbGc6Vn7f1mQVEfPgRYE8vSzKJGD
+         61+Zs1UqOHF+q66NnuES+ATQI5CTGLyqz331xIetQOwOrvJEwhXJwYCGlSIi9m3/sUHs
+         HGYGLD3QCbFdNKnzPmV6GH/Hs65lkksHze8t/Oau2meJvoH71b4KU5J6h01p5j4jKiSK
+         nmeg==
+X-Gm-Message-State: AOJu0YxdYLeQHT6pvZeiKPxaroHdBuk38eT6mi1jOf3n093JUCSlNomW
+	1fbigPuFnyYqGqfdmKkw/7Y+xSZ5VaPqZkBtvKc=
+X-Google-Smtp-Source: AGHT+IGajGCIjh3pu93JqWzGd0XqWu0wSWnK29biKOeETlQIGQplWubvhYwdzrH1uM6Oww1XbdFTdpSYD11gTU239Ww=
+X-Received: by 2002:a05:6870:8914:b0:204:1d62:9a8b with SMTP id
+ i20-20020a056870891400b002041d629a8bmr502514oao.5.1703084237759; Wed, 20 Dec
+ 2023 06:57:17 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20231212134844.1213381-1-lukasz.luba@arm.com> <20231212134844.1213381-8-lukasz.luba@arm.com>
+In-Reply-To: <20231212134844.1213381-8-lukasz.luba@arm.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Wed, 20 Dec 2023 15:57:06 +0100
+Message-ID: <CAJZ5v0h=1yXYzS0LH6dVT1YCMqJ_rYeBJXCmkRsgZEyDK8QCpA@mail.gmail.com>
+Subject: Re: [PATCH v2 7/8] thermal/sysfs: Update governors when the 'weight'
+ has changed
+To: Lukasz Luba <lukasz.luba@arm.com>
+Cc: linux-kernel@vger.kernel.org, daniel.lezcano@linaro.org, rafael@kernel.org, 
+	linux-pm@vger.kernel.org, rui.zhang@intel.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-If the location of the kernel sources contains the string that we're
-filtering for using DT_SCHEMA_FILES, then all schemas will currently be
-matched, returned and checked, not just the ones we actually expected.
-As an example, if the kernel sources happen to be below a directory
-'google', and DT_SCHEMA_FILES=google, everything is checked. More
-common examples might be having the sources below people's home
-directories that contain the string st or arm and then searching for
-those. The list is endless.
+On Tue, Dec 12, 2023 at 2:48=E2=80=AFPM Lukasz Luba <lukasz.luba@arm.com> w=
+rote:
+>
+> Support governors update when the thermal instance's weight has changed.
+> This allows to adjust internal state for the governor.
+>
+> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+> ---
+>  drivers/thermal/thermal_sysfs.c | 9 +++++++++
+>  include/linux/thermal.h         | 1 +
+>  2 files changed, 10 insertions(+)
+>
+> diff --git a/drivers/thermal/thermal_sysfs.c b/drivers/thermal/thermal_sy=
+sfs.c
+> index df85df7d4a88..9afa2e2b76b9 100644
+> --- a/drivers/thermal/thermal_sysfs.c
+> +++ b/drivers/thermal/thermal_sysfs.c
+> @@ -957,6 +957,14 @@ weight_show(struct device *dev, struct device_attrib=
+ute *attr, char *buf)
+>         return sprintf(buf, "%d\n", instance->weight);
+>  }
+>
+> +static void handle_weight_update(struct thermal_zone_device *tz)
+> +{
+> +       if (!tz->governor || !tz->governor->update_tz)
+> +               return;
+> +
+> +       tz->governor->update_tz(tz, THERMAL_INSTANCE_WEIGHT_UPDATE);
+> +}
 
-Fix this by only matching for schemas below the kernel source's
-bindings directory.
+So if you follow my advice from the comment on the first patch, you'll
+be able to use the helper as is without introducing a new one.
 
-Note that I opted for the implementation here so as to not having to
-deal with escaping DT_SCHEMA_FILES, which would have been the
-alternative if the grep match itself had been updated.
+> +
+>  ssize_t weight_store(struct device *dev, struct device_attribute *attr,
+>                      const char *buf, size_t count)
+>  {
+> @@ -974,6 +982,7 @@ ssize_t weight_store(struct device *dev, struct devic=
+e_attribute *attr,
+>         /* Don't race with governors using the 'weight' value */
+>         mutex_lock(&tz->lock);
+>         instance->weight =3D weight;
+> +       handle_weight_update(tz);
 
-Cc: Masahiro Yamada <masahiroy@kernel.org>
-Signed-off-by: André Draszik <andre.draszik@linaro.org>
----
- Documentation/devicetree/bindings/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+So this will become
 
-diff --git a/Documentation/devicetree/bindings/Makefile b/Documentation/devicetree/bindings/Makefile
-index 3e886194b043..2323fd5b7cda 100644
---- a/Documentation/devicetree/bindings/Makefile
-+++ b/Documentation/devicetree/bindings/Makefile
-@@ -28,7 +28,7 @@ $(obj)/%.example.dts: $(src)/%.yaml check_dtschema_version FORCE
- find_all_cmd = find $(srctree)/$(src) \( -name '*.yaml' ! \
- 		-name 'processed-schema*' \)
- 
--find_cmd = $(find_all_cmd) | grep -F -e "$(subst :," -e ",$(DT_SCHEMA_FILES))"
-+find_cmd = $(find_all_cmd) | sed 's|^$(srctree)/$(src)/||' | grep -F -e "$(subst :," -e ",$(DT_SCHEMA_FILES))" | sed 's|^|$(srctree)/$(src)/|'
- CHK_DT_DOCS := $(shell $(find_cmd))
- 
- quiet_cmd_yamllint = LINT    $(src)
--- 
-2.43.0.472.g3155946c3a-goog
+thermal_governor_update_tz(tz, THERMAL_INSTANCE_WEIGHT_UPDATE);
 
+>         mutex_unlock(&tz->lock);
+>
+>         return count;
+> diff --git a/include/linux/thermal.h b/include/linux/thermal.h
+> index 9fd0d3fb234a..24176f075fbf 100644
+> --- a/include/linux/thermal.h
+> +++ b/include/linux/thermal.h
+> @@ -52,6 +52,7 @@ enum thermal_notify_event {
+>         THERMAL_TABLE_CHANGED, /* Thermal table(s) changed */
+>         THERMAL_EVENT_KEEP_ALIVE, /* Request for user space handler to re=
+spond */
+>         THERMAL_INSTANCE_LIST_UPDATE, /* List of thermal instances change=
+d */
+> +       THERMAL_INSTANCE_WEIGHT_UPDATE, /* Thermal instance weight change=
+d */
+
+And I'd slightly prefer THERMAL_INSTANCE_WEIGHT_CHANGE.
+
+>  };
+>
+>  /**
+> --
 
