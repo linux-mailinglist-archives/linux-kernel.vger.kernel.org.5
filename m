@@ -1,191 +1,137 @@
-Return-Path: <linux-kernel+bounces-6965-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6966-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96E50819FE0
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 14:35:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E1861819FE2
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 14:35:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B891D1C2241A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 13:35:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9F7BF285BD0
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 13:35:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59DE6358A4;
-	Wed, 20 Dec 2023 13:34:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29DD9358A9;
+	Wed, 20 Dec 2023 13:35:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=grsecurity.net header.i=@grsecurity.net header.b="U4zYWIrO"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out30-131.freemail.mail.aliyun.com (out30-131.freemail.mail.aliyun.com [115.124.30.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0812324B34;
-	Wed, 20 Dec 2023 13:34:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R431e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0VyuUlv0_1703079283;
-Received: from 30.221.130.111(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0VyuUlv0_1703079283)
-          by smtp.aliyun-inc.com;
-          Wed, 20 Dec 2023 21:34:44 +0800
-Message-ID: <dc63027d-1caa-12d4-0078-42549f77078d@linux.alibaba.com>
-Date: Wed, 20 Dec 2023 21:34:38 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E52002D63B
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 13:35:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=grsecurity.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensrcsec.com
+Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2cc6ea4452cso44497521fa.1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 05:35:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=grsecurity.net; s=grsec; t=1703079309; x=1703684109; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=jWziPB/IY4raRpV7Rblo2J34Fb+ngLADi7PN5gCH0UA=;
+        b=U4zYWIrOltAWomZ8b4ZuYZsB5JQR+wwqSdNWBp2Hu7F2ynmp0Fx87RcAcJdzHLt4jN
+         mRQQrMgtXskZki3Kx7659hRzThhXitYUrI4Z9OSlgh2+t73worv7NuJbTgd0PdKDQoXp
+         rqLtEp+FceFID7bzDIbVpFcWAbFm4OE7oLjBQpGhgIoXGWsoLwG1y2Dh5yrVv2fq8+h2
+         o3cL6Nk+Lgg6VdChZlsTSUL4KHsinx9Q2u8iLrZlz1Om7zShAwdKQuHo0UG7iqWRTj9l
+         H9tzY4tDxCNKGV+mgw/Xi3o2507QkGPS+Nw43h9yxPL4gvzYLCjIQEm+4DPzP6ItLnQ+
+         uLlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703079309; x=1703684109;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=jWziPB/IY4raRpV7Rblo2J34Fb+ngLADi7PN5gCH0UA=;
+        b=K32RRZixau1LXG1jwKpem/Wl1jS2C7WJrNNQvthyKkLth/pd+W5SchpYiRxvDBTjBU
+         toeei8Pscif29UfpaDi0w9spCwvl04MqWyDpr4GaxQQjFyUkARVw5dEIF7mt7TnhlTgT
+         TDYjHOlB6GG+ho+cBpYU4x0/2NBsk+ugmLhaiAlVXDkP3z2WpG9SzVkm4eci9d5QZbWR
+         myIs4vphHRrA2TBHkg3dpdEq00ND8bNJqfvBr/xUjGpU6vp2dPf7pC6R6w8u1/gg2R2a
+         raNFxAC2qzD5cLX+kPZzTZe0dIJ1y/jBbMgXn6YWnnFB8nvBX0c/ImfZUQwaDPFjOKNm
+         DG3g==
+X-Gm-Message-State: AOJu0YyhRDc8g1YL4i9F6/mh4VHFWlEQpZWWaWY4lLkcgIAo7sE4Hl1A
+	gogxb7+fS2WqPGdfnPw5BGVCUw==
+X-Google-Smtp-Source: AGHT+IEAL+yh9uQ4aAFGQ29ZazDWjMdPd+mZb0CGVjlxfHYC5i3OJGCjBNKGpq+jEqiurpFmIp022g==
+X-Received: by 2002:a05:651c:516:b0:2cc:3e21:23a with SMTP id o22-20020a05651c051600b002cc3e21023amr6212072ljp.107.1703079308754;
+        Wed, 20 Dec 2023 05:35:08 -0800 (PST)
+Received: from x1.fritz.box (p200300f6af2831005d1de4756caae0ab.dip0.t-ipconnect.de. [2003:f6:af28:3100:5d1d:e475:6caa:e0ab])
+        by smtp.gmail.com with ESMTPSA id i15-20020a05640200cf00b005537e39745csm2293895edu.47.2023.12.20.05.35.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Dec 2023 05:35:08 -0800 (PST)
+From: Mathias Krause <minipli@grsecurity.net>
+To: Bjorn Helgaas <bhelgaas@google.com>
+Cc: Mathias Krause <minipli@grsecurity.net>,
+	Arend van Spriel <arend.vanspriel@broadcom.com>,
+	Franky Lin <franky.lin@broadcom.com>,
+	Hante Meuleman <hante.meuleman@broadcom.com>,
+	Kalle Valo <kvalo@kernel.org>,
+	linux-pci@vger.kernel.org,
+	linux-wireless@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	SHA-cyfmac-dev-list@infineon.com,
+	brcm80211-dev-list.pdl@broadcom.com
+Subject: [PATCH] PCI: Remove unused 'node' member from struct pci_driver
+Date: Wed, 20 Dec 2023 14:35:05 +0100
+Message-Id: <20231220133505.8798-1-minipli@grsecurity.net>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: [PATCH net-next v8 00/10] net/smc: implement SMCv2.1 virtual ISM
- device support
-To: wintera@linux.ibm.com, wenjia@linux.ibm.com, hca@linux.ibm.com,
- gor@linux.ibm.com, agordeev@linux.ibm.com, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
- kgraul@linux.ibm.com, jaka@linux.ibm.com
-Cc: borntraeger@linux.ibm.com, svens@linux.ibm.com,
- alibuda@linux.alibaba.com, tonylu@linux.alibaba.com, raspl@linux.ibm.com,
- schnelle@linux.ibm.com, guangguan.wang@linux.alibaba.com,
- linux-s390@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20231219142616.80697-1-guwen@linux.alibaba.com>
-From: Wen Gu <guwen@linux.alibaba.com>
-In-Reply-To: <20231219142616.80697-1-guwen@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
+Remove the unused 'node' member. It got replaced by device_driver
+chaining more than 20 years ago in commit 4b4a837f2b57 ("PCI: start to
+use common fields of struct device_driver more...") of the history.git
+tree.
 
+Signed-off-by: Mathias Krause <minipli@grsecurity.net>
+---
+There is only one "user" that makes use of the 'node' member, which is
+the brcm80211 driver. However, its "use" is clearly wrong (a list head
+cannot be initialized this way) and, obviously, not needed.
 
-On 2023/12/19 22:26, Wen Gu wrote:
-> The fourth edition of SMCv2 adds the SMC version 2.1 feature updates for
-> SMC-Dv2 with virtual ISM. Virtual ISM are created and supported mainly by
-> OS or hypervisor software, comparable to IBM ISM which is based on platform
-> firmware or hardware.
-> 
-> With the introduction of virtual ISM, SMCv2.1 makes some updates:
-> 
-> - Introduce feature bitmask to indicate supplemental features.
-> - Reserve a range of CHIDs for virtual ISM.
-> - Support extended GIDs (128 bits) in CLC handshake.
-> 
-> So this patch set aims to implement these updates in Linux kernel. And it
-> acts as the first part of SMC-D virtual ISM extension & loopback-ism [1].
-> 
-> [1] https://lore.kernel.org/netdev/1695568613-125057-1-git-send-email-guwen@linux.alibaba.com/
-> 
+If netdev folks instead want to split this off into a separate commit, I
+can do that. However, I don't expect any cross-tree conflicts regarding
+this change.
 
-Thank you very much for your valuable time and help in this and past versions, Sandy, Wenjia and Jan.
+ drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c | 1 -
+ include/linux/pci.h                                     | 2 --
+ 2 files changed, 3 deletions(-)
 
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c
+index 80220685f5e4..d7fb88bb6ae1 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c
+@@ -2707,7 +2707,6 @@ MODULE_DEVICE_TABLE(pci, brcmf_pcie_devid_table);
+ 
+ 
+ static struct pci_driver brcmf_pciedrvr = {
+-	.node = {},
+ 	.name = KBUILD_MODNAME,
+ 	.id_table = brcmf_pcie_devid_table,
+ 	.probe = brcmf_pcie_probe,
+diff --git a/include/linux/pci.h b/include/linux/pci.h
+index dea043bc1e38..835a937fd233 100644
+--- a/include/linux/pci.h
++++ b/include/linux/pci.h
+@@ -885,7 +885,6 @@ struct module;
+ 
+ /**
+  * struct pci_driver - PCI driver structure
+- * @node:	List of driver structures.
+  * @name:	Driver name.
+  * @id_table:	Pointer to table of device IDs the driver is
+  *		interested in.  Most drivers should export this
+@@ -940,7 +939,6 @@ struct module;
+  *		own I/O address space.
+  */
+ struct pci_driver {
+-	struct list_head	node;
+ 	const char		*name;
+ 	const struct pci_device_id *id_table;	/* Must be non-NULL for probe to be called */
+ 	int  (*probe)(struct pci_dev *dev, const struct pci_device_id *id);	/* New device inserted */
+-- 
+2.39.2
 
-
-I guess there are only Patch #1 #5 #8 left now:
-
-- Patch #1: Some minor changes in subject and fix the format issue
-   (length exceeds 80 columns) compared to v3.
-- Patch #5: removes useless ini->feature_mask assignment in __smc_connect()
-   and smc_listen_v2_check() compared to v4.
-- Patch #8: new added, compared to v3.
-
-Looking forward to any feedback. Thanks. :)
-
-Best regards,
-Wen Gu
-
-> v8->v7:
-> - Patch #7: v7 mistakenly changed the type of gid_ext in
->    smc_clc_msg_accept_confirm to u64 instead of __be64 as previous versions
->    when fixing the rebase conflicts. So fix this mistake.
-> 
-> v7->v6:
-> Link: https://lore.kernel.org/netdev/20231219084536.8158-1-guwen@linux.alibaba.com/
-> - Collect the Reviewed-by tag in v6;
-> - Patch #3: redefine the struct smc_clc_msg_accept_confirm;
-> - Patch #7: Because that the Patch #3 already adds '__packed' to
->    smc_clc_msg_accept_confirm, so Patch #7 doesn't need to do the same thing.
->    But this is a minor change, so I kept the 'Reviewed-by' tag.
-> 
-> Other changes in previous versions but not yet acked:
-> - Patch #1: Some minor changes in subject and fix the format issue
->    (length exceeds 80 columns) compared to v3.
-> - Patch #5: removes useless ini->feature_mask assignment in __smc_connect()
->    and smc_listen_v2_check() compared to v4.
-> - Patch #8: new added, compared to v3.
-> 
-> v6->v5:
-> Link: https://lore.kernel.org/netdev/1702371151-125258-1-git-send-email-guwen@linux.alibaba.com/
-> - Add 'Reviewed-by' label given in the previous versions:
->    * Patch #4, #6, #9, #10 have nothing changed since v3;
-> - Patch #2:
->    * fix the format issue (Alignment should match open parenthesis) compared to v5;
->    * remove useless clc->hdr.length assignment in smcr_clc_prep_confirm_accept()
->      compared to v5;
-> - Patch #3: new added compared to v5.
-> - Patch #7: some minor changes like aclc_v2->aclc or clc_v2->clc compared to v5
->    due to the introduction of Patch #3. Since there were no major changes, I kept
->    the 'Reviewed-by' label.
-> 
-> Other changes in previous versions but not yet acked:
-> - Patch #1: Some minor changes in subject and fix the format issue
->    (length exceeds 80 columns) compared to v3.
-> - Patch #5: removes useless ini->feature_mask assignment in __smc_connect()
->    and smc_listen_v2_check() compared to v4.
-> - Patch #8: new added, compared to v3.
-> 
-> v5->v4:
-> Link: https://lore.kernel.org/netdev/1702021259-41504-1-git-send-email-guwen@linux.alibaba.com/
-> - Patch #6: improve the comment of SMCD_CLC_MAX_V2_GID_ENTRIES;
-> - Patch #4: remove useless ini->feature_mask assignment;
-> 
-> v4->v3:
-> https://lore.kernel.org/netdev/1701920994-73705-1-git-send-email-guwen@linux.alibaba.com/
-> - Patch #6: use SMCD_CLC_MAX_V2_GID_ENTRIES to indicate the max gid
->    entries in CLC proposal and using SMC_MAX_V2_ISM_DEVS to indicate the
->    max devices to propose;
-> - Patch #6: use i and i+1 in smc_find_ism_v2_device_serv();
-> - Patch #2: replace the large if-else block in smc_clc_send_confirm_accept()
->    with 2 subfunctions;
-> - Fix missing byte order conversion of GID and token in CLC handshake,
->    which is in a separate patch sending to net:
->    https://lore.kernel.org/netdev/1701882157-87956-1-git-send-email-guwen@linux.alibaba.com/
-> - Patch #7: add extended GID in SMC-D lgr netlink attribute;
-> 
-> v3->v2:
-> https://lore.kernel.org/netdev/1701343695-122657-1-git-send-email-guwen@linux.alibaba.com/
-> - Rename smc_clc_fill_fce as smc_clc_fill_fce_v2x;
-> - Remove ISM_IDENT_MASK from drivers/s390/net/ism.h;
-> - Add explicitly assigning 'false' to ism_v2_capable in ism_dev_init();
-> - Remove smc_ism_set_v2_capable() helper for now, and introduce it in
->    later loopback-ism implementation;
-> 
-> v2->v1:
-> - Fix sparse complaint;
-> - Rebase to the latest net-next;
-> 
-> Wen Gu (10):
->    net/smc: rename some 'fce' to 'fce_v2x' for clarity
->    net/smc: introduce sub-functions for smc_clc_send_confirm_accept()
->    net/smc: unify the structs of accept or confirm message for v1 and v2
->    net/smc: support SMCv2.x supplemental features negotiation
->    net/smc: introduce virtual ISM device support feature
->    net/smc: define a reserved CHID range for virtual ISM devices
->    net/smc: compatible with 128-bits extended GID of virtual ISM device
->    net/smc: support extended GID in SMC-D lgr netlink attribute
->    net/smc: disable SEID on non-s390 archs where virtual ISM may be used
->    net/smc: manage system EID in SMC stack instead of ISM driver
-> 
->   drivers/s390/net/ism.h        |   7 -
->   drivers/s390/net/ism_drv.c    |  57 ++----
->   include/linux/ism.h           |   1 -
->   include/net/smc.h             |  16 +-
->   include/uapi/linux/smc.h      |   2 +
->   include/uapi/linux/smc_diag.h |   2 +
->   net/smc/af_smc.c              | 118 ++++++++-----
->   net/smc/smc.h                 |  10 +-
->   net/smc/smc_clc.c             | 318 +++++++++++++++++++++-------------
->   net/smc/smc_clc.h             |  64 +++----
->   net/smc/smc_core.c            |  37 ++--
->   net/smc/smc_core.h            |  18 +-
->   net/smc/smc_diag.c            |   9 +-
->   net/smc/smc_ism.c             |  50 ++++--
->   net/smc/smc_ism.h             |  30 +++-
->   net/smc/smc_pnet.c            |   4 +-
->   16 files changed, 448 insertions(+), 295 deletions(-)
-> 
 
