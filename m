@@ -1,85 +1,98 @@
-Return-Path: <linux-kernel+bounces-6421-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6420-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2484681989C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 07:30:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8B0581989A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 07:29:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 565FC1C2509C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 06:30:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8CA8128818C
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 06:29:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83343168CE;
-	Wed, 20 Dec 2023 06:29:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F356125BC;
+	Wed, 20 Dec 2023 06:29:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="TmEm8E62"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from bg1.exmail.qq.com (bg1.exmail.qq.com [114.132.65.219])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F14C168A4;
-	Wed, 20 Dec 2023 06:29:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shingroup.cn
-X-QQ-mid: bizesmtp73t1703053749tonb8xj4
-Received: from HX01040022.powercore.com.cn ( [223.112.234.130])
-	by bizesmtp.qq.com (ESMTP) with 
-	id ; Wed, 20 Dec 2023 14:29:07 +0800 (CST)
-X-QQ-SSF: A0400000000000B0B000000A0000000
-X-QQ-FEAT: cvpDInk2tjX5BPajcFyu8lBYa991EIo5ZSpfNcLacG1cG7G2E3C6Vtt1emMmA
-	qrEcp3y0FfgIXj4J/P3b9jrCHl1i2laDbv2JwGv4398TELEzjD83XbZurtAfBuHSfdhpb1W
-	xr3zNmWvJ7TRhC4v+ZpQdFBnlZ7KNKRAo1Z67UtiGU/ObNYkTrjcextcX6/yFgd2fwMJM+w
-	eEPnyIixtzQA/eFTqT7J+ByZNysmPiHWcYQOIjtgqTyMjxFbIRr3DKU44b6cm5iTa4DMNf3
-	8R108bW8PKHZ07+cGn7yjHmWnGHdTySCS91pq/MrcagT9NFE1KQzeV/hc+iujmBBc2wksOc
-	c4Q8UzLvg8R+N4F3hpC9B0Ow0456+0QNDDI6LMmNXWJlRyqHdgoyl7c3y3WE0JHXO6vjK/o
-	Fcfdb2zwpeH3j03ji9tF/Q==
-X-QQ-GoodBg: 2
-X-BIZMAIL-ID: 6145391181880478621
-From: "JiaLong.Yang" <jialong.yang@shingroup.cn>
-To: Alex Shi <alexs@kernel.org>,
-	Yanteng Si <siyanteng@loongson.cn>,
-	Jonathan Corbet <corbet@lwn.net>
-Cc: 2738078698@qq.com,
-	"JiaLong.Yang" <jialong.yang@shingroup.cn>,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] Docs/zh_CN: Fix the meaning of DEBUG to pr_debug()
-Date: Wed, 20 Dec 2023 14:28:21 +0800
-Message-Id: <20231220062822.16168-1-jialong.yang@shingroup.cn>
-In-Reply-To: <202312201105408639401@shingroup.cn>
-References: <202312201105408639401@shingroup.cn>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0E67125AB;
+	Wed, 20 Dec 2023 06:29:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=hqMzQcL9dCaPS/BWjMsw8duUh/43SjPceygtauigPfw=; b=TmEm8E62f1+FgD45iP1MRou1+B
+	4h38XHxYisTW8Kft69E9UrX/nREJXC6jBAj7zKqcZbh3uco3uuN1iSrChhEs2FLj/jfALCQkyqxvR
+	7fmWXb2S/7lzWvepQvU4h5QHYDtc3ZID1l5RDeK9mM4dlXzdbCMXr2ebutwD2j7nnqjg8roRm7n93
+	f+XONdmbO6IQL5XCHF9BV/jLSXB8DHzq6UYDS8cqetgV5eUnuFldB9Jd6tWWoi69FWwc917868hv9
+	X7ZVRwenOazTeDt9Xjhu0KPRQMPD82CAMqyg4h8RNXcrJaXsw3oXSLNEbMwuFL0uBE729E4hvs23r
+	QoFB4gtQ==;
+Received: from [50.53.46.231] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1rFq4p-00GIZn-1A;
+	Wed, 20 Dec 2023 06:29:07 +0000
+Message-ID: <4155c90e-cdb1-4645-8bcc-fed4ea01ac83@infradead.org>
+Date: Tue, 19 Dec 2023 22:29:06 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] scripts: kernel-doc: Bug fixed for erroneous warning
+Content-Language: en-US
+To: Muhammad Muzammil <m.muzzammilashraf@gmail.com>, corbet@lwn.net,
+ gustavoars@kernel.org
+Cc: linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-hardening@vger.kernel.org
+References: <20231220062446.14511-1-muzammil@dreambigsemi.com>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20231220062446.14511-1-muzammil@dreambigsemi.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:shingroup.cn:qybglogicsvrgz:qybglogicsvrgz6a-1
+Content-Transfer-Encoding: 7bit
 
-We know the macro DEBUG will make pr_debug() save the formatted
-string into final binary. So the translation is a little wrong.
+Hi,
 
-Signed-off-by: JiaLong.Yang <jialong.yang@shingroup.cn>
----
- Documentation/translations/zh_CN/core-api/printk-basics.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 12/19/23 22:24, Muhammad Muzammil wrote:
+> From: Muzammil Ashraf <m.muzzammilashraf@gmail.com>
+> 
+> kernel-doc: fixed erroneous warning generated by '__counted_by'
+> 
+> Signed-off-by: Muzammil Ashraf <m.muzzammilashraf@gmail.com>
+> ---
+>  scripts/kernel-doc | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/scripts/kernel-doc b/scripts/kernel-doc
+> index 1484127db104..ea9688df0e93 100755
+> --- a/scripts/kernel-doc
+> +++ b/scripts/kernel-doc
+> @@ -1661,6 +1661,7 @@ sub check_sections($$$$$) {
+>  			}
+>  			elsif (($decl_type eq "struct") or
+>  		       	       ($decl_type eq "union")) {
+> +                next if (index("@_", "__counted_by") != -1);
+>  				emit_warning("${file}:$.",
+>  					"Excess $decl_type member " .
+>  					"'$sects[$sx]' " .
 
-diff --git a/Documentation/translations/zh_CN/core-api/printk-basics.rst b/Documentation/translations/zh_CN/core-api/printk-basics.rst
-index 59c6efb3fc41..cafa01bccff2 100644
---- a/Documentation/translations/zh_CN/core-api/printk-basics.rst
-+++ b/Documentation/translations/zh_CN/core-api/printk-basics.rst
-@@ -100,7 +100,7 @@ printk()的用法通常是这样的::
- 
- 为了调试，还有两个有条件编译的宏：
- pr_debug()和pr_devel()，除非定义了 ``DEBUG`` (或者在pr_debug()的情况下定义了
--``CONFIG_DYNAMIC_DEBUG`` )，否则它们会被编译。
-+``CONFIG_DYNAMIC_DEBUG`` )，否则它们不会被编译。
- 
- 
- 函数接口
+One of both of these patches should be enough. Can you test these
+instead of your patch, please?
+
+https://lore.kernel.org/linux-doc/20231215001347.work.151-kees@kernel.org/
+
+https://lore.kernel.org/linux-doc/87le9rjb4y.fsf@meer.lwn.net/
+
+Thanks.
+
 -- 
-2.25.1
-
+#Randy
+https://people.kernel.org/tglx/notes-about-netiquette
+https://subspace.kernel.org/etiquette.html
 
