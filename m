@@ -1,108 +1,194 @@
-Return-Path: <linux-kernel+bounces-6583-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6584-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1D7F819AA1
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 09:37:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5656A819AA4
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 09:38:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7F0CE287DA2
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 08:37:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0BD8A288604
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 08:38:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76C391CA8E;
-	Wed, 20 Dec 2023 08:37:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B06CB1C6B1;
+	Wed, 20 Dec 2023 08:37:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GI7hnqtp"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="NLpG2VwD"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAB971B285;
-	Wed, 20 Dec 2023 08:37:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DCAC5C433CA;
-	Wed, 20 Dec 2023 08:37:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703061452;
-	bh=GfqJslkpVvJ3XXYQWsdH3Ruo4ihIvvMcg5EcfmjxGJc=;
-	h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
-	b=GI7hnqtpI6VaXQzN495QY3tIVkSflZjreGel/GxS8oQ3nZ9ZmU6bLn895EsY5Yt7x
-	 mSguc3HxYHXT/vQih18qXo7EhThwMX2DdPIVwPOxEOr2DntH+mghugTC3yTtB3c9bY
-	 CRcR86xaPdPr+eoKnfR1zvyIf5+Pn6H3EYwFCvH09478fvM8ZKyF8VkKYv4NPtGjhJ
-	 8fvGwor+CYu9qYmNugki2U2ftA3j654XUhIY1A+ufY4LtFQfMd/j93dHXC8k0Qxntl
-	 Y+S2siRDTbmwHOJ80CAJDjgSoI2pDOqyfwNbcGLvBgnKSMxnfVWiCGc9ZVIckeyjAf
-	 EOX60QmRkAVAg==
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailauth.nyi.internal (Postfix) with ESMTP id D362727C0061;
-	Wed, 20 Dec 2023 03:37:30 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Wed, 20 Dec 2023 03:37:30 -0500
-X-ME-Sender: <xms:yqeCZcFNU7SBn-nKxq85NIurnFIs4X6mhGvnKpm04Er1P7CYlOSFEQ>
-    <xme:yqeCZVWdNfOFTXyNpTXpbos1Vy0O7339y6NyIMxGxX5XK2biBwK-msRpHSaiNFFkF
-    wtr6Dr_Ie9rXzeLNsU>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdduuddguddvtdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdet
-    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugeskhgvrhhnvghlrdhorhhgqeenucggtf
-    frrghtthgvrhhnpedvveeigfetudegveeiledvgfevuedvgfetgeefieeijeejffeggeeh
-    udegtdevheenucevlhhushhtvghrufhiiigvpedunecurfgrrhgrmhepmhgrihhlfhhroh
-    hmpegrrhhnugdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidquddvkeehudej
-    tddvgedqvdekjedttddvieegqdgrrhhnugeppehkvghrnhgvlhdrohhrghesrghrnhgusg
-    druggv
-X-ME-Proxy: <xmx:yqeCZWKz6nCCmSHfcq4QeVeL2WGm4qZcaChnjeLBMGEusGpBWctMPg>
-    <xmx:yqeCZeHYU5DDezpABXI62ZU3K6Wv1MBrwzG2hqJydfUQMzgPJp65iQ>
-    <xmx:yqeCZSVCPRJttaH8HwzSz-pVNnacHI-O_4mKqgUF_PgS8pnCUvZJOg>
-    <xmx:yqeCZTuBVL4M2cnR5Dyb2ypY_KR-ivxJtqYiSrA8TmGHNLyZ9SMZrQ>
-Feedback-ID: i36794607:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 99D9AB6008D; Wed, 20 Dec 2023 03:37:30 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1364-ga51d5fd3b7-fm-20231219.001-ga51d5fd3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 996BB1D69A;
+	Wed, 20 Dec 2023 08:37:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BK6F3W2023046;
+	Wed, 20 Dec 2023 08:37:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=Y62vHsky7woaZ4yIiuprCQtDCr+efrl5WiKH4aMYlQ0=; b=NL
+	pG2VwD29daXVHlJq65x2nteFn0AOOrQbh9W/bNf91SIE/6s/NM4QwIGj6dmzmAxV
+	+07F9BJJFqvc5dTt/RWwYcvqKP0htznMiyFM2ZTIi9mIFh3RPC0IJHFK5Q978Ca/
+	5P2LwyoO/M6ioiTK+4H1S93qbB/W94m83arIUFIIr9zZNvxOjRnBOl4lacaDr7zW
+	roknz2dEiDV1z8e/j1pb9lWGIbR7GrgrrK9nAAW4Fd5JBJPNstC2jZHi2ZfLTV6W
+	E3T1X7SaXHSQWPu7H11+jv8wy5g1MgYXbNvbsfRU5Mr1NXqJvhjcYXF31zZeq0ND
+	ddGG8t50OJpUsGCxiwjA==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v3fa3hpbt-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 20 Dec 2023 08:37:45 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BK8bisJ006908
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 20 Dec 2023 08:37:44 GMT
+Received: from [10.216.36.155] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 20 Dec
+ 2023 00:37:40 -0800
+Message-ID: <d3dfefbe-0aee-4b4a-ac5c-32db29d691c9@quicinc.com>
+Date: Wed, 20 Dec 2023 14:07:37 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <f3fac40a-c3cb-4535-836f-328cb2f90c86@app.fastmail.com>
-In-Reply-To: <20231220064341.GA847783@ravnborg.org>
-References: <20231219-sam-sparc32-sunset-v3-v1-0-64bb44b598c5@ravnborg.org>
- <20231219-sam-sparc32-sunset-v3-v1-1-64bb44b598c5@ravnborg.org>
- <2fc75a39-a6f4-42f4-ab09-d7622cb23b10@app.fastmail.com>
- <20231220064341.GA847783@ravnborg.org>
-Date: Wed, 20 Dec 2023 08:37:13 +0000
-From: "Arnd Bergmann" <arnd@kernel.org>
-To: "Sam Ravnborg" <sam@ravnborg.org>
-Cc: "David S . Miller" <davem@davemloft.net>,
- "Andreas Larsson" <andreas@gaisler.com>, "Helge Deller" <deller@gmx.de>,
- "Alexander Viro" <viro@zeniv.linux.org.uk>,
- "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
- "Alan Stern" <stern@rowland.harvard.edu>, "Jaroslav Kysela" <perex@perex.cz>,
- "Takashi Iwai" <tiwai@suse.com>, sparclinux@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
- linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
- linux-sound@vger.kernel.org
-Subject: Re: [PATCH 01/27] sparc32: Update defconfig to LEON SMP
-Content-Type: text/plain
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 17/34] media: iris: implement vb2_ops queue setup
+Content-Language: en-US
+To: Konrad Dybcio <konrad.dybcio@linaro.org>, <linux-media@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <stanimir.k.varbanov@gmail.com>,
+        <quic_vgarodia@quicinc.com>, <agross@kernel.org>,
+        <andersson@kernel.org>, <mchehab@kernel.org>,
+        <bryan.odonoghue@linaro.org>
+CC: <linux-arm-msm@vger.kernel.org>, <quic_abhinavk@quicinc.com>
+References: <1702899149-21321-1-git-send-email-quic_dikshita@quicinc.com>
+ <1702899149-21321-18-git-send-email-quic_dikshita@quicinc.com>
+ <cb2a921c-5c8e-44c8-af1d-78d877977b62@linaro.org>
+From: Dikshita Agarwal <quic_dikshita@quicinc.com>
+In-Reply-To: <cb2a921c-5c8e-44c8-af1d-78d877977b62@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: n_XTXsBR4L6G0SE1wabPyaMIIeCi4Cj5
+X-Proofpoint-ORIG-GUID: n_XTXsBR4L6G0SE1wabPyaMIIeCi4Cj5
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
+ phishscore=0 spamscore=0 suspectscore=0 mlxlogscore=787 impostorscore=0
+ clxscore=1015 adultscore=0 mlxscore=0 lowpriorityscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2312200059
 
-On Wed, Dec 20, 2023, at 06:43, Sam Ravnborg wrote:
-> On Tue, Dec 19, 2023 at 10:23:05PM +0000, Arnd Bergmann wrote:
->> On Tue, Dec 19, 2023, at 22:03, Sam Ravnborg via B4 Relay wrote:
->> > From: Sam Ravnborg <sam@ravnborg.org>
->> >
->> > This is a copy of the leon_smp defconfig found in
->> > gaisler-buildroot-2023.02-1.0.
->> >
->> > Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
->> > Cc: "David S. Miller" <davem@davemloft.net>
->> > Cc: Arnd Bergmann <arnd@kernel.org>
->> > Cc: Andreas Larsson <andreas@gaisler.com>
->> 
->> I did not get a cover letter for the series, but I looked at
-> You are listed as a receiver?!?
 
-Found it now, I was just blind.
 
-    Arnd
+On 12/19/2023 5:26 PM, Konrad Dybcio wrote:
+> On 18.12.2023 12:32, Dikshita Agarwal wrote:
+>> Implement queue_setup vb2_ops.
+>> Calculate the buffer count and buffer size as par video
+>> hardware requirement and updates to client.
+>> Also, allocate the video driver buffers for output and
+>> capture plane.
+>>
+>> Signed-off-by: Dikshita Agarwal <quic_dikshita@quicinc.com>
+>> ---
+> [...]
+> 
+>> +static int input_min_count(struct iris_inst *inst)
+>> +{
+>> +	return MIN_BUFFERS;
+>> +}
+> Why is this a function?
+> 
+Some extra checks will be performed to calculate the input buffers for
+encoder, hence it was made a function. May be I can directly use the macro
+at this point and introduce the function later in the patch with encoder
+patches.
+>> +
+>> +static int output_min_count(struct iris_inst *inst)
+>> +{
+>> +	int output_min_count;
+>> +
+>> +	switch (inst->codec) {
+>> +	case H264:
+>> +	case HEVC:
+>> +		output_min_count = 4;
+>> +		break;
+>> +	case VP9:
+>> +		output_min_count = 9;
+>> +		break;
+>> +	default:
+>> +		output_min_count = 4;
+>> +		break;
+>> +	}
+> 
+> switch (inst->codec) {
+> case VP9:
+> 	return 9;
+> case H264:
+> case HEVC:
+> default:
+> 	return 4;
+> }
+> 
+Right, this is better, will make the change.
+>> +
+>> +	return output_min_count;
+>> +}
+>> +
+>> +int iris_get_buf_min_count(struct iris_inst *inst,
+>> +			   enum iris_buffer_type buffer_type)
+>> +{
+>> +	switch (buffer_type) {
+>> +	case BUF_INPUT:
+>> +		return input_min_count(inst);
+>> +	case BUF_OUTPUT:
+>> +		return output_min_count(inst);
+>> +	default:
+>> +		return 0;
+>> +	}
+>> +}
+>> +
+>> +static u32 input_buffer_size(struct iris_inst *inst)
+>> +{
+>> +	u32 base_res_mbs = NUM_MBS_4k;
+>> +	u32 frame_size, num_mbs;
+>> +	struct v4l2_format *f;
+>> +	u32 div_factor = 1;
+>> +	u32 codec;
+>> +
+>> +	f = inst->fmt_src;
+>> +	codec = f->fmt.pix_mp.pixelformat;
+>> +
+>> +	num_mbs = get_mbpf(inst);
+>> +	if (num_mbs > NUM_MBS_4k) {
+>> +		div_factor = 4;
+>> +		base_res_mbs = inst->cap[MBPF].value;
+>> +	} else {
+>> +		base_res_mbs = NUM_MBS_4k;
+>> +		if (codec == V4L2_PIX_FMT_VP9)
+>> +			div_factor = 1;
+>> +		else
+>> +			div_factor = 2;
+>> +	}
+>> +
+>> +	frame_size = base_res_mbs * MB_IN_PIXEL * 3 / 2 / div_factor;
+> that's a bit magic..
+> 
+This is the formula to calculate video frame size, no magic here :)
+>> +
+>> +	 /* multiply by 10/8 (1.25) to get size for 10 bit case */
+> misaligned
+> 
+Oh! wasn't caught by check-patch.
+Thanks for pointing this, Will fix.
+> 
+> Konrad
 
