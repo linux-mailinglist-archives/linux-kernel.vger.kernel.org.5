@@ -1,162 +1,174 @@
-Return-Path: <linux-kernel+bounces-6379-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6382-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 841428197FD
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 06:15:38 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 54FF0819819
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 06:28:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A93DC1C252BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 05:15:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BD90BB221E4
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 05:28:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D11C410A36;
-	Wed, 20 Dec 2023 05:15:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9523B15484;
+	Wed, 20 Dec 2023 05:28:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="y2Da1fa8"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="L+/BeCI1"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2051.outbound.protection.outlook.com [40.107.220.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31116FBE1
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 05:15:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2cc63b3ed71so54729101fa.3
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 21:15:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1703049327; x=1703654127; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=rvHlCxj951YjDHsPMmawLzaHggA+zCebO+fEWpKIwSo=;
-        b=y2Da1fa8xh8Oltx51xalGcoVH5Pcjlr+1KTYaBW7CWHwxQLgV0pzrMcNFrifIupCuk
-         Jm5b5wExcsPCEPKwBU3+bA3Z08mIDP3CAmnsR7zxNMPtBnFndw6YVMC4Kbo62P8l/Knz
-         lpnNb/+L29oN3ePdKDx89m+YTfoldgT3TSs0CADUrLuV5zLpQ2czJuokInVGKYbjo3Kk
-         5TDbQ4Dbq1kCZe9HN4Q012ycevimK1DdX+v51SnE6z9JgOHGFaT3hX73nEbtbUbgpOdM
-         u3cJTseeGSFqztY/dKA6851NoGf4tACG9SYiC01TnDTaew8e1aurbhOFABTmvD+ZU0O+
-         W6WA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703049327; x=1703654127;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rvHlCxj951YjDHsPMmawLzaHggA+zCebO+fEWpKIwSo=;
-        b=t/DLmmq121xDM4vjOHwxfrWwtXbDSrZAjlYeneFZPwgN4nSuoiYppcAzo/jjOzcw85
-         KTZc49hrNgK5XXxvpCqUzykMmqt/VjUMr2XIZZiTlNQ2bNA0vdIl9tp7LPsxtypzVlZd
-         iVGVoU3PhqiB9wzSygd7EgIMyMNQddGZUZ42Pgsrhjq0++QkIhTsxACHbbLpveJVZ2VL
-         bpyxw9eAodPJz5oZ0E2FIJPZUb4eePkyHVwfkK3GevWs1bzZ0xm14G4349Cl/FYt5nye
-         yaefX4O746QieiDg9I8MiX6K+SR9kOQU2bhplbIV5TaYVPrhnamIxVG0QDT7BHpnVfbn
-         ZxRg==
-X-Gm-Message-State: AOJu0Yw5iqL/WICDImnyWnrJBESqJZOIW809PWdRduFx4mXrdfEaaUJr
-	HKzuaGK/GFmTS7LeZbgwB6iV1w==
-X-Google-Smtp-Source: AGHT+IG9s4P1zgEh18QajBxvCQTncRFiLN4R6z6+GvId+kQRZ8914UP7UCTqigd64pASLKZgLYt9GQ==
-X-Received: by 2002:a05:651c:211a:b0:2cc:8a2b:4583 with SMTP id a26-20020a05651c211a00b002cc8a2b4583mr541496ljq.90.1703049326950;
-        Tue, 19 Dec 2023 21:15:26 -0800 (PST)
-Received: from localhost ([2620:10d:c092:400::4:a75b])
-        by smtp.gmail.com with ESMTPSA id u14-20020aa7db8e000000b005530cb1464bsm3921043edt.15.2023.12.19.21.15.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Dec 2023 21:15:26 -0800 (PST)
-Date: Wed, 20 Dec 2023 06:15:23 +0100
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: Yosry Ahmed <yosryahmed@google.com>
-Cc: Nhat Pham <nphamcs@gmail.com>, akpm@linux-foundation.org, tj@kernel.org,
-	lizefan.x@bytedance.com, cerasuolodomenico@gmail.com,
-	sjenning@redhat.com, ddstreet@ieee.org, vitaly.wool@konsulko.com,
-	mhocko@kernel.org, roman.gushchin@linux.dev, shakeelb@google.com,
-	muchun.song@linux.dev, hughd@google.com, corbet@lwn.net,
-	konrad.wilk@oracle.com, senozhatsky@chromium.org, rppt@kernel.org,
-	linux-mm@kvack.org, kernel-team@meta.com,
-	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-	david@ixit.cz, chrisl@kernel.org, Wei Xu <weixugc@google.com>,
-	Yu Zhao <yuzhao@google.com>
-Subject: Re: [PATCH v6] zswap: memcontrol: implement zswap writeback disabling
-Message-ID: <20231220051523.GB23822@cmpxchg.org>
-References: <20231207192406.3809579-1-nphamcs@gmail.com>
- <CAJD7tkZXS-UJVAFfvxJ0nNgTzWBiqepPYA4hEozi01_qktkitg@mail.gmail.com>
- <20231218144431.GB19167@cmpxchg.org>
- <CAJD7tkakMjE1sNfexLzooptDyQS4YZf5DmuoywnSFD7JTbh9BA@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58FC914A8E
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 05:28:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=D1PGQifq5CdrKvNitDdopuv4djwwGq+jifFNoNWJNfDriXLN65rlGb4ZoNlREWkuuhpGatA6j6DUuGE9ni5s0Kz/acqiygiaUY6bFfEddexB7FJtMTG7UXc2d05kMqIzRVMC46XmdvZTJpBz7r8BdL3EWHGSqGn2TmgXBOsx5ADYXyUp7/9lioMmn9EngVTtt1UMRAvmcs2Gsevxisu+4DQH8d91WThXmMUJnY7WHq6LbU5MfSmxvEG8hRqC51uHb7me+AjdDVKsSi0vYNDhodj/iIg3kQMcjJWNBQk+7uotN2N/Pvdv+j68lFDfIk/Df0LuDZ6/Ng/9DoAoua+ivQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=9kfsQYCNQ7XNaDBPfx4N3Tktjqysti7t0/Tldy7rsBI=;
+ b=gIrPYz43JIj+MbqT5MYjtfXEKJ0LOywvyB8RPdR47KEkem9Wk5wKeAfyHxhewwLKb/BJLHOM22qA3bA3Nsd7oDKtmyKh3bEa9AfveHSG6Yll0gizmpUZ1iTqtU5TiC/F9nPdEax8qPALmmdhDOk3bvULMxJM9QxTghtap6OS2OU3nRlTJbUJRdGgO4rR6TyScF8MBfabn5V4Nt4d1gKOm+nNM/URToec0RBiAucM6KcW08DSb1UgchSPuhyZXEdSkVLXf26Iy0+UNX555Jqg4paSvcedGNlM5+FOJNDU+Yc8vE22gJseVXuFsXP+xYOGBMtrS/vTVGiOueSH8WCBTA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9kfsQYCNQ7XNaDBPfx4N3Tktjqysti7t0/Tldy7rsBI=;
+ b=L+/BeCI1h+t/QSIK90nQ9UAWvZX5qniasyGH+Sfzp5rIY6JTPH4l7nP25R5kl2Fa8jQa2AXEVpnKYFK/W+GBPAc619qi3RwWkc/rbYVvXq9QWBC1D2RlI1R/RFwFRpInCQJ+wunTtLx4QqxZZx3xSRSb1HNf/ypLqM27IHsFEGeZRB+XTduvXCW560y53EAcGluu2emV4ZJL/Rrfa118o7lZ3L1dBKiHqoEkK2l9i98MbUVbyM10dOCXKoHzYjfiICPQ1aGACAf9LKJtzLOhKNU6WM5gHDJUw1ebcofqAS9FDnBQulwwDIhQrNb1WNCKMlo1W5Uphze26wcs0kSaug==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3179.namprd12.prod.outlook.com (2603:10b6:5:183::18)
+ by SN7PR12MB7417.namprd12.prod.outlook.com (2603:10b6:806:2a4::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.38; Wed, 20 Dec
+ 2023 05:28:03 +0000
+Received: from DM6PR12MB3179.namprd12.prod.outlook.com
+ ([fe80::5fef:7167:36e:76cd]) by DM6PR12MB3179.namprd12.prod.outlook.com
+ ([fe80::5fef:7167:36e:76cd%4]) with mapi id 15.20.7091.034; Wed, 20 Dec 2023
+ 05:28:03 +0000
+References: <20231218105100.172635-1-ryan.roberts@arm.com>
+ <20231218105100.172635-4-ryan.roberts@arm.com>
+User-agent: mu4e 1.8.13; emacs 29.1
+From: Alistair Popple <apopple@nvidia.com>
+To: Ryan Roberts <ryan.roberts@arm.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon
+ <will@kernel.org>, Ard Biesheuvel <ardb@kernel.org>, Marc Zyngier
+ <maz@kernel.org>, Oliver Upton <oliver.upton@linux.dev>, James Morse
+ <james.morse@arm.com>, Suzuki K Poulose <suzuki.poulose@arm.com>, Zenghui
+ Yu <yuzenghui@huawei.com>, Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+ Alexander Potapenko <glider@google.com>, Andrey Konovalov
+ <andreyknvl@gmail.com>, Dmitry Vyukov <dvyukov@google.com>, Vincenzo
+ Frascino <vincenzo.frascino@arm.com>, Andrew Morton
+ <akpm@linux-foundation.org>, Anshuman Khandual
+ <anshuman.khandual@arm.com>, Matthew Wilcox <willy@infradead.org>, Yu Zhao
+ <yuzhao@google.com>, Mark Rutland <mark.rutland@arm.com>, David
+ Hildenbrand <david@redhat.com>, Kefeng Wang <wangkefeng.wang@huawei.com>,
+ John Hubbard <jhubbard@nvidia.com>, Zi Yan <ziy@nvidia.com>, Barry Song
+ <21cnbao@gmail.com>, Yang Shi <shy828301@gmail.com>,
+ linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 03/16] mm: Batch-clear PTE ranges during zap_pte_range()
+Date: Wed, 20 Dec 2023 16:25:07 +1100
+In-reply-to: <20231218105100.172635-4-ryan.roberts@arm.com>
+Message-ID: <87zfy5zbmu.fsf@nvdebian.thelocal>
+Content-Type: text/plain
+X-ClientProxiedBy: SY5PR01CA0045.ausprd01.prod.outlook.com
+ (2603:10c6:10:1f8::15) To DM6PR12MB3179.namprd12.prod.outlook.com
+ (2603:10b6:5:183::18)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJD7tkakMjE1sNfexLzooptDyQS4YZf5DmuoywnSFD7JTbh9BA@mail.gmail.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3179:EE_|SN7PR12MB7417:EE_
+X-MS-Office365-Filtering-Correlation-Id: fd27fa59-1bf8-4e84-17b3-08dc011c701a
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	KyFc7dyqWBrhJpJG2Aue+z4mKaSO89wj15zdm9Le5AddG4AsPXYAn+VEW1ync3ARN6VH3Eb5YaUOxiYoBXXYdVOYz990hg9A61tj23klu7oyuWKpuMi+61WEJuabSu6JycvdgC+tto/wBqxcbG7w3JBcAR61xP8tfqYEe/gbMQLDrcvPkpAP+vf9gtDwoNACEQwAQNpML+i5VyVlzFiKCWfrHMpDpAnWzFveaViwpG6Ros7Sx+PyV5z4AnLhOVuN7dmtQa/CJ+jAzeojRwSe8jFtcfPWzOhkCRC6k46sUICVpxPfvGMmRe9D4vPvkO8xTOUeaElCIyiiaIY0V+xVxR96mWLLHD7ZLqxCy4Lef41Jsr1jmHgxfJxf/p/3WUY7EVJ+J46A5R6YF6fK49xOsT0Nn6zF425ZMuN/Zk19a1XvKk+ZLfKd3h2dIDIuQvEAnamhJv0xbawMR+aiKnXOOCBaLBG1mqZSTEK0Ps3HC/GV9l/+9YxCp4hrifeMB54QPzT8mPjKAS2qac5/qyb0Epl1M7+ovd3/HAOIYX77S/FtYztWdvYV27XU4beilBWn
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3179.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(39860400002)(346002)(376002)(396003)(230922051799003)(1800799012)(64100799003)(451199024)(186009)(66556008)(66946007)(6916009)(316002)(7416002)(54906003)(66476007)(4744005)(2906002)(8936002)(8676002)(9686003)(5660300002)(4326008)(38100700002)(6512007)(6486002)(6506007)(86362001)(478600001)(26005)(41300700001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?VdavYJWiwo7ygiaX0rSAWsMxjvvujOOEYeCQ5qpqEEWft3o0xw0ZbLY5wSSl?=
+ =?us-ascii?Q?yPjMveVzgKi+FYWlRdnnuGnTdokhYw1R1sbAOkwrMLb6S3eKSjINb+L9f2oi?=
+ =?us-ascii?Q?wLzeKaFU5xWoaqZLEE3Cl/0m9j1V2WMTnIlqiZjfsSRuXM2SVFPLKpi5j+0r?=
+ =?us-ascii?Q?aUsZylGuq28epVFlnK/gVSiGnDZ88fU0b9J+3zsvsHJMlra7/2ZqPvE+5kl9?=
+ =?us-ascii?Q?FcGY7AuFFjmH0LhsWwtSv2VgMXeIMQPH4DJYnHjIJFuhpr5qAlEr04f6P2Gj?=
+ =?us-ascii?Q?W1dr0nbXy3woMjcKqJO7QGCCPfz8DLrkRvvamZ5eWT37rH4Mqik6+sTWwLlk?=
+ =?us-ascii?Q?01hbTQxuN7PduNeC63HByPQiJlLzQEb5T3eoH7dkPP0qSs1MSwKjhv5eq5Fm?=
+ =?us-ascii?Q?zbn3/bc9vYfvLbaPHoTVFZfxkR5HmZTqAA+aucMc/S45g2fHwgqO30IsmP7X?=
+ =?us-ascii?Q?T0etILJPW1qxp4apv8Xy1cVMrNmSsdJn+Xhmq5lwO0QD/yuhSV+jkcQseI9K?=
+ =?us-ascii?Q?V141VJu73Mhos6Z4IWqz9gL2+EMyk7Zm9wi3GF9jARFO77MHZvn+JJvqXQN9?=
+ =?us-ascii?Q?ogXb+AADDK7QcLyl75I6rEodKFSqls5oWnM7jVNx0Ehlkq5BUGtES5oVCXvl?=
+ =?us-ascii?Q?f10g8mL7AyZduweVA73UGi5h1bQRIO6SwHTq6MaLJTKRtYT0z2ZxxG9IhxEf?=
+ =?us-ascii?Q?8COsNcmPy4z2mX0sALALKeK4DrpuQRaYYipruU895Pp+uDQHch42kqv5zBm0?=
+ =?us-ascii?Q?xcraVBmS1dvdHaBjulRdL2av4Dk7VDgrE+oe43fThb0TaLO6Do6KcFnw7VXl?=
+ =?us-ascii?Q?PAKZ8YEbo6CEZejngkh7fAsTCbOdoEYye3hRjMlbFtKxzOjlQT1B3u6Cv5WZ?=
+ =?us-ascii?Q?z9MjxX//ZnzSZj17YdevH25AbzSjMCgnvKpqTmeb71K443Ao3n8hYqtWu55Y?=
+ =?us-ascii?Q?c9K4l9w1YADBB1XZ3WEyYkW7LGtObYeHv/rV9FJGroyGU7/CpukpWPov53ee?=
+ =?us-ascii?Q?64GdtplpIwA93q6GPt81UnGYnKI8qOvhdMUGYZ6J1/f+Q6CnZHYlHZivU0n7?=
+ =?us-ascii?Q?qPgKz77Md5CgADi76BcEPycKjnvFMduJ3BcKm7P41DMqHq37Q35D/ifiRbYR?=
+ =?us-ascii?Q?Yv3CWpKcyH5vrr5LYW994wOcjdNmIW3Ni3+loyUgdPcD9s95XVrZiP7dD8eq?=
+ =?us-ascii?Q?khQijAn8SYVDVd+gWvgpnF0QK8bK9FeJVRMkNyb0zINfxgwVBypMe7sy2cFy?=
+ =?us-ascii?Q?J4rKz8gSQUILoR8QYiwmUwkTeyCyEMSwbOmsvbrpXZVSRfiEHvtIzrUacXLF?=
+ =?us-ascii?Q?7hMHzLawm2ekDS7XAZTY7IBwOw6PhB5yLJcQtyltMcMPsjvDhfZeTyph+Mg5?=
+ =?us-ascii?Q?/7aFlKUAFcNpT20K3DGLv5AhgeSVD2Zg9/nHG3N/tzpDWwhOALDDEZeWXCyR?=
+ =?us-ascii?Q?fG73zJqqGbHNsaYDUp5UTRQV7Q/OT3FBkYyBf2R83GUbGIaFI5qKUAl0btZ9?=
+ =?us-ascii?Q?CKkGPLhGZhVmjNcX/jAeIw/4ul9Kitn33CqKwAJJJ6h3wBT0/zK9WzM3QYLH?=
+ =?us-ascii?Q?Di90oa6CfR+ki4MBHA0n28EDO5UsjNff5kWuV8Ph?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fd27fa59-1bf8-4e84-17b3-08dc011c701a
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3179.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Dec 2023 05:28:03.3181
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: PxOMgRzaJXUUpK+DV65NtLDo4LZPKdauUVBXJZSyNQ1ZEYONi5SpF29TtW0VAz8lZTvqv1GN74FarOOcmFrMcA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB7417
 
-On Mon, Dec 18, 2023 at 01:52:23PM -0800, Yosry Ahmed wrote:
-> > > Taking a step back from all the memory.swap.tiers vs.
-> > > memory.zswap.writeback discussions, I think there may be a more
-> > > fundamental problem here. If the zswap store failure is recurrent,
-> > > pages can keep going back to the LRUs and then sent back to zswap
-> > > eventually, only to be rejected again. For example, this can if zswap
-> > > is above the acceptance threshold, but could be even worse if it's the
-> > > allocator rejecting the page due to not compressing well enough. In
-> > > the latter case, the page can keep going back and forth between zswap
-> > > and LRUs indefinitely.
-> > >
-> > > You probably did not run into this as you're using zsmalloc, but it
-> > > can happen with zbud AFAICT. Even with zsmalloc, a less problematic
-> > > version can happen if zswap is above its acceptance threshold.
-> > >
-> > > This can cause thrashing and ineffective reclaim. We have an internal
-> > > implementation where we mark incompressible pages and put them on the
-> > > unevictable LRU when we don't have a backing swapfile (i.e. ghost
-> > > swapfiles), and something similar may work if writeback is disabled.
-> > > We need to scan such incompressible pages periodically though to
-> > > remove them from the unevictable LRU if they have been dirited.
-> >
-> > I'm not sure this is an actual problem.
-> >
-> > When pages get rejected, they rotate to the furthest point from the
-> > reclaimer - the head of the active list. We only get to them again
-> > after we scanned everything else.
-> >
-> > If all that's left on the LRU is unzswappable, then you'd assume that
-> > remainder isn't very large, and thus not a significant part of overall
-> > scan work. Because if it is, then there is a serious problem with the
-> > zswap configuration.
-> >
-> > There might be possible optimizations to determine how permanent a
-> > rejection is, but I'm not sure the effort is called for just
-> > yet. Rejections are already failure cases that screw up the LRU
-> > ordering, and healthy setups shouldn't have a lot of those. I don't
-> > think this patch adds any sort of new complications to this picture.
-> 
-> We have workloads where a significant amount (maybe 20%? 30% not sure
-> tbh) of the memory is incompressible. Zswap is still a very viable
-> option for those workloads once those pages are taken out of the
-> picture. If those pages remain on the LRUs, they will introduce a
-> regression in reclaim efficiency.
-> 
-> With the upstream code today, those pages go directly to the backing
-> store, which isn't ideal in terms of LRU ordering, but this patch
-> makes them stay on the LRUs, which can be harmful. I don't think we
-> can just assume it is okay. Whether we make those pages unevictable or
-> store them uncompressed in zswap, I think taking them out of the LRUs
-> (until they are redirtied), is the right thing to do.
 
-This is how it works with zram as well, though, and it has plenty of
-happy users. The fact that there are antagonistic workloads doesn't
-mean the feature isn't useful. This flag is optional and not enabled
-by default, so nobody is forced to use it where it hurts.
+Ryan Roberts <ryan.roberts@arm.com> writes:
 
-I'm not saying it's not worth optimizing those cases, but it doesn't
-look like a requirement in order to be useful to a variety of loads.
+[...]
 
-> Adding Wei and Yu for more data about incompressible memory in our
-> fleet. Keep in mind that we have internal patches to cap the
-> compression ratio (i.e. reject pages where the compressed size +
-> metadata is not worth it, or where zsmalloc will store it in a full
-> page anyway). But the same thing can happen upstream with zbud.
+> diff --git a/mm/mmu_gather.c b/mm/mmu_gather.c
+> index 4f559f4ddd21..39725756e6bf 100644
+> --- a/mm/mmu_gather.c
+> +++ b/mm/mmu_gather.c
+> @@ -47,6 +47,21 @@ static bool tlb_next_batch(struct mmu_gather *tlb)
+>  	return true;
+>  }
+>  
+> +unsigned int tlb_reserve_space(struct mmu_gather *tlb, unsigned int nr)
+> +{
+> +	struct mmu_gather_batch *batch = tlb->active;
+> +	unsigned int nr_alloc = batch->max - batch->nr;
+> +
+> +	while (nr_alloc < nr) {
+> +		if (!tlb_next_batch(tlb))
+> +			break;
+> +		nr_alloc += tlb->active->max;
+> +	}
+> +
+> +	tlb->active = batch;
+> +	return nr_alloc;
+> +}
 
-I hate to bring this up, but there has been a bit of a disturbing
-trend in the zswap discussions recently.
+Agree this addresses my previous comment nicely, so you can add:
 
-Please do not argue with private patches. Their behavior, the usecases
-they enable, and their dependencies are entirely irrelevant to patches
-submitted in this forum. They do not need to cater to them or consider
-the consequences for them. The only thing that matters is the upstream
-codebase and the usecases enabled by it.
+Reviewed-by: Alistair Popple <apopple@nvidia.com>
+
+> +
+>  #ifdef CONFIG_SMP
+>  static void tlb_flush_rmap_batch(struct mmu_gather_batch *batch, struct vm_area_struct *vma)
+>  {
+
 
