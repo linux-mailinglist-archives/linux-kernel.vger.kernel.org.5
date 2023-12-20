@@ -1,129 +1,122 @@
-Return-Path: <linux-kernel+bounces-6899-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6901-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AAB1819F1E
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 13:35:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B5068819F24
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 13:36:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 12F53B25255
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 12:35:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 21E42B2174D
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 12:36:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3689324A0C;
-	Wed, 20 Dec 2023 12:35:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AD8624B26;
+	Wed, 20 Dec 2023 12:35:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="iYfBydBf"
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="dhxn1kBD"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-oa1-f53.google.com (mail-oa1-f53.google.com [209.85.160.53])
+Received: from mail-vs1-f44.google.com (mail-vs1-f44.google.com [209.85.217.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2420124B21
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 12:35:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-oa1-f53.google.com with SMTP id 586e51a60fabf-203965f2da4so2737753fac.3
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 04:35:01 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2442C25550
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 12:35:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-vs1-f44.google.com with SMTP id ada2fe7eead31-466c7eae53bso21794137.0
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 04:35:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703075700; x=1703680500; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Za/srdZEvydkDd9GP57FYexKc8cVGgvI7UMEoZsAbSI=;
-        b=iYfBydBf6S5WgS/GLXJG/dG3YWdZUpq+oIkQrEoA+Lukg3QjYxsnP8mq7W9dSom7jI
-         bMJFznG/+CuDxv0jL77viKwKD4UFvAhQx7LZqZMfRrFpOGDmymP/EQ2ud3pUU0OTY90B
-         VlD8zhHQ1q8aS9UHZG4ZtxDdxvJbYBj6DHE+lKyOARaPgTrRk6nFeCf+ntyve3tQZhSz
-         sXqZdxvqIQsiKubDiPbfbbV53d9hoP4/gJmUsU2aW8yLS7drWc+PT0IroBsm5EFWiMih
-         neqpRLm6fLvQkHz5fXScs2yT4kizF1Mun7wuFOPnnJ7t692YfIAViS22nL0KhXjIYXP0
-         qZVg==
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1703075748; x=1703680548; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=z5q57e0yI1dw2nfIkLVz7L+kM2nw1Ddm91mJrAmwHjE=;
+        b=dhxn1kBDrX+hmPW3UKzfEKizBj0QPltSytVrrNvJU5MVSA83zb6waxKAIcK+DROwL8
+         NS7Nevf6izB2BSiTnjbcJAnurKs9ezdFISh8lT+Jq94r58qKO86KAxDCtkZrE5rdPszn
+         7gvnZ/V20jsEjSOvdUBdm3jt+Dw0n+pSQdSpvsSMwjesG5h4PDgZr3xWjjg0DofMzNvR
+         l4MAg6ii9BxFKcV2MktfVGC/vFT+ro0Rx8kH5xqb+zAs3Il2gWIYrkj4eYttRghSp82n
+         qn0+Dnzf50wgSvYy21YhkSxunctGf89wdy+qXGP/8DHIOyvXIJb0Mqh/Foc3kB2DcqKC
+         leQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703075700; x=1703680500;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Za/srdZEvydkDd9GP57FYexKc8cVGgvI7UMEoZsAbSI=;
-        b=SVDNOIZVLUEDTf2okNFUN7kOACKc7D0F2Mzgn4nqCALBYu1/Ah0Y0YwfSQvuzdbRyu
-         60tQ2oiPJaJSTOYPVBEQIE8S1yAUhfac10hSHxuNzZky2+9yurjLJ3F1TvZo1yhu2ImN
-         bgOCi5SA2YtKksXU1urrQzdk5pmWjLYrxs7xexPWUugLPZeF9vu/F0z4q9cFIaXUKwLQ
-         cAIKkeRmcp/WNu67fBGncRCMsDRAxBWD4NdMdDjWWoAY3s2L3yC3qpaw6mOds+VLBcRe
-         FPwZYoCdukPN0Hcv0prh86axpQB2+7O2vTjjhv5WdGdLQlyLq4UXDCE1sNObVnCOh0mG
-         3+Jg==
-X-Gm-Message-State: AOJu0YxcTcxBX4fZt5aqo9RzLWeI7J3rnQMH580GFXUvd+23KzYsbcX3
-	QFPSvahSYM75zdn5eBkFSDx3eKdFhCU6W9+9WB0euA==
-X-Google-Smtp-Source: AGHT+IGxXsV+UOWI6/zxUOXBRP2qxFCt2iJsyon10EsYM//jKSJ+bnMC3b7Q3+MN4DCHoPJu9jD4vWdbCP4Da9UIZHE=
-X-Received: by 2002:a05:6871:5211:b0:204:13cd:74d4 with SMTP id
- ht17-20020a056871521100b0020413cd74d4mr408167oac.18.1703075700321; Wed, 20
- Dec 2023 04:35:00 -0800 (PST)
+        d=1e100.net; s=20230601; t=1703075748; x=1703680548;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=z5q57e0yI1dw2nfIkLVz7L+kM2nw1Ddm91mJrAmwHjE=;
+        b=sDeNeW3q3XpjjN4+RxEy8cl7ZT0bdnZ7LMQU9+VNlBmcgvUIK2dTnvBo1Ce8yDhRfk
+         NO2HfjSq+DyDrRDUWWm/62CX4kbZJvij0nnDcWfDKup8ninXiXoxWdS1S+ILNMHD/rh5
+         8rmRnu4IEFhgGVvlJ0+DzpU6/beVQdX8YcX7DAtJ9/YYSVcnR5BHByjo7fWm5fAqgM97
+         ZNwcu8a7UFGX/8LTERKlC1umKMgyeukdcyri7U5+r4bUK7eYDc5vc2Pkmu30E0GdUd3q
+         8/L6ZtVTx3MP5BxO6WbUl/8sxKwUrHIER/kW9yCQ6Avm1Vd5IfnAoDZE8EjAtqMfaqbL
+         FJvg==
+X-Gm-Message-State: AOJu0YxESK36d0UXkQdi3od78KrpONOXpg3iFMcGogzH1vKLAxouHNPF
+	2XwTBXZzxN0l/+Kn88l+4i3vqWS/jdVx6Ii0w5yWEKi9+0jpxQn4
+X-Google-Smtp-Source: AGHT+IGTgI8+TbffUVpoa3RFSUatMapO3hg0Xf4GerUA7/+fM9d5IKIR4fIpSpkBR78ygqxi/+5GnKcKI8/AeAJ+WqY=
+X-Received: by 2002:a05:6102:4b17:b0:466:9d92:786c with SMTP id
+ ia23-20020a0561024b1700b004669d92786cmr3279485vsb.8.1703075748043; Wed, 20
+ Dec 2023 04:35:48 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231220114225.26567-1-quic_kbajaj@quicinc.com>
- <20231220114225.26567-2-quic_kbajaj@quicinc.com> <d7ae374a-7269-4992-ad44-18b2516cad42@linaro.org>
- <CAA8EJppYuXpqKpTcUda1LBFfBmm40-VpC+3heJqoL82kS=+erA@mail.gmail.com> <519138d9-2434-4357-abec-f400b87755c6@linaro.org>
-In-Reply-To: <519138d9-2434-4357-abec-f400b87755c6@linaro.org>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Wed, 20 Dec 2023 14:34:49 +0200
-Message-ID: <CAA8EJpoEwU_S05EdO+sXekE355d5vAQCO+Vt3iH9yibhqOhH_A@mail.gmail.com>
-Subject: Re: [PATCH 1/2] arm64: dts: qcom: qcm6490-idp: Enable various remoteprocs
-To: Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Komal Bajaj <quic_kbajaj@quicinc.com>, 
-	Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
+References: <20231219125706.23284-1-brgl@bgdev.pl> <ZYGyumQXaM8PXzcz@smile.fi.intel.com>
+ <CAMRc=McFsswSjCU5m+_wmmxQh+T1DkwnrBsYp_KsQfOSwENvLw@mail.gmail.com>
+In-Reply-To: <CAMRc=McFsswSjCU5m+_wmmxQh+T1DkwnrBsYp_KsQfOSwENvLw@mail.gmail.com>
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+Date: Wed, 20 Dec 2023 13:35:37 +0100
+Message-ID: <CAMRc=MesmR+=gMsk2y0Y7jiwtFpcHCofYsi3mxWFrdY9=1Y46A@mail.gmail.com>
+Subject: Re: [PATCH] gpiolib: use __counted_by() for GPIO descriptors
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>, Kent Gibson <warthog618@gmail.com>, 
+	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 20 Dec 2023 at 14:29, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
+On Wed, Dec 20, 2023 at 9:16=E2=80=AFAM Bartosz Golaszewski <brgl@bgdev.pl>=
+ wrote:
 >
-> On 20.12.2023 13:18, Dmitry Baryshkov wrote:
-> > On Wed, 20 Dec 2023 at 13:46, Krzysztof Kozlowski
-> > <krzysztof.kozlowski@linaro.org> wrote:
-> >>
-> >> On 20/12/2023 12:42, Komal Bajaj wrote:
-> >>> Enable the ADSP, CDSP, MPSS and WPSS that are found on the SoC.
-> >>>
-> >>> Signed-off-by: Komal Bajaj <quic_kbajaj@quicinc.com>
-> >>> ---
-> >>>  arch/arm64/boot/dts/qcom/qcm6490-idp.dts | 20 ++++++++++++++++++++
-> >>>  1 file changed, 20 insertions(+)
-> >>>
-> >>> diff --git a/arch/arm64/boot/dts/qcom/qcm6490-idp.dts b/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
-> >>> index 03e97e27d16d..ad78efa9197d 100644
-> >>> --- a/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
-> >>> +++ b/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
-> >>> @@ -419,6 +419,26 @@ &qupv3_id_0 {
-> >>>       status = "okay";
-> >>>  };
-> >>>
-> >>> +&remoteproc_adsp {
-> >>> +     firmware-name = "qcom/qcm6490/adsp.mdt";
-> >>
-> >> Why MDT not MBN?
+> On Tue, Dec 19, 2023 at 4:12=E2=80=AFPM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
 > >
-> > I agree here. NAK until this is .mbn. Please follow the example of
-> > other boards when you write patches.
+> > On Tue, Dec 19, 2023 at 01:57:06PM +0100, Bartosz Golaszewski wrote:
+> > > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> > >
+> > > Pull the array of GPIO descriptors into struct gpio_device as a flexi=
+ble
+> > > array and use __counted_by() to control its size.
 > >
-> >>
-> >> I don't see these files in linux-firmware and your cover letter did not
-> >> explain anything around their submission. What's the status on that part?
+> > How big is the struct gpio_device? Unifying like this might provoke sub=
+tle
+> > errors on very fragmented memory, where k*alloc() might not find enough=
+ free
+> > space. Note, k*alloc() guarantees finding only memory for a single page=
+.
+> > With PAGE_SIZE =3D 4k, this might be an issue.
 > >
-> > This isn't usually required, is it? I mean, the firmware can come from
-> > linux-firmware, from the device partition or in any other way. With
-> > the FW_LOADER_USER_HELPER this becomes just the key string used to
-> > identify firmware to be loaded.
-> I think Krzysztof referenced the fact that the Qualcomm-made boards
-> usually came with redistributable firmware.
+> > I would suggest, if nothing prevents us from switching, to use kvmalloc=
+().
+> >
 >
-> As far as my 5 cents go, not submitting the files to linux-firmware.git
-> only harms the user experience, so I'd always advocate for it, whenever
-> that is actually possible.
+> That's a good point but there's another thing. We need to call
+> gpiochip_get_ngpios() before the allocation. I need to revisit this
+> one.
+>
 
-Me too. I think this is work in progress on the Qualcomm side, see the
-discussion at https://github.com/Linaro/meta-qcom/pull/551 .
+It's trickier than I thought. We need the struct device to exist (have
+its software node assigned) before we check the property but we cannot
+allocate gdev (embedding struct device) + descs before we have read
+it. Eh, maybe it's not worth it and let's keep the two allocations
+separate.
 
--- 
-With best wishes
-Dmitry
+Bart
+
+> Bart
+>
+> > --
+> > With Best Regards,
+> > Andy Shevchenko
+> >
+> >
 
