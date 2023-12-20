@@ -1,165 +1,299 @@
-Return-Path: <linux-kernel+bounces-6774-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6776-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA719819D58
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 11:49:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E2ED7819D5F
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 11:50:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4AD801F27AB4
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 10:49:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 13C491C2113A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 10:50:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C079E210F3;
-	Wed, 20 Dec 2023 10:48:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FC9821108;
+	Wed, 20 Dec 2023 10:49:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="JytAq/Ck"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Hdb/oMG9"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B72E20DDD;
-	Wed, 20 Dec 2023 10:48:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BKACgS4027817;
-	Wed, 20 Dec 2023 10:48:38 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=py09Ii/aCwCGHJewVHJ2kc4SxbhC3k0vo1h0FkMmqtI=;
- b=JytAq/CkUgZ27F4g2NwfB/PoSGhA8MvM9/McQOBpduwQbqVsJvso1Drs1xvf3jz721RU
- sUPoEt1oPyAdkg9DHJVt4xISd1fhpBcTyq4PId9ii0z8tLglHmPjqxXnY1MgFvHU8S8h
- ralFbijAKZOxib4vcbTiHhvZY1UY6GFVPy89RTIhl9txrtj9cjf93r+jOPrAI9ShH2RE
- IQnyteWKrrAxlb6W/kKtjx8JfjGLFWLQ5LBzK9T/knu1RAlRs2NHU+0Pto/Jyvu8unzc
- tAVhAF+SL5hW9Rj6ybeau3VoCVJsvk0eA8rP461YyJ1u8F22Gqcx8+5dlNtZXNT7EnKk Ow== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v3xad8v1e-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 20 Dec 2023 10:48:37 +0000
-Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BKAI8xr014081;
-	Wed, 20 Dec 2023 10:48:37 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v3xad8v0q-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 20 Dec 2023 10:48:37 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BK8uxVb027822;
-	Wed, 20 Dec 2023 10:48:35 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3v1rek5h9g-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 20 Dec 2023 10:48:35 +0000
-Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
-	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BKAmWc928770832
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 20 Dec 2023 10:48:32 GMT
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id A740A20040;
-	Wed, 20 Dec 2023 10:48:32 +0000 (GMT)
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id F294320049;
-	Wed, 20 Dec 2023 10:48:31 +0000 (GMT)
-Received: from [9.171.75.175] (unknown [9.171.75.175])
-	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Wed, 20 Dec 2023 10:48:31 +0000 (GMT)
-Message-ID: <f41ab6b0-d2e4-481b-b972-99dd9048eafa@linux.ibm.com>
-Date: Wed, 20 Dec 2023 11:48:31 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83E4220DE9;
+	Wed, 20 Dec 2023 10:49:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-5cd8879ce18so1627257a12.1;
+        Wed, 20 Dec 2023 02:49:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703069381; x=1703674181; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=fNe7/7PjZgY15q6Jp1KOAZsdGe4j9dnjuvT94arAU8E=;
+        b=Hdb/oMG9GjziivLfcuYWqcBsHdbnnWx1Gz0GdUh4I1NSl6Hq4xQ7jF7y0vbRGJzxRs
+         A01TL7b3SYZYPjJ8aLj4sewhbdy3xT4qu49txss1OspRiDRNsvrxI63fUH7iaqNpfOKt
+         fpPLrcGQeJioM5VgOjS20wxX7t7j6DKgW3K8zgASfT8eWt7+o1d+dutymzW6+X6BTlI7
+         e/4vQQTF8+T9rGV1CxHZMWGyfyraMaxgOxrRYOGzJ9bHqR8v+L3pH8u3NF90BXW50nme
+         zerNvji+BTPdNSfFs510J63/Uq+YLDJsLTlEHYT2eVoDEGxpa+1jZDLRAw5SJ/tBu98K
+         ee1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703069381; x=1703674181;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=fNe7/7PjZgY15q6Jp1KOAZsdGe4j9dnjuvT94arAU8E=;
+        b=tH75ICfZf/QhQiNDPLaTkc9MCPd5n0sCvQwYDAFp2ijnOYQibwZgNI3xSRkrpsRSeR
+         2I7tiOjhsA8dL46NCNtqSwxEJ0mpCOMA4GznOv7KYkF4Vl4CucZoRyrQd6MHDPnKa0dM
+         Lo/V3dMIs0vlnI0aYJoGVJnJu3pkpdsXmAr1qGlvSG4NvcNais0N626VBKtSH3uhvkQY
+         wbwkJqdt5wubj+C6bGq9iB+LXDRWMvvMk+ChfoW70X3advaOCt9PgWk/dLJZmXaL6bmS
+         Yt2nZVyhG/wg2ThtGoadcgDymnYpW6kkzMMi5Ie1ZNU7mjYeVyST75y/dmRwUwOhzpT6
+         ASSg==
+X-Gm-Message-State: AOJu0Yx4VDu8J+f+rTvl7NDKCt9J2NA0P1oAaIAadyT0PCwM3ZwggBIS
+	vtuuyU22sztpKNca7u2jDDd/5mp72BHGqdRWgjs=
+X-Google-Smtp-Source: AGHT+IE85wPJVB1skRf3yOzFc3+Ajr56AWG+z2Ot2LGrho/y90qhWZBo1I6L3mQ2PmxZtgkl4a2gTjDsMRncXiauCNc=
+X-Received: by 2002:a05:6a20:13cc:b0:190:2c2f:7df9 with SMTP id
+ ho12-20020a056a2013cc00b001902c2f7df9mr8991819pzc.64.1703069380595; Wed, 20
+ Dec 2023 02:49:40 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 4/4] KVM: s390: Minor refactor of base/ext facility
- lists
-Content-Language: en-US
-To: Nina Schoetterl-Glausch <nsg@linux.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Vasily Gorbik
- <gor@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>
-Cc: linux-s390@vger.kernel.org, David Hildenbrand <david@redhat.com>,
-        Sven Schnelle <svens@linux.ibm.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-References: <20231219140854.1042599-1-nsg@linux.ibm.com>
- <20231219140854.1042599-5-nsg@linux.ibm.com>
-From: Janosch Frank <frankja@linux.ibm.com>
-Autocrypt: addr=frankja@linux.ibm.com; keydata=
- xsFNBFubpD4BEADX0uhkRhkj2AVn7kI4IuPY3A8xKat0ihuPDXbynUC77mNox7yvK3X5QBO6
- qLqYr+qrG3buymJJRD9xkp4mqgasHdB5WR9MhXWKH08EvtvAMkEJLnqxgbqf8td3pCQ2cEpv
- 15mH49iKSmlTcJ+PvJpGZcq/jE42u9/0YFHhozm8GfQdb9SOI/wBSsOqcXcLTUeAvbdqSBZe
- zuMRBivJQQI1esD9HuADmxdE7c4AeMlap9MvxvUtWk4ZJ/1Z3swMVCGzZb2Xg/9jZpLsyQzb
- lDbbTlEeyBACeED7DYLZI3d0SFKeJZ1SUyMmSOcr9zeSh4S4h4w8xgDDGmeDVygBQZa1HaoL
- Esb8Y4avOYIgYDhgkCh0nol7XQ5i/yKLtnNThubAcxNyryw1xSstnKlxPRoxtqTsxMAiSekk
- 0m3WJwvwd1s878HrQNK0orWd8BzzlSswzjNfQYLF466JOjHPWFOok9pzRs+ucrs6MUwDJj0S
- cITWU9Rxb04XyigY4XmZ8dywaxwi2ZVTEg+MD+sPmRrTw+5F+sU83cUstuymF3w1GmyofgsU
- Z+/ldjToHnq21MNa1wx0lCEipCCyE/8K9B9bg9pUwy5lfx7yORP3JuAUfCYb8DVSHWBPHKNj
- HTOLb2g2UT65AjZEQE95U2AY9iYm5usMqaWD39pAHfhC09/7NQARAQABzSVKYW5vc2NoIEZy
- YW5rIDxmcmFua2phQGxpbnV4LmlibS5jb20+wsF3BBMBCAAhBQJbm6Q+AhsjBQsJCAcCBhUI
- CQoLAgQWAgMBAh4BAheAAAoJEONU5rjiOLn4p9gQALjkdj5euJVI2nNT3/IAxAhQSmRhPEt0
- AmnCYnuTcHRWPujNr5kqgtyER9+EMQ0ZkX44JU2q7OWxTdSNSAN/5Z7qmOR9JySvDOf4d3mS
- bMB5zxL9d8SbnSs1uW96H9ZBTlTQnmLfsiM9TetAjSrR8nUmjGhe2YUhJLR1v1LguME+YseT
- eXnLzIzqqpu311/eYiiIGcmaOjPCE+vFjcXL5oLnGUE73qSYiujwhfPCCUK0850o1fUAYq5p
- CNBCoKT4OddZR+0itKc/cT6NwEDwdokeg0+rAhxb4Rv5oFO70lziBplEjOxu3dqgIKbHbjza
- EXTb+mr7VI9O4tTdqrwJo2q9zLqqOfDBi7NDvZFLzaCewhbdEpDYVu6/WxprAY94hY3F4trT
- rQMHJKQENtF6ZTQc9fcT5I3gAmP+OEvDE5hcTALpWm6Z6SzxO7gEYCnF+qGXqp8sJVrweMub
- UscyLqHoqdZC2UG4LQ1OJ97nzDpIRe0g6oJ9ZIYHKmfw5jjwH6rASTld5MFWajWdNsqK15k/
- RZnHAGICKVIBOBsq26m4EsBlfCdt3b/6emuBjUXR1pyjHMz2awWzCq6/6OWs5eANZ0sdosNq
- dq2v0ULYTazJz2rlCXV89qRa7ukkNwdBSZNEwsD4eEMicj1LSrqWDZMAALw50L4jxaMD7lPL
- jJbazsFNBFubpD4BEADAcUTRqXF/aY53OSH7IwIK9lFKxIm0IoFkOEh7LMfp7FGzaP7ANrZd
- cIzhZi38xyOkcaFY+npGEWvko7rlIAn0JpBO4x3hfhmhBD/WSY8LQIFQNNjEm3vzrMo7b9Jb
- JAqQxfbURY3Dql3GUzeWTG9uaJ00u+EEPlY8zcVShDltIl5PLih20e8xgTnNzx5c110lQSu0
- iZv2lAE6DM+2bJQTsMSYiwKlwTuv9LI9Chnoo6+tsN55NqyMxYqJgElk3VzlTXSr3+rtSCwf
- tq2cinETbzxc1XuhIX6pu/aCGnNfuEkM34b7G1D6CPzDMqokNFbyoO6DQ1+fW6c5gctXg/lZ
- 602iEl4C4rgcr3+EpfoPUWzKeM8JXv5Kpq4YDxhvbitr8Dm8gr38+UKFZKlWLlwhQ56r/zAU
- v6LIsm11GmFs2/cmgD1bqBTNHHcTWwWtRTLgmnqJbVisMJuYJt4KNPqphTWsPY8SEtbufIlY
- HXOJ2lqUzOReTrie2u0qcSvGAbSfec9apTFl2Xko/ddqPcZMpKhBiXmY8tJzSPk3+G4tqur4
- 6TYAm5ouitJsgAR61Cu7s+PNuq/pTLDhK+6/Njmc94NGBcRA4qTuysEGE79vYWP2oIAU4Fv6
- gqaWHZ4MEI2XTqH8wiwzPdCQPYsSE0fXWiYu7ObeErT6iLSTZGx4rQARAQABwsFfBBgBCAAJ
- BQJbm6Q+AhsMAAoJEONU5rjiOLn4DDEP/RuyckW65SZcPG4cMfNgWxZF8rVjeVl/9PBfy01K
- 8R0hajU40bWtXSMiby7j0/dMjz99jN6L+AJHJvrLz4qYRzn2Ys843W+RfXj62Zde4YNBE5SL
- jJweRCbMWKaJLj6499fctxTyeb9+AMLQS4yRSwHuAZLmAb5AyCW1gBcTWZb8ON5BmWnRqeGm
- IgC1EvCnHy++aBnHTn0m+zV89BhTLTUal35tcjUFwluBY39R2ux/HNlBO1GY3Z+WYXhBvq7q
- katThLjaQSmnOrMhzqYmdShP1leFTVbzXUUIYv/GbynO/YrL2gaQpaP1bEUEi8lUAfXJbEWG
- dnHFkciryi092E8/9j89DJg4mmZqOau7TtUxjRMlBcIliXkzSLUk+QvD4LK1kWievJse4mte
- FBdkWHfP4BH/+8DxapRcG1UAheSnSRQ5LiO50annOB7oXF+vgKIaie2TBfZxQNGAs3RQ+bga
- DchCqFm5adiSP5+OT4NjkKUeGpBe/aRyQSle/RropTgCi85pje/juYEn2P9UAgkfBJrOHvQ9
- Z+2Sva8FRd61NJLkCJ4LFumRn9wQlX2icFbi8UDV3do0hXJRRYTWCxrHscMhkrFWLhYiPF4i
- phX7UNdOWBQ90qpHyAxHmDazdo27gEjfvsgYMdveKknEOTEb5phwxWgg7BcIDoJf9UMC
-In-Reply-To: <20231219140854.1042599-5-nsg@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: SSzTOqZ04RDt2qm1_3qA3iU9DDBhdGRi
-X-Proofpoint-ORIG-GUID: 4OLoqLERnriKbfqg7Q8sKFsmbjMowayq
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-20_02,2023-12-14_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 suspectscore=0
- phishscore=0 priorityscore=1501 bulkscore=0 spamscore=0 lowpriorityscore=0
- impostorscore=0 malwarescore=0 mlxlogscore=812 clxscore=1015 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2312200076
+From: xingwei lee <xrivendell7@gmail.com>
+Date: Wed, 20 Dec 2023 18:49:29 +0800
+Message-ID: <CABOYnLzNFD_mf5cY1h8iLnVcTz9Bx14Z6t=9+nbQCPSsTC-5ag@mail.gmail.com>
+Subject: Re: [syzbot] [perf?] WARNING in perf_event_open
+To: syzbot+07144c543a5c002c7305@syzkaller.appspotmail.com
+Cc: acme@kernel.org, adrian.hunter@intel.com, 
+	alexander.shishkin@linux.intel.com, irogers@google.com, jolsa@kernel.org, 
+	linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org, 
+	mark.rutland@arm.com, mingo@redhat.com, namhyung@kernel.org, 
+	netdev@vger.kernel.org, peterz@infradead.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On 12/19/23 15:08, Nina Schoetterl-Glausch wrote:
-> Directly use the size of the arrays instead of going through the
-> indirection of kvm_s390_fac_size().
-> Don't use magic number for the number of entries in the non hypervisor
-> managed facility bit mask list.
-> Make the constraint of that number on kvm_s390_fac_base obvious.
-> Get rid of implicit double anding of stfle_fac_list.
-> 
-> Reviewed-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
-> Signed-off-by: Nina Schoetterl-Glausch <nsg@linux.ibm.com>
+Hello, I reproduced this bug with repro.c and repro.txt with the same
+configure in syzbot and comfiled this bug in the lastest
+mainline/net/bpf
 
-@Nina: I'm currently still recovering from a cold and hence I'm not 
-fully able to grasp this patch.
+bpd-next kernel: 441c725ed592cb22f2a82f2827dccd045356cc81
+kernel config: https://syzkaller.appspot.com/x/.config?x=8f565e10f0b1e1fc
+compiler: gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+and I also notice it maybe the same bug as
+https://lore.kernel.org/all/ZXpm6gQ%2Fd59jGsuW@xpf.sh.intel.com/
 
-May I drop it and we re-visit it next year for 6.9?
+Anyway
 
+=* repro.c =*
+// autogenerated by syzkaller (https://github.com/google/syzkaller)
+
+#define _GNU_SOURCE
+
+#include <dirent.h>
+#include <endian.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <signal.h>
+#include <stdarg.h>
+#include <stdbool.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/prctl.h>
+#include <sys/stat.h>
+#include <sys/syscall.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <time.h>
+#include <unistd.h>
+
+static void sleep_ms(uint64_t ms) { usleep(ms * 1000); }
+
+static uint64_t current_time_ms(void) {
+ struct timespec ts;
+ if (clock_gettime(CLOCK_MONOTONIC, &ts)) exit(1);
+ return (uint64_t)ts.tv_sec * 1000 + (uint64_t)ts.tv_nsec / 1000000;
+}
+
+#define BITMASK(bf_off, bf_len) (((1ull << (bf_len)) - 1) << (bf_off))
+#define STORE_BY_BITMASK(type, htobe, addr, val, bf_off, bf_len)     \
+ *(type*)(addr) =                                                   \
+     htobe((htobe(*(type*)(addr)) & ~BITMASK((bf_off), (bf_len))) | \
+           (((type)(val) << (bf_off)) & BITMASK((bf_off), (bf_len))))
+
+static bool write_file(const char* file, const char* what, ...) {
+ char buf[1024];
+ va_list args;
+ va_start(args, what);
+ vsnprintf(buf, sizeof(buf), what, args);
+ va_end(args);
+ buf[sizeof(buf) - 1] = 0;
+ int len = strlen(buf);
+ int fd = open(file, O_WRONLY | O_CLOEXEC);
+ if (fd == -1) return false;
+ if (write(fd, buf, len) != len) {
+   int err = errno;
+   close(fd);
+   errno = err;
+   return false;
+ }
+ close(fd);
+ return true;
+}
+
+static void kill_and_wait(int pid, int* status) {
+ kill(-pid, SIGKILL);
+ kill(pid, SIGKILL);
+ for (int i = 0; i < 100; i++) {
+   if (waitpid(-1, status, WNOHANG | __WALL) == pid) return;
+   usleep(1000);
+ }
+ DIR* dir = opendir("/sys/fs/fuse/connections");
+ if (dir) {
+   for (;;) {
+     struct dirent* ent = readdir(dir);
+     if (!ent) break;
+     if (strcmp(ent->d_name, ".") == 0 || strcmp(ent->d_name, "..") == 0)
+       continue;
+     char abort[300];
+     snprintf(abort, sizeof(abort), "/sys/fs/fuse/connections/%s/abort",
+              ent->d_name);
+     int fd = open(abort, O_WRONLY);
+     if (fd == -1) {
+       continue;
+     }
+     if (write(fd, abort, 1) < 0) {
+     }
+     close(fd);
+   }
+   closedir(dir);
+ } else {
+ }
+ while (waitpid(-1, status, __WALL) != pid) {
+ }
+}
+
+static void setup_test() {
+ prctl(PR_SET_PDEATHSIG, SIGKILL, 0, 0, 0);
+ setpgrp();
+ write_file("/proc/self/oom_score_adj", "1000");
+}
+
+static void execute_one(void);
+
+#define WAIT_FLAGS __WALL
+
+static void loop(void) {
+ int iter = 0;
+ for (;; iter++) {
+   int pid = fork();
+   if (pid < 0) exit(1);
+   if (pid == 0) {
+     setup_test();
+     execute_one();
+     exit(0);
+   }
+   int status = 0;
+   uint64_t start = current_time_ms();
+   for (;;) {
+     if (waitpid(-1, &status, WNOHANG | WAIT_FLAGS) == pid) break;
+     sleep_ms(1);
+     if (current_time_ms() - start < 5000) continue;
+     kill_and_wait(pid, &status);
+     break;
+   }
+ }
+}
+
+void execute_one(void) {
+ *(uint32_t*)0x2001d000 = 1;
+ *(uint32_t*)0x2001d004 = 0x80;
+ *(uint8_t*)0x2001d008 = 0;
+ *(uint8_t*)0x2001d009 = 0;
+ *(uint8_t*)0x2001d00a = 0;
+ *(uint8_t*)0x2001d00b = 0;
+ *(uint32_t*)0x2001d00c = 0;
+ *(uint64_t*)0x2001d010 = 0x7f;
+ *(uint64_t*)0x2001d018 = 0;
+ *(uint64_t*)0x2001d020 = 0;
+ STORE_BY_BITMASK(uint64_t, , 0x2001d028, 0, 0, 1);
+ STORE_BY_BITMASK(uint64_t, , 0x2001d028, 0, 1, 1);
+ STORE_BY_BITMASK(uint64_t, , 0x2001d028, 0, 2, 1);
+ STORE_BY_BITMASK(uint64_t, , 0x2001d028, 0, 3, 1);
+ STORE_BY_BITMASK(uint64_t, , 0x2001d028, 0, 4, 1);
+ STORE_BY_BITMASK(uint64_t, , 0x2001d028, 0, 5, 1);
+ STORE_BY_BITMASK(uint64_t, , 0x2001d028, 0, 6, 1);
+ STORE_BY_BITMASK(uint64_t, , 0x2001d028, 0, 7, 1);
+ STORE_BY_BITMASK(uint64_t, , 0x2001d028, 0, 8, 1);
+ STORE_BY_BITMASK(uint64_t, , 0x2001d028, 0, 9, 1);
+ STORE_BY_BITMASK(uint64_t, , 0x2001d028, 0, 10, 1);
+ STORE_BY_BITMASK(uint64_t, , 0x2001d028, 0, 11, 1);
+ STORE_BY_BITMASK(uint64_t, , 0x2001d028, 0, 12, 1);
+ STORE_BY_BITMASK(uint64_t, , 0x2001d028, 0, 13, 1);
+ STORE_BY_BITMASK(uint64_t, , 0x2001d028, 0, 14, 1);
+ STORE_BY_BITMASK(uint64_t, , 0x2001d028, 0, 15, 2);
+ STORE_BY_BITMASK(uint64_t, , 0x2001d028, 0, 17, 1);
+ STORE_BY_BITMASK(uint64_t, , 0x2001d028, 0, 18, 1);
+ STORE_BY_BITMASK(uint64_t, , 0x2001d028, 0, 19, 1);
+ STORE_BY_BITMASK(uint64_t, , 0x2001d028, 0, 20, 1);
+ STORE_BY_BITMASK(uint64_t, , 0x2001d028, 0, 21, 1);
+ STORE_BY_BITMASK(uint64_t, , 0x2001d028, 0, 22, 1);
+ STORE_BY_BITMASK(uint64_t, , 0x2001d028, 0, 23, 1);
+ STORE_BY_BITMASK(uint64_t, , 0x2001d028, 0, 24, 1);
+ STORE_BY_BITMASK(uint64_t, , 0x2001d028, 0, 25, 1);
+ STORE_BY_BITMASK(uint64_t, , 0x2001d028, 0, 26, 1);
+ STORE_BY_BITMASK(uint64_t, , 0x2001d028, 0, 27, 1);
+ STORE_BY_BITMASK(uint64_t, , 0x2001d028, 0, 28, 1);
+ STORE_BY_BITMASK(uint64_t, , 0x2001d028, 0, 29, 1);
+ STORE_BY_BITMASK(uint64_t, , 0x2001d028, 0, 30, 1);
+ STORE_BY_BITMASK(uint64_t, , 0x2001d028, 0, 31, 1);
+ STORE_BY_BITMASK(uint64_t, , 0x2001d028, 0, 32, 1);
+ STORE_BY_BITMASK(uint64_t, , 0x2001d028, 0, 33, 1);
+ STORE_BY_BITMASK(uint64_t, , 0x2001d028, 0, 34, 1);
+ STORE_BY_BITMASK(uint64_t, , 0x2001d028, 0, 35, 1);
+ STORE_BY_BITMASK(uint64_t, , 0x2001d028, 0, 36, 1);
+ STORE_BY_BITMASK(uint64_t, , 0x2001d028, 0, 37, 1);
+ STORE_BY_BITMASK(uint64_t, , 0x2001d028, 0, 38, 26);
+ *(uint32_t*)0x2001d030 = 0;
+ *(uint32_t*)0x2001d034 = 0;
+ *(uint64_t*)0x2001d038 = 0;
+ *(uint64_t*)0x2001d040 = 0;
+ *(uint64_t*)0x2001d048 = 0;
+ *(uint64_t*)0x2001d050 = 0;
+ *(uint32_t*)0x2001d058 = 0;
+ *(uint32_t*)0x2001d05c = 0;
+ *(uint64_t*)0x2001d060 = 0;
+ *(uint32_t*)0x2001d068 = 0;
+ *(uint16_t*)0x2001d06c = 0;
+ *(uint16_t*)0x2001d06e = 0;
+ *(uint32_t*)0x2001d070 = 0;
+ *(uint32_t*)0x2001d074 = 0;
+ *(uint64_t*)0x2001d078 = 0;
+ syscall(__NR_perf_event_open, /*attr=*/0x2001d000ul, /*pid=*/0, /*cpu=*/-1,
+         /*group=*/-1, /*flags=*/0ul);
+}
+int main(void) {
+ syscall(__NR_mmap, /*addr=*/0x1ffff000ul, /*len=*/0x1000ul, /*prot=*/0ul,
+         /*flags=*/0x32ul, /*fd=*/-1, /*offset=*/0ul);
+ syscall(__NR_mmap, /*addr=*/0x20000000ul, /*len=*/0x1000000ul, /*prot=*/7ul,
+         /*flags=*/0x32ul, /*fd=*/-1, /*offset=*/0ul);
+ syscall(__NR_mmap, /*addr=*/0x21000000ul, /*len=*/0x1000ul, /*prot=*/0ul,
+         /*flags=*/0x32ul, /*fd=*/-1, /*offset=*/0ul);
+ loop();
+ return 0;
+}
+
+=* repro.txt =*
+perf_event_open(&(0x7f000001d000)={0x1, 0x80, 0x0, 0x0, 0x0, 0x0, 0x0,
+0x7f, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+0x0, @perf_bp={0x0}}, 0x0, 0xffffffffffffffff, 0xffffffffffffffff,
+0x0)
+
+and also https://gist.github.com/xrivendell7/128e198d8ff27d003998b4f0cc19bb74
+
+I hope it helps.
+Thanks!
+Best regards.
+xingwei Lee
 
