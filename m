@@ -1,141 +1,114 @@
-Return-Path: <linux-kernel+bounces-6349-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6351-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A4584819797
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 05:13:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41D9581979A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 05:16:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5B36228867B
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 04:13:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 746B51C252E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 04:16:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27CB1C128;
-	Wed, 20 Dec 2023 04:13:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86717125AC;
+	Wed, 20 Dec 2023 04:16:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="sqFpniuU"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="LW+bDsyj"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D91F168A9
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 04:13:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1d045097b4cso22827535ad.0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 20:13:44 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52CE41173B
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 04:16:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-40c32bea30dso28955e9.0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 20:16:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703045623; x=1703650423; darn=vger.kernel.org;
-        h=mime-version:message-id:date:in-reply-to:subject:cc:to:from
-         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
-        bh=mNVWdMSAqfvpbN5g4IovRqwuhzgdiEbCZgrhc7x2wjc=;
-        b=sqFpniuUv1jPeUcslD9u70BMjvDT3Pn1u4MVKC25xqk7qxT3ogc04/G7AzpnjFN9qP
-         wX0M0o6fDxBVGgdq1KImwVb4xQARFPNes9FjuZOpYBPXl78+YLFexHeH/h/L8Nd46oF7
-         fAtGCV4qqJLJvfql1Hx8OdbBb8T6rgdTXpDhofeX1aN/vUCjzKBiwFQhBDOFceaIVp83
-         2azW/SVeUaLquJ+xCC8bz30l5VXWxfNSJDHiWYyq95ua3xyhNLNWr7xoHg6PfDpmL2BE
-         LE2WARMFquM73UPg09z5t7bXfLsAARBhlaMR76KzetrUdMYZCIaOd5uQcViu/SWCjMdG
-         s+pg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703045623; x=1703650423;
-        h=mime-version:message-id:date:in-reply-to:subject:cc:to:from
-         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1703045805; x=1703650605; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=mNVWdMSAqfvpbN5g4IovRqwuhzgdiEbCZgrhc7x2wjc=;
-        b=K0GiajQ36CWprdHi6cIv70x6d+2jljY54w4m6sEEh2rpQFofDfexP1tBt4BBD+NXrE
-         3iG6JaSB0Z5uq/hhFr2R0JMK5OwoTTdBuGySjJL7W6xlM+9CjbVaiRMrb9dpH3ObCunM
-         Hm+8a7oDMgwl8pwMtHzS969bRpH9jVwFaFU0j3d/GDjfrNQQ2nnv1q2Y987aLmPQFeD7
-         TRfixs/NXbNlDHQknxSdtUP9WDIWuN3kbYianuKwzYd1Pa08GXAJvaz2HehB9aq9000N
-         FMnxNdpNcNATQZbxQw65l+N2shL6odKrp4Pfm3jpOBI05EFtIO0yLJqGwa38RKqVDxG0
-         qcVw==
-X-Gm-Message-State: AOJu0YwmqZiyt8U4TljVj9szPhkQhjWh6gUz6ilbNpFBYSKyaGiC7KGh
-	gOmcYTZ/GfcDt+9Y8CHL5nOv1Q==
-X-Google-Smtp-Source: AGHT+IGTH7Uz/NcmceVfotUGElTRFy6BFXANyvxa2H36ukICplsk22hKc23OStWdWx3+9daWWuC7hQ==
-X-Received: by 2002:a17:903:22c1:b0:1d3:c025:c99e with SMTP id y1-20020a17090322c100b001d3c025c99emr2935918plg.63.1703045623531;
-        Tue, 19 Dec 2023 20:13:43 -0800 (PST)
-Received: from localhost ([2804:14d:7e39:8470:8f60:ee5a:d698:1116])
-        by smtp.gmail.com with ESMTPSA id q14-20020a170902dace00b001d08e08003esm21884208plx.174.2023.12.19.20.13.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Dec 2023 20:13:42 -0800 (PST)
-References: <20231122-arm64-gcs-v7-0-201c483bd775@kernel.org>
-User-agent: mu4e 1.10.8; emacs 29.1
-From: Thiago Jung Bauermann <thiago.bauermann@linaro.org>
-To: Mark Brown <broonie@kernel.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon
- <will@kernel.org>, Jonathan Corbet <corbet@lwn.net>, Andrew Morton
- <akpm@linux-foundation.org>, Marc Zyngier <maz@kernel.org>, Oliver Upton
- <oliver.upton@linux.dev>, James Morse <james.morse@arm.com>, Suzuki K
- Poulose <suzuki.poulose@arm.com>, Arnd Bergmann <arnd@arndb.de>, Oleg
- Nesterov <oleg@redhat.com>, Eric Biederman <ebiederm@xmission.com>, Kees
- Cook <keescook@chromium.org>, Shuah Khan <shuah@kernel.org>, "Rick P.
- Edgecombe" <rick.p.edgecombe@intel.com>, Deepak Gupta
- <debug@rivosinc.com>, Ard Biesheuvel <ardb@kernel.org>, Szabolcs Nagy
- <Szabolcs.Nagy@arm.com>, "H.J. Lu" <hjl.tools@gmail.com>, Paul Walmsley
- <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou
- <aou@eecs.berkeley.edu>, Florian Weimer <fweimer@redhat.com>, Christian
- Brauner <brauner@kernel.org>, linux-arm-kernel@lists.infradead.org,
- linux-doc@vger.kernel.org, kvmarm@lists.linux.dev,
- linux-fsdevel@vger.kernel.org, linux-arch@vger.kernel.org,
- linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
-Subject: Re: [PATCH v7 00/39] arm64/gcs: Provide support for GCS in userspace
-In-reply-to: <20231122-arm64-gcs-v7-0-201c483bd775@kernel.org>
-Date: Wed, 20 Dec 2023 01:13:41 -0300
-Message-ID: <874jgdh5oq.fsf@linaro.org>
+        bh=MmFRQc3E/ET5jgrtsAbnSkKJCHzabblomSdD+OjeUsA=;
+        b=LW+bDsyjxecN6lTQy0xHY5SwLYm5VMX/Hg3yu2af2wkFc7vFsVHP3/g0TsM5l+vPm1
+         i6pyhNBbrEHk6vy8tw/xE63vqKuqt7PHczu0irzbOOEeFTdhoz2rlflO7hs1hGxPAhId
+         jNqCdt4hISGuoDOYsO9UwEXXbkvbUS1TpGNfr3oYLLjjB7OjAJe26ml0he2TPk0iateU
+         dbhdjwK4Q9m/qmpyz3aRUKdMBo3uXuL8zpOrR93bUX3BVBS/eqN2+weng2Tnaqu3K+nR
+         nWqPtzJ+IyzNglg1QJz0SWkbXUBiT/HDHANGxE2FlIUoXw2JSwGqDqpI6eONN1NB/gz6
+         W1OQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703045805; x=1703650605;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MmFRQc3E/ET5jgrtsAbnSkKJCHzabblomSdD+OjeUsA=;
+        b=spveMQmFfvB3YnX1KmilGl1iMC4E1UsZ4vTMoVaVNrcUJkTJMNnjp80q2uVTPHhh7L
+         lBe2KKNCyyn40YTAB+A6PvMTodSL1gMRKR6S1I2aoW92JL/3aNaKJ8wKnIpbldWUcq/Q
+         u6ignFZgNCzJMhpdmIcrba58o1mzveEhpq2CNhDCvk3JuxdkwEewthpEJsyel/4p1DGQ
+         X95wsvHeXETfYBE18dkSItscXSRMdR45kWh2jJxhekW5wrAgLPHXSAVrAkIRa86k97HA
+         MDa+3DTq20rMGU95ExeHTM6vZFCjFX4JlgO7LVC96SAt/W+tjNAgnqU0+cJe+7LkqwOM
+         2Z5A==
+X-Gm-Message-State: AOJu0Yw1roR90LRpCDoXO7zZld531Rc61i0cVbZWZpEHZHRHTeSq3AaK
+	Z1lOeLBSqMHoONp0uYoKCBZgxcuCUYsR9jyNBfxx/KFgnb3D
+X-Google-Smtp-Source: AGHT+IGQhTJJNWiY6fC30Ah4lqY817BxZMdpoi/AqZs6g+A6xMaTvYnmKr2LGf7gdQiYuL0SNjka8oaTlYu/MjAMkwo=
+X-Received: by 2002:a05:600c:1c9a:b0:40d:2bc7:e9b with SMTP id
+ k26-20020a05600c1c9a00b0040d2bc70e9bmr91376wms.4.1703045805256; Tue, 19 Dec
+ 2023 20:16:45 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20231220040037.883811-1-kinseyho@google.com>
+In-Reply-To: <20231220040037.883811-1-kinseyho@google.com>
+From: Yu Zhao <yuzhao@google.com>
+Date: Tue, 19 Dec 2023 21:16:06 -0700
+Message-ID: <CAOUHufaK3X0d9ovEMkFfb3cugqzcnxxqn=o6O-1oohaYANtB0A@mail.gmail.com>
+Subject: Re: [PATCH mm-unstable v3 0/4] mm/mglru: Kconfig cleanup
+To: Kinsey Ho <kinseyho@google.com>, Donet Tom <donettom@linux.vnet.ibm.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Tue, Dec 19, 2023 at 9:01=E2=80=AFPM Kinsey Ho <kinseyho@google.com> wro=
+te:
+>
+> This series is the result of the following discussion:
+> https://lore.kernel.org/47066176-bd93-55dd-c2fa-002299d9e034@linux.ibm.co=
+m/
+>
+> It mainly avoids building the code that walks page tables on CPUs that
+> use it, i.e., those don't support hardware accessed bit. Specifically,
+> it introduces a new Kconfig to guard some of functions added by
+> commit bd74fdaea146 ("mm: multi-gen LRU: support page table walks")
+> on CPUs like POWER9, on which the series was tested.
+>
+>
+> Kinsey Ho (4):
+>   mm/mglru: add CONFIG_ARCH_HAS_HW_PTE_YOUNG
+>   mm/mglru: add CONFIG_LRU_GEN_WALKS_MMU
+>   mm/mglru: remove CONFIG_MEMCG
+>   mm/mglru: remove CONFIG_TRANSPARENT_HUGEPAGE
+>
+>  arch/Kconfig                   |   8 +
+>  arch/arm64/Kconfig             |   1 +
+>  arch/x86/Kconfig               |   1 +
+>  arch/x86/include/asm/pgtable.h |   6 -
+>  include/linux/memcontrol.h     |   2 +-
+>  include/linux/mm_types.h       |  16 +-
+>  include/linux/mmzone.h         |  28 +---
+>  include/linux/pgtable.h        |   2 +-
+>  kernel/fork.c                  |   2 +-
+>  mm/Kconfig                     |   4 +
+>  mm/vmscan.c                    | 271 ++++++++++++++++++---------------
+>  11 files changed, 174 insertions(+), 167 deletions(-)
 
-Mark Brown <broonie@kernel.org> writes:
++Donet Tom <donettom@linux.vnet.ibm.com>
+who is also working on this.
 
->       arm64/mm: Restructure arch_validate_flags() for extensibility
->       prctl: arch-agnostic prctl for shadow stack
->       mman: Add map_shadow_stack() flags
->       arm64: Document boot requirements for Guarded Control Stacks
->       arm64/gcs: Document the ABI for Guarded Control Stacks
->       arm64/sysreg: Add new system registers for GCS
->       arm64/sysreg: Add definitions for architected GCS caps
->       arm64/gcs: Add manual encodings of GCS instructions
->       arm64/gcs: Provide put_user_gcs()
->       arm64/cpufeature: Runtime detection of Guarded Control Stack (GCS)
->       arm64/mm: Allocate PIE slots for EL0 guarded control stack
->       mm: Define VM_SHADOW_STACK for arm64 when we support GCS
->       arm64/mm: Map pages for guarded control stack
->       KVM: arm64: Manage GCS registers for guests
->       arm64/gcs: Allow GCS usage at EL0 and EL1
->       arm64/idreg: Add overrride for GCS
->       arm64/hwcap: Add hwcap for GCS
->       arm64/traps: Handle GCS exceptions
->       arm64/mm: Handle GCS data aborts
->       arm64/gcs: Context switch GCS state for EL0
->       arm64/gcs: Allocate a new GCS for threads with GCS enabled
->       arm64/gcs: Implement shadow stack prctl() interface
->       arm64/mm: Implement map_shadow_stack()
->       arm64/signal: Set up and restore the GCS context for signal handlers
->       arm64/signal: Expose GCS state in signal frames
->       arm64/ptrace: Expose GCS via ptrace and core files
->       arm64: Add Kconfig for Guarded Control Stack (GCS)
->       kselftest/arm64: Verify the GCS hwcap
->       kselftest/arm64: Add GCS as a detected feature in the signal tests
->       kselftest/arm64: Add framework support for GCS to signal handling tests
->       kselftest/arm64: Allow signals tests to specify an expected si_code
->       kselftest/arm64: Always run signals tests with GCS enabled
->       kselftest/arm64: Add very basic GCS test program
->       kselftest/arm64: Add a GCS test program built with the system libc
->       kselftest/arm64: Add test coverage for GCS mode locking
->       selftests/arm64: Add GCS signal tests
->       kselftest/arm64: Add a GCS stress test
->       kselftest/arm64: Enable GCS for the FP stress tests
->       kselftest/clone3: Enable GCS in the clone3 selftests
-
-Not sure if this is warranted, so sorry for the potential spam:
-
-I don't have any comments on the patches I haven't replied to.
-
--- 
-Thiago
+Donet, could try this latest version instead? If it works well as the
+old one you've been using, can you please provide your Tested-by tag?
+Thanks.
 
