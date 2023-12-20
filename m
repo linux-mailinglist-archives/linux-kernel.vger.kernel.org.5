@@ -1,60 +1,60 @@
-Return-Path: <linux-kernel+bounces-6151-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6152-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C9EF819521
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 01:23:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60F64819523
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 01:23:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 705F31C2558D
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 00:23:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B9A8728809D
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 00:23:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CD62200D8;
-	Wed, 20 Dec 2023 00:19:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3C3B208DF;
+	Wed, 20 Dec 2023 00:19:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="U/xL+3FA"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="YxnHhl0e"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+Received: from mail-pj1-f73.google.com (mail-pj1-f73.google.com [209.85.216.73])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D7551DA4F
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 00:19:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 523A81F16B
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 00:19:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--jstultz.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dbd4a080c0bso2649377276.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 16:19:30 -0800 (PST)
+Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-28b8f963816so2527005a91.1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 16:19:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1703031569; x=1703636369; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1703031570; x=1703636370; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=bNh04uMPPxlN5w0eaiGKDRnEs2O+ir6chwSpLeyNOZY=;
-        b=U/xL+3FA1vfQMVyGuj1gar9joGfNdh+gVdvjCD9SUuM2FdfSIgMFJpoXTKR20pxBl3
-         l7GHeKi4KkqKK7IDb6pJ5H6TPsZJPnQWOd3lycLRDpm5VIBjwczzt6qWWfHGuv4Zm84q
-         4OmJZJ3e9TT3Y3e8xRoPVPJD2X988uiSdTZrQs2OTdFQxbV077czvFPPh14ECvRUTd8N
-         1/AHacSMoDfNQCKm7733cwoGy1PbxpwtyxdDknJu3HWrMFcbR04E3Br/9f7xdUAEBeQa
-         VU8JgsCX1LsqAs9Na+lsWsixHHjET66ox7h+fOQn0Qf56divD4jSkyNx+BXazqYX+BSI
-         /QoA==
+        bh=WYZk7eOoB4EkSBls2zylvhTpNqHG785S+70/RgizkRI=;
+        b=YxnHhl0eZhQsCyfsCoXedRz7Nc2q+N9s9taDASCGO4gvgGFTh0Wf7eyEIJDlgmdob/
+         PWfzbx3sipDy6FPlOQghDNquyLECzrI62TF3bSsRvwC9mYRsFOzmFazRHHVRx8eM1OYT
+         6MKmcDXbTTqcBqL69nkWRvhtR0r4xTfjv6vfzJaQRCFBdwC+uBa8DtHZsYf4b7GOq4re
+         L9/4usB7WoM/b48YDehJvG9PZVMTm/wqP7XMTmxlP8+x9CsptpH6ctZnQNxezMr7xiej
+         XZERveUMXfCw0WNBIvkaWra4fNvPxejv+Z8W97Ez+Gf7qrDwIQ5t3K7EuC/sryPR1r9f
+         k1JA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703031569; x=1703636369;
+        d=1e100.net; s=20230601; t=1703031570; x=1703636370;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bNh04uMPPxlN5w0eaiGKDRnEs2O+ir6chwSpLeyNOZY=;
-        b=pSKLsTGZFmnmScN6AQtKLz5WOz5z+lcG9GB3ErDActre0Y6PgwB0Vc/7T3mHjdO7HU
-         9vI9qqi3tDr5EVXzd1Eq2K0gnviMmMkmtpJhD6l6qZEip2Z1KFkzdH48Ui4Ut7nxP5Yz
-         ExpnuXYL9qgEwnTAGF8Uq5NHa7zWoLooWs5PVUfdVyWwrEeNsrodDOTQwFj+XrSFU7cf
-         5OyuvNoTyn+3MQ1ZbmppKQr268/7d7CgMZQ/1UqOs2c72Wsft9fyJY5uM4xGC0iAbXtA
-         BT1M+sq+OqLMrj449Nh6qzXTylgqik6/dewbI9MdxZdrhVblMaZ/qo8+ZiwlLvJ8OLQI
-         dXBA==
-X-Gm-Message-State: AOJu0YwrRnniWpxniNvWNNSllH1larx46KlLp4Wvsa9MlYt6udlAJIwQ
-	XppMfr7bNHnFOj9zDXUqau9kl2eJr/rTn/7n3pJ7DImjXuCVGlE1N2Crq0FAmijAY7+J9ahuGXm
-	kySZc4Kk9DwMNe1WXhhvSWPzIN2xFHiYRDm66NZvnWDd2ojuFqDFe72YlH7xQAvJf/7ioOIo=
-X-Google-Smtp-Source: AGHT+IGTvm5EURdKNjlgJfkx4HO9wEy6DegCXdkHHvIcX7tzc7ibCNKLNpt6PpKTty4+qzPdSBhDMTR1+rQP
+        bh=WYZk7eOoB4EkSBls2zylvhTpNqHG785S+70/RgizkRI=;
+        b=jbrnZwu2P9vi2lcOeY1H0ac0XI+HUnN1fKbOiS/fD5iOX4IjmMr1e7lYeNgJ3nl37Y
+         p5ieHSzaecfhTROHjwubIvBuBzDGWWUXzwqNSuwTU34rSwPQNANuwY3tFrOfFdiqkgEQ
+         rViraeIOKPaBF6wXeSOnXyQA5hX/Xm9ytg57F8tdkTKVBfxB9Knu+N4ySwL805iWQr+A
+         xjC426tfY2jkpm+87IbIfiBIMDowj5TwL9gbcwNnokNBElkPYx599bbr3/0zlYFWcls/
+         czi5ud2DSEB0s1Ywjdj4+lBi+6x/AkvkprGexJlStg7FC1y6MV4CElQjiv7rtykIV8aM
+         gBfg==
+X-Gm-Message-State: AOJu0Yxp/PGcHTL5S1XR0vRKRa1FNsJ+59MTwZUxwS51HiL+1lINQxnU
+	QkAxTfUBlIWlFZVSkIz0ENnmvKjswdzVRfSYgn5sJ0JAyeO9D6LLuiP3TLjhAsqI0po3pfWm/me
+	ABuTY69wGzKu7g37QZGHmGgh3astpCVjkxoQjN4mwKLRws3/MlHFW11zDI4q2oY0cO3Cl+C4=
+X-Google-Smtp-Source: AGHT+IFmhibWT5gq4Ub9tf54kA1GyPrvkHcz1fxEkYADUkby5JfNtsItDzLDQNJQOT2C4R7gcwcZYhnmggnS
 X-Received: from jstultz-noogler2.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:600])
- (user=jstultz job=sendgmr) by 2002:a25:86ce:0:b0:dbc:d2e9:39e7 with SMTP id
- y14-20020a2586ce000000b00dbcd2e939e7mr2500993ybm.10.1703031569088; Tue, 19
- Dec 2023 16:19:29 -0800 (PST)
-Date: Tue, 19 Dec 2023 16:18:26 -0800
+ (user=jstultz job=sendgmr) by 2002:a17:90b:1d07:b0:28b:5015:301 with SMTP id
+ on7-20020a17090b1d0700b0028b50150301mr865251pjb.6.1703031570653; Tue, 19 Dec
+ 2023 16:19:30 -0800 (PST)
+Date: Tue, 19 Dec 2023 16:18:27 -0800
 In-Reply-To: <20231220001856.3710363-1-jstultz@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -64,9 +64,8 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20231220001856.3710363-1-jstultz@google.com>
 X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
-Message-ID: <20231220001856.3710363-16-jstultz@google.com>
-Subject: [PATCH v7 15/23] sched: Add blocked_donor link to task for smarter
- mutex handoffs
+Message-ID: <20231220001856.3710363-17-jstultz@google.com>
+Subject: [PATCH v7 16/23] sched: Add deactivated (sleeping) owner handling to find_proxy_task()
 From: John Stultz <jstultz@google.com>
 To: LKML <linux-kernel@vger.kernel.org>
 Cc: Peter Zijlstra <peterz@infradead.org>, Joel Fernandes <joelaf@google.com>, 
@@ -86,9 +85,14 @@ Content-Type: text/plain; charset="UTF-8"
 
 From: Peter Zijlstra <peterz@infradead.org>
 
-Add link to the task this task is proxying for, and use it so we
-do intelligent hand-off of the owned mutex to the task we're
-running on behalf.
+If the blocked_on chain resolves to a sleeping owner, deactivate
+selected task, and enqueue it on the sleeping owner task.
+Then re-activate it later when the owner is woken up.
+
+NOTE: This has been particularly challenging to get working
+properly, and some of the locking is particularly ackward. I'd
+very much appreciate review and feedback for ways to simplify
+this.
 
 Cc: Joel Fernandes <joelaf@google.com>
 Cc: Qais Yousef <qyousef@google.com>
@@ -117,180 +121,338 @@ Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Juri Lelli <juri.lelli@redhat.com>
 Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
 Signed-off-by: Connor O'Brien <connoro@google.com>
-[jstultz: This patch was split out from larger proxy patch]
+[jstultz: This was broken out from the larger proxy() patch]
 Signed-off-by: John Stultz <jstultz@google.com>
 ---
 v5:
 * Split out from larger proxy patch
 v6:
-* Moved proxied value from earlier patch to this one where it
-  is actually used
-* Rework logic to check sched_proxy_exec() instead of using ifdefs
-* Moved comment change to this patch where it makes sense
+* Major rework, replacing the single list head per task with
+  per-task list head and nodes, creating a tree structure so
+  we only wake up decendents of the task woken.
+* Reworked the locking to take the task->pi_lock, so we can
+  avoid mid-chain wakeup races from try_to_wake_up() called by
+  the ww_mutex logic.
 v7:
-* Use more descriptive term then "us" in comments, as suggested
-  by Metin Kaya.
-* Minor typo fixup from Metin Kaya
-* Reworked proxied variable to prev_not_proxied to simplify usage
+* Drop ununessary __nested lock annotation, as we already drop
+  the lock prior.
+* Add comments on #else & #endif lines, and clearer function
+  names, and commit message tweaks as suggested by Metin Kaya
+* Move activate_blocked_entities() call from ttwu_queue to
+  try_to_wake_up() to simplify locking. Thanks to questions from
+  Metin Kaya
+* Fix irqsave/irqrestore usage now we call this outside where
+  the pi_lock is held
+* Fix activate_blocked_entitites not preserving wake_cpu
+* Fix for UP builds
 ---
- include/linux/sched.h  |  1 +
- kernel/fork.c          |  1 +
- kernel/locking/mutex.c | 35 ++++++++++++++++++++++++++++++++---
- kernel/sched/core.c    | 19 +++++++++++++++++--
- 4 files changed, 51 insertions(+), 5 deletions(-)
+ include/linux/sched.h |   3 +
+ kernel/fork.c         |   4 +
+ kernel/sched/core.c   | 214 ++++++++++++++++++++++++++++++++++++++----
+ 3 files changed, 202 insertions(+), 19 deletions(-)
 
 diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 880af1c3097d..8020e224e057 100644
+index 8020e224e057..6f982948a105 100644
 --- a/include/linux/sched.h
 +++ b/include/linux/sched.h
-@@ -1157,6 +1157,7 @@ struct task_struct {
- 
+@@ -1158,6 +1158,9 @@ struct task_struct {
  	enum blocked_on_state		blocked_on_state;
  	struct mutex			*blocked_on;	/* lock we're blocked on */
-+	struct task_struct		*blocked_donor;	/* task that is boosting this task */
+ 	struct task_struct		*blocked_donor;	/* task that is boosting this task */
++	struct list_head		blocked_head;  /* tasks blocked on this task */
++	struct list_head		blocked_node;  /* our entry on someone elses blocked_head */
++	struct task_struct		*sleeping_owner; /* task our blocked_node is enqueued on */
  	raw_spinlock_t			blocked_lock;
  
  #ifdef CONFIG_DEBUG_ATOMIC_SLEEP
 diff --git a/kernel/fork.c b/kernel/fork.c
-index b3ba3d22d8b2..138fc23cad43 100644
+index 138fc23cad43..56f5e19c268e 100644
 --- a/kernel/fork.c
 +++ b/kernel/fork.c
-@@ -2459,6 +2459,7 @@ __latent_entropy struct task_struct *copy_process(
- 
+@@ -2460,6 +2460,10 @@ __latent_entropy struct task_struct *copy_process(
  	p->blocked_on_state = BO_RUNNABLE;
  	p->blocked_on = NULL; /* not blocked yet */
-+	p->blocked_donor = NULL; /* nobody is boosting p yet */
+ 	p->blocked_donor = NULL; /* nobody is boosting p yet */
++
++	INIT_LIST_HEAD(&p->blocked_head);
++	INIT_LIST_HEAD(&p->blocked_node);
++	p->sleeping_owner = NULL;
  #ifdef CONFIG_BCACHE
  	p->sequential_io	= 0;
  	p->sequential_io_avg	= 0;
-diff --git a/kernel/locking/mutex.c b/kernel/locking/mutex.c
-index 11dc5cb7a5a3..2711af8c0052 100644
---- a/kernel/locking/mutex.c
-+++ b/kernel/locking/mutex.c
-@@ -910,7 +910,7 @@ EXPORT_SYMBOL_GPL(ww_mutex_lock_interruptible);
-  */
- static noinline void __sched __mutex_unlock_slowpath(struct mutex *lock, unsigned long ip)
- {
--	struct task_struct *next = NULL;
-+	struct task_struct *donor, *next = NULL;
- 	DEFINE_WAKE_Q(wake_q);
- 	unsigned long owner;
- 	unsigned long flags;
-@@ -948,7 +948,34 @@ static noinline void __sched __mutex_unlock_slowpath(struct mutex *lock, unsigne
- 	preempt_disable();
- 	raw_spin_lock_irqsave(&lock->wait_lock, flags);
- 	debug_mutex_unlock(lock);
--	if (!list_empty(&lock->wait_list)) {
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index e0afa228bc9d..0cd63bd0bdcd 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -3785,6 +3785,133 @@ static inline void ttwu_do_wakeup(struct task_struct *p)
+ 	trace_sched_wakeup(p);
+ }
+ 
++#ifdef CONFIG_SCHED_PROXY_EXEC
++static void do_activate_task(struct rq *rq, struct task_struct *p, int en_flags)
++{
++	lockdep_assert_rq_held(rq);
 +
-+	if (sched_proxy_exec()) {
-+		raw_spin_lock(&current->blocked_lock);
-+		/*
-+		 * If we have a task boosting current, and that task was boosting
-+		 * current through this lock, hand the lock to that task, as that
-+		 * is the highest waiter, as selected by the scheduling function.
-+		 */
-+		donor = current->blocked_donor;
-+		if (donor) {
-+			struct mutex *next_lock;
++	if (!sched_proxy_exec()) {
++		activate_task(rq, p, en_flags);
++		return;
++	}
 +
-+			raw_spin_lock_nested(&donor->blocked_lock, SINGLE_DEPTH_NESTING);
-+			next_lock = get_task_blocked_on(donor);
-+			if (next_lock == lock) {
-+				next = donor;
-+				donor->blocked_on_state = BO_WAKING;
-+				wake_q_add(&wake_q, donor);
-+				current->blocked_donor = NULL;
-+			}
-+			raw_spin_unlock(&donor->blocked_lock);
-+		}
++	if (p->sleeping_owner) {
++		struct task_struct *owner = p->sleeping_owner;
++
++		raw_spin_lock(&owner->blocked_lock);
++		list_del_init(&p->blocked_node);
++		p->sleeping_owner = NULL;
++		raw_spin_unlock(&owner->blocked_lock);
 +	}
 +
 +	/*
-+	 * Failing that, pick any on the wait list.
++	 * By calling activate_task with blocked_lock held, we
++	 * order against the find_proxy_task() blocked_task case
++	 * such that no more blocked tasks will be enqueued on p
++	 * once we release p->blocked_lock.
 +	 */
-+	if (!next && !list_empty(&lock->wait_list)) {
- 		/* get the first entry from the wait-list: */
- 		struct mutex_waiter *waiter =
- 			list_first_entry(&lock->wait_list,
-@@ -956,7 +983,7 @@ static noinline void __sched __mutex_unlock_slowpath(struct mutex *lock, unsigne
++	raw_spin_lock(&p->blocked_lock);
++	WARN_ON(task_cpu(p) != cpu_of(rq));
++	activate_task(rq, p, en_flags);
++	raw_spin_unlock(&p->blocked_lock);
++}
++
++#ifdef CONFIG_SMP
++static inline void proxy_set_task_cpu(struct task_struct *p, int cpu)
++{
++	unsigned int wake_cpu;
++
++	/* Preserve wake_cpu */
++	wake_cpu = p->wake_cpu;
++	__set_task_cpu(p, cpu);
++	p->wake_cpu = wake_cpu;
++}
++#else /* !CONFIG_SMP */
++static inline void proxy_set_task_cpu(struct task_struct *p, int cpu)
++{
++	__set_task_cpu(p, cpu);
++}
++#endif /* CONFIG_SMP */
++
++static void activate_blocked_entities(struct rq *target_rq,
++				      struct task_struct *owner,
++				      int wake_flags)
++{
++	unsigned long flags;
++	struct rq_flags rf;
++	int target_cpu = cpu_of(target_rq);
++	int en_flags = ENQUEUE_WAKEUP | ENQUEUE_NOCLOCK;
++
++	if (wake_flags & WF_MIGRATED)
++		en_flags |= ENQUEUE_MIGRATED;
++	/*
++	 * A whole bunch of 'proxy' tasks back this blocked task, wake
++	 * them all up to give this task its 'fair' share.
++	 */
++	raw_spin_lock_irqsave(&owner->blocked_lock, flags);
++	while (!list_empty(&owner->blocked_head)) {
++		struct task_struct *pp;
++		unsigned int state;
++
++		pp = list_first_entry(&owner->blocked_head,
++				      struct task_struct,
++				      blocked_node);
++		BUG_ON(pp == owner);
++		list_del_init(&pp->blocked_node);
++		WARN_ON(!pp->sleeping_owner);
++		pp->sleeping_owner = NULL;
++		raw_spin_unlock_irqrestore(&owner->blocked_lock, flags);
++
++		raw_spin_lock_irqsave(&pp->pi_lock, flags);
++		state = READ_ONCE(pp->__state);
++		/* Avoid racing with ttwu */
++		if (state == TASK_WAKING) {
++			raw_spin_unlock_irqrestore(&pp->pi_lock, flags);
++			raw_spin_lock_irqsave(&owner->blocked_lock, flags);
++			continue;
++		}
++		if (READ_ONCE(pp->on_rq)) {
++			/*
++			 * We raced with a non mutex handoff activation of pp.
++			 * That activation will also take care of activating
++			 * all of the tasks after pp in the blocked_entry list,
++			 * so we're done here.
++			 */
++			raw_spin_unlock_irqrestore(&pp->pi_lock, flags);
++			raw_spin_lock_irqsave(&owner->blocked_lock, flags);
++			continue;
++		}
++
++		proxy_set_task_cpu(pp, target_cpu);
++
++		rq_lock_irqsave(target_rq, &rf);
++		update_rq_clock(target_rq);
++		do_activate_task(target_rq, pp, en_flags);
++		resched_curr(target_rq);
++		rq_unlock_irqrestore(target_rq, &rf);
++		raw_spin_unlock_irqrestore(&pp->pi_lock, flags);
++
++		/* recurse - XXX This needs to be reworked to avoid recursing */
++		activate_blocked_entities(target_rq, pp, wake_flags);
++
++		raw_spin_lock_irqsave(&owner->blocked_lock, flags);
++	}
++	raw_spin_unlock_irqrestore(&owner->blocked_lock, flags);
++}
++#else /* !CONFIG_SCHED_PROXY_EXEC */
++static inline void do_activate_task(struct rq *rq, struct task_struct *p,
++				    int en_flags)
++{
++	activate_task(rq, p, en_flags);
++}
++
++static inline void activate_blocked_entities(struct rq *target_rq,
++					     struct task_struct *owner,
++					     int wake_flags)
++{
++}
++#endif /* CONFIG_SCHED_PROXY_EXEC */
++
+ #ifdef CONFIG_SMP
+ static inline bool proxy_needs_return(struct rq *rq, struct task_struct *p)
+ {
+@@ -3839,7 +3966,7 @@ ttwu_do_activate(struct rq *rq, struct task_struct *p, int wake_flags,
+ 		atomic_dec(&task_rq(p)->nr_iowait);
+ 	}
  
- 		next = waiter->task;
+-	activate_task(rq, p, en_flags);
++	do_activate_task(rq, p, en_flags);
+ 	wakeup_preempt(rq, p, wake_flags);
  
--		raw_spin_lock(&next->blocked_lock);
-+		raw_spin_lock_nested(&next->blocked_lock, SINGLE_DEPTH_NESTING);
- 		debug_mutex_wake_waiter(lock, waiter);
- 		WARN_ON(next->blocked_on != lock);
- 		next->blocked_on_state = BO_WAKING;
-@@ -967,6 +994,8 @@ static noinline void __sched __mutex_unlock_slowpath(struct mutex *lock, unsigne
- 	if (owner & MUTEX_FLAG_HANDOFF)
- 		__mutex_handoff(lock, next);
+ 	ttwu_do_wakeup(p);
+@@ -3936,13 +4063,19 @@ void sched_ttwu_pending(void *arg)
+ 	update_rq_clock(rq);
  
-+	if (sched_proxy_exec())
-+		raw_spin_unlock(&current->blocked_lock);
- 	raw_spin_unlock_irqrestore(&lock->wait_lock, flags);
- 	wake_up_q(&wake_q);
- 	preempt_enable();
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 55dc2a3b7e46..e0afa228bc9d 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -6765,7 +6765,17 @@ proxy_migrate_task(struct rq *rq, struct rq_flags *rf,
+ 	llist_for_each_entry_safe(p, t, llist, wake_entry.llist) {
++		int wake_flags;
+ 		if (WARN_ON_ONCE(p->on_cpu))
+ 			smp_cond_load_acquire(&p->on_cpu, !VAL);
+ 
+ 		if (WARN_ON_ONCE(task_cpu(p) != cpu_of(rq)))
+ 			set_task_cpu(p, cpu_of(rq));
+ 
+-		ttwu_do_activate(rq, p, p->sched_remote_wakeup ? WF_MIGRATED : 0, &rf);
++		wake_flags = p->sched_remote_wakeup ? WF_MIGRATED : 0;
++		ttwu_do_activate(rq, p, wake_flags, &rf);
++		rq_unlock(rq, &rf);
++		activate_blocked_entities(rq, p, wake_flags);
++		rq_lock(rq, &rf);
++		update_rq_clock(rq);
+ 	}
+ 
+ 	/*
+@@ -4423,6 +4556,7 @@ int try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
+ 	if (p->blocked_on_state == BO_WAKING)
+ 		p->blocked_on_state = BO_RUNNABLE;
+ 	raw_spin_unlock_irqrestore(&p->blocked_lock, flags);
++	activate_blocked_entities(cpu_rq(cpu), p, wake_flags);
+ out:
+ 	if (success)
+ 		ttwu_stat(p, task_cpu(p), wake_flags);
+@@ -6663,19 +6797,6 @@ proxy_resched_idle(struct rq *rq, struct task_struct *next)
+ 	return rq->idle;
+ }
+ 
+-static bool proxy_deactivate(struct rq *rq, struct task_struct *next)
+-{
+-	unsigned long state = READ_ONCE(next->__state);
+-
+-	/* Don't deactivate if the state has been changed to TASK_RUNNING */
+-	if (state == TASK_RUNNING)
+-		return false;
+-	if (!try_to_deactivate_task(rq, next, state, true))
+-		return false;
+-	proxy_resched_idle(rq, next);
+-	return true;
+-}
+-
+ #ifdef CONFIG_SMP
+ /*
+  * If the blocked-on relationship crosses CPUs, migrate @p to the
+@@ -6761,6 +6882,31 @@ proxy_migrate_task(struct rq *rq, struct rq_flags *rf,
+ }
+ #endif /* CONFIG_SMP */
+ 
++static void proxy_enqueue_on_owner(struct rq *rq, struct task_struct *owner,
++				   struct task_struct *next)
++{
++	/*
++	 * ttwu_activate() will pick them up and place them on whatever rq
++	 * @owner will run next.
++	 */
++	if (!owner->on_rq) {
++		BUG_ON(!next->on_rq);
++		deactivate_task(rq, next, DEQUEUE_SLEEP);
++		if (task_current_selected(rq, next)) {
++			put_prev_task(rq, next);
++			rq_set_selected(rq, rq->idle);
++		}
++		/*
++		 * ttwu_do_activate must not have a chance to activate p
++		 * elsewhere before it's fully extricated from its old rq.
++		 */
++		WARN_ON(next->sleeping_owner);
++		next->sleeping_owner = owner;
++		smp_mb();
++		list_add(&next->blocked_node, &owner->blocked_head);
++	}
++}
++
+ /*
   * Find who @next (currently blocked on a mutex) can proxy for.
   *
-  * Follow the blocked-on relation:
-- *   task->blocked_on -> mutex->owner -> task...
-+ *
-+ *                ,-> task
-+ *                |     | blocked-on
-+ *                |     v
-+ *  blocked_donor |   mutex
-+ *                |     | owner
-+ *                |     v
-+ *                `-- task
-+ *
-+ * and set the blocked_donor relation, this latter is used by the mutex
-+ * code to find which (blocked) task to hand-off to.
-  *
-  * Lock order:
-  *
-@@ -6897,6 +6907,8 @@ find_proxy_task(struct rq *rq, struct task_struct *next, struct rq_flags *rf)
- 		 */
- 		raw_spin_unlock(&p->blocked_lock);
- 		raw_spin_unlock(&mutex->wait_lock);
+@@ -6866,10 +7012,40 @@ find_proxy_task(struct rq *rq, struct task_struct *next, struct rq_flags *rf)
+ 		}
+ 
+ 		if (!owner->on_rq) {
+-			/* XXX Don't handle blocked owners yet */
+-			if (!proxy_deactivate(rq, next))
+-				ret = next;
+-			goto out;
++			/*
++			 * rq->curr must not be added to the blocked_head list or else
++			 * ttwu_do_activate could enqueue it elsewhere before it switches
++			 * out here. The approach to avoid this is the same as in the
++			 * migrate_task case.
++			 */
++			if (curr_in_chain) {
++				raw_spin_unlock(&p->blocked_lock);
++				raw_spin_unlock(&mutex->wait_lock);
++				return proxy_resched_idle(rq, next);
++			}
 +
-+		owner->blocked_donor = p;
- 	}
++			/*
++			 * If !@owner->on_rq, holding @rq->lock will not pin the task,
++			 * so we cannot drop @mutex->wait_lock until we're sure its a blocked
++			 * task on this rq.
++			 *
++			 * We use @owner->blocked_lock to serialize against ttwu_activate().
++			 * Either we see its new owner->on_rq or it will see our list_add().
++			 */
++			if (owner != p) {
++				raw_spin_unlock(&p->blocked_lock);
++				raw_spin_lock(&owner->blocked_lock);
++			}
++
++			proxy_enqueue_on_owner(rq, owner, next);
++
++			if (task_current_selected(rq, next)) {
++				put_prev_task(rq, next);
++				rq_set_selected(rq, rq->idle);
++			}
++			raw_spin_unlock(&owner->blocked_lock);
++			raw_spin_unlock(&mutex->wait_lock);
++			return NULL; /* retry task selection */
+ 		}
  
- 	WARN_ON_ONCE(owner && !owner->on_rq);
-@@ -6979,6 +6991,7 @@ static void __sched notrace __schedule(unsigned int sched_mode)
- 	unsigned long prev_state;
- 	struct rq_flags rf;
- 	struct rq *rq;
-+	bool prev_not_proxied;
- 	int cpu;
- 	bool preserve_need_resched = false;
- 
-@@ -7030,9 +7043,11 @@ static void __sched notrace __schedule(unsigned int sched_mode)
- 		switch_count = &prev->nvcsw;
- 	}
- 
-+	prev_not_proxied = !prev->blocked_donor;
- pick_again:
- 	next = pick_next_task(rq, rq_selected(rq), &rf);
- 	rq_set_selected(rq, next);
-+	next->blocked_donor = NULL;
- 	if (unlikely(task_is_blocked(next))) {
- 		next = find_proxy_task(rq, next, &rf);
- 		if (!next) {
-@@ -7088,7 +7103,7 @@ static void __sched notrace __schedule(unsigned int sched_mode)
- 		rq = context_switch(rq, prev, next, &rf);
- 	} else {
- 		/* In case next was already curr but just got blocked_donor*/
--		if (!task_current_selected(rq, next))
-+		if (prev_not_proxied && next->blocked_donor)
- 			proxy_tag_curr(rq, next);
- 
- 		rq_unpin_lock(rq, &rf);
+ 		if (owner == p) {
 -- 
 2.43.0.472.g3155946c3a-goog
 
