@@ -1,222 +1,1480 @@
-Return-Path: <linux-kernel+bounces-6523-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6524-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E6FC8199EE
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 09:01:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53A7B8199F1
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 09:02:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 26A41286D50
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 08:01:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4EF351F24D48
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 08:02:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09A3D171DC;
-	Wed, 20 Dec 2023 08:01:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FF391B285;
+	Wed, 20 Dec 2023 08:01:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="VOh2HStA"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="PgZXFddF"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFECF18625;
-	Wed, 20 Dec 2023 08:01:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EDC7RlkMHadWg9ubod1KXqDokY4BU9baOESL3L3LP+VPTtxueNwM+XSoF3zJ+80xYqkXkKc3UH2y2Fbhlh4F+AkSu5v0G4bR0xRDqSXs+g1HoH66O4fbaxYsD0Y1e5ReUzFvBA+4PD8JzmbidZhTlcwRU9jV9PCFgkoIYgvfyP3RRvCbuaUwxabcbX+RBtGQ3Fi7jSVvcWFUJe3/wWYfF4fJfYYY6IT0OcJzVeD3wFhCm/ASV+MUdagBd4KFJrjt2AnY2NOciVTlTC7+fB8nBf2OSmN3QUfZ0j9MqzZQHZ8lyEM2sTWd0MVfQ1u5fIDJuGYHpZeOMjq4GHKQxjF2GQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=rNKwxNo3qAOkHn9PMjGeNL/UaZGfqR21jnWoo09taNU=;
- b=D2t6BgNAKUo0TwPPj7ojr/FbXdiBdmC+20iBNC0oz6KYKI3IS3J7UHJD0cQFpnlNh+zZwcK5fJJ0C60gbhz++P3DsyQnDczPM3j3WLjZ3RWJKl63fndZJiyobhs2xU++G+0SgwcutTl4nKv1kMFg/1XfBbDSfLmy6gaRvcZBfo1DtKgd+P6VD452ZlTp/F5ZgUTaB+lzAkelSBud77fj7oTUpy02NiJvJQIn8buyDzKMNc+ftXcEWhoNXHnT0Is1LLXpAriOIAOPdm+Dir4LqPZHAks+6QfDDJxjTWIj4jGfx/K//s0YXi1TL5RueQ4s8hQFD0vXsNXir1WH4SjGDA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rNKwxNo3qAOkHn9PMjGeNL/UaZGfqR21jnWoo09taNU=;
- b=VOh2HStA1xOHfS1DYnRKbLH3vVyxwpSnoQtdpSODrIKC1JBqc5mULkqjB+LdOuZDQASbR0pBt2phqzJwkgS5Lupt+0psQ8MmgNsxBWTwVscg30E/tK+yQpSWxVdT+lrbXdXmRGi/EpSs8DUzNdaMRsQf5M1TSvuhg6mWNtkIABg=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BYAPR12MB4758.namprd12.prod.outlook.com (2603:10b6:a03:a5::28)
- by MW4PR12MB6828.namprd12.prod.outlook.com (2603:10b6:303:209::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.38; Wed, 20 Dec
- 2023 08:01:41 +0000
-Received: from BYAPR12MB4758.namprd12.prod.outlook.com
- ([fe80::39a2:42da:ea20:3349]) by BYAPR12MB4758.namprd12.prod.outlook.com
- ([fe80::39a2:42da:ea20:3349%5]) with mapi id 15.20.7091.034; Wed, 20 Dec 2023
- 08:01:41 +0000
-Message-ID: <1feb69af-06e4-4cfe-a4ea-8dc583742f6e@amd.com>
-Date: Wed, 20 Dec 2023 09:01:28 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] dt-bindings: soc: xilinx: Add support for K26 rev2 SOMs
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- linux-kernel@vger.kernel.org, monstr@monstr.eu, michal.simek@xilinx.com,
- git@xilinx.com
-Cc: Conor Dooley <conor+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org
-References: <6673abb84e542c2841cece9336571f97b19882fe.1702995908.git.michal.simek@amd.com>
- <1afdcd25-d001-4523-be0d-2bf2c9e1d7a6@linaro.org>
-From: Michal Simek <michal.simek@amd.com>
-Autocrypt: addr=michal.simek@amd.com; keydata=
- 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
- 3i3l5DA=
-In-Reply-To: <1afdcd25-d001-4523-be0d-2bf2c9e1d7a6@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: VI1PR03CA0061.eurprd03.prod.outlook.com
- (2603:10a6:803:50::32) To BYAPR12MB4758.namprd12.prod.outlook.com
- (2603:10b6:a03:a5::28)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2D6B168D1;
+	Wed, 20 Dec 2023 08:01:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BK5rbPN002203;
+	Wed, 20 Dec 2023 08:01:38 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=UwMiIgYyDLV2fecao97aVA6TgwE60G6nvAMw3MYtEgI=; b=Pg
+	ZXFddFMHTR579aP5J6xae0TftLR7zZAWoSVidmZ+2bcl2GdU8A/+w36C+4BT022J
+	atQe6cIB53IRjQwfbSAZytwnTlUOhJlJ1PD3UeqnsPU9BECt0AbjV6F5OdmdEDkL
+	0gbtuWaTO1AKiwMbMCJiW8XoE1abf0zCHC+4pUfyAx9c4DWyQYXlQOKoZeUxljrN
+	wQpaKwz57FIg6V6L3cv1kt0y1enuzYLBaphat9G7aSeEEuDmWnkSnPBJ+Wwd3+H4
+	bUqTgWml2LAaLbCUag+JsxKGvW9xJFY569Xk5wbRfKiymz9xX/Mgh4PEKCctD3Et
+	I7i9zI/tUPUcj+THCUdQ==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v3th6r9rx-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 20 Dec 2023 08:01:38 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BK81b88001242
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 20 Dec 2023 08:01:37 GMT
+Received: from [10.216.36.155] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 20 Dec
+ 2023 00:01:32 -0800
+Message-ID: <87fea0ec-b0c4-1c68-d5b0-86deac8a25d8@quicinc.com>
+Date: Wed, 20 Dec 2023 13:31:29 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BYAPR12MB4758:EE_|MW4PR12MB6828:EE_
-X-MS-Office365-Filtering-Correlation-Id: f69ffa4b-bad2-4e63-387f-08dc0131e643
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	MitEKaLnbgB8aVHx3XbVmXIQLcXPUZi84hXRxJQxwfCdscScgKmCRpZgwEEFw0scLJid1rgzuaACAhdnOddx724tn9yvKSyl/wClMYwwlRacKyIzb5OXNFm+MC6mga2oI/37BA1DwctAZXJUSzHUUKc6SLsvfPFoc0apTfQcrLtHankRFwoQ5dsubaZgl9jJgw4xlDxnw2eSv1H8Kv0ruwy5cMf07O1u8mpnd8Pu1gc6RzmrESuxRUCQbLk8KoZuyn72laKaqbCnstYzShB+YyzG9tH4g+mbKX8kO1NTeojnEi6YSb0UbOfoksDRL7iNHCQQqzfii2VgnqEXiXMMvGY3ygtLZ+GiTn0HAq7VwFPSlRTDH3anUPEJKAZB6XabHkLk3r8g4ShPU2uWVRDKyhEF8qjhWrZuwRDHeYqV0VKlEoORV3dMICcxXL7faqv2Wxa/u7eW6QpOCtVMwR7UGM0YOJIE7iP1EWX1biqBxXzXptaA/bm20DGw7SsSU4qXS+ZjXsyx/cSwwIQI5JTU98Yvpi33WlTYhxEzahOGLqHGHoEAOco8OurDFthQJIIcWD6kqCyDrivBIT5ANCNZJFXV6D890WfjRDcrdgA1MJznEtXih6vAu2oyeBsYmC8uxmXZ8wEhII4HDmPWLrRx4g==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB4758.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(376002)(346002)(366004)(39860400002)(230922051799003)(451199024)(64100799003)(1800799012)(186009)(5660300002)(7416002)(2906002)(31696002)(41300700001)(86362001)(36756003)(38100700002)(6486002)(26005)(478600001)(66556008)(66946007)(54906003)(66476007)(316002)(2616005)(53546011)(6506007)(6666004)(31686004)(6512007)(44832011)(8936002)(8676002)(4326008)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?bUxGbVV2aG11clR0VFVyQWxzUlFaQUg4QUQwVTB3cTJ5aGQ2Rjl4RlhVc1hv?=
- =?utf-8?B?SUZTclkyNlgrVW5TS2FJY1c3T3phQmpQT29KVFBXT0N5N09VVElJSWlvM2dF?=
- =?utf-8?B?VkFRa0tmM0FKdjJKd3dQVHRoT1RxNXFKKzhFUEhHWWZ5NGtNVmtpcTM5cTJp?=
- =?utf-8?B?VDR6a3NwYmVIL2hDcGVoaGpvbUFQcjJwdTZXWlBpUTdFazJrOXJZRE1rVWRX?=
- =?utf-8?B?WEszZS8rbnE3cnRnUC9nY1YrdUljVjhaemcvMTRBWWc5UkRRMEYrbFk4andZ?=
- =?utf-8?B?RVIzRWFseFNWajM5azBzMmlLak9oeXB6TkJnQTdBQ1RSeWhCbGlndUpMYU5s?=
- =?utf-8?B?WVJrOG5mS0drTHRDcEtoYitiSFUrK0NhQW9zVXBITmU4UjhmLzZVTVo2NWlw?=
- =?utf-8?B?L0VaZFRtSzJ2RlFkeGd3WHlKeS9BdnlwVXNhZ1pna2xyY1JVbXBTK1hMNHFH?=
- =?utf-8?B?Y0dmQUtaT2VadFdlN0svRzEybUIvdjg3a3dpSjN1UFZEREpHdG5vckhOdXpu?=
- =?utf-8?B?MGFYWjY1bEp3QjRzVlhpZFJmenFvdkQySjNRWFZvR2luRTdzMmhHRFVHZ0Fz?=
- =?utf-8?B?bkZ5RVkxUXNNK2tDcWZoU0VoUlRjTmgzVDJTbnphOUVsQjVtTStEaG9DMVNq?=
- =?utf-8?B?cmZWdndKbC9rclBMSXlGa0hBVXZsUkszZCtlYSt5WGFXSSsvaDZCWHcxWWZX?=
- =?utf-8?B?ZUJYYWJwTGQzOEUwdFcwM2UybnhqS2VJOTVkVVpsTmxYL2J2L0Y2Q2llamJV?=
- =?utf-8?B?T1JCMjZYM2NoeG5tdmFQWWVTaGYyNUNKaXNRNWNYRnVrdHJ2S2ExV05KV1Ur?=
- =?utf-8?B?SUpLc3ZnbWZZcjdjdlFHeW5oclVyVmdLWm1mb29wTGhaU0NuRUNhS242TzVJ?=
- =?utf-8?B?czdmbTl6SXgrSlpCS3hUZVRIMTlJRGpXLy9GcmtyK2QrcGRkRHhQSW9JenQv?=
- =?utf-8?B?eWkrSXJMaDNUMW5WRXFSaUtqUDBzeStWNVBTRXFzS013ZER3TUJvRHIwUTNB?=
- =?utf-8?B?K1RrbmUyK0NzY1dLeWFWTXpKa2VwbHNnZ1oxd25jUDF3OEdYalpJUXl5aFB1?=
- =?utf-8?B?QW5wMTNyYzc3OHVSVDg5Q3lGWE0vUytvclQ2S0Zvc3lIa09YTjVLMmVwc1FZ?=
- =?utf-8?B?KzVhUEQ4QTMyNnUwaVhWZVpBdit5TnYvYVpXL0YwNFBPUW12RUZTQUNkMU5t?=
- =?utf-8?B?ZlFQaGtmRnNSSTRjbGg3Mk1FeHFpNmxFaSsxQVFPdERVck1vbmNzRlJuRkRk?=
- =?utf-8?B?VzRpbk1wUy9OSnllc0wwU3Nrc0syb3hEOCtTRlR0NWVDOG1tVlpZY1JQOFcx?=
- =?utf-8?B?cHhncHgrRXN5ak5yaVV4dkdFMjlnNjVvMzVBalJvTWpnV2FrckRDMEp6bTFw?=
- =?utf-8?B?Vi8xNGVVZkJrVzIvTjVrRzdsVkU4VTN4MnBsRFFaNDErRWdaZkZnS2drOVpZ?=
- =?utf-8?B?Y1lSQkt6dllSd2lkM2ZPTThQVUFQSWQ2OHlKVDZKNmtOcmZ5dkNaOERTZGRW?=
- =?utf-8?B?TkNOd0NsMFJaeWF4WjZEalVySEM2MExjY21tbGp5bTNiUDBzU21ZbDl5d0RE?=
- =?utf-8?B?QktrR1NNM1A3QURjT3RNVGdFRXZOUklvNnltWlcySzZicXFZTWVML0dtem56?=
- =?utf-8?B?UFg0QWZHS0RrQm1BUzBZSGd2ZzVuRlVVdElwU28rN2RlUXVVeVJqZmI0MERo?=
- =?utf-8?B?bG1BbDRLcjhmeW9NNEovYm0xY3luMGdPb0JTcmdyN0VVTVBzYjd0bGcxQ1dO?=
- =?utf-8?B?TU9zcys4cjZyRGpKU0Z1dDNuWE53VjdYRGZ6TTdxNXZUV3FsZlBTVlR6SjM4?=
- =?utf-8?B?dkpIUGZGdVo5ODV5ekVmNmNWaSs3b1l6Sm9ETXRiL2F2Wjl2TVZ0K243cmZw?=
- =?utf-8?B?N3lod1R1VzlqTUlNQkMzaWtscW9sZGZ2c0d6b21Dc3c4RXlUZlFiK1BzVGNT?=
- =?utf-8?B?UFZGNmNjdmcrbzZ3Wk43MVVTN2JtNWRhZmpQVnhiRmFhL0lZajE3UFlYWW1a?=
- =?utf-8?B?d0c3eUVyV0hTT2gzWmQ0S3lwMXI4R1E5SEozQ0pMeG04OWZuNHMybnRvRDZH?=
- =?utf-8?B?NGloSUxCK0V3RE5ZSDZZVVZIL08wZ1BldEM1aWVqMk0xelBuV2E5QkUrZ2lz?=
- =?utf-8?Q?9HFzxdYXm3nKoyQOj2OwE5cJA?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f69ffa4b-bad2-4e63-387f-08dc0131e643
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB4758.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Dec 2023 08:01:41.0495
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: TJM/QFpPCdTQ5rzhho+BaBHpBHhlID5IAGZgMPdzSxbzjrRx6EChEHEmk8Fknmhe
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB6828
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 01/34] media: introduce common helpers for video
+ firmware handling
+Content-Language: en-US
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        <linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <stanimir.k.varbanov@gmail.com>, <quic_vgarodia@quicinc.com>,
+        <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <mchehab@kernel.org>,
+        <bryan.odonoghue@linaro.org>
+CC: <linux-arm-msm@vger.kernel.org>, <quic_abhinavk@quicinc.com>
+References: <1702899149-21321-1-git-send-email-quic_dikshita@quicinc.com>
+ <1702899149-21321-2-git-send-email-quic_dikshita@quicinc.com>
+ <f0682d53-a2f1-4b68-abe1-90a35c9a0641@linaro.org>
+From: Dikshita Agarwal <quic_dikshita@quicinc.com>
+In-Reply-To: <f0682d53-a2f1-4b68-abe1-90a35c9a0641@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: bqNatCUS5GSjNmkxnWtRtUKH1FlofATv
+X-Proofpoint-ORIG-GUID: bqNatCUS5GSjNmkxnWtRtUKH1FlofATv
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ impostorscore=0 bulkscore=0 mlxlogscore=999 lowpriorityscore=0
+ phishscore=0 priorityscore=1501 clxscore=1011 spamscore=0 mlxscore=0
+ adultscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2311290000 definitions=main-2312200054
 
 
 
-On 12/20/23 08:55, Krzysztof Kozlowski wrote:
-> On 19/12/2023 15:25, Michal Simek wrote:
->> Revision 2 is SW compatible with revision 1 but it is necessary to reflect
->> it in model and compatible properties which are parsed by user space.
->> Rev 2 has improved a power on boot reset and MIO34 shutdown glich
->> improvement done via an additional filter in the GreenPak chip.
+On 12/18/2023 11:54 PM, Dmitry Baryshkov wrote:
+> On 18/12/2023 13:31, Dikshita Agarwal wrote:
+>> Re-organize the video driver code by introducing a new folder
+>> 'vcodec' and placing 'venus' driver code inside that.
 >>
->> Signed-off-by: Michal Simek <michal.simek@amd.com>
->> ---
->>
->>   Documentation/devicetree/bindings/soc/xilinx/xilinx.yaml | 2 ++
->>   1 file changed, 2 insertions(+)
->>
->> diff --git a/Documentation/devicetree/bindings/soc/xilinx/xilinx.yaml b/Documentation/devicetree/bindings/soc/xilinx/xilinx.yaml
->> index d4c0fe1fe435..62617e1ea74f 100644
->> --- a/Documentation/devicetree/bindings/soc/xilinx/xilinx.yaml
->> +++ b/Documentation/devicetree/bindings/soc/xilinx/xilinx.yaml
->> @@ -118,6 +118,7 @@ properties:
->>   
->>         - description: Xilinx Kria SOMs
->>           items:
->> +          - const: xlnx,zynqmp-sm-k26-rev2
->>             - const: xlnx,zynqmp-sm-k26-rev1
->>             - const: xlnx,zynqmp-sm-k26-revB
->>             - const: xlnx,zynqmp-sm-k26-revA
+>> Introduce common helpers for trustzone based firmware
+>> load/unload etc. which are placed in common folder
+>> i.e. 'vcodec'.
+>> Use these helpers in 'venus' driver. These helpers will be
+>> used by 'iris' driver as well which is introduced later
+>> in this patch series.
 > 
-> You are changing existing list of compatibles, so all devices with
-> "rev1" will fail the checks. Is it expected?
+> But why do you need to move the venus driver to subdir?
 
-That's a good point. I have actually never have a need to support older 
-combination from validation perspective.
-Let me play with it and see how it will look like to support all older 
-combinations.
-That would very much apply to almost all other records in this file.
-
-Thanks,
-Michal
-
-
+Currently venus driver is present in drivers/media/platform/qcom folder
+which also has camss folder. We introduced vcodec to keep common code and
+moved venus inside that, to indicate that the common code is for vcodec
+drivers i.e venus and iris. Keeping this in qcom folder would mean, common
+code will be used for camss only which is not the case here.
+> 
+>>
+>> Signed-off-by: Dikshita Agarwal <quic_dikshita@quicinc.com>
+>> ---
+>>   drivers/media/platform/qcom/Kconfig                |   2 +-
+>>   drivers/media/platform/qcom/Makefile               |   2 +-
+>>   drivers/media/platform/qcom/vcodec/firmware.c      | 147 +++++++++
+>>   drivers/media/platform/qcom/vcodec/firmware.h      |  21 ++
+>>   .../media/platform/qcom/{ => vcodec}/venus/Kconfig |   0
+>>   .../platform/qcom/{ => vcodec}/venus/Makefile      |   4 +-
+>>   .../media/platform/qcom/{ => vcodec}/venus/core.c  | 102 +++++-
+>>   .../media/platform/qcom/{ => vcodec}/venus/core.h  |   0
+>>   .../media/platform/qcom/{ => vcodec}/venus/dbgfs.c |   0
+>>   .../media/platform/qcom/{ => vcodec}/venus/dbgfs.h |   0
+>>   .../platform/qcom/vcodec/venus/firmware_no_tz.c    | 194 +++++++++++
+>>   .../platform/qcom/vcodec/venus/firmware_no_tz.h    |  19 ++
+>>   .../platform/qcom/{ => vcodec}/venus/helpers.c     |   0
+>>   .../platform/qcom/{ => vcodec}/venus/helpers.h     |   0
+>>   .../media/platform/qcom/{ => vcodec}/venus/hfi.c   |   0
+>>   .../media/platform/qcom/{ => vcodec}/venus/hfi.h   |   0
+>>   .../platform/qcom/{ => vcodec}/venus/hfi_cmds.c    |   0
+>>   .../platform/qcom/{ => vcodec}/venus/hfi_cmds.h    |   0
+>>   .../platform/qcom/{ => vcodec}/venus/hfi_helper.h  |   0
+>>   .../platform/qcom/{ => vcodec}/venus/hfi_msgs.c    |   0
+>>   .../platform/qcom/{ => vcodec}/venus/hfi_msgs.h    |   0
+>>   .../platform/qcom/{ => vcodec}/venus/hfi_parser.c  |   0
+>>   .../platform/qcom/{ => vcodec}/venus/hfi_parser.h  |   0
+>>   .../qcom/{ => vcodec}/venus/hfi_plat_bufs.h        |   0
+>>   .../qcom/{ => vcodec}/venus/hfi_plat_bufs_v6.c     |   0
+>>   .../qcom/{ => vcodec}/venus/hfi_platform.c         |   0
+>>   .../qcom/{ => vcodec}/venus/hfi_platform.h         |   0
+>>   .../qcom/{ => vcodec}/venus/hfi_platform_v4.c      |   0
+>>   .../qcom/{ => vcodec}/venus/hfi_platform_v6.c      |   0
+>>   .../platform/qcom/{ => vcodec}/venus/hfi_venus.c   |  21 +-
+>>   .../platform/qcom/{ => vcodec}/venus/hfi_venus.h   |   0
+>>   .../qcom/{ => vcodec}/venus/hfi_venus_io.h         |   0
+>>   .../platform/qcom/{ => vcodec}/venus/pm_helpers.c  |   0
+>>   .../platform/qcom/{ => vcodec}/venus/pm_helpers.h  |   0
+>>   .../media/platform/qcom/{ => vcodec}/venus/vdec.c  |   0
+>>   .../media/platform/qcom/{ => vcodec}/venus/vdec.h  |   0
+>>   .../platform/qcom/{ => vcodec}/venus/vdec_ctrls.c  |   0
+>>   .../media/platform/qcom/{ => vcodec}/venus/venc.c  |   0
+>>   .../media/platform/qcom/{ => vcodec}/venus/venc.h  |   0
+>>   .../platform/qcom/{ => vcodec}/venus/venc_ctrls.c  |   0
+>>   drivers/media/platform/qcom/venus/firmware.c       | 363
+>> ---------------------
+>>   drivers/media/platform/qcom/venus/firmware.h       |  26 --
+>>   42 files changed, 492 insertions(+), 409 deletions(-)
+>>   create mode 100644 drivers/media/platform/qcom/vcodec/firmware.c
+>>   create mode 100644 drivers/media/platform/qcom/vcodec/firmware.h
+>>   rename drivers/media/platform/qcom/{ => vcodec}/venus/Kconfig (100%)
+>>   rename drivers/media/platform/qcom/{ => vcodec}/venus/Makefile (83%)
+>>   rename drivers/media/platform/qcom/{ => vcodec}/venus/core.c (91%)
+>>   rename drivers/media/platform/qcom/{ => vcodec}/venus/core.h (100%)
+>>   rename drivers/media/platform/qcom/{ => vcodec}/venus/dbgfs.c (100%)
+>>   rename drivers/media/platform/qcom/{ => vcodec}/venus/dbgfs.h (100%)
+>>   create mode 100644
+>> drivers/media/platform/qcom/vcodec/venus/firmware_no_tz.c
+>>   create mode 100644
+>> drivers/media/platform/qcom/vcodec/venus/firmware_no_tz.h
+>>   rename drivers/media/platform/qcom/{ => vcodec}/venus/helpers.c (100%)
+>>   rename drivers/media/platform/qcom/{ => vcodec}/venus/helpers.h (100%)
+>>   rename drivers/media/platform/qcom/{ => vcodec}/venus/hfi.c (100%)
+>>   rename drivers/media/platform/qcom/{ => vcodec}/venus/hfi.h (100%)
+>>   rename drivers/media/platform/qcom/{ => vcodec}/venus/hfi_cmds.c (100%)
+>>   rename drivers/media/platform/qcom/{ => vcodec}/venus/hfi_cmds.h (100%)
+>>   rename drivers/media/platform/qcom/{ => vcodec}/venus/hfi_helper.h (100%)
+>>   rename drivers/media/platform/qcom/{ => vcodec}/venus/hfi_msgs.c (100%)
+>>   rename drivers/media/platform/qcom/{ => vcodec}/venus/hfi_msgs.h (100%)
+>>   rename drivers/media/platform/qcom/{ => vcodec}/venus/hfi_parser.c (100%)
+>>   rename drivers/media/platform/qcom/{ => vcodec}/venus/hfi_parser.h (100%)
+>>   rename drivers/media/platform/qcom/{ => vcodec}/venus/hfi_plat_bufs.h
+>> (100%)
+>>   rename drivers/media/platform/qcom/{ =>
+>> vcodec}/venus/hfi_plat_bufs_v6.c (100%)
+>>   rename drivers/media/platform/qcom/{ => vcodec}/venus/hfi_platform.c
+>> (100%)
+>>   rename drivers/media/platform/qcom/{ => vcodec}/venus/hfi_platform.h
+>> (100%)
+>>   rename drivers/media/platform/qcom/{ => vcodec}/venus/hfi_platform_v4.c
+>> (100%)
+>>   rename drivers/media/platform/qcom/{ => vcodec}/venus/hfi_platform_v6.c
+>> (100%)
+>>   rename drivers/media/platform/qcom/{ => vcodec}/venus/hfi_venus.c (99%)
+>>   rename drivers/media/platform/qcom/{ => vcodec}/venus/hfi_venus.h (100%)
+>>   rename drivers/media/platform/qcom/{ => vcodec}/venus/hfi_venus_io.h
+>> (100%)
+>>   rename drivers/media/platform/qcom/{ => vcodec}/venus/pm_helpers.c (100%)
+>>   rename drivers/media/platform/qcom/{ => vcodec}/venus/pm_helpers.h (100%)
+>>   rename drivers/media/platform/qcom/{ => vcodec}/venus/vdec.c (100%)
+>>   rename drivers/media/platform/qcom/{ => vcodec}/venus/vdec.h (100%)
+>>   rename drivers/media/platform/qcom/{ => vcodec}/venus/vdec_ctrls.c (100%)
+>>   rename drivers/media/platform/qcom/{ => vcodec}/venus/venc.c (100%)
+>>   rename drivers/media/platform/qcom/{ => vcodec}/venus/venc.h (100%)
+>>   rename drivers/media/platform/qcom/{ => vcodec}/venus/venc_ctrls.c (100%)
+>>   delete mode 100644 drivers/media/platform/qcom/venus/firmware.c
+>>   delete mode 100644 drivers/media/platform/qcom/venus/firmware.h
+>>
+>> diff --git a/drivers/media/platform/qcom/Kconfig
+>> b/drivers/media/platform/qcom/Kconfig
+>> index cc5799b..e94142f 100644
+>> --- a/drivers/media/platform/qcom/Kconfig
+>> +++ b/drivers/media/platform/qcom/Kconfig
+>> @@ -3,4 +3,4 @@
+>>   comment "Qualcomm media platform drivers"
+>>     source "drivers/media/platform/qcom/camss/Kconfig"
+>> -source "drivers/media/platform/qcom/venus/Kconfig"
+>> +source "drivers/media/platform/qcom/vcodec/venus/Kconfig"
+>> diff --git a/drivers/media/platform/qcom/Makefile
+>> b/drivers/media/platform/qcom/Makefile
+>> index 4f055c3..3d2d82b 100644
+>> --- a/drivers/media/platform/qcom/Makefile
+>> +++ b/drivers/media/platform/qcom/Makefile
+>> @@ -1,3 +1,3 @@
+>>   # SPDX-License-Identifier: GPL-2.0-only
+>>   obj-y += camss/
+>> -obj-y += venus/
+>> +obj-y += vcodec/venus/
+>> diff --git a/drivers/media/platform/qcom/vcodec/firmware.c
+>> b/drivers/media/platform/qcom/vcodec/firmware.c
+>> new file mode 100644
+>> index 0000000..dbc220a
+>> --- /dev/null
+>> +++ b/drivers/media/platform/qcom/vcodec/firmware.c
+>> @@ -0,0 +1,147 @@
+>> +// SPDX-License-Identifier: GPL-2.0-only
+>> +/*
+>> + * Copyright (c) 2022-2023 Qualcomm Innovation Center, Inc. All rights
+>> reserved.
+>> + */
+>> +
+>> +#include <linux/device.h>
+>> +#include <linux/dma-mapping.h>
+>> +#include <linux/firmware.h>
+>> +#include <linux/kernel.h>
+>> +#include <linux/iommu.h>
+>> +#include <linux/of_device.h>
+>> +#include <linux/firmware/qcom/qcom_scm.h>
+>> +#include <linux/of_reserved_mem.h>
+>> +#include <linux/platform_device.h>
+>> +#include <linux/soc/qcom/mdt_loader.h>
+>> +
+>> +#include "firmware.h"
+>> +
+>> +bool use_tz(struct device *core_dev)
+> 
+> All these functions must get some sane prefix. Otherwise a generic 'use_tz'
+> function is too polluting for the global namespace.
+> 
+I understand, will check and do the needful.
+>> +{
+>> +    struct device_node *np;
+>> +
+>> +    np = of_get_child_by_name(core_dev->of_node, "video-firmware");
+>> +    if (!np)
+>> +        return true;
+>> +
+>> +    return false;
+>> +}
+>> +
+>> +int protect_secure_region(u32 cp_start, u32 cp_size, u32 cp_nonpixel_start,
+>> +              u32 cp_nonpixel_size, u32 pas_id)
+>> +{
+>> +    int ret;
+>> +    /*
+>> +     * Clues for porting using downstream data:
+>> +     * cp_start = 0
+>> +     * cp_size = venus_ns/virtual-addr-pool[0] - yes, address and not size!
+>> +     *   This works, as the non-secure context bank is placed
+>> +     *   contiguously right after the Content Protection region.
+>> +     *
+>> +     * cp_nonpixel_start = venus_sec_non_pixel/virtual-addr-pool[0]
+>> +     * cp_nonpixel_size = venus_sec_non_pixel/virtual-addr-pool[1]
+>> +     */
+>> +    ret = qcom_scm_mem_protect_video_var(cp_start,
+>> +                         cp_size,
+>> +                         cp_nonpixel_start,
+>> +                         cp_nonpixel_size);
+>> +    if (ret)
+>> +        qcom_scm_pas_shutdown(pas_id);
+>> +
+>> +    return ret;
+>> +}
+>> +
+>> +int load_fw(struct device *dev, const char *fw_name, phys_addr_t *mem_phys,
+>> +        size_t *mem_size, u32 pas_id, bool use_tz)
+>> +{
+>> +    const struct firmware *firmware = NULL;
+>> +    struct reserved_mem *rmem;
+>> +    struct device_node *node;
+>> +    void *mem_virt = NULL;
+>> +    ssize_t fw_size = 0;
+>> +    int ret;
+>> +
+>> +    if (!IS_ENABLED(CONFIG_QCOM_MDT_LOADER) ||
+> 
+> Why? Can you just depend on it?
+> 
+Sure, Will check this and get back.
+>> +        (use_tz && !qcom_scm_is_available()))
+>> +        return -EPROBE_DEFER;
+>> +
+>> +    if (!fw_name || !(*fw_name))
+>> +        return -EINVAL;
+>> +
+>> +    *mem_phys = 0;
+>> +    *mem_size = 0;
+>> +
+>> +    node = of_parse_phandle(dev->of_node, "memory-region", 0);
+>> +    if (!node) {
+>> +        dev_err(dev, "no memory-region specified\n");
+>> +        return -EINVAL;
+>> +    }
+>> +
+>> +    rmem = of_reserved_mem_lookup(node);
+>> +    of_node_put(node);
+>> +    if (!rmem) {
+>> +        dev_err(dev, "failed to lookup reserved memory-region\n");
+>> +        return -EINVAL;
+>> +    }
+>> +
+>> +    ret = request_firmware(&firmware, fw_name, dev);
+>> +    if (ret) {
+>> +        dev_err(dev, "%s: failed to request fw \"%s\", error %d\n",
+>> +            __func__, fw_name, ret);
+>> +        return ret;
+>> +    }
+>> +
+>> +    fw_size = qcom_mdt_get_size(firmware);
+>> +    if (fw_size < 0) {
+>> +        ret = fw_size;
+>> +        dev_err(dev, "%s: out of bound fw image fw size: %ld\n",
+>> +            __func__, fw_size);
+>> +        goto err_release_fw;
+>> +    }
+>> +
+>> +    *mem_phys = rmem->base;
+>> +    *mem_size = rmem->size;
+>> +
+>> +    if (*mem_size < fw_size) {
+>> +        ret = -EINVAL;
+>> +        goto err_release_fw;
+>> +    }
+>> +
+>> +    mem_virt = memremap(*mem_phys, *mem_size, MEMREMAP_WC);
+>> +    if (!mem_virt) {
+>> +        dev_err(dev, "unable to remap fw memory region %pa size %#zx\n",
+>> +            mem_phys, *mem_size);
+>> +        goto err_release_fw;
+>> +    }
+>> +
+>> +    if (use_tz)
+>> +        ret = qcom_mdt_load(dev, firmware, fw_name, pas_id, mem_virt,
+>> +                    *mem_phys, *mem_size, NULL);
+>> +    else
+>> +        ret = qcom_mdt_load_no_init(dev, firmware, fw_name, pas_id,
+>> mem_virt,
+>> +                        *mem_phys, *mem_size, NULL);
+>> +    if (ret) {
+>> +        dev_err(dev, "%s: error %d loading fw \"%s\"\n",
+>> +            __func__, ret, fw_name);
+>> +    }
+>> +
+>> +    memunmap(mem_virt);
+>> +err_release_fw:
+>> +    release_firmware(firmware);
+>> +    return ret;
+>> +}
+>> +
+>> +int auth_reset_fw(u32 pas_id)
+>> +{
+>> +    return qcom_scm_pas_auth_and_reset(pas_id);
+>> +}
+>> +
+>> +void unload_fw(u32 pas_id)
+>> +{
+>> +    qcom_scm_pas_shutdown(pas_id);
+>> +}
+>> +
+>> +int set_hw_state(bool resume)
+>> +{
+>> +    return qcom_scm_set_remote_state(resume, 0);
+>> +}
+>> diff --git a/drivers/media/platform/qcom/vcodec/firmware.h
+>> b/drivers/media/platform/qcom/vcodec/firmware.h
+>> new file mode 100644
+>> index 0000000..7d410a8
+>> --- /dev/null
+>> +++ b/drivers/media/platform/qcom/vcodec/firmware.h
+>> @@ -0,0 +1,21 @@
+>> +/* SPDX-License-Identifier: GPL-2.0-only */
+>> +/*
+>> + * Copyright (c) 2022-2023 Qualcomm Innovation Center, Inc. All rights
+>> reserved.
+>> + */
+>> +
+>> +#ifndef _FIRMWARE_H_
+>> +#define _FIRMWARE_H_
+>> +
+>> +#include <linux/device.h>
+>> +#include <linux/types.h>
+>> +
+>> +bool use_tz(struct device *core_dev);
+>> +int load_fw(struct device *dev, const char *fw_name, phys_addr_t *mem_phys,
+>> +        size_t *mem_size, u32 pas_id, bool use_tz);
+>> +int auth_reset_fw(u32 pas_id);
+>> +int protect_secure_region(u32 cp_start, u32 cp_size, u32 cp_nonpixel_start,
+>> +              u32 cp_nonpixel_size, u32 pas_id);
+>> +void unload_fw(u32 pas_id);
+>> +int set_hw_state(bool resume);
+>> +
+>> +#endif
+>> diff --git a/drivers/media/platform/qcom/venus/Kconfig
+>> b/drivers/media/platform/qcom/vcodec/venus/Kconfig
+>> similarity index 100%
+>> rename from drivers/media/platform/qcom/venus/Kconfig
+>> rename to drivers/media/platform/qcom/vcodec/venus/Kconfig
+>> diff --git a/drivers/media/platform/qcom/venus/Makefile
+>> b/drivers/media/platform/qcom/vcodec/venus/Makefile
+>> similarity index 83%
+>> rename from drivers/media/platform/qcom/venus/Makefile
+>> rename to drivers/media/platform/qcom/vcodec/venus/Makefile
+>> index 91ee6be..f6f3a88 100644
+>> --- a/drivers/media/platform/qcom/venus/Makefile
+>> +++ b/drivers/media/platform/qcom/vcodec/venus/Makefile
+>> @@ -1,7 +1,9 @@
+>>   # SPDX-License-Identifier: GPL-2.0
+>>   # Makefile for Qualcomm Venus driver
+>>   -venus-core-objs += core.o helpers.o firmware.o \
+>> +venus-core-objs += ../firmware.o
+>> +
+>> +venus-core-objs += core.o helpers.o firmware_no_tz.o \
+>>              hfi_venus.o hfi_msgs.o hfi_cmds.o hfi.o \
+>>              hfi_parser.o pm_helpers.o dbgfs.o \
+>>              hfi_platform.o hfi_platform_v4.o \
+>> diff --git a/drivers/media/platform/qcom/venus/core.c
+>> b/drivers/media/platform/qcom/vcodec/venus/core.c
+>> similarity index 91%
+>> rename from drivers/media/platform/qcom/venus/core.c
+>> rename to drivers/media/platform/qcom/vcodec/venus/core.c
+>> index 9cffe97..56d9a53 100644
+>> --- a/drivers/media/platform/qcom/venus/core.c
+>> +++ b/drivers/media/platform/qcom/vcodec/venus/core.c
+>> @@ -22,7 +22,8 @@
+>>   #include <media/v4l2-ioctl.h>
+>>     #include "core.h"
+>> -#include "firmware.h"
+>> +#include "../firmware.h"
+>> +#include "firmware_no_tz.h"
+>>   #include "pm_helpers.h"
+>>   #include "hfi_venus_io.h"
+>>   @@ -86,6 +87,8 @@ static void venus_sys_error_handler(struct
+>> work_struct *work)
+>>       struct venus_core *core =
+>>               container_of(work, struct venus_core, work.work);
+>>       int ret, i, max_attempts = RPM_WAIT_FOR_IDLE_MAX_ATTEMPTS;
+>> +    const struct venus_resources *res = core->res;
+>> +    const char *fwpath = NULL;
+>>       const char *err_msg = "";
+>>       bool failed = false;
+>>   @@ -107,7 +110,10 @@ static void venus_sys_error_handler(struct
+>> work_struct *work)
+>>         mutex_lock(&core->lock);
+>>   -    venus_shutdown(core);
+>> +    if (core->use_tz)
+>> +        unload_fw(VENUS_PAS_ID);
+>> +    else
+>> +        unload_fw_no_tz(core);
+> 
+> This is more than introducing helpers.
+> 
+The new helpers are written to make the code generic for video drivers.
+which requires changes in the calling function also.
+>>         venus_coredump(core);
+>>   @@ -127,12 +133,39 @@ static void venus_sys_error_handler(struct
+>> work_struct *work)
+>>           failed = true;
+>>       }
+>>   -    ret = venus_boot(core);
+>> +    ret = of_property_read_string_index(core->dev->of_node,
+>> "firmware-name", 0,
+>> +                        &fwpath);
+>> +    if (ret)
+>> +        fwpath = core->res->fwname;
+>> +
+>> +    ret = load_fw(core->dev, fwpath, &core->fw.mem_phys,
+>> &core->fw.mem_size,
+>> +              VENUS_PAS_ID, core->use_tz);
+> 
+> So, we had a nice local 'venus_boot'. Instead we now have a pile of code
+> with non-generic prefixes, etc. If you are introducing helpers, please
+> refrain from inlining of calling functions, etc. Just move the code to your
+> helpers.
+> 
+As mentioned in above comment, the common helpers are written to make the
+code generic. I Will try to make it more clear, working on the same.
+> NAK for the rest of the patch.
+> 
+>>       if (ret && !failed) {
+>> -        err_msg = "boot Venus";
+>> +        err_msg = "load FW";
+>>           failed = true;
+>>       }
+>>   +    if (core->use_tz)
+>> +        ret = auth_reset_fw(VENUS_PAS_ID);
+>> +    else
+>> +        ret = auth_reset_fw_no_tz(core, core->fw.mem_phys,
+>> core->fw.mem_size);
+>> +    if (ret && !failed) {
+>> +        err_msg = "Auth and Reset";
+>> +        failed = true;
+>> +    }
+>> +
+>> +    if (core->use_tz && res->cp_size) {
+>> +        ret = protect_secure_region(res->cp_start,
+>> +                        res->cp_size,
+>> +                        res->cp_nonpixel_start,
+>> +                        res->cp_nonpixel_size,
+>> +                        VENUS_PAS_ID);
+>> +        if (ret && !failed) {
+>> +            err_msg = "Protect CP Mem";
+>> +            failed = true;
+>> +        }
+>> +    }
+>> +
+>>       ret = hfi_core_resume(core, true);
+>>       if (ret && !failed) {
+>>           err_msg = "resume HFI";
+>> @@ -281,7 +314,9 @@ static irqreturn_t venus_isr_thread(int irq, void
+>> *dev_id)
+>>     static int venus_probe(struct platform_device *pdev)
+>>   {
+>> +    const struct venus_resources *res;
+>>       struct device *dev = &pdev->dev;
+>> +    const char *fwpath = NULL;
+>>       struct venus_core *core;
+>>       int ret;
+>>   @@ -362,14 +397,42 @@ static int venus_probe(struct platform_device *pdev)
+>>       if (ret)
+>>           goto err_runtime_disable;
+>>   -    ret = venus_firmware_init(core);
+>> +    core->use_tz = use_tz(core->dev);
+>> +
+>> +    if (!core->use_tz) {
+>> +        ret = init_fw_no_tz(core);
+>> +        if (ret)
+>> +            goto err_of_depopulate;
+>> +    }
+>> +
+>> +    ret = of_property_read_string_index(dev->of_node, "firmware-name", 0,
+>> +                        &fwpath);
+>>       if (ret)
+>> -        goto err_of_depopulate;
+>> +        fwpath = core->res->fwname;
+>>   -    ret = venus_boot(core);
+>> +    ret = load_fw(core->dev, fwpath, &core->fw.mem_phys,
+>> &core->fw.mem_size,
+>> +              VENUS_PAS_ID, core->use_tz);
+>>       if (ret)
+>>           goto err_firmware_deinit;
+>>   +    if (core->use_tz)
+>> +        ret = auth_reset_fw(VENUS_PAS_ID);
+>> +    else
+>> +        ret = auth_reset_fw_no_tz(core, core->fw.mem_phys,
+>> core->fw.mem_size);
+>> +    if (ret)
+>> +        goto err_firmware_deinit;
+>> +
+>> +    res = core->res;
+>> +    if (core->use_tz && res->cp_size) {
+>> +        ret = protect_secure_region(res->cp_start,
+>> +                        res->cp_size,
+>> +                        res->cp_nonpixel_start,
+>> +                        res->cp_nonpixel_size,
+>> +                        VENUS_PAS_ID);
+>> +        if (ret)
+>> +            goto err_firmware_deinit;
+>> +    }
+>> +
+>>       ret = hfi_core_resume(core, true);
+>>       if (ret)
+>>           goto err_venus_shutdown;
+>> @@ -399,9 +462,13 @@ static int venus_probe(struct platform_device *pdev)
+>>   err_dev_unregister:
+>>       v4l2_device_unregister(&core->v4l2_dev);
+>>   err_venus_shutdown:
+>> -    venus_shutdown(core);
+>> +    if (core->use_tz)
+>> +        unload_fw(VENUS_PAS_ID);
+>> +    else
+>> +        unload_fw_no_tz(core);
+>>   err_firmware_deinit:
+>> -    venus_firmware_deinit(core);
+>> +    if (!core->use_tz)
+>> +        deinit_fw_no_tz(core);
+>>   err_of_depopulate:
+>>       of_platform_depopulate(dev);
+>>   err_runtime_disable:
+>> @@ -430,10 +497,15 @@ static void venus_remove(struct platform_device *pdev)
+>>       ret = hfi_core_deinit(core, true);
+>>       WARN_ON(ret);
+>>   -    venus_shutdown(core);
+>> +    if (core->use_tz)
+>> +        unload_fw(VENUS_PAS_ID);
+>> +    else
+>> +        unload_fw_no_tz(core);
+>> +
+>>       of_platform_depopulate(dev);
+>>   -    venus_firmware_deinit(core);
+>> +    if (!core->use_tz)
+>> +        deinit_fw_no_tz(core);
+>>         pm_runtime_put_sync(dev);
+>>       pm_runtime_disable(dev);
+>> @@ -455,8 +527,12 @@ static void venus_core_shutdown(struct
+>> platform_device *pdev)
+>>       struct venus_core *core = platform_get_drvdata(pdev);
+>>         pm_runtime_get_sync(core->dev);
+>> -    venus_shutdown(core);
+>> -    venus_firmware_deinit(core);
+>> +    if (core->use_tz) {
+>> +        unload_fw(VENUS_PAS_ID);
+>> +    } else {
+>> +        unload_fw_no_tz(core);
+>> +        deinit_fw_no_tz(core);
+>> +    }
+>>       pm_runtime_put_sync(core->dev);
+>>   }
+>>   diff --git a/drivers/media/platform/qcom/venus/core.h
+>> b/drivers/media/platform/qcom/vcodec/venus/core.h
+>> similarity index 100%
+>> rename from drivers/media/platform/qcom/venus/core.h
+>> rename to drivers/media/platform/qcom/vcodec/venus/core.h
+>> diff --git a/drivers/media/platform/qcom/venus/dbgfs.c
+>> b/drivers/media/platform/qcom/vcodec/venus/dbgfs.c
+>> similarity index 100%
+>> rename from drivers/media/platform/qcom/venus/dbgfs.c
+>> rename to drivers/media/platform/qcom/vcodec/venus/dbgfs.c
+>> diff --git a/drivers/media/platform/qcom/venus/dbgfs.h
+>> b/drivers/media/platform/qcom/vcodec/venus/dbgfs.h
+>> similarity index 100%
+>> rename from drivers/media/platform/qcom/venus/dbgfs.h
+>> rename to drivers/media/platform/qcom/vcodec/venus/dbgfs.h
+>> diff --git a/drivers/media/platform/qcom/vcodec/venus/firmware_no_tz.c
+>> b/drivers/media/platform/qcom/vcodec/venus/firmware_no_tz.c
+>> new file mode 100644
+>> index 0000000..9dca6e23
+>> --- /dev/null
+>> +++ b/drivers/media/platform/qcom/vcodec/venus/firmware_no_tz.c
+>> @@ -0,0 +1,194 @@
+>> +// SPDX-License-Identifier: GPL-2.0-only
+>> +/*
+>> + * Copyright (C) 2017 Linaro Ltd.
+>> + */
+>> +
+>> +#include <linux/iommu.h>
+>> +#include <linux/of_device.h>
+>> +#include "core.h"
+>> +#include "firmware_no_tz.h"
+>> +#include "hfi_venus_io.h"
+>> +
+>> +#define VENUS_FW_MEM_SIZE        (6 * SZ_1M)
+>> +#define VENUS_FW_START_ADDR        0x0
+>> +
+>> +int init_fw_no_tz(struct venus_core *core)
+>> +{
+>> +    struct platform_device_info info;
+>> +    struct iommu_domain *iommu_dom;
+>> +    struct platform_device *pdev;
+>> +    struct device_node *np;
+>> +    int ret;
+>> +
+>> +    np = of_get_child_by_name(core->dev->of_node, "video-firmware");
+>> +
+>> +    memset(&info, 0, sizeof(info));
+>> +    info.fwnode = &np->fwnode;
+>> +    info.parent = core->dev;
+>> +    info.name = np->name;
+>> +    info.dma_mask = DMA_BIT_MASK(32);
+>> +
+>> +    pdev = platform_device_register_full(&info);
+>> +    if (IS_ERR(pdev)) {
+>> +        of_node_put(np);
+>> +        return PTR_ERR(pdev);
+>> +    }
+>> +
+>> +    pdev->dev.of_node = np;
+>> +
+>> +    ret = of_dma_configure(&pdev->dev, np, true);
+>> +    if (ret) {
+>> +        dev_err(core->dev, "dma configure fail\n");
+>> +        goto err_unregister;
+>> +    }
+>> +
+>> +    core->fw.dev = &pdev->dev;
+>> +
+>> +    iommu_dom = iommu_domain_alloc(&platform_bus_type);
+>> +    if (!iommu_dom) {
+>> +        dev_err(core->fw.dev, "Failed to allocate iommu domain\n");
+>> +        ret = -ENOMEM;
+>> +        goto err_unregister;
+>> +    }
+>> +
+>> +    ret = iommu_attach_device(iommu_dom, core->fw.dev);
+>> +    if (ret) {
+>> +        dev_err(core->fw.dev, "could not attach device\n");
+>> +        goto err_iommu_free;
+>> +    }
+>> +
+>> +    core->fw.iommu_domain = iommu_dom;
+>> +
+>> +    of_node_put(np);
+>> +
+>> +    return 0;
+>> +
+>> +err_iommu_free:
+>> +    iommu_domain_free(iommu_dom);
+>> +err_unregister:
+>> +    platform_device_unregister(pdev);
+>> +    of_node_put(np);
+>> +    return ret;
+>> +}
+>> +
+>> +void deinit_fw_no_tz(struct venus_core *core)
+>> +{
+>> +    struct iommu_domain *iommu;
+>> +
+>> +    if (!core->fw.dev)
+>> +        return;
+>> +
+>> +    iommu = core->fw.iommu_domain;
+>> +
+>> +    iommu_detach_device(iommu, core->fw.dev);
+>> +
+>> +    if (iommu) {
+>> +        iommu_domain_free(iommu);
+>> +        iommu = NULL;
+>> +    }
+>> +
+>> +    platform_device_unregister(to_platform_device(core->fw.dev));
+>> +}
+>> +
+>> +static void reset_cpu_no_tz(struct venus_core *core)
+>> +{
+>> +    u32 fw_size = core->fw.mapped_mem_size;
+>> +    void __iomem *wrapper_base;
+>> +
+>> +    if (IS_IRIS2_1(core))
+>> +        wrapper_base = core->wrapper_tz_base;
+>> +    else
+>> +        wrapper_base = core->wrapper_base;
+>> +
+>> +    writel(0, wrapper_base + WRAPPER_FW_START_ADDR);
+>> +    writel(fw_size, wrapper_base + WRAPPER_FW_END_ADDR);
+>> +    writel(0, wrapper_base + WRAPPER_CPA_START_ADDR);
+>> +    writel(fw_size, wrapper_base + WRAPPER_CPA_END_ADDR);
+>> +    writel(fw_size, wrapper_base + WRAPPER_NONPIX_START_ADDR);
+>> +    writel(fw_size, wrapper_base + WRAPPER_NONPIX_END_ADDR);
+>> +
+>> +    if (IS_IRIS2_1(core)) {
+>> +        /* Bring XTSS out of reset */
+>> +        writel(0, wrapper_base + WRAPPER_TZ_XTSS_SW_RESET);
+>> +    } else {
+>> +        writel(0x0, wrapper_base + WRAPPER_CPU_CGC_DIS);
+>> +        writel(0x0, wrapper_base + WRAPPER_CPU_CLOCK_CONFIG);
+>> +
+>> +        /* Bring ARM9 out of reset */
+>> +        writel(0, wrapper_base + WRAPPER_A9SS_SW_RESET);
+>> +    }
+>> +}
+>> +
+>> +void set_hw_state_no_tz(struct venus_core *core, bool resume)
+>> +{
+>> +    if (resume) {
+>> +        reset_cpu_no_tz(core);
+>> +    } else {
+>> +        if (IS_IRIS2_1(core))
+>> +            writel(WRAPPER_XTSS_SW_RESET_BIT,
+>> +                   core->wrapper_tz_base + WRAPPER_TZ_XTSS_SW_RESET);
+>> +        else
+>> +            writel(WRAPPER_A9SS_SW_RESET_BIT,
+>> +                   core->wrapper_base + WRAPPER_A9SS_SW_RESET);
+>> +    }
+>> +}
+>> +
+>> +int auth_reset_fw_no_tz(struct venus_core *core, phys_addr_t mem_phys,
+>> +            size_t mem_size)
+>> +{
+>> +    struct iommu_domain *iommu;
+>> +    struct device *dev;
+>> +    int ret;
+>> +
+>> +    dev = core->fw.dev;
+>> +    if (!dev)
+>> +        return -EPROBE_DEFER;
+>> +
+>> +    iommu = core->fw.iommu_domain;
+>> +    core->fw.mapped_mem_size = mem_size;
+>> +
+>> +    ret = iommu_map(iommu, VENUS_FW_START_ADDR, mem_phys, mem_size,
+>> +            IOMMU_READ | IOMMU_WRITE | IOMMU_PRIV, GFP_KERNEL);
+>> +    if (ret) {
+>> +        dev_err(dev, "could not map video firmware region\n");
+>> +        return ret;
+>> +    }
+>> +
+>> +    reset_cpu_no_tz(core);
+>> +
+>> +    return 0;
+>> +}
+>> +
+>> +void unload_fw_no_tz(struct venus_core *core)
+>> +{
+>> +    const size_t mapped = core->fw.mapped_mem_size;
+>> +    struct iommu_domain *iommu;
+>> +    size_t unmapped;
+>> +    u32 reg;
+>> +    struct device *dev = core->fw.dev;
+>> +    void __iomem *wrapper_base = core->wrapper_base;
+>> +    void __iomem *wrapper_tz_base = core->wrapper_tz_base;
+>> +
+>> +    if (IS_IRIS2_1(core)) {
+>> +        /* Assert the reset to XTSS */
+>> +        reg = readl(wrapper_tz_base + WRAPPER_TZ_XTSS_SW_RESET);
+>> +        reg |= WRAPPER_XTSS_SW_RESET_BIT;
+>> +        writel(reg, wrapper_tz_base + WRAPPER_TZ_XTSS_SW_RESET);
+>> +    } else {
+>> +        /* Assert the reset to ARM9 */
+>> +        reg = readl(wrapper_base + WRAPPER_A9SS_SW_RESET);
+>> +        reg |= WRAPPER_A9SS_SW_RESET_BIT;
+>> +        writel(reg, wrapper_base + WRAPPER_A9SS_SW_RESET);
+>> +    }
+>> +
+>> +    iommu = core->fw.iommu_domain;
+>> +
+>> +    if (core->fw.mapped_mem_size && iommu) {
+>> +        unmapped = iommu_unmap(iommu, VENUS_FW_START_ADDR, mapped);
+>> +
+>> +        if (unmapped != mapped)
+>> +            dev_err(dev, "failed to unmap firmware\n");
+>> +        else
+>> +            core->fw.mapped_mem_size = 0;
+>> +    }
+>> +}
+>> diff --git a/drivers/media/platform/qcom/vcodec/venus/firmware_no_tz.h
+>> b/drivers/media/platform/qcom/vcodec/venus/firmware_no_tz.h
+>> new file mode 100644
+>> index 0000000..5f008ef
+>> --- /dev/null
+>> +++ b/drivers/media/platform/qcom/vcodec/venus/firmware_no_tz.h
+>> @@ -0,0 +1,19 @@
+>> +/* SPDX-License-Identifier: GPL-2.0-only */
+>> +/*
+>> + * Copyright (C) 2017 Linaro Ltd.
+>> + */
+>> +#ifndef __FIRMWARE_NO_TZ_H__
+>> +#define __FIRMWARE_NO_TZ_H__
+>> +
+>> +struct device;
+>> +
+>> +#define VENUS_PAS_ID    9
+>> +
+>> +int init_fw_no_tz(struct venus_core *core);
+>> +void deinit_fw_no_tz(struct venus_core *core);
+>> +int auth_reset_fw_no_tz(struct venus_core *core, phys_addr_t mem_phys,
+>> +            size_t mem_size);
+>> +void unload_fw_no_tz(struct venus_core *core);
+>> +void set_hw_state_no_tz(struct venus_core *core, bool resume);
+>> +
+>> +#endif
+>> diff --git a/drivers/media/platform/qcom/venus/helpers.c
+>> b/drivers/media/platform/qcom/vcodec/venus/helpers.c
+>> similarity index 100%
+>> rename from drivers/media/platform/qcom/venus/helpers.c
+>> rename to drivers/media/platform/qcom/vcodec/venus/helpers.c
+>> diff --git a/drivers/media/platform/qcom/venus/helpers.h
+>> b/drivers/media/platform/qcom/vcodec/venus/helpers.h
+>> similarity index 100%
+>> rename from drivers/media/platform/qcom/venus/helpers.h
+>> rename to drivers/media/platform/qcom/vcodec/venus/helpers.h
+>> diff --git a/drivers/media/platform/qcom/venus/hfi.c
+>> b/drivers/media/platform/qcom/vcodec/venus/hfi.c
+>> similarity index 100%
+>> rename from drivers/media/platform/qcom/venus/hfi.c
+>> rename to drivers/media/platform/qcom/vcodec/venus/hfi.c
+>> diff --git a/drivers/media/platform/qcom/venus/hfi.h
+>> b/drivers/media/platform/qcom/vcodec/venus/hfi.h
+>> similarity index 100%
+>> rename from drivers/media/platform/qcom/venus/hfi.h
+>> rename to drivers/media/platform/qcom/vcodec/venus/hfi.h
+>> diff --git a/drivers/media/platform/qcom/venus/hfi_cmds.c
+>> b/drivers/media/platform/qcom/vcodec/venus/hfi_cmds.c
+>> similarity index 100%
+>> rename from drivers/media/platform/qcom/venus/hfi_cmds.c
+>> rename to drivers/media/platform/qcom/vcodec/venus/hfi_cmds.c
+>> diff --git a/drivers/media/platform/qcom/venus/hfi_cmds.h
+>> b/drivers/media/platform/qcom/vcodec/venus/hfi_cmds.h
+>> similarity index 100%
+>> rename from drivers/media/platform/qcom/venus/hfi_cmds.h
+>> rename to drivers/media/platform/qcom/vcodec/venus/hfi_cmds.h
+>> diff --git a/drivers/media/platform/qcom/venus/hfi_helper.h
+>> b/drivers/media/platform/qcom/vcodec/venus/hfi_helper.h
+>> similarity index 100%
+>> rename from drivers/media/platform/qcom/venus/hfi_helper.h
+>> rename to drivers/media/platform/qcom/vcodec/venus/hfi_helper.h
+>> diff --git a/drivers/media/platform/qcom/venus/hfi_msgs.c
+>> b/drivers/media/platform/qcom/vcodec/venus/hfi_msgs.c
+>> similarity index 100%
+>> rename from drivers/media/platform/qcom/venus/hfi_msgs.c
+>> rename to drivers/media/platform/qcom/vcodec/venus/hfi_msgs.c
+>> diff --git a/drivers/media/platform/qcom/venus/hfi_msgs.h
+>> b/drivers/media/platform/qcom/vcodec/venus/hfi_msgs.h
+>> similarity index 100%
+>> rename from drivers/media/platform/qcom/venus/hfi_msgs.h
+>> rename to drivers/media/platform/qcom/vcodec/venus/hfi_msgs.h
+>> diff --git a/drivers/media/platform/qcom/venus/hfi_parser.c
+>> b/drivers/media/platform/qcom/vcodec/venus/hfi_parser.c
+>> similarity index 100%
+>> rename from drivers/media/platform/qcom/venus/hfi_parser.c
+>> rename to drivers/media/platform/qcom/vcodec/venus/hfi_parser.c
+>> diff --git a/drivers/media/platform/qcom/venus/hfi_parser.h
+>> b/drivers/media/platform/qcom/vcodec/venus/hfi_parser.h
+>> similarity index 100%
+>> rename from drivers/media/platform/qcom/venus/hfi_parser.h
+>> rename to drivers/media/platform/qcom/vcodec/venus/hfi_parser.h
+>> diff --git a/drivers/media/platform/qcom/venus/hfi_plat_bufs.h
+>> b/drivers/media/platform/qcom/vcodec/venus/hfi_plat_bufs.h
+>> similarity index 100%
+>> rename from drivers/media/platform/qcom/venus/hfi_plat_bufs.h
+>> rename to drivers/media/platform/qcom/vcodec/venus/hfi_plat_bufs.h
+>> diff --git a/drivers/media/platform/qcom/venus/hfi_plat_bufs_v6.c
+>> b/drivers/media/platform/qcom/vcodec/venus/hfi_plat_bufs_v6.c
+>> similarity index 100%
+>> rename from drivers/media/platform/qcom/venus/hfi_plat_bufs_v6.c
+>> rename to drivers/media/platform/qcom/vcodec/venus/hfi_plat_bufs_v6.c
+>> diff --git a/drivers/media/platform/qcom/venus/hfi_platform.c
+>> b/drivers/media/platform/qcom/vcodec/venus/hfi_platform.c
+>> similarity index 100%
+>> rename from drivers/media/platform/qcom/venus/hfi_platform.c
+>> rename to drivers/media/platform/qcom/vcodec/venus/hfi_platform.c
+>> diff --git a/drivers/media/platform/qcom/venus/hfi_platform.h
+>> b/drivers/media/platform/qcom/vcodec/venus/hfi_platform.h
+>> similarity index 100%
+>> rename from drivers/media/platform/qcom/venus/hfi_platform.h
+>> rename to drivers/media/platform/qcom/vcodec/venus/hfi_platform.h
+>> diff --git a/drivers/media/platform/qcom/venus/hfi_platform_v4.c
+>> b/drivers/media/platform/qcom/vcodec/venus/hfi_platform_v4.c
+>> similarity index 100%
+>> rename from drivers/media/platform/qcom/venus/hfi_platform_v4.c
+>> rename to drivers/media/platform/qcom/vcodec/venus/hfi_platform_v4.c
+>> diff --git a/drivers/media/platform/qcom/venus/hfi_platform_v6.c
+>> b/drivers/media/platform/qcom/vcodec/venus/hfi_platform_v6.c
+>> similarity index 100%
+>> rename from drivers/media/platform/qcom/venus/hfi_platform_v6.c
+>> rename to drivers/media/platform/qcom/vcodec/venus/hfi_platform_v6.c
+>> diff --git a/drivers/media/platform/qcom/venus/hfi_venus.c
+>> b/drivers/media/platform/qcom/vcodec/venus/hfi_venus.c
+>> similarity index 99%
+>> rename from drivers/media/platform/qcom/venus/hfi_venus.c
+>> rename to drivers/media/platform/qcom/vcodec/venus/hfi_venus.c
+>> index f9437b6..5a68db9 100644
+>> --- a/drivers/media/platform/qcom/venus/hfi_venus.c
+>> +++ b/drivers/media/platform/qcom/vcodec/venus/hfi_venus.c
+>> @@ -13,11 +13,12 @@
+>>   #include <linux/slab.h>
+>>     #include "core.h"
+>> +#include "../firmware.h"
+>>   #include "hfi_cmds.h"
+>>   #include "hfi_msgs.h"
+>>   #include "hfi_venus.h"
+>>   #include "hfi_venus_io.h"
+>> -#include "firmware.h"
+>> +#include "firmware_no_tz.h"
+>>     #define HFI_MASK_QHDR_TX_TYPE        0xff000000
+>>   #define HFI_MASK_QHDR_RX_TYPE        0x00ff0000
+>> @@ -635,7 +636,10 @@ static int venus_power_off(struct venus_hfi_device
+>> *hdev)
+>>       if (!hdev->power_enabled)
+>>           return 0;
+>>   -    ret = venus_set_hw_state_suspend(hdev->core);
+>> +    if (hdev->core->use_tz)
+>> +        ret = set_hw_state(false);
+>> +    else
+>> +        set_hw_state_no_tz(hdev->core, false);
+>>       if (ret)
+>>           return ret;
+>>   @@ -655,7 +659,13 @@ static int venus_power_on(struct venus_hfi_device
+>> *hdev)
+>>       if (hdev->power_enabled)
+>>           return 0;
+>>   -    ret = venus_set_hw_state_resume(hdev->core);
+>> +    if (hdev->core->use_tz) {
+>> +        ret = set_hw_state(true);
+>> +        if (ret == -EINVAL)
+>> +            ret = 0;
+>> +    } else {
+>> +        set_hw_state_no_tz(hdev->core, true);
+>> +    }
+>>       if (ret)
+>>           goto err;
+>>   @@ -668,7 +678,10 @@ static int venus_power_on(struct venus_hfi_device
+>> *hdev)
+>>       return 0;
+>>     err_suspend:
+>> -    venus_set_hw_state_suspend(hdev->core);
+>> +    if (hdev->core->use_tz)
+>> +        set_hw_state(false);
+>> +    else
+>> +        set_hw_state_no_tz(hdev->core, false);
+>>   err:
+>>       hdev->power_enabled = false;
+>>       return ret;
+>> diff --git a/drivers/media/platform/qcom/venus/hfi_venus.h
+>> b/drivers/media/platform/qcom/vcodec/venus/hfi_venus.h
+>> similarity index 100%
+>> rename from drivers/media/platform/qcom/venus/hfi_venus.h
+>> rename to drivers/media/platform/qcom/vcodec/venus/hfi_venus.h
+>> diff --git a/drivers/media/platform/qcom/venus/hfi_venus_io.h
+>> b/drivers/media/platform/qcom/vcodec/venus/hfi_venus_io.h
+>> similarity index 100%
+>> rename from drivers/media/platform/qcom/venus/hfi_venus_io.h
+>> rename to drivers/media/platform/qcom/vcodec/venus/hfi_venus_io.h
+>> diff --git a/drivers/media/platform/qcom/venus/pm_helpers.c
+>> b/drivers/media/platform/qcom/vcodec/venus/pm_helpers.c
+>> similarity index 100%
+>> rename from drivers/media/platform/qcom/venus/pm_helpers.c
+>> rename to drivers/media/platform/qcom/vcodec/venus/pm_helpers.c
+>> diff --git a/drivers/media/platform/qcom/venus/pm_helpers.h
+>> b/drivers/media/platform/qcom/vcodec/venus/pm_helpers.h
+>> similarity index 100%
+>> rename from drivers/media/platform/qcom/venus/pm_helpers.h
+>> rename to drivers/media/platform/qcom/vcodec/venus/pm_helpers.h
+>> diff --git a/drivers/media/platform/qcom/venus/vdec.c
+>> b/drivers/media/platform/qcom/vcodec/venus/vdec.c
+>> similarity index 100%
+>> rename from drivers/media/platform/qcom/venus/vdec.c
+>> rename to drivers/media/platform/qcom/vcodec/venus/vdec.c
+>> diff --git a/drivers/media/platform/qcom/venus/vdec.h
+>> b/drivers/media/platform/qcom/vcodec/venus/vdec.h
+>> similarity index 100%
+>> rename from drivers/media/platform/qcom/venus/vdec.h
+>> rename to drivers/media/platform/qcom/vcodec/venus/vdec.h
+>> diff --git a/drivers/media/platform/qcom/venus/vdec_ctrls.c
+>> b/drivers/media/platform/qcom/vcodec/venus/vdec_ctrls.c
+>> similarity index 100%
+>> rename from drivers/media/platform/qcom/venus/vdec_ctrls.c
+>> rename to drivers/media/platform/qcom/vcodec/venus/vdec_ctrls.c
+>> diff --git a/drivers/media/platform/qcom/venus/venc.c
+>> b/drivers/media/platform/qcom/vcodec/venus/venc.c
+>> similarity index 100%
+>> rename from drivers/media/platform/qcom/venus/venc.c
+>> rename to drivers/media/platform/qcom/vcodec/venus/venc.c
+>> diff --git a/drivers/media/platform/qcom/venus/venc.h
+>> b/drivers/media/platform/qcom/vcodec/venus/venc.h
+>> similarity index 100%
+>> rename from drivers/media/platform/qcom/venus/venc.h
+>> rename to drivers/media/platform/qcom/vcodec/venus/venc.h
+>> diff --git a/drivers/media/platform/qcom/venus/venc_ctrls.c
+>> b/drivers/media/platform/qcom/vcodec/venus/venc_ctrls.c
+>> similarity index 100%
+>> rename from drivers/media/platform/qcom/venus/venc_ctrls.c
+>> rename to drivers/media/platform/qcom/vcodec/venus/venc_ctrls.c
+>> diff --git a/drivers/media/platform/qcom/venus/firmware.c
+>> b/drivers/media/platform/qcom/venus/firmware.c
+>> deleted file mode 100644
+>> index fe7da2b..0000000
+>> --- a/drivers/media/platform/qcom/venus/firmware.c
+>> +++ /dev/null
+>> @@ -1,363 +0,0 @@
+>> -// SPDX-License-Identifier: GPL-2.0-only
+>> -/*
+>> - * Copyright (C) 2017 Linaro Ltd.
+>> - */
+>> -
+>> -#include <linux/device.h>
+>> -#include <linux/firmware.h>
+>> -#include <linux/kernel.h>
+>> -#include <linux/iommu.h>
+>> -#include <linux/io.h>
+>> -#include <linux/of.h>
+>> -#include <linux/of_address.h>
+>> -#include <linux/of_reserved_mem.h>
+>> -#include <linux/platform_device.h>
+>> -#include <linux/of_device.h>
+>> -#include <linux/firmware/qcom/qcom_scm.h>
+>> -#include <linux/sizes.h>
+>> -#include <linux/soc/qcom/mdt_loader.h>
+>> -
+>> -#include "core.h"
+>> -#include "firmware.h"
+>> -#include "hfi_venus_io.h"
+>> -
+>> -#define VENUS_PAS_ID            9
+>> -#define VENUS_FW_MEM_SIZE        (6 * SZ_1M)
+>> -#define VENUS_FW_START_ADDR        0x0
+>> -
+>> -static void venus_reset_cpu(struct venus_core *core)
+>> -{
+>> -    u32 fw_size = core->fw.mapped_mem_size;
+>> -    void __iomem *wrapper_base;
+>> -
+>> -    if (IS_IRIS2_1(core))
+>> -        wrapper_base = core->wrapper_tz_base;
+>> -    else
+>> -        wrapper_base = core->wrapper_base;
+>> -
+>> -    writel(0, wrapper_base + WRAPPER_FW_START_ADDR);
+>> -    writel(fw_size, wrapper_base + WRAPPER_FW_END_ADDR);
+>> -    writel(0, wrapper_base + WRAPPER_CPA_START_ADDR);
+>> -    writel(fw_size, wrapper_base + WRAPPER_CPA_END_ADDR);
+>> -    writel(fw_size, wrapper_base + WRAPPER_NONPIX_START_ADDR);
+>> -    writel(fw_size, wrapper_base + WRAPPER_NONPIX_END_ADDR);
+>> -
+>> -    if (IS_IRIS2_1(core)) {
+>> -        /* Bring XTSS out of reset */
+>> -        writel(0, wrapper_base + WRAPPER_TZ_XTSS_SW_RESET);
+>> -    } else {
+>> -        writel(0x0, wrapper_base + WRAPPER_CPU_CGC_DIS);
+>> -        writel(0x0, wrapper_base + WRAPPER_CPU_CLOCK_CONFIG);
+>> -
+>> -        /* Bring ARM9 out of reset */
+>> -        writel(0, wrapper_base + WRAPPER_A9SS_SW_RESET);
+>> -    }
+>> -}
+>> -
+>> -int venus_set_hw_state(struct venus_core *core, bool resume)
+>> -{
+>> -    int ret;
+>> -
+>> -    if (core->use_tz) {
+>> -        ret = qcom_scm_set_remote_state(resume, 0);
+>> -        if (resume && ret == -EINVAL)
+>> -            ret = 0;
+>> -        return ret;
+>> -    }
+>> -
+>> -    if (resume) {
+>> -        venus_reset_cpu(core);
+>> -    } else {
+>> -        if (IS_IRIS2_1(core))
+>> -            writel(WRAPPER_XTSS_SW_RESET_BIT,
+>> -                   core->wrapper_tz_base + WRAPPER_TZ_XTSS_SW_RESET);
+>> -        else
+>> -            writel(WRAPPER_A9SS_SW_RESET_BIT,
+>> -                   core->wrapper_base + WRAPPER_A9SS_SW_RESET);
+>> -    }
+>> -
+>> -    return 0;
+>> -}
+>> -
+>> -static int venus_load_fw(struct venus_core *core, const char *fwname,
+>> -             phys_addr_t *mem_phys, size_t *mem_size)
+>> -{
+>> -    const struct firmware *mdt;
+>> -    struct reserved_mem *rmem;
+>> -    struct device_node *node;
+>> -    struct device *dev;
+>> -    ssize_t fw_size;
+>> -    void *mem_va;
+>> -    int ret;
+>> -
+>> -    *mem_phys = 0;
+>> -    *mem_size = 0;
+>> -
+>> -    dev = core->dev;
+>> -    node = of_parse_phandle(dev->of_node, "memory-region", 0);
+>> -    if (!node) {
+>> -        dev_err(dev, "no memory-region specified\n");
+>> -        return -EINVAL;
+>> -    }
+>> -
+>> -    rmem = of_reserved_mem_lookup(node);
+>> -    of_node_put(node);
+>> -    if (!rmem) {
+>> -        dev_err(dev, "failed to lookup reserved memory-region\n");
+>> -        return -EINVAL;
+>> -    }
+>> -
+>> -    ret = request_firmware(&mdt, fwname, dev);
+>> -    if (ret < 0)
+>> -        return ret;
+>> -
+>> -    fw_size = qcom_mdt_get_size(mdt);
+>> -    if (fw_size < 0) {
+>> -        ret = fw_size;
+>> -        goto err_release_fw;
+>> -    }
+>> -
+>> -    *mem_phys = rmem->base;
+>> -    *mem_size = rmem->size;
+>> -
+>> -    if (*mem_size < fw_size || fw_size > VENUS_FW_MEM_SIZE) {
+>> -        ret = -EINVAL;
+>> -        goto err_release_fw;
+>> -    }
+>> -
+>> -    mem_va = memremap(*mem_phys, *mem_size, MEMREMAP_WC);
+>> -    if (!mem_va) {
+>> -        dev_err(dev, "unable to map memory region %pa size %#zx\n",
+>> mem_phys, *mem_size);
+>> -        ret = -ENOMEM;
+>> -        goto err_release_fw;
+>> -    }
+>> -
+>> -    if (core->use_tz)
+>> -        ret = qcom_mdt_load(dev, mdt, fwname, VENUS_PAS_ID,
+>> -                    mem_va, *mem_phys, *mem_size, NULL);
+>> -    else
+>> -        ret = qcom_mdt_load_no_init(dev, mdt, fwname, VENUS_PAS_ID,
+>> -                        mem_va, *mem_phys, *mem_size, NULL);
+>> -
+>> -    memunmap(mem_va);
+>> -err_release_fw:
+>> -    release_firmware(mdt);
+>> -    return ret;
+>> -}
+>> -
+>> -static int venus_boot_no_tz(struct venus_core *core, phys_addr_t mem_phys,
+>> -                size_t mem_size)
+>> -{
+>> -    struct iommu_domain *iommu;
+>> -    struct device *dev;
+>> -    int ret;
+>> -
+>> -    dev = core->fw.dev;
+>> -    if (!dev)
+>> -        return -EPROBE_DEFER;
+>> -
+>> -    iommu = core->fw.iommu_domain;
+>> -    core->fw.mapped_mem_size = mem_size;
+>> -
+>> -    ret = iommu_map(iommu, VENUS_FW_START_ADDR, mem_phys, mem_size,
+>> -            IOMMU_READ | IOMMU_WRITE | IOMMU_PRIV, GFP_KERNEL);
+>> -    if (ret) {
+>> -        dev_err(dev, "could not map video firmware region\n");
+>> -        return ret;
+>> -    }
+>> -
+>> -    venus_reset_cpu(core);
+>> -
+>> -    return 0;
+>> -}
+>> -
+>> -static int venus_shutdown_no_tz(struct venus_core *core)
+>> -{
+>> -    const size_t mapped = core->fw.mapped_mem_size;
+>> -    struct iommu_domain *iommu;
+>> -    size_t unmapped;
+>> -    u32 reg;
+>> -    struct device *dev = core->fw.dev;
+>> -    void __iomem *wrapper_base = core->wrapper_base;
+>> -    void __iomem *wrapper_tz_base = core->wrapper_tz_base;
+>> -
+>> -    if (IS_IRIS2_1(core)) {
+>> -        /* Assert the reset to XTSS */
+>> -        reg = readl(wrapper_tz_base + WRAPPER_TZ_XTSS_SW_RESET);
+>> -        reg |= WRAPPER_XTSS_SW_RESET_BIT;
+>> -        writel(reg, wrapper_tz_base + WRAPPER_TZ_XTSS_SW_RESET);
+>> -    } else {
+>> -        /* Assert the reset to ARM9 */
+>> -        reg = readl(wrapper_base + WRAPPER_A9SS_SW_RESET);
+>> -        reg |= WRAPPER_A9SS_SW_RESET_BIT;
+>> -        writel(reg, wrapper_base + WRAPPER_A9SS_SW_RESET);
+>> -    }
+>> -
+>> -    iommu = core->fw.iommu_domain;
+>> -
+>> -    if (core->fw.mapped_mem_size && iommu) {
+>> -        unmapped = iommu_unmap(iommu, VENUS_FW_START_ADDR, mapped);
+>> -
+>> -        if (unmapped != mapped)
+>> -            dev_err(dev, "failed to unmap firmware\n");
+>> -        else
+>> -            core->fw.mapped_mem_size = 0;
+>> -    }
+>> -
+>> -    return 0;
+>> -}
+>> -
+>> -int venus_boot(struct venus_core *core)
+>> -{
+>> -    struct device *dev = core->dev;
+>> -    const struct venus_resources *res = core->res;
+>> -    const char *fwpath = NULL;
+>> -    phys_addr_t mem_phys;
+>> -    size_t mem_size;
+>> -    int ret;
+>> -
+>> -    if (!IS_ENABLED(CONFIG_QCOM_MDT_LOADER) ||
+>> -        (core->use_tz && !qcom_scm_is_available()))
+>> -        return -EPROBE_DEFER;
+>> -
+>> -    ret = of_property_read_string_index(dev->of_node, "firmware-name", 0,
+>> -                        &fwpath);
+>> -    if (ret)
+>> -        fwpath = core->res->fwname;
+>> -
+>> -    ret = venus_load_fw(core, fwpath, &mem_phys, &mem_size);
+>> -    if (ret) {
+>> -        dev_err(dev, "fail to load video firmware\n");
+>> -        return -EINVAL;
+>> -    }
+>> -
+>> -    core->fw.mem_size = mem_size;
+>> -    core->fw.mem_phys = mem_phys;
+>> -
+>> -    if (core->use_tz)
+>> -        ret = qcom_scm_pas_auth_and_reset(VENUS_PAS_ID);
+>> -    else
+>> -        ret = venus_boot_no_tz(core, mem_phys, mem_size);
+>> -
+>> -    if (ret)
+>> -        return ret;
+>> -
+>> -    if (core->use_tz && res->cp_size) {
+>> -        /*
+>> -         * Clues for porting using downstream data:
+>> -         * cp_start = 0
+>> -         * cp_size = venus_ns/virtual-addr-pool[0] - yes, address and
+>> not size!
+>> -         *   This works, as the non-secure context bank is placed
+>> -         *   contiguously right after the Content Protection region.
+>> -         *
+>> -         * cp_nonpixel_start = venus_sec_non_pixel/virtual-addr-pool[0]
+>> -         * cp_nonpixel_size = venus_sec_non_pixel/virtual-addr-pool[1]
+>> -         */
+>> -        ret = qcom_scm_mem_protect_video_var(res->cp_start,
+>> -                             res->cp_size,
+>> -                             res->cp_nonpixel_start,
+>> -                             res->cp_nonpixel_size);
+>> -        if (ret) {
+>> -            qcom_scm_pas_shutdown(VENUS_PAS_ID);
+>> -            dev_err(dev, "set virtual address ranges fail (%d)\n",
+>> -                ret);
+>> -            return ret;
+>> -        }
+>> -    }
+>> -
+>> -    return 0;
+>> -}
+>> -
+>> -int venus_shutdown(struct venus_core *core)
+>> -{
+>> -    int ret;
+>> -
+>> -    if (core->use_tz)
+>> -        ret = qcom_scm_pas_shutdown(VENUS_PAS_ID);
+>> -    else
+>> -        ret = venus_shutdown_no_tz(core);
+>> -
+>> -    return ret;
+>> -}
+>> -
+>> -int venus_firmware_init(struct venus_core *core)
+>> -{
+>> -    struct platform_device_info info;
+>> -    struct iommu_domain *iommu_dom;
+>> -    struct platform_device *pdev;
+>> -    struct device_node *np;
+>> -    int ret;
+>> -
+>> -    np = of_get_child_by_name(core->dev->of_node, "video-firmware");
+>> -    if (!np) {
+>> -        core->use_tz = true;
+>> -        return 0;
+>> -    }
+>> -
+>> -    memset(&info, 0, sizeof(info));
+>> -    info.fwnode = &np->fwnode;
+>> -    info.parent = core->dev;
+>> -    info.name = np->name;
+>> -    info.dma_mask = DMA_BIT_MASK(32);
+>> -
+>> -    pdev = platform_device_register_full(&info);
+>> -    if (IS_ERR(pdev)) {
+>> -        of_node_put(np);
+>> -        return PTR_ERR(pdev);
+>> -    }
+>> -
+>> -    pdev->dev.of_node = np;
+>> -
+>> -    ret = of_dma_configure(&pdev->dev, np, true);
+>> -    if (ret) {
+>> -        dev_err(core->dev, "dma configure fail\n");
+>> -        goto err_unregister;
+>> -    }
+>> -
+>> -    core->fw.dev = &pdev->dev;
+>> -
+>> -    iommu_dom = iommu_domain_alloc(&platform_bus_type);
+>> -    if (!iommu_dom) {
+>> -        dev_err(core->fw.dev, "Failed to allocate iommu domain\n");
+>> -        ret = -ENOMEM;
+>> -        goto err_unregister;
+>> -    }
+>> -
+>> -    ret = iommu_attach_device(iommu_dom, core->fw.dev);
+>> -    if (ret) {
+>> -        dev_err(core->fw.dev, "could not attach device\n");
+>> -        goto err_iommu_free;
+>> -    }
+>> -
+>> -    core->fw.iommu_domain = iommu_dom;
+>> -
+>> -    of_node_put(np);
+>> -
+>> -    return 0;
+>> -
+>> -err_iommu_free:
+>> -    iommu_domain_free(iommu_dom);
+>> -err_unregister:
+>> -    platform_device_unregister(pdev);
+>> -    of_node_put(np);
+>> -    return ret;
+>> -}
+>> -
+>> -void venus_firmware_deinit(struct venus_core *core)
+>> -{
+>> -    struct iommu_domain *iommu;
+>> -
+>> -    if (!core->fw.dev)
+>> -        return;
+>> -
+>> -    iommu = core->fw.iommu_domain;
+>> -
+>> -    iommu_detach_device(iommu, core->fw.dev);
+>> -
+>> -    if (core->fw.iommu_domain) {
+>> -        iommu_domain_free(iommu);
+>> -        core->fw.iommu_domain = NULL;
+>> -    }
+>> -
+>> -    platform_device_unregister(to_platform_device(core->fw.dev));
+>> -}
+>> diff --git a/drivers/media/platform/qcom/venus/firmware.h
+>> b/drivers/media/platform/qcom/venus/firmware.h
+>> deleted file mode 100644
+>> index aaccd84..0000000
+>> --- a/drivers/media/platform/qcom/venus/firmware.h
+>> +++ /dev/null
+>> @@ -1,26 +0,0 @@
+>> -/* SPDX-License-Identifier: GPL-2.0-only */
+>> -/*
+>> - * Copyright (C) 2017 Linaro Ltd.
+>> - */
+>> -#ifndef __VENUS_FIRMWARE_H__
+>> -#define __VENUS_FIRMWARE_H__
+>> -
+>> -struct device;
+>> -
+>> -int venus_firmware_init(struct venus_core *core);
+>> -void venus_firmware_deinit(struct venus_core *core);
+>> -int venus_boot(struct venus_core *core);
+>> -int venus_shutdown(struct venus_core *core);
+>> -int venus_set_hw_state(struct venus_core *core, bool suspend);
+>> -
+>> -static inline int venus_set_hw_state_suspend(struct venus_core *core)
+>> -{
+>> -    return venus_set_hw_state(core, false);
+>> -}
+>> -
+>> -static inline int venus_set_hw_state_resume(struct venus_core *core)
+>> -{
+>> -    return venus_set_hw_state(core, true);
+>> -}
+>> -
+>> -#endif
+> 
 
