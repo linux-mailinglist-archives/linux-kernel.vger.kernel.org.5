@@ -1,57 +1,47 @@
-Return-Path: <linux-kernel+bounces-6547-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6548-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 065FB819A34
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 09:12:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA3D3819A38
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 09:14:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 386101C222F2
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 08:12:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 86C07286AA8
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 08:14:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C11B718E3F;
-	Wed, 20 Dec 2023 08:12:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="unId8uUO"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EF8B19BA9;
+	Wed, 20 Dec 2023 08:14:12 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from bmailout1.hostsharing.net (bmailout1.hostsharing.net [83.223.95.100])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 159661CA8E;
-	Wed, 20 Dec 2023 08:12:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A21BC433C7;
-	Wed, 20 Dec 2023 08:12:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703059962;
-	bh=BHRiKQEvoPIgw/Ei788HQtUg9h30YDWszt+pYb2kLqk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=unId8uUOjR9Qvz0tGmgTzCv8tRcQNsP1sTPJ6jq8l85UCjPAkC59QC1JqJNyf5xEr
-	 FWoJceorXNGzjFDeGhSoMdJEFoL9YddSutqAMNTobs7zH7Q/RR9aE2fhCQQL+rl/ag
-	 IUMvq7dO7VLLHLXoE0568+k3Uc/1XW8BLmNpMK2j9c7VR3EM/WJEuyK4XiFht0O7d+
-	 yDGLhwoeBhinZG+5c6IWIBW44YPfVFp9bP8VwlKkXq3VnB9SgvVr5KuBIiap02Sicy
-	 egd36i3OHruOWZlTK3bBgSVKFf8IU1Ew0kLrq9LDCnCTvWPyXiO7dK2Eix9juwvYVD
-	 nn+xTYZKR/cig==
-Received: from johan by xi.lan with local (Exim 4.96.2)
-	(envelope-from <johan@kernel.org>)
-	id 1rFrh2-0000pH-1C;
-	Wed, 20 Dec 2023 09:12:40 +0100
-Date: Wed, 20 Dec 2023 09:12:40 +0100
-From: Johan Hovold <johan@kernel.org>
-To: Marijn Suijten <marijn.suijten@somainline.org>
-Cc: phone-devel@vger.kernel.org, Pavel Machek <pavel@ucw.cz>,
-	Bjorn Andersson <bjorn.andersson@linaro.org>,
-	~postmarketos/upstreaming@lists.sr.ht,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>,
-	Konrad Dybcio <konrad.dybcio@somainline.org>,
-	Martin Botka <martin.botka@somainline.org>,
-	Jami Kettunen <jami.kettunen@somainline.org>,
-	linux-arm-msm@vger.kernel.org, linux-leds@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [RESEND PATCH] leds: ledtrig-pattern: Use last_repeat when
- applying hw pattern
-Message-ID: <ZYKh-F-1psKpm1JA@hovoldconsulting.com>
-References: <20220719213034.1664056-1-marijn.suijten@somainline.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8CD118E02;
+	Wed, 20 Dec 2023 08:14:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=h08.hostsharing.net
+Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
+	 client-signature RSA-PSS (4096 bits) client-digest SHA256)
+	(Client CN "*.hostsharing.net", Issuer "RapidSSL TLS RSA CA G1" (verified OK))
+	by bmailout1.hostsharing.net (Postfix) with ESMTPS id 218AE300002D8;
+	Wed, 20 Dec 2023 09:14:02 +0100 (CET)
+Received: by h08.hostsharing.net (Postfix, from userid 100393)
+	id 10C0DAEC0; Wed, 20 Dec 2023 09:14:02 +0100 (CET)
+Date: Wed, 20 Dec 2023 09:14:02 +0100
+From: Lukas Wunner <lukas@wunner.de>
+To: rentao.bupt@gmail.com
+Cc: Rob Herring <robh+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
+	Andrew Jeffery <andrew@aj.id.au>, devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-aspeed@lists.ozlabs.org,
+	linux-kernel@vger.kernel.org, openbmc@lists.ozlabs.org,
+	taoren@fb.com
+Subject: Re: [PATCH v2 3/6] ARM: dts: aspeed: Common dtsi for Facebook
+ AST2600 Network BMCs
+Message-ID: <20231220081402.GA3831@wunner.de>
+References: <20210805222818.8391-1-rentao.bupt@gmail.com>
+ <20210805222818.8391-4-rentao.bupt@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -60,25 +50,25 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220719213034.1664056-1-marijn.suijten@somainline.org>
+In-Reply-To: <20210805222818.8391-4-rentao.bupt@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-On Tue, Jul 19, 2022 at 11:30:33PM +0200, Marijn Suijten wrote:
-> `last_repeat` holds the actual value requested by the user whereas
-> `repeat` is a software iteration variable that is unused in hardware
-> patterns.
-> 
-> Furthermore `last_repeat` is the field returned to the user when reading
-> the `repeat` sysfs property.  This field is initialized to `-1` which is
-> - together with `1` - the only valid value in the upcoming Qualcomm LPG
-> driver.  It is thus unexpected when `repeat` with an initialization
-> value of `0` is passed into the the driver, when the sysfs property
-> clearly presents a value of `-1`.
-> 
-> Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
-> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Tested-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+On Thu, Aug 05, 2021 at 03:28:15PM -0700, rentao.bupt@gmail.com wrote:
+> This common descirption is included by all Facebook AST2600 Network BMC
+> platforms to minimize duplicated device entries across Facebook Network
+> BMC device trees.
+[...]
+> --- /dev/null
+> +++ b/arch/arm/boot/dts/ast2600-facebook-netbmc-common.dtsi
+[...]
+> +		tpmdev@0 {
+> +			compatible = "tcg,tpm_tis-spi";
 
-Looks correct to me:
+What's the chip used on this board?  Going forward, the DT schema for TPMs
+requires the exact chip name in addition to the generic "tcg,tpm_tis-spi".
 
-Reviewed-by: Johan Hovold <johan+linaro@kernel.org>
+
+> +			spi-max-frequency = <33000000>;
+> +			reg = <0>;
+> +		};
 
