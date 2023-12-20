@@ -1,59 +1,59 @@
-Return-Path: <linux-kernel+bounces-7437-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7438-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A2F781A7E9
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 22:17:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9B5C81A7EA
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 22:17:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 62B581C22BE0
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 21:17:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2F690286953
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 21:17:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 369C14A999;
-	Wed, 20 Dec 2023 21:17:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3D754AF6B;
+	Wed, 20 Dec 2023 21:17:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="OyV7ZQac"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Rm/li2ew"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A12C498AE
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 21:17:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBDA34A9B3
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 21:17:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1d3fc184b6dso1202545ad.2
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 13:17:09 -0800 (PST)
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1d3aa0321b5so1291455ad.2
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 13:17:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1703107028; x=1703711828; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1703107031; x=1703711831; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Pmb1hFIok+9eMKNNtq9Gk+/VDYxh0leTwTc9coy3jGk=;
-        b=OyV7ZQacnPHW04yoE+2yXbC1IJY3TUmM2UOiubF3/YOK6NtOyys99/puF1N5+Lo6L8
-         FVgDqJSlH78X5mJS7H4taC0IFH35E68V3+fz6/C7SggokjrkGG7RCvyhsLLTHy4A6jYW
-         rI5/fjae+yg7LRiPRSNzMWLyeLUNuvjgaozZQ=
+        bh=nqMAcmRjFD5lYv9eaz6Li/2mY5/nRWhBk3z0a51JdoE=;
+        b=Rm/li2ewUQ2jK1rUJEjKu5kv4mMWZiKi+s0VsGzL71uSuDmezamhntuxbQUmlSoHCQ
+         q6kPeX2kxU8+X4UF1/rg9Hi3nUpMPDGzMk1lfG5D8h1BIXxw17Uu166+p5aXFxkBQfmm
+         ktpEbQicnMv5ns1or4ClMoLB/uaGq3beS9jcE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703107028; x=1703711828;
+        d=1e100.net; s=20230601; t=1703107031; x=1703711831;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Pmb1hFIok+9eMKNNtq9Gk+/VDYxh0leTwTc9coy3jGk=;
-        b=p9b4DmEsshz35mLue9a3FE2dUPzMBKlLd6uAnoQ1WQOkVzMSgbtE2wgL2LOF9ajEdo
-         xoSz8KDUdSBsxrBB0FDP7JV392cKs4Ii4mE+mNEVrbF4XUDcFqrHik6gjTd69iheYQIx
-         VadGWkWAPmHW2OzGeeVfr4o4hYqFcQoDs+xa7n8L3z1s8DZlhvwCfhlqRy/F72OlV5al
-         yHXgYfkr17WuIE8E0XSYt3XNVaEEmsNoXRn7ksJsJ7B4szF64ssxDmDxgirZ2WfWx+8L
-         4PNzXV5y5mgae+5j9h56m9PEQbi46JXp+wLeOyES5mj5zaeVDvjWz7BEWjOVLjULVTD5
-         wd5A==
-X-Gm-Message-State: AOJu0Ywr3TTgoWaMjLu0QZa9GXFCnvyyQ/Yvp9qbLSYV8cbOVMu22w8i
-	qKiqGEOzUMFHQojO5DJuAUW6MQ==
-X-Google-Smtp-Source: AGHT+IGMzn78qfxYuCyS1ARY45cL6P2MuHjWyw4/lUIp6wjTkKc2tsB9vxOdISIru88jXT2X5qm6jg==
-X-Received: by 2002:a17:902:b28b:b0:1d3:f43a:a2d5 with SMTP id u11-20020a170902b28b00b001d3f43aa2d5mr1056238plr.120.1703107028565;
-        Wed, 20 Dec 2023 13:17:08 -0800 (PST)
+        bh=nqMAcmRjFD5lYv9eaz6Li/2mY5/nRWhBk3z0a51JdoE=;
+        b=YUWmzYnxHLVFRV/EAoYhA5329UD9Ju5Pin4CDFnvAL7DgJheQGjwqWTUoYyCe4vCIq
+         EeuKL6JR5K3BjtoHQr1MQbzv1XOtqgIWsQMiOOj9MvsC7b1w+6hl6rpec2mKuyLY7M+6
+         ev3CpE9CkLLaPkmVKS/4CfkXsHKpIH7sQh2EiEFs2UWmDW62c3UTtN+5RpnLurz80egc
+         rSRbgnKoIi/k8CLWJ4leUpKDUBqGIGJF/OelPFtBA4Cdjuu+LZlmkqRxIwQOBm0GzCQ0
+         fZZ+zuA/T+vvnJ8o9Tj9sNGId8u2vQFBQGsCW46qTh/5WQNbq7Y8wdswQuEWWkVoiWjA
+         Jzsw==
+X-Gm-Message-State: AOJu0YzXHFZeHHEcsYYIbX9JpylXhCm/l4y20u2kB8e3p1JB/HhzCsOO
+	f3LKU53JDPlnYZnitsGQpTBs0VY2ulpxUweYi34=
+X-Google-Smtp-Source: AGHT+IHiT2pM/zIM7SEA7jKcjzR0uskgBKayIOmSJ+RyhBRQQ2xNi/wESLtEkm0sR2Q1jxnvPlu0Fw==
+X-Received: by 2002:a17:903:496:b0:1d4:445:ba7b with SMTP id jj22-20020a170903049600b001d40445ba7bmr24892plb.36.1703107031029;
+        Wed, 20 Dec 2023 13:17:11 -0800 (PST)
 Received: from tictac2.mtv.corp.google.com ([2620:15c:9d:2:5a22:d46c:eec1:e5d4])
-        by smtp.gmail.com with ESMTPSA id u10-20020a170902b28a00b001d3dfebc05esm175023plr.21.2023.12.20.13.17.06
+        by smtp.gmail.com with ESMTPSA id u10-20020a170902b28a00b001d3dfebc05esm175023plr.21.2023.12.20.13.17.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Dec 2023 13:17:07 -0800 (PST)
+        Wed, 20 Dec 2023 13:17:10 -0800 (PST)
 From: Douglas Anderson <dianders@chromium.org>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: Petr Mladek <pmladek@suse.com>,
@@ -63,9 +63,9 @@ Cc: Petr Mladek <pmladek@suse.com>,
 	Lecopzer Chen <lecopzer.chen@mediatek.com>,
 	Douglas Anderson <dianders@chromium.org>,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 2/4] watchdog/softlockup: Use printk_cpu_sync_get_irqsave() to serialize reporting
-Date: Wed, 20 Dec 2023 13:15:35 -0800
-Message-ID: <20231220131534.2.Ia5906525d440d8e8383cde31b7c61c2aadc8f907@changeid>
+Subject: [PATCH 3/4] watchdog/hardlockup: Use printk_cpu_sync_get_irqsave() to serialize reporting
+Date: Wed, 20 Dec 2023 13:15:36 -0800
+Message-ID: <20231220131534.3.I6ff691b3b40f0379bc860f80c6e729a0485b5247@changeid>
 X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
 In-Reply-To: <20231220211640.2023645-1-dianders@chromium.org>
 References: <20231220211640.2023645-1-dianders@chromium.org>
@@ -77,62 +77,89 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Instead of introducing a spinlock, use printk_cpu_sync_get_irqsave()
-and printk_cpu_sync_put_irqrestore() to serialize softlockup
-reporting. Alone this doesn't have any real advantage over the
-spinlock, but this will allow us to use the same function in a future
-change to also serialize hardlockup crawls.
+If two CPUs end up reporting a hardlockup at the same time then their
+logs could get interleaved which is hard to read.
 
-NOTE: for the most part this serialization is important because we
-often end up in the show_regs() path and that has no built-in
-serialization if there are multiple callers at once. However, even in
-the case where we end up in the dump_stack() path this still has some
-advantages because the stack will be guaranteed to be together in the
-logs with the lockup message with no interleaving.
+The interleaving problem was especially bad with the "perf" hardlockup
+detector where the locked up CPU is always the same as the running CPU
+and we end up in show_regs(). show_regs() has no inherent
+serialization so we could mix together two crawls if two hardlockups
+happened at the same time (and if we didn't have
+`sysctl_hardlockup_all_cpu_backtrace` set). With this change we'll
+fully serialize hardlockups when using the "perf" hardlockup detector.
 
-NOTE: the fact that printk_cpu_sync_get_irqsave() is allowed to be
-called multiple times on the same CPU is important here. Specifically
-we hold the "lock" while calling dump_stack() which also gets the same
-"lock". This is explicitly documented to be OK and means we don't need
-to introduce a variant of dump_stack() that doesn't grab the lock.
+The interleaving problem was less bad with the "buddy" hardlockup
+detector. With "buddy" we always end up calling
+`trigger_single_cpu_backtrace(cpu)` on some CPU other than the running
+one. trigger_single_cpu_backtrace() always at least serializes the
+individual stack crawls because it eventually uses
+printk_cpu_sync_get_irqsave(). Unfortunately the fact that
+trigger_single_cpu_backtrace() eventually calls
+printk_cpu_sync_get_irqsave() (on a different CPU) means that we have
+to drop the "lock" before calling it and we can't fully serialize all
+printouts associated with a given hardlockup. However, we still do get
+the advantage of serializing the output of print_modules() and
+print_irqtrace_events().
+
+Aside from serializing hardlockups from each other, this change also
+has the advantage of serializing hardlockups and softlockups from each
+other if they happen to happen at the same time since they are both
+using the same "lock".
+
+Even though nobody is expected to hang while holding the lock
+associated with printk_cpu_sync_get_irqsave(), out of an abundance of
+caution, we don't call printk_cpu_sync_get_irqsave() until after we
+print out about the hardlockup. This makes extra sure that, even if
+printk_cpu_sync_get_irqsave() somehow never runs we at least print
+that we saw the hardlockup. This is different than the choice made for
+softlockup because hardlockup is really our last resort.
 
 Signed-off-by: Douglas Anderson <dianders@chromium.org>
 ---
 
- kernel/watchdog.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ kernel/watchdog.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
 diff --git a/kernel/watchdog.c b/kernel/watchdog.c
-index b4fd2f12137f..526041a1100a 100644
+index 526041a1100a..11f9577accca 100644
 --- a/kernel/watchdog.c
 +++ b/kernel/watchdog.c
-@@ -454,7 +454,7 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
- 	struct pt_regs *regs = get_irq_regs();
- 	int duration;
- 	int softlockup_all_cpu_backtrace = sysctl_softlockup_all_cpu_backtrace;
--	static DEFINE_SPINLOCK(watchdog_output_lock);
-+	unsigned long flags;
+@@ -151,6 +151,7 @@ void watchdog_hardlockup_check(unsigned int cpu, struct pt_regs *regs)
+ 	 */
+ 	if (is_hardlockup(cpu)) {
+ 		unsigned int this_cpu = smp_processor_id();
++		unsigned long flags;
  
- 	if (!watchdog_enabled)
- 		return HRTIMER_NORESTART;
-@@ -521,7 +521,7 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
- 		/* Start period for the next softlockup warning. */
- 		update_report_ts();
+ 		/* Only print hardlockups once. */
+ 		if (per_cpu(watchdog_hardlockup_warned, cpu))
+@@ -165,7 +166,17 @@ void watchdog_hardlockup_check(unsigned int cpu, struct pt_regs *regs)
+ 				return;
+ 		}
  
--		spin_lock(&watchdog_output_lock);
++		/*
++		 * NOTE: we call printk_cpu_sync_get_irqsave() after printing
++		 * the lockup message. While it would be nice to serialize
++		 * that printout, we really want to make sure that if some
++		 * other CPU somehow locked up while holding the lock associated
++		 * with printk_cpu_sync_get_irqsave() that we can still at least
++		 * get the message about the lockup out.
++		 */
+ 		pr_emerg("Watchdog detected hard LOCKUP on cpu %d\n", cpu);
 +		printk_cpu_sync_get_irqsave(flags);
- 		pr_emerg("BUG: soft lockup - CPU#%d stuck for %us! [%s:%d]\n",
- 			smp_processor_id(), duration,
- 			current->comm, task_pid_nr(current));
-@@ -531,7 +531,7 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
- 			show_regs(regs);
- 		else
- 			dump_stack();
--		spin_unlock(&watchdog_output_lock);
-+		printk_cpu_sync_put_irqrestore(flags);
++
+ 		print_modules();
+ 		print_irqtrace_events(current);
+ 		if (cpu == this_cpu) {
+@@ -173,7 +184,9 @@ void watchdog_hardlockup_check(unsigned int cpu, struct pt_regs *regs)
+ 				show_regs(regs);
+ 			else
+ 				dump_stack();
++			printk_cpu_sync_put_irqrestore(flags);
+ 		} else {
++			printk_cpu_sync_put_irqrestore(flags);
+ 			trigger_single_cpu_backtrace(cpu);
+ 		}
  
- 		if (softlockup_all_cpu_backtrace) {
- 			trigger_allbutcpu_cpu_backtrace(smp_processor_id());
 -- 
 2.43.0.472.g3155946c3a-goog
 
