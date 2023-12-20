@@ -1,169 +1,207 @@
-Return-Path: <linux-kernel+bounces-6452-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6454-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8470819918
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 08:08:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CA7A81991D
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 08:09:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 530FB1F2647A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 07:08:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9E3F31C25227
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 07:09:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AA3115ADB;
-	Wed, 20 Dec 2023 07:08:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ucJ40BEj"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 050AB15AF8;
+	Wed, 20 Dec 2023 07:08:57 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out198-173.us.a.mail.aliyun.com (out198-173.us.a.mail.aliyun.com [47.90.198.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2658F18E07
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 07:08:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-40d3352b525so5289775e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 23:08:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703056089; x=1703660889; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=siLk5U93JA3vEes4gtj6Up/ArB2QKxvJxO05srSDno8=;
-        b=ucJ40BEjWeu79fXTxY5qIThgNZMGA1VkOiq2hD6BgiZsa8q52DZm7sqr6AekITrNTV
-         xh2wPSn6QchCd8NhXylSs74zAb8XnebqJ+Y49rugGCMlaRztjT09r5atN9orBwqoZ6vZ
-         gJ+toszlCUr+MlR3hb0/HE0n6pwXDitZQeVD1IXUcSRNIBCBRumBxSzXsYLHdg0iYVef
-         dKbN1i1vg3sMUTVO5U4tGhjSzYB0LMYFBPuaSfwGdyCBs/AugiB8rCpux85hOx2fDyol
-         mcSPq41/0wn+YtC/j7UnsB/gpP5vxEOr5quW3W+B5XavUypojKtNMXvlFlsE6S3kEC/u
-         jHrA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703056089; x=1703660889;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=siLk5U93JA3vEes4gtj6Up/ArB2QKxvJxO05srSDno8=;
-        b=i2KvDeJRivLnDkcloptr38qZm9u9rU6b7EXIjzyZAh9IXM48mRLpgR0FbEgqkaqUS/
-         MJAH0Dvn1jC2ijXypy6dKlMtRw+FMXKXJETkhIpfqbRGy9QQRgAlM1p/vxkSaT1lBLCW
-         HKC+mI4Ogx/AW3vwoBIUmvqO241OTGwWHzfMkGPPSJHWPHoLpjNHkGvXWr6xuhm8dIjc
-         T8AylexdPmU7KA5G3D0fj4V8AGoAAxQMEjABVAEK0ayXqnzVLbl+dadn0blcM2NTtBWr
-         H0xR52iRiwAU1DxpqcUbZynxNAz2L89tnLL2tHKs2IBuOeX8rJR6uLD1t5gp30FCbvwN
-         rpaw==
-X-Gm-Message-State: AOJu0YwUYMH2BXdd9OYmM/GTdQfGGaAmFFZQPQJL8q+rUUHKfGN/hqlu
-	BVDnBXuBtlJRtClXTNdM4Vpeag==
-X-Google-Smtp-Source: AGHT+IHGcTof4yo4Z71thN7m7MF/WjuC5NVtp/aodfTIImlR933aWFor0qme70UkH0qMmPPP63+nBg==
-X-Received: by 2002:a05:600c:3485:b0:40d:343d:2e08 with SMTP id a5-20020a05600c348500b0040d343d2e08mr345402wmq.98.1703056089350;
-        Tue, 19 Dec 2023 23:08:09 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id v14-20020a05600c444e00b0040c58e410a3sm6154140wmn.14.2023.12.19.23.08.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Dec 2023 23:08:08 -0800 (PST)
-Message-ID: <d18350c3-5730-45df-aa5f-3aae7f8f7e10@linaro.org>
-Date: Wed, 20 Dec 2023 08:08:07 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7499713ACF
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 07:08:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=cyg.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sjterm.com
+X-Alimail-AntiSpam:AC=CONTINUE;BC=0.07452829|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_social|0.0367338-0.0107246-0.952542;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047205;MF=fuyao@sjterm.com;NM=1;PH=DS;RN=9;RT=9;SR=0;TI=SMTPD_---.VoiN-3D_1703056120;
+Received: from localhost(mailfrom:fuyao@sjterm.com fp:SMTPD_---.VoiN-3D_1703056120)
+          by smtp.aliyun-inc.com;
+          Wed, 20 Dec 2023 15:08:41 +0800
+Date: Wed, 20 Dec 2023 15:08:40 +0800
+From: fuyao <fuyao1697@cyg.com>
+To: Lee Jones <lee@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>,
+	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Cc: Maxime Ripard <mripard@kernel.org>,
+	maijianzhang <maijianzhang@allwinnertech.com>
+Subject: [PATCH RESEND] iio: adc: sun4i-gpadc-iio: adaptation interrupt number
+Message-ID: <YwdhTlk+7h+FMrwm@scg>
+Mail-Followup-To: Lee Jones <lee@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>,
+	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+	linux-kernel@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
+	maijianzhang <maijianzhang@allwinnertech.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/3] dt-bindings: soc: mediatek: Change the description of
- gce-events
-Content-Language: en-US
-To: "Jason-JH.Lin" <jason-jh.lin@mediatek.com>,
- Jassi Brar <jassisinghbrar@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Cc: Conor Dooley <conor+dt@kernel.org>,
- Mauro Carvalho Chehab <mchehab@kernel.org>, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org, linux-media@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
- Jason-ch Chen <jason-ch.chen@mediatek.com>,
- Johnson Wang <johnson.wang@mediatek.com>,
- Singo Chang <singo.chang@mediatek.com>, Nancy Lin <nancy.lin@mediatek.com>,
- Shawn Sung <shawn.sung@mediatek.com>,
- Project_Global_Chrome_Upstream_Group@mediatek.com
-References: <20231218083604.7327-1-jason-jh.lin@mediatek.com>
- <20231218083604.7327-4-jason-jh.lin@mediatek.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231218083604.7327-4-jason-jh.lin@mediatek.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YxmR5SPPY18O7LaG@google.com>
+Received: from out20-218.mail.aliyun.com (out20-218.mail.aliyun.com
+ [115.124.20.218]) (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384
+ (256/256 bits)) (No client certificate requested) by
+ smtp.subspace.kernel.org (Postfix) with ESMTPS id 103EC2F28 for
+ <linux-sunxi@lists.linux.dev>; Thu, 25 Aug 2022 12:18:23 +0000 (UTC)
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.3045855|-1;BR=01201311R131S89rulernew998_84748_2000303;CH=blue;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.025949-0.00105542-0.972996;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047190;MF=fuyao@sjterm.com;NM=1;PH=DS;RN=9;RT=9;SR=0;TI=SMTPD_---.P.m81RD_1661428046;
+Received: from localhost(mailfrom:fuyao@sjterm.com
+ fp:SMTPD_---.P.m81RD_1661428046) by smtp.aliyun-inc.com; Thu, 25 Aug 2022
+ 19:47:26 +0800
+Precedence: bulk
+Organization: work_work_work
+Organization: work_work_work
+
+__platform_get_irq_byname determinies whether the interrupt
+number is 0 and returns EINVAL.
+
+Signed-off-by: fuyao <fuyao1697@cyg.com>
+Acked-by:  Jernej Skrabec <jernej.skrabec@gmail.com>
+---
+ include/linux/mfd/sun4i-gpadc.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/include/linux/mfd/sun4i-gpadc.h b/include/linux/mfd/sun4i-gpadc.h
+index ea0ccf33a459..021f820f9d52 100644
+--- a/include/linux/mfd/sun4i-gpadc.h
++++ b/include/linux/mfd/sun4i-gpadc.h
+@@ -81,8 +81,8 @@
+ #define SUN4I_GPADC_TEMP_DATA				0x20
+ #define SUN4I_GPADC_DATA				0x24
+ 
+-#define SUN4I_GPADC_IRQ_FIFO_DATA			0
+-#define SUN4I_GPADC_IRQ_TEMP_DATA			1
++#define SUN4I_GPADC_IRQ_FIFO_DATA			1
++#define SUN4I_GPADC_IRQ_TEMP_DATA			2
+ 
+ /* 10s delay before suspending the IP */
+ #define SUN4I_GPADC_AUTOSUSPEND_DELAY			10000
+-- 
+2.32.0
+
+
+-- 
+Technology is exciting
+
+From mboxrd@z Thu Jan  1 00:00:00 1970
+Return-Path: <linux-arm-kernel-bounces+linux-arm-kernel=archiver.kernel.org@lists.infradead.org>
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+	aws-us-west-2-korg-lkml-1.web.codeaurora.org
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D7BEFC04AA5
+	for <linux-arm-kernel@archiver.kernel.org>; Thu, 25 Aug 2022 11:54:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=43HWo/ZUnCasly+ZDH2iZ6YziJoEl7DGgRHVq1AWHGA=; b=N4HqsZY4E2SL6r
+	coTCsOX2hRzQ7B0a1T00J2VkAPl7AipXosk76WMzyfIWnLKRkW8uqqBXKpQ2sHn25CKHP+ZW5UpiD
+	6l25/vh+YIPuTKjxd22dXb3QWpmIObDbHRRIOZSAWMBva+k42rsgsfgRyYKOI/+fBRoqDqFZHrjV1
+	LbiROW7b0SqMq6vAWAjGQvRON+qQDsqqpadEY+j508ViyVZdDIB2TY1zdy6uTAc4QqMRmzUH2NP7W
+	eSzjr4Kd1dtJMmykNtjjlIm/7IPwpXbHb72IdX1lzo27891mjNCP6V6fToGXw+s5RFS1qHaRuZ+XB
+	8g9p7pCDPqH/9eUb74/g==;
+Received: from localhost ([::1] helo=bombadil.infradead.org)
+	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1oRBPm-00D1Ka-Ur; Thu, 25 Aug 2022 11:52:51 +0000
+Received: from out20-123.mail.aliyun.com ([115.124.20.123])
+	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1oRBPk-00D1FB-2p
+	for linux-arm-kernel@lists.infradead.org; Thu, 25 Aug 2022 11:52:49 +0000
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.3045855|-1;BR=01201311R131S89rulernew998_84748_2000303;CH=blue;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.025949-0.00105542-0.972996;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047190;MF=fuyao@sjterm.com;NM=1;PH=DS;RN=9;RT=9;SR=0;TI=SMTPD_---.P.m81RD_1661428046;
+Received: from localhost(mailfrom:fuyao@sjterm.com fp:SMTPD_---.P.m81RD_1661428046)
+          by smtp.aliyun-inc.com;
+          Thu, 25 Aug 2022 19:47:26 +0800
+Date: Thu, 25 Aug 2022 19:47:26 +0800
+From: fuyao <fuyao1697@cyg.com>
+To: Lee Jones <lee@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>,
+	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Cc: Maxime Ripard <mripard@kernel.org>,
+	maijianzhang <maijianzhang@allwinnertech.com>
+Subject: [PATCH] iio: adc: sun4i-gpadc-iio: adaptation interrupt number
+Message-ID: <YwdhTlk+7h+FMrwm@scg>
+Mail-Followup-To: Lee Jones <lee@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>,
+	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+	linux-kernel@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
+	maijianzhang <maijianzhang@allwinnertech.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+Organization: work_work_work
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20220825_045248_320501_10DAB7D1 
+X-CRM114-Status: UNSURE (   9.15  )
+X-CRM114-Notice: Please train this message.
+X-BeenThere: linux-arm-kernel@lists.infradead.org
+X-Mailman-Version: 2.1.34
+Precedence: list
+List-Id: <linux-arm-kernel.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=archiver.kernel.org@lists.infradead.org
 
-On 18/12/2023 09:36, Jason-JH.Lin wrote:
-> Change the description of mediatek,gce-events property to reference
-> mediatek,gce-mailbox yaml.
-> 
-> Signed-off-by: Jason-JH.Lin <jason-jh.lin@mediatek.com>
-> ---
->  .../devicetree/bindings/soc/mediatek/mediatek,ccorr.yaml     | 5 +----
->  .../devicetree/bindings/soc/mediatek/mediatek,mutex.yaml     | 5 +----
->  .../devicetree/bindings/soc/mediatek/mediatek,wdma.yaml      | 5 +----
->  3 files changed, 3 insertions(+), 12 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/soc/mediatek/mediatek,ccorr.yaml b/Documentation/devicetree/bindings/soc/mediatek/mediatek,ccorr.yaml
-> index 4380b98b0dfe..64c0f99fcbce 100644
-> --- a/Documentation/devicetree/bindings/soc/mediatek/mediatek,ccorr.yaml
-> +++ b/Documentation/devicetree/bindings/soc/mediatek/mediatek,ccorr.yaml
-> @@ -36,10 +36,7 @@ properties:
->  
->    mediatek,gce-events:
->      description:
-> -      The event id which is mapping to the specific hardware event signal
-> -      to gce. The event id is defined in the gce header
-> -      include/dt-bindings/gce/<chip>-gce.h of each chips.
-> -    $ref: /schemas/types.yaml#/definitions/uint32-array
-> +      Reference to Documentation/devicetree/bindings/mailbox/mediatek,gce-mailbox.yaml.
+__platform_get_irq_byname determinies whether the interrupt
+number is 0 and returns EINVAL.
 
-NAK, test your bindings. You allow now any type.
+Signed-off-by: fuyao <fuyao1697@cyg.com>
+---
+ include/linux/mfd/sun4i-gpadc.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/include/linux/mfd/sun4i-gpadc.h b/include/linux/mfd/sun4i-gpadc.h
+index ea0ccf33a459..021f820f9d52 100644
+--- a/include/linux/mfd/sun4i-gpadc.h
++++ b/include/linux/mfd/sun4i-gpadc.h
+@@ -81,8 +81,8 @@
+ #define SUN4I_GPADC_TEMP_DATA				0x20
+ #define SUN4I_GPADC_DATA				0x24
+ 
+-#define SUN4I_GPADC_IRQ_FIFO_DATA			0
+-#define SUN4I_GPADC_IRQ_TEMP_DATA			1
++#define SUN4I_GPADC_IRQ_FIFO_DATA			1
++#define SUN4I_GPADC_IRQ_TEMP_DATA			2
+ 
+ /* 10s delay before suspending the IP */
+ #define SUN4I_GPADC_AUTOSUSPEND_DELAY			10000
+-- 
+2.32.0
 
 
-Best regards,
-Krzysztof
+-- 
+Technology is exciting
 
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+
+
+-- 
+CYG Technology.
 
