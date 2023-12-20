@@ -1,60 +1,60 @@
-Return-Path: <linux-kernel+bounces-6157-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6158-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17A82819528
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 01:24:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BFCD8819529
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 01:24:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3C2CC1C21EE8
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 00:24:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E482A1C24699
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 00:24:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4982522311;
-	Wed, 20 Dec 2023 00:19:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CDBD224C7;
+	Wed, 20 Dec 2023 00:19:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="DMHLwvwz"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="3+mESWIH"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pg1-f202.google.com (mail-pg1-f202.google.com [209.85.215.202])
+Received: from mail-pf1-f202.google.com (mail-pf1-f202.google.com [209.85.210.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DA582136C
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 00:19:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDEF5219E4
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 00:19:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--jstultz.bounces.google.com
-Received: by mail-pg1-f202.google.com with SMTP id 41be03b00d2f7-5cd91cbd273so1001914a12.3
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 16:19:42 -0800 (PST)
+Received: by mail-pf1-f202.google.com with SMTP id d2e1a72fcca58-6d64b546e7eso1791598b3a.2
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 16:19:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1703031581; x=1703636381; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1703031583; x=1703636383; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=6y8S+nSE7+9Tt9N3qq9zNMzLoztzpop33DDkxCG+ySI=;
-        b=DMHLwvwzV0QMEKRQW3VVc+aHO1+pZvv5O4ncbQKM9YudvunIfshn2cOreE4tYxo+wd
-         /lwQWioItjxo+B+xZ36oCRjGQxLwgbyITHKdYS1rS4XJY2/jxcwwlL/AO0GNeVmQmyuO
-         Ie3fNaEuWpbHlvq28mrG06YtUmAtLcSC7Ozz2gK2MMv9DdHsUBs4maBINn5Qwhg3bpKp
-         1JjOvCGP6l9Q/RUf+z9abgp8ZMpseeicKKnVzODmvRnt+2ytabJwBcw+Sq9hJ9OT2OlD
-         IaQV0XF47cBmYzXmOM4m3D7FnvzmkVPuAQBYUUBdub5KFfbEatLAerUYb4nmYx0h089Z
-         F5LQ==
+        bh=Ma+3AbQ8bkO0LeZ0x4L+yPA6KTJo2YRmJIGPc7lQ3VM=;
+        b=3+mESWIHpeKZxqJBcV8G9HW/poxO52h/+lJYw57Cw+JwIg8AiCH9EkSGdKRxUSsr17
+         7nSKmNY28xXTgcDlCoY7Nrg+BpWyasE1WfrpAynbj2RA6TpeK2AtcXEfmDrKvjhK8/sq
+         Dd7fb2GzmOISaDnEtfVMAaBKaLaCs8+IfUwbjvkmQVNSVn2/EgKdWGHwsWpKUViSerPN
+         RtPrWy3WhWwzQPnlOWGngEgC2QMXX3e0a9BmIIcsooy4Mb1FuRUs7MAECp972TxOxgJ7
+         beyUAqGwej9ya9JgdHX5HKkCbgeng4aGZE6rEJ/wQASJM5M7KSBh89xt6E746PvDwBAh
+         E6RA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703031581; x=1703636381;
+        d=1e100.net; s=20230601; t=1703031583; x=1703636383;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6y8S+nSE7+9Tt9N3qq9zNMzLoztzpop33DDkxCG+ySI=;
-        b=RipDc+lyIB3WzqH5i4ShBzIudn+tBiN5f7gJjIFk1rpZ+6bNdJ5qjHkJ/BkPPVp9nd
-         Ot1vMnic6JGqXExnFKKr/yZ6TpqmYEf1grs7sELcea4dvjdqw7+hwxJCsFQ++6+myJfY
-         GkVZMAaQgdwF20086x3nvuDe5rcJ5Hp85F1ffIUvUdVrt2vYObq19F1MfvmDHt9pqn09
-         ZNzucZhW2l/gX1khylNORi62998tyvjdVQsyuErgf+2S7zyHbmIvfDuferPo1B5cTL4E
-         u1ELvhLTSyRT3YVjqzDJe0QvHeNxL/HKQe1AzgTT8HmUP+L+L8UB6sURZjlMd3MvC74u
-         Cs8Q==
-X-Gm-Message-State: AOJu0YzmGqkhZL2WjSWAJhs90YOmxvPRzz7P3MpSSHG/gQHs8H/o2isl
-	t00XOLVnYwCUq3Ht5RChJS1MLeMx7cdIi0x8poIeJ/A2wiRyQmZEVR23XgM9SHGpHhW51hlLvCa
-	QSpwm+XpHe7GENRss4NQPeDDKAsAFkKS0qeR2EJom1betX1qLAq72p8PteD3aG6PdJt00xPM=
-X-Google-Smtp-Source: AGHT+IFxYmvsF0VHJev0Gi/Z/vUlwephStqUcSLGlwMkwFIpbu2UuRc6ddNfrjreND8D2nC2xY9cm7pr0X5O
+        bh=Ma+3AbQ8bkO0LeZ0x4L+yPA6KTJo2YRmJIGPc7lQ3VM=;
+        b=EcycwKA9QGL2xb7+M16A0tPS6j4Wz3rrwhKfTI11wgK3TQYTdB8G4q5vZswGyDD17o
+         E1Fmov0BNlZYV4PyqbeKLEqjJ5g4NSZClyIirAS1QmyEYhoM+j5HVHkTinnJMNtoly/h
+         iOA1X4Max1L186AnXGvaY0MDJMkt6AqKYVSfMUH65qHCX3JfxGz8l5uzTiF/yrQpQeF7
+         CY/OEcO5pj8wEe67carb5jaJOzp9m6n7RIDzOZQYGUUiZ+Oq68tDCetsUz2VNva8suiO
+         0zPdBKwWFWDTvYlARIfi2gNun8HJHSWnofttqrf0gDs0cD4go1HDqCd/wspSLxQRt/KQ
+         KdHg==
+X-Gm-Message-State: AOJu0YzQ64kiZQlhoMOks4Vy1TOkA7rkVc5TKjnEKLjCrWi4fpWIldP4
+	RB8Fo1ZHzybhbENrrI8/gGwqWyt/7ozdtPUlmFQvCfUsA/IOG4cSyqRPmz+ADIRjGtIBYTRFMR7
+	WcUgxiT8JXHTV9402X+wrcK6trP428QKnC7GNdhDuhNVoVDVNEQLu9vMLtVs87cRql15UPLo=
+X-Google-Smtp-Source: AGHT+IHi/7DMb6bi2lndxhzyg+zWbC/oUkKFAaeQms9i1nU22B4vG0I4/VrQBTIy0/6NHvOybXKkr3clE5f2
 X-Received: from jstultz-noogler2.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:600])
- (user=jstultz job=sendgmr) by 2002:a63:5c07:0:b0:5ca:4440:234c with SMTP id
- q7-20020a635c07000000b005ca4440234cmr772730pgb.12.1703031580069; Tue, 19 Dec
- 2023 16:19:40 -0800 (PST)
-Date: Tue, 19 Dec 2023 16:18:32 -0800
+ (user=jstultz job=sendgmr) by 2002:aa7:8486:0:b0:6d8:a6fd:dc98 with SMTP id
+ u6-20020aa78486000000b006d8a6fddc98mr81353pfn.6.1703031581731; Tue, 19 Dec
+ 2023 16:19:41 -0800 (PST)
+Date: Tue, 19 Dec 2023 16:18:33 -0800
 In-Reply-To: <20231220001856.3710363-1-jstultz@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -64,11 +64,11 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20231220001856.3710363-1-jstultz@google.com>
 X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
-Message-ID: <20231220001856.3710363-22-jstultz@google.com>
-Subject: [PATCH v7 21/23] sched: Add find_exec_ctx helper
+Message-ID: <20231220001856.3710363-23-jstultz@google.com>
+Subject: [PATCH v7 22/23] sched: Refactor dl/rt find_lowest/latest_rq logic
 From: John Stultz <jstultz@google.com>
 To: LKML <linux-kernel@vger.kernel.org>
-Cc: "Connor O'Brien" <connoro@google.com>, Joel Fernandes <joelaf@google.com>, 
+Cc: John Stultz <jstultz@google.com>, Joel Fernandes <joelaf@google.com>, 
 	Qais Yousef <qyousef@google.com>, Ingo Molnar <mingo@redhat.com>, 
 	Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>, 
 	Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>, 
@@ -78,16 +78,18 @@ Cc: "Connor O'Brien" <connoro@google.com>, Joel Fernandes <joelaf@google.com>,
 	Daniel Bristot de Oliveira <bristot@redhat.com>, Will Deacon <will@kernel.org>, Waiman Long <longman@redhat.com>, 
 	Boqun Feng <boqun.feng@gmail.com>, "Paul E. McKenney" <paulmck@kernel.org>, 
 	Metin Kaya <Metin.Kaya@arm.com>, Xuewen Yan <xuewen.yan94@gmail.com>, 
-	K Prateek Nayak <kprateek.nayak@amd.com>, Thomas Gleixner <tglx@linutronix.de>, kernel-team@android.com, 
-	John Stultz <jstultz@google.com>
+	K Prateek Nayak <kprateek.nayak@amd.com>, Thomas Gleixner <tglx@linutronix.de>, kernel-team@android.com
 Content-Type: text/plain; charset="UTF-8"
 
-From: Connor O'Brien <connoro@google.com>
+This pulls re-validation logic done in find_lowest_rq
+and find_latest_rq after re-acquiring the rq locks out into its
+own function.
 
-Add a helper to find the runnable owner down a chain of blocked waiters
+This allows us to later use a more complicated validation
+check for chain-migration when using proxy-exectuion.
 
-This patch was broken out from a larger chain migration
-patch originally by Connor O'Brien.
+TODO: It seems likely we could consolidate this two functions
+further and leave the task_is_rt()/task_is_dl() checks externally?
 
 Cc: Joel Fernandes <joelaf@google.com>
 Cc: Qais Yousef <qyousef@google.com>
@@ -112,198 +114,129 @@ Cc: Xuewen Yan <xuewen.yan94@gmail.com>
 Cc: K Prateek Nayak <kprateek.nayak@amd.com>
 Cc: Thomas Gleixner <tglx@linutronix.de>
 Cc: kernel-team@android.com
-Signed-off-by: Connor O'Brien <connoro@google.com>
-[jstultz: split out from larger chain migration patch]
 Signed-off-by: John Stultz <jstultz@google.com>
 ---
- kernel/sched/core.c     | 42 +++++++++++++++++++++++++++++++++++++++++
- kernel/sched/cpupri.c   | 11 ++++++++---
- kernel/sched/deadline.c | 15 +++++++++++++--
- kernel/sched/rt.c       |  9 ++++++++-
- kernel/sched/sched.h    | 10 ++++++++++
- 5 files changed, 81 insertions(+), 6 deletions(-)
+ kernel/sched/deadline.c | 31 ++++++++++++++++++++-----
+ kernel/sched/rt.c       | 50 ++++++++++++++++++++++++++++-------------
+ 2 files changed, 59 insertions(+), 22 deletions(-)
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 0c212dcd4b7a..77a79d5f829a 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -3896,6 +3896,48 @@ static void activate_blocked_entities(struct rq *target_rq,
- 	}
- 	raw_spin_unlock_irqrestore(&owner->blocked_lock, flags);
+diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
+index 21e56ac58e32..8b5701727342 100644
+--- a/kernel/sched/deadline.c
++++ b/kernel/sched/deadline.c
+@@ -2172,6 +2172,30 @@ static int find_later_rq(struct task_struct *sched_ctx, struct task_struct *exec
+ 	return -1;
  }
-+
-+static inline bool task_queued_on_rq(struct rq *rq, struct task_struct *task)
+ 
++static inline bool dl_revalidate_rq_state(struct task_struct *task, struct rq *rq,
++					  struct rq *later)
 +{
-+	if (!task_on_rq_queued(task))
-+		return false;
-+	smp_rmb();
 +	if (task_rq(task) != rq)
 +		return false;
-+	smp_rmb();
++
++	if (!cpumask_test_cpu(later->cpu, &task->cpus_mask))
++		return false;
++
++	if (task_on_cpu(rq, task))
++		return false;
++
++	if (!dl_task(task))
++		return false;
++
++	if (is_migration_disabled(task))
++		return false;
++
 +	if (!task_on_rq_queued(task))
 +		return false;
++
 +	return true;
 +}
 +
-+/*
-+ * Returns the unblocked task at the end of the blocked chain starting with p
-+ * if that chain is composed entirely of tasks enqueued on rq, or NULL otherwise.
-+ */
-+struct task_struct *find_exec_ctx(struct rq *rq, struct task_struct *p)
-+{
-+	struct task_struct *exec_ctx, *owner;
-+	struct mutex *mutex;
-+
-+	if (!sched_proxy_exec())
-+		return p;
-+
-+	lockdep_assert_rq_held(rq);
-+
-+	for (exec_ctx = p; task_is_blocked(exec_ctx) && !task_on_cpu(rq, exec_ctx);
-+							exec_ctx = owner) {
-+		mutex = exec_ctx->blocked_on;
-+		owner = __mutex_owner(mutex);
-+		if (owner == exec_ctx)
-+			break;
-+
-+		if (!task_queued_on_rq(rq, owner) || task_current_selected(rq, owner)) {
-+			exec_ctx = NULL;
-+			break;
-+		}
-+	}
-+	return exec_ctx;
-+}
- #else /* !CONFIG_SCHED_PROXY_EXEC */
- static inline void do_activate_task(struct rq *rq, struct task_struct *p,
- 				    int en_flags)
-diff --git a/kernel/sched/cpupri.c b/kernel/sched/cpupri.c
-index 15e947a3ded7..53be78afdd07 100644
---- a/kernel/sched/cpupri.c
-+++ b/kernel/sched/cpupri.c
-@@ -96,12 +96,17 @@ static inline int __cpupri_find(struct cpupri *cp, struct task_struct *p,
- 	if (skip)
- 		return 0;
- 
--	if (cpumask_any_and(&p->cpus_mask, vec->mask) >= nr_cpu_ids)
-+	if ((p && cpumask_any_and(&p->cpus_mask, vec->mask) >= nr_cpu_ids) ||
-+	    (!p && cpumask_any(vec->mask) >= nr_cpu_ids))
- 		return 0;
- 
- 	if (lowest_mask) {
--		cpumask_and(lowest_mask, &p->cpus_mask, vec->mask);
--		cpumask_and(lowest_mask, lowest_mask, cpu_active_mask);
-+		if (p) {
-+			cpumask_and(lowest_mask, &p->cpus_mask, vec->mask);
-+			cpumask_and(lowest_mask, lowest_mask, cpu_active_mask);
-+		} else {
-+			cpumask_copy(lowest_mask, vec->mask);
-+		}
- 
- 		/*
- 		 * We have to ensure that we have at least one bit
-diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
-index 999bd17f11c4..21e56ac58e32 100644
---- a/kernel/sched/deadline.c
-+++ b/kernel/sched/deadline.c
-@@ -1866,6 +1866,8 @@ static void migrate_task_rq_dl(struct task_struct *p, int new_cpu __maybe_unused
- 
- static void check_preempt_equal_dl(struct rq *rq, struct task_struct *p)
- {
-+	struct task_struct *exec_ctx;
-+
- 	/*
- 	 * Current can't be migrated, useless to reschedule,
- 	 * let's hope p can move out.
-@@ -1874,12 +1876,16 @@ static void check_preempt_equal_dl(struct rq *rq, struct task_struct *p)
- 	    !cpudl_find(&rq->rd->cpudl, rq_selected(rq), rq->curr, NULL))
- 		return;
- 
-+	exec_ctx = find_exec_ctx(rq, p);
-+	if (task_current(rq, exec_ctx))
-+		return;
-+
- 	/*
- 	 * p is migratable, so let's not schedule it and
- 	 * see if it is pushed or pulled somewhere else.
- 	 */
- 	if (p->nr_cpus_allowed != 1 &&
--	    cpudl_find(&rq->rd->cpudl, p, p, NULL))
-+	    cpudl_find(&rq->rd->cpudl, p, exec_ctx, NULL))
- 		return;
- 
- 	resched_curr(rq);
-@@ -2169,12 +2175,17 @@ static int find_later_rq(struct task_struct *sched_ctx, struct task_struct *exec
  /* Locks the rq it finds */
  static struct rq *find_lock_later_rq(struct task_struct *task, struct rq *rq)
  {
-+	struct task_struct *exec_ctx;
- 	struct rq *later_rq = NULL;
- 	int tries;
- 	int cpu;
+@@ -2204,12 +2228,7 @@ static struct rq *find_lock_later_rq(struct task_struct *task, struct rq *rq)
  
- 	for (tries = 0; tries < DL_MAX_TRIES; tries++) {
--		cpu = find_later_rq(task, task);
-+		exec_ctx = find_exec_ctx(rq, task);
-+		if (!exec_ctx)
-+			break;
-+
-+		cpu = find_later_rq(task, exec_ctx);
- 
- 		if ((cpu == -1) || (cpu == rq->cpu))
- 			break;
+ 		/* Retry if something changed. */
+ 		if (double_lock_balance(rq, later_rq)) {
+-			if (unlikely(task_rq(task) != rq ||
+-				     !cpumask_test_cpu(later_rq->cpu, &task->cpus_mask) ||
+-				     task_on_cpu(rq, task) ||
+-				     !dl_task(task) ||
+-				     is_migration_disabled(task) ||
+-				     !task_on_rq_queued(task))) {
++			if (unlikely(!dl_revalidate_rq_state(task, rq, later_rq))) {
+ 				double_unlock_balance(rq, later_rq);
+ 				later_rq = NULL;
+ 				break;
 diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
-index 6371b0fca4ad..f8134d062fa3 100644
+index f8134d062fa3..fabb19891e95 100644
 --- a/kernel/sched/rt.c
 +++ b/kernel/sched/rt.c
-@@ -1640,6 +1640,11 @@ static void check_preempt_equal_prio(struct rq *rq, struct task_struct *p)
- 	    !cpupri_find(&rq->rd->cpupri, rq_selected(rq), rq->curr, NULL))
- 		return;
+@@ -1935,6 +1935,39 @@ static int find_lowest_rq(struct task_struct *sched_ctx, struct task_struct *exe
+ 	return -1;
+ }
  
-+	/* No reason to preempt since rq->curr wouldn't change anyway */
-+	exec_ctx = find_exec_ctx(rq, p);
-+	if (task_current(rq, exec_ctx))
-+		return;
++static inline bool rt_revalidate_rq_state(struct task_struct *task, struct rq *rq,
++					  struct rq *lowest)
++{
++	/*
++	 * We had to unlock the run queue. In
++	 * the mean time, task could have
++	 * migrated already or had its affinity changed.
++	 * Also make sure that it wasn't scheduled on its rq.
++	 * It is possible the task was scheduled, set
++	 * "migrate_disabled" and then got preempted, so we must
++	 * check the task migration disable flag here too.
++	 */
++	if (task_rq(task) != rq)
++		return false;
 +
- 	/*
- 	 * p is migratable, so let's not schedule it and
- 	 * see if it is pushed or pulled somewhere else.
-@@ -1933,12 +1938,14 @@ static int find_lowest_rq(struct task_struct *sched_ctx, struct task_struct *exe
++	if (!cpumask_test_cpu(lowest->cpu, &task->cpus_mask))
++		return false;
++
++	if (task_on_cpu(rq, task))
++		return false;
++
++	if (!rt_task(task))
++		return false;
++
++	if (is_migration_disabled(task))
++		return false;
++
++	if (!task_on_rq_queued(task))
++		return false;
++
++	return true;
++}
++
  /* Will lock the rq it finds */
  static struct rq *find_lock_lowest_rq(struct task_struct *task, struct rq *rq)
  {
-+	struct task_struct *exec_ctx;
- 	struct rq *lowest_rq = NULL;
- 	int tries;
- 	int cpu;
+@@ -1964,22 +1997,7 @@ static struct rq *find_lock_lowest_rq(struct task_struct *task, struct rq *rq)
  
- 	for (tries = 0; tries < RT_MAX_TRIES; tries++) {
--		cpu = find_lowest_rq(task, task);
-+		exec_ctx = find_exec_ctx(rq, task);
-+		cpu = find_lowest_rq(task, exec_ctx);
- 
- 		if ((cpu == -1) || (cpu == rq->cpu))
- 			break;
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index ef3d327e267c..6cd473224cfe 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -3564,6 +3564,16 @@ int task_is_pushable(struct rq *rq, struct task_struct *p, int cpu)
- 
- 	return 0;
- }
-+
-+#ifdef CONFIG_SCHED_PROXY_EXEC
-+struct task_struct *find_exec_ctx(struct rq *rq, struct task_struct *p);
-+#else /* !CONFIG_SCHED_PROXY_EXEC */
-+static inline
-+struct task_struct *find_exec_ctx(struct rq *rq, struct task_struct *p)
-+{
-+	return p;
-+}
-+#endif /* CONFIG_SCHED_PROXY_EXEC */
- #endif
- 
- #endif /* _KERNEL_SCHED_SCHED_H */
+ 		/* if the prio of this runqueue changed, try again */
+ 		if (double_lock_balance(rq, lowest_rq)) {
+-			/*
+-			 * We had to unlock the run queue. In
+-			 * the mean time, task could have
+-			 * migrated already or had its affinity changed.
+-			 * Also make sure that it wasn't scheduled on its rq.
+-			 * It is possible the task was scheduled, set
+-			 * "migrate_disabled" and then got preempted, so we must
+-			 * check the task migration disable flag here too.
+-			 */
+-			if (unlikely(task_rq(task) != rq ||
+-				     !cpumask_test_cpu(lowest_rq->cpu, &task->cpus_mask) ||
+-				     task_on_cpu(rq, task) ||
+-				     !rt_task(task) ||
+-				     is_migration_disabled(task) ||
+-				     !task_on_rq_queued(task))) {
+-
++			if (unlikely(!rt_revalidate_rq_state(task, rq, lowest_rq))) {
+ 				double_unlock_balance(rq, lowest_rq);
+ 				lowest_rq = NULL;
+ 				break;
 -- 
 2.43.0.472.g3155946c3a-goog
 
