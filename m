@@ -1,46 +1,71 @@
-Return-Path: <linux-kernel+bounces-6777-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6778-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B80B819D64
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 11:53:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA65D819D69
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 11:56:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F28E51C20F1A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 10:53:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 78D221F26A15
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 10:56:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56E4420DDD;
-	Wed, 20 Dec 2023 10:53:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BC9020DC9;
+	Wed, 20 Dec 2023 10:56:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="vkBmQruw"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="A8Cs1FCF"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21BBD20B1C;
-	Wed, 20 Dec 2023 10:53:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1703069603;
-	bh=0wM6NyIYfWx3GSl8Kay+3vfdMz3CT7HUYXvuXwJK47Q=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=vkBmQruw2EZdYOqARFcL+ugM0MlOmpY0fyvpp6IOKlTDg1ArOZp4RjMs7N984koTr
-	 7v02x3UYEGBX7Nbo0cLlKJtIWe5uaLpXAYwFfRkGEIXmR0jPof8U1x/RVEmgygHMWi
-	 baqcjXQm5NvfACedg/Jz2EYYx3TKiGQqo4+QP6w0MhIaq6YlYWGw9lvq1rNjjp/xmU
-	 xtlXkDXDw9cqg4gFOeUDv5bjBoFvW3YlHimcbGOed5k//uGcXkAvSu1zbpRajQZY2/
-	 Quf3tPADJ8moAGmHd30mk451URTfCpxkhm2SCqeI1O/lLGXMCQdkSui/RzajLD3WTp
-	 GRZd1txjf43uQ==
-Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 7A80B3781FC8;
-	Wed, 20 Dec 2023 10:53:22 +0000 (UTC)
-Message-ID: <508c9b5a-61d9-4e42-8faa-c6f48f453235@collabora.com>
-Date: Wed, 20 Dec 2023 11:53:21 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0447A20B30
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 10:56:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1703069793;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=3LDXbStXynX0T4Mxxob6LJQXBFex+Ms+cavTOWNyphA=;
+	b=A8Cs1FCFsywmumRne3fJW1/i/4HH72U2kfBeblIsYuxnyZcrGsSadm+sxuY1z0HkBpNE/a
+	2b9Alb9p9CIAf2ftDbqdFJzVkPhl4UUagBYMuLIVjPgQm/3Uog6y4RDm+ShsWt28ai+wfl
+	lPV6gy7QIqeGPRAP6ZqqmcOjmKSt+gc=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-583-_BmlxoeMMcedDJAqXO8Qow-1; Wed, 20 Dec 2023 05:56:30 -0500
+X-MC-Unique: _BmlxoeMMcedDJAqXO8Qow-1
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-40d27ea0165so12224185e9.1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 02:56:30 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703069789; x=1703674589;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3LDXbStXynX0T4Mxxob6LJQXBFex+Ms+cavTOWNyphA=;
+        b=t6qIhwzDnvvYeWTvgH1hecg8BMTo7fD1ZNpeqp/U6wqlQhK7PfleRMvkrmtwcl72As
+         P6fInIX0H9YvsYlbNB8lFOH7Gdw94gWbjr/eq4tAC8HqHz0/hGlE4ShcwzLAcJ35zuO4
+         vKRtxAXbad3fwnZGCMdbEY4wWsZC5XGEO5tDp7WjbA9zZzOsu5qb9nVtaCeavkk8G9mR
+         vrizR/ngm+c5QrjqbBs7K4B+gWW7Be5EHRBc6diCHaubj2/clmlOkl5QX1dk3KM6Aqpt
+         /zQcTYOZzs/ng57JUsyalrneS2cD7u9hqBBHbQ9EHaWK0ygFTH6SAabY1sN4vinTFMLi
+         qCKQ==
+X-Gm-Message-State: AOJu0YwCbCqsMMxuaogr0vJEBzo4SIwJp+gvtPbMWPKtSWDM/kBmNc2b
+	2EsoNpTOyRVxZam4R/k6KotbywrHd0aDdgESER7qfe1QblVb7LhlanBs0k8mNSKcQPfTuMC1mB2
+	JwaY89rLbNtrCUGsr4H4PJhee
+X-Received: by 2002:a1c:7c11:0:b0:40c:55a7:772f with SMTP id x17-20020a1c7c11000000b0040c55a7772fmr7289052wmc.146.1703069789327;
+        Wed, 20 Dec 2023 02:56:29 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IH3ab73NcCHmA2HFIUnD86YS7awwuMGPGKp7xdcA2cfKbsQgb25u6HQPW7k40LvQYe14aRuyQ==
+X-Received: by 2002:a1c:7c11:0:b0:40c:55a7:772f with SMTP id x17-20020a1c7c11000000b0040c55a7772fmr7289047wmc.146.1703069788835;
+        Wed, 20 Dec 2023 02:56:28 -0800 (PST)
+Received: from ?IPV6:2003:cb:c73b:eb00:8e25:6953:927:1802? (p200300cbc73beb008e25695309271802.dip0.t-ipconnect.de. [2003:cb:c73b:eb00:8e25:6953:927:1802])
+        by smtp.gmail.com with ESMTPSA id n11-20020a05600c3b8b00b0040b3d8907fesm6114763wms.29.2023.12.20.02.56.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Dec 2023 02:56:28 -0800 (PST)
+Message-ID: <699cb1db-51eb-460e-9ceb-1ce08ca03050@redhat.com>
+Date: Wed, 20 Dec 2023 11:56:26 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -48,171 +73,408 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/3] soc: mediatek: mtk-socinfo: Add driver for getting
- chip information
+Subject: Re: [PATCH v4 02/16] mm: Batch-copy PTE ranges during fork()
 Content-Language: en-US
-To: William-tw Lin <william-tw.lin@mediatek.com>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Matthias Brugger
- <matthias.bgg@gmail.com>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
-References: <20231220103901.22180-1-william-tw.lin@mediatek.com>
- <20231220103901.22180-3-william-tw.lin@mediatek.com>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20231220103901.22180-3-william-tw.lin@mediatek.com>
+To: Ryan Roberts <ryan.roberts@arm.com>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Ard Biesheuvel <ardb@kernel.org>, Marc Zyngier <maz@kernel.org>,
+ Oliver Upton <oliver.upton@linux.dev>, James Morse <james.morse@arm.com>,
+ Suzuki K Poulose <suzuki.poulose@arm.com>, Zenghui Yu
+ <yuzenghui@huawei.com>, Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+ Alexander Potapenko <glider@google.com>,
+ Andrey Konovalov <andreyknvl@gmail.com>, Dmitry Vyukov <dvyukov@google.com>,
+ Vincenzo Frascino <vincenzo.frascino@arm.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Anshuman Khandual <anshuman.khandual@arm.com>,
+ Matthew Wilcox <willy@infradead.org>, Yu Zhao <yuzhao@google.com>,
+ Mark Rutland <mark.rutland@arm.com>, Kefeng Wang
+ <wangkefeng.wang@huawei.com>, John Hubbard <jhubbard@nvidia.com>,
+ Zi Yan <ziy@nvidia.com>, Barry Song <21cnbao@gmail.com>,
+ Alistair Popple <apopple@nvidia.com>, Yang Shi <shy828301@gmail.com>
+Cc: linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org
+References: <20231218105100.172635-1-ryan.roberts@arm.com>
+ <20231218105100.172635-3-ryan.roberts@arm.com>
+ <0bef5423-6eea-446b-8854-980e9c23a948@redhat.com>
+ <db1be625-33e4-4d07-8500-3f7d3c8f9937@arm.com>
+ <be8b5181-be2c-4800-ba53-c65a6c3ed803@redhat.com>
+ <dd227e51-c4b2-420b-a92a-65da85ab4018@arm.com>
+ <7c0236ad-01f3-437f-8b04-125d69e90dc0@redhat.com>
+ <9a58b1a2-2c13-4fa0-8ffa-2b3d9655f1b6@arm.com>
+ <28968568-f920-47ac-b6fd-87528ffd8f77@redhat.com>
+ <10b0b562-c1c0-4a66-9aeb-a6bff5c218f6@arm.com>
+ <8f8023cb-3c31-4ead-a9e6-03a10e9490c6@redhat.com>
+ <da16a7e5-76dd-4150-9ade-54b0d227a1e1@arm.com>
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <da16a7e5-76dd-4150-9ade-54b0d227a1e1@arm.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-Il 20/12/23 11:39, William-tw Lin ha scritto:
-> Add driver for socinfo retrieval. This patch includes the following:
-> 1. mtk-socinfo driver for chip info retrieval
-> 2. Related changes to Makefile and Kconfig
+On 20.12.23 11:41, Ryan Roberts wrote:
+> On 20/12/2023 10:16, David Hildenbrand wrote:
+>> On 20.12.23 11:11, Ryan Roberts wrote:
+>>> On 20/12/2023 09:54, David Hildenbrand wrote:
+>>>> On 20.12.23 10:51, Ryan Roberts wrote:
+>>>>> On 20/12/2023 09:17, David Hildenbrand wrote:
+>>>>>> On 19.12.23 18:42, Ryan Roberts wrote:
+>>>>>>> On 19/12/2023 17:22, David Hildenbrand wrote:
+>>>>>>>> On 19.12.23 09:30, Ryan Roberts wrote:
+>>>>>>>>> On 18/12/2023 17:47, David Hildenbrand wrote:
+>>>>>>>>>> On 18.12.23 11:50, Ryan Roberts wrote:
+>>>>>>>>>>> Convert copy_pte_range() to copy a batch of ptes in one go. A given
+>>>>>>>>>>> batch is determined by the architecture with the new helper,
+>>>>>>>>>>> pte_batch_remaining(), and maps a physically contiguous block of memory,
+>>>>>>>>>>> all belonging to the same folio. A pte batch is then write-protected in
+>>>>>>>>>>> one go in the parent using the new helper, ptep_set_wrprotects() and is
+>>>>>>>>>>> set in one go in the child using the new helper, set_ptes_full().
+>>>>>>>>>>>
+>>>>>>>>>>> The primary motivation for this change is to reduce the number of tlb
+>>>>>>>>>>> maintenance operations that the arm64 backend has to perform during
+>>>>>>>>>>> fork, as it is about to add transparent support for the "contiguous bit"
+>>>>>>>>>>> in its ptes. By write-protecting the parent using the new
+>>>>>>>>>>> ptep_set_wrprotects() (note the 's' at the end) function, the backend
+>>>>>>>>>>> can avoid having to unfold contig ranges of PTEs, which is expensive,
+>>>>>>>>>>> when all ptes in the range are being write-protected. Similarly, by
+>>>>>>>>>>> using set_ptes_full() rather than set_pte_at() to set up ptes in the
+>>>>>>>>>>> child, the backend does not need to fold a contiguous range once they
+>>>>>>>>>>> are all populated - they can be initially populated as a contiguous
+>>>>>>>>>>> range in the first place.
+>>>>>>>>>>>
+>>>>>>>>>>> This code is very performance sensitive, and a significant amount of
+>>>>>>>>>>> effort has been put into not regressing performance for the order-0
+>>>>>>>>>>> folio case. By default, pte_batch_remaining() is compile constant 1,
+>>>>>>>>>>> which enables the compiler to simplify the extra loops that are added
+>>>>>>>>>>> for batching and produce code that is equivalent (and equally
+>>>>>>>>>>> performant) as the previous implementation.
+>>>>>>>>>>>
+>>>>>>>>>>> This change addresses the core-mm refactoring only and a separate change
+>>>>>>>>>>> will implement pte_batch_remaining(), ptep_set_wrprotects() and
+>>>>>>>>>>> set_ptes_full() in the arm64 backend to realize the performance
+>>>>>>>>>>> improvement as part of the work to enable contpte mappings.
+>>>>>>>>>>>
+>>>>>>>>>>> To ensure the arm64 is performant once implemented, this change is very
+>>>>>>>>>>> careful to only call ptep_get() once per pte batch.
+>>>>>>>>>>>
+>>>>>>>>>>> The following microbenchmark results demonstate that there is no
+>>>>>>>>>>> significant performance change after this patch. Fork is called in a
+>>>>>>>>>>> tight loop in a process with 1G of populated memory and the time for the
+>>>>>>>>>>> function to execute is measured. 100 iterations per run, 8 runs
+>>>>>>>>>>> performed on both Apple M2 (VM) and Ampere Altra (bare metal). Tests
+>>>>>>>>>>> performed for case where 1G memory is comprised of order-0 folios and
+>>>>>>>>>>> case where comprised of pte-mapped order-9 folios. Negative is faster,
+>>>>>>>>>>> positive is slower, compared to baseline upon which the series is based:
+>>>>>>>>>>>
+>>>>>>>>>>> | Apple M2 VM   | order-0 (pte-map) | order-9 (pte-map) |
+>>>>>>>>>>> | fork          |-------------------|-------------------|
+>>>>>>>>>>> | microbench    |    mean |   stdev |    mean |   stdev |
+>>>>>>>>>>> |---------------|---------|---------|---------|---------|
+>>>>>>>>>>> | baseline      |    0.0% |    1.1% |    0.0% |    1.2% |
+>>>>>>>>>>> | after-change  |   -1.0% |    2.0% |   -0.1% |    1.1% |
+>>>>>>>>>>>
+>>>>>>>>>>> | Ampere Altra  | order-0 (pte-map) | order-9 (pte-map) |
+>>>>>>>>>>> | fork          |-------------------|-------------------|
+>>>>>>>>>>> | microbench    |    mean |   stdev |    mean |   stdev |
+>>>>>>>>>>> |---------------|---------|---------|---------|---------|
+>>>>>>>>>>> | baseline      |    0.0% |    1.0% |    0.0% |    0.1% |
+>>>>>>>>>>> | after-change  |   -0.1% |    1.2% |   -0.1% |    0.1% |
+>>>>>>>>>>>
+>>>>>>>>>>> Tested-by: John Hubbard <jhubbard@nvidia.com>
+>>>>>>>>>>> Reviewed-by: Alistair Popple <apopple@nvidia.com>
+>>>>>>>>>>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+>>>>>>>>>>> ---
+>>>>>>>>>>>        include/linux/pgtable.h | 80 +++++++++++++++++++++++++++++++++++
+>>>>>>>>>>>        mm/memory.c             | 92
+>>>>>>>>>>> ++++++++++++++++++++++++++---------------
+>>>>>>>>>>>        2 files changed, 139 insertions(+), 33 deletions(-)
+>>>>>>>>>>>
+>>>>>>>>>>> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+>>>>>>>>>>> index af7639c3b0a3..db93fb81465a 100644
+>>>>>>>>>>> --- a/include/linux/pgtable.h
+>>>>>>>>>>> +++ b/include/linux/pgtable.h
+>>>>>>>>>>> @@ -205,6 +205,27 @@ static inline int pmd_young(pmd_t pmd)
+>>>>>>>>>>>        #define arch_flush_lazy_mmu_mode()    do {} while (0)
+>>>>>>>>>>>        #endif
+>>>>>>>>>>>        +#ifndef pte_batch_remaining
+>>>>>>>>>>> +/**
+>>>>>>>>>>> + * pte_batch_remaining - Number of pages from addr to next batch
+>>>>>>>>>>> boundary.
+>>>>>>>>>>> + * @pte: Page table entry for the first page.
+>>>>>>>>>>> + * @addr: Address of the first page.
+>>>>>>>>>>> + * @end: Batch ceiling (e.g. end of vma).
+>>>>>>>>>>> + *
+>>>>>>>>>>> + * Some architectures (arm64) can efficiently modify a contiguous
+>>>>>>>>>>> batch of
+>>>>>>>>>>> ptes.
+>>>>>>>>>>> + * In such cases, this function returns the remaining number of pages to
+>>>>>>>>>>> the end
+>>>>>>>>>>> + * of the current batch, as defined by addr. This can be useful when
+>>>>>>>>>>> iterating
+>>>>>>>>>>> + * over ptes.
+>>>>>>>>>>> + *
+>>>>>>>>>>> + * May be overridden by the architecture, else batch size is always 1.
+>>>>>>>>>>> + */
+>>>>>>>>>>> +static inline unsigned int pte_batch_remaining(pte_t pte, unsigned long
+>>>>>>>>>>> addr,
+>>>>>>>>>>> +                        unsigned long end)
+>>>>>>>>>>> +{
+>>>>>>>>>>> +    return 1;
+>>>>>>>>>>> +}
+>>>>>>>>>>> +#endif
+>>>>>>>>>>
+>>>>>>>>>> It's a shame we now lose the optimization for all other archtiectures.
+>>>>>>>>>>
+>>>>>>>>>> Was there no way to have some basic batching mechanism that doesn't
+>>>>>>>>>> require
+>>>>>>>>>> arch
+>>>>>>>>>> specifics?
+>>>>>>>>>
+>>>>>>>>> I tried a bunch of things but ultimately the way I've done it was the only
+>>>>>>>>> way
+>>>>>>>>> to reduce the order-0 fork regression to 0.
+>>>>>>>>>
+>>>>>>>>> My original v3 posting was costing 5% extra and even my first attempt at an
+>>>>>>>>> arch-specific version that didn't resolve to a compile-time constant 1
+>>>>>>>>> still
+>>>>>>>>> cost an extra 3%.
+>>>>>>>>>
+>>>>>>>>>
+>>>>>>>>>>
+>>>>>>>>>> I'd have thought that something very basic would have worked like:
+>>>>>>>>>>
+>>>>>>>>>> * Check if PTE is the same when setting the PFN to 0.
+>>>>>>>>>> * Check that PFN is consecutive
+>>>>>>>>>> * Check that all PFNs belong to the same folio
+>>>>>>>>>
+>>>>>>>>> I haven't tried this exact approach, but I'd be surprised if I can get the
+>>>>>>>>> regression under 4% with this. Further along the series I spent a lot of
+>>>>>>>>> time
+>>>>>>>>> having to fiddle with the arm64 implementation; every conditional and every
+>>>>>>>>> memory read (even when in cache) was a problem. There is just so little in
+>>>>>>>>> the
+>>>>>>>>> inner loop that every instruction matters. (At least on Ampere Altra and
+>>>>>>>>> Apple
+>>>>>>>>> M2).
+>>>>>>>>>
+>>>>>>>>> Of course if you're willing to pay that 4-5% for order-0 then the
+>>>>>>>>> benefit to
+>>>>>>>>> order-9 is around 10% in my measurements. Personally though, I'd prefer to
+>>>>>>>>> play
+>>>>>>>>> safe and ensure the common order-0 case doesn't regress, as you previously
+>>>>>>>>> suggested.
+>>>>>>>>>
+>>>>>>>>
+>>>>>>>> I just hacked something up, on top of my beloved rmap cleanup/batching
+>>>>>>>> series. I
+>>>>>>>> implemented very generic and simple batching for large folios (all PTE bits
+>>>>>>>> except the PFN have to match).
+>>>>>>>>
+>>>>>>>> Some very quick testing (don't trust each last % ) on Intel(R) Xeon(R)
+>>>>>>>> Silver
+>>>>>>>> 4210R CPU.
+>>>>>>>>
+>>>>>>>> order-0: 0.014210 -> 0.013969
+>>>>>>>>
+>>>>>>>> -> Around 1.7 % faster
+>>>>>>>>
+>>>>>>>> order-9: 0.014373 -> 0.009149
+>>>>>>>>
+>>>>>>>> -> Around 36.3 % faster
+>>>>>>>
+>>>>>>> Well I guess that shows me :)
+>>>>>>>
+>>>>>>> I'll do a review and run the tests on my HW to see if it concurs.
+>>>>>>
+>>>>>>
+>>>>>> I pushed a simple compile fixup (we need pte_next_pfn()).
+>>>>>
+>>>>> I've just been trying to compile and noticed this. Will take a look at your
+>>>>> update.
+>>>>>
+>>>>> But upon review, I've noticed the part that I think makes this difficult for
+>>>>> arm64 with the contpte optimization; You are calling ptep_get() for every
+>>>>> pte in
+>>>>> the batch. While this is functionally correct, once arm64 has the contpte
+>>>>> changes, its ptep_get() has to read every pte in the contpte block in order to
+>>>>> gather the access and dirty bits. So if your batching function ends up wealking
+>>>>> a 16 entry contpte block, that will cause 16 x 16 reads, which kills
+>>>>> performance. That's why I added the arch-specific pte_batch_remaining()
+>>>>> function; this allows the core-mm to skip to the end of the contpte block and
+>>>>> avoid ptep_get() for the 15 tail ptes. So we end up with 16 READ_ONCE()s
+>>>>> instead
+>>>>> of 256.
+>>>>>
+>>>>> I considered making a ptep_get_noyoungdirty() variant, which would avoid the
+>>>>> bit
+>>>>> gathering. But we have a similar problem in zap_pte_range() and that function
+>>>>> needs the dirty bit to update the folio. So it doesn't work there. (see patch 3
+>>>>> in my series).
+>>>>>
+>>>>> I guess you are going to say that we should combine both approaches, so that
+>>>>> your batching loop can skip forward an arch-provided number of ptes? That would
+>>>>> certainly work, but feels like an orthogonal change to what I'm trying to
+>>>>> achieve :). Anyway, I'll spend some time playing with it today.
+>>>>
+>>>> You can overwrite the function or add special-casing internally, yes.
+>>>>
+>>>> Right now, your patch is called "mm: Batch-copy PTE ranges during fork()" and it
+>>>> doesn't do any of that besides preparing for some arm64 work.
+>>>>
+>>>
+>>> Well it allows an arch to opt-in to batching. But I see your point.
+>>>
+>>> How do you want to handle your patches? Do you want to clean them up and I'll
+>>> base my stuff on top? Or do you want me to take them and sort it all out?
+>>
+>> Whatever you prefer, it was mostly a quick prototype to see if we can achieve
+>> decent performance.
 > 
-> Signed-off-by: William-tw Lin <william-tw.lin@mediatek.com>
-> ---
->   drivers/soc/mediatek/Kconfig       |   8 ++
->   drivers/soc/mediatek/Makefile      |   1 +
->   drivers/soc/mediatek/mtk-socinfo.c | 186 +++++++++++++++++++++++++++++
->   3 files changed, 195 insertions(+)
->   create mode 100644 drivers/soc/mediatek/mtk-socinfo.c
+> I'm about to run it on Altra and M2. But I assume it will show similar results.
 > 
-> diff --git a/drivers/soc/mediatek/Kconfig b/drivers/soc/mediatek/Kconfig
-> index 0810b5b0c688..f34d93977ba6 100644
-> --- a/drivers/soc/mediatek/Kconfig
-> +++ b/drivers/soc/mediatek/Kconfig
-> @@ -68,4 +68,12 @@ config MTK_SVS
->   	  chip process corner, temperatures and other factors. Then DVFS
->   	  driver could apply SVS bank voltage to PMIC/Buck.
->   
-> +config MTK_SOCINFO
-> +	tristate "MediaTek SoC Information"
-> +	default y
+>>
+>> I can fixup the arch thingies (most should be easy, some might require a custom
+>> pte_next_pfn())
+> 
+> Well if you're happy to do that, great! I'm keen to get the contpte stuff into
+> v6.9 if at all possible, and I'm concious that I'm introducing more dependencies
+> on you. And its about to be holiday season...
 
-Add the dependency please.
+There is still plenty of time for 6.9. I'll try to get the rmap cleanup 
+finished asap.
 
-	depends on NVMEM_MTK_EFUSE
+> 
+>> and you can focus on getting cont-pte sorted out on top [I
+>> assume that's what you want to work on :) ].
+> 
+> That's certainly what I'm focussed on. But I'm happy to do whatever is required
+> to get it over the line. I guess I'll start by finishing my review of your v1
+> rmap stuff.
 
-> +	help
-> +	  The MediaTek SoC Information (mtk-socinfo) driver provides
-> +	  information about the SoC to the userspace including the
-> +	  manufacturer name, marketing name and soc name.
-> +
->   endmenu
-> diff --git a/drivers/soc/mediatek/Makefile b/drivers/soc/mediatek/Makefile
-> index 9d3ce7878c5c..6830512848fd 100644
-> --- a/drivers/soc/mediatek/Makefile
-> +++ b/drivers/soc/mediatek/Makefile
-> @@ -7,3 +7,4 @@ obj-$(CONFIG_MTK_REGULATOR_COUPLER) += mtk-regulator-coupler.o
->   obj-$(CONFIG_MTK_MMSYS) += mtk-mmsys.o
->   obj-$(CONFIG_MTK_MMSYS) += mtk-mutex.o
->   obj-$(CONFIG_MTK_SVS) += mtk-svs.o
-> +obj-$(CONFIG_MTK_SOCINFO) += mtk-socinfo.o
-> diff --git a/drivers/soc/mediatek/mtk-socinfo.c b/drivers/soc/mediatek/mtk-socinfo.c
-> new file mode 100644
-> index 000000000000..4a257b5c8eda
-> --- /dev/null
-> +++ b/drivers/soc/mediatek/mtk-socinfo.c
-> @@ -0,0 +1,186 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (c) 2023 MediaTek Inc.
-> + */
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-> +#include <linux/of.h>
-> +#include <linux/of_platform.h>
-> +#include <linux/pm_runtime.h>
-> +#include <linux/nvmem-consumer.h>
-> +#include <linux/device.h>
-> +#include <linux/debugfs.h>
-> +#include <linux/seq_file.h>
-> +#include <linux/string.h>
-> +#include <linux/sys_soc.h>
-> +#include <linux/slab.h>
-> +#include <linux/platform_device.h>
-> +
-> +#define MTK_SOCINFO_ENTRY(_soc_name, _segment_name, _marketing_name, _cell_data1, _cell_data2) {\
-> +	.soc_name = _soc_name,									\
-> +	.segment_name = _segment_name,								\
-> +	.marketing_name = _marketing_name,							\
-> +	.cell_data = {_cell_data1, _cell_data2}							\
-> +}
-> +#define CELL_NOT_USED (0xFFFFFFFF)
-> +#define MAX_CELLS (2)
-> +
-> +struct mtk_socinfo {
-> +	struct device *dev;
-> +	struct name_data *name_data;
-> +	struct socinfo_data *socinfo_data;
-> +	struct soc_device *soc_dev;
-> +};
-> +
-> +struct socinfo_data {
-> +	char *soc_name;
-> +	char *segment_name;
-> +	char *marketing_name;
-> +	u32 cell_data[MAX_CELLS];
-> +};
-> +
-> +static const char *cell_names[MAX_CELLS] = {"socinfo-data1", "socinfo-data2"};
-> +
-> +static struct socinfo_data socinfo_data_table[] = {
-> +	MTK_SOCINFO_ENTRY("MT8173", "MT8173V/AC", "MT8173", 0x6CA20004, 0x10000000),
-> +	MTK_SOCINFO_ENTRY("MT8183", "MT8183V/AZA", "Kompanio 500", 0x00010043, 0x00000840),
-> +	MTK_SOCINFO_ENTRY("MT8186", "MT8186GV/AZA", "Kompanio 520", 0x81861001, CELL_NOT_USED),
-> +	MTK_SOCINFO_ENTRY("MT8186T", "MT8186TV/AZA", "Kompanio 528", 0x81862001, CELL_NOT_USED),
-> +	MTK_SOCINFO_ENTRY("MT8188", "MT8188GV/AZA", "Kompanio 830", 0x81880000, 0x00000010),
-> +	MTK_SOCINFO_ENTRY("MT8188", "MT8188GV/HZA", "Kompanio 830", 0x81880000, 0x00000011),
-> +	MTK_SOCINFO_ENTRY("MT8192", "MT8192V/AZA", "Kompanio 820", 0x00001100, 0x00040080),
-> +	MTK_SOCINFO_ENTRY("MT8192T", "MT8192V/ATZA", "Kompanio 828", 0x00000100, 0x000400C0),
-> +	MTK_SOCINFO_ENTRY("MT8195", "MT8195GV/EZA", "Kompanio 1200", 0x81950300, CELL_NOT_USED),
-> +	MTK_SOCINFO_ENTRY("MT8195", "MT8195GV/EHZA", "Kompanio 1200", 0x81950304, CELL_NOT_USED),
-> +	MTK_SOCINFO_ENTRY("MT8195", "MT8195TV/EZA", "Kompanio 1380", 0x81950400, CELL_NOT_USED),
-> +	MTK_SOCINFO_ENTRY("MT8195", "MT8195TV/EHZA", "Kompanio 1380", 0x81950404, CELL_NOT_USED),
-> +};
-> +
-> +static int mtk_socinfo_create_socinfo_node(struct mtk_socinfo *mtk_socinfop)
-> +{
-> +	struct soc_device_attribute *attrs;
-> +	static char machine[30] = {0};
-> +	static const char *soc_manufacturer = "MediaTek";
-> +
-> +	attrs = devm_kzalloc(mtk_socinfop->dev, sizeof(*attrs), GFP_KERNEL);
-> +	if (!attrs)
-> +		return -ENOMEM;
-> +
-> +	snprintf(machine, sizeof(machine), "%s (%s)", mtk_socinfop->socinfo_data->marketing_name,
-> +		mtk_socinfop->socinfo_data->soc_name);
-> +	attrs->family = soc_manufacturer;
-> +	attrs->machine = machine;
-> +
-> +	mtk_socinfop->soc_dev = soc_device_register(attrs);
-> +	if (IS_ERR(mtk_socinfop->soc_dev))
-> +		return PTR_ERR(mtk_socinfop->soc_dev);
-> +
-> +	dev_info(mtk_socinfop->dev, "%s %s SoC detected.\n", soc_manufacturer, attrs->machine);
-> +	return 0;
-> +}
-> +
-> +static u32 mtk_socinfo_read_cell(struct device *dev, const char *name)
-> +{
-> +	struct nvmem_device *nvmemp;
-> +	struct device_node *np = dev->of_node;
-> +	u32 offset;
-> +	u32 cell_val = CELL_NOT_USED;
-> +
-> +	nvmemp = devm_nvmem_device_get(dev, "mtk-efuse0");
+I'm planning on sending out a new version today.
 
-Are you sure that this is supposed to be "mtk-efuse0" and not "mtk-efuse"?
-Looks strange.
+> 
+>>
+>>>
+>>> As I see it at the moment, I would keep your folio_pte_batch() always core, but
+>>> in subsequent patch, have it use pte_batch_remaining() (the arch function I have
+>>> in my series, which defaults to one).
+>>
+>> Just double-checking, how would it use pte_batch_remaining() ?
+> 
+> I think something like this would do it (untested):
+> 
+> static inline int folio_pte_batch(struct folio *folio, unsigned long addr,
+> 		pte_t *start_ptep, pte_t pte, int max_nr)
+> {
+> 	unsigned long folio_end_pfn = folio_pfn(folio) + folio_nr_pages(folio);
+> 	pte_t expected_pte = pte_next_pfn(pte);
+> 	pte_t *ptep = start_ptep;
+> 	int nr;
+> 
+> 	for (;;) {
+> 		nr = min(max_nr, pte_batch_remaining());
+> 		ptep += nr;
+> 		max_nr -= nr;
+> 
+> 		if (max_nr == 0)
+> 			break;
+> 
 
-Everything else looks ok.
+expected_pte would be messed up. We'd have to increment it a couple of 
+times to make it match the nr of pages we're skipping.
 
+> 		pte = ptep_get(ptep);
+> 
+> 		/* Do all PTE bits match, and the PFN is consecutive? */
+> 		if (!pte_same(pte, expected_pte))
+> 			break;
+> 
+> 		/*
+> 		 * Stop immediately once we reached the end of the folio. In
+> 		 * corner cases the next PFN might fall into a different
+> 		 * folio.
+> 		 */
+> 		if (pte_pfn(pte) == folio_end_pfn - 1)
+> 			break;
+> 
+> 		expected_pte = pte_next_pfn(expected_pte);
+> 	}
+> 
+> 	return ptep - start_ptep;
+> }
+> 
+> Of course, if we have the concept of a "pte batch" in the core-mm, then we might
+> want to call the arch's thing something different; pte span? pte cont? pte cont
+> batch? ...
+
+So, you mean something like
+
+/*
+  * The architecture might be able to tell us efficiently using cont-pte
+  * bits how many next PTEs are certainly compatible. So in that case,
+  * simply skip forward.
+  */
+nr = min(max_nr, nr_cont_ptes(ptep));
+...
+
+I wonder if something simple at the start of the function might be good 
+enough for arm with cont-pte as a first step:
+
+nr = nr_cont_ptes(start_ptep)
+if (nr != 1) {
+	return min(max_nr, nr);
+}
+
+Which would get optimized out on other architectures.
+
+
+-- 
 Cheers,
-Angelo
 
+David / dhildenb
 
 
