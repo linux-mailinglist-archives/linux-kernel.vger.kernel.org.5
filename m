@@ -1,64 +1,64 @@
-Return-Path: <linux-kernel+bounces-6455-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6456-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A2640819923
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 08:10:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB267819925
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 08:11:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C865A1C21558
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 07:10:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4821C1F27532
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 07:11:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 356E314F65;
-	Wed, 20 Dec 2023 07:10:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 319321863B;
+	Wed, 20 Dec 2023 07:11:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="dwOcpL0f"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="NHpRfMXV"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 432A31F5E4
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 07:10:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D3451773D
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 07:11:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-40c41b43e1eso67746615e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 23:10:20 -0800 (PST)
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-40c3ca9472dso61119535e9.2
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 23:11:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703056218; x=1703661018; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1703056278; x=1703661078; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=okON4GLE4m7eiuy8+UmbhgqUVUUKuGj5zHFUalwl3UU=;
-        b=dwOcpL0fLttH/XN6bs6yQkd2hdG8no9MKctUf2wTGNmmkhVKWAd86t7pB79CfqNJb1
-         3qa6PfZCHx9o9AADrW69zvBegw+iW4c/R6eP1z9gQ6ijwMfetfVZvSo7RQgr/yeewYRo
-         V65nG+YGvYO9MylaJnTt7BX9ybhO9Un4Af2ul7UYa8Z/Thnid6Itss3zckFnPCKxC8cl
-         voF7UPCQqir06TX5BmbPP36/ptsErcwZdLzgD+zVlqLpGHJpPzBMpbH4eafnqBzpFzd/
-         2tfCe1Cna4T+WiG+sFplTtRNAQuoyO73ADcfsv0zgqgJwcm/NTqklJwyRGbhD3OdlOmN
-         p6pQ==
+        bh=m2WQhQglhHYm0GV+R5lb/OUTIf5F6rXKdToScXfyqoE=;
+        b=NHpRfMXVuhvZwz3B8qbEiiDw793kOEJPzAdcSsC7oaPn2kdKrbzda7JobuhWW0r70E
+         iZrfVZc0QPQ2M64+2MmffXO8sm80bsYjPefPuE0O5XuVfVmZd/bvslBpUmri4y4zZFUQ
+         GlwuiIDKExt0En+W4/Wq6nQqUSJCsRG/sWoTYmEgVeLE25pvLu84x4kxqj5k4sHur8Of
+         XLaNpAYcuiWNun7bjCQRwy5XqapoNuPoEw7mfbbHSU0t3pLB3OOzm++iqhfAkaop9A/M
+         rp/ctNmA0rf059QlcBDXX+xKXxmYsQI/h77CccDbgQY6DsmvMMSM6Dd5pfYSWhbFBYOZ
+         N3AA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703056218; x=1703661018;
+        d=1e100.net; s=20230601; t=1703056278; x=1703661078;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=okON4GLE4m7eiuy8+UmbhgqUVUUKuGj5zHFUalwl3UU=;
-        b=LtWA7rf09ZdhImPpPoNoGUAgXAWoVQB94fIrLBNAt5i67qSAClewF3O+T9qKBGESb3
-         2SVbghKXKvmngSuFg5R7pEW/9eaDSICtgrQCYeBdP93kB7Za1F2KwNtQpTnZPLF2rH31
-         dyu+Es2Vb4LZAil4J/ao+ZhOnn0mE8ybXa7brbRnsRRmOywYA68ElRjDpAciBWU812qe
-         EAGoo9nWqEbp4PPSt5BcwLxDrC9jApBjWa/7+0kD7xr09hc80Io8LFW7CZGC9TrreBql
-         oQwCyRCNh8Sp5n09iIMcjK1UY2m8YL5cOBsNMoojdOcVnWt6Za9pe5G9nGtfr0PlaMjY
-         IBbg==
-X-Gm-Message-State: AOJu0YzAgoo2AvBDkClCZIbHwJGwy7Lqpaxriy6BfltW/aqYImuriNUB
-	x/qeiApn1rwe33Zn7fxfFmvmeQ==
-X-Google-Smtp-Source: AGHT+IGPunQAyApSaIKE+PxD7CbrP/uD8PsgqvhsUXidXH/rWlukClfDqBMmd+lpEbteqlHtQ6Yrbg==
-X-Received: by 2002:a05:600c:3146:b0:40c:3e7c:9e45 with SMTP id h6-20020a05600c314600b0040c3e7c9e45mr8699714wmo.179.1703056218421;
-        Tue, 19 Dec 2023 23:10:18 -0800 (PST)
+        bh=m2WQhQglhHYm0GV+R5lb/OUTIf5F6rXKdToScXfyqoE=;
+        b=Q6/2Qq9Y7MqHQbE7/xUBGYZFxtsHSnC7YaX5vNUwwEOknBeHgZcYQci5dVBsCO+uqh
+         R73b/TqBStD9rr/XJr46kvVxLqUtSpoUUBEvgsZn4ymIs5X489eYmv55hRCwaaAeR4TK
+         iH9TMPPMO3UnBAfDVzOu/d+q6W/iDlx9mNDTTXSvcvzbENbcZItWiyZb8JTgtqzOBwQ+
+         boPThjDQH6Ytn29s1Po1RxEC/EkxHLrupfXG5dkI5qJ9AuVjbRLgg9kRnbxpCfIa7wCz
+         sX8pf9YmZOE0hwpuXUIK6GCP1+eb8GnZFoazrMa6YQfkgkTt1Y8zQfksIW17WT2OBnRR
+         BT3A==
+X-Gm-Message-State: AOJu0YyV/mF899H5t2IH1AT7NT6slFXcDKQzQgkrKRm1NlNJm4EvGLcK
+	F9+HI11xRqal7qY0vB4opA3Gbg==
+X-Google-Smtp-Source: AGHT+IGBreTKlpU23zic8nyaWtrqyzIIVNo4Jmk4qqd+GdJkepmg6jhQ79j8D4/Wue4fHzPvCeklxw==
+X-Received: by 2002:a05:600c:520d:b0:40d:3376:d87c with SMTP id fb13-20020a05600c520d00b0040d3376d87cmr232153wmb.119.1703056278612;
+        Tue, 19 Dec 2023 23:11:18 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id bd7-20020a05600c1f0700b0040c420eda48sm6382647wmb.22.2023.12.19.23.10.16
+        by smtp.gmail.com with ESMTPSA id bd7-20020a05600c1f0700b0040c420eda48sm6382647wmb.22.2023.12.19.23.11.15
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Dec 2023 23:10:17 -0800 (PST)
-Message-ID: <6265dc95-57fe-4e02-b68c-03d60b1cdabc@linaro.org>
-Date: Wed, 20 Dec 2023 08:10:15 +0100
+        Tue, 19 Dec 2023 23:11:17 -0800 (PST)
+Message-ID: <ed636ec5-92fe-4d07-8492-747df2bedfad@linaro.org>
+Date: Wed, 20 Dec 2023 08:11:15 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,24 +66,15 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/1] arm64: dts: qcom: sm8550: remove
- address/size-cells from mdss_dsi1
+Subject: Re: (subset) [PATCH v3 0/1] arm64: dts: qcom: sm8550: remove
 Content-Language: en-US
-To: "Aiqun Yu (Maria)" <quic_aiquny@quicinc.com>,
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: Tengfei Fan <quic_tengfan@quicinc.com>, andersson@kernel.org,
- konrad.dybcio@linaro.org, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+To: Bjorn Andersson <andersson@kernel.org>, konrad.dybcio@linaro.org,
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ Tengfei Fan <quic_tengfan@quicinc.com>
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org, kernel@quicinc.com
 References: <20231219003106.8663-1-quic_tengfan@quicinc.com>
- <20231219003106.8663-2-quic_tengfan@quicinc.com>
- <457e336e-004c-4721-b58d-e9ada16dc04b@linaro.org>
- <a8f168da-14f7-4377-8dea-f282a3eac0a4@quicinc.com>
- <13b61d41-6045-499e-864b-51c6cb6eacf9@linaro.org>
- <38604415-b410-4995-9c4f-525536435699@quicinc.com>
- <CAA8EJpo07gE7ZeNP6wSGTLtmF_3PKQAKFyMRZ8dk1K+f7PAxrg@mail.gmail.com>
- <ad1547cf-0520-422d-a105-ec426f526d71@quicinc.com>
+ <170301441259.365364.2180258670074890979.b4-ty@kernel.org>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -129,97 +120,28 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <ad1547cf-0520-422d-a105-ec426f526d71@quicinc.com>
+In-Reply-To: <170301441259.365364.2180258670074890979.b4-ty@kernel.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 20/12/2023 01:53, Aiqun Yu (Maria) wrote:
+On 19/12/2023 20:33, Bjorn Andersson wrote:
 > 
-> 
-> On 12/19/2023 6:21 PM, Dmitry Baryshkov wrote:
->> On Tue, 19 Dec 2023 at 12:09, Aiqun Yu (Maria) <quic_aiquny@quicinc.com> wrote:
->>>
->>>
->>>
->>> On 12/19/2023 5:41 PM, Krzysztof Kozlowski wrote:
->>>> On 19/12/2023 10:36, Aiqun Yu (Maria) wrote:
->>>>>
->>>>>
->>>>> On 12/19/2023 3:17 PM, Krzysztof Kozlowski wrote:
->>>>>> On 19/12/2023 01:31, Tengfei Fan wrote:
->>>>>>> The address/size-cells in mdss_dsi1 node have not ranges and child also
->>>>>>> have not reg, then this leads to dtc W=1 warnings:
->>>>>>
->>>>> Comments can be more readable:
->>>>> "mdss_dsi1" node don't have "ranges" or child "reg" property, while it
->>>>> have address/size-cells properties. This caused
->>>>> "avoid_unnecessary_addr_size" warning from dtb check.
->>>>> Remove address/size-cells properties for "mdss_dsi1" node.
->>>>>
->>>>>> I cannot parse it. Address/size cells never have ranges or children.
->>>>>> They cannot have. These are uint32 properties.
->>>>> Pls help to comment on the revised commit message. Every time I write a
->>>>> commit message, also takes a while for me to double confirm whether
->>>>> others can understand me correctly as well. Feel free to let us know if
->>>>> it is not readable to you. It will help us as non-English native developers.
->>>>>>
->>>>>>>
->>>>>>>      sm8550.dtsi:2937.27-2992.6: Warning (avoid_unnecessary_addr_size): /soc@0/display-subsystem@ae00000/dsi@ae96000:
->>>>>>>        unnecessary #address-cells/#size-cells without "ranges" or child "reg" property
->>>>>>>
->>>>>>>
->>>>>>> Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
->>>>>>> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
->>>>>>> ---
->>>>>>
->>>>>> I disagreed with the patch before. You resubmit it without really
->>>>>> addressing my concerns.
->>>>>>
->>>>>> I am not sure if this is correct fix and I want to fix all of such
->>>>>> errors (there are multiple of them) in the same way. Feel free to
->>>>>> propose common solution based on arguments.
->>>>> Per my understanding, "qcom,mdss-dsi-ctrl" driver node like "mdss_dsi1"
->>>>> don't need to have address/size-cells properties.
->>>>
->>>> Just because dtc says so? And what about bindings?
->>> I don't find any reason why "qcom,mdss-dsi-ctrl" driver node need to
->>> have address/size-cells properties. Document Bindings should also be fixed.
->>>>
->>>>> Feel free to let us know whether there is different idea of
->>>>> "address/size-cells" needed for the "qcom,mdss-dsi-ctrl" driver node.
->>>>
->>>> The bindings expressed that idea. If the binding is incorrect, fix the
->>>> binding and the DTS. If the binding is correct, provide rationale why it
->>>> somehow does not apply here etc.
->>> Our plan is to fix the bindings as well.
->>>
->>> In case you have missed the question, I just re-place it here:
->>> While there are about 22 different soc dtsi and it's document binding
->>> files needed to be fixed. Shall we fix it for all qcom related soc usage
->>> in one patch, or we'd better to split into different patches according
->>> to soc specifically?
+> On Tue, 19 Dec 2023 08:31:05 +0800, Tengfei Fan wrote:
+>> The address/size-cells in mdss_dsi1 node have not ranges and child also
+>> have not reg, then this leads to dtc W=1 warnings:
 >>
->> Don't touch the bindings unless you understand what you are doing.
->> Your patch will be NAKed. There can be a DSI panel attached to the DSI
->> host, which means there is a need for #address-cells / #size-cells.
+>>   sm8550.dtsi:2937.27-2992.6: Warning (avoid_unnecessary_addr_size): /soc@0/display-subsystem@ae00000/dsi@ae96000:
+>>     unnecessary #address-cells/#size-cells without "ranges" or child "reg" property
 >>
-> Could you please help to elaborate more on details? Like what's the 
-> right example here for the "qcom,mdss-dsi-ctrl" driver node needed to 
-> have "#address-cells"/"#size-cells".
-
-Isn't the binding describing such example?
-
+>>
+>> [...]
 > 
-> Thx to chime in that we have put a good amount of time here.
->> Please stop wasting the time on dtc warning. The bindings (and the
->> file) are correct.
-> I don't agree here.
-> Either it is a wrong usage of "#address-cells"/"#size-cells", or dtc 
-> warning should be fixed with this usage take into account.
-> "dtb check" will be a good guideline for developers to follow, I don't 
-> think it is wasting time here.
+> Applied, thanks!
+> 
+> [1/1] arm64: dts: qcom: sm8550: remove address/size-cells from mdss_dsi1
+>       commit: 53081095936cdb1501d6bcf6cb703fdd3ac71b85
 
-You don't agree but you don't know how this binding works?
+?!? I explicitly disagreed with this patch here and in the previous thread!
 
 Best regards,
 Krzysztof
