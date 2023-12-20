@@ -1,103 +1,311 @@
-Return-Path: <linux-kernel+bounces-6282-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6275-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68F348196B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 03:09:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EEFE88196A6
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 03:01:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EF69DB221F2
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 02:09:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6D5CA1F267A1
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 02:01:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B4718813;
-	Wed, 20 Dec 2023 02:09:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="yAvZzdkw"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEAA78F7D;
+	Wed, 20 Dec 2023 02:01:08 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 443EC79DD;
-	Wed, 20 Dec 2023 02:09:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=0uJT5gTIpGFqVn5BDA+jA6ZegGHjTIiqXuV3kQHOKvc=; b=yAvZzdkwIn63b04Z6f4uZW2h/D
-	+1ftbdo1MCv7BJq6ZQJ8bXx0V6Gr3soCIeS0vXq9XZy8h9bIIAILJmQILjKYAxHlVWveRmNDDMAcY
-	5Fk1I+pma4h++A2doMPEyAICamKGL111P0OfoAC/cacCdiwWZDqq3xrcuL/Elr0kfoeCovdp5UHTI
-	7U3o2Lg+acCCHDXC6SHYua8vpqfCsD2ZBpIPIAmREF/WXPtXirq5cD/hnilrUue9X2jqC/b07zUJ/
-	c8PKKMLZ6bS0Sm/uHnybu4/z2N+orzi+1ZYoSYXwDxA9Lf6qjORUwwU8idpg+sjm4qOzg2HveJKii
-	PQYCwjpg==;
-Received: from [50.53.46.231] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1rFm1k-00FxUJ-2E;
-	Wed, 20 Dec 2023 02:09:40 +0000
-Message-ID: <f5e1641a-3d92-4822-9ef9-202e6f5b8981@infradead.org>
-Date: Tue, 19 Dec 2023 18:09:40 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BD3B7488;
+	Wed, 20 Dec 2023 02:01:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.234])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4SvxZm4Cl8z29gGv;
+	Wed, 20 Dec 2023 09:59:44 +0800 (CST)
+Received: from dggpeml500026.china.huawei.com (unknown [7.185.36.106])
+	by mail.maildlp.com (Postfix) with ESMTPS id D9C43140499;
+	Wed, 20 Dec 2023 10:00:57 +0800 (CST)
+Received: from huawei.com (10.175.101.6) by dggpeml500026.china.huawei.com
+ (7.185.36.106) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Wed, 20 Dec
+ 2023 10:00:57 +0800
+From: Zhengchao Shao <shaozhengchao@huawei.com>
+To: <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
+CC: <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+	<pabeni@redhat.com>, <brauner@kernel.org>, <dchinner@redhat.com>,
+	<jlayton@kernel.org>, <jack@suse.cz>, <riel@surriel.com>,
+	<weiyongjun1@huawei.com>, <yuehaibing@huawei.com>, <shaozhengchao@huawei.com>
+Subject: [PATCH v2] ipc/mqueue: fix potential sleeping issue in mqueue_flush_file
+Date: Wed, 20 Dec 2023 10:12:08 +0800
+Message-ID: <20231220021208.2634523-1-shaozhengchao@huawei.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net] ethtool: reformat kerneldoc for struct
- ethtool_fec_stats
-Content-Language: en-US
-To: Jonathan Corbet <corbet@lwn.net>, netdev@vger.kernel.org
-Cc: "David S. Miller" <davem@davemloft.net>, Jakub Kicinski
- <kuba@kernel.org>, linux-kernel@vger.kernel.org
-References: <87v88tg32k.fsf@meer.lwn.net>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <87v88tg32k.fsf@meer.lwn.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpeml500026.china.huawei.com (7.185.36.106)
 
+I analyze the potential sleeping issue of the following processes:
+Thread A                                Thread B
+...                                     netlink_create  //ref = 1
+do_mq_notify                            ...
+  sock = netlink_getsockbyfilp          ...     //ref = 2
+  info->notify_sock = sock;             ...
+...                                     netlink_sendmsg
+...                                       skb = netlink_alloc_large_skb  //skb->head is vmalloced
+...                                       netlink_unicast
+...                                         sk = netlink_getsockbyportid //ref = 3
+...                                         netlink_sendskb
+...                                           __netlink_sendskb
+...                                             skb_queue_tail //put skb to sk_receive_queue
+...                                         sock_put //ref = 2
+...                                     ...
+...                                     netlink_release
+...                                       deferred_put_nlk_sk //ref = 1
+mqueue_flush_file
+  spin_lock
+  remove_notification
+    netlink_sendskb
+      sock_put  //ref = 0
+        sk_free
+          ...
+          __sk_destruct
+            netlink_sock_destruct
+              skb_queue_purge  //get skb from sk_receive_queue
+                ...
+                __skb_queue_purge_reason
+                  kfree_skb_reason
+                    __kfree_skb
+                    ...
+                    skb_release_all
+                      skb_release_head_state
+                        netlink_skb_destructor
+                          vfree(skb->head)  //sleeping while holding spinlock
 
+In netlink_sendmsg, if the memory pointed to by skb->head is allocated by
+vmalloc, and is put to sk_receive_queue queue, also the skb is not freed.
+When the mqueue executes flush, the sleeping bug will occur. Use mutex
+lock instead of spin lock in mqueue_flush_file.
 
-On 12/19/23 15:55, Jonathan Corbet wrote:
-> The kerneldoc comment for struct ethtool_fec_stats attempts to describe the
-> "total" and "lanes" fields of the ethtool_fec_stat substructure in a way
-> leading to these warnings:
-> 
->   ./include/linux/ethtool.h:424: warning: Excess struct member 'lane' description in 'ethtool_fec_stats'
->   ./include/linux/ethtool.h:424: warning: Excess struct member 'total' description in 'ethtool_fec_stats'
-> 
-> Reformat the comment to retain the information while eliminating the
-> warnings.
-> 
-> Signed-off-by: Jonathan Corbet <corbet@lwn.net>
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Zhengchao Shao <shaozhengchao@huawei.com>
+---
+v2: CCed some networking maintainer & netdev list
+---
+ ipc/mqueue.c | 48 ++++++++++++++++++++++++------------------------
+ 1 file changed, 24 insertions(+), 24 deletions(-)
 
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
-
-> ---
->  include/linux/ethtool.h | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/linux/ethtool.h b/include/linux/ethtool.h
-> index 689028257fcc..77c7a9ac0ece 100644
-> --- a/include/linux/ethtool.h
-> +++ b/include/linux/ethtool.h
-> @@ -409,8 +409,10 @@ struct ethtool_pause_stats {
->   *	not entire FEC data blocks. This is a non-standard statistic.
->   *	Reported to user space as %ETHTOOL_A_FEC_STAT_CORR_BITS.
->   *
-> - * @lane: per-lane/PCS-instance counts as defined by the standard
-> - * @total: error counts for the entire port, for drivers incapable of reporting
-> + * For each of the above fields, the two substructure members are:
-> + *
-> + * - @lanes: per-lane/PCS-instance counts as defined by the standard
-> + * - @total: error counts for the entire port, for drivers incapable of reporting
->   *	per-lane stats
->   *
->   * Drivers should fill in either only total or per-lane statistics, core
-
+diff --git a/ipc/mqueue.c b/ipc/mqueue.c
+index 5eea4dc0509e..f6f92e3f82e4 100644
+--- a/ipc/mqueue.c
++++ b/ipc/mqueue.c
+@@ -118,9 +118,9 @@ struct posix_msg_tree_node {
+  * Solution: use _release and _acquire barriers.
+  *
+  * 3) There is intentionally no barrier when setting current->state
+- *    to TASK_INTERRUPTIBLE: spin_unlock(&info->lock) provides the
++ *    to TASK_INTERRUPTIBLE: mutex_unlock(&info->lock) provides the
+  *    release memory barrier, and the wakeup is triggered when holding
+- *    info->lock, i.e. spin_lock(&info->lock) provided a pairing
++ *    info->lock, i.e. mutex_lock(&info->lock) provided a pairing
+  *    acquire memory barrier.
+  */
+ 
+@@ -132,7 +132,7 @@ struct ext_wait_queue {		/* queue of sleeping tasks */
+ };
+ 
+ struct mqueue_inode_info {
+-	spinlock_t lock;
++	struct mutex lock;
+ 	struct inode vfs_inode;
+ 	wait_queue_head_t wait_q;
+ 
+@@ -312,7 +312,7 @@ static struct inode *mqueue_get_inode(struct super_block *sb,
+ 		inode->i_size = FILENT_SIZE;
+ 		/* mqueue specific info */
+ 		info = MQUEUE_I(inode);
+-		spin_lock_init(&info->lock);
++		mutex_init(&info->lock);
+ 		init_waitqueue_head(&info->wait_q);
+ 		INIT_LIST_HEAD(&info->e_wait_q[0].list);
+ 		INIT_LIST_HEAD(&info->e_wait_q[1].list);
+@@ -523,11 +523,11 @@ static void mqueue_evict_inode(struct inode *inode)
+ 
+ 	ipc_ns = get_ns_from_inode(inode);
+ 	info = MQUEUE_I(inode);
+-	spin_lock(&info->lock);
++	mutex_lock(&info->lock);
+ 	while ((msg = msg_get(info)) != NULL)
+ 		list_add_tail(&msg->m_list, &tmp_msg);
+ 	kfree(info->node_cache);
+-	spin_unlock(&info->lock);
++	mutex_unlock(&info->lock);
+ 
+ 	list_for_each_entry_safe(msg, nmsg, &tmp_msg, m_list) {
+ 		list_del(&msg->m_list);
+@@ -640,7 +640,7 @@ static ssize_t mqueue_read_file(struct file *filp, char __user *u_data,
+ 	char buffer[FILENT_SIZE];
+ 	ssize_t ret;
+ 
+-	spin_lock(&info->lock);
++	mutex_lock(&info->lock);
+ 	snprintf(buffer, sizeof(buffer),
+ 			"QSIZE:%-10lu NOTIFY:%-5d SIGNO:%-5d NOTIFY_PID:%-6d\n",
+ 			info->qsize,
+@@ -649,7 +649,7 @@ static ssize_t mqueue_read_file(struct file *filp, char __user *u_data,
+ 			 info->notify.sigev_notify == SIGEV_SIGNAL) ?
+ 				info->notify.sigev_signo : 0,
+ 			pid_vnr(info->notify_owner));
+-	spin_unlock(&info->lock);
++	mutex_unlock(&info->lock);
+ 	buffer[sizeof(buffer)-1] = '\0';
+ 
+ 	ret = simple_read_from_buffer(u_data, count, off, buffer,
+@@ -665,11 +665,11 @@ static int mqueue_flush_file(struct file *filp, fl_owner_t id)
+ {
+ 	struct mqueue_inode_info *info = MQUEUE_I(file_inode(filp));
+ 
+-	spin_lock(&info->lock);
++	mutex_lock(&info->lock);
+ 	if (task_tgid(current) == info->notify_owner)
+ 		remove_notification(info);
+ 
+-	spin_unlock(&info->lock);
++	mutex_unlock(&info->lock);
+ 	return 0;
+ }
+ 
+@@ -680,13 +680,13 @@ static __poll_t mqueue_poll_file(struct file *filp, struct poll_table_struct *po
+ 
+ 	poll_wait(filp, &info->wait_q, poll_tab);
+ 
+-	spin_lock(&info->lock);
++	mutex_lock(&info->lock);
+ 	if (info->attr.mq_curmsgs)
+ 		retval = EPOLLIN | EPOLLRDNORM;
+ 
+ 	if (info->attr.mq_curmsgs < info->attr.mq_maxmsg)
+ 		retval |= EPOLLOUT | EPOLLWRNORM;
+-	spin_unlock(&info->lock);
++	mutex_unlock(&info->lock);
+ 
+ 	return retval;
+ }
+@@ -724,7 +724,7 @@ static int wq_sleep(struct mqueue_inode_info *info, int sr,
+ 		/* memory barrier not required, we hold info->lock */
+ 		__set_current_state(TASK_INTERRUPTIBLE);
+ 
+-		spin_unlock(&info->lock);
++		mutex_unlock(&info->lock);
+ 		time = schedule_hrtimeout_range_clock(timeout, 0,
+ 			HRTIMER_MODE_ABS, CLOCK_REALTIME);
+ 
+@@ -734,7 +734,7 @@ static int wq_sleep(struct mqueue_inode_info *info, int sr,
+ 			retval = 0;
+ 			goto out;
+ 		}
+-		spin_lock(&info->lock);
++		mutex_lock(&info->lock);
+ 
+ 		/* we hold info->lock, so no memory barrier required */
+ 		if (READ_ONCE(ewp->state) == STATE_READY) {
+@@ -752,7 +752,7 @@ static int wq_sleep(struct mqueue_inode_info *info, int sr,
+ 	}
+ 	list_del(&ewp->list);
+ out_unlock:
+-	spin_unlock(&info->lock);
++	mutex_unlock(&info->lock);
+ out:
+ 	return retval;
+ }
+@@ -1125,7 +1125,7 @@ static int do_mq_timedsend(mqd_t mqdes, const char __user *u_msg_ptr,
+ 	if (!info->node_cache)
+ 		new_leaf = kmalloc(sizeof(*new_leaf), GFP_KERNEL);
+ 
+-	spin_lock(&info->lock);
++	mutex_lock(&info->lock);
+ 
+ 	if (!info->node_cache && new_leaf) {
+ 		/* Save our speculative allocation into the cache */
+@@ -1166,7 +1166,7 @@ static int do_mq_timedsend(mqd_t mqdes, const char __user *u_msg_ptr,
+ 		simple_inode_init_ts(inode);
+ 	}
+ out_unlock:
+-	spin_unlock(&info->lock);
++	mutex_unlock(&info->lock);
+ 	wake_up_q(&wake_q);
+ out_free:
+ 	if (ret)
+@@ -1230,7 +1230,7 @@ static int do_mq_timedreceive(mqd_t mqdes, char __user *u_msg_ptr,
+ 	if (!info->node_cache)
+ 		new_leaf = kmalloc(sizeof(*new_leaf), GFP_KERNEL);
+ 
+-	spin_lock(&info->lock);
++	mutex_lock(&info->lock);
+ 
+ 	if (!info->node_cache && new_leaf) {
+ 		/* Save our speculative allocation into the cache */
+@@ -1242,7 +1242,7 @@ static int do_mq_timedreceive(mqd_t mqdes, char __user *u_msg_ptr,
+ 
+ 	if (info->attr.mq_curmsgs == 0) {
+ 		if (f.file->f_flags & O_NONBLOCK) {
+-			spin_unlock(&info->lock);
++			mutex_unlock(&info->lock);
+ 			ret = -EAGAIN;
+ 		} else {
+ 			wait.task = current;
+@@ -1261,7 +1261,7 @@ static int do_mq_timedreceive(mqd_t mqdes, char __user *u_msg_ptr,
+ 
+ 		/* There is now free space in queue. */
+ 		pipelined_receive(&wake_q, info);
+-		spin_unlock(&info->lock);
++		mutex_unlock(&info->lock);
+ 		wake_up_q(&wake_q);
+ 		ret = 0;
+ 	}
+@@ -1391,7 +1391,7 @@ static int do_mq_notify(mqd_t mqdes, const struct sigevent *notification)
+ 	info = MQUEUE_I(inode);
+ 
+ 	ret = 0;
+-	spin_lock(&info->lock);
++	mutex_lock(&info->lock);
+ 	if (notification == NULL) {
+ 		if (info->notify_owner == task_tgid(current)) {
+ 			remove_notification(info);
+@@ -1424,7 +1424,7 @@ static int do_mq_notify(mqd_t mqdes, const struct sigevent *notification)
+ 		info->notify_user_ns = get_user_ns(current_user_ns());
+ 		inode_set_atime_to_ts(inode, inode_set_ctime_current(inode));
+ 	}
+-	spin_unlock(&info->lock);
++	mutex_unlock(&info->lock);
+ out_fput:
+ 	fdput(f);
+ out:
+@@ -1470,7 +1470,7 @@ static int do_mq_getsetattr(int mqdes, struct mq_attr *new, struct mq_attr *old)
+ 	inode = file_inode(f.file);
+ 	info = MQUEUE_I(inode);
+ 
+-	spin_lock(&info->lock);
++	mutex_lock(&info->lock);
+ 
+ 	if (old) {
+ 		*old = info->attr;
+@@ -1488,7 +1488,7 @@ static int do_mq_getsetattr(int mqdes, struct mq_attr *new, struct mq_attr *old)
+ 		inode_set_atime_to_ts(inode, inode_set_ctime_current(inode));
+ 	}
+ 
+-	spin_unlock(&info->lock);
++	mutex_unlock(&info->lock);
+ 	fdput(f);
+ 	return 0;
+ }
 -- 
-#Randy
-https://people.kernel.org/tglx/notes-about-netiquette
-https://subspace.kernel.org/etiquette.html
+2.34.1
+
 
