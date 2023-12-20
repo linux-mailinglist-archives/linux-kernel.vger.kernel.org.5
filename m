@@ -1,112 +1,93 @@
-Return-Path: <linux-kernel+bounces-6486-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6487-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 08AEB819980
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 08:29:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40ACF819982
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 08:30:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C29AC28367F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 07:29:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D132D1F257A6
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 07:30:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EFAA16436;
-	Wed, 20 Dec 2023 07:28:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B116C1C6B7;
+	Wed, 20 Dec 2023 07:30:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="PMCPRzos"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TozwqxXQ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0E2B1D52A;
-	Wed, 20 Dec 2023 07:28:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=5Cp0brfPb+fyu6Yk+mtHotB5lP7dckOvawNH9gPrHx4=; b=PMCPRzosOokGKnRpAUl2VHGDKe
-	0uHl0/wFnM3dnK7qurriPilNY7TWfknpJwTn6If8YmdkdrfVyp4rGb3hmDqhXinKtUgmQgdWzw806
-	vYwWnpyB+9V2EPCJxyvIo+tRrnzZVPEyIUBgU/kloUGyZQr/gZAUJuVk5DG+3FDA/WMYGITKQe7t5
-	/gsyOg9qGrAA/Nnc3Xkre+Tq3AmH2Cl4EeyJhInPTsk1Yw0O+Fi5PuYVRa8+BSAwqFS1G7h6V+tTb
-	0PqDIxVBsxxTqh3mTYZERqWJ1o5/sJ6D0GswHlOXYTqPfHMGs5oHumPcLu9n8TJfCjHwARmZFnJcy
-	mRm9ESzw==;
-Received: from [50.53.46.231] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1rFr0X-00GQZN-0z;
-	Wed, 20 Dec 2023 07:28:45 +0000
-Message-ID: <f42f91eb-9425-4a18-89e4-3d25eae66032@infradead.org>
-Date: Tue, 19 Dec 2023 23:28:44 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A578A1C695
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 07:30:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1703057400; x=1734593400;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=BLjDO7r5mLL+cu5RRPPq2ChE9x4K9wfxRNFUHoEs1iw=;
+  b=TozwqxXQg/xmvD3JMeqiL6dPpb5i4duvESg//k0RU+z2vbi2lKOmjbG2
+   zVCPQBVgLlOV4y+SnyBCJyqSV88XNdlx5z2s0o2ySQlEbBsTVUkJ5aKQE
+   9JlSEhvEAo3tKKeNHxE1kTZfh2SMcxExXY6Tt5flttNqTh1/YAjtlLH+h
+   bxMS4y9C7HWI/De6dC+aue3iiy4/sEtJ1sIpklFgXnmLTCwohHL+mhgrb
+   qUKnFhTK2EyvEfZeBNPJo+wBaOyCujNDtOJqBtM+oQ/+7aYyxlRrUMJDu
+   wPbAMPGyVoOECc7LdtAWf1NpoOpp8DWoUHvoDmRsCsFVB99HUs387zRsX
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10929"; a="395502692"
+X-IronPort-AV: E=Sophos;i="6.04,290,1695711600"; 
+   d="scan'208";a="395502692"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Dec 2023 23:30:00 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10929"; a="899636416"
+X-IronPort-AV: E=Sophos;i="6.04,290,1695711600"; 
+   d="scan'208";a="899636416"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga004.jf.intel.com with ESMTP; 19 Dec 2023 23:29:58 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rFr1g-0006Z7-0q;
+	Wed, 20 Dec 2023 07:29:56 +0000
+Date: Wed, 20 Dec 2023 15:29:05 +0800
+From: kernel test robot <lkp@intel.com>
+To: Kalesh Singh <kaleshsingh@google.com>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	Marc Zyngier <maz@kernel.org>, Fuad Tabba <tabba@google.com>
+Subject: arch/arm64/kvm/hyp/nvhe/stacktrace.c:10:1: sparse: sparse: symbol
+ '__pcpu_scope_overflow_stack' was not declared. Should it be static?
+Message-ID: <202312201507.DlDhct9c-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] nilfs2: cpfile: fix some kernel-doc warnings
-Content-Language: en-US
-To: Ryusuke Konishi <konishi.ryusuke@gmail.com>
-Cc: linux-kernel@vger.kernel.org, linux-nilfs@vger.kernel.org
-References: <20231220065931.2372-1-rdunlap@infradead.org>
- <CAKFNMonArSVESPSrCn5ovsggFQAeywg+JfHmBKx9MUGbSmfwTg@mail.gmail.com>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <CAKFNMonArSVESPSrCn5ovsggFQAeywg+JfHmBKx9MUGbSmfwTg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   55cb5f43689d7a9ea5bf35ef050f12334f197347
+commit: 548ec3336f323db56260b312c232ab37285f0284 KVM: arm64: On stack overflow switch to hyp overflow_stack
+date:   1 year, 5 months ago
+config: arm64-randconfig-r112-20231117 (https://download.01.org/0day-ci/archive/20231220/202312201507.DlDhct9c-lkp@intel.com/config)
+compiler: aarch64-linux-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20231220/202312201507.DlDhct9c-lkp@intel.com/reproduce)
 
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312201507.DlDhct9c-lkp@intel.com/
 
-On 12/19/23 23:25, Ryusuke Konishi wrote:
-> On Wed, Dec 20, 2023 at 3:59 PM Randy Dunlap wrote:
->>
->> Correct the function parameter names for nilfs_cpfile_get_info():
->>
->> cpfile.c:564: warning: Function parameter or member 'cnop' not described in 'nilfs_cpfile_get_cpinfo'
->> cpfile.c:564: warning: Function parameter or member 'mode' not described in 'nilfs_cpfile_get_cpinfo'
->> cpfile.c:564: warning: Function parameter or member 'buf' not described in 'nilfs_cpfile_get_cpinfo'
->> cpfile.c:564: warning: Function parameter or member 'cisz' not described in 'nilfs_cpfile_get_cpinfo'
->> cpfile.c:564: warning: Excess function parameter 'cno' description in 'nilfs_cpfile_get_cpinfo'
->> cpfile.c:564: warning: Excess function parameter 'ci' description in 'nilfs_cpfile_get_cpinfo'
->>
->> This still leaves a few kernel-doc warnings.
->> Also, the function parameters should have descriptions after them.
->>
->> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
->> Cc: Ryusuke Konishi <konishi.ryusuke@gmail.com>
->> Cc: linux-nilfs@vger.kernel.org
->> ---
->>  fs/nilfs2/cpfile.c |    6 ++++--
->>  1 file changed, 4 insertions(+), 2 deletions(-)
->>
->> diff -- a/fs/nilfs2/cpfile.c b/fs/nilfs2/cpfile.c
->> --- a/fs/nilfs2/cpfile.c
->> +++ b/fs/nilfs2/cpfile.c
->> @@ -554,8 +554,10 @@ static ssize_t nilfs_cpfile_do_get_ssinf
->>  /**
->>   * nilfs_cpfile_get_cpinfo -
->>   * @cpfile:
->> - * @cno:
->> - * @ci:
->> + * @cnop:
->> + * @mode:
->> + * @buf:
->> + * @cisz:
->>   * @nci:
->>   */
->>
-> 
-> Ah, thank you for pointing it out.
-> 
-> I would like to fill in the missing descriptions and send it upstream.
+sparse warnings: (new ones prefixed by >>)
+>> arch/arm64/kvm/hyp/nvhe/stacktrace.c:10:1: sparse: sparse: symbol '__pcpu_scope_overflow_stack' was not declared. Should it be static?
 
-Yes, please do.
+vim +/__pcpu_scope_overflow_stack +10 arch/arm64/kvm/hyp/nvhe/stacktrace.c
 
-Thanks.
+     9	
+  > 10	DEFINE_PER_CPU(unsigned long [OVERFLOW_STACK_SIZE/sizeof(long)], overflow_stack)
 
 -- 
-#Randy
-https://people.kernel.org/tglx/notes-about-netiquette
-https://subspace.kernel.org/etiquette.html
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
