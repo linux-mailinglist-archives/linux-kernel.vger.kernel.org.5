@@ -1,73 +1,66 @@
-Return-Path: <linux-kernel+bounces-7108-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7051-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 237DD81A1BE
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 16:01:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7BB481A100
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 15:20:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 56AFD1C20BF2
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 15:01:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 22684B21CA7
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 14:20:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA9D43FB11;
-	Wed, 20 Dec 2023 14:59:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EE753A297;
+	Wed, 20 Dec 2023 14:20:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Bcuvbqw7"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QwhmbAbI"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA0C646427
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 14:59:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1881B38F9B;
+	Wed, 20 Dec 2023 14:20:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703084392; x=1734620392;
-  h=resent-from:resent-date:resent-message-id:resent-to:date:
-   from:to:cc:subject:message-id:references:mime-version:
-   in-reply-to;
-  bh=dYVnPf9oHskhTHAwIlHPPxyaHADOhxmPpVIoHmI88Zw=;
-  b=Bcuvbqw7LBMnErZDD5UOLEamYdWzgLVchqrIyIeqg4nqZ0VSwYru+EIt
-   WmOks/8R0MfOph1ms4k8yGWzFNxOEk92mnVWiiV3H4HIzHRRygW4KIAjt
-   WmMUNBf65a48fi9H13vIZzWPi+vwZXsEX2qXIBF/Y/2yggp4gEO2IlvLF
-   q1uFs8nCkimLlXER16wFiUfjfFq+k7kyYuQw+d5UF72djxPIkpcKrXZJN
-   EwTvkHw5YlIVQPcKCA5HaFikWdpZuIWKxqC/vcxHp2VceDseS5JecX1av
-   NaVAGqnvlIAkVVpSN/kaodJANqUpDTB4QIDNmsZja0ls3T3lA4JOx58LH
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10930"; a="375978487"
+  t=1703082006; x=1734618006;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Cpy14Hdv+G05egV79hbRzIYlL3cC/Rq5mKgn8sI00YE=;
+  b=QwhmbAbIRUIcwyczkN35Nd7r8M3X10De/maDN40E75kkr7ER6ftXsx3o
+   yGjdKY1sOK/j2oOuxT50ppqG2ebLz36dx9elwqscR++FWgf4RtDYoJb/s
+   POuIQ3GbwOi8Y0YpiYtla26ae4N4ssOxaYw7J4EHNUSzUBNF946tsURCa
+   +YAJ0xmQbY2JrFHWjfkH0GqqSYngoWTjLDLug0AAjrTQmdzMxnbRf/o+i
+   lhLe/4pKM+X65CL79Uzi3EgMl65vI/a5QgNOGid2ml+vbdjkjkWCrVHhe
+   cNNUYf6UcLHEABgD9PAm83ygo4tI6MTZILuSu6vdLSzBOerO8wyGDKXx2
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10930"; a="375309623"
 X-IronPort-AV: E=Sophos;i="6.04,291,1695711600"; 
-   d="scan'208";a="375978487"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Dec 2023 06:59:52 -0800
+   d="scan'208";a="375309623"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Dec 2023 06:20:05 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10930"; a="805288083"
+X-IronPort-AV: E=McAfee;i="6600,9927,10930"; a="866987960"
 X-IronPort-AV: E=Sophos;i="6.04,291,1695711600"; 
-   d="scan'208";a="805288083"
+   d="scan'208";a="866987960"
 Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga008.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Dec 2023 06:59:50 -0800
+  by FMSMGA003.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Dec 2023 06:20:04 -0800
 Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@intel.com>)
-	id 1rFxwv-00000007Z63-3Z99;
-	Wed, 20 Dec 2023 16:53:29 +0200
-Resent-From: Andy Shevchenko <andriy.shevchenko@intel.com>
-Resent-Date: Wed, 20 Dec 2023 16:53:29 +0200
-Resent-Message-ID: <ZYL_6WKoX2wWyAjJ@smile.fi.intel.com>
-Resent-To: wqu@suse.com, adobriyan@gmail.com, akpm@linux-foundation.org,
-	christophe.jaillet@wanadoo.fr, linux-kernel@vger.kernel.org
-Date: Wed, 20 Dec 2023 16:16:43 +0200
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rFxNz-00000007YVJ-2dru;
+	Wed, 20 Dec 2023 16:17:23 +0200
+Date: Wed, 20 Dec 2023 16:17:23 +0200
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To: Qu Wenruo <wqu@suse.com>
-Cc: Alexey Dobriyan <adobriyan@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-btrfs@vger.kernel.org,
+Cc: linux-btrfs@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
 	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+	David Laight <David.Laight@aculab.com>,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] lib/strtox: introduce kstrtoull_suffix() helper
-Message-ID: <ZYL3Sg85PyTOvjiW@smile.fi.intel.com>
-References: <b3ae8802-b4e0-4542-8fe0-e2d169944ac0@p183>
- <cb6fe9e6-6869-46d5-8826-19ed5b5c439f@suse.com>
+Subject: Re: [PATCH v2 1/2] lib/strtox: introduce kstrtoull_suffix() helper
+Message-ID: <ZYL3c1S7B9PHPEwI@smile.fi.intel.com>
+References: <cover.1703030510.git.wqu@suse.com>
+ <e042f40ea5cf7fa8251713d5bb7a485f42c5615b.1703030510.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,50 +69,54 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cb6fe9e6-6869-46d5-8826-19ed5b5c439f@suse.com>
+In-Reply-To: <e042f40ea5cf7fa8251713d5bb7a485f42c5615b.1703030510.git.wqu@suse.com>
 Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Wed, Dec 20, 2023 at 08:31:09PM +1030, Qu Wenruo wrote:
-> On 2023/12/20 20:24, Alexey Dobriyan wrote:
-> > > Just as mentioned in the comment of memparse(), the simple_stroull()
-> > > usage can lead to overflow all by itself.
-> > 
-> > which is the root cause...
-> > 
-> > I don't like one char suffixes. They are easy to integrate but then the
-> > _real_ suffixes are "MiB", "GiB", etc.
-> > 
-> > If you care only about memparse(), then using _parse_integer() can be
-> > arranged. I don't see why not.
+On Wed, Dec 20, 2023 at 10:40:00AM +1030, Qu Wenruo wrote:
+> Just as mentioned in the comment of memparse(), the simple_stroull()
+> usage can lead to overflow all by itself.
 > 
-> Well, personally speaking I don't think we should even support the suffix at
-> all, at least for the only two usage inside btrfs.
+> Furthermore, the suffix calculation is also super overflow prone because
+> that some suffix like "E" itself would eat 60bits, leaving only 4 bits
+> available.
 > 
-> But unfortunately I'm not the one to do the final call, and the final call
-> is to keep the suffix behavior...
+> And that suffix "E" can also lead to confusion since it's using the same
+> char of hex Ox'E'.
 > 
-> And indeed using _parse_integer() with _parse_interger_fixup_radix() would
-> be better, as we don't need to extend the _kstrtoull() code base.
+> One simple example to expose all the problem is to use memparse() on
+> "25E".
+> The correct value should be 28823037615171174400, but the suffix E makes
+> it super simple to overflow, resulting the incorrect value
+> 10376293541461622784 (9E).
+> 
+> So here we introduce a new helper to address the problem,
+> kstrtoull_suffix():
+> 
+> - Enhance _kstrtoull()
+>   This allow _kstrtoull() to return even if it hits an invalid char, as
+>   long as the optional parameter @retptr is provided.
+> 
+>   If @retptr is provided, _kstrtoull() would try its best to parse the
+>   valid part, and leave the remaining to be handled by the caller.
+> 
+>   If @retptr is not provided, the behavior is not altered.
+> 
+> - New kstrtoull_suffix() helper
+>   This new helper utilize the new @retptr capability of _kstrtoull(),
+>   and provides 2 new ability:
+> 
+>   * Allow certain suffixes to be chosen
+>     The recommended suffix list is "KMGTP" (using the new unit_suffix
+>     enum as a bitmap), excluding the overflow prone "E".
+>     Undermost cases there is really no need to use "E" suffix anyway.
+>     And for those who really need that exabytes suffix, they can enable
+>     that suffix pretty easily.
+> 
+>   * Add overflow checks for the suffixes
+>     If the original number string is fine, but with the extra left
+>     shift overflow happens, then -EOVERFLOW is returned.
 
-
-My comment on the first patch got vanished due to my MTA issues, but I'll try
-to summarize my point here.
-
-
-First of all, I do not like the naming, it's too vague. What kind of suffix?
-Do we suppose to have suffix in the input? What will be the behaviour w/o
-suffix?  And so on...
-
-Second, if it's a problem in memparse(), just fix it and that's all.
-
-Third, as Alexey said, we have metric and byte suffixes and they are different.
-Supporting one without the other is just adding to the existing confusion.
-
-Last, but not least, we do NOT accept new code in the lib/ without test cases.
-
-So, that said here is my formal NAK for this series (at least in this form).
-
-P.S> The Subject should start with either kstrtox: or lib/kstrtox.c.
+NAK. Read the v1 discussion why.
 
 -- 
 With Best Regards,
