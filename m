@@ -1,188 +1,108 @@
-Return-Path: <linux-kernel+bounces-7066-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7067-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5EF3181A12F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 15:34:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF97C81A131
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 15:35:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CA36A1F22E40
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 14:34:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F35241C22515
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 14:35:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EB3D3B2B3;
-	Wed, 20 Dec 2023 14:34:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C58FB3B794;
+	Wed, 20 Dec 2023 14:34:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ax/u038B"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="BHF2GqHW"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A73043AC1A;
-	Wed, 20 Dec 2023 14:34:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87BEEC433CA;
-	Wed, 20 Dec 2023 14:34:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703082881;
-	bh=iNsI8JfwO+C25hEOmVx+Z0q3QIW2jx9qavk1Utsxgy4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ax/u038BkU+2lQkEoNO6vULvumIx9BczrUQfu3Zkcpac03PvdKfZ7yn54XvC4IqG4
-	 rYyIej/075WZvwXH/UO3s2WJ9vHe4rnVF2g3AnWgwHd/ZCjfDcpALbkr0ZyoGZIjL+
-	 jhiYqau5FIXhITuc8XTbZvP5Vxt6nVp3jtIseZPB4j8HQLA8ZHVV6lVYD6ybhRheUJ
-	 HHpkSashYQQxYjxU/kt743PGBPTlpuM/n/+kVJPuYyu/bhOjq79NAHH27vq/+2USbV
-	 raw1KMS0sErTjbcDqKFkk24v43FMiM3XoNSDDDSfiVd/WQWUeMjHPOEiSB7XqP4+XR
-	 BG+OeSv71QGBQ==
-Date: Wed, 20 Dec 2023 20:04:22 +0530
-From: Manivannan Sadhasivam <mani@kernel.org>
-To: Chanwoo Lee <cw9316.lee@samsung.com>
-Cc: alim.akhtar@samsung.com, avri.altman@wdc.com, bvanassche@acm.org,
-	jejb@linux.ibm.com, martin.petersen@oracle.com,
-	peter.wang@mediatek.com, chu.stanley@gmail.com,
-	matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com,
-	stanley.chu@mediatek.com, quic_cang@quicinc.com,
-	quic_asutoshd@quicinc.com, powen.kao@mediatek.com,
-	quic_nguyenb@quicinc.com, yang.lee@linux.alibaba.com,
-	beanhuo@micron.com, Arthur.Simchaev@wdc.com, ebiggers@google.com,
-	linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-mediatek@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org, grant.jung@samsung.com,
-	jt77.jang@samsung.com, dh0421.hwang@samsung.com,
-	sh043.lee@samsung.com
-Subject: Re: [PATCH] ufs: mcq: Adding a function for MCQ enable
-Message-ID: <20231220143422.GF3544@thinkpad>
-References: <CGME20231220052749epcas1p3b90f6c03110ff5f63ffc547ef0f35907@epcas1p3.samsung.com>
- <20231220052737.19857-1-cw9316.lee@samsung.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F244D3B2A7;
+	Wed, 20 Dec 2023 14:34:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=KxkjqpiRhDDXCtVOxBcLzEwoOuA/MLwLsDAq8dy0YWY=; b=BHF2GqHWuAnU1Twu9UvJy9agEU
+	h4yAoWEeR2Hw1DpM5opy5WX4q6fw++idDTVF1sB4CAeT4yznSiudWA4EpjCe3E9EZ0TiIp1LEAngB
+	K4yZ/HEWpv8vTDgAvoDY/N2MkXNEW+qxNYw00E/7p1EQvhFF7U9/GT/z8qWE20A9SoAMVpqTuM0ZU
+	bOgbjq5bxutfk98c8NCtJt6nMHGFlYVAcpUPWgjzsc4yneh8yC4isK1X2E2teOsVvdHYaraQjNYp7
+	g9rHmoB6tgPmd8u34US9uEqD1xqEZSP2wCO0NBNraq3r/4czSlfwFdwrhpIBxW3sZsIyrmdQ4U7bs
+	mh4fyu2w==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+	id 1rFxen-0006FK-1M;
+	Wed, 20 Dec 2023 14:34:45 +0000
+Date: Wed, 20 Dec 2023 06:34:45 -0800
+From: Luis Chamberlain <mcgrof@kernel.org>
+To: Julia Lawall <julia.lawall@inria.fr>
+Cc: Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
+	Joel Granados <j.granados@samsung.com>,
+	Dan Carpenter <dan.carpenter@linaro.org>,
+	Kees Cook <keescook@chromium.org>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	Iurii Zaikin <yzaikin@google.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v2 00/18] sysctl: constify sysctl ctl_tables
+Message-ID: <ZYL7hS1ARS6ygPBP@bombadil.infradead.org>
+References: <20231212090930.y4omk62wenxgo5by@localhost>
+ <ZXligolK0ekZ+Zuf@bombadil.infradead.org>
+ <20231217120201.z4gr3ksjd4ai2nlk@localhost>
+ <908dc370-7cf6-4b2b-b7c9-066779bc48eb@t-8ch.de>
+ <ZYC37Vco1p4vD8ji@bombadil.infradead.org>
+ <a0d96e7b-544f-42d5-b8da-85bc4ca087a9@t-8ch.de>
+ <ZYIGi9Gf7oVI7ksf@bombadil.infradead.org>
+ <alpine.DEB.2.22.394.2312192218050.3196@hadrien>
+ <ZYIwpHXkqBkMB8zl@bombadil.infradead.org>
+ <alpine.DEB.2.22.394.2312200838160.3151@hadrien>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231220052737.19857-1-cw9316.lee@samsung.com>
+In-Reply-To: <alpine.DEB.2.22.394.2312200838160.3151@hadrien>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 
-On Wed, Dec 20, 2023 at 02:27:37PM +0900, Chanwoo Lee wrote:
-> From: ChanWoo Lee <cw9316.lee@samsung.com>
+On Wed, Dec 20, 2023 at 08:39:20AM +0100, Julia Lawall wrote:
 > 
-> The REG_UFS_MEM_CFG register is too general(broad)
-> and it is difficult to know the meaning of only values of 0x1 and 0x2.
-> So far, comments were required.
 > 
-> Therefore, I have added new functions and defines
-> to improve code readability/reusability.
+> On Tue, 19 Dec 2023, Luis Chamberlain wrote:
 > 
-> Signed-off-by: ChanWoo Lee <cw9316.lee@samsung.com>
-> ---
->  drivers/ufs/core/ufs-mcq.c      | 10 +++++++++-
->  drivers/ufs/core/ufshcd.c       |  5 +----
->  drivers/ufs/host/ufs-mediatek.c |  4 +---
->  include/ufs/ufshcd.h            |  1 +
->  include/ufs/ufshci.h            |  4 ++++
->  5 files changed, 16 insertions(+), 8 deletions(-)
+> > On Tue, Dec 19, 2023 at 10:21:25PM +0100, Julia Lawall wrote:
+> > > > As I noted, I think this is a generically neat endeavor and so I think
+> > > > it would be nice to shorthand *any* member of the struct. ctl->any.
+> > > > Julia, is that possible?
+> > >
+> > > What do you mean by *any* member?
+> >
+> > I meant when any code tries to assign a new variable to any of the
+> > members of the struct ctl_table *foo, so any foo->*any*
 > 
-> diff --git a/drivers/ufs/core/ufs-mcq.c b/drivers/ufs/core/ufs-mcq.c
-> index 0787456c2b89..a34ef3aac540 100644
-> --- a/drivers/ufs/core/ufs-mcq.c
-> +++ b/drivers/ufs/core/ufs-mcq.c
-> @@ -394,11 +394,19 @@ EXPORT_SYMBOL_GPL(ufshcd_mcq_make_queues_operational);
->  
->  void ufshcd_mcq_enable_esi(struct ufs_hba *hba)
->  {
-> -	ufshcd_writel(hba, ufshcd_readl(hba, REG_UFS_MEM_CFG) | 0x2,
-> +	ufshcd_writel(hba, ufshcd_readl(hba, REG_UFS_MEM_CFG) | ESI_ENABLE,
->  		      REG_UFS_MEM_CFG);
+> Declaring any to be an identifier metavariable would be sufficient.
 
-This change should be a separate patch.
+Fantastic thanks!
 
->  }
->  EXPORT_SYMBOL_GPL(ufshcd_mcq_enable_esi);
->  
-> +void ufshcd_mcq_enable(struct ufs_hba *hba)
-> +{
-> +	ufshcd_writel(hba, ufshcd_readl(hba, REG_UFS_MEM_CFG) | MCQ_MODE_SELECT,
-> +		      REG_UFS_MEM_CFG);
-
-Use ufshcd_rmwl().
-
-> +	hba->mcq_enabled = true;
-> +}
-> +EXPORT_SYMBOL_GPL(ufshcd_mcq_enable);
-> +
->  void ufshcd_mcq_config_esi(struct ufs_hba *hba, struct msi_msg *msg)
->  {
->  	ufshcd_writel(hba, msg->address_lo, REG_UFS_ESILBA);
-> diff --git a/drivers/ufs/core/ufshcd.c b/drivers/ufs/core/ufshcd.c
-> index ae9936fc6ffb..8195e01e7a3f 100644
-> --- a/drivers/ufs/core/ufshcd.c
-> +++ b/drivers/ufs/core/ufshcd.c
-> @@ -8723,10 +8723,7 @@ static void ufshcd_config_mcq(struct ufs_hba *hba)
->  	hba->host->can_queue = hba->nutrs - UFSHCD_NUM_RESERVED;
->  	hba->reserved_slot = hba->nutrs - UFSHCD_NUM_RESERVED;
->  
-> -	/* Select MCQ mode */
-> -	ufshcd_writel(hba, ufshcd_readl(hba, REG_UFS_MEM_CFG) | 0x1,
-> -		      REG_UFS_MEM_CFG);
-> -	hba->mcq_enabled = true;
-> +	ufshcd_mcq_enable(hba);
->  
->  	dev_info(hba->dev, "MCQ configured, nr_queues=%d, io_queues=%d, read_queue=%d, poll_queues=%d, queue_depth=%d\n",
->  		 hba->nr_hw_queues, hba->nr_queues[HCTX_TYPE_DEFAULT],
-> diff --git a/drivers/ufs/host/ufs-mediatek.c b/drivers/ufs/host/ufs-mediatek.c
-> index fc61790d289b..1048add66419 100644
-> --- a/drivers/ufs/host/ufs-mediatek.c
-> +++ b/drivers/ufs/host/ufs-mediatek.c
-> @@ -1219,9 +1219,7 @@ static int ufs_mtk_link_set_hpm(struct ufs_hba *hba)
->  		ufs_mtk_config_mcq(hba, false);
->  		ufshcd_mcq_make_queues_operational(hba);
->  		ufshcd_mcq_config_mac(hba, hba->nutrs);
-> -		/* Enable MCQ mode */
-> -		ufshcd_writel(hba, ufshcd_readl(hba, REG_UFS_MEM_CFG) | 0x1,
-> -			      REG_UFS_MEM_CFG);
-> +		ufshcd_mcq_enable(hba);
-
-hba->mcq_enabled flag will be set now which is not done previously.
-
->  	}
->  
->  	if (err)
-> diff --git a/include/ufs/ufshcd.h b/include/ufs/ufshcd.h
-> index d862c8ddce03..a96c45fa4b4b 100644
-> --- a/include/ufs/ufshcd.h
-> +++ b/include/ufs/ufshcd.h
-> @@ -1257,6 +1257,7 @@ unsigned long ufshcd_mcq_poll_cqe_lock(struct ufs_hba *hba,
->  					 struct ufs_hw_queue *hwq);
->  void ufshcd_mcq_make_queues_operational(struct ufs_hba *hba);
->  void ufshcd_mcq_enable_esi(struct ufs_hba *hba);
-> +void ufshcd_mcq_enable(struct ufs_hba *hba);
->  void ufshcd_mcq_config_esi(struct ufs_hba *hba, struct msi_msg *msg);
->  
->  int ufshcd_opp_config_clks(struct device *dev, struct opp_table *opp_table,
-> diff --git a/include/ufs/ufshci.h b/include/ufs/ufshci.h
-> index d5accacae6bc..e669fad11fd4 100644
-> --- a/include/ufs/ufshci.h
-> +++ b/include/ufs/ufshci.h
-> @@ -282,6 +282,10 @@ enum {
->  /* UTMRLRSR - UTP Task Management Request Run-Stop Register 80h */
->  #define UTP_TASK_REQ_LIST_RUN_STOP_BIT		0x1
->  
-> +/* REG_UFS_MEM_CFG - Global Config Registers 300h */
-> +#define MCQ_MODE_SELECT 	0x1
-> +#define ESI_ENABLE		0x2
-
-Use BIT() macros.
-
-- Mani
-
-> +
->  /* CQISy - CQ y Interrupt Status Register  */
->  #define UFSHCD_MCQ_CQIS_TAIL_ENT_PUSH_STS	0x1
->  
-> -- 
-> 2.29.0
+> > > If any is an identifier typed
+> > > metavariable then that would get any immediate member.  But maybe you want
+> > > something like
+> > >
+> > > <+...ctl->any...+>
+> > >
+> > > that will match anything that has ctl->any as a subexpression?
+> >
+> > If as just an expression, then no, we really want this to be tied to
+> > the data struture in question we want to modify.
 > 
+> What about foo->a.b?  Or maybe that doesn't occur in your structure?
 
--- 
-மணிவண்ணன் சதாசிவம்
+We'll consider that too, good idea!
+
+  Luis
 
