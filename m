@@ -1,162 +1,98 @@
-Return-Path: <linux-kernel+bounces-7282-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7285-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F8E581A4D7
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 17:24:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90C2681A4E0
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 17:25:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2EDD01F269E9
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 16:24:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4745F1F21BD4
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 16:25:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 608524C60B;
-	Wed, 20 Dec 2023 16:20:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEE6346535;
+	Wed, 20 Dec 2023 16:21:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b="hc2ZOE4L"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 844194AF7B;
-	Wed, 20 Dec 2023 16:20:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B0BC91FB;
-	Wed, 20 Dec 2023 08:20:44 -0800 (PST)
-Received: from [10.57.82.217] (unknown [10.57.82.217])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E6B303F64C;
-	Wed, 20 Dec 2023 08:19:58 -0800 (PST)
-Message-ID: <18918cb6-2a1d-4a07-a9dc-a1d4de3860c3@arm.com>
-Date: Wed, 20 Dec 2023 16:21:05 +0000
+Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5F694184A;
+	Wed, 20 Dec 2023 16:21:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hugovil.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
+	; s=x; h=Subject:Content-Transfer-Encoding:Mime-Version:Message-Id:Cc:To:From
+	:Date:subject:date:message-id:reply-to;
+	bh=ebua2wySSX5WI4UINedesYX+NQM/p2GeiFeCoKwMB/o=; b=hc2ZOE4Luf3maQom4qq8yo8c8q
+	dFr6QA6ZCqecAYmLjNo0nqheLjqvCUSNxZWbJCZqXyHkLew/i5eCkRWCh7ThmQoO92svvv87QARmY
+	7earedJb0utss6Emi0PKvx63LH6Mwf3cbsKkU4XRMHMxrjMwLiNg04K14SiyIfbAyTWY=;
+Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:33870 helo=pettiford)
+	by mail.hugovil.com with esmtpa (Exim 4.92)
+	(envelope-from <hugo@hugovil.com>)
+	id 1rFzJk-00071Q-S1; Wed, 20 Dec 2023 11:21:09 -0500
+Date: Wed, 20 Dec 2023 11:21:08 -0500
+From: Hugo Villeneuve <hugo@hugovil.com>
+To: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: gregkh@linuxfoundation.org, jirislaby@kernel.org, jringle@gridpoint.com,
+ kubakici@wp.pl, phil@raspberrypi.org, bo.svangard@embeddedart.se,
+ linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org, Hugo Villeneuve
+ <hvilleneuve@dimonoff.com>
+Message-Id: <20231220112108.9ff049f369b6fa95f50b803a@hugovil.com>
+In-Reply-To: <ZYMOTx-IniZOhO-Z@smile.fi.intel.com>
+References: <20231219171903.3530985-1-hugo@hugovil.com>
+	<20231219171903.3530985-15-hugo@hugovil.com>
+	<ZYMOTx-IniZOhO-Z@smile.fi.intel.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/8] thermal: gov_power_allocator: Move memory
- allocation out of throttle()
-Content-Language: en-US
-To: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: linux-kernel@vger.kernel.org, daniel.lezcano@linaro.org,
- linux-pm@vger.kernel.org, rui.zhang@intel.com
-References: <20231212134844.1213381-1-lukasz.luba@arm.com>
- <20231212134844.1213381-4-lukasz.luba@arm.com>
- <CAJZ5v0j_FNhi_nzBz-n9Dk4_VBm2yiRLnkAS5btNE8cYD+trRQ@mail.gmail.com>
-From: Lukasz Luba <lukasz.luba@arm.com>
-In-Reply-To: <CAJZ5v0j_FNhi_nzBz-n9Dk4_VBm2yiRLnkAS5btNE8cYD+trRQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 70.80.174.168
+X-SA-Exim-Mail-From: hugo@hugovil.com
+X-Spam-Level: 
+X-Spam-Report: 
+	* -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+	* -0.0 T_SCC_BODY_TEXT_LINE No description available.
+	* -1.4 NICE_REPLY_A Looks like a legit reply (A)
+Subject: Re: [PATCH 14/18] serial: sc16is7xx: drop unneeded MODULE_ALIAS
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 
+On Wed, 20 Dec 2023 17:54:55 +0200
+Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
 
-
-On 12/20/23 14:35, Rafael J. Wysocki wrote:
-> On Tue, Dec 12, 2023 at 2:48 PM Lukasz Luba <lukasz.luba@arm.com> wrote:
->>
->> The new thermal callback allows to react to the change of cooling
->> instances in the thermal zone. Move the memory allocation to that new
->> callback and save CPU cycles in the throttle() code path.
->>
->> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
->> ---
->>   drivers/thermal/gov_power_allocator.c | 144 ++++++++++++++++++++------
->>   1 file changed, 113 insertions(+), 31 deletions(-)
->>
->> diff --git a/drivers/thermal/gov_power_allocator.c b/drivers/thermal/gov_power_allocator.c
->> index 38e1e89ba10c..3328c3ec71f2 100644
->> --- a/drivers/thermal/gov_power_allocator.c
->> +++ b/drivers/thermal/gov_power_allocator.c
->> @@ -61,6 +61,13 @@ static inline s64 div_frac(s64 x, s64 y)
->>    *                     @trip_switch_on should be NULL.
->>    * @trip_max:          last passive trip point of the thermal zone. The
->>    *                     temperature we are controlling for.
->> + * @num_actors:                number of cooling devices supporting IPA callbacks
->> + * @buffer_size:       IPA internal buffer size
->> + * @req_power:         IPA buffer for requested power
->> + * @max_power:         IPA buffer for max allocatable power
->> + * @granted_power:     IPA buffer for granted power
->> + * @extra_actor_power: IPA buffer for extra power
->> + * @weighted_req_power:        IPA buffer for weighted requested power
->>    */
->>   struct power_allocator_params {
->>          bool allocated_tzp;
->> @@ -69,6 +76,13 @@ struct power_allocator_params {
->>          u32 sustainable_power;
->>          const struct thermal_trip *trip_switch_on;
->>          const struct thermal_trip *trip_max;
->> +       int num_actors;
->> +       int buffer_size;
+> On Tue, Dec 19, 2023 at 12:18:58PM -0500, Hugo Villeneuve wrote:
+> > From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+> > 
+> > The MODULE_DEVICE_TABLE already creates the proper aliases for the
 > 
-> None of the above can be negative, so maybe consider using unsigned int?
+> MODULE_DEVICE_TABLE()
 
-True, I'll change them to unsigned.
+Done for V2.
+
+Hugo.
+
 
 > 
->> +       u32 *req_power;
->> +       u32 *max_power;
->> +       u32 *granted_power;
->> +       u32 *extra_actor_power;
->> +       u32 *weighted_req_power;
->>   };
->>
->>   /**
->> @@ -387,39 +401,24 @@ static int allocate_power(struct thermal_zone_device *tz, int control_temp)
->>          u32 *weighted_req_power;
->>          u32 power_range, weight;
->>          int total_weight = 0;
->> -       int num_actors = 0;
+> > SPI driver.
 > 
-> You could retain this local var and set it to params->num_actors.  It
-> is kind of inconsistent to drop it and still use the local variables
-> above.
+> With the above fixed
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> 
+> -- 
+> With Best Regards,
+> Andy Shevchenko
+> 
+> 
+> 
 
-OK, I'll do that.
 
-[snip]
-
->> +
->> +       req_power = kcalloc(num_actors * 5, sizeof(u32), GFP_KERNEL);
-> 
-> I'd use sizeof(*req_power) instead of sizeof(u32) here and below.
-
-OK
-
-> 
->> +       if (!req_power) {
->> +               ret = -ENOMEM;
->> +               goto clean_buffers;
->> +       }
->> +
->> +       params->num_actors = num_actors;
->> +       params->buffer_size = num_actors * 5 * sizeof(u32);
->> +
->> +       _power_buffers_init(params, req_power, &req_power[params->num_actors],
->> +                           &req_power[2 * params->num_actors],
->> +                           &req_power[3 * params->num_actors],
->> +                           &req_power[4 * params->num_actors]);
-> 
-> Why don't you use the local var in this instead of the struct member?
-> It would be easier to read then IMO.
-> 
-> Also, I would rather use pointer arithmetic, so it would become
-> 
-> _power_buffers_init(params, req_power, req_power + num_actors,
-> req_power + 2 * num_actors, req_power + 3 * num_actors, req_power + 4
-> * num_actors);
-> 
-> And note that you could introduce something like
-> 
-> struct power_actor {
->          u32 req_power;
->          u32 max_power;
->          u32 granted_power;
->          u32 extra_actor_power;
->          u32 weighted_req_power;
-> };
-> 
-> and use a single array of these instead of 5 different arrays of u32,
-> which would result in more straightforward code if I'm not mistaken.
-
-That sounds like a good idea. Let me implement it and see - but it
-should be a better way. Thanks!
-
+-- 
+Hugo Villeneuve
 
