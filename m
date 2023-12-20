@@ -1,180 +1,133 @@
-Return-Path: <linux-kernel+bounces-6571-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6572-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0582A819A77
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 09:28:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F15BF819A7C
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 09:30:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ADC551F2691A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 08:28:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AD296284769
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 08:30:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E9BB1D6BC;
-	Wed, 20 Dec 2023 08:28:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E1351CAB7;
+	Wed, 20 Dec 2023 08:30:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=9elements.com header.i=@9elements.com header.b="TnYbtwfb"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="W62plWJw"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0C571D120
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 08:28:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=9elements.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=9elements.com
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a1915034144so629942066b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 00:28:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=9elements.com; s=google; t=1703060889; x=1703665689; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fsZ/9HB6yqurIFZ++8sH/zT31UdGeaTqC79G9+iRJHI=;
-        b=TnYbtwfbauuNmhGkedlV5XQIWbDJ9dFObg4f/+uioRFOHLJ33aZxnEUpaPeNkP+U22
-         9WBqnKkVyU/jwM7fx0BdvllAgbTRb5a2zRBXeHZmECSMrvMERrcc9vPuG1lRoEceehRB
-         4UkLbV0Un+X8bG20OFCxfQJ4I3h/lWrvG5sP4b3z0dUfsVg+PBWUj3Vrtv/07HQeoy56
-         seahj64Ch79Xl6pxJVQGXofcI96D/gwd8TO8A5/3Q8muTnp6rcftzdVoPvNl5d0KMYcH
-         eqxi/WEmVXj/kcIkj/QD+jpdDOfHheboXsCjoP7AU1cZ/AQ+Uq3asDnBwH5HaKL3SBcB
-         q+VA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703060889; x=1703665689;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fsZ/9HB6yqurIFZ++8sH/zT31UdGeaTqC79G9+iRJHI=;
-        b=PszdgKdnRaj4tKJg7wq9ENiPvnOKEmc4MU7uypeJUTl2gDVsxkNi08h3QHpn1oH7fV
-         BNyVbTQFznwbkf/XRkcBFdOlQWQ1svZVcBlHPX86SyoCMV67/nz6XtTW+WpgcVGZX5v5
-         hFpppd/7FlR1U9lDUgLVO8KwDykBelssHoN6ocDwk/X5rT5XMe81NauTBrUqArLWPpe2
-         ODs7M1s9/K2eCi5E2tQ8PVhkT48/xzWi0j4CT4AJ9vxKcyjIfTy7NK0TQkRhMYItMJjI
-         jFsJm3ofz7XFFEQ5F/JCg+MsEjwjaTzkB09NtSYJpoUvEjpnJJV+fOSRWvT8BFneudcI
-         vyBg==
-X-Gm-Message-State: AOJu0YyzLWv1tPS+O6UNHkRvb5hlnYqHTfAog6+HmUXGTygwk1D3z3vc
-	Vy1smeOP+VOajEM+sFZkAxrdgA==
-X-Google-Smtp-Source: AGHT+IFlbu0jo6vmstpx0UVaQeXu2CRGWxUFGIRoAzqhC2OGOUsitD089tzmWvztfqQ85EcnTlmstQ==
-X-Received: by 2002:a17:906:2085:b0:a1b:714f:c59d with SMTP id 5-20020a170906208500b00a1b714fc59dmr9868165ejq.30.1703060889101;
-        Wed, 20 Dec 2023 00:28:09 -0800 (PST)
-Received: from stroh80.sec.9e.network (ip-078-094-000-051.um19.pools.vodafone-ip.de. [78.94.0.51])
-        by smtp.gmail.com with ESMTPSA id s20-20020a170906bc5400b00a26965e4caesm334778ejv.43.2023.12.20.00.28.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Dec 2023 00:28:08 -0800 (PST)
-From: Naresh Solanki <naresh.solanki@9elements.com>
-To: Peter Rosin <peda@axentia.se>
-Cc: Patrick Rudolph <patrick.rudolph@9elements.com>,
-	Naresh Solanki <naresh.solanki@9elements.com>,
-	Andi Shyti <andi.shyti@kernel.org>,
-	linux-i2c@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [RESEND PATCH v5 2/2] i2c: muxes: pca954x: Enable features on MAX7357
-Date: Wed, 20 Dec 2023 13:58:02 +0530
-Message-ID: <20231220082803.345153-2-naresh.solanki@9elements.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231220082803.345153-1-naresh.solanki@9elements.com>
-References: <20231220082803.345153-1-naresh.solanki@9elements.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F3421B26F;
+	Wed, 20 Dec 2023 08:30:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BK6J6Z4016964;
+	Wed, 20 Dec 2023 08:29:59 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=K2rmhOkJoMd+1/Y9bNhaQ8Tg5onlPPDtMcs47isLr5g=; b=W6
+	2plWJwDIEdGhyQ9EYkjKrc7tWZvtsbXnj6AlFUvn8BYpHWnG7bM1A/WSkoGqMuwd
+	8IomSmJTw4N0GKDeLsFmm99vqC5iOL1ueadjQohqIV6xYw4IE7W0+zFV9bEg5ylK
+	Osokc4N9CSZYRte80bnRudrH1Ehx6xttyRxXnKRrOtiR2YKXCpUzMeTexpeRj2yK
+	6/WMFRv7wyb6gc4JbmBrbyiQ76/1jKdL/ffOvzq6AtdSenlit/OY/A1Ls50evW5H
+	bv14aBgfPwpw0PMLkYJBakPXQHdtaNMelL0G8X+cHp4639ao0EMgBAt3iWvFrbGV
+	Rp4og06LYv2FaBjszB7w==
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v3tmm0b28-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 20 Dec 2023 08:29:59 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BK8TwhC018391
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 20 Dec 2023 08:29:58 GMT
+Received: from [10.216.36.155] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 20 Dec
+ 2023 00:29:54 -0800
+Message-ID: <c41c0b30-a3be-28d6-f06e-cb1d6be3608b@quicinc.com>
+Date: Wed, 20 Dec 2023 13:59:51 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 20/34] media: iris: add video hardware internal buffer
+ count and size calculation
+Content-Language: en-US
+To: Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        <linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <stanimir.k.varbanov@gmail.com>, <quic_vgarodia@quicinc.com>,
+        <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <mchehab@kernel.org>
+CC: <linux-arm-msm@vger.kernel.org>, <quic_abhinavk@quicinc.com>
+References: <1702899149-21321-1-git-send-email-quic_dikshita@quicinc.com>
+ <1702899149-21321-21-git-send-email-quic_dikshita@quicinc.com>
+ <cc2da776-9aed-476e-9654-8ad75496db8b@linaro.org>
+From: Dikshita Agarwal <quic_dikshita@quicinc.com>
+In-Reply-To: <cc2da776-9aed-476e-9654-8ad75496db8b@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 2MAU1cA5MYXZaEeLHu_0xfS8SgAecpbx
+X-Proofpoint-ORIG-GUID: 2MAU1cA5MYXZaEeLHu_0xfS8SgAecpbx
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ spamscore=0 impostorscore=0 mlxscore=0 bulkscore=0 clxscore=1015
+ priorityscore=1501 mlxlogscore=999 adultscore=0 malwarescore=0
+ phishscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2311290000 definitions=main-2312200058
 
-From: Patrick Rudolph <patrick.rudolph@9elements.com>
 
-Enable additional features based on DT settings and unconditionally
-release the shared interrupt pin after 1.6 seconds and allow to use
-it as reset.
 
-These features aren't enabled by default and it's up to board designer
-to validate for proper functioning and detection of devices in secondary
-bus as sometimes it can cause secondary bus being disabled.
+On 12/19/2023 5:36 PM, Bryan O'Donoghue wrote:
+> On 18/12/2023 11:32, Dikshita Agarwal wrote:
+>> drivers/media/platform/qcom/vcodec/iris/Makefile | 1 +
+>> .../media/platform/qcom/vcodec/iris/iris_buffer.c | 48 ++
+>> .../media/platform/qcom/vcodec/iris/iris_common.h | 1 +
+>> .../media/platform/qcom/vcodec/iris/iris_core.h | 2 +
+>> .../media/platform/qcom/vcodec/iris/iris_helpers.c | 13 +
+>> .../media/platform/qcom/vcodec/iris/iris_helpers.h | 4 +
+>> .../platform/qcom/vcodec/iris/iris_instance.h | 2 +
+>> .../media/platform/qcom/vcodec/iris/iris_vdec.c | 1 +
+>> .../media/platform/qcom/vcodec/iris/vpu_common.h | 8 +
+>> .../media/platform/qcom/vcodec/iris/vpu_iris3.c | 6 +
+>> .../platform/qcom/vcodec/iris/vpu_iris3_buffer.c | 201 +++++
+>> .../platform/qcom/vcodec/iris/vpu_iris3_buffer.h | 845 +++++++++++++++++++++
+> 
+> So, unless the code you are adding effects existing upstream venus, I think
+> it would be a bit easier to review if you squashed down changes that
+> pertain to Iris only.
+> 
+> For example this patch seems to relate to Iris only, so why is it a
+> progressive change within your series.
+> 
+> Similar comment for "add vb2 streaming and buffer ops" and other "add
+> feature x" patches in this series.
+> 
+> If the change is contained to your own codebase, then progressive changes
+> are more noise than content.
+> 
+> Please try to squash down changes - to reduce the number of patches and the
+> total LOC being proposed here.
+> 
+As requested in V1, we separated out the iris driver code in functional
+patches. Also, as commented in 1st patch, we are OK to have the common
+helpers as separate series.
 
-Signed-off-by: Patrick Rudolph <patrick.rudolph@9elements.com>
-Signed-off-by: Naresh Solanki <naresh.solanki@9elements.com>
-Reviewed-by: Andi Shyti <andi.shyti@kernel.org>
-
----
-Changes in V5:
-- Fix typos
-- Update comment
-- Add newline in dev_warn
-Changes in V4:
-- Drop max7358
-- Update #define
-- Move conf variable
-- Print warning when I2C_FUNC_SMBUS_WRITE_BYTE_DATA isn't supported
-Changes in V3:
-- Delete unused #define
-- Update pca954x_init
-- Update commit message
-Changes in V2:
-- Update comments
-- Update check for DT properties
----
- drivers/i2c/muxes/i2c-mux-pca954x.c | 43 ++++++++++++++++++++++++++++-
- 1 file changed, 42 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/i2c/muxes/i2c-mux-pca954x.c b/drivers/i2c/muxes/i2c-mux-pca954x.c
-index 2219062104fb..f5dfc33b97c0 100644
---- a/drivers/i2c/muxes/i2c-mux-pca954x.c
-+++ b/drivers/i2c/muxes/i2c-mux-pca954x.c
-@@ -57,6 +57,20 @@
- 
- #define PCA954X_IRQ_OFFSET 4
- 
-+/*
-+ * MAX7357's configuration register is writeable after POR, but
-+ * can be locked by setting the basic mode bit. MAX7358 configuration
-+ * register is locked by default and needs to be unlocked first.
-+ * The configuration register holds the following settings:
-+ */
-+#define MAX7357_CONF_INT_ENABLE			BIT(0)
-+#define MAX7357_CONF_FLUSH_OUT			BIT(1)
-+#define MAX7357_CONF_RELEASE_INT		BIT(2)
-+#define MAX7357_CONF_DISCON_SINGLE_CHAN		BIT(4)
-+#define MAX7357_CONF_PRECONNECT_TEST		BIT(7)
-+
-+#define MAX7357_POR_DEFAULT_CONF		MAX7357_CONF_INT_ENABLE
-+
- enum pca_type {
- 	max_7356,
- 	max_7357,
-@@ -470,7 +484,34 @@ static int pca954x_init(struct i2c_client *client, struct pca954x *data)
- 	else
- 		data->last_chan = 0; /* Disconnect multiplexer */
- 
--	ret = i2c_smbus_write_byte(client, data->last_chan);
-+	if (device_is_compatible(&client->dev, "maxim,max7357")) {
-+		if (i2c_check_functionality(client->adapter, I2C_FUNC_SMBUS_WRITE_BYTE_DATA)) {
-+			u8 conf = MAX7357_POR_DEFAULT_CONF;
-+			/*
-+			 * The interrupt signal is shared with the reset pin. Release the
-+			 * interrupt after 1.6 seconds to allow using the pin as reset.
-+			 */
-+			conf |= MAX7357_CONF_RELEASE_INT;
-+
-+			if (device_property_read_bool(&client->dev, "maxim,isolate-stuck-channel"))
-+				conf |= MAX7357_CONF_DISCON_SINGLE_CHAN;
-+			if (device_property_read_bool(&client->dev,
-+						      "maxim,send-flush-out-sequence"))
-+				conf |= MAX7357_CONF_FLUSH_OUT;
-+			if (device_property_read_bool(&client->dev,
-+						      "maxim,preconnection-wiggle-test-enable"))
-+				conf |= MAX7357_CONF_PRECONNECT_TEST;
-+
-+			ret = i2c_smbus_write_byte_data(client, data->last_chan, conf);
-+		} else {
-+			dev_warn(&client->dev, "Write byte data not supported."
-+				 "Cannot enable enhanced mode features\n");
-+			ret = i2c_smbus_write_byte(client, data->last_chan);
-+		}
-+	} else {
-+		ret = i2c_smbus_write_byte(client, data->last_chan);
-+	}
-+
- 	if (ret < 0)
- 		data->last_chan = 0;
- 
--- 
-2.41.0
-
+Patch 6 onward all the code is contained to iris driver only.
+Could you please elaborate, what do you mean by squashing down the changes?
+which patches you want us to squash?
+> ---
+> bod
 
