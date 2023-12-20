@@ -1,110 +1,114 @@
-Return-Path: <linux-kernel+bounces-7057-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7058-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 84D4B81A115
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 15:26:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B43381A118
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 15:27:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 253B61F22B74
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 14:26:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E01D2B20DC2
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 14:27:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4159138F8E;
-	Wed, 20 Dec 2023 14:26:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B31F38FA1;
+	Wed, 20 Dec 2023 14:26:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="omMPistz"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lME0Uujr"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9025438DF5;
-	Wed, 20 Dec 2023 14:26:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF772C433C7;
-	Wed, 20 Dec 2023 14:26:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A577938F82;
+	Wed, 20 Dec 2023 14:26:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46C9BC433C7;
+	Wed, 20 Dec 2023 14:26:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703082384;
-	bh=xpBEBzomf3p2iDt4EErdfgJq0jpQsA2bWX5QENChMOA=;
+	s=k20201202; t=1703082414;
+	bh=ACSAlCfkl6Oembs96AIka+WCm/EX8xaNKzVQV9k6Pgk=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=omMPistz948xTI/ZI7GZCM7Fl61sTjERHai2wv3De1kUu4LPMpy6Wnw35iGFw5gbr
-	 3ZP3AaScuyuKKmf15/7w1FOpCnX4ntseWWxOL9dDCvGTK++YavZt0LEEo2bjZZrDCl
-	 z4PfkJmOqMdfUA7gzDhsncktMhR54UM3YQqm8PuxoR9+i3hhPYJHzXzhBaliFghV9x
-	 yhOetlL4yWN4XL9yFG0M9BSvuqDjCk/gZj2x5qgyRLp+Wht9NyeTt7L5Umk2JavCbm
-	 TUxokcrwh0Vm4kn2NfdAOuJ0UvkbKwpMcUIk3Hk0AW2yrPpFhlAIIOD6tydjE+xaIt
-	 fAAbES7ShHGZw==
-Date: Wed, 20 Dec 2023 23:26:19 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, Masami
- Hiramatsu <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Andrew Morton
- <akpm@linux-foundation.org>, Tzvetomir Stoyanov <tz.stoyanov@gmail.com>,
- Vincent Donnefort <vdonnefort@google.com>, Kent Overstreet
- <kent.overstreet@gmail.com>
-Subject: Re: [PATCH v5 03/15] ring-buffer: Add interface for configuring
- trace sub buffer size
-Message-Id: <20231220232619.67f0b175578d14f9341fb30c@kernel.org>
-In-Reply-To: <20231219185628.298324722@goodmis.org>
-References: <20231219185414.474197117@goodmis.org>
-	<20231219185628.298324722@goodmis.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	b=lME0Uujr7IM1G7b832SNrxZn18Q9EY0WAkvH4/aZq74jJNTpCH3Sde26A6MBnScZU
+	 q7h0NsgVhA+Pdir/XPdD4lfhR8BuaPlwFDS2Gb9tSYY/l6Bco5D8frPQL2CtkRQWH/
+	 bvqB7vG/uCOCtQN4soc/yxWUyJH5r/dsIcaypdv94EW9XCyOffxM9/GpYRgjWArxUc
+	 xDypCsQt50Yeh5VyUhCY4P4+IJyy+OqUIJevpAUMO/OTXImTZLtB2CvFVWKKk3sE+5
+	 vdSmra5TM4UKRhy1frsuR9MQ6i02jx6WcceU2I7MDzmDXs7gE4IP+j02dMYSUv4f09
+	 Qb6ZECqksBm/g==
+Date: Wed, 20 Dec 2023 14:26:38 +0000
+From: Jonathan Cameron <jic23@kernel.org>
+To: Anshul Dalal <anshulusr@gmail.com>
+Cc: linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+ devicetree@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>, Lars-Peter
+ Clausen <lars@metafoo.de>, Rob Herring <robh+dt@kernel.org>, Krzysztof
+ Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ linux-kernel-mentees@lists.linuxfoundation.org, Shuah Khan
+ <skhan@linuxfoundation.org>
+Subject: Re: [PATCH v3 2/2] iio: dac: driver for MCP4821
+Message-ID: <20231220142638.7739c5d7@jic23-huawei>
+In-Reply-To: <20231218164735.787199-2-anshulusr@gmail.com>
+References: <20231218164735.787199-1-anshulusr@gmail.com>
+	<20231218164735.787199-2-anshulusr@gmail.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
+MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Tue, 19 Dec 2023 13:54:17 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
+On Mon, 18 Dec 2023 22:17:34 +0530
+Anshul Dalal <anshulusr@gmail.com> wrote:
 
-> +/**
-> + * ring_buffer_subbuf_order_set - set the size of ring buffer sub page.
-> + * @buffer: The ring_buffer to set the new page size.
-> + * @order: Order of the system pages in one sub buffer page
-> + *
-> + * By default, one ring buffer pages equals to one system page. This API can be
-> + * used to set new size of the ring buffer page. The size must be order of
-> + * system page size, that's why the input parameter @order is the order of
-> + * system pages that are allocated for one ring buffer page:
-> + *  0 - 1 system page
-> + *  1 - 2 system pages
-> + *  3 - 4 system pages
-> + *  ...
+> Adds driver for the MCP48xx series of DACs.
+> 
+> Device uses a simplex SPI channel. To set the value of an output channel,
+> a 16-bit data of following format must be written:
+> 
+> Bit field | Description
+> 15 [MSB]  | Channel selection bit
+>             0 -> Channel A
+>             1 -> Channel B
+> 13        | Output Gain Selection bit
+>             0 -> 2x Gain (Vref = 4.096V)
+>             1 -> 1x Gain (Vref = 2.048V)
+> 12        | Output Shutdown Control bit
+>             0 -> Shutdown the selected channel
+>             1 -> Active mode operation
+> 11-0 [LSB]| DAC Input Data bits
+>             Value's big endian representation is taken as input for the
+>             selected DAC channel. For devices with a resolution of less
+>             than 12-bits, only the x most significant bits are considered
+>             where x is the resolution of the device.
+> Reference: Page#22 [MCP48x2 Datasheet]
+> 
+> Supported devices:
+>   +---------+--------------+-------------+
+>   | Device  |  Resolution  |   Channels  |
+>   |---------|--------------|-------------|
+>   | MCP4801 |     8-bit    |      1      |
+>   | MCP4802 |     8-bit    |      2      |
+>   | MCP4811 |    10-bit    |      1      |
+>   | MCP4812 |    10-bit    |      2      |
+>   | MCP4821 |    12-bit    |      1      |
+>   | MCP4822 |    12-bit    |      2      |
+>   +---------+--------------+-------------+
+> 
+> Devices tested:
+>   MCP4821 [12-bit single channel]
+>   MCP4802 [8-bit dual channel]
+> 
+> Tested on Raspberry Pi Zero 2W
+> 
+> Datasheet: https://ww1.microchip.com/downloads/en/DeviceDoc/22244B.pdf #MCP48x1
+> Datasheet: https://ww1.microchip.com/downloads/en/DeviceDoc/20002249B.pdf #MCP48x2
+> Signed-off-by: Anshul Dalal <anshulusr@gmail.com>
+> 
+> ---
+> 
+> Changes for v3:
+> - no updates
+>
+Oops. I reviewed v2.  Please find comments there.
 
-Don't we have the max order of the pages?
-
-> + *
-> + * Returns 0 on success or < 0 in case of an error.
-> + */
-> +int ring_buffer_subbuf_order_set(struct trace_buffer *buffer, int order)
-> +{
-> +	int psize;
-> +
-> +	if (!buffer || order < 0)
-> +		return -EINVAL;
-> +
-> +	if (buffer->subbuf_order == order)
-> +		return 0;
-> +
-> +	psize = (1 << order) * PAGE_SIZE;
-> +	if (psize <= BUF_PAGE_HDR_SIZE)
-> +		return -EINVAL;
-> +
-> +	buffer->subbuf_order = order;
-> +	buffer->subbuf_size = psize - BUF_PAGE_HDR_SIZE;
-> +
-> +	/* Todo: reset the buffer with the new page size */
-> +
-
-I just wonder why there is no reallocate the sub buffers here.
-Is it OK to change the sub buffer page size and order while
-using the ring buffer?
-
-Thank you,
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Jonathan
 
