@@ -1,201 +1,135 @@
-Return-Path: <linux-kernel+bounces-6334-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6335-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0BDE881975F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 04:50:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A215819760
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 04:50:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B5EF8286A15
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 03:50:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6C9E41C227BE
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 03:50:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFB06BE68;
-	Wed, 20 Dec 2023 03:49:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB5B2C153;
+	Wed, 20 Dec 2023 03:49:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="TRi5q9lD"
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="D/Ts+foZ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-io1-f42.google.com (mail-io1-f42.google.com [209.85.166.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out162-62-58-211.mail.qq.com (out162-62-58-211.mail.qq.com [162.62.58.211])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E197C156E2
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 03:49:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
-Received: by mail-io1-f42.google.com with SMTP id ca18e2360f4ac-7b7fb34265fso38575639f.3
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 19:49:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1703044184; x=1703648984; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=cV23V7TOvb67CyEBq2y7tG+sTh2KHoQeq84YdzqhXCE=;
-        b=TRi5q9lDJZdfAvtKFYNNTleePu2PoxvqaQK4mpAkJLU9znxosjXHvMmfMxx3Ejlmca
-         pvB+tPF+c8YyQ71i0Et++snbh3hCO1Kft8jbif26EcWgiKgamHvIi0o0G1UGeA2NJIef
-         u66nUB+G4Mc7Y+W57xBfd54rBOckBAY+dQ+xv3byLrMryRpPWLT8PIrPKEQhzB0/SkAV
-         3h5eSbwgJNSH+AC6z94xMsOyjoUrwL33GpsABs/x3Xk8mGN2OnD9BhWjwsLxPfSrpRGw
-         ybnYSNg9T5bRELx4pK9CWWNJalLxSNF+t1jMI2ZIuY6Yog08AaNk8iKruj5WMY0QfPg1
-         7EIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703044184; x=1703648984;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cV23V7TOvb67CyEBq2y7tG+sTh2KHoQeq84YdzqhXCE=;
-        b=JH9nC1TSk+NSUQHFGfBbeIEB6l8BpqgGUTClr18ROCYSRo+SFlm3vbKiCSS16+tdQ4
-         7t0oPwYv+jhUSUzM62vYlenW97/JBowo7Rue8ZhgwRzSynylFpwm8/bUXz3077aMQPag
-         sFIar+VZ7yntbRe1d+GffwJPML/9N2dzpadPF8tMGF03LumWZ3u8ccXWcFJ8aXbj6gf8
-         FB+t0CghXf1gAU6xhBXXFt3XTYp/ussRITCGBPklhQLFDMbyc1dYgMZqXLqqBnzPLiBW
-         aJY63G0wTIoRrCSSd8vyspyabXBlQo6KEk6tE6clqzGFxsNkqyFiz3TvGKp1ymypumJC
-         LUjA==
-X-Gm-Message-State: AOJu0YzfI2/OqsoOMBhOuJDT4/Sr6rNeyuVkxscm7SpqxjO2kT5ZxD5z
-	H9/bCsxKEDSxF12jg+lIN2eepPmGQRcpeYtCCqM=
-X-Google-Smtp-Source: AGHT+IEFtaaGYdqONj8ZBQy1SsSMrvVpJouh1AF9l/WyoqOfDMdwX1NJFUbBjCx+mCqU4PqT2OUdiA==
-X-Received: by 2002:a6b:7f0c:0:b0:7b7:faa5:954f with SMTP id l12-20020a6b7f0c000000b007b7faa5954fmr1627037ioq.23.1703044183845;
-        Tue, 19 Dec 2023 19:49:43 -0800 (PST)
-Received: from sunil-laptop ([106.51.83.242])
-        by smtp.gmail.com with ESMTPSA id r9-20020a6bd909000000b007b42bf452f4sm6509305ioc.33.2023.12.19.19.49.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Dec 2023 19:49:43 -0800 (PST)
-Date: Wed, 20 Dec 2023 09:19:32 +0530
-From: Sunil V L <sunilvl@ventanamicro.com>
-To: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-riscv@lists.infradead.org, linux-acpi@vger.kernel.org,
-	linux-pci@vger.kernel.org,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>, Len Brown <lenb@kernel.org>,
-	Anup Patel <anup@brainfault.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Bjorn Helgaas <bhelgaas@google.com>, Haibo Xu <haibo1.xu@intel.com>,
-	Conor Dooley <conor.dooley@microchip.com>,
-	Andrew Jones <ajones@ventanamicro.com>,
-	=?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-	Marc Zyngier <maz@kernel.org>
-Subject: Re: [RFC PATCH v3 00/17] RISC-V: ACPI: Add external interrupt
- controller support
-Message-ID: <ZYJkTN+GNi1nMkJd@sunil-laptop>
-References: <20231219174526.2235150-1-sunilvl@ventanamicro.com>
- <CAJZ5v0j6Veze8xDFKTbVZ5=WAfmLdeJ8NXRnh9kwCZgyaDdgew@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7E1515495
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 03:49:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1703044188; bh=coIR2leWfE09/iQXeKW2K56cU0j7xxFQcu8yUQEoVCs=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=D/Ts+foZUCgO/bSZsgaTpAdWHsfEjGCK+BYZJ9wBj54xyKwCfYseKb6iHcmykJBxk
+	 mZdnJImg24vfcxnqNw8ApSMyTzXaoQ2mpgNMOba1GGGeNKNFA86HHubG/dadOAEYK0
+	 o2RRpw/0+OoyFTR1h1ZYZO9ZwQ62hOx9LGNvKZBU=
+Received: from pek-lxu-l1.wrs.com ([111.198.225.215])
+	by newxmesmtplogicsvrszc5-2.qq.com (NewEsmtp) with SMTP
+	id C6E908D8; Wed, 20 Dec 2023 11:49:46 +0800
+X-QQ-mid: xmsmtpt1703044186t048y8bka
+Message-ID: <tencent_501F4BE81B712525BA1ABB71333D9E001B08@qq.com>
+X-QQ-XMAILINFO: OZsapEVPoiO6pb6ZN/T6VISo+8sqCpjz2tCaSuPsNTgtvXjy3g0NFztgkUpoT5
+	 okiqS1YvfvGMn/42Q7IC3F+wvVPSGiYvA74UkqjJ/oPS7wNO8fFETJFLI6wO1r6cWibys2pFCRim
+	 r4WOxTrMjUMCj5amFd5+FkQ9MrggN88wfKrW4Hd246MWl5VWzuK9TSNlEYN9TDFwLcoPni/pAsWk
+	 9pyhvgoSlWkBmvjKj210bE42HO5UFyYM4cScXkwUmh5mJ8FVe9a5KN2nnBZRxmMu16ffA2A3NfSm
+	 9BIoNF8dUEuqBEQj1dE43R8pkgXdjmPo7zAl/0mdGPnydPXupE+mss0UzVSAyzl5jjB7CiGY6Bt5
+	 5x7M0KlnNegx8ydEBpyeL5/4mVbtqrVIgE6fipN6cXFumOFMaPrsuXylycek8ioJAkrwSTrOjTCl
+	 FAuFayQGXn+cW0C0AvMof12i+BDiuVRSPyDX6Jv+2hodZdsTTAwXiQeKU8/ioE2pxe6gBOVh/eEC
+	 55DdY6EcrnsRq4iRBkRJMB3obeaXADal6why5Q566KSiAQIWjrIR6vTiGFI6Oks4cZJi/L9T7BwA
+	 uHxkQMv1Qa99FDYJia4yPfS+46GZUhXot7FcEui7wlX+GR0bcxWkOR6uHBC+gdxfRuKrjN5MtYU5
+	 /kofbSTfQ2a0iYOavyZV/z0o2KoV+gry9bvPc8aIaaAPpcMLDSr5d5oXg+6LJ1ZHOikIKiYk6bEo
+	 ZrvKcgDDHnnvzKEY5QgQjZOriFPWXYToaDHMvJmOSK//yqx+PBCklWBXeSoQpOGYPRUgsTbG9i7e
+	 cjEVnH4qpR+qmp43oQ5M+HqDrdGkZMy3sVR3YB6gxpadwGYoHVxLrwLsCWMpqvHucevoNY/8apdU
+	 zpZAutJ55IXMrtK5TFELeR87MerVUJsG70ciWTpcysVMZVafGLfl4p8fVpQbBR3Q==
+X-QQ-XMRINFO: Nq+8W0+stu50PRdwbJxPCL0=
+From: Edward Adam Davis <eadavis@qq.com>
+To: syzbot+8ffb0839a24e9c6bfa76@syzkaller.appspotmail.com
+Cc: linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [crypto?] KASAN: slab-out-of-bounds Read in arc4_crypt
+Date: Wed, 20 Dec 2023 11:49:47 +0800
+X-OQ-MSGID: <20231220034946.2840444-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <000000000000d52e14060cc9c551@google.com>
+References: <000000000000d52e14060cc9c551@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJZ5v0j6Veze8xDFKTbVZ5=WAfmLdeJ8NXRnh9kwCZgyaDdgew@mail.gmail.com>
 
-On Tue, Dec 19, 2023 at 06:50:19PM +0100, Rafael J. Wysocki wrote:
-> On Tue, Dec 19, 2023 at 6:45 PM Sunil V L <sunilvl@ventanamicro.com> wrote:
-> >
-> > This series adds support for the below ECR approved by ASWG.
-> > 1) MADT - https://drive.google.com/file/d/1oMGPyOD58JaPgMl1pKasT-VKsIKia7zR/view?usp=sharing
-> >
-> > The series primarily enables irqchip drivers for RISC-V ACPI based
-> > platforms.
-> >
-> > The series can be broadly categorized like below.
-> >
-> > 1) PCI ACPI related functions are migrated from arm64 to common file so
-> > that we don't need to duplicate them for RISC-V.
-> >
-> > 2) Introduced support for fw_devlink for ACPI nodes for IRQ dependency.
-> > This helps to support deferred probe of interrupt controller drivers.
-> >
-> > 3) Modified pnp_irq() to try registering the IRQ  again if it sees it in
-> > disabled state. This solution is similar to how
-> > platform_get_irq_optional() works for regular platform devices.
-> >
-> > 4) Added support for re-ordering the probe of interrupt controllers when
-> > IRQCHIP_ACPI_DECLARE is used.
-> >
-> > 5) ACPI support added in RISC-V interrupt controller drivers.
-> >
-> > This series is based on Anup's AIA v11 series. Since Anup's AIA v11 is
-> > not merged yet and first time introducing fw_devlink, deferred probe and
-> > reordering support for IRQCHIP probe, this series is still kept as RFC.
-> > Looking forward for the feedback!
-> >
-> > Changes since RFC v2:
-> >         1) Introduced fw_devlink for ACPI nodes for IRQ dependency.
-> >         2) Dropped patches in drivers which are not required due to
-> >            fw_devlink support.
-> >         3) Dropped pci_set_msi() patch and added a patch in
-> >            pci_create_root_bus().
-> >         4) Updated pnp_irq() patch so that none of the actual PNP
-> >            drivers need to change.
-> >
-> > Changes since RFC v1:
-> >         1) Abandoned swnode approach as per Marc's feedback.
-> >         2) To cope up with AIA series changes which changed irqchip driver
-> >            probe from core_initcall() to platform_driver, added patches
-> >            to support deferred probing.
-> >         3) Rebased on top of Anup's AIA v11 and added tags.
-> >
-> > To test the series,
-> >
-> > 1) Qemu should be built using the riscv_acpi_b2_v8 branch at
-> > https://github.com/vlsunil/qemu.git
-> >
-> > 2) EDK2 should be built using the instructions at:
-> > https://github.com/tianocore/edk2/blob/master/OvmfPkg/RiscVVirt/README.md
-> >
-> > 3) Build Linux using this series on top of Anup's AIA v11 series.
-> >
-> > Run Qemu:
-> > qemu-system-riscv64 \
-> >  -M virt,pflash0=pflash0,pflash1=pflash1,aia=aplic-imsic \
-> >  -m 2G -smp 8 \
-> >  -serial mon:stdio \
-> >  -device virtio-gpu-pci -full-screen \
-> >  -device qemu-xhci \
-> >  -device usb-kbd \
-> >  -blockdev node-name=pflash0,driver=file,read-only=on,filename=RISCV_VIRT_CODE.fd \
-> >  -blockdev node-name=pflash1,driver=file,filename=RISCV_VIRT_VARS.fd \
-> >  -netdev user,id=net0 -device virtio-net-pci,netdev=net0 \
-> >  -kernel arch/riscv/boot/Image \
-> >  -initrd rootfs.cpio \
-> >  -append "root=/dev/ram ro console=ttyS0 rootwait earlycon=uart8250,mmio,0x10000000"
-> >
-> > To boot with APLIC only, use aia=aplic.
-> > To boot with PLIC, remove aia= option.
-> >
-> > This series is also available in acpi_b2_v3_riscv_aia_v11 branch at
-> > https://github.com/vlsunil/linux.git
-> >
-> > Based-on: 20231023172800.315343-1-apatel@ventanamicro.com
-> > (https://lore.kernel.org/lkml/20231023172800.315343-1-apatel@ventanamicro.com/)
-> >
-> > Sunil V L (17):
-> >   arm64: PCI: Migrate ACPI related functions to pci-acpi.c
-> >   RISC-V: ACPI: Implement PCI related functionality
-> >   PCI: Make pci_create_root_bus() declare its reliance on MSI domains
-> >   ACPI: Add fw_devlink support for ACPI fwnode for IRQ dependency
-> >   ACPI: irq: Add support for deferred probe in acpi_register_gsi()
-> >   pnp.h: Reconfigure IRQ in pnp_irq() to support deferred probe
-> >   ACPI: scan.c: Add weak arch specific function to reorder the IRQCHIP
-> >     probe
-> >   ACPI: RISC-V: Implement arch function to reorder irqchip probe entries
-> >   irqchip: riscv-intc: Add ACPI support for AIA
-> >   irqchip: riscv-imsic: Add ACPI support
-> >   irqchip: riscv-aplic: Add ACPI support
-> >   irqchip: irq-sifive-plic: Add ACPI support
-> >   ACPI: bus: Add RINTC IRQ model for RISC-V
-> >   ACPI: bus: Add acpi_riscv_init function
-> >   ACPI: RISC-V: Create APLIC platform device
-> >   ACPI: RISC-V: Create PLIC platform device
-> >   irqchip: riscv-intc: Set ACPI irqmodel
-> 
-> JFYI, I have no capacity to provide any feedback on this till 6.8-rc1 is out.
-> 
-No worries!. I will wait for your feedback.
+please test slab-out-of-bounds Read in arc4_crypt
 
-Thanks!
-Sunil
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git 17cb8a20bde6
+
+diff --git a/crypto/algif_skcipher.c b/crypto/algif_skcipher.c
+index 02cea2149504..299547b0e200 100644
+--- a/crypto/algif_skcipher.c
++++ b/crypto/algif_skcipher.c
+@@ -120,6 +120,7 @@ static int _skcipher_recvmsg(struct socket *sock, struct msghdr *msg,
+ 	if (IS_ERR(areq))
+ 		return PTR_ERR(areq);
+ 
++	printk("req: %p, %s\n", &areq->cra_u.skcipher_req, __func__);
+ 	/* convert iovecs of output buffers into RX SGL */
+ 	err = af_alg_get_rsgl(sk, msg, flags, areq, ctx->used, &len);
+ 	if (err)
+diff --git a/crypto/arc4.c b/crypto/arc4.c
+index 1a4825c97c5a..79621f4f4c68 100644
+--- a/crypto/arc4.c
++++ b/crypto/arc4.c
+@@ -29,6 +29,7 @@ static int crypto_arc4_crypt(struct crypto_lskcipher *tfm, const u8 *src,
+ {
+ 	struct arc4_ctx *ctx = crypto_lskcipher_ctx(tfm);
+ 
++	printk("%p, flags: %u, ctx: %p, %s\n", siv, flags, ctx, __func__);
+ 	if (!(flags & CRYPTO_LSKCIPHER_FLAG_CONT))
+ 		memcpy(siv, ctx, sizeof(*ctx));
+ 
+diff --git a/crypto/lskcipher.c b/crypto/lskcipher.c
+index a06008e112f3..0a429ffc086f 100644
+--- a/crypto/lskcipher.c
++++ b/crypto/lskcipher.c
+@@ -215,6 +215,10 @@ static int crypto_lskcipher_crypt_sg(struct skcipher_request *req,
+ 
+ 	flags = req->base.flags & CRYPTO_TFM_REQ_MAY_SLEEP;
+ 
++	printk("r: %p, ivs: %p, v: %d, s: %u, ri: %p, wi: %p, f: %u, wnb: %u, %s\n", 
++		req, ivs, IS_ERR_OR_NULL(ivs), ivsize, req->iv, walk.iv, 
++		req->base.flags, walk.nbytes, __func__);
++
+ 	if (req->base.flags & CRYPTO_SKCIPHER_REQ_CONT)
+ 		flags |= CRYPTO_LSKCIPHER_FLAG_CONT;
+ 	else
+@@ -224,6 +228,9 @@ static int crypto_lskcipher_crypt_sg(struct skcipher_request *req,
+ 		flags |= CRYPTO_LSKCIPHER_FLAG_FINAL;
+ 
+ 	err = skcipher_walk_virt(&walk, req, false);
++	printk("ivs: %p, v: %d, s: %u, ri: %p, wi: %p, f: %u, wnb: %u, %s\n", 
++		ivs, IS_ERR_OR_NULL(ivs), ivsize, req->iv, walk.iv, 
++		req->base.flags, walk.nbytes, __func__);
+ 
+ 	while (walk.nbytes) {
+ 		err = crypt(tfm, walk.src.virt.addr, walk.dst.virt.addr,
+diff --git a/crypto/skcipher.c b/crypto/skcipher.c
+index bc70e159d27d..08409990b58a 100644
+--- a/crypto/skcipher.c
++++ b/crypto/skcipher.c
+@@ -716,6 +716,8 @@ static int crypto_lskcipher_import(struct skcipher_request *req, const void *in)
+ 	struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(req);
+ 	u8 *ivs = skcipher_request_ctx(req);
+ 
++	printk("%p, csa: %u, csi: %u, tfm: %p, in: %p, %s\n", 
++		ivs, crypto_skcipher_alignmask(tfm), crypto_skcipher_ivsize(tfm), tfm, in, __func__);
+ 	ivs = PTR_ALIGN(ivs, crypto_skcipher_alignmask(tfm) + 1);
+ 
+ 	memcpy(ivs + crypto_skcipher_ivsize(tfm), in,
+
 
