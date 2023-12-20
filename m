@@ -1,163 +1,127 @@
-Return-Path: <linux-kernel+bounces-6336-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6337-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9FC16819763
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 04:50:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9CC63819767
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 04:53:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C3412851E3
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 03:50:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 402FA1F25833
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 03:53:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FB4DBE5E;
-	Wed, 20 Dec 2023 03:50:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2968C121;
+	Wed, 20 Dec 2023 03:53:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="d2A2m2V4"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Qbe9WYQV"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9B63FBE0
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 03:50:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A93548F45
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 03:53:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1703044234;
+	s=mimecast20190719; t=1703044379;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=S3W0GnoD8052wYxUNxx5sjwSUJEmm53y4MFQD1spj90=;
-	b=d2A2m2V4xaNZAtN0CwpvIYk2M9uzVip9Rafu+kI1aFLrBo7JeJCpkkxv5jvHktVU4kBqPB
-	YBasgGw25NY8UZ7PUj1PMVhkgbKEwCnxh0EdiVojZuicy5xsHkic1GCNhtDRosyJ9qD3d2
-	XfXnAsXScxF2tGXxdi/jH1f/kaC0PF8=
+	bh=vIn5APMs5q/H2mkbVIU64Mx79XhFiyV1fy9ppFrUsQ0=;
+	b=Qbe9WYQVvKZsvb9ts2k2tf3a5aNhVgfH4JJSnmb3t+ljzR7Y7wE/GG8e0qydiuUTrO2NWz
+	pIW2Z7X8GzJeNyZ87xQflhObIAlPuEhmUBjXWZhqPmb3vrPyMmPEjF/7lh1Fn8buqPutlm
+	Io8MzpIpvAw3B8HjruIEYmdChb2pRko=
 Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com
  [209.85.215.197]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-569-3OEiaaglOYaCIrfQYxUWLA-1; Tue, 19 Dec 2023 22:50:32 -0500
-X-MC-Unique: 3OEiaaglOYaCIrfQYxUWLA-1
-Received: by mail-pg1-f197.google.com with SMTP id 41be03b00d2f7-5c668dc7f7bso4718768a12.3
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 19:50:32 -0800 (PST)
+ us-mta-341-Kd_i5WbTPPquJ2lW7XZnXw-1; Tue, 19 Dec 2023 22:52:57 -0500
+X-MC-Unique: Kd_i5WbTPPquJ2lW7XZnXw-1
+Received: by mail-pg1-f197.google.com with SMTP id 41be03b00d2f7-5c65e666609so4726799a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 19:52:57 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703044232; x=1703649032;
+        d=1e100.net; s=20230601; t=1703044377; x=1703649177;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=S3W0GnoD8052wYxUNxx5sjwSUJEmm53y4MFQD1spj90=;
-        b=PzIPoG2gfCHW1kGcS0SHP65EVrz+s+5s6HO5uxzAzjgKEKO0esjWTFhO0LmQTtD3Rc
-         nDrQz4uKkmlXAR1uZLOE2YmkIgjYBhdIIAN0SGFhUoYLN7rzQA/9dnYWh0DbmiIr84aO
-         I925txE0UBfiMOnj4eQvrgZ4n/73fcDRNp6LbL8QDbAVgOu4yfZ8jhcTU93CZP7lU2eW
-         HCDsfQ8Veri4Sa7GJyKSaE48y0EqBIXrurKZlbDzUZkNWqr1tpaKgWpqt+IxJjBp3CO/
-         ZcgNcmHGDwrwUPVvfH2QXuHTfhZSU9V8wW4J1iTjY570+sU87KArEKJKSBKCrLfNszLV
-         9udQ==
-X-Gm-Message-State: AOJu0YwIP8magaU/Tovcv1MU8Jwmy3yiATfBw0AMs6pBgMhYnEO2akk/
-	2YffbOD/nAjvzDyaseQqtdEPMf0+1M00t8nH1lzuYVAwKeKwL7DdlbhV+nQZCSu7SmKLwo2zELD
-	OBKatps+qqvhMFXSIv3NcqQqFyUSmvYGE93dwTXOx
-X-Received: by 2002:a05:6a20:3942:b0:18f:97c:6163 with SMTP id r2-20020a056a20394200b0018f097c6163mr25126882pzg.96.1703044231869;
-        Tue, 19 Dec 2023 19:50:31 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGlS58nfNxtutIIFpX7OkMLYAGwj8W61RJzPQoLQF6krRhPkz+M0a6Jvi/MXgB4l8Yvs6wX2joqA2UTLWTKpdM=
-X-Received: by 2002:a05:6a20:3942:b0:18f:97c:6163 with SMTP id
- r2-20020a056a20394200b0018f097c6163mr25126875pzg.96.1703044231593; Tue, 19
- Dec 2023 19:50:31 -0800 (PST)
+        bh=vIn5APMs5q/H2mkbVIU64Mx79XhFiyV1fy9ppFrUsQ0=;
+        b=il1HLZ7Psk5UFKxudOn44PYn4+sKxdesMD5BhU8W3DMTG0Iy6Gqhihs96cIR7R4e1D
+         cm070APeqxI5q8u9nR/4czfu0oMeY9Oc08hRhQKRnTSfQGP6cq2bmPHOgzDNbIWbiyvc
+         ppt7Xi8LZqIq3DJ7sqACKoxJB+4cjLJZcj7MCUPEx0bT7kEw0YbMqKzq7+4pyk+KVgTq
+         9PuEYqO2yOBO14YbffBDjfLd/+YI9aU+xSezjYA4BD7KUh+rs3EvFm4euGoUAQlVdwrE
+         bVeMC7zbY4uWxwiNTC7KIEaUGxGJeu5nYCNN1Sf6RazbFw93697dJNFKBtaRk1h5XRy5
+         nvVQ==
+X-Gm-Message-State: AOJu0YwbwwXBX76VD3nggNOL+4m1LXsRenIf/Od5Q5kk2b3p5sIBszAw
+	vqT2KfX57HvH6uHkKPVMen94qIuNUz6kBKZKXvU7kKJIYCxloJTugZADP/Jo5zLY4EccU/gVheg
+	P0ebugphbBHKQxgKdqL3hcXBjGDJrrLKEswOMPxUQ
+X-Received: by 2002:a05:6a20:9225:b0:194:cb44:b0b4 with SMTP id i37-20020a056a20922500b00194cb44b0b4mr526130pzf.2.1703044376849;
+        Tue, 19 Dec 2023 19:52:56 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGnMr21VcQdQT+Lk5xChXSsBuDnDzHafReZLcU6LBc8taYyagaiLau7y0wRNSCh7k4SnAF95Kz+VAAjOKYBcWA=
+X-Received: by 2002:a05:6a20:9225:b0:194:cb44:b0b4 with SMTP id
+ i37-20020a056a20922500b00194cb44b0b4mr526122pzf.2.1703044376631; Tue, 19 Dec
+ 2023 19:52:56 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231212131712.1816324-1-maxime.coquelin@redhat.com>
- <20231212131712.1816324-3-maxime.coquelin@redhat.com> <CACGkMEthp13a20TGashiFNDovK+b10mgfdX8L=3Xv05g5-eo0w@mail.gmail.com>
- <8afc44f7-cef5-4b4a-afac-85a4eb967d3e@redhat.com> <CACGkMEtNZyHDzo2e_N9SM9dw4CK8vpZHWBrk7TFFixD1T7cdjw@mail.gmail.com>
- <b793a98c-dfde-4bf6-9057-6fa359cf4723@redhat.com>
-In-Reply-To: <b793a98c-dfde-4bf6-9057-6fa359cf4723@redhat.com>
+References: <d7534cc4caf4ff9d6b072744352c1b69487779ea.1702230703.git.christophe.jaillet@wanadoo.fr>
+In-Reply-To: <d7534cc4caf4ff9d6b072744352c1b69487779ea.1702230703.git.christophe.jaillet@wanadoo.fr>
 From: Jason Wang <jasowang@redhat.com>
-Date: Wed, 20 Dec 2023 11:50:20 +0800
-Message-ID: <CACGkMEsUcVazoagKuTuFQdn55khyyDwOnYKLJuOyyt8_ib7wiA@mail.gmail.com>
-Subject: Re: [PATCH v5 2/4] vduse: Temporarily disable control queue features
-To: Maxime Coquelin <maxime.coquelin@redhat.com>
-Cc: mst@redhat.com, xuanzhuo@linux.alibaba.com, paul@paul-moore.com, 
-	jmorris@namei.org, serge@hallyn.com, stephen.smalley.work@gmail.com, 
-	eparis@parisplace.org, xieyongji@bytedance.com, 
-	virtualization@lists.linux-foundation.org, linux-kernel@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, selinux@vger.kernel.org, 
-	david.marchand@redhat.com, lulu@redhat.com, casey@schaufler-ca.com
+Date: Wed, 20 Dec 2023 11:52:45 +0800
+Message-ID: <CACGkMEuE5a29uXXWfy1Ma+ZqSzWKhS1J1b2XHvhyC90wDFP02g@mail.gmail.com>
+Subject: Re: [PATCH] vdpa: Remove usage of the deprecated ida_simple_xx() API
+To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc: "Michael S. Tsirkin" <mst@redhat.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, 
+	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org, 
+	virtualization@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Dec 18, 2023 at 5:21=E2=80=AFPM Maxime Coquelin
-<maxime.coquelin@redhat.com> wrote:
+On Mon, Dec 11, 2023 at 1:52=E2=80=AFAM Christophe JAILLET
+<christophe.jaillet@wanadoo.fr> wrote:
 >
+> ida_alloc() and ida_free() should be preferred to the deprecated
+> ida_simple_get() and ida_simple_remove().
 >
+> This is less verbose.
 >
-> On 12/18/23 03:50, Jason Wang wrote:
-> > On Wed, Dec 13, 2023 at 7:23=E2=80=AFPM Maxime Coquelin
-> > <maxime.coquelin@redhat.com> wrote:
-> >>
-> >> Hi Jason,
-> >>
-> >> On 12/13/23 05:52, Jason Wang wrote:
-> >>> On Tue, Dec 12, 2023 at 9:17=E2=80=AFPM Maxime Coquelin
-> >>> <maxime.coquelin@redhat.com> wrote:
-> >>>>
-> >>>> Virtio-net driver control queue implementation is not safe
-> >>>> when used with VDUSE. If the VDUSE application does not
-> >>>> reply to control queue messages, it currently ends up
-> >>>> hanging the kernel thread sending this command.
-> >>>>
-> >>>> Some work is on-going to make the control queue
-> >>>> implementation robust with VDUSE. Until it is completed,
-> >>>> let's disable control virtqueue and features that depend on
-> >>>> it.
-> >>>>
-> >>>> Signed-off-by: Maxime Coquelin <maxime.coquelin@redhat.com>
-> >>>
-> >>> I wonder if it's better to fail instead of a mask as a start.
-> >>
-> >> I think it is better to use a mask and not fail, so that we can in the
-> >> future use a recent VDUSE application with an older kernel.
-> >
-> > It may confuse the userspace unless userspace can do post check after
-> > CREATE_DEV.
-> >
-> > And for blk we fail when WCE is set in feature_is_valid():
-> >
-> > static bool features_is_valid(u64 features)
-> > {
-> >          if (!(features & (1ULL << VIRTIO_F_ACCESS_PLATFORM)))
-> >                  return false;
-> >
-> >          /* Now we only support read-only configuration space */
-> >          if (features & (1ULL << VIRTIO_BLK_F_CONFIG_WCE))
-> >                  return false;
-> >
-> >          return true;
-> > }
->
-> Ok, consistency with other devices types is indeed better.
->
-> But should I fail if any of the feature advertised by the application is
-> not listed by the VDUSE driver, or just fail if control queue is being
-> advertised by the application?
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-Maybe it's better to fail for any other of the features that depend on
-the control vq.
+Acked-by: Jason Wang <jasowang@redhat.com>
 
 Thanks
 
+> ---
+>  drivers/vdpa/vdpa.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 >
-> Thanks,
-> Maxime
+> diff --git a/drivers/vdpa/vdpa.c b/drivers/vdpa/vdpa.c
+> index a7612e0783b3..d0695680b282 100644
+> --- a/drivers/vdpa/vdpa.c
+> +++ b/drivers/vdpa/vdpa.c
+> @@ -131,7 +131,7 @@ static void vdpa_release_dev(struct device *d)
+>         if (ops->free)
+>                 ops->free(vdev);
 >
-> > Thanks
-> >
-> >>
-> >> Why would it be better to fail than negotiating?
-> >>
-> >> Thanks,
-> >> Maxime
-> >>
-> >
+> -       ida_simple_remove(&vdpa_index_ida, vdev->index);
+> +       ida_free(&vdpa_index_ida, vdev->index);
+>         kfree(vdev->driver_override);
+>         kfree(vdev);
+>  }
+> @@ -205,7 +205,7 @@ struct vdpa_device *__vdpa_alloc_device(struct device=
+ *parent,
+>         return vdev;
+>
+>  err_name:
+> -       ida_simple_remove(&vdpa_index_ida, vdev->index);
+> +       ida_free(&vdpa_index_ida, vdev->index);
+>  err_ida:
+>         kfree(vdev);
+>  err:
+> --
+> 2.34.1
 >
 
 
