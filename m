@@ -1,103 +1,114 @@
-Return-Path: <linux-kernel+bounces-6770-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6771-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48F7D819D46
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 11:48:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9FA26819D4D
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 11:48:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4127AB21938
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 10:48:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 561E11F26FED
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 10:48:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7651320DE6;
-	Wed, 20 Dec 2023 10:48:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12DBF21103;
+	Wed, 20 Dec 2023 10:48:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="C1gjLa+N"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jygdJwpM"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66F0120DC9
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 10:48:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-dbd4a10735eso2286445276.1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 02:48:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703069282; x=1703674082; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qMnhogAJ5TBsWqLBjRWdOEdn5tLvSkqIXkY34xtolk8=;
-        b=C1gjLa+NaNYUuCqGThGARe5wDVLpxmw4fHIYY4HfKUNi6W8hrGhzUsyTM0o17Se6o3
-         hPutrm+IpNdHz5oVDTT8TzmFo8VfSSMAUxfG8KakAKVoINqI4LUsdyH5Ff57szZFWEAb
-         DmZFw72mDKroyVDYi85dTuN0xt99sLUWNNXvoRLMx/7+Fs6ZXUbwEaknPchbC+7dueQB
-         fG8ShOvDKxJfae92jC+Ax5cdWf/CMJ+WSPJn4JRn7PfZsI0fpwLTtbkKj3whaHjm6TJh
-         BKp8DyHV8fUlv3UJUKpA60uCA55h6SWoPmA2yqE5lxfWKSMsOJ4gxtgJAF0/DwsQ0mhW
-         KoAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703069282; x=1703674082;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qMnhogAJ5TBsWqLBjRWdOEdn5tLvSkqIXkY34xtolk8=;
-        b=IRBn5dS4FQtlSZk7bRNCaXmufcquWMEz3CqP8fOwJ52TauM6bHY4TfFHBUQfluqs8K
-         HvgCRKlsJ3nNDwTsBSVobDYdzd9XNdqBedVpAzZCwnLEyXYz5azENL4IxSwYvvlJUzd9
-         iO+duM7IBhlkv/qKMFwrdsmmgrrMcccEDANVmyBcpYJG5IrsrQyat6Ez8SzzX9RUXpAa
-         hL1TGpqhfn1b6UFiGw9bhXWn6eddZ+dlYzr8iBZMpRRfC2Fuk7EyReXakGnwkxGF4AoU
-         bJNTnpW+t5hgxo4XcS913A4QEzUXA/hhEeZhNehr9skquWRFNKFd5BfdXiPqJHawws/g
-         3GrA==
-X-Gm-Message-State: AOJu0Yy7lHRjAuE1OZ7wmCPl1Jqxq5pGIkm+2hpaCetzfk+WkTaakeKz
-	K0VMMxLiOgNXv0guogym3dNCZkvpeRLJ2G4AOlFYYQ==
-X-Google-Smtp-Source: AGHT+IGYRq8+DNsxwVIrAOVvUPSQcI4YnkGr/ON41SKcXrqS0crfkla2Ki2q/G3D/M1BL/nW1R8hhvgf5T+fUsYD0nM=
-X-Received: by 2002:a25:4155:0:b0:dbc:df05:9157 with SMTP id
- o82-20020a254155000000b00dbcdf059157mr6525037yba.69.1703069282394; Wed, 20
- Dec 2023 02:48:02 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59C2A20DCE;
+	Wed, 20 Dec 2023 10:48:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 678DEC433C7;
+	Wed, 20 Dec 2023 10:48:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703069295;
+	bh=affP7wF8+XMw8uG5v8noirtoXKryiDk9LMZdxtuSBpQ=;
+	h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
+	b=jygdJwpMqP5HaPdqtLr763HT2ZDYZrxZ19woJaNn3MAv/R+EJh9OXdBtNGOBKcPRK
+	 VgEegAEhPxLXA999Ua6+XSfynxz286Hjc/w519TvLk3a7lFHOC2m8lXyDxfqgx2H2h
+	 GfSwX657HUGr7cZB7VX0uAuplho2Lx2/zyxDhLbbGfd5ArXJdad5QUrGIO5UvB1sTv
+	 gS9mhhkayTJRL8smWjguOzRG0JH8KzOduDUv6DZYmGxRvrzGo7b2TQaGZN5m5bKqtx
+	 55X6s2/AJ2v5F4fctW2HIBRTotbKnPAzyJjE/5vgE9PA45p+4eoxWYFZLF0/6g0F/E
+	 9c3nNxe9gQLOg==
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailauth.nyi.internal (Postfix) with ESMTP id 59CCC27C0061;
+	Wed, 20 Dec 2023 05:48:14 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Wed, 20 Dec 2023 05:48:14 -0500
+X-ME-Sender: <xms:bcaCZa-dYaDSNN36puMBjYL2UZjPu7XIDmrS9ZbAtZmLOLHzRsRkmQ>
+    <xme:bcaCZat5hWRhwFchay4HQaiInMmMJezm4FaDG4D7qWJ-QMer37ZYU0DBDBILQhArg
+    4Ew8i-upCvuurJzD3s>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdduvddgvdduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusehkvghrnhgvlhdrohhrgheqnecuggftrf
+    grthhtvghrnhepgedtudegtdejhfdtjeeglefhhfduhedtjeejgeegieelgeduudeiueev
+    ffetjefgnecuffhomhgrihhnpehqvghmuhdrohhrghenucevlhhushhtvghrufhiiigvpe
+    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnugdomhgvshhmthhprghuthhhphgv
+    rhhsohhnrghlihhthidquddvkeehudejtddvgedqvdekjedttddvieegqdgrrhhnugeppe
+    hkvghrnhgvlhdrohhrghesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:bcaCZQDIKCNj7awbmv8GAKA4WgNCD1CdNaOAL918zpCfYGwv1bP6tQ>
+    <xmx:bcaCZSeU8EDkSAwPx0LydaLR2A-g-Npf-ECxnOrW3cDEcyCKfKWFCQ>
+    <xmx:bcaCZfPiwW0oa83V1FG959Vcn7M1gbIp-lc-37NNQpZjt5Ir6z56Yg>
+    <xmx:bsaCZduisMTzT6YuRGasRasp3nG8XGAP5iAFXKnUBRYcf05Nq05azg>
+Feedback-ID: i36794607:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 5080DB6008D; Wed, 20 Dec 2023 05:48:13 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-1364-ga51d5fd3b7-fm-20231219.001-ga51d5fd3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231130172834.12653-1-johan+linaro@kernel.org> <ZYG-Fr9FfIQUup_r@hovoldconsulting.com>
-In-Reply-To: <ZYG-Fr9FfIQUup_r@hovoldconsulting.com>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Wed, 20 Dec 2023 11:47:50 +0100
-Message-ID: <CACRpkdb8ObMaMT+kuvs85QydbeqbChsMEnGTkW27C5iOGLuEww@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: pinctrl: qcom,pmic-mpp: clean up example
-To: Johan Hovold <johan@kernel.org>
-Cc: Bjorn Andersson <andersson@kernel.org>, Andy Gross <agross@kernel.org>, 
-	Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Message-Id: <dbb60b13-565f-43b8-8cb8-6f8cd98b06df@app.fastmail.com>
+In-Reply-To: 
+ <e897e6d5a88ec2f9024c62f7bee5c13bfb2cab55.camel@physik.fu-berlin.de>
+References: <20231219-sam-sparc32-sunset-v3-v1-0-64bb44b598c5@ravnborg.org>
+ <01ea8c41-88cd-4123-95c7-391640845fc3@app.fastmail.com>
+ <e897e6d5a88ec2f9024c62f7bee5c13bfb2cab55.camel@physik.fu-berlin.de>
+Date: Wed, 20 Dec 2023 10:47:56 +0000
+From: "Arnd Bergmann" <arnd@kernel.org>
+To: "John Paul Adrian Glaubitz" <glaubitz@physik.fu-berlin.de>,
+ "Sam Ravnborg" <sam@ravnborg.org>, "David S . Miller" <davem@davemloft.net>,
+ "Andreas Larsson" <andreas@gaisler.com>
+Cc: "Helge Deller" <deller@gmx.de>,
+ "Alexander Viro" <viro@zeniv.linux.org.uk>,
+ "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+ "Alan Stern" <stern@rowland.harvard.edu>, "Jaroslav Kysela" <perex@perex.cz>,
+ "Takashi Iwai" <tiwai@suse.com>, sparclinux@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+ linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linux-sound@vger.kernel.org
+Subject: Re: [PATCH 00/27] sparc32: sunset sun4m and sun4d
+Content-Type: text/plain
 
-On Tue, Dec 19, 2023 at 5:00=E2=80=AFPM Johan Hovold <johan@kernel.org> wro=
-te:
-
-> Hi Linus,
+On Wed, Dec 20, 2023, at 09:54, John Paul Adrian Glaubitz wrote:
+> On Wed, 2023-12-20 at 08:36 +0000, Arnd Bergmann wrote:
+>> All of these were found through inspection rather than testing,
+>> so there is a good chance that other fatal kernel bugs prevent
+>> testing in qemu, at least until the fixes from Andreas' tree
+>> are included.
 >
-> On Thu, Nov 30, 2023 at 06:28:34PM +0100, Johan Hovold wrote:
-> > The Multi-Purpose Pin controller block is part of an SPMI PMIC (which i=
-n
-> > turns sits on an SPMI bus) and uses a single value for the register
-> > property that corresponds to its base address.
-> >
-> > Clean up the example by adding a parent PMIC node with proper
-> > '#address-cells' and '#size-cells' properties, dropping the incorrect
-> > second register value, adding some newline separators and increasing th=
-e
-> > indentation to four spaces.
-> >
-> > Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
->
-> Can you pick this one up for 6.8?
+> Andreas has fixes for these issues?
 
-OK, patch applied!
+Not sure, all I know is that
 
-Yours,
-Linus Walleij
+- Andreas has some fixes for Leon in his tree
+- Sam is unable to boot mainline in qemu
+- There is an unknown set of bugs in sparc32 since it has not
+  been tested for many years without Andreas' patches
+
+it appears that the qemu developers are still testing the sun4m
+model against old Linux and Solaris installations [1], but
+failure to run the leon3 model could still be any combination
+of kernel, qemu or configuration problems.
+
+        Arnd
+
+[1] https://wiki.qemu.org/Documentation/Platforms/SPARC#Compatibility
 
