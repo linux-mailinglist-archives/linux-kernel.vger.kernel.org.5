@@ -1,124 +1,113 @@
-Return-Path: <linux-kernel+bounces-6837-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6842-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 100FA819E4F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 12:42:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A432C819E5E
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 12:44:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 85CCEB23BED
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 11:42:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D46541C222EA
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 11:44:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AC1F219EE;
-	Wed, 20 Dec 2023 11:42:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BADC3219F0;
+	Wed, 20 Dec 2023 11:44:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="e6PfQ08l"
+	dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b="LjpY4eVm"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22F9C219EA
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 11:42:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-5e74b4d5445so22851367b3.1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 03:42:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703072558; x=1703677358; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9FLRBJiNc6al0xeoGFcYf16xBZK82GduG3jNIF84OAQ=;
-        b=e6PfQ08lwOZZ7MX7LkhGnQFyUDXjnsM2BvakPJ70/70UltcOnwAyD8DdtGuYwX+d3D
-         9g3fqIE9uH+Li5zkJw5D3VuJQn08FkDe+iyRk9LOnU/vFAnLEn+a6n4PDbD2e7vceFUS
-         87rqldDxqeeh22XAiWpEF8HKoZ/MWo09H1uh6pGIaXas2uPwvlCPe/M3PrE/XmJ1iC0h
-         fadTU49A5Dei1r6FjT6iv2mYsaM8hLna/mxuID24cJ1L9ue0pWRs3gSxfGgSVyIgYtzY
-         P6M2H4y9Qm0XeB4XrTykcN4Z6Mc8nH49W+ONO2OC1qj2MsVORprClaEFpIYH50jcqmJg
-         jQ8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703072558; x=1703677358;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9FLRBJiNc6al0xeoGFcYf16xBZK82GduG3jNIF84OAQ=;
-        b=ahDDvvHqv5hKXYhltWE/iCXd9njhUzEGTyH+SywNOs6uLW9VKd5C9eLfTXuIgHGzma
-         wUJLL7IiAGpsQDDxmuqfbAnNVcvhx/LnO9/L+c+YcP+9A/iuaxZTzQHwuARJrQrEMLQs
-         gMjDblY/9BLydXw/1jhLomXBUV6GK9n2hRoHGa4P2AVZfju9eu++J5/hKanDN3/bhUtC
-         va2ynwgYhjdp9qBhFTKT9gM4INWCPPjpuMCHxOhPRZa5mbvTUm3iZYDHHjhwSSUhJ1e6
-         zGdZ+eygt2gYfohJI3KZcRhElIcLCENTfgeKMbFAQSugs+qSkIgb2D/IO0HnOtdUFv8A
-         T0rA==
-X-Gm-Message-State: AOJu0YzyeDg3Up6j+VOJXAA9NehRp05zSXu2TIk0h026nJBr3SBLc2+u
-	bYOcpa8sK3xIzqm+rB0gfc9ITHC8jANnY+OO4FbQZA==
-X-Google-Smtp-Source: AGHT+IH3m7OJl+wThf8u3VljPqCG95kkRpc/xctYLP3ucKD0Kbqc3CXmlXTyhUH1P63lrHUB2J1XyLYIBc+4z1ycFC8=
-X-Received: by 2002:a0d:c704:0:b0:5d7:1940:53c4 with SMTP id
- j4-20020a0dc704000000b005d7194053c4mr16842637ywd.60.1703072558142; Wed, 20
- Dec 2023 03:42:38 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2E8622303;
+	Wed, 20 Dec 2023 11:44:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+	s=s31663417; t=1703072640; x=1703677440; i=wahrenst@gmx.net;
+	bh=sDa+OPxR4DSE606VnJ3UhR/fFNpyHYQTxIzktag2M2o=;
+	h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+	b=LjpY4eVmL/OhOIs85lUQ/YT6vqjCrdd17V2/O5xQJ/mi9Z6o7GsrUdtDBjTxEKs4
+	 WsFYJ2+ctyUXI1hlc7gvOc0pwiVsE/O2O2ZMdOUv1W1l6xBDPZFt2Pwkpt7H+IRf2
+	 8f4cGGZ4d0jwH4AsjXY1RBlbsj5qHtwfyHlSZZ4/4Hfq80jhvRfqvBTL20GziEDul
+	 HMtW9Z0yT5nOsd3wRDkwpmPaKm21Yj/EN5iE1PH8QT/XrMm34N86Ex8Qip1n217Mx
+	 Rmy47M2vrRjR4zuPWRH67YKe10Fsp5riuGNBOOVp3rBRBRkfRBfwniHxeigys/27z
+	 Gw3LKr6BIx2oUq/HJg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from stefanw-SCHENKER ([37.4.248.43]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MQMyf-1rc6XO3TSj-00MMiu; Wed, 20
+ Dec 2023 12:43:59 +0100
+From: Stefan Wahren <wahrenst@gmx.net>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>,
+	Florian Fainelli <florian.fainelli@broadcom.com>
+Cc: Ray Jui <rjui@broadcom.com>,
+	Scott Branden <sbranden@broadcom.com>,
+	Adrien Thierry <athierry@redhat.com>,
+	Jeremy Linton <jeremy.linton@arm.com>,
+	linux-serial@vger.kernel.org,
+	bcm-kernel-feedback-list@broadcom.com,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	Stefan Wahren <wahrenst@gmx.net>
+Subject: [PATCH] serial: 8250_bcm2835aux: Restore clock error handling
+Date: Wed, 20 Dec 2023 12:43:34 +0100
+Message-Id: <20231220114334.4712-1-wahrenst@gmx.net>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231215-pinctrl-scmi-v1-0-0fe35e4611f7@nxp.com> <20231215-pinctrl-scmi-v1-4-0fe35e4611f7@nxp.com>
-In-Reply-To: <20231215-pinctrl-scmi-v1-4-0fe35e4611f7@nxp.com>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Wed, 20 Dec 2023 12:42:27 +0100
-Message-ID: <CACRpkdbpcwADJnZz1Q0KQ-gJv8FvnvJS=4PpMF+Np4rNCN3x+w@mail.gmail.com>
-Subject: Re: [PATCH 4/7] dt-bindings: firmware: arm,scmi: support pinctrl protocol
-To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Cc: Sudeep Holla <sudeep.holla@arm.com>, Cristian Marussi <cristian.marussi@arm.com>, 
-	Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Oleksii Moisieiev <oleksii_moisieiev@epam.com>, Shawn Guo <shawnguo@kernel.org>, 
-	Sascha Hauer <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>, 
-	Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-gpio@vger.kernel.org, 
-	Peng Fan <peng.fan@nxp.com>, Takahiro Akashi <takahiro.akashi@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:Yzlm2lrwbBQOtRVkOBr2Xan/fuR2+K2CEDDsKjiPM7TE+KsoKGx
+ +CVuohtU2kAC42xRkRbhF6cxNAygQHCttOjxSZsZ5Vd9baCTEi0bdrP5VkIDXQKAmW4Tgjz
+ nivr2tzl2mWMlUdjiYDYN1x16jHJVkKr8nu/VMy2kkZkz5Wx86F2zDKlq1sg5ddzA1hJEfv
+ ZAmrfpMmBn+gNx56l+hhA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:7HCk4+z6YSs=;QmKBCXvjMqHAKzUSIvwU64N7Em+
+ 4miVrpmBvnbAHBIlPR9TzVzsQyqPhua6sV21LcR+5+m1X8kvH/IdNDIapZeAOvVa5y6LnbvrU
+ omc58O9hM4CsPYTlBz8IWuMFGzeqFEQinvlcnac0KztsKcgafKyYpPv0TX9lxn1XUF2su2V67
+ AFJlU2aAeKAe8qyJJFCGB06iRXDN28slKLX8Iod+nhue/LRM55z9NebrGRQJ9hqGaWvHPYNxi
+ esmUdDYRflmUXzd9Jgz9vxlMxQMY/Ya6akOFseqsG+0Sd2knjVd0/fcDP3V4HvFn4c7o/CZve
+ gwcI6MzpH+RCzZwKHug1wPDMge5LRBtJPkmjUAjid6hFTvqHcEyPajxAtxXp0ai5yUoeRhVNs
+ jKwsY0DrUWaG5QdgnqDYFEhGUdXdcgLb65eKKJuYNYoTtTbW8lQp7GefO1L307EiBKqIH1sOY
+ 7JZ2c94nQ7IU/MTSNEo5KULG572x9PRBErCaq7EJtwo0l+XB5/UgxbzGmghQ0/rpxJhFNvN+I
+ qnVhi7ABlsBY/aOX8Yw1R2aP/61sqcLekwlakpz18gyvcet2SIXvJqsTsg1y4K2ylMPC7ljpw
+ qUTCGgoGBMq7JKF+vPF3Gu3V6rx9AnGT59AEYWriiLlfzphDMGBJDOrmksztYYMN5FjPeQctm
+ Rc1K5QWCdGOOwmy6EE1rGSfMjGplbSLGHXoiaQ7OkSR7L7HVkplT/+a2IRxZFVjRDfnzfGcD8
+ bHanB3ccoYYA8jEka4EFyRoJW6tEx7YxwTP7t0wOUna2rBkl+4pMQkK3t0j6mUHFG0DD3/mq3
+ 7a2wfkH65jOE2eCnGk635zljiFtGfxbqnWB/Z6ZJ83JU1Grlrn/hM1U7AWrE4zcqHeXOUtyfJ
+ q6r2XJGWmrtOAPd4SKRxlWtWBBkoKJdux02h/RFWOZmLaYNX50g+XjD3IWkoxwlf9TZzpOrJE
+ 9XoMhw==
 
-Hi Peng,
+The commit fcc446c8aa63 ("serial: 8250_bcm2835aux: Add ACPI support")
+dropped the error handling for clock acquiring. But even an optional
+clock needs this.
 
-On Fri, Dec 15, 2023 at 12:52=E2=80=AFPM Peng Fan (OSS) <peng.fan@oss.nxp.c=
-om> wrote:
+Fixes: fcc446c8aa63 ("serial: 8250_bcm2835aux: Add ACPI support")
+Signed-off-by: Stefan Wahren <wahrenst@gmx.net>
+=2D--
+ drivers/tty/serial/8250/8250_bcm2835aux.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-In this example, as it is not intended to reflect any specific hardware,
-use the latest canonical naming:
+diff --git a/drivers/tty/serial/8250/8250_bcm2835aux.c b/drivers/tty/seria=
+l/8250/8250_bcm2835aux.c
+index 15a2387a5b25..4f4502fb5454 100644
+=2D-- a/drivers/tty/serial/8250/8250_bcm2835aux.c
++++ b/drivers/tty/serial/8250/8250_bcm2835aux.c
+@@ -119,6 +119,8 @@ static int bcm2835aux_serial_probe(struct platform_dev=
+ice *pdev)
 
-> +
-> +            scmi_pinctrl: protocol@19 {
-> +                reg =3D <0x19>;
-> +                #pinctrl-cells =3D <0>;
-> +
-> +                i2c2-pins {
-> +                    groups =3D "i2c2_a", "i2c2_b";
+ 	/* get the clock - this also enables the HW */
+ 	data->clk =3D devm_clk_get_optional(&pdev->dev, NULL);
++	if (IS_ERR(data->clk))
++		return dev_err_probe(&pdev->dev, PTR_ERR(data->clk), "could not get clk=
+\n");
 
-groups =3D "g_i2c2_a", "g_i2c2_b";
+ 	/* get the interrupt */
+ 	ret =3D platform_get_irq(pdev, 0);
+=2D-
+2.34.1
 
-> +                    function =3D "i2c2";
-
-function =3D "f_i2c2";
-
-> +                };
-> +
-> +                mdio-pins {
-> +                    groups =3D "avb_mdio";
-
-groups =3D "g_avb_mdio";
-
-> +                    drive-strength =3D <24>;
-> +                };
-> +
-> +                keys_pins: keys-pins {
-> +                    pins =3D "GP_5_17", "GP_5_20", "GP_5_22", "GP_2_1";
-
-pins =3D "gpio_5_17", "gpio_5_20", "gpio_5_22", "gpio_2_1";
-
-These names look odd to me, like these are actually groups
-with pins 5..17 etc. Should it be groups =3D "g_gpio_5_17" etc?
-
-Yours,
-Linus Walleij
 
