@@ -1,126 +1,120 @@
-Return-Path: <linux-kernel+bounces-6435-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6437-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 462678198C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 07:48:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3FE598198CD
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 07:50:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0440B287A9E
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 06:48:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F212528612E
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 06:50:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3353F13FF5;
-	Wed, 20 Dec 2023 06:48:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45AB713ACF;
+	Wed, 20 Dec 2023 06:49:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="CpwZpYqj"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF0F6171AE;
-	Wed, 20 Dec 2023 06:47:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=realtek.com
-X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 3BK6lpqL7532004, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36506.realtek.com.tw[172.21.6.27])
-	by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 3BK6lpqL7532004
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 20 Dec 2023 14:47:52 +0800
-Received: from RTEXDAG01.realtek.com.tw (172.21.6.100) by
- RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Wed, 20 Dec 2023 14:47:52 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXDAG01.realtek.com.tw (172.21.6.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Wed, 20 Dec 2023 14:47:51 +0800
-Received: from RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7]) by
- RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7%5]) with mapi id
- 15.01.2375.007; Wed, 20 Dec 2023 14:47:51 +0800
-From: Ping-Ke Shih <pkshih@realtek.com>
-To: Su Hui <suhui@nfschina.com>, "kvalo@kernel.org" <kvalo@kernel.org>
-CC: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>
-Subject: RE: [PATCH wireless-next 01/11] wifi: rtlwifi: add calculate_bit_shift()
-Thread-Topic: [PATCH wireless-next 01/11] wifi: rtlwifi: add
- calculate_bit_shift()
-Thread-Index: AQHaMki42VUjo40x+EmO6M2GdlhuqrCxuxhA
-Date: Wed, 20 Dec 2023 06:47:51 +0000
-Message-ID: <a8f4058de59540eda8ab7acd08ad0cb9@realtek.com>
-References: <20231219065739.1895666-1-suhui@nfschina.com>
- <20231219065739.1895666-2-suhui@nfschina.com>
-In-Reply-To: <20231219065739.1895666-2-suhui@nfschina.com>
-Accept-Language: en-US, zh-TW
-Content-Language: zh-TW
-x-kse-serverinfo: RTEXDAG01.realtek.com.tw, 9
-x-kse-antispam-interceptor-info: fallback
-x-kse-antivirus-interceptor-info: fallback
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84729168C4;
+	Wed, 20 Dec 2023 06:49:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=CLJcevJg8ePh6WU3ddptLA4N7F3zd833b6TMvJ3Gz4o=; b=CpwZpYqjLJSEUWoJzmtt/m5BTK
+	ZzcaZe9X0HGRtBtlP11C0DiUVPgr2IQ0lXpJ2cbYyBLSJEJuttvlArFm9SvZ2xpwwrhKFhQrTrCRP
+	SAx2xkjsFSZPS/x37e5gI+bDjwNZUXGjHjXZuyn7yyfjLya29GSW7oU7TPlAYi/7m01Bi+KRqGkk9
+	HTvL6ZiCG45+jOTWLBWExjjuIm5hUdyPBLkcLyvMUIjU/0FHofjB/jOym4AxtlWCE/aEyifBYzZqG
+	bkeKuP7afS7OZqRDoEt4pkh2uvlc4+EKoc2H6dcXAe4Bf3wTn0KilgOsqotFyUIpftLhND8ZuUdCN
+	WeSKKtlg==;
+Received: from [50.53.46.231] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1rFqOw-00GKeE-1R;
+	Wed, 20 Dec 2023 06:49:54 +0000
+Message-ID: <ddd30bb6-20d1-4b7f-bcee-6b204d0858fb@infradead.org>
+Date: Tue, 19 Dec 2023 22:49:54 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-KSE-AntiSpam-Interceptor-Info: fallback
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] scripts: kernel-doc: Bug fixed for erroneous warning
+Content-Language: en-US
+To: Muhammad Muzammil <m.muzzammilashraf@gmail.com>
+Cc: corbet@lwn.net, gustavoars@kernel.org, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <20231220062446.14511-1-muzammil@dreambigsemi.com>
+ <4155c90e-cdb1-4645-8bcc-fed4ea01ac83@infradead.org>
+ <CAJHePoabyUCxwS_hTjhR+MEJ+JBm+kr2MdbP4zP_54t_geRqwQ@mail.gmail.com>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <CAJHePoabyUCxwS_hTjhR+MEJ+JBm+kr2MdbP4zP_54t_geRqwQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
 
 
-> -----Original Message-----
-> From: Su Hui <suhui@nfschina.com>
-> Sent: Tuesday, December 19, 2023 2:57 PM
-> To: Ping-Ke Shih <pkshih@realtek.com>; kvalo@kernel.org
-> Cc: Su Hui <suhui@nfschina.com>; linux-wireless@vger.kernel.org; linux-ke=
-rnel@vger.kernel.org;
-> kernel-janitors@vger.kernel.org
-> Subject: [PATCH wireless-next 01/11] wifi: rtlwifi: add calculate_bit_shi=
-ft()
->=20
-> There are many same functions like _rtl88e_phy_calculate_bit_shift(),
-> _rtl92c_phy_calculate_bit_shift() and so on. And these functions can
-> cause undefined bitwise shift behavior. Add calculate_bit_shift() to
-> replace them and fix undefined behavior in subsequent patches.
->=20
-> Signed-off-by: Su Hui <suhui@nfschina.com>
+On 12/19/23 22:35, Muhammad Muzammil wrote:
+> HI,
+> 
+> 1) I already have the below patch but it does not work.
+> https://lore.kernel.org/linux-doc/20231215001347.work.151-kees@kernel.org/
+> 
+> 2) When I applied the below patch. It works.
+> https://lore.kernel.org/linux-doc/87le9rjb4y.fsf@meer.lwn.net/
 
-Acked-by: Ping-Ke Shih <pkshih@realtek.com>
+Thanks!
 
-> ---
->  drivers/net/wireless/realtek/rtlwifi/wifi.h | 7 +++++++
->  1 file changed, 7 insertions(+)
->=20
-> diff --git a/drivers/net/wireless/realtek/rtlwifi/wifi.h b/drivers/net/wi=
-reless/realtek/rtlwifi/wifi.h
-> index 31a481f43a07..5d842cc394aa 100644
-> --- a/drivers/net/wireless/realtek/rtlwifi/wifi.h
-> +++ b/drivers/net/wireless/realtek/rtlwifi/wifi.h
-> @@ -3069,4 +3069,11 @@ static inline struct ieee80211_sta *rtl_find_sta(s=
-truct ieee80211_hw *hw,
->         return ieee80211_find_sta(mac->vif, mac_addr);
->  }
->=20
-> +static inline u32 calculate_bit_shift(u32 bitmask)
-> +{
-> +       if (WARN_ON_ONCE(!bitmask))
-> +               return 0;
-> +
-> +       return __ffs(bitmask);
-> +}
->  #endif
 
-Basically, this patchset is to change from below example to above one.=20
+> On Wed, Dec 20, 2023 at 11:29 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+>>
+>> Hi,
+>>
+>> On 12/19/23 22:24, Muhammad Muzammil wrote:
+>>> From: Muzammil Ashraf <m.muzzammilashraf@gmail.com>
+>>>
+>>> kernel-doc: fixed erroneous warning generated by '__counted_by'
+>>>
+>>> Signed-off-by: Muzammil Ashraf <m.muzzammilashraf@gmail.com>
+>>> ---
+>>>  scripts/kernel-doc | 1 +
+>>>  1 file changed, 1 insertion(+)
+>>>
+>>> diff --git a/scripts/kernel-doc b/scripts/kernel-doc
+>>> index 1484127db104..ea9688df0e93 100755
+>>> --- a/scripts/kernel-doc
+>>> +++ b/scripts/kernel-doc
+>>> @@ -1661,6 +1661,7 @@ sub check_sections($$$$$) {
+>>>                       }
+>>>                       elsif (($decl_type eq "struct") or
+>>>                              ($decl_type eq "union")) {
+>>> +                next if (index("@_", "__counted_by") != -1);
+>>>                               emit_warning("${file}:$.",
+>>>                                       "Excess $decl_type member " .
+>>>                                       "'$sects[$sx]' " .
+>>
+>> One of both of these patches should be enough. Can you test these
+>> instead of your patch, please?
+>>
+>> https://lore.kernel.org/linux-doc/20231215001347.work.151-kees@kernel.org/
+>>
+>> https://lore.kernel.org/linux-doc/87le9rjb4y.fsf@meer.lwn.net/
+>>
+>> Thanks.
+>>
+>> --
+>> #Randy
+>> https://people.kernel.org/tglx/notes-about-netiquette
+>> https://subspace.kernel.org/etiquette.html
 
-static u32 _rtl92d_phy_calculate_bit_shift(u32 bitmask)
-{
-       u32 i =3D ffs(bitmask);
-
-       return i ? i - 1 : 32;
-}
-
-And, bitmask is expected not 0, so all are fine to me.=20
-(I don't reply all patches one-by-one to bother people)
-
-Ping-Ke
-
+-- 
+#Randy
+https://people.kernel.org/tglx/notes-about-netiquette
+https://subspace.kernel.org/etiquette.html
 
