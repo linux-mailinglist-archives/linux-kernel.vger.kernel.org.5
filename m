@@ -1,108 +1,100 @@
-Return-Path: <linux-kernel+bounces-7287-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7284-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E016E81A4E4
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 17:26:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF8B481A4DE
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 17:25:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1F2261C21826
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 16:26:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7E4281F2648E
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 16:25:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE1334779F;
-	Wed, 20 Dec 2023 16:22:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="E3/ErV9T"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED03341A86;
+	Wed, 20 Dec 2023 16:21:17 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 242EA40BF5;
-	Wed, 20 Dec 2023 16:22:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B256C433C8;
-	Wed, 20 Dec 2023 16:22:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703089329;
-	bh=cjrdPMNNIzhaLFPRBLRQV3hP1gjDcvza35vAIrrWecQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=E3/ErV9TwEfshoXEnqbo/1pdyEqpHLPNtiIpCHj65LF8TR2/S9H5GYEgaeJAzl8xR
-	 LCi54X+fDcCJGrb6cOtppWDaOPYX6zn1Age1iYRFWUH7KfJ7FxgYZLNDgcNSSLWjBJ
-	 AMgO5RbjA/BJw0lWJzHzrQMsGQUxIFlY7xrVIVxPvbRUkA8AzPS+2ii0d7kbj/G/fm
-	 +GVhhOde0fCP9obVuRxQkO+vc9I1zPJxA9C8LbZW8/os9RB9x6UnxM9xCQ45011GoL
-	 XI4KfiqzfYWBJ44eNcsnTzunEO0wvObM2lRGWNFxiS2odhmBhstbnWSxYgwGI9byEK
-	 QXVJUq4w+jzuw==
-Received: by pali.im (Postfix)
-	id BF7C47E1; Wed, 20 Dec 2023 17:22:06 +0100 (CET)
-Date: Wed, 20 Dec 2023 17:22:06 +0100
-From: Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To: Paul Menzel <pmenzel@molgen.mpg.de>
-Cc: Jean Delvare <jdelvare@suse.com>, Andi Shyti <andi.shyti@kernel.org>,
-	linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] i2c: i801: Add 0x29 as =?utf-8?B?ScKy?=
- =?utf-8?Q?C?= address for lis3lv02d in Dell XPS 15 7590
-Message-ID: <20231220162206.h6rlpvusgnoe7exq@pali>
-References: <20231220161003.68310-1-pmenzel@molgen.mpg.de>
- <20231220161003.68310-2-pmenzel@molgen.mpg.de>
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53C5741854;
+	Wed, 20 Dec 2023 16:21:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 968951FB;
+	Wed, 20 Dec 2023 08:22:00 -0800 (PST)
+Received: from [10.57.82.217] (unknown [10.57.82.217])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CBD4B3F64C;
+	Wed, 20 Dec 2023 08:21:14 -0800 (PST)
+Message-ID: <3f83b7a7-b674-486f-889a-033f550f3654@arm.com>
+Date: Wed, 20 Dec 2023 16:22:22 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 4/8] thermal: gov_power_allocator: Simplify checks for
+ valid power actor
+Content-Language: en-US
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: linux-kernel@vger.kernel.org, daniel.lezcano@linaro.org,
+ linux-pm@vger.kernel.org, rui.zhang@intel.com
+References: <20231212134844.1213381-1-lukasz.luba@arm.com>
+ <20231212134844.1213381-5-lukasz.luba@arm.com>
+ <CAJZ5v0g_+D5WV0kiC_guS4OQP4wb1qgw1xmzFQBhvF9fz4zxJQ@mail.gmail.com>
+From: Lukasz Luba <lukasz.luba@arm.com>
+In-Reply-To: <CAJZ5v0g_+D5WV0kiC_guS4OQP4wb1qgw1xmzFQBhvF9fz4zxJQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231220161003.68310-2-pmenzel@molgen.mpg.de>
-User-Agent: NeoMutt/20180716
 
-On Wednesday 20 December 2023 17:10:02 Paul Menzel wrote:
-> On the Dell XPS 15 7590/0VYV0G, BIOS 1.24.0 09/11/2023, Linux prints the
-> warning below.
-> 
->     i801_smbus 0000:00:1f.4: Accelerometer lis3lv02d is present on SMBus but its address is unknown, skipping registration
-> 
-> Following the same suggestions by Wolfram Sang as for the Dell Precision
-> 3540 [1], the accelerometer can be successfully found on I²C bus 2 at
-> address 0x29.
-> 
->     $ echo lis3lv02d 0x29 | sudo tee /sys/bus/i2c/devices/i2c-2/new_device
->     lis3lv02d 0x29
->     $ dmesg | tail -5
->     [  549.522876] lis3lv02d_i2c 2-0029: supply Vdd not found, using dummy regulator
->     [  549.522904] lis3lv02d_i2c 2-0029: supply Vdd_IO not found, using dummy regulator
->     [  549.542486] lis3lv02d: 8 bits 3DC sensor found
->     [  549.630022] input: ST LIS3LV02DL Accelerometer as /devices/platform/lis3lv02d/input/input35
->     [  549.630586] i2c i2c-2: new_device: Instantiated device lis3lv02d at 0x29
-> 
-> So, the device has that accelerometer. Add the I²C address to the
-> mapping list, and test it successfully on the device.
-> 
-> [1]: https://lore.kernel.org/linux-i2c/97708c11-ac85-fb62-2c8e-d37739ca826f@molgen.mpg.de/
-> 
-> Signed-off-by: Paul Menzel <pmenzel@molgen.mpg.de>
 
-If the accelerometer is working fine then I have no objections.
 
-Acked-by: Pali Rohár <pali@kernel.org>
+On 12/20/23 14:40, Rafael J. Wysocki wrote:
+> On Tue, Dec 12, 2023 at 2:48 PM Lukasz Luba <lukasz.luba@arm.com> wrote:
+>>
+>> There is a need to check if the cooling device in the thermal zone
+>> supports IPA callback and is set for control trip point.
+>> Refactor the code which validates the power actor capabilities and
+>> make it more consistent in all places.
+> 
+> This really is about reducing code duplication which is worth
+> mentioning, so I would say
+> 
+> "Add a helper to check if a given cooling device in a thermal zone
+> supports the IPA callback and is bound to the control trip point and
+> use it wherever that check is needed to reduce code duplication."
+> 
 
-> ---
->  drivers/i2c/busses/i2c-i801.c | 1 +
->  1 file changed, 1 insertion(+)
+Thanks, I'll use it.
+
+>>
+>> No intentional functional impact.
+>>
+>> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+>> ---
+>>   drivers/thermal/gov_power_allocator.c | 41 +++++++++++----------------
+>>   1 file changed, 17 insertions(+), 24 deletions(-)
+>>
+>> diff --git a/drivers/thermal/gov_power_allocator.c b/drivers/thermal/gov_power_allocator.c
+>> index 3328c3ec71f2..1a605fd9c8c6 100644
+>> --- a/drivers/thermal/gov_power_allocator.c
+>> +++ b/drivers/thermal/gov_power_allocator.c
+>> @@ -85,6 +85,13 @@ struct power_allocator_params {
+>>          u32 *weighted_req_power;
+>>   };
+>>
+>> +static bool power_actor_is_valid(struct power_allocator_params *params,
+>> +                                struct thermal_instance *instance)
+>> +{
+>> +       return ((instance->trip == params->trip_max) &&
 > 
-> diff --git a/drivers/i2c/busses/i2c-i801.c b/drivers/i2c/busses/i2c-i801.c
-> index cb9660f84117..3932e8d96a17 100644
-> --- a/drivers/i2c/busses/i2c-i801.c
-> +++ b/drivers/i2c/busses/i2c-i801.c
-> @@ -1233,6 +1233,7 @@ static const struct {
->  	{ "Precision 3540",     0x29 },
->  	{ "Vostro V131",        0x1d },
->  	{ "Vostro 5568",        0x29 },
-> +	{ "XPS 15 7590",        0x29 },
->  };
->  
->  static void register_dell_lis3lv02d_i2c_device(struct i801_priv *priv)
-> -- 
-> 2.43.0
+> The inner parens are redundant.
+
+OK
+
 > 
+>> +                cdev_is_power_actor(instance->cdev));
+>> +}
+> 
+> The part below LGTM.
 
