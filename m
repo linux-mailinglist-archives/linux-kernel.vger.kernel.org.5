@@ -1,45 +1,58 @@
-Return-Path: <linux-kernel+bounces-6998-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6997-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 424D681A05B
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 14:56:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DAB6681A05A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 14:56:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 742751C22672
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 13:56:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7E84EB243BF
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 13:55:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5622936B1F;
-	Wed, 20 Dec 2023 13:56:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 153B5374DB;
+	Wed, 20 Dec 2023 13:55:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b="JQBnorrg"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="jmBmrJHH"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-0201.mail-europe.com (mail-0201.mail-europe.com [51.77.79.158])
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8524038DE0
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 13:56:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=protonmail.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-	s=protonmail3; t=1703080547; x=1703339747;
-	bh=rqYswHeurWEqq+h+3OUgCBIjUPcIMyCOBd+3HdDNPTs=;
-	h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
-	 Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
-	b=JQBnorrgB6ReVA6MrULm2djTBYNk9oQR73QvtoBwU1FqsOxvAh5r3nmDgnw8MjxAu
-	 4tKlRaBp+dMBaQMqcSkZ86oSz3OsodHYgOJdEa4C46l/v0U4CgkVfEHFG7xEcET5bd
-	 sG5BRje7+E7HCF4gCQzID9C+vB801n6/v0USpYJqz/YN6/kOOf7LakVa2lIwq9PJWm
-	 hDtFdSDsz8bGjCms67x4sSESkEV4hErSdkqfx2niWLcLsPGfRA/kI1YE7k1ajMcWqh
-	 1nBWlwnb3IY4oSB+IFshhYE9sfRuWH5XOnvQqSIAhiuvjKc5jvE7PiziKvjo0OBkAY
-	 PGGvePQCl1N4Q==
-Date: Wed, 20 Dec 2023 13:55:27 +0000
-To: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-From: Turritopsis Dohrnii Teo En Ming <teo.en.ming@protonmail.com>
-Cc: "ceo@teo-en-ming-corp.com" <ceo@teo-en-ming-corp.com>
-Subject: I have the latest and greatest Linux Kernel 6.6.7 installed on my refurbished Aftershock gaming laptop after installing Arch Linux on 19 Dec 2023 Tue
-Message-ID: <mRejxPdoL9CnXaSysWPg-tNQ2QaQa2LNbtQFWlQv4NVzG2fBSM8Lb_gPKHJTYHiAxerATFYf2aE-ibE8JUtACknsOzzi1goPrUNV5MYIWnI=@protonmail.com>
-Feedback-ID: 39510961:user:proton
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 457A536AF6;
+	Wed, 20 Dec 2023 13:55:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 30F261C0004;
+	Wed, 20 Dec 2023 13:55:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1703080541;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=tWIpEAW+BnNLwW+nUhjUHHKtOBv1NjjJSAc83dB3i1U=;
+	b=jmBmrJHHEZNWLfUXdiqWSrpF53WS2o+/03LuaAeqZFo+6aZ5BOeW/b5kRIXNS6PDfYcjN6
+	3OBUPOVFULiKauybA1fyx540e1n1wYXq7NGp3VPDDulo0IlxdNBbFfPqps3o4H+tFE5Pk9
+	Ol5zfKw6iv+c6yzLyZ3IGEgHHO7f0LWGZCjpJAbd2dbv77fh+lqpiAurxfdpoYi9ejqyXx
+	kl2IMz2PryFQcxk9Nv8hut6FNXDhiA8XbqioXZ9TLTYGcYSIVP/oNopJ6kDupT0dwZKexL
+	lNwaCXDmzXycBBOyF2LwJmNVD6QosIX5rJlYOABPII93rMUEFde0bCTBYxW9rw==
+From: Gregory CLEMENT <gregory.clement@bootlin.com>
+To: Sjoerd Simons <sjoerd@collabora.com>, Marek
+	=?utf-8?Q?Beh=C3=BAn?= <kabel@kernel.org>
+Cc: kernel@collabora.com, Andrew Lunn <andrew@lunn.ch>, Conor Dooley
+ <conor+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/3] Moxtet bus fixes
+In-Reply-To: <6c93241c35153cfb718db1d81e99e01bfb6dede5.camel@collabora.com>
+References: <20231128213536.3764212-1-sjoerd@collabora.com>
+ <87fs0ceoif.fsf@BL-laptop> <20231208161724.5f4f626a@dellmb>
+ <87fs03cyki.fsf@BL-laptop>
+ <6c93241c35153cfb718db1d81e99e01bfb6dede5.camel@collabora.com>
+Date: Wed, 20 Dec 2023 14:55:39 +0100
+Message-ID: <87o7elash0.fsf@BL-laptop>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -48,122 +61,40 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: gregory.clement@bootlin.com
 
-Subject: I have the latest and greatest Linux Kernel 6.6.7 installed on my =
-refurbished Aftershock gaming laptop after installing Arch Linux on 19 Dec =
-2023 Tue
+Sjoerd Simons <sjoerd@collabora.com> writes:
 
-Good day from Singapore,
+> On Fri, 2023-12-15 at 15:47 +0100, Gregory CLEMENT wrote:
+>> Marek Beh=C3=BAn <kabel@kernel.org> writes:
+>>=20
+>> > On Fri, 08 Dec 2023 15:51:20 +0100
+>> > Gregory CLEMENT <gregory.clement@bootlin.com> wrote:
+>> >=20
+>> > Gregory, as of yet I've never done a pull request. If you are
+>> > willing
+>> > to take all 3 patches now, please do. In the future I would like to
+>>=20
+>> OK I applied them on mvebu/driver.
+>
+> Thanks both for moving this patches forward; Gregory looks like you
+> only applied two of the three patches (missing the dt patch), are you
+> expect that to flow through a different tree or ?
 
-I have the latest and greatest Linux Kernel 6.6.7 installed on my refurbish=
-ed Aftershock gaming laptop after installing Arch Linux on 19 Dec 2023 Tue =
-in the evening.
+The device tree patch is applied on mvebu/dt64, I've just pushed the
+updated branch, but it was already in the for-next branch.
 
-Please refer to the following post at Arch Linux General Discussion mailing=
- list.
+Gregory
 
-Post: [Part 1] These are the guides I have followed to install Arch Linux w=
-ith Linux Kernel 6.6.7 and GNOME on my refurbished Aftershock gaming laptop
-Link: https://lists.archlinux.org/hyperkitty/list/arch-general@lists.archli=
-nux.org/thread/LQTBZYXA26ZTMDZ2IXG4NHNOMDUC6RL3/
+>
+>
+> Regards,
+> --=20
+> Sjoerd Simons
+> Collabora Ltd.
 
-You will be able to install the latest and greatest Linux Kernel 6.6.7 by f=
-ollowing the guides mentioned in the above mailing list post. I chose Arch =
-Linux because it is able to offer the latest Linux Kernel package in its re=
-pository. No other Linux distro/distribution is able to offer the latest Li=
-nux Kernel for installation immediately after it has been released.
-
-Arch Linux can only be installed using the command line. There is no GUI in=
-staller at all to make the installation speedy and efficient. Fortunately, =
-I have good understanding of Linux basics and am quite familiar with the Li=
-nux command line. I can say I have 18 years of experience with Linux beginn=
-ing in the year 2005.
-
-Installing Arch Linux using the command line without a GUI installer can be=
- very very TEDIOUS and very very TIME CONSUMING. But you will get a sense o=
-f satisfaction after installing it successfully.
-
-To recap, I have started installing Arch Linux on my refurbished Aftershock=
- gaming laptop on 19 Dec 2023 Tue at 9.24 PM at night. I have more or less =
-completed installing Arch Linux on 20 Dec 2023 Wed at about 1.00 AM in the =
-early morning.
-
-In total, I have spent about 3 hours and 36 minutes installing Arch Linux w=
-ith NetworkManager (able to connect to Ethernet and Wi-Fi), X.org X Server =
-and GNOME Desktop Environment with Mozilla Firefox and VLC Video Player. I =
-am able to play 4K Ultra HD videos inside Arch Linux. I will spend the next=
- few days or next few weeks (when I have time on my hands) to install Googl=
-e Chrome web browser and configure the sudoers file in Arch Linux.
-
-If there are bugs in Linux Kernel 6.6.7, I will report them to this mailing=
- list.
-
-My used 2nd hand Aftershock gaming laptop model is MX-15 Elite (N850HK1).
-
-AFTERSHOCK LAPTOP MODEL
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-
-Model: N850HK
-
-Product Code: N850HK1
-
-Serial number: NKN850HK1*****5636
-
-Hardware specifications
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-
-CPU
-=3D=3D=3D
-
-Intel Core i7-7700HQ CPU @ 2.80 GHz (7th generation)
-
-RAM
-=3D=3D=3D
-
-SYSTEM MEMORY: 640 KB
-
-EXTENDED MEMORY: 8192 MB (DDR4)
-
-VGA
-=3D=3D=3D
-
-Intel HD Graphics 630
-
-NVIDIA GeForce GTX 1050 TI
-
-STORAGE
-=3D=3D=3D=3D=3D=3D=3D=3D
-
-SATA PORT 0 WDC WDS120G1G0 (120.0 GB) =E2=80=93 Solid State Disk (SSD) for =
-installing operating systems
-
-SATA PORT 2 HGST HTS721010 (1000.2 GB or 1 TB) =E2=80=93 HARDDISK, NOT SSD
-
-ME FW VERSION: 11.6.25.1229
-
-MB SERIES: N85_N87,HJ,HJ1,HK1
-
-BIOS VERSION: 1.05.14TASP
-
-KBC/EC FIRMWARE REVISION: 1.05.10
-
-Thank you.
-
-Regards,
-
-Mr. Turritopsis Dohrnii Teo En Ming
-Targeted Individual in Singapore
-Blogs:
-https://tdtemcerts.blogspot.com
-https://tdtemcerts.wordpress.com
-GIMP also stands for Government-Induced Medical Problems.
-20 Dec 2023 Wednesday 9.54 PM
-
-PS. I have 92 screenshots taken using my vivo V25 Pro 5G mobile phone on Da=
-y 1 of installing Arch Linux.
-
-
-
-
-Sent with Proton Mail secure email.
+--=20
+Gregory Clement, Bootlin
+Embedded Linux and Kernel engineering
+http://bootlin.com
 
