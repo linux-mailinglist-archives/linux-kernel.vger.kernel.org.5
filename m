@@ -1,317 +1,260 @@
-Return-Path: <linux-kernel+bounces-6913-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6914-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 981E2819F44
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 13:43:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CE28819F46
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 13:44:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5094A288CBF
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 12:43:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A4BB21F289D4
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 12:44:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F6352CCBD;
-	Wed, 20 Dec 2023 12:42:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EgRn/M4p"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1BB424B4C;
+	Wed, 20 Dec 2023 12:44:07 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1814125768;
-	Wed, 20 Dec 2023 12:42:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a269a271b5bso28910966b.1;
-        Wed, 20 Dec 2023 04:42:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703076125; x=1703680925; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=c+OYySgHHNTfvrGPve6K5XaLtto4C7fZ8C40m6cGKqQ=;
-        b=EgRn/M4p2XvyrRqE7AahaZm8Hxwf+lCyrLnil1pYsDS7G4JqpyYz8Ha969ViKXDiWi
-         r2c7Wou4OsFAaOSRp5h+Go5aOHOrENn/ec43uACZ3YyyexdWVZu+6PzZx0jAS/O29rlU
-         N1Co608gc6syCyuf8uj53HsewyxX8xuPj1etuDKCVMn58MfcE0h63DX3Cdviv1A4D307
-         EfCnSMpaKCjgv3TtanHDDKVd7sEV/ti3XPmjVq7DkK16Y7ryqCAgRPywB5xE47IpJwEY
-         lLjN5WAOX6X/86MuUMxYqKc3vWBuJLdJmLaC2OtUZlFVPPp5av5yf3mpRxpNtRt5gVfu
-         ybCA==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9EB224B28
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 12:44:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-35fc4376ceeso13809555ab.2
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 04:44:05 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703076125; x=1703680925;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=c+OYySgHHNTfvrGPve6K5XaLtto4C7fZ8C40m6cGKqQ=;
-        b=e6vXw41ebt8DZYH1OY8GG/PJzC9NnBhUkADNEecTym55SpG/vi144p+QUWx0MtU8mt
-         8fpJjOPRVqMMlUL08kxF4Yz4+dItGB3EKoyt8V5iJQKi+XHQ5AOeAI1c9Zj7DouoKsp9
-         OiTumsoCv+stOaLjdJfb26zrSRm3+a2vGarJT9fis8XMeKe1rLylKqIZ7dNokr6jQDAg
-         OKM7uLgngCGLxEr3K37y86niq+L/mB5BwRH7zO15INe/K5txEALsXN2Sxrd9jGzK+KC4
-         UDyd5jl3oaUqhooMb1dy4kff4D65iTcEPVFl/BHV1Y4CrIcxhaYjBZd+T7hdQ+IG7kqw
-         gbyg==
-X-Gm-Message-State: AOJu0YwY6+mr0OqRHnUe3reGKThtKedkIt8ekuXvbyNFe+4HXQKPyvat
-	fM2SgW+EnhUJ1Xp8H4L19GxhX7MXTaQ=
-X-Google-Smtp-Source: AGHT+IHvugUFVYkk01amjd/zSYSFsKIIG+w/DrNxvz0EjKrdNTSKbMj6urF22EEVpibk71HXjzr59A==
-X-Received: by 2002:a17:906:188:b0:a19:a1ba:da45 with SMTP id 8-20020a170906018800b00a19a1bada45mr8553632ejb.108.1703076125132;
-        Wed, 20 Dec 2023 04:42:05 -0800 (PST)
-Received: from tom-HP-ZBook-Fury-15-G7-Mobile-Workstation (net-188-217-59-229.cust.vodafonedsl.it. [188.217.59.229])
-        by smtp.gmail.com with ESMTPSA id y22-20020a170906071600b00a2686db1e81sm1381358ejb.26.2023.12.20.04.42.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Dec 2023 04:42:04 -0800 (PST)
-Date: Wed, 20 Dec 2023 13:42:02 +0100
-From: Tommaso Merciai <tomm.merciai@gmail.com>
-To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc: linuxfancy@googlegroups.com, martin.hecht@avnet.eu,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/4] media: i2c: alvium: removal of fr field
-Message-ID: <ZYLhGqOKvoXOuaSK@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
-References: <20231220085609.2595732-1-tomm.merciai@gmail.com>
- <20231220085609.2595732-3-tomm.merciai@gmail.com>
- <20231220091309.GG29638@pendragon.ideasonboard.com>
- <ZYK7y/jaEZ2JHsnH@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
- <20231220100643.GJ29638@pendragon.ideasonboard.com>
- <ZYLNuw1/IJg7jrEa@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
- <20231220112902.GE25366@pendragon.ideasonboard.com>
- <ZYLYAMrEtCoQ940z@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
- <20231220121944.GM29638@pendragon.ideasonboard.com>
+        d=1e100.net; s=20230601; t=1703076245; x=1703681045;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=KKSDPWoic49VZgMUDNSDFb50PiIua8AvJzyFaGtMJ4s=;
+        b=pxbmyBJ8H5AQELLC8gg4GNpbGZGLaBJ57/tCsUmq8jO5mEdyk2LfYRlOFYkGvXb6iK
+         N+M3o2ri2WNl+JTeTHfcqN5JoJzAMrIRUSt8D3vWCH2c8oscHpKtScQAEuPShS/ySFzQ
+         mi3Sp1IrToXV4miJqkjlIHI9dTFxGKrD2ib39HhEF/q8GaBB5u0DBJ1q72rGsY+sPNsf
+         Wy5xTLG5Ow0g8exBY1tHIGeBAJu26oaNVmgHS7bN8LKuj8X7yQF5Yu/i1UYM2uCo01i2
+         NCRSbZq2C6cTtvzumyUv7dAmL1U4vrKLGSIZantJU7eF1s5vxGznYtZ8auhUGA+BaVCW
+         CtcA==
+X-Gm-Message-State: AOJu0Yx/4m0nL5LIDln/YhJoWqhWm/Mr3FPcxlS35lJd1WXnbtHvLk3Y
+	YI4hfOd6wIml9kttfgOJDZzadt8YhGZ38JJb/mx6mWoNKR8o
+X-Google-Smtp-Source: AGHT+IGldMtyC5Lf7S8zbFvkb+SKSKCS2S3hsgORz5BHVKipzi519vl05ez4OrmhGW0pcyMt9bO9V7qnZTj4LmyD3ot7kXPNxYJh
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231220121944.GM29638@pendragon.ideasonboard.com>
+X-Received: by 2002:a92:c569:0:b0:35f:a0ff:de13 with SMTP id
+ b9-20020a92c569000000b0035fa0ffde13mr938863ilj.3.1703076244852; Wed, 20 Dec
+ 2023 04:44:04 -0800 (PST)
+Date: Wed, 20 Dec 2023 04:44:04 -0800
+In-Reply-To: <20231220111554.1127-1-hdanton@sina.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000999995060cf05663@google.com>
+Subject: Re: [syzbot] [net?] KASAN: slab-use-after-free Read in taprio_dump
+From: syzbot <syzbot+d4d8c0fd15a0abe39bcf@syzkaller.appspotmail.com>
+To: hdanton@sina.com, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, Dec 20, 2023 at 02:19:44PM +0200, Laurent Pinchart wrote:
-> On Wed, Dec 20, 2023 at 01:03:12PM +0100, Tommaso Merciai wrote:
-> > On Wed, Dec 20, 2023 at 01:29:02PM +0200, Laurent Pinchart wrote:
-> > > On Wed, Dec 20, 2023 at 12:19:23PM +0100, Tommaso Merciai wrote:
-> > > > On Wed, Dec 20, 2023 at 12:06:43PM +0200, Laurent Pinchart wrote:
-> > > > > On Wed, Dec 20, 2023 at 11:02:51AM +0100, Tommaso Merciai wrote:
-> > > > > > On Wed, Dec 20, 2023 at 11:13:09AM +0200, Laurent Pinchart wrote:
-> > > > > > > Hi Tommaso,
-> > > > > > > 
-> > > > > > > Thank you for the patch.
-> > > > > > > 
-> > > > > > > Use the imperative in the subject line:
-> > > > > > > 
-> > > > > > > media: i2c: alvium: Remove the fr field of the alvium_dev structure
-> > > > > > > 
-> > > > > > > On Wed, Dec 20, 2023 at 09:56:07AM +0100, Tommaso Merciai wrote:
-> > > > > > > > The fr (frame rate) field of the alvium_dev structure is
-> > > > > > > > only used to pass result from alvium_set_frame_interval() to
-> > > > > > > > alvium_set_frame_rate() that writes this info into the hw reg.
-> > > > > > > > Replace them with function parameter.
-> > > > > > > 
-> > > > > > > Replace it with a function parameter.
-> > > > > > 
-> > > > > > Thanks I'll fix this in v3.
-> > > > > > 
-> > > > > > > > 
-> > > > > > > > Signed-off-by: Tommaso Merciai <tomm.merciai@gmail.com>
-> > > > > > > > ---
-> > > > > > > >  drivers/media/i2c/alvium-csi2.c | 24 ++++++++++++------------
-> > > > > > > >  drivers/media/i2c/alvium-csi2.h |  1 -
-> > > > > > > >  2 files changed, 12 insertions(+), 13 deletions(-)
-> > > > > > > > 
-> > > > > > > > diff --git a/drivers/media/i2c/alvium-csi2.c b/drivers/media/i2c/alvium-csi2.c
-> > > > > > > > index 0dcd69bf9f92..a9ff6cc97cff 100644
-> > > > > > > > --- a/drivers/media/i2c/alvium-csi2.c
-> > > > > > > > +++ b/drivers/media/i2c/alvium-csi2.c
-> > > > > > > > @@ -1185,19 +1185,19 @@ static int alvium_get_frame_interval(struct alvium_dev *alvium,
-> > > > > > > >  	return ret;
-> > > > > > > >  }
-> > > > > > > >  
-> > > > > > > > -static int alvium_set_frame_rate(struct alvium_dev *alvium)
-> > > > > > > > +static int alvium_set_frame_rate(struct alvium_dev *alvium, u64 fr)
-> > > > > > > >  {
-> > > > > > > >  	struct device *dev = &alvium->i2c_client->dev;
-> > > > > > > >  	int ret;
-> > > > > > > >  
-> > > > > > > >  	ret = alvium_write_hshake(alvium, REG_BCRM_ACQUISITION_FRAME_RATE_RW,
-> > > > > > > > -				  alvium->fr);
-> > > > > > > > +				  fr);
-> > > > > > > >  	if (ret) {
-> > > > > > > >  		dev_err(dev, "Fail to set frame rate lanes reg\n");
-> > > > > > > >  		return ret;
-> > > > > > > >  	}
-> > > > > > > >  
-> > > > > > > > -	dev_dbg(dev, "set frame rate: %llu us\n", alvium->fr);
-> > > > > > > > +	dev_dbg(dev, "set frame rate: %llu us\n", fr);
-> > > > > > > >  
-> > > > > > > >  	return 0;
-> > > > > > > >  }
-> > > > > > > > @@ -1661,10 +1661,11 @@ static int alvium_g_frame_interval(struct v4l2_subdev *sd,
-> > > > > > > >  }
-> > > > > > > >  
-> > > > > > > >  static int alvium_set_frame_interval(struct alvium_dev *alvium,
-> > > > > > > > -				     struct v4l2_subdev_frame_interval *fi)
-> > > > > > > > +				     struct v4l2_subdev_frame_interval *fi,
-> > > > > > > > +				     u64 *req_fr)
-> > > > > > > >  {
-> > > > > > > >  	struct device *dev = &alvium->i2c_client->dev;
-> > > > > > > > -	u64 req_fr, dft_fr, min_fr, max_fr;
-> > > > > > > > +	u64 dft_fr, min_fr, max_fr;
-> > > > > > > >  	int ret;
-> > > > > > > >  
-> > > > > > > >  	if (fi->interval.denominator == 0)
-> > > > > > > > @@ -1681,13 +1682,12 @@ static int alvium_set_frame_interval(struct alvium_dev *alvium,
-> > > > > > > >  	dev_dbg(dev, "fi->interval.denominator = %d\n",
-> > > > > > > >  		fi->interval.denominator);
-> > > > > > > >  
-> > > > > > > > -	req_fr = (u64)((fi->interval.denominator * USEC_PER_SEC) /
-> > > > > > > > +	*req_fr = (u64)((fi->interval.denominator * USEC_PER_SEC) /
-> > > > > > > >  		       fi->interval.numerator);
-> > > > > > > >  
-> > > > > > > > -	if (req_fr >= max_fr && req_fr <= min_fr)
-> > > > > > > > -		req_fr = dft_fr;
-> > > > > > > > +	if (*req_fr >= max_fr && *req_fr <= min_fr)
-> > > > > > > > +		*req_fr = dft_fr;
-> > > > > > > 
-> > > > > > > Shouldn't we clamp the value to [min, max] instead of using the default
-> > > > > > > if it's out of range ? Something like
-> > > > > > > 
-> > > > > > > 	*req_fr = clamp(*req_fr, min_fr, max_fr)
-> > > > > > > 
-> > > > > > > This makes me realize that the current code is wrong, req_fr can't be >=
-> > > > > > > max and <= min at the same time. You probably meant || instead of &&.
-> > > > > > > 
-> > > > > > > This should be fixed in a separate patch.
-> > > > > > 
-> > > > > > If this is ok for you, after this series I can put a patch with || fix
-> > > > > > instead of clamping, because if we clamp dft_fr is not used any more.
-> > > > > > After if you agree I will work on clamping.
-> > > > > > Thanks for the catch! :)
-> > > > > 
-> > > > > It's fine to fix this on top of the series, but I don't see why you
-> > > > > would need to first use ||. You can call clamp() and remove dft_fr.
-> > > > 
-> > > > I'm just thinking out loud eh :)
-> > > > 
-> > > > Maybe in the future we need to expose fr infos to the user to play with
-> > > > that. But we are writing for now, then we can replan to readd dft_fr
-> > > > read later.
-> > > > 
-> > > > I think this is what your are suggesting:
-> > > > 
-> > > > +++ b/drivers/media/i2c/alvium-csi2.c
-> > > > @@ -1171,12 +1171,10 @@ static int alvium_set_bayer_pattern(struct alvium_dev *alvium,
-> > > >  }
-> > > > 
-> > > >  static int alvium_get_frame_interval(struct alvium_dev *alvium,
-> > > > -                                    u64 *dft_fr, u64 *min_fr, u64 *max_fr)
-> > > > +                                    u64 *min_fr, u64 *max_fr)
-> > > >  {
-> > > >         int ret = 0;
-> > > > 
-> > > > -       alvium_read(alvium, REG_BCRM_ACQUISITION_FRAME_RATE_RW,
-> > > > -                   dft_fr, &ret);
-> > > >         alvium_read(alvium, REG_BCRM_ACQUISITION_FRAME_RATE_MIN_R,
-> > > >                     min_fr, &ret);
-> > > >         alvium_read(alvium, REG_BCRM_ACQUISITION_FRAME_RATE_MAX_R,
-> > > > @@ -1647,7 +1645,7 @@ static int alvium_s_frame_interval(struct v4l2_subdev *sd,
-> > > >  {
-> > > >         struct alvium_dev *alvium = sd_to_alvium(sd);
-> > > >         struct device *dev = &alvium->i2c_client->dev;
-> > > > -       u64 req_fr, dft_fr, min_fr, max_fr;
-> > > > +       u64 req_fr, min_fr, max_fr;
-> > > >         struct v4l2_fract *interval;
-> > > >         int ret;
-> > > > 
-> > > > @@ -1657,7 +1655,7 @@ static int alvium_s_frame_interval(struct v4l2_subdev *sd,
-> > > >         if (fi->interval.denominator == 0)
-> > > >                 return -EINVAL;
-> > > > 
-> > > > -       ret = alvium_get_frame_interval(alvium, &dft_fr, &min_fr, &max_fr);
-> > > > +       ret = alvium_get_frame_interval(alvium, &min_fr, &max_fr);
-> > > >         if (ret) {
-> > > >                 dev_err(dev, "Fail to get frame interval\n");
-> > > >                 return ret;
-> > > > @@ -1670,9 +1668,7 @@ static int alvium_s_frame_interval(struct v4l2_subdev *sd,
-> > > > 
-> > > >         req_fr = (u64)((fi->interval.denominator * USEC_PER_SEC) /
-> > > >                        fi->interval.numerator);
-> > > > -
-> > > > -       if (req_fr >= max_fr && req_fr <= min_fr)
-> > > > -               req_fr = dft_fr;
-> > > > +       req_fr = clamp(req_fr, min_fr, max_fr);
-> > > > 
-> > > >         interval = v4l2_subdev_state_get_interval(sd_state, 0);
-> > > > 
-> > > > right?
-> > > 
-> > > Yes this looks good to me.
-> > 
-> > Just an info.
-> > Can I proceed to send v3 of this series and then the fix or better to
-> > wait?
-> 
-> For me you can send v3. Bonus points if you include the above fix in v3
-> as a patch at the end :-) I think we would then be ready to merge the
-> whole series.
+Hello,
 
-Perfect, thanks :)
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+WARNING in call_rcu
 
-> 
-> > > > > > > >  
-> > > > > > > > -	alvium->fr = req_fr;
-> > > > > > > >  	alvium->frame_interval.numerator = fi->interval.numerator;
-> > > > > > > >  	alvium->frame_interval.denominator = fi->interval.denominator;
-> > > > > > > >  
-> > > > > > > > @@ -1699,6 +1699,7 @@ static int alvium_s_frame_interval(struct v4l2_subdev *sd,
-> > > > > > > >  				   struct v4l2_subdev_frame_interval *fi)
-> > > > > > > >  {
-> > > > > > > >  	struct alvium_dev *alvium = sd_to_alvium(sd);
-> > > > > > > > +	u64 req_fr = ALVIUM_DEFAULT_FR_HZ;
-> > > > > > > 
-> > > > > > > Do you need to initialize the variable ? It doesn't seem to be required.
-> > > > > > 
-> > > > > > Really not, it's just to maintain the logic of alvium->fr. I will drop
-> > > > > > this in v3, thanks!
-> > > > > > 
-> > > > > > > With these small issues fixed,
-> > > > > > > 
-> > > > > > > Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> > > > > > > 
-> > > > > > > >  	int ret;
-> > > > > > > >  
-> > > > > > > >  	/*
-> > > > > > > > @@ -1711,9 +1712,9 @@ static int alvium_s_frame_interval(struct v4l2_subdev *sd,
-> > > > > > > >  	if (alvium->streaming)
-> > > > > > > >  		return -EBUSY;
-> > > > > > > >  
-> > > > > > > > -	ret = alvium_set_frame_interval(alvium, fi);
-> > > > > > > > +	ret = alvium_set_frame_interval(alvium, fi, &req_fr);
-> > > > > > > >  	if (!ret)
-> > > > > > > > -		ret = alvium_set_frame_rate(alvium);
-> > > > > > > > +		ret = alvium_set_frame_rate(alvium, req_fr);
-> > > > > > > >  
-> > > > > > > >  	return ret;
-> > > > > > > >  }
-> > > > > > > > @@ -2273,7 +2274,6 @@ static int alvium_subdev_init(struct alvium_dev *alvium)
-> > > > > > > >  	/* Setup initial frame interval*/
-> > > > > > > >  	alvium->frame_interval.numerator = 1;
-> > > > > > > >  	alvium->frame_interval.denominator = ALVIUM_DEFAULT_FR_HZ;
-> > > > > > > > -	alvium->fr = ALVIUM_DEFAULT_FR_HZ;
-> > > > > > > >  
-> > > > > > > >  	/* Setup the initial mode */
-> > > > > > > >  	alvium->mode.fmt = alvium_csi2_default_fmt;
-> > > > > > > > diff --git a/drivers/media/i2c/alvium-csi2.h b/drivers/media/i2c/alvium-csi2.h
-> > > > > > > > index 17f0bbbd1839..80066ac25047 100644
-> > > > > > > > --- a/drivers/media/i2c/alvium-csi2.h
-> > > > > > > > +++ b/drivers/media/i2c/alvium-csi2.h
-> > > > > > > > @@ -443,7 +443,6 @@ struct alvium_dev {
-> > > > > > > >  
-> > > > > > > >  	struct alvium_mode mode;
-> > > > > > > >  	struct v4l2_fract frame_interval;
-> > > > > > > > -	u64 fr;
-> > > > > > > >  
-> > > > > > > >  	u8 h_sup_csi_lanes;
-> > > > > > > >  	u64 link_freq;
-> 
-> -- 
-> Regards,
-> 
-> Laurent Pinchart
+------------[ cut here ]------------
+ODEBUG: activate active (active state 1) object: 0000000040a741f2 object type: rcu_head hint: 0x0
+WARNING: CPU: 0 PID: 10724 at lib/debugobjects.c:517 debug_print_object lib/debugobjects.c:514 [inline]
+WARNING: CPU: 0 PID: 10724 at lib/debugobjects.c:517 debug_object_activate+0x578/0x7e0 lib/debugobjects.c:733
+Modules linked in:
+CPU: 0 PID: 10724 Comm: syz-executor.4 Not tainted 6.7.0-rc5-syzkaller-00083-gd5b235ec8eab-dirty #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/10/2023
+pstate: 604000c5 (nZCv daIF +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+pc : debug_print_object lib/debugobjects.c:514 [inline]
+pc : debug_object_activate+0x578/0x7e0 lib/debugobjects.c:733
+lr : debug_print_object lib/debugobjects.c:514 [inline]
+lr : debug_object_activate+0x578/0x7e0 lib/debugobjects.c:733
+sp : ffff800080007a00
+x29: ffff800080007ad0 x28: dfff800000000000 x27: ffff700010000f44
+x26: 0000000000000000 x25: ffff0000da75c900 x24: 0000000000000000
+x23: ffff80008a9af3a0 x22: ffff80008ae8cdc0 x21: 0000000000000001
+x20: ffff80008a9af3a0 x19: ffff0000da75c900 x18: ffff800080006ee0
+x17: 6631343761303430 x16: ffff80008a82f460 x15: 0000000000000001
+x14: 1fffe0003682623a x13: 0000000000000000 x12: 0000000000000000
+x11: 0000000000010004 x10: 0000000000ff0100 x9 : f1155cbcba9a1100
+x8 : f1155cbcba9a1100 x7 : 0000000000000001 x6 : 0000000000000001
+x5 : ffff8000800072f8 x4 : ffff80008e5d2600 x3 : ffff8000805ad1c0
+x2 : 0000000000000001 x1 : 0000000100010002 x0 : 0000000000000000
+Call trace:
+ debug_print_object lib/debugobjects.c:514 [inline]
+ debug_object_activate+0x578/0x7e0 lib/debugobjects.c:733
+ debug_rcu_head_queue kernel/rcu/rcu.h:227 [inline]
+ __call_rcu_common kernel/rcu/tree.c:2666 [inline]
+ call_rcu+0x48/0xaf4 kernel/rcu/tree.c:2795
+ switch_schedules net/sched/sch_taprio.c:210 [inline]
+ advance_sched+0x7e0/0xac0 net/sched/sch_taprio.c:984
+ __run_hrtimer kernel/time/hrtimer.c:1688 [inline]
+ __hrtimer_run_queues+0x484/0xca0 kernel/time/hrtimer.c:1752
+ hrtimer_interrupt+0x2c0/0xb64 kernel/time/hrtimer.c:1814
+ timer_handler drivers/clocksource/arm_arch_timer.c:674 [inline]
+ arch_timer_handler_virt+0x74/0x88 drivers/clocksource/arm_arch_timer.c:685
+ handle_percpu_devid_irq+0x2a4/0x804 kernel/irq/chip.c:942
+ generic_handle_irq_desc include/linux/irqdesc.h:161 [inline]
+ handle_irq_desc kernel/irq/irqdesc.c:672 [inline]
+ generic_handle_domain_irq+0x7c/0xc4 kernel/irq/irqdesc.c:728
+ __gic_handle_irq drivers/irqchip/irq-gic-v3.c:782 [inline]
+ __gic_handle_irq_from_irqson drivers/irqchip/irq-gic-v3.c:833 [inline]
+ gic_handle_irq+0x6c/0x190 drivers/irqchip/irq-gic-v3.c:877
+ call_on_irq_stack+0x24/0x4c arch/arm64/kernel/entry.S:886
+ do_interrupt_handler+0xd4/0x138 arch/arm64/kernel/entry-common.c:276
+ __el1_irq arch/arm64/kernel/entry-common.c:502 [inline]
+ el1_interrupt+0x34/0x68 arch/arm64/kernel/entry-common.c:517
+ el1h_64_irq_handler+0x18/0x24 arch/arm64/kernel/entry-common.c:522
+ el1h_64_irq+0x64/0x68 arch/arm64/kernel/entry.S:591
+ __daif_local_irq_restore arch/arm64/include/asm/irqflags.h:176 [inline]
+ arch_local_irq_restore arch/arm64/include/asm/irqflags.h:196 [inline]
+ __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:151 [inline]
+ _raw_spin_unlock_irqrestore+0x44/0x98 kernel/locking/spinlock.c:194
+ unlock_hrtimer_base kernel/time/hrtimer.c:1020 [inline]
+ hrtimer_start_range_ns+0x8a0/0x9ac kernel/time/hrtimer.c:1304
+ hrtimer_start include/linux/hrtimer.h:418 [inline]
+ taprio_dump+0xa40/0xc68 net/sched/sch_taprio.c:2444
+ tc_fill_qdisc+0x570/0xf1c net/sched/sch_api.c:952
+ qdisc_notify+0x1a0/0x338 net/sched/sch_api.c:1024
+ tc_modify_qdisc+0x16d4/0x1870 net/sched/sch_api.c:1719
+ rtnetlink_rcv_msg+0x748/0xdbc net/core/rtnetlink.c:6558
+ netlink_rcv_skb+0x214/0x3c4 net/netlink/af_netlink.c:2545
+ rtnetlink_rcv+0x28/0x38 net/core/rtnetlink.c:6576
+ netlink_unicast_kernel net/netlink/af_netlink.c:1342 [inline]
+ netlink_unicast+0x65c/0x898 net/netlink/af_netlink.c:1368
+ netlink_sendmsg+0x83c/0xb20 net/netlink/af_netlink.c:1910
+ sock_sendmsg_nosec net/socket.c:730 [inline]
+ __sock_sendmsg net/socket.c:745 [inline]
+ ____sys_sendmsg+0x56c/0x840 net/socket.c:2584
+ ___sys_sendmsg net/socket.c:2638 [inline]
+ __sys_sendmsg+0x26c/0x33c net/socket.c:2667
+ __do_sys_sendmsg net/socket.c:2676 [inline]
+ __se_sys_sendmsg net/socket.c:2674 [inline]
+ __arm64_sys_sendmsg+0x80/0x94 net/socket.c:2674
+ __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
+ invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
+ el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
+ do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
+ el0_svc+0x54/0x158 arch/arm64/kernel/entry-common.c:678
+ el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
+ el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
+irq event stamp: 2628
+hardirqs last  enabled at (2627): [<ffff80008a91ca44>] __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:151 [inline]
+hardirqs last  enabled at (2627): [<ffff80008a91ca44>] _raw_spin_unlock_irqrestore+0x38/0x98 kernel/locking/spinlock.c:194
+hardirqs last disabled at (2628): [<ffff80008a82b044>] __el1_irq arch/arm64/kernel/entry-common.c:499 [inline]
+hardirqs last disabled at (2628): [<ffff80008a82b044>] el1_interrupt+0x24/0x68 arch/arm64/kernel/entry-common.c:517
+softirqs last  enabled at (2616): [<ffff800088d03038>] spin_unlock_bh include/linux/spinlock.h:396 [inline]
+softirqs last  enabled at (2616): [<ffff800088d03038>] taprio_change+0x3504/0x3d40 net/sched/sch_taprio.c:2010
+softirqs last disabled at (2608): [<ffff800088d029c0>] spin_lock_bh include/linux/spinlock.h:356 [inline]
+softirqs last disabled at (2608): [<ffff800088d029c0>] taprio_change+0x2e8c/0x3d40 net/sched/sch_taprio.c:1943
+---[ end trace 0000000000000000 ]---
+------------[ cut here ]------------
+ODEBUG: active_state active (active state 1) object: 0000000040a741f2 object type: rcu_head hint: 0x0
+WARNING: CPU: 0 PID: 10724 at lib/debugobjects.c:517 debug_print_object lib/debugobjects.c:514 [inline]
+WARNING: CPU: 0 PID: 10724 at lib/debugobjects.c:517 debug_object_active_state+0x2e4/0x414 lib/debugobjects.c:993
+Modules linked in:
+CPU: 0 PID: 10724 Comm: syz-executor.4 Tainted: G        W          6.7.0-rc5-syzkaller-00083-gd5b235ec8eab-dirty #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/10/2023
+pstate: 604000c5 (nZCv daIF +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+pc : debug_print_object lib/debugobjects.c:514 [inline]
+pc : debug_object_active_state+0x2e4/0x414 lib/debugobjects.c:993
+lr : debug_print_object lib/debugobjects.c:514 [inline]
+lr : debug_object_active_state+0x2e4/0x414 lib/debugobjects.c:993
+sp : ffff800080007ac0
+x29: ffff800080007ad0 x28: ffff80008e4f0000 x27: dfff800000000000
+x26: 1fffe0001ac85cf7 x25: ffff800092d4d000 x24: 1fffe0001ac85cf8
+x23: 0000000000000000 x22: ffff0000da75c900 x21: ffff80008a9af3a0
+x20: ffff80008ae8cdc0 x19: 0000000000000001 x18: ffff800080006ee0
+x17: 6130343030303030 x16: ffff80008a82f460 x15: 0000000000000001
+x14: 1fffe0003682623a x13: 0000000000000000 x12: 0000000000000000
+x11: 0000000000010004 x10: 0000000000ff0100 x9 : f1155cbcba9a1100
+x8 : f1155cbcba9a1100 x7 : 0000000000000001 x6 : 0000000000000001
+x5 : ffff8000800073b8 x4 : ffff80008e5d2600 x3 : ffff8000805ad1c0
+x2 : 0000000000000001 x1 : 0000000100010002 x0 : 0000000000000000
+Call trace:
+ debug_print_object lib/debugobjects.c:514 [inline]
+ debug_object_active_state+0x2e4/0x414 lib/debugobjects.c:993
+ debug_rcu_head_queue kernel/rcu/rcu.h:228 [inline]
+ __call_rcu_common kernel/rcu/tree.c:2666 [inline]
+ call_rcu+0x60/0xaf4 kernel/rcu/tree.c:2795
+ switch_schedules net/sched/sch_taprio.c:210 [inline]
+ advance_sched+0x7e0/0xac0 net/sched/sch_taprio.c:984
+ __run_hrtimer kernel/time/hrtimer.c:1688 [inline]
+ __hrtimer_run_queues+0x484/0xca0 kernel/time/hrtimer.c:1752
+ hrtimer_interrupt+0x2c0/0xb64 kernel/time/hrtimer.c:1814
+ timer_handler drivers/clocksource/arm_arch_timer.c:674 [inline]
+ arch_timer_handler_virt+0x74/0x88 drivers/clocksource/arm_arch_timer.c:685
+ handle_percpu_devid_irq+0x2a4/0x804 kernel/irq/chip.c:942
+ generic_handle_irq_desc include/linux/irqdesc.h:161 [inline]
+ handle_irq_desc kernel/irq/irqdesc.c:672 [inline]
+ generic_handle_domain_irq+0x7c/0xc4 kernel/irq/irqdesc.c:728
+ __gic_handle_irq drivers/irqchip/irq-gic-v3.c:782 [inline]
+ __gic_handle_irq_from_irqson drivers/irqchip/irq-gic-v3.c:833 [inline]
+ gic_handle_irq+0x6c/0x190 drivers/irqchip/irq-gic-v3.c:877
+ call_on_irq_stack+0x24/0x4c arch/arm64/kernel/entry.S:886
+ do_interrupt_handler+0xd4/0x138 arch/arm64/kernel/entry-common.c:276
+ __el1_irq arch/arm64/kernel/entry-common.c:502 [inline]
+ el1_interrupt+0x34/0x68 arch/arm64/kernel/entry-common.c:517
+ el1h_64_irq_handler+0x18/0x24 arch/arm64/kernel/entry-common.c:522
+ el1h_64_irq+0x64/0x68 arch/arm64/kernel/entry.S:591
+ __daif_local_irq_restore arch/arm64/include/asm/irqflags.h:176 [inline]
+ arch_local_irq_restore arch/arm64/include/asm/irqflags.h:196 [inline]
+ __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:151 [inline]
+ _raw_spin_unlock_irqrestore+0x44/0x98 kernel/locking/spinlock.c:194
+ unlock_hrtimer_base kernel/time/hrtimer.c:1020 [inline]
+ hrtimer_start_range_ns+0x8a0/0x9ac kernel/time/hrtimer.c:1304
+ hrtimer_start include/linux/hrtimer.h:418 [inline]
+ taprio_dump+0xa40/0xc68 net/sched/sch_taprio.c:2444
+ tc_fill_qdisc+0x570/0xf1c net/sched/sch_api.c:952
+ qdisc_notify+0x1a0/0x338 net/sched/sch_api.c:1024
+ tc_modify_qdisc+0x16d4/0x1870 net/sched/sch_api.c:1719
+ rtnetlink_rcv_msg+0x748/0xdbc net/core/rtnetlink.c:6558
+ netlink_rcv_skb+0x214/0x3c4 net/netlink/af_netlink.c:2545
+ rtnetlink_rcv+0x28/0x38 net/core/rtnetlink.c:6576
+ netlink_unicast_kernel net/netlink/af_netlink.c:1342 [inline]
+ netlink_unicast+0x65c/0x898 net/netlink/af_netlink.c:1368
+ netlink_sendmsg+0x83c/0xb20 net/netlink/af_netlink.c:1910
+ sock_sendmsg_nosec net/socket.c:730 [inline]
+ __sock_sendmsg net/socket.c:745 [inline]
+ ____sys_sendmsg+0x56c/0x840 net/socket.c:2584
+ ___sys_sendmsg net/socket.c:2638 [inline]
+ __sys_sendmsg+0x26c/0x33c net/socket.c:2667
+ __do_sys_sendmsg net/socket.c:2676 [inline]
+ __se_sys_sendmsg net/socket.c:2674 [inline]
+ __arm64_sys_sendmsg+0x80/0x94 net/socket.c:2674
+ __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
+ invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
+ el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
+ do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
+ el0_svc+0x54/0x158 arch/arm64/kernel/entry-common.c:678
+ el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
+ el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
+irq event stamp: 2628
+hardirqs last  enabled at (2627): [<ffff80008a91ca44>] __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:151 [inline]
+hardirqs last  enabled at (2627): [<ffff80008a91ca44>] _raw_spin_unlock_irqrestore+0x38/0x98 kernel/locking/spinlock.c:194
+hardirqs last disabled at (2628): [<ffff80008a82b044>] __el1_irq arch/arm64/kernel/entry-common.c:499 [inline]
+hardirqs last disabled at (2628): [<ffff80008a82b044>] el1_interrupt+0x24/0x68 arch/arm64/kernel/entry-common.c:517
+softirqs last  enabled at (2616): [<ffff800088d03038>] spin_unlock_bh include/linux/spinlock.h:396 [inline]
+softirqs last  enabled at (2616): [<ffff800088d03038>] taprio_change+0x3504/0x3d40 net/sched/sch_taprio.c:2010
+softirqs last disabled at (2608): [<ffff800088d029c0>] spin_lock_bh include/linux/spinlock.h:356 [inline]
+softirqs last disabled at (2608): [<ffff800088d029c0>] taprio_change+0x2e8c/0x3d40 net/sched/sch_taprio.c:1943
+---[ end trace 0000000000000000 ]---
+rcu: __call_rcu_common(): Double-freed CB 0000000040a741f2->taprio_free_sched_cb+0x0/0x178()!!!   slab kmalloc-512 start ffff0000da75c800 pointer offset 256 size 512
+
+
+Tested on:
+
+commit:         d5b235ec Merge branch 'for-next/core' into for-kernelci
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=11d6e2bee80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f36ea342ce412b14
+dashboard link: https://syzkaller.appspot.com/bug?extid=d4d8c0fd15a0abe39bcf
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: arm64
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=11e0f416e80000
+
 
