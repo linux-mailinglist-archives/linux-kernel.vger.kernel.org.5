@@ -1,144 +1,84 @@
-Return-Path: <linux-kernel+bounces-6302-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6303-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB5658196F4
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 03:53:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 09D748196F7
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 03:57:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0AD451C254D4
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 02:53:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AE1F21F261B1
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 02:57:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7839B8F41;
-	Wed, 20 Dec 2023 02:53:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="pHFC0HeD"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A1EA8813;
+	Wed, 20 Dec 2023 02:57:24 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+Received: from mxhk.zte.com.cn (mxhk.zte.com.cn [63.216.63.40])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A4E78488;
-	Wed, 20 Dec 2023 02:52:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1703040775;
-	bh=u+n7djgZgZC5+nAlDbG46jcmuKzAaYJMrC+bvBoFM0c=;
-	h=Date:From:To:Cc:Subject:From;
-	b=pHFC0HeDZMm6Nyp7PFD9Q3ura+L1lAAv6lwFHd14ZzBaxFyYuwZw//HbmrbbXPvt7
-	 52PAJt63HgWKz7Ys4p/n7Ud1JEDRNIrCySKyf96CFDzwTOX96cUIZCHfZz4S/O0Wnd
-	 z1/9tOGtwu7hYivg84JoWZU94QVbVHSgyjFdfXHdUBb5B0qa3fJc30r8WLt9LpuglQ
-	 hM8oxnSlThBtCK1UXmaQvEqTwcrG/QOcoq7HF3Terh1f0uN5jxacRtNefHfraL32h/
-	 1LEpzSNK7OTXwza6jJnrpSnghgLXgllT9GXPzTPX1TG3gYdyDY8fcfI++zgSJyrgHk
-	 1YJNlndx+Z/jQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE6A1BE58;
+	Wed, 20 Dec 2023 02:57:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zte.com.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zte.com.cn
+Received: from mse-fl2.zte.com.cn (unknown [10.5.228.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4Svym55Pdkz4wdD;
-	Wed, 20 Dec 2023 13:52:53 +1100 (AEDT)
-Date: Wed, 20 Dec 2023 13:52:51 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Paolo Bonzini <pbonzini@redhat.com>, KVM <kvm@vger.kernel.org>, Jens
- Axboe <axboe@kernel.dk>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
- Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the kvm tree with the block tree
-Message-ID: <20231220135251.67a61536@canb.auug.org.au>
+	by mxhk.zte.com.cn (FangMail) with ESMTPS id 4Svys95x1rz8XrRB;
+	Wed, 20 Dec 2023 10:57:17 +0800 (CST)
+Received: from xaxapp02.zte.com.cn ([10.88.97.241])
+	by mse-fl2.zte.com.cn with SMTP id 3BK2v7Ji078029;
+	Wed, 20 Dec 2023 10:57:07 +0800 (+08)
+	(envelope-from yang.guang5@zte.com.cn)
+Received: from mapi (xaxapp03[null])
+	by mapi (Zmail) with MAPI id mid31;
+	Wed, 20 Dec 2023 10:57:08 +0800 (CST)
+Date: Wed, 20 Dec 2023 10:57:08 +0800 (CST)
+X-Zmail-TransId: 2afb65825804ffffffff93b-ece67
+X-Mailer: Zmail v1.0
+Message-ID: <202312201057082362118@zte.com.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Se2yPS5HSeJnu+2cA8zfccr";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Mime-Version: 1.0
+From: <yang.guang5@zte.com.cn>
+To: <lgirdwood@gmail.com>
+Cc: <jiang.xuexin@zte.com.cn>, <chen.haonan2@zte.com.cn>, <cgel.zte@gmail.com>,
+        <broonie@kernel.org>, <perex@perex.cz>, <tiwai@suse.com>,
+        <linux-sound@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: =?UTF-8?B?W1BBVENIIGxpbnV4LW5leHRdIEFTb0M6IHNvYy10b3BvbG9neTogU3dpdGNoIHRvIHVzZSBkZXZfZXJyX3Byb2JlKCkgaGVscGVy?=
+Content-Type: text/plain;
+	charset="UTF-8"
+X-MAIL:mse-fl2.zte.com.cn 3BK2v7Ji078029
+X-Fangmail-Gw-Spam-Type: 0
+X-Fangmail-Anti-Spam-Filtered: true
+X-Fangmail-MID-QID: 6582580D.000/4Svys95x1rz8XrRB
 
---Sig_/Se2yPS5HSeJnu+2cA8zfccr
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+From: Yang Guang <yang.guang5@zte.com.cn>
 
-Hi all,
+dev_err() can be replace with dev_err_probe() which will
+check if error code is -EPROBE_DEFER.
 
-Today's linux-next merge of the kvm tree got a conflict in:
+Signed-off-by: Chen Haonan <chen.haonan2@zte.com.cn>
+---
+ sound/soc/soc-topology.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-  io_uring/io_uring.c
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index ba4890991f0d..c0d40162aff2 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -1736,8 +1736,7 @@ static int soc_tplg_fe_link_create(struct soc_tplg *tplg,
 
-between commit:
+ 	ret = snd_soc_add_pcm_runtimes(tplg->comp->card, link, 1);
+ 	if (ret < 0) {
+-		if (ret != -EPROBE_DEFER)
+-			dev_err(tplg->dev, "ASoC: adding FE link failed\n");
++		dev_err_probe(tplg->dev, ret, "ASoC: adding FE link failed\n");
+ 		goto err;
+ 	}
 
-  6e5e6d274956 ("io_uring: drop any code related to SCM_RIGHTS")
-
-from the block tree and commit:
-
-  4f0b9194bc11 ("fs: Rename anon_inode_getfile_secure() and anon_inode_getf=
-d_secure()")
-
-from the kvm tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc io_uring/io_uring.c
-index bc0dc1ca9f1e,db3f545ddcac..000000000000
---- a/io_uring/io_uring.c
-+++ b/io_uring/io_uring.c
-@@@ -3777,8 -3867,28 +3777,9 @@@ static int io_uring_install_fd(struct f
-   */
-  static struct file *io_uring_get_file(struct io_ring_ctx *ctx)
-  {
-- 	return anon_inode_getfile_secure("[io_uring]", &io_uring_fops, ctx,
- -	struct file *file;
- -#if defined(CONFIG_UNIX)
- -	int ret;
- -
- -	ret =3D sock_create_kern(&init_net, PF_UNIX, SOCK_RAW, IPPROTO_IP,
- -				&ctx->ring_sock);
- -	if (ret)
- -		return ERR_PTR(ret);
- -#endif
- -
-+ 	/* Create a new inode so that the LSM can block the creation.  */
- -	file =3D anon_inode_create_getfile("[io_uring]", &io_uring_fops, ctx,
-++	return anon_inode_create_getfile("[io_uring]", &io_uring_fops, ctx,
-  					 O_RDWR | O_CLOEXEC, NULL);
- -#if defined(CONFIG_UNIX)
- -	if (IS_ERR(file)) {
- -		sock_release(ctx->ring_sock);
- -		ctx->ring_sock =3D NULL;
- -	} else {
- -		ctx->ring_sock->file =3D file;
- -	}
- -#endif
- -	return file;
-  }
- =20
-  static __cold int io_uring_create(unsigned entries, struct io_uring_param=
-s *p,
-
---Sig_/Se2yPS5HSeJnu+2cA8zfccr
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmWCVwMACgkQAVBC80lX
-0GyU2gf+OY5SIJaF+IjNQMWUt2zmqt/rolbsnDZUnWJ3l1iiq30lDQtlVOfbZP7j
-c3fu65tRA1OAJjALfvNaTCppB5iR7e4uN9tFkYt1Xu0fMHvd8ZAqrpj4mffuGVx6
-PgMwRBSqAjU3dzEWslOJJqJoyJ7EmvqrZ6Yek3PX6iu46jvEn3wZdJlfJOTODSJg
-0ufHB7jPBPmpUN4N44YgpJYHR/ULVFC7cyxFE0Gl+E7JWrC/yD+cKCyX9rRDIE2r
-ZekKllT7ApCq6iroR/73u1CX5xwRW7EGXCMcJ8xNU65cHqaEjZrY1nLlHhglmJP+
-Yf/nmoGi4DJ7JOuD/8u8chs+D8o4lw==
-=dNsd
------END PGP SIGNATURE-----
-
---Sig_/Se2yPS5HSeJnu+2cA8zfccr--
+-- 
+2.25.1
 
