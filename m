@@ -1,67 +1,67 @@
-Return-Path: <linux-kernel+bounces-7409-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7410-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38DDD81A787
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 21:13:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47D5F81A789
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 21:13:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E9CBD2889AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 20:13:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EAC681F23D0A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 20:13:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5BB248CD0;
-	Wed, 20 Dec 2023 20:13:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65776495C5;
+	Wed, 20 Dec 2023 20:13:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uBAAhA7Z"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b6MuwGzW"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F1BC41841;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACA1F487B4;
 	Wed, 20 Dec 2023 20:13:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 15534C433C7;
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 27C7FC433C8;
 	Wed, 20 Dec 2023 20:13:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1703103192;
-	bh=cUulZY7a6w+CtQVA4by2nPiQJljSCjxCA5eTFRsuNNM=;
+	bh=b7SIMzMYWuwDwBZZBkV1rUx56WnnkCBWjHcD4OAzNeQ=;
 	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=uBAAhA7Z0MpS2m+TiH+tqxtEDtIIBgfOVUFqoKryNv70jC+Wf+tCr25wT0aHTLCsu
-	 lw4TBT8bP2//KQzkpPaQkCCpSzfDDa8U5IBzR1BrpyI3hwWZRd3bHqBx5nYVZsHy7c
-	 mVxWRt6gMWYzgn4IC7UvL+f+lJS1ENoV8Fk+PiO8bjhbQH94zsV7N208Vq/QI31qLh
-	 giQO1N24RjQuOJf7mNzWlQGOMggeuMGKyzLShBrsL58QBmKk/a8H7ni+MFXaw6W3VP
-	 zu6J/BIyG0JjzR2G0xCqWAUrYzN01Dzlpg4bDrrUNdzOhST87MTmVaRsJlPNy+ySyt
-	 TTurxu8/1PJSw==
+	b=b6MuwGzWxPw9Nn4kcmw0DbjI6lbRR3dnwxknFu2Qx0C9omIKpRCP7N7M4+a/dAcDr
+	 nvEntM3H8RL8bIYfm2osST2fWy4SAk3MWxORxjAG1qAXcymipUaSwPWjjStU1+Q5UB
+	 Zo9vIjgCujmJ29D8MB1FPIW/FwEMW/3s8VbWjKshW8IU2lmmaKrgnPSCyuqytI4746
+	 xmkK83PZTY3prgdOSyUhpEeYnc5QWOdx7E92xvyiLmvgDWy4nIA4PYtWJH1ZJOKw2g
+	 jlrBoWby+KDeEM0V1aUdkD5j0GlT5gOPKfVWl4t+njMXbdWRavlS2uqOxjJm5WGX83
+	 6xVRppMmrX3DA==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id F423DD8C985;
-	Wed, 20 Dec 2023 20:13:11 +0000 (UTC)
-Subject: Re: [GIT PULL] more NFSD fixes for 6.7-rc
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 10C87C561EE;
+	Wed, 20 Dec 2023 20:13:12 +0000 (UTC)
+Subject: Re: [GIT PULL] overlayfs fixes for 6.7-rc7
 From: pr-tracker-bot@kernel.org
-In-Reply-To: <957B327E-8807-4EEC-8BA3-6465A0810778@oracle.com>
-References: <957B327E-8807-4EEC-8BA3-6465A0810778@oracle.com>
+In-Reply-To: <20231220033505.735262-1-amir73il@gmail.com>
+References: <20231220033505.735262-1-amir73il@gmail.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <957B327E-8807-4EEC-8BA3-6465A0810778@oracle.com>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/cel/linux.git tags/nfsd-6.7-2
-X-PR-Tracked-Commit-Id: bd018b98ba84ca0c80abac1ef23ce726a809e58c
+X-PR-Tracked-Message-Id: <20231220033505.735262-1-amir73il@gmail.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/overlayfs/vfs.git ovl-fixes-6.7-rc7
+X-PR-Tracked-Commit-Id: 413ba91089c74207313b315e04cf381ffb5b20e4
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: ac1c13e257c798510a60559c2cd50f1828f89c4e
-Message-Id: <170310319199.16038.6468012873166012993.pr-tracker-bot@kernel.org>
-Date: Wed, 20 Dec 2023 20:13:11 +0000
-To: Chuck Lever III <chuck.lever@oracle.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, Linux NFS Mailing List <linux-nfs@vger.kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Jeff Layton <jlayton@kernel.org>
+X-PR-Merge-Commit-Id: 1a44b0073b9235521280e19d963b6dfef7888f18
+Message-Id: <170310319206.16038.17631825269258809724.pr-tracker-bot@kernel.org>
+Date: Wed, 20 Dec 2023 20:13:12 +0000
+To: Amir Goldstein <amir73il@gmail.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, Miklos Szeredi <miklos@szeredi.hu>, Christian Brauner <brauner@kernel.org>, linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-unionfs@vger.kernel.org
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 
-The pull request you sent on Tue, 19 Dec 2023 20:41:12 +0000:
+The pull request you sent on Wed, 20 Dec 2023 05:35:05 +0200:
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/cel/linux.git tags/nfsd-6.7-2
+> git://git.kernel.org/pub/scm/linux/kernel/git/overlayfs/vfs.git ovl-fixes-6.7-rc7
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/ac1c13e257c798510a60559c2cd50f1828f89c4e
+https://git.kernel.org/torvalds/c/1a44b0073b9235521280e19d963b6dfef7888f18
 
 Thank you!
 
