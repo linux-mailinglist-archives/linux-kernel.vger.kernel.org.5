@@ -1,496 +1,285 @@
-Return-Path: <linux-kernel+bounces-7675-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7662-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E76381AB7F
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 01:01:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB94B81AB62
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 00:57:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B2BFB1C23C30
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 00:01:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3CEAF1F2107B
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 23:57:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F369524BA;
-	Wed, 20 Dec 2023 23:55:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD7E64E1BF;
+	Wed, 20 Dec 2023 23:55:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="A/KtLs3a"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IAk3xv5i"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-io1-f42.google.com (mail-io1-f42.google.com [209.85.166.42])
+Received: from mail-io1-f46.google.com (mail-io1-f46.google.com [209.85.166.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2CAB50266
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 23:55:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-io1-f42.google.com with SMTP id ca18e2360f4ac-7b7fdde8b26so7348139f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 15:55:28 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E55F84B5B5;
+	Wed, 20 Dec 2023 23:55:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-io1-f46.google.com with SMTP id ca18e2360f4ac-7b7d65d4eecso9180239f.0;
+        Wed, 20 Dec 2023 15:55:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1703116528; x=1703721328; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=E4LntbTWAkvb3ubuXcE2yEZinwRXbecjdU87OrYLeRQ=;
-        b=A/KtLs3a+q5u2Z+kgFF4rdclXeigCtkHU8l7JKORaO1NCAr+ZxtHqfHnU9W3idaX/6
-         rxTJzNpS9gBeG+HBAR/+ETpJNKNkMO3wIaMHOsJDptSwaGPnCpLtw96y1CJsKfKf7GtN
-         XX+YT0jrjPeO/jvZ8cFXSAHe/gw0KRoycOYm0=
+        d=gmail.com; s=20230601; t=1703116516; x=1703721316; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5tNoJUjS2qxiKE/v+m+/kf6Z1ppnJjq/UKAlEiUarNg=;
+        b=IAk3xv5iiiXx33MxyhxtqqzbR1o0TC28Tk3mENjWMEUWKfE9Iu8rDcpa+FllBHwe5n
+         ofzmyv2KvcavYL1ppnRrYFuwU9qCaNUBe5Q+4KR/JTVA1LL9SiAP1WPUAMrqu59O1fga
+         K/Uv2L8axXD9Ky0M6ZlX8GAUKa9s1ag0UB4HLVqbDJdn3M/WhZtT5vJnjXfMC+PKhVaV
+         y5HpIp6mp6k1nLUC1Lng5G7yqpFtTaQn1LnfrV1t9I0/pq6lWxsUakCcAiXmWktvwuuC
+         LaAmzzyyTxNW+vnLHHqtNbQdU/JOt5ajeNq0Xsi/hqCM0SLW4vPfyCBeoi+vkzpIMb86
+         nx/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703116528; x=1703721328;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1703116516; x=1703721316;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=E4LntbTWAkvb3ubuXcE2yEZinwRXbecjdU87OrYLeRQ=;
-        b=DvB9wzFB9atVOAVZz+nTtCXvFMy4XjIVEX0NHMJiCEMbFF7+OXF8YEPvTdFHylYjLo
-         IrulHbsfVgrCzCT2qfDmxE0sIzkZFGFvXXR9/jzuNA6s4BdF0qWWibZsLIJmq0bI8bgb
-         a1sQQjP5Ja0vaZJtrELvQaJf8EYahe89W51DH7VpviZDuYkoxoZFbX/tmIwAkJDO67HU
-         v9PbKnv2EzF75ifZciFO+DXo/O8DiFDWT/qSCgfMnVnCSBQHX4L9nCIJTIcS98/KOWZj
-         RVE6BYjkT3YtRO5HZWwilaIh5nSbjVAQRbckx6YjTd5NSuNzdr+6cYixfDyqmNgl2IUm
-         LqdA==
-X-Gm-Message-State: AOJu0YwOabgqfz7yvZNZ4BtPVprcf3OHLkLB7FgJWOJUH/BcALF/UIWU
-	YOwXDvqmGB3wXRRBPq0V6BRE9rmbTkOg38ultWE=
-X-Google-Smtp-Source: AGHT+IFAx/PaxXX+lr5qfGthnr+ElVsLssqVolh6NkqV0cO+WfS28o1kqCpFuafVxI51uDFrBehZvg==
-X-Received: by 2002:a6b:5f10:0:b0:7ba:8569:8b37 with SMTP id t16-20020a6b5f10000000b007ba85698b37mr298479iob.25.1703116528068;
-        Wed, 20 Dec 2023 15:55:28 -0800 (PST)
-Received: from markhas1.lan (71-218-50-136.hlrn.qwest.net. [71.218.50.136])
-        by smtp.gmail.com with ESMTPSA id bp22-20020a056638441600b0046b39a6f404sm177805jab.17.2023.12.20.15.55.27
+        bh=5tNoJUjS2qxiKE/v+m+/kf6Z1ppnJjq/UKAlEiUarNg=;
+        b=G8tL6Cfq44J0RYw8Obp6yaP58rt4nWtuAlAqB/x8ip0DibDOruElxMgDMiDh6Nx4gk
+         DToAvMo7Y3K0m4I4wiX2CsUAR0ATtKWWTHxfzFQ6pqjQVEhT1RcpjQ+l4YU5N/iMw32S
+         CGzxWC1vojqiq3xY30d9EyWWLdIEhyX0zKDGSjUNcFhCIwt1A2SS1RK08LLw/P0SihBr
+         Ph1UvTyrhUsBOV1/NH1z3cnrfaePBLgNYXuqI+/rRvOQWJ0HMgfEHm+7AzG/2wXLlFsw
+         9gHRAux6MuNhJHVh9GhPCJnpVCXiZ0FqbOqZdxvTJll37EVob3B48mqxZFcQIrH/6pgA
+         ZELA==
+X-Gm-Message-State: AOJu0YxqmzhnewVrC2esbd/+wnzbD3Z0SPa7VsPdUzhiQEBpSQHO2IFR
+	+BIdFHhWtT0qZEUyFEZET4Q=
+X-Google-Smtp-Source: AGHT+IHS7mgQPeN0+o/BvAk9Yb3iVwWZMQDE2/qNOBo4zbc9gopCEoybZh4sSUyNsvuiJ5RZNphZhQ==
+X-Received: by 2002:a92:ca4a:0:b0:35f:717e:84c7 with SMTP id q10-20020a92ca4a000000b0035f717e84c7mr20831929ilo.65.1703116515976;
+        Wed, 20 Dec 2023 15:55:15 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id 20-20020a170902e9d400b001d3c46900f7sm277658plk.304.2023.12.20.15.55.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Dec 2023 15:55:27 -0800 (PST)
-From: Mark Hasemeyer <markhas@chromium.org>
-To: LKML <linux-kernel@vger.kernel.org>
-Cc: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Tzung-Bi Shih <tzungbi@kernel.org>,
-	Raul Rangel <rrangel@chromium.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Andy Shevchenko <andriy.shevchenko@intel.com>,
-	Rob Herring <robh@kernel.org>,
-	Sudeep Holla <sudeep.holla@arm.com>,
-	Mark Hasemeyer <markhas@chromium.org>,
-	Benson Leung <bleung@chromium.org>,
-	Bhanu Prakash Maiya <bhanumaiya@chromium.org>,
-	Chen-Yu Tsai <wenst@chromium.org>,
-	Guenter Roeck <groeck@chromium.org>,
-	Lee Jones <lee@kernel.org>,
-	Prashant Malani <pmalani@chromium.org>,
-	Rob Barnes <robbarnes@google.com>,
-	Stephen Boyd <swboyd@chromium.org>,
-	chrome-platform@lists.linux.dev
-Subject: [PATCH v2 22/22] platform/chrome: cros_ec: Use PM subsystem to manage wakeirq
-Date: Wed, 20 Dec 2023 16:54:36 -0700
-Message-ID: <20231220165423.v2.22.Ieee574a0e94fbaae01fd6883ffe2ceeb98d7df28@changeid>
-X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
-In-Reply-To: <20231220235459.2965548-1-markhas@chromium.org>
-References: <20231220235459.2965548-1-markhas@chromium.org>
+        Wed, 20 Dec 2023 15:55:15 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date: Wed, 20 Dec 2023 15:55:14 -0800
+From: Guenter Roeck <linux@roeck-us.net>
+To: Ivor Wanders <ivor@iwanders.net>
+Cc: Jean Delvare <jdelvare@suse.com>, Jonathan Corbet <corbet@lwn.net>,
+	Maximilian Luz <luzmaximilian@gmail.com>,
+	Hans de Goede <hdegoede@redhat.com>,
+	Mark Gross <markgross@kernel.org>, linux-hwmon@vger.kernel.org,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] hwmon: add fan speed monitoring driver for Surface
+ devices
+Message-ID: <ab8a1ff3-6d01-4331-ba5d-d677d1ad80b5@roeck-us.net>
+References: <20231220234415.5219-1-ivor@iwanders.net>
+ <20231220234415.5219-2-ivor@iwanders.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231220234415.5219-2-ivor@iwanders.net>
 
-The cros ec driver is manually managing the wake IRQ by calling
-enable_irq_wake()/disable_irq_wake() during suspend/resume.
+On Wed, Dec 20, 2023 at 06:44:14PM -0500, Ivor Wanders wrote:
+> Adds a driver that provides read only access to the fan speed for Microsoft
+> Surface Pro devices. The fan speed is always regulated by the EC and cannot
+> be influenced directly.
+> 
+> Signed-off-by: Ivor Wanders <ivor@iwanders.net>
+> Link: https://github.com/linux-surface/kernel/pull/144
+> ---
+>  Documentation/hwmon/index.rst       |   1 +
+>  Documentation/hwmon/surface_fan.rst |  27 ++++++
+>  MAINTAINERS                         |   8 ++
+>  drivers/hwmon/Kconfig               |  13 +++
+>  drivers/hwmon/Makefile              |   1 +
+>  drivers/hwmon/surface_fan.c         | 125 ++++++++++++++++++++++++++++
+>  6 files changed, 175 insertions(+)
+>  create mode 100644 Documentation/hwmon/surface_fan.rst
+>  create mode 100644 drivers/hwmon/surface_fan.c
+> 
+> diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rst
+> index 042e1cf95..4dfb3b9bd 100644
+> --- a/Documentation/hwmon/index.rst
+> +++ b/Documentation/hwmon/index.rst
+> @@ -202,6 +202,7 @@ Hardware Monitoring Kernel Drivers
+>     smsc47m1
+>     sparx5-temp
+>     stpddc60
+> +   surface_fan
+>     sy7636a-hwmon
+>     tc654
+>     tc74
+> diff --git a/Documentation/hwmon/surface_fan.rst b/Documentation/hwmon/surface_fan.rst
+> new file mode 100644
+> index 000000000..6e27a6653
+> --- /dev/null
+> +++ b/Documentation/hwmon/surface_fan.rst
+> @@ -0,0 +1,27 @@
+> +.. SPDX-License-Identifier: GPL-2.0-or-later
+> +
+> +Kernel driver surface_fan
+> +=========================
+> +
+> +Supported Devices:
+> +
+> +  * Microsoft Surface Pro 9
+> +
+> +Author: Ivor Wanders <ivor@iwanders.net>
+> +
+> +Description
+> +-----------
+> +
+> +This provides monitoring of the fan found in some Microsoft Surface Pro devices,
+> +like the Surface Pro 9. The fan is always controlled by the onboard controller.
+> +
+> +Sysfs interface
+> +---------------
+> +
+> +======================= ======= =========================================
+> +Name                    Perm    Description
+> +======================= ======= =========================================
+> +``fan1_input``          RO      Current fan speed in RPM.
+> +``fan1_max``            RO      Approximate maximum fan speed.
+> +``fan1_min``            RO      Minimum fan speed used by the controller.
+> +======================= ======= =========================================
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 439cf523b..8e7870af3 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -14078,6 +14078,14 @@ F:	Documentation/driver-api/surface_aggregator/clients/dtx.rst
+>  F:	drivers/platform/surface/surface_dtx.c
+>  F:	include/uapi/linux/surface_aggregator/dtx.h
+>  
+> +MICROSOFT SURFACE SENSOR FAN DRIVER
+> +M:	Maximilian Luz <luzmaximilian@gmail.com>
+> +M:	Ivor Wanders <ivor@iwanders.net>
+> +L:	linux-hwmon@vger.kernel.org
+> +S:	Maintained
+> +F:	Documentation/hwmon/surface_fan.rst
+> +F:	drivers/hwmon/surface_fan.c
+> +
+>  MICROSOFT SURFACE GPE LID SUPPORT DRIVER
+>  M:	Maximilian Luz <luzmaximilian@gmail.com>
+>  L:	platform-driver-x86@vger.kernel.org
+> diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
+> index 307477b8a..4b4d999af 100644
+> --- a/drivers/hwmon/Kconfig
+> +++ b/drivers/hwmon/Kconfig
+> @@ -1965,6 +1965,19 @@ config SENSORS_SMM665
+>  	  This driver can also be built as a module. If so, the module will
+>  	  be called smm665.
+>  
+> +config SENSORS_SURFACE_FAN
+> +	tristate "Surface Fan Driver"
+> +	depends on SURFACE_AGGREGATOR
+> +	help
+> +	  Driver that provides monitoring of the fan on Surface Pro devices that
+> +	  have a fan, like the Surface Pro 9.
+> +
+> +	  This makes the fan's current speed accessible through the hwmon
+> +	  system. It does not provide control over the fan, the firmware is
+> +	  responsible for that, this driver merely provides monitoring.
+> +
+> +	  Select M or Y here, if you want to be able to read the fan's speed.
+> +
+>  config SENSORS_ADC128D818
+>  	tristate "Texas Instruments ADC128D818"
+>  	depends on I2C
+> diff --git a/drivers/hwmon/Makefile b/drivers/hwmon/Makefile
+> index 3f4b0fda0..5ae214c06 100644
+> --- a/drivers/hwmon/Makefile
+> +++ b/drivers/hwmon/Makefile
+> @@ -198,6 +198,7 @@ obj-$(CONFIG_SENSORS_SMSC47M1)	+= smsc47m1.o
+>  obj-$(CONFIG_SENSORS_SMSC47M192)+= smsc47m192.o
+>  obj-$(CONFIG_SENSORS_SPARX5)	+= sparx5-temp.o
+>  obj-$(CONFIG_SENSORS_STTS751)	+= stts751.o
+> +obj-$(CONFIG_SENSORS_SURFACE_FAN)+= surface_fan.o
+>  obj-$(CONFIG_SENSORS_SY7636A)	+= sy7636a-hwmon.o
+>  obj-$(CONFIG_SENSORS_AMC6821)	+= amc6821.o
+>  obj-$(CONFIG_SENSORS_TC74)	+= tc74.o
+> diff --git a/drivers/hwmon/surface_fan.c b/drivers/hwmon/surface_fan.c
+> new file mode 100644
+> index 000000000..7129b25ed
+> --- /dev/null
+> +++ b/drivers/hwmon/surface_fan.c
+> @@ -0,0 +1,125 @@
+> +// SPDX-License-Identifier: GPL-2.0+
+> +/*
+> + * Surface Fan driver for Surface System Aggregator Module. It provides access
+> + * to the fan's rpm through the hwmon system.
+> + *
+> + * Copyright (C) 2023 Ivor Wanders <ivor@iwanders.net>
+> + */
+> +
+> +#include <linux/hwmon.h>
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/surface_aggregator/device.h>
+> +#include <linux/types.h>
+> +
+> +// The minimum speed for the fan when turned on by the controller. The onboard
+> +// controller uses this as minimum value before turning the fan on or off.
+> +#define SURFACE_FAN_MIN_SPEED 3000
+> +// The maximum speed, determined by observation and rounding up to the nearest
+> +// multiple of 500 to account for variation between individual fans.
+> +#define SURFACE_FAN_MAX_SPEED 7500
+> +
+> +// SSAM
+> +SSAM_DEFINE_SYNC_REQUEST_CL_R(__ssam_fan_rpm_get, __le16, {
+> +	.target_category = SSAM_SSH_TC_FAN,
+> +	.command_id      = 0x01,
+> +});
+> +
+> +// hwmon
+> +umode_t surface_fan_hwmon_is_visible(const void *drvdata,
+> +				     enum hwmon_sensor_types type, u32 attr,
+> +				     int channel)
+> +{
+> +	if (type != hwmon_fan)
+> +		return 0;
+> +
+> +	switch (attr) {
+> +	case hwmon_fan_input:
+> +	case hwmon_fan_label:
+> +	case hwmon_fan_min:
+> +	case hwmon_fan_max:
+> +		return 0444;
+> +	default:
+> +		return 0;
+> +	}
+> +}
+> +
+> +static int surface_fan_hwmon_read(struct device *dev,
+> +				  enum hwmon_sensor_types type, u32 attr,
+> +				  int channel, long *val)
+> +{
+> +	struct ssam_device *sdev = dev_get_drvdata(dev);
+> +	__le16 value;
+> +	int res;
+> +
+> +	if (type != hwmon_fan)
+> +		return -EOPNOTSUPP;
+> +
+> +	switch (attr) {
+> +	case hwmon_fan_input:
+> +		res = __ssam_fan_rpm_get(sdev, &value);
+> +		if (res)
+> +			return -EIO;
+> +		*val = le16_to_cpu(value);
+> +		return 0;
+> +	case hwmon_fan_min:
+> +		*val = SURFACE_FAN_MIN_SPEED;
+> +		return 0;
+> +	case hwmon_fan_max:
+> +		*val = SURFACE_FAN_MAX_SPEED;
+> +		return 0;
 
-Modify the driver to use the power management subsystem to manage the
-wakeirq.
+No, sorry. Limit attributes are supposed to be used to program limits,
+not to report constant values to userspace (and please refrain from
+referring to other drivers doing the same. Two wrongs don't make it right).
 
-Rather than assuming that the IRQ is wake capable, use the underlying
-firmware/device tree to determine whether or not to enable it as a wake
-source. Some Chromebooks rely solely on the ec_sync pin to wake the AP
-but do not specify the interrupt as wake capable in the ACPI _CRS. For
-LPC/ACPI based systems a DMI quirk is introduced listing boards whose
-firmware should not be trusted to provide correct wake capable values.
-For device tree base systems, it is not an issue as the relevant device
-tree entries have been updated and DTS is built from source for each
-ChromeOS update.
-
-The IRQ wake logic was added on an interface basis (lpc, spi, uart) as
-opposed to adding it to cros_ec.c because the i2c subsystem already
-enables the wakirq (if applicable) on our behalf.
-
-Signed-off-by: Mark Hasemeyer <markhas@chromium.org>
----
-
-Changes in v2:
--Rebase on linux-next
--Add cover letter
--See each patch for patch specific changes
--Look for 'wakeup-source' property in cros_ec_spi.c
-
- drivers/platform/chrome/cros_ec.c           |  9 ----
- drivers/platform/chrome/cros_ec_lpc.c       | 52 +++++++++++++++++++--
- drivers/platform/chrome/cros_ec_spi.c       | 41 ++++++++++++----
- drivers/platform/chrome/cros_ec_uart.c      | 34 ++++++++++++--
- include/linux/platform_data/cros_ec_proto.h |  2 -
- 5 files changed, 110 insertions(+), 28 deletions(-)
-
-diff --git a/drivers/platform/chrome/cros_ec.c b/drivers/platform/chrome/cros_ec.c
-index badc68bbae8cc..f24d2f2084399 100644
---- a/drivers/platform/chrome/cros_ec.c
-+++ b/drivers/platform/chrome/cros_ec.c
-@@ -353,12 +353,6 @@ EXPORT_SYMBOL(cros_ec_suspend_prepare);
- 
- static void cros_ec_disable_irq(struct cros_ec_device *ec_dev)
- {
--	struct device *dev = ec_dev->dev;
--	if (device_may_wakeup(dev))
--		ec_dev->wake_enabled = !enable_irq_wake(ec_dev->irq);
--	else
--		ec_dev->wake_enabled = false;
--
- 	disable_irq(ec_dev->irq);
- 	ec_dev->suspended = true;
- }
-@@ -440,9 +434,6 @@ static void cros_ec_enable_irq(struct cros_ec_device *ec_dev)
- 	ec_dev->suspended = false;
- 	enable_irq(ec_dev->irq);
- 
--	if (ec_dev->wake_enabled)
--		disable_irq_wake(ec_dev->irq);
--
- 	/*
- 	 * Let the mfd devices know about events that occur during
- 	 * suspend. This way the clients know what to do with them.
-diff --git a/drivers/platform/chrome/cros_ec_lpc.c b/drivers/platform/chrome/cros_ec_lpc.c
-index f0f3d3d561572..fec5aefd6f177 100644
---- a/drivers/platform/chrome/cros_ec_lpc.c
-+++ b/drivers/platform/chrome/cros_ec_lpc.c
-@@ -21,6 +21,7 @@
- #include <linux/platform_data/cros_ec_commands.h>
- #include <linux/platform_data/cros_ec_proto.h>
- #include <linux/platform_device.h>
-+#include <linux/pm_wakeirq.h>
- #include <linux/printk.h>
- #include <linux/reboot.h>
- #include <linux/suspend.h>
-@@ -48,6 +49,28 @@ struct lpc_driver_ops {
- 
- static struct lpc_driver_ops cros_ec_lpc_ops = { };
- 
-+static const struct dmi_system_id untrusted_fw_irq_wake_capable[] = {
-+	{
-+		.ident = "Brya",
-+		.matches = {
-+			DMI_MATCH(DMI_PRODUCT_FAMILY, "Google_Brya")
-+		}
-+	},
-+	{
-+		.ident = "Brask",
-+		.matches = {
-+			DMI_MATCH(DMI_PRODUCT_FAMILY, "Google_Brask")
-+		}
-+	},
-+	{ }
-+}
-+MODULE_DEVICE_TABLE(dmi, untrusted_fw_irq_wake_capable);
-+
-+static bool cros_ec_should_force_irq_wake_capable(void)
-+{
-+	return dmi_first_match(untrusted_fw_irq_wake_capable) != NULL;
-+}
-+
- /*
-  * A generic instance of the read function of struct lpc_driver_ops, used for
-  * the LPC EC.
-@@ -350,9 +373,11 @@ static void cros_ec_lpc_acpi_notify(acpi_handle device, u32 value, void *data)
- static int cros_ec_lpc_probe(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
-+	bool irq_wake = false;
- 	struct acpi_device *adev;
- 	acpi_status status;
- 	struct cros_ec_device *ec_dev;
-+	struct resource irqres;
- 	u8 buf[2] = {};
- 	int irq, ret;
- 
-@@ -428,20 +453,36 @@ static int cros_ec_lpc_probe(struct platform_device *pdev)
- 	 * Some boards do not have an IRQ allotted for cros_ec_lpc,
- 	 * which makes ENXIO an expected (and safe) scenario.
- 	 */
--	irq = platform_get_irq_optional(pdev, 0);
--	if (irq > 0)
-+	irq = platform_get_irq_resource_optional(pdev, 0, &irqres);
-+	if (irq > 0) {
- 		ec_dev->irq = irq;
--	else if (irq != -ENXIO) {
-+		if (cros_ec_should_force_irq_wake_capable())
-+			irq_wake = true;
-+		else
-+			irq_wake = irqres.flags & IORESOURCE_IRQ_WAKECAPABLE;
-+		dev_dbg(dev, "IRQ: %i, wake_capable: %i\n", irq, irq_wake);
-+	} else if (irq != -ENXIO) {
- 		dev_err(dev, "couldn't retrieve IRQ number (%d)\n", irq);
- 		return irq;
- 	}
- 
- 	ret = cros_ec_register(ec_dev);
- 	if (ret) {
--		dev_err(dev, "couldn't register ec_dev (%d)\n", ret);
-+		dev_err_probe(dev, ret, "couldn't register ec_dev (%d)\n", ret);
- 		return ret;
- 	}
- 
-+	if (irq_wake) {
-+		ret = device_init_wakeup(dev, true);
-+		if (ret) {
-+			dev_err_probe(dev, ret, "Failed to init device for wakeup");
-+			return ret;
-+		}
-+		ret = dev_pm_set_wake_irq(dev, irq);
-+		if (ret)
-+			return ret;
-+	}
-+
- 	/*
- 	 * Connect a notify handler to process MKBP messages if we have a
- 	 * companion ACPI device.
-@@ -463,6 +504,7 @@ static int cros_ec_lpc_probe(struct platform_device *pdev)
- static void cros_ec_lpc_remove(struct platform_device *pdev)
- {
- 	struct cros_ec_device *ec_dev = platform_get_drvdata(pdev);
-+	struct device *dev = ec_dev->dev;
- 	struct acpi_device *adev;
- 
- 	adev = ACPI_COMPANION(&pdev->dev);
-@@ -470,6 +512,8 @@ static void cros_ec_lpc_remove(struct platform_device *pdev)
- 		acpi_remove_notify_handler(adev->handle, ACPI_ALL_NOTIFY,
- 					   cros_ec_lpc_acpi_notify);
- 
-+	dev_pm_clear_wake_irq(dev);
-+	device_init_wakeup(dev, false);
- 	cros_ec_unregister(ec_dev);
- }
- 
-diff --git a/drivers/platform/chrome/cros_ec_spi.c b/drivers/platform/chrome/cros_ec_spi.c
-index 3e88cc92e8192..0aad8b2f007f6 100644
---- a/drivers/platform/chrome/cros_ec_spi.c
-+++ b/drivers/platform/chrome/cros_ec_spi.c
-@@ -7,9 +7,11 @@
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/of.h>
-+#include <linux/of_irq.h>
- #include <linux/platform_data/cros_ec_commands.h>
- #include <linux/platform_data/cros_ec_proto.h>
- #include <linux/platform_device.h>
-+#include <linux/pm_wakeirq.h>
- #include <linux/slab.h>
- #include <linux/spi/spi.h>
- #include <uapi/linux/sched/types.h>
-@@ -70,6 +72,7 @@
-  * @end_of_msg_delay: used to set the delay_usecs on the spi_transfer that
-  *      is sent when we want to turn off CS at the end of a transaction.
-  * @high_pri_worker: Used to schedule high priority work.
-+ * @irq_wake: Whether or not irq assertion should wake the system.
-  */
- struct cros_ec_spi {
- 	struct spi_device *spi;
-@@ -77,6 +80,7 @@ struct cros_ec_spi {
- 	unsigned int start_of_msg_delay;
- 	unsigned int end_of_msg_delay;
- 	struct kthread_worker *high_pri_worker;
-+	bool irq_wake;
- };
- 
- typedef int (*cros_ec_xfer_fn_t) (struct cros_ec_device *ec_dev,
-@@ -689,12 +693,16 @@ static int cros_ec_cmd_xfer_spi(struct cros_ec_device *ec_dev,
- 	return cros_ec_xfer_high_pri(ec_dev, ec_msg, do_cros_ec_cmd_xfer_spi);
- }
- 
--static void cros_ec_spi_dt_probe(struct cros_ec_spi *ec_spi, struct device *dev)
-+static void cros_ec_spi_dt_probe(struct cros_ec_spi *ec_spi, struct spi_device *spi)
- {
--	struct device_node *np = dev->of_node;
-+	struct cros_ec_device *ec_dev = spi_get_drvdata(spi);
-+	struct device_node *np = spi->dev.of_node;
- 	u32 val;
- 	int ret;
- 
-+	if (!np)
-+		return;
-+
- 	ret = of_property_read_u32(np, "google,cros-ec-spi-pre-delay", &val);
- 	if (!ret)
- 		ec_spi->start_of_msg_delay = val;
-@@ -702,6 +710,11 @@ static void cros_ec_spi_dt_probe(struct cros_ec_spi *ec_spi, struct device *dev)
- 	ret = of_property_read_u32(np, "google,cros-ec-spi-msg-delay", &val);
- 	if (!ret)
- 		ec_spi->end_of_msg_delay = val;
-+
-+	if (ec_dev->irq > 0 && of_property_read_bool(np, "wakeup-source")) {
-+		ec_spi->irq_wake = true;
-+		dev_dbg(&spi->dev, "IRQ: %i, wake_capable: %i\n", ec_dev->irq, ec_spi->irq_wake);
-+	}
- }
- 
- static void cros_ec_spi_high_pri_release(void *worker)
-@@ -753,9 +766,6 @@ static int cros_ec_spi_probe(struct spi_device *spi)
- 	if (!ec_dev)
- 		return -ENOMEM;
- 
--	/* Check for any DT properties */
--	cros_ec_spi_dt_probe(ec_spi, dev);
--
- 	spi_set_drvdata(spi, ec_dev);
- 	ec_dev->dev = dev;
- 	ec_dev->priv = ec_spi;
-@@ -768,6 +778,9 @@ static int cros_ec_spi_probe(struct spi_device *spi)
- 			   sizeof(struct ec_response_get_protocol_info);
- 	ec_dev->dout_size = sizeof(struct ec_host_request);
- 
-+	/* Check for any DT properties */
-+	cros_ec_spi_dt_probe(ec_spi, spi);
-+
- 	ec_spi->last_transfer_ns = ktime_get_ns();
- 
- 	err = cros_ec_spi_devm_high_pri_alloc(dev, ec_spi);
-@@ -776,19 +789,31 @@ static int cros_ec_spi_probe(struct spi_device *spi)
- 
- 	err = cros_ec_register(ec_dev);
- 	if (err) {
--		dev_err(dev, "cannot register EC\n");
-+		dev_err_probe(dev, err, "cannot register EC\n");
- 		return err;
- 	}
- 
--	device_init_wakeup(&spi->dev, true);
-+	if (ec_spi->irq_wake) {
-+		err = device_init_wakeup(dev, true);
-+		if (err) {
-+			dev_err_probe(dev, err, "Failed to init device for wakeup\n");
-+			return err;
-+		}
-+		err = dev_pm_set_wake_irq(dev, ec_dev->irq);
-+		if (err)
-+			dev_err_probe(dev, err, "Failed to set irq(%d) for wake\n", ec_dev->irq);
-+	}
- 
--	return 0;
-+	return err;
- }
- 
- static void cros_ec_spi_remove(struct spi_device *spi)
- {
- 	struct cros_ec_device *ec_dev = spi_get_drvdata(spi);
-+	struct device *dev = ec_dev->dev;
- 
-+	dev_pm_clear_wake_irq(dev);
-+	device_init_wakeup(dev, false);
- 	cros_ec_unregister(ec_dev);
- }
- 
-diff --git a/drivers/platform/chrome/cros_ec_uart.c b/drivers/platform/chrome/cros_ec_uart.c
-index 68d80559fddc2..ced53bb40b2ef 100644
---- a/drivers/platform/chrome/cros_ec_uart.c
-+++ b/drivers/platform/chrome/cros_ec_uart.c
-@@ -13,6 +13,7 @@
- #include <linux/module.h>
- #include <linux/of.h>
- #include <linux/platform_data/cros_ec_proto.h>
-+#include <linux/pm_wakeirq.h>
- #include <linux/serdev.h>
- #include <linux/slab.h>
- #include <uapi/linux/sched/types.h>
-@@ -70,6 +71,7 @@ struct response_info {
-  * @baudrate:		UART baudrate of attached EC device.
-  * @flowcontrol:	UART flowcontrol of attached device.
-  * @irq:		Linux IRQ number of associated serial device.
-+ * @irq_wake:		Whether or not irq assertion should wake the system.
-  * @response:		Response info passing between cros_ec_uart_pkt_xfer()
-  *			and cros_ec_uart_rx_bytes()
-  */
-@@ -78,6 +80,7 @@ struct cros_ec_uart {
- 	u32 baudrate;
- 	u8 flowcontrol;
- 	u32 irq;
-+	bool irq_wake;
- 	struct response_info response;
- };
- 
-@@ -224,8 +227,10 @@ static int cros_ec_uart_resource(struct acpi_resource *ares, void *data)
- static int cros_ec_uart_acpi_probe(struct cros_ec_uart *ec_uart)
- {
- 	int ret;
-+	struct resource irqres;
- 	LIST_HEAD(resources);
--	struct acpi_device *adev = ACPI_COMPANION(&ec_uart->serdev->dev);
-+	struct device *dev = &ec_uart->serdev->dev;
-+	struct acpi_device *adev = ACPI_COMPANION(dev);
- 
- 	ret = acpi_dev_get_resources(adev, &resources, cros_ec_uart_resource, ec_uart);
- 	if (ret < 0)
-@@ -234,12 +239,13 @@ static int cros_ec_uart_acpi_probe(struct cros_ec_uart *ec_uart)
- 	acpi_dev_free_resource_list(&resources);
- 
- 	/* Retrieve GpioInt and translate it to Linux IRQ number */
--	ret = acpi_dev_gpio_irq_get(adev, 0);
-+	ret = acpi_dev_get_gpio_irq_resource(adev, NULL, 0, &irqres);
- 	if (ret < 0)
- 		return ret;
- 
--	ec_uart->irq = ret;
--	dev_dbg(&ec_uart->serdev->dev, "IRQ number %d\n", ec_uart->irq);
-+	ec_uart->irq = irqres.start;
-+	ec_uart->irq_wake = irqres.flags & IORESOURCE_IRQ_WAKECAPABLE;
-+	dev_dbg(dev, "IRQ: %i, wake_capable: %i\n", ec_uart->irq, ec_uart->irq_wake);
- 
- 	return 0;
- }
-@@ -301,13 +307,31 @@ static int cros_ec_uart_probe(struct serdev_device *serdev)
- 
- 	serdev_device_set_client_ops(serdev, &cros_ec_uart_client_ops);
- 
--	return cros_ec_register(ec_dev);
-+	/* Register a new cros_ec device */
-+	ret = cros_ec_register(ec_dev);
-+	if (ret) {
-+		dev_err(dev, "Couldn't register ec_dev (%d)\n", ret);
-+		return ret;
-+	}
-+
-+	if (ec_uart->irq_wake) {
-+		ret = device_init_wakeup(dev, true);
-+		if (ret) {
-+			dev_err_probe(dev, ret, "Failed to init device for wakeup");
-+			return ret;
-+		}
-+		ret = dev_pm_set_wake_irq(dev, ec_uart->irq);
-+	}
-+	return ret;
- }
- 
- static void cros_ec_uart_remove(struct serdev_device *serdev)
- {
- 	struct cros_ec_device *ec_dev = serdev_device_get_drvdata(serdev);
-+	struct device *dev = ec_dev->dev;
- 
-+	dev_pm_clear_wake_irq(dev);
-+	device_init_wakeup(dev, false);
- 	cros_ec_unregister(ec_dev);
- };
- 
-diff --git a/include/linux/platform_data/cros_ec_proto.h b/include/linux/platform_data/cros_ec_proto.h
-index 8865e350c12a5..91e32db4ef715 100644
---- a/include/linux/platform_data/cros_ec_proto.h
-+++ b/include/linux/platform_data/cros_ec_proto.h
-@@ -115,7 +115,6 @@ struct cros_ec_command {
-  *        performance advantage to using dword.
-  * @din_size: Size of din buffer to allocate (zero to use static din).
-  * @dout_size: Size of dout buffer to allocate (zero to use static dout).
-- * @wake_enabled: True if this device can wake the system from sleep.
-  * @suspended: True if this device had been suspended.
-  * @cmd_xfer: Send command to EC and get response.
-  *            Returns the number of bytes received if the communication
-@@ -173,7 +172,6 @@ struct cros_ec_device {
- 	u8 *dout;
- 	int din_size;
- 	int dout_size;
--	bool wake_enabled;
- 	bool suspended;
- 	int (*cmd_xfer)(struct cros_ec_device *ec,
- 			struct cros_ec_command *msg);
--- 
-2.43.0.472.g3155946c3a-goog
-
+Guenter
 
