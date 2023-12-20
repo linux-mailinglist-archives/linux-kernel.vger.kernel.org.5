@@ -1,54 +1,41 @@
-Return-Path: <linux-kernel+bounces-7118-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7119-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D07A081A1DE
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 16:10:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88B8E81A1E1
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 16:10:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D4165B24402
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 15:10:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3CBA71F24714
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 15:10:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75EB4405C9;
-	Wed, 20 Dec 2023 15:10:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF1233F8FF;
+	Wed, 20 Dec 2023 15:10:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=tuxedocomputers.com header.i=@tuxedocomputers.com header.b="XlkTCDt1"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LQfqgR9f"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail.tuxedocomputers.com (mail.tuxedocomputers.com [157.90.84.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 047653E478;
-	Wed, 20 Dec 2023 15:10:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tuxedocomputers.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxedocomputers.com
-Received: from wse.fritz.box (p5de453e7.dip0.t-ipconnect.de [93.228.83.231])
-	(Authenticated sender: wse@tuxedocomputers.com)
-	by mail.tuxedocomputers.com (Postfix) with ESMTPA id 29F582FC005B;
-	Wed, 20 Dec 2023 16:10:01 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tuxedocomputers.com;
-	s=default; t=1703085001;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=5tKSPvJAxyIWCo3o1IP0I0X+wGRPFx5GX1RfPv6tvcw=;
-	b=XlkTCDt1pvRNVfPZiH/Js9ZbxYUtbQaThxubTpnuZo2FzU4jJmwmPNuVYh7wnmv9+f9Ewu
-	FQzF/IGHobdOsO1kGbk2gx5AOaxUv9X2UUFCSOiXSYaEDv8HpdFNp6x+S/urwEtf5oX1iG
-	AWyn51czyKDJFbCP1xFOXn4RdnJyExY=
-Authentication-Results: mail.tuxedocomputers.com;
-	auth=pass smtp.auth=wse@tuxedocomputers.com smtp.mailfrom=wse@tuxedocomputers.com
-From: Werner Sembach <wse@tuxedocomputers.com>
-To: Andreas Noever <andreas.noever@gmail.com>,
-	Michael Jamet <michael.jamet@intel.com>,
-	Mika Westerberg <mika.westerberg@linux.intel.com>,
-	Yehezkel Bernat <YehezkelShB@gmail.com>
-Cc: Werner Sembach <wse@tuxedocomputers.com>,
-	linux-usb@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] thunderbolt: Reduce retry timeout to speed up boot for some devices
-Date: Wed, 20 Dec 2023 16:09:56 +0100
-Message-Id: <20231220150956.230227-1-wse@tuxedocomputers.com>
-X-Mailer: git-send-email 2.34.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0F673E47A;
+	Wed, 20 Dec 2023 15:10:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id B6650C433C9;
+	Wed, 20 Dec 2023 15:10:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703085024;
+	bh=k5lHD9R+C2B/6uLWIwnXipq7ksFs2/w3BCDwsiM+uuI=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=LQfqgR9fZc8yrV3lASYhrwq4W82RQjyLx5LgzEU8uoo7j1Prk8KstEdAECdaT/ESr
+	 xyvmbzXZB5S9rJ7OSLno6eMhC41UejusUzWvLf6AzK1gXvVglqHZeNxy63QeuIjX+A
+	 I7ADngy2WF8ktgSg+qt44cka0VBvB390vlSNH5vAJ/G+j+O/xdNBoBV9rYBonasEp5
+	 klZJe5eanHhc4YL43yMrJsJTICaq6wnWgncrdeCeD+IfIjf5gBGTpVckB6gFqbRpdB
+	 TCpqKuM9PHDlBPse2jhwKTLzHZEp64I8j6WI+LJnHgh/wxV5KPqmvnd44+U+NZzMPy
+	 CD3G40bZXXz5A==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 9CF25DD4EE4;
+	Wed, 20 Dec 2023 15:10:24 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,37 +43,45 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] samples/bpf: use %lu format specifier for unsigned long
+ values
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <170308502463.13212.4312172367426805229.git-patchwork-notify@kernel.org>
+Date: Wed, 20 Dec 2023 15:10:24 +0000
+References: <20231219152307.368921-1-colin.i.king@gmail.com>
+In-Reply-To: <20231219152307.368921-1-colin.i.king@gmail.com>
+To: Colin Ian King <colin.i.king@gmail.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev,
+ john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+ haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
+ kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 
-This is a followup to "thunderbolt: Workaround an IOMMU fault on certain
-systems with Intel Maple Ridge".
+Hello:
 
-It seems like the timeout can be reduced to 250ms. This reduces the overall
-delay caused by the retires to ~1s. This is about the time other things
-being initialized in parallel need anyway*, so like this the effective boot
-time is no longer compromised.
+This patch was applied to bpf/bpf-next.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
 
-*I only had a single device available for my measurements: A Clevo X170KM-G
-desktop replacement notebook.
+On Tue, 19 Dec 2023 15:23:07 +0000 you wrote:
+> Currently %ld format specifiers are being used for unsigned long
+> values. Fix this by using %lu instead. Cleans up cppcheck warnings:
+> 
+> warning: %ld in format string (no. 1) requires 'long' but the argument
+> type is 'unsigned long'. [invalidPrintfArgType_sint]
+> 
+> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+> 
+> [...]
 
-Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
----
- drivers/thunderbolt/icm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Here is the summary with links:
+  - samples/bpf: use %lu format specifier for unsigned long values
+    https://git.kernel.org/bpf/bpf-next/c/32f24938a1fc
 
-diff --git a/drivers/thunderbolt/icm.c b/drivers/thunderbolt/icm.c
-index d8b9c734abd36..56790d50f9e32 100644
---- a/drivers/thunderbolt/icm.c
-+++ b/drivers/thunderbolt/icm.c
-@@ -1020,7 +1020,7 @@ icm_tr_driver_ready(struct tb *tb, enum tb_security_level *security_level,
- 
- 	memset(&reply, 0, sizeof(reply));
- 	ret = icm_request(tb, &request, sizeof(request), &reply, sizeof(reply),
--			  1, 10, 2000);
-+			  1, 10, 250);
- 	if (ret)
- 		return ret;
- 
+You are awesome, thank you!
 -- 
-2.34.1
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
