@@ -1,125 +1,188 @@
-Return-Path: <linux-kernel+bounces-6339-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6340-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CBD2A819771
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 04:56:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DB14819773
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 04:58:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8310C1F25ABB
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 03:56:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C7AE6284A89
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 03:58:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2DA0BE5E;
-	Wed, 20 Dec 2023 03:56:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CCFA15491;
+	Wed, 20 Dec 2023 03:58:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="hgY1pU0k"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="EXa7R4Xr"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F2D0BE5B;
-	Wed, 20 Dec 2023 03:56:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BK1T3c9015055;
-	Wed, 20 Dec 2023 03:56:16 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=m6SgXRhJwFhAQ6dv55GNTd9UQkjE3XpPXZe3APKf5F0=; b=hg
-	Y1pU0k9iBQEm0Xy9TOm3m6gXii8sSIkjtddyWgqcqAbd7a4eDGTbXsbSRr/Abe/z
-	JVxpjTFuE5LGuoWljxmzOpVx3+ICVDl2z+WtSAQiiFxKi9ZeJmsjP4VRYNUnfU4e
-	h9BjLrMI7cyCLzmTyv/C3hCdgllaTzlE9stDqIdr3NmwicuywIHj24SGQcN0KjF7
-	Rz+xqzaHvjp5w5hFV2OQnfh1WgL6TZ8epn9jfC27d/z15wDRwgM4T+PnSmTc18Ho
-	d669Ous9UHoC2pOiuuoYcNstRSzOVBdBAvuRpUAv9PSTOgkujIzUhvr6aeLbhUNH
-	jFvGu7W/y9PCVXhuU4og==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v3fa3h4w1-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 20 Dec 2023 03:56:16 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BK3uFk4028816
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 20 Dec 2023 03:56:15 GMT
-Received: from [10.253.12.246] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 19 Dec
- 2023 19:56:11 -0800
-Message-ID: <24dcff81-7b19-4301-a69f-1242c1a352b6@quicinc.com>
-Date: Wed, 20 Dec 2023 11:56:09 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5766B14AA0
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 03:57:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1703044677;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=KGB9OQg5bjkn7TP5D/aYpmIW7Xo9iRJPncX1JD79MEo=;
+	b=EXa7R4XrTG7MhW1KrswKDbwPJhKY7nvALtRFn7C4olJWqcW5JENRQbwdMogKor5boBHqlZ
+	LOcJ76VNXl+ScFkYDs2D2JOkHsk3N8EvXTuC5QMoEZQeLnCEBLXJlCbJ9ZxzCPB3RxxZ40
+	IbTwRT7tzaPHBXwcADD7Diui2TW4akg=
+Received: from mail-oi1-f199.google.com (mail-oi1-f199.google.com
+ [209.85.167.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-636-RlTLU0ggNCa106G8ZHtpGw-1; Tue, 19 Dec 2023 22:57:55 -0500
+X-MC-Unique: RlTLU0ggNCa106G8ZHtpGw-1
+Received: by mail-oi1-f199.google.com with SMTP id 5614622812f47-3ba2072052cso6587958b6e.2
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 19:57:55 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703044674; x=1703649474;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KGB9OQg5bjkn7TP5D/aYpmIW7Xo9iRJPncX1JD79MEo=;
+        b=Jvkwqducrnp9Gb//bjJN2KGbZH0RxU8/f/9TtpPzFXsDK2MInBhFBwZqov7HHl/AiX
+         o70VlC7acsk+utn3YwBAgQ/iRVs+djcS+g8V0PRJ2HQoU0WXgcfiCYn2O/qSqw/p4cdq
+         Vw7564RxcuNuxyYfP8TzflUySJhX8DedSPF/lDbDWybqxAz65Zg8OZtX5ziNv5RbaGB7
+         Q1A5zrTFCdRHNp3IJqNYKzUrCBrunRBzwmdQm8sx86vsKBtZNt9y8N09LByJiDiAKSl0
+         QveZPU5cjZz14bztHKIL6FI9XRx1OMBYJyMRyHPD5mjtVXDGvZUqhnNzV0p4EYudQtLg
+         dLTw==
+X-Gm-Message-State: AOJu0YyN5rryVIZ9e0MdO8iizNGvL5R2U07bmAP8hhLvaeMQM2M4itkR
+	w5bG6jIo3x9e3G0KMq4dDx6b6uKhsuHseY694R9zrLV1wRLBPalkPTcPFsPIHNz7l6igk4We8uX
+	fDNGda+z2xNETGHj1hqpV53BvcT6hHQajVHu0mLqZ8xkWSIS1W2M=
+X-Received: by 2002:a05:6808:2225:b0:3b9:de1e:17c2 with SMTP id bd37-20020a056808222500b003b9de1e17c2mr24722060oib.43.1703044674625;
+        Tue, 19 Dec 2023 19:57:54 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHBHszk26c2E8rxJ5eYpscabmiTkCBilA5/rsGNc2AubHn4l/QKcgkKQYrD/3vio7FZZEGnHDCtWORhj8swx3E=
+X-Received: by 2002:a05:6808:2225:b0:3b9:de1e:17c2 with SMTP id
+ bd37-20020a056808222500b003b9de1e17c2mr24722049oib.43.1703044674328; Tue, 19
+ Dec 2023 19:57:54 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 16/16] arm64: dts: qcom: sm8550: Fix UFS PHY clocks
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        <andersson@kernel.org>, <konrad.dybcio@linaro.org>, <vkoul@kernel.org>,
-        <sboyd@kernel.org>, <mturquette@baylibre.com>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>
-CC: <linux-arm-msm@vger.kernel.org>, <linux-phy@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <devicetree@vger.kernel.org>
-References: <20231218120712.16438-1-manivannan.sadhasivam@linaro.org>
- <20231218120712.16438-17-manivannan.sadhasivam@linaro.org>
-Content-Language: en-US
-From: Can Guo <quic_cang@quicinc.com>
-In-Reply-To: <20231218120712.16438-17-manivannan.sadhasivam@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: LEg498F1SXOE7mQ0_qfpKh5KE5Nak2I5
-X-Proofpoint-ORIG-GUID: LEg498F1SXOE7mQ0_qfpKh5KE5Nak2I5
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
- phishscore=0 spamscore=0 suspectscore=0 mlxlogscore=830 impostorscore=0
- clxscore=1011 adultscore=0 mlxscore=0 lowpriorityscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2312200023
+References: <20231219071849.3912896-1-changyuanl@google.com>
+In-Reply-To: <20231219071849.3912896-1-changyuanl@google.com>
+From: Jason Wang <jasowang@redhat.com>
+Date: Wed, 20 Dec 2023 11:57:42 +0800
+Message-ID: <CACGkMEuEY5xJyf6H6RgqSuD0PeY9kynYywxzM2+3W6MPaav0Zw@mail.gmail.com>
+Subject: Re: [PATCH] virtio_pmem: support feature SHMEM_REGION
+To: Changyuan Lyu <changyuanl@google.com>
+Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>, "Michael S . Tsirkin" <mst@redhat.com>, 
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Dan Williams <dan.j.williams@intel.com>, 
+	Vishal Verma <vishal.l.verma@intel.com>, Dave Jiang <dave.jiang@intel.com>, 
+	virtualization@lists.linux.dev, nvdimm@lists.linux.dev, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-
-
-On 12/18/2023 8:07 PM, Manivannan Sadhasivam wrote:
-> QMP PHY used in SM8550 requires 3 clocks:
-> 
-> * ref - 19.2MHz reference clock from RPMh
-> * ref_aux - Auxiliary reference clock from GCC
-> * qref - QREF clock from TCSR
-> 
-> Fixes: 35cf1aaab169 ("arm64: dts: qcom: sm8550: Add UFS host controller and phy nodes")
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+On Tue, Dec 19, 2023 at 3:19=E2=80=AFPM Changyuan Lyu <changyuanl@google.co=
+m> wrote:
+>
+> As per virtio spec 1.2 section 5.19.5.2, if the feature
+> VIRTIO_PMEM_F_SHMEM_REGION has been negotiated, the driver MUST query
+> shared memory ID 0 for the physical address ranges.
+>
+> Signed-off-by: Changyuan Lyu <changyuanl@google.com>
 > ---
->   arch/arm64/boot/dts/qcom/sm8550.dtsi | 9 ++++++---
->   1 file changed, 6 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/sm8550.dtsi b/arch/arm64/boot/dts/qcom/sm8550.dtsi
-> index baa8540868a4..386ffd0d72c4 100644
-> --- a/arch/arm64/boot/dts/qcom/sm8550.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sm8550.dtsi
-> @@ -1891,9 +1891,12 @@ crypto: crypto@1dfa000 {
->   		ufs_mem_phy: phy@1d80000 {
->   			compatible = "qcom,sm8550-qmp-ufs-phy";
->   			reg = <0x0 0x01d80000 0x0 0x2000>;
-> -			clocks = <&tcsr TCSR_UFS_CLKREF_EN>,
-> -				 <&gcc GCC_UFS_PHY_PHY_AUX_CLK>;
-> -			clock-names = "ref", "ref_aux";
-> +			clocks = <&rpmhcc RPMH_CXO_CLK>,
-> +				 <&gcc GCC_UFS_PHY_PHY_AUX_CLK>,
-> +				 <&tcsr TCSR_UFS_CLKREF_EN>;
-> +			clock-names = "ref",
-> +				      "ref_aux",
-> +				      "qref";
->   
->   			power-domains = <&gcc UFS_MEM_PHY_GDSC>;
->   
-Reviewed-by: Can Guo <quic_cang@quicinc.com>
+>  drivers/nvdimm/virtio_pmem.c     | 29 +++++++++++++++++++++++++----
+>  include/uapi/linux/virtio_pmem.h |  8 ++++++++
+>  2 files changed, 33 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/nvdimm/virtio_pmem.c b/drivers/nvdimm/virtio_pmem.c
+> index a92eb172f0e7..5b28d543728b 100644
+> --- a/drivers/nvdimm/virtio_pmem.c
+> +++ b/drivers/nvdimm/virtio_pmem.c
+> @@ -35,6 +35,8 @@ static int virtio_pmem_probe(struct virtio_device *vdev=
+)
+>         struct nd_region *nd_region;
+>         struct virtio_pmem *vpmem;
+>         struct resource res;
+> +       struct virtio_shm_region shm_reg;
+> +       bool have_shm;
+>         int err =3D 0;
+>
+>         if (!vdev->config->get) {
+> @@ -57,10 +59,23 @@ static int virtio_pmem_probe(struct virtio_device *vd=
+ev)
+>                 goto out_err;
+>         }
+>
+> -       virtio_cread_le(vpmem->vdev, struct virtio_pmem_config,
+> -                       start, &vpmem->start);
+> -       virtio_cread_le(vpmem->vdev, struct virtio_pmem_config,
+> -                       size, &vpmem->size);
+> +       if (virtio_has_feature(vdev, VIRTIO_PMEM_F_SHMEM_REGION)) {
+> +               have_shm =3D virtio_get_shm_region(vdev, &shm_reg,
+> +                               (u8)VIRTIO_PMEM_SHMCAP_ID);
+> +               if (!have_shm) {
+> +                       dev_err(&vdev->dev, "failed to get shared memory =
+region %d\n",
+> +                                       VIRTIO_PMEM_SHMCAP_ID);
+> +                       return -EINVAL;
+> +               }
+> +               vpmem->start =3D shm_reg.addr;
+> +               vpmem->size =3D shm_reg.len;
+> +       } else {
+> +               virtio_cread_le(vpmem->vdev, struct virtio_pmem_config,
+> +                               start, &vpmem->start);
+> +               virtio_cread_le(vpmem->vdev, struct virtio_pmem_config,
+> +                               size, &vpmem->size);
+> +       }
+> +
+>
+>         res.start =3D vpmem->start;
+>         res.end   =3D vpmem->start + vpmem->size - 1;
+> @@ -122,7 +137,13 @@ static void virtio_pmem_remove(struct virtio_device =
+*vdev)
+>         virtio_reset_device(vdev);
+>  }
+>
+> +static unsigned int features[] =3D {
+> +       VIRTIO_PMEM_F_SHMEM_REGION,
+> +};
+> +
+>  static struct virtio_driver virtio_pmem_driver =3D {
+> +       .feature_table          =3D features,
+> +       .feature_table_size     =3D ARRAY_SIZE(features),
+>         .driver.name            =3D KBUILD_MODNAME,
+>         .driver.owner           =3D THIS_MODULE,
+>         .id_table               =3D id_table,
+> diff --git a/include/uapi/linux/virtio_pmem.h b/include/uapi/linux/virtio=
+_pmem.h
+> index d676b3620383..025174f6eacf 100644
+> --- a/include/uapi/linux/virtio_pmem.h
+> +++ b/include/uapi/linux/virtio_pmem.h
+> @@ -14,6 +14,14 @@
+>  #include <linux/virtio_ids.h>
+>  #include <linux/virtio_config.h>
+>
+> +/* Feature bits */
+> +#define VIRTIO_PMEM_F_SHMEM_REGION 0   /* guest physical address range w=
+ill be
+> +                                        * indicated as shared memory reg=
+ion 0
+> +                                        */
+> +
+> +/* shmid of the shared memory region corresponding to the pmem */
+> +#define VIRTIO_PMEM_SHMCAP_ID 0
+
+NIT: not a native speaker, but any reason for "CAP" here? Would it be
+better to use SHMMEM_REGION_ID?
+
+Thanks
+
+> +
+>  struct virtio_pmem_config {
+>         __le64 start;
+>         __le64 size;
+> --
+> 2.43.0.472.g3155946c3a-goog
+>
+
 
