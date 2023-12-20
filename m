@@ -1,124 +1,102 @@
-Return-Path: <linux-kernel+bounces-6482-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6483-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9EC78819976
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 08:28:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65BB9819978
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 08:28:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B3D1D1C25860
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 07:28:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 986AA1C240F5
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 07:28:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D237156E2;
-	Wed, 20 Dec 2023 07:26:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZbrdC7KB"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7137B1BDFD;
+	Wed, 20 Dec 2023 07:26:25 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FC8E2208D;
-	Wed, 20 Dec 2023 07:26:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-5e82f502a4cso7380157b3.0;
-        Tue, 19 Dec 2023 23:26:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703057172; x=1703661972; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EzYCqCFyrXN3Jx7OKv87DouNgO5Lu5lZTs1h6WtByWQ=;
-        b=ZbrdC7KBiuEgKotAdrwJWbBrcqX9M/UO0TRNZretfuKJ8aOQpPLap3/OtzuJlIuZ7P
-         9UNt3X5UqR/tuzT03vm92cjZM1dy6l+/mrUXxDliStIEgZ5LSs7COC/UkyuV2y/xRMyX
-         xeeK2LuKyNiLJUQQAFMwpmmcCyOhFl/tsvZwonLL17ezrWGrVmIm4F5VBG6xjPDaTEg+
-         PIJjwQSJgarbvqkdydckoTvu46uua/jbjQIKyC8Bt4xxiBtRXeapA0Vno6YB6GmmZcnF
-         W4/VaQDa1Oc9I3xBkrUQ9Q6F19R3l6oK6tbDcdlAi7FMyTtXxL9uzUrkshuqEf4vaEG2
-         hLkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703057172; x=1703661972;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EzYCqCFyrXN3Jx7OKv87DouNgO5Lu5lZTs1h6WtByWQ=;
-        b=LNz6SQ7Y7qMblsoeVJ/K/RwLQmkIgOBee+PZ9RRPMYMBwVwjyJWLZSod+JzJHIO3aS
-         2XxnYqNTME+KIkwPudzKUcZIFjIuugg9BjCnO7pbedR/1REhpYQPPz3jpLb+dZhFMkpd
-         IqIbKIHiTjZdLccOXOMFSeQA3zHXRIlKQkHOgu4syKmMs9cb85D+q98qcMuT732OkonQ
-         KXEjReptdzPplew8JNuRtcVrXirxVu4+ERwiWc+XN1cXqO3RtMBCkL8tzjAQDmufu2Cn
-         FPB2K0qookXG/OCEcrIdDOZ3iIpqq3USnEJ2nIAPay1D3A6X8yoR/FnesK0Z8m/d+Ip8
-         8Kgw==
-X-Gm-Message-State: AOJu0YxEclf1RxmOACBso8Kn78+Jy4VwxrQw4G4Vu2tbptyfXfBVXB4H
-	73PvI1LOZBhbI41GpwqTUmDEEkng+7RmfrbaOQy8p0ILHmY=
-X-Google-Smtp-Source: AGHT+IEDFxtA+AcXoB2h28NfTj80mMvvNZc3QvUU6Z3rUjXvQZYaTxtpAqS2Js5oydyOJgJ5msWrRl54zHerX5T6trA=
-X-Received: by 2002:a0d:d952:0:b0:5e7:5da7:a850 with SMTP id
- b79-20020a0dd952000000b005e75da7a850mr2211967ywe.37.1703057172306; Tue, 19
- Dec 2023 23:26:12 -0800 (PST)
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 610EC18E3C;
+	Wed, 20 Dec 2023 07:26:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
+Received: from loongson.cn (unknown [112.20.110.252])
+	by gateway (Coremail) with SMTP id _____8CxuegXl4JlIN8CAA--.14484S3;
+	Wed, 20 Dec 2023 15:26:15 +0800 (CST)
+Received: from [192.168.100.8] (unknown [112.20.110.252])
+	by localhost.localdomain (Coremail) with SMTP id AQAAf8Bx3uQUl4JlpbYBAA--.10622S3;
+	Wed, 20 Dec 2023 15:26:12 +0800 (CST)
+Message-ID: <340cbb78-3e68-4584-8e11-313f7f86fd34@loongson.cn>
+Date: Wed, 20 Dec 2023 15:26:12 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231220065931.2372-1-rdunlap@infradead.org>
-In-Reply-To: <20231220065931.2372-1-rdunlap@infradead.org>
-From: Ryusuke Konishi <konishi.ryusuke@gmail.com>
-Date: Wed, 20 Dec 2023 16:25:55 +0900
-Message-ID: <CAKFNMonArSVESPSrCn5ovsggFQAeywg+JfHmBKx9MUGbSmfwTg@mail.gmail.com>
-Subject: Re: [PATCH] nilfs2: cpfile: fix some kernel-doc warnings
-To: Randy Dunlap <rdunlap@infradead.org>
-Cc: linux-kernel@vger.kernel.org, linux-nilfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] Docs/zh_CN: Fix the meaning of DEBUG to pr_debug()
+Content-Language: en-US
+To: "JiaLong.Yang" <jialong.yang@shingroup.cn>, Alex Shi <alexs@kernel.org>,
+ Jonathan Corbet <corbet@lwn.net>
+Cc: 2738078698@qq.com, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <202312201105408639401@shingroup.cn>
+ <20231220062822.16168-1-jialong.yang@shingroup.cn>
+From: Yanteng Si <siyanteng@loongson.cn>
+In-Reply-To: <20231220062822.16168-1-jialong.yang@shingroup.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:AQAAf8Bx3uQUl4JlpbYBAA--.10622S3
+X-CM-SenderInfo: pvl1t0pwhqwqxorr0wxvrqhubq/
+X-Coremail-Antispam: 1Uk129KBj93XoWrKr4fArW8JrWfuFyxGryrZrc_yoW8JF15pw
+	4Ikr1xJan7Cr1UC348WrW2gF15Ka4xuwsrKrWDZw17XFn3Jr48Arsrtas09F93Zr92yayj
+	vFsIgr98ua1jvrbCm3ZEXasCq-sJn29KB7ZKAUJUUUUr529EdanIXcx71UUUUU7KY7ZEXa
+	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+	0xBIdaVrnRJUUU9jb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+	0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+	xVW8Jr0_Cr1UM2kKe7AKxVWUXVWUAwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
+	AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
+	XVWUAwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI4
+	8JMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMxCIbckI1I0E14v26r1Y
+	6r17MI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7
+	AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE
+	2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcV
+	C2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2Kfnx
+	nUUI43ZEXa7IU8CksDUUUUU==
 
-On Wed, Dec 20, 2023 at 3:59=E2=80=AFPM Randy Dunlap wrote:
->
-> Correct the function parameter names for nilfs_cpfile_get_info():
->
-> cpfile.c:564: warning: Function parameter or member 'cnop' not described =
-in 'nilfs_cpfile_get_cpinfo'
-> cpfile.c:564: warning: Function parameter or member 'mode' not described =
-in 'nilfs_cpfile_get_cpinfo'
-> cpfile.c:564: warning: Function parameter or member 'buf' not described i=
-n 'nilfs_cpfile_get_cpinfo'
-> cpfile.c:564: warning: Function parameter or member 'cisz' not described =
-in 'nilfs_cpfile_get_cpinfo'
-> cpfile.c:564: warning: Excess function parameter 'cno' description in 'ni=
-lfs_cpfile_get_cpinfo'
-> cpfile.c:564: warning: Excess function parameter 'ci' description in 'nil=
-fs_cpfile_get_cpinfo'
->
-> This still leaves a few kernel-doc warnings.
-> Also, the function parameters should have descriptions after them.
->
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Ryusuke Konishi <konishi.ryusuke@gmail.com>
-> Cc: linux-nilfs@vger.kernel.org
-> ---
->  fs/nilfs2/cpfile.c |    6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
->
-> diff -- a/fs/nilfs2/cpfile.c b/fs/nilfs2/cpfile.c
-> --- a/fs/nilfs2/cpfile.c
-> +++ b/fs/nilfs2/cpfile.c
-> @@ -554,8 +554,10 @@ static ssize_t nilfs_cpfile_do_get_ssinf
->  /**
->   * nilfs_cpfile_get_cpinfo -
->   * @cpfile:
-> - * @cno:
-> - * @ci:
-> + * @cnop:
-> + * @mode:
-> + * @buf:
-> + * @cisz:
->   * @nci:
->   */
->
 
-Ah, thank you for pointing it out.
+在 2023/12/20 14:28, JiaLong.Yang 写道:
+> We know the macro DEBUG will make pr_debug() save the formatted
+> string into final binary. So the translation is a little wrong.
+>
+> Signed-off-by: JiaLong.Yang <jialong.yang@shingroup.cn>
 
-I would like to fill in the missing descriptions and send it upstream.
+Acked-by: Yanteng Si <siyanteng@loongson.cn>
+
+
+BTW, you lost Zenghui's Reviewed-by tag. :)
+
 
 Thanks,
-Ryusuke Konishi
+
+Yanteng
+
+> ---
+>   Documentation/translations/zh_CN/core-api/printk-basics.rst | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/Documentation/translations/zh_CN/core-api/printk-basics.rst b/Documentation/translations/zh_CN/core-api/printk-basics.rst
+> index 59c6efb3fc41..cafa01bccff2 100644
+> --- a/Documentation/translations/zh_CN/core-api/printk-basics.rst
+> +++ b/Documentation/translations/zh_CN/core-api/printk-basics.rst
+> @@ -100,7 +100,7 @@ printk()的用法通常是这样的::
+>   
+>   为了调试，还有两个有条件编译的宏：
+>   pr_debug()和pr_devel()，除非定义了 ``DEBUG`` (或者在pr_debug()的情况下定义了
+> -``CONFIG_DYNAMIC_DEBUG`` )，否则它们会被编译。
+> +``CONFIG_DYNAMIC_DEBUG`` )，否则它们不会被编译。
+>   
+>   
+>   函数接口
+
 
