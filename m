@@ -1,105 +1,134 @@
-Return-Path: <linux-kernel+bounces-6867-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6876-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00AB7819EB2
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 13:11:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16188819EC3
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 13:14:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB54E2871B2
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 12:11:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A82771F2326F
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 12:14:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A017322323;
-	Wed, 20 Dec 2023 12:11:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BA7322311;
+	Wed, 20 Dec 2023 12:12:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DUayH45U"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="SrG5rg1G"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E72CA224C8;
-	Wed, 20 Dec 2023 12:11:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3121C433C8;
-	Wed, 20 Dec 2023 12:11:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703074297;
-	bh=UyVES0yGOZFSGG4lRjbL3dWPaXBK15e0io0HDwNiXHE=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=DUayH45UB/QeaU85TH0c4gzPIqbYYcxv2OLxGO8Amzok4xhqVah6ZzkyNvcAS9VLq
-	 t5nncSTA3Qls3toti4f/eWO+BuTkKyN5yjJGwNwfErH3XdsWkXJmcqW26P5/7uC4PX
-	 zI+945GH79R9IrwqhM4gCcb2yYH0es/WCW3UHv20uAAZopbHxaFK9KGTDJEEgy0Sn0
-	 6GudGnuC6w+GsXXnodfvmNkUVFKpIY+PGOqf2eE6Di0+5a2ZlPAOuD28aQ6VHY0m6a
-	 S2TAjGIKRsCnGQhY1Uq/LzUViVURAyhQ6uV9yt8NkVIrncNIjy88DL3RyXfKxWtjoW
-	 W//47BJZ5UueA==
-Date: Wed, 20 Dec 2023 21:11:33 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Randy Dunlap <rdunlap@infradead.org>
-Cc: linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
- Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCH] tracing/synthetic: fix kernel-doc warnings
-Message-Id: <20231220211133.5a1e558134cba721250acf5f@kernel.org>
-In-Reply-To: <20231220061226.30962-1-rdunlap@infradead.org>
-References: <20231220061226.30962-1-rdunlap@infradead.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C2AB3B78A
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 12:12:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-5532b348d30so4416530a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 04:12:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1703074360; x=1703679160; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Y7DKtBhMqO9gULXLjrp+moP7cf0MV4CuE8EgQpgJRlc=;
+        b=SrG5rg1GU9xFMAWBFxK7P98zFjLxi8zOY1aYRyBE0nbhIfX64Ckn6ve7Vj0aZl/S5+
+         UeDb5CCVYmYjfet1Mpn7+13BkvC+ViXVZ2CDBx3xVRORvLsAo1cl4pAVunxkQIDej5FQ
+         bRbBeARdO4OEBt8hUBmie6CyfWemcSP3WhJdA0SASXQJ3pfyxzzPEw8WLzv9prk5PlRk
+         pgJa7E5nmzan77u7JFjUUAluqnYK5gODXiKtq0rUU4WR/TyR8rC6FmsjhYPevZ8J/MRa
+         PxUE4eEadB9Z9NR4DOLNk1DKAGGLvrkJrs9LLV3ouOXc5OWFZoyRO58TH6bTSZ7xw9XP
+         7OEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703074360; x=1703679160;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Y7DKtBhMqO9gULXLjrp+moP7cf0MV4CuE8EgQpgJRlc=;
+        b=ZOBEoS8WoIGQi6vp7IC4tFKHDrXLXQItOmSYRV2OgL674FZAUkT7gWj63Ru1qcRVlF
+         VS4ff5/pZeNYnZwDIUJuVoTSXoyqk/R5PkFLLK8LXgRh36nWVdRM+ChVBjRs7A4MeU5S
+         4YqKhaFILTzh8+LbYjA8hazpiXZ4bPVKCFD8Q8vCyIkPzuqTv+V7KLVMtgJMZkXpTiRj
+         cFT69M/azf/Kzw6csPJbnb9jSIZodI/rk6uu1Lm887Xhn+bNvdEe3ZWw8qL+azEJvdgQ
+         4CuuDOqeZUCyTJTMUEaPBZjzwOXqS0Fs7hTgfpjoTtXqH7Ii+lNPgijW/yjcIb8T29f7
+         X9Ng==
+X-Gm-Message-State: AOJu0YxnnDXDCkabivS1kRuIE2mPv54NQ2jhpi2oCoxKGIqJ3u3mA8jl
+	ROMUrK0zur/F8ReKnFIL+VQHdg==
+X-Google-Smtp-Source: AGHT+IEpiBf8zpqbPxu3AmHrEtyQuEhM65XJKg3tYXGHlQ4sniVLgBOBAg6hKoo0JZnlX2P+XOouaw==
+X-Received: by 2002:a50:9515:0:b0:553:6fff:d7d4 with SMTP id u21-20020a509515000000b005536fffd7d4mr2161532eda.51.1703074360351;
+        Wed, 20 Dec 2023 04:12:40 -0800 (PST)
+Received: from [192.168.199.59] (178235179206.dynamic-4-waw-k-1-3-0.vectranet.pl. [178.235.179.206])
+        by smtp.gmail.com with ESMTPSA id u30-20020a50951e000000b0054ca7afdf35sm13276303eda.86.2023.12.20.04.12.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Dec 2023 04:12:39 -0800 (PST)
+Message-ID: <ee3d7a22-dbd5-44a2-8b93-76ec583c91a8@linaro.org>
+Date: Wed, 20 Dec 2023 13:12:37 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] arm64: dts: qcom: qcm6490-idp: Correct the voltage
+ setting for vph_pwr
+Content-Language: en-US
+To: Komal Bajaj <quic_kbajaj@quicinc.com>,
+ Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Caleb Connolly <caleb.connolly@linaro.org>,
+ Naina Mehta <quic_nainmeht@quicinc.com>
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20231220110015.25378-1-quic_kbajaj@quicinc.com>
+ <20231220110015.25378-2-quic_kbajaj@quicinc.com>
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20231220110015.25378-2-quic_kbajaj@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On Tue, 19 Dec 2023 22:12:26 -0800
-Randy Dunlap <rdunlap@infradead.org> wrote:
-
-> scripts/kernel-doc warns about using @args: for variadic arguments to
-> functions. Documentation/doc-guide/kernel-doc.rst says that this should
-> be written as @...: instead, so update the source code to match that,
-> preventing the warnings.
+On 20.12.2023 12:00, Komal Bajaj wrote:
+> Min and max voltages for vph_pwr should be same, otherwise rpmh
+> will not probe, so correcting the min and max voltages for vph_pwr.
 > 
-> trace_events_synth.c:1165: warning: Excess function parameter 'args' description in '__synth_event_gen_cmd_start'
-> trace_events_synth.c:1714: warning: Excess function parameter 'args' description in 'synth_event_trace'
-> 
-
-Thanks, this looks good to me.
-
-Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Masami Hiramatsu <mhiramat@kernel.org>
-> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> Cc: linux-trace-kernel@vger.kernel.org
+> Fixes: 9af6a9f32ad0 ("arm64: dts: qcom: Add base qcm6490 idp board dts")
+> Signed-off-by: Komal Bajaj <quic_kbajaj@quicinc.com>
 > ---
->  kernel/trace/trace_events_synth.c |    4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff -- a/kernel/trace/trace_events_synth.c b/kernel/trace/trace_events_synth.c
-> --- a/kernel/trace/trace_events_synth.c
-> +++ b/kernel/trace/trace_events_synth.c
-> @@ -1137,7 +1137,7 @@ EXPORT_SYMBOL_GPL(synth_event_add_fields
->   * @cmd: A pointer to the dynevent_cmd struct representing the new event
->   * @name: The name of the synthetic event
->   * @mod: The module creating the event, NULL if not created from a module
-> - * @args: Variable number of arg (pairs), one pair for each field
-> + * @...: Variable number of arg (pairs), one pair for each field
->   *
->   * NOTE: Users normally won't want to call this function directly, but
->   * rather use the synth_event_gen_cmd_start() wrapper, which
-> @@ -1695,7 +1695,7 @@ __synth_event_trace_end(struct synth_eve
->   * synth_event_trace - Trace a synthetic event
->   * @file: The trace_event_file representing the synthetic event
->   * @n_vals: The number of values in vals
-> - * @args: Variable number of args containing the event values
-> + * @...: Variable number of args containing the event values
->   *
->   * Trace a synthetic event using the values passed in the variable
->   * argument list.
+2.5V is just a bit low :D
 
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Konrad
 
