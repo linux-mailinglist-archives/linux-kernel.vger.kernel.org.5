@@ -1,106 +1,101 @@
-Return-Path: <linux-kernel+bounces-7290-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7289-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4CAA81A4EC
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 17:26:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63F9881A4EA
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 17:26:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 76AD11F27175
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 16:26:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 20C4B28A3CE
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 16:26:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EECE1487B0;
-	Wed, 20 Dec 2023 16:23:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D912A482CA;
+	Wed, 20 Dec 2023 16:23:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pbx40+sV"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.134])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23627482DB;
-	Wed, 20 Dec 2023 16:23:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=tuxedocomputers.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=tuxedocomputers.com
-Received: from [192.168.42.27] ([93.228.83.231]) by mrelayeu.kundenserver.de
- (mreue012 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 1N62mG-1rE1Hf1jHk-016Nlq; Wed, 20 Dec 2023 17:23:15 +0100
-Message-ID: <30cf5b62-4b4e-49d2-910a-5f8cd824c599@tuxedocomputers.com>
-Date: Wed, 20 Dec 2023 17:23:11 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3490A47A7B;
+	Wed, 20 Dec 2023 16:23:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73CC8C433C7;
+	Wed, 20 Dec 2023 16:23:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703089399;
+	bh=IYxNhfoPQDOhU8TVSYJ0LQ/+qknb5nTRTy9LLBYZ0Uc=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=pbx40+sVvAprd4ZsHKt5lVIzubGuCmQZjBNcWlwFYNuDkUltnT23y4VAtisropWA5
+	 mKDUrMnK0f/AS6Ju8v7okrOu8uX0WWJmvvnn7PDQ+myx5x02lTzoK9N73eF730Szdy
+	 tDkMg8mswc64Ts5qQ6YlN7GvFfJPvPrdTj86b0Pq1g6XoTJEggpiVrjVGMO48peTrt
+	 gMmBI0SZcCsLPRsx9Ndv1LRcpBsHAm24jtBhaB9dVG6Iw/4Vbf0HSamaRIhkmKTOlp
+	 SzFWzJPR3GW+BuWcoFRnd6l/ONtBr4GiQj0TXvV0FE7PkcU8JGO3XPUf59wi8ucolN
+	 /xhjEwmFYLC1w==
+Date: Thu, 21 Dec 2023 01:23:14 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, Masami
+ Hiramatsu <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Andrew Morton
+ <akpm@linux-foundation.org>, Tzvetomir Stoyanov <tz.stoyanov@gmail.com>,
+ Vincent Donnefort <vdonnefort@google.com>, Kent Overstreet
+ <kent.overstreet@gmail.com>
+Subject: Re: [PATCH v5 06/15] ring-buffer: Clear pages on error in
+ ring_buffer_subbuf_order_set() failure
+Message-Id: <20231221012314.1d041383caf29e31c49dfc4e@kernel.org>
+In-Reply-To: <20231219185629.179352802@goodmis.org>
+References: <20231219185414.474197117@goodmis.org>
+	<20231219185629.179352802@goodmis.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] thunderbolt: Reduce retry timeout to speed up boot for
- some devices
-To: Greg KH <greg@kroah.com>
-Cc: Andreas Noever <andreas.noever@gmail.com>,
- Michael Jamet <michael.jamet@intel.com>,
- Mika Westerberg <mika.westerberg@linux.intel.com>,
- Yehezkel Bernat <YehezkelShB@gmail.com>, linux-usb@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20231220150956.230227-1-wse@tuxedocomputers.com>
- <2e00a0dc-5911-44ee-8c50-a8482eb44197@tuxedocomputers.com>
- <2023122012-spruce-unsteady-e187@gregkh>
-Content-Language: de-DE, en-US
-From: Werner Sembach <wse@tuxedocomputers.com>
-In-Reply-To: <2023122012-spruce-unsteady-e187@gregkh>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:VnzeexlXxtn0dqGC3DkGchGf4sqU6cd7AkK7XQctWYheV28WKkY
- BZu+eZ4l+Wu4j/q0VLBKoDLq/DyVsiJc9IHpFmUZxKjpxOHzloGeB7Uu7jQMV6suhjXSibA
- F416PJhRzqOAy+rW21VhhPIeioKR2FEmW/q100HzG81Bn6r86Ra7XcjGN7Va/Q7Sxh+Q9nI
- OzluoOruct+ZHC6/7vivA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:8vA4dr7eehw=;rqTdw6uheFbOEgNsEAuSw5I28Kf
- O6uRBwRxDXkFZolDsex7c2JxunLtJIS6FhqEgZf5I02DqkYJpKYNItFJEEK7mrbVWAQZRbyri
- YK99k/XsQyVLe6C0vPjQUT8MmCUbiEBuNtUfH4RocVFo95P/Z3sfFz4sOl2/ARsZQpqwlYfeC
- hEpXHBoHKWyRnJkuLEWgooCVSKV105s/+hzTeHYruMSAI1Bex4nzMXd2+QO38R+We0jInYf0X
- 4X6IrIEyJADW2hl5YBZ129TNDifHokinC4gHq2UgmAFUaAM0YhzEWhrw+12Uz9hbQSSiG+H0a
- c9bOhd4LaoH3JbVOYBVM+Fd4PwJIcU1vOUNdFMiQkTqCO33UnsmDDdCiUmEk1NVQjcjMMiCNi
- NCeBPP145hxqwX+H7yNgF83rFbNHuEhzwkAtXnVhlvXuX0l6LSWNNPx0diSrp6ifNaAePyL9O
- ED9BccCeJxtiEU206qtfaJKtFcfoIW4NXlZ8T9yYi8LY3PuXm+glwBi3d8R7pnLuZFrLONyI3
- Ukrerg5NbtBBC50U8hkq8wO9kzTNXx29qP4qEOvUuwuQBzKCiXjGH+9wjHpswgWTmj2b5pQWg
- VrWpXJQaSzGtfwZhsFEaleY584UgmVc8DHMdBiD4CrzaAPwvne4shDm0SS7snrwho7pS8glNh
- UsBOI0E4EVEhczhbG14yjReekaKV4+xdZ1zg1F+DX1THmzL0WJYc5WpzBkRSWWurAEcCYB7eV
- pTwc2D4hQ4zR4Cq8YtZdAnXIEplTnx8wsb5OXrXCWySFh89BDGOAAhRcDQCLfSGoNEXQH9ND2
- jQo19ozu8yj/P6Y/vZ2EEntNA/jwsKb9uDDgn7XaT9BBUHKL/VSbpAJGu2PLb8Pkqg2NPUP4S
- AvUepFbNVzDvFog==
+
+On Tue, 19 Dec 2023 13:54:20 -0500
+Steven Rostedt <rostedt@goodmis.org> wrote:
+
+> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+> 
+> On failure to allocate ring buffer pages, the pointer to the CPU buffer
+> pages is freed, but the pages that were allocated previously were not.
+> Make sure they are freed too.
+> 
+> Fixes: TBD ("tracing: Set new size of the ring buffer sub page")
+
+Do you merge this fix to the original one in the same series later?
+I think it is better to merge it for git bisect.
+
+Thank you,
+
+> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+> ---
+>  kernel/trace/ring_buffer.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
+> index c2afcf98ea91..3c11e8e811ed 100644
+> --- a/kernel/trace/ring_buffer.c
+> +++ b/kernel/trace/ring_buffer.c
+> @@ -5927,6 +5927,7 @@ int ring_buffer_subbuf_order_set(struct trace_buffer *buffer, int order)
+>  	for_each_buffer_cpu(buffer, cpu) {
+>  		if (!cpu_buffers[cpu])
+>  			continue;
+> +		rb_free_cpu_buffer(cpu_buffers[cpu]);
+>  		kfree(cpu_buffers[cpu]);
+>  	}
+>  	kfree(cpu_buffers);
+> -- 
+> 2.42.0
+> 
+> 
 
 
-Am 20.12.23 um 17:04 schrieb Greg KH:
-> On Wed, Dec 20, 2023 at 04:23:15PM +0100, Werner Sembach wrote:
->> Am 20.12.23 um 16:09 schrieb Werner Sembach:
->>> This is a followup to "thunderbolt: Workaround an IOMMU fault on certain
->>> systems with Intel Maple Ridge".
->>>
->>> It seems like the timeout can be reduced to 250ms. This reduces the overall
->>> delay caused by the retires to ~1s. This is about the time other things
->>> being initialized in parallel need anyway*, so like this the effective boot
->>> time is no longer compromised.
->>>
->>> *I only had a single device available for my measurements: A Clevo X170KM-G
->>> desktop replacement notebook.
->>>
->>> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
->> I wonder if this could also land in stable? Or would it be to risky?
-> If it's really a bugfix now, why would it _not_ be relevant for stable?
-
-Because it changes a timeout that could cause issues if set to low: This 
-Patch sets to to 250ms. Set to 50ms it causes issues, currently it's 
-2000ms, 2 people tested that 250ms is enough, but i don't know if this 
-is a big enough sample size for stable.
-
-The advantage is significantly faster boot time on affected devices 
-(~12s down to ~3s), however they do already work fine without it.
-
-Kind regards,
-
-Werner
-
->
-> thanks,
->
-> greg k-h
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
