@@ -1,169 +1,277 @@
-Return-Path: <linux-kernel+bounces-6737-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6739-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E570819CB1
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 11:25:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2382F819CB6
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 11:26:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BCCFF1F2894B
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 10:25:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D021A283BEB
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 10:26:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A830B20322;
-	Wed, 20 Dec 2023 10:24:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2FE5200D3;
+	Wed, 20 Dec 2023 10:26:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="qUNEaR4D"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="FgyhDWqM"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2080.outbound.protection.outlook.com [40.107.92.80])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F5C1219EA
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 10:23:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jmNF2W4Xx27BWaPiRsximnfRv+7gfIoPpKqPsohXnk46BikxM6cbqVqyvGbrfhsYlC/bDphHiGvapcpQXdtcfMn3KNfDkPsGI676ZgPL/I2GlSaEMRo73+qJNb5sLGj3eSbYK5NAWV3I8ptcdCmdf7Unbc212ThHMNJjrjLPb4u8fcbma7If4fTkN7ASYzRH98AZo6AMpYv1o5gKunHjNYZ5IMow4//f1FoVXFovvH3KOsIUsnT5L9QQ/lkE268IuNNnDAjcD8tnIiCUsthuVQhSTYhaO4xsZlCMZjaSnXgCwUpiXYNn6NNMOCiJ2IDUN0a5G+uaei1eiJIxS91XYQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=OPh1Cxx1/SUddMoM5I2AcQtVzhUlKA4Pdbyr7kN+r78=;
- b=j3s42ewOaJjteACpgb6H6OS2VZuS+1YEz2DlVeyOaqBZzXMkj3yYLSmcQiSg6PgJyjbbhAQApPV7ynW954IOSv7giaXe8dDzu9UUvL0E4WhSV8o6cv1SI8ZEP2n483HUtK+aPyN1TVC44WhiRoPXC0wYzHF23+QnUdP8Ah7leIRWCFZMpPNYJYaa5lvHWxajJlxwIUZAapptnu6g1k2z1z+ssYVpeyqCrW6hj/pIz2GcHThHDRbKKSqF9KwVWaO1FPsfmMAOJ/gneL/9ZioXfp2Mb1Ub4wyyRvSgG88+6WliuMYuHvXwG0oX9ZxWJqEaXbAjMAs8FF+PQxUpBfT4cQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OPh1Cxx1/SUddMoM5I2AcQtVzhUlKA4Pdbyr7kN+r78=;
- b=qUNEaR4D7h8XLqLPOg3erTccaYnZw7DmrjoZ/v+Smda7Mfezk8OwfaV8YWd2go2b0pyQD0RYfv/H5Rg2ZG8TNAWuhv7jmjngGWv6tw2iU8uy9dUVjJYqRz9jVWldrE1whreV9lCSbddISqzIPXMBKJb0M/If39awEu8MbVLIMhk=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from DM8PR12MB5445.namprd12.prod.outlook.com (2603:10b6:8:24::7) by
- BL1PR12MB5801.namprd12.prod.outlook.com (2603:10b6:208:391::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.38; Wed, 20 Dec
- 2023 10:23:56 +0000
-Received: from DM8PR12MB5445.namprd12.prod.outlook.com
- ([fe80::e557:fd55:457:12]) by DM8PR12MB5445.namprd12.prod.outlook.com
- ([fe80::e557:fd55:457:12%4]) with mapi id 15.20.7113.016; Wed, 20 Dec 2023
- 10:23:56 +0000
-Message-ID: <6d7163bc-db76-42f9-8c5e-f9b855b233fc@amd.com>
-Date: Wed, 20 Dec 2023 17:23:48 +0700
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] iommu: amd: NULL value may be dereferenced
-Content-Language: en-US
-To: Alexander Sapozhnikov <alsp705@gmail.com>, Joerg Roedel
- <joro@8bytes.org>, ToWill Deacon <will@kernel.org>
-Cc: iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
- lvc-project@linuxtesting.org
-References: <20231219100219.17332-1-alsp705@gmail.com>
-From: "Suthikulpanit, Suravee" <suravee.suthikulpanit@amd.com>
-In-Reply-To: <20231219100219.17332-1-alsp705@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SI1PR02CA0055.apcprd02.prod.outlook.com
- (2603:1096:4:1f5::16) To DM8PR12MB5445.namprd12.prod.outlook.com
- (2603:10b6:8:24::7)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 871B0208A6
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 10:26:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-40c236624edso60062595e9.1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 02:26:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1703067984; x=1703672784; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=pX13GgiaquuyyTjBBvzGeBqVX5oA1abtoRS201+TY+I=;
+        b=FgyhDWqMh2A5tOoetgX8IwN3N4kNj8hbWkDn166Wn2nr3pHye+XND6FBRIDxDdwYbe
+         0B097nAo6NWu/L5u2MK1oHaBVG8BxasupuCVdsUbCo5uHI7E6MVQ0SZwAh5B6/q4YSu/
+         E210BnHtTs0wRJ9HiEytUFN2/GObwTrQQZBsQNfEPyMqVWtDOx8YGFjSqpY64Rwpp6eb
+         FiOiel+Y5+1wRZUHlU1RKagB8i8ayzYgWWbyQdxTWh2yEbTlgiCULEFGup8F0OsTDJM7
+         qoZ2E0e7sVgC1E5o26f9+mvW8CeyACW8raxdRRdwKOnKbWD+7J0+BS0NxeGHyqzgG1Di
+         Uu1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703067984; x=1703672784;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pX13GgiaquuyyTjBBvzGeBqVX5oA1abtoRS201+TY+I=;
+        b=XZlm4Gu3CfKUUuon4fojsU1zm+BzEb35GvBzVm9YrJjDde4VrVm3XOMvC1JurAlUC1
+         RMx9Ekq0EPtEzpaOAt6MHu7w4RbjWRzoSaV/pAnNYKnW3GeSHtlNT1sIOznT3XzLXwiZ
+         8LSa0aB4QuJ9uedcHrT/DBMl0cWhUDyor/7Q5KcnMNF+ExLkdTD7IB/FpF7CMg8hrns/
+         J+CNfluiV9LpPp97R3JWM9dc6WfTcarT8bGUkAPJhiIuXkXACvl/5hRCcfeMSURt9Iha
+         4YLbwxK7OSYIrE5DUFoY2gbkvtgqoZjw6Qf5H0xCsFSACcuc6pAVB+BV8Q8dnA04YhNd
+         c5Zg==
+X-Gm-Message-State: AOJu0YzFetxXDx7rOyEcudREwsmsXgB3kxTO02yNfvOHOhRoSJ8Go/c5
+	MqWghi6szGsSErIOHjBg+CLQdw==
+X-Google-Smtp-Source: AGHT+IGwzJptxKxqWiAXYwXjXS5wabIdldCCRy6C5+KcotZFMsF7zVkbDvihSsOAJNGR83Mr4ItmLg==
+X-Received: by 2002:a05:600c:4d0e:b0:40b:4476:cd31 with SMTP id u14-20020a05600c4d0e00b0040b4476cd31mr9706552wmp.13.1703067983796;
+        Wed, 20 Dec 2023 02:26:23 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id w20-20020a05600c475400b0040b4fca8620sm6763964wmo.37.2023.12.20.02.26.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Dec 2023 02:26:23 -0800 (PST)
+Message-ID: <a78c5ce7-bc89-44ad-8c8a-7c17ed8a7995@linaro.org>
+Date: Wed, 20 Dec 2023 11:26:21 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM8PR12MB5445:EE_|BL1PR12MB5801:EE_
-X-MS-Office365-Filtering-Correlation-Id: b78e7a82-7b0d-4dbd-e595-08dc0145c5e3
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	YBNlMtPh/JDCiNSaXbWF9H0EVceFvuaVU1hIFyJfx/IZ1XdUO2DWo2hwAtqt4fxHO27QIi486jLQ67lxz9rNoX1l1hFbH3hWZCq5hC3eDK+Id0C+eMTosVLo5rW46bbhNfM1/ohSifcjiIEXk81VI+HYQDRZpvdUafJwXqsHqhUQdWWUt7qsEql4GvdCQn61Ra1rdAtXbHoSSFFsiQc+wF1r/XOP3WQGoMFjjXt7QqBT3S6l0yyUtdbFhJzZkXoNHGH8oT5MjT7/Prmq0Lu+glTzgPDKWLW3txuvv86ffbme6/pKvmuSY9ybSghNRRhdUgbZYYZjghp1ioyeAm5mfMthhthjkY5SzyQ3jvhI7h8JEiyYoIf1VqCRzIUhZghnEu1PCnNo/FtpyPIN4yi2k90cexEBBdoTy3a7j7kK2sDgefVdpojDQoWXL33LH0Ptyv1ge23+NrxMdFTnMniNlWjbxwltrAI8a65sKR35/T09/90xl/aEPsscV+5/9ryXA4T3psp3crII1DgosVu/TQPh5RSA2KA1qghjWpu04MN9F2FIvQoJFD0nvtJswenqBTdn+EJqws1U2BWX6zUe4OkRgoAtkcistkr3oBXwnbml87ivVBS5k3BDw7EzjYUlE1IW8o3TvHIEZTd9XGtiSg==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM8PR12MB5445.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(366004)(346002)(39860400002)(396003)(376002)(230922051799003)(1800799012)(451199024)(186009)(64100799003)(2616005)(26005)(53546011)(5660300002)(83380400001)(6512007)(8936002)(6666004)(6506007)(66556008)(478600001)(8676002)(110136005)(316002)(6486002)(66946007)(66476007)(4326008)(41300700001)(2906002)(36756003)(31696002)(38100700002)(86362001)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?Q3ZIajNqck9DY1pYK1MyN29ZZWpTUTNGc2pIb29FT0RqaENsaGZzQzM4NjBn?=
- =?utf-8?B?ekswdVRUWEk0K0NQTmV5dTNocTBGOUxoaE9aZW1DWFF2QlUwT2lwWXk5Mm1o?=
- =?utf-8?B?VFNRdDdTMFNHSUpkRWdUaS80Q0RJdENLWkhPWWpOT25IcmNIbVdVMlU4Y0xh?=
- =?utf-8?B?cDlMYnJCcnlnbjh0NWFHWHdFUDE4WlhqU0FKS0ZpakZzSjBEZ0c3RTh1YlJI?=
- =?utf-8?B?K3M5QUk0MllOTzVmT09uM0ZobkRHSDdLN0xLVHdFQmVQNWlMaEYyZ2NxUVFi?=
- =?utf-8?B?akJYRGo0TUpvK3laY1hCWjdDU3ZCbmJwL2FZQnU3UHRldi9KMWRDYmszOVZ2?=
- =?utf-8?B?SWlaYnJxQ3R0Q1RmMFF2K2R4MzlVb3dMZVhvZU54Y3Rnbi9nQmFpTzJsT1Fn?=
- =?utf-8?B?cGx2TjUzT3FlVXZ2czJmdFd6WjdtSDNmRXBvYVhJZGU5MFNScUFWZWc0T0Nu?=
- =?utf-8?B?REFTbmlKbjFHT2VQVTJZYzlHMEs3UktFeVlmcVgybHRsVnEwWDlJemU4YUVt?=
- =?utf-8?B?bzFUOGcyOTUyTS94eG1ha3U1M2NPOWQzcDhBaTNObG1GM1M1Z0ZCek8zSGhm?=
- =?utf-8?B?NTFCb1JaSWYwTFFqVGFrb2ZLcmxOa1hVMnJKKzFUL25peW1XRzVsQ0hCbUNJ?=
- =?utf-8?B?L1drNGVOYnY0azR1SHI2QzlwelNZMTJqNk9iRlJLMjVzK0ZRUlJQMElTWXhN?=
- =?utf-8?B?M1c1RlBnOTJxWDJWT3BaNlV3MFZyUStPQVZVd1R6K2ZnQ0NraFZwSHd1cmVo?=
- =?utf-8?B?eUFTYnRoUDRma243VmdtcGJTaDQwU3NWR2ZKdFl4YjBKY1BzMzZSSDJDWFpl?=
- =?utf-8?B?U2hDUzVJYWRCNkxKOThSWVVxWko0dUFWZWM3dnVYOWpVSHNMZWJjMGNFMDJD?=
- =?utf-8?B?T1JxZDBtQjYzNDlwelUxYVA1ekdhaUNDRytHbGFJTXVZVUZrYjJ1RXdwc1lk?=
- =?utf-8?B?NjhPbjZvUUx5ZXJ5ZWdYR1JIN1Y5OFdReENDK3RHZkJRaktuMTBLa3lhYXpP?=
- =?utf-8?B?TXVMNUVoYnBwMWlYU01rdDB5d2JwK0k0VlVTOFNKc0dFVjh4RndpNzFNZ053?=
- =?utf-8?B?NkNnT3dkWkk1UGFoT3J0WVJLN1ExUUt5Mno3UStaWGlOWmtmbldCc1kzd1Rz?=
- =?utf-8?B?OFFORnN3VEswTWk5cjY3dUFQcXRqT3ZxZ2ROMDAycVZsdHZxRTBDRnNVVWE2?=
- =?utf-8?B?RGZWSEd0NnF2QTBuS2FsdzRtY21WaFdkMGl6WUFXYlJXY29UaUVYVkd0cnl5?=
- =?utf-8?B?eE5GdURIOWZ5TGNOUFFDQ0RMZXlxL0llOTJQOW52bFM4NzNMNmJjd0dQS3cy?=
- =?utf-8?B?ZklhQ3hrUkhLc2lKWGx2Y0hpVjJxdWtpbFA4clByT2lvVjhZaktUcWRRYVBW?=
- =?utf-8?B?NFlGUGt4TGF3bUpkTWJxWlc1bHVJZEg5N1Rjci9aQ0lQWnR5eGJqMHdnNkNB?=
- =?utf-8?B?azRoNVdOdGdhM0JTYWg4bFRaSldBRFkrd2pmZUU1SEllSXk0TmlteFpGSW1n?=
- =?utf-8?B?dGVHb0hFcTJvbHpLV2xyMFY2WTN1cmowL1hvWi9rUTQvWDY1NURoS0gzSDJC?=
- =?utf-8?B?dDBsMWI0aDRsb2RFVEN1R05FaWlJMTFJSGY5MWNNVFYrM3dpUFd3cFhuYzJ3?=
- =?utf-8?B?NGg3QTNHZzJFbVRQOXpJY1hTWWtzbHRuTjhobDBTV3ZkVHdjSVNUUDdKN3JR?=
- =?utf-8?B?VkZieHpsL0t3cDB1SElpMUUrZWV2M01GamYrelNKMGF5RERoU2dKd2p2azQ4?=
- =?utf-8?B?UDJqSXltem5MS1lrQjVNVnFsVkhyMzlvL25kMmtGVzFRQkVHdHMwc1VOaXFP?=
- =?utf-8?B?czY3NFVsbks2YmtodTE4QmgxOHFPVXNzR29xYVNqOHVZOUVBdVlQTE94QW94?=
- =?utf-8?B?Vjl0TEdySXBEMVhNSXBZa21PV0QzTzFnWjNtSTdja3pGSXBZMXdZSlBWUmVH?=
- =?utf-8?B?cGhHMlZrUnRGZnMwT2h5ZjhiSDNvU0J3aTZjWko2N1BEYmtYME9zZUtlVFZy?=
- =?utf-8?B?Mjk1ZUhXRnVvd0xxUFJDVnpndnkybFgvcVQ0amYrZzlLL0RZMkRtbEhRVVZr?=
- =?utf-8?B?TGpxa0ptcEdUSU1uMVlLU3c5clNRT1ZFaUxBVHBGMDJEMjBvZmtJY0JzMDhu?=
- =?utf-8?Q?jlzxvzOj4mHjqnxmlKdMHJSiV?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b78e7a82-7b0d-4dbd-e595-08dc0145c5e3
-X-MS-Exchange-CrossTenant-AuthSource: DM8PR12MB5445.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Dec 2023 10:23:56.5607
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: HwODwT3TMN2yQ/o2+kOl2+fib7Couc9kyZil8t+1YcUXAOlC79edwc8Y4XVMTgjjS99QqZFNsGMTbcdJGASQZQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5801
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/4] dt-bindings: pinctrl: mobileye,eyeq5-pinctrl: add
+ bindings
+To: =?UTF-8?Q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>,
+ Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
+ Gregory CLEMENT <gregory.clement@bootlin.com>,
+ Linus Walleij <linus.walleij@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: linux-mips@vger.kernel.org, linux-gpio@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Tawfik Bayouk <tawfik.bayouk@mobileye.com>
+References: <20231218-mbly-pinctrl-v1-0-2f7d366c2051@bootlin.com>
+ <20231218-mbly-pinctrl-v1-1-2f7d366c2051@bootlin.com>
+ <0f0c0d16-f736-419e-9ffc-c3dc507b815c@linaro.org>
+ <CXT1TYH16JPB.2RY1IKI8NAUNE@bootlin.com>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <CXT1TYH16JPB.2RY1IKI8NAUNE@bootlin.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-
-
-On 12/19/2023 5:02 PM, Alexander Sapozhnikov wrote:
-> Pointer 'dom' which was dereferenced at iommu.c:1993
-> is compared to NULL value at iommu.c:1998.
+On 20/12/2023 10:21, Théo Lebrun wrote:
+> Hello,
 > 
-> Found by Linux Verification Center (linuxtesting.org) with SVACE.
+> I've seen all your comments, thanks for that. I'll answer to some.
 > 
-> Signed-off-by: Alexander Sapozhnikov <alsp705@gmail.com>
-> ---
->   drivers/iommu/amd/iommu.c | 3 +++
->   1 file changed, 3 insertions(+)
+> On Tue Dec 19, 2023 at 8:34 AM CET, Krzysztof Kozlowski wrote:
+>> On 18/12/2023 18:19, Théo Lebrun wrote:
+>>> Add dt-schema type bindings for the Mobileye EyeQ5 pin controller.
+>>>
+>>> Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
+>>> ---
+>>>  .../bindings/pinctrl/mobileye,eyeq5-pinctrl.yaml   | 125 +++++++++++++++++++++
+>>>  MAINTAINERS                                        |   1 +
+>>>  2 files changed, 126 insertions(+)
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/pinctrl/mobileye,eyeq5-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/mobileye,eyeq5-pinctrl.yaml
+>>> new file mode 100644
+>>> index 000000000000..5faddebe2413
+>>> --- /dev/null
+>>> +++ b/Documentation/devicetree/bindings/pinctrl/mobileye,eyeq5-pinctrl.yaml
+>>> @@ -0,0 +1,125 @@
+>>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>>> +%YAML 1.2
+>>> +---
+>>> +$id: http://devicetree.org/schemas/pinctrl/mobileye,eyeq5-pinctrl.yaml#
+>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>>> +
+>>> +title: Mobileye EyeQ5 pinctrl (pinmux & pinconf) controller
+>>
+>> pinctrl means pin controller, so you basically wrote:
+>> pin controller pinmux and pin configuration controller
+>>
+>> Just "pin controller"
+>>
+>>
+>>> +
+>>> +description:
+>>> +  The EyeQ5 pin controller handles a pin bank. It is custom to this platform,
+>>
+>> Can part of SoC be not custom to given platform? I mean... describe the
+>> hardware, not write essay.
+>>
+>>> +  its registers live in a shared region called OLB.
+>>> +  There are two pin banks on the platform, each having a specific compatible.
+>>
+>> Instead of repeating something obvious - visible from the binding -
+>> explain why. Say something different than the binding is saying.
+>>
+>>
+>>> +  Pins and groups are bijective.
+>>> +
+>>> +maintainers:
+>>> +  - Grégory Clement <gregory.clement@bootlin.com>
+>>> +  - Théo Lebrun <theo.lebrun@bootlin.com>
+>>> +  - Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>
+>>> +
+>>> +properties:
+>>> +  $nodename:
+>>> +    pattern: "^pinctrl([0-9]+)?$"
+>>> +    description:
+>>> +      We have no unique address, we rely on OLB; we therefore can't keep the
+>>> +      standard pattern and cannot inherit from pinctrl.yaml.
+>>
+>> No, instead fix pinctrl.yaml
 > 
-> diff --git a/drivers/iommu/amd/iommu.c b/drivers/iommu/amd/iommu.c
-> index a0924144bac8..64a88e67be9c 100644
-> --- a/drivers/iommu/amd/iommu.c
-> +++ b/drivers/iommu/amd/iommu.c
-> @@ -1985,6 +1985,9 @@ static void amd_iommu_domain_free(struct iommu_domain *dom)
->   {
->   	struct protection_domain *domain;
->   
-> +	if (!dom)
-> +		return;
-> +
->   	domain = to_pdomain(dom);
->   
->   	if (domain->dev_cnt > 0)
+> I've tried some things, but I'm unsure how to proceed. Options I see:
+> 
+>  - Modify pinctrl.yaml so that if reg/ranges is required, $nodename must
+>    be the current value ("^(pinctrl|pinmux)(@[0-9a-f]+)?$"). Else,
+>    $nodename should be "^(pinctrl|pinmux)(-[0-9a-f]+)?$".
 
-This check is already added in the following commit in the next branch 
-of the iommu.git repo.
+Yes, but: "-[0-9]", these are not hex.
 
-3f4b87b959ea "iommu/amd: Make use of domain_alloc and domain_free"
-(https://git.kernel.org/pub/scm/linux/kernel/git/joro/iommu.git/commit/?h=next&id=3f4b87b959eab362b89fce6ceb9d1badd102e5ea)
+I don't understand what is the problem here. It's just a regex and there
+are plenty of examples how this should look like.
 
-Thanks,
-Suravee
+> 
+>    I've tried some things but nothing conclusive for the moment.
+> 
+>  - Leave pinctrl.yaml alone and override $nodename from our binding.
+>    I've not found a way to do that though.
+> 
+>  - Use the current $nodename, ie with a unit address. With that approach
+>    I get the "node has a unit name, but no reg or ranges property"
+>    warning which, reading the code, I don't see a way of avoiding.
+> 
+> Were you thinking about option 1? Any advice on how to proceed would be
+> helpful, I've not been able to get a working patch to use option 1.
+
+Why?
+
+> 
+>>
+>>> +
+>>> +  compatible:
+>>> +    enum:
+>>> +      - mobileye,eyeq5-a-pinctrl
+>>> +      - mobileye,eyeq5-b-pinctrl
+>>
+>> Why two compatibles? Description provided no rationale for this.
+> 
+> I'll add that info. The gist of it is to have one node per bank. Each
+> pin has two function: GPIO or pin-dependent. So we must know which bank
+> we are to know what each pin function can be.
+
+OK
+
+> 
+> Both nodes are child to the same OLB. The compatible also tells us which
+> registers to use.
+> 
+>>
+>>> +
+>>> +  "#pinctrl-cells":
+>>> +    const: 1
+>>> +
+>>> +  mobileye,olb:
+>>> +    $ref: /schemas/types.yaml#/definitions/phandle
+>>> +    description:
+>>> +      A phandle to the OLB syscon. This is a fallback to using the parent as
+>>> +      syscon node.
+>>
+>> So here is the explanation for missing unit address. If all registers,
+>> as you claim in description, belong to OLB, then this should be part of
+>> OLB. Drop the phandle.
+> 
+> The reason I provided both options was that I see four drivers that do
+> this kind of fallback. I guess it was for legacy reasons. I'm dropping
+> the phandle and keeping only the child option.
+> 
+> 	drivers/gpio/gpio-syscon.c
+> 	drivers/phy/rockchip/phy-rockchip-usb.c
+> 	drivers/phy/samsung/phy-exynos-dp-video.c
+> 	drivers/soc/rockchip/io-domain.c
+> 
+
+
+Best regards,
+Krzysztof
+
 
