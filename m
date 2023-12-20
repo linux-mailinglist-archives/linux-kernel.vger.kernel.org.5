@@ -1,93 +1,77 @@
-Return-Path: <linux-kernel+bounces-6602-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6600-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3791819ADD
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 09:49:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1786B819AD8
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 09:48:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 85EF2B2261B
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 08:49:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3D6D21C22041
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 08:48:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E7911D525;
-	Wed, 20 Dec 2023 08:48:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D7F4208B9;
+	Wed, 20 Dec 2023 08:47:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="pKWfcRA4"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ZxmMoY3s"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f48.google.com (mail-qv1-f48.google.com [209.85.219.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA30C1CAA6;
-	Wed, 20 Dec 2023 08:48:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
-Received: from pps.filterd (m0369458.ppops.net [127.0.0.1])
-	by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3BK60V9b015096;
-	Wed, 20 Dec 2023 09:47:53 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	selector1; bh=gOTJOkgkUXjyDgxkghIjHED6KsoYJ6xYXo9usGGB+Xk=; b=pK
-	WfcRA4k3TYYGTzstvSZGq3qzFqEcrKmVG1SRfSXZTldF/lnuwzDnSKnvHv3cw1WG
-	WsgLp6AOAmfwTp5ctFalIYxQcom2K8Wu0bC4jl/aliJ2TGsa03gawPq3ciQjPXeB
-	6gegEpGN6xn/DtNL7q8TNHAKJQm2A3GxgU7Oe4bnI3AYfJi0otSqPoQ3ujpbqGf/
-	3wjudhYSs/1gq02UbHLWABUKe2eL371k83aQHt1Gr1H+SlIFIcthrHicCIEHwTE4
-	oQES7SwoQ2EZ7hgNB0N0sJJppPxuA67ynDBPjMILfaFQXXaYTzL8Pxl+PcbJrI2Y
-	o4/Gl3WCtmGo5bxKJ/yg==
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3v1pb4p1h3-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 20 Dec 2023 09:47:53 +0100 (CET)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 83015100057;
-	Wed, 20 Dec 2023 09:47:52 +0100 (CET)
-Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 88E5A20A77D;
-	Wed, 20 Dec 2023 09:47:49 +0100 (CET)
-Received: from localhost (10.201.20.120) by SHFDAG1NODE1.st.com (10.75.129.69)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 20 Dec
- 2023 09:47:49 +0100
-From: Hugues Fruchet <hugues.fruchet@foss.st.com>
-To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-        Philipp Zabel
-	<p.zabel@pengutronix.de>,
-        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        Sakari Ailus
-	<sakari.ailus@linux.intel.com>,
-        Benjamin Gaignard
-	<benjamin.gaignard@collabora.com>,
-        Laurent Pinchart
-	<laurent.pinchart+renesas@ideasonboard.com>,
-        Daniel Almeida
-	<daniel.almeida@collabora.com>,
-        Benjamin Mugnier
-	<benjamin.mugnier@foss.st.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Mauro
- Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil@xs4all.nl>, <linux-media@vger.kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <linux-rockchip@lists.infradead.org>
-CC: Hugues Fruchet <hugues.fruchet@foss.st.com>,
-        Marco Felsch
-	<m.felsch@pengutronix.de>,
-        Adam Ford <aford173@gmail.com>
-Subject: [PATCH v3 5/5] arm64: dts: st: add video encoder support to stm32mp255
-Date: Wed, 20 Dec 2023 09:46:41 +0100
-Message-ID: <20231220084641.2076428-6-hugues.fruchet@foss.st.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231220084641.2076428-1-hugues.fruchet@foss.st.com>
-References: <20231220084641.2076428-1-hugues.fruchet@foss.st.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EEF31DA4C
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 08:47:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-qv1-f48.google.com with SMTP id 6a1803df08f44-67ee17ab697so42250496d6.0
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 00:47:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1703062049; x=1703666849; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=AkUnotLHiwUHunRMJ74rg2n/XXNGCcUjwtUyRu/WLvI=;
+        b=ZxmMoY3srabQN0piL72YR13AYRU+/OE2lth68ODEe5z8knmzqHdydud2OWyTCYBwUj
+         cuN4BoIjN0ivJ/BIgDLlrGc5v2hlsm2pQzBCeSTnDCBZ3CdROuITMqCAkiUUQr3rOjLD
+         ariS3SKTAXN5GRZretajq7/NnQcL3hqiQe8HN50Pj2IxPt6hqQDmR0gJo2lDlgGC48Jf
+         iWCdT1lslY41GQS3qlcjBjQ+e/Ua/6BrxVHENSmGdIkru+9TZyeT5q8OWo+pTjI/QbvF
+         oO2iktz5w8xBEFcKu9dXRimDgY/oZ+5QKBnXoE9ZWkowIWvuQ7pYyMYFXAL+JcStR+Do
+         JG4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703062049; x=1703666849;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=AkUnotLHiwUHunRMJ74rg2n/XXNGCcUjwtUyRu/WLvI=;
+        b=NvrSe2KD3Gu09Gvncj/GpDRmaD7z0Mikag6DICAo/vVImGbdwGCrlEFUWq3yDAZlZm
+         9IjFA/VUrG0lQEAW1bb1zelz2Lgo/xN15/gh5/tmHTVPn3YgwY+tRf4qgo2BXi08LY9D
+         k1HHhHim1TqY2IXmUQr1Q730GU4NCAU14GdHcolLqOv37tb+fm+sNXt0E9uzNEOd+rqs
+         2B462evyohL4r6GyNhvpZf5xFyWth2kXjp69x199LyxYkRV+Iiw/kJ2q30n5IRWzY+Nz
+         FJv/P0S5q4xhb9r5cDxIezzL3GBuH3xXVhbBN01ddEkZURdH89gM55U9X/8w0E2IkBgB
+         4lCw==
+X-Gm-Message-State: AOJu0YyVH5iGAPrHjBSsehbXQIqgq23ECpVHH6Ypj3BfR27EpUsBXFIc
+	+GjhaWC+5cOdYPz98oU8FgHTqA==
+X-Google-Smtp-Source: AGHT+IEdfszLOaIesNW+7ESBIjUWCUZ2vKw4gM2QUlrYD4MHAlBGCggMU5JjWuGySGOTJMs9kxjrng==
+X-Received: by 2002:ad4:5c6a:0:b0:67f:43f4:d058 with SMTP id i10-20020ad45c6a000000b0067f43f4d058mr5857968qvh.105.1703062048881;
+        Wed, 20 Dec 2023 00:47:28 -0800 (PST)
+Received: from krzk-bin.. ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id g18-20020a0ce752000000b0067abfe5709dsm11168847qvn.139.2023.12.20.00.47.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Dec 2023 00:47:28 -0800 (PST)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: Olof Johansson <olof@lixom.net>,
+	Arnd Bergmann <arnd@arndb.de>,
+	arm@kernel.org,
+	soc@kernel.org
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Alim Akhtar <alim.akhtar@samsung.com>,
+	Peter Griffin <peter.griffin@linaro.org>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-samsung-soc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [GIT PULL 1/2] samsung: drivers for v6.8
+Date: Wed, 20 Dec 2023 09:47:21 +0100
+Message-Id: <20231220084722.22149-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -95,57 +79,124 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: EQNCAS1NODE3.st.com (10.75.129.80) To SHFDAG1NODE1.st.com
- (10.75.129.69)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-20_02,2023-12-14_01,2023-05-22_02
 
-Add VENC hardware video encoder support to STM32MP255.
+Hi,
 
-Signed-off-by: Hugues Fruchet <hugues.fruchet@foss.st.com>
----
- arch/arm64/boot/dts/st/stm32mp251.dtsi | 6 ++++++
- arch/arm64/boot/dts/st/stm32mp255.dtsi | 7 +++++++
- 2 files changed, 13 insertions(+)
+Driver changes needed for Google GS101 SoC, plus usual Samsung SoC driver
+updates.
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index 8fc7e9199499..5dd4f3580a60 100644
---- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
-+++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -58,6 +58,12 @@ ck_icn_p_vdec: ck-icn-p-vdec {
- 			compatible = "fixed-clock";
- 			clock-frequency = <200000000>;
- 		};
-+
-+		ck_icn_p_venc: ck-icn-p-venc {
-+			#clock-cells = <0>;
-+			compatible = "fixed-clock";
-+			clock-frequency = <200000000>;
-+		};
- 	};
- 
- 	firmware {
-diff --git a/arch/arm64/boot/dts/st/stm32mp255.dtsi b/arch/arm64/boot/dts/st/stm32mp255.dtsi
-index aea5096dac3c..17f197c5b22b 100644
---- a/arch/arm64/boot/dts/st/stm32mp255.dtsi
-+++ b/arch/arm64/boot/dts/st/stm32mp255.dtsi
-@@ -14,6 +14,13 @@ vdec: vdec@480d0000 {
- 				interrupts = <GIC_SPI 117 IRQ_TYPE_LEVEL_HIGH>;
- 				clocks = <&ck_icn_p_vdec>;
- 			};
-+
-+			venc: venc@480e0000 {
-+				compatible = "st,stm32mp25-venc";
-+				reg = <0x480e0000 0x800>;
-+				interrupts = <GIC_SPI 167 IRQ_TYPE_LEVEL_HIGH>;
-+				clocks = <&ck_icn_ls_mcu>;
-+			};
- 		};
- 	};
- };
--- 
-2.25.1
+This includes topic branch, see explanation in pull-request/tag.
 
+Best regards,
+Krzysztof
+
+
+The following changes since commit b85ea95d086471afb4ad062012a4d73cd328fa86:
+
+  Linux 6.7-rc1 (2023-11-12 16:19:07 -0800)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/krzk/linux.git tags/samsung-drivers-6.8
+
+for you to fetch changes up to 35f32e39b4d9b436354c2a37623c393a2ac7cf87:
+
+  dt-bindings: clock: google,gs101: rename CMU_TOP gate defines (2023-12-18 09:59:20 +0100)
+
+----------------------------------------------------------------
+Samsung SoC driver changes for v6.8
+
+1. Add support for Google GS101 SoC to different drivers: clock
+   controller, serial and watchdog.
+
+   The clock driver changes depend on few bindings headers, which I put
+   in a topic branch with the bindings refactoring and GS101 support,
+   therefore this this pull request includes that bindings topic branch.
+
+   The rest of the bindings topic branch is not necessary here, however
+   keeping everything together makes it easier to share between
+   branches.  The bindings topic branch is mostly refactoring all the
+   compatibles to add SoC-specific compatible followed by fallback.
+
+2. Exynos ChipID: recognize ExynosAutov920.
+
+----------------------------------------------------------------
+Jaewon Kim (8):
+      soc: samsung: exynos-chipid: add exynosautov920 SoC support
+      dt-bindings: samsung: exynos-sysreg: add exynosautov920 sysreg
+      dt-bindings: samsung: exynos-pmu: add exynosautov920 compatible
+      dt-bindings: samsung: usi: add exynosautov920-usi compatible
+      dt-bindings: serial: samsung: add exynosautov920-uart compatible
+      dt-bindings: pwm: samsung: add exynosautov920 compatible
+      dt-bindings: arm: samsung: Document exynosautov920 SADK board binding
+      dt-bindings: hwinfo: samsung,exynos-chipid: add exynosautov920 compatible
+
+Krzysztof Kozlowski (18):
+      dt-bindings: hwinfo: samsung,exynos-chipid: add specific compatibles for existing SoC
+      dt-bindings: i2c: exynos5: add specific compatibles for existing SoC
+      dt-bindings: i2c: samsung,s3c2410-i2c: add specific compatibles for existing SoC
+      dt-bindings: mmc: samsung,exynos-dw-mshc: add specific compatibles for existing SoC
+      dt-bindings: rtc: s3c-rtc: add specific compatibles for existing SoC
+      dt-bindings: serial: samsung: add specific compatibles for existing SoC
+      dt-bindings: samsung: exynos-pmu: add specific compatibles for existing SoC
+      dt-bindings: gpu: arm,mali-midgard: add specific compatibles for existing Exynos SoC
+      dt-bindings: iio: samsung,exynos-adc: add specific compatibles for existing SoC
+      ASoC: dt-bindings: samsung-i2s: add specific compatibles for existing SoC
+      dt-bindings: pwm: samsung: add specific compatibles for existing SoC
+      dt-bindings: i2c: exynos5: add specific compatible for Tesla FSD
+      dt-bindings: pwm: samsung: add specific compatible for Tesla FSD
+      dt-bindings: serial: samsung: add specific compatible for Tesla FSD
+      dt-bindings: samsung: exynos-pmu: add specific compatible for Tesla FSD
+      dt-bindings: watchdog: samsung: add specific compatible for Tesla FSD
+      dt-bindings: samsung: exynos-sysreg: combine exynosautov920 with other enum
+      Merge tag 'samsung-dt-bindings-refactoring-and-google-gs101-6.8' into next/drivers
+
+Peter Griffin (13):
+      dt-bindings: soc: samsung: exynos-pmu: Add gs101 compatible
+      dt-bindings: clock: Add Google gs101 clock management unit bindings
+      dt-bindings: soc: google: exynos-sysreg: add dedicated SYSREG compatibles to GS101
+      dt-bindings: watchdog: Document Google gs101 watchdog bindings
+      dt-bindings: serial: samsung: Add google-gs101-uart compatible
+      dt-bindings: serial: samsung: Make samsung,uart-fifosize a required property
+      dt-bindings: clock: google,gs101: fix incorrect numbering and DGB suffix
+      clk: samsung: clk-pll: Add support for pll_{0516,0517,518}
+      clk: samsung: clk-gs101: Add cmu_top, cmu_misc and cmu_apm support
+      tty: serial: samsung: Add gs101 compatible and common fifoszdt_serial_drv_data
+      watchdog: s3c2410_wdt: Add support for WTCON register DBGACK_MASK bit
+      watchdog: s3c2410_wdt: Update QUIRK macros to use BIT macro
+      watchdog: s3c2410_wdt: Add support for Google gs101 SoC
+
+Tudor Ambarus (2):
+      dt-bindings: soc: samsung: usi: add google,gs101-usi compatible
+      dt-bindings: clock: google,gs101: rename CMU_TOP gate defines
+
+ .../bindings/arm/samsung/samsung-boards.yaml       |    6 +
+ .../bindings/clock/google,gs101-clock.yaml         |  106 +
+ .../devicetree/bindings/gpu/arm,mali-midgard.yaml  |    5 +
+ .../bindings/hwinfo/samsung,exynos-chipid.yaml     |   18 +-
+ .../devicetree/bindings/i2c/i2c-exynos5.yaml       |   11 +-
+ .../bindings/i2c/samsung,s3c2410-i2c.yaml          |   22 +-
+ .../bindings/iio/adc/samsung,exynos-adc.yaml       |   29 +-
+ .../bindings/mfd/samsung,exynos5433-lpass.yaml     |    2 +-
+ .../bindings/mmc/samsung,exynos-dw-mshc.yaml       |   25 +-
+ .../devicetree/bindings/pwm/pwm-samsung.yaml       |    4 +
+ Documentation/devicetree/bindings/rtc/s3c-rtc.yaml |    5 +
+ .../devicetree/bindings/serial/samsung_uart.yaml   |   28 +-
+ .../bindings/soc/samsung/exynos-pmu.yaml           |   10 +
+ .../bindings/soc/samsung/exynos-usi.yaml           |    7 +-
+ .../soc/samsung/samsung,exynos-sysreg.yaml         |    5 +
+ .../devicetree/bindings/sound/samsung-i2s.yaml     |   19 +-
+ .../devicetree/bindings/watchdog/samsung-wdt.yaml  |   29 +-
+ drivers/clk/samsung/Makefile                       |    1 +
+ drivers/clk/samsung/clk-gs101.c                    | 2518 ++++++++++++++++++++
+ drivers/clk/samsung/clk-pll.c                      |    6 +
+ drivers/clk/samsung/clk-pll.h                      |    3 +
+ drivers/soc/samsung/exynos-chipid.c                |    1 +
+ drivers/tty/serial/samsung_tty.c                   |   16 +
+ drivers/watchdog/s3c2410_wdt.c                     |   85 +-
+ include/dt-bindings/clock/google,gs101.h           |  392 +++
+ 25 files changed, 3285 insertions(+), 68 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/clock/google,gs101-clock.yaml
+ create mode 100644 drivers/clk/samsung/clk-gs101.c
+ create mode 100644 include/dt-bindings/clock/google,gs101.h
 
