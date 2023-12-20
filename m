@@ -1,70 +1,70 @@
-Return-Path: <linux-kernel+bounces-6685-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6687-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7DE5B819C13
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 11:06:00 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8EDF2819C18
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 11:06:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F320B1F21903
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 10:05:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EDAD9B228EF
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 10:06:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4125821370;
-	Wed, 20 Dec 2023 10:04:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 781F82231C;
+	Wed, 20 Dec 2023 10:04:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Df/ktfVZ";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="qAE9+yGC"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Hizdu3wr";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="O3Dc/amU"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF0DB20B1D;
-	Wed, 20 Dec 2023 10:04:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 174D920DEF;
+	Wed, 20 Dec 2023 10:04:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Wed, 20 Dec 2023 10:04:00 -0000
+Date: Wed, 20 Dec 2023 10:04:01 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1703066641;
+	s=2020; t=1703066642;
 	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
 	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
 	 content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=1NQst+VHifrVkSDrISNwkDvKh+Nr0RWNByBHjKD+YH4=;
-	b=Df/ktfVZ+8jmmpkt0QKbp24GM2H1bSsCgLNeO3CCAArjkKmXlAq4XvDzn3ehUIjmBni3fO
-	fcnXO5BWrd5LYgxP2TaG9nfqMUeL95qQXvpzjMG/Mgc1JZFrIHvNtJMUVZPtqBXVi4ogTl
-	Rfikg6WHrpS/oeNk46z1Ma5Cc0uPQ1q4FVIJgm3QTpW1xbRV0zWjUQEL4Mo/p5eyZdDpWU
-	mg8r4b7UpqVfMSEjkquO57MTgz0s3588N7q+YaoI3FCWLgUyyK26TRCs+dy2eJh7vmnM85
-	GF2FeH2umw/+4oNlpGzeBmEZr7bn8uq22Od1y/QuzVyjB11tlv78CFv0LuTuXA==
+	bh=yYfBJlxTG3aKsBJQ89DaFh+wXp49c/rVSIv+pRMLbPY=;
+	b=Hizdu3wrqHDrJ7Ob1tVJp9w3NJcLMHleWjrCzvzmnbzR7ZIAYsvUllBdrf9wE4rPDUxY7u
+	O5Slukfn+NyFXCSVTmeq+US+PEpD53b/UudJo2KyvqJuRsBJZbnIvpxVD6/fE4WA0z2MBM
+	a3ebd3J69pidNvz+CC5vi8Q6y234VOcsVhaX9siQZby6n1ZQ+d57jIOjQVbVUjyXD7wJHz
+	dKAD2zirBY0NGn6FV5GvjjRgD0Tn4WZDH1a43CI+kIEGuGKQza4mtdQv8M3c/oAuFMJBby
+	Yd6XmxQlnwg8QGjQoqqRbzF6yqMhUW4EfHJZkSAEPUmh4NPP6+++Oe8M/0BsWw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1703066641;
+	s=2020e; t=1703066642;
 	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
 	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
 	 content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=1NQst+VHifrVkSDrISNwkDvKh+Nr0RWNByBHjKD+YH4=;
-	b=qAE9+yGCyQFuv3vmBsOT3RSxtLOqYh+ON6I9r+VgMqfHpYNYvNLIV+owe1OhL5FQJVFMOr
-	5dq7LDHD6tbSRPAg==
+	bh=yYfBJlxTG3aKsBJQ89DaFh+wXp49c/rVSIv+pRMLbPY=;
+	b=O3Dc/amU7ofRTkR2F8zJF/gJx6aE909qcMh/l6EIuATsBHgc06vRRZ8WbJ8XvZOJ64MTCW
+	v+AmKNMDh9QSDZDw==
 From: "tip-bot2 for Vegard Nossum" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To: linux-tip-commits@vger.kernel.org
-Subject:
- [tip: x86/asm] x86/asm: Always set A (accessed) flag in GDT descriptors
+Subject: [tip: x86/asm] x86/asm: Replace magic numbers in GDT descriptors,
+ preparations
 Cc: Vegard Nossum <vegard.nossum@oracle.com>, Ingo Molnar <mingo@kernel.org>,
  Linus Torvalds <torvalds@linux-foundation.org>, x86@kernel.org,
  linux-kernel@vger.kernel.org
-In-Reply-To: <20231219151200.2878271-5-vegard.nossum@oracle.com>
-References: <20231219151200.2878271-5-vegard.nossum@oracle.com>
+In-Reply-To: <20231219151200.2878271-3-vegard.nossum@oracle.com>
+References: <20231219151200.2878271-3-vegard.nossum@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <170306664044.398.8301222392360848816.tip-bot2@tip-bot2>
+Message-ID: <170306664164.398.4293804017901105347.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe:
  Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -74,130 +74,125 @@ Content-Transfer-Encoding: 7bit
 
 The following commit has been merged into the x86/asm branch of tip:
 
-Commit-ID:     3b184b71dfcb156e08246f8fbe0cd088c6a6efed
-Gitweb:        https://git.kernel.org/tip/3b184b71dfcb156e08246f8fbe0cd088c6a6efed
+Commit-ID:     41ef75c848e33beb1f7b981866b62b0066f744c7
+Gitweb:        https://git.kernel.org/tip/41ef75c848e33beb1f7b981866b62b0066f744c7
 Author:        Vegard Nossum <vegard.nossum@oracle.com>
-AuthorDate:    Tue, 19 Dec 2023 16:11:59 +01:00
+AuthorDate:    Tue, 19 Dec 2023 16:11:57 +01:00
 Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Wed, 20 Dec 2023 10:57:51 +01:00
+CommitterDate: Wed, 20 Dec 2023 10:57:20 +01:00
 
-x86/asm: Always set A (accessed) flag in GDT descriptors
+x86/asm: Replace magic numbers in GDT descriptors, preparations
 
-We have no known use for having the CPU track whether GDT descriptors
-have been accessed or not.
+We'd like to replace all the magic numbers in various GDT descriptors
+with new, semantically meaningful, symbolic values.
 
-Simplify the code by adding the flag to the common flags and removing
-it everywhere else.
+In order to be able to verify that the change doesn't cause any actual
+changes to the compiled binary code, I've split the change into two
+patches:
+
+ - Part 1 (this commit): everything _but_ actually replacing the numbers
+ - Part 2 (the following commit): _only_ replacing the numbers
+
+The reason we need this split for verification is that including new
+headers causes some spurious changes to the object files, mostly line
+number changes in the debug info but occasionally other subtle codegen
+changes.
 
 Signed-off-by: Vegard Nossum <vegard.nossum@oracle.com>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
 Acked-by: Linus Torvalds <torvalds@linux-foundation.org>
-Link: https://lore.kernel.org/r/20231219151200.2878271-5-vegard.nossum@oracle.com
+Link: https://lore.kernel.org/r/20231219151200.2878271-3-vegard.nossum@oracle.com
 ---
- arch/x86/boot/pm.c                      |  4 ++--
- arch/x86/include/asm/desc_defs.h        |  4 ++--
- arch/x86/kernel/cpu/common.c            | 12 ++++++------
- arch/x86/kernel/head64.c                |  6 +++---
- arch/x86/realmode/rm/reboot.S           |  2 +-
- drivers/firmware/efi/libstub/x86-5lvl.c |  4 ++--
- 6 files changed, 16 insertions(+), 16 deletions(-)
+ arch/x86/boot/pm.c               | 1 +
+ arch/x86/include/asm/desc_defs.h | 2 ++
+ arch/x86/kernel/cpu/common.c     | 8 --------
+ arch/x86/platform/pvh/head.S     | 1 +
+ arch/x86/realmode/rm/reboot.S    | 1 +
+ 5 files changed, 5 insertions(+), 8 deletions(-)
 
 diff --git a/arch/x86/boot/pm.c b/arch/x86/boot/pm.c
-index ab35b52..5941f93 100644
+index 40031a6..0361b53 100644
 --- a/arch/x86/boot/pm.c
 +++ b/arch/x86/boot/pm.c
-@@ -68,9 +68,9 @@ static void setup_gdt(void)
- 	   being 8-byte unaligned.  Intel recommends 16 byte alignment. */
- 	static const u64 boot_gdt[] __attribute__((aligned(16))) = {
- 		/* CS: code, read/execute, 4 GB, base 0 */
--		[GDT_ENTRY_BOOT_CS] = GDT_ENTRY(DESC_CODE32 | _DESC_ACCESSED, 0, 0xfffff),
-+		[GDT_ENTRY_BOOT_CS] = GDT_ENTRY(DESC_CODE32, 0, 0xfffff),
- 		/* DS: data, read/write, 4 GB, base 0 */
--		[GDT_ENTRY_BOOT_DS] = GDT_ENTRY(DESC_DATA32 | _DESC_ACCESSED, 0, 0xfffff),
-+		[GDT_ENTRY_BOOT_DS] = GDT_ENTRY(DESC_DATA32, 0, 0xfffff),
- 		/* TSS: 32-bit tss, 104 bytes, base 4096 */
- 		/* We only have a TSS here to keep Intel VT happy;
- 		   we don't actually use it for anything. */
+@@ -11,6 +11,7 @@
+  */
+ 
+ #include "boot.h"
++#include <asm/desc_defs.h>
+ #include <asm/segment.h>
+ 
+ /*
 diff --git a/arch/x86/include/asm/desc_defs.h b/arch/x86/include/asm/desc_defs.h
-index 33d229e..d440a65 100644
+index 7c08cbf..33d229e 100644
 --- a/arch/x86/include/asm/desc_defs.h
 +++ b/arch/x86/include/asm/desc_defs.h
-@@ -37,9 +37,9 @@
-  * of flags
-  */
+@@ -144,6 +144,7 @@ struct gate_struct {
  
--#define _DESC_DATA		(_DESC_S | _DESC_PRESENT | \
-+#define _DESC_DATA		(_DESC_S | _DESC_PRESENT | _DESC_ACCESSED | \
- 				 _DESC_DATA_WRITABLE)
--#define _DESC_CODE		(_DESC_S | _DESC_PRESENT | \
-+#define _DESC_CODE		(_DESC_S | _DESC_PRESENT | _DESC_ACCESSED | \
- 				 _DESC_CODE_READABLE | _DESC_CODE_EXECUTABLE)
+ typedef struct gate_struct gate_desc;
  
- #define DESC_DATA16		(_DESC_DATA)
++#ifndef _SETUP
+ static inline unsigned long gate_offset(const gate_desc *g)
+ {
+ #ifdef CONFIG_X86_64
+@@ -158,6 +159,7 @@ static inline unsigned long gate_segment(const gate_desc *g)
+ {
+ 	return g->segment;
+ }
++#endif
+ 
+ struct desc_ptr {
+ 	unsigned short size;
 diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
-index 32934a0..6184488 100644
+index b14fc8c..ceb6e4b 100644
 --- a/arch/x86/kernel/cpu/common.c
 +++ b/arch/x86/kernel/cpu/common.c
-@@ -188,12 +188,12 @@ DEFINE_PER_CPU_PAGE_ALIGNED(struct gdt_page, gdt_page) = { .gdt = {
- 	 * TLS descriptors are currently at a different place compared to i386.
- 	 * Hopefully nobody expects them at a fixed place (Wine?)
+@@ -204,25 +204,17 @@ DEFINE_PER_CPU_PAGE_ALIGNED(struct gdt_page, gdt_page) = { .gdt = {
+ 	 * They code segments and data segments have fixed 64k limits,
+ 	 * the transfer segment sizes are set at run time.
  	 */
--	[GDT_ENTRY_KERNEL32_CS]		= GDT_ENTRY_INIT(DESC_CODE32 | _DESC_ACCESSED, 0, 0xfffff),
--	[GDT_ENTRY_KERNEL_CS]		= GDT_ENTRY_INIT(DESC_CODE64 | _DESC_ACCESSED, 0, 0xfffff),
--	[GDT_ENTRY_KERNEL_DS]		= GDT_ENTRY_INIT(DESC_DATA64 | _DESC_ACCESSED, 0, 0xfffff),
--	[GDT_ENTRY_DEFAULT_USER32_CS]	= GDT_ENTRY_INIT(DESC_CODE32 | DESC_USER | _DESC_ACCESSED, 0, 0xfffff),
--	[GDT_ENTRY_DEFAULT_USER_DS]	= GDT_ENTRY_INIT(DESC_DATA64 | DESC_USER | _DESC_ACCESSED, 0, 0xfffff),
--	[GDT_ENTRY_DEFAULT_USER_CS]	= GDT_ENTRY_INIT(DESC_CODE64 | DESC_USER | _DESC_ACCESSED, 0, 0xfffff),
-+	[GDT_ENTRY_KERNEL32_CS]		= GDT_ENTRY_INIT(DESC_CODE32, 0, 0xfffff),
-+	[GDT_ENTRY_KERNEL_CS]		= GDT_ENTRY_INIT(DESC_CODE64, 0, 0xfffff),
-+	[GDT_ENTRY_KERNEL_DS]		= GDT_ENTRY_INIT(DESC_DATA64, 0, 0xfffff),
-+	[GDT_ENTRY_DEFAULT_USER32_CS]	= GDT_ENTRY_INIT(DESC_CODE32 | DESC_USER, 0, 0xfffff),
-+	[GDT_ENTRY_DEFAULT_USER_DS]	= GDT_ENTRY_INIT(DESC_DATA64 | DESC_USER, 0, 0xfffff),
-+	[GDT_ENTRY_DEFAULT_USER_CS]	= GDT_ENTRY_INIT(DESC_CODE64 | DESC_USER, 0, 0xfffff),
- #else
- 	[GDT_ENTRY_KERNEL_CS]		= GDT_ENTRY_INIT(DESC_CODE32, 0, 0xfffff),
- 	[GDT_ENTRY_KERNEL_DS]		= GDT_ENTRY_INIT(DESC_DATA32, 0, 0xfffff),
-diff --git a/arch/x86/kernel/head64.c b/arch/x86/kernel/head64.c
-index 00dbddf..dc09560 100644
---- a/arch/x86/kernel/head64.c
-+++ b/arch/x86/kernel/head64.c
-@@ -71,9 +71,9 @@ EXPORT_SYMBOL(vmemmap_base);
-  * GDT used on the boot CPU before switching to virtual addresses.
-  */
- static struct desc_struct startup_gdt[GDT_ENTRIES] __initdata = {
--	[GDT_ENTRY_KERNEL32_CS]         = GDT_ENTRY_INIT(DESC_CODE32 | _DESC_ACCESSED, 0, 0xfffff),
--	[GDT_ENTRY_KERNEL_CS]           = GDT_ENTRY_INIT(DESC_CODE64 | _DESC_ACCESSED, 0, 0xfffff),
--	[GDT_ENTRY_KERNEL_DS]           = GDT_ENTRY_INIT(DESC_DATA64 | _DESC_ACCESSED, 0, 0xfffff),
-+	[GDT_ENTRY_KERNEL32_CS]         = GDT_ENTRY_INIT(DESC_CODE32, 0, 0xfffff),
-+	[GDT_ENTRY_KERNEL_CS]           = GDT_ENTRY_INIT(DESC_CODE64, 0, 0xfffff),
-+	[GDT_ENTRY_KERNEL_DS]           = GDT_ENTRY_INIT(DESC_DATA64, 0, 0xfffff),
- };
+-	/* 32-bit code */
+ 	[GDT_ENTRY_PNPBIOS_CS32]	= GDT_ENTRY_INIT(0x409a, 0, 0xffff),
+-	/* 16-bit code */
+ 	[GDT_ENTRY_PNPBIOS_CS16]	= GDT_ENTRY_INIT(0x009a, 0, 0xffff),
+-	/* 16-bit data */
+ 	[GDT_ENTRY_PNPBIOS_DS]		= GDT_ENTRY_INIT(0x0092, 0, 0xffff),
+-	/* 16-bit data */
+ 	[GDT_ENTRY_PNPBIOS_TS1]		= GDT_ENTRY_INIT(0x0092, 0, 0),
+-	/* 16-bit data */
+ 	[GDT_ENTRY_PNPBIOS_TS2]		= GDT_ENTRY_INIT(0x0092, 0, 0),
+ 	/*
+ 	 * The APM segments have byte granularity and their bases
+ 	 * are set at run time.  All have 64k limits.
+ 	 */
+-	/* 32-bit code */
+ 	[GDT_ENTRY_APMBIOS_BASE]	= GDT_ENTRY_INIT(0x409a, 0, 0xffff),
+-	/* 16-bit code */
+ 	[GDT_ENTRY_APMBIOS_BASE+1]	= GDT_ENTRY_INIT(0x009a, 0, 0xffff),
+-	/* data */
+ 	[GDT_ENTRY_APMBIOS_BASE+2]	= GDT_ENTRY_INIT(0x4092, 0, 0xffff),
  
- /*
+ 	[GDT_ENTRY_ESPFIX_SS]		= GDT_ENTRY_INIT(0xc092, 0, 0xfffff),
+diff --git a/arch/x86/platform/pvh/head.S b/arch/x86/platform/pvh/head.S
+index c4365a0..9bcafdd 100644
+--- a/arch/x86/platform/pvh/head.S
++++ b/arch/x86/platform/pvh/head.S
+@@ -11,6 +11,7 @@
+ #include <linux/elfnote.h>
+ #include <linux/init.h>
+ #include <linux/linkage.h>
++#include <asm/desc_defs.h>
+ #include <asm/segment.h>
+ #include <asm/asm.h>
+ #include <asm/boot.h>
 diff --git a/arch/x86/realmode/rm/reboot.S b/arch/x86/realmode/rm/reboot.S
-index 5bc068b..e714b46 100644
+index f10515b..4476418 100644
 --- a/arch/x86/realmode/rm/reboot.S
 +++ b/arch/x86/realmode/rm/reboot.S
-@@ -154,5 +154,5 @@ SYM_DATA_START(machine_real_restart_gdt)
- 	 * base value 0x100; since this is consistent with real mode
- 	 * semantics we don't have to reload the segments once CR0.PE = 0.
- 	 */
--	.quad	GDT_ENTRY(DESC_DATA16 | _DESC_ACCESSED, 0x100, 0xffff)
-+	.quad	GDT_ENTRY(DESC_DATA16, 0x100, 0xffff)
- SYM_DATA_END(machine_real_restart_gdt)
-diff --git a/drivers/firmware/efi/libstub/x86-5lvl.c b/drivers/firmware/efi/libstub/x86-5lvl.c
-index 005dd9b..77359e8 100644
---- a/drivers/firmware/efi/libstub/x86-5lvl.c
-+++ b/drivers/firmware/efi/libstub/x86-5lvl.c
-@@ -13,8 +13,8 @@ bool efi_no5lvl;
- static void (*la57_toggle)(void *cr3);
- 
- static const struct desc_struct gdt[] = {
--	[GDT_ENTRY_KERNEL32_CS] = GDT_ENTRY_INIT(DESC_CODE32 | _DESC_ACCESSED, 0, 0xfffff),
--	[GDT_ENTRY_KERNEL_CS]   = GDT_ENTRY_INIT(DESC_CODE64 | _DESC_ACCESSED, 0, 0xfffff),
-+	[GDT_ENTRY_KERNEL32_CS] = GDT_ENTRY_INIT(DESC_CODE32, 0, 0xfffff),
-+	[GDT_ENTRY_KERNEL_CS]   = GDT_ENTRY_INIT(DESC_CODE64, 0, 0xfffff),
- };
- 
- /*
+@@ -1,5 +1,6 @@
+ /* SPDX-License-Identifier: GPL-2.0 */
+ #include <linux/linkage.h>
++#include <asm/desc_defs.h>
+ #include <asm/segment.h>
+ #include <asm/page_types.h>
+ #include <asm/processor-flags.h>
 
