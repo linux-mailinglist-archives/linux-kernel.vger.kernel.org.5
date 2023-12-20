@@ -1,101 +1,166 @@
-Return-Path: <linux-kernel+bounces-7004-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7005-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F7D581A06A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 14:58:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D57A81A06E
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 14:59:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 87F0A1C22C23
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 13:58:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EEC651F21B54
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 13:59:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 504463A29A;
-	Wed, 20 Dec 2023 13:57:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 279A838DE7;
+	Wed, 20 Dec 2023 13:58:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="OYnNlcpS"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NwM8+cbY"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F8F838F90
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 13:57:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1703080654;
-	bh=oCsTlzOS6oSxRGdJ1goQg2w9teTFYwuxwEp7xWcBwpo=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=OYnNlcpS/D8peXYscsbSFXGU+HqzinoYLzgDTqfkWAMdO/6abvAMZXnB9VVW7SKuE
-	 9J1G1vaJokfATNAds7XzLU7nhvaJFnt9ZKOxtqYm2AZTrKpFgtpk7S6dkqCi1V+Lk2
-	 oDYTvEZnsUdod5gV/17Ep0ufzVMPgUfXwwfNkyiinuoanLIWxzFdFMJJGhPwJGeSTt
-	 eY4M/1pVbRXMLeOiyJu3h68Z4u7F6dwD02NZQ+0OhKaZ16QUFuvHcan8PpjkpGd9fk
-	 uD5EtEnxcA8s3KMCDIjO44QZ16vUL71U59o7YkwBpZUVMcUdzDgNqJ9+CWWJfKCrha
-	 Tvcgd0NmqRdrg==
-Received: from IcarusMOD.eternityproject.eu (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 063993781F8C;
-	Wed, 20 Dec 2023 13:57:33 +0000 (UTC)
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-To: chunkuang.hu@kernel.org
-Cc: p.zabel@pengutronix.de,
-	airlied@gmail.com,
-	daniel@ffwll.ch,
-	matthias.bgg@gmail.com,
-	angelogioacchino.delregno@collabora.com,
-	dri-devel@lists.freedesktop.org,
-	linux-mediatek@lists.infradead.org,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F6AD38DD5;
+	Wed, 20 Dec 2023 13:58:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51FAAC433C8;
+	Wed, 20 Dec 2023 13:58:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703080686;
+	bh=FX4VAPxyEVKvbbJffi2oi0T7IYc01Fhx2zd5wWkz3wc=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=NwM8+cbYhkZDjaSPH54gM/FtSQx6WK56VcCUrgaSheWX7L6662Q9fpHMey/F+cXZg
+	 LtFvlGYJcQXNjGKH3q6PORLqW8xfTVeMW+qmdar9AMN+2hdBfaCbaiH4Dd2wDHodsP
+	 6FXgC3IFwnVC0v9tZgGSNbk0asM4KrATuC53simrWj1wtcSYwZ7eMZWO41nOb3MUa2
+	 1H0UHtmiEvgTJW85oLccXjlzIY0tGG0UBoOT5XJVBoWPiUHiiuKIzK2kohUG0eyu0w
+	 hZNhih9om2p+wdoGzMhF251x4XXMoN20Z9/D3usDXePXY2dt3r/kXxyFTMy6Hgqdl+
+	 a3TCwLcOZfNkg==
+Received: from [104.132.45.104] (helo=wait-a-minute.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1rFx5H-005hDm-0g;
+	Wed, 20 Dec 2023 13:58:03 +0000
+Date: Wed, 20 Dec 2023 13:58:02 +0000
+Message-ID: <87zfy5t1qt.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: Haibo Xu <xiaobo55x@gmail.com>
+Cc: Haibo Xu <haibo1.xu@intel.com>,
+	ajones@ventanamicro.com,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Shuah Khan <shuah@kernel.org>,
+	Oliver Upton <oliver.upton@linux.dev>,
+	James Morse <james.morse@arm.com>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Zenghui Yu <yuzenghui@huawei.com>,
+	Anup Patel <anup@brainfault.org>,
+	Atish Patra <atishp@atishpatra.org>,
+	Guo Ren <guoren@kernel.org>,
+	Mayuresh Chitale <mchitale@ventanamicro.com>,
+	Greentime Hu <greentime.hu@sifive.com>,
+	wchen <waylingii@gmail.com>,
+	Conor Dooley <conor.dooley@microchip.com>,
+	Heiko Stuebner <heiko@sntech.de>,
+	Minda Chen <minda.chen@starfivetech.com>,
+	Samuel Holland <samuel@sholland.org>,
+	Jisheng Zhang <jszhang@kernel.org>,
+	Sean Christopherson <seanjc@google.com>,
+	Peter Xu <peterx@redhat.com>,
+	Like Xu <likexu@tencent.com>,
+	Vipin Sharma <vipinsh@google.com>,
+	Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>,
+	Aaron Lewis <aaronlewis@google.com>,
+	Thomas Huth <thuth@redhat.com>,
 	linux-kernel@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	kvm@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
-	kernel@collabora.com
-Subject: [PATCH v2 4/4] drm/mediatek: dsi: Replace open-coded instance of HZ_PER_MHZ
-Date: Wed, 20 Dec 2023 14:57:22 +0100
-Message-ID: <20231220135722.192080-5-angelogioacchino.delregno@collabora.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231220135722.192080-1-angelogioacchino.delregno@collabora.com>
-References: <20231220135722.192080-1-angelogioacchino.delregno@collabora.com>
+	kvmarm@lists.linux.dev,
+	kvm-riscv@lists.infradead.org
+Subject: Re: [PATCH v4 11/11] KVM: selftests: Enable tunning of err_margin_us in arch timer test
+In-Reply-To: <CAJve8ona7g=LxW1YeRB_FqGodF973H=A3b2m8054gmzK=Z7_ww@mail.gmail.com>
+References: <cover.1702371136.git.haibo1.xu@intel.com>
+	<0343a9e4bfa8011fbb6bca0286cee7eab1f17d5d.1702371136.git.haibo1.xu@intel.com>
+	<8734vy832j.wl-maz@kernel.org>
+	<CAJve8onc0WN5g98aOVBmJx15wFBAqfBKJ+ufoLY+oqYyVL+=3A@mail.gmail.com>
+	<f98879dc24f948f7a8a7b5374a32bc04@kernel.org>
+	<CAJve8ona7g=LxW1YeRB_FqGodF973H=A3b2m8054gmzK=Z7_ww@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-SA-Exim-Connect-IP: 104.132.45.104
+X-SA-Exim-Rcpt-To: xiaobo55x@gmail.com, haibo1.xu@intel.com, ajones@ventanamicro.com, paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu, pbonzini@redhat.com, shuah@kernel.org, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, anup@brainfault.org, atishp@atishpatra.org, guoren@kernel.org, mchitale@ventanamicro.com, greentime.hu@sifive.com, waylingii@gmail.com, conor.dooley@microchip.com, heiko@sntech.de, minda.chen@starfivetech.com, samuel@sholland.org, jszhang@kernel.org, seanjc@google.com, peterx@redhat.com, likexu@tencent.com, vipinsh@google.com, maciej.wieczor-retman@intel.com, aaronlewis@google.com, thuth@redhat.com, linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org, kvm@vger.kernel.org, linux-kselftest@vger.kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, kvm-riscv@lists.infradead.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-In mtk_dsi_phy_timconfig(), we're dividing the `data_rate` variable,
-expressed in Hz to retrieve a value in MHz: instead of open-coding,
-use the HZ_PER_MHZ definition, available in linux/units.h.
+On Wed, 20 Dec 2023 13:51:24 +0000,
+Haibo Xu <xiaobo55x@gmail.com> wrote:
+>=20
+> On Wed, Dec 20, 2023 at 5:00=E2=80=AFPM Marc Zyngier <maz@kernel.org> wro=
+te:
+> >
+> > On 2023-12-20 06:50, Haibo Xu wrote:
+> > > On Wed, Dec 20, 2023 at 2:22=E2=80=AFAM Marc Zyngier <maz@kernel.org>=
+ wrote:
+> > >>
+> > >> On Tue, 12 Dec 2023 09:31:20 +0000,
+> > >> Haibo Xu <haibo1.xu@intel.com> wrote:
+> > >> > diff --git a/tools/testing/selftests/kvm/include/timer_test.h b/to=
+ols/testing/selftests/kvm/include/timer_test.h
+> > >> > index 968257b893a7..b1d405e7157d 100644
+> > >> > --- a/tools/testing/selftests/kvm/include/timer_test.h
+> > >> > +++ b/tools/testing/selftests/kvm/include/timer_test.h
+> > >> > @@ -22,6 +22,7 @@ struct test_args {
+> > >> >       int nr_iter;
+> > >> >       int timer_period_ms;
+> > >> >       int migration_freq_ms;
+> > >> > +     int timer_err_margin_us;
+> > >>
+> > >> ... except that you are storing it as a signed value. Some consisten=
+cy
+> > >> wouldn't hurt, really, and would avoid issues when passing large
+> > >> values.
+> > >>
+> > >
+> > > Yes, it's more proper to use an unsigned int for the non-negative err=
+or
+> > > margin.
+> > > Storing as signed here is just to keep the type consistent with that
+> > > of timer_period_ms
+> > > since there will be '+' operation in other places.
+> > >
+> > >         tools/testing/selftests/kvm/aarch64/arch_timer.c
+> > >         /* Setup a timeout for the interrupt to arrive */
+> > >          udelay(msecs_to_usecs(test_args.timer_period_ms) +
+> > >              test_args.timer_err_margin_us);
+> >
+> > But that's exactly why using a signed quantity is wrong.
+> > What does it mean to have a huge *negative* margin?
+> >
+>=20
+> Hi Marc,
+>=20
+> I agree that negative values are meaningless for the margin.
+> If I understand correctly, the negative margin should be filtered by
+> assertion in atoi_non_negative().
 
-Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
----
- drivers/gpu/drm/mediatek/mtk_dsi.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+No. Please.
 
-diff --git a/drivers/gpu/drm/mediatek/mtk_dsi.c b/drivers/gpu/drm/mediatek/mtk_dsi.c
-index 2ba6cd129150..b9a37407f3b4 100644
---- a/drivers/gpu/drm/mediatek/mtk_dsi.c
-+++ b/drivers/gpu/drm/mediatek/mtk_dsi.c
-@@ -12,6 +12,7 @@
- #include <linux/phy/phy.h>
- #include <linux/platform_device.h>
- #include <linux/reset.h>
-+#include <linux/units.h>
- 
- #include <video/mipi_display.h>
- #include <video/videomode.h>
-@@ -237,7 +238,7 @@ static void mtk_dsi_mask(struct mtk_dsi *dsi, u32 offset, u32 mask, u32 data)
- static void mtk_dsi_phy_timconfig(struct mtk_dsi *dsi)
- {
- 	u32 timcon0, timcon1, timcon2, timcon3;
--	u32 data_rate_mhz = DIV_ROUND_UP(dsi->data_rate, 1000000);
-+	u32 data_rate_mhz = DIV_ROUND_UP(dsi->data_rate, HZ_PER_MHZ);
- 	struct mtk_phy_timing *timing = &dsi->phy_timing;
- 
- 	timing->lpx = (60 * data_rate_mhz / (8 * 1000)) + 1;
--- 
-2.43.0
+atoi_non_negative() returns a uint32_t, which is what it should do.
+The bug is squarely in the use of an 'int' to store such value, and it
+is the *storage* that turns a positive value into a negative one.
 
+	M.
+
+--=20
+Without deviation from the norm, progress is not possible.
 
