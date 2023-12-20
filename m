@@ -1,86 +1,214 @@
-Return-Path: <linux-kernel+bounces-7040-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7041-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7165A81A0DC
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 15:11:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8674281A0DD
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 15:12:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1159C1F26F81
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 14:11:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E9FDD1F26F31
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 14:12:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BE6838DF8;
-	Wed, 20 Dec 2023 14:11:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F09BA38F89;
+	Wed, 20 Dec 2023 14:12:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LdyuB/Wi"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kfFn5Dvb"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7202739841;
-	Wed, 20 Dec 2023 14:11:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF06DC433C8;
-	Wed, 20 Dec 2023 14:11:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 473A938DDD;
+	Wed, 20 Dec 2023 14:12:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BEB7DC433C7;
+	Wed, 20 Dec 2023 14:12:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703081500;
-	bh=i1vREzGg9L6c6Fd8geHXkYfzZq5y9cqUrhAh22X+8L4=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-	b=LdyuB/WixkJS74JDO3vKkJPH9rsRhrjL1Qgcvgw92zCcahIvro7KgaBubxblZ1RYM
-	 x63JAQINmM9i5f/3Kqowbai95TRZiTOCn56jT3Im2mpLt0wANGKugvr2FpDJlREcVc
-	 QkJRNknVEZkEvRPFexrVy0mqw5uVkzIKly+fPbkiZ6Z/t5+TA4KTdJ1lYYvee1Dcru
-	 1ws/fyi8jNL3kswkqKRoLadxVSOKGYJg3PRUqFwH2WXS6ahNhSq3G78CjCpFQDG7e4
-	 ee+tyoWwTw22R/Qls9zMPjNkqdjRg1cLA0VeNauyaktDeZszzi41IuSAcU4W/SD2ii
-	 IrbXeiwE9gTGQ==
-From: Kalle Valo <kvalo@kernel.org>
-To: Mathias Krause <minipli@grsecurity.net>
-Cc: Bjorn Helgaas <bhelgaas@google.com>,  Arend van Spriel
- <arend.vanspriel@broadcom.com>,  Franky Lin <franky.lin@broadcom.com>,
-  Hante Meuleman <hante.meuleman@broadcom.com>,  linux-pci@vger.kernel.org,
-  linux-wireless@vger.kernel.org,  linux-kernel@vger.kernel.org,
-  SHA-cyfmac-dev-list@infineon.com,  brcm80211-dev-list.pdl@broadcom.com
-Subject: Re: [PATCH] PCI: Remove unused 'node' member from struct pci_driver
-References: <20231220133505.8798-1-minipli@grsecurity.net>
-Date: Wed, 20 Dec 2023 16:11:37 +0200
-In-Reply-To: <20231220133505.8798-1-minipli@grsecurity.net> (Mathias Krause's
-	message of "Wed, 20 Dec 2023 14:35:05 +0100")
-Message-ID: <87cyv12cbq.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+	s=k20201202; t=1703081535;
+	bh=omuGEKL0AnBbS+fvO5aEEjVVdipBqKAYv93nwOJV9Ss=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=kfFn5Dvbbrr6iPRuNItHtdv6Wg3PZAyXrr95xvGleIi39+oOv90e36Fw7E1LPRtrk
+	 YIPmh5cnnozM0+VqfHkzu0sxLR1qmEAGMcRahaLSd3fvG/HpUsohvAYXNUHHihIPuq
+	 wpz3UEBa/45OpzSRAdrVOgLrwVJAELez9l+J+jyKcY9k6nNPMWYp6Ysoegw8M0X/RP
+	 ig2hn1EO9RCfzUcoq0/LlX5UBTbAkRD5mD/6Tm5taU7mVRmI4KkzNm7SCpi1tWIIsI
+	 KuYSCRF9jMYHZq7o+z3SQPS3dNYSXGJzzIromkeLLnA+vUAZXDmH4Gg1FChTGR7hyg
+	 wUXs6tFD7treQ==
+Received: from [104.132.45.104] (helo=wait-a-minute.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1rFxIz-005haC-Go;
+	Wed, 20 Dec 2023 14:12:13 +0000
+Date: Wed, 20 Dec 2023 14:12:12 +0000
+Message-ID: <87wmt9t137.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: <ankita@nvidia.com>
+Cc: <jgg@nvidia.com>,
+	<oliver.upton@linux.dev>,
+	<suzuki.poulose@arm.com>,
+	<yuzenghui@huawei.com>,
+	<catalin.marinas@arm.com>,
+	<will@kernel.org>,
+	<alex.williamson@redhat.com>,
+	<kevin.tian@intel.com>,
+	<yi.l.liu@intel.com>,
+	<ardb@kernel.org>,
+	<akpm@linux-foundation.org>,
+	<gshan@redhat.com>,
+	<mochs@nvidia.com>,
+	<lpieralisi@kernel.org>,
+	<aniketa@nvidia.com>,
+	<cjia@nvidia.com>,
+	<kwankhede@nvidia.com>,
+	<targupta@nvidia.com>,
+	<vsethi@nvidia.com>,
+	<acurrid@nvidia.com>,
+	<apopple@nvidia.com>,
+	<jhubbard@nvidia.com>,
+	<danw@nvidia.com>,
+	<linux-mm@kvack.org>,
+	<kvmarm@lists.linux.dev>,
+	<kvm@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v4 1/3] kvm: arm64: introduce new flag for non-cacheable IO memory
+In-Reply-To: <20231218090719.22250-2-ankita@nvidia.com>
+References: <20231218090719.22250-1-ankita@nvidia.com>
+	<20231218090719.22250-2-ankita@nvidia.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 104.132.45.104
+X-SA-Exim-Rcpt-To: ankita@nvidia.com, jgg@nvidia.com, oliver.upton@linux.dev, suzuki.poulose@arm.com, yuzenghui@huawei.com, catalin.marinas@arm.com, will@kernel.org, alex.williamson@redhat.com, kevin.tian@intel.com, yi.l.liu@intel.com, ardb@kernel.org, akpm@linux-foundation.org, gshan@redhat.com, mochs@nvidia.com, lpieralisi@kernel.org, aniketa@nvidia.com, cjia@nvidia.com, kwankhede@nvidia.com, targupta@nvidia.com, vsethi@nvidia.com, acurrid@nvidia.com, apopple@nvidia.com, jhubbard@nvidia.com, danw@nvidia.com, linux-mm@kvack.org, kvmarm@lists.linux.dev, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-Mathias Krause <minipli@grsecurity.net> writes:
+On Mon, 18 Dec 2023 09:07:17 +0000,
+<ankita@nvidia.com> wrote:
+> 
+> From: Ankit Agrawal <ankita@nvidia.com>
+> 
+> For various reasons described in the cover letter, and primarily to
 
-> Remove the unused 'node' member. It got replaced by device_driver
-> chaining more than 20 years ago in commit 4b4a837f2b57 ("PCI: start to
-> use common fields of struct device_driver more...") of the history.git
-> tree.
->
-> Signed-off-by: Mathias Krause <minipli@grsecurity.net>
+Well, the cover letter does not end-up in the git tree, so you must
+put some actual information here.
+
+> allow VM get IO memory with NORMALNC properties, it is desired
+> to relax the KVM stage 2 device memory attributes from DEVICE_nGnRE
+> to NormalNC. So set S2 PTE for IO memory as NORMAL_NC.
+> 
+> A Normal-NC flag is not present today. So add a new kvm_pgtable_prot
+> (KVM_PGTABLE_PROT_NORMAL_NC) flag for it, along with its
+> corresponding PTE value 0x5 (0b101) determined from [1].
+> 
+> Lastly, adapt the stage2 PTE property setter function
+> (stage2_set_prot_attr) to handle the NormalNC attribute.
+> 
+> [1] section D8.5.5 of DDI0487J_a_a-profile_architecture_reference_manual.pdf
+> 
+> Signed-off-by: Ankit Agrawal <ankita@nvidia.com>
+> Suggested-by: Jason Gunthorpe <jgg@nvidia.com>
+> Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+> Tested-by: Ankit Agrawal <ankita@nvidia.com>
 > ---
-> There is only one "user" that makes use of the 'node' member, which is
-> the brcm80211 driver. However, its "use" is clearly wrong (a list head
-> cannot be initialized this way) and, obviously, not needed.
->
-> If netdev folks instead want to split this off into a separate commit, I
-> can do that. However, I don't expect any cross-tree conflicts regarding
-> this change.
->
->  drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c | 1 -
->  include/linux/pci.h                                     | 2 --
->  2 files changed, 3 deletions(-)
+>  arch/arm64/include/asm/kvm_pgtable.h |  2 ++
+>  arch/arm64/include/asm/memory.h      |  2 ++
+>  arch/arm64/kvm/hyp/pgtable.c         | 13 +++++++++++--
+>  3 files changed, 15 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/arm64/include/asm/kvm_pgtable.h b/arch/arm64/include/asm/kvm_pgtable.h
+> index cfdf40f734b1..19278dfe7978 100644
+> --- a/arch/arm64/include/asm/kvm_pgtable.h
+> +++ b/arch/arm64/include/asm/kvm_pgtable.h
+> @@ -197,6 +197,7 @@ enum kvm_pgtable_stage2_flags {
+>   * @KVM_PGTABLE_PROT_W:		Write permission.
+>   * @KVM_PGTABLE_PROT_R:		Read permission.
+>   * @KVM_PGTABLE_PROT_DEVICE:	Device attributes.
+> + * @KVM_PGTABLE_PROT_NORMAL_NC:	Normal noncacheable attributes.
+>   * @KVM_PGTABLE_PROT_SW0:	Software bit 0.
+>   * @KVM_PGTABLE_PROT_SW1:	Software bit 1.
+>   * @KVM_PGTABLE_PROT_SW2:	Software bit 2.
+> @@ -208,6 +209,7 @@ enum kvm_pgtable_prot {
+>  	KVM_PGTABLE_PROT_R			= BIT(2),
+>  
+>  	KVM_PGTABLE_PROT_DEVICE			= BIT(3),
+> +	KVM_PGTABLE_PROT_NORMAL_NC		= BIT(4),
+>  
+>  	KVM_PGTABLE_PROT_SW0			= BIT(55),
+>  	KVM_PGTABLE_PROT_SW1			= BIT(56),
+> diff --git a/arch/arm64/include/asm/memory.h b/arch/arm64/include/asm/memory.h
+> index fde4186cc387..c247e5f29d5a 100644
+> --- a/arch/arm64/include/asm/memory.h
+> +++ b/arch/arm64/include/asm/memory.h
+> @@ -147,6 +147,7 @@
+>   * Memory types for Stage-2 translation
+>   */
+>  #define MT_S2_NORMAL		0xf
+> +#define MT_S2_NORMAL_NC		0x5
+>  #define MT_S2_DEVICE_nGnRE	0x1
+>  
+>  /*
+> @@ -154,6 +155,7 @@
+>   * Stage-2 enforces Normal-WB and Device-nGnRE
+>   */
+>  #define MT_S2_FWB_NORMAL	6
+> +#define MT_S2_FWB_NORMAL_NC	5
+>  #define MT_S2_FWB_DEVICE_nGnRE	1
+>  
+>  #ifdef CONFIG_ARM64_4K_PAGES
+> diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
+> index c651df904fe3..0fff079a0ef3 100644
+> --- a/arch/arm64/kvm/hyp/pgtable.c
+> +++ b/arch/arm64/kvm/hyp/pgtable.c
+> @@ -718,10 +718,19 @@ static int stage2_set_prot_attr(struct kvm_pgtable *pgt, enum kvm_pgtable_prot p
+>  				kvm_pte_t *ptep)
+>  {
+>  	bool device = prot & KVM_PGTABLE_PROT_DEVICE;
+> -	kvm_pte_t attr = device ? KVM_S2_MEMATTR(pgt, DEVICE_nGnRE) :
+> -			    KVM_S2_MEMATTR(pgt, NORMAL);
+> +	bool normal_nc = prot & KVM_PGTABLE_PROT_NORMAL_NC;
+> +	kvm_pte_t attr;
+>  	u32 sh = KVM_PTE_LEAF_ATTR_LO_S2_SH_IS;
+>  
+> +	WARN_ON_ONCE(device && normal_nc);
+> +
+> +	if (device)
+> +		attr = KVM_S2_MEMATTR(pgt, DEVICE_nGnRE);
+> +	else if (normal_nc)
+> +		attr = KVM_S2_MEMATTR(pgt, NORMAL_NC);
+> +	else
+> +		attr = KVM_S2_MEMATTR(pgt, NORMAL);
+> +
 
-No need to split anything, feel free to take this via PCI tree:
+This whole thing can be written a bit more elegantly:
 
-Acked-by: Kalle Valo <kvalo@kernel.org>
+	switch (prot & (KVM_PGTABLE_PROT_DEVICE |
+			KVM_PGTABLE_PROT_NORMAL_NC)) {
+	case 0:
+		attr = KVM_S2_MEMATTR(pgt, NORMAL);
+		break;
+	case KVM_PGTABLE_PROT_DEVICE:
+		if (prot & KVM_PGTABLE_PROT_X)
+			return -EINVAL;
+		attr = KVM_S2_MEMATTR(pgt, DEVICE_nGnRE);
+		break;
+	case KVM_PGTABLE_PROT_NORMAL_NC:
+		attr = KVM_S2_MEMATTR(pgt, NORMAL_NC);
+		break;
+	default:
+		WARN_ON_ONCE(1);
+	}
+
+and you can get rid of all of the boolean crud.
+
+	M.
 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+Without deviation from the norm, progress is not possible.
 
