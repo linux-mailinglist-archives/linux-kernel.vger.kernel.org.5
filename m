@@ -1,288 +1,336 @@
-Return-Path: <linux-kernel+bounces-6886-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6887-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20384819EE4
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 13:19:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11E87819EE7
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 13:21:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9E5F6283AAC
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 12:19:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 364FA1C22413
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 12:21:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B29E2232B;
-	Wed, 20 Dec 2023 12:19:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83C0D22321;
+	Wed, 20 Dec 2023 12:21:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="KFSBLUdi"
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="i+cYkk9R"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f172.google.com (mail-il1-f172.google.com [209.85.166.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2725E22309;
-	Wed, 20 Dec 2023 12:19:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id CB402833;
-	Wed, 20 Dec 2023 13:18:47 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1703074728;
-	bh=dCAElmgbWoouBQbpx1OPzGXYnO54Rregags1Eg+vhC8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=KFSBLUdi1g2Ap0/yUI8gf/tv6FFIX0h7oljDfNhGrJN9dPcNLZ1OQMm/UvuCWPF3Q
-	 cSOpd6yExiaIHJ4mS/R/8kiXEhkVNzbLsNEscvzb3sxeoN5THlnZVVUYQ2mUK7ltKi
-	 pJzB4fUmdGoqGPo7aYHpskdn0l6nv58VeaRFCH3w=
-Date: Wed, 20 Dec 2023 14:19:44 +0200
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To: Tommaso Merciai <tomm.merciai@gmail.com>
-Cc: linuxfancy@googlegroups.com, martin.hecht@avnet.eu,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/4] media: i2c: alvium: removal of fr field
-Message-ID: <20231220121944.GM29638@pendragon.ideasonboard.com>
-References: <20231220085609.2595732-1-tomm.merciai@gmail.com>
- <20231220085609.2595732-3-tomm.merciai@gmail.com>
- <20231220091309.GG29638@pendragon.ideasonboard.com>
- <ZYK7y/jaEZ2JHsnH@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
- <20231220100643.GJ29638@pendragon.ideasonboard.com>
- <ZYLNuw1/IJg7jrEa@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
- <20231220112902.GE25366@pendragon.ideasonboard.com>
- <ZYLYAMrEtCoQ940z@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 548A022308
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 12:20:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-il1-f172.google.com with SMTP id e9e14a558f8ab-35d3846fac9so23479545ab.2
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 04:20:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1703074856; x=1703679656; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=lo278K0WzeNhO2XB8OTPVe4wM6zLDvQlgKwUUEsFo2Y=;
+        b=i+cYkk9RYSKNnU68wWCSrX0YH2B38cvNnGYHPA7BXk9ajOhQyqKin9pJ/7rYWTKxLo
+         oRLUxPhrPuPZ4ksKhXN6OmqhLxU7ulqFItHy0cDXBNvu2VjJ9fKb6Em/yA7CQzj7BLY7
+         b9RXewJ1v/RPt7A+f1XiCv/LuHQRoWGykF5TPjLPAIkaS56ElFi/LA1kEoApPvFJuGj7
+         iGzOkgDvHSR3Ujrob1CUn6r916kRIKAnVDaYxt7IOxvuhh8eYJj+qCPeuG/UMz15SZNM
+         ljvSs/YmcRBGGAhFAZplnbKeLb8klBNvoUGFJMH1wI2X9ltWtLRTvNDUPt8IXPM2czaU
+         pRpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703074856; x=1703679656;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=lo278K0WzeNhO2XB8OTPVe4wM6zLDvQlgKwUUEsFo2Y=;
+        b=FFmGp40xNkcuMixnejfvryCScgW012eSfNuAep49ZbN1Z/F5viAN0cWADOr3td63HQ
+         Y0HfdIzNxr88dWU3sua2env5VAN40rO96pYHtWWB/9guMuOyJuTKE1KGF7yGrxS9+CnN
+         HeJ98mSv4+NKu9f1p6t+p1OJGgL578sqmbMucD8iejqVr6ZewN7dxBe0n/2QJ+9J8zK6
+         hIG53xf1Q6/8C4UgSc6z7ZqHvBUNAlQXK308JEpw00ct9pU/Dnny4u7XHIieS5PZUPbL
+         gvbb90d9TuDZqyjwXUf9ZL+lvc0bm5gO9bMw1TO3qPsJlPCVWaCQNIpon3Ys6f0/qDDf
+         oKJA==
+X-Gm-Message-State: AOJu0Yzk2EYUEk5mXELg3++0dRygYtkxeczRF5wromiPNc7XsQnrJIw2
+	gDdD4Ft0pvRuoGwWU1lQ2dKGgw==
+X-Google-Smtp-Source: AGHT+IGnMvR7ylp1fX7m/paxr1IRwjme5dY/6Uc2RJGRTjvEJLxMjNqHZQav8XEQW3PCKiPsKVCTOw==
+X-Received: by 2002:a05:6e02:1c87:b0:35f:bba4:d4ce with SMTP id w7-20020a056e021c8700b0035fbba4d4cemr4603927ill.14.1703074856197;
+        Wed, 20 Dec 2023 04:20:56 -0800 (PST)
+Received: from [10.254.235.157] ([139.177.225.232])
+        by smtp.gmail.com with ESMTPSA id be9-20020a170902aa0900b001d07d83fdd0sm22807188plb.238.2023.12.20.04.20.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Dec 2023 04:20:55 -0800 (PST)
+Message-ID: <2a22e9b5-dc8c-4c4d-81c2-2f4e1850cf3d@bytedance.com>
+Date: Wed, 20 Dec 2023 20:20:49 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <ZYLYAMrEtCoQ940z@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 6/6] mm/zswap: directly use percpu mutex and buffer in
+ load/store
+Content-Language: en-US
+To: Yosry Ahmed <yosryahmed@google.com>, Nhat Pham <nphamcs@gmail.com>,
+ Chris Li <chrisl@kernel.org>
+Cc: Seth Jennings <sjenning@redhat.com>,
+ Vitaly Wool <vitaly.wool@konsulko.com>, Dan Streetman <ddstreet@ieee.org>,
+ Johannes Weiner <hannes@cmpxchg.org>,
+ Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
+ linux-mm@kvack.org
+References: <20231213-zswap-dstmem-v3-0-4eac09b94ece@bytedance.com>
+ <20231213-zswap-dstmem-v3-6-4eac09b94ece@bytedance.com>
+ <CAF8kJuOv+k0TcKJhs8wEWi20=B84bomj5BvpUAHvj6k3A+WE5A@mail.gmail.com>
+ <CAKEwX=P=frZmEXm26uTBN05gqLXoL-Shgk5P=EsMpYR16dW-sw@mail.gmail.com>
+ <CAJD7tkb2gWz1uQ7C6NQ7mAB=QQgaKHSwDFr0XS9ZrGFPOP1tTQ@mail.gmail.com>
+From: Chengming Zhou <zhouchengming@bytedance.com>
+In-Reply-To: <CAJD7tkb2gWz1uQ7C6NQ7mAB=QQgaKHSwDFr0XS9ZrGFPOP1tTQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Wed, Dec 20, 2023 at 01:03:12PM +0100, Tommaso Merciai wrote:
-> On Wed, Dec 20, 2023 at 01:29:02PM +0200, Laurent Pinchart wrote:
-> > On Wed, Dec 20, 2023 at 12:19:23PM +0100, Tommaso Merciai wrote:
-> > > On Wed, Dec 20, 2023 at 12:06:43PM +0200, Laurent Pinchart wrote:
-> > > > On Wed, Dec 20, 2023 at 11:02:51AM +0100, Tommaso Merciai wrote:
-> > > > > On Wed, Dec 20, 2023 at 11:13:09AM +0200, Laurent Pinchart wrote:
-> > > > > > Hi Tommaso,
-> > > > > > 
-> > > > > > Thank you for the patch.
-> > > > > > 
-> > > > > > Use the imperative in the subject line:
-> > > > > > 
-> > > > > > media: i2c: alvium: Remove the fr field of the alvium_dev structure
-> > > > > > 
-> > > > > > On Wed, Dec 20, 2023 at 09:56:07AM +0100, Tommaso Merciai wrote:
-> > > > > > > The fr (frame rate) field of the alvium_dev structure is
-> > > > > > > only used to pass result from alvium_set_frame_interval() to
-> > > > > > > alvium_set_frame_rate() that writes this info into the hw reg.
-> > > > > > > Replace them with function parameter.
-> > > > > > 
-> > > > > > Replace it with a function parameter.
-> > > > > 
-> > > > > Thanks I'll fix this in v3.
-> > > > > 
-> > > > > > > 
-> > > > > > > Signed-off-by: Tommaso Merciai <tomm.merciai@gmail.com>
-> > > > > > > ---
-> > > > > > >  drivers/media/i2c/alvium-csi2.c | 24 ++++++++++++------------
-> > > > > > >  drivers/media/i2c/alvium-csi2.h |  1 -
-> > > > > > >  2 files changed, 12 insertions(+), 13 deletions(-)
-> > > > > > > 
-> > > > > > > diff --git a/drivers/media/i2c/alvium-csi2.c b/drivers/media/i2c/alvium-csi2.c
-> > > > > > > index 0dcd69bf9f92..a9ff6cc97cff 100644
-> > > > > > > --- a/drivers/media/i2c/alvium-csi2.c
-> > > > > > > +++ b/drivers/media/i2c/alvium-csi2.c
-> > > > > > > @@ -1185,19 +1185,19 @@ static int alvium_get_frame_interval(struct alvium_dev *alvium,
-> > > > > > >  	return ret;
-> > > > > > >  }
-> > > > > > >  
-> > > > > > > -static int alvium_set_frame_rate(struct alvium_dev *alvium)
-> > > > > > > +static int alvium_set_frame_rate(struct alvium_dev *alvium, u64 fr)
-> > > > > > >  {
-> > > > > > >  	struct device *dev = &alvium->i2c_client->dev;
-> > > > > > >  	int ret;
-> > > > > > >  
-> > > > > > >  	ret = alvium_write_hshake(alvium, REG_BCRM_ACQUISITION_FRAME_RATE_RW,
-> > > > > > > -				  alvium->fr);
-> > > > > > > +				  fr);
-> > > > > > >  	if (ret) {
-> > > > > > >  		dev_err(dev, "Fail to set frame rate lanes reg\n");
-> > > > > > >  		return ret;
-> > > > > > >  	}
-> > > > > > >  
-> > > > > > > -	dev_dbg(dev, "set frame rate: %llu us\n", alvium->fr);
-> > > > > > > +	dev_dbg(dev, "set frame rate: %llu us\n", fr);
-> > > > > > >  
-> > > > > > >  	return 0;
-> > > > > > >  }
-> > > > > > > @@ -1661,10 +1661,11 @@ static int alvium_g_frame_interval(struct v4l2_subdev *sd,
-> > > > > > >  }
-> > > > > > >  
-> > > > > > >  static int alvium_set_frame_interval(struct alvium_dev *alvium,
-> > > > > > > -				     struct v4l2_subdev_frame_interval *fi)
-> > > > > > > +				     struct v4l2_subdev_frame_interval *fi,
-> > > > > > > +				     u64 *req_fr)
-> > > > > > >  {
-> > > > > > >  	struct device *dev = &alvium->i2c_client->dev;
-> > > > > > > -	u64 req_fr, dft_fr, min_fr, max_fr;
-> > > > > > > +	u64 dft_fr, min_fr, max_fr;
-> > > > > > >  	int ret;
-> > > > > > >  
-> > > > > > >  	if (fi->interval.denominator == 0)
-> > > > > > > @@ -1681,13 +1682,12 @@ static int alvium_set_frame_interval(struct alvium_dev *alvium,
-> > > > > > >  	dev_dbg(dev, "fi->interval.denominator = %d\n",
-> > > > > > >  		fi->interval.denominator);
-> > > > > > >  
-> > > > > > > -	req_fr = (u64)((fi->interval.denominator * USEC_PER_SEC) /
-> > > > > > > +	*req_fr = (u64)((fi->interval.denominator * USEC_PER_SEC) /
-> > > > > > >  		       fi->interval.numerator);
-> > > > > > >  
-> > > > > > > -	if (req_fr >= max_fr && req_fr <= min_fr)
-> > > > > > > -		req_fr = dft_fr;
-> > > > > > > +	if (*req_fr >= max_fr && *req_fr <= min_fr)
-> > > > > > > +		*req_fr = dft_fr;
-> > > > > > 
-> > > > > > Shouldn't we clamp the value to [min, max] instead of using the default
-> > > > > > if it's out of range ? Something like
-> > > > > > 
-> > > > > > 	*req_fr = clamp(*req_fr, min_fr, max_fr)
-> > > > > > 
-> > > > > > This makes me realize that the current code is wrong, req_fr can't be >=
-> > > > > > max and <= min at the same time. You probably meant || instead of &&.
-> > > > > > 
-> > > > > > This should be fixed in a separate patch.
-> > > > > 
-> > > > > If this is ok for you, after this series I can put a patch with || fix
-> > > > > instead of clamping, because if we clamp dft_fr is not used any more.
-> > > > > After if you agree I will work on clamping.
-> > > > > Thanks for the catch! :)
-> > > > 
-> > > > It's fine to fix this on top of the series, but I don't see why you
-> > > > would need to first use ||. You can call clamp() and remove dft_fr.
-> > > 
-> > > I'm just thinking out loud eh :)
-> > > 
-> > > Maybe in the future we need to expose fr infos to the user to play with
-> > > that. But we are writing for now, then we can replan to readd dft_fr
-> > > read later.
-> > > 
-> > > I think this is what your are suggesting:
-> > > 
-> > > +++ b/drivers/media/i2c/alvium-csi2.c
-> > > @@ -1171,12 +1171,10 @@ static int alvium_set_bayer_pattern(struct alvium_dev *alvium,
-> > >  }
-> > > 
-> > >  static int alvium_get_frame_interval(struct alvium_dev *alvium,
-> > > -                                    u64 *dft_fr, u64 *min_fr, u64 *max_fr)
-> > > +                                    u64 *min_fr, u64 *max_fr)
-> > >  {
-> > >         int ret = 0;
-> > > 
-> > > -       alvium_read(alvium, REG_BCRM_ACQUISITION_FRAME_RATE_RW,
-> > > -                   dft_fr, &ret);
-> > >         alvium_read(alvium, REG_BCRM_ACQUISITION_FRAME_RATE_MIN_R,
-> > >                     min_fr, &ret);
-> > >         alvium_read(alvium, REG_BCRM_ACQUISITION_FRAME_RATE_MAX_R,
-> > > @@ -1647,7 +1645,7 @@ static int alvium_s_frame_interval(struct v4l2_subdev *sd,
-> > >  {
-> > >         struct alvium_dev *alvium = sd_to_alvium(sd);
-> > >         struct device *dev = &alvium->i2c_client->dev;
-> > > -       u64 req_fr, dft_fr, min_fr, max_fr;
-> > > +       u64 req_fr, min_fr, max_fr;
-> > >         struct v4l2_fract *interval;
-> > >         int ret;
-> > > 
-> > > @@ -1657,7 +1655,7 @@ static int alvium_s_frame_interval(struct v4l2_subdev *sd,
-> > >         if (fi->interval.denominator == 0)
-> > >                 return -EINVAL;
-> > > 
-> > > -       ret = alvium_get_frame_interval(alvium, &dft_fr, &min_fr, &max_fr);
-> > > +       ret = alvium_get_frame_interval(alvium, &min_fr, &max_fr);
-> > >         if (ret) {
-> > >                 dev_err(dev, "Fail to get frame interval\n");
-> > >                 return ret;
-> > > @@ -1670,9 +1668,7 @@ static int alvium_s_frame_interval(struct v4l2_subdev *sd,
-> > > 
-> > >         req_fr = (u64)((fi->interval.denominator * USEC_PER_SEC) /
-> > >                        fi->interval.numerator);
-> > > -
-> > > -       if (req_fr >= max_fr && req_fr <= min_fr)
-> > > -               req_fr = dft_fr;
-> > > +       req_fr = clamp(req_fr, min_fr, max_fr);
-> > > 
-> > >         interval = v4l2_subdev_state_get_interval(sd_state, 0);
-> > > 
-> > > right?
-> > 
-> > Yes this looks good to me.
+On 2023/12/20 05:39, Yosry Ahmed wrote:
+> On Tue, Dec 19, 2023 at 10:43 AM Nhat Pham <nphamcs@gmail.com> wrote:
+>>
+>> On Tue, Dec 19, 2023 at 5:29 AM Chris Li <chrisl@kernel.org> wrote:
+>>>
+>>> Hi Chengming and Yosry,
+>>>
+>>> On Mon, Dec 18, 2023 at 3:50 AM Chengming Zhou
+>>> <zhouchengming@bytedance.com> wrote:
+>>>>
+>>>> Since the introduce of reusing the dstmem in the load path, it seems
+>>>> confusing that we are now using acomp_ctx->dstmem and acomp_ctx->mutex
+>>>> now for purposes other than what the naming suggests.
+>>>>
+>>>> Yosry suggested removing these two fields from acomp_ctx, and directly
+>>>> using zswap_dstmem and zswap_mutex in both the load and store paths,
+>>>> rename them, and add proper comments above their definitions that they
+>>>> are for generic percpu buffering on the load and store paths.
+>>>>
+>>>> So this patch remove dstmem and mutex from acomp_ctx, and rename the
+>>>> zswap_dstmem to zswap_buffer, using the percpu mutex and buffer on
+>>>> the load and store paths.
+>>>
+>>> Sorry joining this discussion late.
+>>>
+>>> I get the rename of "dstmem" to "buffer". Because the buffer is used
+>>> for both load and store as well. What I don't get is that, why do we
+>>> move it out of the acomp_ctx struct. Now we have 3 per cpu entry:
+>>> buffer, mutex and acomp_ctx. I think we should do the reverse, fold
+>>> this three per cpu entry into one struct the acomp_ctx. Each per_cpu
+>>> load() has a sequence of dance around the cpu id and disable preempt
+>>> etc, while each of the struct member load is just a plan memory load.
+>>> It seems to me it would be more optimal to combine this three per cpu
+>>> entry into acomp_ctx. Just do the per cpu for the acomp_ctx once.
+>>
+>> I agree with Chris. From a practicality POV, what Chris says here
+>> makes sense. From a semantic POV, this buffer is only used in
+>> (de)compression contexts - be it in store, load, or writeback - so it
+>> belonging to the orignal struct still makes sense to me. Why separate
+>> it out, without any benefits. Just rename the old field buffer or
+>> zswap_buffer and call it a day? It will be a smaller patch too!
+>>
 > 
-> Just an info.
-> Can I proceed to send v3 of this series and then the fix or better to
-> wait?
+> My main concern is that the struct name is specific for the crypto
+> acomp stuff, but that buffer and mutex are not.
+> How about we keep it in the struct, but refactor the struct as follows:
+> 
+> struct zswap_ctx {
+>     struct {
+>         struct crypto_acomp *acomp;
+>         struct acomp_req *req;
+>         struct crypto_wait wait;
+>     }  acomp_ctx;
+>     u8 *dstmem;
+>     struct mutex *mutex;
+> };
+> 
+> , and then rename zswap_pool.acomp_ctx to zswap_pool.ctx?
 
-For me you can send v3. Bonus points if you include the above fix in v3
-as a patch at the end :-) I think we would then be ready to merge the
-whole series.
+I think there are two viewpoints here, both works ok to me.
 
-> > > > > > >  
-> > > > > > > -	alvium->fr = req_fr;
-> > > > > > >  	alvium->frame_interval.numerator = fi->interval.numerator;
-> > > > > > >  	alvium->frame_interval.denominator = fi->interval.denominator;
-> > > > > > >  
-> > > > > > > @@ -1699,6 +1699,7 @@ static int alvium_s_frame_interval(struct v4l2_subdev *sd,
-> > > > > > >  				   struct v4l2_subdev_frame_interval *fi)
-> > > > > > >  {
-> > > > > > >  	struct alvium_dev *alvium = sd_to_alvium(sd);
-> > > > > > > +	u64 req_fr = ALVIUM_DEFAULT_FR_HZ;
-> > > > > > 
-> > > > > > Do you need to initialize the variable ? It doesn't seem to be required.
-> > > > > 
-> > > > > Really not, it's just to maintain the logic of alvium->fr. I will drop
-> > > > > this in v3, thanks!
-> > > > > 
-> > > > > > With these small issues fixed,
-> > > > > > 
-> > > > > > Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> > > > > > 
-> > > > > > >  	int ret;
-> > > > > > >  
-> > > > > > >  	/*
-> > > > > > > @@ -1711,9 +1712,9 @@ static int alvium_s_frame_interval(struct v4l2_subdev *sd,
-> > > > > > >  	if (alvium->streaming)
-> > > > > > >  		return -EBUSY;
-> > > > > > >  
-> > > > > > > -	ret = alvium_set_frame_interval(alvium, fi);
-> > > > > > > +	ret = alvium_set_frame_interval(alvium, fi, &req_fr);
-> > > > > > >  	if (!ret)
-> > > > > > > -		ret = alvium_set_frame_rate(alvium);
-> > > > > > > +		ret = alvium_set_frame_rate(alvium, req_fr);
-> > > > > > >  
-> > > > > > >  	return ret;
-> > > > > > >  }
-> > > > > > > @@ -2273,7 +2274,6 @@ static int alvium_subdev_init(struct alvium_dev *alvium)
-> > > > > > >  	/* Setup initial frame interval*/
-> > > > > > >  	alvium->frame_interval.numerator = 1;
-> > > > > > >  	alvium->frame_interval.denominator = ALVIUM_DEFAULT_FR_HZ;
-> > > > > > > -	alvium->fr = ALVIUM_DEFAULT_FR_HZ;
-> > > > > > >  
-> > > > > > >  	/* Setup the initial mode */
-> > > > > > >  	alvium->mode.fmt = alvium_csi2_default_fmt;
-> > > > > > > diff --git a/drivers/media/i2c/alvium-csi2.h b/drivers/media/i2c/alvium-csi2.h
-> > > > > > > index 17f0bbbd1839..80066ac25047 100644
-> > > > > > > --- a/drivers/media/i2c/alvium-csi2.h
-> > > > > > > +++ b/drivers/media/i2c/alvium-csi2.h
-> > > > > > > @@ -443,7 +443,6 @@ struct alvium_dev {
-> > > > > > >  
-> > > > > > >  	struct alvium_mode mode;
-> > > > > > >  	struct v4l2_fract frame_interval;
-> > > > > > > -	u64 fr;
-> > > > > > >  
-> > > > > > >  	u8 h_sup_csi_lanes;
-> > > > > > >  	u64 link_freq;
+The first is from ownship or lifetime, these percpu mutex and dstmem
+are shared between all pools, so no one pool own the mutex and dstmem,
+nor does the percpu acomp_ctx in each pool.
 
--- 
-Regards,
+The second is from usage, these percpu mutex and dstmem are used by
+the percpu acomp_ctx in each pool, so it's easy to use to put pointers
+to them in the percpu acomp_ctx.
 
-Laurent Pinchart
+Actually I think it's simpler to let the percpu acomp_ctx has its own
+mutex and dstmem, which in fact are the necessary parts when it use
+the acomp interfaces.
+
+This way, we could delete the percpu mutex and dstmem, and its hotplugs,
+and not shared anymore between all pools. Maybe we would have many pools
+at the same time in the future, like different compression algorithm or
+different zpool for different memcg workloads. Who knows? :-)
+
+So how about this patch below? Just RFC.
+
+Subject: [PATCH] mm/zswap: make each acomp_ctx has its own mutex and dstmem
+
+Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+---
+ include/linux/cpuhotplug.h |  1 -
+ mm/zswap.c                 | 86 ++++++++++++--------------------------
+ 2 files changed, 26 insertions(+), 61 deletions(-)
+
+diff --git a/include/linux/cpuhotplug.h b/include/linux/cpuhotplug.h
+index efc0c0b07efb..c3e06e21766a 100644
+--- a/include/linux/cpuhotplug.h
++++ b/include/linux/cpuhotplug.h
+@@ -124,7 +124,6 @@ enum cpuhp_state {
+ 	CPUHP_ARM_BL_PREPARE,
+ 	CPUHP_TRACE_RB_PREPARE,
+ 	CPUHP_MM_ZS_PREPARE,
+-	CPUHP_MM_ZSWP_MEM_PREPARE,
+ 	CPUHP_MM_ZSWP_POOL_PREPARE,
+ 	CPUHP_KVM_PPC_BOOK3S_PREPARE,
+ 	CPUHP_ZCOMP_PREPARE,
+diff --git a/mm/zswap.c b/mm/zswap.c
+index 2c349fd88904..37301f1a80a9 100644
+--- a/mm/zswap.c
++++ b/mm/zswap.c
+@@ -694,63 +694,31 @@ static void zswap_alloc_shrinker(struct zswap_pool *pool)
+ /*********************************
+ * per-cpu code
+ **********************************/
+-static DEFINE_PER_CPU(u8 *, zswap_dstmem);
+-/*
+- * If users dynamically change the zpool type and compressor at runtime, i.e.
+- * zswap is running, zswap can have more than one zpool on one cpu, but they
+- * are sharing dtsmem. So we need this mutex to be per-cpu.
+- */
+-static DEFINE_PER_CPU(struct mutex *, zswap_mutex);
+-
+-static int zswap_dstmem_prepare(unsigned int cpu)
+-{
+-	struct mutex *mutex;
+-	u8 *dst;
+-
+-	dst = kmalloc_node(PAGE_SIZE, GFP_KERNEL, cpu_to_node(cpu));
+-	if (!dst)
+-		return -ENOMEM;
+-
+-	mutex = kmalloc_node(sizeof(*mutex), GFP_KERNEL, cpu_to_node(cpu));
+-	if (!mutex) {
+-		kfree(dst);
+-		return -ENOMEM;
+-	}
+-
+-	mutex_init(mutex);
+-	per_cpu(zswap_dstmem, cpu) = dst;
+-	per_cpu(zswap_mutex, cpu) = mutex;
+-	return 0;
+-}
+-
+-static int zswap_dstmem_dead(unsigned int cpu)
+-{
+-	struct mutex *mutex;
+-	u8 *dst;
+-
+-	mutex = per_cpu(zswap_mutex, cpu);
+-	kfree(mutex);
+-	per_cpu(zswap_mutex, cpu) = NULL;
+-
+-	dst = per_cpu(zswap_dstmem, cpu);
+-	kfree(dst);
+-	per_cpu(zswap_dstmem, cpu) = NULL;
+-
+-	return 0;
+-}
+-
+ static int zswap_cpu_comp_prepare(unsigned int cpu, struct hlist_node *node)
+ {
+ 	struct zswap_pool *pool = hlist_entry(node, struct zswap_pool, node);
+ 	struct crypto_acomp_ctx *acomp_ctx = per_cpu_ptr(pool->acomp_ctx, cpu);
+ 	struct crypto_acomp *acomp;
+ 	struct acomp_req *req;
++	int ret = 0;
++
++	acomp_ctx->dstmem = kmalloc_node(PAGE_SIZE, GFP_KERNEL, cpu_to_node(cpu));
++	if (!acomp_ctx->dstmem)
++		return -ENOMEM;
++
++	acomp_ctx->mutex = kmalloc_node(sizeof(struct mutex), GFP_KERNEL, cpu_to_node(cpu));
++	if (!acomp_ctx->mutex) {
++		ret = -ENOMEM;
++		goto mutex_fail;
++	}
++	mutex_init(acomp_ctx->mutex);
+
+ 	acomp = crypto_alloc_acomp_node(pool->tfm_name, 0, 0, cpu_to_node(cpu));
+ 	if (IS_ERR(acomp)) {
+ 		pr_err("could not alloc crypto acomp %s : %ld\n",
+ 				pool->tfm_name, PTR_ERR(acomp));
+-		return PTR_ERR(acomp);
++		ret = PTR_ERR(acomp);
++		goto acomp_fail;
+ 	}
+ 	acomp_ctx->acomp = acomp;
+
+@@ -758,8 +726,8 @@ static int zswap_cpu_comp_prepare(unsigned int cpu, struct hlist_node *node)
+ 	if (!req) {
+ 		pr_err("could not alloc crypto acomp_request %s\n",
+ 		       pool->tfm_name);
+-		crypto_free_acomp(acomp_ctx->acomp);
+-		return -ENOMEM;
++		ret = -ENOMEM;
++		goto req_fail;
+ 	}
+ 	acomp_ctx->req = req;
+
+@@ -772,10 +740,15 @@ static int zswap_cpu_comp_prepare(unsigned int cpu, struct hlist_node *node)
+ 	acomp_request_set_callback(req, CRYPTO_TFM_REQ_MAY_BACKLOG,
+ 				   crypto_req_done, &acomp_ctx->wait);
+
+-	acomp_ctx->mutex = per_cpu(zswap_mutex, cpu);
+-	acomp_ctx->dstmem = per_cpu(zswap_dstmem, cpu);
+-
+ 	return 0;
++req_fail:
++	crypto_free_acomp(acomp_ctx->acomp);
++acomp_fail:
++	kfree(acomp_ctx->mutex);
++mutex_fail:
++	kfree(acomp_ctx->dstmem);
++
++	return ret;
+ }
+
+ static int zswap_cpu_comp_dead(unsigned int cpu, struct hlist_node *node)
+@@ -788,6 +761,8 @@ static int zswap_cpu_comp_dead(unsigned int cpu, struct hlist_node *node)
+ 			acomp_request_free(acomp_ctx->req);
+ 		if (!IS_ERR_OR_NULL(acomp_ctx->acomp))
+ 			crypto_free_acomp(acomp_ctx->acomp);
++		kfree(acomp_ctx->mutex);
++		kfree(acomp_ctx->dstmem);
+ 	}
+
+ 	return 0;
+@@ -1901,13 +1876,6 @@ static int zswap_setup(void)
+ 		goto cache_fail;
+ 	}
+
+-	ret = cpuhp_setup_state(CPUHP_MM_ZSWP_MEM_PREPARE, "mm/zswap:prepare",
+-				zswap_dstmem_prepare, zswap_dstmem_dead);
+-	if (ret) {
+-		pr_err("dstmem alloc failed\n");
+-		goto dstmem_fail;
+-	}
+-
+ 	ret = cpuhp_setup_state_multi(CPUHP_MM_ZSWP_POOL_PREPARE,
+ 				      "mm/zswap_pool:prepare",
+ 				      zswap_cpu_comp_prepare,
+@@ -1939,8 +1907,6 @@ static int zswap_setup(void)
+ 	if (pool)
+ 		zswap_pool_destroy(pool);
+ hp_fail:
+-	cpuhp_remove_state(CPUHP_MM_ZSWP_MEM_PREPARE);
+-dstmem_fail:
+ 	kmem_cache_destroy(zswap_entry_cache);
+ cache_fail:
+ 	/* if built-in, we aren't unloaded on failure; don't allow use */
+--
+2.20.1
+
 
