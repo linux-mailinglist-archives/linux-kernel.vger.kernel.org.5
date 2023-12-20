@@ -1,126 +1,124 @@
-Return-Path: <linux-kernel+bounces-6840-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6837-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C4F8819E59
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 12:43:36 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 100FA819E4F
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 12:42:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5F73E1C20B3F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 11:43:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 85CCEB23BED
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 11:42:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE68622331;
-	Wed, 20 Dec 2023 11:43:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AC1F219EE;
+	Wed, 20 Dec 2023 11:42:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="cnOv7p6S"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="e6PfQ08l"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C252724A16;
-	Wed, 20 Dec 2023 11:42:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BK6bAXR027838;
-	Wed, 20 Dec 2023 11:42:55 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	qcppdkim1; bh=A94w/D6FBEVhyYIllgHDNATXn/sIBqHjf1D3M3mSY8M=; b=cn
-	Ov7p6SUs2Zj/M0KKJG0u9eTDckSS+Fc6Tm/GjGMMfOiCrOVRIGiaVCaJK6YqFyPt
-	Tt2KgIf0JP3ZlphDOhcbfdO0mj2CaKnoyRRMfg6JsFqvCYvAwISgctZJDv3U+E+u
-	pG9ys30x9eM8nB9kWh06KWgoyBpismR171fYWpBfVu3KrkMhY9pSQghiIHbHBr/a
-	MhNz3fQFm3dBDCJJ1XuKoOEdYysZCTQkyqtLvD7T6jcxGwg3dVprGGdpawUseH/N
-	tH0PAcPw/PuILLKKhe6X1q4wPXx+UrD4F8SNyrVVABtPJxtGjhom4T0bPgU6yyVJ
-	BfzZOH59HsyBkduFILyw==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v3tnw0qwj-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 20 Dec 2023 11:42:55 +0000 (GMT)
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BKBgsil021211
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 20 Dec 2023 11:42:54 GMT
-Received: from hu-kbajaj-hyd.qualcomm.com (10.80.80.8) by
- nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Wed, 20 Dec 2023 03:42:51 -0800
-From: Komal Bajaj <quic_kbajaj@quicinc.com>
-To: Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio
-	<konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "Krzysztof
- Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>
-CC: <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Komal Bajaj <quic_kbajaj@quicinc.com>
-Subject: [PATCH 2/2] arm64: dts: qcom: qcs6490-rb3gen2: Enable various remoteprocs
-Date: Wed, 20 Dec 2023 17:12:25 +0530
-Message-ID: <20231220114225.26567-3-quic_kbajaj@quicinc.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231220114225.26567-1-quic_kbajaj@quicinc.com>
-References: <20231220114225.26567-1-quic_kbajaj@quicinc.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22F9C219EA
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 11:42:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-5e74b4d5445so22851367b3.1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 03:42:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1703072558; x=1703677358; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9FLRBJiNc6al0xeoGFcYf16xBZK82GduG3jNIF84OAQ=;
+        b=e6PfQ08lwOZZ7MX7LkhGnQFyUDXjnsM2BvakPJ70/70UltcOnwAyD8DdtGuYwX+d3D
+         9g3fqIE9uH+Li5zkJw5D3VuJQn08FkDe+iyRk9LOnU/vFAnLEn+a6n4PDbD2e7vceFUS
+         87rqldDxqeeh22XAiWpEF8HKoZ/MWo09H1uh6pGIaXas2uPwvlCPe/M3PrE/XmJ1iC0h
+         fadTU49A5Dei1r6FjT6iv2mYsaM8hLna/mxuID24cJ1L9ue0pWRs3gSxfGgSVyIgYtzY
+         P6M2H4y9Qm0XeB4XrTykcN4Z6Mc8nH49W+ONO2OC1qj2MsVORprClaEFpIYH50jcqmJg
+         jQ8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703072558; x=1703677358;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9FLRBJiNc6al0xeoGFcYf16xBZK82GduG3jNIF84OAQ=;
+        b=ahDDvvHqv5hKXYhltWE/iCXd9njhUzEGTyH+SywNOs6uLW9VKd5C9eLfTXuIgHGzma
+         wUJLL7IiAGpsQDDxmuqfbAnNVcvhx/LnO9/L+c+YcP+9A/iuaxZTzQHwuARJrQrEMLQs
+         gMjDblY/9BLydXw/1jhLomXBUV6GK9n2hRoHGa4P2AVZfju9eu++J5/hKanDN3/bhUtC
+         va2ynwgYhjdp9qBhFTKT9gM4INWCPPjpuMCHxOhPRZa5mbvTUm3iZYDHHjhwSSUhJ1e6
+         zGdZ+eygt2gYfohJI3KZcRhElIcLCENTfgeKMbFAQSugs+qSkIgb2D/IO0HnOtdUFv8A
+         T0rA==
+X-Gm-Message-State: AOJu0YzyeDg3Up6j+VOJXAA9NehRp05zSXu2TIk0h026nJBr3SBLc2+u
+	bYOcpa8sK3xIzqm+rB0gfc9ITHC8jANnY+OO4FbQZA==
+X-Google-Smtp-Source: AGHT+IH3m7OJl+wThf8u3VljPqCG95kkRpc/xctYLP3ucKD0Kbqc3CXmlXTyhUH1P63lrHUB2J1XyLYIBc+4z1ycFC8=
+X-Received: by 2002:a0d:c704:0:b0:5d7:1940:53c4 with SMTP id
+ j4-20020a0dc704000000b005d7194053c4mr16842637ywd.60.1703072558142; Wed, 20
+ Dec 2023 03:42:38 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: gM_1ih8IpKfCoZkhCuKfAMAf4M5fV3o_
-X-Proofpoint-ORIG-GUID: gM_1ih8IpKfCoZkhCuKfAMAf4M5fV3o_
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- spamscore=0 impostorscore=0 suspectscore=0 phishscore=0 bulkscore=0
- clxscore=1015 mlxlogscore=594 lowpriorityscore=0 adultscore=0 mlxscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2312200082
+References: <20231215-pinctrl-scmi-v1-0-0fe35e4611f7@nxp.com> <20231215-pinctrl-scmi-v1-4-0fe35e4611f7@nxp.com>
+In-Reply-To: <20231215-pinctrl-scmi-v1-4-0fe35e4611f7@nxp.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Wed, 20 Dec 2023 12:42:27 +0100
+Message-ID: <CACRpkdbpcwADJnZz1Q0KQ-gJv8FvnvJS=4PpMF+Np4rNCN3x+w@mail.gmail.com>
+Subject: Re: [PATCH 4/7] dt-bindings: firmware: arm,scmi: support pinctrl protocol
+To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+Cc: Sudeep Holla <sudeep.holla@arm.com>, Cristian Marussi <cristian.marussi@arm.com>, 
+	Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Oleksii Moisieiev <oleksii_moisieiev@epam.com>, Shawn Guo <shawnguo@kernel.org>, 
+	Sascha Hauer <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>, 
+	Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-gpio@vger.kernel.org, 
+	Peng Fan <peng.fan@nxp.com>, Takahiro Akashi <takahiro.akashi@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Enable the ADSP, CDSP and WPSS that are found on qcs6490-rb3gen2.
+Hi Peng,
 
-Signed-off-by: Komal Bajaj <quic_kbajaj@quicinc.com>
----
- arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+On Fri, Dec 15, 2023 at 12:52=E2=80=AFPM Peng Fan (OSS) <peng.fan@oss.nxp.c=
+om> wrote:
 
-diff --git a/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts b/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
-index 8bb7d13d85f6..172f9a3678fd 100644
---- a/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
-+++ b/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
-@@ -417,6 +417,21 @@ &qupv3_id_0 {
- 	status = "okay";
- };
+In this example, as it is not intended to reflect any specific hardware,
+use the latest canonical naming:
 
-+&remoteproc_adsp {
-+	firmware-name = "qcom/qcm6490/adsp.mdt";
-+	status = "okay";
-+};
-+
-+&remoteproc_cdsp {
-+	firmware-name = "qcom/qcm6490/cdsp.mdt";
-+	status = "okay";
-+};
-+
-+&remoteproc_wpss {
-+	firmware-name = "qcom/qcm6490/wpss.mdt";
-+	status = "okay";
-+};
-+
- &tlmm {
- 	gpio-reserved-ranges = <32 2>, /* ADSP */
- 			       <48 4>; /* NFC */
---
-2.42.0
+> +
+> +            scmi_pinctrl: protocol@19 {
+> +                reg =3D <0x19>;
+> +                #pinctrl-cells =3D <0>;
+> +
+> +                i2c2-pins {
+> +                    groups =3D "i2c2_a", "i2c2_b";
 
+groups =3D "g_i2c2_a", "g_i2c2_b";
+
+> +                    function =3D "i2c2";
+
+function =3D "f_i2c2";
+
+> +                };
+> +
+> +                mdio-pins {
+> +                    groups =3D "avb_mdio";
+
+groups =3D "g_avb_mdio";
+
+> +                    drive-strength =3D <24>;
+> +                };
+> +
+> +                keys_pins: keys-pins {
+> +                    pins =3D "GP_5_17", "GP_5_20", "GP_5_22", "GP_2_1";
+
+pins =3D "gpio_5_17", "gpio_5_20", "gpio_5_22", "gpio_2_1";
+
+These names look odd to me, like these are actually groups
+with pins 5..17 etc. Should it be groups =3D "g_gpio_5_17" etc?
+
+Yours,
+Linus Walleij
 
