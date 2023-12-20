@@ -1,144 +1,119 @@
-Return-Path: <linux-kernel+bounces-7390-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7392-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E7E981A740
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 20:25:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD6CA81A745
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 20:25:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 51BBA1C237FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 19:25:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EB0F11C237FB
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 19:25:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EB0C4878B;
-	Wed, 20 Dec 2023 19:24:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA0EE487AF;
+	Wed, 20 Dec 2023 19:25:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="eBGQ/oGH"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="zFlspcyi"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
+Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C30A3482F4
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 19:24:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-5bdb0be3591so13158a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 11:24:56 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B41D248CF0
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 19:25:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-5d2d0661a8dso508797b3.2
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 11:25:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1703100296; x=1703705096; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=G3r2jEuboXnt0TyTccKW6CqAS7wWsR7OcHQYWrEfYgk=;
-        b=eBGQ/oGH4ttsIRETiVhphdmP8E0ratJH9w9+T4pFAA38BitAKjJMdVBzdrtuFehhUb
-         4JrejhktM2P/Yc/hzERTC9K294/yNtWzyjfTRnvXBPKVGFRDZROCN8Ph2An6r96pFDU9
-         RCukNEJVbvl/teauL1wf0tATIaNPz4icAMV0LAJ20s/BBK+7eBwPTzv9kJbV+32QfvhG
-         7+LNEnvFaNFXEaGq0IkJwK5INDsdmYAbfyy8FuyqktCKbs40xiMHBSS/AL8XJb5c9LqK
-         yHxB7sDgSYLCpGb6U3N4JfIoUtCvzpIEWXy5SqIMj2X5dpDTKOvezonZF2UegOlUP78E
-         eFdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703100296; x=1703705096;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=linaro.org; s=google; t=1703100309; x=1703705109; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=G3r2jEuboXnt0TyTccKW6CqAS7wWsR7OcHQYWrEfYgk=;
-        b=hH0c7ZTAVP58aTgStBNpecYUulzezFpjQb/gKJPdNxGl1Qxl8MbfmC/Yp36NMjTHfu
-         8knsE1RfWfSKcehknloQI0Z4BG6D/kqb1DqLSflQgzQF8dnUZ0yABBZVb4K3zk4oXoQU
-         UIWaF4ekALY5FuAgd7xF1rsmOte+nI9AvOsDcITZ5CWvoRf5WL2n7/mQzGgL+F8rPw8B
-         +0NK4cH19J/HrnoGvZKUyXoXQLNIG6RuQT1zYDWSGzOLDxmE5XHmx1yaCzqllQIqSWvI
-         vsuSV7bppBnN7STWpxiBDmOXYac3Uk9OCJpGj6uGNt2AuBwS7af75ByFkcWOUjTC7eYH
-         9iZw==
-X-Gm-Message-State: AOJu0YxaAdzaxccL3KpM68JPV9sQivPMA2VCRl/L01TWvQoiYdt80x7B
-	FzNobVBkOxPMEEqLtzQhkvoz0w==
-X-Google-Smtp-Source: AGHT+IE10Hi1D4FeGuaDp33730ilQCSEdYF4Q1r3oFM/U/FYVIIElNunnOAF0gcrcSMw42C8IsArdQ==
-X-Received: by 2002:a05:6a20:e123:b0:187:7761:6155 with SMTP id kr35-20020a056a20e12300b0018777616155mr209907pzb.55.1703100295875;
-        Wed, 20 Dec 2023 11:24:55 -0800 (PST)
-Received: from google.com ([2620:15c:2d3:205:a8ff:6a0c:2784:5a34])
-        by smtp.gmail.com with ESMTPSA id n38-20020a056a000d6600b006d3dd365a76sm134211pfv.2.2023.12.20.11.24.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Dec 2023 11:24:55 -0800 (PST)
-Date: Wed, 20 Dec 2023 11:24:49 -0800
-From: Nick Desaulniers <ndesaulniers@google.com>
-To: Tanzir Hasan <tanzirh@google.com>
-Cc: Jorge Lopez <jorge.lopez2@hp.com>, Hans de Goede <hdegoede@redhat.com>,
-	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Al Viro <viro@zeniv.linux.org.uk>
-Subject: Re: [PATCH] platform/x86: hp-bioscfg: Removed needless asm-generic
-Message-ID: <ZYM_gZAdEnczZiBz@google.com>
-References: <20231219-hp-password-v1-1-052fe7b6b7f1@google.com>
+        bh=QNmCP+oe3oSMVeft7bEuEgPHXSe736/+Mn6NnLSCe2I=;
+        b=zFlspcyihG7gzbLJJMkrNtjBdvCMt+fHWDNFvGaAQ1t3yUqL7425UfcBNu1+mYegI7
+         AdzHNZ8Mp6pgKv87k+JCS7KI/TWQTIkGJrYc5gMqmBla/x+cFxHZUOianeg8zG+S4TVw
+         qJ4E7UA9qQ4BADjLwjNValnWejobFeoifiZ2GzwfXtatdONsgytdGgUos+RZn4oOUkN1
+         TiGHK4KReFPN4ZTsyf09lV1NUVVcI3PotTvfbTwUzXf+LN9sB10/sOzo2JKDGUEm9Mhn
+         7J6HjmLTVxLgHzLchD89JlgAgTaaPZ/cSrDKYi9EEOs3R08zfdAUYGrGFA2MsHmAoc13
+         hZHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703100309; x=1703705109;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QNmCP+oe3oSMVeft7bEuEgPHXSe736/+Mn6NnLSCe2I=;
+        b=T80mMfvdq7OMANcC/Hc0nET4+k6jos2Ds9s2QHdPaUceuw2/8F28M3KU2rldyDu+uc
+         RCKZ2cb6pXnzmldOSXH3IMkAQNTJebyPW0ovOWAdAB4ErKLWAgq96t5LhCpnaMVGANY8
+         QJiUyOmWK1i07Wzpc7raSx1VaouHbhZLTjMShG7mjR8agiqGhz/fQThOOWS3s85QHcTT
+         YF9BflBYQwggNyIeU2bIcRBm+cHulSKt7UXLrTtlWTi5rHTpzydUBBzg6whH/IStK1zB
+         VUSzMLoCgxQXDeG24BV2DLMTLY0qK2BboLl9wyn5SZTkBjBcC7GK340fmGCXtRPMYYnh
+         1Bkw==
+X-Gm-Message-State: AOJu0YxgkZQ0y1BRkPjABwYCVXVQrPQyiXWyOtffjhOeEB69UIGVtLd2
+	duvKs8CWWjOLhvEg0ClIEbGkYEv1i3ufsWqLRCoMXA==
+X-Google-Smtp-Source: AGHT+IHKQoxOSx/75Yu3bPfICRilkmmatfOTZGCwh6ZIG0MIHwmi1SgmuqkGllO5XCdAmaUsxQDOtWdj3LD1JcBG/pk=
+X-Received: by 2002:a0d:d80a:0:b0:5e2:a469:71b6 with SMTP id
+ a10-20020a0dd80a000000b005e2a46971b6mr258824ywe.4.1703100309747; Wed, 20 Dec
+ 2023 11:25:09 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231219-hp-password-v1-1-052fe7b6b7f1@google.com>
+References: <20231215143906.3651122-1-emil.renner.berthing@canonical.com>
+ <20231215143906.3651122-2-emil.renner.berthing@canonical.com>
+ <20231215202137.GA317624-robh@kernel.org> <CAJM55Z9pBpYfwpxPH7bUumuosVDn9DHLSBngW6CtG7aK_z+_bQ@mail.gmail.com>
+In-Reply-To: <CAJM55Z9pBpYfwpxPH7bUumuosVDn9DHLSBngW6CtG7aK_z+_bQ@mail.gmail.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Wed, 20 Dec 2023 20:24:58 +0100
+Message-ID: <CACRpkdYT+jf4=dk3Y9cwa_=aYCihVq93N-iT0RUbtT2-+PX69w@mail.gmail.com>
+Subject: Re: [PATCH v1 1/8] dt-bindings: pinctrl: Add thead,th1520-pinctrl bindings
+To: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+Cc: Rob Herring <robh@kernel.org>, linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org, 
+	Hoan Tran <hoan@os.amperecomputing.com>, Serge Semin <fancer.lancer@gmail.com>, 
+	Bartosz Golaszewski <brgl@bgdev.pl>, Andy Shevchenko <andy@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Jisheng Zhang <jszhang@kernel.org>, Guo Ren <guoren@kernel.org>, Fu Wei <wefu@redhat.com>, 
+	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 19, 2023 at 10:10:52PM +0000, Tanzir Hasan wrote:
-> asm-generic/posix-types.h is obtained through bioscfg.h so there is no
-> need to include it.
+On Sat, Dec 16, 2023 at 2:57=E2=80=AFPM Emil Renner Berthing
+<emil.renner.berthing@canonical.com> wrote:
 
-I verified that by:
-1. building with V=1
-2. taking the compiler invocation and adding -H
+> > > +          thead,strong-pull-up:
+> > > +            oneOf:
+> > > +              - type: boolean
+> > > +              - $ref: /schemas/types.yaml#/definitions/uint32
+> > > +                enum: [ 0, 2100 ]
+> > > +            description: Enable or disable strong 2.1kOhm pull-up.
+> >
+> > bias-pull-up can already specify the strength in Ohms.
+>
+> The strong pull up is a separate bit that can be enabled independently fr=
+om the
+> regular pull-up/down, so in theory you could enable both the regular pull=
+-up
+> and the strong pull-up at the same time, or even the regular poll-down an=
+d the
+> strong pull-up which is probably not advised.
 
-. drivers/platform/x86/hp/hp-bioscfg/bioscfg.h
-.. ./include/linux/wmi.h
-... ./include/linux/device.h
-.... ./include/linux/dev_printk.h
-..... ./include/linux/compiler.h
-...... ./arch/x86/include/generated/asm/rwonce.h
-....... ./include/asm-generic/rwonce.h
-........ ./include/linux/kasan-checks.h
-......... ./include/linux/types.h
-.......... ./include/uapi/linux/types.h
-........... ./arch/x86/include/generated/uapi/asm/types.h
-............ ./arch/x86/include/asm/posix_types.h
-............. ./arch/x86/include/uapi/asm/posix_types_64.h
-.............. ./include/uapi/asm-generic/posix_types.h
+bias-pull-up; <- Just regular pulling up the ordinary
+bias-pull-up =3D <100>; <- Same thing if the ordinary is 100 Ohm (figure ou=
+t what
+  resistance it actually is....)
+bias-pull-up =3D <21000000>; <- strong pull up
+bias-pull-up =3D <21000100>; <- both at the same time
 
-> It is also an asm-generic file which should be
-> avoided if possible.
+> So the idea here was just to make sure that you can do eg.
+>
+>         thead,strong-pull-up =3D <0>;
+>
+> to make sure the bit is cleared.
 
-Correct, though there is a linux/posix_types.h file.
+No use bias-disable; for this.
 
-biocfg.h hasn't seen any changes since introduction; perhaps some reference was
-removed in follow up changes to passwdobj-attributes.c, but nothing stood out.
-
-Regardless, this file builds just fine without either (asm/posix_types.h or
-linux/posix_types.h), and asm-generic should not be used (as suggested by Al).
-
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Tested-by: Nick Desaulniers <ndesaulniers@google.com>
-
-> 
-> Suggest-by: Al Viro <viro@zeniv.linux.org.uk>
-> Signed-off-by: Tanzir Hasan <tanzirh@google.com>
-> ---
->  drivers/platform/x86/hp/hp-bioscfg/passwdobj-attributes.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/drivers/platform/x86/hp/hp-bioscfg/passwdobj-attributes.c b/drivers/platform/x86/hp/hp-bioscfg/passwdobj-attributes.c
-> index 03d0188804ba..f7efe217a4bb 100644
-> --- a/drivers/platform/x86/hp/hp-bioscfg/passwdobj-attributes.c
-> +++ b/drivers/platform/x86/hp/hp-bioscfg/passwdobj-attributes.c
-> @@ -7,7 +7,6 @@
->   */
->  
->  #include "bioscfg.h"
-> -#include <asm-generic/posix_types.h>
->  
->  GET_INSTANCE_ID(password);
->  /*
-> 
-> ---
-> base-commit: 3fb7c66ac51a87984e043d9f47b7a509e3f53906
-> change-id: 20231219-hp-password-19068dc438b5
-> 
-> Best regards,
-> -- 
-> Tanzir Hasan <tanzirh@google.com>
-> 
+Yours,
+Linus Walleij
 
