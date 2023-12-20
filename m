@@ -1,75 +1,172 @@
-Return-Path: <linux-kernel+bounces-7077-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6940-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 738A981A156
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 15:45:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A91C819F8B
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 14:10:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1303D1F22CBF
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 14:45:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CD7281C2101F
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 13:10:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 514883DB80;
-	Wed, 20 Dec 2023 14:45:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 327D6358A4;
+	Wed, 20 Dec 2023 13:09:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="geH8Po+2"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-m49205.qiye.163.com (mail-m49205.qiye.163.com [45.254.49.205])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 988103D989;
-	Wed, 20 Dec 2023 14:45:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sangfor.com.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sangfor.com.cn
-Received: from [0.0.0.0] (unknown [IPV6:240e:3b7:3270:35d0:2d5d:a87c:93d7:296a])
-	by mail-m12773.qiye.163.com (Hmail) with ESMTPA id 9186D2C063A;
-	Wed, 20 Dec 2023 16:47:09 +0800 (CST)
-Message-ID: <8a0d7c64-128b-277a-8128-5b413f4fc341@sangfor.com.cn>
-Date: Wed, 20 Dec 2023 16:47:09 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E93934540;
+	Wed, 20 Dec 2023 13:09:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19026C433C7;
+	Wed, 20 Dec 2023 13:09:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703077797;
+	bh=kNBcPwaMlCBZq05QdM/ZhosCOAELdn7NQH61Zm2JFdI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=geH8Po+2xTzfgztalOer3avEmmYlxn/45tUCRRhRPkul1OdegcfPNbzZr3tlUU9gL
+	 Gr9cAMJrqZuYg4ZXywlT8vSMjii9EQa5EbRzNrvsitbUMRrwbGZ+Vs5h7oma4+HXCX
+	 Y6lx9NhOjzB4pblu7fVu8HdFsBrqgIGPmNWbmGUcFzrh5wBtM9iKG3YDgpGMKzvzlh
+	 8vB2ywPk0x3h2DIr7Fq1JC41iWIBZuH9vX9FxlyK05Uq+uzcK1I4v29L51UH7MToRn
+	 KnLrmtlosx1RWynwXEXaab9s09kXI2/VKwn3Z8VcssHKf3wD1CPcmCmEDqkbqzUfsQ
+	 heTJfZCiYSM3Q==
+Date: Wed, 20 Dec 2023 20:57:20 +0800
+From: Jisheng Zhang <jszhang@kernel.org>
+To: yunhui cui <cuiyunhui@bytedance.com>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, Will Deacon <will@kernel.org>,
+	"Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Nick Piggin <npiggin@gmail.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-arch@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [External] [PATCH 2/4] riscv: tlb: convert __p*d_free_tlb() to
+ inline functions
+Message-ID: <ZYLksMHfzH1usBAb@xhacker>
+References: <20231219175046.2496-1-jszhang@kernel.org>
+ <20231219175046.2496-3-jszhang@kernel.org>
+ <CAEEQ3wn6j0N-NSQjEqE8Ee9dGzGMJJ4CW2Yhw_njAaOgR8G_eQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH 0/2] scsi: ses: Fix out-of-bounds accesses
-Content-Language: en-US
-To: jejb@linux.ibm.com, martin.petersen@oracle.com
-Cc: zhuwei@sangfor.com.cn, thenzl@redhat.com, linux-scsi@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20231130142835.18041-1-dinghui@sangfor.com.cn>
-From: Ding Hui <dinghui@sangfor.com.cn>
-In-Reply-To: <20231130142835.18041-1-dinghui@sangfor.com.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
-	tZV1koWUFITzdXWS1ZQUlXWQ8JGhUIEh9ZQVlDGR5DVktNHU9DS08eGEkeQ1UTARMWGhIXJBQOD1
-	lXWRgSC1lBWUlPSx5BSBlMQUhJTEtBSE4fS0FJH04fQRpDTBhBQkgfTEFJQk0aWVdZFhoPEhUdFF
-	lBWU9LSFVKTU9JTklVSktLVUpCWQY+
-X-HM-Tid: 0a8c86684666b249kuuu9186d2c063a
-X-HM-MType: 1
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MQg6Kgw*AzwxNyNJCx1RTkoI
-	CRVPChdVSlVKTEtIS01JS0hLTkhKVTMWGhIXVR8SFRwTDhI7CBoVHB0UCVUYFBZVGBVFWVdZEgtZ
-	QVlJT0seQUgZTEFISUxLQUhOH0tBSR9OH0EaQ0wYQUJIH0xBSUJNGllXWQgBWUFKTEpKNwY+
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEEQ3wn6j0N-NSQjEqE8Ee9dGzGMJJ4CW2Yhw_njAaOgR8G_eQ@mail.gmail.com>
 
-On 2023/11/30 22:28, Ding Hui wrote:
-> This series includes a few OOB fixes for ses driver
-> 
-> Ding Hui (1):
->    scsi: ses: increase default init_alloc_size
-> 
-> Zhu Wei (1):
->    scsi: ses: Fix slab-out-of-bounds in ses_get_power_status()
-> 
->   drivers/scsi/ses.c | 55 +++++++++++++++++++++++++++++++++++++++-------
->   1 file changed, 47 insertions(+), 8 deletions(-)
-> 
+On Wed, Dec 20, 2023 at 10:59:22AM +0800, yunhui cui wrote:
+> Hi Jisheng,
 
-Friendly ping.
+Hi,
 
--- 
-Thanks,
-- Ding Hui
+> 
+> On Wed, Dec 20, 2023 at 2:04 AM Jisheng Zhang <jszhang@kernel.org> wrote:
+> >
+> > This is to prepare for enabling MMU_GATHER_RCU_TABLE_FREE.
+> > No functionality changes.
+> >
+> > Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+> > ---
+> >  arch/riscv/include/asm/pgalloc.h | 54 +++++++++++++++++++-------------
+> >  1 file changed, 32 insertions(+), 22 deletions(-)
+> >
+> > diff --git a/arch/riscv/include/asm/pgalloc.h b/arch/riscv/include/asm/pgalloc.h
+> > index a12fb83fa1f5..3c5e3bd15f46 100644
+> > --- a/arch/riscv/include/asm/pgalloc.h
+> > +++ b/arch/riscv/include/asm/pgalloc.h
+> > @@ -95,13 +95,16 @@ static inline void pud_free(struct mm_struct *mm, pud_t *pud)
+> >                 __pud_free(mm, pud);
+> >  }
+> >
+> > -#define __pud_free_tlb(tlb, pud, addr)                                 \
+> > -do {                                                                   \
+> > -       if (pgtable_l4_enabled) {                                       \
+> > -               pagetable_pud_dtor(virt_to_ptdesc(pud));                \
+> > -               tlb_remove_page_ptdesc((tlb), virt_to_ptdesc(pud));     \
+> > -       }                                                               \
+> > -} while (0)
+> > +static inline void __pud_free_tlb(struct mmu_gather *tlb, pud_t *pud,
+> > +                                 unsigned long addr)
+> > +{
+> > +       if (pgtable_l4_enabled) {
+> > +               struct ptdesc *ptdesc = virt_to_ptdesc(pud);
+> > +
+> > +               pagetable_pud_dtor(ptdesc);
+> > +               tlb_remove_page_ptdesc(tlb, ptdesc);
+> > +       }
+> > +}
+> >
+> >  #define p4d_alloc_one p4d_alloc_one
+> >  static inline p4d_t *p4d_alloc_one(struct mm_struct *mm, unsigned long addr)
+> > @@ -130,11 +133,12 @@ static inline void p4d_free(struct mm_struct *mm, p4d_t *p4d)
+> >                 __p4d_free(mm, p4d);
+> >  }
+> >
+> > -#define __p4d_free_tlb(tlb, p4d, addr)                                 \
+> > -do {                                                                   \
+> > -       if (pgtable_l5_enabled)                                         \
+> > -               tlb_remove_page_ptdesc((tlb), virt_to_ptdesc(p4d));     \
+> > -} while (0)
+> > +static inline void __p4d_free_tlb(struct mmu_gather *tlb, p4d_t *p4d,
+> > +                                 unsigned long addr)
+> > +{
+> > +       if (pgtable_l5_enabled)
+> > +               tlb_remove_page_ptdesc(tlb, virt_to_ptdesc(p4d));
+> > +}
+> >  #endif /* __PAGETABLE_PMD_FOLDED */
+> >
+> >  static inline void sync_kernel_mappings(pgd_t *pgd)
+> > @@ -159,19 +163,25 @@ static inline pgd_t *pgd_alloc(struct mm_struct *mm)
+> >
+> >  #ifndef __PAGETABLE_PMD_FOLDED
+> >
+> > -#define __pmd_free_tlb(tlb, pmd, addr)                         \
+> > -do {                                                           \
+> > -       pagetable_pmd_dtor(virt_to_ptdesc(pmd));                \
+> > -       tlb_remove_page_ptdesc((tlb), virt_to_ptdesc(pmd));     \
+> > -} while (0)
+> > +static inline void __pmd_free_tlb(struct mmu_gather *tlb, pmd_t *pmd,
+> > +                                 unsigned long addr)
+> > +{
+> > +       struct ptdesc *ptdesc = virt_to_ptdesc(pmd);
+> > +
+> > +       pagetable_pmd_dtor(ptdesc);
+> > +       tlb_remove_page_ptdesc(tlb, ptdesc);
+> > +}
+> >
+> >  #endif /* __PAGETABLE_PMD_FOLDED */
+> >
+> > -#define __pte_free_tlb(tlb, pte, buf)                  \
+> > -do {                                                   \
+> > -       pagetable_pte_dtor(page_ptdesc(pte));           \
+> > -       tlb_remove_page_ptdesc((tlb), page_ptdesc(pte));\
+> > -} while (0)
+> > +static inline void __pte_free_tlb(struct mmu_gather *tlb, pgtable_t pte,
+> > +                                 unsigned long addr)
+> > +{
+> > +       struct ptdesc *ptdesc = page_ptdesc(pte);
+> > +
+> > +       pagetable_pte_dtor(ptdesc);
+> > +       tlb_remove_page_ptdesc(tlb, ptdesc);
+> > +}
+> >  #endif /* CONFIG_MMU */
+> >
+> >  #endif /* _ASM_RISCV_PGALLOC_H */
+> > --
+> > 2.40.0
+> >
+> 
+> Why is it necessary to convert to inline functions?
 
+Hmm, it's not necessary but a plus, the inline version's readability and
+maintainability is better than macros
+
+Regards
 
