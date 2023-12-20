@@ -1,106 +1,193 @@
-Return-Path: <linux-kernel+bounces-7034-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7035-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49C6081A0C6
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 15:09:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C9F2081A0CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 15:09:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 04A6A282D0A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 14:09:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 68EE61F2A4E2
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 14:09:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEDD238DDE;
-	Wed, 20 Dec 2023 14:09:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PTc1MRG9"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 945F738FB4;
+	Wed, 20 Dec 2023 14:09:28 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E14538F81;
-	Wed, 20 Dec 2023 14:09:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703081357; x=1734617357;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=4aqkzWwe/QO/2csYRmPX92UHytd6d0JQX8zFr1gOUuM=;
-  b=PTc1MRG9rnhTyocnVPG42JUdF0yZFJfrzED3bLMoZ+j8sxz/XZ2TPuFY
-   VrLVpki8E4Ap3muFgY5c4Ha1Y7dsCDk9byXdvsBBA5aHZtMoIclf1CwS2
-   o9i0fxSE5W7JBg9CknC5B/YktQ9cRRMJfRYAIqQmNf61aCoq9LoFZmReq
-   N7shGrP8Ec1c4dxrlJB4XXCuvrKqdWTwIbFGCOU6BK0Q52Rpd7husBpVa
-   4oDTBcFFBQndP08xIzUfiuTRSbZl3CKVNu75fvKrioqVYxFomaogdExFW
-   NagcyGJyz/bCOQLjnLlkpP8RHmrXipY1ODSl5o8IZOaRUaBstM/x9GcM2
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10930"; a="2658126"
-X-IronPort-AV: E=Sophos;i="6.04,291,1695711600"; 
-   d="scan'208";a="2658126"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Dec 2023 06:09:17 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10930"; a="779862813"
-X-IronPort-AV: E=Sophos;i="6.04,291,1695711600"; 
-   d="scan'208";a="779862813"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga007.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Dec 2023 06:09:14 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rFxG3-00000007YP4-3Lkx;
-	Wed, 20 Dec 2023 16:09:11 +0200
-Date: Wed, 20 Dec 2023 16:09:11 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: Linus Walleij <linus.walleij@linaro.org>,
-	Kent Gibson <warthog618@gmail.com>, linux-gpio@vger.kernel.org,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 140BD38F96;
+	Wed, 20 Dec 2023 14:09:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R641e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0VyumN3k_1703081361;
+Received: from j66a10360.sqa.eu95.tbsite.net(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0VyumN3k_1703081361)
+          by smtp.aliyun-inc.com;
+          Wed, 20 Dec 2023 22:09:22 +0800
+From: "D. Wythe" <alibuda@linux.alibaba.com>
+To: pablo@netfilter.org,
+	kadlec@netfilter.org,
+	fw@strlen.de
+Cc: bpf@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH 1/2] gpiolib: drop tabs from local variable declarations
-Message-ID: <ZYL1hybEfHxGVQrr@smile.fi.intel.com>
-References: <20231219142323.28929-1-brgl@bgdev.pl>
- <ZYGxefhI9UpwknhD@smile.fi.intel.com>
- <CAMRc=MfqYAYsjdPNrc2u7NDuUVdaA4NcE3vMevhSUmZOtc14CQ@mail.gmail.com>
+	netdev@vger.kernel.org,
+	coreteam@netfilter.org,
+	netfilter-devel@vger.kernel.org,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	ast@kernel.org
+Subject: [RFC nf-next v3 2/2] selftests/bpf: Add netfilter link prog update test
+Date: Wed, 20 Dec 2023 22:09:11 +0800
+Message-Id: <1703081351-85579-3-git-send-email-alibuda@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
+In-Reply-To: <1703081351-85579-1-git-send-email-alibuda@linux.alibaba.com>
+References: <1703081351-85579-1-git-send-email-alibuda@linux.alibaba.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMRc=MfqYAYsjdPNrc2u7NDuUVdaA4NcE3vMevhSUmZOtc14CQ@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Tue, Dec 19, 2023 at 08:59:12PM +0100, Bartosz Golaszewski wrote:
-> On Tue, Dec 19, 2023 at 4:06 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> > On Tue, Dec 19, 2023 at 03:23:22PM +0100, Bartosz Golaszewski wrote:
+From: "D. Wythe" <alibuda@linux.alibaba.com>
 
-...
+Update prog for active links and verify whether
+the prog has been successfully replaced.
 
-> > > +     struct gpio_chip *gc = desc->gdev->chip;
-> > > +     int ret;
-> > > +     unsigned long flags;
-> > > +     unsigned int offset;
-> >
-> > I'm wondering if you can make it reversed xmas tree order.
-> > This will make it even more consistent between functions.
-> 
-> Sure but we'd have to update all functions across gpiolib.c. Let's
-> take it one thing at a time.
+Expected output:
 
-The point is to do this for the lines you modified to avoid additional churn
-and burden for backport. At least these two things (removing TABs and shuffling
-the order) are kinda of the same family of the logical changes. I do not see
-the problem doing this in one patch for the lines you modified. Yet, for the
-rest it might be another patch, but I don't think it worth doing it.
+./test_progs -t netfilter_link_update_prog
+Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
 
+Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
+---
+ .../bpf/prog_tests/netfilter_link_update_prog.c    | 83 ++++++++++++++++++++++
+ .../bpf/progs/test_netfilter_link_update_prog.c    | 24 +++++++
+ 2 files changed, 107 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/netfilter_link_update_prog.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_netfilter_link_update_prog.c
+
+diff --git a/tools/testing/selftests/bpf/prog_tests/netfilter_link_update_prog.c b/tools/testing/selftests/bpf/prog_tests/netfilter_link_update_prog.c
+new file mode 100644
+index 00000000..d23b544
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/netfilter_link_update_prog.c
+@@ -0,0 +1,83 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++
++#include <test_progs.h>
++#include <linux/netfilter.h>
++#include <network_helpers.h>
++#include "test_netfilter_link_update_prog.skel.h"
++
++#define SERVER_ADDR "127.0.0.1"
++#define SERVER_PORT 12345
++
++static const char dummy_message[] = "A dummy message";
++
++static int send_dummy(int client_fd)
++{
++	struct sockaddr_storage saddr;
++	struct sockaddr *saddr_p;
++	socklen_t saddr_len;
++	int err;
++
++	saddr_p = (struct sockaddr *)&saddr;
++	err = make_sockaddr(AF_INET, SERVER_ADDR, SERVER_PORT, &saddr, &saddr_len);
++	if (!ASSERT_OK(err, "make_sockaddr"))
++		return -1;
++
++	err = sendto(client_fd, dummy_message, sizeof(dummy_message) - 1, 0, saddr_p, saddr_len);
++	if (!ASSERT_GE(err, 0, "sendto"))
++		return -1;
++
++	return 0;
++}
++
++void test_netfilter_link_update_prog(void)
++{
++	LIBBPF_OPTS(bpf_netfilter_opts, opts,
++		.pf = NFPROTO_IPV4,
++		.hooknum = NF_INET_LOCAL_OUT,
++		.priority = 100);
++	struct test_netfilter_link_update_prog *skel;
++	struct bpf_program *prog;
++	int server_fd, client_fd;
++	int err;
++
++	skel = test_netfilter_link_update_prog__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "test_netfilter_link_update_prog__open_and_load"))
++		goto out;
++
++	prog = skel->progs.nf_link_prog;
++
++	if (!ASSERT_OK_PTR(prog, "load program"))
++		goto out;
++
++	skel->links.nf_link_prog = bpf_program__attach_netfilter(prog, &opts);
++	if (!ASSERT_OK_PTR(skel->links.nf_link_prog, "attach netfilter program"))
++		goto out;
++
++	server_fd = start_server(AF_INET, SOCK_DGRAM, SERVER_ADDR, SERVER_PORT, 0);
++	if (!ASSERT_GE(server_fd, 0, "start_server"))
++		goto out;
++
++	client_fd = connect_to_fd(server_fd, 0);
++	if (!ASSERT_GE(client_fd, 0, "connect_to_fd"))
++		goto out;
++
++	send_dummy(client_fd);
++
++	ASSERT_EQ(skel->bss->counter, 0, "counter should be zero");
++
++	err = bpf_link__update_program(skel->links.nf_link_prog, skel->progs.nf_link_prog_new);
++	if (!ASSERT_OK(err, "bpf_link__update_program"))
++		goto out;
++
++	send_dummy(client_fd);
++	ASSERT_GE(skel->bss->counter, 0, "counter should be greater than zero");
++out:
++	if (client_fd > 0)
++		close(client_fd);
++	if (server_fd > 0)
++		close(server_fd);
++
++	test_netfilter_link_update_prog__destroy(skel);
++}
++
++
+diff --git a/tools/testing/selftests/bpf/progs/test_netfilter_link_update_prog.c b/tools/testing/selftests/bpf/progs/test_netfilter_link_update_prog.c
+new file mode 100644
+index 00000000..42ae332
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/test_netfilter_link_update_prog.c
+@@ -0,0 +1,24 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++
++#include "vmlinux.h"
++#include <bpf/bpf_helpers.h>
++
++#define NF_ACCEPT 1
++
++SEC("netfilter")
++int nf_link_prog(struct bpf_nf_ctx *ctx)
++{
++	return NF_ACCEPT;
++}
++
++u64 counter = 0;
++
++SEC("netfilter")
++int nf_link_prog_new(struct bpf_nf_ctx *ctx)
++{
++	counter++;
++	return NF_ACCEPT;
++}
++
++char _license[] SEC("license") = "GPL";
++
 -- 
-With Best Regards,
-Andy Shevchenko
-
+1.8.3.1
 
 
