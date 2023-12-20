@@ -1,107 +1,229 @@
-Return-Path: <linux-kernel+bounces-7018-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7019-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81AB381A08F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 15:02:25 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0268481A091
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 15:02:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B9B7D28A3AE
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 14:02:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6E39DB2483A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 14:02:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C28540BF3;
-	Wed, 20 Dec 2023 14:00:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 435373789F;
+	Wed, 20 Dec 2023 14:00:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZPEvx5OI"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hNkG118w"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4DDD40BE0;
-	Wed, 20 Dec 2023 14:00:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34943C433C7;
-	Wed, 20 Dec 2023 14:00:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703080807;
-	bh=+UjhavKUNioyCLuYa/eAIifHPzlf8OMi3q4tlY/kIII=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=ZPEvx5OIVRGL8qNYDhuCf+Eyhu7N7gGpyxUEJy1Dou5VQ0xUvLUvdlKcCOKQX2h4p
-	 /KAAgyhT2puLegHqGRF4Nc1GkXKYXSvks7uScMpfdKHOs05lOqSjywe8xoNFB5XDdw
-	 VatbHT1lUGuL9F6Rvu189Em9/PrhykJKmqshRe/Dts+wETEQLdXBFrhighSJOxwtj9
-	 O1DJ8lVXBmKBiihBnvyD+S/2zJZ369/oGlKSwpdS6/82III6q37K1oIz2iCt7J/Bpw
-	 kSsOL2AUsKCpMJsl2InL4ERp4DshtE0WqCWYN/tHx+H0cs/QXjatVPEAzGwEPvvUUl
-	 CLoNGOmtYzufw==
-Received: from [104.132.45.104] (helo=wait-a-minute.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rFx7E-005hJ7-Qt;
-	Wed, 20 Dec 2023 14:00:04 +0000
-Date: Wed, 20 Dec 2023 14:00:04 +0000
-Message-ID: <87y1dpt1nf.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: <ankita@nvidia.com>
-Cc: <jgg@nvidia.com>,
-	<oliver.upton@linux.dev>,
-	<suzuki.poulose@arm.com>,
-	<yuzenghui@huawei.com>,
-	<catalin.marinas@arm.com>,
-	<will@kernel.org>,
-	<alex.williamson@redhat.com>,
-	<kevin.tian@intel.com>,
-	<yi.l.liu@intel.com>,
-	<ardb@kernel.org>,
-	<akpm@linux-foundation.org>,
-	<gshan@redhat.com>,
-	<mochs@nvidia.com>,
-	<lpieralisi@kernel.org>,
-	<aniketa@nvidia.com>,
-	<cjia@nvidia.com>,
-	<kwankhede@nvidia.com>,
-	<targupta@nvidia.com>,
-	<vsethi@nvidia.com>,
-	<acurrid@nvidia.com>,
-	<apopple@nvidia.com>,
-	<jhubbard@nvidia.com>,
-	<danw@nvidia.com>,
-	<linux-mm@kvack.org>,
-	<kvmarm@lists.linux.dev>,
-	<kvm@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v4 0/3] kvm: arm64: allow the VM to select DEVICE_* and NORMAL_NC for IO memory
-In-Reply-To: <20231218090719.22250-1-ankita@nvidia.com>
-References: <20231218090719.22250-1-ankita@nvidia.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
- (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF042374F0
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 14:00:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1703080826;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=0O1MqgGGyvjOUiWkIFWdN3z01s+W1X+YTJyO/i9L0rQ=;
+	b=hNkG118wsXpM0QFlIG4DM/gO2K6/RYs4IabWAEzgf6lL6nmRTkcgXD/bgNpf7wuHuNQrw/
+	L7wr5qwQCeYr8xuvU70tNpYv978H1V0FmmbCGNEQqdC/dyVZEfefZV1GXD8fm33FVU28Zh
+	rD6COfz8+M55F1L8eGSytmkes3wAJh8=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-320-pcdMyRBoO1K9bu_TJYdKmA-1; Wed, 20 Dec 2023 09:00:24 -0500
+X-MC-Unique: pcdMyRBoO1K9bu_TJYdKmA-1
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-40c691ffad7so39442375e9.1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 06:00:24 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703080824; x=1703685624;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0O1MqgGGyvjOUiWkIFWdN3z01s+W1X+YTJyO/i9L0rQ=;
+        b=wy7wR0IebzI/pnJoZF0jcFHpo4kms7QYvTkRPEd1hVRxgdv9axOj4JLJrr/2QQzYKV
+         TSNW3orFQXyV+8aiQJjDIzVujj2f4UHLM+yKK244ljGf5X9f8c/at5mj0cRSsNXzbMPN
+         yDlUf62Zzx6rQI7gx6BYhWu61WzY+pMT9MICquhPpsKCKvI+GrM/yju/RBfsoX70O7a9
+         qTwDl23vxArmOP4vaics63AYSl6+63OOFoH4sQ2XjmqWwGm3oTNiSAKbG8sqDUcxMBRe
+         Jf+3Jux2WLGuY8Krmp7OI2pxnlo0T0rj5l/LT8cRprk4gh8SxGKzwI69GhFACVK9J114
+         kbeA==
+X-Gm-Message-State: AOJu0YxrQD5B7qHyV0dUISy8K43kfzTJUONfyxnzSc6KRGxe99a+oJvs
+	swUAQzdUybHh+Go5lbolYnEeVBC/oZfNbVPn+L8qT1tlupNkMiS4VGV8I1pBW+DDTIjwap9A6BG
+	kFvWQ2vpG32lV44Z2h/2Q83kq
+X-Received: by 2002:a05:600c:16c4:b0:40c:3133:6f02 with SMTP id l4-20020a05600c16c400b0040c31336f02mr5427094wmn.342.1703080823695;
+        Wed, 20 Dec 2023 06:00:23 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IF6tlnLiOllO1kDTgRnWerqGD3+JlJUXHDRI0Sb2gKLNNMCR86VcUGsW0uSAXRgPhFGMOLjyA==
+X-Received: by 2002:a05:600c:16c4:b0:40c:3133:6f02 with SMTP id l4-20020a05600c16c400b0040c31336f02mr5427069wmn.342.1703080823265;
+        Wed, 20 Dec 2023 06:00:23 -0800 (PST)
+Received: from ?IPV6:2003:cb:c73b:eb00:8e25:6953:927:1802? (p200300cbc73beb008e25695309271802.dip0.t-ipconnect.de. [2003:cb:c73b:eb00:8e25:6953:927:1802])
+        by smtp.gmail.com with ESMTPSA id p2-20020a05600c1d8200b0040596352951sm8087777wms.5.2023.12.20.06.00.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Dec 2023 06:00:22 -0800 (PST)
+Message-ID: <5fcbf405-7e62-4b38-acc4-a9dd8cc91214@redhat.com>
+Date: Wed, 20 Dec 2023 15:00:21 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 104.132.45.104
-X-SA-Exim-Rcpt-To: ankita@nvidia.com, jgg@nvidia.com, oliver.upton@linux.dev, suzuki.poulose@arm.com, yuzenghui@huawei.com, catalin.marinas@arm.com, will@kernel.org, alex.williamson@redhat.com, kevin.tian@intel.com, yi.l.liu@intel.com, ardb@kernel.org, akpm@linux-foundation.org, gshan@redhat.com, mochs@nvidia.com, lpieralisi@kernel.org, aniketa@nvidia.com, cjia@nvidia.com, kwankhede@nvidia.com, targupta@nvidia.com, vsethi@nvidia.com, acurrid@nvidia.com, apopple@nvidia.com, jhubbard@nvidia.com, danw@nvidia.com, linux-mm@kvack.org, kvmarm@lists.linux.dev, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
-
-On Mon, 18 Dec 2023 09:07:16 +0000,
-<ankita@nvidia.com> wrote:
-> 
-> From: Ankit Agrawal <ankita@nvidia.com>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 02/16] mm: Batch-copy PTE ranges during fork()
+Content-Language: en-US
+To: Ryan Roberts <ryan.roberts@arm.com>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Ard Biesheuvel <ardb@kernel.org>, Marc Zyngier <maz@kernel.org>,
+ Oliver Upton <oliver.upton@linux.dev>, James Morse <james.morse@arm.com>,
+ Suzuki K Poulose <suzuki.poulose@arm.com>, Zenghui Yu
+ <yuzenghui@huawei.com>, Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+ Alexander Potapenko <glider@google.com>,
+ Andrey Konovalov <andreyknvl@gmail.com>, Dmitry Vyukov <dvyukov@google.com>,
+ Vincenzo Frascino <vincenzo.frascino@arm.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Anshuman Khandual <anshuman.khandual@arm.com>,
+ Matthew Wilcox <willy@infradead.org>, Yu Zhao <yuzhao@google.com>,
+ Mark Rutland <mark.rutland@arm.com>, Kefeng Wang
+ <wangkefeng.wang@huawei.com>, John Hubbard <jhubbard@nvidia.com>,
+ Zi Yan <ziy@nvidia.com>, Barry Song <21cnbao@gmail.com>,
+ Alistair Popple <apopple@nvidia.com>, Yang Shi <shy828301@gmail.com>
+Cc: linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org
+References: <20231218105100.172635-1-ryan.roberts@arm.com>
+ <db1be625-33e4-4d07-8500-3f7d3c8f9937@arm.com>
+ <be8b5181-be2c-4800-ba53-c65a6c3ed803@redhat.com>
+ <dd227e51-c4b2-420b-a92a-65da85ab4018@arm.com>
+ <7c0236ad-01f3-437f-8b04-125d69e90dc0@redhat.com>
+ <9a58b1a2-2c13-4fa0-8ffa-2b3d9655f1b6@arm.com>
+ <28968568-f920-47ac-b6fd-87528ffd8f77@redhat.com>
+ <10b0b562-c1c0-4a66-9aeb-a6bff5c218f6@arm.com>
+ <8f8023cb-3c31-4ead-a9e6-03a10e9490c6@redhat.com>
+ <da16a7e5-76dd-4150-9ade-54b0d227a1e1@arm.com>
+ <699cb1db-51eb-460e-9ceb-1ce08ca03050@redhat.com>
+ <da29a4c6-61f6-4203-9c82-9ce6e1c32552@arm.com>
+ <2a8c5b6c-f5ae-43b2-99aa-6d10e79b76e1@redhat.com>
+ <ade26f27-03af-4ad7-ad81-38b482f7572c@arm.com>
+ <3194b8a5-3f72-4d9e-a267-fbdad32ad864@redhat.com>
+ <f2f420cf-678d-466d-ac30-bc8251f16632@arm.com>
+ <9f99a3ca-051e-4b1b-81e9-8456d8e422ad@redhat.com>
+ <c1913fa2-d313-4f05-a649-da69b6d31d2a@arm.com>
+ <c244707c-8c0c-4593-ab45-d8f165dbc5ee@redhat.com>
+ <ba6a5c11-34fb-40ca-b24a-f51a207464f2@arm.com>
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ xsFNBFXLn5EBEAC+zYvAFJxCBY9Tr1xZgcESmxVNI/0ffzE/ZQOiHJl6mGkmA1R7/uUpiCjJ
+ dBrn+lhhOYjjNefFQou6478faXE6o2AhmebqT4KiQoUQFV4R7y1KMEKoSyy8hQaK1umALTdL
+ QZLQMzNE74ap+GDK0wnacPQFpcG1AE9RMq3aeErY5tujekBS32jfC/7AnH7I0v1v1TbbK3Gp
+ XNeiN4QroO+5qaSr0ID2sz5jtBLRb15RMre27E1ImpaIv2Jw8NJgW0k/D1RyKCwaTsgRdwuK
+ Kx/Y91XuSBdz0uOyU/S8kM1+ag0wvsGlpBVxRR/xw/E8M7TEwuCZQArqqTCmkG6HGcXFT0V9
+ PXFNNgV5jXMQRwU0O/ztJIQqsE5LsUomE//bLwzj9IVsaQpKDqW6TAPjcdBDPLHvriq7kGjt
+ WhVhdl0qEYB8lkBEU7V2Yb+SYhmhpDrti9Fq1EsmhiHSkxJcGREoMK/63r9WLZYI3+4W2rAc
+ UucZa4OT27U5ZISjNg3Ev0rxU5UH2/pT4wJCfxwocmqaRr6UYmrtZmND89X0KigoFD/XSeVv
+ jwBRNjPAubK9/k5NoRrYqztM9W6sJqrH8+UWZ1Idd/DdmogJh0gNC0+N42Za9yBRURfIdKSb
+ B3JfpUqcWwE7vUaYrHG1nw54pLUoPG6sAA7Mehl3nd4pZUALHwARAQABzSREYXZpZCBIaWxk
+ ZW5icmFuZCA8ZGF2aWRAcmVkaGF0LmNvbT7CwZgEEwEIAEICGwMGCwkIBwMCBhUIAgkKCwQW
+ AgMBAh4BAheAAhkBFiEEG9nKrXNcTDpGDfzKTd4Q9wD/g1oFAl8Ox4kFCRKpKXgACgkQTd4Q
+ 9wD/g1oHcA//a6Tj7SBNjFNM1iNhWUo1lxAja0lpSodSnB2g4FCZ4R61SBR4l/psBL73xktp
+ rDHrx4aSpwkRP6Epu6mLvhlfjmkRG4OynJ5HG1gfv7RJJfnUdUM1z5kdS8JBrOhMJS2c/gPf
+ wv1TGRq2XdMPnfY2o0CxRqpcLkx4vBODvJGl2mQyJF/gPepdDfcT8/PY9BJ7FL6Hrq1gnAo4
+ 3Iv9qV0JiT2wmZciNyYQhmA1V6dyTRiQ4YAc31zOo2IM+xisPzeSHgw3ONY/XhYvfZ9r7W1l
+ pNQdc2G+o4Di9NPFHQQhDw3YTRR1opJaTlRDzxYxzU6ZnUUBghxt9cwUWTpfCktkMZiPSDGd
+ KgQBjnweV2jw9UOTxjb4LXqDjmSNkjDdQUOU69jGMUXgihvo4zhYcMX8F5gWdRtMR7DzW/YE
+ BgVcyxNkMIXoY1aYj6npHYiNQesQlqjU6azjbH70/SXKM5tNRplgW8TNprMDuntdvV9wNkFs
+ 9TyM02V5aWxFfI42+aivc4KEw69SE9KXwC7FSf5wXzuTot97N9Phj/Z3+jx443jo2NR34XgF
+ 89cct7wJMjOF7bBefo0fPPZQuIma0Zym71cP61OP/i11ahNye6HGKfxGCOcs5wW9kRQEk8P9
+ M/k2wt3mt/fCQnuP/mWutNPt95w9wSsUyATLmtNrwccz63XOwU0EVcufkQEQAOfX3n0g0fZz
+ Bgm/S2zF/kxQKCEKP8ID+Vz8sy2GpDvveBq4H2Y34XWsT1zLJdvqPI4af4ZSMxuerWjXbVWb
+ T6d4odQIG0fKx4F8NccDqbgHeZRNajXeeJ3R7gAzvWvQNLz4piHrO/B4tf8svmRBL0ZB5P5A
+ 2uhdwLU3NZuK22zpNn4is87BPWF8HhY0L5fafgDMOqnf4guJVJPYNPhUFzXUbPqOKOkL8ojk
+ CXxkOFHAbjstSK5Ca3fKquY3rdX3DNo+EL7FvAiw1mUtS+5GeYE+RMnDCsVFm/C7kY8c2d0G
+ NWkB9pJM5+mnIoFNxy7YBcldYATVeOHoY4LyaUWNnAvFYWp08dHWfZo9WCiJMuTfgtH9tc75
+ 7QanMVdPt6fDK8UUXIBLQ2TWr/sQKE9xtFuEmoQGlE1l6bGaDnnMLcYu+Asp3kDT0w4zYGsx
+ 5r6XQVRH4+5N6eHZiaeYtFOujp5n+pjBaQK7wUUjDilPQ5QMzIuCL4YjVoylWiBNknvQWBXS
+ lQCWmavOT9sttGQXdPCC5ynI+1ymZC1ORZKANLnRAb0NH/UCzcsstw2TAkFnMEbo9Zu9w7Kv
+ AxBQXWeXhJI9XQssfrf4Gusdqx8nPEpfOqCtbbwJMATbHyqLt7/oz/5deGuwxgb65pWIzufa
+ N7eop7uh+6bezi+rugUI+w6DABEBAAHCwXwEGAEIACYCGwwWIQQb2cqtc1xMOkYN/MpN3hD3
+ AP+DWgUCXw7HsgUJEqkpoQAKCRBN3hD3AP+DWrrpD/4qS3dyVRxDcDHIlmguXjC1Q5tZTwNB
+ boaBTPHSy/Nksu0eY7x6HfQJ3xajVH32Ms6t1trDQmPx2iP5+7iDsb7OKAb5eOS8h+BEBDeq
+ 3ecsQDv0fFJOA9ag5O3LLNk+3x3q7e0uo06XMaY7UHS341ozXUUI7wC7iKfoUTv03iO9El5f
+ XpNMx/YrIMduZ2+nd9Di7o5+KIwlb2mAB9sTNHdMrXesX8eBL6T9b+MZJk+mZuPxKNVfEQMQ
+ a5SxUEADIPQTPNvBewdeI80yeOCrN+Zzwy/Mrx9EPeu59Y5vSJOx/z6OUImD/GhX7Xvkt3kq
+ Er5KTrJz3++B6SH9pum9PuoE/k+nntJkNMmQpR4MCBaV/J9gIOPGodDKnjdng+mXliF3Ptu6
+ 3oxc2RCyGzTlxyMwuc2U5Q7KtUNTdDe8T0uE+9b8BLMVQDDfJjqY0VVqSUwImzTDLX9S4g/8
+ kC4HRcclk8hpyhY2jKGluZO0awwTIMgVEzmTyBphDg/Gx7dZU1Xf8HFuE+UZ5UDHDTnwgv7E
+ th6RC9+WrhDNspZ9fJjKWRbveQgUFCpe1sa77LAw+XFrKmBHXp9ZVIe90RMe2tRL06BGiRZr
+ jPrnvUsUUsjRoRNJjKKA/REq+sAnhkNPPZ/NNMjaZ5b8Tovi8C0tmxiCHaQYqj7G2rgnT0kt
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <ba6a5c11-34fb-40ca-b24a-f51a207464f2@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
 [...]
 
-> Applied over next-20231211
+>>>
+>>
+>> gcc version 13.2.1 20231011 (Red Hat 13.2.1-4) (GCC)
+>>
+>>  From Fedora 38. So "a bit" newer :P
+>>
+> 
+> I'll retry with newer toolchain.
+> 
+> FWIW, with the code fix and the original compiler:
+> 
+> Fork, order-0, Apple M2:
+> | kernel                |   mean_rel |   std_rel |
+> |:----------------------|-----------:|----------:|
+> | mm-unstable           |       0.0% |      0.8% |
+> | hugetlb-rmap-cleanups |       1.3% |      2.0% |
+> | fork-batching         |       4.3% |      1.0% |
+> 
+> Fork, order-9, Apple M2:
+> | kernel                |   mean_rel |   std_rel |
+> |:----------------------|-----------:|----------:|
+> | mm-unstable           |       0.0% |      0.8% |
+> | hugetlb-rmap-cleanups |       0.9% |      0.9% |
+> | fork-batching         |     -37.3% |      1.0% |
+> 
+> Fork, order-0, Ampere Altra:
+> | kernel                |   mean_rel |   std_rel |
+> |:----------------------|-----------:|----------:|
+> | mm-unstable           |       0.0% |      0.7% |
+> | hugetlb-rmap-cleanups |       3.2% |      0.7% |
+> | fork-batching         |       5.5% |      1.1% |
+> 
+> Fork, order-9, Ampere Altra:
+> | kernel                |   mean_rel |   std_rel |
+> |:----------------------|-----------:|----------:|
+> | mm-unstable           |       0.0% |      0.1% |
+> | hugetlb-rmap-cleanups |       0.5% |      0.1% |
+> | fork-batching         |     -10.4% |      0.1% |
+> 
 
-In the future, please post patches that are generated against a tag
-from Linus' tree. The usual wisdom is to use -rc3 as the base.
+I just gave it another quick benchmark run on that Intel system.
 
-	M.
+hugetlb-rmap-cleanups -> fork-batching
+
+order-0: 0.014114 -> 0.013848
+
+-1.9%
+
+order-9: 0.014262 -> 0.009410
+
+-34%
+
+Note that I disable SMT and turbo, and pin the test to one CPU, to make 
+the results as stable as possible. My kernel config has anything related 
+to debugging disabled.
 
 -- 
-Without deviation from the norm, progress is not possible.
+Cheers,
+
+David / dhildenb
+
 
