@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-7201-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7202-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 30D4581A321
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 16:52:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5672981A326
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 16:52:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 09499B22108
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 15:52:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 889AE1C24314
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 15:52:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09B9140BF0;
-	Wed, 20 Dec 2023 15:52:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C63545C1E;
+	Wed, 20 Dec 2023 15:52:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WTeO/bwl"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Hpwx24rm"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-il1-f172.google.com (mail-il1-f172.google.com [209.85.166.172])
+Received: from mail-oi1-f173.google.com (mail-oi1-f173.google.com [209.85.167.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FF874175F;
-	Wed, 20 Dec 2023 15:52:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74BD841C9F;
+	Wed, 20 Dec 2023 15:52:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f172.google.com with SMTP id e9e14a558f8ab-35f71436397so42746995ab.3;
-        Wed, 20 Dec 2023 07:52:13 -0800 (PST)
+Received: by mail-oi1-f173.google.com with SMTP id 5614622812f47-3b9ef61b6b8so4597773b6e.3;
+        Wed, 20 Dec 2023 07:52:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703087533; x=1703692333; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1703087538; x=1703692338; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=2YhijXyfw3O8scS/NndOb/qu0F4jqnKn1xUMAlvfq/4=;
-        b=WTeO/bwlvvp/2cO8hzpLZGqJH8SgY5UkZR09kTf/UqApFpe7HYckpa6JSslzIg5WoR
-         jijja3G0sp2dLm7p3LBgWCRuBcDh6J5D5KO1VU0aIGD7OccJ3z2dGr2RI5UphE7GDprF
-         eUhobyAwWm/2H0GhAeRM1xBoAhkKVafmmxbSJwL4mi43DLUnxKmHXsUV6YtJzP8K/SwW
-         dycdMRBbAesMskeji6es3YY0kGxZ6KA/E7fdp+SdDfsxFfUaCkCpJujuyFRKXCBieloW
-         b/xRBWJPD6l+E0WOI4f6uzM7/aL4hTmnMSxPNrOi/bELE7tMlwqAKOhGwnEyl93juh1v
-         y2WA==
+        bh=Ac7bRTlD+tFj1q/I5q22nhtbhnHQtfeipFwSuSKMXBU=;
+        b=Hpwx24rmr/RDQALzrs1EvBuUVDXeQX538r5NoMSMJzySTfU4brcV+8SMKw0vr0DMZf
+         JoFjli+yfnxks00NPjQlDw9FlHykw91wIyFhU/ZTDxxOHSk3ySY4VXYQa96qGl6FMab+
+         GqRcVM7TgolMG1z3Kglh8U7HXLvDE0DSCRULDAY/O04Y4ojSxZV+o1dyt/IZ3lVwUkmZ
+         nCe6UAFtCln8RCJykf1uSfE1GSlbsrt3K3e0o/Do0mF/+C/fzm77GPFG7mZjbYbhaPdL
+         nZ0dbI/8WOmoV1la5XsiLkW7FTa/XAl2+7+bpkQTh5Rq9fKCw3FnLwLgYJwuC1nar3Uq
+         UaqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703087533; x=1703692333;
+        d=1e100.net; s=20230601; t=1703087538; x=1703692338;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=2YhijXyfw3O8scS/NndOb/qu0F4jqnKn1xUMAlvfq/4=;
-        b=bV/b0SGyN8+lKWKZMrvSMESEpI8OKebQzl9dRvkEMWoFkg8CMw07f7/OCEgX4J3WCG
-         fI2h2PnKtAQrKsjZO4TFOIcMndXQG+n5RcXQIxdZ4bFJnZZGqB1JiFyGz1LrB1LoEcr0
-         IhuYzL8oKfI5/RTYVV94z3az48CtD+OEMZ7VPrmN0nq8Ynjy2ip3iUakeg3luJox88mS
-         n6Y2lOatep+J8XeZmgqqdEXmOSuRFudo85dpK6f2t2kUFCBDSOciolRBfpOFB/XkDMs0
-         UWXOCwXhlHfmPkf7pH65qghQJtoEhsVQr15ZbDl4p0uOcT7pDkO2GTLkWCxOMv/bUmZf
-         Tw4Q==
-X-Gm-Message-State: AOJu0Yzjo11VvtDi3WajpWmAUTv4nE487MJwwaMXmQMT7BqcFm//BtPr
-	50zkXe/0v/ZJ4slJhUIvztU=
-X-Google-Smtp-Source: AGHT+IEBVyLA+ABgGkWuXkUwlBhcq2icMzTWEVVhbmk8aHTBP5mqMoYRxyR0WjfqDOb1nxj7Hti0iQ==
-X-Received: by 2002:a05:6e02:12e4:b0:35d:58ce:2322 with SMTP id l4-20020a056e0212e400b0035d58ce2322mr28289150iln.5.1703087533223;
-        Wed, 20 Dec 2023 07:52:13 -0800 (PST)
+        bh=Ac7bRTlD+tFj1q/I5q22nhtbhnHQtfeipFwSuSKMXBU=;
+        b=LBLzEY8TlYaFlNAEUQhxOSLhxRVsVcHzzF1W8wwj6IV3HN150EiIIccoLCydUUmijH
+         2gGifNjlTjSQXBFPSG3XGjznDw09KX1I5eUh0g9fJzAZyRkOZXmHdW+mg1hT2GpDd7Zz
+         c1wO+ksSi/0RDwUkUskczPztiBRQ0P3hoeuC3Pv3YSdLJ/G/mh9Zco+IK0/+YLXPl9aL
+         qzdndwjxm1pFBjWkf4QHXXfgrmAoGYnBcMZNXfuagnGOJOHKoxKTrygHIXxyAqybqK7u
+         yQbs8XSXKWxbmM37hH7KRsMIz0U2zweTuEiulTlu1TWdd8JZ/BzLabKGH9cL/LalOxJ9
+         NlHg==
+X-Gm-Message-State: AOJu0Yz5CRtZzpC69rbmeE5kZ7Vf2cpKyAuDFjMjAL2LbNMHhb6Rdxlg
+	DIOB+/ASBm1Wd8sejPvw+0k=
+X-Google-Smtp-Source: AGHT+IEcuPINh6ZC5CVFT+VrkZ5x1B11SLviiebMdIz3vMCdRYPYeLqZh+ebc1f47jXClV6y4S49aA==
+X-Received: by 2002:a05:6358:339e:b0:172:8a22:9df5 with SMTP id i30-20020a056358339e00b001728a229df5mr14486245rwd.24.1703087538521;
+        Wed, 20 Dec 2023 07:52:18 -0800 (PST)
 Received: from cosmo-ubuntu-2204.dhcpserver.bu9bmc.local (1-34-21-66.hinet-ip.hinet.net. [1.34.21.66])
-        by smtp.gmail.com with ESMTPSA id y188-20020a6364c5000000b00588e8421fa8sm4840847pgb.84.2023.12.20.07.52.08
+        by smtp.gmail.com with ESMTPSA id y188-20020a6364c5000000b00588e8421fa8sm4840847pgb.84.2023.12.20.07.52.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Dec 2023 07:52:12 -0800 (PST)
+        Wed, 20 Dec 2023 07:52:17 -0800 (PST)
 From: Cosmo Chou <chou.cosmo@gmail.com>
 To: linux@roeck-us.net,
 	robh+dt@kernel.org,
@@ -85,9 +85,9 @@ Cc: devicetree@vger.kernel.org,
 	chou.cosmo@gmail.com,
 	cosmo.chou@quantatw.com,
 	Conor Dooley <conor.dooley@microchip.com>
-Subject: [PATCH v3 1/3] dt-bindings: vendor-prefixes: add asteralabs
-Date: Wed, 20 Dec 2023 23:51:40 +0800
-Message-Id: <20231220155142.3060255-2-chou.cosmo@gmail.com>
+Subject: [PATCH v3 2/3] dt-bindings: trivial-devices: add Astera Labs PT5161L
+Date: Wed, 20 Dec 2023 23:51:41 +0800
+Message-Id: <20231220155142.3060255-3-chou.cosmo@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231220155142.3060255-1-chou.cosmo@gmail.com>
 References: <20231220155142.3060255-1-chou.cosmo@gmail.com>
@@ -99,28 +99,27 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add vendor prefix for Astera Labs, Inc.
-https://www.asteralabs.com
+Add dt-bindings for pt5161l temperature monitoring.
 
 Signed-off-by: Cosmo Chou <chou.cosmo@gmail.com>
 Acked-by: Conor Dooley <conor.dooley@microchip.com>
 ---
- Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+ Documentation/devicetree/bindings/trivial-devices.yaml | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-index 309b94c328c8..5c49f63d4ef0 100644
---- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-+++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-@@ -155,6 +155,8 @@ patternProperties:
-     description: ASPEED Technology Inc.
-   "^asrock,.*":
-     description: ASRock Inc.
-+  "^asteralabs,.*":
-+    description: Astera Labs, Inc.
-   "^asus,.*":
-     description: AsusTek Computer Inc.
-   "^atheros,.*":
+diff --git a/Documentation/devicetree/bindings/trivial-devices.yaml b/Documentation/devicetree/bindings/trivial-devices.yaml
+index c3190f2a168a..bc3ab1aedb12 100644
+--- a/Documentation/devicetree/bindings/trivial-devices.yaml
++++ b/Documentation/devicetree/bindings/trivial-devices.yaml
+@@ -47,6 +47,8 @@ properties:
+           - adi,lt7182s
+             # AMS iAQ-Core VOC Sensor
+           - ams,iaq-core
++            # Temperature monitoring of Astera Labs PT5161L PCIe retimer
++          - asteralabs,pt5161l
+             # i2c serial eeprom (24cxx)
+           - at,24c08
+             # i2c trusted platform module (TPM)
 -- 
 2.34.1
 
