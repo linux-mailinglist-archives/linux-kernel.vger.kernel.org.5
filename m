@@ -1,334 +1,216 @@
-Return-Path: <linux-kernel+bounces-7319-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7320-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D4F3D81A598
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 17:49:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 71FD181A5A2
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 17:53:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4BAB5B20FFB
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 16:49:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F0BC31F24462
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 16:53:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9380246526;
-	Wed, 20 Dec 2023 16:49:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C793D4645F;
+	Wed, 20 Dec 2023 16:53:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="NagBxEGF"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Z6uAANDs";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Z6uAANDs"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A8764642E;
-	Wed, 20 Dec 2023 16:49:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BKGe6XA026803;
-	Wed, 20 Dec 2023 16:49:00 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=ZbFRKfQ8apHOhegnAQD1nmzIFGR465JSBOj3gnYHwtM=; b=Na
-	gBxEGFhWLZDZ8bVq573pBUokR+i/OojEsme+jqQmtdTPivp6m1xv5khWF9CYwlX0
-	atVGQpLuB7nW9sIw6cEFEhAIW066FgS/hipaRKUXHBlbSnBH1l4Rgk9bAtGtsnaG
-	cAyRBu2Su/zY2fdO/mT2V+FX9z4vdSFIAL6o/u/pDnGM212RSncmQ4C4eDSbfEzh
-	60J6bwRk10A16I+7KmCoeuDMAGud/5lnotaD2/tCrI9hYY9TzFHo5PD9ZB5JmO7T
-	hgmQtL1LiuJ+9AL4aFjekoydExzQ245ryzpC/9L9fF2NqKmogzMEJ751rwfD57dh
-	C5Kt7snbv24i9UTLBkCQ==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v37vxv940-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 20 Dec 2023 16:49:00 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BKGmxDM001242
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 20 Dec 2023 16:48:59 GMT
-Received: from [10.110.111.239] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 20 Dec
- 2023 08:48:57 -0800
-Message-ID: <91628bd3-45ab-0e2b-2331-f3f1ea2232b4@quicinc.com>
-Date: Wed, 20 Dec 2023 08:48:56 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E5AB41867;
+	Wed, 20 Dec 2023 16:53:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 14A891F839;
+	Wed, 20 Dec 2023 16:53:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1703091203; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=vm1yUE9SrYIkgxYi7zmDVIFJRIvsnwmUrZSkxaXzisE=;
+	b=Z6uAANDsRSVWAgdvltS/+uDJymqrWfRcoD/g2tG46EoWsApHAdrg/FvYO1cnPu8p2JZ/mW
+	borNomYbcO2kvrrOtFzu0LEwPto4512JH3DrGfpd9lBbPtueH1hUEdqsP27GNsGBlMhifd
+	ix13OITORSXBIsEDq7G7wG2XUuGR5ao=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1703091203; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=vm1yUE9SrYIkgxYi7zmDVIFJRIvsnwmUrZSkxaXzisE=;
+	b=Z6uAANDsRSVWAgdvltS/+uDJymqrWfRcoD/g2tG46EoWsApHAdrg/FvYO1cnPu8p2JZ/mW
+	borNomYbcO2kvrrOtFzu0LEwPto4512JH3DrGfpd9lBbPtueH1hUEdqsP27GNsGBlMhifd
+	ix13OITORSXBIsEDq7G7wG2XUuGR5ao=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 856F913722;
+	Wed, 20 Dec 2023 16:53:22 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id dtINEgIcg2V6SQAAD6G6ig
+	(envelope-from <mpdesouza@suse.com>); Wed, 20 Dec 2023 16:53:22 +0000
+From: Marcos Paulo de Souza <mpdesouza@suse.com>
+Subject: [PATCH RESEND v4 0/3] livepatch: Move modules to selftests and add
+ a new test
+Date: Wed, 20 Dec 2023 13:53:11 -0300
+Message-Id: <20231220-send-lp-kselftests-v4-0-3458ec1b1a38@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v6] drm/msm/dpu: improve DSC allocation
-Content-Language: en-US
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-CC: <dri-devel@lists.freedesktop.org>, <robdclark@gmail.com>,
-        <sean@poorly.run>, <swboyd@chromium.org>, <dianders@chromium.org>,
-        <vkoul@kernel.org>, <daniel@ffwll.ch>, <airlied@gmail.com>,
-        <agross@kernel.org>, <andersson@kernel.org>,
-        <quic_abhinavk@quicinc.com>, <quic_jesszhan@quicinc.com>,
-        <quic_sbillaka@quicinc.com>, <marijn.suijten@somainline.org>,
-        <freedreno@lists.freedesktop.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <1702580172-30606-1-git-send-email-quic_khsieh@quicinc.com>
- <a5ec8760-cdfe-b420-43c1-913b0095ba93@quicinc.com>
- <CAA8EJpoBiiTbc91E8hSK0seBOXAW++8V8yJzbGmCJJcXbZ3raQ@mail.gmail.com>
-From: Kuogee Hsieh <quic_khsieh@quicinc.com>
-In-Reply-To: <CAA8EJpoBiiTbc91E8hSK0seBOXAW++8V8yJzbGmCJJcXbZ3raQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: Lja8mOxvgY7cajDk_jdUI6JXc2yWi9pv
-X-Proofpoint-GUID: Lja8mOxvgY7cajDk_jdUI6JXc2yWi9pv
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
- suspectscore=0 impostorscore=0 lowpriorityscore=0 malwarescore=0
- bulkscore=0 phishscore=0 spamscore=0 clxscore=1015 mlxscore=0 adultscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2312200120
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+To: Shuah Khan <shuah@kernel.org>, Jonathan Corbet <corbet@lwn.net>, 
+ Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
+ Alexander Gordeev <agordeev@linux.ibm.com>, 
+ Christian Borntraeger <borntraeger@linux.ibm.com>, 
+ Sven Schnelle <svens@linux.ibm.com>, Josh Poimboeuf <jpoimboe@kernel.org>, 
+ Jiri Kosina <jikos@kernel.org>, Miroslav Benes <mbenes@suse.cz>, 
+ Petr Mladek <pmladek@suse.com>, Joe Lawrence <joe.lawrence@redhat.com>
+Cc: linux-kselftest@vger.kernel.org, linux-doc@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org, 
+ live-patching@vger.kernel.org, Marcos Paulo de Souza <mpdesouza@suse.com>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1703091199; l=5280;
+ i=mpdesouza@suse.com; s=20231031; h=from:subject:message-id;
+ bh=+BP7hpbPX9We3ko7Is3VoUKy+iNqI3Br7+vM+eyJyk4=;
+ b=x1U07QbBxC2UQtpiPxcRnKemex0NKnRQR3aT2tBqyOS7/hI4FiDkCbDJgQBI00vi9N6Kjp5ZW
+ XvTkvsJ1YuRDRiToyc1B9fCEamg0f5/7YvpOUIZA/PKDhqXHiu+mXBH
+X-Developer-Key: i=mpdesouza@suse.com; a=ed25519;
+ pk=/Ni/TsKkr69EOmdZXkp1Q/BlzDonbOBRsfPa18ySIwU=
+X-Spam-Level: 
+X-Spam-Level: 
+X-Spamd-Result: default: False [-3.10 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 RCPT_COUNT_TWELVE(0.00)[18];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 MID_RHS_MATCH_FROM(0.00)[]
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Score: -3.10
+X-Spam-Flag: NO
 
+Changes in v4:
+* Documented how to compile the livepatch selftests without running the
+  tests (Joe)
+* Removed the mention to lib/livepatch on MAINTAINERS file, reported by
+  checkpatch.
 
-On 12/19/2023 2:32 PM, Dmitry Baryshkov wrote:
-> On Tue, 19 Dec 2023 at 18:18, Kuogee Hsieh <quic_khsieh@quicinc.com> wrote:
->> Hi Dmitry,
->>
->> Anymore comments from you?
-> No, for some reason I missed this patch. Please excuse me.
->
->> On 12/14/2023 10:56 AM, Kuogee Hsieh wrote:
->>> At DSC V1.1 DCE (Display Compression Engine) contains a DSC encoder.
->>> However, at DSC V1.2 DCE consists of two DSC encoders, one has an odd
->>> index and another one has an even index. Each encoder can work
->>> independently. But only two DSC encoders from same DCE can be paired
->>> to work together to support DSC merge mode at DSC V1.2. For DSC V1.1
->>> two consecutive DSC encoders (start with even index) have to be paired
->>> to support DSC merge mode.  In addition, the DSC with even index have
->>> to be mapped to even PINGPONG index and DSC with odd index have to be
->>> mapped to odd PINGPONG index at its data path in regardless of DSC
->>> V1.1 or V1.2. This patch improves DSC allocation mechanism with
->>> consideration of those factors.
->>>
->>> Changes in V6:
->>> -- rename _dpu_rm_reserve_dsc_single to _dpu_rm_dsc_alloc
->>> -- rename _dpu_rm_reserve_dsc_pair to _dpu_rm_dsc_alloc_pair
->>> -- pass global_state to _dpu_rm_pingpong_next_index()
->>> -- remove pp_max
->>> -- fix for loop condition check at _dpu_rm_dsc_alloc()
->>>
->>> Changes in V5:
->>> -- delete dsc_id[]
->>> -- update to global_state->dsc_to_enc_id[] directly
->>> -- replace ndx with idx
->>> -- fix indentation at function declaration
->>> -- only one for loop at _dpu_rm_reserve_dsc_single()
->>>
->>> Changes in V4:
->>> -- rework commit message
->>> -- use reserved_by_other()
->>> -- add _dpu_rm_pingpong_next_index()
->>> -- revise _dpu_rm_pingpong_dsc_check()
->>>
->>> Changes in V3:
->>> -- add dpu_rm_pingpong_dsc_check()
->>> -- for pair allocation use i += 2 at for loop
->>>
->>> Changes in V2:
->>>       -- split _dpu_rm_reserve_dsc() into _dpu_rm_reserve_dsc_single() and
->>>          _dpu_rm_reserve_dsc_pair()
->>>
->>> Fixes: f2803ee91a41 ("drm/msm/disp/dpu1: Add DSC support in RM")
->>> Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
->>> ---
->>>    drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c | 154 +++++++++++++++++++++++++++++----
->>>    1 file changed, 139 insertions(+), 15 deletions(-)
-> Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
->
-> See below for minor nit.
->
->>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c
->>> index f9215643..0ce2a25 100644
->>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c
->>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c
->>> @@ -461,29 +461,153 @@ static int _dpu_rm_reserve_ctls(
->>>        return 0;
->>>    }
->>>
->>> -static int _dpu_rm_reserve_dsc(struct dpu_rm *rm,
->>> -                            struct dpu_global_state *global_state,
->>> -                            struct drm_encoder *enc,
->>> -                            const struct msm_display_topology *top)
->>> +static int _dpu_rm_pingpong_next_index(struct dpu_global_state *global_state,
->>> +                                    int start,
-> I'd still prefer to see `enum dpu_pingpong` as a parameter here
-> instead of just an index, but this is just my taste.
+Changes in v3:
+* Rebased on top of v6.6-rc5
+* The commits messages were improved (Thanks Petr!)
+* Created TEST_GEN_MODS_DIR variable to point to a directly that contains kernel
+  modules, and adapt selftests to build it before running the test.
+* Moved test_klp-call_getpid out of test_programs, since the gen_tar
+  would just copy the generated test programs to the livepatches dir,
+  and so scripts relying on test_programs/test_klp-call_getpid will fail.
+* Added a module_param for klp_pids, describing it's usage.
+* Simplified the call_getpid program to ignore the return of getpid syscall,
+  since we only want to make sure the process transitions correctly to the
+  patched stated
+* The test-syscall.sh not prints a log message showing the number of remaining
+  processes to transition into to livepatched state, and check_output expects it
+  to be 0.
+* Added MODULE_AUTHOR and MODULE_DESCRIPTION to test_klp_syscall.c
 
-Can you please elaborate more details (pseudo code)  for this?
+- Link to v3: https://lore.kernel.org/r/20231031-send-lp-kselftests-v3-0-2b1655c2605f@suse.com
+- Link to v2: https://lore.kernel.org/linux-kselftest/20220630141226.2802-1-mpdesouza@suse.com/
 
-i can add it at my next DP dsc patches.
+This patchset moves the current kernel testing livepatch modules from
+lib/livepatches to tools/testing/selftest/livepatch/test_modules, and compiles
+them as out-of-tree modules before testing.
 
->
->>> +                                    uint32_t enc_id)
->>>    {
->>> -     int num_dsc = top->num_dsc;
->>>        int i;
->>>
->>> -     /* check if DSC required are allocated or not */
->>> -     for (i = 0; i < num_dsc; i++) {
->>> -             if (!rm->dsc_blks[i]) {
->>> -                     DPU_ERROR("DSC %d does not exist\n", i);
->>> -                     return -EIO;
->>> +     for (i = start; i < (PINGPONG_MAX - PINGPONG_0); i++) {
->>> +             if (global_state->pingpong_to_enc_id[i] == enc_id)
->>> +                     return i;
->>> +     }
->>> +
->>> +     return -ENAVAIL;
->>> +}
->>> +
->>> +static int _dpu_rm_pingpong_dsc_check(int dsc_idx, int pp_idx)
->>> +{
->>> +     /*
->>> +      * DSC with even index must be used with the PINGPONG with even index
->>> +      * DSC with odd index must be used with the PINGPONG with odd index
->>> +      */
->>> +     if ((dsc_idx & 0x01) != (pp_idx & 0x01))
->>> +             return -ENAVAIL;
->>> +
->>> +     return 0;
->>> +}
->>> +
->>> +static int _dpu_rm_dsc_alloc(struct dpu_rm *rm,
->>> +                          struct dpu_global_state *global_state,
->>> +                          uint32_t enc_id,
->>> +                          const struct msm_display_topology *top)
->>> +{
->>> +     int num_dsc = 0;
->>> +     int pp_idx = 0;
->>> +     int dsc_idx;
->>> +     int ret;
->>> +
->>> +     for (dsc_idx = 0; dsc_idx < ARRAY_SIZE(rm->dsc_blks) &&
->>> +          num_dsc < top->num_dsc; dsc_idx++) {
->>> +             if (!rm->dsc_blks[dsc_idx])
->>> +                     continue;
->>> +
->>> +             if (reserved_by_other(global_state->dsc_to_enc_id, dsc_idx, enc_id))
->>> +                     continue;
->>> +
->>> +             pp_idx = _dpu_rm_pingpong_next_index(global_state, pp_idx, enc_id);
->>> +             if (pp_idx < 0)
->>> +                     return -ENAVAIL;
->>> +
->>> +             ret = _dpu_rm_pingpong_dsc_check(dsc_idx, pp_idx);
->>> +             if (ret)
->>> +                     return -ENAVAIL;
->>> +
->>> +             global_state->dsc_to_enc_id[dsc_idx] = enc_id;
->>> +             num_dsc++;
->>> +             pp_idx++;
->>> +     }
->>> +
->>> +     if (num_dsc < top->num_dsc) {
->>> +             DPU_ERROR("DSC allocation failed num_dsc=%d required=%d\n",
->>> +                        num_dsc, top->num_dsc);
->>> +             return -ENAVAIL;
->>> +     }
->>> +
->>> +     return 0;
->>> +}
->>> +
->>> +static int _dpu_rm_dsc_alloc_pair(struct dpu_rm *rm,
->>> +                               struct dpu_global_state *global_state,
->>> +                               uint32_t enc_id,
->>> +                               const struct msm_display_topology *top)
->>> +{
->>> +     int num_dsc = 0;
->>> +     int dsc_idx, pp_idx = 0;
->>> +     int ret;
->>> +
->>> +     /* only start from even dsc index */
->>> +     for (dsc_idx = 0; dsc_idx < ARRAY_SIZE(rm->dsc_blks) &&
->>> +          num_dsc < top->num_dsc; dsc_idx += 2) {
->>> +             if (!rm->dsc_blks[dsc_idx] ||
->>> +                 !rm->dsc_blks[dsc_idx + 1])
->>> +                     continue;
->>> +
->>> +             /* consective dsc index to be paired */
->>> +             if (reserved_by_other(global_state->dsc_to_enc_id, dsc_idx, enc_id) ||
->>> +                 reserved_by_other(global_state->dsc_to_enc_id, dsc_idx + 1, enc_id))
->>> +                     continue;
->>> +
->>> +             pp_idx = _dpu_rm_pingpong_next_index(global_state, pp_idx, enc_id);
->>> +             if (pp_idx < 0)
->>> +                     return -ENAVAIL;
->>> +
->>> +             ret = _dpu_rm_pingpong_dsc_check(dsc_idx, pp_idx);
->>> +             if (ret) {
->>> +                     pp_idx = 0;
->>> +                     continue;
->>>                }
->>>
->>> -             if (global_state->dsc_to_enc_id[i]) {
->>> -                     DPU_ERROR("DSC %d is already allocated\n", i);
->>> -                     return -EIO;
->>> +             pp_idx = _dpu_rm_pingpong_next_index(global_state, pp_idx + 1, enc_id);
->>> +             if (pp_idx < 0)
->>> +                     return -ENAVAIL;
->>> +
->>> +             ret = _dpu_rm_pingpong_dsc_check(dsc_idx + 1, pp_idx);
->>> +             if (ret) {
->>> +                     pp_idx = 0;
->>> +                     continue;
->>>                }
->>> +
->>> +             global_state->dsc_to_enc_id[dsc_idx] = enc_id;
->>> +             global_state->dsc_to_enc_id[dsc_idx + 1] = enc_id;
->>> +             num_dsc += 2;
->>> +             pp_idx++;       /* start for next pair */
->>>        }
->>>
->>> -     for (i = 0; i < num_dsc; i++)
->>> -             global_state->dsc_to_enc_id[i] = enc->base.id;
->>> +     if (num_dsc < top->num_dsc) {
->>> +             DPU_ERROR("DSC allocation failed num_dsc=%d required=%d\n",
->>> +                        num_dsc, top->num_dsc);
->>> +             return -ENAVAIL;
->>> +     }
->>> +
->>> +     return 0;
->>> +}
->>> +
->>> +static int _dpu_rm_reserve_dsc(struct dpu_rm *rm,
->>> +                            struct dpu_global_state *global_state,
->>> +                            struct drm_encoder *enc,
->>> +                            const struct msm_display_topology *top)
->>> +{
->>> +     uint32_t enc_id = enc->base.id;
->>> +
->>> +     if (!top->num_dsc || !top->num_intf)
->>> +             return 0;
->>> +
->>> +     /*
->>> +      * Facts:
->>> +      * 1) no pingpong split (two layer mixers shared one pingpong)
->>> +      * 2) DSC pair starts from even index, such as index(0,1), (2,3), etc
->>> +      * 3) even PINGPONG connects to even DSC
->>> +      * 4) odd PINGPONG connects to odd DSC
->>> +      * 5) pair: encoder +--> pp_idx_0 --> dsc_idx_0
->>> +      *                  +--> pp_idx_1 --> dsc_idx_1
->>> +      */
->>> +
->>> +     /* num_dsc should be either 1, 2 or 4 */
->>> +     if (top->num_dsc > top->num_intf)       /* merge mode */
->>> +             return _dpu_rm_dsc_alloc_pair(rm, global_state, enc_id, top);
->>> +     else
->>> +             return _dpu_rm_dsc_alloc(rm, global_state, enc_id, top);
->>>
->>>        return 0;
->>>    }
->
->
+There is also a new test being added. This new test exercises multiple processes
+calling a syscall, while a livepatch patched the syscall.
+
+Why this move is an improvement:
+* The modules are now compiled as out-of-tree modules against the current
+  running kernel, making them capable of being tested on different systems with
+  newer or older kernels.
+* Such approach now needs kernel-devel package to be installed, since they are
+  out-of-tree modules. These can be generated by running "make rpm-pkg" in the
+  kernel source.
+
+What needs to be solved:
+* Currently gen_tar only packages the resulting binaries of the tests, and not
+  the sources. For the current approach, the newly added modules would be
+  compiled and then packaged. It works when testing on a system with the same
+  kernel version. But it will fail when running on a machine with different kernel
+  version, since module was compiled against the kernel currently running.
+
+  This is not a new problem, just aligning the expectations. For the current
+  approach to be truly system agnostic gen_tar would need to include the module
+  and program sources to be compiled in the target systems.
+
+Thanks in advance!
+  Marcos
+
+Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
+---
+Marcos Paulo de Souza (3):
+      kselftests: lib.mk: Add TEST_GEN_MODS_DIR variable
+      livepatch: Move tests from lib/livepatch to selftests/livepatch
+      selftests: livepatch: Test livepatching a heavily called syscall
+
+ Documentation/dev-tools/kselftest.rst              |   4 +
+ MAINTAINERS                                        |   1 -
+ arch/s390/configs/debug_defconfig                  |   1 -
+ arch/s390/configs/defconfig                        |   1 -
+ lib/Kconfig.debug                                  |  22 ----
+ lib/Makefile                                       |   2 -
+ lib/livepatch/Makefile                             |  14 ---
+ tools/testing/selftests/lib.mk                     |  20 +++-
+ tools/testing/selftests/livepatch/Makefile         |   5 +-
+ tools/testing/selftests/livepatch/README           |  25 +++--
+ tools/testing/selftests/livepatch/config           |   1 -
+ tools/testing/selftests/livepatch/functions.sh     |  34 +++---
+ .../testing/selftests/livepatch/test-callbacks.sh  |  50 ++++-----
+ tools/testing/selftests/livepatch/test-ftrace.sh   |   6 +-
+ .../testing/selftests/livepatch/test-livepatch.sh  |  10 +-
+ .../selftests/livepatch/test-shadow-vars.sh        |   2 +-
+ tools/testing/selftests/livepatch/test-state.sh    |  18 ++--
+ tools/testing/selftests/livepatch/test-syscall.sh  |  53 ++++++++++
+ tools/testing/selftests/livepatch/test-sysfs.sh    |   6 +-
+ .../selftests/livepatch/test_klp-call_getpid.c     |  44 ++++++++
+ .../selftests/livepatch/test_modules/Makefile      |  20 ++++
+ .../test_modules}/test_klp_atomic_replace.c        |   0
+ .../test_modules}/test_klp_callbacks_busy.c        |   0
+ .../test_modules}/test_klp_callbacks_demo.c        |   0
+ .../test_modules}/test_klp_callbacks_demo2.c       |   0
+ .../test_modules}/test_klp_callbacks_mod.c         |   0
+ .../livepatch/test_modules}/test_klp_livepatch.c   |   0
+ .../livepatch/test_modules}/test_klp_shadow_vars.c |   0
+ .../livepatch/test_modules}/test_klp_state.c       |   0
+ .../livepatch/test_modules}/test_klp_state2.c      |   0
+ .../livepatch/test_modules}/test_klp_state3.c      |   0
+ .../livepatch/test_modules/test_klp_syscall.c      | 116 +++++++++++++++++++++
+ 32 files changed, 334 insertions(+), 121 deletions(-)
+---
+base-commit: 206ed72d6b33f53b2a8bf043f54ed6734121d26b
+change-id: 20231031-send-lp-kselftests-4c917dcd4565
+
+Best regards,
+-- 
+Marcos Paulo de Souza <mpdesouza@suse.com>
+
 
