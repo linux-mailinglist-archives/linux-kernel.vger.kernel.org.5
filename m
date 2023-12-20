@@ -1,130 +1,111 @@
-Return-Path: <linux-kernel+bounces-7032-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7033-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B03281A0B8
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 15:08:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39EB281A0B9
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 15:08:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CC0E328C8D0
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 14:08:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6BF631C21134
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 14:08:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67CDF38DDF;
-	Wed, 20 Dec 2023 14:08:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A024D38DE0;
+	Wed, 20 Dec 2023 14:08:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="EI4iGy7y"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com [209.85.210.48])
+Received: from mail-oi1-f174.google.com (mail-oi1-f174.google.com [209.85.167.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAF7038DD9;
-	Wed, 20 Dec 2023 14:08:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f48.google.com with SMTP id 46e09a7af769-6d9db2f1ddfso1445981a34.0;
-        Wed, 20 Dec 2023 06:08:11 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA0BF36AFC
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 14:08:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-oi1-f174.google.com with SMTP id 5614622812f47-3ba00fe4e98so4359592b6e.2
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 06:08:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1703081314; x=1703686114; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WnoZsHZnEYcQ46Kd4Lu9crr2sSJLKt3dsvDOoA3QbMw=;
+        b=EI4iGy7y0HcpweynZ3G4nxlD2neIneIReyrx3U+ZhQQ2Ws+Rw+tjlNLy20iOn9Abid
+         69RgmF6d74ET7QmV6hH9nRd9vd3P8PKQrpyiu7fBRZiRI/adHgheKhmbcC4hS576Ft0N
+         SaN5qRQFPYSi1qmkDudUe/fhWZnM/1d5d0n9GSg0tI/weBstQZ9b/23DYDpMvw2V+E55
+         +IPMfYecd6PdFPHRbJzrbVW14yIFd/ZaoH/1AhHo/CGvn9p2Jj0HLSpOXg8lRkr497N4
+         XU92j1sRlkXWQKw3chrAzIFAg3prTWNDP10izwLz1pwJxpblANkprvJc1XCO0f3Wuqfm
+         bLcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703081290; x=1703686090;
+        d=1e100.net; s=20230601; t=1703081314; x=1703686114;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=5XhtQFN3mZQ/Dw8ZbAdKZYMHrSfvWlcNoVNMZmYn47s=;
-        b=KJCaxSjYaT3s3lB6bUtmnp6DRV+Z7QDmaHrHYoh71pR5IAplMqstPzbTP8tsrRO5xR
-         bXCsR5G+BsYjSukiTHxiCzTsX/a16opPlGzH19NTTSf1c3HG093V0JOfX3aW/NakUXzs
-         wzfLpegaUCdzoB0hVT85hyufsSBxHpf1IBsFO1CkthW9KEeHXZyZi+wb+zW5+FRfP6XY
-         DVLqE5wqLqYLsO3aJvz+7+wnXi8SNuDF9pzA+t2L095oJ/gUFMnYO5ONLBWYoLP0XX28
-         /hea+5IjAUs0AMmJVpQp36Dat1Q266WZIisNsFPZO0Bcw33IGRAxlmtJw+sI4+hqOzN1
-         2fEg==
-X-Gm-Message-State: AOJu0YzxS38D7GKl4SMfK1gF+kaeGEwYH0z5nBudtHgZOGVOVWSYf7ph
-	5xBY+Ff9Su34eyUIbV+vlJMumYSyeyICk+mYz4Y=
-X-Google-Smtp-Source: AGHT+IFzmOJOqjqOBRB6g1dbVELMhLRT7SmkuthyUaBl0tQTEwy7ae4sETVM4yefl7ZPhZN8oi4e9LW1+P0hQXN0RH4=
-X-Received: by 2002:a4a:b141:0:b0:591:c8cd:a13a with SMTP id
- e1-20020a4ab141000000b00591c8cda13amr11108064ooo.0.1703081290634; Wed, 20 Dec
- 2023 06:08:10 -0800 (PST)
+        bh=WnoZsHZnEYcQ46Kd4Lu9crr2sSJLKt3dsvDOoA3QbMw=;
+        b=DI6S/x5oivHR8H6RV6ndOgeG4qf+pLlWiNOrfAPK24FcNaS4WHtf6vSYZfzf7BzcZh
+         62g6MJq2NaY38/oTOo+8fgth++ZVxdnnUFUKudUbSQWnVD6QImwSPMa6TYV6TmOINjDw
+         ub6v1usLMmlGK/dv5fpJFhUuDjWREAYhuQjcAvAtmMeMbIULk6hbeAnIQUVbQZlQf/8m
+         aa86lvZO6XHrQjZn6lDesXXjmdKo9DcTNwXqV05JvvgrMnaKQD9sIi3cMDe8NgaHzzwA
+         S9z/dJkp3wL3WRtz3KMpqk30OeKMCq/yMg2WGnUIslTJ2Xm4bhiQqNSnq2MXMzCqyziV
+         zqrg==
+X-Gm-Message-State: AOJu0Yy36I75dfwaDrXH7E5P9v6+6unSrXINTo3Y9W1jOlag2saWxeag
+	EdYRz/TwzjHHtOnL/jud+ep0WixcDKb1I8wocHAcDQ==
+X-Google-Smtp-Source: AGHT+IFFY4slCaCs05mER84U3vXe6xaUXr+pRDcYc1I6qLkwNlDilN+SZ+3SlD4MTvEyaNXi+77Z713nyT4YhivBp3U=
+X-Received: by 2002:a05:6359:4c22:b0:172:ab3b:cc1e with SMTP id
+ kj34-20020a0563594c2200b00172ab3bcc1emr8595804rwc.4.1703081313727; Wed, 20
+ Dec 2023 06:08:33 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231206113138.3576492-1-lukasz.luba@arm.com> <20231206113138.3576492-3-lukasz.luba@arm.com>
-In-Reply-To: <20231206113138.3576492-3-lukasz.luba@arm.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Wed, 20 Dec 2023 15:07:59 +0100
-Message-ID: <CAJZ5v0jSt87KXB0HPXhc+T05K0FgQNKzrNVj4NqYJ+a_WCJbWw@mail.gmail.com>
-Subject: Re: [PATCH 2/5] thermal: gov_power_allocator: Refactor check_power_actors()
-To: Lukasz Luba <lukasz.luba@arm.com>
-Cc: linux-kernel@vger.kernel.org, daniel.lezcano@linaro.org, rafael@kernel.org, 
-	linux-pm@vger.kernel.org, rui.zhang@intel.com
+References: <20231219201102.41639-1-brgl@bgdev.pl> <ZYL0MWAQ-frYLnZq@smile.fi.intel.com>
+In-Reply-To: <ZYL0MWAQ-frYLnZq@smile.fi.intel.com>
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+Date: Wed, 20 Dec 2023 15:08:22 +0100
+Message-ID: <CAMRc=MfbwMPQPM+OPzh12Hvbe7Wx9+vMwDn7oz=gFdfZ5N2PXw@mail.gmail.com>
+Subject: Re: [RFC PATCH] gpiolib: remove extra_checks
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>, Kent Gibson <warthog618@gmail.com>, 
+	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Dec 6, 2023 at 12:30=E2=80=AFPM Lukasz Luba <lukasz.luba@arm.com> w=
-rote:
+On Wed, Dec 20, 2023 at 3:03=E2=80=AFPM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
 >
-> Refactor check_power_actors() to make it possible for re-use in the
-> upcoming new callback.
+> On Tue, Dec 19, 2023 at 09:11:02PM +0100, Bartosz Golaszewski wrote:
+> > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> >
+> > extra_checks is only used in a few places. It also depends on
+>
+> > a non-standard DEBUG define one needs to add to the source file.
+>
+> Huh?!
+>
+> What then CONFIG_DEBUG_GPIO is about?
 
-I would say "In preparation for a subsequent change, rearrange
-check_power_actors()".
->
-> No intentional functional impact.
->
-> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
-> ---
->  drivers/thermal/gov_power_allocator.c | 10 ++++++----
->  1 file changed, 6 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/thermal/gov_power_allocator.c b/drivers/thermal/gov_=
-power_allocator.c
-> index 785fff14223d..38e1e89ba10c 100644
-> --- a/drivers/thermal/gov_power_allocator.c
-> +++ b/drivers/thermal/gov_power_allocator.c
-> @@ -581,8 +581,9 @@ static void allow_maximum_power(struct thermal_zone_d=
-evice *tz, bool update)
->   * power actor API. The warning should help to investigate the issue, wh=
-ich
->   * could be e.g. lack of Energy Model for a given device.
->   *
-> - * Return: 0 on success, -EINVAL if any cooling device does not implemen=
-t
-> - * the power actor API.
-> + * Return number of cooling devices or -EINVAL if any cooling device doe=
-s not
-> + * implement the power actor API. Return value 0 is also valid since coo=
-ling
-> + * devices might be attached later.
+Ah, right, it's set in Makefile. I didn't notice before.
 
-I would say "If all of the cooling devices currently attached to @tz
-implement the power actor API, return the number of them (which may be
-0, because some cooling devices may be attached later).  Otherwise,
-return -EINVAL."
+>
+> > The
+> > overhead of removing it should be minimal (we already use pure
+> > might_sleep() in the code anyway) so drop it.
+>
+> ...
+>
+> I agree on might_sleep() changes, but WARN_ON(), see above why.
+>
 
->   */
->  static int check_power_actors(struct thermal_zone_device *tz,
->                               struct power_allocator_params *params)
-> @@ -597,8 +598,9 @@ static int check_power_actors(struct thermal_zone_dev=
-ice *tz,
->                 if (!cdev_is_power_actor(instance->cdev)) {
->                         dev_warn(&tz->device, "power_allocator: %s is not=
- a power actor\n",
->                                  instance->cdev->type);
-> -                       ret =3D -EINVAL;
-> +                       return -EINVAL;
->                 }
-> +               ret++;
->         }
->
->         return ret;
-> @@ -631,7 +633,7 @@ static int power_allocator_bind(struct thermal_zone_d=
-evice *tz)
->         }
->
->         ret =3D check_power_actors(tz, params);
-> -       if (ret) {
-> +       if (ret < 0) {
->                 dev_warn(&tz->device, "power_allocator: binding failed\n"=
-);
->                 kfree(params);
->                 return ret;
+See above where?
+
+Bart
+
 > --
+> With Best Regards,
+> Andy Shevchenko
+>
+>
 
