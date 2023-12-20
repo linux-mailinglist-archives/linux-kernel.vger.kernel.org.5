@@ -1,308 +1,221 @@
-Return-Path: <linux-kernel+bounces-6808-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6809-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A153819DD8
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 12:19:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 872DA819DE6
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 12:20:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C71F61F21C3E
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 11:19:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D9198B22789
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 11:20:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61CC921361;
-	Wed, 20 Dec 2023 11:19:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DC982137D;
+	Wed, 20 Dec 2023 11:20:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mXvlXXqV"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="oKP0PgpJ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1212021345;
-	Wed, 20 Dec 2023 11:19:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-54c7744a93fso6909816a12.2;
-        Wed, 20 Dec 2023 03:19:27 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2CF721356
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 11:20:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-40c39e936b4so62614335e9.1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 03:20:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703071166; x=1703675966; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=53ALlqpQQBiJfMHSAH0XUy1XX9K4mSw/bFk5aEE1Ong=;
-        b=mXvlXXqVKwH0k89OILyeM3LdObiCayuWQBYPeFyDAlj1bEg91FdZXcvyQe1AKCNNDu
-         SyB1C4ZhpBscCU5wvx2UEP9QAtBMFDQ3Zcfnq3iUc37sjq+TL8KM0M1QS0PuE4+fi9go
-         6xZyS4oPFrfIONpFxmk/J9TyEWakjByj/yAJZkyN9vflKcaluhMGdZV5x9e4YMwNdIoX
-         3FOlA87xWcZV1gkw/HxcMJ/n3NMBFFAxaxBIbT/jLAo52Q4Whmu7i3HQQ6yM3dznLmD5
-         0Aa+OZsZcRj/ssFQjEySMXWZFNM8TuGz53VJyfZvL/iTzxBHX4bjdVQUbm2dPHl8xfqJ
-         /QpA==
+        d=linaro.org; s=google; t=1703071204; x=1703676004; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=IAmlDlInxuQrZ1cE1pP47ocBQk8ES4XUkRZRFq3xVa4=;
+        b=oKP0PgpJizdPjrHFvhWxiY0djhRZoc8PfWYJV6MBJDzig7X5s+YHpXVNy8fiVJvXjg
+         W/D7EG7+3wKhzfuAw+8JpKfKYlQnmKsTSail4+wFUxUw7lCogSo/mPOSdWxhNKa1JJmw
+         ZIw2yL49Gyyr18evnb/1os4y6HjQ1+4220OdYtJ8XExZ4OETz7aX4obwfai71BRPo99f
+         7Ju+31363wtA4bL7e9ek+iuH4CT7gbyq9TO9VkU39r6/NyblM64g7NmFZJUMZF7JckxW
+         9TU4BdccptMP07pIr7Urc/5dgbXhi8tAkkhTFZKk9hGwnjFQV5UPae0RtEOzKRMGFfly
+         bPMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703071166; x=1703675966;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=53ALlqpQQBiJfMHSAH0XUy1XX9K4mSw/bFk5aEE1Ong=;
-        b=ICyTng621Q4RKnA5PFTxfEGWrpproZfWEFW2/siknK5uK9TT+692kx+H56g4a39AKO
-         C5TeEp0PAjolSvHYEpjAHanKTzMIQTIT89dzRLxyq0yEUuqSPe0iuuR6t1u9tvvGW7E8
-         zMncAeOy4S8ENCS1B0KDbtJwoLGcZxlg5ndpKKSS4SfuIygqGDww2Swoef19YA3y0Ybe
-         rZMeR51LStxewyQYD13pEq3pAFdUeawHlem4HEEKKQ2IVlF2XvzSC1eXFHyFFRL+o9Cg
-         KRcwqv5ZBOeLlhR/cEGSd0e6QRg1KgIVcPhHuWozzL5Wlwmhg2mSnuWHCvlSRHV2kBVI
-         H6DQ==
-X-Gm-Message-State: AOJu0YzC+6b+b4hrMz+yicOfIMddd6j0VcY73ELpcm8TZhNizl3M8WJZ
-	tcpUl0X+hhqUvS6db0hrv+s=
-X-Google-Smtp-Source: AGHT+IEO9tjxM7UBMuqtKeASifmELeWwumI2TaDQVK5BwBjvkk3AyHRkAGNSkpwu0mOrPkTWfv1GUw==
-X-Received: by 2002:a50:85cb:0:b0:551:9405:46a9 with SMTP id q11-20020a5085cb000000b00551940546a9mr6715587edh.30.1703071166078;
-        Wed, 20 Dec 2023 03:19:26 -0800 (PST)
-Received: from tom-HP-ZBook-Fury-15-G7-Mobile-Workstation (net-188-217-59-229.cust.vodafonedsl.it. [188.217.59.229])
-        by smtp.gmail.com with ESMTPSA id r14-20020aa7cb8e000000b00552f2607d2asm4725986edt.96.2023.12.20.03.19.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Dec 2023 03:19:25 -0800 (PST)
-Date: Wed, 20 Dec 2023 12:19:23 +0100
-From: Tommaso Merciai <tomm.merciai@gmail.com>
-To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc: linuxfancy@googlegroups.com, martin.hecht@avnet.eu,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/4] media: i2c: alvium: removal of fr field
-Message-ID: <ZYLNuw1/IJg7jrEa@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
-References: <20231220085609.2595732-1-tomm.merciai@gmail.com>
- <20231220085609.2595732-3-tomm.merciai@gmail.com>
- <20231220091309.GG29638@pendragon.ideasonboard.com>
- <ZYK7y/jaEZ2JHsnH@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
- <20231220100643.GJ29638@pendragon.ideasonboard.com>
+        d=1e100.net; s=20230601; t=1703071204; x=1703676004;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=IAmlDlInxuQrZ1cE1pP47ocBQk8ES4XUkRZRFq3xVa4=;
+        b=YemfKXBrT5gFQq4p3/cQ/EkaQFeFPUUdi6J9AEmJHlN6jMauGkoowinlWSJWtsMLil
+         ooW2yWzkl8MlIBlkUTU6ggBO4Ypi6gsn9OhsdxTrb393zbcvVYwqKCQ0jjvKzj5DdPRR
+         jPsGHAcQoIxUsad9uxdqg/IpG5hCP6cnXKL7FKj4MAXCJO/1dPn+GK/7FD7SK7D9gtoP
+         egSmGar88y5+YqvFpwIzclECu+c5hheLGStbvoQ3ijInPuN7GCri4TGjvl2KUnklArHo
+         4+4LZs8aa7E62omAQRsTBl5i/C8ClbOqGRS5zuBbu/Pc6EVHaYzae/A6YhMSJE302BdW
+         smFA==
+X-Gm-Message-State: AOJu0YyRv29P0Yd6AXF0ctO1Q7mTX9LwI2lU1XmWxU6s5zg65b0BWTbJ
+	r1OKF6xXPce2rXbN1SxllhJcjAnM9q2zQ7pL87s=
+X-Google-Smtp-Source: AGHT+IE4OPqXHN9xe8HeBW+oIWLnaNLFDOWpgf+uMrHPDDKnKVZy22hD8yDPLE3qC2DGi8l9HPxUew==
+X-Received: by 2002:a05:600c:8512:b0:40d:38c6:7cec with SMTP id gw18-20020a05600c851200b0040d38c67cecmr114039wmb.299.1703071204012;
+        Wed, 20 Dec 2023 03:20:04 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id q15-20020a05600c46cf00b0040b349c91acsm6912026wmo.16.2023.12.20.03.20.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Dec 2023 03:20:03 -0800 (PST)
+Message-ID: <596c4ed6-bf3d-4406-8b28-2b34548520d1@linaro.org>
+Date: Wed, 20 Dec 2023 12:20:01 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231220100643.GJ29638@pendragon.ideasonboard.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/1] arm64: dts: qcom: sm8550: remove
+ address/size-cells from mdss_dsi1
+Content-Language: en-US
+To: "Aiqun Yu (Maria)" <quic_aiquny@quicinc.com>,
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: Tengfei Fan <quic_tengfan@quicinc.com>, andersson@kernel.org,
+ konrad.dybcio@linaro.org, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, kernel@quicinc.com
+References: <20231219003106.8663-1-quic_tengfan@quicinc.com>
+ <20231219003106.8663-2-quic_tengfan@quicinc.com>
+ <457e336e-004c-4721-b58d-e9ada16dc04b@linaro.org>
+ <a8f168da-14f7-4377-8dea-f282a3eac0a4@quicinc.com>
+ <13b61d41-6045-499e-864b-51c6cb6eacf9@linaro.org>
+ <38604415-b410-4995-9c4f-525536435699@quicinc.com>
+ <CAA8EJpo07gE7ZeNP6wSGTLtmF_3PKQAKFyMRZ8dk1K+f7PAxrg@mail.gmail.com>
+ <ad1547cf-0520-422d-a105-ec426f526d71@quicinc.com>
+ <CAA8EJppwsezPV21Uw8xTn=ra8L2jfnkHoRghDPN96O5tJsOD7A@mail.gmail.com>
+ <72305a35-02e6-4ff6-8251-01f986530c5d@quicinc.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <72305a35-02e6-4ff6-8251-01f986530c5d@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hi Laurent,
-Thanks for your comment.
+On 20/12/2023 11:33, Aiqun Yu (Maria) wrote:
+>>>>
+>>>> Don't touch the bindings unless you understand what you are doing.
+>>>> Your patch will be NAKed. There can be a DSI panel attached to the DSI
+>>>> host, which means there is a need for #address-cells / #size-cells.
+>>>>
+>>> Could you please help to elaborate more on details? Like what's the
+>>> right example here for the "qcom,mdss-dsi-ctrl" driver node needed to
+>>> have "#address-cells"/"#size-cells".
+>>
+>> As I wrote, the attached DSI panels make use of #address-cells / #size-cells.
+>>
+>> Please take a look at the sdm845-mtp.dts, which provides a complex
+>> enough example (a panel which is attached to both DSI0 and DSI1
+>> hosts).
+> I can see the panel example now.
+> While panel@0 likely node is not at in the binding that I've checked. 
 
-On Wed, Dec 20, 2023 at 12:06:43PM +0200, Laurent Pinchart wrote:
-> On Wed, Dec 20, 2023 at 11:02:51AM +0100, Tommaso Merciai wrote:
-> > Hi Laurent,
-> > Thanks for your review.
-> > 
-> > On Wed, Dec 20, 2023 at 11:13:09AM +0200, Laurent Pinchart wrote:
-> > > Hi Tommaso,
-> > > 
-> > > Thank you for the patch.
-> > > 
-> > > Use the imperative in the subject line:
-> > > 
-> > > media: i2c: alvium: Remove the fr field of the alvium_dev structure
-> > > 
-> > > On Wed, Dec 20, 2023 at 09:56:07AM +0100, Tommaso Merciai wrote:
-> > > > The fr (frame rate) field of the alvium_dev structure is
-> > > > only used to pass result from alvium_set_frame_interval() to
-> > > > alvium_set_frame_rate() that writes this info into the hw reg.
-> > > > Replace them with function parameter.
-> > > 
-> > > Replace it with a function parameter.
-> > 
-> > Thanks I'll fix this in v3.
-> > 
-> > > 
-> > > > 
-> > > > Signed-off-by: Tommaso Merciai <tomm.merciai@gmail.com>
-> > > > ---
-> > > >  drivers/media/i2c/alvium-csi2.c | 24 ++++++++++++------------
-> > > >  drivers/media/i2c/alvium-csi2.h |  1 -
-> > > >  2 files changed, 12 insertions(+), 13 deletions(-)
-> > > > 
-> > > > diff --git a/drivers/media/i2c/alvium-csi2.c b/drivers/media/i2c/alvium-csi2.c
-> > > > index 0dcd69bf9f92..a9ff6cc97cff 100644
-> > > > --- a/drivers/media/i2c/alvium-csi2.c
-> > > > +++ b/drivers/media/i2c/alvium-csi2.c
-> > > > @@ -1185,19 +1185,19 @@ static int alvium_get_frame_interval(struct alvium_dev *alvium,
-> > > >  	return ret;
-> > > >  }
-> > > >  
-> > > > -static int alvium_set_frame_rate(struct alvium_dev *alvium)
-> > > > +static int alvium_set_frame_rate(struct alvium_dev *alvium, u64 fr)
-> > > >  {
-> > > >  	struct device *dev = &alvium->i2c_client->dev;
-> > > >  	int ret;
-> > > >  
-> > > >  	ret = alvium_write_hshake(alvium, REG_BCRM_ACQUISITION_FRAME_RATE_RW,
-> > > > -				  alvium->fr);
-> > > > +				  fr);
-> > > >  	if (ret) {
-> > > >  		dev_err(dev, "Fail to set frame rate lanes reg\n");
-> > > >  		return ret;
-> > > >  	}
-> > > >  
-> > > > -	dev_dbg(dev, "set frame rate: %llu us\n", alvium->fr);
-> > > > +	dev_dbg(dev, "set frame rate: %llu us\n", fr);
-> > > >  
-> > > >  	return 0;
-> > > >  }
-> > > > @@ -1661,10 +1661,11 @@ static int alvium_g_frame_interval(struct v4l2_subdev *sd,
-> > > >  }
-> > > >  
-> > > >  static int alvium_set_frame_interval(struct alvium_dev *alvium,
-> > > > -				     struct v4l2_subdev_frame_interval *fi)
-> > > > +				     struct v4l2_subdev_frame_interval *fi,
-> > > > +				     u64 *req_fr)
-> > > >  {
-> > > >  	struct device *dev = &alvium->i2c_client->dev;
-> > > > -	u64 req_fr, dft_fr, min_fr, max_fr;
-> > > > +	u64 dft_fr, min_fr, max_fr;
-> > > >  	int ret;
-> > > >  
-> > > >  	if (fi->interval.denominator == 0)
-> > > > @@ -1681,13 +1682,12 @@ static int alvium_set_frame_interval(struct alvium_dev *alvium,
-> > > >  	dev_dbg(dev, "fi->interval.denominator = %d\n",
-> > > >  		fi->interval.denominator);
-> > > >  
-> > > > -	req_fr = (u64)((fi->interval.denominator * USEC_PER_SEC) /
-> > > > +	*req_fr = (u64)((fi->interval.denominator * USEC_PER_SEC) /
-> > > >  		       fi->interval.numerator);
-> > > >  
-> > > > -	if (req_fr >= max_fr && req_fr <= min_fr)
-> > > > -		req_fr = dft_fr;
-> > > > +	if (*req_fr >= max_fr && *req_fr <= min_fr)
-> > > > +		*req_fr = dft_fr;
-> > > 
-> > > Shouldn't we clamp the value to [min, max] instead of using the default
-> > > if it's out of range ? Something like
-> > > 
-> > > 	*req_fr = clamp(*req_fr, min_fr, max_fr)
-> > > 
-> > > This makes me realize that the current code is wrong, req_fr can't be >=
-> > > max and <= min at the same time. You probably meant || instead of &&.
-> > > 
-> > > This should be fixed in a separate patch.
-> > 
-> > If this is ok for you, after this series I can put a patch with || fix
-> > instead of clamping, because if we clamp dft_fr is not used any more.
-> > After if you agree I will work on clamping.
-> > Thanks for the catch! :)
+"Likely not" is not the same as "cannot".
+
+> There are quite a few of binding document about the same driver. I 
+
+You keep mixing drivers, bindings and devices which does not help this
+discussion. I really do not understand above sentence.
+
+> checked 5 of the bindings document and moste of them are alike, and 
+> don't have the panel example.:(
+
+Example like the example DTS in the binding? What does it have to do
+with anything here? What are we talking here about?
+
+>>
+>>> Thx to chime in that we have put a good amount of time here.
+>>
+>> Can't quite catch you here.
+>>
+>>>> Please stop wasting the time on dtc warning. The bindings (and the
+>>>> file) are correct.
+>>> I don't agree here.
+>>> Either it is a wrong usage of "#address-cells"/"#size-cells", or dtc
+>>> warning should be fixed with this usage take into account.
+>>> "dtb check" will be a good guideline for developers to follow, I don't
+>>> think it is wasting time here.
+>>
+>> It is a guideline, but not a rule. No warnings by default is more of
+>> the rule. W=1 enables warnings that developers have to classify and
+>> cope with.
+>>
+>> E.g. I don't think dtc correctly handles the case when there are both
+>> with-address and no-address nodes (e.g. 'panel@0' and 'ports'). Note,
+>> I might be mistaken there.
+> Now I understand the issue, here is some thinking from my end, and 
+> welcome others to chime in with more ideas:
+> 1. Only put "#address-cells" "#size-cells" right before node of panel@0.
+> 2. Align current binding document with "panel@0" examples.
+
+Examples? Again, about what examples are you talking? Mixing terminology
+does not help this discussion, so let's be specific:
+Touching examples just because you want, without valid reason: no
+
+> 3. Too many bindings files for driver "qcom,mdss-dsi-ctrl", shall we 
+> align them into 1 binding files.
+
+You are joking right? First of all, there is no driver
+"qcom,mdss-dsi-ctrl". Don't mix the terms, because it does not help the
+discussion. Second, please read previous discussions related to these
+bindings.
+
+> 4. enhance the dtc warning check if we still want to have 
+> "#address-cells" "#size-cells" even if there is no "panel@0" attached.
 > 
-> It's fine to fix this on top of the series, but I don't see why you
-> would need to first use ||. You can call clamp() and remove dft_fr.
+> @krzy here I try to answer your comments here as well.
+> I am disagree on leave the warning as it is. And want to do something to 
+> improve this. Ideas above.
+> Let me know if any comments is not right addressed from your comments.
 
-I'm just thinking out loud eh :)
+You want to do something without understanding the problem which results
+in random band-aids over some warning. Instead, please dig deeper to
+understand the problem and then propose solution.
 
-Maybe in the future we need to expose fr infos to the user to play with
-that. But we are writing for now, then we can replan to readd dft_fr
-read later.
+Best regards,
+Krzysztof
 
-I think this is what your are suggesting:
-
-+++ b/drivers/media/i2c/alvium-csi2.c
-@@ -1171,12 +1171,10 @@ static int alvium_set_bayer_pattern(struct alvium_dev *alvium,
- }
-
- static int alvium_get_frame_interval(struct alvium_dev *alvium,
--                                    u64 *dft_fr, u64 *min_fr, u64 *max_fr)
-+                                    u64 *min_fr, u64 *max_fr)
- {
-        int ret = 0;
-
--       alvium_read(alvium, REG_BCRM_ACQUISITION_FRAME_RATE_RW,
--                   dft_fr, &ret);
-        alvium_read(alvium, REG_BCRM_ACQUISITION_FRAME_RATE_MIN_R,
-                    min_fr, &ret);
-        alvium_read(alvium, REG_BCRM_ACQUISITION_FRAME_RATE_MAX_R,
-@@ -1647,7 +1645,7 @@ static int alvium_s_frame_interval(struct v4l2_subdev *sd,
- {
-        struct alvium_dev *alvium = sd_to_alvium(sd);
-        struct device *dev = &alvium->i2c_client->dev;
--       u64 req_fr, dft_fr, min_fr, max_fr;
-+       u64 req_fr, min_fr, max_fr;
-        struct v4l2_fract *interval;
-        int ret;
-
-@@ -1657,7 +1655,7 @@ static int alvium_s_frame_interval(struct v4l2_subdev *sd,
-        if (fi->interval.denominator == 0)
-                return -EINVAL;
-
--       ret = alvium_get_frame_interval(alvium, &dft_fr, &min_fr, &max_fr);
-+       ret = alvium_get_frame_interval(alvium, &min_fr, &max_fr);
-        if (ret) {
-                dev_err(dev, "Fail to get frame interval\n");
-                return ret;
-@@ -1670,9 +1668,7 @@ static int alvium_s_frame_interval(struct v4l2_subdev *sd,
-
-        req_fr = (u64)((fi->interval.denominator * USEC_PER_SEC) /
-                       fi->interval.numerator);
--
--       if (req_fr >= max_fr && req_fr <= min_fr)
--               req_fr = dft_fr;
-+       req_fr = clamp(req_fr, min_fr, max_fr);
-
-        interval = v4l2_subdev_state_get_interval(sd_state, 0);
-
-right?
-Thanks again.
-
-Regards,
-Tommaso
-
-> 
-> > > >  
-> > > > -	alvium->fr = req_fr;
-> > > >  	alvium->frame_interval.numerator = fi->interval.numerator;
-> > > >  	alvium->frame_interval.denominator = fi->interval.denominator;
-> > > >  
-> > > > @@ -1699,6 +1699,7 @@ static int alvium_s_frame_interval(struct v4l2_subdev *sd,
-> > > >  				   struct v4l2_subdev_frame_interval *fi)
-> > > >  {
-> > > >  	struct alvium_dev *alvium = sd_to_alvium(sd);
-> > > > +	u64 req_fr = ALVIUM_DEFAULT_FR_HZ;
-> > > 
-> > > Do you need to initialize the variable ? It doesn't seem to be required.
-> > 
-> > Really not, it's just to maintain the logic of alvium->fr. I will drop
-> > this in v3, thanks!
-> > 
-> > > With these small issues fixed,
-> > > 
-> > > Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> > > 
-> > > >  	int ret;
-> > > >  
-> > > >  	/*
-> > > > @@ -1711,9 +1712,9 @@ static int alvium_s_frame_interval(struct v4l2_subdev *sd,
-> > > >  	if (alvium->streaming)
-> > > >  		return -EBUSY;
-> > > >  
-> > > > -	ret = alvium_set_frame_interval(alvium, fi);
-> > > > +	ret = alvium_set_frame_interval(alvium, fi, &req_fr);
-> > > >  	if (!ret)
-> > > > -		ret = alvium_set_frame_rate(alvium);
-> > > > +		ret = alvium_set_frame_rate(alvium, req_fr);
-> > > >  
-> > > >  	return ret;
-> > > >  }
-> > > > @@ -2273,7 +2274,6 @@ static int alvium_subdev_init(struct alvium_dev *alvium)
-> > > >  	/* Setup initial frame interval*/
-> > > >  	alvium->frame_interval.numerator = 1;
-> > > >  	alvium->frame_interval.denominator = ALVIUM_DEFAULT_FR_HZ;
-> > > > -	alvium->fr = ALVIUM_DEFAULT_FR_HZ;
-> > > >  
-> > > >  	/* Setup the initial mode */
-> > > >  	alvium->mode.fmt = alvium_csi2_default_fmt;
-> > > > diff --git a/drivers/media/i2c/alvium-csi2.h b/drivers/media/i2c/alvium-csi2.h
-> > > > index 17f0bbbd1839..80066ac25047 100644
-> > > > --- a/drivers/media/i2c/alvium-csi2.h
-> > > > +++ b/drivers/media/i2c/alvium-csi2.h
-> > > > @@ -443,7 +443,6 @@ struct alvium_dev {
-> > > >  
-> > > >  	struct alvium_mode mode;
-> > > >  	struct v4l2_fract frame_interval;
-> > > > -	u64 fr;
-> > > >  
-> > > >  	u8 h_sup_csi_lanes;
-> > > >  	u64 link_freq;
-> 
-> -- 
-> Regards,
-> 
-> Laurent Pinchart
 
