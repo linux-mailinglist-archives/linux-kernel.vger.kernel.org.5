@@ -1,151 +1,99 @@
-Return-Path: <linux-kernel+bounces-7165-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7164-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E90681A284
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 16:30:38 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D9EBD81A281
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 16:30:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C16D71F24DF7
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 15:30:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7CB94B2726B
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 15:30:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1BD340C08;
-	Wed, 20 Dec 2023 15:28:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C17C3FE33;
+	Wed, 20 Dec 2023 15:28:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="RHjxNMA6"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="W03/Qc6D"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC25C405EF;
-	Wed, 20 Dec 2023 15:28:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-	by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3BKAf2YH011895;
-	Wed, 20 Dec 2023 16:28:39 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	selector1; bh=gOTJOkgkUXjyDgxkghIjHED6KsoYJ6xYXo9usGGB+Xk=; b=RH
-	jxNMA6pwf3Oh7gds5r32LGVowam+bdSUMq+QvqZ8P4GbpbCVvh0YUvvA6to/oczM
-	6SkM7c+Zr66tofKFwkc+ZaEDTB/r/q33kgUa4Xs5iciAMoBkFTQHB4/qreu9C1gl
-	hKe+S5mC9bf/5yu5INzFmrs6/LZx2uAyZCX8FijJtTIbcUOkLSophylMsITwUi23
-	YiI/c9T7Fi3QPRAP4e2d0TTn66IIMFfmnaH+aOqn4s1dJ2+aQftQwn7ECFOkLy2f
-	QlaP/QATCJxal+tLtr1XV8KllRFW8tKKj6WZlHxVUJcUzO5VmWBUAUCXlhsi+Qfq
-	dTUx3ywdPFjhmNjxnYaQ==
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3v13nhhvuc-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 20 Dec 2023 16:28:39 +0100 (CET)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id BB3C1100057;
-	Wed, 20 Dec 2023 16:28:38 +0100 (CET)
-Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id AF65121ED2E;
-	Wed, 20 Dec 2023 16:28:38 +0100 (CET)
-Received: from localhost (10.201.20.120) by SHFDAG1NODE1.st.com (10.75.129.69)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 20 Dec
- 2023 16:28:38 +0100
-From: Hugues Fruchet <hugues.fruchet@foss.st.com>
-To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-        Philipp Zabel
-	<p.zabel@pengutronix.de>,
-        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        Sakari Ailus
-	<sakari.ailus@linux.intel.com>,
-        Benjamin Gaignard
-	<benjamin.gaignard@collabora.com>,
-        Laurent Pinchart
-	<laurent.pinchart+renesas@ideasonboard.com>,
-        Daniel Almeida
-	<daniel.almeida@collabora.com>,
-        Benjamin Mugnier
-	<benjamin.mugnier@foss.st.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Mauro
- Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil@xs4all.nl>, <linux-media@vger.kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <linux-rockchip@lists.infradead.org>
-CC: Hugues Fruchet <hugues.fruchet@foss.st.com>,
-        Marco Felsch
-	<m.felsch@pengutronix.de>,
-        Adam Ford <aford173@gmail.com>
-Subject: [PATCH v4 5/5] arm64: dts: st: add video encoder support to stm32mp255
-Date: Wed, 20 Dec 2023 16:27:32 +0100
-Message-ID: <20231220152732.2138260-6-hugues.fruchet@foss.st.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231220152732.2138260-1-hugues.fruchet@foss.st.com>
-References: <20231220152732.2138260-1-hugues.fruchet@foss.st.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 618B047F5F
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 15:28:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-d9b9adaf291so3222679276.1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 07:28:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1703086092; x=1703690892; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=g7gRsnGK/98vqBcsCXhR92alkXxNhTCIZpp/DaIxwxU=;
+        b=W03/Qc6DiZ9M5AEqYCbf56BpRCY1qPSlkNH2IkrU2lC6zhIxQ3rHitPnk351jdBwp5
+         zIz+FgtEM6Zt4HBwgGL2nT5dKWTdBS4ggVZp1RliG3Nplnb3s4LOc3+9jOST4cpiLDQB
+         qSWQR1LmkSOvrJ973LuL22xik2cD9IroSPT199BhFBdotNP7ZfGdhRBprAK3herbLy62
+         ZJe+utp/qyB3ReQkSOT5gV6D0uHd8cJLMfgCNY7TdcwQXvrTos62VnAl6eXYMPTJ0cju
+         HW7w8pCkC8Hmp6m3rsV5MVqlyA/wuR8wUD6Q0OEnBd1s6VZ9H/a0f7G/McNQA0Ub+weg
+         LMNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703086092; x=1703690892;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=g7gRsnGK/98vqBcsCXhR92alkXxNhTCIZpp/DaIxwxU=;
+        b=nNjotn1Mhe1B1fUeOdBy3Nlga4Qk3wMg6iSf041Q8ncB0Bwtqo29FGe+Hx9ISo/gUH
+         /c/grg4mRPqgOiWkgQovi7o7ErBITjfTRKiyo2veXWA8znD3M86gNSEDWCnO0rGab61c
+         MI9IJXi9xsMdG5IrADOrmkhr07PBe8DFOGgOPnvPhO3Z7NtPjwVHQzo6y5/EzItLNRbs
+         mz722Y6ih5j3bvlZB24aZWfwuauUMNiH/Oi4mz+YjHlWxpj/w/5CgYoBQOBGcUCTQ3H7
+         3Iyb149kPRRqQ8cmfoErmmPIj24xSOuehWC6BX7035qgUYkOWeVmmEPuCiOz8Bv1b+IS
+         a6/A==
+X-Gm-Message-State: AOJu0YwqedjeCI/um/gVK4dSr0G6UHxX7ER1tJVvbk96/BeoPnJLp1ib
+	NjqUZeDFYHkEpeCT5wjJ/Izyi3AHyDJnq5UyzNoRcA==
+X-Google-Smtp-Source: AGHT+IHvLkJ6Yg8dTs7bidAxdL9xHex4/uIhS8hfLIfdr0GXHNzu4uRJv+qfme+slkFJoK416zFCj/8x8mLra8uNxak=
+X-Received: by 2002:a25:ae1f:0:b0:dbc:d6ad:616c with SMTP id
+ a31-20020a25ae1f000000b00dbcd6ad616cmr5779335ybj.24.1703086092356; Wed, 20
+ Dec 2023 07:28:12 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: EQNCAS1NODE3.st.com (10.75.129.80) To SHFDAG1NODE1.st.com
- (10.75.129.69)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-20_09,2023-12-20_01,2023-05-22_02
+References: <20231219201102.41639-1-brgl@bgdev.pl> <ZYL0MWAQ-frYLnZq@smile.fi.intel.com>
+In-Reply-To: <ZYL0MWAQ-frYLnZq@smile.fi.intel.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Wed, 20 Dec 2023 16:28:00 +0100
+Message-ID: <CACRpkdZB-5DN5NYJNGheDJnNWRt8x4LwgOQpL4NDyX2JSn+_9g@mail.gmail.com>
+Subject: Re: [RFC PATCH] gpiolib: remove extra_checks
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Bartosz Golaszewski <brgl@bgdev.pl>, Kent Gibson <warthog618@gmail.com>, linux-gpio@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Add VENC hardware video encoder support to STM32MP255.
+On Wed, Dec 20, 2023 at 3:03=E2=80=AFPM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+> On Tue, Dec 19, 2023 at 09:11:02PM +0100, Bartosz Golaszewski wrote:
+> > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> >
+> > extra_checks is only used in a few places. It also depends on
+>
+> > a non-standard DEBUG define one needs to add to the source file.
+>
+> Huh?!
+>
+> What then CONFIG_DEBUG_GPIO is about?
 
-Signed-off-by: Hugues Fruchet <hugues.fruchet@foss.st.com>
----
- arch/arm64/boot/dts/st/stm32mp251.dtsi | 6 ++++++
- arch/arm64/boot/dts/st/stm32mp255.dtsi | 7 +++++++
- 2 files changed, 13 insertions(+)
+Yeah that is some helper DBrownell added because like me he could
+never figure out how to pass -DDEBUG to a single file on the command
+line and besides gpiolib is several files. I added the same to pinctrl
+to get core debug messages.
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index 8fc7e9199499..5dd4f3580a60 100644
---- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
-+++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -58,6 +58,12 @@ ck_icn_p_vdec: ck-icn-p-vdec {
- 			compatible = "fixed-clock";
- 			clock-frequency = <200000000>;
- 		};
-+
-+		ck_icn_p_venc: ck-icn-p-venc {
-+			#clock-cells = <0>;
-+			compatible = "fixed-clock";
-+			clock-frequency = <200000000>;
-+		};
- 	};
- 
- 	firmware {
-diff --git a/arch/arm64/boot/dts/st/stm32mp255.dtsi b/arch/arm64/boot/dts/st/stm32mp255.dtsi
-index aea5096dac3c..17f197c5b22b 100644
---- a/arch/arm64/boot/dts/st/stm32mp255.dtsi
-+++ b/arch/arm64/boot/dts/st/stm32mp255.dtsi
-@@ -14,6 +14,13 @@ vdec: vdec@480d0000 {
- 				interrupts = <GIC_SPI 117 IRQ_TYPE_LEVEL_HIGH>;
- 				clocks = <&ck_icn_p_vdec>;
- 			};
-+
-+			venc: venc@480e0000 {
-+				compatible = "st,stm32mp25-venc";
-+				reg = <0x480e0000 0x800>;
-+				interrupts = <GIC_SPI 167 IRQ_TYPE_LEVEL_HIGH>;
-+				clocks = <&ck_icn_ls_mcu>;
-+			};
- 		};
- 	};
- };
--- 
-2.25.1
+I guess Bartosz means extra_checks is =3D=3D a non-standard DEBUG
+define.
 
+Yours,
+Linus Walleij
 
