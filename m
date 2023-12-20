@@ -1,141 +1,129 @@
-Return-Path: <linux-kernel+bounces-6801-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6790-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A7369819DBC
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 12:14:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 01648819D99
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 12:04:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 63D0D2883E8
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 11:14:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AB90A1F21D82
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 11:04:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A332821110;
-	Wed, 20 Dec 2023 11:14:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9703224C7;
+	Wed, 20 Dec 2023 11:03:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nwvn1CBD"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FF4121103;
-	Wed, 20 Dec 2023 11:14:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 30E9D2018C6;
-	Wed, 20 Dec 2023 12:14:26 +0100 (CET)
-Received: from aprdc01srsp001v.ap-rdc01.nxp.com (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
-	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id EDE2820056C;
-	Wed, 20 Dec 2023 12:14:25 +0100 (CET)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 46D741802200;
-	Wed, 20 Dec 2023 19:14:24 +0800 (+08)
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-To: abelvesa@kernel.org,
-	peng.fan@nxp.com,
-	mturquette@baylibre.com,
-	sboyd@kernel.org,
-	shawnguo@kernel.org,
-	s.hauer@pengutronix.de,
-	kernel@pengutronix.de,
-	festevam@gmail.com,
-	linux-imx@nxp.com,
-	shengjiu.wang@gmail.com
-Cc: linux-clk@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] clk: imx: pll14xx: change naming of fvco to fout
-Date: Wed, 20 Dec 2023 18:33:09 +0800
-Message-Id: <1703068389-6130-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16B69224E9;
+	Wed, 20 Dec 2023 11:03:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE109C433CD;
+	Wed, 20 Dec 2023 11:03:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703070186;
+	bh=GrMriv7ivnlP9h7Q18r2uy1Z2grWFasuxR26KwYb0Rs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=nwvn1CBDR+i3BPjmWN8LynrNe7VQW1YBIDFsOxKIBbznBF5Mpp+2lil0a2bNqfODM
+	 aLhiyR8JJne58blG9yQCdJaoB1JG0R1HEa5co6psefejF/iqfDqpQbugByrFd5Q3AW
+	 K39jhol9fvboYfpGEsIsunq5jeWz7r/7XLy17Rwn7iv3ncvtr5ZOJjVSLYLDqZyvfC
+	 p3d6IIKkdnaKAl8r7WQ6LITy9zKiHoolzTZZ8j7t2HZFhCn9npJXw3sghmqyCrouon
+	 7eU6yyDRYG+26QZicjNPSMQQUxyVS1fRCiiHsIcrlKMvH5j7pPKVfcBiGI5LceQlSq
+	 /Tn59zc0nukwg==
+Date: Wed, 20 Dec 2023 12:03:00 +0100
+From: "wsa@kernel.org" <wsa@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Andi Shyti <andi.shyti@kernel.org>,
+	Chris Packham <Chris.Packham@alliedtelesis.co.nz>,
+	"robh+dt@kernel.org" <robh+dt@kernel.org>,
+	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
+	"conor+dt@kernel.org" <conor+dt@kernel.org>,
+	"gregory.clement@bootlin.com" <gregory.clement@bootlin.com>,
+	"linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v6 1/2] dt-bindings: i2c: add bus-reset-gpios property
+Message-ID: <ZYLJ5EMKK1jhSclQ@shikoro>
+Mail-Followup-To: "wsa@kernel.org" <wsa@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Andi Shyti <andi.shyti@kernel.org>,
+	Chris Packham <Chris.Packham@alliedtelesis.co.nz>,
+	"robh+dt@kernel.org" <robh+dt@kernel.org>,
+	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
+	"conor+dt@kernel.org" <conor+dt@kernel.org>,
+	"gregory.clement@bootlin.com" <gregory.clement@bootlin.com>,
+	"linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20231115035753.925534-1-chris.packham@alliedtelesis.co.nz>
+ <20231115035753.925534-2-chris.packham@alliedtelesis.co.nz>
+ <f24b9b2d-aeb1-47f7-bf21-4383fdcf94aa@linaro.org>
+ <5a52b0c9-8858-4f55-8dd7-9269c29c10a7@alliedtelesis.co.nz>
+ <ZYHMvZ3plIQ0zXWa@shikoro>
+ <601d07b5-264d-4322-b92e-63d58b3d69fa@alliedtelesis.co.nz>
+ <ZYICEczlao+pg8kd@shikoro>
+ <20231219232545.ksrxgvl7epeewga2@zenone.zhora.eu>
+ <e80a06aa-bb44-4993-8e67-dbc910a409ab@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="WHFDagMOY8iIgeIJ"
+Content-Disposition: inline
+In-Reply-To: <e80a06aa-bb44-4993-8e67-dbc910a409ab@linaro.org>
 
-pll14xx_calc_rate() output the fout clock not the fvco clock
-The relation of fvco and fout is:
-	fout = fvco / (1 << sdiv)
 
-So use correct naming for the clock.
+--WHFDagMOY8iIgeIJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
- drivers/clk/imx/clk-pll14xx.c | 23 ++++++++++++-----------
- 1 file changed, 12 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/clk/imx/clk-pll14xx.c b/drivers/clk/imx/clk-pll14xx.c
-index 0d58d85c375e..d63564dbb12c 100644
---- a/drivers/clk/imx/clk-pll14xx.c
-+++ b/drivers/clk/imx/clk-pll14xx.c
-@@ -104,15 +104,15 @@ static const struct imx_pll14xx_rate_table *imx_get_pll_settings(
- static long pll14xx_calc_rate(struct clk_pll14xx *pll, int mdiv, int pdiv,
- 			      int sdiv, int kdiv, unsigned long prate)
- {
--	u64 fvco = prate;
-+	u64 fout = prate;
- 
--	/* fvco = (m * 65536 + k) * Fin / (p * 65536) */
--	fvco *= (mdiv * 65536 + kdiv);
-+	/* fout = (m * 65536 + k) * Fin / (p * 65536) / (1 << sdiv) */
-+	fout *= (mdiv * 65536 + kdiv);
- 	pdiv *= 65536;
- 
--	do_div(fvco, pdiv << sdiv);
-+	do_div(fout, pdiv << sdiv);
- 
--	return fvco;
-+	return fout;
- }
- 
- static long pll1443x_calc_kdiv(int mdiv, int pdiv, int sdiv,
-@@ -131,7 +131,7 @@ static void imx_pll14xx_calc_settings(struct clk_pll14xx *pll, unsigned long rat
- {
- 	u32 pll_div_ctl0, pll_div_ctl1;
- 	int mdiv, pdiv, sdiv, kdiv;
--	long fvco, rate_min, rate_max, dist, best = LONG_MAX;
-+	long fout, rate_min, rate_max, dist, best = LONG_MAX;
- 	const struct imx_pll14xx_rate_table *tt;
- 
- 	/*
-@@ -143,6 +143,7 @@ static void imx_pll14xx_calc_settings(struct clk_pll14xx *pll, unsigned long rat
- 	 * d) -32768 <= k <= 32767
- 	 *
- 	 * fvco = (m * 65536 + k) * prate / (p * 65536)
-+	 * fout = (m * 65536 + k) * prate / (p * 65536) / (1 << sdiv)
- 	 */
- 
- 	/* First try if we can get the desired rate from one of the static entries */
-@@ -173,8 +174,8 @@ static void imx_pll14xx_calc_settings(struct clk_pll14xx *pll, unsigned long rat
- 		pr_debug("%s: in=%ld, want=%ld Only adjust kdiv %ld -> %d\n",
- 			 clk_hw_get_name(&pll->hw), prate, rate,
- 			 FIELD_GET(KDIV_MASK, pll_div_ctl1), kdiv);
--		fvco = pll14xx_calc_rate(pll, mdiv, pdiv, sdiv, kdiv, prate);
--		t->rate = (unsigned int)fvco;
-+		fout = pll14xx_calc_rate(pll, mdiv, pdiv, sdiv, kdiv, prate);
-+		t->rate = (unsigned int)fout;
- 		t->mdiv = mdiv;
- 		t->pdiv = pdiv;
- 		t->sdiv = sdiv;
-@@ -190,13 +191,13 @@ static void imx_pll14xx_calc_settings(struct clk_pll14xx *pll, unsigned long rat
- 			mdiv = clamp(mdiv, 64, 1023);
- 
- 			kdiv = pll1443x_calc_kdiv(mdiv, pdiv, sdiv, rate, prate);
--			fvco = pll14xx_calc_rate(pll, mdiv, pdiv, sdiv, kdiv, prate);
-+			fout = pll14xx_calc_rate(pll, mdiv, pdiv, sdiv, kdiv, prate);
- 
- 			/* best match */
--			dist = abs((long)rate - (long)fvco);
-+			dist = abs((long)rate - (long)fout);
- 			if (dist < best) {
- 				best = dist;
--				t->rate = (unsigned int)fvco;
-+				t->rate = (unsigned int)fout;
- 				t->mdiv = mdiv;
- 				t->pdiv = pdiv;
- 				t->sdiv = sdiv;
--- 
-2.34.1
+> >>> I personally would like to see it accepted but it seems there are=20
+> >>> objections to this approach. I've yet to come up with anything better=
+ to=20
+> >>> offer as an alternative.
+> >>
+> >> I see. Thanks for the heads up!
+> >=20
+> > I'm also inclined to have this merged. A real fix might take
+> > time.
+>=20
+> NAK
+>=20
+> If you intend to merge it, then please carry:
 
+No worries. If this is "abusing" DT, then it is not going to be merged
+by me. I am sorry for Chris, but sometimes simple problems create quite
+some fuzz because Linux hardware abstractions has not foreseen certain
+use cases. Or the APIs dealing with them didn't forsee that. We have
+been there a lot of times :/
+
+
+--WHFDagMOY8iIgeIJ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmWCyeEACgkQFA3kzBSg
+KbYtUBAAhgwr4srMDqCAfVg3lItT80XUcPPuD1wSb+62T/SLusHGQAlIh+qwQ02e
+K4+9VWDpZGmlHh00Zsutfu9fcbuRlO3ICI61+7sVp0IoYGJgaCr/t9Zaf59cbIol
+tpLwrZnp1JOu3MYnZa6zmitBhYnqyAzyME4//J4Y8ol7jkWMPIZ4/JwYpQaz3dSL
+jrYcXGBIrZVUAtS9ZGJShExz3tnVmg69cc05noH18rkUUhPCKeqgQhpNbKlwu/Cq
+UqIzYa4MRlY/JXxJcCa0sWtvKOJWxhF1UI1kn53v60znM+Ku+n8uvciX787voveW
+zIq22dNIv1iiA4SX3O8/Ncnvyrk+K2JPFBcPMy/XKN5IWtaWQSZsViZ/Y8Zgtg09
+C4Z/shQwcjzSd2aJhVNdXnR3fiMdiLNivSkHiBji0PM9KWTcG4bXRSGRM35h95v+
+ii6+U13AOp5Thix8oSvmaYv1sH3ZTmkLIh8YHEC9uTVylgIpEoZksOoZn7F+JLrA
+LAF6w4e1mbowBwhM1sS8pQJvjOIQDsO80Ygl1feo/+fA//nZYcQCTCBNDO0mebVw
+CGoOTlAj4IBUzLi524C3ErLAawO+mrkpqOsc2mmtkkNcWOzaCJmtROLh8AL+ugVa
+ll43a7YU4ikQYjfZH3LDE+bzCiaxKrhwp1fRm57D2jn3ISZRslM=
+=Xirm
+-----END PGP SIGNATURE-----
+
+--WHFDagMOY8iIgeIJ--
 
