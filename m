@@ -1,167 +1,131 @@
-Return-Path: <linux-kernel+bounces-7349-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7357-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E40481A653
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 18:28:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 540C981A679
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 18:37:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2C7AEB22D7D
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 17:28:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 10AA02875AC
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 17:37:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A0F4481D8;
-	Wed, 20 Dec 2023 17:28:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3099481AC;
+	Wed, 20 Dec 2023 17:37:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="PpAdagND"
+	dkim=pass (2048-bit key) header.d=kroah.com header.i=@kroah.com header.b="aXXh4QTI";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="MrbqF/6E"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mout.web.de (mout.web.de [212.227.17.12])
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A500481A0;
-	Wed, 20 Dec 2023 17:28:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-	t=1703093290; x=1703698090; i=markus.elfring@web.de;
-	bh=JaA2fxNDoommCiVHVHU09SsAG6D3wIoXFEtfnfjjzyQ=;
-	h=X-UI-Sender-Class:Date:To:Cc:References:Subject:From:
-	 In-Reply-To;
-	b=PpAdagNDYHmfbvfxI7B/w48jLC4VbRtiPJoOuT5HMwRothHp8nyH7BM+1XlI1GXy
-	 x7cF9YHPOJuGE9Wb3I4ojwY3+6W29jnsymSvmp48uMNRWZ6xTgQj2XIWdghxDfYLy
-	 H0HZNcHgl2o8QuD4xuvPVjHDRBo6IxQMpydnwbcxNmxw5ImQy7dlPTb2KR/0SrJEW
-	 5UID2CK9h5SUOl+jIS7BelnberEx/MraxwLvebQpcYQBFSl5WwTTp4xmN/9EYGQ3T
-	 kKYVAc5nzdDEr46ozMQ2A3Cs88UcdOweo+TL14SRHOhwkkQwpcbUom/BKs/g87+z+
-	 vrRSTPY2hlS6Sa0iAQ==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb105
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1MeDQj-1qhDe23aCd-00bEh6; Wed, 20
- Dec 2023 18:28:09 +0100
-Message-ID: <b472d62b-47f9-428b-b5a9-9b3c526f487c@web.de>
-Date: Wed, 20 Dec 2023 18:28:07 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21A3E47A59;
+	Wed, 20 Dec 2023 17:37:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kroah.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kroah.com
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+	by mailout.nyi.internal (Postfix) with ESMTP id 19A265C0442;
+	Wed, 20 Dec 2023 12:37:19 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Wed, 20 Dec 2023 12:37:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm2; t=1703093839; x=1703180239; bh=GnEOfo/anO
+	WPxQKbFe9WTvHxFyLYv0rH36Sgz3O76EA=; b=aXXh4QTI7ED5bSnleEslOsioM6
+	YoRDVZ74YnQU0cOVdLvloTPUot0eUYa9XmQmN2yJx4fAfiTwaglQJkyS6T9A2Qu6
+	ZcY7a9HqWaMNV9Q5HKOpvH8p7dlXvfR4CPRtKfCl/23egGabG3cRvXr75CA1wlr1
+	MdcukxgH1L+piPaDe2wcRI4ojzltu5/v/EDHMiFghTnk/ifNQS564GvqhgDnp0/Z
+	GgxGZBSLZeCP/l5n73prVvhcGKW8mW3EqCa5Rji5SZI05knYJyofk6yyxCTG3V3e
+	46/iRm0XjzN+Ja5gNL4UlxRA25HCshD6dwMIAL1C05GF6tm74rbKqc6QsjZw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1703093839; x=1703180239; bh=GnEOfo/anOWPxQKbFe9WTvHxFyLY
+	v0rH36Sgz3O76EA=; b=MrbqF/6ESfm7v+lfWAl0Y0jTu/CYn+TBctauTik8BT2c
+	8ycFNg7CxokRozm2bz5/a0Zbk2b2m8T7MHqmKAOimGo+2v0KoBc1+SIUZD5/Hn9n
+	10B4A51PojaiUhTrQ59PGLpzq1ewmYWiFk/xD19o4K7n3D0PUrNWvqXqd+hF0sxA
+	mLrzINgcPEUAv7ivEn5R9kHIypeJZ92R1CNPM3iHOJxdw99jhlbhHu/Om5RelZst
+	rBVKty6LELb2Jikz7Idi0t51yRAX2OPIUJEejA3rZgVf6ua2bea/2X97xKH8Bnmq
+	k1Iq+iCgxHJl6fnVioatlu8zfi/5lVc8cjqn+MPxwQ==
+X-ME-Sender: <xms:TiaDZZr-RYhvDpYhO1PKQY0t5viCD-RgsAD2KXVtYbC-7cX3oK2A6Q>
+    <xme:TiaDZbrfeXJSRpFudtXJzkO5ilpa0nMZBAtorUsyYE_MAuhKgd-qB0ZPgxPcPBRfq
+    ZH8zes5uGkk3Q>
+X-ME-Received: <xmr:TiaDZWO2vb8ihjMJStPeVh-Yr9MWzdKucj2L8lin6UD85hBnNO5MxmpMCcxIK8VhA0RKbHqWht-nYoIMfZv1FrIvOzg8ERuv1A>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdduvddguddtfecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgv
+    ghcumffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeehge
+    dvvedvleejuefgtdduudfhkeeltdeihfevjeekjeeuhfdtueefhffgheekteenucevlhhu
+    shhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrhgvgheskhhroh
+    grhhdrtghomh
+X-ME-Proxy: <xmx:TiaDZU4Gy1eoXwmJn_MFs-OvVZaWEQBDsUWwuxsBMU6z1iQH-fOOig>
+    <xmx:TiaDZY6HR3mqMKamGePb70QNMRpZ8ISGcEOL6EjHDEy_SwIH5pWQqg>
+    <xmx:TiaDZcjnDINQk2k1EleuQn1fUtWmwnVTPa7ILNOIM1NQ6MPe59EmgQ>
+    <xmx:TyaDZYy5nb9sRfb6yFIOVos_JX9bxHDiwD7JEn_naB-tVU27bm49bA>
+Feedback-ID: i787e41f1:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 20 Dec 2023 12:37:18 -0500 (EST)
+Date: Wed, 20 Dec 2023 18:30:53 +0100
+From: Greg KH <greg@kroah.com>
+To: Werner Sembach <wse@tuxedocomputers.com>
+Cc: Andreas Noever <andreas.noever@gmail.com>,
+	Michael Jamet <michael.jamet@intel.com>,
+	Mika Westerberg <mika.westerberg@linux.intel.com>,
+	Yehezkel Bernat <YehezkelShB@gmail.com>, linux-usb@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] thunderbolt: Reduce retry timeout to speed up boot for
+ some devices
+Message-ID: <2023122056-snowflake-visor-1262@gregkh>
+References: <20231220150956.230227-1-wse@tuxedocomputers.com>
+ <2e00a0dc-5911-44ee-8c50-a8482eb44197@tuxedocomputers.com>
+ <2023122012-spruce-unsteady-e187@gregkh>
+ <e7c768aa-a071-4590-ab1a-d80738dce1e5@tuxedocomputers.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Yazen Ghannam <yazen.ghannam@amd.com>, Borislav Petkov <bp@alien8.de>,
- linux-edac@vger.kernel.org, kernel-janitors@vger.kernel.org
-Cc: LKML <linux-kernel@vger.kernel.org>, Avadhut Naik <avadhut.naik@amd.com>,
- Christophe Jaillet <christophe.jaillet@wanadoo.fr>,
- John Allen <john.allen@amd.com>, Muralidhara M K <muralidhara.mk@amd.com>,
- Tony Luck <tony.luck@intel.com>, William Roche <william.roche@oracle.com>
-References: <20231218190406.27479-2-yazen.ghannam@amd.com>
-Subject: Re: [PATCH v4 1/3] RAS: Introduce AMD Address Translation Library
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <20231218190406.27479-2-yazen.ghannam@amd.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:LpOpQfMLOJ28U+FSOEeLudUgnY5BrKIWUS5XPC8lBFWoQcidS0T
- 9lozXUO+fqIs7Wu3ya3Sc2AxIFe7PFUuzjDyY13RUlOGDQ7Ix1ILCZczYDV5Svc4orw2aDB
- ODpQ608s2CEVWK2j2yg2EqOrowmzOynbfaiRTvjgN66a6R3tD1iilXK3P/EEynEQo3hruLj
- Uy28EHxF3BM8RnM+hyQTg==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:BZhrZ0n9XNQ=;orYPngzetXKwht6bs8pgPrNY/DX
- Y8iC3CaY4LFN12PIPDORRoVi12WvG6+MJj0+PJ1meq4yw0Q7FVhJV9TLF5Xwgxsln82R9mUCC
- qdEqXger5KJyNIudna1WPlBVMOeNdptednZOcT01J8wE1uuud7Jp9bC5q5T8d6E6SkCpCdVGx
- 5ztLaX71l0vkgICJTsBdXB8cjFpMijpHUSq/Gqb+SyTN4ZmsNzKnU9I+hh6C0ZtROoOhWoEXD
- yZYAXrI6V4ioHKm7j8beZ/HFs+c4mnvt6lmpIm3yOiiozN6HDmS6jdQxQ7sZrXu+UluQ6D3CK
- affCPmCd3B9kPXm0eiyCnYNe8uqC5KOlS/Fz6j8PUfjVV7F7NYKY1TYhxfcko4U747PoUAJ5R
- 1jRlWXFNZO8jLUlLik2fbx6uHaNaYGuUfXU+/xLsUburG6ZeY1V0gguoNgKh7vHjLhMc9Tq+d
- nYW9v1Gm2/BFOsEy+Eq6PuyYKiCJpdrpPUM4fwYQASUAESTjSTnA/8Hlm3pyluHAjbn8ruK4t
- 0DR4rZxGZc+IxrjG4mVmGNtukNa65cIgjkHgFhzNrWLkQNOMmlLqLCHzCDw7/njIQRH8Si8hM
- Iu+Cm5LBVN7JcVB0MqnhP9daW15uUsEK6TYaU1WgmItx1VSkvuLsudPiOl1uRgg+6NbCIgT81
- gJAVE9CrOvnKzJNO0q0obdVXlqMNZ/wgMuduM/Dl0Y+JWUuRnGGu/yyZCXvKNDv+QmRMuhr7N
- qhfVdfk7sC1ib42IqZHx2SZRYRe0fsF5+cyFOLyhAHCg8CCPpN4ZUpc53dCNeJa3oC/gVhXqG
- ko1+1HkNq7NIOX2DIT5NYBlFQgKLXf1qCrjylPxkOkKOSSUYZBawwk/QVNw4nXXlMJSCFygfq
- 5o0WWUAPf6Jzq3OYlEeMVUfoVpj1v6KwVcCfvT2PZF25RNMbrA4sg7L1i6dQzBw+kNgEJR92J
- e566SLzWy+ZQ1DJfm8W4w76Ri/o=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e7c768aa-a071-4590-ab1a-d80738dce1e5@tuxedocomputers.com>
 
-=E2=80=A6
-> +++ b/drivers/ras/amd/atl/map.c
-> @@ -0,0 +1,667 @@
-=E2=80=A6
-> +static int get_coh_st_fabric_id(struct addr_ctx *ctx)
-> +{
-=E2=80=A6
-> +	if (df_cfg.rev < DF4p5)
-> +		ctx->coh_st_fabric_id =3D FIELD_GET(DF2_COH_ST_FABRIC_ID, reg);
-> +	else
-> +		ctx->coh_st_fabric_id =3D FIELD_GET(DF4p5_COH_ST_FABRIC_ID, reg);
-=E2=80=A6
-> +}
-=E2=80=A6
+On Wed, Dec 20, 2023 at 05:41:01PM +0100, Werner Sembach wrote:
+> 
+> Am 20.12.23 um 17:04 schrieb Greg KH:
+> > On Wed, Dec 20, 2023 at 04:23:15PM +0100, Werner Sembach wrote:
+> > > Am 20.12.23 um 16:09 schrieb Werner Sembach:
+> > > > This is a followup to "thunderbolt: Workaround an IOMMU fault on certain
+> > > > systems with Intel Maple Ridge".
+> > > > 
+> > > > It seems like the timeout can be reduced to 250ms. This reduces the overall
+> > > > delay caused by the retires to ~1s. This is about the time other things
+> > > > being initialized in parallel need anyway*, so like this the effective boot
+> > > > time is no longer compromised.
+> > > > 
+> > > > *I only had a single device available for my measurements: A Clevo X170KM-G
+> > > > desktop replacement notebook.
+> > > > 
+> > > > Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
+> > > I wonder if this could also land in stable? Or would it be to risky?
+> > If it's really a bugfix now, why would it _not_ be relevant for stable?
+> 
+> Because it changes a timeout that could cause issues if set to low: This
+> Patch sets to to 250ms. Set to 50ms it causes issues, currently it's 2000ms,
+> 2 people tested that 250ms is enough, but i don't know if this is a big
+> enough sample size for stable.
 
-Is the following statement variant a bit nicer?
+Remember, the next kernel will be a stable kernel tree, just like the
+one after that.  If it's good enough for Linus's tree, why wouldn't it
+be good enough for all stable trees?  Either it works or it doesn't,
+none of this "we will break things when you move to a new kernel" stuff
+please.
 
-	ctx->coh_st_fabric_id =3D FIELD_GET((df_cfg.rev < DF4p5)
-					  ? DF2_COH_ST_FABRIC_ID
-					  : DF4p5_COH_ST_FABRIC_ID,
-					  reg);
+thanks,
 
-
-
-> +static bool valid_map(struct addr_ctx *ctx)
-> +{
-> +	if (df_cfg.rev >=3D DF4)
-> +		return FIELD_GET(DF_ADDR_RANGE_VAL, ctx->map.ctl);
-> +	else
-> +		return FIELD_GET(DF_ADDR_RANGE_VAL, ctx->map.base);
-> +}
-=E2=80=A6
-
-Can the following statement variant be integrated instead?
-
-	return FIELD_GET(DF_ADDR_RANGE_VAL, (df_cfg.rev >=3D DF4) ? ctx->map.ctl =
-: ctx->map.base);
-
-
-
-> +int get_address_map(struct addr_ctx *ctx)
-> +{
-> +	int ret =3D 0;
-> +
-> +	ret =3D get_address_map_common(ctx);
-> +	if (ret)
-> +		goto out;
-> +
-> +	ret =3D get_global_map_data(ctx);
-> +	if (ret)
-> +		goto out;
-> +
-> +	dump_address_map(&ctx->map);
-> +
-> +out:
-> +	return ret;
-> +}
-=E2=80=A6
-
-Would you like to use a function implementation like the following instead=
-?
-
-int get_address_map(struct addr_ctx *ctx)
-{
-	int ret =3D get_address_map_common(ctx);
-
-	if (ret)
-		return ret;
-
-	ret =3D get_global_map_data(ctx);
-	if (ret)
-		return ret;
-
-	dump_address_map(&ctx->map);
-	return 0;
-}
-
-
-See also:
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Do=
-cumentation/process/coding-style.rst?h=3Dv6.7-rc6#n532
-
-Regards,
-Markus
+greg k-h
 
