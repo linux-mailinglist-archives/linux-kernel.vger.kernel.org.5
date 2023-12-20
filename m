@@ -1,122 +1,78 @@
-Return-Path: <linux-kernel+bounces-6513-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6515-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D392F8199D3
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 08:48:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D9FC8199D8
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 08:49:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 75D9BB224F7
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 07:48:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 39BD4288263
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 07:49:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB932168C4;
-	Wed, 20 Dec 2023 07:48:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="eTgT4jLA"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93B89168B2;
+	Wed, 20 Dec 2023 07:49:44 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+Received: from bmailout3.hostsharing.net (bmailout3.hostsharing.net [176.9.242.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C101E15AFF
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 07:48:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
-X-UUID: 1f5004a09f0c11eeba30773df0976c77-20231220
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-	h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=zWnIxvvt9i9Arc7rR/Bktc59NaeLptNqSNuvQsls8/s=;
-	b=eTgT4jLA87EuL8ZD2Xc5k1/KIXqXnUPNmvI5RRYrSTyHXXl7Nf+3mbe6IQeeutC31Hz4+rfhf0VDl7jz0xxIEam6In3creyP8txNSXs/h2IgStMj0MrH59OhVy5RVrhmB0acvPMr0iNaKUHHGsmMrOjE1ZnD6gJ427S4qiUnHtE=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.35,REQID:bdd8cb7b-dc44-4d0a-b6b9-8fd9036d6d26,IP:0,U
-	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-	release,TS:0
-X-CID-META: VersionHash:5d391d7,CLOUDID:f7edf881-8d4f-477b-89d2-1e3bdbef96d1,B
-	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-	RL:11|1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:
-	NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULN
-X-UUID: 1f5004a09f0c11eeba30773df0976c77-20231220
-Received: from mtkmbs14n1.mediatek.inc [(172.21.101.75)] by mailgw02.mediatek.com
-	(envelope-from <kuan-ying.lee@mediatek.com>)
-	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 91579362; Wed, 20 Dec 2023 15:48:10 +0800
-Received: from mtkmbs13n1.mediatek.inc (172.21.101.193) by
- mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Wed, 20 Dec 2023 15:48:09 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
- mtkmbs13n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Wed, 20 Dec 2023 15:48:09 +0800
-From: Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
-To: Andrew Morton <akpm@linux-foundation.org>, Matthias Brugger
-	<matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
-	<angelogioacchino.delregno@collabora.com>
-CC: <casper.li@mediatek.com>, <chinwen.chang@mediatek.com>,
-	<qun-wei.lin@mediatek.com>, <linux-mm@kvack.org>, Kuan-Ying Lee
-	<Kuan-Ying.Lee@mediatek.com>, <linux-kernel@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>
-Subject: [PATCH] mm: page_alloc: remove duplication of free_one_page()
-Date: Wed, 20 Dec 2023 15:47:56 +0800
-Message-ID: <20231220074757.3656-1-Kuan-Ying.Lee@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4DE01B285;
+	Wed, 20 Dec 2023 07:49:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=h08.hostsharing.net
+Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
+	 client-signature RSA-PSS (4096 bits) client-digest SHA256)
+	(Client CN "*.hostsharing.net", Issuer "RapidSSL TLS RSA CA G1" (verified OK))
+	by bmailout3.hostsharing.net (Postfix) with ESMTPS id AE1D610029CB7;
+	Wed, 20 Dec 2023 08:49:31 +0100 (CET)
+Received: by h08.hostsharing.net (Postfix, from userid 100393)
+	id 80E251FD98; Wed, 20 Dec 2023 08:49:31 +0100 (CET)
+Date: Wed, 20 Dec 2023 08:49:31 +0100
+From: Lukas Wunner <lukas@wunner.de>
+To: Yannic Moog <y.moog@phytec.de>
+Cc: Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+	Li Yang <leoyang.li@nxp.com>, Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	NXP Linux Team <linux-imx@nxp.com>, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	upstream@lists.phytec.de
+Subject: Re: [PATCH v2 2/2] arm64: dts: freescale: add phyGATE-Tauri i.MX 8M
+ Mini Support
+Message-ID: <20231220074931.GA13382@wunner.de>
+References: <20230925-tauri_upstream_support-v2-0-62a6dfc48e31@phytec.de>
+ <20230925-tauri_upstream_support-v2-2-62a6dfc48e31@phytec.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-AS-Result: No-10--1.042100-8.000000
-X-TMASE-MatchedRID: JWnFpJnSkzs5HWa1kxc3Mc36paW7ZnFoBCxvLPUx407fUZT83lbkEK1r
-	wNdVdYipgrCec5Bjx+qAMuqetGVetnyef22ep6XYro1URZJFbJvd1KJkmiEcSkExS0sIXgpfF27
-	mDyBvZ5CSjwm7NH6qsNECzCqMxVGBuUqn/hcBctSNWcj5w63xsn8wdqmWSBW9n1s5w+bk2xuOh+
-	wyNBrFXDJiNuKohDcKzKSG3JdyKAPqtV2AGMNPavWdclq8lU1q
-X-TM-AS-User-Approved-Sender: No
-X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10--1.042100-8.000000
-X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-SNTS-SMTP: F5135FF66DB980116838C225763DDE80253B6A99B2BB8055C0B14DC95FFE14C42000:8
-X-MTK: N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230925-tauri_upstream_support-v2-2-62a6dfc48e31@phytec.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-Remove duplication of free_one_page().
+On Mon, Sep 25, 2023 at 09:25:19AM +0200, Yannic Moog wrote:
+> phyGATE-Tauri uses a phyCORE-i.MX8MM SoM. Add device tree for the board.
+[...]
+> +	tpm: tpm@1 {
+> +		compatible = "tcg,tpm_tis-spi";
 
-Cc: Casper Li <casper.li@mediatek.com>
-Signed-off-by: Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
----
- mm/page_alloc.c | 9 +--------
- 1 file changed, 1 insertion(+), 8 deletions(-)
+What's the chip used on this board?  Going forward, the DT schema for TPMs
+requires the exact chip name in addition to the generic "tcg,tpm_tis-spi".
 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 2f646773a934..f46af8616cac 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -1262,7 +1262,6 @@ static void free_one_page(struct zone *zone,
- static void __free_pages_ok(struct page *page, unsigned int order,
- 			    fpi_t fpi_flags)
- {
--	unsigned long flags;
- 	int migratetype;
- 	unsigned long pfn = page_to_pfn(page);
- 	struct zone *zone = page_zone(page);
-@@ -1277,13 +1276,7 @@ static void __free_pages_ok(struct page *page, unsigned int order,
- 	 */
- 	migratetype = get_pfnblock_migratetype(page, pfn);
- 
--	spin_lock_irqsave(&zone->lock, flags);
--	if (unlikely(has_isolate_pageblock(zone) ||
--		is_migrate_isolate(migratetype))) {
--		migratetype = get_pfnblock_migratetype(page, pfn);
--	}
--	__free_one_page(page, pfn, zone, order, migratetype, fpi_flags);
--	spin_unlock_irqrestore(&zone->lock, flags);
-+	free_one_page(zone, page, pfn, order, migratetype, fpi_flags);
- 
- 	__count_vm_events(PGFREE, 1 << order);
- }
--- 
-2.18.0
 
+> +		interrupts = <11 IRQ_TYPE_LEVEL_LOW>;
+> +		interrupt-parent = <&gpio2>;
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&pinctrl_tpm>;
+> +		reg = <1>;
+> +		spi-max-frequency = <38000000>;
+> +	};
+> +};
 
