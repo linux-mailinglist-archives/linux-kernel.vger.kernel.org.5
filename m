@@ -1,212 +1,96 @@
-Return-Path: <linux-kernel+bounces-7396-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7388-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72A9C81A755
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 20:38:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9258281A728
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 20:08:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E79151F233B3
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 19:38:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 394811F2273C
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 19:08:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EACC4878D;
-	Wed, 20 Dec 2023 19:37:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA069482F4;
+	Wed, 20 Dec 2023 19:08:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oltmanns.dev header.i=@oltmanns.dev header.b="xbQQdgnG"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="U0BIZ1Vv"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mout-p-101.mailbox.org (mout-p-101.mailbox.org [80.241.56.151])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4542C48CC0;
-	Wed, 20 Dec 2023 19:37:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oltmanns.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oltmanns.dev
-Received: from smtp102.mailbox.org (smtp102.mailbox.org [10.196.197.102])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4SwP3b1fmjz9ssS;
-	Wed, 20 Dec 2023 20:37:47 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oltmanns.dev;
-	s=MBO0001; t=1703101067;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=jgxSUwGOi+ie/puV3wymSBpsL2XirYOnPiXm8jpB72I=;
-	b=xbQQdgnGakr8QIqbYrhLaYBAmMjZeHqK+kgRtWIfiTEw6bI2ZeRalOrkweo9b7MqptX65d
-	vIB4sGVAAw79caC0Tus+QNhPiHsM/RKd12D7HtqTwbkNUq+osNaBuIkZWFRmQnuk62b6Hv
-	8wuPpg/a75LWGtHsnabNtGjgFzqnWBahaUS1qTs2kAmneFYcC7YNJblIpi0/Ek+BOHHse6
-	bb7ZnfOx4X1ew9HJUvbUxRqsXSp29Z3dXNuxKhEFJ9YtSUN3NgLTdsXB8mfWfLHb3nUVFT
-	ud9eAuOyF4gFtqV41ulbeS2P0PoRaVtJ0pfcw/A0HFfcQX4PiUHNK7yp0fz1IQ==
-References: <20231218-pinephone-pll-fixes-v1-0-e238b6ed6dc1@oltmanns.dev>
- <10386431.nUPlyArG6x@jernej-laptop> <87edfh9ud8.fsf@oltmanns.dev>
- <1845418.atdPhlSkOF@jernej-laptop>
-From: Frank Oltmanns <frank@oltmanns.dev>
-To: Jernej =?utf-8?Q?=C5=A0krabec?= <jernej.skrabec@gmail.com>
-Cc: Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
- <sboyd@kernel.org>, Chen-Yu Tsai <wens@csie.org>, Samuel Holland
- <samuel@sholland.org>, Guido =?utf-8?Q?G=C3=BCnther?= <agx@sigxcpu.org>,
- Purism Kernel Team
- <kernel@puri.sm>, Ondrej Jirman <megi@xff.cz>, Neil Armstrong
- <neil.armstrong@linaro.org>, Jessica Zhang <quic_jesszhan@quicinc.com>,
- Sam Ravnborg <sam@ravnborg.org>, Maarten Lankhorst
- <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
- Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>, linux-clk@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
- linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH 5/5] drm/panel: st7703: Drive XBD599 panel at higher
- clock rate
-Date: Wed, 20 Dec 2023 19:57:06 +0100
-In-reply-to: <1845418.atdPhlSkOF@jernej-laptop>
-Message-ID: <875y0sacmz.fsf@oltmanns.dev>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A039A38DE9
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 19:08:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-dbdafda6155so7711276.0
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 11:08:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1703099289; x=1703704089; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3/hbo7J2frnI9kAcgSjgY3xoG0ekm9nQwa7Ih1omnQ4=;
+        b=U0BIZ1VvqXHypq1VUp/aYEMSvgCCZ4DpS0DuRc2S19FPF78tnUh5l6Wq0mwdOIdgsG
+         Wevz/ecnMmiAO1JruO3hRJituWTJnATl4EOX7fbJmRvFDkxPnc4wWFPV2HNHVHhfxFH0
+         FK14ANAclxYxdjaRciMCv6mEQPoZLBHo/7Jx/hT4sj2N6TPs9cO5E7s0a+3x+k6v61NA
+         UBOh+G1zXW+hGOwdhIQl9taWuu5FeZQkSqQhg52YyMEHzsUsvFWGrN+h3id+2iQPMGT8
+         /Hi5f4I+XdjiGvVWQjLBdJ7Y+1+td91WTgF3evB1EZfFJ2WbJsMEkMT6l3t6aobuZqaX
+         ys+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703099289; x=1703704089;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3/hbo7J2frnI9kAcgSjgY3xoG0ekm9nQwa7Ih1omnQ4=;
+        b=Tg82WA7FF9NFDwEHhc/Rry4J4AS9dU4QMHPtMKl695R+rcsjRYbb2lJTYPzWtf43lJ
+         JMtUBJA9eSAcnyPAj4KgdcAl2viZaqIHfV4EGe0w9BrsD+6mKe94DdEWa3bgyUsJ0Cnt
+         2qsd5E5sVtCOKCtASsaO7oWN9ZAyPEUlQgf7q3ZPlefgGDdbJ1IJjwbRfs9KRsyFlCvB
+         VUiMtWUxzEEPYTS4mQZH63tAA8TfjfmZE7nIrFaKgWB4esZqOBagt4mdr3SvgsYxRagu
+         PPCzzxAfXaJlr1Uhle6DP6ZvexXKG5+FOz2k9QAgBOV+8onB7vhUnOUgmaNbAKdNEODt
+         0xyg==
+X-Gm-Message-State: AOJu0YzuWmBJNnNULxVE8T68xP8M5ih0D0bMF7els46mAy8w9DdhEONH
+	g0AZvwY7OzCL2M15lAFiQiSsYRGUcX85QxYFuTwTDA==
+X-Google-Smtp-Source: AGHT+IHES4XmlzfwBWZdC1UDww21Rn5I7OAnN+fxvvKEl2wobubYyI3zjvqPyMcH1YdH3qPmCuQCooUKaYAGGo1TwYY=
+X-Received: by 2002:a25:c543:0:b0:db9:84c4:151a with SMTP id
+ v64-20020a25c543000000b00db984c4151amr126523ybe.34.1703099289362; Wed, 20 Dec
+ 2023 11:08:09 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+References: <20231220184753.6472-1-semen.protsenko@linaro.org>
+In-Reply-To: <20231220184753.6472-1-semen.protsenko@linaro.org>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Wed, 20 Dec 2023 20:07:57 +0100
+Message-ID: <CACRpkdZqjX39knEMVnhZPCZZAF8YN0yDww5nvS0tEn_pP0R2fg@mail.gmail.com>
+Subject: Re: [PATCH] iio: pressure: bmp280: Add missing bmp085 to SPI id table
+To: Sam Protsenko <semen.protsenko@linaro.org>
+Cc: Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, 
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
+	Angel Iglesias <ang.iglesiasg@gmail.com>, Akinobu Mita <akinobu.mita@gmail.com>, 
+	linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
+On Wed, Dec 20, 2023 at 7:47=E2=80=AFPM Sam Protsenko
+<semen.protsenko@linaro.org> wrote:
 
-Ok, I've done more detailed testing, and it seems this patch results in
-lots of dropped frames. I'm sorry for not being more thorough earlier.
-I'll do some more testing without this patch and might have to either
-remove it from V2 of this series.
+> "bmp085" is missing in bmp280_spi_id[] table, which leads to the next
+> warning in dmesg:
+>
+>     SPI driver bmp280 has no spi_device_id for bosch,bmp085
+>
+> Add "bmp085" to bmp280_spi_id[] by mimicking its existing description in
+> bmp280_of_spi_match[] table to fix the above warning.
+>
+> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+> Fixes: b26b4e91700f ("iio: pressure: bmp280: add SPI interface driver")
 
-I need to see if the same stability can be achieved when running
-PLL-MIPI outside its specied range.
+Right! Thanks for fixing this Sam!
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-Best regards,
-  Frank
-
-On 2023-12-20 at 16:18:49 +0100, Jernej =C5=A0krabec <jernej.skrabec@gmail.=
-com> wrote:
-> Dne sreda, 20. december 2023 ob 08:14:27 CET je Frank Oltmanns napisal(a):
->>
->> On 2023-12-19 at 18:04:29 +0100, Jernej =C5=A0krabec <jernej.skrabec@gma=
-il.com> wrote:
->> > Dne ponedeljek, 18. december 2023 ob 14:35:23 CET je Frank Oltmanns na=
-pisal(a):
->> >> This panel is used in the pinephone that runs on a Allwinner A64 SOC.
->> >> Acoording to it's datasheet, the SOC requires PLL-MIPI to run at more
->> >> than 500 MHz.
->> >>
->> >> Therefore, change [hv]sync_(start|end) so that we reach a clock rate
->> >> that is high enough to drive PLL-MIPI within its limits.
->> >>
->> >> Signed-off-by: Frank Oltmanns <frank@oltmanns.dev>
->> >
->> > I'm not too sure about this patch. I see that PLL_MIPI doesn't have set
->> > minimum frequency limit in clock driver. If you add it, clock framework
->> > should find rate that is high enough and divisible with target rate.
->>
->> This one is really a tough nut. Unfortunately, the PLL_MIPI clock for
->> this panel has to run exactly at 6 * panel clock. Let me start by
->> showing the relevant part of the clock tree (this is on the pinephone
->> after applying the patches):
->>     pll-video0                 393600000
->>        pll-mipi                500945454
->>           tcon0                500945454
->>              tcon-data-clock   125236363
->>
->> To elaborate, tcon-data-clock has to run at 1/4 the DSI per-lane bit
->> rate [1]. It's a fixed divisor
->>
->> The panel I'm proposing to change is defined as this:
->>
->>     static const struct st7703_panel_desc xbd599_desc =3D {
->>     	.mode =3D &xbd599_mode,
->>     	.lanes =3D 4,
->>     	.mode_flags =3D MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_VIDEO_SYNC_PULS=
-E,
->>     	.format =3D MIPI_DSI_FMT_RGB888,
->>     	.init_sequence =3D xbd599_init_sequence,
->>     };
->>
->> So, we have 24 bpp and 4 lanes. Therefore, the resulting requested
->> tcon-data-clock rate is
->>     crtc_clock * 1000 * (24 / 4) / 4
->>
->> tcon-data-clock therefore requests a parent rate of
->>     4 * (crtc_clock * 1000 * (24 / 4) / 4)
->>
->> The initial 4 is the fixed divisor between tcon0 and tcon-data-clock.
->> Since tcon0 is a ccu_mux, the rate of tcon0 equals the rate of pll-mipi.
->>
->> Since PLL-MIPI has to run at at least at 500MHz this forces us to have a
->> crtc_clock >=3D 83.333 MHz. The mode I'm prorposing results in a rate of
->> 83.502 MHz.
->
-> This is much better explanation why this change is needed. Still, I think
-> adding min and max rate to PLL_MIPI would make sense, so proper rates
-> are guaranteed.
->
-> Anyway, do you know where are all those old values come from? And how did
-> you come up with new ones? I guess you can't just simply change timings,
-> there are probably some HW limitations? Do you know if BSP kernel support
-> this panel and how this situation is solved there?
->
->>
->> If we only changed the constraints on the PLL_MIPI without changing the
->> panel mode, we end up with a mismatch. This, in turn, would result in
->> dropped frames, right?
->
-> From what I read, I think frame rate would be higher than 60 fps. What
-> exactly would happen depends on the panel.
->
-> Best regards,
-> Jernej
->
->>
->> Best regards,
->>   Frank
->>
->> [1] Source:
->> https://elixir.bootlin.com/linux/v6.6.7/source/drivers/gpu/drm/sun4i/sun=
-4i_tcon.c#L346
->>
->> >
->> > Best regards,
->> > Jernej
->> >
->> >> ---
->> >>  drivers/gpu/drm/panel/panel-sitronix-st7703.c | 14 +++++++-------
->> >>  1 file changed, 7 insertions(+), 7 deletions(-)
->> >>
->> >> diff --git a/drivers/gpu/drm/panel/panel-sitronix-st7703.c b/drivers/=
-gpu/drm/panel/panel-sitronix-st7703.c
->> >> index b55bafd1a8be..6886fd7f765e 100644
->> >> --- a/drivers/gpu/drm/panel/panel-sitronix-st7703.c
->> >> +++ b/drivers/gpu/drm/panel/panel-sitronix-st7703.c
->> >> @@ -320,14 +320,14 @@ static int xbd599_init_sequence(struct st7703 *=
-ctx)
->> >>
->> >>  static const struct drm_display_mode xbd599_mode =3D {
->> >>  	.hdisplay    =3D 720,
->> >> -	.hsync_start =3D 720 + 40,
->> >> -	.hsync_end   =3D 720 + 40 + 40,
->> >> -	.htotal	     =3D 720 + 40 + 40 + 40,
->> >> +	.hsync_start =3D 720 + 65,
->> >> +	.hsync_end   =3D 720 + 65 + 65,
->> >> +	.htotal      =3D 720 + 65 + 65 + 65,
->> >>  	.vdisplay    =3D 1440,
->> >> -	.vsync_start =3D 1440 + 18,
->> >> -	.vsync_end   =3D 1440 + 18 + 10,
->> >> -	.vtotal	     =3D 1440 + 18 + 10 + 17,
->> >> -	.clock	     =3D 69000,
->> >> +	.vsync_start =3D 1440 + 30,
->> >> +	.vsync_end   =3D 1440 + 30 + 22,
->> >> +	.vtotal	     =3D 1440 + 30 + 22 + 29,
->> >> +	.clock	     =3D (720 + 65 + 65 + 65) * (1440 + 30 + 22 + 29) * 60 /=
- 1000,
->> >>  	.flags	     =3D DRM_MODE_FLAG_NHSYNC | DRM_MODE_FLAG_NVSYNC,
->> >>  	.width_mm    =3D 68,
->> >>  	.height_mm   =3D 136,
->> >>
->> >>
->>
+Yours,
+Linus Walleij
 
