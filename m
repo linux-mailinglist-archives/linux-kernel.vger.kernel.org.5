@@ -1,290 +1,123 @@
-Return-Path: <linux-kernel+bounces-6217-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6218-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2F52819607
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 01:59:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 75D0B81960D
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 02:00:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5300D1F22F0B
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 00:59:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 077E81F22F7B
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 01:00:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0127546A4;
-	Wed, 20 Dec 2023 00:59:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4E3946B0;
+	Wed, 20 Dec 2023 01:00:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="PCAaEnQO"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="er1d/tGh"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3715A3D75
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 00:59:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=twuVdNI7X+eOgqTug2j27yqgLemDEtt6zo+hBkRI6rQ=; b=PCAaEnQOu1aWysFtjXLiImGC8B
-	f5THTKRbGcvv4DhGRLw53u8PsEAa0b4PlCTJnQ+kgmoSws7f7qPaOg1vGFjnKWhcU5ah68Pj+hc62
-	Rq3SkHfz4EZJyZc3yVq76wyYP6SuhBQ8gherhAXcYVCfjC6NxmIUxCwfI7hMUwqVoZruw5ZUnpUEI
-	BYJ3hiKsetWNRO7EMNTx5JcfrzH4/wpcoT5QZu4IelRu3b1At3SK3K3TRFdNMQb8ri/lyf1U9XVzw
-	vho0v0uPk6FV2hgCbgMriav/gU0HKVW/bCNr27u33MzyMbkMyl968DDYqNnCQkPkLYp3HGZrDa2SI
-	bnS0eOiA==;
-Received: from [50.53.46.231] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1rFkvW-00FqzU-18;
-	Wed, 20 Dec 2023 00:59:10 +0000
-Message-ID: <338faf05-e545-4b17-b941-32a4a02adbd4@infradead.org>
-Date: Tue, 19 Dec 2023 16:59:08 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7723BA2B;
+	Wed, 20 Dec 2023 01:00:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1703034009; x=1734570009;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=gIKef6p2pnRwDgZPaAPbr3bSEyMzw577pOdpYRM0VGo=;
+  b=er1d/tGhfDLuuaPgN1BFWmLPqYWd7FGILvBsEizAPPXNHVu6+GLKPMjN
+   yl0qwNr1GBqKCn4SPAIZ7rEdzAKtv7yGdTXCykJ7gM2MIhJdb/SdrR0sZ
+   Lmgxezjm0W4nYCXUhf654ZJU33qz1lLPiJl1hCElZtkiyj7Eqp7Eg+Kfy
+   2CcVmVMDEwkKYhO8VWb4OnSgoSu3a0TGEXhsamUkBKCYYIqbZw2CUhH1g
+   W0slSN1ag56izcefMws8J75aUarRuL48y/VNLC6u3JEwVSvAs8LLd3heb
+   M322DR1W4FeHB0exJZBdJ9srxKmGlQhTy0e+w91GwWZ9MHyNIpYwXLytO
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10929"; a="392914596"
+X-IronPort-AV: E=Sophos;i="6.04,290,1695711600"; 
+   d="scan'208";a="392914596"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Dec 2023 17:00:09 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10929"; a="846534858"
+X-IronPort-AV: E=Sophos;i="6.04,290,1695711600"; 
+   d="scan'208";a="846534858"
+Received: from lveltman-mobl.ger.corp.intel.com (HELO box.shutemov.name) ([10.252.33.252])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Dec 2023 17:00:03 -0800
+Received: by box.shutemov.name (Postfix, from userid 1000)
+	id 9C43A10A43B; Wed, 20 Dec 2023 04:00:00 +0300 (+03)
+Date: Wed, 20 Dec 2023 04:00:00 +0300
+From: kirill.shutemov@linux.intel.com
+To: Alexey Makhalov <alexey.makhalov@broadcom.com>
+Cc: linux-kernel@vger.kernel.org, virtualization@lists.linux.dev,
+	bp@alien8.de, hpa@zytor.com, dave.hansen@linux.intel.com,
+	mingo@redhat.com, tglx@linutronix.de, x86@kernel.org,
+	netdev@vger.kernel.org, richardcochran@gmail.com,
+	linux-input@vger.kernel.org, dmitry.torokhov@gmail.com,
+	zackr@vmware.com, linux-graphics-maintainer@vmware.com,
+	pv-drivers@vmware.com, namit@vmware.com, timothym@vmware.com,
+	akaher@vmware.com, jsipek@vmware.com,
+	dri-devel@lists.freedesktop.org, daniel@ffwll.ch, airlied@gmail.com,
+	tzimmermann@suse.de, mripard@kernel.org,
+	maarten.lankhorst@linux.intel.com, horms@kernel.org
+Subject: Re: [PATCH v3 6/6] x86/vmware: Add TDX hypercall support
+Message-ID: <20231220010000.y5ybey76xjckvh6y@box.shutemov.name>
+References: <20231219215751.9445-1-alexey.makhalov@broadcom.com>
+ <20231219215751.9445-7-alexey.makhalov@broadcom.com>
+ <20231219232323.euweerulgsgbodx5@box.shutemov.name>
+ <ba679460-827d-40b1-bc78-bcee1c013f36@broadcom.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 17/23] sched: Initial sched_football test
- implementation
-Content-Language: en-US
-To: John Stultz <jstultz@google.com>, LKML <linux-kernel@vger.kernel.org>
-Cc: Joel Fernandes <joelaf@google.com>, Qais Yousef <qyousef@google.com>,
- Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
- Juri Lelli <juri.lelli@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>,
- Dietmar Eggemann <dietmar.eggemann@arm.com>,
- Valentin Schneider <vschneid@redhat.com>,
- Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
- Zimuzo Ezeozue <zezeozue@google.com>, Youssef Esmat
- <youssefesmat@google.com>, Mel Gorman <mgorman@suse.de>,
- Daniel Bristot de Oliveira <bristot@redhat.com>,
- Will Deacon <will@kernel.org>, Waiman Long <longman@redhat.com>,
- Boqun Feng <boqun.feng@gmail.com>, "Paul E. McKenney" <paulmck@kernel.org>,
- Metin Kaya <Metin.Kaya@arm.com>, Xuewen Yan <xuewen.yan94@gmail.com>,
- K Prateek Nayak <kprateek.nayak@amd.com>,
- Thomas Gleixner <tglx@linutronix.de>, kernel-team@android.com
-References: <20231220001856.3710363-1-jstultz@google.com>
- <20231220001856.3710363-18-jstultz@google.com>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20231220001856.3710363-18-jstultz@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ba679460-827d-40b1-bc78-bcee1c013f36@broadcom.com>
 
-Hi John,
-
-On 12/19/23 16:18, John Stultz wrote:
-> Reimplementation of the sched_football test from LTP:
-> https://github.com/linux-test-project/ltp/blob/master/testcases/realtime/func/sched_football/sched_football.c
+On Tue, Dec 19, 2023 at 04:27:51PM -0800, Alexey Makhalov wrote:
 > 
-> But reworked to run in the kernel and utilize mutexes
-> to illustrate proper boosting of low priority mutex
-> holders.
 > 
-> TODO:
-> * Need a rt_mutex version so it can work w/o proxy-execution
-> * Need a better place to put it
+> On 12/19/23 3:23 PM, kirill.shutemov@linux.intel.com wrote:
+> > On Tue, Dec 19, 2023 at 01:57:51PM -0800, Alexey Makhalov wrote:
+> > > diff --git a/arch/x86/kernel/cpu/vmware.c b/arch/x86/kernel/cpu/vmware.c
+> > > index 3aa1adaed18f..ef07ab7a07e1 100644
+> > > --- a/arch/x86/kernel/cpu/vmware.c
+> > > +++ b/arch/x86/kernel/cpu/vmware.c
+> > > @@ -428,6 +428,30 @@ static bool __init vmware_legacy_x2apic_available(void)
+> > >   		(eax & BIT(VCPU_LEGACY_X2APIC));
+> > >   }
+> > > +#ifdef CONFIG_INTEL_TDX_GUEST
+> > > +unsigned long vmware_tdx_hypercall(unsigned long cmd,
+> > > +				   struct tdx_module_args *args)
+> > > +{
+> > > +	if (!hypervisor_is_type(X86_HYPER_VMWARE))
+> > > +		return 0;
+
+BTW, don't you want to warn here to? We don't expect vmware hypercalls to
+be called by non-vmware guest, do we?
+
+> > > +
+> > > +	if (cmd & ~VMWARE_CMD_MASK) {
+> > > +		pr_warn("Out of range command %x\n", cmd);
+> > > +		return 0;
+> > 
+> > Is zero success? Shouldn't it be an error?
 > 
-> Cc: kernel-team@android.com
-> Signed-off-by: John Stultz <jstultz@google.com>
-> ---
->  kernel/sched/Makefile              |   1 +
->  kernel/sched/test_sched_football.c | 242 +++++++++++++++++++++++++++++
->  lib/Kconfig.debug                  |  14 ++
->  3 files changed, 257 insertions(+)
->  create mode 100644 kernel/sched/test_sched_football.c
-> 
+> VMware hypercalls do not have a standard way of signalling an error.
+> To generalize expectations from the caller perspective of any existing
+> hypercalls: error (including hypercall is not supported or disabled) is when
+> return value is 0 and out1/2 are unchanged or equal to in1/in2.
 
+You are talking about signaling errors over hypercall transport. But if
+kernel can see that something is wrong why cannot it signal the issue
+clearly to caller. It is going to be in-kernel convention.
 
-> diff --git a/kernel/sched/test_sched_football.c b/kernel/sched/test_sched_football.c
-> new file mode 100644
-> index 000000000000..9742c45c0fe0
-> --- /dev/null
-> +++ b/kernel/sched/test_sched_football.c
-> @@ -0,0 +1,242 @@
-> +// SPDX-License-Identifier: GPL-2.0+
-> +/*
-> + * Module-based test case for RT scheduling invariant
-> + *
-> + * A reimplementation of my old sched_football test
-> + * found in LTP:
-> + *   https://github.com/linux-test-project/ltp/blob/master/testcases/realtime/func/sched_football/sched_football.c
-> + *
-> + * Similar to that test, this tries to validate the RT
-> + * scheduling invariant, that the across N available cpus, the
-> + * top N priority tasks always running.
-> + *
-> + * This is done via having N offsensive players that are
-> + * medium priority, which constantly are trying to increment the
-> + * ball_pos counter.
-> + *
-> + * Blocking this, are N defensive players that are higher
-
-no comma           ^
-
-> + * priority which just spin on the cpu, preventing the medium
-> + * priroity tasks from running.
-> + *
-> + * To complicate this, there are also N defensive low priority
-> + * tasks. These start first and each aquire one of N mutexes.
-
-                                        acquire
-
-> + * The high priority defense tasks will later try to grab the
-> + * mutexes and block, opening a window for the offsensive tasks
-
-                                                  offensive
-
-> + * to run and increment the ball. If priority inheritance or
-> + * proxy execution is used, the low priority defense players
-> + * should be boosted to the high priority levels, and will
-> + * prevent the mid priority offensive tasks from running.
-> + *
-> + * Copyright © International Business Machines  Corp., 2007, 2008
-> + * Copyright (C) Google, 2023
-> + *
-> + * Authors: John Stultz <jstultz@google.com>
-> + */
-> +
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-> +#include <linux/kthread.h>
-> +#include <linux/delay.h>
-> +#include <linux/sched/rt.h>
-> +#include <linux/spinlock.h>
-> +#include <linux/mutex.h>
-> +#include <linux/rwsem.h>
-> +#include <linux/smp.h>
-> +#include <linux/slab.h>
-> +#include <linux/interrupt.h>
-> +#include <linux/sched.h>
-> +#include <uapi/linux/sched/types.h>
-> +#include <linux/rtmutex.h>
-> +
-> +atomic_t players_ready;
-> +atomic_t ball_pos;
-> +int players_per_team;
-> +bool game_over;
-> +
-> +struct mutex *mutex_low_list;
-> +struct mutex *mutex_mid_list;
-> +
-
-[]
-
-Is this the referee?
-
-> +int ref_thread(void *arg)
-> +{
-> +	struct task_struct *kth;
-> +	long game_time = (long)arg;
-> +	unsigned long final_pos;
-> +	long i;
-> +
-> +	pr_info("%s: started ref, game_time: %ld secs !\n", __func__,
-> +		game_time);
-> +
-> +	/* Create low  priority defensive team */
-> +	for (i = 0; i < players_per_team; i++)
-> +		kth = create_fifo_thread(defense_low_thread, (void *)i,
-> +					 "defese-low-thread", 2);
-
-					  defense
-
-> +	/* Wait for the defense threads to start */
-> +	while (atomic_read(&players_ready) < players_per_team)
-> +		msleep(1);
-> +
-> +	for (i = 0; i < players_per_team; i++)
-> +		kth = create_fifo_thread(defense_mid_thread,
-> +					 (void *)(players_per_team - i - 1),
-> +					 "defese-mid-thread", 3);
-
-					  ditto
-
-> +	/* Wait for the defense threads to start */
-> +	while (atomic_read(&players_ready) < players_per_team * 2)
-> +		msleep(1);
-> +
-> +	/* Create mid priority offensive team */
-> +	for (i = 0; i < players_per_team; i++)
-> +		kth = create_fifo_thread(offense_thread, NULL,
-> +					 "offense-thread", 5);
-> +	/* Wait for the offense threads to start */
-> +	while (atomic_read(&players_ready) < players_per_team * 3)
-> +		msleep(1);
-> +
-> +	/* Create high priority defensive team */
-> +	for (i = 0; i < players_per_team; i++)
-> +		kth = create_fifo_thread(defense_hi_thread, (void *)i,
-> +					 "defese-hi-thread", 10);
-
-					  ditto
-
-> +	/* Wait for the defense threads to start */
-> +	while (atomic_read(&players_ready) < players_per_team * 4)
-> +		msleep(1);
-> +
-> +	/* Create high priority defensive team */
-> +	for (i = 0; i < players_per_team; i++)
-> +		kth = create_fifo_thread(crazy_fan_thread, NULL,
-> +					 "crazy-fan-thread", 15);
-> +	/* Wait for the defense threads to start */
-> +	while (atomic_read(&players_ready) < players_per_team * 5)
-> +		msleep(1);
-> +
-> +	pr_info("%s: all players checked in! Starting game.\n", __func__);
-> +	atomic_set(&ball_pos, 0);
-> +	msleep(game_time * 1000);
-> +	final_pos = atomic_read(&ball_pos);
-> +	pr_info("%s: final ball_pos: %ld\n", __func__, final_pos);
-> +	WARN_ON(final_pos != 0);
-> +	game_over = true;
-> +	return 0;
-> +}
-> +
-
-
-> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> index 4405f81248fb..1d90059d190f 100644
-> --- a/lib/Kconfig.debug
-> +++ b/lib/Kconfig.debug
-> @@ -1238,6 +1238,20 @@ config SCHED_DEBUG
->  	  that can help debug the scheduler. The runtime overhead of this
->  	  option is minimal.
->  
-> +config SCHED_RT_INVARIENT_TEST
-
-                   INVARIANT
-
-> +	tristate "RT invarient scheduling tester"
-
-	             invariant
-
-> +	depends on DEBUG_KERNEL
-> +	help
-> +	  This option provides a kernel module that runs tests to make
-> +	  sure the RT invarient holds (top N priority tasks run on N
-
-	              invariant
-
-> +	  available cpus).
-> +
-> +	  Say Y here if you want kernel rt scheduling tests
-
-	                                RT
-
-> +	  to be built into the kernel.
-> +	  Say M if you want this test to build as a module.
-> +	  Say N if you are unsure.
-> +
-> +
->  config SCHED_INFO
->  	bool
->  	default n
+And to very least, it has to be pr_warn_once().
 
 -- 
-#Randy
-https://people.kernel.org/tglx/notes-about-netiquette
-https://subspace.kernel.org/etiquette.html
+  Kiryl Shutsemau / Kirill A. Shutemov
 
