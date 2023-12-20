@@ -1,102 +1,91 @@
-Return-Path: <linux-kernel+bounces-7397-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7398-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5F0581A756
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 20:38:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D851081A75C
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 20:40:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 56FE8288DE6
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 19:38:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DAF5C1C23454
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 19:40:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE0314879C;
-	Wed, 20 Dec 2023 19:38:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51D7748782;
+	Wed, 20 Dec 2023 19:40:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EpzBeXEp"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="c3l/w81O"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0684748782;
-	Wed, 20 Dec 2023 19:38:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-5cece20f006so599317b3.3;
-        Wed, 20 Dec 2023 11:38:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703101102; x=1703705902; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=MNikzNGiijk+3h/nmRItuAzAl46HZPOUR0AnDs8oHAs=;
-        b=EpzBeXEptxqHdFWGhDLRq3NHk42ef3GV57/pecw6fXLIEbNz3tLSBGC+2YntpB2jC6
-         0RzYuEWrlCGjVPrZS9Ed+zpSlGM/Kd5P5RgbWiSCUOcy7YqAERDmwQwkoax6PPFBqS36
-         IOthdin9V6XQgWvTCCaP8s8aZwItQABogzQNJUxgZLTRlRVZOBrN3reK5qlkbWwXZH0D
-         hQhStjnkQ+AthmQxzKip6iNT17gF2fD3dKJ09iC96J8hUu41QVM/bAnY1jDrlqVVWfjO
-         vWupDy9Ey29ICLyR+h4HO8/2WadTLwBe2xyd3qF1Xxa272m7Vp0rthPAae7zhRPQZ2TI
-         FFjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703101102; x=1703705902;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=MNikzNGiijk+3h/nmRItuAzAl46HZPOUR0AnDs8oHAs=;
-        b=Hi72uksgKRJUG1aJpDxsCQbjf66GNMzOWnr4tfA5UqZhPS1S2iTdbLNrox3LJGwAKM
-         LqFm4CR5BU6Vlk+li6i1dbz/eaMN429sJ6mw6ZCCKpmOdyHLmK2/6YDbcvCSIcY/gHD/
-         L5zVPMFDdEkOzJBJyKtKVBaHn/kMknR3xH0Q49PWPq8XZSTkitu09b0knYLQwVKtWPFZ
-         C5Cv3cuKZYN5TesvGXnwXgsBQtfrObUxFpCliw7uAF3x7LE6TJoYCD+tZh7YrrBlY7Ze
-         +PAd/6i/6EXmAppKafuFs93z9Eq4TJ/2x99XNb46Stuzf0HcdsnCmWORsDxWu3YNZbNz
-         p+Ww==
-X-Gm-Message-State: AOJu0YzYVJErcesDZJPE8bTQTmrN3U4IsguirugebNg+s4t0ysZaYr8q
-	ZgZgjkSuK+ZfIyxUO5PpY1ajlSGiTuNGsR8E+ATdBJsECB0=
-X-Google-Smtp-Source: AGHT+IEMLWLLWrpL4vLO9ZfDNGdjGTubUBWV4duV4vjBrXovq3mYS2P65ifXEI//SW/K+wcmQozczFA57TH//CkBO5s=
-X-Received: by 2002:a0d:f4c5:0:b0:5d8:5727:80fb with SMTP id
- d188-20020a0df4c5000000b005d8572780fbmr240889ywf.84.1703101101988; Wed, 20
- Dec 2023 11:38:21 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2048482F8;
+	Wed, 20 Dec 2023 19:40:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=uSs9ugn4xX2syOMWcNQR3J7dtI3OSeKcZNKPuVvX3e4=; b=c3l/w81OMzy6jVcp2UuJtQ47AU
+	5qZofDQgBokGRMTk0plHbY9mKYht878jdPOgiQhPZ3A22yZ4qKmtJ6M4PExkDTnMeyi4NOfP8UgbL
+	5A+jvoS+GNRtZvTTJVuyfNyVJqYXOkB7JZsV9T4S2yW/kiQC6kbEp20sBdtS3reKp137yft3bfuKQ
+	mYrkrz57/+u0eh4y5ezdr60oWaNlJD0IZ49TT2HZx74+XtijHPaOTVAljIDP9nxqFbQy7nDh0P8OQ
+	Usw8gDGJT8VZlomBzwcGXlbfZi1TFrBZF6WOSl+utu3FZdnWeIw3u+tCOFnVbmsubfC9h/d2GsC8y
+	vGQ20Ycw==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+	id 1rG2Qe-000mTL-1b;
+	Wed, 20 Dec 2023 19:40:28 +0000
+Date: Wed, 20 Dec 2023 11:40:28 -0800
+From: Luis Chamberlain <mcgrof@kernel.org>
+To: deller@kernel.org
+Cc: linux-kernel@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>, linux-modules@vger.kernel.org,
+	linux-arch@vger.kernel.org
+Subject: Re: [PATCH 0/4] Section alignment issues?
+Message-ID: <ZYNDLEzkjfrpgu7U@bombadil.infradead.org>
+References: <20231122221814.139916-1-deller@kernel.org>
+ <ZYIKmQj0H1YAJWlz@bombadil.infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231220160931.251686445@linuxfoundation.org>
-In-Reply-To: <20231220160931.251686445@linuxfoundation.org>
-From: Allen <allen.lkml@gmail.com>
-Date: Wed, 20 Dec 2023 11:38:10 -0800
-Message-ID: <CAOMdWSLiqXs2zg0HBKf--htX+Ve0d-=RjGXwaoNrf4CbBS1JOQ@mail.gmail.com>
-Subject: Re: [PATCH 5.15 000/159] 5.15.145-rc1 review
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
-	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
-	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
-	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
-	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZYIKmQj0H1YAJWlz@bombadil.infradead.org>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 
-> This is the start of the stable review cycle for the 5.15.145 release.
-> There are 159 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Fri, 22 Dec 2023 16:08:59 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.145-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
->
+On Tue, Dec 19, 2023 at 01:26:49PM -0800, Luis Chamberlain wrote:
+> On Wed, Nov 22, 2023 at 11:18:10PM +0100, deller@kernel.org wrote:
+> > From: Helge Deller <deller@gmx.de>
+> > My questions:
+> > - Am I wrong with my analysis?
+> 
+> This would typically of course depend on the arch, but whether it helps
+> is what I would like to see with real numbers rather then speculation.
+> Howeer, I don't expect some of these are hot paths except maybe the
+> table lookups. So could you look at some perf stat differences
+> without / with alignment ? Other than bootup live patching would be
+> a good test case. We have selftest for modules, the script in selftests
+> tools/testing/selftests/kmod/kmod.sh is pretty aggressive, but the live
+> patching tests might be better suited.
+> 
+> > - What does people see on other architectures?
+> > - Does it make sense to add a compile- and runtime-check, like the patch below, to the kernel?
+> 
+> The chatty aspects really depend on the above results.
+> 
+> Aren't there some archs where an unaligned access would actually crash?
+> Why hasn't that happened?
 
-Compiled and booted on my x86_64 and ARM64 test systems. No errors or
-regressions.
+I've gone down through memory lane and we have discussed this before.
 
-Tested-by: Allen Pais <apais@linux.microsoft.com>
+It would seem this misalignment should not affect performance, and this
+should not be an issue unless you have a buggy exception hanlder. We
+actually ran into one before. Please refer to merge commit
 
-Thanks.
+e74acdf55da6649dd30be5b621a93b71cbe7f3f9
+
+  Luis
 
