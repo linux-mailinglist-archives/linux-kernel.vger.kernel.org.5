@@ -1,31 +1,31 @@
-Return-Path: <linux-kernel+bounces-6592-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6593-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50AFB819ABB
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 09:42:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA559819ABD
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 09:43:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A5494B2659B
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 08:42:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 764611F2110D
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 08:43:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 342341C6A8;
-	Wed, 20 Dec 2023 08:41:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79EE81F5FF;
+	Wed, 20 Dec 2023 08:42:57 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D26971DA27;
-	Wed, 20 Dec 2023 08:41:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F222D1F5E4
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 08:42:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CFFA61FB;
-	Wed, 20 Dec 2023 00:42:19 -0800 (PST)
-Received: from [10.57.82.217] (unknown [10.57.82.217])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D7DF33F64C;
-	Wed, 20 Dec 2023 00:41:32 -0800 (PST)
-Message-ID: <bf11d4a5-44e0-4e76-b795-dbbb2b338d12@arm.com>
-Date: Wed, 20 Dec 2023 08:42:39 +0000
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 18BF41FB;
+	Wed, 20 Dec 2023 00:43:39 -0800 (PST)
+Received: from [10.57.75.247] (unknown [10.57.75.247])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AF8AC3F64C;
+	Wed, 20 Dec 2023 00:42:50 -0800 (PST)
+Message-ID: <44ca1e89-c0f3-4916-9bd7-99a3fc626073@arm.com>
+Date: Wed, 20 Dec 2023 08:42:49 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -33,292 +33,242 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 15/23] PM: EM: Optimize em_cpu_energy() and remove
- division
-Content-Language: en-US
-To: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc: rui.zhang@intel.com, amit.kucheria@verdurent.com, rafael@kernel.org,
- linux-kernel@vger.kernel.org, amit.kachhap@gmail.com,
- daniel.lezcano@linaro.org, viresh.kumar@linaro.org, len.brown@intel.com,
- pavel@ucw.cz, mhiramat@kernel.org, qyousef@layalina.io, wvw@google.com,
- linux-pm@vger.kernel.org
-References: <20231129110853.94344-1-lukasz.luba@arm.com>
- <20231129110853.94344-16-lukasz.luba@arm.com>
- <ff68662a-6206-4bea-9307-071a50b368f9@arm.com>
-From: Lukasz Luba <lukasz.luba@arm.com>
-In-Reply-To: <ff68662a-6206-4bea-9307-071a50b368f9@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Subject: Re: [PATCH v4 16/16] arm64/mm: Implement clear_ptes() to optimize
+ exit, munmap, dontneed
+Content-Language: en-GB
+To: Alistair Popple <apopple@nvidia.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Ard Biesheuvel <ardb@kernel.org>, Marc Zyngier <maz@kernel.org>,
+ Oliver Upton <oliver.upton@linux.dev>, James Morse <james.morse@arm.com>,
+ Suzuki K Poulose <suzuki.poulose@arm.com>, Zenghui Yu
+ <yuzenghui@huawei.com>, Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+ Alexander Potapenko <glider@google.com>,
+ Andrey Konovalov <andreyknvl@gmail.com>, Dmitry Vyukov <dvyukov@google.com>,
+ Vincenzo Frascino <vincenzo.frascino@arm.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Anshuman Khandual <anshuman.khandual@arm.com>,
+ Matthew Wilcox <willy@infradead.org>, Yu Zhao <yuzhao@google.com>,
+ Mark Rutland <mark.rutland@arm.com>, David Hildenbrand <david@redhat.com>,
+ Kefeng Wang <wangkefeng.wang@huawei.com>, John Hubbard
+ <jhubbard@nvidia.com>, Zi Yan <ziy@nvidia.com>,
+ Barry Song <21cnbao@gmail.com>, Yang Shi <shy828301@gmail.com>,
+ linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org
+References: <20231218105100.172635-1-ryan.roberts@arm.com>
+ <20231218105100.172635-17-ryan.roberts@arm.com>
+ <87v88tzbfe.fsf@nvdebian.thelocal>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <87v88tzbfe.fsf@nvdebian.thelocal>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-
-
-On 12/12/23 18:50, Dietmar Eggemann wrote:
-> On 29/11/2023 12:08, Lukasz Luba wrote:
->> The Energy Model (EM) can be modified at runtime which brings new
->> possibilities. The em_cpu_energy() is called by the Energy Aware Scheduler
->> (EAS) in it's hot path. The energy calculation uses power value for
+On 20/12/2023 05:28, Alistair Popple wrote:
 > 
-> NIT: s/it's/its
-
-OK
-
+> Ryan Roberts <ryan.roberts@arm.com> writes:
 > 
->> a given performance state (ps) and the CPU busy time as percentage for that
->> given frequency, which effectively is:
+>> With the core-mm changes in place to batch-clear ptes during
+>> zap_pte_range(), we can take advantage of this in arm64 to greatly
+>> reduce the number of tlbis we have to issue, and recover the lost
+>> performance in exit, munmap and madvise(DONTNEED) incured when adding
+>> support for transparent contiguous ptes.
 >>
->> pd_nrg = ps->power * busy_time_pct                        (1)
+>> If we are clearing a whole contpte range, we can elide first unfolding
+>> that range and save the tlbis. We just clear the whole range.
 >>
->>                   cpu_util
->> busy_time_pct = -----------------                         (2)
->>                   ps->performance
+>> The following microbenchmark results demonstate the effect of this
+>> change on madvise(DONTNEED) performance for large pte-mapped folios.
+>> madvise(dontneed) is called for each page of a 1G populated mapping and
+>> the total time is measured. 100 iterations per run, 8 runs performed on
+>> both Apple M2 (VM) and Ampere Altra (bare metal). Tests performed for
+>> case where 1G memory is comprised of pte-mapped order-9 folios. Negative
+>> is faster, positive is slower, compared to baseline upon which the
+>> series is based:
 >>
->> The 'ps->performance' is the CPU capacity (performance) at that given ps.
->> Thus, in a situation when the OS is not overloaded and we have EAS
->> working, the busy time is lower than 'ps->performance' that the CPU is
->> running at. Therefore, in longer scheduling period we can treat the power
->> value calculated above as the energy.
-> 
-> Not sure I understand what a longer 'scheduling period' has to do with
-> that? Is this to highlight the issue between instantaneous power and the
-> energy being the integral over it? And the 'scheduling period' is the
-> runnable time of this task?
-
-I can probably drop this sentence. I just wanted to describe that EAS
-operates on power values, but actually assumes that it will be energy
-because we know that the tasks will run longer. It's not the best
-place to even try to describe this bit of EAS+EM in this patch header.
-
-> 
->> We can optimize the last arithmetic operation in em_cpu_energy() and
->> remove the division. This can be done because em_perf_state::cost, which
->> is a special coefficient, can now hold the pre-calculated value including
->> the 'ps->performance' information for a performance state (ps):
+>> | dontneed      |    Apple M2 VM    |    Ampere Altra   |
+>> | order-9       |-------------------|-------------------|
+>> | (pte-map)     |    mean |   stdev |    mean |   stdev |
+>> |---------------|---------|---------|---------|---------|
+>> | baseline      |    0.0% |    7.9% |    0.0% |    0.0% |
+>> | before-change |   -1.3% |    7.0% |   13.0% |    0.0% |
+>> | after-change  |   -9.9% |    0.9% |   14.1% |    0.0% |
 >>
->>                ps->power
->> ps->cost = ---------------                                (3)
->>             ps->performance
-> 
-> Ah, this is equation (2) in the existing code with s/cap/performance.
-
-yes
-
-> 
->> In the past the 'ps->performance' had to be calculated at runtime every
->> time the em_cpu_energy() was called. Thus there was this formula involved:
+>> The memory is initially all contpte-mapped and has to be unfolded (which
+>> requires tlbi for the whole block) when the first page is touched (since
+>> the test is madvise-ing 1 page at a time). Ampere Altra has high cost
+>> for tlbi; this is why cost increases there.
 >>
-> 
->>                    ps->freq
->> ps->performance = ------------- * scale_cpu               (4)
->>                    cpu_max_freq
+>> The following microbenchmark results demonstate the recovery (and
+>> overall improvement) of munmap performance for large pte-mapped folios.
+>> munmap is called for a 1G populated mapping and the function runtime is
+>> measured. 100 iterations per run, 8 runs performed on both Apple M2 (VM)
+>> and Ampere Altra (bare metal). Tests performed for case where 1G memory
+>> is comprised of pte-mapped order-9 folios. Negative is faster, positive
+>> is slower, compared to baseline upon which the series is based:
 >>
->> When we inject (4) into (2) than we can have this equation:
+>> | munmap        |    Apple M2 VM    |    Ampere Altra   |
+>> | order-9       |-------------------|-------------------|
+>> | (pte-map)     |    mean |   stdev |    mean |   stdev |
+>> |---------------|---------|---------|---------|---------|
+>> | baseline      |    0.0% |    6.4% |    0.0% |    0.1% |
+>> | before-change |   43.3% |    1.9% |  375.2% |    0.0% |
+>> | after-change  |   -6.0% |    1.4% |   -0.6% |    0.2% |
 >>
->>                   cpu_util * cpu_max_freq
->> busy_time_pct = ------------------------                  (5)
->>                   ps->freq * scale_cpu
->>
->> Because the right 'scale_cpu' value wasn't ready during the boot time
->> and EM initialization, we had to perform the division by 'scale_cpu'
->> at runtime. There was not safe mechanism to update EM at runtime.
->> It has changed thanks to EM runtime modification feature.
->>
->> It is possible to avoid the division by 'scale_cpu' at runtime, because
->> EM is updated whenever new max capacity CPU is set in the system or after
->> the boot has finished and proper CPU capacity is ready.
->>
->> Use that feature and do the needed division during the calculation of the
->> coefficient 'ps->cost'. That enhanced 'ps->cost' value can be then just
->> multiplied simply by utilization:
->>
->> pd_nrg = ps->cost * \Sum cpu_util                         (6)
->>
->> to get the needed energy for whole Performance Domain (PD).
->>
->> With this optimization, the em_cpu_energy() should run faster on the Big
->> CPU by 1.43x and on the Little CPU by 1.69x.
-> 
-> Where are those precise numbers are coming from? Which platform was it?
-
-That was mainline big.Little board rockpi4 b w/ rockchip 3399, present
-quite a few commercial devices (e.g. chromebooks or plenty other seen in
-DT). The numbers are from measuring the time it takes to run this
-function em_cpu_cost() in a loop for mln of times. Thus, the instruction
-cache and data cache should be hot, but the operation would impact the
-different score.
-
-> 
->>
->> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+>> Tested-by: John Hubbard <jhubbard@nvidia.com>
+>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
 >> ---
->>   include/linux/energy_model.h | 68 +++++-------------------------------
->>   kernel/power/energy_model.c  |  7 ++--
->>   2 files changed, 12 insertions(+), 63 deletions(-)
+>>  arch/arm64/include/asm/pgtable.h | 42 +++++++++++++++++++++++++++++
+>>  arch/arm64/mm/contpte.c          | 45 ++++++++++++++++++++++++++++++++
+>>  2 files changed, 87 insertions(+)
 >>
->> diff --git a/include/linux/energy_model.h b/include/linux/energy_model.h
->> index e30750500b10..0f5621898a81 100644
->> --- a/include/linux/energy_model.h
->> +++ b/include/linux/energy_model.h
->> @@ -115,27 +115,6 @@ struct em_perf_domain {
->>   #define EM_MAX_NUM_CPUS 16
->>   #endif
->>   
->> -/*
->> - * To avoid an overflow on 32bit machines while calculating the energy
->> - * use a different order in the operation. First divide by the 'cpu_scale'
->> - * which would reduce big value stored in the 'cost' field, then multiply by
->> - * the 'sum_util'. This would allow to handle existing platforms, which have
->> - * e.g. power ~1.3 Watt at max freq, so the 'cost' value > 1mln micro-Watts.
->> - * In such scenario, where there are 4 CPUs in the Perf. Domain the 'sum_util'
->> - * could be 4096, then multiplication: 'cost' * 'sum_util'  would overflow.
->> - * This reordering of operations has some limitations, we lose small
->> - * precision in the estimation (comparing to 64bit platform w/o reordering).
->> - *
->> - * We are safe on 64bit machine.
->> - */
->> -#ifdef CONFIG_64BIT
->> -#define em_estimate_energy(cost, sum_util, scale_cpu) \
->> -	(((cost) * (sum_util)) / (scale_cpu))
->> -#else
->> -#define em_estimate_energy(cost, sum_util, scale_cpu) \
->> -	(((cost) / (scale_cpu)) * (sum_util))
->> -#endif
->> -
->>   struct em_data_callback {
->>   	/**
->>   	 * active_power() - Provide power at the next performance state of
->> @@ -249,29 +228,16 @@ static inline unsigned long em_cpu_energy(struct em_perf_domain *pd,
->>   {
->>   	struct em_perf_table *runtime_table;
->>   	struct em_perf_state *ps;
->> -	unsigned long scale_cpu;
->> -	int cpu, i;
->> +	int i;
->>   
->>   	if (!sum_util)
->>   		return 0;
->>   
->> -	/*
->> -	 * In order to predict the performance state, map the utilization of
->> -	 * the most utilized CPU of the performance domain to a requested
->> -	 * frequency, like schedutil. Take also into account that the real
->> -	 * frequency might be set lower (due to thermal capping). Thus, clamp
->> -	 * max utilization to the allowed CPU capacity before calculating
->> -	 * effective frequency.
+>> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
+>> index d4805f73b9db..f5bf059291c3 100644
+>> --- a/arch/arm64/include/asm/pgtable.h
+>> +++ b/arch/arm64/include/asm/pgtable.h
+>> @@ -953,6 +953,29 @@ static inline pte_t __ptep_get_and_clear(struct mm_struct *mm,
+>>  	return pte;
+>>  }
+>>  
+>> +static inline pte_t __clear_ptes(struct mm_struct *mm,
+>> +				 unsigned long address, pte_t *ptep,
+>> +				 unsigned int nr, int full)
 > 
-> Why do you remove this comment? IMHO, it's still valid and independent
-> of the changes here?
+> Ping on my previous comment - why not just use the generic version
+> defined in patch 3 which is basically identical to this?
 
-Fair enough, I thought this comment makes more confusion in the new
-function, but I'll keep it.
+Perhaps I misunderstood your original comment - I thought this was what you were
+suggesting - i.e. move this code out of the arm64 clear_ptes() impl into its own
+__clear_ptes() helper, and always define an arm64 clear_ptes(), even when
+ARM64_CONTPTE is not enabled.
+
+I can use (and was in v3) the generic version when ARM64_CONTPTE is disabled.
+But I can't use it when its enabled, because then arm64 needs its own
+implementation to manage the contpte bit. And once it defines it's own version,
+by defining the macro clear_ptes(), then the generic version is no longer
+defined so I can't call it as part of this implementation. Even if I could, that
+would be recursive.
+
+Or perhaps I'm still not understanding your suggestion?
 
 > 
->> -	 */
->> -	cpu = cpumask_first(to_cpumask(pd->cpus));
->> -	scale_cpu = arch_scale_cpu_capacity(cpu);
->> -
->>   	/*
->>   	 * No rcu_read_lock() since it's already called by task scheduler.
->>   	 * The runtime_table is always there for CPUs, so we don't check.
->>   	 */
->>   	runtime_table = rcu_dereference(pd->runtime_table);
->> -
->>   	ps = &runtime_table->state[pd->nr_perf_states - 1];
->>   
->>   	max_util = map_util_perf(max_util);
->> @@ -286,35 +252,21 @@ static inline unsigned long em_cpu_energy(struct em_perf_domain *pd,
->>   	ps = &runtime_table->state[i];
->>   
->>   	/*
->> -	 * The capacity of a CPU in the domain at the performance state (ps)
->> -	 * can be computed as:
->> -	 *
->> -	 *             ps->freq * scale_cpu
->> -	 *   ps->cap = --------------------                          (1)
->> -	 *                 cpu_max_freq
->> -	 *
->> -	 * So, ignoring the costs of idle states (which are not available in
->> -	 * the EM), the energy consumed by this CPU at that performance state
->> +	 * The energy consumed by the CPU at the given performance state (ps)
->>   	 * is estimated as:
->>   	 *
->> -	 *             ps->power * cpu_util
->> -	 *   cpu_nrg = --------------------                          (2)
->> -	 *                   ps->cap
->> +	 *                ps->power
->> +	 *   cpu_nrg = --------------- * cpu_util                    (1)
->> +	 *             ps->performance
->>   	 *
->> -	 * since 'cpu_util / ps->cap' represents its percentage of busy time.
->> +	 * The 'cpu_util / ps->performance' represents its percentage of
->> +	 * busy time. The idle cost is ignored (it's not available in the EM).
->>   	 *
->>   	 *   NOTE: Although the result of this computation actually is in
->>   	 *         units of power, it can be manipulated as an energy value
->>   	 *         over a scheduling period, since it is assumed to be
->>   	 *         constant during that interval.
->>   	 *
->> -	 * By injecting (1) in (2), 'cpu_nrg' can be re-expressed as a product
->> -	 * of two terms:
->> -	 *
->> -	 *             ps->power * cpu_max_freq   cpu_util
->> -	 *   cpu_nrg = ------------------------ * ---------          (3)
->> -	 *                    ps->freq            scale_cpu
->> -	 *
->>   	 * The first term is static, and is stored in the em_perf_state struct
->>   	 * as 'ps->cost'.
->>   	 *
->> @@ -323,11 +275,9 @@ static inline unsigned long em_cpu_energy(struct em_perf_domain *pd,
->>   	 * total energy of the domain (which is the simple sum of the energy of
->>   	 * all of its CPUs) can be factorized as:
->>   	 *
->> -	 *            ps->cost * \Sum cpu_util
->> -	 *   pd_nrg = ------------------------                       (4)
->> -	 *                  scale_cpu
->> +	 *   pd_nrg = ps->cost * \Sum cpu_util                       (2)
->>   	 */
->> -	return em_estimate_energy(ps->cost, sum_util, scale_cpu);
->> +	return ps->cost * sum_util;
+>> +{
+>> +	pte_t orig_pte = __ptep_get_and_clear(mm, address, ptep);
+>> +	unsigned int i;
+>> +	pte_t pte;
+>> +
+>> +	for (i = 1; i < nr; i++) {
+>> +		address += PAGE_SIZE;
+>> +		ptep++;
+>> +		pte = __ptep_get_and_clear(mm, address, ptep);
+>> +
+>> +		if (pte_dirty(pte))
+>> +			orig_pte = pte_mkdirty(orig_pte);
+>> +
+>> +		if (pte_young(pte))
+>> +			orig_pte = pte_mkyoung(orig_pte);
+>> +	}
+>> +
+>> +	return orig_pte;
+>> +}
+>> +
+>>  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+>>  #define __HAVE_ARCH_PMDP_HUGE_GET_AND_CLEAR
+>>  static inline pmd_t pmdp_huge_get_and_clear(struct mm_struct *mm,
+>> @@ -1151,6 +1174,8 @@ extern pte_t contpte_ptep_get(pte_t *ptep, pte_t orig_pte);
+>>  extern pte_t contpte_ptep_get_lockless(pte_t *orig_ptep);
+>>  extern void contpte_set_ptes(struct mm_struct *mm, unsigned long addr,
+>>  				pte_t *ptep, pte_t pte, unsigned int nr);
+>> +extern pte_t contpte_clear_ptes(struct mm_struct *mm, unsigned long addr,
+>> +				pte_t *ptep, unsigned int nr, int full);
+>>  extern int contpte_ptep_test_and_clear_young(struct vm_area_struct *vma,
+>>  				unsigned long addr, pte_t *ptep);
+>>  extern int contpte_ptep_clear_flush_young(struct vm_area_struct *vma,
+>> @@ -1279,6 +1304,22 @@ static inline void pte_clear(struct mm_struct *mm,
+>>  	__pte_clear(mm, addr, ptep);
+>>  }
+>>  
+>> +#define clear_ptes clear_ptes
+>> +static inline pte_t clear_ptes(struct mm_struct *mm,
+>> +				unsigned long addr, pte_t *ptep,
+>> +				unsigned int nr, int full)
+>> +{
+>> +	pte_t pte;
+>> +
+>> +	if (nr == 1) {
+>> +		contpte_try_unfold(mm, addr, ptep, __ptep_get(ptep));
+>> +		pte = __ptep_get_and_clear(mm, addr, ptep);
+>> +	} else
+>> +		pte = contpte_clear_ptes(mm, addr, ptep, nr, full);
+>> +
+>> +	return pte;
+>> +}
+>> +
+>>  #define __HAVE_ARCH_PTEP_GET_AND_CLEAR
+>>  static inline pte_t ptep_get_and_clear(struct mm_struct *mm,
+>>  				unsigned long addr, pte_t *ptep)
+>> @@ -1366,6 +1407,7 @@ static inline int ptep_set_access_flags(struct vm_area_struct *vma,
+>>  #define set_pte					__set_pte
+>>  #define set_ptes				__set_ptes
+>>  #define pte_clear				__pte_clear
+>> +#define clear_ptes				__clear_ptes
+>>  #define __HAVE_ARCH_PTEP_GET_AND_CLEAR
+>>  #define ptep_get_and_clear			__ptep_get_and_clear
+>>  #define __HAVE_ARCH_PTEP_TEST_AND_CLEAR_YOUNG
+>> diff --git a/arch/arm64/mm/contpte.c b/arch/arm64/mm/contpte.c
+>> index 72e672024785..6f2a15ac5163 100644
+>> --- a/arch/arm64/mm/contpte.c
+>> +++ b/arch/arm64/mm/contpte.c
+>> @@ -293,6 +293,51 @@ void contpte_set_ptes(struct mm_struct *mm, unsigned long addr,
+>>  }
+>>  EXPORT_SYMBOL(contpte_set_ptes);
+>>  
+>> +pte_t contpte_clear_ptes(struct mm_struct *mm, unsigned long addr, pte_t *ptep,
+>> +					unsigned int nr, int full)
+>> +{
+>> +	/*
+>> +	 * If we cover a partial contpte block at the beginning or end of the
+>> +	 * batch, unfold if currently folded. This makes it safe to clear some
+>> +	 * of the entries while keeping others. contpte blocks in the middle of
+>> +	 * the range, which are fully covered don't need to be unfolded because
+>> +	 * we will clear the full block.
+>> +	 */
+>> +
+>> +	unsigned int i;
+>> +	pte_t pte;
+>> +	pte_t tail;
+>> +
+>> +	if (!mm_is_user(mm))
+>> +		return __clear_ptes(mm, addr, ptep, nr, full);
+>> +
+>> +	if (ptep != contpte_align_down(ptep) || nr < CONT_PTES)
+>> +		contpte_try_unfold(mm, addr, ptep, __ptep_get(ptep));
+>> +
+>> +	if (ptep + nr != contpte_align_down(ptep + nr))
+>> +		contpte_try_unfold(mm, addr + PAGE_SIZE * (nr - 1),
+>> +				   ptep + nr - 1,
+>> +				   __ptep_get(ptep + nr - 1));
+>> +
+>> +	pte = __ptep_get_and_clear(mm, addr, ptep);
+>> +
+>> +	for (i = 1; i < nr; i++) {
+>> +		addr += PAGE_SIZE;
+>> +		ptep++;
+>> +
+>> +		tail = __ptep_get_and_clear(mm, addr, ptep);
+>> +
+>> +		if (pte_dirty(tail))
+>> +			pte = pte_mkdirty(pte);
+>> +
+>> +		if (pte_young(tail))
+>> +			pte = pte_mkyoung(pte);
+>> +	}
+>> +
+>> +	return pte;
+>> +}
+>> +EXPORT_SYMBOL(contpte_clear_ptes);
+>> +
+>>  int contpte_ptep_test_and_clear_young(struct vm_area_struct *vma,
+>>  					unsigned long addr, pte_t *ptep)
+>>  {
 > 
-> Can you not keep the existing comment and only change:
-> 
-> (a) that ps->cap id ps->performance in (2) and
-> 
-> (b) that:
-> 
->            *             ps->power * cpu_max_freq   cpu_util
->            *   cpu_nrg = ------------------------ * ---------     (3)
->            *                    ps->freq            scale_cpu
-> 
->                          <---- (old) ps->cost --->
-> 
->      is now
-> 
->                  ps->power * cpu_max_freq       1
->      ps-> cost = ------------------------ * ----------
->                          ps->freq            scale_cpu
-> 
->                  <---- (old) ps->cost --->
-> 
-> and (c) that (4) has changed to:
-> 
->           *   pd_nrg = ps->cost * \Sum cpu_util                   (4)
-> 
-> which avoid the division?
-> 
-> Less changes is always much nicer since it makes it so much easier to
-> detect history and review changes.
 
-I'm open to change that, but I will have to contact you offline
-what you mean. This comment section in code is really tricky to
-handle right.
-
-> 
-> I do understand the changes from the technical viewpoint but the review
-> took me way too long which I partly blame to all the changes in the
-> comments which could have been avoided. Just want to make sure that
-> others done have to go through this pain too.
-> 
-
-I'll try to apply your comments and produce smaller diff in that
-patch.
 
