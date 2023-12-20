@@ -1,134 +1,112 @@
-Return-Path: <linux-kernel+bounces-7194-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7197-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0BFF681A30C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 16:49:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8041F81A314
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 16:51:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3ED781C24051
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 15:49:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1BA3A1F214F3
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 15:51:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37BAC40C1B;
-	Wed, 20 Dec 2023 15:49:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 915B141757;
+	Wed, 20 Dec 2023 15:50:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="MaXTpkpz"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1D7540BF0;
-	Wed, 20 Dec 2023 15:49:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44827C433C8;
-	Wed, 20 Dec 2023 15:49:17 +0000 (UTC)
-Date: Wed, 20 Dec 2023 10:50:17 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
- <linux-trace-kernel@vger.kernel.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, Dongliang Cui
- <cuidongliang390@gmail.com>, Hongyu Jin  <hongyu.jin@unisoc.com>,
- linux-fsdevel@vger.kernel.org
-Subject: [PATCH] eventfs: Have event files and directories default to parent
- uid and gid
-Message-ID: <20231220105017.1489d790@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD4A440C00;
+	Wed, 20 Dec 2023 15:50:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1703087443; x=1734623443;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=UhdmluMNpK/TcTrqtcRnsnNoNAHzR/TaqZv3iZKi1oc=;
+  b=MaXTpkpz0mzFMfP5I4n4/B7zkbrxy7E+CJh73I44uFbO5wwJX4/iyjHU
+   s17q6bwa/ZK4rFjLmkJzZdbofCZId3uo1KW+IaCJH9PfVhr+OR01rmdXB
+   ztAfoWxdbb0W9Yk96zqlmwePTChYTVahqi4UPOOxh8k1dwMUF+hcutwOk
+   DgX40traih8C8677JYPFa2Fyx03CghlG6kwy1TedjS+D6Rophm1jFM516
+   G0gMTNWKlQgJ2tsE5DhyZyZvz1HTTai70TnNYl2uyl1WVFZu0z5LCIOUn
+   B/4WE1VWi8zzfH8KuYHl42mqqAA1sI+n8kBk3Li6s9qX+H+tJiHNcFuJ9
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10930"; a="462282775"
+X-IronPort-AV: E=Sophos;i="6.04,291,1695711600"; 
+   d="scan'208";a="462282775"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Dec 2023 07:50:41 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10930"; a="1107765632"
+X-IronPort-AV: E=Sophos;i="6.04,291,1695711600"; 
+   d="scan'208";a="1107765632"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga005.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Dec 2023 07:50:38 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@intel.com>)
+	id 1rFyqB-00000007amZ-0P8C;
+	Wed, 20 Dec 2023 17:50:35 +0200
+Date: Wed, 20 Dec 2023 17:50:34 +0200
+From: Andy Shevchenko <andriy.shevchenko@intel.com>
+To: Hugo Villeneuve <hugo@hugovil.com>
+Cc: gregkh@linuxfoundation.org, jirislaby@kernel.org, jringle@gridpoint.com,
+	kubakici@wp.pl, phil@raspberrypi.org, bo.svangard@embeddedart.se,
+	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+	Hugo Villeneuve <hvilleneuve@dimonoff.com>
+Subject: Re: [PATCH 09/18] serial: sc16is7xx: add macro for max number of
+ UART ports
+Message-ID: <ZYMNSqFgAhId-lQ2@smile.fi.intel.com>
+References: <20231219171903.3530985-1-hugo@hugovil.com>
+ <20231219171903.3530985-10-hugo@hugovil.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231219171903.3530985-10-hugo@hugovil.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+On Tue, Dec 19, 2023 at 12:18:53PM -0500, Hugo Villeneuve wrote:
+> From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+> 
+> Add macro to hold the maximum number of UART ports per IC/device.
 
-Dongliang reported:
+...
 
-  I found that in the latest version, the nodes of tracefs have been
-  changed to dynamically created.
+> -	if (count < 0 || count > ARRAY_SIZE(irda_port))
+> +	if (count < 0 || count > SC16IS7XX_MAX_PORTS)
 
-  This has caused me to encounter a problem where the gid I specified in
-  the mounting parameters cannot apply to all files, as in the following
-  situation:
+ARRAY_SIZE() is more robust than this. What if you change to support different
+devices where this won't be as defined?
 
-  /data/tmp/events # mount | grep tracefs
-  tracefs on /data/tmp type tracefs (rw,seclabel,relatime,gid=3012)
+>  		return;
 
-  gid 3012 = readtracefs
+...
 
-  /data/tmp # ls -lh
-  total 0
-  -r--r-----   1 root readtracefs 0 1970-01-01 08:00 README
-  -r--r-----   1 root readtracefs 0 1970-01-01 08:00 available_events
+> -	if (count < 0 || count > ARRAY_SIZE(mctrl_port))
+> +	if (count < 0 || count > SC16IS7XX_MAX_PORTS)
+>  		return 0;
 
-  ums9621_1h10:/data/tmp/events # ls -lh
-  total 0
-  drwxr-xr-x 2 root root 0 2023-12-19 00:56 alarmtimer
-  drwxr-xr-x 2 root root 0 2023-12-19 00:56 asoc
+Ditto.
 
-  It will prevent certain applications from accessing tracefs properly, I
-  try to avoid this issue by making the following modifications.
+...
 
-To fix this, have the files created default to taking the ownership of
-the parent dentry unless the ownership was previously set by the user.
+> +	WARN_ON(devtype->nr_uart > SC16IS7XX_MAX_PORTS);
 
-Link: https://lore.kernel.org/linux-trace-kernel/1703063706-30539-1-git-send-email-dongliang.cui@unisoc.com/
+Not sure about this, perhaps it's fine.
 
-Reported-by: Dongliang Cui <cuidongliang390@gmail.com>
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- fs/tracefs/event_inode.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+Otherwise looks reasonable.
 
-diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
-index 43e237864a42..2ccc849a5bda 100644
---- a/fs/tracefs/event_inode.c
-+++ b/fs/tracefs/event_inode.c
-@@ -148,7 +148,8 @@ static const struct file_operations eventfs_file_operations = {
- 	.release	= eventfs_release,
- };
- 
--static void update_inode_attr(struct inode *inode, struct eventfs_attr *attr, umode_t mode)
-+static void update_inode_attr(struct dentry *dentry, struct inode *inode,
-+			      struct eventfs_attr *attr, umode_t mode)
- {
- 	if (!attr) {
- 		inode->i_mode = mode;
-@@ -162,9 +163,13 @@ static void update_inode_attr(struct inode *inode, struct eventfs_attr *attr, um
- 
- 	if (attr->mode & EVENTFS_SAVE_UID)
- 		inode->i_uid = attr->uid;
-+	else
-+		inode->i_uid = d_inode(dentry->d_parent)->i_uid;
- 
- 	if (attr->mode & EVENTFS_SAVE_GID)
- 		inode->i_gid = attr->gid;
-+	else
-+		inode->i_gid = d_inode(dentry->d_parent)->i_gid;
- }
- 
- /**
-@@ -206,7 +211,7 @@ static struct dentry *create_file(const char *name, umode_t mode,
- 		return eventfs_failed_creating(dentry);
- 
- 	/* If the user updated the directory's attributes, use them */
--	update_inode_attr(inode, attr, mode);
-+	update_inode_attr(dentry, inode, attr, mode);
- 
- 	inode->i_op = &eventfs_file_inode_operations;
- 	inode->i_fop = fop;
-@@ -242,7 +247,8 @@ static struct dentry *create_dir(struct eventfs_inode *ei, struct dentry *parent
- 		return eventfs_failed_creating(dentry);
- 
- 	/* If the user updated the directory's attributes, use them */
--	update_inode_attr(inode, &ei->attr, S_IFDIR | S_IRWXU | S_IRUGO | S_IXUGO);
-+	update_inode_attr(dentry, inode, &ei->attr,
-+			  S_IFDIR | S_IRWXU | S_IRUGO | S_IXUGO);
- 
- 	inode->i_op = &eventfs_root_dir_inode_operations;
- 	inode->i_fop = &eventfs_file_operations;
 -- 
-2.42.0
+With Best Regards,
+Andy Shevchenko
+
 
 
