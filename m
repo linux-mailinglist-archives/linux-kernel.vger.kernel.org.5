@@ -1,207 +1,95 @@
-Return-Path: <linux-kernel+bounces-6464-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6460-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26912819956
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 08:21:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8093A81994E
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 08:17:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4BED71C22075
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 07:21:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3B98A2870C6
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 07:17:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56B321CAB7;
-	Wed, 20 Dec 2023 07:21:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67ECB14F7F;
+	Wed, 20 Dec 2023 07:17:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="O+Cvo459"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out198-185.us.a.mail.aliyun.com (out198-185.us.a.mail.aliyun.com [47.90.198.185])
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4C6B1CA8C
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 07:21:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=cyg.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sjterm.com
-X-Alimail-AntiSpam:AC=CONTINUE;BC=0.07450683|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_social|0.0367338-0.0107246-0.952542;FP=2195691681752430067|5|2|12|0|-1|-1|-1;HT=ay29a033018047211;MF=fuyao@sjterm.com;NM=1;PH=DS;RN=9;RT=9;SR=0;TI=SMTPD_---.Voipd4K_1703056552;
-Received: from localhost(mailfrom:fuyao@sjterm.com fp:SMTPD_---.Voipd4K_1703056552)
-          by smtp.aliyun-inc.com;
-          Wed, 20 Dec 2023 15:15:53 +0800
-Date: Wed, 20 Dec 2023 15:15:52 +0800
-From: fuyao <fuyao1697@cyg.com>
-To: Lee Jones <lee@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Samuel Holland <samuel@sholland.org>,
-	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Cc: Maxime Ripard <mripard@kernel.org>,
-	maijianzhang <maijianzhang@allwinnertech.com>
-Subject: [PATCH RESEND] iio: adc: sun4i-gpadc-iio: adaptation interrupt number
-Message-ID: <YwdhTlk+8h+FMrwm@scg>
-Mail-Followup-To: Lee Jones <lee@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Samuel Holland <samuel@sholland.org>,
-	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-	linux-kernel@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
-	maijianzhang <maijianzhang@allwinnertech.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71404168A9;
+	Wed, 20 Dec 2023 07:17:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id C9D5CE0002;
+	Wed, 20 Dec 2023 07:17:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1703056639;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=OBi+8NL7aE/XRZED3MqrIc3p9l2z2kSeWHJGCwCuiVU=;
+	b=O+Cvo4591OIgVVq6asdrH1hS+zDMLhGXgs8JiEiI+QlBo98Rt8fCd8S7GN1yPJ0VcRdLwl
+	3v6KfKW+HKekpuGvj5BQwcK/ziuf/22EMCZR6+kxNRODklgpAPWvePigutFecov13JmxKt
+	GIEld6cfo0cokWr4WVsNWqPD4LQUisg0qLCgaFoPRsyeKTmKV7yfvTA3+fh4QGQm6HCvEt
+	be1geQbgJzIU3rKhwYtSZtM1NIDwM8m74BraPimkr7ime7QvmUpdUnRvevL0S2PMBT/nG4
+	Vo0VVUfL8eqRCLyeUFMaXAT4EikQ9IumiBibwslHrjpYD7eBpMS/TJF+NKdd4g==
+Date: Wed, 20 Dec 2023 08:17:17 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Srinivas Kandagatla
+ <srinivas.kandagatla@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
+ <conor+dt@kernel.org>, Michael Walle <michael@walle.cc>,
+ linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ u-boot@lists.denx.de, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+Subject: Re: [PATCH V2 3/5] nvmem: u-boot-env: use more nvmem subsystem
+ helpers
+Message-ID: <20231220081717.0afc17f3@xps-13>
+In-Reply-To: <1b5d4c36-9963-476c-8edf-e807beceda80@gmail.com>
+References: <20231219174025.15228-1-zajec5@gmail.com>
+	<20231219174025.15228-3-zajec5@gmail.com>
+	<2023121929-salami-pessimist-c943@gregkh>
+	<1b5d4c36-9963-476c-8edf-e807beceda80@gmail.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YxmR5SPPY18O7LaG@google.com>
-Received: from out20-218.mail.aliyun.com (out20-218.mail.aliyun.com
- [115.124.20.218]) (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384
- (256/256 bits)) (No client certificate requested) by
- smtp.subspace.kernel.org (Postfix) with ESMTPS id 103EC2F28 for
- <linux-sunxi@lists.linux.dev>; Thu, 25 Aug 2022 12:18:23 +0000 (UTC)
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.3045855|-1;BR=01201311R131S89rulernew998_84748_2000303;CH=blue;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.025949-0.00105542-0.972996;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047190;MF=fuyao@sjterm.com;NM=1;PH=DS;RN=9;RT=9;SR=0;TI=SMTPD_---.P.m81RD_1661428046;
-Received: from localhost(mailfrom:fuyao@sjterm.com
- fp:SMTPD_---.P.m81RD_1661428046) by smtp.aliyun-inc.com; Thu, 25 Aug 2022
- 19:47:26 +0800
-Precedence: bulk
-Organization: work_work_work
-Organization: work_work_work
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: miquel.raynal@bootlin.com
 
-__platform_get_irq_byname determinies whether the interrupt
-number is 0 and returns EINVAL.
+Hi Rafa=C5=82,
 
-Signed-off-by: fuyao <fuyao1697@cyg.com>
-Acked-by: Jernej Skrabec <jernej.skrabec@gmail.com>
----
- include/linux/mfd/sun4i-gpadc.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+zajec5@gmail.com wrote on Tue, 19 Dec 2023 19:16:37 +0100:
 
-diff --git a/include/linux/mfd/sun4i-gpadc.h b/include/linux/mfd/sun4i-gpadc.h
-index ea0ccf33a459..021f820f9d52 100644
---- a/include/linux/mfd/sun4i-gpadc.h
-+++ b/include/linux/mfd/sun4i-gpadc.h
-@@ -81,8 +81,8 @@
- #define SUN4I_GPADC_TEMP_DATA				0x20
- #define SUN4I_GPADC_DATA				0x24
- 
--#define SUN4I_GPADC_IRQ_FIFO_DATA			0
--#define SUN4I_GPADC_IRQ_TEMP_DATA			1
-+#define SUN4I_GPADC_IRQ_FIFO_DATA			1
-+#define SUN4I_GPADC_IRQ_TEMP_DATA			2
- 
- /* 10s delay before suspending the IP */
- #define SUN4I_GPADC_AUTOSUSPEND_DELAY			10000
--- 
-2.32.0
+> On 19.12.2023 19:13, Greg Kroah-Hartman wrote:
+> > On Tue, Dec 19, 2023 at 06:40:23PM +0100, Rafa=C5=82 Mi=C5=82ecki wrote=
+: =20
+> >> From: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
+> >>
+> >> 1. Use nvmem_dev_size() and nvmem_device_read() to make this driver le=
+ss
+> >>     mtd dependent
+> >> 2. Use nvmem_add_one_cell() to simplify adding NVMEM cells =20
+> >=20
+> > Shouldn't this be 2 different patches? =20
+>=20
+> I used to maintainers complaining my patches are too small and not the
+> other way ;) I think it happened two or three times with mtd subsys.
 
+A single patch may be too small if it's alone and we don't see the big
+picture, otherwise I have no issue with small patches, do I? Anyway, in
+this case I don't mind the patch being split or kept like this, just
+keep my R-by applied to both if you do indeed split.
 
--- 
-CYG Technology
-
-From mboxrd@z Thu Jan  1 00:00:00 1970
-Return-Path: <linux-arm-kernel-bounces+linux-arm-kernel=archiver.kernel.org@lists.infradead.org>
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-	aws-us-west-2-korg-lkml-1.web.codeaurora.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D7BEFC04AA5
-	for <linux-arm-kernel@archiver.kernel.org>; Thu, 25 Aug 2022 11:54:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=43HWo/ZUnCasly+ZDH2iZ6YziJoEl7DGgRHVq1AWHGA=; b=N4HqsZY4E2SL6r
-	coTCsOX2hRzQ7B0a1T00J2VkAPl7AipXosk76WMzyfIWnLKRkW8uqqBXKpQ2sHn25CKHP+ZW5UpiD
-	6l25/vh+YIPuTKjxd22dXb3QWpmIObDbHRRIOZSAWMBva+k42rsgsfgRyYKOI/+fBRoqDqFZHrjV1
-	LbiROW7b0SqMq6vAWAjGQvRON+qQDsqqpadEY+j508ViyVZdDIB2TY1zdy6uTAc4QqMRmzUH2NP7W
-	eSzjr4Kd1dtJMmykNtjjlIm/7IPwpXbHb72IdX1lzo27891mjNCP6V6fToGXw+s5RFS1qHaRuZ+XB
-	8g9p7pCDPqH/9eUb74/g==;
-Received: from localhost ([::1] helo=bombadil.infradead.org)
-	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oRBPm-00D1Ka-Ur; Thu, 25 Aug 2022 11:52:51 +0000
-Received: from out20-123.mail.aliyun.com ([115.124.20.123])
-	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oRBPk-00D1FB-2p
-	for linux-arm-kernel@lists.infradead.org; Thu, 25 Aug 2022 11:52:49 +0000
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.3045855|-1;BR=01201311R131S89rulernew998_84748_2000303;CH=blue;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.025949-0.00105542-0.972996;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047190;MF=fuyao@sjterm.com;NM=1;PH=DS;RN=9;RT=9;SR=0;TI=SMTPD_---.P.m81RD_1661428046;
-Received: from localhost(mailfrom:fuyao@sjterm.com fp:SMTPD_---.P.m81RD_1661428046)
-          by smtp.aliyun-inc.com;
-          Thu, 25 Aug 2022 19:47:26 +0800
-Date: Thu, 25 Aug 2022 19:47:26 +0800
-From: fuyao <fuyao1697@cyg.com>
-To: Lee Jones <lee@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Samuel Holland <samuel@sholland.org>,
-	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Cc: Maxime Ripard <mripard@kernel.org>,
-	maijianzhang <maijianzhang@allwinnertech.com>
-Subject: [PATCH] iio: adc: sun4i-gpadc-iio: adaptation interrupt number
-Message-ID: <YwdhTlk+7h+FMrwm@scg>
-Mail-Followup-To: Lee Jones <lee@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Samuel Holland <samuel@sholland.org>,
-	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-	linux-kernel@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
-	maijianzhang <maijianzhang@allwinnertech.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-Organization: work_work_work
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220825_045248_320501_10DAB7D1 
-X-CRM114-Status: UNSURE (   9.15  )
-X-CRM114-Notice: Please train this message.
-X-BeenThere: linux-arm-kernel@lists.infradead.org
-X-Mailman-Version: 2.1.34
-Precedence: list
-List-Id: <linux-arm-kernel.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=archiver.kernel.org@lists.infradead.org
-
-__platform_get_irq_byname determinies whether the interrupt
-number is 0 and returns EINVAL.
-
-Signed-off-by: fuyao <fuyao1697@cyg.com>
----
- include/linux/mfd/sun4i-gpadc.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/include/linux/mfd/sun4i-gpadc.h b/include/linux/mfd/sun4i-gpadc.h
-index ea0ccf33a459..021f820f9d52 100644
---- a/include/linux/mfd/sun4i-gpadc.h
-+++ b/include/linux/mfd/sun4i-gpadc.h
-@@ -81,8 +81,8 @@
- #define SUN4I_GPADC_TEMP_DATA				0x20
- #define SUN4I_GPADC_DATA				0x24
- 
--#define SUN4I_GPADC_IRQ_FIFO_DATA			0
--#define SUN4I_GPADC_IRQ_TEMP_DATA			1
-+#define SUN4I_GPADC_IRQ_FIFO_DATA			1
-+#define SUN4I_GPADC_IRQ_TEMP_DATA			2
- 
- /* 10s delay before suspending the IP */
- #define SUN4I_GPADC_AUTOSUSPEND_DELAY			10000
--- 
-2.32.0
-
-
--- 
-Technology is exciting
-
-_______________________________________________
-linux-arm-kernel mailing list
-linux-arm-kernel@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-
-
--- 
-CYG Technology.
+Thanks,
+Miqu=C3=A8l
 
