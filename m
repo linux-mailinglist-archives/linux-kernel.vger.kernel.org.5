@@ -1,266 +1,140 @@
-Return-Path: <linux-kernel+bounces-7498-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7499-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B03C481A8F1
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 23:17:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 85B4B81A8F4
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 23:17:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D3494B21EC1
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 22:16:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3B16D28C98D
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 22:17:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E9AD4A98A;
-	Wed, 20 Dec 2023 22:16:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 134FD4A991;
+	Wed, 20 Dec 2023 22:17:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="s/b1Ax84"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WM2hF1qN"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C389649F7F;
-	Wed, 20 Dec 2023 22:16:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A132C433C8;
-	Wed, 20 Dec 2023 22:16:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703110609;
-	bh=EYuAHLFAu52JNqdpI9RE6CjobCj8plhFfDlK2x+vg4g=;
-	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-	b=s/b1Ax841wkTMn/VP+5NRp8THggUZTYTKKns1K2yPYtcF8+nZ154CP8JzyCW0rbwE
-	 qTiFBMa1gjuru+k4XPM/5Qb1Zwwx44HHWTpO2I+mG6lBY7uvx0U3nMVlhuaIIPJXSm
-	 aF5Zyj5xgOpJUK+lEIl10FBFsA0N++OyUpakjkYltY2ih5wjPBpR4vHhuXN0HBc2gg
-	 NMK/NFN5l+gy5zOSbJl4yb7bY3L/k5viKx4NToRSxuXk5wWJfCjlUbCOt0xJMDj5lI
-	 uOf5Olc5gcU5pIE4PpmVoFDg7GelklhmU9diq/hp1CA5NSgOdjkuKW8s4xeUteAe/E
-	 XQE9p9Fo/1XTw==
-Message-ID: <c98539f99030f174583d7ee36802b4b9.sboyd@kernel.org>
-Content-Type: text/plain; charset="utf-8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3409208A5;
+	Wed, 20 Dec 2023 22:17:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-40c60dfa5bfso2317585e9.0;
+        Wed, 20 Dec 2023 14:17:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703110666; x=1703715466; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=PHyyJwEJsELVXyenxWN25EQbJJCm8HvjgqB6ecbKFBo=;
+        b=WM2hF1qNLEkOQ19yG9QT+Dmuxw8GWjc9u9hCEUxhSjoa9qBOM3Zg2y/60Er/klt6EA
+         v7Xx/0xaKFwLUt/8C2iluOemb6pFk3y1wNNSl2sY1hfby2F/fHlxCfrtJUJFVSBcG0BH
+         /gcs/0FmbjM6WH9otcGwVp+AiC/hPoWW6xf2edLhAmZ0DUBkBktpMoC2xtHjLbRRml5u
+         m2ZM12BlcZ+BNjykPA1IAxVw13cs1qiKf/k0pYvIVM83SqdwzFaihlJUG2Q0YQLHdLgZ
+         reLQiApXiIjk+JM0qjQ8I9V2ZNmb5hRA8HklD/PXbiW8gOT0bB1qpZtOjD/48+vQEQXN
+         /32Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703110666; x=1703715466;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=PHyyJwEJsELVXyenxWN25EQbJJCm8HvjgqB6ecbKFBo=;
+        b=FhjDYVxn9ZpdztrT94O6V8t4PuA5yhHgkJhd/dU7/LOZnux91dytdxd9+lgWrP7+pX
+         U6OpFzX105crkNzI+c1O+Onl9uR8B6GctXwjbZamrQ+GvCfLg74VmqEYFk7S5dJxQuav
+         fXJYxPlbPtKqdUC7Re2rD+kfqifnd9LBu1i7JgBBBo9r6YcfyZY7zq7iXOnDueNt3COL
+         akA/vjGqRPTShYajhoutKi9zSANrJFHWXuexg9P0qqK19kFJcadQKe6ej4W7nfjXi+T0
+         VEcVr4lGKi/FBVDmlcOnuyRqoQIm6yXIQgZS32JHlC0LQ3EBItgHIPJwWB5fgJf5366O
+         1WGA==
+X-Gm-Message-State: AOJu0YwnHvVAkD2o5OrnceUGCPxDySndQtQo4O/ccP8koSswKsCYkkIp
+	1N6wxiJpPrgaaaw1ecFhlAM=
+X-Google-Smtp-Source: AGHT+IFw4SnA+/mZ11I2Ol93m6wma7Zi+Othu3tzlLL/CUYJd9aiBIF5JaZbZ5k4ckVYvHoZD+eZaw==
+X-Received: by 2002:a1c:6a0b:0:b0:40d:39e9:d3d0 with SMTP id f11-20020a1c6a0b000000b0040d39e9d3d0mr169980wmc.144.1703110665627;
+        Wed, 20 Dec 2023 14:17:45 -0800 (PST)
+Received: from localhost.localdomain (host-95-250-248-68.retail.telecomitalia.it. [95.250.248.68])
+        by smtp.googlemail.com with ESMTPSA id v14-20020a05600c444e00b0040c58e410a3sm8908826wmn.14.2023.12.20.14.17.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Dec 2023 14:17:45 -0800 (PST)
+From: Christian Marangi <ansuelsmth@gmail.com>
+To: Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>,
+	linux-arm-msm@vger.kernel.org,
+	linux-clk@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Christian Marangi <ansuelsmth@gmail.com>
+Subject: [PATCH v8 0/3] clk: qcom: clk-rcg2: introduce support for multiple conf for same freq
+Date: Wed, 20 Dec 2023 23:17:21 +0100
+Message-Id: <20231220221724.3822-1-ansuelsmth@gmail.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20231219130909.265091-2-gabriel.fernandez@foss.st.com>
-References: <20231219130909.265091-1-gabriel.fernandez@foss.st.com> <20231219130909.265091-2-gabriel.fernandez@foss.st.com>
-Subject: Re: [PATCH v7 1/2] clk: stm32: introduce clocks for STM32MP257 platform
-From: Stephen Boyd <sboyd@kernel.org>
-Cc: linux-clk@vger.kernel.org, devicetree@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-To: Alexandre Torgue <alexandre.torgue@foss.st.com>, Conor Dooley <conor+dt@kernel.org>, Gabriel Fernandez <gabriel.fernandez@foss.st.com>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, Michael Turquette <mturquette@baylibre.com>, Philipp Zabel <p.zabel@pengutronix.de>, Rob Herring <robh+dt@kernel.org>
-Date: Wed, 20 Dec 2023 14:16:46 -0800
-User-Agent: alot/0.10
+Content-Transfer-Encoding: 8bit
 
-Quoting gabriel.fernandez@foss.st.com (2023-12-19 05:09:08)
-> diff --git a/drivers/clk/stm32/clk-stm32mp25.c b/drivers/clk/stm32/clk-st=
-m32mp25.c
-> new file mode 100644
-> index 000000000000..313e022c6142
-> --- /dev/null
-> +++ b/drivers/clk/stm32/clk-stm32mp25.c
-> @@ -0,0 +1,1826 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Copyright (C) STMicroelectronics 2023 - All Rights Reserved
-> + * Author: Gabriel Fernandez <gabriel.fernandez@foss.st.com> for STMicro=
-electronics.
-> + */
-> +
-> +#include <linux/clk.h>
-> +#include <linux/of_address.h>
-> +#include <linux/platform_device.h>
-> +
-> +#include "clk-stm32-core.h"
-> +#include "reset-stm32.h"
-> +#include "stm32mp25_rcc.h"
-> +
-> +#include <dt-bindings/clock/st,stm32mp25-rcc.h>
-> +#include <dt-bindings/reset/st,stm32mp25-rcc.h>
-> +
-> +static const struct clk_parent_data adc12_src[] =3D {
-> +       { .name =3D "ck_flexgen_46" },
+This small series fix a current problem with ipq8074 where the 2 uniphy
+port doesn't work in some corner case with some clk configuration. The
+port to correctly work require a specific frequency, using the wrong one
+results in the port not transmitting data.
 
-This is a new driver. Don't use .name here. Instead use .index or .hw
-and if that can't work then use .fw_name.
+With the current code with a requested freq of 125MHz, the frequency is
+set to 105MHz. This is caused by the fact that there are 2 different
+configuration to set 125MHz and it's always selected the first one that
+results in 105MHz.
 
-> +       { .name =3D "ck_icn_ls_mcu" },
-> +};
-> +
-> +static const struct clk_parent_data adc3_src[] =3D {
-> +       { .name =3D "ck_flexgen_47" },
-> +       { .name =3D "ck_icn_ls_mcu" },
-> +       { .name =3D "ck_flexgen_46" },
-> +};
-[...]
-> +static struct clk_stm32_composite ck_ker_usb3pciephy =3D {
-> +       .gate_id =3D GATE_USB3PCIEPHY,
-> +       .mux_id =3D MUX_USB3PCIEPHY,
-> +       .div_id =3D NO_STM32_DIV,
-> +       .hw.init =3D CLK_HW_INIT_PARENTS_DATA("ck_ker_usb3pciephy", usb3p=
-ciphy_src,
-> +                                           &clk_stm32_composite_ops, 0),
-> +};
-> +
-> +/* USB3 DRD */
-> +static struct clk_stm32_gate ck_icn_m_usb3dr =3D {
-> +       .gate_id =3D GATE_USB3DR,
-> +       .hw.init =3D CLK_HW_INIT("ck_icn_m_usb3dr", "ck_icn_hsl", &clk_st=
-m32_gate_ops, 0),
-> +};
-> +
-> +static struct clk_stm32_gate ck_ker_usb2phy2 =3D {
-> +       .gate_id =3D GATE_USB3DR,
-> +       .hw.init =3D CLK_HW_INIT("ck_ker_usb2phy2", "ck_flexgen_58", &clk=
-_stm32_gate_ops, 0),
-> +};
-> +
-> +/* USBTC */
-> +static struct clk_stm32_gate ck_icn_p_usbtc =3D {
-> +       .gate_id =3D GATE_USBTC,
-> +       .hw.init =3D CLK_HW_INIT("ck_icn_p_usbtc", "ck_icn_apb4", &clk_st=
-m32_gate_ops, 0),
+In the original QSDK code, the frequency configuration selection is
+different and the CEIL FLOOR logic is not present. Instead it's used a
+BEST approach where the frequency table is checked and then it's checked
+if there are duplicate entry.
 
-Please stop using strings to match parents, i.e. don't use CLK_HW_INIT.
+This proposed implementation is more specific and introduce an entire new
+set of ops and a specific freq table to support this special configuration.
 
-> +};
-> +
-> +static struct clk_stm32_gate ck_ker_usbtc =3D {
-> +       .gate_id =3D GATE_USBTC,
-> +       .hw.init =3D CLK_HW_INIT("ck_ker_usbtc", "ck_flexgen_35", &clk_st=
-m32_gate_ops, 0),
-> +};
-> +
-> +/* VDEC / VENC */
-> +static struct clk_stm32_gate ck_icn_p_vdec =3D {
-> +       .gate_id =3D GATE_VDEC,
-> +       .hw.init =3D CLK_HW_INIT("ck_icn_p_vdec", "ck_icn_apb4", &clk_stm=
-32_gate_ops, 0),
-> +};
-> +
-> +static struct clk_stm32_gate ck_icn_p_venc =3D {
-> +       .gate_id =3D GATE_VENC,
-> +       .hw.init =3D CLK_HW_INIT("ck_icn_p_venc", "ck_icn_apb4", &clk_stm=
-32_gate_ops, 0),
-> +};
-> +
-> +/* VREF */
-> +static struct clk_stm32_gate ck_icn_p_vref =3D {
-> +       .gate_id =3D GATE_VREF,
-> +       .hw.init =3D CLK_HW_INIT("ck_icn_p_vref", "ck_icn_apb3", &clk_stm=
-32_gate_ops, 0),
-> +};
-> +
-> +/* WWDG */
-> +static struct clk_stm32_gate ck_icn_p_wwdg1 =3D {
-> +       .gate_id =3D GATE_WWDG1,
-> +       .hw.init =3D CLK_HW_INIT("ck_icn_p_wwdg1", "ck_icn_apb3", &clk_st=
-m32_gate_ops, 0),
-> +};
-> +
-> +static struct clk_stm32_gate ck_icn_p_wwdg2 =3D {
-> +       .gate_id =3D GATE_WWDG2,
-> +       .hw.init =3D CLK_HW_INIT("ck_icn_p_wwdg2", "ck_icn_ls_mcu", &clk_=
-stm32_gate_ops, 0),
-> +};
-> +
-> +enum security_clk {
-> +       SECF_NONE,
+A union is introduced in rcg2 struct to not duplicate the struct.
+A new set of ops clk_rcg2_fm_ops are introduced to support this new kind
+of frequency table.
 
-What is the use of this single value enum?
+Changes v8:
+- Add Tested-by tag
+- Fix typo in commit description
+- Address requested fixup for Stephen
+Changes v7:
+- Improve handling of exit condition on missing parent.
+Changes v6:
+- Small rework of best_conf selection to mute Sparse warn.
+Changes v5:
+- Rework selection logic with suggestion from Konrad
+- Return -EINVAL and WARN if we fail to find a correct conf
+Changes v4:
+- Drop suggested but wrong re-search patch
+- Move everything to separate ops and struct to not affect current rcg2
+  users.
+Changes v3:
+- Add qcom_find_freq_exact
+- Drop re-search on rcg2_set_rate
+- Rework multiple conf patch to follow new implementation
+Changes v2:
+- Out of RFC
+- Fix compile warning from buildbot related to F redefinition
 
-> +};
-> +
-> +static const struct clock_config stm32mp25_clock_cfg[] =3D {
-> +       STM32_GATE_CFG(CK_BUS_ETH1,             ck_icn_p_eth1,          S=
-ECF_NONE),
-> +       STM32_GATE_CFG(CK_BUS_ETH2,             ck_icn_p_eth2,          S=
-ECF_NONE),
-[....]
-> +
-> +static const struct of_device_id stm32mp25_match_data[] =3D {
-> +       {
-> +               .compatible =3D "st,stm32mp25-rcc",
-> +               .data =3D &stm32mp25_data,
-> +       },
+Christian Marangi (3):
+  clk: qcom: clk-rcg: introduce support for multiple conf for same freq
+  clk: qcom: clk-rcg2: add support for rcg2 freq multi ops
+  clk: qcom: gcc-ipq8074: rework nss_port5/6 clock to multiple conf
 
-One line please:
+ drivers/clk/qcom/clk-rcg.h     |  24 ++++-
+ drivers/clk/qcom/clk-rcg2.c    | 166 +++++++++++++++++++++++++++++++++
+ drivers/clk/qcom/common.c      |  18 ++++
+ drivers/clk/qcom/common.h      |   2 +
+ drivers/clk/qcom/gcc-ipq8074.c | 120 +++++++++++++++---------
+ 5 files changed, 285 insertions(+), 45 deletions(-)
 
- 	{ .compatible =3D "st,stm32mp25-rcc", .data =3D &stm32mp25_data, },
+-- 
+2.40.1
 
-> +       { }
-> +};
-> +MODULE_DEVICE_TABLE(of, stm32mp25_match_data);
-> +
-> +static int get_clock_deps(struct device *dev)
-
-What is the explanation for this function?
-
-> +{
-> +       static const char * const clock_deps_name[] =3D {
-> +               "hsi", "hse", "msi", "lsi", "lse",
-> +       };
-> +       int i;
-> +
-> +       for (i =3D 0; i < ARRAY_SIZE(clock_deps_name); i++) {
-> +               struct clk *clk;
-> +
-> +               clk =3D of_clk_get_by_name(dev_of_node(dev), clock_deps_n=
-ame[i]);
-> +               if (IS_ERR(clk))
-> +                       return PTR_ERR(clk);
-> +
-> +               clk_put(clk);
-> +       }
-> +
-> +       return 0;
-> +}
-> +
-> +static int stm32mp25_rcc_clocks_probe(struct platform_device *pdev)
-> +{
-> +       struct device *dev =3D &pdev->dev;
-> +       void __iomem *base;
-> +       int ret;
-> +
-> +       ret =3D get_clock_deps(dev);
-> +       if (ret)
-> +               return ret;
-> +
-> +       base =3D devm_of_iomap(dev, dev->of_node, 0, NULL);
-
-Use platform device APIs.
-
-> +       if (WARN_ON(IS_ERR(base)))
-> +               return PTR_ERR(base);
-> +
-> +       return stm32_rcc_init(dev, stm32mp25_match_data, base);
-> +}
-> +
-> +static int stm32mp25_rcc_clocks_remove(struct platform_device *pdev)
-> +{
-> +       struct device *dev =3D &pdev->dev;
-> +       struct device_node *child, *np =3D dev_of_node(dev);
-> +
-> +       for_each_available_child_of_node(np, child)
-> +               of_clk_del_provider(child);
-
-Add the providers with devm?
-
-> +
-> +       return 0;
-> +}
-> +
-> +static struct platform_driver stm32mp25_rcc_clocks_driver =3D {
-> +       .driver =3D {
-> +               .name =3D "stm32mp25_rcc",
-> +               .of_match_table =3D stm32mp25_match_data,
-> +       },
-> +       .probe =3D stm32mp25_rcc_clocks_probe,
-> +       .remove =3D stm32mp25_rcc_clocks_remove,
-> +};
-> +
-> +static int __init stm32mp25_clocks_init(void)
-> +{
-> +       return platform_driver_register(&stm32mp25_rcc_clocks_driver);
-> +}
-> +
-> +core_initcall(stm32mp25_clocks_init);
 
