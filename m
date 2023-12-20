@@ -1,140 +1,117 @@
-Return-Path: <linux-kernel+bounces-6654-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6655-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C17F819BB5
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 10:52:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 216A9819BB9
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 10:52:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 18C7D1F23C88
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 09:52:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B47BE1F24CF5
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 09:52:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9832B2030A;
-	Wed, 20 Dec 2023 09:51:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7FAC20330;
+	Wed, 20 Dec 2023 09:52:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KUPj6oFW"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lP1xU3t7"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6E0F1F612;
-	Wed, 20 Dec 2023 09:51:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B63D0C433C7;
-	Wed, 20 Dec 2023 09:51:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703065912;
-	bh=Cp6gzt3q4v5XnTntRjirvjcv/I42KDzoFGvVKYV/ZYA=;
-	h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
-	b=KUPj6oFWlnLEtsziChPP6fNg6KLO22ByvgKX47tRye5w0L3zPZHC3qn4pmIBBCHik
-	 j92jbvRoK9SXAcBTYyMO2QPjs1o0KtcilwdCMqpDDX90y8fJG3lsmsbr+XNFnSmyuc
-	 /1kEIGuHhFtqtTejF54pmipy01C2DDUpvbBM1URSsnTL9T9LZMGpGJSsZZl0ijJPt5
-	 snrx+3Z1qvT3sJqmRWD8+v1lZC6io5wn9elGVGvlZbQXOtWs7yx7JBYb2NJxffYURU
-	 tYOQpw+65Y024Z/VVT1z2wXVb/5o37JrDEx70Um1/N6UigmQzSN+unknc6alOKzyXc
-	 23V55hKIXsebw==
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailauth.nyi.internal (Postfix) with ESMTP id 926C227C005A;
-	Wed, 20 Dec 2023 04:51:50 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Wed, 20 Dec 2023 04:51:50 -0500
-X-ME-Sender: <xms:NLmCZbZl8gKQKvH6_jEgGanAWRBW0IZ9wSq2V-Xq4b7yZ4S2j9wxdw>
-    <xme:NLmCZabuVOhCENTUuNyROA8RzCLAKX2XuSSoruo5P6aq9agWJDiowVbzia3M5VZtX
-    1zls5TgLGThqnqqS7Y>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdduvddguddtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusehkvghrnhgvlhdrohhrgheqnecuggftrf
-    grthhtvghrnhepvdeviefgtedugeevieelvdfgveeuvdfgteegfeeiieejjeffgeeghedu
-    gedtveehnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    eprghrnhguodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdduvdekhedujedt
-    vdegqddvkeejtddtvdeigedqrghrnhgupeepkhgvrhhnvghlrdhorhhgsegrrhhnuggsrd
-    guvg
-X-ME-Proxy: <xmx:NbmCZd8Y-yYEchDqoN_ntfXRavuxioD9eu7W4WXdOf2ztyRZGuMCxA>
-    <xmx:NbmCZRpducWjQsjhpng9BGJFM1gihhAQnIydaUX0iRt8Ff-A7W7Iiw>
-    <xmx:NbmCZWrEzVWoia2K0Iwijp9UcgvYJ_gMbOTKiAdIZZaY8RREb-4zmg>
-    <xmx:NrmCZb62Iw048aegq2kvAtL_NfPBQ1wXuVZi7RU4NCk0hLEiQ7teNw>
-Feedback-ID: i36794607:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id E3684B6008D; Wed, 20 Dec 2023 04:51:48 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1364-ga51d5fd3b7-fm-20231219.001-ga51d5fd3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6DEF208A6;
+	Wed, 20 Dec 2023 09:52:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a2343c31c4bso468532766b.1;
+        Wed, 20 Dec 2023 01:52:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703065921; x=1703670721; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=M9qpB4qf3ZId6lZMFowk0z0oliDO3YWtk6BSWDnuZ0o=;
+        b=lP1xU3t7Ja8m7hqpkybAxl1+BOI+rPjr4HScLvWBdD5D52SVPmzLgA+P6jycjOzFV9
+         rptbAJsfaiC9k2vRb+FBRMBU2NYpfiWdVZgyUOW7CdpnieS7wM8ttViBFqvUcxCRkSqf
+         oNgQsxAEo4HaM3TZYR/xDeJalrcfrK0Aq1UhLkG60QyXP+snjpIoT9QHvApRXABHC4+u
+         vWsTPb5miP1L9oYrs8Mb/OTulR1L8AIs9zrpC/ZFtnNN/ZJemJRvsITDjiZ+bRPajmIe
+         c9MOtwtdlQSRJomw9Sdsaj7JDH6fcN7gBPCdfmVgzydOZ8AFw8kN4LFG+YeVAxXNkHp/
+         wPnw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703065921; x=1703670721;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=M9qpB4qf3ZId6lZMFowk0z0oliDO3YWtk6BSWDnuZ0o=;
+        b=lH7fkehjEA0jr+mUaAxrKL9iQaOmWp7MsAQWa/j7JSaIh2UUMrLYMvLuG+1WDObsr5
+         rnMb/0XIXNgy32s3fwN2G3Wb3rlBYCVjHxHm0vIy9tx2yipxPVFtzdOLXcId4PJwWMue
+         roI26ngGMTO3Qoa7ZKIHqTPTuIjxl1f1xTepKM3L/Kw92gpfMqtEPPt0o4p2NGnFOc/x
+         o1DE21w2xRgCtKz/kJ0v4LezXe9WrYtv6XBSxJ/mJEl3ABSbHynHf5uV09bjirjOyCWr
+         CQqoeR1l0cpAXGaNu2CvIB6fddsUte26/TaUCr0YXTXaYWwsB/Vp6uGM0fvpUGYBWpoc
+         xNog==
+X-Gm-Message-State: AOJu0YxjpXZXWew3Yhqv0Cu9KtCRDv6SXAZYYJGN22g2IALjk1MgOQhi
+	DVb7ORrNAcZbO6sSg8dmSk8=
+X-Google-Smtp-Source: AGHT+IE28g41l7HoQZQIn3TqFjt4hhf/zSXdXrozlWV0k0jrhm2KNFm8zxiuiquLZS9DJmjzTRsGSQ==
+X-Received: by 2002:a17:906:10da:b0:a23:617d:1917 with SMTP id v26-20020a17090610da00b00a23617d1917mr1485420ejv.116.1703065920680;
+        Wed, 20 Dec 2023 01:52:00 -0800 (PST)
+Received: from localhost.localdomain ([154.72.162.158])
+        by smtp.gmail.com with ESMTPSA id st3-20020a170907c08300b00a1c4fde4e88sm16596791ejc.18.2023.12.20.01.51.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Dec 2023 01:52:00 -0800 (PST)
+From: Brandon Cheo Fusi <fusibrandon13@gmail.com>
+To: Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Chen-Yu Tsai <wens@csie.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>,
+	Yangtao Li <tiny.windzz@gmail.com>,
+	"Rafael J . Wysocki" <rafael@kernel.org>,
+	Viresh Kumar <viresh.kumar@linaro.org>
+Cc: devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-sunxi@lists.linux.dev,
+	linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	linux-pm@vger.kernel.org,
+	Brandon Cheo Fusi <fusibrandon13@gmail.com>
+Subject: [RFC PATCH 0/2] Add support for reading D1 efuse speed bin
+Date: Wed, 20 Dec 2023 10:51:39 +0100
+Message-Id: <20231220095141.27883-1-fusibrandon13@gmail.com>
+X-Mailer: git-send-email 2.30.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <55c0b9a5-6ba3-4582-97f0-225d0119da5d@app.fastmail.com>
-In-Reply-To: <9c4479a3d194450593d541ae02ad288a@AcuMS.aculab.com>
-References: <20231219-sam-sparc32-sunset-v3-v1-0-64bb44b598c5@ravnborg.org>
- <01ea8c41-88cd-4123-95c7-391640845fc3@app.fastmail.com>
- <9c4479a3d194450593d541ae02ad288a@AcuMS.aculab.com>
-Date: Wed, 20 Dec 2023 09:51:27 +0000
-From: "Arnd Bergmann" <arnd@kernel.org>
-To: "David Laight" <David.Laight@ACULAB.COM>,
- "Sam Ravnborg" <sam@ravnborg.org>, "David S . Miller" <davem@davemloft.net>,
- "Andreas Larsson" <andreas@gaisler.com>
-Cc: "Helge Deller" <deller@gmx.de>,
- "Alexander Viro" <viro@zeniv.linux.org.uk>,
- "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
- "Alan Stern" <stern@rowland.harvard.edu>, "Jaroslav Kysela" <perex@perex.cz>,
- "Takashi Iwai" <tiwai@suse.com>,
- "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
- "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>,
- "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
- "linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>
-Subject: Re: [PATCH 00/27] sparc32: sunset sun4m and sun4d
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 
-On Wed, Dec 20, 2023, at 09:34, David Laight wrote:
-> From: Arnd Bergmann
->> Sent: 20 December 2023 08:37
->> 
->> On Tue, Dec 19, 2023, at 22:03, Sam Ravnborg via B4 Relay wrote:
->> > TODO before this can be applied:
->> > - Ack from davem - as he is the principal sparc maintainer
->> > - Tested-by: preferably on a target or QEMU (see above)
->> >   I expect bugs as there are some involved changes!
->> >
->> > Ideas for the future
->> > - Apply the most relevant downstream Gaisler patches
->> >   - The ones introducing CAS should have preference as we then
->> >     can drop the cmpxchg emulation
->> 
->> One note about the CAS -- as far as I can tell, the absence
->> of the futex() syscall on sparc32 kernels means that no glibc
->> from the past decade can work correctly as it now requires futex
->> for its internal locking, though it does work on sparc64 kernels
->> in compat32 mode as well as the LEON3 kernel that adds futex
->> support.
->
-> Does the glibc mutex 'fast path' also require a CAS instruction?
+Hi everyone,
 
-I think that depends on whether glibc is built for a CPU with
-CAS or not. If it's built for 32-bit sparcv9 or leon, it should use
-CAS and crash on sparcv8 without CAS. If it's built for pure
-sparcv8, it should try to use an emulation that is incompatible
-with the kernel futex syscall.
+This series is an attempt to get feedback on decoding D1 efuse speed bins
+in the Sun50i H6 cpufreq driver, and turning the result into a meaningful
+value that selects voltage ranges in an OPP table.
 
-> Presumably having CAS also removes the 'really horrid (tm)' code
-> required to make all the bitmap operations atomic?
+I want to make sure I get this right before sending in a v3 of the D1
+cpufreq support series at
 
-Yes, but I'm not sure this is implemented in the leon3 tree.
-With CAS enabled, at least asm/atomic.h, asm/bitops.h,
-asm/cmpxchg.h and asm/spinlock.h can be implemented as efficiently
-as they are in the 64-bit version.
+https://lore.kernel.org/linux-sunxi/20231218110543.64044-1-fusibrandon13@gmail.com/T/#t
 
-> Seems a shame to lose old sparc32 support when (I think) the sun3
-> in my cupboard would still work - if only it had a working psu.
-> (The 110/220V switch wasn't connected and the FET wasn't rated
-> for 450V. UK mains can be 240+10% if you are near a substation.)
+which is currently stuck at
 
-sun3 support has never worked upstream. There is an old series from
-20 years ago that made it work but nobody ever tried to get it
-merged.
+https://lore.kernel.org/linux-sunxi/aad8302d-a015-44ee-ad11-1a4c6e00074c@sholland.org/
 
-       Arnd
+Brandon Cheo Fusi (2):
+  cpufreq: sun50i: Add support for D1's speed bin decoding
+  riscv: dts: allwinner: Fill in OPPs
+
+ arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi |  8 +-
+ drivers/cpufreq/sun50i-cpufreq-nvmem.c        | 85 +++++++++++++++----
+ 2 files changed, 76 insertions(+), 17 deletions(-)
+
+-- 
+2.30.2
+
 
