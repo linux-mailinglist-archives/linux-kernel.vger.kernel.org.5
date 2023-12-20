@@ -1,157 +1,222 @@
-Return-Path: <linux-kernel+bounces-6525-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6526-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DAC198199F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 09:02:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A81138199F6
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 09:02:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 513161F254F1
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 08:02:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 20B2B1F24D48
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 08:02:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 534131CABD;
-	Wed, 20 Dec 2023 08:01:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9388918637;
+	Wed, 20 Dec 2023 08:02:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="vEu/s0jk"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="asEHogS3"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFFC81CA9A
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 08:01:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a234dc0984fso392620866b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 00:01:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703059311; x=1703664111; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Q6qwFojeAseZiqFw0AS/OLjMh8l70gGs83fGIX57eS8=;
-        b=vEu/s0jkPZHYqnslqSPpyyE9UgQFXq4gQvQR1QOwZE6hQewzkbHbs7q9d70Rk7vTfj
-         7nGSYzjZ6ZVLzBjoupf6FYlW+yAMR9eCvtZkGc+eI5oXRNBEBXSH8hyKZvoDEEMHLsV3
-         tUUav1/2J9t5yPsa3cYuG1mQ4ieI95FeijRcCvOPk8HubLDqLfAa/XwyrBgmMquNRB2W
-         adHmrhCVMA09mSW4oqSPS5kQTh+VXPrnt7PqM0nQAu0VJ7hxifuIJ/DgWBp6XQvtE3jc
-         CRPIlSmZZl/1laCnBlxJlclQGkj/8NkcrSnNjtVYjPKrxaFO8Y8ai9T/dlBjuCvxt1ad
-         v3EQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703059311; x=1703664111;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Q6qwFojeAseZiqFw0AS/OLjMh8l70gGs83fGIX57eS8=;
-        b=Vp+Na6qFveQmM29HKhJgaRx01kCk5UZWF1+IQNKb8BAhkx5zsF9O0OWHWfAh+DK9dG
-         SzSDKHgius0lRVlgzzWJaRrKHIpfi0S4d5RyulYLXipNr31FHTLnp7vDR6XcwbFate8G
-         sVqfmlAaCJ7vR+doxLuFesJS9cSkjwaWK2K3AFsre05PXkwllvaXqxU/iwZYGpu9XKCS
-         CMjCLrBhD1staD8NV6fE0Z7aeIPEOxDiQBsvI3XFEkQiFsfMoUErgkOew8frHBW0NPDg
-         Py20wL9xZp4U2OIE8b4my+F49PJ+JeVx9yTLOQgZvfxnFnA2XU0hYb3fZr+uKQXeMIzL
-         lIxw==
-X-Gm-Message-State: AOJu0YxVKJTfdT4mCyi1E6UfRtMTHcsdaShQ5zHtkZ61+eEoltjzcSvM
-	vvAyVeQLMNh4SzBKMHumk1azxA==
-X-Google-Smtp-Source: AGHT+IFstkKIv3GmlshOA5zE0O5rfyM7nIKCAkrHm+VvYOOBKDV2Igl0hYuTtcgmlXX/gJ7an6xiyA==
-X-Received: by 2002:a17:906:257:b0:a23:48be:3eba with SMTP id 23-20020a170906025700b00a2348be3ebamr2540650ejl.142.1703059311081;
-        Wed, 20 Dec 2023 00:01:51 -0800 (PST)
-Received: from hades.. (ppp089210121239.access.hol.gr. [89.210.121.239])
-        by smtp.gmail.com with ESMTPSA id wq8-20020a170907064800b00a2697aaac78sm223206ejb.30.2023.12.20.00.01.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Dec 2023 00:01:50 -0800 (PST)
-From: Ilias Apalodimas <ilias.apalodimas@linaro.org>
-To: netdev@vger.kernel.org
-Cc: linyunsheng@huawei.com,
-	Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v2] page_pool: Rename frag_users to pagecnt_bias
-Date: Wed, 20 Dec 2023 10:01:46 +0200
-Message-Id: <20231220080147.740134-1-ilias.apalodimas@linaro.org>
-X-Mailer: git-send-email 2.37.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 284271D6AB;
+	Wed, 20 Dec 2023 08:02:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BK7ePQw019738;
+	Wed, 20 Dec 2023 08:02:01 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=Im95OQeuK1bHXsXSynBGzQS4F6s+R4W/Sfgm+I1J06E=; b=as
+	EHogS3TNhusxZyXrZWmhtXOqbTstSw49p7QAj4cmuZPKSRnpbGCNTfs5TtNmJGc0
+	r7fFzMTGbrAVmX6nYPfXBHB2Tqv4i1wsi9k1idGGmKjPxZCy3accGq3yoMtDby5x
+	Xl7Tz9koEvtpsT8bjlHS371dfodK1u2pgWsulUpRipglpCoOcQtt6SrkQhJuB7I+
+	UNu3/rv2qICdkdFkHA58gAajI9BndG+pvezklPqAtokcJjdJw5OXg9nFvKZtqYGC
+	KkhjWG6EmA/mhfiOHI1y/iRBBYs6BPFvtYDvWzTSnrxSpS2RFHvYezM5bFWTqPGp
+	QmdNqQR8zlPLk3HtdKOA==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v3v3381f5-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 20 Dec 2023 08:02:01 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BK820xp001528
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 20 Dec 2023 08:02:00 GMT
+Received: from [10.216.36.155] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 20 Dec
+ 2023 00:01:55 -0800
+Message-ID: <08013b9f-f259-459d-a5ce-269fb78ecf7a@quicinc.com>
+Date: Wed, 20 Dec 2023 13:31:52 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 01/34] media: introduce common helpers for video
+ firmware handling
+Content-Language: en-US
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Bryan O'Donoghue
+	<bryan.odonoghue@linaro.org>
+CC: <linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <stanimir.k.varbanov@gmail.com>, <quic_vgarodia@quicinc.com>,
+        <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <mchehab@kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <quic_abhinavk@quicinc.com>
+References: <1702899149-21321-1-git-send-email-quic_dikshita@quicinc.com>
+ <1702899149-21321-2-git-send-email-quic_dikshita@quicinc.com>
+ <e08f54cb-5b28-497b-9484-b691dce0acff@linaro.org>
+ <CAA8EJpojYFRcO32wXc9B5Q1D1oSMbx3GP1d9qdtppar39-2=Qw@mail.gmail.com>
+From: Dikshita Agarwal <quic_dikshita@quicinc.com>
+In-Reply-To: <CAA8EJpojYFRcO32wXc9B5Q1D1oSMbx3GP1d9qdtppar39-2=Qw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: DZv1BZGDm9-M2heHH_-G5BMtESA_DwTT
+X-Proofpoint-GUID: DZv1BZGDm9-M2heHH_-G5BMtESA_DwTT
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 spamscore=0
+ mlxscore=0 malwarescore=0 mlxlogscore=999 clxscore=1015 priorityscore=1501
+ adultscore=0 suspectscore=0 lowpriorityscore=0 bulkscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2311290000
+ definitions=main-2312200054
 
-Since [0] got merged, it's clear that 'pp_ref_count' is used to track
-the number of users for each page. On struct page_pool though we have
-a member called 'frag_users'. Despite of what the name suggests this is
-not the number of users. It instead represents the number of fragments of
-the current page. When we split the page this is set to the actual number
-of frags and later used in page_pool_drain_frag() to infer the real number
-of users.
 
-So let's rename it to something that matches the description above
 
-[0]
-Link: https://lore.kernel.org/netdev/20231212044614.42733-2-liangchen.linux@gmail.com/
-Signed-off-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
----
-Changes since v1:
-- rename to pagecnt_bias instead of frag_cnt to match the mm subsystem
-- rebase on top of -main
- include/net/page_pool/types.h | 2 +-
- net/core/page_pool.c          | 8 ++++----
- 2 files changed, 5 insertions(+), 5 deletions(-)
+On 12/19/2023 6:56 PM, Dmitry Baryshkov wrote:
+> On Tue, 19 Dec 2023 at 13:40, Bryan O'Donoghue
+> <bryan.odonoghue@linaro.org> wrote:
+>>
+>> On 18/12/2023 11:31, Dikshita Agarwal wrote:
+>>> Re-organize the video driver code by introducing a new folder
+>>> 'vcodec' and placing 'venus' driver code inside that.
+>>>
+>>> Introduce common helpers for trustzone based firmware
+>>> load/unload etc. which are placed in common folder
+>>> i.e. 'vcodec'.
+>>> Use these helpers in 'venus' driver. These helpers will be
+>>> used by 'iris' driver as well which is introduced later
+>>> in this patch series.
+>>>
+>>> Signed-off-by: Dikshita Agarwal <quic_dikshita@quicinc.com>
+>>> ---
+>>
+>> This is a very large patch, I think it needs to be broken up into
+>> smaller chunks.
+>>
+>> #1 Introduce common helper functions
+>> #2 Use common helper functions
+> 
+> This will make it harder to review. It's usually preferred to have a
+> single 'move' patch instead of two (add + remove). But I definitely
+> agree that the size of the patch is big. Somewhat it is related to the
+> fact that this doesn't only introduce helpers, but also reshuffles the
+> rest of the code.
+> 
+Thanking along the same lines as Dmitry's, we wanted to show the usage of
+these common helpers in iris driver as well, hence we added these patches
+as part of this series.
+I can send these patches 1-3 as separate series and mark the dependency of
+iris series to that if you would prefer that way.
 
-diff --git a/include/net/page_pool/types.h b/include/net/page_pool/types.h
-index 76481c465375..d47491ba973d 100644
---- a/include/net/page_pool/types.h
-+++ b/include/net/page_pool/types.h
-@@ -130,7 +130,7 @@ struct page_pool {
-
- 	bool has_init_callback;
-
--	long frag_users;
-+	long pagecnt_bias;
- 	struct page *frag_page;
- 	unsigned int frag_offset;
- 	u32 pages_state_hold_cnt;
-diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-index 4933762e5a6b..0e64d6b8e748 100644
---- a/net/core/page_pool.c
-+++ b/net/core/page_pool.c
-@@ -760,7 +760,7 @@ EXPORT_SYMBOL(page_pool_put_page_bulk);
- static struct page *page_pool_drain_frag(struct page_pool *pool,
- 					 struct page *page)
- {
--	long drain_count = BIAS_MAX - pool->frag_users;
-+	long drain_count = BIAS_MAX - pool->pagecnt_bias;
-
- 	/* Some user is still using the page frag */
- 	if (likely(page_pool_unref_page(page, drain_count)))
-@@ -779,7 +779,7 @@ static struct page *page_pool_drain_frag(struct page_pool *pool,
-
- static void page_pool_free_frag(struct page_pool *pool)
- {
--	long drain_count = BIAS_MAX - pool->frag_users;
-+	long drain_count = BIAS_MAX - pool->pagecnt_bias;
- 	struct page *page = pool->frag_page;
-
- 	pool->frag_page = NULL;
-@@ -821,14 +821,14 @@ struct page *page_pool_alloc_frag(struct page_pool *pool,
- 		pool->frag_page = page;
-
- frag_reset:
--		pool->frag_users = 1;
-+		pool->pagecnt_bias = 1;
- 		*offset = 0;
- 		pool->frag_offset = size;
- 		page_pool_fragment_page(page, BIAS_MAX);
- 		return page;
- 	}
-
--	pool->frag_users++;
-+	pool->pagecnt_bias++;
- 	pool->frag_offset = *offset + size;
- 	alloc_stat_inc(pool, fast);
- 	return page;
---
-2.37.2
-
+Also, as mentioned in comments in previous patches, to make the common
+helper code generic, moving just the code from venus to vcodec was not
+sufficient and more changes were needed in calling functions of venus as well.
+>>
+>> Its alot of code to try to eat in the one go.
+>>
+>> Could you consider making patches 1-3 a standalone series to reduce the
+>> amount of code to review here ?
+> 
+> This sounds like a good idea.
+> >>
+>> * 77e7025529d7c - (HEAD -> linux-stable-master-23-12-18-iris-v2) media:
+>> iris: add power management for encoder (21 hours ago)
+>>
+>> * ceb6a6f023fd3 - (tag: v6.7-rc6, linux-stable/master) Linux 6.7-rc6 (2
+>> days ago)
+>>
+>> git diff ceb6a6f023fd3 | wc -l
+>>
+>> 21243
+>>
+>> Also I feel it wouild give more time for the changes to "digest" though
+>> upstream users and to find any unintended bugs.
+>>
+>>> +int load_fw(struct device *dev, const char *fw_name, phys_addr_t *mem_phys,
+>>> +         size_t *mem_size, u32 pas_id, bool use_tz)
+>>> +{
+>>> +     const struct firmware *firmware = NULL;
+>>> +     struct reserved_mem *rmem;
+>>> +     struct device_node *node;
+>>> +     void *mem_virt = NULL;
+>>> +     ssize_t fw_size = 0;
+>>> +     int ret;
+>>> +
+>>> +     if (!IS_ENABLED(CONFIG_QCOM_MDT_LOADER) ||
+>>> +         (use_tz && !qcom_scm_is_available()))
+>>> +             return -EPROBE_DEFER;
+>>> +
+>>> +     if (!fw_name || !(*fw_name))
+>>> +             return -EINVAL;
+>>
+>> The parameter check should come before the qcom_scm_is_available()
+>>
+>> No matter how many times you -EPROBE_DEFER -EINVAL is still -EINVAL.
+>>
+Sure, will check and do the needful.
+>>> +
+>>> +     *mem_phys = 0;
+>>> +     *mem_size = 0;
+>>
+>> I don't think you need this, you don't appear to use these variables
+>> before you assign them below.
+>>
+That's true, will fix.
+>>
+>>> +
+>>> +     *mem_phys = rmem->base;
+>>> +     *mem_size = rmem->size;
+>>
+>>> +
+>>> +int auth_reset_fw(u32 pas_id)
+>>> +{
+>>> +     return qcom_scm_pas_auth_and_reset(pas_id);
+>>> +}
+>>> +
+>>> +void unload_fw(u32 pas_id)
+>>> +{
+>>> +     qcom_scm_pas_shutdown(pas_id);
+>>> +}
+>>> +
+>>
+>> Do these wrapper functions add anything ? Some kind of validity check on
+>> the pas_id otherwise I'm not sure these are justified.
+>>
+>>> +int set_hw_state(bool resume)
+>>> +{
+>>> +     return qcom_scm_set_remote_state(resume, 0);
+>>> +}
+Will check more on this and do required changes.
+>>> diff --git a/drivers/media/platform/qcom/vcodec/firmware.h b/drivers/media/platform/qcom/vcodec/firmware.h
+>>> new file mode 100644
+>>> index 0000000..7d410a8
+>>> --- /dev/null
+>>
+>> ---
+>> bod
+>>
+>>
+> 
+> 
 
