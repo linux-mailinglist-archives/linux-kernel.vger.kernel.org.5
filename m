@@ -1,173 +1,159 @@
-Return-Path: <linux-kernel+bounces-7418-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7419-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECEE981A7B3
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 21:37:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7EAFC81A7B4
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 21:37:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A8BE428666F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 20:37:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3CBBF285352
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 20:37:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 101624A9A8;
-	Wed, 20 Dec 2023 20:36:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1AD01DDD4;
+	Wed, 20 Dec 2023 20:36:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EgjBIk3E"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cQ6zqdZV"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+Received: from mail-ua1-f52.google.com (mail-ua1-f52.google.com [209.85.222.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7B6548CF4;
-	Wed, 20 Dec 2023 20:36:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD9601DA35
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 20:36:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-40c48d7a7a7so698505e9.3;
-        Wed, 20 Dec 2023 12:36:15 -0800 (PST)
+Received: by mail-ua1-f52.google.com with SMTP id a1e0cc1a2514c-7cc0f5bcb4fso25599241.1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 12:36:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703104574; x=1703709374; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yT4onLSCJnRO5OsDAsoEnYosn/gTLA+uZJCYGELgzHg=;
-        b=EgjBIk3EGX1vIK//UQixsKSQqlfL9c8wTIc07xiTB0xgbiAnI83CDBl4rrdQbOL70W
-         AwkhexIUP/i5nZOOqtPO2tCYjZMbGTcV1E0rhCWNBkLFe6wc8jhAfdMjz57idBHY60oo
-         b4Nr8DBq9fMT4cH8ILd+cWuCt4nZnKYzmGopy02l9UsZpz9Y79IuCvbUaKgCtKJa2VYl
-         ZyOHh3vdnMqP6lsYDJx1e0tX7IxyEuzxuJTxRy4rChdEUJD7zLl6UfXUSN2++poH1L2L
-         go20SpDqZBRVYAODSMCW/bWClEWmHCc+p23Q1M/whjbwk8EBDXca+j8FuuJeHRJU5zXk
-         rlEQ==
+        d=gmail.com; s=20230601; t=1703104590; x=1703709390; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
+         :to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=sUVV3nvmIFREJ94/uU3gKA9j+xl55+CVV1feR0augDU=;
+        b=cQ6zqdZV4e4fPxaGkejkFzKz6TwyE9J8QlM3mVe6xjPDOzuQ9xJ6Jy7Srk1VvHtJdd
+         bn20Eq9ZtdOt2M+IE2Ds4eNqpewS2NgyLiO+YPt7xqbR46lIi5cNS54kLUUztWMNxMjp
+         nqyQsvKXFa+G87Xn3l2ZZWpp2w1Rv7zB19rhOzTOyvXDWypGGMCOQPbYW/+V5VoaQ83Q
+         0oIDHXbUbDnwLyCnMY7DPsIWWPR4SRn4cSqQCcmcijO6BuaRPdK7LvxrMw9ctDTNzC2K
+         vPiHeNqfcxyaHsygvyOoQUAyck5IYs7shvxiNxxuBeSJPdwbIYdn3b080jWmQP1wlIhq
+         lh8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703104574; x=1703709374;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yT4onLSCJnRO5OsDAsoEnYosn/gTLA+uZJCYGELgzHg=;
-        b=jbw7Da6jf310kEtoD7OWQ3dVyn/FOqrh2dP4lFrs4+EQ8KHOadAKo/ZFqqTCcfEJej
-         8tbMR58E/4N+3xdY41saq5btmr3lQvyEir5vPUUwtqOaSt1XwBM9rV//5oC2y4BWEd0Y
-         4vSI/p7UoOya+gNdJzObDdOoJYrTrjdnnJm78mlAIrbjpVuB17DrLNZ0l2vzkgDwgHlu
-         yZ2zkcRy97DD/Stm8dRy8rXqqnUpWIsILfOIOVNWpuPAoJPKGFIyHlPe+lZuUA8NnLUD
-         PSPK6KsPjTK4edozPaIgJ6ANETzpFAg4vWjhwr4H6pzryJj8Z/VMCZLJLWLjiyDRzOPG
-         ZkeA==
-X-Gm-Message-State: AOJu0YxAkiTnt0tdxdTj8R3NFn+r61C8EhxKE0RUhaouhTntQpEW0ziZ
-	4O9kgObUGlSwvPYSKBt4Zto=
-X-Google-Smtp-Source: AGHT+IEtwDmn2IbaAJwe9giXx+3hvOdMNOXDyWm03ZJR089ngNLl2e5wGYDa27uVUhlHEo6c4G1Paw==
-X-Received: by 2002:a05:600c:524f:b0:40c:2822:958f with SMTP id fc15-20020a05600c524f00b0040c2822958fmr127184wmb.73.1703104574143;
-        Wed, 20 Dec 2023 12:36:14 -0800 (PST)
-Received: from localhost.localdomain (82-149-12-148.dynamic.telemach.net. [82.149.12.148])
-        by smtp.gmail.com with ESMTPSA id v14-20020a05600c444e00b0040c58e410a3sm8703224wmn.14.2023.12.20.12.36.12
+        d=1e100.net; s=20230601; t=1703104590; x=1703709390;
+        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
+         :to:from:date:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=sUVV3nvmIFREJ94/uU3gKA9j+xl55+CVV1feR0augDU=;
+        b=MWhCGhA6CbodTvUd2vA62FPb5S0pLtwa1hENfT1iujfogabQ6yubcnEJGEQoHzVA+y
+         hpgqUDhCzTccvANpOW7j/Y4vuhAWN/28wXhJCwVUrLb9lgrmCaosPkleUe69qHCRBUHN
+         0I20yW0Cz5AzUi3PuolLdkEhBOnTVx7OVRiNfosHTiMG/qypUUpt7ueruGb0mGQM8AWY
+         YJ41KnjFG4Rq+LGHVpjT/0ql/pXrq0WSObHVxlT3QoWgpwYdynWNBdgKo0qGc5nS4AWy
+         ATetaxhdf2lKbCog4uyvWmZxv7ZsqL0mbTeTIzL7Yp/6kPg89+Tt+QToBQd07PCGz6It
+         Q3vw==
+X-Gm-Message-State: AOJu0YwpfQ2JQRw2PjiylKTyvEjPIPbTDuvSWGNV5O/RMXe+V5DllcW+
+	V6x5bC8YqgLyYJowfLHvQjA=
+X-Google-Smtp-Source: AGHT+IGlkuEIgtq/nlBc2/TpOgKhmmQQ7kSmxneFHS8SKf3JrvH1xOo8t3EsXoRMjo6Ovw5SmTJ9Fg==
+X-Received: by 2002:a05:6102:c93:b0:464:92e8:5db1 with SMTP id f19-20020a0561020c9300b0046492e85db1mr323216vst.9.1703104590555;
+        Wed, 20 Dec 2023 12:36:30 -0800 (PST)
+Received: from errol.ini.cmu.edu ([72.95.245.133])
+        by smtp.gmail.com with ESMTPSA id k15-20020ac8478f000000b004240481cee0sm182102qtq.58.2023.12.20.12.36.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Dec 2023 12:36:13 -0800 (PST)
-From: Jernej Skrabec <jernej.skrabec@gmail.com>
-To: robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org,
-	wens@csie.org,
-	samuel@sholland.org,
-	andrew@lunn.ch,
-	hkallweit1@gmail.com,
-	linux@armlinux.org.uk,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com
-Cc: devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-sunxi@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org,
-	Jernej Skrabec <jernej.skrabec@gmail.com>
-Subject: [PATCH v5 3/3] arm64: dts: allwinner: orange-pi-one-plus: Fix ethernet
-Date: Wed, 20 Dec 2023 21:35:37 +0100
-Message-ID: <20231220203537.83479-4-jernej.skrabec@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231220203537.83479-1-jernej.skrabec@gmail.com>
-References: <20231220203537.83479-1-jernej.skrabec@gmail.com>
+        Wed, 20 Dec 2023 12:36:30 -0800 (PST)
+Date: Wed, 20 Dec 2023 15:36:28 -0500
+From: "Gabriel L. Somlo" <gsomlo@gmail.com>
+To: arnd@arndb.de
+Cc: jdelvare@suse.de, kgugala@antmicro.com, mholenko@antmicro.com,
+	joel@jms.id.au, linux-kernel@vger.kernel.org, soc@kernel.org
+Subject: Re: [PATCH] drivers/soc/litex: drop obsolete dependency on
+ COMPILE_TEST
+Message-ID: <ZYNQTLzKBLW29nUS@errol.ini.cmu.edu>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221124161618.34ca07b3@endymion.delvare>
+X-Clacks-Overhead: GNU Terry Pratchett
 
-Orange Pi One Plus has two regulators that power the Realtek RTL8211E
-PHY. According to the datasheet, both regulators need to be enabled
-at the same time, or that "phy-io" should be enabled slightly earlier
-than "ephy" regulator.
+On Thu, 24 Nov 2022 at 16:16:18 +0100, Jean Delvare wrote:
+> Since commit 0166dc11be91 ("of: make CONFIG_OF user selectable"), it
+> is possible to test-build any driver which depends on OF on any
+> architecture by explicitly selecting OF. Therefore depending on
+> COMPILE_TEST as an alternative is no longer needed.
+> 
+> It is actually better to always build such drivers with OF enabled,
+> so that the test builds are closer to how each driver will actually be
+> built on its intended target. Building them without OF may not test
+> much as the compiler will optimize out potentially large parts of the
+> code. In the worst case, this could even pop false positive warnings.
+> Dropping COMPILE_TEST here improves the quality of our testing and
+> avoids wasting time on non-existent issues.
+> 
+> As a minor optimization, this also lets us drop of_match_ptr() and
+> ifdef-guarding, as we now know what they will resolve to, we might as
+> well save cpp some work.
+> 
+> Signed-off-by: Jean Delvare <jdelvare@suse.de>
+> Cc: Karol Gugala <kgugala@antmicro.com>
+> Cc: Mateusz Holenko <mholenko@antmicro.com>
+> Cc: Gabriel Somlo <gsomlo@gmail.com>
+> Cc: Joel Stanley <joel@jms.id.au>
 
-RTL8211E/RTL8211EG datasheet says:
+Reviewed-by: Gabriel Somlo <gsomlo@gmail.com>
 
-  Note 4: 2.5V (or 1.8/1.5V) RGMII power should be risen simultaneously
-  or slightly earlier than 3.3V power. Rising 2.5V (or 1.8/1.5V) power
-  later than 3.3V power may lead to errors.
+Arnd: since it's been a while (sorry about that), please advise on
+whether Jean should re-send the original patch, unless you can grab
+it directly from here and pull it through the soc tree:
+https://lore.kernel.org/lkml/20221125142756.3e51a28d@endymion.delvare/
 
-Original submission ignored these rules, so it works in some cases but
-not all. On top of that, regulator voltages don't reflect actual ones
-in hardware. Rework ethernet and PHY nodes to properly reflect HW.
+Thanks much,
+--Gabriel
 
-Fixes: 7ee32a17e0d6 ("arm64: dts: allwinner: h6: orangepi-one-plus: Enable ethernet")
-Signed-off-by: Jernej Skrabec <jernej.skrabec@gmail.com>
----
- .../allwinner/sun50i-h6-orangepi-one-plus.dts | 29 ++++++++++++++-----
- 1 file changed, 22 insertions(+), 7 deletions(-)
-
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi-one-plus.dts b/arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi-one-plus.dts
-index 29a081e72a9b..9c76eecaacce 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi-one-plus.dts
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi-one-plus.dts
-@@ -12,15 +12,15 @@ aliases {
- 		ethernet0 = &emac;
- 	};
- 
--	reg_gmac_3v3: gmac-3v3 {
-+	reg_gmac_2v5: gmac-2v5 {
- 		compatible = "regulator-fixed";
--		regulator-name = "vcc-gmac-3v3";
--		regulator-min-microvolt = <3300000>;
--		regulator-max-microvolt = <3300000>;
--		startup-delay-us = <100000>;
-+		regulator-name = "gmac-2v5";
-+		regulator-min-microvolt = <2500000>;
-+		regulator-max-microvolt = <2500000>;
- 		enable-active-high;
- 		gpio = <&pio 3 6 GPIO_ACTIVE_HIGH>; /* PD6 */
--		vin-supply = <&reg_aldo2>;
-+		off-on-delay-us = <100000>;
-+		vin-supply = <&reg_vcc5v>;
- 	};
- };
- 
-@@ -29,7 +29,6 @@ &emac {
- 	pinctrl-0 = <&ext_rgmii_pins>;
- 	phy-mode = "rgmii-id";
- 	phy-handle = <&ext_rgmii_phy>;
--	phy-supply = <&reg_gmac_3v3>;
- 	allwinner,rx-delay-ps = <200>;
- 	allwinner,tx-delay-ps = <200>;
- 	status = "okay";
-@@ -39,5 +38,21 @@ &mdio {
- 	ext_rgmii_phy: ethernet-phy@1 {
- 		compatible = "ethernet-phy-ieee802.3-c22";
- 		reg = <1>;
-+		/*
-+		 * The board uses 2.5V RGMII signalling. Power sequence to enable
-+		 * the phy is to enable GMAC-2V5 and GMAC-3V (aldo2) power rails
-+		 * at the same time and to wait 100ms. The driver enables phy-io
-+		 * first. Delay is achieved with enable-ramp-delay on reg_aldo2.
-+		 */
-+		phy-io-supply = <&reg_gmac_2v5>;
-+		ephy-supply = <&reg_aldo2>;
-+
-+		reset-gpios = <&pio 3 14 GPIO_ACTIVE_LOW>; /* PD14 */
-+		reset-assert-us = <15000>;
-+		reset-deassert-us = <40000>;
- 	};
- };
-+
-+&reg_aldo2 {
-+	regulator-enable-ramp-delay = <100000>;
-+};
--- 
-2.43.0
-
+> ---
+>  drivers/soc/litex/Kconfig          |    2 +-
+>  drivers/soc/litex/litex_soc_ctrl.c |    4 +---
+>  2 files changed, 2 insertions(+), 4 deletions(-)
+> 
+> --- linux-6.0.orig/drivers/soc/litex/Kconfig
+> +++ linux-6.0/drivers/soc/litex/Kconfig
+> @@ -7,7 +7,7 @@ config LITEX
+>  
+>  config LITEX_SOC_CONTROLLER
+>  	tristate "Enable LiteX SoC Controller driver"
+> -	depends on OF || COMPILE_TEST
+> +	depends on OF
+>  	depends on HAS_IOMEM
+>  	select LITEX
+>  	help
+> --- linux-6.0.orig/drivers/soc/litex/litex_soc_ctrl.c
+> +++ linux-6.0/drivers/soc/litex/litex_soc_ctrl.c
+> @@ -82,13 +82,11 @@ static int litex_reset_handler(struct no
+>  	return NOTIFY_DONE;
+>  }
+>  
+> -#ifdef CONFIG_OF
+>  static const struct of_device_id litex_soc_ctrl_of_match[] = {
+>  	{.compatible = "litex,soc-controller"},
+>  	{},
+>  };
+>  MODULE_DEVICE_TABLE(of, litex_soc_ctrl_of_match);
+> -#endif /* CONFIG_OF */
+>  
+>  static int litex_soc_ctrl_probe(struct platform_device *pdev)
+>  {
+> @@ -131,7 +129,7 @@ static int litex_soc_ctrl_remove(struct
+>  static struct platform_driver litex_soc_ctrl_driver = {
+>  	.driver = {
+>  		.name = "litex-soc-controller",
+> -		.of_match_table = of_match_ptr(litex_soc_ctrl_of_match)
+> +		.of_match_table = litex_soc_ctrl_of_match,
+>  	},
+>  	.probe = litex_soc_ctrl_probe,
+>  	.remove = litex_soc_ctrl_remove,
+> 
+> 
+> -- 
+> Jean Delvare
+> SUSE L3 Support
+> 
 
