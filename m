@@ -1,130 +1,154 @@
-Return-Path: <linux-kernel+bounces-6982-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6980-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 63C7C81A00D
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 14:44:21 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C543C81A009
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 14:44:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 20EAB287E1A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 13:44:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 65F94B216A0
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 13:44:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C1BB36B0E;
-	Wed, 20 Dec 2023 13:43:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C0F138DE0;
+	Wed, 20 Dec 2023 13:43:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GYTxO7tC"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EB7538DDF;
-	Wed, 20 Dec 2023 13:43:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.194])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4SwFBn673FzsSWt;
-	Wed, 20 Dec 2023 21:43:29 +0800 (CST)
-Received: from dggpeml500021.china.huawei.com (unknown [7.185.36.21])
-	by mail.maildlp.com (Postfix) with ESMTPS id 149001402DE;
-	Wed, 20 Dec 2023 21:43:47 +0800 (CST)
-Received: from [10.174.177.174] (10.174.177.174) by
- dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 20 Dec 2023 21:43:46 +0800
-Message-ID: <253f741f-7ec8-1adb-1efe-a93d33ec6e12@huawei.com>
-Date: Wed, 20 Dec 2023 21:43:46 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8904B38DD4
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 13:43:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 53AEEC433C7;
+	Wed, 20 Dec 2023 13:43:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703079834;
+	bh=QMljrOv897FmsVWy5N1Xz1hinrz7EiFYEPnIJAs7QUk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=GYTxO7tCPod+y4rqctr2YHQpxphABVWY/4y3FiRw1JNEEv9Dan5eWkIViHB2JPSaG
+	 Dacl3Sbn3Q4HjTXCmizka1qqIj/bkNLFWROf49sEF/uEPpHC21Z34tehaxEPdSIVdB
+	 rwH4WthiRs3UBfVvqnRM/d0yTHuWZanyIWsZXeb/fdGFGZrusA1L4ukUnzUoXXm/0e
+	 EvZQj/pXAJ1+EH1V/qfhSfvDR+LmCsQN9sSNuvAe0eWzoE/cmIEyiHkoYU+gUhSlfJ
+	 oHxoX62pQIgCBmdaZSuI2QHWewuRVS6Gli+AWVXu6gqIfdlHGd4YKRVn6izE81kRm5
+	 xAaEboEdJlS9w==
+Date: Wed, 20 Dec 2023 14:43:51 +0100
+From: Frederic Weisbecker <frederic@kernel.org>
+To: Anna-Maria Behnsen <anna-maria@linutronix.de>
+Cc: linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+	John Stultz <jstultz@google.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Eric Dumazet <edumazet@google.com>,
+	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+	Arjan van de Ven <arjan@infradead.org>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
+	Rik van Riel <riel@surriel.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Sebastian Siewior <bigeasy@linutronix.de>,
+	Giovanni Gherdovich <ggherdovich@suse.cz>,
+	Lukasz Luba <lukasz.luba@arm.com>,
+	"Gautham R . Shenoy" <gautham.shenoy@amd.com>,
+	Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
+	K Prateek Nayak <kprateek.nayak@amd.com>
+Subject: Re: [PATCH v9 05/32] tracing/timers: Add tracepoint for tracking
+ timer base is_idle flag
+Message-ID: <ZYLvl06i0zIZfclG@localhost.localdomain>
+References: <20231201092654.34614-1-anna-maria@linutronix.de>
+ <20231201092654.34614-6-anna-maria@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.2
-Subject: Re: [PATCH 4/4] ext4: avoid dividing by 0 in
- mb_update_avg_fragment_size() when block bitmap corrupt
-Content-Language: en-US
-To: Jan Kara <jack@suse.cz>
-CC: <linux-ext4@vger.kernel.org>, <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
-	<ritesh.list@gmail.com>, <linux-kernel@vger.kernel.org>,
-	<yi.zhang@huawei.com>, <yangerkun@huawei.com>, <yukuai3@huawei.com>,
-	<stable@vger.kernel.org>, Baokun Li <libaokun1@huawei.com>
-References: <20231218141814.1477338-1-libaokun1@huawei.com>
- <20231218141814.1477338-5-libaokun1@huawei.com>
- <20231218144342.2we3j2dtyedulfga@quack3>
- <20231218150905.llu5tgjgen4nxthq@quack3>
- <9db31834-cbd3-c60a-3048-ef57143d8e55@huawei.com>
-From: Baokun Li <libaokun1@huawei.com>
-In-Reply-To: <9db31834-cbd3-c60a-3048-ef57143d8e55@huawei.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml500021.china.huawei.com (7.185.36.21)
+In-Reply-To: <20231201092654.34614-6-anna-maria@linutronix.de>
 
-On 2023/12/19 16:02, Baokun Li wrote:
-> On 2023/12/18 23:09, Jan Kara wrote:
->> On Mon 18-12-23 15:43:42, Jan Kara wrote:
->>> On Mon 18-12-23 22:18:14, Baokun Li wrote:
->>>> When bb_free is not 0 but bb_fragments is 0, return directly to avoid
->>>> system crash due to division by zero.
->>> How could this possibly happen? bb_fragments is the number of free 
->>> space
->>> extents and bb_free is the number of free blocks. No free space 
->>> extents =>
->>> no free blocks seems pretty obvious? You can see the logic in
->>> ext4_mb_generate_buddy()...
->> Oh, I see. This is probably about "bitmap corrupted case". But still 
->> both
->> allocation and freeing of blocks shouldn't operate on bitmaps marked as
->> corrupted so this should not happen?
->>
->>                                 Honza
-> Yes, we should make sure that we don't allocate or free blocks in
-> groups where the block bitmap has been marked as corrupt, but
-> there are still some issues here:
->
-> 1. When a block bitmap is found to be corrupted, ext4_grp_locked_error()
-> is always called first, and only after that the block bitmap of the group
-> is marked as corrupted. In ext4_grp_locked_error(), the group may
-> be unlocked, and then other processes may be able to access the
-> corrupted bitmap. In this case, we can just put the marking of
-> corruption before ext4_grp_locked_error().
->
-> 2. ext4_free_blocks() finds a corrupt bitmap can just return and do
-> nothing, because there is no problem with not freeing an exception
-> block. But mb_mark_used() has no logic for determining if a block
-> bitmap is corrupt, and its caller has no error handling logic, so
-> mb_mark_used() needs its caller to make sure that it doesn't allocate
-> blocks in a group with a corrupted block bitmap (which is why it
-> added the judgment in patch 2). However, it is possible to unlock group
-> between determining whether the group is corrupt and actually calling
-> mb_mark_used() to use those blocks. For example, when calling
-> mb_mark_used() in ext4_mb_try_best_found(), we are determining
-> whether the group's block bitmap is corrupted or not in the previous
-> ext4_mb_good_group(), but we are not determining it again when using
-> the blocks in ext4_mb_try_best_found(), at which point we may be
-> modifying the corrupted block bitmap.
->
-> 3. Determine if a block bitmap is corrupted outside of a group lock
-> in ext4_mb_find_by_goal().
->
-> 4. In ext4_mb_check_limits(), it may be possible to use the ac_b_ex
-> found in group 0 while holding a lock in group 1.
+Le Fri, Dec 01, 2023 at 10:26:27AM +0100, Anna-Maria Behnsen a �crit :
+> When debugging timer code the timer tracepoints are very important. There
+> is no tracepoint when the is_idle flag of the timer base changes. Instead
+> of always adding manually trace_printk(), add tracepoints which can be
+> easily enabled whenever required.
+> 
+> Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
 
-I'm very sorry that the fourth point was wrong, I read "||" as "&&" in
-ext4_mb_check_limits() ：
+Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 
-  if (finish_group || ac->ac_found > sbi->s_mb_min_to_scan)
+Just a detail below, again this can be posted as a delta patch or
+edited before applying:
 
->
-> In addition to the above, there may be some corner cases that cause
-> inconsistencies, so here we determine if bb_fragments is 0 to avoid a
-> crash due to division by zero. Perhaps we could just replace
-> grp->bb_free == 0 with grp->bb_fragments == 0, which wouldn't look
-> so strange.
+> ---
+> v9: New in v9
+> ---
+>  include/trace/events/timer.h | 20 ++++++++++++++++++++
+>  kernel/time/timer.c          |  2 ++
+>  2 files changed, 22 insertions(+)
+> 
+> diff --git a/include/trace/events/timer.h b/include/trace/events/timer.h
+> index 99ada928d445..1ef58a04fc57 100644
+> --- a/include/trace/events/timer.h
+> +++ b/include/trace/events/timer.h
+> @@ -142,6 +142,26 @@ DEFINE_EVENT(timer_class, timer_cancel,
+>  	TP_ARGS(timer)
+>  );
+>  
+> +TRACE_EVENT(timer_base_idle,
+> +
+> +	TP_PROTO(bool is_idle, unsigned int cpu),
+> +
+> +	TP_ARGS(is_idle, cpu),
+> +
+> +	TP_STRUCT__entry(
+> +		__field( bool,		is_idle	)
+> +		__field( unsigned int,	cpu	)
+> +	),
+> +
+> +	TP_fast_assign(
+> +		__entry->is_idle	= is_idle;
+> +		__entry->cpu		= cpu;
+> +	),
+> +
+> +	TP_printk("is_idle=%d cpu=%d",
+> +		  __entry->is_idle, __entry->cpu)
+> +);
+> +
+>  #define decode_clockid(type)						\
+>  	__print_symbolic(type,						\
+>  		{ CLOCK_REALTIME,	"CLOCK_REALTIME"	},	\
+> diff --git a/kernel/time/timer.c b/kernel/time/timer.c
+> index a81d793a43d0..46a9b96a3976 100644
+> --- a/kernel/time/timer.c
+> +++ b/kernel/time/timer.c
+> @@ -1964,6 +1964,7 @@ u64 get_next_timer_interrupt(unsigned long basej, u64 basem)
+>  		if ((expires - basem) > TICK_NSEC)
+>  			base->is_idle = true;
+>  	}
+> +	trace_timer_base_idle(base->is_idle, base->cpu);
 
-Thanks!
--- 
-With Best Regards,
-Baokun Li
-.
+This will trigger a trace everytime we loop into idle or remotely
+compute the next timer. Can we move that to when base->is_idle is set
+from false to true only?
+
+>  	raw_spin_unlock(&base->lock);
+>  
+>  	return cmp_next_hrtimer_event(basem, expires);
+> @@ -1985,6 +1986,7 @@ void timer_clear_idle(void)
+>  	 * the lock in the exit from idle path.
+>  	 */
+>  	base->is_idle = false;
+> +	trace_timer_base_idle(0, smp_processor_id());
+
+Same here. If base->is_idle was already false, you could spare a noisy
+trace.
+
+Thanks.
+
+>  }
+>  #endif
+>  
+> -- 
+> 2.39.2
+> 
 
