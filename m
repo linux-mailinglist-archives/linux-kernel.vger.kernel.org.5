@@ -1,721 +1,178 @@
-Return-Path: <linux-kernel+bounces-6554-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6555-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E24E1819A4A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 09:17:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A55E819A4D
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 09:18:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9AC0E285DB9
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 08:17:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9AF6F1F26069
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 08:18:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60CE91EB5D;
-	Wed, 20 Dec 2023 08:17:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B19FA19BCD;
+	Wed, 20 Dec 2023 08:18:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="wF2rzoCU"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="jcW6hNgJ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 506521EA74
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 08:17:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-553e36acfbaso3051a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 00:17:30 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78BC118E3C
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 08:18:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-40c31f18274so68311825e9.0
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 00:18:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1703060248; x=1703665048; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8vOAyyVEVpa8qMFppzgoViL2yb2XDpzbKQHbzqyHCMU=;
-        b=wF2rzoCUZlwec3XUfzEYbCUOeabbMheH+3t4cSNNsh4JLoqz9q7hvbDdshDtyrubJd
-         hpcvcOhxp56ZJOlIslMVtIwP1PrRO31kxTZS0QiA7k2jENKpS60IQdA9NXabjrng+YrQ
-         /fGLucrxh5Si1GspVaUf7jAV3zHgQU4uRLSfw3JPqAP/AoZ38J56SLqYnu9SQlyFDT7B
-         JDQRtKPVWkk1tepFlmlQzEnFPgyxJ2wy1tfBhBEpuNSkr8x4cwlBEK9fk3LHqFeoILfO
-         JIPVaXkwkoMw5EsLLv+cGbvWYzbWRhZTA/kFhsu9BiRgeYn8pHRxyxTdOnUJOzdI2M+k
-         yK4w==
+        d=linaro.org; s=google; t=1703060312; x=1703665112; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=KFx+4cYYZZyuj/TbSksWbQ0odlf5Gkpf1BfzDhsfY78=;
+        b=jcW6hNgJstaBH053IBKs5Ikp64c3qoDl8gH2APe4VmcQAjBU6u3d6WmIMapKQS4bbh
+         HZ4xtOX6XEB/tIyfmzJTjwtmW4HO3j7YwjBbT6Oms36X+XLyKu9QqOigaO3R/12BpjYj
+         4ZV5IYYgk/+hMEhHK5knhaklz/fikLKyaL15hmNQiDxIgzemO4lGUAJM6Ho0Uo1Wm2Eu
+         3REPwU/7yHJOML5/I1+R3GZOFkuSOzNXLCGJe74YjEPbAeM4CxBXmus7Ia1naYuVPT5y
+         PI4fMIf8WL199cg7cwVgyLGQTu8jxFSuissBWQnf4DfGPBLggGLv7jQK6tcWd9U0rhR0
+         em6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703060248; x=1703665048;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8vOAyyVEVpa8qMFppzgoViL2yb2XDpzbKQHbzqyHCMU=;
-        b=lUSpRD/5b/BI8o/09z/3s49pdYJCxMr247OF1I4rXJbKNZzksrnDPiXcJb+i3EDSIG
-         hg5SZyCOTcE6D+1sPTZwb3qoWdOOVn24pkP/z5DlQkORbnlXES2QDJifBOzd0akeT+LP
-         n++6lLMv7Oqo8ttqQI+fIjjfuy5LuBUUYiUKm4TE7EwJJLDnL+xfYn9ttao4xDpPsmDH
-         GflfYpmslO7WRGsrHChrr6qHzp/P7xF9zcoGTrjOHyFzUhc4M9li0nhPXEBaY4kOoKSU
-         IKYgl6QVPU9JLF/qAUcK+3Z/9F5IC1wEv6mubsJoSk+gWWXqKo6vx9b2CElE12lb43Kg
-         x3zg==
-X-Gm-Message-State: AOJu0Yx3SRfmEAxZFHr2CVMXCAB21aKGufs2q2KnPl9KkEVePFSCxUj0
-	5MElJXxpyfKL9V+cguj/9MjZ7fg1Fi2yrv/2XTYZahiN/lBK
-X-Google-Smtp-Source: AGHT+IGKtdFQzbgDzPUbfX03yfqoakmjSeUDS0e/kJKOd2KPA5FZY3iY/jtu2tiazin6/FpacDPtzjhrDYu7A7VxFAA=
-X-Received: by 2002:a05:6402:3106:b0:553:ee95:2b4f with SMTP id
- dc6-20020a056402310600b00553ee952b4fmr22213edb.3.1703060248223; Wed, 20 Dec
- 2023 00:17:28 -0800 (PST)
+        d=1e100.net; s=20230601; t=1703060312; x=1703665112;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=KFx+4cYYZZyuj/TbSksWbQ0odlf5Gkpf1BfzDhsfY78=;
+        b=aXkTfpE/kc9OJl/BduCw7EuPNgQ0EFu8pQ6tmQS4TDzJdhHQ7HiwQ7xEISFxbyZ+l3
+         HD+kElRZBEW1ki3rTYg/xmiebzAzcnL4ipzl+0QIyhb5pdkCPqUfNASsBvn8KHPzl9bd
+         gNrJbje5fcDp7G+gQ4pnTB+t2ny0uIspofRpP8SFS0cbfDnqykVSwECIzZK9FiAB1i5T
+         RMuZQb3wrES9BPkQ0AjhbqEEJv7AkNOvqxSamEmNlo94mMrkQfvhgtyqvHZ39ukg60DO
+         fDmo9eMn+c0eVuQ7Agtqumt377sWwpSE+KWyDIVNTtrMFvqvf1oyIXIAO2trAKo89zLz
+         7FmQ==
+X-Gm-Message-State: AOJu0Yz5FEAXboyeiAPCZM9F3Tez9tyFATOeGlCI4J9xopOq4pfgMBrl
+	lV02CwRmNeW9JQXQ3/IEgH/rfw==
+X-Google-Smtp-Source: AGHT+IHEvKhppihFZH+YMFsL92asJI8U5hrxVQXJ29aNTXCAtYMicV20O0jJERUSuLv9+WBXoV7lHg==
+X-Received: by 2002:a05:600c:219a:b0:40c:20d9:f003 with SMTP id e26-20020a05600c219a00b0040c20d9f003mr9060358wme.242.1703060311708;
+        Wed, 20 Dec 2023 00:18:31 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id f17-20020a05600c4e9100b0040c310abc4bsm6237316wmq.43.2023.12.20.00.18.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Dec 2023 00:18:30 -0800 (PST)
+Message-ID: <5be15b6f-ac6e-4cab-bd83-ef3fa50e1886@linaro.org>
+Date: Wed, 20 Dec 2023 09:18:28 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231208061407.2125867-1-yuzhao@google.com> <CAMgjq7BTaV5OvHNjGRVJP2VDxj+PXhfd6957CjS4BJ9J4OY8HA@mail.gmail.com>
- <CAOUHufYwZAUaJh6i8Fazc4gVMSqcsz9JbRNpj0cpx2qR+bZBFw@mail.gmail.com>
- <CAMgjq7AtceR-CXnKFfQHM3qi0y4oGyJ4_sw_uh5EkpXCBzkCXg@mail.gmail.com>
- <CAMgjq7CJ3hYHysyRfHzYU4hOYqhUOttxMYGtg0FxzM_wvvyhFA@mail.gmail.com>
- <CAOUHufa=ybd-EPos9DryLHYyhphN0P7qyV5NY3Pui0dfVSk9tQ@mail.gmail.com>
- <ZXpx0K8Vdo3FJixg@google.com> <CAMgjq7CRf4iEKuW2qWKzbhssMbixBo3UoLPqsSk4b+Tvw8at8A@mail.gmail.com>
- <CAOUHufY6x_Erz02Bzoejfs_g2hcmrMFpiOdjiaWZ97oirz71aQ@mail.gmail.com>
- <ZXvcgyjTu92Qqk5X@google.com> <CAMgjq7BsY1tJeOZwSppxUN7Lha-_a7WLfhv1_bxTuU4EuiQyVg@mail.gmail.com>
- <CAOUHufZFkdDjCdQKBV5+W_bp_7x5VwrwkYbJeDdQ19S=m4Mc6A@mail.gmail.com>
- <CAOUHufbRq8WsGzNRn119GqL5AmeSOkZxQv3L2LTaCm=k3bzrRA@mail.gmail.com>
- <CAMgjq7C8uUOz5i8rEHNCs37fdEiAuMZsuV+Ktnz3TMX9Nf8F+g@mail.gmail.com> <CAOUHufamzdOL8ByV9V7KQJKnvZBMboVz-EGD=Fus7LZk1inhCw@mail.gmail.com>
-In-Reply-To: <CAOUHufamzdOL8ByV9V7KQJKnvZBMboVz-EGD=Fus7LZk1inhCw@mail.gmail.com>
-From: Yu Zhao <yuzhao@google.com>
-Date: Wed, 20 Dec 2023 01:16:50 -0700
-Message-ID: <CAOUHufaWkAvQK_fmXF5WZW4ZKQ0W4UZfjWDG+OZAxgF_J0dOuA@mail.gmail.com>
-Subject: Re: [PATCH mm-unstable v1 1/4] mm/mglru: fix underprotected page cache
-To: Kairui Song <ryncsn@gmail.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, Charan Teja Kalla <quic_charante@quicinc.com>, 
-	Kalesh Singh <kaleshsingh@google.com>, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] dt-bindings: firmware: xilinx: Describe missing child
+ nodes
+Content-Language: en-US
+To: Michal Simek <michal.simek@amd.com>, linux-kernel@vger.kernel.org,
+ monstr@monstr.eu, michal.simek@xilinx.com, git@xilinx.com
+Cc: Conor Dooley <conor+dt@kernel.org>, Guenter Roeck <linux@roeck-us.net>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Naman Trivedi Manojbhai <naman.trivedimanojbhai@amd.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ Sebastian Reichel <sebastian.reichel@collabora.com>,
+ Shubhrajyoti Datta <shubhrajyoti.datta@amd.com>, devicetree@vger.kernel.org,
+ kishore Manne <nava.kishore.manne@amd.com>,
+ linux-arm-kernel@lists.infradead.org
+References: <5bb16305a05692de29ee2aa2accc793e23b68dec.1702997680.git.michal.simek@amd.com>
+ <fc7863a2-d3c5-47c8-9484-ef9cd6d7dd5d@linaro.org>
+ <bcc3a802-70cd-425e-bb33-3ced81c038fd@amd.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <bcc3a802-70cd-425e-bb33-3ced81c038fd@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, Dec 19, 2023 at 11:38=E2=80=AFPM Yu Zhao <yuzhao@google.com> wrote:
->
-> On Tue, Dec 19, 2023 at 11:58=E2=80=AFAM Kairui Song <ryncsn@gmail.com> w=
-rote:
-> >
-> > Yu Zhao <yuzhao@google.com> =E4=BA=8E2023=E5=B9=B412=E6=9C=8819=E6=97=
-=A5=E5=91=A8=E4=BA=8C 11:45=E5=86=99=E9=81=93=EF=BC=9A
-> > >
-> > > On Mon, Dec 18, 2023 at 8:21=E2=80=AFPM Yu Zhao <yuzhao@google.com> w=
-rote:
-> > > >
-> > > > On Mon, Dec 18, 2023 at 11:05=E2=80=AFAM Kairui Song <ryncsn@gmail.=
-com> wrote:
-> > > > >
-> > > > > Yu Zhao <yuzhao@google.com> =E4=BA=8E2023=E5=B9=B412=E6=9C=8815=
-=E6=97=A5=E5=91=A8=E4=BA=94 12:56=E5=86=99=E9=81=93=EF=BC=9A
-> > > > > >
-> > > > > > On Thu, Dec 14, 2023 at 04:51:00PM -0700, Yu Zhao wrote:
-> > > > > > > On Thu, Dec 14, 2023 at 11:38=E2=80=AFAM Kairui Song <ryncsn@=
-gmail.com> wrote:
-> > > > > > > >
-> > > > > > > > Yu Zhao <yuzhao@google.com> =E4=BA=8E2023=E5=B9=B412=E6=9C=
-=8814=E6=97=A5=E5=91=A8=E5=9B=9B 11:09=E5=86=99=E9=81=93=EF=BC=9A
-> > > > > > > > > On Wed, Dec 13, 2023 at 12:59:14AM -0700, Yu Zhao wrote:
-> > > > > > > > > > On Tue, Dec 12, 2023 at 8:03=E2=80=AFPM Kairui Song <ry=
-ncsn@gmail.com> wrote:
-> > > > > > > > > > >
-> > > > > > > > > > > Kairui Song <ryncsn@gmail.com> =E4=BA=8E2023=E5=B9=B4=
-12=E6=9C=8812=E6=97=A5=E5=91=A8=E4=BA=8C 14:52=E5=86=99=E9=81=93=EF=BC=9A
-> > > > > > > > > > > >
-> > > > > > > > > > > > Yu Zhao <yuzhao@google.com> =E4=BA=8E2023=E5=B9=B41=
-2=E6=9C=8812=E6=97=A5=E5=91=A8=E4=BA=8C 06:07=E5=86=99=E9=81=93=EF=BC=9A
-> > > > > > > > > > > > >
-> > > > > > > > > > > > > On Fri, Dec 8, 2023 at 1:24=E2=80=AFAM Kairui Son=
-g <ryncsn@gmail.com> wrote:
-> > > > > > > > > > > > > >
-> > > > > > > > > > > > > > Yu Zhao <yuzhao@google.com> =E4=BA=8E2023=E5=B9=
-=B412=E6=9C=888=E6=97=A5=E5=91=A8=E4=BA=94 14:14=E5=86=99=E9=81=93=EF=BC=9A
-> > > > > > > > > > > > > > >
-> > > > > > > > > > > > > > > Unmapped folios accessed through file descrip=
-tors can be
-> > > > > > > > > > > > > > > underprotected. Those folios are added to the=
- oldest generation based
-> > > > > > > > > > > > > > > on:
-> > > > > > > > > > > > > > > 1. The fact that they are less costly to recl=
-aim (no need to walk the
-> > > > > > > > > > > > > > >    rmap and flush the TLB) and have less impa=
-ct on performance (don't
-> > > > > > > > > > > > > > >    cause major PFs and can be non-blocking if=
- needed again).
-> > > > > > > > > > > > > > > 2. The observation that they are likely to be=
- single-use. E.g., for
-> > > > > > > > > > > > > > >    client use cases like Android, its apps pa=
-rse configuration files
-> > > > > > > > > > > > > > >    and store the data in heap (anon); for ser=
-ver use cases like MySQL,
-> > > > > > > > > > > > > > >    it reads from InnoDB files and holds the c=
-ached data for tables in
-> > > > > > > > > > > > > > >    buffer pools (anon).
-> > > > > > > > > > > > > > >
-> > > > > > > > > > > > > > > However, the oldest generation can be very sh=
-ort lived, and if so, it
-> > > > > > > > > > > > > > > doesn't provide the PID controller with enoug=
-h time to respond to a
-> > > > > > > > > > > > > > > surge of refaults. (Note that the PID control=
-ler uses weighted
-> > > > > > > > > > > > > > > refaults and those from evicted generations o=
-nly take a half of the
-> > > > > > > > > > > > > > > whole weight.) In other words, for a short li=
-ved generation, the
-> > > > > > > > > > > > > > > moving average smooths out the spike quickly.
-> > > > > > > > > > > > > > >
-> > > > > > > > > > > > > > > To fix the problem:
-> > > > > > > > > > > > > > > 1. For folios that are already on LRU, if the=
-y can be beyond the
-> > > > > > > > > > > > > > >    tracking range of tiers, i.e., five access=
-es through file
-> > > > > > > > > > > > > > >    descriptors, move them to the second oldes=
-t generation to give them
-> > > > > > > > > > > > > > >    more time to age. (Note that tiers are use=
-d by the PID controller
-> > > > > > > > > > > > > > >    to statistically determine whether folios =
-accessed multiple times
-> > > > > > > > > > > > > > >    through file descriptors are worth protect=
-ing.)
-> > > > > > > > > > > > > > > 2. When adding unmapped folios to LRU, adjust=
- the placement of them so
-> > > > > > > > > > > > > > >    that they are not too close to the tail. T=
-he effect of this is
-> > > > > > > > > > > > > > >    similar to the above.
-> > > > > > > > > > > > > > >
-> > > > > > > > > > > > > > > On Android, launching 55 apps sequentially:
-> > > > > > > > > > > > > > >                            Before     After  =
-    Change
-> > > > > > > > > > > > > > >   workingset_refault_anon  25641024   2559897=
-2   0%
-> > > > > > > > > > > > > > >   workingset_refault_file  115016834  1061784=
-38  -8%
-> > > > > > > > > > > > > >
-> > > > > > > > > > > > > > Hi Yu,
-> > > > > > > > > > > > > >
-> > > > > > > > > > > > > > Thanks you for your amazing works on MGLRU.
-> > > > > > > > > > > > > >
-> > > > > > > > > > > > > > I believe this is the similar issue I was tryin=
-g to resolve previously:
-> > > > > > > > > > > > > > https://lwn.net/Articles/945266/
-> > > > > > > > > > > > > > The idea is to use refault distance to decide i=
-f the page should be
-> > > > > > > > > > > > > > place in oldest generation or some other gen, w=
-hich per my test,
-> > > > > > > > > > > > > > worked very well, and we have been using refaul=
-t distance for MGLRU in
-> > > > > > > > > > > > > > multiple workloads.
-> > > > > > > > > > > > > >
-> > > > > > > > > > > > > > There are a few issues left in my previous RFC =
-series, like anon pages
-> > > > > > > > > > > > > > in MGLRU shouldn't be considered, I wanted to c=
-ollect feedback or test
-> > > > > > > > > > > > > > cases, but unfortunately it seems didn't get to=
-o much attention
-> > > > > > > > > > > > > > upstream.
-> > > > > > > > > > > > > >
-> > > > > > > > > > > > > > I think both this patch and my previous series =
-are for solving the
-> > > > > > > > > > > > > > file pages underpertected issue, and I did a qu=
-ick test using this
-> > > > > > > > > > > > > > series, for mongodb test, refault distance seem=
-s still a better
-> > > > > > > > > > > > > > solution (I'm not saying these two optimization=
- are mutually exclusive
-> > > > > > > > > > > > > > though, just they do have some conflicts in imp=
-lementation and solving
-> > > > > > > > > > > > > > similar problem):
-> > > > > > > > > > > > > >
-> > > > > > > > > > > > > > Previous result:
-> > > > > > > > > > > > > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-> > > > > > > > > > > > > > Execution Results after 905 seconds
-> > > > > > > > > > > > > > -----------------------------------------------=
--------------------
-> > > > > > > > > > > > > >                   Executed        Time (=C2=B5s=
-)       Rate
-> > > > > > > > > > > > > >   STOCK_LEVEL     2542            27121571486.2=
-   0.09 txn/s
-> > > > > > > > > > > > > > -----------------------------------------------=
--------------------
-> > > > > > > > > > > > > >   TOTAL           2542            27121571486.2=
-   0.09 txn/s
-> > > > > > > > > > > > > >
-> > > > > > > > > > > > > > This patch:
-> > > > > > > > > > > > > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-> > > > > > > > > > > > > > Execution Results after 900 seconds
-> > > > > > > > > > > > > > -----------------------------------------------=
--------------------
-> > > > > > > > > > > > > >                   Executed        Time (=C2=B5s=
-)       Rate
-> > > > > > > > > > > > > >   STOCK_LEVEL     1594            27061522574.4=
-   0.06 txn/s
-> > > > > > > > > > > > > > -----------------------------------------------=
--------------------
-> > > > > > > > > > > > > >   TOTAL           1594            27061522574.4=
-   0.06 txn/s
-> > > > > > > > > > > > > >
-> > > > > > > > > > > > > > Unpatched version is always around ~500.
-> > > > > > > > > > > > >
-> > > > > > > > > > > > > Thanks for the test results!
-> > > > > > > > > > > > >
-> > > > > > > > > > > > > > I think there are a few points here:
-> > > > > > > > > > > > > > - Refault distance make use of page shadow so i=
-t can better
-> > > > > > > > > > > > > > distinguish evicted pages of different access p=
-attern (re-access
-> > > > > > > > > > > > > > distance).
-> > > > > > > > > > > > > > - Throttled refault distance can help hold part=
- of workingset when
-> > > > > > > > > > > > > > memory is too small to hold the whole workingse=
-t.
-> > > > > > > > > > > > > >
-> > > > > > > > > > > > > > So maybe part of this patch and the bits of pre=
-vious series can be
-> > > > > > > > > > > > > > combined to work better on this issue, how do y=
-ou think?
-> > > > > > > > > > > > >
-> > > > > > > > > > > > > I'll try to find some time this week to look at y=
-our RFC. It'd be a
-> > > > > > > > > > >
-> > > > > > > > > > > Hi Yu,
-> > > > > > > > > > >
-> > > > > > > > > > > I'm working on V4 of the RFC now, which just update s=
-ome comments, and
-> > > > > > > > > > > skip anon page re-activation in refault path for mglr=
-u which was not
-> > > > > > > > > > > very helpful, only some tiny adjustment.
-> > > > > > > > > > > And I found it easier to test with fio, using followi=
-ng test script:
-> > > > > > > > > > >
-> > > > > > > > > > > #!/bin/bash
-> > > > > > > > > > > swapoff -a
-> > > > > > > > > > >
-> > > > > > > > > > > modprobe brd rd_nr=3D1 rd_size=3D16777216
-> > > > > > > > > > > mkfs.ext4 /dev/ram0
-> > > > > > > > > > > mount /dev/ram0 /mnt
-> > > > > > > > > > >
-> > > > > > > > > > > mkdir -p /sys/fs/cgroup/benchmark
-> > > > > > > > > > > cd /sys/fs/cgroup/benchmark
-> > > > > > > > > > >
-> > > > > > > > > > > echo 4G > memory.max
-> > > > > > > > > > > echo $$ > cgroup.procs
-> > > > > > > > > > > echo 3 > /proc/sys/vm/drop_caches
-> > > > > > > > > > >
-> > > > > > > > > > > fio -name=3Dmglru --numjobs=3D12 --directory=3D/mnt -=
--size=3D1024m \
-> > > > > > > > > > >           --buffered=3D1 --ioengine=3Dio_uring --iode=
-pth=3D128 \
-> > > > > > > > > > >           --iodepth_batch_submit=3D32 --iodepth_batch=
-_complete=3D32 \
-> > > > > > > > > > >           --rw=3Drandread --random_distribution=3Dzip=
-f:0.5 --norandommap \
-> > > > > > > > > > >           --time_based --ramp_time=3D5m --runtime=3D5=
-m --group_reporting
-> > > > > > > > > > >
-> > > > > > > > > > > zipf:0.5 is used here to simulate a cached read with =
-slight bias
-> > > > > > > > > > > towards certain pages.
-> > > > > > > > > > > Unpatched 6.7-rc4:
-> > > > > > > > > > > Run status group 0 (all jobs):
-> > > > > > > > > > >    READ: bw=3D6548MiB/s (6866MB/s), 6548MiB/s-6548MiB=
-/s
-> > > > > > > > > > > (6866MB/s-6866MB/s), io=3D1918GiB (2060GB), run=3D300=
-001-300001msec
-> > > > > > > > > > >
-> > > > > > > > > > > Patched with RFC v4:
-> > > > > > > > > > > Run status group 0 (all jobs):
-> > > > > > > > > > >    READ: bw=3D7270MiB/s (7623MB/s), 7270MiB/s-7270MiB=
-/s
-> > > > > > > > > > > (7623MB/s-7623MB/s), io=3D2130GiB (2287GB), run=3D300=
-001-300001msec
-> > > > > > > > > > >
-> > > > > > > > > > > Patched with this series:
-> > > > > > > > > > > Run status group 0 (all jobs):
-> > > > > > > > > > >    READ: bw=3D7098MiB/s (7442MB/s), 7098MiB/s-7098MiB=
-/s
-> > > > > > > > > > > (7442MB/s-7442MB/s), io=3D2079GiB (2233GB), run=3D300=
-002-300002msec
-> > > > > > > > > > >
-> > > > > > > > > > > MGLRU off:
-> > > > > > > > > > > Run status group 0 (all jobs):
-> > > > > > > > > > >    READ: bw=3D6525MiB/s (6842MB/s), 6525MiB/s-6525MiB=
-/s
-> > > > > > > > > > > (6842MB/s-6842MB/s), io=3D1912GiB (2052GB), run=3D300=
-002-300002msec
-> > > > > > > > > > >
-> > > > > > > > > > > - If I change zipf:0.5 to random:
-> > > > > > > > > > > Unpatched 6.7-rc4:
-> > > > > > > > > > > Patched with this series:
-> > > > > > > > > > > Run status group 0 (all jobs):
-> > > > > > > > > > >    READ: bw=3D5975MiB/s (6265MB/s), 5975MiB/s-5975MiB=
-/s
-> > > > > > > > > > > (6265MB/s-6265MB/s), io=3D1750GiB (1879GB), run=3D300=
-002-300002msec
-> > > > > > > > > > >
-> > > > > > > > > > > Patched with RFC v4:
-> > > > > > > > > > > Run status group 0 (all jobs):
-> > > > > > > > > > >    READ: bw=3D5987MiB/s (6278MB/s), 5987MiB/s-5987MiB=
-/s
-> > > > > > > > > > > (6278MB/s-6278MB/s), io=3D1754GiB (1883GB), run=3D300=
-001-300001msec
-> > > > > > > > > > >
-> > > > > > > > > > > Patched with this series:
-> > > > > > > > > > > Run status group 0 (all jobs):
-> > > > > > > > > > >    READ: bw=3D5839MiB/s (6123MB/s), 5839MiB/s-5839MiB=
-/s
-> > > > > > > > > > > (6123MB/s-6123MB/s), io=3D1711GiB (1837GB), run=3D300=
-001-300001msec
-> > > > > > > > > > >
-> > > > > > > > > > > MGLRU off:
-> > > > > > > > > > > Run status group 0 (all jobs):
-> > > > > > > > > > >    READ: bw=3D5689MiB/s (5965MB/s), 5689MiB/s-5689MiB=
-/s
-> > > > > > > > > > > (5965MB/s-5965MB/s), io=3D1667GiB (1790GB), run=3D300=
-003-300003msec
-> > > > > > > > > > >
-> > > > > > > > > > > fio uses ramdisk so LRU accuracy will have smaller im=
-pact. The Mongodb
-> > > > > > > > > > > test I provided before uses a SATA SSD so it will hav=
-e a much higher
-> > > > > > > > > > > impact. I'll provides a script to setup the test case=
- and run it, it's
-> > > > > > > > > > > more complex to setup than fio since involving settin=
-g up multiple
-> > > > > > > > > > > replicas and auth and hundreds of GB of test fixtures=
-, I'm currently
-> > > > > > > > > > > occupied by some other tasks but will try best to sen=
-d them out as
-> > > > > > > > > > > soon as possible.
-> > > > > > > > > >
-> > > > > > > > > > Thanks! Apparently your RFC did show better IOPS with b=
-oth access
-> > > > > > > > > > patterns, which was a surprise to me because it had hig=
-her refaults
-> > > > > > > > > > and usually higher refautls result in worse performance=
-.
-> > > > > >
-> > > > > > And thanks for providing the refaults I requested for -- your d=
-ata
-> > > > > > below confirms what I mentioned above:
-> > > > > >
-> > > > > > For fio:
-> > > > > >                            Your RFC   This series   Change
-> > > > > >   workingset_refault_file  628192729  596790506     -5%
-> > > > > >   IOPS                     1862k      1830k         -2%
-> > > > > >
-> > > > > > For MongoDB:
-> > > > > >                            Your RFC   This series   Change
-> > > > > >   workingset_refault_anon  10512      35277         +30%
-> > > > > >   workingset_refault_file  22751782   20335355      -11%
-> > > > > >   total                    22762294   20370632      -11%
-> > > > > >   TPS                      0.09       0.06          -33%
-> > > > > >
-> > > > > > For MongoDB, this series should be a big win (but apparently it=
-'s not),
-> > > > > > especially when using zram, since an anon refault should be a l=
-ot
-> > > > > > cheaper than a file refault.
-> > > > > >
-> > > > > > So, I'm baffled...
-> > > > > >
-> > > > > > One important detail I forgot to mention: based on your data fr=
-om
-> > > > > > lru_gen_full, I think there is another difference between our K=
-configs:
-> > > > > >
-> > > > > >                   Your Kconfig  My Kconfig  Max possible
-> > > > > >   LRU_REFS_WIDTH  1             2           2
-> > > > >
-> > > > > Hi Yu,
-> > > > >
-> > > > > Thanks for the info, my fault, I forgot to update my config as I =
-was
-> > > > > testing some other features.
-> > > > > Buf after I changed LRU_REFS_WIDTH to 2 by disabling IDLE_PAGE, t=
-hing
-> > > > > got much worse for MongoDB test:
-> > > > >
-> > > > > With LRU_REFS_WIDTH =3D=3D 2:
-> > > > >
-> > > > > This patch:
-> > > > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > > > > Execution Results after 919 seconds
-> > > > > -----------------------------------------------------------------=
--
-> > > > >                   Executed        Time (=C2=B5s)       Rate
-> > > > >   STOCK_LEVEL     488             27598136201.9   0.02 txn/s
-> > > > > -----------------------------------------------------------------=
--
-> > > > >   TOTAL           488             27598136201.9   0.02 txn/s
-> > > > >
-> > > > > memcg    86 /system.slice/docker-1c3a90be9f0a072f5719332419550cd0=
-e1455f2cd5863bc2780ca4d3f913ece5.scope
-> > > > >  node     0
-> > > > >           1     948187          0x          0x
-> > > > >                      0          0           0           0        =
-   0
-> > > > >          0           0=C2=B7
-> > > > >                      1          0           0           0        =
-   0
-> > > > >          0           0=C2=B7
-> > > > >                      2          0           0           0        =
-   0
-> > > > >          0           0=C2=B7
-> > > > >                      3          0           0           0        =
-   0
-> > > > >          0           0=C2=B7
-> > > > >                                 0           0           0        =
-   0
-> > > > >          0           0=C2=B7
-> > > > >           2     948187          0     6051788=C2=B7
-> > > > >                      0          0r          0e          0p      1=
-1916r
-> > > > >      66442e          0p
-> > > > >                      1          0r          0e          0p       =
- 903r
-> > > > >      16888e          0p
-> > > > >                      2          0r          0e          0p       =
- 459r
-> > > > >       9764e          0p
-> > > > >                      3          0r          0e          0p       =
-   0r
-> > > > >          0e       2874p
-> > > > >                                 0           0           0        =
-   0
-> > > > >          0           0=C2=B7
-> > > > >           3     948187    1353160        6351=C2=B7
-> > > > >                      0          0           0           0        =
-   0
-> > > > >          0           0=C2=B7
-> > > > >                      1          0           0           0        =
-   0
-> > > > >          0           0=C2=B7
-> > > > >                      2          0           0           0        =
-   0
-> > > > >          0           0=C2=B7
-> > > > >                      3          0           0           0        =
-   0
-> > > > >          0           0=C2=B7
-> > > > >                                 0           0           0        =
-   0
-> > > > >          0           0=C2=B7
-> > > > >           4      73045      23573          12=C2=B7
-> > > > >                      0          0R          0T          0     349=
-8607R
-> > > > >    4868605T          0=C2=B7
-> > > > >                      1          0R          0T          0     301=
-2246R
-> > > > >    3270261T          0=C2=B7
-> > > > >                      2          0R          0T          0     249=
-8608R
-> > > > >    2839104T          0=C2=B7
-> > > > >                      3          0R          0T          0        =
-   0R
-> > > > >    1983947T          0=C2=B7
-> > > > >                           1486579L          0O    1380614Y       =
-2945N
-> > > > >       2945F       2734A
-> > > > >
-> > > > > workingset_refault_anon 0
-> > > > > workingset_refault_file 18130598
-> > > > >
-> > > > >               total        used        free      shared  buff/cac=
-he   available
-> > > > > Mem:          31978        6705         312          20       249=
-60       24786
-> > > > > Swap:         31977           4       31973
-> > > > >
-> > > > > RFC:
-> > > > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > > > > Execution Results after 908 seconds
-> > > > > -----------------------------------------------------------------=
--
-> > > > >                   Executed        Time (=C2=B5s)       Rate
-> > > > >   STOCK_LEVEL     2252            27159962888.2   0.08 txn/s
-> > > > > -----------------------------------------------------------------=
--
-> > > > >   TOTAL           2252            27159962888.2   0.08 txn/s
-> > > > >
-> > > > > workingset_refault_anon 22585
-> > > > > workingset_refault_file 22715256
-> > > > >
-> > > > > memcg    66 /system.slice/docker-0989446ff78106e32d3f400a0cf371c9=
-a703281bded86d6d6bb1af706ebb25da.scope
-> > > > >  node     0
-> > > > >          22     563007       2274     1198225=C2=B7
-> > > > >                      0          0r          1e          0p       =
-   0r
-> > > > >     697076e          0p
-> > > > >                      1          0r          0e          0p       =
-   0r
-> > > > >          0e     325661p
-> > > > >                      2          0r          0e          0p       =
-   0r
-> > > > >          0e     888728p
-> > > > >                      3          0r          0e          0p       =
-   0r
-> > > > >          0e    3602238p
-> > > > >                                 0           0           0        =
-   0
-> > > > >          0           0=C2=B7
-> > > > >          23     532222       7525     4948747=C2=B7
-> > > > >                      0          0           0           0        =
-   0
-> > > > >          0           0=C2=B7
-> > > > >                      1          0           0           0        =
-   0
-> > > > >          0           0=C2=B7
-> > > > >                      2          0           0           0        =
-   0
-> > > > >          0           0=C2=B7
-> > > > >                      3          0           0           0        =
-   0
-> > > > >          0           0=C2=B7
-> > > > >                                 0           0           0        =
-   0
-> > > > >          0           0=C2=B7
-> > > > >          24     500367    1214667        3292=C2=B7
-> > > > >                      0          0           0           0        =
-   0
-> > > > >          0           0=C2=B7
-> > > > >                      1          0           0           0        =
-   0
-> > > > >          0           0=C2=B7
-> > > > >                      2          0           0           0        =
-   0
-> > > > >          0           0=C2=B7
-> > > > >                      3          0           0           0        =
-   0
-> > > > >          0           0=C2=B7
-> > > > >                                 0           0           0        =
-   0
-> > > > >          0           0=C2=B7
-> > > > >          25     469692      40797         466=C2=B7
-> > > > >                      0          0R        271T          0        =
-   0R
-> > > > >    1162165T          0=C2=B7
-> > > > >                      1          0R          0T          0      77=
-4028R
-> > > > >    1205332T          0=C2=B7
-> > > > >                      2          0R          0T          0        =
-   0R
-> > > > >     932484T          0=C2=B7
-> > > > >                      3          0R          1T          0        =
-   0R
-> > > > >    4252158T          0=C2=B7
-> > > > >                          25178380L     156515O   23953602Y      5=
-9234N
-> > > > >      49391F      48664A
-> > > > >
-> > > > >               total        used        free      shared  buff/cac=
-he   available
-> > > > > Mem:          31978        6968         338           5       246=
-71       24555
-> > > > > Swap:         31977        1533       30444
-> > > > >
-> > > > > Using same mongodb config (a 3 replica cluster using the same con=
-fig):
-> > > > > {
-> > > > >     "net": {
-> > > > >         "bindIpAll": true,
-> > > > >         "ipv6": false,
-> > > > >         "maxIncomingConnections": 10000,
-> > > > >     },
-> > > > >     "setParameter": {
-> > > > >         "disabledSecureAllocatorDomains": "*"
-> > > > >     },
-> > > > >     "replication": {
-> > > > >         "oplogSizeMB": 10480,
-> > > > >         "replSetName": "issa-tpcc_0"
-> > > > >     },
-> > > > >     "security": {
-> > > > >         "keyFile": "/data/db/keyfile"
-> > > > >     },
-> > > > >     "storage": {
-> > > > >         "dbPath": "/data/db/",
-> > > > >         "syncPeriodSecs": 60,
-> > > > >         "directoryPerDB": true,
-> > > > >         "wiredTiger": {
-> > > > >             "engineConfig": {
-> > > > >                 "cacheSizeGB": 5
-> > > > >             }
-> > > > >         }
-> > > > >     },
-> > > > >     "systemLog": {
-> > > > >         "destination": "file",
-> > > > >         "logAppend": true,
-> > > > >         "logRotate": "rename",
-> > > > >         "path": "/data/db/mongod.log",
-> > > > >         "verbosity": 0
-> > > > >     }
-> > > > > }
-> > > > >
-> > > > > The test environment have 32g memory and 16 core.
-> > > > >
-> > > > > Per my analyze, the access pattern for the mongodb test is that p=
-age
-> > > > > will be re-access long after it's evicted so PID controller won't
-> > > > > protect higher tier. That RFC will make use of the long existing
-> > > > > shadow to do feedback to PID/Gen so the result will be much bette=
-r.
-> > > > > Still need more adjusting though, will try to do a rebase on top =
-of
-> > > > > mm-unstable which includes your patch.
-> > > > >
-> > > > > I've no idea why the workingset_refault_* is higher in the better
-> > > > > case, this a clearly an IO bound workload, Memory and IO is busy =
-while
-> > > > > CPU is not full...
-> > > > >
-> > > > > I've uploaded my local reproducer here:
-> > > > > https://github.com/ryncsn/emm-test-project/tree/master/mongo-clus=
-ter
-> > > > > https://github.com/ryncsn/py-tpcc
-> > > >
-> > > > Thanks for the repos -- I'm trying them right now. Which MongoDB
-> > > > version did you use? setup.sh didn't seem to install it.
-> > > >
-> > > > Also do you have a QEMU image? It'd be a lot easier for me to
-> > > > duplicate the exact environment by looking into it.
-> > >
-> > > I ended up using docker.io/mongodb/mongodb-community-server:latest,
-> > > and it's not working:
-> > >
-> > > # docker exec -it mongo-r1 mongosh --eval \
-> > > '"rs.initiate({
-> > >     _id: "issa-tpcc_0",
-> > >     members: [
-> > >       {_id: 0, host: "mongo-r1"},
-> > >       {_id: 1, host: "mongo-r2"},
-> > >       {_id: 2, host: "mongo-r3"}
-> > >     ]
-> > > })"'
-> > > Emulate Docker CLI using podman. Create /etc/containers/nodocker to q=
-uiet msg.
-> > > Error: can only create exec sessions on running containers: container
-> > > state improper
-> >
-> > Hi Yu,
-> >
-> > I've updated the test repo:
-> > https://github.com/ryncsn/emm-test-project/tree/master/mongo-cluster
-> >
-> > I've tested it on top of latest Fedora Cloud Image 39 and it worked
-> > well for me, the README now contains detailed and not hard to follow
-> > steps to reproduce this test.
->
-> Thanks. I was following the instructions down to the letter and it
-> fell apart again at line 46 (./tpcc.py).
+On 20/12/2023 08:57, Michal Simek wrote:
+> 
+> 
+> On 12/20/23 08:53, Krzysztof Kozlowski wrote:
+>> On 19/12/2023 15:54, Michal Simek wrote:
+>>> Firmware node has more than fpga, aes and clock child nodes but also power,
+>>> reset, gpio, pinctrl and pcap which are not described yet.
+>>> All of them have binding in separate files but there is missing connection
+>>> to firmware node that's why describe it.
+>>>
+>>> Signed-off-by: Michal Simek <michal.simek@amd.com>
+>>> ---
+>>>
+>>>   .../firmware/xilinx/xlnx,zynqmp-firmware.yaml | 31 +++++++++++++++++++
+>>>   1 file changed, 31 insertions(+)
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/firmware/xilinx/xlnx,zynqmp-firmware.yaml b/Documentation/devicetree/bindings/firmware/xilinx/xlnx,zynqmp-firmware.yaml
+>>> index 3d578f98ae2c..0662544f86f0 100644
+>>> --- a/Documentation/devicetree/bindings/firmware/xilinx/xlnx,zynqmp-firmware.yaml
+>>> +++ b/Documentation/devicetree/bindings/firmware/xilinx/xlnx,zynqmp-firmware.yaml
+>>> @@ -53,6 +53,37 @@ properties:
+>>>         vector.
+>>>       type: object
+>>>   
+>>> +  zynqmp-power:
+>>
+>> Can we rename it to "power-management" or if it is a power-domain
+>> provider to "power-controller"? Assuming nothing requires the old name?
+> 
+> I don't think there is any name dependency and node name can be renamed.
+> 
+>>
+>> Also, all these nodes/properties look like not ordered by name, so maybe
+>> it is possible to add new nodes in some order?
+> 
+> I am fine with it. Do you want to sort it before adding new one or add new one 
+> and sort of all them?
 
-I think you just broke it by
-https://github.com/ryncsn/py-tpcc/commit/7b9b380d636cb84faa5b11b5562e531f92=
-4eeb7e
+Maybe the new properties can be added not in one chunk but
+as-ordered-as-possible?
 
-(But it's also possible you actually wanted me to use this latest
-commit but forgot to account for it in your instructions.)
+Best regards,
+Krzysztof
 
-> Were you able to successfully run the benchmark on a fresh VM by
-> following the instructions? If not, I'd appreciate it if you could do
-> so and document all the missing steps.
 
