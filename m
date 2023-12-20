@@ -1,51 +1,51 @@
-Return-Path: <linux-kernel+bounces-6971-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6972-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A640819FF4
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 14:39:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A50C7819FF5
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 14:39:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E5FF11F231A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 13:39:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C91AC1C2268B
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 13:39:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 588743529C;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E428B36B1D;
 	Wed, 20 Dec 2023 13:39:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="bu7KCtlv"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="U5QJ/9Xy"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C3AE34569;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10ECE2D63E;
 	Wed, 20 Dec 2023 13:39:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BKDA8W2031091;
-	Wed, 20 Dec 2023 13:38:33 GMT
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BKDKxUe021583;
+	Wed, 20 Dec 2023 13:38:41 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:mime-version:content-type; s=
-	qcppdkim1; bh=pN4BHUhiNI6+9uqvMcSXwIU07/RDI9wrKIK5K3yeVVA=; b=bu
-	7KCtlv+RgFAZYzpF3hHI45i2DMX/yYJCM8TvgzBgOnx/acrfHPUTevpOgHydC7jL
-	8wNTLi7bSgp0XrdULOS05L6D5MzKpnd/8W1/qEippjRD/OF9r6cGlEZYwjeOvlkA
-	4bMOxV0ZwxGY+Es356HuKmuRAYW4DHU+QczRHtp1U/DDP8LJT8WkLRM8xLV6re7T
-	ntAN6Bnh358YPkoJQxuVkORPpcl4ZGY3qzwN1F+UIqDXA+BVSl5J4LXUuyyQ0vRs
-	XNbZoEKJ+GKLMVfQU3MvH7w6x8dRu71zRpRnErFIRATmy4aQFWQLwalCsOB+4EbT
-	UFXicKv4/6GhF0RX3pfw==
+	from:to:cc:subject:date:message-id:in-reply-to:references
+	:mime-version:content-type; s=qcppdkim1; bh=GoztlXCDEb5vrsVrMC6+
+	E6EshVMmGerVRldyGtTVCto=; b=U5QJ/9Xy7HNPwnf0SyioYid4kkou47WQnpKO
+	joyC2DvOS+a0aSLxgHwM/EjpmxPstCmU6AhX0apc61jVEoacvKVSTP6Ug7XvUVKQ
+	ThebtS98by71I7qBKBlQBZeWaQ2hLQ/W9oU2Fid0UGNQn8kRG9kkZTJc/M5UKUWJ
+	yTqzmTdYPauokXgbbVl+yjJ3AXf4m/89cv5NcgDm9IazHCde+AfV5EJKo6yy0HVU
+	D6eleASyxzVfo4t0hTmw1GBLToGOPtI5HRVQVBw3g5aERAtTr9JRUvVKTqXqLr17
+	UdzEDmB2n4UUeMbrAcqoZm3ZA0YtX4883DTdnuTDzLusn0qjYA==
 Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v3tnw10s4-1
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v37vxuncq-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 20 Dec 2023 13:38:33 +0000 (GMT)
+	Wed, 20 Dec 2023 13:38:41 +0000 (GMT)
 Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BKDcWkS021718
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BKDcect021729
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 20 Dec 2023 13:38:32 GMT
+	Wed, 20 Dec 2023 13:38:40 GMT
 Received: from hu-bibekkum-hyd.qualcomm.com (10.80.80.8) by
  nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Wed, 20 Dec 2023 05:38:26 -0800
+ 15.2.1118.40; Wed, 20 Dec 2023 05:38:33 -0800
 From: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
 To: <will@kernel.org>, <robin.murphy@arm.com>, <joro@8bytes.org>,
         <dmitry.baryshkov@linaro.org>, <konrad.dybcio@linaro.org>,
@@ -59,10 +59,12 @@ CC: <linux-arm-msm@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
         <qipl.kernel.upstream@quicinc.com>,
         Bibek Kumar Patro
 	<quic_bibekkum@quicinc.com>
-Subject: [PATCH v6 0/5] iommu/arm-smmu: introduction of ACTLR implementation for Qualcomm SoCs
-Date: Wed, 20 Dec 2023 19:08:03 +0530
-Message-ID: <20231220133808.5654-1-quic_bibekkum@quicinc.com>
+Subject: [PATCH v6 1/5] iommu/arm-smmu: re-enable context caching in smmu reset operation
+Date: Wed, 20 Dec 2023 19:08:04 +0530
+Message-ID: <20231220133808.5654-2-quic_bibekkum@quicinc.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20231220133808.5654-1-quic_bibekkum@quicinc.com>
+References: <20231220133808.5654-1-quic_bibekkum@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,148 +76,104 @@ X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
  nalasex01c.na.qualcomm.com (10.47.97.35)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: ZaJChor2nKTZJ6wRCweOi9d5ouyxV7fI
-X-Proofpoint-ORIG-GUID: ZaJChor2nKTZJ6wRCweOi9d5ouyxV7fI
+X-Proofpoint-ORIG-GUID: q8nPaJCcW-qxkgte6wjKN-DlrrGxLL7L
+X-Proofpoint-GUID: q8nPaJCcW-qxkgte6wjKN-DlrrGxLL7L
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- spamscore=0 impostorscore=0 suspectscore=0 phishscore=0 bulkscore=0
- clxscore=1015 mlxlogscore=999 lowpriorityscore=0 adultscore=0 mlxscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
+ suspectscore=0 impostorscore=0 lowpriorityscore=0 malwarescore=0
+ bulkscore=0 phishscore=0 spamscore=0 clxscore=1015 mlxscore=0 adultscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.19.0-2311290000 definitions=main-2312200097
 
-This patch series consist of five parts and covers the following:
+Default MMU-500 reset operation disables context caching in
+prefetch buffer. It is however expected for context banks using
+the ACTLR register to retain their prefetch value during reset
+and runtime suspend.
 
-1. Re-enable context caching for Qualcomm SoCs to retain prefetcher
-   settings during reset and runtime suspend.
+Replace default MMU-500 reset operation with Qualcomm specific reset
+operation which envelope the default reset operation and re-enables
+context caching in prefetch buffer for Qualcomm SoCs.
 
-2. Remove cfg inside qcom_smmu structure and replace it with single
-   pointer to qcom_smmu_match_data avoiding replication of multiple
-   members from same.
+Signed-off-by: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+---
+ drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 37 ++++++++++++++++++++--
+ 1 file changed, 34 insertions(+), 3 deletions(-)
 
-3. Introduce intital set of driver changes to implement ACTLR register
-   for custom prefetcher settings in Qualcomm SoCs.
+diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+index 549ae4dba3a6..000e207346af 100644
+--- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
++++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+@@ -14,6 +14,16 @@
 
-4. Add ACTLR data and implementation operations for SM8550.
+ #define QCOM_DUMMY_VAL	-1
 
-5. Add ACTLR data and implementation operations for SC7280.
++/*
++ * SMMU-500 TRM defines BIT(0) as CMTLB (Enable context caching in the
++ * macro TLB) and BIT(1) as CPRE (Enable context caching in the prefetch
++ * buffer). The remaining bits are implementation defined and vary across
++ * SoCs.
++ */
++
++#define CPRE			(1 << 1)
++#define CMTLB			(1 << 0)
++
+ static struct qcom_smmu *to_qcom_smmu(struct arm_smmu_device *smmu)
+ {
+ 	return container_of(smmu, struct qcom_smmu, smmu);
+@@ -376,11 +386,32 @@ static int qcom_smmu_def_domain_type(struct device *dev)
+ 	return match ? IOMMU_DOMAIN_IDENTITY : 0;
+ }
 
-Changes in v6 from v5:
- - Remove extra Suggested-by tags.
- - Add return check for arm_mmu500_reset in 1/5 as discussed.
-Link to v5:
-https://lore.kernel.org/all/20231219135947.1623-1-quic_bibekkum@quicinc.com/
++static int qcom_smmu500_reset(struct arm_smmu_device *smmu)
++{
++	int ret;
++	u32 val;
++	int i;
++
++	ret = arm_mmu500_reset(smmu);
++
++	if (ret)
++		return ret;
++
++	/* arm_mmu500_reset() disables CPRE which is re-enabled here */
++	for (i = 0; i < smmu->num_context_banks; ++i) {
++		val = arm_smmu_cb_read(smmu, i, ARM_SMMU_CB_ACTLR);
++		val |= CPRE;
++		arm_smmu_cb_write(smmu, i, ARM_SMMU_CB_ACTLR, val);
++	}
++
++	return 0;
++}
++
+ static int qcom_sdm845_smmu500_reset(struct arm_smmu_device *smmu)
+ {
+ 	int ret;
 
-Changes in v5 from v4:
- New addition:
- - Modify copyright year in arm-smmu-qcom.h to 2023 from 2022.
- Changes to incorporate suggestions from Dmitry as follows:
- - Modify the defines for prefetch in (foo << bar) format
-   as suggested.(FIELD_PREP could not be used in defines
-   is not inside any block/function)
- Changes to incorporate suggestions from Konrad as follows:
- - Shift context caching enablement patch as 1/5 instead of 5/5 to
-   be picked up as independent patch.
- - Fix the codestyle to orient variables in reverse xmas tree format
-   for patch 1/5.
- - Fix variable name in patch 1/5 as suggested.
- Link to v3:
-https://lore.kernel.org/all/20231215101827.30549-1-quic_bibekkum@quicinc.com/
+-	arm_mmu500_reset(smmu);
++	qcom_smmu500_reset(smmu);
 
-Changes in v4 from v3:
- New addition:
- - Remove actlrcfg_size and use NULL end element instead to traverse
-   the actlr table, as this would be a cleaner approach by removing
-   redundancy of actlrcfg_size.
- - Renaming of actlr set function to arm_smmu_qcom based proprietary
-   convention.
- - break from loop once sid is found and ACTLR value is initialized
-   in qcom_smmu_set_actlr.
- - Modify the GFX prefetch value separating into 2 sensible defines.
- - Modify comments for prefetch defines as per SMMU-500 TRM.
- Changes to incorporate suggestions from Konrad as follows:
- - Use Reverse-Christmas-tree sorting wherever applicable.
- - Pass arguments directly to arm_smmu_set_actlr instead of creating
-   duplicate variables.
- - Use array indexing instead of direct pointer addressed by new
-   addition of eliminating actlrcfg_size.
- - Switch the HEX value's case from upper to lower case in SC7280
-   actlrcfg table.
- Changes to incorporate suggestions from Dmitry as follows:
- - Separate changes not related to ACTLR support to different commit
-   with patch 5/5.
- - Using pointer to struct for arguments in smr_is_subset().
- Changes to incorporate suggestions from Bjorn as follows:
- - fix the commit message for patch 2/5 to properly document the
-   value space to avoid confusion.
- Fixed build issues reported by kernel test robot [1] for
- arm64-allyesconfig [2].
- [1]: https://lore.kernel.org/all/202312011750.Pwca3TWE-lkp@intel.com/
- [2]:
-https://download.01.org/0day-ci/archive/20231201/202312011750.Pwca3TWE-lkp@intel.com/config
- Link to v3:
-https://lore.kernel.org/all/20231127145412.3981-1-quic_bibekkum@quicinc.com/
-
-Changes in v3 from v2:
- New addition:
- - Include patch 3/4 for adding ACTLR support and data for SC7280.
- - Add driver changes for actlr support in gpu smmu.
- - Add target wise actlr data and implementation ops for gpu smmu.
- Changes to incorporate suggestions from Robin as follows:
- - Match the ACTLR values with individual corresponding SID instead
-   of assuming that any SMR will be programmed to match a superset of
-   the data.
- - Instead of replicating each elements from qcom_smmu_match_data to
-   qcom_smmu structre during smmu device creation, replace the
-   replicated members with qcom_smmu_match_data structure inside
-   qcom_smmu structre and handle the dereference in places that
-   requires them.
- Changes to incorporate suggestions from Dmitry and Konrad as follows:
- - Maintain actlr table inside a single structure instead of
-   nested structure.
- - Rename prefetch defines to more appropriately describe their
-   behavior.
- - Remove SM8550 specific implementation ops and roll back to default
-   qcom_smmu_500_impl implementation ops.
- - Add back the removed comments which are NAK.
- - Fix commit description for patch 4/4.
- Link to v2:
-https://lore.kernel.org/all/20231114135654.30475-1-quic_bibekkum@quicinc.com/
-
-Changes in v2 from v1:
- - Incorporated suggestions on v1 from Dmitry,Konrad,Pratyush.
- - Added defines for ACTLR values.
- - Linked sm8550 implementation structure to corresponding
-   compatible string.
- - Repackaged actlr value set implementation to separate function.
- - Fixed indentation errors.
- - Link to v1:
-https://lore.kernel.org/all/20231103215124.1095-1-quic_bibekkum@quicinc.com/
-
-Changes in v1 from RFC:
- - Incorporated suggestion form Robin on RFC
- - Moved the actlr data table into driver, instead of maintaining
-   it inside soc specific DT and piggybacking on exisiting iommus
-   property (iommu = <SID, MASK, ACTLR>) to set this value during
-   smmu probe.
- - Link to RFC:
-https://lore.kernel.org/all/a01e7e60-6ead-4a9e-ba90-22a8a6bbd03f@quicinc.com/
-
-Bibek Kumar Patro (5):
-  iommu/arm-smmu: re-enable context caching in smmu reset operation
-  iommu/arm-smmu: refactor qcom_smmu structure to include single pointer
-  iommu/arm-smmu: introduction of ACTLR for custom prefetcher settings
-  iommu/arm-smmu: add ACTLR data and support for SM8550
-  iommu/arm-smmu: add ACTLR data and support for SC7280
-
- .../iommu/arm/arm-smmu/arm-smmu-qcom-debug.c  |   2 +-
- drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c    | 189 +++++++++++++++++-
- drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h    |   8 +-
- drivers/iommu/arm/arm-smmu/arm-smmu.c         |   5 +-
- drivers/iommu/arm/arm-smmu/arm-smmu.h         |   5 +
- 5 files changed, 199 insertions(+), 10 deletions(-)
-
+ 	/*
+ 	 * To address performance degradation in non-real time clients,
+@@ -407,7 +438,7 @@ static const struct arm_smmu_impl qcom_smmu_500_impl = {
+ 	.init_context = qcom_smmu_init_context,
+ 	.cfg_probe = qcom_smmu_cfg_probe,
+ 	.def_domain_type = qcom_smmu_def_domain_type,
+-	.reset = arm_mmu500_reset,
++	.reset = qcom_smmu500_reset,
+ 	.write_s2cr = qcom_smmu_write_s2cr,
+ 	.tlb_sync = qcom_smmu_tlb_sync,
+ };
+@@ -432,7 +463,7 @@ static const struct arm_smmu_impl qcom_adreno_smmu_v2_impl = {
+ static const struct arm_smmu_impl qcom_adreno_smmu_500_impl = {
+ 	.init_context = qcom_adreno_smmu_init_context,
+ 	.def_domain_type = qcom_smmu_def_domain_type,
+-	.reset = arm_mmu500_reset,
++	.reset = qcom_smmu500_reset,
+ 	.alloc_context_bank = qcom_adreno_smmu_alloc_context_bank,
+ 	.write_sctlr = qcom_adreno_smmu_write_sctlr,
+ 	.tlb_sync = qcom_smmu_tlb_sync,
 --
 2.17.1
 
