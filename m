@@ -1,108 +1,148 @@
-Return-Path: <linux-kernel+bounces-6408-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6409-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F073081987D
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 07:06:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F24F819880
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 07:06:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 93C58B224C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 06:06:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 62E151C256AD
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 06:06:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EC7C1549E;
-	Wed, 20 Dec 2023 06:03:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="AwJHPLXP"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09059168D7;
+	Wed, 20 Dec 2023 06:04:54 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FF6614F7F;
-	Wed, 20 Dec 2023 06:03:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38F3BC433C9;
-	Wed, 20 Dec 2023 06:03:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1703052214;
-	bh=caqI3j25my7HSQ3UGShfhpSfMjHkWvireTit8gq0UK4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=AwJHPLXPF4L2EPRaveASgxrYYMqcYPglna+W1L8pljl4v70ImLPxswEbeJ2mN7oL8
-	 PyZd8U16HYOfVhMCBChGJI6u6CJB9Cg2boGHSgp8AXcEA4W6Qtz7TQ1a4TcxfsoNjT
-	 AnWE+BuJe73snbtGnM8zBJXjgODj79ZI0SbZ9gjM=
-Date: Wed, 20 Dec 2023 07:03:32 +0100
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Nick Desaulniers <ndesaulniers@google.com>
-Cc: Tanzir Hasan <tanzirh@google.com>, Ingo Molnar <mingo@kernel.org>,
-	Kees Cook <keescook@chromium.org>,
-	Andy Shevchenko <andy@kernel.org>, linux-hardening@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Andrew Morton <akpm@linux-foundation.org>, llvm@lists.linux.dev,
-	Al Viro <viro@zeniv.linux.org.uk>,
-	Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH v4 1/2] kernel.h: removed REPEAT_BYTE from kernel.h
-Message-ID: <2023122051-scholar-scribble-26da@gregkh>
-References: <20231219-libstringheader-v4-0-aaeb26495d2f@google.com>
- <20231219-libstringheader-v4-1-aaeb26495d2f@google.com>
- <2023121938-stargazer-purse-0dc1@gregkh>
- <CAE-cH4p-TzH3zyJfmSg3r=fw78j8y-0t0dp-NvaLyVYAMULw1w@mail.gmail.com>
- <2023121928-propose-florist-5898@gregkh>
- <CAKwvOdnW_vZyiO3BE=Vce4OrcX4+pb6QrEFbmeya0Z+w_5d=zw@mail.gmail.com>
+Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F5B51CAA7
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 06:04:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
+X-AuditID: a67dfc5b-d6dff70000001748-9e-658283f89047
+Received: from hymail23.hynixad.com (10.156.135.53) by hymail14.hynixad.com
+ (10.156.135.44) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.2.986.42; Wed, 20 Dec
+ 2023 15:04:40 +0900
+Received: from hymail23.hynixad.com ([10.156.135.53]) by hymail23.hynixad.com
+ ([10.156.135.53]) with mapi id 15.02.0986.042; Wed, 20 Dec 2023 15:04:34
+ +0900
+From: "Hardaway (Shih Hung) Tseng SKHYT" <hardaway.tseng@sk.com>
+To: Keith Busch <kbusch@kernel.org>, =?utf-8?B?SmltIExpbiDmnpflv5fono0=?=
+	<jim.lin@siliconmotion.com>, =?utf-8?B?RGF2aWQgWWVoIOiRieWvsOiejQ==?=
+	<david.yeh@siliconmotion.com>
+CC: Jim.Lin <jim.chihjung.lin@gmail.com>, "axboe@kernel.dk" <axboe@kernel.dk>,
+	"hch@lst.de" <hch@lst.de>, "sagi@grimberg.me" <sagi@grimberg.me>,
+	"linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	=?utf-8?B?Q0ogQ2hlbiDpmbPnvqTlgpE=?= <cj.chen@siliconmotion.com>,
+	=?utf-8?B?7ZWc7IOB7JWIKEhBTiBTQU5HQU4pIOuMgOunjOuyleyduA==?=
+	<sangan.han@sk.com>, "Ives(Hsueh Hsien) Lu SKHYT" <ives.lu@sk.com>
+Subject: RE: [PATCH] nvme-pci: disable write zeroes for SK Hynix BC901
+Thread-Topic: [PATCH] nvme-pci: disable write zeroes for SK Hynix BC901
+Thread-Index: AQHaIabItSYv0AoU6E61/0TaLKTrOLCOdLOAgAHxkXD//3BOAIAAn7AggCFT0YA=
+Date: Wed, 20 Dec 2023 06:04:34 +0000
+Message-ID: <d468b3530c2442fcadd89b5b3bcc665d@sk.com>
+References: <20231128025737.53026-1-jim.lin@siliconmotion.com>
+ <SEYPR01MB4341EFAA7D4B563BFF903B45FDBCA@SEYPR01MB4341.apcprd01.prod.exchangelabs.com>
+ <71aae1b4cb0441d0940a5e536f4ffce0@sk.com>
+ <ZWaBULOgInxbp6JQ@kbusch-mbp.dhcp.thefacebook.com> 
+Accept-Language: zh-TW, en-US, ko-KR
+Content-Language: zh-TW
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKwvOdnW_vZyiO3BE=Vce4OrcX4+pb6QrEFbmeya0Z+w_5d=zw@mail.gmail.com>
+X-CFilter-Loop: Reflected
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrNLMWRmVeSWpSXmKPExsXC9ZZnoe6P5qZUg9eTJS0u75rD5sDo8XmT
+	XABjFJdNSmpOZllqkb5dAldG1+5XrAUPdCq6tz9naWA8o93FyMEhIWAi8fytYRcjJ4eQwGtG
+	iVcPFboYuYDsBYwSi47OYAJJsAk4SDxp38sGkhAR2MgoMfHAB3aQBLPAA2aJvrv6ILawgJvE
+	zxO/GUFsEQF3ica3bcwQtp/EzOVrmECWsQioSjz/wA1i8gqYSlxa5w6x6wejxLMDXWAjGQVU
+	JN4ffs4IMV5c4tzFVrC4hICAxJI955khbFGJl4//sULYChIvXm0FG88soCmxfpc+RKuixJTu
+	h2CtvAKCEidnPmGBKJeUOLjiBssERtFZSDbMQuiehaR7FpLuBYwsqxiFMvPKchMzc0z0Mirz
+	Miv0kvNzNzECo2BZ7Z/oHYyfLgQfYhTgYFTi4T3Q2pgqxJpYVlyZe4hRgoNZSYTXZVF9qhBv
+	SmJlVWpRfnxRaU5q8SFGaQ4WJXFeo2/lKUIC6YklqdmpqQWpRTBZJg5OqQZGZYv55lPWv7HY
+	1GCSLMC7ztSqrydYTcbfd77UeXHlL8baTXuF/q89ccLshcgXntw/d7hWr2VffCDi3LN5fw2N
+	WbYV1R56Xa974+d7yXtrJ9f927/j7aPlb9lPRYUWHnxi2WrgwlhuMfVb30OpktSeSSb5jhyc
+	Gkd+6E45IaCy5Omj2EwhZrd1SizFGYmGWsxFxYkAIcPjCX4CAAA=
 
-On Tue, Dec 19, 2023 at 03:00:22PM -0800, Nick Desaulniers wrote:
-> ---
-> 
-> For Google specific guidance, I'll quote what they have:
-> 
-> > License Headers and Copyright Notices
-> > Googlers should add Google's copyright notice (or a "The Project Authors" style copyright notice) to new files being added to the library if permitted by the project maintainers.
-> 
-> Then the relevant section of 1.Intro.rst:
-> 
-> > Copyright assignments are not required (or requested) for code contributed
-> > to the kernel.
-> 
-> Shall I interpret those together to mean that the "project
-> maintainers" don't permit copyright assignments for "new files being
-> added," and thus Tanzir SHOULD NOT be adding a copyright assignment to
-> the newly created header?
-
-You can add a copyright header, as long as it is the CORRECT copyright
-header.
-
-Look at what this patch did, it attempted to claim that Google now owned
-the copyright on the whole file, when in fact, that is obviously not the
-case as a Google employee did not write the actual code that was added
-to that file.
-
-> Or shall I leave the interpretation up to an explicit discussion with
-> opensource-licensing@google.com?
-
-I think you should talk to them and get their clarification as to when
-copyright headers should be added, AND what they should contain when
-moving code around from other copyrighted files.
-
-> For example, consider include/linux/sysfs.h.  It's 600+ lines long and
-> contains 4 copyright assignments explicitly in sources. If we split
-> that header file in half, which copyright assignments do we transfer
-> to the new half, if any?
-
-That's up to you to figure out, I'm not the one doing the work :)
-
-Perhaps run it by your corporate lawyers to ensure that you get it
-correct with what they think is right first, if you have any questions
-about what to do here, as in the end, they are the ones that will care
-the most, right?
-
-good luck!
-
-greg k-h
+SGkgS2VpdGgsDQoNCkhvcGUgZXZlcnl0aGluZyB5b3UgYXJlIGRvaW5nIGlzIHdlbGwhDQoNClRo
+ZXNlIGRheXMgb3VyIHRlYW1zIHRyaWVkIHNldmVyYWwgd2F5IHRvIGRvIGZ1cnRoZXIgdmVyaWZp
+Y2F0aW9uIG9mIHRoaXMgZGlzYWJsZSB3cml0ZSB6ZXJvIHBhdGNoIGZvciBCQzkwMSwgbGV0IG1l
+IHN1bW1hcml6ZSBhcyBiZWxvdyA6DQoNCjEpCVRoZSBjaHJvbWUgaW1hZ2Ugd2l0aCB0aGlzIG5l
+dyB3cml0ZSB6ZXJvIGRpc2FibGUgY29kZSBidWlsdCB3aXRoIDUuMTUsIGhhcyBiZWVuIHZlcmlm
+aWVkIGFuZCBwYXNzZWQgKDwgMjBtaW4gbW9kZSBzd2l0Y2hpbmcgdGltZSkNCjIpCUR1ZSB0byBz
+b21lIGxpbWl0YXRpb25zLCBHb29nbGUgdGVhbSBjb3VsZG4ndCBidWlsZCBhIG5ldyBjaHJvbWUg
+aW1hZ2Ugd2l0aCB0aGUgc3VnZ2VzdGVkIDYuNSBvciBsYXRlciB2ZXJzaW9uICsgdGhpcyBkaXNh
+YmxlIHdyaXRlIHplcm8gcGF0Y2ggZm9yIHZlcmlmaWNhdGlvbiB0ZXN0Lg0KMykJVHJpZWQgdG8g
+YnVpbGQgaW1hZ2Ugd2l0aCA1LjE1ICsgZGlzYWJsZSB3cml0ZSB6ZXJvIHBhdGNoICsgREVBQyBt
+ZXJnZWQsIHN5c3RlbSBjYW4gcnVuIGJ1dCB0aGUgdGVzdGluZyByZXN1bHQgaXMgZmFpbGVkICg+
+IDIwbWluIG1vZGUgc3dpdGNoaW5nLCBhY3R1YWxseSAyN34yOW1pbnMpLg0KDQpBYm92ZSBpcyBh
+bGwgd2UgY291bGQgZG8gaGVyZSBmb3IgdGhlIHZlcmlmaWNhdGlvbiBvZiB0aGlzIHBhdGNoLCBj
+b3VsZCB5b3Ugc2hhcmUgdXMgeW91ciBjb21tZW50IG9yIHN1Z2dlc3Rpb24/DQoNClRoYW5rIHlv
+dSBzbyBtdWNoIQ0KDQoNClRoYW5rcyAmIFJlZ2FyZHMsDQpIYXJkYXdheS4NCg0KDQpIYXJkYXdh
+eSBUc2VuZy8gU3IuIE1hbmFnZXIgfCBTTi1GQVFFIHwgU0sgaHluaXggU2VtaWNvbmR1Y3RvciBU
+YWl3YW4NCkFkZHJlc3M6IDEwRi4gTm8uIDMwOCwgWmhpZnUgUmQuLCBaaG9uZ3NoYW4gRGlzdC4s
+IFRhaXBlaSBDaXR5IDEwNDY2LCBUYWl3YW4NCk9mZmljZSA6ICs4ODYtMi0zNTE4LTIzMTMvIEZh
+eDogKzg4Ni0yLTM1MTgtMjM2Ni8gTW9iaWxlOiArODg2LTkxOS04MDMtNDU4DQpFbWFpbDogaGFy
+ZGF3YXkudHNlbmdAc2suY29tDQoNClNLIGh5bml4IENvbmZpZGVudGlhbA0K4oCcVGhpcyBlLW1h
+aWwgbWF5IGNvbnRhaW4gY29uZmlkZW50aWFsIGFuZC9vciBwcml2aWxlZ2VkIGluZm9ybWF0aW9u
+LiBJZiB5b3UgYXJlIG5vdCB0aGUgaW50ZW5kZWQgcmVjaXBpZW50KG9yIGhhdmUgcmVjZWl2ZWQg
+dGhpcyBlLW1haWwgaW4gZXJyb3IpLCBwbGVhc2Ugbm90aWZ5IHRoZSBzZW5kZXIgaW1tZWRpYXRl
+bHkgYW5kIGRlc3Ryb3kgdGhpcyBlLW1haWwuIEFueSB1bmF1dGhvcml6ZWQgY29weWluZywgZGlz
+Y2xvc3VyZSBvciBkaXN0cmlidXRpb24gb2YgdGhlIG1hdGVyaWFsIGluIHRoaXMgZS1tYWlsIGlz
+IHN0cmljdGx5IGZvcmJpZGRlbi7igJ0NCg0KDQotLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0K
+RnJvbTogSGFyZGF3YXkgKFNoaWggSHVuZykgVHNlbmcgU0tIWVQgDQpTZW50OiBXZWRuZXNkYXks
+IE5vdmVtYmVyIDI5LCAyMDIzIDExOjUxIEFNDQpUbzogJ0tlaXRoIEJ1c2NoJyA8a2J1c2NoQGtl
+cm5lbC5vcmc+OyBKaW0gTGluIOael+W/l+iejSA8amltLmxpbkBzaWxpY29ubW90aW9uLmNvbT47
+IERhdmlkIFllaCDokYnlr7Dono0gPGRhdmlkLnllaEBzaWxpY29ubW90aW9uLmNvbT4NCkNjOiBK
+aW0uTGluIDxqaW0uY2hpaGp1bmcubGluQGdtYWlsLmNvbT47IGF4Ym9lQGtlcm5lbC5kazsgaGNo
+QGxzdC5kZTsgc2FnaUBncmltYmVyZy5tZTsgbGludXgtbnZtZUBsaXN0cy5pbmZyYWRlYWQub3Jn
+OyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOyBDSiBDaGVuIOmZs+e+pOWCkSA8Y2ouY2hl
+bkBzaWxpY29ubW90aW9uLmNvbT47IO2VnOyDgeyViChIQU4gU0FOR0FOKSDrjIDrp4zrspXsnbgg
+PHNhbmdhbi5oYW5Ac2suY29tPjsgSXZlcyhIc3VlaCBIc2llbikgTHUgU0tIWVQgPGl2ZXMubHVA
+c2suY29tPg0KU3ViamVjdDogUkU6IFtQQVRDSF0gbnZtZS1wY2k6IGRpc2FibGUgd3JpdGUgemVy
+b2VzIGZvciBTSyBIeW5peCBCQzkwMQ0KDQpIaSBLZWl0aCwNCg0KVGhhbmtzIGZvciBoZWFkIHVw
+IENocmlzdG9waCdzIHF1ZXN0aW9ucyENCk91ciB0ZWFtIHdpbGwgaGVscCB1cyB0byBhbnN3ZXIg
+dGhlbS4NCg0KSGkgSmltIGFuZCBEYXZpZCwNClRoYW5rcyBmb3IgeW91ciBzdXBwb3J0IQ0KDQoN
+ClRoYW5rcyAmIFJlZ2FyZHMsDQpIYXJkYXdheS4NCg0KDQpIYXJkYXdheSBUc2VuZy8gU3IuIE1h
+bmFnZXIgfCBTTi1GQVFFIHwgU0sgaHluaXggU2VtaWNvbmR1Y3RvciBUYWl3YW4NCkFkZHJlc3M6
+IDEwRi4gTm8uIDMwOCwgWmhpZnUgUmQuLCBaaG9uZ3NoYW4gRGlzdC4sIFRhaXBlaSBDaXR5IDEw
+NDY2LCBUYWl3YW4gT2ZmaWNlIDogKzg4Ni0yLTM1MTgtMjMxMy8gRmF4OiArODg2LTItMzUxOC0y
+MzY2LyBNb2JpbGU6ICs4ODYtOTE5LTgwMy00NTgNCkVtYWlsOiBoYXJkYXdheS50c2VuZ0Bzay5j
+b20NCg0KU0sgaHluaXggQ29uZmlkZW50aWFsDQrigJxUaGlzIGUtbWFpbCBtYXkgY29udGFpbiBj
+b25maWRlbnRpYWwgYW5kL29yIHByaXZpbGVnZWQgaW5mb3JtYXRpb24uIElmIHlvdSBhcmUgbm90
+IHRoZSBpbnRlbmRlZCByZWNpcGllbnQob3IgaGF2ZSByZWNlaXZlZCB0aGlzIGUtbWFpbCBpbiBl
+cnJvciksIHBsZWFzZSBub3RpZnkgdGhlIHNlbmRlciBpbW1lZGlhdGVseSBhbmQgZGVzdHJveSB0
+aGlzIGUtbWFpbC4gQW55IHVuYXV0aG9yaXplZCBjb3B5aW5nLCBkaXNjbG9zdXJlIG9yIGRpc3Ry
+aWJ1dGlvbiBvZiB0aGUgbWF0ZXJpYWwgaW4gdGhpcyBlLW1haWwgaXMgc3RyaWN0bHkgZm9yYmlk
+ZGVuLuKAnQ0KDQoNCi0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQpGcm9tOiBLZWl0aCBCdXNj
+aCA8a2J1c2NoQGtlcm5lbC5vcmc+DQpTZW50OiBXZWRuZXNkYXksIE5vdmVtYmVyIDI5LCAyMDIz
+IDg6MTAgQU0NClRvOiBIYXJkYXdheSAoU2hpaCBIdW5nKSBUc2VuZyBTS0hZVCA8aGFyZGF3YXku
+dHNlbmdAc2suY29tPg0KQ2M6IEppbSBMaW4g5p6X5b+X6J6NIDxqaW0ubGluQHNpbGljb25tb3Rp
+b24uY29tPjsgSmltLkxpbiA8amltLmNoaWhqdW5nLmxpbkBnbWFpbC5jb20+OyBheGJvZUBrZXJu
+ZWwuZGs7IGhjaEBsc3QuZGU7IHNhZ2lAZ3JpbWJlcmcubWU7IGxpbnV4LW52bWVAbGlzdHMuaW5m
+cmFkZWFkLm9yZzsgbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZzsgQ0ogQ2hlbiDpmbPnvqTl
+gpEgPGNqLmNoZW5Ac2lsaWNvbm1vdGlvbi5jb20+OyBEYXZpZCBZZWgg6JGJ5a+w6J6NIDxkYXZp
+ZC55ZWhAc2lsaWNvbm1vdGlvbi5jb20+OyDtlZzsg4HslYgoSEFOIFNBTkdBTikg64yA66eM67KV
+7J24IDxzYW5nYW4uaGFuQHNrLmNvbT47IEl2ZXMoSHN1ZWggSHNpZW4pIEx1IFNLSFlUIDxpdmVz
+Lmx1QHNrLmNvbT4NClN1YmplY3Q6IFJlOiBbUEFUQ0hdIG52bWUtcGNpOiBkaXNhYmxlIHdyaXRl
+IHplcm9lcyBmb3IgU0sgSHluaXggQkM5MDENCg0KT24gVHVlLCBOb3YgMjgsIDIwMjMgYXQgMTE6
+NTE6NDJQTSArMDAwMCwgaGFyZGF3YXkudHNlbmdAc2suY29tIHdyb3RlOg0KPiBIaSBLZWl0aCwg
+SmltIGFuZCB0ZWFtLA0KPiANCj4gVGhhbmtzIGZvciBlZmZvcnRzIQ0KPiANCj4gVGhpcyBpcyBI
+YXJkYXdheSBmcm9tIFNLIGh5bml4LCB0aGlzIHNvZnR3YXJlIGNoYW5nZSBoYXMgYmVlbiB0ZXN0
+ZWQgYW5kIHZlcmlmaWVkIGJ5IE9ETSBDb21wYWwsIHRoZSB0ZXN0aW5nIHJlc3VsdCBpcyBwYXNz
+LCB0aGVyZWZvcmUsIHdlIHdvdWxkIGxpa2UgdG8gYXBwbHkgdGhpcyB1cGRhdGUuDQoNCkdyZWF0
+LCB0aGFua3MgZm9yIGNvbmZpcm1pbmcuIEkndmUgZ290IHRoaXMgcXVldWVkIHVwIGludGVybmFs
+bHksIGJ1dCB3YW50IHRvIGNoZWNrIGlmIENocmlzdG9waCdzIHF1ZXN0aW9uIGNvdWxkIGxlYWQg
+dG8gYSBiZXR0ZXIgb3V0Y29tZSBmb3IgZXZlcnlvbmUuIEZvciByZWZlcmVuY2UsIGFza2VkIGhl
+cmU6DQoNCiAgaHR0cHM6Ly9saXN0cy5pbmZyYWRlYWQub3JnL3BpcGVybWFpbC9saW51eC1udm1l
+LzIwMjMtTm92ZW1iZXIvMDQzMjk4Lmh0bWwNCg0KSWYgeW91IHdlcmUgYWxyZWFkeSB0ZXN0aW5n
+IGNsb3NlIHRvIHVwc3RyZWFtLCA2LjIgb3IgbmV3ZXIsIHRoZW4gdGhpcyBwYXRjaCBpcyBhbHJl
+YWR5IHRoZSBiZXN0IG9wdGlvbi4NCg==
 
