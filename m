@@ -1,85 +1,115 @@
-Return-Path: <linux-kernel+bounces-6623-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6624-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C59B3819B25
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 10:11:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 307A2819B27
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 10:12:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5F9001F21A78
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 09:11:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 62CE61C2160A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 09:12:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C97931DA40;
-	Wed, 20 Dec 2023 09:10:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E3F11D6BC;
+	Wed, 20 Dec 2023 09:12:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="KB1j5PCo"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="kZKl2bv/"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 009941CAA7
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 09:10:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-54c7744a93fso6738922a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 01:10:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1703063452; x=1703668252; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=+v0fE5jKaNBwKCEajCCubecf7GuVrsOPuUZ1oyddEgM=;
-        b=KB1j5PCoj8rtMhkfOTgxczc/5wZvNLcIbS8KCwp1c2lOJXgVwh/qh3R1zO6BepLyuR
-         BpHfoR8z1EtH5xrpISNroGVOtuvrYtiizOpj9rV/p5JVWd6BT8QIQ6cfe+Zz2XSzuCPp
-         IwYaRU4eosOm5pdDcSd65Vbem1bjOphG4bTLtRbBONArPR8ZEwqx0nU7lNPTozvoB1M+
-         CvAcrSGbZUqAm9Q/OTi6uk0qeg4vU80ogdejzjsZ2D623nGCu9ydxH9NGM5KqkyNEK5B
-         4rUKeYqN9GTlfAHtMQWtI5JwiV/RTlN42z7BnXZZdRposKBqbU+g0nAXJE7tCkobUxek
-         Adow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703063452; x=1703668252;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+v0fE5jKaNBwKCEajCCubecf7GuVrsOPuUZ1oyddEgM=;
-        b=FSmHv+VtD3bo3VOW1m5DPRJmYAET4mkFDwa/94DjEQ0/MLrwbYBTiYcO8oNi2EGvce
-         Yjn9prf9POUdXlUblQk8SouXfduvzO71u6vu1kz7HFYCqCyr7cx5CIK1AE81o/8hogW1
-         TaAWdc+ngkCxdUIW3GH6QSBhf4qNY/X11oqtGK1cPbp0le0XD77r9HxPJApW6LnFnafM
-         +oIe+VmKBctnI/wgafOyWwTQyONpuLh8BHFJr0dnODO4E9kqV2dejix78ZYr/XuqSbAq
-         wrgrcjZrOJFZzNm4P7PvVaXzOzd3wXJnp3l6W/6UGv8Dvm/KM4Pi2JqgwPz7wRzXAw8s
-         jSxw==
-X-Gm-Message-State: AOJu0YxJf/FhRkn5ocQfxMcBxLOc2M3jPyAmoNffTY8SMfpIv1W3HCQR
-	wSWf82kjIdRlDWm6oDThvhKElQ==
-X-Google-Smtp-Source: AGHT+IEqrK2jbaA2i+1nfz5XYzN2BPsY41Nnqro8du+5cvtwVQUNml/czk6hhUD4xs+iR+C+28cY3g==
-X-Received: by 2002:a50:9b5d:0:b0:553:6c38:148a with SMTP id a29-20020a509b5d000000b005536c38148amr2275734edj.39.1703063452203;
-        Wed, 20 Dec 2023 01:10:52 -0800 (PST)
-Received: from localhost ([86.61.181.4])
-        by smtp.gmail.com with ESMTPSA id ij24-20020a056402159800b005529a6a185esm5609114edb.84.2023.12.20.01.10.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Dec 2023 01:10:51 -0800 (PST)
-Date: Wed, 20 Dec 2023 10:10:50 +0100
-From: Jiri Pirko <jiri@resnulli.us>
-To: Sagi Maimon <maimon.sagi@gmail.com>
-Cc: richardcochran@gmail.com, jonathan.lemon@gmail.com, vadfed@fb.com,
-	arkadiusz.kubalewski@intel.com, davem@davemloft.net,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] ptp: ocp: fix bug in unregistering the DPLL subsystem
-Message-ID: <ZYKvmqszs6P4wqim@nanopsycho>
-References: <20231220081914.16779-1-maimon.sagi@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1359E1D6A6
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 09:12:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 45BCFFF803;
+	Wed, 20 Dec 2023 09:12:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1703063562;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3mCR1Dvkv7wQjJFGFcVOYbaNhzlOz828ZxpONDrKsmM=;
+	b=kZKl2bv/JZArh4wgtRB1PTgVMI++06p/qE65ClLqBtmLOgYiGaw6yJMamCd9sQNcly8xAh
+	JgJ2MppHZH36qamAt81YoGAYCg1EBViWzIlOfvnLfW8BhjH8a+zG6FaTFzi2xDrsXS6osZ
+	Au5eHDhwNgnuGdoi6Z7JF5piHSNg0tliX3KHCHzxS4Ke9R4SoXiR8GCR7OOqvLo+ajEbWv
+	fl4bmJBtmWR1+rcJEUPsA4v2uyAejUvZOCNA6hIKM3qsDqoqa9/ocJeWV/33gzmbtrplKG
+	S3b+4kyo70MchMFYwXr/qL0FlRbKpPEoXBqFMzv9JfQ+Gusl9WGO+J5v+fLvaw==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: ZhaoLong Wang <wangzhaolong1@huawei.com>,
+	miquel.raynal@bootlin.com,
+	richard@nod.at,
+	vigneshr@ti.com,
+	dpervushin@embeddedalley.com,
+	Artem.Bityutskiy@nokia.com
+Cc: linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	chengzhihao1@huawei.com,
+	yi.zhang@huawei.com,
+	yangerkun@huawei.com
+Subject: Re: [PATCH V4] mtd: Fix gluebi NULL pointer dereference caused by ftl notifier
+Date: Wed, 20 Dec 2023 10:12:40 +0100
+Message-Id: <20231220091240.655350-1-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231220024619.2138625-1-wangzhaolong1@huawei.com>
+References: 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231220081914.16779-1-maimon.sagi@gmail.com>
+X-linux-mtd-patch-notification: thanks
+X-linux-mtd-patch-commit: b'2fb802a9c52d326d0d9c32962fb701fe0ed3eb39'
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: miquel.raynal@bootlin.com
 
-Wed, Dec 20, 2023 at 09:19:14AM CET, maimon.sagi@gmail.com wrote:
->When unregistering the DPLL subsystem the priv pointer is different then
->the one used for registration which cause failure in unregistering.
->
->Fixes: 09eeb3aecc6c ("ptp_ocp: implement DPLL ops")
+On Wed, 2023-12-20 at 02:46:19 UTC, ZhaoLong Wang wrote:
+> If both ftl.ko and gluebi.ko are loaded, the notifier of ftl
+> triggers NULL pointer dereference when trying to access
+> ‘gluebi->desc’ in gluebi_read().
+> 
+> ubi_gluebi_init
+>   ubi_register_volume_notifier
+>     ubi_enumerate_volumes
+>       ubi_notify_all
+>         gluebi_notify    nb->notifier_call()
+>           gluebi_create
+>             mtd_device_register
+>               mtd_device_parse_register
+>                 add_mtd_device
+>                   blktrans_notify_add   not->add()
+>                     ftl_add_mtd         tr->add_mtd()
+>                       scan_header
+>                         mtd_read
+>                           mtd_read_oob
+>                             mtd_read_oob_std
+>                               gluebi_read   mtd->read()
+>                                 gluebi->desc - NULL
+> 
+> Detailed reproduction information available at the Link [1],
+> 
+> In the normal case, obtain gluebi->desc in the gluebi_get_device(),
+> and access gluebi->desc in the gluebi_read(). However,
+> gluebi_get_device() is not executed in advance in the
+> ftl_add_mtd() process, which leads to NULL pointer dereference.
+> 
+> The solution for the gluebi module is to run jffs2 on the UBI
+> volume without considering working with ftl or mtdblock [2].
+> Therefore, this problem can be avoided by preventing gluebi from
+> creating the mtdblock device after creating mtd partition of the
+> type MTD_UBIVOLUME.
+> 
+> Fixes: 2ba3d76a1e29 ("UBI: make gluebi a separate module")
+> Link: https://bugzilla.kernel.org/show_bug.cgi?id=217992 [1]
+> Link: https://lore.kernel.org/lkml/441107100.23734.1697904580252.JavaMail.zimbra@nod.at/ [2]
+> Signed-off-by: ZhaoLong Wang <wangzhaolong1@huawei.com>
+> Reviewed-by: Zhihao Cheng <chengzhihao1@huawei.com>
+> Acked-by: Richard Weinberger <richard@nod.at>
 
-Reviewed-by: Jiri Pirko <jiri@nvidia.com>
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/next, thanks.
+
+Miquel
 
