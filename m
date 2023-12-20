@@ -1,52 +1,47 @@
-Return-Path: <linux-kernel+bounces-7210-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7211-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4B5C81A338
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 16:55:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E98C081A33B
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 16:55:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 241851C23E90
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 15:55:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 26A651C2206D
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 15:55:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F12E46525;
-	Wed, 20 Dec 2023 15:54:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D590346448;
+	Wed, 20 Dec 2023 15:54:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="B4tzYCzV"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 835C046520;
-	Wed, 20 Dec 2023 15:54:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=gmail.com
-X-IronPort-AV: E=McAfee;i="6600,9927,10930"; a="394718101"
-X-IronPort-AV: E=Sophos;i="6.04,291,1695711600"; 
-   d="scan'208";a="394718101"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Dec 2023 07:54:13 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10930"; a="867014290"
-X-IronPort-AV: E=Sophos;i="6.04,291,1695711600"; 
-   d="scan'208";a="867014290"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by FMSMGA003.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Dec 2023 07:54:11 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andy.shevchenko@gmail.com>)
-	id 1rFytb-00000007aqH-45CW;
-	Wed, 20 Dec 2023 17:54:07 +0200
-Date: Wed, 20 Dec 2023 17:54:07 +0200
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-To: Hugo Villeneuve <hugo@hugovil.com>
-Cc: gregkh@linuxfoundation.org, jirislaby@kernel.org, jringle@gridpoint.com,
-	kubakici@wp.pl, phil@raspberrypi.org, bo.svangard@embeddedart.se,
-	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-	Hugo Villeneuve <hvilleneuve@dimonoff.com>
-Subject: Re: [PATCH 13/18] serial: sc16is7xx: use in_range() for DT
- properties bound checks
-Message-ID: <ZYMOH2VFRJ1npR7L@smile.fi.intel.com>
-References: <20231219171903.3530985-1-hugo@hugovil.com>
- <20231219171903.3530985-14-hugo@hugovil.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DB1B41228;
+	Wed, 20 Dec 2023 15:54:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6ECBC433CA;
+	Wed, 20 Dec 2023 15:54:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703087675;
+	bh=AM5719R9/C4+1es2WOJRGzV9K/BOUfmgbJTp8XrC8WM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=B4tzYCzVwxLds0uOf+/b869Ml9KakXONq4jpLpWWZphICn0aibnLVPDcfij6TVhri
+	 z9dR6PFb+2s7WzGUWfclfpYam7t6B12omxpmLwSAICY5jWIhMa2kHKYokXXHl85+MB
+	 66NRxqsHRK9hyLJ4FacRtHvDsRdXLMRztpaQTjBBuidoxp7UuRjwBYGgcUksYelnjh
+	 nUXJY8pIUO1MH6WE0PrZ7nBWxT0aDKd/+qcWpsy4Oiz1jDESpZNa1WNWVL2X/LRb4v
+	 qmaEw5muVLjFprGiPrfVEmUEm/dlhaBC3cUlKEWqlpAH+tK005w+Gi00cTKaBgl1iu
+	 6yOFo1THa/Wiw==
+Received: (nullmailer pid 278038 invoked by uid 1000);
+	Wed, 20 Dec 2023 15:54:32 -0000
+Date: Wed, 20 Dec 2023 09:54:32 -0600
+From: Rob Herring <robh@kernel.org>
+To: Frank Li <Frank.Li@nxp.com>
+Cc: linux-arm-kernel@lists.infradead.org, s.hauer@pengutronix.de, bhelgaas@google.com, kw@linux.com, linux-pci@vger.kernel.org, conor+dt@kernel.org, krzysztof.kozlowski@linaro.org, lpieralisi@kernel.org, devicetree@vger.kernel.org, festevam@gmail.com, imx@lists.linux.dev, manivannan.sadhasivam@linaro.org, krzysztof.kozlowski+dt@linaro.org, helgaas@kernel.org, l.stach@pengutronix.de, linux-kernel@vger.kernel.org, shawnguo@kernel.org, linux-imx@nxp.com, Frank.li@nxp.com, hongxing.zhu@nxp.com, kernel@pengutronix.de
+Subject: Re: [PATCH v4 09/15] dt-bindings: imx6q-pcie: remove reg and reg-name
+Message-ID: <170308767228.277985.15603263470608919081.robh@kernel.org>
+References: <20231217051210.754832-1-Frank.Li@nxp.com>
+ <20231217051210.754832-10-Frank.Li@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -55,28 +50,24 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231219171903.3530985-14-hugo@hugovil.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20231217051210.754832-10-Frank.Li@nxp.com>
 
-On Tue, Dec 19, 2023 at 12:18:57PM -0500, Hugo Villeneuve wrote:
-> From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+
+On Sun, 17 Dec 2023 00:12:04 -0500, Frank Li wrote:
+> snps,dw-pcie.yaml already have reg and reg-name information. Needn't
+> duplciate here.
 > 
-> Improve code readability and efficiency by using in_range() when checking
-> device tree properties bound.
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> ---
+> 
+> Notes:
+>     Change from v1 to v4:
+>     - new patch at v4
+> 
+>  .../devicetree/bindings/pci/fsl,imx6q-pcie.yaml        | 10 ----------
+>  1 file changed, 10 deletions(-)
+> 
 
-...
-
->  	count = device_property_count_u32(dev, "irda-mode-ports");
-> -	if (count < 0 || count > SC16IS7XX_MAX_PORTS)
-> +	if (!in_range(count, 0, SC16IS7XX_MAX_PORTS + 1))
->  		return;
-
-Okay, looking at this, it becomes uglier than initial code,
-means my suggestion was not good. Please, drop this patch.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
+Acked-by: Rob Herring <robh@kernel.org>
 
 
