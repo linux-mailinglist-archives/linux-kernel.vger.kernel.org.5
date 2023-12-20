@@ -1,201 +1,136 @@
-Return-Path: <linux-kernel+bounces-6309-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6310-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90A17819709
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 04:01:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 957E981970A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 04:02:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 45DB6284F72
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 03:01:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 51CC6282563
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 03:02:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F2328F59;
-	Wed, 20 Dec 2023 03:01:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3684AF9F1;
+	Wed, 20 Dec 2023 03:01:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="p7DU9Wi+"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZKFa8s5/"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02E838BEB
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 03:01:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a2371eae8f1so192724666b.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 19:01:28 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 501AED312
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 03:01:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1d3d0faf262so18179215ad.3
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 19:01:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1703041287; x=1703646087; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1703041296; x=1703646096; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=pH2MC+JCVirOX6aXBHXvKDTSAfz8y1doyFVsXiJxsJk=;
-        b=p7DU9Wi+ja7LZCfbmD8ln7S2AfqmXk3Y1DZtYbDRkFoe+uBmzXrXa128XRaSxb63IO
-         AL1HsirLfnxTnJuDr9noON9nEYKvmH/cHBl/322cNWjMy+soC9kv+5oJPMCOu2lVb49w
-         TejbBN4/F+khsFeYCv65rMGUA8ChBMIhsetl0UwZ91RxdtIPTGyfEr2CysDIEwZUHx0Q
-         jPR1FsEjE31b03CtKqJnX9l88UN9knsrp9tlQOGP0krI3kRcix6jo9BIZu8L7wR2ml0N
-         E3fi7jeX7jgExS6u1i1aXttuwnVUfF0emAbfGm/KL4mkurzotnUh0jRD6V5f/J7kFZjM
-         1y+g==
+        bh=QDcGZt780N7cf+8KzhOequQQWw83UVMubMF6UVq890A=;
+        b=ZKFa8s5/xZFN+KZtL10Pg29ffY6IuJKkiFIr2vYiReTkG21rWuif2e7jt/p0d+qxs/
+         adkG+sV/UXQ9RzHHYO9KpwKrvi23hJVRWP3eyQRDInXpc1fyk+A9mhWCuXO/kmVXxPvI
+         zkjCGJGq4tSUDI0azdGEXvHGAEe6W/0nFKINtGVuOihPqbqzneg7B5Jt7JCIg1Ta9XQ7
+         LQx0jNUk3e/3FQV3+ucczfnWiu6UPBxn5SqrRZl/ADj4+MnVCb9CyL+8zbb9W1vKvi/4
+         sGutPQ+7C+/ciExomhx190URRmvzxMU+CFaRuuOUwMmMbV+45gEffJ4bICtVVrsrDanF
+         o23w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703041287; x=1703646087;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1703041296; x=1703646096;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=pH2MC+JCVirOX6aXBHXvKDTSAfz8y1doyFVsXiJxsJk=;
-        b=p+6/CY0z5w7WJRZ+Tqk5neVTXMrFvqLsQ9HNhoHCpJw/a5iAiNzvX41Hab21E3nhSD
-         DlGzVCJrX/od1bjv+vrnpTQwhfy6lLMwe/Mnw+cFgWXm/ubKzlpexsxiORrtU1E19fwT
-         OeXIGIuXT7RGC6p99YyFg5BuODDppKKrQGruTlkgNNKWxkW7wK4gAxZa9pmaNaOJhIrH
-         1J4Ry5TKMY3OWPJN5RJ7gSD9TCFVpZ20M9eVr6GXRBkM5fOeEapy24CxtO3IoLbOZzG0
-         cRNUXg1txwrvsDwKmXDuP51ngOiHCbReJK4fpBo2K15fBvqX6CRS5+WC5LNGkMGiidd+
-         AACQ==
-X-Gm-Message-State: AOJu0YxUcCJzCJIshjftRD5xf26Wgj7Bb1+j2nY38Q6Uu9ws/2mfszCO
-	CQ9o6roJTKGXdXMBfQeSf3ITuaIrd91Zk8MySDh5CA==
-X-Google-Smtp-Source: AGHT+IFd0CMR8oOndSs9pPa6vty7A5RF77qbqSqiOEhvaFZJvbPWfZgqGjZmEwjrHvuDWKljCfDj1j1bwumMVK+pRi0=
-X-Received: by 2002:a17:906:86:b0:a1f:a27f:d58d with SMTP id
- 6-20020a170906008600b00a1fa27fd58dmr7450375ejc.105.1703041286894; Tue, 19 Dec
- 2023 19:01:26 -0800 (PST)
+        bh=QDcGZt780N7cf+8KzhOequQQWw83UVMubMF6UVq890A=;
+        b=IC2mnOgIBB31KCJ7d7DOVXijsya2dkaSFvRJyydkd0za441+uVrI0BekvA85ZSgeXU
+         gFIOjuCHrQRIRj/2vQ6yaNxkGwdZqIjvhmtbWDnA5cNGhNHNe1zWmTX8GKJDmeE98Mdw
+         7IGqajGt5Bj4/Md0RNd4uq5E4LglS+6GSKO+En9yLsJGn+1mhZAWe8ddHfEK2r6QuOFc
+         8cN97T6fkBC3nPmvRXVlD9JaoKly91knHUYZmdefiSMKoOL8lTJhOB2iQXooa7p7IN+l
+         o/qr0jfDSCF41CRwsgKf/ETxHe5RIanCd5gtQWGHiQINbxuysTPJi5DcsI8Xfhrus+4K
+         FNOw==
+X-Gm-Message-State: AOJu0YxxCxXkQ+mpTwWrxElMRXSX5n0s//Kfjp12bTP3ZgQG/RykJ5BP
+	RlfzkTo6wU2kfZMwYAbjGGJ4HhFMWIE=
+X-Google-Smtp-Source: AGHT+IEDTnad5cVvWJ4zCxN1KdcFYYIzAX5inlXZMrowaBwcuL22z2qHYQWCeJlX6qAI0qKDn09DlQ==
+X-Received: by 2002:a17:903:234c:b0:1d0:c418:1758 with SMTP id c12-20020a170903234c00b001d0c4181758mr23877565plh.66.1703041296453;
+        Tue, 19 Dec 2023 19:01:36 -0800 (PST)
+Received: from code.. ([144.202.108.46])
+        by smtp.gmail.com with ESMTPSA id w10-20020a170902e88a00b001d38410aa13sm8752200plg.192.2023.12.19.19.01.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Dec 2023 19:01:36 -0800 (PST)
+From: Yuntao Wang <ytcoode@gmail.com>
+To: akpm@linux-foundation.org
+Cc: bhe@redhat.com,
+	bp@alien8.de,
+	corbet@lwn.net,
+	dave.hansen@linux.intel.com,
+	ebiederm@xmission.com,
+	hpa@zytor.com,
+	kexec@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	mingo@redhat.com,
+	tglx@linutronix.de,
+	x86@kernel.org,
+	ytcoode@gmail.com
+Subject: [PATCH v2] x86/kexec: use pr_err() instead of kexec_dprintk() when an error occurs
+Date: Wed, 20 Dec 2023 11:01:24 +0800
+Message-ID: <20231220030124.149160-1-ytcoode@gmail.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20231219122151.aa4ae562537abf74067588fe@linux-foundation.org>
+References: <20231219122151.aa4ae562537abf74067588fe@linux-foundation.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231214020530.2267499-1-almasrymina@google.com>
- <20231214020530.2267499-5-almasrymina@google.com> <ddffff98-f3de-6a5d-eb26-636dacefe9aa@huawei.com>
- <CAHS8izO2nDHuxKau8iLcAmnho-1TYkzW09MBZ80+JzOo9YyVFA@mail.gmail.com>
- <20231215021114.ipvdx2bwtxckrfdg@google.com> <20231215190126.1040fa12@kernel.org>
- <CALvZod5myy2SvuCMNmqjjYeNONqSArV+8y8mrkfnNeog8WLjng@mail.gmail.com> <CAHS8izOLBtjHOqbTS_PiTNe+rTE=jboDWDM9zS108B57vVNcwA@mail.gmail.com>
-In-Reply-To: <CAHS8izOLBtjHOqbTS_PiTNe+rTE=jboDWDM9zS108B57vVNcwA@mail.gmail.com>
-From: Mina Almasry <almasrymina@google.com>
-Date: Tue, 19 Dec 2023 19:01:14 -0800
-Message-ID: <CAHS8izMkCwv3jak9KUHeDUrkwBNNpdYk4voEX7Cbp7mTpNAQdA@mail.gmail.com>
-Subject: Re: [RFC PATCH net-next v1 4/4] net: page_pool: use netmem_t instead
- of struct page in API
-To: Shakeel Butt <shakeelb@google.com>
-Cc: Jakub Kicinski <kuba@kernel.org>, Yunsheng Lin <linyunsheng@huawei.com>, 
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org, 
-	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
-	"H. Peter Anvin" <hpa@zytor.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	"Rafael J. Wysocki" <rafael@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>, 
-	=?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
-	Michael Chan <michael.chan@broadcom.com>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Wei Fang <wei.fang@nxp.com>, 
-	Shenwei Wang <shenwei.wang@nxp.com>, Clark Wang <xiaoning.wang@nxp.com>, 
-	NXP Linux Team <linux-imx@nxp.com>, Jeroen de Borst <jeroendb@google.com>, 
-	Praveen Kaligineedi <pkaligineedi@google.com>, Shailend Chand <shailend@google.com>, 
-	Yisen Zhuang <yisen.zhuang@huawei.com>, Salil Mehta <salil.mehta@huawei.com>, 
-	Jesse Brandeburg <jesse.brandeburg@intel.com>, Tony Nguyen <anthony.l.nguyen@intel.com>, 
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>, Marcin Wojtas <mw@semihalf.com>, 
-	Russell King <linux@armlinux.org.uk>, Sunil Goutham <sgoutham@marvell.com>, 
-	Geetha sowjanya <gakula@marvell.com>, Subbaraya Sundeep <sbhatta@marvell.com>, 
-	hariprasad <hkelam@marvell.com>, Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>, 
-	Sean Wang <sean.wang@mediatek.com>, Mark Lee <Mark-MC.Lee@mediatek.com>, 
-	Lorenzo Bianconi <lorenzo@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
-	Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, 
-	Horatiu Vultur <horatiu.vultur@microchip.com>, UNGLinuxDriver@microchip.com, 
-	"K. Y. Srinivasan" <kys@microsoft.com>, Haiyang Zhang <haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>, 
-	Dexuan Cui <decui@microsoft.com>, Jassi Brar <jaswinder.singh@linaro.org>, 
-	Ilias Apalodimas <ilias.apalodimas@linaro.org>, 
-	Alexandre Torgue <alexandre.torgue@foss.st.com>, Jose Abreu <joabreu@synopsys.com>, 
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>, Siddharth Vadapalli <s-vadapalli@ti.com>, 
-	Ravi Gunasekaran <r-gunasekaran@ti.com>, Roger Quadros <rogerq@kernel.org>, 
-	Jiawen Wu <jiawenwu@trustnetic.com>, Mengyuan Lou <mengyuanlou@net-swift.com>, 
-	Ronak Doshi <doshir@vmware.com>, VMware PV-Drivers Reviewers <pv-drivers@vmware.com>, 
-	Ryder Lee <ryder.lee@mediatek.com>, Shayne Chen <shayne.chen@mediatek.com>, 
-	Kalle Valo <kvalo@kernel.org>, Juergen Gross <jgross@suse.com>, 
-	Stefano Stabellini <sstabellini@kernel.org>, 
-	Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Stefan Hajnoczi <stefanha@redhat.com>, Stefano Garzarella <sgarzare@redhat.com>, Shuah Khan <shuah@kernel.org>, 
-	=?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>, 
-	Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, 
-	Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>, 
-	Jason Gunthorpe <jgg@nvidia.com>, Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Sat, Dec 16, 2023 at 2:06=E2=80=AFPM Mina Almasry <almasrymina@google.co=
-m> wrote:
->
-> On Sat, Dec 16, 2023 at 11:47=E2=80=AFAM Shakeel Butt <shakeelb@google.co=
-m> wrote:
-> >
-> > On Fri, Dec 15, 2023 at 7:01=E2=80=AFPM Jakub Kicinski <kuba@kernel.org=
-> wrote:
-> > >
-> > > On Fri, 15 Dec 2023 02:11:14 +0000 Shakeel Butt wrote:
-> > > > > From my POV it has to be the first one. We want to abstract the m=
-emory
-> > > > > type from the drivers as much as possible, not introduce N new me=
-mory
-> > > > > types and ask the driver to implement new code for each of them
-> > > > > separately.
-> > > >
-> > > > Agree with Mina's point. Let's aim to decouple memory types from
-> > > > drivers.
-> > >
-> > > What does "decouple" mean? Drivers should never convert netmem
-> > > to pages. Either a path in the driver can deal with netmem,
-> > > i.e. never touch the payload, or it needs pages.
-> >
->
-> I'm guessing the paths in the driver that need pages will have to be
-> disabled for non-paged netmem, which is fine.
->
-> One example that I ran into with GVE is that it calls page_address()
-> to copy small packets instead of adding them as a frag. I can add a
-> netmem_address() that returns page_address() for pages, and NULL for
-> non-pages (never passing non-pages to mm code). The driver can detect
-> that the netmem has no address, and disable the optimization for
-> non-paged netmem.
->
-> > "Decouple" might not be the right word. What I wanted to say was to
-> > avoid too much specialization such that we have to have a new API for
-> > every new fancy thing.
-> >
-> > >
-> > > Perhaps we should aim to not export netmem_to_page(),
-> > > prevent modules from accessing it directly.
-> >
-> > +1.
->
+When detecting an error, the current code uses kexec_dprintk() to output
+log message. This is not quite appropriate as kexec_dprintk() is mainly
+used for outputting debugging messages, rather than error messages.
 
-I looked into this, but it turns out it's a slightly bigger change
-that needs some refactoring to make it work. There are few places
-where I believe I need to add netmem_to_page() that are exposed to the
-drivers via inline helpers, these are:
+Replace kexec_dprintk() with pr_err(). This also makes the output method
+for this error log align with the output method for other error logs in
+this function.
 
-- skb_frag_page(), which returns NULL if the netmem is not a page, but
-needs to do a netmem_to_page() to return the page otherwise.
-- The helpers inside skb_add_rx_frag(), which needs to do a
-netmem_to_page() to set skb->pfmemalloc.
-- Some of the page_pool APIs are exposed to the drivers as static
-inline helpers, and if I want the page_pool to use netmem internally
-the page_pool needs to do a netmem_to_page() in these helpers.
+Additionally, the last return statement in set_page_address() is
+unnecessary, remove it.
 
-The refactor is not an issue, but I was wondering if not exporting
-netmem_to_page() was worth moving the code around. I was thinking in
-the interim until netmem is adopted and has actual driver users we may
-prefer to just add a comment on the netmem_to_page() helper that says
-'try not to use this directly and use the netmem helpers instead'.
+Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
+---
+v1 -> v2: Rewrite changelogs
 
-> This is an aggressive approach and I like it. I'll try to make it work
-> (should be fine).
->
->
-> --
-> Thanks,
-> Mina
+ arch/x86/kernel/kexec-bzimage64.c | 2 +-
+ mm/highmem.c                      | 2 --
+ 2 files changed, 1 insertion(+), 3 deletions(-)
 
+diff --git a/arch/x86/kernel/kexec-bzimage64.c b/arch/x86/kernel/kexec-bzimage64.c
+index e9ae0eac6bf9..4a77d5dd4bce 100644
+--- a/arch/x86/kernel/kexec-bzimage64.c
++++ b/arch/x86/kernel/kexec-bzimage64.c
+@@ -429,7 +429,7 @@ static void *bzImage64_load(struct kimage *image, char *kernel,
+ 	 * command line. Make sure it does not overflow
+ 	 */
+ 	if (cmdline_len + MAX_ELFCOREHDR_STR_LEN > header->cmdline_size) {
+-		kexec_dprintk("Appending elfcorehdr=<addr> to command line exceeds maximum allowed length\n");
++		pr_err("Appending elfcorehdr=<addr> to command line exceeds maximum allowed length\n");
+ 		return ERR_PTR(-EINVAL);
+ 	}
+ 
+diff --git a/mm/highmem.c b/mm/highmem.c
+index e19269093a93..bd48ba445dd4 100644
+--- a/mm/highmem.c
++++ b/mm/highmem.c
+@@ -799,8 +799,6 @@ void set_page_address(struct page *page, void *virtual)
+ 		}
+ 		spin_unlock_irqrestore(&pas->lock, flags);
+ 	}
+-
+-	return;
+ }
+ 
+ void __init page_address_init(void)
+-- 
+2.43.0
 
-
---
-Thanks,
-Mina
 
