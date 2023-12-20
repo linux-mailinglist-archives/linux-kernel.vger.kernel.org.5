@@ -1,135 +1,240 @@
-Return-Path: <linux-kernel+bounces-7117-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7116-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B037881A1DC
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 16:10:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 565AA81A1DA
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 16:10:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D47FB1C221FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 15:10:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 79D2F1C22345
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 15:10:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B49F3E47F;
-	Wed, 20 Dec 2023 15:10:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4019D3D98F;
+	Wed, 20 Dec 2023 15:10:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="HA3rBzvq"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c+2d/xGt"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8689D3E467;
-	Wed, 20 Dec 2023 15:10:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-	t=1703084992; x=1703689792; i=w_armin@gmx.de;
-	bh=qhG3JEYtczaYqpd6vjtfBVybBteTkGpA87cR/MSHPlI=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=HA3rBzvqLE5fuosDh39Wsz650AgeWgd+EM123XUEi0rRQeCqc5IM1TFQR1fMQFEa
-	 UFGX7m8xFJyZnUhrzVZuIImkU/ZKk+7vxugaQJ1IW/lR0O9z2vojjeHc6q8PUYcOC
-	 8Yuq6FwQN3xGC1rg0bFdOCE6BWSPcpQeD93EnJmWS7sDAWI9IEPlReemA2f9xi6yM
-	 E13cKAZkNbrVln0OG9WzpO/l2UIvPkh5M6tEat6X5NaFqWsHpR9sydbfx1zzjHOmZ
-	 hbDaoggxClkEJAVTL95yh9Kr5Notd0A5t74nFDhij8Osbh2o8l7AqRnmKwPrX5uBi
-	 4onEmBXIBkSVhF+Erw==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [141.30.226.129] ([141.30.226.129]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1M6DWi-1rMaz237w8-006ckQ; Wed, 20
- Dec 2023 16:09:52 +0100
-Message-ID: <d8e455b9-0a27-4361-8f92-9f1cb1fff537@gmx.de>
-Date: Wed, 20 Dec 2023 16:09:51 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E34D43E467;
+	Wed, 20 Dec 2023 15:10:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-40d2764c0f2so23556905e9.2;
+        Wed, 20 Dec 2023 07:10:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703084999; x=1703689799; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NpNq0mGAO/ID0JEaLZ8hDs6wkvqKfsMQXHlt+mgq8b8=;
+        b=c+2d/xGt5H4IzSF90vSZc8bO4z4Oab0WtiSPbGbSTqkBWUXa/Ca22bBFjn8rVm6EXt
+         17/8uzb4qKmZlTxLDLcXi/PjqHQW8jfDi+ef8WxRslFf+02U/o1lHNnDrup5UMp7K3vQ
+         RhKGrTs0ei1IjdeXg0b/AsLYhJ3IJdLQIZUkuEAqJ/yW7RyaL3aMoUD8RYaYxfJ9Ajad
+         0eo/xGWOO2fjDrqTA6X7c/IzZvGxSlWa2sEr9rhNRheOpnBUd7/vFQ7xLvKBU6nV83Tk
+         psaAx4DaQw0+mGry+2HvbOj42Dg6DHcoPl2vc0aLHIIBDirQIu9luvOD2MYZ4Mv5EW86
+         vp5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703084999; x=1703689799;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NpNq0mGAO/ID0JEaLZ8hDs6wkvqKfsMQXHlt+mgq8b8=;
+        b=XuJKipsHhekMu2zfC73R2DchM9Prlb6D+iSX/Z4LCYCoCupRzXJeg+MLSSL+Q4WNzB
+         jgar+EcFVY3a2VW6dNe+lrEhO6RiEykMXt2PsYlX05sNYAbgfoBMikYG9aiFg01zU6S0
+         rw2LVIgev10Ft+p/tqQPFE+6ZGai7VPfkPDBIADazUoLQ5O36S6rl7Vsd8pdQZocZN5L
+         s0le+hfkhyQOzKyK7lhC+jd4pz3SBuPxMpSjdJ09GWIs6c3rbZ1b3y41PTx71ZqSPxuH
+         S7KV57fR6MbjsVXcWyW7tbLzAqA5Gmat6cpNmDwn+BaTgjNXFPRMjJLY+IXQ01ZYyZDx
+         d7Rg==
+X-Gm-Message-State: AOJu0YxkaOCDxTB8tUSk2UV/cIP79jXwP9zqbyd2sYoDrxGRmUAP84zF
+	N/cfmzTYpbcn2Cqw389Nudo=
+X-Google-Smtp-Source: AGHT+IErSAIMtKMfbJ6ITLfsl9Oe7KWcu4MMxZlvFn1ZUPhaJ21o+kfiDGYLYtG+Y4FMDqDLYBgDbg==
+X-Received: by 2002:a05:600c:b43:b0:40b:5e1f:6fe0 with SMTP id k3-20020a05600c0b4300b0040b5e1f6fe0mr9713821wmr.53.1703084998936;
+        Wed, 20 Dec 2023 07:09:58 -0800 (PST)
+Received: from jernej-laptop.localnet (82-149-12-148.dynamic.telemach.net. [82.149.12.148])
+        by smtp.gmail.com with ESMTPSA id z5-20020a05600c0a0500b0040d1a925beesm7917351wmp.3.2023.12.20.07.09.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Dec 2023 07:09:58 -0800 (PST)
+From: Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
+To: Frank Oltmanns <frank@oltmanns.dev>
+Cc: Michael Turquette <mturquette@baylibre.com>,
+ Stephen Boyd <sboyd@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+ Samuel Holland <samuel@sholland.org>,
+ Guido =?ISO-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>,
+ Purism Kernel Team <kernel@puri.sm>, Ondrej Jirman <megi@xff.cz>,
+ Neil Armstrong <neil.armstrong@linaro.org>,
+ Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
+ dri-devel@lists.freedesktop.org
+Subject:
+ Re: [PATCH 1/5] clk: sunxi-ng: nkm: Support constraints on m/n ratio and
+ parent rate
+Date: Wed, 20 Dec 2023 16:09:55 +0100
+Message-ID: <23332183.6Emhk5qWAg@jernej-laptop>
+In-Reply-To: <87msu59wrc.fsf@oltmanns.dev>
+References:
+ <20231218-pinephone-pll-fixes-v1-0-e238b6ed6dc1@oltmanns.dev>
+ <5736273.DvuYhMxLoT@jernej-laptop> <87msu59wrc.fsf@oltmanns.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] hwmon: (acpi_power_meter) Install IPMI handler for Dell
- systems
-To: Kai-Heng Feng <kai.heng.feng@canonical.com>, jdelvare@suse.com,
- linux@roeck-us.net
-Cc: linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231220051350.392350-1-kai.heng.feng@canonical.com>
-Content-Language: en-US
-From: Armin Wolf <W_Armin@gmx.de>
-In-Reply-To: <20231220051350.392350-1-kai.heng.feng@canonical.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:+uFY2EtJJvAKtG9sOckP3KeI20V3v0lxatL9nlEfHmFKY+Ukusk
- cPvpEXgyK200UrGdWk01qIpU2D2g4dQ5a8uMOAVm8MMNI9X1iuS4JL2h/tVCw/c9/cHCAse
- 2lWmO/WQoiG3DxaObLGcKbHsargq5XeyS8FtGYnCHfU3RXzOgMjSJBHoSeVG9kDfNcXnCOL
- F1eyBJYmInuaKCMxWTraA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:tKS1Lk1+9CI=;yjbvVaAnZS2MS8n59Q+kv8j0bjP
- c5UlZlTALQTLNlrooBrnnmBWSjEslLxGyqRici9Bu5rDAzVWI+kskOlGz0T1DLM5oajNJuYgL
- vk9Vy4xry7Ig6ywzVT+jcU5/SNK9GN3VbcpEYIV78P/T5FKOlbmhUi9UblOhWAxsMSf1+JTOz
- 0SdC9o3reqpfSRDgTVB0peMbWDpiEyc0f8fzoMTGtNBIkQNXJxszO1Q9oYGs8h/WEV42XnqBc
- edszaYTX/JsrOGH98wk+Vib3STf1N5mpv2ZAlYZfENcBg0Zu8X6JTDdRgey8sn07LXm+zNN4r
- dwPFZigXVYJWRamwrfSU2h9D6YERwh06Q1ugYawZ+lk4bnerHkYzUQcEmBEvu1AAH7eXbbIFe
- jAMgJG2o/kDjxN0rw9dEgX/ggjYcICG9BKJjiJALQRsuUxXU0uMgWozIS/vUcUab7a9qoqLia
- 32w8r6QaQgKZYWe8XaahFrfLpHXUDKUipAomS5Q65O4w6vFNIni0Uu9/Ff1Pf7riQCdU0oTrO
- G8Nw61LTuHBHi+WgH+orz9vD+CmfsNzhxelLnvPazZmPKuJhcVxz6rzdsb5YslF6BN0mas7CU
- 2w/LrRiON1L22AR7cFXZAMALojK+W1aAoj8zi7CTEYDk2zQoNsKHOSit2B/IhJV21afCcnDdR
- VNQxnE4E2lKL91H+N6ZKi5/AQDs0CSMDzIhB9xI4YYq2lz8SoEUEtHSTNugJJJyXlPM8rgu55
- QK0mah29bJ5rwglUkrP1b3na9seQ2izJu0k4W5TmWfA8EZ+m34N82tGontGyAs1fcUw3P9YDp
- Cttz7RQVXUV/obzgK68h69YqXruPFQC04mQfSgeI2ZtKLtkJZA6DVCexeI2HyOUjYCWrFQ4CF
- Jl3bqAzZnNEaKxoFhZehdoYh3rvYg3aWjj3nT4ixG0ETYy1CTw1nDydUlMTKGhxP6Q8xfiS+L
- 2DVbkQSp6SfSLusb2XfMxh+x0RM=
+Content-Type: text/plain; charset="UTF-8"
 
-Am 20.12.23 um 06:13 schrieb Kai-Heng Feng:
+Dne sreda, 20. december 2023 ob 07:58:07 CET je Frank Oltmanns napisal(a):
+> Hi Jernej!
+>=20
+> On 2023-12-19 at 17:46:08 +0100, Jernej =C5=A0krabec <jernej.skrabec@gmai=
+l.com> wrote:
+> > Hi Frank!
+> >
+> > Dne ponedeljek, 18. december 2023 ob 14:35:19 CET je Frank Oltmanns nap=
+isal(a):
+> >> The Allwinner A64 manual lists the following constraints for the
+> >> PLL-MIPI clock:
+> >>  - M/N >=3D 3
+> >
+> > This should be "<=3D"
+>=20
+> Yes, good catch! I will fix it in V2.
+>=20
+> >
+> >>  - (PLL_VIDEO0)/M >=3D 24MHz
+> >>
+> >> The PLL-MIPI clock is implemented as ccu_nkm. Therefore, add support f=
+or
+> >> these constraints.
+> >>
+> >> Signed-off-by: Frank Oltmanns <frank@oltmanns.dev>
+> >> ---
+> >>  drivers/clk/sunxi-ng/ccu_nkm.c | 23 +++++++++++++++++++++++
+> >>  drivers/clk/sunxi-ng/ccu_nkm.h |  8 ++++++++
+> >>  2 files changed, 31 insertions(+)
+> >>
+> >> diff --git a/drivers/clk/sunxi-ng/ccu_nkm.c b/drivers/clk/sunxi-ng/ccu=
+_nkm.c
+> >> index eed64547ad42..2af5c1ebd527 100644
+> >> --- a/drivers/clk/sunxi-ng/ccu_nkm.c
+> >> +++ b/drivers/clk/sunxi-ng/ccu_nkm.c
+> >> @@ -16,6 +16,20 @@ struct _ccu_nkm {
+> >>  	unsigned long	m, min_m, max_m;
+> >>  };
+> >>
+> >> +static bool ccu_nkm_is_valid_rate(struct ccu_common *common, unsigned=
+ long parent,
+> >> +				  unsigned long n, unsigned long m)
+> >> +{
+> >> +	struct ccu_nkm *nkm =3D container_of(common, struct ccu_nkm, common);
+> >> +
+> >> +	if (nkm->max_mn_ratio && (m > nkm->max_mn_ratio * n))
+> >> +		return false;
+> >> +
+> >> +	if (nkm->parent_wo_nk && (parent < nkm->parent_wo_nk * m))
+> >> +		return false;
+> >> +
+> >> +	return true;
+> >> +}
+> >> +
+> >>  static unsigned long ccu_nkm_find_best_with_parent_adj(struct ccu_com=
+mon *common,
+> >>  						       struct clk_hw *parent_hw,
+> >>  						       unsigned long *parent, unsigned long rate,
+> >> @@ -32,6 +46,9 @@ static unsigned long ccu_nkm_find_best_with_parent_a=
+dj(struct ccu_common *common
+> >>
+> >>  				tmp_parent =3D clk_hw_round_rate(parent_hw, rate * _m / (_n * _k)=
+);
+> >>
+> >> +				if (!ccu_nkm_is_valid_rate(common, tmp_parent, _n, _m))
+> >> +					continue;
+> >> +
+> >>  				tmp_rate =3D tmp_parent * _n * _k / _m;
+> >>
+> >>  				if (ccu_is_better_rate(common, rate, tmp_rate, best_rate) ||
+> >> @@ -65,6 +82,12 @@ static unsigned long ccu_nkm_find_best(unsigned lon=
+g parent, unsigned long rate,
+> >>  	for (_k =3D nkm->min_k; _k <=3D nkm->max_k; _k++) {
+> >>  		for (_n =3D nkm->min_n; _n <=3D nkm->max_n; _n++) {
+> >>  			for (_m =3D nkm->min_m; _m <=3D nkm->max_m; _m++) {
+> >> +				if ((common->reg =3D=3D 0x040) && (_m > 3 * _n))
+> >> +					break;
+> >> +
+> >> +				if ((common->reg =3D=3D 0x040) && (parent < 24000000 * _m))
+> >> +					continue;
+> >> +
+> >
+> > You already figured this part.
+> >
+> >>  				unsigned long tmp_rate;
+> >>
+> >>  				tmp_rate =3D parent * _n * _k / _m;
+> >> diff --git a/drivers/clk/sunxi-ng/ccu_nkm.h b/drivers/clk/sunxi-ng/ccu=
+_nkm.h
+> >> index 6601defb3f38..d3d3eaf55faf 100644
+> >> --- a/drivers/clk/sunxi-ng/ccu_nkm.h
+> >> +++ b/drivers/clk/sunxi-ng/ccu_nkm.h
+> >> @@ -16,6 +16,12 @@
+> >>   * struct ccu_nkm - Definition of an N-K-M clock
+> >>   *
+> >>   * Clocks based on the formula parent * N * K / M
+> >> + *
+> >> + * @max_mn_ratio:	Maximum value for M / N.
+> >> + * @parent_wo_nk:	The minimum rate the parent must provide after appl=
+ying the divisor,
+> >> + *			but without applying the multipliers, i.e. the contstraint
+> >> + *			   (parent rate)/M >=3D parent_wo_nk
+> >> + *			must be fulfilled.
+> >>   */
+> >>  struct ccu_nkm {
+> >>  	u32			enable;
+> >> @@ -27,6 +33,8 @@ struct ccu_nkm {
+> >>  	struct ccu_mux_internal	mux;
+> >>
+> >>  	unsigned int		fixed_post_div;
+> >> +	unsigned long		max_mn_ratio;
+> >> +	unsigned long           parent_wo_nk;
+> >
+> > What about max_m_n_ratio and max_parent_m_ratio, to be consistent? This
+> > should also allow to simplify description.
+>=20
+> Jernej, thank you so much! This is brilliant! I was racking my brain for
+> a good name but failed. Now, that I see your proposal, I don't know why
+> I hadn't come up with it. It's the obvious choice.
+>=20
+> I'd say with the new names we should be able to get rid of the comments
+> describing the new struct members (also in ccu_nm.h). What are your
+> thoughts on that?
 
-> The following error can be observed at boot:
-> [    3.717920] ACPI Error: No handler for Region [SYSI] (00000000ab9e62c=
-5) [IPMI] (20230628/evregion-130)
-> [    3.717928] ACPI Error: Region IPMI (ID=3D7) has no handler (20230628=
-/exfldio-261)
->
-> [    3.717936] No Local Variables are initialized for Method [_GHL]
->
-> [    3.717938] No Arguments are initialized for method [_GHL]
->
-> [    3.717940] ACPI Error: Aborting method \_SB.PMI0._GHL due to previou=
-s error (AE_NOT_EXIST) (20230628/psparse-529)
-> [    3.717949] ACPI Error: Aborting method \_SB.PMI0._PMC due to previou=
-s error (AE_NOT_EXIST) (20230628/psparse-529)
-> [    3.717957] ACPI: \_SB_.PMI0: _PMC evaluation failed: AE_NOT_EXIST
->
-> On Dell systems several methods of acpi_power_meter access variables in
-> IPMI region [0], so request module 'ipmi_si' which will load 'acpi_ipmi'
-> and install the region handler accordingly.
+Ah, I missed that only new ones are documented. Yeah, you can skip it.
 
-Hi,
+Best regards,
+Jernej
 
-this driver should be loaded automatically if an ACPI IPMI device is prese=
-nt.
-Can you share the output of "acpidump"?
+>=20
+> Best regards,
+>   Frank
+>=20
+> >
+> > Best regards,
+> > Jernej
+> >
+> >>
+> >>  	struct ccu_common	common;
+> >>  };
+> >>
+> >>
+>=20
 
-Armin Wolf
 
-> [0] https://www.dell.com/support/manuals/en-us/redhat-enterprise-linux-v=
-8.0/rhel8_rn_pub/advanced-configuration-and-power-interface-acpi-error-mes=
-sages-displayed-in-dmesg?guid=3Dguid-0d5ae482-1977-42cf-b417-3ed5c3f5ee62
->
-> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> ---
->   drivers/hwmon/acpi_power_meter.c | 2 ++
->   1 file changed, 2 insertions(+)
->
-> diff --git a/drivers/hwmon/acpi_power_meter.c b/drivers/hwmon/acpi_power=
-_meter.c
-> index 703666b95bf4..b9db53166bc9 100644
-> --- a/drivers/hwmon/acpi_power_meter.c
-> +++ b/drivers/hwmon/acpi_power_meter.c
-> @@ -882,6 +882,8 @@ static int acpi_power_meter_add(struct acpi_device *=
-device)
->   	strcpy(acpi_device_name(device), ACPI_POWER_METER_DEVICE_NAME);
->   	strcpy(acpi_device_class(device), ACPI_POWER_METER_CLASS);
->   	device->driver_data =3D resource;
-> +	if (dmi_match(DMI_SYS_VENDOR, "Dell Inc."))
-> +		request_module("ipmi_si");
->
->   	res =3D read_capabilities(resource);
->   	if (res)
+
+
 
