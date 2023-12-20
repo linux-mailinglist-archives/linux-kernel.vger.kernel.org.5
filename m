@@ -1,149 +1,135 @@
-Return-Path: <linux-kernel+bounces-7493-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7491-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 180CD81A8DA
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 23:13:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F80581A8D4
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 23:13:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 685D3B22059
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 22:13:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 61E8C1C22BC0
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 22:13:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 026C44B159;
-	Wed, 20 Dec 2023 22:13:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFFED4A995;
+	Wed, 20 Dec 2023 22:13:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="CnC0/rBg"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Hr4Onva/"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03D224A98A
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 22:12:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
-Received: from mail-pg1-f199.google.com (mail-pg1-f199.google.com [209.85.215.199])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id F0C023F16B
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 22:12:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20210705; t=1703110377;
-	bh=ztD/RtxtcUR049JPC70sEXT6G1p0fRBcP6k1VF14xA0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type;
-	b=CnC0/rBgOJpyqdOiKtFGkwWonyv1HvXWmiE4fW1fSVhrB4jaY471QXHzaH0/TnRw/
-	 yEvSEZp5PW4wzsS+NUf8kvuUI/XNgU830WDzD6QOyp5NLMIRTLQiYYJM7GPuP5k/li
-	 tz/a6+yAIQnLpdvia8LTi9NhcRzKUIdPAGYcIouyH/6o9H9sTQQk4xZqZ564ISDQGG
-	 GZIKbtnApUWFR+Ar414Xv4SAqwjKehTjai2LWH7WVtlOGy8I7gWKZLCs+YESKU4jqm
-	 4Dj4dSLGR5Ufp48Yr0xYNlHT+Vyrb6WPYwwdqGVhEvfpMZ8Pp9fVQUvllnXwA6sX0V
-	 OaNwMkml3CZFA==
-Received: by mail-pg1-f199.google.com with SMTP id 41be03b00d2f7-5c641d55e27so84399a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 14:12:57 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FB064A98E
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 22:12:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a2343c31c4bso15112766b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 14:12:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1703110377; x=1703715177; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=WbE+p+rcyyFP+eEtMwxqlwbKKm3YVPbvUnctIfiDxV4=;
+        b=Hr4Onva/aMYa64TV02v8sEKnKOa9dU62ufHv3yjaq1jplcVcisLWqPTnod6NLBmyFf
+         Oj2XWDERSnbqEhbSHqPfRL+xOo0q4I8ZxNh4PksJmQ7akJXXsFjZJ6H269HHJKBhRZ3/
+         rSqRYkF0PHYQLSfwsHb8O5J1vcFEyhzJHTAjthYue2WHfZQE93GV21d9G19rMnsWnre/
+         +8kIGjaiGETubllpaBv2Z1E2IVgOfhaTDJO3L/47jiNzxlF1z1ODi/WuTDshXNx8EsX8
+         1R36bcOCsw9trvSTscRUDP9VnL0o9rKC9fZyQmmm62IPKdmS/2bdlUba3ugcWnuf7D0R
+         LDTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703110376; x=1703715176;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ztD/RtxtcUR049JPC70sEXT6G1p0fRBcP6k1VF14xA0=;
-        b=dsPWr4h17/LITI136d+2djbbtHnVm0Sca31ruH66xEY5DlDn7B/+/2FKgkC+pkmo1f
-         Jx7A/s5FpiChH6MK46nglBm6N2LGkm2i5Bx1zpUwcEl45pRKWGXCvoq/h+xDH7juP45O
-         jVqSZ0T1yfQEMQL6ieiMT8RpYBsWZBTusQcbEMHfnTvMNCoIXS591hJGuypRrM0E4E6T
-         3GtBADrQAj2zAxSz45c9Qb+LjHlDUgNwcfjUAKAC3EYpRPAJO1/YVgzl+8aShAo7egq3
-         RbIkG0w4ERHQqFcTZqvaYyRYO8abYB6pjzOPy1+SyWGEXoEq/X2UBJYcOvw+W3WWA6BD
-         uhWA==
-X-Gm-Message-State: AOJu0YyZezbthLAPAxotPgiJlZqgDbRwseIsYE7uBIq1gSgWn0WSSdmL
-	LJgVkuCQPc21hdBo2C9ifQmaOvMESFCyuwISiYzarQIUrn4N14HoJ0h/csHB4Q7CiQYpItbY+Ul
-	3skMcguN6KEoTRQgTtoJt4Qw3fJijuDy7L+d58t/zW8eooUXoKoujX72Qi005J9pj
-X-Received: by 2002:a17:90a:e38c:b0:28b:ee58:6af9 with SMTP id b12-20020a17090ae38c00b0028bee586af9mr89945pjz.45.1703110376313;
+        d=1e100.net; s=20230601; t=1703110377; x=1703715177;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=WbE+p+rcyyFP+eEtMwxqlwbKKm3YVPbvUnctIfiDxV4=;
+        b=fVOhAf8Ju/P0s2EQPeFzBnJJgbLlhQjlkii9ErPtzeif3E8Acot+SzUXgY2FqAAFeY
+         glbtKUap45FmqUeDnnDQJCfWWl+EhEFodDjSKe6yx4FvHZ6J1ds0vpl5tIzl75xu1ael
+         w5oYeSjFcZ2TPFXuPYjWpCqtNWQu+nzdDGKrtb8sZQmWwy8nrPg+5soOlTwMDEtOkaTd
+         /p2f4Gcr0OQfJ682a9/c2fknzGg1LG/8udXsz+qfbXcTsxuYMtpc8PINmBuEYfAMXoRD
+         CKQCa4Ay4tEOpjRnT4HSGlFq7bySaSJT9pe0XYaOw38Vf77XYjnN7Ym6qE5QQubB5+rt
+         69qA==
+X-Gm-Message-State: AOJu0Yy/nbJf1YwTMpDa9HN8y3+JoPuZbdFL5BZi7ADvuKvBcuZnDNsZ
+	ZT8TkfrRzOa00CoBIXLsdI1EGA==
+X-Google-Smtp-Source: AGHT+IHJw/FE2ewpobj61P+2P9GS8ZpVhAHis9tAoOMOkVKIcEuDOaRMsr1NH5TfHUZOtlI0W92iCQ==
+X-Received: by 2002:a17:906:65d8:b0:a19:a19b:4251 with SMTP id z24-20020a17090665d800b00a19a19b4251mr5876749ejn.188.1703110376744;
         Wed, 20 Dec 2023 14:12:56 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHwEkSypqppxNa6DzbllkKPFL0WNHCiPNexIbWvv6ZYq0p0TeVf2IZN0vR33CJkyQadJGqioZXGZv/CcW4QuWs=
-X-Received: by 2002:a17:90a:e38c:b0:28b:ee58:6af9 with SMTP id
- b12-20020a17090ae38c00b0028bee586af9mr89931pjz.45.1703110375913; Wed, 20 Dec
- 2023 14:12:55 -0800 (PST)
+Received: from [10.167.154.1] (178235179206.dynamic-4-waw-k-1-3-0.vectranet.pl. [178.235.179.206])
+        by smtp.gmail.com with ESMTPSA id x22-20020a170906135600b00a235f3b8259sm254654ejb.186.2023.12.20.14.12.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Dec 2023 14:12:56 -0800 (PST)
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Subject: [PATCH RFT v2 0/3] Fix up SC8280XP idle states
+Date: Wed, 20 Dec 2023 23:12:53 +0100
+Message-Id: <20230619-topic-sc8280xp-idle-v2-0-cde50bf02f3c@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231220051350.392350-1-kai.heng.feng@canonical.com> <d8e455b9-0a27-4361-8f92-9f1cb1fff537@gmx.de>
-In-Reply-To: <d8e455b9-0a27-4361-8f92-9f1cb1fff537@gmx.de>
-From: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Date: Thu, 21 Dec 2023 06:12:43 +0800
-Message-ID: <CAAd53p62bJcuHAZMnYuKqoi_YV+W0zOuyQTCvjcKMBoVP68QBA@mail.gmail.com>
-Subject: Re: [PATCH] hwmon: (acpi_power_meter) Install IPMI handler for Dell systems
-To: Armin Wolf <W_Armin@gmx.de>
-Cc: jdelvare@suse.com, linux@roeck-us.net, linux-hwmon@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAOVmg2UC/32NQQ6CMBBFr0Jmbc20gBZXrjyAcWdYlFJgkqZtW
+ iQYwt1tOIDL919+3gbJRDIJbsUG0SyUyLsM4lSAnpQbDaM+MwgUJV54w2YfSLOkpZC4hmytYYi
+ DRryKstIS8rNTybAuKqen/HUfa/MYohloPVJveD5e0OZxojT7+D3yCz/U39LCGbKyVrJrZFXzH
+ u+WnIr+7OMI7b7vP1oDiMfRAAAA
+To: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
+ Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Johan Hovold <johan+linaro@kernel.org>
+Cc: Marijn Suijten <marijn.suijten@somainline.org>, 
+ linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Konrad Dybcio <konrad.dybcio@somainline.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>
+X-Mailer: b4 0.12.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1703110375; l=1554;
+ i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
+ bh=ARUY1xHpXtNbYJC73kXlyu2iubFsquAhjet7Dqjyorw=;
+ b=jEr+FiShAw83HyJ/2AgXX7eCo9PSxs+fd6VLsvmwSxLTtAFYHteCzA7izJM+8hpXXahv2STz/
+ KP9ClVfkcC1BKCyOMLzdt6YpWdfFOmse7l+aVQMz3Ri4ySQHP+ZzN9u
+X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
+ pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
 
-Hi Armin,
+Comparing the data available in the downstream sources with what's there
+upstream, it was easy to spot some differences. This series aligns what
+we have upstream with what is there on the vendor kernel.
 
-On Wed, Dec 20, 2023 at 11:09=E2=80=AFPM Armin Wolf <W_Armin@gmx.de> wrote:
->
-> Am 20.12.23 um 06:13 schrieb Kai-Heng Feng:
->
-> > The following error can be observed at boot:
-> > [    3.717920] ACPI Error: No handler for Region [SYSI] (00000000ab9e62=
-c5) [IPMI] (20230628/evregion-130)
-> > [    3.717928] ACPI Error: Region IPMI (ID=3D7) has no handler (2023062=
-8/exfldio-261)
-> >
-> > [    3.717936] No Local Variables are initialized for Method [_GHL]
-> >
-> > [    3.717938] No Arguments are initialized for method [_GHL]
-> >
-> > [    3.717940] ACPI Error: Aborting method \_SB.PMI0._GHL due to previo=
-us error (AE_NOT_EXIST) (20230628/psparse-529)
-> > [    3.717949] ACPI Error: Aborting method \_SB.PMI0._PMC due to previo=
-us error (AE_NOT_EXIST) (20230628/psparse-529)
-> > [    3.717957] ACPI: \_SB_.PMI0: _PMC evaluation failed: AE_NOT_EXIST
-> >
-> > On Dell systems several methods of acpi_power_meter access variables in
-> > IPMI region [0], so request module 'ipmi_si' which will load 'acpi_ipmi=
-'
-> > and install the region handler accordingly.
->
-> Hi,
->
-> this driver should be loaded automatically if an ACPI IPMI device is pres=
-ent.
-> Can you share the output of "acpidump"?
+The big asterisk there is that the downstream sources for SC8280XP can't
+always be trusted. A simple test shows that the lower idle states that
+were previously missing are implemented in the firmware (Linux reports no
+errors and enters them).
 
-Yes it's loaded automatically, but it's loaded after acpi_power_meter,
-so the patch only make sure ipmi_si and ipmi_acpi are loaded before
-this module.
+HOWEVER
 
-Kai-Heng
+The only cluster idle state that's been present until now (the deepest
+one) is now barely used if at all, as the scheduler seems to deem it
+inefficient or so.
 
->
-> Armin Wolf
->
-> > [0] https://www.dell.com/support/manuals/en-us/redhat-enterprise-linux-=
-v8.0/rhel8_rn_pub/advanced-configuration-and-power-interface-acpi-error-mes=
-sages-displayed-in-dmesg?guid=3Dguid-0d5ae482-1977-42cf-b417-3ed5c3f5ee62
-> >
-> > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> > ---
-> >   drivers/hwmon/acpi_power_meter.c | 2 ++
-> >   1 file changed, 2 insertions(+)
-> >
-> > diff --git a/drivers/hwmon/acpi_power_meter.c b/drivers/hwmon/acpi_powe=
-r_meter.c
-> > index 703666b95bf4..b9db53166bc9 100644
-> > --- a/drivers/hwmon/acpi_power_meter.c
-> > +++ b/drivers/hwmon/acpi_power_meter.c
-> > @@ -882,6 +882,8 @@ static int acpi_power_meter_add(struct acpi_device =
-*device)
-> >       strcpy(acpi_device_name(device), ACPI_POWER_METER_DEVICE_NAME);
-> >       strcpy(acpi_device_class(device), ACPI_POWER_METER_CLASS);
-> >       device->driver_data =3D resource;
-> > +     if (dmi_match(DMI_SYS_VENDOR, "Dell Inc."))
-> > +             request_module("ipmi_si");
-> >
-> >       res =3D read_capabilities(resource);
-> >       if (res)
+Hence, a request for testing and comments, especially from those who
+use the X13s daily or have reliable setup to measure the power usage.
+
+Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+---
+Changes in v2:
+- Rename the idle states
+- Drop RFC, confirmed with Qualcomm
+- Rebase
+- Link to v1: https://lore.kernel.org/r/20230619-topic-sc8280xp-idle-v1-0-35a8b98451d0@linaro.org
+
+---
+Konrad Dybcio (3):
+      arm64: dts: qcom: sc8280xp: Add lower cluster idle states
+      arm64: dts: qcom: sc8280xp: Add missing CPU idle states
+      arm64: dts: qcom: sc8280xp: Fix up idle state periods
+
+ arch/arm64/boot/dts/qcom/sc8280xp.dtsi | 72 +++++++++++++++++++++++++---------
+ 1 file changed, 54 insertions(+), 18 deletions(-)
+---
+base-commit: 20d857259d7d10cd0d5e8b60608455986167cfad
+change-id: 20230619-topic-sc8280xp-idle-00fc007234c8
+
+Best regards,
+-- 
+Konrad Dybcio <konrad.dybcio@linaro.org>
+
 
