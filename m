@@ -1,117 +1,185 @@
-Return-Path: <linux-kernel+bounces-7055-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7056-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF22181A10F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 15:24:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F06F581A114
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 15:24:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B009281AAD
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 14:24:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2E2101C21756
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 14:24:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41A2E38F96;
-	Wed, 20 Dec 2023 14:24:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6533A38FBF;
+	Wed, 20 Dec 2023 14:24:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LHnqEiLb"
+	dkim=pass (2048-bit key) header.d=mess.org header.i=@mess.org header.b="fsIgbuOC";
+	dkim=pass (2048-bit key) header.d=mess.org header.i=@mess.org header.b="CJ77FQKT"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+Received: from gofer.mess.org (gofer.mess.org [88.97.38.141])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E66238DF5;
-	Wed, 20 Dec 2023 14:24:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703082254; x=1734618254;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=Ij+eZ1wb0paDDLjZRVqjdrr8YSgCgTMHNcU/T9GNHlA=;
-  b=LHnqEiLbk8Br2rgIBSquHpIBL8YNBeks4zVAa9AZ503FWEj0u7me16rY
-   67UEFYowsEB3WVZLPAUB5BQJvT/FXiykwzTxTM81DpA+sNiWo8uREFaHB
-   mIwSWjeamk2bOMD1wPkecWq+IgBQAX+fd/yQ7LB/2lAjJfH5EXfPd1Kre
-   +RVPFZ83P6wH9vi4DUy9v67phbbRQVvqaI/9pXTyd9oHwx5MgGdm2RAWt
-   dq43j0RZf5FsGU0S66ZvUW8ej7+9IsM1t+wLx3+nH445xhmsYkDZ/uYsk
-   zkvdZ8sP5ssgWmzLaFK/1GJVmg4j+YoNxAq6B8LbybbLPqoTbxhWN8fcw
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10930"; a="392991585"
-X-IronPort-AV: E=Sophos;i="6.04,291,1695711600"; 
-   d="scan'208";a="392991585"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Dec 2023 06:24:13 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10930"; a="1107742833"
-X-IronPort-AV: E=Sophos;i="6.04,291,1695711600"; 
-   d="scan'208";a="1107742833"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga005.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Dec 2023 06:24:11 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rFxUW-00000007YcA-3mex;
-	Wed, 20 Dec 2023 16:24:08 +0200
-Date: Wed, 20 Dec 2023 16:24:08 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Qu Wenruo <wqu@suse.com>
-Cc: Alexey Dobriyan <adobriyan@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-btrfs@vger.kernel.org,
-	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7B7338F8E;
+	Wed, 20 Dec 2023 14:24:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mess.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mess.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mess.org; s=2020;
+	t=1703082278; bh=3nJY5azeXpwacoa6a2SmWI95bGDplAo5X6yyrstIjmU=;
+	h=From:To:Cc:Subject:Date:From;
+	b=fsIgbuOCsPqt2uskYUYZh1wJwArRP6uO97NbODoc+qf9AkVTPtj+79/J/mPMUDLzf
+	 X+AlAwWPxBf47mSCj89pGu141jLGFIcVPgleMxrC/rLMgpNgxifRi0YiieE+k/zFpc
+	 qUxOfQBFd8tjkHmRzO27T1KYQfnx8YTmca82ZeArUfiXsb/e0/v5tgqTOcnadjYgce
+	 Y2lKz2Ynn1pCF9qkKXxAHq/vfxV+SA4PmghCuQuobfAg5aO3eI4AEy9gafq7LOjgi8
+	 lpWVOURnlu0s4BnCNALzDoXCKQPTNC+KpuQ3FL+9NR4UJ7CWJGtDmsf4Ufm5MCAtEt
+	 eH7z9cDskVxYA==
+Received: by gofer.mess.org (Postfix, from userid 501)
+	id 39D6B1000CC; Wed, 20 Dec 2023 14:24:38 +0000 (GMT)
+X-Spam-Level: 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mess.org; s=2020;
+	t=1703082276; bh=3nJY5azeXpwacoa6a2SmWI95bGDplAo5X6yyrstIjmU=;
+	h=From:To:Cc:Subject:Date:From;
+	b=CJ77FQKTi3a7yYSw14QDo+huocBfxWeIAdaGsdHQQS+UfVhiOgGZPKyb8hzW6PNr6
+	 BlOlb/fp4aRMahIpP8qgNMuRbZALcOb79ezlUDY0FYSV/Cz4aTY+eukU53BuyU5HSk
+	 s6tlYfVOyWK6vf6R6uNOJ5S4ieUwXiqOIC9HqjI3E92xYEkEavngA0H/ogI584SXVT
+	 2SXI91OnJ/lm0ZHy5dFjL7RuOIx4m86LkbYBTBehVp88iQhWxfXWMO9DQBYl/Zup2T
+	 pRDykH5Haz0S5TwhdHKIISE89lT07Soq6BmQ+65CHk6bLX7runTYduRMs39Mj09mJi
+	 Wpx02ysD7lPUA==
+Received: from localhost.localdomain (bigcore.local [IPv6:2a02:8011:d000:212:ca7f:54ff:fe51:14d6])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by gofer.mess.org (Postfix) with ESMTPSA id 077791000CC;
+	Wed, 20 Dec 2023 14:24:36 +0000 (GMT)
+From: Sean Young <sean@mess.org>
+To: Thierry Reding <thierry.reding@gmail.com>,
+	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	Ray Jui <rjui@broadcom.com>,
+	Scott Branden <sbranden@broadcom.com>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>
+Cc: Sean Young <sean@mess.org>,
+	linux-pwm@vger.kernel.org,
+	linux-rpi-kernel@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] lib/strtox: introduce kstrtoull_suffix() helper
-Message-ID: <ZYL5CI4aEyVnabhe@smile.fi.intel.com>
+Subject: [PATCH v11] pwm: bcm2835: Allow PWM driver to be used in atomic context
+Date: Wed, 20 Dec 2023 14:24:25 +0000
+Message-ID: <20231220142426.1275052-1-sean@mess.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
 
+clk_get_rate() may do a mutex lock. Fetch the clock rate once, and prevent
+rate changes using clk_rate_exclusive_get().
 
-On Wed, Dec 20, 2023 at 08:31:09PM +1030, Qu Wenruo wrote:
-> On 2023/12/20 20:24, Alexey Dobriyan wrote:
-> > > Just as mentioned in the comment of memparse(), the simple_stroull()
-> > > usage can lead to overflow all by itself.
-> > 
-> > which is the root cause...
-> > 
-> > I don't like one char suffixes. They are easy to integrate but then the
-> > _real_ suffixes are "MiB", "GiB", etc.
-> > 
-> > If you care only about memparse(), then using _parse_integer() can be
-> > arranged. I don't see why not.
-> 
-> Well, personally speaking I don't think we should even support the suffix at
-> all, at least for the only two usage inside btrfs.
-> 
-> But unfortunately I'm not the one to do the final call, and the final call
-> is to keep the suffix behavior...
-> 
-> And indeed using _parse_integer() with _parse_interger_fixup_radix() would
-> be better, as we don't need to extend the _kstrtoull() code base.
+Signed-off-by: Sean Young <sean@mess.org>
+Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
+---
+ drivers/pwm/pwm-bcm2835.c | 38 +++++++++++++++++++++++++++++---------
+ 1 file changed, 29 insertions(+), 9 deletions(-)
 
-My comment on the first patch got vanished due to my MTA issues, but I'll try
-to summarize my point here.
-
-First of all, I do not like the naming, it's too vague. What kind of suffix?
-Do we suppose to have suffix in the input? What will be the behaviour w/o
-suffix?  And so on...
-
-Second, if it's a problem in memparse(), just fix it and that's all.
-
-Third, as Alexey said, we have metric and byte suffixes and they are different.
-Supporting one without the other is just adding to the existing confusion.
-
-Last, but not least, we do NOT accept new code in the lib/ without test cases.
-
-So, that said here is my formal NAK for this series (at least in this form).
-
-P.S> The Subject should start with either kstrtox: or lib/kstrtox.c.
-
+diff --git a/drivers/pwm/pwm-bcm2835.c b/drivers/pwm/pwm-bcm2835.c
+index ab30667f4f95..307c0bd5f885 100644
+--- a/drivers/pwm/pwm-bcm2835.c
++++ b/drivers/pwm/pwm-bcm2835.c
+@@ -28,6 +28,7 @@ struct bcm2835_pwm {
+ 	struct device *dev;
+ 	void __iomem *base;
+ 	struct clk *clk;
++	unsigned long rate;
+ };
+ 
+ static inline struct bcm2835_pwm *to_bcm2835_pwm(struct pwm_chip *chip)
+@@ -63,17 +64,11 @@ static int bcm2835_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
+ {
+ 
+ 	struct bcm2835_pwm *pc = to_bcm2835_pwm(chip);
+-	unsigned long rate = clk_get_rate(pc->clk);
+ 	unsigned long long period_cycles;
+ 	u64 max_period;
+ 
+ 	u32 val;
+ 
+-	if (!rate) {
+-		dev_err(pc->dev, "failed to get clock rate\n");
+-		return -EINVAL;
+-	}
+-
+ 	/*
+ 	 * period_cycles must be a 32 bit value, so period * rate / NSEC_PER_SEC
+ 	 * must be <= U32_MAX. As U32_MAX * NSEC_PER_SEC < U64_MAX the
+@@ -88,13 +83,13 @@ static int bcm2835_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
+ 	 * <=> period < ((U32_MAX * NSEC_PER_SEC + NSEC_PER_SEC/2) / rate
+ 	 * <=> period <= ceil((U32_MAX * NSEC_PER_SEC + NSEC_PER_SEC/2) / rate) - 1
+ 	 */
+-	max_period = DIV_ROUND_UP_ULL((u64)U32_MAX * NSEC_PER_SEC + NSEC_PER_SEC / 2, rate) - 1;
++	max_period = DIV_ROUND_UP_ULL((u64)U32_MAX * NSEC_PER_SEC + NSEC_PER_SEC / 2, pc->rate) - 1;
+ 
+ 	if (state->period > max_period)
+ 		return -EINVAL;
+ 
+ 	/* set period */
+-	period_cycles = DIV_ROUND_CLOSEST_ULL(state->period * rate, NSEC_PER_SEC);
++	period_cycles = DIV_ROUND_CLOSEST_ULL(state->period * pc->rate, NSEC_PER_SEC);
+ 
+ 	/* don't accept a period that is too small */
+ 	if (period_cycles < PERIOD_MIN)
+@@ -103,7 +98,7 @@ static int bcm2835_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
+ 	writel(period_cycles, pc->base + PERIOD(pwm->hwpwm));
+ 
+ 	/* set duty cycle */
+-	val = DIV_ROUND_CLOSEST_ULL(state->duty_cycle * rate, NSEC_PER_SEC);
++	val = DIV_ROUND_CLOSEST_ULL(state->duty_cycle * pc->rate, NSEC_PER_SEC);
+ 	writel(val, pc->base + DUTY(pwm->hwpwm));
+ 
+ 	/* set polarity */
+@@ -131,6 +126,13 @@ static const struct pwm_ops bcm2835_pwm_ops = {
+ 	.apply = bcm2835_pwm_apply,
+ };
+ 
++static void devm_clk_rate_exclusive_put(void *data)
++{
++	struct clk *clk = data;
++
++	clk_rate_exclusive_put(clk);
++}
++
+ static int bcm2835_pwm_probe(struct platform_device *pdev)
+ {
+ 	struct bcm2835_pwm *pc;
+@@ -151,8 +153,26 @@ static int bcm2835_pwm_probe(struct platform_device *pdev)
+ 		return dev_err_probe(&pdev->dev, PTR_ERR(pc->clk),
+ 				     "clock not found\n");
+ 
++	ret = clk_rate_exclusive_get(pc->clk);
++	if (ret)
++		return dev_err_probe(&pdev->dev, ret,
++				     "fail to get exclusive rate\n");
++
++	ret = devm_add_action_or_reset(&pdev->dev, devm_clk_rate_exclusive_put,
++				       pc->clk);
++	if (ret) {
++		clk_rate_exclusive_put(pc->clk);
++		return ret;
++	}
++
++	pc->rate = clk_get_rate(pc->clk);
++	if (!pc->rate)
++		return dev_err_probe(&pdev->dev, -EINVAL,
++				     "failed to get clock rate\n");
++
+ 	pc->chip.dev = &pdev->dev;
+ 	pc->chip.ops = &bcm2835_pwm_ops;
++	pc->chip.atomic = true;
+ 	pc->chip.npwm = 2;
+ 
+ 	platform_set_drvdata(pdev, pc);
 -- 
-With Best Regards,
-Andy Shevchenko
+2.43.0
 
 
