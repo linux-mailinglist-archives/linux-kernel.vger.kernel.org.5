@@ -1,133 +1,65 @@
-Return-Path: <linux-kernel+bounces-7021-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7046-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1424481A095
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 15:02:59 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8132581A0EC
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 15:17:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C6CDA28AE27
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 14:02:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 23680B21035
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 14:17:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3CAD38FB0;
-	Wed, 20 Dec 2023 14:00:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFA9938DE7;
+	Wed, 20 Dec 2023 14:17:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FjxiOTEj"
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="jvD9Jf4Z"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4175838F8E
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 14:00:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D73AC433CC;
-	Wed, 20 Dec 2023 14:00:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703080855;
-	bh=TsDCwkBaMdKoCv+Np9f6t9jCgxH5nUH7ukB2HEWM/aE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=FjxiOTEj9CZ8MeLmeRu78ioBBydcvtHYgk3K5f5vg8xElj+nYY2PD8Xd0D9WO8pav
-	 EwK7ksy7wgEvELKaH/CHbQHXgHv+zAW9UACPzC67UVNoxty7HsE2V8zMB4yGKvYTXX
-	 D6zRYappk6Kk0t3jG+ZaYURa3ItCf2Sg0ENfVMj5FSkATr5ep1fStLqnPl2bYPvxo6
-	 vc7GXNAhSI0dkxLUVy1bjrKp9swdZ9ei6frpg0UVx9d5RmDGtOATP/AO5QTLTLRoxZ
-	 5Sx8t7EhhSj5RIKiPt3FUQV66Pwi90sJK3B/KguPYasdcihPrjNIneUODaz4OUql41
-	 wThyO4evLUIVw==
-Date: Wed, 20 Dec 2023 15:00:52 +0100
-From: Frederic Weisbecker <frederic@kernel.org>
-To: Anna-Maria Behnsen <anna-maria@linutronix.de>
-Cc: linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
-	John Stultz <jstultz@google.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Eric Dumazet <edumazet@google.com>,
-	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-	Arjan van de Ven <arjan@infradead.org>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	Rik van Riel <riel@surriel.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Sebastian Siewior <bigeasy@linutronix.de>,
-	Giovanni Gherdovich <ggherdovich@suse.cz>,
-	Lukasz Luba <lukasz.luba@arm.com>,
-	"Gautham R . Shenoy" <gautham.shenoy@amd.com>,
-	Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
-	K Prateek Nayak <kprateek.nayak@amd.com>
-Subject: Re: [PATCH v9 11/32] timers: Rework idle logic
-Message-ID: <ZYLzlBPpS5zT7OHq@localhost.localdomain>
-References: <20231201092654.34614-1-anna-maria@linutronix.de>
- <20231201092654.34614-12-anna-maria@linutronix.de>
+Received: from m12.mail.163.com (m12.mail.163.com [220.181.12.215])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16EBD38DDE
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 14:17:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=47DEQ
+	pj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=; b=jvD9Jf4Zv+vrDmzEx3r37
+	E16J9u0uDVXVoPGRvo0Z/0U75Gs30iFufZL9bkzYSmQ2Gd6H/KPhUrk9TV5f3+Ec
+	yxWV7982Lp59Fm7kHekb1hzqDKjHBmu/Bm+jQCi1N81KTi/hm0cVFAszApIrEMOj
+	/spNc2Y1FMDv5nzgwXlgEI=
+Received: from localhost.localdomain (unknown [120.229.70.191])
+	by zwqz-smtp-mta-g5-3 (Coremail) with SMTP id _____wDnj7Ko84Jlw2XSGA--.9712S2;
+	Wed, 20 Dec 2023 22:01:14 +0800 (CST)
+From: Junwen Wu <wudaemon@163.com>
+To: laoar.shao@gmail.com
+Cc: bristot@redhat.com,
+	bsegall@google.com,
+	dietmar.eggemann@arm.com,
+	juri.lelli@redhat.com,
+	linux-kernel@vger.kernel.org,
+	mgorman@suse.de,
+	mingo@redhat.com,
+	peterz@infradead.org,
+	rostedt@goodmis.org,
+	vincent.guittot@linaro.org,
+	vschneid@redhat.com,
+	wudaemon@163.com
+Subject: Re: [PATCH v1] sched/rt: Fix rt task's sched latency statistics in sched_stat_wait trace_point
+Date: Wed, 20 Dec 2023 14:01:12 +0000
+Message-Id: <20231220140112.821992-1-wudaemon@163.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <CALOAHbDY0dkohOudFL4UAK2XBn0FKe7uKLmbWUzmDeEdTq8M9w@mail.gmail.com>
+References: <CALOAHbDY0dkohOudFL4UAK2XBn0FKe7uKLmbWUzmDeEdTq8M9w@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231201092654.34614-12-anna-maria@linutronix.de>
+X-CM-TRANSID:_____wDnj7Ko84Jlw2XSGA--.9712S2
+X-Coremail-Antispam: 1Uf129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+	VFW2AGmfu7bjvjm3AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvjfUb189UUUUU
+X-CM-SenderInfo: 5zxgtvxprqqiywtou0bp/1tbisQ5MbWVOAlB8pQAAs+
 
-Le Fri, Dec 01, 2023 at 10:26:33AM +0100, Anna-Maria Behnsen a écrit :
-> From: Thomas Gleixner <tglx@linutronix.de>
-> 
-> To improve readability of the code, split base->idle calculation and
-> expires calculation into separate parts. While at it, update the comment
-> about timer base idle marking.
-> 
-> Thereby the following subtle change happens if the next event is just one
-> jiffy ahead and the tick was already stopped: Originally base->is_idle
-> remains true in this situation. Now base->is_idle turns to false. This may
-> spare an IPI if a timer is enqueued remotely to an idle CPU that is going
-> to tick on the next jiffy.
-> 
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
-> Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
-> ---
-> v9: Re-ordering to not hurt the eyes and update comment
-> v4: Change condition to force 0 delta and update commit message (Frederic)
-> ---
->  kernel/time/timer.c | 31 ++++++++++++++++---------------
->  1 file changed, 16 insertions(+), 15 deletions(-)
-> 
-> diff --git a/kernel/time/timer.c b/kernel/time/timer.c
-> index fee42dda8237..0826018d9873 100644
-> --- a/kernel/time/timer.c
-> +++ b/kernel/time/timer.c
-> @@ -1943,22 +1943,23 @@ u64 get_next_timer_interrupt(unsigned long basej, u64 basem)
->  	 */
->  	__forward_timer_base(base, basej);
->  
-> -	if (time_before_eq(nextevt, basej)) {
-> -		expires = basem;
-> -		base->is_idle = false;
-> -	} else {
-> -		if (base->timers_pending)
-> -			expires = basem + (u64)(nextevt - basej) * TICK_NSEC;
-> -		/*
-> -		 * If we expect to sleep more than a tick, mark the base idle.
-> -		 * Also the tick is stopped so any added timer must forward
-> -		 * the base clk itself to keep granularity small. This idle
-> -		 * logic is only maintained for the BASE_STD base, deferrable
-> -		 * timers may still see large granularity skew (by design).
-> -		 */
-> -		if ((expires - basem) > TICK_NSEC)
-> -			base->is_idle = true;
-> +	if (base->timers_pending) {
-> +		/* If we missed a tick already, force 0 delta */
-> +		if (time_before(nextevt, basej))
-> +			nextevt = basej;
-> +		expires = basem + (u64)(nextevt - basej) * TICK_NSEC;
->  	}
-> +
-> +	/*
-> +	 * Base is idle if the next event is more than a tick away.
-> +	 *
-> +	 * If the base is marked idle then any timer add operation must forward
-> +	 * the base clk itself to keep granularity small. This idle logic is
-> +	 * only maintained for the BASE_STD base, deferrable timers may still
-> +	 * see large granularity skew (by design).
-> +	 */
-> +	base->is_idle = time_after(nextevt, basej + 1);
-> +
 
-Much better, thanks! :-)
 
