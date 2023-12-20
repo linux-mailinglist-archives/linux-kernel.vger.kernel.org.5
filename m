@@ -1,191 +1,139 @@
-Return-Path: <linux-kernel+bounces-6288-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6287-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 236908196D0
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 03:29:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A39A98196CB
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 03:28:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4893C1C25011
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 02:29:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 340BEB24B45
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 02:28:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFFBF8C00;
-	Wed, 20 Dec 2023 02:29:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5672D8BFB;
+	Wed, 20 Dec 2023 02:28:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hO2svIY8"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="eDgUbFiY"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CE278827;
-	Wed, 20 Dec 2023 02:29:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703039356; x=1734575356;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=5P8valVma7379oKA2C4O5u8JYMU/WxLyLWS4JRVSF50=;
-  b=hO2svIY8Cqn1Ir3XfrM5pb+m9HJ7Oi4DBmlMNGch9BXTmB9qVXykW4fR
-   cIPShyDvi7OwoXInVlLEoRuzGjr6NMe6RDP6+J/VtkECVmuvULc+Z+ZGL
-   kHwGUT/Fy4MOgUSGtmVU0fGh/wa3QOsGhVLBFRuaYbbO8ZftSOt0eWp6M
-   YkOUXvE7LqnztJAUAs1xzkP1STrb3a0L1vp+S1bIUtSMob9OmDfqyGJGn
-   b0tzqKd1FBOEXKl8oaHTIX8i75vN7KfKZPNuJl4RpeHpslqjR9JsfzsYS
-   dJ34AxdBq9oN3uz/ku0DILZxu6JKv+o0G4BvPs/tH3FGme9/oZ/MP6KDg
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10929"; a="481940572"
-X-IronPort-AV: E=Sophos;i="6.04,290,1695711600"; 
-   d="scan'208";a="481940572"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Dec 2023 18:29:15 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10929"; a="949378315"
-X-IronPort-AV: E=Sophos;i="6.04,290,1695711600"; 
-   d="scan'208";a="949378315"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Dec 2023 18:29:06 -0800
-From: "Huang, Ying" <ying.huang@intel.com>
-To: Gregory Price <gregory.price@memverge.com>
-Cc: Gregory Price <gourry.memverge@gmail.com>,  <linux-mm@kvack.org>,
-  <linux-doc@vger.kernel.org>,  <linux-fsdevel@vger.kernel.org>,
-  <linux-kernel@vger.kernel.org>,  <linux-api@vger.kernel.org>,
-  <x86@kernel.org>,  <akpm@linux-foundation.org>,  <arnd@arndb.de>,
-  <tglx@linutronix.de>,  <luto@kernel.org>,  <mingo@redhat.com>,
-  <bp@alien8.de>,  <dave.hansen@linux.intel.com>,  <hpa@zytor.com>,
-  <mhocko@kernel.org>,  <tj@kernel.org>,  <corbet@lwn.net>,
-  <rakie.kim@sk.com>,  <hyeongtak.ji@sk.com>,  <honggyu.kim@sk.com>,
-  <vtavarespetr@micron.com>,  <peterz@infradead.org>,
-  <jgroves@micron.com>,  <ravis.opensrc@micron.com>,
-  <sthanneeru@micron.com>,  <emirakhur@micron.com>,  <Hasan.Maruf@amd.com>,
-  <seungjun.ha@samsung.com>,  Johannes Weiner <hannes@cmpxchg.org>,  Hasan
- Al Maruf <hasanalmaruf@fb.com>,  Hao Wang <haowang3@fb.com>,  Dan Williams
- <dan.j.williams@intel.com>,  "Michal Hocko" <mhocko@suse.com>,  Zhongkun
- He <hezhongkun.hzk@bytedance.com>,  "Frank van der Linden"
- <fvdl@google.com>,  John Groves <john@jagalactic.com>,  Jonathan Cameron
- <Jonathan.Cameron@huawei.com>
-Subject: Re: [PATCH v4 00/11] mempolicy2, mbind2, and weighted interleave
-In-Reply-To: <ZYHcPiU2IzHr/tbQ@memverge.com> (Gregory Price's message of "Tue,
-	19 Dec 2023 13:09:02 -0500")
-References: <20231218194631.21667-1-gregory.price@memverge.com>
-	<87wmtanba2.fsf@yhuang6-desk2.ccr.corp.intel.com>
-	<ZYHcPiU2IzHr/tbQ@memverge.com>
-Date: Wed, 20 Dec 2023 10:27:06 +0800
-Message-ID: <87zfy5libp.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F06B846B;
+	Wed, 20 Dec 2023 02:28:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=S6hBBZYUTdu1SR1857lmwvYGVoEU9Tl7+LRs2NQaAd8=; b=eDgUbFiY79P17VReQHuHCRVBo7
+	54vBKiszoO2sKY7W03M+6FSkyO0rohkApYaptKXK3LKWpI7Zfak54m+3ZnK9J4ZDbmbBFdcDQxFbr
+	dslLnFi8G5uCkYSrg0lS20kIcy4igWQQiR4gA27uEyRKbcNRO/ktcHzHww0Na68RZpkpf4DjL541j
+	cc/GMZtFRuGQ773feihpSavEJjh4LTktm7esjMe6LsShFXYKg9Y1o2p7CNjhLSiMs46I9yfAdd2Yi
+	Mh9rae7qDTWF+5rVls4KJl621Rt4hax8BQr9iuaHSpifQD5HJmJpijJ6mdn5jCTYGlj/R1frWIsLq
+	ClEtFCYg==;
+Received: from [50.53.46.231] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1rFmJq-00FyTs-1y;
+	Wed, 20 Dec 2023 02:28:22 +0000
+Message-ID: <8fd18c6b-3a26-4cdc-a18f-48587d0ce79b@infradead.org>
+Date: Tue, 19 Dec 2023 18:28:22 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] wifi: cfg80211: address several kerneldoc warnings
+Content-Language: en-US
+To: Jonathan Corbet <corbet@lwn.net>,
+ Johannes Berg <johannes@sipsolutions.net>
+Cc: linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <87plz1g2sc.fsf@meer.lwn.net>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <87plz1g2sc.fsf@meer.lwn.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Gregory Price <gregory.price@memverge.com> writes:
 
-> On Tue, Dec 19, 2023 at 11:04:05AM +0800, Huang, Ying wrote:
->> Gregory Price <gourry.memverge@gmail.com> writes:
->> 
->> > This patch set extends the mempolicy interface to enable new
->> > mempolicies which may require extended data to operate.
->> >
->> > MPOL_WEIGHTED_INTERLEAVE is included as an example extension.
->> 
->> Per my understanding, it's better to describe why we need this patchset
->> at the beginning.  Per my understanding, weighted interleave is used to
->> expand DRAM bandwidth for workloads with real high memory bandwidth
->> requirements.  Without it, DRAM bandwidth will be saturated, which leads
->> to poor performance.
->> 
->
-> Will add more details, thanks.
->
->> > struct mempolicy_args {
->> >     unsigned short mode;            /* policy mode */
->> >     unsigned short mode_flags;      /* policy mode flags */
->> >     int home_node;                  /* mbind: use MPOL_MF_HOME_NODE */
->> >     nodemask_t *policy_nodes;       /* get/set/mbind */
->> >     unsigned char *il_weights;      /* for mode MPOL_WEIGHTED_INTERLEAVE */
->> >     int policy_node;                /* get: policy node information */
->> > };
->> 
->> Because we use more and more parameters to describe the mempolicy, I
->> think it's a good idea to replace some parameters with struct.  But I
->> don't think it's a good idea to put unrelated stuff into the struct.
->> For example,
->> 
->> struct mempolicy_param {
->>     unsigned short mode;            /* policy mode */
->>     unsigned short mode_flags;      /* policy mode flags */
->>     int home_node;                  /* mbind: use MPOL_MF_HOME_NODE */
->>     nodemask_t *policy_nodes;
->>     unsigned char *il_weights;      /* for mode MPOL_WEIGHTED_INTERLEAVE */
->> };
->> 
->> describe the parameters to create the mempolicy.  It can be used by
->> set/get_mempolicy() and mbind().  So, I think that it's a good
->> abstraction.  But "policy_node" has nothing to do with set_mempolicy()
->> and mbind().  So I think that we shouldn't add it into the struct.  It's
->> totally OK to use different parameters for different functions.  For
->> example,
->> 
->> long do_set_mempolicy(struct mempolicy_param *mparam);
->> long do_mbind(unsigned long start, unsigned long len,
->>                 struct mempolicy_param *mparam, unsigned long flags);
->> long do_get_task_mempolicy(struct mempolicy_param *mparam, int
->>                 *policy_node);
->> 
->> This isn't the full list.  My point is to use separate parameter for
->> something specific for some function.
->>
->
-> this is the internal structure, but i get the point, we can drop it from
-> the structure and extend the arg list internally.
->
-> I'd originally thought to just remove the policy_node stuff all
-> together from get_mempolicy2().  Do you prefer to have a separate struct
-> for set/get interfaces so that the get interface struct can be extended?
->
-> All the MPOL_F_NODE "alternate data fetch" mechanisms from
-> get_mempolicy() feel like more of a wart than a feature.  And presently
-> the only data returned in policy_node is the next allocation node for
-> interleave.  That's not even particularly useful, so I'm of a mind to
-> remove it.
->
-> Assuming we remove policy_node altogether... do we still break up the
-> set/get interface into separate structures to avoid this in the future?
 
-I have no much experience at ABI definition.  So, I want to get guidance
-from more experienced people on this.
+On 12/19/23 16:01, Jonathan Corbet wrote:
+> include/net/cfg80211.h includes a number of kerneldoc entries for struct
+> members that do not exist, leading to these warnings:
+> 
+>   ./include/net/cfg80211.h:3192: warning: Excess struct member 'band_pref' description in 'cfg80211_bss_selection'
+>   ./include/net/cfg80211.h:3192: warning: Excess struct member 'adjust' description in 'cfg80211_bss_selection'
+>   ./include/net/cfg80211.h:6181: warning: Excess struct member 'bssid' description in 'wireless_dev'
+>   ./include/net/cfg80211.h:6181: warning: Excess struct member 'beacon_interval' description in 'wireless_dev'
+>   ./include/net/cfg80211.h:7299: warning: Excess struct member 'bss' description in 'cfg80211_rx_assoc_resp_data'
+> 
+> Remove and/or repair each entry to address the warnings and ensure a proper
+> docs build for the affected structures.
+> 
+> Signed-off-by: Jonathan Corbet <corbet@lwn.net>
 
-Is it good to implement all functionality of get_mempolicy() with
-get_mempolicy2(), so we can deprecate get_mempolicy() and remove it
-finally?  So, users don't need to use 2 similar syscalls?
+Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
 
-And, IIUC, we will not get policy_node, addr_node, and policy config at
-the same time, is it better to use a union instead of struct in
-get_mempolicy2()?
 
->> > struct mpol_args {
->> >         /* Basic mempolicy settings */
->> >         __u16 mode;
->> >         __u16 mode_flags;
->> >         __s32 home_node;
->> >         __aligned_u64 pol_nodes;
->> >         __aligned_u64 *il_weights;      /* of size pol_maxnodes */
->> >         __u64 pol_maxnodes;
->> >         __s32 policy_node;
->> > };
->> 
->> Same as my idea above.  I think we shouldn't add policy_node for
->> set_mempolicy2()/mbind2().  That will make users confusing.  We can use
->> a different struct for get_mempolicy2().
->> 
->
-> See above.
+> ---
+>  include/net/cfg80211.h | 11 ++++-------
+>  1 file changed, 4 insertions(+), 7 deletions(-)
+> 
+> diff --git a/include/net/cfg80211.h b/include/net/cfg80211.h
+> index b137a33a1b68..81c46c8e2a68 100644
+> --- a/include/net/cfg80211.h
+> +++ b/include/net/cfg80211.h
+> @@ -3180,8 +3180,8 @@ struct cfg80211_ibss_params {
+>   *
+>   * @behaviour: requested BSS selection behaviour.
+>   * @param: parameters for requestion behaviour.
+> - * @band_pref: preferred band for %NL80211_BSS_SELECT_ATTR_BAND_PREF.
+> - * @adjust: parameters for %NL80211_BSS_SELECT_ATTR_RSSI_ADJUST.
+> + * @param.band_pref: preferred band for %NL80211_BSS_SELECT_ATTR_BAND_PREF.
+> + * @param.adjust: parameters for %NL80211_BSS_SELECT_ATTR_RSSI_ADJUST.
+>   */
+>  struct cfg80211_bss_selection {
+>  	enum nl80211_bss_select_attr behaviour;
+> @@ -6013,7 +6013,6 @@ void wiphy_delayed_work_flush(struct wiphy *wiphy,
+>   *	wireless device if it has no netdev
+>   * @u: union containing data specific to @iftype
+>   * @connected: indicates if connected or not (STA mode)
+> - * @bssid: (private) Used by the internal configuration code
+>   * @wext: (private) Used by the internal wireless extensions compat code
+>   * @wext.ibss: (private) IBSS data part of wext handling
+>   * @wext.connect: (private) connection handling data
+> @@ -6033,8 +6032,6 @@ void wiphy_delayed_work_flush(struct wiphy *wiphy,
+>   * @mgmt_registrations: list of registrations for management frames
+>   * @mgmt_registrations_need_update: mgmt registrations were updated,
+>   *	need to propagate the update to the driver
+> - * @beacon_interval: beacon interval used on this device for transmitting
+> - *	beacons, 0 when not valid
+>   * @address: The address for this device, valid only if @netdev is %NULL
+>   * @is_running: true if this is a non-netdev device that has been started, e.g.
+>   *	the P2P Device.
+> @@ -7270,8 +7267,6 @@ void cfg80211_auth_timeout(struct net_device *dev, const u8 *addr);
+>  
+>  /**
+>   * struct cfg80211_rx_assoc_resp_data - association response data
+> - * @bss: the BSS that association was requested with, ownership of the pointer
+> - *	moves to cfg80211 in the call to cfg80211_rx_assoc_resp()
+>   * @buf: (Re)Association Response frame (header + body)
+>   * @len: length of the frame data
+>   * @uapsd_queues: bitmap of queues configured for uapsd. Same format
+> @@ -7281,6 +7276,8 @@ void cfg80211_auth_timeout(struct net_device *dev, const u8 *addr);
+>   * @ap_mld_addr: AP MLD address (in case of MLO)
+>   * @links: per-link information indexed by link ID, use links[0] for
+>   *	non-MLO connections
+> + * @links.bss: the BSS that association was requested with, ownership of the
+> + *      pointer moves to cfg80211 in the call to cfg80211_rx_assoc_resp()
+>   * @links.status: Set this (along with a BSS pointer) for links that
+>   *	were rejected by the AP.
+>   */
 
---
-Best Regards,
-Huang, Ying
+-- 
+#Randy
+https://people.kernel.org/tglx/notes-about-netiquette
+https://subspace.kernel.org/etiquette.html
 
