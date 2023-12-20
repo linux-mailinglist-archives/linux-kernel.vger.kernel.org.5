@@ -1,243 +1,252 @@
-Return-Path: <linux-kernel+bounces-6389-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6390-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDBA9819849
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 06:43:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0F0881984A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 06:44:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6B5B01F26229
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 05:43:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E58EB1C2515F
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 05:44:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BBB4101CC;
-	Wed, 20 Dec 2023 05:43:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD993101CC;
+	Wed, 20 Dec 2023 05:44:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="x3RK85M8"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="CXkdEhAx"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-vk1-f170.google.com (mail-vk1-f170.google.com [209.85.221.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1985B946E
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 05:43:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-vk1-f170.google.com with SMTP id 71dfb90a1353d-4b328087918so964860e0c.0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 21:43:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703050984; x=1703655784; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uAZTeNF5ZezjDTNS53zJRbUUjywj7n/LbtvhNMedYA0=;
-        b=x3RK85M8b+6MO0YDvTG/aKPG4HBY/+rTrjRGusRkLwoxmd+IyA6oemLMGvYCj87JT4
-         G9i3c6OiplT07CHsjULXlr/4LrHaG/L/apTY8u04PRr7muBwnbUngHatZq2MdRqgQbzR
-         j5PsLNrMkCKTZWiWNXDces5LMRZexTj0mpE4MZpq9e5MAffwfeORsDwbLYgis5PSTufe
-         KLyiFTwTzmOaJjnib2/U5iEdA1e1JM1uGqzMW772RYhQM+IIARw96z3X4qih2N5mfvD6
-         ZeAnoZdBDKDDzJbhX2aIpQzl4i7YDpUidCBDDOwbzrveCEG3p/Iu45rfXwvbQCZ/fH/2
-         41oA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703050984; x=1703655784;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=uAZTeNF5ZezjDTNS53zJRbUUjywj7n/LbtvhNMedYA0=;
-        b=emo6NV1hO2/vm5WIi24nB80vSufltOXOPoesU5ecKN+Ah0IFKsaXt0Y2mCA+faNaIe
-         gOMuWpt4aYYPEdbgO31B/bDHELRuCHdDxoASutW5wVCohSAmEfx2zwdQzBjSHsXTDbSU
-         LTMxFdBiv5ScUJa8cjpvE0FHd44N06DhgKpxSZl0oZuFWd7G58XtVi4vMN/MIs/gPZCa
-         Wms/ZLPB1kREn/rPmeSa2Noy1EqHCuFJFrirxTohVoOZ7DAXMw/skpJmjlYRn8bKNZfH
-         Z2b7GoKWzSWy/Or2r2r58DNVqo+dDNuGveFTOWQ1ANIWPx0lPdgPeqc9KvXC435rI00Q
-         vI5Q==
-X-Gm-Message-State: AOJu0YzjSmLYRnJEkddMeZMtOf3sqnlMfxLimYavFZuFMLoIFAE3KSK4
-	UzHIimXGUEk/728G7QmdJCUqOLEMQOxIcp01Cg+ziQ==
-X-Google-Smtp-Source: AGHT+IE+M+mVOtLBygLLepmm1wTEWiOGC0i5CQlDAKUUHH74D0RJCAYCLQRPuYto1mTmNOLpGVhgOvWzuwozWp0Fczo=
-X-Received: by 2002:a05:6122:17a3:b0:4b6:d9db:d87 with SMTP id
- o35-20020a05612217a300b004b6d9db0d87mr2126699vkf.6.1703050983882; Tue, 19 Dec
- 2023 21:43:03 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5ED01FBE1
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 05:44:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1703051067;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=I1d5+ro+lqpJiHMWS3NTjfotG8YhvP95BegVyQFgf8g=;
+	b=CXkdEhAxjyI8x2D8Fz1qmrJBFcsPryC0wl5FzhhJzdvgksEh2ptIiBAD/Yy36Epc9oUeW2
+	HE8Tl77Zz74VHMPTgvAKa+TM+GAiNwLreHJP1NcYj2PqaRdLr7QLU/I5w8wkvrg2M3k+LT
+	Q333IhOw2MOQOXQvE62jk4XbCmbyWgY=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-466-yEduL3uBPv-to6JrmQGr1A-1; Wed, 20 Dec 2023 00:44:23 -0500
+X-MC-Unique: yEduL3uBPv-to6JrmQGr1A-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 83C5C8350E3;
+	Wed, 20 Dec 2023 05:44:23 +0000 (UTC)
+Received: from localhost (unknown [10.72.116.38])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 85DE03C25;
+	Wed, 20 Dec 2023 05:44:22 +0000 (UTC)
+Date: Wed, 20 Dec 2023 13:44:19 +0800
+From: Baoquan He <bhe@redhat.com>
+To: kernel test robot <lkp@intel.com>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Linux Memory Management List <linux-mm@kvack.org>
+Subject: Re: arch/sh/kernel/relocate_kernel.S:38: Error: invalid operands for
+ opcode
+Message-ID: <ZYJ/M1HZ9ITfs4qe@MiWiFi-R3L-srv>
+References: <202312182200.Ka7MzifQ-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231219074407.947984749@linuxfoundation.org>
-In-Reply-To: <20231219074407.947984749@linuxfoundation.org>
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Wed, 20 Dec 2023 11:12:52 +0530
-Message-ID: <CA+G9fYvmpuwR1zKNxj5DxFdxvcWnMhyn7BL5jZ+Q20RaRyZfKQ@mail.gmail.com>
-Subject: Re: [PATCH 5.10 00/60] 5.10.205-rc2 review
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
-	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
-	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
-	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
-	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202312182200.Ka7MzifQ-lkp@intel.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
 
-On Tue, 19 Dec 2023 at 13:23, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.10.205 release.
-> There are 60 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Thu, 21 Dec 2023 07:43:52 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.10.205-rc2.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.10.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On 12/18/23 at 10:55pm, kernel test robot wrote:
+> Hi Baoquan,
+> 
+> FYI, the error/warning was bisected to this commit, please ignore it if it's irrelevant.
+> 
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   ceb6a6f023fd3e8b07761ed900352ef574010bcb
+> commit: d70c27b728b8da1ab9c3b7ca117ee1c99dc86d29 sh, kexec: fix the incorrect ifdeffery and dependency of CONFIG_KEXEC
+> date:   6 days ago
+> config: sh-randconfig-r002-20220124 (https://download.01.org/0day-ci/archive/20231218/202312182200.Ka7MzifQ-lkp@intel.com/config)
+> compiler: sh4-linux-gcc (GCC) 13.2.0
+> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231218/202312182200.Ka7MzifQ-lkp@intel.com/reproduce)
+> 
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202312182200.Ka7MzifQ-lkp@intel.com/
+> 
+> All errors (new ones prefixed by >>):
+> 
+>    arch/sh/kernel/relocate_kernel.S: Assembler messages:
+> >> arch/sh/kernel/relocate_kernel.S:38: Error: invalid operands for opcode
+>    arch/sh/kernel/relocate_kernel.S:41: Error: invalid operands for opcode
+>    arch/sh/kernel/relocate_kernel.S:126: Error: invalid operands for opcode
+>    arch/sh/kernel/relocate_kernel.S:129: Error: invalid operands for opcode
 
+I reproduced this error, haven't got why and a way to fix it, will come
+back later if I have fix.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+> 
+> vim +38 arch/sh/kernel/relocate_kernel.S
+> 
+> 9d44190eae97ad4 kogiidena   2006-01-16   13  
+> 9d44190eae97ad4 kogiidena   2006-01-16   14  		.globl relocate_new_kernel
+> 9d44190eae97ad4 kogiidena   2006-01-16   15  relocate_new_kernel:
+> 9d44190eae97ad4 kogiidena   2006-01-16   16  	/* r4 = indirection_page   */
+> 9d44190eae97ad4 kogiidena   2006-01-16   17  	/* r5 = reboot_code_buffer */
+> 9d44190eae97ad4 kogiidena   2006-01-16   18  	/* r6 = start_address      */
+> 9d44190eae97ad4 kogiidena   2006-01-16   19  
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   20  	mov.l	10f, r0		/* PAGE_SIZE */
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   21  	add	r5, r0		/* setup new stack at end of control page */
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   22  
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   23  	/* save r15->r8 to new stack */
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   24  	mov.l	r15, @-r0
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   25  	mov	r0, r15
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   26  	mov.l	r14, @-r15
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   27  	mov.l	r13, @-r15
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   28  	mov.l	r12, @-r15
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   29  	mov.l	r11, @-r15
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   30  	mov.l	r10, @-r15
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   31  	mov.l	r9, @-r15
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   32  	mov.l	r8, @-r15
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   33  
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   34  	/* save other random registers */
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   35  	sts.l	macl, @-r15
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   36  	sts.l	mach, @-r15
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   37  	stc.l	gbr, @-r15
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18  @38  	stc.l	ssr, @-r15
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   39  	stc.l	sr, @-r15
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   40  	sts.l	pr, @-r15
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   41  	stc.l	spc, @-r15
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   42  
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   43  	/* switch to bank1 and save r7->r0 */
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   44  	mov.l	12f, r9
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   45  	stc	sr, r8
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   46  	or	r9, r8
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   47  	ldc	r8, sr
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   48  	mov.l	r7, @-r15
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   49  	mov.l	r6, @-r15
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   50  	mov.l	r5, @-r15
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   51  	mov.l	r4, @-r15
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   52  	mov.l	r3, @-r15
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   53  	mov.l	r2, @-r15
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   54  	mov.l	r1, @-r15
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   55  	mov.l	r0, @-r15
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   56  
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   57  	/* switch to bank0 and save r7->r0 */
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   58  	mov.l	12f, r9
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   59  	not	r9, r9
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   60  	stc	sr, r8
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   61  	and	r9, r8
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   62  	ldc	r8, sr
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   63  	mov.l	r7, @-r15
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   64  	mov.l	r6, @-r15
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   65  	mov.l	r5, @-r15
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   66  	mov.l	r4, @-r15
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   67  	mov.l	r3, @-r15
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   68  	mov.l	r2, @-r15
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   69  	mov.l	r1, @-r15
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   70  	mov.l	r0, @-r15
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   71  
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   72  	mov.l	r4, @-r15	/* save indirection page again */
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   73  
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   74  	bsr	swap_pages	/* swap pages before jumping to new kernel */
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   75  	 nop
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   76  
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   77  	mova	11f, r0
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   78  	mov.l	r15, @r0	/* save pointer to stack */
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   79  
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   80  	jsr	@r6		/* hand over control to new kernel */
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   81  	 nop
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   82  
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   83  	mov.l	11f, r15	/* get pointer to stack */
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   84  	mov.l	@r15+, r4	/* restore r4 to get indirection page */
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   85  
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   86  	bsr	swap_pages	/* swap pages back to previous state */
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   87  	 nop
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   88  
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   89  	/* make sure bank0 is active and restore r0->r7 */
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   90  	mov.l	12f, r9
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   91  	not	r9, r9
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   92  	stc	sr, r8
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   93  	and	r9, r8
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   94  	ldc	r8, sr
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   95  	mov.l	@r15+, r0
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   96  	mov.l	@r15+, r1
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   97  	mov.l	@r15+, r2
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   98  	mov.l	@r15+, r3
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18   99  	mov.l	@r15+, r4
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18  100  	mov.l	@r15+, r5
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18  101  	mov.l	@r15+, r6
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18  102  	mov.l	@r15+, r7
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18  103  
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18  104  	/* switch to bank1 and restore r0->r7 */
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18  105  	mov.l	12f, r9
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18  106  	stc	sr, r8
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18  107  	or	r9, r8
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18  108  	ldc	r8, sr
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18  109  	mov.l	@r15+, r0
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18  110  	mov.l	@r15+, r1
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18  111  	mov.l	@r15+, r2
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18  112  	mov.l	@r15+, r3
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18  113  	mov.l	@r15+, r4
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18  114  	mov.l	@r15+, r5
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18  115  	mov.l	@r15+, r6
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18  116  	mov.l	@r15+, r7
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18  117  
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18  118  	/* switch back to bank0 */
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18  119  	mov.l	12f, r9
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18  120  	not	r9, r9
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18  121  	stc	sr, r8
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18  122  	and	r9, r8
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18  123  	ldc	r8, sr
+> 9d44190eae97ad4 kogiidena   2006-01-16  124  
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18  125  	/* restore other random registers */
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18  126  	ldc.l	@r15+, spc
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18  127  	lds.l	@r15+, pr
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18  128  	ldc.l	@r15+, sr
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18  129  	ldc.l	@r15+, ssr
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18  130  	ldc.l	@r15+, gbr
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18  131  	lds.l	@r15+, mach
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18  132  	lds.l	@r15+, macl
+> 9d44190eae97ad4 kogiidena   2006-01-16  133  
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18  134  	/* restore r8->r15 */
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18  135  	mov.l	@r15+, r8
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18  136  	mov.l	@r15+, r9
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18  137  	mov.l	@r15+, r10
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18  138  	mov.l	@r15+, r11
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18  139  	mov.l	@r15+, r12
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18  140  	mov.l	@r15+, r13
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18  141  	mov.l	@r15+, r14
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18  142  	mov.l	@r15+, r15
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18  143  	rts
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18  144  	 nop
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18  145  
+> b7cf6ddc13186f9 Magnus Damm 2009-03-18  146  swap_pages:
+> 9d44190eae97ad4 kogiidena   2006-01-16  147  	bra	1f
+> 9d44190eae97ad4 kogiidena   2006-01-16  148  	 mov	r4,r0	  /* cmd = indirection_page */
+> 9d44190eae97ad4 kogiidena   2006-01-16  149  0:
+> 9d44190eae97ad4 kogiidena   2006-01-16  150  	mov.l	@r4+,r0	  /* cmd = *ind++ */
+> 9d44190eae97ad4 kogiidena   2006-01-16  151  
+> 
+> :::::: The code at line 38 was first introduced by commit
+> :::::: b7cf6ddc13186f9272438a97aa75972d496d0b0a sh: add kexec jump support
+> 
+> :::::: TO: Magnus Damm <damm@igel.co.jp>
+> :::::: CC: Paul Mundt <lethal@linux-sh.org>
+> 
+> -- 
+> 0-DAY CI Kernel Test Service
+> https://github.com/intel/lkp-tests/wiki
+> 
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-## Build
-* kernel: 5.10.205-rc2
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-5.10.y
-* git commit: 163d4e78243233162937b69caa8e5368a4fba1b0
-* git describe: v5.10.204-61-g163d4e782432
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10.y/build/v5.10=
-.204-61-g163d4e782432
-
-## Test Regressions (compared to v5.10.204)
-
-## Metric Regressions (compared to v5.10.204)
-
-## Test Fixes (compared to v5.10.204)
-
-## Metric Fixes (compared to v5.10.204)
-
-## Test result summary
-total: 99194, pass: 75772, fail: 3827, skip: 19519, xfail: 76
-
-## Build Summary
-* arc: 5 total, 5 passed, 0 failed
-* arm: 117 total, 117 passed, 0 failed
-* arm64: 44 total, 44 passed, 0 failed
-* i386: 35 total, 35 passed, 0 failed
-* mips: 24 total, 24 passed, 0 failed
-* parisc: 3 total, 0 passed, 3 failed
-* powerpc: 25 total, 25 passed, 0 failed
-* riscv: 11 total, 11 passed, 0 failed
-* s390: 12 total, 12 passed, 0 failed
-* sh: 10 total, 10 passed, 0 failed
-* sparc: 8 total, 8 passed, 0 failed
-* x86_64: 38 total, 38 passed, 0 failed
-
-## Test suites summary
-* boot
-* kselftest-android
-* kselftest-arm64
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers-dma-buf
-* kselftest-efivarfs
-* kselftest-exec
-* kselftest-filesystems
-* kselftest-filesystems-binderfs
-* kselftest-filesystems-epoll
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-ftrace
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-net-forwarding
-* kselftest-net-mptcp
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-user_events
-* kselftest-vDSO
-* kselftest-vm
-* kselftest-watchdog
-* kselftest-x86
-* kselftest-zram
-* kunit
-* libgpiod
-* log-parser-boot
-* log-parser-test
-* ltp-cap_bounds
-* ltp-commands
-* ltp-containers
-* ltp-controllers
-* ltp-cpuhotplug
-* ltp-crypto
-* ltp-cve
-* ltp-dio
-* ltp-fcntl-locktests
-* ltp-filecaps
-* ltp-fs
-* ltp-fs_bind
-* ltp-fs_perms_simple
-* ltp-fsx
-* ltp-hugetlb
-* ltp-io
-* ltp-ipc
-* ltp-math
-* ltp-mm
-* ltp-nptl
-* ltp-pty
-* ltp-sched
-* ltp-securebits
-* ltp-smoke
-* ltp-syscalls
-* ltp-tracing
-* network-basic-tests
-* perf
-* rcutorture
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
 
