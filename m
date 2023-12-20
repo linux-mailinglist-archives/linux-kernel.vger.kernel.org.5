@@ -1,141 +1,111 @@
-Return-Path: <linux-kernel+bounces-6346-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6347-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D12981977C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 05:02:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3EAC3819787
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 05:06:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 59D1B2884BF
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 04:02:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 664641C25315
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 04:06:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7880DBE64;
-	Wed, 20 Dec 2023 04:01:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2D571118C;
+	Wed, 20 Dec 2023 04:06:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ID58M14q"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="MQHVrLdi"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CFCC1BDF7
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 04:01:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A0D4D26F
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 04:06:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1703044882;
+	s=mimecast20190719; t=1703045163;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Y9WrZt2uNhtNYFIXv3cFXVd3+GtJdXG5iynZg0EOskg=;
-	b=ID58M14qelHWpdQW6xLtFbgAfWg7SNb176SsevazIDt6Eo/idxZlJD4A2jACPQZm5xjh7r
-	wYGuBabzmmCl7jm+0d13O4IoMzf0NPA16urVX7b8kcfWCYDC6FBMM/eH1K2LVPiB4zY6kE
-	OjZ0xILo30blag4VkVyuJEcgZTkfKdc=
-Received: from mail-ot1-f70.google.com (mail-ot1-f70.google.com
- [209.85.210.70]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=od6b06R9di1R/4iYBvwR9HNhISJUCGr44+UWNtXtRoc=;
+	b=MQHVrLdiTnYXrw0TsTvqsw7g/+M4/YK//6u5ghkO6uJMkdtWueDTmWOVcYC0+84OnsPtBr
+	CRJlyc3k2ErmsGfxbmvLCd7QsgMEhdsvofSjae84SHOrSeW3rffOP2KvbOaJHVkAiaklLC
+	s+SaepToKj1tfMOCkQaWM2rvIRnM5Mo=
+Received: from mail-oi1-f199.google.com (mail-oi1-f199.google.com
+ [209.85.167.199]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-494-18CZG1jGPSSSFt7QqQ9SKQ-1; Tue, 19 Dec 2023 23:01:20 -0500
-X-MC-Unique: 18CZG1jGPSSSFt7QqQ9SKQ-1
-Received: by mail-ot1-f70.google.com with SMTP id 46e09a7af769-6da66541ac5so3442690a34.0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 20:01:20 -0800 (PST)
+ us-mta-20-4ATFmPmfMSGi5qgViQdx_w-1; Tue, 19 Dec 2023 23:06:02 -0500
+X-MC-Unique: 4ATFmPmfMSGi5qgViQdx_w-1
+Received: by mail-oi1-f199.google.com with SMTP id 5614622812f47-3ba2072052cso6595536b6e.2
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 20:06:01 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703044880; x=1703649680;
+        d=1e100.net; s=20230601; t=1703045161; x=1703649961;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Y9WrZt2uNhtNYFIXv3cFXVd3+GtJdXG5iynZg0EOskg=;
-        b=Yg2W2gmIjy74hl4HpFCBlzWS/1QZG8VeMFvPS9xAcJA+1P3U2+VyvRE3WBbll1R05O
-         5oZLB93tY/ERD7mYUIMLKzoOP0GSn4BK6AvFLElPIVs4UlNCoQsolRoo2S9fcJDd9rzy
-         xMbcZ1wzUZzqGiBCvcehNa9488BrPmsl9dlV8/5FaPVBR8Wor4lfIEGEaRXdvsWVviEG
-         deELQ330kf1dtrysm3tKnyoJYtMA2iehIbwSrVrrf5NIzAHAaOkq3UPRQu9RhXzjjmMY
-         +6BUysANFEacynXSo/BeLyusA/ruhojJX7pEQJEqdOG4+u+6POz3IDElCm7BzfHM6yaW
-         e9rg==
-X-Gm-Message-State: AOJu0YyPz4tDPBSrTjcptYMjctiBY9sf4tbw3aw/YyLmvhql2lZlCnA6
-	QSFLK3bxW7bZL3sO/wyGwu0R7DZefztymaUksAjkJa5duWMW0my0Wkqsl6BYl19EcjYzy2pCaNq
-	SykL/0efWTdlFWF3DcRTZfeDzw3yKP04ArY0wOfox
-X-Received: by 2002:a05:6830:111a:b0:6db:a784:e63c with SMTP id w26-20020a056830111a00b006dba784e63cmr1226581otq.52.1703044880074;
-        Tue, 19 Dec 2023 20:01:20 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGKXTTVHkTHwzTIJp3S44KEnYn52QSYOGCVLEeAMGeoIdjhsZpD4pvK8iU+DlF3o79kgP3L8OwSOJhybMg0H+A=
-X-Received: by 2002:a05:6830:111a:b0:6db:a784:e63c with SMTP id
- w26-20020a056830111a00b006dba784e63cmr1226573otq.52.1703044879855; Tue, 19
- Dec 2023 20:01:19 -0800 (PST)
+        bh=od6b06R9di1R/4iYBvwR9HNhISJUCGr44+UWNtXtRoc=;
+        b=rjFiY96902WxjPkr7ah7tkK4wEeFnYVcSzFMKSMPDYGA8Q/dB3FyhT3NrdzjjPh0KU
+         c+fSSLeHJHzNhfpSFuoJablsdm1ROCd3JJuRyuZ6fJVBz2Xy2+mwCmKOK411E6QLC7b8
+         br9UgIIWPlCRMgF/tx0w2/hOTf7T3fv+Q9k0w8S5ZFGTh1CuAQTZNdjK+RmltzxtVr1R
+         dF29Ggcx0SfFG47evLLtTmDh7HSrmuo+5KBoo9j8CEC1Q72IrMJUBRTo+ii0UoM+aYQV
+         Fpe4V33yVaqpOjts5QYAiRyuXFsLnZkm7Yb66Ul6FfuT25wYdNGUok0BJ+Qw9EwieH3M
+         1xnQ==
+X-Gm-Message-State: AOJu0YzQrQBaGqrTzMkopeF7dbv/wwbTqy0T+f1KhSIPxNEOpLpbYoXN
+	19g1Z5+Yl/KVeNz14Uc/vR7U0YU292a1KuCQopwI74JzIC9RIq9mGgj7SOY0d1WL0LJ+C1Qc/eC
+	xv23+N+R8Pjlftn33FLe1wO3sTzbHBeW+ZPiaYhcz
+X-Received: by 2002:a05:6808:2022:b0:3bb:5f46:fc92 with SMTP id q34-20020a056808202200b003bb5f46fc92mr2662218oiw.32.1703045161217;
+        Tue, 19 Dec 2023 20:06:01 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IF7bNzJNP++sajjpkBSvZbj8fBXUFR3JlD7KqetxxL+4FHj3ZcsomiOKSot/CNkMhv11b5giD9zm5wB0LFKSTg=
+X-Received: by 2002:a05:6808:2022:b0:3bb:5f46:fc92 with SMTP id
+ q34-20020a056808202200b003bb5f46fc92mr2662209oiw.32.1703045161039; Tue, 19
+ Dec 2023 20:06:01 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <a7b0ef1eabd081f1c7c894e9b11de01678e85dee.1666293559.git.christophe.jaillet@wanadoo.fr>
- <72a89724-9dad-499a-a0ed-ad9d046d235d@wanadoo.fr>
-In-Reply-To: <72a89724-9dad-499a-a0ed-ad9d046d235d@wanadoo.fr>
+References: <20231219180858.120898-1-dtatulea@nvidia.com> <20231219180858.120898-3-dtatulea@nvidia.com>
+ <CACGkMEv7xQkZYJAgAUK6C3oUrZ9vuUJdTKRzihXcNPb-iWdpJw@mail.gmail.com>
+In-Reply-To: <CACGkMEv7xQkZYJAgAUK6C3oUrZ9vuUJdTKRzihXcNPb-iWdpJw@mail.gmail.com>
 From: Jason Wang <jasowang@redhat.com>
-Date: Wed, 20 Dec 2023 12:01:08 +0800
-Message-ID: <CACGkMEtHy4GxGEQyL9EThK11wHTH=JS44gM+A41gsWSSg9e=QQ@mail.gmail.com>
-Subject: Re: [PATCH] vdpa: Fix an error handling path in eni_vdpa_probe()
-To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc: "Michael S. Tsirkin" <mst@redhat.com>, Wu Zongyong <wuzongyong@linux.alibaba.com>, 
-	Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org, 
-	kernel-janitors@vger.kernel.org, virtualization@lists.linux-foundation.org
+Date: Wed, 20 Dec 2023 12:05:50 +0800
+Message-ID: <CACGkMEsaaDGi63__YrvsTC1HqgTaEWHvGokK1bJS5+m1XYM-6w@mail.gmail.com>
+Subject: Re: [PATCH vhost v4 02/15] vdpa: Add VHOST_BACKEND_F_CHANGEABLE_VQ_ADDR_IN_SUSPEND
+ flag
+To: Dragos Tatulea <dtatulea@nvidia.com>
+Cc: "Michael S . Tsirkin" <mst@redhat.com>, Eugenio Perez Martin <eperezma@redhat.com>, 
+	Si-Wei Liu <si-wei.liu@oracle.com>, Saeed Mahameed <saeedm@nvidia.com>, 
+	Leon Romanovsky <leon@kernel.org>, virtualization@lists.linux-foundation.org, 
+	Gal Pressman <gal@nvidia.com>, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Parav Pandit <parav@nvidia.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 8, 2023 at 5:14=E2=80=AFAM Christophe JAILLET
-<christophe.jaillet@wanadoo.fr> wrote:
+On Wed, Dec 20, 2023 at 11:46=E2=80=AFAM Jason Wang <jasowang@redhat.com> w=
+rote:
 >
-> Le 20/10/2022 =C3=A0 21:21, Christophe JAILLET a =C3=A9crit :
-> > After a successful vp_legacy_probe() call, vp_legacy_remove() should be
-> > called in the error handling path, as already done in the remove functi=
-on.
+> On Wed, Dec 20, 2023 at 2:09=E2=80=AFAM Dragos Tatulea <dtatulea@nvidia.c=
+om> wrote:
 > >
-> > Add the missing call.
-> >
-> > Fixes: e85087beedca ("eni_vdpa: add vDPA driver for Alibaba ENI")
-> > Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> > ---
-> >   drivers/vdpa/alibaba/eni_vdpa.c | 6 ++++--
-> >   1 file changed, 4 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/vdpa/alibaba/eni_vdpa.c b/drivers/vdpa/alibaba/eni=
-_vdpa.c
-> > index 5a09a09cca70..cce3d1837104 100644
-> > --- a/drivers/vdpa/alibaba/eni_vdpa.c
-> > +++ b/drivers/vdpa/alibaba/eni_vdpa.c
-> > @@ -497,7 +497,7 @@ static int eni_vdpa_probe(struct pci_dev *pdev, con=
-st struct pci_device_id *id)
-> >       if (!eni_vdpa->vring) {
-> >               ret =3D -ENOMEM;
-> >               ENI_ERR(pdev, "failed to allocate virtqueues\n");
-> > -             goto err;
-> > +             goto err_remove_vp_legacy;
-> >       }
-> >
-> >       for (i =3D 0; i < eni_vdpa->queues; i++) {
-> > @@ -509,11 +509,13 @@ static int eni_vdpa_probe(struct pci_dev *pdev, c=
-onst struct pci_device_id *id)
-> >       ret =3D vdpa_register_device(&eni_vdpa->vdpa, eni_vdpa->queues);
-> >       if (ret) {
-> >               ENI_ERR(pdev, "failed to register to vdpa bus\n");
-> > -             goto err;
-> > +             goto err_remove_vp_legacy;
-> >       }
-> >
-> >       return 0;
-> >
-> > +err_remove_vp_legacy:
-> > +     vp_legacy_remove(&eni_vdpa->ldev);
-> >   err:
-> >       put_device(&eni_vdpa->vdpa.dev);
-> >       return ret;
+> > The virtio spec doesn't allow changing virtqueue addresses after
+> > DRIVER_OK. Some devices do support this operation when the device is
+> > suspended. The VHOST_BACKEND_F_CHANGEABLE_VQ_ADDR_IN_SUSPEND flag
+> > advertises this support as a backend features.
 >
-> Polite reminder on a (very) old patch.
+> There's an ongoing effort in virtio spec to introduce the suspend state.
+>
+> So I wonder if it's better to just allow such behaviour?
 
-Acked-by: Jason Wang <jasowang@redhat.com>
+Actually I mean, allow drivers to modify the parameters during suspend
+without a new feature.
 
 Thanks
 
 >
-> CJ
+> Thanks
+>
 >
 
 
