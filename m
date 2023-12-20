@@ -1,137 +1,144 @@
-Return-Path: <linux-kernel+bounces-7274-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7275-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D5CF381A452
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 17:19:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D48581A477
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 17:20:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 92A0428C0E4
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 16:19:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6F6F01C24438
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 16:20:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92EE34D108;
-	Wed, 20 Dec 2023 16:13:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 799C241867;
+	Wed, 20 Dec 2023 16:14:26 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5023A4CE0D;
-	Wed, 20 Dec 2023 16:12:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8A0722F4;
-	Wed, 20 Dec 2023 08:13:43 -0800 (PST)
-Received: from [10.57.82.217] (unknown [10.57.82.217])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C384D3F64C;
-	Wed, 20 Dec 2023 08:12:57 -0800 (PST)
-Message-ID: <489ff972-272a-4038-b455-383fcbaa251d@arm.com>
-Date: Wed, 20 Dec 2023 16:14:04 +0000
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CEE341862;
+	Wed, 20 Dec 2023 16:14:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F102EC433C9;
+	Wed, 20 Dec 2023 16:14:24 +0000 (UTC)
+Date: Wed, 20 Dec 2023 11:15:25 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
+ <linux-trace-kernel@vger.kernel.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, Alexander Graf <graf@amazon.com>, Tom
+ Zanussi <zanussi@kernel.org>
+Subject: [PATCH] tracing / synthetic: Disable events after testing in
+ synth_event_gen_test_init()
+Message-ID: <20231220111525.2f0f49b0@gandalf.local.home>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 8/8] thermal: gov_power_allocator: Support new update
- callback of weights
-Content-Language: en-US
-To: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: linux-kernel@vger.kernel.org, daniel.lezcano@linaro.org,
- linux-pm@vger.kernel.org, rui.zhang@intel.com
-References: <20231212134844.1213381-1-lukasz.luba@arm.com>
- <20231212134844.1213381-9-lukasz.luba@arm.com>
- <CAJZ5v0gEFNhPYh8MdG6JPaXC0XggvyED+0QDuV+aLa5vASzhhA@mail.gmail.com>
-From: Lukasz Luba <lukasz.luba@arm.com>
-In-Reply-To: <CAJZ5v0gEFNhPYh8MdG6JPaXC0XggvyED+0QDuV+aLa5vASzhhA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Hi Rafael,
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-On 12/20/23 14:59, Rafael J. Wysocki wrote:
-> On Tue, Dec 12, 2023 at 2:48 PM Lukasz Luba <lukasz.luba@arm.com> wrote:
->>
->> When the thermal instance's weight is updated from the sysfs the governor
->> update_tz() callback is triggered. Implement proper reaction to this
->> event in the IPA, which would save CPU cycles spent in throttle().
->> This will speed-up the main throttle() IPA function and clean it up
->> a bit.
->>
->> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
->> ---
->>   drivers/thermal/gov_power_allocator.c | 15 +++++++++------
->>   1 file changed, 9 insertions(+), 6 deletions(-)
->>
->> diff --git a/drivers/thermal/gov_power_allocator.c b/drivers/thermal/gov_power_allocator.c
->> index 574aa5822112..a9f1549e6355 100644
->> --- a/drivers/thermal/gov_power_allocator.c
->> +++ b/drivers/thermal/gov_power_allocator.c
->> @@ -61,6 +61,7 @@ static inline s64 div_frac(s64 x, s64 y)
->>    *                     @trip_switch_on should be NULL.
->>    * @trip_max:          last passive trip point of the thermal zone. The
->>    *                     temperature we are controlling for.
->> + * @total_weight:      Sum of all thermal instances weights
->>    * @num_actors:                number of cooling devices supporting IPA callbacks
->>    * @buffer_size:       IPA internal buffer size
->>    * @req_power:         IPA buffer for requested power
->> @@ -76,6 +77,7 @@ struct power_allocator_params {
->>          u32 sustainable_power;
->>          const struct thermal_trip *trip_switch_on;
->>          const struct thermal_trip *trip_max;
->> +       int total_weight;
->>          int num_actors;
->>          int buffer_size;
->>          u32 *req_power;
->> @@ -403,16 +405,11 @@ static int allocate_power(struct thermal_zone_device *tz, int control_temp)
->>          u32 total_req_power = 0;
->>          u32 *weighted_req_power;
->>          u32 power_range, weight;
->> -       int total_weight = 0;
->>          int i = 0;
->>
->>          if (!params->num_actors)
->>                  return -ENODEV;
->>
->> -       list_for_each_entry(instance, &tz->thermal_instances, tz_node)
->> -               if (power_actor_is_valid(params, instance))
->> -                       total_weight += instance->weight;
->> -
->>          /* Clean all buffers for new power estimations */
->>          memset(params->req_power, 0, params->buffer_size);
->>
->> @@ -430,7 +427,7 @@ static int allocate_power(struct thermal_zone_device *tz, int control_temp)
->>                  if (cdev->ops->get_requested_power(cdev, &req_power[i]))
->>                          continue;
->>
->> -               if (!total_weight)
->> +               if (!params->total_weight)
->>                          weight = 1 << FRAC_BITS;
->>                  else
->>                          weight = instance->weight;
->> @@ -666,6 +663,12 @@ static void power_allocator_update_tz(struct thermal_zone_device *tz,
->>
->>                  allocate_actors_buffer(params, num_actors);
->>                  break;
->> +       case THERMAL_INSTANCE_WEIGHT_UPDATE:
->> +               params->total_weight = 0;
->> +               list_for_each_entry(instance, &tz->thermal_instances, tz_node)
->> +                       if (power_actor_is_valid(params, instance))
->> +                               params->total_weight += instance->weight;
->> +               break;
->>          default:
->>                  break;
->>          }
->> --
-> 
-> This one looks good to me, but if you decide to follow my advice from
-> the previous comments, it will need to be adjusted.
+The synth_event_gen_test module can be built in, if someone wants to run
+the tests at boot up and not have to load them.
 
-Yes, I will follow your recommendations, so this will be adjusted.
+The synth_event_gen_test_init() function creates and enables the synthetic
+events and runs its tests.
 
-Thank you for the review. I will respond to your other comments in
-patches as well.
+The synth_event_gen_test_exit() disables the events it created and
+destroys the events.
 
-Regards,
-Lukasz
+If the module is builtin, the events are never disabled. The issue is, the
+events should be disable after the tests are run. This could be an issue
+if the rest of the boot up tests are enabled, as they expect the events to
+be in a known state before testing. That known state happens to be
+disabled.
+
+When CONFIG_SYNTH_EVENT_GEN_TEST=y and CONFIG_EVENT_TRACE_STARTUP_TEST=y
+a warning will trigger:
+
+ Running tests on trace events:
+ Testing event create_synth_test:
+ Enabled event during self test!
+ ------------[ cut here ]------------
+ WARNING: CPU: 2 PID: 1 at kernel/trace/trace_events.c:4150 event_trace_self_tests+0x1c2/0x480
+ Modules linked in:
+ CPU: 2 PID: 1 Comm: swapper/0 Not tainted 6.7.0-rc2-test-00031-gb803d7c664d5-dirty #276
+ Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+ RIP: 0010:event_trace_self_tests+0x1c2/0x480
+ Code: bb e8 a2 ab 5d fc 48 8d 7b 48 e8 f9 3d 99 fc 48 8b 73 48 40 f6 c6 01 0f 84 d6 fe ff ff 48 c7 c7 20 b6 ad bb e8 7f ab 5d fc 90 <0f> 0b 90 48 89 df e8 d3 3d 99 fc 48 8b 1b 4c 39 f3 0f 85 2c ff ff
+ RSP: 0000:ffffc9000001fdc0 EFLAGS: 00010246
+ RAX: 0000000000000029 RBX: ffff88810399ca80 RCX: 0000000000000000
+ RDX: 0000000000000000 RSI: ffffffffb9f19478 RDI: ffff88823c734e64
+ RBP: ffff88810399f300 R08: 0000000000000000 R09: fffffbfff79eb32a
+ R10: ffffffffbcf59957 R11: 0000000000000001 R12: ffff888104068090
+ R13: ffffffffbc89f0a0 R14: ffffffffbc8a0f08 R15: 0000000000000078
+ FS:  0000000000000000(0000) GS:ffff88823c700000(0000) knlGS:0000000000000000
+ CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+ CR2: 0000000000000000 CR3: 00000001f6282001 CR4: 0000000000170ef0
+ Call Trace:
+  <TASK>
+  ? __warn+0xa5/0x200
+  ? event_trace_self_tests+0x1c2/0x480
+  ? report_bug+0x1f6/0x220
+  ? handle_bug+0x6f/0x90
+  ? exc_invalid_op+0x17/0x50
+  ? asm_exc_invalid_op+0x1a/0x20
+  ? tracer_preempt_on+0x78/0x1c0
+  ? event_trace_self_tests+0x1c2/0x480
+  ? __pfx_event_trace_self_tests_init+0x10/0x10
+  event_trace_self_tests_init+0x27/0xe0
+  do_one_initcall+0xd6/0x3c0
+  ? __pfx_do_one_initcall+0x10/0x10
+  ? kasan_set_track+0x25/0x30
+  ? rcu_is_watching+0x38/0x60
+  kernel_init_freeable+0x324/0x450
+  ? __pfx_kernel_init+0x10/0x10
+  kernel_init+0x1f/0x1e0
+  ? _raw_spin_unlock_irq+0x33/0x50
+  ret_from_fork+0x34/0x60
+  ? __pfx_kernel_init+0x10/0x10
+  ret_from_fork_asm+0x1b/0x30
+  </TASK>
+
+This is because the synth_event_gen_test_init() left the synthetic events
+that it created enabled. By having it disable them after testing, the
+other selftests will run fine.
+
+Cc: stable@vger.kernel.org
+Fixes: 9fe41efaca084 ("tracing: Add synth event generation test module")
+Reported-by: Alexander Graf <graf@amazon.com>
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ kernel/trace/synth_event_gen_test.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/kernel/trace/synth_event_gen_test.c b/kernel/trace/synth_event_gen_test.c
+index 8dfe85499d4a..354c2117be43 100644
+--- a/kernel/trace/synth_event_gen_test.c
++++ b/kernel/trace/synth_event_gen_test.c
+@@ -477,6 +477,17 @@ static int __init synth_event_gen_test_init(void)
+ 
+ 	ret = test_trace_synth_event();
+ 	WARN_ON(ret);
++
++	/* Disable when done */
++	trace_array_set_clr_event(gen_synth_test->tr,
++				  "synthetic",
++				  "gen_synth_test", false);
++	trace_array_set_clr_event(empty_synth_test->tr,
++				  "synthetic",
++				  "empty_synth_test", false);
++	trace_array_set_clr_event(create_synth_test->tr,
++				  "synthetic",
++				  "create_synth_test", false);
+  out:
+ 	return ret;
+ }
+-- 
+2.42.0
+
 
