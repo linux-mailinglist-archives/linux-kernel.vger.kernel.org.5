@@ -1,360 +1,185 @@
-Return-Path: <linux-kernel+bounces-7358-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7359-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7ECA981A681
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 18:41:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A926181A684
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 18:41:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D8B1DB24378
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 17:41:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 650BA287F1A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 17:41:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1881747F5F;
-	Wed, 20 Dec 2023 17:41:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63CBC481B8;
+	Wed, 20 Dec 2023 17:41:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qe3lnkV8"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2ED9A47A67;
-	Wed, 20 Dec 2023 17:41:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 543901FB;
-	Wed, 20 Dec 2023 09:41:56 -0800 (PST)
-Received: from [10.57.46.64] (unknown [10.57.46.64])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C155C3F64C;
-	Wed, 20 Dec 2023 09:41:08 -0800 (PST)
-Message-ID: <7023e9fb-0bde-4a17-aa9e-e29e6b8b4bf1@arm.com>
-Date: Wed, 20 Dec 2023 17:41:07 +0000
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A16847A59;
+	Wed, 20 Dec 2023 17:41:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD52EC433C8;
+	Wed, 20 Dec 2023 17:41:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703094088;
+	bh=5Xlp1kmL+9sf60Znhi3G0Telb2yFxg4srnBL7eqxQlo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=qe3lnkV8jEdZPfS35OjakjvYfLPOpFIq+g28CkASCttzL9dP50Z/103JkbGAIN9vs
+	 jjqZnyO8vJNnUJqqwhRnSSVwQ6TPap93rG0Y0/BqBg4CQKaTVLQgP4K8ZO1V9jRo9+
+	 zSMIINkQFzyxXPB9Hmza+D+DIJYU/RQ9phTRbsy1X7gYGvHB7aoug0nVwT/ioWm/Ms
+	 pkrdu2IHSp1/kwogxEJxfHGEaNcFm3Ur/utp9H1OQQa+rmOZwo4+4rwKEZecjN7GqH
+	 PbRl1s+ooAUPRgQrWQODSHjmPfkGyfS+zP3W699wG5k5xoLfrdYCbjTUDkBuaQVZC1
+	 NdayTWTfn48Iw==
+Date: Wed, 20 Dec 2023 23:11:13 +0530
+From: Manivannan Sadhasivam <mani@kernel.org>
+To: Frank Li <Frank.li@nxp.com>
+Cc: allenbh@gmail.com, bhelgaas@google.com, dave.jiang@intel.com,
+	imx@lists.linux.dev, jdmason@kudzu.us, kishon@kernel.org,
+	kw@linux.com, linux-kernel@vger.kernel.org,
+	linux-pci@vger.kernel.org, lpieralisi@kernel.org,
+	ntb@lists.linux.dev
+Subject: Re: [PATCH v2 1/1] PCI: endpoint: pci-epf-vntb: Fix transfer fail
+ when BAR1 is fixed size
+Message-ID: <20231220174113.GO3544@thinkpad>
+References: <20231219142403.1223873-1-Frank.Li@nxp.com>
+ <20231220142736.GE3544@thinkpad>
+ <ZYMVMo3TVPMiEN/L@lizhi-Precision-Tower-5810>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC V2 1/4] perf/core: Add aux_pause, aux_resume,
- aux_start_paused
-Content-Language: en-GB
-To: Adrian Hunter <adrian.hunter@intel.com>,
- Peter Zijlstra <peterz@infradead.org>
-Cc: Ingo Molnar <mingo@redhat.com>, Mark Rutland <mark.rutland@arm.com>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Heiko Carstens <hca@linux.ibm.com>, Thomas Richter <tmricht@linux.ibm.com>,
- Hendrik Brueckner <brueckner@linux.ibm.com>,
- Mike Leach <mike.leach@linaro.org>, James Clark <james.clark@arm.com>,
- coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
- Yicong Yang <yangyicong@hisilicon.com>,
- Jonathan Cameron <jonathan.cameron@huawei.com>, Will Deacon
- <will@kernel.org>, Arnaldo Carvalho de Melo <acme@kernel.org>,
- Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
- Ian Rogers <irogers@google.com>, linux-kernel@vger.kernel.org,
- linux-perf-users@vger.kernel.org
-References: <20231208172449.35444-1-adrian.hunter@intel.com>
- <20231208172449.35444-2-adrian.hunter@intel.com>
-From: Suzuki K Poulose <suzuki.poulose@arm.com>
-In-Reply-To: <20231208172449.35444-2-adrian.hunter@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZYMVMo3TVPMiEN/L@lizhi-Precision-Tower-5810>
 
-On 08/12/2023 17:24, Adrian Hunter wrote:
-> Hardware traces, such as instruction traces, can produce a vast amount of
-> trace data, so being able to reduce tracing to more specific circumstances
-> can be useful.
+On Wed, Dec 20, 2023 at 11:24:18AM -0500, Frank Li wrote:
+> On Wed, Dec 20, 2023 at 07:57:36PM +0530, Manivannan Sadhasivam wrote:
+> > On Tue, Dec 19, 2023 at 09:24:03AM -0500, Frank Li wrote:
+> > > ntb_netdev transfer is failing when epc controller's BAR1 is fix size, such
+> > > as 64K. Certain controller(like dwc) require memory address must be align
+> > > with the fixed bar size.
+> > > 
+> > > For example:
+> > > 	If BAR1's fix size is 64K, and other size programmable BAR's
+> > > alignment is 4K.
+> > > 	vntb call pci_epf_alloc_space() get 4K aligned address, like
+> > > 0x104E31000. But root complex actually write to address 0x104E30000 when
+> > > write BAR1.
+> > > 
+> > > Adds bar_fixed_size check and sets correct alignment for fixed-size BAR.
+> > > 
+> > 
+> > Change looks fine by me, but I have a hard time understanding this commit
+> > message.
+> > 
+> > The change just checks the size of the doorbell BAR if a fixed size BAR is used
+> > by the controller and uses the fixed size. In the commit message you are talking
+> > about alignment and root complex writing to the BAR which are just confusing.
+> > 
+> > Please reword this commit message to make it understandable.
 > 
-> The ability to pause or resume tracing when another event happens, can do
-> that.
+> Maybe I talk about too much about it. Actually, supposed it should  work if
+> use fixed-size bar(64K), which actually only mapped 4k, if RC only use 4k
+> also.
 > 
-> Add ability for an event to "pause" or "resume" AUX area tracing.
+> "copy from dwc spec"
 > 
-> Add aux_pause bit to perf_event_attr to indicate that, if the event
-> happens, the associated AUX area tracing should be paused. Ditto
-> aux_resume. Do not allow aux_pause and aux_resume to be set together.
+> But dwc iATU IATU_LWR_TARGET_ADDR_OFF_INBOUND_0
+> 11-0
+> LWR_TARGET_HW
+> Forms the LSB's of the Lower Target part of the new address of the translated region.
+> Forms the LSB's of the Lower Target part of the new address of the translated region. The start address must be aligned to a CX_ATU_MIN_REGION_SIZE kB boundary (in address match mode); and to the Bar size boundary (in BAR match mode) so that these bits are always '0'. If the BAR is smaller than the iATU region size, then the iATU target address must align to the iATU region size; otherwise it must align to the BAR size.
+> A write to this location is ignored by the PCIe controller.
+> - Field size depends on log2(CX_ATU_MIN_REGION_SIZE) in address match mode.
+> - Field size depends on log2(BAR_MASK+1) in BAR match mode.
+> ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 > 
-> Add aux_start_paused bit to perf_event_attr to indicate to an AUX area
-> event that it should start in a "paused" state.
+> For fixed size bar, BAR_MASK is fixed value. If pass down a 4k aligned
+> address to iATU for 64K fixed sized bar, some address bits will be
+> truncated. 
 > 
-> Add aux_paused to struct perf_event for AUX area events to keep track of
-> the "paused" state. aux_paused is initialized to aux_start_paused.
-> 
-> Add PERF_EF_PAUSE and PERF_EF_RESUME modes for ->stop() and ->start()
-> callbacks. Call as needed, during __perf_event_output(). Add
-> aux_in_pause_resume to struct perf_buffer to prevent races with the NMI
-> handler. Pause/resume in NMI context will miss out if it coincides with
-> another pause/resume.
-> 
-> To use aux_pause or aux_resume, an event must be in a group with the AUX
-> area event as the group leader.
-> 
-> Example (requires Intel PT and tools patches also):
-> 
->   $ perf record --kcore -e '{intel_pt/aux-start-paused/k,syscalls:sys_enter_newuname/aux-resume/,syscalls:sys_exit_newuname/aux-pause/}' uname
->   Linux
->   [ perf record: Woken up 1 times to write data ]
->   [ perf record: Captured and wrote 0.041 MB perf.data ]
->   $ perf script --call-trace
->   uname    5712 [007]    83.855580930: name: 0x7ffd9dcebec0
->   uname    5712 [007]    83.855582518:  psb offs: 0
->   uname    5712 [007]    83.855582518:  cbr: 42 freq: 4205 MHz (150%)
->   uname    5712 [007]    83.855582723: ([kernel.kallsyms])    debug_smp_processor_id
->   uname    5712 [007]    83.855582723: ([kernel.kallsyms])    __x64_sys_newuname
->   uname    5712 [007]    83.855582723: ([kernel.kallsyms])        down_read
->   uname    5712 [007]    83.855582723: ([kernel.kallsyms])            __cond_resched
->   uname    5712 [007]    83.855582932: ([kernel.kallsyms])            preempt_count_add
->   uname    5712 [007]    83.855582932: ([kernel.kallsyms])                in_lock_functions
->   uname    5712 [007]    83.855582932: ([kernel.kallsyms])            preempt_count_sub
->   uname    5712 [007]    83.855582932: ([kernel.kallsyms])        up_read
->   uname    5712 [007]    83.855582932: ([kernel.kallsyms])            preempt_count_add
->   uname    5712 [007]    83.855583348: ([kernel.kallsyms])                in_lock_functions
->   uname    5712 [007]    83.855583348: ([kernel.kallsyms])            preempt_count_sub
->   uname    5712 [007]    83.855583348: ([kernel.kallsyms])        _copy_to_user
->   uname    5712 [007]    83.855583557: ([kernel.kallsyms])    syscall_exit_to_user_mode
->   uname    5712 [007]    83.855583557: ([kernel.kallsyms])        syscall_exit_work
->   uname    5712 [007]    83.855583557: ([kernel.kallsyms])            perf_syscall_exit
->   uname    5712 [007]    83.855583557: ([kernel.kallsyms])                debug_smp_processor_id
->   uname    5712 [007]    83.855583557: ([kernel.kallsyms])                perf_trace_buf_alloc
->   uname    5712 [007]    83.855583557: ([kernel.kallsyms])                    perf_swevent_get_recursion_context
->   uname    5712 [007]    83.855583557: ([kernel.kallsyms])                        debug_smp_processor_id
->   uname    5712 [007]    83.855583557: ([kernel.kallsyms])                    debug_smp_processor_id
->   uname    5712 [007]    83.855583557: ([kernel.kallsyms])                perf_tp_event
->   uname    5712 [007]    83.855583557: ([kernel.kallsyms])                    perf_trace_buf_update
->   uname    5712 [007]    83.855583557: ([kernel.kallsyms])                        tracing_gen_ctx_irq_test
->   uname    5712 [007]    83.855583557: ([kernel.kallsyms])                    perf_swevent_event
->   uname    5712 [007]    83.855583765: ([kernel.kallsyms])                        __perf_event_account_interrupt
->   uname    5712 [007]    83.855583765: ([kernel.kallsyms])                            __this_cpu_preempt_check
->   uname    5712 [007]    83.855583765: ([kernel.kallsyms])                        perf_event_output_forward
->   uname    5712 [007]    83.855583765: ([kernel.kallsyms])                            perf_event_aux_pause
->   uname    5712 [007]    83.855583765: ([kernel.kallsyms])                                ring_buffer_get
->   uname    5712 [007]    83.855583765: ([kernel.kallsyms])                                    __rcu_read_lock
->   uname    5712 [007]    83.855583765: ([kernel.kallsyms])                                    __rcu_read_unlock
->   uname    5712 [007]    83.855583765: ([kernel.kallsyms])                                pt_event_stop
->   uname    5712 [007]    83.855583765: ([kernel.kallsyms])                                    debug_smp_processor_id
->   uname    5712 [007]    83.855583765: ([kernel.kallsyms])                                    debug_smp_processor_id
->   uname    5712 [007]    83.855583973: ([kernel.kallsyms])                                    native_write_msr
->   uname    5712 [007]    83.855583973: ([kernel.kallsyms])                                    native_write_msr
->   uname    5712 [007]    83.855584175: 0x0
-> 
-> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
-> ---
->   include/linux/perf_event.h      | 15 +++++++
->   include/uapi/linux/perf_event.h | 11 ++++-
->   kernel/events/core.c            | 72 +++++++++++++++++++++++++++++++--
->   kernel/events/internal.h        |  1 +
->   4 files changed, 95 insertions(+), 4 deletions(-)
-> 
-> diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
-> index e85cd1c0eaf3..252c4aac3b79 100644
-> --- a/include/linux/perf_event.h
-> +++ b/include/linux/perf_event.h
-> @@ -291,6 +291,7 @@ struct perf_event_pmu_context;
->   #define PERF_PMU_CAP_NO_EXCLUDE			0x0040
->   #define PERF_PMU_CAP_AUX_OUTPUT			0x0080
->   #define PERF_PMU_CAP_EXTENDED_HW_TYPE		0x0100
-> +#define PERF_PMU_CAP_AUX_PAUSE			0x0200
->   
->   struct perf_output_handle;
->   
-> @@ -363,6 +364,8 @@ struct pmu {
->   #define PERF_EF_START	0x01		/* start the counter when adding    */
->   #define PERF_EF_RELOAD	0x02		/* reload the counter when starting */
->   #define PERF_EF_UPDATE	0x04		/* update the counter when stopping */
-> +#define PERF_EF_PAUSE	0x08		/* AUX area event, pause tracing */
-> +#define PERF_EF_RESUME	0x10		/* AUX area event, resume tracing */
->   
->   	/*
->   	 * Adds/Removes a counter to/from the PMU, can be done inside a
-> @@ -402,6 +405,15 @@ struct pmu {
->   	 *
->   	 * ->start() with PERF_EF_RELOAD will reprogram the counter
->   	 *  value, must be preceded by a ->stop() with PERF_EF_UPDATE.
-> +	 *
-> +	 * ->stop() with PERF_EF_PAUSE will stop as simply as possible. Will not
-> +	 * overlap another ->stop() with PERF_EF_PAUSE nor ->start() with
-> +	 * PERF_EF_RESUME.
-> +	 *
-> +	 * ->start() with PERF_EF_RESUME will start as simply as possible but
-> +	 * only if the counter is not otherwise stopped. Will not overlap
-> +	 * another ->start() with PERF_EF_RESUME nor ->stop() with
-> +	 * PERF_EF_PAUSE.
->   	 */
->   	void (*start)			(struct perf_event *event, int flags);
->   	void (*stop)			(struct perf_event *event, int flags);
-> @@ -797,6 +809,9 @@ struct perf_event {
->   	/* for aux_output events */
->   	struct perf_event		*aux_event;
->   
-> +	/* for AUX area events */
-> +	unsigned int			aux_paused;
-> +
->   	void (*destroy)(struct perf_event *);
->   	struct rcu_head			rcu_head;
->   
-> diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
-> index 39c6a250dd1b..437bc2a8d50c 100644
-> --- a/include/uapi/linux/perf_event.h
-> +++ b/include/uapi/linux/perf_event.h
-> @@ -507,7 +507,16 @@ struct perf_event_attr {
->   	__u16	sample_max_stack;
->   	__u16	__reserved_2;
->   	__u32	aux_sample_size;
-> -	__u32	__reserved_3;
-> +
-> +	union {
-> +		__u32	aux_output_cfg;
-> +		struct {
-> +			__u64	aux_pause        :  1, /* on overflow, pause AUX area tracing */
 
-Did you mean __u32 ? Otherwise look good to me.
+Okay, now I understood the issue, thanks.
 
-Suzuki
+But this issue can happen for other BARs also, right. Since you encountered the
+issue with DB BAR, it doesn't mean that the issue won't happen with other BARs.
+So you need to have this check in place for all the used BARs.
 
-> +				aux_resume       :  1, /* on overflow, resume AUX area tracing */
-> +				aux_start_paused :  1, /* start AUX area tracing paused */
-> +				__reserved_3     : 29;
-> +		};
-> +	};
->   
->   	/*
->   	 * User provided data if sigtrap=1, passed back to user via
-> diff --git a/kernel/events/core.c b/kernel/events/core.c
-> index 4c72a41f11af..c1e11884d06e 100644
-> --- a/kernel/events/core.c
-> +++ b/kernel/events/core.c
-> @@ -2060,7 +2060,8 @@ static void perf_put_aux_event(struct perf_event *event)
->   
->   static bool perf_need_aux_event(struct perf_event *event)
->   {
-> -	return !!event->attr.aux_output || !!event->attr.aux_sample_size;
-> +	return event->attr.aux_output || event->attr.aux_sample_size ||
-> +	       event->attr.aux_pause || event->attr.aux_resume;
->   }
->   
->   static int perf_get_aux_event(struct perf_event *event,
-> @@ -2085,6 +2086,10 @@ static int perf_get_aux_event(struct perf_event *event,
->   	    !perf_aux_output_match(event, group_leader))
->   		return 0;
->   
-> +	if ((event->attr.aux_pause || event->attr.aux_resume) &&
-> +	    !(group_leader->pmu->capabilities & PERF_PMU_CAP_AUX_PAUSE))
-> +		return 0;
-> +
->   	if (event->attr.aux_sample_size && !group_leader->pmu->snapshot_aux)
->   		return 0;
->   
-> @@ -7773,6 +7778,47 @@ void perf_prepare_header(struct perf_event_header *header,
->   	WARN_ON_ONCE(header->size & 7);
->   }
->   
-> +static void __perf_event_aux_pause(struct perf_event *event, bool pause)
-> +{
-> +	if (pause) {
-> +		if (!READ_ONCE(event->aux_paused)) {
-> +			WRITE_ONCE(event->aux_paused, 1);
-> +			event->pmu->stop(event, PERF_EF_PAUSE);
-> +		}
-> +	} else {
-> +		if (READ_ONCE(event->aux_paused)) {
-> +			WRITE_ONCE(event->aux_paused, 0);
-> +			event->pmu->start(event, PERF_EF_RESUME);
-> +		}
-> +	}
-> +}
-> +
-> +static void perf_event_aux_pause(struct perf_event *event, bool pause)
-> +{
-> +	struct perf_buffer *rb;
-> +	unsigned long flags;
-> +
-> +	if (WARN_ON_ONCE(!event))
-> +		return;
-> +
-> +	rb = ring_buffer_get(event);
-> +	if (!rb)
-> +		return;
-> +
-> +	local_irq_save(flags);
-> +	/* Guard against NMI, NMI loses here */
-> +	if (READ_ONCE(rb->aux_in_pause_resume))
-> +		goto out_restore;
-> +	WRITE_ONCE(rb->aux_in_pause_resume, 1);
-> +	barrier();
-> +	__perf_event_aux_pause(event, pause);
-> +	barrier();
-> +	WRITE_ONCE(rb->aux_in_pause_resume, 0);
-> +out_restore:
-> +	local_irq_restore(flags);
-> +	ring_buffer_put(rb);
-> +}
-> +
->   static __always_inline int
->   __perf_event_output(struct perf_event *event,
->   		    struct perf_sample_data *data,
-> @@ -7786,6 +7832,9 @@ __perf_event_output(struct perf_event *event,
->   	struct perf_event_header header;
->   	int err;
->   
-> +	if (event->attr.aux_pause)
-> +		perf_event_aux_pause(event->aux_event, true);
-> +
->   	/* protect the callchain buffers */
->   	rcu_read_lock();
->   
-> @@ -7802,6 +7851,10 @@ __perf_event_output(struct perf_event *event,
->   
->   exit:
->   	rcu_read_unlock();
-> +
-> +	if (event->attr.aux_resume)
-> +		perf_event_aux_pause(event->aux_event, false);
-> +
->   	return err;
->   }
->   
-> @@ -11941,10 +11994,23 @@ perf_event_alloc(struct perf_event_attr *attr, int cpu,
->   	}
->   
->   	if (event->attr.aux_output &&
-> -	    !(pmu->capabilities & PERF_PMU_CAP_AUX_OUTPUT)) {
-> +	    (!(pmu->capabilities & PERF_PMU_CAP_AUX_OUTPUT) ||
-> +	     event->attr.aux_pause || event->attr.aux_resume)) {
-> +		err = -EOPNOTSUPP;
-> +		goto err_pmu;
-> +	}
-> +
-> +	if (event->attr.aux_pause && event->attr.aux_resume) {
-> +		err = -EINVAL;
-> +		goto err_pmu;
-> +	}
-> +
-> +	if (event->attr.aux_start_paused &&
-> +	    !(pmu->capabilities & PERF_PMU_CAP_AUX_PAUSE)) {
->   		err = -EOPNOTSUPP;
->   		goto err_pmu;
->   	}
-> +	event->aux_paused = event->attr.aux_start_paused;
->   
->   	if (cgroup_fd != -1) {
->   		err = perf_cgroup_connect(cgroup_fd, event, attr, group_leader);
-> @@ -12741,7 +12807,7 @@ perf_event_create_kernel_counter(struct perf_event_attr *attr, int cpu,
->   	 * Grouping is not supported for kernel events, neither is 'AUX',
->   	 * make sure the caller's intentions are adjusted.
->   	 */
-> -	if (attr->aux_output)
-> +	if (attr->aux_output || attr->aux_output_cfg)
->   		return ERR_PTR(-EINVAL);
->   
->   	event = perf_event_alloc(attr, cpu, task, NULL, NULL,
-> diff --git a/kernel/events/internal.h b/kernel/events/internal.h
-> index 5150d5f84c03..3320f78117dc 100644
-> --- a/kernel/events/internal.h
-> +++ b/kernel/events/internal.h
-> @@ -51,6 +51,7 @@ struct perf_buffer {
->   	void				(*free_aux)(void *);
->   	refcount_t			aux_refcount;
->   	int				aux_in_sampling;
-> +	int				aux_in_pause_resume;
->   	void				**aux_pages;
->   	void				*aux_priv;
->   
+> Hidden some hardware detail, do you think if it is enough?
+> 
+> "ntb_netdev transfer is failing when epc controller's BAR1 is fix size.
+> Adds bar_fixed_size check. If require memory bigger than BAR1's fixed size,
+> return -ENOMEM. If smaller than BAR1's fixed size, use BAR1's fixed size."
+> 
 
+How about,
+
+"PCI: endpoint: pci-epf-vntb: Fix transfer failure for fixed size BARs
+
+For the inbound MEM/IO TLPs, iATU on the endpoint expects the target address to
+be aligned to the size of the BAR. For configurable BARs, there is no issue
+because both host and endpoint will know the exact size of the BAR region. But
+for fixed size BARs available in some controllers, if the BAR size advertised by
+the endpoint is not same as of the actual BAR size used in the controller, then
+the MEM/IO TLPs generated by the host will not be translated properly by the
+endpoint iATU.
+
+So if the fixed size BARs are available in endpoint controllers, always use the
+actual BAR size."
+
+Also, add the Fixes tag and CC stable list since this is a bug.
+
+- Mani
+
+> Frank
+> 
+> > 
+> > > Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> > > ---
+> > > 
+> > > Notes:
+> > >     Change from v1 to v2
+> > >     - Remove unnessary set align when fix_bar_size.
+> > > 
+> > >  drivers/pci/endpoint/functions/pci-epf-vntb.c | 8 ++++++++
+> > >  1 file changed, 8 insertions(+)
+> > > 
+> > > diff --git a/drivers/pci/endpoint/functions/pci-epf-vntb.c b/drivers/pci/endpoint/functions/pci-epf-vntb.c
+> > > index 3f60128560ed0..ec3922f404efe 100644
+> > > --- a/drivers/pci/endpoint/functions/pci-epf-vntb.c
+> > > +++ b/drivers/pci/endpoint/functions/pci-epf-vntb.c
+> > > @@ -550,6 +550,14 @@ static int epf_ntb_db_bar_init(struct epf_ntb *ntb)
+> > >  
+> > >  	barno = ntb->epf_ntb_bar[BAR_DB];
+> > >  
+> > > +	if (epc_features->bar_fixed_size[barno]) {
+> > > +		if (size > epc_features->bar_fixed_size[barno]) {
+> > > +			dev_err(dev, "Fixed BAR%d is too small for doorbell\n", barno);
+> > > +			return -EINVAL;
+> > 
+> > -ENOMEM?
+> > 
+> > - Mani
+> > 
+> > > +		}
+> > > +		size = epc_features->bar_fixed_size[barno];
+> > > +	}
+> > > +
+> > >  	mw_addr = pci_epf_alloc_space(ntb->epf, size, barno, align, 0);
+> > >  	if (!mw_addr) {
+> > >  		dev_err(dev, "Failed to allocate OB address\n");
+> > > -- 
+> > > 2.34.1
+> > > 
+> > 
+> > -- 
+> > மணிவண்ணன் சதாசிவம்
+
+-- 
+மணிவண்ணன் சதாசிவம்
 
