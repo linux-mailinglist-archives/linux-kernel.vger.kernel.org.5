@@ -1,102 +1,118 @@
-Return-Path: <linux-kernel+bounces-7267-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7271-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8853B81A423
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 17:16:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 251A581A43F
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 17:18:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0D564B279C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 16:16:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 56C631C24261
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 16:18:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D2F0495E6;
-	Wed, 20 Dec 2023 16:11:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47D404C630;
+	Wed, 20 Dec 2023 16:12:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b="D0QMdRem"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="aAYeNCKu"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15F7A495EC;
-	Wed, 20 Dec 2023 16:11:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hugovil.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
-	; s=x; h=Subject:Content-Transfer-Encoding:Mime-Version:Message-Id:Cc:To:From
-	:Date:subject:date:message-id:reply-to;
-	bh=h3wCD3ROBeekL2LK2cv12WSp+pxJN7ZdSftlsllgyzY=; b=D0QMdRemHB0wsSBXdXjXzIm8i3
-	aKAf+aFX5FnlC6JikhEJrV2K/0SbFN/HcdrKf6SQ9LQSpmF/yvFv3QQNPJLIRXd59idGPjf8VKbR1
-	V49dJh+QY4msOQOXHBhXmSCEvSjMt0GfDRCaYMW3cB69nJ/0pnWwTXnVc0/NkGVd+suw=;
-Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:39702 helo=pettiford)
-	by mail.hugovil.com with esmtpa (Exim 4.92)
-	(envelope-from <hugo@hugovil.com>)
-	id 1rFzAY-0006uu-5a; Wed, 20 Dec 2023 11:11:38 -0500
-Date: Wed, 20 Dec 2023 11:11:36 -0500
-From: Hugo Villeneuve <hugo@hugovil.com>
-To: Andy Shevchenko <andriy.shevchenko@intel.com>
-Cc: gregkh@linuxfoundation.org, jirislaby@kernel.org, jringle@gridpoint.com,
- kubakici@wp.pl, phil@raspberrypi.org, bo.svangard@embeddedart.se,
- linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org, Hugo Villeneuve
- <hvilleneuve@dimonoff.com>
-Message-Id: <20231220111136.99315587e832190a528f7630@hugovil.com>
-In-Reply-To: <ZYMMs5A758h12AEM@smile.fi.intel.com>
-References: <20231219171903.3530985-1-hugo@hugovil.com>
-	<20231219171903.3530985-9-hugo@hugovil.com>
-	<ZYMMs5A758h12AEM@smile.fi.intel.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BC1A4AF73
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 16:12:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1703088754;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vEaUEcnajrqgltfyosH4+omdF/fMexYhj4bOk+VvvgM=;
+	b=aAYeNCKuFX0LtNZanY07NyIxH4iv+eNmZ4oc7aUEAz48jU/L3OTGNT5IDuaG2ffxGWJpXH
+	m09PokzsUDXGLJg6oLyvBtHGu2vWNFcKOpCyXS5/g7Dr0DvUjONN0p47/NOk9o21ui4C5v
+	0GfSZtMhMvpxzeudYHRYJjk2c6+RYfA=
+Received: from mail-yw1-f198.google.com (mail-yw1-f198.google.com
+ [209.85.128.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-641-eUD6fTTTM5Wc9-8TdDEccA-1; Wed, 20 Dec 2023 11:12:32 -0500
+X-MC-Unique: eUD6fTTTM5Wc9-8TdDEccA-1
+Received: by mail-yw1-f198.google.com with SMTP id 00721157ae682-5e7c4de7198so21082017b3.1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 08:12:32 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703088752; x=1703693552;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vEaUEcnajrqgltfyosH4+omdF/fMexYhj4bOk+VvvgM=;
+        b=EYhD4c+ctjm3ouWS6Tc7WSDWyoOrA1W14R6QlSyqryb7//+yn2XUsGJkcX4DTMsvUp
+         r4YVTnAXm5ywT06gdfygE6oaCEAGRpE/CVhi1h8Lk1h2YU4A5XBRZlvk2F6ZCd9YjnV0
+         ffE/eaXRMnXdUjzE1rnGFX3nOy8J9e4GHDF+rAHWI9JmSMMagzm5WHf6Ym/Mz7bOy6U3
+         DIiNhbRksOtI1g8nr6UP3ZRnMnoi9+ZVrsb46brhyBxDFIFYS8wG2b3+KsrkD8ZuRyls
+         D5ntMnSlxIHUwxc1fzfoBWJC2MMtXnYQ5J7xbqOZrefep4OV8Jh28qWC7ddJAbjUbZZ1
+         d+5Q==
+X-Gm-Message-State: AOJu0YycvmGSpb7AhVcZDSRfEHxxuu0gwgrsBnsWmSE9GGMP66Lc0B47
+	v5UoEI08K0M+WN6f1Q7TNDvvonHldsoRay4WZGWvJlEHYSfhyw3wOaKGE1iIK3PVsK1NYQ7wf4/
+	Q/7n1NeOhjhv0A7w3sqitb3jEoxLdsZb1/YvzN0e4
+X-Received: by 2002:a25:b28c:0:b0:dbd:ae7b:fa8 with SMTP id k12-20020a25b28c000000b00dbdae7b0fa8mr579089ybj.89.1703088752248;
+        Wed, 20 Dec 2023 08:12:32 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHHWUzQ5gSLWTlGDWQ2EyGysa9J4p1aJm/bZyTvMiHKlVwkL61HZXv/dGZYlfl74NKZqaTdvxihWh9dq51N+XM=
+X-Received: by 2002:a25:b28c:0:b0:dbd:ae7b:fa8 with SMTP id
+ k12-20020a25b28c000000b00dbdae7b0fa8mr579074ybj.89.1703088752028; Wed, 20 Dec
+ 2023 08:12:32 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 70.80.174.168
-X-SA-Exim-Mail-From: hugo@hugovil.com
-X-Spam-Level: 
-X-Spam-Report: 
-	* -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-	* -0.0 T_SCC_BODY_TEXT_LINE No description available.
-	* -1.4 NICE_REPLY_A Looks like a legit reply (A)
-Subject: Re: [PATCH 08/18] serial: sc16is7xx: add driver name to struct
- uart_driver
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
+MIME-Version: 1.0
+References: <20231219180858.120898-1-dtatulea@nvidia.com> <20231219180858.120898-5-dtatulea@nvidia.com>
+In-Reply-To: <20231219180858.120898-5-dtatulea@nvidia.com>
+From: Eugenio Perez Martin <eperezma@redhat.com>
+Date: Wed, 20 Dec 2023 17:11:55 +0100
+Message-ID: <CAJaqyWeZK5WmZRnUv4+MF=A1ALsx_OOcWHXDV1EquwpBhTkVJQ@mail.gmail.com>
+Subject: Re: [PATCH vhost v4 04/15] vdpa: Accept VHOST_BACKEND_F_CHANGEABLE_VQ_ADDR_IN_SUSPEND
+ backend feature
+To: Dragos Tatulea <dtatulea@nvidia.com>
+Cc: "Michael S . Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, 
+	Si-Wei Liu <si-wei.liu@oracle.com>, Saeed Mahameed <saeedm@nvidia.com>, 
+	Leon Romanovsky <leon@kernel.org>, virtualization@lists.linux-foundation.org, 
+	Gal Pressman <gal@nvidia.com>, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Parav Pandit <parav@nvidia.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 20 Dec 2023 17:48:03 +0200
-Andy Shevchenko <andriy.shevchenko@intel.com> wrote:
+On Tue, Dec 19, 2023 at 7:09=E2=80=AFPM Dragos Tatulea <dtatulea@nvidia.com=
+> wrote:
+>
+> If userland sets this feature, allow it.
+>
+> Signed-off-by: Dragos Tatulea <dtatulea@nvidia.com>
+> Suggested-by: Eugenio P=C3=A9rez <eperezma@redhat.com>
 
-> On Tue, Dec 19, 2023 at 12:18:52PM -0500, Hugo Villeneuve wrote:
-> > From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
-> > 
-> > Make sure that the driver name is displayed instead of "unknown" when
-> > displaying the driver infos:
-> > 
-> > Before:
-> >     cat /proc/tty/drivers | grep ttySC
-> >     unknown              /dev/ttySC    243 0-7 serial
-> > 
-> > After:
-> >     cat /proc/tty/drivers | grep ttySC
-> >     sc16is7xx            /dev/ttySC    243 0-7 serial
-> 
-> "Useless use of cat" (you can google for this phrase, it's famous).
-> 
-> 	grep ... /proc/...
-> 
-> will work :-)
-> 
-> Otherwise LGTM!
+Acked-by: Eugenio P=C3=A9rez <eperezma@redhat.com>
 
-Old habits die hard :)
+> ---
+>  drivers/vhost/vdpa.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
+> index da7ec77cdaff..2250fcd90e5b 100644
+> --- a/drivers/vhost/vdpa.c
+> +++ b/drivers/vhost/vdpa.c
+> @@ -749,6 +749,7 @@ static long vhost_vdpa_unlocked_ioctl(struct file *fi=
+lep,
+>                                  BIT_ULL(VHOST_BACKEND_F_IOTLB_PERSIST) |
+>                                  BIT_ULL(VHOST_BACKEND_F_SUSPEND) |
+>                                  BIT_ULL(VHOST_BACKEND_F_RESUME) |
+> +                                BIT_ULL(VHOST_BACKEND_F_CHANGEABLE_VQ_AD=
+DR_IN_SUSPEND) |
+>                                  BIT_ULL(VHOST_BACKEND_F_ENABLE_AFTER_DRI=
+VER_OK)))
+>                         return -EOPNOTSUPP;
+>                 if ((features & BIT_ULL(VHOST_BACKEND_F_SUSPEND)) &&
+> --
+> 2.43.0
+>
 
-Interesting read!
-
-Will modify commit message in V2.
-
-Thank you.
-
-Hugo Villeneuve
 
