@@ -1,103 +1,102 @@
-Return-Path: <linux-kernel+bounces-6369-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6370-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E41018197B9
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 05:23:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FFC88197BE
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 05:24:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7B0D21F25FD8
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 04:23:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CF49128417D
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 04:24:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDBEC208CE;
-	Wed, 20 Dec 2023 04:22:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85B6B210F3;
+	Wed, 20 Dec 2023 04:24:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="CiOGIy9K"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XYs7ox2Q"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f41.google.com (mail-qv1-f41.google.com [209.85.219.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 560C9208B3
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 04:22:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1703046157;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=G45CImyqsOOmdqDD2eGP+r9BP7+mm5bd9KiBb8nBAIM=;
-	b=CiOGIy9Kw6oQ0ZpO2ZUNgNABmiAArjFHoSdR2EULO16V8MQGKXaTQVNbH8Cyd5B7Vyxjpo
-	K0YNrlY3nmJwRvL3iwG4zkE5HCq/bQCbZEhFs5IGAeBQJgZ6PgPyTGghA6Rf8GASckkxQp
-	gnc0zNJAjPYmVz3i8XVxHd9H5h9XPv0=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-433-Tu1M_nxTPP6L7Ts-3ewPyw-1; Tue, 19 Dec 2023 23:22:34 -0500
-X-MC-Unique: Tu1M_nxTPP6L7Ts-3ewPyw-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6B6FA832D62;
-	Wed, 20 Dec 2023 04:22:33 +0000 (UTC)
-Received: from localhost (unknown [10.72.116.38])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 83323492BE6;
-	Wed, 20 Dec 2023 04:22:32 +0000 (UTC)
-Date: Wed, 20 Dec 2023 12:22:29 +0800
-From: Baoquan He <bhe@redhat.com>
-To: Conor Dooley <conor@kernel.org>, akpm@linux-foundation.org
-Cc: linux-kernel@vger.kernel.org, kexec@lists.infradead.org, x86@kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-riscv@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-	linux-parisc@vger.kernel.org, joe@perches.com, nathan@kernel.org
-Subject: Re: [PATCH v4 5/7] kexec_file, ricv: print out debugging message if
- required
-Message-ID: <ZYJsBW0Y7Y+XhSgf@MiWiFi-R3L-srv>
-References: <20231213055747.61826-1-bhe@redhat.com>
- <20231213055747.61826-6-bhe@redhat.com>
- <20231219-twitch-many-ca8877857182@spud>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94246210E1;
+	Wed, 20 Dec 2023 04:24:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f41.google.com with SMTP id 6a1803df08f44-67aa9a99915so41166216d6.3;
+        Tue, 19 Dec 2023 20:24:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703046240; x=1703651040; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=n+eJ8GCNdPeoI4L8SnnmNHM4OsYtuGuRi23NMEvZEH0=;
+        b=XYs7ox2QPonlGlVkk+yry6IlBw+l0pqP+/pRuqP3I/4KQqXxBfvbxEpBBFnTYIGAQz
+         uYDk5zMqvxcpGPSMncU1EKX/x98KxlexLomYVzwcBrpwHFUbDDQ6jSz8bPbru75M2+xw
+         NhgPXHqCaTl8DIWbnA3WyizbnynazGMm/usAaJ2PCs3owlDYBIyHmYSkIoyxpCn7eAbS
+         eXr2rucNH/VFcAfUv2yNgu8ydQvxwf8J/r85Gdn7F9XDHINgb0BCKs95Kvx0MmmMPWa9
+         3xV44ORS6zfc6nHUpo5Hy2PZjZI3TjvoRUi6x/zeRuzVeOez0kvzYx+8EmFSPRwLv6JC
+         SWUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703046240; x=1703651040;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=n+eJ8GCNdPeoI4L8SnnmNHM4OsYtuGuRi23NMEvZEH0=;
+        b=jpch4OsJdrlEuF8+GyikOwa8J+xZYjhvoj4tmaShNFTf0TFitknTP3e0o++0DNrHcr
+         Ivp1J3ySykHtGwM8ky125BuE0PXpTwbCkqTmfbHQoUg7k9IkRJLPK6DAPP22FTN23S/b
+         2Rx8Qq9qnpLb67ywRTrQKGmSRJPPnGCY5iCVpbat7q7p0RnT5K/p1SzYvR4XjnCoVsb4
+         yOBs+J6KvctfM8Z5RC8GoIN8aSYOVKEN97fIdHsacWA40x8BcOtmfHV/Nep1SouH+fbw
+         S7HbXPCPfyzE01+B9qBFaP6aW8uzqbVQeKuNQRSU4xL3N1dZZGewuJhs/TVfTGFS/KtL
+         Xw4Q==
+X-Gm-Message-State: AOJu0Yz1fpvgYAx7b261GRj43rrM3+q2do3Yne8W5xOBSviDsQ5Gura4
+	WdCiP/pKzKsi4oxRh2XlAwQtA7CMB53iWR0Fc9SSElRgMdM=
+X-Google-Smtp-Source: AGHT+IGsshzgoWnH/DuEgm6oNicXeUsHwPLWsGkkHmeEzkr9wchEn6s/RXAZaQjMOg5TBFh8pmhof2mBhDLqHJ9nCTU=
+X-Received: by 2002:a05:6214:ca3:b0:67f:262c:14e4 with SMTP id
+ s3-20020a0562140ca300b0067f262c14e4mr12331448qvs.68.1703046240452; Tue, 19
+ Dec 2023 20:24:00 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231219-twitch-many-ca8877857182@spud>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
+References: <20231219175206.12342-1-zohar@linux.ibm.com> <20231219175206.12342-3-zohar@linux.ibm.com>
+ <ddff6449a57ef38e503fcaef759fa37ed391d134.camel@linux.ibm.com>
+In-Reply-To: <ddff6449a57ef38e503fcaef759fa37ed391d134.camel@linux.ibm.com>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Wed, 20 Dec 2023 06:23:49 +0200
+Message-ID: <CAOQ4uxgn3X5Py9XE6wmafPpUBSXDzygUpgDSVct9AfzH+0kvXA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] evm: add support to disable EVM on unsupported filesystems
+To: Mimi Zohar <zohar@linux.ibm.com>
+Cc: linux-unionfs@vger.kernel.org, linux-integrity@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Christian Brauner <brauner@kernel.org>, 
+	Seth Forshee <sforshee@kernel.org>, Roberto Sassu <roberto.sassu@huaweicloud.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 12/19/23 at 02:44pm, Conor Dooley wrote:
-> On Wed, Dec 13, 2023 at 01:57:45PM +0800, Baoquan He wrote:
-> > Then when specifying '-d' for kexec_file_load interface, loaded
-> > locations of kernel/initrd/cmdline etc can be printed out to help debug.
-> > 
-> > Here replace pr_debug() with the newly added kexec_dprintk() in kexec_file
-> > loading related codes.
-> > 
-> > And also replace pr_notice() with kexec_dprintk() in elf_kexec_load()
-> > because loaded location of purgatory and device tree are only printed
-> > out for debugging, it doesn't make sense to always print them out.
-> > 
-> > And also remove kexec_image_info() because the content has been printed
-> > out in generic code.
-> > 
-> > Signed-off-by: Baoquan He <bhe@redhat.com>
-> 
-> I'm sorry - I meant to look at this several days ago but I forgot.
-> Apart from the typo that crept back into $subject, this version explains
-> the rationale behind what you're changing a lot better, thanks.
+On Tue, Dec 19, 2023 at 9:10=E2=80=AFPM Mimi Zohar <zohar@linux.ibm.com> wr=
+ote:
+>
+> On Tue, 2023-12-19 at 12:52 -0500, Mimi Zohar wrote:
+>
+> > diff --git a/include/linux/fs.h b/include/linux/fs.h
+> > index 98b7a7a8c42e..db9350a734ef 100644
+> > --- a/include/linux/fs.h
+> > +++ b/include/linux/fs.h
+> > @@ -1164,6 +1164,7 @@ extern int send_sigurg(struct fown_struct *fown);
+> >  #define SB_I_USERNS_VISIBLE          0x00000010 /* fstype already moun=
+ted */
+> >  #define SB_I_IMA_UNVERIFIABLE_SIGNATURE      0x00000020
+> >  #define SB_I_UNTRUSTED_MOUNTER               0x00000040
+> > +#define SB_I_EVM_UNSUPPORTED         0x00000050
+>
+> This needs to be fixed.
+>
 
-Thanks for careful checking. I forgot the typo fixing you have pointed
-out in v3 reviewing.
+With this fixed, you may add:
 
-Hi Andrew,
+Acked-by: Amir Goldstein <amir73il@gmail.com>
 
-Could you help fix the typo in subject?
-
-[PATCH v4 5/7] kexec_file, ricv: print out debugging message if required
-                           ~~~ s/ricv/riscv/
-
+Thanks,
+Amir.
 
