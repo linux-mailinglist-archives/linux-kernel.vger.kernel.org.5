@@ -1,152 +1,201 @@
-Return-Path: <linux-kernel+bounces-6333-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6334-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93ACC81975C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 04:49:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BDE881975F
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 04:50:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2B0521F28DBC
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 03:49:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B5EF8286A15
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 03:50:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BE25C8CE;
-	Wed, 20 Dec 2023 03:49:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFB06BE68;
+	Wed, 20 Dec 2023 03:49:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="GhKmsDZe"
+	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="TRi5q9lD"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f42.google.com (mail-io1-f42.google.com [209.85.166.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D5E1BE6B
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 03:49:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1703044142;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rcEKCuZCISl6MmvUHOcZ8wbgYmHDedpsTc/f0SRr9EY=;
-	b=GhKmsDZeYb3XSwGueRdW3A1Ucznh7i4wMn3j9US9reLAMoMPMe2SZgh2faIb42QT//ROMv
-	H4yhkjW/NSbBE6Lzut9GtPWwBU7daahL19RSwLgChg5MgVc19a44qbdwEZ7/+08MRRSSEc
-	jKFMw7+6UMD7fCLvTlehVlJF4Cc1ICA=
-Received: from mail-oo1-f71.google.com (mail-oo1-f71.google.com
- [209.85.161.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-264-s6cma28sPie5NBWUBm_Ffw-1; Tue, 19 Dec 2023 22:48:59 -0500
-X-MC-Unique: s6cma28sPie5NBWUBm_Ffw-1
-Received: by mail-oo1-f71.google.com with SMTP id 006d021491bc7-58e2b7e4f94so6343884eaf.2
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 19:48:59 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E197C156E2
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 03:49:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
+Received: by mail-io1-f42.google.com with SMTP id ca18e2360f4ac-7b7fb34265fso38575639f.3
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 19:49:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1703044184; x=1703648984; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=cV23V7TOvb67CyEBq2y7tG+sTh2KHoQeq84YdzqhXCE=;
+        b=TRi5q9lDJZdfAvtKFYNNTleePu2PoxvqaQK4mpAkJLU9znxosjXHvMmfMxx3Ejlmca
+         pvB+tPF+c8YyQ71i0Et++snbh3hCO1Kft8jbif26EcWgiKgamHvIi0o0G1UGeA2NJIef
+         u66nUB+G4Mc7Y+W57xBfd54rBOckBAY+dQ+xv3byLrMryRpPWLT8PIrPKEQhzB0/SkAV
+         3h5eSbwgJNSH+AC6z94xMsOyjoUrwL33GpsABs/x3Xk8mGN2OnD9BhWjwsLxPfSrpRGw
+         ybnYSNg9T5bRELx4pK9CWWNJalLxSNF+t1jMI2ZIuY6Yog08AaNk8iKruj5WMY0QfPg1
+         7EIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703044138; x=1703648938;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rcEKCuZCISl6MmvUHOcZ8wbgYmHDedpsTc/f0SRr9EY=;
-        b=bHAB8p4RQYGU6g9N949JUs+L5/I+ypR4pi73QrXP5/EXysZoWrKICJq14A8fTL1Xv8
-         crSxl3/Gthw1k3ztmnTnxi9pFUgksMXL7pRhb8SHCRahY/lbPQwRyGymKM0r7ZAvJAj1
-         oF0qVqYtbZP1b8PCj1TWzoXxQmOC7Pqtkis9z6M3JcRYnM77dhojzSMhZielRwW0KMrX
-         9VXRR2GSaCuWGDpKSrq10lMK/MmYfnUvoH7O7yKL3HFilZxWlohsKpjRdxN2C19dN3pv
-         mnDiowxWfXyRxrNuWXEmKnYG8ZmBUpLuz/T5M3PGcxYyZwrJT8dycFuZh16hrcR//ktA
-         nrDA==
-X-Gm-Message-State: AOJu0Yy594MXCuNmvg4bAcxcnVAyoCMOtpaHr6/rpZOWW6gT9UY7OaqZ
-	v0IY/pVAPbwosj0TcJctbRILyDwu5vGVDppYCG8/ElHgBfPb6WRMFJlYbcflfjzeMnpgT2uqLjH
-	BbC17mqJq9e0+HIP0VLUpBfuTgq9qgdspxDkhf0A7
-X-Received: by 2002:a05:6358:2919:b0:170:982:5611 with SMTP id y25-20020a056358291900b0017009825611mr28623937rwb.32.1703044138503;
-        Tue, 19 Dec 2023 19:48:58 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFaWh6Q0+sX3khUGlVzDT+nrVdy0DPPOrc9xz+Dh3vmGUvcZjZ2nthFRcXi9qE3vyRl3qciLiksVeyICTqENg0=
-X-Received: by 2002:a05:6358:2919:b0:170:982:5611 with SMTP id
- y25-20020a056358291900b0017009825611mr28623927rwb.32.1703044138196; Tue, 19
- Dec 2023 19:48:58 -0800 (PST)
+        d=1e100.net; s=20230601; t=1703044184; x=1703648984;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=cV23V7TOvb67CyEBq2y7tG+sTh2KHoQeq84YdzqhXCE=;
+        b=JH9nC1TSk+NSUQHFGfBbeIEB6l8BpqgGUTClr18ROCYSRo+SFlm3vbKiCSS16+tdQ4
+         7t0oPwYv+jhUSUzM62vYlenW97/JBowo7Rue8ZhgwRzSynylFpwm8/bUXz3077aMQPag
+         sFIar+VZ7yntbRe1d+GffwJPML/9N2dzpadPF8tMGF03LumWZ3u8ccXWcFJ8aXbj6gf8
+         FB+t0CghXf1gAU6xhBXXFt3XTYp/ussRITCGBPklhQLFDMbyc1dYgMZqXLqqBnzPLiBW
+         aJY63G0wTIoRrCSSd8vyspyabXBlQo6KEk6tE6clqzGFxsNkqyFiz3TvGKp1ymypumJC
+         LUjA==
+X-Gm-Message-State: AOJu0YzfI2/OqsoOMBhOuJDT4/Sr6rNeyuVkxscm7SpqxjO2kT5ZxD5z
+	H9/bCsxKEDSxF12jg+lIN2eepPmGQRcpeYtCCqM=
+X-Google-Smtp-Source: AGHT+IEFtaaGYdqONj8ZBQy1SsSMrvVpJouh1AF9l/WyoqOfDMdwX1NJFUbBjCx+mCqU4PqT2OUdiA==
+X-Received: by 2002:a6b:7f0c:0:b0:7b7:faa5:954f with SMTP id l12-20020a6b7f0c000000b007b7faa5954fmr1627037ioq.23.1703044183845;
+        Tue, 19 Dec 2023 19:49:43 -0800 (PST)
+Received: from sunil-laptop ([106.51.83.242])
+        by smtp.gmail.com with ESMTPSA id r9-20020a6bd909000000b007b42bf452f4sm6509305ioc.33.2023.12.19.19.49.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Dec 2023 19:49:43 -0800 (PST)
+Date: Wed, 20 Dec 2023 09:19:32 +0530
+From: Sunil V L <sunilvl@ventanamicro.com>
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-riscv@lists.infradead.org, linux-acpi@vger.kernel.org,
+	linux-pci@vger.kernel.org,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, Len Brown <lenb@kernel.org>,
+	Anup Patel <anup@brainfault.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Bjorn Helgaas <bhelgaas@google.com>, Haibo Xu <haibo1.xu@intel.com>,
+	Conor Dooley <conor.dooley@microchip.com>,
+	Andrew Jones <ajones@ventanamicro.com>,
+	=?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+	Marc Zyngier <maz@kernel.org>
+Subject: Re: [RFC PATCH v3 00/17] RISC-V: ACPI: Add external interrupt
+ controller support
+Message-ID: <ZYJkTN+GNi1nMkJd@sunil-laptop>
+References: <20231219174526.2235150-1-sunilvl@ventanamicro.com>
+ <CAJZ5v0j6Veze8xDFKTbVZ5=WAfmLdeJ8NXRnh9kwCZgyaDdgew@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231218-v6-7-topic-virtio-net-ptp-v1-0-cac92b2d8532@pengutronix.de>
- <65807512bc20b_805482941e@willemb.c.googlers.com.notmuch>
-In-Reply-To: <65807512bc20b_805482941e@willemb.c.googlers.com.notmuch>
-From: Jason Wang <jasowang@redhat.com>
-Date: Wed, 20 Dec 2023 11:48:47 +0800
-Message-ID: <CACGkMEuuz3R5CgBpKrnBwtFP3ZxWULDMm47LhtxYYHSSUy_2fQ@mail.gmail.com>
-Subject: Re: [PATCH RFC 0/4] virtio-net: add tx-hash, rx-tstamp, tx-tstamp and tx-time
-To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc: Steffen Trumtrar <s.trumtrar@pengutronix.de>, "Michael S. Tsirkin" <mst@redhat.com>, 
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Richard Cochran <richardcochran@gmail.com>, virtualization@lists.linux.dev, 
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Willem de Bruijn <willemb@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJZ5v0j6Veze8xDFKTbVZ5=WAfmLdeJ8NXRnh9kwCZgyaDdgew@mail.gmail.com>
 
-On Tue, Dec 19, 2023 at 12:36=E2=80=AFAM Willem de Bruijn
-<willemdebruijn.kernel@gmail.com> wrote:
->
-> Steffen Trumtrar wrote:
-> > This series tries to pick up the work on the virtio-net timestamping
-> > feature from Willem de Bruijn.
+On Tue, Dec 19, 2023 at 06:50:19PM +0100, Rafael J. Wysocki wrote:
+> On Tue, Dec 19, 2023 at 6:45 PM Sunil V L <sunilvl@ventanamicro.com> wrote:
 > >
-> > Original series
-> >     Message-Id: 20210208185558.995292-1-willemdebruijn.kernel@gmail.com
-> >     Subject: [PATCH RFC v2 0/4] virtio-net: add tx-hash, rx-tstamp,
-> >     tx-tstamp and tx-time
-> >     From: Willem de Bruijn <willemb@google.com>
+> > This series adds support for the below ECR approved by ASWG.
+> > 1) MADT - https://drive.google.com/file/d/1oMGPyOD58JaPgMl1pKasT-VKsIKia7zR/view?usp=sharing
 > >
-> >     RFC for four new features to the virtio network device:
+> > The series primarily enables irqchip drivers for RISC-V ACPI based
+> > platforms.
 > >
-> >     1. pass tx flow state to host, for routing + telemetry
-> >     2. pass rx tstamp to guest, for better RTT estimation
-> >     3. pass tx tstamp to guest, idem
-> >     3. pass tx delivery time to host, for accurate pacing
+> > The series can be broadly categorized like below.
 > >
-> >     All would introduce an extension to the virtio spec.
+> > 1) PCI ACPI related functions are migrated from arm64 to common file so
+> > that we don't need to duplicate them for RISC-V.
 > >
-> > The original series consisted of a hack around the DMA API, which shoul=
-d
-> > be fixed in this series.
+> > 2) Introduced support for fw_devlink for ACPI nodes for IRQ dependency.
+> > This helps to support deferred probe of interrupt controller drivers.
 > >
-> > The changes in this series are to the driver side. For the changes to q=
-emu see:
-> >     https://github.com/strumtrar/qemu/tree/v8.1.1/virtio-net-ptp
+> > 3) Modified pnp_irq() to try registering the IRQ  again if it sees it in
+> > disabled state. This solution is similar to how
+> > platform_get_irq_optional() works for regular platform devices.
 > >
-> > Currently only virtio-net is supported. The original series used
-> > vhost-net as backend. However, the path through tun via sendmsg doesn't
-> > allow us to write data back to the driver side without any hacks.
-> > Therefore use the way via plain virtio-net without vhost albeit better
-> > performance.
+> > 4) Added support for re-ordering the probe of interrupt controllers when
+> > IRQCHIP_ACPI_DECLARE is used.
 > >
-> > Signed-off-by: Steffen Trumtrar <s.trumtrar@pengutronix.de>
->
-> Thanks for picking this back up, Steffen. Nice to see that the code still
-> applies mostly cleanly.
->
-> For context: I dropped the work only because I had no real device
-> implementation. The referenced patch series to qemu changes that.
->
-> I suppose the main issue is the virtio API changes that this introduces,
-> which will have to be accepted to the spec.
->
-> One small comment to patch 4: there I just assumed the virtual device
-> time is CLOCK_TAI. There is a concurrent feature under review for HW
-> pacing offload with AF_XDP sockets. The clock issue comes up a bit. In
-> general, for hardware we cannot assume a clock.
+> > 5) ACPI support added in RISC-V interrupt controller drivers.
+> >
+> > This series is based on Anup's AIA v11 series. Since Anup's AIA v11 is
+> > not merged yet and first time introducing fw_devlink, deferred probe and
+> > reordering support for IRQCHIP probe, this series is still kept as RFC.
+> > Looking forward for the feedback!
+> >
+> > Changes since RFC v2:
+> >         1) Introduced fw_devlink for ACPI nodes for IRQ dependency.
+> >         2) Dropped patches in drivers which are not required due to
+> >            fw_devlink support.
+> >         3) Dropped pci_set_msi() patch and added a patch in
+> >            pci_create_root_bus().
+> >         4) Updated pnp_irq() patch so that none of the actual PNP
+> >            drivers need to change.
+> >
+> > Changes since RFC v1:
+> >         1) Abandoned swnode approach as per Marc's feedback.
+> >         2) To cope up with AIA series changes which changed irqchip driver
+> >            probe from core_initcall() to platform_driver, added patches
+> >            to support deferred probing.
+> >         3) Rebased on top of Anup's AIA v11 and added tags.
+> >
+> > To test the series,
+> >
+> > 1) Qemu should be built using the riscv_acpi_b2_v8 branch at
+> > https://github.com/vlsunil/qemu.git
+> >
+> > 2) EDK2 should be built using the instructions at:
+> > https://github.com/tianocore/edk2/blob/master/OvmfPkg/RiscVVirt/README.md
+> >
+> > 3) Build Linux using this series on top of Anup's AIA v11 series.
+> >
+> > Run Qemu:
+> > qemu-system-riscv64 \
+> >  -M virt,pflash0=pflash0,pflash1=pflash1,aia=aplic-imsic \
+> >  -m 2G -smp 8 \
+> >  -serial mon:stdio \
+> >  -device virtio-gpu-pci -full-screen \
+> >  -device qemu-xhci \
+> >  -device usb-kbd \
+> >  -blockdev node-name=pflash0,driver=file,read-only=on,filename=RISCV_VIRT_CODE.fd \
+> >  -blockdev node-name=pflash1,driver=file,filename=RISCV_VIRT_VARS.fd \
+> >  -netdev user,id=net0 -device virtio-net-pci,netdev=net0 \
+> >  -kernel arch/riscv/boot/Image \
+> >  -initrd rootfs.cpio \
+> >  -append "root=/dev/ram ro console=ttyS0 rootwait earlycon=uart8250,mmio,0x10000000"
+> >
+> > To boot with APLIC only, use aia=aplic.
+> > To boot with PLIC, remove aia= option.
+> >
+> > This series is also available in acpi_b2_v3_riscv_aia_v11 branch at
+> > https://github.com/vlsunil/linux.git
+> >
+> > Based-on: 20231023172800.315343-1-apatel@ventanamicro.com
+> > (https://lore.kernel.org/lkml/20231023172800.315343-1-apatel@ventanamicro.com/)
+> >
+> > Sunil V L (17):
+> >   arm64: PCI: Migrate ACPI related functions to pci-acpi.c
+> >   RISC-V: ACPI: Implement PCI related functionality
+> >   PCI: Make pci_create_root_bus() declare its reliance on MSI domains
+> >   ACPI: Add fw_devlink support for ACPI fwnode for IRQ dependency
+> >   ACPI: irq: Add support for deferred probe in acpi_register_gsi()
+> >   pnp.h: Reconfigure IRQ in pnp_irq() to support deferred probe
+> >   ACPI: scan.c: Add weak arch specific function to reorder the IRQCHIP
+> >     probe
+> >   ACPI: RISC-V: Implement arch function to reorder irqchip probe entries
+> >   irqchip: riscv-intc: Add ACPI support for AIA
+> >   irqchip: riscv-imsic: Add ACPI support
+> >   irqchip: riscv-aplic: Add ACPI support
+> >   irqchip: irq-sifive-plic: Add ACPI support
+> >   ACPI: bus: Add RINTC IRQ model for RISC-V
+> >   ACPI: bus: Add acpi_riscv_init function
+> >   ACPI: RISC-V: Create APLIC platform device
+> >   ACPI: RISC-V: Create PLIC platform device
+> >   irqchip: riscv-intc: Set ACPI irqmodel
+> 
+> JFYI, I have no capacity to provide any feedback on this till 6.8-rc1 is out.
+> 
+No worries!. I will wait for your feedback.
 
-Any reason for this? E.g some modern NIC have PTP support.
-
-> For virtio, perhaps
-> assuming the same monotonic hardware clock in guest and host can be
-> assumed.
-
-Note that virtio can be implemented in hardware now. So we can assume
-things like the kvm ptp clock.
-
-> But this clock alignment needs some thought.
->
-
-Thanks
-
+Thanks!
+Sunil
 
