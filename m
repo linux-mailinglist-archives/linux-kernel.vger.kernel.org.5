@@ -1,128 +1,110 @@
-Return-Path: <linux-kernel+bounces-7434-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7435-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8476981A7E5
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 22:15:16 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3299181A7E7
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 22:17:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D5FA71F23B3E
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 21:15:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B953AB22ED9
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 21:17:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C18248780;
-	Wed, 20 Dec 2023 21:15:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFB8E495C1;
+	Wed, 20 Dec 2023 21:17:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="mLsVrn9y"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD4D61DFF8
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 21:15:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ghiti.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ghiti.fr
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 79F0220004;
-	Wed, 20 Dec 2023 21:15:00 +0000 (UTC)
-Message-ID: <594df6bc-0207-46f6-aa81-dcf1f3665917@ghiti.fr>
-Date: Wed, 20 Dec 2023 22:14:59 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15960495C0
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 21:17:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1d3f2985425so1200305ad.3
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 13:17:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1703107024; x=1703711824; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=plCzQlGY/dQiSudjgURo8kfQVZqgAHmTig4adjzQbPU=;
+        b=mLsVrn9yiBztS01SR//uv45C26hTRNlRopDydr3b70El4edH3X1bxbJ9K/H55PAVck
+         XlYnPjcskp1nPnSiAEXepBNwzJR77HQrX3Y/z5e5zBi8+bC1i0wjZCsJ7hgOUkPTJfH+
+         nEvK39/6zQTJrk50WWeh9Z/QtugrnFGiZ+mY8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703107024; x=1703711824;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=plCzQlGY/dQiSudjgURo8kfQVZqgAHmTig4adjzQbPU=;
+        b=wnHx0VuGEBLQSu9lu+pMTyFmA5ejkONyjWYliqlOi8d5l4HhzeO3PfCqe3xe0zQyRK
+         TDNK8QlUyB49X1GNyS6r+JFSl2vYiJnJEmoes0FPHfjwx+74pxfAe7mGgNlmUFwxumrI
+         BwCGZ9j5CZsE2MdxW1h5C5FHLgxcPath0m6uZI7qyt368Oq2E2FsuSnsgoyjkPnjfEaQ
+         mYPYRVGKJt6hSgXYD5h6UoOrEeZ63WTqKpyk/ng4tAmFKbE6pcmWQLrZwfB3egPto5mh
+         q85NA6oCNOcJ1IRVd1zPMFJsURQ8JJTXQt69KaCijvoPSo1r60vKb8t9o27ecHJCIpqS
+         ahoQ==
+X-Gm-Message-State: AOJu0YzEafK/CI1OCBE05y676y4XvMcD8nC++LIPmbnYlmRN/ceJLF0F
+	edqxyOsRgXlaF2Bolo6o2K0TXg==
+X-Google-Smtp-Source: AGHT+IH8Z9+yInrarq0mHLy0WlmppFY4B2k8ydNwc6zKBV+StP1lSQLEJUGCon+d8mQW4KRncDQIEw==
+X-Received: by 2002:a17:902:680a:b0:1d3:4489:3681 with SMTP id h10-20020a170902680a00b001d344893681mr6572592plk.73.1703107024443;
+        Wed, 20 Dec 2023 13:17:04 -0800 (PST)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:9d:2:5a22:d46c:eec1:e5d4])
+        by smtp.gmail.com with ESMTPSA id u10-20020a170902b28a00b001d3dfebc05esm175023plr.21.2023.12.20.13.17.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Dec 2023 13:17:03 -0800 (PST)
+From: Douglas Anderson <dianders@chromium.org>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Petr Mladek <pmladek@suse.com>,
+	Li Zhe <lizhe.67@bytedance.com>,
+	Pingfan Liu <kernelfans@gmail.com>,
+	John Ogness <john.ogness@linutronix.de>,
+	Lecopzer Chen <lecopzer.chen@mediatek.com>,
+	Douglas Anderson <dianders@chromium.org>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 0/4] watchdog: Better handling of concurrent lockups
+Date: Wed, 20 Dec 2023 13:15:33 -0800
+Message-ID: <20231220211640.2023645-1-dianders@chromium.org>
+X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] riscv: put va_kernel_xip_pa_offset into CONFIG_XIP_KERNEL
-Content-Language: en-US
-To: Yunhui Cui <cuiyunhui@bytedance.com>, paul.walmsley@sifive.com,
- palmer@dabbelt.com, aou@eecs.berkeley.edu, ajones@ventanamicro.com,
- alexghiti@rivosinc.com, anup@brainfault.org, samitolvanen@google.com,
- rppt@kernel.org, panqinglin2020@iscas.ac.cn,
- linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20231220103428.61758-1-cuiyunhui@bytedance.com>
-From: Alexandre Ghiti <alex@ghiti.fr>
-In-Reply-To: <20231220103428.61758-1-cuiyunhui@bytedance.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-GND-Sasl: alex@ghiti.fr
-
-Hi Yunhui,
-
-On 20/12/2023 11:34, Yunhui Cui wrote:
-> opitmize the kernel_mapping_pa_to_va() and kernel_mapping_va_to_pa().
->
-> Signed-off-by: Yunhui Cui <cuiyunhui@bytedance.com>
-> ---
->   arch/riscv/include/asm/page.h | 33 ++++++++++++++++++++-------------
->   1 file changed, 20 insertions(+), 13 deletions(-)
->
-> diff --git a/arch/riscv/include/asm/page.h b/arch/riscv/include/asm/page.h
-> index 5488ecc337b6..0d2b479d02cd 100644
-> --- a/arch/riscv/include/asm/page.h
-> +++ b/arch/riscv/include/asm/page.h
-> @@ -113,8 +113,8 @@ struct kernel_mapping {
->   	unsigned long va_pa_offset;
->   	/* Offset between kernel mapping virtual address and kernel load address */
->   	unsigned long va_kernel_pa_offset;
-> -	unsigned long va_kernel_xip_pa_offset;
->   #ifdef CONFIG_XIP_KERNEL
-> +	unsigned long va_kernel_xip_pa_offset;
->   	uintptr_t xiprom;
->   	uintptr_t xiprom_sz;
->   #endif
-> @@ -134,12 +134,25 @@ extern phys_addr_t phys_ram_base;
->   #else
->   void *linear_mapping_pa_to_va(unsigned long x);
->   #endif
-> -#define kernel_mapping_pa_to_va(y)	({					\
-> -	unsigned long _y = (unsigned long)(y);					\
-> -	(IS_ENABLED(CONFIG_XIP_KERNEL) && _y < phys_ram_base) ?			\
-> -		(void *)(_y + kernel_map.va_kernel_xip_pa_offset) :		\
-> -		(void *)(_y + kernel_map.va_kernel_pa_offset + XIP_OFFSET);	\
-> -	})
-> +
-> +#ifdef CONFIG_XIP_KERNEL
-> +#define kernel_mapping_pa_to_va(y)							\
-> +	(((unsigned long)(y) < phys_ram_base) ?						\
-> +		(void *)((unsigned long)(y) + kernel_map.va_kernel_xip_pa_offset) :	\
-> +		(void *)((unsigned long)(y) + kernel_map.va_kernel_pa_offset + XIP_OFFSET))
-> +
-> +#define kernel_mapping_va_to_pa(y)						\
-> +	(((unsigned long)(y) < kernel_map.virt_addr + XIP_OFFSET) ?		\
-> +		((unsigned long)(y) - kernel_map.va_kernel_xip_pa_offset) :	\
-> +		((unsigned long)(y) - kernel_map.va_kernel_pa_offset - XIP_OFFSET))
-> +#else
-> +#define kernel_mapping_pa_to_va(y)						\
-> +	((void *)((unsigned long)(y) + kernel_map.va_kernel_pa_offset + XIP_OFFSET))
-> +
-> +#define kernel_mapping_va_to_pa(y)						\
-> +	((unsigned long)(y) - kernel_map.va_kernel_pa_offset - XIP_OFFSET)
-> +#endif
-> +
->   #define __pa_to_va_nodebug(x)		linear_mapping_pa_to_va(x)
->   
->   #ifndef CONFIG_DEBUG_VIRTUAL
-> @@ -147,12 +160,6 @@ void *linear_mapping_pa_to_va(unsigned long x);
->   #else
->   phys_addr_t linear_mapping_va_to_pa(unsigned long x);
->   #endif
-> -#define kernel_mapping_va_to_pa(y) ({						\
-> -	unsigned long _y = (unsigned long)(y);					\
-> -	(IS_ENABLED(CONFIG_XIP_KERNEL) && _y < kernel_map.virt_addr + XIP_OFFSET) ? \
-> -		(_y - kernel_map.va_kernel_xip_pa_offset) :			\
-> -		(_y - kernel_map.va_kernel_pa_offset - XIP_OFFSET);		\
-> -	})
->   
->   #define __va_to_pa_nodebug(x)	({						\
->   	unsigned long _x = x;							\
+Content-Transfer-Encoding: 8bit
 
 
-Not sure using #ifdef optimizes anything since the compiler should do 
-the same with the IS_ENABLED(CONFIG_XIP_KERNEL) and it does not really 
-improve the readability of this file which is already overloaded with 
-#ifdef, so I don't think this change is needed.
+When we get multiple lockups at roughly the same time, the output in
+the kernel logs can be very confusing since the reports about the
+lockups end up interleaved in the logs. There is some code in the
+kernel to try to handle this but it wasn't that complete.
 
-Thanks,
+Li Zhe recently made this a bit better for softlockups (specifically
+for the case where `kernel.softlockup_all_cpu_backtrace` is not set)
+in commit 9d02330abd3e ("softlockup: serialized softlockup's log"),
+but that only handled softlockup reports. Hardlockup reports still had
+similar issues.
 
-Alex
+This series also has a small fix to avoid dumping all stacks a second
+time in the case of a panic. This is a bit unrelated to the
+interleaving fixes but it does also improve the clarity of lockup
+reports.
+
+
+Douglas Anderson (4):
+  watchdog/hardlockup: Adopt softlockup logic avoiding double-dumps
+  watchdog/softlockup: Use printk_cpu_sync_get_irqsave() to serialize
+    reporting
+  watchdog/hardlockup: Use printk_cpu_sync_get_irqsave() to serialize
+    reporting
+  watchdog: If panicking and we dumped everything, don't re-enable
+    dumping
+
+ kernel/watchdog.c | 43 ++++++++++++++++++++++++++++++++-----------
+ 1 file changed, 32 insertions(+), 11 deletions(-)
+
+-- 
+2.43.0.472.g3155946c3a-goog
 
 
