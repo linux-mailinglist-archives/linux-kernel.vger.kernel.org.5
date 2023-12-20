@@ -1,180 +1,123 @@
-Return-Path: <linux-kernel+bounces-6254-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6255-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2338E819669
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 02:35:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5EF2D81966B
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 02:36:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 48F4F1C20F68
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 01:35:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1A815284587
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 01:36:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B3D18BF9;
-	Wed, 20 Dec 2023 01:35:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1090379D8;
+	Wed, 20 Dec 2023 01:36:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=w6rz.net header.i=@w6rz.net header.b="vVwRPhwc"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+Received: from omta38.uswest2.a.cloudfilter.net (omta38.uswest2.a.cloudfilter.net [35.89.44.37])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DD8C7488;
-	Wed, 20 Dec 2023 01:35:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
-Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
-	by ex01.ufhost.com (Postfix) with ESMTP id 1408124DBFD;
-	Wed, 20 Dec 2023 09:35:16 +0800 (CST)
-Received: from EXMBX063.cuchost.com (172.16.7.63) by EXMBX166.cuchost.com
- (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 20 Dec
- 2023 09:35:15 +0800
-Received: from EXMBX066.cuchost.com (172.16.7.66) by EXMBX063.cuchost.com
- (172.16.7.63) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 20 Dec
- 2023 09:35:15 +0800
-Received: from EXMBX066.cuchost.com ([fe80::5947:9245:907e:339f]) by
- EXMBX066.cuchost.com ([fe80::5947:9245:907e:339f%17]) with mapi id
- 15.00.1497.044; Wed, 20 Dec 2023 09:35:15 +0800
-From: JeeHeng Sia <jeeheng.sia@starfivetech.com>
-To: Emil Renner Berthing <emil.renner.berthing@canonical.com>,
-	"kernel@esmil.dk" <kernel@esmil.dk>, "conor@kernel.org" <conor@kernel.org>,
-	"robh+dt@kernel.org" <robh+dt@kernel.org>,
-	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
-	"paul.walmsley@sifive.com" <paul.walmsley@sifive.com>, "palmer@dabbelt.com"
-	<palmer@dabbelt.com>, "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
-	"mturquette@baylibre.com" <mturquette@baylibre.com>, "sboyd@kernel.org"
-	<sboyd@kernel.org>, "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>, "Hal
- Feng" <hal.feng@starfivetech.com>, Xingyu Wu <xingyu.wu@starfivetech.com>
-CC: "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>, Leyfoon Tan
-	<leyfoon.tan@starfivetech.com>
-Subject: RE: [PATCH v1 06/16] clk: starfive: Add JH8100 System clock generator
- driver
-Thread-Topic: [PATCH v1 06/16] clk: starfive: Add JH8100 System clock
- generator driver
-Thread-Index: AQHaKDp8qa+gHWDJHkGDh0MGWRuwVrCfD58AgAXCtdCAAc4FgIAJXVZwgABwgACAAQqwwA==
-Date: Wed, 20 Dec 2023 01:35:15 +0000
-Message-ID: <88f5651b913d4b2f9e9c76ecf8429aac@EXMBX066.cuchost.com>
-References: <20231206115000.295825-1-jeeheng.sia@starfivetech.com>
- <20231206115000.295825-7-jeeheng.sia@starfivetech.com>
- <CAJM55Z_VgBGvCPuvwmQahMcMfuWKnOKpZ9bBbbhei_Teu5Apeg@mail.gmail.com>
- <9ae86c6786bc4ac7b93c971ba00084a6@EXMBX066.cuchost.com>
- <CAJM55Z9GVFGuwqe=zLXQvBwDfVSz4eA2EXDd4sqWVCKJF2J+fg@mail.gmail.com>
- <d35d3cf480064c69b1125ba07d615446@EXMBX066.cuchost.com>
- <CAJM55Z_XZVBKr05X4QeCeDO_iMZh-FbKsikcNsDPK7iKuVEodw@mail.gmail.com>
-In-Reply-To: <CAJM55Z_XZVBKr05X4QeCeDO_iMZh-FbKsikcNsDPK7iKuVEodw@mail.gmail.com>
-Accept-Language: en-US, zh-CN
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-ms-exchange-transport-fromentityheader: Hosted
-x-yovoleruleagent: yovoleflag
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B4796133
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 01:36:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=w6rz.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=w6rz.net
+Received: from eig-obgw-6002a.ext.cloudfilter.net ([10.0.30.222])
+	by cmsmtp with ESMTPS
+	id Fj5br7oQcVly7FlVKrrXQf; Wed, 20 Dec 2023 01:36:10 +0000
+Received: from box5620.bluehost.com ([162.241.219.59])
+	by cmsmtp with ESMTPS
+	id FlVJrsOyKM0U2FlVJrDuwM; Wed, 20 Dec 2023 01:36:09 +0000
+X-Authority-Analysis: v=2.4 cv=BuKOfKb5 c=1 sm=1 tr=0 ts=65824509
+ a=30941lsx5skRcbJ0JMGu9A==:117 a=30941lsx5skRcbJ0JMGu9A==:17
+ a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
+ a=IkcTkHD0fZMA:10 a=e2cXIFwxEfEA:10 a=-Ou01B_BuAIA:10 a=VwQbUJbxAAAA:8
+ a=HaFmDPmJAAAA:8 a=49j0FZ7RFL9ueZfULrUA:9 a=QEXdDO2ut3YA:10
+ a=AjGcO6oz07-iQ99wixmX:22 a=nmWuMzfKamIsx3l42hEX:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=w6rz.net;
+	s=default; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:
+	Message-ID:From:In-Reply-To:References:Cc:To:Subject:Sender:Reply-To:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=vYYv6VnWyDYnl1N0uNA5sHrnj1iKPuBOwJABAM3pcV8=; b=vVwRPhwcKrrny2n4IUK8kkqwKi
+	I3X7SS9vD/91Xk3fCoxiV/FXgFSE6eYBd57XnPIehSsMTBcNoOB7OCqohlgUJH/Nqbr6DKr/vZSoB
+	cPIGd83YlsjyZiX6ftoPjXQcwkgm0HJgEeyk7vQD5JXyN/QnGa44YjXb7z2o5SkkC1NmuXEu7iKMq
+	quIeGQdXKMaMihu1vtkKnA4P88gM3i4S/UbPuLW0XC1knd2ypPPQqSklR64+2sPYO5nSZkFx//Aw7
+	mo/a1Ql+yoBqvSJ3+IS2yCVT9xkrp8IT7s6TcS/3KYh52clgViCQwMOQVbFJz1gRNhSjP21dZxnGX
+	eZnaeYyg==;
+Received: from c-98-207-139-8.hsd1.ca.comcast.net ([98.207.139.8]:60674 helo=[10.0.1.47])
+	by box5620.bluehost.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96.2)
+	(envelope-from <re@w6rz.net>)
+	id 1rFlVH-000kqQ-0c;
+	Tue, 19 Dec 2023 18:36:07 -0700
+Subject: Re: [PATCH 5.15 00/83] 5.15.144-rc1 review
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
+Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+ torvalds@linux-foundation.org, akpm@linux-foundation.org,
+ linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+ lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+ f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, srw@sladewatkins.net,
+ rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com
+References: <20231218135049.738602288@linuxfoundation.org>
+In-Reply-To: <20231218135049.738602288@linuxfoundation.org>
+From: Ron Economos <re@w6rz.net>
+Message-ID: <ffe3f88d-521e-2bf7-d971-13333162024f@w6rz.net>
+Date: Tue, 19 Dec 2023 17:36:04 -0800
+User-Agent: Mozilla/5.0 (X11; Linux armv7l; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - box5620.bluehost.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - w6rz.net
+X-BWhitelist: no
+X-Source-IP: 98.207.139.8
+X-Source-L: No
+X-Exim-ID: 1rFlVH-000kqQ-0c
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: c-98-207-139-8.hsd1.ca.comcast.net ([10.0.1.47]) [98.207.139.8]:60674
+X-Source-Auth: re@w6rz.net
+X-Email-Count: 4
+X-Org: HG=bhshared;ORG=bluehost;
+X-Source-Cap: d3NpeHJ6bmU7d3NpeHJ6bmU7Ym94NTYyMC5ibHVlaG9zdC5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfAF5/it3c+JZPnXXNza8/ru6Sq5LvvUMnoAaSExCOMrdX+IO32uw/tSLxQwu3NdlYVgOCno9flYibDaYcdCZI73eW7RgxQP4Kg7xHWYnQDzOsoGcUjaF
+ fu+90XtI4cRqwLxXZJ+nl/F1Rr6/087uJsFjFwcL6dCEVX1JKAFF5X5174JmD8DLD4WtyWEbR2lwAgYn7VR83ljZAk1KWTA8yJs=
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogRW1pbCBSZW5uZXIgQmVy
-dGhpbmcgPGVtaWwucmVubmVyLmJlcnRoaW5nQGNhbm9uaWNhbC5jb20+DQo+IFNlbnQ6IFdlZG5l
-c2RheSwgRGVjZW1iZXIgMjAsIDIwMjMgMTo0MCBBTQ0KPiBUbzogSmVlSGVuZyBTaWEgPGplZWhl
-bmcuc2lhQHN0YXJmaXZldGVjaC5jb20+OyBFbWlsIFJlbm5lciBCZXJ0aGluZyA8ZW1pbC5yZW5u
-ZXIuYmVydGhpbmdAY2Fub25pY2FsLmNvbT47IGtlcm5lbEBlc21pbC5kazsNCj4gY29ub3JAa2Vy
-bmVsLm9yZzsgcm9iaCtkdEBrZXJuZWwub3JnOyBrcnp5c3p0b2Yua296bG93c2tpK2R0QGxpbmFy
-by5vcmc7IHBhdWwud2FsbXNsZXlAc2lmaXZlLmNvbTsgcGFsbWVyQGRhYmJlbHQuY29tOw0KPiBh
-b3VAZWVjcy5iZXJrZWxleS5lZHU7IG10dXJxdWV0dGVAYmF5bGlicmUuY29tOyBzYm95ZEBrZXJu
-ZWwub3JnOyBwLnphYmVsQHBlbmd1dHJvbml4LmRlOyBIYWwgRmVuZw0KPiA8aGFsLmZlbmdAc3Rh
-cmZpdmV0ZWNoLmNvbT47IFhpbmd5dSBXdSA8eGluZ3l1Lnd1QHN0YXJmaXZldGVjaC5jb20+DQo+
-IENjOiBsaW51eC1yaXNjdkBsaXN0cy5pbmZyYWRlYWQub3JnOyBkZXZpY2V0cmVlQHZnZXIua2Vy
-bmVsLm9yZzsgbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZzsgbGludXgtY2xrQHZnZXIua2Vy
-bmVsLm9yZzsgTGV5Zm9vbiBUYW4NCj4gPGxleWZvb24udGFuQHN0YXJmaXZldGVjaC5jb20+DQo+
-IFN1YmplY3Q6IFJFOiBbUEFUQ0ggdjEgMDYvMTZdIGNsazogc3RhcmZpdmU6IEFkZCBKSDgxMDAg
-U3lzdGVtIGNsb2NrIGdlbmVyYXRvciBkcml2ZXINCj4gDQo+IEplZUhlbmcgU2lhIHdyb3RlOg0K
-PiA+DQo+ID4NCj4gPiA+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+ID4gPiBGcm9tOiBF
-bWlsIFJlbm5lciBCZXJ0aGluZyA8ZW1pbC5yZW5uZXIuYmVydGhpbmdAY2Fub25pY2FsLmNvbT4N
-Cj4gPiA+IFNlbnQ6IFdlZG5lc2RheSwgRGVjZW1iZXIgMTMsIDIwMjMgNzo1NyBQTQ0KPiA+ID4g
-VG86IEplZUhlbmcgU2lhIDxqZWVoZW5nLnNpYUBzdGFyZml2ZXRlY2guY29tPjsgRW1pbCBSZW5u
-ZXIgQmVydGhpbmcgPGVtaWwucmVubmVyLmJlcnRoaW5nQGNhbm9uaWNhbC5jb20+OyBrZXJuZWxA
-ZXNtaWwuZGs7DQo+ID4gPiBjb25vckBrZXJuZWwub3JnOyByb2JoK2R0QGtlcm5lbC5vcmc7IGty
-enlzenRvZi5rb3psb3dza2krZHRAbGluYXJvLm9yZzsgcGF1bC53YWxtc2xleUBzaWZpdmUuY29t
-OyBwYWxtZXJAZGFiYmVsdC5jb207DQo+ID4gPiBhb3VAZWVjcy5iZXJrZWxleS5lZHU7IG10dXJx
-dWV0dGVAYmF5bGlicmUuY29tOyBzYm95ZEBrZXJuZWwub3JnOyBwLnphYmVsQHBlbmd1dHJvbml4
-LmRlOyBIYWwgRmVuZw0KPiA+ID4gPGhhbC5mZW5nQHN0YXJmaXZldGVjaC5jb20+OyBYaW5neXUg
-V3UgPHhpbmd5dS53dUBzdGFyZml2ZXRlY2guY29tPg0KPiA+ID4gQ2M6IGxpbnV4LXJpc2N2QGxp
-c3RzLmluZnJhZGVhZC5vcmc7IGRldmljZXRyZWVAdmdlci5rZXJuZWwub3JnOyBsaW51eC1rZXJu
-ZWxAdmdlci5rZXJuZWwub3JnOyBsaW51eC1jbGtAdmdlci5rZXJuZWwub3JnOyBMZXlmb29uDQo+
-IFRhbg0KPiA+ID4gPGxleWZvb24udGFuQHN0YXJmaXZldGVjaC5jb20+DQo+ID4gPiBTdWJqZWN0
-OiBSRTogW1BBVENIIHYxIDA2LzE2XSBjbGs6IHN0YXJmaXZlOiBBZGQgSkg4MTAwIFN5c3RlbSBj
-bG9jayBnZW5lcmF0b3IgZHJpdmVyDQo+ID4gPg0KPiA+ID4gSmVlSGVuZyBTaWEgd3JvdGU6DQo+
-ID4gPiA+ID4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gPiA+ID4gPiBGcm9tOiBFbWls
-IFJlbm5lciBCZXJ0aGluZyA8ZW1pbC5yZW5uZXIuYmVydGhpbmdAY2Fub25pY2FsLmNvbT4NCj4g
-PiA+ID4gPiBTZW50OiBTYXR1cmRheSwgRGVjZW1iZXIgOSwgMjAyMyAxMjoyNSBBTQ0KPiA+ID4g
-PiA+IFRvOiBKZWVIZW5nIFNpYSA8amVlaGVuZy5zaWFAc3RhcmZpdmV0ZWNoLmNvbT47IGtlcm5l
-bEBlc21pbC5kazsgY29ub3JAa2VybmVsLm9yZzsgcm9iaCtkdEBrZXJuZWwub3JnOw0KPiA+ID4g
-PiA+IGtyenlzenRvZi5rb3psb3dza2krZHRAbGluYXJvLm9yZzsgcGF1bC53YWxtc2xleUBzaWZp
-dmUuY29tOyBwYWxtZXJAZGFiYmVsdC5jb207IGFvdUBlZWNzLmJlcmtlbGV5LmVkdTsNCj4gPiA+
-ID4gPiBtdHVycXVldHRlQGJheWxpYnJlLmNvbTsgc2JveWRAa2VybmVsLm9yZzsgcC56YWJlbEBw
-ZW5ndXRyb25peC5kZTsgZW1pbC5yZW5uZXIuYmVydGhpbmdAY2Fub25pY2FsLmNvbTsgSGFsIEZl
-bmcNCj4gPiA+ID4gPiA8aGFsLmZlbmdAc3RhcmZpdmV0ZWNoLmNvbT47IFhpbmd5dSBXdSA8eGlu
-Z3l1Lnd1QHN0YXJmaXZldGVjaC5jb20+DQo+ID4gPiA+ID4gQ2M6IGxpbnV4LXJpc2N2QGxpc3Rz
-LmluZnJhZGVhZC5vcmc7IGRldmljZXRyZWVAdmdlci5rZXJuZWwub3JnOyBsaW51eC1rZXJuZWxA
-dmdlci5rZXJuZWwub3JnOyBsaW51eC1jbGtAdmdlci5rZXJuZWwub3JnOw0KPiBMZXlmb29uDQo+
-ID4gPiBUYW4NCj4gPiA+ID4gPiA8bGV5Zm9vbi50YW5Ac3RhcmZpdmV0ZWNoLmNvbT4NCj4gPiA+
-ID4gPiBTdWJqZWN0OiBSZTogW1BBVENIIHYxIDA2LzE2XSBjbGs6IHN0YXJmaXZlOiBBZGQgSkg4
-MTAwIFN5c3RlbSBjbG9jayBnZW5lcmF0b3IgZHJpdmVyDQo+ID4gPiA+ID4NCj4gPiA+ID4gPiBT
-aWEgSmVlIEhlbmcgd3JvdGU6DQo+ID4gPiA+ID4gPiBBZGQgc3VwcG9ydCBmb3IgSkg4MTAwIFN5
-c3RlbSBjbG9jayBnZW5lcmF0b3IuDQo+ID4gPiA+ID4gPg0KPiA+ID4gPiA+ID4gU2lnbmVkLW9m
-Zi1ieTogU2lhIEplZSBIZW5nIDxqZWVoZW5nLnNpYUBzdGFyZml2ZXRlY2guY29tPg0KPiA+ID4g
-PiA+ID4gUmV2aWV3ZWQtYnk6IExleSBGb29uIFRhbiA8bGV5Zm9vbi50YW5Ac3RhcmZpdmV0ZWNo
-LmNvbT4NCj4gPiA+ID4gPiA+IC0tLQ0KPiA+ID4gPiA+ID4gIE1BSU5UQUlORVJTICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgOCArDQo+ID4gPiA+ID4gPiAgZHJpdmVycy9j
-bGsvc3RhcmZpdmUvS2NvbmZpZyAgICAgICAgICAgICAgICAgIHwgICA5ICsNCj4gPiA+ID4gPiA+
-ICBkcml2ZXJzL2Nsay9zdGFyZml2ZS9NYWtlZmlsZSAgICAgICAgICAgICAgICAgfCAgIDEgKw0K
-PiA+ID4gPiA+ID4gIGRyaXZlcnMvY2xrL3N0YXJmaXZlL2Nsay1zdGFyZml2ZS1jb21tb24uaCAg
-ICB8ICAgOSArLQ0KPiA+ID4gPiA+ID4gIGRyaXZlcnMvY2xrL3N0YXJmaXZlL2poODEwMC9NYWtl
-ZmlsZSAgICAgICAgICB8ICAgMyArDQo+ID4gPiA+ID4gPiAgLi4uL2Nsay9zdGFyZml2ZS9qaDgx
-MDAvY2xrLXN0YXJmaXZlLWpoODEwMC5oIHwgIDExICsNCj4gPiA+ID4gPiA+ICBkcml2ZXJzL2Ns
-ay9zdGFyZml2ZS9qaDgxMDAvY2xrLXN5cy5jICAgICAgICAgfCA0NTUgKysrKysrKysrKysrKysr
-KysrDQo+ID4gPiA+ID4gPiAgNyBmaWxlcyBjaGFuZ2VkLCA0OTUgaW5zZXJ0aW9ucygrKSwgMSBk
-ZWxldGlvbigtKQ0KPiA+ID4gPiA+ID4gIGNyZWF0ZSBtb2RlIDEwMDY0NCBkcml2ZXJzL2Nsay9z
-dGFyZml2ZS9qaDgxMDAvTWFrZWZpbGUNCj4gPiA+ID4gPiA+ICBjcmVhdGUgbW9kZSAxMDA2NDQg
-ZHJpdmVycy9jbGsvc3RhcmZpdmUvamg4MTAwL2Nsay1zdGFyZml2ZS1qaDgxMDAuaA0KPiA+ID4g
-PiA+ID4gIGNyZWF0ZSBtb2RlIDEwMDY0NCBkcml2ZXJzL2Nsay9zdGFyZml2ZS9qaDgxMDAvY2xr
-LXN5cy5jDQo+ID4gPiAuLi4NCj4gPiA+ID4gPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2Nsay9z
-dGFyZml2ZS9NYWtlZmlsZSBiL2RyaXZlcnMvY2xrL3N0YXJmaXZlL01ha2VmaWxlDQo+ID4gPiA+
-ID4gPiBpbmRleCAwMTJmN2VlODNmOGUuLjZjYjNjZTgyMzMzMCAxMDA2NDQNCj4gPiA+ID4gPiA+
-IC0tLSBhL2RyaXZlcnMvY2xrL3N0YXJmaXZlL01ha2VmaWxlDQo+ID4gPiA+ID4gPiArKysgYi9k
-cml2ZXJzL2Nsay9zdGFyZml2ZS9NYWtlZmlsZQ0KPiA+ID4gPiA+ID4gQEAgLTEwLDMgKzEwLDQg
-QEAgb2JqLSQoQ09ORklHX0NMS19TVEFSRklWRV9KSDcxMTBfQU9OKQkrPSBjbGstc3RhcmZpdmUt
-amg3MTEwLWFvbi5vDQo+ID4gPiA+ID4gPiAgb2JqLSQoQ09ORklHX0NMS19TVEFSRklWRV9KSDcx
-MTBfU1RHKQkrPSBjbGstc3RhcmZpdmUtamg3MTEwLXN0Zy5vDQo+ID4gPiA+ID4gPiAgb2JqLSQo
-Q09ORklHX0NMS19TVEFSRklWRV9KSDcxMTBfSVNQKQkrPSBjbGstc3RhcmZpdmUtamg3MTEwLWlz
-cC5vDQo+ID4gPiA+ID4gPiAgb2JqLSQoQ09ORklHX0NMS19TVEFSRklWRV9KSDcxMTBfVk9VVCkJ
-Kz0gY2xrLXN0YXJmaXZlLWpoNzExMC12b3V0Lm8NCj4gPiA+ID4gPiA+ICtvYmotJChDT05GSUdf
-Q0xLX1NUQVJGSVZFX0pIODEwMF9TWVMpCSs9IGpoODEwMC8NCj4gPiA+ID4gPg0KPiA+ID4gPiA+
-IEkgZG9uJ3QgcmVhbGx5IHNlZSB3aHkgZG8geW91IG5lZWQgYSBzcGVjaWFsIHN1YmRpcmVjdG9y
-eSBmb3IgdGhlIEpIODEwMD8gVGhlDQo+ID4gPiA+ID4gSkg3MTEwIGRyaXZlcnMgZG8gZmluZSB3
-aXRob3V0IGl0Lg0KPiA+ID4gPiBFYWNoIHN1YmZvbGRlciBjYW4gcmVwcmVzZW50IGEgZGlmZmVy
-ZW50IHBsYXRmb3JtLCBtYWtpbmcgaXQgZWFzaWVyIHRvDQo+ID4gPiA+IGxvY2F0ZSBhbmQgbWFp
-bnRhaW4gcGxhdGZvcm0tc3BlY2lmaWMgY29kZS4gU2luY2UgdGhlIGNvZGUgaXMgZXhwZWN0ZWQN
-Cj4gPiA+ID4gdG8gZ3JvdyBpbiB0aGUgZnV0dXJlLCBsZXQncyBzdGFydCBvcmdhbml6aW5nIGl0
-IGluIGEgZm9sZGVyLWJhc2VkIHN0cnVjdHVyZQ0KPiA+ID4gPiBmb3IgZWFzaWVyIG1haW50ZW5h
-bmNlIGF0IGEgbGF0ZXIgc3RhZ2UuDQo+ID4gPg0KPiA+ID4gWWVzLCBidXQgdGhhdCdzIG5vdCB3
-aGF0IHlvdSdyZSBkb2luZyBoZXJlLiBZb3UncmUgbWFraW5nIGp1c3Qgb25lIG9mIHRoZSAzDQo+
-ID4gPiBhbG1vc3QgaWRlbnRpY2FsIGRyaXZlcnMgYmUgZGlmZmVyZW50IGZvciBubyBnb29kIHJl
-YXNvbi4NCj4gPiBJIHdpbGwgcmVzdHJ1Y3R1cmUgaXQgZm9yIHRoZSBvdGhlciAyIHBsYXRmb3Jt
-cy4NCj4gDQo+IFRoYXQgd291bGQgYmUgbGVzcyBiYWQsIGJ1dCB5b3Ugc3RpbGwgaGF2ZW4ndCBl
-eHBsYWluZWQgd2h5IHlvdSBuZWVkIHRvIG1vdmUNCj4gZXZlcnl0aGluZyBhcm91bmQgbGlrZSB0
-aGF0Og0KPiBodHRwczovL2xvcmUua2VybmVsLm9yZy9saW51eC1yaXNjdi9DQUpNNTVaXzNNdHky
-TGZ0UFZrUUMxd2J3dEdlem5NTUFrOW1BakhfR29OdUw3Q0t0YVFAbWFpbC5nbWFpbC5jb20vDQo+
-IA0KPiBJIGRvbid0IHRoaW5rIGp1c3QgInRvbyBtYW55IGZpbGVzIiBpcyBhIHZlcnkgZ29vZCBh
-cmd1bWVudCBoZXJlLiBKdXN0IGxvb2sgYXQNCj4gZHJpdmVycy9jbGsvc3VueGkNClRoYW5rcy4g
-R2l2ZW4gdGhhdCB0aGUgdHJlbmQgaXMgbm90IHRvIHVzZSBzdWJmb2xkZXJzIHRvIGRpZmZlcmVu
-dGlhdGUgdGhlIHBsYXRmb3JtDQpjbG9jayBkcml2ZXIsIEkgYW0gb2theSB3aXRoIHJlbW92aW5n
-IHRoZSBzdWJmb2xkZXIgYW5kIGZvbGxvd2luZyB0aGUgbmFtaW5nDQpjb252ZW50aW9uIGZyb20g
-dGhlIEpINzF4eCdzIGZpbGUgbmFtZS4NCj4gDQo+IC9FbWlsDQo=
+On 12/18/23 5:51 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.15.144 release.
+> There are 83 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 20 Dec 2023 13:50:31 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.144-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
+
+Built and booted successfully on RISC-V RV64 (HiFive Unmatched).
+
+Tested-by: Ron Economos <re@w6rz.net>
+
 
