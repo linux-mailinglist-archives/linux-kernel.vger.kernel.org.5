@@ -1,127 +1,152 @@
-Return-Path: <linux-kernel+bounces-6785-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6784-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 521E0819D83
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 12:02:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF174819D80
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 12:02:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0F99C287859
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 11:02:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4E7821F21FEC
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 11:02:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA7AF21350;
-	Wed, 20 Dec 2023 11:02:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53A0420DE9;
+	Wed, 20 Dec 2023 11:02:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="dc1lT+rN"
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="2hTYVkq2"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 336E7210EF
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 11:02:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-5d33574f64eso45387907b3.3
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 03:02:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703070148; x=1703674948; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nWZSCVRWyRcXn4WJEnxmsNNdBu46mpN/PeFPjmLZcSo=;
-        b=dc1lT+rN4Jk1cfhR9kpv3m6Eokb0zL1DeRVZZFb8FpS+LSLEY8OMDzET4PmijmLtT2
-         O7QKXk4qQ3Jy5nnA3nLM5mR9Jjvh/m9GWCQYPWm8HLpMxqTEcT35Si55MWb6/IoNGswR
-         pTPVVvXcerCAqo0ODQ9iYkQVgwRgo2fJHz5xiHbQFeyvCyPIiJwGcP2TLQJ1EVqkzx6I
-         uZ6mNHj+1s+/uddVt6CzJ7fJfXJxIiDSXJZbFtfFstXzsonly6GuGx05UnTczE/ZVBg+
-         GT0h9puyl/ll1mn6Agb31cAHynel0HrCuVSsMRsfqeuGrTLkmWO/nFCL8bZQWpJ+Ut+7
-         9qxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703070148; x=1703674948;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nWZSCVRWyRcXn4WJEnxmsNNdBu46mpN/PeFPjmLZcSo=;
-        b=R17ro7MdD+BP88IJx5tSkTkuVF1U+YYQ5ZaTal9Dij45AmRW7YuP7Z7CZHKjJhH1zt
-         aSe/QumW+UBaeudz0rZ3EUDCrYab90ouZJZul0sp26IJyAAEsELXLbf0jFZhHGG2+5jk
-         Gs5pJpFGMyWYfDYPY7sEWjShA1v7Wv4lTnY5bfj2b3eY3AOYOqGePOMDXl5/9GOOaJIv
-         tTm8B5dHpm1wwIrT4p/lmNQrj1toMoyWiAm7qYo/YAgFblLWqejtRzUnvIkXITSnGqMJ
-         XY5MvoT61KWgl0ac7spFWiuxIitV+7OKoEuKbEEb1cPxGU6MKN1ZhU5x+M2sC3KpdxOB
-         Q+ZQ==
-X-Gm-Message-State: AOJu0YyqWS8WdLyNeKyzF2T6GvRYyFHJiy0lrUv2B19HCeSaDHozXnXb
-	+SPjw/9I3zI/Ww/33LWwR6zoZbJvniDi8nYmDBBScA==
-X-Google-Smtp-Source: AGHT+IGI18zKecLpoICynLSs1R9jI1aHtIpeMLm0ek2fpDCCeCyu36u+kC2bJq5eVNLOe5HR45rwOgyJR2ClP5LV5U0=
-X-Received: by 2002:a0d:ea11:0:b0:5e7:ebc6:984 with SMTP id
- t17-20020a0dea11000000b005e7ebc60984mr2065348ywe.84.1703070148183; Wed, 20
- Dec 2023 03:02:28 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F4DA20DCD;
+	Wed, 20 Dec 2023 11:02:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1703070144;
+	bh=SislEKrbcBCyeF1cvA7sktZWbgCq5DooZegn8jxygCM=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=2hTYVkq2uP3CruHjaY/H/vSbxgKxgARWX/amioDU5W2RFfbRDpG9XU9BswCMc1PBc
+	 tM1Uz7hL0ZkjoKD540e4fh/aEdpdF4jvskIOAfMN11BDUKzApZFLXAuV7QYFvKvEqL
+	 Y8vDEfIdriVZiiCqCwWTnd2OKcC5FcNDCSnC3YQHvjPoejeSLRbSbLc9pgk8naiUB5
+	 ifehch5ldnba6WoqCVjVCMBgSHQmtGmdmG7AqwsjqkpjNqx3Cr/hs16i8Oz5KJNyw5
+	 7P6ASVqW1PdSogJuIGUF1v6R1fGqAkOvnKs8oKxS7G7+5ZnLrSc/0EdaifW8KoQ0mm
+	 jPtUyVV1bTfig==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id B76663781FC9;
+	Wed, 20 Dec 2023 11:02:23 +0000 (UTC)
+Message-ID: <80b61d00-ac87-4880-a535-0a5fdd3bed83@collabora.com>
+Date: Wed, 20 Dec 2023 12:02:22 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231212090611.950-1-quic_aiquny@quicinc.com>
-In-Reply-To: <20231212090611.950-1-quic_aiquny@quicinc.com>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Wed, 20 Dec 2023 12:02:17 +0100
-Message-ID: <CACRpkdb6dkw58GwkqYXTDAQtdLazOLyp1CEjnkxDX2v=TDvvMw@mail.gmail.com>
-Subject: Re: [PATCH v2] pinctrl: Add lock to ensure the state atomization
-To: Maria Yu <quic_aiquny@quicinc.com>
-Cc: andersson@kernel.org, kernel@quicinc.com, linux-gpio@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 3/3] nvmem: mtk-efuse: Modify driver for getting chip
+ information
+Content-Language: en-US
+To: William-tw Lin <william-tw.lin@mediatek.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Matthias Brugger
+ <matthias.bgg@gmail.com>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
+References: <20231220103901.22180-1-william-tw.lin@mediatek.com>
+ <20231220103901.22180-4-william-tw.lin@mediatek.com>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20231220103901.22180-4-william-tw.lin@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi Maria,
+Il 20/12/23 11:39, William-tw Lin ha scritto:
+> Retrieval of soc info is needed. This patch includes the following:
+> 1. Register socinfo device in mtk-efuse.c
+> 
 
-On Tue, Dec 12, 2023 at 10:06=E2=80=AFAM Maria Yu <quic_aiquny@quicinc.com>=
- wrote:
+nvmem: mtk-efuse: Register MediaTek socinfo driver from efuse
 
-> Currently pinctrl_select_state is an export symbol and don't have
-> effective re-entrance protect design. During async probing of devices
-> it's possible to end up in pinctrl_select_state() from multiple
-> contexts simultaneously, so make it thread safe.
-> More over, when the real racy happened, the system frequently have
-> printk message like:
->   "not freeing pin xx (xxx) as part of deactivating group xxx - it is
-> already used for some other setting".
-> Finally the system crashed after the flood log.
-> Add per pinctrl lock to ensure the old state and new state transition
-> atomization.
-> Also move dev error print message outside the region with interrupts
-> disabled.
->
-> Fixes: 4198a9b57106 ("pinctrl: avoid reload of p state in list iteration"=
-)
-> Signed-off-by: Maria Yu <quic_aiquny@quicinc.com>
+The socinfo driver reads chip information from eFuses and does not need
+any devicetree node. Register it from mtk-efuse.
 
-Overall this looks good!
+While at it, also add the name for this driver's nvmem_config.
 
-> @@ -1262,9 +1263,12 @@ static void pinctrl_link_add(struct pinctrl_dev *p=
-ctldev,
->  static int pinctrl_commit_state(struct pinctrl *p, struct pinctrl_state =
-*state)
->  {
->         struct pinctrl_setting *setting, *setting2;
-> -       struct pinctrl_state *old_state =3D READ_ONCE(p->state);
-> +       struct pinctrl_state *old_state;
->         int ret;
-> +       unsigned long flags;
->
-> +       spin_lock_irqsave(&p->lock, flags);
-(...)
-> +       spin_unlock_irqrestore(&p->lock, flags);
-(...)
-> +       spin_unlock_irqrestore(&p->lock, flags);
 
-Is it possible to use a scoped guard for pinctrl_commit_state()?
+^^^ that's a proper commit title and description :-)
 
-#include <linux/cleanup.h>
-guard(spinlock_irqsave)(&p->lock);
+> Signed-off-by: William-tw Lin <william-tw.lin@mediatek.com>
+> ---
+>   drivers/nvmem/mtk-efuse.c | 11 ++++++++++-
+>   1 file changed, 10 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/nvmem/mtk-efuse.c b/drivers/nvmem/mtk-efuse.c
+> index 84f05b40a411..3914e039e288 100644
+> --- a/drivers/nvmem/mtk-efuse.c
+> +++ b/drivers/nvmem/mtk-efuse.c
+> @@ -68,6 +68,7 @@ static int mtk_efuse_probe(struct platform_device *pdev)
+>   	struct nvmem_config econfig = {};
+>   	struct mtk_efuse_priv *priv;
+>   	const struct mtk_efuse_pdata *pdata;
+> +	struct platform_device *socinfo;
+>   
+>   	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+>   	if (!priv)
+> @@ -85,11 +86,19 @@ static int mtk_efuse_probe(struct platform_device *pdev)
+>   	econfig.size = resource_size(res);
+>   	econfig.priv = priv;
+>   	econfig.dev = dev;
+> +	econfig.name = "mtk-efuse";
+>   	if (pdata->uses_post_processing)
+>   		econfig.fixup_dt_cell_info = &mtk_efuse_fixup_dt_cell_info;
+>   	nvmem = devm_nvmem_register(dev, &econfig);
+> +	if (IS_ERR(nvmem))
+> +		return PTR_ERR(nvmem);
+>   
+> -	return PTR_ERR_OR_ZERO(nvmem);
+> +	socinfo = platform_device_register_data(&pdev->dev, "mtk-socinfo",
+> +						PLATFORM_DEVID_AUTO, NULL, 0);
+> +	if (IS_ERR(socinfo))
+> +		dev_info(dev, "MediaTek SoC Information will be unavailable\n");
+> +
 
-It saves some code (and no need for flags) and avoid possible
-bugs when people add new errorpaths to the code.
+	if (IS_ERR(socinfo))
+		dev_info(dev, "MediaTek SoC Information will be unavailable\n");
 
-Yours,
-Linus Walleij
+	platform_set_drvdata(pdev, socinfo);
+	return 0;
+
+> +	return 0;
+>   }
+>   
+>   static const struct mtk_efuse_pdata mtk_mt8186_efuse_pdata = {
+
+
+static void mtk_efuse_remove(struct platform_device *pdev)
+{
+	struct platform_device *socinfo = platform_get_drvdata(pdev);
+
+	if (!IS_ERR_OR_NULL(socinfo))
+		platform_device_unregister(socinfo);
+}
+
+static struct platform_driver mtk_efuse_driver = {
+	.probe = mtk_efuse_probe,
+	.remove_new = mtk_efuse_remove, <---- add this
+	.driver = {
+		.name = "mediatek,efuse",
+		.of_match_table = mtk_efuse_of_match,
+	}
+};
+
+After those additions, it's good for me.
+
+Thanks,
+Angelo
 
