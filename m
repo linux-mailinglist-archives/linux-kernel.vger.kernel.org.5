@@ -1,148 +1,128 @@
-Return-Path: <linux-kernel+bounces-6425-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6424-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8126A8198A5
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 07:33:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D4CE8198A4
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 07:33:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A597B1C256EE
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 06:33:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EBA85288258
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 06:33:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 914201CA91;
-	Wed, 20 Dec 2023 06:33:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8332214F9D;
+	Wed, 20 Dec 2023 06:33:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="cvS4vcLA"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="RFXgY9h+"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F8E41C680
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 06:33:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Content-Type: text/plain;
-	charset=us-ascii
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1703053998;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=FfpLB0WYs8nz5UdmiOJ/cuEd4btbk/+PVDiE8yot5zc=;
-	b=cvS4vcLA7EtoRWMOlI56+GNDO7nmjBr8m8PrvtkvaVv5zW1aepAj+VkgjPGkIbZkrrs+Q8
-	Npv2dT33NMHZ7K184jYhQgQpS+B0GICuE7ofcWjngvoGNixvNbn7hLLVhvYeeHMovQsKst
-	T6y3x/7NGWHnSvQcZn2yPn0ByQDOcr4=
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A250414AA6;
+	Wed, 20 Dec 2023 06:32:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BK5LJki030251;
+	Wed, 20 Dec 2023 06:32:54 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=H+yzUCisvEbkPUEHym0QjsjP6XAzDoMfyOVXQ9S3PqE=; b=RF
+	XgY9h+49royOk+metHq3zw+9NBGoCXAODQHgoV++KnJx+n/6Tvph1tyvi8QPifa4
+	Rl9LXw+tP2IE/5+oC4/aG9y5mPB96AdZcSlF0/5ssLL2lWhstG51CO/bsIzj6DMM
+	dnb4Mt7FmooTINFDWs6Do+/rXFPaal+fRLcZgSX7YA6EsOn9KHccYBF3yfjQKBNF
+	UwmoYr1CiMpQ/QLsoov68VAhkCgb9dn2YpBFZD2yGzpDfb++gLPe2mp062sdwG78
+	82L58PieXarbVGzloeUFulci4n9YWPgK8MauOe6W5WT6QGLFDm7cVMeLJ0MnyXWU
+	OSTnsgXMFKjRL9f+yxgQ==
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v37vxtp8m-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 20 Dec 2023 06:32:53 +0000 (GMT)
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+	by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BK6WrWE024537
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 20 Dec 2023 06:32:53 GMT
+Received: from [10.216.20.45] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 19 Dec
+ 2023 22:32:49 -0800
+Message-ID: <d0ea23ae-8fba-d229-b0f6-dc522f285233@quicinc.com>
+Date: Wed, 20 Dec 2023 12:02:45 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Subject: Re: [PATCH v2 2/3] arm64: mm: HVO: support BBM of vmemmap pgtable
- safely
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Muchun Song <muchun.song@linux.dev>
-In-Reply-To: <20231220051855.47547-3-sunnanyong@huawei.com>
-Date: Wed, 20 Dec 2023 14:32:33 +0800
-Cc: Catalin Marinas <catalin.marinas@arm.com>,
- Will Deacon <will@kernel.org>,
- Mike Kravetz <mike.kravetz@oracle.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Anshuman Khandual <anshuman.khandual@arm.com>,
- "Matthew Wilcox (Oracle)" <willy@infradead.org>,
- Kefeng Wang <wangkefeng.wang@huawei.com>,
- linux-arm-kernel@lists.infradead.org,
- LKML <linux-kernel@vger.kernel.org>,
- Linux-MM <linux-mm@kvack.org>
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 00/34] Qualcomm video encoder and decoder driver
+Content-Language: en-US
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Dikshita Agarwal
+	<quic_dikshita@quicinc.com>,
+        <linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <stanimir.k.varbanov@gmail.com>, <agross@kernel.org>,
+        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+        <mchehab@kernel.org>, <bryan.odonoghue@linaro.org>
+CC: <linux-arm-msm@vger.kernel.org>, <quic_abhinavk@quicinc.com>
+References: <1702899149-21321-1-git-send-email-quic_dikshita@quicinc.com>
+ <a033dfc5-dcf1-4969-ad4d-1836ff9ff0a3@linaro.org>
+From: Vikash Garodia <quic_vgarodia@quicinc.com>
+In-Reply-To: <a033dfc5-dcf1-4969-ad4d-1836ff9ff0a3@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <08DCC8BB-631C-4F7A-BB0A-494AD2AD3465@linux.dev>
-References: <20231220051855.47547-1-sunnanyong@huawei.com>
- <20231220051855.47547-3-sunnanyong@huawei.com>
-To: Nanyong Sun <sunnanyong@huawei.com>
-X-Migadu-Flow: FLOW_OUT
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: quYc5HixXbRvfkGHmsyyua48rxpl76PE
+X-Proofpoint-GUID: quYc5HixXbRvfkGHmsyyua48rxpl76PE
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=485
+ suspectscore=0 impostorscore=0 lowpriorityscore=0 malwarescore=0
+ bulkscore=0 phishscore=0 spamscore=0 clxscore=1011 mlxscore=0 adultscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2312200042
 
+Hi Dmitry,
 
-
-> On Dec 20, 2023, at 13:18, Nanyong Sun <sunnanyong@huawei.com> wrote:
+On 12/19/2023 12:08 AM, Dmitry Baryshkov wrote:
+> On 18/12/2023 13:31, Dikshita Agarwal wrote:
+>> This patch series introduces support for Qualcomm new video acceleration
+>> hardware architecture, used for video stream decoding/encoding. This driver
+>> is based on new communication protocol between video hardware and application
+>> processor.
 > 
-> Implement vmemmap_update_pmd and vmemmap_update_pte on arm64 to do
-> BBM(break-before-make) logic when change the page table of vmemmap
-> address, they will under the init_mm.page_table_lock.
-> If a translation fault of vmemmap address concurrently happened after
-> pte/pmd cleared, vmemmap page fault handler will acquire the
-> init_mm.page_table_lock to wait for vmemmap update to complete,
-> by then the virtual address is valid again, so PF can return and
-> access can continue.
-> In other case, do the traditional kernel fault.
+> This doesn't answer one important point, you have been asked for v1. What is the
+> actual change point between Venus and Iris? What has been changed so much that
+> it demands a separate driver. This is the main question for the cover letter,
+> which has not been answered so far.
 > 
-> Implement vmemmap_flush_tlb_all/range on arm64 with nothing
-> to do because tlb already flushed in every single BBM.
-> 
-> Signed-off-by: Nanyong Sun <sunnanyong@huawei.com>
-> ---
-> arch/arm64/include/asm/esr.h |  4 ++
-> arch/arm64/include/asm/mmu.h | 20 +++++++++
-> arch/arm64/mm/fault.c        | 78 ++++++++++++++++++++++++++++++++++--
-> arch/arm64/mm/mmu.c          | 28 +++++++++++++
-> 4 files changed, 127 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/arm64/include/asm/esr.h b/arch/arm64/include/asm/esr.h
-> index ae35939f395b..1c63256efd25 100644
-> --- a/arch/arm64/include/asm/esr.h
-> +++ b/arch/arm64/include/asm/esr.h
-> @@ -116,6 +116,10 @@
-> #define ESR_ELx_FSC_SERROR (0x11)
-> #define ESR_ELx_FSC_ACCESS (0x08)
-> #define ESR_ELx_FSC_FAULT (0x04)
-> +#define ESR_ELx_FSC_FAULT_L0    (0x04)
-> +#define ESR_ELx_FSC_FAULT_L1    (0x05)
-> +#define ESR_ELx_FSC_FAULT_L2    (0x06)
-> +#define ESR_ELx_FSC_FAULT_L3    (0x07)
-> #define ESR_ELx_FSC_PERM (0x0C)
-> #define ESR_ELx_FSC_SEA_TTW0 (0x14)
-> #define ESR_ELx_FSC_SEA_TTW1 (0x15)
-> diff --git a/arch/arm64/include/asm/mmu.h b/arch/arm64/include/asm/mmu.h
-> index 2fcf51231d6e..b553bc37c925 100644
-> --- a/arch/arm64/include/asm/mmu.h
-> +++ b/arch/arm64/include/asm/mmu.h
-> @@ -76,5 +76,25 @@ extern bool kaslr_requires_kpti(void);
-> #define INIT_MM_CONTEXT(name) \
-> .pgd = init_pg_dir,
-> 
-> +#ifdef CONFIG_HUGETLB_PAGE_OPTIMIZE_VMEMMAP
-> +void vmemmap_update_pmd(unsigned long addr, pmd_t *pmdp, pte_t *ptep);
-> +#define vmemmap_update_pmd vmemmap_update_pmd
-> +void vmemmap_update_pte(unsigned long addr, pte_t *ptep, pte_t pte);
-> +#define vmemmap_update_pte vmemmap_update_pte
-> +
-> +static inline void vmemmap_flush_tlb_all(void)
-> +{
-> + 	/* do nothing, already flushed tlb in every single BBM */
-> +}
-> +#define vmemmap_flush_tlb_all vmemmap_flush_tlb_all
-> +
-> +static inline void vmemmap_flush_tlb_range(unsigned long start,
-> +   unsigned long end)
-> +{
-> + 	/* do nothing, already flushed tlb in every single BBM */
-> +}
-> +#define vmemmap_flush_tlb_range vmemmap_flush_tlb_range
-> +#endif
+> From what I see from you bindings, the hardware is pretty close to what we see
+> in the latest venus generations. I asssme that there was a change in the vcodec
+> inteface to the firmware and other similar changes. Could you please point out,
+> which parts of Venus driver do no longer work or are not applicable for sm8550
 
-I think those declaration related to TLB flushing should be moved
-to arch/arm64/include/asm/tlbflush.h since we do not include
-<asm/mmu.h> explicitly in hugetlb_vmemmap.c and its functionality
-is to flush TLB. Luckily, <asm/tlbflush.h> is included by hugetlb_vmemmap.c.
+The motivation behind having a separate IRIS driver was discussed earlier in [1]
+In the same discussion, it was ellaborated on how the impact would be with
+change in the new firmware interface and other video layers in the driver. I can
+add this in cover letter in the next revision.
 
-Additionally, vmemmap_update_pmd/pte helpers should be moved to
-arch/arm64/include/asm/pgtable.h since it is really pgtable related
-operations.
+We see some duplication of code and to handle the same, the series brings in a
+common code reusability between iris and venus. Aligning the common peices of
+venus and iris will be a work in progress, once we land the base driver for iris.
 
-Thanks.
+Again qualcomm video team does not have a plan to support sm8550/x1e80100 on
+venus as the changes are too interleaved to absorb in venus driver. And there is
+significant interest in community to start validating video driver on sm8550 or
+x1e80100.
 
+[1] https://lore.kernel.org/lkml/8c97d866-1cab-0106-4ab3-3ca070945ef7@quicinc.com/
 
-
-
+Regards,
+Vikash
 
