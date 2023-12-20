@@ -1,148 +1,116 @@
-Return-Path: <linux-kernel+bounces-6977-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6978-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18BC481A003
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 14:41:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11A0781A006
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 14:42:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C07A61F27821
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 13:41:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4537A1C22322
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 13:42:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5CE9364C0;
-	Wed, 20 Dec 2023 13:40:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="VzWxAJ3X"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4CC8358A5;
+	Wed, 20 Dec 2023 13:41:53 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D691C36AFE;
-	Wed, 20 Dec 2023 13:40:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BK9XEhB016224;
-	Wed, 20 Dec 2023 13:40:36 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=uBZryIRzk6NQuGKqkpwinMRaZplCLcVDmu1RUIDKfTk=; b=Vz
-	WxAJ3XTjrNdflfzcPGZ/qQHKiMpOb+Yom9mZeck/kMjI5aoxJyw9s+Gqh2405dQN
-	80gwz69UeLuybLGYZZWtWVqw9/KHRhHdbuKlluFkhvbAqUzKBgRHd/z3CeviQYzJ
-	Jb4NSDQicHIW9C9b6airAjdJWxRyUyvRlQZ7/PfDv5jC1OXFGagQa5Ux34hCqCD0
-	ZkDRYMFrOJIGKV/m1dLyjrPO7Xl24cjY0PSBtAINON4JLzkn0gjaGXCMLd1wLYGL
-	A+neWiewVvexC+r9agcKcW39TLh/bRTKYuDxkxWUwP3KSnFAkyldfkyiYY08r+MZ
-	PUmTfHZx/1P05+HJJrfA==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v3wr10jjg-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 20 Dec 2023 13:40:36 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BKDeZ2e030746
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 20 Dec 2023 13:40:35 GMT
-Received: from [10.239.133.49] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 20 Dec
- 2023 05:40:31 -0800
-Message-ID: <98407ed5-5e0c-4bee-be4c-70b3d8972823@quicinc.com>
-Date: Wed, 20 Dec 2023 21:40:29 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E106336AED;
+	Wed, 20 Dec 2023 13:41:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.252])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4SwF8R1tSfzWk3v;
+	Wed, 20 Dec 2023 21:41:27 +0800 (CST)
+Received: from dggpeml500010.china.huawei.com (unknown [7.185.36.155])
+	by mail.maildlp.com (Postfix) with ESMTPS id 1B4D9180085;
+	Wed, 20 Dec 2023 21:41:47 +0800 (CST)
+Received: from huawei.com (10.175.101.6) by dggpeml500010.china.huawei.com
+ (7.185.36.155) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Wed, 20 Dec
+ 2023 21:41:46 +0800
+From: Xin Liu <liuxin350@huawei.com>
+To: <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+	<martin.lau@linux.dev>, <song@kernel.org>, <yhs@fb.com>,
+	<john.fastabend@gmail.com>, <kpsingh@kernel.org>, <sdf@google.com>,
+	<haoluo@google.com>, <jolsa@kernel.org>
+CC: <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>, <yanan@huawei.com>,
+	<wuchangye@huawei.com>, <xiesongyang@huawei.com>, <kongweibin2@huawei.com>,
+	<liuxin350@huawei.com>, <tianmuyang@huawei.com>, <zhangmingyi5@huawei.com>
+Subject: [PATCH] fix null pointer dereference in bpf_object__collect_prog_relos
+Date: Wed, 20 Dec 2023 21:41:51 +0800
+Message-ID: <20231220134151.144224-1-liuxin350@huawei.com>
+X-Mailer: git-send-email 2.33.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: dts: qcom: Add coresight nodes for sm8450
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Andy Gross
-	<agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio
-	<konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "Krzysztof
- Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>
-CC: <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Tingwei Zhang <quic_tingweiz@quicinc.com>,
-        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
-        Tao Zhang
-	<quic_taozha@quicinc.com>, <coresight@lists.linaro.org>
-References: <20231220124009.16816-1-quic_jinlmao@quicinc.com>
- <dfc7fe85-7418-410c-bd82-6e08799e6417@linaro.org>
- <439916dc-8f71-4998-b145-1d183d9e68f5@quicinc.com>
- <77ba0140-5b74-40d7-a923-4b270d661d3a@linaro.org>
-From: Jinlong Mao <quic_jinlmao@quicinc.com>
-In-Reply-To: <77ba0140-5b74-40d7-a923-4b270d661d3a@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: ULhEewe5uUSLkhhTvWJRb1dyW4xG-V0H
-X-Proofpoint-GUID: ULhEewe5uUSLkhhTvWJRb1dyW4xG-V0H
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- phishscore=0 priorityscore=1501 impostorscore=0 mlxscore=0 adultscore=0
- spamscore=0 mlxlogscore=713 bulkscore=0 clxscore=1015 malwarescore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2312200097
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpeml500010.china.huawei.com (7.185.36.155)
 
+From: zhangmingyi <zhangmingyi5@huawei.com>
 
+a issue occurred while reading an ELF file in libbpf.c during fuzzing:
 
-On 12/20/2023 9:21 PM, Krzysztof Kozlowski wrote:
-> On 20/12/2023 14:07, Jinlong Mao wrote:
->>
->>
->> On 12/20/2023 8:46 PM, Krzysztof Kozlowski wrote:
->>> On 20/12/2023 13:40, Mao Jinlong wrote:
->>>> Add coresight components on Qualcomm SM8450 Soc. The components include
->>>> TMC ETF/ETR, ETE, STM, TPDM, CTI.
->>>>
->>>> Signed-off-by: Mao Jinlong <quic_jinlmao@quicinc.com>
->>>> ---
->>>>    arch/arm64/boot/dts/qcom/sm8450.dtsi | 742 +++++++++++++++++++++++++++
->>>>    1 file changed, 742 insertions(+)
->>>>
->>>> diff --git a/arch/arm64/boot/dts/qcom/sm8450.dtsi b/arch/arm64/boot/dts/qcom/sm8450.dtsi
->>>> index 1783fa78bdbc..112b5a069c94 100644
->>>> --- a/arch/arm64/boot/dts/qcom/sm8450.dtsi
->>>> +++ b/arch/arm64/boot/dts/qcom/sm8450.dtsi
->>>> @@ -285,6 +285,192 @@ CLUSTER_SLEEP_1: cluster-sleep-1 {
->>>>    		};
->>>>    	};
->>>>    
->>>> +	ete0 {
->>>
->>> ete-0
->> Thanks for the review.
->>
->> In arm,embedded-trace-extension.yaml, the node name pattern is
->> "^ete([0-9a-f]+)$".
-> 
-> I don't understand why this binding requires ete name. It's not like it
-> is a generic name worth preserving. Also, the recommended suffix for
-> names is with '-'.
-> 
-The number in the ete name should be the same as the number of the CPU.
-So we can know which CPU this ete belongs to from the name.
+	Program received signal SIGSEGV, Segmentation fault.
+	0x0000000000958e97 in bpf_object.collect_prog_relos () at libbpf.c:4206
+	4206 in libbpf.c
+	(gdb) bt
+	#0 0x0000000000958e97 in bpf_object.collect_prog_relos () at libbpf.c:4206
+	#1 0x000000000094f9d6 in bpf_object.collect_relos () at libbpf.c:6706
+	#2 0x000000000092bef3 in bpf_object_open () at libbpf.c:7437
+	#3 0x000000000092c046 in bpf_object.open_mem () at libbpf.c:7497
+	#4 0x0000000000924afa in LLVMFuzzerTestOneInput () at fuzz/bpf-object-fuzzer.c:16
+	#5 0x000000000060be11 in testblitz_engine::fuzzer::Fuzzer::run_one ()
+	#6 0x000000000087ad92 in tracing::span::Span::in_scope ()
+	#7 0x00000000006078aa in testblitz_engine::fuzzer::util::walkdir ()
+	#8 0x00000000005f3217 in testblitz_engine::entrypoint::main::{{closure}} ()
+	#9 0x00000000005f2601 in main ()
+	(gdb)
 
-I will update the binding in arm,embedded-trace-extension.yaml.
+scn_data was null at this code(tools/lib/bpf/src/libbpf.c):
 
-Thanks
-Jinlong Mao
-> 
-> Best regards,
-> Krzysztof
-> 
+	if (rel->r_offset % BPF_INSN_SZ || rel->r_offset >= scn_data->d_size) {
+
+The scn_data is derived from the code above:
+    
+	scn = elf_sec_by_idx(obj, sec_idx);
+	scn_data = elf_sec_data(obj, scn);
+
+	relo_sec_name = elf_sec_str(obj, shdr->sh_name);
+	sec_name = elf_sec_name(obj, scn);
+	if (!relo_sec_name || !sec_name)// don't check whether scn_data is NULL
+		return -EINVAL;
+
+In certain special scenarios, such as reading a malformed ELF file,
+it is possible that scn_data may be a null pointer
+
+Signed-off-by: zhangmingyi  <zhangmingyi5@huawei.com>
+Signed-off-by: Xin Liu <liuxin350@huawei.com>
+Signed-off-by: Changye Wu <wuchangye@huawei.com>
+---
+ tools/lib/bpf/libbpf.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index e067be95da3c..df1b550f7460 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -4344,6 +4344,8 @@ bpf_object__collect_prog_relos(struct bpf_object *obj, Elf64_Shdr *shdr, Elf_Dat
+ 
+ 	scn = elf_sec_by_idx(obj, sec_idx);
+ 	scn_data = elf_sec_data(obj, scn);
++	if (!scn_data)
++		return -LIBBPF_ERRNO__FORMAT;
+ 
+ 	relo_sec_name = elf_sec_str(obj, shdr->sh_name);
+ 	sec_name = elf_sec_name(obj, scn);
+-- 
+2.33.0
+
 
