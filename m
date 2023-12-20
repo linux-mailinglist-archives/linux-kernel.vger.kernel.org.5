@@ -1,306 +1,132 @@
-Return-Path: <linux-kernel+bounces-7503-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7502-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3161D81A8FE
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 23:18:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AECE681A8FD
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 23:18:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DBD7A28D39C
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6AE3428D38E
 	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 22:18:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07F594B5B2;
-	Wed, 20 Dec 2023 22:17:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB39F4B5B0;
+	Wed, 20 Dec 2023 22:17:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ngynl445"
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="XLjtep/4"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F8B54AF79;
-	Wed, 20 Dec 2023 22:17:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-40c6ea99429so1973885e9.3;
-        Wed, 20 Dec 2023 14:17:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703110670; x=1703715470; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XoL1IP5/8m1OxKspN+bDc7OtzceuHolddBcPNgOTtWM=;
-        b=ngynl4457z19gpXxH76QYfWp9U1eNp+i5c3vX/mO/AiDkpnnhUf7GnUS9GNoc1UBne
-         e4brjdNqrkSshEVyLKnk4f4JgcpyicIkNIRY2UlYYk0UEXpzaO1AeoxikRugYXctXeVY
-         ZGp+l0ItI9Nr0aCzYE1VfpFwSThzvJjy2yT+3CDXTV2mguETQOOx8ogy2tE3/GiM7Exu
-         xcydqN8Cmti6P6wPywiRJ/FSOYGMAKOqWwVXJmi7oyubp12tl8w52HPhgJo+SzhjYj/t
-         AAsr7UIsrVXVo2jt1AsuPsVpxqC5Pp3kHGWvACbapsFHQetWTHR1wZQeM1fvTZVLiVb7
-         +kqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703110670; x=1703715470;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XoL1IP5/8m1OxKspN+bDc7OtzceuHolddBcPNgOTtWM=;
-        b=nAuhK/HEeOdD0kZgdGLGqh1Elkm0IwTkh+Cu8c8eBOR1yH8vi+eeH4dk0Tx74W8yCl
-         7KfMZXM2j4DSkoBqNLcsaR0KmJZU6Ht2dnmZ2AP65E14q3SIqGBMYXK7Yfh1jlROsH9q
-         mTSmrIJdT7IQEwf7wXH8ED0BiJ7DBIJakD6qRdnVXSelvdmxX/nyLcKdB1KQdzVd10oh
-         6M34yqh70WM/r+kI2oFOWDAlI5VJ18oon9t+lZU0ZKh+v6rhPEY8HeVbhF7tYF1YEWJS
-         1h0h2fJWU7KYZ5W4c5qkj3jXxu64YE3Yss/3tuCztJr4qpNi4VKyYH1i5bMVuL3ocHz4
-         V3hg==
-X-Gm-Message-State: AOJu0YxClUp7sbtx/peSlnB9TYMVUlDdXLaDXU6Q8JTQFGO8b802gD0a
-	qNQkGuJ8z6R0zz5mqZ5Z37w=
-X-Google-Smtp-Source: AGHT+IEq1deFeW2q5omLXJ7iHkcy7EdrmQdxJrPfD+COl2+qqgXRIiNqr7cmJLIXq44UGlyvimEedg==
-X-Received: by 2002:a05:600c:19d3:b0:40b:5e1e:fb94 with SMTP id u19-20020a05600c19d300b0040b5e1efb94mr128343wmq.73.1703110669756;
-        Wed, 20 Dec 2023 14:17:49 -0800 (PST)
-Received: from localhost.localdomain (host-95-250-248-68.retail.telecomitalia.it. [95.250.248.68])
-        by smtp.googlemail.com with ESMTPSA id v14-20020a05600c444e00b0040c58e410a3sm8908826wmn.14.2023.12.20.14.17.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Dec 2023 14:17:49 -0800 (PST)
-From: Christian Marangi <ansuelsmth@gmail.com>
-To: Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>,
-	linux-arm-msm@vger.kernel.org,
-	linux-clk@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Christian Marangi <ansuelsmth@gmail.com>
-Subject: [PATCH v8 3/3] clk: qcom: gcc-ipq8074: rework nss_port5/6 clock to multiple conf
-Date: Wed, 20 Dec 2023 23:17:24 +0100
-Message-Id: <20231220221724.3822-4-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20231220221724.3822-1-ansuelsmth@gmail.com>
-References: <20231220221724.3822-1-ansuelsmth@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7249C4A9A3
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 22:17:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+	by mailout.nyi.internal (Postfix) with ESMTP id 874465C0889;
+	Wed, 20 Dec 2023 17:17:49 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Wed, 20 Dec 2023 17:17:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1703110669; x=1703197069; bh=OZRcAdL4EQ+8sSj6ubSGPK48MTy5
+	E2DQIyh6YCxr9S0=; b=XLjtep/4NmK0SclOZydu+yJDTtTDQwxCTXQKQzTxBqAu
+	CMbfpzE5X4GOygiu0cJW0XDz58L9jyx0AQLj33nDNvm+6m58rJO/Q/t8fs564Le6
+	nzBWv+4LoNg0chc6f7IlwU4N8XPR0EYdIydx03v9jsMN8iRP00cHGqZtfZxoUbBg
+	S9Sqzh1ducFentSuC18DjT7IYy3mPd00Y8iFOK/agtFlQe23WwXIz0QVN4jGbG7O
+	qIVdrBn1Q8Z+zd2+SD/AJatFB9NPczsCR/v01vY7Om3+N+2DM+KeUYHCRPuSHWUy
+	w6698URHm8OL2NsEbvRQpW9C0woVyh9jlN1QCWk2Xg==
+X-ME-Sender: <xms:DGiDZazJvIXPi_GohPSX8i02ceUZiWW_uNuezbgG3lHDH3H9zhKAfQ>
+    <xme:DGiDZWSCGOkO77iV-kUgjZSyazbbWvg7QKW4TdEKQllB6fFa-AKts_nmtMFH8hz_J
+    EKRx5b6aiMhuUNm_uE>
+X-ME-Received: <xmr:DGiDZcW0JSgWif7GHXBseiVWrQy_9LnikjwIYR72iLPvSZpl9hAlh39JfFvPrC-rXq6Y4BvEK50st8WAy1Fm28PtAPfZX3fLE5I>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdduvddgudehlecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvvefujgfkfhggtgesthdtredttddtvdenucfhrhhomhephfhinhhn
+    ucfvhhgrihhnuceofhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgheqnecuggftrf
+    grthhtvghrnhepleeuheelheekgfeuvedtveetjeekhfffkeeffffftdfgjeevkeegfedv
+    ueehueelnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    epfhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgh
+X-ME-Proxy: <xmx:DGiDZQhi9rgfc-DMN0Ru5-5iFBZ_mL0fYDy2-7cuYIxwdX3Cg_ETgA>
+    <xmx:DGiDZcCxnqjsT8Z7tWzOhlUXfbBqkjWffDGRT_2mzOn0WxSuhQVOQw>
+    <xmx:DGiDZRLLKj3jnNpn3oyv9ou-avzfVrYHTuTwZceUncly4Zi_UH5N6g>
+    <xmx:DWiDZXrF6DspBFtBbO_pM4h3FN9BDAj_LhyjrkwRfaw7hgJXIfDo9w>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 20 Dec 2023 17:17:46 -0500 (EST)
+Date: Thu, 21 Dec 2023 09:18:10 +1100 (AEDT)
+From: Finn Thain <fthain@linux-m68k.org>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+cc: linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org
+Subject: Re: [PATCH] nubus: make nubus_bus_type static and constant
+In-Reply-To: <2023121940-enlarged-editor-c9a8@gregkh>
+Message-ID: <af81751a-f562-a7d5-b754-ff6ac02082c2@linux-m68k.org>
+References: <2023121940-enlarged-editor-c9a8@gregkh>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 
-Rework nss_port5/6 to use the new multiple configuration implementation
-and correctly fix the clocks for these port under some corner case.
 
-This is particularly relevant for device that have 2.5G or 10G port
-connected to port5 or port 6 on ipq8074. As the parent are shared
-across multiple port it may be required to select the correct
-configuration to accomplish the desired clock. Without this patch such
-port doesn't work in some specific ethernet speed as the clock will be
-set to the wrong frequency as we just select the first configuration for
-the related frequency instead of selecting the best one.
+On Tue, 19 Dec 2023, Greg Kroah-Hartman wrote:
 
-Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
----
- drivers/clk/qcom/gcc-ipq8074.c | 120 +++++++++++++++++++++------------
- 1 file changed, 76 insertions(+), 44 deletions(-)
+> Now that the driver core can properly handle constant struct bus_type,
+> move the nubus_bus_type variable to be a constant structure as well,
+> placing it into read-only memory which can not be modified at runtime.
+> 
+> It's also never used outside of drivers/nubus/bus.c so make it static
+> and don't export it as no one is using it.
+> 
+> Cc: Finn Thain <fthain@linux-m68k.org>
+> Cc: linux-m68k@lists.linux-m68k.org
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-diff --git a/drivers/clk/qcom/gcc-ipq8074.c b/drivers/clk/qcom/gcc-ipq8074.c
-index b7faf12a511a..6f9ca10c29c5 100644
---- a/drivers/clk/qcom/gcc-ipq8074.c
-+++ b/drivers/clk/qcom/gcc-ipq8074.c
-@@ -1675,15 +1675,23 @@ static struct clk_regmap_div nss_port4_tx_div_clk_src = {
- 	},
- };
- 
--static const struct freq_tbl ftbl_nss_port5_rx_clk_src[] = {
--	F(19200000, P_XO, 1, 0, 0),
--	F(25000000, P_UNIPHY1_RX, 12.5, 0, 0),
--	F(25000000, P_UNIPHY0_RX, 5, 0, 0),
--	F(78125000, P_UNIPHY1_RX, 4, 0, 0),
--	F(125000000, P_UNIPHY1_RX, 2.5, 0, 0),
--	F(125000000, P_UNIPHY0_RX, 1, 0, 0),
--	F(156250000, P_UNIPHY1_RX, 2, 0, 0),
--	F(312500000, P_UNIPHY1_RX, 1, 0, 0),
-+static const struct freq_conf ftbl_nss_port5_rx_clk_src_25[] = {
-+	C(P_UNIPHY1_RX, 12.5, 0, 0),
-+	C(P_UNIPHY0_RX, 5, 0, 0),
-+};
-+
-+static const struct freq_conf ftbl_nss_port5_rx_clk_src_125[] = {
-+	C(P_UNIPHY1_RX, 2.5, 0, 0),
-+	C(P_UNIPHY0_RX, 1, 0, 0),
-+};
-+
-+static const struct freq_multi_tbl ftbl_nss_port5_rx_clk_src[] = {
-+	FMS(19200000, P_XO, 1, 0, 0),
-+	FM(25000000, ftbl_nss_port5_rx_clk_src_25),
-+	FMS(78125000, P_UNIPHY1_RX, 4, 0, 0),
-+	FM(125000000, ftbl_nss_port5_rx_clk_src_125),
-+	FMS(156250000, P_UNIPHY1_RX, 2, 0, 0),
-+	FMS(312500000, P_UNIPHY1_RX, 1, 0, 0),
- 	{ }
- };
- 
-@@ -1710,14 +1718,14 @@ gcc_xo_uniphy0_rx_tx_uniphy1_rx_tx_ubi32_bias_map[] = {
- 
- static struct clk_rcg2 nss_port5_rx_clk_src = {
- 	.cmd_rcgr = 0x68060,
--	.freq_tbl = ftbl_nss_port5_rx_clk_src,
-+	.freq_multi_tbl = ftbl_nss_port5_rx_clk_src,
- 	.hid_width = 5,
- 	.parent_map = gcc_xo_uniphy0_rx_tx_uniphy1_rx_tx_ubi32_bias_map,
- 	.clkr.hw.init = &(struct clk_init_data){
- 		.name = "nss_port5_rx_clk_src",
- 		.parent_data = gcc_xo_uniphy0_rx_tx_uniphy1_rx_tx_ubi32_bias,
- 		.num_parents = ARRAY_SIZE(gcc_xo_uniphy0_rx_tx_uniphy1_rx_tx_ubi32_bias),
--		.ops = &clk_rcg2_ops,
-+		.ops = &clk_rcg2_fm_ops,
- 	},
- };
- 
-@@ -1737,15 +1745,23 @@ static struct clk_regmap_div nss_port5_rx_div_clk_src = {
- 	},
- };
- 
--static const struct freq_tbl ftbl_nss_port5_tx_clk_src[] = {
--	F(19200000, P_XO, 1, 0, 0),
--	F(25000000, P_UNIPHY1_TX, 12.5, 0, 0),
--	F(25000000, P_UNIPHY0_TX, 5, 0, 0),
--	F(78125000, P_UNIPHY1_TX, 4, 0, 0),
--	F(125000000, P_UNIPHY1_TX, 2.5, 0, 0),
--	F(125000000, P_UNIPHY0_TX, 1, 0, 0),
--	F(156250000, P_UNIPHY1_TX, 2, 0, 0),
--	F(312500000, P_UNIPHY1_TX, 1, 0, 0),
-+static const struct freq_conf ftbl_nss_port5_tx_clk_src_25[] = {
-+	C(P_UNIPHY1_TX, 12.5, 0, 0),
-+	C(P_UNIPHY0_TX, 5, 0, 0),
-+};
-+
-+static const struct freq_conf ftbl_nss_port5_tx_clk_src_125[] = {
-+	C(P_UNIPHY1_TX, 2.5, 0, 0),
-+	C(P_UNIPHY0_TX, 1, 0, 0),
-+};
-+
-+static const struct freq_multi_tbl ftbl_nss_port5_tx_clk_src[] = {
-+	FMS(19200000, P_XO, 1, 0, 0),
-+	FM(25000000, ftbl_nss_port5_tx_clk_src_25),
-+	FMS(78125000, P_UNIPHY1_TX, 4, 0, 0),
-+	FM(125000000, ftbl_nss_port5_tx_clk_src_125),
-+	FMS(156250000, P_UNIPHY1_TX, 2, 0, 0),
-+	FMS(312500000, P_UNIPHY1_TX, 1, 0, 0),
- 	{ }
- };
- 
-@@ -1772,14 +1788,14 @@ gcc_xo_uniphy0_tx_rx_uniphy1_tx_rx_ubi32_bias_map[] = {
- 
- static struct clk_rcg2 nss_port5_tx_clk_src = {
- 	.cmd_rcgr = 0x68068,
--	.freq_tbl = ftbl_nss_port5_tx_clk_src,
-+	.freq_multi_tbl = ftbl_nss_port5_tx_clk_src,
- 	.hid_width = 5,
- 	.parent_map = gcc_xo_uniphy0_tx_rx_uniphy1_tx_rx_ubi32_bias_map,
- 	.clkr.hw.init = &(struct clk_init_data){
- 		.name = "nss_port5_tx_clk_src",
- 		.parent_data = gcc_xo_uniphy0_tx_rx_uniphy1_tx_rx_ubi32_bias,
- 		.num_parents = ARRAY_SIZE(gcc_xo_uniphy0_tx_rx_uniphy1_tx_rx_ubi32_bias),
--		.ops = &clk_rcg2_ops,
-+		.ops = &clk_rcg2_fm_ops,
- 	},
- };
- 
-@@ -1799,15 +1815,23 @@ static struct clk_regmap_div nss_port5_tx_div_clk_src = {
- 	},
- };
- 
--static const struct freq_tbl ftbl_nss_port6_rx_clk_src[] = {
--	F(19200000, P_XO, 1, 0, 0),
--	F(25000000, P_UNIPHY2_RX, 5, 0, 0),
--	F(25000000, P_UNIPHY2_RX, 12.5, 0, 0),
--	F(78125000, P_UNIPHY2_RX, 4, 0, 0),
--	F(125000000, P_UNIPHY2_RX, 1, 0, 0),
--	F(125000000, P_UNIPHY2_RX, 2.5, 0, 0),
--	F(156250000, P_UNIPHY2_RX, 2, 0, 0),
--	F(312500000, P_UNIPHY2_RX, 1, 0, 0),
-+static const struct freq_conf ftbl_nss_port6_rx_clk_src_25[] = {
-+	C(P_UNIPHY2_RX, 5, 0, 0),
-+	C(P_UNIPHY2_RX, 12.5, 0, 0),
-+};
-+
-+static const struct freq_conf ftbl_nss_port6_rx_clk_src_125[] = {
-+	C(P_UNIPHY2_RX, 1, 0, 0),
-+	C(P_UNIPHY2_RX, 2.5, 0, 0),
-+};
-+
-+static const struct freq_multi_tbl ftbl_nss_port6_rx_clk_src[] = {
-+	FMS(19200000, P_XO, 1, 0, 0),
-+	FM(25000000, ftbl_nss_port6_rx_clk_src_25),
-+	FMS(78125000, P_UNIPHY2_RX, 4, 0, 0),
-+	FM(125000000, ftbl_nss_port6_rx_clk_src_125),
-+	FMS(156250000, P_UNIPHY2_RX, 2, 0, 0),
-+	FMS(312500000, P_UNIPHY2_RX, 1, 0, 0),
- 	{ }
- };
- 
-@@ -1829,14 +1853,14 @@ static const struct parent_map gcc_xo_uniphy2_rx_tx_ubi32_bias_map[] = {
- 
- static struct clk_rcg2 nss_port6_rx_clk_src = {
- 	.cmd_rcgr = 0x68070,
--	.freq_tbl = ftbl_nss_port6_rx_clk_src,
-+	.freq_multi_tbl = ftbl_nss_port6_rx_clk_src,
- 	.hid_width = 5,
- 	.parent_map = gcc_xo_uniphy2_rx_tx_ubi32_bias_map,
- 	.clkr.hw.init = &(struct clk_init_data){
- 		.name = "nss_port6_rx_clk_src",
- 		.parent_data = gcc_xo_uniphy2_rx_tx_ubi32_bias,
- 		.num_parents = ARRAY_SIZE(gcc_xo_uniphy2_rx_tx_ubi32_bias),
--		.ops = &clk_rcg2_ops,
-+		.ops = &clk_rcg2_fm_ops,
- 	},
- };
- 
-@@ -1856,15 +1880,23 @@ static struct clk_regmap_div nss_port6_rx_div_clk_src = {
- 	},
- };
- 
--static const struct freq_tbl ftbl_nss_port6_tx_clk_src[] = {
--	F(19200000, P_XO, 1, 0, 0),
--	F(25000000, P_UNIPHY2_TX, 5, 0, 0),
--	F(25000000, P_UNIPHY2_TX, 12.5, 0, 0),
--	F(78125000, P_UNIPHY2_TX, 4, 0, 0),
--	F(125000000, P_UNIPHY2_TX, 1, 0, 0),
--	F(125000000, P_UNIPHY2_TX, 2.5, 0, 0),
--	F(156250000, P_UNIPHY2_TX, 2, 0, 0),
--	F(312500000, P_UNIPHY2_TX, 1, 0, 0),
-+static const struct freq_conf ftbl_nss_port6_tx_clk_src_25[] = {
-+	C(P_UNIPHY2_TX, 5, 0, 0),
-+	C(P_UNIPHY2_TX, 12.5, 0, 0),
-+};
-+
-+static const struct freq_conf ftbl_nss_port6_tx_clk_src_125[] = {
-+	C(P_UNIPHY2_TX, 1, 0, 0),
-+	C(P_UNIPHY2_TX, 2.5, 0, 0),
-+};
-+
-+static const struct freq_multi_tbl ftbl_nss_port6_tx_clk_src[] = {
-+	FMS(19200000, P_XO, 1, 0, 0),
-+	FM(25000000, ftbl_nss_port6_tx_clk_src_25),
-+	FMS(78125000, P_UNIPHY1_RX, 4, 0, 0),
-+	FM(125000000, ftbl_nss_port6_tx_clk_src_125),
-+	FMS(156250000, P_UNIPHY1_RX, 2, 0, 0),
-+	FMS(312500000, P_UNIPHY1_RX, 1, 0, 0),
- 	{ }
- };
- 
-@@ -1886,14 +1918,14 @@ static const struct parent_map gcc_xo_uniphy2_tx_rx_ubi32_bias_map[] = {
- 
- static struct clk_rcg2 nss_port6_tx_clk_src = {
- 	.cmd_rcgr = 0x68078,
--	.freq_tbl = ftbl_nss_port6_tx_clk_src,
-+	.freq_multi_tbl = ftbl_nss_port6_tx_clk_src,
- 	.hid_width = 5,
- 	.parent_map = gcc_xo_uniphy2_tx_rx_ubi32_bias_map,
- 	.clkr.hw.init = &(struct clk_init_data){
- 		.name = "nss_port6_tx_clk_src",
- 		.parent_data = gcc_xo_uniphy2_tx_rx_ubi32_bias,
- 		.num_parents = ARRAY_SIZE(gcc_xo_uniphy2_tx_rx_ubi32_bias),
--		.ops = &clk_rcg2_ops,
-+		.ops = &clk_rcg2_fm_ops,
- 	},
- };
- 
--- 
-2.40.1
+Acked-by: Finn Thain <fthain@linux-m68k.org>
 
+Thanks, Greg.
+
+> ---
+>  drivers/nubus/bus.c   | 3 +--
+>  include/linux/nubus.h | 2 --
+>  2 files changed, 1 insertion(+), 4 deletions(-)
+> 
+> diff --git a/drivers/nubus/bus.c b/drivers/nubus/bus.c
+> index 72921e4f35f6..12df4d88970c 100644
+> --- a/drivers/nubus/bus.c
+> +++ b/drivers/nubus/bus.c
+> @@ -32,12 +32,11 @@ static void nubus_device_remove(struct device *dev)
+>  		ndrv->remove(to_nubus_board(dev));
+>  }
+>  
+> -struct bus_type nubus_bus_type = {
+> +static const struct bus_type nubus_bus_type = {
+>  	.name		= "nubus",
+>  	.probe		= nubus_device_probe,
+>  	.remove		= nubus_device_remove,
+>  };
+> -EXPORT_SYMBOL(nubus_bus_type);
+>  
+>  int nubus_driver_register(struct nubus_driver *ndrv)
+>  {
+> diff --git a/include/linux/nubus.h b/include/linux/nubus.h
+> index bdcd85e622d8..4d103ac8f5c7 100644
+> --- a/include/linux/nubus.h
+> +++ b/include/linux/nubus.h
+> @@ -89,8 +89,6 @@ struct nubus_driver {
+>  	void (*remove)(struct nubus_board *board);
+>  };
+>  
+> -extern struct bus_type nubus_bus_type;
+> -
+>  /* Generic NuBus interface functions, modelled after the PCI interface */
+>  #ifdef CONFIG_PROC_FS
+>  extern bool nubus_populate_procfs;
+> 
 
