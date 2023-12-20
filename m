@@ -1,59 +1,59 @@
-Return-Path: <linux-kernel+bounces-7670-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7671-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8657E81AB75
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 01:00:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8DAF81AB77
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 01:00:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B87CA1C20B9E
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 23:59:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 887961F24299
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 00:00:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7627850243;
-	Wed, 20 Dec 2023 23:55:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32C8A5026E;
+	Wed, 20 Dec 2023 23:55:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="ieMQxj5w"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="RTult0R2"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-il1-f177.google.com (mail-il1-f177.google.com [209.85.166.177])
+Received: from mail-io1-f46.google.com (mail-io1-f46.google.com [209.85.166.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C94C4F5FA
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 23:55:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BEA94F892
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 23:55:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-il1-f177.google.com with SMTP id e9e14a558f8ab-35fc6eb9075so619165ab.1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 15:55:24 -0800 (PST)
+Received: by mail-io1-f46.google.com with SMTP id ca18e2360f4ac-7b7fbe3db16so8312739f.3
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 15:55:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1703116523; x=1703721323; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1703116524; x=1703721324; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ZKh5FX4xH2A55TvaLBm+1lswVT7mH5LMvN7VXVfLl8c=;
-        b=ieMQxj5wfYGB1TiYeOYZCbjVxOt4Rz94IXWdMs4OMMQukhyWpk8iRfK8F32s6INq3n
-         nP40GVvM2bHStM/qkxPwfs8LybFBxzjdxyP+k6qvzJhCaY3nSyE9tjr2weZMiifFyjrC
-         QltXU3YE+xn5zUxK+U3RA6KCXBGJ2/y4ge17c=
+        bh=tGuZXGW/tZ1AN0p557o5C5f/tYqgvv6aKKeuF8fEKW0=;
+        b=RTult0R2kNN/Ah8ueZDjGp0VS3HMqdkRL4Yn56i2O4KqPkVI9buwRJFYTAzWF6kU5l
+         GaM4S3MtRxWGfsrGfiW/a0b7YgCnBjx4sqbmrHECczjC5BG7w7onpDYatWzGs5W+1ACQ
+         It9z4KD2cNV7srisn0btvOR1nbuAGs7t6Lm5g=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703116523; x=1703721323;
+        d=1e100.net; s=20230601; t=1703116524; x=1703721324;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ZKh5FX4xH2A55TvaLBm+1lswVT7mH5LMvN7VXVfLl8c=;
-        b=gNiCMIoyrWOv3BxpnxrCw5xBHUlyi/5hhjBjVsERQLh8DMTnkuvgNWlUim6eg6jDK2
-         eVK8w+UVZ9XJjMg6yelzW7cHJwjcy/t0nTbefsOQR3/aTz9Ylayk9f5YunSA+fnOLOrA
-         3+6ZnY36Ve6+ZEum91TFBFotzDsXtHL2xqc81XZCcWbZez8c9S0An0SeI+pWu9uLR7pE
-         BRnVfYKKWCfH2rEZjDq0zwIm4z93NDFblYQ8Xw2pWCwAN7mYmM9cOgu7Tt9LXTC0iz2T
-         O8WaX+K+uMqS0ThsnWxUm1XEt10mScZtf4Gw4XWsN+paiBOQwSfdFjI0trMFhNE+NXQI
-         JgLw==
-X-Gm-Message-State: AOJu0YxXcVg/l900N2OpKgXYvUtk/gVWuPMzEuCY4pgG893bp86Mrah7
-	gWO5VKD42sxL0PlUdzsEfha0EiEJLiA6B/NaDBWIDxNjfQ==
-X-Google-Smtp-Source: AGHT+IEmW9gIzUsmNqEyx5I4EH1A+yRQP7jOpEKHuyJqA2GJeCmFZb3fstaeE8sjWD7QqAT20uydcQ==
-X-Received: by 2002:a05:6e02:1bc4:b0:35d:4463:5dd2 with SMTP id x4-20020a056e021bc400b0035d44635dd2mr2680020ilv.16.1703116523652;
-        Wed, 20 Dec 2023 15:55:23 -0800 (PST)
+        bh=tGuZXGW/tZ1AN0p557o5C5f/tYqgvv6aKKeuF8fEKW0=;
+        b=A/rqU4dj2Sz5Gc3urbyZtqun/BVGJNnYfGaW3QpwiBG1ctLlWekBtYn5PgwAYcB5mQ
+         21Gs6bQLyc1w1UCnKN12VCkpYcYYNPxMwHXg85iAsx/xGfE078tCdk9dXZKLjrxYWtY0
+         UmgEsnjErgxLEK2wYtoQiBPbda/KqkM3Xt6xOxdnCIYas3yiY9TBeTBNObH6rrTn4QJl
+         mAZbopDiEeC9RUtitAUxAvGp7ZRMVnwCAuFgj6Ybk5FEi7c1IXpUBzJB+1u7uhvqfH+q
+         QIiPMDMtvL8aSh9SbATA90wtwJ8nsYZ8SDXO3PIWFNACPcfDIjZjR4sOUAwDx9bHVItF
+         3GNg==
+X-Gm-Message-State: AOJu0YyAyFaawPeJAGu3f3NTjaDh5N43q0Xo7shRCnfj0F1vIR3Lja33
+	b1eYfgeP1+gDz2Fvd6hZjOQFQf9f1a+J3fTpuZM=
+X-Google-Smtp-Source: AGHT+IHwsyDhLKH4KCjyu9wSKyc/C2kTcwRhw8xhhn17ISW39v1/k+XbVmie3GgkSnB8nUOY8TufEQ==
+X-Received: by 2002:a6b:7305:0:b0:7b9:c344:6e77 with SMTP id e5-20020a6b7305000000b007b9c3446e77mr2318247ioh.8.1703116524433;
+        Wed, 20 Dec 2023 15:55:24 -0800 (PST)
 Received: from markhas1.lan (71-218-50-136.hlrn.qwest.net. [71.218.50.136])
         by smtp.gmail.com with ESMTPSA id bp22-20020a056638441600b0046b39a6f404sm177805jab.17.2023.12.20.15.55.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Dec 2023 15:55:23 -0800 (PST)
+        Wed, 20 Dec 2023 15:55:24 -0800 (PST)
 From: Mark Hasemeyer <markhas@chromium.org>
 To: LKML <linux-kernel@vger.kernel.org>
 Cc: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
@@ -68,9 +68,9 @@ Cc: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
 	Frank Rowand <frowand.list@gmail.com>,
 	Rob Herring <robh+dt@kernel.org>,
 	devicetree@vger.kernel.org
-Subject: [PATCH v2 17/22] of: irq: add wake capable bit to of_irq_resource()
-Date: Wed, 20 Dec 2023 16:54:31 -0700
-Message-ID: <20231220165423.v2.17.I29b26a7f3b80fac0a618707446a10b6cc974fdaf@changeid>
+Subject: [PATCH v2 18/22] of: irq: Add default implementation for of_irq_to_resource()
+Date: Wed, 20 Dec 2023 16:54:32 -0700
+Message-ID: <20231220165423.v2.18.I31d4dd6a7e5a3e5eee05c87b358e63cd1aa0e467@changeid>
 X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
 In-Reply-To: <20231220235459.2965548-1-markhas@chromium.org>
 References: <20231220235459.2965548-1-markhas@chromium.org>
@@ -82,89 +82,51 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add wake capability information to the IRQ resource. Wake capability is
-assumed based on conventions provided in the devicetree wakeup-source
-binding documentation. An interrupt is considered wake capable if the
-following are true:
-1. A wakeup-source property exits in the same device node as the
-   interrupt.
-2. The IRQ is marked as dedicated by setting its interrupt-name to
-   "wakeup".
-
-The wakeup-source documentation states that dedicated interrupts can use
-device specific interrupt names and device drivers are still welcome to
-use their own naming schemes. This API is provided as a helper if one is
-willing to conform to the above conventions.
-
-The ACPI subsystems already provides similar APIs that allow one to
-query the wake capability of an IRQ. This brings closer feature parity
-to the devicetree.
+Similar to of_irq_to_resource_table(), add a default implementation of
+of_irq_to_resource() for systems that don't have CONFIG_OF_IRQ defined.
 
 Signed-off-by: Mark Hasemeyer <markhas@chromium.org>
 ---
 
 Changes in v2:
--Update logic to return true only if wakeup-source property and
- "wakeup" interrupt-name are defined
--irq->IRQ, api->API
+-None
 
- drivers/of/irq.c | 32 +++++++++++++++++++++++++++++++-
- 1 file changed, 31 insertions(+), 1 deletion(-)
+ include/linux/of_irq.h | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/of/irq.c b/drivers/of/irq.c
-index 174900072c18c..7583adf386220 100644
---- a/drivers/of/irq.c
-+++ b/drivers/of/irq.c
-@@ -383,11 +383,39 @@ int of_irq_parse_one(struct device_node *device, int index, struct of_phandle_ar
- }
- EXPORT_SYMBOL_GPL(of_irq_parse_one);
+diff --git a/include/linux/of_irq.h b/include/linux/of_irq.h
+index d6d3eae2f1452..0d73b2ca92d31 100644
+--- a/include/linux/of_irq.h
++++ b/include/linux/of_irq.h
+@@ -34,8 +34,6 @@ static inline int of_irq_parse_oldworld(const struct device_node *device, int in
  
-+/**
-+ * __of_irq_wake_capable - Determine whether a given IRQ index is wake capable
-+ *
-+ * The IRQ is considered wake capable if the following are true:
-+ * 1. wakeup-source property exists
-+ * 2. provided IRQ index is labelled as a dedicated wakeirq
-+ *
-+ * This logic assumes the provided IRQ index is valid.
-+ *
-+ * @dev: pointer to device tree node
-+ * @index: zero-based index of the IRQ
-+ * Return: True if provided IRQ index for #dev is wake capable. False otherwise.
-+ */
-+static bool __of_irq_wake_capable(const struct device_node *dev, int index)
-+{
-+	int wakeindex;
-+
-+	if (!of_property_read_bool(dev, "wakeup-source"))
-+		return false;
-+
-+	wakeindex = of_property_match_string(dev, "interrupt-names", "wakeup");
-+	return wakeindex >= 0 && wakeindex == index;
-+}
-+
- /**
-  * of_irq_to_resource - Decode a node's IRQ and return it as a resource
-  * @dev: pointer to device tree node
-- * @index: zero-based index of the irq
-+ * @index: zero-based index of the IRQ
-  * @r: pointer to resource structure to return result into.
-+ *
-+ * Return: Linux IRQ number on success, or 0 on the IRQ mapping failure, or
-+ * -EPROBE_DEFER if the IRQ domain is not yet created, or error code in case
-+ * of any other failure.
-  */
- int of_irq_to_resource(struct device_node *dev, int index, struct resource *r)
+ extern int of_irq_parse_raw(const __be32 *addr, struct of_phandle_args *out_irq);
+ extern unsigned int irq_create_of_mapping(struct of_phandle_args *irq_data);
+-extern int of_irq_to_resource(struct device_node *dev, int index,
+-			      struct resource *r);
+ 
+ #ifdef CONFIG_OF_IRQ
+ extern void of_irq_init(const struct of_device_id *matches);
+@@ -44,6 +42,7 @@ extern int of_irq_parse_one(struct device_node *device, int index,
+ extern int of_irq_count(struct device_node *dev);
+ extern int of_irq_get(struct device_node *dev, int index);
+ extern int of_irq_get_byname(struct device_node *dev, const char *name);
++extern int of_irq_to_resource(struct device_node *dev, int index, struct resource *r);
+ extern int of_irq_to_resource_table(struct device_node *dev,
+ 		struct resource *res, int nr_irqs);
+ extern struct device_node *of_irq_find_parent(struct device_node *child);
+@@ -76,6 +75,11 @@ static inline int of_irq_get_byname(struct device_node *dev, const char *name)
  {
-@@ -411,6 +439,8 @@ int of_irq_to_resource(struct device_node *dev, int index, struct resource *r)
- 
- 		r->start = r->end = irq;
- 		r->flags = IORESOURCE_IRQ | irqd_get_trigger_type(irq_get_irq_data(irq));
-+		if (__of_irq_wake_capable(dev, index))
-+			r->flags |= IORESOURCE_IRQ_WAKECAPABLE;
- 		r->name = name ? name : of_node_full_name(dev);
- 	}
- 
+ 	return 0;
+ }
++static inline int of_irq_to_resource(struct device_node *dev, int index,
++			      struct resource *r)
++{
++	return 0;
++}
+ static inline int of_irq_to_resource_table(struct device_node *dev,
+ 					   struct resource *res, int nr_irqs)
+ {
 -- 
 2.43.0.472.g3155946c3a-goog
 
