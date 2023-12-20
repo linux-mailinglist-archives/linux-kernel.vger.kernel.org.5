@@ -1,129 +1,214 @@
-Return-Path: <linux-kernel+bounces-7044-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7045-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C90481A0E7
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 15:16:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C298D81A0E9
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 15:16:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5F02A1C21312
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 14:16:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E72B51C214DE
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 14:16:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6621038DEA;
-	Wed, 20 Dec 2023 14:16:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCBA538F9E;
+	Wed, 20 Dec 2023 14:16:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="HTr45FD9"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="B5e6AjFX"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48C5C38DDC
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 14:16:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a2335d81693so154074966b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 06:16:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703081762; x=1703686562; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=IU6Wes3Z2lzY7Qfw5nqLmVftUip6+kMENpaNfvrt1S0=;
-        b=HTr45FD9BhYw8BeYHTTTRtlb7DsdRMrOp49vbCF+AkLPs2bR40duM8VPFmuHiwHCh5
-         f1spEkHpSU4yzQBUCv9tQ5+rem+ukOGHbgiW/O5+V2OAI4pI1wD1HEGIu/IbSKgpXcRq
-         zWiRagKqrL2yJ8J/b6y+//zNXoV14iPaO9vu869iM9WYJ2TFgPCoPRT8/bubm8/kDyUK
-         lzoj9pZWT9zDH2kWFBbFrIC3S3QzkjB22i1Mx1VPJKSy5RkmkmpBLp8jdn4lMAkk2C61
-         KkvDKqOMUvIiUGO2p7BrCddrNB2QW+AmrAgwdBOvqPjl4S0gpyH8BbWtyPB3z5KI8Q7g
-         wAqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703081762; x=1703686562;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=IU6Wes3Z2lzY7Qfw5nqLmVftUip6+kMENpaNfvrt1S0=;
-        b=sUCHWJjw74EAmF+1zQrC8M3eSSw0szKwOG6bI1niN8/EpXjGE1VxDxema9yncJCP21
-         G6z6anwuDO/kJ0peP75G6nDZvpF1/tAp6H342c9O/okmsZLXsKdz5SjrQpyO2lECJ/Kp
-         cOSqZHZT/kVeddStI0kZ1u44mrnwvoA6RX7ZiN0keou8V29emqn6NUaQ7R+JXrNteMG/
-         D3LXgtC5pFRLaDIUMpU0oe1lzGCVIu8yTTPzqS4LIWfoAZz7sCl8jNxURUa8DGjZT0mp
-         wnAItR7s2KNO5dqysfH4mP1vpF09YD6xcUpILtZF1Favljj+62BYjx6pJvQ1y6K6N7QM
-         0OBQ==
-X-Gm-Message-State: AOJu0YyuC2g5nomHFM2JXshRdTnbarml/6q4EnCdPb9+8Rf/Z8xzK0nS
-	GGtVGI058ow+wGEzE1A6u+OE8GwToyrSyhSf9xy+H9ffc3E=
-X-Google-Smtp-Source: AGHT+IEHYW2zICDaV7IqwQui5h87pHX9NN3ehIg71uo3rtXg/BqO5eq6IeHoO8VteYQSh6f/mgSIUA==
-X-Received: by 2002:a17:906:b7cb:b0:a26:8583:b9d0 with SMTP id fy11-20020a170906b7cb00b00a268583b9d0mr1883003ejb.35.1703081762566;
-        Wed, 20 Dec 2023 06:16:02 -0800 (PST)
-Received: from [192.168.199.125] (178235179206.dynamic-4-waw-k-1-3-0.vectranet.pl. [178.235.179.206])
-        by smtp.gmail.com with ESMTPSA id e6-20020a170906044600b00a2685b44ce9sm1621505eja.0.2023.12.20.06.16.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Dec 2023 06:16:02 -0800 (PST)
-Message-ID: <9dc9b23b-6ebb-45b2-a03e-1379a4ceab90@linaro.org>
-Date: Wed, 20 Dec 2023 15:16:00 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F64238F82;
+	Wed, 20 Dec 2023 14:16:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8FBD3C433C8;
+	Wed, 20 Dec 2023 14:16:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703081803;
+	bh=ZI70D8QvLaWdXr+fAuK9V6XLldoFTfbDeU/tcqCx5Bs=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=B5e6AjFXAbuWH87OJt2SncWeCUQNmySRUqIgLbrY1DD0aF0i3otiqnjjhkE24YOOH
+	 KirDF+QUDSsbn1/+/GFIHNzn7bpJchKI/Kjv80eqSoDfN73rVGUASKiJSXJssiJMaA
+	 U/Wjw7zQyNon/FCoPeBP+FTRhhQjRpbn3mgCKt7ZziecilMqhPBKxEhbBDc6PNMPkR
+	 VSbgVwz+AYuDi7upHfRIkKIY+pg/uFvVx+yBwynsT6sTmlY5m5VmKXmRdWrgVOtLZ5
+	 E3X8ParhMu06znMEq2MJhbZY4rsFAME5XHPfeFeguIQTrtXty5naajYcGAbA37405P
+	 xhtVYMji6aRwQ==
+Received: from [104.132.45.104] (helo=wait-a-minute.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1rFxNJ-005hcv-4T;
+	Wed, 20 Dec 2023 14:16:41 +0000
+Date: Wed, 20 Dec 2023 14:16:40 +0000
+Message-ID: <87v88tt0vr.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: <ankita@nvidia.com>
+Cc: <jgg@nvidia.com>,
+	<oliver.upton@linux.dev>,
+	<suzuki.poulose@arm.com>,
+	<yuzenghui@huawei.com>,
+	<catalin.marinas@arm.com>,
+	<will@kernel.org>,
+	<alex.williamson@redhat.com>,
+	<kevin.tian@intel.com>,
+	<yi.l.liu@intel.com>,
+	<ardb@kernel.org>,
+	<akpm@linux-foundation.org>,
+	<gshan@redhat.com>,
+	<mochs@nvidia.com>,
+	<lpieralisi@kernel.org>,
+	<aniketa@nvidia.com>,
+	<cjia@nvidia.com>,
+	<kwankhede@nvidia.com>,
+	<targupta@nvidia.com>,
+	<vsethi@nvidia.com>,
+	<acurrid@nvidia.com>,
+	<apopple@nvidia.com>,
+	<jhubbard@nvidia.com>,
+	<danw@nvidia.com>,
+	<linux-mm@kvack.org>,
+	<kvmarm@lists.linux.dev>,
+	<kvm@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v4 2/3] kvm: arm64: set io memory s2 pte as normalnc for vfio pci devices
+In-Reply-To: <20231218090719.22250-3-ankita@nvidia.com>
+References: <20231218090719.22250-1-ankita@nvidia.com>
+	<20231218090719.22250-3-ankita@nvidia.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: dts: qcom: sdm845: Use the Low Power Island CX/MX
- for SLPI
-Content-Language: en-US
-To: Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Dylan Van Assche <me@dylanvanassche.be>
-Cc: Marijn Suijten <marijn.suijten@somainline.org>,
- linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, Caleb Connolly <caleb.connolly@linaro.org>
-References: <20231220-topic-sdm845_slpi_lcxmx-v1-1-db7c72ef99ae@linaro.org>
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20231220-topic-sdm845_slpi_lcxmx-v1-1-db7c72ef99ae@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 104.132.45.104
+X-SA-Exim-Rcpt-To: ankita@nvidia.com, jgg@nvidia.com, oliver.upton@linux.dev, suzuki.poulose@arm.com, yuzenghui@huawei.com, catalin.marinas@arm.com, will@kernel.org, alex.williamson@redhat.com, kevin.tian@intel.com, yi.l.liu@intel.com, ardb@kernel.org, akpm@linux-foundation.org, gshan@redhat.com, mochs@nvidia.com, lpieralisi@kernel.org, aniketa@nvidia.com, cjia@nvidia.com, kwankhede@nvidia.com, targupta@nvidia.com, vsethi@nvidia.com, acurrid@nvidia.com, apopple@nvidia.com, jhubbard@nvidia.com, danw@nvidia.com, linux-mm@kvack.org, kvmarm@lists.linux.dev, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-On 20.12.2023 15:15, Konrad Dybcio wrote:
-> The SLPI is powered by the Low Power Island power rails. Fix the incorrect
-> assignment.
+On Mon, 18 Dec 2023 09:07:18 +0000,
+<ankita@nvidia.com> wrote:
 > 
-> Fixes: 74588aada59a ("arm64: dts: qcom: sdm845: add SLPI remoteproc")
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> From: Ankit Agrawal <ankita@nvidia.com>
+> 
+> To provide VM with the ability to get device IO memory with NormalNC
+> property, map device MMIO in KVM for ARM64 at stage2 as NormalNC.
+> Having NormalNC S2 default puts guests in control (based on [1],
+> "Combining stage 1 and stage 2 memory type attributes") of device
+> MMIO regions memory mappings. The rules are summarized below:
+> ([(S1) - stage1], [(S2) - stage 2])
+> 
+> S1           |  S2           | Result
+> NORMAL-WB    |  NORMAL-NC    | NORMAL-NC
+> NORMAL-WT    |  NORMAL-NC    | NORMAL-NC
+> NORMAL-NC    |  NORMAL-NC    | NORMAL-NC
+> DEVICE<attr> |  NORMAL-NC    | DEVICE<attr>
+> 
+> Generalizing this to non PCI devices may be problematic. E.g. GICv2
+> vCPU interface, which is effectively a shared peripheral, can allow
+> a guest to affect another guest's interrupt distribution. The issue
+> may be solved by limiting the relaxation to mappings that have a user
+> VMA. Still There is insufficient information and uncertainity in the
+> behavior of non PCI driver. Hence caution is maintained and the change
+> is restricted to the VFIO-PCI devices. PCIe on the other hand is safe
+> because the PCI bridge does not generate errors, and thus do not cause
+> uncontained failures.
+> 
+> A new flag VM_VFIO_ALLOW_WC to indicate KVM that the device is WC capable.
+> KVM use this flag to activate the code.
+> 
+> This could be extended to other devices in the future once that
+> is deemed safe.
+> 
+> [1] section D8.5.5 of DDI0487J_a_a-profile_architecture_reference_manual.pdf
+> 
+> Signed-off-by: Ankit Agrawal <ankita@nvidia.com>
+> Suggested-by: Catalin Marinas <catalin.marinas@arm.com>
+> Acked-by: Jason Gunthorpe <jgg@nvidia.com>
+> Tested-by: Ankit Agrawal <ankita@nvidia.com>
 > ---
-b4 seems to not have included my "only compile-tested" comment
+>  arch/arm64/kvm/mmu.c | 18 ++++++++++++++----
+>  include/linux/mm.h   | 13 +++++++++++++
+>  2 files changed, 27 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
+> index d14504821b79..e1e6847a793b 100644
+> --- a/arch/arm64/kvm/mmu.c
+> +++ b/arch/arm64/kvm/mmu.c
+> @@ -1381,7 +1381,7 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
+>  	int ret = 0;
+>  	bool write_fault, writable, force_pte = false;
+>  	bool exec_fault, mte_allowed;
+> -	bool device = false;
+> +	bool device = false, vfio_allow_wc = false;
+>  	unsigned long mmu_seq;
+>  	struct kvm *kvm = vcpu->kvm;
+>  	struct kvm_mmu_memory_cache *memcache = &vcpu->arch.mmu_page_cache;
+> @@ -1472,6 +1472,8 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
+>  	gfn = fault_ipa >> PAGE_SHIFT;
+>  	mte_allowed = kvm_vma_mte_allowed(vma);
+>  
+> +	vfio_allow_wc = (vma->vm_flags & VM_VFIO_ALLOW_WC);
+> +
+>  	/* Don't use the VMA after the unlock -- it may have vanished */
+>  	vma = NULL;
+>  
+> @@ -1557,10 +1559,18 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
+>  	if (exec_fault)
+>  		prot |= KVM_PGTABLE_PROT_X;
+>  
+> -	if (device)
+> -		prot |= KVM_PGTABLE_PROT_DEVICE;
+> -	else if (cpus_have_final_cap(ARM64_HAS_CACHE_DIC))
+> +	if (device) {
+> +		/*
+> +		 * To provide VM with the ability to get device IO memory
+> +		 * with NormalNC property, map device MMIO as NormalNC in S2.
+> +		 */
+> +		if (vfio_allow_wc)
+> +			prot |= KVM_PGTABLE_PROT_NORMAL_NC;
+> +		else
+> +			prot |= KVM_PGTABLE_PROT_DEVICE;
+> +	} else if (cpus_have_final_cap(ARM64_HAS_CACHE_DIC)) {
+>  		prot |= KVM_PGTABLE_PROT_X;
+> +	}
+>  
+>  	/*
+>  	 * Under the premise of getting a FSC_PERM fault, we just need to relax
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index 2bea89dc0bdf..d2f0f969875c 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -391,6 +391,19 @@ extern unsigned int kobjsize(const void *objp);
+>  # define VM_UFFD_MINOR		VM_NONE
+>  #endif /* CONFIG_HAVE_ARCH_USERFAULTFD_MINOR */
+>  
+> +/* This flag is used to connect VFIO to arch specific KVM code. It
+> + * indicates that the memory under this VMA is safe for use with any
+> + * non-cachable memory type inside KVM. Some VFIO devices, on some
+> + * platforms, are thought to be unsafe and can cause machine crashes if
+> + * KVM does not lock down the memory type.
+> + */
 
-Konrad
+Comment format.
+
+> +#ifdef CONFIG_64BIT
+> +#define VM_VFIO_ALLOW_WC_BIT	39
+> +#define VM_VFIO_ALLOW_WC	BIT(VM_VFIO_ALLOW_WC_BIT)
+> +#else
+> +#define VM_VFIO_ALLOW_WC	VM_NONE
+> +#endif
+> +
+>  /* Bits set in the VMA until the stack is in its final location */
+>  #define VM_STACK_INCOMPLETE_SETUP (VM_RAND_READ | VM_SEQ_READ | VM_STACK_EARLY)
+
+The mm.h change should be standalone, separate from the KVM stuff.
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
 
