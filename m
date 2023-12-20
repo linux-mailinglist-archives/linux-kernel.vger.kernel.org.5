@@ -1,31 +1,54 @@
-Return-Path: <linux-kernel+bounces-6651-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6653-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8D68819BAC
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 10:51:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D99D8819BB0
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 10:51:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 712092821F2
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 09:51:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B77B01C221DC
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 09:51:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2959A200C9;
-	Wed, 20 Dec 2023 09:51:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B4771F619;
+	Wed, 20 Dec 2023 09:51:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="G7gjDCpT"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB9DA200AB
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 09:51:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 765F31FB;
-	Wed, 20 Dec 2023 01:51:53 -0800 (PST)
-Received: from [10.57.75.247] (unknown [10.57.75.247])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DDB023F5A1;
-	Wed, 20 Dec 2023 01:51:03 -0800 (PST)
-Message-ID: <9a58b1a2-2c13-4fa0-8ffa-2b3d9655f1b6@arm.com>
-Date: Wed, 20 Dec 2023 09:51:01 +0000
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF81E208CB;
+	Wed, 20 Dec 2023 09:51:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BK6F3aA023046;
+	Wed, 20 Dec 2023 09:51:13 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=mpJvZli5xpZQpMvqBX2PUqD/NsWh7NE2eRZG4icSJOg=; b=G7
+	gjDCpTzW4x6gNErn2RMx00VHbHQoCCUNQ8UoZTZzC6QjUSuGmL6DGWckKpxM3eDf
+	lFKpfoF7l4j6bHGQ7sY9cV1wWjeA4ILVXTHfJxaHGs+461sMKUWDAsVfRaDDk/9j
+	ANRLioO9rErDdXXYLXxFLGEeak5c1Te9JgknPQMVh8udzPvFBZ65cgzn6I500dTI
+	Vauy8wg7EuYwZhH9j7PkRlmcsuNDSFYAW4phhl4c2Let2kHAO4qkQd/qJhCab7DT
+	EoTsnVNT6ffrT0uyTY4GNdeLqBOslOlKREOzujTPmeDCf3iyLSHCvxxXjRNvlyWe
+	zAYbD+gGUfxNDDGOeCgQ==
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v3fa3hupt-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 20 Dec 2023 09:51:13 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BK9pBQv012961
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 20 Dec 2023 09:51:12 GMT
+Received: from [10.239.133.211] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 20 Dec
+ 2023 01:51:07 -0800
+Message-ID: <b7ef4e75-69c6-4251-8f9c-58682699e3f6@quicinc.com>
+Date: Wed, 20 Dec 2023 17:51:03 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -33,238 +56,437 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 02/16] mm: Batch-copy PTE ranges during fork()
-Content-Language: en-GB
-To: David Hildenbrand <david@redhat.com>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Ard Biesheuvel <ardb@kernel.org>, Marc Zyngier <maz@kernel.org>,
- Oliver Upton <oliver.upton@linux.dev>, James Morse <james.morse@arm.com>,
- Suzuki K Poulose <suzuki.poulose@arm.com>, Zenghui Yu
- <yuzenghui@huawei.com>, Andrey Ryabinin <ryabinin.a.a@gmail.com>,
- Alexander Potapenko <glider@google.com>,
- Andrey Konovalov <andreyknvl@gmail.com>, Dmitry Vyukov <dvyukov@google.com>,
- Vincenzo Frascino <vincenzo.frascino@arm.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Anshuman Khandual <anshuman.khandual@arm.com>,
- Matthew Wilcox <willy@infradead.org>, Yu Zhao <yuzhao@google.com>,
- Mark Rutland <mark.rutland@arm.com>, Kefeng Wang
- <wangkefeng.wang@huawei.com>, John Hubbard <jhubbard@nvidia.com>,
- Zi Yan <ziy@nvidia.com>, Barry Song <21cnbao@gmail.com>,
- Alistair Popple <apopple@nvidia.com>, Yang Shi <shy828301@gmail.com>
-Cc: linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org
-References: <20231218105100.172635-1-ryan.roberts@arm.com>
- <20231218105100.172635-3-ryan.roberts@arm.com>
- <0bef5423-6eea-446b-8854-980e9c23a948@redhat.com>
- <db1be625-33e4-4d07-8500-3f7d3c8f9937@arm.com>
- <be8b5181-be2c-4800-ba53-c65a6c3ed803@redhat.com>
- <dd227e51-c4b2-420b-a92a-65da85ab4018@arm.com>
- <7c0236ad-01f3-437f-8b04-125d69e90dc0@redhat.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <7c0236ad-01f3-437f-8b04-125d69e90dc0@redhat.com>
-Content-Type: text/plain; charset=UTF-8
+Subject: Re: [PATCH v3 6/8] coresight-tpdm: Add timestamp control register
+ support for the CMB
+Content-Language: en-US
+To: Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mathieu Poirier
+	<mathieu.poirier@linaro.org>,
+        Alexander Shishkin
+	<alexander.shishkin@linux.intel.com>,
+        Konrad Dybcio <konradybcio@gmail.com>,
+        Mike Leach <mike.leach@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+CC: Jinlong Mao <quic_jinlmao@quicinc.com>,
+        Greg Kroah-Hartman
+	<gregkh@linuxfoundation.org>,
+        <coresight@lists.linaro.org>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        Tingwei Zhang <quic_tingweiz@quicinc.com>,
+        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
+        Trilok Soni
+	<quic_tsoni@quicinc.com>,
+        Song Chai <quic_songchai@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
+        <andersson@kernel.org>
+References: <1700533494-19276-1-git-send-email-quic_taozha@quicinc.com>
+ <1700533494-19276-7-git-send-email-quic_taozha@quicinc.com>
+ <ebd7e310-d1b4-4b2e-a915-6241e04763d4@arm.com>
+ <b61c3d70-7277-4fe7-ab67-8afc1062c737@quicinc.com>
+ <cdad425c-b965-44c7-a612-1c99341e95b9@arm.com>
+From: Tao Zhang <quic_taozha@quicinc.com>
+In-Reply-To: <cdad425c-b965-44c7-a612-1c99341e95b9@arm.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 5JoT3wRGH-NkjSs_jMjOto-Zjq6A_Q1Y
+X-Proofpoint-ORIG-GUID: 5JoT3wRGH-NkjSs_jMjOto-Zjq6A_Q1Y
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
+ phishscore=0 spamscore=0 suspectscore=0 mlxlogscore=999 impostorscore=0
+ clxscore=1015 adultscore=0 mlxscore=0 lowpriorityscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2312200068
 
-On 20/12/2023 09:17, David Hildenbrand wrote:
-> On 19.12.23 18:42, Ryan Roberts wrote:
->> On 19/12/2023 17:22, David Hildenbrand wrote:
->>> On 19.12.23 09:30, Ryan Roberts wrote:
->>>> On 18/12/2023 17:47, David Hildenbrand wrote:
->>>>> On 18.12.23 11:50, Ryan Roberts wrote:
->>>>>> Convert copy_pte_range() to copy a batch of ptes in one go. A given
->>>>>> batch is determined by the architecture with the new helper,
->>>>>> pte_batch_remaining(), and maps a physically contiguous block of memory,
->>>>>> all belonging to the same folio. A pte batch is then write-protected in
->>>>>> one go in the parent using the new helper, ptep_set_wrprotects() and is
->>>>>> set in one go in the child using the new helper, set_ptes_full().
->>>>>>
->>>>>> The primary motivation for this change is to reduce the number of tlb
->>>>>> maintenance operations that the arm64 backend has to perform during
->>>>>> fork, as it is about to add transparent support for the "contiguous bit"
->>>>>> in its ptes. By write-protecting the parent using the new
->>>>>> ptep_set_wrprotects() (note the 's' at the end) function, the backend
->>>>>> can avoid having to unfold contig ranges of PTEs, which is expensive,
->>>>>> when all ptes in the range are being write-protected. Similarly, by
->>>>>> using set_ptes_full() rather than set_pte_at() to set up ptes in the
->>>>>> child, the backend does not need to fold a contiguous range once they
->>>>>> are all populated - they can be initially populated as a contiguous
->>>>>> range in the first place.
->>>>>>
->>>>>> This code is very performance sensitive, and a significant amount of
->>>>>> effort has been put into not regressing performance for the order-0
->>>>>> folio case. By default, pte_batch_remaining() is compile constant 1,
->>>>>> which enables the compiler to simplify the extra loops that are added
->>>>>> for batching and produce code that is equivalent (and equally
->>>>>> performant) as the previous implementation.
->>>>>>
->>>>>> This change addresses the core-mm refactoring only and a separate change
->>>>>> will implement pte_batch_remaining(), ptep_set_wrprotects() and
->>>>>> set_ptes_full() in the arm64 backend to realize the performance
->>>>>> improvement as part of the work to enable contpte mappings.
->>>>>>
->>>>>> To ensure the arm64 is performant once implemented, this change is very
->>>>>> careful to only call ptep_get() once per pte batch.
->>>>>>
->>>>>> The following microbenchmark results demonstate that there is no
->>>>>> significant performance change after this patch. Fork is called in a
->>>>>> tight loop in a process with 1G of populated memory and the time for the
->>>>>> function to execute is measured. 100 iterations per run, 8 runs
->>>>>> performed on both Apple M2 (VM) and Ampere Altra (bare metal). Tests
->>>>>> performed for case where 1G memory is comprised of order-0 folios and
->>>>>> case where comprised of pte-mapped order-9 folios. Negative is faster,
->>>>>> positive is slower, compared to baseline upon which the series is based:
->>>>>>
->>>>>> | Apple M2 VM   | order-0 (pte-map) | order-9 (pte-map) |
->>>>>> | fork          |-------------------|-------------------|
->>>>>> | microbench    |    mean |   stdev |    mean |   stdev |
->>>>>> |---------------|---------|---------|---------|---------|
->>>>>> | baseline      |    0.0% |    1.1% |    0.0% |    1.2% |
->>>>>> | after-change  |   -1.0% |    2.0% |   -0.1% |    1.1% |
->>>>>>
->>>>>> | Ampere Altra  | order-0 (pte-map) | order-9 (pte-map) |
->>>>>> | fork          |-------------------|-------------------|
->>>>>> | microbench    |    mean |   stdev |    mean |   stdev |
->>>>>> |---------------|---------|---------|---------|---------|
->>>>>> | baseline      |    0.0% |    1.0% |    0.0% |    0.1% |
->>>>>> | after-change  |   -0.1% |    1.2% |   -0.1% |    0.1% |
->>>>>>
->>>>>> Tested-by: John Hubbard <jhubbard@nvidia.com>
->>>>>> Reviewed-by: Alistair Popple <apopple@nvidia.com>
->>>>>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
->>>>>> ---
->>>>>>     include/linux/pgtable.h | 80 +++++++++++++++++++++++++++++++++++
->>>>>>     mm/memory.c             | 92 ++++++++++++++++++++++++++---------------
->>>>>>     2 files changed, 139 insertions(+), 33 deletions(-)
->>>>>>
->>>>>> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
->>>>>> index af7639c3b0a3..db93fb81465a 100644
->>>>>> --- a/include/linux/pgtable.h
->>>>>> +++ b/include/linux/pgtable.h
->>>>>> @@ -205,6 +205,27 @@ static inline int pmd_young(pmd_t pmd)
->>>>>>     #define arch_flush_lazy_mmu_mode()    do {} while (0)
->>>>>>     #endif
->>>>>>     +#ifndef pte_batch_remaining
->>>>>> +/**
->>>>>> + * pte_batch_remaining - Number of pages from addr to next batch boundary.
->>>>>> + * @pte: Page table entry for the first page.
->>>>>> + * @addr: Address of the first page.
->>>>>> + * @end: Batch ceiling (e.g. end of vma).
->>>>>> + *
->>>>>> + * Some architectures (arm64) can efficiently modify a contiguous batch of
->>>>>> ptes.
->>>>>> + * In such cases, this function returns the remaining number of pages to
->>>>>> the end
->>>>>> + * of the current batch, as defined by addr. This can be useful when
->>>>>> iterating
->>>>>> + * over ptes.
->>>>>> + *
->>>>>> + * May be overridden by the architecture, else batch size is always 1.
->>>>>> + */
->>>>>> +static inline unsigned int pte_batch_remaining(pte_t pte, unsigned long
->>>>>> addr,
->>>>>> +                        unsigned long end)
->>>>>> +{
->>>>>> +    return 1;
->>>>>> +}
->>>>>> +#endif
->>>>>
->>>>> It's a shame we now lose the optimization for all other archtiectures.
->>>>>
->>>>> Was there no way to have some basic batching mechanism that doesn't require
->>>>> arch
->>>>> specifics?
->>>>
->>>> I tried a bunch of things but ultimately the way I've done it was the only way
->>>> to reduce the order-0 fork regression to 0.
->>>>
->>>> My original v3 posting was costing 5% extra and even my first attempt at an
->>>> arch-specific version that didn't resolve to a compile-time constant 1 still
->>>> cost an extra 3%.
->>>>
->>>>
->>>>>
->>>>> I'd have thought that something very basic would have worked like:
->>>>>
->>>>> * Check if PTE is the same when setting the PFN to 0.
->>>>> * Check that PFN is consecutive
->>>>> * Check that all PFNs belong to the same folio
->>>>
->>>> I haven't tried this exact approach, but I'd be surprised if I can get the
->>>> regression under 4% with this. Further along the series I spent a lot of time
->>>> having to fiddle with the arm64 implementation; every conditional and every
->>>> memory read (even when in cache) was a problem. There is just so little in the
->>>> inner loop that every instruction matters. (At least on Ampere Altra and Apple
->>>> M2).
->>>>
->>>> Of course if you're willing to pay that 4-5% for order-0 then the benefit to
->>>> order-9 is around 10% in my measurements. Personally though, I'd prefer to play
->>>> safe and ensure the common order-0 case doesn't regress, as you previously
->>>> suggested.
->>>>
->>>
->>> I just hacked something up, on top of my beloved rmap cleanup/batching series. I
->>> implemented very generic and simple batching for large folios (all PTE bits
->>> except the PFN have to match).
->>>
->>> Some very quick testing (don't trust each last % ) on Intel(R) Xeon(R) Silver
->>> 4210R CPU.
->>>
->>> order-0: 0.014210 -> 0.013969
->>>
->>> -> Around 1.7 % faster
->>>
->>> order-9: 0.014373 -> 0.009149
->>>
->>> -> Around 36.3 % faster
+
+On 12/19/2023 9:51 PM, Suzuki K Poulose wrote:
+> On 19/12/2023 02:43, Tao Zhang wrote:
 >>
->> Well I guess that shows me :)
+>> On 12/18/2023 6:46 PM, Suzuki K Poulose wrote:
+>>> On 21/11/2023 02:24, Tao Zhang wrote:
+>>>> CMB_TIER register is CMB subunit timestamp insertion enable register.
+>>>> Bit 0 is PATT_TSENAB bit. Set this bit to 1 to request a timestamp
+>>>> following a CMB interface pattern match. Bit 1 is XTRIG_TSENAB bit.
+>>>> Set this bit to 1 to request a timestamp following a CMB CTI timestamp
+>>>> request. Bit 2 is TS_ALL bit. Set this bit to 1 to request timestamp
+>>>> for all packets.
+>>>>
+>>>> Reviewed-by: James Clark <james.clark@arm.com>
+>>>> Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
+>>>> Signed-off-by: Jinlong Mao <quic_jinlmao@quicinc.com>
+>>>> ---
+>>>>   .../testing/sysfs-bus-coresight-devices-tpdm  |  35 ++++++
+>>>>   drivers/hwtracing/coresight/coresight-tpdm.c  | 116 
+>>>> +++++++++++++++++-
+>>>>   drivers/hwtracing/coresight/coresight-tpdm.h  |  14 +++
+>>>>   3 files changed, 162 insertions(+), 3 deletions(-)
+>>>>
+>>>> diff --git 
+>>>> a/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm 
+>>>> b/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
+>>>> index 53662ce7c2d0..e0b77107be13 100644
+>>>> --- a/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
+>>>> +++ b/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
+>>>> @@ -214,3 +214,38 @@ KernelVersion    6.7
+>>>>   Contact:    Jinlong Mao (QUIC) <quic_jinlmao@quicinc.com>, Tao 
+>>>> Zhang (QUIC) <quic_taozha@quicinc.com>
+>>>>   Description:
+>>>>           (RW) Set/Get the mask of the pattern for the CMB subunit 
+>>>> TPDM.
+>>>> +
+>>>> +What: /sys/bus/coresight/devices/<tpdm-name>/cmb_patt/enable_ts
+>>>> +Date:        September 2023
+>>>> +KernelVersion    6.7
+>>>> +Contact:    Jinlong Mao (QUIC) <quic_jinlmao@quicinc.com>, Tao 
+>>>> Zhang (QUIC) <quic_taozha@quicinc.com>
+>>>> +Description:
+>>>> +        (Write) Set the pattern timestamp of CMB tpdm. Read
+>>>> +        the pattern timestamp of CMB tpdm.
+>>>> +
+>>>> +        Accepts only one of the 2 values -  0 or 1.
+>>>> +        0 : Disable CMB pattern timestamp.
+>>>> +        1 : Enable CMB pattern timestamp.
+>>>> +
+>>>> +What: /sys/bus/coresight/devices/<tpdm-name>/cmb_trig_ts
+>>>> +Date:        September 2023
+>>>> +KernelVersion    6.7
+>>>> +Contact:    Jinlong Mao (QUIC) <quic_jinlmao@quicinc.com>, Tao 
+>>>> Zhang (QUIC) <quic_taozha@quicinc.com>
+>>>> +Description:
+>>>> +        (RW) Set/Get the trigger timestamp of the CMB for tpdm.
+>>>> +
+>>>> +        Accepts only one of the 2 values -  0 or 1.
+>>>> +        0 : Set the CMB trigger type to false
+>>>> +        1 : Set the CMB trigger type to true
+>>>> +
+>>>> +What: /sys/bus/coresight/devices/<tpdm-name>/cmb_ts_all
+>>>> +Date:        September 2023
+>>>> +KernelVersion    6.7
+>>>> +Contact:    Jinlong Mao (QUIC) <quic_jinlmao@quicinc.com>, Tao 
+>>>> Zhang (QUIC) <quic_taozha@quicinc.com>
+>>>> +Description:
+>>>> +        (RW) Read or write the status of timestamp upon all 
+>>>> interface.
+>>>> +        Only value 0 and 1  can be written to this node. Set this 
+>>>> node to 1 to requeset
+>>>> +        timestamp to all trace packet.
+>>>> +        Accepts only one of the 2 values -  0 or 1.
+>>>> +        0 : Disable the timestamp of all trace packets.
+>>>> +        1 : Enable the timestamp of all trace packets.
+>>>> diff --git a/drivers/hwtracing/coresight/coresight-tpdm.c 
+>>>> b/drivers/hwtracing/coresight/coresight-tpdm.c
+>>>> index 894d4309f1c7..f6cda5616e84 100644
+>>>> --- a/drivers/hwtracing/coresight/coresight-tpdm.c
+>>>> +++ b/drivers/hwtracing/coresight/coresight-tpdm.c
+>>>> @@ -331,6 +331,36 @@ static void tpdm_enable_dsb(struct 
+>>>> tpdm_drvdata *drvdata)
+>>>>       writel_relaxed(val, drvdata->base + TPDM_DSB_CR);
+>>>>   }
+>>>>   +static void set_cmb_tier(struct tpdm_drvdata *drvdata)
+>>>> +{
+>>>> +    u32 val;
+>>>> +
+>>>> +    val = readl_relaxed(drvdata->base + TPDM_CMB_TIER);
+>>>> +
+>>>> +    /* Clear all relevant fields */
+>>>> +    val &= ~(TPDM_CMB_TIER_PATT_TSENAB | TPDM_CMB_TIER_TS_ALL |
+>>>> +         TPDM_CMB_TIER_XTRIG_TSENAB);
+>>>> +
+>>>> +    /* Set pattern timestamp type and enablement */
+>>>> +    if (drvdata->cmb->patt_ts)
+>>>> +        val |= TPDM_CMB_TIER_PATT_TSENAB;
+>>>
+>>>  -- cut --
+>>>> +    else
+>>>> +        val &= ~TPDM_CMB_TIER_PATT_TSENAB;
+>>>
+>>>
+>>> All the else cases in this function are superfluous. Please remove all
+>>> of them.
+>> I will update this in the next patch.
+>>>
+>>>> +
+>>>> +    /* Set trigger timestamp */
+>>>> +    if (drvdata->cmb->trig_ts)
+>>>> +        val |= TPDM_CMB_TIER_XTRIG_TSENAB;
+>>>> +    else
+>>>> +        val &= ~TPDM_CMB_TIER_XTRIG_TSENAB;
+>>>> +
+>>>> +    /* Set all timestamp enablement*/
+>>>> +    if (drvdata->cmb->ts_all)
+>>>> +        val |= TPDM_CMB_TIER_TS_ALL;
+>>>> +    else
+>>>> +        val &= ~TPDM_CMB_TIER_TS_ALL;
+>>>> +    writel_relaxed(val, drvdata->base + TPDM_CMB_TIER);
+>>>> +}
+>>>> +
+>>>>   static void tpdm_enable_cmb(struct tpdm_drvdata *drvdata)
+>>>>   {
+>>>>       u32 val, i;
+>>>> @@ -347,6 +377,8 @@ static void tpdm_enable_cmb(struct tpdm_drvdata 
+>>>> *drvdata)
+>>>>                   drvdata->base + TPDM_CMB_XPMR(i));
+>>>>       }
+>>>>   +    set_cmb_tier(drvdata);
+>>>> +
+>>>>       val = readl_relaxed(drvdata->base + TPDM_CMB_CR);
+>>>>       /*
+>>>>        * Set to 0 for continuous CMB collection mode,
+>>>> @@ -695,9 +727,17 @@ static ssize_t enable_ts_show(struct device *dev,
+>>>>                     char *buf)
+>>>>   {
+>>>>       struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+>>>> +    ssize_t size = 0;
+>>>>   -    return sysfs_emit(buf, "%u\n",
+>>>> -             (unsigned int)drvdata->dsb->patt_ts);
+>>>> +    if (tpdm_has_dsb_dataset(drvdata))
+>>>> +        size = sysfs_emit(buf, "%u\n",
+>>>> +                 (unsigned int)drvdata->dsb->patt_ts);
+>>>> +
+>>>> +    if (tpdm_has_cmb_dataset(drvdata))
+>>>> +        size = sysfs_emit(buf, "%u\n",
+>>>> +                 (unsigned int)drvdata->cmb->patt_ts);
+>>>
+>>> Why does this need to show two values ? This must only show ONE value.
+>>> How you deduce that might be based on the availability of the feature
+>>> set. Or store the TS value in the drvdata and use that instead for
+>>> controlling CMB/DSB.
 >>
->> I'll do a review and run the tests on my HW to see if it concurs.
-> 
-> 
-> I pushed a simple compile fixup (we need pte_next_pfn()).
+>> Since both of CMB/DSB need to have "enable_ts" SysFs file, can I 
+>> separate them
+>
+> The question really is, do we need fine grained control. i.e.,
+>
+> enable TS for DSB but not for CMB or vice versa.
+>
+> I am not an expert on the usage scenario of the same. So, if you/Qcomm
+> thinks the users need separate, fine grained control for timestamp
+> for the DSB and CMB, then yes, follow your recommendation below.
+> i.e., tpdm.../dsb_patt/enable_ts
+>
+>> as "enable_dsb_ts" and "enable_cmb_ts"? The path will be like below.
+>>
+>> tpdm0/dsb_patt/enable_dsb_ts
+>
+> You don't need enable_dsb_ts. It could be "enable_ts"
+>
+>>
+>> tpdm1/cmb_patt/enable_cmb_ts
+>>
+>> Is this design appropriate?
+>
+>
+> Otherwise, stick to single enable_ts : which enables the ts for both
+> CMB/DSB. And it only ever show one value : 0 (TS is disabled for both
+> CMB/DSB) 1 : TS enabled for both.
 
-I've just been trying to compile and noticed this. Will take a look at your update.
+We have a very special case, such as the TPDM supporting both CMB and
 
-But upon review, I've noticed the part that I think makes this difficult for
-arm64 with the contpte optimization; You are calling ptep_get() for every pte in
-the batch. While this is functionally correct, once arm64 has the contpte
-changes, its ptep_get() has to read every pte in the contpte block in order to
-gather the access and dirty bits. So if your batching function ends up wealking
-a 16 entry contpte block, that will cause 16 x 16 reads, which kills
-performance. That's why I added the arch-specific pte_batch_remaining()
-function; this allows the core-mm to skip to the end of the contpte block and
-avoid ptep_get() for the 15 tail ptes. So we end up with 16 READ_ONCE()s instead
-of 256.
+DSB datasets. Although this case is very rare, it still exists.
 
-I considered making a ptep_get_noyoungdirty() variant, which would avoid the bit
-gathering. But we have a similar problem in zap_pte_range() and that function
-needs the dirty bit to update the folio. So it doesn't work there. (see patch 3
-in my series).
+Can I use the data bit to instruct whether timestamp is enabled for 
+CMB/DSB or not? For example,
 
-I guess you are going to say that we should combine both approaches, so that
-your batching loop can skip forward an arch-provided number of ptes? That would
-certainly work, but feels like an orthogonal change to what I'm trying to
-achieve :). Anyway, I'll spend some time playing with it today.
+size = sysfs_emit(buf, "%u\n",
+                 (unsigned int)(drvdata->dsb->patt_ts << 1 | 
+drvdata->cmb->patt_ts));
+
+Thus, this value can instruct the following situations.
+
+0 - TS is disabled for both CMB/DSB
+
+1 - TS is enabled for CMB
+
+2 - TS is enabled for DSB
+
+3 - TS is enabled for both
+
+Is this approach acceptable?
 
 
-> 
-> Note that we should probably handle "ptep_set_wrprotects" rather like set_ptes:
-> 
-> #ifndef wrprotect_ptes
-> static inline void wrprotect_ptes(struct mm_struct *mm, unsigned long addr,
->                pte_t *ptep, unsigned int nr)
-> {
->        for (;;) {
->                ptep_set_wrprotect(mm, addr, ptep);
->                if (--nr == 0)
->                        break;
->                ptep++;
->                addr += PAGE_SIZE;
->        }
-> }
-> #endif
-> 
-> 
+Best,
 
+Tao
+
+>
+> Suzuki
+>
+>
+>>>
+>
+>>> Also, the sysfs documentation needs update, if this is going to
+>>> control the CMB.
+>>
+>> Sure. I will update the SysFs documentation according to the 
+>> modification in the
+>>
+>> next patch series.
+>>
+>>
+>> Best,
+>>
+>> Tao
+>>
+>>>
+>>> Suzuki
+>>>
+>>>
+>>>> +
+>>>> +    return size;
+>>>>   }
+>>>>     /*
+>>>> @@ -715,8 +755,13 @@ static ssize_t enable_ts_store(struct device 
+>>>> *dev,
+>>>>           return -EINVAL;
+>>>>         spin_lock(&drvdata->spinlock);
+>>>> -    drvdata->dsb->patt_ts = !!val;
+>>>> +    if (tpdm_has_dsb_dataset(drvdata))
+>>>> +        drvdata->dsb->patt_ts = !!val;
+>>>> +
+>>>> +    if (tpdm_has_cmb_dataset(drvdata))
+>>>> +        drvdata->cmb->patt_ts = !!val;
+>>>>       spin_unlock(&drvdata->spinlock);
+>>>> +
+>>>>       return size;
+>>>>   }
+>>>>   static DEVICE_ATTR_RW(enable_ts);
+>>>> @@ -851,6 +896,68 @@ static ssize_t cmb_mode_store(struct device *dev,
+>>>>   }
+>>>>   static DEVICE_ATTR_RW(cmb_mode);
+>>>>   +static ssize_t cmb_ts_all_show(struct device *dev,
+>>>> +                   struct device_attribute *attr,
+>>>> +                   char *buf)
+>>>> +{
+>>>> +    struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+>>>> +
+>>>> +    return sysfs_emit(buf, "%u\n",
+>>>> +              (unsigned int)drvdata->cmb->ts_all);
+>>>> +}
+>>>> +
+>>>> +static ssize_t cmb_ts_all_store(struct device *dev,
+>>>> +                struct device_attribute *attr,
+>>>> +                const char *buf,
+>>>> +                size_t size)
+>>>> +{
+>>>> +    struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+>>>> +    unsigned long val;
+>>>> +
+>>>> +    if ((kstrtoul(buf, 0, &val)) || (val & ~1UL))
+>>>> +        return -EINVAL;
+>>>> +
+>>>> +    spin_lock(&drvdata->spinlock);
+>>>> +    if (val)
+>>>> +        drvdata->cmb->ts_all = true;
+>>>> +    else
+>>>> +        drvdata->cmb->ts_all = false;
+>>>> +    spin_unlock(&drvdata->spinlock);
+>>>> +    return size;
+>>>> +}
+>>>> +static DEVICE_ATTR_RW(cmb_ts_all);
+>>>> +
+>>>> +static ssize_t cmb_trig_ts_show(struct device *dev,
+>>>> +                struct device_attribute *attr,
+>>>> +                char *buf)
+>>>> +{
+>>>> +    struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+>>>> +
+>>>> +    return sysfs_emit(buf, "%u\n",
+>>>> +              (unsigned int)drvdata->cmb->trig_ts);
+>>>> +}
+>>>> +
+>>>> +static ssize_t cmb_trig_ts_store(struct device *dev,
+>>>> +                 struct device_attribute *attr,
+>>>> +                 const char *buf,
+>>>> +                 size_t size)
+>>>> +{
+>>>> +    struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+>>>> +    unsigned long val;
+>>>> +
+>>>> +    if ((kstrtoul(buf, 0, &val)) || (val & ~1UL))
+>>>> +        return -EINVAL;
+>>>> +
+>>>> +    spin_lock(&drvdata->spinlock);
+>>>> +    if (val)
+>>>> +        drvdata->cmb->trig_ts = true;
+>>>> +    else
+>>>> +        drvdata->cmb->trig_ts = false;
+>>>> +    spin_unlock(&drvdata->spinlock);
+>>>> +    return size;
+>>>> +}
+>>>> +static DEVICE_ATTR_RW(cmb_trig_ts);
+>>>> +
+>>>>   static struct attribute *tpdm_dsb_edge_attrs[] = {
+>>>>       &dev_attr_ctrl_idx.attr,
+>>>>       &dev_attr_ctrl_val.attr,
+>>>> @@ -973,6 +1080,7 @@ static struct attribute *tpdm_cmb_patt_attrs[] 
+>>>> = {
+>>>>       CMB_PATT_ATTR(1),
+>>>>       CMB_PATT_MASK_ATTR(0),
+>>>>       CMB_PATT_MASK_ATTR(1),
+>>>> +    &dev_attr_enable_ts.attr,
+>>>>       NULL,
+>>>>   };
+>>>>   @@ -985,6 +1093,8 @@ static struct attribute *tpdm_dsb_attrs[] = {
+>>>>     static struct attribute *tpdm_cmb_attrs[] = {
+>>>>       &dev_attr_cmb_mode.attr,
+>>>> +    &dev_attr_cmb_ts_all.attr,
+>>>> +    &dev_attr_cmb_trig_ts.attr,
+>>>>       NULL,
+>>>>   };
+>>>>   diff --git a/drivers/hwtracing/coresight/coresight-tpdm.h 
+>>>> b/drivers/hwtracing/coresight/coresight-tpdm.h
+>>>> index e90d008c1cb2..65b7ca6c4077 100644
+>>>> --- a/drivers/hwtracing/coresight/coresight-tpdm.h
+>>>> +++ b/drivers/hwtracing/coresight/coresight-tpdm.h
+>>>> @@ -11,6 +11,8 @@
+>>>>     /* CMB Subunit Registers */
+>>>>   #define TPDM_CMB_CR        (0xA00)
+>>>> +/*CMB subunit timestamp insertion enable register*/
+>>>> +#define TPDM_CMB_TIER        (0xA04)
+>>>>   /*CMB subunit timestamp pattern registers*/
+>>>>   #define TPDM_CMB_TPR(n)        (0xA08 + (n * 4))
+>>>>   /*CMB subunit timestamp pattern mask registers*/
+>>>> @@ -24,6 +26,12 @@
+>>>>   #define TPDM_CMB_CR_ENA        BIT(0)
+>>>>   /* Trace collection mode for CMB subunit */
+>>>>   #define TPDM_CMB_CR_MODE    BIT(1)
+>>>> +/* Timestamp control for pattern match */
+>>>> +#define TPDM_CMB_TIER_PATT_TSENAB    BIT(0)
+>>>> +/* CMB CTI timestamp request */
+>>>> +#define TPDM_CMB_TIER_XTRIG_TSENAB    BIT(1)
+>>>> +/* For timestamp fo all trace */
+>>>> +#define TPDM_CMB_TIER_TS_ALL        BIT(2)
+>>>>     /*Patten register number*/
+>>>>   #define TPDM_CMB_MAX_PATT        2
+>>>> @@ -217,6 +225,9 @@ struct dsb_dataset {
+>>>>    * @patt_mask:        Save value for pattern mask
+>>>>    * @trig_patt:        Save value for trigger pattern
+>>>>    * @trig_patt_mask:   Save value for trigger pattern mask
+>>>> + * @patt_ts:          Indicates if pattern match for timestamp is 
+>>>> enabled.
+>>>> + * @trig_ts:          Indicates if CTI trigger for timestamp is 
+>>>> enabled.
+>>>> + * @ts_all:           Indicates if timestamp is enabled for all 
+>>>> packets.
+>>>>    */
+>>>>   struct cmb_dataset {
+>>>>       u32            trace_mode;
+>>>> @@ -224,6 +235,9 @@ struct cmb_dataset {
+>>>>       u32            patt_mask[TPDM_CMB_MAX_PATT];
+>>>>       u32            trig_patt[TPDM_CMB_MAX_PATT];
+>>>>       u32            trig_patt_mask[TPDM_CMB_MAX_PATT];
+>>>> +    bool            patt_ts;
+>>>> +    bool            trig_ts;
+>>>> +    bool            ts_all;
+>>>>   };
+>>>>     /**
+>>>
+>
+> _______________________________________________
+> CoreSight mailing list -- coresight@lists.linaro.org
+> To unsubscribe send an email to coresight-leave@lists.linaro.org
 
