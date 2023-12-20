@@ -1,169 +1,93 @@
-Return-Path: <linux-kernel+bounces-6815-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6816-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BE4D819DFE
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 12:28:00 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBD5F819E03
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 12:28:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ED87C1F26DDB
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 11:27:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 46682B23A24
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 11:28:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 366BE21370;
-	Wed, 20 Dec 2023 11:27:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 654F121365;
+	Wed, 20 Dec 2023 11:28:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="O5wKBere"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="AiCGQbDj"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+Received: from mail-qv1-f52.google.com (mail-qv1-f52.google.com [209.85.219.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30B8121358
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 11:27:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-3366e78d872so2705113f8f.3
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 03:27:47 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C8D121358
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 11:28:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qv1-f52.google.com with SMTP id 6a1803df08f44-67f30d74b68so27343256d6.1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 03:28:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1703071666; x=1703676466; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=rIel7XFTmiBrpLn0+7pYKEdYfk2zO/p/x9Mr4kZugQg=;
-        b=O5wKBere0TfY/r25sJsVgw8OqORSlVBj8VdSJqyWT+Oy7wxT/+4sLBhi4Ga888eqDA
-         Kui5nwsiSWDeeVVp+9Ubtsq1AsM7L2UdNanRHUK93023aJMSM2KzhJqDGXL7AlFNoUuR
-         KF3Lh76reGCH7knaJ90t4jNcAae8nJyPUdBkekqszTLhBVrNqqeYB7wxjXJTJwE9CdRF
-         9itqMXlc0oBKAQiHvuLOpdU7amsybcKmsLS1twhV3dgplV/IOce8EoDRuiPivVHwSoNI
-         lKO7dIpu3CyHNj/Bjp+tukiInMajbrxuX1VtNSsx8ALC4dSoC5uFETYs9gpGmisutqFm
-         V5gg==
+        d=google.com; s=20230601; t=1703071714; x=1703676514; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hcGG20SZ9UCuGoY4ieTF40E4xDyL6a01++66TUtS6is=;
+        b=AiCGQbDjMKLPwp3JI32A2goxcjSZC6vo3Od7l0atkWxkYOB004BZYmRD6zyzipStoO
+         syCA/UtfNw4vxP1tLVbi1nP/fe4nk+S1XnVXImT7qo6masL48IP3TzQ61YvDSK2/odie
+         ra5EcTlNzMHwDmpLePUIcrstCVlzPxeVARrStffztx2Od14SjXslAdOQfPkXg3nhb4sH
+         cMsw6Kja8Hpmu1nJBin7iQDq+iUS8avTPTtdEWFQw10neM38QVwVKPixbS0gbmXYgA3+
+         j28Jrj6xtkd1jG/O5XISxAZTxF+obbVRA1dQQu7ADfAsVOCvhjwKd9CjRPCr1prnOZbl
+         SHBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703071666; x=1703676466;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rIel7XFTmiBrpLn0+7pYKEdYfk2zO/p/x9Mr4kZugQg=;
-        b=ipR+h66Qkhby0CA+60yOEOLy/VRMi4KF9wQKBykcH63dy3I3xgGzSn2dbwpbm7SuZk
-         sfmMMX2zY0pCDArkcZozM8yHGOnFZpcB8ZuJ603hD9W0PSvskaA5ZHe1Y2noUGbO+yFL
-         EE1YtxZaAQkOXYdOWeR+iR1xet1TG75PiSudC2sGKJSy5dL7/uvWX5MNtOOxdxNtHYsp
-         koSKI3OFfqzmP6MeO9doJqP5Q2NwLJfDQz81YyhQq67PnagK2cXlronoC58ZZA1bZpxh
-         6O3zl0ZyXo6nn5sR003ljOSKvJ+8r/o3q54piylY47V7noRSNNXg/q5tjjvTg6e5MxWD
-         +y6g==
-X-Gm-Message-State: AOJu0YyDO8EpvZvrrpvL0VbuOKHrAsTeywedf3j1R317x9QD8gG7AlxV
-	NJcHEnoCJR/uHmnLM9Pwf1sATw==
-X-Google-Smtp-Source: AGHT+IHR8g8RtJyeCfjQMjEGwJURvM0JKUzavHP1V0nZXPmBQpWvLglrlOcFYYjNJdKS1+in0fcCtw==
-X-Received: by 2002:adf:ce08:0:b0:336:5d20:db7a with SMTP id p8-20020adfce08000000b003365d20db7amr1904063wrn.219.1703071666158;
-        Wed, 20 Dec 2023 03:27:46 -0800 (PST)
-Received: from [192.168.50.4] ([82.78.167.103])
-        by smtp.gmail.com with ESMTPSA id o15-20020a056000010f00b0033671cdf33fsm4205690wrx.94.2023.12.20.03.27.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Dec 2023 03:27:45 -0800 (PST)
-Message-ID: <a617f464-e61e-44a7-8483-8890d4b2142f@tuxon.dev>
-Date: Wed, 20 Dec 2023 13:27:43 +0200
+        d=1e100.net; s=20230601; t=1703071714; x=1703676514;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hcGG20SZ9UCuGoY4ieTF40E4xDyL6a01++66TUtS6is=;
+        b=aqhZrbm3P56tIhF652iFQXUUk1EU7vO0LPnEjhz8zcFRwb1atHDiXB1htKh/FK/itb
+         mlteizwFY/K0XS8XYAWUVuWjPoHgTdo+M/1hyUOZLsCsj1D5uR7CFrX3jrJpoiFXobqY
+         XizuYvWFcKPAQswRdtNhre5Vt+0yQDduQ6uqKtfrhXsNzCyCUVVBDpKBGMpB7SXRuMng
+         3CeBz7epej1dVFJwYjnfpP73HKIzPPP3nPq74qNDzjCA83EXidrhd9AkJ+gKES9dYqm8
+         m6eUZc+19plkIN5x4i89E3fbmhOnkHjJV6dOqB6MDBz+BGzHDpD+tZPKbp9Fr4CfStxA
+         RgNQ==
+X-Gm-Message-State: AOJu0YyIaS/gAh6Xfyqsx7CeoyKgY16AEQAuAur+wD90F8rureK4pxBR
+	QKdYzaiksT2AZSDsDbv4miWaIdLJMBBK7SqYZki4Yg==
+X-Google-Smtp-Source: AGHT+IFZWUI/3ZtmtxtNhXDaQSExCQzZlj9wAWUtGTpscIeUIj5afAcZSYxSN1IUBLYASdnV3PlG1ATqJd4ohbhERr4=
+X-Received: by 2002:a05:6214:d47:b0:67f:3d14:4b6e with SMTP id
+ 7-20020a0562140d4700b0067f3d144b6emr7374255qvr.130.1703071714268; Wed, 20 Dec
+ 2023 03:28:34 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net 1/2] net: ravb: Wait for operation mode to be applied
-Content-Language: en-US
-To: Sergey Shtylyov <s.shtylyov@omp.ru>, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
- claudiu.beznea.uj@bp.renesas.com, yoshihiro.shimoda.uh@renesas.com,
- wsa+renesas@sang-engineering.com, niklas.soderlund+renesas@ragnatech.se,
- biju.das.jz@bp.renesas.com, prabhakar.mahadev-lad.rj@bp.renesas.com,
- mitsuhiro.kimura.kc@renesas.com, geert+renesas@glider.be
-Cc: netdev@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20231214113137.2450292-1-claudiu.beznea.uj@bp.renesas.com>
- <20231214113137.2450292-2-claudiu.beznea.uj@bp.renesas.com>
- <d08dbbd4-2e63-c436-6935-df68c291bf75@omp.ru>
- <0b807496-f387-4aef-8650-a43a9249468f@tuxon.dev>
- <2e70a095-8079-84f1-f842-eb90059610ed@omp.ru>
-From: claudiu beznea <claudiu.beznea@tuxon.dev>
-In-Reply-To: <2e70a095-8079-84f1-f842-eb90059610ed@omp.ru>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20231213233605.661251-1-iii@linux.ibm.com> <20231213233605.661251-34-iii@linux.ibm.com>
+In-Reply-To: <20231213233605.661251-34-iii@linux.ibm.com>
+From: Alexander Potapenko <glider@google.com>
+Date: Wed, 20 Dec 2023 12:27:53 +0100
+Message-ID: <CAG_fn=WP2ZPdptOoEnCen3BuYs3EgB1nNfmoxDnC9LZK9r4CrQ@mail.gmail.com>
+Subject: Re: [PATCH v3 33/34] s390: Implement the architecture-specific kmsan functions
+To: Ilya Leoshkevich <iii@linux.ibm.com>
+Cc: Alexander Gordeev <agordeev@linux.ibm.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	Christoph Lameter <cl@linux.com>, David Rientjes <rientjes@google.com>, Heiko Carstens <hca@linux.ibm.com>, 
+	Joonsoo Kim <iamjoonsoo.kim@lge.com>, Marco Elver <elver@google.com>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, Pekka Enberg <penberg@kernel.org>, 
+	Steven Rostedt <rostedt@goodmis.org>, Vasily Gorbik <gor@linux.ibm.com>, 
+	Vlastimil Babka <vbabka@suse.cz>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
+	Dmitry Vyukov <dvyukov@google.com>, Hyeonggon Yoo <42.hyeyoo@gmail.com>, kasan-dev@googlegroups.com, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, linux-s390@vger.kernel.org, 
+	linux-trace-kernel@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Sven Schnelle <svens@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-
-
-On 19.12.2023 18:49, Sergey Shtylyov wrote:
-> On 12/15/23 1:04 PM, claudiu beznea wrote:
-> [...]
->>>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->>>>
->>>> CSR.OPS bits specify the current operating mode and (according to
->>>> documentation) they are updated when the operating mode change request
->>>> is processed. Thus, check CSR.OPS before proceeding.
->>>
->>>    The manuals I have indeed say we need to check CSR.OPS... But we only
->>> need to wait iff we transfer from the operation mode to the config mode...
->>
->> RZ/G3S manual say about CSR.OPS "These bits are updated when an operating
-> 
->    I was unable to find the RZ/G3 manuals on ther Renesas' website... :-(
-> 
->> mode changes is processed". From this I get we need to check it for any mode.
-> 
->   I don't argue with the (safety) checking of CSR.OPS, I was just pointing
-> out that the R-Car gen3 manual says that only transfer from operation to
-> the config mode happens after a considerable amount of time, other transfers
-> do happen immediately after updating CCC.OPC.
-> 
->> Also, on configuration procedure (of RZ/G3S) it say CSR.OPS need to be
->> checked when switching from reset -> config.
-> 
->    Just checked or waited on?
-
-Manual say to check that the read value of CSR.OPS=2
-
->    The R-car does have a specific algorithm for transferring from the operation
-> to the reset mode (you need to set CC.DTSR first and then wait for CSR.DTS to
-> clear before updating CCC.OPC)...
-
-In the stop procedure chapter of RZ/G3S manual, as the setup of DMAC.CCC=0
-is the last operation that needs to be done, it doesn't specify either that
-CSR needs to be checked.
-
-> 
-> [...]
-> 
->>>> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->>>> ---
->>>>  drivers/net/ethernet/renesas/ravb_main.c | 47 ++++++++++++++++++++----
->>>>  1 file changed, 39 insertions(+), 8 deletions(-)
->>>>
->>>> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
->>>> index 9178f6d60e74..ce95eb5af354 100644
->>>> --- a/drivers/net/ethernet/renesas/ravb_main.c
->>>> +++ b/drivers/net/ethernet/renesas/ravb_main.c
-> [...]
->>>> @@ -1744,6 +1747,18 @@ static inline int ravb_hook_irq(unsigned int irq, irq_handler_t handler,
->>>>  	return error;
->>>>  }
->>>>  
->>>> +static int ravb_set_reset_mode(struct net_device *ndev)
->>>> +{
->>>> +	int error;
->>>> +
->>>> +	ravb_write(ndev, CCC_OPC_RESET, CCC);
->>>> +	error = ravb_wait(ndev, CSR, CSR_OPS, CSR_OPS_RESET);
->>>> +	if (error)
->>>> +		netdev_err(ndev, "failed to switch device to reset mode\n");
->>>> +
->>>> +	return error;
->>>> +}
->>>> +
->>>
->>>    Again, ravb_wait() call doesn't seem necessary here...
->>
->> Ok. I followed the guideline from the description of CSR.OPS. Let me know
->> if you want to keep it or not. I think I haven't saw any issues w/o this.
-> 
->   Yes, please remove the waiting.
-> 
-> [...]
-> 
-> MBR, Sergey
+On Thu, Dec 14, 2023 at 12:37=E2=80=AFAM Ilya Leoshkevich <iii@linux.ibm.co=
+m> wrote:
+>
+> arch_kmsan_get_meta_or_null() finds the lowcore shadow by querying the
+> prefix and calling kmsan_get_metadata() again.
+>
+> kmsan_virt_addr_valid() delegates to virt_addr_valid().
+>
+> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+Reviewed-by: Alexander Potapenko <glider@google.com>
 
