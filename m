@@ -1,196 +1,161 @@
-Return-Path: <linux-kernel+bounces-6681-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6682-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95258819C09
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 11:04:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF008819C0B
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 11:05:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F13DFB22ABC
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 10:04:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8B70C282632
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 10:05:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5511521378;
-	Wed, 20 Dec 2023 10:03:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2ECDA20310;
+	Wed, 20 Dec 2023 10:03:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fairphone.com header.i=@fairphone.com header.b="j5QOHoos"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T9hhbzbr"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0522120DEF
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 10:03:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fairphone.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fairphone.com
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a2356bb40e3so297335166b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 02:03:04 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 038C9200AC;
+	Wed, 20 Dec 2023 10:03:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1d3ad3ad517so15507635ad.0;
+        Wed, 20 Dec 2023 02:03:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fairphone.com; s=fair; t=1703066583; x=1703671383; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=r4XO7eTq5V2tgbn1CZjnff0P0/4EZ/7bk+Ag+yNw4uk=;
-        b=j5QOHooskpbZ7tJuuKSIB8sbjQnrdcakB7oZ9VNifwJw4tFAzosdquKB00DZck5jib
-         x+q4fnnap/YHifOqsB57hKF9NNdxpmmLu+nwwwQCStp3A/HLklSdrcVeyGR/7UUvZ7dX
-         ELqsj3YnqvyUIrgqz3Wi+CyJ5kWyyEn9QmtC0Dme7fPcW7lSd4T1Dnie9YxCVtJg5cPB
-         cM9SI1gU/4xygGzeBMtOsXGqugZhEofuTWT58NV7Qdg0ZKplWZP/c8xGvgCOOdnbxkBT
-         0HwpcOg7pYTuVJmu7FlUNQ4ybhkgpSDAl08oYW48wupB9RwPmZwTsrAURSA/XnuW0qPF
-         ymyQ==
+        d=gmail.com; s=20230601; t=1703066627; x=1703671427; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Kv7pcKESPT+TCkl9Xrdp73a8YfbSAnnQTKjLK4qwwlY=;
+        b=T9hhbzbrVuOcUjp1vYUrxu0M6NAAvZK3U3pP+WtzQBHyJWKvbLCbFSIJwJUsg2eGxd
+         axg7XJywoy1/a8EwgF0tK86vikMgFa9CBSoNfDhqvdxbD9KrlbTXUb7sONeXLXtz7t/Y
+         ltlEnJzp7y63JDiF7l1SoZN8ns0ttN0/tjnp63eouq/60XdmkL0/BpEKxC2w0u1IhkyC
+         EilxRhKWfNxhQ14m7bsbLH5Ck1RcMTCAdf5vLCGUKGG0P4gEpki0kFZ0cwIyc/u1SRNd
+         iZqggvQOtUkhwsIFccpKIAMF1Elhbw4Cf2ej89ZsmJ8gkO4puBPUmgjYzxOOq4wHqYT7
+         r0sw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703066583; x=1703671383;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1703066627; x=1703671427;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=r4XO7eTq5V2tgbn1CZjnff0P0/4EZ/7bk+Ag+yNw4uk=;
-        b=caMPUg/5De8cOUBWsb7+BXrjGLpCqgX76DprwChmo5696/FcRMtpti8R97DDOyt8O/
-         v60q+IUcm4CfbK0lKSD5J68fgvvgsDX90Ub1qW9vtdMvlFt1ONaZfPTp+Uah/IylCwYY
-         BKnIoX9l8ZAQn08+ik72yGl3WqbX3ID8bDTy5PL8IGXGw9RWnb28whCqcPYB2+r8MpVF
-         +ART+ahgXZ7wVXrS0qZxeoaar3boFYrA4It4C0T/VUASfB0eCWS/eQBgfcKRkbFX3ktX
-         v8jm6kKVrcmS1zSNVTzGH9ygL+nUPlGb68WfY/p4xjzWEQkJLOBw0ZiFSRY3xY6qIg9A
-         FI6Q==
-X-Gm-Message-State: AOJu0YwtWLGAoPZoX7TK/jdJxCOdT7UHYOXRUfUWcTm3m0hgAKZ/TEVj
-	wK90qFmhddZj9JJoEw35BV2U/Q==
-X-Google-Smtp-Source: AGHT+IEbEhGD1wKLG7GiNnVJ3JrKSvGoOg9IQgsOKKagASOiSEzuam7Zj/WVz99NylAwPsFOW50kKw==
-X-Received: by 2002:a17:906:19:b0:a23:6084:d5c4 with SMTP id 25-20020a170906001900b00a236084d5c4mr2144865eja.34.1703066583077;
-        Wed, 20 Dec 2023 02:03:03 -0800 (PST)
-Received: from otso.luca.vpn.lucaweiss.eu (2a02-8388-6584-6400-d322-7350-96d2-429d.cable.dynamic.v6.surfer.at. [2a02:8388:6584:6400:d322:7350:96d2:429d])
-        by smtp.gmail.com with ESMTPSA id f18-20020a170906561200b00a2356a7eafasm3718681ejq.199.2023.12.20.02.03.02
+        bh=Kv7pcKESPT+TCkl9Xrdp73a8YfbSAnnQTKjLK4qwwlY=;
+        b=QRZeZNdRfpKmfqWDuyw3L3bmaQpvQhF/8YQ72ruiTtt6tSttQ1uHyE8Oo2DemJ+oRT
+         TfRYRT/V+5f2ukie73d6dx4ezzNM9EoYMj/Q5UapLiUQpK2OTyDrlDT5zWu57oG3jYSr
+         cH3xN4ZQSqH2bemeOkUbCbxIKURati1LEujgtABalYr5VY7I974xlWiJ+13ojyohvAH3
+         M4rt3CW6mIpWq5eBsOjFYyjQEy1ujv8Won+YgjuTD1O4hjyGgc4kVuTAofeCj6PEr9mJ
+         ZXjpMN2yQsOebt3NzjoVHPM4MCJ3nmqIZR5N4tcJfqIRRg2CURHnQiH+ooHvydo1Ovn5
+         dy9Q==
+X-Gm-Message-State: AOJu0YyR0L1tcdylnhaIbXJPVrE9aHpXJBlGVRdkXxTIOW2zj1IIFUYo
+	/9N5LkIAwSrwTDCRTVMtBZg=
+X-Google-Smtp-Source: AGHT+IHhiWsmvk8dt5jOgK6dEcjg/B7A85Yb4vK4Rg4/4wRjtDW6C6AggyThrr8x7F4bzVhlh86gJg==
+X-Received: by 2002:a17:902:f682:b0:1d3:bb5b:c38 with SMTP id l2-20020a170902f68200b001d3bb5b0c38mr3126088plg.46.1703066627370;
+        Wed, 20 Dec 2023 02:03:47 -0800 (PST)
+Received: from ubuntu.. ([117.18.48.102])
+        by smtp.gmail.com with ESMTPSA id x3-20020a170902fe8300b001d3b7c5776asm5721619plm.160.2023.12.20.02.03.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Dec 2023 02:03:02 -0800 (PST)
-From: Luca Weiss <luca.weiss@fairphone.com>
-Date: Wed, 20 Dec 2023 11:02:58 +0100
-Subject: [PATCH 3/3] arm64: dts: qcom: qcm6490-fairphone-fp5: Add PMIC
- GLINK
+        Wed, 20 Dec 2023 02:03:46 -0800 (PST)
+From: Hongyu Jin <hongyu.jin.cn@gmail.com>
+To: agk@redhat.com,
+	snitzer@kernel.org,
+	mpatocka@redhat.com,
+	axboe@kernel.dk,
+	ebiggers@kernel.org
+Cc: zhiguo.niu@unisoc.com,
+	ke.wang@unisoc.com,
+	yibin.ding@unisoc.com,
+	hongyu.jin@unisoc.com,
+	linux-kernel@vger.kernel.org,
+	dm-devel@lists.linux.dev,
+	linux-block@vger.kernel.org
+Subject: [PATCH v6 0/5] Fix I/O priority lost in device-mapper
+Date: Wed, 20 Dec 2023 18:03:28 +0800
+Message-Id: <20231220100333.107049-1-hongyu.jin.cn@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231213104216.27845-6-hongyu.jin.cn@gmail.com>
+References: <20231213104216.27845-6-hongyu.jin.cn@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231220-fp5-pmic-glink-v1-3-2a1f8e3c661c@fairphone.com>
-References: <20231220-fp5-pmic-glink-v1-0-2a1f8e3c661c@fairphone.com>
-In-Reply-To: <20231220-fp5-pmic-glink-v1-0-2a1f8e3c661c@fairphone.com>
-To: Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, 
- Heikki Krogerus <heikki.krogerus@linux.intel.com>, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- cros-qcom-dts-watchers@chromium.org
-Cc: ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org, 
- linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org, 
- Luca Weiss <luca.weiss@fairphone.com>
-X-Mailer: b4 0.12.4
+Content-Transfer-Encoding: 8bit
 
-Via the PMIC GLINK driver we can get info about fuel gauge, charger and
-USB connector events. Add the node to the dts and configure USB so that
-role switching works.
+From: Hongyu Jin <hongyu.jin@unisoc.com>
 
-Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
----
- arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts | 46 +++++++++++++++++++++-
- arch/arm64/boot/dts/qcom/sc7280.dtsi               | 19 +++++++++
- 2 files changed, 64 insertions(+), 1 deletion(-)
+High-priority tasks get data from dm-verity devices via RT IO priority,
+I/O will lose RT priority when reading FEC and hash values via kworker
+submission IO during verification, and the verification phase may be
+blocked by low-priority IO.
 
-diff --git a/arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts b/arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts
-index 176898c9dbbd..e9076d92ebd1 100644
---- a/arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts
-+++ b/arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts
-@@ -71,6 +71,41 @@ event-hall-sensor {
- 		};
- 	};
- 
-+	pmic-glink {
-+		compatible = "qcom,qcm6490-pmic-glink", "qcom,pmic-glink";
-+
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		connector@0 {
-+			compatible = "usb-c-connector";
-+			reg = <0>;
-+			power-role = "dual";
-+			data-role = "dual";
-+
-+			ports {
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+
-+				port@0 {
-+					reg = <0>;
-+
-+					pmic_glink_hs_in: endpoint {
-+						remote-endpoint = <&usb_1_dwc3_hs>;
-+					};
-+				};
-+
-+				port@1 {
-+					reg = <1>;
-+
-+					pmic_glink_ss_in: endpoint {
-+						remote-endpoint = <&usb_1_dwc3_ss>;
-+					};
-+				};
-+			};
-+		};
-+	};
-+
- 	reserved-memory {
- 		cont_splash_mem: cont-splash@e1000000 {
- 			reg = <0x0 0xe1000000 0x0 0x2300000>;
-@@ -886,7 +921,16 @@ &usb_1 {
- };
- 
- &usb_1_dwc3 {
--	dr_mode = "peripheral";
-+	dr_mode = "otg";
-+	usb-role-switch;
-+};
-+
-+&usb_1_dwc3_hs {
-+	remote-endpoint = <&pmic_glink_hs_in>;
-+};
-+
-+&usb_1_dwc3_ss {
-+	remote-endpoint = <&pmic_glink_ss_in>;
- };
- 
- &usb_1_hsphy {
-diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-index cd7641fd09b2..3b268620bea8 100644
---- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-@@ -4065,6 +4065,25 @@ usb_1_dwc3: usb@a600000 {
- 				phys = <&usb_1_hsphy>, <&usb_1_qmpphy QMP_USB43DP_USB3_PHY>;
- 				phy-names = "usb2-phy", "usb3-phy";
- 				maximum-speed = "super-speed";
-+
-+				ports {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+
-+					port@0 {
-+						reg = <0>;
-+
-+						usb_1_dwc3_hs: endpoint {
-+						};
-+					};
-+
-+					port@1 {
-+						reg = <1>;
-+
-+						usb_1_dwc3_ss: endpoint {
-+						};
-+					};
-+				};
- 			};
- 		};
- 
+Dm-crypt has the same problem in the data writing process.
 
+This is because io_context and blkcg are missing.
+
+Move bio_set_ioprio() into submit_bio():
+1. Only call bio_set_ioprio() once to set the priority of original bio,
+   the bio that cloned and splited from original bio will auto inherit
+   the priority of original bio in clone process.
+
+2. Make the IO priority of the original bio to be passed to dm,
+   and the dm target inherits the IO priority as needed.
+
+All changes are based on master branch commit 2cf4f94d8e86 ("Merge tag
+'scsi-fixes' of git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi")
+
+Changes in v6:
+  - Rebase patch and resolve conflict for patch 1, 3, 4
+  - Modify patch 4: fec_read_parity() follow the priority of original
+    bio
+  - Update commit message
+Changes in v5:
+  - Rewrite patch 2, add ioprio parameter in dm_io();
+  - Modify dm_io() in patch 3 
+Changes in v4:
+  - Modify commit message by Suggestion
+  - Modify patch for dm-crypt
+Changes in v3:
+  - Split patch for device-mapper
+  - Add patch to fix dm-crypy I/O priority question
+  - Add block patch to review together
+  - Fix some error in v2 patch
+Changes in v2:
+  - Add ioprio field in struct dm_io_region
+  - Initial struct dm_io_region::ioprio to IOPRIO_DEFAULT
+  - Add two interface
+
+Hongyu Jin (5):
+  block: Fix bio IO priority setting
+  dm: Support I/O priority for dm_io()
+  dm-bufio: Support I/O priority
+  dm verity: Fix I/O priority lost when read FEC and hash
+  dm-crypt: Fix lost ioprio when queuing write bios
+
+ block/blk-core.c                              | 10 +++++
+ block/blk-mq.c                                | 11 -----
+ drivers/md/dm-bufio.c                         | 43 +++++++++++--------
+ drivers/md/dm-crypt.c                         |  1 +
+ drivers/md/dm-ebs-target.c                    |  8 ++--
+ drivers/md/dm-integrity.c                     | 12 +++---
+ drivers/md/dm-io.c                            | 23 +++++-----
+ drivers/md/dm-kcopyd.c                        |  4 +-
+ drivers/md/dm-log.c                           |  4 +-
+ drivers/md/dm-raid1.c                         |  6 +--
+ drivers/md/dm-snap-persistent.c               |  8 ++--
+ drivers/md/dm-verity-fec.c                    | 20 ++++++---
+ drivers/md/dm-verity-target.c                 | 13 ++++--
+ drivers/md/dm-writecache.c                    |  8 ++--
+ drivers/md/persistent-data/dm-block-manager.c |  6 +--
+ include/linux/dm-bufio.h                      |  5 ++-
+ include/linux/dm-io.h                         |  3 +-
+ 17 files changed, 105 insertions(+), 80 deletions(-)
+
+
+base-commit: 2cf4f94d8e8646803f8fb0facf134b0cd7fb691a
 -- 
-2.43.0
+2.34.1
 
 
