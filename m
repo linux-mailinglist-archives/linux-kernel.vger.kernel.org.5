@@ -1,75 +1,106 @@
-Return-Path: <linux-kernel+bounces-6431-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6433-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A6248198BF
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 07:43:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8FEE8198C6
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 07:45:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0EB1D2885FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 06:43:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 41C16B25800
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 06:45:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70B821401D;
-	Wed, 20 Dec 2023 06:43:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B00E1401D;
+	Wed, 20 Dec 2023 06:44:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b="WTEfw2kB";
+	dkim=permerror (0-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b="I7V1QNB2"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mailrelay4-1.pub.mailoutpod2-cph3.one.com (mailrelay4-1.pub.mailoutpod2-cph3.one.com [46.30.211.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D55B013ACD
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 06:43:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7b7aacf63b9so33629539f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 22:43:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703054584; x=1703659384;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=YGlEjSAHnBtCLlsDDaOQ1qsonCVPPhN5ND5K9+RQgSE=;
-        b=D3kLH3G3xnlHyrFX1k4rmFLRFxHEnrPiJZYstW8awjCd4i+/lylEBI+WZJdQwupI6G
-         hXe4mo2klhV9XwxrHIegubTTAs55ja3JoBKHGbVTMlnYyjvgKSpuFi+/tZE+Wm345IR8
-         oxS3MNa4u6w/QshSHBmzKXoZjFGEMGwRfwMv4r01GNeMeJ1shmUrw2oiGHzjGCc18F48
-         4sX8vYmr7blo1Gti6g1nyniET9UYaUHwh5ml/nLWGUHiGMIJvUWJxrmQ6uiWB7gRn8Wt
-         MyVRJ7Ep+SAPZRsPCxzeTILshIrigkuH0jUvnxfo/ebRjiDgFy8638gUtPvX78MD7OW1
-         pdQA==
-X-Gm-Message-State: AOJu0YwCXNdwhYCA5OUrxhmzt6M1iYdAawHb7wJ+1XI8dkKiIlF1/7J1
-	2FrmiS0Js1bVLAeE8yfFV4HhOnMn/110veEoS2/An/wIa+U+
-X-Google-Smtp-Source: AGHT+IHzU9ID4FIAUmeLJ8cojUf4Bpp2mkxS3oUOk/Fav/KqdpyNKdUsbmPqD8xL1N7zWiwTD+qoL76nvdEUXOuNQEls1397ohnL
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B73601D532
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 06:44:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ravnborg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ravnborg.org
+X-HalOne-ID: 1e28ad07-9f03-11ee-ace3-2dc64a403fa2
+Received: from mailrelay1.pub.mailoutpod3-cph3.one.com (unknown [104.37.34.38])
+	by mailrelay4 (Halon) with ESMTPS
+	id 1e28ad07-9f03-11ee-ace3-2dc64a403fa2;
+	Wed, 20 Dec 2023 06:43:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=ravnborg.org; s=rsa2;
+	h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
+	 from:date:from;
+	bh=czDnAIGqZkpfvoL/iiaTcwjziBrJyFAvdctS7icVWtc=;
+	b=WTEfw2kBTisB9iFEa9k6bTNf3ZeFtX6YS/mDbeFYMeHjQUFMj+djmcVbc1cef/pSFwCRLCub/jnhv
+	 2fHatP15emjbQbFiDThaWGqVzKmKZTqQ1B30zZ7bUqpGRIOScf1BV7XfkO0q+w/lvty/Pn0cL0On8W
+	 oqU+A1ANEhmyyXukEtwPJG+6D/eltnGFElclkTn/gw7ypdxput8jsuCt5HYFjedLwRgmL7k62wX2W5
+	 IiKKWdWv7A7Xvv0i7iN81LrU2MqpDrNWGFNT+dneqOhojAAtmAXX9/HCCeJ7aTlgviXPoBFtM6EX86
+	 AexoXyioyxNrhwepKSz3ee+qdLEEb0Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
+	d=ravnborg.org; s=ed2;
+	h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
+	 from:date:from;
+	bh=czDnAIGqZkpfvoL/iiaTcwjziBrJyFAvdctS7icVWtc=;
+	b=I7V1QNB20dvpYRV1erNIT0+pk9yXU6uliif9Cl438drmSB++wNLblgBunf6TvAnxaAm4ycM59iEKF
+	 M4AyopcBg==
+X-HalOne-ID: 1ce66959-9f03-11ee-964d-27feea414716
+Received: from ravnborg.org (2-105-2-98-cable.dk.customer.tdc.net [2.105.2.98])
+	by mailrelay1 (Halon) with ESMTPSA
+	id 1ce66959-9f03-11ee-964d-27feea414716;
+	Wed, 20 Dec 2023 06:43:43 +0000 (UTC)
+Date: Wed, 20 Dec 2023 07:43:41 +0100
+From: Sam Ravnborg <sam@ravnborg.org>
+To: Arnd Bergmann <arnd@kernel.org>
+Cc: "David S . Miller" <davem@davemloft.net>,
+	Andreas Larsson <andreas@gaisler.com>, Helge Deller <deller@gmx.de>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Alan Stern <stern@rowland.harvard.edu>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-usb@vger.kernel.org, linux-fbdev@vger.kernel.org,
+	dri-devel@lists.freedesktop.org, linux-sound@vger.kernel.org
+Subject: Re: [PATCH 01/27] sparc32: Update defconfig to LEON SMP
+Message-ID: <20231220064341.GA847783@ravnborg.org>
+References: <20231219-sam-sparc32-sunset-v3-v1-0-64bb44b598c5@ravnborg.org>
+ <20231219-sam-sparc32-sunset-v3-v1-1-64bb44b598c5@ravnborg.org>
+ <2fc75a39-a6f4-42f4-ab09-d7622cb23b10@app.fastmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:410f:b0:468:fbcd:15a1 with SMTP id
- ay15-20020a056638410f00b00468fbcd15a1mr335796jab.0.1703054584084; Tue, 19 Dec
- 2023 22:43:04 -0800 (PST)
-Date: Tue, 19 Dec 2023 22:43:04 -0800
-In-Reply-To: <tencent_2D9956CFC10D9425B98DCE12085DBEDDB607@qq.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000847e07060ceb4b3e@google.com>
-Subject: Re: [syzbot] [crypto?] KASAN: slab-out-of-bounds Read in arc4_crypt
-From: syzbot <syzbot+8ffb0839a24e9c6bfa76@syzkaller.appspotmail.com>
-To: eadavis@qq.com, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2fc75a39-a6f4-42f4-ab09-d7622cb23b10@app.fastmail.com>
 
-Hello,
+Hi Arnd,
 
-syzbot tried to test the proposed patch but the build/boot failed:
+On Tue, Dec 19, 2023 at 10:23:05PM +0000, Arnd Bergmann wrote:
+> On Tue, Dec 19, 2023, at 22:03, Sam Ravnborg via B4 Relay wrote:
+> > From: Sam Ravnborg <sam@ravnborg.org>
+> >
+> > This is a copy of the leon_smp defconfig found in
+> > gaisler-buildroot-2023.02-1.0.
+> >
+> > Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
+> > Cc: "David S. Miller" <davem@davemloft.net>
+> > Cc: Arnd Bergmann <arnd@kernel.org>
+> > Cc: Andreas Larsson <andreas@gaisler.com>
+> 
+> I did not get a cover letter for the series, but I looked at
+You are listed as a receiver?!?
 
-crypto/algif_skcipher.c:126:48: error: invalid use of flexible array member
+It can be found here:
+https://lore.kernel.org/sparclinux/20231219-sam-sparc32-sunset-v3-v1-0-64bb44b598c5@ravnborg.org/T/#m2fc5b3c23331efd12492a61ba39ac000a563ac52
 
+> all 27 patches and they all look good to me, nice cleanup!
+> 
+> Acked-by: Arnd Bergmann <arnd@arndb.de>
+Thanks!
 
-Tested on:
-
-commit:         17cb8a20 Add linux-next specific files for 20231215
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ec104439b5dbc583
-dashboard link: https://syzkaller.appspot.com/bug?extid=8ffb0839a24e9c6bfa76
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=10a124e9e80000
-
+	Sam
 
