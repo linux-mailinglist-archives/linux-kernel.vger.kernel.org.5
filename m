@@ -1,99 +1,121 @@
-Return-Path: <linux-kernel+bounces-7481-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7483-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E42181A8B0
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 23:04:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC93F81A8B9
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 23:07:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5466F28AF4F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 22:04:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7973428B844
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 22:07:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7679495FF;
-	Wed, 20 Dec 2023 22:04:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 106EC49F7F;
+	Wed, 20 Dec 2023 22:07:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dK7VI8aC"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="RrVhP0DW"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B4244A983;
-	Wed, 20 Dec 2023 22:04:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1d3f3ee00a2so1393925ad.3;
-        Wed, 20 Dec 2023 14:04:00 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BC2148780
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 22:07:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-5e898eb4432so3434187b3.0
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 14:07:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703109840; x=1703714640; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=cNHUUsyM1naYIm7Z3rNAieSmn32a7fPMNDK6KWutmoY=;
-        b=dK7VI8aC7CHI/07ZW8nR2DtpOwjpVeB0jBvniXy7mdaIb1HyPu7Hiy8rsMlufldm50
-         yAWbu+W2B01JVRuLYXM9yI5tB3ukp3sH6C0fjpj8zRAGpPPHmw390DB6NuvEs6A/aNp8
-         KBjSLvu+B3s8Z2XGSpeUnMolpfsUfdsbay40xdNHYwLlKc0VGx/xqK0eVFtDavxvmUR2
-         GDXyMtiOko12BWZYdSfpit/RNRkeIlRdtHPAvajBMgKxP/SAEcSzK4bfCGwFrbve+cPU
-         BHSK6A8ENQmsbG3rB1rVjHPOH6EAOaYYPkH+tC58hhiDapRUBtAJdfNj3ZIeODdKCzeP
-         0dmg==
+        d=google.com; s=20230601; t=1703110022; x=1703714822; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=twaoVxa46Zq7Us3SlYz5ukbixjYRr3FrFNCXxXQIcEU=;
+        b=RrVhP0DW3deaYUGUMfsfhYib3IMk/0Tp1D4BKju0dTOKNVMWr2AuI82+GaLX23TZ8d
+         wIt97T7/d8h0qq+QPJOwGsUt8RCN045+FkH6ccIy5wuDiOU4FZkHClleSNsq6uwNJ/T4
+         CmaNaeN9NHFADtpVV3gdnHsebmL3kT6/iV0AU08yGmUeR9An69wGw58UylfjhHLjQR69
+         OuVnsUvWJhnGJBwfNDPdzVo8CV81KjvqK92C98Za1oNsfOiH3LQUkKi5alC1z/R0nRxi
+         wBg/J7b1h84GSHIldhQn99d/ek6sBbtqhTsqNbQMmCHUrIOo6Q1tSsngYFUMEvdmxnUy
+         YWCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703109840; x=1703714640;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cNHUUsyM1naYIm7Z3rNAieSmn32a7fPMNDK6KWutmoY=;
-        b=QgRQSLr6jKEbF8kYydZvHeH+ko7sjIScj6fXf0AqcHKQueKB/hHWLyASTMl3o57XjY
-         De4Bd57u4qLzNPxYB3Ffx9wbscUVQdSJDJgG9uQekPaclcWz29wTe8HKhPfJhgTnrKLL
-         8dYtpFhE3zYEJE8dG2fGMDtoIb6xLJMDKb4l8zC3XXeYYqkgR+wDOnSu/y4gs9nGT3im
-         HFgU7a0UAnI8sYHjOOPkdl6oZ8zgBsdxEx4O82+lB2UgtiR8DmnhmqTyWKDIZtI0w3Iz
-         uFU3F6YwUhaMKenTEdRQf7X2ClmVDawz3+xJtHaAPL0EmvGEf8TSGm0YOduq+Fus9Dgc
-         IVMw==
-X-Gm-Message-State: AOJu0Ywv8S3I6nJRLyAj1hciWa+Y55MWuWv8n+JbAQLOqQiMWBXiexbb
-	dLEJmM54FhypH6GrZohylb0=
-X-Google-Smtp-Source: AGHT+IHxTN5KazZ5x584+OE2ul+IQzkJSSv1VEd1vLT4hZwHexZ6Q1bbQI271QpPzi6nD9r/LhOn3Q==
-X-Received: by 2002:a17:902:e851:b0:1d3:c8ff:4f6e with SMTP id t17-20020a170902e85100b001d3c8ff4f6emr4874600plg.103.1703109840154;
-        Wed, 20 Dec 2023 14:04:00 -0800 (PST)
-Received: from google.com ([2620:15c:9d:2:9d7:3461:3155:35d4])
-        by smtp.gmail.com with ESMTPSA id d5-20020a170902cec500b001d3f2850a15sm204724plg.89.2023.12.20.14.03.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Dec 2023 14:03:59 -0800 (PST)
-Date: Wed, 20 Dec 2023 14:03:57 -0800
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To: Esther Shimanovich <eshima@google.com>
-Cc: Esther Shimanovich <eshimanovich@chromium.org>,
-	Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Rajat Jain <rajatja@google.com>
-Subject: Re: [PATCH v2] PCI: Relabel JHL6540 on Lenovo X1 Carbon 7,8
-Message-ID: <ZYNkzdw7FzlTQqty@google.com>
-References: <20231219-thunderbolt-pci-patch-4-v2-1-ec2d7af45a9b@chromium.org>
- <ZYIWHjr0U08tIHOk@google.com>
- <CAK5fCsA0ecsWeQgV-gk=9KCkjDMcgaBj8Zh6XP8jAam-Cp0COA@mail.gmail.com>
- <ZYJFq6T3uGJVv0Nh@google.com>
- <CAK5fCsAAXLaXBCy_pBEaynog=xjuZNSP2b0edwrcZ_3Vo4xxCQ@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1703110022; x=1703714822;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=twaoVxa46Zq7Us3SlYz5ukbixjYRr3FrFNCXxXQIcEU=;
+        b=uJEBCa9jzNAPIJ6KOQ+pMaAa/oMpSepV4GY3wkbuD+YCxuAtkOnj5/j/WnQzmbHRiI
+         k+ce6SpZNQZ+Om4MbmXx3umH3oVS4pPTg9gGJb/vxACwBBy2uHVIfO8eVxQjku+TVu10
+         eKo7beJUbzijEqEThwrBbIn3XUd50ZYukQsjtBKRylrSkD8DI3U0mGnUz0G2EZF8TVOU
+         ZY/5r082IkQJWzNWIHIsoSIX+8CPrYjYuulL3U3K6LLKxUo25dgtAgFY5sZggkkrtjvE
+         Wzo1jlrW1DWB/yJPFyOrWZWTYo/Umlk0KP7A6WYOfE5BIQ6Uq1yVaxSI9JZla8rBB+gM
+         H/8A==
+X-Gm-Message-State: AOJu0YzH8sdK3Rs3UX3t8LQspx8hMlB2ggPcSX6zDbDo7rQgfGiOBX4m
+	0jsTwoj9ACUL7iMdx/iMsnCvE5Gg4nY=
+X-Google-Smtp-Source: AGHT+IGrRH+xCGlIICVf9RYSmyKktND+5ibjizfY6hM4NM8AzbBBfnWK6zAv5vm+0wYBoLUpxnTJXhBMkEU=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:8750:0:b0:d9a:e3d9:99bd with SMTP id
+ e16-20020a258750000000b00d9ae3d999bdmr16524ybn.5.1703110022170; Wed, 20 Dec
+ 2023 14:07:02 -0800 (PST)
+Date: Wed, 20 Dec 2023 14:07:00 -0800
+In-Reply-To: <20231219081104.GB2639779@ls.amr.corp.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK5fCsAAXLaXBCy_pBEaynog=xjuZNSP2b0edwrcZ_3Vo4xxCQ@mail.gmail.com>
+Mime-Version: 1.0
+References: <cover.1699936040.git.isaku.yamahata@intel.com>
+ <1c12f378af7de16d7895f8badb18c3b1715e9271.1699936040.git.isaku.yamahata@intel.com>
+ <938efd3cfcb25d828deab0cc0ba797177cc69602.camel@redhat.com>
+ <ZXo54VNuIqbMsYv-@google.com> <aa7aa5ea5b112a0ec70c6276beb281e19c052f0e.camel@redhat.com>
+ <ZXswR04H9Tl7xlyj@google.com> <20231219014045.GA2639779@ls.amr.corp.intel.com>
+ <CALMp9eRgWct3bb5en0=geT0HmMemipkzXkjL9kmEAV+1yJg-pw@mail.gmail.com> <20231219081104.GB2639779@ls.amr.corp.intel.com>
+Message-ID: <ZYNlhKCcOHgjTcFZ@google.com>
+Subject: Re: [PATCH v2 1/3] KVM: x86: Make the hardcoded APIC bus frequency vm variable
+From: Sean Christopherson <seanjc@google.com>
+To: Isaku Yamahata <isaku.yamahata@linux.intel.com>
+Cc: Jim Mattson <jmattson@google.com>, Maxim Levitsky <mlevitsk@redhat.com>, isaku.yamahata@intel.com, 
+	kvm@vger.kernel.org, linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com, 
+	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com, 
+	Vishal Annapurve <vannapurve@google.com>
+Content-Type: text/plain; charset="us-ascii"
 
-On Wed, Dec 20, 2023 at 02:46:20PM -0500, Esther Shimanovich wrote:
-> > Again, maybe PCI_DEVICE_ID_INTEL_ALPINE_RIDGE_C_4C_BRIDGE?
+On Tue, Dec 19, 2023, Isaku Yamahata wrote:
+> On Mon, Dec 18, 2023 at 07:53:45PM -0800, Jim Mattson <jmattson@google.com> wrote:
+> > > There are several options to address this.
+> > > 1. Make the KVM able to configure APIC bus frequency (This patch).
+> > >    Pros: It resembles the existing hardware.  The recent Intel CPUs
+> > >    adapts 25MHz.
+> > >    Cons: Require the VMM to emulate the APIC timer at 25MHz.
+> > > 2. Make the TDX architecture enumerate CPUID 0x15 to configurable
+> > >    frequency or not enumerate it.
+> > >    Pros: Any APIC bus frequency is allowed.
+> > >    Cons: Deviation from the real hardware.
+
+I don't buy this as a valid Con.  TDX is one gigantic deviation from real hardware,
+and since TDX obviously can't guarantee the APIC timer is emulated at the correct
+frequency, there can't possibly be any security benefits.  If this were truly a
+Con that anyone cared about, we would have gotten patches to "fix" KVM a long time
+ago.
+
+If the TDX module wasn't effectively hardware-defined software, i.e. was actually
+able to adapt at the speed of software, then fixing this in TDX would be a complete
+no-brainer.
+
+The KVM uAPI required to play nice is relatively minor, so I'm not totally opposed
+to adding it.  But I totally agree with Jim that forcing KVM to change 13+ years
+of behavior just because someone at Intel decided that 25MHz was a good number is
+ridiculous.
+
+> > > 3. Make the TDX guest kernel use 1GHz when it's running on KVM.
+> > >    Cons: The kernel ignores CPUID leaf 0x15.
+> > 
+> > 4. Change CPUID.15H under TDX to report the crystal clock frequency as 1 GHz.
+> > Pro: This has been the virtual APIC frequency for KVM guests for 13 years.
+> > Pro: This requires changing only one hard-coded constant in TDX.
+> > 
+> > I see no compelling reason to complicate KVM with support for
+> > configurable APIC frequencies, and I see no advantages to doing so.
 > 
-> Question--- PCI_DEVICE_ID_INTEL_ALPINE_RIDGE_C_4C_BRIDGE is defined in
-> "drivers/thunderbolt/nhi.h" as opposed to "include/linux/pci_ids.h".
-> It seems like the ids in "drivers/thunderbolt/nhi.h" are specifically
-> for use within the thunderbolt driver only. Would you want me to move
-> it into pci_ids.h so that I could use it here? Or could I ignore this
-> suggestion? My personal inclination is that that would make more sense
-> to do in a separate refactoring patch.
-
-I'll leave that decision to PCI maintainers.
-
-Thanks.
-
--- 
-Dmitry
+> Because TDX isn't specific to KVM, it should work with other VMM technologies.
+> If we'd like to go for this route, the frequency would be configurable.  What
+> frequency should be acceptable securely is obscure.  25MHz has long history with
+> the real hardware.
 
