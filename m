@@ -1,218 +1,332 @@
-Return-Path: <linux-kernel+bounces-6612-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6614-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB9B5819AFE
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 09:57:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07CC7819B04
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 09:58:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1C2CC1C257D8
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 08:57:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 875341F22B8B
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 08:58:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78B25208A8;
-	Wed, 20 Dec 2023 08:56:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8F1D1DA50;
+	Wed, 20 Dec 2023 08:57:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bL1r5uMd"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="mKYviiHG"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 424F81F932;
-	Wed, 20 Dec 2023 08:56:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-55322dbabf6so4218288a12.0;
-        Wed, 20 Dec 2023 00:56:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703062578; x=1703667378; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hYVOyNX8K/YP0tmvGryMk7eYWDrGsoqCCSsYGBM39r0=;
-        b=bL1r5uMd7qtVkljpmwQZ22X/dgJuD1YNif4MUjsz1/EJXVmnJSWGHbN5mLg8NDKa8E
-         MkIUDQ6YmczT2UTiVVEAt4EDhNVQl/e7EcKUaClG1rgRasG8O8q2daEkxlEIBOQ9m3HX
-         Ox2tYToe/cRjKHvSxn0/SC/E9+91mRLk1xMALBqxf1VxhCsJwiAZ9URI8OO3v3Mq0ntL
-         VCdywNOvZfP20oD24d6Zs7U/knLsZDy/VDqfqkx7K4Nc0+Tw1TORLqE54qQsVwV3UC4u
-         gr/2pJA5t1+fO81DVc799I/9kFIV9oBQlJGphgbh1xWNbdL3uBJVp9oBRjjzJSiTIrbG
-         jLfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703062578; x=1703667378;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hYVOyNX8K/YP0tmvGryMk7eYWDrGsoqCCSsYGBM39r0=;
-        b=anzdTSTKCr/cJA8Jh6O9qXP5Oc1M2FBhBDPcnRACZgxIVO4jXm5cFNDxFOrX7O1uKt
-         zcQgORR2uBcZV3TMrnHtjr2eY4Uc5QwYzjdg8mlPcC6KlK8QA7Ny2O6HWxl85Up/KnV6
-         p808AJR2IIRX+Tw3wSkyqydu2qX8UiwxyF4Pgi3NPNm0e3fRus0sgwYT4ZUkpTbfCVSo
-         PpXp7+hpopypOfcDVnuhbbekj7CR7JqUeRPNr6+LGqXuSFv/hXkjnT0JZT4wUKD1O9d3
-         r3KYU226njtq/Db2WsDa31UntWbbEHuOWvKu7uqy0yCrXHZaRjBJClJ4jzytUdvB/jUt
-         41SA==
-X-Gm-Message-State: AOJu0YxfEwp+/lIt/WEZkyGdTcC0Jyhqdy+el8JqQLMLaXDutBZ1I10U
-	p5h7w454yNLHP/s8dS7YcWQ=
-X-Google-Smtp-Source: AGHT+IGWpRBfBRp1cwdGts7GjNjyDFE0XrLq5MdwHJTHDsBASHsizgPsfIYpEtniVKUdW2ULxGphLg==
-X-Received: by 2002:a50:c25a:0:b0:553:9fab:6cb6 with SMTP id t26-20020a50c25a000000b005539fab6cb6mr1106828edf.74.1703062578516;
-        Wed, 20 Dec 2023 00:56:18 -0800 (PST)
-Received: from tom-HP-ZBook-Fury-15-G7-Mobile-Workstation.station (net-188-217-59-229.cust.vodafonedsl.it. [188.217.59.229])
-        by smtp.gmail.com with ESMTPSA id cq12-20020a056402220c00b0055335e89ed8sm3532169edb.30.2023.12.20.00.56.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Dec 2023 00:56:18 -0800 (PST)
-From: Tommaso Merciai <tomm.merciai@gmail.com>
-To: 
-Cc: linuxfancy@googlegroups.com,
-	laurent.pinchart@ideasonboard.com,
-	martin.hecht@avnet.eu,
-	tomm.merciai@gmail.com,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	linux-media@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 4/4] media: i2c: alvium: store frame interval in subdev state
-Date: Wed, 20 Dec 2023 09:56:09 +0100
-Message-Id: <20231220085609.2595732-5-tomm.merciai@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231220085609.2595732-1-tomm.merciai@gmail.com>
-References: <20231220085609.2595732-1-tomm.merciai@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A0D41DA4B;
+	Wed, 20 Dec 2023 08:57:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BK6dtXQ014865;
+	Wed, 20 Dec 2023 08:56:49 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=4qNF4u2dvT4HUSq/K5oCUAMNkc5Mlfnef5M+7zwqRu4=; b=mK
+	YviiHGv+NCpGOff3jCnXy1jiXS0pEKg1JmdiayRwN916Ev8LRerNoEw3i4a7cfHj
+	lxbb+4e2t6Rze0gnKZnEy3RUxmNbb/31jiROsPienvmHeIiM8e4fMdApD6HUTDim
+	HP89j/0htP0O4U5/IcF1KeTikTgSCe3zYRHFbzPYxKxMZ2JLaoZScNLIo5NWB6iE
+	0YqUgY4OUbn+BgtQY3sVnOUV2p32bxIuhEDebtoaS8MuLq3qJGWg44eZCQVJJQRx
+	KXFZti2HadS7cB4WBpq+suafX3UOQNZ3u64ucBdbQb6NkKDPbBZMjiralm3urj6u
+	J/fwgnvUDJrBaAxy8H0w==
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v3pkyrsn0-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 20 Dec 2023 08:56:48 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BK8ulhR024469
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 20 Dec 2023 08:56:47 GMT
+Received: from [10.239.133.211] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 20 Dec
+ 2023 00:56:42 -0800
+Message-ID: <0d4e2aa7-23e3-4851-bc43-80e7737f3a1a@quicinc.com>
+Date: Wed, 20 Dec 2023 16:56:42 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 3/8] coresight-tpdm: Add CMB dataset support
+Content-Language: en-US
+To: Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mathieu Poirier
+	<mathieu.poirier@linaro.org>,
+        Alexander Shishkin
+	<alexander.shishkin@linux.intel.com>,
+        Konrad Dybcio <konradybcio@gmail.com>,
+        Mike Leach <mike.leach@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+CC: Jinlong Mao <quic_jinlmao@quicinc.com>, Leo Yan <leo.yan@linaro.org>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        <coresight@lists.linaro.org>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        Tingwei Zhang
+	<quic_tingweiz@quicinc.com>,
+        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
+        Trilok Soni <quic_tsoni@quicinc.com>,
+        Song Chai <quic_songchai@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
+        <andersson@kernel.org>
+References: <1700533494-19276-1-git-send-email-quic_taozha@quicinc.com>
+ <1700533494-19276-4-git-send-email-quic_taozha@quicinc.com>
+ <f4ed3577-f78b-4b78-b306-8284ccb96043@arm.com>
+ <8dcafd9a-ff90-439a-9337-fb957d2fcad1@quicinc.com>
+ <df433a15-2698-4e1f-9d15-db52befb7541@arm.com>
+From: Tao Zhang <quic_taozha@quicinc.com>
+In-Reply-To: <df433a15-2698-4e1f-9d15-db52befb7541@arm.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: INlAPihp8gCgic1HGFwRnBjVIw_xawDi
+X-Proofpoint-ORIG-GUID: INlAPihp8gCgic1HGFwRnBjVIw_xawDi
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
+ mlxlogscore=999 malwarescore=0 lowpriorityscore=0 bulkscore=0 adultscore=0
+ clxscore=1015 priorityscore=1501 suspectscore=0 phishscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2311290000
+ definitions=main-2312200060
 
-Use the newly added storage for frame interval in the subdev state to
-simplify the driver.
 
-Signed-off-by: Tommaso Merciai <tomm.merciai@gmail.com>
----
-Changes Since v1:
- - Removed FIXME comment and active state check into alvium_s_frame_interval
-   as suggested by LPinchart.
- - Fixed call alvium_set_frame_rate() only for active state into alvium_s_frame_interval
-   as suggested by LPinchart.
+On 12/19/2023 9:56 PM, Suzuki K Poulose wrote:
+> On 19/12/2023 09:22, Tao Zhang wrote:
+>>
+>> On 12/18/2023 6:34 PM, Suzuki K Poulose wrote:
+>>> On 21/11/2023 02:24, Tao Zhang wrote:
+>>>> CMB (continuous multi-bit) is one of TPDM's dataset type. CMB subunit
+>>>> can be enabled for data collection by writing 1 to the first bit of
+>>>> CMB_CR register. This change is to add enable/disable function for
+>>>> CMB dataset by writing CMB_CR register.
+>>>>
+>>>> Reviewed-by: James Clark <james.clark@arm.com>
+>>>> Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
+>>>> Signed-off-by: Jinlong Mao <quic_jinlmao@quicinc.com>
+>>>> ---
+>>>>   drivers/hwtracing/coresight/coresight-tpdm.c | 31 
+>>>> ++++++++++++++++++++
+>>>>   drivers/hwtracing/coresight/coresight-tpdm.h |  8 +++++
+>>>>   2 files changed, 39 insertions(+)
+>>>>
+>>>> diff --git a/drivers/hwtracing/coresight/coresight-tpdm.c 
+>>>> b/drivers/hwtracing/coresight/coresight-tpdm.c
+>>>> index 97654aa4b772..c8bb38822e08 100644
+>>>> --- a/drivers/hwtracing/coresight/coresight-tpdm.c
+>>>> +++ b/drivers/hwtracing/coresight/coresight-tpdm.c
+>>>> @@ -131,6 +131,11 @@ static bool tpdm_has_dsb_dataset(struct 
+>>>> tpdm_drvdata *drvdata)
+>>>>       return (drvdata->datasets & TPDM_PIDR0_DS_DSB);
+>>>>   }
+>>>>   +static bool tpdm_has_cmb_dataset(struct tpdm_drvdata *drvdata)
+>>>> +{
+>>>> +    return (drvdata->datasets & TPDM_PIDR0_DS_CMB);
+>>>> +}
+>>>> +
+>>>>   static umode_t tpdm_dsb_is_visible(struct kobject *kobj,
+>>>>                      struct attribute *attr, int n)
+>>>>   {
+>>>> @@ -267,6 +272,17 @@ static void tpdm_enable_dsb(struct 
+>>>> tpdm_drvdata *drvdata)
+>>>>       writel_relaxed(val, drvdata->base + TPDM_DSB_CR);
+>>>>   }
+>>>>   +static void tpdm_enable_cmb(struct tpdm_drvdata *drvdata)
+>>>> +{
+>>>> +    u32 val;
+>>>> +
+>>>> +    val = readl_relaxed(drvdata->base + TPDM_CMB_CR);
+>>>> +    val |= TPDM_CMB_CR_ENA;
+>>>> +
+>>>> +    /* Set the enable bit of CMB control register to 1 */
+>>>> +    writel_relaxed(val, drvdata->base + TPDM_CMB_CR);
+>>>> +}
+>>>> +
+>>>>   /*
+>>>>    * TPDM enable operations
+>>>>    * The TPDM or Monitor serves as data collection component for 
+>>>> various
+>>>> @@ -281,6 +297,8 @@ static void __tpdm_enable(struct tpdm_drvdata 
+>>>> *drvdata)
+>>>>         if (tpdm_has_dsb_dataset(drvdata))
+>>>>           tpdm_enable_dsb(drvdata);
+>>>> +    if (tpdm_has_cmb_dataset(drvdata))
+>>>> +        tpdm_enable_cmb(drvdata);
+>>>
+>>> Don't we need to add this check in the "property read" section ?
+>>> Otherwise, we could generate warnings unnecessarily ?
+>>>
+>>> i.e, if (tpdm_has_cmb_..())
+>>>       rc |= fwnode_..read_property(cmb-elem-size...)
+>>>
+>>> Similarly for DSB.
+>>
+>> TPDM and TPDA are two independent hardware. If you want to modify 
+>> them in this way, the
+>>
+>
+> You don't have to, as long as the header files are included ?
+>
+> Read my response in the other patch, where it applies.
 
- drivers/media/i2c/alvium-csi2.c | 51 +++++++++++----------------------
- drivers/media/i2c/alvium-csi2.h |  1 -
- 2 files changed, 16 insertions(+), 36 deletions(-)
+Got it. I will update in the next patch series.
 
-diff --git a/drivers/media/i2c/alvium-csi2.c b/drivers/media/i2c/alvium-csi2.c
-index b234d74454bf..240bf991105e 100644
---- a/drivers/media/i2c/alvium-csi2.c
-+++ b/drivers/media/i2c/alvium-csi2.c
-@@ -1641,42 +1641,16 @@ static int alvium_hw_init(struct alvium_dev *alvium)
- }
- 
- /* --------------- Subdev Operations --------------- */
--
--static int alvium_g_frame_interval(struct v4l2_subdev *sd,
--				   struct v4l2_subdev_state *sd_state,
--				   struct v4l2_subdev_frame_interval *fi)
--{
--	struct alvium_dev *alvium = sd_to_alvium(sd);
--
--	/*
--	 * FIXME: Implement support for V4L2_SUBDEV_FORMAT_TRY, using the V4L2
--	 * subdev active state API.
--	 */
--	if (fi->which != V4L2_SUBDEV_FORMAT_ACTIVE)
--		return -EINVAL;
--
--	fi->interval = alvium->frame_interval;
--
--	return 0;
--}
--
- static int alvium_s_frame_interval(struct v4l2_subdev *sd,
- 				   struct v4l2_subdev_state *sd_state,
- 				   struct v4l2_subdev_frame_interval *fi)
- {
- 	struct alvium_dev *alvium = sd_to_alvium(sd);
- 	struct device *dev = &alvium->i2c_client->dev;
--	u64 req_fr = ALVIUM_DEFAULT_FR_HZ;
--	u64 dft_fr, min_fr, max_fr;
-+	u64 req_fr, dft_fr, min_fr, max_fr;
-+	struct v4l2_fract *interval;
- 	int ret;
- 
--	/*
--	 * FIXME: Implement support for V4L2_SUBDEV_FORMAT_TRY, using the V4L2
--	 * subdev active state API.
--	 */
--	if (fi->which != V4L2_SUBDEV_FORMAT_ACTIVE)
--		return -EINVAL;
--
- 	if (alvium->streaming)
- 		return -EBUSY;
- 
-@@ -1700,8 +1674,13 @@ static int alvium_s_frame_interval(struct v4l2_subdev *sd,
- 	if (req_fr >= max_fr && req_fr <= min_fr)
- 		req_fr = dft_fr;
- 
--	alvium->frame_interval.numerator = fi->interval.numerator;
--	alvium->frame_interval.denominator = fi->interval.denominator;
-+	interval = v4l2_subdev_state_get_interval(sd_state, 0);
-+
-+	interval->numerator = fi->interval.numerator;
-+	interval->denominator = fi->interval.denominator;
-+
-+	if (fi->which != V4L2_SUBDEV_FORMAT_ACTIVE)
-+		return 0;
- 
- 	return alvium_set_frame_rate(alvium, req_fr);
- }
-@@ -1851,6 +1830,7 @@ static int alvium_init_state(struct v4l2_subdev *sd,
- {
- 	struct alvium_dev *alvium = sd_to_alvium(sd);
- 	struct alvium_mode *mode = &alvium->mode;
-+	struct v4l2_fract *interval;
- 	struct v4l2_subdev_format sd_fmt = {
- 		.which = V4L2_SUBDEV_FORMAT_TRY,
- 		.format = alvium_csi2_default_fmt,
-@@ -1868,6 +1848,11 @@ static int alvium_init_state(struct v4l2_subdev *sd,
- 	*v4l2_subdev_state_get_crop(state, 0) = sd_crop.rect;
- 	*v4l2_subdev_state_get_format(state, 0) = sd_fmt.format;
- 
-+	/* Setup initial frame interval*/
-+	interval = v4l2_subdev_state_get_interval(state, 0);
-+	interval->numerator = 1;
-+	interval->denominator = ALVIUM_DEFAULT_FR_HZ;
-+
- 	return 0;
- }
- 
-@@ -2237,7 +2222,7 @@ static const struct v4l2_subdev_pad_ops alvium_pad_ops = {
- 	.set_fmt = alvium_set_fmt,
- 	.get_selection = alvium_get_selection,
- 	.set_selection = alvium_set_selection,
--	.get_frame_interval = alvium_g_frame_interval,
-+	.get_frame_interval = v4l2_subdev_get_frame_interval,
- 	.set_frame_interval = alvium_s_frame_interval,
- };
- 
-@@ -2258,10 +2243,6 @@ static int alvium_subdev_init(struct alvium_dev *alvium)
- 	struct v4l2_subdev *sd = &alvium->sd;
- 	int ret;
- 
--	/* Setup initial frame interval*/
--	alvium->frame_interval.numerator = 1;
--	alvium->frame_interval.denominator = ALVIUM_DEFAULT_FR_HZ;
--
- 	/* Setup the initial mode */
- 	alvium->mode.fmt = alvium_csi2_default_fmt;
- 	alvium->mode.width = alvium_csi2_default_fmt.width;
-diff --git a/drivers/media/i2c/alvium-csi2.h b/drivers/media/i2c/alvium-csi2.h
-index 80066ac25047..9463f8604fbc 100644
---- a/drivers/media/i2c/alvium-csi2.h
-+++ b/drivers/media/i2c/alvium-csi2.h
-@@ -442,7 +442,6 @@ struct alvium_dev {
- 	s32 inc_sharp;
- 
- 	struct alvium_mode mode;
--	struct v4l2_fract frame_interval;
- 
- 	u8 h_sup_csi_lanes;
- 	u64 link_freq;
--- 
-2.34.1
 
+Best,
+
+Tao
+
+>
+> Suzuki
+>
+>> two independent drivers will be coupled to each other. At the same 
+>> time, this configuration
+>>
+>> is manually set in the devicetree by the users, and this check cannot 
+>> avoid manual setting errors.
+>>
+>>   Even if the configuration is wrong, it will not cause the driver to 
+>> stop working, it will only cause
+>>
+>> the data to be lost from the TPDM.
+>>
+>>>
+>>>>       CS_LOCK(drvdata->base);
+>>>>   }
+>>>> @@ -314,6 +332,17 @@ static void tpdm_disable_dsb(struct 
+>>>> tpdm_drvdata *drvdata)
+>>>>       writel_relaxed(val, drvdata->base + TPDM_DSB_CR);
+>>>>   }
+>>>>   +static void tpdm_disable_cmb(struct tpdm_drvdata *drvdata)
+>>>> +{
+>>>> +    u32 val;
+>>>> +
+>>>> +    val = readl_relaxed(drvdata->base + TPDM_CMB_CR);
+>>>> +    val &= ~TPDM_CMB_CR_ENA;
+>>>> +
+>>>> +    /* Set the enable bit of CMB control register to 0 */
+>>>> +    writel_relaxed(val, drvdata->base + TPDM_CMB_CR);
+>>>> +}
+>>>> +
+>>>>   /* TPDM disable operations */
+>>>>   static void __tpdm_disable(struct tpdm_drvdata *drvdata)
+>>>>   {
+>>>> @@ -321,6 +350,8 @@ static void __tpdm_disable(struct tpdm_drvdata 
+>>>> *drvdata)
+>>>>         if (tpdm_has_dsb_dataset(drvdata))
+>>>>           tpdm_disable_dsb(drvdata);
+>>>> +    if (tpdm_has_cmb_dataset(drvdata))
+>>>> +        tpdm_disable_cmb(drvdata);
+>>>
+>>> minor nit: Instead of having these :
+>>>
+>>>     if (tpdm_has_XY_()
+>>>         tpdm_{enable/disable}_XY_()
+>>> I prefer :
+>>>
+>>>     tpdm_{enable/disable}_XY_
+>>>
+>>> and the helper take care of returning early if the feature is
+>>> not present.
+>> Does the following sample modification meet your expectation?
+>> static void tpdm_disable_dsb(struct tpdm_drvdata *drvdata)
+>> {
+>>      u32 val;
+>>
+>>      if (tpdm_has_dsb_dataset(drvdata)) {
+>>          /* Set the enable bit of DSB control register to 0 */
+>>          val = readl_relaxed(drvdata->base + TPDM_DSB_CR);
+>>          val &= ~TPDM_DSB_CR_ENA;
+>>          writel_relaxed(val, drvdata->base + TPDM_DSB_CR);
+>>      }
+>> }
+>>
+>> static void tpdm_disable_cmb(struct tpdm_drvdata *drvdata)
+>> {
+>>      u32 val;
+>>
+>>      if (tpdm_has_cmb_dataset(drvdata)) {
+>>          val = readl_relaxed(drvdata->base + TPDM_CMB_CR);
+>>          val &= ~TPDM_CMB_CR_ENA;
+>>
+>>          /* Set the enable bit of CMB control register to 0 */
+>>          writel_relaxed(val, drvdata->base + TPDM_CMB_CR);
+>>      }
+>> }
+>>
+>> /* TPDM disable operations */
+>> static void __tpdm_disable(struct tpdm_drvdata *drvdata)
+>> {
+>>      CS_UNLOCK(drvdata->base);
+>>
+>>      tpdm_disable_dsb(drvdata);
+>>      tpdm_disable_cmb(drvdata);
+>>
+>
+> Yes, thats exactly I was looking for.
+
+Got it. I will update in the next patch series.
+
+
+Best,
+
+Tao
+
+>
+>>      CS_LOCK(drvdata->base);
+>>
+>> }
+>>
+>>
+>> Best,
+>>
+>> Tao
+>>
+>>>
+>>>
+>>> Suzuki
+>>>
+>>>
+>>>>         CS_LOCK(drvdata->base);
+>>>>   }
+>>>> diff --git a/drivers/hwtracing/coresight/coresight-tpdm.h 
+>>>> b/drivers/hwtracing/coresight/coresight-tpdm.h
+>>>> index 4115b2a17b8d..0098c58dfdd6 100644
+>>>> --- a/drivers/hwtracing/coresight/coresight-tpdm.h
+>>>> +++ b/drivers/hwtracing/coresight/coresight-tpdm.h
+>>>> @@ -9,6 +9,12 @@
+>>>>   /* The max number of the datasets that TPDM supports */
+>>>>   #define TPDM_DATASETS       7
+>>>>   +/* CMB Subunit Registers */
+>>>> +#define TPDM_CMB_CR        (0xA00)
+>>>> +
+>>>> +/* Enable bit for CMB subunit */
+>>>> +#define TPDM_CMB_CR_ENA        BIT(0)
+>>>> +
+>>>>   /* DSB Subunit Registers */
+>>>>   #define TPDM_DSB_CR        (0x780)
+>>>>   #define TPDM_DSB_TIER        (0x784)
+>>>> @@ -79,10 +85,12 @@
+>>>>    *
+>>>>    * PERIPHIDR0[0] : Fix to 1 if ImplDef subunit present, else 0
+>>>>    * PERIPHIDR0[1] : Fix to 1 if DSB subunit present, else 0
+>>>> + * PERIPHIDR0[2] : Fix to 1 if CMB subunit present, else 0
+>>>>    */
+>>>>     #define TPDM_PIDR0_DS_IMPDEF    BIT(0)
+>>>>   #define TPDM_PIDR0_DS_DSB    BIT(1)
+>>>> +#define TPDM_PIDR0_DS_CMB    BIT(2)
+>>>>     #define TPDM_DSB_MAX_LINES    256
+>>>>   /* MAX number of EDCR registers */
+>>>
+>
 
