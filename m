@@ -1,115 +1,354 @@
-Return-Path: <linux-kernel+bounces-6386-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6387-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38FB8819834
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 06:34:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C4E4D819844
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 06:39:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6C0B11C254E0
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 05:34:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5088F281E86
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 05:39:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23D66101CC;
-	Wed, 20 Dec 2023 05:34:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="BEXDwgOy"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FF7910A3C;
+	Wed, 20 Dec 2023 05:39:14 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24E7915AC7;
-	Wed, 20 Dec 2023 05:34:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BK4oRe6001889;
-	Wed, 20 Dec 2023 05:34:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=K33oHyfwjCkr5btHRVdLguivGo60Y0wp3ZnNoXIm724=; b=BE
-	XDwgOyJBbwhnKGnOGjoH64xhSpD9Fta9Gu6FzaVPbOneMqVEYXAqzXQ0S/mQp4HM
-	XcuYIaGBp591lKRU893EkYLUoCrYySXQ8xj42bpT9bbWw6c1DgD008vViAD6PFHL
-	kbG1vvMI96Frzjp7cfTHdqs8kmRgls5dw9WjvRcAgQ1u4sDic7ieCQOSJmHRnQX3
-	6B1RxZjBMhKNrvB0WtL0tzfLDu+Lq1XLmHhekTU3mwXwcVhiu8IE0QrMhhirhMUC
-	2Xz/4lUIj3DSEMiA/BoiWtySu6ezEx0VqqySHK05MAP9NwOT0kQfH2/PDqc2ppVf
-	oo8893MFSCdlRHgnlmAg==
-Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v37vxtk4h-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 20 Dec 2023 05:34:37 +0000 (GMT)
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-	by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BK5YarL012961
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 20 Dec 2023 05:34:36 GMT
-Received: from [10.239.132.150] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 19 Dec
- 2023 21:34:30 -0800
-Message-ID: <f8719779-a3d4-49c5-9dc1-240ef982384e@quicinc.com>
-Date: Wed, 20 Dec 2023 13:34:28 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AA0BFBE1;
+	Wed, 20 Dec 2023 05:39:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 347DD2214C;
+	Wed, 20 Dec 2023 05:39:10 +0000 (UTC)
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 1966513926;
+	Wed, 20 Dec 2023 05:39:06 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id HYZxLfp9gmXUIwAAn2gu4w
+	(envelope-from <ddiss@suse.de>); Wed, 20 Dec 2023 05:39:06 +0000
+Date: Wed, 20 Dec 2023 16:38:56 +1100
+From: David Disseldorp <ddiss@suse.de>
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+ Christophe JAILLET <christophe.jaillet@wanadoo.fr>, Andy Shevchenko
+ <andriy.shevchenko@linux.intel.com>, David Laight
+ <David.Laight@ACULAB.COM>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] lib/strtox: introduce kstrtoull_suffix() helper
+Message-ID: <20231220163856.274f84a3@echidna>
+In-Reply-To: <e042f40ea5cf7fa8251713d5bb7a485f42c5615b.1703030510.git.wqu@suse.com>
+References: <cover.1703030510.git.wqu@suse.com>
+	<e042f40ea5cf7fa8251713d5bb7a485f42c5615b.1703030510.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: (subset) [PATCH v3 0/1] arm64: dts: qcom: sm8550: remove
-Content-Language: en-US
-To: Bjorn Andersson <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, Tengfei Fan <quic_tengfan@quicinc.com>
-CC: <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <kernel@quicinc.com>
-References: <20231219003106.8663-1-quic_tengfan@quicinc.com>
- <170301441259.365364.2180258670074890979.b4-ty@kernel.org>
-From: "Aiqun Yu (Maria)" <quic_aiquny@quicinc.com>
-In-Reply-To: <170301441259.365364.2180258670074890979.b4-ty@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: a2swOqmPy2OUHI4zHupBY4Pox0NBNmDP
-X-Proofpoint-GUID: a2swOqmPy2OUHI4zHupBY4Pox0NBNmDP
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=785
- suspectscore=0 impostorscore=0 lowpriorityscore=0 malwarescore=0
- bulkscore=0 phishscore=0 spamscore=0 clxscore=1015 mlxscore=0 adultscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2312200034
+X-Spam-Level: 
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	 REPLY(-4.00)[]
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Score: -4.00
+X-Rspamd-Queue-Id: 347DD2214C
 
+On Wed, 20 Dec 2023 10:40:00 +1030, Qu Wenruo wrote:
 
-
-On 12/20/2023 3:33 AM, Bjorn Andersson wrote:
+> Just as mentioned in the comment of memparse(), the simple_stroull()
+> usage can lead to overflow all by itself.
 > 
-> On Tue, 19 Dec 2023 08:31:05 +0800, Tengfei Fan wrote:
->> The address/size-cells in mdss_dsi1 node have not ranges and child also
->> have not reg, then this leads to dtc W=1 warnings:
->>
->>    sm8550.dtsi:2937.27-2992.6: Warning (avoid_unnecessary_addr_size): /soc@0/display-subsystem@ae00000/dsi@ae96000:
->>      unnecessary #address-cells/#size-cells without "ranges" or child "reg" property
->>
->>
->> [...]
+> Furthermore, the suffix calculation is also super overflow prone because
+> that some suffix like "E" itself would eat 60bits, leaving only 4 bits
+> available.
 > 
-> Applied, thanks!
-Hi Bjorn,
+> And that suffix "E" can also lead to confusion since it's using the same
+> char of hex Ox'E'.
+> 
+> One simple example to expose all the problem is to use memparse() on
+> "25E".
+> The correct value should be 28823037615171174400, but the suffix E makes
+> it super simple to overflow, resulting the incorrect value
+> 10376293541461622784 (9E).
+> 
+> So here we introduce a new helper to address the problem,
+> kstrtoull_suffix():
+> 
+> - Enhance _kstrtoull()
+>   This allow _kstrtoull() to return even if it hits an invalid char, as
+>   long as the optional parameter @retptr is provided.
+> 
+>   If @retptr is provided, _kstrtoull() would try its best to parse the
+>   valid part, and leave the remaining to be handled by the caller.
+> 
+>   If @retptr is not provided, the behavior is not altered.
+> 
+> - New kstrtoull_suffix() helper
+>   This new helper utilize the new @retptr capability of _kstrtoull(),
+>   and provides 2 new ability:
+> 
+>   * Allow certain suffixes to be chosen
+>     The recommended suffix list is "KMGTP" (using the new unit_suffix
+>     enum as a bitmap), excluding the overflow prone "E".
+>     Undermost cases there is really no need to use "E" suffix anyway.
+>     And for those who really need that exabytes suffix, they can enable
+>     that suffix pretty easily.
+> 
+>   * Add overflow checks for the suffixes
+>     If the original number string is fine, but with the extra left
+>     shift overflow happens, then -EOVERFLOW is returned.
+> 
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Cc: David Laight <David.Laight@ACULAB.COM>
+> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> 
+> ----
+> Changelog:
+> v2:
+> - Use enum bitmap to describe the suffixes
+>   This gets rid of the upper/lower case problem, and enum makes it
+>   a little more readable.
+> 
+> - Fix the suffix overflow detection
+> 
+> - Move the left shift out of the switch block
+> 
+> - Remove the "done" tag
+>   Since no tailing character can already be handled properly.
 
-Discussion is still on going.
-Dmitry dropped the previous review-by.
-> 
-> [1/1] arm64: dts: qcom: sm8550: remove address/size-cells from mdss_dsi1
->        commit: 53081095936cdb1501d6bcf6cb703fdd3ac71b85
-> 
-> Best regards,
+nit: git am puts this changelog in the commit message when applied.
+Please use `git send-email --annotate` and put it next to the diffstat,
+so that it gets discarded.
 
--- 
-Thx and BRs,
-Aiqun(Maria) Yu
+> ---
+>  include/linux/kstrtox.h |  20 ++++++++
+>  lib/kstrtox.c           | 108 ++++++++++++++++++++++++++++++++++++++--
+>  2 files changed, 123 insertions(+), 5 deletions(-)
+> 
+> diff --git a/include/linux/kstrtox.h b/include/linux/kstrtox.h
+> index 7fcf29a4e0de..edac52d18a8e 100644
+> --- a/include/linux/kstrtox.h
+> +++ b/include/linux/kstrtox.h
+> @@ -9,6 +9,26 @@
+>  int __must_check _kstrtoul(const char *s, unsigned int base, unsigned long *res);
+>  int __must_check _kstrtol(const char *s, unsigned int base, long *res);
+>  
+> +/*
+> + * The default suffix list would not include "E" since it's too easy to overflow
+> + * and not much real world usage.
+> + */
+> +enum unit_suffix {
+> +	SUFFIX_K = (1 << 0),
+> +	SUFFIX_M = (1 << 1),
+> +	SUFFIX_G = (1 << 2),
+> +	SUFFIX_T = (1 << 3),
+> +	SUFFIX_P = (1 << 4),
+> +	SUFFIX_E = (1 << 5),
+> +};
+> +
+> +/*
+> + * The default suffix list would not include "E" since it's too easy to overflow
+> + * and not much real world usage.
+> + */
+
+^ this comment is a duplicate.
+
+> +#define KSTRTOULL_SUFFIX_DEFAULT (SUFFIX_K | SUFFIX_M | SUFFIX_G | SUFFIX_T | SUFFIX_P)
+
+I think it'd be clearer if you dropped this default and had callers
+explicitly provide the desired suffix mask.
+
+> +int kstrtoull_suffix(const char *s, unsigned int base, unsigned long long *res,
+> +		     enum unit_suffix suffixes);
+
+__must_check would be consistent with the other helpers...
+
+>  int __must_check kstrtoull(const char *s, unsigned int base, unsigned long long *res);
+>  int __must_check kstrtoll(const char *s, unsigned int base, long long *res);
+>  
+> diff --git a/lib/kstrtox.c b/lib/kstrtox.c
+> index d586e6af5e5a..8a2fdd1e3376 100644
+> --- a/lib/kstrtox.c
+> +++ b/lib/kstrtox.c
+> @@ -93,7 +93,8 @@ unsigned int _parse_integer(const char *s, unsigned int base, unsigned long long
+>  	return _parse_integer_limit(s, base, p, INT_MAX);
+>  }
+>  
+> -static int _kstrtoull(const char *s, unsigned int base, unsigned long long *res)
+> +static int _kstrtoull(const char *s, unsigned int base, unsigned long long *res,
+> +		      char **retptr)
+>  {
+>  	unsigned long long _res;
+>  	unsigned int rv;
+> @@ -105,11 +106,19 @@ static int _kstrtoull(const char *s, unsigned int base, unsigned long long *res)
+>  	if (rv == 0)
+>  		return -EINVAL;
+>  	s += rv;
+> -	if (*s == '\n')
+> +
+> +	/*
+> +	 * If @retptr is provided, caller is responsible to detect
+> +	 * the extra chars, otherwise we can skip one newline.
+> +	 */
+> +	if (!retptr && *s == '\n')
+>  		s++;
+> -	if (*s)
+> +	if (!retptr && *s)
+>  		return -EINVAL;
+> +
+>  	*res = _res;
+> +	if (retptr)
+> +		*retptr = (char *)s;
+>  	return 0;
+>  }
+>  
+> @@ -133,10 +142,99 @@ int kstrtoull(const char *s, unsigned int base, unsigned long long *res)
+>  {
+>  	if (s[0] == '+')
+>  		s++;
+> -	return _kstrtoull(s, base, res);
+> +	return _kstrtoull(s, base, res, NULL);
+>  }
+>  EXPORT_SYMBOL(kstrtoull);
+>  
+> +/**
+> + * kstrtoull_suffix - convert a string to ull with suffixes support
+> + * @s: The start of the string. The string must be null-terminated, and may also
+> + *  include a single newline before its terminating null.
+> + * @base: The number base to use. The maximum supported base is 16. If base is
+> + *  given as 0, then the base of the string is automatically detected with the
+> + *  conventional semantics - If it begins with 0x the number will be parsed as a
+> + *  hexadecimal (case insensitive), if it otherwise begins with 0, it will be
+> + *  parsed as an octal number. Otherwise it will be parsed as a decimal.
+> + * @res: Where to write the result of the conversion on success.
+> + * @suffixes: bitmap of acceptable suffixes, unknown bits would be ignored.
+> + *
+> + * Return 0 on success.
+> + *
+> + * Return -ERANGE on overflow or -EINVAL if invalid chars found.
+> + * Return value must be checked.
+> + */
+> +int kstrtoull_suffix(const char *s, unsigned int base, unsigned long long *res,
+> +		     enum unit_suffix suffixes)
+> +{
+> +	unsigned long long value;
+> +	int shift = 0;
+> +	char *endptr;
+> +	int ret;
+> +
+> +	ret = _kstrtoull(s, base, &value, &endptr);
+> +	/* Either already overflow or no number string at all. */
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	switch (*endptr) {
+> +	case 'K':
+> +	case 'k':
+> +		if (!(suffixes & SUFFIX_K))
+> +			return -EINVAL;
+> +		shift = 10;
+> +		break;
+> +	case 'M':
+> +	case 'm':
+> +		if (!(suffixes & SUFFIX_M))
+> +			return -EINVAL;
+> +		shift = 20;
+> +		break;
+> +	case 'G':
+> +	case 'g':
+> +		if (!(suffixes & SUFFIX_G))
+> +			return -EINVAL;
+> +		shift = 30;
+> +		break;
+> +	case 'T':
+> +	case 't':
+> +		if (!(suffixes & SUFFIX_T))
+> +			return -EINVAL;
+> +		shift = 40;
+> +		break;
+> +	case 'P':
+> +	case 'p':
+> +		if (!(suffixes & SUFFIX_P))
+> +			return -EINVAL;
+> +		shift = 50;
+> +		break;
+> +	case 'E':
+> +	case 'e':
+> +		if (!(suffixes & SUFFIX_E))
+> +			return -EINVAL;
+> +		shift = 60;
+> +		break;
+> +	}
+> +	if (shift)
+> +		endptr++;
+> +	if (*endptr == '\n')
+> +		endptr++;
+> +	if (*endptr)
+> +		return -EINVAL;
+> +
+> +	/*
+> +	 * Overflow check.
+> +	 *
+> +	 * Check @shift before doing right shift, as if right shift bit is
+> +	 * greater than or equal to the number of bits, the result is undefined.
+> +	 */
+> +	if (shift && value >> (64 - shift))
+> +		return -EOVERFLOW;
+> +	value <<= shift;
+
+Might as well roll this logic in with the existing "if (shift)"
+above, e.g.
+	if (shift) {
+		/*
+		 * Overflow check...
+		 */
+		if (value >> (64 - shift))
+			return -EOVERFLOW;
+		value <<= shift;
+		endptr++;
+	}
+	if (*endptr == '\n')
+	...
+
+> +	*res = value;
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL(kstrtoull_suffix);
+> +
+>  /**
+>   * kstrtoll - convert a string to a long long
+>   * @s: The start of the string. The string must be null-terminated, and may also
+> @@ -159,7 +257,7 @@ int kstrtoll(const char *s, unsigned int base, long long *res)
+>  	int rv;
+>  
+>  	if (s[0] == '-') {
+> -		rv = _kstrtoull(s + 1, base, &tmp);
+> +		rv = _kstrtoull(s + 1, base, &tmp, NULL);
+>  		if (rv < 0)
+>  			return rv;
+>  		if ((long long)-tmp > 0)
+
+
+With the above changes made, feel free to add
+Reviewed-by: David Disseldorp <ddiss@suse.de>
+
+I'll leave the review of patch 2/2 up to others, as I'm still a little
+worried about sysfs trailing whitespace regressions.
 
