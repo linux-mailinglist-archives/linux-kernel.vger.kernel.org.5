@@ -1,96 +1,204 @@
-Return-Path: <linux-kernel+bounces-7307-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7308-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17BC981A56D
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 17:39:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42F2981A56F
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 17:39:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C8A0C283271
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 16:39:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A6F941F21847
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 16:39:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58B9F41862;
-	Wed, 20 Dec 2023 16:38:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6579E46544;
+	Wed, 20 Dec 2023 16:39:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b="wuKj1pY3"
+	dkim=pass (1024-bit key) header.d=inria.fr header.i=@inria.fr header.b="A3WYyiSP"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
+Received: from mail2-relais-roc.national.inria.fr (mail2-relais-roc.national.inria.fr [192.134.164.83])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 141274185C;
-	Wed, 20 Dec 2023 16:38:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hugovil.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
-	; s=x; h=Subject:Content-Transfer-Encoding:Mime-Version:Message-Id:Cc:To:From
-	:Date:subject:date:message-id:reply-to;
-	bh=7DWE80MpX5b5xDLz+z39HDenzmXZGJEBVw+/CVqzpdA=; b=wuKj1pY3nqNsSl0CZ4cOKhKvMi
-	SkD6Eg8Z88H99iWCRsG8IlzcasI9Hp2LWILtfw+SvnLSoxfUZ/J9SJ+IuN/ZwYUm8fL7FF1xcNO2L
-	W/aGDUM0+5Q+lo87e2T5B6tZYlZJqV+mY7ne7D34PCH+t/qhO1FDvK/Db1Y9MCZG9s08=;
-Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:45880 helo=pettiford)
-	by mail.hugovil.com with esmtpa (Exim 4.92)
-	(envelope-from <hugo@hugovil.com>)
-	id 1rFzaq-0007Cm-0w; Wed, 20 Dec 2023 11:38:48 -0500
-Date: Wed, 20 Dec 2023 11:38:47 -0500
-From: Hugo Villeneuve <hugo@hugovil.com>
-To: Andy Shevchenko <andriy.shevchenko@intel.com>
-Cc: gregkh@linuxfoundation.org, jirislaby@kernel.org, jringle@gridpoint.com,
- kubakici@wp.pl, phil@raspberrypi.org, bo.svangard@embeddedart.se,
- linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org, Hugo Villeneuve
- <hvilleneuve@dimonoff.com>
-Message-Id: <20231220113847.b3dfc4b9a786b78c70cad2e8@hugovil.com>
-In-Reply-To: <ZYMRBbPEwIa8K4NI@smile.fi.intel.com>
-References: <20231219171903.3530985-1-hugo@hugovil.com>
-	<ZYMRBbPEwIa8K4NI@smile.fi.intel.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71DB946427
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 16:39:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=inria.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=inria.fr
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=inria.fr; s=dc;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=jZuB1SWu1rTqUusWnh9xfO54q7lnXcSPPU9kuHUzttY=;
+  b=A3WYyiSPKR3frvNDdWhoLJFnm3c7fDeFQ68GFqfrGGCmu8cIYQAG5/GS
+   hnD9SUFv7wfLYCxVuhCUA5GDVchAI7qez2LW6E24Y2mmnFfs8ksc2vdlK
+   2s32d4OwYXtm7zPZXV/TkfQj7ZgnOwCQVeS/LUuLeYM7NQLLo+5nq5Qru
+   c=;
+Authentication-Results: mail2-relais-roc.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=julia.lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
+X-IronPort-AV: E=Sophos;i="6.04,291,1695679200"; 
+   d="scan'208";a="143383956"
+Received: from dt-lawall.paris.inria.fr ([128.93.67.65])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Dec 2023 17:39:25 +0100
+Date: Wed, 20 Dec 2023 17:39:24 +0100 (CET)
+From: Julia Lawall <julia.lawall@inria.fr>
+To: Vincent Guittot <vincent.guittot@linaro.org>
+cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+    Dietmar Eggemann <dietmar.eggemann@arm.com>, Mel Gorman <mgorman@suse.de>, 
+    linux-kernel@vger.kernel.org
+Subject: Re: EEVDF and NUMA balancing
+In-Reply-To: <CAKfTPtALEFtrapi3Kk97KLGQN4259eEQEwwftVUK4RG42Vgoyw@mail.gmail.com>
+Message-ID: <44df7caf-dbb0-70c3-fbad-7242c0f87b5f@inria.fr>
+References: <alpine.DEB.2.22.394.2310032059060.3220@hadrien> <20231003215159.GJ1539@noisy.programming.kicks-ass.net> <alpine.DEB.2.22.394.2310041358420.3108@hadrien> <20231004120544.GA6307@noisy.programming.kicks-ass.net> <alpine.DEB.2.22.394.2310041822170.3108@hadrien>
+ <20231004174801.GE19999@noisy.programming.kicks-ass.net> <alpine.DEB.2.22.394.2310041958380.3108@hadrien> <20231009102949.GC14330@noisy.programming.kicks-ass.net> <b8ab29de-1775-46e-dd75-cdf98be8b0@inria.fr> <CAKfTPtBhWwk9sf9F1=KwubiAWFDC2A9ZT-SSJ+tgFxme1cFmYA@mail.gmail.com>
+ <alpine.DEB.2.22.394.2312182302310.3361@hadrien> <CAKfTPtALEFtrapi3Kk97KLGQN4259eEQEwwftVUK4RG42Vgoyw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-X-SA-Exim-Connect-IP: 70.80.174.168
-X-SA-Exim-Mail-From: hugo@hugovil.com
-X-Spam-Level: 
-X-Spam-Report: 
-	* -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-	* -0.0 T_SCC_BODY_TEXT_LINE No description available.
-	* -1.4 NICE_REPLY_A Looks like a legit reply (A)
-Subject: Re: [PATCH 00/18] serial: sc16is7xx: fixes, cleanups and
- improvements
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 
-On Wed, 20 Dec 2023 18:06:29 +0200
-Andy Shevchenko <andriy.shevchenko@intel.com> wrote:
 
-> On Tue, Dec 19, 2023 at 12:18:44PM -0500, Hugo Villeneuve wrote:
-> > From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
-> >=20
-> > Hello,
-> > this patch series brings a few fixes, clean-ups and improvements to the
-> > sc16is7xx driver.
-> >=20
-> > Some of the patches have been suggested by Andy Shevchenko following th=
-is
-> > dicussion:
-> >=20
-> > Link: https://lore.kernel.org/all/CAHp75VebCZckUrNraYQj9k=3DMrn2kbYs1Lx=
-26f5-8rKJ3RXeh-w@mail.gmail.com/
->=20
-> Thanks, good series (need a bit of additional work, though).
-> What I really miss is the proper split of the driver. See
-> 0f04a81784fe ("pinctrl: mcp23s08: Split to three parts: core, I=B2C, SPI")
-> as an example of a such.
 
-Hi Andy,
-thank you for the reviews.
+On Tue, 19 Dec 2023, Vincent Guittot wrote:
 
-I was thinking of doing the split after this current serie, and I
-will look at your example as a reference.
+> On Mon, 18 Dec 2023 at 23:31, Julia Lawall <julia.lawall@inria.fr> wrote:
+> >
+> >
+> >
+> > On Mon, 18 Dec 2023, Vincent Guittot wrote:
+> >
+> > > On Mon, 18 Dec 2023 at 14:58, Julia Lawall <julia.lawall@inria.fr> wrote:
+> > > >
+> > > > Hello,
+> > > >
+> > > > I have looked further into the NUMA balancing issue.
+> > > >
+> > > > The context is that there are 2N threads running on 2N cores, one thread
+> > > > gets NUMA balanced to the other socket, leaving N+1 threads on one socket
+> > > > and N-1 threads on the other socket.  This condition typically persists
+> > > > for one or more seconds.
+> > > >
+> > > > Previously, I reported this on a 4-socket machine, but it can also occur
+> > > > on a 2-socket machine, with other tests from the NAS benchmark suite
+> > > > (sp.B, bt.B, etc).
+> > > >
+> > > > Since there are N+1 threads on one of the sockets, it would seem that load
+> > > > balancing would quickly kick in to bring some thread back to socket with
+> > > > only N-1 threads.  This doesn't happen, though, because actually most of
+> > > > the threads have some NUMA effects such that they have a preferred node.
+> > > > So there is a high chance that an attempt to steal will fail, because both
+> > > > threads have a preference for the socket.
+> > > >
+> > > > At this point, the only hope is active balancing.  However, triggering
+> > > > active balancing requires the success of the following condition in
+> > > > imbalanced_active_balance:
+> > > >
+> > > >         if ((env->migration_type == migrate_task) &&
+> > > >             (sd->nr_balance_failed > sd->cache_nice_tries+2))
+> > > >
+> > > > sd->nr_balance_failed does not increase because the core is idle.  When a
+> > > > core is idle, it comes to the load_balance function from schedule() though
+> > > > newidle_balance.  newidle_balance always sends in the flag CPU_NEWLY_IDLE,
+> > > > even if the core has been idle for a long time.
+> > >
+> > > Do you mean that you never kick a normal idle load balance ?
+> >
+> > OK, it seems that both happen, at different times.  But the calls to
+> > trigger_load_balance seem to rarely do more than the SMT level.
+>
+> yes, the min period is equal to "cpumask_weight of sched_domain" ms, 2
+> ms at SMT level and 2N ms at numa level.
+>
+> >
+> > I have attached part of a trace in which I print various things that
+> > happen during the idle period.
+> >
+> > >
+> > > >
+> > > > Changing newidle_balance to use CPU_IDLE rather than CPU_NEWLY_IDLE when
+> > > > the core was already idle before the call to schedule() is not enough
+> > > > though, because there is also the constraint on the migration type.  That
+> > > > turns out to be (mostly?) migrate_util.  Removing the following
+> > > > code from find_busiest_queue:
+> > > >
+> > > >                         /*
+> > > >                          * Don't try to pull utilization from a CPU with one
+> > > >                          * running task. Whatever its utilization, we will fail
+> > > >                          * detach the task.
+> > > >                          */
+> > > >                         if (nr_running <= 1)
+> > > >                                 continue;
+> > >
+> > > I'm surprised that load_balance wants to "migrate_util"  instead of
+> > > "migrate_task"
+> >
+> > In the attached trace, there are 147 occurrences of migrate_util, and 3
+> > occurrences of migrate_task.  But even when migrate_task appears, the
+> > counter has gotten knocked back down, due to the calls to newidle_balance.
+> >
+> > > You have N+1 threads on a group of 2N CPUs so you should have at most
+> > > 1 thread per CPUs in your busiest group.
+> >
+> > One CPU has 2 threads, and the others have one.  The one with two threads
+> > is returned as the busiest one.  But nothing happens, because both of them
+> > prefer the socket that they are on.
+>
+> This explains way load_balance uses migrate_util and not migrate_task.
+> One CPU with 2 threads can be overloaded
 
-Hugo Villeneuve
+The node with N-1 tasks (and thus an empty core) is categorized as
+group_has_spare and the one with N+1 tasks (and thus one core with 2
+tasks and N-1 cores with 1 task) is categorized as group_overloaded.  This
+seems reasonable, and based on these values the conditions hold for
+migrate_util to be chosen.
+
+I tried just extending the test in imbalanced_active_balance to also
+accept migrate_util, but the sd->nr_balance_failed still goes up too
+slowly due to the many calls from newidle_balance.
+
+julia
+
+>
+> ok, so it seems that your 1st problem is that you have 2 threads on
+> the same CPU whereas you should have an idle core in this numa node.
+> All cores are sharing the same LLC, aren't they ?
+>
+> You should not have more than 1 thread per CPU when there are N+1
+> threads on a node with N cores / 2N CPUs. This will enable the
+> load_balance to try to migrate a task instead of some util(ization)
+> and you should reach the active load balance.
+>
+> >
+> > > In theory you should have the
+> > > local "group_has_spare" and the busiest "group_fully_busy" (at most).
+> > > This means that no group should be overloaded and load_balance should
+> > > not try to migrate utli but only task
+> >
+> > I didn't collect information about the groups.  I will look into that.
+> >
+> > julia
+> >
+> > >
+> > >
+> > > >
+> > > > and changing the above test to:
+> > > >
+> > > >         if ((env->migration_type == migrate_task || env->migration_type == migrate_util) &&
+> > > >             (sd->nr_balance_failed > sd->cache_nice_tries+2))
+> > > >
+> > > > seems to solve the problem.
+> > > >
+> > > > I will test this on more applications.  But let me know if the above
+> > > > solution seems completely inappropriate.  Maybe it violates some other
+> > > > constraints.
+> > > >
+> > > > I have no idea why this problem became more visible with EEVDF.  It seems
+> > > > to have to do with the time slices all turning out to be the same.  I got
+> > > > the same behavior in 6.5 by overwriting the timeslice calculation to
+> > > > always return 1.  But I don't see the connection between the timeslice and
+> > > > the behavior of the idle task.
+> > > >
+> > > > thanks,
+> > > > julia
+> > >
+>
 
