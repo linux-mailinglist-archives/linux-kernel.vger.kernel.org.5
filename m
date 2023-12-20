@@ -1,183 +1,184 @@
-Return-Path: <linux-kernel+bounces-6160-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6161-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94DA181952D
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 01:25:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A1476819533
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 01:26:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4D3F4283BFD
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 00:25:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D45571C2131E
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 00:26:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 460EC11732;
-	Wed, 20 Dec 2023 00:21:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6ED4933DE;
+	Wed, 20 Dec 2023 00:26:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kA3chXYD"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jrLEakRO"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-io1-f47.google.com (mail-io1-f47.google.com [209.85.166.47])
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 323A4EACD
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 00:21:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3C7246B0;
+	Wed, 20 Dec 2023 00:26:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f47.google.com with SMTP id ca18e2360f4ac-7b7fdde8b98so20337539f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 16:21:25 -0800 (PST)
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-3366e78d872so2292326f8f.3;
+        Tue, 19 Dec 2023 16:26:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703031685; x=1703636485; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1703031959; x=1703636759; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=WfYZl5ZrcfbZuMK/TopLSwtg7XNXi/JhwSQdO+z2kF8=;
-        b=kA3chXYDKidrsZZHlID8nlaRfCZJXE85UsL6eI+NdCwxBmxE4YCdIR0yoyYzj+9wJ/
-         3XtiSbjmuV9s3lFQlHgEWEjHPH7XlNZOjQjMwUngeLvyLGnzE9A9tXmg3Zes41olPjpJ
-         oI0hLR1/xQbsL6bmPI5Zm1Sih/UxLrpHQSPRJw4R+AZZEkN81x3fwxSeA/+knqROFcm+
-         ygJY3prSJSjJVRxB061ijZ1joxMNjX5gtuqgVyKGIWv6b9dp8FU96wKqVLGP93OhW5PI
-         0j1CSeijA3eC5vvswttqXM7Mo6G5tSEF7D4YjQKRvjAa6BT/MEJL/vUAXD6jqYGAtC8D
-         3PpA==
+        bh=P8SdDvE7M57yXe3BWZ3ZcRgxoEXpwC009EWtj4naDlo=;
+        b=jrLEakROWtxFBmVftDc2CjXqf45zvlK0KCawG+cOgc+pdrufluELINqqlzG7yL5nQw
+         ZthEkKrHb2UOXVyL3Khh/773a9eSdy/dL4KJFXyhsofjXS2irjv3Fpboc2bg+UJKQJ82
+         rIAsYIEgUoWOPd2VgrhzL/XdN/Ct17u6gxa6VHnccpMzC7XkL27VnMsMNJYuB+vAdQRw
+         8JrLYbwkIK0pGeVwpAnTkVzEExUCbBV6mAWVnSBmKlBmgQFizcXlxfEoYcu+bpRWYgan
+         QrUh+vo3mqfpISd5k2OaCWxSnCKBMEVeGo7euKfS9V5u9j5MV4/teha6/mP0zjRQnEm3
+         EHVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703031685; x=1703636485;
+        d=1e100.net; s=20230601; t=1703031959; x=1703636759;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=WfYZl5ZrcfbZuMK/TopLSwtg7XNXi/JhwSQdO+z2kF8=;
-        b=TcvHI7yKMsQTqaNWOxtsY8G5q/wEfJTmQy4iLfM0/e1+DQSFAP8cxs9fiJiXHrfGm2
-         u8OrrDd0hriY5P2kgPVJdX0TCjWIqkyC6uKHWwNCNKiN2irLNZ+pJ/Zp8JeWQwuwNm+F
-         JXr1Y2e1O0S3W9wikq3E80eksEPUAhRxs4HNsFCP9vVGct8MRqqLZCJS//96NCMzajTu
-         j/iEPxAGNBvDQ1HexmKtcUdP48JF5myvNc5lwAqh6i0GDHPqT+xLk7WGbdFkBVUy7jvm
-         fHBtGFmV9GascGzAjSW+lUWZCMw+/7xBfX1N6baoKOdH8198xPMnRBSHNhackliagqTb
-         yY1A==
-X-Gm-Message-State: AOJu0YxNPm5vDMP27VfrugLZ+IVJWGkeLNG0j1sEs9qwB6hchu6GSvRg
-	BMXy15ZRnNwY010aN+dK8Jl66xRZC+lxfz/cVGrAUKmgc1usow==
-X-Google-Smtp-Source: AGHT+IH8HoIT17fSSZbOHgb3YqJpC/ukBGjW+e32jgnnwlNoqvIMO1p3SvoENHMGYIpCveLGx+INexzbqhJKFp11Vsk=
-X-Received: by 2002:a05:6602:123b:b0:7ba:72f2:430c with SMTP id
- z27-20020a056602123b00b007ba72f2430cmr127233iot.6.1703031684948; Tue, 19 Dec
- 2023 16:21:24 -0800 (PST)
+        bh=P8SdDvE7M57yXe3BWZ3ZcRgxoEXpwC009EWtj4naDlo=;
+        b=SOnhzwaXhkbu66rg5X5cnfdMK8dzxGKDHigVqL/wDwpDe2GcNQjptVdrxu9tMBxFtt
+         hVI9i5EIL688j1Ptk6LbixYSfaoitTk1CkPFpd/eiagN7OLE8NSmTzOBl08tlsqHzqz2
+         wcdFMFnwJhNo/0tHja2/45S3pLQ9hYX0TdLDWjZQd/Q+afJdi/BaP5c1YqKEzmAoXuE5
+         IVGUt+sQpbA8J8U+ABYUNwK6V5XZOoR5d0oWnUm91IBbmfdiG966p/kdKNxwhQ2o7elV
+         wyz7HUSSsbQhQe3+P8BtAaXEoxolJKjd9sCXMA1YKN03lMytQgb0qoUefU9fXFufljtJ
+         v0/Q==
+X-Gm-Message-State: AOJu0YzMwikWSRUQ3v6CQ7xsqCdC+/CPsgVnUepGJNn297pfTjewz+n4
+	2G02Z8sxAz/rZY/KKUxNCNdg4tuiVhv2kYb3Aio=
+X-Google-Smtp-Source: AGHT+IEKMRJ2A/8k+HFec9JVztktWh1oH4gjUHQQ0P51MbeujpIkHXJ7CzFF2BpdFy049M782P4CbjjYU8rKwgPQOXw=
+X-Received: by 2002:adf:e9c6:0:b0:336:5fb5:b5b with SMTP id
+ l6-20020adfe9c6000000b003365fb50b5bmr1843366wrn.109.1703031958902; Tue, 19
+ Dec 2023 16:25:58 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231211052850.3513230-1-debug.penguin32@gmail.com>
- <CAKEwX=MzkBt1F2WZaacuCQ+E6eWt1AKvbGZ6JFHy5tkoYigqQg@mail.gmail.com>
- <CALk6Uxog_LLF2dec2J54baMfee8jCOEabjWLG6-L=FEyZ-FFBQ@mail.gmail.com>
- <CAKEwX=OwFk7aL-PGE4JBR0qy5NzbDbSmPGyu8yd7FK+yU8mRBg@mail.gmail.com> <CALk6Uxp_vKh2y-Fjh5=0gP_gmBZTLuJ8T0CLAFedRp79zaJikQ@mail.gmail.com>
-In-Reply-To: <CALk6Uxp_vKh2y-Fjh5=0gP_gmBZTLuJ8T0CLAFedRp79zaJikQ@mail.gmail.com>
-From: Nhat Pham <nphamcs@gmail.com>
-Date: Tue, 19 Dec 2023 16:21:13 -0800
-Message-ID: <CAKEwX=NLe-N6dLvOVErPSL3Vfw6wqHgcUBQoNRLeWkN6chdvLQ@mail.gmail.com>
-Subject: Re: [PATCH] mm/zswap: Improve with alloc_workqueue() call
-To: Ronald Monthero <debug.penguin32@gmail.com>
-Cc: sjenning@redhat.com, akpm@linux-foundation.org, 
-	Dan Streetman <ddstreet@ieee.org>, Vitaly Wool <vitaly.wool@konsulko.com>, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, Chris Li <chrisl@kernel.org>
+References: <20231215171020.687342-1-bigeasy@linutronix.de> <20231215171020.687342-16-bigeasy@linutronix.de>
+In-Reply-To: <20231215171020.687342-16-bigeasy@linutronix.de>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 19 Dec 2023 16:25:47 -0800
+Message-ID: <CAADnVQKJBpvfyvmgM29FLv+KpLwBBRggXWzwKzaCT9U-4bgxjA@mail.gmail.com>
+Subject: Re: [PATCH net-next 15/24] net: Use nested-BH locking for XDP redirect.
+To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: LKML <linux-kernel@vger.kernel.org>, 
+	Network Development <netdev@vger.kernel.org>, "David S. Miller" <davem@davemloft.net>, 
+	Boqun Feng <boqun.feng@gmail.com>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Eric Dumazet <edumazet@google.com>, Frederic Weisbecker <frederic@kernel.org>, 
+	Ingo Molnar <mingo@redhat.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Thomas Gleixner <tglx@linutronix.de>, 
+	Waiman Long <longman@redhat.com>, Will Deacon <will@kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, Cong Wang <xiyou.wangcong@gmail.com>, 
+	Hao Luo <haoluo@google.com>, Jamal Hadi Salim <jhs@mojatatu.com>, 
+	Jesper Dangaard Brouer <hawk@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Jiri Pirko <jiri@resnulli.us>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Ronak Doshi <doshir@vmware.com>, Song Liu <song@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, VMware PV-Drivers Reviewers <pv-drivers@vmware.com>, 
+	Yonghong Song <yonghong.song@linux.dev>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 15, 2023 at 1:04=E2=80=AFAM Ronald Monthero
-<debug.penguin32@gmail.com> wrote:
+On Fri, Dec 15, 2023 at 9:10=E2=80=AFAM Sebastian Andrzej Siewior
+<bigeasy@linutronix.de> wrote:
+> diff --git a/net/core/dev.c b/net/core/dev.c
+> index 5a0f6da7b3ae5..5ba7509e88752 100644
+> --- a/net/core/dev.c
+> +++ b/net/core/dev.c
+> @@ -3993,6 +3993,7 @@ sch_handle_ingress(struct sk_buff *skb, struct pack=
+et_type **pt_prev, int *ret,
+>                 *pt_prev =3D NULL;
+>         }
 >
-> On Thu, Dec 14, 2023 at 10:28=E2=80=AFAM Nhat Pham <nphamcs@gmail.com> wr=
-ote:
-> >
-> ..
-> < snipped >
+> +       guard(local_lock_nested_bh)(&bpf_run_lock.redirect_lock);
+>         qdisc_skb_cb(skb)->pkt_len =3D skb->len;
+>         tcx_set_ingress(skb, true);
 >
-> > I should have been clearer. I'm not against the change per-se - I
-> > agree that we should replace create_workqueue() with
-> > alloc_workqueue(). What I meant was, IIUC, there are two behavioral
-> > changes with this new workqueue creation:
-> >
-> > a) We're replacing a bounded workqueue (which as you noted, is fixed
-> > by create_workqueue()) with an unbounded one (WQ_UNBOUND). This seems
-> > fine to me - I doubt locality buys us much here.
+> @@ -4045,6 +4046,7 @@ sch_handle_egress(struct sk_buff *skb, int *ret, st=
+ruct net_device *dev)
+>         if (!entry)
+>                 return skb;
 >
-> Yes the workqueue attribute change per se but the existing
-> functionality remains seamless and the change is more a forward
-> looking change. imo under a memory pressure scenario an unbound
-> workqueue might workaround the scenario better as the number of
-> backing pools is dynamic. And with the WQ_UNBOUND attribute the
-> scheduler is more open to exercise some improvisations in any
-> demanding scenarios for offloading cpu time slicing for workers, ie if
-> any other worker of the same primary cpu had to be served due to
-> workers with WQ_HIGHPRI and WQ_CPU_INTENSIVE.Although normal and
-> highpri worker-pools don't interact with each other, the target cpu
-> atleast need not be the same if our worker for zswap is WQ_UNBOUND.
-
-I don't object to the change per-se. I just meant that these
-changes/discussion should be spelled out in the patch's changelog :)
-IMHO, we should document behavior changes if there are any. For
-instance, when we switched to kmap_local_page() for zswap, there is a
-discussion in the changelog regarding how it differs from the old (and
-deprecated) kmap_atomic():
-
-https://lore.kernel.org/linux-mm/20231127160058.586446-1-fabio.maria.de.fra=
-ncesco@linux.intel.com/
-
-and how that difference doesn't matter in the case of zswap.
-
+> +       guard(local_lock_nested_bh)(&bpf_run_lock.redirect_lock);
+>         /* qdisc_skb_cb(skb)->pkt_len & tcx_set_ingress() was
+>          * already set by the caller.
+>          */
+> @@ -5008,6 +5010,7 @@ int do_xdp_generic(struct bpf_prog *xdp_prog, struc=
+t sk_buff *skb)
+>                 u32 act;
+>                 int err;
 >
-> Also noting that the existing wq of zwap worker has the WQ_MEM_RECLAIM
-> attribute, so is there a rescue worker for zswap during a memory
-> pressure scenario ?
-> Quoting: "All work items which might be used on code paths that handle
-> memory reclaim are required to be queued on wq's that have a
-> rescue-worker reserved for execution under memory pressure. Else it is
-> possible that the worker-pool deadlocks waiting for execution contexts
-> to free up"
-
-Seems like it, but this behavior is not changed by your patch :) So
-i'm not too concerned by it one way or another.
-
+> +               guard(local_lock_nested_bh)(&bpf_run_lock.redirect_lock);
+>                 act =3D netif_receive_generic_xdp(skb, &xdp, xdp_prog);
+>                 if (act !=3D XDP_PASS) {
+>                         switch (act) {
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index 7c9653734fb60..72a7812f933a1 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -4241,6 +4241,7 @@ static const struct bpf_func_proto bpf_xdp_adjust_m=
+eta_proto =3D {
+>   */
+>  void xdp_do_flush(void)
+>  {
+> +       guard(local_lock_nested_bh)(&bpf_run_lock.redirect_lock);
+>         __dev_flush();
+>         __cpu_map_flush();
+>         __xsk_map_flush();
+> diff --git a/net/core/lwt_bpf.c b/net/core/lwt_bpf.c
+> index a94943681e5aa..74b88e897a7e3 100644
+> --- a/net/core/lwt_bpf.c
+> +++ b/net/core/lwt_bpf.c
+> @@ -44,6 +44,7 @@ static int run_lwt_bpf(struct sk_buff *skb, struct bpf_=
+lwt_prog *lwt,
+>          * BPF prog and skb_do_redirect().
+>          */
+>         local_bh_disable();
+> +       local_lock_nested_bh(&bpf_run_lock.redirect_lock);
+>         bpf_compute_data_pointers(skb);
+>         ret =3D bpf_prog_run_save_cb(lwt->prog, skb);
 >
-> Also additional thought if adding WQ_FREEZABLE attribute while
-> creating the zswap worker make sense in scenarios to handle freeze and
-> unfreeze of specific cgroups or file system wide freeze and unfreeze
-> scenarios ? Does zswap worker participate in freeze/unfreeze code path
-> scenarios ?
-
-I don't think so, no? This zswap worker is scheduled upon the zswap
-pool limit hit (which happens on the zswap store/swapping/memory
-reclaim) path.
-
+> @@ -76,6 +77,7 @@ static int run_lwt_bpf(struct sk_buff *skb, struct bpf_=
+lwt_prog *lwt,
+>                 break;
+>         }
 >
-> > b) create_workqueue() limits the number of concurrent per-cpu
-> > execution contexts at 1 (i.e only one single global reclaimer),
-> > whereas after this patch this is set to the default value. This seems
-> > fine to me too - I don't remember us taking advantage of the previous
-> > concurrency limitation. Also, in practice, the task_struct is
-> > one-to-one with the zswap_pool's anyway, and most of the time, there
-> > is just a single pool being used. (But it begs the question - what's
-> > the point of using 0 instead of 1 here?)
+> +       local_unlock_nested_bh(&bpf_run_lock.redirect_lock);
+>         local_bh_enable();
 >
-> Nothing in particular but I left it at default 0, which can go upto
-> 256 ( @maxactive per cpu).
-> But if zswap worker is always intended to only have 1 active worker per c=
-pu,
-> then that's fine with 1, otherwise a default setting might be flexible
-> for scaling.
-> just a thought, does having a higher value help for larger memory systems=
-  ?
+>         return ret;
+> diff --git a/net/sched/cls_api.c b/net/sched/cls_api.c
+> index 1976bd1639863..da61b99bc558f 100644
+> --- a/net/sched/cls_api.c
+> +++ b/net/sched/cls_api.c
+> @@ -23,6 +23,7 @@
+>  #include <linux/jhash.h>
+>  #include <linux/rculist.h>
+>  #include <linux/rhashtable.h>
+> +#include <linux/bpf.h>
+>  #include <net/net_namespace.h>
+>  #include <net/sock.h>
+>  #include <net/netlink.h>
+> @@ -3925,6 +3926,7 @@ struct sk_buff *tcf_qevent_handle(struct tcf_qevent=
+ *qe, struct Qdisc *sch, stru
+>
+>         fl =3D rcu_dereference_bh(qe->filter_chain);
+>
+> +       guard(local_lock_nested_bh)(&bpf_run_lock.redirect_lock);
+>         switch (tcf_classify(skb, NULL, fl, &cl_res, false)) {
+>         case TC_ACT_SHOT:
+>                 qdisc_qstats_drop(sch);
 
-I don't think having higher value helps here tbh. We only have one
-work_struct per pool, so it shouldn't make a difference either way :)
+Here and in all other places this patch adds locks that
+will kill performance of XDP, tcx and everything else in networking.
 
->
-> > Both seem fine (to me anyway - other reviewers feel free to take a
-> > look and fact-check everything). I just feel like this should be
-> > explicitly noted in the changelog, IMHO, in case we are mistaken and
-> > need to revisit this :) Either way, not a NACK from me.
->
-> Thanks Nhat, for checking. Above are my thoughts, I could be missing
-> some info or incorrect
-> on certain fronts so I would seek clarifications.
-> Also thanks in advance to other experts/maintainers, please share
-> feedback and suggestions.
->
-> BR,
-> ronald
-
-Also +Chris Li, who is also working on improving zswap :)
+I'm surprised Jesper and other folks are not jumping in with nacks.
+We measure performance in nanoseconds here.
+Extra lock is no go.
+Please find a different way without ruining performance.
 
