@@ -1,92 +1,117 @@
-Return-Path: <linux-kernel+bounces-6746-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6744-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62669819CCA
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 11:31:39 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45681819CC5
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 11:30:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1D1FC288635
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 10:31:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DD90EB22687
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 10:30:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19BEA20B01;
-	Wed, 20 Dec 2023 10:30:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 163D420B1C;
+	Wed, 20 Dec 2023 10:30:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="RMqNigBv"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from SHSQR01.spreadtrum.com (unknown [222.66.158.135])
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5B25210F5
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 10:30:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=unisoc.com
-Received: from dlp.unisoc.com ([10.29.3.86])
-	by SHSQR01.spreadtrum.com with ESMTP id 3BKATt6H069490;
-	Wed, 20 Dec 2023 18:29:55 +0800 (+08)
-	(envelope-from zhaoyang.huang@unisoc.com)
-Received: from SHDLP.spreadtrum.com (bjmbx01.spreadtrum.com [10.0.64.7])
-	by dlp.unisoc.com (SkyGuard) with ESMTPS id 4Sw8mD0818z2QJrHp;
-	Wed, 20 Dec 2023 18:23:39 +0800 (CST)
-Received: from bj03382pcu01.spreadtrum.com (10.0.73.40) by
- BJMBX01.spreadtrum.com (10.0.64.7) with Microsoft SMTP Server (TLS) id
- 15.0.1497.23; Wed, 20 Dec 2023 18:29:53 +0800
-From: "zhaoyang.huang" <zhaoyang.huang@unisoc.com>
-To: Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox
-	<willy@infradead.org>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>,
-        Zhaoyang Huang <huangzhaoyang@gmail.com>, <steve.kang@unisoc.com>
-Subject: [RFC PATCH 1/1] mm: mark folio accessed in minor fault
-Date: Wed, 20 Dec 2023 18:29:48 +0800
-Message-ID: <20231220102948.1963798-1-zhaoyang.huang@unisoc.com>
-X-Mailer: git-send-email 2.25.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0363208CC;
+	Wed, 20 Dec 2023 10:30:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1703068240;
+	bh=n/zmS7VaIkLVY/5N1cyUJFCFW5xVaPkF4+goSBWq9cM=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=RMqNigBv8VHDwSINqU0L6N899DFky+1/+lQq33I3OqX38HUalwuvuhDVXnwsqUQiI
+	 Q7skFkjLBCFruk/gyTDQrU1LufFQe8TgcFkhgTo+R5Y+rVyE5mTEJwxDxveZqJGEZw
+	 ravUH5zW4p220IFJ5QLx5mEV+3JAdfeMm4TsrEXfgP+gdjZjOnW1bOiDTiYXEgVzbC
+	 lgGNfdavd9YEMdhxRg+yYe0iB3o5xvq3gYcUkoFR9xXmOfGVllVzNCEfu2vrnyHaaI
+	 vL0Dxdn1QfK+tj0CtLoFxdeRwAPfKUClI7VHsPvklpEQ4lnG8PJAvAT2Y5fcb91itt
+	 sY6PK7uKV+DWA==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 150E83781FC8;
+	Wed, 20 Dec 2023 10:30:39 +0000 (UTC)
+Message-ID: <d1767b1d-0b80-4ece-8a35-18eed52a3f6e@collabora.com>
+Date: Wed, 20 Dec 2023 11:30:38 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SHCAS01.spreadtrum.com (10.0.1.201) To
- BJMBX01.spreadtrum.com (10.0.64.7)
-X-MAIL:SHSQR01.spreadtrum.com 3BKATt6H069490
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 3/3] arm64: dts: mediatek: mt8195: Add 'rx-fifo-depth'
+ for cherry
+Content-Language: en-US
+To: Chunfeng Yun <chunfeng.yun@mediatek.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Cc: Conor Dooley <conor+dt@kernel.org>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ Mathias Nyman <mathias.nyman@intel.com>, linux-usb@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Eddie Hung <eddie.hung@mediatek.com>, Macpaul Lin <macpaul.lin@mediatek.com>
+References: <20231220025842.7082-1-chunfeng.yun@mediatek.com>
+ <20231220025842.7082-3-chunfeng.yun@mediatek.com>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20231220025842.7082-3-chunfeng.yun@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+Il 20/12/23 03:58, Chunfeng Yun ha scritto:
+> Add the quirk property "rx-fifo-depth" to work around Gen1 isoc-in
+> transfer issue which send out unexpected ACK even after device
+> already finished the burst transfer with a short patcket, specially
+> for a 4K camera device.
+> 
+> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+> ---
+> v3: change value according to binding
+> v2: use 'rx-fifo-depth' property
+> ---
+>   arch/arm64/boot/dts/mediatek/mt8195-cherry.dtsi | 2 ++
+>   1 file changed, 2 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/mediatek/mt8195-cherry.dtsi b/arch/arm64/boot/dts/mediatek/mt8195-cherry.dtsi
+> index dd5b89b73190..58593348b810 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt8195-cherry.dtsi
+> +++ b/arch/arm64/boot/dts/mediatek/mt8195-cherry.dtsi
+> @@ -1185,6 +1185,7 @@
+>   
 
-Inactive mapped folio will be promoted to active only when it is
-scanned in shrink_inactive_list, while the vfs folio will do this
-immidiatly when it is accessed. These will introduce two affections:
+Can you please place rx-fifo-depth before power supplies?
 
-1. NR_ACTIVE_FILE is not accurate as expected.
-2. Low reclaiming efficiency caused by dummy nactive folio which should
-   be kept as earlier as shrink_active_list.
+after which,
 
-I would like to suggest mark the folio be accessed in minor fault to
-solve this situation.
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 
-Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
----
- mm/filemap.c | 5 +++++
- 1 file changed, 5 insertions(+)
+Thanks,
+Angelo
 
-diff --git a/mm/filemap.c b/mm/filemap.c
-index f0a15ce1bd1b..b1ee6ce716c2 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -3273,6 +3273,11 @@ vm_fault_t filemap_fault(struct vm_fault *vmf)
- 	 */
- 	folio = filemap_get_folio(mapping, index);
- 	if (likely(!IS_ERR(folio))) {
-+		/*
-+		 * try to promote inactive folio here when it is accessed
-+		 * as minor fault
-+		 */
-+		folio_mark_accessed(folio);
- 		/*
- 		 * We found the page, so try async readahead before waiting for
- 		 * the lock.
--- 
-2.25.1
+>   	vusb33-supply = <&mt6359_vusb_ldo_reg>;
+>   	vbus-supply = <&usb_vbus>;
+> +	rx-fifo-depth = <3>;
+>   };
+>   
+>   &xhci1 {
+> @@ -1192,6 +1193,7 @@
+>   
+>   	vusb33-supply = <&mt6359_vusb_ldo_reg>;
+>   	vbus-supply = <&usb_vbus>;
+> +	rx-fifo-depth = <3>;
+>   };
+>   
+>   &xhci2 {
+
 
 
