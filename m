@@ -1,181 +1,83 @@
-Return-Path: <linux-kernel+bounces-6167-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6168-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 394EC819549
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 01:29:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5789B81954B
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 01:30:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5DEFC1C20F23
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 00:29:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 11F9D288F93
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 00:30:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E1CE23B4;
-	Wed, 20 Dec 2023 00:29:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KvI8gPE+"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 279DE440B;
+	Wed, 20 Dec 2023 00:30:06 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9F271857;
-	Wed, 20 Dec 2023 00:29:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703032157; x=1734568157;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=p+/2b4Svswb34S51gM2UmZA0WikjjhK3jS+2AGDABcM=;
-  b=KvI8gPE+t09jhH1nAjCIE+EGav13SOVQAXurtCUbPDUM54u52BE8K4K9
-   WR7m7itqsPpLHw2Aypof35e9Rp3QabpzsVN95+prlkOYS+14rrKJT3bH0
-   wdYLTB0bxVSRvmrn5+BC4NqWHmUlH/6kzv2WiIeAIKeHqZzQl9lzfRywv
-   dqoQNGNgwUkRr9anC7NIN/6+DXcyBTJY1t50zhWyGZoUMfhoERHWzTBOA
-   ZoikQRxFqn3oowd66j0jVy/Px1WgIOMiDfPbu/0k9AoQBD7Vf1XqpbtgR
-   4YdO+xKBJtYZj0iIrqw9VD5XYTDX7VAKpzclD+bsApsFS7p+/ItqYME6a
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10929"; a="481926606"
-X-IronPort-AV: E=Sophos;i="6.04,289,1695711600"; 
-   d="scan'208";a="481926606"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Dec 2023 16:29:16 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10929"; a="810406706"
-X-IronPort-AV: E=Sophos;i="6.04,289,1695711600"; 
-   d="scan'208";a="810406706"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by orsmga001.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 19 Dec 2023 16:29:15 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 19 Dec 2023 16:29:14 -0800
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Tue, 19 Dec 2023 16:29:14 -0800
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.100)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Tue, 19 Dec 2023 16:29:14 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OsQHV919oSofyLaT88086JxTZK+ntio8VgunTSWCahWgiu3UacSmv88gIa9ZdkWrgzlNhwC+OF5pOWHcfpndLe8zHzqb8uO7NeQeJUD67jMdRJv1xTE5+UEAxkM5cll5/tyM+O4Tw3ma5QljSJlIOGqBRSUYWOrXYJQ6ageNctT0RI9H1WzRIUMWLVhK3k7AXTl94q0DEZNMKgIWg/NYulPsRfmYDlOJTSjbj1eQtDlh98OwwSP/fY6QQEUtn9DN+iL8xspbEtjCJHPTH3woXfuQfeXoH1589BdN+7GJFVyu6QM9YRgSFWWAMtZddYRNCNhwoApaFnOcnDm+ekSwiw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=0HCRiH7JXiKdbk0VaE/0USN3hVUUgdQIKtXX1gePwp4=;
- b=PK/NiEo8bh8gM+mV6byeMVDOut5DwgXX9nlojKGC1MZy0yf65VjXfcSa7vTmA+ODdN4ycg9+DzLnnOTyDh8VoehVa8Dh/r6u8Ht5JY7UlAAoaFFvrOQ+w8rOHt36ZShJiy5SsSe7qaAXOOzyoJMERM2tvjJJLl0Rv1cOwAST9yHk2Z5sg0e1Ym3jn2x0BGIiNLVk/O1XTJOJlnSAPL2Ssr7d377qpY6ebuDpRw1+mIp/jI6ZJ8zBTbLZHrlaDoTetIdgkUT6lstKVJhixRi+rN2gWU1HD59YD8CK5SkteadZCzCY6lONSze8cdr3+X4A3gkDwl86K8CAD1ORz4iBpQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SA1PR11MB6733.namprd11.prod.outlook.com (2603:10b6:806:25c::17)
- by DM4PR11MB5454.namprd11.prod.outlook.com (2603:10b6:5:399::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.38; Wed, 20 Dec
- 2023 00:29:12 +0000
-Received: from SA1PR11MB6733.namprd11.prod.outlook.com
- ([fe80::da91:dbe5:857c:fa9c]) by SA1PR11MB6733.namprd11.prod.outlook.com
- ([fe80::da91:dbe5:857c:fa9c%4]) with mapi id 15.20.7113.016; Wed, 20 Dec 2023
- 00:29:12 +0000
-Date: Tue, 19 Dec 2023 16:29:08 -0800
-From: Ira Weiny <ira.weiny@intel.com>
-To: Dan Williams <dan.j.williams@intel.com>, Ira Weiny <ira.weiny@intel.com>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>
-CC: Dan Williams <dan.j.williams@intel.com>, Smita Koralahalli
-	<Smita.KoralahalliChannabasappa@amd.com>, Shiju Jose <shiju.jose@huawei.com>,
-	Yazen Ghannam <yazen.ghannam@amd.com>, Davidlohr Bueso <dave@stgolabs.net>,
-	Dave Jiang <dave.jiang@intel.com>, Alison Schofield
-	<alison.schofield@intel.com>, Vishal Verma <vishal.l.verma@intel.com>, "Ard
- Biesheuvel" <ardb@kernel.org>, <linux-efi@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-cxl@vger.kernel.org>, Bjorn Helgaas
-	<bhelgaas@google.com>
-Subject: Re: [PATCH v4 7/7] cxl/memdev: Register for and process CPER events
-Message-ID: <658235548ca6c_2edf029490@iweiny-mobl.notmuch>
-References: <20231215-cxl-cper-v4-0-01b6dab44fcd@intel.com>
- <20231215-cxl-cper-v4-7-01b6dab44fcd@intel.com>
- <20231219143732.0000181e@Huawei.com>
- <658226c9a49f3_277bd294fb@iweiny-mobl.notmuch>
- <65822909ebe4c_269bd294f5@dwillia2-mobl3.amr.corp.intel.com.notmuch>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <65822909ebe4c_269bd294f5@dwillia2-mobl3.amr.corp.intel.com.notmuch>
-X-ClientProxiedBy: SJ0PR05CA0028.namprd05.prod.outlook.com
- (2603:10b6:a03:33b::33) To SA1PR11MB6733.namprd11.prod.outlook.com
- (2603:10b6:806:25c::17)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B1671FB6
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 00:30:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7b7fa6cba91so86511339f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 16:30:03 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703032203; x=1703637003;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=IB4yfa/gkpOsXJDXGczqw9b/EB2d2YrDYws3LKmd3wU=;
+        b=OJWEGmEdsZ1CACm7vMLv01kykQSxyEAHeAJc4nItvneTuOKJ03FV265q6HjeHRDsZe
+         /q20QUjHJ1MpbL6GoZWM+8BnY18ZRerLdpJElIPFEeDm8pawag9GBW7Vdkwv2GQAiy9+
+         b08db3T9v80+DrJe4Yqu0RwZQh0Cw9nk8U+kvovm0g23E24ZUOs9RtEK7SteXbp9z9bU
+         JgvUT++tlfsesup0h+E+JnOtqBMjiw6KTVeojjrdPYu+MKr24Z+4AbvSNdx/QbSqNJu0
+         C7kK/p3VP/oTuWgKRkYPQbDOC5cvNJKBCuZIEyAZgWWr7vRfOVcUBlNm3kEK3GOX3VCZ
+         ENKQ==
+X-Gm-Message-State: AOJu0YxdmYSKYP485nPQGiSnCIPndA9nJ508nkrxEZlZD3e+la3DdMBM
+	ZeqOsxBu5hO9LmO4Y7m3jB/P48vqielQO5mXafHrezIYXSlj
+X-Google-Smtp-Source: AGHT+IGpzlanNXyUXLz8ztZUudG8cCibZeW7FsWjkwVgcLUP+171LFpbOUNnK6UdyNs02nKqZOrH9gU5Qf47KS6Z25X3dvBwYVfr
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SA1PR11MB6733:EE_|DM4PR11MB5454:EE_
-X-MS-Office365-Filtering-Correlation-Id: 89812e80-f362-40a5-dc66-08dc00f2b068
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: meOH+JH1W5Js479VL8luxPvMVWw6CynPnGJmJOwgvDmva7N5MtJ44Obue8Lc0GQoXUFQlWYZx/wACRmL2SLfq0QBBXmBhkg9rrEriGnZay0lpPP9T1JaDRk35EUAaZFecvkDaz9Br8efsbb48JxOMUarNg+rip2AJ6RGryRapdp5AWsMqlm7zSG9HHn4qVa63cl6pFH19nAgF6bqk/t9/S8AaxVAzggMInApZPufZc4Yx/NJBiLiMW+7fYktTv6ZkLWotK6LFc+UWKJ/EP53Vd/qItDh1p9C0hbgbU9e7LTxfsGaX8CKw1frXO/jsAp5u2NnMzwMiDEgTSTw57tYrzFhdWNN2/fpcME1jAGaH3RrwWcAfyYySGaKeOYKdOcogumH+rH3nP+qQ5TPie0Uu+XW2xpJAqvrS0aTRLrwntZKod8XZNIeGSwBR7kpNQJG+UP3UQhCzoTtULBBqmv6K6hG0wll5ARz+wGm4DaTaGLzvmnpLBFK7sezFdJuzYPYk8L5mx5Om8SRM4Aw4I1Cy4dvtMwJ/gR3cXqe7/62TveTFo8TCkvRGnO1cluP+2V3
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR11MB6733.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(396003)(366004)(39860400002)(136003)(346002)(230922051799003)(451199024)(186009)(1800799012)(64100799003)(6506007)(9686003)(6512007)(6666004)(38100700002)(82960400001)(86362001)(478600001)(8936002)(8676002)(4326008)(110136005)(41300700001)(7416002)(4744005)(2906002)(5660300002)(66556008)(54906003)(6486002)(44832011)(66476007)(66946007)(316002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?mE6hAs/0AFTBO1qgTr7oWXqz2F9Tba/t9C8WjyU0IQViirz3f7OLwETKlNsh?=
- =?us-ascii?Q?tfNhKmBJa20EPkPsYP38PflAraOrg7okQAaOipNdv8zID+0h/EDwrUcHviZ0?=
- =?us-ascii?Q?GpqBIG2NoMhClpXLBxn3WSmE6s85fVd4SOa2G0kC/eS5l6WAndlFGYk8FWqO?=
- =?us-ascii?Q?hkpKz3vbF1IHBq7Rt8O67lYXjyRctMay1RJ93slnwuiiSTfXjzWn/0PrYHoP?=
- =?us-ascii?Q?MbivJkDpzql8+6DETAdgz6IISAVFrcYnrrU8EB6+p815WG1VOGBIMzfstQup?=
- =?us-ascii?Q?47TRbdwS35EV6V6XVR8dRmYyATaXLPrmzdo+LxHlE5K6kdU7/ouT5m1eCsub?=
- =?us-ascii?Q?YQJWlpWpiDbet0KJ3D+lN4zuOUglbi5hroLGBZwMd7KmoW81RCOjccScj7IU?=
- =?us-ascii?Q?kAddGtTqhVn6kzaYMzzOSU6F+udkN7+C4lG7/6x/k2RYoz1wkapysnQTaSMM?=
- =?us-ascii?Q?Gs+2QxNufCmDus+yAOCk/hHtWrzE/rhKz6UwbqUR/BuADI/YgImSrIerwRjW?=
- =?us-ascii?Q?TMj6xsLI7aUqQV+PBznJHjoV0tjFCoCFcvsiQlmldvIInZllYXrjGgc3IVit?=
- =?us-ascii?Q?Qld1G67AC+Rjnh0LVq7I3wO/Zlnj5UfAuCje1vnNQqrOdI3KQ2OPR7I1W4+J?=
- =?us-ascii?Q?T9gtw7TakS3hO+Dpiun6VrHXXzT8qXAmiP8/BLZXUWF36AsNoiKpyky0/mQb?=
- =?us-ascii?Q?Os7fRDFiBAv4EaEMIpP+2yRA3xzmNIZzvwCmNumEGNXdyhLi3MVN2QY4ugJx?=
- =?us-ascii?Q?hvfVBIXsoTLCzEoZ5l/Y8lz+kwsiQnrDuwznUYlwOTSchGS5ae+/JT33qfQc?=
- =?us-ascii?Q?3dhRvJG+IhrjNwgDv2ji9o3d958LgVLw1zvRZG7vHRYgIwzoGAtzHLeygsBz?=
- =?us-ascii?Q?gucLxo3QXHpEPG2Z+MbuO8ohbt+wOPKOcjt0WEOgSkT/QK9Kiy1vGG0pyK/l?=
- =?us-ascii?Q?sIV+pvHmb1gMWFR0LJ0HyLayLnafb2Dt5+Qik+qQ7+IZrgP0pVyIU+zRHpVl?=
- =?us-ascii?Q?nV86kjv0ZCHHKOZvqvC2P1UMdMLtadM+CyPsqt4KTJoZxPiypwWE1L6q+MlE?=
- =?us-ascii?Q?zr0vMSqK9xYV8Olib/efxhEMNZccTYeWV95fkPiQUSEFa4uOvq56961fuSep?=
- =?us-ascii?Q?3eAkpaHNFsadiusRw7uXFo9D94fkqePlA1OauQbBmNm8MmI3wM4zidAvy5AI?=
- =?us-ascii?Q?bS5yuEki7Ki2MSa8aQDY+42W226lbWqxliRQn+jIw+09nX9+hT+0Upf8SuXP?=
- =?us-ascii?Q?cu8aTF2PuiQxlZIHQVXgY2rdvwZPAS9kP6YClyFxKgoLjl1hwM6i6bgjFe1J?=
- =?us-ascii?Q?PU3pHYoQghcjWhejnzuz5awKixBjfvL6xvz5ked4aXAckYjv2pyRm/p/S4eK?=
- =?us-ascii?Q?HHVfjueS8RoQ+JuZoFSSUqC4BS0toNmzaFS0yJ8DlBwwtCts56plWwUjbmog?=
- =?us-ascii?Q?IZY1jUQeQXzcVfhDyY9zJyDKOmQmB9KI+mGxKfsE2wm41pNC0THWmwuzPteM?=
- =?us-ascii?Q?tjoCMAIwAReWltWTCXu7sbuQl/FxRglhakmOqNsLmAEiRnt7XTuUtRJoFJfn?=
- =?us-ascii?Q?WCV/6eWlwba88MKZfFKPeDmIm1YvT8JkltRtJ5kgDw4UnZz5KIuTHal9yo8f?=
- =?us-ascii?Q?GnNpQ+iFrRUPTZC0KM3oLApmrHfGEMbkEZCK+dZOstFQ?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 89812e80-f362-40a5-dc66-08dc00f2b068
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR11MB6733.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Dec 2023 00:29:12.3038
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: FyJ4XbGtziBiR+R/U5bJvfcBKuUDLsbHkUtbLghJBJ16CifsVrNxsBu1MccOD+1pfwxX4h1Kh2+FWhdDQbmTAQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB5454
-X-OriginatorOrg: intel.com
+X-Received: by 2002:a05:6e02:1d93:b0:35f:a015:322a with SMTP id
+ h19-20020a056e021d9300b0035fa015322amr999281ila.5.1703032203274; Tue, 19 Dec
+ 2023 16:30:03 -0800 (PST)
+Date: Tue, 19 Dec 2023 16:30:03 -0800
+In-Reply-To: <000000000000e171200600d6d8bd@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000847160060ce61580@google.com>
+Subject: Re: [syzbot] [overlayfs?] possible deadlock in seq_read_iter (2)
+From: syzbot <syzbot+da4f9f61f96525c62cc7@syzkaller.appspotmail.com>
+To: amir73il@gmail.com, axboe@kernel.dk, hch@lst.de, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-unionfs@vger.kernel.org, miklos@szeredi.hu, rafael@kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-Dan Williams wrote:
-> Ira Weiny wrote:
-> [..]
-> > > and drop the = NULL above.
-> > 
-> > Done.
-> 
-> The NULL assignment was more about making it clear that
-> __free(pci_dev_put) will take no action until the pdev is acquired.
-> Otherwise, any future refactoring that introduces a 'return' before
-> @pdev is acquired needs to be careful to assign @pdev to NULL. So, just
-> include it in the declaration more as a __free() declaration style issue
-> than a correctness issue.
+syzbot has bisected this issue to:
 
-I think he meant the assignment to cxlds.  At least that is the NULL
-assignment I took out.
+commit 1e8c813b083c4122dfeaa5c3b11028331026e85d
+Author: Christoph Hellwig <hch@lst.de>
+Date:   Wed May 31 12:55:32 2023 +0000
 
-Ira
+    PM: hibernate: don't use early_lookup_bdev in resume_store
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14b15592e80000
+start commit:   2cf4f94d8e86 Merge tag 'scsi-fixes' of git://git.kernel.or..
+git tree:       upstream
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=16b15592e80000
+console output: https://syzkaller.appspot.com/x/log.txt?x=12b15592e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e5751b3a2226135d
+dashboard link: https://syzkaller.appspot.com/bug?extid=da4f9f61f96525c62cc7
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=176a4f49e80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=154aa8d6e80000
+
+Reported-by: syzbot+da4f9f61f96525c62cc7@syzkaller.appspotmail.com
+Fixes: 1e8c813b083c ("PM: hibernate: don't use early_lookup_bdev in resume_store")
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
