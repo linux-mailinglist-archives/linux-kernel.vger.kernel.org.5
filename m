@@ -1,81 +1,145 @@
-Return-Path: <linux-kernel+bounces-6804-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6806-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7392819DC9
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 12:17:02 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 09813819DCC
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 12:17:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 72329B24030
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 11:17:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8D9FEB23C4B
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 11:17:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13B6221363;
-	Wed, 20 Dec 2023 11:16:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 509042135B;
+	Wed, 20 Dec 2023 11:16:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="fr3wvUuR"
+	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="hrUh7nxY"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-4322.protonmail.ch (mail-4322.protonmail.ch [185.70.43.22])
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E18C21346
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 11:16:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-	s=protonmail; t=1703071001; x=1703330201;
-	bh=AHEwZCmY/Zfr7myDOFIbTRHugY04FkfLKVuXC4pRExo=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=fr3wvUuRDUzm+7gUByQScgV9ATDIz8BUobKA0OBXmEE3dHb3In6D0CveSzvaRaq3y
-	 EwZzyxxqynkhwRIJNgNAtGyufPLgKqFWyKU7dsZiOknNh9CoEGPiSNyQGb1rCrXSGr
-	 c3HDDhkywV+QLSdB5Os20FnQdjBQIZTuASsM0WCe4h/ezRuIycAT+cJ4UZEJcIi2Dz
-	 9rx/D79vhVGaNPoMk+FumrCOwA5PQC4qkmZamfmFZzM9B/2yvORoSPKW+mEkUEqrtl
-	 aVGtZVrKYc4/YBw4R7hf4AN9WlvXiYNKOx/UqdxiVr/VBxsxy8ChTL6DHFwvGgLOy3
-	 DxykXhB4DhU0w==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D460D21350;
+	Wed, 20 Dec 2023 11:16:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+	by mx0b-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BK6UF3u024892;
+	Wed, 20 Dec 2023 05:16:24 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	PODMain02222019; bh=VZbrjRCy0AAo8RNgyyUy8yOaJCjKdRG4waMvAX3/Dv8=; b=
+	hrUh7nxYOYvDDvrpblKEPcJYufp3IzT7cC3msl2Au7wT9TAswacIBcqbum0OQ8pE
+	SZ6OIiearssd645dabnLtxXI/wIr9f4Zp9uiOxvmgrL0UQ/8eSF2WaccV9kfccnK
+	2Puz7BGgDVAAXYSqN2y439+Sqs4Fz4OgY5f1UJiuhU0VqTtf4XE4t8mPf2KaZFBc
+	wE0OoPOHoBeT/YBu0jWLzjBaVdSoZQcctBWlBDts2TxeDl3NJARigBXFSVakIIGa
+	5Hy3JTluujsEM3ZebZN+TT4VASceXXvzWJVaHT4VlFvoJ6Q1pYf0ukCdGL6aVwOK
+	W1DBMl7Nk4AMv2y96PeVpw==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3v196nd9hw-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 20 Dec 2023 05:16:24 -0600 (CST)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 20 Dec
+ 2023 11:16:23 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.40 via Frontend Transport; Wed, 20 Dec 2023 11:16:23 +0000
+Received: from [198.90.251.82] (edi-sw-dsktp-006.ad.cirrus.com [198.90.251.82])
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 962A111AB;
+	Wed, 20 Dec 2023 11:16:22 +0000 (UTC)
+Message-ID: <b88d4e9c-d249-498b-afeb-63a2e823e089@opensource.cirrus.com>
 Date: Wed, 20 Dec 2023 11:16:22 +0000
-To: Miguel Ojeda <ojeda@kernel.org>, Wedson Almeida Filho <wedsonaf@gmail.com>, Alex Gaynor <alex.gaynor@gmail.com>
-From: Benno Lossin <benno.lossin@proton.me>
-Cc: Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Andreas Hindborg <a.hindborg@samsung.com>, Alice Ryhl <aliceryhl@google.com>, rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org, patches@lists.linux.dev
-Subject: Re: [PATCH] rust: upgrade to Rust 1.74.1
-Message-ID: <98aedb6a-bdf5-482a-b063-8cb8bab49874@proton.me>
-In-Reply-To: <20231214092958.377061-1-ojeda@kernel.org>
-References: <20231214092958.377061-1-ojeda@kernel.org>
-Feedback-ID: 71780778:user:proton
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] kunit: run test suites only after module
+ initialization completes
+To: Marco Pagani <marpagan@redhat.com>,
+        Brendan Higgins
+	<brendan.higgins@linux.dev>,
+        David Gow <davidgow@google.com>,
+        Shuah Khan
+	<skhan@linuxfoundation.org>,
+        Jinjie Ruan <ruanjinjie@huawei.com>, Rae Moar
+	<rmoar@google.com>
+CC: Javier Martinez Canillas <javierm@redhat.com>,
+        <linux-kselftest@vger.kernel.org>, <kunit-dev@googlegroups.com>,
+        <linux-kernel@vger.kernel.org>
+References: <20231206150729.54604-1-marpagan@redhat.com>
+Content-Language: en-US
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
+In-Reply-To: <20231206150729.54604-1-marpagan@redhat.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-ORIG-GUID: 254LZ0vv1XrUbXvNUpnwMgUrIC8-NLhr
+X-Proofpoint-GUID: 254LZ0vv1XrUbXvNUpnwMgUrIC8-NLhr
+X-Proofpoint-Spam-Reason: safe
 
-On 12/14/23 10:29, Miguel Ojeda wrote:
-> This is the next upgrade to the Rust toolchain, from 1.73.0 to 1.74.1
-> (i.e. the latest) [1].
->=20
-> See the upgrade policy [2] and the comments on the first upgrade in
-> commit 3ed03f4da06e ("rust: upgrade to Rust 1.68.2").
-[...]
-
-> Link: https://github.com/rust-lang/rust/blob/stable/RELEASES.md#version-1=
-741-2023-12-07 [1]
-> Link: https://rust-for-linux.com/rust-version-policy [2]
-> Link: https://github.com/Rust-for-Linux/linux/issues/2 [3]
-> Link: https://github.com/rust-lang/rust/pull/114201 [4]
-> Link: https://github.com/rust-lang/rust-clippy/issues/11219 [5]
-> Link: https://github.com/rust-lang/rust-clippy/issues/11431 [6]
-> Link: https://github.com/rust-lang/rust/issues/117976#issuecomment-182222=
-5691 [7]
-> Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
+On 06/12/2023 15:07, Marco Pagani wrote:
+> Commit 2810c1e99867 ("kunit: Fix wild-memory-access bug in
+> kunit_free_suite_set()") fixed a wild-memory-access bug that could have
+> happened during the loading phase of test suites built and executed as
+> loadable modules. However, it also introduced a problematic side effect
+> that causes test suites modules to crash when they attempt to register
+> fake devices.
+> 
+> When a module is loaded, it traverses the MODULE_STATE_UNFORMED and
+> MODULE_STATE_COMING states before reaching the normal operating state
+> MODULE_STATE_LIVE. Finally, when the module is removed, it moves to
+> MODULE_STATE_GOING before being released. However, if the loading
+> function load_module() fails between complete_formation() and
+> do_init_module(), the module goes directly from MODULE_STATE_COMING to
+> MODULE_STATE_GOING without passing through MODULE_STATE_LIVE.
+> 
+> This behavior was causing kunit_module_exit() to be called without
+> having first executed kunit_module_init(). Since kunit_module_exit() is
+> responsible for freeing the memory allocated by kunit_module_init()
+> through kunit_filter_suites(), this behavior was resulting in a
+> wild-memory-access bug.
+> 
+> Commit 2810c1e99867 ("kunit: Fix wild-memory-access bug in
+> kunit_free_suite_set()") fixed this issue by running the tests when the
+> module is still in MODULE_STATE_COMING. However, modules in that state
+> are not fully initialized, lacking sysfs kobjects. Therefore, if a test
+> module attempts to register a fake device, it will inevitably crash.
+> 
+> This patch proposes a different approach to fix the original
+> wild-memory-access bug while restoring the normal module execution flow
+> by making kunit_module_exit() able to detect if kunit_module_init() has
+> previously initialized the tests suite set. In this way, test modules
+> can once again register fake devices without crashing.
+> 
+> This behavior is achieved by checking whether mod->kunit_suites is a
+> virtual or direct mapping address. If it is a virtual address, then
+> kunit_module_init() has allocated the suite_set in kunit_filter_suites()
+> using kmalloc_array(). On the contrary, if mod->kunit_suites is still
+> pointing to the original address that was set when looking up the
+> .kunit_test_suites section of the module, then the loading phase has
+> failed and there's no memory to be freed.
+> 
+> v3:
+> - add a comment to clarify why the start address is checked
+> v2:
+> - add include <linux/mm.h>
+> 
+> Fixes: 2810c1e99867 ("kunit: Fix wild-memory-access bug in kunit_free_suite_set()")
+> Tested-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+> Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
+> Signed-off-by: Marco Pagani <marpagan@redhat.com>
 > ---
 
-Reviewed-by: Benno Lossin <benno.lossin@proton.me>
+For V3:
 
---=20
-Cheers,
-Benno
+Tested-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 
+Fixes this crash:
+https://lore.kernel.org/all/e239b94b-462a-41e5-9a4c-cd1ffd530d75@opensource.cirrus.com/
+
+Also tested with sound/pci/hda/cirrus_scodec_test.c
 
