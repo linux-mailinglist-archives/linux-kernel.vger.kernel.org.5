@@ -1,60 +1,59 @@
-Return-Path: <linux-kernel+bounces-6589-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6588-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BCD8819AB3
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 09:41:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D0612819AB0
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 09:40:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BBEB0B25C0F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 08:41:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1281DB25A77
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 08:40:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 366B3200AB;
-	Wed, 20 Dec 2023 08:40:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 601081F60A;
+	Wed, 20 Dec 2023 08:39:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=wolfvision.net header.i=@wolfvision.net header.b="gV7/VU15"
+	dkim=pass (1024-bit key) header.d=wolfvision.net header.i=@wolfvision.net header.b="g+cWobTZ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2082.outbound.protection.outlook.com [40.107.6.82])
+Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2051.outbound.protection.outlook.com [40.107.8.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F10B11DA31;
-	Wed, 20 Dec 2023 08:39:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 201E11D6A4;
+	Wed, 20 Dec 2023 08:39:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wolfvision.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wolfvision.net
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WwawyAnUYzuolo3qtickjZrF7SgH00XBOVTbQgJevDvzRaTuRF8j4TDeF/TyMWp4pC99sTKGBbZ1h3i27ZAMpOQaSt/SCi8vESqKWrCQLKYgLawOAurK0DeLiQ8ctGb8GG2eucWpmxI4YoNA8nPDrzenhFHV2axnGnBdfpFvlra1tMgV/Yr2CWKy/IhD2kQdOnBxW4uRqbefJXMzDCq5BsoFzK/KTvJnu3kLKRM7BzV1X1z93hi/us3K2TPeEGDu5Od2v+YHGTupvC9YIXrPpvJFUCFcL1keviQs1rV2DvWiohONFA4XSvBB0EuLHXYGfDZW297xUfxoszQ/1KMIDw==
+ b=iZcP6pdX+7gUNm2HLgMFTA9R1/pd951H56Df8zidPYxNfdXBU5ZS+IxM8JbYjK3QvPnXFEzMUggdjQJUsZuGChZtCYQ0G669A+nEHbwJe1JaNSaFrZv1onWbENlv+U+bdqRzMRAfSVZZOOSo7K+e7uAT/ZLQcFZDa6WBYTk5tgtDET/Qal/wGUi6mh4tmf5PUWiow6Lf2HRjHaUuf6+pikrEYUDxsMyiARkyoCR87Q0EaQo0ALFVH/72yvlZJ+tcFcw7GxeCN3N1K0ufEh6THiut5YBYtp37aaiQBvi3gHWDBl+c4bIpnF9jO95fqFiaCiRoe6BRGycOHhiXuFXATg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=YhIWW4/rDnj+F3sOuf67Df7bs4EBw1L8/azwrFPGv9E=;
- b=dqwWdYcRYFIu76zBYoInXa0OlIsX6iBKyHGP0xYVerHqhPIcpXC9iYU2TK6pJOR/ZPw8/+UDNEnSwBwn3xga3m8yHjhlYiIwSEqdZ3vE/jw+erdNJThIfLeoqfr4/JcwNFX7M5R17ePLsjVg4D44LvywAHxNQNn6U8lc8LZY7YGc7Vkq7SsPa0hO8As0tGcH1AjYq/79vKPXHzNy7s15F9LUG0z506Ng1gksuoLol/FKXkaoIenmhjSh2QCY6E8vcGAbQqLuw/RjpL58pNBhCFuiDgrNNw5lxmb6YcaWWgWotBilWC6FzAAenzMEHnlPXbu0zedjMPuSB3R1nU6+TA==
+ bh=2dJliw5bToQke3WfeUdjp5G1kxFNViFF+00Gz9vm6og=;
+ b=bUIejdZISWkWAXYb7elbB0ZtiLRvi+EjV6v3lLGRcb8Iplo3J19AFiuzKSWpN0wHIO7/2YgVjrCRaK3/fC45HYT5mqFe5Y8K9fXrcCnCgDpaD9Aj5UKhWAuKmJL+PdObGunkq9HzTsjWVQHC8UMl/NbWlmRs0GF7nYbXRM766hOuJpy8Om7TyULMqDN/9kB9bZSJIX/rnYIOmQW/5mKjaFZg8od7NNFBm/aXdqpKaL4d0uGV5gK8vQjuW9umruVLx2rfsyiNjRxPym8c2ZOV2T0GxPjap2yfDVMil+2IwDYbzgd2L0CXlglMzdNsPzvIPPM078YVzEhzp3xXLA4+Ug==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=wolfvision.net; dmarc=pass action=none
  header.from=wolfvision.net; dkim=pass header.d=wolfvision.net; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wolfvision.net;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YhIWW4/rDnj+F3sOuf67Df7bs4EBw1L8/azwrFPGv9E=;
- b=gV7/VU15ZhBW8TqOJ6+fw6J+hguHTloP4Bj4V//rzc/K7m3s3MLlgVdbj5v1jSD73klWTtQjL/4XHmN+pXDOe92H+8DuniDqiZGeClo5Hjl9zCegC4GFDhchCEocmrj1EFi2YgWsq22hpCiQg41WFJ07esRl4keY518Y/j8R+X8=
+ bh=2dJliw5bToQke3WfeUdjp5G1kxFNViFF+00Gz9vm6og=;
+ b=g+cWobTZE/vFlvatSv5yd3f9V6X1DVmp/PlZKaWf4veIeh//1TM6UmL4Mn89JAVohnz9IP06W9Z8W5iaJkPWBuvDFIryZOdORd9H/p8SB2GFmxVb0dk36kIiBreznHd3+vYK0tF72L4CvcosW94/tsRx51X4F12zojrmrWOpLCM=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=wolfvision.net;
 Received: from VE1PR08MB4974.eurprd08.prod.outlook.com (2603:10a6:803:111::15)
- by PA4PR08MB6080.eurprd08.prod.outlook.com (2603:10a6:102:ec::21) with
+ by AM9PR08MB6114.eurprd08.prod.outlook.com (2603:10a6:20b:287::8) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7113.18; Wed, 20 Dec
- 2023 08:39:52 +0000
+ 2023 08:39:53 +0000
 Received: from VE1PR08MB4974.eurprd08.prod.outlook.com
  ([fe80::6b40:1e6f:7c94:71dc]) by VE1PR08MB4974.eurprd08.prod.outlook.com
  ([fe80::6b40:1e6f:7c94:71dc%4]) with mapi id 15.20.7091.034; Wed, 20 Dec 2023
  08:39:52 +0000
 From: Javier Carrasco <javier.carrasco@wolfvision.net>
-Date: Wed, 20 Dec 2023 09:39:45 +0100
-Subject: [PATCH v6 3/4] dt-bindings: input: touchscreen: st1232: add
- touch-overlay example
+Date: Wed, 20 Dec 2023 09:39:46 +0100
+Subject: [PATCH v6 4/4] Input: st1232 - add touch overlays handling
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230510-feature-ts_virtobj_patch-v6-3-d8a605975153@wolfvision.net>
+Message-Id: <20230510-feature-ts_virtobj_patch-v6-4-d8a605975153@wolfvision.net>
 References: <20230510-feature-ts_virtobj_patch-v6-0-d8a605975153@wolfvision.net>
 In-Reply-To: <20230510-feature-ts_virtobj_patch-v6-0-d8a605975153@wolfvision.net>
 To: Dmitry Torokhov <dmitry.torokhov@gmail.com>, 
@@ -67,11 +66,11 @@ Cc: linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
  devicetree@vger.kernel.org, 
  Javier Carrasco <javier.carrasco@wolfvision.net>
 X-Mailer: b4 0.12.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1703061588; l=2473;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1703061588; l=5320;
  i=javier.carrasco@wolfvision.net; s=20230509; h=from:subject:message-id;
- bh=59bW29DENUDew3cR5WsWqMNLxLGnItTLxZpUNAO1AqM=;
- b=zJKzrBhBPFDk7o7khvgq+un3DAbxCeyIfIOU8YOIlnteq3GzaFvaj2lYIC8a60xddubnQ7oZZ
- 3rTxHLzniIMBboD9hYbsQUPz2AB+edkkq9B+y0Vfeij7Y0aGnKv29od
+ bh=5l6dIl/NYW73Tl4xHQU1WZhPslhNKxcOjVzCX472s8k=;
+ b=qSIXewiWUER8XL78l2IfugcIrm8vnXv0D6OSNSE33VjHncGYz1vBcRwowDeMMfrGIZB5C9bu5
+ 5CFFjp8NkQtChVlFfdsIIJEPXaiatvTNUaIdpiGkTvn5rrY9FhbVHWy
 X-Developer-Key: i=javier.carrasco@wolfvision.net; a=ed25519;
  pk=tIGJV7M+tCizagNijF0eGMBGcOsPD+0cWGfKjl4h6K8=
 X-ClientProxiedBy: VI1PR0502CA0028.eurprd05.prod.outlook.com
@@ -84,124 +83,224 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: VE1PR08MB4974:EE_|PA4PR08MB6080:EE_
-X-MS-Office365-Filtering-Correlation-Id: 14fc98aa-1b1c-4182-1c68-08dc01373bd9
+X-MS-TrafficTypeDiagnostic: VE1PR08MB4974:EE_|AM9PR08MB6114:EE_
+X-MS-Office365-Filtering-Correlation-Id: d0292b3c-689f-47fa-c811-08dc01373c46
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	i9witi/rKJyhru9eDXOBrNXaHa80FVaZ8n2XLSJ1riuRzYRrjHiILjuq/YYOoE1Xjyjle3FzmtK1StliM9WzbsiRqspgIYy2WtqvN6E/Cydc8iD6OYAVmDsPjf89od3sdXUC11nEnaVRV0aCpuaKB+4IdyxtkzxujH+GBzuWabEjGPeaNVA05PfGS63pKYI0u/wb/dg0jsVHd3HkM/RHkjNWU9yIvONg9A9lLq8XTGWW3nJVR7zhDB/6Lk2Dn+KbxWsd1Ivl8WB6Pf5zcEm/uLK3mYNHtJYMVFyjV5hHxtDTe9sDYbBuJQUjmQeGLGHI0JtPOTj5w6Ej7StlK7RnU/FYDn0uDXB4PSWzt+2h+m2FoceGZDNCIFnKAoX3mNVunEWQ1J3RnJHl54h4V3jTU2bZnhwuy4U+S1lNJp6RkEp9m6BR3ThtP5FE5bKdnudxnp3HX95CgVkbgVd8CcLMySrD+sCElV/EwMu5xrDubIpGSlgyxmheBZYqUNvclnoP4HTNfh5U2kpGJ0oGbuL0v1ojxbc7YUMoybGX4YTaC68rX6evvRYM3uZMnrAw79BMBWBB6G48u8lOcbFh0HXtt4qfabbKBAgO+6/5lnpY9/U=
+	VSyjRzKWbxq1gg5O1gn2OAiM9R42U03KX2CWXGJTLk0LM3ovx9iV2+ojrebip33fsK9a+00X7bW6BGtgiOsJ6qXhh5WQJpkP+Q0uE1JDCk3WDz6BRzgqrCe4qSfR+7JLOFeE8WuCTw4KPqguxNYafSEPCV1nx9linPjcAWcR6kZ2/9VnCNdgp5HGtzJCj8Cw891G0jtcMqvEGMdRKlhfbf1XEqztYM/mjopkAXhsGkUpW/afZg+4IJZ4tD+abTX2mnUkP3WsZJ4EGGHSVYwB/HHy/X7OC2bw8H0U94AnV6m2La/nfveHtOPambpOIv3Eayd+PvCBjSLIPAhqflBvJlpsSK71ou9AAyZummBUrgojzSnfIKi9u3dR27+gLbUy7Dl0aVOU+OB12qJEj9ltbo4eX1rYScF8a1KB7z2iar07orlW4Qjv8j3l4HjVPYzvNPgGInz57DRHpbpFO7OsYog9IrVxub2LZw3zkRsnsEcvKPFtxLO8+wQkkbMIbyS7oaT9g2HAsN4GCoi/y84tNsPcOE1OWyMMbe4GlPA78hQGIr3I6iLAPzwy3XoxQIMZvUdsYF4Wd8m1FenArys7D/4w9zsiI4PcjkB4zX1YLP/PyJG3XEnMb9RpcTzHgFii
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR08MB4974.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39850400004)(366004)(346002)(396003)(376002)(136003)(230922051799003)(186009)(64100799003)(1800799012)(451199024)(2616005)(86362001)(6666004)(6506007)(6512007)(52116002)(478600001)(26005)(107886003)(6636002)(316002)(66946007)(66556008)(66476007)(44832011)(6486002)(110136005)(38100700002)(36756003)(2906002)(4326008)(5660300002)(8936002)(8676002)(38350700005)(41300700001);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR08MB4974.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(39850400004)(396003)(136003)(376002)(346002)(230922051799003)(451199024)(186009)(64100799003)(1800799012)(26005)(5660300002)(66556008)(6636002)(316002)(6486002)(66946007)(66476007)(44832011)(107886003)(2906002)(38100700002)(4326008)(8936002)(478600001)(8676002)(52116002)(83380400001)(6666004)(41300700001)(110136005)(86362001)(2616005)(6512007)(6506007)(36756003)(38350700005);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?SzNOYUZaMExZU2s3WVhBOTNWUDJJVWNScTZ1VUFoNHZLUTBpUld5aVV0UVpM?=
- =?utf-8?B?dld0dlBnTnByQXJkclczNXNhK1RVMnJxTmF5bWc1TXNISEJ2eHMyMGVBczhK?=
- =?utf-8?B?R25qME1ZWmp0b0lVd3dDUXAwVXh4NDJSa0NyeWg1WG0zbFNSSnFIa1ovRVlp?=
- =?utf-8?B?UXFQY2I4RFRIRldVaWM4c0ZSSllrU0lvc1hRU29HMitGeU1udUsvclZ0aFFk?=
- =?utf-8?B?NFZaMDlySENCTVgxRjlJdG9KaTU2ZmZpSm1UbUpXVlM0UmhaUSs3R3pwMmt0?=
- =?utf-8?B?YWJsNGl6cVdzQklIMEw2blZ5ellXTDBNNmNMSnI1bmJWcmhHWXpCMnJRMG42?=
- =?utf-8?B?dFhJbDFLREl3YzVHYXNvaEozQkx2SUtBTDNUL1VPdUNIWlIzT3A3Q3RldDM2?=
- =?utf-8?B?Q1ZWckZjYmNPaDFrZGF0MzlFbm5JVmVTcFhGUW5YTkFGVFBrNVQ5WGZuMkFS?=
- =?utf-8?B?bjdyS1B1bVlZS0MrRXRCSVdZbEdSSmxXbDhkdHk5T0ZzaHc0Q3FkRmQ1SG9C?=
- =?utf-8?B?V1ljV0E0UWloYlFFcVBHSE5XcVVJVFBuaklhbFRuNnpEWHB2VzZKWXg3U0JE?=
- =?utf-8?B?Z1dwUllRaU92QmdtaHZwbWlyblBoS25MSzhYTklkK096OWNOa3RSVzFaQTdO?=
- =?utf-8?B?cTNncldKcURGalJJOWw4QnVBcXkwZGFsRFora1ZoeXNYWWgxMTVEY0U0Tmtk?=
- =?utf-8?B?dWdsZXI2TEFRLzFDczJsVndJOHFRaWxyOFRjK0Q3bjViU1p3cnc1MTFxQWU5?=
- =?utf-8?B?UU5kTjZXQ0lxV0N0Z0NkNUpOeWRwSndER3BoRUJmSDZuZmRPL3UzNlQ4QlBE?=
- =?utf-8?B?dlFpQkhkcWJrV1E1N1pOS29RRGd0NUROR1FtdnVGdFB6NVBBL3VrdDlWYnRH?=
- =?utf-8?B?VENQZUFnSFhoa3NWV0R6NWJWYkFZNEY0YmVrU3VUZDBsR1c2UFhTR0tQdGZB?=
- =?utf-8?B?QW1ST1F2OUxyemhBVFNDT0syZ1dUcy9PUlZOMjhwYmtLWE01VWNMSDdPbmhS?=
- =?utf-8?B?SGc1dXpBSTEyZnFDcEFNRUhQeWg3d2pBdVJQVWZCNmtsS0hlbEdodzl1Wlk5?=
- =?utf-8?B?UkRzaWE4MWc0TEc1U0oveFFqWkllUjdKdGI4OEgyaTB0YU1mMjF2TmoxY2RN?=
- =?utf-8?B?dE81QTZ0ajdCdFVNZ1hFK0ZnNFhRRWJURUZQRlF0WGpnSUVVeWlXYktncXQ5?=
- =?utf-8?B?eTlCOHYyRUYrSDc0UmdFOEZYSXBtRVZFeHBTRE1DeHVwcTNKVFJrQUFMQkFy?=
- =?utf-8?B?ZFdqWHpzOXlyV2JNQ2NQcmtVL05GNnByd21MeVlHa2huejZiOXovdHFReFdi?=
- =?utf-8?B?aHVGUG1PS05EeWlDNUh6a0g5NkpvSWZwY0MyT0phTDR5cHlYRFlrbGxDc1kz?=
- =?utf-8?B?MlIvY2sxY2d0SWF2cmNoM3RFajlkMnVBdTZsa0hiVkdBclI2SHpMRlZMU2Rx?=
- =?utf-8?B?bFg1aVN6MFJydHUzSjk1OTI5S2dSbWx2aWR6QVdjL3Z5NWlVd0c5YWg3UmhD?=
- =?utf-8?B?eFhtSThoRmZKMkZwaHArTWtDcW5qNnNROGsyUk5HbXpFN3RSQThDY3JweDhq?=
- =?utf-8?B?dHZFak5YdXhSTG9QWktzQmp4QnNWR1ptb3VhUjlORG9GQUFJNUlCb1UzNDVF?=
- =?utf-8?B?aC9VaG04Q2loQWxhclF3OFB2WlZUL3JxWFFMUDlzdWowUDBMWUhqWk5OWnov?=
- =?utf-8?B?S3pRam5iRDZQYVhNNDNEbEl5c0tXVWVSQW1ucjNlVjhYTFlpVGhiRmFVRTQ5?=
- =?utf-8?B?bk1OVXZRWXZjbDhTNUI0cGZNMXlWOExjakE3bTFnYWR2YlpKY3d1YjNkalVs?=
- =?utf-8?B?L2VIbWM1UitpcU9XODBFL050ODRqSjdaU1Y4OStUYkJuVEM4OEl1ZlR6YkJh?=
- =?utf-8?B?Rnh1b0pFS1VQMTFTQzIxSmZQVThrcForQ2lxbGticTloYUVOVjhMQlVZTVc4?=
- =?utf-8?B?ejhKQ2RGNGVxYU1mYXJHRS9vM0xpdmtoRGYvN09WREhiNTdXU2hwYzVsQUpS?=
- =?utf-8?B?UURydUVEaVpGYzNBdGozcmFaTkxhaDIxbkJnUVlBQzBsYlRCYlF3emcvODB1?=
- =?utf-8?B?Y1RMK3k5cTBVZHlEQWhzL2M0R0lLSmpNMUJjWXcxTXlIQmFWRGRKZFpXY3Zz?=
- =?utf-8?B?bC96dEg2Yy8xbmQ3MGwvOVgzdEdzY0R3S1p5a0xDQmMySURSS28zNC9ObytF?=
- =?utf-8?Q?mtaLISGPZG4TQlc7xTkiRQI=3D?=
+	=?utf-8?B?MTlPUzJRMElLL2lIRVRCMTlTQkpEallHUzc5OG9jalVzUS9FZXVWcDA5bUNX?=
+ =?utf-8?B?S0s1ZUZ2cHNERHFBVTFhQ2QzZ2hrdE1yMU9WR253UDAxd0diZ1FNWVFFSTRW?=
+ =?utf-8?B?TXRMa0RnV3pNZVRrcWUvZTVaUHNZNjR4TEJEM1dDbkpaVFJCQlJ0ckExM0lK?=
+ =?utf-8?B?a3Zja08ySUM3VDJpS1ZSbTBoclBDdW43Z1FOUEJXSnczWFZBbTBYTVhKWW5l?=
+ =?utf-8?B?VUdYdnhQZThSOTNLOWZUbnFic3NhMVVXV1B2TXUxMGFvWDN5WE9oV1ROa3Uw?=
+ =?utf-8?B?WDZzOWY4Q2xUSVhKUGhsaGJmS0RLTVBneWdISFNhNHRrdGxsL1lTcWtZcytl?=
+ =?utf-8?B?S3N2TDd3aFRpOHZMY0pSWllGQjRFSU1wMkRSaERocGNvQ3dXblpId251OW5k?=
+ =?utf-8?B?WXFXRXpibURCbEFsaHFRMnRIQmlQRHVJdHhhdXlycjBpbWVtSGI5SFNoblpC?=
+ =?utf-8?B?eEJ4eU4zU1BHZDVCNU42bjVHQjljeUE0WDdUOW12dVVna21HR0VSSFZ0VVor?=
+ =?utf-8?B?M2ZTTTR3Y0NweHFSSTl1Q09FY2Fsc3RHR05iWnV4ZU10T1BVRXIyRnpGak0w?=
+ =?utf-8?B?YzBSRTBLdm5DUTR2ay8wYVZlRWZ6MWtiQTJWbUdOdDk4KzRZZ2UrZjFUdzFT?=
+ =?utf-8?B?NW1DOXFKZ2tpc29RdHFMbTEyaS95R1p5dzhtZ0oxamNOS2dDYStUTytaelM0?=
+ =?utf-8?B?VGgrVldoSXpwVzBTdGQ1c1U5dndtWHgvWHRJZHI3T1FJRDArajlXL2ZUcEVP?=
+ =?utf-8?B?aGpPKzNzRlJ6eW95dStJUmIvYno4bE1sZWNUVGFpOHJXcG43VXBuU0RMbW43?=
+ =?utf-8?B?SkpJdndFOFc3Q1dyb1RuUnZvbDFxaTY4aXBXZFNqTW5hdjQzUGorSnNKS3JX?=
+ =?utf-8?B?WXplQTlLQXUxN0I0WGNWT2hWR25BcFZvenFpaUJ4M29acWZEMTl2ZmtJRXBp?=
+ =?utf-8?B?NytCS1hISWdteHJHN0luU0MwOWU4ek5YQk1MaWV6Y2N5d1ZFT2ZlalRwdTJS?=
+ =?utf-8?B?WEVPZUtxT0ZHbWQ2bS9jNG1tK3VERlZ0dURURFJtdEUrdE9hYlVoZ0pnR1V2?=
+ =?utf-8?B?RlhsNms1OWxVS0lNQjl5RVRRc2JibzBNUE04eEVyalh2NmtnNmUxTFRYcDVU?=
+ =?utf-8?B?dEdYR2RBenBXVHF3S3gzSHR1N2d5MzNWTEUycnFaMUQ0NC9hU0VQRjFoa2dl?=
+ =?utf-8?B?ZC8yMG1GSWpUL0NlWFVUNEs2QkVuU3hXS2oxTHVvYmpYZW1GTnIrUmlxTzRu?=
+ =?utf-8?B?RDhjSjB5UFcxR2hzMG5ISWFXYlc4RkQ5TUlvYkQ3bm94am5mNVNGaE9YMXQ5?=
+ =?utf-8?B?NVlJRmJvRkFKa2RqYkV1SUt2cWtiUmhDL091N0VYSDhlV1h4ODVmZm1xS25M?=
+ =?utf-8?B?S0JocDVLT1dsT1I2ZGFxdzl5RFl4RDh5aE9MNVV6MFN2Y1lxVzNJVStjVVVY?=
+ =?utf-8?B?aktBU2pQZGIzOHk2ZjA2NWNKWlMwQmZyRmR4WEpkcVdWeEcxYytBS2FHcnd1?=
+ =?utf-8?B?V2NBZkIyN3F4N0U2TEZJMlFpc2RyWStrcmVBTEQxQnI0aWJtTmloNnZvSnBF?=
+ =?utf-8?B?dlE3TnZoS2NhUUtGMWZ5aTFoWW9WZFExWFBQSS9CdXFNTmkxUSttUS9tcVMy?=
+ =?utf-8?B?YkxLNHlrdjlXcGYzNEhEUk1lYk83cXN4L2tka1FuTEtVVXBuS1BsNUdCZmlx?=
+ =?utf-8?B?NWxrR21tcFBITVRRR1A2M0QzaGxCNDR5VUo4TWhqeElhU2Y5VGk4MW5xUmIx?=
+ =?utf-8?B?WTI3Y2RsdlR5NEplSDY0bnBRd01tdVF4YndVbFF4SVNxdXluSUV1UDBrNDBV?=
+ =?utf-8?B?NzY4L3Fmc2dwTmJmejFlY0NGLzVIQTc3VG94MWhtd0hYOW9ldGJ2V2gySkMw?=
+ =?utf-8?B?SXJLc3I1dW50MEVoTXI0aU1zVjlyeCtNZlErMHJBYXdOZVdQZUhhN3NXS2NN?=
+ =?utf-8?B?M0tod053TXhhMnJPRlZxd2VsQmJKTCt4WDVwRUJBTkxhVXkyTk40TzdRa2dT?=
+ =?utf-8?B?V01PUDd1MkhheVQwZU9jTDJZbG5GWjN5QWRadjRXSHB2V3lOOFQvVm5yaFdF?=
+ =?utf-8?B?OUg3TTFZeE1mbUhqcnNUT25mdWowd0owNGRoSlFITXg2Q2lEdm5YQzNNV3g3?=
+ =?utf-8?B?UnpPR2tCc09Ec0FWOUlEcmxBdTVrRzhnREMrWVFWVHE0TWN3amt1dEl4WEpX?=
+ =?utf-8?Q?LjTeKSsut4K05QqfMGFjxl0=3D?=
 X-OriginatorOrg: wolfvision.net
-X-MS-Exchange-CrossTenant-Network-Message-Id: 14fc98aa-1b1c-4182-1c68-08dc01373bd9
+X-MS-Exchange-CrossTenant-Network-Message-Id: d0292b3c-689f-47fa-c811-08dc01373c46
 X-MS-Exchange-CrossTenant-AuthSource: VE1PR08MB4974.eurprd08.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Dec 2023 08:39:51.9909
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Dec 2023 08:39:52.8580
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: e94ec9da-9183-471e-83b3-51baa8eb804f
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 1U/3eOAnkQT9ldTr8WbVWDi3p3YFVM4hNydpiS93YU+Ow8au+AeoKPXu++5IfjaM7rHNnqTOes0QIvFa/i1zOzEhva20pMtJm8WZx6BEm74=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA4PR08MB6080
+X-MS-Exchange-CrossTenant-UserPrincipalName: at+2ijy75fmjHGr/Nh/hNSv0d+LoxXK+4NSAEuuxWHonKorFx9WlYcTWjiUK5sKeR4djj9cQOnKLibkFfmmZgAInSmoRgei3WhejJ6VnHC4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR08MB6114
 
-The touch-overaly feature adds support for segments (touch areas) on the
-touchscreen surface that represent overlays with clipped touchscreen
-areas and printed buttons.
+Use touch-overlay to support overlay objects such as buttons and a resized
+frame defined in the device tree.
 
-Add nodes for a clipped touchscreen and overlay buttons to the existing
-example.
+If buttons are provided, register an additional device to report key
+events separately. A key event will be generated if the coordinates
+of a touch event are within the area defined by the button properties.
 
 Signed-off-by: Javier Carrasco <javier.carrasco@wolfvision.net>
 ---
- .../input/touchscreen/sitronix,st1232.yaml         | 29 ++++++++++++++++++++++
- 1 file changed, 29 insertions(+)
+ drivers/input/touchscreen/st1232.c | 71 ++++++++++++++++++++++++++++++--------
+ 1 file changed, 57 insertions(+), 14 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/input/touchscreen/sitronix,st1232.yaml b/Documentation/devicetree/bindings/input/touchscreen/sitronix,st1232.yaml
-index 1d8ca19fd37a..e7ee7a0d74c4 100644
---- a/Documentation/devicetree/bindings/input/touchscreen/sitronix,st1232.yaml
-+++ b/Documentation/devicetree/bindings/input/touchscreen/sitronix,st1232.yaml
-@@ -37,6 +37,7 @@ unevaluatedProperties: false
+diff --git a/drivers/input/touchscreen/st1232.c b/drivers/input/touchscreen/st1232.c
+index 6475084aee1b..5684cf04bfa1 100644
+--- a/drivers/input/touchscreen/st1232.c
++++ b/drivers/input/touchscreen/st1232.c
+@@ -22,6 +22,7 @@
+ #include <linux/pm_qos.h>
+ #include <linux/slab.h>
+ #include <linux/types.h>
++#include <linux/input/touch-overlay.h>
  
- examples:
-   - |
-+    #include <dt-bindings/input/linux-event-codes.h>
-     i2c {
-             #address-cells = <1>;
-             #size-cells = <0>;
-@@ -46,5 +47,33 @@ examples:
-                     reg = <0x55>;
-                     interrupts = <2 0>;
-                     gpios = <&gpio1 166 0>;
+ #define ST1232_TS_NAME	"st1232-ts"
+ #define ST1633_TS_NAME	"st1633-ts"
+@@ -56,7 +57,9 @@ struct st1232_ts_data {
+ 	struct touchscreen_properties prop;
+ 	struct dev_pm_qos_request low_latency_req;
+ 	struct gpio_desc *reset_gpio;
++	struct input_dev *overlay_keypad;
+ 	const struct st_chip_info *chip_info;
++	struct list_head touch_overlay_list;
+ 	int read_buf_len;
+ 	u8 *read_buf;
+ };
+@@ -130,6 +133,7 @@ static int st1232_ts_read_resolution(struct st1232_ts_data *ts, u16 *max_x,
+ static int st1232_ts_parse_and_report(struct st1232_ts_data *ts)
+ {
+ 	struct input_dev *input = ts->input_dev;
++	struct input_dev *keypad = ts->overlay_keypad;
+ 	struct input_mt_pos pos[ST_TS_MAX_FINGERS];
+ 	u8 z[ST_TS_MAX_FINGERS];
+ 	int slots[ST_TS_MAX_FINGERS];
+@@ -138,14 +142,20 @@ static int st1232_ts_parse_and_report(struct st1232_ts_data *ts)
+ 
+ 	for (i = 0; i < ts->chip_info->max_fingers; i++) {
+ 		u8 *buf = &ts->read_buf[i * 4];
++		bool contact = buf[0] & BIT(7);
++		unsigned int x, y;
+ 
+-		if (buf[0] & BIT(7)) {
+-			unsigned int x = ((buf[0] & 0x70) << 4) | buf[1];
+-			unsigned int y = ((buf[0] & 0x07) << 8) | buf[2];
+-
+-			touchscreen_set_mt_pos(&pos[n_contacts],
+-					       &ts->prop, x, y);
++		if (contact) {
++			x = ((buf[0] & 0x70) << 4) | buf[1];
++			y = ((buf[0] & 0x07) << 8) | buf[2];
++		}
++		if (touch_overlay_process_event(&ts->touch_overlay_list, keypad,
++						contact ? &x : NULL,
++						contact ? &y : NULL, i))
++			continue;
+ 
++		if (contact) {
++			touchscreen_set_mt_pos(&pos[n_contacts], &ts->prop, x, y);
+ 			/* st1232 includes a z-axis / touch strength */
+ 			if (ts->chip_info->have_z)
+ 				z[n_contacts] = ts->read_buf[i + 6];
+@@ -226,6 +236,7 @@ static int st1232_ts_probe(struct i2c_client *client)
+ 	const struct st_chip_info *match;
+ 	struct st1232_ts_data *ts;
+ 	struct input_dev *input_dev;
++	struct input_dev *overlay_keypad;
+ 	u16 max_x, max_y;
+ 	int error;
+ 
+@@ -263,8 +274,13 @@ static int st1232_ts_probe(struct i2c_client *client)
+ 	if (!input_dev)
+ 		return -ENOMEM;
+ 
++	overlay_keypad = devm_input_allocate_device(&client->dev);
++	if (!overlay_keypad)
++		return -ENOMEM;
 +
-+                    touch-overlay {
-+                            segment-0 {
-+                                    label = "Touchscreen";
-+                                    x-origin = <0>;
-+                                    x-size = <240>;
-+                                    y-origin = <40>;
-+                                    y-size = <280>;
-+                            };
+ 	ts->client = client;
+ 	ts->input_dev = input_dev;
++	ts->overlay_keypad = overlay_keypad;
+ 
+ 	ts->reset_gpio = devm_gpiod_get_optional(&client->dev, NULL,
+ 						 GPIOD_OUT_HIGH);
+@@ -286,24 +302,38 @@ static int st1232_ts_probe(struct i2c_client *client)
+ 
+ 	input_dev->name = "st1232-touchscreen";
+ 	input_dev->id.bustype = BUS_I2C;
++	overlay_keypad->name = "st1232-keypad";
++	overlay_keypad->id.bustype = BUS_I2C;
+ 
+ 	/* Wait until device is ready */
+ 	error = st1232_ts_wait_ready(ts);
+ 	if (error)
+ 		return error;
+ 
+-	/* Read resolution from the chip */
+-	error = st1232_ts_read_resolution(ts, &max_x, &max_y);
+-	if (error) {
+-		dev_err(&client->dev,
+-			"Failed to read resolution: %d\n", error);
+-		return error;
+-	}
+-
+ 	if (ts->chip_info->have_z)
+ 		input_set_abs_params(input_dev, ABS_MT_TOUCH_MAJOR, 0,
+ 				     ts->chip_info->max_area, 0, 0);
+ 
++	/* map overlay objects if defined in the device tree */
++	INIT_LIST_HEAD(&ts->touch_overlay_list);
++	error = touch_overlay_map(&ts->touch_overlay_list, ts->overlay_keypad);
++	if (error)
++		return error;
 +
-+                            segment-1a {
-+                                    label = "Camera light";
-+                                    linux,code = <KEY_LIGHTS_TOGGLE>;
-+                                    x-origin = <40>;
-+                                    x-size = <40>;
-+                                    y-origin = <0>;
-+                                    y-size = <40>;
-+                            };
++	if (touch_overlay_mapped_touchscreen(&ts->touch_overlay_list)) {
++		/* Read resolution from the overlay touchscreen if defined */
++		touch_overlay_get_touchscreen_abs(&ts->touch_overlay_list,
++						  &max_x, &max_y);
++	} else {
++		/* Read resolution from the chip */
++		error = st1232_ts_read_resolution(ts, &max_x, &max_y);
++		if (error) {
++			dev_err(&client->dev,
++				"Failed to read resolution: %d\n", error);
++			return error;
++		}
++	}
 +
-+                            segment-2a {
-+                                    label = "Power";
-+                                    linux,code = <KEY_POWER>;
-+                                    x-origin = <160>;
-+                                    x-size = <40>;
-+                                    y-origin = <0>;
-+                                    y-size = <40>;
-+                            };
-+                    };
-             };
-     };
+ 	input_set_abs_params(input_dev, ABS_MT_POSITION_X,
+ 			     0, max_x, 0, 0);
+ 	input_set_abs_params(input_dev, ABS_MT_POSITION_Y,
+@@ -335,6 +365,19 @@ static int st1232_ts_probe(struct i2c_client *client)
+ 		return error;
+ 	}
+ 
++	/* Register keypad input device if overlay buttons were defined */
++	if (touch_overlay_mapped_buttons(&ts->touch_overlay_list)) {
++		error = input_register_device(ts->overlay_keypad);
++		if (error) {
++			dev_err(&client->dev,
++				"Unable to register %s input device\n",
++				overlay_keypad->name);
++			return error;
++		}
++	} else {
++		input_free_device(ts->overlay_keypad);
++	}
++
+ 	i2c_set_clientdata(client, ts);
+ 
+ 	return 0;
 
 -- 
 2.39.2
