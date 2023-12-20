@@ -1,199 +1,160 @@
-Return-Path: <linux-kernel+bounces-6201-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6202-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2CE3C8195D5
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 01:45:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5579D8195D9
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 01:46:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D836B282CF1
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 00:45:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 87C6B1C2495B
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 00:46:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D7DA23BB;
-	Wed, 20 Dec 2023 00:45:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88B7823DC;
+	Wed, 20 Dec 2023 00:46:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PgwLLqJV"
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="CbR1kEK4"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCC9B1FAF
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 00:45:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703033134; x=1734569134;
-  h=date:from:to:cc:subject:message-id;
-  bh=GYPHL4RA1huHvRI2dq8LlXaE4QNA41e4Z2zZQ6OeCrE=;
-  b=PgwLLqJV9s/aNwhKmzqEy8FWELyjjqyDJp9SXg5oTlGv9VZNrKD9jqJf
-   9B3Bvfv66acLWOC/ssgCexiLk9ZW2SupEfIHQ5kDJkV3FpS2KCEhXG/eN
-   SRWqIch15OuAM5sBNvqyoO6LIjwfIxzARW4FbLPAHOuh//i3Zs1lzN8y6
-   AAedQU74GgBSQU7uIbupP6xbvY5wjLT5GJZ8/zd/3j8XaTjJ2xElfLzSb
-   sJTiJU8GaWu9M9cYg7boDgw8SZC9U+eKZHQzm1YjWBj4FEV4TM/eEIKE4
-   FFrkBG9h3uPnQWkJhwNAw3m4JRN24PHKkOWFTGj4ykejzx762+nuBO/jx
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10929"; a="17297220"
-X-IronPort-AV: E=Sophos;i="6.04,289,1695711600"; 
-   d="scan'208";a="17297220"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Dec 2023 16:45:33 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10929"; a="779665624"
-X-IronPort-AV: E=Sophos;i="6.04,289,1695711600"; 
-   d="scan'208";a="779665624"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga007.fm.intel.com with ESMTP; 19 Dec 2023 16:45:31 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rFkiH-00068B-2U;
-	Wed, 20 Dec 2023 00:45:29 +0000
-Date: Wed, 20 Dec 2023 08:44:45 +0800
-From: kernel test robot <lkp@intel.com>
-To: "x86-ml" <x86@kernel.org>
-Cc: linux-kernel@vger.kernel.org
-Subject: [tip:x86/build] BUILD SUCCESS
- 88a2b4edda3d0709727be53f4423b0b832d91de3
-Message-ID: <202312200842.Ku9syy2G-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 555558BE3;
+	Wed, 20 Dec 2023 00:46:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1703033201;
+	bh=884oxzW58Wnf+JCV4KrDsGdP0EgAnKE+W4TO2E0uFVM=;
+	h=From:To:Cc:Subject:Date:From;
+	b=CbR1kEK4jgpv5UaBDymH5Q8MqCXgZWiOaKdEXviTjuyhdazlQNLeyOJ6DmX5xQ+pT
+	 qgTZ052mCkw+hUgyzsueEnYG2ZkxN9C7xsQ0rISWGaCXYidRDq5d+7HDNXZxHnI6hE
+	 7yQ2TtK5B5fQlHLhAbURsx5IdKH5VbIdkLAwDOZ+2Ctc98sb6WA0MxM2hZfc9AKogf
+	 eIMxd7XUKPvp7ftwPUGORti/PeaonOc5r9nUMna7FslZGeQ5EuKNcQUTUSuL6uC8/A
+	 yMDlHXU9hPy2WiCGYuir95FW695ePp5Wkv1gKDqMdBDQnVnY1zHW1slbmwHK5FKINo
+	 EHo0K6rugeUVQ==
+Received: from localhost (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: cristicc)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 2B80A37814AA;
+	Wed, 20 Dec 2023 00:46:41 +0000 (UTC)
+From: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+To: Emil Renner Berthing <kernel@esmil.dk>,
+	Conor Dooley <conor@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Richard Cochran <richardcochran@gmail.com>,
+	Andrew Lunn <andrew@lunn.ch>,
+	Jacob Keller <jacob.e.keller@intel.com>
+Cc: linux-riscv@lists.infradead.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org,
+	kernel@collabora.com
+Subject: [PATCH v5 0/4] Enable networking support for StarFive JH7100 SoC
+Date: Wed, 20 Dec 2023 02:46:33 +0200
+Message-ID: <20231220004638.2463643-1-cristian.ciocaltea@collabora.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/build
-branch HEAD: 88a2b4edda3d0709727be53f4423b0b832d91de3  x86/Kconfig: Rework CONFIG_X86_PAE dependency
+This patch series adds ethernet support for the StarFive JH7100 SoC and
+makes it available for the StarFive VisionFive V1 and BeagleV Starlight
+boards, although I could only validate on the former SBC.  Thank you Emil
+and Geert for helping with tests on BeagleV!
 
-elapsed time: 753m
+The work is heavily based on the reference implementation [1] and depends
+on the SiFive Composable Cache controller and non-coherent DMA support
+provided by Emil via [2] and [3].
 
-configs tested: 117
-configs skipped: 134
+*Update 1*: As of next-20231214, dependencies [2] & [3] have been merged.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+*Update 2*: Since v5, the dwmac patches will be handled via [4], while the
+            clock patches subset via [5].
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                               defconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                                 defconfig   gcc  
-arm                               allnoconfig   gcc  
-arm                           u8500_defconfig   gcc  
-arm64                            allmodconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                                defconfig   gcc  
-hexagon                          allmodconfig   clang
-hexagon                          allyesconfig   clang
-i386                             allmodconfig   clang
-i386                              allnoconfig   clang
-i386                             allyesconfig   clang
-i386         buildonly-randconfig-001-20231219   clang
-i386         buildonly-randconfig-002-20231219   clang
-i386         buildonly-randconfig-003-20231219   clang
-i386         buildonly-randconfig-004-20231219   clang
-i386         buildonly-randconfig-005-20231219   clang
-i386         buildonly-randconfig-006-20231219   clang
-i386                                defconfig   gcc  
-i386                  randconfig-001-20231219   clang
-i386                  randconfig-002-20231219   clang
-i386                  randconfig-003-20231219   clang
-i386                  randconfig-004-20231219   clang
-i386                  randconfig-005-20231219   clang
-i386                  randconfig-006-20231219   clang
-i386                  randconfig-011-20231219   gcc  
-i386                  randconfig-011-20231220   clang
-i386                  randconfig-012-20231219   gcc  
-i386                  randconfig-012-20231220   clang
-i386                  randconfig-013-20231219   gcc  
-i386                  randconfig-013-20231220   clang
-i386                  randconfig-014-20231219   gcc  
-i386                  randconfig-014-20231220   clang
-i386                  randconfig-015-20231219   gcc  
-i386                  randconfig-015-20231220   clang
-i386                  randconfig-016-20231219   gcc  
-i386                  randconfig-016-20231220   clang
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                         amcore_defconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                        m5272c3_defconfig   gcc  
-m68k                       m5275evb_defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                         db1xxx_defconfig   gcc  
-mips                      fuloong2e_defconfig   gcc  
-mips                       rbtx49xx_defconfig   gcc  
-nios2                            alldefconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                    amigaone_defconfig   gcc  
-powerpc                     ep8248e_defconfig   gcc  
-powerpc                      mgcoge_defconfig   gcc  
-riscv                               defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                              allnoconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                            hp6xx_defconfig   gcc  
-sh                     magicpanelr2_defconfig   gcc  
-sh                           se7343_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   clang
-x86_64       buildonly-randconfig-001-20231220   gcc  
-x86_64       buildonly-randconfig-002-20231220   gcc  
-x86_64       buildonly-randconfig-003-20231220   gcc  
-x86_64       buildonly-randconfig-004-20231220   gcc  
-x86_64       buildonly-randconfig-005-20231220   gcc  
-x86_64       buildonly-randconfig-006-20231220   gcc  
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64                randconfig-011-20231220   gcc  
-x86_64                randconfig-012-20231220   gcc  
-x86_64                randconfig-013-20231220   gcc  
-x86_64                randconfig-014-20231220   gcc  
-x86_64                randconfig-015-20231220   gcc  
-x86_64                randconfig-016-20231220   gcc  
-x86_64                randconfig-071-20231220   gcc  
-x86_64                randconfig-072-20231220   gcc  
-x86_64                randconfig-073-20231220   gcc  
-x86_64                randconfig-074-20231220   gcc  
-x86_64                randconfig-075-20231220   gcc  
-x86_64                randconfig-076-20231220   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
+[1] https://github.com/starfive-tech/linux/commits/visionfive
+[2] https://lore.kernel.org/all/CAJM55Z_pdoGxRXbmBgJ5GbVWyeM1N6+LHihbNdT26Oo_qA5VYA@mail.gmail.com/
+[3] https://lore.kernel.org/all/20231130151932.729708-1-emil.renner.berthing@canonical.com/
+[4] https://lore.kernel.org/lkml/20231220002824.2462655-1-cristian.ciocaltea@collabora.com/
+[5] https://lore.kernel.org/lkml/20231219232442.2460166-1-cristian.ciocaltea@collabora.com/
+
+Changes in v5:
+ - Collected R-b tags from Jacob and Andrew
+ - Squashed PATCH 2 into PATCH 1 per Krzysztof's review
+ - Split series into patch sets per subsystem, as described in "Update 2"
+   section above (per Andrew's review)
+ - v4:
+   https://lore.kernel.org/lkml/20231218214451.2345691-1-cristian.ciocaltea@collabora.com/
+
+Changes in v4:
+ - Restricted double usage of 'ahb' reset name in PATCH 2 (Jessica, Samuel)
+ - Moved phy reference from PATCH 5 to both PATCH 6 & 7 where the node is
+   actually defined (Emil, Conor)
+ - Drop unnecessary gpio include in PATCH 6; also added a DTS comment
+   describing the rational behind RX internal delay adjustment (Andrew)
+ - v3:
+   https://lore.kernel.org/lkml/20231215204050.2296404-1-cristian.ciocaltea@collabora.com/
+
+Changes in v3:
+ - Rebased series onto next-20231214 and dropped the ccache & DMA coherency
+   related patches (v2 06-08/12) handled by Emil via [3]
+ - Squashed PATCH v2 01/12 into PATCH v3 2/9, per Krzysztof's review
+ - Dropped incorrect PATCH v2 02/12
+ - Incorporated Emil's feedback; also added his Co-developed-by on all dts
+   patches
+ - Documented the need of adjusting RX internal delay in PATCH v3 8/9, per
+   Andrew's request
+ - Added clock fixes from Emil (PATCH v3 8-9/9) required to support
+   10/100Mb link speeds
+ - v2:
+   https://lore.kernel.org/lkml/20231029042712.520010-1-cristian.ciocaltea@collabora.com/
+
+Changes in v2:
+ - Dropped ccache PATCH 01-05 reworked by Emil via [2]
+ - Dropped already applied PATCH 06/12
+ - Added PATCH v2 01 to prepare snps-dwmac binding for JH7100 support
+ - Added PATCH v2 02-03 to provide some jh7110-dwmac binding optimizations
+ - Handled JH7110 conflicting work in PATCH 07 via PATCH v2 04
+ - Reworked PATCH 8 via PATCH v2 05, adding JH7100 quirk and dropped
+   starfive,gtxclk-dlychain DT property; also fixed register naming
+ - Added PATCH v2 08 providing DMA coherency related DT changes
+ - Updated PATCH 9 commit msg:
+   s/OF_DMA_DEFAULT_COHERENT/ARCH_DMA_DEFAULT_COHERENT/
+ - Replaced 'uncached-offset' property with 'sifive,cache-ops' in PATCH
+   10/12 and dropped 'sideband' reg
+ - Add new patch providing coherent DMA memory pool (PATCH v2 10)
+ - Updated PATCH 11/12 according to the stmmac glue layer changes in
+   upstream
+ - Split PATCH 12/12 into PATCH v2 10-12 to handle individual gmac setup of
+   VisionFive v1 and BeagleV boards as they use different PHYs; also
+   switched phy-mode from "rgmii-tx" to "rgmii-id" (requires a reduction of
+   rx-internal-delay-ps by ~50%)
+ - Rebased series onto next-20231024
+ - v1:
+   https://lore.kernel.org/lkml/20230211031821.976408-1-cristian.ciocaltea@collabora.com/
+
+Cristian Ciocaltea (4):
+  riscv: dts: starfive: jh7100: Add sysmain and gmac DT nodes
+  riscv: dts: starfive: jh7100-common: Setup pinmux and enable gmac
+  riscv: dts: starfive: visionfive-v1: Setup ethernet phy
+  riscv: dts: starfive: beaglev-starlight: Setup phy reset gpio
+
+ .../dts/starfive/jh7100-beaglev-starlight.dts | 11 +++
+ .../boot/dts/starfive/jh7100-common.dtsi      | 84 +++++++++++++++++++
+ .../jh7100-starfive-visionfive-v1.dts         | 22 ++++-
+ arch/riscv/boot/dts/starfive/jh7100.dtsi      | 36 ++++++++
+ 4 files changed, 152 insertions(+), 1 deletion(-)
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.43.0
+
 
