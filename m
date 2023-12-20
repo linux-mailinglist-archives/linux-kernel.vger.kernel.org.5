@@ -1,111 +1,100 @@
-Return-Path: <linux-kernel+bounces-6233-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6249-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59265819633
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 02:26:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DD4F819657
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 02:34:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8BBB01C255DA
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 01:26:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C0D0E1C255F3
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 01:34:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03BCC6137;
-	Wed, 20 Dec 2023 01:26:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7134747E;
+	Wed, 20 Dec 2023 01:30:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mgR2rS8W"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JwG44T51"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF6C5567C;
-	Wed, 20 Dec 2023 01:26:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703035567; x=1734571567;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=BB5xrxsz+BnW5YoyU869JFzcyH3wK7pydPymvf+6dm8=;
-  b=mgR2rS8W867+Znl9NISgZMQM9uZBiieLYR3b07Ey7INDjUHqQKa0+n5f
-   9tGJ+TR5TzyBE8IsRaEFb/iNvTb4KWCHLbUsS4UIgXhEnnOJQFymBPxl6
-   gsGlqnOWJHX7nZ3qFaHVYtEsi0CXP5dp+fZxcMfezNaU//30x7vr6WNPT
-   fxa+KEGCzYoruxSzenvJTR0CNpUQk3M/2tiNjz3XCgTRLGUf72HqxYKQ3
-   BqqjeNlxxpWs4J67ZZ0D0CdzUetSBoETqWWni4opH6N2Aw4qAkjigYW/Z
-   wQiYRHpXiBeB9LTsQ+fgNIoWxEL30eFswuApwlqDgMVRW9jX1IMsQs6gI
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10929"; a="9207136"
-X-IronPort-AV: E=Sophos;i="6.04,290,1695711600"; 
-   d="scan'208";a="9207136"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Dec 2023 17:26:06 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10929"; a="899553838"
-X-IronPort-AV: E=Sophos;i="6.04,290,1695711600"; 
-   d="scan'208";a="899553838"
-Received: from ihur-mobl1.amr.corp.intel.com (HELO desk) ([10.209.1.244])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Dec 2023 17:26:05 -0800
-Date: Tue, 19 Dec 2023 17:25:57 -0800
-From: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-To: Josh Poimboeuf <jpoimboe@kernel.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Andy Lutomirski <luto@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
-	Sean Christopherson <seanjc@google.com>,
-	Paolo Bonzini <pbonzini@redhat.com>, tony.luck@intel.com,
-	ak@linux.intel.com, tim.c.chen@linux.intel.com,
-	Andrew Cooper <andrew.cooper3@citrix.com>,
-	Nikolay Borisov <nik.borisov@suse.com>,
-	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-	kvm@vger.kernel.org,
-	Alyssa Milburn <alyssa.milburn@linux.intel.com>,
-	Daniel Sneddon <daniel.sneddon@linux.intel.com>,
-	antonio.gomez.iglesias@linux.intel.com,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH  v4 6/6] KVM: VMX: Move VERW closer to VMentry for MDS
- mitigation
-Message-ID: <20231220012557.7myc7xy24tveaid6@desk>
-References: <20231027-delay-verw-v4-0-9a3622d4bcf7@linux.intel.com>
- <20231027-delay-verw-v4-6-9a3622d4bcf7@linux.intel.com>
- <20231201200247.vui6enzdj5nzctf4@treble>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1B4AFC06;
+	Wed, 20 Dec 2023 01:30:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 5BFF5C433CA;
+	Wed, 20 Dec 2023 01:30:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703035825;
+	bh=ZrNoIh29HSTlJOYdA5duZSg9G5/8jsY1BPip+euLb+U=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=JwG44T515OOs2PbyRLEZiKieywVD6225ABxcba+1ehwDyy2cBP+3J+6h/lq3wnvoz
+	 /DXxsKKqlrAEiKmM3D3hkWFM17ys5Nh8Ea+PtSVfkcb/9F6MTqyji5Zi/uENWLX8sR
+	 /BgEemUIHlqb2kiVBbaobqEw0THYujxtXvXhFUnbHH0Gv7bnsB9aPLVIT0yGFv1f+F
+	 ICEwCq+nTqf7EQSGjLTugtSCGciGDZli+ipM2AGRp4IZ5TU1N5MWqweQsOi/fRkx2Y
+	 /iAq3Mxz8dOKbgMbpLnKttLkOLCor2su5v3u6LdDwHyZwyZZ/FP5w4kcEUsW0UTQWR
+	 UkBhPrjwNLyWA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 3E8E5C561EE;
+	Wed, 20 Dec 2023 01:30:25 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231201200247.vui6enzdj5nzctf4@treble>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v5 0/4] bpf: support to track BPF_JNE
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <170303582525.28294.7293109481883503225.git-patchwork-notify@kernel.org>
+Date: Wed, 20 Dec 2023 01:30:25 +0000
+References: <20231219134800.1550388-1-menglong8.dong@gmail.com>
+In-Reply-To: <20231219134800.1550388-1-menglong8.dong@gmail.com>
+To: Menglong Dong <menglong8.dong@gmail.com>
+Cc: andrii@kernel.org, eddyz87@gmail.com, yonghong.song@linux.dev,
+ alexei.starovoitov@gmail.com, ast@kernel.org, daniel@iogearbox.net,
+ john.fastabend@gmail.com, martin.lau@linux.dev, song@kernel.org,
+ kpsingh@kernel.org, sdf@google.com, haoluo@google.com, jolsa@kernel.org,
+ mykolal@fb.com, shuah@kernel.org, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
 
-On Fri, Dec 01, 2023 at 12:02:47PM -0800, Josh Poimboeuf wrote:
-> On Fri, Oct 27, 2023 at 07:39:12AM -0700, Pawan Gupta wrote:
-> > -	vmx_disable_fb_clear(vmx);
-> > +	/*
-> > +	 * Optimize the latency of VERW in guests for MMIO mitigation. Skip
-> > +	 * the optimization when MDS mitigation(later in asm) is enabled.
-> > +	 */
-> > +	if (!cpu_feature_enabled(X86_FEATURE_CLEAR_CPU_BUF))
-> > +		vmx_disable_fb_clear(vmx);
-> >  
-> >  	if (vcpu->arch.cr2 != native_read_cr2())
-> >  		native_write_cr2(vcpu->arch.cr2);
-> > @@ -7248,7 +7256,8 @@ static noinstr void vmx_vcpu_enter_exit(struct kvm_vcpu *vcpu,
-> >  
-> >  	vmx->idt_vectoring_info = 0;
-> >  
-> > -	vmx_enable_fb_clear(vmx);
-> > +	if (!cpu_feature_enabled(X86_FEATURE_CLEAR_CPU_BUF))
-> > +		vmx_enable_fb_clear(vmx);
-> >  
+Hello:
+
+This series was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
+
+On Tue, 19 Dec 2023 21:47:56 +0800 you wrote:
+> For now, the reg bounds is not handled for BPF_JNE case, which can cause
+> the failure of following case:
 > 
-> It may be cleaner to instead check X86_FEATURE_CLEAR_CPU_BUF when
-> setting vmx->disable_fb_clear in the first place, in
-> vmx_update_fb_clear_dis().
+>   /* The type of "a" is u32 */
+>   if (a > 0 && a < 100) {
+>     /* the range of the register for a is [0, 99], not [1, 99],
+>      * and will cause the following error:
+>      *
+>      *   invalid zero-sized read
+>      *
+>      * as a can be 0.
+>      */
+>     bpf_skb_store_bytes(skb, xx, xx, a, 0);
+>   }
+> 
+> [...]
 
-Right. Thanks for the review.
+Here is the summary with links:
+  - [bpf-next,v5,1/4] bpf: make the verifier tracks the "not equal" for regs
+    https://git.kernel.org/bpf/bpf-next/c/d028f87517d6
+  - [bpf-next,v5,2/4] selftests/bpf: remove reduplicated s32 casting in "crafted_cases"
+    https://git.kernel.org/bpf/bpf-next/c/1de584832375
+  - [bpf-next,v5,3/4] selftests/bpf: activate the OP_NE logic in range_cond()
+    https://git.kernel.org/bpf/bpf-next/c/31d9cc96b1e3
+  - [bpf-next,v5,4/4] selftests/bpf: add testcase to verifier_bounds.c for BPF_JNE
+    https://git.kernel.org/bpf/bpf-next/c/463ea64eb008
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
