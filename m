@@ -1,131 +1,75 @@
-Return-Path: <linux-kernel+bounces-6928-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7077-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77D4B819F70
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 14:02:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 738A981A156
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 15:45:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 354A5286BAE
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 13:02:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1303D1F22CBF
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 14:45:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3DC625569;
-	Wed, 20 Dec 2023 13:02:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="m8RpIy0C"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 514883DB80;
+	Wed, 20 Dec 2023 14:45:18 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+Received: from mail-m49205.qiye.163.com (mail-m49205.qiye.163.com [45.254.49.205])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59F8D25541;
-	Wed, 20 Dec 2023 13:02:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 224E32B3;
-	Wed, 20 Dec 2023 14:01:40 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1703077300;
-	bh=MB0nR/heBhUV7y8E41acYk2PbnEPOOJDseKUnd5jXDw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=m8RpIy0C4Dt6+20MsgoWNQ5s3PlEfxdt6kKpURHb4JqmUAzLQe/7kNGydVoi9jcR/
-	 vch2OgKvR5oA9p/064oXtszZa6/Vc4oltEsDAVgGdENX76ik9v3U2AkCGkEkmdW/PM
-	 pM8gxcMQSSYKZxEMBJEdmKgVfmieG6jhD99/Ugmc=
-Date: Wed, 20 Dec 2023 15:02:36 +0200
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To: Tommaso Merciai <tomm.merciai@gmail.com>
-Cc: linuxfancy@googlegroups.com, sakari.ailus@linux.intel.com,
-	martin.hecht@avnet.eu, Mauro Carvalho Chehab <mchehab@kernel.org>,
-	linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 5/5] media: i2c: alvium: fix req_fr check into
- alvium_s_frame_interval()
-Message-ID: <20231220130236.GN29638@pendragon.ideasonboard.com>
-References: <20231220124023.2801417-1-tomm.merciai@gmail.com>
- <20231220124023.2801417-6-tomm.merciai@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 988103D989;
+	Wed, 20 Dec 2023 14:45:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sangfor.com.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sangfor.com.cn
+Received: from [0.0.0.0] (unknown [IPV6:240e:3b7:3270:35d0:2d5d:a87c:93d7:296a])
+	by mail-m12773.qiye.163.com (Hmail) with ESMTPA id 9186D2C063A;
+	Wed, 20 Dec 2023 16:47:09 +0800 (CST)
+Message-ID: <8a0d7c64-128b-277a-8128-5b413f4fc341@sangfor.com.cn>
+Date: Wed, 20 Dec 2023 16:47:09 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231220124023.2801417-6-tomm.merciai@gmail.com>
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH 0/2] scsi: ses: Fix out-of-bounds accesses
+Content-Language: en-US
+To: jejb@linux.ibm.com, martin.petersen@oracle.com
+Cc: zhuwei@sangfor.com.cn, thenzl@redhat.com, linux-scsi@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20231130142835.18041-1-dinghui@sangfor.com.cn>
+From: Ding Hui <dinghui@sangfor.com.cn>
+In-Reply-To: <20231130142835.18041-1-dinghui@sangfor.com.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+	tZV1koWUFITzdXWS1ZQUlXWQ8JGhUIEh9ZQVlDGR5DVktNHU9DS08eGEkeQ1UTARMWGhIXJBQOD1
+	lXWRgSC1lBWUlPSx5BSBlMQUhJTEtBSE4fS0FJH04fQRpDTBhBQkgfTEFJQk0aWVdZFhoPEhUdFF
+	lBWU9LSFVKTU9JTklVSktLVUpCWQY+
+X-HM-Tid: 0a8c86684666b249kuuu9186d2c063a
+X-HM-MType: 1
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MQg6Kgw*AzwxNyNJCx1RTkoI
+	CRVPChdVSlVKTEtIS01JS0hLTkhKVTMWGhIXVR8SFRwTDhI7CBoVHB0UCVUYFBZVGBVFWVdZEgtZ
+	QVlJT0seQUgZTEFISUxLQUhOH0tBSR9OH0EaQ0wYQUJIH0xBSUJNGllXWQgBWUFKTEpKNwY+
 
-Hi Tommaso,
-
-Thank you for the patch.
-
-On Wed, Dec 20, 2023 at 01:40:23PM +0100, Tommaso Merciai wrote:
-> Actually req_fr check into alvium_s_frame_interval() is wrong.
-> In particular req_fr can't be >=max and <= min at the same time.
-> Fix this using clamp and remove dft_fr parameter from
-> alvium_get_frame_interval() not more used.
-
-The commit message should have explained why clamping is better than
-picking a default value, as that's a functional change. If you propose
-an updated commit message in a reply, I think Sakari can update the
-patch when applying the series to his tree, there's no need for a v4.
-
-> Signed-off-by: Tommaso Merciai <tomm.merciai@gmail.com>
-
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-
-> ---
->  drivers/media/i2c/alvium-csi2.c | 12 ++++--------
->  1 file changed, 4 insertions(+), 8 deletions(-)
+On 2023/11/30 22:28, Ding Hui wrote:
+> This series includes a few OOB fixes for ses driver
 > 
-> diff --git a/drivers/media/i2c/alvium-csi2.c b/drivers/media/i2c/alvium-csi2.c
-> index 240bf991105e..01111a00902d 100644
-> --- a/drivers/media/i2c/alvium-csi2.c
-> +++ b/drivers/media/i2c/alvium-csi2.c
-> @@ -1171,12 +1171,10 @@ static int alvium_set_bayer_pattern(struct alvium_dev *alvium,
->  }
->  
->  static int alvium_get_frame_interval(struct alvium_dev *alvium,
-> -				     u64 *dft_fr, u64 *min_fr, u64 *max_fr)
-> +				     u64 *min_fr, u64 *max_fr)
->  {
->  	int ret = 0;
->  
-> -	alvium_read(alvium, REG_BCRM_ACQUISITION_FRAME_RATE_RW,
-> -		    dft_fr, &ret);
->  	alvium_read(alvium, REG_BCRM_ACQUISITION_FRAME_RATE_MIN_R,
->  		    min_fr, &ret);
->  	alvium_read(alvium, REG_BCRM_ACQUISITION_FRAME_RATE_MAX_R,
-> @@ -1647,7 +1645,7 @@ static int alvium_s_frame_interval(struct v4l2_subdev *sd,
->  {
->  	struct alvium_dev *alvium = sd_to_alvium(sd);
->  	struct device *dev = &alvium->i2c_client->dev;
-> -	u64 req_fr, dft_fr, min_fr, max_fr;
-> +	u64 req_fr, min_fr, max_fr;
->  	struct v4l2_fract *interval;
->  	int ret;
->  
-> @@ -1657,7 +1655,7 @@ static int alvium_s_frame_interval(struct v4l2_subdev *sd,
->  	if (fi->interval.denominator == 0)
->  		return -EINVAL;
->  
-> -	ret = alvium_get_frame_interval(alvium, &dft_fr, &min_fr, &max_fr);
-> +	ret = alvium_get_frame_interval(alvium, &min_fr, &max_fr);
->  	if (ret) {
->  		dev_err(dev, "Fail to get frame interval\n");
->  		return ret;
-> @@ -1670,9 +1668,7 @@ static int alvium_s_frame_interval(struct v4l2_subdev *sd,
->  
->  	req_fr = (u64)((fi->interval.denominator * USEC_PER_SEC) /
->  		       fi->interval.numerator);
-> -
-> -	if (req_fr >= max_fr && req_fr <= min_fr)
-> -		req_fr = dft_fr;
-> +	req_fr = clamp(req_fr, min_fr, max_fr);
->  
->  	interval = v4l2_subdev_state_get_interval(sd_state, 0);
->  
+> Ding Hui (1):
+>    scsi: ses: increase default init_alloc_size
+> 
+> Zhu Wei (1):
+>    scsi: ses: Fix slab-out-of-bounds in ses_get_power_status()
+> 
+>   drivers/scsi/ses.c | 55 +++++++++++++++++++++++++++++++++++++++-------
+>   1 file changed, 47 insertions(+), 8 deletions(-)
+> 
+
+Friendly ping.
 
 -- 
-Regards,
+Thanks,
+- Ding Hui
 
-Laurent Pinchart
 
