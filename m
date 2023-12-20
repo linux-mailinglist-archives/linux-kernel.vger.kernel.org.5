@@ -1,95 +1,162 @@
-Return-Path: <linux-kernel+bounces-7283-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7282-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3F3881A4DC
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 17:24:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F8E581A4D7
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 17:24:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 65F51B24CB7
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 16:24:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2EDD01F269E9
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 16:24:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFEA64B15C;
-	Wed, 20 Dec 2023 16:20:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NlffhOCJ"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 608524C60B;
+	Wed, 20 Dec 2023 16:20:02 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C264482F7;
-	Wed, 20 Dec 2023 16:20:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DBC9C433C8;
-	Wed, 20 Dec 2023 16:20:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703089232;
-	bh=XVgd7pqYNT+knJLpFJ5VDLSw1dPBnwpebcm4HpkJ8yQ=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=NlffhOCJ1UyfI+WZlEScRu+W0FpBZpCOJutilYVtmDMnQM1SUCDQWrom7mdcLTN2C
-	 xzavSclOmhmxZGL4IWQ8ZF9qjqBsAsJBj7Y6fdMEBqFF7HH7ITrhwei88JIFCIf4X5
-	 vWzFZ6NJm8blBrsml3RNc6tpZfCqhk0wa0Jhhac//IgP7apWRYSVJ1Bpk6BXpVQUiL
-	 eY2i9NXO494PrP21ejfBr7KYvLeCuQRenGVx2zr4IByU/k9Fx5Oo42PUOhmkgHMkQH
-	 XGuorGu0QbKOuaJTAJAATGEVDqNUuAl85YwL27w1Vs9OxDPP5oIDAt4ytA796XcyNP
-	 2v3e/q9WJ0epQ==
-Date: Wed, 20 Dec 2023 17:20:25 +0100
-From: Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
-To: Christian Marangi <ansuelsmth@gmail.com>
-Cc: Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>, Andrew Lunn
- <andrew@lunn.ch>, Jakub Kicinski <kuba@kernel.org>, Daniel Golle
- <daniel@makrotopia.org>, "David S. Miller" <davem@davemloft.net>, Li Zetao
- <lizetao1@huawei.com>, linux-kernel@vger.kernel.org,
- linux-leds@vger.kernel.org
-Subject: Re: [PATCH v4 1/2] leds: trigger: netdev: display only supported
- link speed attribute
-Message-ID: <20231220172025.3b9c452b@dellmb>
-In-Reply-To: <20231219165353.23233-1-ansuelsmth@gmail.com>
-References: <20231219165353.23233-1-ansuelsmth@gmail.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 844194AF7B;
+	Wed, 20 Dec 2023 16:20:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B0BC91FB;
+	Wed, 20 Dec 2023 08:20:44 -0800 (PST)
+Received: from [10.57.82.217] (unknown [10.57.82.217])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E6B303F64C;
+	Wed, 20 Dec 2023 08:19:58 -0800 (PST)
+Message-ID: <18918cb6-2a1d-4a07-a9dc-a1d4de3860c3@arm.com>
+Date: Wed, 20 Dec 2023 16:21:05 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 3/8] thermal: gov_power_allocator: Move memory
+ allocation out of throttle()
+Content-Language: en-US
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: linux-kernel@vger.kernel.org, daniel.lezcano@linaro.org,
+ linux-pm@vger.kernel.org, rui.zhang@intel.com
+References: <20231212134844.1213381-1-lukasz.luba@arm.com>
+ <20231212134844.1213381-4-lukasz.luba@arm.com>
+ <CAJZ5v0j_FNhi_nzBz-n9Dk4_VBm2yiRLnkAS5btNE8cYD+trRQ@mail.gmail.com>
+From: Lukasz Luba <lukasz.luba@arm.com>
+In-Reply-To: <CAJZ5v0j_FNhi_nzBz-n9Dk4_VBm2yiRLnkAS5btNE8cYD+trRQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Tue, 19 Dec 2023 17:53:52 +0100
-Christian Marangi <ansuelsmth@gmail.com> wrote:
 
-> +	for_each_set_bit(mode, supported_link_modes, __ETHTOOL_LINK_MODE_MASK_NBITS) {
-> +		struct ethtool_link_ksettings link_ksettings;
-> +
-> +		ethtool_params_from_link_mode(&link_ksettings, mode);
-> +
-> +		if (attr == &dev_attr_link_10.attr &&
-> +		    link_ksettings.base.speed == SPEED_10)
-> +			return attr->mode;
-> +
-> +		if (attr == &dev_attr_link_100.attr &&
-> +		    link_ksettings.base.speed == SPEED_100)
-> +			return attr->mode;
-> +
-> +		if (attr == &dev_attr_link_1000.attr &&
-> +		    link_ksettings.base.speed == SPEED_1000)
-> +			return attr->mode;
-> +
-> +		if (attr == &dev_attr_link_2500.attr &&
-> +		    link_ksettings.base.speed == SPEED_2500)
-> +			return attr->mode;
-> +
-> +		if (attr == &dev_attr_link_5000.attr &&
-> +		    link_ksettings.base.speed == SPEED_5000)
-> +			return attr->mode;
-> +
-> +		if (attr == &dev_attr_link_10000.attr &&
-> +		    link_ksettings.base.speed == SPEED_10000)
-> +			return attr->mode;
 
-Hi Christian,
+On 12/20/23 14:35, Rafael J. Wysocki wrote:
+> On Tue, Dec 12, 2023 at 2:48 PM Lukasz Luba <lukasz.luba@arm.com> wrote:
+>>
+>> The new thermal callback allows to react to the change of cooling
+>> instances in the thermal zone. Move the memory allocation to that new
+>> callback and save CPU cycles in the throttle() code path.
+>>
+>> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+>> ---
+>>   drivers/thermal/gov_power_allocator.c | 144 ++++++++++++++++++++------
+>>   1 file changed, 113 insertions(+), 31 deletions(-)
+>>
+>> diff --git a/drivers/thermal/gov_power_allocator.c b/drivers/thermal/gov_power_allocator.c
+>> index 38e1e89ba10c..3328c3ec71f2 100644
+>> --- a/drivers/thermal/gov_power_allocator.c
+>> +++ b/drivers/thermal/gov_power_allocator.c
+>> @@ -61,6 +61,13 @@ static inline s64 div_frac(s64 x, s64 y)
+>>    *                     @trip_switch_on should be NULL.
+>>    * @trip_max:          last passive trip point of the thermal zone. The
+>>    *                     temperature we are controlling for.
+>> + * @num_actors:                number of cooling devices supporting IPA callbacks
+>> + * @buffer_size:       IPA internal buffer size
+>> + * @req_power:         IPA buffer for requested power
+>> + * @max_power:         IPA buffer for max allocatable power
+>> + * @granted_power:     IPA buffer for granted power
+>> + * @extra_actor_power: IPA buffer for extra power
+>> + * @weighted_req_power:        IPA buffer for weighted requested power
+>>    */
+>>   struct power_allocator_params {
+>>          bool allocated_tzp;
+>> @@ -69,6 +76,13 @@ struct power_allocator_params {
+>>          u32 sustainable_power;
+>>          const struct thermal_trip *trip_switch_on;
+>>          const struct thermal_trip *trip_max;
+>> +       int num_actors;
+>> +       int buffer_size;
+> 
+> None of the above can be negative, so maybe consider using unsigned int?
 
-ugly code repetition. Use a macro or a switch or something.
+True, I'll change them to unsigned.
 
-Marek
+> 
+>> +       u32 *req_power;
+>> +       u32 *max_power;
+>> +       u32 *granted_power;
+>> +       u32 *extra_actor_power;
+>> +       u32 *weighted_req_power;
+>>   };
+>>
+>>   /**
+>> @@ -387,39 +401,24 @@ static int allocate_power(struct thermal_zone_device *tz, int control_temp)
+>>          u32 *weighted_req_power;
+>>          u32 power_range, weight;
+>>          int total_weight = 0;
+>> -       int num_actors = 0;
+> 
+> You could retain this local var and set it to params->num_actors.  It
+> is kind of inconsistent to drop it and still use the local variables
+> above.
+
+OK, I'll do that.
+
+[snip]
+
+>> +
+>> +       req_power = kcalloc(num_actors * 5, sizeof(u32), GFP_KERNEL);
+> 
+> I'd use sizeof(*req_power) instead of sizeof(u32) here and below.
+
+OK
+
+> 
+>> +       if (!req_power) {
+>> +               ret = -ENOMEM;
+>> +               goto clean_buffers;
+>> +       }
+>> +
+>> +       params->num_actors = num_actors;
+>> +       params->buffer_size = num_actors * 5 * sizeof(u32);
+>> +
+>> +       _power_buffers_init(params, req_power, &req_power[params->num_actors],
+>> +                           &req_power[2 * params->num_actors],
+>> +                           &req_power[3 * params->num_actors],
+>> +                           &req_power[4 * params->num_actors]);
+> 
+> Why don't you use the local var in this instead of the struct member?
+> It would be easier to read then IMO.
+> 
+> Also, I would rather use pointer arithmetic, so it would become
+> 
+> _power_buffers_init(params, req_power, req_power + num_actors,
+> req_power + 2 * num_actors, req_power + 3 * num_actors, req_power + 4
+> * num_actors);
+> 
+> And note that you could introduce something like
+> 
+> struct power_actor {
+>          u32 req_power;
+>          u32 max_power;
+>          u32 granted_power;
+>          u32 extra_actor_power;
+>          u32 weighted_req_power;
+> };
+> 
+> and use a single array of these instead of 5 different arrays of u32,
+> which would result in more straightforward code if I'm not mistaken.
+
+That sounds like a good idea. Let me implement it and see - but it
+should be a better way. Thanks!
+
 
