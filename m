@@ -1,188 +1,219 @@
-Return-Path: <linux-kernel+bounces-6492-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6491-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52268819997
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 08:33:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D347819995
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 08:33:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D011F2829AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 07:33:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0427E28438C
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 07:33:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7689B19BB8;
-	Wed, 20 Dec 2023 07:33:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57142168B2;
+	Wed, 20 Dec 2023 07:33:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="2B+geRKl"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="eaI1ixBT"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A43B18AF6
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 07:33:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--changyuanl.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dbce9c6cd26so5819357276.0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 23:33:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1703057611; x=1703662411; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=twveIrdTcd/mulXsZ5S2piYz3X+8ZAw3Sbz5Wtujg/U=;
-        b=2B+geRKlxSdSxtkOWqoJ4PFde0rtQw+ritLnaVe01BFv+QlhK7Fwroby/y+gg1ZI13
-         qltlS03FGeAPLRFlRR4OwsJBkzOMo21TQDnrzOmHxC1StQ0WM3yEeBF0c+asfhb7a9xH
-         SR545k1z6xnxE5JwTrnHH+mWa/aus99XpzMYvUjuxTbVtZw+UOryLOQIF200DAYDSrwP
-         MvQLS3Pz/YI8snuWuvYyZQKyoAgqtovNIOT6uMYDHSRZIDUdu51INJgmq5zKYABd4Zfi
-         GgYnmiWoamLf8xorCqknT/zSNs2D2taDraky5o1B89rjSBWaQ5fOBXZnryQ7xyDPj3iN
-         V7Rg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703057611; x=1703662411;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=twveIrdTcd/mulXsZ5S2piYz3X+8ZAw3Sbz5Wtujg/U=;
-        b=swvznF5mWhQYFA66OB1gzmHuGZZDXxICnHThMGvUGOylQOdNQCsX+VNDpRIc0EdjT0
-         Wikk0Vqy4ojZyg2C3A611X4K21kb+2/BCAsv3fX6445MabiaiyaRLjxFLdM0DyXz4wzd
-         OQG8jZkUbkPvQviKYrAZgcLlgH+er/1KX0mH5QVmJWX8lnSiOmmb9NKEZtpvCn3Gmq7q
-         94+1OxLOz6D6+VPldL6I0dftm0sUghLKIi/TyZKvrtLUko/J/94MAFgAanZnJ52fi5eG
-         Z8vH2qmnE9K+EPtLfruIE+H/L48S0HQxWdKhFayLsY4CFP4VJRttyIYKzNL9Z8sjvaR0
-         dnUg==
-X-Gm-Message-State: AOJu0YyUDo6uOBzGU0RYQYNzp6PJ7F7sGikcRJOfdQ/ASAkFZHMVlTzW
-	YijDUVLwSn54vjEyu52SL4dmpYkFC0ITFbDR
-X-Google-Smtp-Source: AGHT+IFgIl8umfUHjjsA9gTZqJL4tpauFYgrM50BhRXTIf57FHoLEgTJR8p0S0qgUwaz+Y8q6eDmm27wpLrnBJhu
-X-Received: from changyuanl-desktop.svl.corp.google.com ([2620:15c:2a3:200:2c53:4290:ec42:9360])
- (user=changyuanl job=sendgmr) by 2002:a25:8041:0:b0:dbc:fb31:e5f with SMTP id
- a1-20020a258041000000b00dbcfb310e5fmr2508826ybn.10.1703057611420; Tue, 19 Dec
- 2023 23:33:31 -0800 (PST)
-Date: Tue, 19 Dec 2023 23:32:27 -0800
-In-Reply-To: <20231220020100-mutt-send-email-mst@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B34B1640D;
+	Wed, 20 Dec 2023 07:33:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BK4Dlpo022880;
+	Wed, 20 Dec 2023 07:32:59 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=BnD/wIZiRU3uaH33fmoB/ksRaZee7RDastjX3GeqY2c=; b=ea
+	I1ixBTee++GRkUQVKLhYJsx12ZZpiVVAQXk3lz3yC3r6YihSdPMhg3Me8xiMPu/j
+	gcAJL1QLfdk4Hn7F/YSy0xc2oE2UNySI6fIxf0hUEPYVYPBQcJ2qVDBHHssbAqNC
+	Kuiskpx0r3CCCusQWIWLvy6wuR5nyUm5pTq5sCnybROR/0sAOSeCC1NyL+eZ6F0o
+	flZ6Dayj2edj154r6tP1bEBZKLUuktBAADJ0g0En12Wvr/m5waeLy6dGZAyaQv3i
+	HSDNODvRmoYlI8KLlATygcMJ7lZLdyMta7m/R6j19Vcl1t8CEvn74rwhPzn/yWRl
+	9W0FgdZIDYS1IazDGgaw==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v3fa3hj2t-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 20 Dec 2023 07:32:58 +0000 (GMT)
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BK7WvM4019047
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 20 Dec 2023 07:32:57 GMT
+Received: from [10.216.10.102] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 19 Dec
+ 2023 23:32:48 -0800
+Message-ID: <8b80ab09-8444-4c3d-83b0-c7dbf5e58658@quicinc.com>
+Date: Wed, 20 Dec 2023 13:02:45 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20231220020100-mutt-send-email-mst@kernel.org>
-X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
-Message-ID: <20231220073227.252605-1-changyuanl@google.com>
-Subject: [PATCH v3] virtio_pmem: support feature SHMEM_REGION
-From: Changyuan Lyu <changyuanl@google.com>
-To: mst@redhat.com
-Cc: changyuanl@google.com, dan.j.williams@intel.com, dave.jiang@intel.com, 
-	jasowang@redhat.com, linux-kernel@vger.kernel.org, nvdimm@lists.linux.dev, 
-	pankaj.gupta.linux@gmail.com, virtualization@lists.linux.dev, 
-	vishal.l.verma@intel.com, xuanzhuo@linux.alibaba.com
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next] net: stmmac: dwmac-qcom-ethqos: Add support for
+ 2.5G SGMII
+Content-Language: en-US
+To: Andrew Halaney <ahalaney@redhat.com>
+CC: Vinod Koul <vkoul@kernel.org>, Bhupesh Sharma <bhupesh.sharma@linaro.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu
+	<joabreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet
+	<edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni
+	<pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>, <netdev@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <kernel@quicinc.com>
+References: <20231218071118.21879-1-quic_snehshah@quicinc.com>
+ <4zbf5fmijxnajk7kygcjrcusf6tdnuzsqqboh23nr6f3rb3c4g@qkfofhq7jmv6>
+From: Sneh Shah <quic_snehshah@quicinc.com>
+In-Reply-To: <4zbf5fmijxnajk7kygcjrcusf6tdnuzsqqboh23nr6f3rb3c4g@qkfofhq7jmv6>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 7Ut7UXyS2eIOhFoqn7Ux1zDtvLQ-HMcx
+X-Proofpoint-ORIG-GUID: 7Ut7UXyS2eIOhFoqn7Ux1zDtvLQ-HMcx
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
+ phishscore=0 spamscore=0 suspectscore=0 mlxlogscore=999 impostorscore=0
+ clxscore=1015 adultscore=0 mlxscore=0 lowpriorityscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2312200050
 
-On Tue, Dec 19, 2023 at 11:01 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+
+
+On 12/18/2023 9:50 PM, Andrew Halaney wrote:
+> On Mon, Dec 18, 2023 at 12:41:18PM +0530, Sneh Shah wrote:
+>> Serdes phy needs to operate at 2500 mode for 2.5G speed and 1000
+>> mode for 1G/100M/10M speed.
+>> Added changes to configure serdes phy and mac based on link speed.
+>>
+>> Signed-off-by: Sneh Shah <quic_snehshah@quicinc.com>
+>> ---
+>>  .../stmicro/stmmac/dwmac-qcom-ethqos.c        | 31 +++++++++++++++++--
+>>  1 file changed, 29 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
+>> index d3bf42d0fceb..b3a28dc19161 100644
+>> --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
+>> +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
+>> @@ -21,6 +21,7 @@
+>>  #define RGMII_IO_MACRO_CONFIG2		0x1C
+>>  #define RGMII_IO_MACRO_DEBUG1		0x20
+>>  #define EMAC_SYSTEM_LOW_POWER_DEBUG	0x28
+>> +#define ETHQOS_MAC_AN_CTRL		0xE0
+>>  
+>>  /* RGMII_IO_MACRO_CONFIG fields */
+>>  #define RGMII_CONFIG_FUNC_CLK_EN		BIT(30)
+>> @@ -78,6 +79,10 @@
+>>  #define ETHQOS_MAC_CTRL_SPEED_MODE		BIT(14)
+>>  #define ETHQOS_MAC_CTRL_PORT_SEL		BIT(15)
+>>  
+>> +/*ETHQOS_MAC_AN_CTRL bits */
+>> +#define ETHQOS_MAC_AN_CTRL_RAN			BIT(9)
+>> +#define ETHQOS_MAC_AN_CTRL_ANE			BIT(12)
+>> +
 > 
-> This is not a great description. Please describe what the patch does.
+> nit: space please add a space before ETHQOS_MAC_AN_CTRL
+> 
+will take care of this in next patch
 
-Thanks for the feedback! Please see the v3 patch below.
-
----8<---
-
-This patch adds the support for feature VIRTIO_PMEM_F_SHMEM_REGION
-(virtio spec v1.2 section 5.19.5.2 [1]). Feature bit
-VIRTIO_PMEM_F_SHMEM_REGION is added to the driver feature
-table.
-
-If the driver feature bit VIRTIO_PMEM_F_SHMEM_REGION is found,
-during probe, virtio pmem ignores the `start` and `size` fields in
-device config and looks for a shared memory region of id 0. The
-physical address range of the pmem is then determined by the physical
-address range of shared memory region 0.
-
-[1] https://docs.oasis-open.org/virtio/virtio/v1.2/csd01/virtio-v1.2-csd01.html#x1-6480002
-
-Signed-off-by: Changyuan Lyu <changyuanl@google.com>
-
----
-v3:
-  * updated the patch description.
-V2:
-  * renamed VIRTIO_PMEM_SHMCAP_ID to VIRTIO_PMEM_SHMEM_REGION_ID
-  * fixed the error handling when region 0 does not exist
----
- drivers/nvdimm/virtio_pmem.c     | 30 ++++++++++++++++++++++++++----
- include/uapi/linux/virtio_pmem.h |  8 ++++++++
- 2 files changed, 34 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/nvdimm/virtio_pmem.c b/drivers/nvdimm/virtio_pmem.c
-index a92eb172f0e7..8e447c7558cb 100644
---- a/drivers/nvdimm/virtio_pmem.c
-+++ b/drivers/nvdimm/virtio_pmem.c
-@@ -35,6 +35,8 @@ static int virtio_pmem_probe(struct virtio_device *vdev)
- 	struct nd_region *nd_region;
- 	struct virtio_pmem *vpmem;
- 	struct resource res;
-+	struct virtio_shm_region shm_reg;
-+	bool have_shm;
- 	int err = 0;
- 
- 	if (!vdev->config->get) {
-@@ -57,10 +59,24 @@ static int virtio_pmem_probe(struct virtio_device *vdev)
- 		goto out_err;
- 	}
- 
--	virtio_cread_le(vpmem->vdev, struct virtio_pmem_config,
--			start, &vpmem->start);
--	virtio_cread_le(vpmem->vdev, struct virtio_pmem_config,
--			size, &vpmem->size);
-+	if (virtio_has_feature(vdev, VIRTIO_PMEM_F_SHMEM_REGION)) {
-+		have_shm = virtio_get_shm_region(vdev, &shm_reg,
-+				(u8)VIRTIO_PMEM_SHMEM_REGION_ID);
-+		if (!have_shm) {
-+			dev_err(&vdev->dev, "failed to get shared memory region %d\n",
-+					VIRTIO_PMEM_SHMEM_REGION_ID);
-+			err = -ENXIO;
-+			goto out_vq;
-+		}
-+		vpmem->start = shm_reg.addr;
-+		vpmem->size = shm_reg.len;
-+	} else {
-+		virtio_cread_le(vpmem->vdev, struct virtio_pmem_config,
-+				start, &vpmem->start);
-+		virtio_cread_le(vpmem->vdev, struct virtio_pmem_config,
-+				size, &vpmem->size);
-+	}
-+
- 
- 	res.start = vpmem->start;
- 	res.end   = vpmem->start + vpmem->size - 1;
-@@ -122,7 +138,13 @@ static void virtio_pmem_remove(struct virtio_device *vdev)
- 	virtio_reset_device(vdev);
- }
- 
-+static unsigned int features[] = {
-+	VIRTIO_PMEM_F_SHMEM_REGION,
-+};
-+
- static struct virtio_driver virtio_pmem_driver = {
-+	.feature_table		= features,
-+	.feature_table_size	= ARRAY_SIZE(features),
- 	.driver.name		= KBUILD_MODNAME,
- 	.driver.owner		= THIS_MODULE,
- 	.id_table		= id_table,
-diff --git a/include/uapi/linux/virtio_pmem.h b/include/uapi/linux/virtio_pmem.h
-index d676b3620383..c5e49b6e58b1 100644
---- a/include/uapi/linux/virtio_pmem.h
-+++ b/include/uapi/linux/virtio_pmem.h
-@@ -14,6 +14,14 @@
- #include <linux/virtio_ids.h>
- #include <linux/virtio_config.h>
- 
-+/* Feature bits */
-+#define VIRTIO_PMEM_F_SHMEM_REGION 0	/* guest physical address range will be
-+					 * indicated as shared memory region 0
-+					 */
-+
-+/* shmid of the shared memory region corresponding to the pmem */
-+#define VIRTIO_PMEM_SHMEM_REGION_ID 0
-+
- struct virtio_pmem_config {
- 	__le64 start;
- 	__le64 size;
--- 
-2.43.0.472.g3155946c3a-goog
-
+>>  struct ethqos_emac_por {
+>>  	unsigned int offset;
+>>  	unsigned int value;
+>> @@ -109,6 +114,7 @@ struct qcom_ethqos {
+>>  	unsigned int num_por;
+>>  	bool rgmii_config_loopback_en;
+>>  	bool has_emac_ge_3;
+>> +	unsigned int serdes_speed;
+>>  };
+>>  
+>>  static int rgmii_readl(struct qcom_ethqos *ethqos, unsigned int offset)
+>> @@ -600,27 +606,47 @@ static int ethqos_configure_rgmii(struct qcom_ethqos *ethqos)
+>>  
+>>  static int ethqos_configure_sgmii(struct qcom_ethqos *ethqos)
+>>  {
+>> -	int val;
+>> -
+>> +	int val, mac_an_value;
+>>  	val = readl(ethqos->mac_base + MAC_CTRL_REG);
+>> +	mac_an_value = readl(ethqos->mac_base + ETHQOS_MAC_AN_CTRL);
+>>  
+>>  	switch (ethqos->speed) {
+>> +	case SPEED_2500:
+>> +		val &= ~ETHQOS_MAC_CTRL_PORT_SEL;
+>> +		rgmii_updatel(ethqos, RGMII_CONFIG2_RGMII_CLK_SEL_CFG,
+>> +			      RGMII_CONFIG2_RGMII_CLK_SEL_CFG,
+>> +			      RGMII_IO_MACRO_CONFIG2);
+>> +		if (ethqos->serdes_speed != SPEED_2500)
+>> +			phy_set_speed(ethqos->serdes_phy, ethqos->speed);
+>> +		mac_an_value &= ~ETHQOS_MAC_AN_CTRL_ANE;
+>> +		break;
+>>  	case SPEED_1000:
+>>  		val &= ~ETHQOS_MAC_CTRL_PORT_SEL;
+>>  		rgmii_updatel(ethqos, RGMII_CONFIG2_RGMII_CLK_SEL_CFG,
+>>  			      RGMII_CONFIG2_RGMII_CLK_SEL_CFG,
+>>  			      RGMII_IO_MACRO_CONFIG2);
+>> +		if (ethqos->serdes_speed != SPEED_1000)
+>> +			phy_set_speed(ethqos->serdes_phy, ethqos->speed);
+>> +		mac_an_value |= ETHQOS_MAC_AN_CTRL_RAN | ETHQOS_MAC_AN_CTRL_ANE;
+>>  		break;
+>>  	case SPEED_100:
+>>  		val |= ETHQOS_MAC_CTRL_PORT_SEL | ETHQOS_MAC_CTRL_SPEED_MODE;
+>> +		if (ethqos->serdes_speed != SPEED_1000)
+>> +			phy_set_speed(ethqos->serdes_phy, ethqos->speed);
+>> +		mac_an_value |= ETHQOS_MAC_AN_CTRL_RAN | ETHQOS_MAC_AN_CTRL_ANE;
+>>  		break;
+>>  	case SPEED_10:
+>>  		val |= ETHQOS_MAC_CTRL_PORT_SEL;
+>>  		val &= ~ETHQOS_MAC_CTRL_SPEED_MODE;
+>> +		if (ethqos->serdes_speed != SPEED_1000)
+>> +			phy_set_speed(ethqos->serdes_phy, ethqos->speed);
+>> +		mac_an_value |= ETHQOS_MAC_AN_CTRL_RAN | ETHQOS_MAC_AN_CTRL_ANE;
+>>  		break;
+>>  	}
+>>  
+>>  	writel(val, ethqos->mac_base + MAC_CTRL_REG);
+>> +	writel(mac_an_value, ethqos->mac_base + ETHQOS_MAC_AN_CTRL);
+>> +	ethqos->serdes_speed = ethqos->speed;
+> 
+> I see these bits are generic and there's some functions in stmmac_pcs.h
+> that muck with these...
+> 
+> Could you help me understand if this really should be Qualcomm specific,
+> or if this is something that should be considered for the more core bits
+> of the driver? I feel in either case we should take advantage of the
+> common definitions in that file if possible.
+> 
+we do have function dwmac_ctrl_ane in core driver which updates same registers. However, it does not have the option to reset ANE bit, it can only set bits. For SPEED_2500 we need to reset ANE bit. Hence I am adding it here. Not sure if we can extend dwmac_ctrl_ane function to reset bits as well.
+>>  
+>>  	return val;
+>>  }
+>> @@ -789,6 +815,7 @@ static int qcom_ethqos_probe(struct platform_device *pdev)
+>>  				     "Failed to get serdes phy\n");
+>>  
+>>  	ethqos->speed = SPEED_1000;
+>> +	ethqos->serdes_speed = SPEED_1000;
+>>  	ethqos_update_link_clk(ethqos, SPEED_1000);
+>>  	ethqos_set_func_clk_en(ethqos);
+>>  
+>> -- 
+>> 2.17.1
+>>
+> 
 
