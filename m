@@ -1,68 +1,107 @@
-Return-Path: <linux-kernel+bounces-7074-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7071-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 013DD81A14A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 15:41:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D17381A13F
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 15:39:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B2C1C28235B
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 14:41:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BF6981C203F3
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 14:39:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BA003D3A2;
-	Wed, 20 Dec 2023 14:41:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="e86LEVcE"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D96033D3BD;
+	Wed, 20 Dec 2023 14:39:31 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.219])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15EAB24B3E
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 14:41:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=r9ksr
-	NXOTxgxH4c0sDif0BlwN8OMT6GeRiy6ZpC4yqo=; b=e86LEVcEicfjvtTpcWHyT
-	hCbs+WBPkjlOT8Xmykl7lrlCZJY/2Hyb/dIgGKqIN20GoY+OfWQ4XM762J1VGywh
-	Y1OcGJReK07QcGhJYaxjloyCVh2XOH39Mr0d4+iZA5i1nsrbezh8LJ8ER+lokWPh
-	CVOZLSL6ZvqDKejKB/cHes=
-Received: from localhost.localdomain (unknown [120.229.70.95])
-	by zwqz-smtp-mta-g1-2 (Coremail) with SMTP id _____wDX_0Xd_IJlHRBYBw--.35742S2;
-	Wed, 20 Dec 2023 22:40:31 +0800 (CST)
-From: Junwen Wu <wudaemon@163.com>
-To: laoar.shao@gmail.com
-Cc: bristot@redhat.com,
-	bsegall@google.com,
-	dietmar.eggemann@arm.com,
-	juri.lelli@redhat.com,
-	linux-kernel@vger.kernel.org,
-	mgorman@suse.de,
-	mingo@redhat.com,
-	peterz@infradead.org,
-	rostedt@goodmis.org,
-	vincent.guittot@linaro.org,
-	vschneid@redhat.com,
-	wudaemon@163.com
-Subject: Re: [PATCH v1] sched/rt: Fix rt task's sched latency statistics error in sched_stat_wait trace_point
-Date: Wed, 20 Dec 2023 14:40:29 +0000
-Message-Id: <20231220144029.836019-1-wudaemon@163.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231220143249.833273-1-wudaemon@163.com>
-References: <20231220143249.833273-1-wudaemon@163.com>
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75BDF3D38D;
+	Wed, 20 Dec 2023 14:39:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 046A1C433C8;
+	Wed, 20 Dec 2023 14:39:29 +0000 (UTC)
+Date: Wed, 20 Dec 2023 09:40:30 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, Mark
+ Rutland <mark.rutland@arm.com>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, Andrew Morton
+ <akpm@linux-foundation.org>, Tzvetomir Stoyanov <tz.stoyanov@gmail.com>,
+ Vincent Donnefort <vdonnefort@google.com>, Kent Overstreet
+ <kent.overstreet@gmail.com>
+Subject: Re: [PATCH v5 03/15] ring-buffer: Add interface for configuring
+ trace sub buffer size
+Message-ID: <20231220094030.5d13438b@gandalf.local.home>
+In-Reply-To: <20231220232619.67f0b175578d14f9341fb30c@kernel.org>
+References: <20231219185414.474197117@goodmis.org>
+	<20231219185628.298324722@goodmis.org>
+	<20231220232619.67f0b175578d14f9341fb30c@kernel.org>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wDX_0Xd_IJlHRBYBw--.35742S2
-X-Coremail-Antispam: 1Uf129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-	VFW2AGmfu7bjvjm3AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvjfUn189UUUUU
-X-CM-SenderInfo: 5zxgtvxprqqiywtou0bp/1tbisRZMbWVOAlD2jgABsG
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-sorry, type error.  rt_se->on_rq is still 1
---
-Best regards
+On Wed, 20 Dec 2023 23:26:19 +0900
+Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
+
+> On Tue, 19 Dec 2023 13:54:17 -0500
+> Steven Rostedt <rostedt@goodmis.org> wrote:
+> 
+> > +/**
+> > + * ring_buffer_subbuf_order_set - set the size of ring buffer sub page.
+> > + * @buffer: The ring_buffer to set the new page size.
+> > + * @order: Order of the system pages in one sub buffer page
+> > + *
+> > + * By default, one ring buffer pages equals to one system page. This API can be
+> > + * used to set new size of the ring buffer page. The size must be order of
+> > + * system page size, that's why the input parameter @order is the order of
+> > + * system pages that are allocated for one ring buffer page:
+> > + *  0 - 1 system page
+> > + *  1 - 2 system pages
+> > + *  3 - 4 system pages
+> > + *  ...  
+> 
+> Don't we have the max order of the pages?
+
+Actually there is. I think it's 7?
+
+Honestly, anything over 5 is probably too much. But hey.
+
+> 
+> > + *
+> > + * Returns 0 on success or < 0 in case of an error.
+> > + */
+> > +int ring_buffer_subbuf_order_set(struct trace_buffer *buffer, int order)
+> > +{
+> > +	int psize;
+> > +
+> > +	if (!buffer || order < 0)
+> > +		return -EINVAL;
+> > +
+> > +	if (buffer->subbuf_order == order)
+> > +		return 0;
+> > +
+> > +	psize = (1 << order) * PAGE_SIZE;
+> > +	if (psize <= BUF_PAGE_HDR_SIZE)
+> > +		return -EINVAL;
+> > +
+> > +	buffer->subbuf_order = order;
+> > +	buffer->subbuf_size = psize - BUF_PAGE_HDR_SIZE;
+> > +
+> > +	/* Todo: reset the buffer with the new page size */
+> > +  
+> 
+> I just wonder why there is no reallocate the sub buffers here.
+> Is it OK to change the sub buffer page size and order while
+> using the ring buffer?
+
+Currently we disable the ring buffer to do the update.
+
+-- Steve
 
 
