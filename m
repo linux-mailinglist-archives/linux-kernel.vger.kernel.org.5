@@ -1,51 +1,51 @@
-Return-Path: <linux-kernel+bounces-7599-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7600-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A68281AAB7
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 00:07:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C983A81AAB8
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 00:07:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2F4BE28214D
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 23:06:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0820F1C22A64
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 23:07:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C20A57895;
-	Wed, 20 Dec 2023 22:46:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC82851C2A;
+	Wed, 20 Dec 2023 22:46:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Iwkyu+BP"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="DYZUI4eA"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24CAC55C36
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 22:46:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C358776902
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 22:46:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1703112395;
+	s=mimecast20190719; t=1703112397;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=vX4HFQixyHeUqudW1I+7GoOAzQbfOI98S0mk8R6Q4EQ=;
-	b=Iwkyu+BPE5jnsbkbdG+s+crY+49jyinQTbt46QkHZZz6Fg0Q9ud4lMzJ4BrKCqpNzwpXv0
-	6qwjdcSaeCf6kIEB7ScjPpJ4leftLN4PEi1mIuT2HD8LRvvGGiknwWgfCpJjGOVPotr03t
-	baOo+hggxJVwH2ao7eVw2OJJ3SB+FL0=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-548-1zduYvExPhKGzCC_CaEsSA-1; Wed, 20 Dec 2023 17:46:31 -0500
-X-MC-Unique: 1zduYvExPhKGzCC_CaEsSA-1
+	bh=FS6TinGTKiO3H/lfNCqQPkYyWdSgfpvkK+CFwNOsPIw=;
+	b=DYZUI4eAzbE/81PlcrPVDpDIIbYgaOcyDvRpBkFWonR2IC2NxbZz6E7CIILjM8lYsbbQ3t
+	YBe8Ur1EeUDY7/wY0fsRTKAu25MPdwN5nfMGNnK8ydUXQi4p9o6qsNoNq6r1WvlQ3882Wx
+	D4sKYGPym9V+M+iKy+qAA8gqQ5H6Dvw=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-314-hNtzcJbYOtScYX6nbBDUnA-1; Wed,
+ 20 Dec 2023 17:46:34 -0500
+X-MC-Unique: hNtzcJbYOtScYX6nbBDUnA-1
 Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id CDE6C185A783;
-	Wed, 20 Dec 2023 22:46:30 +0000 (UTC)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C6BF838425AF;
+	Wed, 20 Dec 2023 22:46:33 +0000 (UTC)
 Received: from t14s.fritz.box (unknown [10.39.192.101])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 1364A40C6EB9;
-	Wed, 20 Dec 2023 22:46:28 +0000 (UTC)
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 3BC8F40C6EB9;
+	Wed, 20 Dec 2023 22:46:31 +0000 (UTC)
 From: David Hildenbrand <david@redhat.com>
 To: linux-kernel@vger.kernel.org
 Cc: linux-mm@kvack.org,
@@ -58,9 +58,9 @@ Cc: linux-mm@kvack.org,
 	Mike Kravetz <mike.kravetz@oracle.com>,
 	Muchun Song <muchun.song@linux.dev>,
 	Peter Xu <peterx@redhat.com>
-Subject: [PATCH v2 32/40] mm/rmap: remove page_remove_rmap()
-Date: Wed, 20 Dec 2023 23:44:56 +0100
-Message-ID: <20231220224504.646757-33-david@redhat.com>
+Subject: [PATCH v2 33/40] mm/rmap: convert page_dup_file_rmap() to folio_dup_file_rmap_[pte|ptes|pmd]()
+Date: Wed, 20 Dec 2023 23:44:57 +0100
+Message-ID: <20231220224504.646757-34-david@redhat.com>
 In-Reply-To: <20231220224504.646757-1-david@redhat.com>
 References: <20231220224504.646757-1-david@redhat.com>
 Precedence: bulk
@@ -72,136 +72,109 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
 
-All callers are gone, let's remove it and some leftover traces.
+Let's convert page_dup_file_rmap() like the other rmap functions. As there
+is only a single caller, convert that single caller right away and remove
+page_dup_file_rmap().
+
+Add folio_dup_file_rmap_ptes() right away, we want to perform rmap
+baching during fork() soon.
 
 Signed-off-by: David Hildenbrand <david@redhat.com>
 ---
- include/linux/rmap.h |  4 +---
- mm/filemap.c         | 10 +++++-----
- mm/internal.h        |  2 +-
- mm/memory-failure.c  |  4 ++--
- mm/rmap.c            | 23 ++---------------------
- 5 files changed, 11 insertions(+), 32 deletions(-)
+ include/linux/rmap.h | 59 ++++++++++++++++++++++++++++++++++++++++----
+ mm/memory.c          |  2 +-
+ 2 files changed, 55 insertions(+), 6 deletions(-)
 
 diff --git a/include/linux/rmap.h b/include/linux/rmap.h
-index 57e045093f047..fef369e37039a 100644
+index fef369e37039a..7607f862e795d 100644
 --- a/include/linux/rmap.h
 +++ b/include/linux/rmap.h
-@@ -241,8 +241,6 @@ void folio_add_file_rmap_ptes(struct folio *, struct page *, int nr_pages,
- 	folio_add_file_rmap_ptes(folio, page, 1, vma)
- void folio_add_file_rmap_pmd(struct folio *, struct page *,
- 		struct vm_area_struct *);
--void page_remove_rmap(struct page *, struct vm_area_struct *,
--		bool compound);
- void folio_remove_rmap_ptes(struct folio *, struct page *, int nr_pages,
- 		struct vm_area_struct *);
- #define folio_remove_rmap_pte(folio, page, vma) \
-@@ -389,7 +387,7 @@ static inline int page_try_dup_anon_rmap(struct page *page, bool compound,
-  *
-  * This is similar to page_try_dup_anon_rmap(), however, not used during fork()
-  * to duplicate a mapping, but instead to prepare for KSM or temporarily
-- * unmapping a page (swap, migration) via page_remove_rmap().
-+ * unmapping a page (swap, migration) via folio_remove_rmap_*().
-  *
-  * Marking the page shared can only fail if the page may be pinned; device
-  * private pages cannot get pinned and consequently this function cannot fail.
-diff --git a/mm/filemap.c b/mm/filemap.c
-index 67ba56ecdd32a..c8dafe70d4cce 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -113,11 +113,11 @@
-  *    ->i_pages lock		(try_to_unmap_one)
-  *    ->lruvec->lru_lock	(follow_page->mark_page_accessed)
-  *    ->lruvec->lru_lock	(check_pte_range->isolate_lru_page)
-- *    ->private_lock		(page_remove_rmap->set_page_dirty)
-- *    ->i_pages lock		(page_remove_rmap->set_page_dirty)
-- *    bdi.wb->list_lock		(page_remove_rmap->set_page_dirty)
-- *    ->inode->i_lock		(page_remove_rmap->set_page_dirty)
-- *    ->memcg->move_lock	(page_remove_rmap->folio_memcg_lock)
-+ *    ->private_lock		(folio_remove_rmap_pte->set_page_dirty)
-+ *    ->i_pages lock		(folio_remove_rmap_pte->set_page_dirty)
-+ *    bdi.wb->list_lock		(folio_remove_rmap_pte->set_page_dirty)
-+ *    ->inode->i_lock		(folio_remove_rmap_pte->set_page_dirty)
-+ *    ->memcg->move_lock	(folio_remove_rmap_pte->folio_memcg_lock)
-  *    bdi.wb->list_lock		(zap_pte_range->set_page_dirty)
-  *    ->inode->i_lock		(zap_pte_range->set_page_dirty)
-  *    ->private_lock		(zap_pte_range->block_dirty_folio)
-diff --git a/mm/internal.h b/mm/internal.h
-index 222e63b2dea48..a94355e70bd78 100644
---- a/mm/internal.h
-+++ b/mm/internal.h
-@@ -651,7 +651,7 @@ folio_within_vma(struct folio *folio, struct vm_area_struct *vma)
-  * under page table lock for the pte/pmd being added or removed.
-  *
-  * mlock is usually called at the end of page_add_*_rmap(), munlock at
-- * the end of page_remove_rmap(); but new anon folios are managed by
-+ * the end of folio_remove_rmap_*(); but new anon folios are managed by
-  * folio_add_lru_vma() calling mlock_new_folio().
-  */
- void mlock_folio(struct folio *folio);
-diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-index 5a23da5eb8c1e..a0d9b4ac7d545 100644
---- a/mm/memory-failure.c
-+++ b/mm/memory-failure.c
-@@ -2315,8 +2315,8 @@ int memory_failure(unsigned long pfn, int flags)
- 	 * We use page flags to determine what action should be taken, but
- 	 * the flags can be modified by the error containment action.  One
- 	 * example is an mlocked page, where PG_mlocked is cleared by
--	 * page_remove_rmap() in try_to_unmap_one(). So to determine page status
--	 * correctly, we save a copy of the page flags at this time.
-+	 * folio_remove_rmap_*() in try_to_unmap_one(). So to determine page
-+	 * status correctly, we save a copy of the page flags at this time.
- 	 */
- 	page_flags = p->flags;
- 
-diff --git a/mm/rmap.c b/mm/rmap.c
-index a3ec2be484cfc..3ee254a996221 100644
---- a/mm/rmap.c
-+++ b/mm/rmap.c
-@@ -470,7 +470,7 @@ void __init anon_vma_init(void)
- /*
-  * Getting a lock on a stable anon_vma from a page off the LRU is tricky!
-  *
-- * Since there is no serialization what so ever against page_remove_rmap()
-+ * Since there is no serialization what so ever against folio_remove_rmap_*()
-  * the best this function can do is return a refcount increased anon_vma
-  * that might have been relevant to this page.
-  *
-@@ -487,7 +487,7 @@ void __init anon_vma_init(void)
-  * [ something equivalent to page_mapped_in_vma() ].
-  *
-  * Since anon_vma's slab is SLAB_TYPESAFE_BY_RCU and we know from
-- * page_remove_rmap() that the anon_vma pointer from page->mapping is valid
-+ * folio_remove_rmap_*() that the anon_vma pointer from page->mapping is valid
-  * if there is a mapcount, we can dereference the anon_vma after observing
-  * those.
-  *
-@@ -1498,25 +1498,6 @@ void folio_add_file_rmap_pmd(struct folio *folio, struct page *page,
- #endif
+@@ -308,6 +308,60 @@ static inline void hugetlb_remove_rmap(struct folio *folio)
+ 	atomic_dec(&folio->_entire_mapcount);
  }
  
--/**
-- * page_remove_rmap - take down pte mapping from a page
-- * @page:	page to remove mapping from
-- * @vma:	the vm area from which the mapping is removed
-- * @compound:	uncharge the page as compound or small page
-- *
-- * The caller needs to hold the pte lock.
-- */
--void page_remove_rmap(struct page *page, struct vm_area_struct *vma,
--		bool compound)
++static __always_inline void __folio_dup_file_rmap(struct folio *folio,
++		struct page *page, int nr_pages, enum rmap_level level)
++{
++	__folio_rmap_sanity_checks(folio, page, nr_pages, level);
++
++	switch (level) {
++	case RMAP_LEVEL_PTE:
++		do {
++			atomic_inc(&page->_mapcount);
++		} while (page++, --nr_pages > 0);
++		break;
++	case RMAP_LEVEL_PMD:
++		atomic_inc(&folio->_entire_mapcount);
++		break;
++	}
++}
++
++/**
++ * folio_dup_file_rmap_ptes - duplicate PTE mappings of a page range of a folio
++ * @folio:	The folio to duplicate the mappings of
++ * @page:	The first page to duplicate the mappings of
++ * @nr_pages:	The number of pages of which the mapping will be duplicated
++ *
++ * The page range of the folio is defined by [page, page + nr_pages)
++ *
++ * The caller needs to hold the page table lock.
++ */
++static inline void folio_dup_file_rmap_ptes(struct folio *folio,
++		struct page *page, int nr_pages)
++{
++	__folio_dup_file_rmap(folio, page, nr_pages, RMAP_LEVEL_PTE);
++}
++#define folio_dup_file_rmap_pte(folio, page) \
++	folio_dup_file_rmap_ptes(folio, page, 1)
++
++/**
++ * folio_dup_file_rmap_pmd - duplicate a PMD mapping of a page range of a folio
++ * @folio:	The folio to duplicate the mapping of
++ * @page:	The first page to duplicate the mapping of
++ *
++ * The page range of the folio is defined by [page, page + HPAGE_PMD_NR)
++ *
++ * The caller needs to hold the page table lock.
++ */
++static inline void folio_dup_file_rmap_pmd(struct folio *folio,
++		struct page *page)
++{
++#ifdef CONFIG_TRANSPARENT_HUGEPAGE
++	__folio_dup_file_rmap(folio, page, HPAGE_PMD_NR, RMAP_LEVEL_PTE);
++#else
++	WARN_ON_ONCE(true);
++#endif
++}
++
+ static inline void __page_dup_rmap(struct page *page, bool compound)
+ {
+ 	VM_WARN_ON(folio_test_hugetlb(page_folio(page)));
+@@ -322,11 +376,6 @@ static inline void __page_dup_rmap(struct page *page, bool compound)
+ 	}
+ }
+ 
+-static inline void page_dup_file_rmap(struct page *page, bool compound)
 -{
--	struct folio *folio = page_folio(page);
--
--	if (likely(!compound))
--		folio_remove_rmap_pte(folio, page, vma);
--	else
--		folio_remove_rmap_pmd(folio, page, vma);
+-	__page_dup_rmap(page, compound);
 -}
 -
- static __always_inline void __folio_remove_rmap(struct folio *folio,
- 		struct page *page, int nr_pages, struct vm_area_struct *vma,
- 		enum rmap_level level)
+ /**
+  * page_try_dup_anon_rmap - try duplicating a mapping of an already mapped
+  *			    anonymous page
+diff --git a/mm/memory.c b/mm/memory.c
+index eda2181275d9b..dc2a8e6858179 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -965,7 +965,7 @@ copy_present_pte(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma,
+ 		rss[MM_ANONPAGES]++;
+ 	} else if (page) {
+ 		folio_get(folio);
+-		page_dup_file_rmap(page, false);
++		folio_dup_file_rmap_pte(folio, page);
+ 		rss[mm_counter_file(page)]++;
+ 	}
+ 
 -- 
 2.43.0
 
