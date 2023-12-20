@@ -1,111 +1,151 @@
-Return-Path: <linux-kernel+bounces-6332-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6333-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5687D819757
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 04:49:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93ACC81975C
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 04:49:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 12C1E288415
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 03:49:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2B0521F28DBC
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 03:49:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B491A208A2;
-	Wed, 20 Dec 2023 03:47:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BE25C8CE;
+	Wed, 20 Dec 2023 03:49:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="BoVBXp1a"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="GhKmsDZe"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B41C41F60A
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 03:47:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D5E1BE6B
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 03:49:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1703044042;
+	s=mimecast20190719; t=1703044142;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=zeRKaaUGMF/rV1Pw2tqp6lNgEKTL5KPcCr8EDMoKMeM=;
-	b=BoVBXp1aSRuYG6C7ze3k3Yd3ctOJK2iBDudvgG7XHsgESZ+SRzWqki6ANfZuOSGlfdmjLQ
-	MYSmgshA0XmnkBM7WA821on6m8z9qpLuUZXSZWilWv/jALwuctlZY5iUfp+PgmCfs8lIm1
-	FWpZ5eviBUjrsI0bOU0IaVcUoKLPZWI=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=rcEKCuZCISl6MmvUHOcZ8wbgYmHDedpsTc/f0SRr9EY=;
+	b=GhKmsDZeYb3XSwGueRdW3A1Ucznh7i4wMn3j9US9reLAMoMPMe2SZgh2faIb42QT//ROMv
+	H4yhkjW/NSbBE6Lzut9GtPWwBU7daahL19RSwLgChg5MgVc19a44qbdwEZ7/+08MRRSSEc
+	jKFMw7+6UMD7fCLvTlehVlJF4Cc1ICA=
+Received: from mail-oo1-f71.google.com (mail-oo1-f71.google.com
+ [209.85.161.71]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-362-LuOJU51RPbyuhVfnRcm59g-1; Tue, 19 Dec 2023 22:47:20 -0500
-X-MC-Unique: LuOJU51RPbyuhVfnRcm59g-1
-Received: by mail-qk1-f200.google.com with SMTP id af79cd13be357-77fb91da85cso761788585a.2
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 19:47:20 -0800 (PST)
+ us-mta-264-s6cma28sPie5NBWUBm_Ffw-1; Tue, 19 Dec 2023 22:48:59 -0500
+X-MC-Unique: s6cma28sPie5NBWUBm_Ffw-1
+Received: by mail-oo1-f71.google.com with SMTP id 006d021491bc7-58e2b7e4f94so6343884eaf.2
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 19:48:59 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703044040; x=1703648840;
+        d=1e100.net; s=20230601; t=1703044138; x=1703648938;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=zeRKaaUGMF/rV1Pw2tqp6lNgEKTL5KPcCr8EDMoKMeM=;
-        b=XPC3+CgXCy9Ho8zF81/Yny/SG7p4pGewx9EFBryAJufx7C1HHC2gXPGARVnHGGgIZe
-         Vy3jouBTk7EmEHJbtZ7SxUu525hDcQo83HcLg9lH7Moc4998PwVW9xZWwLqphThhAEuV
-         8f+WfcUnJoeM9R8H1dxSbjulT3yDrGieE90nY6BE5aK2o1zje1Tbx+YfECdEj3f1XH8X
-         SdpvQ4vfMBaf60SHKyV2+bXsjrW863P1Vl7VDcu38cundiLoqCy2/5abJpU7LRTKvnmY
-         K8h6N46ZEHNzov9jEc0s8ZEJiT+SZiJ3UOt4E7wClfKuSBOaCpTfE0b3753ng6NOYyMQ
-         gg6Q==
-X-Gm-Message-State: AOJu0YzsDa7LTa5zE2PGehB8PcRLGZ+UxvufxcCKxveUbY9jkMQCW9Mh
-	XORZb7wDqlQ8zqz5TWjFPHgM/DvQB2Kz0uyNVZ7vLACOcj5RB5AUDZLUZ55WzB3EX1KLbCBbyEz
-	TR8UDEpJrAksDXFuQSnfoS1DZ12dt2qHx6QAaYgxp
-X-Received: by 2002:a05:620a:1025:b0:781:2e4:a333 with SMTP id a5-20020a05620a102500b0078102e4a333mr1851792qkk.101.1703044040362;
-        Tue, 19 Dec 2023 19:47:20 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IF2eu48vysOQiZNwVknIUUkOGzk8lLz1dfUfotvXOLhv6Vyvhvaja8sHuwdb2gwij5dOp0VLjJ8belHFZFJh4k=
-X-Received: by 2002:a05:620a:1025:b0:781:2e4:a333 with SMTP id
- a5-20020a05620a102500b0078102e4a333mr1851780qkk.101.1703044040147; Tue, 19
- Dec 2023 19:47:20 -0800 (PST)
+        bh=rcEKCuZCISl6MmvUHOcZ8wbgYmHDedpsTc/f0SRr9EY=;
+        b=bHAB8p4RQYGU6g9N949JUs+L5/I+ypR4pi73QrXP5/EXysZoWrKICJq14A8fTL1Xv8
+         crSxl3/Gthw1k3ztmnTnxi9pFUgksMXL7pRhb8SHCRahY/lbPQwRyGymKM0r7ZAvJAj1
+         oF0qVqYtbZP1b8PCj1TWzoXxQmOC7Pqtkis9z6M3JcRYnM77dhojzSMhZielRwW0KMrX
+         9VXRR2GSaCuWGDpKSrq10lMK/MmYfnUvoH7O7yKL3HFilZxWlohsKpjRdxN2C19dN3pv
+         mnDiowxWfXyRxrNuWXEmKnYG8ZmBUpLuz/T5M3PGcxYyZwrJT8dycFuZh16hrcR//ktA
+         nrDA==
+X-Gm-Message-State: AOJu0Yy594MXCuNmvg4bAcxcnVAyoCMOtpaHr6/rpZOWW6gT9UY7OaqZ
+	v0IY/pVAPbwosj0TcJctbRILyDwu5vGVDppYCG8/ElHgBfPb6WRMFJlYbcflfjzeMnpgT2uqLjH
+	BbC17mqJq9e0+HIP0VLUpBfuTgq9qgdspxDkhf0A7
+X-Received: by 2002:a05:6358:2919:b0:170:982:5611 with SMTP id y25-20020a056358291900b0017009825611mr28623937rwb.32.1703044138503;
+        Tue, 19 Dec 2023 19:48:58 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFaWh6Q0+sX3khUGlVzDT+nrVdy0DPPOrc9xz+Dh3vmGUvcZjZ2nthFRcXi9qE3vyRl3qciLiksVeyICTqENg0=
+X-Received: by 2002:a05:6358:2919:b0:170:982:5611 with SMTP id
+ y25-20020a056358291900b0017009825611mr28623927rwb.32.1703044138196; Tue, 19
+ Dec 2023 19:48:58 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231219180858.120898-1-dtatulea@nvidia.com> <20231219180858.120898-15-dtatulea@nvidia.com>
-In-Reply-To: <20231219180858.120898-15-dtatulea@nvidia.com>
+References: <20231218-v6-7-topic-virtio-net-ptp-v1-0-cac92b2d8532@pengutronix.de>
+ <65807512bc20b_805482941e@willemb.c.googlers.com.notmuch>
+In-Reply-To: <65807512bc20b_805482941e@willemb.c.googlers.com.notmuch>
 From: Jason Wang <jasowang@redhat.com>
-Date: Wed, 20 Dec 2023 11:47:08 +0800
-Message-ID: <CACGkMEtMkjORddUC4x+O9JsDevQBpo0KiJu1XCcvxgKgqfXuGQ@mail.gmail.com>
-Subject: Re: [PATCH vhost v4 14/15] vdpa/mlx5: Introduce reference counting to mrs
-To: Dragos Tatulea <dtatulea@nvidia.com>
-Cc: "Michael S . Tsirkin" <mst@redhat.com>, Eugenio Perez Martin <eperezma@redhat.com>, 
-	Si-Wei Liu <si-wei.liu@oracle.com>, Saeed Mahameed <saeedm@nvidia.com>, 
-	Leon Romanovsky <leon@kernel.org>, virtualization@lists.linux-foundation.org, 
-	Gal Pressman <gal@nvidia.com>, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Parav Pandit <parav@nvidia.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Date: Wed, 20 Dec 2023 11:48:47 +0800
+Message-ID: <CACGkMEuuz3R5CgBpKrnBwtFP3ZxWULDMm47LhtxYYHSSUy_2fQ@mail.gmail.com>
+Subject: Re: [PATCH RFC 0/4] virtio-net: add tx-hash, rx-tstamp, tx-tstamp and tx-time
+To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc: Steffen Trumtrar <s.trumtrar@pengutronix.de>, "Michael S. Tsirkin" <mst@redhat.com>, 
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Richard Cochran <richardcochran@gmail.com>, virtualization@lists.linux.dev, 
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Willem de Bruijn <willemb@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Dec 20, 2023 at 2:10=E2=80=AFAM Dragos Tatulea <dtatulea@nvidia.com=
-> wrote:
+On Tue, Dec 19, 2023 at 12:36=E2=80=AFAM Willem de Bruijn
+<willemdebruijn.kernel@gmail.com> wrote:
 >
-> Deleting the old mr during mr update (.set_map) and then modifying the
-> vqs with the new mr is not a good flow for firmware. The firmware
-> expects that mkeys are deleted after there are no more vqs referencing
-> them.
+> Steffen Trumtrar wrote:
+> > This series tries to pick up the work on the virtio-net timestamping
+> > feature from Willem de Bruijn.
+> >
+> > Original series
+> >     Message-Id: 20210208185558.995292-1-willemdebruijn.kernel@gmail.com
+> >     Subject: [PATCH RFC v2 0/4] virtio-net: add tx-hash, rx-tstamp,
+> >     tx-tstamp and tx-time
+> >     From: Willem de Bruijn <willemb@google.com>
+> >
+> >     RFC for four new features to the virtio network device:
+> >
+> >     1. pass tx flow state to host, for routing + telemetry
+> >     2. pass rx tstamp to guest, for better RTT estimation
+> >     3. pass tx tstamp to guest, idem
+> >     3. pass tx delivery time to host, for accurate pacing
+> >
+> >     All would introduce an extension to the virtio spec.
+> >
+> > The original series consisted of a hack around the DMA API, which shoul=
+d
+> > be fixed in this series.
+> >
+> > The changes in this series are to the driver side. For the changes to q=
+emu see:
+> >     https://github.com/strumtrar/qemu/tree/v8.1.1/virtio-net-ptp
+> >
+> > Currently only virtio-net is supported. The original series used
+> > vhost-net as backend. However, the path through tun via sendmsg doesn't
+> > allow us to write data back to the driver side without any hacks.
+> > Therefore use the way via plain virtio-net without vhost albeit better
+> > performance.
+> >
+> > Signed-off-by: Steffen Trumtrar <s.trumtrar@pengutronix.de>
 >
-> Introduce reference counting for mrs to fix this. It is the only way to
-> make sure that mkeys are not in use by vqs.
+> Thanks for picking this back up, Steffen. Nice to see that the code still
+> applies mostly cleanly.
 >
-> An mr reference is taken when the mr is associated to the mr asid table
-> and when the mr is linked to the vq on create/modify. The reference is
-> released when the mkey is unlinked from the vq (trough modify/destroy)
-> and from the mr asid table.
+> For context: I dropped the work only because I had no real device
+> implementation. The referenced patch series to qemu changes that.
 >
-> To make things consistent, get rid of mlx5_vdpa_destroy_mr and use
-> get/put semantics everywhere.
+> I suppose the main issue is the virtio API changes that this introduces,
+> which will have to be accepted to the spec.
 >
-> Reviewed-by: Gal Pressman <gal@nvidia.com>
-> Acked-by: Eugenio P=C3=A9rez <eperezma@redhat.com>
-> Signed-off-by: Dragos Tatulea <dtatulea@nvidia.com>
-> ---
+> One small comment to patch 4: there I just assumed the virtual device
+> time is CLOCK_TAI. There is a concurrent feature under review for HW
+> pacing offload with AF_XDP sockets. The clock issue comes up a bit. In
+> general, for hardware we cannot assume a clock.
 
-Acked-by: Jason Wang <jasowang@redhat.com>
+Any reason for this? E.g some modern NIC have PTP support.
+
+> For virtio, perhaps
+> assuming the same monotonic hardware clock in guest and host can be
+> assumed.
+
+Note that virtio can be implemented in hardware now. So we can assume
+things like the kvm ptp clock.
+
+> But this clock alignment needs some thought.
+>
 
 Thanks
 
