@@ -1,208 +1,171 @@
-Return-Path: <linux-kernel+bounces-6647-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6648-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C82C5819BA4
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 10:46:56 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92117819BA5
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 10:48:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 185072842C8
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 09:46:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 17C88B2557F
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 09:48:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7F771F61D;
-	Wed, 20 Dec 2023 09:46:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1AB71F612;
+	Wed, 20 Dec 2023 09:48:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aAdQFac6"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 070B51F602
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 09:46:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ore@pengutronix.de>)
-	id 1rFt9w-00032F-RJ; Wed, 20 Dec 2023 10:46:36 +0100
-Received: from [2a0a:edc0:2:b01:1d::c0] (helo=ptx.whiteo.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ore@pengutronix.de>)
-	id 1rFt9t-000DKM-LV; Wed, 20 Dec 2023 10:46:34 +0100
-Received: from ore by ptx.whiteo.stw.pengutronix.de with local (Exim 4.92)
-	(envelope-from <ore@pengutronix.de>)
-	id 1rFt9u-007uXL-LS; Wed, 20 Dec 2023 10:46:34 +0100
-Date: Wed, 20 Dec 2023 10:46:34 +0100
-From: Oleksij Rempel <o.rempel@pengutronix.de>
-To: Vladimir Oltean <olteanv@gmail.com>
-Cc: Woojung Huh <woojung.huh@microchip.com>, Andrew Lunn <andrew@lunn.ch>,
-	Arun Ramadoss <arun.ramadoss@microchip.com>,
-	Florian Fainelli <f.fainelli@gmail.com>, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, UNGLinuxDriver@microchip.com,
-	Eric Dumazet <edumazet@google.com>, kernel@pengutronix.de,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	"David S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH net-next v1 3/3] net: dsa: microchip: Fix PHY loopback
- configuration for KSZ8794 and KSZ8873
-Message-ID: <20231220094634.GG1697233@pengutronix.de>
-References: <20231121152426.4188456-1-o.rempel@pengutronix.de>
- <20231121152426.4188456-1-o.rempel@pengutronix.de>
- <20231121152426.4188456-3-o.rempel@pengutronix.de>
- <20231121152426.4188456-3-o.rempel@pengutronix.de>
- <20231207002823.2qx24nxjhn6e43w4@skbuf>
- <20231207051502.GB1324895@pengutronix.de>
- <20231207140030.ki625ety6cg3ujxn@skbuf>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E395E1F5FF;
+	Wed, 20 Dec 2023 09:48:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3166FC433C8;
+	Wed, 20 Dec 2023 09:48:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703065728;
+	bh=wJiQg+u749YBBw4wmY0qJj3zwBAd7kxmoLP3xzWnTMA=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=aAdQFac69rgV1g//Rszj1gYUTlrhwYsrYR+0s7Nzt8odxsu0XcLGPn2jB/4KwO1eb
+	 hykRs9n6dlquwNRSq466xQUFGNpkwK0eiNrhJOmon9tWp5XCEFG3IHzynh78XfE7T2
+	 o7C/SUn7jMxx7C6JQGvP5yl6X/kpR/snQ6dGBLXM6bCYrb8TsFaRFF2yy6Jpdd5kQ9
+	 zvFrRwtOYanlhGhtO9Dys5IKQMwxdBfA7WdycfMsRYgEhYGT1H82/trAzsus9pmcuM
+	 SAGb5qX1DKsw71joZPRDn0RYbq9fwwzXdc254KWkjboslxzbt4gEeRUuE0jRrT/0n7
+	 Yht4XiC229FnA==
+Date: Wed, 20 Dec 2023 18:48:43 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, Masami
+ Hiramatsu <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Andrew Morton
+ <akpm@linux-foundation.org>, Tzvetomir Stoyanov <tz.stoyanov@gmail.com>,
+ Vincent Donnefort <vdonnefort@google.com>, Kent Overstreet
+ <kent.overstreet@gmail.com>
+Subject: Re: [PATCH v5 01/15] ring-buffer: Refactor ring buffer
+ implementation
+Message-Id: <20231220184843.163d60de46f82b7b4ee01d3d@kernel.org>
+In-Reply-To: <20231219185627.723857541@goodmis.org>
+References: <20231219185414.474197117@goodmis.org>
+	<20231219185627.723857541@goodmis.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231207140030.ki625ety6cg3ujxn@skbuf>
-X-Sent-From: Pengutronix Hildesheim
-X-URL: http://www.pengutronix.de/
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Thu, Dec 07, 2023 at 04:00:30PM +0200, Vladimir Oltean wrote:
-> On Thu, Dec 07, 2023 at 06:15:02AM +0100, Oleksij Rempel wrote:
-> > On Thu, Dec 07, 2023 at 02:28:23AM +0200, Vladimir Oltean wrote:
-> > > On Tue, Nov 21, 2023 at 04:24:26PM +0100, Oleksij Rempel wrote:
-> > > > Correct the PHY loopback bit handling in the ksz8_w_phy_bmcr and
-> > > > ksz8_r_phy_bmcr functions for KSZ8794 and KSZ8873 variants in the ksz8795
-> > > > driver. Previously, the code erroneously used Bit 7 of port register 0xD
-> > > > for both chip variants, which is actually for LED configuration. This
-> > > > update ensures the correct registers and bits are used for the PHY
-> > > > loopback feature:
-> > > > 
-> > > > - For KSZ8794: Use 0xF / Bit 7.
-> > > > - For KSZ8873: Use 0xD / Bit 0.
-> > > > 
-> > > > Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> > > > ---
-> > > 
-> > > How did you find, and how did you test this, and on which one of the switches?
-> > 
-> > I tested it by using "ethtool -t lanX" command on KSZ8873. Before this
-> > patch the link will stop to work _after_ end of the selftest. The
-> > selftest will fail too.
-> > 
-> > After this patch, the selftest is passed, except of the TCP test. And
-> > link is working _after_ the selftest,
+On Tue, 19 Dec 2023 13:54:15 -0500
+Steven Rostedt <rostedt@goodmis.org> wrote:
+
+> From: "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 > 
-> So you are suggesting that this far-end loopback mode does work as
-> expected by the kernel.
+> In order to introduce sub-buffer size per ring buffer, some internal
+> refactoring is needed. As ring_buffer_print_page_header() will depend on
+> the trace_buffer structure, it is moved after the structure definition.
 > 
-> But is that consistent with the description from the datasheet? It speaks
-> about an "originating PHY port", but maybe this is confusing, because
-> based on your test, even the CPU port could be originating the traffic
-> that gets looped back?
+> Link: https://lore.kernel.org/linux-trace-devel/20211213094825.61876-2-tz.stoyanov@gmail.com
 > 
-> I see it says that far-end loopback goes through the switching fabric.
-> So the packet, on its return path from the loopback port, gets forwarded
-> by its MAC DA? That can't be, because the MAC DA lookup has already
-> determined the destination to be the loopback port (and no MAC SA<->DA
-> swapping should take place). Or it is forced by the switch to return
-> specifically to the originating port?
+
+OK, but the title is too generic. Something like 
+"Move ring_buffer_print_page_header() after ring_buffer_iter"
+will be preferable.
+
+Thank you,
+
+
+> Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+> ---
+>  kernel/trace/ring_buffer.c | 60 +++++++++++++++++++-------------------
+>  1 file changed, 30 insertions(+), 30 deletions(-)
 > 
-> With a bridge between the 2 LAN ports, and lan1 put in loopback, what
-> happens if you send a broadcast packet towards lan1? Will you also see
-> it on lan2's link partner, or only on the CPU port?
+> diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
+> index f7dc74e45ebf..2400c8e68fd3 100644
+> --- a/kernel/trace/ring_buffer.c
+> +++ b/kernel/trace/ring_buffer.c
+> @@ -379,36 +379,6 @@ static inline bool test_time_stamp(u64 delta)
+>  /* Max payload is BUF_PAGE_SIZE - header (8bytes) */
+>  #define BUF_MAX_DATA_SIZE (BUF_PAGE_SIZE - (sizeof(u32) * 2))
+>  
+> -int ring_buffer_print_page_header(struct trace_seq *s)
+> -{
+> -	struct buffer_data_page field;
+> -
+> -	trace_seq_printf(s, "\tfield: u64 timestamp;\t"
+> -			 "offset:0;\tsize:%u;\tsigned:%u;\n",
+> -			 (unsigned int)sizeof(field.time_stamp),
+> -			 (unsigned int)is_signed_type(u64));
+> -
+> -	trace_seq_printf(s, "\tfield: local_t commit;\t"
+> -			 "offset:%u;\tsize:%u;\tsigned:%u;\n",
+> -			 (unsigned int)offsetof(typeof(field), commit),
+> -			 (unsigned int)sizeof(field.commit),
+> -			 (unsigned int)is_signed_type(long));
+> -
+> -	trace_seq_printf(s, "\tfield: int overwrite;\t"
+> -			 "offset:%u;\tsize:%u;\tsigned:%u;\n",
+> -			 (unsigned int)offsetof(typeof(field), commit),
+> -			 1,
+> -			 (unsigned int)is_signed_type(long));
+> -
+> -	trace_seq_printf(s, "\tfield: char data;\t"
+> -			 "offset:%u;\tsize:%u;\tsigned:%u;\n",
+> -			 (unsigned int)offsetof(typeof(field), data),
+> -			 (unsigned int)BUF_PAGE_SIZE,
+> -			 (unsigned int)is_signed_type(char));
+> -
+> -	return !trace_seq_has_overflowed(s);
+> -}
+> -
+>  struct rb_irq_work {
+>  	struct irq_work			work;
+>  	wait_queue_head_t		waiters;
+> @@ -556,6 +526,36 @@ struct ring_buffer_iter {
+>  	int				missed_events;
+>  };
+>  
+> +int ring_buffer_print_page_header(struct trace_seq *s)
+> +{
+> +	struct buffer_data_page field;
+> +
+> +	trace_seq_printf(s, "\tfield: u64 timestamp;\t"
+> +			 "offset:0;\tsize:%u;\tsigned:%u;\n",
+> +			 (unsigned int)sizeof(field.time_stamp),
+> +			 (unsigned int)is_signed_type(u64));
+> +
+> +	trace_seq_printf(s, "\tfield: local_t commit;\t"
+> +			 "offset:%u;\tsize:%u;\tsigned:%u;\n",
+> +			 (unsigned int)offsetof(typeof(field), commit),
+> +			 (unsigned int)sizeof(field.commit),
+> +			 (unsigned int)is_signed_type(long));
+> +
+> +	trace_seq_printf(s, "\tfield: int overwrite;\t"
+> +			 "offset:%u;\tsize:%u;\tsigned:%u;\n",
+> +			 (unsigned int)offsetof(typeof(field), commit),
+> +			 1,
+> +			 (unsigned int)is_signed_type(long));
+> +
+> +	trace_seq_printf(s, "\tfield: char data;\t"
+> +			 "offset:%u;\tsize:%u;\tsigned:%u;\n",
+> +			 (unsigned int)offsetof(typeof(field), data),
+> +			 (unsigned int)BUF_PAGE_SIZE,
+> +			 (unsigned int)is_signed_type(char));
+> +
+> +	return !trace_seq_has_overflowed(s);
+> +}
+> +
+>  static inline void rb_time_read(rb_time_t *t, u64 *ret)
+>  {
+>  	*ret = local64_read(&t->time);
+> -- 
+> 2.42.0
 > 
-> It's not your fault, but this is all a bit confusing, and I'm not quite
-> able to match up the documentation with your results. I will trust the
-> experimental results, however.
-
-I did following tests:
-ip l a name br0 type bridge
-ip l s dev br0 up
-ip l s lan1 master br0
-ip l s dev lan1 up
-ip l s lan2 master br0
-ip l s dev lan2 up
-
-# to avoid link drop with the loopback mode
-ethtool -s lan1 speed 100 duplex full autoneg off
-# currently no tool support loopback configuration, so set it directly
-# to the register
-mii -i lan1 -p 0 -r 0 -v 6120
-
-################# Test 1 ###########################
-# on DUT
-ping 192.168.2.200 -I lan1
-
-on eth0/cpu interface:
-00:03:20.656445 AF Unknown (4294967295), length 61: 
-        0x0000:  ffff 000e cd00 cdbe 0806 0001 0800 0604  ................
-        0x0010:  0001 000e cd00 cdbe c0a8 010e 0000 0000  ................
-        0x0020:  0000 c0a8 02c8 0000 0000 0000 0000 0000  ................
-        0x0030:  0000 0000 0000 0000 01                   .........
-00:03:20.656548 AF Unknown (4294967295), length 61: 
-        0x0000:  ffff 000e cd00 cdbe 0806 0001 0800 0604  ................
-        0x0010:  0001 000e cd00 cdbe c0a8 010e 0000 0000  ................
-        0x0020:  0000 c0a8 02c8 0000 0000 0000 0000 0000  ................
-        0x0030:  0000 0000 0000 0000 00                   .........
-
-on lan1 remote system:
-100 701.752654927 00:0e:cd:00:cd:be → ff:ff:ff:ff:ff:ff ARP 60 Who has 192.168.2.200? Tell 192.168.1.14
-
-on lan2 remote system:
-347 1071.154437549 00:0e:cd:00:cd:be → ff:ff:ff:ff:ff:ff ARP 60 Who has 192.168.2.200? Tell 192.168.1.14
+> 
 
 
-################# Test 2 ###########################
-# send ping on on lan1 remote system:
-ping 172.17.0.1
-
-on eth0/cpu interface DUT:
--- nothing --
-
-on lan1 remote system:
-109 946.617862621 80:61:5f:0c:29:54 → ff:ff:ff:ff:ff:ff ARP 42 Who has 172.17.0.1? Tell 172.17.0.12
-
-on lan2 remote system:
--- nothing --
-
-################# Test 3 ###########################
-# send ping on on lan2 remote system:
-ping 172.17.0.122
-
-on eth0/cpu interface DUT:
-00:12:18.034220 AF Unknown (4294967295), length 61: 
-        0x0000:  ffff 8061 5f0c 2955 0806 0001 0800 0604  ...a_.)U........
-        0x0010:  0001 8061 5f0c 2955 ac11 000d 0000 0000  ...a_.)U........
-        0x0020:  0000 ac11 007a 0000 0000 0000 0000 0000  .....z..........
-        0x0030:  0000 0000 0000 0000 01                   .........
-00:12:18.034228 AF Unknown (4294967295), length 61: 
-        0x0000:  ffff 8061 5f0c 2955 0806 0001 0800 0604  ...a_.)U........
-        0x0010:  0001 8061 5f0c 2955 ac11 000d 0000 0000  ...a_.)U........
-        0x0020:  0000 ac11 007a 0000 0000 0000 0000 0000  .....z..........
-        0x0030:  0000 0000 0000 0000 00
-
-on lan1 remote system:
--- nothing --
-
-on lan2 remote system:
-476 1608.560311470 80:61:5f:0c:29:55 → ff:ff:ff:ff:ff:ff ARP 42 Who has 172.17.0.122? Tell 172.17.0.13
-477 1608.560361808 80:61:5f:0c:29:55 → ff:ff:ff:ff:ff:ff ARP 60 Who has 172.17.0.122? Tell 172.17.0.13
-
-I also retest selftest results and noted that it is not working if
-port is part of bridge.
-
-Regards,
-Oleksij
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
