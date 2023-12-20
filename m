@@ -1,367 +1,348 @@
-Return-Path: <linux-kernel+bounces-6765-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6766-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2C3C819D2C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 11:42:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36712819D30
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 11:43:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 799B7288D99
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 10:42:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5A0301C256CF
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 10:43:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12E3B20B0B;
-	Wed, 20 Dec 2023 10:41:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5822120B30;
+	Wed, 20 Dec 2023 10:43:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=topic.nl header.i=@topic.nl header.b="HRLRxzNu"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE49D20B06
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 10:41:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0D9A21FB;
-	Wed, 20 Dec 2023 02:42:37 -0800 (PST)
-Received: from [10.57.75.247] (unknown [10.57.75.247])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1B55F3F5A1;
-	Wed, 20 Dec 2023 02:41:47 -0800 (PST)
-Message-ID: <da16a7e5-76dd-4150-9ade-54b0d227a1e1@arm.com>
-Date: Wed, 20 Dec 2023 10:41:46 +0000
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2043.outbound.protection.outlook.com [40.107.20.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17FEF20B03;
+	Wed, 20 Dec 2023 10:43:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=topic.nl
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=topic.nl
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HsxcGXTRItPeWLwxUi9hYwOLnOCEiTgiGZvsm/ex7RiAjsAWalWRBD2tv3Cpd7vL7W2nPCELsiKtpQ+knUCsCklNmCPa4vxecSVlrWGHAGbDD3WwLhdXVARTHAP0XNRrbRD6VXrvsClYjUxj4Wyu7HvmX7rtpIl9nlzIITwpNukQ/LUDN5GWfe+38GHbQAwAZ4zk05Hw0kR8IdZQkzEnkAWjJa3y/GDmaITjQWvzFPoTHw9wUaku0dHbiqPOciEqgrxUKVEB13hYHjQ12PJs20URYbfr4nT63n3b+3eAmIrre7yBT0DIkbvYyYqj+nTSv8iSxsuQ7vztjFJogXhwFg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ZHTXGgB/QZ5hKpEz1UlTrycFSe6OfPKsfEa01mT83KI=;
+ b=CSnqFRK/D567/Tqp8SMNK9IRl5vUxPNd7M8vho2rnLKZJj4dIk+eTtjZlureaNScDyJr0thb1AlpV0awltrud7QnYblExpeOOLXbD38yFrPL2ZntrdpvqQeL44SCGG2pxWQVGpD8Ni1SFtLaqWE/o3Z63ILgPU9SrgG3npu8KdmKZPzpPdvAwDf0Oe6xMvmsqAI9TOBUm2SnNS6ORutTNwJhud0lhZNpvAQPCA/si36f/ilsRX+pSno2/XDIG/GHAXqdjlWQUSW3ZNcK2v5I4wS0bflanTyBARt9E6Rpd+FF48yPZXlcYjRihE1bqeVP2TDP+YWt/KQDa1cEgLAVOw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 20.93.157.195) smtp.rcpttodomain=huawei.com smtp.mailfrom=topic.nl;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=topic.nl;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=topic.nl; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZHTXGgB/QZ5hKpEz1UlTrycFSe6OfPKsfEa01mT83KI=;
+ b=HRLRxzNugcJLw7CsAy4VzRftSizlpT2FzJhmqqfVM3cfFdrvold61Hb9Nl0mCQcgjsf0JOyRd3yVEmST52x/LOGaG1z5UBKPEJK4YhJUmMKenoIq01v1d2H202Q1PkF+7ZH71CNJAejWViNyCKXi/Xt3e8C7KI/R/2QoT18bq8IoxYvMerjbM5rYW6/oDcNM1S43A8Jv/9fIdSA1MyPw8Lrx1gzsf79ik9//OwXycyRiFo0p4ura0PW6pkTePc/8NnPniFkI9bbvWQLplUdtkxp/TSBfOqaEzdrQYnRrtI6sEpoLRYKoC1v3qrXZWBPgaDg5ekfvdQE/4RYQbgXkhQ==
+Received: from AS4P191CA0012.EURP191.PROD.OUTLOOK.COM (2603:10a6:20b:5d5::11)
+ by PAXPR04MB8701.eurprd04.prod.outlook.com (2603:10a6:102:21c::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7113.18; Wed, 20 Dec
+ 2023 10:43:00 +0000
+Received: from AM4PEPF00025F9A.EURPRD83.prod.outlook.com
+ (2603:10a6:20b:5d5:cafe::ed) by AS4P191CA0012.outlook.office365.com
+ (2603:10a6:20b:5d5::11) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7113.18 via Frontend
+ Transport; Wed, 20 Dec 2023 10:43:00 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 20.93.157.195)
+ smtp.mailfrom=topic.nl; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=topic.nl;
+Received-SPF: Pass (protection.outlook.com: domain of topic.nl designates
+ 20.93.157.195 as permitted sender) receiver=protection.outlook.com;
+ client-ip=20.93.157.195; helo=westeu11-emailsignatures-cloud.codetwo.com;
+ pr=C
+Received: from westeu11-emailsignatures-cloud.codetwo.com (20.93.157.195) by
+ AM4PEPF00025F9A.mail.protection.outlook.com (10.167.16.9) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7113.18 via Frontend Transport; Wed, 20 Dec 2023 10:43:00 +0000
+Received: from EUR04-DB3-obe.outbound.protection.outlook.com (104.47.12.51) by westeu11-emailsignatures-cloud.codetwo.com with CodeTwo SMTP Server (TLS12) via SMTP; Wed, 20 Dec 2023 10:42:59 +0000
+Authentication-Results-Original: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=topic.nl;
+Received: from VE1PR04MB7471.eurprd04.prod.outlook.com (2603:10a6:800:1a7::11)
+ by PAXPR04MB9108.eurprd04.prod.outlook.com (2603:10a6:102:22b::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.38; Wed, 20 Dec
+ 2023 10:42:56 +0000
+Received: from VE1PR04MB7471.eurprd04.prod.outlook.com
+ ([fe80::5002:554a:3ace:1f8b]) by VE1PR04MB7471.eurprd04.prod.outlook.com
+ ([fe80::5002:554a:3ace:1f8b%2]) with mapi id 15.20.7091.034; Wed, 20 Dec 2023
+ 10:42:55 +0000
+Message-ID: <ca96c5d2-33aa-496b-b85f-531e628cb6d6@topic.nl>
+Date: Wed, 20 Dec 2023 11:42:54 +0100
+User-Agent: Mozilla Thunderbird
+From: Mike Looijmans <mike.looijmans@topic.nl>
+Subject: Re: [PATCH 1/2] dt-bindings: iio: adc: ti-ads1298: Add driver
+Content-Language: en-US
+To: Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+ Conor Dooley <conor@kernel.org>
+CC: devicetree@vger.kernel.org, linux-iio@vger.kernel.org,
+ Conor Dooley <conor+dt@kernel.org>, Jonathan Cameron <jic23@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Lars-Peter Clausen <lars@metafoo.de>, Rob Herring <robh+dt@kernel.org>,
+ linux-kernel@vger.kernel.org
+References: <1b153bce-a66a-45ee-a5c6-963ea6fb1c82.949ef384-8293-46b8-903f-40a477c056ae.618139b3-8cb2-4e4c-9283-9e3787c70105@emailsignatures365.codetwo.com>
+ <20231213094722.31547-1-mike.looijmans@topic.nl>
+ <20231213-diffuser-disposal-ea21bbce8b64@spud>
+ <20231214102244.000052a3@Huawei.com>
+Organization: TOPIC
+In-Reply-To: <20231214102244.000052a3@Huawei.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-ClientProxiedBy: AS4P190CA0048.EURP190.PROD.OUTLOOK.COM
+ (2603:10a6:20b:656::21) To VE1PR04MB7471.eurprd04.prod.outlook.com
+ (2603:10a6:800:1a7::11)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 02/16] mm: Batch-copy PTE ranges during fork()
-Content-Language: en-GB
-To: David Hildenbrand <david@redhat.com>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Ard Biesheuvel <ardb@kernel.org>, Marc Zyngier <maz@kernel.org>,
- Oliver Upton <oliver.upton@linux.dev>, James Morse <james.morse@arm.com>,
- Suzuki K Poulose <suzuki.poulose@arm.com>, Zenghui Yu
- <yuzenghui@huawei.com>, Andrey Ryabinin <ryabinin.a.a@gmail.com>,
- Alexander Potapenko <glider@google.com>,
- Andrey Konovalov <andreyknvl@gmail.com>, Dmitry Vyukov <dvyukov@google.com>,
- Vincenzo Frascino <vincenzo.frascino@arm.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Anshuman Khandual <anshuman.khandual@arm.com>,
- Matthew Wilcox <willy@infradead.org>, Yu Zhao <yuzhao@google.com>,
- Mark Rutland <mark.rutland@arm.com>, Kefeng Wang
- <wangkefeng.wang@huawei.com>, John Hubbard <jhubbard@nvidia.com>,
- Zi Yan <ziy@nvidia.com>, Barry Song <21cnbao@gmail.com>,
- Alistair Popple <apopple@nvidia.com>, Yang Shi <shy828301@gmail.com>
-Cc: linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org
-References: <20231218105100.172635-1-ryan.roberts@arm.com>
- <20231218105100.172635-3-ryan.roberts@arm.com>
- <0bef5423-6eea-446b-8854-980e9c23a948@redhat.com>
- <db1be625-33e4-4d07-8500-3f7d3c8f9937@arm.com>
- <be8b5181-be2c-4800-ba53-c65a6c3ed803@redhat.com>
- <dd227e51-c4b2-420b-a92a-65da85ab4018@arm.com>
- <7c0236ad-01f3-437f-8b04-125d69e90dc0@redhat.com>
- <9a58b1a2-2c13-4fa0-8ffa-2b3d9655f1b6@arm.com>
- <28968568-f920-47ac-b6fd-87528ffd8f77@redhat.com>
- <10b0b562-c1c0-4a66-9aeb-a6bff5c218f6@arm.com>
- <8f8023cb-3c31-4ead-a9e6-03a10e9490c6@redhat.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <8f8023cb-3c31-4ead-a9e6-03a10e9490c6@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-MS-TrafficTypeDiagnostic:
+	VE1PR04MB7471:EE_|PAXPR04MB9108:EE_|AM4PEPF00025F9A:EE_|PAXPR04MB8701:EE_
+X-MS-Office365-Filtering-Correlation-Id: 16e04fb0-a106-489b-111a-08dc01486f9a
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam-Untrusted: BCL:0;
+X-Microsoft-Antispam-Message-Info-Original:
+ LlXu+eRUjVbNym9nti5WxPNkEzZnKAXJVKvr4iwoHJmGfw6cuw8bAPLmdXcT2OKUu0oRozqxw6/5oMkmx21PwAc96mYj/IqRkIanTuMQad7x+d0ZBUJVflHoZm2VATHfiBp095MbyKGrcP0GLY8+jB8KLFDIf0xnlBT0zwgabQjPs77JzwyQ0fgXDjyUUN68UlK0zO4g9qEa9yDgQwW7JPGCjMhyRfSlsyMcUVP2fc4I2LkQMYrKPY0RcGHWdOt9HStn8PpNsejq/W2Z56UZw0FeK3s8UMEtp4oTlhraRC+80gCHvEkfGV6k4wbrmrQxE7yKNco54eQHiolT1gXpAwdA3p0WtoaQj0TRh9OD2JNi1EYS4QfinioJERiGeLFh1bPIr2b/GFQZlKHWu8BFoETWltyx8sywX3X+VWgVLliconVEE+k3IuVmiVid7MBwAWLvHMqJBlUyIsnMmvS/cSsqg2zKz7Kdb+kgmaCSgyyXNOZZNddB3tV1BlIVNBySS7Fhu5gpk6Bu4tgaTiru//O8GCgAVT26bYmazuk9mR2DNeT4OYQaah0G02DA8XkgziAirg9dFfsjTxuasXhe9E3X4sF6avx9mDRO/bEorcMp5M2VgTXOLkB4FLPXjitqO/RtjMqWkn9tMv5HUXNJKPNH7okUxnW6LIOjQVk9Z9Jz8wjZO7ec9zgebFTboMCMWvyOSQjg/6gr4yahSKlalw==
+X-Forefront-Antispam-Report-Untrusted:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR04MB7471.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(396003)(376002)(366004)(39840400004)(136003)(230173577357003)(230273577357003)(230922051799003)(451199024)(64100799003)(1800799012)(186009)(31686004)(36756003)(38100700002)(7416002)(2906002)(5660300002)(83380400001)(6506007)(53546011)(2616005)(6512007)(36916002)(26005)(966005)(8676002)(66946007)(41300700001)(478600001)(66556008)(54906003)(6486002)(110136005)(8936002)(86362001)(31696002)(4326008)(15974865002)(66476007)(44832011)(316002)(273104002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB9108
+X-CodeTwo-MessageID: fac2d985-2de5-4a08-81bb-e9e6443fe64c.20231220104258@westeu11-emailsignatures-cloud.codetwo.com
+X-CodeTwoProcessed: true
+X-EOPAttributedMessage: 0
+X-MS-Exchange-Transport-CrossTenantHeadersStripped:
+ AM4PEPF00025F9A.EURPRD83.prod.outlook.com
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id-Prvs:
+	9fc4e06f-ccac-4726-c844-08dc01486cee
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	0wdIQLjVXYTs2eOJP2EUpoD1/Vl5GTFWp8r/THrYWqimWnzwqFTST3bpJ1MJw72gu5B9e0IqZ3WgGJQ3UydbwGXBT79rxeVRET67/r5YqdbVA/y7fBAyDNZ+cUW8ZGOMrbqTu3b+M0kWi6dHtoB8u4qku7nTSmo3nFDybbpWXrC0Fag73vVtLFHBfLx8DWAj3AN5zvXcwSTHp9VEVLXNUi8gVAnLnqhzQ2imQsnJ6Gl4ERU5Ti3DnPxyhLQUnDQBu3AIuweNMB0Jla4nKP8tjKzWIjK8HuFlh6wqzWMuNOSV4f9nkfLoyyT5hq4Wz2PnqKhSmnkEJtx2CUFT/Fwnq+Io/YuG0UrvHSTt8zTEXtViXHk3XhqCncZJxAMvXsVLwNFh5euV/QYWRFsIKQxgNV64Qbry2KQfP6o2VQom3g9XG7PeDXW20bAEh3BGwifkraeoyj4WAUkQoMrXpBmOVxZ6zM9rAdAGqjBLtB3i/5m+5iMhAeL0KbTiCJemhjAcjniuLVcZVoJ3AyGbt2BbkaCNI41GEsNB7LGdcr/G9jwKwGiaA3wxUASGuCyHN+oc06vR0LxIabsxDn0Y/d2oGdYnwj4GTp0JJtQRBe80c8der9b6DWjkvVHeZuSEn50Lxyp87QI6QszuAZC2I4PFDwA7JI2Cus2sD3MnCgiBXqSn8+/TSCPglxIOT3LlfqbKSLoYO3eML0HP3rHTP2O7nFzv2uULXg86STFs/5iPahb0VLRD9IVuGalGKSkYwK2AWGgXVFuUYm5x/prsPM51hHy1SMU+YXq4USbMmLZeOKU=
+X-Forefront-Antispam-Report:
+	CIP:20.93.157.195;CTRY:NL;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:westeu11-emailsignatures-cloud.codetwo.com;PTR:westeu11-emailsignatures-cloud.codetwo.com;CAT:NONE;SFS:(13230031)(4636009)(346002)(396003)(136003)(39840400004)(376002)(230922051799003)(230173577357003)(230273577357003)(451199024)(186009)(1800799012)(64100799003)(82310400011)(36840700001)(46966006)(47076005)(7416002)(6486002)(966005)(6512007)(26005)(478600001)(36756003)(2616005)(336012)(356005)(41300700001)(36860700001)(7636003)(7596003)(15974865002)(83380400001)(86362001)(31696002)(36916002)(6506007)(53546011)(2906002)(44832011)(40480700001)(31686004)(8676002)(8936002)(70206006)(316002)(54906003)(70586007)(110136005)(4326008)(5660300002)(273104002)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: topic.nl
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Dec 2023 10:43:00.0627
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 16e04fb0-a106-489b-111a-08dc01486f9a
+X-MS-Exchange-CrossTenant-Id: 449607a5-3517-482d-8d16-41dd868cbda3
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=449607a5-3517-482d-8d16-41dd868cbda3;Ip=[20.93.157.195];Helo=[westeu11-emailsignatures-cloud.codetwo.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	AM4PEPF00025F9A.EURPRD83.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB8701
 
-On 20/12/2023 10:16, David Hildenbrand wrote:
-> On 20.12.23 11:11, Ryan Roberts wrote:
->> On 20/12/2023 09:54, David Hildenbrand wrote:
->>> On 20.12.23 10:51, Ryan Roberts wrote:
->>>> On 20/12/2023 09:17, David Hildenbrand wrote:
->>>>> On 19.12.23 18:42, Ryan Roberts wrote:
->>>>>> On 19/12/2023 17:22, David Hildenbrand wrote:
->>>>>>> On 19.12.23 09:30, Ryan Roberts wrote:
->>>>>>>> On 18/12/2023 17:47, David Hildenbrand wrote:
->>>>>>>>> On 18.12.23 11:50, Ryan Roberts wrote:
->>>>>>>>>> Convert copy_pte_range() to copy a batch of ptes in one go. A given
->>>>>>>>>> batch is determined by the architecture with the new helper,
->>>>>>>>>> pte_batch_remaining(), and maps a physically contiguous block of memory,
->>>>>>>>>> all belonging to the same folio. A pte batch is then write-protected in
->>>>>>>>>> one go in the parent using the new helper, ptep_set_wrprotects() and is
->>>>>>>>>> set in one go in the child using the new helper, set_ptes_full().
->>>>>>>>>>
->>>>>>>>>> The primary motivation for this change is to reduce the number of tlb
->>>>>>>>>> maintenance operations that the arm64 backend has to perform during
->>>>>>>>>> fork, as it is about to add transparent support for the "contiguous bit"
->>>>>>>>>> in its ptes. By write-protecting the parent using the new
->>>>>>>>>> ptep_set_wrprotects() (note the 's' at the end) function, the backend
->>>>>>>>>> can avoid having to unfold contig ranges of PTEs, which is expensive,
->>>>>>>>>> when all ptes in the range are being write-protected. Similarly, by
->>>>>>>>>> using set_ptes_full() rather than set_pte_at() to set up ptes in the
->>>>>>>>>> child, the backend does not need to fold a contiguous range once they
->>>>>>>>>> are all populated - they can be initially populated as a contiguous
->>>>>>>>>> range in the first place.
->>>>>>>>>>
->>>>>>>>>> This code is very performance sensitive, and a significant amount of
->>>>>>>>>> effort has been put into not regressing performance for the order-0
->>>>>>>>>> folio case. By default, pte_batch_remaining() is compile constant 1,
->>>>>>>>>> which enables the compiler to simplify the extra loops that are added
->>>>>>>>>> for batching and produce code that is equivalent (and equally
->>>>>>>>>> performant) as the previous implementation.
->>>>>>>>>>
->>>>>>>>>> This change addresses the core-mm refactoring only and a separate change
->>>>>>>>>> will implement pte_batch_remaining(), ptep_set_wrprotects() and
->>>>>>>>>> set_ptes_full() in the arm64 backend to realize the performance
->>>>>>>>>> improvement as part of the work to enable contpte mappings.
->>>>>>>>>>
->>>>>>>>>> To ensure the arm64 is performant once implemented, this change is very
->>>>>>>>>> careful to only call ptep_get() once per pte batch.
->>>>>>>>>>
->>>>>>>>>> The following microbenchmark results demonstate that there is no
->>>>>>>>>> significant performance change after this patch. Fork is called in a
->>>>>>>>>> tight loop in a process with 1G of populated memory and the time for the
->>>>>>>>>> function to execute is measured. 100 iterations per run, 8 runs
->>>>>>>>>> performed on both Apple M2 (VM) and Ampere Altra (bare metal). Tests
->>>>>>>>>> performed for case where 1G memory is comprised of order-0 folios and
->>>>>>>>>> case where comprised of pte-mapped order-9 folios. Negative is faster,
->>>>>>>>>> positive is slower, compared to baseline upon which the series is based:
->>>>>>>>>>
->>>>>>>>>> | Apple M2 VM   | order-0 (pte-map) | order-9 (pte-map) |
->>>>>>>>>> | fork          |-------------------|-------------------|
->>>>>>>>>> | microbench    |    mean |   stdev |    mean |   stdev |
->>>>>>>>>> |---------------|---------|---------|---------|---------|
->>>>>>>>>> | baseline      |    0.0% |    1.1% |    0.0% |    1.2% |
->>>>>>>>>> | after-change  |   -1.0% |    2.0% |   -0.1% |    1.1% |
->>>>>>>>>>
->>>>>>>>>> | Ampere Altra  | order-0 (pte-map) | order-9 (pte-map) |
->>>>>>>>>> | fork          |-------------------|-------------------|
->>>>>>>>>> | microbench    |    mean |   stdev |    mean |   stdev |
->>>>>>>>>> |---------------|---------|---------|---------|---------|
->>>>>>>>>> | baseline      |    0.0% |    1.0% |    0.0% |    0.1% |
->>>>>>>>>> | after-change  |   -0.1% |    1.2% |   -0.1% |    0.1% |
->>>>>>>>>>
->>>>>>>>>> Tested-by: John Hubbard <jhubbard@nvidia.com>
->>>>>>>>>> Reviewed-by: Alistair Popple <apopple@nvidia.com>
->>>>>>>>>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
->>>>>>>>>> ---
->>>>>>>>>>       include/linux/pgtable.h | 80 +++++++++++++++++++++++++++++++++++
->>>>>>>>>>       mm/memory.c             | 92
->>>>>>>>>> ++++++++++++++++++++++++++---------------
->>>>>>>>>>       2 files changed, 139 insertions(+), 33 deletions(-)
->>>>>>>>>>
->>>>>>>>>> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
->>>>>>>>>> index af7639c3b0a3..db93fb81465a 100644
->>>>>>>>>> --- a/include/linux/pgtable.h
->>>>>>>>>> +++ b/include/linux/pgtable.h
->>>>>>>>>> @@ -205,6 +205,27 @@ static inline int pmd_young(pmd_t pmd)
->>>>>>>>>>       #define arch_flush_lazy_mmu_mode()    do {} while (0)
->>>>>>>>>>       #endif
->>>>>>>>>>       +#ifndef pte_batch_remaining
->>>>>>>>>> +/**
->>>>>>>>>> + * pte_batch_remaining - Number of pages from addr to next batch
->>>>>>>>>> boundary.
->>>>>>>>>> + * @pte: Page table entry for the first page.
->>>>>>>>>> + * @addr: Address of the first page.
->>>>>>>>>> + * @end: Batch ceiling (e.g. end of vma).
->>>>>>>>>> + *
->>>>>>>>>> + * Some architectures (arm64) can efficiently modify a contiguous
->>>>>>>>>> batch of
->>>>>>>>>> ptes.
->>>>>>>>>> + * In such cases, this function returns the remaining number of pages to
->>>>>>>>>> the end
->>>>>>>>>> + * of the current batch, as defined by addr. This can be useful when
->>>>>>>>>> iterating
->>>>>>>>>> + * over ptes.
->>>>>>>>>> + *
->>>>>>>>>> + * May be overridden by the architecture, else batch size is always 1.
->>>>>>>>>> + */
->>>>>>>>>> +static inline unsigned int pte_batch_remaining(pte_t pte, unsigned long
->>>>>>>>>> addr,
->>>>>>>>>> +                        unsigned long end)
->>>>>>>>>> +{
->>>>>>>>>> +    return 1;
->>>>>>>>>> +}
->>>>>>>>>> +#endif
->>>>>>>>>
->>>>>>>>> It's a shame we now lose the optimization for all other archtiectures.
->>>>>>>>>
->>>>>>>>> Was there no way to have some basic batching mechanism that doesn't
->>>>>>>>> require
->>>>>>>>> arch
->>>>>>>>> specifics?
->>>>>>>>
->>>>>>>> I tried a bunch of things but ultimately the way I've done it was the only
->>>>>>>> way
->>>>>>>> to reduce the order-0 fork regression to 0.
->>>>>>>>
->>>>>>>> My original v3 posting was costing 5% extra and even my first attempt at an
->>>>>>>> arch-specific version that didn't resolve to a compile-time constant 1
->>>>>>>> still
->>>>>>>> cost an extra 3%.
->>>>>>>>
->>>>>>>>
->>>>>>>>>
->>>>>>>>> I'd have thought that something very basic would have worked like:
->>>>>>>>>
->>>>>>>>> * Check if PTE is the same when setting the PFN to 0.
->>>>>>>>> * Check that PFN is consecutive
->>>>>>>>> * Check that all PFNs belong to the same folio
->>>>>>>>
->>>>>>>> I haven't tried this exact approach, but I'd be surprised if I can get the
->>>>>>>> regression under 4% with this. Further along the series I spent a lot of
->>>>>>>> time
->>>>>>>> having to fiddle with the arm64 implementation; every conditional and every
->>>>>>>> memory read (even when in cache) was a problem. There is just so little in
->>>>>>>> the
->>>>>>>> inner loop that every instruction matters. (At least on Ampere Altra and
->>>>>>>> Apple
->>>>>>>> M2).
->>>>>>>>
->>>>>>>> Of course if you're willing to pay that 4-5% for order-0 then the
->>>>>>>> benefit to
->>>>>>>> order-9 is around 10% in my measurements. Personally though, I'd prefer to
->>>>>>>> play
->>>>>>>> safe and ensure the common order-0 case doesn't regress, as you previously
->>>>>>>> suggested.
->>>>>>>>
->>>>>>>
->>>>>>> I just hacked something up, on top of my beloved rmap cleanup/batching
->>>>>>> series. I
->>>>>>> implemented very generic and simple batching for large folios (all PTE bits
->>>>>>> except the PFN have to match).
->>>>>>>
->>>>>>> Some very quick testing (don't trust each last % ) on Intel(R) Xeon(R)
->>>>>>> Silver
->>>>>>> 4210R CPU.
->>>>>>>
->>>>>>> order-0: 0.014210 -> 0.013969
->>>>>>>
->>>>>>> -> Around 1.7 % faster
->>>>>>>
->>>>>>> order-9: 0.014373 -> 0.009149
->>>>>>>
->>>>>>> -> Around 36.3 % faster
->>>>>>
->>>>>> Well I guess that shows me :)
->>>>>>
->>>>>> I'll do a review and run the tests on my HW to see if it concurs.
->>>>>
->>>>>
->>>>> I pushed a simple compile fixup (we need pte_next_pfn()).
->>>>
->>>> I've just been trying to compile and noticed this. Will take a look at your
->>>> update.
->>>>
->>>> But upon review, I've noticed the part that I think makes this difficult for
->>>> arm64 with the contpte optimization; You are calling ptep_get() for every
->>>> pte in
->>>> the batch. While this is functionally correct, once arm64 has the contpte
->>>> changes, its ptep_get() has to read every pte in the contpte block in order to
->>>> gather the access and dirty bits. So if your batching function ends up wealking
->>>> a 16 entry contpte block, that will cause 16 x 16 reads, which kills
->>>> performance. That's why I added the arch-specific pte_batch_remaining()
->>>> function; this allows the core-mm to skip to the end of the contpte block and
->>>> avoid ptep_get() for the 15 tail ptes. So we end up with 16 READ_ONCE()s
->>>> instead
->>>> of 256.
->>>>
->>>> I considered making a ptep_get_noyoungdirty() variant, which would avoid the
->>>> bit
->>>> gathering. But we have a similar problem in zap_pte_range() and that function
->>>> needs the dirty bit to update the folio. So it doesn't work there. (see patch 3
->>>> in my series).
->>>>
->>>> I guess you are going to say that we should combine both approaches, so that
->>>> your batching loop can skip forward an arch-provided number of ptes? That would
->>>> certainly work, but feels like an orthogonal change to what I'm trying to
->>>> achieve :). Anyway, I'll spend some time playing with it today.
->>>
->>> You can overwrite the function or add special-casing internally, yes.
->>>
->>> Right now, your patch is called "mm: Batch-copy PTE ranges during fork()" and it
->>> doesn't do any of that besides preparing for some arm64 work.
->>>
+See below.
+
+
+Met vriendelijke groet / kind regards,=0A=
+=0A=
+Mike Looijmans=0A=
+System Expert=0A=
+=0A=
+=0A=
+TOPIC Embedded Products B.V.=0A=
+Materiaalweg 4, 5681 RJ Best=0A=
+The Netherlands=0A=
+=0A=
+T: +31 (0) 499 33 69 69=0A=
+E: mike.looijmans@topic.nl=0A=
+W: www.topic.nl=0A=
+=0A=
+Please consider the environment before printing this e-mail=0A=
+On 14-12-2023 11:22, Jonathan Cameron wrote:
+> On Wed, 13 Dec 2023 16:23:43 +0000
+> Conor Dooley <conor@kernel.org> wrote:
+>=20
+>> On Wed, Dec 13, 2023 at 10:47:21AM +0100, Mike Looijmans wrote:
+>>> Skeleton driver for the TI ADS1298 medical ADC. This device is
+>>> typically used for ECG and similar measurements. Supports data
+>>> acquisition at configurable scale and sampling frequency.
 >>
->> Well it allows an arch to opt-in to batching. But I see your point.
+>> I think the commit subject and body here were accidentally copy-pasted
+>> from the driver patch. Patches for bindings should avoid talking about
+>> drivers and focus on the harware (unless we are talking about LEDs or
+>> motors etc)
+
+Yeah, that's what happened. Will fix in next version.
+
 >>
->> How do you want to handle your patches? Do you want to clean them up and I'll
->> base my stuff on top? Or do you want me to take them and sort it all out?
-> 
-> Whatever you prefer, it was mostly a quick prototype to see if we can achieve
-> decent performance.
+>>>
+>>> Signed-off-by: Mike Looijmans <mike.looijmans@topic.nl>
+>>>
+>>> ---
+>>>
+>>>   .../bindings/iio/adc/ti,ads1298.yaml          | 80 ++++++++++++++++++=
++
+>>>   1 file changed, 80 insertions(+)
+>>>   create mode 100644 Documentation/devicetree/bindings/iio/adc/ti,ads12=
+98.yaml
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/iio/adc/ti,ads1298.yaml =
+b/Documentation/devicetree/bindings/iio/adc/ti,ads1298.yaml
+>>> new file mode 100644
+>>> index 000000000000..7a160ba721eb
+>>> --- /dev/null
+>>> +++ b/Documentation/devicetree/bindings/iio/adc/ti,ads1298.yaml
+>>> @@ -0,0 +1,80 @@
+>>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>>> +%YAML 1.2
+>>> +---
+>>> +$id: http://devicetree.org/schemas/iio/adc/ti,ads1298.yaml#
+>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>>> +
+>>> +title: Texas Instruments' ads1298 medical ADC chips
+>>> +
+>>> +maintainers:
+>>> +  - Mike Looijmans <mike.looijmans@topic.nl>
+>>> +
+>>> +properties:
+>>> +  compatible:
+>>> +    enum:
+>>> +      - ti,ads1298
+>>> +
+>>> +  reg:
+>>> +    maxItems: 1
+>>> +
+>>> +  spi-cpha: true
+>>> +
+>>> +  reset-gpios:
+>>> +    maxItems: 1
+>>> +
+>>> +  avdd-supply:
+>>> +    description:
+>>> +      Analog power supply, voltage between AVDD and AVSS. When providi=
+ng a
+>>> +      symmetric +/- 2.5V, the regulator should report 5V.
+>=20
+> Any precedence in tree for doing this?  I thought we had bindings that re=
+quired negative
+> supplies to be specified separately if present - so this would need to be=
+ 2
+> supplies. e.g.
+> https://elixir.bootlin.com/linux/v6.7-rc5/source/Documentation/devicetree=
+/bindings/iio/adc/ti,adc12138.yaml#L37
+>=20
 
-I'm about to run it on Altra and M2. But I assume it will show similar results.
+Given that some serious thought...
 
-> 
-> I can fixup the arch thingies (most should be easy, some might require a custom
-> pte_next_pfn()) 
+Splitting into positive and negative supplies would make sense if the chip=
+=20
+would have terminals for positive, negative and ground. Which it does not=20
+have, there's only positive and negative (which the datasheet misleadingly=
+=20
+calls "analog ground").
 
-Well if you're happy to do that, great! I'm keen to get the contpte stuff into
-v6.9 if at all possible, and I'm concious that I'm introducing more dependencies
-on you. And its about to be holiday season...
+The analog voltage supplied to the chip has no effect on its outputs, the=20
+analog supply must be connected between the AVDD and AVSS pins. Its relatio=
+n=20
+to analog ground is not relevant, so whether the voltages are +5/0 or=20
++2.5/-2.5 or +4/-1 or whatever does not affect the output of the ADC, which=
+=20
+only reports the difference between its "p" and "n" input signals. It only=
+=20
+affects the range of the inputs, as it cannot measure (p or n) outside the=
+=20
+analog supply.
 
-> and you can focus on getting cont-pte sorted out on top [I
-> assume that's what you want to work on :) ].
 
-That's certainly what I'm focussed on. But I'm happy to do whatever is required
-to get it over the line. I guess I'll start by finishing my review of your v1
-rmap stuff.
-
-> 
+>=20
+>>> +
+>>> +  vref-supply:
+>>> +    description:
+>>> +      Optional reference voltage. If omitted, internal reference is us=
+ed,
+>>> +      depending on analog supply this is 2.4 or 4V.
 >>
->> As I see it at the moment, I would keep your folio_pte_batch() always core, but
->> in subsequent patch, have it use pte_batch_remaining() (the arch function I have
->> in my series, which defaults to one). 
-> 
-> Just double-checking, how would it use pte_batch_remaining() ?
+>> It may be worth mentioning here what the conditions for the internal
+>> reference being 2.4 or 4 volts actually are.
 
-I think something like this would do it (untested):
-
-static inline int folio_pte_batch(struct folio *folio, unsigned long addr,
-		pte_t *start_ptep, pte_t pte, int max_nr)
-{
-	unsigned long folio_end_pfn = folio_pfn(folio) + folio_nr_pages(folio);
-	pte_t expected_pte = pte_next_pfn(pte);
-	pte_t *ptep = start_ptep;
-	int nr;
-
-	for (;;) {
-		nr = min(max_nr, pte_batch_remaining());
-		ptep += nr;
-		max_nr -= nr;
-
-		if (max_nr == 0)
-			break;
-
-		pte = ptep_get(ptep);
-
-		/* Do all PTE bits match, and the PFN is consecutive? */
-		if (!pte_same(pte, expected_pte))
-			break;
-
-		/*
-		 * Stop immediately once we reached the end of the folio. In
-		 * corner cases the next PFN might fall into a different
-		 * folio.
-		 */
-		if (pte_pfn(pte) == folio_end_pfn - 1)
-			break;
-
-		expected_pte = pte_next_pfn(expected_pte);
-	}
-
-	return ptep - start_ptep;
-}
-
-Of course, if we have the concept of a "pte batch" in the core-mm, then we might
-want to call the arch's thing something different; pte span? pte cont? pte cont
-batch? ...
+Will do (there's a 4.4 V treshold).
 
 
-> 
->> Then do a similar thing to what you have
->> done for fork in zap_pte_range() - also using folio_pte_batch(). Then lay my
->> series on top.
-> 
-> Yes, we should probably try to handle the zapping part similarly: make it
-> benefit all archs first, then special-case on cont-pte. I can help there as well.
+>>
+>>> +
+>>> +  clocks:
+>>> +    description: Optional 2.048 MHz external source clock on CLK pin
+>>> +    maxItems: 1
+>>> +
+>>> +  clock-names:
+>>> +    const: clk
+>>
+>> Since you have only one clock, having clock-names (especially with a
+>> name like "clk") is pointless IMO.
 
-OK great.
+True.
+
+>>
+>> Generally though, this patch looks good to me.
+>>
+>> Cheers,
+>> Conor.
+>>
+>>> +  interrupts:
+>>> +    description: Interrupt on DRDY pin, triggers on falling edge
+>>> +    maxItems: 1
+>>> +
+>>> +  label: true
+>>> +
+>>> +required:
+>>> +  - compatible
+>>> +  - reg
+>>> +  - avdd-supply
+>>> +  - interrupts
+>>> +
+>>> +allOf:
+>>> +  - $ref: /schemas/spi/spi-peripheral-props.yaml#
+>>> +
+>>> +unevaluatedProperties: false
+>>> +
+>>> +examples:
+>>> +  - |
+>>> +    #include <dt-bindings/gpio/gpio.h>
+>>> +    #include <dt-bindings/interrupt-controller/irq.h>
+>>> +    spi {
+>>> +        #address-cells =3D <1>;
+>>> +        #size-cells =3D <0>;
+>>> +
+>>> +        adc@1 {
+>>> +          reg =3D <1>;
+>>> +          compatible =3D "ti,ads1298";
+>>> +          label =3D "ads1298-1-ecg";
+>>> +          avdd-supply =3D <&reg_iso_5v_a>;
+>>> +          clock-names =3D "clk";
+>>> +          clocks =3D <&clk_ads1298>;
+>>> +          interrupt-parent =3D <&gpio0>;
+>>> +          interrupts =3D <78 IRQ_TYPE_EDGE_FALLING>;
+>>> +          spi-max-frequency =3D <20000000>;
+>>> +          spi-cpha;
+>>> +        };
+>>> +    };
+>>> +...
+>>> --=20
+>>> 2.34.1
+>>>
+>>>
+>>> Met vriendelijke groet / kind regards,
+>>>
+>>> Mike Looijmans
+>>> System Expert
+>>>
+>>>
+>>> TOPIC Embedded Products B.V.
+>>> Materiaalweg 4, 5681 RJ Best
+>>> The Netherlands
+>>>
+>>> T: +31 (0) 499 33 69 69
+>>> E: mike.looijmans@topic.nl
+>>> W: www.topic.nl
+>>>
+>>> Please consider the environment before printing this e-mail
+>>
+>=20
 
 
