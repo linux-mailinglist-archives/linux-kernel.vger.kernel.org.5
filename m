@@ -1,175 +1,235 @@
-Return-Path: <linux-kernel+bounces-6220-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6221-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 326F3819612
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 02:01:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F041819614
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 02:04:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B32771F211D5
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 01:01:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EEF3028742A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 01:04:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A2E74692;
-	Wed, 20 Dec 2023 01:00:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AA0246B0;
+	Wed, 20 Dec 2023 01:04:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZdPqqC2m"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="FA8NfmAP"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB86A79CC;
-	Wed, 20 Dec 2023 01:00:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6587AC433C8;
-	Wed, 20 Dec 2023 01:00:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703034054;
-	bh=4syDIv0RLwOoNUlwaRQGOzsRhe4oIXvWdi4qYIv7kc8=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=ZdPqqC2m65iV4CGkhx4G5oQ95lk6Am7JoKxR95gUf91AXAr38xSW/Ie3u6p57szTH
-	 +xQ/05BAVUzvNCEfnxIVTtKrKvUNqjTtLVoznBNSNL7V0ouLSV3RyteV2OkF2C/aFk
-	 AFp4E7cfVa1RSgP521RsfQUNr3QNvY9B74a+VJJvs2zJTdhc64rTr0z7Hu3Y8s9EoA
-	 sK81M+Iy3Ue0P2B6DyRg93Z/yx3yGeCj5G7h4yMCwfJ0nAmIA+GRjCQPf8CcKLPwuZ
-	 YGl0lNaIh3QT2wmVP04/E8jR7LoZRiRtKzpYvviV6/MBMGgHClSpSrOUcI890fk+Vo
-	 iblBm9KsE5Dug==
-Date: Wed, 20 Dec 2023 10:00:47 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Steven Rostedt
- <rostedt@goodmis.org>, Florent Revest <revest@chromium.org>,
- linux-trace-kernel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>, Sven
- Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>,
- Arnaldo Carvalho de Melo <acme@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>, Alan Maguire <alan.maguire@oracle.com>, Mark
- Rutland <mark.rutland@arm.com>, Peter Zijlstra <peterz@infradead.org>,
- Thomas Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
-Subject: Re: [PATCH v5 28/34] fprobe: Rewrite fprobe on function-graph
- tracer
-Message-Id: <20231220100047.e33d862cb869423c2a3a82bf@kernel.org>
-In-Reply-To: <ZYGrB7NsDEWk2liL@krava>
-References: <170290509018.220107.1347127510564358608.stgit@devnote2>
-	<170290542972.220107.9135357273431693988.stgit@devnote2>
-	<ZYGrB7NsDEWk2liL@krava>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCFB2440B
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 01:04:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=aFf71YKlmBdavy5zuWJqFMWS/uiK5dKGj3zZ+PjZ9FY=; b=FA8NfmAPI3pUNkh4ps+a6iLirM
+	ZtkIhBicbYm5PCmZ/SgIPeVWojMvE8KGdOoV2XUU6yVApUxkQ2RyjZyaAdlIwH6LlFBCzktkaKW6k
+	ghtAfJ7b+AD58mpLeVSg+vX5GjlXSHQSaxzt0vB/1J61Ru3mDnRrftmSIEyT7VzBtRNJsbCXziILK
+	aPPhSw+Bu8drCM4JosRAvPbfUwLZ7XsFzFL7SmIkWHBVdzX/Z1NP+k3AAvfVG/afRgScGbHWrr86G
+	dl0YjgR5Vt315qwcoE2vkLnqyQ2JLSZy1yONxGogpPiXI1/ZtO1N4cPcQ+x1qAaLXFyHCvJtYuWHY
+	btjabnwA==;
+Received: from [50.53.46.231] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1rFl0L-00FrLp-38;
+	Wed, 20 Dec 2023 01:04:10 +0000
+Message-ID: <155363f0-26f5-4946-a36e-ee68b5887e60@infradead.org>
+Date: Tue, 19 Dec 2023 17:04:08 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7 06/23] sched: Add CONFIG_SCHED_PROXY_EXEC & boot
+ argument to enable/disable
+Content-Language: en-US
+To: John Stultz <jstultz@google.com>, LKML <linux-kernel@vger.kernel.org>
+Cc: Joel Fernandes <joelaf@google.com>, Qais Yousef <qyousef@google.com>,
+ Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
+ Juri Lelli <juri.lelli@redhat.com>,
+ Vincent Guittot <vincent.guittot@linaro.org>,
+ Dietmar Eggemann <dietmar.eggemann@arm.com>,
+ Valentin Schneider <vschneid@redhat.com>,
+ Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
+ Zimuzo Ezeozue <zezeozue@google.com>, Youssef Esmat
+ <youssefesmat@google.com>, Mel Gorman <mgorman@suse.de>,
+ Daniel Bristot de Oliveira <bristot@redhat.com>,
+ Will Deacon <will@kernel.org>, Waiman Long <longman@redhat.com>,
+ Boqun Feng <boqun.feng@gmail.com>, "Paul E. McKenney" <paulmck@kernel.org>,
+ Metin Kaya <Metin.Kaya@arm.com>, Xuewen Yan <xuewen.yan94@gmail.com>,
+ K Prateek Nayak <kprateek.nayak@amd.com>,
+ Thomas Gleixner <tglx@linutronix.de>, kernel-team@android.com
+References: <20231220001856.3710363-1-jstultz@google.com>
+ <20231220001856.3710363-7-jstultz@google.com>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20231220001856.3710363-7-jstultz@google.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On Tue, 19 Dec 2023 15:39:03 +0100
-Jiri Olsa <olsajiri@gmail.com> wrote:
 
-> On Mon, Dec 18, 2023 at 10:17:10PM +0900, Masami Hiramatsu (Google) wrote:
+
+On 12/19/23 16:18, John Stultz wrote:
+> Add a CONFIG_SCHED_PROXY_EXEC option, along with a boot argument
+> sched_prox_exec= that can be used to disable the feature at boot
+
+  sched_proxy_exec=
+
+> time if CONFIG_SCHED_PROXY_EXEC was enabled.
 > 
-> SNIP
+> Cc: Joel Fernandes <joelaf@google.com>
+> Cc: Qais Yousef <qyousef@google.com>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Juri Lelli <juri.lelli@redhat.com>
+> Cc: Vincent Guittot <vincent.guittot@linaro.org>
+> Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
+> Cc: Valentin Schneider <vschneid@redhat.com>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: Ben Segall <bsegall@google.com>
+> Cc: Zimuzo Ezeozue <zezeozue@google.com>
+> Cc: Youssef Esmat <youssefesmat@google.com>
+> Cc: Mel Gorman <mgorman@suse.de>
+> Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Waiman Long <longman@redhat.com>
+> Cc: Boqun Feng <boqun.feng@gmail.com>
+> Cc: "Paul E. McKenney" <paulmck@kernel.org>
+> Cc: Metin Kaya <Metin.Kaya@arm.com>
+> Cc: Xuewen Yan <xuewen.yan94@gmail.com>
+> Cc: K Prateek Nayak <kprateek.nayak@amd.com>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: kernel-team@android.com
+> Signed-off-by: John Stultz <jstultz@google.com>
+> ---
+> v7:
+> * Switch to CONFIG_SCHED_PROXY_EXEC/sched_proxy_exec= as
+>   suggested by Metin Kaya.
+> * Switch boot arg from =disable/enable to use kstrtobool(),
+>   which supports =yes|no|1|0|true|false|on|off, as also
+>   suggested by Metin Kaya, and print a message when a boot
+>   argument is used.
+> ---
+>  .../admin-guide/kernel-parameters.txt         |  5 ++++
+>  include/linux/sched.h                         | 13 +++++++++
+>  init/Kconfig                                  |  7 +++++
+>  kernel/sched/core.c                           | 29 +++++++++++++++++++
+>  4 files changed, 54 insertions(+)
 > 
-> > -static void fprobe_exit_handler(struct rethook_node *rh, void *data,
-> > -				unsigned long ret_ip, struct pt_regs *regs)
-> > +static int fprobe_entry(unsigned long func, unsigned long ret_ip,
-> > +			struct ftrace_regs *fregs, struct fgraph_ops *gops)
-> >  {
-> > -	struct fprobe *fp = (struct fprobe *)data;
-> > -	struct fprobe_rethook_node *fpr;
-> > -	struct ftrace_regs *fregs = (struct ftrace_regs *)regs;
-> > -	int bit;
-> > +	struct fprobe_hlist_node *node, *first;
-> > +	unsigned long *fgraph_data = NULL;
-> > +	unsigned long header;
-> > +	int reserved_words;
-> > +	struct fprobe *fp;
-> > +	int used, ret;
-> >  
-> > -	if (!fp || fprobe_disabled(fp))
-> > -		return;
-> > +	if (WARN_ON_ONCE(!fregs))
-> > +		return 0;
-> >  
-> > -	fpr = container_of(rh, struct fprobe_rethook_node, node);
-> > +	first = node = find_first_fprobe_node(func);
-> > +	if (unlikely(!first))
-> > +		return 0;
-> > +
-> > +	reserved_words = 0;
-> > +	hlist_for_each_entry_from_rcu(node, hlist) {
-> > +		if (node->addr != func)
-> > +			break;
-> > +		fp = READ_ONCE(node->fp);
-> > +		if (!fp || !fp->exit_handler)
-> > +			continue;
-> > +		/*
-> > +		 * Since fprobe can be enabled until the next loop, we ignore the
-> > +		 * fprobe's disabled flag in this loop.
-> > +		 */
-> > +		reserved_words +=
-> > +			DIV_ROUND_UP(fp->entry_data_size, sizeof(long)) + 1;
-> > +	}
-> > +	node = first;
-> > +	if (reserved_words) {
-> > +		fgraph_data = fgraph_reserve_data(gops->idx, reserved_words * sizeof(long));
-> > +		if (unlikely(!fgraph_data)) {
-> > +			hlist_for_each_entry_from_rcu(node, hlist) {
-> > +				if (node->addr != func)
-> > +					break;
-> > +				fp = READ_ONCE(node->fp);
-> > +				if (fp && !fprobe_disabled(fp))
-> > +					fp->nmissed++;
-> > +			}
-> > +			return 0;
-> > +		}
-> > +	}
-> 
-> this looks expensive compared to what we do now.. IIUC due to the graph
-> ops limitations (16 ctive ops), you have just single graph ops for fprobe
-> and each fprobe registration stores ips into hash which you need to search
-> in here to get registered callbacks..?
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index 65731b060e3f..cc64393b913f 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -5714,6 +5714,11 @@
+>  	sa1100ir	[NET]
+>  			See drivers/net/irda/sa1100_ir.c.
+>  
+> +	sched_proxy_exec= [KNL]
+> +			Enables or disables "proxy execution" style
+> +			solution to mutex based priority inversion.
 
-I think this is not so expensive. Most cases, it only hits 1 fprobe on the
-hash. And if the fprobe is only used to hook the entry, reserved_words == 0.
+			            mutex-based
 
-> I wonder would it make sense to allow arbitrary number of active graph_ops
-> with the price some callback might fail because there's no stack space so
-> each fprobe instance would have its own graph_ops.. and we would get rid
-> of the code above (and below) ?
+> +			Format: <bool>
+> +
+>  	sched_verbose	[KNL] Enables verbose scheduler debug messages.
+>  
+>  	schedstats=	[KNL,X86] Enable or disable scheduled statistics.
+> diff --git a/include/linux/sched.h b/include/linux/sched.h
+> index bfe8670f99a1..880af1c3097d 100644
+> --- a/include/linux/sched.h
+> +++ b/include/linux/sched.h
+> @@ -1566,6 +1566,19 @@ struct task_struct {
+>  	 */
+>  };
+>  
+> +#ifdef CONFIG_SCHED_PROXY_EXEC
+> +DECLARE_STATIC_KEY_TRUE(__sched_proxy_exec);
+> +static inline bool sched_proxy_exec(void)
+> +{
+> +	return static_branch_likely(&__sched_proxy_exec);
+> +}
+> +#else
+> +static inline bool sched_proxy_exec(void)
+> +{
+> +	return false;
+> +}
+> +#endif
+> +
+>  static inline struct pid *task_pid(struct task_struct *task)
+>  {
+>  	return task->thread_pid;
+> diff --git a/init/Kconfig b/init/Kconfig
+> index 9ffb103fc927..c5a759b6366a 100644
+> --- a/init/Kconfig
+> +++ b/init/Kconfig
+> @@ -908,6 +908,13 @@ config NUMA_BALANCING_DEFAULT_ENABLED
+>  	  If set, automatic NUMA balancing will be enabled if running on a NUMA
+>  	  machine.
+>  
+> +config SCHED_PROXY_EXEC
+> +	bool "Proxy Execution"
+> +	default n
+> +	help
+> +	  This option enables proxy execution, a mechanism for mutex owning
 
-Yeah, actually my first implementation is that. But I realized that doesn't
-work, this requires intermediate object which has refcounter because the
-"marker" on the shadow stack will be left after unregistering it. We need to
-identify which is still available and which is not. And for that purpose,
-we may need to introduce similar structure in the fgraph too.
+	                                                       mutex-owning
 
-The current multi-fgraph does;
+> +	  tasks to inherit the scheduling context of higher priority waiters.
+> +
+>  menuconfig CGROUPS
+>  	bool "Control Group support"
+>  	select KERNFS
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index 4e46189d545d..e06558fb08aa 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -117,6 +117,35 @@ EXPORT_TRACEPOINT_SYMBOL_GPL(sched_compute_energy_tp);
+>  
+>  DEFINE_PER_CPU_SHARED_ALIGNED(struct rq, runqueues);
+>  
+> +#ifdef CONFIG_SCHED_PROXY_EXEC
+> +DEFINE_STATIC_KEY_TRUE(__sched_proxy_exec);
+> +static int __init setup_proxy_exec(char *str)
+> +{
+> +	bool proxy_enable;
+> +
+> +	if (kstrtobool(str, &proxy_enable)) {
+> +		pr_warn("Unable to parse sched_proxy_exec=\n");
+> +		return 0;
+> +	}
+> +
+> +	if (proxy_enable) {
+> +		pr_info("sched_proxy_exec enabled via boot arg\n");
+> +		static_branch_enable(&__sched_proxy_exec);
+> +	} else {
+> +		pr_info("sched_proxy_exec disabled via boot arg\n");
+> +		static_branch_disable(&__sched_proxy_exec);
+> +	}
+> +	return 1;
+> +}
+> +#else
+> +static int __init setup_proxy_exec(char *str)
+> +{
+> +	pr_warn("CONFIG_SCHED_PROXY_EXEC=n, so it cannot be enabled or disabled at boottime\n");
 
- - if CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS=n (called from dedicated mcount
-   asm code), it has to loop on all fgraph_ops and check the hash, which is
-   inefficient but it can easily push the return trace entry on the shadow
-   stack.
+Preferably s/boottime/boot time/.
 
- - if CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS=y (called from ftrace asm code),
-   it does not need to loop (that will be done by ftrace) but each handler
-   does NOT know who pushed the return trace entry on the shadow stack.
-   Thus it has to decode the shadow stack and check it needs to push return
-   trace entry or not. And this is hard if the traced function is self-
-   recursive call or tail call. To check the recursive call, I introduced
-   a bitmap entry on the shadow stack. This bitmap size limits the max
-   number of fgraph.
-
-So, unlimit the number of fgraph, we may need to stack the number of fgraph
-on the stack and each fgraph callback has to unwind the shadow stack to check
-whether their own number is there instead of checking the bit in the bitmap.
-That will be more trusted way but maybe slow.
-
-Another option is introducing a pair of pre- and post-callbacks which is called
-before and after calling the list/direct call of ftrace_ops. And pre-callback
-will push the ret_stack on shadow stack and post-callback will commit or cancel it.
-(but this one is hard to design... maybe becomes ugly interface.)
-
-Thank you,
+> +	return 0;
+> +}
+> +#endif
+> +__setup("sched_proxy_exec=", setup_proxy_exec);
+> +
+>  #ifdef CONFIG_SCHED_DEBUG
+>  /*
+>   * Debugging: various feature bits
 
 -- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+#Randy
+https://people.kernel.org/tglx/notes-about-netiquette
+https://subspace.kernel.org/etiquette.html
 
