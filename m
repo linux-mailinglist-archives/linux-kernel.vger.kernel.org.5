@@ -1,160 +1,169 @@
-Return-Path: <linux-kernel+bounces-6951-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6950-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D6E23819FC1
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 14:23:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AFCD8819FC0
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 14:22:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D8C601C22606
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 13:23:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3EB1B1F22FED
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 13:22:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6666D2D638;
-	Wed, 20 Dec 2023 13:22:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 521212D633;
+	Wed, 20 Dec 2023 13:21:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="RjoYMdLa";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="umNzLV4E"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="vXDhFHaZ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F1DF2D61A
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 13:22:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailout.nyi.internal (Postfix) with ESMTP id 383E95C01D3;
-	Wed, 20 Dec 2023 08:22:53 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Wed, 20 Dec 2023 08:22:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:message-id:mime-version:reply-to:subject:subject:to:to; s=fm1;
-	 t=1703078573; x=1703164973; bh=MVaQ59ZRKrzj8tRObv3W3R2ScHQiNojV
-	AARGAGqKes8=; b=RjoYMdLaPcXxDEFtyFwAler30h4h8N4IAWUhNxmJ2Hvt6I+t
-	Sd2KN1Pu30UyEVujnEAJLNEbUAqRBg8na/EXRGu0EQ54uTRHwCS4hRvV/Y9VokpP
-	B7Hc+b4mLRXJywhiSmDZVg2jXIHjErd35Z+l9FfvprWxnRyD+JPxgtFXiXBFjH3B
-	bCbaDo1hkPvwEF8vSkht2A+JpkXGDB7SeWATPwZA+0JiR2d/gaQGpzNrfkeMjTJw
-	AQ1UW72Ql/Kq/E+FVPGvFTQWFQnbI9iCytiz+P4kWBihI0Z/pfCp2OFSv6TkR/gd
-	mhAl3QcHFer82SRMyuFzIVMNrsrYBG+NYKRFmw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:message-id
-	:mime-version:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
-	1703078573; x=1703164973; bh=MVaQ59ZRKrzj8tRObv3W3R2ScHQiNojVAAR
-	GAGqKes8=; b=umNzLV4ETbXRKkFnjjTLQhLEsnOEvKE/+PRNGxDdrHQnfRy0Wy9
-	7ksTGu6IZ4CZC4h18olFS5RTpvoIJ7wY3U3eZF8rsPbQWNUfjZTbOuuKh1foIK0m
-	DQ5usx14qrBs5h2dVMoOXRXYgYTsNx+wAuObjKxLOQq1MhTCMLaz0gJco8MOEosM
-	y2gvwLuKdEwbPjOtoKAEUTwkL2iRyshwfu8deklZmx3Tut+tYPul/pnWB9dc1WaH
-	kt+ld/7oOg/k37TrWbwB9mpVUo7UNyusWWvh/9tZZlGyr74rLwjWc62a+FYAVvea
-	jWqn0FLYFF8nWUq16itUvRnlWfS5jIuCaYA==
-X-ME-Sender: <xms:rOqCZY4WQIgxIGglD5iu4AS7_lZDbCc3DjO5Hn0QSoLjjZFbzmZ4sw>
-    <xme:rOqCZZ5Ka86Pxu9PoB9ryctSvUtO_zF62mTPNb4jkEThSVUm7xo23awmdDt67JfZC
-    3YXW-wV6xl2AaYB7LY>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdduvddghedvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkfffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehrnhgu
-    uceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrthhtvg
-    hrnhepueeljeetffehudfftddvhfeufffhveeffffgjeduudeiieehkeehvdeghfetfeeg
-    necuffhomhgrihhnpehkvghrnhgvlhdrohhrghdpphgvnhhguhhtrhhonhhigidruggvne
-    cuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprghrnhgu
-    segrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:rOqCZXcRwQ0jIKWRb_zzs71gKVU330GN6IKh-vd6VoKvoMbBGVC73g>
-    <xmx:rOqCZdLFfOFp0b8gHn7bgwsQkaVaZPAyfngmtzOYdmOza7qpOpZU7A>
-    <xmx:rOqCZcKqttHncSg0XpyOD1hXN6AbYxaMdLoimRXTCDIFIqT6F-5W9Q>
-    <xmx:reqCZWj5o7Am6BUseACtMTtXM9xAaBXFVfx1ZCflvPkhL-hL-Co4SQ>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id CEB89B6008D; Wed, 20 Dec 2023 08:22:52 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1364-ga51d5fd3b7-fm-20231219.001-ga51d5fd3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BCD42D02A
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 13:21:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2cc6eecd319so47419581fa.1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 05:21:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1703078511; x=1703683311; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=7oFlTMabigYjmKu9hB3PA+2ishWi1oEJOR42AVBlS3w=;
+        b=vXDhFHaZmuA6YaDQ4YYCUy0R+oN/BXv1Jjy95f7fLM3BG7SvisqCwTIoQ62e9/SNaK
+         P8bsUYqUrkGMf2vJz2ha3cncexH9+tU/13bNwCDBv1C1J5qF8xkhNMMA+aRDoAE5/Ka3
+         ljLN/tuw/F6SM4j8zsjyz0ay7udao2+rNuBo1sRmdqH+jwOGWBO15nSm40F6Fw/2+N4u
+         tSO2NoB4qCJcuXL+30u+0Sv6QCp4Zu/SGxYwa2ok5vaOIzfhesF3YoLvwiTODYqVxTGY
+         6JLFImju6Hi4xmP9wGkneur7A00PyPqdQH8rBK9HufW3wCjSrNrUexgm/iSEUxexmGGY
+         ke3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703078511; x=1703683311;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7oFlTMabigYjmKu9hB3PA+2ishWi1oEJOR42AVBlS3w=;
+        b=JxA4/y3y43Tgxyii8CIO0bUuHpDSwv4Hx3pEn5QzkKBpf5mqruGZOoI553+KQLbBuh
+         ab+zyH5uo7NN2ivmaT2n7xEFc7axtKvQDHDjrBrhvIisF6K7RMajgQtQIGfS5ow+vxQV
+         gl09UkDS/I9ZuMFaR+2aGzhZMEVPmNKMLhVXHUQnBahHj4i/CM0RLCWRuBPye6wzEmAP
+         le+awTOwuY3+8V26FnoobrXXU+VUY1iTlWvmJ+Ap/1ZB7YVIDAuZckrudr3BaSVBu3s3
+         LCupYVw3gUFdY6BnI9R9IjzzcbBDEAM1+uXSDWDXqwqBCKy0xHqkeQTCT2WNXWJQmfK6
+         sSNg==
+X-Gm-Message-State: AOJu0YxdG1fnkGqu4ooA6zAmFnKRT2V8fs8BTWCNNZYqsPvN+moeIItv
+	8tr9LrqfcYGR7ha1n0A1y1vlFQ==
+X-Google-Smtp-Source: AGHT+IEoSmmrFFjT4fk/E4P3WaAMABJS0GZLWtw+Avx8+aRNbYdtYwVzxg+dOgmglOq/GuD9sr0U2A==
+X-Received: by 2002:a2e:350f:0:b0:2cc:7157:4e78 with SMTP id z15-20020a2e350f000000b002cc71574e78mr2953492ljz.77.1703078511060;
+        Wed, 20 Dec 2023 05:21:51 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id a15-20020a5d508f000000b0033330846e76sm13484938wrt.86.2023.12.20.05.21.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Dec 2023 05:21:50 -0800 (PST)
+Message-ID: <77ba0140-5b74-40d7-a923-4b270d661d3a@linaro.org>
+Date: Wed, 20 Dec 2023 14:21:48 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <10ff8b28-3892-4920-b4a0-4612fe814f6d@app.fastmail.com>
-Date: Wed, 20 Dec 2023 13:21:17 +0000
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Linus Torvalds" <torvalds@linux-foundation.org>
-Cc: soc@kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: [GIT PULL] ARM: SoC fixes for 6.7, part 2
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] arm64: dts: qcom: Add coresight nodes for sm8450
+Content-Language: en-US
+To: Jinlong Mao <quic_jinlmao@quicinc.com>, Andy Gross <agross@kernel.org>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Tingwei Zhang <quic_tingweiz@quicinc.com>,
+ Yuanfang Zhang <quic_yuanfang@quicinc.com>,
+ Tao Zhang <quic_taozha@quicinc.com>, coresight@lists.linaro.org
+References: <20231220124009.16816-1-quic_jinlmao@quicinc.com>
+ <dfc7fe85-7418-410c-bd82-6e08799e6417@linaro.org>
+ <439916dc-8f71-4998-b145-1d183d9e68f5@quicinc.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <439916dc-8f71-4998-b145-1d183d9e68f5@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-The following changes since commit a39b6ac3781d46ba18193c9dbb2110f31e9bffe9:
+On 20/12/2023 14:07, Jinlong Mao wrote:
+> 
+> 
+> On 12/20/2023 8:46 PM, Krzysztof Kozlowski wrote:
+>> On 20/12/2023 13:40, Mao Jinlong wrote:
+>>> Add coresight components on Qualcomm SM8450 Soc. The components include
+>>> TMC ETF/ETR, ETE, STM, TPDM, CTI.
+>>>
+>>> Signed-off-by: Mao Jinlong <quic_jinlmao@quicinc.com>
+>>> ---
+>>>   arch/arm64/boot/dts/qcom/sm8450.dtsi | 742 +++++++++++++++++++++++++++
+>>>   1 file changed, 742 insertions(+)
+>>>
+>>> diff --git a/arch/arm64/boot/dts/qcom/sm8450.dtsi b/arch/arm64/boot/dts/qcom/sm8450.dtsi
+>>> index 1783fa78bdbc..112b5a069c94 100644
+>>> --- a/arch/arm64/boot/dts/qcom/sm8450.dtsi
+>>> +++ b/arch/arm64/boot/dts/qcom/sm8450.dtsi
+>>> @@ -285,6 +285,192 @@ CLUSTER_SLEEP_1: cluster-sleep-1 {
+>>>   		};
+>>>   	};
+>>>   
+>>> +	ete0 {
+>>
+>> ete-0
+> Thanks for the review.
+> 
+> In arm,embedded-trace-extension.yaml, the node name pattern is 
+> "^ete([0-9a-f]+)$".
 
-  Linux 6.7-rc5 (2023-12-10 14:33:40 -0800)
+I don't understand why this binding requires ete name. It's not like it
+is a generic name worth preserving. Also, the recommended suffix for
+names is with '-'.
 
-are available in the Git repository at:
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/soc/soc.git tags/soc-fixes-6.7-2
+Best regards,
+Krzysztof
 
-for you to fetch changes up to fa3d6c7183106a187a8d399216db3f088a6aab81:
-
-  arm64: dts: mediatek: mt8395-genio-1200-evk: add interrupt-parent for mt6360 (2023-12-20 13:05:43 +0000)
-
-----------------------------------------------------------------
-ARM: SoC fixes for 6.7, part 2
-
-There are only a handful of bugfixes this time, which feels almost too
-small, so I hope we are not missing something important.
-
- - One more mediatek dts warning fix after the previous larger set,
-   this should finally result in a clean defconfig build.
-
- - TI OMAP dts fixes for a spurious hang on am335x and invalid data on DTA7
-
- - One DTS fix for ethernet on Oriange Pi Zero (Allwinner H616)
-
- - A regression fix for ti-sysc interconnect target module driver to
-   not access registers after reset if srst_udelay quirk is needed
-
- - Reset controller driver fixes for a crash during error handling and
-   a build warning
-
-----------------------------------------------------------------
-Andrew Davis (1):
-      ARM: dts: dra7: Fix DRA7 L3 NoC node register size
-
-Arnd Bergmann (4):
-      Merge tag 'sunxi-fixes-for-6.7-1' of https://git.kernel.org/pub/scm/linux/kernel/git/sunxi/linux into arm/fixes
-      Merge tag 'reset-fixes-for-v6.7' of git://git.pengutronix.de/pza/linux into arm/fixes
-      Merge tag 'omap-for-v6.7/fixes-signed' of git://git.kernel.org/pub/scm/linux/kernel/git/tmlind/linux-omap into arm/fixes
-      Merge tag 'am3-usb-hang-fix-signed' of git://git.kernel.org/pub/scm/linux/kernel/git/tmlind/linux-omap into arm/fixes
-
-Chukun Pan (1):
-      arm64: dts: allwinner: h616: update emac for Orange Pi Zero 3
-
-Geert Uytterhoeven (1):
-      reset: Fix crash when freeing non-existent optional resets
-
-Krzysztof Kozlowski (1):
-      reset: hisilicon: hi6220: fix Wvoid-pointer-to-enum-cast warning
-
-Kunwu Chan (1):
-      ARM: OMAP2+: Fix null pointer dereference and memory leak in omap_soc_device_init
-
-Macpaul Lin (1):
-      arm64: dts: mediatek: mt8395-genio-1200-evk: add interrupt-parent for mt6360
-
-Tony Lindgren (2):
-      bus: ti-sysc: Flush posted write only after srst_udelay
-      ARM: dts: Fix occasional boot hang for am3 usb
-
- arch/arm/boot/dts/ti/omap/am33xx.dtsi                  |  1 +
- arch/arm/boot/dts/ti/omap/dra7.dtsi                    |  2 +-
- arch/arm/mach-omap2/id.c                               |  5 +++++
- .../boot/dts/allwinner/sun50i-h616-orangepi-zero.dtsi  |  3 ---
- .../boot/dts/allwinner/sun50i-h616-orangepi-zero2.dts  |  3 +++
- .../boot/dts/allwinner/sun50i-h618-orangepi-zero3.dts  |  2 ++
- arch/arm64/boot/dts/mediatek/mt8395-genio-1200-evk.dts |  1 +
- drivers/bus/ti-sysc.c                                  | 18 ++++++++++++++----
- drivers/reset/core.c                                   |  8 ++++----
- drivers/reset/hisilicon/hi6220_reset.c                 |  2 +-
- 10 files changed, 32 insertions(+), 13 deletions(-)
 
