@@ -1,109 +1,170 @@
-Return-Path: <linux-kernel+bounces-6575-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6516-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A19AB819A88
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 09:32:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C31C38199DB
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 08:54:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 573711F26869
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 08:32:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 53CB1283FB5
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 07:54:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34C651C6B8;
-	Wed, 20 Dec 2023 08:32:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFB81168D1;
+	Wed, 20 Dec 2023 07:54:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="AwiH2EGs"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from zju.edu.cn (spam.zju.edu.cn [61.164.42.155])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2A121C686
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 08:32:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
-Received: from dinghao.liu$zju.edu.cn ( [10.190.71.26] ) by
- ajax-webmail-mail-app3 (Coremail) ; Wed, 20 Dec 2023 15:52:43 +0800
- (GMT+08:00)
-Date: Wed, 20 Dec 2023 15:52:43 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From: dinghao.liu@zju.edu.cn
-To: "Ira Weiny" <ira.weiny@intel.com>
-Cc: "Dan Williams" <dan.j.williams@intel.com>, 
-	"Vishal Verma" <vishal.l.verma@intel.com>, 
-	"Dave Jiang" <dave.jiang@intel.com>, nvdimm@lists.linux.dev, 
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] [v2] nvdimm-btt: fix several memleaks
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version 2023.2-cmXT5 build
- 20230825(e13b6a3b) Copyright (c) 2002-2023 www.mailtech.cn
- mispb-4df6dc2c-e274-4d1c-b502-72c5c3dfa9ce-zj.edu.cn
-In-Reply-To: <65822a6542ca1_277bd294f3@iweiny-mobl.notmuch>
-References: <20231210085817.30161-1-dinghao.liu@zju.edu.cn>
- <657b9cb088175_27db80294d2@iweiny-mobl.notmuch>
- <657c82966e358_2947c22941a@iweiny-mobl.notmuch>
- <13ffb3fd.41cd7.18c7c3b52bf.Coremail.dinghao.liu@zju.edu.cn>
- <65822a6542ca1_277bd294f3@iweiny-mobl.notmuch>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0EBB1BDE3
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 07:53:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-50dfac6c0beso6778194e87.2
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 23:53:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1703058837; x=1703663637; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=3FimZuW/iqEBkhsHrOmUZiu725SFS/il8oCyiDlR7tM=;
+        b=AwiH2EGse3kBGwnGli7S4iQWVIuGVWf14yeVM4NsK6HkzFNH/fYu618AiWsht5I3Cl
+         rKSio6T6tD/lasMYU5ds2XdlAwp9I3F8R228irp/Fd3ccrTyv8AL7WAyIopp0StKs9S6
+         zq0F1Hg2h81LOoptSuOj7+7Nt5l0o4gqeUHSh2VuZXHGQPPYbpyIDGxg2jmDvj0yjnoX
+         C41emj/hoXXWuBtATtAUn5oanAH3Tka5SVtLhg0rco15QvrRHx4M3DcLYSrLaDVJzbtS
+         tqExhYphrFPirWICQZ4L60jvx9yWfmG4By4nlX/ZcAM7FgVTlIFQ08OYcDF2W/3XRzXz
+         LkzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703058837; x=1703663637;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3FimZuW/iqEBkhsHrOmUZiu725SFS/il8oCyiDlR7tM=;
+        b=sNYUMclSfoMBJsp72kAgoED5kH58+Jh6X/y04j0yuHI8CPcjSVnfE73iAJM/JXhHZd
+         ZGikiQBcDt3LiZAFdxFetbIJVDIlqekrVX4bpO4eT37zT46N9mo8+M5sdRiPhuLVwaF8
+         aaTSKwMY3NuOaru1+rWmLO0nZnosTeggF9TR7RD20X/fsRRk17kE3Lrg2iUKawUtCfjS
+         eD8imrZXwKvvWNWqGBhMrFTrQmroEC8Gv7sKLHL6JRR9753k+Parn2yo3B8cH8NiFrfu
+         Q1ZoXwxKpqEjGUwgn8AOtMDD1mFq3KQ8V2XcmC3IsP+ItG4LUf4xzi9iYh3YhFoYxkNq
+         9AkA==
+X-Gm-Message-State: AOJu0Yz56s7TGWTRNwvcNDD7+WWkqXpv7xvgQ0tKDvPUYVlVbNRRbJSU
+	iF+GMMMvy7IoxWzjBUbn79ONlg==
+X-Google-Smtp-Source: AGHT+IG+uEyWl5LeQk7JkL2RrmiKwDqUKZyIbv7XkC6gk3uH33WoJoPs3wYiQT+AjisrViOOvCU83Q==
+X-Received: by 2002:ac2:554b:0:b0:50e:4fc4:1e91 with SMTP id l11-20020ac2554b000000b0050e4fc41e91mr385389lfk.123.1703058836824;
+        Tue, 19 Dec 2023 23:53:56 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id je17-20020a05600c1f9100b0040b4b2a15ebsm6239945wmb.28.2023.12.19.23.53.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Dec 2023 23:53:56 -0800 (PST)
+Message-ID: <fc7863a2-d3c5-47c8-9484-ef9cd6d7dd5d@linaro.org>
+Date: Wed, 20 Dec 2023 08:53:53 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <62f848c1.48243.18c86366e76.Coremail.dinghao.liu@zju.edu.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID:cC_KCgBnb3NMnYJl5scwAQ--.36390W
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAg0PBmWBaRd7cgABsU
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
-	CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-	daVFxhVjvjDU=
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] dt-bindings: firmware: xilinx: Describe missing child
+ nodes
+Content-Language: en-US
+To: Michal Simek <michal.simek@amd.com>, linux-kernel@vger.kernel.org,
+ monstr@monstr.eu, michal.simek@xilinx.com, git@xilinx.com
+Cc: Conor Dooley <conor+dt@kernel.org>, Guenter Roeck <linux@roeck-us.net>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Naman Trivedi Manojbhai <naman.trivedimanojbhai@amd.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ Sebastian Reichel <sebastian.reichel@collabora.com>,
+ Shubhrajyoti Datta <shubhrajyoti.datta@amd.com>, devicetree@vger.kernel.org,
+ kishore Manne <nava.kishore.manne@amd.com>,
+ linux-arm-kernel@lists.infradead.org
+References: <5bb16305a05692de29ee2aa2accc793e23b68dec.1702997680.git.michal.simek@amd.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <5bb16305a05692de29ee2aa2accc793e23b68dec.1702997680.git.michal.simek@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-PiBkaW5naGFvLmxpdUAgd3JvdGU6Cj4gPiA+IElyYSBXZWlueSB3cm90ZToKPiA+ID4gPiBEaW5n
-aGFvIExpdSB3cm90ZToKCltzbmlwXQoKPiA+ID4gPiAKPiA+ID4gPiBUaGlzIGRvZXMgbm90IHF1
-aXRlIHdvcmsuCj4gPiA+ID4gCj4gPiA+ID4gZnJlZV9hcmVuYXMoKSBpcyB1c2VkIGluIHRoZSBl
-cnJvciBwYXRocyBvZiBjcmVhdGVfYXJlbmFzKCkgYW5kCj4gPiA+ID4gZGlzY292ZXJfYXJlbmFz
-KCkuICBJbiB0aG9zZSBjYXNlcyBkZXZtX2tmcmVlKCkgaXMgcHJvYmFibHkgYSBiZXR0ZXIgd2F5
-Cj4gPiA+ID4gdG8gY2xlYW4gdXAgdGhpcy4KPiA+IAo+ID4gSGVyZSBJJ20gYSBsaXR0bGUgY29u
-ZnVzZWQgYWJvdXQgd2hlbiBkZXZtX2tmcmVlKCkgc2hvdWxkIGJlIHVzZWQuCj4gCj4gT3ZlciBh
-bGwgaXQgc2hvdWxkIGJlIHVzZWQgd2hlbmV2ZXIgbWVtb3J5IGlzIGFsbG9jYXRlZCBmb3IgdGhl
-IGxpZmV0aW1lCj4gb2YgdGhlIGRldmljZS4KPiAKPiA+IENvZGUgaW4gYnR0X2luaXQoKSBpbXBs
-aWVzIHRoYXQgcmVzb3VyY2VzIGFsbG9jYXRlZCBieSBkZXZtXyogY291bGQgYmUKPiA+IGF1dG8g
-ZnJlZWQgaW4gYm90aCBlcnJvciBhbmQgc3VjY2VzcyBwYXRocyBvZiBwcm9iZS9hdHRhY2ggKGUu
-Zy4sIGJ0dCAKPiA+IGFsbG9jYXRlZCBieSBkZXZtX2t6YWxsb2MgaXMgbmV2ZXIgZnJlZWQgYnkg
-ZGV2bV9rZnJlZSkuCj4gPiBVc2luZyBkZXZtX2tmcmVlKCkgaW4gZnJlZV9hcmVuYXMoKSBpcyBv
-ayBmb3IgbWUsIGJ1dCBJIHdhbnQgdG8ga25vdwo+ID4gd2hldGhlciBub3QgdXNpbmcgZGV2bV9r
-ZnJlZSgpIGNvbnN0aXR1dGVzIGEgYnVnLgo+IAo+IFVuZm9ydHVuYXRlbHkgSSdtIG5vdCBmYW1p
-bGlhciBlbm91Z2ggd2l0aCB0aGlzIGNvZGUgdG8ga25vdyBmb3Igc3VyZS4KPiAKPiBBZnRlciBt
-eSBxdWljayBjaGVja3MgYmVmb3JlIEkgdGhvdWdodCBpdCB3YXMuICBCdXQgZWFjaCB0aW1lIEkg
-bG9vayBhdCBpdAo+IEkgZ2V0IGNvbmZ1c2VkLiAgVGhpcyBpcyB3aHkgSSB3YXMgdGhpbmtpbmcg
-bWF5YmUgbm90IHVzaW5nIGRldm1fKigpIGFuZAo+IHVzaW5nIG5vX2ZyZWVfcHRyKCkgbWF5IGJl
-IGEgYmV0dGVyIHNvbHV0aW9uIHRvIG1ha2Ugc3VyZSB0aGluZ3MgZG9uJ3QKPiBsZWFrIHdpdGhv
-dXQgY2hhbmdpbmcgdGhlIHN1Y2Nlc3MgcGF0aCAod2hpY2ggaXMgbGlrZWx5IHdvcmtpbmcgZmlu
-ZQo+IGJlY2F1c2Ugbm8gYnVncyBoYXZlIGJlZW4gZm91bmQuKQoKV2UgaGF2ZSB0aGUgc2FtZSBj
-b25mdXNpb24gaGVyZS4uLiBJIGZpbmQgYSBkaXNjdXNzaW9uIGFib3V0IHRoaXMgcHJvYmxlbSwK
-d2hpY2ggaW1wbGllcyB0aGF0IG5vdCB1c2luZyBkZXZtX2tmcmVlKCkgbWF5IGRlbGF5IHRoZSBy
-ZWxlYXNlLCBidXQgdGhlIG1lbW9yeSB3aWxsIGJlIGZyZWVkIGxhdGVyIGFuZCBubyBtZW1vcnkg
-aXMgbGVha2VkOgoKaHR0cHM6Ly93d3cubWFpbC1hcmNoaXZlLmNvbS9saW51eC1rZXJuZWxAdmdl
-ci5rZXJuZWwub3JnL21zZzIwMDk1NjEuaHRtbAoKPiA+IAo+ID4gPiBXZSBtaWdodCB3YW50IHRv
-IGxvb2sgYXQgdXNpbmcgbm9fZnJlZV9wdHIoKSBpbiB0aGlzIGNvZGUuICBTZWUgdGhpcwo+ID4g
-PiBwYXRjaFsxXSBmb3IgYW4gZXhhbXBsZSBvZiBob3cgdG8gaW5oaWJpdCB0aGUgY2xlYW51cCBh
-bmQgcGFzcyB0aGUKPiA+ID4gcG9pbnRlciBvbiB3aGVuIHRoZSBmdW5jdGlvbiBzdWNjZWVkcy4K
-PiA+ID4gCj4gPiA+IFsxXQo+ID4gPiBodHRwczovL2xvcmUua2VybmVsLm9yZy9hbGwvMTcwMjYx
-NzkxOTE0LjE3MTQ2NTQuNjQ0NzY4MDI4NTM1NzU0NTYzOC5zdGdpdEBkd2lsbGlhMi14ZmguamYu
-aW50ZWwuY29tLwo+ID4gPiAKPiA+ID4gSXJhCj4gPiAKPiA+IFRoYW5rcyBmb3IgdGhpcyBleGFt
-cGxlLiBCdXQgaXQgc2VlbXMgdGhhdCBub19mcmVlX3B0cigpIGlzIHVzZWQgdG8KPiA+IGhhbmRs
-ZSB0aGUgc2NvcGUgYmFzZWQgcmVzb3VyY2UgbWFuYWdlbWVudC4gQ2hhbmdlcyBpbiB0aGlzIHBh
-dGNoIGRvZXMKPiA+IG5vdCBpbnRyb2R1Y2UgdGhpcyBmZWF0dXJlLiBEbyBJIHVuZGVyc3RhbmQg
-dGhpcyBjb3JyZWN0bHk/Cj4gCj4gWW91IGRvIHVuZGVyc3RhbmQgYnV0IEkgd2FzIHRoaW5raW5n
-IHRoYXQgcGVyaGFwcyB1c2luZyBub19mcmVlX3B0cigpCj4gcmF0aGVyIHRoYW4gZGV2bV8qKCkg
-bWlnaHQgYmUgYW4gZWFzaWVyIHdheSB0byBmaXggdGhpcyBidWcgd2l0aG91dCB0cnlpbmcKPiB0
-byBkZWNvZGUgdGhlIGxpZmV0aW1lIG9mIGV2ZXJ5dGhpbmcuCj4gCgpNeSBjb25jZXJuIGlzIHRo
-YXQgbm9fZnJlZV9wdHIoKSBtYXkgbm90IGJlIGFibGUgdG8gY29tcGxldGVseSBmaXggYWxsCm1l
-bWxlYWtzIGJlY2F1c2Ugc29tZSBvZiB0aGVtIGFyZSB0cmlnZ2VyZWQgaW4gKHBhcnQgb2YpIHN1
-Y2Nlc3MgcGF0aHMgKGUuZy4sCndoZW4gYnR0X2ZyZWVsaXN0X2luaXQgc3VjY2VlZHMgYnV0IGJ0
-dF9ydHRfaW5pdCBmYWlscywgZGlzY292ZXJfYXJlbmFzIHN0aWxsIG5lZWRzIHRvIGNsZWFuIHVw
-IHRoZSBtZW1vcnkgYWxsb2NhdGVkIGluIGJ0dF9mcmVlbGlzdF9pbml0KS4KCkkgY2hlY2tlZCB0
-aGUgZGVzaWduIG9mIG5vX2ZyZWVfcHRyKCksIGFuZCBpdCBzZWVtcyB0aGF0IGl0IHdpbGwgZ2Vu
-ZXJhdGUKYSBuZXcgcG9pbnRlciBvbiBzdWNjZXNzIGFuZCB0aGUgbWVtb3J5IHN0aWxsIGxlYWtz
-IGluIHRoZSBhYm92ZSBjYXNlLiAKVGhlcmVmb3JlLCBJIHRoaW5rIHVzaW5nIGRldm1fKigpIGlz
-IHN0aWxsIHRoZSBiZXN0IHNvbHV0aW9uIGZvciB0aGlzIGJ1Zy4gCgpSZWdhcmRzLApEaW5naGFv
+On 19/12/2023 15:54, Michal Simek wrote:
+> Firmware node has more than fpga, aes and clock child nodes but also power,
+> reset, gpio, pinctrl and pcap which are not described yet.
+> All of them have binding in separate files but there is missing connection
+> to firmware node that's why describe it.
+> 
+> Signed-off-by: Michal Simek <michal.simek@amd.com>
+> ---
+> 
+>  .../firmware/xilinx/xlnx,zynqmp-firmware.yaml | 31 +++++++++++++++++++
+>  1 file changed, 31 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/firmware/xilinx/xlnx,zynqmp-firmware.yaml b/Documentation/devicetree/bindings/firmware/xilinx/xlnx,zynqmp-firmware.yaml
+> index 3d578f98ae2c..0662544f86f0 100644
+> --- a/Documentation/devicetree/bindings/firmware/xilinx/xlnx,zynqmp-firmware.yaml
+> +++ b/Documentation/devicetree/bindings/firmware/xilinx/xlnx,zynqmp-firmware.yaml
+> @@ -53,6 +53,37 @@ properties:
+>        vector.
+>      type: object
+>  
+> +  zynqmp-power:
+
+Can we rename it to "power-management" or if it is a power-domain
+provider to "power-controller"? Assuming nothing requires the old name?
+
+Also, all these nodes/properties look like not ordered by name, so maybe
+it is possible to add new nodes in some order?
+
+> +    $ref: /schemas/power/reset/xlnx,zynqmp-power.yaml#
+> +    description: The zynqmp-power node describes the power management
+> +      configurations. It will control remote suspend/shutdown interfaces.
+> +    type: object
+> +
+
+
+Best regards,
+Krzysztof
 
 
