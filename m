@@ -1,75 +1,85 @@
-Return-Path: <linux-kernel+bounces-7064-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7065-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A29F281A12A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 15:33:49 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E6D981A12D
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 15:34:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 43FC21F22AB3
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 14:33:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 10B71B223C3
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 14:34:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D585A3AC3A;
-	Wed, 20 Dec 2023 14:33:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C57B3B28B;
+	Wed, 20 Dec 2023 14:34:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="Sg/diu03"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="i8rcmbsP"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.219])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D96B73AC02
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 14:33:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=QCDlE
-	bzW5TXyMCl1UgCkBMj1mXpk7iFNAzzxSB/CW7k=; b=Sg/diu03Ax4XfZjm6TMk7
-	5OlqjZgDlajl/+R3TSyeRgkfPDV47LhVUbmqu229lig4gFeHFv4n76B5BcCfmbbK
-	c9lxpd0jyTrey/QQ9rSjWjzI9ZUWPgW5VK7VFzdDOvsu04LdnNjthwu1QYjqo/qo
-	F2u9D970PErHVz+ofWtOdI=
-Received: from localhost.localdomain (unknown [120.229.70.191])
-	by zwqz-smtp-mta-g1-3 (Coremail) with SMTP id _____wD3_xQR+4JlSE6KDA--.26908S2;
-	Wed, 20 Dec 2023 22:32:51 +0800 (CST)
-From: Junwen Wu <wudaemon@163.com>
-To: laoar.shao@gmail.com
-Cc: bristot@redhat.com,
-	bsegall@google.com,
-	dietmar.eggemann@arm.com,
-	juri.lelli@redhat.com,
-	linux-kernel@vger.kernel.org,
-	mgorman@suse.de,
-	mingo@redhat.com,
-	peterz@infradead.org,
-	rostedt@goodmis.org,
-	vincent.guittot@linaro.org,
-	vschneid@redhat.com,
-	wudaemon@163.com
-Subject: Re: [PATCH v1] sched/rt: Fix rt task's sched latency statistics error in sched_stat_wait trace_point
-Date: Wed, 20 Dec 2023 14:32:49 +0000
-Message-Id: <20231220143249.833273-1-wudaemon@163.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231220140112.821992-1-wudaemon@163.com>
-References: <20231220140112.821992-1-wudaemon@163.com>
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 589C33AC3A;
+	Wed, 20 Dec 2023 14:34:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4D93C433C9;
+	Wed, 20 Dec 2023 14:34:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703082847;
+	bh=41quJ9B/Oz6jQoPktZ6U8rZMIvvzNB3ljXVrZ23V5YI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=i8rcmbsPOEOqfWS0i+q1CrU11T55QLB4YIizoU3/004XJQodh85CeyTsLbGRGcCrQ
+	 bQGZtXQluK2fld+DVQtBAhK4RVWDWXVd4Jkc9u/myze41Y/0QvSObtWmZDJbrNmNNF
+	 V1TCNoYEZ8Z3vETbDOUnSO7TJZOUqMu67hhC6OOwRQWcKMj9CiTUNN41NWGINguzUu
+	 95VsZ92ww+WoZ34zryXTP9Xe5A4lXCcSzKNhiGr3IpCEiv3021wJuAc39N8V7MYsuR
+	 ovH6YIf8jD51lHg5yR+cKAP2D38lSP8AB4isFMWlz8uki//CFLiTXoJGpYQXcofY/P
+	 rgeF3JKrxagVw==
+Date: Wed, 20 Dec 2023 15:34:01 +0100
+From: Simon Horman <horms@kernel.org>
+To: Alexander Sapozhnikov <alsp705@gmail.com>
+Cc: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org
+Subject: Re: [PATCH] net: fddi: skfp: Uninitialized data
+Message-ID: <20231220143401.GH882741@kernel.org>
+References: <20231219100819.17426-1-alsp705@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wD3_xQR+4JlSE6KDA--.26908S2
-X-Coremail-Antispam: 1Uf129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-	VFW2AGmfu7bjvjm3AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvjfUn189UUUUU
-X-CM-SenderInfo: 5zxgtvxprqqiywtou0bp/1tbisA9MbWV4G6E+9AABsy
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231219100819.17426-1-alsp705@gmail.com>
 
->>I think we'd better use if (!on_rt_rq(rt_se))
->>
->> +               update_stats_wait_end_rt(rt_rq, rt_se);
->>
-hi, Yafang.when execute update_stats_dequeue_rt, rt_se->on_rq is still 0, util dequeue_rt_stack,
-the method is not effect.
-I this we can use if (p && p != rq->curr) /*Mark the end of the wait period if dequeueing task*/
-because schedstats is not supported for rt group,we only need to update rt_se that is realy task.
---
-Best regards
+On Tue, Dec 19, 2023 at 01:08:19PM +0300, Alexander Sapozhnikov wrote:
+> Found by Linux Verification Center (linuxtesting.org) with SVACE.
+> 
+> Signed-off-by: Alexander Sapozhnikov <alsp705@gmail.com>
 
+Hi,
+
+I think that more explanation is required regarding the problem
+this solves and how it might affect users.
+
+> ---
+>  drivers/net/fddi/skfp/pmf.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/fddi/skfp/pmf.c b/drivers/net/fddi/skfp/pmf.c
+> index 563fb7f0b327..3f24fbd82a73 100644
+> --- a/drivers/net/fddi/skfp/pmf.c
+> +++ b/drivers/net/fddi/skfp/pmf.c
+> @@ -1084,7 +1084,7 @@ static int smt_set_para(struct s_smc *smc, struct smt_para *pa, int index,
+>  	int		path ;
+>  	int		port ;
+>  	SK_LOC_DECL(u_char,byte_val) ;
+> -	SK_LOC_DECL(u_short,word_val) ;
+> +	SK_LOC_DECL(u_short, word_val) = 0 ;
+>  	SK_LOC_DECL(u_long,long_val) ;
+>  
+>  	mac = index - INDEX_MAC ;
+> -- 
+> 2.40.1
+> 
+> 
 
