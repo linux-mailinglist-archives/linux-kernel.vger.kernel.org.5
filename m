@@ -1,112 +1,162 @@
-Return-Path: <linux-kernel+bounces-6322-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6323-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B7C6819733
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 04:35:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6058F81973D
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 04:40:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E082B1F26519
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 03:35:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E3F87B2477A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 03:40:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0750E8F6D;
-	Wed, 20 Dec 2023 03:35:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C09968F71;
+	Wed, 20 Dec 2023 03:40:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DSN2oyqK"
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="FE/TZjwL"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E55C98BF9;
-	Wed, 20 Dec 2023 03:35:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-40c38e292c8so1581375e9.0;
-        Tue, 19 Dec 2023 19:35:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703043310; x=1703648110; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=5McdNYUfS43oFu24jQBDWrkjliOXRVBsUJKO5WYO7k4=;
-        b=DSN2oyqKdM/eBiionDaHP82Z8q/P6bi0oP9QQmVUYIQwat6agSr7eL79CsutJf2/4s
-         TaROn11mtuX5pFwZIPZiRfIQKuo4RlXAyWtb3e6giSVmmCwe62/5/34WQQ4qfqlD/sNO
-         RBZaO+ldElMA6y4pqPgPl/mDRs0G9AkfYNYrpPr4EHycG7eRpAkV/EKCbh+Whu9E0vB9
-         ITS+9Vd80DAvCeT7oCVfbz2FyyUitYbepELXmMCTEgNdyVy5JruGj9p4UzryWk31OuOl
-         2ZHgusvSiMEkN5nzj2lyb4pCs/5NnEtpeGDH0S+rxZg90LBPijxSPQf38BNUyOtazuDT
-         8wuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703043310; x=1703648110;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5McdNYUfS43oFu24jQBDWrkjliOXRVBsUJKO5WYO7k4=;
-        b=K9qYj9XBL4Vbv0dOZVQkyQ7Rp9ApheTgzLNoUV21SfK+GPz2hlD7p/LaJpBdoi7jPq
-         76oKBN3BJIpHgXrSAJlzMe6kBZpMQTPqtfjZu6EcJsAvwV+T2WZMcN9hy1OLPORcoTRT
-         8v57X73wkUV2Bcxd50lT3LrCZk/1Lp8Gk3nILiWOSpNF1wLQiWuprUINcZPqmVf3ZK2h
-         lWV/jUjvNVKQ2y0/7+xgpMdPGYwF3IW7Xn+ScKXHmyxacRhPIgZlCewJMljb+UPa91Ug
-         jBPCN4YdrtzyX8f7j4bbEQd0X3rTWe/ml2eK8ryCn6LYMfnHyX9tIJeAH8kRjWonDDT9
-         qQ4g==
-X-Gm-Message-State: AOJu0Yxi2KImpQ/tBJbDgdx3G15/lozIy+tNK86buCEtql+lhBYzYw5C
-	LkR+BvLPmzfbH/ljBgh5GGAeLc8mZpo=
-X-Google-Smtp-Source: AGHT+IGvf4RzaroOE+YYYMFYLzZbWiyVYW+4FpN0Ajt1G5/AOZ3GwYPxefZXjUb6vQSx0A04WHsAzg==
-X-Received: by 2002:a05:600c:6988:b0:40c:29a1:5559 with SMTP id fp8-20020a05600c698800b0040c29a15559mr1007613wmb.67.1703043309918;
-        Tue, 19 Dec 2023 19:35:09 -0800 (PST)
-Received: from amir-ThinkPad-T480.lan ([5.29.249.86])
-        by smtp.gmail.com with ESMTPSA id f17-20020a05600c4e9100b0040c310abc4bsm5367543wmq.43.2023.12.19.19.35.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Dec 2023 19:35:09 -0800 (PST)
-From: Amir Goldstein <amir73il@gmail.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Miklos Szeredi <miklos@szeredi.hu>,
-	Christian Brauner <brauner@kernel.org>,
-	linux-kernel@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-unionfs@vger.kernel.org
-Subject: [GIT PULL] overlayfs fixes for 6.7-rc7
-Date: Wed, 20 Dec 2023 05:35:05 +0200
-Message-Id: <20231220033505.735262-1-amir73il@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FDD58C02;
+	Wed, 20 Dec 2023 03:40:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1703043626;
+	bh=LxXYxW2bs3l7KuPRCYllTwAzb73+N1q9RxfmHtoBHi8=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=FE/TZjwLf/1r2JSv1gEW2d/POdIGdxzhk1uGywp5bjkqTpv30NZ+K00N6gdJdG0En
+	 q8DsuG5vdXNAL9djC4dxY9AnufCRZA1JQWjT6Xf8uL3mI/jeutaUG8W36uwwoLQCeB
+	 VKBgNwePzvh/R5FyCNTQr/kAfA2SBOybG3IkmMsmGlaCAoL9AZa8kNY4sJKgdw6ZrX
+	 hpDpIWDsjypITPRvR4T+PSDsEyDLwsAblGWGrwl8sXkgZPNYDMWd4DrTqminTUnzpf
+	 fVvNNICtZSYhmXQwX7GlvhclRWC1av5pHnyZN1iMNornDDHaYMTE4tw15A0o7LjS8u
+	 tTBLRsM+JM5fg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4Svzpx3Bt1z4wd4;
+	Wed, 20 Dec 2023 14:40:25 +1100 (AEDT)
+Date: Wed, 20 Dec 2023 14:40:24 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Paolo Bonzini <pbonzini@redhat.com>
+Cc: Randy Dunlap <rdunlap@infradead.org>, Huacai Chen
+ <chenhuacai@loongson.cn>, Huacai Chen <chenhuacai@kernel.org>, Tianrui Zhao
+ <zhaotianrui@loongson.cn>, Bibo Mao <maobibo@loongson.cn>,
+ kvm@vger.kernel.org, loongarch@lists.linux.dev,
+ linux-kernel@vger.kernel.org, Xuerui Wang <kernel@xen0n.name>, Jiaxun Yang
+ <jiaxun.yang@flygoat.com>
+Subject: Re: [PATCH] LoongArch: KVM: Fix build due to API changes
+Message-ID: <20231220144024.7d9fd46b@canb.auug.org.au>
+In-Reply-To: <15ba5868-42de-4563-9903-ccd0297e2075@infradead.org>
+References: <20231115090735.2404866-1-chenhuacai@loongson.cn>
+	<15ba5868-42de-4563-9903-ccd0297e2075@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_//S5PCuZDLoPcwX41DFKdeRu";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-Hi Linus,
+--Sig_//S5PCuZDLoPcwX41DFKdeRu
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Please pull an overlayfs fix for a regression from 6.7-rc1.
+Hi all,
 
-This branch has been sitting in linux-next for a few days and
-it has gone through the usual overlayfs test routines.
+On Fri, 15 Dec 2023 21:08:06 -0800 Randy Dunlap <rdunlap@infradead.org> wro=
+te:
+>
+> Someone please merge this patch...
 
-The branch merges cleanly with master branch of the moment.
+I have applied it to my merge of the kvm tree today and will keep
+applying it until it is applied to the kvm tree ...
 
-Thanks,
-Amir.
+It looks like this:
 
-----------------------------------------------------------------
-The following changes since commit 98b1cc82c4affc16f5598d4fa14b1858671b2263:
+From: Huacai Chen <chenhuacai@loongson.cn>
+To: Paolo Bonzini <pbonzini@redhat.com>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	Tianrui Zhao <zhaotianrui@loongson.cn>,
+	Bibo Mao <maobibo@loongson.cn>
+Cc: kvm@vger.kernel.org,
+	loongarch@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	Xuerui Wang <kernel@xen0n.name>,
+	Jiaxun Yang <jiaxun.yang@flygoat.com>,
+	Huacai Chen <chenhuacai@loongson.cn>
+Subject: [PATCH] LoongArch: KVM: Fix build due to API changes
+Date: Wed, 15 Nov 2023 17:07:35 +0800
 
-  Linux 6.7-rc2 (2023-11-19 15:02:14 -0800)
+Commit 8569992d64b8f750e34b7858eac ("KVM: Use gfn instead of hva for
+mmu_notifier_retry") replaces mmu_invalidate_retry_hva() usage with
+mmu_invalidate_retry_gfn() for X86, LoongArch also need similar changes
+to fix build.
 
-are available in the Git repository at:
+Fixes: 8569992d64b8 ("KVM: Use gfn instead of hva for mmu_notifier_retry")
+Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Tested-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+---
+ arch/loongarch/kvm/mmu.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/overlayfs/vfs.git ovl-fixes-6.7-rc7
+diff --git a/arch/loongarch/kvm/mmu.c b/arch/loongarch/kvm/mmu.c
+index 80480df5f550..9463ebecd39b 100644
+--- a/arch/loongarch/kvm/mmu.c
++++ b/arch/loongarch/kvm/mmu.c
+@@ -627,7 +627,7 @@ static bool fault_supports_huge_mapping(struct kvm_memo=
+ry_slot *memslot,
+  *
+  * There are several ways to safely use this helper:
+  *
+- * - Check mmu_invalidate_retry_hva() after grabbing the mapping level, be=
+fore
++ * - Check mmu_invalidate_retry_gfn() after grabbing the mapping level, be=
+fore
+  *   consuming it.  In this case, mmu_lock doesn't need to be held during =
+the
+  *   lookup, but it does need to be held while checking the MMU notifier.
+  *
+@@ -807,7 +807,7 @@ static int kvm_map_page(struct kvm_vcpu *vcpu, unsigned=
+ long gpa, bool write)
+=20
+ 	/* Check if an invalidation has taken place since we got pfn */
+ 	spin_lock(&kvm->mmu_lock);
+-	if (mmu_invalidate_retry_hva(kvm, mmu_seq, hva)) {
++	if (mmu_invalidate_retry_gfn(kvm, mmu_seq, gfn)) {
+ 		/*
+ 		 * This can happen when mappings are changed asynchronously, but
+ 		 * also synchronously if a COW is triggered by
+--=20
+2.39.3
 
-for you to fetch changes up to 413ba91089c74207313b315e04cf381ffb5b20e4:
+Though my Signed-off-by is not necessary if it applied to the kvm tree.
 
-  ovl: fix dentry reference leak after changes to underlying layers (2023-12-17 13:33:46 +0200)
+--=20
+Cheers,
+Stephen Rothwell
 
-----------------------------------------------------------------
-overlayfs fixes for 6.7-rc7
+--Sig_//S5PCuZDLoPcwX41DFKdeRu
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-----------------------------------------------------------------
-Amir Goldstein (1):
-      ovl: fix dentry reference leak after changes to underlying layers
+-----BEGIN PGP SIGNATURE-----
 
- fs/overlayfs/copy_up.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmWCYigACgkQAVBC80lX
+0Gw0hgf/dBEXxvqYb+gUvVeOe+ITNt6ui/uaSnXarJOtRq0NUOfL/gW/TGK5NoVO
+r0MrXU6jAkr1K3+P0NvF/vJ52tlYaRjxNGNiB/cmLocgTLF8nCsjNSL6yTEraGqy
+L9Lx2osHr8w1VoTL7k2b7Uoa46xk/YCE9ssMNcSJe4w5ONwzqfM/MVplCyV4pDdE
+1fppL1Dt7uu5rozcoFPklB5e3kpt0/29/36QnI+fak1nXpSbhKwyxFpSzB8gDJBF
+aZxgUh5me1CEsLsPP9rRKTaMFg2+KbSjQrmVIfY4cMiqzDBILIntW1sTMfxMP0+W
+6prGmrL8hvSA3Z5m0RMSM6m6Jstnow==
+=eOfT
+-----END PGP SIGNATURE-----
+
+--Sig_//S5PCuZDLoPcwX41DFKdeRu--
 
