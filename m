@@ -1,185 +1,274 @@
-Return-Path: <linux-kernel+bounces-7382-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7384-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91FD781A709
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 19:51:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 617D181A718
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 19:58:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 497E7287381
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 18:51:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2EDA11C234F7
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 18:58:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D44B9482F0;
-	Wed, 20 Dec 2023 18:51:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 617FB482EF;
+	Wed, 20 Dec 2023 18:58:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="ncq/DNPn"
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="rsHdTtmW"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2053.outbound.protection.outlook.com [40.107.220.53])
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2076.outbound.protection.outlook.com [40.107.22.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 900B3482D9;
-	Wed, 20 Dec 2023 18:50:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D1BB482D7;
+	Wed, 20 Dec 2023 18:58:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hqRXdzqW1SGvMzJ8v/DhqkvCeZ3fyCOBeNm1aLk9HkhH8cKiT2MMWQDFNy/9hxiM6eIYZN5H2i5vDe/ObL29uUIjgQ+/Al9fgyOrlXab2Y7bacwXvMoIpvL2jqk4t9E5lzuaR2iMOF9hx3Z0h9ESxOdSl2ZzQp3TDMg7HMD6IEn2hCIYuGPkgbjSV5zL2gB/KaiQQVBFj9Hh7/TtRq/QrMH9+dJLmLe3JiRWEEnzTdzZRsndbKlMnzW8S49BAc4DIz5jlydBr1rCRfGpwP7iGTMhQbJ7diYPW9FkhvGIjouOaLXofBZz62rleIy6gC8MKhnaQTkgBx3AC4DUwnG0Zg==
+ b=n5+AyLt87xHM81PiuwcjdQVRgTFUx/1LeNE3GCgdwiEfBIqVoxELb5rnXK9cIhGADXLNsgJuQd9PMRs0DrG40xmXmRJjEza62o7HHfsZ2tk9XXh6sQl2I7X/r4cOBTKDgbbPdqpcPz1v4cuvq17rK22Ip5tbxytXdvc6IWmx3prGQMhFbTjUH/zLFV80QVHBz8AmYUQOYIe3k6RLDGQ4z2JhZG0GJ4fVzxPaLnUEAGefw5P1Kw+6FoxL+ZPuVYxzi+AyNLKBR5dftlM68eAFRHSEKWDkx2uB629yJUrvDOhBCvV1tv/gJ6Ys5swMyvqGhJlhoNSpub8yXtgdA+VOBA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=/z/3P1WI0N1ZVdKTpq8DVHvmGZpPGYSRY7pNKD4wqVc=;
- b=ii8J0e8xXs+JA7nGqzkYo3GTZDE+PHi4oqTaJfaWk4MEatE7PYSa0RDqbNrZeagUTcvUo3lya0k2s0AVt8Q5lD7eresZTRX9+V0a1+iDmyDBqOpfsFZHKwfNvmI1eW7o8eJq8J1fiPryPBaFL2V45qhhkkz16Ym8CpH32roRDXwaxHy9KcsqSBvAPIhtIVm4dbTtmoPNswgcD5C9XerUuK8bJxFwpIidemwBxfIAIVhrgdDAHoCp3+Qk5EaB8Emjx0L5QcZtgy4xQV1OKcG0pTSqpDhbXOhfO9KeGG2JRM5d2obL8wMxaFYItKEkg7QZ8iGJUvVIio5Awojljz86oQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=alatek.krakow.pl smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ bh=jUXQarsC9LUK25PD8eInsWlK05YZSSYPmrjs6ceFe5g=;
+ b=EcvKgXJ8drxMFkubLdO3jqnFVgg3buseYmDiEUCl8NjlxNeqS9IKUIW0+9w2OlT0H5QvUavPi6N4QJkXyrDS7sk/DeN0DmZRYnkCm4FfjQB37U9JN2FsmTOuuQT80fOsaQCBAHru3NfjZfQr1Zb5f9bRH/PMgMG+M4nXQ1d8CTuli6QcuWaDESf6juyaIhmfSQc7jDStBl5VkLOYnumvW20uR1+qFhv5yWwa9k1nYTK6ayBK2mr2mjqgqgV57yMsYS6VTr3BQsnInlApwHLSwKPPgJDrY7aco9TVl9UoEAyp15eb4hde9n3geVl+zeRwKQq1r9yxkp9FkJVj/sDTvw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/z/3P1WI0N1ZVdKTpq8DVHvmGZpPGYSRY7pNKD4wqVc=;
- b=ncq/DNPnCAtUP4DS+o+NPoXrjqzXaVFhNZqK2eSbwOaIeTSMNumgjXkJchF7YHcsIdbyiTP4OavHYTe2RR3+DYi6SCbhNQQZD9OXMBcunuvIpeXmpTS2jvNYfBHebg8bFkVgbckJ2roWYr5Hnlc5BJq4J6cxxY9UPne5joza9TY=
-Received: from MW4PR04CA0342.namprd04.prod.outlook.com (2603:10b6:303:8a::17)
- by BL1PR12MB5945.namprd12.prod.outlook.com (2603:10b6:208:398::14) with
+ bh=jUXQarsC9LUK25PD8eInsWlK05YZSSYPmrjs6ceFe5g=;
+ b=rsHdTtmWnLTcu35J0qtSqEbQiZL6xXtFiWdygVJZnS2fz1dD5c1nfiyNAkDvqj8G3G3SVyLmQu67y/BLmc7Geo7AeZ/VgOXBRnZrIrwjbQ1bvHYv7AejB8FGfjUBzWNaFO78QT/JG6rz6zXL0KfIA0PKch4dlfx2S269uwYEnKA=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from AM0PR04MB4834.eurprd04.prod.outlook.com (2603:10a6:208:c8::18)
+ by AS8PR04MB8611.eurprd04.prod.outlook.com (2603:10a6:20b:426::17) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.38; Wed, 20 Dec
- 2023 18:50:55 +0000
-Received: from CO1PEPF000044FD.namprd21.prod.outlook.com
- (2603:10b6:303:8a:cafe::48) by MW4PR04CA0342.outlook.office365.com
- (2603:10b6:303:8a::17) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.38 via Frontend
- Transport; Wed, 20 Dec 2023 18:50:55 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CO1PEPF000044FD.mail.protection.outlook.com (10.167.241.203) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7113.18 via Frontend Transport; Wed, 20 Dec 2023 18:50:54 +0000
-Received: from SATLEXMB06.amd.com (10.181.40.147) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Wed, 20 Dec
- 2023 12:50:54 -0600
-Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB06.amd.com
- (10.181.40.147) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Wed, 20 Dec
- 2023 12:50:53 -0600
-Received: from [172.19.74.144] (10.180.168.240) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.34 via Frontend
- Transport; Wed, 20 Dec 2023 12:50:53 -0600
-Message-ID: <bce801b2-b2a1-8014-a84d-87a18460cd1b@amd.com>
-Date: Wed, 20 Dec 2023 10:50:48 -0800
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7113.18; Wed, 20 Dec
+ 2023 18:58:12 +0000
+Received: from AM0PR04MB4834.eurprd04.prod.outlook.com
+ ([fe80::cca:115e:9cc0:fdcd]) by AM0PR04MB4834.eurprd04.prod.outlook.com
+ ([fe80::cca:115e:9cc0:fdcd%6]) with mapi id 15.20.7113.016; Wed, 20 Dec 2023
+ 18:58:12 +0000
+Date: Wed, 20 Dec 2023 13:55:34 -0500
+From: Frank Li <Frank.li@nxp.com>
+To: Manivannan Sadhasivam <mani@kernel.org>
+Cc: allenbh@gmail.com, bhelgaas@google.com, dave.jiang@intel.com,
+	imx@lists.linux.dev, jdmason@kudzu.us, kishon@kernel.org,
+	kw@linux.com, linux-kernel@vger.kernel.org,
+	linux-pci@vger.kernel.org, lpieralisi@kernel.org,
+	ntb@lists.linux.dev
+Subject: Re: [PATCH v2 1/1] PCI: endpoint: pci-epf-vntb: Fix transfer fail
+ when BAR1 is fixed size
+Message-ID: <ZYM4phZTHJD7+MEw@lizhi-Precision-Tower-5810>
+References: <20231219142403.1223873-1-Frank.Li@nxp.com>
+ <20231220142736.GE3544@thinkpad>
+ <ZYMVMo3TVPMiEN/L@lizhi-Precision-Tower-5810>
+ <20231220174113.GO3544@thinkpad>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231220174113.GO3544@thinkpad>
+X-ClientProxiedBy: BYAPR07CA0004.namprd07.prod.outlook.com
+ (2603:10b6:a02:bc::17) To AM6PR04MB4838.eurprd04.prod.outlook.com
+ (2603:10a6:20b:4::16)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: [PATCH v5 0/8] Miscellaneous xdma driver enhancements
-Content-Language: en-US
-To: Jan Kuliga <jankul@alatek.krakow.pl>, <brian.xu@amd.com>,
-	<raj.kumar.rampelli@amd.com>, <vkoul@kernel.org>, <michal.simek@amd.com>,
-	<dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<miquel.raynal@bootlin.com>
-References: <20231218113904.9071-1-jankul@alatek.krakow.pl>
-From: Lizhi Hou <lizhi.hou@amd.com>
-In-Reply-To: <20231218113904.9071-1-jankul@alatek.krakow.pl>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PEPF000044FD:EE_|BL1PR12MB5945:EE_
-X-MS-Office365-Filtering-Correlation-Id: a554635b-cfe2-414e-26ec-08dc018c98db
+X-MS-TrafficTypeDiagnostic: AM0PR04MB4834:EE_|AS8PR04MB8611:EE_
+X-MS-Office365-Filtering-Correlation-Id: a2cb637e-3b96-4d44-a81a-08dc018d4e0d
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	UYmSD2VfjrLxXlWfxTDkGwFUP4COVdWjZ0IrQQg9U/fhj9JePD1gdV5bqnYS+qYtwkrjwuCvFvDlndc5XQW6QnhouypOLgbFtq8ZqTbMFz2C6omuacv+i5/RQU9zGu9ihNu9FOeL/AOY/ODl32OwyQBcSfheVuLz6YPgHidNS4cvP6eFPih9sn40me5ncMAerbO9LblJrQP7uRmLglcdVwpdVU0zNTZtCkJNvK6czT6sHJOxXdwnExw3irulvDJG+mx/vOBVQsXUFZCdFiozK5XaC8I0RJqYWmqe8vQAgfcL4mvtlQYSIFXH5RWYr9/79v0oRcmv3vduYAPbU4AM8oT6rakhzNDpB9rLn17iZuOT7HbRFfovnC8bqwRXTcGe/XlsqNtN5qKkxfvdHN3I/qwjlpJRFPaIzG1+bhLeHARxBomSLlAUbuqE/8KSlmwRYfgkGBbKbogILbTnwqZtp/JaU9GOcOT00AiuRqsn3gCDxL0mPIJIxU7+oT19Y17tQ37TPFPtCIycsBhU26bTNcJF+L9j5eMSQd4PynGJrbPEmeVp8O7Z/8J6SYYzPkv4hkH2t9tk3Xkn1cgOYyqX4XP4UyRK5ZcsT7mfUPiF/0aBS3GsGAIiLAKEBWKqD6HoCjjmfHTYZJQ0RTtf9ynW88T1evsBxET1ceuAvao+R20xg4aSa86+Vr8Ra/fMc3A41N3roII5KwOfQY3HW8DBTO6SCRtHSA0DHI+8O5YOJFInrp28V5PKEA43VpvN3V67x0doTZ8BOspjFVLyfYWqqhDJ6VG37gEkggfjysXwbw8A5W/yTzQ6+0sc0npLQIgM
+	o6Vh0Kk7kwGYkU2/bLKwmwyB1bYMod+0rRs2Fg6vY2ilBvBnzUFtZ+wxTSQnHpPs8bj0eDCdnZXk9JtiVq191Koz7dJLFcqtex0LXCGxxGiu7aOxnAOm6RsKpdapBAMvw3eKmuNIKxSZotXj9PUXcvrO+3sEqz+sBbLbZBfiRCz+/Non1sXqSHiJr1bHgQ49SDqU0WBN1Uw5GA8xNAAm24O2b4baOorVCHMQNZsyg1/LBuU04IHMolGpxkXFr9AdLnaVs2O/EwYg9o2nEmiivkN0VtiBsO9CVl1x1QObB5dxqVcgKgk1T0GzrC1TxvOceAW6dkCU+JfyILfZP2AqBD6PCgN6ffQ3z3400Sdh++76MMoTTC1+Dr+sqPaUx73Pslg8YwlrUCq4t1I2dTiqeccYTt9snP+XpvafZH0oTwDJ62M7pe9VLxaiGKo1HCXqGrS2zjX2dzjhHV6gk6Xfy774uRTo0ICM7KGsdJC397C1zvnZVc3NRp8W1QIUDmxwZSFpUyybPjyyst/RDgc7GathUetB1OIPWi1/4AcHYFckA3acin6NkTG51oSzIsCEJkZ+yZbQJOhV5391HUGfKN2GAvGoH5yrBTbdxmoJ4duvBsuoSEUOfJ90Bcu6MsvW
 X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(136003)(396003)(376002)(346002)(230922051799003)(1800799012)(186009)(64100799003)(451199024)(82310400011)(36840700001)(46966006)(40470700004)(40460700003)(426003)(336012)(2616005)(26005)(70586007)(36860700001)(8936002)(53546011)(6666004)(5660300002)(83380400001)(44832011)(8676002)(966005)(478600001)(41300700001)(316002)(70206006)(110136005)(16576012)(2906002)(31696002)(86362001)(82740400003)(81166007)(356005)(47076005)(36756003)(40480700001)(31686004)(66899024)(36900700001)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Dec 2023 18:50:54.9909
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB4834.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(136003)(376002)(396003)(346002)(366004)(39860400002)(230922051799003)(451199024)(186009)(64100799003)(1800799012)(33716001)(41300700001)(9686003)(6512007)(86362001)(6506007)(6666004)(26005)(52116002)(478600001)(38350700005)(7416002)(2906002)(5660300002)(8936002)(4326008)(8676002)(6486002)(966005)(83380400001)(6916009)(316002)(66556008)(66946007)(66476007)(38100700002)(67856001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?cFFOcWFXWklDRW5yNnJ5QnIxaGNIYlF1dnVPZWFsU0l6ZjN5U040WHZjZTgw?=
+ =?utf-8?B?aDFqL2M4dTNhNWMzTFBoTnNTTXRlSjRzUjdrWUxhQU1NWG1WTHlvYlNMUUN4?=
+ =?utf-8?B?NjgxSXdKd2hXSkNWY3VmSkRrdWNaSTFwcVdNVU9weWNkcnVYYVhENWdrK3V4?=
+ =?utf-8?B?Z0xuNlBNRVpBMEFtTHZYWWdzdG5QTEFRczV0ZHoyZEZsVmRGVVRCaTRtd01C?=
+ =?utf-8?B?VUJobVdldjc5c0ZNcEFLZXpWZ3NHSWwxRk4xd2UwTERzTEk0WHNsaFVzN3Z5?=
+ =?utf-8?B?MWUxQWxDemkrbDlmVWNmNlo5RnYvM0JTdXhwajVhK21MVG9kbUNCT0xiMEJC?=
+ =?utf-8?B?QUV1NHBEbkExcnN4c1VPeDhCUXJaUEo0cGRJTVdvVzFVaVlURVNFbUxhQm1l?=
+ =?utf-8?B?V1QxQndMMWdZRlY1bXdMWmFVa1RyQzRYVzlPRnZnN3BLNUtmRUJCMnZzVTdl?=
+ =?utf-8?B?bjRUdjBTdjB2cHFKeUFaVTM3SFpuOW5EeVQ1SS96K1U4bXVIaE1Qc2p1NHp0?=
+ =?utf-8?B?Ui9BaTBOVE9wWGg0S1BGdXMrSE9STmtndGhyanNoUDNVdXlZdVNoT054di9r?=
+ =?utf-8?B?cWduaUVPZVBlQzJscmNvQmErNGJxRWhtWDFjT0ZPZnJPUWZ2L2Uzcmd6UmFZ?=
+ =?utf-8?B?c1RBNWdJc2tjTDUrK2g1NlJGZ3ZsMDIySTVYSDNCWDdSRUNzTmhiQTFtdVJC?=
+ =?utf-8?B?WTc4ZUhVY3lHR3NpOUtydjlIZE5laDJUVzJsVThqbGRjTlVZbnJzZDlOOFN0?=
+ =?utf-8?B?OENobUw4R2U0R01FSHVaVExHWE5PcFh0UDFuUy8vaWJkaTR6Q1hOaDViVjQv?=
+ =?utf-8?B?bFNGTzlCNUUzdFhKOVZJUzcxSDltRW9KckJ2bDZXSTlnL2krYkRybVdKQUsz?=
+ =?utf-8?B?Ujhvc3VzL1UwVnNUQlFIdGRybDdZeHNSTjJITkgwdE5WT0lackI5cFRBRzJY?=
+ =?utf-8?B?OG1lcUtiTExFN2EwaVFxS2NYUG4rUlozNyt2VHNFSFZZRFdaYVRuNEFQM3I0?=
+ =?utf-8?B?Z2NlU3NuTFJiTjFQSnhOSGFlV3U5eGx1TnJ4aUk0R2FlVVVpc2hQdlRxT2Fn?=
+ =?utf-8?B?YkRMZHZYTEwxdlNMbmhaRmdnNEhBZUZmeUpJZEpndzdQcTBvOTIwR0pCQlY2?=
+ =?utf-8?B?T2tjRXFZNGk0TEpyNGgwNFZPTXNBQXhRSHFzSFhTZEpWNzVrb1pvSGxKZ3h0?=
+ =?utf-8?B?TG9pZlNRWTRod25JOHhKelVoQWVtSHE2Z1ZrMGxrTHFrVlk3ZVFmRmRUZkRp?=
+ =?utf-8?B?M2lyUkdrZ0lBN0dVY0hWSWNWQUI5STVZRTgwS0drT1liSFZXM3ZKblFvSzhl?=
+ =?utf-8?B?R1BvdFRwaStsYVJSMkNIQVdLY1lZb0F4RWcrMDVObmFOeE9xVHliOWtyWVp1?=
+ =?utf-8?B?R0c0dlZNVEdwVEVsNC9NM1RYbXRLbW5NSXMwbFNyU1hod1RMM0YvYmNLMnd4?=
+ =?utf-8?B?UDc5ZHRnOHBWbnVFVUIzN0w2cFZBUTFseVhaNUx4MXBCSlRpdGE1ZXhodUc5?=
+ =?utf-8?B?ZGdGcTJaWWNzTXcvam4yN1BmTk1EUzF6cmduT3ZlUlRwSjRvRTlJaEFtQ1Av?=
+ =?utf-8?B?WERLWXNwRUo4MHh0VzUwSWVodDV1Sy9vL0lyMkFqajZnc1JVd3IwbGcwL2cy?=
+ =?utf-8?B?eE11Q1Y2SG8vek04Z0tGc2Zxa0t5UFVMQS94MXorMHMrNnFHZTNFVnU4bE16?=
+ =?utf-8?B?WVlpUFJzaWpzY0pzMm5uaVdNb2x1bmlFRG5XOVpiMW5FSlZDZi9nc2xiY1RI?=
+ =?utf-8?B?WFd1Vi9BV1NBa1BxUTZMYmkrQmxoZzRWc3UzY2xjU0VHL3V0SkxzWnFGWlhX?=
+ =?utf-8?B?L1VoMnd4N1hCMjZHWDA0aHY4RTZPS05xQlMxSmVGcFAxNVlSNVlyV0dNNnZD?=
+ =?utf-8?B?RXB1bWRNSlE0WHlrRmNWMGZQYzR4MkMzVFJ5NkFCZWhNcDlRdDgreFlmZGd0?=
+ =?utf-8?B?dXFJcFVJcFRmRUR0bzBwMzFtTW1XR0tFYmVVNGZydFVsaUlsNS9CK2NNamtK?=
+ =?utf-8?B?SXROdWZXemI0dDhHaDdRL1dib3UzRUIvWEpLZkRiNFVKWHJQTjdKSkhLVmVS?=
+ =?utf-8?B?dG4rMmJ2andMY2RVMmlBSkJzbk5qQ0lNbElJVncvTk9paTd3SG04VEVhZHVX?=
+ =?utf-8?Q?WPAY=3D?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a2cb637e-3b96-4d44-a81a-08dc018d4e0d
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4838.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Dec 2023 18:58:12.6912
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: a554635b-cfe2-414e-26ec-08dc018c98db
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	CO1PEPF000044FD.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5945
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Jm/4SNAd0M207UkYU0N+f9lvUIDlb/mlxP9gAWwK0/Jkdc6NSYiCBWVRLG8JWBTJ8YtUA599LT201kUPIxVoFA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8611
 
-Verified this patch series with our device (sg interface)
+On Wed, Dec 20, 2023 at 11:11:13PM +0530, Manivannan Sadhasivam wrote:
+> On Wed, Dec 20, 2023 at 11:24:18AM -0500, Frank Li wrote:
+> > On Wed, Dec 20, 2023 at 07:57:36PM +0530, Manivannan Sadhasivam wrote:
+> > > On Tue, Dec 19, 2023 at 09:24:03AM -0500, Frank Li wrote:
+> > > > ntb_netdev transfer is failing when epc controller's BAR1 is fix size, such
+> > > > as 64K. Certain controller(like dwc) require memory address must be align
+> > > > with the fixed bar size.
+> > > > 
+> > > > For example:
+> > > > 	If BAR1's fix size is 64K, and other size programmable BAR's
+> > > > alignment is 4K.
+> > > > 	vntb call pci_epf_alloc_space() get 4K aligned address, like
+> > > > 0x104E31000. But root complex actually write to address 0x104E30000 when
+> > > > write BAR1.
+> > > > 
+> > > > Adds bar_fixed_size check and sets correct alignment for fixed-size BAR.
+> > > > 
+> > > 
+> > > Change looks fine by me, but I have a hard time understanding this commit
+> > > message.
+> > > 
+> > > The change just checks the size of the doorbell BAR if a fixed size BAR is used
+> > > by the controller and uses the fixed size. In the commit message you are talking
+> > > about alignment and root complex writing to the BAR which are just confusing.
+> > > 
+> > > Please reword this commit message to make it understandable.
+> > 
+> > Maybe I talk about too much about it. Actually, supposed it should  work if
+> > use fixed-size bar(64K), which actually only mapped 4k, if RC only use 4k
+> > also.
+> > 
+> > "copy from dwc spec"
+> > 
+> > But dwc iATU IATU_LWR_TARGET_ADDR_OFF_INBOUND_0
+> > 11-0
+> > LWR_TARGET_HW
+> > Forms the LSB's of the Lower Target part of the new address of the translated region.
+> > Forms the LSB's of the Lower Target part of the new address of the translated region. The start address must be aligned to a CX_ATU_MIN_REGION_SIZE kB boundary (in address match mode); and to the Bar size boundary (in BAR match mode) so that these bits are always '0'. If the BAR is smaller than the iATU region size, then the iATU target address must align to the iATU region size; otherwise it must align to the BAR size.
+> > A write to this location is ignored by the PCIe controller.
+> > - Field size depends on log2(CX_ATU_MIN_REGION_SIZE) in address match mode.
+> > - Field size depends on log2(BAR_MASK+1) in BAR match mode.
+> > ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> > 
+> > For fixed size bar, BAR_MASK is fixed value. If pass down a 4k aligned
+> > address to iATU for 64K fixed sized bar, some address bits will be
+> > truncated. 
+> > 
+> 
+> Okay, now I understood the issue, thanks.
+> 
+> But this issue can happen for other BARs also, right. Since you encountered the
+> issue with DB BAR, it doesn't mean that the issue won't happen with other BARs.
+> So you need to have this check in place for all the used BARs.
 
+Config BAR already consider it. Memory windows bar is little complex. I
+need do some tests, let me finish 
 
-Thanks,
+https://lore.kernel.org/imx/20231211215842.134823-1-Frank.Li@nxp.com/T/#t
 
-Lizhi
+Then I will can add more SOC, which all bars is fixed size.
 
-On 12/18/23 03:39, Jan Kuliga wrote:
-> Hi,
->
-> This patchset introduces a couple of xdma driver enhancements. The most
-> important change is the introduction of interleaved DMA transfers
-> feature, which is a big deal, as it allows DMAEngine clients to express
-> DMA transfers in an arbitrary way. This is extremely useful in FPGA
-> environments, where in one FPGA system there may be a need to do DMA both
-> to/from FIFO at a fixed address and to/from a (non)contiguous RAM.
->
-> It is a another reroll of my previous patch series [1], but it is heavily
-> modified one as it is based on Miquel's patchset [2]. We agreed on doing
-> it that way, as both our patchsets touched the very same piece of code.
-> The discussion took place under [2] thread.
->
-> I tested it with XDMA v4.1 (Rev.20) IP core, with both sg and
-> interleaved DMA transfers.
->
-> Jan
->
-> Changes since v1:
-> [PATCH 1/5]:
-> Complete a terminated descriptor with dma_cookie_complete()
-> Don't reinitialize temporary list head in xdma_terminate_all()
-> [PATCH 4/5]:
-> Fix incorrect text wrapping
->
-> Changes since v2:
-> [PATCH 1/5]:
-> DO NOT schedule callback from within xdma_terminate_all()
->
-> Changes since v3:
-> Base patchset on Miquel's [2] series
-> Reorganize commits` structure
-> Introduce interleaved DMA transfers feature
-> Implement transfer error reporting
->
-> Changes since v4:
-> Get rid of duplicated line of code
-> Fix various coding style issues
->
-> [1]:
-> https://lore.kernel.org/dmaengine/20231124192524.134989-1-jankul@alatek.krakow.pl/T/#t
->
-> [2]:
-> https://lore.kernel.org/dmaengine/20231130111315.729430-1-miquel.raynal@bootlin.com/T/#t
->
-> ---
-> Jan Kuliga (8):
->    dmaengine: xilinx: xdma: Get rid of unused code
->    dmaengine: xilinx: xdma: Add necessary macro definitions
->    dmaengine: xilinx: xdma: Ease dma_pool alignment requirements
->    dmaengine: xilinx: xdma: Rework xdma_terminate_all()
->    dmaengine: xilinx: xdma: Add error checking in xdma_channel_isr()
->    dmaengine: xilinx: xdma: Add transfer error reporting
->    dmaengine: xilinx: xdma: Prepare the introduction of interleaved DMA
->      transfers
->    dmaengine: xilinx: xdma: Implement interleaved DMA transfers
->
->   drivers/dma/xilinx/xdma-regs.h |  30 ++--
->   drivers/dma/xilinx/xdma.c      | 283 +++++++++++++++++++++++----------
->   2 files changed, 210 insertions(+), 103 deletions(-)
->
+Frank
+
+> 
+> > Hidden some hardware detail, do you think if it is enough?
+> > 
+> > "ntb_netdev transfer is failing when epc controller's BAR1 is fix size.
+> > Adds bar_fixed_size check. If require memory bigger than BAR1's fixed size,
+> > return -ENOMEM. If smaller than BAR1's fixed size, use BAR1's fixed size."
+> > 
+> 
+> How about,
+> 
+> "PCI: endpoint: pci-epf-vntb: Fix transfer failure for fixed size BARs
+> 
+> For the inbound MEM/IO TLPs, iATU on the endpoint expects the target address to
+> be aligned to the size of the BAR. For configurable BARs, there is no issue
+> because both host and endpoint will know the exact size of the BAR region. But
+> for fixed size BARs available in some controllers, if the BAR size advertised by
+> the endpoint is not same as of the actual BAR size used in the controller, then
+> the MEM/IO TLPs generated by the host will not be translated properly by the
+> endpoint iATU.
+> 
+> So if the fixed size BARs are available in endpoint controllers, always use the
+> actual BAR size."
+> 
+> Also, add the Fixes tag and CC stable list since this is a bug.
+> 
+> - Mani
+> 
+> > Frank
+> > 
+> > > 
+> > > > Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> > > > ---
+> > > > 
+> > > > Notes:
+> > > >     Change from v1 to v2
+> > > >     - Remove unnessary set align when fix_bar_size.
+> > > > 
+> > > >  drivers/pci/endpoint/functions/pci-epf-vntb.c | 8 ++++++++
+> > > >  1 file changed, 8 insertions(+)
+> > > > 
+> > > > diff --git a/drivers/pci/endpoint/functions/pci-epf-vntb.c b/drivers/pci/endpoint/functions/pci-epf-vntb.c
+> > > > index 3f60128560ed0..ec3922f404efe 100644
+> > > > --- a/drivers/pci/endpoint/functions/pci-epf-vntb.c
+> > > > +++ b/drivers/pci/endpoint/functions/pci-epf-vntb.c
+> > > > @@ -550,6 +550,14 @@ static int epf_ntb_db_bar_init(struct epf_ntb *ntb)
+> > > >  
+> > > >  	barno = ntb->epf_ntb_bar[BAR_DB];
+> > > >  
+> > > > +	if (epc_features->bar_fixed_size[barno]) {
+> > > > +		if (size > epc_features->bar_fixed_size[barno]) {
+> > > > +			dev_err(dev, "Fixed BAR%d is too small for doorbell\n", barno);
+> > > > +			return -EINVAL;
+> > > 
+> > > -ENOMEM?
+> > > 
+> > > - Mani
+> > > 
+> > > > +		}
+> > > > +		size = epc_features->bar_fixed_size[barno];
+> > > > +	}
+> > > > +
+> > > >  	mw_addr = pci_epf_alloc_space(ntb->epf, size, barno, align, 0);
+> > > >  	if (!mw_addr) {
+> > > >  		dev_err(dev, "Failed to allocate OB address\n");
+> > > > -- 
+> > > > 2.34.1
+> > > > 
+> > > 
+> > > -- 
+> > > மணிவண்ணன் சதாசிவம்
+> 
+> -- 
+> மணிவண்ணன் சதாசிவம்
 
