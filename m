@@ -1,230 +1,198 @@
-Return-Path: <linux-kernel+bounces-7369-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7368-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9792681A6A0
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 19:02:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1995881A69F
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 19:01:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BC9D31C23505
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 18:02:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C994628762D
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 18:01:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 387D7481C3;
-	Wed, 20 Dec 2023 18:01:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04A9B481C3;
+	Wed, 20 Dec 2023 18:01:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="DJWEyTbK"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="McLTJGE+"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f50.google.com (mail-io1-f50.google.com [209.85.166.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE8E6482C5
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 18:01:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703095315; x=1734631315;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=1eHSdKAdcLl3svp/SQeWuGtvxl/d2/uavwjQca5Q4RM=;
-  b=DJWEyTbKt0Hg8P3egbsPWKGTjfbxkycxyW/L3TyMk3Vi6xbc8jSOMd3D
-   xbVDI2MULm2xz1qkBviaqEhAcU+Jk9rMfSVdMz0KRATCUvRixLIX3+b5O
-   ixpLEQwqSAtHczho5ha+uwA4inBpgY189bKPr72UxU1uqSaANufz/klIx
-   O54Ev3hM0z6yo8Q9wptwU0KgvfpaUbUX5vQb4ngHLvN+9rR5RxCyqcmT6
-   2a07JT4bn1M5RFCKtPilPHDIHDgxbCZT3y1iU/4F5RxjPyxfqW5/TFnbT
-   V2pxFeLeJ/kysJdPL/m1cZLxS1Mbb+wIB7JSuuJwDiKRUiQ/g4htsNtF0
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10930"; a="460192409"
-X-IronPort-AV: E=Sophos;i="6.04,291,1695711600"; 
-   d="scan'208";a="460192409"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Dec 2023 10:01:44 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,291,1695711600"; 
-   d="scan'208";a="10828878"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmviesa002.fm.intel.com with ESMTP; 20 Dec 2023 10:01:41 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rG0sx-0007IB-2B;
-	Wed, 20 Dec 2023 18:01:36 +0000
-Date: Thu, 21 Dec 2023 02:00:35 +0800
-From: kernel test robot <lkp@intel.com>
-To: Zeng Heng <zengheng4@huawei.com>, longman@redhat.com,
-	boqun.feng@gmail.com, peterz@infradead.org, mingo@redhat.com,
-	will@kernel.org, guohui@uniontech.com
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	linux-kernel@vger.kernel.org, xiexiuqi@huawei.com,
-	liwei391@huawei.com
-Subject: Re: [PATCH] locking/osq_lock: Avoid false sharing in
- optimistic_spin_node
-Message-ID: <202312210155.Wc2HUK8C-lkp@intel.com>
-References: <20231220070204.2662730-1-zengheng4@huawei.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F157E482C0;
+	Wed, 20 Dec 2023 18:01:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-io1-f50.google.com with SMTP id ca18e2360f4ac-7b7fdde8b56so68352539f.1;
+        Wed, 20 Dec 2023 10:01:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703095269; x=1703700069; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZJzSEoEvuif1BDrUFvDqH2tIiQ4fF92h4jSTRbuCOLY=;
+        b=McLTJGE+ItI6rlKoV6vOnN1Un5vqxwZEGotVNwruyLVspye9agmwHxPueIg09rK5z5
+         Gc6dcV3vZy+wWZ2TRaTroLxiapbwqmKSO6GTAm4/zokm7CbQruu/uPhX41DDp1BXxuiW
+         VcpgtnjZTSOMABQ60d1owN9ll57QLp2sHutcHPIjo63dh61KWsJpvYUd9MuHjARH5YPq
+         t/hKz6VRZCznUCisAPAaOuftcKwwR2oAEDNL4yVjByujmD2NMS2qLA5TZz9bdM0MQtp8
+         UMIOOtqfu6RkIEWjjFLgitgOQfHsBcbmqwwKh+uY9H2anADF0Rn0s1hPtvag1kpKhu95
+         ME2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703095269; x=1703700069;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZJzSEoEvuif1BDrUFvDqH2tIiQ4fF92h4jSTRbuCOLY=;
+        b=JqcSSJAutbZmlDHw2GM1px8t4L737fES1a4LDinFFM2Z3K+9uo3XeWnMMwpnCTut98
+         k+8mkE1VCQlM9W5EQUBPesEiogDD7cGChV/06zCU1jHCddkqI2Y0nS15tfX9PApsumFE
+         hMjWw64zXkQa6bl3IrNtcusFnwiOpIxlT7sr51GTF0A6/NiXMrtBFhj/qR90UZGhgemA
+         p5azigbhRt+OW6OX4RguDaO6EM+7skUFg3oU7qeKmwuEwLEdI7VriR+xJR7mWYmzX2l/
+         nwihjNlOgTTAmD4jxlezOLxO7dvDlDj5vFoX5OiH7rG/7HLo8q1/zYnFNCQjnbKmDy9D
+         UlFQ==
+X-Gm-Message-State: AOJu0YwSh35WTsg3Z6PohRfMnLnvj1yWQawspzLcPD3FJHWg7h0wjF5h
+	PinNcnmxXApcWqcduV37l05RSlBP6e5wwLEvaj0=
+X-Google-Smtp-Source: AGHT+IFyV8d2RNp2PDX4fUdZmr5runKhc8tqWt5xHA/RVVcp4rAfS4is9TW8I+KHHVVp9KONswzhGSHykb5YQalhmzs=
+X-Received: by 2002:a05:6602:2c53:b0:7b3:9356:665 with SMTP id
+ x19-20020a0566022c5300b007b393560665mr27215712iov.4.1703095268836; Wed, 20
+ Dec 2023 10:01:08 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231220070204.2662730-1-zengheng4@huawei.com>
+References: <61273e5e9b490682388377c20f52d19de4a80460.1703054559.git.baolin.wang@linux.alibaba.com>
+In-Reply-To: <61273e5e9b490682388377c20f52d19de4a80460.1703054559.git.baolin.wang@linux.alibaba.com>
+From: Nhat Pham <nphamcs@gmail.com>
+Date: Wed, 20 Dec 2023 10:00:57 -0800
+Message-ID: <CAKEwX=N9zXX9GZWT9v_wuJB0Sbj27U6qeV6iz+CrJ362j_mY7Q@mail.gmail.com>
+Subject: Re: [PATCH] mm: memcg: fix split queue list crash when large folio migration
+To: Baolin Wang <baolin.wang@linux.alibaba.com>
+Cc: akpm@linux-foundation.org, hannes@cmpxchg.org, mhocko@kernel.org, 
+	roman.gushchin@linux.dev, shakeelb@google.com, muchun.song@linux.dev, 
+	david@redhat.com, ying.huang@intel.com, shy828301@gmail.com, ziy@nvidia.com, 
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Zeng,
+On Tue, Dec 19, 2023 at 10:52=E2=80=AFPM Baolin Wang
+<baolin.wang@linux.alibaba.com> wrote:
+>
+> When running autonuma with enabling multi-size THP, I encountered the fol=
+lowing
+> kernel crash issue:
+>
+> [  134.290216] list_del corruption. prev->next should be fffff9ad42e1c490=
+,
+> but was dead000000000100. (prev=3Dfffff9ad42399890)
+> [  134.290877] kernel BUG at lib/list_debug.c:62!
+> [  134.291052] invalid opcode: 0000 [#1] PREEMPT SMP NOPTI
+> [  134.291210] CPU: 56 PID: 8037 Comm: numa01 Kdump: loaded Tainted:
+> G            E      6.7.0-rc4+ #20
+> [  134.291649] RIP: 0010:__list_del_entry_valid_or_report+0x97/0xb0
+> ......
+> [  134.294252] Call Trace:
+> [  134.294362]  <TASK>
+> [  134.294440]  ? die+0x33/0x90
+> [  134.294561]  ? do_trap+0xe0/0x110
+> ......
+> [  134.295681]  ? __list_del_entry_valid_or_report+0x97/0xb0
+> [  134.295842]  folio_undo_large_rmappable+0x99/0x100
+> [  134.296003]  destroy_large_folio+0x68/0x70
+> [  134.296172]  migrate_folio_move+0x12e/0x260
+> [  134.296264]  ? __pfx_remove_migration_pte+0x10/0x10
+> [  134.296389]  migrate_pages_batch+0x495/0x6b0
+> [  134.296523]  migrate_pages+0x1d0/0x500
+> [  134.296646]  ? __pfx_alloc_misplaced_dst_folio+0x10/0x10
+> [  134.296799]  migrate_misplaced_folio+0x12d/0x2b0
+> [  134.296953]  do_numa_page+0x1f4/0x570
+> [  134.297121]  __handle_mm_fault+0x2b0/0x6c0
+> [  134.297254]  handle_mm_fault+0x107/0x270
+> [  134.300897]  do_user_addr_fault+0x167/0x680
+> [  134.304561]  exc_page_fault+0x65/0x140
+> [  134.307919]  asm_exc_page_fault+0x22/0x30
+>
+> The reason for the crash is that, the commit 85ce2c517ade ("memcontrol: o=
+nly
+> transfer the memcg data for migration") removed the charging and unchargi=
+ng
+> operations of the migration folios and cleared the memcg data of the old =
+folio.
+>
+> During the subsequent release process of the old large folio in destroy_l=
+arge_folio(),
+> if the large folio needs to be removed from the split queue, an incorrect=
+ split
+> queue can be obtained (which is pgdat->deferred_split_queue) because the =
+old
+> folio's memcg is NULL now. This can lead to list operations being perform=
+ed
+> under the wrong split queue lock protection, resulting in a list crash as=
+ above.
 
-kernel test robot noticed the following build errors:
+Ah this is tricky. I think you're right - the old folio's memcg is
+used to get the deferred split queue, and we cleared it here :)
 
-[auto build test ERROR on tip/locking/core]
-[also build test ERROR on linus/master v6.7-rc6 next-20231220]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+>
+> After the migration, the old folio is going to be freed, so we can remove=
+ it
+> from the split queue in mem_cgroup_migrate() a bit earlier before clearin=
+g the
+> memcg data to avoid getting incorrect split queue.
+>
+> Fixes: 85ce2c517ade ("memcontrol: only transfer the memcg data for migrat=
+ion")
+> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+> ---
+>  mm/huge_memory.c |  2 +-
+>  mm/memcontrol.c  | 11 +++++++++++
+>  2 files changed, 12 insertions(+), 1 deletion(-)
+>
+> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> index 6be1a380a298..c50dc2e1483f 100644
+> --- a/mm/huge_memory.c
+> +++ b/mm/huge_memory.c
+> @@ -3124,7 +3124,7 @@ void folio_undo_large_rmappable(struct folio *folio=
+)
+>         spin_lock_irqsave(&ds_queue->split_queue_lock, flags);
+>         if (!list_empty(&folio->_deferred_list)) {
+>                 ds_queue->split_queue_len--;
+> -               list_del(&folio->_deferred_list);
+> +               list_del_init(&folio->_deferred_list);
+>         }
+>         spin_unlock_irqrestore(&ds_queue->split_queue_lock, flags);
+>  }
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index ae8c62c7aa53..e66e0811cccc 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -7575,6 +7575,17 @@ void mem_cgroup_migrate(struct folio *old, struct =
+folio *new)
+>
+>         /* Transfer the charge and the css ref */
+>         commit_charge(new, memcg);
+> +       /*
+> +        * If the old folio a large folio and is in the split queue, it n=
+eeds
+> +        * to be removed from the split queue now, in case getting an inc=
+orrect
+> +        * split queue in destroy_large_folio() after the memcg of the ol=
+d folio
+> +        * is cleared.
+> +        *
+> +        * In addition, the old folio is about to be freed after migratio=
+n, so
+> +        * removing from the split queue a bit earlier seems reasonable.
+> +        */
+> +       if (folio_test_large(old) && folio_test_large_rmappable(old))
+> +               folio_undo_large_rmappable(old);
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Zeng-Heng/locking-osq_lock-Avoid-false-sharing-in-optimistic_spin_node/20231220-150010
-base:   tip/locking/core
-patch link:    https://lore.kernel.org/r/20231220070204.2662730-1-zengheng4%40huawei.com
-patch subject: [PATCH] locking/osq_lock: Avoid false sharing in optimistic_spin_node
-config: arm-defconfig (https://download.01.org/0day-ci/archive/20231221/202312210155.Wc2HUK8C-lkp@intel.com/config)
-compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project.git f28c006a5895fc0e329fe15fead81e37457cb1d1)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231221/202312210155.Wc2HUK8C-lkp@intel.com/reproduce)
+This looks reasonable to me :)
+Reviewed-by: Nhat Pham <nphamcs@gmail.com>
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312210155.Wc2HUK8C-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   In file included from arch/arm/kernel/asm-offsets.c:11:
-   In file included from include/linux/sched.h:15:
-   In file included from include/linux/sem.h:5:
-   In file included from include/uapi/linux/sem.h:5:
-   In file included from include/linux/ipc.h:7:
-   In file included from include/linux/rhashtable-types.h:14:
-   In file included from include/linux/mutex.h:20:
->> include/linux/osq_lock.h:16:9: error: expected ';' at end of declaration list
-           int cpu ____cacheline_aligned;
-                  ^
-                  ;
-   In file included from arch/arm/kernel/asm-offsets.c:12:
-   In file included from include/linux/mm.h:1084:
-   In file included from include/linux/huge_mm.h:8:
-   In file included from include/linux/fs.h:33:
-   In file included from include/linux/percpu-rwsem.h:7:
-   In file included from include/linux/rcuwait.h:6:
-   In file included from include/linux/sched/signal.h:6:
-   include/linux/signal.h:97:11: warning: array index 3 is past the end of the array (which contains 2 elements) [-Warray-bounds]
-                   return (set->sig[3] | set->sig[2] |
-                           ^        ~
-   arch/arm/include/asm/signal.h:17:2: note: array 'sig' declared here
-           unsigned long sig[_NSIG_WORDS];
-           ^
-   In file included from arch/arm/kernel/asm-offsets.c:12:
-   In file included from include/linux/mm.h:1084:
-   In file included from include/linux/huge_mm.h:8:
-   In file included from include/linux/fs.h:33:
-   In file included from include/linux/percpu-rwsem.h:7:
-   In file included from include/linux/rcuwait.h:6:
-   In file included from include/linux/sched/signal.h:6:
-   include/linux/signal.h:97:25: warning: array index 2 is past the end of the array (which contains 2 elements) [-Warray-bounds]
-                   return (set->sig[3] | set->sig[2] |
-                                         ^        ~
-   arch/arm/include/asm/signal.h:17:2: note: array 'sig' declared here
-           unsigned long sig[_NSIG_WORDS];
-           ^
-   In file included from arch/arm/kernel/asm-offsets.c:12:
-   In file included from include/linux/mm.h:1084:
-   In file included from include/linux/huge_mm.h:8:
-   In file included from include/linux/fs.h:33:
-   In file included from include/linux/percpu-rwsem.h:7:
-   In file included from include/linux/rcuwait.h:6:
-   In file included from include/linux/sched/signal.h:6:
-   include/linux/signal.h:113:11: warning: array index 3 is past the end of the array (which contains 2 elements) [-Warray-bounds]
-                   return  (set1->sig[3] == set2->sig[3]) &&
-                            ^         ~
-   arch/arm/include/asm/signal.h:17:2: note: array 'sig' declared here
-           unsigned long sig[_NSIG_WORDS];
-           ^
-   In file included from arch/arm/kernel/asm-offsets.c:12:
-   In file included from include/linux/mm.h:1084:
-   In file included from include/linux/huge_mm.h:8:
-   In file included from include/linux/fs.h:33:
-   In file included from include/linux/percpu-rwsem.h:7:
-   In file included from include/linux/rcuwait.h:6:
-   In file included from include/linux/sched/signal.h:6:
-   include/linux/signal.h:113:27: warning: array index 3 is past the end of the array (which contains 2 elements) [-Warray-bounds]
-                   return  (set1->sig[3] == set2->sig[3]) &&
-                                            ^         ~
-   arch/arm/include/asm/signal.h:17:2: note: array 'sig' declared here
-           unsigned long sig[_NSIG_WORDS];
-           ^
-   In file included from arch/arm/kernel/asm-offsets.c:12:
-   In file included from include/linux/mm.h:1084:
-   In file included from include/linux/huge_mm.h:8:
-   In file included from include/linux/fs.h:33:
-   In file included from include/linux/percpu-rwsem.h:7:
-   In file included from include/linux/rcuwait.h:6:
-   In file included from include/linux/sched/signal.h:6:
-   include/linux/signal.h:114:5: warning: array index 2 is past the end of the array (which contains 2 elements) [-Warray-bounds]
-                           (set1->sig[2] == set2->sig[2]) &&
-                            ^         ~
-   arch/arm/include/asm/signal.h:17:2: note: array 'sig' declared here
-           unsigned long sig[_NSIG_WORDS];
-           ^
-   In file included from arch/arm/kernel/asm-offsets.c:12:
-   In file included from include/linux/mm.h:1084:
-   In file included from include/linux/huge_mm.h:8:
-   In file included from include/linux/fs.h:33:
-   In file included from include/linux/percpu-rwsem.h:7:
-   In file included from include/linux/rcuwait.h:6:
-   In file included from include/linux/sched/signal.h:6:
-   include/linux/signal.h:114:21: warning: array index 2 is past the end of the array (which contains 2 elements) [-Warray-bounds]
-                           (set1->sig[2] == set2->sig[2]) &&
-                                            ^         ~
-   arch/arm/include/asm/signal.h:17:2: note: array 'sig' declared here
-           unsigned long sig[_NSIG_WORDS];
-           ^
-   In file included from arch/arm/kernel/asm-offsets.c:12:
-   In file included from include/linux/mm.h:1084:
-   In file included from include/linux/huge_mm.h:8:
-   In file included from include/linux/fs.h:33:
-   In file included from include/linux/percpu-rwsem.h:7:
-   In file included from include/linux/rcuwait.h:6:
-   In file included from include/linux/sched/signal.h:6:
-   include/linux/signal.h:156:1: warning: array index 3 is past the end of the array (which contains 2 elements) [-Warray-bounds]
-   _SIG_SET_BINOP(sigorsets, _sig_or)
-   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/signal.h:137:8: note: expanded from macro '_SIG_SET_BINOP'
-                   a3 = a->sig[3]; a2 = a->sig[2];                         \
-                        ^      ~
-   arch/arm/include/asm/signal.h:17:2: note: array 'sig' declared here
-           unsigned long sig[_NSIG_WORDS];
-           ^
-   In file included from arch/arm/kernel/asm-offsets.c:12:
-   In file included from include/linux/mm.h:1084:
-   In file included from include/linux/huge_mm.h:8:
-
-
-vim +16 include/linux/osq_lock.h
-
-     4	
-     5	/*
-     6	 * An MCS like lock especially tailored for optimistic spinning for sleeping
-     7	 * lock implementations (mutex, rwsem, etc).
-     8	 */
-     9	struct optimistic_spin_node {
-    10		struct optimistic_spin_node *next, *prev;
-    11		int locked; /* 1 if lock acquired */
-    12		/*
-    13		 * Stores an encoded CPU # + 1 value.
-    14		 * Only read by other cpus, so split into different cache lines.
-    15		 */
-  > 16		int cpu ____cacheline_aligned;
-    17	};
-    18	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+>         old->memcg_data =3D 0;
+>  }
+>
+> --
+> 2.39.3
+>
 
