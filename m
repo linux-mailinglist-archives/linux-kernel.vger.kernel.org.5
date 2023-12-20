@@ -1,65 +1,54 @@
-Return-Path: <linux-kernel+bounces-6420-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6422-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8B0581989A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 07:29:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60E5081989E
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 07:30:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8CA8128818C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 06:29:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1CA85287C42
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 06:30:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F356125BC;
-	Wed, 20 Dec 2023 06:29:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67FEE13AF3;
+	Wed, 20 Dec 2023 06:30:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="TmEm8E62"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="YWPKOw9i"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0E67125AB;
-	Wed, 20 Dec 2023 06:29:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=hqMzQcL9dCaPS/BWjMsw8duUh/43SjPceygtauigPfw=; b=TmEm8E62f1+FgD45iP1MRou1+B
-	4h38XHxYisTW8Kft69E9UrX/nREJXC6jBAj7zKqcZbh3uco3uuN1iSrChhEs2FLj/jfALCQkyqxvR
-	7fmWXb2S/7lzWvepQvU4h5QHYDtc3ZID1l5RDeK9mM4dlXzdbCMXr2ebutwD2j7nnqjg8roRm7n93
-	f+XONdmbO6IQL5XCHF9BV/jLSXB8DHzq6UYDS8cqetgV5eUnuFldB9Jd6tWWoi69FWwc917868hv9
-	X7ZVRwenOazTeDt9Xjhu0KPRQMPD82CAMqyg4h8RNXcrJaXsw3oXSLNEbMwuFL0uBE729E4hvs23r
-	QoFB4gtQ==;
-Received: from [50.53.46.231] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1rFq4p-00GIZn-1A;
-	Wed, 20 Dec 2023 06:29:07 +0000
-Message-ID: <4155c90e-cdb1-4645-8bcc-fed4ea01ac83@infradead.org>
-Date: Tue, 19 Dec 2023 22:29:06 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0F693D86;
+	Wed, 20 Dec 2023 06:30:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 935C4C433C7;
+	Wed, 20 Dec 2023 06:30:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1703053828;
+	bh=VH/9MOpR3fFnxqYouqNXKsbQTywKgOvD11JxAGjn4ds=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=YWPKOw9ifRhFdbdqq4B4WEqoOXgNLkZP4Xfo35LK1h/pQChwspUPWIBz5lamqV1Nv
+	 b1NPU2gnYFHzl7sMYjfS2r3t4Mwj7utyznvZZwyPYYbOCGPk5F9mnar/tQrljiZ+4C
+	 SMhYFsOZdn0DPo3pS+/SSyWdBJ8sEqjKsLRNMJOE=
+Date: Wed, 20 Dec 2023 07:30:25 +0100
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Muhammad Muzammil <m.muzzammilashraf@gmail.com>
+Cc: rdunlap@infradead.org, corbet@lwn.net, gustavoars@kernel.org,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] scripts: kernel-doc: Bug fixed for erroneous warning
+Message-ID: <2023122059-wick-ransack-1cfb@gregkh>
+References: <20231220062446.14511-1-muzammil@dreambigsemi.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] scripts: kernel-doc: Bug fixed for erroneous warning
-Content-Language: en-US
-To: Muhammad Muzammil <m.muzzammilashraf@gmail.com>, corbet@lwn.net,
- gustavoars@kernel.org
-Cc: linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-hardening@vger.kernel.org
-References: <20231220062446.14511-1-muzammil@dreambigsemi.com>
-From: Randy Dunlap <rdunlap@infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 In-Reply-To: <20231220062446.14511-1-muzammil@dreambigsemi.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
 
-Hi,
-
-On 12/19/23 22:24, Muhammad Muzammil wrote:
+On Wed, Dec 20, 2023 at 11:24:46AM +0500, Muhammad Muzammil wrote:
 > From: Muzammil Ashraf <m.muzzammilashraf@gmail.com>
 > 
 > kernel-doc: fixed erroneous warning generated by '__counted_by'
@@ -78,21 +67,11 @@ On 12/19/23 22:24, Muhammad Muzammil wrote:
 >  			elsif (($decl_type eq "struct") or
 >  		       	       ($decl_type eq "union")) {
 > +                next if (index("@_", "__counted_by") != -1);
->  				emit_warning("${file}:$.",
->  					"Excess $decl_type member " .
->  					"'$sects[$sx]' " .
 
-One of both of these patches should be enough. Can you test these
-instead of your patch, please?
+Please fix your editor to properly use tabs, and to set them to the
+correct 8 column spacing.
 
-https://lore.kernel.org/linux-doc/20231215001347.work.151-kees@kernel.org/
+thanks,
 
-https://lore.kernel.org/linux-doc/87le9rjb4y.fsf@meer.lwn.net/
-
-Thanks.
-
--- 
-#Randy
-https://people.kernel.org/tglx/notes-about-netiquette
-https://subspace.kernel.org/etiquette.html
+greg k-h
 
