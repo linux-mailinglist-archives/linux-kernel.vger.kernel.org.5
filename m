@@ -1,108 +1,105 @@
-Return-Path: <linux-kernel+bounces-7341-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7342-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC51E81A616
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 18:13:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A8FB581A62A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 18:16:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0ADA01C24561
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 17:13:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6517C286568
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 17:16:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DB2C4779E;
-	Wed, 20 Dec 2023 17:13:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DF4347A45;
+	Wed, 20 Dec 2023 17:16:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="poN48gjs"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ur4c7YSP"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14AE947787
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 17:12:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2cc5d9cf766so67712861fa.2
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 09:12:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703092377; x=1703697177; darn=vger.kernel.org;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QB9ev+uMncqth39tI1tRydoRsIX73JNNXrX2aWeDi9A=;
-        b=poN48gjswwuk8mYxNPgd8V3OSvQvaRT03L8QIyN+lh95Wegm7sBtUk+tn5ZGrfPjC0
-         6fCoPoc52+9y6+caYIVRrwHjel+4K3YRBTN2O0hmNkmjvRUr45TwGovJzKobM81Jl+RN
-         6PvTHWOlX0maV1WWxyHMOLcW0+YIhVD4VEMDcUnlZsW4tv7UpYU/F3QCQ+Rq2KcBzB9F
-         l9NEjfi72+ihYZJXyJQdYfPvtdoY+EjUc6DPsLEYRS2mQj7ArndIpS60WDlckNSXEVhp
-         FhZwcsHDu5Onukw0U9WXTG2YFwpgvy09y1/Kk6JKMGn8p2BMjXNiW55cM9envXJu4TM6
-         ybtw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703092377; x=1703697177;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QB9ev+uMncqth39tI1tRydoRsIX73JNNXrX2aWeDi9A=;
-        b=Y1fDC+sIASYOLWgULcHwIprBT04jqwZTgWuH3VDfyoYy3XvE5i7uVx3P4bVG6V1VlR
-         xDb5gh8bdRPamUme/o3XCm9/zQjKxHEJZCmSt4Qtv8R7XH6UaagAUz6GbGL7b2P6aSHu
-         74iqN595HTpv84JF226hQFruWT6vPTmmORJN65Nq8joU8Bp5CB8RyOBtQlqANCKN8AHp
-         JK4DhLA0bI0R3NDYCdnQiPb+eu45VaD3QNNsKce5ch/ItXrZWCoN7cmZBM52Sp6AjqHD
-         sDyvTcdIMxLNJWX40UcW+vy2VTG4U8t4Jo9kwV+4BN4VzEdOdA0dngLRRJ0yJ2VKXtnb
-         pGaA==
-X-Gm-Message-State: AOJu0Yw0TeuHjF72eO4x0ReVu4ctNBV0bhexz200NV71KLZh76y/+KyF
-	GHmZgLgWDYVicp41zdl8T6MvvA==
-X-Google-Smtp-Source: AGHT+IFNb/zRS/yfTqowxh8HH2imsPZuzJjNgYk9xNKk34o9tgTlDX+1Uvy0Ra9NlXWnkdN4WRTWyw==
-X-Received: by 2002:a05:6512:3c9b:b0:50e:50ee:f378 with SMTP id h27-20020a0565123c9b00b0050e50eef378mr1005745lfv.65.1703092377027;
-        Wed, 20 Dec 2023 09:12:57 -0800 (PST)
-Received: from mutt (c-9b0ee555.07-21-73746f28.bbcust.telenor.se. [85.229.14.155])
-        by smtp.gmail.com with ESMTPSA id l15-20020ac24a8f000000b0050e23d8af76sm14916lfp.137.2023.12.20.09.12.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Dec 2023 09:12:56 -0800 (PST)
-Date: Wed, 20 Dec 2023 18:12:54 +0100
-From: Anders Roxell <anders.roxell@linaro.org>
-To: Mark Brown <broonie@kernel.org>
-Cc: Kees Cook <keescook@chromium.org>,
-	Andy Lutomirski <luto@amacapital.net>,
-	Will Drewry <wad@chromium.org>, Shuah Khan <shuah@kernel.org>,
-	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] kselftest/seccomp: Convert to KTAP output
-Message-ID: <20231220171254.GA1278954@mutt>
-References: <20231219-b4-kselftest-seccomp-benchmark-ktap-v1-0-f99e228631b0@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 494CA4777A;
+	Wed, 20 Dec 2023 17:16:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F2C4C433C8;
+	Wed, 20 Dec 2023 17:16:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703092572;
+	bh=Eiy+C2ZXzvDMSMgKR0MbMIlTF+JlGNwj6ZVYIMIOtWQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ur4c7YSPm4CQrVZ8m9imdISvG3xbEvfOni6NopOnwm2A/WM8VElbuL5vopxf1b3mL
+	 Q3m2qRFj1ZmALuonVDRWAtUFcWb+CjtdCy+/7TcyY3t74jtP4AR/lcUkJv/xmum0Br
+	 Qbyn6vIgU6Kly5PAz7It0zyMbn3KVznNgbNP+HwyoGLbN4xhjJyifG9RWjvTfC4jWD
+	 w7CeLVQuG/iwTHF+77p05Llnhzo0kE682tDDWykz7cE4EQF+SaXTw/BfpFdskEPh8K
+	 vz7kVZJNANClzAQfCRRg3Qt4ZQ7585RFs/R5tN2nTKzPX2OTAiBdumAO+WH0wWVFPv
+	 NNmiP8hHffATw==
+Date: Wed, 20 Dec 2023 17:16:08 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Abdel Alkuor <alkuor@gmail.com>
+Cc: Jean Delvare <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-doc@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] dt-bindings: hwmon: (lm75) Add AMS AS6200
+ temperature sensor
+Message-ID: <20231220-elope-powwow-918b5b82b15a@spud>
+References: <89fb5eec30df734ee8fc58427cf5d94929076514.1702874115.git.alkuor@gmail.com>
+ <20231219-mascot-semester-7d2c492b99bc@spud>
+ <ZYHEcfB7b+k2g9Ge@abdel>
+ <20231220-gristle-renovate-557b8c330e4e@spud>
+ <ZYMezZbvgtsCW07j@abdel>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="nuJfECSTr2kZ3Cgk"
 Content-Disposition: inline
-In-Reply-To: <20231219-b4-kselftest-seccomp-benchmark-ktap-v1-0-f99e228631b0@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <ZYMezZbvgtsCW07j@abdel>
 
-On 2023-12-19 21:21, Mark Brown wrote:
-> Currently the seccomp benchmark selftest produces non-standard output,
-> meaning that while it makes a number of checks of the performance it
-> observes this has to be parsed by humans.  This means that automated
-> systems running this suite of tests are almost certainly ignoring the
-> results which isn't ideal for spotting problems.  Let's rework things so
-> that each check that the program does is reported as a test result to
-> the framework.
-> 
-> Signed-off-by: Mark Brown <broonie@kernel.org>
 
-Tested-by: Anders Roxell <anders.roxell@linaro.org>
+--nuJfECSTr2kZ3Cgk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Tested these patches on today tag and it works as expected.
+On Wed, Dec 20, 2023 at 12:05:17PM -0500, Abdel Alkuor wrote:
+> On Wed, Dec 20, 2023 at 04:25:15PM +0000, Conor Dooley wrote:
+> > On Tue, Dec 19, 2023 at 11:27:29AM -0500, Abdel Alkuor wrote:
+> > > On Tue, Dec 19, 2023 at 03:18:24PM +0000, Conor Dooley wrote:
+> > > > On Sun, Dec 17, 2023 at 11:52:27PM -0500, Abdel Alkuor wrote:
+> > > > =20
+> > > No, not all of them support the interrupt. Just tmp101, tmp102, tmp11=
+2, and as6200.
+> > > For now, I'll add the check for ams,as6200.
+> >
+> Hi Conor,
+> > If multiple devices have the interrupt you should document it for all of
+> > them IMO.
+>=20
+> The interrupt hasn't been implemented for tmp101, tmp102 and tmp112 yet.
+> Should I still add them to the interrupt property? They might be two diff=
+erent
+> things driver and bindings, but I just wanted to make sure.
 
-seccomp_seccomp_benchmark_native_1_bitmap pass
-seccomp_seccomp_benchmark_native_1_filter pass
-seccomp_seccomp_benchmark_per-filter_last_2_diff_per-filter_filters_4 fail
-seccomp_seccomp_benchmark_1_bitmapped_2_bitmapped pass
-seccomp_seccomp_benchmark_entry_1_bitmapped pass
-seccomp_seccomp_benchmark_entry_2_bitmapped fail
-seccomp_seccomp_benchmark_native_entry_per_filter_4_4_filters_total fail
+I don't really care if the driver supports the interrupt on any of the
+platforms (including the as6200), if the hardware has an interrupt the
+binding should reflect that :)
 
-Now with this change it shows up in the results.
+--nuJfECSTr2kZ3Cgk
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Cheers,
-Anders
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZYMhWAAKCRB4tDGHoIJi
+0lPnAP4qmVFHXqA+gOPetccSuj7gYO7EqOSMdNPd/jOvvbXTfwD/VBcAeBux9k3O
+PevT/EJcrS/FoIT4NsmAJhtzujhhOwM=
+=wgRl
+-----END PGP SIGNATURE-----
+
+--nuJfECSTr2kZ3Cgk--
 
