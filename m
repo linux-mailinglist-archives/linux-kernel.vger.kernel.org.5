@@ -1,60 +1,62 @@
-Return-Path: <linux-kernel+bounces-6152-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6153-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60F64819523
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 01:23:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99969819524
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 01:23:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B9A8728809D
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 00:23:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 085D41F25F92
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 00:23:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3C3B208DF;
-	Wed, 20 Dec 2023 00:19:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3478A20B26;
+	Wed, 20 Dec 2023 00:19:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="YxnHhl0e"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="umVrC99g"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pj1-f73.google.com (mail-pj1-f73.google.com [209.85.216.73])
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 523A81F16B
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 00:19:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95372200D5
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 00:19:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--jstultz.bounces.google.com
-Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-28b8f963816so2527005a91.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 16:19:31 -0800 (PST)
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-5e73bd9079eso32578577b3.2
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 16:19:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1703031570; x=1703636370; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=WYZk7eOoB4EkSBls2zylvhTpNqHG785S+70/RgizkRI=;
-        b=YxnHhl0eZhQsCyfsCoXedRz7Nc2q+N9s9taDASCGO4gvgGFTh0Wf7eyEIJDlgmdob/
-         PWfzbx3sipDy6FPlOQghDNquyLECzrI62TF3bSsRvwC9mYRsFOzmFazRHHVRx8eM1OYT
-         6MKmcDXbTTqcBqL69nkWRvhtR0r4xTfjv6vfzJaQRCFBdwC+uBa8DtHZsYf4b7GOq4re
-         L9/4usB7WoM/b48YDehJvG9PZVMTm/wqP7XMTmxlP8+x9CsptpH6ctZnQNxezMr7xiej
-         XZERveUMXfCw0WNBIvkaWra4fNvPxejv+Z8W97Ez+Gf7qrDwIQ5t3K7EuC/sryPR1r9f
-         k1JA==
+        d=google.com; s=20230601; t=1703031572; x=1703636372; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=AIfyyqU8vvkBxzT4xph+dm2KvcH+GhhY/2ZmCVqXntI=;
+        b=umVrC99gRoJhtjuT9Sr4qw/c6e1DLGzxutQKK5qOnxrXllsSXpXpOoA2UTVmAlqguj
+         gyaNfHIrmyHWLONVtHRsNQKDJXulTbLVt7RHDCv3YSY+OgPu+4UeGXXM5alTZtsYp5xC
+         WkuxSh6Vl6D+IkGLzG1m1yTHKs0AoEyQR94zrvJFIShEXdQ08bWpQg/wMQP87Ngru5vt
+         QPJ/dGfucl8QV+1ThB4XHceWwhAUZ+CSHtQpJ7mbGCaw939xvSQ4/n2lWSxxNKzfXKgI
+         ZL6HxUnRDsLOK2H4ur0IuUwjR2YVtL5UXCyOz7k+Vry/ZUzmF0DtZMp+oCtBV2DhMIEx
+         DBDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703031570; x=1703636370;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WYZk7eOoB4EkSBls2zylvhTpNqHG785S+70/RgizkRI=;
-        b=jbrnZwu2P9vi2lcOeY1H0ac0XI+HUnN1fKbOiS/fD5iOX4IjmMr1e7lYeNgJ3nl37Y
-         p5ieHSzaecfhTROHjwubIvBuBzDGWWUXzwqNSuwTU34rSwPQNANuwY3tFrOfFdiqkgEQ
-         rViraeIOKPaBF6wXeSOnXyQA5hX/Xm9ytg57F8tdkTKVBfxB9Knu+N4ySwL805iWQr+A
-         xjC426tfY2jkpm+87IbIfiBIMDowj5TwL9gbcwNnokNBElkPYx599bbr3/0zlYFWcls/
-         czi5ud2DSEB0s1Ywjdj4+lBi+6x/AkvkprGexJlStg7FC1y6MV4CElQjiv7rtykIV8aM
-         gBfg==
-X-Gm-Message-State: AOJu0Yxp/PGcHTL5S1XR0vRKRa1FNsJ+59MTwZUxwS51HiL+1lINQxnU
-	QkAxTfUBlIWlFZVSkIz0ENnmvKjswdzVRfSYgn5sJ0JAyeO9D6LLuiP3TLjhAsqI0po3pfWm/me
-	ABuTY69wGzKu7g37QZGHmGgh3astpCVjkxoQjN4mwKLRws3/MlHFW11zDI4q2oY0cO3Cl+C4=
-X-Google-Smtp-Source: AGHT+IFmhibWT5gq4Ub9tf54kA1GyPrvkHcz1fxEkYADUkby5JfNtsItDzLDQNJQOT2C4R7gcwcZYhnmggnS
+        d=1e100.net; s=20230601; t=1703031572; x=1703636372;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=AIfyyqU8vvkBxzT4xph+dm2KvcH+GhhY/2ZmCVqXntI=;
+        b=plgU+p4OW9YSJtcZDuFFQzuZJbU/we6lJwaiB9vwQiRoHWlreqsCmAEi/Aa4B57ROC
+         ZNqcBH00rKaPVXKT6BYDjcx5a/yZPe8LoB4Se4gTmm0ns6y19YwKVhFhWlbnLBInGAJq
+         9MWmStOpAN5oKF67vTmR5hMS7ot0k+ydOw2oGmjqVOFm2onbMonvR2QYlpEW6dHNrW0c
+         hP5UCYhARmKoyQVeodP1CuwGWTchfHx9pffYpwNoBC1aRYJG35tb05sDphUBnqqZSxBu
+         YO/acuXD5ojz9w8XOwcssFzbi7RM8D9INRpY5CDqK4hejCOUVJ+PAEWnIrObzR85P+58
+         4Fyg==
+X-Gm-Message-State: AOJu0Yyuw/YWSTKLd9rrxQJUH5+jQdpAVHuVnjaTcLeDpJWDgg1x5nWa
+	uX8aFRF2uPXnF7IGb2nfXrtGV12we56sG/ejQGmFlmcFnhn48/vpcmMAV07ddvSCH5hbAILh95x
+	egTCs1EyzIj7AvNUe0mZog7TrKvsTw/GnDy+SlATtL2RhCRlSaDX/NvsBr0j6mHZ9ptrG9O4=
+X-Google-Smtp-Source: AGHT+IEQVD9hjXxmvtfUNLzEVhTlYwXthri2unuNndqCOZSGlx11NHsaq76wkJ/AvlLoDcuPbV2MaXu/49yn
 X-Received: from jstultz-noogler2.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:600])
- (user=jstultz job=sendgmr) by 2002:a17:90b:1d07:b0:28b:5015:301 with SMTP id
- on7-20020a17090b1d0700b0028b50150301mr865251pjb.6.1703031570653; Tue, 19 Dec
- 2023 16:19:30 -0800 (PST)
-Date: Tue, 19 Dec 2023 16:18:27 -0800
+ (user=jstultz job=sendgmr) by 2002:a05:690c:4491:b0:5e8:3e57:6900 with SMTP
+ id gr17-20020a05690c449100b005e83e576900mr423186ywb.1.1703031572518; Tue, 19
+ Dec 2023 16:19:32 -0800 (PST)
+Date: Tue, 19 Dec 2023 16:18:28 -0800
 In-Reply-To: <20231220001856.3710363-1-jstultz@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -64,35 +66,35 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20231220001856.3710363-1-jstultz@google.com>
 X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
-Message-ID: <20231220001856.3710363-17-jstultz@google.com>
-Subject: [PATCH v7 16/23] sched: Add deactivated (sleeping) owner handling to find_proxy_task()
+Message-ID: <20231220001856.3710363-18-jstultz@google.com>
+Subject: [PATCH v7 17/23] sched: Initial sched_football test implementation
 From: John Stultz <jstultz@google.com>
 To: LKML <linux-kernel@vger.kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>, Joel Fernandes <joelaf@google.com>, 
+Cc: John Stultz <jstultz@google.com>, Joel Fernandes <joelaf@google.com>, 
 	Qais Yousef <qyousef@google.com>, Ingo Molnar <mingo@redhat.com>, 
-	Juri Lelli <juri.lelli@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>, 
-	Dietmar Eggemann <dietmar.eggemann@arm.com>, Valentin Schneider <vschneid@redhat.com>, 
-	Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, 
-	Zimuzo Ezeozue <zezeozue@google.com>, Youssef Esmat <youssefesmat@google.com>, 
-	Mel Gorman <mgorman@suse.de>, Daniel Bristot de Oliveira <bristot@redhat.com>, Will Deacon <will@kernel.org>, 
-	Waiman Long <longman@redhat.com>, Boqun Feng <boqun.feng@gmail.com>, 
-	"Paul E. McKenney" <paulmck@kernel.org>, Metin Kaya <Metin.Kaya@arm.com>, 
-	Xuewen Yan <xuewen.yan94@gmail.com>, K Prateek Nayak <kprateek.nayak@amd.com>, 
-	Thomas Gleixner <tglx@linutronix.de>, kernel-team@android.com, 
-	Valentin Schneider <valentin.schneider@arm.com>, "Connor O'Brien" <connoro@google.com>, 
-	John Stultz <jstultz@google.com>
+	Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>, 
+	Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>, 
+	Valentin Schneider <vschneid@redhat.com>, Steven Rostedt <rostedt@goodmis.org>, 
+	Ben Segall <bsegall@google.com>, Zimuzo Ezeozue <zezeozue@google.com>, 
+	Youssef Esmat <youssefesmat@google.com>, Mel Gorman <mgorman@suse.de>, 
+	Daniel Bristot de Oliveira <bristot@redhat.com>, Will Deacon <will@kernel.org>, Waiman Long <longman@redhat.com>, 
+	Boqun Feng <boqun.feng@gmail.com>, "Paul E. McKenney" <paulmck@kernel.org>, 
+	Metin Kaya <Metin.Kaya@arm.com>, Xuewen Yan <xuewen.yan94@gmail.com>, 
+	K Prateek Nayak <kprateek.nayak@amd.com>, Thomas Gleixner <tglx@linutronix.de>, kernel-team@android.com
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Peter Zijlstra <peterz@infradead.org>
+Reimplementation of the sched_football test from LTP:
+https://github.com/linux-test-project/ltp/blob/master/testcases/realtime/fu=
+nc/sched_football/sched_football.c
 
-If the blocked_on chain resolves to a sleeping owner, deactivate
-selected task, and enqueue it on the sleeping owner task.
-Then re-activate it later when the owner is woken up.
+But reworked to run in the kernel and utilize mutexes
+to illustrate proper boosting of low priority mutex
+holders.
 
-NOTE: This has been particularly challenging to get working
-properly, and some of the locking is particularly ackward. I'd
-very much appreciate review and feedback for ways to simplify
-this.
+TODO:
+* Need a rt_mutex version so it can work w/o proxy-execution
+* Need a better place to put it
 
 Cc: Joel Fernandes <joelaf@google.com>
 Cc: Qais Yousef <qyousef@google.com>
@@ -117,343 +119,302 @@ Cc: Xuewen Yan <xuewen.yan94@gmail.com>
 Cc: K Prateek Nayak <kprateek.nayak@amd.com>
 Cc: Thomas Gleixner <tglx@linutronix.de>
 Cc: kernel-team@android.com
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Juri Lelli <juri.lelli@redhat.com>
-Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
-Signed-off-by: Connor O'Brien <connoro@google.com>
-[jstultz: This was broken out from the larger proxy() patch]
 Signed-off-by: John Stultz <jstultz@google.com>
 ---
-v5:
-* Split out from larger proxy patch
-v6:
-* Major rework, replacing the single list head per task with
-  per-task list head and nodes, creating a tree structure so
-  we only wake up decendents of the task woken.
-* Reworked the locking to take the task->pi_lock, so we can
-  avoid mid-chain wakeup races from try_to_wake_up() called by
-  the ww_mutex logic.
-v7:
-* Drop ununessary __nested lock annotation, as we already drop
-  the lock prior.
-* Add comments on #else & #endif lines, and clearer function
-  names, and commit message tweaks as suggested by Metin Kaya
-* Move activate_blocked_entities() call from ttwu_queue to
-  try_to_wake_up() to simplify locking. Thanks to questions from
-  Metin Kaya
-* Fix irqsave/irqrestore usage now we call this outside where
-  the pi_lock is held
-* Fix activate_blocked_entitites not preserving wake_cpu
-* Fix for UP builds
----
- include/linux/sched.h |   3 +
- kernel/fork.c         |   4 +
- kernel/sched/core.c   | 214 ++++++++++++++++++++++++++++++++++++++----
- 3 files changed, 202 insertions(+), 19 deletions(-)
+ kernel/sched/Makefile              |   1 +
+ kernel/sched/test_sched_football.c | 242 +++++++++++++++++++++++++++++
+ lib/Kconfig.debug                  |  14 ++
+ 3 files changed, 257 insertions(+)
+ create mode 100644 kernel/sched/test_sched_football.c
 
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 8020e224e057..6f982948a105 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -1158,6 +1158,9 @@ struct task_struct {
- 	enum blocked_on_state		blocked_on_state;
- 	struct mutex			*blocked_on;	/* lock we're blocked on */
- 	struct task_struct		*blocked_donor;	/* task that is boosting this task */
-+	struct list_head		blocked_head;  /* tasks blocked on this task */
-+	struct list_head		blocked_node;  /* our entry on someone elses blocked_head */
-+	struct task_struct		*sleeping_owner; /* task our blocked_node is enqueued on */
- 	raw_spinlock_t			blocked_lock;
- 
- #ifdef CONFIG_DEBUG_ATOMIC_SLEEP
-diff --git a/kernel/fork.c b/kernel/fork.c
-index 138fc23cad43..56f5e19c268e 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -2460,6 +2460,10 @@ __latent_entropy struct task_struct *copy_process(
- 	p->blocked_on_state = BO_RUNNABLE;
- 	p->blocked_on = NULL; /* not blocked yet */
- 	p->blocked_donor = NULL; /* nobody is boosting p yet */
+diff --git a/kernel/sched/Makefile b/kernel/sched/Makefile
+index 976092b7bd45..2729d565dfd7 100644
+--- a/kernel/sched/Makefile
++++ b/kernel/sched/Makefile
+@@ -32,3 +32,4 @@ obj-y +=3D core.o
+ obj-y +=3D fair.o
+ obj-y +=3D build_policy.o
+ obj-y +=3D build_utility.o
++obj-$(CONFIG_SCHED_RT_INVARIENT_TEST) +=3D test_sched_football.o
+diff --git a/kernel/sched/test_sched_football.c b/kernel/sched/test_sched_f=
+ootball.c
+new file mode 100644
+index 000000000000..9742c45c0fe0
+--- /dev/null
++++ b/kernel/sched/test_sched_football.c
+@@ -0,0 +1,242 @@
++// SPDX-License-Identifier: GPL-2.0+
++/*
++ * Module-based test case for RT scheduling invariant
++ *
++ * A reimplementation of my old sched_football test
++ * found in LTP:
++ *   https://github.com/linux-test-project/ltp/blob/master/testcases/realt=
+ime/func/sched_football/sched_football.c
++ *
++ * Similar to that test, this tries to validate the RT
++ * scheduling invariant, that the across N available cpus, the
++ * top N priority tasks always running.
++ *
++ * This is done via having N offsensive players that are
++ * medium priority, which constantly are trying to increment the
++ * ball_pos counter.
++ *
++ * Blocking this, are N defensive players that are higher
++ * priority which just spin on the cpu, preventing the medium
++ * priroity tasks from running.
++ *
++ * To complicate this, there are also N defensive low priority
++ * tasks. These start first and each aquire one of N mutexes.
++ * The high priority defense tasks will later try to grab the
++ * mutexes and block, opening a window for the offsensive tasks
++ * to run and increment the ball. If priority inheritance or
++ * proxy execution is used, the low priority defense players
++ * should be boosted to the high priority levels, and will
++ * prevent the mid priority offensive tasks from running.
++ *
++ * Copyright =C2=A9 International Business Machines  Corp., 2007, 2008
++ * Copyright (C) Google, 2023
++ *
++ * Authors: John Stultz <jstultz@google.com>
++ */
 +
-+	INIT_LIST_HEAD(&p->blocked_head);
-+	INIT_LIST_HEAD(&p->blocked_node);
-+	p->sleeping_owner = NULL;
- #ifdef CONFIG_BCACHE
- 	p->sequential_io	= 0;
- 	p->sequential_io_avg	= 0;
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index e0afa228bc9d..0cd63bd0bdcd 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -3785,6 +3785,133 @@ static inline void ttwu_do_wakeup(struct task_struct *p)
- 	trace_sched_wakeup(p);
- }
- 
-+#ifdef CONFIG_SCHED_PROXY_EXEC
-+static void do_activate_task(struct rq *rq, struct task_struct *p, int en_flags)
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/kthread.h>
++#include <linux/delay.h>
++#include <linux/sched/rt.h>
++#include <linux/spinlock.h>
++#include <linux/mutex.h>
++#include <linux/rwsem.h>
++#include <linux/smp.h>
++#include <linux/slab.h>
++#include <linux/interrupt.h>
++#include <linux/sched.h>
++#include <uapi/linux/sched/types.h>
++#include <linux/rtmutex.h>
++
++atomic_t players_ready;
++atomic_t ball_pos;
++int players_per_team;
++bool game_over;
++
++struct mutex *mutex_low_list;
++struct mutex *mutex_mid_list;
++
++static inline
++struct task_struct *create_fifo_thread(int (*threadfn)(void *data), void *=
+data,
++				       char *name, int prio)
 +{
-+	lockdep_assert_rq_held(rq);
++	struct task_struct *kth;
++	struct sched_attr attr =3D {
++		.size		=3D sizeof(struct sched_attr),
++		.sched_policy	=3D SCHED_FIFO,
++		.sched_nice	=3D 0,
++		.sched_priority	=3D prio,
++	};
++	int ret;
 +
-+	if (!sched_proxy_exec()) {
-+		activate_task(rq, p, en_flags);
-+		return;
++	kth =3D kthread_create(threadfn, data, name);
++	if (IS_ERR(kth)) {
++		pr_warn("%s eerr, kthread_create failed\n", __func__);
++		return kth;
++	}
++	ret =3D sched_setattr_nocheck(kth, &attr);
++	if (ret) {
++		kthread_stop(kth);
++		pr_warn("%s: failed to set SCHED_FIFO\n", __func__);
++		return ERR_PTR(ret);
 +	}
 +
-+	if (p->sleeping_owner) {
-+		struct task_struct *owner = p->sleeping_owner;
++	wake_up_process(kth);
++	return kth;
++}
 +
-+		raw_spin_lock(&owner->blocked_lock);
-+		list_del_init(&p->blocked_node);
-+		p->sleeping_owner = NULL;
-+		raw_spin_unlock(&owner->blocked_lock);
++int defense_low_thread(void *arg)
++{
++	long tnum =3D (long)arg;
++
++	atomic_inc(&players_ready);
++	mutex_lock(&mutex_low_list[tnum]);
++	while (!READ_ONCE(game_over)) {
++		if (kthread_should_stop())
++			break;
++		schedule();
++	}
++	mutex_unlock(&mutex_low_list[tnum]);
++	return 0;
++}
++
++int defense_mid_thread(void *arg)
++{
++	long tnum =3D (long)arg;
++
++	atomic_inc(&players_ready);
++	mutex_lock(&mutex_mid_list[tnum]);
++	mutex_lock(&mutex_low_list[tnum]);
++	while (!READ_ONCE(game_over)) {
++		if (kthread_should_stop())
++			break;
++		schedule();
++	}
++	mutex_unlock(&mutex_low_list[tnum]);
++	mutex_unlock(&mutex_mid_list[tnum]);
++	return 0;
++}
++
++int offense_thread(void *)
++{
++	atomic_inc(&players_ready);
++	while (!READ_ONCE(game_over)) {
++		if (kthread_should_stop())
++			break;
++		schedule();
++		atomic_inc(&ball_pos);
++	}
++	return 0;
++}
++
++int defense_hi_thread(void *arg)
++{
++	long tnum =3D (long)arg;
++
++	atomic_inc(&players_ready);
++	mutex_lock(&mutex_mid_list[tnum]);
++	while (!READ_ONCE(game_over)) {
++		if (kthread_should_stop())
++			break;
++		schedule();
++	}
++	mutex_unlock(&mutex_mid_list[tnum]);
++	return 0;
++}
++
++int crazy_fan_thread(void *)
++{
++	int count =3D 0;
++
++	atomic_inc(&players_ready);
++	while (!READ_ONCE(game_over)) {
++		if (kthread_should_stop())
++			break;
++		schedule();
++		udelay(1000);
++		msleep(2);
++		count++;
++	}
++	return 0;
++}
++
++int ref_thread(void *arg)
++{
++	struct task_struct *kth;
++	long game_time =3D (long)arg;
++	unsigned long final_pos;
++	long i;
++
++	pr_info("%s: started ref, game_time: %ld secs !\n", __func__,
++		game_time);
++
++	/* Create low  priority defensive team */
++	for (i =3D 0; i < players_per_team; i++)
++		kth =3D create_fifo_thread(defense_low_thread, (void *)i,
++					 "defese-low-thread", 2);
++	/* Wait for the defense threads to start */
++	while (atomic_read(&players_ready) < players_per_team)
++		msleep(1);
++
++	for (i =3D 0; i < players_per_team; i++)
++		kth =3D create_fifo_thread(defense_mid_thread,
++					 (void *)(players_per_team - i - 1),
++					 "defese-mid-thread", 3);
++	/* Wait for the defense threads to start */
++	while (atomic_read(&players_ready) < players_per_team * 2)
++		msleep(1);
++
++	/* Create mid priority offensive team */
++	for (i =3D 0; i < players_per_team; i++)
++		kth =3D create_fifo_thread(offense_thread, NULL,
++					 "offense-thread", 5);
++	/* Wait for the offense threads to start */
++	while (atomic_read(&players_ready) < players_per_team * 3)
++		msleep(1);
++
++	/* Create high priority defensive team */
++	for (i =3D 0; i < players_per_team; i++)
++		kth =3D create_fifo_thread(defense_hi_thread, (void *)i,
++					 "defese-hi-thread", 10);
++	/* Wait for the defense threads to start */
++	while (atomic_read(&players_ready) < players_per_team * 4)
++		msleep(1);
++
++	/* Create high priority defensive team */
++	for (i =3D 0; i < players_per_team; i++)
++		kth =3D create_fifo_thread(crazy_fan_thread, NULL,
++					 "crazy-fan-thread", 15);
++	/* Wait for the defense threads to start */
++	while (atomic_read(&players_ready) < players_per_team * 5)
++		msleep(1);
++
++	pr_info("%s: all players checked in! Starting game.\n", __func__);
++	atomic_set(&ball_pos, 0);
++	msleep(game_time * 1000);
++	final_pos =3D atomic_read(&ball_pos);
++	pr_info("%s: final ball_pos: %ld\n", __func__, final_pos);
++	WARN_ON(final_pos !=3D 0);
++	game_over =3D true;
++	return 0;
++}
++
++static int __init test_sched_football_init(void)
++{
++	struct task_struct *kth;
++	int i;
++
++	players_per_team =3D num_online_cpus();
++
++	mutex_low_list =3D kmalloc_array(players_per_team,  sizeof(struct mutex),=
+ GFP_ATOMIC);
++	mutex_mid_list =3D kmalloc_array(players_per_team,  sizeof(struct mutex),=
+ GFP_ATOMIC);
++
++	for (i =3D 0; i < players_per_team; i++) {
++		mutex_init(&mutex_low_list[i]);
++		mutex_init(&mutex_mid_list[i]);
 +	}
 +
-+	/*
-+	 * By calling activate_task with blocked_lock held, we
-+	 * order against the find_proxy_task() blocked_task case
-+	 * such that no more blocked tasks will be enqueued on p
-+	 * once we release p->blocked_lock.
-+	 */
-+	raw_spin_lock(&p->blocked_lock);
-+	WARN_ON(task_cpu(p) != cpu_of(rq));
-+	activate_task(rq, p, en_flags);
-+	raw_spin_unlock(&p->blocked_lock);
++	kth =3D create_fifo_thread(ref_thread, (void *)10, "ref-thread", 20);
++
++	return 0;
 +}
++module_init(test_sched_football_init);
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index 4405f81248fb..1d90059d190f 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -1238,6 +1238,20 @@ config SCHED_DEBUG
+ 	  that can help debug the scheduler. The runtime overhead of this
+ 	  option is minimal.
+=20
++config SCHED_RT_INVARIENT_TEST
++	tristate "RT invarient scheduling tester"
++	depends on DEBUG_KERNEL
++	help
++	  This option provides a kernel module that runs tests to make
++	  sure the RT invarient holds (top N priority tasks run on N
++	  available cpus).
 +
-+#ifdef CONFIG_SMP
-+static inline void proxy_set_task_cpu(struct task_struct *p, int cpu)
-+{
-+	unsigned int wake_cpu;
++	  Say Y here if you want kernel rt scheduling tests
++	  to be built into the kernel.
++	  Say M if you want this test to build as a module.
++	  Say N if you are unsure.
 +
-+	/* Preserve wake_cpu */
-+	wake_cpu = p->wake_cpu;
-+	__set_task_cpu(p, cpu);
-+	p->wake_cpu = wake_cpu;
-+}
-+#else /* !CONFIG_SMP */
-+static inline void proxy_set_task_cpu(struct task_struct *p, int cpu)
-+{
-+	__set_task_cpu(p, cpu);
-+}
-+#endif /* CONFIG_SMP */
 +
-+static void activate_blocked_entities(struct rq *target_rq,
-+				      struct task_struct *owner,
-+				      int wake_flags)
-+{
-+	unsigned long flags;
-+	struct rq_flags rf;
-+	int target_cpu = cpu_of(target_rq);
-+	int en_flags = ENQUEUE_WAKEUP | ENQUEUE_NOCLOCK;
-+
-+	if (wake_flags & WF_MIGRATED)
-+		en_flags |= ENQUEUE_MIGRATED;
-+	/*
-+	 * A whole bunch of 'proxy' tasks back this blocked task, wake
-+	 * them all up to give this task its 'fair' share.
-+	 */
-+	raw_spin_lock_irqsave(&owner->blocked_lock, flags);
-+	while (!list_empty(&owner->blocked_head)) {
-+		struct task_struct *pp;
-+		unsigned int state;
-+
-+		pp = list_first_entry(&owner->blocked_head,
-+				      struct task_struct,
-+				      blocked_node);
-+		BUG_ON(pp == owner);
-+		list_del_init(&pp->blocked_node);
-+		WARN_ON(!pp->sleeping_owner);
-+		pp->sleeping_owner = NULL;
-+		raw_spin_unlock_irqrestore(&owner->blocked_lock, flags);
-+
-+		raw_spin_lock_irqsave(&pp->pi_lock, flags);
-+		state = READ_ONCE(pp->__state);
-+		/* Avoid racing with ttwu */
-+		if (state == TASK_WAKING) {
-+			raw_spin_unlock_irqrestore(&pp->pi_lock, flags);
-+			raw_spin_lock_irqsave(&owner->blocked_lock, flags);
-+			continue;
-+		}
-+		if (READ_ONCE(pp->on_rq)) {
-+			/*
-+			 * We raced with a non mutex handoff activation of pp.
-+			 * That activation will also take care of activating
-+			 * all of the tasks after pp in the blocked_entry list,
-+			 * so we're done here.
-+			 */
-+			raw_spin_unlock_irqrestore(&pp->pi_lock, flags);
-+			raw_spin_lock_irqsave(&owner->blocked_lock, flags);
-+			continue;
-+		}
-+
-+		proxy_set_task_cpu(pp, target_cpu);
-+
-+		rq_lock_irqsave(target_rq, &rf);
-+		update_rq_clock(target_rq);
-+		do_activate_task(target_rq, pp, en_flags);
-+		resched_curr(target_rq);
-+		rq_unlock_irqrestore(target_rq, &rf);
-+		raw_spin_unlock_irqrestore(&pp->pi_lock, flags);
-+
-+		/* recurse - XXX This needs to be reworked to avoid recursing */
-+		activate_blocked_entities(target_rq, pp, wake_flags);
-+
-+		raw_spin_lock_irqsave(&owner->blocked_lock, flags);
-+	}
-+	raw_spin_unlock_irqrestore(&owner->blocked_lock, flags);
-+}
-+#else /* !CONFIG_SCHED_PROXY_EXEC */
-+static inline void do_activate_task(struct rq *rq, struct task_struct *p,
-+				    int en_flags)
-+{
-+	activate_task(rq, p, en_flags);
-+}
-+
-+static inline void activate_blocked_entities(struct rq *target_rq,
-+					     struct task_struct *owner,
-+					     int wake_flags)
-+{
-+}
-+#endif /* CONFIG_SCHED_PROXY_EXEC */
-+
- #ifdef CONFIG_SMP
- static inline bool proxy_needs_return(struct rq *rq, struct task_struct *p)
- {
-@@ -3839,7 +3966,7 @@ ttwu_do_activate(struct rq *rq, struct task_struct *p, int wake_flags,
- 		atomic_dec(&task_rq(p)->nr_iowait);
- 	}
- 
--	activate_task(rq, p, en_flags);
-+	do_activate_task(rq, p, en_flags);
- 	wakeup_preempt(rq, p, wake_flags);
- 
- 	ttwu_do_wakeup(p);
-@@ -3936,13 +4063,19 @@ void sched_ttwu_pending(void *arg)
- 	update_rq_clock(rq);
- 
- 	llist_for_each_entry_safe(p, t, llist, wake_entry.llist) {
-+		int wake_flags;
- 		if (WARN_ON_ONCE(p->on_cpu))
- 			smp_cond_load_acquire(&p->on_cpu, !VAL);
- 
- 		if (WARN_ON_ONCE(task_cpu(p) != cpu_of(rq)))
- 			set_task_cpu(p, cpu_of(rq));
- 
--		ttwu_do_activate(rq, p, p->sched_remote_wakeup ? WF_MIGRATED : 0, &rf);
-+		wake_flags = p->sched_remote_wakeup ? WF_MIGRATED : 0;
-+		ttwu_do_activate(rq, p, wake_flags, &rf);
-+		rq_unlock(rq, &rf);
-+		activate_blocked_entities(rq, p, wake_flags);
-+		rq_lock(rq, &rf);
-+		update_rq_clock(rq);
- 	}
- 
- 	/*
-@@ -4423,6 +4556,7 @@ int try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
- 	if (p->blocked_on_state == BO_WAKING)
- 		p->blocked_on_state = BO_RUNNABLE;
- 	raw_spin_unlock_irqrestore(&p->blocked_lock, flags);
-+	activate_blocked_entities(cpu_rq(cpu), p, wake_flags);
- out:
- 	if (success)
- 		ttwu_stat(p, task_cpu(p), wake_flags);
-@@ -6663,19 +6797,6 @@ proxy_resched_idle(struct rq *rq, struct task_struct *next)
- 	return rq->idle;
- }
- 
--static bool proxy_deactivate(struct rq *rq, struct task_struct *next)
--{
--	unsigned long state = READ_ONCE(next->__state);
--
--	/* Don't deactivate if the state has been changed to TASK_RUNNING */
--	if (state == TASK_RUNNING)
--		return false;
--	if (!try_to_deactivate_task(rq, next, state, true))
--		return false;
--	proxy_resched_idle(rq, next);
--	return true;
--}
--
- #ifdef CONFIG_SMP
- /*
-  * If the blocked-on relationship crosses CPUs, migrate @p to the
-@@ -6761,6 +6882,31 @@ proxy_migrate_task(struct rq *rq, struct rq_flags *rf,
- }
- #endif /* CONFIG_SMP */
- 
-+static void proxy_enqueue_on_owner(struct rq *rq, struct task_struct *owner,
-+				   struct task_struct *next)
-+{
-+	/*
-+	 * ttwu_activate() will pick them up and place them on whatever rq
-+	 * @owner will run next.
-+	 */
-+	if (!owner->on_rq) {
-+		BUG_ON(!next->on_rq);
-+		deactivate_task(rq, next, DEQUEUE_SLEEP);
-+		if (task_current_selected(rq, next)) {
-+			put_prev_task(rq, next);
-+			rq_set_selected(rq, rq->idle);
-+		}
-+		/*
-+		 * ttwu_do_activate must not have a chance to activate p
-+		 * elsewhere before it's fully extricated from its old rq.
-+		 */
-+		WARN_ON(next->sleeping_owner);
-+		next->sleeping_owner = owner;
-+		smp_mb();
-+		list_add(&next->blocked_node, &owner->blocked_head);
-+	}
-+}
-+
- /*
-  * Find who @next (currently blocked on a mutex) can proxy for.
-  *
-@@ -6866,10 +7012,40 @@ find_proxy_task(struct rq *rq, struct task_struct *next, struct rq_flags *rf)
- 		}
- 
- 		if (!owner->on_rq) {
--			/* XXX Don't handle blocked owners yet */
--			if (!proxy_deactivate(rq, next))
--				ret = next;
--			goto out;
-+			/*
-+			 * rq->curr must not be added to the blocked_head list or else
-+			 * ttwu_do_activate could enqueue it elsewhere before it switches
-+			 * out here. The approach to avoid this is the same as in the
-+			 * migrate_task case.
-+			 */
-+			if (curr_in_chain) {
-+				raw_spin_unlock(&p->blocked_lock);
-+				raw_spin_unlock(&mutex->wait_lock);
-+				return proxy_resched_idle(rq, next);
-+			}
-+
-+			/*
-+			 * If !@owner->on_rq, holding @rq->lock will not pin the task,
-+			 * so we cannot drop @mutex->wait_lock until we're sure its a blocked
-+			 * task on this rq.
-+			 *
-+			 * We use @owner->blocked_lock to serialize against ttwu_activate().
-+			 * Either we see its new owner->on_rq or it will see our list_add().
-+			 */
-+			if (owner != p) {
-+				raw_spin_unlock(&p->blocked_lock);
-+				raw_spin_lock(&owner->blocked_lock);
-+			}
-+
-+			proxy_enqueue_on_owner(rq, owner, next);
-+
-+			if (task_current_selected(rq, next)) {
-+				put_prev_task(rq, next);
-+				rq_set_selected(rq, rq->idle);
-+			}
-+			raw_spin_unlock(&owner->blocked_lock);
-+			raw_spin_unlock(&mutex->wait_lock);
-+			return NULL; /* retry task selection */
- 		}
- 
- 		if (owner == p) {
--- 
+ config SCHED_INFO
+ 	bool
+ 	default n
+--=20
 2.43.0.472.g3155946c3a-goog
 
 
