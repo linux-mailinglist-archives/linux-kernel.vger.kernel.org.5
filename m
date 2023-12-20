@@ -1,102 +1,95 @@
-Return-Path: <linux-kernel+bounces-6789-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6792-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F147819D96
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 12:03:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69370819DA2
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 12:05:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A309FB215CF
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 11:03:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 241842829EA
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 11:05:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93B6A2230B;
-	Wed, 20 Dec 2023 11:03:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 970A3210E5;
+	Wed, 20 Dec 2023 11:05:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ZLsOLMp6"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D654022093;
-	Wed, 20 Dec 2023 11:03:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1A1A41FB;
-	Wed, 20 Dec 2023 03:03:47 -0800 (PST)
-Received: from e129166.arm.com (unknown [10.57.82.217])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 5E6FB3F5A1;
-	Wed, 20 Dec 2023 03:02:59 -0800 (PST)
-From: Lukasz Luba <lukasz.luba@arm.com>
-To: linux-kernel@vger.kernel.org,
-	linux-pm@vger.kernel.org
-Cc: lukasz.luba@arm.com,
-	dietmar.eggemann@arm.com,
-	linux-arm-kernel@lists.infradead.org,
-	sboyd@kernel.org,
-	nm@ti.com,
-	linux-samsung-soc@vger.kernel.org,
-	daniel.lezcano@linaro.org,
-	rafael@kernel.org,
-	viresh.kumar@linaro.org,
-	krzysztof.kozlowski@linaro.org,
-	alim.akhtar@samsung.com,
-	m.szyprowski@samsung.com,
-	xuewen.yan94@gmail.com,
-	mhiramat@kernel.org,
-	qyousef@layalina.io,
-	wvw@google.com
-Subject: [PATCH 2/2] soc: samsung: exynos-asv: Update Energy Model after adjusting voltage
-Date: Wed, 20 Dec 2023 11:03:39 +0000
-Message-Id: <20231220110339.1065505-3-lukasz.luba@arm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231220110339.1065505-1-lukasz.luba@arm.com>
-References: <20231220110339.1065505-1-lukasz.luba@arm.com>
+Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com [209.85.160.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5597210EF
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 11:05:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f177.google.com with SMTP id d75a77b69052e-42581f9c0e7so45806291cf.2
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 03:05:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1703070308; x=1703675108; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aRuOb3thPKxS5ftTwWuPZVBwpG9dfs4GXpoJ1hD7vC0=;
+        b=ZLsOLMp6hN5xMThNv+as6Ms91ht4Hg8idXzILP4u9tIFPo+5rHRXxllusclBYIXajE
+         Taub7AAXqVnoQI3f+fLXz1Gp0AxFveNNF0bNkr8eTL/zMqrVufk8w5ZNjCo+t1tZ8qv8
+         t8z5nthKMJW+gMkBUyv+fkxw3IDtvvaXbfvz6qO0TtjPZ/NLkiMZzcomXP3VmwV5CiRQ
+         UTKG35J2uNwTtYgyXGpycBAz1Ubbiix2cIl1KNmNuETV61LRgb3U//dbRzVATravzLY2
+         7cwjvRQh5zkoshl6AuNy4Yj/qGDO3V1Z+x9I8CvRuIbJouB2zBFCjxFaSRojVcxHE5UK
+         ufRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703070308; x=1703675108;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=aRuOb3thPKxS5ftTwWuPZVBwpG9dfs4GXpoJ1hD7vC0=;
+        b=W8X4/ktYdIGxx3IoHE0mNrI5kIcCalOXib7e9OeWAV/duYP88uE/FLyhREmPUeDWsz
+         VGLHDqgDywbo+aTTB8+BGXSGF3A8nXOiiGSdTR/zEM7o7vu3tVg5VMqARecERFYgzDsE
+         t/jrDntjtfs3pLMoBvH8tS+8WQ9AlfJB0QzBv5j8bPbHUWHHN5NWHQi0bDNqHhHSa6XR
+         5U3fvTR0R1aSyIybpDrpsxrrciEAK2d9mrNfSuDuSGQi/ZiP6ohjqokcW8ypbwtrULTy
+         RAfaC1K+Tf8bi+qTzWSf+dZEku2K7BY5lNWK7mV5AtQ3cMQHSKsv1wbmeEmcDE62Te34
+         vFjQ==
+X-Gm-Message-State: AOJu0Yxyi0Wv++kH6c28jV7/in+g/NC3mQsV/8ZIzS47Wqm5UjJS/i7u
+	fewXRQnKf+mxJu3/3IfInAZQvI+rhyD+QCW6leSpwg==
+X-Google-Smtp-Source: AGHT+IGM1DvhNsHIpLRzl7TLlRhf+sSCR6McpSC15tKPCcbFJwj7U8mFeDmNKOAesBXFyLQOLaIWCh6aAZXNFJ7pswI=
+X-Received: by 2002:ad4:5dca:0:b0:67f:143d:b8ca with SMTP id
+ m10-20020ad45dca000000b0067f143db8camr12635720qvh.44.1703070308403; Wed, 20
+ Dec 2023 03:05:08 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20231213233605.661251-1-iii@linux.ibm.com> <20231213233605.661251-25-iii@linux.ibm.com>
+In-Reply-To: <20231213233605.661251-25-iii@linux.ibm.com>
+From: Alexander Potapenko <glider@google.com>
+Date: Wed, 20 Dec 2023 12:04:28 +0100
+Message-ID: <CAG_fn=X_MejbvJRG7qYih+qrL6D0hrJW7czfAJbOdY5ES4JyiA@mail.gmail.com>
+Subject: Re: [PATCH v3 24/34] s390/cpumf: Unpoison STCCTM output buffer
+To: Ilya Leoshkevich <iii@linux.ibm.com>
+Cc: Alexander Gordeev <agordeev@linux.ibm.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	Christoph Lameter <cl@linux.com>, David Rientjes <rientjes@google.com>, Heiko Carstens <hca@linux.ibm.com>, 
+	Joonsoo Kim <iamjoonsoo.kim@lge.com>, Marco Elver <elver@google.com>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, Pekka Enberg <penberg@kernel.org>, 
+	Steven Rostedt <rostedt@goodmis.org>, Vasily Gorbik <gor@linux.ibm.com>, 
+	Vlastimil Babka <vbabka@suse.cz>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
+	Dmitry Vyukov <dvyukov@google.com>, Hyeonggon Yoo <42.hyeyoo@gmail.com>, kasan-dev@googlegroups.com, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, linux-s390@vger.kernel.org, 
+	linux-trace-kernel@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Sven Schnelle <svens@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-When the voltage for OPPs is adjusted there is a need to also update
-Energy Model framework. The EM data contains power values which depend
-on voltage values. The EM structure is used for thermal (IPA governor)
-and in scheduler task placement (EAS) so it should reflect the real HW
-model as best as possible to operate properly.
-
-Based on data on Exynos5422 ASV tables the maximum power difference might
-be ~29%. An Odroid-XU4 (with a random sample SoC in this chip lottery)
-showed power difference for some OPPs ~20%. Therefore, it's worth to
-update the EM.
-
-Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
----
- drivers/soc/samsung/exynos-asv.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/soc/samsung/exynos-asv.c b/drivers/soc/samsung/exynos-asv.c
-index d60af8acc391..328f079423d6 100644
---- a/drivers/soc/samsung/exynos-asv.c
-+++ b/drivers/soc/samsung/exynos-asv.c
-@@ -97,9 +97,17 @@ static int exynos_asv_update_opps(struct exynos_asv *asv)
- 			last_opp_table = opp_table;
- 
- 			ret = exynos_asv_update_cpu_opps(asv, cpu);
--			if (ret < 0)
-+			if (!ret) {
-+				/*
-+				 * When the voltage for OPPs successfully
-+				 * changed, update the EM power values to
-+				 * reflect the reality and not use stale data
-+				 */
-+				dev_pm_opp_of_update_em(cpu);
-+			} else {
- 				dev_err(asv->dev, "Couldn't udate OPPs for cpu%d\n",
- 					cpuid);
-+			}
- 		}
- 
- 		dev_pm_opp_put_opp_table(opp_table);
--- 
-2.25.1
-
+On Thu, Dec 14, 2023 at 12:37=E2=80=AFAM Ilya Leoshkevich <iii@linux.ibm.co=
+m> wrote:
+>
+> stcctm() uses the "Q" constraint for dest, therefore KMSAN does not
+> understand that it fills multiple doublewords pointed to by dest, not
+> just one. This results in false positives.
+>
+> Unpoison the whole dest manually with kmsan_unpoison_memory().
+>
+> Reported-by: Alexander Gordeev <agordeev@linux.ibm.com>
+> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+Reviewed-by: Alexander Potapenko <glider@google.com>
 
