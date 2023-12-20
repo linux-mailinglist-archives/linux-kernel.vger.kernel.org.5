@@ -1,129 +1,130 @@
-Return-Path: <linux-kernel+bounces-6917-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6918-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17460819F52
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 13:48:28 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8200819F53
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 13:52:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A62C91F22AF7
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 12:48:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2C07CB234B0
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 12:52:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F2282554D;
-	Wed, 20 Dec 2023 12:48:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8241F2554D;
+	Wed, 20 Dec 2023 12:52:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NFSftMkq"
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="JK5dcKx/"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out203-205-221-240.mail.qq.com (out203-205-221-240.mail.qq.com [203.205.221.240])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5FB824B35;
-	Wed, 20 Dec 2023 12:48:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C48FC433C8;
-	Wed, 20 Dec 2023 12:48:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703076497;
-	bh=sSn/BQ2KPfowG0+/3vpfhVEq5uOao18ijFkUkqK42DA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=NFSftMkqfz02hb0rM1uQmEGj0i8nQusf31YqdI/hTHVLer3jJXyZpLPn3DzFFkcq/
-	 EI+S3TdBXyAhiWgyqP8gNJSWIMdKOBgc1PX4DQN9uzy/MsyvedoYfNYSiQF7N+Cw/w
-	 VJ8NCL4LnHm99O87LstLcVFlbYyDxROcKL0NJbDeJfRVlbPKzYJiwSJfwL113O9gQk
-	 wfH3Lo8KvIU4M6YL+RwnRhanB+Cxzj0U0vGjrmM9XFgVqHDe7vBFqewBrIHiCq0hgd
-	 SA1KFdbj4/UIWlZLpsLYcO8GmRndla8jP56aWtxX/hq2rQ3/5c4GGuYMX2W7Pv4gwF
-	 IcHngouaOz+iQ==
-Received: from johan by xi.lan with local (Exim 4.96.2)
-	(envelope-from <johan@kernel.org>)
-	id 1rFvzj-0002Bc-0y;
-	Wed, 20 Dec 2023 13:48:15 +0100
-Date: Wed, 20 Dec 2023 13:48:15 +0100
-From: Johan Hovold <johan@kernel.org>
-To: Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc: Bjorn Andersson <andersson@kernel.org>, Andy Gross <agross@kernel.org>,
-	Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Marijn Suijten <marijn.suijten@somainline.org>,
-	linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v3 04/15] clk: qcom: gcc-sm6375: Add runtime PM
-Message-ID: <ZYLij93-n1-OWpIp@hovoldconsulting.com>
-References: <20230717-topic-branch_aon_cleanup-v3-0-3e31bce9c626@linaro.org>
- <20230717-topic-branch_aon_cleanup-v3-4-3e31bce9c626@linaro.org>
- <ZYKzU4FFCc9lnE-p@hovoldconsulting.com>
- <0cbdb9fb-9ad6-46c4-9d20-b0a766ab2629@linaro.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5ABC425543
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 12:51:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1703076714; bh=dDA7s6cLkYl9Y27bXuM7ONc4rDr3vZ02baelaAtoo48=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=JK5dcKx/lHmu5nrnVluTe/CSG17v5Ds6VQsB4c1pU5LsN4J2rhksRfflAOFe95DLt
+	 nLerNSJsJv4Ek/4crZsW2DZzyA+J3D43SFisobSm+aLV8cfOrZQRsx72m8tRoa1l4L
+	 RoUPg5JyjMbhIz6IsukP5TMXPa9FkLVyhdrvg4LI=
+Received: from pek-lxu-l1.wrs.com ([111.198.225.215])
+	by newxmesmtplogicsvrsza10-0.qq.com (NewEsmtp) with SMTP
+	id CF49281A; Wed, 20 Dec 2023 20:51:52 +0800
+X-QQ-mid: xmsmtpt1703076712tv7g3v10l
+Message-ID: <tencent_08175DFCDDF2993CCFAB0D88A5BD0D889207@qq.com>
+X-QQ-XMAILINFO: OCzxluqIaPHWpv/n4BVKJUo54DWozrG+RlGeUL8eBJk/YsYbSs5JPiLpT0VHdA
+	 j8Ca9NECVQcKAQyK4NGO0FGZ3gPgNb47rglkiJKt9OFw6g8UgfJ70GL/gokYvNTBeWi/z7aSn6nL
+	 25IQQ7aMT+bfUB0JgUE1mdZOKq2SblHJbZVR53EoHYsaPoBE4GyjOwGUE7AuiB3rPYnoymZB1smL
+	 7QPms0M1IHbpSCnLZb+fpWi4G+DVLXtmi7C0DKmB1l9mzt91RMNYxbc+hfOB6bXp5XbWtnvSXeR6
+	 o8x081YITRrjVQAjUUNuPxogOoJTlkeWU/WnIwzbfAjCfsjiq7cydTBSMiLZcn5zCiXWiq31QWZc
+	 m3HZNcFqUiD8e/q/qwTGbVK4uXo39QQZKQDL1/wNh/JZwFIqKFsQzT9kSgNCI/3+vs+ULULn/LiY
+	 FFftbU16s0UDL/5opjDkFOjCHh5M5fU++ehdfaKOQW3eS1hKsDKX3i9Kicip/Wmvkj8CBighD3YS
+	 9S47zs3B6hPuP0Ejs75qk2OZDGaUvC33cPXCsOe/G26+7E0iF015p7YrjBqkRpRgNRlVqWpoCfK4
+	 oUP5jskVNV7TWq548l5BTLXgoM+6OjDcGGBRtZXVU44xVcYRwdF+6WeiCtOBC7dyTcjgKBzdS5Hm
+	 YOeIaKXD+y8Sirffs2J+t22f/+G233hqPHLYP4jVxmtfVbysATl2fBImztossU8iEu6bShL67qAz
+	 u7B2mn68Yd+kNbvYI6CYx1+sJYLzSa4UQgEdNbcvR68aWowTdRPkM5No2DH7R5XSzoz3yhbpo8Sp
+	 ovt8ajdaMaNgdTveljtdJzFT2KAXnuiDyb4lcVje2NIwz1UymAMhM2S3HAzQelICSAbLw9aq4ipc
+	 kNCSXbACqp4ua/S8zZibX0G+J3lIlg6W9+4eknBTbb6XUm9LmxJyfJbzI0KA5VcIdD44z/KJevYh
+	 0T+XNqSfg=
+X-QQ-XMRINFO: OWPUhxQsoeAVDbp3OJHYyFg=
+From: Edward Adam Davis <eadavis@qq.com>
+To: syzbot+8ffb0839a24e9c6bfa76@syzkaller.appspotmail.com
+Cc: linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [crypto?] KASAN: slab-out-of-bounds Read in arc4_crypt
+Date: Wed, 20 Dec 2023 20:51:53 +0800
+X-OQ-MSGID: <20231220125152.3574150-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <000000000000d52e14060cc9c551@google.com>
+References: <000000000000d52e14060cc9c551@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0cbdb9fb-9ad6-46c4-9d20-b0a766ab2629@linaro.org>
+Content-Transfer-Encoding: 8bit
 
-On Wed, Dec 20, 2023 at 01:26:55PM +0100, Konrad Dybcio wrote:
-> On 20.12.2023 10:26, Johan Hovold wrote:
-> > On Wed, Dec 20, 2023 at 01:30:45AM +0100, Konrad Dybcio wrote:
-> >> The GCC block on SM6375 is powered by the VDD_CX rail. We need to ensure
-> >> that CX is enabled to prevent unwanted power collapse 
-> > 
-> > As I pointed out earlier, this bit of the commit message is incorrect
-> > and misleading as the power domain will never be disabled until you
-> > enable runtime PM as part of this very patch:
-> > 
-> > 	https://lore.kernel.org/all/ZLaSpFFBzP_Yz5yY@hovoldconsulting.com/
-> > 
-> > Specifically, genpd will not power off CX (at runtime) while the driver
-> > is bound when runtime PM is left disabled.
+please test slab-out-of-bounds Read in arc4_crypt
 
-> OK I only now see what you really meant.
-> 
-> What this bit says is true, but it may be confusing within the context
-> of this patch.
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git 17cb8a20bde6
 
-I'd say it's misleading since it suggests that something can currently
-cause an "unwanted power collapse" which is not the case.
-
-> The CX domain must be turned on [for the SoC to function], however this
-> patch does not solve the issue of it being powered down [like you've said
-> just binding the PD will keep it always-active for RPM-disabled devices].
-> It complements this process, by allowing it to shut down when unnecessary.
-
-Right, so just skip the misleading bits about "unwanted power collapse".
-
-> >> and that the
-> >> reference is dropped when unused so that the system can enter a
-> >> firmware-managed lower power state.
-> >>
-> >> Enable runtime PM to keep the power flowing only when necessary.
-> > 
-> > The rest is correct.
-
-> Let me try to reword this and see if you like it:
-> 
-> 
-> The GCC block on SM6375 is powered by the VDD_CX rail. The Device Tree
-> description of this dependency lets Linux keep the rail online to prevent
-> power outages. It is however undesirable to keep it enabled at all times,
-> as that consumes additional power.
-
-I'd skip or rephrase the second sentence myself.
+diff --git a/crypto/algif_skcipher.c b/crypto/algif_skcipher.c
+index 02cea2149504..236ba4221b07 100644
+--- a/crypto/algif_skcipher.c
++++ b/crypto/algif_skcipher.c
+@@ -102,11 +102,12 @@ static int _skcipher_recvmsg(struct socket *sock, struct msghdr *msg,
+ 	struct alg_sock *pask = alg_sk(psk);
+ 	struct af_alg_ctx *ctx = ask->private;
+ 	struct crypto_skcipher *tfm = pask->private;
++	struct skcipher_alg *alg = crypto_skcipher_alg(tfm);
+ 	unsigned int bs = crypto_skcipher_chunksize(tfm);
+ 	struct af_alg_async_req *areq;
+ 	unsigned cflags = 0;
+ 	int err = 0;
+-	size_t len = 0;
++	size_t len = 0, aqlen;
  
-> Moreover, failing to drop the "enabled" vote prevents firmware-managed,
-> SoC-wide power collapse in suspend, which leads to even more wasted power.
+ 	if (!ctx->init || (ctx->more && ctx->used < bs)) {
+ 		err = af_alg_wait_for_data(sk, flags, bs);
+@@ -115,8 +116,11 @@ static int _skcipher_recvmsg(struct socket *sock, struct msghdr *msg,
+ 	}
+ 
+ 	/* Allocate cipher request for current operation. */
+-	areq = af_alg_alloc_areq(sk, sizeof(struct af_alg_async_req) +
+-				     crypto_skcipher_reqsize(tfm));
++	aqlen = sizeof(struct af_alg_async_req) + crypto_skcipher_reqsize(tfm);
++	if (alg->co.base.cra_type != &crypto_skcipher_type)
++		aqlen += alg->co.statesize;
++	printk("%u, %s\n", alg->co.statesize, __func__);
++	areq = af_alg_alloc_areq(sk, aqlen);
+ 	if (IS_ERR(areq))
+ 		return PTR_ERR(areq);
+ 
+diff --git a/crypto/skcipher.c b/crypto/skcipher.c
+index bc70e159d27d..0ae4a05a5aa7 100644
+--- a/crypto/skcipher.c
++++ b/crypto/skcipher.c
+@@ -44,7 +44,6 @@ struct skcipher_walk_buffer {
+ 	u8 buffer[];
+ };
+ 
+-static const struct crypto_type crypto_skcipher_type;
+ 
+ static int skcipher_walk_next(struct skcipher_walk *walk);
+ 
+diff --git a/include/crypto/internal/skcipher.h b/include/crypto/internal/skcipher.h
+index 7ae42afdcf3e..3c05872652f2 100644
+--- a/include/crypto/internal/skcipher.h
++++ b/include/crypto/internal/skcipher.h
+@@ -24,6 +24,7 @@
+ 
+ struct aead_request;
+ struct rtattr;
++static const struct crypto_type crypto_skcipher_type;
+ 
+ struct skcipher_instance {
+ 	void (*free)(struct skcipher_instance *inst);
 
-However if this is what you meant by "firmware-managed lower power
-state" then this is not correct either. genpd will still power off the
-power domain during system suspend, regardless of whether a driver
-implements runtime PM.
-
-> Enable runtime PM to keep the power flowing only when necessary.
-
-So I'm starting to question whether we need this at all. AFAIK CX is
-never going to be disabled at runtime and this patch is not needed to
-disable CX during system suspend.
-
-Johan
 
