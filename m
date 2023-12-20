@@ -1,245 +1,120 @@
-Return-Path: <linux-kernel+bounces-6677-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6678-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 118B7819BF6
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 11:03:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 55D4E819BF8
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 11:03:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7CAC5B24408
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 10:03:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 10FEE2885ED
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 10:03:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26F3C20322;
-	Wed, 20 Dec 2023 10:02:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F384520B03;
+	Wed, 20 Dec 2023 10:03:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lCM7rQ73"
+	dkim=pass (2048-bit key) header.d=fairphone.com header.i=@fairphone.com header.b="2ga6A6By"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC7C920300;
-	Wed, 20 Dec 2023 10:02:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-553338313a0so4326507a12.2;
-        Wed, 20 Dec 2023 02:02:55 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8FF9208BC
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 10:03:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fairphone.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fairphone.com
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a234dc0984fso406561866b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 02:03:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703066574; x=1703671374; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=kfu0M4uWTXFwTI3vwajeh5o3Zd+yxSRhcHBR++GaThc=;
-        b=lCM7rQ73Dvf+Ml0bIsWoZDkFskt6ucHV6sOOY3G4sdCo/CENNLM/a1GWUbFT5Hq7dV
-         Pa8Hq/ruK5b2sxVoyNIjRBnbR6/9CJSNaxWX+B75xvEyakEyKIVCvG6EZTKTWsBzVBi2
-         SGuVpIsn7INKKlP0PEmcdzSKjTdtDxwzOcYbgJZVBaY/0YQRpKFPnh2jlbOkj1SIs7QF
-         o7k2CypYEG/pRqYtnzrRD0RH239Ny6WAds5/26Or6XImMt5890n1scrm/q4qnpi71vNW
-         ICOhzmESuQ9qk9qsD35BT8XaJhJ5E1oe6UoxxpKTmM/psBsVDu7YpPU4ok0oaGICTks+
-         y3Gg==
+        d=fairphone.com; s=fair; t=1703066579; x=1703671379; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=LhB2sxNkKBiagF0783M3sqDgGJEaCC2xOC1nqq1YmjY=;
+        b=2ga6A6ByhDbCY2zzftNgm6xE0y+Uwgt16L+0VgFjPjV4ycTP3uZOadOK46/3mNz9fb
+         +RV6/HQ8QvbzfkplF5pHNw81X7Qoonqb09dGOqYICQTegElLRM99FF5eMOafTelLROJK
+         Svsec8q+mmjGI3hS2JGiIWX43jfpt3ipiwbYoQAbyyLB/Ogp7YFulbVSTWWN6XDPHj9S
+         8Nr0AxZf6Vc7VK+rusc0j+45vpZUdddYFGykNvu6rm0QD9gN4DWSJtTsD3kJahtTZD4b
+         KYmFmF4zT7kOkQsbcwsYUREIdjLrvWIzq3XTIxPhG3E90dI/HSh9KN0jOv1hIKnY3A+W
+         nINQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703066574; x=1703671374;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kfu0M4uWTXFwTI3vwajeh5o3Zd+yxSRhcHBR++GaThc=;
-        b=aXkm9uPFMWZM8FgI4s/RUtIOmhNmxzVrxiV8Wp8RBpCx1P7JLOWANdp7cRU/gBZm7U
-         oh0u/zs7JKf70WZOO2YGtwuCxuCrCv7RnaqnD17Vk45Cvt6wgXXnDr8wj6AgcjyGLqfA
-         AnEwXledI410AGYXDPq+Ejvc6HaPwWBZDkgh+LcI46xqKw3fxWKFp4Lqswt4CKrkELm7
-         aOLJy1hvxWHBxGhLgYtrzc8eCy3e/egsZ6uqoemfW5px+7micJ/vk3vAfY6VNGpMSUb8
-         pRGmbhvav1cgrXgvB2L+KuwQPlHX9HlXTRIhJa+/tiHf/ZuSpE1X6M8tlnozmjyxMvTe
-         wwbw==
-X-Gm-Message-State: AOJu0YxCV9vk7YMeUpgFypLrV+PHo3pWNJ4ZJx69bfugRJ/p/8HdsWnx
-	o19s+u+GGsqgK8py55lzT2eS2/176H0=
-X-Google-Smtp-Source: AGHT+IFF3B7AIruRKJwSxlwY7IYqV04Xf8hAr0rl9q0r+FbP+wZb6Aj0YIkYfEccPOnPYu+ArX6wKg==
-X-Received: by 2002:a50:bb44:0:b0:553:2b04:14a2 with SMTP id y62-20020a50bb44000000b005532b0414a2mr3316554ede.14.1703066573994;
-        Wed, 20 Dec 2023 02:02:53 -0800 (PST)
-Received: from tom-HP-ZBook-Fury-15-G7-Mobile-Workstation (net-188-217-59-229.cust.vodafonedsl.it. [188.217.59.229])
-        by smtp.gmail.com with ESMTPSA id m11-20020a50cc0b000000b0054cb316499dsm12420971edi.10.2023.12.20.02.02.52
+        d=1e100.net; s=20230601; t=1703066579; x=1703671379;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=LhB2sxNkKBiagF0783M3sqDgGJEaCC2xOC1nqq1YmjY=;
+        b=n84YBpXCP7KLAOiWSXdORm1Zmg2ZAZmdp67iX6vByy7/JNaShPqj2Nq5UuutaJodIO
+         I1mgU7PM/HNA+Z5WCazG8GogI2adl1qIn0BvvWWz76c3KpIhBgHm5mqKSOkTXCPPam+s
+         +qgmDODGeCM+WbZ5BsilleVzoOqq2a1CdRt4S0QzCfHOLoM6NRe5Uzy6rtgjqz4Uq+f1
+         7YePE6Hs9lRz2u+D5/IckAc+y9AZwv4h5ukCJJ2j5Komvs0f/qDCa6TVialDyyqqMSH5
+         +rITq/mdvfweVu0OcrJ7IPPpwqgkUjVxV/eyqcEKRsCWw8ioL9JKYoXQalJkQf7AUzTA
+         XZ9w==
+X-Gm-Message-State: AOJu0Yx5DMbSE8WdFmvavbRk3pzsv/7DwX2LfjR9HYUOkt46tksmA1hW
+	IlPUe1sH8YqnOynDKA0ZJkaehQ==
+X-Google-Smtp-Source: AGHT+IHokmA9+d5x8tM9eQ1Cy3LVFwwsHmIA3JK2l1zkwjRap7mv+9Js+V7gnKo+1ddD+28jHQXyPw==
+X-Received: by 2002:a17:906:26c6:b0:a1f:7298:aa25 with SMTP id u6-20020a17090626c600b00a1f7298aa25mr10590034ejc.45.1703066579067;
+        Wed, 20 Dec 2023 02:02:59 -0800 (PST)
+Received: from otso.luca.vpn.lucaweiss.eu (2a02-8388-6584-6400-d322-7350-96d2-429d.cable.dynamic.v6.surfer.at. [2a02:8388:6584:6400:d322:7350:96d2:429d])
+        by smtp.gmail.com with ESMTPSA id f18-20020a170906561200b00a2356a7eafasm3718681ejq.199.2023.12.20.02.02.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Dec 2023 02:02:53 -0800 (PST)
-Date: Wed, 20 Dec 2023 11:02:51 +0100
-From: Tommaso Merciai <tomm.merciai@gmail.com>
-To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc: linuxfancy@googlegroups.com, martin.hecht@avnet.eu,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/4] media: i2c: alvium: removal of fr field
-Message-ID: <ZYK7y/jaEZ2JHsnH@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
-References: <20231220085609.2595732-1-tomm.merciai@gmail.com>
- <20231220085609.2595732-3-tomm.merciai@gmail.com>
- <20231220091309.GG29638@pendragon.ideasonboard.com>
+        Wed, 20 Dec 2023 02:02:58 -0800 (PST)
+From: Luca Weiss <luca.weiss@fairphone.com>
+Subject: [PATCH 0/3] Fairphone 5 PMIC-GLINK support (USB-C, charger, fuel
+ gauge)
+Date: Wed, 20 Dec 2023 11:02:55 +0100
+Message-Id: <20231220-fp5-pmic-glink-v1-0-2a1f8e3c661c@fairphone.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231220091309.GG29638@pendragon.ideasonboard.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAM+7gmUC/x3MQQqAIBBA0avErBtQK4KuEi3MRhsqE4UIxLsnL
+ d/i/wyJIlOCqckQ6eHEt6+QbQNm194R8lYNSqhOKiXQhgHDxQbdyf7AVcitt1qakTTUKESy/P7
+ DeSnlAw9veBRgAAAA
+To: Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ Heikki Krogerus <heikki.krogerus@linux.intel.com>, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ cros-qcom-dts-watchers@chromium.org
+Cc: ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org, 
+ linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org, 
+ Luca Weiss <luca.weiss@fairphone.com>
+X-Mailer: b4 0.12.4
 
-Hi Laurent,
-Thanks for your review.
+This series adds all the necessary bits to enable USB-C role switching,
+charger and fuel gauge (all via pmic-glink) on Fairphone 5.
 
-On Wed, Dec 20, 2023 at 11:13:09AM +0200, Laurent Pinchart wrote:
-> Hi Tommaso,
-> 
-> Thank you for the patch.
-> 
-> Use the imperative in the subject line:
-> 
-> media: i2c: alvium: Remove the fr field of the alvium_dev structure
-> 
-> On Wed, Dec 20, 2023 at 09:56:07AM +0100, Tommaso Merciai wrote:
-> > The fr (frame rate) field of the alvium_dev structure is
-> > only used to pass result from alvium_set_frame_interval() to
-> > alvium_set_frame_rate() that writes this info into the hw reg.
-> > Replace them with function parameter.
-> 
-> Replace it with a function parameter.
+One thing that could be made different is the pmic-glink compatible.
+I've chosen to use qcm6490 compatible for it and not sc7280 since
+there's plenty of firmware variety on sc7280-based platforms and they
+might require different quirks in the future, so limit this PDOS quirk
+to just qcm6490 for now.
 
-Thanks I'll fix this in v3.
+If someone thinks it should be qcom,sc7280-pmic-glink, please let me
+know :)
 
-> 
-> > 
-> > Signed-off-by: Tommaso Merciai <tomm.merciai@gmail.com>
-> > ---
-> >  drivers/media/i2c/alvium-csi2.c | 24 ++++++++++++------------
-> >  drivers/media/i2c/alvium-csi2.h |  1 -
-> >  2 files changed, 12 insertions(+), 13 deletions(-)
-> > 
-> > diff --git a/drivers/media/i2c/alvium-csi2.c b/drivers/media/i2c/alvium-csi2.c
-> > index 0dcd69bf9f92..a9ff6cc97cff 100644
-> > --- a/drivers/media/i2c/alvium-csi2.c
-> > +++ b/drivers/media/i2c/alvium-csi2.c
-> > @@ -1185,19 +1185,19 @@ static int alvium_get_frame_interval(struct alvium_dev *alvium,
-> >  	return ret;
-> >  }
-> >  
-> > -static int alvium_set_frame_rate(struct alvium_dev *alvium)
-> > +static int alvium_set_frame_rate(struct alvium_dev *alvium, u64 fr)
-> >  {
-> >  	struct device *dev = &alvium->i2c_client->dev;
-> >  	int ret;
-> >  
-> >  	ret = alvium_write_hshake(alvium, REG_BCRM_ACQUISITION_FRAME_RATE_RW,
-> > -				  alvium->fr);
-> > +				  fr);
-> >  	if (ret) {
-> >  		dev_err(dev, "Fail to set frame rate lanes reg\n");
-> >  		return ret;
-> >  	}
-> >  
-> > -	dev_dbg(dev, "set frame rate: %llu us\n", alvium->fr);
-> > +	dev_dbg(dev, "set frame rate: %llu us\n", fr);
-> >  
-> >  	return 0;
-> >  }
-> > @@ -1661,10 +1661,11 @@ static int alvium_g_frame_interval(struct v4l2_subdev *sd,
-> >  }
-> >  
-> >  static int alvium_set_frame_interval(struct alvium_dev *alvium,
-> > -				     struct v4l2_subdev_frame_interval *fi)
-> > +				     struct v4l2_subdev_frame_interval *fi,
-> > +				     u64 *req_fr)
-> >  {
-> >  	struct device *dev = &alvium->i2c_client->dev;
-> > -	u64 req_fr, dft_fr, min_fr, max_fr;
-> > +	u64 dft_fr, min_fr, max_fr;
-> >  	int ret;
-> >  
-> >  	if (fi->interval.denominator == 0)
-> > @@ -1681,13 +1682,12 @@ static int alvium_set_frame_interval(struct alvium_dev *alvium,
-> >  	dev_dbg(dev, "fi->interval.denominator = %d\n",
-> >  		fi->interval.denominator);
-> >  
-> > -	req_fr = (u64)((fi->interval.denominator * USEC_PER_SEC) /
-> > +	*req_fr = (u64)((fi->interval.denominator * USEC_PER_SEC) /
-> >  		       fi->interval.numerator);
-> >  
-> > -	if (req_fr >= max_fr && req_fr <= min_fr)
-> > -		req_fr = dft_fr;
-> > +	if (*req_fr >= max_fr && *req_fr <= min_fr)
-> > +		*req_fr = dft_fr;
-> 
-> Shouldn't we clamp the value to [min, max] instead of using the default
-> if it's out of range ? Something like
-> 
-> 	*req_fr = clamp(*req_fr, min_fr, max_fr)
-> 
-> This makes me realize that the current code is wrong, req_fr can't be >=
-> max and <= min at the same time. You probably meant || instead of &&.
-> 
-> This should be fixed in a separate patch.
+Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
+---
+Luca Weiss (3):
+      dt-bindings: soc: qcom: qcom,pmic-glink: document QCM6490 compatible
+      usb: typec: ucsi: Add qcm6490-pmic-glink as needing PDOS quirk
+      arm64: dts: qcom: qcm6490-fairphone-fp5: Add PMIC GLINK
 
-If this is ok for you, after this series I can put a patch with || fix
-instead of clamping, because if we clamp dft_fr is not used any more.
-After if you agree I will work on clamping.
-Thanks for the catch! :)
+ .../bindings/soc/qcom/qcom,pmic-glink.yaml         |  1 +
+ arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts | 46 +++++++++++++++++++++-
+ arch/arm64/boot/dts/qcom/sc7280.dtsi               | 19 +++++++++
+ drivers/usb/typec/ucsi/ucsi_glink.c                |  1 +
+ 4 files changed, 66 insertions(+), 1 deletion(-)
+---
+base-commit: 76fbb7732259f4c970998d6978d72177658a783a
+change-id: 20231220-fp5-pmic-glink-b01d4fa1c7ea
 
-> 
-> >  
-> > -	alvium->fr = req_fr;
-> >  	alvium->frame_interval.numerator = fi->interval.numerator;
-> >  	alvium->frame_interval.denominator = fi->interval.denominator;
-> >  
-> > @@ -1699,6 +1699,7 @@ static int alvium_s_frame_interval(struct v4l2_subdev *sd,
-> >  				   struct v4l2_subdev_frame_interval *fi)
-> >  {
-> >  	struct alvium_dev *alvium = sd_to_alvium(sd);
-> > +	u64 req_fr = ALVIUM_DEFAULT_FR_HZ;
-> 
-> Do you need to initialize the variable ? It doesn't seem to be required.
+Best regards,
+-- 
+Luca Weiss <luca.weiss@fairphone.com>
 
-Really not, it's just to maintain the logic of alvium->fr. I will drop
-this in v3, thanks!
-
-Regards,
-Tommaso
-
-
-> 
-> With these small issues fixed,
-> 
-> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> 
-> >  	int ret;
-> >  
-> >  	/*
-> > @@ -1711,9 +1712,9 @@ static int alvium_s_frame_interval(struct v4l2_subdev *sd,
-> >  	if (alvium->streaming)
-> >  		return -EBUSY;
-> >  
-> > -	ret = alvium_set_frame_interval(alvium, fi);
-> > +	ret = alvium_set_frame_interval(alvium, fi, &req_fr);
-> >  	if (!ret)
-> > -		ret = alvium_set_frame_rate(alvium);
-> > +		ret = alvium_set_frame_rate(alvium, req_fr);
-> >  
-> >  	return ret;
-> >  }
-> > @@ -2273,7 +2274,6 @@ static int alvium_subdev_init(struct alvium_dev *alvium)
-> >  	/* Setup initial frame interval*/
-> >  	alvium->frame_interval.numerator = 1;
-> >  	alvium->frame_interval.denominator = ALVIUM_DEFAULT_FR_HZ;
-> > -	alvium->fr = ALVIUM_DEFAULT_FR_HZ;
-> >  
-> >  	/* Setup the initial mode */
-> >  	alvium->mode.fmt = alvium_csi2_default_fmt;
-> > diff --git a/drivers/media/i2c/alvium-csi2.h b/drivers/media/i2c/alvium-csi2.h
-> > index 17f0bbbd1839..80066ac25047 100644
-> > --- a/drivers/media/i2c/alvium-csi2.h
-> > +++ b/drivers/media/i2c/alvium-csi2.h
-> > @@ -443,7 +443,6 @@ struct alvium_dev {
-> >  
-> >  	struct alvium_mode mode;
-> >  	struct v4l2_fract frame_interval;
-> > -	u64 fr;
-> >  
-> >  	u8 h_sup_csi_lanes;
-> >  	u64 link_freq;
-> 
-> -- 
-> Regards,
-> 
-> Laurent Pinchart
 
