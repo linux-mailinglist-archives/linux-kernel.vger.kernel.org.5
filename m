@@ -1,132 +1,154 @@
-Return-Path: <linux-kernel+bounces-7224-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7225-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4F4F81A36D
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 17:00:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9988481A370
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 17:00:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5596EB25EA2
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 16:00:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0F5871F262BD
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 16:00:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C56D46B9B;
-	Wed, 20 Dec 2023 15:59:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E307D4779C;
+	Wed, 20 Dec 2023 15:59:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="bkAfuWde";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="hoRBxrVf"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FF6745C09;
-	Wed, 20 Dec 2023 15:59:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 77D261FB;
-	Wed, 20 Dec 2023 07:59:49 -0800 (PST)
-Received: from [192.168.1.3] (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1C9C23F64C;
-	Wed, 20 Dec 2023 07:59:02 -0800 (PST)
-Message-ID: <e80f75ea-99e9-e4d2-6477-443e521ef90a@arm.com>
-Date: Wed, 20 Dec 2023 15:59:01 +0000
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4EBD47771;
+	Wed, 20 Dec 2023 15:59:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Wed, 20 Dec 2023 15:59:04 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1703087945;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=jP3aAkdQoWZVpNzAO+LKKTgDZR1ZVplKuZ3SA3WwaZo=;
+	b=bkAfuWde2N5yyQWYJg/wuoHTAPyOyAz2x5tWJzLpqUfhmERmYvvxV617PNanmjszHLfoue
+	ZUwOuIfb4ZdLHLi1igfil8tze6Yhw5pwYb1f31MWVYezAp6iA/tkhXyyBawE59hWwCYApV
+	l5JT0XVUjUvRK/lVovrO1xbeGATQrIMHfET/gQunRffUvYLwU+PyLRi/ARo1ZYzb3GWqgS
+	lYsQTezGjDXJ6rkBKzCFktXwkkFmENbCGvNXSD+KBpsJomKqOGHr6utNQokVemCOjhfs0l
+	k9P3z9Cpz4+payiKs6D+a9ODURI6UsY8sE5sgh+JXH+BrZcNSacLQ1Ato14nKQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1703087945;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=jP3aAkdQoWZVpNzAO+LKKTgDZR1ZVplKuZ3SA3WwaZo=;
+	b=hoRBxrVfuMNPWo9bY6kKteNO97p85VVsGxGa+KAGY7FL9eSsfrW/MbrS07n2xZv3m4KMqF
+	h8Hgqd0WUWhcAnAQ==
+From: "tip-bot2 for Anna-Maria Behnsen" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject:
+ [tip: timers/core] timers: Fix nextevt calculation when no timers are pending
+Cc: "Anna-Maria Behnsen" <anna-maria@linutronix.de>,
+ Thomas Gleixner <tglx@linutronix.de>,
+ Frederic Weisbecker <frederic@kernel.org>, x86@kernel.org,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20231201092654.34614-13-anna-maria@linutronix.de>
+References: <20231201092654.34614-13-anna-maria@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-From: James Clark <james.clark@arm.com>
-Subject: Re: [PATCH RFC V3 4/4] coresight: Have a stab at support for pause /
- resume
-To: Adrian Hunter <adrian.hunter@intel.com>
-Cc: Ingo Molnar <mingo@redhat.com>, Mark Rutland <mark.rutland@arm.com>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Heiko Carstens <hca@linux.ibm.com>, Thomas Richter <tmricht@linux.ibm.com>,
- Hendrik Brueckner <brueckner@linux.ibm.com>,
- Suzuki K Poulose <suzuki.poulose@arm.com>, Mike Leach
- <mike.leach@linaro.org>, coresight@lists.linaro.org,
- linux-arm-kernel@lists.infradead.org, Yicong Yang
- <yangyicong@hisilicon.com>, Jonathan Cameron <jonathan.cameron@huawei.com>,
- Will Deacon <will@kernel.org>, Arnaldo Carvalho de Melo <acme@kernel.org>,
- Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
- Ian Rogers <irogers@google.com>, linux-kernel@vger.kernel.org,
- linux-perf-users@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>
-References: <20231208172449.35444-5-adrian.hunter@intel.com>
- <20231215064242.36251-1-adrian.hunter@intel.com>
-Content-Language: en-US
-In-Reply-To: <20231215064242.36251-1-adrian.hunter@intel.com>
-Content-Type: text/plain; charset=UTF-8
+Message-ID: <170308794496.398.15842990234534147833.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 
+The following commit has been merged into the timers/core branch of tip:
 
+Commit-ID:     da65f29dada7f7cbbf0d6375b88a0316f5f7d6f5
+Gitweb:        https://git.kernel.org/tip/da65f29dada7f7cbbf0d6375b88a0316f5f7d6f5
+Author:        Anna-Maria Behnsen <anna-maria@linutronix.de>
+AuthorDate:    Fri, 01 Dec 2023 10:26:34 +01:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Wed, 20 Dec 2023 16:49:39 +01:00
 
-On 15/12/2023 06:42, Adrian Hunter wrote:
-> For discussion only, un-tested...
-> 
+timers: Fix nextevt calculation when no timers are pending
 
-If anyone wants to test Coresight, the diff below is required to get the
-most basic use case working. It also probably needs more thought and
-some edge case handling:
+When no timer is queued into an empty timer base, the next_expiry will not
+be updated. It was originally calculated as
 
-diff --git a/drivers/hwtracing/coresight/coresight-etm-perf.c b/drivers/hwtracing/coresight/coresight-etm-perf.c
-index 596c01e37624..bd0767356277 100644
---- a/drivers/hwtracing/coresight/coresight-etm-perf.c
-+++ b/drivers/hwtracing/coresight/coresight-etm-perf.c
-@@ -556,7 +556,8 @@ static void etm_event_stop(struct perf_event *event, int mode)
- 	struct etm_event_data *event_data;
- 	struct list_head *path;
- 
--	if (mode & PERF_EF_PAUSE && !READ_ONCE(ctxt->pr_allowed))
-+	if ((mode & PERF_EF_PAUSE && !READ_ONCE(ctxt->pr_allowed)) ||
-+	    event->hw.state == PERF_HES_STOPPED)
- 		return;
- 
- 	WRITE_ONCE(ctxt->pr_allowed, 0);
-@@ -573,9 +574,6 @@ static void etm_event_stop(struct perf_event *event, int mode)
- 	/* Clear the event_data as this ETM is stopping the trace. */
- 	ctxt->event_data = NULL;
- 
--	if (event->hw.state == PERF_HES_STOPPED)
--		goto out_pr_allowed;
--
- 	/* We must have a valid event_data for a running event */
- 	if (WARN_ON(!event_data))
- 		return;
-@@ -586,7 +584,7 @@ static void etm_event_stop(struct perf_event *event, int mode)
- 	 * nothing needs to be torn down other than outputting a
- 	 * zero sized record.
- 	 */
--	if (handle->event && (mode & PERF_EF_UPDATE) &&
-+	if (handle->event && (mode & (PERF_EF_UPDATE | PERF_EF_PAUSE)) &&
- 	    !cpumask_test_cpu(cpu, &event_data->mask)) {
- 		event->hw.state = PERF_HES_STOPPED;
- 		perf_aux_output_end(handle, 0);
-@@ -616,7 +614,7 @@ static void etm_event_stop(struct perf_event *event, int mode)
- 	 * handle due to lack of buffer space), we don't
- 	 * have to do anything here.
- 	 */
--	if (handle->event && (mode & PERF_EF_UPDATE)) {
-+	if (handle->event && (mode & (PERF_EF_UPDATE | PERF_EF_PAUSE))) {
- 		if (WARN_ON_ONCE(handle->event != event))
- 			return;
- 
-@@ -646,7 +644,6 @@ static void etm_event_stop(struct perf_event *event, int mode)
- 	/* Disabling the path make its elements available to other sessions */
- 	coresight_disable_path(path);
- 
--out_pr_allowed:
- 	if (mode & PERF_EF_PAUSE)
- 		WRITE_ONCE(ctxt->pr_allowed, 1);
- }
-@@ -656,7 +653,7 @@ static int etm_event_add(struct perf_event *event, int mode)
- 	int ret = 0;
- 	struct hw_perf_event *hwc = &event->hw;
- 
--	if (mode & PERF_EF_START && !READ_ONCE(event->aux_paused)) {
-+	if (mode & PERF_EF_START) {
- 		etm_event_start(event, 0);
- 		if (hwc->state & PERF_HES_STOPPED)
- 			ret = -EINVAL;
--- 
-2.34.1
+  base->clk + NEXT_TIMER_MAX_DELTA
 
+When the timer base stays empty long enough (> NEXT_TIMER_MAX_DELTA), the
+next_expiry value of the empty base suggests that there is a timer pending
+soon. This might be more a kind of a theoretical problem, but the fix
+doesn't hurt.
+
+Use only base->next_expiry value as nextevt when timers are
+pending. Otherwise nextevt will be jiffies + NEXT_TIMER_MAX_DELTA. As all
+information is in place, update base->next_expiry value of the empty timer
+base as well.
+
+Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+Link: https://lore.kernel.org/r/20231201092654.34614-13-anna-maria@linutronix.de
+
+---
+ kernel/time/timer.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/time/timer.c b/kernel/time/timer.c
+index cf51655..352b161 100644
+--- a/kernel/time/timer.c
++++ b/kernel/time/timer.c
+@@ -1922,8 +1922,8 @@ static u64 cmp_next_hrtimer_event(u64 basem, u64 expires)
+ u64 get_next_timer_interrupt(unsigned long basej, u64 basem)
+ {
+ 	struct timer_base *base = this_cpu_ptr(&timer_bases[BASE_STD]);
++	unsigned long nextevt = basej + NEXT_TIMER_MAX_DELTA;
+ 	u64 expires = KTIME_MAX;
+-	unsigned long nextevt;
+ 	bool was_idle;
+ 
+ 	/*
+@@ -1936,7 +1936,6 @@ u64 get_next_timer_interrupt(unsigned long basej, u64 basem)
+ 	raw_spin_lock(&base->lock);
+ 	if (base->next_expiry_recalc)
+ 		next_expiry_recalc(base);
+-	nextevt = base->next_expiry;
+ 
+ 	/*
+ 	 * We have a fresh next event. Check whether we can forward the
+@@ -1945,10 +1944,20 @@ u64 get_next_timer_interrupt(unsigned long basej, u64 basem)
+ 	__forward_timer_base(base, basej);
+ 
+ 	if (base->timers_pending) {
++		nextevt = base->next_expiry;
++
+ 		/* If we missed a tick already, force 0 delta */
+ 		if (time_before(nextevt, basej))
+ 			nextevt = basej;
+ 		expires = basem + (u64)(nextevt - basej) * TICK_NSEC;
++	} else {
++		/*
++		 * Move next_expiry for the empty base into the future to
++		 * prevent a unnecessary raise of the timer softirq when the
++		 * next_expiry value will be reached even if there is no timer
++		 * pending.
++		 */
++		base->next_expiry = nextevt;
+ 	}
+ 
+ 	/*
 
