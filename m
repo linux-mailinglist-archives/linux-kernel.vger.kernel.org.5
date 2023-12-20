@@ -1,104 +1,85 @@
-Return-Path: <linux-kernel+bounces-6418-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6421-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 63BFA819894
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 07:25:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2484681989C
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 07:30:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0910EB2528F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 06:25:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 565FC1C2509C
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 06:30:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52BAF14F72;
-	Wed, 20 Dec 2023 06:25:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RwV8dcQT"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83343168CE;
+	Wed, 20 Dec 2023 06:29:55 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from bg1.exmail.qq.com (bg1.exmail.qq.com [114.132.65.219])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7919914A8D;
-	Wed, 20 Dec 2023 06:24:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-6d47bb467a9so305290b3a.1;
-        Tue, 19 Dec 2023 22:24:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703053498; x=1703658298; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=M+Gywa6hos2k92mPKfc1Jr7T/X9o9bZ/INu1pAC6uQc=;
-        b=RwV8dcQTVmRXqfsGZphhChrbjAbYE/NAjRcEzt+U7IRlP/QRhsW405E/ULI0RblWoh
-         /QqjVkMKNBJzwU/bsjrT08NSLTc8junE+QtGIN2bCIwgiI/ulqFjwadLt8cWa33iZoWX
-         WqYUBzOVlInETLnGjhFlE2Hc3wW/AvRpD31cnOYpz3XE7U21Dt2THUPdtMptOoMu2SZe
-         myeSg/Cqy6P2rzvKwfd2Xoi3qaXxtUYHPvtkOAi0Fj09yWhRUHEQf/AvxIExShQ4kK5T
-         HhU7LQohkPDsmr5C+txCt+azwHEnBy+t1ShRtJ6VxDHsKCpX4q9kLdawqMhDV81Y5avM
-         6mNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703053498; x=1703658298;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=M+Gywa6hos2k92mPKfc1Jr7T/X9o9bZ/INu1pAC6uQc=;
-        b=LZZ9nZPnBcJLT2Lga7zuoESq3QZKSlBnG1LQjRYxXc4vDQn+X9JzY69LaL40MB46KR
-         4DZjaa/INxjMwlLygVtlNpAqfI7Jtsl3YFhQ6hBT//VyKiAfmRSmV+9xIzcc+gK71E6n
-         xovJTgfFcJ4Ko6zIcZKvbAfah/VPI0Qnicf/VlsliZnVQgPLn9lY97J93dHuDI+WqGg/
-         Zzw+EhDatdX8Wa7/zbErhoQ28m5nD2HCcstzh4KX6yrEDgzjA8uALffC37I86eQQswCf
-         zzCSHiou+H4Wc+GjLJShxwBqiDHilnEw/Wv0Q+1hIdRtfunujCvjNINsBIrU6vnRjYeo
-         bOgA==
-X-Gm-Message-State: AOJu0YyN8kZvIKodVphXJb9hYO1vwxTl5nwN86f+hqXvveZ+iW5eypjU
-	GpGJVVSSdulat9KQuKQpOHirugG+JBdBO6+B
-X-Google-Smtp-Source: AGHT+IHDqa1wvVE1/rDngwKohpTQVr0wR38rdYzcr4/wzebcnvxcCmR6HiPTENMqAWwMucNp7QEXSQ==
-X-Received: by 2002:a05:6a20:ba02:b0:194:1d9:aafc with SMTP id fa2-20020a056a20ba0200b0019401d9aafcmr2393121pzb.46.1703053497591;
-        Tue, 19 Dec 2023 22:24:57 -0800 (PST)
-Received: from dreambig.dreambig.corp ([58.27.187.115])
-        by smtp.gmail.com with ESMTPSA id f16-20020a631f10000000b005cdc081bd2asm1824405pgf.24.2023.12.19.22.24.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Dec 2023 22:24:57 -0800 (PST)
-From: Muhammad Muzammil <m.muzzammilashraf@gmail.com>
-X-Google-Original-From: Muhammad Muzammil <muzammil@dreambigsemi.com>
-To: rdunlap@infradead.org,
-	corbet@lwn.net,
-	gustavoars@kernel.org
-Cc: linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org,
-	Muzammil Ashraf <m.muzzammilashraf@gmail.com>
-Subject: [PATCH] scripts: kernel-doc: Bug fixed for erroneous warning
-Date: Wed, 20 Dec 2023 11:24:46 +0500
-Message-Id: <20231220062446.14511-1-muzammil@dreambigsemi.com>
-X-Mailer: git-send-email 2.25.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F14C168A4;
+	Wed, 20 Dec 2023 06:29:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shingroup.cn
+X-QQ-mid: bizesmtp73t1703053749tonb8xj4
+Received: from HX01040022.powercore.com.cn ( [223.112.234.130])
+	by bizesmtp.qq.com (ESMTP) with 
+	id ; Wed, 20 Dec 2023 14:29:07 +0800 (CST)
+X-QQ-SSF: A0400000000000B0B000000A0000000
+X-QQ-FEAT: cvpDInk2tjX5BPajcFyu8lBYa991EIo5ZSpfNcLacG1cG7G2E3C6Vtt1emMmA
+	qrEcp3y0FfgIXj4J/P3b9jrCHl1i2laDbv2JwGv4398TELEzjD83XbZurtAfBuHSfdhpb1W
+	xr3zNmWvJ7TRhC4v+ZpQdFBnlZ7KNKRAo1Z67UtiGU/ObNYkTrjcextcX6/yFgd2fwMJM+w
+	eEPnyIixtzQA/eFTqT7J+ByZNysmPiHWcYQOIjtgqTyMjxFbIRr3DKU44b6cm5iTa4DMNf3
+	8R108bW8PKHZ07+cGn7yjHmWnGHdTySCS91pq/MrcagT9NFE1KQzeV/hc+iujmBBc2wksOc
+	c4Q8UzLvg8R+N4F3hpC9B0Ow0456+0QNDDI6LMmNXWJlRyqHdgoyl7c3y3WE0JHXO6vjK/o
+	Fcfdb2zwpeH3j03ji9tF/Q==
+X-QQ-GoodBg: 2
+X-BIZMAIL-ID: 6145391181880478621
+From: "JiaLong.Yang" <jialong.yang@shingroup.cn>
+To: Alex Shi <alexs@kernel.org>,
+	Yanteng Si <siyanteng@loongson.cn>,
+	Jonathan Corbet <corbet@lwn.net>
+Cc: 2738078698@qq.com,
+	"JiaLong.Yang" <jialong.yang@shingroup.cn>,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] Docs/zh_CN: Fix the meaning of DEBUG to pr_debug()
+Date: Wed, 20 Dec 2023 14:28:21 +0800
+Message-Id: <20231220062822.16168-1-jialong.yang@shingroup.cn>
+In-Reply-To: <202312201105408639401@shingroup.cn>
+References: <202312201105408639401@shingroup.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:shingroup.cn:qybglogicsvrgz:qybglogicsvrgz6a-1
 
-From: Muzammil Ashraf <m.muzzammilashraf@gmail.com>
+We know the macro DEBUG will make pr_debug() save the formatted
+string into final binary. So the translation is a little wrong.
 
-kernel-doc: fixed erroneous warning generated by '__counted_by'
-
-Signed-off-by: Muzammil Ashraf <m.muzzammilashraf@gmail.com>
+Signed-off-by: JiaLong.Yang <jialong.yang@shingroup.cn>
 ---
- scripts/kernel-doc | 1 +
- 1 file changed, 1 insertion(+)
+ Documentation/translations/zh_CN/core-api/printk-basics.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/scripts/kernel-doc b/scripts/kernel-doc
-index 1484127db104..ea9688df0e93 100755
---- a/scripts/kernel-doc
-+++ b/scripts/kernel-doc
-@@ -1661,6 +1661,7 @@ sub check_sections($$$$$) {
- 			}
- 			elsif (($decl_type eq "struct") or
- 		       	       ($decl_type eq "union")) {
-+                next if (index("@_", "__counted_by") != -1);
- 				emit_warning("${file}:$.",
- 					"Excess $decl_type member " .
- 					"'$sects[$sx]' " .
+diff --git a/Documentation/translations/zh_CN/core-api/printk-basics.rst b/Documentation/translations/zh_CN/core-api/printk-basics.rst
+index 59c6efb3fc41..cafa01bccff2 100644
+--- a/Documentation/translations/zh_CN/core-api/printk-basics.rst
++++ b/Documentation/translations/zh_CN/core-api/printk-basics.rst
+@@ -100,7 +100,7 @@ printk()的用法通常是这样的::
+ 
+ 为了调试，还有两个有条件编译的宏：
+ pr_debug()和pr_devel()，除非定义了 ``DEBUG`` (或者在pr_debug()的情况下定义了
+-``CONFIG_DYNAMIC_DEBUG`` )，否则它们会被编译。
++``CONFIG_DYNAMIC_DEBUG`` )，否则它们不会被编译。
+ 
+ 
+ 函数接口
 -- 
-2.27.0
+2.25.1
 
 
