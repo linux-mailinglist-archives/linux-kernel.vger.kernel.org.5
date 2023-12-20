@@ -1,86 +1,98 @@
-Return-Path: <linux-kernel+bounces-6504-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6505-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B5A48199B9
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 08:40:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E00C8199BA
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 08:40:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EAB83B250D9
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 07:40:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 910921C22141
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 07:40:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF05720B19;
-	Wed, 20 Dec 2023 07:39:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D37DE168D6;
+	Wed, 20 Dec 2023 07:39:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="H5xI8sLy"
+	dkim=pass (1024-bit key) header.d=inria.fr header.i=@inria.fr header.b="qy7Cmt9O"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mail2-relais-roc.national.inria.fr (mail2-relais-roc.national.inria.fr [192.134.164.83])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9D0D208D6;
-	Wed, 20 Dec 2023 07:39:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD808C433C8;
-	Wed, 20 Dec 2023 07:39:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1703057941;
-	bh=ZB1Fpehfxz1OYRnlaoOsVM8LmfGkRvS/BbeYZcRWryA=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=H5xI8sLyoEomG1i907Zb/EZTQKW2N10h2n7VfSK283UUP4iEWXnzXDe/5fF0RdAnm
-	 +yYeAk3x4ARMHbhtjBq2bklKs/lerpAhOAJ35LI77OkC3JkWtdhEBGvz72w64MDS8Y
-	 YaS/8hfMJamOWAOd4nlEtulA1Ms1I3EpZy4O/jr8=
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: jikos@kernel.org,
-	benjamin.tissoires@redhat.com
-Cc: linux-kernel@vger.kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	linux-input@vger.kernel.org
-Subject: [PATCH 3/3] HID: bpf: make bus_type const in struct hid_bpf_ops
-Date: Wed, 20 Dec 2023 08:38:48 +0100
-Message-ID: <2023122048-dormitory-headboard-e248@gregkh>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <2023122045-pellet-eggbeater-8d2f@gregkh>
-References: <2023122045-pellet-eggbeater-8d2f@gregkh>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 434032135D;
+	Wed, 20 Dec 2023 07:39:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=inria.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=inria.fr
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=inria.fr; s=dc;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=ngYO8w4xEMeyVxDuDZMJoLOL2uVoOjZGaa0n4KABU6c=;
+  b=qy7Cmt9O1QYf0vjHyuwJw3P+qhTDMvpEMzlir3AJxAjLzUS2dre6bV9D
+   SzXdnvC/AVxnoHe79EsDsNHOfRgtEIjsJCg2Cbd8U8QT47ADsw1iNBcN4
+   rE24mYdFEJWM2YJPk50LyiwQUxEfo4eQqGPTVIJmQ5lC/2z/GHC4+PKPd
+   8=;
+Authentication-Results: mail2-relais-roc.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=julia.lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
+X-IronPort-AV: E=Sophos;i="6.04,290,1695679200"; 
+   d="scan'208";a="143245362"
+Received: from 231.85.89.92.rev.sfr.net (HELO hadrien) ([92.89.85.231])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Dec 2023 08:39:20 +0100
+Date: Wed, 20 Dec 2023 08:39:20 +0100 (CET)
+From: Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To: Luis Chamberlain <mcgrof@kernel.org>
+cc: =?ISO-8859-15?Q?Thomas_Wei=DFschuh?= <linux@weissschuh.net>, 
+    Joel Granados <j.granados@samsung.com>, 
+    Dan Carpenter <dan.carpenter@linaro.org>, 
+    Kees Cook <keescook@chromium.org>, 
+    "Gustavo A. R. Silva" <gustavoars@kernel.org>, 
+    Iurii Zaikin <yzaikin@google.com>, 
+    Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+    linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org, 
+    linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v2 00/18] sysctl: constify sysctl ctl_tables
+In-Reply-To: <ZYIwpHXkqBkMB8zl@bombadil.infradead.org>
+Message-ID: <alpine.DEB.2.22.394.2312200838160.3151@hadrien>
+References: <20231208095926.aavsjrtqbb5rygmb@localhost> <8509a36b-ac23-4fcd-b797-f8915662d5e1@t-8ch.de> <20231212090930.y4omk62wenxgo5by@localhost> <ZXligolK0ekZ+Zuf@bombadil.infradead.org> <20231217120201.z4gr3ksjd4ai2nlk@localhost>
+ <908dc370-7cf6-4b2b-b7c9-066779bc48eb@t-8ch.de> <ZYC37Vco1p4vD8ji@bombadil.infradead.org> <a0d96e7b-544f-42d5-b8da-85bc4ca087a9@t-8ch.de> <ZYIGi9Gf7oVI7ksf@bombadil.infradead.org> <alpine.DEB.2.22.394.2312192218050.3196@hadrien>
+ <ZYIwpHXkqBkMB8zl@bombadil.infradead.org>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Lines: 30
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1053; i=gregkh@linuxfoundation.org; h=from:subject:message-id; bh=ZB1Fpehfxz1OYRnlaoOsVM8LmfGkRvS/BbeYZcRWryA=; b=owGbwMvMwCRo6H6F97bub03G02pJDKlNszj7DiSeDZdW1jI+pHBLNLKFkf9+w6+t958JM1p3R cRmK3zqiGVhEGRikBVTZPmyjefo/opDil6Gtqdh5rAygQxh4OIUgInYrGRYMPXCammvJfOO/23s SpjFdFBLa/+6MIYFm5+UXH+45pB7Q5t1newpycf3C3XjAA==
-X-Developer-Key: i=gregkh@linuxfoundation.org; a=openpgp; fpr=F4B60CC5BF78C2214A313DCB3147D40DDB2DFB29
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 
-The struct bus_type pointer in hid_bpf_ops just passes the pointer to
-the driver core, and the driver core can handle, and expects, a constant
-pointer, so also make the pointer constant in hid_bpf_ops.
 
-Part of the process of moving all usages of struct bus_type to be
-constant to move them all to read-only memory.
 
-Cc: Jiri Kosina <jikos@kernel.org>
-Cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc: linux-input@vger.kernel.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- include/linux/hid_bpf.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Tue, 19 Dec 2023, Luis Chamberlain wrote:
 
-diff --git a/include/linux/hid_bpf.h b/include/linux/hid_bpf.h
-index e9afb61e6ee0..840cd254172d 100644
---- a/include/linux/hid_bpf.h
-+++ b/include/linux/hid_bpf.h
-@@ -115,7 +115,7 @@ struct hid_bpf_ops {
- 				  size_t len, enum hid_report_type rtype,
- 				  enum hid_class_request reqtype);
- 	struct module *owner;
--	struct bus_type *bus_type;
-+	const struct bus_type *bus_type;
- };
- 
- extern struct hid_bpf_ops *hid_bpf_ops;
--- 
-2.43.0
+> On Tue, Dec 19, 2023 at 10:21:25PM +0100, Julia Lawall wrote:
+> > > As I noted, I think this is a generically neat endeavor and so I think
+> > > it would be nice to shorthand *any* member of the struct. ctl->any.
+> > > Julia, is that possible?
+> >
+> > What do you mean by *any* member?
+>
+> I meant when any code tries to assign a new variable to any of the
+> members of the struct ctl_table *foo, so any foo->*any*
 
+Declaring any to be an identifier metavariable would be sufficient.
+
+>
+> > If any is an identifier typed
+> > metavariable then that would get any immediate member.  But maybe you want
+> > something like
+> >
+> > <+...ctl->any...+>
+> >
+> > that will match anything that has ctl->any as a subexpression?
+>
+> If as just an expression, then no, we really want this to be tied to
+> the data struture in question we want to modify.
+
+What about foo->a.b?  Or maybe that doesn't occur in your structure?
+
+julia
 
