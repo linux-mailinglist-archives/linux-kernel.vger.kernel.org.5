@@ -1,91 +1,90 @@
-Return-Path: <linux-kernel+bounces-7520-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7523-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94B5F81A93F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 23:39:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B36CB81A943
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 23:41:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9266C1C22C74
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 22:39:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6F8C4281473
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 22:41:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 445BF4A9B7;
-	Wed, 20 Dec 2023 22:39:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 707F44A9B2;
+	Wed, 20 Dec 2023 22:41:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="CriiQRJ+"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="eTagRBiK"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F51439FE1
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 22:38:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703111936; x=1734647936;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=7yp/mIrXqNVCXVarfj2+8+MRYJyd9csmXA3PQt7prGM=;
-  b=CriiQRJ+XiYD6UJ4FWQmVCtXpHU3bgSD1nDYLXz6j34ulNZ2YFMM0H+I
-   n4FmKnH+NAecpBOOa145M58EDqYuzTa/h6JApyo3cTOFVwbY6lhdRkz2I
-   U459RPiwcHS1kRr3O8Mf8coFHutKTlV9MJzi6iiSp2IEKI4/Yw5TQu3sc
-   CnHzvrzAbLycGVqn9Bc8PYxu2P3RH07ecvF2IEgYmKawspOdsbV/jO54k
-   jgc+L6+7RdTr+QJa/ZqgMGJkPWaWsUwwJqIXBKAMrfmdwFVrgy+6hc3yc
-   OK9KrhZLp5fokYkCvcXUxCcW2PhZ65OBfj6oCdzVQeMDJSsfqEtoyI+zz
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10930"; a="399716739"
-X-IronPort-AV: E=Sophos;i="6.04,292,1695711600"; 
-   d="scan'208";a="399716739"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Dec 2023 14:38:56 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10930"; a="842417564"
-X-IronPort-AV: E=Sophos;i="6.04,292,1695711600"; 
-   d="scan'208";a="842417564"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga008.fm.intel.com with ESMTP; 20 Dec 2023 14:38:53 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rG5DH-0007bD-0a;
-	Wed, 20 Dec 2023 22:38:51 +0000
-Date: Thu, 21 Dec 2023 06:38:32 +0800
-From: kernel test robot <lkp@intel.com>
-To: Zack Rusin <zackr@vmware.com>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	Martin Krastev <krastevm@vmware.com>,
-	Maaz Mombasawala <mombasawalam@vmware.com>
-Subject: scripts/kernel-doc: drivers/gpu/drm/vmwgfx/vmwgfx_stdu.c:76:
- warning: Excess struct member 'transfer' description in 'vmw_stdu_dirty'
-Message-ID: <202312210609.kvPv3OIN-lkp@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 921B21E527;
+	Wed, 20 Dec 2023 22:41:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=/RajmtD0X7/0mTwIrcPHmeX+DW181fJFVhZhihu0AOk=; b=eTagRBiKvDTDsQgmpKIKPFxULD
+	TrzcsNIRkhtwLSKLie9SEU4Opld++XqQTUjDmHOAtG4Sr6oLNUtQsDpjHXaLniYNYR4r0URTj9Xdz
+	8hA0Ndzu1cOw15Qvw3s0Ah9tPQVenGKDTgbu4tDDyryT54o4wcz69pPuPGOUGs+AiJaUcPjYR+kQU
+	fS37/afQdm3DLBjAEab6Ygxr/H7Kq4CvwkqfQuQbLWiylMb12TadjV7Rb9jtWElBtEq/XVX5K+g7G
+	y8EEp9TpIO5Vpli0Tpprf48O4I2kohI8y2q4VhLjjpydGgbmlfuUnwb9Qw218bkH2SQ7R2u4eJReW
+	8FS7Lh8g==;
+Received: from [50.53.46.231] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1rG5Fk-0016GF-33;
+	Wed, 20 Dec 2023 22:41:24 +0000
+Message-ID: <88cf45e3-c383-499a-9a6f-3dd586ce15c2@infradead.org>
+Date: Wed, 20 Dec 2023 14:41:24 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: scripts/kernel-doc: drivers/gpu/drm/vmwgfx/vmwgfx_stdu.c:76:
+ warning: Excess struct member 'transfer' description in 'vmw_stdu_dirty'
+Content-Language: en-US
+To: kernel test robot <lkp@intel.com>, Zack Rusin <zackr@vmware.com>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+ Martin Krastev <krastevm@vmware.com>,
+ Maaz Mombasawala <mombasawalam@vmware.com>
+References: <202312210609.kvPv3OIN-lkp@intel.com>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <202312210609.kvPv3OIN-lkp@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   1a44b0073b9235521280e19d963b6dfef7888f18
-commit: 39985eea5a6dd1e844f216028252870e980b9e7f drm/vmwgfx: Abstract placement selection
-date:   10 months ago
-config: x86_64-rhel-8.3-func (https://download.01.org/0day-ci/archive/20231221/202312210609.kvPv3OIN-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231221/202312210609.kvPv3OIN-lkp@intel.com/reproduce)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312210609.kvPv3OIN-lkp@intel.com/
 
-All warnings (new ones prefixed by >>):
+On 12/20/23 14:38, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   1a44b0073b9235521280e19d963b6dfef7888f18
+> commit: 39985eea5a6dd1e844f216028252870e980b9e7f drm/vmwgfx: Abstract placement selection
+> date:   10 months ago
+> config: x86_64-rhel-8.3-func (https://download.01.org/0day-ci/archive/20231221/202312210609.kvPv3OIN-lkp@intel.com/config)
+> compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231221/202312210609.kvPv3OIN-lkp@intel.com/reproduce)
+> 
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202312210609.kvPv3OIN-lkp@intel.com/
+> 
+> All warnings (new ones prefixed by >>):
+> 
+>>> scripts/kernel-doc: drivers/gpu/drm/vmwgfx/vmwgfx_stdu.c:76: warning: Excess struct member 'transfer' description in 'vmw_stdu_dirty'
+>>> scripts/kernel-doc: drivers/gpu/drm/vmwgfx/vmwgfx_stdu.c:76: warning: Excess struct member 'transfer' description in 'vmw_stdu_dirty'
+> 
 
->> scripts/kernel-doc: drivers/gpu/drm/vmwgfx/vmwgfx_stdu.c:76: warning: Excess struct member 'transfer' description in 'vmw_stdu_dirty'
->> scripts/kernel-doc: drivers/gpu/drm/vmwgfx/vmwgfx_stdu.c:76: warning: Excess struct member 'transfer' description in 'vmw_stdu_dirty'
+I have already sent a patch for this:
+https://lore.kernel.org/dri-devel/20231215234102.16574-1-rdunlap@infradead.org/
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+#Randy
+https://people.kernel.org/tglx/notes-about-netiquette
+https://subspace.kernel.org/etiquette.html
 
