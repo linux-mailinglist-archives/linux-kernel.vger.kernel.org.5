@@ -1,156 +1,188 @@
-Return-Path: <linux-kernel+bounces-6490-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6492-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9031819986
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 08:32:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 52268819997
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 08:33:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 190981C220C5
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 07:32:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D011F2829AF
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 07:33:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AD6618E3F;
-	Wed, 20 Dec 2023 07:31:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7689B19BB8;
+	Wed, 20 Dec 2023 07:33:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TQlEbAsY"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="2B+geRKl"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C4A016430
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 07:31:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-40c31f18274so67958755e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 23:31:53 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A43B18AF6
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 07:33:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--changyuanl.bounces.google.com
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dbce9c6cd26so5819357276.0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 23:33:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703057512; x=1703662312; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KgTfKXWY7XjvekdpFsE0LKPur0TdoR58RWZw0DnkjLQ=;
-        b=TQlEbAsYS8edx3ya61BDjIT86GP3+Z+K2Bz/di8cJvkqRIhCnHfl47O7WNHucJLvF7
-         /Hklx8SBYNpBBk2U6jS3ynNA/aYLjs2t2rAYnhj7uE/GZE0LbdqJSviVZQMPkeKoD08h
-         7KlWZxd61M6bLD/EffE41k+9L0XQaD9tfH4jyG5XNXDWe/vl663g5V1TbhOEiy5mpakH
-         5jNmu5etlL1+pvfy5IaYwMrJzxV6lkxWP5wxaUN5YPSdYxP+mEHHpv8mI+LMW9gmwWNz
-         xlhDYDQLsvHeIuwmGdVfPPPjcxgB0Fr+DrgJd1zV6z/bvwsa3DQP8yi1rZCAdDdSGKEp
-         JSyQ==
+        d=google.com; s=20230601; t=1703057611; x=1703662411; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=twveIrdTcd/mulXsZ5S2piYz3X+8ZAw3Sbz5Wtujg/U=;
+        b=2B+geRKlxSdSxtkOWqoJ4PFde0rtQw+ritLnaVe01BFv+QlhK7Fwroby/y+gg1ZI13
+         qltlS03FGeAPLRFlRR4OwsJBkzOMo21TQDnrzOmHxC1StQ0WM3yEeBF0c+asfhb7a9xH
+         SR545k1z6xnxE5JwTrnHH+mWa/aus99XpzMYvUjuxTbVtZw+UOryLOQIF200DAYDSrwP
+         MvQLS3Pz/YI8snuWuvYyZQKyoAgqtovNIOT6uMYDHSRZIDUdu51INJgmq5zKYABd4Zfi
+         GgYnmiWoamLf8xorCqknT/zSNs2D2taDraky5o1B89rjSBWaQ5fOBXZnryQ7xyDPj3iN
+         V7Rg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703057512; x=1703662312;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KgTfKXWY7XjvekdpFsE0LKPur0TdoR58RWZw0DnkjLQ=;
-        b=TJsZZGDYRA9IZL51b+48gOUpq04pKmvFXUFV7/lINLQTlO0cPl2yfy/v8RokucXDPh
-         b6UEIpRK8TPhfboZtGyJI219FicXa49qh8migtfSTLN26cn2BZx6OIeXHlIu4f7G/n0m
-         nzT5EeaGKKP+pCYyisAHgOq5z893veAmSI4r2RzPm+sOKlfAbHMc3ZAMCxXDA5iFmwTS
-         MzI2V+nYpbhFvjrtSxQ5scdbgEH6zAGfAoJocQXlAD2a+C5g9g15TeN+21d1Fym86EQb
-         8NJjAGdIsTs/AigkuC0STSL5/v8NGHNjwYMXRLPhEvuhvGEUl4athqKeoXeI8xaqgpvp
-         yJwQ==
-X-Gm-Message-State: AOJu0YwGjgJIfzHoi5TuG9IFaPTKTW/b/IpoFEVbKvSe+6EBgHWdWFF1
-	GAQwKv7xJ39OILlnK6oosb0fpUcoFkSi
-X-Google-Smtp-Source: AGHT+IE6OCx7xv9Ck8Ua1xJJjOOvuOQiCQa5MA3KZmAJTZXFR0gauoPXCD0l8/8mRJP+aBGkO1EUgw==
-X-Received: by 2002:a05:600c:4746:b0:40c:6136:10eb with SMTP id w6-20020a05600c474600b0040c613610ebmr5976247wmo.36.1703057512145;
-        Tue, 19 Dec 2023 23:31:52 -0800 (PST)
-Received: from alex-pc-ubuntu.lan (31-10-153-16.cgn.dynamic.upc.ch. [31.10.153.16])
-        by smtp.gmail.com with ESMTPSA id q16-20020adff950000000b003366a9cb0d1sm6348461wrr.92.2023.12.19.23.31.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Dec 2023 23:31:50 -0800 (PST)
-From: Aleksandrs Vinarskis <alex.vinarskis@gmail.com>
-To: lee@kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: andriy.shevchenko@linux.intel.com,
-	hdegoede@redhat.com
-Subject: [PATCH v1 2/2] mfd: intel-lpss: Introduce QUIRK_CLOCK_DIVIDER_UNITY for XPS 9530
-Date: Wed, 20 Dec 2023 08:31:48 +0100
-Message-Id: <20231220073148.19402-3-alex.vinarskis@gmail.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20231220073148.19402-1-alex.vinarskis@gmail.com>
-References: <20231220073148.19402-1-alex.vinarskis@gmail.com>
+        d=1e100.net; s=20230601; t=1703057611; x=1703662411;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=twveIrdTcd/mulXsZ5S2piYz3X+8ZAw3Sbz5Wtujg/U=;
+        b=swvznF5mWhQYFA66OB1gzmHuGZZDXxICnHThMGvUGOylQOdNQCsX+VNDpRIc0EdjT0
+         Wikk0Vqy4ojZyg2C3A611X4K21kb+2/BCAsv3fX6445MabiaiyaRLjxFLdM0DyXz4wzd
+         OQG8jZkUbkPvQviKYrAZgcLlgH+er/1KX0mH5QVmJWX8lnSiOmmb9NKEZtpvCn3Gmq7q
+         94+1OxLOz6D6+VPldL6I0dftm0sUghLKIi/TyZKvrtLUko/J/94MAFgAanZnJ52fi5eG
+         Z8vH2qmnE9K+EPtLfruIE+H/L48S0HQxWdKhFayLsY4CFP4VJRttyIYKzNL9Z8sjvaR0
+         dnUg==
+X-Gm-Message-State: AOJu0YyUDo6uOBzGU0RYQYNzp6PJ7F7sGikcRJOfdQ/ASAkFZHMVlTzW
+	YijDUVLwSn54vjEyu52SL4dmpYkFC0ITFbDR
+X-Google-Smtp-Source: AGHT+IFgIl8umfUHjjsA9gTZqJL4tpauFYgrM50BhRXTIf57FHoLEgTJR8p0S0qgUwaz+Y8q6eDmm27wpLrnBJhu
+X-Received: from changyuanl-desktop.svl.corp.google.com ([2620:15c:2a3:200:2c53:4290:ec42:9360])
+ (user=changyuanl job=sendgmr) by 2002:a25:8041:0:b0:dbc:fb31:e5f with SMTP id
+ a1-20020a258041000000b00dbcfb310e5fmr2508826ybn.10.1703057611420; Tue, 19 Dec
+ 2023 23:33:31 -0800 (PST)
+Date: Tue, 19 Dec 2023 23:32:27 -0800
+In-Reply-To: <20231220020100-mutt-send-email-mst@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+References: <20231220020100-mutt-send-email-mst@kernel.org>
+X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
+Message-ID: <20231220073227.252605-1-changyuanl@google.com>
+Subject: [PATCH v3] virtio_pmem: support feature SHMEM_REGION
+From: Changyuan Lyu <changyuanl@google.com>
+To: mst@redhat.com
+Cc: changyuanl@google.com, dan.j.williams@intel.com, dave.jiang@intel.com, 
+	jasowang@redhat.com, linux-kernel@vger.kernel.org, nvdimm@lists.linux.dev, 
+	pankaj.gupta.linux@gmail.com, virtualization@lists.linux.dev, 
+	vishal.l.verma@intel.com, xuanzhuo@linux.alibaba.com
+Content-Type: text/plain; charset="UTF-8"
 
-Some devices (eg. Dell XPS 9530, 2023) due to a firmware bug have a
-misconfigured clock divider, which should've been 1:1. This introduces
-quirk which conditionally re-configures the clock divider to 1:1.
+On Tue, Dec 19, 2023 at 11:01 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+> 
+> This is not a great description. Please describe what the patch does.
 
-Signed-off-by: Aleksandrs Vinarskis <alex.vinarskis@gmail.com>
+Thanks for the feedback! Please see the v3 patch below.
+
+---8<---
+
+This patch adds the support for feature VIRTIO_PMEM_F_SHMEM_REGION
+(virtio spec v1.2 section 5.19.5.2 [1]). Feature bit
+VIRTIO_PMEM_F_SHMEM_REGION is added to the driver feature
+table.
+
+If the driver feature bit VIRTIO_PMEM_F_SHMEM_REGION is found,
+during probe, virtio pmem ignores the `start` and `size` fields in
+device config and looks for a shared memory region of id 0. The
+physical address range of the pmem is then determined by the physical
+address range of shared memory region 0.
+
+[1] https://docs.oasis-open.org/virtio/virtio/v1.2/csd01/virtio-v1.2-csd01.html#x1-6480002
+
+Signed-off-by: Changyuan Lyu <changyuanl@google.com>
+
 ---
- drivers/mfd/intel-lpss-pci.c | 8 ++++++++
- drivers/mfd/intel-lpss.c     | 7 +++++++
- drivers/mfd/intel-lpss.h     | 1 +
- 3 files changed, 16 insertions(+)
+v3:
+  * updated the patch description.
+V2:
+  * renamed VIRTIO_PMEM_SHMCAP_ID to VIRTIO_PMEM_SHMEM_REGION_ID
+  * fixed the error handling when region 0 does not exist
+---
+ drivers/nvdimm/virtio_pmem.c     | 30 ++++++++++++++++++++++++++----
+ include/uapi/linux/virtio_pmem.h |  8 ++++++++
+ 2 files changed, 34 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/mfd/intel-lpss-pci.c b/drivers/mfd/intel-lpss-pci.c
-index cf8006e094f7..2e3b91418415 100644
---- a/drivers/mfd/intel-lpss-pci.c
-+++ b/drivers/mfd/intel-lpss-pci.c
-@@ -28,6 +28,11 @@ static const struct intel_lpss_platform_info quirk_ignore_resource_conflicts = {
- 	.quirks = QUIRK_IGNORE_RESOURCE_CONFLICTS,
- };
+diff --git a/drivers/nvdimm/virtio_pmem.c b/drivers/nvdimm/virtio_pmem.c
+index a92eb172f0e7..8e447c7558cb 100644
+--- a/drivers/nvdimm/virtio_pmem.c
++++ b/drivers/nvdimm/virtio_pmem.c
+@@ -35,6 +35,8 @@ static int virtio_pmem_probe(struct virtio_device *vdev)
+ 	struct nd_region *nd_region;
+ 	struct virtio_pmem *vpmem;
+ 	struct resource res;
++	struct virtio_shm_region shm_reg;
++	bool have_shm;
+ 	int err = 0;
  
-+/* Some devices have misconfigured clock divider, which should've been 1:1 */
-+static const struct intel_lpss_platform_info quirk_skip_clock_divider = {
-+	.quirks = QUIRK_CLOCK_DIVIDER_UNITY,
-+};
-+
- static const struct pci_device_id quirk_ids[] = {
- 	{	/* Microsoft Surface Go (version 1) I2C4 */
- 		PCI_DEVICE_SUB(PCI_VENDOR_ID_INTEL, 0x9d64, 0x152d, 0x1182),
-@@ -35,6 +40,9 @@ static const struct pci_device_id quirk_ids[] = {
- 	}, {	/* Microsoft Surface Go 2 I2C4 */
- 		PCI_DEVICE_SUB(PCI_VENDOR_ID_INTEL, 0x9d64, 0x152d, 0x1237),
- 		.driver_data = (kernel_ulong_t)&quirk_ignore_resource_conflicts,
-+	}, {	/* Dell XPS 9530 (2023) */
-+		PCI_DEVICE_SUB(PCI_VENDOR_ID_INTEL, 0x51fb, 0x1028, 0x0beb),
-+		.driver_data = (kernel_ulong_t)&quirk_skip_clock_divider,
- 	},
- 	{}
- };
-diff --git a/drivers/mfd/intel-lpss.c b/drivers/mfd/intel-lpss.c
-index aafa0da5f8db..2a9018112dfc 100644
---- a/drivers/mfd/intel-lpss.c
-+++ b/drivers/mfd/intel-lpss.c
-@@ -300,6 +300,7 @@ static int intel_lpss_register_clock_divider(struct intel_lpss *lpss,
- {
- 	char name[32];
- 	struct clk *tmp = *clk;
-+	int ret;
+ 	if (!vdev->config->get) {
+@@ -57,10 +59,24 @@ static int virtio_pmem_probe(struct virtio_device *vdev)
+ 		goto out_err;
+ 	}
  
- 	snprintf(name, sizeof(name), "%s-enable", devname);
- 	tmp = clk_register_gate(NULL, name, __clk_get_name(tmp), 0,
-@@ -316,6 +317,12 @@ static int intel_lpss_register_clock_divider(struct intel_lpss *lpss,
- 		return PTR_ERR(tmp);
- 	*clk = tmp;
- 
-+	if (lpss->info->quirks & QUIRK_CLOCK_DIVIDER_UNITY) {
-+		ret = clk_set_rate(tmp, lpss->info->clk_rate);
-+		if (ret)
-+			return ret;
+-	virtio_cread_le(vpmem->vdev, struct virtio_pmem_config,
+-			start, &vpmem->start);
+-	virtio_cread_le(vpmem->vdev, struct virtio_pmem_config,
+-			size, &vpmem->size);
++	if (virtio_has_feature(vdev, VIRTIO_PMEM_F_SHMEM_REGION)) {
++		have_shm = virtio_get_shm_region(vdev, &shm_reg,
++				(u8)VIRTIO_PMEM_SHMEM_REGION_ID);
++		if (!have_shm) {
++			dev_err(&vdev->dev, "failed to get shared memory region %d\n",
++					VIRTIO_PMEM_SHMEM_REGION_ID);
++			err = -ENXIO;
++			goto out_vq;
++		}
++		vpmem->start = shm_reg.addr;
++		vpmem->size = shm_reg.len;
++	} else {
++		virtio_cread_le(vpmem->vdev, struct virtio_pmem_config,
++				start, &vpmem->start);
++		virtio_cread_le(vpmem->vdev, struct virtio_pmem_config,
++				size, &vpmem->size);
 +	}
 +
- 	snprintf(name, sizeof(name), "%s-update", devname);
- 	tmp = clk_register_gate(NULL, name, __clk_get_name(tmp),
- 				CLK_SET_RATE_PARENT, lpss->priv, 31, 0, NULL);
-diff --git a/drivers/mfd/intel-lpss.h b/drivers/mfd/intel-lpss.h
-index 3e9d96c372a8..f27834b74cb6 100644
---- a/drivers/mfd/intel-lpss.h
-+++ b/drivers/mfd/intel-lpss.h
-@@ -14,6 +14,7 @@
- #include <linux/pm.h>
  
- #define QUIRK_IGNORE_RESOURCE_CONFLICTS BIT(0)
-+#define QUIRK_CLOCK_DIVIDER_UNITY		BIT(1)
+ 	res.start = vpmem->start;
+ 	res.end   = vpmem->start + vpmem->size - 1;
+@@ -122,7 +138,13 @@ static void virtio_pmem_remove(struct virtio_device *vdev)
+ 	virtio_reset_device(vdev);
+ }
  
- struct device;
- struct resource;
++static unsigned int features[] = {
++	VIRTIO_PMEM_F_SHMEM_REGION,
++};
++
+ static struct virtio_driver virtio_pmem_driver = {
++	.feature_table		= features,
++	.feature_table_size	= ARRAY_SIZE(features),
+ 	.driver.name		= KBUILD_MODNAME,
+ 	.driver.owner		= THIS_MODULE,
+ 	.id_table		= id_table,
+diff --git a/include/uapi/linux/virtio_pmem.h b/include/uapi/linux/virtio_pmem.h
+index d676b3620383..c5e49b6e58b1 100644
+--- a/include/uapi/linux/virtio_pmem.h
++++ b/include/uapi/linux/virtio_pmem.h
+@@ -14,6 +14,14 @@
+ #include <linux/virtio_ids.h>
+ #include <linux/virtio_config.h>
+ 
++/* Feature bits */
++#define VIRTIO_PMEM_F_SHMEM_REGION 0	/* guest physical address range will be
++					 * indicated as shared memory region 0
++					 */
++
++/* shmid of the shared memory region corresponding to the pmem */
++#define VIRTIO_PMEM_SHMEM_REGION_ID 0
++
+ struct virtio_pmem_config {
+ 	__le64 start;
+ 	__le64 size;
 -- 
-2.40.1
+2.43.0.472.g3155946c3a-goog
 
 
