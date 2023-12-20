@@ -1,149 +1,102 @@
-Return-Path: <linux-kernel+bounces-7473-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7474-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60DCC81A853
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 22:42:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 883D181A855
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 22:42:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1CFD5284E79
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 21:42:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B971D1C22760
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 21:42:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3875495D6;
-	Wed, 20 Dec 2023 21:38:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B40A49885;
+	Wed, 20 Dec 2023 21:39:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b="uYCZ3KNG"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="uaVoJ0eD"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
+Received: from out-175.mta0.migadu.com (out-175.mta0.migadu.com [91.218.175.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E896D495EC;
-	Wed, 20 Dec 2023 21:38:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hugovil.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
-	; s=x; h=Subject:Content-Transfer-Encoding:Mime-Version:Message-Id:Cc:To:From
-	:Date:subject:date:message-id:reply-to;
-	bh=wIWDMjkfub9nTTJ5JI74/K00hMgRE/kdEk8xa9Y7LW0=; b=uYCZ3KNG9utyPrLOQFCRgBF6Nl
-	/vkLFPPGzZu4iOSDQKwsx9kGJD7FMpBWrI9XxlegwaUE3iaeSlBGPPAxzAV51jnMqIvo0I201/wtR
-	1aL5j4WX9noqJjeATTXuVYICtmfyutP384rd9vxKV5lI9eI4rPXAgxpi/h54/vjCWj4U=;
-Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:57326 helo=pettiford)
-	by mail.hugovil.com with esmtpa (Exim 4.92)
-	(envelope-from <hugo@hugovil.com>)
-	id 1rG4Gk-0002Rp-RU; Wed, 20 Dec 2023 16:38:23 -0500
-Date: Wed, 20 Dec 2023 16:38:22 -0500
-From: Hugo Villeneuve <hugo@hugovil.com>
-To: Andy Shevchenko <andriy.shevchenko@intel.com>
-Cc: gregkh@linuxfoundation.org, jirislaby@kernel.org, jringle@gridpoint.com,
- kubakici@wp.pl, phil@raspberrypi.org, bo.svangard@embeddedart.se,
- linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org, Hugo Villeneuve
- <hvilleneuve@dimonoff.com>
-Message-Id: <20231220163822.ce1d3893735d3334ae2d04e2@hugovil.com>
-In-Reply-To: <ZYMQRv1Td7FjH5Mh@smile.fi.intel.com>
-References: <20231219171903.3530985-1-hugo@hugovil.com>
-	<20231219171903.3530985-18-hugo@hugovil.com>
-	<ZYMQRv1Td7FjH5Mh@smile.fi.intel.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0A544B5A8
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 21:39:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Wed, 20 Dec 2023 16:39:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1703108358;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=uADafuqFMCeXQ5Fj4WVSnQJ6HfedZAFlxNtI1icEQik=;
+	b=uaVoJ0eDqHKMMDAL7U6wiyolJ/49uVE0BquJe7BEbhDIHsjESiLiEaDkoqvThJNjWSAnLw
+	a1zqGof93sisOLTnFcGT1eL1RpMElAuGISwQHypQHp9Obg8YSYVm/LA7JLD6Mhna42NcIs
+	GAR5tiTADYICiDh7d4NacvzxpGj7y2g=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	linux-fsdevel@vger.kernel.org, tglx@linutronix.de, x86@kernel.org,
+	tj@kernel.org, peterz@infradead.org, mathieu.desnoyers@efficios.com,
+	paulmck@kernel.org, keescook@chromium.org,
+	dave.hansen@linux.intel.com, mingo@redhat.com, will@kernel.org,
+	longman@redhat.com, boqun.feng@gmail.com, brauner@kernel.org
+Subject: Re: [PATCH 42/50] sem: Split out sem_types.h
+Message-ID: <20231220213913.gptbcbpwb4q3prtf@moria.home.lan>
+References: <20231216024834.3510073-1-kent.overstreet@linux.dev>
+ <20231216033300.3553457-1-kent.overstreet@linux.dev>
+ <20231216033300.3553457-10-kent.overstreet@linux.dev>
+ <CAMuHMdVRDQQmeO0ggyW-O+de45abyktwYH3ZFF1=mqd2iQXE1Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 70.80.174.168
-X-SA-Exim-Mail-From: hugo@hugovil.com
-X-Spam-Level: 
-X-Spam-Report: 
-	* -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-	* -0.0 T_SCC_BODY_TEXT_LINE No description available.
-	* -1.4 NICE_REPLY_A Looks like a legit reply (A)
-Subject: Re: [PATCH 17/18] serial: sc16is7xx: refactor EFR lock
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMuHMdVRDQQmeO0ggyW-O+de45abyktwYH3ZFF1=mqd2iQXE1Q@mail.gmail.com>
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, 20 Dec 2023 18:03:18 +0200
-Andy Shevchenko <andriy.shevchenko@intel.com> wrote:
+On Wed, Dec 20, 2023 at 12:53:46PM +0100, Geert Uytterhoeven wrote:
+> Hi Kent,
+> 
+> On Sat, Dec 16, 2023 at 4:37 AM Kent Overstreet
+> <kent.overstreet@linux.dev> wrote:
+> > More sched.h dependency pruning.
+> >
+> > Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> 
+> Thanks for your patch, which is now commit eb72d60ccaed883a ("sem:
+> Split out sem_types.h") in next-20231220.
+> 
+> $ make ARCH=m68k defconfig arch/m68k/kernel/asm-offsets.i
+> *** Default configuration is based on 'multi_defconfig'
+> #
+> # No change to .config
+> #
+>   UPD     include/config/kernel.release
+>   UPD     include/generated/utsrelease.h
+>   CC      arch/m68k/kernel/asm-offsets.s
+> In file included from arch/m68k/kernel/asm-offsets.c:15:
+> ./include/linux/sched.h:551:3: error: conflicting types for
+> ‘____cacheline_aligned’
+>   551 | } ____cacheline_aligned;
+>       |   ^~~~~~~~~~~~~~~~~~~~~
+> ./include/linux/sched.h:509:3: note: previous declaration of
+> ‘____cacheline_aligned’ was here
+>   509 | } ____cacheline_aligned;
+>       |   ^~~~~~~~~~~~~~~~~~~~~
+> make[3]: *** [scripts/Makefile.build:116:
+> arch/m68k/kernel/asm-offsets.s] Error 1
+> make[2]: *** [Makefile:1191: prepare0] Error 2
+> make[1]: *** [Makefile:350: __build_one_by_one] Error 2
+> make: *** [Makefile:234: __sub-make] Error 2
 
-> On Tue, Dec 19, 2023 at 12:19:01PM -0500, Hugo Villeneuve wrote:
-> > From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
-> > 
-> > Move common code for EFR lock/unlock of mutex into functions for code reuse
-> > and clarity.
-> 
-> ...
-> 
-> > @@ -333,6 +333,7 @@ struct sc16is7xx_one {
-> >  	struct sc16is7xx_one_config	config;
-> >  	bool				irda_mode;
-> >  	unsigned int			old_mctrl;
-> > +	u8				old_lcr; /* Value before EFR access. */
-> >  };
-> 
-> Have you run `pahole`?
-> I believe with
-> 
-> 	unsigned int			old_mctrl;
-> 	u8				old_lcr; /* Value before EFR access. */
-> 	bool				irda_mode;
-> 
-> layout it will take less memory.
+Is this a build failure on linux-next, or that specific commit?
 
-Hi,
-I did not know about this tool, nice.
-
-$ pahole -C sc16is7xx_one drivers/tty/serial/sc16is7xx.o
-
-Before:
-    /* size: 752, cachelines: 12, members: 10 */
-
-With your proposed change:
-    /* size: 744, cachelines: 12, members: 10 */
-
-Will add this modification for V2, as well as other issues
-noted below.
-
-Thank you,
-Hugo
-
-
-> > +/* In an amazing feat of design, the Enhanced Features Register (EFR)
-> 
-> /*
->  * This is NOT the style we use for multi-line
->  * comments in the serial subsystem. On contrary
->  * this comment can be used as a proper example.
->  * (Yes, I noticed it's an old comment, but take
->  *  a chance to fix it.)
->  */
-> 
-> > + * shares the address of the Interrupt Identification Register (IIR).
-> > + * Access to EFR is switched on by writing a magic value (0xbf) to the
-> > + * Line Control Register (LCR). Any interrupt firing during this time will
-> > + * see the EFR where it expects the IIR to be, leading to
-> > + * "Unexpected interrupt" messages.
-> > + *
-> > + * Prevent this possibility by claiming a mutex while accessing the EFR,
-> > + * and claiming the same mutex from within the interrupt handler. This is
-> > + * similar to disabling the interrupt, but that doesn't work because the
-> > + * bulk of the interrupt processing is run as a workqueue job in thread
-> > + * context.
-> > + */
-> 
-> ...
-> 
-> > +	sc16is7xx_port_write(port, SC16IS7XX_LCR_REG,
-> > +			     SC16IS7XX_LCR_CONF_MODE_B);
-> 
-> One line. (Yes, 81 character, but readability is as good as before.
-> 
-> -- 
-> With Best Regards,
-> Andy Shevchenko
-> 
-> 
-> 
-> 
+It looks like this should be fixed in a later commit that includes
+cache.h in sched.h; I'll move that include back to this patch.
 
