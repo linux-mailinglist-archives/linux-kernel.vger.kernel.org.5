@@ -1,98 +1,135 @@
-Return-Path: <linux-kernel+bounces-7285-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7286-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90C2681A4E0
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 17:25:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B66181A4E2
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 17:25:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4745F1F21BD4
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 16:25:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 27F62289D4B
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 16:25:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEE6346535;
-	Wed, 20 Dec 2023 16:21:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97F6946BBC;
+	Wed, 20 Dec 2023 16:21:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b="hc2ZOE4L"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cAIaChAc"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5F694184A;
-	Wed, 20 Dec 2023 16:21:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hugovil.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
-	; s=x; h=Subject:Content-Transfer-Encoding:Mime-Version:Message-Id:Cc:To:From
-	:Date:subject:date:message-id:reply-to;
-	bh=ebua2wySSX5WI4UINedesYX+NQM/p2GeiFeCoKwMB/o=; b=hc2ZOE4Luf3maQom4qq8yo8c8q
-	dFr6QA6ZCqecAYmLjNo0nqheLjqvCUSNxZWbJCZqXyHkLew/i5eCkRWCh7ThmQoO92svvv87QARmY
-	7earedJb0utss6Emi0PKvx63LH6Mwf3cbsKkU4XRMHMxrjMwLiNg04K14SiyIfbAyTWY=;
-Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:33870 helo=pettiford)
-	by mail.hugovil.com with esmtpa (Exim 4.92)
-	(envelope-from <hugo@hugovil.com>)
-	id 1rFzJk-00071Q-S1; Wed, 20 Dec 2023 11:21:09 -0500
-Date: Wed, 20 Dec 2023 11:21:08 -0500
-From: Hugo Villeneuve <hugo@hugovil.com>
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: gregkh@linuxfoundation.org, jirislaby@kernel.org, jringle@gridpoint.com,
- kubakici@wp.pl, phil@raspberrypi.org, bo.svangard@embeddedart.se,
- linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org, Hugo Villeneuve
- <hvilleneuve@dimonoff.com>
-Message-Id: <20231220112108.9ff049f369b6fa95f50b803a@hugovil.com>
-In-Reply-To: <ZYMOTx-IniZOhO-Z@smile.fi.intel.com>
-References: <20231219171903.3530985-1-hugo@hugovil.com>
-	<20231219171903.3530985-15-hugo@hugovil.com>
-	<ZYMOTx-IniZOhO-Z@smile.fi.intel.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA3C83F8E1;
+	Wed, 20 Dec 2023 16:21:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 250A6C433C8;
+	Wed, 20 Dec 2023 16:21:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703089285;
+	bh=1kQMmHkd1Er03MtdXnS45qhF/JNgU19Bb0Ki9TnP0F8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=cAIaChAcojsA67I7y9UJxw8gI5noRw8mh8p2/t3B5WuNJHbIlYIVA5isXs+0Ad+W2
+	 vBDLtQHRNJhMIxnDPQmlrEo5wwIp8Rb+5noC3QOKGWMcx11trDY7cW1NaQUDv7NQ7r
+	 CtpifB1P0Q4oPH4uCwSDUKlhWUrzGabRS6/WR8oQMgCIX4YtyF2lht+gINaLLxfDmm
+	 MBrtZejJ4X3pw5RqQu4fp7z97uQYZNH9reniS8m8LZeTcB+99liVRq25HcG/DRKPOT
+	 v5kwdJaBW4ijruZEe2lgSJ06jBYgYlClZmxhv0m2FCoHHNu3K1lL2uw6hVIdgsL34F
+	 t9TA7/31uOe0g==
+Received: by pali.im (Postfix)
+	id 3D8047E1; Wed, 20 Dec 2023 17:21:22 +0100 (CET)
+Date: Wed, 20 Dec 2023 17:21:22 +0100
+From: Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To: Paul Menzel <pmenzel@molgen.mpg.de>
+Cc: Jean Delvare <jdelvare@suse.com>, Andi Shyti <andi.shyti@kernel.org>,
+	linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] i2c: i801: Add 0x29 as =?utf-8?B?ScKy?=
+ =?utf-8?Q?C?= address for lis3lv02d in Dell Precision 3540
+Message-ID: <20231220162122.y57rudx6qhxc6eku@pali>
+References: <20231220161003.68310-1-pmenzel@molgen.mpg.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 70.80.174.168
-X-SA-Exim-Mail-From: hugo@hugovil.com
-X-Spam-Level: 
-X-Spam-Report: 
-	* -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-	* -0.0 T_SCC_BODY_TEXT_LINE No description available.
-	* -1.4 NICE_REPLY_A Looks like a legit reply (A)
-Subject: Re: [PATCH 14/18] serial: sc16is7xx: drop unneeded MODULE_ALIAS
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231220161003.68310-1-pmenzel@molgen.mpg.de>
+User-Agent: NeoMutt/20180716
 
-On Wed, 20 Dec 2023 17:54:55 +0200
-Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
-
-> On Tue, Dec 19, 2023 at 12:18:58PM -0500, Hugo Villeneuve wrote:
-> > From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
-> > 
-> > The MODULE_DEVICE_TABLE already creates the proper aliases for the
+On Wednesday 20 December 2023 17:10:01 Paul Menzel wrote:
+> On the Dell Precision 3540/0M14W7, BIOS 1.7.4 05/12/2020, Linux prints
+> the warning below.
 > 
-> MODULE_DEVICE_TABLE()
-
-Done for V2.
-
-Hugo.
-
-
+>     i801_smbus 0000:00:1f.4: Accelerometer lis3lv02d is present on SMBus but its address is unknown, skipping registration
 > 
-> > SPI driver.
+> With the help of Wolfram Sang, the test to probe it on I²C bus 6 at address
+> 0x29 was successful.
 > 
-> With the above fixed
-> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+>     $ cd /sys/bus/pci/drivers/i801_smbus/0000:00:1f.4
+>     $ ls -d i2c-?
+>     i2c-6
+>     $ sudo i2cdetect 6
+>     WARNING! This program can confuse your I2C bus, cause data loss and worse!
+>     I will probe file /dev/i2c-6.
+>     I will probe address range 0x08-0x77.
+>     Continue? [Y/n] Y
+>          0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f
+>     00:                         08 -- -- -- -- -- -- --
+>     10: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+>     20: -- -- -- -- -- -- -- -- -- 29 -- -- -- -- -- --
+>     30: 30 -- -- -- -- 35 UU UU -- -- -- -- -- -- -- --
+>     40: -- -- -- -- 44 -- -- -- -- -- -- -- -- -- -- --
+>     50: UU -- 52 -- -- -- -- -- -- -- -- -- -- -- -- --
+>     60: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+>     70: -- -- -- -- -- -- -- --
 > 
+>     $ echo lis3lv02d 0x29 | sudo tee /sys/bus/i2c/devices/i2c-6/new_device
+>     $ sudo dmesg
+>     […]
+>     [ 2110.787000] i2c i2c-6: new_device: Instantiated device lis3lv02d at 0x29
+>     [ 2110.791932] lis3lv02d_i2c 6-0029: supply Vdd not found, using dummy regulator
+>     [ 2110.791981] lis3lv02d_i2c 6-0029: supply Vdd_IO not found, using dummy regulator
+>     [ 2110.809233] lis3lv02d: 8 bits 3DC sensor found
+>     [ 2110.900668] input: ST LIS3LV02DL Accelerometer as /devices/platform/lis3lv02d/input/input23
+> 
+> So, the device has that accelerometer. Add the I2C address to the
+> mapping list.
+> 
+> Link: https://lore.kernel.org/linux-i2c/97708c11-ac85-fb62-2c8e-d37739ca826f@molgen.mpg.de/
+> Signed-off-by: Paul Menzel <pmenzel@molgen.mpg.de>
+
+If the accelerometer is working fine then I have no objections.
+
+Acked-by: Pali Rohár <pali@kernel.org>
+
+Anyway, if you have a time then try to look into decompiled ACPI DSDT
+table if Dell had not put somewhere this SMBus/I²C address of the
+accelerometer. I remember that for older Latitude E6440 I looked into
+every DSDT method related with accelerometer if there is not some
+information but I have not find anything and also Dell confirmed that
+this address information is not there present. I'm still hoping that
+Dell put autodiscovery address for new machines somewhere...
+
+And if you are more curious you can start investigation what are other
+devices which i2cdetect showed (only those with UU are bound to some
+kernel/userspace driver).
+
+> ---
+>  drivers/i2c/busses/i2c-i801.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/i2c/busses/i2c-i801.c b/drivers/i2c/busses/i2c-i801.c
+> index 070999139c6d..cb9660f84117 100644
+> --- a/drivers/i2c/busses/i2c-i801.c
+> +++ b/drivers/i2c/busses/i2c-i801.c
+> @@ -1230,6 +1230,7 @@ static const struct {
+>  	 * Additional individual entries were added after verification.
+>  	 */
+>  	{ "Latitude 5480",      0x29 },
+> +	{ "Precision 3540",     0x29 },
+>  	{ "Vostro V131",        0x1d },
+>  	{ "Vostro 5568",        0x29 },
+>  };
 > -- 
-> With Best Regards,
-> Andy Shevchenko
+> 2.43.0
 > 
-> 
-> 
-
-
--- 
-Hugo Villeneuve
 
