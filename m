@@ -1,188 +1,168 @@
-Return-Path: <linux-kernel+bounces-6992-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6993-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A9BA081A047
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 14:51:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0294F81A049
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 14:51:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CDA221C2253F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 13:51:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AE01828463C
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 13:51:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7E3236B0F;
-	Wed, 20 Dec 2023 13:51:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 540FD37168;
+	Wed, 20 Dec 2023 13:51:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YejMj6yO"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com [209.85.210.46])
+Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 133AD38DD8;
-	Wed, 20 Dec 2023 13:51:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14DC538DD5;
+	Wed, 20 Dec 2023 13:51:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f46.google.com with SMTP id 46e09a7af769-6da6576064dso1009890a34.1;
-        Wed, 20 Dec 2023 05:51:19 -0800 (PST)
+Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2cc7d80324dso22215801fa.2;
+        Wed, 20 Dec 2023 05:51:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703080296; x=1703685096; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Rei5fD9NGFINnaZoP+B7hv3sKvx8MD4zubiuSki3juc=;
+        b=YejMj6yOZeG5bM5ZgEYx3UThHgaA25TGnd/euJ7ThvX4DSeA8xlKrMxqegGQdEUAQW
+         duid4aS3Y/TsDAvr93C6YABOMX4j2L+eNu9jLpKYOTR8UbgY9he4PXjb/rHBQ+XshI5i
+         ycmGejwhp++i20eHFmCQM5NbBYOqVgu9IY07Vct58knkckqEQniPq3bn2Z72ad1jJpiU
+         8lefpUeJHnLwhXEzkEeF02fYPEGvMqOVU3aDWysCrxtt5bAd44o8u4+s00/vfOviHIvY
+         AF7RlSoNthexes7OgjYM4b6/8YCZlazbr9HRI6gmknDjxApL6DwmmdHaaeKcmHKOR7GJ
+         fW7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703080279; x=1703685079;
+        d=1e100.net; s=20230601; t=1703080296; x=1703685096;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=m2lU+eMx3+kOMFg1wDlc+9EMfswuKkS1DBslLLWNXWE=;
-        b=h9FPeVoNAnCGg+nh8e4CO6zTeCyoekXFCSW7JNrBsvIgx0NYfHBW7vY8k9Ym1Ln+lY
-         OlpoMkV2DtAIMi+AJhgrdKROoSo+iA+I0/c0PDtZjaikVicvX0n2KA+/RBY+glJTFJn1
-         4L3APLr5NAKE8NMKZKjrZNiIoMhj4T/vqKonnBeIaxOC0+hPTXh20aPQLH4f9sBsTYMQ
-         nL6I2zsegWK2rbmsGI9Zrx7X681Fg0Ylk4chSRmHMaTvoUOVbdOabGVj0oh8SgNfoeaV
-         lkxSdEHCTdp8OTXqzCvykk53jdxGoF+ed73OCMA36SxOEpSdEb/8DapHkpCEb7gM0AEw
-         x54A==
-X-Gm-Message-State: AOJu0Yz66x3L74bDRqPJSNVg3fdrpk6Kg/9cKZq5oqOObxNM0PDFthaG
-	C7c9vM47QxKla9PzfP3wfIPt4kc0DtGCtvvi+Kk=
-X-Google-Smtp-Source: AGHT+IE2325k4JDGlJJwoytkERkv8LDhLcy0rhdfXp0W2j5XnLlymgPbXD0ZO/MRtZcXLZt9f3yWuw4cArCMsjf/wfI=
-X-Received: by 2002:a05:6870:b028:b0:1fb:e5f:c530 with SMTP id
- y40-20020a056870b02800b001fb0e5fc530mr35863963oae.4.1703080279087; Wed, 20
- Dec 2023 05:51:19 -0800 (PST)
+        bh=Rei5fD9NGFINnaZoP+B7hv3sKvx8MD4zubiuSki3juc=;
+        b=YfogNEFkhmxY7BvumRirQNkv8VCGusc/TxU5L0NIQBiU0Yk35xDwTkMbeAodSezI1V
+         9RL8T81tXy1wbW1zXKbgwVQodNDDHlPZ/DLBVSM6/5pbhtbnUwAifm6OgfVwiIW2LycQ
+         m8pM8nrAOdvsjpj0AKBLEeq0mWSrrkbkFxkHwh8+ODRr4ZciGK1/PcKcq5Xetv98TXjK
+         Oy7WpvLHPH+q0bY7Kag6Zi2p8FbqPEwsI6U3Y4ATJQ8JPzmBu4FpJyY/LJWdkHq8RyS5
+         PNQEOa3LJyLf6041komhHKzbvhPbtUKTzdCljP5XvuNdqaT9Dd0NG8E7Ei11UN+FDb2m
+         2Lmw==
+X-Gm-Message-State: AOJu0YzXfnM5LEyYGM+c3vCttZI49mViTBCP4oekqDha5PmeGAuyL8Y4
+	2D7lR2JJJJyFJjsOnmVhxX0rhkpX23tnr8njlHA=
+X-Google-Smtp-Source: AGHT+IGZec52dGpUhRR0rOVEDoEhnbeYTYNEvPvXIC1fF5bOhuW6KuhADUDrozoxLytShIKBvr4qyyNNDjrfwgJW9ik=
+X-Received: by 2002:a05:651c:1055:b0:2cc:8481:f21e with SMTP id
+ x21-20020a05651c105500b002cc8481f21emr712056ljm.39.1703080295789; Wed, 20 Dec
+ 2023 05:51:35 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231212134844.1213381-1-lukasz.luba@arm.com> <20231212134844.1213381-2-lukasz.luba@arm.com>
-In-Reply-To: <20231212134844.1213381-2-lukasz.luba@arm.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Wed, 20 Dec 2023 14:51:07 +0100
-Message-ID: <CAJZ5v0iFOrgtN82pqUqDhE1jMA4wjhH19DFhzPP3yYO05O03=g@mail.gmail.com>
-Subject: Re: [PATCH v2 1/8] thermal: core: Add governor callback for thermal
- zone change
-To: Lukasz Luba <lukasz.luba@arm.com>
-Cc: linux-kernel@vger.kernel.org, daniel.lezcano@linaro.org, rafael@kernel.org, 
-	linux-pm@vger.kernel.org, rui.zhang@intel.com
+References: <cover.1702371136.git.haibo1.xu@intel.com> <0343a9e4bfa8011fbb6bca0286cee7eab1f17d5d.1702371136.git.haibo1.xu@intel.com>
+ <8734vy832j.wl-maz@kernel.org> <CAJve8onc0WN5g98aOVBmJx15wFBAqfBKJ+ufoLY+oqYyVL+=3A@mail.gmail.com>
+ <f98879dc24f948f7a8a7b5374a32bc04@kernel.org>
+In-Reply-To: <f98879dc24f948f7a8a7b5374a32bc04@kernel.org>
+From: Haibo Xu <xiaobo55x@gmail.com>
+Date: Wed, 20 Dec 2023 21:51:24 +0800
+Message-ID: <CAJve8ona7g=LxW1YeRB_FqGodF973H=A3b2m8054gmzK=Z7_ww@mail.gmail.com>
+Subject: Re: [PATCH v4 11/11] KVM: selftests: Enable tunning of err_margin_us
+ in arch timer test
+To: Marc Zyngier <maz@kernel.org>
+Cc: Haibo Xu <haibo1.xu@intel.com>, ajones@ventanamicro.com, 
+	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Albert Ou <aou@eecs.berkeley.edu>, Paolo Bonzini <pbonzini@redhat.com>, 
+	Shuah Khan <shuah@kernel.org>, Oliver Upton <oliver.upton@linux.dev>, 
+	James Morse <james.morse@arm.com>, Suzuki K Poulose <suzuki.poulose@arm.com>, 
+	Zenghui Yu <yuzenghui@huawei.com>, Anup Patel <anup@brainfault.org>, 
+	Atish Patra <atishp@atishpatra.org>, Guo Ren <guoren@kernel.org>, 
+	Mayuresh Chitale <mchitale@ventanamicro.com>, Greentime Hu <greentime.hu@sifive.com>, 
+	wchen <waylingii@gmail.com>, Conor Dooley <conor.dooley@microchip.com>, 
+	Heiko Stuebner <heiko@sntech.de>, Minda Chen <minda.chen@starfivetech.com>, 
+	Samuel Holland <samuel@sholland.org>, Jisheng Zhang <jszhang@kernel.org>, 
+	Sean Christopherson <seanjc@google.com>, Peter Xu <peterx@redhat.com>, Like Xu <likexu@tencent.com>, 
+	Vipin Sharma <vipinsh@google.com>, 
+	Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>, Aaron Lewis <aaronlewis@google.com>, 
+	Thomas Huth <thuth@redhat.com>, linux-kernel@vger.kernel.org, 
+	linux-riscv@lists.infradead.org, kvm@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	kvmarm@lists.linux.dev, kvm-riscv@lists.infradead.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 12, 2023 at 2:48=E2=80=AFPM Lukasz Luba <lukasz.luba@arm.com> w=
+On Wed, Dec 20, 2023 at 5:00=E2=80=AFPM Marc Zyngier <maz@kernel.org> wrote=
+:
+>
+> On 2023-12-20 06:50, Haibo Xu wrote:
+> > On Wed, Dec 20, 2023 at 2:22=E2=80=AFAM Marc Zyngier <maz@kernel.org> w=
 rote:
+> >>
+> >> On Tue, 12 Dec 2023 09:31:20 +0000,
+> >> Haibo Xu <haibo1.xu@intel.com> wrote:
+> >> > > @@ -216,6 +221,9 @@ static bool parse_args(int argc, char *argv[])
+> >> >               case 'm':
+> >> >                       test_args.migration_freq_ms =3D atoi_non_negat=
+ive("Frequency", optarg);
+> >> >                       break;
+> >> > +             case 'e':
+> >> > +                     test_args.timer_err_margin_us =3D atoi_non_neg=
+ative("Error Margin", optarg);
+> >> > +                     break;
+> >>
+> >> So your error margin is always unsigned...
+> >>
+> >
+> > The error margin was supposed to be a non-negative [0, INT_MAX].
+> > (May be need to define a Max for the input, instead of INT_MAX)
+> >
+> >> >               case 'o':
+> >> >                       test_args.counter_offset =3D strtol(optarg, NU=
+LL, 0);
+> >> >                       test_args.reserved =3D 0;
+> >> > diff --git a/tools/testing/selftests/kvm/include/timer_test.h b/tool=
+s/testing/selftests/kvm/include/timer_test.h
+> >> > index 968257b893a7..b1d405e7157d 100644
+> >> > --- a/tools/testing/selftests/kvm/include/timer_test.h
+> >> > +++ b/tools/testing/selftests/kvm/include/timer_test.h
+> >> > @@ -22,6 +22,7 @@ struct test_args {
+> >> >       int nr_iter;
+> >> >       int timer_period_ms;
+> >> >       int migration_freq_ms;
+> >> > +     int timer_err_margin_us;
+> >>
+> >> ... except that you are storing it as a signed value. Some consistency
+> >> wouldn't hurt, really, and would avoid issues when passing large
+> >> values.
+> >>
+> >
+> > Yes, it's more proper to use an unsigned int for the non-negative error
+> > margin.
+> > Storing as signed here is just to keep the type consistent with that
+> > of timer_period_ms
+> > since there will be '+' operation in other places.
+> >
+> >         tools/testing/selftests/kvm/aarch64/arch_timer.c
+> >         /* Setup a timeout for the interrupt to arrive */
+> >          udelay(msecs_to_usecs(test_args.timer_period_ms) +
+> >              test_args.timer_err_margin_us);
 >
-> Add a new callback which can update governors when there is a change in
-> the thermal zone internals, e.g. thermal cooling instance list changed.
-
-I would say what struct type the callback is going to be added to.
-
-> That makes possible to move some heavy operations like memory allocations
-> related to the number of cooling instances out of the throttle() callback=
-.
->
-> Reuse the 'enum thermal_notify_event' and extend it with a new event:
-> THERMAL_INSTANCE_LIST_UPDATE.
-
-I think that this is a bit too low-level (see below).
-
-> Both callback code paths (throttle() and update_tz()) are protected with
-> the same thermal zone lock, which guaranties the consistency.
->
-> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
-> ---
->  drivers/thermal/thermal_core.c | 13 +++++++++++++
->  include/linux/thermal.h        |  5 +++++
->  2 files changed, 18 insertions(+)
->
-> diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_cor=
-e.c
-> index 625ba07cbe2f..592c956f6fd5 100644
-> --- a/drivers/thermal/thermal_core.c
-> +++ b/drivers/thermal/thermal_core.c
-> @@ -314,6 +314,14 @@ static void handle_non_critical_trips(struct thermal=
-_zone_device *tz,
->                        def_governor->throttle(tz, trip);
->  }
+> But that's exactly why using a signed quantity is wrong.
+> What does it mean to have a huge *negative* margin?
 >
 
-I needed a bit more time to think about this.
+Hi Marc,
 
-> +static void handle_instances_list_update(struct thermal_zone_device *tz)
-> +{
-> +       if (!tz->governor || !tz->governor->update_tz)
-> +               return;
-> +
-> +       tz->governor->update_tz(tz, THERMAL_INSTANCE_LIST_UPDATE);
-> +}
+I agree that negative values are meaningless for the margin.
+If I understand correctly, the negative margin should be filtered by
+assertion in atoi_non_negative().
 
-So I would call the above something more generic, like
-thermal_governor_update_tz() and I would pass the "reason" argument to
-it.
+Thanks,
+Haibo
 
-> +
->  void thermal_zone_device_critical(struct thermal_zone_device *tz)
->  {
->         /*
-> @@ -723,6 +731,8 @@ int thermal_bind_cdev_to_trip(struct thermal_zone_dev=
-ice *tz,
->                 list_add_tail(&dev->tz_node, &tz->thermal_instances);
->                 list_add_tail(&dev->cdev_node, &cdev->thermal_instances);
->                 atomic_set(&tz->need_update, 1);
-> +
-> +               handle_instances_list_update(tz);
-
-In particular for this, I would use a special "reason" value, like
-THERMAL_TZ_BIND_CDEV.
-
-Yes, the list of instances will change as a result of the binding, but
-that is an internal detail specific to the current implementation.
-
->         }
->         mutex_unlock(&cdev->lock);
->         mutex_unlock(&tz->lock);
-> @@ -781,6 +791,9 @@ int thermal_unbind_cdev_from_trip(struct thermal_zone=
-_device *tz,
->                 if (pos->tz =3D=3D tz && pos->trip =3D=3D trip && pos->cd=
-ev =3D=3D cdev) {
->                         list_del(&pos->tz_node);
->                         list_del(&pos->cdev_node);
-> +
-> +                       handle_instances_list_update(tz);
-
-Analogously, I'd use something like THERMAL_TZ_UNBIND_CDEV here.
-
-> +
->                         mutex_unlock(&cdev->lock);
->                         mutex_unlock(&tz->lock);
->                         goto unbind;
-> diff --git a/include/linux/thermal.h b/include/linux/thermal.h
-> index c7190e2dfcb4..9fd0d3fb234a 100644
-> --- a/include/linux/thermal.h
-> +++ b/include/linux/thermal.h
-> @@ -51,6 +51,7 @@ enum thermal_notify_event {
->         THERMAL_DEVICE_POWER_CAPABILITY_CHANGED, /* power capability chan=
-ged */
->         THERMAL_TABLE_CHANGED, /* Thermal table(s) changed */
->         THERMAL_EVENT_KEEP_ALIVE, /* Request for user space handler to re=
-spond */
-> +       THERMAL_INSTANCE_LIST_UPDATE, /* List of thermal instances change=
-d */
-
-So I would add THERMAL_TZ_BIND_CDEV and THERMAL_TZ_UNBIND_CDEV to the list.
-
->  };
+> I don't see how you can justify this.
 >
->  /**
-> @@ -195,6 +196,8 @@ struct thermal_zone_device {
->   *                     thermal zone.
->   * @throttle:  callback called for every trip point even if temperature =
-is
->   *             below the trip point temperature
-> + * @update_tz: callback called when thermal zone internals have changed,=
- e.g.
-> + *             thermal cooling instance was added/removed
->   * @governor_list:     node in thermal_governor_list (in thermal_core.c)
->   */
->  struct thermal_governor {
-> @@ -203,6 +206,8 @@ struct thermal_governor {
->         void (*unbind_from_tz)(struct thermal_zone_device *tz);
->         int (*throttle)(struct thermal_zone_device *tz,
->                         const struct thermal_trip *trip);
-> +       void (*update_tz)(struct thermal_zone_device *tz,
-> +                         enum thermal_notify_event reason);
->         struct list_head        governor_list;
->  };
->
+>          M.
 > --
+> Jazz is not dead. It just smells funny...
 
