@@ -1,106 +1,149 @@
-Return-Path: <linux-kernel+bounces-7454-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7473-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E43181A81C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 22:36:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60DCC81A853
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 22:42:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A33A9B22EF5
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 21:36:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1CFD5284E79
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 21:42:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89D9648CFD;
-	Wed, 20 Dec 2023 21:36:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3875495D6;
+	Wed, 20 Dec 2023 21:38:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FPnDMo7p"
+	dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b="uYCZ3KNG"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCDC6495C1;
-	Wed, 20 Dec 2023 21:36:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D32AAC433C8;
-	Wed, 20 Dec 2023 21:36:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703108192;
-	bh=8fD+g/UALuuFVC/2IctyRtQM4JlqRN9pptw2dt8R384=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=FPnDMo7pNAr/kSeAnISx6iuXuIfsSnkY1fKBKFrT3QgIbqPjQugd/OPucZIcKIpkR
-	 VgyhBRqne7a7T2qdpp79bzBdY7TdF+ZnOXIILHpvaHQEqwWRRamFOKNEc9GqZ2GM0G
-	 6k9rmb+DazFqGagtmG/7WXvigSPZfmi46GjfgghdlY3TMHQ+F1VqfMyDXTkSSs3WWY
-	 r4eLEgwSuVmi0g9kr0MEkRv3hSPPkqnxB7FaqDQ/BSoxSUJUoyZHwqYE9jlHRMZopE
-	 7NPikncxVjQCVqnkhU/wRWfnHZPYRcKSusq37pLNTsJK5Yk1JkYGa460DVfaGpDxxd
-	 UxyFN4JL30JQw==
-Received: (nullmailer pid 1179044 invoked by uid 1000);
-	Wed, 20 Dec 2023 21:36:29 -0000
-Date: Wed, 20 Dec 2023 15:36:29 -0600
-From: Rob Herring <robh@kernel.org>
-To: Inochi Amaoto <inochiama@outlook.com>
-Cc: Conor Dooley <conor@kernel.org>, jingbao qiu <qiujingbao.dlmu@gmail.com>, a.zummo@towertech.it, alexandre.belloni@bootlin.com, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, chao.wei@sophgo.com, unicorn_wang@outlook.com, paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu, linux-rtc@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, dlan@gentoo.org
-Subject: Re: [PATCH v2 1/3] dt-bindings: rtc: sophgo: add RTC support for
- Sophgo CV1800 series SoC
-Message-ID: <20231220213629.GA1177070-robh@kernel.org>
-References: <20231217-swept-uncorrupt-92ac058dba4b@spud>
- <IA1PR20MB4953BE30DC29820912321C07BB90A@IA1PR20MB4953.namprd20.prod.outlook.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E896D495EC;
+	Wed, 20 Dec 2023 21:38:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hugovil.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
+	; s=x; h=Subject:Content-Transfer-Encoding:Mime-Version:Message-Id:Cc:To:From
+	:Date:subject:date:message-id:reply-to;
+	bh=wIWDMjkfub9nTTJ5JI74/K00hMgRE/kdEk8xa9Y7LW0=; b=uYCZ3KNG9utyPrLOQFCRgBF6Nl
+	/vkLFPPGzZu4iOSDQKwsx9kGJD7FMpBWrI9XxlegwaUE3iaeSlBGPPAxzAV51jnMqIvo0I201/wtR
+	1aL5j4WX9noqJjeATTXuVYICtmfyutP384rd9vxKV5lI9eI4rPXAgxpi/h54/vjCWj4U=;
+Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:57326 helo=pettiford)
+	by mail.hugovil.com with esmtpa (Exim 4.92)
+	(envelope-from <hugo@hugovil.com>)
+	id 1rG4Gk-0002Rp-RU; Wed, 20 Dec 2023 16:38:23 -0500
+Date: Wed, 20 Dec 2023 16:38:22 -0500
+From: Hugo Villeneuve <hugo@hugovil.com>
+To: Andy Shevchenko <andriy.shevchenko@intel.com>
+Cc: gregkh@linuxfoundation.org, jirislaby@kernel.org, jringle@gridpoint.com,
+ kubakici@wp.pl, phil@raspberrypi.org, bo.svangard@embeddedart.se,
+ linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org, Hugo Villeneuve
+ <hvilleneuve@dimonoff.com>
+Message-Id: <20231220163822.ce1d3893735d3334ae2d04e2@hugovil.com>
+In-Reply-To: <ZYMQRv1Td7FjH5Mh@smile.fi.intel.com>
+References: <20231219171903.3530985-1-hugo@hugovil.com>
+	<20231219171903.3530985-18-hugo@hugovil.com>
+	<ZYMQRv1Td7FjH5Mh@smile.fi.intel.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <IA1PR20MB4953BE30DC29820912321C07BB90A@IA1PR20MB4953.namprd20.prod.outlook.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 70.80.174.168
+X-SA-Exim-Mail-From: hugo@hugovil.com
+X-Spam-Level: 
+X-Spam-Report: 
+	* -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+	* -0.0 T_SCC_BODY_TEXT_LINE No description available.
+	* -1.4 NICE_REPLY_A Looks like a legit reply (A)
+Subject: Re: [PATCH 17/18] serial: sc16is7xx: refactor EFR lock
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 
-On Mon, Dec 18, 2023 at 11:41:52AM +0800, Inochi Amaoto wrote:
-> >On Sun, Dec 17, 2023 at 09:16:39PM +0800, jingbao qiu wrote:
-> >> On Sun, Dec 17, 2023 at 8:26=E2=80=AFPM Conor Dooley <conor@kernel.org> w=
-> >rote:
-> >> >
-> >> > On Sun, Dec 17, 2023 at 07:09:50PM +0800, Jingbao Qiu wrote:
-> >> >
-> >> > > +  reg:
-> >> > > +    items:
-> >> > > +      - description: data register
-> >> > > +      - description: control register
-> >> >
-> >> > > +    rtc@5025000{
-> >> > > +      compatible =3D "sophgo,cv1800-rtc";
-> >> > > +      reg =3D <0x5025000 0x1000>, <0x5026000 0x1000>;
-> >> >
-> >> > Why are these two regions rather than just one, given they are located
-> >> > next to one another?
-> >> > Are they separate on one of the other devices in this family?
-> >> >
-> >> > Thanks,
-> >> > Conor.
-> >> >
-> >>=20
-> >> I think there are two reasons, the first one is to distinguish
-> >> different logical ,
-> >> REG_ CTRL (base on 0x5025000) controls clock calibration, sleep,and other
-> >> functions, RTC_ CORE (base on 0x5026000) has basic RTC functionality,
-> >> The second is the maximum address used by RTC_CTRL (base on 0x5025000)
-> >> is 0x0ac,which is much smaller than 0x1000. Therefore, the datasheet divi=
-> >des
-> >> it into two parts for introduction, and I also divide it into two
-> >> parts based on this
-> >> introduction.So do you suggest that I merge them together=EF=BC=9F
-> >
-> >If all of the cv1800 series devices have them sequentially, I would just
-> >make them one region.
-> >
+On Wed, 20 Dec 2023 18:03:18 +0200
+Andy Shevchenko <andriy.shevchenko@intel.com> wrote:
+
+> On Tue, Dec 19, 2023 at 12:19:01PM -0500, Hugo Villeneuve wrote:
+> > From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+> > 
+> > Move common code for EFR lock/unlock of mutex into functions for code reuse
+> > and clarity.
 > 
-> I agree with using one region. The ctrl and core region are highly
-> releated.
+> ...
 > 
-> Moreover, I suggest using syscon to describe this region, the reboot
-> device is also in this region.
+> > @@ -333,6 +333,7 @@ struct sc16is7xx_one {
+> >  	struct sc16is7xx_one_config	config;
+> >  	bool				irda_mode;
+> >  	unsigned int			old_mctrl;
+> > +	u8				old_lcr; /* Value before EFR access. */
+> >  };
+> 
+> Have you run `pahole`?
+> I believe with
+> 
+> 	unsigned int			old_mctrl;
+> 	u8				old_lcr; /* Value before EFR access. */
+> 	bool				irda_mode;
+> 
+> layout it will take less memory.
 
-Then the description of the device is incomplete. Please describe the 
-whole block/device.
+Hi,
+I did not know about this tool, nice.
 
-Rob
+$ pahole -C sc16is7xx_one drivers/tty/serial/sc16is7xx.o
 
+Before:
+    /* size: 752, cachelines: 12, members: 10 */
+
+With your proposed change:
+    /* size: 744, cachelines: 12, members: 10 */
+
+Will add this modification for V2, as well as other issues
+noted below.
+
+Thank you,
+Hugo
+
+
+> > +/* In an amazing feat of design, the Enhanced Features Register (EFR)
+> 
+> /*
+>  * This is NOT the style we use for multi-line
+>  * comments in the serial subsystem. On contrary
+>  * this comment can be used as a proper example.
+>  * (Yes, I noticed it's an old comment, but take
+>  *  a chance to fix it.)
+>  */
+> 
+> > + * shares the address of the Interrupt Identification Register (IIR).
+> > + * Access to EFR is switched on by writing a magic value (0xbf) to the
+> > + * Line Control Register (LCR). Any interrupt firing during this time will
+> > + * see the EFR where it expects the IIR to be, leading to
+> > + * "Unexpected interrupt" messages.
+> > + *
+> > + * Prevent this possibility by claiming a mutex while accessing the EFR,
+> > + * and claiming the same mutex from within the interrupt handler. This is
+> > + * similar to disabling the interrupt, but that doesn't work because the
+> > + * bulk of the interrupt processing is run as a workqueue job in thread
+> > + * context.
+> > + */
+> 
+> ...
+> 
+> > +	sc16is7xx_port_write(port, SC16IS7XX_LCR_REG,
+> > +			     SC16IS7XX_LCR_CONF_MODE_B);
+> 
+> One line. (Yes, 81 character, but readability is as good as before.
+> 
+> -- 
+> With Best Regards,
+> Andy Shevchenko
+> 
+> 
+> 
+> 
 
