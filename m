@@ -1,128 +1,101 @@
-Return-Path: <linux-kernel+bounces-7245-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7246-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5821E81A3B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 17:06:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B787C81A3BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 17:07:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0D9961F23632
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 16:06:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5BBEBB27C1D
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 16:07:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47C6A41844;
-	Wed, 20 Dec 2023 16:06:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5208A47A45;
+	Wed, 20 Dec 2023 16:06:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mojatatu-com.20230601.gappssmtp.com header.i=@mojatatu-com.20230601.gappssmtp.com header.b="CWQyGDQn"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="G58HHy6B"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com [209.85.219.173])
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0079841757
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 16:06:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mojatatu.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=mojatatu.com
-Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-dbd99c08cd6so931307276.0
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 08:06:07 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 486454779A;
+	Wed, 20 Dec 2023 16:06:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-40d38f03712so4785225e9.2;
+        Wed, 20 Dec 2023 08:06:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mojatatu-com.20230601.gappssmtp.com; s=20230601; t=1703088367; x=1703693167; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1703088371; x=1703693171; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=gUS+E4b1XTZCpmipitw527bXQBzsOD2DIGTWW2tFCFk=;
-        b=CWQyGDQn+lJCDeYr1Hn6nLkxnXv13IowwIqrEmUY6rA6ineq/Xk8e8+lawqh3X0Iil
-         kaub0xMYIl0S58i+13UIXvMqkJd1sfzwQzeuoKMojeW6kNA2vijve46z3OJKWqY0lw4e
-         Tiq/NzvpWGr1adoWnl+JW9aIpefrhivKJqOg+1sSYqAZYnUgDjwxSnx5IDjXrR/WlNda
-         Qc9bkKBQ1+ujq6nA0ALvWtpJTSFKjheVLml7K+9tT+0YfynUsYjjvFjv2zUVfQImU6GR
-         iPPmgrW0qgO4qLC/pHBeXPD7v2fTO8j59kIxmbj7it8Ce71PG0+SoQomzWjBHrgx5rkh
-         VaHA==
+        bh=MKeVtmpby8agEN95u23iRX0G3ZBjcE521MUvPxeI9UQ=;
+        b=G58HHy6BzqjqfNo0ikjKnJ+S/2XMwF2ZuQm/yao1EOwtwaSYZSZm3HKQNyv9nkUKBM
+         hfm8S/eg30tYWdLojb6yIWGhPIxpueSENk5OMx+8zi3vo72i0VqbbczITrpuZT7g+j70
+         tcXqmIZ7QJvwl3A80QDwcriuaewX/4c0Yt/vNZOFUtGTityYQgSX7Lkz9NPuX6UgYVmE
+         EI9Tj8rMGuAYad9BmfHATmVt4k2k9+g/KDtkQjh5izTVRhb+tGtnOd/Aux/xkWD4b1Bh
+         0bcCOSD40klACRWnj15kJFHZNiyW/eFisTJ6G3EI8ELY/ndW+oLwR5z8eDtCm8WQmO82
+         Z0dQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703088367; x=1703693167;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1703088371; x=1703693171;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=gUS+E4b1XTZCpmipitw527bXQBzsOD2DIGTWW2tFCFk=;
-        b=aVi4UlPKlHo4iDdcSH6qpiZ7T2xPErNkdX/j0yBPpft3DBMT2+86ZH8Q3SkCprHBgw
-         t3UL7+HT/TVcYgEUpYmDKoKEiZoPFwa1U1ii9zrR2pX4TMDWAcvgSrri65/U/IH1EIbE
-         uLigz/xQ7MGz5shMcE/giXVfy1ioAFfslOaVQtpsHmvhdzOg3yXLIyAOeMBKz88NsHcc
-         rDmdmRc6pVpmhTvA/q+CVLLZ9lwB9QOP/BQ+hGxwZ1kkojCZS7jFYMOWlm9poEgCQsJ8
-         4ATqYCpYBzE9izFGUuh+KLpIJNjx2x49KMR+wQfMkmU8LpygErYbLqocGOcqRDpo8u7B
-         BlZw==
-X-Gm-Message-State: AOJu0YxdBTPRz4Qp5ACAfwoHVR+EuGEzfNXQc1nM9vpexGViuBtyuUP2
-	EOFSULq3oc3ozhacPyNs5sFEtupx7Kb7Hmy+x/eNfg==
-X-Google-Smtp-Source: AGHT+IGbDlkYFm8oLQEkqQKyIalzbolHWzCjRd7CY6nZPCHGT9KC+dfOH9m39U4B3s0F708/DkKgGYPnkqhqQqA6+7M=
-X-Received: by 2002:a05:6902:2681:b0:dbd:ae7d:ce7c with SMTP id
- dx1-20020a056902268100b00dbdae7dce7cmr809573ybb.67.1703088366833; Wed, 20 Dec
- 2023 08:06:06 -0800 (PST)
+        bh=MKeVtmpby8agEN95u23iRX0G3ZBjcE521MUvPxeI9UQ=;
+        b=ei0E24UIuUJtJKuB5MyiXipyhiNGy5ruf5sT+Dj+WzFfnMdtWJKQzcZ6WMWwLNwawk
+         rY5E4eu/mtlAqHMekADa9driOJXkoQJXROeLlOVzyWqr1t0xYdT2ZoFk6tb7//MtSUeB
+         CJIpotEMTlGdRWxkI6Ah2eS+Dy43bkqxi0rBgfp4KtYfrE50GoLYdYftU2tnMIvHJq/H
+         hU6wzQJByM0k9oN0np3gJUNKasgQ/k+2i7+yzuNwojnlgHEa52hvqLjxunjGNnQ50pE4
+         yWe9saj+4LAIG3t9hUj5Xt+x8dEl9n32b2BDNbskI9l5UlnBCnVt5BjoBw974aKaDwb2
+         uzkg==
+X-Gm-Message-State: AOJu0Yyg7+klRfq2uSA/ZDHTithCgpwkW97DP2QMiIjBXq/a75l2Ey52
+	umbBs1CITzn7W53ebgO/4uahhKgTPZc=
+X-Google-Smtp-Source: AGHT+IHNNUxFFbzwO/+e7nAtjKQOfaHYrOTNtk2WOx0vdtLtwyJsLW3Z8oV9lUYcQHyLmwrAB+58VA==
+X-Received: by 2002:a05:600c:1f1a:b0:40c:31f1:145c with SMTP id bd26-20020a05600c1f1a00b0040c31f1145cmr10286149wmb.169.1703088371109;
+        Wed, 20 Dec 2023 08:06:11 -0800 (PST)
+Received: from localhost (p200300e41f0fa600f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f0f:a600:f22f:74ff:fe1f:3a53])
+        by smtp.gmail.com with ESMTPSA id az32-20020a05600c602000b0040cebe1d7f7sm111480wmb.12.2023.12.20.08.06.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Dec 2023 08:06:10 -0800 (PST)
+From: Thierry Reding <thierry.reding@gmail.com>
+To: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	Ray Jui <rjui@broadcom.com>,
+	Scott Branden <sbranden@broadcom.com>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	Sean Young <sean@mess.org>
+Cc: linux-pwm@vger.kernel.org,
+	linux-rpi-kernel@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v11] pwm: bcm2835: Allow PWM driver to be used in atomic context
+Date: Wed, 20 Dec 2023 17:06:07 +0100
+Message-ID: <170308520275.565566.6645944679194242340.b4-ty@gmail.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20231220142426.1275052-1-sean@mess.org>
+References: <20231220142426.1275052-1-sean@mess.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231220030838.11751-1-hbh25y@gmail.com> <CAM0EoMnPgKFK5uyx5YJUYc1F7U0058aYOQb6H6ewcz9Y8OouAw@mail.gmail.com>
-In-Reply-To: <CAM0EoMnPgKFK5uyx5YJUYc1F7U0058aYOQb6H6ewcz9Y8OouAw@mail.gmail.com>
-From: Jamal Hadi Salim <jhs@mojatatu.com>
-Date: Wed, 20 Dec 2023 11:05:55 -0500
-Message-ID: <CAM0EoM=4ZRteGbjAdBuLGtbM_qpnJoUuky-Yj+i+3FOqXXra+Q@mail.gmail.com>
-Subject: Re: [PATCH] net: sched: em_text: fix possible memory leak in em_text_destroy()
-To: Hangyu Hua <hbh25y@gmail.com>
-Cc: xiyou.wangcong@gmail.com, jiri@resnulli.us, davem@davemloft.net, 
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, tgraf@suug.ch, 
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-On Wed, Dec 20, 2023 at 6:55=E2=80=AFAM Jamal Hadi Salim <jhs@mojatatu.com>=
- wrote:
->
-> Hi Hangyu,
-> While the fix looks correct - can you please describe how you came
-> across this issue? Was it a tool or by inspection? Do you have a text
-> case that triggered something etc, etc.
->
-> On Tue, Dec 19, 2023 at 10:09=E2=80=AFPM Hangyu Hua <hbh25y@gmail.com> wr=
-ote:
-> >
-> > m->data needs to be freed when em_text_destroy is called.
-> >
-> > Fixes: d675c989ed2d ("[PKT_SCHED]: Packet classification based on texts=
-earch (ematch)")
-> > Signed-off-by: Hangyu Hua <hbh25y@gmail.com>
-> > ---
-> >  net/sched/em_text.c | 4 +++-
-> >  1 file changed, 3 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/net/sched/em_text.c b/net/sched/em_text.c
-> > index 6f3c1fb2fb44..b9d5d4dca2c9 100644
-> > --- a/net/sched/em_text.c
-> > +++ b/net/sched/em_text.c
-> > @@ -97,8 +97,10 @@ static int em_text_change(struct net *net, void *dat=
-a, int len,
-> >
-> >  static void em_text_destroy(struct tcf_ematch *m)
-> >  {
-> > -       if (EM_TEXT_PRIV(m) && EM_TEXT_PRIV(m)->config)
-> > +       if (EM_TEXT_PRIV(m) && EM_TEXT_PRIV(m)->config) {
-> >                 textsearch_destroy(EM_TEXT_PRIV(m)->config);
-> > +               kfree(m->data);
-> > +       }
-> >  }
-> >
->
 
-the bot just complained about needing a cast, use this:
-struct text_match *
+On Wed, 20 Dec 2023 14:24:25 +0000, Sean Young wrote:
+> clk_get_rate() may do a mutex lock. Fetch the clock rate once, and prevent
+> rate changes using clk_rate_exclusive_get().
+> 
+> 
 
-cheers,
-jamal
-> Acked-by: Jamal Hadi Salim <jhs@mojatatu.com>
->
-> cheers,
-> jamal
->
-> >  static int em_text_dump(struct sk_buff *skb, struct tcf_ematch *m)
-> > --
-> > 2.34.1
-> >
+Applied, thanks!
+
+[1/1] pwm: bcm2835: Allow PWM driver to be used in atomic context
+      commit: fcc76072935935082efa127b97c7ddd880d2d793
+
+Best regards,
+-- 
+Thierry Reding <thierry.reding@gmail.com>
 
