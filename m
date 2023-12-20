@@ -1,95 +1,126 @@
-Return-Path: <linux-kernel+bounces-7048-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7049-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC05781A0F5
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 15:19:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF3E881A0FC
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 15:20:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 09E661C23167
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 14:19:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 65BED2815FB
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 14:19:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0ADA38F96;
-	Wed, 20 Dec 2023 14:18:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32C9538F9A;
+	Wed, 20 Dec 2023 14:19:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ZKX3SwHk"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="G0hcqa/f"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 162C13A276
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 14:18:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-5e86fc3f1e2so7210277b3.0
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 06:18:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703081936; x=1703686736; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=0dJ/uTYOAXQ9/VO+SpE3eiUrHkLtjwxggeQpM/8y8I0=;
-        b=ZKX3SwHkhxRkpt2AZ0SJxa/dcXoE42aLpXzmYzxyVkWrwqga54YEZJfApXi9Sm0pAq
-         89zkA9pVJhnaUo2C4Bl/M9Wwh2iNjDHtTz0UzUQ311Cee3rN8dKw7pZWkYFQW+2wYqq+
-         XWos3gFdTEkLRUqSTmseG5OSfg/NfM9XklLm1Bjye3qqujZ14k+Ks0uGYcazZ5XXDgvX
-         MTANkztdbj6bZakjooAWdNauPIMK9+Lu/dD0NGyUYqVWYeb5Wk0RKsPrrC1ZBvYpgPq7
-         ngl7jtYPN2sbYqas3gRTTRtGvOJaLSCSW5gGt+++uuPfPB+w4eoZPeJAG/LpEaCK8i9R
-         /lZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703081936; x=1703686736;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=0dJ/uTYOAXQ9/VO+SpE3eiUrHkLtjwxggeQpM/8y8I0=;
-        b=Nsk2EI0cDKA9Ie5Cd7IlMpbrmo8ELnVlxFMV1oBN6P7ag6tkMZPP+rXGQ3VtgZgK3W
-         6l9cETRQUxHehicw3P7q7DR9dC50RyfeDOLFFaWmAzY1goMmhdSE/SxKbuCnWB8ttJEA
-         9P7T5no07DA3EZ7kISN9xkp5/o9NkcQubx299YJlcqOK45rozr9nf0Dts5jaIyPTUMJp
-         P9reVfNEG8gxs0Pw4SJHcfDxVPr/P8TWBy7WfFT71KgX0kwUY2od6SS0hg+ZDBpkWiLa
-         lK6rdtIj4S0aHAad1f+6KiOcjmULZOu6HvZ+hs1vIhKbyVJL9P/qtD96YzhKawTn2rEA
-         t7zw==
-X-Gm-Message-State: AOJu0Yz0XwBTA68zTadZ2yabJ1kroI/en//EzsWJF7PWbKZI5rMzIHck
-	CLY/YIR2ux4ygi1xym5McPhQu18sqw0RPfGTSz/QPywnIf26DDUC
-X-Google-Smtp-Source: AGHT+IGYeV0v/WtQuzYBXkz8MyIbFUmMaWaLwF2L65FzaM7MvZgbusGiiqhH18ISHE/cxMHp63q9EolKbR34g5Yw7zE=
-X-Received: by 2002:a81:5b45:0:b0:5d9:36ee:50a8 with SMTP id
- p66-20020a815b45000000b005d936ee50a8mr15930266ywb.2.1703081935494; Wed, 20
- Dec 2023 06:18:55 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2985638DDC;
+	Wed, 20 Dec 2023 14:19:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BKDrT0d024048;
+	Wed, 20 Dec 2023 14:19:23 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=TkYb/4DF5JuuftB1DBBCZGJSXJ4lwaNv+h8XVPO0QIY=;
+ b=G0hcqa/fSCqNhm/57B/32HWVwyiMZubPlJLc7sEtSoPRn38n/yNqs3C+en7FgGj4b3b8
+ ygREYN3iUkGZTuHocZ+Zaq+fV1lqLXxufVXMPki4ngqQ+wOJs9tdHAy/EoLfER7+sDuI
+ crY36iIBWqvhCBsSeGXJgkRYKBtKxMWWVaWw3Lv1y88WdK9YqXQ0EhQeRyr+VttJz9DT
+ c6VEHUarWG6D8Q0z4tMLxZXUPnQFtBI1JyH68cCd5BXyqdSG48nlearO+q/I79O8TZdU
+ 1SznemnWP7zrKkzflz9usPBLBStOPVxBEd+sGIqt/WtuPXdqB5ZgE1qSB9sjMLx0N9uE EQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v41hx0wv9-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 20 Dec 2023 14:19:23 +0000
+Received: from m0353724.ppops.net (m0353724.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BKDsM3K027005;
+	Wed, 20 Dec 2023 14:19:22 GMT
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v41hx0wuq-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 20 Dec 2023 14:19:22 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BKDLP18004856;
+	Wed, 20 Dec 2023 14:19:22 GMT
+Received: from smtprelay04.wdc07v.mail.ibm.com ([172.16.1.71])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3v1pkyxyjx-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 20 Dec 2023 14:19:22 +0000
+Received: from smtpav01.wdc07v.mail.ibm.com (smtpav01.wdc07v.mail.ibm.com [10.39.53.228])
+	by smtprelay04.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BKEJLRo38404718
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 20 Dec 2023 14:19:21 GMT
+Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 905115804B;
+	Wed, 20 Dec 2023 14:19:21 +0000 (GMT)
+Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id D498A58059;
+	Wed, 20 Dec 2023 14:19:20 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.61.116.58])
+	by smtpav01.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+	Wed, 20 Dec 2023 14:19:20 +0000 (GMT)
+Message-ID: <d7826ddcd6db86773b57ffe603df9b18d95a5252.camel@linux.ibm.com>
+Subject: Re: [PATCH v2 0/3] evm: disable EVM on overlayfs
+From: Mimi Zohar <zohar@linux.ibm.com>
+To: Christian Brauner <brauner@kernel.org>
+Cc: linux-unionfs@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Amir Goldstein <amir73il@gmail.com>,
+        Seth
+ Forshee <sforshee@kernel.org>,
+        Roberto Sassu <roberto.sassu@huaweicloud.com>
+Date: Wed, 20 Dec 2023 09:19:20 -0500
+In-Reply-To: <20231220-komprimieren-kooperativ-cdb5e8803ce0@brauner>
+References: <20231219175206.12342-1-zohar@linux.ibm.com>
+	 <20231220-komprimieren-kooperativ-cdb5e8803ce0@brauner>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-22.el8) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20231220-fp5-pmic-glink-v1-0-2a1f8e3c661c@fairphone.com> <20231220-fp5-pmic-glink-v1-2-2a1f8e3c661c@fairphone.com>
-In-Reply-To: <20231220-fp5-pmic-glink-v1-2-2a1f8e3c661c@fairphone.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Wed, 20 Dec 2023 16:18:44 +0200
-Message-ID: <CAA8EJprW-ZTf8azegjb6H-tx01JGRgifL+AeKiPW_pc+k4PPhQ@mail.gmail.com>
-Subject: Re: [PATCH 2/3] usb: typec: ucsi: Add qcm6490-pmic-glink as needing
- PDOS quirk
-To: Luca Weiss <luca.weiss@fairphone.com>
-Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Heikki Krogerus <heikki.krogerus@linux.intel.com>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, cros-qcom-dts-watchers@chromium.org, 
-	~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org, 
-	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: yc77YjAOFM9d7ZCNE54es3Cm62roTOBW
+X-Proofpoint-GUID: RQVNBkl7O8JO40O_WJWtFu95bjBJn_M4
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-20_07,2023-12-20_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
+ priorityscore=1501 phishscore=0 suspectscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=780 bulkscore=0 adultscore=0 clxscore=1015 lowpriorityscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2312200102
 
-On Wed, 20 Dec 2023 at 12:04, Luca Weiss <luca.weiss@fairphone.com> wrote:
->
-> The QCM6490 Linux Android firmware needs this workaround as well. Add it
-> to the list.
->
-> Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
-> ---
->  drivers/usb/typec/ucsi/ucsi_glink.c | 1 +
->  1 file changed, 1 insertion(+)
+On Wed, 2023-12-20 at 13:35 +0100, Christian Brauner wrote:
+> On Tue, Dec 19, 2023 at 12:52:03PM -0500, Mimi Zohar wrote:
+> > EVM verifies the existing 'security.evm' value, before allowing it
+> > to be updated.  The EVM HMAC and the original file signatures contain
+> > filesystem specific metadata (e.g. i_ino, i_generation and s_uuid).
+> > 
+> > This poses a challenge when transitioning from the lower backing file
+> > to the upper backing file.
+> > 
+> > Until a complete solution is developed, disable EVM on overlayfs.
+> > 
+> > Changelog v2:
+> > Addressed Amir's comments:
+> > - Simplified security_inode_copy_up_xattr() return.
+> > - Identified filesystems that don't support EVM based on a new SB_I flag.
+> 
+> We're wasting a flag for a single filesystem but we do have enough of
+> them left so I think this is ok,
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Thanks, Christian.
 
--- 
-With best wishes
-Dmitry
+> 
+> Reviewed-by: Christian Brauner <brauner@kernel.org>
+
 
