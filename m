@@ -1,486 +1,264 @@
-Return-Path: <linux-kernel+bounces-6270-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6271-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7525F819692
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 02:52:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42C47819694
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 02:54:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2D71A288B2C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 01:52:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 67AE11C243D8
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 01:54:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F2E1883C;
-	Wed, 20 Dec 2023 01:52:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kHOx7Wc4"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F19B1C6B7;
+	Wed, 20 Dec 2023 01:54:49 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-il1-f179.google.com (mail-il1-f179.google.com [209.85.166.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3F4A1401F;
-	Wed, 20 Dec 2023 01:52:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f179.google.com with SMTP id e9e14a558f8ab-35f519f3ea9so23483325ab.3;
-        Tue, 19 Dec 2023 17:52:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703037131; x=1703641931; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4Y9g7c+vuEkFBYBNDHkeNbZIyU4v51PaB2WVpgjrMac=;
-        b=kHOx7Wc4j0VJnI/QyJ8DLOySMk6QJSzTB/TWw4AW0f5Ld/r7YXjpYk2vpptXjofGFD
-         m6jQzt5sOiLJpX7eULgn96ozNL6OaLG5+fwwU+f5O4c4/OHzv++h4YMHw6oDskXpVkMa
-         /bidtSG5I6sjHQKTdFEMhFwBbc+YDgkUBOZVn0OcEboLcN2lCIBUbKwuSTjC6iuVaNt/
-         n8jG+Kn3E2+TNNtmuP6CejX6md+7hWb/kBLWZQx0ZPL855iaBstjE8VSUwE7MviT2eJA
-         cIl6FZdPD/nomD3eAdNtApJcrrCnd1IfdUA0WqmHLyX5wlIoWLNHu8Q7JmSOXBx0iZR3
-         H/TA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703037131; x=1703641931;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4Y9g7c+vuEkFBYBNDHkeNbZIyU4v51PaB2WVpgjrMac=;
-        b=iMFusXCjdv/q8g70uIAdcQj2+ZZegUHKi5o/ycMDVtfveAFoIgZIcKyGFvSxn0b6kn
-         rbCYh4GGSUbfEcQh7q/RaNmpvX9XjDBZgktMvjT6yOxoIX9qoZSbyvB6hKbr/geSSzoR
-         BCD+GodN9D0y3zhzKJhbHc20oxRRmyVKDSEdShwRmjNbGF4mr4soSXLly1z1xzc8i3wi
-         MTBgl7GdVCOVSrrmM2U7Iem+K8aRTzw6XzEvZX6W41t+MbDu04rGK2hK2d0Sf9w5YBhW
-         bvhH2b3EynSZ9+Jr3EOySNVxq2C3Wfq19svU/rs0D+XhJZ/PaXYkeMqqGDYy2oSy0vUb
-         qK/g==
-X-Gm-Message-State: AOJu0YxCs7Wp+k9keOpJ8vRohpUUs3Y9iBXJKaYUZD90RP//vAXfcywk
-	zPSYzpA0DIVzytwH9WT73ZfwU7dFZHA=
-X-Google-Smtp-Source: AGHT+IFzrJwtCyqYapTBFPRdx+Ll2pTmHpjpIWEhw8WJ5H+95UFj1rovoefo650NwPpAy2Tfgc3r4g==
-X-Received: by 2002:a92:ca4a:0:b0:35c:e547:d759 with SMTP id q10-20020a92ca4a000000b0035ce547d759mr20146233ilo.12.1703037130920;
-        Tue, 19 Dec 2023 17:52:10 -0800 (PST)
-Received: from rigel.home.arpa (60-241-235-125.tpgi.com.au. [60.241.235.125])
-        by smtp.gmail.com with ESMTPSA id c17-20020a631c51000000b005b92e60cf57sm20133208pgm.56.2023.12.19.17.52.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Dec 2023 17:52:10 -0800 (PST)
-From: Kent Gibson <warthog618@gmail.com>
-To: linux-kernel@vger.kernel.org,
-	linux-gpio@vger.kernel.org,
-	brgl@bgdev.pl,
-	linus.walleij@linaro.org,
-	andy@kernel.org
-Cc: Kent Gibson <warthog618@gmail.com>
-Subject: [PATCH 4/4] gpiolib: cdev: replace locking wrappers for gpio_device with guards
-Date: Wed, 20 Dec 2023 09:51:06 +0800
-Message-Id: <20231220015106.16732-5-warthog618@gmail.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231220015106.16732-1-warthog618@gmail.com>
-References: <20231220015106.16732-1-warthog618@gmail.com>
+Received: from mx9.didiglobal.com (mx9.didiglobal.com [111.202.70.124])
+	by smtp.subspace.kernel.org (Postfix) with SMTP id 7F4FE1C695
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 01:54:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=didichuxing.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=didiglobal.com
+Received: from mail.didiglobal.com (unknown [10.79.64.13])
+	by mx9.didiglobal.com (MailData Gateway V2.8.8) with ESMTPS id 4C17019211FC15;
+	Wed, 20 Dec 2023 09:51:34 +0800 (CST)
+Received: from [172.24.140.11] (10.79.71.102) by
+ ZJY01-ACTMBX-03.didichuxing.com (10.79.64.13) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Wed, 20 Dec 2023 09:51:33 +0800
+Message-ID: <ba043dd3-d626-cb59-99d6-249efdec9763@didichuxing.com>
+Date: Wed, 20 Dec 2023 09:51:29 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.1
+Subject: Re: [REGRESSION] EEVDF scheduling fail, picking leftmost - Soft
+ Lockup
+To: Igor Raits <igor@gooddata.com>, <linux-kernel@vger.kernel.org>
+CC: Jaroslav Pulchart <jaroslav.pulchart@gooddata.com>, Daniel Secik
+	<daniel.secik@gooddata.com>
+Content-Language: en-US
+X-MD-Sfrom: wanghonglei@didiglobal.com
+X-MD-SrcIP: 10.79.64.13
+From: Honglei Wang <wanghonglei@didichuxing.com>
+In-Reply-To: <CA+9S74gb33kXH2cvGHZid3+pT2-f=jdCZ4gu00x3pgBwjBf0yw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: ZJY01-PUBMBX-01.didichuxing.com (10.79.64.32) To
+ ZJY01-ACTMBX-03.didichuxing.com (10.79.64.13)
 
-Replace the wrapping functions that inhibit removal of the gpio_device
-with equivalent guard macros.
 
-Signed-off-by: Kent Gibson <warthog618@gmail.com>
----
- drivers/gpio/gpiolib-cdev.c | 195 ++++++++++--------------------------
- 1 file changed, 52 insertions(+), 143 deletions(-)
 
-diff --git a/drivers/gpio/gpiolib-cdev.c b/drivers/gpio/gpiolib-cdev.c
-index 5b07578e3bfa..77ecf308ef39 100644
---- a/drivers/gpio/gpiolib-cdev.c
-+++ b/drivers/gpio/gpiolib-cdev.c
-@@ -65,44 +65,20 @@ typedef long (*ioctl_fn)(struct file *, unsigned int, unsigned long);
- typedef ssize_t (*read_fn)(struct file *, char __user *,
- 			   size_t count, loff_t *);
- 
--static __poll_t call_poll_locked(struct file *file,
--				 struct poll_table_struct *wait,
--				 struct gpio_device *gdev, poll_fn func)
--{
--	__poll_t ret;
--
--	down_read(&gdev->sem);
--	ret = func(file, wait);
--	up_read(&gdev->sem);
--
--	return ret;
--}
--
--static long call_ioctl_locked(struct file *file, unsigned int cmd,
--			      unsigned long arg, struct gpio_device *gdev,
--			      ioctl_fn func)
--{
--	long ret;
-+DEFINE_CLASS(_read_sem_guard,
-+	     struct rw_semaphore *,
-+	     up_read(_T),
-+	     ({
-+		down_read(sem);
-+		sem;
-+	     }),
-+	     struct rw_semaphore *sem);
- 
--	down_read(&gdev->sem);
--	ret = func(file, cmd, arg);
--	up_read(&gdev->sem);
-+/* guard that downs a rw_semaphore while in scope */
-+#define read_sem_guard(sem) CLASS(_read_sem_guard, _sem)(sem)
- 
--	return ret;
--}
--
--static ssize_t call_read_locked(struct file *file, char __user *buf,
--				size_t count, loff_t *f_ps,
--				struct gpio_device *gdev, read_fn func)
--{
--	ssize_t ret;
--
--	down_read(&gdev->sem);
--	ret = func(file, buf, count, f_ps);
--	up_read(&gdev->sem);
--
--	return ret;
--}
-+/* guard on the gpio_device sem to inhibit device removal while in use */
-+#define gdev_guard(gdev) read_sem_guard(gdev->sem)
- 
- /*
-  * GPIO line handle management
-@@ -238,8 +214,8 @@ static long linehandle_set_config(struct linehandle_state *lh,
- 	return 0;
- }
- 
--static long linehandle_ioctl_unlocked(struct file *file, unsigned int cmd,
--				      unsigned long arg)
-+static long linehandle_ioctl(struct file *file, unsigned int cmd,
-+			     unsigned long arg)
- {
- 	struct linehandle_state *lh = file->private_data;
- 	void __user *ip = (void __user *)arg;
-@@ -248,6 +224,8 @@ static long linehandle_ioctl_unlocked(struct file *file, unsigned int cmd,
- 	unsigned int i;
- 	int ret;
- 
-+	gdev_guard(&lh->gdev);
-+
- 	if (!lh->gdev->chip)
- 		return -ENODEV;
- 
-@@ -297,15 +275,6 @@ static long linehandle_ioctl_unlocked(struct file *file, unsigned int cmd,
- 	}
- }
- 
--static long linehandle_ioctl(struct file *file, unsigned int cmd,
--			     unsigned long arg)
--{
--	struct linehandle_state *lh = file->private_data;
--
--	return call_ioctl_locked(file, cmd, arg, lh->gdev,
--				 linehandle_ioctl_unlocked);
--}
--
- #ifdef CONFIG_COMPAT
- static long linehandle_ioctl_compat(struct file *file, unsigned int cmd,
- 				    unsigned long arg)
-@@ -1564,12 +1533,14 @@ static long linereq_set_config(struct linereq *lr, void __user *ip)
- 	return 0;
- }
- 
--static long linereq_ioctl_unlocked(struct file *file, unsigned int cmd,
--				   unsigned long arg)
-+static long linereq_ioctl(struct file *file, unsigned int cmd,
-+			  unsigned long arg)
- {
- 	struct linereq *lr = file->private_data;
- 	void __user *ip = (void __user *)arg;
- 
-+	gdev_guard(&lr->gdev);
-+
- 	if (!lr->gdev->chip)
- 		return -ENODEV;
- 
-@@ -1585,15 +1556,6 @@ static long linereq_ioctl_unlocked(struct file *file, unsigned int cmd,
- 	}
- }
- 
--static long linereq_ioctl(struct file *file, unsigned int cmd,
--			  unsigned long arg)
--{
--	struct linereq *lr = file->private_data;
--
--	return call_ioctl_locked(file, cmd, arg, lr->gdev,
--				 linereq_ioctl_unlocked);
--}
--
- #ifdef CONFIG_COMPAT
- static long linereq_ioctl_compat(struct file *file, unsigned int cmd,
- 				 unsigned long arg)
-@@ -1602,12 +1564,14 @@ static long linereq_ioctl_compat(struct file *file, unsigned int cmd,
- }
- #endif
- 
--static __poll_t linereq_poll_unlocked(struct file *file,
--				      struct poll_table_struct *wait)
-+static __poll_t linereq_poll(struct file *file,
-+			     struct poll_table_struct *wait)
- {
- 	struct linereq *lr = file->private_data;
- 	__poll_t events = 0;
- 
-+	gdev_guard(&lr->gdev);
-+
- 	if (!lr->gdev->chip)
- 		return EPOLLHUP | EPOLLERR;
- 
-@@ -1620,22 +1584,16 @@ static __poll_t linereq_poll_unlocked(struct file *file,
- 	return events;
- }
- 
--static __poll_t linereq_poll(struct file *file,
--			     struct poll_table_struct *wait)
--{
--	struct linereq *lr = file->private_data;
--
--	return call_poll_locked(file, wait, lr->gdev, linereq_poll_unlocked);
--}
--
--static ssize_t linereq_read_unlocked(struct file *file, char __user *buf,
--				     size_t count, loff_t *f_ps)
-+static ssize_t linereq_read(struct file *file, char __user *buf,
-+			    size_t count, loff_t *f_ps)
- {
- 	struct linereq *lr = file->private_data;
- 	struct gpio_v2_line_event le;
- 	ssize_t bytes_read = 0;
- 	int ret;
- 
-+	gdev_guard(&lr->gdev);
-+
- 	if (!lr->gdev->chip)
- 		return -ENODEV;
- 
-@@ -1677,15 +1635,6 @@ static ssize_t linereq_read_unlocked(struct file *file, char __user *buf,
- 	return bytes_read;
- }
- 
--static ssize_t linereq_read(struct file *file, char __user *buf,
--			    size_t count, loff_t *f_ps)
--{
--	struct linereq *lr = file->private_data;
--
--	return call_read_locked(file, buf, count, f_ps, lr->gdev,
--				linereq_read_unlocked);
--}
--
- static void linereq_free(struct linereq *lr)
- {
- 	struct line *line;
-@@ -1938,12 +1887,14 @@ struct lineevent_state {
- 	(GPIOEVENT_REQUEST_RISING_EDGE | \
- 	GPIOEVENT_REQUEST_FALLING_EDGE)
- 
--static __poll_t lineevent_poll_unlocked(struct file *file,
--					struct poll_table_struct *wait)
-+static __poll_t lineevent_poll(struct file *file,
-+			       struct poll_table_struct *wait)
- {
- 	struct lineevent_state *le = file->private_data;
- 	__poll_t events = 0;
- 
-+	gdev_guard(&le->gdev);
-+
- 	if (!le->gdev->chip)
- 		return EPOLLHUP | EPOLLERR;
- 
-@@ -1955,14 +1906,6 @@ static __poll_t lineevent_poll_unlocked(struct file *file,
- 	return events;
- }
- 
--static __poll_t lineevent_poll(struct file *file,
--			       struct poll_table_struct *wait)
--{
--	struct lineevent_state *le = file->private_data;
--
--	return call_poll_locked(file, wait, le->gdev, lineevent_poll_unlocked);
--}
--
- static int lineevent_unregistered_notify(struct notifier_block *nb,
- 					 unsigned long action, void *data)
- {
-@@ -1979,8 +1922,8 @@ struct compat_gpioeevent_data {
- 	u32		id;
- };
- 
--static ssize_t lineevent_read_unlocked(struct file *file, char __user *buf,
--				       size_t count, loff_t *f_ps)
-+static ssize_t lineevent_read(struct file *file, char __user *buf,
-+			      size_t count, loff_t *f_ps)
- {
- 	struct lineevent_state *le = file->private_data;
- 	struct gpioevent_data ge;
-@@ -1988,6 +1931,8 @@ static ssize_t lineevent_read_unlocked(struct file *file, char __user *buf,
- 	ssize_t ge_size;
- 	int ret;
- 
-+	gdev_guard(&le->gdev);
-+
- 	if (!le->gdev->chip)
- 		return -ENODEV;
- 
-@@ -2042,15 +1987,6 @@ static ssize_t lineevent_read_unlocked(struct file *file, char __user *buf,
- 	return bytes_read;
- }
- 
--static ssize_t lineevent_read(struct file *file, char __user *buf,
--			      size_t count, loff_t *f_ps)
--{
--	struct lineevent_state *le = file->private_data;
--
--	return call_read_locked(file, buf, count, f_ps, le->gdev,
--				lineevent_read_unlocked);
--}
--
- static void lineevent_free(struct lineevent_state *le)
- {
- 	if (le->device_unregistered_nb.notifier_call)
-@@ -2071,13 +2007,15 @@ static int lineevent_release(struct inode *inode, struct file *file)
- 	return 0;
- }
- 
--static long lineevent_ioctl_unlocked(struct file *file, unsigned int cmd,
--				     unsigned long arg)
-+static long lineevent_ioctl(struct file *file, unsigned int cmd,
-+			    unsigned long arg)
- {
- 	struct lineevent_state *le = file->private_data;
- 	void __user *ip = (void __user *)arg;
- 	struct gpiohandle_data ghd;
- 
-+	gdev_guard(&le->gdev);
-+
- 	if (!le->gdev->chip)
- 		return -ENODEV;
- 
-@@ -2103,15 +2041,6 @@ static long lineevent_ioctl_unlocked(struct file *file, unsigned int cmd,
- 	return -EINVAL;
- }
- 
--static long lineevent_ioctl(struct file *file, unsigned int cmd,
--			    unsigned long arg)
--{
--	struct lineevent_state *le = file->private_data;
--
--	return call_ioctl_locked(file, cmd, arg, le->gdev,
--				 lineevent_ioctl_unlocked);
--}
--
- #ifdef CONFIG_COMPAT
- static long lineevent_ioctl_compat(struct file *file, unsigned int cmd,
- 				   unsigned long arg)
-@@ -2671,12 +2600,14 @@ static int gpio_device_unregistered_notify(struct notifier_block *nb,
- 	return NOTIFY_OK;
- }
- 
--static __poll_t lineinfo_watch_poll_unlocked(struct file *file,
--					     struct poll_table_struct *pollt)
-+static __poll_t lineinfo_watch_poll(struct file *file,
-+				    struct poll_table_struct *pollt)
- {
- 	struct gpio_chardev_data *cdev = file->private_data;
- 	__poll_t events = 0;
- 
-+	gdev_guard(&cdev->gdev);
-+
- 	if (!cdev->gdev->chip)
- 		return EPOLLHUP | EPOLLERR;
- 
-@@ -2689,17 +2620,8 @@ static __poll_t lineinfo_watch_poll_unlocked(struct file *file,
- 	return events;
- }
- 
--static __poll_t lineinfo_watch_poll(struct file *file,
--				    struct poll_table_struct *pollt)
--{
--	struct gpio_chardev_data *cdev = file->private_data;
--
--	return call_poll_locked(file, pollt, cdev->gdev,
--				lineinfo_watch_poll_unlocked);
--}
--
--static ssize_t lineinfo_watch_read_unlocked(struct file *file, char __user *buf,
--					    size_t count, loff_t *off)
-+static ssize_t lineinfo_watch_read(struct file *file, char __user *buf,
-+				   size_t count, loff_t *off)
- {
- 	struct gpio_chardev_data *cdev = file->private_data;
- 	struct gpio_v2_line_info_changed event;
-@@ -2707,6 +2629,8 @@ static ssize_t lineinfo_watch_read_unlocked(struct file *file, char __user *buf,
- 	int ret;
- 	size_t event_size;
- 
-+	gdev_guard(&cdev->gdev);
-+
- 	if (!cdev->gdev->chip)
- 		return -ENODEV;
- 
-@@ -2769,15 +2693,6 @@ static ssize_t lineinfo_watch_read_unlocked(struct file *file, char __user *buf,
- 	return bytes_read;
- }
- 
--static ssize_t lineinfo_watch_read(struct file *file, char __user *buf,
--				   size_t count, loff_t *off)
--{
--	struct gpio_chardev_data *cdev = file->private_data;
--
--	return call_read_locked(file, buf, count, off, cdev->gdev,
--				lineinfo_watch_read_unlocked);
--}
--
- /**
-  * gpio_chrdev_open() - open the chardev for ioctl operations
-  * @inode: inode for this chardev
-@@ -2791,17 +2706,15 @@ static int gpio_chrdev_open(struct inode *inode, struct file *file)
- 	struct gpio_chardev_data *cdev;
- 	int ret = -ENOMEM;
- 
--	down_read(&gdev->sem);
-+	gdev_guard(&gdev);
- 
- 	/* Fail on open if the backing gpiochip is gone */
--	if (!gdev->chip) {
--		ret = -ENODEV;
--		goto out_unlock;
--	}
-+	if (!gdev->chip)
-+		return -ENODEV;
- 
- 	cdev = kzalloc(sizeof(*cdev), GFP_KERNEL);
- 	if (!cdev)
--		goto out_unlock;
-+		return -ENODEV;
- 
- 	cdev->watched_lines = bitmap_zalloc(gdev->chip->ngpio, GFP_KERNEL);
- 	if (!cdev->watched_lines)
-@@ -2830,8 +2743,6 @@ static int gpio_chrdev_open(struct inode *inode, struct file *file)
- 	if (ret)
- 		goto out_unregister_device_notifier;
- 
--	up_read(&gdev->sem);
--
- 	return ret;
- 
- out_unregister_device_notifier:
-@@ -2845,8 +2756,6 @@ static int gpio_chrdev_open(struct inode *inode, struct file *file)
- 	bitmap_free(cdev->watched_lines);
- out_free_cdev:
- 	kfree(cdev);
--out_unlock:
--	up_read(&gdev->sem);
- 	return ret;
- }
- 
--- 
-2.39.2
+On 2023/12/20 03:10, Igor Raits wrote:
+> Good $timeoftheday everyone,
+> 
+> After upgrading the kernel from 6.6.1 to 6.6.4 we have noticed on some
+> subset of our systems the regression. It looks like following:
+> [Fri Dec 15 08:31:20 CET 2023] EEVDF scheduling fail, picking leftmost
+> [Fri Dec 15 08:31:44 CET 2023] watchdog: BUG: soft lockup - CPU#1
+> stuck for 22s! [VM Thread:37074]
+> 
+> First message is visible in the virtual console however the second one
+> appears only when analyzing via "crash".
+> 
+> I was trying to find any existing reports but instead found some
+> automated syzbot notification about possible soft lockup and some
+> discussion around usage of pr_err() and printk() stuff however I'm not
+> really sure which one(s) you would suggest us to try.
+> 
 
+Looks like this is the problem you got (printk while hoding rq->lock).
+People are working on fixing that. For now, maybe you can just do small 
+modification to skip the pr_err and move on. Or try Peter's early_printk 
+hacks here
+https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git/log/?h=debug/experimental
+
+It depends on your case. Hope this help.
+
+Thanks,
+Honglei
+
+> We've also tried 6.6.7 but with no luck, the issue is still there. My
+> colleague has started bisecting but it will take a while. The error is
+> not 100% reproducible but on some nodes it was visible a few hours
+> after deployment so it is not something very esoteric.
+> 
+> Any help is very much appreciated!
+> 
+> Below I'm pasting the output of the "bt -a" in case it will be helpful.
+> 
+> PID: 37538    TASK: ffff88817e8bb400  CPU: 0    COMMAND: "Ruby-0-Thread-5"
+>      [exception RIP: native_queued_spin_lock_slowpath+639]
+>      RIP: ffffffffb465882f  RSP: ffffc9000268fd48  RFLAGS: 00000046
+>      RAX: 0000000000000000  RBX: ffff888f82c32880  RCX: 0000000000040000
+>      RDX: 0000000000000003  RSI: 0000000000100100  RDI: ffff888f82cb1a80
+>      RBP: ffff888f82cb1a80   R8: 0000000000000006   R9: fffffffffffffff0
+>      R10: 0000000000000006  R11: 000000000000027b  R12: 0000000000000000
+>      R13: 0000000000000000  R14: 000000000002e72f  R15: ffff88810098ee00
+>      CS: 0010  SS: 0000
+>   #0 [ffffc9000268fd68] _raw_spin_lock at ffffffffb46583e5
+>   #1 [ffffc9000268fd70] raw_spin_rq_lock_nested at ffffffffb3b44669
+>   #2 [ffffc9000268fd88] load_balance at ffffffffb3b5e71d
+>   #3 [ffffc9000268fe68] rebalance_domains at ffffffffb3b5f82a
+>   #4 [ffffc9000268fed8] __do_softirq at ffffffffb4659008
+>   #5 [ffffc9000268ff28] irq_exit_rcu at ffffffffb3b08796
+>   #6 [ffffc9000268ff38] sysvec_apic_timer_interrupt at ffffffffb4643a7c
+>   #7 [ffffc9000268ff50] asm_sysvec_apic_timer_interrupt at ffffffffb4800e06
+>      RIP: 00007fae95431e07  RSP: 00007fae222f65c8  RFLAGS: 00000202
+>      RAX: 00007faea9446640  RBX: 00007faea9446640  RCX: 000000070412f828
+>      RDX: 0000000080500001  RSI: 000000070412f828  RDI: 0000000000000013
+>      RBP: 00007fae222f6620   R8: 000000070412f828   R9: 000000000000006d
+>      R10: 00007faeac695040  R11: 00007fae95431e00  R12: 0000000000000000
+>      R13: 00007fae222f65d8  R14: 00007fae222f66b8  R15: 00007faea526f800
+>      ORIG_RAX: ffffffffffffffff  CS: 0033  SS: 002b
+> 
+> PID: 37074    TASK: ffff88882c0b4e00  CPU: 1    COMMAND: "VM Thread"
+>      [exception RIP: vprintk_emit+389]
+>      RIP: ffffffffb3b89735  RSP: ffffc90000184e68  RFLAGS: 00000002
+>      RAX: 0000000000000001  RBX: 0000000000000046  RCX: 000000000000ff18
+>      RDX: ffff88882c0b4e00  RSI: 0000000000000002  RDI: ffffffffb6474120
+>      RBP: 00000000ffffffff   R8: 80000000ffffd508   R9: 0000000000ffff0a
+>      R10: 0000000000000004  R11: 0000000000000047  R12: 0000000000000000
+>      R13: 0000000000000000  R14: ffffffffb4f7cca8  R15: 0000000000000043
+>      CS: 0010  SS: 0018
+>   #0 [ffffc90000184ea8] _printk at ffffffffb3b85b38
+>   #1 [ffffc90000184f08] watchdog_timer_fn at ffffffffb3c29464
+>   #2 [ffffc90000184f30] __hrtimer_run_queues at ffffffffb3bc753f
+>   #3 [ffffc90000184f88] hrtimer_interrupt at ffffffffb3bc7fdc
+>   #4 [ffffc90000184fd8] __sysvec_apic_timer_interrupt at ffffffffb3a70c4b
+>   #5 [ffffc90000184ff0] sysvec_apic_timer_interrupt at ffffffffb4643aad
+> --- <IRQ stack> ---
+>      RIP: 0000000000000010  RSP: 0000000000000018  RFLAGS: ffffc900016a3d38
+>      RAX: 0000000000000001  RBX: 0000000000000000  RCX: 0000000000000001
+>      RDX: ffff888f82c39500  RSI: ffff88810006b328  RDI: ffffffffffffffff
+>      RBP: ffff888f82c72d40   R8: 0000000000000000   R9: 0000000000000000
+>      R10: 0000000000000005  R11: 0000000000000000  R12: 0000000000000202
+>      R13: ffff888f82c71380  R14: 0000000000000001  R15: ffff888f82c72d40
+>      ORIG_RAX: ffffffffb3be3f62  CS: 0202  SS: ffffffffb3be3f42
+> bt: WARNING: possibly bogus exception frame
+> 
+> PID: 37078    TASK: ffff88845f91ce00  CPU: 2    COMMAND: "C2 CompilerThre"
+>      [exception RIP: native_queued_spin_lock_slowpath+114]
+>      RIP: ffffffffb4658622  RSP: ffffc9000187b9e8  RFLAGS: 00000002
+>      RAX: 0000000000000001  RBX: ffff888103e1ce00  RCX: ffff888103e1d228
+>      RDX: 0000000000000000  RSI: 0000000000000000  RDI: ffff888f82cb1a80
+>      RBP: ffff888f82cb1a80   R8: 0000000000000002   R9: ffff888f82cb1428
+>      R10: 0000000000000000  R11: 0000000000000000  R12: 0000000000000000
+>      R13: 0000000000000087  R14: ffff888103e1dadc  R15: ffff888f82c80000
+>      CS: 0010  SS: 0000
+>   #0 [ffffc9000187ba08] _raw_spin_lock at ffffffffb46583e5
+>   #1 [ffffc9000187ba10] raw_spin_rq_lock_nested at ffffffffb3b44669
+>   #2 [ffffc9000187ba28] try_to_wake_up at ffffffffb3b4edec
+>   #3 [ffffc9000187ba80] kick_pool at ffffffffb3b21689
+>   #4 [ffffc9000187ba98] __queue_work at ffffffffb3b24d57
+>   #5 [ffffc9000187bae0] queue_work_on at ffffffffb3b24f94
+>   #6 [ffffc9000187baf0] soft_cursor at ffffffffb40e4e70
+>   #7 [ffffc9000187bb48] bit_cursor at ffffffffb40e49e5
+>   #8 [ffffc9000187bc10] hide_cursor at ffffffffb41b306b
+>   #9 [ffffc9000187bc20] vt_console_print at ffffffffb41b5691
+> #10 [ffffc9000187bc88] console_flush_all at ffffffffb3b876c1
+> #11 [ffffc9000187bd00] console_unlock at ffffffffb3b8792c
+> #12 [ffffc9000187bd38] vprintk_emit at ffffffffb3b89750
+> #13 [ffffc9000187bd80] _printk at ffffffffb3b85b38
+> #14 [ffffc9000187bde0] pick_next_entity.constprop.0 at ffffffffb3b5bc88
+> #15 [ffffc9000187bdf8] pick_next_task_fair at ffffffffb3b5f15b
+> #16 [ffffc9000187be30] pick_next_task at ffffffffb3b47727
+> #17 [ffffc9000187be90] __schedule at ffffffffb4650f4d
+> #18 [ffffc9000187bef8] schedule at ffffffffb465160a
+> #19 [ffffc9000187bf10] exit_to_user_mode_loop at ffffffffb3bb6290
+> #20 [ffffc9000187bf30] exit_to_user_mode_prepare at ffffffffb3bb6452
+> #21 [ffffc9000187bf48] irqentry_exit_to_user_mode at ffffffffb4644975
+> #22 [ffffc9000187bf50] asm_sysvec_apic_timer_interrupt at ffffffffb4800e06
+>      RIP: 00007faeabc4464c  RSP: 00007faea8efb4d0  RFLAGS: 00000202
+>      RAX: 00007fae84df0850  RBX: 0000000000000008  RCX: 0000000000000645
+>      RDX: 00007fae84df0840  RSI: 0000000000000010  RDI: 00007faea8efb4e0
+>      RBP: 00007faea8efb550   R8: 00007faea4122000   R9: 0000000000000000
+>      R10: 0000000000000000  R11: 0000000000200012  R12: 0000000000000030
+>      R13: 00007faea8efb6e0  R14: 0000000000000400  R15: 000000000000064a
+>      ORIG_RAX: ffffffffffffffff  CS: 0033  SS: 002b
+> 
+> PID: 36585    TASK: ffff8881009e3400  CPU: 3    COMMAND: "C2 CompilerThre"
+>      [exception RIP: native_queued_spin_lock_slowpath+639]
+>      RIP: ffffffffb465882f  RSP: ffffc9000153bd48  RFLAGS: 00000046
+>      RAX: 0000000000000000  RBX: ffff888f82cf2880  RCX: 0000000000100000
+>      RDX: 0000000000000004  RSI: 0000000000140100  RDI: ffff888f82cb1a80
+>      RBP: ffff888f82cb1a80   R8: 0000000000000006   R9: fffffffffffffff8
+>      R10: 0000000000000006  R11: 0000000000000000  R12: 0000000000000000
+>      R13: 0000000000000003  R14: 0000000000010671  R15: ffff88810098c600
+>      CS: 0010  SS: 0000
+>   #0 [ffffc9000153bd68] _raw_spin_lock at ffffffffb46583e5
+>   #1 [ffffc9000153bd70] raw_spin_rq_lock_nested at ffffffffb3b44669
+>   #2 [ffffc9000153bd88] load_balance at ffffffffb3b5e71d
+>   #3 [ffffc9000153be68] rebalance_domains at ffffffffb3b5f82a
+>   #4 [ffffc9000153bed8] __do_softirq at ffffffffb4659008
+>   #5 [ffffc9000153bf28] irq_exit_rcu at ffffffffb3b08796
+>   #6 [ffffc9000153bf38] sysvec_apic_timer_interrupt at ffffffffb4643a7c
+>   #7 [ffffc9000153bf50] asm_sysvec_apic_timer_interrupt at ffffffffb4800e06
+>      RIP: 00007f0661b21a74  RSP: 00007f0631ffaf38  RFLAGS: 00000202
+>      RAX: 0000000000000000  RBX: 00007f0631ffb750  RCX: 0000000000000001
+>      RDX: 0000000000000002  RSI: 0000000000000000  RDI: 00007f0631ffb034
+>      RBP: 00007f0631ffb080   R8: 0000000000000002   R9: 0000000055555555
+>      R10: 00007f0631ffb048  R11: 0000000000000000  R12: 0000000000000002
+>      R13: 00007f0608f2c1d0  R14: 00007f0608f2f8d0  R15: 00007f0631ffaf50
+>      ORIG_RAX: ffffffffffffffff  CS: 0033  SS: 002b
+> 
+> PID: 37776    TASK: ffff888459fc8000  CPU: 4    COMMAND: "C2 CompilerThre"
+>      [exception RIP: native_queued_spin_lock_slowpath+496]
+>      RIP: ffffffffb46587a0  RSP: ffffc90002807d48  RFLAGS: 00000002
+>      RAX: 0000000000180101  RBX: ffff888f82d32880  RCX: 0000000000140000
+>      RDX: 0000000000000000  RSI: 0000000000000100  RDI: ffff888f82cb1a80
+>      RBP: ffff888f82cb1a80   R8: 0000000000000006   R9: fffffffffffffff0
+>      R10: 0000000000000006  R11: 000000000000027b  R12: 0000000000000000
+>      R13: 0000000000000004  R14: 000000000000d865  R15: ffff88810098f000
+>      CS: 0010  SS: 0000
+>   #0 [ffffc90002807d68] _raw_spin_lock at ffffffffb46583e5
+>   #1 [ffffc90002807d70] raw_spin_rq_lock_nested at ffffffffb3b44669
+>   #2 [ffffc90002807d88] load_balance at ffffffffb3b5e71d
+>   #3 [ffffc90002807e68] rebalance_domains at ffffffffb3b5f82a
+>   #4 [ffffc90002807ed8] __do_softirq at ffffffffb4659008
+>   #5 [ffffc90002807f28] irq_exit_rcu at ffffffffb3b08796
+>   #6 [ffffc90002807f38] sysvec_apic_timer_interrupt at ffffffffb4643a7c
+>   #7 [ffffc90002807f50] asm_sysvec_apic_timer_interrupt at ffffffffb4800e06
+>      RIP: 00007f09b972ac50  RSP: 00007f09894fa898  RFLAGS: 00000246
+>      RAX: 00007f09b8fdded8  RBX: 00007f093c0f9920  RCX: 0000000000000049
+>      RDX: 00007f09b99bf2a8  RSI: 0000000000000000  RDI: 0000000000000010
+>      RBP: 00007f09894fa8b0   R8: 0000000000000001   R9: 0000000000000002
+>      R10: 0000000000000013  R11: 0000000000000012  R12: 0000000000000049
+>      R13: 00007f093c0f9700  R14: 00007f093d3728c8  R15: 0000000000000049
+>      ORIG_RAX: ffffffffffffffff  CS: 0033  SS: 002b
+> 
+> PID: 20501    TASK: ffff888184349a00  CPU: 5    COMMAND: "unbound"
+>      [exception RIP: native_queued_spin_lock_slowpath+639]
+>      RIP: ffffffffb465882f  RSP: ffffc900007fbb08  RFLAGS: 00000046
+>      RAX: 0000000000000000  RBX: ffff888f82d72880  RCX: 0000000000180000
+>      RDX: 0000000000000000  RSI: 0000000000040100  RDI: ffff888f82cb1a80
+>      RBP: ffff888f82cb1a80   R8: 0000000000000006   R9: fffffffffffffff0
+>      R10: 0000000000000006  R11: 0000000000000001  R12: 0000000000000000
+>      R13: 0000000000000005  R14: ffff888f82d71a80  R15: 0000000000000000
+>      CS: 0010  SS: 0018
+>   #0 [ffffc900007fbb28] _raw_spin_lock at ffffffffb46583e5
+>   #1 [ffffc900007fbb30] raw_spin_rq_lock_nested at ffffffffb3b44669
+>   #2 [ffffc900007fbb48] load_balance at ffffffffb3b5e71d
+>   #3 [ffffc900007fbc28] newidle_balance at ffffffffb3b5ede3
+>   #4 [ffffc900007fbc88] pick_next_task_fair at ffffffffb3b5f0a1
+>   #5 [ffffc900007fbcc0] pick_next_task at ffffffffb3b47727
+>   #6 [ffffc900007fbd20] __schedule at ffffffffb4650f4d
+>   #7 [ffffc900007fbd88] schedule at ffffffffb465160a
+>   #8 [ffffc900007fbda0] schedule_hrtimeout_range_clock at ffffffffb4657465
+>   #9 [ffffc900007fbe10] ep_poll at ffffffffb3e9617d
+> #10 [ffffc900007fbeb0] do_epoll_wait at ffffffffb3e962a4
+> #11 [ffffc900007fbee8] __x64_sys_epoll_wait at ffffffffb3e96b20
+> #12 [ffffc900007fbf38] do_syscall_64 at ffffffffb463df98
+> #13 [ffffc900007fbf50] entry_SYSCALL_64_after_hwframe at ffffffffb48000e6
+>      RIP: 00007f643f54e8be  RSP: 00007f6437ffec70  RFLAGS: 00000293
+>      RAX: ffffffffffffffda  RBX: 0000000000000000  RCX: 00007f643f54e8be
+>      RDX: 0000000000000020  RSI: 00007f6428000ed0  RDI: 0000000000000023
+>      RBP: 00007f6428000c10   R8: 0000000000000000   R9: 00007f6437ffec08
+>      R10: 00000000ffffffff  R11: 0000000000000293  R12: 00007f6428000ed0
+>      R13: 00007f6428000eb0  R14: 00007f6428000eb0  R15: 00000000ffffffff
+>      ORIG_RAX: 00000000000000e8  CS: 0033  SS: 002b
+> 
 
