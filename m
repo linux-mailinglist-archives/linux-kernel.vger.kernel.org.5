@@ -1,79 +1,72 @@
-Return-Path: <linux-kernel+bounces-7061-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7062-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9633281A11E
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 15:28:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ECBD681A123
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 15:30:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4B1741F22CD4
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 14:28:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A8142285424
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 14:30:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE4C738F9A;
-	Wed, 20 Dec 2023 14:28:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="RT4mppbm"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 162363526B;
+	Wed, 20 Dec 2023 14:30:31 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88B1E38F82;
-	Wed, 20 Dec 2023 14:28:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 146D81BF204;
-	Wed, 20 Dec 2023 14:28:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1703082515;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nC9eF10X2lqjXUL6MHDbsTgCI+eRXF8SsKwjlAptjRE=;
-	b=RT4mppbm2rdD1gnbuOzoHcU5HifXFlcTA5K/KZtHQyKfty1O17bAxM/TsE0zMA50u3m/+J
-	S5p+eq4fA5BAzX32zGX9fOOZqX3uIp6gcWa+EceDeXjbLFUxouXPvSOzuxx8wcM1Wnu+AC
-	GLnJkB1U5/RTCzr14lpOZIstS7ekMe6+Nmhh5uptn9GsN1ReL/aPG9BPfHlKPmcp+VIcQ3
-	HbjZ18wOTqpbGyA3OnG3J8bKajGpakUvka/cJLtXgZsnqopxDUZhx36NDJJqCKOhlXy/gX
-	w7ah9HhqVScaydaf10sHJzH1ACX0LT+27zjy4AZa1MirlkgTbizc2gtQDdeG0A==
-Message-ID: <52b10a61-ee3e-4166-a9e6-f417f2f5ea5d@bootlin.com>
-Date: Wed, 20 Dec 2023 15:28:34 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CCB138FAB;
+	Wed, 20 Dec 2023 14:30:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=kernel.org
+X-IronPort-AV: E=McAfee;i="6600,9927,10930"; a="380811906"
+X-IronPort-AV: E=Sophos;i="6.04,291,1695711600"; 
+   d="scan'208";a="380811906"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Dec 2023 06:30:28 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10930"; a="919992164"
+X-IronPort-AV: E=Sophos;i="6.04,291,1695711600"; 
+   d="scan'208";a="919992164"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga001.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Dec 2023 06:30:27 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andy@kernel.org>)
+	id 1rFxaa-00000007YhR-3EWU;
+	Wed, 20 Dec 2023 16:30:24 +0200
+Date: Wed, 20 Dec 2023 16:30:24 +0200
+From: Andy Shevchenko <andy@kernel.org>
+To: Kent Gibson <warthog618@gmail.com>
+Cc: linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, brgl@bgdev.pl,
+	linus.walleij@linaro.org
+Subject: Re: [PATCH 2/4] gpiolib: cdev: allocate linereq using kvzalloc()
+Message-ID: <ZYL6gIpG5GBONVSO@smile.fi.intel.com>
+References: <20231220015106.16732-1-warthog618@gmail.com>
+ <20231220015106.16732-3-warthog618@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v9] rtc: tps6594: Add driver for TPS6594 RTC
-To: Esteban Blanc <eblanc@baylibre.com>, a.zummo@towertech.it,
- alexandre.belloni@bootlin.com
-Cc: andy.shevchenko@gmail.com, linux-kernel@vger.kernel.org,
- linux-rtc@vger.kernel.org, jpanis@baylibre.com, jneanne@baylibre.com,
- u-kumar1@ti.com
-References: <20231107094701.2223486-1-eblanc@baylibre.com>
-Content-Language: en-US
-From: Thomas Richard <thomas.richard@bootlin.com>
-In-Reply-To: <20231107094701.2223486-1-eblanc@baylibre.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-GND-Sasl: thomas.richard@bootlin.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231220015106.16732-3-warthog618@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On 11/7/23 10:47, Esteban Blanc wrote:
-> TPS6594 PMIC is a MFD. This patch adds support for
-> the RTC found inside TPS6594 family of PMIC.
-> 
-> Alarm is also supported.
-> 
-> Signed-off-by: Esteban Blanc <eblanc@baylibre.com>
-> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+On Wed, Dec 20, 2023 at 09:51:04AM +0800, Kent Gibson wrote:
+> The size of struct linereq may exceed a page, so allocate space for
+> it using kvzalloc() instead of kzalloc().
 
-Tested-by: Thomas Richard <thomas.richard@bootlin.com>
+It might be this needs a bit of elaboration. The kmalloc() tries to allocate
+a contiguous (in physical address space) chunk of memory and with fragmented
+memory it might be not possible. So the above issue might (rarely) happen.
+In most cases the call to kmalloc() will succeed.
 
 -- 
-Thomas Richard, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+With Best Regards,
+Andy Shevchenko
+
 
 
