@@ -1,127 +1,165 @@
-Return-Path: <linux-kernel+bounces-6569-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6570-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0F92819A72
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 09:28:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B64D819A74
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 09:28:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 768691F26929
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 08:28:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C33381F248B1
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 08:28:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F18F11BDFD;
-	Wed, 20 Dec 2023 08:28:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 022CE1CFAD;
+	Wed, 20 Dec 2023 08:28:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UhIxQgP9"
+	dkim=pass (2048-bit key) header.d=9elements.com header.i=@9elements.com header.b="MZrQwlO3"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4837B1D520;
-	Wed, 20 Dec 2023 08:28:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE5C6C433C7;
-	Wed, 20 Dec 2023 08:28:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703060883;
-	bh=PvZzODyCN3h0tm/M44eh6gfUfU6RJmkkjXP2te2QE/g=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=UhIxQgP9RMa2hIa55tyezx81Qnuht1Ck39onGZDWdO1OKrdIDIZa/yTUWeGjDXYmi
-	 vGHlltknD4YXjk8bWEopjl9PLyZY8+TNdMPh5Bm352qhzYjBAa/xFLxBlWYdCvdkVD
-	 yl6jBW63RR0x5n425wRaAJDCpiDgBpZf3LN6Alx5aFBwsR+wq6l5iYTWTltNYXyNC8
-	 Nlf1whr/O9Wd8+xMHBNJdkRW65vpyxzwxc/FcGhJwK//3zcznOwD1k+k2YSLbwyyvG
-	 HisJXHShyMC8MYvOyNbCsQC8jVJ+4Ri1WTMjy7ZNjSQ+Tz/sT04ZERHw4Y98hGDWwv
-	 wGwTRte9cdv8Q==
-Date: Wed, 20 Dec 2023 10:27:58 +0200
-From: Leon Romanovsky <leon@kernel.org>
-To: longli@linuxonhyperv.com
-Cc: Jason Gunthorpe <jgg@ziepe.ca>, Ajay Sharma <sharmaajay@microsoft.com>,
-	Dexuan Cui <decui@microsoft.com>,
-	"K. Y. Srinivasan" <kys@microsoft.com>,
-	Haiyang Zhang <haiyangz@microsoft.com>,
-	Wei Liu <wei.liu@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	linux-rdma@vger.kernel.org, linux-hyperv@vger.kernel.org,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Long Li <longli@microsoft.com>
-Subject: Re: [Patch v4 0/3] Register with RDMA SOC interface and support for
- CQ
-Message-ID: <20231220082758.GC136797@unreal>
-References: <1702692255-23640-1-git-send-email-longli@linuxonhyperv.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A74741CF8F
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 08:28:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=9elements.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=9elements.com
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-552fba34d69so5190331a12.3
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 00:28:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=9elements.com; s=google; t=1703060888; x=1703665688; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Pnge+1KVjVw+sI86vmpy7qUzgDU254VIm7qUPhyPlKQ=;
+        b=MZrQwlO3xukNXXNfYYdSjx8yDcUF3KcGglmtgTF3x+FXcAsgBVFQ0Xd5mDVD8PPcNr
+         ZvDdjY+JgdhUZXxo20rXlqi8MWUK1fCDGjEoLw9yoZ90bqFwHBP6bBiekqvmNGCT17KS
+         umQtaN+tT+uZY9sR4XGVETWOf0xiuccHI+niiwQVnsmVxwD9hIUOtGaqGQxeMQ7RlArS
+         xZD7iIwBaDZoaZRJ/QbwdjkGd1ESJgaJ1LxtO3trdkYm5Bva3hjk1HeDXjUyxofyIOai
+         0kVhWk23qT5VHrDfBCU27+9RZcBJtWmZQ7qeAiysyuXY0ifB5knb7uCIuJS5EuJr54nd
+         4H6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703060888; x=1703665688;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Pnge+1KVjVw+sI86vmpy7qUzgDU254VIm7qUPhyPlKQ=;
+        b=xDeMVEGX9CifvZ/9C7BQJzGmFKTQa4T4DQwUg3nD/CfcJWLXUvHydX5tI+R9S16vHD
+         IHJVOG4wrQiqy02GcmQ1SOTaE0X6Cffrjpl4wa+EX9pGJ2myxYyrF2Ne2Bbu1yVS8l5k
+         /xmCOdGQh1o695CXiyEpkAGvbJp2y5pIHJH/DWfTki9z437thm5Gbhwyl0nQckunSVH4
+         y/2QO15P3fBnDHwaEsZyETYPbiMdVoEzKPRUlAIqLu8ck8YHWrrQEilrji/14pH8T0RV
+         pCELMhjP9BGWQz/hHLv6auOB+9fFjNErMOAmlGOhn0BXgPN+wh9ExQ9jMerj8ZR3Uzot
+         a3fQ==
+X-Gm-Message-State: AOJu0YxU0vKfZ7mSh3d5gmbViwB7p2VObuJYz0jBYFn5BMjMZCVifQfg
+	8YG78jcS2PNMAjCY24//5+PoccnKLF7Tt9pejdB5eQ==
+X-Google-Smtp-Source: AGHT+IE36Cv9THHqW9iFTSNZBi0qnVFrcNILBTSuYuHbpyaKyFhPLiBh0wr2wnk+hxXBFGH2QuTEbg==
+X-Received: by 2002:a17:906:c784:b0:a23:3621:a542 with SMTP id cw4-20020a170906c78400b00a233621a542mr3111987ejb.108.1703060887793;
+        Wed, 20 Dec 2023 00:28:07 -0800 (PST)
+Received: from stroh80.sec.9e.network (ip-078-094-000-051.um19.pools.vodafone-ip.de. [78.94.0.51])
+        by smtp.gmail.com with ESMTPSA id s20-20020a170906bc5400b00a26965e4caesm334778ejv.43.2023.12.20.00.28.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Dec 2023 00:28:07 -0800 (PST)
+From: Naresh Solanki <naresh.solanki@9elements.com>
+To: Peter Rosin <peda@axentia.se>,
+	Andi Shyti <andi.shyti@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc: Patrick Rudolph <patrick.rudolph@9elements.com>,
+	Naresh Solanki <naresh.solanki@9elements.com>,
+	Rob Herring <robh@kernel.org>,
+	linux-i2c@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [RESEND PATCH v5 1/2] dt-bindings: i2c: pca954x: Add custom properties for MAX7357
+Date: Wed, 20 Dec 2023 13:58:01 +0530
+Message-ID: <20231220082803.345153-1-naresh.solanki@9elements.com>
+X-Mailer: git-send-email 2.41.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1702692255-23640-1-git-send-email-longli@linuxonhyperv.com>
+Content-Transfer-Encoding: 8bit
 
-On Fri, Dec 15, 2023 at 06:04:12PM -0800, longli@linuxonhyperv.com wrote:
-> From: Long Li <longli@microsoft.com>
-> 
-> This patchset add support for registering a RDMA device with SoC for
-> support of querying device capabilities, upcoming RC queue pairs and
-> CQ interrupts.
-> 
-> This patchset is partially based on Ajay Sharma's work:
-> https://lore.kernel.org/netdev/1697494322-26814-1-git-send-email-sharmaajay@linuxonhyperv.com
-> 
-> Changes in v2:
-> Dropped the patches to create EQs for RC QP. They will be implemented with
-> RC patches.
-> 
-> 
-> Long Li (3):
->   RDMA/mana_ib: register RDMA device with GDMA
->   RDMA/mana_ib: query device capabilities
->   RDMA/mana_ib: Add CQ interrupt support for RAW QP
-> 
->  drivers/infiniband/hw/mana/cq.c               | 34 ++++++-
->  drivers/infiniband/hw/mana/device.c           | 31 +++++--
->  drivers/infiniband/hw/mana/main.c             | 69 ++++++++++----
->  drivers/infiniband/hw/mana/mana_ib.h          | 53 +++++++++++
->  drivers/infiniband/hw/mana/qp.c               | 90 ++++++++++++++++---
->  .../net/ethernet/microsoft/mana/gdma_main.c   |  5 ++
->  include/net/mana/gdma.h                       |  5 ++
->  7 files changed, 252 insertions(+), 35 deletions(-)
+From: Patrick Rudolph <patrick.rudolph@9elements.com>
 
-Applied with the following change in third patch.
+Maxim Max7357 has a configuration register to enable additional
+features. These features aren't enabled by default & its up to
+board designer to enable the same as it may have unexpected side effects.
 
-diff --git a/drivers/infiniband/hw/mana/qp.c b/drivers/infiniband/hw/mana/qp.c
-index 19998082a376..21ac9fcadf3f 100644
---- a/drivers/infiniband/hw/mana/qp.c
-+++ b/drivers/infiniband/hw/mana/qp.c
-@@ -443,17 +443,16 @@ static int mana_ib_create_qp_raw(struct ib_qp *ibqp, struct ib_pd *ibpd,
-                ibdev_dbg(&mdev->ib_dev,
-                          "Failed copy udata for create qp-raw, %d\n",
-                          err);
--               goto err_destroy_wq_obj;
-+               goto err_release_gdma_cq;
-        }
+These should be validated for proper functioning & detection of devices
+in secondary bus as sometimes it can cause secondary bus being disabled.
 
-        return 0;
+Add booleans for:
+ - maxim,isolate-stuck-channel
+ - maxim,send-flush-out-sequence
+ - maxim,preconnection-wiggle-test-enable
 
--err_destroy_wq_obj:
--       if (gdma_cq) {
--               kfree(gdma_cq);
--               gd->gdma_context->cq_table[send_cq->id] = NULL;
--       }
-+err_release_gdma_cq:
-+       kfree(gdma_cq);
-+       gd->gdma_context->cq_table[send_cq->id] = NULL;
+Signed-off-by: Patrick Rudolph <patrick.rudolph@9elements.com>
+Signed-off-by: Naresh Solanki <naresh.solanki@9elements.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
+---
+Changes in V4:
+- Drop max7358.
+Changes in V3:
+- Update commit message
+Changes in V2:
+- Update properties.
+---
+ .../bindings/i2c/i2c-mux-pca954x.yaml         | 30 +++++++++++++++++++
+ 1 file changed, 30 insertions(+)
 
-+err_destroy_wq_obj:
-        mana_destroy_wq_obj(mpc, GDMA_SQ, qp->tx_object);
+diff --git a/Documentation/devicetree/bindings/i2c/i2c-mux-pca954x.yaml b/Documentation/devicetree/bindings/i2c/i2c-mux-pca954x.yaml
+index 2d7bb998b0e9..9aa0585200c9 100644
+--- a/Documentation/devicetree/bindings/i2c/i2c-mux-pca954x.yaml
++++ b/Documentation/devicetree/bindings/i2c/i2c-mux-pca954x.yaml
+@@ -71,6 +71,23 @@ properties:
+     description: A voltage regulator supplying power to the chip. On PCA9846
+       the regulator supplies power to VDD2 (core logic) and optionally to VDD1.
+ 
++  maxim,isolate-stuck-channel:
++    type: boolean
++    description: Allows to use non faulty channels while a stuck channel is
++      isolated from the upstream bus. If not set all channels are isolated from
++      the upstream bus until the fault is cleared.
++
++  maxim,send-flush-out-sequence:
++    type: boolean
++    description: Send a flush-out sequence to stuck auxiliary buses
++      automatically after a stuck channel is being detected.
++
++  maxim,preconnection-wiggle-test-enable:
++    type: boolean
++    description: Send a STOP condition to the auxiliary buses when the switch
++      register activates a channel to detect a stuck high fault. On fault the
++      channel is isolated from the upstream bus.
++
+ required:
+   - compatible
+   - reg
+@@ -95,6 +112,19 @@ allOf:
+         "#interrupt-cells": false
+         interrupt-controller: false
+ 
++  - if:
++      not:
++        properties:
++          compatible:
++            contains:
++              enum:
++                - maxim,max7357
++    then:
++      properties:
++        maxim,isolate-stuck-channel: false
++        maxim,send-flush-out-sequence: false
++        maxim,preconnection-wiggle-test-enable: false
++
+ unevaluatedProperties: false
+ 
+ examples:
 
- err_destroy_dma_region:
+base-commit: 76998e5bcdf155b36c7066808a0a65b2ee13cb2a
+-- 
+2.41.0
 
-
-> 
-> -- 
-> 2.25.1
-> 
 
