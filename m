@@ -1,312 +1,231 @@
-Return-Path: <linux-kernel+bounces-7336-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7337-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7ECE81A5FA
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 18:07:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E564981A5FE
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 18:09:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2FBDC1F22C6C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 17:07:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 92FC02852DE
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 17:09:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13C634778E;
-	Wed, 20 Dec 2023 17:07:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BF3C4778F;
+	Wed, 20 Dec 2023 17:09:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BRl0yeyk"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="b8ZXi7eI"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E12A47771;
-	Wed, 20 Dec 2023 17:07:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-40c256ffdbcso68824575e9.2;
-        Wed, 20 Dec 2023 09:07:14 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF1D947771
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 17:09:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-28be15fca9fso287683a91.3
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 09:09:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703092033; x=1703696833; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=btkt3/Ub6w7H3XcLi44cnri98QOOc7fkwdM7Oeq81Eo=;
-        b=BRl0yeykETh6Qc62GG9n3IKCsA/gZvRZnLOjgHLngh0FCupeF8kdVdI5QOcH/y9iee
-         N9y48T8nwnKyoeKfj3BY/czkYiRgzNwpNb1lr/PAHHYWuTqPvj8NG6NElZPHWfJinc8k
-         AbWvyWF+o2ssqOFG9hxOXb+tw/VwCurunjTgV6EE37eX7rGQwt1isP4TvLSV+iXhcIVZ
-         8eSN4hk3/U83BwmNnZaIgpgp3h4bvwYhHS4UZhQjHpgNZ/8lsRcfJ6EmAFZ2q/WGWL5L
-         JaUs0l2BCC0zqxM4MlhyodMn9LBBA7Weu41vn24wcmpJCZ9qyBxrZOw6RTQSw4kHRnFI
-         1ATw==
+        d=linaro.org; s=google; t=1703092172; x=1703696972; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=HZ7jTw+AAxm5MCrLUPCxZhuBjfnYxDCeJf4ldH7CNa8=;
+        b=b8ZXi7eIaARsywlQd2KoTnSkgGgxmrmc8PPcL3pO7cZ4iRKhGaHdngx8LamMkjKcsS
+         +8QIuHvO142EYYd6ypnoSMXnZtaSThCgy9uldHPMXUFneaD5w0/zEmMAcub8Et3MjpXa
+         vQQLqdUuUCqSUseui2WN7nqfFO1FAz6P40quCBXIO9O4vh3HXZ/94WorWIm0+xPbOPPS
+         1/lLuthEC/F/UBkamZiUSntXuPWCv9Z1YVcIRAlgNFTfZBEKGtLubCCcfCnhvCkfmloR
+         FfYfy2/AX8W05/8lNJeQt+15EajBCn8r/4/5sBuxtGd1fTQIUgA+BfPE9l9jCGJKPPZi
+         cVrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703092033; x=1703696833;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=btkt3/Ub6w7H3XcLi44cnri98QOOc7fkwdM7Oeq81Eo=;
-        b=Wk1r5lrYWW+PH1Oqmj996k0gSnlfL3KDpvj9aK+069oyFZKdlRq7plGpwUeenFiO1T
-         NrS+CScQXxj2nZLFiY5aF9Ay7iFaaq96zgDSP2b6xZNpZa8RYZFKqsRndzu0FREwFU1v
-         2hORhYIU/wvOhTf06dHNu37O7rvN5zyy3/V5SUj2ks9I23cpEVvklkLpn4vC5GhUcMsg
-         Ei0UpZLPMy8AoMXuLKsZLiu5d5tic/Yj2QCpVcW8bOpT2Z53k5UO+IYX7oY+7/XJaQBm
-         sMi/OfLDsURgxS7Zcp162QrlAMVHO1vY1QmZQBK8XMjeYTAq7fxtHtEfvoJU+SCPOls1
-         bhyw==
-X-Gm-Message-State: AOJu0YzgQ+OYLtIVV6YnKTaCKpt024urX1Q7jhEake8trUHzAUZ9qnG9
-	N0qQqpRRYnrqvxJCFMRSLbA=
-X-Google-Smtp-Source: AGHT+IGvEP676wB5EEGLYgDzsgUKyE+KWhF17l1DqTPa5u1oabt9VHt0CW5KehWJlyW6Bsn5irovSw==
-X-Received: by 2002:a1c:4b0c:0:b0:40d:12ad:e0c9 with SMTP id y12-20020a1c4b0c000000b0040d12ade0c9mr14037wma.10.1703092032496;
-        Wed, 20 Dec 2023 09:07:12 -0800 (PST)
-Received: from jernej-laptop.localnet (82-149-12-148.dynamic.telemach.net. [82.149.12.148])
-        by smtp.gmail.com with ESMTPSA id ay14-20020a05600c1e0e00b0040c6ab53cd2sm282264wmb.10.2023.12.20.09.07.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Dec 2023 09:07:11 -0800 (PST)
-From: Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-To: Anne Macedo <retpolanne@posteo.net>
-Cc: Andre Przywara <andre.przywara@arm.com>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
- Samuel Holland <samuel@sholland.org>,
- "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
- <devicetree@vger.kernel.org>,
- "moderated list:ARM/Allwinner sunXi SoC support"
- <linux-arm-kernel@lists.infradead.org>,
- "open list:ARM/Allwinner sunXi SoC support" <linux-sunxi@lists.linux.dev>,
- open list <linux-kernel@vger.kernel.org>,
- Corentin Labbe <clabbe@baylibre.com>
-Subject: Re: [PATCH] arm64: dts: allwinner: Orange Pi One Plus PHY support
-Date: Wed, 20 Dec 2023 18:07:08 +0100
-Message-ID: <1962081.yKVeVyVuyW@jernej-laptop>
-In-Reply-To: <6p6d6l7mxof227mmdud2wsbgjr45dlqjxithpfjxnpjut2l23m@xz65d6ckyvi3>
-References:
- <20231212122835.10850-2-retpolanne@posteo.net>
- <3456637.QJadu78ljV@jernej-laptop>
- <6p6d6l7mxof227mmdud2wsbgjr45dlqjxithpfjxnpjut2l23m@xz65d6ckyvi3>
+        d=1e100.net; s=20230601; t=1703092172; x=1703696972;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=HZ7jTw+AAxm5MCrLUPCxZhuBjfnYxDCeJf4ldH7CNa8=;
+        b=JH4qvuRqqkSXyqI1R90uwBQ+aHj0V+TjkYYgiJILCqWWXXbdLyZ3+VXaM28UxBBIf4
+         GsijZqosKBIb1NyCOySQhzi3tOtyaXECNazLMiadS8NX2k4dgvUGpQDdPYHt6h+miIho
+         E/5eHezdXqDR9fSFRry5SRH27aZoUKXXN0NVutj7LsGPhSai6xodag7ITEUVfykOnkVI
+         VGdGz9CJzpYazLz0Lb+GIroJzsi93w5P+SjqsAtAMuhcukwqyoEDkblDOb9lTJgw9NXN
+         m96zVpIqDFNndRE6w2tevy6leJDw7wICExvvGw3w5MSsYqHHZhR2N+qux8ZBDIDfNirX
+         29HQ==
+X-Gm-Message-State: AOJu0Yxg+yqG01MwSjH2NMb68WerD4smRYKoWQaEZvzEvkHmI9f4xUW2
+	5plGVe3lz/Av8HeU9osx5En3v4ZNDGtDfCjoM5rcGQ==
+X-Google-Smtp-Source: AGHT+IFD3kcJbZ1RGpZ/JJ30Y4IhtQNSZ+k3F934RSL0Aai/kJpFvT3eTnKb8f7gDI3uM52Bu+yIjiUH6vUD1VGYHwg=
+X-Received: by 2002:a17:90a:e149:b0:286:6cc0:b926 with SMTP id
+ ez9-20020a17090ae14900b002866cc0b926mr7825575pjb.93.1703092172021; Wed, 20
+ Dec 2023 09:09:32 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+References: <alpine.DEB.2.22.394.2310032059060.3220@hadrien>
+ <20231003215159.GJ1539@noisy.programming.kicks-ass.net> <alpine.DEB.2.22.394.2310041358420.3108@hadrien>
+ <20231004120544.GA6307@noisy.programming.kicks-ass.net> <alpine.DEB.2.22.394.2310041822170.3108@hadrien>
+ <20231004174801.GE19999@noisy.programming.kicks-ass.net> <alpine.DEB.2.22.394.2310041958380.3108@hadrien>
+ <20231009102949.GC14330@noisy.programming.kicks-ass.net> <b8ab29de-1775-46e-dd75-cdf98be8b0@inria.fr>
+ <CAKfTPtBhWwk9sf9F1=KwubiAWFDC2A9ZT-SSJ+tgFxme1cFmYA@mail.gmail.com>
+ <alpine.DEB.2.22.394.2312182302310.3361@hadrien> <CAKfTPtALEFtrapi3Kk97KLGQN4259eEQEwwftVUK4RG42Vgoyw@mail.gmail.com>
+ <98b3df1-79b7-836f-e334-afbdd594b55@inria.fr>
+In-Reply-To: <98b3df1-79b7-836f-e334-afbdd594b55@inria.fr>
+From: Vincent Guittot <vincent.guittot@linaro.org>
+Date: Wed, 20 Dec 2023 18:09:20 +0100
+Message-ID: <CAKfTPtCRN_eWgVdK2-h6E_ifJKwwJEtMjeNjB=5DXZFWyBS+tQ@mail.gmail.com>
+Subject: Re: EEVDF and NUMA balancing
+To: Julia Lawall <julia.lawall@inria.fr>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Dietmar Eggemann <dietmar.eggemann@arm.com>, Mel Gorman <mgorman@suse.de>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Dne sreda, 20. december 2023 ob 13:13:38 CET je Anne Macedo napisal(a):
-> On Tue, Dec 19, 2023 at 07:54:23PM +0100, Jernej Skrabec wrote:
-> > Dne torek, 19. december 2023 ob 01:31:05 CET je Anne Macedo napisal(a):
-> > > On Wed, Dec 13, 2023 at 12:25:23PM +0000, Andre Przywara wrote:
-> > > > On Wed, 13 Dec 2023 11:02:39 +0000
-> > > > Anne Macedo <retpolanne@posteo.net> wrote:
-> > > > 
-> > > > Hi Anne,
-> > > > 
-> > > > > On Wed, Dec 13, 2023 at 01:35:44AM +0000, Andre Przywara wrote:
-> > > > > > On Tue, 12 Dec 2023 19:27:14 +0000
-> > > > > > Anne Macedo <retpolanne@posteo.net> wrote:
-> > > > > > 
-> > > > > > Hi Anne,
-> > > > > >   
-> > > > > > > On Tue, Dec 12, 2023 at 04:22:00PM +0000, Andre Przywara wrote:  
-> > > > > > > > On Tue, 12 Dec 2023 12:28:30 +0000
-> > > > > > > > Anne Macedo <retpolanne@posteo.net> wrote:
-> > > > > > > > 
-> > > > > > > > Hi Anne,
-> > > > > > > >     
-> > > > > > > > > Adds compatible values to mdio subnodes for Ethernet PHY representing
-> > > > > > > > > Realtek 8211 PHY to Orange Pi One Plus.    
-> > > > > > > > 
-> > > > > > > > So can you state why this would be needed? This is the RTL8211 ID,    
-> > > > > > > 
-> > > > > > > Apologies, I completely forgot to include some context. 
-> > > > > > >   
-> > > > > > > > right? Which should be autodetected via MDIO. Looking back in my inbox
-> > > > > > > > you proposed this change before, for U-Boot, specifically, but I fail to
-> > > > > > > > find a solution or explanation what really happens here. Two Renesas .dts
-> > > > > > > > files have the same compatible, and the commit message talks about the
-> > > > > > > > reset line there, is this related?
-> > > > > > > > 
-> > > > > > > > So can you please give some more background and explanation? That would be
-> > > > > > > > part of a good commit message anyway ("why", not "what").    
-> > > > > > > 
-> > > > > > > Should I resend the commit with a more meaningful explanation? The
-> > > > > > > context is the following:
-> > > > > > > 
-> > > > > > > currently, ethernet doesn't seem to work on both u-boot and Linux on the
-> > > > > > > Orange Pi One Plus board. 
-> > > > > > > 
-> > > > > > > On the kernel, this error shows up:
-> > > > > > > 
-> > > > > > > Configuring network interfaces... [    5.992589] dwmac-sun8i 5020000.ethernet eth0: Register MEM_TYPE_PAGE_POOL RxQ-0
-> > > > > > > [    6.000823] dwmac-sun8i 5020000.ethernet eth0: __stmmac_open: Cannot attach to PHY (error: -19)
-> > > > > > > 
-> > > > > > > After applying this fix, the PHY gets attached: 
-> > > > > > > 
-> > > > > > > Configuring network interfaces... [    6.060020] dwmac-sun8i 5020000.ethernet eth0: Register MEM_TYPE_PAGE_POOL RxQ-0
-> > > > > > > [    6.069460] dwmac-sun8i 5020000.ethernet eth0: PHY [stmmac-0:01] driver [RTL8211E Gigabit Ethernet] (irq=POLL)
-> > > > > > > 
-> > > > > > > The previous compatible list that had ethernet-phy-ieee802.3-c22 fails
-> > > > > > > to find a PHY, so this patch includes the correct PHY ID with the
-> > > > > > > RTL8211 ID. 
-> > > > > > > 
-> > > > > > > The behaviour is described on [1].  
-> > > > > > 
-> > > > > > So this is all an observation, but no real explanation, isn't it?  
-> > > > > 
-> > > > > I've made some analysis on [3] on this bug, but it was based solely on
-> > > > > u-boot. I was having trouble with the regulator and on u-boot nothing
-> > > > > would trigger the GPIO PD6 and the vcc-gmac-3v3 regulator, so the NIC
-> > > > > was completely dead. Next I did an analysis based on [2] because the
-> > > > > u-boot PHY initialization was flaky.
-> > > > > 
-> > > > > > To cite [1]: "If the PHY reports an incorrect ID (or none at all) ...".
-> > > > > > I am pretty sure this is not the case here, instead we are looking at
-> > > > > > some missing platform bits, like a missing clock, reset, or most likely
-> > > > > > regulator. Or one of the existing resources is wrongly assigned or  
-> > > > > 
-> > > > > As I mentioned, PHY initialization is flaky on u-boot, so maybe that
-> > > > > assumption is correct. 
-> > > > > 
-> > > > > > configured? If the PHY is not (yet?) powered correctly when the code
-> > > > > > does the auto-detection via the MDIO bus, then the initialisation would  
-> > > > > 
-> > > > > If I recall correctly (I don't know if I kept it in my notes :c), that
-> > > > > could be the case. regulator-boot-on makes the NIC work (LEDs blink, at
-> > > > > least) but it doesn't get initialized. 
-> > > > > 
-> > > > > > fail. But since it works when overriding the auto-detection, I feel
-> > > > > > like we are papering over something here.
-> > > > > > Do you have the schematics for this board? I can only find the one for
-> > > > > > the Orange Pi Plus 2E, and I don't know how similar those two are. This
-> > > > > > shows *two* regulators, but both are activated by the same GPIO.  
-> > > > > 
-> > > > > I do. It's available on [4]
-> > > > 
-> > > > Oh damn it, I got lost in Orange Pi's naming maze again - and was looking
-> > > > for the wrong board! So thanks for the link, and this clears things up!
-> > > > 
-> > > > So yes, the Orange Pi *One* Plus, much like the Orange Pi 3, uses *two*
-> > > > regulators for Ethernet: one 3.3V from the PMIC's ALDO2 rail to power the
-> > > > PHY, and a discrete 2.5V regulator, enabled by GPIO PD6, for the voltage
-> > > > level on the MDIO lines. On top of this there is a reset line for the PHY,
-> > > > though this is held up by a pull-up resistor, so it *should* work,
-> > > > although we should describe this in the DT.
-> > > > 
-> > > > So the DT looks wrong then: The reg_gmac_3v3 is actually a 2.5V regulator,
-> > > > and phy-supply is aldo2. I think it was done the way it is to somehow make
-> > > > it work with the current DT binding and code, which just supports one
-> > > > regulator. And aldo2 is referenced as the source of reg_gmac_3v3, which
-> > > > smells like another hack to me.
-> > > > 
-> > > > > > It would also be interesting to see if any of Corentin's work for the
-> > > > > > Orange Pi 3 helps here?  
-> > > > > 
-> > > > > Adding [5] for reference here, thanks! Will check it out. 
-> > > > 
-> > > > This is an older version, there are actually updates. And he also mentions
-> > > > your board as well, so I think it just can sail in the wake of the OPi 3
-> > > > Ethernet enablement.
-> > > > 
-> > > > Can you try if this change, just applied to your .dts instead, works?
-> > > > https://github.com/montjoie/linux/commit/cf6e192eca1d59be630e6729d2cef9e897b3da8c
-> > > 
-> > > Hello, 
-> > > 
-> > > I've tried applying this change but it didn't seem to work :( 
-> > 
-> > Those patches are obsolete, I took over the work and latest patches are here:
-> > https://github.com/jernejsk/linux-1/commits/opi3-net/ (last 3)
-> > 
-> > While I have OrangePi 3 and I have tested patches on it, I don't have Orange
-> > Pi One Plus.
-> > 
-> > > 
-> > > I got these errors:
-> > > 
-> > > [    5.117220] dwmac-sun8i 5020000.ethernet: IRQ eth_wake_irq not found
-> > > [    5.124366] dwmac-sun8i 5020000.ethernet: IRQ eth_lpi not found
-> > > [    5.130645] dwmac-sun8i 5020000.ethernet: No regulator found
-> > > [    5.137133] dwmac-sun8i 5020000.ethernet: PTP uses main clock
-> > > [    5.143925] dwmac-sun8i 5020000.ethernet: Current syscon value is not the default 58000 (expect 50000)
-> > > [    5.157588] dwmac-sun8i 5020000.ethernet: No HW DMA feature register supported
-> > > [    5.164905] dwmac-sun8i 5020000.ethernet: RX Checksum Offload Engine supported
-> > > [    5.172189] dwmac-sun8i 5020000.ethernet: COE Type 2
-> > > [    5.177213] dwmac-sun8i 5020000.ethernet: TX Checksum insertion supported
-> > > [    5.184033] dwmac-sun8i 5020000.ethernet: Normal descriptors
-> > > [    5.189724] dwmac-sun8i 5020000.ethernet: Chain mode enabled
-> > > [    5.381149] dwmac-sun8i 5020000.ethernet: EMAC reset timeout
-> > > [    5.386863] dwmac-sun8i 5020000.ethernet eth0: stmmac_dvr_remove: removing driver
-> > > [    5.438851] dwmac-sun8i: probe of 5020000.ethernet failed with error -110
-> > > 
-> > > I think I understand what is going on in Corentin's patch though. Please
-> > > correct me if I'm wrong:
-> > > 
-> > > 1. Instead of using the gmac-3v3, they use gmac-2v5 enabled by PD6.
-> > 
-> > Yes, 3v3 is completely wrong. Schematic only shows 2v5 regulator controlled
-> > with PD6.
-> > 
-> > > 2. For "phy-io", the 2v5 regulator is used
-> > > 3. For "ephy", the 3v3 regulator is used (aldo2 already sends this 3v3
-> > > signal)
-> > 
-> > Correct.
-> > 
-> > > 
-> > > My changes are here:
-> > > https://github.com/retpolanne/linux/commit/45aa2abde2606f9164f9a97d092fab6a36d45165
-> > > 
-> > > Maybe I should try to use the existing 3v3 regulator alongside a new 2v5
-> > > regulator on the DT. 
-> > 
-> > No.
-> > 
-> > Please make sure that you have
-> > https://github.com/jernejsk/linux-1/commit/25b44143ea8162209beb02759ca3ea3bd3be7a74
-> 
-> I was able to apply this one
-> https://github.com/jernejsk/linux-1/commit/18725ec6239ac4eedea4aefbe224594d2735399c
-> 
-> But not this one: 
-> https://github.com/jernejsk/linux-1/commit/25b44143ea8162209beb02759ca3ea3bd3be7a74
-> 
-> I believe this latter patch is required to make it work. Has it been
-> sent upstream? 
+On Tue, 19 Dec 2023 at 18:51, Julia Lawall <julia.lawall@inria.fr> wrote:
+>
+> > > One CPU has 2 threads, and the others have one.  The one with two threads
+> > > is returned as the busiest one.  But nothing happens, because both of them
+> > > prefer the socket that they are on.
+> >
+> > This explains way load_balance uses migrate_util and not migrate_task.
+> > One CPU with 2 threads can be overloaded
+> >
+> > ok, so it seems that your 1st problem is that you have 2 threads on
+> > the same CPU whereas you should have an idle core in this numa node.
+> > All cores are sharing the same LLC, aren't they ?
+>
+> Sorry, not following this.
+>
+> Socket 1 has N-1 threads, and thus an idle CPU.
+> Socket 2 has N+1 threads, and thus one CPU with two threads.
+>
+> Socket 1 tries to steal from that one CPU with two threads, but that
+> fails, because both threads prefer being on Socket 2.
+>
+> Since most (or all?) of the threads on Socket 2 perfer being on Socket 2.
+> the only hope for Socket 1 to fill in its idle core is active balancing.
+> But active balancing is not triggered because of migrate_util and because
+> CPU_NEWLY_IDLE prevents the failure counter from ebing increased.
 
-No, but I plan to do that soon.
+ CPU_NEWLY_IDLE load_balance doesn't aims to do active load balance so
+you should focus on the CPU_NEWLY_IDLE load_balance
 
-In any case, patches are based on v6.7-rc1, but you should be able to apply
-them to v6.6 too. With older kernels there is issue in first chunk (include),
-but that is trivial to resolve.
+>
+> The part that I am currently missing to understand is that when I convert
+> CPU_NEWLY_IDLE to CPU_IDLE, it typically picks a CPU with only one thread
+> as busiest.  I have the impression that the fbq_type intervenes to cause
 
-Best regards,
-Jernej
+find_busiest_queue skips rqs which only have threads preferring being
+in there. So it selects another rq with a thread that doesn't prefer
+its current node.
 
-> 
-> > 
-> > Without it, ethernet PHY won't be powered on and you will get errors in dmesg.
-> > 
-> > Best regards,
-> > Jernej
-> > 
-> > > > 
-> > > > Cheers,
-> > > > Andre
-> > > > 
-> > > > P.S. Is there any chance where I can reply/comment on your blog? It seems
-> > > > like I can clear some things up...
-> > > > 
-> > > > > [3] https://blog.retpolanne.com/hardware/embedded/2023/07/07/embedded-phy.html
-> > > > > [4] https://linux-sunxi.org/images/7/7c/OrangePi_OnePlus_Schematics_v2.0.pdf
-> > > > > [5] https://lore.kernel.org/netdev/20220509074857.195302-1-clabbe@baylibre.com/
-> > > > > 
-> > > > > Regards, Anne
-> > > > 
-> > > 
-> > > Regards, Anne
-> > > 
-> > 
-> > 
-> > 
-> > 
-> 
+do you know what is the value of env->fbq_type ?
+
+need_active_balance() probably needs a new condition for the numa case
+where the busiest queue can't be selected and we have to trigger an
+active load_balance on a rq with only 1 thread but that is not running
+on its preferred node. Something like the untested below :
+
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index e5da5eaab6ce..de1474191488 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -11150,6 +11150,24 @@ imbalanced_active_balance(struct lb_env *env)
+        return 0;
+ }
+
++static inline bool
++numa_active_balance(struct lb_env *env)
++{
++       struct sched_domain *sd = env->sd;
++
++       /*
++        * We tried to migrate only a !numa task or a task on wrong node but
++        * the busiest queue with such task has only 1 running task. Previous
++        * attempt has failed so force the migration of such task.
++        */
++       if ((env->fbq_type < all) &&
++           (env->src_rq->cfs.h_nr_running == 1) &&
++           (sd->nr_balance_failed > 0))
++               return 1;
++
++       return 0;
++}
++
+ static int need_active_balance(struct lb_env *env)
+ {
+        struct sched_domain *sd = env->sd;
+@@ -11176,6 +11194,9 @@ static int need_active_balance(struct lb_env *env)
+        if (env->migration_type == migrate_misfit)
+                return 1;
+
++       if (numa_active_balance(env))
++               return 1;
++
+        return 0;
+ }
+
+
+> it to avoid the CPU with two threads that already prefer Socket 2.  But I
+> don't know at the moment why that is the case.  In any case, it's fine to
+> active balance from a CPU with only one thread, because Socket 2 will
+> even itself out afterwards.
+>
+> >
+> > You should not have more than 1 thread per CPU when there are N+1
+> > threads on a node with N cores / 2N CPUs.
+>
+> Hmm, I think there is a miscommunication about cores and CPUs.  The
+> machine has two sockets with 16 physical cores each, and thus 32
+> hyperthreads.  There are 64 threads running.
+
+Ok, I have been confused by what you wrote previously:
+" The context is that there are 2N threads running on 2N cores, one thread
+gets NUMA balanced to the other socket, leaving N+1 threads on one socket
+and N-1 threads on the other socket."
+
+I have assumed that there were N cores and 2N CPUs per socket as you
+mentioned Intel Xeon 6130 in the commit message . My previous emails
+don't apply at all with N CPUs per socket and the group_overloaded is
+correct.
 
 
 
-
+>
+> julia
+>
+> > This will enable the
+> > load_balance to try to migrate a task instead of some util(ization)
+> > and you should reach the active load balance.
+> >
+> > >
+> > > > In theory you should have the
+> > > > local "group_has_spare" and the busiest "group_fully_busy" (at most).
+> > > > This means that no group should be overloaded and load_balance should
+> > > > not try to migrate utli but only task
+> > >
+> > > I didn't collect information about the groups.  I will look into that.
+> > >
+> > > julia
+> > >
+> > > >
+> > > >
+> > > > >
+> > > > > and changing the above test to:
+> > > > >
+> > > > >         if ((env->migration_type == migrate_task || env->migration_type == migrate_util) &&
+> > > > >             (sd->nr_balance_failed > sd->cache_nice_tries+2))
+> > > > >
+> > > > > seems to solve the problem.
+> > > > >
+> > > > > I will test this on more applications.  But let me know if the above
+> > > > > solution seems completely inappropriate.  Maybe it violates some other
+> > > > > constraints.
+> > > > >
+> > > > > I have no idea why this problem became more visible with EEVDF.  It seems
+> > > > > to have to do with the time slices all turning out to be the same.  I got
+> > > > > the same behavior in 6.5 by overwriting the timeslice calculation to
+> > > > > always return 1.  But I don't see the connection between the timeslice and
+> > > > > the behavior of the idle task.
+> > > > >
+> > > > > thanks,
+> > > > > julia
+> > > >
+> >
 
