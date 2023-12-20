@@ -1,385 +1,198 @@
-Return-Path: <linux-kernel+bounces-6719-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6728-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4632F819C89
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 11:18:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36384819C9C
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 11:21:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B1EAB1F255A2
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 10:18:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E0E8D2847AD
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 10:21:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B411B21112;
-	Wed, 20 Dec 2023 10:16:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 227C0224C2;
+	Wed, 20 Dec 2023 10:18:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="BDxnJlX9"
+	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="E4hwHjys"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 282E9200D1
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 10:16:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1703067412;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=RYtsflTEbT6BNxwlf89Krmu0Br2efQiSHwp9Kz6CuSc=;
-	b=BDxnJlX92jy6igD25B/8ZivBWoDs+RH7dwlCftNsn843PkwOKljMn0FrVs8Ca1j2hhilk4
-	0NaoQMjjVHVGnC2MksBPjcUH2aDZ1CR5cwKrWp27hZ8HN1svc7y0L3yb3QmwsN35XzvpFe
-	NGJSMTx4ALJ/YWY3S0/8sNjE/Qy+v2A=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-149-R7vj_tG9OtatLtfIeCFHvg-1; Wed, 20 Dec 2023 05:16:50 -0500
-X-MC-Unique: R7vj_tG9OtatLtfIeCFHvg-1
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-40c514f9243so36828705e9.3
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 02:16:50 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703067409; x=1703672209;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RYtsflTEbT6BNxwlf89Krmu0Br2efQiSHwp9Kz6CuSc=;
-        b=McBUvc56DD7ZPqqLAfeQB0qvlJkm9YNbU0zp9GaPS3kHdK+UdkF/Dj9HpEjmnIiRFR
-         bWsNhIswS3djQy6b3cY/sUSGFb4H2Lb8x8+AfGZwe92PSd9+7K4KtOU1u5x4z76CysLl
-         6FDnWULxbFPHs36GwNw3eTjEzDlq0TUf4M+V4XpkdFd7Ik7kRsHgTTmO7nyL+FhmL93U
-         FS9AkViAOY2aClAk99g1VV1G6zdYRReVZysZFm3T5oZFpBF/QmrolUO73jasTXqvoJCb
-         at+RxR3N4TttWiL5bWTUQJlD5I8P+lgPUOqetgcc3WhyEYuDBAAU/gWSfHJ+FjKhl/nl
-         Y7xg==
-X-Gm-Message-State: AOJu0YwrfnM4jqYY3vP9H0gI30mbeyPOqgfEWU/SibT33dwoIIOoAs85
-	TSbAPr0kz3oHbKs//45B8RaQe4lPRc4PLOIJGCF3KsTVgxeJgR0HQP8Y2bpBNsfcRJ6NEWjP97g
-	wwy0cu/5u2Ufg2F4c18nUTxIr
-X-Received: by 2002:a05:600c:3507:b0:40d:30c0:b145 with SMTP id h7-20020a05600c350700b0040d30c0b145mr741696wmq.74.1703067409297;
-        Wed, 20 Dec 2023 02:16:49 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IG4PQdQOxwM2g+WYl99xNh2t+rlUpp2zpLEXH1J/PoNElFiwLG99USdFpGU4AcSFqePx+gzKA==
-X-Received: by 2002:a05:600c:3507:b0:40d:30c0:b145 with SMTP id h7-20020a05600c350700b0040d30c0b145mr741678wmq.74.1703067408687;
-        Wed, 20 Dec 2023 02:16:48 -0800 (PST)
-Received: from ?IPV6:2003:cb:c73b:eb00:8e25:6953:927:1802? (p200300cbc73beb008e25695309271802.dip0.t-ipconnect.de. [2003:cb:c73b:eb00:8e25:6953:927:1802])
-        by smtp.gmail.com with ESMTPSA id bd7-20020a05600c1f0700b0040c420eda48sm7106371wmb.22.2023.12.20.02.16.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Dec 2023 02:16:48 -0800 (PST)
-Message-ID: <8f8023cb-3c31-4ead-a9e6-03a10e9490c6@redhat.com>
-Date: Wed, 20 Dec 2023 11:16:46 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DDC5208A2;
+	Wed, 20 Dec 2023 10:18:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
+X-UUID: 2524dfbc9f2111eea5db2bebc7c28f94-20231220
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+	h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=CdU2676FRynX/MDB7fl2lJe4/NB6e97cAqd453bdqPk=;
+	b=E4hwHjysH/un7bXmmhnh1LIRNsOP8Rhk/7bZ10/HMTBeNHEqEQlaqoYwnEDH4kksfQfz/fnyaw7hL6y+pnaaoGjAhlKQ60AuNWfNSECKpR5VnBXIUWsu9rtTeW0ifjz5Ix1YLuJoJOwdgXLiverv1fz/QH+f6a5BBHcRxtcRkdM=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.35,REQID:d1977fe1-8353-4ad9-b788-129c09329523,IP:0,U
+	RL:0,TC:0,Content:-25,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
+	N:release,TS:-25
+X-CID-META: VersionHash:5d391d7,CLOUDID:e38ffa81-8d4f-477b-89d2-1e3bdbef96d1,B
+	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+	RL:1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
+	DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULS
+X-UUID: 2524dfbc9f2111eea5db2bebc7c28f94-20231220
+Received: from mtkmbs14n2.mediatek.inc [(172.21.101.76)] by mailgw01.mediatek.com
+	(envelope-from <moudy.ho@mediatek.com>)
+	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+	with ESMTP id 1367280753; Wed, 20 Dec 2023 18:18:40 +0800
+Received: from mtkmbs13n1.mediatek.inc (172.21.101.193) by
+ mtkmbs11n2.mediatek.inc (172.21.101.187) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Wed, 20 Dec 2023 18:18:39 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
+ mtkmbs13n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Wed, 20 Dec 2023 18:18:39 +0800
+From: Moudy Ho <moudy.ho@mediatek.com>
+To: Mauro Carvalho Chehab <mchehab@kernel.org>, Matthias Brugger
+	<matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
+	<angelogioacchino.delregno@collabora.com>
+CC: <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>,
+	Moudy Ho <moudy.ho@mediatek.corp-partner.google.com>
+Subject: [PATCH v9 00/12] add support MDP3 on MT8195 platform
+Date: Wed, 20 Dec 2023 18:18:26 +0800
+Message-ID: <20231220101838.21510-1-moudy.ho@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 02/16] mm: Batch-copy PTE ranges during fork()
-Content-Language: en-US
-To: Ryan Roberts <ryan.roberts@arm.com>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Ard Biesheuvel <ardb@kernel.org>, Marc Zyngier <maz@kernel.org>,
- Oliver Upton <oliver.upton@linux.dev>, James Morse <james.morse@arm.com>,
- Suzuki K Poulose <suzuki.poulose@arm.com>, Zenghui Yu
- <yuzenghui@huawei.com>, Andrey Ryabinin <ryabinin.a.a@gmail.com>,
- Alexander Potapenko <glider@google.com>,
- Andrey Konovalov <andreyknvl@gmail.com>, Dmitry Vyukov <dvyukov@google.com>,
- Vincenzo Frascino <vincenzo.frascino@arm.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Anshuman Khandual <anshuman.khandual@arm.com>,
- Matthew Wilcox <willy@infradead.org>, Yu Zhao <yuzhao@google.com>,
- Mark Rutland <mark.rutland@arm.com>, Kefeng Wang
- <wangkefeng.wang@huawei.com>, John Hubbard <jhubbard@nvidia.com>,
- Zi Yan <ziy@nvidia.com>, Barry Song <21cnbao@gmail.com>,
- Alistair Popple <apopple@nvidia.com>, Yang Shi <shy828301@gmail.com>
-Cc: linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org
-References: <20231218105100.172635-1-ryan.roberts@arm.com>
- <20231218105100.172635-3-ryan.roberts@arm.com>
- <0bef5423-6eea-446b-8854-980e9c23a948@redhat.com>
- <db1be625-33e4-4d07-8500-3f7d3c8f9937@arm.com>
- <be8b5181-be2c-4800-ba53-c65a6c3ed803@redhat.com>
- <dd227e51-c4b2-420b-a92a-65da85ab4018@arm.com>
- <7c0236ad-01f3-437f-8b04-125d69e90dc0@redhat.com>
- <9a58b1a2-2c13-4fa0-8ffa-2b3d9655f1b6@arm.com>
- <28968568-f920-47ac-b6fd-87528ffd8f77@redhat.com>
- <10b0b562-c1c0-4a66-9aeb-a6bff5c218f6@arm.com>
-From: David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <10b0b562-c1c0-4a66-9aeb-a6bff5c218f6@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-MTK: N
 
-On 20.12.23 11:11, Ryan Roberts wrote:
-> On 20/12/2023 09:54, David Hildenbrand wrote:
->> On 20.12.23 10:51, Ryan Roberts wrote:
->>> On 20/12/2023 09:17, David Hildenbrand wrote:
->>>> On 19.12.23 18:42, Ryan Roberts wrote:
->>>>> On 19/12/2023 17:22, David Hildenbrand wrote:
->>>>>> On 19.12.23 09:30, Ryan Roberts wrote:
->>>>>>> On 18/12/2023 17:47, David Hildenbrand wrote:
->>>>>>>> On 18.12.23 11:50, Ryan Roberts wrote:
->>>>>>>>> Convert copy_pte_range() to copy a batch of ptes in one go. A given
->>>>>>>>> batch is determined by the architecture with the new helper,
->>>>>>>>> pte_batch_remaining(), and maps a physically contiguous block of memory,
->>>>>>>>> all belonging to the same folio. A pte batch is then write-protected in
->>>>>>>>> one go in the parent using the new helper, ptep_set_wrprotects() and is
->>>>>>>>> set in one go in the child using the new helper, set_ptes_full().
->>>>>>>>>
->>>>>>>>> The primary motivation for this change is to reduce the number of tlb
->>>>>>>>> maintenance operations that the arm64 backend has to perform during
->>>>>>>>> fork, as it is about to add transparent support for the "contiguous bit"
->>>>>>>>> in its ptes. By write-protecting the parent using the new
->>>>>>>>> ptep_set_wrprotects() (note the 's' at the end) function, the backend
->>>>>>>>> can avoid having to unfold contig ranges of PTEs, which is expensive,
->>>>>>>>> when all ptes in the range are being write-protected. Similarly, by
->>>>>>>>> using set_ptes_full() rather than set_pte_at() to set up ptes in the
->>>>>>>>> child, the backend does not need to fold a contiguous range once they
->>>>>>>>> are all populated - they can be initially populated as a contiguous
->>>>>>>>> range in the first place.
->>>>>>>>>
->>>>>>>>> This code is very performance sensitive, and a significant amount of
->>>>>>>>> effort has been put into not regressing performance for the order-0
->>>>>>>>> folio case. By default, pte_batch_remaining() is compile constant 1,
->>>>>>>>> which enables the compiler to simplify the extra loops that are added
->>>>>>>>> for batching and produce code that is equivalent (and equally
->>>>>>>>> performant) as the previous implementation.
->>>>>>>>>
->>>>>>>>> This change addresses the core-mm refactoring only and a separate change
->>>>>>>>> will implement pte_batch_remaining(), ptep_set_wrprotects() and
->>>>>>>>> set_ptes_full() in the arm64 backend to realize the performance
->>>>>>>>> improvement as part of the work to enable contpte mappings.
->>>>>>>>>
->>>>>>>>> To ensure the arm64 is performant once implemented, this change is very
->>>>>>>>> careful to only call ptep_get() once per pte batch.
->>>>>>>>>
->>>>>>>>> The following microbenchmark results demonstate that there is no
->>>>>>>>> significant performance change after this patch. Fork is called in a
->>>>>>>>> tight loop in a process with 1G of populated memory and the time for the
->>>>>>>>> function to execute is measured. 100 iterations per run, 8 runs
->>>>>>>>> performed on both Apple M2 (VM) and Ampere Altra (bare metal). Tests
->>>>>>>>> performed for case where 1G memory is comprised of order-0 folios and
->>>>>>>>> case where comprised of pte-mapped order-9 folios. Negative is faster,
->>>>>>>>> positive is slower, compared to baseline upon which the series is based:
->>>>>>>>>
->>>>>>>>> | Apple M2 VM   | order-0 (pte-map) | order-9 (pte-map) |
->>>>>>>>> | fork          |-------------------|-------------------|
->>>>>>>>> | microbench    |    mean |   stdev |    mean |   stdev |
->>>>>>>>> |---------------|---------|---------|---------|---------|
->>>>>>>>> | baseline      |    0.0% |    1.1% |    0.0% |    1.2% |
->>>>>>>>> | after-change  |   -1.0% |    2.0% |   -0.1% |    1.1% |
->>>>>>>>>
->>>>>>>>> | Ampere Altra  | order-0 (pte-map) | order-9 (pte-map) |
->>>>>>>>> | fork          |-------------------|-------------------|
->>>>>>>>> | microbench    |    mean |   stdev |    mean |   stdev |
->>>>>>>>> |---------------|---------|---------|---------|---------|
->>>>>>>>> | baseline      |    0.0% |    1.0% |    0.0% |    0.1% |
->>>>>>>>> | after-change  |   -0.1% |    1.2% |   -0.1% |    0.1% |
->>>>>>>>>
->>>>>>>>> Tested-by: John Hubbard <jhubbard@nvidia.com>
->>>>>>>>> Reviewed-by: Alistair Popple <apopple@nvidia.com>
->>>>>>>>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
->>>>>>>>> ---
->>>>>>>>>       include/linux/pgtable.h | 80 +++++++++++++++++++++++++++++++++++
->>>>>>>>>       mm/memory.c             | 92 ++++++++++++++++++++++++++---------------
->>>>>>>>>       2 files changed, 139 insertions(+), 33 deletions(-)
->>>>>>>>>
->>>>>>>>> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
->>>>>>>>> index af7639c3b0a3..db93fb81465a 100644
->>>>>>>>> --- a/include/linux/pgtable.h
->>>>>>>>> +++ b/include/linux/pgtable.h
->>>>>>>>> @@ -205,6 +205,27 @@ static inline int pmd_young(pmd_t pmd)
->>>>>>>>>       #define arch_flush_lazy_mmu_mode()    do {} while (0)
->>>>>>>>>       #endif
->>>>>>>>>       +#ifndef pte_batch_remaining
->>>>>>>>> +/**
->>>>>>>>> + * pte_batch_remaining - Number of pages from addr to next batch boundary.
->>>>>>>>> + * @pte: Page table entry for the first page.
->>>>>>>>> + * @addr: Address of the first page.
->>>>>>>>> + * @end: Batch ceiling (e.g. end of vma).
->>>>>>>>> + *
->>>>>>>>> + * Some architectures (arm64) can efficiently modify a contiguous batch of
->>>>>>>>> ptes.
->>>>>>>>> + * In such cases, this function returns the remaining number of pages to
->>>>>>>>> the end
->>>>>>>>> + * of the current batch, as defined by addr. This can be useful when
->>>>>>>>> iterating
->>>>>>>>> + * over ptes.
->>>>>>>>> + *
->>>>>>>>> + * May be overridden by the architecture, else batch size is always 1.
->>>>>>>>> + */
->>>>>>>>> +static inline unsigned int pte_batch_remaining(pte_t pte, unsigned long
->>>>>>>>> addr,
->>>>>>>>> +                        unsigned long end)
->>>>>>>>> +{
->>>>>>>>> +    return 1;
->>>>>>>>> +}
->>>>>>>>> +#endif
->>>>>>>>
->>>>>>>> It's a shame we now lose the optimization for all other archtiectures.
->>>>>>>>
->>>>>>>> Was there no way to have some basic batching mechanism that doesn't require
->>>>>>>> arch
->>>>>>>> specifics?
->>>>>>>
->>>>>>> I tried a bunch of things but ultimately the way I've done it was the only
->>>>>>> way
->>>>>>> to reduce the order-0 fork regression to 0.
->>>>>>>
->>>>>>> My original v3 posting was costing 5% extra and even my first attempt at an
->>>>>>> arch-specific version that didn't resolve to a compile-time constant 1 still
->>>>>>> cost an extra 3%.
->>>>>>>
->>>>>>>
->>>>>>>>
->>>>>>>> I'd have thought that something very basic would have worked like:
->>>>>>>>
->>>>>>>> * Check if PTE is the same when setting the PFN to 0.
->>>>>>>> * Check that PFN is consecutive
->>>>>>>> * Check that all PFNs belong to the same folio
->>>>>>>
->>>>>>> I haven't tried this exact approach, but I'd be surprised if I can get the
->>>>>>> regression under 4% with this. Further along the series I spent a lot of time
->>>>>>> having to fiddle with the arm64 implementation; every conditional and every
->>>>>>> memory read (even when in cache) was a problem. There is just so little in
->>>>>>> the
->>>>>>> inner loop that every instruction matters. (At least on Ampere Altra and
->>>>>>> Apple
->>>>>>> M2).
->>>>>>>
->>>>>>> Of course if you're willing to pay that 4-5% for order-0 then the benefit to
->>>>>>> order-9 is around 10% in my measurements. Personally though, I'd prefer to
->>>>>>> play
->>>>>>> safe and ensure the common order-0 case doesn't regress, as you previously
->>>>>>> suggested.
->>>>>>>
->>>>>>
->>>>>> I just hacked something up, on top of my beloved rmap cleanup/batching
->>>>>> series. I
->>>>>> implemented very generic and simple batching for large folios (all PTE bits
->>>>>> except the PFN have to match).
->>>>>>
->>>>>> Some very quick testing (don't trust each last % ) on Intel(R) Xeon(R) Silver
->>>>>> 4210R CPU.
->>>>>>
->>>>>> order-0: 0.014210 -> 0.013969
->>>>>>
->>>>>> -> Around 1.7 % faster
->>>>>>
->>>>>> order-9: 0.014373 -> 0.009149
->>>>>>
->>>>>> -> Around 36.3 % faster
->>>>>
->>>>> Well I guess that shows me :)
->>>>>
->>>>> I'll do a review and run the tests on my HW to see if it concurs.
->>>>
->>>>
->>>> I pushed a simple compile fixup (we need pte_next_pfn()).
->>>
->>> I've just been trying to compile and noticed this. Will take a look at your
->>> update.
->>>
->>> But upon review, I've noticed the part that I think makes this difficult for
->>> arm64 with the contpte optimization; You are calling ptep_get() for every pte in
->>> the batch. While this is functionally correct, once arm64 has the contpte
->>> changes, its ptep_get() has to read every pte in the contpte block in order to
->>> gather the access and dirty bits. So if your batching function ends up wealking
->>> a 16 entry contpte block, that will cause 16 x 16 reads, which kills
->>> performance. That's why I added the arch-specific pte_batch_remaining()
->>> function; this allows the core-mm to skip to the end of the contpte block and
->>> avoid ptep_get() for the 15 tail ptes. So we end up with 16 READ_ONCE()s instead
->>> of 256.
->>>
->>> I considered making a ptep_get_noyoungdirty() variant, which would avoid the bit
->>> gathering. But we have a similar problem in zap_pte_range() and that function
->>> needs the dirty bit to update the folio. So it doesn't work there. (see patch 3
->>> in my series).
->>>
->>> I guess you are going to say that we should combine both approaches, so that
->>> your batching loop can skip forward an arch-provided number of ptes? That would
->>> certainly work, but feels like an orthogonal change to what I'm trying to
->>> achieve :). Anyway, I'll spend some time playing with it today.
->>
->> You can overwrite the function or add special-casing internally, yes.
->>
->> Right now, your patch is called "mm: Batch-copy PTE ranges during fork()" and it
->> doesn't do any of that besides preparing for some arm64 work.
->>
-> 
-> Well it allows an arch to opt-in to batching. But I see your point.
-> 
-> How do you want to handle your patches? Do you want to clean them up and I'll
-> base my stuff on top? Or do you want me to take them and sort it all out?
+From: Moudy Ho <moudy.ho@mediatek.corp-partner.google.com>
 
-Whatever you prefer, it was mostly a quick prototype to see if we can 
-achieve decent performance.
+Changes since v8:
+- Rebase on linux-next.
+- Dependent dtsi files:
+  Message ID = 20231030094840.2479-1-moudy.ho@mediatek.com
+- Dependent bindings:
+  Message ID = 20231220100853.20616-1-moudy.ho@mediatek.com
 
-I can fixup the arch thingies (most should be easy, some might require a 
-custom pte_next_pfn()) and you can focus on getting cont-pte sorted out 
-on top [I assume that's what you want to work on :) ].
+Changes since v7:
+- Rebase on linux-next.
+- Dependent dtsi files:
+  https://patchwork.kernel.org/project/linux-mediatek/list/?series=797543
+- Dependent bindings:
+  https://patchwork.kernel.org/project/linux-mediatek/list/?series=797555
+- Patch [9/12] has made corresponding adjustments in response to the changes in
+  the compatible name of the PAD component in DTSI and binding.
+- Adding WROT compatible name in the MDP driver's of_match_table in [9/12] to
+  avoid deactivating 'pm_runtime_*' functions.
 
-> 
-> As I see it at the moment, I would keep your folio_pte_batch() always core, but
-> in subsequent patch, have it use pte_batch_remaining() (the arch function I have
-> in my series, which defaults to one). 
+Changes since v6:
+- Rebase on v6.6-rc5.
+- Dependent dtsi files:
+  https://patchwork.kernel.org/project/linux-mediatek/list/?series=792079
+- Dependent bindings:
+  https://patchwork.kernel.org/project/linux-mediatek/list/?series=792477
+- Move the patch that fixes compile warnings from this series and
+  create a separate standalone patch.
 
-Just double-checking, how would it use pte_batch_remaining() ?
+Changes since v5:
+- Rebase on v6.6-rc2.
+- Dependent dtsi files:
+  https://patchwork.kernel.org/project/linux-mediatek/list/?series=786511
+- Dependent bindings:
+  https://patchwork.kernel.org/project/linux-mediatek/list/?series=786520
+- Integrate MMSY/MUTEX structure in "mdp_probe".
+- Fix the build warnings that were detected by the linux-media
+  build scripts tool.
 
-> Then do a similar thing to what you have
-> done for fork in zap_pte_range() - also using folio_pte_batch(). Then lay my
-> series on top.
+Changes since v4:
+- Rebase on v6.6-rc1
+- Remove any unnecessary DTS settings.
+- Adjust the usage of MOD and clock in blending components.
 
-Yes, we should probably try to handle the zapping part similarly: make 
-it benefit all archs first, then special-case on cont-pte. I can help 
-there as well.
+Changes since v3:
+- Depend on :
+  [1] https://patchwork.kernel.org/project/linux-media/list/?series=719841
+- Suggested by Krzysztof, integrating all newly added bindings for
+  the mt8195 MDP3 into the file "mediatek,mt8195-mdp3.yaml".
+- Revise MDP3 nodes with generic names.
+
+Changes since v2:
+- Depend on :
+  [1] MMSYS/MUTEX: https://patchwork.kernel.org/project/linux-mediatek/list/?series=711592
+  [2] MDP3: https://patchwork.kernel.org/project/linux-mediatek/list/?series=711618
+- Suggested by Rob to revise MDP3 bindings to pass dtbs check
+- Add parallel paths feature.
+- Add blended components settings.
+
+Changes since v1:
+- Depend on :
+  [1] MDP3 : https://patchwork.kernel.org/project/linux-mediatek/list/?series=698872
+  [2] MMSYS/MUTEX: https://patchwork.kernel.org/project/linux-mediatek/list/?series=684959
+- Fix compilation failure due to use of undeclared identifier in file "mtk-mdp3-cmdq.c"
+
+Hello,
+
+This patch is used to add support for MDP3 on the MT8195 platform that
+contains more picture quality components, and can arrange more pipelines
+through two sets of MMSYS and MUTEX respectively.
+
+Moudy Ho (12):
+  media: platform: mtk-mdp3: add support second sets of MMSYS
+  media: platform: mtk-mdp3: add support second sets of MUTEX
+  media: platform: mtk-mdp3: introduce more pipelines from MT8195
+  media: platform: mtk-mdp3: introduce more MDP3 components
+  media: platform: mtk-mdp3: add checks for dummy components
+  media: platform: mtk-mdp3: avoid multiple driver registrations
+  media: platform: mtk-mdp3: extend GCE event waiting in RDMA and WROT
+  media: platform: mtk-mdp3: add support for blending multiple
+    components
+  media: platform: mtk-mdp3: add mt8195 platform configuration
+  media: platform: mtk-mdp3: add mt8195 shared memory configurations
+  media: platform: mtk-mdp3: add mt8195 MDP3 component settings
+  media: platform: mtk-mdp3: add support for parallel pipe to improve
+    FPS
+
+ .../platform/mediatek/mdp3/mdp_cfg_data.c     | 729 +++++++++++++-
+ .../platform/mediatek/mdp3/mdp_reg_aal.h      |  25 +
+ .../platform/mediatek/mdp3/mdp_reg_color.h    |  31 +
+ .../media/platform/mediatek/mdp3/mdp_reg_fg.h |  23 +
+ .../platform/mediatek/mdp3/mdp_reg_hdr.h      |  31 +
+ .../platform/mediatek/mdp3/mdp_reg_merge.h    |  25 +
+ .../platform/mediatek/mdp3/mdp_reg_ovl.h      |  25 +
+ .../platform/mediatek/mdp3/mdp_reg_pad.h      |  21 +
+ .../platform/mediatek/mdp3/mdp_reg_rdma.h     |  24 +
+ .../platform/mediatek/mdp3/mdp_reg_rsz.h      |   2 +
+ .../platform/mediatek/mdp3/mdp_reg_tdshp.h    |  34 +
+ .../platform/mediatek/mdp3/mdp_reg_wrot.h     |   8 +
+ .../platform/mediatek/mdp3/mdp_sm_mt8195.h    | 283 ++++++
+ .../platform/mediatek/mdp3/mtk-img-ipi.h      |   4 +
+ .../platform/mediatek/mdp3/mtk-mdp3-cfg.h     |   2 +
+ .../platform/mediatek/mdp3/mtk-mdp3-cmdq.c    | 440 +++++++--
+ .../platform/mediatek/mdp3/mtk-mdp3-cmdq.h    |   1 +
+ .../platform/mediatek/mdp3/mtk-mdp3-comp.c    | 895 +++++++++++++++++-
+ .../platform/mediatek/mdp3/mtk-mdp3-comp.h    |  93 +-
+ .../platform/mediatek/mdp3/mtk-mdp3-core.c    | 142 ++-
+ .../platform/mediatek/mdp3/mtk-mdp3-core.h    |  50 +-
+ .../platform/mediatek/mdp3/mtk-mdp3-m2m.c     |  15 +
+ .../platform/mediatek/mdp3/mtk-mdp3-regs.c    |  18 +
+ .../platform/mediatek/mdp3/mtk-mdp3-regs.h    |   1 +
+ .../platform/mediatek/mdp3/mtk-mdp3-vpu.c     |   3 +-
+ 25 files changed, 2747 insertions(+), 178 deletions(-)
+ create mode 100644 drivers/media/platform/mediatek/mdp3/mdp_reg_aal.h
+ create mode 100644 drivers/media/platform/mediatek/mdp3/mdp_reg_color.h
+ create mode 100644 drivers/media/platform/mediatek/mdp3/mdp_reg_fg.h
+ create mode 100644 drivers/media/platform/mediatek/mdp3/mdp_reg_hdr.h
+ create mode 100644 drivers/media/platform/mediatek/mdp3/mdp_reg_merge.h
+ create mode 100644 drivers/media/platform/mediatek/mdp3/mdp_reg_ovl.h
+ create mode 100644 drivers/media/platform/mediatek/mdp3/mdp_reg_pad.h
+ create mode 100644 drivers/media/platform/mediatek/mdp3/mdp_reg_tdshp.h
+ create mode 100644 drivers/media/platform/mediatek/mdp3/mdp_sm_mt8195.h
 
 -- 
-Cheers,
-
-David / dhildenb
+2.18.0
 
 
