@@ -1,211 +1,133 @@
-Return-Path: <linux-kernel+bounces-6188-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6189-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2CB2281959D
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 01:36:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5AF888195A2
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 01:37:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D96AB28C46F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 00:36:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EFC5C1F261BB
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 00:37:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2419EBE64;
-	Wed, 20 Dec 2023 00:33:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50E618827;
+	Wed, 20 Dec 2023 00:33:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arista.com header.i=@arista.com header.b="Fo/ku9Ia"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="j2846WhU"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AAE8846B
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 00:33:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=arista.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arista.com
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-40d12ade25dso38257785e9.2
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 16:33:26 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6E98101CC
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 00:33:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-54cb4fa667bso6352332a12.3
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 16:33:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=arista.com; s=google; t=1703032405; x=1703637205; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=2ZU+vKUedcxvlMvLQvRGcy4W/7LE9vhnsOAwLDimoXo=;
-        b=Fo/ku9Ia5s/JCrg4/dAYOai0d7SUqif2MoA7isXysdX+hIYHjGWfmMrcFLgW3XyLA+
-         pl1DRyvs3gOPqKFCU/7eeivWrFJN1ekfVL4G2MPZPJqY8zDdMV2dFpWvouAWtl64/3ZO
-         sI0OwPnwjgr+Y3ZgzYl1Eg5p93V9VlrlL/LRf87sgmQ35M17r/xxdBiSA5oIKt1fJss3
-         hklc/FjkfH+FD7N+eFPEHof2Bu6C+7Dlkqh6psLU/v7sutydiKoIQ3VsFobzy0w8NrXw
-         3G4phh/3gyhJi1cWxdvzMD3LCshLsgz8sfPv6NTpfyYWckC6Z+lrPCF1qVtPV0yoFduJ
-         9k5A==
+        d=linaro.org; s=google; t=1703032424; x=1703637224; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=6oWt7Kdf1ACDD8T3Tz+4gRwLFsuaJRvcvf1Mgt2PhhA=;
+        b=j2846WhUDm2+wBrHODSOQhpuqr16uFfU5t2TP2hDRe/Z46juGqd0QUW03Qeyjw9wzg
+         g1OPN2RkFBDYaKCjjZccwxWQMVgRYoFwpVtDAIK/cokk3y3GlETQTpQ4MSMviFRniW/t
+         SSfxwHSMFqrgSCKXLNMyLG2kHYqqEEAKv4/vAnnst4bMynRmGAZy5J09+Vw77FYixh7J
+         8c0Bf/Hd8l6k0UQCObxQEAcqLr6bbqaOTIF+Hk05juG0oqA++d8MhYEuDPwcdC2IzemB
+         XAcR1+2GPTF/NUr0D8SmScMeQy/OV1IerSoomVkItz7ixWbCnP619+f/+6Tpsrzl77QA
+         H/Rw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703032405; x=1703637205;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=2ZU+vKUedcxvlMvLQvRGcy4W/7LE9vhnsOAwLDimoXo=;
-        b=YV5mc5iMvHNL56tL3Q2N5+8Nn48bCAzooAYpFiJ/1GsQdgn3dZ5s7Rx12jSWpzVbdd
-         ScbKo4Ch7bZ0gMKu3zPofEw7RP8Ghp7f5hHxUGY/ksn4m3NiXW3XdY2gZHnW95EWyaJs
-         2CvHtI8g1TaSHw7QMmjhjsL8Q922s7I1jOSWevavRWdWerQ3agjzbernAQzQ3cb+9WMC
-         fzRzdoVqFr5IjDthh4j9fssCTB4CRQHkvBgxNHYEUScreOg2Va64t1hk+yaO9r6wQsqS
-         LQdI7rGAuSvT+bSKS+BZgMrU4rk8TmDp2TgEtoTh93uuHQWwg6sgZJ8t6PML3bly2Mvn
-         P5JA==
-X-Gm-Message-State: AOJu0Yx3kNlaUlm4WDDSjpZZR436itkRnZ6gBno+WCZ29vy/A/bzujS6
-	4kFW4E4tU5MYYMapCZzU3HYCow==
-X-Google-Smtp-Source: AGHT+IFDsp4Fit6NQwqfzspnxFl5di5q7fJzYXKlPh0b18nTx/seRlZyhvAvWyP7REsUspaUN3uX8A==
-X-Received: by 2002:a05:600c:4591:b0:40c:6c80:efa4 with SMTP id r17-20020a05600c459100b0040c6c80efa4mr4027621wmo.35.1703032404687;
-        Tue, 19 Dec 2023 16:33:24 -0800 (PST)
-Received: from Mindolluin.ire.aristanetworks.com ([217.173.96.166])
-        by smtp.gmail.com with ESMTPSA id w20-20020a05600c475400b0040b4fca8620sm5060620wmo.37.2023.12.19.16.33.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Dec 2023 16:33:23 -0800 (PST)
-From: Dmitry Safonov <dima@arista.com>
-To: Masahiro Yamada <masahiroy@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nicolas Schier <nicolas@fjasle.eu>
-Cc: Dmitry Safonov <dima@arista.com>,
-	Baptiste Covolato <baptiste@arista.com>,
-	Benjamin Gray <bgray@linux.ibm.com>,
-	Kevin Mitchell <kevmitch@arista.com>,
-	linux-kbuild@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Dmitry Safonov <0x7f454c46@gmail.com>
-Subject: [PATCH] gen_init_cpio: Apply mtime supplied by user to all file types
-Date: Wed, 20 Dec 2023 00:33:15 +0000
-Message-ID: <20231220-gen_init_cpio-reproducible-v1-1-d40da0b2c15c@arista.com>
-X-Mailer: git-send-email 2.43.0
+        d=1e100.net; s=20230601; t=1703032424; x=1703637224;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6oWt7Kdf1ACDD8T3Tz+4gRwLFsuaJRvcvf1Mgt2PhhA=;
+        b=jRyN5OC2SOjS/I+suPUH33KJRXx8Fk4GNUEKiuKNQlmp0QodD3io912XIMjQsoGXdG
+         elzgNa56QCUcayzIf4E3pL4oRD/qxF5qOEOyBO+vOYoMZYcdqt4h9tE+rZA2p5Eb9q+/
+         yZu3hs8Hl/Cr2Uu/grH2bXmxaKI5OtTnc0lODZOtnQsMbKWv91qFPpF1e8VoUOY7Faei
+         8m8oQjOObvSnEC1iW66QgjRya/jKOPNzGtKgsXWHh0gj4gSzEljC52zscj8ttmuMJpE7
+         mrEucjNE3Xb6eJye+bg0Zrby4m2G6mMh1SOi1Ylr4xDrLICd85pE0AT+B42SIF2x+Cse
+         5teg==
+X-Gm-Message-State: AOJu0YyIwGbsAA8EnFlMnNBB76hgTUjsxNN/V6eI1AoAIwNof5G5lARh
+	Ti/uhH7hlF/2cqBJDLn49s3drg==
+X-Google-Smtp-Source: AGHT+IFv4tHSymEIQd1ipGRMZ5o6Y+SvPnq9pG1QqYS2z5PKcu5ihp7ckm8xnbQ5lon0c6SL1vw4zA==
+X-Received: by 2002:a50:bae3:0:b0:553:4d8f:cdf2 with SMTP id x90-20020a50bae3000000b005534d8fcdf2mr2569355ede.53.1703032424090;
+        Tue, 19 Dec 2023 16:33:44 -0800 (PST)
+Received: from [192.168.199.59] (178235179206.dynamic-4-waw-k-1-3-0.vectranet.pl. [178.235.179.206])
+        by smtp.gmail.com with ESMTPSA id cr7-20020a056402222700b0054ce9ef93fbsm12104379edb.4.2023.12.19.16.33.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Dec 2023 16:33:43 -0800 (PST)
+Message-ID: <3bb12e73-6f25-4668-9bd7-93d080d0d3bd@linaro.org>
+Date: Wed, 20 Dec 2023 01:33:41 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Mailer: b4 0.13-dev-b6b4b
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1703032397; l=4390; i=dima@arista.com; s=20231212; h=from:subject:message-id; bh=WO4So3owkEgbDEJz508Jr0jtYldh4JAlQaVVz0idt6E=; b=QJo6MWRgcyZxxGf7vSu4xmF/4R01Xhsvf4ITaDjWlDexwqI14kpOIsX+CmK5JjU98BeNpYumO u3dgh/Gn/1wC60sm+cS3RCbmhEKP9eeCdw+MnlQp/krlQMvz1UEvGG3
-X-Developer-Key: i=dima@arista.com; a=ed25519; pk=hXINUhX25b0D/zWBKvd6zkvH7W2rcwh/CH6cjEa3OTk=
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 08/16] arm64: dts: qcom: sm6115: Fix UFS PHY clocks
+Content-Language: en-US
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+ andersson@kernel.org, vkoul@kernel.org, sboyd@kernel.org,
+ mturquette@baylibre.com, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+Cc: linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+ devicetree@vger.kernel.org, quic_cang@quicinc.com
+References: <20231218120712.16438-1-manivannan.sadhasivam@linaro.org>
+ <20231218120712.16438-9-manivannan.sadhasivam@linaro.org>
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20231218120712.16438-9-manivannan.sadhasivam@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Currently gen_init_cpio -d <timestamp> is applied to symlinks,
-directories and special files. These files are created by
-gen_init_cpio from their description. Without <timestamp> option
-current time(NULL) is used. And regular files that go in initramfs
-are created before cpio generation, so their mtime(s) are preserved.
+On 18.12.2023 13:07, Manivannan Sadhasivam wrote:
+> QMP PHY used in SM6115 requires 3 clocks:
+> 
+> * ref - 19.2MHz reference clock from RPM
+> * ref_aux - Auxiliary reference clock from GCC
+> * qref - QREF clock from GCC
+> 
+> Fixes: 97e563bf5ba1 ("arm64: dts: qcom: sm6115: Add basic soc dtsi")
+> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> ---
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-This is usually not an issue as reproducible builds should rebuild
-everything in the distribution, including binaries, configs and whatever
-other regular files may find their way into kernel's initramfs.
-
-On the other hand, gen_initramfs.sh usage claims:
->	-d <date>      Use date for all file mtime values
-
-Ar Arista initramfs files are managed with version control system
-that preserves mtime. Those are configs, boot parameters, init scripts,
-version files, platform-specific files, probably some others, too.
-
-While it's certainly possible to work this around by copying the file
-into temp directory and adjusting mtime prior to gen_init_cpio call,
-I don't see why it needs workarounds.
-
-The intended user of -d <date> option is the one that needs to create
-a reproducible build, see commit a8b8017c34fe ("initramfs: Use
-KBUILD_BUILD_TIMESTAMP for generated entries"). If a user wants
-the build reproduction, they use -d <date>, which can be set on all
-types of files, without surprising exceptions and workarounds.
-Let's KISS here and just apply the time that user specified
-with -d option.
-
-Based-on-a-patch-by: Baptiste Covolato <baptiste@arista.com>
-Link: https://lore.kernel.org/lkml/20181025215133.20138-1-baptiste@arista.com/
-Signed-off-by: Dmitry Safonov <dima@arista.com>
----
- usr/gen_init_cpio.c | 33 +++++++++++++++++++++------------
- 1 file changed, 21 insertions(+), 12 deletions(-)
-
-diff --git a/usr/gen_init_cpio.c b/usr/gen_init_cpio.c
-index 61230532fef1..edcdb8abfa31 100644
---- a/usr/gen_init_cpio.c
-+++ b/usr/gen_init_cpio.c
-@@ -27,6 +27,7 @@
- static unsigned int offset;
- static unsigned int ino = 721;
- static time_t default_mtime;
-+static bool do_file_mtime;
- static bool do_csum = false;
- 
- struct file_handler {
-@@ -329,6 +330,7 @@ static int cpio_mkfile(const char *name, const char *location,
- 	int file;
- 	int retval;
- 	int rc = -1;
-+	time_t mtime;
- 	int namesize;
- 	unsigned int i;
- 	uint32_t csum = 0;
-@@ -347,16 +349,21 @@ static int cpio_mkfile(const char *name, const char *location,
- 		goto error;
- 	}
- 
--	if (buf.st_mtime > 0xffffffff) {
--		fprintf(stderr, "%s: Timestamp exceeds maximum cpio timestamp, clipping.\n",
--			location);
--		buf.st_mtime = 0xffffffff;
--	}
-+	if (do_file_mtime) {
-+		mtime = default_mtime;
-+	} else {
-+		mtime = buf.st_mtime;
-+		if (mtime > 0xffffffff) {
-+			fprintf(stderr, "%s: Timestamp exceeds maximum cpio timestamp, clipping.\n",
-+					location);
-+			mtime = 0xffffffff;
-+		}
- 
--	if (buf.st_mtime < 0) {
--		fprintf(stderr, "%s: Timestamp negative, clipping.\n",
--			location);
--		buf.st_mtime = 0;
-+		if (mtime < 0) {
-+			fprintf(stderr, "%s: Timestamp negative, clipping.\n",
-+					location);
-+			mtime = 0;
-+		}
- 	}
- 
- 	if (buf.st_size > 0xffffffff) {
-@@ -387,7 +394,7 @@ static int cpio_mkfile(const char *name, const char *location,
- 			(long) uid,		/* uid */
- 			(long) gid,		/* gid */
- 			nlinks,			/* nlink */
--			(long) buf.st_mtime,	/* mtime */
-+			(long) mtime,		/* mtime */
- 			size,			/* filesize */
- 			3,			/* major */
- 			1,			/* minor */
-@@ -536,8 +543,9 @@ static void usage(const char *prog)
- 		"file /sbin/kinit /usr/src/klibc/kinit/kinit 0755 0 0\n"
- 		"\n"
- 		"<timestamp> is time in seconds since Epoch that will be used\n"
--		"as mtime for symlinks, special files and directories. The default\n"
--		"is to use the current time for these entries.\n"
-+		"as mtime for symlinks, directories, regular and special files.\n"
-+		"The default is to use the current time for all files, but\n"
-+		"preserve modification time for regular files.\n"
- 		"-c: calculate and store 32-bit checksums for file data.\n",
- 		prog);
- }
-@@ -594,6 +602,7 @@ int main (int argc, char *argv[])
- 				usage(argv[0]);
- 				exit(1);
- 			}
-+			do_file_mtime = true;
- 			break;
- 		case 'c':
- 			do_csum = true;
-
----
-base-commit: 55cb5f43689d7a9ea5bf35ef050f12334f197347
-change-id: 20231219-gen_init_cpio-reproducible-99c707d8e66c
-
-Best regards,
--- 
-Dmitry Safonov <dima@arista.com>
-
+Konrad
 
