@@ -1,181 +1,141 @@
-Return-Path: <linux-kernel+bounces-6788-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6801-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D8C8819D8E
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 12:03:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A7369819DBC
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 12:14:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4684D1C257EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 11:03:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 63D0D2883E8
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 11:14:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF2C021A04;
-	Wed, 20 Dec 2023 11:03:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A332821110;
+	Wed, 20 Dec 2023 11:14:35 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBF5421345;
-	Wed, 20 Dec 2023 11:02:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D07CD2F4;
-	Wed, 20 Dec 2023 03:03:43 -0800 (PST)
-Received: from e129166.arm.com (unknown [10.57.82.217])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 20A973F5A1;
-	Wed, 20 Dec 2023 03:02:55 -0800 (PST)
-From: Lukasz Luba <lukasz.luba@arm.com>
-To: linux-kernel@vger.kernel.org,
-	linux-pm@vger.kernel.org
-Cc: lukasz.luba@arm.com,
-	dietmar.eggemann@arm.com,
-	linux-arm-kernel@lists.infradead.org,
+Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FF4121103;
+	Wed, 20 Dec 2023 11:14:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 30E9D2018C6;
+	Wed, 20 Dec 2023 12:14:26 +0100 (CET)
+Received: from aprdc01srsp001v.ap-rdc01.nxp.com (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
+	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id EDE2820056C;
+	Wed, 20 Dec 2023 12:14:25 +0100 (CET)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 46D741802200;
+	Wed, 20 Dec 2023 19:14:24 +0800 (+08)
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
+To: abelvesa@kernel.org,
+	peng.fan@nxp.com,
+	mturquette@baylibre.com,
 	sboyd@kernel.org,
-	nm@ti.com,
-	linux-samsung-soc@vger.kernel.org,
-	daniel.lezcano@linaro.org,
-	rafael@kernel.org,
-	viresh.kumar@linaro.org,
-	krzysztof.kozlowski@linaro.org,
-	alim.akhtar@samsung.com,
-	m.szyprowski@samsung.com,
-	xuewen.yan94@gmail.com,
-	mhiramat@kernel.org,
-	qyousef@layalina.io,
-	wvw@google.com
-Subject: [PATCH 1/2] OPP: Add API to update EM after adjustment of voltage for OPPs
-Date: Wed, 20 Dec 2023 11:03:38 +0000
-Message-Id: <20231220110339.1065505-2-lukasz.luba@arm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231220110339.1065505-1-lukasz.luba@arm.com>
-References: <20231220110339.1065505-1-lukasz.luba@arm.com>
+	shawnguo@kernel.org,
+	s.hauer@pengutronix.de,
+	kernel@pengutronix.de,
+	festevam@gmail.com,
+	linux-imx@nxp.com,
+	shengjiu.wang@gmail.com
+Cc: linux-clk@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] clk: imx: pll14xx: change naming of fvco to fout
+Date: Wed, 20 Dec 2023 18:33:09 +0800
+Message-Id: <1703068389-6130-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-There are device drivers which can modify voltage values for OPPs. It
-could be due to the chip binning and those drivers have specific chip
-knowledge about this. This adjustment can happen after Energy Model is
-registered, thus EM can have stale data about power.
+pll14xx_calc_rate() output the fout clock not the fvco clock
+The relation of fvco and fout is:
+	fout = fvco / (1 << sdiv)
 
-Introduce new API function which can be used by device driver which
-adjusted the voltage for OPPs. The implementation takes care about
-calculating needed internal details in the new EM table ('cost' field).
-It plugs in the new EM table to the framework so other subsystems would
-use the correct data.
+So use correct naming for the clock.
 
-Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 ---
- drivers/opp/of.c       | 69 ++++++++++++++++++++++++++++++++++++++++++
- include/linux/pm_opp.h |  6 ++++
- 2 files changed, 75 insertions(+)
+ drivers/clk/imx/clk-pll14xx.c | 23 ++++++++++++-----------
+ 1 file changed, 12 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/opp/of.c b/drivers/opp/of.c
-index 81fa27599d58..992434c0b711 100644
---- a/drivers/opp/of.c
-+++ b/drivers/opp/of.c
-@@ -1596,3 +1596,72 @@ int dev_pm_opp_of_register_em(struct device *dev, struct cpumask *cpus)
- 	return ret;
- }
- EXPORT_SYMBOL_GPL(dev_pm_opp_of_register_em);
-+
-+/**
-+ * dev_pm_opp_of_update_em() - Update Energy Model with new power values
-+ * @dev		: Device for which an Energy Model has to be registered
-+ *
-+ * This uses the "dynamic-power-coefficient" devicetree property to calculate
-+ * power values for EM. It uses the new adjusted voltage values known for OPPs
-+ * which have changed after boot.
-+ */
-+int dev_pm_opp_of_update_em(struct device *dev)
-+{
-+	struct em_perf_table __rcu *runtime_table;
-+	struct em_perf_state *table, *new_table;
-+	struct em_perf_domain *pd;
-+	int ret, table_size, i;
-+
-+	if (IS_ERR_OR_NULL(dev))
-+		return -EINVAL;
-+
-+	pd = em_pd_get(dev);
-+	if (!pd) {
-+		dev_warn(dev, "Couldn't find Energy Model %d\n", ret);
-+		return -EINVAL;
-+	}
-+
-+	runtime_table = em_allocate_table(pd);
-+	if (!runtime_table) {
-+		dev_warn(dev, "new EM allocation failed\n");
-+		return -ENOMEM;
-+	}
-+
-+	new_table = runtime_table->state;
-+
-+	table = em_get_table(pd);
-+	/* Initialize data based on older EM table */
-+	table_size = sizeof(struct em_perf_state) * pd->nr_perf_states;
-+	memcpy(new_table, table, table_size);
-+
-+	em_put_table();
-+
-+	/* Update power values which might change due to new voltage in OPPs */
-+	for (i = 0; i < pd->nr_perf_states; i++) {
-+		unsigned long freq = new_table[i].frequency;
-+		unsigned long power;
-+
-+		ret = _get_power(dev, &power, &freq);
-+		if (ret)
-+			goto failed;
-+
-+		new_table[i].power = power;
-+	}
-+
-+	ret = em_dev_compute_costs(dev, new_table, pd->nr_perf_states);
-+	if (ret)
-+		goto failed;
-+
-+	ret = em_dev_update_perf_domain(dev, runtime_table);
-+	if (ret)
-+		goto failed;
-+
-+	return 0;
-+
-+failed:
-+	dev_warn(dev, "EM update failed %d\n", ret);
-+	em_free_table(runtime_table);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(dev_pm_opp_of_update_em);
-diff --git a/include/linux/pm_opp.h b/include/linux/pm_opp.h
-index ccd97bcef269..b3ab117890fc 100644
---- a/include/linux/pm_opp.h
-+++ b/include/linux/pm_opp.h
-@@ -464,6 +464,7 @@ struct device_node *dev_pm_opp_get_of_node(struct dev_pm_opp *opp);
- int of_get_required_opp_performance_state(struct device_node *np, int index);
- int dev_pm_opp_of_find_icc_paths(struct device *dev, struct opp_table *opp_table);
- int dev_pm_opp_of_register_em(struct device *dev, struct cpumask *cpus);
-+int dev_pm_opp_of_update_em(struct device *dev);
- static inline void dev_pm_opp_of_unregister_em(struct device *dev)
+diff --git a/drivers/clk/imx/clk-pll14xx.c b/drivers/clk/imx/clk-pll14xx.c
+index 0d58d85c375e..d63564dbb12c 100644
+--- a/drivers/clk/imx/clk-pll14xx.c
++++ b/drivers/clk/imx/clk-pll14xx.c
+@@ -104,15 +104,15 @@ static const struct imx_pll14xx_rate_table *imx_get_pll_settings(
+ static long pll14xx_calc_rate(struct clk_pll14xx *pll, int mdiv, int pdiv,
+ 			      int sdiv, int kdiv, unsigned long prate)
  {
- 	em_dev_unregister_perf_domain(dev);
-@@ -527,6 +528,11 @@ static inline void dev_pm_opp_of_unregister_em(struct device *dev)
- {
+-	u64 fvco = prate;
++	u64 fout = prate;
+ 
+-	/* fvco = (m * 65536 + k) * Fin / (p * 65536) */
+-	fvco *= (mdiv * 65536 + kdiv);
++	/* fout = (m * 65536 + k) * Fin / (p * 65536) / (1 << sdiv) */
++	fout *= (mdiv * 65536 + kdiv);
+ 	pdiv *= 65536;
+ 
+-	do_div(fvco, pdiv << sdiv);
++	do_div(fout, pdiv << sdiv);
+ 
+-	return fvco;
++	return fout;
  }
  
-+static inline int dev_pm_opp_of_update_em(struct device *dev)
-+{
-+	return -EOPNOTSUPP;
-+}
-+
- static inline int of_get_required_opp_performance_state(struct device_node *np, int index)
+ static long pll1443x_calc_kdiv(int mdiv, int pdiv, int sdiv,
+@@ -131,7 +131,7 @@ static void imx_pll14xx_calc_settings(struct clk_pll14xx *pll, unsigned long rat
  {
- 	return -EOPNOTSUPP;
+ 	u32 pll_div_ctl0, pll_div_ctl1;
+ 	int mdiv, pdiv, sdiv, kdiv;
+-	long fvco, rate_min, rate_max, dist, best = LONG_MAX;
++	long fout, rate_min, rate_max, dist, best = LONG_MAX;
+ 	const struct imx_pll14xx_rate_table *tt;
+ 
+ 	/*
+@@ -143,6 +143,7 @@ static void imx_pll14xx_calc_settings(struct clk_pll14xx *pll, unsigned long rat
+ 	 * d) -32768 <= k <= 32767
+ 	 *
+ 	 * fvco = (m * 65536 + k) * prate / (p * 65536)
++	 * fout = (m * 65536 + k) * prate / (p * 65536) / (1 << sdiv)
+ 	 */
+ 
+ 	/* First try if we can get the desired rate from one of the static entries */
+@@ -173,8 +174,8 @@ static void imx_pll14xx_calc_settings(struct clk_pll14xx *pll, unsigned long rat
+ 		pr_debug("%s: in=%ld, want=%ld Only adjust kdiv %ld -> %d\n",
+ 			 clk_hw_get_name(&pll->hw), prate, rate,
+ 			 FIELD_GET(KDIV_MASK, pll_div_ctl1), kdiv);
+-		fvco = pll14xx_calc_rate(pll, mdiv, pdiv, sdiv, kdiv, prate);
+-		t->rate = (unsigned int)fvco;
++		fout = pll14xx_calc_rate(pll, mdiv, pdiv, sdiv, kdiv, prate);
++		t->rate = (unsigned int)fout;
+ 		t->mdiv = mdiv;
+ 		t->pdiv = pdiv;
+ 		t->sdiv = sdiv;
+@@ -190,13 +191,13 @@ static void imx_pll14xx_calc_settings(struct clk_pll14xx *pll, unsigned long rat
+ 			mdiv = clamp(mdiv, 64, 1023);
+ 
+ 			kdiv = pll1443x_calc_kdiv(mdiv, pdiv, sdiv, rate, prate);
+-			fvco = pll14xx_calc_rate(pll, mdiv, pdiv, sdiv, kdiv, prate);
++			fout = pll14xx_calc_rate(pll, mdiv, pdiv, sdiv, kdiv, prate);
+ 
+ 			/* best match */
+-			dist = abs((long)rate - (long)fvco);
++			dist = abs((long)rate - (long)fout);
+ 			if (dist < best) {
+ 				best = dist;
+-				t->rate = (unsigned int)fvco;
++				t->rate = (unsigned int)fout;
+ 				t->mdiv = mdiv;
+ 				t->pdiv = pdiv;
+ 				t->sdiv = sdiv;
 -- 
-2.25.1
+2.34.1
 
 
