@@ -1,133 +1,226 @@
-Return-Path: <linux-kernel+bounces-7421-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7422-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6B7B81A7BA
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 21:44:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2096781A7BF
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 21:49:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 255211C22867
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 20:44:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8D3EC1F23474
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 20:49:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D69871DFED;
-	Wed, 20 Dec 2023 20:44:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A66261EA7B;
+	Wed, 20 Dec 2023 20:49:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="2hJ5E3U4"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BB38482E5;
-	Wed, 20 Dec 2023 20:44:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
-Received: from [192.168.1.104] (178.176.77.120) by msexch01.omp.ru
- (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Wed, 20 Dec
- 2023 23:44:19 +0300
-Subject: Re: [PATCH net-next v2 19/21] net: ravb: Do not set promiscuous mode
- if the interface is down
-To: claudiu beznea <claudiu.beznea@tuxon.dev>, <davem@davemloft.net>,
-	<edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-	<richardcochran@gmail.com>, <p.zabel@pengutronix.de>,
-	<yoshihiro.shimoda.uh@renesas.com>, <wsa+renesas@sang-engineering.com>,
-	<geert+renesas@glider.be>
-CC: <netdev@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, Claudiu Beznea
-	<claudiu.beznea.uj@bp.renesas.com>
-References: <20231214114600.2451162-1-claudiu.beznea.uj@bp.renesas.com>
- <20231214114600.2451162-20-claudiu.beznea.uj@bp.renesas.com>
- <69a80458-b607-2cee-e8b1-38eb8d56eca3@omp.ru>
- <b7a3f560-d3ec-4f0b-9d34-02717f3e29ae@tuxon.dev>
-From: Sergey Shtylyov <s.shtylyov@omp.ru>
-Organization: Open Mobile Platform
-Message-ID: <1e6a3316-eb9a-f783-6f76-c9439c4db498@omp.ru>
-Date: Wed, 20 Dec 2023 23:44:18 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F67E1DA4E
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 20:49:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--changyuanl.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dbdae92c10aso146403276.1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 12:49:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1703105388; x=1703710188; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=+67tASvvfvVlycjBWIPAKXF8pqUpHvg7cTGJy7iScoY=;
+        b=2hJ5E3U4bK9LtJ00LFR+G8VE3Af/W1hYNTBtqhJeCcdukgDvlc3UYCl1JlxmH0V01h
+         O6RPTvxuvhtrrG92H3aREHYgqqBE7/zt6ppJPmhKH7ouYitUV7QjdREUKDQIVZoU72Xm
+         RwU7xfcEDD5RWWsF1HwuRVPZjjPPWEVvtt+EqRISgo9ZzkoMKOz5q5cXgk4Hyrie9LRz
+         mupv6lLA0h3dWebTzQ50uFWBkNtVdXNouAM1TIh5BOJfmPFxezbGycH9CZXxbOcmA+b1
+         pmjFLeoer86ri7Q2TEM0vr25mNb9rqLPD30r+CTlRJjLp0CV8WgK64yvQfk46c8epMNc
+         V0Sw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703105388; x=1703710188;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+67tASvvfvVlycjBWIPAKXF8pqUpHvg7cTGJy7iScoY=;
+        b=oBmiw8Tona1lCyLdtokieTJaTcGoXukD0zJGOGwlBppze/YsJlzW6ESKjvqkpxgdt2
+         k753NsIvy8E2IiX703JIyETUoomocdToi7XwtsdeU85eGlSMJW3L0GsA84DB8qV/IVdC
+         VktfseNZpPQDdE1KCVyZjS3oAU7HwTIXa0EO5om/MIeMawxPLoLiNGVcOFeCI1aV7IfD
+         DhNQsloKNXmaCudTJ/39bML5VgkSWP5pAKrL+9I4sVxgA6H3fhPUKcACEzrCQ2K3dIpd
+         p+oCZyhkTrauRTKFNKBClo2Z3jNxro+5YAjTBfvpHMR4UTebKUGFxLlpzk+D3vhbJOkC
+         ZgBQ==
+X-Gm-Message-State: AOJu0YyGD+vP4qn1B5zX+R1bPzzGeKksojDbjmjUrESj87gv2gCpLGdj
+	Sn20wc8n7bhJc6cZS98YXTxu3p/a4i6/5GsB
+X-Google-Smtp-Source: AGHT+IFGz/g8oviURbSJJeUW8nOMBtaCgjO0s5GEio3sKCF+sokVNU4wY8bytqJ5H4vjvQnhZJx9AlAUQr7FnGnG
+X-Received: from changyuanl-desktop.svl.corp.google.com ([2620:15c:2a3:200:7133:a1e9:e9d0:684b])
+ (user=changyuanl job=sendgmr) by 2002:a25:850d:0:b0:dbd:460e:1262 with SMTP
+ id w13-20020a25850d000000b00dbd460e1262mr123237ybk.3.1703105388077; Wed, 20
+ Dec 2023 12:49:48 -0800 (PST)
+Date: Wed, 20 Dec 2023 12:49:06 -0800
+In-Reply-To: <20231220023653-mutt-send-email-mst@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-In-Reply-To: <b7a3f560-d3ec-4f0b-9d34-02717f3e29ae@tuxon.dev>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
- (10.188.4.12)
-X-KSE-ServerInfo: msexch01.omp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 12/20/2023 20:22:09
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 59
-X-KSE-AntiSpam-Info: Lua profiles 182256 [Dec 20 2023]
-X-KSE-AntiSpam-Info: Version: 6.1.0.3
-X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
-X-KSE-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a
-X-KSE-AntiSpam-Info: {rep_avail}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: {relay has no DNS name}
-X-KSE-AntiSpam-Info: {SMTP from is not routable}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.77.120 in (user)
- b.barracudacentral.org}
-X-KSE-AntiSpam-Info:
-	omp.ru:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2
-X-KSE-AntiSpam-Info: ApMailHostAddress: 178.176.77.120
-X-KSE-AntiSpam-Info: {DNS response errors}
-X-KSE-AntiSpam-Info: Rate: 59
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
- smtp.mailfrom=omp.ru;dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 12/20/2023 20:28:00
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 12/20/2023 7:12:00 PM
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+Mime-Version: 1.0
+References: <20231220023653-mutt-send-email-mst@kernel.org>
+X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
+Message-ID: <20231220204906.566922-1-changyuanl@google.com>
+Subject: [PATCH v4] virtio_pmem: support feature SHMEM_REGION
+From: Changyuan Lyu <changyuanl@google.com>
+To: mst@redhat.com
+Cc: changyuanl@google.com, dan.j.williams@intel.com, dave.jiang@intel.com, 
+	jasowang@redhat.com, linux-kernel@vger.kernel.org, nvdimm@lists.linux.dev, 
+	pankaj.gupta.linux@gmail.com, virtualization@lists.linux.dev, 
+	vishal.l.verma@intel.com, xuanzhuo@linux.alibaba.com
+Content-Type: text/plain; charset="UTF-8"
 
-On 12/17/23 5:02 PM, claudiu beznea wrote:
+Thanks Michael for the feedback!
 
-[...]
->>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->>>
->>> Do not allow setting promiscuous mode if the interface is down. In case
->>> runtime PM is enabled, and while interface is down, the IP will be in reset
->>> mode (as for some platforms disabling/enabling the clocks will switch the
->>> IP to standby mode which will lead to losing registers' content).
->>
->>    Register.
->>    Have this issue actually occurred for you?
->>
->>> Commit prepares for the addition of runtime PM.
->>>
->>> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->> [...]
->>
->>> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
->>> index 1995cf7ff084..633346b6cd7c 100644
->>> --- a/drivers/net/ethernet/renesas/ravb_main.c
->>> +++ b/drivers/net/ethernet/renesas/ravb_main.c
->>> @@ -2164,6 +2164,9 @@ static void ravb_set_rx_mode(struct net_device *ndev)
->>>  	struct ravb_private *priv = netdev_priv(ndev);
->>>  	unsigned long flags;
->>>  
->>> +	if (!netif_running(ndev))
->>
->>    Seems racy as well...
-> 
-> It is also called with rtnl_mutex locked at least though __dev_change_flags().
+On Tue, Dec 19, 2023 at 11:44 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+>
+> > On Tue, Dec 19, 2023 at 11:32:27PM -0800, Changyuan Lyu wrote:
+> > 
+> > +		if (!have_shm) {
+> > +			dev_err(&vdev->dev, "failed to get shared memory region %d\n",
+> > +					VIRTIO_PMEM_SHMEM_REGION_ID);
+> > +			err = -ENXIO;
+> > +			goto out_vq;
+> > +		}
+>
+> Maybe additionally, add a validate callback and clear
+> VIRTIO_PMEM_F_SHMEM_REGION if VIRTIO_PMEM_SHMEM_REGION_ID is not there.
 
-   I'm tired of chasing the call tree for you. :-)
-   Since I'm hoping we'll agree on the ndo_get_stats() case, it would
-seem safer to use an is_opened flag here as well, like sh_eth.c does.
+Done.
 
-[...]
+> > +/* Feature bits */
+> > +#define VIRTIO_PMEM_F_SHMEM_REGION 0	/* guest physical address range will be
+> > +					 * indicated as shared memory region 0
+> > +					 */
+>
+> Either make this comment shorter to fit in one line, or put the
+> multi-line comment before the define.
 
-MBR, Sergey
+Done.
+
+---8<---
+
+This patch adds the support for feature VIRTIO_PMEM_F_SHMEM_REGION
+(virtio spec v1.2 section 5.19.5.2 [1]). 
+
+During feature negotiation, if VIRTIO_PMEM_F_SHMEM_REGION is offered
+by the device, the driver looks for a shared memory region of id 0.
+If it is found, this feature is understood. Otherwise, this feature
+bit is cleared.
+
+During probe, if VIRTIO_PMEM_F_SHMEM_REGION has been negotiated,
+virtio pmem ignores the `start` and `size` fields in device config
+and uses the physical address range of shared memory region 0.
+
+[1] https://docs.oasis-open.org/virtio/virtio/v1.2/csd01/virtio-v1.2-csd01.html#x1-6480002
+
+Signed-off-by: Changyuan Lyu <changyuanl@google.com>
+---
+v4:
+  * added virtio_pmem_validate callback. 
+v3:
+  * updated the patch description.
+V2:
+  * renamed VIRTIO_PMEM_SHMCAP_ID to VIRTIO_PMEM_SHMEM_REGION_ID
+  * fixed the error handling when region 0 does not exist
+---
+ drivers/nvdimm/virtio_pmem.c     | 36 ++++++++++++++++++++++++++++----
+ include/uapi/linux/virtio_pmem.h |  7 +++++++
+ 2 files changed, 39 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/nvdimm/virtio_pmem.c b/drivers/nvdimm/virtio_pmem.c
+index a92eb172f0e7..4ceced5cefcf 100644
+--- a/drivers/nvdimm/virtio_pmem.c
++++ b/drivers/nvdimm/virtio_pmem.c
+@@ -29,12 +29,27 @@ static int init_vq(struct virtio_pmem *vpmem)
+ 	return 0;
+ };
+ 
++static int virtio_pmem_validate(struct virtio_device *vdev)
++{
++	struct virtio_shm_region shm_reg;
++
++	if (virtio_has_feature(vdev, VIRTIO_PMEM_F_SHMEM_REGION) &&
++		!virtio_get_shm_region(vdev, &shm_reg, (u8)VIRTIO_PMEM_SHMEM_REGION_ID)
++	) {
++		dev_notice(&vdev->dev, "failed to get shared memory region %d\n",
++				VIRTIO_PMEM_SHMEM_REGION_ID);
++		__virtio_clear_bit(vdev, VIRTIO_PMEM_F_SHMEM_REGION);
++	}
++	return 0;
++}
++
+ static int virtio_pmem_probe(struct virtio_device *vdev)
+ {
+ 	struct nd_region_desc ndr_desc = {};
+ 	struct nd_region *nd_region;
+ 	struct virtio_pmem *vpmem;
+ 	struct resource res;
++	struct virtio_shm_region shm_reg;
+ 	int err = 0;
+ 
+ 	if (!vdev->config->get) {
+@@ -57,10 +72,16 @@ static int virtio_pmem_probe(struct virtio_device *vdev)
+ 		goto out_err;
+ 	}
+ 
+-	virtio_cread_le(vpmem->vdev, struct virtio_pmem_config,
+-			start, &vpmem->start);
+-	virtio_cread_le(vpmem->vdev, struct virtio_pmem_config,
+-			size, &vpmem->size);
++	if (virtio_has_feature(vdev, VIRTIO_PMEM_F_SHMEM_REGION)) {
++		virtio_get_shm_region(vdev, &shm_reg, (u8)VIRTIO_PMEM_SHMEM_REGION_ID);
++		vpmem->start = shm_reg.addr;
++		vpmem->size = shm_reg.len;
++	} else {
++		virtio_cread_le(vpmem->vdev, struct virtio_pmem_config,
++				start, &vpmem->start);
++		virtio_cread_le(vpmem->vdev, struct virtio_pmem_config,
++				size, &vpmem->size);
++	}
+ 
+ 	res.start = vpmem->start;
+ 	res.end   = vpmem->start + vpmem->size - 1;
+@@ -122,10 +143,17 @@ static void virtio_pmem_remove(struct virtio_device *vdev)
+ 	virtio_reset_device(vdev);
+ }
+ 
++static unsigned int features[] = {
++	VIRTIO_PMEM_F_SHMEM_REGION,
++};
++
+ static struct virtio_driver virtio_pmem_driver = {
++	.feature_table		= features,
++	.feature_table_size	= ARRAY_SIZE(features),
+ 	.driver.name		= KBUILD_MODNAME,
+ 	.driver.owner		= THIS_MODULE,
+ 	.id_table		= id_table,
++	.validate		= virtio_pmem_validate,
+ 	.probe			= virtio_pmem_probe,
+ 	.remove			= virtio_pmem_remove,
+ };
+diff --git a/include/uapi/linux/virtio_pmem.h b/include/uapi/linux/virtio_pmem.h
+index d676b3620383..ede4f3564977 100644
+--- a/include/uapi/linux/virtio_pmem.h
++++ b/include/uapi/linux/virtio_pmem.h
+@@ -14,6 +14,13 @@
+ #include <linux/virtio_ids.h>
+ #include <linux/virtio_config.h>
+ 
++/* Feature bits */
++/* guest physical address range will be indicated as shared memory region 0 */
++#define VIRTIO_PMEM_F_SHMEM_REGION 0
++
++/* shmid of the shared memory region corresponding to the pmem */
++#define VIRTIO_PMEM_SHMEM_REGION_ID 0
++
+ struct virtio_pmem_config {
+ 	__le64 start;
+ 	__le64 size;
+-- 
+2.43.0.472.g3155946c3a-goog
+
 
