@@ -1,220 +1,157 @@
-Return-Path: <linux-kernel+bounces-6695-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6696-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 30A79819C3D
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 11:09:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E3AD819C48
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 11:10:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4BA781C25932
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 10:09:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 139181F28F01
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 10:10:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 641AB2030B;
-	Wed, 20 Dec 2023 10:06:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA5F920B21;
+	Wed, 20 Dec 2023 10:08:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="CIHyIoDN"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="IGSuSdtw"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFA4B2030C;
-	Wed, 20 Dec 2023 10:06:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id E5FBB833;
-	Wed, 20 Dec 2023 11:05:46 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1703066747;
-	bh=/p097dBmZUfcAFQdNpNSImp1bcsBgLB7HROBHOtk7PA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=CIHyIoDNY8WoQk7ugFASa9IlmVcq+04mBMP8pYl5xCVz/Ij3yrw6iAH6PPflq03VF
-	 0OXh09wB6DXXqe+O2fmeUHL0PQ30XQvq4Dxe6K+8u8nHaUUP3dhxGmQMOBWb4XU9ig
-	 yxBaMBT/50ow93Axs9G3SlYGHFsdEZ6bfMrpyugI=
-Date: Wed, 20 Dec 2023 12:06:43 +0200
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To: Tommaso Merciai <tomm.merciai@gmail.com>
-Cc: linuxfancy@googlegroups.com, martin.hecht@avnet.eu,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/4] media: i2c: alvium: removal of fr field
-Message-ID: <20231220100643.GJ29638@pendragon.ideasonboard.com>
-References: <20231220085609.2595732-1-tomm.merciai@gmail.com>
- <20231220085609.2595732-3-tomm.merciai@gmail.com>
- <20231220091309.GG29638@pendragon.ideasonboard.com>
- <ZYK7y/jaEZ2JHsnH@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78D1B20B03;
+	Wed, 20 Dec 2023 10:08:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BK95Ylu025177;
+	Wed, 20 Dec 2023 10:08:02 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=uhhFGihaGd26R0sRUHpGszdFchbJbZ+tsPToykepTJo=; b=IG
+	SuSdtw+ZP626NqXnqQXcHE0lzWt8MxPJICiHAFPFll8qgiSrXQar2/s3+9WCimQ0
+	Jpe8zDS/bqhcCpbIP2qMyzcuXl9YsjXMpLr8Xa4q1Pdqk6ZhZPc7xXEGJx5Pss7F
+	U+3prl+KSaveyd1McldjNzRfEg4pfQbYVqoWSj2OfjdM8iUf/PSyZr5HUmg1d2oH
+	xuuTt6UtmBpU9uLYEoLdNAQp9PauTqILA7FtDqzSLS9+lhTl0m+QzP7xcy47vBuN
+	CbVsIMPge5k/1C9d4gOGDRsmgBFx7ClEDOVEI9PkgN0UVliYcyKZyOC5uGTMxJeU
+	AAM/UdNUDOFSk3iTvgow==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v3v338aca-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 20 Dec 2023 10:08:02 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BKA81wb001394
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 20 Dec 2023 10:08:01 GMT
+Received: from [10.253.32.162] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 20 Dec
+ 2023 02:07:55 -0800
+Message-ID: <0c416e86-2fd3-4ace-a42f-83c7f4dd25b9@quicinc.com>
+Date: Wed, 20 Dec 2023 18:07:53 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <ZYK7y/jaEZ2JHsnH@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 5/5] dt-bindings: net: ipq4019-mdio: Document ipq5332
+ platform
+Content-Language: en-US
+To: Conor Dooley <conor@kernel.org>
+CC: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, <agross@kernel.org>,
+        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <andrew@lunn.ch>, <hkallweit1@gmail.com>, <linux@armlinux.org.uk>,
+        <robert.marko@sartura.hr>, <linux-arm-msm@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <quic_srichara@quicinc.com>
+References: <2e77e3b1-00b6-46b9-bfed-7cae3ffa15e9@linaro.org>
+ <7bae46fd-63fd-4b86-9a56-73052cf0ea95@quicinc.com>
+ <5a8095e6-b6a6-4d11-b006-31519e8d8622@linaro.org>
+ <7466b655-2b7e-44f2-a510-6e0cc1b95248@quicinc.com>
+ <602759ce-c93d-4111-9272-1dce7e4a170a@linaro.org>
+ <f656d1c7-ea86-405a-9165-9eb079ea6f2a@quicinc.com>
+ <20231215-gauze-sprinkled-172729f22b6c@spud>
+ <9eab958e-d91f-4f3c-aadd-6b34eaed2cef@quicinc.com>
+ <20231216-unearned-lucid-4bd2ddcd4ac2@spud>
+ <af1dff98-a63e-47b3-a709-6f4110a97529@quicinc.com>
+ <20231219-childcare-sugar-d1ecde8bd0b0@spud>
+From: Jie Luo <quic_luoj@quicinc.com>
+In-Reply-To: <20231219-childcare-sugar-d1ecde8bd0b0@spud>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: BOZj3fUucv2hHInaerU2IgGZJQhhZ2du
+X-Proofpoint-GUID: BOZj3fUucv2hHInaerU2IgGZJQhhZ2du
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 spamscore=0
+ mlxscore=0 malwarescore=0 mlxlogscore=999 clxscore=1015 priorityscore=1501
+ adultscore=0 suspectscore=0 lowpriorityscore=0 bulkscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2311290000
+ definitions=main-2312200071
 
-On Wed, Dec 20, 2023 at 11:02:51AM +0100, Tommaso Merciai wrote:
-> Hi Laurent,
-> Thanks for your review.
-> 
-> On Wed, Dec 20, 2023 at 11:13:09AM +0200, Laurent Pinchart wrote:
-> > Hi Tommaso,
-> > 
-> > Thank you for the patch.
-> > 
-> > Use the imperative in the subject line:
-> > 
-> > media: i2c: alvium: Remove the fr field of the alvium_dev structure
-> > 
-> > On Wed, Dec 20, 2023 at 09:56:07AM +0100, Tommaso Merciai wrote:
-> > > The fr (frame rate) field of the alvium_dev structure is
-> > > only used to pass result from alvium_set_frame_interval() to
-> > > alvium_set_frame_rate() that writes this info into the hw reg.
-> > > Replace them with function parameter.
-> > 
-> > Replace it with a function parameter.
-> 
-> Thanks I'll fix this in v3.
-> 
-> > 
-> > > 
-> > > Signed-off-by: Tommaso Merciai <tomm.merciai@gmail.com>
-> > > ---
-> > >  drivers/media/i2c/alvium-csi2.c | 24 ++++++++++++------------
-> > >  drivers/media/i2c/alvium-csi2.h |  1 -
-> > >  2 files changed, 12 insertions(+), 13 deletions(-)
-> > > 
-> > > diff --git a/drivers/media/i2c/alvium-csi2.c b/drivers/media/i2c/alvium-csi2.c
-> > > index 0dcd69bf9f92..a9ff6cc97cff 100644
-> > > --- a/drivers/media/i2c/alvium-csi2.c
-> > > +++ b/drivers/media/i2c/alvium-csi2.c
-> > > @@ -1185,19 +1185,19 @@ static int alvium_get_frame_interval(struct alvium_dev *alvium,
-> > >  	return ret;
-> > >  }
-> > >  
-> > > -static int alvium_set_frame_rate(struct alvium_dev *alvium)
-> > > +static int alvium_set_frame_rate(struct alvium_dev *alvium, u64 fr)
-> > >  {
-> > >  	struct device *dev = &alvium->i2c_client->dev;
-> > >  	int ret;
-> > >  
-> > >  	ret = alvium_write_hshake(alvium, REG_BCRM_ACQUISITION_FRAME_RATE_RW,
-> > > -				  alvium->fr);
-> > > +				  fr);
-> > >  	if (ret) {
-> > >  		dev_err(dev, "Fail to set frame rate lanes reg\n");
-> > >  		return ret;
-> > >  	}
-> > >  
-> > > -	dev_dbg(dev, "set frame rate: %llu us\n", alvium->fr);
-> > > +	dev_dbg(dev, "set frame rate: %llu us\n", fr);
-> > >  
-> > >  	return 0;
-> > >  }
-> > > @@ -1661,10 +1661,11 @@ static int alvium_g_frame_interval(struct v4l2_subdev *sd,
-> > >  }
-> > >  
-> > >  static int alvium_set_frame_interval(struct alvium_dev *alvium,
-> > > -				     struct v4l2_subdev_frame_interval *fi)
-> > > +				     struct v4l2_subdev_frame_interval *fi,
-> > > +				     u64 *req_fr)
-> > >  {
-> > >  	struct device *dev = &alvium->i2c_client->dev;
-> > > -	u64 req_fr, dft_fr, min_fr, max_fr;
-> > > +	u64 dft_fr, min_fr, max_fr;
-> > >  	int ret;
-> > >  
-> > >  	if (fi->interval.denominator == 0)
-> > > @@ -1681,13 +1682,12 @@ static int alvium_set_frame_interval(struct alvium_dev *alvium,
-> > >  	dev_dbg(dev, "fi->interval.denominator = %d\n",
-> > >  		fi->interval.denominator);
-> > >  
-> > > -	req_fr = (u64)((fi->interval.denominator * USEC_PER_SEC) /
-> > > +	*req_fr = (u64)((fi->interval.denominator * USEC_PER_SEC) /
-> > >  		       fi->interval.numerator);
-> > >  
-> > > -	if (req_fr >= max_fr && req_fr <= min_fr)
-> > > -		req_fr = dft_fr;
-> > > +	if (*req_fr >= max_fr && *req_fr <= min_fr)
-> > > +		*req_fr = dft_fr;
-> > 
-> > Shouldn't we clamp the value to [min, max] instead of using the default
-> > if it's out of range ? Something like
-> > 
-> > 	*req_fr = clamp(*req_fr, min_fr, max_fr)
-> > 
-> > This makes me realize that the current code is wrong, req_fr can't be >=
-> > max and <= min at the same time. You probably meant || instead of &&.
-> > 
-> > This should be fixed in a separate patch.
-> 
-> If this is ok for you, after this series I can put a patch with || fix
-> instead of clamping, because if we clamp dft_fr is not used any more.
-> After if you agree I will work on clamping.
-> Thanks for the catch! :)
 
-It's fine to fix this on top of the series, but I don't see why you
-would need to first use ||. You can call clamp() and remove dft_fr.
 
-> > >  
-> > > -	alvium->fr = req_fr;
-> > >  	alvium->frame_interval.numerator = fi->interval.numerator;
-> > >  	alvium->frame_interval.denominator = fi->interval.denominator;
-> > >  
-> > > @@ -1699,6 +1699,7 @@ static int alvium_s_frame_interval(struct v4l2_subdev *sd,
-> > >  				   struct v4l2_subdev_frame_interval *fi)
-> > >  {
-> > >  	struct alvium_dev *alvium = sd_to_alvium(sd);
-> > > +	u64 req_fr = ALVIUM_DEFAULT_FR_HZ;
-> > 
-> > Do you need to initialize the variable ? It doesn't seem to be required.
+On 12/19/2023 11:47 PM, Conor Dooley wrote:
+> On Sat, Dec 16, 2023 at 11:37:08PM +0800, Jie Luo wrote:
+>> On 12/16/2023 10:16 PM, Conor Dooley wrote:
+>>> On Sat, Dec 16, 2023 at 09:16:49PM +0800, Jie Luo wrote:
+>>>> On 12/15/2023 9:41 PM, Conor Dooley wrote:
+>>>>> On Fri, Dec 15, 2023 at 08:40:20PM +0800, Jie Luo wrote:
+>>>>>> On 12/15/2023 8:19 PM, Krzysztof Kozlowski wrote:
+>>>>>>> On 15/12/2023 12:42, Jie Luo wrote:
 > 
-> Really not, it's just to maintain the logic of alvium->fr. I will drop
-> this in v3, thanks!
+>>>>>> There is also no enable control for the reference clocks since it is
+>>>>>> inputted by the hardware PIN connection, i will update these description
+>>>>>> in the DT to make it more clear.
+>>>>>
+>>>>> Again, this does not justify having custom properties for this clock,
+>>>>> as it is no different to other platforms. As far as I can tell, the only
+>>>>> thing that a standard "clocks" property cannot convey here is the
+>>>>> internal reference. I would suggest that since there is only one
+>>>>> internal clock frequency, the absence of this particular clock in the
+>>>>> "clocks" property can be used to determine that the reference is the
+>>>>> internal on
+>>>
+>>> I'm surprised you didn't pick up on this, but there are actually _2_
+>>> internal references, which I have just noticed while double checking the
+>>> binding patch.
+>>
+>> i noticed this, the reference clock source can be supported by clocks as
+>> you suggested here, it is really helpful.
+>>
+>>> What is the impact of using the 48 MHz or 96 MHz internal reference?
+>> They works on the different IPQ platform, 96MHZ internal reference is
+>> used on IPQ5018, the internal 48MHZ is used on the IPQ5332, that is
+>> same as what you describe above, the different clock source rate is
+>> selected as the different register value, then the PLL can do the
+>> corresponding config to output the correct clock rate, the external
+>> clock source is also same if the clock rate is same, just the different
+>> hardware PIN is selected if the external reference source is configured.
 > 
-> > With these small issues fixed,
-> > 
-> > Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> > 
-> > >  	int ret;
-> > >  
-> > >  	/*
-> > > @@ -1711,9 +1712,9 @@ static int alvium_s_frame_interval(struct v4l2_subdev *sd,
-> > >  	if (alvium->streaming)
-> > >  		return -EBUSY;
-> > >  
-> > > -	ret = alvium_set_frame_interval(alvium, fi);
-> > > +	ret = alvium_set_frame_interval(alvium, fi, &req_fr);
-> > >  	if (!ret)
-> > > -		ret = alvium_set_frame_rate(alvium);
-> > > +		ret = alvium_set_frame_rate(alvium, req_fr);
-> > >  
-> > >  	return ret;
-> > >  }
-> > > @@ -2273,7 +2274,6 @@ static int alvium_subdev_init(struct alvium_dev *alvium)
-> > >  	/* Setup initial frame interval*/
-> > >  	alvium->frame_interval.numerator = 1;
-> > >  	alvium->frame_interval.denominator = ALVIUM_DEFAULT_FR_HZ;
-> > > -	alvium->fr = ALVIUM_DEFAULT_FR_HZ;
-> > >  
-> > >  	/* Setup the initial mode */
-> > >  	alvium->mode.fmt = alvium_csi2_default_fmt;
-> > > diff --git a/drivers/media/i2c/alvium-csi2.h b/drivers/media/i2c/alvium-csi2.h
-> > > index 17f0bbbd1839..80066ac25047 100644
-> > > --- a/drivers/media/i2c/alvium-csi2.h
-> > > +++ b/drivers/media/i2c/alvium-csi2.h
-> > > @@ -443,7 +443,6 @@ struct alvium_dev {
-> > >  
-> > >  	struct alvium_mode mode;
-> > >  	struct v4l2_fract frame_interval;
-> > > -	u64 fr;
-> > >  
-> > >  	u8 h_sup_csi_lanes;
-> > >  	u64 link_freq;
+> 
+> Ah, so there is only one internal reference frequency per device. Then
+> my suggestion to use the presence of the clock in the clocks property
+> should work, just the fallback to the internal reference is going to
+> depend on the compatible.
+> 
+> Thanks,
+> Conor.
 
--- 
-Regards,
+The reference clock source is configurable, normally there is the fix
+reference clock configured per each IPQ platform, but we should keep
+the reference clock source configurable in case of the reference clock
+source switch needed in the future.
 
-Laurent Pinchart
+you are right, the reference clock source can be distinguished by
+checking the clock rate and the compatible string.
 
