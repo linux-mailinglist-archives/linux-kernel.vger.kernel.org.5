@@ -1,146 +1,137 @@
-Return-Path: <linux-kernel+bounces-7273-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7274-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB8EE81A44E
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 17:19:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D5CF381A452
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 17:19:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6F5B51F269C3
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 16:19:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 92A0428C0E4
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 16:19:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 530AF4CDEE;
-	Wed, 20 Dec 2023 16:12:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92EE34D108;
+	Wed, 20 Dec 2023 16:13:01 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF8544CB5C;
-	Wed, 20 Dec 2023 16:12:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F11DC433CB;
-	Wed, 20 Dec 2023 16:12:56 +0000 (UTC)
-Date: Wed, 20 Dec 2023 11:13:56 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
- <linux-trace-kernel@vger.kernel.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, Dongliang Cui
- <cuidongliang390@gmail.com>, Hongyu Jin  <hongyu.jin@unisoc.com>,
- linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH] eventfs: Have event files and directories default to
- parent uid and gid
-Message-ID: <20231220111356.54ea0ed2@gandalf.local.home>
-In-Reply-To: <20231220105017.1489d790@gandalf.local.home>
-References: <20231220105017.1489d790@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5023A4CE0D;
+	Wed, 20 Dec 2023 16:12:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8A0722F4;
+	Wed, 20 Dec 2023 08:13:43 -0800 (PST)
+Received: from [10.57.82.217] (unknown [10.57.82.217])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C384D3F64C;
+	Wed, 20 Dec 2023 08:12:57 -0800 (PST)
+Message-ID: <489ff972-272a-4038-b455-383fcbaa251d@arm.com>
+Date: Wed, 20 Dec 2023 16:14:04 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 8/8] thermal: gov_power_allocator: Support new update
+ callback of weights
+Content-Language: en-US
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: linux-kernel@vger.kernel.org, daniel.lezcano@linaro.org,
+ linux-pm@vger.kernel.org, rui.zhang@intel.com
+References: <20231212134844.1213381-1-lukasz.luba@arm.com>
+ <20231212134844.1213381-9-lukasz.luba@arm.com>
+ <CAJZ5v0gEFNhPYh8MdG6JPaXC0XggvyED+0QDuV+aLa5vASzhhA@mail.gmail.com>
+From: Lukasz Luba <lukasz.luba@arm.com>
+In-Reply-To: <CAJZ5v0gEFNhPYh8MdG6JPaXC0XggvyED+0QDuV+aLa5vASzhhA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Wed, 20 Dec 2023 10:50:17 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
+Hi Rafael,
 
-> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+On 12/20/23 14:59, Rafael J. Wysocki wrote:
+> On Tue, Dec 12, 2023 at 2:48 PM Lukasz Luba <lukasz.luba@arm.com> wrote:
+>>
+>> When the thermal instance's weight is updated from the sysfs the governor
+>> update_tz() callback is triggered. Implement proper reaction to this
+>> event in the IPA, which would save CPU cycles spent in throttle().
+>> This will speed-up the main throttle() IPA function and clean it up
+>> a bit.
+>>
+>> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+>> ---
+>>   drivers/thermal/gov_power_allocator.c | 15 +++++++++------
+>>   1 file changed, 9 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/drivers/thermal/gov_power_allocator.c b/drivers/thermal/gov_power_allocator.c
+>> index 574aa5822112..a9f1549e6355 100644
+>> --- a/drivers/thermal/gov_power_allocator.c
+>> +++ b/drivers/thermal/gov_power_allocator.c
+>> @@ -61,6 +61,7 @@ static inline s64 div_frac(s64 x, s64 y)
+>>    *                     @trip_switch_on should be NULL.
+>>    * @trip_max:          last passive trip point of the thermal zone. The
+>>    *                     temperature we are controlling for.
+>> + * @total_weight:      Sum of all thermal instances weights
+>>    * @num_actors:                number of cooling devices supporting IPA callbacks
+>>    * @buffer_size:       IPA internal buffer size
+>>    * @req_power:         IPA buffer for requested power
+>> @@ -76,6 +77,7 @@ struct power_allocator_params {
+>>          u32 sustainable_power;
+>>          const struct thermal_trip *trip_switch_on;
+>>          const struct thermal_trip *trip_max;
+>> +       int total_weight;
+>>          int num_actors;
+>>          int buffer_size;
+>>          u32 *req_power;
+>> @@ -403,16 +405,11 @@ static int allocate_power(struct thermal_zone_device *tz, int control_temp)
+>>          u32 total_req_power = 0;
+>>          u32 *weighted_req_power;
+>>          u32 power_range, weight;
+>> -       int total_weight = 0;
+>>          int i = 0;
+>>
+>>          if (!params->num_actors)
+>>                  return -ENODEV;
+>>
+>> -       list_for_each_entry(instance, &tz->thermal_instances, tz_node)
+>> -               if (power_actor_is_valid(params, instance))
+>> -                       total_weight += instance->weight;
+>> -
+>>          /* Clean all buffers for new power estimations */
+>>          memset(params->req_power, 0, params->buffer_size);
+>>
+>> @@ -430,7 +427,7 @@ static int allocate_power(struct thermal_zone_device *tz, int control_temp)
+>>                  if (cdev->ops->get_requested_power(cdev, &req_power[i]))
+>>                          continue;
+>>
+>> -               if (!total_weight)
+>> +               if (!params->total_weight)
+>>                          weight = 1 << FRAC_BITS;
+>>                  else
+>>                          weight = instance->weight;
+>> @@ -666,6 +663,12 @@ static void power_allocator_update_tz(struct thermal_zone_device *tz,
+>>
+>>                  allocate_actors_buffer(params, num_actors);
+>>                  break;
+>> +       case THERMAL_INSTANCE_WEIGHT_UPDATE:
+>> +               params->total_weight = 0;
+>> +               list_for_each_entry(instance, &tz->thermal_instances, tz_node)
+>> +                       if (power_actor_is_valid(params, instance))
+>> +                               params->total_weight += instance->weight;
+>> +               break;
+>>          default:
+>>                  break;
+>>          }
+>> --
 > 
-> Dongliang reported:
-> 
->   I found that in the latest version, the nodes of tracefs have been
->   changed to dynamically created.
-> 
->   This has caused me to encounter a problem where the gid I specified in
->   the mounting parameters cannot apply to all files, as in the following
->   situation:
-> 
->   /data/tmp/events # mount | grep tracefs
->   tracefs on /data/tmp type tracefs (rw,seclabel,relatime,gid=3012)
-> 
->   gid 3012 = readtracefs
-> 
->   /data/tmp # ls -lh
->   total 0
->   -r--r-----   1 root readtracefs 0 1970-01-01 08:00 README
->   -r--r-----   1 root readtracefs 0 1970-01-01 08:00 available_events
-> 
->   ums9621_1h10:/data/tmp/events # ls -lh
->   total 0
->   drwxr-xr-x 2 root root 0 2023-12-19 00:56 alarmtimer
->   drwxr-xr-x 2 root root 0 2023-12-19 00:56 asoc
-> 
->   It will prevent certain applications from accessing tracefs properly, I
->   try to avoid this issue by making the following modifications.
-> 
-> To fix this, have the files created default to taking the ownership of
-> the parent dentry unless the ownership was previously set by the user.
-> 
-> Link: https://lore.kernel.org/linux-trace-kernel/1703063706-30539-1-git-send-email-dongliang.cui@unisoc.com/
-> 
+> This one looks good to me, but if you decide to follow my advice from
+> the previous comments, it will need to be adjusted.
 
-I forgot to add:
+Yes, I will follow your recommendations, so this will be adjusted.
 
-  Cc: stable@vger.kernel.org
-  Fixes: 28e12c09f5aa0 ("eventfs: Save ownership and mode")
+Thank you for the review. I will respond to your other comments in
+patches as well.
 
-
--- Steve
-
-> Reported-by: Dongliang Cui <cuidongliang390@gmail.com>
-> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-> ---
->  fs/tracefs/event_inode.c | 12 +++++++++---
->  1 file changed, 9 insertions(+), 3 deletions(-)
-> 
-> diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
-> index 43e237864a42..2ccc849a5bda 100644
-> --- a/fs/tracefs/event_inode.c
-> +++ b/fs/tracefs/event_inode.c
-> @@ -148,7 +148,8 @@ static const struct file_operations eventfs_file_operations = {
->  	.release	= eventfs_release,
->  };
->  
-> -static void update_inode_attr(struct inode *inode, struct eventfs_attr *attr, umode_t mode)
-> +static void update_inode_attr(struct dentry *dentry, struct inode *inode,
-> +			      struct eventfs_attr *attr, umode_t mode)
->  {
->  	if (!attr) {
->  		inode->i_mode = mode;
-> @@ -162,9 +163,13 @@ static void update_inode_attr(struct inode *inode, struct eventfs_attr *attr, um
->  
->  	if (attr->mode & EVENTFS_SAVE_UID)
->  		inode->i_uid = attr->uid;
-> +	else
-> +		inode->i_uid = d_inode(dentry->d_parent)->i_uid;
->  
->  	if (attr->mode & EVENTFS_SAVE_GID)
->  		inode->i_gid = attr->gid;
-> +	else
-> +		inode->i_gid = d_inode(dentry->d_parent)->i_gid;
->  }
->  
->  /**
-> @@ -206,7 +211,7 @@ static struct dentry *create_file(const char *name, umode_t mode,
->  		return eventfs_failed_creating(dentry);
->  
->  	/* If the user updated the directory's attributes, use them */
-> -	update_inode_attr(inode, attr, mode);
-> +	update_inode_attr(dentry, inode, attr, mode);
->  
->  	inode->i_op = &eventfs_file_inode_operations;
->  	inode->i_fop = fop;
-> @@ -242,7 +247,8 @@ static struct dentry *create_dir(struct eventfs_inode *ei, struct dentry *parent
->  		return eventfs_failed_creating(dentry);
->  
->  	/* If the user updated the directory's attributes, use them */
-> -	update_inode_attr(inode, &ei->attr, S_IFDIR | S_IRWXU | S_IRUGO | S_IXUGO);
-> +	update_inode_attr(dentry, inode, &ei->attr,
-> +			  S_IFDIR | S_IRWXU | S_IRUGO | S_IXUGO);
->  
->  	inode->i_op = &eventfs_root_dir_inode_operations;
->  	inode->i_fop = &eventfs_file_operations;
-
+Regards,
+Lukasz
 
