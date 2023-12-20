@@ -1,133 +1,115 @@
-Return-Path: <linux-kernel+bounces-7027-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7028-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCC4981A0A6
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 15:04:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B8B281A0A9
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 15:06:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7CD801F2A1D1
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 14:04:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 36FFD28C95A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 14:06:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F3A038DE5;
-	Wed, 20 Dec 2023 14:04:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEAAD38DE0;
+	Wed, 20 Dec 2023 14:05:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jKG469aN"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Dci0TnJc"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9140B381B2;
-	Wed, 20 Dec 2023 14:04:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3419BC433C9;
-	Wed, 20 Dec 2023 14:04:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703081069;
-	bh=rgiDGvgZVGtqWKKiBe9tiDZOroTq3u2y1PmyOEn9Hyc=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=jKG469aNJKPh+zRF40g1uu1kxbQuLz+u0L/Ow08hvtl5RxvgW/fZEIIr+M9wqL7hH
-	 z2ui/DfwaAcu6IpWuDbw20jQqBkA2V2Q5uORzPikgTlvrUcfbaPvzoYbEHG6yqs0WZ
-	 R4LgPerYwLRMcPBwTI4jbY5u1IP0qC8J48E8ouTa+du7T4mFTj4d//DgxJGBuoPkGl
-	 wNJ3Y3JmHooODmoikIEzaXV+vF8YEf4F1IgsKfB//nJDuupmdSgtH7BIK9RJJcZWtz
-	 irGzQvOe/VwWrl1H2MoYn5JIAtsi/rf2VECzYspJGPozV/lFD4H6La8awOFJQojBKH
-	 oz8S9yOUTnOcg==
-Date: Wed, 20 Dec 2023 14:04:15 +0000
-From: Jonathan Cameron <jic23@kernel.org>
-To: Marcelo Schmitt <marcelo.schmitt1@gmail.com>
-Cc: Marcelo Schmitt <marcelo.schmitt@analog.com>, apw@canonical.com,
- joe@perches.com, dwaipayanray1@gmail.com, lukas.bulwahn@gmail.com,
- paul.cercueil@analog.com, Michael.Hennerich@analog.com, lars@metafoo.de,
- robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- dan.carpenter@linaro.org, dlechner@baylibre.com, linux-iio@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 09/15] iio: adc: ad7091r: Enable internal vref if
- external vref is not supplied
-Message-ID: <20231220140415.0143e8ca@jic23-huawei>
-In-Reply-To: <ZYCC3z44hMzgQTa6@debian-BULLSEYE-live-builder-AMD64>
-References: <cover.1702746240.git.marcelo.schmitt1@gmail.com>
-	<ce92ae93b1c2e36b20a9881b145c8c2c85acb1dd.1702746240.git.marcelo.schmitt1@gmail.com>
-	<20231217154142.191ba69b@jic23-huawei>
-	<ZYCC3z44hMzgQTa6@debian-BULLSEYE-live-builder-AMD64>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC2D438DD6;
+	Wed, 20 Dec 2023 14:05:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BK9X5La016122;
+	Wed, 20 Dec 2023 14:05:51 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=qcppdkim1; bh=5PDcbnH
+	3mjXKBprgaG+TyL+B4BSSx4l7EbsJ2NYYViQ=; b=Dci0TnJcCU4bHSCN99+oJJO
+	Z8zQBbr2EXNQurHQEfPqQQEnEnWxXYEYdI3pmVi6c2RhA3F81Tz3GPhVpx5xOZ2R
+	R+KWM2b6j8e+j6ZJEGg9Y2s7ILNzrw7ZioDeYKR0WdiAiJwHI9BGD5Q34syvARww
+	zIXU3rwzMHyP6sO8DrAI/2RSDzyRZvoAygLNJ19LF9vf7RawUecGEdtHeq/POUnR
+	hrrP4EyrkAiGb/rinwZKraHTNQ970+KlHd+3YOO7YuJTSYALH/f1nuOyIi8yKAMg
+	ThJzflZ054VPsgf9G702gjRKdsQ4LZPvBVmBMPkLJyFoEj7SVmXiuZBVj0mv/xA=
+	=
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v3wr10mtm-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 20 Dec 2023 14:05:51 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BKE5nWR003933
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 20 Dec 2023 14:05:49 GMT
+Received: from hu-jinlmao-lv.qualcomm.com (10.49.16.6) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Wed, 20 Dec 2023 06:05:49 -0800
+From: Mao Jinlong <quic_jinlmao@quicinc.com>
+To: Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose
+	<suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>, James Clark
+	<james.clark@arm.com>,
+        Leo Yan <leo.yan@linaro.org>, Andy Gross
+	<agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio
+	<konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "Krzysztof
+ Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>
+CC: Mao Jinlong <quic_jinlmao@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Tingwei Zhang
+	<quic_tingweiz@quicinc.com>,
+        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
+        "Tao
+ Zhang" <quic_taozha@quicinc.com>, <coresight@lists.linaro.org>
+Subject: [PATCH v1 0/2] arm64: dts: qcom: Add coresight nodes for sm8450 
+Date: Wed, 20 Dec 2023 06:05:33 -0800
+Message-ID: <20231220140538.13136-1-quic_jinlmao@quicinc.com>
+X-Mailer: git-send-email 2.41.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: ok_SVjbAHQonwGMkmCAT8Tu_GtjtHVcO
+X-Proofpoint-GUID: ok_SVjbAHQonwGMkmCAT8Tu_GtjtHVcO
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ phishscore=0 priorityscore=1501 impostorscore=0 mlxscore=0 adultscore=0
+ spamscore=0 mlxlogscore=607 bulkscore=0 clxscore=1015 malwarescore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2312200099
 
-On Mon, 18 Dec 2023 14:35:27 -0300
-Marcelo Schmitt <marcelo.schmitt1@gmail.com> wrote:
+Add coresight components on Qualcomm SM8450 Soc. The components include
+TMC ETF/ETR, ETE, STM, TPDM, CTI. And update the pattern of ete node
+name.
 
-> On 12/17, Jonathan Cameron wrote:
-> > On Sat, 16 Dec 2023 14:49:07 -0300
-> > Marcelo Schmitt <marcelo.schmitt@analog.com> wrote:
-> >   
-> > > The ADC needs a voltage reference to work correctly.
-> > > Enable AD7091R internal voltage reference if no external vref is supplied.
-> > > 
-> > > Signed-off-by: Marcelo Schmitt <marcelo.schmitt@analog.com>  
-> > This one sounds to me like it should have a fixes tag and be
-> > much earlier in the set to perhaps simplify backports.  
-> 
-> Could be. If we stick to the fact that the dt-binding does not require a voltage
-> regulator then this can be seen as a fix.
-> Though, if users can provide an external reference this patch makes no
-> difference them.
-> I am using the internal reference for testing so having this one makes a
-> difference for me.
-The binding has it as optional, though usually when not having an
-external reference leads to use of an internal one, we call it out
-in the description.  
+Mao Jinlong (2):
+  dt-bindings: arm: coresight: Update the pattern of ete node name
+  arm64: dts: qcom: Add coresight nodes for sm8450
 
-Meh, can backport it as a fix if anyone asks for it.
+ .../arm/arm,embedded-trace-extension.yaml     |   6 +-
+ arch/arm64/boot/dts/qcom/sm8450.dtsi          | 742 ++++++++++++++++++
+ 2 files changed, 745 insertions(+), 3 deletions(-)
 
-Jonathan
-
-> 
-> > 
-> > Jonathan
-> >   
-> > > ---
-> > >  drivers/iio/adc/ad7091r-base.c | 7 +++++++
-> > >  drivers/iio/adc/ad7091r-base.h | 1 +
-> > >  2 files changed, 8 insertions(+)
-> > > 
-> > > diff --git a/drivers/iio/adc/ad7091r-base.c b/drivers/iio/adc/ad7091r-base.c
-> > > index aead72ef55b6..9d0b489966f5 100644
-> > > --- a/drivers/iio/adc/ad7091r-base.c
-> > > +++ b/drivers/iio/adc/ad7091r-base.c
-> > > @@ -217,7 +217,14 @@ int ad7091r_probe(struct device *dev, const struct ad7091r_init_info *init_info,
-> > >  	if (IS_ERR(st->vref)) {
-> > >  		if (PTR_ERR(st->vref) == -EPROBE_DEFER)
-> > >  			return -EPROBE_DEFER;
-> > > +
-> > >  		st->vref = NULL;
-> > > +		/* Enable internal vref */
-> > > +		ret = regmap_update_bits(st->map, AD7091R_REG_CONF,
-> > > +					 AD7091R_REG_CONF_INT_VREF, BIT(0));
-> > > +		if (ret)
-> > > +			return dev_err_probe(st->dev, ret,
-> > > +					     "Error on enable internal reference\n");
-> > >  	} else {
-> > >  		ret = regulator_enable(st->vref);
-> > >  		if (ret)
-> > > diff --git a/drivers/iio/adc/ad7091r-base.h b/drivers/iio/adc/ad7091r-base.h
-> > > index 81b8a4bbb929..9cfb362a00a4 100644
-> > > --- a/drivers/iio/adc/ad7091r-base.h
-> > > +++ b/drivers/iio/adc/ad7091r-base.h
-> > > @@ -20,6 +20,7 @@
-> > >  #define AD7091R_REG_CH_HYSTERESIS(ch) ((ch) * 3 + 6)
-> > >  
-> > >  /* AD7091R_REG_CONF */
-> > > +#define AD7091R_REG_CONF_INT_VREF	BIT(0)
-> > >  #define AD7091R_REG_CONF_ALERT_EN	BIT(4)
-> > >  #define AD7091R_REG_CONF_AUTO		BIT(8)
-> > >  #define AD7091R_REG_CONF_CMD		BIT(10)  
-> > 
-> >   
+-- 
+2.41.0
 
 
