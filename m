@@ -1,114 +1,332 @@
-Return-Path: <linux-kernel+bounces-6771-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6772-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9FA26819D4D
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 11:48:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37238819D51
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 11:48:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 561E11F26FED
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 10:48:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E22242886F0
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 10:48:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12DBF21103;
-	Wed, 20 Dec 2023 10:48:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DDE32110F;
+	Wed, 20 Dec 2023 10:48:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jygdJwpM"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GhlHKF+O"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59C2A20DCE;
-	Wed, 20 Dec 2023 10:48:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 678DEC433C7;
-	Wed, 20 Dec 2023 10:48:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703069295;
-	bh=affP7wF8+XMw8uG5v8noirtoXKryiDk9LMZdxtuSBpQ=;
-	h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
-	b=jygdJwpMqP5HaPdqtLr763HT2ZDYZrxZ19woJaNn3MAv/R+EJh9OXdBtNGOBKcPRK
-	 VgEegAEhPxLXA999Ua6+XSfynxz286Hjc/w519TvLk3a7lFHOC2m8lXyDxfqgx2H2h
-	 GfSwX657HUGr7cZB7VX0uAuplho2Lx2/zyxDhLbbGfd5ArXJdad5QUrGIO5UvB1sTv
-	 gS9mhhkayTJRL8smWjguOzRG0JH8KzOduDUv6DZYmGxRvrzGo7b2TQaGZN5m5bKqtx
-	 55X6s2/AJ2v5F4fctW2HIBRTotbKnPAzyJjE/5vgE9PA45p+4eoxWYFZLF0/6g0F/E
-	 9c3nNxe9gQLOg==
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailauth.nyi.internal (Postfix) with ESMTP id 59CCC27C0061;
-	Wed, 20 Dec 2023 05:48:14 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Wed, 20 Dec 2023 05:48:14 -0500
-X-ME-Sender: <xms:bcaCZa-dYaDSNN36puMBjYL2UZjPu7XIDmrS9ZbAtZmLOLHzRsRkmQ>
-    <xme:bcaCZat5hWRhwFchay4HQaiInMmMJezm4FaDG4D7qWJ-QMer37ZYU0DBDBILQhArg
-    4Ew8i-upCvuurJzD3s>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdduvddgvdduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusehkvghrnhgvlhdrohhrgheqnecuggftrf
-    grthhtvghrnhepgedtudegtdejhfdtjeeglefhhfduhedtjeejgeegieelgeduudeiueev
-    ffetjefgnecuffhomhgrihhnpehqvghmuhdrohhrghenucevlhhushhtvghrufhiiigvpe
-    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnugdomhgvshhmthhprghuthhhphgv
-    rhhsohhnrghlihhthidquddvkeehudejtddvgedqvdekjedttddvieegqdgrrhhnugeppe
-    hkvghrnhgvlhdrohhrghesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:bcaCZQDIKCNj7awbmv8GAKA4WgNCD1CdNaOAL918zpCfYGwv1bP6tQ>
-    <xmx:bcaCZSeU8EDkSAwPx0LydaLR2A-g-Npf-ECxnOrW3cDEcyCKfKWFCQ>
-    <xmx:bcaCZfPiwW0oa83V1FG959Vcn7M1gbIp-lc-37NNQpZjt5Ir6z56Yg>
-    <xmx:bsaCZduisMTzT6YuRGasRasp3nG8XGAP5iAFXKnUBRYcf05Nq05azg>
-Feedback-ID: i36794607:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 5080DB6008D; Wed, 20 Dec 2023 05:48:13 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1364-ga51d5fd3b7-fm-20231219.001-ga51d5fd3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 221CE21350;
+	Wed, 20 Dec 2023 10:48:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2cc6ea4452cso42597261fa.1;
+        Wed, 20 Dec 2023 02:48:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703069300; x=1703674100; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ThNtIfnlIGuBL4u3+JKBWwmpRKYHrtqm+ZdySwo/r7Y=;
+        b=GhlHKF+OxW4dR7KN5Usp75bDBaoGsqi95AV+yE7TzQOtFqGKvaMO9vnBD1TW0QZOQm
+         S5x9/SoOCr29BsZsHV5GU/P4g7J8W3yhX8n6tqpE+uWApj0FFleHl47gzk0V0NhACdD6
+         5Dx+RqVBr4E2mdBPrm2qFEmFuJbkOBZBgaPkC4rpAVgQThxVBlkxjKO+Td/TolmyNIq0
+         wb+AZjv86Sr+4T8WIrgczsgMkisXZfGLV1zFaQYSCXIyO1Y/WjsB6/AwbhhMu3gPup/J
+         YPhU7beY9dc9gbbYmhi407LP+4jZMFt+hqy1VZvyLgwhU+crNPjP3z/yrKZ5cUBzWc8a
+         1/iw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703069300; x=1703674100;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ThNtIfnlIGuBL4u3+JKBWwmpRKYHrtqm+ZdySwo/r7Y=;
+        b=hQasAyUWAmmnLA2S+dW9cnRCE6tSjYPQ2J6hR2Y+5JbuNBsxYx/2bkf1AZ8PZvgC93
+         7dgjJgItrnuBLiW7To8Bad/Q0B4NFXobhDiPoxayXy/TsukTGgpfKFXmQtOFFBDU3ARO
+         FQX/Izzg8Z/vmRXLaEnPGasag2L2uJUtwk7SyPb0zDHQ1okpn5exx+Ty/3IJeRRG3bqB
+         G+w4hoRin04ogemTpiVZV6xQGnGO1MTkAn4JugsVdEadf1giCaBUnRvrVkJU/AxFPiWa
+         86Pi2ZHDW02AKLdZEsgzF65hhOLQ4dS86FgwhIr6DgDj5EHY59v2TCG4zH1NFpIm6A96
+         ECdA==
+X-Gm-Message-State: AOJu0YwpoGN0Jp+E/jkjOxLazYUoTFlwgCzT03uA1jTp6Nl6GPGZR4Lp
+	nhvvvL3uxghlaLxT6ZyKcG0=
+X-Google-Smtp-Source: AGHT+IG7dlKniwOxuWH6xHGqWIz/OdpfrFThiRi4i2YoF5zExz/Vi/LEw9ureDOZEvqmbm11j9Bilg==
+X-Received: by 2002:a05:651c:226:b0:2cc:769e:723d with SMTP id z6-20020a05651c022600b002cc769e723dmr1926964ljn.87.1703069299819;
+        Wed, 20 Dec 2023 02:48:19 -0800 (PST)
+Received: from HYB-hhAwRlzzMZb.ad.analog.com ([5.2.193.82])
+        by smtp.gmail.com with ESMTPSA id x12-20020a5d650c000000b003366c058509sm1904063wru.23.2023.12.20.02.48.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Dec 2023 02:48:19 -0800 (PST)
+From: Dumitru Ceclan <mitrutzceclan@gmail.com>
+To: 
+Cc: linus.walleij@linaro.org,
+	brgl@bgdev.pl,
+	andy@kernel.org,
+	linux-gpio@vger.kernel.org,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	Jonathan Cameron <jic23@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Michael Walle <michael@walle.cc>,
+	Andy Shevchenko <andy.shevchenko@gmail.com>,
+	Arnd Bergmann <arnd@arndb.de>,
+	ChiaEn Wu <chiaen_wu@richtek.com>,
+	Niklas Schnelle <schnelle@linux.ibm.com>,
+	=?UTF-8?q?Leonard=20G=C3=B6hrs?= <l.goehrs@pengutronix.de>,
+	Mike Looijmans <mike.looijmans@topic.nl>,
+	Haibo Chen <haibo.chen@nxp.com>,
+	Hugo Villeneuve <hvilleneuve@dimonoff.com>,
+	Ceclan Dumitru <dumitru.ceclan@analog.com>,
+	linux-iio@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Dumitru Ceclan <mitrutzceclan@gmail.com>
+Subject: [PATCH v11 1/2] dt-bindings: adc: add AD7173
+Date: Wed, 20 Dec 2023 12:48:04 +0200
+Message-ID: <20231220104810.3179-1-mitrutzceclan@gmail.com>
+X-Mailer: git-send-email 2.42.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <dbb60b13-565f-43b8-8cb8-6f8cd98b06df@app.fastmail.com>
-In-Reply-To: 
- <e897e6d5a88ec2f9024c62f7bee5c13bfb2cab55.camel@physik.fu-berlin.de>
-References: <20231219-sam-sparc32-sunset-v3-v1-0-64bb44b598c5@ravnborg.org>
- <01ea8c41-88cd-4123-95c7-391640845fc3@app.fastmail.com>
- <e897e6d5a88ec2f9024c62f7bee5c13bfb2cab55.camel@physik.fu-berlin.de>
-Date: Wed, 20 Dec 2023 10:47:56 +0000
-From: "Arnd Bergmann" <arnd@kernel.org>
-To: "John Paul Adrian Glaubitz" <glaubitz@physik.fu-berlin.de>,
- "Sam Ravnborg" <sam@ravnborg.org>, "David S . Miller" <davem@davemloft.net>,
- "Andreas Larsson" <andreas@gaisler.com>
-Cc: "Helge Deller" <deller@gmx.de>,
- "Alexander Viro" <viro@zeniv.linux.org.uk>,
- "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
- "Alan Stern" <stern@rowland.harvard.edu>, "Jaroslav Kysela" <perex@perex.cz>,
- "Takashi Iwai" <tiwai@suse.com>, sparclinux@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
- linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
- linux-sound@vger.kernel.org
-Subject: Re: [PATCH 00/27] sparc32: sunset sun4m and sun4d
-Content-Type: text/plain
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Wed, Dec 20, 2023, at 09:54, John Paul Adrian Glaubitz wrote:
-> On Wed, 2023-12-20 at 08:36 +0000, Arnd Bergmann wrote:
->> All of these were found through inspection rather than testing,
->> so there is a good chance that other fatal kernel bugs prevent
->> testing in qemu, at least until the fixes from Andreas' tree
->> are included.
->
-> Andreas has fixes for these issues?
+The AD7173 family offer a complete integrated Sigma-Delta ADC solution
+which can be used in high precision, low noise single channel applications
+or higher speed multiplexed applications. The Sigma-Delta ADC is intended
+primarily for measurement of signals close to DC but also delivers
+outstanding performance with input bandwidths out to ~10kHz.
 
-Not sure, all I know is that
+Signed-off-by: Dumitru Ceclan <mitrutzceclan@gmail.com>
+---
+V10->V11
+ - Fix example warning: '#gpio-cells' is a dependency of 'gpio-controller'
+ - Add description to #gpio-cells property
+V9->V10
+ - Fix dt_binding_check type warning from adi,reference-select
+V8->v9
+ - Add gpio-controller and "#gpio-cells" properties
+ - Add missing avdd2 and iovdd supplies
+ - Add string type to reference-select
+V7->V8
+ - include missing fix from V6
+V6->V7 <no changes>
+V5->V6
+ - Moved global required property to proper placement
+V4 -> V5
+ - Use string enum instead of integers for "adi,reference-select"
+ - Fix conditional checking in regards to compatible
+V3 -> V4
+ - include supply attributes
+ - add channel attribute for selecting conversion reference
+V2 -> V3
+ - remove redundant descriptions
+ - use referenced 'bipolar' property
+ - remove newlines from example
+V1 -> V2 <no changes>
 
-- Andreas has some fixes for Leon in his tree
-- Sam is unable to boot mainline in qemu
-- There is an unknown set of bugs in sparc32 since it has not
-  been tested for many years without Andreas' patches
+ .../bindings/iio/adc/adi,ad7173.yaml          | 188 ++++++++++++++++++
+ 1 file changed, 188 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/iio/adc/adi,ad7173.yaml
 
-it appears that the qemu developers are still testing the sun4m
-model against old Linux and Solaris installations [1], but
-failure to run the leon3 model could still be any combination
-of kernel, qemu or configuration problems.
+diff --git a/Documentation/devicetree/bindings/iio/adc/adi,ad7173.yaml b/Documentation/devicetree/bindings/iio/adc/adi,ad7173.yaml
+new file mode 100644
+index 000000000000..7c8caef76528
+--- /dev/null
++++ b/Documentation/devicetree/bindings/iio/adc/adi,ad7173.yaml
+@@ -0,0 +1,188 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++# Copyright 2023 Analog Devices Inc.
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/iio/adc/adi,ad7173.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Analog Devices AD7173 ADC
++
++maintainers:
++  - Ceclan Dumitru <dumitru.ceclan@analog.com>
++
++description: |
++  Bindings for the Analog Devices AD717X ADC's. Datasheets for supported chips:
++    https://www.analog.com/media/en/technical-documentation/data-sheets/AD7172-2.pdf
++    https://www.analog.com/media/en/technical-documentation/data-sheets/AD7173-8.pdf
++    https://www.analog.com/media/en/technical-documentation/data-sheets/AD7175-2.pdf
++    https://www.analog.com/media/en/technical-documentation/data-sheets/AD7176-2.pdf
++
++properties:
++  compatible:
++    enum:
++      - adi,ad7172-2
++      - adi,ad7173-8
++      - adi,ad7175-2
++      - adi,ad7176-2
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  '#address-cells':
++    const: 1
++
++  '#size-cells':
++    const: 0
++
++  spi-max-frequency:
++    maximum: 20000000
++
++  gpio-controller:
++    description: Marks the device node as a GPIO controller.
++
++  "#gpio-cells":
++    const: 2
++    description:
++      The first cell is the GPIO number and the second cell specifies
++      GPIO flags, as defined in <dt-bindings/gpio/gpio.h>.
++
++  refin-supply:
++    description: external reference supply, can be used as reference for conversion.
++
++  refin2-supply:
++    description: external reference supply, can be used as reference for conversion.
++
++  avdd-supply:
++    description: avdd supply, can be used as reference for conversion.
++
++  avdd2-supply:
++    description: avdd2 supply, used as the input to the internal voltage regulator.
++
++  iovdd-supply:
++    description: iovdd supply, used for the chip digital interface.
++
++patternProperties:
++  "^channel@[0-9a-f]$":
++    type: object
++    $ref: adc.yaml
++    unevaluatedProperties: false
++
++    properties:
++      reg:
++        minimum: 0
++        maximum: 15
++
++      diff-channels:
++        items:
++          minimum: 0
++          maximum: 31
++
++      adi,reference-select:
++        description: |
++          Select the reference source to use when converting on
++          the specific channel. Valid values are:
++          refin      : REFIN(+)/REFIN(−).
++          refin2     : REFIN2(+)/REFIN2(−)
++          refout-avss: REFOUT/AVSS (Internal reference)
++          avdd       : AVDD
++
++          External reference refin2 only available on ad7173-8.
++          If not specified, internal reference used.
++        $ref: /schemas/types.yaml#/definitions/string
++        enum:
++          - refin
++          - refin2
++          - refout-avss
++          - avdd
++        default: refout-avss
++
++    required:
++      - reg
++      - diff-channels
++
++required:
++  - compatible
++  - reg
++  - interrupts
++
++allOf:
++  - $ref: /schemas/spi/spi-peripheral-props.yaml#
++
++  - if:
++      properties:
++        compatible:
++          not:
++            contains:
++              const: adi,ad7173-8
++    then:
++      properties:
++        refin2-supply: false
++      patternProperties:
++        "^channel@[0-9a-f]$":
++          properties:
++            adi,reference-select:
++              enum:
++                - refin
++                - refout-avss
++                - avdd
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++    #include <dt-bindings/interrupt-controller/irq.h>
++
++    spi {
++      #address-cells = <1>;
++      #size-cells = <0>;
++
++      adc@0 {
++        compatible = "adi,ad7173-8";
++        reg = <0>;
++
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        interrupts = <25 IRQ_TYPE_EDGE_FALLING>;
++        interrupt-parent = <&gpio>;
++        spi-max-frequency = <5000000>;
++        gpio-controller;
++        #gpio-cells = <2>;
++
++        refin-supply = <&dummy_regulator>;
++
++        channel@0 {
++          reg = <0>;
++          bipolar;
++          diff-channels = <0 1>;
++          adi,reference-select = "refin";
++        };
++
++        channel@1 {
++          reg = <1>;
++          diff-channels = <2 3>;
++        };
++
++        channel@2 {
++          reg = <2>;
++          bipolar;
++          diff-channels = <4 5>;
++        };
++
++        channel@3 {
++          reg = <3>;
++          bipolar;
++          diff-channels = <6 7>;
++        };
++
++        channel@4 {
++          reg = <4>;
++          diff-channels = <8 9>;
++          adi,reference-select = "avdd";
++        };
++      };
++    };
+-- 
+2.42.0
 
-        Arnd
-
-[1] https://wiki.qemu.org/Documentation/Platforms/SPARC#Compatibility
 
