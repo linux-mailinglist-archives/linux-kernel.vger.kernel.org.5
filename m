@@ -1,118 +1,150 @@
-Return-Path: <linux-kernel+bounces-6969-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6970-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0C7E819FEE
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 14:37:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 18F5B819FEF
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 14:38:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9FA751F22EDF
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 13:37:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C324F1F219BB
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 13:38:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BCFB34571;
-	Wed, 20 Dec 2023 13:37:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD391374E4;
+	Wed, 20 Dec 2023 13:38:00 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-oo1-f48.google.com (mail-oo1-f48.google.com [209.85.161.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C712436AED;
-	Wed, 20 Dec 2023 13:37:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f48.google.com with SMTP id 006d021491bc7-590a21e977aso149511eaf.1;
-        Wed, 20 Dec 2023 05:37:31 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703079451; x=1703684251;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zi2/E2JPV+E9OtEb+OM3gBdNSO0WpJsVMVo8MT1752Q=;
-        b=XYJGNkpURqgyWzOqZIQhyj9nWiIgxi+/VN3Ib+Kiu9sUvsjDhRwrkLpVwu8l68nqwP
-         YgnrB5OUqoI4p8qHXLTzSS4NEHWCdAbuRonBOfiDhpXB4eVNow9YJ8XBD8JNncqMZ8Cu
-         gCs+9Ono9T+Lmb28MCNuCLF0UXROIAQ9pP1tJSIOkMKq/zCbThu4fKd0rqhcPC8h4V0n
-         wAPhqLjqHNnCe80p6XuiYdyTF07i5evaTmfvVMs21QMnZEFoV2FnCE7CaM1cfW3JkfRd
-         +9q2JNN83XNCWKQLta6S0ZSBx3Fht98YeMj8n30+ZUmQkxESFS5cWs7lTnmLp8Y70i0P
-         cFOA==
-X-Gm-Message-State: AOJu0YzFhjA3yyqGFGhxSM30Gtki9cTqLpNxL2qNs9RCMCxmfr6lcmAi
-	d1CB1DPJ+xffGKTtVf3MKxa+/p6OOZesRmNMYhU=
-X-Google-Smtp-Source: AGHT+IFPWD1e7bEmPP17/BQHTxvMpnKN6yH0aErwTtDPwWdlJLiDHeAP8Hb82e1l2JF/FiGR8wGIdFVB4I83HJ1p0Lg=
-X-Received: by 2002:a05:6820:258a:b0:593:e53b:2df1 with SMTP id
- cs10-20020a056820258a00b00593e53b2df1mr4441366oob.1.1703079450842; Wed, 20
- Dec 2023 05:37:30 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 165FA374C1
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 13:37:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.17])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4SwF022SzBz1FFG9;
+	Wed, 20 Dec 2023 21:34:10 +0800 (CST)
+Received: from kwepemm000003.china.huawei.com (unknown [7.193.23.66])
+	by mail.maildlp.com (Postfix) with ESMTPS id 342EB1A0172;
+	Wed, 20 Dec 2023 21:37:54 +0800 (CST)
+Received: from [10.174.179.79] (10.174.179.79) by
+ kwepemm000003.china.huawei.com (7.193.23.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 20 Dec 2023 21:37:53 +0800
+Subject: Re: [PATCH v2 2/3] arm64: mm: HVO: support BBM of vmemmap pgtable
+ safely
+To: Muchun Song <muchun.song@linux.dev>
+CC: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+	Mike Kravetz <mike.kravetz@oracle.com>, Andrew Morton
+	<akpm@linux-foundation.org>, Anshuman Khandual <anshuman.khandual@arm.com>,
+	"Matthew Wilcox (Oracle)" <willy@infradead.org>, Kefeng Wang
+	<wangkefeng.wang@huawei.com>, <linux-arm-kernel@lists.infradead.org>, LKML
+	<linux-kernel@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>
+References: <20231220051855.47547-1-sunnanyong@huawei.com>
+ <20231220051855.47547-3-sunnanyong@huawei.com>
+ <08DCC8BB-631C-4F7A-BB0A-494AD2AD3465@linux.dev>
+From: Nanyong Sun <sunnanyong@huawei.com>
+Message-ID: <8e3b03bc-af43-adaf-5980-82548893a7c5@huawei.com>
+Date: Wed, 20 Dec 2023 21:37:52 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231212134844.1213381-1-lukasz.luba@arm.com> <b2f9db3f-96a4-4e1e-9be0-32f19948c489@arm.com>
-In-Reply-To: <b2f9db3f-96a4-4e1e-9be0-32f19948c489@arm.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Wed, 20 Dec 2023 14:37:19 +0100
-Message-ID: <CAJZ5v0jx=Nm0zrKeGuDkkiskCT_LOF77fVFWt-mATkf3X9qUDQ@mail.gmail.com>
-Subject: Re: [PATCH v2 0/8] Add callback for cooling list update to speed-up IPA
-To: Lukasz Luba <lukasz.luba@arm.com>
-Cc: daniel.lezcano@linaro.org, rafael@kernel.org, linux-pm@vger.kernel.org, 
-	rui.zhang@intel.com, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <08DCC8BB-631C-4F7A-BB0A-494AD2AD3465@linux.dev>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemm000003.china.huawei.com (7.193.23.66)
 
-On Wed, Dec 20, 2023 at 1:53=E2=80=AFPM Lukasz Luba <lukasz.luba@arm.com> w=
-rote:
->
-> Hi Daniel, Rafael,
->
-> On 12/12/23 13:48, Lukasz Luba wrote:
-> > Hi all,
-> >
-> > The patch set a new callback for thermal governors and implementation f=
-or
-> > Intelligent Power Allocator.
-> >
-> > The goal is to move some heavy operarions like the memory allocations a=
-nd heavy
-> > computations (multiplications) out of throttle() callback hot path.
-> >
-> > The new callback is generic enough to handle other imporants update eve=
-nts.
-> > It re-uses existing thermal_notify_event definitions.
-> >
-> > In addition there are some small clean-ups for IPA code.
-> >
-> > changes:
-> > v2:
-> > - change callback name to update_tz() and add parameter (Rafael)
-> > - added new event to trigger this callback - instance 'weight' update
-> >
-> > Regards,
-> > Lukasz
-> >
-> > Lukasz Luba (8):
-> >    thermal: core: Add governor callback for thermal zone change
-> >    thermal: gov_power_allocator: Refactor check_power_actors()
-> >    thermal: gov_power_allocator: Move memory allocation out of throttle=
-()
-> >    thermal: gov_power_allocator: Simplify checks for valid power actor
-> >    thermal: gov_power_allocator: Refactor checks in divvy_up_power()
-> >    thermal/sysfs: Update instance->weight under tz lock
-> >    thermal/sysfs: Update governors when the 'weight' has changed
-> >    thermal: gov_power_allocator: Support new update callback of weights
-> >
-> >   drivers/thermal/gov_power_allocator.c | 216 ++++++++++++++++++-------=
--
-> >   drivers/thermal/thermal_core.c        |  13 ++
-> >   drivers/thermal/thermal_sysfs.c       |  15 ++
-> >   include/linux/thermal.h               |   6 +
-> >   4 files changed, 182 insertions(+), 68 deletions(-)
-> >
->
-> I know it's a bit late in time period...
-> You probably missed that patch set in your mailbox.
-> This patch set can probably just wait to the next window, or
-> should I resend it later in 2024?
+On 2023/12/20 14:32, Muchun Song wrote:
 
-Not really, I was about to comment one the first patch.
+>
+>> On Dec 20, 2023, at 13:18, Nanyong Sun <sunnanyong@huawei.com> wrote:
+>>
+>> Implement vmemmap_update_pmd and vmemmap_update_pte on arm64 to do
+>> BBM(break-before-make) logic when change the page table of vmemmap
+>> address, they will under the init_mm.page_table_lock.
+>> If a translation fault of vmemmap address concurrently happened after
+>> pte/pmd cleared, vmemmap page fault handler will acquire the
+>> init_mm.page_table_lock to wait for vmemmap update to complete,
+>> by then the virtual address is valid again, so PF can return and
+>> access can continue.
+>> In other case, do the traditional kernel fault.
+>>
+>> Implement vmemmap_flush_tlb_all/range on arm64 with nothing
+>> to do because tlb already flushed in every single BBM.
+>>
+>> Signed-off-by: Nanyong Sun <sunnanyong@huawei.com>
+>> ---
+>> arch/arm64/include/asm/esr.h |  4 ++
+>> arch/arm64/include/asm/mmu.h | 20 +++++++++
+>> arch/arm64/mm/fault.c        | 78 ++++++++++++++++++++++++++++++++++--
+>> arch/arm64/mm/mmu.c          | 28 +++++++++++++
+>> 4 files changed, 127 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/arch/arm64/include/asm/esr.h b/arch/arm64/include/asm/esr.h
+>> index ae35939f395b..1c63256efd25 100644
+>> --- a/arch/arm64/include/asm/esr.h
+>> +++ b/arch/arm64/include/asm/esr.h
+>> @@ -116,6 +116,10 @@
+>> #define ESR_ELx_FSC_SERROR (0x11)
+>> #define ESR_ELx_FSC_ACCESS (0x08)
+>> #define ESR_ELx_FSC_FAULT (0x04)
+>> +#define ESR_ELx_FSC_FAULT_L0    (0x04)
+>> +#define ESR_ELx_FSC_FAULT_L1    (0x05)
+>> +#define ESR_ELx_FSC_FAULT_L2    (0x06)
+>> +#define ESR_ELx_FSC_FAULT_L3    (0x07)
+>> #define ESR_ELx_FSC_PERM (0x0C)
+>> #define ESR_ELx_FSC_SEA_TTW0 (0x14)
+>> #define ESR_ELx_FSC_SEA_TTW1 (0x15)
+>> diff --git a/arch/arm64/include/asm/mmu.h b/arch/arm64/include/asm/mmu.h
+>> index 2fcf51231d6e..b553bc37c925 100644
+>> --- a/arch/arm64/include/asm/mmu.h
+>> +++ b/arch/arm64/include/asm/mmu.h
+>> @@ -76,5 +76,25 @@ extern bool kaslr_requires_kpti(void);
+>> #define INIT_MM_CONTEXT(name) \
+>> .pgd = init_pg_dir,
+>>
+>> +#ifdef CONFIG_HUGETLB_PAGE_OPTIMIZE_VMEMMAP
+>> +void vmemmap_update_pmd(unsigned long addr, pmd_t *pmdp, pte_t *ptep);
+>> +#define vmemmap_update_pmd vmemmap_update_pmd
+>> +void vmemmap_update_pte(unsigned long addr, pte_t *ptep, pte_t pte);
+>> +#define vmemmap_update_pte vmemmap_update_pte
+>> +
+>> +static inline void vmemmap_flush_tlb_all(void)
+>> +{
+>> + 	/* do nothing, already flushed tlb in every single BBM */
+>> +}
+>> +#define vmemmap_flush_tlb_all vmemmap_flush_tlb_all
+>> +
+>> +static inline void vmemmap_flush_tlb_range(unsigned long start,
+>> +   unsigned long end)
+>> +{
+>> + 	/* do nothing, already flushed tlb in every single BBM */
+>> +}
+>> +#define vmemmap_flush_tlb_range vmemmap_flush_tlb_range
+>> +#endif
+> I think those declaration related to TLB flushing should be moved
+> to arch/arm64/include/asm/tlbflush.h since we do not include
+> <asm/mmu.h> explicitly in hugetlb_vmemmap.c and its functionality
+> is to flush TLB. Luckily, <asm/tlbflush.h> is included by hugetlb_vmemmap.c.
+>
+> Additionally, vmemmap_update_pmd/pte helpers should be moved to
+> arch/arm64/include/asm/pgtable.h since it is really pgtable related
+> operations.
+>
+> Thanks.
 
-I'll do that shortly.
+Yes£¬I will move them in next version.
+
+Thanks for your time.
+
+>
+>
+>
+>
+> .
 
