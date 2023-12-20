@@ -1,49 +1,77 @@
-Return-Path: <linux-kernel+bounces-6751-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6752-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1142819CDB
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 11:34:23 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A9B7819CDC
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 11:34:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 017F01C22475
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 10:34:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 86A88B237EB
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 10:34:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEEDA208DF;
-	Wed, 20 Dec 2023 10:34:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD98D20B11;
+	Wed, 20 Dec 2023 10:34:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="Up1r4dwn"
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="OTmQ2Fwg"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.219])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6350208A5;
-	Wed, 20 Dec 2023 10:34:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=Z0swl
-	vC0MCYVh5hNtI+/mhkIaiC3hDyw+jzAaT3KLfQ=; b=Up1r4dwnZs6SMYokmOeYl
-	09xtjYed3sk323KRWTra8EeSrcaIWnrlRxGGCFV68Rs2zYbs5hDUGT94KzxhzQqb
-	iUZAGtroLzJfMICytuqeNAVG9fNYWrL8DZxhIO03Ov1H6DbDoRdpn4XeZ4k6oSfo
-	oicbnc8ilbi1ZRpf7+K8lw=
-Received: from ProDesk.. (unknown [58.22.7.114])
-	by zwqz-smtp-mta-g0-0 (Coremail) with SMTP id _____wCXnyMCw4JlbFzLGA--.15074S2;
-	Wed, 20 Dec 2023 18:33:41 +0800 (CST)
-From: Andy Yan <andyshrk@163.com>
-To: heiko@sntech.de
-Cc: jbx6244@gmail.com,
-	krzysztof.kozlowski+dt@linaro.org,
-	robh+dt@kernel.org,
-	devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	linux-rockchip@lists.infradead.org,
-	david.wu@rock-chips.com,
-	Andy Yan <andy.yan@rock-chips.com>
-Subject: [PATCH] Revert "ARM: dts: rockchip: restyle emac nodes"
-Date: Wed, 20 Dec 2023 18:33:34 +0800
-Message-Id: <20231220103334.2665543-1-andyshrk@163.com>
-X-Mailer: git-send-email 2.34.1
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27AD0208C9
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 10:34:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1d3b8184a84so15625425ad.1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 02:34:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1703068477; x=1703673277; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZFWsnBzn58gm3ZPzcT2FNSYLm3tXrViiUU3720enkpQ=;
+        b=OTmQ2Fwg1qyh9GoELCa4DASmueGFyVWb5oCaKZimOIladaaCYiegXwTxJyyKgW+OHL
+         +VCVpcb9s38jCtKrit+L5LItvVJMnDM2tw8ldqL5ylx3y2yOSDELLtXLG+mXSNGoiyCw
+         R1JKw6HiOTotOrig2sUJaDs0hJKcbNIo8oo0YD893RGOgRlI92mDc2xVyqJUjmh+Mnj6
+         I3WKwC5X96krDM++8jpt7OM0G2R/LlUo5s+4L9NW1kkpw56bZesHbVsBY6J346w7yWTu
+         Yi8d/RVEQrhc0KKX0D28zxiFdHGR7dkuH1SdTWY/vWC6efStzHwKVAW5tZo6fAEBBBYh
+         +XCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703068477; x=1703673277;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZFWsnBzn58gm3ZPzcT2FNSYLm3tXrViiUU3720enkpQ=;
+        b=nYZWvz0EDqAsyiXIJ77sKXd8zU/e7TMnO9eoogKXKI1a0aNu7BI33ULR7fYO0wb1rC
+         azMIfAkQx8wRd8vVuGe8+L9lBJGnIqCkAMoWrMR0tYWPPC1MJUvrRM6AOcICaSOEEQB7
+         5XEAtGdGcnSNO0ISsBw05Kp6mE1+V86v3AwX9NpKBAlT3WCJQkXFbH1j6qeXawuHSajk
+         cXmf1ofBXftGXOiUfZQ/vNU1FThqM6ZJEzr5zVGOYS0B2iPq8UtF/DTIHkhjwyLTxG6W
+         t9eXgR1Dibf6qpTgJu+ic9X6pwyronafGOvErsMNL/A/2h5Bw270r1dvNTN+lDfdQYvT
+         LDUw==
+X-Gm-Message-State: AOJu0YzeZSSbLyLU+oRK/x78otgTsDpD9CdfYj5e3cPT61spNGkH8dq2
+	cKGBzRJI0U7Ku4jx7cszVm2itg==
+X-Google-Smtp-Source: AGHT+IHO+ozw4UTv/+0I7mcW0/b1xzuABhT5sLWUu3zVP2een7tUqoHLOb8TRg7oPfm7mfmUlOEPog==
+X-Received: by 2002:a17:903:904:b0:1d3:7c0b:d4ca with SMTP id ll4-20020a170903090400b001d37c0bd4camr6996259plb.73.1703068477268;
+        Wed, 20 Dec 2023 02:34:37 -0800 (PST)
+Received: from L6YN4KR4K9.bytedance.net ([61.213.176.10])
+        by smtp.gmail.com with ESMTPSA id c16-20020a170903235000b001d337b8c0b2sm15525089plh.7.2023.12.20.02.34.33
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Wed, 20 Dec 2023 02:34:36 -0800 (PST)
+From: Yunhui Cui <cuiyunhui@bytedance.com>
+To: paul.walmsley@sifive.com,
+	palmer@dabbelt.com,
+	aou@eecs.berkeley.edu,
+	ajones@ventanamicro.com,
+	alexghiti@rivosinc.com,
+	anup@brainfault.org,
+	samitolvanen@google.com,
+	rppt@kernel.org,
+	panqinglin2020@iscas.ac.cn,
+	cuiyunhui@bytedance.com,
+	linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] riscv: put va_kernel_xip_pa_offset into CONFIG_XIP_KERNEL
+Date: Wed, 20 Dec 2023 18:34:28 +0800
+Message-Id: <20231220103428.61758-1-cuiyunhui@bytedance.com>
+X-Mailer: git-send-email 2.39.2 (Apple Git-143)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -51,240 +79,74 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wCXnyMCw4JlbFzLGA--.15074S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxuw48Gr1fCFWkWrW3urW5GFg_yoW3GFWfpw
-	nxArZ7Xrs7Wr4Fg398J34DJrs8Aw4qkwsY9rs7Cr4rJF1I93s7tr17Krn3ua42qrW5A3yI
-	9r4fCr92ywsrXw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jrxhdUUUUU=
-X-CM-SenderInfo: 5dqg52xkunqiywtou0bp/xtbBEAdMXmVOBEAhLQAAsm
 
-From: Andy Yan <andy.yan@rock-chips.com>
+opitmize the kernel_mapping_pa_to_va() and kernel_mapping_va_to_pa().
 
-When try to run rk3036 kylin board with mainline,
-I found the emac ethernet probe failed:
-
-[    2.324583] loop: module loaded
-[    2.328435] SPI driver spidev has no spi_device_id for rockchip,spidev
-[    2.338688] tun: Universal TUN/TAP device driver, 1.6
-[    2.345397] rockchip_emac 10200000.ethernet: no regulator found
-[    2.351892] rockchip_emac 10200000.ethernet: ARC EMAC detected with id: 0x7fd02
-[    2.359331] rockchip_emac 10200000.ethernet: IRQ is 43
-[    2.364719] rockchip_emac 10200000.ethernet: MAC address is now e6:58:d6:ec:d9:7c
-[    2.396993] mdio_bus Synopsys MII Bus: mdio has invalid PHY address
-[    2.403306] mdio_bus Synopsys MII Bus: scan phy mdio at address 0
-[    2.508656] rockchip_emac 10200000.ethernet: of_phy_connect() failed
-[    2.516334] rockchip_emac 10200000.ethernet: failed to probe arc emac (-19)
-
-This reverts commit 1dabb74971b3 ("ARM: dts: rockchip: restyle emac nodes")
-make emac on rk3036 kylin board probe right again:
-[    1.920385] CAN device driver interface
-[    1.925499] rockchip_emac 10200000.ethernet: no regulator found
-[    1.932535] rockchip_emac 10200000.ethernet: ARC EMAC detected with id: 0x7fd02
-[    1.940735] rockchip_emac 10200000.ethernet: IRQ is 42
-[    1.946743] rockchip_emac 10200000.ethernet: MAC address is now 96:7d:4f:0a:69:b3
-[    2.581340] rockchip_emac 10200000.ethernet: connected to Generic PHY phy with id 0xffffc816
-[    2.592560] e1000e: Intel(R) PRO/1000 Network Driver
-[    2.598136] e1000e: Copyright(c) 1999 - 2015 Intel Corporation.
-
-Fixes: 1dabb74971b3 ("ARM: dts: rockchip: restyle emac nodes")
-Signed-off-by: Andy Yan <andy.yan@rock-chips.com>
+Signed-off-by: Yunhui Cui <cuiyunhui@bytedance.com>
 ---
+ arch/riscv/include/asm/page.h | 33 ++++++++++++++++++++-------------
+ 1 file changed, 20 insertions(+), 13 deletions(-)
 
- arch/arm/boot/dts/rockchip/rk3036-evb.dts     | 16 ++++++----------
- arch/arm/boot/dts/rockchip/rk3036-kylin.dts   | 16 ++++++----------
- arch/arm/boot/dts/rockchip/rk3036.dtsi        |  2 ++
- .../boot/dts/rockchip/rk3066a-marsboard.dts   | 17 +++++++----------
- .../boot/dts/rockchip/rk3066a-rayeager.dts    | 15 +++++----------
- .../boot/dts/rockchip/rk3188-radxarock.dts    | 19 ++++++++-----------
- arch/arm/boot/dts/rockchip/rk3xxx.dtsi        |  2 ++
- 7 files changed, 36 insertions(+), 51 deletions(-)
-
-diff --git a/arch/arm/boot/dts/rockchip/rk3036-evb.dts b/arch/arm/boot/dts/rockchip/rk3036-evb.dts
-index becdc0b664bf..94216f870b57 100644
---- a/arch/arm/boot/dts/rockchip/rk3036-evb.dts
-+++ b/arch/arm/boot/dts/rockchip/rk3036-evb.dts
-@@ -15,20 +15,16 @@ memory@60000000 {
- };
- 
- &emac {
--	phy = <&phy0>;
--	phy-reset-duration = <10>; /* millisecond */
--	phy-reset-gpios = <&gpio2 RK_PC6 GPIO_ACTIVE_LOW>; /* PHY_RST */
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&emac_xfer>, <&emac_mdio>;
--	status = "okay";
-+	phy = <&phy0>;
-+	phy-reset-gpios = <&gpio2 RK_PC6 GPIO_ACTIVE_LOW>; /* PHY_RST */
-+	phy-reset-duration = <10>; /* millisecond */
- 
--	mdio {
--		#address-cells = <1>;
--		#size-cells = <0>;
-+	status = "okay";
- 
--		phy0: ethernet-phy@0 {
--			reg = <0>;
--		};
-+	phy0: ethernet-phy@0 {
-+		reg = <0>;
- 	};
- };
- 
-diff --git a/arch/arm/boot/dts/rockchip/rk3036-kylin.dts b/arch/arm/boot/dts/rockchip/rk3036-kylin.dts
-index 67e1e04139e7..e817eba8c622 100644
---- a/arch/arm/boot/dts/rockchip/rk3036-kylin.dts
-+++ b/arch/arm/boot/dts/rockchip/rk3036-kylin.dts
-@@ -80,20 +80,16 @@ &acodec {
- };
- 
- &emac {
--	phy = <&phy0>;
--	phy-reset-duration = <10>; /* millisecond */
--	phy-reset-gpios = <&gpio2 RK_PC6 GPIO_ACTIVE_LOW>; /* PHY_RST */
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&emac_xfer>, <&emac_mdio>;
--	status = "okay";
-+	phy = <&phy0>;
-+	phy-reset-gpios = <&gpio2 RK_PC6 GPIO_ACTIVE_LOW>; /* PHY_RST */
-+	phy-reset-duration = <10>; /* millisecond */
- 
--	mdio {
--		#address-cells = <1>;
--		#size-cells = <0>;
-+	status = "okay";
- 
--		phy0: ethernet-phy@0 {
--			reg = <0>;
--		};
-+	phy0: ethernet-phy@0 {
-+		reg = <0>;
- 	};
- };
- 
-diff --git a/arch/arm/boot/dts/rockchip/rk3036.dtsi b/arch/arm/boot/dts/rockchip/rk3036.dtsi
-index 78686fc72ce6..e240b89b0b35 100644
---- a/arch/arm/boot/dts/rockchip/rk3036.dtsi
-+++ b/arch/arm/boot/dts/rockchip/rk3036.dtsi
-@@ -228,6 +228,8 @@ emac: ethernet@10200000 {
- 		compatible = "rockchip,rk3036-emac";
- 		reg = <0x10200000 0x4000>;
- 		interrupts = <GIC_SPI 8 IRQ_TYPE_LEVEL_HIGH>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
- 		rockchip,grf = <&grf>;
- 		clocks = <&cru HCLK_MAC>, <&cru SCLK_MACREF>, <&cru SCLK_MAC>;
- 		clock-names = "hclk", "macref", "macclk";
-diff --git a/arch/arm/boot/dts/rockchip/rk3066a-marsboard.dts b/arch/arm/boot/dts/rockchip/rk3066a-marsboard.dts
-index f6e8d49a02ef..e3d6f0e81330 100644
---- a/arch/arm/boot/dts/rockchip/rk3066a-marsboard.dts
-+++ b/arch/arm/boot/dts/rockchip/rk3066a-marsboard.dts
-@@ -150,21 +150,18 @@ vcc28_cif: regulator@12 {
- #include "../tps65910.dtsi"
- 
- &emac {
-+	status = "okay";
+diff --git a/arch/riscv/include/asm/page.h b/arch/riscv/include/asm/page.h
+index 5488ecc337b6..0d2b479d02cd 100644
+--- a/arch/riscv/include/asm/page.h
++++ b/arch/riscv/include/asm/page.h
+@@ -113,8 +113,8 @@ struct kernel_mapping {
+ 	unsigned long va_pa_offset;
+ 	/* Offset between kernel mapping virtual address and kernel load address */
+ 	unsigned long va_kernel_pa_offset;
+-	unsigned long va_kernel_xip_pa_offset;
+ #ifdef CONFIG_XIP_KERNEL
++	unsigned long va_kernel_xip_pa_offset;
+ 	uintptr_t xiprom;
+ 	uintptr_t xiprom_sz;
+ #endif
+@@ -134,12 +134,25 @@ extern phys_addr_t phys_ram_base;
+ #else
+ void *linear_mapping_pa_to_va(unsigned long x);
+ #endif
+-#define kernel_mapping_pa_to_va(y)	({					\
+-	unsigned long _y = (unsigned long)(y);					\
+-	(IS_ENABLED(CONFIG_XIP_KERNEL) && _y < phys_ram_base) ?			\
+-		(void *)(_y + kernel_map.va_kernel_xip_pa_offset) :		\
+-		(void *)(_y + kernel_map.va_kernel_pa_offset + XIP_OFFSET);	\
+-	})
 +
- 	phy = <&phy0>;
- 	phy-supply = <&vcc_rmii>;
++#ifdef CONFIG_XIP_KERNEL
++#define kernel_mapping_pa_to_va(y)							\
++	(((unsigned long)(y) < phys_ram_base) ?						\
++		(void *)((unsigned long)(y) + kernel_map.va_kernel_xip_pa_offset) :	\
++		(void *)((unsigned long)(y) + kernel_map.va_kernel_pa_offset + XIP_OFFSET))
 +
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&emac_xfer>, <&emac_mdio>, <&phy_int>;
--	status = "okay";
--
--	mdio {
--		#address-cells = <1>;
--		#size-cells = <0>;
- 
--		phy0: ethernet-phy@0 {
--			reg = <0>;
--			interrupt-parent = <&gpio1>;
--			interrupts = <RK_PD2 IRQ_TYPE_LEVEL_LOW>;
--		};
-+	phy0: ethernet-phy@0 {
-+		reg = <0>;
-+		interrupt-parent = <&gpio1>;
-+		interrupts = <RK_PD2 IRQ_TYPE_LEVEL_LOW>;
- 	};
- };
- 
-diff --git a/arch/arm/boot/dts/rockchip/rk3066a-rayeager.dts b/arch/arm/boot/dts/rockchip/rk3066a-rayeager.dts
-index 29d8e5bf88f5..096616324c2d 100644
---- a/arch/arm/boot/dts/rockchip/rk3066a-rayeager.dts
-+++ b/arch/arm/boot/dts/rockchip/rk3066a-rayeager.dts
-@@ -142,20 +142,15 @@ &cpu1 {
- };
- 
- &emac {
--	phy = <&phy0>;
--	phy-supply = <&vcc_rmii>;
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&emac_xfer>, <&emac_mdio>, <&rmii_rst>;
-+	phy = <&phy0>;
-+	phy-supply = <&vcc_rmii>;
- 	status = "okay";
- 
--	mdio {
--		#address-cells = <1>;
--		#size-cells = <0>;
--
--		phy0: ethernet-phy@0 {
--			reg = <0>;
--			reset-gpios = <&gpio1 RK_PD6 GPIO_ACTIVE_LOW>;
--		};
-+	phy0: ethernet-phy@0 {
-+		reg = <0>;
-+		reset-gpios = <&gpio1 RK_PD6 GPIO_ACTIVE_LOW>;
- 	};
- };
- 
-diff --git a/arch/arm/boot/dts/rockchip/rk3188-radxarock.dts b/arch/arm/boot/dts/rockchip/rk3188-radxarock.dts
-index 118deacd38c4..239d2ec37fdc 100644
---- a/arch/arm/boot/dts/rockchip/rk3188-radxarock.dts
-+++ b/arch/arm/boot/dts/rockchip/rk3188-radxarock.dts
-@@ -126,21 +126,18 @@ vsys: vsys-regulator {
- };
- 
- &emac {
--	phy = <&phy0>;
--	phy-supply = <&vcc_rmii>;
-+	status = "okay";
++#define kernel_mapping_va_to_pa(y)						\
++	(((unsigned long)(y) < kernel_map.virt_addr + XIP_OFFSET) ?		\
++		((unsigned long)(y) - kernel_map.va_kernel_xip_pa_offset) :	\
++		((unsigned long)(y) - kernel_map.va_kernel_pa_offset - XIP_OFFSET))
++#else
++#define kernel_mapping_pa_to_va(y)						\
++	((void *)((unsigned long)(y) + kernel_map.va_kernel_pa_offset + XIP_OFFSET))
 +
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&emac_xfer>, <&emac_mdio>, <&phy_int>;
--	status = "okay";
++#define kernel_mapping_va_to_pa(y)						\
++	((unsigned long)(y) - kernel_map.va_kernel_pa_offset - XIP_OFFSET)
++#endif
++
+ #define __pa_to_va_nodebug(x)		linear_mapping_pa_to_va(x)
  
--	mdio {
--		#address-cells = <1>;
--		#size-cells = <0>;
-+	phy = <&phy0>;
-+	phy-supply = <&vcc_rmii>;
+ #ifndef CONFIG_DEBUG_VIRTUAL
+@@ -147,12 +160,6 @@ void *linear_mapping_pa_to_va(unsigned long x);
+ #else
+ phys_addr_t linear_mapping_va_to_pa(unsigned long x);
+ #endif
+-#define kernel_mapping_va_to_pa(y) ({						\
+-	unsigned long _y = (unsigned long)(y);					\
+-	(IS_ENABLED(CONFIG_XIP_KERNEL) && _y < kernel_map.virt_addr + XIP_OFFSET) ? \
+-		(_y - kernel_map.va_kernel_xip_pa_offset) :			\
+-		(_y - kernel_map.va_kernel_pa_offset - XIP_OFFSET);		\
+-	})
  
--		phy0: ethernet-phy@0 {
--			reg = <0>;
--			interrupt-parent = <&gpio3>;
--			interrupts = <RK_PD2 IRQ_TYPE_LEVEL_LOW>;
--		};
-+	phy0: ethernet-phy@0 {
-+		reg = <0>;
-+		interrupt-parent = <&gpio3>;
-+		interrupts = <RK_PD2 IRQ_TYPE_LEVEL_LOW>;
- 	};
- };
- 
-diff --git a/arch/arm/boot/dts/rockchip/rk3xxx.dtsi b/arch/arm/boot/dts/rockchip/rk3xxx.dtsi
-index cb4e42ede56a..17e89d30de78 100644
---- a/arch/arm/boot/dts/rockchip/rk3xxx.dtsi
-+++ b/arch/arm/boot/dts/rockchip/rk3xxx.dtsi
-@@ -193,6 +193,8 @@ emac: ethernet@10204000 {
- 		compatible = "snps,arc-emac";
- 		reg = <0x10204000 0x3c>;
- 		interrupts = <GIC_SPI 19 IRQ_TYPE_LEVEL_HIGH>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
- 
- 		rockchip,grf = <&grf>;
- 
+ #define __va_to_pa_nodebug(x)	({						\
+ 	unsigned long _x = x;							\
 -- 
-2.34.1
+2.20.1
 
 
