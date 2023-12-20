@@ -1,138 +1,463 @@
-Return-Path: <linux-kernel+bounces-6793-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6794-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4FA0C819DA6
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 12:05:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22835819DA9
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 12:07:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 05C471F26820
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 11:05:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8E40F1F21851
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 11:07:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECB16210EF;
-	Wed, 20 Dec 2023 11:05:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nNpkHQ5Q"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45B6021103;
+	Wed, 20 Dec 2023 11:07:11 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com [209.85.210.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BC41210F6;
-	Wed, 20 Dec 2023 11:05:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f43.google.com with SMTP id 46e09a7af769-6d9f8578932so4198443a34.2;
-        Wed, 20 Dec 2023 03:05:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703070339; x=1703675139; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
-         :to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZK4NlSSPgQwsGSHLA/Pycg97M136hutjFPJCvYqz4Ck=;
-        b=nNpkHQ5Q3t4Vo5jzD23CVoq4WvQoIo0KMvz3puhxF8NGoLAumpp9y9YCesviDnkEYE
-         IIpHKqK+yqGtcCv6967F9JmIfMAoeIhyji6Wr2grvc+OaJIAgaOcfuqgndq/NC9RlzuD
-         yZCQahT8PryFRjVvHkfhOzsggEW7QpsBPEtkLiwyhUXVVLznCJpJyt9nub3z8XU889G2
-         6faxu/zp/He6sCK1H26wrro2HQw7J2cnjGxPsswQzMpAYbaL5C4rYI59g+EsXSTEiKlp
-         TCqwGWTjaNwKV9H/sRGBRDnjgK2OcrwqVHziTBtXbNU2aHGXMTgcI9fIew9mzudbbma7
-         EgdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703070339; x=1703675139;
-        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
-         :to:from:date:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ZK4NlSSPgQwsGSHLA/Pycg97M136hutjFPJCvYqz4Ck=;
-        b=LLZqY+EKJWTt9E0GaXodjQlmpSbz0x+V3lTTp7qIXTurvcq1vMW4GbE43+Wh8LxU13
-         cf91NbsjqKmGo2pCy1IPG+JjBODo22gDgUu8HqjqXZw4UtSFCEV9C41LaLhWw1kAOrcL
-         krLk8IGEyBhes0VN0xL+EBYqg0vf3Is+p2zJTA8kL45f+deeXyeEo53gHGY9FCrTjfYV
-         IjBjhu1aCIDKMT428Oi+rp5QwjOvEcmD1r3IumJY7PVhM9CiNY8PyLS8zcwvY0xPOo/d
-         AcFqRnkKE1QVnZSwIIL0v2HcFBXO+1l39hacSXd1UEEOQo4IUbBTbvSbsB+YhTRNVfOu
-         +k+w==
-X-Gm-Message-State: AOJu0YxICztuiizqOEvtUtOpT2P9e1KAH60aCheMIxsGRcajqqNv6Ybv
-	2Y8wbDKMdDu9KfWPy1kr6Uo=
-X-Google-Smtp-Source: AGHT+IHNw5Fjt6eji/RZDZ0VYxrLINVasZMdhYpFeaAe+l8GXMP3b8PGNjKBysKhnQL06umOFZ4krA==
-X-Received: by 2002:a05:6359:4c1c:b0:170:bd6c:b7cf with SMTP id kj28-20020a0563594c1c00b00170bd6cb7cfmr23746012rwc.46.1703070339040;
-        Wed, 20 Dec 2023 03:05:39 -0800 (PST)
-Received: from archie.me ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id fk1-20020a056a003a8100b006d40f44dc03sm7642917pfb.11.2023.12.20.03.05.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Dec 2023 03:05:38 -0800 (PST)
-Received: by archie.me (Postfix, from userid 1000)
-	id AF6051028B299; Wed, 20 Dec 2023 18:05:34 +0700 (WIB)
-Date: Wed, 20 Dec 2023 18:05:34 +0700
-From: Bagas Sanjaya <bagasdotme@gmail.com>
-To: Hector Martin <marcan@marcan.st>,
-	Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Kalle Valo <kvalo@kernel.org>, Daniel Berlin <dberlin@dberlin.org>,
-	Arend van Spriel <arend.vanspriel@broadcom.com>,
-	Arend van Spriel <aspriel@gmail.com>,
-	Franky Lin <franky.lin@broadcom.com>,
-	Hante Meuleman <hante.meuleman@broadcom.com>,
-	SHA-cyfmac-dev-list@infineon.com, asahi@lists.linux.dev,
-	brcm80211-dev-list.pdl@broadcom.com, linux-kernel@vger.kernel.org,
-	linux-wireless@vger.kernel.org, David Airlie <airlied@redhat.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Dave Stevenson <dave.stevenson@raspberrypi.com>,
-	Phil Elwell <phil@raspberrypi.com>,
-	Nick Hollinghurst <nick.hollinghurst@raspberrypi.com>
-Subject: Re: [PATCH] wifi: brcmfmac: cfg80211: Use WSEC to set SAE password
-Message-ID: <ZYLKftqKFJ_PMmF3@archie.me>
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A87121343;
+	Wed, 20 Dec 2023 11:07:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 277981FB;
+	Wed, 20 Dec 2023 03:07:53 -0800 (PST)
+Received: from [10.57.46.64] (unknown [10.57.46.64])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DA0193F5A1;
+	Wed, 20 Dec 2023 03:07:05 -0800 (PST)
+Message-ID: <cc7b83ec-2c97-4a5d-87a9-36f1e13d8fc4@arm.com>
+Date: Wed, 20 Dec 2023 11:07:04 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="rMlNXoe/imCf0D6r"
-Content-Disposition: inline
-In-Reply-To: <6e330280-0b0a-4483-ac09-cd974d87a7ae@marcan.st>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 6/8] coresight-tpdm: Add timestamp control register
+ support for the CMB
+Content-Language: en-GB
+To: Tao Zhang <quic_taozha@quicinc.com>,
+ Mathieu Poirier <mathieu.poirier@linaro.org>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Konrad Dybcio <konradybcio@gmail.com>, Mike Leach <mike.leach@linaro.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Cc: Jinlong Mao <quic_jinlmao@quicinc.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, coresight@lists.linaro.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, Tingwei Zhang <quic_tingweiz@quicinc.com>,
+ Yuanfang Zhang <quic_yuanfang@quicinc.com>,
+ Trilok Soni <quic_tsoni@quicinc.com>, Song Chai <quic_songchai@quicinc.com>,
+ linux-arm-msm@vger.kernel.org, andersson@kernel.org
+References: <1700533494-19276-1-git-send-email-quic_taozha@quicinc.com>
+ <1700533494-19276-7-git-send-email-quic_taozha@quicinc.com>
+ <ebd7e310-d1b4-4b2e-a915-6241e04763d4@arm.com>
+ <b61c3d70-7277-4fe7-ab67-8afc1062c737@quicinc.com>
+ <cdad425c-b965-44c7-a612-1c99341e95b9@arm.com>
+ <b7ef4e75-69c6-4251-8f9c-58682699e3f6@quicinc.com>
+From: Suzuki K Poulose <suzuki.poulose@arm.com>
+In-Reply-To: <b7ef4e75-69c6-4251-8f9c-58682699e3f6@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+
+On 20/12/2023 09:51, Tao Zhang wrote:
+> 
+> On 12/19/2023 9:51 PM, Suzuki K Poulose wrote:
+>> On 19/12/2023 02:43, Tao Zhang wrote:
+>>>
+>>> On 12/18/2023 6:46 PM, Suzuki K Poulose wrote:
+>>>> On 21/11/2023 02:24, Tao Zhang wrote:
+>>>>> CMB_TIER register is CMB subunit timestamp insertion enable register.
+>>>>> Bit 0 is PATT_TSENAB bit. Set this bit to 1 to request a timestamp
+>>>>> following a CMB interface pattern match. Bit 1 is XTRIG_TSENAB bit.
+>>>>> Set this bit to 1 to request a timestamp following a CMB CTI timestamp
+>>>>> request. Bit 2 is TS_ALL bit. Set this bit to 1 to request timestamp
+>>>>> for all packets.
+>>>>>
+>>>>> Reviewed-by: James Clark <james.clark@arm.com>
+>>>>> Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
+>>>>> Signed-off-by: Jinlong Mao <quic_jinlmao@quicinc.com>
+>>>>> ---
+>>>>>   .../testing/sysfs-bus-coresight-devices-tpdm  |  35 ++++++
+>>>>>   drivers/hwtracing/coresight/coresight-tpdm.c  | 116 
+>>>>> +++++++++++++++++-
+>>>>>   drivers/hwtracing/coresight/coresight-tpdm.h  |  14 +++
+>>>>>   3 files changed, 162 insertions(+), 3 deletions(-)
+>>>>>
+>>>>> diff --git 
+>>>>> a/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm 
+>>>>> b/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
+>>>>> index 53662ce7c2d0..e0b77107be13 100644
+>>>>> --- a/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
+>>>>> +++ b/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
+>>>>> @@ -214,3 +214,38 @@ KernelVersion    6.7
+>>>>>   Contact:    Jinlong Mao (QUIC) <quic_jinlmao@quicinc.com>, Tao 
+>>>>> Zhang (QUIC) <quic_taozha@quicinc.com>
+>>>>>   Description:
+>>>>>           (RW) Set/Get the mask of the pattern for the CMB subunit 
+>>>>> TPDM.
+>>>>> +
+>>>>> +What: /sys/bus/coresight/devices/<tpdm-name>/cmb_patt/enable_ts
+>>>>> +Date:        September 2023
+>>>>> +KernelVersion    6.7
+>>>>> +Contact:    Jinlong Mao (QUIC) <quic_jinlmao@quicinc.com>, Tao 
+>>>>> Zhang (QUIC) <quic_taozha@quicinc.com>
+>>>>> +Description:
+>>>>> +        (Write) Set the pattern timestamp of CMB tpdm. Read
+>>>>> +        the pattern timestamp of CMB tpdm.
+>>>>> +
+>>>>> +        Accepts only one of the 2 values -  0 or 1.
+>>>>> +        0 : Disable CMB pattern timestamp.
+>>>>> +        1 : Enable CMB pattern timestamp.
+>>>>> +
+>>>>> +What: /sys/bus/coresight/devices/<tpdm-name>/cmb_trig_ts
+>>>>> +Date:        September 2023
+>>>>> +KernelVersion    6.7
+>>>>> +Contact:    Jinlong Mao (QUIC) <quic_jinlmao@quicinc.com>, Tao 
+>>>>> Zhang (QUIC) <quic_taozha@quicinc.com>
+>>>>> +Description:
+>>>>> +        (RW) Set/Get the trigger timestamp of the CMB for tpdm.
+>>>>> +
+>>>>> +        Accepts only one of the 2 values -  0 or 1.
+>>>>> +        0 : Set the CMB trigger type to false
+>>>>> +        1 : Set the CMB trigger type to true
+>>>>> +
+>>>>> +What: /sys/bus/coresight/devices/<tpdm-name>/cmb_ts_all
+>>>>> +Date:        September 2023
+>>>>> +KernelVersion    6.7
+>>>>> +Contact:    Jinlong Mao (QUIC) <quic_jinlmao@quicinc.com>, Tao 
+>>>>> Zhang (QUIC) <quic_taozha@quicinc.com>
+>>>>> +Description:
+>>>>> +        (RW) Read or write the status of timestamp upon all 
+>>>>> interface.
+>>>>> +        Only value 0 and 1  can be written to this node. Set this 
+>>>>> node to 1 to requeset
+>>>>> +        timestamp to all trace packet.
+>>>>> +        Accepts only one of the 2 values -  0 or 1.
+>>>>> +        0 : Disable the timestamp of all trace packets.
+>>>>> +        1 : Enable the timestamp of all trace packets.
+>>>>> diff --git a/drivers/hwtracing/coresight/coresight-tpdm.c 
+>>>>> b/drivers/hwtracing/coresight/coresight-tpdm.c
+>>>>> index 894d4309f1c7..f6cda5616e84 100644
+>>>>> --- a/drivers/hwtracing/coresight/coresight-tpdm.c
+>>>>> +++ b/drivers/hwtracing/coresight/coresight-tpdm.c
+>>>>> @@ -331,6 +331,36 @@ static void tpdm_enable_dsb(struct 
+>>>>> tpdm_drvdata *drvdata)
+>>>>>       writel_relaxed(val, drvdata->base + TPDM_DSB_CR);
+>>>>>   }
+>>>>>   +static void set_cmb_tier(struct tpdm_drvdata *drvdata)
+>>>>> +{
+>>>>> +    u32 val;
+>>>>> +
+>>>>> +    val = readl_relaxed(drvdata->base + TPDM_CMB_TIER);
+>>>>> +
+>>>>> +    /* Clear all relevant fields */
+>>>>> +    val &= ~(TPDM_CMB_TIER_PATT_TSENAB | TPDM_CMB_TIER_TS_ALL |
+>>>>> +         TPDM_CMB_TIER_XTRIG_TSENAB);
+>>>>> +
+>>>>> +    /* Set pattern timestamp type and enablement */
+>>>>> +    if (drvdata->cmb->patt_ts)
+>>>>> +        val |= TPDM_CMB_TIER_PATT_TSENAB;
+>>>>
+>>>>  -- cut --
+>>>>> +    else
+>>>>> +        val &= ~TPDM_CMB_TIER_PATT_TSENAB;
+>>>>
+>>>>
+>>>> All the else cases in this function are superfluous. Please remove all
+>>>> of them.
+>>> I will update this in the next patch.
+>>>>
+>>>>> +
+>>>>> +    /* Set trigger timestamp */
+>>>>> +    if (drvdata->cmb->trig_ts)
+>>>>> +        val |= TPDM_CMB_TIER_XTRIG_TSENAB;
+>>>>> +    else
+>>>>> +        val &= ~TPDM_CMB_TIER_XTRIG_TSENAB;
+>>>>> +
+>>>>> +    /* Set all timestamp enablement*/
+>>>>> +    if (drvdata->cmb->ts_all)
+>>>>> +        val |= TPDM_CMB_TIER_TS_ALL;
+>>>>> +    else
+>>>>> +        val &= ~TPDM_CMB_TIER_TS_ALL;
+>>>>> +    writel_relaxed(val, drvdata->base + TPDM_CMB_TIER);
+>>>>> +}
+>>>>> +
+>>>>>   static void tpdm_enable_cmb(struct tpdm_drvdata *drvdata)
+>>>>>   {
+>>>>>       u32 val, i;
+>>>>> @@ -347,6 +377,8 @@ static void tpdm_enable_cmb(struct tpdm_drvdata 
+>>>>> *drvdata)
+>>>>>                   drvdata->base + TPDM_CMB_XPMR(i));
+>>>>>       }
+>>>>>   +    set_cmb_tier(drvdata);
+>>>>> +
+>>>>>       val = readl_relaxed(drvdata->base + TPDM_CMB_CR);
+>>>>>       /*
+>>>>>        * Set to 0 for continuous CMB collection mode,
+>>>>> @@ -695,9 +727,17 @@ static ssize_t enable_ts_show(struct device *dev,
+>>>>>                     char *buf)
+>>>>>   {
+>>>>>       struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+>>>>> +    ssize_t size = 0;
+>>>>>   -    return sysfs_emit(buf, "%u\n",
+>>>>> -             (unsigned int)drvdata->dsb->patt_ts);
+>>>>> +    if (tpdm_has_dsb_dataset(drvdata))
+>>>>> +        size = sysfs_emit(buf, "%u\n",
+>>>>> +                 (unsigned int)drvdata->dsb->patt_ts);
+>>>>> +
+>>>>> +    if (tpdm_has_cmb_dataset(drvdata))
+>>>>> +        size = sysfs_emit(buf, "%u\n",
+>>>>> +                 (unsigned int)drvdata->cmb->patt_ts);
+>>>>
+>>>> Why does this need to show two values ? This must only show ONE value.
+>>>> How you deduce that might be based on the availability of the feature
+>>>> set. Or store the TS value in the drvdata and use that instead for
+>>>> controlling CMB/DSB.
+>>>
+>>> Since both of CMB/DSB need to have "enable_ts" SysFs file, can I 
+>>> separate them
+>>
+>> The question really is, do we need fine grained control. i.e.,
+>>
+>> enable TS for DSB but not for CMB or vice versa.
+>>
+>> I am not an expert on the usage scenario of the same. So, if you/Qcomm
+>> thinks the users need separate, fine grained control for timestamp
+>> for the DSB and CMB, then yes, follow your recommendation below.
+>> i.e., tpdm.../dsb_patt/enable_ts
+>>
+>>> as "enable_dsb_ts" and "enable_cmb_ts"? The path will be like below.
+>>>
+>>> tpdm0/dsb_patt/enable_dsb_ts
+>>
+>> You don't need enable_dsb_ts. It could be "enable_ts"
+>>
+>>>
+>>> tpdm1/cmb_patt/enable_cmb_ts
+>>>
+>>> Is this design appropriate?
+>>
+>>
+>> Otherwise, stick to single enable_ts : which enables the ts for both
+>> CMB/DSB. And it only ever show one value : 0 (TS is disabled for both
+>> CMB/DSB) 1 : TS enabled for both.
+> 
+> We have a very special case, such as the TPDM supporting both CMB and
+> 
+> DSB datasets. Although this case is very rare, it still exists.
+> 
+> Can I use the data bit to instruct whether timestamp is enabled for 
+> CMB/DSB or not? For example,
+> 
+> size = sysfs_emit(buf, "%u\n",
+>                  (unsigned int)(drvdata->dsb->patt_ts << 1 | 
+> drvdata->cmb->patt_ts));
+> 
+> Thus, this value can instruct the following situations.
+> 
+> 0 - TS is disabled for both CMB/DSB
+> 
+> 1 - TS is enabled for CMB
+> 
+> 2 - TS is enabled for DSB
+> 
+> 3 - TS is enabled for both
+> 
+> Is this approach acceptable?
+> 
+
+No, please stick to separate controls for TS. Do not complicate
+the user interface.
+
+i.e.,
+tpdm0/dsb_patt/enable_ts
+tpdm0/cmb_patt/enable_ts
+
+Suzuki
 
 
---rMlNXoe/imCf0D6r
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> 
+> Best,
+> 
+> Tao
+> 
+>>
+>> Suzuki
+>>
+>>
+>>>>
+>>
+>>>> Also, the sysfs documentation needs update, if this is going to
+>>>> control the CMB.
+>>>
+>>> Sure. I will update the SysFs documentation according to the 
+>>> modification in the
+>>>
+>>> next patch series.
+>>>
+>>>
+>>> Best,
+>>>
+>>> Tao
+>>>
+>>>>
+>>>> Suzuki
+>>>>
+>>>>
+>>>>> +
+>>>>> +    return size;
+>>>>>   }
+>>>>>     /*
+>>>>> @@ -715,8 +755,13 @@ static ssize_t enable_ts_store(struct device 
+>>>>> *dev,
+>>>>>           return -EINVAL;
+>>>>>         spin_lock(&drvdata->spinlock);
+>>>>> -    drvdata->dsb->patt_ts = !!val;
+>>>>> +    if (tpdm_has_dsb_dataset(drvdata))
+>>>>> +        drvdata->dsb->patt_ts = !!val;
+>>>>> +
+>>>>> +    if (tpdm_has_cmb_dataset(drvdata))
+>>>>> +        drvdata->cmb->patt_ts = !!val;
+>>>>>       spin_unlock(&drvdata->spinlock);
+>>>>> +
+>>>>>       return size;
+>>>>>   }
+>>>>>   static DEVICE_ATTR_RW(enable_ts);
+>>>>> @@ -851,6 +896,68 @@ static ssize_t cmb_mode_store(struct device *dev,
+>>>>>   }
+>>>>>   static DEVICE_ATTR_RW(cmb_mode);
+>>>>>   +static ssize_t cmb_ts_all_show(struct device *dev,
+>>>>> +                   struct device_attribute *attr,
+>>>>> +                   char *buf)
+>>>>> +{
+>>>>> +    struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+>>>>> +
+>>>>> +    return sysfs_emit(buf, "%u\n",
+>>>>> +              (unsigned int)drvdata->cmb->ts_all);
+>>>>> +}
+>>>>> +
+>>>>> +static ssize_t cmb_ts_all_store(struct device *dev,
+>>>>> +                struct device_attribute *attr,
+>>>>> +                const char *buf,
+>>>>> +                size_t size)
+>>>>> +{
+>>>>> +    struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+>>>>> +    unsigned long val;
+>>>>> +
+>>>>> +    if ((kstrtoul(buf, 0, &val)) || (val & ~1UL))
+>>>>> +        return -EINVAL;
+>>>>> +
+>>>>> +    spin_lock(&drvdata->spinlock);
+>>>>> +    if (val)
+>>>>> +        drvdata->cmb->ts_all = true;
+>>>>> +    else
+>>>>> +        drvdata->cmb->ts_all = false;
+>>>>> +    spin_unlock(&drvdata->spinlock);
+>>>>> +    return size;
+>>>>> +}
+>>>>> +static DEVICE_ATTR_RW(cmb_ts_all);
+>>>>> +
+>>>>> +static ssize_t cmb_trig_ts_show(struct device *dev,
+>>>>> +                struct device_attribute *attr,
+>>>>> +                char *buf)
+>>>>> +{
+>>>>> +    struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+>>>>> +
+>>>>> +    return sysfs_emit(buf, "%u\n",
+>>>>> +              (unsigned int)drvdata->cmb->trig_ts);
+>>>>> +}
+>>>>> +
+>>>>> +static ssize_t cmb_trig_ts_store(struct device *dev,
+>>>>> +                 struct device_attribute *attr,
+>>>>> +                 const char *buf,
+>>>>> +                 size_t size)
+>>>>> +{
+>>>>> +    struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+>>>>> +    unsigned long val;
+>>>>> +
+>>>>> +    if ((kstrtoul(buf, 0, &val)) || (val & ~1UL))
+>>>>> +        return -EINVAL;
+>>>>> +
+>>>>> +    spin_lock(&drvdata->spinlock);
+>>>>> +    if (val)
+>>>>> +        drvdata->cmb->trig_ts = true;
+>>>>> +    else
+>>>>> +        drvdata->cmb->trig_ts = false;
+>>>>> +    spin_unlock(&drvdata->spinlock);
+>>>>> +    return size;
+>>>>> +}
+>>>>> +static DEVICE_ATTR_RW(cmb_trig_ts);
+>>>>> +
+>>>>>   static struct attribute *tpdm_dsb_edge_attrs[] = {
+>>>>>       &dev_attr_ctrl_idx.attr,
+>>>>>       &dev_attr_ctrl_val.attr,
+>>>>> @@ -973,6 +1080,7 @@ static struct attribute *tpdm_cmb_patt_attrs[] 
+>>>>> = {
+>>>>>       CMB_PATT_ATTR(1),
+>>>>>       CMB_PATT_MASK_ATTR(0),
+>>>>>       CMB_PATT_MASK_ATTR(1),
+>>>>> +    &dev_attr_enable_ts.attr,
+>>>>>       NULL,
+>>>>>   };
+>>>>>   @@ -985,6 +1093,8 @@ static struct attribute *tpdm_dsb_attrs[] = {
+>>>>>     static struct attribute *tpdm_cmb_attrs[] = {
+>>>>>       &dev_attr_cmb_mode.attr,
+>>>>> +    &dev_attr_cmb_ts_all.attr,
+>>>>> +    &dev_attr_cmb_trig_ts.attr,
+>>>>>       NULL,
+>>>>>   };
+>>>>>   diff --git a/drivers/hwtracing/coresight/coresight-tpdm.h 
+>>>>> b/drivers/hwtracing/coresight/coresight-tpdm.h
+>>>>> index e90d008c1cb2..65b7ca6c4077 100644
+>>>>> --- a/drivers/hwtracing/coresight/coresight-tpdm.h
+>>>>> +++ b/drivers/hwtracing/coresight/coresight-tpdm.h
+>>>>> @@ -11,6 +11,8 @@
+>>>>>     /* CMB Subunit Registers */
+>>>>>   #define TPDM_CMB_CR        (0xA00)
+>>>>> +/*CMB subunit timestamp insertion enable register*/
+>>>>> +#define TPDM_CMB_TIER        (0xA04)
+>>>>>   /*CMB subunit timestamp pattern registers*/
+>>>>>   #define TPDM_CMB_TPR(n)        (0xA08 + (n * 4))
+>>>>>   /*CMB subunit timestamp pattern mask registers*/
+>>>>> @@ -24,6 +26,12 @@
+>>>>>   #define TPDM_CMB_CR_ENA        BIT(0)
+>>>>>   /* Trace collection mode for CMB subunit */
+>>>>>   #define TPDM_CMB_CR_MODE    BIT(1)
+>>>>> +/* Timestamp control for pattern match */
+>>>>> +#define TPDM_CMB_TIER_PATT_TSENAB    BIT(0)
+>>>>> +/* CMB CTI timestamp request */
+>>>>> +#define TPDM_CMB_TIER_XTRIG_TSENAB    BIT(1)
+>>>>> +/* For timestamp fo all trace */
+>>>>> +#define TPDM_CMB_TIER_TS_ALL        BIT(2)
+>>>>>     /*Patten register number*/
+>>>>>   #define TPDM_CMB_MAX_PATT        2
+>>>>> @@ -217,6 +225,9 @@ struct dsb_dataset {
+>>>>>    * @patt_mask:        Save value for pattern mask
+>>>>>    * @trig_patt:        Save value for trigger pattern
+>>>>>    * @trig_patt_mask:   Save value for trigger pattern mask
+>>>>> + * @patt_ts:          Indicates if pattern match for timestamp is 
+>>>>> enabled.
+>>>>> + * @trig_ts:          Indicates if CTI trigger for timestamp is 
+>>>>> enabled.
+>>>>> + * @ts_all:           Indicates if timestamp is enabled for all 
+>>>>> packets.
+>>>>>    */
+>>>>>   struct cmb_dataset {
+>>>>>       u32            trace_mode;
+>>>>> @@ -224,6 +235,9 @@ struct cmb_dataset {
+>>>>>       u32            patt_mask[TPDM_CMB_MAX_PATT];
+>>>>>       u32            trig_patt[TPDM_CMB_MAX_PATT];
+>>>>>       u32            trig_patt_mask[TPDM_CMB_MAX_PATT];
+>>>>> +    bool            patt_ts;
+>>>>> +    bool            trig_ts;
+>>>>> +    bool            ts_all;
+>>>>>   };
+>>>>>     /**
+>>>>
+>>
+>> _______________________________________________
+>> CoreSight mailing list -- coresight@lists.linaro.org
+>> To unsubscribe send an email to coresight-leave@lists.linaro.org
 
-On Wed, Dec 20, 2023 at 01:16:20PM +0900, Hector Martin wrote:
->=20
->=20
-> On 2023/12/20 10:44, Linus Torvalds wrote:
-> > Put another way: if we effectively don't have a driver maintainer that
-> > can test things, and somebody is willing to step up, shouldn't we take
-> > that person up on it?
->=20
-> Personally, I do think the rPi folks themselves should step up for
-> *testing* at the very least. I did point them at our downstream WiFi
-> branch at one point during a previous discussion and haven't heard back,
-> so either they never tested it, or they did and it didn't break
-> anything. If they're shipping popular Linux hardware where the WiFi
-> chipset vendor has fully and completely checked out of any upstream
-> support, they need to either accept that upstream support will likely
-> break at some point (because that's just what happens when nobody cares
-> about a given piece of hardware, especially with drivers shared across
-> others like this one) or they need to proactively step up and take on,
-> minimally, an early testing role themselves.
-
-I'm agree that downstream (e.g. rPi) developers should also participating
-in upstream kernel development.
-
-Also Cc: rPi folks to solicit their opinions.
-
-Thanks.
-
---=20
-An old man doll... just what I always wanted! - Clara
-
---rMlNXoe/imCf0D6r
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZYLKewAKCRD2uYlJVVFO
-ozFjAP9RYxpZvqkXRWkXgtGFOlqyvnG5Y1UEvsJdEKmqzdW30AD8CHkVFxApQ5TK
-WCwps84FH+6ExEtPz0RrClRSWpi05QI=
-=ea1G
------END PGP SIGNATURE-----
-
---rMlNXoe/imCf0D6r--
 
