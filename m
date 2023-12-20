@@ -1,154 +1,150 @@
-Return-Path: <linux-kernel+bounces-6289-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6290-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CCC668196D4
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 03:29:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 178968196D7
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 03:30:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6B1F71F25436
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 02:29:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C2FED288A96
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 02:30:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4173CBE5E;
-	Wed, 20 Dec 2023 02:29:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5530C8C06;
+	Wed, 20 Dec 2023 02:29:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="kacXMSXl"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B75B68801;
-	Wed, 20 Dec 2023 02:29:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1d3d3f0afc4so4615925ad.1;
-        Tue, 19 Dec 2023 18:29:17 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703039357; x=1703644157;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/s6nh+OnT95rk67Vq0CX7/pjmy4zN7W5jm/vs3FA464=;
-        b=Nggtw0vAtj5Kza0eInQ4fb8EU80aOd14DxSKFF/YUXyawDwENqNbDhg0A7DF3QPqS9
-         38fim5PRoD8KcyHdbOo7zyPxUC9PQBMRE3iVLyNvQUj0SVbPLkdm+04D6+kpORMK7KCk
-         fN2RD195nFmHOeJPTLJ4mxR/1vot7YC6ZIYiRLNiFsZcLcnIUOUidVkbECywmTugb1N8
-         Vx0LtWIslhF2Ad/Je2rzdeWKyXBsezNzEAnwiG3y55yzqXZFHSA+gTXl77VdzYdELN56
-         mbLjO7UVkXbRNb7UnIAKLpnYWdNSNvtJfyAg6NHAUfUHnC4moB9vmnQAJSqS64NPqcMC
-         ZBcg==
-X-Gm-Message-State: AOJu0YxqepK2bFBXiF+xy5S8aTkqKp9X4+yYZiiQsUTJl6x8CIHugufa
-	+HszXOc1SFeLn5sc+xp3bgc=
-X-Google-Smtp-Source: AGHT+IGos0PDCWC8ruYbF/agSpJZbToAMxgPnG0vQFuSL/lSS57+y3tqUUJ2tGKCaNFXQZxlV9A60A==
-X-Received: by 2002:a17:902:d2ca:b0:1d0:61a0:9844 with SMTP id n10-20020a170902d2ca00b001d061a09844mr38471639plc.4.1703039356931;
-        Tue, 19 Dec 2023 18:29:16 -0800 (PST)
-Received: from tgsp-ThinkPad-X280.. ([223.148.26.128])
-        by smtp.gmail.com with ESMTPSA id l3-20020a170903244300b001d3d81c795bsm2112654pls.271.2023.12.19.18.29.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Dec 2023 18:29:16 -0800 (PST)
-From: xiongxin <xiongxin@kylinos.cn>
-To: fancer.lancer@gmail.com,
-	hoan@os.amperecomputing.com,
-	linus.walleij@linaro.org,
-	brgl@bgdev.pl,
-	andy@kernel.org
-Cc: linux-gpio@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	xiongxin <xiongxin@kylinos.cn>,
-	stable@kernel.org,
-	Riwen Lu <luriwen@kylinos.cn>
-Subject: [PATCH v5] gpio: dwapb: mask/unmask IRQ when disable/enale it
-Date: Wed, 20 Dec 2023 10:29:01 +0800
-Message-Id: <20231220022901.29158-1-xiongxin@kylinos.cn>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231219101620.4617-1-xiongxin@kylinos.cn>
-References: <20231219101620.4617-1-xiongxin@kylinos.cn>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4859DFC07;
+	Wed, 20 Dec 2023 02:29:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=vI6BjtvZa1OtwQfscOfCYySPSF4W/z+9OUCWNtr2S0Q=; b=kacXMSXlVR7wQyIQbqm2dFOL2y
+	75gcSjsTqGnIEzCDqmkcRrCl4P7oVgOF/TSgbLHJ1cu2wL2qo6F+g80/UW42QLcYUygeJvsTY14Jd
+	S0MgiIheFV2Xn7RnUkxrVk1mwSDHkql9aZbxtDS6aOdcw10uCHvaBxLOxSDXcbY5ZNUZv8v9yHzol
+	XFg45yBJZ2mgEzsldQC3sPM0meY9t1fEzsQzcKRaO5p/PS5buuDQiK83zPAi0GMDtQE+uj0mNIc+e
+	FBnrSm5aOvPjF0FHmt3bia5VdPmL7wGUcAUWRZbvnDD3AXoVJlp69GYLkyeNkTcuqobsFDKrZ2iMn
+	Nk4Mwiuw==;
+Received: from [50.53.46.231] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1rFmL1-00FyTs-0t;
+	Wed, 20 Dec 2023 02:29:35 +0000
+Message-ID: <5e0e5d84-3891-47a1-bce1-beb26cd19b7b@infradead.org>
+Date: Tue, 19 Dec 2023 18:29:35 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] wifi: cfg80211: address several kerneldoc warnings
+Content-Language: en-US
+To: Jeff Johnson <quic_jjohnson@quicinc.com>, Jonathan Corbet
+ <corbet@lwn.net>, Johannes Berg <johannes@sipsolutions.net>
+Cc: linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <87plz1g2sc.fsf@meer.lwn.net>
+ <56d7f97e-bc8b-465f-9e59-80028ccec995@quicinc.com>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <56d7f97e-bc8b-465f-9e59-80028ccec995@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-In the hardware implementation of the I2C HID driver based on DesignWare
-GPIO IRQ chip, when the user continues to use the I2C HID device in the
-suspend process, the I2C HID interrupt will be masked after the resume
-process is finished.
 
-This is because the disable_irq()/enable_irq() of the DesignWare GPIO
-driver does not synchronize the IRQ mask register state. In normal use
-of the I2C HID procedure, the GPIO IRQ irq_mask()/irq_unmask() functions
-are called in pairs. In case of an exception, i2c_hid_core_suspend()
-calls disable_irq() to disable the GPIO IRQ. With low probability, this
-causes irq_unmask() to not be called, which causes the GPIO IRQ to be
-masked and not unmasked in enable_irq(), raising an exception.
 
-Add synchronization to the masked register state in the
-dwapb_irq_enable()/dwapb_irq_disable() function. mask the GPIO IRQ
-before disabling it. After enabling the GPIO IRQ, unmask the IRQ.
+On 12/19/23 17:00, Jeff Johnson wrote:
+> On 12/19/2023 4:01 PM, Jonathan Corbet wrote:
+>> include/net/cfg80211.h includes a number of kerneldoc entries for struct
+>> members that do not exist, leading to these warnings:
+>>
+>>   ./include/net/cfg80211.h:3192: warning: Excess struct member 'band_pref' description in 'cfg80211_bss_selection'
+>>   ./include/net/cfg80211.h:3192: warning: Excess struct member 'adjust' description in 'cfg80211_bss_selection'
+>>   ./include/net/cfg80211.h:6181: warning: Excess struct member 'bssid' description in 'wireless_dev'
+>>   ./include/net/cfg80211.h:6181: warning: Excess struct member 'beacon_interval' description in 'wireless_dev'
+>>   ./include/net/cfg80211.h:7299: warning: Excess struct member 'bss' description in 'cfg80211_rx_assoc_resp_data'
+>>
+>> Remove and/or repair each entry to address the warnings and ensure a proper
+>> docs build for the affected structures.
+>>
+>> Signed-off-by: Jonathan Corbet <corbet@lwn.net>
+>> ---
+>>  include/net/cfg80211.h | 11 ++++-------
+>>  1 file changed, 4 insertions(+), 7 deletions(-)
+>>
+>> diff --git a/include/net/cfg80211.h b/include/net/cfg80211.h
+>> index b137a33a1b68..81c46c8e2a68 100644
+>> --- a/include/net/cfg80211.h
+>> +++ b/include/net/cfg80211.h
+>> @@ -3180,8 +3180,8 @@ struct cfg80211_ibss_params {
+>>   *
+>>   * @behaviour: requested BSS selection behaviour.
+>>   * @param: parameters for requestion behaviour.
+>> - * @band_pref: preferred band for %NL80211_BSS_SELECT_ATTR_BAND_PREF.
+>> - * @adjust: parameters for %NL80211_BSS_SELECT_ATTR_RSSI_ADJUST.
+>> + * @param.band_pref: preferred band for %NL80211_BSS_SELECT_ATTR_BAND_PREF.
+>> + * @param.adjust: parameters for %NL80211_BSS_SELECT_ATTR_RSSI_ADJUST.
+>>   */
+>>  struct cfg80211_bss_selection {
+>>  	enum nl80211_bss_select_attr behaviour;
+>> @@ -6013,7 +6013,6 @@ void wiphy_delayed_work_flush(struct wiphy *wiphy,
+>>   *	wireless device if it has no netdev
+>>   * @u: union containing data specific to @iftype
+>>   * @connected: indicates if connected or not (STA mode)
+>> - * @bssid: (private) Used by the internal configuration code
+>>   * @wext: (private) Used by the internal wireless extensions compat code
+>>   * @wext.ibss: (private) IBSS data part of wext handling
+>>   * @wext.connect: (private) connection handling data
+>> @@ -6033,8 +6032,6 @@ void wiphy_delayed_work_flush(struct wiphy *wiphy,
+>>   * @mgmt_registrations: list of registrations for management frames
+>>   * @mgmt_registrations_need_update: mgmt registrations were updated,
+>>   *	need to propagate the update to the driver
+>> - * @beacon_interval: beacon interval used on this device for transmitting
+>> - *	beacons, 0 when not valid
+>>   * @address: The address for this device, valid only if @netdev is %NULL
+>>   * @is_running: true if this is a non-netdev device that has been started, e.g.
+>>   *	the P2P Device.
+>> @@ -7270,8 +7267,6 @@ void cfg80211_auth_timeout(struct net_device *dev, const u8 *addr);
+>>  
+>>  /**
+>>   * struct cfg80211_rx_assoc_resp_data - association response data
+>> - * @bss: the BSS that association was requested with, ownership of the pointer
+>> - *	moves to cfg80211 in the call to cfg80211_rx_assoc_resp()
+>>   * @buf: (Re)Association Response frame (header + body)
+>>   * @len: length of the frame data
+>>   * @uapsd_queues: bitmap of queues configured for uapsd. Same format
+>> @@ -7281,6 +7276,8 @@ void cfg80211_auth_timeout(struct net_device *dev, const u8 *addr);
+>>   * @ap_mld_addr: AP MLD address (in case of MLO)
+>>   * @links: per-link information indexed by link ID, use links[0] for
+>>   *	non-MLO connections
+> 
+> also missing the following?
+>  * @links.addr: MLO per-link MAC address
 
-Fixes: 7779b3455697 ("gpio: add a driver for the Synopsys DesignWare APB GPIO block")
-Cc: stable@kernel.org
-Co-developed-by: Riwen Lu <luriwen@kylinos.cn>
-Signed-off-by: Riwen Lu <luriwen@kylinos.cn>
-Signed-off-by: xiongxin <xiongxin@kylinos.cn>
-Acked-by: Serge Semin <fancer.lancer@gmail.com>
-Reviewed-by: Andy Shevchenko <andy@kernel.org>
----
-v5:
-	* fix typo in patch description
-v4:
-	* Add patch tag information
-v3:
-	* Modify the submitter's information
-v2:
-	* Resubmit the patch to fix this exception from the DesignWare
-	  GPIO driver side
-v1:
-	* Resolve the exception from the IRQ core layer. (key point not
-	  found correctly)
----
- drivers/gpio/gpio-dwapb.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+Yes, that should also be fixed at some point.
 
-diff --git a/drivers/gpio/gpio-dwapb.c b/drivers/gpio/gpio-dwapb.c
-index 4a4f61bf6c58..8c59332429c2 100644
---- a/drivers/gpio/gpio-dwapb.c
-+++ b/drivers/gpio/gpio-dwapb.c
-@@ -282,13 +282,15 @@ static void dwapb_irq_enable(struct irq_data *d)
- {
- 	struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
- 	struct dwapb_gpio *gpio = to_dwapb_gpio(gc);
-+	irq_hw_number_t hwirq = irqd_to_hwirq(d);
- 	unsigned long flags;
- 	u32 val;
- 
- 	raw_spin_lock_irqsave(&gc->bgpio_lock, flags);
--	val = dwapb_read(gpio, GPIO_INTEN);
--	val |= BIT(irqd_to_hwirq(d));
-+	val = dwapb_read(gpio, GPIO_INTEN) | BIT(hwirq);
- 	dwapb_write(gpio, GPIO_INTEN, val);
-+	val = dwapb_read(gpio, GPIO_INTMASK) & ~BIT(hwirq);
-+	dwapb_write(gpio, GPIO_INTMASK, val);
- 	raw_spin_unlock_irqrestore(&gc->bgpio_lock, flags);
- }
- 
-@@ -296,12 +298,14 @@ static void dwapb_irq_disable(struct irq_data *d)
- {
- 	struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
- 	struct dwapb_gpio *gpio = to_dwapb_gpio(gc);
-+	irq_hw_number_t hwirq = irqd_to_hwirq(d);
- 	unsigned long flags;
- 	u32 val;
- 
- 	raw_spin_lock_irqsave(&gc->bgpio_lock, flags);
--	val = dwapb_read(gpio, GPIO_INTEN);
--	val &= ~BIT(irqd_to_hwirq(d));
-+	val = dwapb_read(gpio, GPIO_INTMASK) | BIT(hwirq);
-+	dwapb_write(gpio, GPIO_INTMASK, val);
-+	val = dwapb_read(gpio, GPIO_INTEN) & ~BIT(hwirq);
- 	dwapb_write(gpio, GPIO_INTEN, val);
- 	raw_spin_unlock_irqrestore(&gc->bgpio_lock, flags);
- }
+What Jon is trying to do here is address a boatload of new kernel-doc warnings of the
+"Excess struct member" variety.
+
+> 
+>> + * @links.bss: the BSS that association was requested with, ownership of the
+>> + *      pointer moves to cfg80211 in the call to cfg80211_rx_assoc_resp()
+>>   * @links.status: Set this (along with a BSS pointer) for links that
+>>   *	were rejected by the AP.
+>>   */
+> 
+> 
+
+Thanks.
 -- 
-2.34.1
-
+#Randy
+https://people.kernel.org/tglx/notes-about-netiquette
+https://subspace.kernel.org/etiquette.html
 
