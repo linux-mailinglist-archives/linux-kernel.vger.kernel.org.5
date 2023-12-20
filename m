@@ -1,190 +1,334 @@
-Return-Path: <linux-kernel+bounces-7318-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7319-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1527581A590
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 17:48:34 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D4F3D81A598
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 17:49:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 811791F2418F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 16:48:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4BAB5B20FFB
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 16:49:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 978F74643B;
-	Wed, 20 Dec 2023 16:48:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9380246526;
+	Wed, 20 Dec 2023 16:49:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="l3fdusUW"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="NagBxEGF"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3636141A92
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 16:48:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703090904; x=1734626904;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=HaKTni1h/yjqjVfi4pHddVk5OjH7XnULnIt4yRHlChs=;
-  b=l3fdusUWDTDUEbOm2JOKnkA3gghEaVF3gxdxHlsBfSFq9LsB3Cjf4TE2
-   irf16NQxOIbzDzbkShICQobEjhr/XIVHL2XaZDt9GzGObtEAAHa7FbYqd
-   7nLC2SWpLheKCKjEKGSQy7BCGUa4uP+CYqWVU69ghYRdLhFpK4vSuLs8y
-   VMDM7jDO+9/dC1AnGGoAXUD/QdLAui3nFOm87xzqnB4RK2C33FzFMQrri
-   ymdLKE+c8t7F7EhV3mrvm+UXdO/yKCDJzjBb+lpLPr/IJwf0Iza9vXcsE
-   D3QopYgfb17iXbfoAjQSZAEpbHF7GurnCYXCWmDzMmcZeHdiDF3K0GVYl
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10930"; a="3076371"
-X-IronPort-AV: E=Sophos;i="6.04,291,1695711600"; 
-   d="scan'208";a="3076371"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Dec 2023 08:48:24 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10930"; a="842337574"
-X-IronPort-AV: E=Sophos;i="6.04,291,1695711600"; 
-   d="scan'208";a="842337574"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga008.fm.intel.com with ESMTP; 20 Dec 2023 08:48:21 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rFzk3-0007Cr-1F;
-	Wed, 20 Dec 2023 16:48:19 +0000
-Date: Thu, 21 Dec 2023 00:47:51 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kinsey Ho <kinseyho@google.com>,
-	Andrew Morton <akpm@linux-foundation.org>
-Cc: oe-kbuild-all@lists.linux.dev,
-	Linux Memory Management List <linux-mm@kvack.org>,
-	linux-kernel@vger.kernel.org, yuzhao@google.com,
-	Kinsey Ho <kinseyho@google.com>,
-	Aneesh Kumar K V <aneesh.kumar@linux.ibm.com>
-Subject: Re: [PATCH mm-unstable v1 4/4] mm/mglru: remove
- CONFIG_TRANSPARENT_HUGEPAGE
-Message-ID: <202312210042.xQEiqlEh-lkp@intel.com>
-References: <20231220040037.883811-5-kinseyho@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A8764642E;
+	Wed, 20 Dec 2023 16:49:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BKGe6XA026803;
+	Wed, 20 Dec 2023 16:49:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=ZbFRKfQ8apHOhegnAQD1nmzIFGR465JSBOj3gnYHwtM=; b=Na
+	gBxEGFhWLZDZ8bVq573pBUokR+i/OojEsme+jqQmtdTPivp6m1xv5khWF9CYwlX0
+	atVGQpLuB7nW9sIw6cEFEhAIW066FgS/hipaRKUXHBlbSnBH1l4Rgk9bAtGtsnaG
+	cAyRBu2Su/zY2fdO/mT2V+FX9z4vdSFIAL6o/u/pDnGM212RSncmQ4C4eDSbfEzh
+	60J6bwRk10A16I+7KmCoeuDMAGud/5lnotaD2/tCrI9hYY9TzFHo5PD9ZB5JmO7T
+	hgmQtL1LiuJ+9AL4aFjekoydExzQ245ryzpC/9L9fF2NqKmogzMEJ751rwfD57dh
+	C5Kt7snbv24i9UTLBkCQ==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v37vxv940-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 20 Dec 2023 16:49:00 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BKGmxDM001242
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 20 Dec 2023 16:48:59 GMT
+Received: from [10.110.111.239] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 20 Dec
+ 2023 08:48:57 -0800
+Message-ID: <91628bd3-45ab-0e2b-2331-f3f1ea2232b4@quicinc.com>
+Date: Wed, 20 Dec 2023 08:48:56 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231220040037.883811-5-kinseyho@google.com>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v6] drm/msm/dpu: improve DSC allocation
+Content-Language: en-US
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+CC: <dri-devel@lists.freedesktop.org>, <robdclark@gmail.com>,
+        <sean@poorly.run>, <swboyd@chromium.org>, <dianders@chromium.org>,
+        <vkoul@kernel.org>, <daniel@ffwll.ch>, <airlied@gmail.com>,
+        <agross@kernel.org>, <andersson@kernel.org>,
+        <quic_abhinavk@quicinc.com>, <quic_jesszhan@quicinc.com>,
+        <quic_sbillaka@quicinc.com>, <marijn.suijten@somainline.org>,
+        <freedreno@lists.freedesktop.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <1702580172-30606-1-git-send-email-quic_khsieh@quicinc.com>
+ <a5ec8760-cdfe-b420-43c1-913b0095ba93@quicinc.com>
+ <CAA8EJpoBiiTbc91E8hSK0seBOXAW++8V8yJzbGmCJJcXbZ3raQ@mail.gmail.com>
+From: Kuogee Hsieh <quic_khsieh@quicinc.com>
+In-Reply-To: <CAA8EJpoBiiTbc91E8hSK0seBOXAW++8V8yJzbGmCJJcXbZ3raQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: Lja8mOxvgY7cajDk_jdUI6JXc2yWi9pv
+X-Proofpoint-GUID: Lja8mOxvgY7cajDk_jdUI6JXc2yWi9pv
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
+ suspectscore=0 impostorscore=0 lowpriorityscore=0 malwarescore=0
+ bulkscore=0 phishscore=0 spamscore=0 clxscore=1015 mlxscore=0 adultscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2312200120
 
-Hi Kinsey,
 
-kernel test robot noticed the following build errors:
+On 12/19/2023 2:32 PM, Dmitry Baryshkov wrote:
+> On Tue, 19 Dec 2023 at 18:18, Kuogee Hsieh <quic_khsieh@quicinc.com> wrote:
+>> Hi Dmitry,
+>>
+>> Anymore comments from you?
+> No, for some reason I missed this patch. Please excuse me.
+>
+>> On 12/14/2023 10:56 AM, Kuogee Hsieh wrote:
+>>> At DSC V1.1 DCE (Display Compression Engine) contains a DSC encoder.
+>>> However, at DSC V1.2 DCE consists of two DSC encoders, one has an odd
+>>> index and another one has an even index. Each encoder can work
+>>> independently. But only two DSC encoders from same DCE can be paired
+>>> to work together to support DSC merge mode at DSC V1.2. For DSC V1.1
+>>> two consecutive DSC encoders (start with even index) have to be paired
+>>> to support DSC merge mode.  In addition, the DSC with even index have
+>>> to be mapped to even PINGPONG index and DSC with odd index have to be
+>>> mapped to odd PINGPONG index at its data path in regardless of DSC
+>>> V1.1 or V1.2. This patch improves DSC allocation mechanism with
+>>> consideration of those factors.
+>>>
+>>> Changes in V6:
+>>> -- rename _dpu_rm_reserve_dsc_single to _dpu_rm_dsc_alloc
+>>> -- rename _dpu_rm_reserve_dsc_pair to _dpu_rm_dsc_alloc_pair
+>>> -- pass global_state to _dpu_rm_pingpong_next_index()
+>>> -- remove pp_max
+>>> -- fix for loop condition check at _dpu_rm_dsc_alloc()
+>>>
+>>> Changes in V5:
+>>> -- delete dsc_id[]
+>>> -- update to global_state->dsc_to_enc_id[] directly
+>>> -- replace ndx with idx
+>>> -- fix indentation at function declaration
+>>> -- only one for loop at _dpu_rm_reserve_dsc_single()
+>>>
+>>> Changes in V4:
+>>> -- rework commit message
+>>> -- use reserved_by_other()
+>>> -- add _dpu_rm_pingpong_next_index()
+>>> -- revise _dpu_rm_pingpong_dsc_check()
+>>>
+>>> Changes in V3:
+>>> -- add dpu_rm_pingpong_dsc_check()
+>>> -- for pair allocation use i += 2 at for loop
+>>>
+>>> Changes in V2:
+>>>       -- split _dpu_rm_reserve_dsc() into _dpu_rm_reserve_dsc_single() and
+>>>          _dpu_rm_reserve_dsc_pair()
+>>>
+>>> Fixes: f2803ee91a41 ("drm/msm/disp/dpu1: Add DSC support in RM")
+>>> Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
+>>> ---
+>>>    drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c | 154 +++++++++++++++++++++++++++++----
+>>>    1 file changed, 139 insertions(+), 15 deletions(-)
+> Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+>
+> See below for minor nit.
+>
+>>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c
+>>> index f9215643..0ce2a25 100644
+>>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c
+>>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c
+>>> @@ -461,29 +461,153 @@ static int _dpu_rm_reserve_ctls(
+>>>        return 0;
+>>>    }
+>>>
+>>> -static int _dpu_rm_reserve_dsc(struct dpu_rm *rm,
+>>> -                            struct dpu_global_state *global_state,
+>>> -                            struct drm_encoder *enc,
+>>> -                            const struct msm_display_topology *top)
+>>> +static int _dpu_rm_pingpong_next_index(struct dpu_global_state *global_state,
+>>> +                                    int start,
+> I'd still prefer to see `enum dpu_pingpong` as a parameter here
+> instead of just an index, but this is just my taste.
 
-[auto build test ERROR on akpm-mm/mm-everything]
+Can you please elaborate more details (pseudo code)  for this?
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Kinsey-Ho/mm-mglru-add-CONFIG_ARCH_HAS_HW_PTE_YOUNG/20231220-120318
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
-patch link:    https://lore.kernel.org/r/20231220040037.883811-5-kinseyho%40google.com
-patch subject: [PATCH mm-unstable v1 4/4] mm/mglru: remove CONFIG_TRANSPARENT_HUGEPAGE
-config: arm-randconfig-002-20231220 (https://download.01.org/0day-ci/archive/20231221/202312210042.xQEiqlEh-lkp@intel.com/config)
-compiler: arm-linux-gnueabi-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231221/202312210042.xQEiqlEh-lkp@intel.com/reproduce)
+i can add it at my next DP dsc patches.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312210042.xQEiqlEh-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   mm/vmscan.c: In function 'walk_pmd_range_locked':
->> mm/vmscan.c:3455:21: error: implicit declaration of function 'pmd_dirty'; did you mean 'pte_dirty'? [-Werror=implicit-function-declaration]
-    3455 |                 if (pmd_dirty(pmd[i]) && !folio_test_dirty(folio) &&
-         |                     ^~~~~~~~~
-         |                     pte_dirty
-   cc1: some warnings being treated as errors
-
-
-vim +3455 mm/vmscan.c
-
-bd74fdaea146029 Yu Zhao        2022-09-18  3394  
-b5ff4133617d0ec T.J. Alumbaugh 2023-01-18  3395  static void walk_pmd_range_locked(pud_t *pud, unsigned long addr, struct vm_area_struct *vma,
-b5ff4133617d0ec T.J. Alumbaugh 2023-01-18  3396  				  struct mm_walk *args, unsigned long *bitmap, unsigned long *first)
-bd74fdaea146029 Yu Zhao        2022-09-18  3397  {
-bd74fdaea146029 Yu Zhao        2022-09-18  3398  	int i;
-bd74fdaea146029 Yu Zhao        2022-09-18  3399  	pmd_t *pmd;
-bd74fdaea146029 Yu Zhao        2022-09-18  3400  	spinlock_t *ptl;
-bd74fdaea146029 Yu Zhao        2022-09-18  3401  	struct lru_gen_mm_walk *walk = args->private;
-bd74fdaea146029 Yu Zhao        2022-09-18  3402  	struct mem_cgroup *memcg = lruvec_memcg(walk->lruvec);
-bd74fdaea146029 Yu Zhao        2022-09-18  3403  	struct pglist_data *pgdat = lruvec_pgdat(walk->lruvec);
-bd74fdaea146029 Yu Zhao        2022-09-18  3404  	int old_gen, new_gen = lru_gen_from_seq(walk->max_seq);
-bd74fdaea146029 Yu Zhao        2022-09-18  3405  
-bd74fdaea146029 Yu Zhao        2022-09-18  3406  	VM_WARN_ON_ONCE(pud_leaf(*pud));
-bd74fdaea146029 Yu Zhao        2022-09-18  3407  
-bd74fdaea146029 Yu Zhao        2022-09-18  3408  	/* try to batch at most 1+MIN_LRU_BATCH+1 entries */
-b5ff4133617d0ec T.J. Alumbaugh 2023-01-18  3409  	if (*first == -1) {
-b5ff4133617d0ec T.J. Alumbaugh 2023-01-18  3410  		*first = addr;
-b5ff4133617d0ec T.J. Alumbaugh 2023-01-18  3411  		bitmap_zero(bitmap, MIN_LRU_BATCH);
-bd74fdaea146029 Yu Zhao        2022-09-18  3412  		return;
-bd74fdaea146029 Yu Zhao        2022-09-18  3413  	}
-bd74fdaea146029 Yu Zhao        2022-09-18  3414  
-b5ff4133617d0ec T.J. Alumbaugh 2023-01-18  3415  	i = addr == -1 ? 0 : pmd_index(addr) - pmd_index(*first);
-bd74fdaea146029 Yu Zhao        2022-09-18  3416  	if (i && i <= MIN_LRU_BATCH) {
-bd74fdaea146029 Yu Zhao        2022-09-18  3417  		__set_bit(i - 1, bitmap);
-bd74fdaea146029 Yu Zhao        2022-09-18  3418  		return;
-bd74fdaea146029 Yu Zhao        2022-09-18  3419  	}
-bd74fdaea146029 Yu Zhao        2022-09-18  3420  
-b5ff4133617d0ec T.J. Alumbaugh 2023-01-18  3421  	pmd = pmd_offset(pud, *first);
-bd74fdaea146029 Yu Zhao        2022-09-18  3422  
-bd74fdaea146029 Yu Zhao        2022-09-18  3423  	ptl = pmd_lockptr(args->mm, pmd);
-bd74fdaea146029 Yu Zhao        2022-09-18  3424  	if (!spin_trylock(ptl))
-bd74fdaea146029 Yu Zhao        2022-09-18  3425  		goto done;
-bd74fdaea146029 Yu Zhao        2022-09-18  3426  
-bd74fdaea146029 Yu Zhao        2022-09-18  3427  	arch_enter_lazy_mmu_mode();
-bd74fdaea146029 Yu Zhao        2022-09-18  3428  
-bd74fdaea146029 Yu Zhao        2022-09-18  3429  	do {
-bd74fdaea146029 Yu Zhao        2022-09-18  3430  		unsigned long pfn;
-bd74fdaea146029 Yu Zhao        2022-09-18  3431  		struct folio *folio;
-b5ff4133617d0ec T.J. Alumbaugh 2023-01-18  3432  
-b5ff4133617d0ec T.J. Alumbaugh 2023-01-18  3433  		/* don't round down the first address */
-b5ff4133617d0ec T.J. Alumbaugh 2023-01-18  3434  		addr = i ? (*first & PMD_MASK) + i * PMD_SIZE : *first;
-bd74fdaea146029 Yu Zhao        2022-09-18  3435  
-bd74fdaea146029 Yu Zhao        2022-09-18  3436  		pfn = get_pmd_pfn(pmd[i], vma, addr);
-bd74fdaea146029 Yu Zhao        2022-09-18  3437  		if (pfn == -1)
-bd74fdaea146029 Yu Zhao        2022-09-18  3438  			goto next;
-bd74fdaea146029 Yu Zhao        2022-09-18  3439  
-bd74fdaea146029 Yu Zhao        2022-09-18  3440  		if (!pmd_trans_huge(pmd[i])) {
-bd02df412cbb9a6 T.J. Alumbaugh 2023-05-22  3441  			if (should_clear_pmd_young())
-bd74fdaea146029 Yu Zhao        2022-09-18  3442  				pmdp_test_and_clear_young(vma, addr, pmd + i);
-bd74fdaea146029 Yu Zhao        2022-09-18  3443  			goto next;
-bd74fdaea146029 Yu Zhao        2022-09-18  3444  		}
-bd74fdaea146029 Yu Zhao        2022-09-18  3445  
-bd74fdaea146029 Yu Zhao        2022-09-18  3446  		folio = get_pfn_folio(pfn, memcg, pgdat, walk->can_swap);
-bd74fdaea146029 Yu Zhao        2022-09-18  3447  		if (!folio)
-bd74fdaea146029 Yu Zhao        2022-09-18  3448  			goto next;
-bd74fdaea146029 Yu Zhao        2022-09-18  3449  
-bd74fdaea146029 Yu Zhao        2022-09-18  3450  		if (!pmdp_test_and_clear_young(vma, addr, pmd + i))
-bd74fdaea146029 Yu Zhao        2022-09-18  3451  			goto next;
-bd74fdaea146029 Yu Zhao        2022-09-18  3452  
-bd74fdaea146029 Yu Zhao        2022-09-18  3453  		walk->mm_stats[MM_LEAF_YOUNG]++;
-bd74fdaea146029 Yu Zhao        2022-09-18  3454  
-bd74fdaea146029 Yu Zhao        2022-09-18 @3455  		if (pmd_dirty(pmd[i]) && !folio_test_dirty(folio) &&
-bd74fdaea146029 Yu Zhao        2022-09-18  3456  		    !(folio_test_anon(folio) && folio_test_swapbacked(folio) &&
-bd74fdaea146029 Yu Zhao        2022-09-18  3457  		      !folio_test_swapcache(folio)))
-bd74fdaea146029 Yu Zhao        2022-09-18  3458  			folio_mark_dirty(folio);
-bd74fdaea146029 Yu Zhao        2022-09-18  3459  
-bd74fdaea146029 Yu Zhao        2022-09-18  3460  		old_gen = folio_update_gen(folio, new_gen);
-bd74fdaea146029 Yu Zhao        2022-09-18  3461  		if (old_gen >= 0 && old_gen != new_gen)
-bd74fdaea146029 Yu Zhao        2022-09-18  3462  			update_batch_size(walk, folio, old_gen, new_gen);
-bd74fdaea146029 Yu Zhao        2022-09-18  3463  next:
-bd74fdaea146029 Yu Zhao        2022-09-18  3464  		i = i > MIN_LRU_BATCH ? 0 : find_next_bit(bitmap, MIN_LRU_BATCH, i) + 1;
-bd74fdaea146029 Yu Zhao        2022-09-18  3465  	} while (i <= MIN_LRU_BATCH);
-bd74fdaea146029 Yu Zhao        2022-09-18  3466  
-bd74fdaea146029 Yu Zhao        2022-09-18  3467  	arch_leave_lazy_mmu_mode();
-bd74fdaea146029 Yu Zhao        2022-09-18  3468  	spin_unlock(ptl);
-bd74fdaea146029 Yu Zhao        2022-09-18  3469  done:
-b5ff4133617d0ec T.J. Alumbaugh 2023-01-18  3470  	*first = -1;
-bd74fdaea146029 Yu Zhao        2022-09-18  3471  }
-bd74fdaea146029 Yu Zhao        2022-09-18  3472  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+>
+>>> +                                    uint32_t enc_id)
+>>>    {
+>>> -     int num_dsc = top->num_dsc;
+>>>        int i;
+>>>
+>>> -     /* check if DSC required are allocated or not */
+>>> -     for (i = 0; i < num_dsc; i++) {
+>>> -             if (!rm->dsc_blks[i]) {
+>>> -                     DPU_ERROR("DSC %d does not exist\n", i);
+>>> -                     return -EIO;
+>>> +     for (i = start; i < (PINGPONG_MAX - PINGPONG_0); i++) {
+>>> +             if (global_state->pingpong_to_enc_id[i] == enc_id)
+>>> +                     return i;
+>>> +     }
+>>> +
+>>> +     return -ENAVAIL;
+>>> +}
+>>> +
+>>> +static int _dpu_rm_pingpong_dsc_check(int dsc_idx, int pp_idx)
+>>> +{
+>>> +     /*
+>>> +      * DSC with even index must be used with the PINGPONG with even index
+>>> +      * DSC with odd index must be used with the PINGPONG with odd index
+>>> +      */
+>>> +     if ((dsc_idx & 0x01) != (pp_idx & 0x01))
+>>> +             return -ENAVAIL;
+>>> +
+>>> +     return 0;
+>>> +}
+>>> +
+>>> +static int _dpu_rm_dsc_alloc(struct dpu_rm *rm,
+>>> +                          struct dpu_global_state *global_state,
+>>> +                          uint32_t enc_id,
+>>> +                          const struct msm_display_topology *top)
+>>> +{
+>>> +     int num_dsc = 0;
+>>> +     int pp_idx = 0;
+>>> +     int dsc_idx;
+>>> +     int ret;
+>>> +
+>>> +     for (dsc_idx = 0; dsc_idx < ARRAY_SIZE(rm->dsc_blks) &&
+>>> +          num_dsc < top->num_dsc; dsc_idx++) {
+>>> +             if (!rm->dsc_blks[dsc_idx])
+>>> +                     continue;
+>>> +
+>>> +             if (reserved_by_other(global_state->dsc_to_enc_id, dsc_idx, enc_id))
+>>> +                     continue;
+>>> +
+>>> +             pp_idx = _dpu_rm_pingpong_next_index(global_state, pp_idx, enc_id);
+>>> +             if (pp_idx < 0)
+>>> +                     return -ENAVAIL;
+>>> +
+>>> +             ret = _dpu_rm_pingpong_dsc_check(dsc_idx, pp_idx);
+>>> +             if (ret)
+>>> +                     return -ENAVAIL;
+>>> +
+>>> +             global_state->dsc_to_enc_id[dsc_idx] = enc_id;
+>>> +             num_dsc++;
+>>> +             pp_idx++;
+>>> +     }
+>>> +
+>>> +     if (num_dsc < top->num_dsc) {
+>>> +             DPU_ERROR("DSC allocation failed num_dsc=%d required=%d\n",
+>>> +                        num_dsc, top->num_dsc);
+>>> +             return -ENAVAIL;
+>>> +     }
+>>> +
+>>> +     return 0;
+>>> +}
+>>> +
+>>> +static int _dpu_rm_dsc_alloc_pair(struct dpu_rm *rm,
+>>> +                               struct dpu_global_state *global_state,
+>>> +                               uint32_t enc_id,
+>>> +                               const struct msm_display_topology *top)
+>>> +{
+>>> +     int num_dsc = 0;
+>>> +     int dsc_idx, pp_idx = 0;
+>>> +     int ret;
+>>> +
+>>> +     /* only start from even dsc index */
+>>> +     for (dsc_idx = 0; dsc_idx < ARRAY_SIZE(rm->dsc_blks) &&
+>>> +          num_dsc < top->num_dsc; dsc_idx += 2) {
+>>> +             if (!rm->dsc_blks[dsc_idx] ||
+>>> +                 !rm->dsc_blks[dsc_idx + 1])
+>>> +                     continue;
+>>> +
+>>> +             /* consective dsc index to be paired */
+>>> +             if (reserved_by_other(global_state->dsc_to_enc_id, dsc_idx, enc_id) ||
+>>> +                 reserved_by_other(global_state->dsc_to_enc_id, dsc_idx + 1, enc_id))
+>>> +                     continue;
+>>> +
+>>> +             pp_idx = _dpu_rm_pingpong_next_index(global_state, pp_idx, enc_id);
+>>> +             if (pp_idx < 0)
+>>> +                     return -ENAVAIL;
+>>> +
+>>> +             ret = _dpu_rm_pingpong_dsc_check(dsc_idx, pp_idx);
+>>> +             if (ret) {
+>>> +                     pp_idx = 0;
+>>> +                     continue;
+>>>                }
+>>>
+>>> -             if (global_state->dsc_to_enc_id[i]) {
+>>> -                     DPU_ERROR("DSC %d is already allocated\n", i);
+>>> -                     return -EIO;
+>>> +             pp_idx = _dpu_rm_pingpong_next_index(global_state, pp_idx + 1, enc_id);
+>>> +             if (pp_idx < 0)
+>>> +                     return -ENAVAIL;
+>>> +
+>>> +             ret = _dpu_rm_pingpong_dsc_check(dsc_idx + 1, pp_idx);
+>>> +             if (ret) {
+>>> +                     pp_idx = 0;
+>>> +                     continue;
+>>>                }
+>>> +
+>>> +             global_state->dsc_to_enc_id[dsc_idx] = enc_id;
+>>> +             global_state->dsc_to_enc_id[dsc_idx + 1] = enc_id;
+>>> +             num_dsc += 2;
+>>> +             pp_idx++;       /* start for next pair */
+>>>        }
+>>>
+>>> -     for (i = 0; i < num_dsc; i++)
+>>> -             global_state->dsc_to_enc_id[i] = enc->base.id;
+>>> +     if (num_dsc < top->num_dsc) {
+>>> +             DPU_ERROR("DSC allocation failed num_dsc=%d required=%d\n",
+>>> +                        num_dsc, top->num_dsc);
+>>> +             return -ENAVAIL;
+>>> +     }
+>>> +
+>>> +     return 0;
+>>> +}
+>>> +
+>>> +static int _dpu_rm_reserve_dsc(struct dpu_rm *rm,
+>>> +                            struct dpu_global_state *global_state,
+>>> +                            struct drm_encoder *enc,
+>>> +                            const struct msm_display_topology *top)
+>>> +{
+>>> +     uint32_t enc_id = enc->base.id;
+>>> +
+>>> +     if (!top->num_dsc || !top->num_intf)
+>>> +             return 0;
+>>> +
+>>> +     /*
+>>> +      * Facts:
+>>> +      * 1) no pingpong split (two layer mixers shared one pingpong)
+>>> +      * 2) DSC pair starts from even index, such as index(0,1), (2,3), etc
+>>> +      * 3) even PINGPONG connects to even DSC
+>>> +      * 4) odd PINGPONG connects to odd DSC
+>>> +      * 5) pair: encoder +--> pp_idx_0 --> dsc_idx_0
+>>> +      *                  +--> pp_idx_1 --> dsc_idx_1
+>>> +      */
+>>> +
+>>> +     /* num_dsc should be either 1, 2 or 4 */
+>>> +     if (top->num_dsc > top->num_intf)       /* merge mode */
+>>> +             return _dpu_rm_dsc_alloc_pair(rm, global_state, enc_id, top);
+>>> +     else
+>>> +             return _dpu_rm_dsc_alloc(rm, global_state, enc_id, top);
+>>>
+>>>        return 0;
+>>>    }
+>
+>
 
