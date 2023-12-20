@@ -1,112 +1,151 @@
-Return-Path: <linux-kernel+bounces-6545-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6521-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 787B0819A2A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 09:11:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B4478199E8
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 08:57:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 285A91F23180
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 08:11:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AF2FAB24443
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 07:57:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C47501D536;
-	Wed, 20 Dec 2023 08:11:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA5C51CAB7;
+	Wed, 20 Dec 2023 07:57:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=phytec.de header.i=@phytec.de header.b="hqtIw6KK"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="zzLyB38g"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mickerik.phytec.de (mickerik.phytec.de [91.26.50.163])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C4201D528
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 08:11:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=phytec.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=phytec.de
-DKIM-Signature: v=1; a=rsa-sha256; d=phytec.de; s=a4; c=relaxed/simple;
-	q=dns/txt; i=@phytec.de; t=1703058972; x=1705650972;
-	h=From:Sender:Reply-To:Subject:Date:Message-ID:To:CC:MIME-Version:Content-Type:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=6uuT1ejfRCFoiCRYbJ2OkaYUhy/VvQ76QdT7VhFOBjQ=;
-	b=hqtIw6KKamLq+zdP0x2+fxgC2UQgoyXh5zFkk1sD5VTk/428Y9ABPmR2kCmK44f7
-	O4JJHT0Qt8/qeJKOD/6kFsQh5Xct2AvEZrpr0lAqlktmLXsrsKLVISWPD2qZBWzz
-	GF9BQWEEmSVfvQGOJ7eASOLdZsFTqLYg2uAWLsFQR5I=;
-X-AuditID: ac14000a-fadff7000000290d-82-65829e1bf074
-Received: from florix.phytec.de (Unknown_Domain [172.25.0.13])
-	(using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(Client did not present a certificate)
-	by mickerik.phytec.de (PHYTEC Mail Gateway) with SMTP id 07.70.10509.B1E92856; Wed, 20 Dec 2023 08:56:11 +0100 (CET)
-Received: from Berlix.phytec.de (172.25.0.12) by Florix.phytec.de
- (172.25.0.13) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.6; Wed, 20 Dec
- 2023 08:56:11 +0100
-Received: from Berlix.phytec.de ([fe80::197e:d26b:2ca:c7b4]) by
- berlix.phytec.de ([fe80::197e:d26b:2ca:c7b4%4]) with mapi id 15.01.2507.006;
- Wed, 20 Dec 2023 08:56:11 +0100
-From: Yannic Moog <Y.Moog@phytec.de>
-To: "lukas@wunner.de" <lukas@wunner.de>
-CC: "upstream@lists.phytec.de" <upstream@lists.phytec.de>,
-	"kernel@pengutronix.de" <kernel@pengutronix.de>, "leoyang.li@nxp.com"
-	<leoyang.li@nxp.com>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-	"festevam@gmail.com" <festevam@gmail.com>, "devicetree@vger.kernel.org"
-	<devicetree@vger.kernel.org>, "shawnguo@kernel.org" <shawnguo@kernel.org>,
-	"linux-imx@nxp.com" <linux-imx@nxp.com>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "conor+dt@kernel.org" <conor+dt@kernel.org>,
-	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
-	"robh+dt@kernel.org" <robh+dt@kernel.org>, Teresa Remmet <T.Remmet@phytec.de>
-Subject: Re: [PATCH v2 2/2] arm64: dts: freescale: add phyGATE-Tauri i.MX 8M
- Mini Support
-Thread-Topic: [PATCH v2 2/2] arm64: dts: freescale: add phyGATE-Tauri i.MX 8M
- Mini Support
-Thread-Index: AQHaMxkSda9BK8mQGUeWhpcfSvCZ4LCxvQiA
-Date: Wed, 20 Dec 2023 07:56:11 +0000
-Message-ID: <ab45c82485fa272f74adf560cbb58ee60cc42689.camel@phytec.de>
-References: <20230925-tauri_upstream_support-v2-0-62a6dfc48e31@phytec.de>
-	 <20230925-tauri_upstream_support-v2-2-62a6dfc48e31@phytec.de>
-	 <20231220074931.GA13382@wunner.de>
-In-Reply-To: <20231220074931.GA13382@wunner.de>
-Accept-Language: de-DE, en-US
-Content-Language: de-DE
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <B4003917F20D11438A472951449BC850@phytec.de>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 898281CA8E
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 07:57:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-50e18689828so6171402e87.2
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Dec 2023 23:57:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1703059034; x=1703663834; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=xhzDs4fQYzZp/6r6fTf/FxMWbjIgjGBLAvcDTnyWS/c=;
+        b=zzLyB38gxCR1ktyw7qfpvJqxRMvPIkZh7s6RvZ0taXE60ZJ8SG1YNGS5U+7wvU0M3R
+         C37tgSFZc3Sjsaeq5guxABhsnjAZLeoRAdO3vS0VgMt1aCLsqB5df+zF/FXNPm4xVAU6
+         G74CWk638IYR1k4m2VbrfP85bX3Fz99Vyzu9jgkqS0g6sSzoiHyV7fDH90rsPqTHQfWE
+         DXzNiisaATuu0K1MlXjR3moPzWxQ6rMdf50+gJdmU28NcOf8FNteU5ZJUxf15BvDKH8U
+         IVkNMTyhcdhx66YIviX+ovgD2DIwgHnNtnHCu/kAeQbZkOUe3IjZBRsCvPEZdPQzsWIO
+         HwkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703059034; x=1703663834;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=xhzDs4fQYzZp/6r6fTf/FxMWbjIgjGBLAvcDTnyWS/c=;
+        b=hWXs476gGIEk9DzYdTtdBIMRu+mh8ZH/2wxGdyN9PvYzvk4xDcIFTqBhHBSfoU5JF9
+         wqYJiOJzqQo5tmv8BPJ39dPXvOZVIAktamDUMpz8EEZwjBVjE8mZlyfZ2wkPtyG7db8M
+         +4sNCLT6YK0urYpKTI90gJegi9Az4RN/2lJm/EdlZVzVcgUA6hEVQ3MBrtduWrJQZk5z
+         OV1hJwoE+KXl7bBU29tLUMiNW38ZATgWFu27Qqj5FyZhQcZZfwoCeL3N627Nn2NQTM2s
+         0QA3Ua13b3e1pWsRaK25tuj/rIi/ujYoeEoAGaktrkMD21VlvlNOiNINOh5xGlaBTRha
+         uCYQ==
+X-Gm-Message-State: AOJu0Yyu8NZZPgKq6+CCDtuYN2jHYiTwj0wiVJfxCYG48mKGcaJVocIG
+	DwKDiB0KJOHNZj/ADkLHa+ZsyUC78ew0pnyq0+KtegEhProGJjR6
+X-Google-Smtp-Source: AGHT+IF4cEe5qD0TAD4NRf5ALUwrzG2wKsHgN3POJBugKH427YT7T/Wbew8AfhuW+6eC+mk5ZJQ4BQBicBs6EObCmgM=
+X-Received: by 2002:ac2:562c:0:b0:50e:3b91:99a1 with SMTP id
+ b12-20020ac2562c000000b0050e3b9199a1mr2022467lff.86.1703059034592; Tue, 19
+ Dec 2023 23:57:14 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrKIsWRmVeSWpSXmKPExsWyRpKBV1d6XlOqwaybNhZr9p5jsph/5Byr
-	xcOr/harpu5kseh78ZDZ4lDzASaLTY+vsVp0/VrJbHF51xw2ixfPpS1a9x5ht/i7fROLxYst
-	4hbd79Qd+Dx2zrrL7rFpVSebx51re9g8Ni+p9+jvbmH12PhuB5NH/18Dj8+b5DxmtG9jDeCM
-	4rJJSc3JLEst0rdL4Mq4cnQiY8ECjooTd1YwNTC2cHQxcnJICJhIXP14jxHEFhJYzCTx7HNJ
-	FyMXkH2fUeLV+0Y2CGcDo8SeltssIFVsAioSJ2dcAusQEVCXmHX5NStIEbPAa1aJhWvPs4Mk
-	hAWiJS41twIlOICKYiQO7bWFqDeSaNm1lwnEZhFQlZja1whWzivgJjFp83NmuGXLG7eBFXEK
-	6Eucvv2dFcRmFJCV2LDhPDOIzSwgLrHpGURcQkBAYskeiLiEgKjEy8f/oOLyEiduTWMCuYFZ
-	QFNi/S59CNNCYtF3N4gpihJTuh9CnSAocXLmE5YJjOKzkCyYhdA8C6F5FpLmWUiaFzCyrmIU
-	ys1Mzk4tyszWK8ioLElN1ktJ3cQISgoiDFw7GPvmeBxiZOJgPMQowcGsJMK7t7MpVYg3JbGy
-	KrUoP76oNCe1+BCjNAeLkjjv6o7gVCGB9MSS1OzU1ILUIpgsEwenVANjd5lqgYaTyQZ3j/MV
-	/97XJH10ZdtcOOmtdpWSWq/V/YZG2YkZj+03Hkq00Z3Uq9v8ln3CUubzBcu++u36/Gutx5lL
-	LHObn3DcMoi3a9ustLysaP/ChgVlz588E4yLNf1ykGFDP1v8h5s/pDt6mM8fdNW+OWvWX9a1
-	uvd6nUQOzmv9lpaSpVajxFKckWioxVxUnAgATS0FfPgCAAA=
+References: <20231215073119.543560-1-ilias.apalodimas@linaro.org>
+ <6fddeb22-0906-e04c-3a84-7836bef9ffa2@huawei.com> <CAC_iWjLiOdUqLmRHjZmwv9QBsBvYNV=zn30JrRbJa05qMyDBmw@mail.gmail.com>
+ <fb0f33d8-d09a-57fc-83b0-ccf152277355@huawei.com>
+In-Reply-To: <fb0f33d8-d09a-57fc-83b0-ccf152277355@huawei.com>
+From: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Date: Wed, 20 Dec 2023 09:56:38 +0200
+Message-ID: <CAC_iWjKH5ZCUwVWc2EisfjeLVF=ko967hqpdAc7G4FdsZCq7NA@mail.gmail.com>
+Subject: Re: [PATCH net-next] page_pool: Rename frag_users to frag_cnt
+To: Yunsheng Lin <linyunsheng@huawei.com>
+Cc: netdev@vger.kernel.org, Jesper Dangaard Brouer <hawk@kernel.org>, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-SGVsbG8gTHVrYXMsDQoNCk9uIFdlZCwgMjAyMy0xMi0yMCBhdCAwODo0OSArMDEwMCwgTHVrYXMg
-V3VubmVyIHdyb3RlOg0KPiBPbiBNb24sIFNlcCAyNSwgMjAyMyBhdCAwOToyNToxOUFNICswMjAw
-LCBZYW5uaWMgTW9vZyB3cm90ZToNCj4gPiBwaHlHQVRFLVRhdXJpIHVzZXMgYSBwaHlDT1JFLWku
-TVg4TU0gU29NLiBBZGQgZGV2aWNlIHRyZWUgZm9yIHRoZSBib2FyZC4NCj4gWy4uLl0NCj4gPiAr
-CXRwbTogdHBtQDEgew0KPiA+ICsJCWNvbXBhdGlibGUgPSAidGNnLHRwbV90aXMtc3BpIjsNCj4g
-DQo+IFdoYXQncyB0aGUgY2hpcCB1c2VkIG9uIHRoaXMgYm9hcmQ/wqAgR29pbmcgZm9yd2FyZCwg
-dGhlIERUIHNjaGVtYSBmb3IgVFBNcw0KPiByZXF1aXJlcyB0aGUgZXhhY3QgY2hpcCBuYW1lIGlu
-IGFkZGl0aW9uIHRvIHRoZSBnZW5lcmljICJ0Y2csdHBtX3Rpcy1zcGkiLg0KDQpUUE0gU0xCIDk2
-NzAgaXMgdXNlZCBvbiB0aGUgYm9hcmQuIFRoYW5rIHlvdSBmb3IgaGlnaGxpZ2h0aW5nIHRoaXMu
-DQoNCllhbm5pYw0KDQo+IA0KPiANCj4gPiArCQlpbnRlcnJ1cHRzID0gPDExIElSUV9UWVBFX0xF
-VkVMX0xPVz47DQo+ID4gKwkJaW50ZXJydXB0LXBhcmVudCA9IDwmZ3BpbzI+Ow0KPiA+ICsJCXBp
-bmN0cmwtbmFtZXMgPSAiZGVmYXVsdCI7DQo+ID4gKwkJcGluY3RybC0wID0gPCZwaW5jdHJsX3Rw
-bT47DQo+ID4gKwkJcmVnID0gPDE+Ow0KPiA+ICsJCXNwaS1tYXgtZnJlcXVlbmN5ID0gPDM4MDAw
-MDAwPjsNCj4gPiArCX07DQo+ID4gK307DQoNCg==
+Hi Yunsheng,
+
+On Fri, 15 Dec 2023 at 14:34, Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>
+> On 2023/12/15 19:58, Ilias Apalodimas wrote:
+> > Hi Yunsheng,
+> >
+> > On Fri, 15 Dec 2023 at 13:10, Yunsheng Lin <linyunsheng@huawei.com> wrote:
+> >>
+> >> On 2023/12/15 15:31, Ilias Apalodimas wrote:
+> >>> Since [0] got merged, it's clear that 'pp_ref_count' is used to track
+> >>> the number of users for each page. On struct_page though we have
+> >>> a member called 'frag_users'. Despite of what the name suggests this is
+> >>> not the number of users. It instead represents the number of fragments of
+> >>> the current page. When we have a single page this is set to one. When we
+> >>> split the page this is set to the actual number of frags and later used
+> >>> in page_pool_drain_frag() to infer the real number of users.
+> >>>
+> >>> So let's rename it to something that matches the description above
+> >>>
+> >>> [0]
+> >>> Link: https://lore.kernel.org/netdev/20231212044614.42733-2-liangchen.linux@gmail.com/
+> >>> Signed-off-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+> >>> ---
+> >>>  include/net/page_pool.h | 2 +-
+> >>>  net/core/page_pool.c    | 8 ++++----
+> >>>  2 files changed, 5 insertions(+), 5 deletions(-)
+> >>>
+> >>> diff --git a/include/net/page_pool.h b/include/net/page_pool.h
+> >>> index 813c93499f20..957cd84bb3f4 100644
+> >>> --- a/include/net/page_pool.h
+> >>> +++ b/include/net/page_pool.h
+> >>> @@ -158,7 +158,7 @@ struct page_pool {
+> >>>       u32 pages_state_hold_cnt;
+> >>>       unsigned int frag_offset;
+> >>>       struct page *frag_page;
+> >>> -     long frag_users;
+> >>> +     long frag_cnt;
+> >>
+> >> I would rename it to something like refcnt_bais to mirror the pagecnt_bias
+> >> in struct page_frag_cache.
+> >
+> > Sure
+> >
+> >>
+> >>>
+> >>>  #ifdef CONFIG_PAGE_POOL_STATS
+> >>>       /* these stats are incremented while in softirq context */
+> >>> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
+> >>> index 9b203d8660e4..19a56a52ac8f 100644
+> >>> --- a/net/core/page_pool.c
+> >>> +++ b/net/core/page_pool.c
+> >>> @@ -659,7 +659,7 @@ EXPORT_SYMBOL(page_pool_put_page_bulk);
+> >>>  static struct page *page_pool_drain_frag(struct page_pool *pool,
+> >>>                                        struct page *page)
+> >>>  {
+> >>> -     long drain_count = BIAS_MAX - pool->frag_users;
+> >>> +     long drain_count = BIAS_MAX - pool->frag_cnt;
+> >>
+> >> drain_count = pool->refcnt_bais;
+> >
+> > I think this is a typo right? This still remains
+>
+> It would be better to invert logic too, as it is mirroring:
+>
+> https://elixir.bootlin.com/linux/v6.7-rc5/source/mm/page_alloc.c#L4745
+
+This is still a bit confusing for me since the actual bias is the
+number of fragments that you initially split the page. But I am fine
+with having a common approach. I'll send the rename again shortly, and
+I can send the logic invert a bit later (or feel free to send it,
+since it was your idea).
+
+Thanks
+/Ilias
 
