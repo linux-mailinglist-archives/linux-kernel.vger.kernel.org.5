@@ -1,113 +1,127 @@
-Return-Path: <linux-kernel+bounces-6842-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6841-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A432C819E5E
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 12:44:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 732CE819E5B
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 12:43:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D46541C222EA
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 11:44:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2ADF6285DB5
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 11:43:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BADC3219F0;
-	Wed, 20 Dec 2023 11:44:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B85E2137C;
+	Wed, 20 Dec 2023 11:43:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b="LjpY4eVm"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Y7gPLQEq"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2E8622303;
-	Wed, 20 Dec 2023 11:44:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-	s=s31663417; t=1703072640; x=1703677440; i=wahrenst@gmx.net;
-	bh=sDa+OPxR4DSE606VnJ3UhR/fFNpyHYQTxIzktag2M2o=;
-	h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-	b=LjpY4eVmL/OhOIs85lUQ/YT6vqjCrdd17V2/O5xQJ/mi9Z6o7GsrUdtDBjTxEKs4
-	 WsFYJ2+ctyUXI1hlc7gvOc0pwiVsE/O2O2ZMdOUv1W1l6xBDPZFt2Pwkpt7H+IRf2
-	 8f4cGGZ4d0jwH4AsjXY1RBlbsj5qHtwfyHlSZZ4/4Hfq80jhvRfqvBTL20GziEDul
-	 HMtW9Z0yT5nOsd3wRDkwpmPaKm21Yj/EN5iE1PH8QT/XrMm34N86Ex8Qip1n217Mx
-	 Rmy47M2vrRjR4zuPWRH67YKe10Fsp5riuGNBOOVp3rBRBRkfRBfwniHxeigys/27z
-	 Gw3LKr6BIx2oUq/HJg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from stefanw-SCHENKER ([37.4.248.43]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MQMyf-1rc6XO3TSj-00MMiu; Wed, 20
- Dec 2023 12:43:59 +0100
-From: Stefan Wahren <wahrenst@gmx.net>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jirislaby@kernel.org>,
-	Florian Fainelli <florian.fainelli@broadcom.com>
-Cc: Ray Jui <rjui@broadcom.com>,
-	Scott Branden <sbranden@broadcom.com>,
-	Adrien Thierry <athierry@redhat.com>,
-	Jeremy Linton <jeremy.linton@arm.com>,
-	linux-serial@vger.kernel.org,
-	bcm-kernel-feedback-list@broadcom.com,
-	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	Stefan Wahren <wahrenst@gmx.net>
-Subject: [PATCH] serial: 8250_bcm2835aux: Restore clock error handling
-Date: Wed, 20 Dec 2023 12:43:34 +0100
-Message-Id: <20231220114334.4712-1-wahrenst@gmx.net>
-X-Mailer: git-send-email 2.34.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40F0E219F3;
+	Wed, 20 Dec 2023 11:43:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-550dd0e3304so6966957a12.1;
+        Wed, 20 Dec 2023 03:43:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703072618; x=1703677418; darn=vger.kernel.org;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=i3Hrrww3/q9zrrOhRgX3lPr2/9drbsz7GbzoFtUlfZk=;
+        b=Y7gPLQEq2IvAlO+THPxTy5SlibYV9avbEpOycjOSp2EhUzAcevjxs8EJkWLuptj3yb
+         aa/GTwbQeVxpcTyO/MDpqFHahlVZjNEPEgCD2ivq/PGNTk97sGbW1SwsT3yZ1rfN/FbG
+         7IGoMVYC64B1EyqKqq6NSjPI0HRBdDj5I4SJl1tUJy9HAXlTyudBHTw8HJ9b6IquwqET
+         w4F11ub3Np15mSHKEphxGUabK/5BmGES0IidACPCX9ms46kinRvkv5VpaJnPbojU5V98
+         GLdhpsXntgOuA7Rvub0mscZqEEjNib6Q/pfFbfkGBU/+iAtM7HSz8B0WR5AkSUh3n0Gk
+         +lKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703072618; x=1703677418;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=i3Hrrww3/q9zrrOhRgX3lPr2/9drbsz7GbzoFtUlfZk=;
+        b=fUcECrdw/5oox+FqEe42NqaKNdJWpg2PRM4YPG3Vcu/PpTHttX/rygXUYAru4mYxWy
+         WtR6QLxfYDRskW92FidydqCzpg6vg9VzLilualZZF1pUjbN9quiwSv2LEpd0Ns9t71zO
+         H0+fu6VwILpLlIJxTnWcJBK7Nq6GjfaQPV9S8+l53oHXp5YeRUT/UfArE3MujYzjdz5Y
+         lCMWtZNGvH6AorYsIkGjo0NGglCQjhxTAJvrFPHQZC46UdlWJboV1pmcmqZdqg3HB8rh
+         bq6Ql9EBUtVrh4+psSTkcclJZm3QhvOFtSQnapAdqQR/d0dh76EuvnBH2frA/cAd0s/u
+         Y5Xg==
+X-Gm-Message-State: AOJu0YwFLz4vdhsVIID00HvCu3c1A3o4xrtUCVWBzGumR7kvq8ieaczS
+	ieBFhyr606oIXjyNyhLxwkRGQnFhmAg=
+X-Google-Smtp-Source: AGHT+IFeS+mwiDKoz41d/4hOnWmA2xl8RlSjK/74CEiNQqJjreS0w3KGmyDMuAaWkzOWrkXPMUw5QQ==
+X-Received: by 2002:a17:906:3f5a:b0:a19:35eb:7c8a with SMTP id f26-20020a1709063f5a00b00a1935eb7c8amr10781626ejj.3.1703072618174;
+        Wed, 20 Dec 2023 03:43:38 -0800 (PST)
+Received: from orome.fritz.box (p200300e41f0fa600f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f0f:a600:f22f:74ff:fe1f:3a53])
+        by smtp.gmail.com with ESMTPSA id tm6-20020a170907c38600b00a1ca6f5f189sm16725673ejc.179.2023.12.20.03.43.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Dec 2023 03:43:37 -0800 (PST)
+Date: Wed, 20 Dec 2023 12:43:36 +0100
+From: Thierry Reding <thierry.reding@gmail.com>
+To: Kartik <kkartik@nvidia.com>
+Cc: rdunlap@infradead.org, sfr@canb.auug.org.au, jonathanh@nvidia.com,
+	frank.li@vivo.com, linux-tegra@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] soc/tegra: fuse: Define tegra194_soc_attr_group for
+ Tegra241
+Message-ID: <ZYLTaMvCClFKAL8h@orome.fritz.box>
+References: <20231220061013.120173-1-kkartik@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="kASl1LDAhVZzDkAk"
+Content-Disposition: inline
+In-Reply-To: <20231220061013.120173-1-kkartik@nvidia.com>
+User-Agent: Mutt/2.2.12 (2023-09-09)
+
+
+--kASl1LDAhVZzDkAk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:Yzlm2lrwbBQOtRVkOBr2Xan/fuR2+K2CEDDsKjiPM7TE+KsoKGx
- +CVuohtU2kAC42xRkRbhF6cxNAygQHCttOjxSZsZ5Vd9baCTEi0bdrP5VkIDXQKAmW4Tgjz
- nivr2tzl2mWMlUdjiYDYN1x16jHJVkKr8nu/VMy2kkZkz5Wx86F2zDKlq1sg5ddzA1hJEfv
- ZAmrfpMmBn+gNx56l+hhA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:7HCk4+z6YSs=;QmKBCXvjMqHAKzUSIvwU64N7Em+
- 4miVrpmBvnbAHBIlPR9TzVzsQyqPhua6sV21LcR+5+m1X8kvH/IdNDIapZeAOvVa5y6LnbvrU
- omc58O9hM4CsPYTlBz8IWuMFGzeqFEQinvlcnac0KztsKcgafKyYpPv0TX9lxn1XUF2su2V67
- AFJlU2aAeKAe8qyJJFCGB06iRXDN28slKLX8Iod+nhue/LRM55z9NebrGRQJ9hqGaWvHPYNxi
- esmUdDYRflmUXzd9Jgz9vxlMxQMY/Ya6akOFseqsG+0Sd2knjVd0/fcDP3V4HvFn4c7o/CZve
- gwcI6MzpH+RCzZwKHug1wPDMge5LRBtJPkmjUAjid6hFTvqHcEyPajxAtxXp0ai5yUoeRhVNs
- jKwsY0DrUWaG5QdgnqDYFEhGUdXdcgLb65eKKJuYNYoTtTbW8lQp7GefO1L307EiBKqIH1sOY
- 7JZ2c94nQ7IU/MTSNEo5KULG572x9PRBErCaq7EJtwo0l+XB5/UgxbzGmghQ0/rpxJhFNvN+I
- qnVhi7ABlsBY/aOX8Yw1R2aP/61sqcLekwlakpz18gyvcet2SIXvJqsTsg1y4K2ylMPC7ljpw
- qUTCGgoGBMq7JKF+vPF3Gu3V6rx9AnGT59AEYWriiLlfzphDMGBJDOrmksztYYMN5FjPeQctm
- Rc1K5QWCdGOOwmy6EE1rGSfMjGplbSLGHXoiaQ7OkSR7L7HVkplT/+a2IRxZFVjRDfnzfGcD8
- bHanB3ccoYYA8jEka4EFyRoJW6tEx7YxwTP7t0wOUna2rBkl+4pMQkK3t0j6mUHFG0DD3/mq3
- 7a2wfkH65jOE2eCnGk635zljiFtGfxbqnWB/Z6ZJ83JU1Grlrn/hM1U7AWrE4zcqHeXOUtyfJ
- q6r2XJGWmrtOAPd4SKRxlWtWBBkoKJdux02h/RFWOZmLaYNX50g+XjD3IWkoxwlf9TZzpOrJE
- 9XoMhw==
 
-The commit fcc446c8aa63 ("serial: 8250_bcm2835aux: Add ACPI support")
-dropped the error handling for clock acquiring. But even an optional
-clock needs this.
+On Wed, Dec 20, 2023 at 11:40:13AM +0530, Kartik wrote:
+> Tegra241 SoC data uses tegra194_soc_attr_group, which is only defined
+> if config CONFIG_ARCH_TEGRA_194_SOC or CONFIG_ARCH_TEGRA_234_SOC or
+> both are enabled. This causes a build failure if both of these configs
+> are disabled and CONFIG_ARCH_TEGRA_241_SOC is enabled.
+>=20
+> Define tegra194_soc_attr_group if CONFIG_ARCH_TEGRA_241_SOC is enabled.
+>=20
+> Signed-off-by: Kartik <kkartik@nvidia.com>
+> ---
+>  drivers/soc/tegra/fuse/fuse-tegra.c | 3 ++-
+>  drivers/soc/tegra/fuse/fuse.h       | 3 ++-
+>  2 files changed, 4 insertions(+), 2 deletions(-)
 
-Fixes: fcc446c8aa63 ("serial: 8250_bcm2835aux: Add ACPI support")
-Signed-off-by: Stefan Wahren <wahrenst@gmx.net>
-=2D--
- drivers/tty/serial/8250/8250_bcm2835aux.c | 2 ++
- 1 file changed, 2 insertions(+)
+Applied, thanks.
 
-diff --git a/drivers/tty/serial/8250/8250_bcm2835aux.c b/drivers/tty/seria=
-l/8250/8250_bcm2835aux.c
-index 15a2387a5b25..4f4502fb5454 100644
-=2D-- a/drivers/tty/serial/8250/8250_bcm2835aux.c
-+++ b/drivers/tty/serial/8250/8250_bcm2835aux.c
-@@ -119,6 +119,8 @@ static int bcm2835aux_serial_probe(struct platform_dev=
-ice *pdev)
+Thierry
 
- 	/* get the clock - this also enables the HW */
- 	data->clk =3D devm_clk_get_optional(&pdev->dev, NULL);
-+	if (IS_ERR(data->clk))
-+		return dev_err_probe(&pdev->dev, PTR_ERR(data->clk), "could not get clk=
-\n");
+--kASl1LDAhVZzDkAk
+Content-Type: application/pgp-signature; name="signature.asc"
 
- 	/* get the interrupt */
- 	ret =3D platform_get_irq(pdev, 0);
-=2D-
-2.34.1
+-----BEGIN PGP SIGNATURE-----
 
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmWC02gACgkQ3SOs138+
+s6ELmg/9GJAdHN1hEHfiDcG0vjrGjYDxD46wDykHZUpZwOdQolddlH7uTSNGZVSR
+VkF53NY3rOLLZAToLCOzzweTVFiG4D/54k5DHWd+YXHd18lYaHsaySP29go2oYEl
+jdzRE/FoEpdY3Tx5RURYXSyqFoy8DK4fUIAdvOg82L2EOCKF8YLXMKxS0D+S+z/g
+h95ObHrkD8pN/SZdQSb8CzAlZQxoRMCQqvdPqoFisJgBe1Tu+J8TDcSoxe4zYqzB
+Qza7AqLNlbQTpBdhkWJUKfwxe/AQ/bCgIRRKRErtWpMRjPY4SjFhzlcPMDoYiUbI
+rJFgYsv9WGIxp3qcaraEJyVFQ/UlNYdpgLr9N3d2R2l23elVxgg5OPApb69h6nzS
+Rccw3FCYL1Z/JjGyuRDKP0RRb/GMYRjqUxWm8y0tsGkn/ROdCbJUkzsVBMfhsa1L
+Elq4gxVkSgCNLpR2LiArZOIzkmYB3HoJ4jGJeA5Rv1r+YmFX8ePg/PU02PjYfpFb
+ofC/KDuaI/BMEZIO+P1q7m+c9dotn2ZcG4kXa8XRF+AhpKtU5KXeWJTMk2V45ZTt
+TCvHt2Xivsn+9DNzxdMBITmG+U6fByFraS05wY6FdrL5BswTW3U1bp0v1XmgYafv
+FvPpywWRbXKr0eFOIJdZAtbE3ON7SdQgIBnznXNURge5Saphgv0=
+=bO4k
+-----END PGP SIGNATURE-----
+
+--kASl1LDAhVZzDkAk--
 
