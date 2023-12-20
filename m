@@ -1,160 +1,121 @@
-Return-Path: <linux-kernel+bounces-7609-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7610-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F8BC81AAC6
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 00:09:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 233CA81AAC9
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 00:10:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 859D81C211BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 23:09:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3BC061C20DAC
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 23:10:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 401E14CB4D;
-	Wed, 20 Dec 2023 22:49:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 438194B15E;
+	Wed, 20 Dec 2023 22:53:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZwOXiCHa"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VwIuqz+G"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08D6A4C634;
-	Wed, 20 Dec 2023 22:49:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 271494645E;
+	Wed, 20 Dec 2023 22:53:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-40d05ebe642so7820055e9.0;
-        Wed, 20 Dec 2023 14:49:06 -0800 (PST)
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-40c39ef63d9so2031965e9.3;
+        Wed, 20 Dec 2023 14:53:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703112545; x=1703717345; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=XsKFunyIEF//ykMeSfV/a0SwdfxlBLJSsRhTiMN79G0=;
-        b=ZwOXiCHasH2dqJ1hZ0lVqm8bm7LQXXSUC15smv25RqICJmzN4MAsbLI5CX4qvmw3iI
-         LKxh7hgd3qxi9z0OL6GzDafXySkTYoMjgTlNHPGoh6m8HcXMEpvfGIZbladbsuMhZBvN
-         x+FhIcbmV04Af0J+LLkMzzjIFSuieleslJaEiz1gRZPuvhv6haZm+XWuueLmM1JyzvSu
-         iBOI0hP7B9Mo5Ov+GkrgxSjRH1MpwFjtaS/a1D8f0Laej7AO0zMwQzQushs/mKfWuQQ1
-         gjfkShuNuKVUc0c2o4b9HnVadte0uyRn1UJC5/6n56fyCOtp2iEpYOWf8c4dyuaAOopt
-         +gSw==
+        d=gmail.com; s=20230601; t=1703112798; x=1703717598; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=Nclggf2he0zPUgzUtzVNusuGq5DYWatgL0vR1Ajc/sA=;
+        b=VwIuqz+Gg6+8CJntNRu363aVzqdj30oezjxtzHL2LsAXHLSI1L4o0NiCsyF+zHFmI2
+         /5X7F6Jzd0UVs/RanTHmdc4qJNUtRLyFGtTWLmiaOes4jJGd+wjtoPmj9dnlQUenSpfR
+         LueN2iILO7p+rdj+2y78zXrhog/GBaEKj9Ax+PhhD/vDabpcbL2DfxPCMvOvwVvnOAJ7
+         folq5DDmb4av63DEU6Ks6OUK/j8AZ0YcDDw5qWIvaSYRVgY2cgxJsiTtd7NNQ4tWAWa9
+         Pt/0U6FKlhdMRNUFNTRYoqsZvoIc7kEs0qzfiz7pk9HUZC3egr17HVXI0VS4Pd9zu72+
+         1YHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703112545; x=1703717345;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XsKFunyIEF//ykMeSfV/a0SwdfxlBLJSsRhTiMN79G0=;
-        b=UWtEsrvD2m6nKQrareyGTGlbVylIn+bwtEW3y8ywdx32kfLi6KmLEpmZVAo68Qm8C4
-         q2Kai5EfFLbZ1KpqKKmoplFEmQIL4WuVJFGQKLUQ4XchQAZrj+G5DClbhe8ETMTIfLPQ
-         H2thKnMVuf9NaeWFewFlu4JpvcoI7fRDT8cghNkEd1Eplccvk6Jl4k/8aS5HchO7/XOh
-         +HOQcTL32+UzMgqYOhmWPxEuhr+ptMrr31L5P4wCSruo774qFJSkSYE2SvwJSEIwlpXS
-         5pxTR2vz3XWP94k4u2CU7AGRD6Zgek1q5IS31Qo4Fg4o70nWkQc1ykihH0XxHZ5EXKK9
-         +h+Q==
-X-Gm-Message-State: AOJu0Yw14VUrMGl4C2HpblmMhhK4AZuByDSAoaAh2Dzi7ctJsHsCHQ+D
-	oaM/DZqhvxhAZUKkZr1QXMU=
-X-Google-Smtp-Source: AGHT+IE0GQS8h9Bn6EEDpz71Q3KqeYEHpWCA6O//K+GbvqyOaflgKNE6Gt2tJdtve2W+HxxxigiJlQ==
-X-Received: by 2002:a7b:ce0f:0:b0:40c:3c2b:b72e with SMTP id m15-20020a7bce0f000000b0040c3c2bb72emr142289wmc.116.1703112544559;
-        Wed, 20 Dec 2023 14:49:04 -0800 (PST)
-Received: from localhost.localdomain (host-95-250-248-68.retail.telecomitalia.it. [95.250.248.68])
-        by smtp.googlemail.com with ESMTPSA id bi8-20020a05600c3d8800b0040d28bbaf7bsm8220838wmb.10.2023.12.20.14.49.03
+        d=1e100.net; s=20230601; t=1703112798; x=1703717598;
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Nclggf2he0zPUgzUtzVNusuGq5DYWatgL0vR1Ajc/sA=;
+        b=ngZcRfLbjvaJ2D6Dz5yghgV313B4iVcQWchEHlAbyIBbHbt7++NtuanZkvle7Pb2sQ
+         UGfsqN/IPuc9UfVDxeXgZnjunQAC6+NL95JAdlPJh9iVHQlAyBBCAdNPxzf0WiuvGMtV
+         kMjGa3Jq3IDG/Ij24klsVV8KfklD4GW0zICaXjV5kNBAmnNloWhqXnmZancvRAEOZzJ0
+         WjtsM5Agw6xjVYfEDqOBIWFtEUDprLdSjf0j+tl6uQODalCkpuSJWrpeRAjZB6Rhs6Mc
+         nlJtWZAc0MC7MqG3CJ4TcWW3/o6cfFrjpcfLo3MlcNevJjsCQs6KTIOGp+rvzZxjb/1f
+         wILg==
+X-Gm-Message-State: AOJu0YwvisihHAce/bWCIPihD6sgknIZnsZ9mgZtY1oP4ahA99GqGxKd
+	gU/Y3JyAHyIc0p/q+OaBq/k=
+X-Google-Smtp-Source: AGHT+IEo1z37b4hacYUj8UoMuL2erFGk05NYdH5xhxZpFqVleEHWWiPf6XIphny9MgRFLeQT953pFQ==
+X-Received: by 2002:a05:600c:b57:b0:40d:3d64:1145 with SMTP id k23-20020a05600c0b5700b0040d3d641145mr46511wmr.131.1703112798070;
+        Wed, 20 Dec 2023 14:53:18 -0800 (PST)
+Received: from Ansuel-xps. (host-95-250-248-68.retail.telecomitalia.it. [95.250.248.68])
+        by smtp.gmail.com with ESMTPSA id w20-20020a05600c475400b0040b4fca8620sm8815820wmo.37.2023.12.20.14.53.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Dec 2023 14:49:04 -0800 (PST)
+        Wed, 20 Dec 2023 14:53:17 -0800 (PST)
+Message-ID: <6583705d.050a0220.6e903.083d@mx.google.com>
+X-Google-Original-Message-ID: <ZYNwWkr2znb7A--K@Ansuel-xps.>
+Date: Wed, 20 Dec 2023 23:53:14 +0100
 From: Christian Marangi <ansuelsmth@gmail.com>
-To: Pavel Machek <pavel@ucw.cz>,
-	Lee Jones <lee@kernel.org>,
-	Christian Marangi <ansuelsmth@gmail.com>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Daniel Golle <daniel@makrotopia.org>,
-	=?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
+To: Rob Herring <robh@kernel.org>
+Cc: Andrew Lunn <andrew@lunn.ch>, Heiner Kallweit <hkallweit1@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
 	"David S. Miller" <davem@davemloft.net>,
-	Li Zetao <lizetao1@huawei.com>,
-	linux-kernel@vger.kernel.org,
-	linux-leds@vger.kernel.org
-Subject: [PATCH v5 2/2] docs: ABI: sysfs-class-led-trigger-netdev: Document now hidable link_*
-Date: Wed, 20 Dec 2023 23:48:27 +0100
-Message-Id: <20231220224827.27667-2-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20231220224827.27667-1-ansuelsmth@gmail.com>
-References: <20231220224827.27667-1-ansuelsmth@gmail.com>
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Florian Fainelli <f.fainelli@gmail.com>, netdev@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Tobias Waldekranz <tobias@waldekranz.com>
+Subject: Re: [net-next PATCH v4 1/4] dt-bindings: net: phy: Document new LEDs
+ polarity property
+References: <20231215212244.1658-1-ansuelsmth@gmail.com>
+ <20231215212244.1658-2-ansuelsmth@gmail.com>
+ <20231220152209.GA229412-robh@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231220152209.GA229412-robh@kernel.org>
 
-Document now hidable link speed modes for the LED netdev trigger.
+On Wed, Dec 20, 2023 at 09:22:09AM -0600, Rob Herring wrote:
+> On Fri, Dec 15, 2023 at 10:22:41PM +0100, Christian Marangi wrote:
+> > Document new LEDs polarity property to define what mode the LED needs to
+> > be put to turn it on.
+> > 
+> > Currently supported modes are:
+> > 
+> > - active-low
+> > - active-high
+> > - active-low-tristate
+> > - active-high-tristate
+> 
+> Why is having a polarity unique to LEDs on ethernet PHYs? It's not. We 
+> already have 'active-low' established on several LED bindings. Please 
+> move the definition to leds/common.yaml and extend it. I would simply 
+> add an 'inactive-tristate' boolean property (if there's an actual user). 
+>
 
-Link speed modes are now showed only if the named network device
-supports them and are hidden if not.
+Should I also drop the active-low from the current schema that have it?
 
-Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
----
-Changes v2:
-- Add this patch
+Also we have led-active-low. (should we support both?)
 
- .../ABI/testing/sysfs-class-led-trigger-netdev       | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+On the marvell10g series we are discussing of using tristate or not. We
+notice tristate might be confusing, would it be better to use
+inactive-high-impedance ?
 
-diff --git a/Documentation/ABI/testing/sysfs-class-led-trigger-netdev b/Documentation/ABI/testing/sysfs-class-led-trigger-netdev
-index a6c307c4befa..ed46b37ab8a2 100644
---- a/Documentation/ABI/testing/sysfs-class-led-trigger-netdev
-+++ b/Documentation/ABI/testing/sysfs-class-led-trigger-netdev
-@@ -88,6 +88,8 @@ Description:
- 		speed of 10MBps of the named network device.
- 		Setting this value also immediately changes the LED state.
- 
-+		Present only if the named network device supports 10Mbps link speed.
-+
- What:		/sys/class/leds/<led>/link_100
- Date:		Jun 2023
- KernelVersion:	6.5
-@@ -101,6 +103,8 @@ Description:
- 		speed of 100Mbps of the named network device.
- 		Setting this value also immediately changes the LED state.
- 
-+		Present only if the named network device supports 100Mbps link speed.
-+
- What:		/sys/class/leds/<led>/link_1000
- Date:		Jun 2023
- KernelVersion:	6.5
-@@ -114,6 +118,8 @@ Description:
- 		speed of 1000Mbps of the named network device.
- 		Setting this value also immediately changes the LED state.
- 
-+		Present only if the named network device supports 1000Mbps link speed.
-+
- What:		/sys/class/leds/<led>/link_2500
- Date:		Nov 2023
- KernelVersion:	6.8
-@@ -127,6 +133,8 @@ Description:
- 		speed of 2500Mbps of the named network device.
- 		Setting this value also immediately changes the LED state.
- 
-+		Present only if the named network device supports 2500Mbps link speed.
-+
- What:		/sys/class/leds/<led>/link_5000
- Date:		Nov 2023
- KernelVersion:	6.8
-@@ -140,6 +148,8 @@ Description:
- 		speed of 5000Mbps of the named network device.
- 		Setting this value also immediately changes the LED state.
- 
-+		Present only if the named network device supports 5000Mbps link speed.
-+
- What:		/sys/class/leds/<led>/link_10000
- Date:		Nov 2023
- KernelVersion:	6.8
-@@ -153,6 +163,8 @@ Description:
- 		speed of 10000Mbps of the named network device.
- 		Setting this value also immediately changes the LED state.
- 
-+		Present only if the named network device supports 10000Mbps link speed.
-+
- What:		/sys/class/leds/<led>/half_duplex
- Date:		Jun 2023
- KernelVersion:	6.5
+> I do worry this continues to evolve until we've re-created the pinctrl 
+> binding...
+> 
+
 -- 
-2.40.1
-
+	Ansuel
 
