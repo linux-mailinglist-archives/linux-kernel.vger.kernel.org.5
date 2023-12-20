@@ -1,195 +1,102 @@
-Return-Path: <linux-kernel+bounces-7238-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7239-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D4C4881A38B
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 17:03:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 516F081A39D
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 17:04:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4A5BEB20DBB
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 16:03:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0DB8A281F5F
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 16:04:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9866E4BAA0;
-	Wed, 20 Dec 2023 15:59:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA03646521;
+	Wed, 20 Dec 2023 16:00:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b="se9WbNYU"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDF534BA99
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 15:59:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E25EF1FB;
-	Wed, 20 Dec 2023 08:00:16 -0800 (PST)
-Received: from [10.57.75.247] (unknown [10.57.75.247])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5F5A03F64C;
-	Wed, 20 Dec 2023 07:59:28 -0800 (PST)
-Message-ID: <65b27029-28be-4744-85c3-6d3aa935aa03@arm.com>
-Date: Wed, 20 Dec 2023 15:59:26 +0000
+Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A0CA4645B;
+	Wed, 20 Dec 2023 16:00:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hugovil.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
+	; s=x; h=Subject:Content-Transfer-Encoding:Mime-Version:Message-Id:Cc:To:From
+	:Date:subject:date:message-id:reply-to;
+	bh=+NldyuY/BxdtLBEewyvEtWy6UnYa/M2HSy8eSghzyg4=; b=se9WbNYUaP7keWhf5ITLLV+TdY
+	t3zov8YrpzqXyIk+OnFT/y9nmgTTttlnN9kvZp+ocOP/iNDvEHlftX35Tm3+SRKN+jw+xgE+1+dRY
+	mc1mcG9jAEkUg4f7xeXUYip7v36IBAFpHH0Q2iythyfWJ1f9sh81QcdCOSnfjwF1iF30=;
+Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:51650 helo=pettiford)
+	by mail.hugovil.com with esmtpa (Exim 4.92)
+	(envelope-from <hugo@hugovil.com>)
+	id 1rFyzy-0006jy-Bc; Wed, 20 Dec 2023 11:00:42 -0500
+Date: Wed, 20 Dec 2023 11:00:41 -0500
+From: Hugo Villeneuve <hugo@hugovil.com>
+To: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: gregkh@linuxfoundation.org, jirislaby@kernel.org, jringle@gridpoint.com,
+ kubakici@wp.pl, phil@raspberrypi.org, bo.svangard@embeddedart.se,
+ linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org, Hugo Villeneuve
+ <hvilleneuve@dimonoff.com>, stable@vger.kernel.org
+Message-Id: <20231220110041.23ed3c4e97a61d102c6b1e24@hugovil.com>
+In-Reply-To: <ZYMLciH4y_Y5ewiL@smile.fi.intel.com>
+References: <20231219171903.3530985-1-hugo@hugovil.com>
+	<20231219171903.3530985-5-hugo@hugovil.com>
+	<ZYMLciH4y_Y5ewiL@smile.fi.intel.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 02/16] mm: Batch-copy PTE ranges during fork()
-Content-Language: en-GB
-To: David Hildenbrand <david@redhat.com>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Ard Biesheuvel <ardb@kernel.org>, Marc Zyngier <maz@kernel.org>,
- Oliver Upton <oliver.upton@linux.dev>, James Morse <james.morse@arm.com>,
- Suzuki K Poulose <suzuki.poulose@arm.com>, Zenghui Yu
- <yuzenghui@huawei.com>, Andrey Ryabinin <ryabinin.a.a@gmail.com>,
- Alexander Potapenko <glider@google.com>,
- Andrey Konovalov <andreyknvl@gmail.com>, Dmitry Vyukov <dvyukov@google.com>,
- Vincenzo Frascino <vincenzo.frascino@arm.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Anshuman Khandual <anshuman.khandual@arm.com>,
- Matthew Wilcox <willy@infradead.org>, Yu Zhao <yuzhao@google.com>,
- Mark Rutland <mark.rutland@arm.com>, Kefeng Wang
- <wangkefeng.wang@huawei.com>, John Hubbard <jhubbard@nvidia.com>,
- Zi Yan <ziy@nvidia.com>, Barry Song <21cnbao@gmail.com>,
- Alistair Popple <apopple@nvidia.com>, Yang Shi <shy828301@gmail.com>
-Cc: linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org
-References: <20231218105100.172635-1-ryan.roberts@arm.com>
- <7c0236ad-01f3-437f-8b04-125d69e90dc0@redhat.com>
- <9a58b1a2-2c13-4fa0-8ffa-2b3d9655f1b6@arm.com>
- <28968568-f920-47ac-b6fd-87528ffd8f77@redhat.com>
- <10b0b562-c1c0-4a66-9aeb-a6bff5c218f6@arm.com>
- <8f8023cb-3c31-4ead-a9e6-03a10e9490c6@redhat.com>
- <da16a7e5-76dd-4150-9ade-54b0d227a1e1@arm.com>
- <699cb1db-51eb-460e-9ceb-1ce08ca03050@redhat.com>
- <da29a4c6-61f6-4203-9c82-9ce6e1c32552@arm.com>
- <2a8c5b6c-f5ae-43b2-99aa-6d10e79b76e1@redhat.com>
- <ade26f27-03af-4ad7-ad81-38b482f7572c@arm.com>
- <3194b8a5-3f72-4d9e-a267-fbdad32ad864@redhat.com>
- <f2f420cf-678d-466d-ac30-bc8251f16632@arm.com>
- <9f99a3ca-051e-4b1b-81e9-8456d8e422ad@redhat.com>
- <c1913fa2-d313-4f05-a649-da69b6d31d2a@arm.com>
- <c244707c-8c0c-4593-ab45-d8f165dbc5ee@redhat.com>
- <ba6a5c11-34fb-40ca-b24a-f51a207464f2@arm.com>
- <5fcbf405-7e62-4b38-acc4-a9dd8cc91214@redhat.com>
- <396cae5d-70e4-449f-af6c-2348b720d3a3@arm.com>
- <cfd88172-1624-4966-92c6-5197b26a820b@redhat.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <cfd88172-1624-4966-92c6-5197b26a820b@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 70.80.174.168
+X-SA-Exim-Mail-From: hugo@hugovil.com
+X-Spam-Level: 
+X-Spam-Report: 
+	* -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+	* -0.0 T_SCC_BODY_TEXT_LINE No description available.
+	* -1.4 NICE_REPLY_A Looks like a legit reply (A)
+Subject: Re: [PATCH 04/18] serial: sc16is7xx: improve do/while loop in
+ sc16is7xx_irq()
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 
-On 20/12/2023 15:35, David Hildenbrand wrote:
-> On 20.12.23 16:05, Ryan Roberts wrote:
->> On 20/12/2023 14:00, David Hildenbrand wrote:
->>> [...]
->>>
->>>>>>
->>>>>
->>>>> gcc version 13.2.1 20231011 (Red Hat 13.2.1-4) (GCC)
->>>>>
->>>>>   From Fedora 38. So "a bit" newer :P
->>>>>
->>>>
->>>> I'll retry with newer toolchain.
->>>>
->>>> FWIW, with the code fix and the original compiler:
->>>>
->>>> Fork, order-0, Apple M2:
->>>> | kernel                |   mean_rel |   std_rel |
->>>> |:----------------------|-----------:|----------:|
->>>> | mm-unstable           |       0.0% |      0.8% |
->>>> | hugetlb-rmap-cleanups |       1.3% |      2.0% |
->>>> | fork-batching         |       4.3% |      1.0% |
->>>>
->>>> Fork, order-9, Apple M2:
->>>> | kernel                |   mean_rel |   std_rel |
->>>> |:----------------------|-----------:|----------:|
->>>> | mm-unstable           |       0.0% |      0.8% |
->>>> | hugetlb-rmap-cleanups |       0.9% |      0.9% |
->>>> | fork-batching         |     -37.3% |      1.0% |
->>>>
->>>> Fork, order-0, Ampere Altra:
->>>> | kernel                |   mean_rel |   std_rel |
->>>> |:----------------------|-----------:|----------:|
->>>> | mm-unstable           |       0.0% |      0.7% |
->>>> | hugetlb-rmap-cleanups |       3.2% |      0.7% |
->>>> | fork-batching         |       5.5% |      1.1% |
->>>>
->>>> Fork, order-9, Ampere Altra:
->>>> | kernel                |   mean_rel |   std_rel |
->>>> |:----------------------|-----------:|----------:|
->>>> | mm-unstable           |       0.0% |      0.1% |
->>>> | hugetlb-rmap-cleanups |       0.5% |      0.1% |
->>>> | fork-batching         |     -10.4% |      0.1% |
->>>>
->>>
->>> I just gave it another quick benchmark run on that Intel system.
->>>
->>> hugetlb-rmap-cleanups -> fork-batching
->>>
->>> order-0: 0.014114 -> 0.013848
->>>
->>> -1.9%
->>>
->>> order-9: 0.014262 -> 0.009410
->>>
->>> -34%
->>>
->>> Note that I disable SMT and turbo, and pin the test to one CPU, to make the
->>> results as stable as possible. My kernel config has anything related to
->>> debugging disabled.
->>>
->>
->> And with gcc 13.2 on arm64:
->>
->> Fork, order-0, Apple M2 VM:
->> | kernel                |   mean_rel |   std_rel |
->> |:----------------------|-----------:|----------:|
->> | mm-unstable           |       0.0% |      1.5% |
->> | hugetlb-rmap-cleanups |      -3.3% |      1.1% |
->> | fork-batching         |      -3.6% |      1.4% |
->>
->> Fork, order-9, Apple M2 VM:
->> | kernel                |   mean_rel |   std_rel |
->> |:----------------------|-----------:|----------:|
->> | mm-unstable           |       0.0% |      1.8% |
->> | hugetlb-rmap-cleanups |      -5.8% |      1.3% |
->> | fork-batching         |     -38.1% |      2.3% |
->>
->> Fork, order-0, Ampere Altra:
->> | kernel                |   mean_rel |   std_rel |
->> |:----------------------|-----------:|----------:|
->> | mm-unstable           |       0.0% |      1.3% |
->> | hugetlb-rmap-cleanups |      -0.1% |      0.4% |
->> | fork-batching         |      -0.4% |      0.5% |
->>
->> Fork, order-9, Ampere Altra:
->> | kernel                |   mean_rel |   std_rel |
->> |:----------------------|-----------:|----------:|
->> | mm-unstable           |       0.0% |      0.1% |
->> | hugetlb-rmap-cleanups |      -0.1% |      0.1% |
->> | fork-batching         |     -13.9% |      0.1% |
->>
->>
->> So all looking good. Compiler was the issue. Sorry for the noise.
-> 
-> No need to be sorry, good that we figured out what's going wrong here.
-> 
-> Weird that the compiler makes such a difference here.
-> 
->>
->> So please go ahead with you rmap v2 stuff, and I'll wait for you to post the
->> fork and zap batching patches properly, then rebase my arm64 contpte stuff on
->> top and remeasure everything.
-> 
-> Yes, will get rmap v2 out soon, then start working on fork, and then try
-> tackling zap. I have some holiday coming up, so it might take some time -- but
-> there is plenty of time left.
+On Wed, 20 Dec 2023 17:42:42 +0200
+Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
 
-Me too, I'll be out from end of Friday, returning on 2nd Jan.
-
-Happy Christmas!
-
+> On Tue, Dec 19, 2023 at 12:18:48PM -0500, Hugo Villeneuve wrote:
+> > From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+> > 
+> > Simplify and improve readability by replacing while(1) loop with
+> > do {} while, and by using the keep_polling variable as the exit
+> > condition, making it more explicit.
 > 
+> ...
+> 
+> > +	bool keep_polling;
+> 
+> > +
+> 
+> Stray blank line. Otherwise LGTM.
 
+Yes, and I just realized I should also change:
+
+    do {
+        keep_polling = false;
+        int i;
+        ...
+
+to:
+
+    do {
+        int i;
+
+        keep_polling = false;
+        ...
+
+Hugo Villeneuve
 
