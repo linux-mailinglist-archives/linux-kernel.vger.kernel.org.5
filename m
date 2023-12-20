@@ -1,157 +1,102 @@
-Return-Path: <linux-kernel+bounces-6836-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6838-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7097819E4B
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 12:41:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40F31819E52
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 12:43:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 54528B25116
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 11:41:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D51DA1F22EC5
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 11:43:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33E4A2137D;
-	Wed, 20 Dec 2023 11:41:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65E37219F9;
+	Wed, 20 Dec 2023 11:42:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="hCIQKu+V"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="UK1DT9vO"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1AA52230D
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 11:41:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-40d38f03712so1805305e9.2
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 03:41:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1703072481; x=1703677281; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=SZWhqtv1uYgAtrEvWORH5Jkai5M2Z/ROl6KfWhfHkKU=;
-        b=hCIQKu+Vbkex63tChfosUR/zvPPmw6Hgoz9w9dgx8GYL58b5wM6+5PhSZbIAqqxRE1
-         5e4t3mYaXvvLzC4MK3+Q70+hWDNmhtOU9dW0tNa97vMIwD/ymWvpzsEYW+ZhF3mYRwgt
-         33B4Icep/S83qd8FvEa7KJ6zwiflKWri63WZosr2J0ZmMnRSOCFPSk4J5hzVluiz6FP8
-         0il8U5fYQf+ZWV0r7sfBahOPWGtz9XAcBwN3fn4S/IIbM4WtXKWsnk+CgIfy2Gd7dF2K
-         C806ZRENcOhTY2QP9iMfXJ/aOUzH/sV9SEtxdQy2GiuQO7cU/QmYgXQX9feCeOojev2c
-         jZqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703072481; x=1703677281;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SZWhqtv1uYgAtrEvWORH5Jkai5M2Z/ROl6KfWhfHkKU=;
-        b=VBr/JaLXaKWPKT3Rs2HoxbFhvlOGrtyvtNLU8g90eysvVfsLdsOqGeFLYaRcmrOOD0
-         A8KS3fj4Hprh6oFIXhlb9iy+ra3Y4l4VkddtHTsNZDuFwxqNdTkbFgNIXQEnIW8Nx08Q
-         Rz6k5WmwHBfxvuM/TX0P1zYBorIIfJOq+m/LApvJVuM83SANwqhPWqLobNWbPfeyQT6v
-         XNsw+ufuHFE8OL/oxquQb7455zglwsdTiQmY9XqPx6tOXq0Y2+qwt9NZpYjE1DcUn85R
-         4YCyuNAYp9PzxqDLUfCnFz76g+03xaJWUwwTyW9Xoa+Vl+puFHrnYMwImubNf+OPrQZh
-         7B/Q==
-X-Gm-Message-State: AOJu0YzX/qUeYWmd+u+Fo/wIxLRrzH7G9wgm50WTf0WUN4236N4BTnHh
-	K8HiJIR2uMMZOuWOzxAnKZKrDw==
-X-Google-Smtp-Source: AGHT+IGrOP3rCvSQlLOPOY+Br1f+srVKe7B5d6K6/Ee1K7y3SdFosWv+1eHUoS5ib1QvAzNgoIZg0w==
-X-Received: by 2002:a05:600c:1688:b0:40b:2a53:7913 with SMTP id k8-20020a05600c168800b0040b2a537913mr9715344wmn.13.1703072480998;
-        Wed, 20 Dec 2023 03:41:20 -0800 (PST)
-Received: from [192.168.50.4] ([82.78.167.103])
-        by smtp.gmail.com with ESMTPSA id z5-20020a05600c0a0500b0040c2963e5f3sm7135141wmp.38.2023.12.20.03.41.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Dec 2023 03:41:20 -0800 (PST)
-Message-ID: <3d4511bd-fd96-4281-a5cb-ac1765bded31@tuxon.dev>
-Date: Wed, 20 Dec 2023 13:41:18 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5956822304;
+	Wed, 20 Dec 2023 11:42:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BK5sdw9022676;
+	Wed, 20 Dec 2023 11:42:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=qcppdkim1; bh=2j3ICgC
+	Q/r45jyvw6AYQvdh0mdhlwrngYIvFf7PIelg=; b=UK1DT9vOCI4nt4tZPYwRGLh
+	OCIBWrMLgvuFTgrvZ6ko9Yq2fcjSdwMdU2GRB6BoYJkp7paLnpzA8bc26/w5mXhA
+	o9kQMA2d1S5/YX17vE8zcDLkXsRWtbZ0GMEPDcXpU4zYcIkZBEWAFRCZZwwcYyiS
+	bGrh0Ub/F5BJmCmFgS6AsuYnF3B+jFCo2W874ezQZvMi256B16t73S57gBLP6weS
+	IEw7vz8z33Kz+g0m8X/0IBM6MXpr5JWCdLC0DdlhV45La7/ErG2BbolIBD4whSQX
+	R5jlqfFSEpRq6lYj3vAqjUFQSNJnvTJUX+y2IYkeGWaQsWIxfKKgAiAnPogUQog=
+	=
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v3rppgxwk-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 20 Dec 2023 11:42:45 +0000 (GMT)
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BKBgiX2021663
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 20 Dec 2023 11:42:44 GMT
+Received: from hu-kbajaj-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Wed, 20 Dec 2023 03:42:40 -0800
+From: Komal Bajaj <quic_kbajaj@quicinc.com>
+To: Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio
+	<konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "Krzysztof
+ Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>
+CC: <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Komal Bajaj <quic_kbajaj@quicinc.com>
+Subject: [PATCH 0/2] Enable various remoteprocs for qcm6490-idp and qcs6490-rb3gen2
+Date: Wed, 20 Dec 2023 17:12:23 +0530
+Message-ID: <20231220114225.26567-1-quic_kbajaj@quicinc.com>
+X-Mailer: git-send-email 2.42.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v2 11/21] net: ravb: Move DBAT configuration to
- the driver's ndo_open API
-Content-Language: en-US
-To: Sergey Shtylyov <s.shtylyov@omp.ru>, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
- richardcochran@gmail.com, p.zabel@pengutronix.de,
- yoshihiro.shimoda.uh@renesas.com, wsa+renesas@sang-engineering.com,
- geert+renesas@glider.be
-Cc: netdev@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
- linux-kernel@vger.kernel.org,
- Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-References: <20231214114600.2451162-1-claudiu.beznea.uj@bp.renesas.com>
- <20231214114600.2451162-12-claudiu.beznea.uj@bp.renesas.com>
- <a93c0673-2876-5bb2-29aa-0d0208b97b10@omp.ru>
- <4721c4e6-cc0f-48bd-8b14-4a8217ada1fd@omp.ru>
- <b17c6124-0b84-40b2-a254-cce617f73cf2@tuxon.dev>
- <59ba595a-ab79-cc5d-feff-dad60e80c44f@omp.ru>
-From: claudiu beznea <claudiu.beznea@tuxon.dev>
-In-Reply-To: <59ba595a-ab79-cc5d-feff-dad60e80c44f@omp.ru>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: QjMFDxxP9mKVFy-c8rTE4_ChqB2QJ15a
+X-Proofpoint-GUID: QjMFDxxP9mKVFy-c8rTE4_ChqB2QJ15a
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxscore=0
+ priorityscore=1501 suspectscore=0 mlxlogscore=250 impostorscore=0
+ clxscore=1015 spamscore=0 phishscore=0 lowpriorityscore=0 adultscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2312200082
 
+Enable various applicable remoteproc nodes for qcm6490-idp
+and qcs6490-rb3gen2.
 
+Komal Bajaj (2):
+  arm64: dts: qcom: qcm6490-idp: Enable various remoteprocs
+  arm64: dts: qcom: qcs6490-rb3gen2: Enable various remoteprocs
 
-On 19.12.2023 20:54, Sergey Shtylyov wrote:
-> On 12/17/23 3:54 PM, claudiu beznea wrote:
-> 
-> [...]
-> 
->>>>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->>>>>
->>>>> DBAT setup was done in the driver's probe API. As some IP variants switch
->>>>> to reset mode (and thus registers' content is lost) when setting clocks
->>>>> (due to module standby functionality) to be able to implement runtime PM
->>>>> move the DBAT configuration in the driver's ndo_open API.
->>>>>
->>>>> This commit prepares the code for the addition of runtime PM.
->>>>>
->>>>> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->>>>
->>>> Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
->>>>
->>>> [...]
->>>>> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
->>>>> index 04eaa1967651..6b8ca08be35e 100644
->>>>> --- a/drivers/net/ethernet/renesas/ravb_main.c
->>>>> +++ b/drivers/net/ethernet/renesas/ravb_main.c
->>>>> @@ -1822,6 +1822,7 @@ static int ravb_open(struct net_device *ndev)
->>>>>  		napi_enable(&priv->napi[RAVB_NC]);
->>>>>  
->>>>>  	ravb_set_delay_mode(ndev);
->>>>> +	ravb_write(ndev, priv->desc_bat_dma, DBAT);
->>>
->>>    Looking at it again, I suspect this belong in ravb_dmac_init()...
->>
->> ravb_dmac_init() is called from multiple places in this driver, e.g.,
-> 
->    It's purpose is to configure AVB-DMAC and DBAT is the AVB-DMAC register,
-> right?
+ arch/arm64/boot/dts/qcom/qcm6490-idp.dts     | 20 ++++++++++++++++++++
+ arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts | 15 +++++++++++++++
+ 2 files changed, 35 insertions(+)
 
-It is. But it is pointless to configure it more than one time after
-ravb_open() has been called as the register content is not changed until IP
-enters reset mode (though ravb_close() now).
+--
+2.42.0
 
-> 
->> ravb_set_ringparam(), ravb_tx_timeout_work().
-> 
->    I know. Its value is only calculated once, in ravb_probe(), right?
-
-right
-
-> 
->> I'm afraid we may broke the behavior of these if DBAT setup is moved
-
-I was wrong here. DBAT is not changed by IP while TX/RX is working.
-
-> 
->    Do not be afraid! :-)
-> 
->> in ravb_dmac_init(). This is also
->> valid for setting delay (see patch 10/12).
-> 
->    I don't think there will be a problem either... but maybe we
-> should call it in ravb_emac_init() indeed.
-> 
-> [...]
-> 
-> MBR, Sergey
 
