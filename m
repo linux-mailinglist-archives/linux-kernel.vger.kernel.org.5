@@ -1,174 +1,236 @@
-Return-Path: <linux-kernel+bounces-6382-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6381-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54FF0819819
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 06:28:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 78A5F819818
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 06:28:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BD90BB221E4
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 05:28:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 31E042884A7
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 05:28:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9523B15484;
-	Wed, 20 Dec 2023 05:28:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 172F1125A2;
+	Wed, 20 Dec 2023 05:28:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="L+/BeCI1"
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="TKo4XbMy"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2051.outbound.protection.outlook.com [40.107.220.51])
+Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58FC914A8E
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 05:28:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=D1PGQifq5CdrKvNitDdopuv4djwwGq+jifFNoNWJNfDriXLN65rlGb4ZoNlREWkuuhpGatA6j6DUuGE9ni5s0Kz/acqiygiaUY6bFfEddexB7FJtMTG7UXc2d05kMqIzRVMC46XmdvZTJpBz7r8BdL3EWHGSqGn2TmgXBOsx5ADYXyUp7/9lioMmn9EngVTtt1UMRAvmcs2Gsevxisu+4DQH8d91WThXmMUJnY7WHq6LbU5MfSmxvEG8hRqC51uHb7me+AjdDVKsSi0vYNDhodj/iIg3kQMcjJWNBQk+7uotN2N/Pvdv+j68lFDfIk/Df0LuDZ6/Ng/9DoAoua+ivQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=9kfsQYCNQ7XNaDBPfx4N3Tktjqysti7t0/Tldy7rsBI=;
- b=gIrPYz43JIj+MbqT5MYjtfXEKJ0LOywvyB8RPdR47KEkem9Wk5wKeAfyHxhewwLKb/BJLHOM22qA3bA3Nsd7oDKtmyKh3bEa9AfveHSG6Yll0gizmpUZ1iTqtU5TiC/F9nPdEax8qPALmmdhDOk3bvULMxJM9QxTghtap6OS2OU3nRlTJbUJRdGgO4rR6TyScF8MBfabn5V4Nt4d1gKOm+nNM/URToec0RBiAucM6KcW08DSb1UgchSPuhyZXEdSkVLXf26Iy0+UNX555Jqg4paSvcedGNlM5+FOJNDU+Yc8vE22gJseVXuFsXP+xYOGBMtrS/vTVGiOueSH8WCBTA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9kfsQYCNQ7XNaDBPfx4N3Tktjqysti7t0/Tldy7rsBI=;
- b=L+/BeCI1h+t/QSIK90nQ9UAWvZX5qniasyGH+Sfzp5rIY6JTPH4l7nP25R5kl2Fa8jQa2AXEVpnKYFK/W+GBPAc619qi3RwWkc/rbYVvXq9QWBC1D2RlI1R/RFwFRpInCQJ+wunTtLx4QqxZZx3xSRSb1HNf/ypLqM27IHsFEGeZRB+XTduvXCW560y53EAcGluu2emV4ZJL/Rrfa118o7lZ3L1dBKiHqoEkK2l9i98MbUVbyM10dOCXKoHzYjfiICPQ1aGACAf9LKJtzLOhKNU6WM5gHDJUw1ebcofqAS9FDnBQulwwDIhQrNb1WNCKMlo1W5Uphze26wcs0kSaug==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3179.namprd12.prod.outlook.com (2603:10b6:5:183::18)
- by SN7PR12MB7417.namprd12.prod.outlook.com (2603:10b6:806:2a4::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.38; Wed, 20 Dec
- 2023 05:28:03 +0000
-Received: from DM6PR12MB3179.namprd12.prod.outlook.com
- ([fe80::5fef:7167:36e:76cd]) by DM6PR12MB3179.namprd12.prod.outlook.com
- ([fe80::5fef:7167:36e:76cd%4]) with mapi id 15.20.7091.034; Wed, 20 Dec 2023
- 05:28:03 +0000
-References: <20231218105100.172635-1-ryan.roberts@arm.com>
- <20231218105100.172635-4-ryan.roberts@arm.com>
-User-agent: mu4e 1.8.13; emacs 29.1
-From: Alistair Popple <apopple@nvidia.com>
-To: Ryan Roberts <ryan.roberts@arm.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon
- <will@kernel.org>, Ard Biesheuvel <ardb@kernel.org>, Marc Zyngier
- <maz@kernel.org>, Oliver Upton <oliver.upton@linux.dev>, James Morse
- <james.morse@arm.com>, Suzuki K Poulose <suzuki.poulose@arm.com>, Zenghui
- Yu <yuzenghui@huawei.com>, Andrey Ryabinin <ryabinin.a.a@gmail.com>,
- Alexander Potapenko <glider@google.com>, Andrey Konovalov
- <andreyknvl@gmail.com>, Dmitry Vyukov <dvyukov@google.com>, Vincenzo
- Frascino <vincenzo.frascino@arm.com>, Andrew Morton
- <akpm@linux-foundation.org>, Anshuman Khandual
- <anshuman.khandual@arm.com>, Matthew Wilcox <willy@infradead.org>, Yu Zhao
- <yuzhao@google.com>, Mark Rutland <mark.rutland@arm.com>, David
- Hildenbrand <david@redhat.com>, Kefeng Wang <wangkefeng.wang@huawei.com>,
- John Hubbard <jhubbard@nvidia.com>, Zi Yan <ziy@nvidia.com>, Barry Song
- <21cnbao@gmail.com>, Yang Shi <shy828301@gmail.com>,
- linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 03/16] mm: Batch-clear PTE ranges during zap_pte_range()
-Date: Wed, 20 Dec 2023 16:25:07 +1100
-In-reply-to: <20231218105100.172635-4-ryan.roberts@arm.com>
-Message-ID: <87zfy5zbmu.fsf@nvdebian.thelocal>
-Content-Type: text/plain
-X-ClientProxiedBy: SY5PR01CA0045.ausprd01.prod.outlook.com
- (2603:10c6:10:1f8::15) To DM6PR12MB3179.namprd12.prod.outlook.com
- (2603:10b6:5:183::18)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 822F211C84
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 05:27:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
+	by mailout2.samsung.com (KnoxPortal) with ESMTP id 20231220052752epoutp02f5e1511a6af45d9c0cac51195cf5f3eb~icwR-fV8F1831818318epoutp02Z
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 05:27:52 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20231220052752epoutp02f5e1511a6af45d9c0cac51195cf5f3eb~icwR-fV8F1831818318epoutp02Z
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1703050072;
+	bh=Qr6Y/n44TAh60hRyqSdn6ykroR+doAVKJrBLaV/BU3U=;
+	h=From:To:Cc:Subject:Date:References:From;
+	b=TKo4XbMyF3thDWxQ+ID9i8Db9tS7E8S2649tuzV8bdGF00XgFoK9jViCjEMg8h/V6
+	 OxZJm1F+f7FnHtCfTw1QnBvdx37MvAF0Qo+9asugI7+q+oYWZb21zTcSYpivJuC4Pd
+	 1YMTonVdOS/wFQv/PWm3DQ3OM0PP+gZ9LxQzafso=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+	epcas1p4.samsung.com (KnoxPortal) with ESMTP id
+	20231220052750epcas1p43b047fc01a36edbbd76ad192775eea22~icwQrp6SM1444814448epcas1p4J;
+	Wed, 20 Dec 2023 05:27:50 +0000 (GMT)
+Received: from epsmges1p3.samsung.com (unknown [182.195.38.248]) by
+	epsnrtp1.localdomain (Postfix) with ESMTP id 4Sw2Bt0vvVz4x9Pr; Wed, 20 Dec
+	2023 05:27:50 +0000 (GMT)
+Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
+	epsmges1p3.samsung.com (Symantec Messaging Gateway) with SMTP id
+	A7.EC.09739.55B72856; Wed, 20 Dec 2023 14:27:49 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+	epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
+	20231220052749epcas1p3b90f6c03110ff5f63ffc547ef0f35907~icwPb-Im92245822458epcas1p3a;
+	Wed, 20 Dec 2023 05:27:49 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+	epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+	20231220052749epsmtrp2b953272c91a3b32041de0feadc2c5924~icwPaqkOk1019310193epsmtrp2M;
+	Wed, 20 Dec 2023 05:27:49 +0000 (GMT)
+X-AuditID: b6c32a37-e67fa7000000260b-84-65827b551e19
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+	epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+	57.E7.08755.55B72856; Wed, 20 Dec 2023 14:27:49 +0900 (KST)
+Received: from localhost.localdomain (unknown [10.253.100.232]) by
+	epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+	20231220052749epsmtip1758180bb7a83894c81a23ec2d805d5ff~icwPHDQ5W0564405644epsmtip1u;
+	Wed, 20 Dec 2023 05:27:49 +0000 (GMT)
+From: Chanwoo Lee <cw9316.lee@samsung.com>
+To: alim.akhtar@samsung.com, avri.altman@wdc.com, bvanassche@acm.org,
+	jejb@linux.ibm.com, martin.petersen@oracle.com, peter.wang@mediatek.com,
+	chu.stanley@gmail.com, matthias.bgg@gmail.com,
+	angelogioacchino.delregno@collabora.com, stanley.chu@mediatek.com,
+	quic_cang@quicinc.com, mani@kernel.org, quic_asutoshd@quicinc.com,
+	powen.kao@mediatek.com, quic_nguyenb@quicinc.com,
+	yang.lee@linux.alibaba.com, beanhuo@micron.com, Arthur.Simchaev@wdc.com,
+	ebiggers@google.com, linux-scsi@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org
+Cc: grant.jung@samsung.com, jt77.jang@samsung.com, dh0421.hwang@samsung.com,
+	sh043.lee@samsung.com, ChanWoo Lee <cw9316.lee@samsung.com>
+Subject: [PATCH] ufs: mcq: Adding a function for MCQ enable
+Date: Wed, 20 Dec 2023 14:27:37 +0900
+Message-Id: <20231220052737.19857-1-cw9316.lee@samsung.com>
+X-Mailer: git-send-email 2.29.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3179:EE_|SN7PR12MB7417:EE_
-X-MS-Office365-Filtering-Correlation-Id: fd27fa59-1bf8-4e84-17b3-08dc011c701a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	KyFc7dyqWBrhJpJG2Aue+z4mKaSO89wj15zdm9Le5AddG4AsPXYAn+VEW1ync3ARN6VH3Eb5YaUOxiYoBXXYdVOYz990hg9A61tj23klu7oyuWKpuMi+61WEJuabSu6JycvdgC+tto/wBqxcbG7w3JBcAR61xP8tfqYEe/gbMQLDrcvPkpAP+vf9gtDwoNACEQwAQNpML+i5VyVlzFiKCWfrHMpDpAnWzFveaViwpG6Ros7Sx+PyV5z4AnLhOVuN7dmtQa/CJ+jAzeojRwSe8jFtcfPWzOhkCRC6k46sUICVpxPfvGMmRe9D4vPvkO8xTOUeaElCIyiiaIY0V+xVxR96mWLLHD7ZLqxCy4Lef41Jsr1jmHgxfJxf/p/3WUY7EVJ+J46A5R6YF6fK49xOsT0Nn6zF425ZMuN/Zk19a1XvKk+ZLfKd3h2dIDIuQvEAnamhJv0xbawMR+aiKnXOOCBaLBG1mqZSTEK0Ps3HC/GV9l/+9YxCp4hrifeMB54QPzT8mPjKAS2qac5/qyb0Epl1M7+ovd3/HAOIYX77S/FtYztWdvYV27XU4beilBWn
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3179.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(39860400002)(346002)(376002)(396003)(230922051799003)(1800799012)(64100799003)(451199024)(186009)(66556008)(66946007)(6916009)(316002)(7416002)(54906003)(66476007)(4744005)(2906002)(8936002)(8676002)(9686003)(5660300002)(4326008)(38100700002)(6512007)(6486002)(6506007)(86362001)(478600001)(26005)(41300700001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?VdavYJWiwo7ygiaX0rSAWsMxjvvujOOEYeCQ5qpqEEWft3o0xw0ZbLY5wSSl?=
- =?us-ascii?Q?yPjMveVzgKi+FYWlRdnnuGnTdokhYw1R1sbAOkwrMLb6S3eKSjINb+L9f2oi?=
- =?us-ascii?Q?wLzeKaFU5xWoaqZLEE3Cl/0m9j1V2WMTnIlqiZjfsSRuXM2SVFPLKpi5j+0r?=
- =?us-ascii?Q?aUsZylGuq28epVFlnK/gVSiGnDZ88fU0b9J+3zsvsHJMlra7/2ZqPvE+5kl9?=
- =?us-ascii?Q?FcGY7AuFFjmH0LhsWwtSv2VgMXeIMQPH4DJYnHjIJFuhpr5qAlEr04f6P2Gj?=
- =?us-ascii?Q?W1dr0nbXy3woMjcKqJO7QGCCPfz8DLrkRvvamZ5eWT37rH4Mqik6+sTWwLlk?=
- =?us-ascii?Q?01hbTQxuN7PduNeC63HByPQiJlLzQEb5T3eoH7dkPP0qSs1MSwKjhv5eq5Fm?=
- =?us-ascii?Q?zbn3/bc9vYfvLbaPHoTVFZfxkR5HmZTqAA+aucMc/S45g2fHwgqO30IsmP7X?=
- =?us-ascii?Q?T0etILJPW1qxp4apv8Xy1cVMrNmSsdJn+Xhmq5lwO0QD/yuhSV+jkcQseI9K?=
- =?us-ascii?Q?V141VJu73Mhos6Z4IWqz9gL2+EMyk7Zm9wi3GF9jARFO77MHZvn+JJvqXQN9?=
- =?us-ascii?Q?ogXb+AADDK7QcLyl75I6rEodKFSqls5oWnM7jVNx0Ehlkq5BUGtES5oVCXvl?=
- =?us-ascii?Q?f10g8mL7AyZduweVA73UGi5h1bQRIO6SwHTq6MaLJTKRtYT0z2ZxxG9IhxEf?=
- =?us-ascii?Q?8COsNcmPy4z2mX0sALALKeK4DrpuQRaYYipruU895Pp+uDQHch42kqv5zBm0?=
- =?us-ascii?Q?xcraVBmS1dvdHaBjulRdL2av4Dk7VDgrE+oe43fThb0TaLO6Do6KcFnw7VXl?=
- =?us-ascii?Q?PAKZ8YEbo6CEZejngkh7fAsTCbOdoEYye3hRjMlbFtKxzOjlQT1B3u6Cv5WZ?=
- =?us-ascii?Q?z9MjxX//ZnzSZj17YdevH25AbzSjMCgnvKpqTmeb71K443Ao3n8hYqtWu55Y?=
- =?us-ascii?Q?c9K4l9w1YADBB1XZ3WEyYkW7LGtObYeHv/rV9FJGroyGU7/CpukpWPov53ee?=
- =?us-ascii?Q?64GdtplpIwA93q6GPt81UnGYnKI8qOvhdMUGYZ6J1/f+Q6CnZHYlHZivU0n7?=
- =?us-ascii?Q?qPgKz77Md5CgADi76BcEPycKjnvFMduJ3BcKm7P41DMqHq37Q35D/ifiRbYR?=
- =?us-ascii?Q?Yv3CWpKcyH5vrr5LYW994wOcjdNmIW3Ni3+loyUgdPcD9s95XVrZiP7dD8eq?=
- =?us-ascii?Q?khQijAn8SYVDVd+gWvgpnF0QK8bK9FeJVRMkNyb0zINfxgwVBypMe7sy2cFy?=
- =?us-ascii?Q?J4rKz8gSQUILoR8QYiwmUwkTeyCyEMSwbOmsvbrpXZVSRfiEHvtIzrUacXLF?=
- =?us-ascii?Q?7hMHzLawm2ekDS7XAZTY7IBwOw6PhB5yLJcQtyltMcMPsjvDhfZeTyph+Mg5?=
- =?us-ascii?Q?/7aFlKUAFcNpT20K3DGLv5AhgeSVD2Zg9/nHG3N/tzpDWwhOALDDEZeWXCyR?=
- =?us-ascii?Q?fG73zJqqGbHNsaYDUp5UTRQV7Q/OT3FBkYyBf2R83GUbGIaFI5qKUAl0btZ9?=
- =?us-ascii?Q?CKkGPLhGZhVmjNcX/jAeIw/4ul9Kitn33CqKwAJJJ6h3wBT0/zK9WzM3QYLH?=
- =?us-ascii?Q?Di90oa6CfR+ki4MBHA0n28EDO5UsjNff5kWuV8Ph?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fd27fa59-1bf8-4e84-17b3-08dc011c701a
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3179.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Dec 2023 05:28:03.3181
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: PxOMgRzaJXUUpK+DV65NtLDo4LZPKdauUVBXJZSyNQ1ZEYONi5SpF29TtW0VAz8lZTvqv1GN74FarOOcmFrMcA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB7417
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA01Te0yTVxzN7dd+LczCZ5F5h4isQaMkPMrzFmSaScyXYAjGPclcrfQbJZS2
+	6YM4NOIorxZ0YHgogkPGQ8CAA4GC41USeYyQAcLYoNsAmY7J0yIBFdZS2Pzv3JNzfifnd/Nj
+	YRwt04kVI1VRCqlQwsVt6Y1dRzw8Pr6YRHlffchHf95uxNFQJUTa7HIG+nttBEedk1o6yltc
+	w5BpsB1DN/pSGahttJeJBquTGWj9TS0TlYw10pD+aT8T1U2PMtBwSyGOhjWDAGX8osdRx2IV
+	QBXdGzSUlOyLGpZfMdCccZOO7qQX0dH10fs4yn3WzURJr9voqKzhV4Dmv+kCx53J4cdhpN5Y
+	CsjmAiOTLK5Tk3VVWpxsnuSTWSUdgKwvTSSTe9vp5GptOk4uzfxGJ7N/vExee1AFyBd1LmRa
+	RwYtwj4y9qiYEooohSsljZKJYqTRIdywM4ITAv8Ab54Hj48Cua5SYRwVwg09FeFxMkZiXg3X
+	NV4oUZupCKFSyfX64KhCplZRrmKZUhXCpeQiiTxA7qkUxinV0mhPKaUK4nl7+/ibhedixSua
+	VZrc6HKhqecv+hWw8Z4O2LAg4QeNsyM0HbBlcQg9gGVaE7A+lgGsbC3HLSoO8RLA2wXSHcdC
+	Td+2qBXA1aJCzCoyAZhSa68DLBZOuMPxR2EWzR7iGR3OlN/disAIHYDrnTq6xeBABMM37d/T
+	LJhOHIQr3WlbmG3m89sXMGvaAfj6j0zMyu+GvTefbHkxM69puIVZhkKiwgbqUidoVkMoTGtL
+	3sYOcLb7AdOKneCL+VbcatAAeOd597Y7C0DT0jhuVR2DmhQNbumAEUdgbYuXNc0Ozq9kMiw0
+	JNgwPZVjVbvBQt0AvjN/aWyaYcUk7E3NZ1q3chZW5yYxs4BLwVsdCt7qUPB/WDHAqsC7lFwZ
+	F00peXLf/74yShZXB7Zuwj1QD/LmFj0NgMYCBgBZGHcPO7QkkeKwRcKvEyiFTKBQSyilAfib
+	t5qNOTlGycxHJVUJeH58b78AHz/ky/cN4O5l9z+OpzhEtFBFxVKUnFLs+GgsG6crtN6OfXlS
+	588HDk9Wls+m/tz1w8ajcLef5ocP9Y063Z087hDS8tWpd+YCdZpXE6LIJ8XVWTdHk8+Fzl7m
+	q3js+bCpfMfY4Pozh9ci46f8gkob7vffy28W1QuCOEP7Bec/C9s1tfvbrvSmrvfTEk0TIzfG
+	v1jYZTfgbNx8mZLyD/LhiR2DDySUDfTHfxm+uXcsRzBjb79cBOMCqi8lKBhuGTPO9ySH5In7
+	DOsLgs3TXsqi3KHN5wdbFcK8E+ebppNsn/pfMnUGaXOu3ioC+opr4/iFD5kfRdmdzBYbstiT
+	hkw+/G784um8/TU9nxxLqSGWHg6e7SlT9pRU5I/xNJpPfw/PwdRculIs5LljCqXwX4Nj8KOc
+	BAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Ra0hTcRiH+Z/bjpJ6nJbHmZaTqIzMUcFfFM2IPN2jiCAEm3rykm5rx+Uq
+	1FLJnGVT0kzLbGqXdWU1LxlOZ7gcQpm3UizNS0lp3paUl3JJ0LeH5/nB++ElUb4RE5AxkgRW
+	LhHHCQlbrKJB6LH+0JlU1vd23lLYW1xBwLf3aJiZcxuHwz/bCVjfl4nB/LGfKJxqMaCwwHwe
+	h7UdTTzYcj8dh7/mHvOg5l0FAqs+N/Ogrr8Dh63PrxOwNa0FwKzOKgLWjWkBvGOaR2Bq+kao
+	n5jB4UjPbwzeunADg7kdTwiY98XEg6mztRgs178HcPRcA9iynGlt28VU9ZQBprqwh8eU6BSM
+	TptJMNV9foxaUweYp2UpTHqTAWOmH18gmPHBLozJeZHMZD/TAmZS58Fk1GUh+x2O2AZEsnEx
+	J1n5hsCjttGWtGlE1uOhrHw1hJ0F864qYEPS1Cb6+yMzUAFbkk/VALrvygBYDAK6xvCaUAFy
+	gZ3ohgZucTMB6IyhXNzqCcqb7m7cZZ07U6k4na5aad2glBrQpW0jqDU4Uf70nKEUsTJGraIt
+	poy/bLfgrxq+o4u3VtCzHy+ii96Rbro2gFkZXfBp+iJUDewL/0uF/6USgGiBKyvj4qPiOZFM
+	JGETfThxPKeQRPlESON14O+bvddWgUrtmI8RICQwAppEhc522zQpLN8uUnzqNCuXhskVcSxn
+	BG4kJnSxc/lyKZJPRYkT2OMsK2Pl/ypC2gjOIrWHHKXuSVd+rPWv0AJvweiyvOADumzn2Jo9
+	uEtQvvvhp/NZ4+ssBbxXjdMnZr6+S1w2+GHYMOpVKRjLPna36LyR/Zw1rg6wfAoLDGvb9+Zy
+	zEC5WXytN+5gpq/UNDW4ekv7w91BV9t3Lxk/KjOvjyi4lZA84Rj9e2Oox8CJlpydaYaQ016a
+	+871ZTcpy8u5fvscSdGm0NySdlOXllSGrHnhOVyvDA0O1+/106v8bfghOPJxxmG7ot9pZPOq
+	i90mh9kniFn6zXcuqXLdiKdIwxSfynf1e7B1h050vC5stWdjcPhBt8mZ5s7kWOU+pWJqMkUV
+	q552cy+u/1Auc6/W53JCjIsWi7xROSf+A+8PLCFVAwAA
+X-CMS-MailID: 20231220052749epcas1p3b90f6c03110ff5f63ffc547ef0f35907
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20231220052749epcas1p3b90f6c03110ff5f63ffc547ef0f35907
+References: <CGME20231220052749epcas1p3b90f6c03110ff5f63ffc547ef0f35907@epcas1p3.samsung.com>
 
+From: ChanWoo Lee <cw9316.lee@samsung.com>
 
-Ryan Roberts <ryan.roberts@arm.com> writes:
+The REG_UFS_MEM_CFG register is too general(broad)
+and it is difficult to know the meaning of only values of 0x1 and 0x2.
+So far, comments were required.
 
-[...]
+Therefore, I have added new functions and defines
+to improve code readability/reusability.
 
-> diff --git a/mm/mmu_gather.c b/mm/mmu_gather.c
-> index 4f559f4ddd21..39725756e6bf 100644
-> --- a/mm/mmu_gather.c
-> +++ b/mm/mmu_gather.c
-> @@ -47,6 +47,21 @@ static bool tlb_next_batch(struct mmu_gather *tlb)
->  	return true;
->  }
->  
-> +unsigned int tlb_reserve_space(struct mmu_gather *tlb, unsigned int nr)
-> +{
-> +	struct mmu_gather_batch *batch = tlb->active;
-> +	unsigned int nr_alloc = batch->max - batch->nr;
-> +
-> +	while (nr_alloc < nr) {
-> +		if (!tlb_next_batch(tlb))
-> +			break;
-> +		nr_alloc += tlb->active->max;
-> +	}
-> +
-> +	tlb->active = batch;
-> +	return nr_alloc;
-> +}
+Signed-off-by: ChanWoo Lee <cw9316.lee@samsung.com>
+---
+ drivers/ufs/core/ufs-mcq.c      | 10 +++++++++-
+ drivers/ufs/core/ufshcd.c       |  5 +----
+ drivers/ufs/host/ufs-mediatek.c |  4 +---
+ include/ufs/ufshcd.h            |  1 +
+ include/ufs/ufshci.h            |  4 ++++
+ 5 files changed, 16 insertions(+), 8 deletions(-)
 
-Agree this addresses my previous comment nicely, so you can add:
-
-Reviewed-by: Alistair Popple <apopple@nvidia.com>
-
-> +
->  #ifdef CONFIG_SMP
->  static void tlb_flush_rmap_batch(struct mmu_gather_batch *batch, struct vm_area_struct *vma)
->  {
+diff --git a/drivers/ufs/core/ufs-mcq.c b/drivers/ufs/core/ufs-mcq.c
+index 0787456c2b89..a34ef3aac540 100644
+--- a/drivers/ufs/core/ufs-mcq.c
++++ b/drivers/ufs/core/ufs-mcq.c
+@@ -394,11 +394,19 @@ EXPORT_SYMBOL_GPL(ufshcd_mcq_make_queues_operational);
+ 
+ void ufshcd_mcq_enable_esi(struct ufs_hba *hba)
+ {
+-	ufshcd_writel(hba, ufshcd_readl(hba, REG_UFS_MEM_CFG) | 0x2,
++	ufshcd_writel(hba, ufshcd_readl(hba, REG_UFS_MEM_CFG) | ESI_ENABLE,
+ 		      REG_UFS_MEM_CFG);
+ }
+ EXPORT_SYMBOL_GPL(ufshcd_mcq_enable_esi);
+ 
++void ufshcd_mcq_enable(struct ufs_hba *hba)
++{
++	ufshcd_writel(hba, ufshcd_readl(hba, REG_UFS_MEM_CFG) | MCQ_MODE_SELECT,
++		      REG_UFS_MEM_CFG);
++	hba->mcq_enabled = true;
++}
++EXPORT_SYMBOL_GPL(ufshcd_mcq_enable);
++
+ void ufshcd_mcq_config_esi(struct ufs_hba *hba, struct msi_msg *msg)
+ {
+ 	ufshcd_writel(hba, msg->address_lo, REG_UFS_ESILBA);
+diff --git a/drivers/ufs/core/ufshcd.c b/drivers/ufs/core/ufshcd.c
+index ae9936fc6ffb..8195e01e7a3f 100644
+--- a/drivers/ufs/core/ufshcd.c
++++ b/drivers/ufs/core/ufshcd.c
+@@ -8723,10 +8723,7 @@ static void ufshcd_config_mcq(struct ufs_hba *hba)
+ 	hba->host->can_queue = hba->nutrs - UFSHCD_NUM_RESERVED;
+ 	hba->reserved_slot = hba->nutrs - UFSHCD_NUM_RESERVED;
+ 
+-	/* Select MCQ mode */
+-	ufshcd_writel(hba, ufshcd_readl(hba, REG_UFS_MEM_CFG) | 0x1,
+-		      REG_UFS_MEM_CFG);
+-	hba->mcq_enabled = true;
++	ufshcd_mcq_enable(hba);
+ 
+ 	dev_info(hba->dev, "MCQ configured, nr_queues=%d, io_queues=%d, read_queue=%d, poll_queues=%d, queue_depth=%d\n",
+ 		 hba->nr_hw_queues, hba->nr_queues[HCTX_TYPE_DEFAULT],
+diff --git a/drivers/ufs/host/ufs-mediatek.c b/drivers/ufs/host/ufs-mediatek.c
+index fc61790d289b..1048add66419 100644
+--- a/drivers/ufs/host/ufs-mediatek.c
++++ b/drivers/ufs/host/ufs-mediatek.c
+@@ -1219,9 +1219,7 @@ static int ufs_mtk_link_set_hpm(struct ufs_hba *hba)
+ 		ufs_mtk_config_mcq(hba, false);
+ 		ufshcd_mcq_make_queues_operational(hba);
+ 		ufshcd_mcq_config_mac(hba, hba->nutrs);
+-		/* Enable MCQ mode */
+-		ufshcd_writel(hba, ufshcd_readl(hba, REG_UFS_MEM_CFG) | 0x1,
+-			      REG_UFS_MEM_CFG);
++		ufshcd_mcq_enable(hba);
+ 	}
+ 
+ 	if (err)
+diff --git a/include/ufs/ufshcd.h b/include/ufs/ufshcd.h
+index d862c8ddce03..a96c45fa4b4b 100644
+--- a/include/ufs/ufshcd.h
++++ b/include/ufs/ufshcd.h
+@@ -1257,6 +1257,7 @@ unsigned long ufshcd_mcq_poll_cqe_lock(struct ufs_hba *hba,
+ 					 struct ufs_hw_queue *hwq);
+ void ufshcd_mcq_make_queues_operational(struct ufs_hba *hba);
+ void ufshcd_mcq_enable_esi(struct ufs_hba *hba);
++void ufshcd_mcq_enable(struct ufs_hba *hba);
+ void ufshcd_mcq_config_esi(struct ufs_hba *hba, struct msi_msg *msg);
+ 
+ int ufshcd_opp_config_clks(struct device *dev, struct opp_table *opp_table,
+diff --git a/include/ufs/ufshci.h b/include/ufs/ufshci.h
+index d5accacae6bc..e669fad11fd4 100644
+--- a/include/ufs/ufshci.h
++++ b/include/ufs/ufshci.h
+@@ -282,6 +282,10 @@ enum {
+ /* UTMRLRSR - UTP Task Management Request Run-Stop Register 80h */
+ #define UTP_TASK_REQ_LIST_RUN_STOP_BIT		0x1
+ 
++/* REG_UFS_MEM_CFG - Global Config Registers 300h */
++#define MCQ_MODE_SELECT 	0x1
++#define ESI_ENABLE		0x2
++
+ /* CQISy - CQ y Interrupt Status Register  */
+ #define UFSHCD_MCQ_CQIS_TAIL_ENT_PUSH_STS	0x1
+ 
+-- 
+2.29.0
 
 
