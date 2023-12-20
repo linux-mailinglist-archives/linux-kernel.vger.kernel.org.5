@@ -1,125 +1,124 @@
-Return-Path: <linux-kernel+bounces-6299-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6294-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C572E8196EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 03:47:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 84DE18196E1
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 03:43:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 044851C2568C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 02:47:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9E52A1C25379
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 02:43:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F8B4125DC;
-	Wed, 20 Dec 2023 02:46:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8723F8827;
+	Wed, 20 Dec 2023 02:43:07 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from SHSQR01.spreadtrum.com (unknown [222.66.158.135])
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29EA211C88
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 02:46:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=unisoc.com
-Received: from dlp.unisoc.com ([10.29.3.86])
-	by SHSQR01.spreadtrum.com with ESMTP id 3BK2k78m079129;
-	Wed, 20 Dec 2023 10:46:07 +0800 (+08)
-	(envelope-from Jing.Xia@unisoc.com)
-Received: from SHDLP.spreadtrum.com (shmbx04.spreadtrum.com [10.0.1.214])
-	by dlp.unisoc.com (SkyGuard) with ESMTPS id 4SvyT46H8Zz2PpYXS;
-	Wed, 20 Dec 2023 10:39:52 +0800 (CST)
-Received: from bj08259pcu.spreadtrum.com (10.0.73.196) by
- shmbx04.spreadtrum.com (10.0.1.214) with Microsoft SMTP Server (TLS) id
- 15.0.1497.23; Wed, 20 Dec 2023 10:46:06 +0800
-From: Jing Xia <jing.xia@unisoc.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki"
-	<rafael@kernel.org>
-CC: <linux-kernel@vger.kernel.org>, <jing.xia.mail@gmail.com>,
-        <xuewen.yan@unisoc.com>, <ke.wang@unisoc.com>,
-        <chunyan.zhang@unisoc.com>
-Subject: [PATCH V2] class: fix use-after-free in class_register()
-Date: Wed, 20 Dec 2023 10:46:03 +0800
-Message-ID: <20231220024603.186078-1-jing.xia@unisoc.com>
-X-Mailer: git-send-email 2.25.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1EF67497
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 02:43:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.44])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4SvyXR18DQz1wnwQ;
+	Wed, 20 Dec 2023 10:42:47 +0800 (CST)
+Received: from dggpemd200001.china.huawei.com (unknown [7.185.36.224])
+	by mail.maildlp.com (Postfix) with ESMTPS id 6CE0F140412;
+	Wed, 20 Dec 2023 10:43:01 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by dggpemd200001.china.huawei.com
+ (7.185.36.224) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.2.1258.28; Wed, 20 Dec
+ 2023 10:43:00 +0800
+From: ZhaoLong Wang <wangzhaolong1@huawei.com>
+To: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+	<dpervushin@embeddedalley.com>, <Artem.Bityutskiy@nokia.com>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<chengzhihao1@huawei.com>, <wangzhaolong1@huawei.com>, <yi.zhang@huawei.com>,
+	<yangerkun@huawei.com>
+Subject: [PATCH V4] mtd: Fix gluebi NULL pointer dereference caused by ftl notifier
+Date: Wed, 20 Dec 2023 10:46:19 +0800
+Message-ID: <20231220024619.2138625-1-wangzhaolong1@huawei.com>
+X-Mailer: git-send-email 2.31.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
- shmbx04.spreadtrum.com (10.0.1.214)
-X-MAIL:SHSQR01.spreadtrum.com 3BK2k78m079129
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemd200001.china.huawei.com (7.185.36.224)
 
-The lock_class_key is still registered and can be found in
-lock_keys_hash hlist after subsys_private is freed in error
-handler path.A task who iterate over the lock_keys_hash
-later may cause use-after-free.So fix that up and unregister
-the lock_class_key before kfree(cp).
+If both ftl.ko and gluebi.ko are loaded, the notifier of ftl
+triggers NULL pointer dereference when trying to access
+‘gluebi->desc’ in gluebi_read().
 
-On our platform, a driver fails to kset_register because of
-creating duplicate filename '/class/xxx'.With Kasan enabled,
-it prints a invalid-access bug report.
+ubi_gluebi_init
+  ubi_register_volume_notifier
+    ubi_enumerate_volumes
+      ubi_notify_all
+        gluebi_notify    nb->notifier_call()
+          gluebi_create
+            mtd_device_register
+              mtd_device_parse_register
+                add_mtd_device
+                  blktrans_notify_add   not->add()
+                    ftl_add_mtd         tr->add_mtd()
+                      scan_header
+                        mtd_read
+                          mtd_read_oob
+                            mtd_read_oob_std
+                              gluebi_read   mtd->read()
+                                gluebi->desc - NULL
 
-KASAN bug report:
+Detailed reproduction information available at the Link [1],
 
-BUG: KASAN: invalid-access in lockdep_register_key+0x19c/0x1bc
-Write of size 8 at addr 15ffff808b8c0368 by task modprobe/252
-Pointer tag: [15], memory tag: [fe]
+In the normal case, obtain gluebi->desc in the gluebi_get_device(),
+and access gluebi->desc in the gluebi_read(). However,
+gluebi_get_device() is not executed in advance in the
+ftl_add_mtd() process, which leads to NULL pointer dereference.
 
-CPU: 7 PID: 252 Comm: modprobe Tainted: G        W
- 6.6.0-mainline-maybe-dirty #1
+The solution for the gluebi module is to run jffs2 on the UBI
+volume without considering working with ftl or mtdblock [2].
+Therefore, this problem can be avoided by preventing gluebi from
+creating the mtdblock device after creating mtd partition of the
+type MTD_UBIVOLUME.
 
-Call trace:
-dump_backtrace+0x1b0/0x1e4
-show_stack+0x2c/0x40
-dump_stack_lvl+0xac/0xe0
-print_report+0x18c/0x4d8
-kasan_report+0xe8/0x148
-__hwasan_store8_noabort+0x88/0x98
-lockdep_register_key+0x19c/0x1bc
-class_register+0x94/0x1ec
-init_module+0xbc/0xf48 [rfkill]
-do_one_initcall+0x17c/0x72c
-do_init_module+0x19c/0x3f8
-...
-Memory state around the buggy address:
-ffffff808b8c0100: 8a 8a 8a 8a 8a 8a 8a 8a 8a 8a 8a 8a 8a 8a 8a 8a
-ffffff808b8c0200: 8a 8a 8a 8a 8a 8a 8a 8a fe fe fe fe fe fe fe fe
->ffffff808b8c0300: fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe
-                                     ^
-ffffff808b8c0400: 03 03 03 03 03 03 03 03 03 03 03 03 03 03 03 03
-
-As CONFIG_KASAN_GENERIC is not set, Kasan reports invalid-access
-not use-after-free here.In this case, modprobe is manipulating
-the corrupted lock_keys_hash hlish where lock_class_key is already
-freed before.
-
-It's worth noting that this only can happen if lockdep is enabled,
-which is not true for normal system.
-
-Fixes: dcfbb67e48a2 ("driver core: class: use lock_class_key already present in struct subsys_private")
-Signed-off-by: Jing Xia <jing.xia@unisoc.com>
-Signed-off-by: Xuewen Yan <xuewen.yan@unisoc.com>
+Fixes: 2ba3d76a1e29 ("UBI: make gluebi a separate module")
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=217992 [1]
+Link: https://lore.kernel.org/lkml/441107100.23734.1697904580252.JavaMail.zimbra@nod.at/ [2]
+Signed-off-by: ZhaoLong Wang <wangzhaolong1@huawei.com>
+Reviewed-by: Zhihao Cheng <chengzhihao1@huawei.com>
+Acked-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/base/class.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/mtd/mtd_blkdevs.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/base/class.c b/drivers/base/class.c
-index 7e78aee0fd6c..7b38fdf8e1d7 100644
---- a/drivers/base/class.c
-+++ b/drivers/base/class.c
-@@ -213,6 +213,7 @@ int class_register(const struct class *cls)
- 	return 0;
+diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
+index ff18636e0889..5bc32108ca03 100644
+--- a/drivers/mtd/mtd_blkdevs.c
++++ b/drivers/mtd/mtd_blkdevs.c
+@@ -463,7 +463,7 @@ static void blktrans_notify_add(struct mtd_info *mtd)
+ {
+ 	struct mtd_blktrans_ops *tr;
  
- err_out:
-+	lockdep_unregister_key(key);
- 	kfree(cp);
- 	return error;
- }
+-	if (mtd->type == MTD_ABSENT)
++	if (mtd->type == MTD_ABSENT || mtd->type == MTD_UBIVOLUME)
+ 		return;
+ 
+ 	list_for_each_entry(tr, &blktrans_majors, list)
+@@ -503,7 +503,7 @@ int register_mtd_blktrans(struct mtd_blktrans_ops *tr)
+ 	mutex_lock(&mtd_table_mutex);
+ 	list_add(&tr->list, &blktrans_majors);
+ 	mtd_for_each_device(mtd)
+-		if (mtd->type != MTD_ABSENT)
++		if (mtd->type != MTD_ABSENT && mtd->type != MTD_UBIVOLUME)
+ 			tr->add_mtd(tr, mtd);
+ 	mutex_unlock(&mtd_table_mutex);
+ 	return 0;
 -- 
-2.25.1
+2.31.1
 
 
