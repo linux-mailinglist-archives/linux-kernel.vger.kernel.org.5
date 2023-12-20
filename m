@@ -1,152 +1,208 @@
-Return-Path: <linux-kernel+bounces-6752-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6753-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A9B7819CDC
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 11:34:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 530C5819D07
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 11:39:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 86A88B237EB
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 10:34:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D29541F22700
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 10:39:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD98D20B11;
-	Wed, 20 Dec 2023 10:34:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DF6C225CE;
+	Wed, 20 Dec 2023 10:37:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="OTmQ2Fwg"
+	dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b="qorYyphY"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27AD0208C9
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 10:34:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1d3b8184a84so15625425ad.1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 02:34:37 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32FB222303;
+	Wed, 20 Dec 2023 10:37:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ew.tq-group.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1703068477; x=1703673277; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZFWsnBzn58gm3ZPzcT2FNSYLm3tXrViiUU3720enkpQ=;
-        b=OTmQ2Fwg1qyh9GoELCa4DASmueGFyVWb5oCaKZimOIladaaCYiegXwTxJyyKgW+OHL
-         +VCVpcb9s38jCtKrit+L5LItvVJMnDM2tw8ldqL5ylx3y2yOSDELLtXLG+mXSNGoiyCw
-         R1JKw6HiOTotOrig2sUJaDs0hJKcbNIo8oo0YD893RGOgRlI92mDc2xVyqJUjmh+Mnj6
-         I3WKwC5X96krDM++8jpt7OM0G2R/LlUo5s+4L9NW1kkpw56bZesHbVsBY6J346w7yWTu
-         Yi8d/RVEQrhc0KKX0D28zxiFdHGR7dkuH1SdTWY/vWC6efStzHwKVAW5tZo6fAEBBBYh
-         +XCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703068477; x=1703673277;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZFWsnBzn58gm3ZPzcT2FNSYLm3tXrViiUU3720enkpQ=;
-        b=nYZWvz0EDqAsyiXIJ77sKXd8zU/e7TMnO9eoogKXKI1a0aNu7BI33ULR7fYO0wb1rC
-         azMIfAkQx8wRd8vVuGe8+L9lBJGnIqCkAMoWrMR0tYWPPC1MJUvrRM6AOcICaSOEEQB7
-         5XEAtGdGcnSNO0ISsBw05Kp6mE1+V86v3AwX9NpKBAlT3WCJQkXFbH1j6qeXawuHSajk
-         cXmf1ofBXftGXOiUfZQ/vNU1FThqM6ZJEzr5zVGOYS0B2iPq8UtF/DTIHkhjwyLTxG6W
-         t9eXgR1Dibf6qpTgJu+ic9X6pwyronafGOvErsMNL/A/2h5Bw270r1dvNTN+lDfdQYvT
-         LDUw==
-X-Gm-Message-State: AOJu0YzeZSSbLyLU+oRK/x78otgTsDpD9CdfYj5e3cPT61spNGkH8dq2
-	cKGBzRJI0U7Ku4jx7cszVm2itg==
-X-Google-Smtp-Source: AGHT+IHO+ozw4UTv/+0I7mcW0/b1xzuABhT5sLWUu3zVP2een7tUqoHLOb8TRg7oPfm7mfmUlOEPog==
-X-Received: by 2002:a17:903:904:b0:1d3:7c0b:d4ca with SMTP id ll4-20020a170903090400b001d37c0bd4camr6996259plb.73.1703068477268;
-        Wed, 20 Dec 2023 02:34:37 -0800 (PST)
-Received: from L6YN4KR4K9.bytedance.net ([61.213.176.10])
-        by smtp.gmail.com with ESMTPSA id c16-20020a170903235000b001d337b8c0b2sm15525089plh.7.2023.12.20.02.34.33
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Wed, 20 Dec 2023 02:34:36 -0800 (PST)
-From: Yunhui Cui <cuiyunhui@bytedance.com>
-To: paul.walmsley@sifive.com,
-	palmer@dabbelt.com,
-	aou@eecs.berkeley.edu,
-	ajones@ventanamicro.com,
-	alexghiti@rivosinc.com,
-	anup@brainfault.org,
-	samitolvanen@google.com,
-	rppt@kernel.org,
-	panqinglin2020@iscas.ac.cn,
-	cuiyunhui@bytedance.com,
-	linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] riscv: put va_kernel_xip_pa_offset into CONFIG_XIP_KERNEL
-Date: Wed, 20 Dec 2023 18:34:28 +0800
-Message-Id: <20231220103428.61758-1-cuiyunhui@bytedance.com>
-X-Mailer: git-send-email 2.39.2 (Apple Git-143)
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1703068655; x=1734604655;
+  h=date:from:to:cc:message-id:references:mime-version:
+   content-transfer-encoding:in-reply-to:subject;
+  bh=g+TPrc8PqsX2A6MOEoxOpOrmmDnEXK+JiSxFz/fzK0M=;
+  b=qorYyphYsqiyjby+z2kKSOdcHxhL1v8lJdL/OdREpAf2RpxfX8mPAc3f
+   J6zJLY25w1G8vv0SDmv2PbC+jfWv8rCjZMGp1EOMhA/6b3awg+9hvzyqS
+   W+EHSAlYG4AC8UOKtESewiJic6dQ3XpSbsTA9gRo47Ht8qN+yT+h7ycAt
+   I23oFoLSag1Ad04B3Q3m8CxMnGsS8LAP0WDIZJeYHZKQpmLz2MvfG6Drf
+   2+QLcXaOuvKnEi5YbL7ZpfgG1TmvPLGlJtX212LCORW0z2+U6kYhIHARz
+   YCD7/WcSIduDlIJZve8NKV8qcEuqruMbhI2u4JODVa7uU4TMvZjHQjpD9
+   w==;
+X-IronPort-AV: E=Sophos;i="6.04,291,1695679200"; 
+   d="scan'208";a="34607338"
+Subject: Re: Re: [PATCH] i2c: i2c-imx: allow bus recovery on non-muxable pads
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+  by mx1.tq-group.com with ESMTP; 20 Dec 2023 11:37:27 +0100
+Received: from herburgerg-w2 (herburgerg-w2.tq-net.de [10.122.52.145])
+	by vtuxmail01.tq-net.de (Postfix) with ESMTPA id D2DF5280075;
+	Wed, 20 Dec 2023 11:37:26 +0100 (CET)
+Date: Wed, 20 Dec 2023 11:37:21 +0100
+From: Gregor Herburger <gregor.herburger@ew.tq-group.com>
+To: esben@geanix.com
+Cc: Oleksij Rempel <o.rempel@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Andi Shyti <andi.shyti@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	NXP Linux Team <linux-imx@nxp.com>,
+	"linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux@ew.tq-group.com" <linux@ew.tq-group.com>
+Message-ID: <ZYLD4WgOPFB9ccym@herburgerg-w2>
+References: <20231218-i2c-imx-recovery-v1-1-f69fa85b228c@ew.tq-group.com>
+ <87frzyprhq.fsf@geanix.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <87frzyprhq.fsf@geanix.com>
 
-opitmize the kernel_mapping_pa_to_va() and kernel_mapping_va_to_pa().
+Hi Esben,
 
-Signed-off-by: Yunhui Cui <cuiyunhui@bytedance.com>
----
- arch/riscv/include/asm/page.h | 33 ++++++++++++++++++++-------------
- 1 file changed, 20 insertions(+), 13 deletions(-)
+I had another look at your patch and tested it on a LX2160a SoC without
+pinctrl. I agree that using the generic GPIO recovery you suggested is
+the better solution.
 
-diff --git a/arch/riscv/include/asm/page.h b/arch/riscv/include/asm/page.h
-index 5488ecc337b6..0d2b479d02cd 100644
---- a/arch/riscv/include/asm/page.h
-+++ b/arch/riscv/include/asm/page.h
-@@ -113,8 +113,8 @@ struct kernel_mapping {
- 	unsigned long va_pa_offset;
- 	/* Offset between kernel mapping virtual address and kernel load address */
- 	unsigned long va_kernel_pa_offset;
--	unsigned long va_kernel_xip_pa_offset;
- #ifdef CONFIG_XIP_KERNEL
-+	unsigned long va_kernel_xip_pa_offset;
- 	uintptr_t xiprom;
- 	uintptr_t xiprom_sz;
- #endif
-@@ -134,12 +134,25 @@ extern phys_addr_t phys_ram_base;
- #else
- void *linear_mapping_pa_to_va(unsigned long x);
- #endif
--#define kernel_mapping_pa_to_va(y)	({					\
--	unsigned long _y = (unsigned long)(y);					\
--	(IS_ENABLED(CONFIG_XIP_KERNEL) && _y < phys_ram_base) ?			\
--		(void *)(_y + kernel_map.va_kernel_xip_pa_offset) :		\
--		(void *)(_y + kernel_map.va_kernel_pa_offset + XIP_OFFSET);	\
--	})
-+
-+#ifdef CONFIG_XIP_KERNEL
-+#define kernel_mapping_pa_to_va(y)							\
-+	(((unsigned long)(y) < phys_ram_base) ?						\
-+		(void *)((unsigned long)(y) + kernel_map.va_kernel_xip_pa_offset) :	\
-+		(void *)((unsigned long)(y) + kernel_map.va_kernel_pa_offset + XIP_OFFSET))
-+
-+#define kernel_mapping_va_to_pa(y)						\
-+	(((unsigned long)(y) < kernel_map.virt_addr + XIP_OFFSET) ?		\
-+		((unsigned long)(y) - kernel_map.va_kernel_xip_pa_offset) :	\
-+		((unsigned long)(y) - kernel_map.va_kernel_pa_offset - XIP_OFFSET))
-+#else
-+#define kernel_mapping_pa_to_va(y)						\
-+	((void *)((unsigned long)(y) + kernel_map.va_kernel_pa_offset + XIP_OFFSET))
-+
-+#define kernel_mapping_va_to_pa(y)						\
-+	((unsigned long)(y) - kernel_map.va_kernel_pa_offset - XIP_OFFSET)
-+#endif
-+
- #define __pa_to_va_nodebug(x)		linear_mapping_pa_to_va(x)
- 
- #ifndef CONFIG_DEBUG_VIRTUAL
-@@ -147,12 +160,6 @@ void *linear_mapping_pa_to_va(unsigned long x);
- #else
- phys_addr_t linear_mapping_va_to_pa(unsigned long x);
- #endif
--#define kernel_mapping_va_to_pa(y) ({						\
--	unsigned long _y = (unsigned long)(y);					\
--	(IS_ENABLED(CONFIG_XIP_KERNEL) && _y < kernel_map.virt_addr + XIP_OFFSET) ? \
--		(_y - kernel_map.va_kernel_xip_pa_offset) :			\
--		(_y - kernel_map.va_kernel_pa_offset - XIP_OFFSET);		\
--	})
- 
- #define __va_to_pa_nodebug(x)	({						\
- 	unsigned long _x = x;							\
+To make your solution work I had to make a small change (see below).
+
+On Tue, Dec 19, 2023 at 07:43:21AM +0000, esben@geanix.com wrote:
+> Why not move to use the generic GPIO recovery instead?  Will something
+> like this be able to cover at least the same scenarios as your change?
+> 
+> From 7e432496bae8c7ac35c21504bc1cd03f1dfef97f Mon Sep 17 00:00:00 2001
+> Message-ID: <7e432496bae8c7ac35c21504bc1cd03f1dfef97f.1702971634.git.esben@geanix.com>
+> From: Esben Haabendal <esben@geanix.com>
+> Date: Tue, 25 May 2021 11:25:44 +0200
+> Subject: [PATCH] i2c: imx: move to generic GPIO recovery
+> 
+> Starting with
+> commit 75820314de26 ("i2c: core: add generic I2C GPIO recovery")
+> GPIO bus recovery is supported by the I2C core, so we can remove the
+> driver implementation and use that one instead.
+> 
+> As a nice side-effect, pinctrl becomes optional, allowing bus recovery on
+> LS1021A, which does not have such luxury, but can be wired up to use extra
+> fixed GPIO pins.
+> 
+> Signed-off-by: Esben Haabendal <esben@geanix.com>
+> ---
+>  drivers/i2c/busses/i2c-imx.c | 62 ++++--------------------------------
+>  1 file changed, 7 insertions(+), 55 deletions(-)
+> 
+> diff --git a/drivers/i2c/busses/i2c-imx.c b/drivers/i2c/busses/i2c-imx.c
+> index 1775a79aeba2..824d8bbb9be5 100644
+> --- a/drivers/i2c/busses/i2c-imx.c
+> +++ b/drivers/i2c/busses/i2c-imx.c
+> @@ -212,10 +212,6 @@ struct imx_i2c_struct {
+>  	const struct imx_i2c_hwdata	*hwdata;
+>  	struct i2c_bus_recovery_info rinfo;
+>  
+> -	struct pinctrl *pinctrl;
+> -	struct pinctrl_state *pinctrl_pins_default;
+> -	struct pinctrl_state *pinctrl_pins_gpio;
+> -
+>  	struct imx_i2c_dma	*dma;
+>  	struct i2c_client	*slave;
+>  	enum i2c_slave_event last_slave_event;
+> @@ -1357,24 +1353,6 @@ static int i2c_imx_xfer_atomic(struct i2c_adapter *adapter,
+>  	return result;
+>  }
+>  
+> -static void i2c_imx_prepare_recovery(struct i2c_adapter *adap)
+> -{
+> -	struct imx_i2c_struct *i2c_imx;
+> -
+> -	i2c_imx = container_of(adap, struct imx_i2c_struct, adapter);
+> -
+> -	pinctrl_select_state(i2c_imx->pinctrl, i2c_imx->pinctrl_pins_gpio);
+> -}
+> -
+> -static void i2c_imx_unprepare_recovery(struct i2c_adapter *adap)
+> -{
+> -	struct imx_i2c_struct *i2c_imx;
+> -
+> -	i2c_imx = container_of(adap, struct imx_i2c_struct, adapter);
+> -
+> -	pinctrl_select_state(i2c_imx->pinctrl, i2c_imx->pinctrl_pins_default);
+> -}
+> -
+>  /*
+>   * We switch SCL and SDA to their GPIO function and do some bitbanging
+>   * for bus recovery. These alternative pinmux settings can be
+> @@ -1385,43 +1363,17 @@ static void i2c_imx_unprepare_recovery(struct i2c_adapter *adap)
+>  static int i2c_imx_init_recovery_info(struct imx_i2c_struct *i2c_imx,
+>  		struct platform_device *pdev)
+>  {
+> -	struct i2c_bus_recovery_info *rinfo = &i2c_imx->rinfo;
+> +	struct i2c_bus_recovery_info *bri = &i2c_imx->rinfo;
+>  
+> -	i2c_imx->pinctrl = devm_pinctrl_get(&pdev->dev);
+> -	if (!i2c_imx->pinctrl) {
+> -		dev_info(&pdev->dev, "pinctrl unavailable, bus recovery not supported\n");
+> +	bri->pinctrl = devm_pinctrl_get(&pdev->dev);
+> +	if (PTR_ERR(bri->pinctrl) == -ENODEV) {
+> +		bri->pinctrl = NULL;
+>  		return 0;
+Should not return here to allow setting of adapter.bus_recovery_info
+later.
+
+>  	}
+> -	if (IS_ERR(i2c_imx->pinctrl)) {
+> -		dev_info(&pdev->dev, "can't get pinctrl, bus recovery not supported\n");
+> -		return PTR_ERR(i2c_imx->pinctrl);
+> -	}
+> -
+> -	i2c_imx->pinctrl_pins_default = pinctrl_lookup_state(i2c_imx->pinctrl,
+> -			PINCTRL_STATE_DEFAULT);
+> -	i2c_imx->pinctrl_pins_gpio = pinctrl_lookup_state(i2c_imx->pinctrl,
+> -			"gpio");
+> -	rinfo->sda_gpiod = devm_gpiod_get(&pdev->dev, "sda", GPIOD_IN);
+> -	rinfo->scl_gpiod = devm_gpiod_get(&pdev->dev, "scl", GPIOD_OUT_HIGH_OPEN_DRAIN);
+> -
+> -	if (PTR_ERR(rinfo->sda_gpiod) == -EPROBE_DEFER ||
+> -	    PTR_ERR(rinfo->scl_gpiod) == -EPROBE_DEFER) {
+> -		return -EPROBE_DEFER;
+> -	} else if (IS_ERR(rinfo->sda_gpiod) ||
+> -		   IS_ERR(rinfo->scl_gpiod) ||
+> -		   IS_ERR(i2c_imx->pinctrl_pins_default) ||
+> -		   IS_ERR(i2c_imx->pinctrl_pins_gpio)) {
+> -		dev_dbg(&pdev->dev, "recovery information incomplete\n");
+> -		return 0;
+> -	}
+> -
+> -	dev_dbg(&pdev->dev, "using scl%s for recovery\n",
+> -		rinfo->sda_gpiod ? ",sda" : "");
+> +	if (IS_ERR(bri->pinctrl))
+> +		return PTR_ERR(bri->pinctrl);
+>  
+> -	rinfo->prepare_recovery = i2c_imx_prepare_recovery;
+> -	rinfo->unprepare_recovery = i2c_imx_unprepare_recovery;
+> -	rinfo->recover_bus = i2c_generic_scl_recovery;
+> -	i2c_imx->adapter.bus_recovery_info = rinfo;
+> +	i2c_imx->adapter.bus_recovery_info = bri;
+>  
+>  	return 0;
+>  }
+
+Best regards,
+Gregor
+
 -- 
-2.20.1
-
+TQ-Systems GmbH | Mühlstraße 2, Gut Delling | 82229 Seefeld, Germany
+Amtsgericht München, HRB 105018
+Geschäftsführer: Detlef Schneider, Rüdiger Stahl, Stefan Schneider
+https://www.tq-group.com/
 
