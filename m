@@ -1,71 +1,39 @@
-Return-Path: <linux-kernel+bounces-6667-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6668-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75D41819BDA
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 11:00:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0628819BDD
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 11:00:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2E80E2880FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 10:00:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A717C2880DB
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 10:00:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EE11200AA;
-	Wed, 20 Dec 2023 10:00:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 902DC1F934;
+	Wed, 20 Dec 2023 10:00:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="HU/2TajB"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uZJkPnNa"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19C1C1F932
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 10:00:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1703066411;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=ZOwxbnKCqTvbPb7dNxZkb8DxBKBNfmgXfSTqXzu6wUU=;
-	b=HU/2TajBu7h5r6gpb9ht1FvjwvmkI0gtbS9SM7q2O83uGaC4KPU5sJwZFLGiQKJHMbgYFo
-	p575ZEFZeunk7Rg4sb+iazhUQVNCX18DXqc7cW+BbxkvyFalZQeoD5N/JTKK2YN8v6yWVZ
-	oxuWZCkYnk1zYFzIbbW466CweIfBTW8=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-695-UCURZDF9NzuaBLEX8CG8Ew-1; Wed, 20 Dec 2023 05:00:10 -0500
-X-MC-Unique: UCURZDF9NzuaBLEX8CG8Ew-1
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-40c58a71b7cso47122635e9.2
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 02:00:10 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703066409; x=1703671209;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZOwxbnKCqTvbPb7dNxZkb8DxBKBNfmgXfSTqXzu6wUU=;
-        b=qACp3y3sy8+QMIkLB37pmlBvQe6jmpWK0Fri6n9wXNLIs4OgH3W4+9TpqORgZa9BMA
-         WKW/6KSrTp8xfBwMvGr/oHfGNz0VqPfu7sMzrvGHT5QXsS+3lgSdeQOc6IBFLBG2CYvK
-         bitMy21RcLuT5LppX63yOBQqdrpm7htDuKvPoILAf4GrKzRDXx0ADFsKa1163BhBQQR5
-         KHk9fMxixAq0mgXfonO/CbRBnhz/62H7QUEwS5jWE2kYANkqa7XYt6g7ZPoQIRxH0jW3
-         7ZGF4VZdTblZ0EHpYQtJH3qI2DUhMouV4FuiLd8Mr1mcjEU4oA7kjNn8pz3oGhK6xWVk
-         2vJg==
-X-Gm-Message-State: AOJu0Yx6tuY5JJmougN1596nofT0APCE/um0vZlBfkpfcMdo0rq6Hql4
-	lkH9k+tTlmtJWRuKieMAC9sBUnbXbMavQXBCHXTch91LzdsunyrBwuEs+tpiqHox/1vLpTD45qn
-	4dl3VOONDWXHgyr9FqIkeEix3
-X-Received: by 2002:a05:600c:2b0e:b0:40c:337e:f059 with SMTP id y14-20020a05600c2b0e00b0040c337ef059mr10745619wme.65.1703066409271;
-        Wed, 20 Dec 2023 02:00:09 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGmlriJkZ2QzWApV1tpgO8fpO242Eld4X51fAg1ZiS/sdUk8EW4LmIzTP59jEvTX3TSmIDZ8A==
-X-Received: by 2002:a05:600c:2b0e:b0:40c:337e:f059 with SMTP id y14-20020a05600c2b0e00b0040c337ef059mr10745599wme.65.1703066408736;
-        Wed, 20 Dec 2023 02:00:08 -0800 (PST)
-Received: from ?IPV6:2003:cb:c73b:eb00:8e25:6953:927:1802? (p200300cbc73beb008e25695309271802.dip0.t-ipconnect.de. [2003:cb:c73b:eb00:8e25:6953:927:1802])
-        by smtp.gmail.com with ESMTPSA id d9-20020adffbc9000000b003367dd514d9sm554472wrs.15.2023.12.20.02.00.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Dec 2023 02:00:08 -0800 (PST)
-Message-ID: <23638533-048f-4110-971f-bb359b39b60b@redhat.com>
-Date: Wed, 20 Dec 2023 11:00:06 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD6C220314;
+	Wed, 20 Dec 2023 10:00:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F13B0C433C7;
+	Wed, 20 Dec 2023 10:00:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703066428;
+	bh=Z4BetA0xTtxuKU6pDTnIeJLWHhB+REPMpxWUg68qe2g=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=uZJkPnNaQJwbs5l3Ui/9e9XgtSTShzHF0yTZ/gAb41JdJS7tlGDzRu8b84SVXAxI+
+	 NdPjXtDAZmZzA1kUiVw3WUa+xc5rvoRqdP48QqnLOAcpHk6YeDiJIxlnZhtiHTRvni
+	 b0nc1YqMXby1WVeqxR/XDVCEZIgNCIfbvuUrHhnJTwlCY5I/S3oEJK99MHSdLjlYrT
+	 bnjOLPuI4SfSXaVVol/jGUnsBmLcU+I8+jZ7wtb+MbkndHewtyQ8zoDE2gT7j0Q286
+	 v4rsUN4hsJ4WT3TJLOJOuZig4JZZjOxJF7MxVod1dNX4fGmdKixr8wS4DXia9prjsW
+	 gKz9kKmBCXoFg==
+Message-ID: <fdd3c0eb-5772-4e61-b695-06ea30ec9213@kernel.org>
+Date: Wed, 20 Dec 2023 12:00:25 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -73,259 +41,167 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 02/16] mm: Batch-copy PTE ranges during fork()
+Subject: Re: [PATCH v2 1/5] dt-bindings: phy: cadence-torrent: Add optional
+ input reference clock for PLL1
 Content-Language: en-US
-To: Ryan Roberts <ryan.roberts@arm.com>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Ard Biesheuvel <ardb@kernel.org>, Marc Zyngier <maz@kernel.org>,
- Oliver Upton <oliver.upton@linux.dev>, James Morse <james.morse@arm.com>,
- Suzuki K Poulose <suzuki.poulose@arm.com>, Zenghui Yu
- <yuzenghui@huawei.com>, Andrey Ryabinin <ryabinin.a.a@gmail.com>,
- Alexander Potapenko <glider@google.com>,
- Andrey Konovalov <andreyknvl@gmail.com>, Dmitry Vyukov <dvyukov@google.com>,
- Vincenzo Frascino <vincenzo.frascino@arm.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Anshuman Khandual <anshuman.khandual@arm.com>,
- Matthew Wilcox <willy@infradead.org>, Yu Zhao <yuzhao@google.com>,
- Mark Rutland <mark.rutland@arm.com>, Kefeng Wang
- <wangkefeng.wang@huawei.com>, John Hubbard <jhubbard@nvidia.com>,
- Zi Yan <ziy@nvidia.com>, Barry Song <21cnbao@gmail.com>,
- Alistair Popple <apopple@nvidia.com>, Yang Shi <shy828301@gmail.com>
-Cc: linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org
-References: <20231218105100.172635-1-ryan.roberts@arm.com>
- <20231218105100.172635-3-ryan.roberts@arm.com>
- <0bef5423-6eea-446b-8854-980e9c23a948@redhat.com>
- <db1be625-33e4-4d07-8500-3f7d3c8f9937@arm.com>
- <be8b5181-be2c-4800-ba53-c65a6c3ed803@redhat.com>
- <dd227e51-c4b2-420b-a92a-65da85ab4018@arm.com>
- <7c0236ad-01f3-437f-8b04-125d69e90dc0@redhat.com>
- <9a58b1a2-2c13-4fa0-8ffa-2b3d9655f1b6@arm.com>
- <15177acd-8d75-46a8-9460-98ea313a7b2b@arm.com>
-From: David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <15177acd-8d75-46a8-9460-98ea313a7b2b@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+To: Swapnil Kashinath Jakhade <sjakhade@cadence.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ "vkoul@kernel.org" <vkoul@kernel.org>, "kishon@kernel.org"
+ <kishon@kernel.org>, "robh+dt@kernel.org" <robh+dt@kernel.org>,
+ "krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
+ "conor+dt@kernel.org" <conor+dt@kernel.org>,
+ "linux-phy@lists.infradead.org" <linux-phy@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+Cc: Milind Parab <mparab@cadence.com>, "s-vadapalli@ti.com"
+ <s-vadapalli@ti.com>
+References: <20231212114840.1468903-1-sjakhade@cadence.com>
+ <20231212114840.1468903-2-sjakhade@cadence.com>
+ <e09e4df8-ec36-4953-9bb0-75a3ce0b535d@linaro.org>
+ <DM6PR07MB61548DC520B4BA66D6FC625AC58CA@DM6PR07MB6154.namprd07.prod.outlook.com>
+ <38d171ee-b94b-4d1c-8702-60735a005596@linaro.org>
+ <9a86efae-2855-484e-be01-cf5fffdf9f95@kernel.org>
+ <DM6PR07MB6154B687D5F3196D9FE3D2EFC596A@DM6PR07MB6154.namprd07.prod.outlook.com>
+From: Roger Quadros <rogerq@kernel.org>
+In-Reply-To: <DM6PR07MB6154B687D5F3196D9FE3D2EFC596A@DM6PR07MB6154.namprd07.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On 20.12.23 10:57, Ryan Roberts wrote:
-> On 20/12/2023 09:51, Ryan Roberts wrote:
->> On 20/12/2023 09:17, David Hildenbrand wrote:
->>> On 19.12.23 18:42, Ryan Roberts wrote:
->>>> On 19/12/2023 17:22, David Hildenbrand wrote:
->>>>> On 19.12.23 09:30, Ryan Roberts wrote:
->>>>>> On 18/12/2023 17:47, David Hildenbrand wrote:
->>>>>>> On 18.12.23 11:50, Ryan Roberts wrote:
->>>>>>>> Convert copy_pte_range() to copy a batch of ptes in one go. A given
->>>>>>>> batch is determined by the architecture with the new helper,
->>>>>>>> pte_batch_remaining(), and maps a physically contiguous block of memory,
->>>>>>>> all belonging to the same folio. A pte batch is then write-protected in
->>>>>>>> one go in the parent using the new helper, ptep_set_wrprotects() and is
->>>>>>>> set in one go in the child using the new helper, set_ptes_full().
->>>>>>>>
->>>>>>>> The primary motivation for this change is to reduce the number of tlb
->>>>>>>> maintenance operations that the arm64 backend has to perform during
->>>>>>>> fork, as it is about to add transparent support for the "contiguous bit"
->>>>>>>> in its ptes. By write-protecting the parent using the new
->>>>>>>> ptep_set_wrprotects() (note the 's' at the end) function, the backend
->>>>>>>> can avoid having to unfold contig ranges of PTEs, which is expensive,
->>>>>>>> when all ptes in the range are being write-protected. Similarly, by
->>>>>>>> using set_ptes_full() rather than set_pte_at() to set up ptes in the
->>>>>>>> child, the backend does not need to fold a contiguous range once they
->>>>>>>> are all populated - they can be initially populated as a contiguous
->>>>>>>> range in the first place.
->>>>>>>>
->>>>>>>> This code is very performance sensitive, and a significant amount of
->>>>>>>> effort has been put into not regressing performance for the order-0
->>>>>>>> folio case. By default, pte_batch_remaining() is compile constant 1,
->>>>>>>> which enables the compiler to simplify the extra loops that are added
->>>>>>>> for batching and produce code that is equivalent (and equally
->>>>>>>> performant) as the previous implementation.
->>>>>>>>
->>>>>>>> This change addresses the core-mm refactoring only and a separate change
->>>>>>>> will implement pte_batch_remaining(), ptep_set_wrprotects() and
->>>>>>>> set_ptes_full() in the arm64 backend to realize the performance
->>>>>>>> improvement as part of the work to enable contpte mappings.
->>>>>>>>
->>>>>>>> To ensure the arm64 is performant once implemented, this change is very
->>>>>>>> careful to only call ptep_get() once per pte batch.
->>>>>>>>
->>>>>>>> The following microbenchmark results demonstate that there is no
->>>>>>>> significant performance change after this patch. Fork is called in a
->>>>>>>> tight loop in a process with 1G of populated memory and the time for the
->>>>>>>> function to execute is measured. 100 iterations per run, 8 runs
->>>>>>>> performed on both Apple M2 (VM) and Ampere Altra (bare metal). Tests
->>>>>>>> performed for case where 1G memory is comprised of order-0 folios and
->>>>>>>> case where comprised of pte-mapped order-9 folios. Negative is faster,
->>>>>>>> positive is slower, compared to baseline upon which the series is based:
->>>>>>>>
->>>>>>>> | Apple M2 VM   | order-0 (pte-map) | order-9 (pte-map) |
->>>>>>>> | fork          |-------------------|-------------------|
->>>>>>>> | microbench    |    mean |   stdev |    mean |   stdev |
->>>>>>>> |---------------|---------|---------|---------|---------|
->>>>>>>> | baseline      |    0.0% |    1.1% |    0.0% |    1.2% |
->>>>>>>> | after-change  |   -1.0% |    2.0% |   -0.1% |    1.1% |
->>>>>>>>
->>>>>>>> | Ampere Altra  | order-0 (pte-map) | order-9 (pte-map) |
->>>>>>>> | fork          |-------------------|-------------------|
->>>>>>>> | microbench    |    mean |   stdev |    mean |   stdev |
->>>>>>>> |---------------|---------|---------|---------|---------|
->>>>>>>> | baseline      |    0.0% |    1.0% |    0.0% |    0.1% |
->>>>>>>> | after-change  |   -0.1% |    1.2% |   -0.1% |    0.1% |
->>>>>>>>
->>>>>>>> Tested-by: John Hubbard <jhubbard@nvidia.com>
->>>>>>>> Reviewed-by: Alistair Popple <apopple@nvidia.com>
->>>>>>>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
->>>>>>>> ---
->>>>>>>>      include/linux/pgtable.h | 80 +++++++++++++++++++++++++++++++++++
->>>>>>>>      mm/memory.c             | 92 ++++++++++++++++++++++++++---------------
->>>>>>>>      2 files changed, 139 insertions(+), 33 deletions(-)
->>>>>>>>
->>>>>>>> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
->>>>>>>> index af7639c3b0a3..db93fb81465a 100644
->>>>>>>> --- a/include/linux/pgtable.h
->>>>>>>> +++ b/include/linux/pgtable.h
->>>>>>>> @@ -205,6 +205,27 @@ static inline int pmd_young(pmd_t pmd)
->>>>>>>>      #define arch_flush_lazy_mmu_mode()    do {} while (0)
->>>>>>>>      #endif
->>>>>>>>      +#ifndef pte_batch_remaining
->>>>>>>> +/**
->>>>>>>> + * pte_batch_remaining - Number of pages from addr to next batch boundary.
->>>>>>>> + * @pte: Page table entry for the first page.
->>>>>>>> + * @addr: Address of the first page.
->>>>>>>> + * @end: Batch ceiling (e.g. end of vma).
->>>>>>>> + *
->>>>>>>> + * Some architectures (arm64) can efficiently modify a contiguous batch of
->>>>>>>> ptes.
->>>>>>>> + * In such cases, this function returns the remaining number of pages to
->>>>>>>> the end
->>>>>>>> + * of the current batch, as defined by addr. This can be useful when
->>>>>>>> iterating
->>>>>>>> + * over ptes.
->>>>>>>> + *
->>>>>>>> + * May be overridden by the architecture, else batch size is always 1.
->>>>>>>> + */
->>>>>>>> +static inline unsigned int pte_batch_remaining(pte_t pte, unsigned long
->>>>>>>> addr,
->>>>>>>> +                        unsigned long end)
->>>>>>>> +{
->>>>>>>> +    return 1;
->>>>>>>> +}
->>>>>>>> +#endif
->>>>>>>
->>>>>>> It's a shame we now lose the optimization for all other archtiectures.
->>>>>>>
->>>>>>> Was there no way to have some basic batching mechanism that doesn't require
->>>>>>> arch
->>>>>>> specifics?
->>>>>>
->>>>>> I tried a bunch of things but ultimately the way I've done it was the only way
->>>>>> to reduce the order-0 fork regression to 0.
->>>>>>
->>>>>> My original v3 posting was costing 5% extra and even my first attempt at an
->>>>>> arch-specific version that didn't resolve to a compile-time constant 1 still
->>>>>> cost an extra 3%.
->>>>>>
->>>>>>
->>>>>>>
->>>>>>> I'd have thought that something very basic would have worked like:
->>>>>>>
->>>>>>> * Check if PTE is the same when setting the PFN to 0.
->>>>>>> * Check that PFN is consecutive
->>>>>>> * Check that all PFNs belong to the same folio
->>>>>>
->>>>>> I haven't tried this exact approach, but I'd be surprised if I can get the
->>>>>> regression under 4% with this. Further along the series I spent a lot of time
->>>>>> having to fiddle with the arm64 implementation; every conditional and every
->>>>>> memory read (even when in cache) was a problem. There is just so little in the
->>>>>> inner loop that every instruction matters. (At least on Ampere Altra and Apple
->>>>>> M2).
->>>>>>
->>>>>> Of course if you're willing to pay that 4-5% for order-0 then the benefit to
->>>>>> order-9 is around 10% in my measurements. Personally though, I'd prefer to play
->>>>>> safe and ensure the common order-0 case doesn't regress, as you previously
->>>>>> suggested.
->>>>>>
->>>>>
->>>>> I just hacked something up, on top of my beloved rmap cleanup/batching series. I
->>>>> implemented very generic and simple batching for large folios (all PTE bits
->>>>> except the PFN have to match).
->>>>>
->>>>> Some very quick testing (don't trust each last % ) on Intel(R) Xeon(R) Silver
->>>>> 4210R CPU.
->>>>>
->>>>> order-0: 0.014210 -> 0.013969
->>>>>
->>>>> -> Around 1.7 % faster
->>>>>
->>>>> order-9: 0.014373 -> 0.009149
->>>>>
->>>>> -> Around 36.3 % faster
->>>>
->>>> Well I guess that shows me :)
->>>>
->>>> I'll do a review and run the tests on my HW to see if it concurs.
->>>
->>>
->>> I pushed a simple compile fixup (we need pte_next_pfn()).
+
+
+On 20/12/2023 11:00, Swapnil Kashinath Jakhade wrote:
+> 
+> 
+>> -----Original Message-----
+>> From: Roger Quadros <rogerq@kernel.org>
+>> Sent: Tuesday, December 19, 2023 2:39 AM
+>> To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>; Swapnil Kashinath
+>> Jakhade <sjakhade@cadence.com>; vkoul@kernel.org; kishon@kernel.org;
+>> robh+dt@kernel.org; krzysztof.kozlowski+dt@linaro.org; conor+dt@kernel.org;
+>> linux-phy@lists.infradead.org; linux-kernel@vger.kernel.org;
+>> devicetree@vger.kernel.org
+>> Cc: Milind Parab <mparab@cadence.com>; s-vadapalli@ti.com
+>> Subject: Re: [PATCH v2 1/5] dt-bindings: phy: cadence-torrent: Add optional
+>> input reference clock for PLL1
 >>
->> I've just been trying to compile and noticed this. Will take a look at your update.
+>> EXTERNAL MAIL
+>>
+>>
+>>
+>> On 14/12/2023 09:22, Krzysztof Kozlowski wrote:
+>>> On 14/12/2023 08:02, Swapnil Kashinath Jakhade wrote:
+>>>> Hi Krzysztof,
+>>>>
+>>>>> -----Original Message-----
+>>>>> From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>>>>> Sent: Wednesday, December 13, 2023 12:19 PM
+>>>>> To: Swapnil Kashinath Jakhade <sjakhade@cadence.com>;
+>> vkoul@kernel.org;
+>>>>> kishon@kernel.org; robh+dt@kernel.org;
+>> krzysztof.kozlowski+dt@linaro.org;
+>>>>> conor+dt@kernel.org; linux-phy@lists.infradead.org; linux-
+>>>>> kernel@vger.kernel.org; devicetree@vger.kernel.org
+>>>>> Cc: Milind Parab <mparab@cadence.com>; rogerq@kernel.org; s-
+>>>>> vadapalli@ti.com
+>>>>> Subject: Re: [PATCH v2 1/5] dt-bindings: phy: cadence-torrent: Add optional
+>>>>> input reference clock for PLL1
+>>>>>
+>>>>> EXTERNAL MAIL
+>>>>>
+>>>>>
+>>>>> On 12/12/2023 12:48, Swapnil Jakhade wrote:
+>>>>>> Torrent PHY can have two input reference clocks. Update bindings
+>>>>>
+>>>>> It already supports two.
+>>>>>
+>>>>
+>>>> Thanks for your comments.
+>>>> refclk and pll1_refclk are the two input reference clocks for the PLLs.
+>>>> phy_en_refclk is used to enable output reference clock in some cases.
+>>>
+>>> Why input clock is used to enable output reference clock?
+>>
+>> Looking at the driver code, "phy_en_refclk" is used at 2 places only to
+>> set the parent of 2 clocks apparently called "received reference clock"
+>> and "derived reference clock", either of which can be used to enable an
+>> optional reference clock output feature.
+>>
+>> My understanding is that it is a separate refclk input than 'refclk' (pll0)
+>> or 'pll1_refclk' which can be used to enable a reference clock output feature.
+>>
+>> So this PHY can support a total of 3 input reference clocks:
+>> "refclk" is PLL0 reference clock and is required on all platforms
+>> "pll1_refclk" is PLL1 reference clock and is required on some platforms
+>> "phy_en_refclk" is reference for output reference clock generator and is
+>> optional on all platforms
+>>
+>> Swapnil, can you please confirm my understanding? Thanks!
+>>
 > 
-> Took a look; there will still be arch work needed; arm64 doesn't define
-> PFN_PTE_SHIFT because it defines set_ptes(). I'm not sure if there are other
-> arches that also don't define PFN_PTE_SHIFT (or pte_next_pfn()) if the math is
-> more complex) - it will need an audit.
-> 
+> Yes. This is correct. The two input reference clocks mentioned in commit
+> message refers to refclk and pll1_refclk.
 
-Right, likely many that have their own set_ptes() implementation right now.
+Thanks. Can you please clarify this in the DT documentation in next spin?
+
+> 
+> Thanks & regards,
+> Swapnil
+>>>
+>>>>
+>>>>>> to support dual reference clock multilink configurations.
+>>>>>>
+>>>>>> Signed-off-by: Swapnil Jakhade <sjakhade@cadence.com>
+>>>>>> ---
+>>>>>>  .../devicetree/bindings/phy/phy-cadence-torrent.yaml        | 6 +++---
+>>>>>>  1 file changed, 3 insertions(+), 3 deletions(-)
+>>>>>>
+>>>>>> diff --git a/Documentation/devicetree/bindings/phy/phy-cadence-
+>>>>> torrent.yaml b/Documentation/devicetree/bindings/phy/phy-cadence-
+>>>>> torrent.yaml
+>>>>>> index dfb31314face..98946f549895 100644
+>>>>>> --- a/Documentation/devicetree/bindings/phy/phy-cadence-torrent.yaml
+>>>>>> +++ b/Documentation/devicetree/bindings/phy/phy-cadence-torrent.yaml
+>>>>>> @@ -35,14 +35,14 @@ properties:
+>>>>>>      minItems: 1
+>>>>>>      maxItems: 2
+>>>>>>      description:
+>>>>>> -      PHY reference clock for 1 item. Must contain an entry in clock-names.
+>>>>>> -      Optional Parent to enable output reference clock.
+>>>>>> +      PHY input reference clocks - refclk & pll1_refclk (optional).
+>>>>>> +      Optional Parent to enable output reference clock (phy_en_refclk).
+>>>>>
+>>>>> So third clock? But you allow only two? Confusing.
+>>>>>
+>>>>
+>>>> Yes, if both refclk and pll1_refclk are present, phy_en_refclk can't be used.
+>>>>
+>>>>>>
+>>>>>>    clock-names:
+>>>>>>      minItems: 1
+>>>>>>      items:
+>>>>>>        - const: refclk
+>>>>>> -      - const: phy_en_refclk
+>>>>>> +      - enum: [ pll1_refclk, phy_en_refclk ]
+>>>>>
+>>>>> This does not match your commit msg. You already had two clocks there.
+>>>>>
+>>>> Yes, but refclk was the single input reference clock used for PLLs earlier.
+>>>> As stated in commit message, a new input reference clock (pll1_refclk) is
+>> added here.
+>>>
+>>> existing phy_en_refclk is also input reference clock, isn't it?
+>>>
+>>>>
+>>>
+>>> Best regards,
+>>> Krzysztof
+>>>
+>>
+>> --
+>> cheers,
+>> -roger
 
 -- 
-Cheers,
-
-David / dhildenb
-
+cheers,
+-roger
 
