@@ -1,134 +1,127 @@
-Return-Path: <linux-kernel+bounces-7139-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7124-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CDADA81A221
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 16:21:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DEE9981A1F8
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 16:14:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F20E81C22E2E
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 15:21:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1DE291C22F62
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 15:14:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2F064A9B8;
-	Wed, 20 Dec 2023 15:16:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D11693FB03;
+	Wed, 20 Dec 2023 15:14:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="JCeWi2Fu"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Wacwklq8"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2055.outbound.protection.outlook.com [40.107.95.55])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D098C4A9A0;
-	Wed, 20 Dec 2023 15:16:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bF5seuj+78E+raXnqrkKGLQY6lz1HYG+0q0PPuMIT3JIpHesgyeKR0/KCnxwso+aSE8Fc7S8f7k8zRqY+SAMOTTLiHThUUxcNPFutnXfBQoH1ALpPYGc03xZ18kUbH9yhoLXwFH9zbzI8IYtfxBlC9WdEj0JyDzJOladjuD65buc51BWyXXXJIwHW6Ekoz6Clvdh3NRGq1PXxypE3tCzDnkUFPC1J4muOXgDsE8nRzNRnYZkf313qRSErjmcLBOBj5p5/vhq0tBKV/eEYUwnB6rz4dnrYvLFiuNJTDSD3EaAnnv8Z3qTvYI2M73j/gG68qznUMjqIhSdJE/6xO/Y6w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=lxMh2gFafVbbSg5ON5U0cELcw5bQfEXak4dRapTlmAA=;
- b=BqK8oiiXjZ/5VDzlDT9KZw9cPiOTKY95NDRxNoqMkBzG6wXCTtNsYf5vG567vdUp3BxjtYadgNC17lcxtUeUv8HM0IgJD20/2gkwL8IO2mVOhr9313SHFqU3Pz5+bl2vRnHd92shng0wlYWCBz9Q9oeuew2M0wLN2xZtfF97F59oK8uQEzrZuoDcBGxemRgR/PFKvS+bMgNXMUVyl1bpbHG3h0YVzk7b3r5lozqPitSCf5NHbemHi1LQfSFZuGf4OyuF5Y5ajRPTy8HQMBYd51DzNPFAwjvnWIfvW9XDnHzhfnzAbyC2eikBTWjJ5jPKhM4TfWDpIfZ39RSO7nZ/Yg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lxMh2gFafVbbSg5ON5U0cELcw5bQfEXak4dRapTlmAA=;
- b=JCeWi2FuQYeF+1o65k6MsJergf05KMZoyM9+QJt4HV7eEIU3wn2jDnDwgXt4OkXQGhkDMC5AR85NFtRoyVx+WNP1XavtHxndCpixsKYFC04AuKqbEKKuYsgr1g/63qeQqoZVS2rwO7q+pKDPUf55bez2mXtl1qE75/NhC2OeEfY=
-Received: from DS7PR03CA0240.namprd03.prod.outlook.com (2603:10b6:5:3ba::35)
- by DM4PR12MB5327.namprd12.prod.outlook.com (2603:10b6:5:39e::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7113.18; Wed, 20 Dec
- 2023 15:16:02 +0000
-Received: from DS2PEPF0000343D.namprd02.prod.outlook.com
- (2603:10b6:5:3ba:cafe::17) by DS7PR03CA0240.outlook.office365.com
- (2603:10b6:5:3ba::35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7113.18 via Frontend
- Transport; Wed, 20 Dec 2023 15:16:02 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- DS2PEPF0000343D.mail.protection.outlook.com (10.167.18.40) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7113.14 via Frontend Transport; Wed, 20 Dec 2023 15:16:02 +0000
-Received: from gomati.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Wed, 20 Dec
- 2023 09:15:58 -0600
-From: Nikunj A Dadhania <nikunj@amd.com>
-To: <linux-kernel@vger.kernel.org>, <thomas.lendacky@amd.com>,
-	<x86@kernel.org>, <kvm@vger.kernel.org>
-CC: <bp@alien8.de>, <mingo@redhat.com>, <tglx@linutronix.de>,
-	<dave.hansen@linux.intel.com>, <dionnaglaze@google.com>, <pgonda@google.com>,
-	<seanjc@google.com>, <pbonzini@redhat.com>, <nikunj@amd.com>
-Subject: [PATCH v7 13/16] x86/kvmclock: Skip kvmclock when Secure TSC is available
-Date: Wed, 20 Dec 2023 20:43:55 +0530
-Message-ID: <20231220151358.2147066-14-nikunj@amd.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231220151358.2147066-1-nikunj@amd.com>
-References: <20231220151358.2147066-1-nikunj@amd.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A01923D38F;
+	Wed, 20 Dec 2023 15:14:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1703085284; x=1734621284;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ULvCCsVn4cqIVLiFeZesMLdDzimmihjmZz9S7LtZK9I=;
+  b=Wacwklq89/7WWhlBLn/54lbeuyQzWOtOPGArJ00suyr4/x3MkXFjzrSM
+   BE3b4YRMJ1Hp5Ccz1BNdRFL/O0D+eaPmtBjwFJizkXFJh2lkyN0OihB93
+   a36dx+YOEgk6uGYO53HZe1Y6/nx+WXIrpQVh/NZnmoTUqE3xEuPErF5x1
+   7EPaWhzvhkK8VUHyq674sHZLMCF4/WDOxIptsntzhVHvan9NueNVjFLNB
+   RoBAOzCrU47VSDNhwcTidWR9jfrWviCueAeuVdTl8iCjeKG1hS0u9PZOK
+   3KA2nSLuaB10ewudteP5POTpWyKFoLGx8lYrNYCoNd27x9tdfmBa2a3bB
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10930"; a="9293728"
+X-IronPort-AV: E=Sophos;i="6.04,291,1695711600"; 
+   d="scan'208";a="9293728"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Dec 2023 07:14:43 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10930"; a="776372196"
+X-IronPort-AV: E=Sophos;i="6.04,291,1695711600"; 
+   d="scan'208";a="776372196"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga002.jf.intel.com with ESMTP; 20 Dec 2023 07:14:40 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rFyHO-00073J-1B;
+	Wed, 20 Dec 2023 15:14:38 +0000
+Date: Wed, 20 Dec 2023 23:13:56 +0800
+From: kernel test robot <lkp@intel.com>
+To: Hangyu Hua <hbh25y@gmail.com>, jhs@mojatatu.com,
+	xiyou.wangcong@gmail.com, jiri@resnulli.us, davem@davemloft.net,
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+	tgraf@suug.ch
+Cc: oe-kbuild-all@lists.linux.dev, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Hangyu Hua <hbh25y@gmail.com>
+Subject: Re: [PATCH] net: sched: em_text: fix possible memory leak in
+ em_text_destroy()
+Message-ID: <202312202228.58nFn5h0-lkp@intel.com>
+References: <20231220030838.11751-1-hbh25y@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS2PEPF0000343D:EE_|DM4PR12MB5327:EE_
-X-MS-Office365-Filtering-Correlation-Id: d597b634-d478-44eb-3af7-08dc016e9415
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	LkezmpRgtC7G/BPmO+19IqsDIr/TKlIaREe8gvmeRZKEWTtn/cZc3EdzhYZAsmRBef71pHgmKBiPWqON4xPd0vvz6OLHvwWXL9AEVaod9bjq6VNTJM3pPavRenoE5LDcbwPUzpmCiEEbcj4fZkx+3sblCW42mT8BKmCkmRyQrrRN2rMA64840PEnuxlGDiefouxjwP4VdvhscAB0RvLyDCiBhjDMwywIORwdL9WTQd6lrqTi9WLTQuMiKNr7t+BM2pzwYI0dDpu15BrGax6y7P6swE+THJ0g1Jgw2tH7HoBsbYbAisDqAJmswYIDW19wT0ytRm33ithjlvc2g/04+SQJzX4iZ3qqMSoIcEI99vwY/r+gmIJUkQ74kx5tmyiF9pQJjfVJqxHS/m3uNKQXZtHuHxUWfnuhokoNyBEATuRqvCmjyUWhJgweDYa7JnwCWc/zGFmiENstbcBLVmhG/ftpd4tNPh4ZzoRIVIKiuzO0n7IKHUlvGNtKr5+Hq2vEn/TDj7I9xaxqFGNffnHFZMA87JjkSy+3/3GHjqdyLjaN2mmleH/D9bMsq73FEZ1cQhdBUysNc0quOefxmbqy1Cj6JqQ1TsbPAEyL3qBxcKY3Yso+Aymxxzx9C80NqC7zyVqUF9VuX8w+FMAj+3t8kiGCcWGLr174adUDtVsbhm/dkaIpF8Y9tMY7RbvVLzwNdMJHQGEuimIs7I3RXpMRF6Tk2705tsxNMS9o/7dSbr2wFOYZWJI1bOt6pfNxMIz2AWZyid0Yq8VZYkNooM/sVg==
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(376002)(136003)(346002)(396003)(230922051799003)(451199024)(82310400011)(1800799012)(186009)(64100799003)(46966006)(36840700001)(40470700004)(356005)(81166007)(82740400003)(7696005)(41300700001)(36860700001)(16526019)(26005)(36756003)(83380400001)(336012)(426003)(47076005)(4744005)(2616005)(7416002)(1076003)(5660300002)(2906002)(8936002)(8676002)(4326008)(70206006)(70586007)(316002)(54906003)(478600001)(110136005)(40480700001)(40460700003)(6666004)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Dec 2023 15:16:02.1436
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: d597b634-d478-44eb-3af7-08dc016e9415
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	DS2PEPF0000343D.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5327
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231220030838.11751-1-hbh25y@gmail.com>
 
-For AMD SNP guests having Secure TSC enabled, skip using the kvmclock.
-The guest kernel will fallback and use Secure TSC based clocksource.
+Hi Hangyu,
 
-Signed-off-by: Nikunj A Dadhania <nikunj@amd.com>
-Tested-by: Peter Gonda <pgonda@google.com>
----
- arch/x86/kernel/kvmclock.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+kernel test robot noticed the following build warnings:
 
-diff --git a/arch/x86/kernel/kvmclock.c b/arch/x86/kernel/kvmclock.c
-index fb8f52149be9..e3de354abf74 100644
---- a/arch/x86/kernel/kvmclock.c
-+++ b/arch/x86/kernel/kvmclock.c
-@@ -288,7 +288,7 @@ void __init kvmclock_init(void)
- {
- 	u8 flags;
- 
--	if (!kvm_para_available() || !kvmclock)
-+	if (!kvm_para_available() || !kvmclock || cpu_feature_enabled(X86_FEATURE_SNP_SECURE_TSC))
- 		return;
- 
- 	if (kvm_para_has_feature(KVM_FEATURE_CLOCKSOURCE2)) {
+[auto build test WARNING on net-next/main]
+[also build test WARNING on net/main linus/master v6.7-rc6]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Hangyu-Hua/net-sched-em_text-fix-possible-memory-leak-in-em_text_destroy/20231220-111317
+base:   net-next/main
+patch link:    https://lore.kernel.org/r/20231220030838.11751-1-hbh25y%40gmail.com
+patch subject: [PATCH] net: sched: em_text: fix possible memory leak in em_text_destroy()
+config: m68k-allmodconfig (https://download.01.org/0day-ci/archive/20231220/202312202228.58nFn5h0-lkp@intel.com/config)
+compiler: m68k-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231220/202312202228.58nFn5h0-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312202228.58nFn5h0-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   net/sched/em_text.c: In function 'em_text_destroy':
+>> net/sched/em_text.c:102:24: warning: passing argument 1 of 'kfree' makes pointer from integer without a cast [-Wint-conversion]
+     102 |                 kfree(m->data);
+         |                       ~^~~~~~
+         |                        |
+         |                        long unsigned int
+   In file included from net/sched/em_text.c:8:
+   include/linux/slab.h:227:24: note: expected 'const void *' but argument is of type 'long unsigned int'
+     227 | void kfree(const void *objp);
+         |            ~~~~~~~~~~~~^~~~
+
+
+vim +/kfree +102 net/sched/em_text.c
+
+    97	
+    98	static void em_text_destroy(struct tcf_ematch *m)
+    99	{
+   100		if (EM_TEXT_PRIV(m) && EM_TEXT_PRIV(m)->config) {
+   101			textsearch_destroy(EM_TEXT_PRIV(m)->config);
+ > 102			kfree(m->data);
+   103		}
+   104	}
+   105	
+
 -- 
-2.34.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
