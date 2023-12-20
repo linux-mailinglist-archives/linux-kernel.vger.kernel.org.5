@@ -1,75 +1,138 @@
-Return-Path: <linux-kernel+bounces-7404-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7405-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC4EA81A76F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 21:00:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6833381A772
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 21:01:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8E8CAB23C84
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 20:00:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 538521C22CFD
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 20:01:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4FDF487A3;
-	Wed, 20 Dec 2023 19:59:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="nGclzkJI"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9317B487B0;
+	Wed, 20 Dec 2023 20:01:16 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 744084878D
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 19:59:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=MOQBkuV64qGkpkL02M2q/zJVUfocblbpJ8/Q7Pg5Jnc=; b=nGclzkJI27pB0hdUSS5ouVV0ns
-	O+02D269IBZ8f7WlDkCx6o7vRlP+AcWviiCSxE9Xn4rqSC7fubqVL0J6J8yG5tGrmbJ3/Entj/RgB
-	xusZ7QrgCc32vwQkLV6HTKigjopb1NrrsKiTqUWMEj6Nf+C4zN67FkXhaIRiSK5jvbuAM8rgKUs3o
-	+n1Ci83at1FkOal+kmoinH8t2A8APDD2M8TWwT6abZIKSIqNnwBdUseorZuM09PWH+CT/QsUsb5Zv
-	7rFdrklOtINI2fyQJ4jHkCXqYs5hWiSrk8gGFKfOyIpg2nCa3rPwY+O2goOf39CGNWUvDcaVEGbSd
-	pYNwbF1w==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1rG2io-004Imu-0V; Wed, 20 Dec 2023 19:59:14 +0000
-Date: Wed, 20 Dec 2023 19:59:13 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: Ira Weiny <ira.weiny@intel.com>
-Cc: "Fabio M. De Francesco" <fabio.maria.de.francesco@linux.intel.com>,
-	Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm/memory: Replace kmap() with kmap_local_page()
-Message-ID: <ZYNHkQZhwvM81TZP@casper.infradead.org>
-References: <20231215084417.2002370-1-fabio.maria.de.francesco@linux.intel.com>
- <657fbdb5db945_126a129483@iweiny-mobl.notmuch>
- <4255260.irdbgypaU6@fdefranc-mobl3>
- <6583463e8de5c_30a94294fb@iweiny-mobl.notmuch>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B83D848795;
+	Wed, 20 Dec 2023 20:01:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
+Received: from [192.168.1.104] (178.176.77.120) by msexch01.omp.ru
+ (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Wed, 20 Dec
+ 2023 23:00:55 +0300
+Subject: Re: [PATCH net-next v2 18/21] net: ravb: Return cached statistics if
+ the interface is down
+To: claudiu beznea <claudiu.beznea@tuxon.dev>, <davem@davemloft.net>,
+	<edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+	<richardcochran@gmail.com>, <p.zabel@pengutronix.de>,
+	<yoshihiro.shimoda.uh@renesas.com>, <wsa+renesas@sang-engineering.com>,
+	<geert+renesas@glider.be>
+CC: <netdev@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, Claudiu Beznea
+	<claudiu.beznea.uj@bp.renesas.com>
+References: <20231214114600.2451162-1-claudiu.beznea.uj@bp.renesas.com>
+ <20231214114600.2451162-19-claudiu.beznea.uj@bp.renesas.com>
+ <025040a9-f160-d5f3-e5b0-79fe4619aa9b@omp.ru>
+ <eed10979-c482-43fe-bbe4-4de5b276e2dd@tuxon.dev>
+From: Sergey Shtylyov <s.shtylyov@omp.ru>
+Organization: Open Mobile Platform
+Message-ID: <00434866-a494-9253-6fdc-bcf634c69212@omp.ru>
+Date: Wed, 20 Dec 2023 23:00:54 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6583463e8de5c_30a94294fb@iweiny-mobl.notmuch>
+In-Reply-To: <eed10979-c482-43fe-bbe4-4de5b276e2dd@tuxon.dev>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
+ (10.188.4.12)
+X-KSE-ServerInfo: msexch01.omp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 12/20/2023 19:44:45
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 59
+X-KSE-AntiSpam-Info: Lua profiles 182256 [Dec 20 2023]
+X-KSE-AntiSpam-Info: Version: 6.1.0.3
+X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
+X-KSE-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a
+X-KSE-AntiSpam-Info: {rep_avail}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: {relay has no DNS name}
+X-KSE-AntiSpam-Info: {SMTP from is not routable}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.77.120 in (user)
+ b.barracudacentral.org}
+X-KSE-AntiSpam-Info:
+	omp.ru:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2
+X-KSE-AntiSpam-Info: ApMailHostAddress: 178.176.77.120
+X-KSE-AntiSpam-Info: {DNS response errors}
+X-KSE-AntiSpam-Info: Rate: 59
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
+ smtp.mailfrom=omp.ru;dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 12/20/2023 19:51:00
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 12/20/2023 7:12:00 PM
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
 
-On Wed, Dec 20, 2023 at 11:53:34AM -0800, Ira Weiny wrote:
-> > My understanding of the current implementation is that unmap_and_put_page() 
-> > calls folio_release_kmap(), taking as arguments the folio which the page 
-> > belongs to and the kernel virtual address returned by kmap_local_page().
-> > 
-> > folio_release_kmap() calls kunmap_local() and then folio_put(). The last is 
-> > called on the folio obtained by the unmap_and_put_page() wrapper and, if I'm 
-> > not wrong, it releases refcounts on folios like put_page() does on pages.
+On 12/17/23 4:54 PM, claudiu beznea wrote:
+
+[...]
+>>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>>>
+>>> Return the cached statistics in case the interface is down. There should be
+>>> no drawback to this, as most of the statistics are updated on the data path
+>>> and if runtime PM is enabled and the interface is down, the registers that
+>>> are explicitly read on ravb_get_stats() are zero anyway on most of the IP
+>>> variants.
+>>>
+>>> The commit prepares the code for the addition of runtime PM support.
+>>>
+>>> Suggested-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+>>> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>>> ---
+>>>
+>>> Changes in v2:
+>>> - none; this patch is new
+>>>
+>>>  drivers/net/ethernet/renesas/ravb_main.c | 3 +++
+>>>  1 file changed, 3 insertions(+)
+>>>
+>>> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
+>>> index a2a64c22ec41..1995cf7ff084 100644
+>>> --- a/drivers/net/ethernet/renesas/ravb_main.c
+>>> +++ b/drivers/net/ethernet/renesas/ravb_main.c
+>>> @@ -2110,6 +2110,9 @@ static struct net_device_stats *ravb_get_stats(struct net_device *ndev)
+>>>  	const struct ravb_hw_info *info = priv->info;
+>>>  	struct net_device_stats *nstats, *stats0, *stats1;
+>>>  
+>>> +	if (!netif_running(ndev))
+>>
+>>    I'm afraid this is racy as __LINK_STATE_START bit gets set
+>> by __dev_open() before calling the ndo_open() method... :-(
 > 
-> This is where my consternation came from.  I saw the folio_put() and did
-> not realize that get_page() now calls folio_get().
+> But (at least on my setup), both ndo_get_stats and ndo_open are called with
+> rtnl_mutex locked.
 
-That's not new.  See 86d234cb0499 which changed get_page() to call
-folio_get(), but notice that it's doing the _exact same thing_ that
-get_page() used to do.  And it's behaved this way since ddc58f27f9ee
-in 2016.
+   Unfortunately, it's not always so -- see e.g. netstat_show() in net/core/net-sysfs.c...
+ 
+[...]
+
+MBR, Sergey
 
