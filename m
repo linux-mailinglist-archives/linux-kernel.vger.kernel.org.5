@@ -1,66 +1,64 @@
-Return-Path: <linux-kernel+bounces-7188-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7189-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF9BE81A2FA
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 16:46:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23FA581A2FD
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 16:46:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 630361F22FC6
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 15:46:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D3B07284A2D
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 15:46:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A1D14175F;
-	Wed, 20 Dec 2023 15:46:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB68B40C09;
+	Wed, 20 Dec 2023 15:46:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="AVC49m9F"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gEYyiChK"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2D984174A;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20BB04184B;
+	Wed, 20 Dec 2023 15:46:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78727C433CC;
 	Wed, 20 Dec 2023 15:46:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC20AC433C7;
-	Wed, 20 Dec 2023 15:46:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1703087196;
-	bh=msAgnUJbaRwfm0a89d9Fghf3puPMYUbmDNZfg/0kRDo=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=AVC49m9FN7UGqMos9JDgfGONK9pW0mV8N1W5Vv3mUk6F8twDEkxVRjNuBW5IX5JUG
-	 0nLJsru7WPnunGTjb8v+22r3+58p8Imo1VC0eV03PaX/vc6dYu8/ZTuhs9iN6RDN2k
-	 DT9h9/+GrpK5JBrs2or6PwZlDKEuYDvIQ3LPCpIY=
-Date: Wed, 20 Dec 2023 07:46:34 -0800
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Baoquan He <bhe@redhat.com>
-Cc: Conor Dooley <conor@kernel.org>, linux-kernel@vger.kernel.org,
- kexec@lists.infradead.org, x86@kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-riscv@lists.infradead.org,
- linuxppc-dev@lists.ozlabs.org, linux-parisc@vger.kernel.org,
- joe@perches.com, nathan@kernel.org
-Subject: Re: [PATCH v4 5/7] kexec_file, ricv: print out debugging message if
- required
-Message-Id: <20231220074634.cd736ec567cd7adf1e4c6d7e@linux-foundation.org>
-In-Reply-To: <ZYJsBW0Y7Y+XhSgf@MiWiFi-R3L-srv>
-References: <20231213055747.61826-1-bhe@redhat.com>
-	<20231213055747.61826-6-bhe@redhat.com>
-	<20231219-twitch-many-ca8877857182@spud>
-	<ZYJsBW0Y7Y+XhSgf@MiWiFi-R3L-srv>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703087198;
+	bh=buZ0uthUYg/dZyPy0gNLv1TA78g0kvvXHVubL+0C9A8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=gEYyiChKiGUhQOzrJvhu8y4wokWx+pYf58ADKKE9Zq8ze0yXFbXRvgB6SWALtRGmH
+	 hzUN6BTKJOLTuJi5N6wMde2HGcvGb9gyiyHd9rpbuh6pOmozUyDYyAnM00UNvs7upy
+	 F9mKBjiBg4jzl12+R/fMRrrjg7e/BMhVj0gq31IP6ODLZFvA86iXRGtkJIJgG7MTlC
+	 kd3qiiqEWTfWVLWV9RXqnwCvMEHOIYTIo2kAGe10ntd8WTOzBSQNxHBsYSinlz7reM
+	 OLRxKDXiNBhq/FCB2orTzJN2IjECjOctNDtzBqNsU5DTctbY3GbzPT2PKB3jjwVKkY
+	 bDg3l58Gm7mAg==
+Received: (nullmailer pid 269252 invoked by uid 1000);
+	Wed, 20 Dec 2023 15:46:35 -0000
+Date: Wed, 20 Dec 2023 09:46:35 -0600
+From: Rob Herring <robh@kernel.org>
+To: Frank Li <Frank.Li@nxp.com>
+Cc: krzysztof.kozlowski@linaro.org, bhelgaas@google.com, conor+dt@kernel.org, devicetree@vger.kernel.org, festevam@gmail.com, helgaas@kernel.org, hongxing.zhu@nxp.com, imx@lists.linux.dev, kernel@pengutronix.de, krzysztof.kozlowski+dt@linaro.org, kw@linux.com, l.stach@pengutronix.de, linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com, linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org, lpieralisi@kernel.org, manivannan.sadhasivam@linaro.org, s.hauer@pengutronix.de, shawnguo@kernel.org
+Subject: Re: [PATCH v4 09/15] dt-bindings: imx6q-pcie: remove reg and reg-name
+Message-ID: <20231220154635.GA266754-robh@kernel.org>
+References: <20231217051210.754832-1-Frank.Li@nxp.com>
+ <20231217051210.754832-10-Frank.Li@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231217051210.754832-10-Frank.Li@nxp.com>
 
-On Wed, 20 Dec 2023 12:22:29 +0800 Baoquan He <bhe@redhat.com> wrote:
+On Sun, Dec 17, 2023 at 12:12:04AM -0500, Frank Li wrote:
+> snps,dw-pcie.yaml already have reg and reg-name information. Needn't
+> duplciate here.
 
-> Could you help fix the typo in subject?
-> 
-> [PATCH v4 5/7] kexec_file, ricv: print out debugging message if required
->                            ~~~ s/ricv/riscv/
+It does, but it doesn't define which of the possible names nor number 
+and order of entries. It's primary purpose is to stop people from 
+inventing their own names.
 
-I made that change.
+Rob
 
