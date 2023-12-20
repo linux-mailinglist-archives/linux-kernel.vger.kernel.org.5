@@ -1,244 +1,156 @@
-Return-Path: <linux-kernel+bounces-6318-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-6319-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CE0A819721
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 04:25:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B02CD819722
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 04:26:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 23ACF287002
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 03:25:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 219B11F258A2
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Dec 2023 03:26:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B15718F41;
-	Wed, 20 Dec 2023 03:25:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F19EE8BFC;
+	Wed, 20 Dec 2023 03:26:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Vr2vQ5xS"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="H4ysoX84"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B03E156DD;
-	Wed, 20 Dec 2023 03:25:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B26618BF9
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 03:26:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703042716; x=1734578716;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=7tG7uUz/0Cp/tMpJo2Y2RuTuyuh7GtcWVTgWV880FJA=;
-  b=Vr2vQ5xSvyxoLfnu2n8eS0q5CqJCCNqBkIl7r+Dfe+p9XaG/4pk4/M8Z
-   GaKzs7dTT6F0FwZcyPDHQ7iE2Zl3bbKXuklWSLWPRsuQ/DnEMXENJzomF
-   k2BzMfj13f50DDf93JxNPkHMMZZoTK3Xwf0A/GNJ/e6sc22u9tPF1SLTB
-   igCSeHOYdPhnSodHbiUjNjsTNvMZ8FUknnxvPoSIVnYFR55AnuiVnncVE
-   VDiQgkk0XZAscQjABW20dA2RTKPUE2Mao2u0ggCFHp7uY1cDNbOw21+vY
-   1lX/233VToatD92ireL50VlapKHsP67YTcD0bnHIT2TicfUdcv7VJouzY
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10929"; a="481946535"
+  t=1703042765; x=1734578765;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=sQg0GHxqRq6b339BHu/0EY4JKczngEdLPcPHfv4AawA=;
+  b=H4ysoX84HRpZ127I1Dk6hW90NQOb3KXt4+qroUjHXMPrX4Ffk2MpNd5F
+   zdy6p1FmvG86J+p3b6jXVPWm15XmYHtnTTcxjdm71wNoLfXFf3gW4Qb4v
+   04IEcSxKkAMyIhXBQV009wRyr/4k2sI2mxcZ1twLjAhcotArmtKdby45O
+   u/wyGm7J8aVB/+8BGkFX3ZrwJPaDfXTRqE8CVuIyQnAMUPrGSdridGTID
+   Ui4ulVDjOOsBaaRULLrZY8rcAKhpATgaMvFCbDHWXWZgZ2AH0B10GhOoe
+   cC6ozf9J5zvMbuk2pABoaMpXU/h1Z/Y6d2IEtCEJ/1HurkyKFwptwiYi0
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10929"; a="375246186"
 X-IronPort-AV: E=Sophos;i="6.04,290,1695711600"; 
-   d="scan'208";a="481946535"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Dec 2023 19:25:15 -0800
+   d="scan'208";a="375246186"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Dec 2023 19:26:05 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10929"; a="769440701"
 X-IronPort-AV: E=Sophos;i="6.04,290,1695711600"; 
-   d="scan'208";a="769440701"
-Received: from mohdfai2-mobl.gar.corp.intel.com (HELO [10.107.26.22]) ([10.107.26.22])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Dec 2023 19:25:12 -0800
-Message-ID: <d76e2682-8763-49d0-b46a-5f874eb61985@linux.intel.com>
-Date: Wed, 20 Dec 2023 11:25:09 +0800
+   d="scan'208";a="24418688"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orviesa001.jf.intel.com with ESMTP; 19 Dec 2023 19:26:04 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rFnDb-0006HR-1l;
+	Wed, 20 Dec 2023 03:25:59 +0000
+Date: Wed, 20 Dec 2023 11:25:30 +0800
+From: kernel test robot <lkp@intel.com>
+To: Robin Murphy <robin.murphy@arm.com>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	Joerg Roedel <jroedel@suse.de>
+Subject: drivers/iommu/ipmmu-vmsa.c:946:34: warning: 'ipmmu_of_ids' defined
+ but not used
+Message-ID: <202312201150.a8PJmJcl-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 net 0/4] qbv cycle time extension/truncation
-To: Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc: Vinicius Costa Gomes <vinicius.gomes@intel.com>,
- Jamal Hadi Salim <jhs@mojatatu.com>, Cong Wang <xiyou.wangcong@gmail.com>,
- Jiri Pirko <jiri@resnulli.us>, "David S . Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20231219081453.718489-1-faizal.abdul.rahim@linux.intel.com>
- <20231219165650.3amt4ftyt7gisz47@skbuf>
-Content-Language: en-US
-From: "Abdul Rahim, Faizal" <faizal.abdul.rahim@linux.intel.com>
-In-Reply-To: <20231219165650.3amt4ftyt7gisz47@skbuf>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+Hi Robin,
+
+FYI, the error/warning still remains.
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   55cb5f43689d7a9ea5bf35ef050f12334f197347
+commit: b87d6d7fa405e23478f1e1dff6d66b5a533a5433 iommu/ipmmu-vmsa: Clean up bus_set_iommu()
+date:   1 year, 3 months ago
+config: i386-buildonly-randconfig-005-20231101 (https://download.01.org/0day-ci/archive/20231220/202312201150.a8PJmJcl-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231220/202312201150.a8PJmJcl-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312201150.a8PJmJcl-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> drivers/iommu/ipmmu-vmsa.c:946:34: warning: 'ipmmu_of_ids' defined but not used [-Wunused-const-variable=]
+     946 | static const struct of_device_id ipmmu_of_ids[] = {
+         |                                  ^~~~~~~~~~~~
 
 
+vim +/ipmmu_of_ids +946 drivers/iommu/ipmmu-vmsa.c
 
-On 20/12/2023 12:56 am, Vladimir Oltean wrote:
-> On Tue, Dec 19, 2023 at 03:14:49AM -0500, Faizal Rahim wrote:
->> According to IEEE Std. 802.1Q-2018 section Q.5 CycleTimeExtension,
->> the Cycle Time Extension variable allows this extension of the last old
->> cycle to be done in a defined way. If the last complete old cycle would
->> normally end less than OperCycleTimeExtension nanoseconds before the new
->> base time, then the last complete cycle before AdminBaseTime is reached
->> is extended so that it ends at AdminBaseTime.
->>
->> Changes in v3:
->> - Removed the last 3 patches related to fixing cycle time adjustment
->> for the "current entry". This is to simplify this patch series submission
->> which only covers cycle time adjustment for the "next entry".
->> - Negative correction calculation in get_cycle_time_correction() is
->>    guarded so that it doesn't exceed interval
->> - Some rename (macro, function)
->> - Transport commit message comments to the code comments
->> - Removed unnecessary null check
->> - Reword commit message
->>
->> Changes in v2:
->> - Added 's64 cycle_time_correction' in 'sched_gate_list struct'.
->> - Removed sched_changed created in v1 since the new cycle_time_correction
->>    field can also serve to indicate the need for a schedule change.
->> - Added 'bool correction_active' in 'struct sched_entry' to represent
->>    the correction state from the entry's perspective and return corrected
->>    interval value when active.
->> - Fix cycle time correction logics for the next entry in advance_sched()
->> - Fix and implement proper cycle time correction logics for current
->>    entry in taprio_start_sched()
->>
->> v2 at:
->> https://lore.kernel.org/lkml/20231107112023.676016-1-faizal.abdul.rahim@linux.intel.com/
->> v1 at:
->> https://lore.kernel.org/lkml/20230530082541.495-1-muhammad.husaini.zulkifli@intel.com/
-> 
-> I'm sorry that I stopped responding on your v2. I realized the discussion
-> reached a point where I couldn't figure out who is right without some
-> testing. I wanted to write a selftest to highlight the expected correct
-> behavior of the datapath during various schedule changes, and whether we
-> could ever end up with a negative interval after the correction. However,
-> writing that got quite complicated and that ended there.
-> 
-> How are you testing the behavior, and who reported the issues / what prompted
-> the changes? Honestly I'm not very confident in the changes we're
-> pushing down the linux-stable pipe. They don't look all that obvious, so
-> I still think that having selftests would help. If you don't have a
-> testing rig already assembled, and you don't want to start one, I might
-> want to give it a second try and cook something up myself.
-> 
-> Something really simple like:
-> - start schedule 1 with base-time A and cycle-time-extension B
-> - start schedule 2 with base-time C
-> - send one packet with isochron during the last cycle of schedule 1
-> 
-> By varying the parameters, we could check if the schedule is correctly
-> extended or truncated. We could configure the 2 schedules in such a way
-> that "extending" would mean that isochron's gate (from schedule 1) is
-> open (and thus, the packet will pass) and "truncating" would mean that
-> the packet is scheduled according to schedule 2 (where isochron's gate
-> will be always closed, so the packet will never pass).
-> 
-> We could then alter the cycle-time-extension relative to the base-times,
-> to force a truncation of 1, 2, 3 entries or more, and see that the
-> behavior is always correct.
+7a62ced8ebd0e1 Yoshihiro Shimoda       2021-09-07  945  
+33f3ac9b511612 Magnus Damm             2017-10-16 @946  static const struct of_device_id ipmmu_of_ids[] = {
+33f3ac9b511612 Magnus Damm             2017-10-16  947  	{
+33f3ac9b511612 Magnus Damm             2017-10-16  948  		.compatible = "renesas,ipmmu-vmsa",
+33f3ac9b511612 Magnus Damm             2017-10-16  949  		.data = &ipmmu_features_default,
+60fb0083c9d43b Fabrizio Castro         2018-08-23  950  	}, {
+60fb0083c9d43b Fabrizio Castro         2018-08-23  951  		.compatible = "renesas,ipmmu-r8a774a1",
+60fb0083c9d43b Fabrizio Castro         2018-08-23  952  		.data = &ipmmu_features_rcar_gen3,
+757f26a3a9ec2c Biju Das                2019-09-27  953  	}, {
+757f26a3a9ec2c Biju Das                2019-09-27  954  		.compatible = "renesas,ipmmu-r8a774b1",
+757f26a3a9ec2c Biju Das                2019-09-27  955  		.data = &ipmmu_features_rcar_gen3,
+b6d39cd82241bf Fabrizio Castro         2018-12-13  956  	}, {
+b6d39cd82241bf Fabrizio Castro         2018-12-13  957  		.compatible = "renesas,ipmmu-r8a774c0",
+b6d39cd82241bf Fabrizio Castro         2018-12-13  958  		.data = &ipmmu_features_rcar_gen3,
+4b2aa7a6f9b793 Marian-Cristian Rotariu 2020-07-14  959  	}, {
+4b2aa7a6f9b793 Marian-Cristian Rotariu 2020-07-14  960  		.compatible = "renesas,ipmmu-r8a774e1",
+4b2aa7a6f9b793 Marian-Cristian Rotariu 2020-07-14  961  		.data = &ipmmu_features_rcar_gen3,
+58b8e8bf409236 Magnus Damm             2017-10-16  962  	}, {
+58b8e8bf409236 Magnus Damm             2017-10-16  963  		.compatible = "renesas,ipmmu-r8a7795",
+0b8ac1409641e1 Magnus Damm             2018-06-14  964  		.data = &ipmmu_features_rcar_gen3,
+0b8ac1409641e1 Magnus Damm             2018-06-14  965  	}, {
+0b8ac1409641e1 Magnus Damm             2018-06-14  966  		.compatible = "renesas,ipmmu-r8a7796",
+0b8ac1409641e1 Magnus Damm             2018-06-14  967  		.data = &ipmmu_features_rcar_gen3,
+17fe1618163980 Yoshihiro Shimoda       2020-06-11  968  	}, {
+17fe1618163980 Yoshihiro Shimoda       2020-06-11  969  		.compatible = "renesas,ipmmu-r8a77961",
+17fe1618163980 Yoshihiro Shimoda       2020-06-11  970  		.data = &ipmmu_features_rcar_gen3,
+98dbffd39a6513 Jacopo Mondi            2018-06-14  971  	}, {
+98dbffd39a6513 Jacopo Mondi            2018-06-14  972  		.compatible = "renesas,ipmmu-r8a77965",
+98dbffd39a6513 Jacopo Mondi            2018-06-14  973  		.data = &ipmmu_features_rcar_gen3,
+3701c123e1c13c Simon Horman            2018-06-14  974  	}, {
+3701c123e1c13c Simon Horman            2018-06-14  975  		.compatible = "renesas,ipmmu-r8a77970",
+3701c123e1c13c Simon Horman            2018-06-14  976  		.data = &ipmmu_features_rcar_gen3,
+1cdeb52e5c245b Nikita Yushchenko       2021-09-23  977  	}, {
+1cdeb52e5c245b Nikita Yushchenko       2021-09-23  978  		.compatible = "renesas,ipmmu-r8a77980",
+1cdeb52e5c245b Nikita Yushchenko       2021-09-23  979  		.data = &ipmmu_features_rcar_gen3,
+b0c32912150565 Hai Nguyen Pham         2018-10-17  980  	}, {
+b0c32912150565 Hai Nguyen Pham         2018-10-17  981  		.compatible = "renesas,ipmmu-r8a77990",
+b0c32912150565 Hai Nguyen Pham         2018-10-17  982  		.data = &ipmmu_features_rcar_gen3,
+3701c123e1c13c Simon Horman            2018-06-14  983  	}, {
+3701c123e1c13c Simon Horman            2018-06-14  984  		.compatible = "renesas,ipmmu-r8a77995",
+3701c123e1c13c Simon Horman            2018-06-14  985  		.data = &ipmmu_features_rcar_gen3,
+7a62ced8ebd0e1 Yoshihiro Shimoda       2021-09-07  986  	}, {
+7a62ced8ebd0e1 Yoshihiro Shimoda       2021-09-07  987  		.compatible = "renesas,ipmmu-r8a779a0",
+ae684caf465b7d Yoshihiro Shimoda       2022-02-08  988  		.data = &ipmmu_features_rcar_gen4,
+ae684caf465b7d Yoshihiro Shimoda       2022-02-08  989  	}, {
+9f7d09fe23a011 Yoshihiro Shimoda       2022-06-17  990  		.compatible = "renesas,rcar-gen4-ipmmu-vmsa",
+ae684caf465b7d Yoshihiro Shimoda       2022-02-08  991  		.data = &ipmmu_features_rcar_gen4,
+33f3ac9b511612 Magnus Damm             2017-10-16  992  	}, {
+33f3ac9b511612 Magnus Damm             2017-10-16  993  		/* Terminator */
+33f3ac9b511612 Magnus Damm             2017-10-16  994  	},
+33f3ac9b511612 Magnus Damm             2017-10-16  995  };
+33f3ac9b511612 Magnus Damm             2017-10-16  996  
 
-Hi Vladimir,
+:::::: The code at line 946 was first introduced by commit
+:::::: 33f3ac9b511612153bae1d328b0c84c0367cd08d iommu/ipmmu-vmsa: Introduce features, break out alias
 
-No worries, I truly appreciate the time you took to review and reply.
+:::::: TO: Magnus Damm <damm+renesas@opensource.se>
+:::::: CC: Alex Williamson <alex.williamson@redhat.com>
 
-What prompted this in general is related to my project requirement to 
-enable software QBV cycle time extension, so there's a validation team that 
-created test cases to properly validate cycle time extension. Then I 
-noticed the code doesn't handle truncation properly also, since it's the 
-same code area, I just fixed it together.
-
-Each time before sending the patch for upstream review, I normally will run 
-our test cases that only validates cycle time extension. For truncation, I 
-modify the test cases on my own and put logs to check if the 
-cycle_time_correction negative value is within the correct range. I 
-probably should have mentioned sooner that I have tested this myself, sorry 
-about that.
-
-Example of the test I run for cycle time extension:
-1) 2 boards connected back-to-back with i226 NIC. Board A as sender, Board 
-B as receiver
-2) Time is sync between 2 boards with phc2sys and ptp4l
-3) Run GCL1 on Board A with cycle time extension enabled:
-     tc qdisc replace dev $INTERFACE parent root handle 100 taprio \
-     num_tc 4 \
-     map 3 2 1 0 3 3 3 3 3 3 3 3 3 3 3 3 \
-     queues 1@0 1@1 1@2 1@3 \
-     base-time 0 \
-     cycle-time-extension 1000000 \
-     sched-entry S 09 500000 \
-     sched-entry S 0a 500000 \
-     clockid CLOCK_TAI
-4) capture tcp dump on Board B
-5) Send packets from Board A to Board B with 200us interval via UDP Tai
-6) When packets reached Board B, trigger GCL2 to Board A:
-    CYCLETIME=1000000
-    APPLYTIME=1000000000 # 1s
-    CURRENT=$(date +%s%N)
-    BASE=$(( (CURRENT + APPLYTIME + (2*CYCLETIME)) - ((CURRENT + APPLYTIME)
-          % CYCLETIME) + ((CYCLETIME*3)/5) ))
-     tc qdisc replace dev $INTERFACE parent root handle 100 taprio \
-     num_tc 4 \
-     map 3 2 1 0 3 3 3 3 3 3 3 3 3 3 3 3 \
-     queues 1@0 1@1 1@2 1@3 \
-     base-time $BASE \
-     cycle-time-extension 1000000 \
-     sched-entry S oc 500000 \
-     sched-entry S 08 500000 \
-     clockid CLOCK_TAI
-7) Analyze tcp dump data on Board B using wireshark, will observe packets 
-receive pattern changed.
-
-Note that I've hidden "Best Effort (default) 7001 → 7001" data from the 
-wireshark log so that it's easier to see the pattern.
-
-      TIMESTAMP               PRIORITY             PRIORITY    NOTES 
-
-1702896645.925014509	Critical Applications	7004 → 7004   GCL1
-1702896645.925014893	Critical Applications	7004 → 7004   GCL1
-1702896645.925514454	Excellent Effort	7003 → 7003   GCL1
-1702896645.925514835	Excellent Effort	7003 → 7003   GCL1
-1702896645.926014371	Critical Applications	7004 → 7004   GCL1
-1702896645.926014755	Critical Applications	7004 → 7004   GCL1
-1702896645.926514620	Excellent Effort	7003 → 7003   GCL1
-1702896645.926515004	Excellent Effort	7003 → 7003   GCL1
-1702896645.927014408	Critical Applications	7004 → 7004   GCL1
-1702896645.927014792	Critical Applications	7004 → 7004   GCL1
-1702896645.927514789	Excellent Effort	7003 → 7003   GCL1
-1702896645.927515173	Excellent Effort	7003 → 7003   GCL1
-1702896645.928168304	Excellent Effort	7003 → 7003   Extended
-1702896645.928368780	Excellent Effort	7003 → 7003   Extended
-1702896645.928569406	Excellent Effort	7003 → 7003   Extended
-1702896645.929614835	Background	        7002 → 7002   GCL2
-1702896645.929615219	Background	        7002 → 7002   GCL2
-1702896645.930614643	Background	        7002 → 7002   GCL2
-1702896645.930615027	Background	        7002 → 7002   GCL2
-1702896645.931614604	Background	        7002 → 7002   GCL2
-1702896645.931614991	Background	        7002 → 7002   GCL2
-
-The extended packets only will happen if cycle_time and interval fields
-are updated using cycle_time_correction. Without that patch, the extended 
-packets are not received.
-
-
-As for the negative truncation case, I just make the interval quite long, 
-and experimented with GCL2 base-time value so that it hits the "next entry" 
-in advance_sched(). Then I checked my logs in get_cycle_time_correction() 
-to see the truncation case and its values.
-
-Based on your feedback of the test required, I think that my existing 
-truncation test is not enough, but the extension test case part should be 
-good right ?
-
-Do let me know then, I'm more than willing to do more test for the 
-truncation case as per your suggestion, well basically, anything to help 
-speed up the patches series review process :)
-
-
-Appreciate your suggestion and help a lot, thank you.
-
-
-
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
