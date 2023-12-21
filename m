@@ -1,407 +1,197 @@
-Return-Path: <linux-kernel+bounces-8312-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8313-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 05B0281B576
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 13:06:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 565B281B57B
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 13:09:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B04BA28579C
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 12:06:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D37691F24ED8
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 12:09:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79FF26E5AF;
-	Thu, 21 Dec 2023 12:06:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51F426E5A4;
+	Thu, 21 Dec 2023 12:09:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sX6so0f4"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="P16zovW2"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFA946D1BF;
-	Thu, 21 Dec 2023 12:06:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86AD5C433C8;
-	Thu, 21 Dec 2023 12:06:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703160402;
-	bh=FYeMNbw8BtytmLK5Ppctl2wRAn1H7cpvJrvgLFOJx2Y=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=sX6so0f4M/3Bs5KwTHM+VMk5in6ZgO5QYdYI0Paa7gQu9qHCci1ZVUdXUxK9oFtRX
-	 9lVHjt8zxqJVwZ+NhER/9c+1+ZfqkBBRMClGjdrOMF1wB2+VRKqLtMFERbfM/Zgyin
-	 ixzCLXoT0WCt8FnzrbjXOWQDZPQnoErnhty2SBw70Da1OQfREssoBJaQfomklAsi6/
-	 U1YLaRMm6STIQPdA2Sx/DOVxFIToUl0tdub6n/AfDSRM+WxefiiTZpa0/0T7xpq1ck
-	 tQWiBG7c1fXD6+Yik/KzgwSrajMEzReB+Qc+VuNbdyUraD3fDRG/F50pYfbMpHjR6F
-	 utzHHz8O2jk/g==
-Date: Thu, 21 Dec 2023 12:06:24 +0000
-From: Jonathan Cameron <jic23@kernel.org>
-To: Paul Cercueil <paul@crapouillou.net>
-Cc: Lars-Peter Clausen <lars@metafoo.de>, Sumit Semwal
- <sumit.semwal@linaro.org>, Christian =?UTF-8?B?S8O2bmln?=
- <christian.koenig@amd.com>, Vinod Koul <vkoul@kernel.org>, Jonathan Corbet
- <corbet@lwn.net>, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- dmaengine@vger.kernel.org, linux-iio@vger.kernel.org,
- linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
- linaro-mm-sig@lists.linaro.org, Nuno =?UTF-8?B?U8Oh?=
- <noname.nuno@gmail.com>, Michael Hennerich <Michael.Hennerich@analog.com>
-Subject: Re: [PATCH v5 5/8] iio: core: Add new DMABUF interface
- infrastructure
-Message-ID: <20231221120624.7bcdc302@jic23-huawei>
-In-Reply-To: <20231219175009.65482-6-paul@crapouillou.net>
-References: <20231219175009.65482-1-paul@crapouillou.net>
-	<20231219175009.65482-6-paul@crapouillou.net>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 329E56E2BF
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 12:09:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1703160547;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=u2zddOQ1qeYa0ve/5dlXq/cgaEaRPGUue1VUy/g3vDE=;
+	b=P16zovW23++TbKf9GYzsdnwGBdVIZT0rtU5lkxXzHqy1IO8Qun2IRYgxL4j7X1ZaiSv2PC
+	bkWxfPxLZm9PCmaJkp7v7eAQ7BGbOKiT57K7+w/daUVV5Ss55w8CMBX54MkaeALLR6NXJA
+	BdItMIiAxIEIJVPpMlDu4ZxnqbBzdr4=
+Received: from mail-yw1-f198.google.com (mail-yw1-f198.google.com
+ [209.85.128.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-618-7lnz2j0_NH-LM2P-W2QkxA-1; Thu, 21 Dec 2023 07:09:05 -0500
+X-MC-Unique: 7lnz2j0_NH-LM2P-W2QkxA-1
+Received: by mail-yw1-f198.google.com with SMTP id 00721157ae682-5e6fe91c706so13079897b3.2
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 04:09:05 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703160545; x=1703765345;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=u2zddOQ1qeYa0ve/5dlXq/cgaEaRPGUue1VUy/g3vDE=;
+        b=e8Nqh5Xeh6s1PjCCU9N5u9PU1/w/bxvwiOJpIW8cmi3ckS5A+ahFXP2qtU7QfeNkW/
+         SJN1JQuVc726KqNBZbed72rAA1ieNapka1Meiov6jpck5c0i5PDdSGk8BWwbYnM8MSzq
+         bya/pku4/22WK4GbBuo1StRDUkwt5+HYtOKE5GjvXKw0wp/1rrOSjq/ezRSxzinFlW2x
+         SGIiVKBHoeh3PhIhlC6bPSGkKHTXqTs2lVEMeFXJE4UXv+ph0QleuyJFSp7v+LJRfyR3
+         A81YTF4jLeF4vZ4nZpyEO5ICR5RHH9gt8+aTrM/QFPddmhwqs6hG4yP9pv98vIRwZNCI
+         kzTA==
+X-Gm-Message-State: AOJu0YxmGin2W6KE4CdgpcOWmW+PPthcxm64f6p2zn7fB2T7dce5JSwJ
+	2UUojeAr78TcatcVTfmIohALOoOWSwct/TiZmdv9ImRyh7m0FZ0jMA6tTqt9JyOfaKpjHF/UsTY
+	xCKlvlU6ats0rvyl8BFrkJewLgjRMPIkTkqyhIHHA
+X-Received: by 2002:a0d:eacc:0:b0:5e8:d7b2:cdcd with SMTP id t195-20020a0deacc000000b005e8d7b2cdcdmr1029732ywe.48.1703160544739;
+        Thu, 21 Dec 2023 04:09:04 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IE+wUNNsjF8vEWQGGMpBGoBAUApRdPfu53AYtmvTV2W30g5Q9Sc3RlTNwEHeRRatnR6DBa23ya1wKjB1B+7qt4=
+X-Received: by 2002:a0d:eacc:0:b0:5e8:d7b2:cdcd with SMTP id
+ t195-20020a0deacc000000b005e8d7b2cdcdmr1029718ywe.48.1703160543744; Thu, 21
+ Dec 2023 04:09:03 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20231219180858.120898-1-dtatulea@nvidia.com> <20231219180858.120898-3-dtatulea@nvidia.com>
+ <CACGkMEv7xQkZYJAgAUK6C3oUrZ9vuUJdTKRzihXcNPb-iWdpJw@mail.gmail.com>
+ <CACGkMEsaaDGi63__YrvsTC1HqgTaEWHvGokK1bJS5+m1XYM-6w@mail.gmail.com>
+ <CAJaqyWdoaj8a7q1KrGqWmkYvAw_R_p0utcWvDvkyVm1nUOAxrA@mail.gmail.com>
+ <CACGkMEuM7bXxsxHUs_SodiDQ2+akrLqqzWZBJSZEcnMASUkb+g@mail.gmail.com>
+ <CAJaqyWeBVVcTZEzZK=63Ymk85wnRFd+_wK56UfEHNXBH-qy1Zg@mail.gmail.com> <70adc734331c1289dceb3bcdc991f3da7e4db2f0.camel@nvidia.com>
+In-Reply-To: <70adc734331c1289dceb3bcdc991f3da7e4db2f0.camel@nvidia.com>
+From: Eugenio Perez Martin <eperezma@redhat.com>
+Date: Thu, 21 Dec 2023 13:08:27 +0100
+Message-ID: <CAJaqyWeUHiZXMFkNBpinCsJAXojtPkGz+SjzUNDPx5W=qqON1w@mail.gmail.com>
+Subject: Re: [PATCH vhost v4 02/15] vdpa: Add VHOST_BACKEND_F_CHANGEABLE_VQ_ADDR_IN_SUSPEND
+ flag
+To: Dragos Tatulea <dtatulea@nvidia.com>
+Cc: "jasowang@redhat.com" <jasowang@redhat.com>, 
+	"xuanzhuo@linux.alibaba.com" <xuanzhuo@linux.alibaba.com>, Parav Pandit <parav@nvidia.com>, 
+	"virtualization@lists.linux-foundation.org" <virtualization@lists.linux-foundation.org>, Gal Pressman <gal@nvidia.com>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	"si-wei.liu@oracle.com" <si-wei.liu@oracle.com>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>, 
+	"mst@redhat.com" <mst@redhat.com>, Saeed Mahameed <saeedm@nvidia.com>, "leon@kernel.org" <leon@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 19 Dec 2023 18:50:06 +0100
-Paul Cercueil <paul@crapouillou.net> wrote:
-
-> Add the necessary infrastructure to the IIO core to support a new
-> optional DMABUF based interface.
-> 
-> With this new interface, DMABUF objects (externally created) can be
-> attached to a IIO buffer, and subsequently used for data transfer.
-> 
-> A userspace application can then use this interface to share DMABUF
-> objects between several interfaces, allowing it to transfer data in a
-> zero-copy fashion, for instance between IIO and the USB stack.
-> 
-> The userspace application can also memory-map the DMABUF objects, and
-> access the sample data directly. The advantage of doing this vs. the
-> read() interface is that it avoids an extra copy of the data between the
-> kernel and userspace. This is particularly userful for high-speed
-> devices which produce several megabytes or even gigabytes of data per
-> second.
-> 
-> As part of the interface, 3 new IOCTLs have been added:
-> 
-> IIO_BUFFER_DMABUF_ATTACH_IOCTL(int fd):
->  Attach the DMABUF object identified by the given file descriptor to the
->  buffer.
-> 
-> IIO_BUFFER_DMABUF_DETACH_IOCTL(int fd):
->  Detach the DMABUF object identified by the given file descriptor from
->  the buffer. Note that closing the IIO buffer's file descriptor will
->  automatically detach all previously attached DMABUF objects.
-> 
-> IIO_BUFFER_DMABUF_ENQUEUE_IOCTL(struct iio_dmabuf *):
->  Request a data transfer to/from the given DMABUF object. Its file
->  descriptor, as well as the transfer size and flags are provided in the
->  "iio_dmabuf" structure.
-> 
-> These three IOCTLs have to be performed on the IIO buffer's file
-> descriptor, obtained using the IIO_BUFFER_GET_FD_IOCTL() ioctl.
-> 
-
-Fair enough - so they don't apply to the 'legacy' buffer which simplifies
-things but in one place you assume that logic is used (given error return
-values).
-
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> 
-This is big and complex and I'm out of time for now, so I've made some
-comments but should revisit it.
-I'm also looking for review from those more familiar with dmabuf side
-of things than I am!
-
-Jonathan
-
-
->  
-> +static int iio_dma_resv_lock(struct dma_buf *dmabuf, bool nonblock)
-> +{
-> +	int ret;
-> +
-> +	ret = dma_resv_lock_interruptible(dmabuf->resv, NULL);
-> +	if (ret) {
-> +		if (ret != -EDEADLK)
-> +			goto out;
-> +		if (nonblock) {
-> +			ret = -EBUSY;
-> +			goto out;
-> +		}
-> +
-> +		ret = dma_resv_lock_slow_interruptible(dmabuf->resv, NULL);
-> +	}
-> +
-> +out:
-> +	return ret;
-
-I'm not a fan gotos that do nothing.  Just return in appropriate places above.
-
-> +}
+On Thu, Dec 21, 2023 at 12:52=E2=80=AFPM Dragos Tatulea <dtatulea@nvidia.co=
+m> wrote:
 >
-> +static int iio_buffer_detach_dmabuf(struct iio_dev_buffer_pair *ib, int *user_req)
-> +{
-> +	struct dma_buf_attachment *attach;
-> +	struct iio_dmabuf_priv *priv;
-> +	struct dma_buf *dmabuf;
-> +	int dmabuf_fd, ret = 0;
-> +
-> +	if (copy_from_user(&dmabuf_fd, user_req, sizeof(dmabuf_fd)))
-> +		return -EFAULT;
-> +
-> +	dmabuf = dma_buf_get(dmabuf_fd);
-> +	if (IS_ERR(dmabuf))
-> +		return PTR_ERR(dmabuf);
-> +
-> +	attach = iio_buffer_find_attachment(ib->indio_dev, dmabuf);
-> +	if (IS_ERR(attach)) {
-> +		ret = PTR_ERR(attach);
-> +		goto out_dmabuf_put;
-> +	}
-> +
-> +	priv = attach->importer_priv;
-> +	list_del_init(&priv->entry);
-> +
-> +	/*
-> +	 * Unref twice to release the reference obtained with
-> +	 * iio_buffer_find_attachment() above, and the one obtained in
-> +	 * iio_buffer_attach_dmabuf().
-> +	 */
-> +	iio_buffer_dmabuf_put(attach);
-> +	iio_buffer_dmabuf_put(attach);
-> +
-> +out_dmabuf_put:
-> +	dma_buf_put(dmabuf);
-As below. Feels like a __free(dma_buf_put) bit of magic would be a nice to have.
+> On Thu, 2023-12-21 at 08:46 +0100, Eugenio Perez Martin wrote:
+> > On Thu, Dec 21, 2023 at 3:03=E2=80=AFAM Jason Wang <jasowang@redhat.com=
+> wrote:
+> > >
+> > > On Wed, Dec 20, 2023 at 9:32=E2=80=AFPM Eugenio Perez Martin
+> > > <eperezma@redhat.com> wrote:
+> > > >
+> > > > On Wed, Dec 20, 2023 at 5:06=E2=80=AFAM Jason Wang <jasowang@redhat=
+.com> wrote:
+> > > > >
+> > > > > On Wed, Dec 20, 2023 at 11:46=E2=80=AFAM Jason Wang <jasowang@red=
+hat.com> wrote:
+> > > > > >
+> > > > > > On Wed, Dec 20, 2023 at 2:09=E2=80=AFAM Dragos Tatulea <dtatule=
+a@nvidia.com> wrote:
+> > > > > > >
+> > > > > > > The virtio spec doesn't allow changing virtqueue addresses af=
+ter
+> > > > > > > DRIVER_OK. Some devices do support this operation when the de=
+vice is
+> > > > > > > suspended. The VHOST_BACKEND_F_CHANGEABLE_VQ_ADDR_IN_SUSPEND =
+flag
+> > > > > > > advertises this support as a backend features.
+> > > > > >
+> > > > > > There's an ongoing effort in virtio spec to introduce the suspe=
+nd state.
+> > > > > >
+> > > > > > So I wonder if it's better to just allow such behaviour?
+> > > > >
+> > > > > Actually I mean, allow drivers to modify the parameters during su=
+spend
+> > > > > without a new feature.
+> > > > >
+> > > >
+> > > > That would be ideal, but how do userland checks if it can suspend +
+> > > > change properties + resume?
+> > >
+> > > As discussed, it looks to me the only device that supports suspend is
+> > > simulator and it supports change properties.
+> > >
+> > > E.g:
+> > >
+> > > static int vdpasim_set_vq_address(struct vdpa_device *vdpa, u16 idx,
+> > >                                   u64 desc_area, u64 driver_area,
+> > >                                   u64 device_area)
+> > > {
+> > >         struct vdpasim *vdpasim =3D vdpa_to_sim(vdpa);
+> > >         struct vdpasim_virtqueue *vq =3D &vdpasim->vqs[idx];
+> > >
+> > >         vq->desc_addr =3D desc_area;
+> > >         vq->driver_addr =3D driver_area;
+> > >         vq->device_addr =3D device_area;
+> > >
+> > >         return 0;
+> > > }
+> > >
+> >
+> > So in the current kernel master it is valid to set a different vq
+> > address while the device is suspended in vdpa_sim. But it is not valid
+> > in mlx5, as the FW will not be updated in resume (Dragos, please
+> > correct me if I'm wrong). Both of them return success.
+> >
+> In the current state, there is no resume. HW Virtqueues will just get re-=
+created
+> with the new address.
+>
 
-> +
-> +	return ret;
-> +}
-> +
-> +static const char *
-> +iio_buffer_dma_fence_get_driver_name(struct dma_fence *fence)
-> +{
-> +	return "iio";
-> +}
-> +
-> +static void iio_buffer_dma_fence_release(struct dma_fence *fence)
-> +{
-> +	struct iio_dma_fence *iio_fence =
-> +		container_of(fence, struct iio_dma_fence, base);
-> +
-> +	kfree(iio_fence);
-> +}
-> +
-> +static const struct dma_fence_ops iio_buffer_dma_fence_ops = {
-> +	.get_driver_name	= iio_buffer_dma_fence_get_driver_name,
-> +	.get_timeline_name	= iio_buffer_dma_fence_get_driver_name,
-> +	.release		= iio_buffer_dma_fence_release,
-> +};
-> +
-> +static int iio_buffer_enqueue_dmabuf(struct iio_dev_buffer_pair *ib,
-> +				     struct iio_dmabuf __user *iio_dmabuf_req,
-> +				     bool nonblock)
-> +{
-> +	struct iio_dev *indio_dev = ib->indio_dev;
-> +	struct iio_buffer *buffer = ib->buffer;
-> +	struct iio_dmabuf iio_dmabuf;
-> +	struct dma_buf_attachment *attach;
-> +	struct iio_dmabuf_priv *priv;
-> +	enum dma_data_direction dir;
-> +	struct iio_dma_fence *fence;
-> +	struct dma_buf *dmabuf;
-> +	struct sg_table *sgt;
-> +	unsigned long timeout;
-> +	bool dma_to_ram;
-> +	bool cyclic;
-> +	int ret;
-> +
-> +	if (copy_from_user(&iio_dmabuf, iio_dmabuf_req, sizeof(iio_dmabuf)))
-> +		return -EFAULT;
-> +
-> +	if (iio_dmabuf.flags & ~IIO_BUFFER_DMABUF_SUPPORTED_FLAGS)
-> +		return -EINVAL;
-> +
-> +	cyclic = iio_dmabuf.flags & IIO_BUFFER_DMABUF_CYCLIC;
-> +
-> +	/* Cyclic flag is only supported on output buffers */
-> +	if (cyclic && buffer->direction != IIO_BUFFER_DIRECTION_OUT)
-> +		return -EINVAL;
-> +
-> +	dmabuf = dma_buf_get(iio_dmabuf.fd);
-> +	if (IS_ERR(dmabuf))
-> +		return PTR_ERR(dmabuf);
-> +
-> +	if (!iio_dmabuf.bytes_used || iio_dmabuf.bytes_used > dmabuf->size) {
-> +		ret = -EINVAL;
-> +		goto err_dmabuf_put;
-> +	}
-> +
-> +	attach = iio_buffer_find_attachment(indio_dev, dmabuf);
-> +	if (IS_ERR(attach)) {
-> +		ret = PTR_ERR(attach);
-> +		goto err_dmabuf_put;
+Oh, then all of this is effectively transparent to the userspace
+except for the time it takes?
 
-Might be worth some cleanup.h magic given this put happens in all exit paths.
+In that case you're right, we don't need feature flags. But I think it
+would be great to also move the error return in case userspace tries
+to modify vq parameters out of suspend state.
 
-> +	}
-> +
-> +	priv = attach->importer_priv;
-> +
-> +	dma_to_ram = buffer->direction == IIO_BUFFER_DIRECTION_IN;
-> +	dir = dma_to_ram ? DMA_FROM_DEVICE : DMA_TO_DEVICE;
-> +
-> +	sgt = dma_buf_map_attachment(attach, dir);
-> +	if (IS_ERR(sgt)) {
-> +		ret = PTR_ERR(sgt);
-> +		dev_err(&indio_dev->dev, "Unable to map attachment: %d\n", ret);
-> +		goto err_attachment_put;
-> +	}
-> +
-> +	fence = kmalloc(sizeof(*fence), GFP_KERNEL);
-> +	if (!fence) {
-> +		ret = -ENOMEM;
-> +		goto err_unmap_attachment;
-> +	}
-> +
-> +	fence->priv = priv;
-> +	fence->sgt = sgt;
-> +	fence->dir = dir;
-> +	priv->fence = fence;
-> +
-> +	dma_fence_init(&fence->base, &iio_buffer_dma_fence_ops,
-> +		       &priv->lock, priv->context, 0);
-> +
-> +	ret = iio_dma_resv_lock(dmabuf, nonblock);
-> +	if (ret)
-> +		goto err_fence_put;
-> +
-> +	timeout = nonblock ? 0 : msecs_to_jiffies(DMABUF_ENQUEUE_TIMEOUT_MS);
-> +
-> +	/* Make sure we don't have writers */
-> +	ret = (int) dma_resv_wait_timeout(dmabuf->resv, DMA_RESV_USAGE_WRITE,
-> +					  true, timeout);
-
-I'd handle this and similar cases as long rather than adding the odd looking cast and making
-me think too much about it.
-
-> +	if (ret == 0)
-> +		ret = -EBUSY;
-> +	if (ret < 0)
-> +		goto err_resv_unlock;
-> +
-> +	if (dma_to_ram) {
-> +		/*
-> +		 * If we're writing to the DMABUF, make sure we don't have
-> +		 * readers
-> +		 */
-> +		ret = (int) dma_resv_wait_timeout(dmabuf->resv,
-> +						  DMA_RESV_USAGE_READ, true,
-> +						  timeout);
-> +		if (ret == 0)
-> +			ret = -EBUSY;
-> +		if (ret < 0)
-> +			goto err_resv_unlock;
-> +	}
-> +
-> +	ret = dma_resv_reserve_fences(dmabuf->resv, 1);
-> +	if (ret)
-> +		goto err_resv_unlock;
-> +
-> +	dma_resv_add_fence(dmabuf->resv, &fence->base,
-> +			   dma_resv_usage_rw(dma_to_ram));
-> +	dma_resv_unlock(dmabuf->resv);
-> +
-> +	ret = buffer->access->enqueue_dmabuf(buffer, priv->block, sgt,
-> +					     iio_dmabuf.bytes_used, cyclic);
-> +	if (ret)
-> +		iio_buffer_signal_dmabuf_done(attach, ret);
-
-I'd like a comment on why using the 'successful' path cleanup makes sense in this
-error case.  It's possible to figure it out, but reviewers are lazy and generally
-we like the cleanup to be obvious and local on error paths.
-
-> +
-> +	dma_buf_put(dmabuf);
-> +
-> +	return ret;
-> +
-> +err_resv_unlock:
-> +	dma_resv_unlock(dmabuf->resv);
-> +err_fence_put:
-> +	dma_fence_put(&fence->base);
-> +err_unmap_attachment:
-> +	dma_buf_unmap_attachment(attach, sgt, dir);
-> +err_attachment_put:
-> +	iio_buffer_dmabuf_put(attach);
-> +err_dmabuf_put:
-> +	dma_buf_put(dmabuf);
-> +
-> +	return ret;
-> +}
-> +
-> +void iio_buffer_signal_dmabuf_done(struct dma_buf_attachment *attach, int ret)
-> +{
-> +	struct iio_dmabuf_priv *priv = attach->importer_priv;
-> +	struct iio_dma_fence *fence = priv->fence;
-> +	enum dma_data_direction dir = fence->dir;
-> +	struct sg_table *sgt = fence->sgt;
-> +
-> +	dma_fence_get(&fence->base);
-
-I don't know much about dma_fence, but is it valid to access
-contents of it (sgt, etc) before getting a reference?
-Ultimately dma_fence_put() can result in a kfree_rcu() so seems
-unlikely to be safe and definitely fails the 'obviously correct'
-test.  Given those are I assume trivial accesses just do them 
-down here perhaps?
+Thanks!
 
 
-> +	fence->base.error = ret;
-> +	dma_fence_signal(&fence->base);
-> +	dma_fence_put(&fence->base);
-> +
-> +	dma_buf_unmap_attachment(attach, sgt, dir);
-> +	iio_buffer_dmabuf_put(attach);
-> +}
-> +EXPORT_SYMBOL_GPL(iio_buffer_signal_dmabuf_done);
-> +
-
-> +static long iio_buffer_chrdev_ioctl(struct file *filp,
-> +				    unsigned int cmd, unsigned long arg)
-> +{
-> +	struct iio_dev_buffer_pair *ib = filp->private_data;
-> +	void __user *_arg = (void __user *)arg;
-> +
-> +	switch (cmd) {
-> +	case IIO_BUFFER_DMABUF_ATTACH_IOCTL:
-> +		return iio_buffer_attach_dmabuf(ib, _arg);
-> +	case IIO_BUFFER_DMABUF_DETACH_IOCTL:
-> +		return iio_buffer_detach_dmabuf(ib, _arg);
-> +	case IIO_BUFFER_DMABUF_ENQUEUE_IOCTL:
-> +		return iio_buffer_enqueue_dmabuf(ib, _arg,
-> +						 filp->f_flags & O_NONBLOCK);
-> +	default:
-> +		return IIO_IOCTL_UNHANDLED;
-
-Given you aren't using the ioctl handling on the legacy buffer, I think this
-should simply return an error code, not the magic value we use to indicate
-'all fine, but it's not mine'.
-Probably -EINVAL or similar.  Note that the wrapper around the legacy buffer
-ioctls translates this to -ENODEV; rather than returning from the ioctl.
-
-
-
-> +	}
-> +}
-> +
->  static const struct file_operations iio_buffer_chrdev_fileops = {
->  	.owner = THIS_MODULE,
->  	.llseek = noop_llseek,
->  	.read = iio_buffer_read,
->  	.write = iio_buffer_write,
-> +	.unlocked_ioctl = iio_buffer_chrdev_ioctl,
-> +	.compat_ioctl = compat_ptr_ioctl,
->  	.poll = iio_buffer_poll,
->  	.release = iio_buffer_chrdev_release,
->  };
+> > How can we know in the destination QEMU if it is valid to suspend &
+> > set address? Should we handle this as a bugfix and backport the
+> > change?
+> >
+> > > >
+> > > > The only way that comes to my mind is to make sure all parents retu=
+rn
+> > > > error if userland tries to do it, and then fallback in userland.
+> > >
+> > > Yes.
+> > >
+> > > > I'm
+> > > > ok with that, but I'm not sure if the current master & previous ker=
+nel
+> > > > has a coherent behavior. Do they return error? Or return success
+> > > > without changing address / vq state?
+> > >
+> > > We probably don't need to worry too much here, as e.g set_vq_address
+> > > could fail even without suspend (just at uAPI level).
+> > >
+> >
+> > I don't get this, sorry. I rephrased my point with an example earlier
+> > in the mail.
+> >
+>
 
 
