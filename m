@@ -1,87 +1,197 @@
-Return-Path: <linux-kernel+bounces-8296-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8297-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7232B81B518
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 12:40:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C87781B51D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 12:42:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2E2C728193E
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 11:40:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CF9C31C24E29
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 11:42:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3E356EB52;
-	Thu, 21 Dec 2023 11:40:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBD106E2A1;
+	Thu, 21 Dec 2023 11:42:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EJjKfMIv"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="D+whZSpu";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Y2TE2OBd";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="D+whZSpu";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Y2TE2OBd"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C4426D1A4;
-	Thu, 21 Dec 2023 11:40:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7491AC433C7;
-	Thu, 21 Dec 2023 11:40:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703158835;
-	bh=0XVAbyt5Q2EdtCdnVgot+orUzg22qdyuWONYOCaOdvc=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=EJjKfMIv+lEiqo5m5vpW/rQ70EOUNXbX2Lyc3QilwQXwY+cjKMEek8oJD0ypJ9pzZ
-	 0+YC8yJmimS0t+HDpBcAx65cpJ6QC2Y0GPWs+wRAYoPfWHPunk1hf+iQ+CvS1J5ey6
-	 hiIz/ea1PaZcIIXaXsIxFMuamU2vuqUISJ8dVXqvlGkjnByx/ajgecqSeOUokKCt2E
-	 TP2BmAsJIaIoW0Ld47zRAGl/pZ135pFhycy7N7bAS8AcruycCyRevpTOLA/1bTF0EF
-	 y97Yz2wffZPtPoqvXe2MLE89FsxWzie35kqvUH/9SeNTYQnwt/giyfHkAz5vG23+mO
-	 mzKPhMMX8Skig==
-Date: Thu, 21 Dec 2023 11:40:20 +0000
-From: Jonathan Cameron <jic23@kernel.org>
-To: Paul Cercueil <paul@crapouillou.net>
-Cc: Lars-Peter Clausen <lars@metafoo.de>, Sumit Semwal
- <sumit.semwal@linaro.org>, Christian =?UTF-8?B?S8O2bmln?=
- <christian.koenig@amd.com>, Vinod Koul <vkoul@kernel.org>, Jonathan Corbet
- <corbet@lwn.net>, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- dmaengine@vger.kernel.org, linux-iio@vger.kernel.org,
- linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
- linaro-mm-sig@lists.linaro.org, Nuno =?UTF-8?B?U8Oh?=
- <noname.nuno@gmail.com>, Michael Hennerich <Michael.Hennerich@analog.com>
-Subject: Re: [PATCH v5 3/8] dmaengine: Add API function
- dmaengine_prep_slave_dma_vec()
-Message-ID: <20231221114020.2d1e6364@jic23-huawei>
-In-Reply-To: <20231219175009.65482-4-paul@crapouillou.net>
-References: <20231219175009.65482-1-paul@crapouillou.net>
-	<20231219175009.65482-4-paul@crapouillou.net>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C71D1DA3B;
+	Thu, 21 Dec 2023 11:42:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id A07101FB73;
+	Thu, 21 Dec 2023 11:42:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1703158921; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=HHGj/QWNdjAWrYVT+sev2QMbn9CEKZZ/Yw7K3T4SC9k=;
+	b=D+whZSpuxgib93oNZ0IF1mLee1O3AL+iNCX0uDYMGIOE9ywMBVsgZS2LACAABhhIPgrQdu
+	z9u+ttw+qlAlUV29460x/JHoeIPQtC2ORQlsNZnTQzZhEl09RxcVRzQAUOLS6Km8Q82bVK
+	QkBVtcQx4RjcTII8A1uyjml6J9I/Z70=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1703158921;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=HHGj/QWNdjAWrYVT+sev2QMbn9CEKZZ/Yw7K3T4SC9k=;
+	b=Y2TE2OBdyc8UnRUTNf5Y3YBYbTw2MHEaQj3rUmP3226n4Chbqpg+sTTDaztz3SJCkJFS/5
+	A4lIU6vN8/O7VHAA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1703158921; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=HHGj/QWNdjAWrYVT+sev2QMbn9CEKZZ/Yw7K3T4SC9k=;
+	b=D+whZSpuxgib93oNZ0IF1mLee1O3AL+iNCX0uDYMGIOE9ywMBVsgZS2LACAABhhIPgrQdu
+	z9u+ttw+qlAlUV29460x/JHoeIPQtC2ORQlsNZnTQzZhEl09RxcVRzQAUOLS6Km8Q82bVK
+	QkBVtcQx4RjcTII8A1uyjml6J9I/Z70=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1703158921;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=HHGj/QWNdjAWrYVT+sev2QMbn9CEKZZ/Yw7K3T4SC9k=;
+	b=Y2TE2OBdyc8UnRUTNf5Y3YBYbTw2MHEaQj3rUmP3226n4Chbqpg+sTTDaztz3SJCkJFS/5
+	A4lIU6vN8/O7VHAA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 952B013725;
+	Thu, 21 Dec 2023 11:42:01 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id kVZmJIkkhGUAYAAAD6G6ig
+	(envelope-from <jack@suse.cz>); Thu, 21 Dec 2023 11:42:01 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 3ECABA07E3; Thu, 21 Dec 2023 12:41:53 +0100 (CET)
+Date: Thu, 21 Dec 2023 12:41:53 +0100
+From: Jan Kara <jack@suse.cz>
+To: Christoph Hellwig <hch@lst.de>
+Cc: linux-mm@kvack.org, "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+	Jan Kara <jack@suse.com>, David Howells <dhowells@redhat.com>,
+	Brian Foster <bfoster@redhat.com>, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 13/17] writeback: Factor writeback_get_folio() out of
+ write_cache_pages()
+Message-ID: <20231221114153.2ktiwixqedsk5adw@quack3>
+References: <20231218153553.807799-1-hch@lst.de>
+ <20231218153553.807799-14-hch@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231218153553.807799-14-hch@lst.de>
+X-Spam-Level: 
+X-Spam-Level: 
+X-Spamd-Result: default: False [-1.20 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 RCPT_COUNT_SEVEN(0.00)[8];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[infradead.org:email,suse.cz:email,suse.com:email];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-1.60)[92.44%]
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Score: -1.20
+X-Spam-Flag: NO
 
-On Tue, 19 Dec 2023 18:50:04 +0100
-Paul Cercueil <paul@crapouillou.net> wrote:
-
-> This function can be used to initiate a scatter-gather DMA transfer,
-> where the address and size of each segment is located in one entry of
-> the dma_vec array.
+On Mon 18-12-23 16:35:49, Christoph Hellwig wrote:
+> From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 > 
-> The major difference with dmaengine_prep_slave_sg() is that it supports
-> specifying the lengths of each DMA transfer; as trying to override the
-> length of the transfer with dmaengine_prep_slave_sg() is a very tedious
-> process. The introduction of a new API function is also justified by the
-> fact that scatterlists are on their way out.
+> Move the loop for should-we-write-this-folio to its own function.
 > 
-> Note that dmaengine_prep_interleaved_dma() is not helpful either in that
-> case, as it assumes that the address of each segment will be higher than
-> the one of the previous segment, which we just cannot guarantee in case
-> of a scatter-gather transfer.
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+
+Looks good to me. Feel free to add:
+
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+But I'd note that the call stack depth of similarly called helper functions
+(with more to come later in the series) is getting a bit confusing. Maybe
+we should inline writeback_get_next() into its single caller
+writeback_get_folio() to reduce confusion a bit...
+
+								Honza
+
+> +static struct folio *writeback_get_folio(struct address_space *mapping,
+> +		struct writeback_control *wbc)
+> +{
+> +	struct folio *folio;
+> +
+> +	for (;;) {
+> +		folio = writeback_get_next(mapping, wbc);
+> +		if (!folio)
+> +			return NULL;
+> +		folio_lock(folio);
+> +		if (likely(should_writeback_folio(mapping, wbc, folio)))
+> +			break;
+> +		folio_unlock(folio);
+> +	}
+> +
+> +	trace_wbc_writepage(wbc, inode_to_bdi(mapping->host));
+> +	return folio;
+> +}
+> +
+>  static struct folio *writeback_iter_init(struct address_space *mapping,
+>  		struct writeback_control *wbc)
+>  {
+> @@ -2455,7 +2474,7 @@ static struct folio *writeback_iter_init(struct address_space *mapping,
+>  
+>  	wbc->err = 0;
+>  	folio_batch_init(&wbc->fbatch);
+> -	return writeback_get_next(mapping, wbc);
+> +	return writeback_get_folio(mapping, wbc);
+>  }
+>  
+>  /**
+> @@ -2498,17 +2517,9 @@ int write_cache_pages(struct address_space *mapping,
+>  
+>  	for (folio = writeback_iter_init(mapping, wbc);
+>  	     folio;
+> -	     folio = writeback_get_next(mapping, wbc)) {
+> +	     folio = writeback_get_folio(mapping, wbc)) {
+>  		unsigned long nr;
+>  
+> -		folio_lock(folio);
+> -		if (!should_writeback_folio(mapping, wbc, folio)) {
+> -			folio_unlock(folio);
+> -			continue;
+> -		}
+> -
+> -		trace_wbc_writepage(wbc, inode_to_bdi(mapping->host));
+> -
+>  		error = writepage(folio, wbc, data);
+>  		nr = folio_nr_pages(folio);
+>  		wbc->nr_to_write -= nr;
+> -- 
+> 2.39.2
 > 
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-
-This and the next patch look fine to me as clearly simplify things for
-our usecases, but they are really something for the dmaengine maintainers
-to comment on.
-
-Jonathan
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
