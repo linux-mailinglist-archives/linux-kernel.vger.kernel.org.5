@@ -1,131 +1,119 @@
-Return-Path: <linux-kernel+bounces-8822-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8823-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52FE181BCBA
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 18:13:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95AA981BCBB
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 18:14:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6F912B21F33
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 17:13:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 51E232864A7
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 17:14:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D28B5991D;
-	Thu, 21 Dec 2023 17:13:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5C43627F4;
+	Thu, 21 Dec 2023 17:13:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b="HJD9yBYP"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="xxg3Y9Yz"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0B295822F;
-	Thu, 21 Dec 2023 17:13:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hugovil.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
-	; s=x; h=Subject:Content-Transfer-Encoding:Mime-Version:Message-Id:Cc:To:From
-	:Date:subject:date:message-id:reply-to;
-	bh=248JVgGyRvCA5szqZVI4DtrGSxFHLc+06wLR7mZzUgw=; b=HJD9yBYPkAx1lcfslO8XmfanRu
-	EUDSmzPVea8xvPCxexKhDR+0nnQWZiERB9AKjbqWVV+Wms4loMDsUORbkhbPHFR61q3UkJvKUxkru
-	UYjBYHq1P70oHavw/ld3qm+lSF+RMyQ96wWmdZ01ZkVoZKBx42UvFCQIkuKLT+jjtuNM=;
-Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:45918 helo=pettiford)
-	by mail.hugovil.com with esmtpa (Exim 4.92)
-	(envelope-from <hugo@hugovil.com>)
-	id 1rGMc6-0007Fu-7K; Thu, 21 Dec 2023 12:13:38 -0500
-Date: Thu, 21 Dec 2023 12:13:37 -0500
-From: Hugo Villeneuve <hugo@hugovil.com>
-To: Andy Shevchenko <andriy.shevchenko@intel.com>
-Cc: gregkh@linuxfoundation.org, jirislaby@kernel.org, jringle@gridpoint.com,
- kubakici@wp.pl, phil@raspberrypi.org, linux-kernel@vger.kernel.org,
- linux-serial@vger.kernel.org, Hugo Villeneuve <hvilleneuve@dimonoff.com>,
- stable@vger.kernel.org, Yury Norov <yury.norov@gmail.com>
-Message-Id: <20231221121337.8d56a89ece7c341f9f36bf6b@hugovil.com>
-In-Reply-To: <ZYRk6NpuUJvVEmOZ@smile.fi.intel.com>
-References: <20231219171903.3530985-1-hugo@hugovil.com>
-	<20231219171903.3530985-3-hugo@hugovil.com>
-	<ZYMK-l03S86Nw19I@smile.fi.intel.com>
-	<20231221105639.17910de5e7d7a486834bd856@hugovil.com>
-	<20231221111337.2c1af5bbe4920268dac25e8f@hugovil.com>
-	<ZYRk6NpuUJvVEmOZ@smile.fi.intel.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85C39627ED
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 17:13:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-5534180f0e9so12496a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 09:13:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1703178835; x=1703783635; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eh24iCbFxiwtrROZkpCebfSpqES7hwdYxSjrscwi2QY=;
+        b=xxg3Y9YzUZjhL4Zru04FiOBP0/TuViVal4Og2BgTgueuGDg1d/vkqdXENqL/iSZmN0
+         zdbW1sEfBgV2xzCTz3hU5wyKWLnKSnPBERQlRZthosQCyJlDbenXMWqzwDegpnV8O7aM
+         Fza7KLlnhtTS6Cr4GnidXWyWAvhwhwqG79COryz7XUfU+eFBShmNw5Yn0idyFDcZXcJy
+         n/Ca4YS1rbNOB7FjDuQxVxfGcbgUXHTBVmHhjUc4Z9mo4acC8+7ZqCoykIIwDDMxQi8a
+         Yslc4xQebZSrHi1VdV/09Ze3GOihIO6wW6Lgofvt4fwBILwZiokiKEvzypOw5wldqxJB
+         cX+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703178835; x=1703783635;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=eh24iCbFxiwtrROZkpCebfSpqES7hwdYxSjrscwi2QY=;
+        b=OQydFEIWYW4M40wkAn0ZAaHYjyXhIYyNegcwCgSKn0EpsIK9KtGY9326kGr5GhQPuJ
+         f1UOfrclPWd3QFfjQ+BhLoRoS8wcLg8k/d+Rt20MtD+Z1axVALpwN2DCbzAlqIJrsbN5
+         lbCaZ/gFb56MwfNuWAu9ZMtVq0hnIZpsC4FpOWwkvkrDPq4qhrgnY7siqdK9ZFyfs698
+         6ihAvqvZSu917H/qq/bML4iOpMX/LxVo9A8rgW0zVgVh7VAegjraaB2IrWe7EwYzHR2X
+         VPvE9ufoNY0QAYOP/9IyGZFI+5i+IhXgJkR1A05g1BBx5pC25c8gxVXM31liz3GxQ5Ln
+         KSNw==
+X-Gm-Message-State: AOJu0Yz5aDyce/u5h1ImeFYivlPMJSEsdPx5D2tN4EHlbcsyzmYjAZRA
+	99XFTOd3iLq4hp2XfTVVJC1xR8BUYCLvtCzl9xtfOBLaojY=
+X-Google-Smtp-Source: AGHT+IHArRhSTAh12qj6uTyw3xGzBKCiLKvnnKgDb3eCRIaFWKpUfWyPi2Ki3Nk4xYpyIEOAGzxKJumcPm+t/g1lZHc=
+X-Received: by 2002:a50:c08a:0:b0:554:1b1c:72c4 with SMTP id
+ k10-20020a50c08a000000b005541b1c72c4mr116205edf.1.1703178834637; Thu, 21 Dec
+ 2023 09:13:54 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 70.80.174.168
-X-SA-Exim-Mail-From: hugo@hugovil.com
-X-Spam-Level: 
-X-Spam-Report: 
-	* -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-	* -0.0 T_SCC_BODY_TEXT_LINE No description available.
-	* -3.8 NICE_REPLY_A Looks like a legit reply (A)
-Subject: Re: [PATCH 02/18] serial: sc16is7xx: fix invalid sc16is7xx_lines
- bitfield in case of probe error
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
+MIME-Version: 1.0
+References: <20231220001856.3710363-1-jstultz@google.com> <2b4bb9ce-fe92-47fe-9185-e29571502ae9@arm.com>
+In-Reply-To: <2b4bb9ce-fe92-47fe-9185-e29571502ae9@arm.com>
+From: John Stultz <jstultz@google.com>
+Date: Thu, 21 Dec 2023 09:13:42 -0800
+Message-ID: <CANDhNCrHd+5twWVNqBAhVLfhMhkiO0KjxXBmwVgaCD4kAyFyWw@mail.gmail.com>
+Subject: Re: [PATCH v7 00/23] Proxy Execution: A generalized form of Priority
+ Inheritance v7
+To: Metin Kaya <metin.kaya@arm.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, Joel Fernandes <joelaf@google.com>, 
+	Qais Yousef <qyousef@google.com>, Ingo Molnar <mingo@redhat.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>, 
+	Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>, 
+	Valentin Schneider <vschneid@redhat.com>, Steven Rostedt <rostedt@goodmis.org>, 
+	Ben Segall <bsegall@google.com>, Zimuzo Ezeozue <zezeozue@google.com>, 
+	Youssef Esmat <youssefesmat@google.com>, Mel Gorman <mgorman@suse.de>, 
+	Daniel Bristot de Oliveira <bristot@redhat.com>, Will Deacon <will@kernel.org>, Waiman Long <longman@redhat.com>, 
+	Boqun Feng <boqun.feng@gmail.com>, "Paul E. McKenney" <paulmck@kernel.org>, 
+	Xuewen Yan <xuewen.yan94@gmail.com>, K Prateek Nayak <kprateek.nayak@amd.com>, 
+	Thomas Gleixner <tglx@linutronix.de>, kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 21 Dec 2023 18:16:40 +0200
-Andy Shevchenko <andriy.shevchenko@intel.com> wrote:
+On Thu, Dec 21, 2023 at 12:35=E2=80=AFAM Metin Kaya <metin.kaya@arm.com> wr=
+ote:
+> On 20/12/2023 12:18 am, John Stultz wrote:
+> >
+> > As Connor outlined in a previous submission of this patch series,
+>
+> Nit: Better to have a reference to Connor's patch series (i.e.,
+> https://lore.kernel.org/lkml/20221003214501.2050087-1-connoro@google.com/=
+)
+> here?
 
-> On Thu, Dec 21, 2023 at 11:13:37AM -0500, Hugo Villeneuve wrote:
-> > On Thu, 21 Dec 2023 10:56:39 -0500
-> > Hugo Villeneuve <hugo@hugovil.com> wrote:
-> > > On Wed, 20 Dec 2023 17:40:42 +0200
-> > > Andy Shevchenko <andriy.shevchenko@intel.com> wrote:
-> 
-> ...
-> 
-> > > this will indeed fix the problem described in patch 1.
-> > > 
-> > > However, if I remove patch 1, and I simulate the same probe error as
-> > > described in patch 1, now we get stuck forever when trying to 
-> > > remove the driver. This is something that I observed before and
-> > > that patch 1 also corrected.
-> > > 
-> > > The problem is caused in sc16is7xx_remove() when calling this function
-> > > 
-> > >     kthread_flush_worker(&s->kworker);
-> > > 
-> > > I am not sure how best to handle that without patch 1.
-> > 
-> > Also, if we manage to get past kthread_flush_worker() and 
-> > kthread_stop() (commented out for testing purposes), we get another bug:
-> > 
-> > # rmmod sc16is7xx
-> > ...
-> > crystal-duart-24m already disabled
-> > WARNING: CPU: 2 PID: 340 at drivers/clk/clk.c:1090
-> > clk_core_disable+0x1b0/0x1e0
-> > ...
-> > Call trace:
-> > clk_core_disable+0x1b0/0x1e0
-> > clk_disable+0x38/0x60
-> > sc16is7xx_remove+0x1e4/0x240 [sc16is7xx]
-> > 
-> > This one is caused by calling clk_disable_unprepare(). But
-> > clk_disable_unprepare() has already been called in probe error handling
-> > code. Patch 1 also fixed this...
-> 
-> Word "fixed" is incorrect. "Papered over" is what it did.
+Yes, thank you for providing the link!
 
-Hi,
-I just found the problem, and it was in my bug simulation, not the
-driver itself. When I simulated the bug, I forgot to set "ret" to an
-error code, and thus I returned 0 at the end of sc16is7xx_probe(). This
-is why sc16is7xx_remove() was called when unloading driver, but
-shouldn't have.
 
-If I simulate my probe error and return "-EINVAL" at the end of
-sc16is7xx_probe(), sc16is7xx_remove() is not called when
-unloading the driver.
+> > * As discussed at OSPM[5], I like to split pick_next_task() up
+> >    into two phases selecting and setting the next tasks, as
+> >    currently pick_next_task() assumes the returned task will be
+> >    run which results in various side-effects in sched class logic
+> >    when it=E2=80=99s run. I tried to take a pass at this earlier, but
+> >    it=E2=80=99s hairy and lower on the priority list for now.
+>
+> Do you think we should mention virtual runqueue idea and adding trace
+> points to measure task migration times? They are not "open issues", but
+> kind of to-do items in the agenda.
+>
 
-Sorry for the noise, so I will drop patch 1 and leave patch "fix invalid
-sc16is7xx_lines bitfield in case of probe error" as it is, and
-simply remove comments about Yury's patch.
+I appreciate you bringing those up. The virtual runqueue idea is still
+a bit handwavy, but the trace points are a good item for the TODO.
+Apologies for missing it, as you suggested it just the other day as I
+was prepping these patches, and I didn't go back to add it here in the
+cover letter.
 
-Hugo.
+thanks
+-john
 
