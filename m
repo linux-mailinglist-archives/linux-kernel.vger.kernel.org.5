@@ -1,97 +1,200 @@
-Return-Path: <linux-kernel+bounces-8925-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8927-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CA2981BE3B
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 19:30:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7486381BE44
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 19:34:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9FCF51C24A7D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 18:30:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 27A461F24760
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 18:34:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0E1064A95;
-	Thu, 21 Dec 2023 18:30:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D099C208CC;
+	Thu, 21 Dec 2023 18:33:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Y6lVslGM"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NWFSarlv"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
+Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C02E464A86
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 18:29:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-5e784ce9bb8so9510307b3.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 10:29:59 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDF22BA30;
+	Thu, 21 Dec 2023 18:33:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-517ab9a4a13so853913a12.1;
+        Thu, 21 Dec 2023 10:33:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1703183399; x=1703788199; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=L6oljuqvAIy93N8zvm81RWXYplalK2qFGzuO99N/A1A=;
-        b=Y6lVslGMQ3kuZvcMYNeIChpChmcHjmi8JBtjCzjZEFZC7Yq0CvVAlrTsW0s0rKEXRw
-         xwWqa8NV1xqOTKi/94GM5irZTKLP4JOVOTpi3FaiU82QQvh7hDSZFLXD/xe6WQM9A1r0
-         x2y9l6bVTUNavwKQrrD9qXlRRchzBnOulbDDU=
+        d=gmail.com; s=20230601; t=1703183631; x=1703788431; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=YkM0jC9/yHAO382d+ILawqQDBhBWk0KZJUHJnBoAQj8=;
+        b=NWFSarlvHM76cDXDO/8ThaS7uQnaGDt0OgXn+3ercda5p6Nh44iw8TAkeSt+1kWAi7
+         dEl2uNeq/1NGaksVhRFtrHb48jPFr5WRgH9zqW5bkL9x8MvlPcAeNuC3U7c5lD1xwPDC
+         N1kl1xPJZN56+GkbHtdFHKlbaVGgCJSOGuQvzqjAfN1FxjC3uRTJbKbvS+jgpLC3v+y6
+         GkN+/h9thmYephHbHGS+TlLqnVN+POHwcU5Q0JAFuh/nh2wUaXgcPYnz8SECjqO/BrMA
+         DJQeYsTjK+V5oOfgHuXdVubKPK0RKUvjW3IxcfWn5bemto0kjtfPTkilxPVzSVAnXmNm
+         5Gug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703183399; x=1703788199;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1703183631; x=1703788431;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=L6oljuqvAIy93N8zvm81RWXYplalK2qFGzuO99N/A1A=;
-        b=ohuzRiETqxGUy1asGoOXsa7ZnSrHgBPt3r28UNJtojOFcJ+ru3JU/DjMwKAshql7DS
-         RlIoFkSF29hif9foYxp78Bsxw7k3qksvg8+SPBKHWuGXmAVAeYmcmQzNO6+ufq7IU4wF
-         aLDSf7sUKzPXOfVuw1LzzmisnQ4b0o7KmsgrzWeTCv7ZbIR8LGBjERBY/Stuu1q2X5xM
-         TvDXSgJfFs3lcnEkVWPmmDWGK/TBj0l/mmks6fP6lr3VBnwdEp6lDGjVOcZaF0E9vfbY
-         OP8jA638hjfhLvUguThwnmwvc3S8Jn1GSZB288J/EK72hEddBXAnovEGO5OmW1f+gagc
-         Vl7A==
-X-Gm-Message-State: AOJu0YzIucEfA5B0tpaFCC2XwI6ahT69vwJTNGiGSlB2yiBofiwTn/Ul
-	xOeBfak+Sv/SM6/ITQtbABRani5tqE15xR/p5aaX1+2+gh1K
-X-Google-Smtp-Source: AGHT+IEiSrygJN7UsasZNLLekaqrAbeQ73Pp+vOq9WoBQd7rE/7pQR4T8FH5PDn+1E5Ln7pawvXptkWHT22gZYo2058=
-X-Received: by 2002:a0d:d403:0:b0:5d7:5bef:e6e6 with SMTP id
- w3-20020a0dd403000000b005d75befe6e6mr818315ywd.31.1703183398828; Thu, 21 Dec
- 2023 10:29:58 -0800 (PST)
+        bh=YkM0jC9/yHAO382d+ILawqQDBhBWk0KZJUHJnBoAQj8=;
+        b=uYWf00vl0q9KUh66yJmIiaZcb3bEDX5WlqZ4E7F1qz6AykDjnjRr3e11p4Ugz3BvA4
+         fZaWosy7ZE/nPDezeVKTxG261Sh1E9eOGgRUx6RszYmOQHhuuJq8MT1W6MxKuWRXksov
+         h+dAofPiRxXmD/2P3fW8SAHr65oUgzQpIfk61vmo0Csm5P93zSv4FReADy+EPGCdLOI6
+         ssUr01I4EvYZFABPW5Cs68jcqhxZ1WspXfB6BfiS9ysw7B7d2hJeO4k14Ln+0Pjo+IhE
+         nN18+IkPEyvcOivTS7F7Ujzwip4XFfMekzRwXb6Q+0l4QNhB/3ww2Q82roZvFbVtBONf
+         JtDg==
+X-Gm-Message-State: AOJu0YyBCrsKUrRZ5xRQm2nR90rcOM2ZPnV/ApoebIi58D3/aT5iyUPP
+	6adSqNDmI1yrD7aqXAwPMMbDY1dAf2hJTg==
+X-Google-Smtp-Source: AGHT+IHebS7pSf/c5UzumBrqxQMXdQsW1Z2LHz1hJZPTMqTvpsA5neH2P+pyHDHWYXbXY1GDik9frg==
+X-Received: by 2002:a05:6a20:a10a:b0:191:6028:c6cc with SMTP id q10-20020a056a20a10a00b001916028c6ccmr133280pzk.96.1703183630744;
+        Thu, 21 Dec 2023 10:33:50 -0800 (PST)
+Received: from localhost.localdomain ([2401:4900:5f28:c37d:9ad0:e7ae:52c2:c31a])
+        by smtp.gmail.com with ESMTPSA id u26-20020a63235a000000b005c2420fb198sm1926978pgm.37.2023.12.21.10.33.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Dec 2023 10:33:49 -0800 (PST)
+From: Anshul Dalal <anshulusr@gmail.com>
+To: linux-kernel@vger.kernel.org,
+	linux-input@vger.kernel.org,
+	devicetree@vger.kernel.org
+Cc: Anshul Dalal <anshulusr@gmail.com>,
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	linux-kernel-mentees@lists.linuxfoundation.org
+Subject: [PATCH v1] dt-bindings: input: convert drv266x to json-schema
+Date: Fri, 22 Dec 2023 00:01:08 +0530
+Message-ID: <20231221183109.684325-1-anshulusr@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231220235459.2965548-1-markhas@chromium.org>
- <20231220165423.v2.6.I06b059021de1bf6103e60a73211f078f2af75d17@changeid> <7199b7b7-238e-45de-96f1-0f04d0fa718d@linaro.org>
-In-Reply-To: <7199b7b7-238e-45de-96f1-0f04d0fa718d@linaro.org>
-From: Mark Hasemeyer <markhas@chromium.org>
-Date: Thu, 21 Dec 2023 11:29:47 -0700
-Message-ID: <CANg-bXD+TVHO3o6f66fJXQ7AtXxPY00TQqjvX2vwk9PyTd1ZaA@mail.gmail.com>
-Subject: Re: [PATCH v2 06/22] ARM: dts: samsung: exynos5420: Enable
- cros-ec-spi as wake source
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
-	Tzung-Bi Shih <tzungbi@kernel.org>, Raul Rangel <rrangel@chromium.org>, 
-	Konrad Dybcio <konrad.dybcio@linaro.org>, Andy Shevchenko <andriy.shevchenko@intel.com>, 
-	Rob Herring <robh@kernel.org>, Sudeep Holla <sudeep.holla@arm.com>, 
-	Alim Akhtar <alim.akhtar@samsung.com>, Conor Dooley <conor+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
-	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-samsung-soc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-> You do not need this property, if driver assumes that. Just enable it
-> unconditionally.
+Convert devicetree binding documentation for ti drv2665 and drv2667
+haptics driver to json-schema. The previously two separate bindings have
+been merged into a single drv266x.yaml.
 
-The goal of this patch series is to change exactly that: to prevent
-the driver from unconditionally enabling the irq for wake.
-The driver works across numerous buses (spi, uart, i2c, lpc) and
-supports DT and ACPI.
-SPI+DT systems all happen to need irq wake enabled.
+Signed-off-by: Anshul Dalal <anshulusr@gmail.com>
+---
+ .../devicetree/bindings/input/ti,drv2665.txt  | 17 -------
+ .../devicetree/bindings/input/ti,drv2667.txt  | 17 -------
+ .../devicetree/bindings/input/ti,drv266x.yaml | 50 +++++++++++++++++++
+ 3 files changed, 50 insertions(+), 34 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/input/ti,drv2665.txt
+ delete mode 100644 Documentation/devicetree/bindings/input/ti,drv2667.txt
+ create mode 100644 Documentation/devicetree/bindings/input/ti,drv266x.yaml
 
-> I don't think anything from previous discussion was
-> resolved.
+diff --git a/Documentation/devicetree/bindings/input/ti,drv2665.txt b/Documentation/devicetree/bindings/input/ti,drv2665.txt
+deleted file mode 100644
+index 1ba97ac04305..000000000000
+--- a/Documentation/devicetree/bindings/input/ti,drv2665.txt
++++ /dev/null
+@@ -1,17 +0,0 @@
+-* Texas Instruments - drv2665 Haptics driver
+-
+-Required properties:
+-	- compatible - "ti,drv2665" - DRV2665
+-	- reg -  I2C slave address
+-	- vbat-supply - Required supply regulator
+-
+-Example:
+-
+-haptics: haptics@59 {
+-	compatible = "ti,drv2665";
+-	reg = <0x59>;
+-	vbat-supply = <&vbat>;
+-};
+-
+-For more product information please see the link below:
+-http://www.ti.com/product/drv2665
+diff --git a/Documentation/devicetree/bindings/input/ti,drv2667.txt b/Documentation/devicetree/bindings/input/ti,drv2667.txt
+deleted file mode 100644
+index 996382cf994a..000000000000
+--- a/Documentation/devicetree/bindings/input/ti,drv2667.txt
++++ /dev/null
+@@ -1,17 +0,0 @@
+-* Texas Instruments - drv2667 Haptics driver
+-
+-Required properties:
+-	- compatible - "ti,drv2667" - DRV2667
+-	- reg -  I2C slave address
+-	- vbat-supply - Required supply regulator
+-
+-Example:
+-
+-haptics: haptics@59 {
+-	compatible = "ti,drv2667";
+-	reg = <0x59>;
+-	vbat-supply = <&vbat>;
+-};
+-
+-For more product information please see the link below:
+-http://www.ti.com/product/drv2667
+diff --git a/Documentation/devicetree/bindings/input/ti,drv266x.yaml b/Documentation/devicetree/bindings/input/ti,drv266x.yaml
+new file mode 100644
+index 000000000000..da1818824373
+--- /dev/null
++++ b/Documentation/devicetree/bindings/input/ti,drv266x.yaml
+@@ -0,0 +1,50 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/input/ti,drv266x.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Texas Instruments - drv266x Haptics driver
++
++description: |
++  Product Page:
++    http://www.ti.com/product/drv2665
++    http://www.ti.com/product/drv2667
++
++maintainers:
++  - Anshul Dalal <anshulusr@gmail.com>
++
++properties:
++  compatible:
++    enum:
++      - ti,drv2665
++      - ti,drv2667
++
++  reg:
++    maxItems: 1
++
++  vbat-supply:
++    description: Required supply regulator
++
++required:
++  - compatible
++  - reg
++  - vbat-supply
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++
++
++    i2c {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        haptics@59 {
++            compatible = "ti,drv2667";
++            reg = <0x59>;
++            vbat-supply = <&vbat>;
++        };
++    };
+-- 
+2.43.0
 
-Which previous discussion do you mean? In v1 it was suggested to split
-up the DTS changes by arch/soc and add a cover letter (which I did).
-Wrt to the binding discussion, Sudeep said the new documentation
-wording looked good to him [1].
-
-[1]: https://lore.kernel.org/all/ZYAjxxHcCOgDVMTQ@bogus/
 
