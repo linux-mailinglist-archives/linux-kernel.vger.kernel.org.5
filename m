@@ -1,64 +1,64 @@
-Return-Path: <linux-kernel+bounces-7926-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7927-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B4D781AF4C
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 08:20:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3709681AF52
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 08:23:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D43F7B231FA
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 07:20:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D6ACE1F22C41
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 07:22:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F97F11737;
-	Thu, 21 Dec 2023 07:20:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6830BE7D;
+	Thu, 21 Dec 2023 07:22:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="K2fjoXIZ"
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="jfh2dIEE"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58DCBD2E8
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 07:20:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-3368b1e056eso95224f8f.3
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 23:20:40 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3B2DD2E1
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 07:22:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1d3d0faf262so4122045ad.3
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 23:22:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703143238; x=1703748038; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=bytedance.com; s=google; t=1703143369; x=1703748169; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=GKgaUl17rtgLH3n5Nekpmxk62rNTTUXnQZ16qpZCttA=;
-        b=K2fjoXIZY8+9Mb+HnansQ8TclG5/mU+IypXhIHjQ6TeyiEBqk5leQy7pWHIuwxYnsv
-         sL4eyaBzs/JaPymTqDv2SMebwuLTYTeFkzOdr4PwsCIcltu1FL6zlHrAUkcZ0ZdJaXsd
-         5D/cjK8I4yrzpwcXUs9Zt2njub5qnRbFq6Yl1TcAN4C1JtJnOTZH4d1zdZJxWvl1Myno
-         P9Fnb5rYK/onQ6Yg5P3hjzMH8uMQfh2q6tUA98qGilRHgECpeIGV14m9kxk6f2MbgWgI
-         hKnlMCDx3zLzumTqMeMGjdPxjX32FT3+znu55rwj3XU8WGniWjb8O+KpHo9mW4HdCXbK
-         uGQg==
+        bh=8JWrW+IEVHMjZq4fIupoComMYAyw+v4n8pU1GtYpLyk=;
+        b=jfh2dIEE/y2LSP/R7fO8SMKFTTJMRnuHMzhGDtA2JV4wtI2zB51MbIhh1sfQcm9/az
+         mK1xLTVdpT2WLW6yeR6W5jK37OPEbH13lPubzjMv9KPb/Cp0M0TjVCasaF3WlSwg7uPb
+         b0pKd+qq8TGOPpGYBmQomLeg8f3E8KZGWKRH8nGMbPHcLvrqr6zbzZ0mXPUvAFd5tdBK
+         qIsMf0TraEmW6bxEh5Fki96BDNGYcgmNlm960Yyac8kP9l04wur8EZWlxtfHansa/vZE
+         mMFCsrAh4zsrYhZOi0tVmEB3t+Pu4Yp1cgCfNMqfvtbgzjmr1XUNPCAdY/vgx8LCQVrq
+         szhw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703143238; x=1703748038;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1703143369; x=1703748169;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GKgaUl17rtgLH3n5Nekpmxk62rNTTUXnQZ16qpZCttA=;
-        b=f+NwZbF6wg64N2hZl1BWbqQNzbNW27HQvND8U5l1Ryr1CqYPqTtTC01NyeSi9uzQq3
-         HuKejtLel1geU/w4qwUZd9j/W0vjx81wNX4uYtNFQ1J4pOYyeY7LfgY29E4SBpAyq8xP
-         OXk+LWK4E6cIaQ845wuedNIa6dwTesu4QjFJe8Xk1Pamxg8FGCpDy15nJcH1Nb9WJMyo
-         pyHUL+fBQu/adcUHu82eq9c5vI99Bo17Evo043Dv6t91j6kLXrH8Q7FYtjAZWzAPI1PC
-         2rkm4TNljOYmRAZHulqcB0946iWusYeSe3hquU8MBmQSk75cYhNhmVoiF/zCzv1LEGqo
-         GTkw==
-X-Gm-Message-State: AOJu0Ywg+baS0QUsJH5/HoBHWzIqILTlxi7i9YnuApd1ZQ4JdK/DprCg
-	FpWSZ85VFbUIbozaSSMah2cO8Q==
-X-Google-Smtp-Source: AGHT+IFwrccjq4OlxK7GpmI32IQnSqqd4iZqJH5Arxx9LuH27eRxzL6EpPLkfL0R+/1RZBQgSya6rA==
-X-Received: by 2002:a5d:5918:0:b0:336:8af1:5127 with SMTP id v24-20020a5d5918000000b003368af15127mr161271wrd.97.1703143238648;
-        Wed, 20 Dec 2023 23:20:38 -0800 (PST)
-Received: from [192.168.2.107] ([79.115.63.202])
-        by smtp.gmail.com with ESMTPSA id w9-20020a5d6809000000b00336768f52fesm1310663wru.63.2023.12.20.23.20.36
+        bh=8JWrW+IEVHMjZq4fIupoComMYAyw+v4n8pU1GtYpLyk=;
+        b=BTqjZ/J+wSQTFX9cXwIzgfHnp/qtFkRy+A1KFDII/3YfYgze7uiAnJnVX8UZ24Iwip
+         Nf7i0hYaNw3Kdja5mN2jQgN5+iwooS+xb3tNpCIyRxKfkquzKUdENLXQwyhR5WPBxR+u
+         eCWSjV0SAUziTo4896dIBvRZ4GiJyzBTIJlqtrM51HwB67RXvTWGgWPsBCARFWXGUBMX
+         LJXhXGo7wfXOqnw3BPDTarcbOsKGP3JaxIHHCiWtFHwMsDI3QMYyxhTk7PMZgGM0lGUc
+         2+dJjxFTjX8xxo15Sn1sv5yq6sLz2jRMOWY+6NOTXPPZKfOumu77I3nRSKjz+frklXSr
+         bnvA==
+X-Gm-Message-State: AOJu0YzkGZDp3FRMLDsf0oYJn8IB7pmQ58QvfaOpHFu5rTNd5e/hObWy
+	PokTE3CmEwIx2MGGf9coDvMgFQ==
+X-Google-Smtp-Source: AGHT+IEj3GDlylzsimgqCGPEQsleUlysirGuXQiTOleks6R7RwIWSJ0HQUF4Tl434sorYTQhNei1TA==
+X-Received: by 2002:a17:902:c406:b0:1d1:c96a:c5e with SMTP id k6-20020a170902c40600b001d1c96a0c5emr25078114plk.70.1703143369021;
+        Wed, 20 Dec 2023 23:22:49 -0800 (PST)
+Received: from [10.255.163.20] ([139.177.225.237])
+        by smtp.gmail.com with ESMTPSA id g15-20020a1709029f8f00b001cfb84c92dfsm881320plq.276.2023.12.20.23.22.45
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Dec 2023 23:20:38 -0800 (PST)
-Message-ID: <173b06ab-2518-49ee-a67f-85256bc5b6a7@linaro.org>
-Date: Thu, 21 Dec 2023 07:20:34 +0000
+        Wed, 20 Dec 2023 23:22:48 -0800 (PST)
+Message-ID: <31b3ced3-953b-49fd-865f-52aa1627e71a@bytedance.com>
+Date: Thu, 21 Dec 2023 15:22:42 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,92 +66,34 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 02/13] dt-bindings: clock: google,gs101-clock: add PERIC0
- clock management unit
-To: Rob Herring <robh@kernel.org>
-Cc: peter.griffin@linaro.org, krzysztof.kozlowski+dt@linaro.org,
- mturquette@baylibre.com, sboyd@kernel.org, conor+dt@kernel.org,
- andi.shyti@kernel.org, alim.akhtar@samsung.com, gregkh@linuxfoundation.org,
- jirislaby@kernel.org, catalin.marinas@arm.com, will@kernel.org,
- s.nawrocki@samsung.com, tomasz.figa@gmail.com, cw00.choi@samsung.com,
- arnd@arndb.de, semen.protsenko@linaro.org, andre.draszik@linaro.org,
- saravanak@google.com, willmcvicker@google.com,
- linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org,
- linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
- linux-serial@vger.kernel.org
-References: <20231214105243.3707730-1-tudor.ambarus@linaro.org>
- <20231214105243.3707730-3-tudor.ambarus@linaro.org>
- <20231220150726.GA223267-robh@kernel.org>
+Subject: Re: [RFC PATCH v2 0/5] hugetlb: parallelize hugetlb page init on boot
 Content-Language: en-US
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <20231220150726.GA223267-robh@kernel.org>
-Content-Type: text/plain; charset=UTF-8
+To: Mike Kravetz <mike.kravetz@oracle.com>, Gang Li <gang.li@linux.dev>
+Cc: David Hildenbrand <david@redhat.com>, David Rientjes
+ <rientjes@google.com>, Muchun Song <muchun.song@linux.dev>,
+ Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org
+References: <20231208025240.4744-1-gang.li@linux.dev>
+ <20231212200653.GA7043@monkey>
+From: Gang Li <ligang.bdlg@bytedance.com>
+In-Reply-To: <20231212200653.GA7043@monkey>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-
-
-On 12/20/23 15:07, Rob Herring wrote:
-> On Thu, Dec 14, 2023 at 10:52:32AM +0000, Tudor Ambarus wrote:
->> Add dt-schema documentation for the Connectivity Peripheral 0 (PERIC0)
->> clock management unit.
->>
->> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
->> ---
->>  .../bindings/clock/google,gs101-clock.yaml    | 25 +++++-
->>  include/dt-bindings/clock/google,gs101.h      | 86 +++++++++++++++++++
->>  2 files changed, 109 insertions(+), 2 deletions(-)
->>
->> diff --git a/Documentation/devicetree/bindings/clock/google,gs101-clock.yaml b/Documentation/devicetree/bindings/clock/google,gs101-clock.yaml
->> index 3eebc03a309b..ba54c13c55bc 100644
->> --- a/Documentation/devicetree/bindings/clock/google,gs101-clock.yaml
->> +++ b/Documentation/devicetree/bindings/clock/google,gs101-clock.yaml
->> @@ -30,14 +30,15 @@ properties:
->>        - google,gs101-cmu-top
->>        - google,gs101-cmu-apm
->>        - google,gs101-cmu-misc
->> +      - google,gs101-cmu-peric0
->>  
->>    clocks:
->>      minItems: 1
->> -    maxItems: 2
->> +    maxItems: 3
->>  
->>    clock-names:
->>      minItems: 1
->> -    maxItems: 2
->> +    maxItems: 3
->>  
->>    "#clock-cells":
->>      const: 1
->> @@ -88,6 +89,26 @@ allOf:
->>              - const: dout_cmu_misc_bus
->>              - const: dout_cmu_misc_sss
->>  
->> +  - if:
->> +      properties:
->> +        compatible:
->> +          contains:
->> +            const: google,gs101-cmu-peric0
->> +
->> +    then:
->> +      properties:
->> +        clocks:
->> +          items:
->> +            - description: External reference clock (24.576 MHz)
->> +            - description: Connectivity Peripheral 0 bus clock (from CMU_TOP)
->> +            - description: Connectivity Peripheral 0 IP clock (from CMU_TOP)
->> +
->> +        clock-names:
->> +          items:
->> +            - const: oscclk
->> +            - const: dout_cmu_peric0_bus
->> +            - const: dout_cmu_peric0_ip
+On 2023/12/13 04:06, Mike Kravetz wrote:
+> With today's code, allocating 6656 2MB pages via the kernel command line
+> results in:
+> node 0:  924 pages
+> node 1: 5732 pages
+> total:  6656 pages
 > 
-> 'bus' and 'ip' are sufficient because naming is local to the module. The 
-> same is true on 'dout_cmu_misc_bus'. As that has not made a release, 
-> please fix all of them.
->
+> With code to parallel allocations in this series:
+> node 0:  924 pages
+> node 1: 1547 pages
+> total:  2471 pages
 
-Ok, will fix them shortly. Thanks, Rob!
+Hi Mike,
+
+Disable numa_aware for hugetlb_alloc_node should solve this problem.
+I will fix it in v3.
 
