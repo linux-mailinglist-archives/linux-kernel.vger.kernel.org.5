@@ -1,68 +1,68 @@
-Return-Path: <linux-kernel+bounces-8981-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8982-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 196D481BEE0
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 20:11:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 719DE81BEE3
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 20:12:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A9942B234D5
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 19:11:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 261391F25515
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 19:12:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A234F745EC;
-	Thu, 21 Dec 2023 19:10:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4219776DAC;
+	Thu, 21 Dec 2023 19:10:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="cVqiZ/qE"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UN4fTdHd"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A65C0768EA
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 19:10:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D9EF76DA6
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 19:10:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1703185850;
+	s=mimecast20190719; t=1703185856;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=4219KYM+Lx5MIoMXHlnouIE3ETSXouTN4mLohiWEzAY=;
-	b=cVqiZ/qE973zKIjMx/mGBXZe6j6jFQtUnlaeYsrPHGY624nS5FaJcj9JpFl+Cgy9KxqQNX
-	nS3Vv15qSFaCeKne8MJSpM/t7qEoTzd6G4xs0ljQl3fRifSbHsFcftoNQyzPlDtfdIZNvz
-	bYDPM+X6FH001fDnzCK/of728PY/tVM=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=oX0CWwSSb/xcfXKSUEFguRgCx8LqXafuU1W5XbBtf6I=;
+	b=UN4fTdHdMSca8LN5B1rtxO8eUr5Sx+EdFWIIT8owFUpMRE5F4IDH3sWshnYqfZoVfXsHqt
+	iSNR8dlQwcRT9jv0QHNCt6+EZrRzU/8nMKck0dhsYdSwkxWKau5omYhmArca1egpF7rrI4
+	+vwhBNro8jc0Qm/aocHR0VLufPEVSDw=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-351-lS_LYUlEMH-KRpaPAKRgoQ-1; Thu, 21 Dec 2023 14:10:48 -0500
-X-MC-Unique: lS_LYUlEMH-KRpaPAKRgoQ-1
-Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-67f6f0992fcso14607296d6.2
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 11:10:48 -0800 (PST)
+ us-mta-316-uysadmXcNMO9HK9bqpcOuw-1; Thu, 21 Dec 2023 14:10:54 -0500
+X-MC-Unique: uysadmXcNMO9HK9bqpcOuw-1
+Received: by mail-qk1-f200.google.com with SMTP id af79cd13be357-781293a471fso24537885a.3
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 11:10:54 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703185845; x=1703790645;
+        d=1e100.net; s=20230601; t=1703185850; x=1703790650;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=4219KYM+Lx5MIoMXHlnouIE3ETSXouTN4mLohiWEzAY=;
-        b=XPEiAzqR6dGgKBijnV6Mop2t14MSHQiQ/OeXFPBSP+/lXG6t0eLtmZRWsQUUOf2nh5
-         ayTgtFDWRzmBC02mvayYVI1Z5C6H/kf//wxr72Cq4tK49a9T2DIXxhv6bHvjElI2cdEM
-         a7TBvbWvOxV+F8DSeuK85PPDg9iN8Hf0Bdp9EPnSIHL2rE+eC5e2bJqMovVAvdFbkFtW
-         cO/uB74HA2sJQG252YoryuaHKKy+VBhqqZyUshQeMVov1YkWc8Z/dIzlmPVuhHt1Jo2n
-         765d5A0JPQaju20wArsu5rfFTLKQ9iWbkBptrge7Td2Ka9qn/et2L0VYJ+5q/BjmlnMe
-         Opuw==
-X-Gm-Message-State: AOJu0YwK2MEsqaaKi/EqAG5ONmLrscdJCfyiFWaTooVWW5GENvtIGabq
-	r6Qr9Igy80F9g3zO7aF9u15BbRznqnjZrGOPCWz3fGeWyNLa24ixcaDS5ofEgOfZn8qzegQnfJu
-	UTjFSKWh6F9PMxCGr+XVaDfhCeqa7qn2Y
-X-Received: by 2002:a37:c209:0:b0:77f:11d4:f58e with SMTP id i9-20020a37c209000000b0077f11d4f58emr286554qkm.148.1703185845042;
-        Thu, 21 Dec 2023 11:10:45 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IG8jYkyl5NGRggoBhvuDpRsaNOweDEis0bQkLs57xnRD25grZcE9INmJJc/kRzCE79nsbsx3Q==
-X-Received: by 2002:a37:c209:0:b0:77f:11d4:f58e with SMTP id i9-20020a37c209000000b0077f11d4f58emr286537qkm.148.1703185844782;
-        Thu, 21 Dec 2023 11:10:44 -0800 (PST)
+        bh=oX0CWwSSb/xcfXKSUEFguRgCx8LqXafuU1W5XbBtf6I=;
+        b=XcIBJIHLP0HtqM4e3dYTI1EQTGXP09aX69QuEPLnvg3FgIE5jQqnuSPUMuy8JbmQdn
+         JlaFi6QduJQTUXPbTMoQXZBx/qirXneJIdUjZZC+7VcI2nXCZ0IHBhoN+zX8+0Cc/sDQ
+         5Hk5glulXZnTN05NW5QSn5lCwf7t1Ah7oSdkASCf3pqB+lJUxLcJXCGMyD4G+NkooOwY
+         KnQlVGsBpQwcxxOt2TaPk+2qAlKnzpWRrSI06E5/YEsEnOpoHXEnOOV4hPyL9mM6rl3U
+         W78NHjVWJy1/Urd+S0OJbrY3Lrq2rEesSlV6viG3iEUSlPTSDq5XNCGzES6FfMNTjW3h
+         HF0g==
+X-Gm-Message-State: AOJu0Ywy5WMFK7raM69/8ERccOFccs0tTlg7p5inFOGqtFUF2tJ9dHVS
+	yXDtm9r6lfy/qPLD0PbVgDyh7DRP5IEB1DqUJzAE4z0VYez2ipcXeyxgDPX7xxTtgqCRoqZ5IKq
+	WtnjGnhkG/UP2e8zRj6xvCiRxNwRqQ+cg
+X-Received: by 2002:a05:620a:2914:b0:77f:92f:fcc0 with SMTP id m20-20020a05620a291400b0077f092ffcc0mr328946qkp.24.1703185850241;
+        Thu, 21 Dec 2023 11:10:50 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGFFmVes4XMCZ3lGbcjd+Jg+rBUmhWnl7+B+n29gnbBYnepEnbM62uIlen/a5SDWSV96Vlghg==
+X-Received: by 2002:a05:620a:2914:b0:77f:92f:fcc0 with SMTP id m20-20020a05620a291400b0077f092ffcc0mr328927qkp.24.1703185849959;
+        Thu, 21 Dec 2023 11:10:49 -0800 (PST)
 Received: from fedora.redhat.com ([2600:1700:1ff0:d0e0::37])
-        by smtp.gmail.com with ESMTPSA id 25-20020a05620a04d900b0077f0a4bd3c6sm846370qks.77.2023.12.21.11.10.41
+        by smtp.gmail.com with ESMTPSA id 25-20020a05620a04d900b0077f0a4bd3c6sm846370qks.77.2023.12.21.11.10.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Dec 2023 11:10:42 -0800 (PST)
+        Thu, 21 Dec 2023 11:10:48 -0800 (PST)
 From: Andrew Halaney <ahalaney@redhat.com>
 To: Andy Gross <agross@kernel.org>,
 	Bjorn Andersson <andersson@kernel.org>,
@@ -81,9 +81,9 @@ Cc: Andrew Halaney <ahalaney@redhat.com>,
 	linux-arm-msm@vger.kernel.org,
 	linux-scsi@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH RFC v3 04/11] scsi: ufs: qcom: Perform read back after writing unipro mode
-Date: Thu, 21 Dec 2023 13:09:50 -0600
-Message-ID: <20231221-ufs-reset-ensure-effect-before-delay-v3-4-2195a1b66d2e@redhat.com>
+Subject: [PATCH RFC v3 05/11] scsi: ufs: qcom: Perform read back after writing CGC enable
+Date: Thu, 21 Dec 2023 13:09:51 -0600
+Message-ID: <20231221-ufs-reset-ensure-effect-before-delay-v3-5-2195a1b66d2e@redhat.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231221-ufs-reset-ensure-effect-before-delay-v3-0-2195a1b66d2e@redhat.com>
 References: <20231221-ufs-reset-ensure-effect-before-delay-v3-0-2195a1b66d2e@redhat.com>
@@ -97,7 +97,7 @@ Content-Type: text/plain; charset="utf-8"
 X-Mailer: b4 0.12.3
 Content-Transfer-Encoding: 8bit
 
-Currently, the QUNIPRO_SEL bit is written to and then an mb() is used to
+Currently, the CGC enable bit is written and then an mb() is used to
 ensure that completes before continuing.
 
 mb() ensure that the write completes, but completion doesn't mean that
@@ -113,25 +113,25 @@ Let's do that to ensure the bit hits the device. Because the mb()'s
 purpose wasn't to add extra ordering (on top of the ordering guaranteed
 by writel()/readl()), it can safely be removed.
 
-Fixes: f06fcc7155dc ("scsi: ufs-qcom: add QUniPro hardware support and power optimizations")
+Fixes: 81c0fc51b7a7 ("ufs-qcom: add support for Qualcomm Technologies Inc platforms")
 Signed-off-by: Andrew Halaney <ahalaney@redhat.com>
 ---
  drivers/ufs/host/ufs-qcom.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
-index 6df2ab3b6f23..ab1ff7432d11 100644
+index ab1ff7432d11..3db19591d008 100644
 --- a/drivers/ufs/host/ufs-qcom.c
 +++ b/drivers/ufs/host/ufs-qcom.c
-@@ -280,7 +280,7 @@ static void ufs_qcom_select_unipro_mode(struct ufs_qcom_host *host)
- 		ufshcd_rmwl(host->hba, QUNIPRO_G4_SEL, 0, REG_UFS_CFG0);
+@@ -409,7 +409,7 @@ static void ufs_qcom_enable_hw_clk_gating(struct ufs_hba *hba)
+ 		    REG_UFS_CFG2);
  
- 	/* make sure above configuration is applied before we return */
+ 	/* Ensure that HW clock gating is enabled before next operations */
 -	mb();
-+	ufshcd_readl(host->hba, REG_UFS_CFG1);
++	ufshcd_readl(hba, REG_UFS_CFG2);
  }
  
- /*
+ static int ufs_qcom_hce_enable_notify(struct ufs_hba *hba,
 
 -- 
 2.43.0
