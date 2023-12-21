@@ -1,138 +1,91 @@
-Return-Path: <linux-kernel+bounces-8880-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8881-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AF1881BD9E
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 18:53:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D5D681BDA7
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 18:54:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B3A141F25AE7
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 17:53:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C67431F2555E
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 17:54:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D36062811;
-	Thu, 21 Dec 2023 17:53:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C333A634EF;
+	Thu, 21 Dec 2023 17:54:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="TL3TVCBu"
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="kooKke3E"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33343BA2F
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 17:53:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-40d41a32effso2085e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 09:53:06 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68DCA634E2
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 17:53:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-50e4a637958so1422959e87.2
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 09:53:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1703181185; x=1703785985; darn=vger.kernel.org;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1703181236; x=1703786036; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=jGJxOOvEqxsVQC6VhA5d1D39OpY+NWeBZWu2r5+YFiU=;
-        b=TL3TVCBuJu04cLFvn4DR6oVXP4RWTxlH8j2H8P453QgT2/GMSCs6GkOqyFS6rDysnm
-         ib1BcdB7fDsMb/z1F6iiovsr2jv8b/83326Lua/AEOuDAsxCcdmVCQ2aTjgHs8/GEpRp
-         PzlBC79yEKi5u7p4sujHoy+Gd/LtqoaVgDW2ZefvBWNtFsparEtJyJ2nIYbeGV9klnzW
-         eSz3bZVLIP1usPle/LyfzAFFaTWZSVAFwl3++VfGnNw+hF8qDhGNT/aW1v7OCidliluY
-         Ca6heradamQG06xnUTky6pMGKLMramzsC3CsGB8OLz9pJT34yiZz0weWoTOdiySFUVlI
-         l+yg==
+        bh=uyvnsyjEDwsUuLwMHfYUDOCjkLXxDADJ3gDmnw3h4uw=;
+        b=kooKke3ExWIs55KMR0sS95C5ojaPw04G7o/Ku8rr/b0D5t6O5XVMhK3gY2AqRPZx0F
+         Xi9gsDW87a+bvrFGcS9FPexLLboB+zN7feG72PZ1e80s9UhOKllBC+PWapkn9BZQZZRI
+         G9TB6mH+wfDbYcAvjOqAZ5BCwyPQIlkhTHTqYj7+jClty6VvLiSzdUXtapa8xw3NUczx
+         ZJEMzMmeHNygs7iaClaKfrAilgha+TTI1zMan+SyENaV9TqGnI6ktLsKKlbgroiUx6W7
+         qS1taynyQhDCDm2N4gGAucoRTl7Iv4tSrWBLPbfPFiVeZ39+bOAEcpifixOMtA1BFu5U
+         ELxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703181185; x=1703785985;
+        d=1e100.net; s=20230601; t=1703181236; x=1703786036;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=jGJxOOvEqxsVQC6VhA5d1D39OpY+NWeBZWu2r5+YFiU=;
-        b=XLZN9E1l0DM4kyed5gqPBzW91kqRG9bWoMzEmH4USvleQD9xUmjC4uTtIDur1nTXw4
-         nVR4/LBjoEPVtg0h8J3BdS6/UBcQEqq1ChV/2JDfSQtBVv70CLv5OWGACTPwioRYveIg
-         F0gjkgDVVIRQgMKbHyHtlHlroE3lWlD0IWDV6rbwsf7FR8CoV8yhyA04nyiLgSeNGdFT
-         1FPmW3n5Lqdogwd7Qvq8CXAYLbBf3upj/Xhxo/xVJuv9RQI9s0QDafi7FdqpvF4gyhOf
-         8BEL0WDPcnXWSj/KQKMM8ToY9RNy9g+bu+3PV1Ah4qTw2CuKcLKtKaMqH5tPQ9ydkl4B
-         OTxw==
-X-Gm-Message-State: AOJu0Yzopxrmhq7vwesxjLS/gVQrSRd4EdP/CYkgJBMOQpuXf/aE/hPc
-	1vYy52lnpA8Eu4Hod2ZzKghOwKL/0jUyLWzqr//W9rZW3rg=
-X-Google-Smtp-Source: AGHT+IHimUqDXhGdGLvwEwI7ls19nRWkrwvr/YKVAUJ7osC06zOOPKhKmusnr/CpENW5LVrhPZcH9Pv+OAs2his0BqM=
-X-Received: by 2002:a7b:c3c1:0:b0:40d:400c:1b26 with SMTP id
- t1-20020a7bc3c1000000b0040d400c1b26mr107780wmj.7.1703181185195; Thu, 21 Dec
- 2023 09:53:05 -0800 (PST)
+        bh=uyvnsyjEDwsUuLwMHfYUDOCjkLXxDADJ3gDmnw3h4uw=;
+        b=F/i7k+Iuk5j0LZiKje/z7qzPN3Auk7fVmqRI1+/U09AJtjqTJ48TR1acn217kBZ2ql
+         0xTv17v59T56Sm/8PyGsEewQF0bioIlXFqgLr1HFNdNRIRCtHi5I4YKiw2lZtkgEFT9W
+         6dg3BtaCdN+Lb+MzEeFkx0GZzqwQu0104jhcMv6t2ZTVMWNbG5+D474TeDGyg15drcFY
+         mMfaNg+xTKebMD6PoCgoRYuJ9qTT01fqFH50w5P9dG5W+Qhr74Vn2z+Bfe9iUPyQs755
+         fm6ix+C9ye+9mK/aNXMtJo0AHjwbJp8gDmO9WXIRzhq0LSIT4EVSgv6/d3cjV8ZOI18v
+         2+tw==
+X-Gm-Message-State: AOJu0YwYyMTEFhzus+1pY3m39n3ewMbFeFO3qirO2vGmXVODU0+CBWmu
+	nvioNXEWXzjgATPewbv/x9TESvazNrqrXTvz7Lve0g==
+X-Google-Smtp-Source: AGHT+IE2ge4UK3B/28OyNJsYgBRrO+CoJIShGaRLGYuzONOCc/uFJ0mOz6/3Iza3du7r74b7GPBwMBxm/piGxU/FSfY=
+X-Received: by 2002:a05:6512:60d:b0:50e:5e48:2282 with SMTP id
+ b13-20020a056512060d00b0050e5e482282mr412065lfe.146.1703181236297; Thu, 21
+ Dec 2023 09:53:56 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231220001856.3710363-1-jstultz@google.com> <20231220001856.3710363-6-jstultz@google.com>
- <35af7d68-7a98-4b72-8186-814482f9f98f@arm.com>
-In-Reply-To: <35af7d68-7a98-4b72-8186-814482f9f98f@arm.com>
-From: John Stultz <jstultz@google.com>
-Date: Thu, 21 Dec 2023 09:52:52 -0800
-Message-ID: <CANDhNCqyJUAYjbuKVwEUcEjPZFUyiCQoToRYZK7g0ODzW3wCVg@mail.gmail.com>
-Subject: Re: [PATCH v7 05/23] locking/mutex: Rework task_struct::blocked_on
-To: Metin Kaya <metin.kaya@arm.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
-	Joel Fernandes <joelaf@google.com>, Qais Yousef <qyousef@google.com>, Ingo Molnar <mingo@redhat.com>, 
-	Juri Lelli <juri.lelli@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>, 
-	Dietmar Eggemann <dietmar.eggemann@arm.com>, Valentin Schneider <vschneid@redhat.com>, 
-	Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, 
-	Zimuzo Ezeozue <zezeozue@google.com>, Youssef Esmat <youssefesmat@google.com>, 
-	Mel Gorman <mgorman@suse.de>, Daniel Bristot de Oliveira <bristot@redhat.com>, Will Deacon <will@kernel.org>, 
-	Waiman Long <longman@redhat.com>, Boqun Feng <boqun.feng@gmail.com>, 
-	"Paul E. McKenney" <paulmck@kernel.org>, Xuewen Yan <xuewen.yan94@gmail.com>, 
-	K Prateek Nayak <kprateek.nayak@amd.com>, Thomas Gleixner <tglx@linutronix.de>, kernel-team@android.com, 
-	"Connor O'Brien" <connoro@google.com>
+References: <20231220-optimize_checksum-v13-0-a73547e1cad8@rivosinc.com> <20231220-optimize_checksum-v13-2-a73547e1cad8@rivosinc.com>
+In-Reply-To: <20231220-optimize_checksum-v13-2-a73547e1cad8@rivosinc.com>
+From: Evan Green <evan@rivosinc.com>
+Date: Thu, 21 Dec 2023 09:53:19 -0800
+Message-ID: <CALs-HstooJ5z9T_M48jwQGbxiUdL-B8eFqqsi4-6TMrMJtz7mg@mail.gmail.com>
+Subject: Re: [PATCH v13 2/5] riscv: Add static key for misaligned accesses
+To: Charlie Jenkins <charlie@rivosinc.com>
+Cc: Palmer Dabbelt <palmer@dabbelt.com>, Conor Dooley <conor@kernel.org>, 
+	Samuel Holland <samuel.holland@sifive.com>, David Laight <David.Laight@aculab.com>, 
+	Xiao Wang <xiao.w.wang@intel.com>, linux-riscv@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org, 
+	Paul Walmsley <paul.walmsley@sifive.com>, Albert Ou <aou@eecs.berkeley.edu>, 
+	Arnd Bergmann <arnd@arndb.de>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Dec 21, 2023 at 2:13=E2=80=AFAM Metin Kaya <metin.kaya@arm.com> wro=
-te:
-> On 20/12/2023 12:18 am, John Stultz wrote:
-> > +static inline struct mutex *get_task_blocked_on(struct task_struct *p)
-> > +{
-> > +     lockdep_assert_held(&p->blocked_lock);
-> > +
-> > +     return p->blocked_on;
-> > +}
-> > +
-> > +static inline struct mutex *get_task_blocked_on_once(struct task_struc=
-t *p)
-> > +{
-> > +     return READ_ONCE(p->blocked_on);
-> > +}
+On Wed, Dec 20, 2023 at 3:37=E2=80=AFPM Charlie Jenkins <charlie@rivosinc.c=
+om> wrote:
 >
-> These functions make me think we should use [get, set]_task_blocked_on()
-> for accessing blocked_on & blocked_on_state fields, but there are some
-> references in this patch which we directly access aforementioned fields.
-> Is this OK?
-
-Yeah. In the reworks I've probably added some subtle uses that should
-be switched to the accessors or better commented.
-
-
- > @@ -4341,6 +4342,11 @@ int try_to_wake_up(struct task_struct *p,
-unsigned int state, int wake_flags)
-> >
-> >               ttwu_queue(p, cpu, wake_flags);
-> >       }
-> > +     /* XXX can we do something better here for !CONFIG_SCHED_PROXY_EX=
-EC case */
+> Support static branches depending on the value of misaligned accesses.
+> This will be used by a later patch in the series. All cpus must be
+> considered "fast" for this static branch to be flipped.
 >
-> blocked_on* fields are now used even in !CONFIG_SCHED_PROXY_EXEC case.
-> I'm unsure if we can get rid of lock & unlock lines or entire hunk, but
-> would this be too ugly? I wish we could convert blocked_on_state to an
-> atomic variable.
+> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
 
-Well, atomics have their own costs, but it's something I'll think
-about. In the comment above, the idea I'm pondering is that in the
-!PROXY_EXEC case the blocked_on_state doesn't provide much utility, so
-maybe there's a way to opt out of that portion (while keeping the
-blocked_on for debug checking).  Even in the PROXY_EXEC case, we might
-be able to move this check to proxy_needs_return(), but I need to
-think the logic out to make sure we'd always hit that path when we
-need to make the transition.
+You didn't pick up my tag from the last spin, so here it is again:
 
-I've also wondered if the blocked_on_state might be able to be merged
-into the task->__state, but the rules there are more subtle so for my
-sanity I've kept it separate here for now.
-
-thanks
--john
+Reviewed-by: Evan Green <evan@rivosinc.com>
 
