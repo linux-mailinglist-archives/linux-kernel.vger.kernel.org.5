@@ -1,299 +1,126 @@
-Return-Path: <linux-kernel+bounces-8700-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8701-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7BB5781BB3F
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 16:46:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0062681BB41
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 16:46:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3245F2867B5
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 15:46:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AAB031F28FD7
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 15:46:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46F2F58215;
-	Thu, 21 Dec 2023 15:45:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AA3B53A17;
+	Thu, 21 Dec 2023 15:46:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="X5aHKt09"
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="FDr8+EXO"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C1375821E
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 15:45:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703173525; x=1734709525;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Gd6wKDRN8uX3IpoIU9qsH4qSjhv9zFYbxCKO/iBeMpw=;
-  b=X5aHKt099I+wg3S6D/1KP90PpHPwwSwz1n+b7qdO6iD8rNGcFBXY4/Ux
-   xZKqur8FNsjeWIqNC40HqAVDGDyXNAL/E/wAYlhPLObTc26Aspq+n2ca0
-   ClW2jjapzGKULoHkGgVyQEANCRlToOkq+wfy4okgoNzumIqemyPkDpd87
-   f+Ep9Wc7QdGbs2pRLHD22gHGHtBsXAaWdbykGEl81+g9wNz+rbja481VF
-   CkktOKXWCxXS6981BPdK0SHHwRB3xFLajJGRWIdQDE44Chq0mE8Ftj7bQ
-   2lhpFAGrqE4GUHua8NfWTEYOQV1HX/59huANIl7/sMrDejw9lnb3kxa71
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10931"; a="394882707"
-X-IronPort-AV: E=Sophos;i="6.04,293,1695711600"; 
-   d="scan'208";a="394882707"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Dec 2023 07:45:24 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10931"; a="842651936"
-X-IronPort-AV: E=Sophos;i="6.04,293,1695711600"; 
-   d="scan'208";a="842651936"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga008.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Dec 2023 07:45:19 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@intel.com>)
-	id 1rGLEa-00000007sz1-3WxJ;
-	Thu, 21 Dec 2023 17:45:16 +0200
-Date: Thu, 21 Dec 2023 17:45:16 +0200
-From: Andy Shevchenko <andriy.shevchenko@intel.com>
-To: Mark Hasemeyer <markhas@chromium.org>
-Cc: LKML <linux-kernel@vger.kernel.org>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Tzung-Bi Shih <tzungbi@kernel.org>,
-	Raul Rangel <rrangel@chromium.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Rob Herring <robh@kernel.org>, Sudeep Holla <sudeep.holla@arm.com>,
-	Benson Leung <bleung@chromium.org>,
-	Bhanu Prakash Maiya <bhanumaiya@chromium.org>,
-	Chen-Yu Tsai <wenst@chromium.org>,
-	Guenter Roeck <groeck@chromium.org>, Lee Jones <lee@kernel.org>,
-	Prashant Malani <pmalani@chromium.org>,
-	Rob Barnes <robbarnes@google.com>,
-	Stephen Boyd <swboyd@chromium.org>, chrome-platform@lists.linux.dev
-Subject: Re: [PATCH v2 22/22] platform/chrome: cros_ec: Use PM subsystem to
- manage wakeirq
-Message-ID: <ZYRdjHVgES1odZAQ@smile.fi.intel.com>
-References: <20231220235459.2965548-1-markhas@chromium.org>
- <20231220165423.v2.22.Ieee574a0e94fbaae01fd6883ffe2ceeb98d7df28@changeid>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E3EC539FD
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 15:46:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1d3d3f0afc4so2362305ad.1
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 07:46:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1703173592; x=1703778392; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1Lh0BKtyrN6yro9u80s5vCgpZBYXmKXJHEdT+0k/Q74=;
+        b=FDr8+EXO9DzACRVq9DLbzrnmCMNMI58h9+3DztlZjs9++HEKGqUcCzoRjMsbTZEQXD
+         +LkHEP189HUbtFaeScq4wZRZv4FMI/yi0+JHV7ptTfufOIG23V9JxP45P7CLTSZQi0RJ
+         K32/0kdCSe/kllBQlJW+RZz40vHoCHRjYpfP9yZBy0YMSJAmsHS48svKo+DDY9G4WsDj
+         L5dcBRUui3BQKQCtqITkRF4aGtyy89Xdwfei7RDJ5ZaUHWdiHYUzYluEk87bp3eobJn/
+         YtomhUz5O1s8m+WZGd9nHMlj+S4cOd2Xcjlq6XbjvcEf+WYUIhhTg2DqqfzwyBAKs2yZ
+         5+QQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703173592; x=1703778392;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1Lh0BKtyrN6yro9u80s5vCgpZBYXmKXJHEdT+0k/Q74=;
+        b=iK/NTRHySjXrdKK2zvl6nFXBGvHvmrr1o80aAt11GTagDHtX1dJ9F+rgvThjR1LWT2
+         yJjfH3DDr+dXWwPGB+bdwGqBJPux8W/7X7vWAvdCAbw7x8HfQ3klPOq5TPMRYWwqqGjm
+         2N6jhBiN9qyYXcxwUy/FxWp9RzvFRgfhLzMl0TgzVI8HKxYXtYMVoi8fXF4dTIkrvK6Y
+         +bRMUOwNlcfKo1/IWqZTVUfc1AdH8JUTIxa5tJ5ywZlxLNMMNvG6/9mgqty1W6rh/IYS
+         9pPURH51ECgYsiyxkW3m4Gbc7HUlBaFythI06XhJ2Nq+jHt1cZaHeGX+grdDcf0m49Dx
+         1Cbw==
+X-Gm-Message-State: AOJu0Yz5DR76ZYi7aE9W4YDI/nEcsstMNAk1keq5ssGI2leuE3Lj2iUE
+	Oodu8NBLGa3eIU4lTqkqKL5JvA==
+X-Google-Smtp-Source: AGHT+IE2VNshP+sAbnUUrOxFL6xMZpyArSCAn7aqXcXGUtjj8frJbojM4Xg7E+9w5FA1jvSOWwmbzA==
+X-Received: by 2002:a17:902:e88c:b0:1d3:f2df:da26 with SMTP id w12-20020a170902e88c00b001d3f2dfda26mr4798309plg.1.1703173592555;
+        Thu, 21 Dec 2023 07:46:32 -0800 (PST)
+Received: from [192.168.1.150] ([198.8.77.194])
+        by smtp.gmail.com with ESMTPSA id be10-20020a170902aa0a00b001d3c3d486bfsm1784959plb.163.2023.12.21.07.46.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Dec 2023 07:46:32 -0800 (PST)
+Message-ID: <c64745d9-4a85-49c0-9df7-f687b18c2c00@kernel.dk>
+Date: Thu, 21 Dec 2023 08:46:30 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231220165423.v2.22.Ieee574a0e94fbaae01fd6883ffe2ceeb98d7df28@changeid>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+User-Agent: Mozilla Thunderbird
+Subject: Re: KMSAN: uninit-value in io_rw_fail
+Content-Language: en-US
+To: xingwei lee <xrivendell7@gmail.com>,
+ syzbot+12dde80bf174ac8ae285@syzkaller.appspotmail.com
+Cc: asml.silence@gmail.com, io-uring@vger.kernel.org,
+ linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+ glider@google.com
+References: <CABOYnLzhrQ25C_vjthTZZhZCjQrL-HC4=MKmYG0CyoG6hKpbnw@mail.gmail.com>
+From: Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <CABOYnLzhrQ25C_vjthTZZhZCjQrL-HC4=MKmYG0CyoG6hKpbnw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Dec 20, 2023 at 04:54:36PM -0700, Mark Hasemeyer wrote:
-> The cros ec driver is manually managing the wake IRQ by calling
-> enable_irq_wake()/disable_irq_wake() during suspend/resume.
-> 
-> Modify the driver to use the power management subsystem to manage the
-> wakeirq.
-> 
-> Rather than assuming that the IRQ is wake capable, use the underlying
-> firmware/device tree to determine whether or not to enable it as a wake
-> source. Some Chromebooks rely solely on the ec_sync pin to wake the AP
-> but do not specify the interrupt as wake capable in the ACPI _CRS. For
-> LPC/ACPI based systems a DMI quirk is introduced listing boards whose
-> firmware should not be trusted to provide correct wake capable values.
-> For device tree base systems, it is not an issue as the relevant device
-> tree entries have been updated and DTS is built from source for each
-> ChromeOS update.
-> 
-> The IRQ wake logic was added on an interface basis (lpc, spi, uart) as
-> opposed to adding it to cros_ec.c because the i2c subsystem already
-> enables the wakirq (if applicable) on our behalf.
+On 12/21/23 3:58 AM, xingwei lee wrote:
+> Hello I found a bug in io_uring and comfirmed at the latest upstream
+> mainine linux.
+> TITLE: KMSAN: uninit-value in io_rw_fail
+> and I find this bug maybe existed in the
+> https://syzkaller.appspot.com/bug?extid=12dde80bf174ac8ae285 but do
+> not have a stable reproducer.
+> However, I generate a stable reproducer and comfirmed in the latest mainline.
 
-...
+I took a look at that one and can't see anything wrong, is that one
+still triggering? In any case, this one is different, as it's the writev
+path. Can you try the below?
 
-> +static const struct dmi_system_id untrusted_fw_irq_wake_capable[] = {
-> +	{
-> +		.ident = "Brya",
-> +		.matches = {
-> +			DMI_MATCH(DMI_PRODUCT_FAMILY, "Google_Brya")
-> +		}
-
-Leave trailing comma.
-
-> +	},
-> +	{
-> +		.ident = "Brask",
-> +		.matches = {
-> +			DMI_MATCH(DMI_PRODUCT_FAMILY, "Google_Brask")
-> +		}
-
-Ditto.
-
-It will reduce a churn in the future if adding more fields here.
-
-> +	},
-> +	{ }
-> +}
-
-...
-
-> +static bool cros_ec_should_force_irq_wake_capable(void)
-> +{
-> +	return dmi_first_match(untrusted_fw_irq_wake_capable) != NULL;
-
-' != NULL' is redundant.
-
-> +}
-
-...
-
->  	struct device *dev = &pdev->dev;
-
-> +	bool irq_wake = false;
-
-Why not put this...
-
->  	struct acpi_device *adev;
->  	acpi_status status;
->  	struct cros_ec_device *ec_dev;
-> +	struct resource irqres;
-
-...here?
-
->  	u8 buf[2] = {};
->  	int irq, ret;
-
-...
-
-> +	irq = platform_get_irq_resource_optional(pdev, 0, &irqres);
-> +	if (irq > 0) {
->  		ec_dev->irq = irq;
-> -	else if (irq != -ENXIO) {
-> +		if (cros_ec_should_force_irq_wake_capable())
-> +			irq_wake = true;
-> +		else
-> +			irq_wake = irqres.flags & IORESOURCE_IRQ_WAKECAPABLE;
-> +		dev_dbg(dev, "IRQ: %i, wake_capable: %i\n", irq, irq_wake);
-> +	} else if (irq != -ENXIO) {
->  		dev_err(dev, "couldn't retrieve IRQ number (%d)\n", irq);
->  		return irq;
->  	}
-
-Yeah, this is confusing now. Which one should I trust more: irq or irqres.start?
-What is the point to have irqres with this duplication?
-
-...
-
-> -		dev_err(dev, "couldn't register ec_dev (%d)\n", ret);
-> +		dev_err_probe(dev, ret, "couldn't register ec_dev (%d)\n", ret);
->  		return ret;
-
-		return dev_err_probe(...);
-
-...
-
-> +			dev_err_probe(dev, ret, "Failed to init device for wakeup");
-> +			return ret;
-
-Ditto.
-
-...
-
-> +	if (!np)
-> +		return;
-
-Why do you need this now?
-
-I would expect either agnostic code or the very first mandatory of_*() call
-will fail with the error anyway.
-
-...
-
->  	ret = of_property_read_u32(np, "google,cros-ec-spi-msg-delay", &val);
->  	if (!ret)
->  		ec_spi->end_of_msg_delay = val;
-
-> +	if (ec_dev->irq > 0 && of_property_read_bool(np, "wakeup-source")) {
-> +		ec_spi->irq_wake = true;
-> +		dev_dbg(&spi->dev, "IRQ: %i, wake_capable: %i\n", ec_dev->irq, ec_spi->irq_wake);
-> +	}
-
-	if (ret)
-		return;
-
-	ec_spi->irq_wake = of_property_read_bool(np, "wakeup-source"));
-	dev_dbg(&spi->dev, "IRQ: %i, wake_capable: %s\n", ec_dev->irq, str_yes_no(ec_spi->irq_wake));
-
-?
-
-...
-
-> +	if (ec_spi->irq_wake) {
-> +		err = device_init_wakeup(dev, true);
-> +		if (err) {
-> +			dev_err_probe(dev, err, "Failed to init device for wakeup\n");
-> +			return err;
-
-			return dev_err_probe(...);
-
-> +		}
-> +		err = dev_pm_set_wake_irq(dev, ec_dev->irq);
-> +		if (err)
-> +			dev_err_probe(dev, err, "Failed to set irq(%d) for wake\n", ec_dev->irq);
-
-		Ditto.
-
-> +	}
-
-> -	return 0;
-> +	return err;
-
-Unneeded change (see above how to use dev_err_probe() in an efficient way).
-
-ret / err... Even in one file already some inconsistency...
-
-...
-
-> @@ -78,6 +80,7 @@ struct cros_ec_uart {
->  	u32 baudrate;
->  	u8 flowcontrol;
->  	u32 irq;
-> +	bool irq_wake;
->  	struct response_info response;
->  };
-
-Run `pahole` and amend respectively to avoid wasting memory.
-
-...
-
-> +	dev_dbg(dev, "IRQ: %i, wake_capable: %i\n", ec_uart->irq, ec_uart->irq_wake);
-
-str_yes_no() from string_choices.h?
-
-...
-
-> +	/* Register a new cros_ec device */
-> +	ret = cros_ec_register(ec_dev);
-> +	if (ret) {
-> +		dev_err(dev, "Couldn't register ec_dev (%d)\n", ret);
-> +		return ret;
-
-Why not dev_err_probe() here...
-
-> +	}
-> +
-> +	if (ec_uart->irq_wake) {
-> +		ret = device_init_wakeup(dev, true);
-> +		if (ret) {
-> +			dev_err_probe(dev, ret, "Failed to init device for wakeup");
-> +			return ret;
-
-...and here?
-
-> +		}
-> +		ret = dev_pm_set_wake_irq(dev, ec_uart->irq);
-> +	}
-> +	return ret;
->  }
+diff --git a/io_uring/rw.c b/io_uring/rw.c
+index 4943d683508b..0c856726b15d 100644
+--- a/io_uring/rw.c
++++ b/io_uring/rw.c
+@@ -589,15 +589,19 @@ static inline int io_rw_prep_async(struct io_kiocb *req, int rw)
+ 	struct iovec *iov;
+ 	int ret;
+ 
++	iorw->bytes_done = 0;
++	iorw->free_iovec = NULL;
++
+ 	/* submission path, ->uring_lock should already be taken */
+ 	ret = io_import_iovec(rw, req, &iov, &iorw->s, 0);
+ 	if (unlikely(ret < 0))
+ 		return ret;
+ 
+-	iorw->bytes_done = 0;
+-	iorw->free_iovec = iov;
+-	if (iov)
++	if (iov) {
++		iorw->free_iovec = iov;
+ 		req->flags |= REQ_F_NEED_CLEANUP;
++	}
++
+ 	return 0;
+ }
+ 
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+Jens Axboe
 
 
