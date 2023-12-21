@@ -1,92 +1,61 @@
-Return-Path: <linux-kernel+bounces-8297-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8298-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C87781B51D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 12:42:16 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B382C81B51E
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 12:42:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CF9C31C24E29
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 11:42:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BA0ABB20B62
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 11:42:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBD106E2A1;
-	Thu, 21 Dec 2023 11:42:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD8B46DD18;
+	Thu, 21 Dec 2023 11:42:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="D+whZSpu";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Y2TE2OBd";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="D+whZSpu";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Y2TE2OBd"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="NUzxyK6q"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C71D1DA3B;
-	Thu, 21 Dec 2023 11:42:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8872D6D1C6
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 11:42:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1703158949;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wO71qD98XeNn6o22z4de+p4+swSxefVPiivSdhVSM3Q=;
+	b=NUzxyK6q8iPYgWiGZ2H/fzJQrR0VqfG/AaQK4nCNJOPZ3aPBywBg1NiCS/FlDsSaOaDPqw
+	3N72xToLVzuFKarH0bmJHraFnuWbYF4DEvuTnUqZ6yRZdZr5x/egGQtewtJL1MkHkkugoa
+	eblp/8qxEdR8X1/NymC4bGS19Si9Yic=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-66-dSYlwMV3Mn6BjRBhtZiqkg-1; Thu, 21 Dec 2023 06:42:26 -0500
+X-MC-Unique: dSYlwMV3Mn6BjRBhtZiqkg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id A07101FB73;
-	Thu, 21 Dec 2023 11:42:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1703158921; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=HHGj/QWNdjAWrYVT+sev2QMbn9CEKZZ/Yw7K3T4SC9k=;
-	b=D+whZSpuxgib93oNZ0IF1mLee1O3AL+iNCX0uDYMGIOE9ywMBVsgZS2LACAABhhIPgrQdu
-	z9u+ttw+qlAlUV29460x/JHoeIPQtC2ORQlsNZnTQzZhEl09RxcVRzQAUOLS6Km8Q82bVK
-	QkBVtcQx4RjcTII8A1uyjml6J9I/Z70=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1703158921;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=HHGj/QWNdjAWrYVT+sev2QMbn9CEKZZ/Yw7K3T4SC9k=;
-	b=Y2TE2OBdyc8UnRUTNf5Y3YBYbTw2MHEaQj3rUmP3226n4Chbqpg+sTTDaztz3SJCkJFS/5
-	A4lIU6vN8/O7VHAA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1703158921; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=HHGj/QWNdjAWrYVT+sev2QMbn9CEKZZ/Yw7K3T4SC9k=;
-	b=D+whZSpuxgib93oNZ0IF1mLee1O3AL+iNCX0uDYMGIOE9ywMBVsgZS2LACAABhhIPgrQdu
-	z9u+ttw+qlAlUV29460x/JHoeIPQtC2ORQlsNZnTQzZhEl09RxcVRzQAUOLS6Km8Q82bVK
-	QkBVtcQx4RjcTII8A1uyjml6J9I/Z70=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1703158921;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=HHGj/QWNdjAWrYVT+sev2QMbn9CEKZZ/Yw7K3T4SC9k=;
-	b=Y2TE2OBdyc8UnRUTNf5Y3YBYbTw2MHEaQj3rUmP3226n4Chbqpg+sTTDaztz3SJCkJFS/5
-	A4lIU6vN8/O7VHAA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 952B013725;
-	Thu, 21 Dec 2023 11:42:01 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id kVZmJIkkhGUAYAAAD6G6ig
-	(envelope-from <jack@suse.cz>); Thu, 21 Dec 2023 11:42:01 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 3ECABA07E3; Thu, 21 Dec 2023 12:41:53 +0100 (CET)
-Date: Thu, 21 Dec 2023 12:41:53 +0100
-From: Jan Kara <jack@suse.cz>
-To: Christoph Hellwig <hch@lst.de>
-Cc: linux-mm@kvack.org, "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	Jan Kara <jack@suse.com>, David Howells <dhowells@redhat.com>,
-	Brian Foster <bfoster@redhat.com>, linux-fsdevel@vger.kernel.org,
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id DDB2285A588;
+	Thu, 21 Dec 2023 11:42:25 +0000 (UTC)
+Received: from localhost (unknown [10.72.116.38])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 38E5F51D5;
+	Thu, 21 Dec 2023 11:42:24 +0000 (UTC)
+Date: Thu, 21 Dec 2023 19:42:21 +0800
+From: Baoquan He <bhe@redhat.com>
+To: fuqiang wang <fuqiang.wang@easystack.cn>
+Cc: Vivek Goyal <vgoyal@redhat.com>, Dave Young <dyoung@redhat.com>,
+	Yuntao Wang <ytcoode@gmail.com>, kexec@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 13/17] writeback: Factor writeback_get_folio() out of
- write_cache_pages()
-Message-ID: <20231221114153.2ktiwixqedsk5adw@quack3>
-References: <20231218153553.807799-1-hch@lst.de>
- <20231218153553.807799-14-hch@lst.de>
+Subject: Re: [PATCH v2 2/2] kexec: Fix potential out of bounds in
+ crash_exclude_mem_range()
+Message-ID: <ZYQknSaxtNt/ZQvI@MiWiFi-R3L-srv>
+References: <20231220055733.100325-1-fuqiang.wang@easystack.cn>
+ <20231220055733.100325-3-fuqiang.wang@easystack.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -95,103 +64,58 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231218153553.807799-14-hch@lst.de>
-X-Spam-Level: 
-X-Spam-Level: 
-X-Spamd-Result: default: False [-1.20 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 RCPT_COUNT_SEVEN(0.00)[8];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[infradead.org:email,suse.cz:email,suse.com:email];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-1.60)[92.44%]
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Score: -1.20
-X-Spam-Flag: NO
+In-Reply-To: <20231220055733.100325-3-fuqiang.wang@easystack.cn>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
 
-On Mon 18-12-23 16:35:49, Christoph Hellwig wrote:
-> From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+On 12/20/23 at 01:57pm, fuqiang wang wrote:
+> When the split does not occur on the last array member, the current code
+> will not return an error. So the correct array out-of-bounds check should
+> be mem->nr_ranges >= mem->max_nr_ranges.
 > 
-> Move the loop for should-we-write-this-folio to its own function.
+> When the OOB happen, the cmem->ranges[] have changed, so return early to
+> avoid it.
 > 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> Signed-off-by: fuqiang wang <fuqiang.wang@easystack.cn>
+> ---
+>  kernel/crash_core.c | 7 +++----
+>  1 file changed, 3 insertions(+), 4 deletions(-)
 
-Looks good to me. Feel free to add:
+You may need rebase your work on next/master branch to avoid conflict.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
 
-But I'd note that the call stack depth of similarly called helper functions
-(with more to come later in the series) is getting a bit confusing. Maybe
-we should inline writeback_get_next() into its single caller
-writeback_get_folio() to reduce confusion a bit...
+In the current, below commit exists, then code change in this patch may
+not be needed.
+86d80cbb61ca crash_core: fix and simplify the logic of crash_exclude_mem_range()
 
-								Honza
-
-> +static struct folio *writeback_get_folio(struct address_space *mapping,
-> +		struct writeback_control *wbc)
-> +{
-> +	struct folio *folio;
-> +
-> +	for (;;) {
-> +		folio = writeback_get_next(mapping, wbc);
-> +		if (!folio)
-> +			return NULL;
-> +		folio_lock(folio);
-> +		if (likely(should_writeback_folio(mapping, wbc, folio)))
-> +			break;
-> +		folio_unlock(folio);
-> +	}
-> +
-> +	trace_wbc_writepage(wbc, inode_to_bdi(mapping->host));
-> +	return folio;
-> +}
-> +
->  static struct folio *writeback_iter_init(struct address_space *mapping,
->  		struct writeback_control *wbc)
->  {
-> @@ -2455,7 +2474,7 @@ static struct folio *writeback_iter_init(struct address_space *mapping,
+> 
+> diff --git a/kernel/crash_core.c b/kernel/crash_core.c
+> index d4313b53837e..b1ab61c74fd2 100644
+> --- a/kernel/crash_core.c
+> +++ b/kernel/crash_core.c
+> @@ -611,6 +611,9 @@ int crash_exclude_mem_range(struct crash_mem *mem,
+>  		}
 >  
->  	wbc->err = 0;
->  	folio_batch_init(&wbc->fbatch);
-> -	return writeback_get_next(mapping, wbc);
-> +	return writeback_get_folio(mapping, wbc);
->  }
+>  		if (p_start > start && p_end < end) {
+> +			/* Split happened */
+> +			if (mem->nr_ranges >= mem->max_nr_ranges)
+> +				return -ENOMEM;
+>  			/* Split original range */
+>  			mem->ranges[i].end = p_start - 1;
+>  			temp_range.start = p_end + 1;
+> @@ -626,10 +629,6 @@ int crash_exclude_mem_range(struct crash_mem *mem,
+>  	if (!temp_range.end)
+>  		return 0;
 >  
->  /**
-> @@ -2498,17 +2517,9 @@ int write_cache_pages(struct address_space *mapping,
->  
->  	for (folio = writeback_iter_init(mapping, wbc);
->  	     folio;
-> -	     folio = writeback_get_next(mapping, wbc)) {
-> +	     folio = writeback_get_folio(mapping, wbc)) {
->  		unsigned long nr;
->  
-> -		folio_lock(folio);
-> -		if (!should_writeback_folio(mapping, wbc, folio)) {
-> -			folio_unlock(folio);
-> -			continue;
-> -		}
+> -	/* Split happened */
+> -	if (i == mem->max_nr_ranges - 1)
+> -		return -ENOMEM;
 > -
-> -		trace_wbc_writepage(wbc, inode_to_bdi(mapping->host));
-> -
->  		error = writepage(folio, wbc, data);
->  		nr = folio_nr_pages(folio);
->  		wbc->nr_to_write -= nr;
+>  	/* Location where new range should go */
+>  	j = i + 1;
+>  	if (j < mem->nr_ranges) {
 > -- 
-> 2.39.2
+> 2.42.0
 > 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+
 
