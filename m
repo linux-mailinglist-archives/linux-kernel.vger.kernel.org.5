@@ -1,202 +1,155 @@
-Return-Path: <linux-kernel+bounces-8663-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8664-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2E5C81BAC4
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 16:29:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 492F881BACC
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 16:30:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 12DCC1C2391E
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 15:29:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7AD301C234B1
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 15:30:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11940539F5;
-	Thu, 21 Dec 2023 15:29:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 637A2539E8;
+	Thu, 21 Dec 2023 15:30:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b="mPJVEoL7"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="LTii675s"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from aposti.net (aposti.net [89.234.176.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B27373609D;
-	Thu, 21 Dec 2023 15:29:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crapouillou.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-	s=mail; t=1703172570;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A96550254
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 15:30:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1703172625;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=S3jLsuWp0eHbR7sFaPwv2PYYJeuE7Uz8tuEbC3SNVWs=;
-	b=mPJVEoL7U3BkI4v4nuQiZc47+4kRct8ZnU/lH2TDGw3pAOu7mc0V33RlEfCBImVaAo2Mn2
-	3+3b8TznG0oO4ZeZ7bDM4Vm//Pg0h1xEWew4Q74fz+8MSMVi2AnX15TTL/29yGTwX8OahE
-	LCVOPLNKys6YUjnwOSHqVJ0jtnggUec=
-Message-ID: <fdfa480e2e702e4e0e96269ac579f2ee750f1fc1.camel@crapouillou.net>
-Subject: Re: [PATCH v5 3/8] dmaengine: Add API function
- dmaengine_prep_slave_dma_vec()
-From: Paul Cercueil <paul@crapouillou.net>
-To: Vinod Koul <vkoul@kernel.org>
-Cc: Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen
- <lars@metafoo.de>,  Sumit Semwal <sumit.semwal@linaro.org>, Christian
- =?ISO-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,  Jonathan Corbet
- <corbet@lwn.net>, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
- dmaengine@vger.kernel.org, linux-iio@vger.kernel.org, 
- linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org, 
- linaro-mm-sig@lists.linaro.org, Nuno =?ISO-8859-1?Q?S=E1?=
- <noname.nuno@gmail.com>, Michael Hennerich <Michael.Hennerich@analog.com>
-Date: Thu, 21 Dec 2023 16:29:27 +0100
-In-Reply-To: <ZYRWbROAuMXftH07@matsya>
-References: <20231219175009.65482-1-paul@crapouillou.net>
-	 <20231219175009.65482-4-paul@crapouillou.net> <ZYRWbROAuMXftH07@matsya>
-Autocrypt: addr=paul@crapouillou.net; prefer-encrypt=mutual;
- keydata=mQENBF0KhcEBCADkfmrzdTOp/gFOMQX0QwKE2WgeCJiHPWkpEuPH81/HB2dpjPZNW03ZMLQfECbbaEkdbN4YnPfXgcc1uBe5mwOAPV1MBlaZcEt4M67iYQwSNrP7maPS3IaQJ18ES8JJ5Uf5UzFZaUawgH+oipYGW+v31cX6L3k+dGsPRM0Pyo0sQt52fsopNPZ9iag0iY7dGNuKenaEqkYNjwEgTtNz8dt6s3hMpHIKZFL3OhAGi88wF/21isv0zkF4J0wlf9gYUTEEY3Eulx80PTVqGIcHZzfavlWIdzhe+rxHTDGVwseR2Y1WjgFGQ2F+vXetAB8NEeygXee+i9nY5qt9c07m8mzjABEBAAG0JFBhdWwgQ2VyY3VlaWwgPHBhdWxAY3JhcG91aWxsb3UubmV0PokBTgQTAQoAOBYhBNdHYd8OeCBwpMuVxnPua9InSr1BBQJdCoXBAhsDBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheAAAoJEHPua9InSr1BgvIH/0kLyrI3V0f33a6D3BJwc1grbygPVYGuC5l5eMnAI+rDmLR19E2yvibRpgUc87NmPEQPpbbtAZt8On/2WZoE5OIPdlId/AHNpdgAtGXo0ZX4LGeVPjxjdkbrKVHxbcdcnY+zzaFglpbVSvp76pxqgVg8PgxkAAeeJV+ET4t0823Gz2HzCL/6JZhvKAEtHVulOWoBh368SYdolp1TSfORWmHzvQiCCCA+j0cMkYVGzIQzEQhX7Urf9N/nhU5/SGLFEi9DcBfXoGzhyQyLXflhJtKm3XGB1K/pPulbKaPcKAl6rIDWPuFpHkSbmZ9r4KFlBwgAhlGy6nqP7O3u7q23hRW5AQ0EXQqFwQEIAMo+MgvYHsyjX3Ja4Oolg1Txzm8woj30ch2nACFCqaO0R/1kLj2VVeLrDyQUOlXx9PD6IQI4M8wy8m0sR4wV2p/g/paw7k65cjzYYLh+FdLNyO7IW
-	YXndJO+wDPi3aK/YKUYepqlP+QsmaHNYNdXEQDRKqNfJg8t0f5rfzp9ryxd1tCnbV+tG8VHQWiZXNqN7062DygSNXFUfQ0vZ3J2D4oAcIAEXTymRQ2+hr3Hf7I61KMHWeSkCvCG2decTYsHlw5Erix/jYWqVOtX0roOOLqWkqpQQJWtU+biWrAksmFmCp5fXIg1Nlg39v21xCXBGxJkxyTYuhdWyu1yDQ+LSIUAEQEAAYkBNgQYAQoAIBYhBNdHYd8OeCBwpMuVxnPua9InSr1BBQJdCoXBAhsMAAoJEHPua9InSr1B4wsH/Az767YCT0FSsMNt1jkkdLCBi7nY0GTW+PLP1a4zvVqFMo/vD6uz1ZflVTUAEvcTi3VHYZrlgjcxmcGu239oruqUS8Qy/xgZBp9KF0NTWQSl1iBfVbIU5VV1vHS6r77W5x0qXgfvAUWOH4gmN3MnF01SH2zMcLiaUGF+mcwl15rHbjnT3Nu2399aSE6cep86igfCAyFUOXjYEGlJy+c6UyT+DUylpjQg0nl8MlZ/7Whg2fAU9+FALIbQYQzGlT4c71SibR9T741jnegHhlmV4WXXUD6roFt54t0MSAFSVxzG8mLcSjR2cLUJ3NIPXixYUSEn3tQhfZj07xIIjWxAYZo=
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=cZkCmal2eYhdvEB2cLXCA/u0IOjOUAwA1vCuz38GOXU=;
+	b=LTii675sJT4kudqws48Hrz8Fx+ZDN+235FUhP7H8FKTaM4k4mQgKwKHYzjN4JT2QCjs+FJ
+	qa8JZVVQaNIdvHYW3rfwmbWwzsYqW1NwhZHoujvh2wIixbNLhptPFMglBFrY6EYwrkNXE/
+	DlruN2MGEUpmFz4iVDrqvIf6q90jn18=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-64-qYteG4chOteRcviwmUQYXg-1; Thu,
+ 21 Dec 2023 10:30:19 -0500
+X-MC-Unique: qYteG4chOteRcviwmUQYXg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id EA317380606E;
+	Thu, 21 Dec 2023 15:30:17 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.39.195.169])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 6D5D62166B35;
+	Thu, 21 Dec 2023 15:30:15 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+	Kingdom.
+	Registered in England and Wales under Company Registration No. 3798903
+To: torvalds@linux-foundation.org
+cc: dhowells@redhat.com, Markus Suvanto <markus.suvanto@gmail.com>,
+    Marc Dionne <marc.dionne@auristor.com>,
+    Wang Lei <wang840925@gmail.com>, Jeff Layton <jlayton@redhat.com>,
+    Steve French <smfrench@gmail.com>,
+    Jarkko Sakkinen <jarkko@kernel.org>,
+    "David S. Miller" <davem@davemloft.net>,
+    Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+    Paolo Abeni <pabeni@redhat.com>, linux-afs@lists.infradead.org,
+    keyrings@vger.kernel.org, linux-cifs@vger.kernel.org,
+    linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+    netdev@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+    linux-kernel@vger.kernel.org
+Subject: [GIT PULL] afs, dns: Fix dynamic root interaction with negative DNS
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1843327.1703172564.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+From: David Howells <dhowells@redhat.com>
+Date: Thu, 21 Dec 2023 15:30:14 +0000
+Message-ID: <1843374.1703172614@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
 
-Hi Vinod,
+Hi Linus,
 
-Le jeudi 21 d=C3=A9cembre 2023 =C3=A0 20:44 +0530, Vinod Koul a =C3=A9crit=
-=C2=A0:
-> On 19-12-23, 18:50, Paul Cercueil wrote:
-> > This function can be used to initiate a scatter-gather DMA
-> > transfer,
-> > where the address and size of each segment is located in one entry
-> > of
-> > the dma_vec array.
-> >=20
-> > The major difference with dmaengine_prep_slave_sg() is that it
-> > supports
-> > specifying the lengths of each DMA transfer; as trying to override
-> > the
-> > length of the transfer with dmaengine_prep_slave_sg() is a very
-> > tedious
-> > process. The introduction of a new API function is also justified
-> > by the
-> > fact that scatterlists are on their way out.
-> >=20
-> > Note that dmaengine_prep_interleaved_dma() is not helpful either in
-> > that
-> > case, as it assumes that the address of each segment will be higher
-> > than
-> > the one of the previous segment, which we just cannot guarantee in
-> > case
-> > of a scatter-gather transfer.
-> >=20
-> > Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> >=20
-> > ---
-> > v3: New patch
-> >=20
-> > v5: Replace with function dmaengine_prep_slave_dma_vec(), and
-> > struct
-> > =C2=A0=C2=A0=C2=A0 'dma_vec'.
-> > =C2=A0=C2=A0=C2=A0 Note that at some point we will need to support cycl=
-ic
-> > transfers
-> > =C2=A0=C2=A0=C2=A0 using dmaengine_prep_slave_dma_vec(). Maybe with a n=
-ew "flags"
-> > =C2=A0=C2=A0=C2=A0 parameter to the function?
-> > ---
-> > =C2=A0include/linux/dmaengine.h | 25 +++++++++++++++++++++++++
-> > =C2=A01 file changed, 25 insertions(+)
-> >=20
-> > diff --git a/include/linux/dmaengine.h b/include/linux/dmaengine.h
-> > index 3df70d6131c8..ee5931ddb42f 100644
-> > --- a/include/linux/dmaengine.h
-> > +++ b/include/linux/dmaengine.h
-> > @@ -160,6 +160,16 @@ struct dma_interleaved_template {
-> > =C2=A0	struct data_chunk sgl[];
-> > =C2=A0};
-> > =C2=A0
-> > +/**
-> > + * struct dma_vec - DMA vector
-> > + * @addr: Bus address of the start of the vector
-> > + * @len: Length in bytes of the DMA vector
-> > + */
-> > +struct dma_vec {
-> > +	dma_addr_t addr;
-> > +	size_t len;
-> > +};
->=20
-> so you want to transfer multiple buffers, right? why not use
-> dmaengine_prep_slave_sg(). If there is reason for not using that one?
+Could you apply this, please?  It's intended to improve the interaction of
+arbitrary lookups in the AFS dynamic root that hit DNS lookup failures[1]
+where kafs behaves differently from openafs and causes some applications t=
+o
+fail that aren't expecting that.  Further, negative DNS results aren't
+getting removed and are causing failures to persist.
 
-Well I think I answer that in the commit message, don't I?
+ (1) Always delete unused (particularly negative) dentries as soon as
+     possible so that they don't prevent future lookups from retrying.
 
-> Furthermore I missed replying to your email earlier on use of
-> dmaengine_prep_interleaved_dma(), my apologies.
-> That can be made to work for you as well. Please see the notes where
-> icg
-> can be ignored and it does not need icg value to be set
->=20
-> Infact, interleaved api can be made to work in most of these cases I
-> can
-> think of...
+ (2) Fix the handling of new-style negative DNS lookups in ->lookup() to
+     make them return ENOENT so that userspace doesn't get confused when
+     stat succeeds but the following open on the looked up file then fails=
+.
 
-So if I want to transfer 16 bytes from 0x10, then 16 bytes from 0x0,
-then 16 bytes from 0x20, how should I configure the
-dma_interleaved_template?
+ (3) Fix key handling so that DNS lookup results are reclaimed almost as
+     soon as they expire rather than sitting round either forever or for a=
+n
+     additional 5 mins beyond a set expiry time returning EKEYEXPIRED.
+     They persist for 1s as /bin/ls will do a second stat call if the firs=
+t
+     fails.
 
-Cheers,
--Paul
+Reviewed-by: Jeffrey Altman <jaltman@auristor.com>
 
-> > +
-> > =C2=A0/**
-> > =C2=A0 * enum dma_ctrl_flags - DMA flags to augment operation
-> > preparation,
-> > =C2=A0 *=C2=A0 control completion, and communicate status.
-> > @@ -910,6 +920,10 @@ struct dma_device {
-> > =C2=A0	struct dma_async_tx_descriptor
-> > *(*device_prep_dma_interrupt)(
-> > =C2=A0		struct dma_chan *chan, unsigned long flags);
-> > =C2=A0
-> > +	struct dma_async_tx_descriptor
-> > *(*device_prep_slave_dma_vec)(
-> > +		struct dma_chan *chan, const struct dma_vec *vecs,
-> > +		size_t nents, enum dma_transfer_direction
-> > direction,
-> > +		unsigned long flags);
-> > =C2=A0	struct dma_async_tx_descriptor *(*device_prep_slave_sg)(
-> > =C2=A0		struct dma_chan *chan, struct scatterlist *sgl,
-> > =C2=A0		unsigned int sg_len, enum dma_transfer_direction
-> > direction,
-> > @@ -972,6 +986,17 @@ static inline struct dma_async_tx_descriptor
-> > *dmaengine_prep_slave_single(
-> > =C2=A0						=C2=A0 dir, flags,
-> > NULL);
-> > =C2=A0}
-> > =C2=A0
-> > +static inline struct dma_async_tx_descriptor
-> > *dmaengine_prep_slave_dma_vec(
-> > +	struct dma_chan *chan, const struct dma_vec *vecs, size_t
-> > nents,
-> > +	enum dma_transfer_direction dir, unsigned long flags)
-> > +{
-> > +	if (!chan || !chan->device || !chan->device-
-> > >device_prep_slave_dma_vec)
-> > +		return NULL;
-> > +
-> > +	return chan->device->device_prep_slave_dma_vec(chan, vecs,
-> > nents,
-> > +						=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 dir,
-> > flags);
-> > +}
-> > +
-> > =C2=A0static inline struct dma_async_tx_descriptor
-> > *dmaengine_prep_slave_sg(
-> > =C2=A0	struct dma_chan *chan, struct scatterlist
-> > *sgl,	unsigned int sg_len,
-> > =C2=A0	enum dma_transfer_direction dir, unsigned long flags)
-> > --=20
-> > 2.43.0
->=20
+Thanks,
+David
+
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=3D216637 [1]
+Link: https://lore.kernel.org/r/20231211163412.2766147-1-dhowells@redhat.c=
+om/ # v1
+Link: https://lore.kernel.org/r/20231211213233.2793525-1-dhowells@redhat.c=
+om/ # v2
+Link: https://lore.kernel.org/r/20231212144611.3100234-1-dhowells@redhat.c=
+om/ # v3
+Link: https://lore.kernel.org/r/20231221134558.1659214-1-dhowells@redhat.c=
+om/ # v4
+---
+The following changes since commit ceb6a6f023fd3e8b07761ed900352ef574010bc=
+b:
+
+  Linux 6.7-rc6 (2023-12-17 15:19:28 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git tags=
+/afs-fixes-20231221
+
+for you to fetch changes up to 39299bdd2546688d92ed9db4948f6219ca1b9542:
+
+  keys, dns: Allow key types (eg. DNS) to be reclaimed immediately on expi=
+ry (2023-12-21 13:47:38 +0000)
+
+----------------------------------------------------------------
+AFS fixes
+
+----------------------------------------------------------------
+David Howells (3):
+      afs: Fix the dynamic root's d_delete to always delete unused dentrie=
+s
+      afs: Fix dynamic root lookup DNS check
+      keys, dns: Allow key types (eg. DNS) to be reclaimed immediately on =
+expiry
+
+ fs/afs/dynroot.c           | 31 +++++++++++++++++--------------
+ include/linux/key-type.h   |  1 +
+ net/dns_resolver/dns_key.c | 10 +++++++++-
+ security/keys/gc.c         | 31 +++++++++++++++++++++----------
+ security/keys/internal.h   | 11 ++++++++++-
+ security/keys/key.c        | 15 +++++----------
+ security/keys/proc.c       |  2 +-
+ 7 files changed, 64 insertions(+), 37 deletions(-)
 
 
