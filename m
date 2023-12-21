@@ -1,124 +1,85 @@
-Return-Path: <linux-kernel+bounces-8403-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8404-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 831DF81B6AE
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 13:58:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DDA481B6AF
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 13:58:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3F5CF28875C
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 12:58:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 709981C25921
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 12:58:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15A377764E;
-	Thu, 21 Dec 2023 12:52:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96EA87765C;
+	Thu, 21 Dec 2023 12:53:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jTZ6LZUZ"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="WcDSlBON"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FE5077643;
-	Thu, 21 Dec 2023 12:52:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703163132; x=1734699132;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=FbPXrgzp9CMlNqZjP3ebUSZqWMGld04TyVhznkGVITo=;
-  b=jTZ6LZUZp51bxftqHPoNIiVb/LG4r9wLEve2KL+zRSsL/fWMg8wlsSc5
-   59QxDDVdjzTubYtzGzdNVqYYSLCL+QwZS3jpun4Zmn4c/jd2SOikMOqiY
-   azRcbDQ5vt7CUZT8wtrNMsAI/DrDzxChk4cckd4umCTfUOzBYV4QyZzi2
-   +SntVZntgLIbeUuTLUkeIuENRzXYK0gUbHhQtjNfdnCdz0Q5onl1ipo0J
-   jJjDsulXSkXxfA/Xjuur8oDeaMR1oWJ1CUpXKJGwbT1kBaeN1gWZxlEum
-   RCtU5YquP0B/RTV/dCCHKaEI/E0X1OA2vSk0u9RRoHfxXLLsNrP3Xr4bd
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10930"; a="14653875"
-X-IronPort-AV: E=Sophos;i="6.04,293,1695711600"; 
-   d="scan'208";a="14653875"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Dec 2023 04:52:12 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10930"; a="780183598"
-X-IronPort-AV: E=Sophos;i="6.04,293,1695711600"; 
-   d="scan'208";a="780183598"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga007.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Dec 2023 04:52:09 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rGIX0-00000007r0i-19N8;
-	Thu, 21 Dec 2023 14:52:06 +0200
-Date: Thu, 21 Dec 2023 14:52:05 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: Linus Walleij <linus.walleij@linaro.org>,
-	Kent Gibson <warthog618@gmail.com>, linux-gpio@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [RFC PATCH] gpiolib: remove extra_checks
-Message-ID: <ZYQ09RIq1R8xmn_k@smile.fi.intel.com>
-References: <20231219201102.41639-1-brgl@bgdev.pl>
- <ZYL0MWAQ-frYLnZq@smile.fi.intel.com>
- <CACRpkdZB-5DN5NYJNGheDJnNWRt8x4LwgOQpL4NDyX2JSn+_9g@mail.gmail.com>
- <CAMRc=MfLXxfzhKDc9e3jRF9mdVo=9UnC9O+i9s-uGm2pEa7vMg@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B99C773194
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 12:53:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0338FC433C8;
+	Thu, 21 Dec 2023 12:52:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1703163180;
+	bh=gKhKNa0sY4C4Cj3iqBnWG1NsdzfMGndZJwfkXGkd+NE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=WcDSlBONft8xEvMF1g028+ao6/S4/QxET4WaZxu+2Mm+b8oVv706Ni6QQ68pJeEgC
+	 I2xJkU9PfIXtKkIIdXj5oQLqrHqMfMWL2j+n+zns72rKL0vLVXmwfzkpk8GShrs+nf
+	 e44CLJUMYw24QIDnhUCWC8OGVC4EnXidjYCxRk8Y=
+Date: Thu, 21 Dec 2023 13:52:57 +0100
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Gary Rookard <garyrookard@fastmail.org>
+Cc: philipp.g.hortmann@gmail.com, linux-staging@list.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/5] staging: rtl8192e: rename variable
+ HTInitializeBssDesc and (4) other
+Message-ID: <2023122137-account-vitality-9a72@gregkh>
+References: <20231221031004.14779-1-garyrookard@fastmail.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMRc=MfLXxfzhKDc9e3jRF9mdVo=9UnC9O+i9s-uGm2pEa7vMg@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20231221031004.14779-1-garyrookard@fastmail.org>
 
-On Thu, Dec 21, 2023 at 10:26:03AM +0100, Bartosz Golaszewski wrote:
-> On Wed, Dec 20, 2023 at 4:28 PM Linus Walleij <linus.walleij@linaro.org> wrote:
-> > On Wed, Dec 20, 2023 at 3:03 PM Andy Shevchenko
-> > <andriy.shevchenko@linux.intel.com> wrote:
-> > > On Tue, Dec 19, 2023 at 09:11:02PM +0100, Bartosz Golaszewski wrote:
-> > > > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> > > >
-> > > > extra_checks is only used in a few places. It also depends on
-> > >
-> > > > a non-standard DEBUG define one needs to add to the source file.
-> > >
-> > > Huh?!
-> > >
-> > > What then CONFIG_DEBUG_GPIO is about?
-> >
-> > Yeah that is some helper DBrownell added because like me he could
-> > never figure out how to pass -DDEBUG to a single file on the command
-> > line and besides gpiolib is several files. I added the same to pinctrl
-> > to get core debug messages.
-> >
-> > I guess Bartosz means extra_checks is == a non-standard DEBUG
-> > define.
+On Wed, Dec 20, 2023 at 10:09:59PM -0500, Gary Rookard wrote:
+> Hi,
+> 
+> This patch series renames (5) different variables with
+> the checkpatch coding style issue, Avoid CamelCase.
+> 
+> Patch 1/5) rename variable HTInitializeBssDesc
+> Patch 2/5) rename variable HTResetSelfAndSavePeerSetting
+> Patch 3/5) rename variable HTCCheck
+> Patch 4/5) rename variable HTSetConnectBwModeCallback
+> Patch 5/5) rename variable ePeerHTSpecVer
+> 
+> Signed-off-by: Gary Rookard <garyrookard@fastmail.org>
+> 
+> Gary Rookard (5):
+>   staging: rtl8192e: rename variable HTInitializeBssDesc
+>   staging: rtl8192e: rename variable HTResetSelfAndSavePeerSetting
+>   staging: rtl8192e: rename variable HTCCheck
+>   staging: rtl8192e: rename variable HTSetConnectBwModeCallback
+>   staging: rtl8192e: rename variable ePeerHTSpecVer
+> 
+>  drivers/staging/rtl8192e/rtl819x_HT.h     |  2 +-
+>  drivers/staging/rtl8192e/rtl819x_HTProc.c | 16 ++++++++--------
+>  drivers/staging/rtl8192e/rtllib.h         |  6 +++---
+>  drivers/staging/rtl8192e/rtllib_rx.c      |  6 +++---
+>  drivers/staging/rtl8192e/rtllib_softmac.c |  6 +++---
+>  5 files changed, 18 insertions(+), 18 deletions(-)
 
-I agree on this statement.
+I see 2 different patch series here sent to the list, both seeming to do
+the same thing?
 
-> Defining DEBUG makes sense to
-> enable dev_dbg() messages.
+confused,
 
-Exactly!
-
-> CONFIG_DEBUG_GPIO is used by one driver
-
-By all drivers which are using pr_debug() / dev_dbg().
-I am using it a lot in my development process (actually I have it enabled
-in all my kernel configurations).
-
-> to enable code that can lead to undefined behavior (should it maybe be
-> #if 0?).
-
-I don't know what you are talking about here.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+greg k-h
 
