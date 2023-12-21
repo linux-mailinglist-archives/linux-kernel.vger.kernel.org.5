@@ -1,163 +1,216 @@
-Return-Path: <linux-kernel+bounces-8542-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8543-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8249381B92D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 15:04:28 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7539B81B92F
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 15:04:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DB0AB283E10
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 14:04:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BC5E1B285BC
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 14:04:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 715A555E60;
-	Thu, 21 Dec 2023 13:57:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DAC455E76;
+	Thu, 21 Dec 2023 13:57:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="dyjI6cK0"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="G5LpP8YW"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C39CB55E52
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 13:57:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-5e745891a69so8278897b3.2
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 05:57:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703167046; x=1703771846; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wVLL5bW0YfWBSEGexgyYtg+trVF7bli3OEKILg9N7tk=;
-        b=dyjI6cK0RNC/IWBwTtNidlkB7BN3iZzMev+4M6CvQ+hAT3+pC5XX+1vyA0su5Eg9Fw
-         1rku3VHCDc2yGu9NHIwfSn46+zDqvKMEPvI/lE2z284B24Q1ufHxWjVLer51aW2gwpQZ
-         zxlYjnyjBbE+0r9wzX1c5liQ4C17F9i2p0+W2e3bG1BiIcTozcrAiO2gCG1SF5yUxlQl
-         N5krboA+joOtQbBWjgyu2H7KJkJTDPK8o9tqGhlNpVj/rivdYRMq+LQJLId59Gwp6jj2
-         ylV+AMNabrzN9X+M9e95fjr6qiHNR9mjMoZJl5RebvbxuRBHbLTw9RyZ2Hpt9pWnSkFZ
-         bPdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703167046; x=1703771846;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wVLL5bW0YfWBSEGexgyYtg+trVF7bli3OEKILg9N7tk=;
-        b=MNeHsLLyg5l91Wih1WwKThBBqvwqaipwnt210haZEzAhUn2PGF5M80Gx/7gGCyUrBu
-         ZHLIFaxoP8mE5jdS9rJMZ7THul/L0OknL0NUZjcVOYaxVC2XQUxPU/lXyySJdSyBgqYO
-         Eq6iad6O77ScXglKx/uyRThpybuNSWvPM8gN55HCepl0WR51jTrOnYADWMdIRRorUmJG
-         Rkxvy7+xArhNaxK9/rQ2lQFaKahVgkFSKYmLcTDnmfdwHdxyKgfnIJUmCDKCc+L2dwjQ
-         B+3Wn7wN7k9Jl4jgIp6gPJOaPvEnwyROsJeJYshycCzYsUvhPUiNdWQU5HULeLAz9yQK
-         lN+A==
-X-Gm-Message-State: AOJu0Yx3K7CtKTtMyc8FAH20ZIUv2gkLPYcYj4lzAEMXx9VbGB/2uwi2
-	70wz3hBXs2bKLtmgwCNn9257ovzobtp69IpPo7IGhCqkIVH70X3jlMc=
-X-Google-Smtp-Source: AGHT+IFZ1qcBfCLgb/cLThThc+4qRwsmiFwVndI+yAxTHyzBnGORoB5NRPxyw4AHtrKddus3UTta0WhtQOhSqN6hFts=
-X-Received: by 2002:a81:52c8:0:b0:5e7:5a66:9a9 with SMTP id
- g191-20020a8152c8000000b005e75a6609a9mr1202944ywb.90.1703167045735; Thu, 21
- Dec 2023 05:57:25 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84AEF55E52
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 13:57:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1703167055;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=wzXIqq06sVA7ycfPhNS7D2yXU6a0uOf4G1W1CQ/WYbo=;
+	b=G5LpP8YWqWlu3wFDzKmQNaOU/SqALAPKdl3FCaAEVFJH6dUadkO6zfdO4AAiXo+KKGCA4b
+	wP1heN5kfLwtnDYrVrTzYyVpDko7/LqaDGHmEWiB8tJgcuSbK93wGKLPtOgxpctLb73sF2
+	QvF9qHB1+lWGJVDbiGIpyzmdPXT0Tms=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-622-Qe1ZmrDjPVW47Kkq7q9Fsw-1; Thu, 21 Dec 2023 08:57:33 -0500
+X-MC-Unique: Qe1ZmrDjPVW47Kkq7q9Fsw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1402B101A555;
+	Thu, 21 Dec 2023 13:57:33 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.39.195.169])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id EC54E51E3;
+	Thu, 21 Dec 2023 13:57:31 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+	Kingdom.
+	Registered in England and Wales under Company Registration No. 3798903
+From: David Howells <dhowells@redhat.com>
+To: torvalds@linux-foundation.org
+cc: dhowells@redhat.com, Jeffrey Altman <jaltman@auristor.com>,
+    Marc Dionne <marc.dionne@auristor.com>,
+    linux-afs@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+    linux-kernel@vger.kernel.org
+Subject: [PATCH] afs: Fix use-after-free due to get/remove race in volume tree
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231221083622.3445726-1-yuklin.soo@starfivetech.com> <20231221083622.3445726-2-yuklin.soo@starfivetech.com>
-In-Reply-To: <20231221083622.3445726-2-yuklin.soo@starfivetech.com>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Thu, 21 Dec 2023 14:57:14 +0100
-Message-ID: <CACRpkdYL8wK2vX7P7p4QvU9VV2CPjRv_aXiLqO+07MMCCKKk4Q@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/6] dt-bindings: pinctrl: starfive: add JH8100
- pinctrl bindings
-To: Alex Soo <yuklin.soo@starfivetech.com>
-Cc: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, Hal Feng <hal.feng@starfivetech.com>, 
-	Ley Foon Tan <leyfoon.tan@starfivetech.com>, 
-	Jianlong Huang <jianlong.huang@starfivetech.com>, Emil Renner Berthing <kernel@esmil.dk>, 
-	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	Conor Dooley <conor+dt@kernel.org>, Drew Fustini <drew@beagleboard.org>, linux-gpio@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-riscv@lists.infradead.org, Paul Walmsley <paul.walmsley@sifive.com>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1659973.1703167051.1@warthog.procyon.org.uk>
 Content-Transfer-Encoding: quoted-printable
+Date: Thu, 21 Dec 2023 13:57:31 +0000
+Message-ID: <1659974.1703167051@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
 
-Hi Alex,
+Hi Linus,
 
-thanks for your patch!
+Could you apply this fix please?
 
-On Thu, Dec 21, 2023 at 9:36=E2=80=AFAM Alex Soo <yuklin.soo@starfivetech.c=
-om> wrote:
+David
+---
+When an afs_volume struct is put, its refcount is reduced to 0 before the
+cell->volume_lock is taken and the volume removed from the cell->volumes
+tree.  Unfortunately, this means that the lookup code can race and see a
+volume with a zero ref in the tree, resulting in a use-after-free:
 
-> Add dt-binding documentation and header file for JH8100 pinctrl
-> driver.
->
-> Signed-off-by: Alex Soo <yuklin.soo@starfivetech.com>
-> Reviewed-by: Ley Foon Tan <leyfoon.tan@starfivetech.com>
-(...)
-> +title: StarFive JH8100 AON Pin Controller
+        refcount_t: addition on 0; use-after-free.
+        WARNING: CPU: 3 PID: 130782 at lib/refcount.c:25 refcount_warn_sat=
+urate+0x7a/0xda
+        ...
+        RIP: 0010:refcount_warn_saturate+0x7a/0xda
+        ...
+        Call Trace:
+         <TASK>
+         ? __warn+0x8b/0xf5
+         ? report_bug+0xbf/0x11b
+         ? refcount_warn_saturate+0x7a/0xda
+         ? handle_bug+0x3c/0x5b
+         ? exc_invalid_op+0x13/0x59
+         ? asm_exc_invalid_op+0x16/0x20
+         ? refcount_warn_saturate+0x7a/0xda
+         ? refcount_warn_saturate+0x7a/0xda
+         afs_get_volume+0x3d/0x55
+         afs_create_volume+0x126/0x1de
+         afs_validate_fc+0xfe/0x130
+         afs_get_tree+0x20/0x2e5
+         vfs_get_tree+0x1d/0xc9
+         do_new_mount+0x13b/0x22e
+         do_mount+0x5d/0x8a
+         __do_sys_mount+0x100/0x12a
+         do_syscall_64+0x3a/0x94
+         entry_SYSCALL_64_after_hwframe+0x62/0x6a
 
-If AON means "always-on" then spell that out in the title, the world has
-too many opaque TLAs.
+Fix this by:
 
-title: StarFive JH8100 AON (always-on) Pin Controller
+ (1) When putting, use a flag to indicate if the volume has been removed
+     from the tree and skip the rb_erase if it has.
 
-(...)
-> +        properties:
-> +          pinmux:
-> +            description: |
-> +              The list of GPIOs and their mux settings or function selec=
-t.
-> +              The GPIOMUX and PINMUX macros are used to configure the
-> +              I/O multiplexing and function selection respectively.
-> +
-> +          bias-disable: true
-> +
-> +          bias-pull-up:
-> +            type: boolean
-> +
-> +          bias-pull-down:
-> +            type: boolean
-> +
-> +          drive-strength:
-> +            enum: [ 2, 4, 8, 12 ]
+ (2) When looking up, use a conditional ref increment and if it fails
+     because the refcount is 0, replace the node in the tree and set the
+     removal flag.
 
-Milliamperes? Then spell that out in a description:
+Fixes: 20325960f875 ("afs: Reorganise volume and server trees to be rooted=
+ on the cell")
+Signed-off-by: David Howells <dhowells@redhat.com>
+Reviewed-by: Jeffrey Altman <jaltman@auristor.com>
+cc: Marc Dionne <marc.dionne@auristor.com>
+cc: linux-afs@lists.infradead.org
+---
+ fs/afs/internal.h |    2 ++
+ fs/afs/volume.c   |   26 +++++++++++++++++++++++---
+ 2 files changed, 25 insertions(+), 3 deletions(-)
 
-> +  Voltage regulator supply the actual voltage to the GPIO bank while the=
- syscon register
-> +  configuration in bit [1:0] indicates the current voltage setting.
-> +
-> +  +------+------+-------------------+
-> +  | Bit1 | Bit0 | Reference Voltage |
-> +  +------+------+-------------------+
-> +  |  0   |  0   |     3.3 V         |
-> +  +------+------+-------------------+
-> +  |  1   |  x   |     1.8 V         |
-> +  +------+------+-------------------+
-> +
-> +  To increase the device voltage, set bit [1:0] to the new operating sta=
-te first before
-> +  raising the actual voltage to the higher operating point.
-> +
-> +  To decrease the device voltage, hold bit [1:0] to the current operatin=
-g state until
-> +  the actual voltage has stabilized at the lower operating point before =
-changing the
-> +  setting.
-> +
-> +  Alternatively, a device voltage change can always be initiated by firs=
-t setting syscon
-> +  register bit [1:0] =3D 0, the safe 3.3V startup condition, before chan=
-ging the device
-> +  voltage. Then once the actual voltage is changed and has stabilized at=
- the new operating
-> +  point, bit [1:0] can be reset as appropriate.
+diff --git a/fs/afs/internal.h b/fs/afs/internal.h
+index a812952be1c9..7385d62c8cf5 100644
+--- a/fs/afs/internal.h
++++ b/fs/afs/internal.h
+@@ -586,6 +586,7 @@ struct afs_volume {
+ #define AFS_VOLUME_OFFLINE	4	/* - T if volume offline notice given */
+ #define AFS_VOLUME_BUSY		5	/* - T if volume busy notice given */
+ #define AFS_VOLUME_MAYBE_NO_IBULK 6	/* - T if some servers don't have Inl=
+ineBulkStatus */
++#define AFS_VOLUME_RM_TREE	7	/* - Set if volume removed from cell->volume=
+s */
+ #ifdef CONFIG_AFS_FSCACHE
+ 	struct fscache_volume	*cache;		/* Caching cookie */
+ #endif
+@@ -1513,6 +1514,7 @@ extern struct afs_vlserver_list *afs_extract_vlserve=
+r_list(struct afs_cell *,
+ extern struct afs_volume *afs_create_volume(struct afs_fs_context *);
+ extern int afs_activate_volume(struct afs_volume *);
+ extern void afs_deactivate_volume(struct afs_volume *);
++bool afs_try_get_volume(struct afs_volume *volume, enum afs_volume_trace =
+reason);
+ extern struct afs_volume *afs_get_volume(struct afs_volume *, enum afs_vo=
+lume_trace);
+ extern void afs_put_volume(struct afs_net *, struct afs_volume *, enum af=
+s_volume_trace);
+ extern int afs_check_volume_status(struct afs_volume *, struct afs_operat=
+ion *);
+diff --git a/fs/afs/volume.c b/fs/afs/volume.c
+index 29d483c80281..115c081a8e2c 100644
+--- a/fs/afs/volume.c
++++ b/fs/afs/volume.c
+@@ -32,8 +32,13 @@ static struct afs_volume *afs_insert_volume_into_cell(s=
+truct afs_cell *cell,
+ 		} else if (p->vid > volume->vid) {
+ 			pp =3D &(*pp)->rb_right;
+ 		} else {
+-			volume =3D afs_get_volume(p, afs_volume_trace_get_cell_insert);
+-			goto found;
++			if (afs_try_get_volume(p, afs_volume_trace_get_cell_insert)) {
++				volume =3D p;
++				goto found;
++			}
++
++			set_bit(AFS_VOLUME_RM_TREE, &volume->flags);
++			rb_replace_node_rcu(&p->cell_node, &volume->cell_node, &cell->volumes)=
+;
+ 		}
+ 	}
+ =
 
-Actually: where is this information even used?
+@@ -56,7 +61,8 @@ static void afs_remove_volume_from_cell(struct afs_volum=
+e *volume)
+ 				 afs_volume_trace_remove);
+ 		write_seqlock(&cell->volume_lock);
+ 		hlist_del_rcu(&volume->proc_link);
+-		rb_erase(&volume->cell_node, &cell->volumes);
++		if (!test_and_set_bit(AFS_VOLUME_RM_TREE, &volume->flags))
++			rb_erase(&volume->cell_node, &cell->volumes);
+ 		write_sequnlock(&cell->volume_lock);
+ 	}
+ }
+@@ -231,6 +237,20 @@ static void afs_destroy_volume(struct afs_net *net, s=
+truct afs_volume *volume)
+ 	_leave(" [destroyed]");
+ }
+ =
 
-> +          slew-rate:
-> +            maximum: 1
++/*
++ * Try to get a reference on a volume record.
++ */
++bool afs_try_get_volume(struct afs_volume *volume, enum afs_volume_trace =
+reason)
++{
++	int r;
++
++	if (__refcount_inc_not_zero(&volume->ref, &r)) {
++		trace_afs_volume(volume->vid, r + 1, reason);
++		return true;
++	}
++	return false;
++}
++
+ /*
+  * Get a reference on a volume record.
+  */
 
-Milliseconds? Write unit in description please.
-
-Yours,
-Linus Walleij
 
