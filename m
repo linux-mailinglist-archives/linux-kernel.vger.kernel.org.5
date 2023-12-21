@@ -1,301 +1,108 @@
-Return-Path: <linux-kernel+bounces-8806-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8807-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0D4381BC84
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 18:00:02 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA7F181BC88
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 18:00:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 96D43284010
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 17:00:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6CB77B26106
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 17:00:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6FD259909;
-	Thu, 21 Dec 2023 16:59:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F8991DA43;
+	Thu, 21 Dec 2023 17:00:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="e0bqik5n"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YzNL63Ts"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF3E35822D
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 16:59:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1703177988;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ky8oNKjijOb1tIn4ayWtmUKjCWxopvvJegMZ8w2vi34=;
-	b=e0bqik5n2u/g/i/FfaKegqsV8Eu8kuIzq+eMUuZtW+yBHBylACF7OeD4+arAFcH05/1yWW
-	Elb4pMpTZByrOIjq1UG/ZIydNBsFHsj9b+vhXfeWxNJImQ8/6v24rrQGClYp/9rKQs2fxN
-	fZSlP3qL6uxFW4YjqCHJWQm9x2cjDj0=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-495-m1_Ugb1ENweSo6OnMku2Bg-1; Thu, 21 Dec 2023 11:59:47 -0500
-X-MC-Unique: m1_Ugb1ENweSo6OnMku2Bg-1
-Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-a1f99dd182dso49268766b.3
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 08:59:46 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703177986; x=1703782786;
-        h=content-transfer-encoding:mime-version:user-agent:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ky8oNKjijOb1tIn4ayWtmUKjCWxopvvJegMZ8w2vi34=;
-        b=hvvx1dVTIyl5oE72knn/r60Q0zzVwHjq80JoVtM+JHwRq716Fm+GE6iSRjw6YXqkOT
-         F4++g4vam4xylfE0p9q27Cv0qxTl7uXyH3RdnDRsfr2Ju1h5qnVDtjsrt2FUPpu39oc8
-         z/LiJxfaV2r3h76L/HbAzOBtq6B7s2K3nn7D+gT5ElhkxE5Kf0xA9XlG0F8fltW10v+U
-         u3f0gViooHxfDCddyLSKUAHWzZofK8EvAiQtQMivM4vB3yGSDThexcPqvZYxX3E1eQ8Y
-         qpJT6qUdrD0W+8MOEEiqr5PuHSufvx4INgiWTT6UnPWJXb4EawOv8N3ZBfgNr6JKqkf7
-         52tw==
-X-Gm-Message-State: AOJu0Yy0plFThx9ZBScqkCA1Fgn4jOut17y3jfBG8y62K3QE7uFjTF1b
-	xyLDsr0+x11tsVkynqCLqaPuZC13DET9THLxhlt8D3yac/MVB5zObCL0LsPSlT8xEJLvtcu6o4e
-	9Atv1+xwE4BhLiYxsvSQ8Wm3ZfKsc3xH5
-X-Received: by 2002:a17:906:eb14:b0:a1e:6f75:d9f6 with SMTP id mb20-20020a170906eb1400b00a1e6f75d9f6mr53001ejb.74.1703177986106;
-        Thu, 21 Dec 2023 08:59:46 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEJww3NmjP4GfkogpnV//xBltozl1W6BKERNxb21AASQ3+QDCRv3QeGeoJNUYihJ1w99Z0N+A==
-X-Received: by 2002:a17:906:eb14:b0:a1e:6f75:d9f6 with SMTP id mb20-20020a170906eb1400b00a1e6f75d9f6mr52996ejb.74.1703177985764;
-        Thu, 21 Dec 2023 08:59:45 -0800 (PST)
-Received: from starship ([77.137.131.62])
-        by smtp.gmail.com with ESMTPSA id j13-20020a170906254d00b009fea232316bsm1141978ejb.193.2023.12.21.08.59.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Dec 2023 08:59:45 -0800 (PST)
-Message-ID: <daaf098a6219310b6b1c1e3dc147fbb7e48b6f54.camel@redhat.com>
-Subject: Re: [PATCH 3/9] KVM: x86: Initialize guest cpu_caps based on guest
- CPUID
-From: Maxim Levitsky <mlevitsk@redhat.com>
-To: Sean Christopherson <seanjc@google.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Date: Thu, 21 Dec 2023 18:59:43 +0200
-In-Reply-To: <ZWk8IMZamuemfwXG@google.com>
-References: <20231110235528.1561679-1-seanjc@google.com>
-	 <20231110235528.1561679-4-seanjc@google.com>
-	 <3ad69657ba8e1b19d150db574193619cf0cb34df.camel@redhat.com>
-	 <ZWk8IMZamuemfwXG@google.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3A7958219;
+	Thu, 21 Dec 2023 17:00:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB440C433C7;
+	Thu, 21 Dec 2023 16:59:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703178000;
+	bh=bOJhMEkc9tPuEQ+lzfk79DprQNK3SWgvZMHEBqMSjzo=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=YzNL63TsgmlRzHVq86jWpsJgI2t6sYuXz5oc7/vWPaoXa6FpqyK8jHrLsUK7Uuq9i
+	 11t4zp/i1gb3qNZSy0Zgn3Qo4v1yypSwc7njTJ2VcbAdRDiXB2KY2sQEwuP/s8vIUU
+	 iRrpZZj/eQpIS8XbytGScUreM+qPkK7wq+1VWQPVsH6yMO1deOYlbIZhxoC6y2JQAc
+	 TjdsUTubrcEU2flQY19QDxVHIju8NfvDGc4dMBzdDjMIvuwLn2I3AGb2/QRQV4OcHa
+	 pOteeL/i00VBlkRuEEE7Rsy7P4w/LhFMt5iwkKph/fmUlFOmHO/zV3DTm8z+ejsXos
+	 wFOveaR42sp0w==
+Date: Thu, 21 Dec 2023 16:59:47 +0000
+From: Jonathan Cameron <jic23@kernel.org>
+To: Marcelo Schmitt <marcelo.schmitt@analog.com>
+Cc: <apw@canonical.com>, <joe@perches.com>, <dwaipayanray1@gmail.com>,
+ <lukas.bulwahn@gmail.com>, <paul.cercueil@analog.com>,
+ <Michael.Hennerich@analog.com>, <lars@metafoo.de>, <robh+dt@kernel.org>,
+ <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+ <dan.carpenter@linaro.org>, <dlechner@baylibre.com>,
+ <marcelo.schmitt1@gmail.com>, <linux-iio@vger.kernel.org>,
+ <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v5 11/11] MAINTAINERS: Add MAINTAINERS entry for AD7091R
+Message-ID: <20231221165947.6c64b2c5@jic23-huawei>
+In-Reply-To: <4247e653354f8eb362264189db24c612d5e4e131.1703013352.git.marcelo.schmitt1@gmail.com>
+References: <cover.1703013352.git.marcelo.schmitt1@gmail.com>
+	<4247e653354f8eb362264189db24c612d5e4e131.1703013352.git.marcelo.schmitt1@gmail.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Thu, 2023-11-30 at 17:51 -0800, Sean Christopherson wrote:
-> On Sun, Nov 19, 2023, Maxim Levitsky wrote:
-> > On Fri, 2023-11-10 at 15:55 -0800, Sean Christopherson wrote:
-> > > +/*
-> > > + * This isn't truly "unsafe", but all callers except kvm_cpu_after_set_cpuid()
-> > > + * should use __cpuid_entry_get_reg(), which provides compile-time validation
-> > > + * of the input.
-> > > + */
-> > > +static u32 cpuid_get_reg_unsafe(struct kvm_cpuid_entry2 *entry, u32 reg)
-> > > +{
-> > > +	switch (reg) {
-> > > +	case CPUID_EAX:
-> > > +		return entry->eax;
-> > > +	case CPUID_EBX:
-> > > +		return entry->ebx;
-> > > +	case CPUID_ECX:
-> > > +		return entry->ecx;
-> > > +	case CPUID_EDX:
-> > > +		return entry->edx;
-> > > +	default:
-> > > +		WARN_ON_ONCE(1);
-> > > +		return 0;
-> > > +	}
-> > > +}
-> 
-> ...
-> 
-> > >  static void kvm_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
-> > >  {
-> > >  	struct kvm_lapic *apic = vcpu->arch.apic;
-> > >  	struct kvm_cpuid_entry2 *best;
-> > >  	bool allow_gbpages;
-> > > +	int i;
-> > >  
-> > > -	memset(vcpu->arch.cpu_caps, 0, sizeof(vcpu->arch.cpu_caps));
-> > > +	BUILD_BUG_ON(ARRAY_SIZE(reverse_cpuid) != NR_KVM_CPU_CAPS);
-> > > +
-> > > +	/*
-> > > +	 * Reset guest capabilities to userspace's guest CPUID definition, i.e.
-> > > +	 * honor userspace's definition for features that don't require KVM or
-> > > +	 * hardware management/support (or that KVM simply doesn't care about).
-> > > +	 */
-> > > +	for (i = 0; i < NR_KVM_CPU_CAPS; i++) {
-> > > +		const struct cpuid_reg cpuid = reverse_cpuid[i];
-> > > +
-> > > +		best = kvm_find_cpuid_entry_index(vcpu, cpuid.function, cpuid.index);
-> > > +		if (best)
-> > > +			vcpu->arch.cpu_caps[i] = cpuid_get_reg_unsafe(best, cpuid.reg);
-> > 
-> > Why not just use __cpuid_entry_get_reg? 
-> > 
-> > cpuid.reg comes from read/only 'reverse_cpuid' anyway, and in fact
-> > it seems that all callers of __cpuid_entry_get_reg, take the reg value from
-> > x86_feature_cpuid() which also takes it from 'reverse_cpuid'.
-> > 
-> > So if the compiler is smart enough to not complain in these cases, I don't
-> > see why this case is different.
-> 
-> It's because the input isn't a compile-time constant, and so the BUILD_BUG() in
-> the default path will fire. 
->  All of the compile-time assertions in reverse_cpuid.h
-> rely on the feature being a constant value, which allows the compiler to optimize
-> away the dead paths, i.e. turn __cpuid_entry_get_reg()'s switch statement into
-> simple pointer arithmetic and thus omit the BUILD_BUG() code.
+On Tue, 19 Dec 2023 17:32:59 -0300
+Marcelo Schmitt <marcelo.schmitt@analog.com> wrote:
 
-In the above code, assuming that the compiler really treats the reverse_cpuid as const
-(if that assumption is not true, then all uses of __cpuid_entry_get_reg are also not compile
-time constant either),
-then the 'reg' value depends only on 'i', and therefore for each iteration of the loop,
-the compiler does know the compile time value of the 'reg',
-and so it can easily prove that 'default' case in __cpuid_entry_get_reg can't be reached,
-and thus eliminate that BUILD_BUG().
-
-
+> The driver for AD7091R was added in
+> ca693001: iio: adc: Add support for AD7091R5 ADC
+> but no MAINTAINERS file entry was added for it since then.
+> Add a proper MAINTAINERS file entry for the AD7091R driver.
 > 
-> > Also why not to initialize guest_caps = host_caps & userspace_cpuid?
-> > 
-> > If this was the default we won't need any guest_cpu_cap_restrict and such,
-> > instead it will just work.
-> 
-> Hrm, I definitely like the idea.  Unfortunately, unless we do an audit of all
-> ~120 uses of guest_cpuid_has(), restricting those based on kvm_cpu_caps might
-> break userspace.
+> Signed-off-by: Marcelo Schmitt <marcelo.schmitt@analog.com>
+Hi Marcelo
 
-120 uses is not that bad, IMHO it is worth it - we won't need to deal with that
-in the future.
+The series looks good to me now. However timing is a bit against
+us because I won't squeeze in another pull request (unless the
+kernel release is delayed for some and Linus strong hints at that
+this weekend).
 
-How about a compromise - you change the patches such as it will be possible to remove
-these cases one by one, and also all new cases will be fully automatic?
+What I'll probably do with this series is pull out the first 2 patches
+as fixes to go in either at the back end of the merge window or just
+after, then pick the rest of the patches up for 6.9.
 
+If I seem to have lost track of them in about the 2nd week of January,
+feel free to poke me. 
 
+Jonathan
+> ---
+>  MAINTAINERS | 8 ++++++++
+>  1 file changed, 8 insertions(+)
 > 
-> Aside from purging the governed feature nomenclature, the main goal of this series
-> provide a way to do fast lookups of all known guest CPUID bits without needing to
-> opt-in on a feature-by-feature basis, including for features that are fully
-> controlled by userspace.
-
-I'll note that, this makes sense.
-> 
-> It's definitely doable, but I'm not all that confident that the end result would
-> be a net positive, e.g. I believe we would need to special case things like the
-> feature bits that gate MSR_IA32_SPEC_CTRL and MSR_IA32_PRED_CMD.  MOVBE and RDPID
-> are other features that come to mind, where KVM emulates the feature in software
-> but it won't be set in kvm_cpu_caps.
-
-> 
-> Oof, and MONITOR and MWAIT too, as KVM deliberately doesn't advertise those to
-> userspace.
-> 
-> So yeah, I'm not opposed to trying that route at some point, but I really don't
-> want to do that in this series as the risk of subtly breaking something is super
-> high.
-> 
-> > Special code will only be needed in few more complex cases, like forced exposed
-> > of a feature to a guest due to a virtualization hole.
-> > 
-> > 
-> > > +		else
-> > > +			vcpu->arch.cpu_caps[i] = 0;
-> > > +	}
-> > >  
-> > >  	/*
-> > >  	 * If TDP is enabled, let the guest use GBPAGES if they're supported in
-> > > @@ -342,8 +380,7 @@ static void kvm_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
-> > >  	 */
-> > >  	allow_gbpages = tdp_enabled ? boot_cpu_has(X86_FEATURE_GBPAGES) :
-> > >  				      guest_cpuid_has(vcpu, X86_FEATURE_GBPAGES);
-> > > -	if (allow_gbpages)
-> > > -		guest_cpu_cap_set(vcpu, X86_FEATURE_GBPAGES);
-> > > +	guest_cpu_cap_change(vcpu, X86_FEATURE_GBPAGES, allow_gbpages);
-> > 
-> > IMHO the original code was more readable, now I need to look up the
-> > 'guest_cpu_cap_change()' to understand what is going on.
-> 
-> The change is "necessary".  The issue is that with the caps 0-initialied, the
-> !allow_gbpages could simply do nothing.  Now, KVM needs to explicitly clear the
-> flag, i.e. would need to do:
-> 
-> 	if (allow_gbpages)
-> 		guest_cpu_cap_set(vcpu, X86_FEATURE_GBPAGES);
-> 	else
-> 		guest_cpu_cap_clear(vcpu, X86_FEATURE_GBPAGES);
-
-I understand now but I am complaining more about the fact that I like the
-explicit longer version better than calling guest_cpu_cap_change because it's not obvious
-what guest_cpu_cap_change really does. I am not going to fight over this though,
-just saying.
-
-> 
-> I don't much love the name either, but it pairs with cpuid_entry_change() and I
-> want to keep the kvm_cpu_cap, cpuid_entry, and guest_cpu_cap APIs in sync as far
-> as the APIs go.  The only reason kvm_cpu_cap_change() doesn't exist is because
-> there aren't any flows that need to toggle a bit.
-> 
-> > >  static __always_inline bool guest_cpu_cap_has(struct kvm_vcpu *vcpu,
-> > > diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> > > index 8a99a73b6ee5..5827328e30f1 100644
-> > > --- a/arch/x86/kvm/svm/svm.c
-> > > +++ b/arch/x86/kvm/svm/svm.c
-> > > @@ -4315,14 +4315,14 @@ static void svm_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
-> > >  	 * XSS on VM-Enter/VM-Exit.  Failure to do so would effectively give
-> > >  	 * the guest read/write access to the host's XSS.
-> > >  	 */
-> > > -	if (boot_cpu_has(X86_FEATURE_XSAVE) &&
-> > > -	    boot_cpu_has(X86_FEATURE_XSAVES) &&
-> > > -	    guest_cpuid_has(vcpu, X86_FEATURE_XSAVE))
-> > > -		guest_cpu_cap_set(vcpu, X86_FEATURE_XSAVES);
-> > > +	guest_cpu_cap_change(vcpu, X86_FEATURE_XSAVES,
-> > > +			     boot_cpu_has(X86_FEATURE_XSAVE) &&
-> > > +			     boot_cpu_has(X86_FEATURE_XSAVES) &&
-> > > +			     guest_cpuid_has(vcpu, X86_FEATURE_XSAVE));
-> > 
-> > In theory this change does change behavior, now the X86_FEATURE_XSAVE will
-> > be set iff the condition is true, but before it was set *if* the condition was true.
-> 
-> No, before it was set if and only if the condition was true, because in that case
-> caps were 0-initialized, i.e. this was/is the only way for XSAVE to be set.
-> 
-> > > -	guest_cpu_cap_check_and_set(vcpu, X86_FEATURE_NRIPS);
-> > > -	guest_cpu_cap_check_and_set(vcpu, X86_FEATURE_TSCRATEMSR);
-> > > -	guest_cpu_cap_check_and_set(vcpu, X86_FEATURE_LBRV);
-> > > +	guest_cpu_cap_restrict(vcpu, X86_FEATURE_NRIPS);
-> > > +	guest_cpu_cap_restrict(vcpu, X86_FEATURE_TSCRATEMSR);
-> > > +	guest_cpu_cap_restrict(vcpu, X86_FEATURE_LBRV);
-> > 
-> > One of the main reasons I don't like governed features is this manual list.
-> 
-> To be fair, the manual lists predate the governed features.
-
-100% agree, however the point of governed features was to simplify this list,
-the point of this patch set is to simplify these lists and yet they still remain,
-more or less untouched, and we will still need to maintain them.
-
-Again I do think that governed features and/or this patchset are better than
-the mess that was there before, but a part of me wants to fully get rid of this mess instead
-of just making it a bit more beautiful. 
-
-> 
-> > I want to reach the point that one won't need to add anything manually,
-> > unless there is a good reason to do so, and there are only a few exceptions
-> > when the guest cap is set, while the host's isn't.
-> 
-> Yeah, agreed.
-
-I am glad that we are on the same page here.
-
-Best regards,
-	Maxim Levitsky
-
-> 
-
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 4eddc4212f2b..3473cfbac826 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -1126,6 +1126,14 @@ F:	Documentation/ABI/testing/sysfs-bus-iio-adc-ad4130
+>  F:	Documentation/devicetree/bindings/iio/adc/adi,ad4130.yaml
+>  F:	drivers/iio/adc/ad4130.c
+>  
+> +ANALOG DEVICES INC AD7091R DRIVER
+> +M:	Marcelo Schmitt <marcelo.schmitt@analog.com>
+> +L:	linux-iio@vger.kernel.org
+> +S:	Supported
+> +W:	http://ez.analog.com/community/linux-device-drivers
+> +F:	Documentation/devicetree/bindings/iio/adc/adi,ad7091r*
+> +F:	drivers/iio/adc/drivers/iio/adc/ad7091r*
+> +
+>  ANALOG DEVICES INC AD7192 DRIVER
+>  M:	Alexandru Tachici <alexandru.tachici@analog.com>
+>  L:	linux-iio@vger.kernel.org
 
 
