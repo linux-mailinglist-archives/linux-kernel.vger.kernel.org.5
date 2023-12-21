@@ -1,173 +1,149 @@
-Return-Path: <linux-kernel+bounces-8028-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8030-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2706581B0CE
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 09:56:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A2D9E81B0D3
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 09:57:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D79C92857E5
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 08:56:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 51D661F23ACA
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 08:57:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23D78208DE;
-	Thu, 21 Dec 2023 08:56:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44283208B9;
+	Thu, 21 Dec 2023 08:57:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mwa.re header.i=@mwa.re header.b="NDMfaLUk"
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="EOiQtYjb"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C39F520310
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 08:56:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mwa.re
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mwa.re
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-40d2376db79so4152995e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 00:56:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mwa.re; s=google; t=1703148969; x=1703753769; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=NEvSJjqER4dwgNc/kNYaxgpYNiAgTRW68D75l9amAIo=;
-        b=NDMfaLUkyhpXoqEV/t0PgPzhk5tk0HRHeTtDcI1R71X6U13Ipb55S9WkDMh/NFPAq9
-         ZaljAfhx6bqRiinITey+xustLqMFuOuV3F6nZn1S8KA5zPmAMWhuS5Wtgoh43FfqO3ny
-         RHaa5McxKAX/auJAMDuN046mtclPjLdj5/bWUkIrLhg7q5Dcs8Fo9r+o0dNuZl4GKXBk
-         zxsOjdyiNZdeGIJM2LA2iFt5NIc7b+QQg17etv3LsscILKjb8Sss1fFnUT21ou8cQyop
-         ohMlDxhhDUOsfDSOE2osZTUz+d4P++bgCu0kErmwx5mv0wCxhtZJpnARx3lWrAmilvLy
-         NUsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703148969; x=1703753769;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=NEvSJjqER4dwgNc/kNYaxgpYNiAgTRW68D75l9amAIo=;
-        b=LCyUG/Ru63l9XQg3j4D+Dzer/Paa+3HBy3pgVRmTDFAnXAT77Gl/+Y+kpB6h+ewv2j
-         b1CPQc96EOgIcNakW2jhsuNNkB+4MQ3RrY8Tl9lVx1lcA9I9rooQR3ZU9ZpFJRQ6fBF1
-         HL+p9wZQzinMdEugbpeXm+WgwVSNZJ4rUnPEiThQvTbCJr1ZMUgDYTIBGaSDBxtZiNny
-         iiZ5pBX1Kho2QqvcotWpk0cd8M7cEqD74HmwKTxwldjHHsJlv+M/k8zD1S2r2qOq1liR
-         SVVloUPD53rz7uDTpe7jPL2OgY0NBKRqcSJUU2erPi9mj6zJLIp5M5o+KmCsXqFoIvt+
-         XLWA==
-X-Gm-Message-State: AOJu0YzZvi4CCKEvCWXBbXyM6Ck5dFdt2pTIRRDm+PUbnfyFYkPc24O9
-	XmX0JDTFGVG8gZnrg/KaY/VWJA==
-X-Google-Smtp-Source: AGHT+IHU/9GNoG9CPlJyJF9wM151c4hjR0wjSeY1C/IGdwvvUOslq6CPfOOZuGw4+k0LWBSfy21dKA==
-X-Received: by 2002:a05:600c:4fd4:b0:40b:5e22:958 with SMTP id o20-20020a05600c4fd400b0040b5e220958mr646831wmq.71.1703148968824;
-        Thu, 21 Dec 2023 00:56:08 -0800 (PST)
-Received: from 2001-4dd0-53c2-1-e989-a920-d643-58fc.ipv6dyn.netcologne.de (2001-4dd0-53c2-1-e989-a920-d643-58fc.ipv6dyn.netcologne.de. [2001:4dd0:53c2:1:e989:a920:d643:58fc])
-        by smtp.gmail.com with ESMTPSA id l11-20020a5d560b000000b0033680f7be5fsm1502267wrv.87.2023.12.21.00.56.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Dec 2023 00:56:08 -0800 (PST)
-Message-ID: <491250ba57be2ab983048ffcf5ffd2aec2bedb9e.camel@mwa.re>
-Subject: Re: element sizes in input_event struct on riscv32
-From: Antonios Salios <antonios@mwa.re>
-To: Arnd Bergmann <arnd@arndb.de>, Dmitry Torokhov
- <dmitry.torokhov@gmail.com>,  Deepa Dinamani <deepa.kernel@gmail.com>
-Cc: rydberg@bitmath.org, linux-input@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Jan Henrik Weinstock <jan@mwa.re>, Lukas
-	=?ISO-8859-1?Q?J=FCnger?=
-	 <lukas@mwa.re>
-Date: Thu, 21 Dec 2023 09:56:06 +0100
-In-Reply-To: <9e97eb50-f9a6-4655-9422-fa1106fff97a@app.fastmail.com>
-References: <c812ea74dd02d1baf85dc6fb32701e103984d25d.camel@mwa.re>
-	 <ZYEFCHBC75rjCE0n@google.com>
-	 <9e97eb50-f9a6-4655-9422-fa1106fff97a@app.fastmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.2 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EACD6210F8;
+	Thu, 21 Dec 2023 08:57:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3BL8uVRa014634;
+	Thu, 21 Dec 2023 02:56:31 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1703148991;
+	bh=16IxcBEYZK9twQ1G/yQmRxe1As8IXBcEe8yradY/0k8=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=EOiQtYjbdl2KdH+EqJDqJOwxPYmI0wE86tJ4Tnkq8/vVJSZUFOmfo4lpTPaWuPq5n
+	 3QijJeWBLHvfBjtlGFYHgFyDfYNTVn0nbchvNpw0A2PKGb5wZjMGQuEF7tc/fDfRd8
+	 qh5RE1qqwq39c49MQzZM0+Nmrlzj95WReElkv5OE=
+Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
+	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3BL8uVCH063030
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Thu, 21 Dec 2023 02:56:31 -0600
+Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 21
+ Dec 2023 02:56:31 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 21 Dec 2023 02:56:31 -0600
+Received: from [172.24.227.247] (uda0500640.dhcp.ti.com [172.24.227.247])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3BL8uORk081324;
+	Thu, 21 Dec 2023 02:56:25 -0600
+Message-ID: <d78949f0-bb03-82ea-b40f-1bb92b41e200@ti.com>
+Date: Thu, 21 Dec 2023 14:26:24 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-
-On Tue, 2023-12-19 at 13:53 +0000, Arnd Bergmann wrote:
-> On Tue, Dec 19, 2023, at 02:50, Dmitry Torokhov wrote:
-> > Hi Antonious,
-> >=20
-> > On Thu, Dec 14, 2023 at 11:11:18AM +0100, Antonios Salios wrote:
-> > > Hi all.
-> > >=20
-> > > I'm having trouble getting evdev to run in a simulated Buildroot
-> > > environment on riscv32. Evtest (and the x11 driver) seems to be
-> > > receiving garbage data from input devices.
-> > >=20
-> > > Analyzing the input_event struct shows that the kernel uses 32-
-> > > bit (aka
-> > > __kernel_ulong_t) values for __sec & __usec.
-> > > Evtest on the other hand interprets these variables as 64-bit
-> > > time_t
-> > > values in a timeval struct, resulting in a mismatch between the
-> > > kernel
-> > > and userspace.
-> > >=20
-> > > What would be the correct size for these values on a 32-bit
-> > > architecture that uses 64-bit time_t values?
-> >=20
-> > I think there is misunderstanding - we do not have *2* 64-bit
-> > values on
-> > 32-but architectures. Here is what was done:
-> >=20
-> > =C2=A0=C2=A0=C2=A0 Input: extend usable life of event timestamps to 210=
-6 on 32 bit
-> > systems
->=20
-> Thanks for forwarding this to me. You are definitely right that
-> the user-space structure is intended to use a pair of
-> __kernel_ulong_t
-> for the timestamp. Usually if an application gets this wrong, it is
-> the
-> result of having copied old kernel headers the source directory that
-> need to be updated.
->=20
-> For evtest in particular, I don't see how that is possible, the
-> source
-> code at [1] shows that it just includes the global linux/input.h,
-> which on riscv32 would have to be at least from linux-5.6 anyway
-> because older versions are too old to build a time64 glibc.
->=20
-> Antonios, can you check which header was used to build your copy
-> of evtest, and in case this came from /usr/include/linux, which
-> version it corresponds to?
->=20
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Arnd
->=20
-> [1]
-> https://gitlab.freedesktop.org/libevdev/evtest/-/blob/master/evtest.c?ref=
-_type=3Dheads
-
-The header is included from the sysroot of the toolchain, using version
-6.5.6.
-I'm using glibc 2.37 with a toolchain built from Buildroot.
-
-The problem seems to be, that __USE_TIME_BITS64 is not defined even
-though riscv32 uses 64-bit time.
-__BITS_PER_LONG is set to 32 & __KERNEL__ is (of course) undefined in
-userspace.
-The userspace therefore uses 64-bit values as opposed to the kernel,
-which uses 32-bit values.
-
-__USE_TIME_BITS64 is only set when __TIMESIZE is set to 32. [1]
-Under riscv32, the default value of 64 is used. [2]
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH net-next] net: dsa: mt7530: register OF node for internal
+ MDIO bus
+Content-Language: en-US
+To: =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>,
+        Daniel Golle
+	<daniel@makrotopia.org>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        DENG
+ Qingfang <dqfext@gmail.com>, Sean Wang <sean.wang@mediatek.com>,
+        Andrew Lunn
+	<andrew@lunn.ch>, Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean
+	<olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet
+	<edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni
+	<pabeni@redhat.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+CC: David Bauer <mail@david-bauer.net>, <mithat.guner@xeront.com>,
+        <erkin.bozoglu@xeront.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        Ravi Gunasekaran <r-gunasekaran@ti.com>
+References: <20231220173539.59071-1-arinc.unal@arinc9.com>
+From: Ravi Gunasekaran <r-gunasekaran@ti.com>
+In-Reply-To: <20231220173539.59071-1-arinc.unal@arinc9.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
 
-[1]
-https://sourceware.org/git/?p=3Dglibc.git;a=3Dblob;f=3Dsysdeps/unix/sysv/li=
-nux/features-time64.h;h=3Daf9d84daa7dfe4174e9f977b2c76c5c0df1ce47b;hb=3Dref=
-s/tags/glibc-2.37
-[2]
-https://sourceware.org/git/?p=3Dglibc.git;a=3Dblob_plain;f=3Dbits/timesize.=
-h;hb=3Drefs/tags/glibc-2.37
 
---=20
-Antonios Salios
-Software Engineer
+On 12/20/23 11:05 PM, Arınç ÜNAL wrote:
+> From: David Bauer <mail@david-bauer.net>
+> 
+> The MT753x switches provide a switch-internal MDIO bus for the embedded
+> PHYs.
+> 
+> Register a OF sub-node on the switch OF-node for this internal MDIO bus.
+> This allows to configure the embedded PHYs using device-tree.
+> 
+> Signed-off-by: David Bauer <mail@david-bauer.net>
+> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+> Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
+> ---
+>  drivers/net/dsa/mt7530.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
+> index 391c4dbdff42..f8ecc354630b 100644
+> --- a/drivers/net/dsa/mt7530.c
+> +++ b/drivers/net/dsa/mt7530.c
+> @@ -2155,10 +2155,13 @@ mt7530_setup_mdio(struct mt7530_priv *priv)
+>  {
+>  	struct dsa_switch *ds = priv->ds;
+>  	struct device *dev = priv->dev;
+> +	struct device_node *np, *mnp;
+>  	struct mii_bus *bus;
+>  	static int idx;
+>  	int ret;
+>  
+> +	np = priv->dev->of_node;
+> +
+>  	bus = devm_mdiobus_alloc(dev);
+>  	if (!bus)
+>  		return -ENOMEM;
+> @@ -2177,7 +2180,9 @@ mt7530_setup_mdio(struct mt7530_priv *priv)
+>  	if (priv->irq)
+>  		mt7530_setup_mdio_irq(priv);
+>  
+> -	ret = devm_mdiobus_register(dev, bus);
+> +	mnp = of_get_child_by_name(np, "mdio");
 
-MachineWare GmbH | www.machineware.de
-H=C3=BChnermarkt 19, 52062 Aachen, Germany
-Amtsgericht Aachen HRB25734
+If the node is not found, then the return value would be NULL.
+Though devm_of_mdiobus_register() and of_node_put() take care of NULL references,
+other drivers that use devm_of_mdiobus_register() mostly perform a early exit if the node is NULL.
 
-Gesch=C3=A4ftsf=C3=BChrung
-Lukas J=C3=BCnger
-Dr.-Ing. Jan Henrik Weinstock
+
+> +	ret = devm_of_mdiobus_register(dev, bus, mnp);
+> +	of_node_put(mnp);
+>  	if (ret) {
+>  		dev_err(dev, "failed to register MDIO bus: %d\n", ret);
+>  		if (priv->irq)
+
+-- 
+Regards,
+Ravi
 
