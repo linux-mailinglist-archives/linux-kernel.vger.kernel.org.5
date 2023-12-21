@@ -1,133 +1,105 @@
-Return-Path: <linux-kernel+bounces-8659-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8661-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AAC0281BAB9
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 16:28:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73DA681BABB
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 16:28:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6825528D4B1
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 15:28:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2A20028D551
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 15:28:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEA4259930;
-	Thu, 21 Dec 2023 15:26:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A08E353A1E;
+	Thu, 21 Dec 2023 15:26:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="PVVrDZW8"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="gAQK00WN"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDFF662812;
-	Thu, 21 Dec 2023 15:26:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 5DF4A1C0008;
-	Thu, 21 Dec 2023 15:26:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1703172364;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=XnimU0svkWDNRKLCz0ZHPlRmfQ2Z7rDvpCfZmcxrsRA=;
-	b=PVVrDZW8xJ8POwGPVj8PmC3/ImUj1UkPGA2n10kyjrVPwnsbr49JHOiasX5HibWVMGoPVD
-	Dp8D1cj2DYgjaGFsv3bUuEsUjLpT5yskbduq7VJ+NeiKYiVxKZJmoAhhkeulSd0729r2Dg
-	/nPjzT+NiDc9HznVjwzGGrNng9opes3zrTD3f972m0kq+dTQcD0qq43P+WtShk0eBKZB5x
-	lZzwS7JwMHBSNEMg3jMVoOpnOKjF4sxmUlnwSt3HK4L4IZipz0V4QBy/GmHEg4ShUTnwdV
-	xAT7a3nzHojAC1XjgJgY+Lg5zxdso+Il1ydaz0DrQG+x7eLxWBd2EpwO9C3V4A==
-From: Gregory CLEMENT <gregory.clement@bootlin.com>
-To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Paul Burton <paulburton@kernel.org>, linux-mips@vger.kernel.org, Jiaxun
- Yang <jiaxun.yang@flygoat.com>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Vladimir
- Kondratiev <vladimir.kondratiev@mobileye.com>, Tawfik Bayouk
- <tawfik.bayouk@mobileye.com>, Alexandre Belloni
- <alexandre.belloni@bootlin.com>, =?utf-8?Q?Th=C3=A9o?= Lebrun
- <theo.lebrun@bootlin.com>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v5 00/22] Add support for the Mobileye EyeQ5 SoC
-In-Reply-To: <ZYRR7zIZax7yUgsZ@alpha.franken.de>
-References: <20231212163459.1923041-1-gregory.clement@bootlin.com>
- <878r5vctdg.fsf@BL-laptop> <ZYNhbQjMbAH6I0kI@alpha.franken.de>
- <87frzwasxo.fsf@BL-laptop> <ZYRR7zIZax7yUgsZ@alpha.franken.de>
-Date: Thu, 21 Dec 2023 16:26:02 +0100
-Message-ID: <87a5q3bmr9.fsf@BL-laptop>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAB8C539F9
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 15:26:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-28bc870c540so724910a91.2
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 07:26:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1703172402; x=1703777202; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=dC5SYh5wvDuLRLTzz+EBxLcN+RV8t/MMdts61ZKTGpM=;
+        b=gAQK00WNHcA8r+I0bj28Kz7rqnbPcfUT2GYgmb8LDByRdUPvO4czgORZRb8uiIkkdG
+         0+25qmmcpCNL9I1EbR4sYjFNYjCNvaso+AFRRMREnT0SuowObLh7L5fG15dNNz0oHIDr
+         MBQmBtor2ncMs5EMj7pF4Z01S+MBRQGtgKpNMZmjQnW+Sbzcf9A2XZPdB7df0HN1YAvr
+         aY3joIDG+Tnx8BNCIQiaNFXEY+fhR55GKrB8sNpVLyd84PacoM9eahV90nue/77pniL3
+         0o3WvIkRBtDaISBtawSeRapTRTgkxuRR6kxx3ZoT/CDA9pe3CXhrfdbnkXqjnk9/MHaQ
+         EpRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703172402; x=1703777202;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=dC5SYh5wvDuLRLTzz+EBxLcN+RV8t/MMdts61ZKTGpM=;
+        b=fd5IjA4zLSd4OMEkax2uKv1K0PbO/CuhKer/QOdx8Fm1ui7bPtYkoE4yt2jdAQ0iCL
+         HxvwN6cjMipTtJU3LnIsClpFp/uSN/JXB4KvdmGAUviFPNYgtDWOF09QqDOaI8Htrpy/
+         HO7C7II7xRxTUg6v3jBCPgyoicrIXPhwVI+DmHrqhWwD0ELCoYuSPl7Wq2ORu+HNxfuH
+         8h5tUh3a8DvhvWhiIsP2Dzbrjmihhv/knG8sRLEXMhoq2ztDbbA8oJ6eL3DteX9dP45z
+         LYJ1pfihzYHPD/elkSLnvpqeHUckbG7rhvKuKJ3Ze6zpsN4Hr4ntEEkv617qWGy3cI0Q
+         MZ3g==
+X-Gm-Message-State: AOJu0YzvqdQgfOpXPj7BlHejPYgstw49bk9hOoOBOEO0vt+nJCEpbmWr
+	EW3IeRKkZy4EBHYmWW4mJ386e2x8lBSAQEZdii9MPA==
+X-Google-Smtp-Source: AGHT+IGmod8PxPFs6GtLGlc1ip28xbRCud5bvi34qmO5VlkGOnVt8UR2EPlFRqRpX/09QQQYU5oP5AUdyh4JCBlfl/U=
+X-Received: by 2002:a17:90a:5408:b0:28b:cbec:2f4a with SMTP id
+ z8-20020a17090a540800b0028bcbec2f4amr2327195pjh.15.1703172401946; Thu, 21 Dec
+ 2023 07:26:41 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-GND-Sasl: gregory.clement@bootlin.com
+References: <20231215052652.917741-1-imran.f.khan@oracle.com>
+ <CAKfTPtD85OSem=7RMquLWokVp7gffvDaY3mtwevkxp1mSSVVqQ@mail.gmail.com>
+ <d8507f86-2458-4b01-a774-5102473e657e@oracle.com> <1c13b0cc-098c-4f75-9f37-a53a66965409@oracle.com>
+ <CAKfTPtDqqAYNCFb6US-4Yd=-xvj8mhMuO0PkUhWsqekxp__M4g@mail.gmail.com>
+ <a9993f8b-6449-4452-a168-db966d9bae49@oracle.com> <CAKfTPtD1Q7R0ySc=a_5Aw9M0McQiom80DWEB6FRv7vYoPRVebg@mail.gmail.com>
+ <20231221082105.GA600162@ziqianlu-desk2>
+In-Reply-To: <20231221082105.GA600162@ziqianlu-desk2>
+From: Vincent Guittot <vincent.guittot@linaro.org>
+Date: Thu, 21 Dec 2023 16:26:30 +0100
+Message-ID: <CAKfTPtDP6FXKa0ifpXd+jh5DBBBXmz7CcgaB7w8R5in1iQbTiw@mail.gmail.com>
+Subject: Re: [RFC PATCH] sched: fair: reset task_group.load_avg when there are
+ no running tasks.
+To: Aaron Lu <aaron.lu@intel.com>
+Cc: Imran Khan <imran.f.khan@oracle.com>, mingo@redhat.com, peterz@infradead.org, 
+	juri.lelli@redhat.com, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
+	bsegall@google.com, mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Thomas Bogendoerfer <tsbogend@alpha.franken.de> writes:
+Hi Aaron,
 
-> On Thu, Dec 21, 2023 at 08:57:55AM +0100, Gregory CLEMENT wrote:
->> I do not oppose the addition of a new platform, even though, like
->> Jiaxun, I would prefer to avoid duplicating code. The only thing
->> preventing the use of the same kernel for EyeQ5 and other platforms is
->> the starting address.
+On Thu, 21 Dec 2023 at 09:21, Aaron Lu <aaron.lu@intel.com> wrote:
 >
-> there shouldn't be code duplication.
+> Hi Vincent,
 >
-> My rough idea would be something like
+> Thanks for the heads up.
+>
+> On Wed, Dec 20, 2023 at 06:31:08PM +0100, Vincent Guittot wrote:
+> > Aaron,
+> > Could you run the tests that you run for testing "Ratelimit update to
+> > tg->load_avg" and check if this patch impacts your performance ?
+>
+> I run hackbench/netperf/postgres_sysbench with nr_thread=nr_cpu on a 2
+> sockets/120cores/240cpus Intel server and didn't notice any performance
+> change after applying your diff so I think it's not a problem.
 
-Thanks for the feedback, I am going to test it.
+Thanks for the tests.
+
+I'm going to prepare a proper patch
 
 >
-> diff --git a/arch/mips/Kbuild b/arch/mips/Kbuild
-> index af2967bffb73..d683993ed331 100644
-> --- a/arch/mips/Kbuild
-> +++ b/arch/mips/Kbuild
-> @@ -17,6 +17,7 @@ obj- := $(platform-y)
->  # mips object files
->  # The object files are linked as core-y files would be linked
->  
-> +obj-y += generic/
->  obj-y += kernel/
->  obj-y += mm/
->  obj-y += net/
-> diff --git a/arch/mips/generic/Makefile b/arch/mips/generic/Makefile
-> index e37a59bae0a6..56011d738441 100644
-> --- a/arch/mips/generic/Makefile
-> +++ b/arch/mips/generic/Makefile
-> @@ -4,9 +4,9 @@
->  # Author: Paul Burton <paul.burton@mips.com>
->  #
->  
-> -obj-y += init.o
-> -obj-y += irq.o
-> -obj-y += proc.o
-> +obj-$(CONFIG_MACH_GENERIC_CORE) += init.o
-> +obj-$(CONFIG_MACH_GENERIC_CORE) += irq.o
-> +obj-$(CONFIG_MACH_GENERIC_CORE) += proc.o
->  
->  obj-$(CONFIG_YAMON_DT_SHIM)            += yamon-dt.o
->  obj-$(CONFIG_LEGACY_BOARD_SEAD3)       += board-sead3.o
->
-> so everyboady needing these parts of a generic kernel is able
-> to take it.
->
->> Therefore, if it were possible to have a relocatable kernel, this
->> issue would disappear.
->
-> yes. There is support for relocatable kernel, so what are we missing
-> there ?
-
-But in arch/mips/generic/Platform we have:
-
-load-$(CONFIG_MIPS_GENERIC)    += 0xffffffff80100000
-
-So, the load address is defined during compilation; for example, I don't
-think there is such a mechanism currently for ARM. hat's what I mean by
-'relocatable,' but perhaps it's not exactly what you have in mind.
-
-Gregory
-
--- 
-Gregory Clement, Bootlin
-Embedded Linux and Kernel engineering
-http://bootlin.com
+> Regards,
+> Aaron
 
