@@ -1,103 +1,116 @@
-Return-Path: <linux-kernel+bounces-8899-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8900-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22BF581BDDE
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 19:05:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D02B81BDE8
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 19:06:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9E0C5B25EDB
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 18:05:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 390B728C5ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 18:06:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E701C64A92;
-	Thu, 21 Dec 2023 18:01:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A5136518E;
+	Thu, 21 Dec 2023 18:05:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="O3M09i9y"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ljigpITK"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77B866351A
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 18:01:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a23350cd51cso130191766b.2
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 10:01:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1703181712; x=1703786512; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=UFhYgBQMy/5618m05/BdiCx0uBB+GH471mXeLigE3V4=;
-        b=O3M09i9yUEXI7TqUXOLTBUsoDXFNe961FJX017RFLnmk36cOzkxNbn2yVdPHjyI+/t
-         RphjXwzay1Hx3BN7gnTbGg05irSH7jgJujx170r288FhVv83uSeyyKSyR/TnQtXosqnl
-         j7p844/Dbu9A/O6FWH+S4vLZ/E0m5KfRe9Bxc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703181712; x=1703786512;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=UFhYgBQMy/5618m05/BdiCx0uBB+GH471mXeLigE3V4=;
-        b=NlVP9QVff9CEoUxYWn77MKepgSaJ/8NpROOtO7BL3J/WXlWOCwFTZ0GWIlhpYxONiM
-         C8C3XUEBVYG4QEF3tm4h8E0TxVNiCBl5U+TwP1afm4wy49HfixTPcHBm/3wUB2xaGwC2
-         Gid7w9rH1+R/s8SmACg+SLS+MFA0T60w3mNg5965S7tFUF7JFnjTzMnh8QodfMCP87yd
-         yRhE6KU1u/HFrCCEkDOpFDvaTGbMlF/vbVfzX1QRI86UVhGlyR8CQYdC3rHJPeXt43uc
-         qXfi8FUNlNIU3YQn+iZtc099W1CBcX0iaijGGzksVSWhigGtKjoHX+4I7qULJqlOZ2X2
-         LZqg==
-X-Gm-Message-State: AOJu0Yy7GV+1Di2HhypLvquO3SvcOpsicUqANY9LxKY5vKkFiapUBdj4
-	LUpM0kefXyfEAwCGkc7N30zj9Q/UbYe/clKNhSjZeAZLRReR9Whz
-X-Google-Smtp-Source: AGHT+IGLr8Z2fwv7Qpgq1mzcmJ8R7hl1pja1WmfQMcE88o5louAV87ZCrlMQ6xPsAbmS8UBw9qIZTw==
-X-Received: by 2002:a17:906:bcc7:b0:a23:5898:5123 with SMTP id lw7-20020a170906bcc700b00a2358985123mr72775ejb.86.1703181712617;
-        Thu, 21 Dec 2023 10:01:52 -0800 (PST)
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com. [209.85.208.51])
-        by smtp.gmail.com with ESMTPSA id d3-20020a170907272300b00a230f3799a4sm1193546ejl.225.2023.12.21.10.01.51
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Dec 2023 10:01:51 -0800 (PST)
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-55370780c74so1292001a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 10:01:51 -0800 (PST)
-X-Received: by 2002:a17:906:748b:b0:a23:52d2:44c8 with SMTP id
- e11-20020a170906748b00b00a2352d244c8mr97647ejl.37.1703181710093; Thu, 21 Dec
- 2023 10:01:50 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCD41627E2;
+	Thu, 21 Dec 2023 18:05:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E661C433C7;
+	Thu, 21 Dec 2023 18:05:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703181935;
+	bh=D5T8wHGhxAKHwrI/lC8X+GMnYbXpN7+mZX5GeytoQ04=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ljigpITKWRoXryXYXE7TF2C2rWPXY88P26mNPS/9U7CNNAjF5Zgv7xB2KPUv4brT3
+	 PXS8SzBv56B91NY5jhDj5FMdLD1e2lW8gEtAJh0GRa3CzOWW29o1BubDuLqBcPnKF1
+	 p+rUcxAizfn9zOMvUHawaFn6lITidua0/D9rs6oepNSEDamK1ClDAXQnS1s/fG3n7b
+	 65MR+q0DuQxdlKBgnwGld9sXNpSb6nquEs7dgOjIzxgB1MwHx4Zt+eynFiDDvsfjYB
+	 MTuXW+ZX0eFdIOjOx/6Ork84bt15YpWCDAKWnm7nPvbHDsKeey4pUs6hK+p/uNmzP5
+	 rNzVDH9I/ZriA==
+Date: Thu, 21 Dec 2023 18:05:28 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Oleksij Rempel <o.rempel@pengutronix.de>
+Cc: =?iso-8859-1?Q?K=F6ry?= Maincent <kory.maincent@bootlin.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Russ Weight <russ.weight@linux.dev>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-doc@vger.kernel.org, devicetree@vger.kernel.org,
+	Dent Project <dentproject@linuxfoundation.org>,
+	Liam Girdwood <lgirdwood@gmail.com>
+Subject: Re: [PATCH net-next v2 8/8] net: pse-pd: Add PD692x0 PSE controller
+ driver
+Message-ID: <81f0ddba-5008-43a4-a41c-c7b6ba8e2e3b@sirena.org.uk>
+References: <20231204225956.GG981228@pengutronix.de>
+ <20231205064527.GJ981228@pengutronix.de>
+ <4b96b8c8-7def-46e5-9c85-d9e925fb9251@sirena.org.uk>
+ <20231205140203.GK981228@pengutronix.de>
+ <88ed0c94-d052-4564-be0c-79a0f502eda8@sirena.org.uk>
+ <20231221163610.47038996@kmaincent-XPS-13-7390>
+ <ffda1003-b752-402e-8e51-e2e24a840cff@sirena.org.uk>
+ <20231221171000.45310167@kmaincent-XPS-13-7390>
+ <501f671d-4e03-490b-a9d6-e1f39bb99115@sirena.org.uk>
+ <20231221174246.GI1697233@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <1842328.1703171371@warthog.procyon.org.uk>
-In-Reply-To: <1842328.1703171371@warthog.procyon.org.uk>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Thu, 21 Dec 2023 10:01:32 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wjJtcyi=oRf7Rtf2RueWq_336KEsSf9b-BKPxRcHHQx+Q@mail.gmail.com>
-Message-ID: <CAHk-=wjJtcyi=oRf7Rtf2RueWq_336KEsSf9b-BKPxRcHHQx+Q@mail.gmail.com>
-Subject: Re: [PATCH] afs: Fix overwriting of result of DNS query
-To: David Howells <dhowells@redhat.com>
-Cc: Anastasia Belova <abelova@astralinux.ru>, Marc Dionne <marc.dionne@auristor.com>, 
-	linux-afs@lists.infradead.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="9BoYyAUBuFErv7HY"
+Content-Disposition: inline
+In-Reply-To: <20231221174246.GI1697233@pengutronix.de>
+X-Cookie: Results are not typical.
 
-On Thu, 21 Dec 2023 at 07:09, David Howells <dhowells@redhat.com> wrote:
->
-> Could you apply this fix, please?
 
-Ok, so this is just *annoying*.
+--9BoYyAUBuFErv7HY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Why did you send me this as a patch, and then *twenty minutes* later
-you send me an AFS pull request that does *not* include this patch?
+On Thu, Dec 21, 2023 at 06:42:46PM +0100, Oleksij Rempel wrote:
 
-WTF?
+> The main question is - how to represent a remote consumer (Powered
+> Device)? It looks for me like having a dummy regulator consumer for each
+> (PSE PI) withing the PSE framework is the simplest thing to do. User
+> should enable this dummy consumer from user space by using already
+> existing interface in case of PoDL - ETHTOOL_A_PODL_PSE_ADMIN_CONTROL
+> or new interface for Clause 33 PSE.
 
-I've applied this, but I'm really annoyed, because it really feels
-like you went out of your way to just generate unnecessary noise and
-pointless workflow churn.
+That's not even a dummy consumer - the physical power output from the
+system is a real, physical thing that we can point at just as much as
+any other physical device.  Some kind of library/helper thing that
+connects up with other interfaces for controlling network ports like you
+suggest above does seem like a good fit here.
 
-It's not even like the pull request contained anything different. The
-patch _and_ the pull request were both not just about AFS, but about
-DNS issues in AFS.
+--9BoYyAUBuFErv7HY
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Get your act together.
+-----BEGIN PGP SIGNATURE-----
 
-                    Linus
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmWEfmcACgkQJNaLcl1U
+h9Acggf+NDcjJKIBfD5BoXWMfSIkaHsYiitSj17XijQ9AOb+V8MrpL1QbuK2lHzS
+yZv4O/Ed2yk2oLnxJ029R54HnKgXQ25hZKFjdGkLxCHSZS+GhzRPHw7QLIG8KeGO
+Aw4qjs/Lkd5Nv6sNBs4es4wUiOY5+unwiqOEBZn+doFs6amX0i9Sedk8HqTxpA1l
+BjrYbDuacb+WEe2vLU1mTrz1+VF67nSO8R+iyShD7sss5AiiLtxxMwiBlPsZn+ec
+rjFGC5L2bxo71F1HTKDyn108V5E/u0kpfhbRab7jSGr3Z+48TjBczb+QaNfkzegY
+GswtRELPkEY6dOfiXM/49YnnGd+6mw==
+=A5qx
+-----END PGP SIGNATURE-----
+
+--9BoYyAUBuFErv7HY--
 
