@@ -1,132 +1,108 @@
-Return-Path: <linux-kernel+bounces-9181-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9182-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46DE681C1FC
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 00:31:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB20781C200
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 00:35:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5F8D51C247BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 23:31:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 532E8285EB4
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 23:35:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 624CA79485;
-	Thu, 21 Dec 2023 23:31:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C35B79491;
+	Thu, 21 Dec 2023 23:34:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=iwanders.net header.i=@iwanders.net header.b="YW5xSbd0"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="2RQevUcQ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-oi1-f177.google.com (mail-oi1-f177.google.com [209.85.167.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5854D76DC3
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 23:31:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iwanders.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iwanders.net
-Received: by mail-oi1-f177.google.com with SMTP id 5614622812f47-3ba1be5ad0aso863821b6e.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 15:31:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=iwanders.net; s=google; t=1703201497; x=1703806297; darn=vger.kernel.org;
-        h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=trj2UjC/YtIz6QCG5+fR8YcYr1hMRs+1oPS6HsPhuyM=;
-        b=YW5xSbd0ll37d8d2+DgOguuHxjLQ2wPOSy0FTweZR4c8zPu8NWdMQqBSWIQMpw8OIl
-         GDqrxEwu8lw/ahLQtnqcyO0HkrodnayxaJ3DN81R8W9Q5v84kMMM/RMUEnczeLQzFawX
-         UctD40+1qNVX2aeMLu4spxban5kIAPRHG1n9o=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703201497; x=1703806297;
-        h=references:in-reply-to:message-id:date:subject:cc:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=trj2UjC/YtIz6QCG5+fR8YcYr1hMRs+1oPS6HsPhuyM=;
-        b=nADecz9fACItBKUyEiQxGjyCaaKjTV0GqYhOnI6UrgCYpw7opUTdDQDLfWi/8GHRk5
-         dGdRTkxNX7EFji7ahc5+Saz4anI5MDkHZrwl6YxIyv6TOPWxaCKVOW7iklwfi1XTWdyC
-         +RvXj/kjNBVTm7WMRtZfLOf384wbvCs7DCGQgWluVsrZoTlg9t/LVt1cXLGgt1cMW7yG
-         4BJeje+APSw7b7b3J6JuDaUF7XqC1iaHYmKohdXL8NVoT5Iej5vugW+kiN9h/gOLhqYK
-         9G816tHUw/NDfbVxRyrlIANPb4z21pnkE9cC2MGUQDStu2TB+w6mWXAv2lUrfXvRWII0
-         bnTQ==
-X-Gm-Message-State: AOJu0YyukFR6cOTvVeVuCBRaEVrhX2D7VVqRep+EDK+tsJ83NJ9PSNyk
-	XM1quwwtuwXs/MDAwKcniCpRCiIEaRrPYg==
-X-Google-Smtp-Source: AGHT+IHeRemHWemfuJkcauBZwWcQTQ0ufpigRSxdQmvyuLI9JfySLwoJ3RY6QxVIRPjSQqj0+bVXqQ==
-X-Received: by 2002:a05:6808:398d:b0:3b8:4841:2bae with SMTP id gq13-20020a056808398d00b003b848412baemr612259oib.19.1703201497380;
-        Thu, 21 Dec 2023 15:31:37 -0800 (PST)
-Received: from eagle.lan (24-246-30-234.cable.teksavvy.com. [24.246.30.234])
-        by smtp.gmail.com with ESMTPSA id ew11-20020a0562140aab00b0067f626a5b2esm957438qvb.74.2023.12.21.15.31.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Dec 2023 15:31:36 -0800 (PST)
-From: Ivor Wanders <ivor@iwanders.net>
-To: rdunlap@infradead.org
-Cc: corbet@lwn.net,
-	ivor@iwanders.net,
-	jdelvare@suse.com,
-	linux-doc@vger.kernel.org,
-	linux-hwmon@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux@roeck-us.net,
-	luzmaximilian@gmail.com
-Subject: [PATCH v2] hwmon: clarify intent of fan min/max
-Date: Thu, 21 Dec 2023 18:31:33 -0500
-Message-Id: <20231221233133.14978-1-ivor@iwanders.net>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <40285311-8adc-4ca9-86ce-27c8b723a102@infradead.org>
-References: <40285311-8adc-4ca9-86ce-27c8b723a102@infradead.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D21378E72;
+	Thu, 21 Dec 2023 23:34:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=PLpFzJBkRIVRbImC6LLkmU60cfDt3U7Bi6p9cnlmj6Q=; b=2RQevUcQbjUPI2JVCGpeo4x++E
+	9R+a4V/PtRyXUsT77FI45fG2H0u4FUrjQFyFWiiaIKgXEljawZdEc1V2X1ETptA6sChNACCd4nkUh
+	0Av/T8LiuIK6Fkyx540+WgkU5x7wSn6wo8zCxSelqrMvxd2njXs5QI6GghrSnqOZZcQM1oqT22mRq
+	q9SXqvq0jtkZHbNBZqH2lbjQlatN8Xoj66XMuQhkM38GIoWXhY542sZmt1eUdqTAHo3bEIlKjasod
+	fMrgDoJlJJYIh4kA+KCLWYBp7HbP9aFHp8+H6vVFohxOJ649PzcOPZ8uFtBw31acuW4Apu0Bls9S1
+	XiCYC5ZA==;
+Received: from [50.53.46.231] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1rGSZ2-004RWi-2C;
+	Thu, 21 Dec 2023 23:34:52 +0000
+Message-ID: <65d0c378-2126-4746-bb68-99ca97b6e069@infradead.org>
+Date: Thu, 21 Dec 2023 15:34:52 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/3] nvdimm/dimm_devs: fix kernel-doc for function params
+Content-Language: en-US
+To: Ira Weiny <ira.weiny@intel.com>, linux-kernel@vger.kernel.org
+Cc: Dan Williams <dan.j.williams@intel.com>,
+ Vishal Verma <vishal.l.verma@intel.com>, Dave Jiang <dave.jiang@intel.com>,
+ nvdimm@lists.linux.dev
+References: <20231207210545.24056-1-rdunlap@infradead.org>
+ <20231207210545.24056-2-rdunlap@infradead.org>
+ <6584bc064ea54_5580229435@iweiny-mobl.notmuch>
+ <6584bd663bd30_576052949c@iweiny-mobl.notmuch>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <6584bd663bd30_576052949c@iweiny-mobl.notmuch>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-This adds a link to the hwmon sysfs attributes in the hwmon patch
-submission bullet points. It also adds an explanation denoting the
-intent of the fan min and max attributes.
+Hi Ira,
 
-Signed-off-by: Ivor Wanders <ivor@iwanders.net>
----
- Documentation/hwmon/submitting-patches.rst |  4 +++-
- Documentation/hwmon/sysfs-interface.rst    | 12 +++++++++---
- 2 files changed, 12 insertions(+), 4 deletions(-)
+On 12/21/23 14:34, Ira Weiny wrote:
+> Ira Weiny wrote:
+>> Randy Dunlap wrote:
+> 
+> [snip]
+> 
+>>> diff -- a/drivers/nvdimm/dimm_devs.c b/drivers/nvdimm/dimm_devs.c
+>>> --- a/drivers/nvdimm/dimm_devs.c
+>>> +++ b/drivers/nvdimm/dimm_devs.c
+>>> @@ -53,7 +53,10 @@ static int validate_dimm(struct nvdimm_d
+>>>  
+>>>  /**
+>>>   * nvdimm_init_nsarea - determine the geometry of a dimm's namespace area
+>>> - * @nvdimm: dimm to initialize
+>>> + * @ndd: dimm to initialize
+>>> + *
+>>> + * Returns: %0 if the area is already valid, -errno on error,
+>>
+>> This is good...
+>>
+>>> ...otherwise an
+>>> + * ND_CMD_* status code.
+>>
+>> I don't see where any of the ->ndctl() calls return an ND_CMD_* status
+>> code.  What am I missing?
 
-diff --git a/Documentation/hwmon/submitting-patches.rst b/Documentation/hwmon/submitting-patches.rst
-index 6482c4f13..d634c41d7 100644
---- a/Documentation/hwmon/submitting-patches.rst
-+++ b/Documentation/hwmon/submitting-patches.rst
-@@ -141,7 +141,9 @@ increase the chances of your change being accepted.
- 
- * When deciding which sysfs attributes to support, look at the chip's
-   capabilities. While we do not expect your driver to support everything the
--  chip may offer, it should at least support all limits and alarms.
-+  chip may offer, it should at least support all limits and alarms. Only
-+  add attributes that follow the intent of the attributes, as described in
-+  Documentation/hwmon/sysfs-interface.rst.
- 
- * Last but not least, please check if a driver for your chip already exists
-   before starting to write a new driver. Especially for temperature sensors,
-diff --git a/Documentation/hwmon/sysfs-interface.rst b/Documentation/hwmon/sysfs-interface.rst
-index f76e9f8cc..edfde3b13 100644
---- a/Documentation/hwmon/sysfs-interface.rst
-+++ b/Documentation/hwmon/sysfs-interface.rst
-@@ -167,13 +167,19 @@ Fans
- ****
- 
- `fan[1-*]_min`
--		Fan minimum value
-+		Fan minimum value. This is intended as a way to specify
-+		the desired minimum speed to the device if the device
-+		supports that. It is not intended for communicating
-+		a constant that denotes the lowest possible fan speed.
- 
- `fan[1-*]_max`
--		Fan maximum value
-+		Fan maximum value. This is intended as a way to specify
-+		the desired maximum speed to the device if the device
-+		supports that. It is not intended for communicating
-+		a constant that denotes the highest possible fan speed.
- 
- `fan[1-*]_input`
--		Fan input value.
-+		Fan input value. This is the fan's current speed.
- 
- `fan[1-*]_div`
- 		Fan divisor.
+Probably nothing.
+Yes, please drop that/fix that when you merge it.
+Thanks.
+
+> If you agree that this should be dropped I can clean it up as I'm trying
+> to prep the nvdimm tree now and was hoping to take this series.
+> 
+> Ira
+> 
+>>
+>> The rest looks good,
+>> Ira
+
 -- 
-2.17.1
-
+#Randy
+https://people.kernel.org/tglx/notes-about-netiquette
+https://subspace.kernel.org/etiquette.html
 
