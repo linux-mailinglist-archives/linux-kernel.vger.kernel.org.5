@@ -1,111 +1,91 @@
-Return-Path: <linux-kernel+bounces-8262-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8263-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B77A581B4A8
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 12:07:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C18DA81B4AB
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 12:07:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E94031C23317
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 11:07:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C1B7E1C22D70
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 11:07:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 478736ABB4;
-	Thu, 21 Dec 2023 11:07:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B49866ABB7;
+	Thu, 21 Dec 2023 11:07:47 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com [209.85.167.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from bmailout3.hostsharing.net (bmailout3.hostsharing.net [176.9.242.62])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A1DE4120C;
-	Thu, 21 Dec 2023 11:07:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f179.google.com with SMTP id 5614622812f47-3ba32e9554bso152237b6e.1;
-        Thu, 21 Dec 2023 03:07:01 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703156820; x=1703761620;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KFySEnepUE+tDIi+pM++FTPD8l5vR/6BAzQA3Eq9QBI=;
-        b=TcN/a1CMQhkmPbONm+8IZ+nttxmPSze4HZOdv7QTISbjc1Gz2egch1Z38sYz+cUlO4
-         pEmNe9s69Pocy4cUvxhnzzJvhyD1QciYHTec9wMdfYBOMrqLzH6rQGv5Y/ID+7aeGA/g
-         MZS+n0mbkqbFa+Uu3XfZ54nK5oIvuDBG55T79rexiafKgGAjREzzQwaTruMRMUjcqZQG
-         lBS3oeNYWTIR4QUeGbm2LYgzgMMWb72q6asP5gErOBJUgDkSUnoyLhUXl710bY/OIenV
-         5xJolMj+swlfAfBrrw5e/ztrS1MKZ4V7mtcBcWmnEhwv8448MazJ+LfuI7PZ387GZA9J
-         FhSA==
-X-Gm-Message-State: AOJu0Yynb84NzQ4dHxwAW5r9pOUSvx4OHfqYL2jnV3F/Z6kSITslm4BY
-	1KrKxmDZz+gIDEJi60RpmI4vK357n9ubxtRnt70=
-X-Google-Smtp-Source: AGHT+IFccL6Z2EozfxozVM+x3rnOqtP5HKLCPF2ejd6EdNcwGQZ4mIq/rAebsMlg8Gb8tYZb2RRqGanQUw3wiHS8YAo=
-X-Received: by 2002:a05:6820:2484:b0:591:4861:6b02 with SMTP id
- cq4-20020a056820248400b0059148616b02mr25687361oob.1.1703156820529; Thu, 21
- Dec 2023 03:07:00 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78E1B6AB8F;
+	Thu, 21 Dec 2023 11:07:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=h08.hostsharing.net
+Received: from h08.hostsharing.net (h08.hostsharing.net [IPv6:2a01:37:1000::53df:5f1c:0])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
+	 client-signature RSA-PSS (4096 bits) client-digest SHA256)
+	(Client CN "*.hostsharing.net", Issuer "RapidSSL TLS RSA CA G1" (verified OK))
+	by bmailout3.hostsharing.net (Postfix) with ESMTPS id 65DC21003D0EC;
+	Thu, 21 Dec 2023 12:07:43 +0100 (CET)
+Received: by h08.hostsharing.net (Postfix, from userid 100393)
+	id 3411B1E5F; Thu, 21 Dec 2023 12:07:43 +0100 (CET)
+Date: Thu, 21 Dec 2023 12:07:43 +0100
+From: Lukas Wunner <lukas@wunner.de>
+To: Robin Murphy <robin.murphy@arm.com>
+Cc: Ethan Zhao <haifeng.zhao@linux.intel.com>, bhelgaas@google.com,
+	baolu.lu@linux.intel.com, dwmw2@infradead.org, will@kernel.org,
+	linux-pci@vger.kernel.org, iommu@lists.linux.dev,
+	linux-kernel@vger.kernel.org, Haorong Ye <yehaorong@bytedance.com>
+Subject: Re: [PATCH 2/2] iommu/vt-d: don's issue devTLB flush request when
+ device is disconnected
+Message-ID: <20231221110743.GA1619@wunner.de>
+References: <20231213034637.2603013-1-haifeng.zhao@linux.intel.com>
+ <20231213034637.2603013-3-haifeng.zhao@linux.intel.com>
+ <20231213104417.GA31964@wunner.de>
+ <3b7742c4-bbae-4a78-a5a6-30df936a17d4@arm.com>
+ <20231221104254.GB12714@wunner.de>
+ <6f49be01-89e3-4407-9813-51d62e723947@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231221055144.24862-1-rdunlap@infradead.org>
-In-Reply-To: <20231221055144.24862-1-rdunlap@infradead.org>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Thu, 21 Dec 2023 12:06:48 +0100
-Message-ID: <CAJZ5v0j5mcxRMQR3T+tmuL89Y+GjrWYwK_hj+fYikczp=Ey3Fw@mail.gmail.com>
-Subject: Re: [PATCH] thermal: cpuidle_cooling: fix kernel-doc warning and a spello
-To: Randy Dunlap <rdunlap@infradead.org>
-Cc: linux-kernel@vger.kernel.org, Amit Daniel Kachhap <amit.kachhap@gmail.com>, 
-	Daniel Lezcano <daniel.lezcano@linaro.org>, Viresh Kumar <viresh.kumar@linaro.org>, 
-	Lukasz Luba <lukasz.luba@arm.com>, "Rafael J . Wysocki" <rafael@kernel.org>, Zhang Rui <rui.zhang@intel.com>, 
-	linux-pm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6f49be01-89e3-4407-9813-51d62e723947@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-On Thu, Dec 21, 2023 at 6:51=E2=80=AFAM Randy Dunlap <rdunlap@infradead.org=
-> wrote:
->
-> Correct one misuse of kernel-doc notation and one spelling error as
-> reported by codespell.
->
-> cpuidle_cooling.c:152: warning: cannot understand function prototype: 'st=
-ruct thermal_cooling_device_ops cpuidle_cooling_ops =3D '
->
-> For the kernel-doc warning, don't use "/**" for a comment on data.
-> kernel-doc can be used for structure declarations but not definitions.
->
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Amit Daniel Kachhap <amit.kachhap@gmail.com>
-> Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
-> Cc: Viresh Kumar <viresh.kumar@linaro.org>
-> Cc: Lukasz Luba <lukasz.luba@arm.com>
-> Cc: Rafael J. Wysocki <rafael@kernel.org>
-> Cc: Zhang Rui <rui.zhang@intel.com>
-> Cc: linux-pm@vger.kernel.org
-> ---
->  drivers/thermal/cpuidle_cooling.c |    4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff -- a/drivers/thermal/cpuidle_cooling.c b/drivers/thermal/cpuidle_coo=
-ling.c
-> --- a/drivers/thermal/cpuidle_cooling.c
-> +++ b/drivers/thermal/cpuidle_cooling.c
-> @@ -66,7 +66,7 @@ static unsigned int cpuidle_cooling_runt
->   * @state : a pointer to the state variable to be filled
->   *
->   * The function always returns 100 as the injection ratio. It is
-> - * percentile based for consistency accross different platforms.
-> + * percentile based for consistency across different platforms.
->   *
->   * Return: The function can not fail, it is always zero
->   */
-> @@ -146,7 +146,7 @@ static int cpuidle_cooling_set_cur_state
->         return 0;
->  }
->
-> -/**
-> +/*
->   * cpuidle_cooling_ops - thermal cooling device ops
->   */
->  static struct thermal_cooling_device_ops cpuidle_cooling_ops =3D {
+On Thu, Dec 21, 2023 at 11:01:56AM +0000, Robin Murphy wrote:
+> On 2023-12-21 10:42 am, Lukas Wunner wrote:
+> > On Wed, Dec 13, 2023 at 11:54:05AM +0000, Robin Murphy wrote:
+> > > I think if we want to ensure ATCs are invalidated on hot-unplug we need an
+> > > additional pre-removal notifier to take care of that, and that step would
+> > > then want to distinguish between an orderly removal where cleaning up is
+> > > somewhat meaningful, and a surprise removal where it definitely isn't.
+> > 
+> > Even if a user starts the process for orderly removal, the device may be
+> > surprise-removed *during* that process.  So we cannot assume that the
+> > device is actually accessible if orderly removal has been initiated.
+> > If the form factor supports surprise removal, the device may be gone
+> > at any time.
+> 
+> Sure, whatever we do there's always going to be some unavoidable
+> time-of-check-to-time-of-use race window so we can never guarantee that
+> sending a request to the device will succeed. I was just making the point
+> that if we *have* already detected a surprise removal, then cleaning up its
+> leftover driver model state should still generate a BUS_NOTIFY_REMOVE_DEVICE
+> call, but in that case we can know there's no point trying to send any
+> requests to the device that's already gone.
 
-Applied as 6.8 material, thanks!
+Right, using pci_dev_is_disconnected() as a *speedup* when we
+definitely know the device is gone, that's perfectly fine.
+
+So in that sense the proposed patch is acceptable *after* this
+series has been extended to make sure hard lockups can *never*
+occur on unplug.
+
+Thanks,
+
+Lukas
 
