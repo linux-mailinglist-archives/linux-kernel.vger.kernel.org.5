@@ -1,25 +1,25 @@
-Return-Path: <linux-kernel+bounces-9025-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9026-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7936F81BF63
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 21:06:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DE8481BF64
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 21:06:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 35BDC288F0E
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 20:06:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 29BC7288EA0
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 20:06:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51AD0745FA;
-	Thu, 21 Dec 2023 20:06:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10E72760A9;
+	Thu, 21 Dec 2023 20:06:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="UQy5FdaO"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="USMsmCfc"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
+Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E833745CE
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 20:06:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AD73745D7
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 20:06:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
@@ -29,10 +29,10 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=FJl4ImE4TRrDXvrAPN+dS4cgTUzwQEr6h+ILfia+IPo=;
-	b=UQy5FdaOJP3WHcVUkGmBl3aQkcqo5p6PbagnBT8wp0ljLIpod/Ojsrg7YfgnIjF56yHZRq
-	Hho7BHFtctI8tiFKBQkJ21sW2wiU4BcM7mHrjBDpphYej6wGMhj1TMy2nV0GXg97lpUgq8
-	tU7rBZD5CJd5flB9JqJlXxWqDy6GX1E=
+	bh=ColijDwhDovJxdnzDPHxNzx5OycMVFqUSNs1GHs5mVk=;
+	b=USMsmCfcfZYE03AC87Gmpyp9gmlr/kMJv0pWBUPw9nx0sHm6vrJx9MiJnMGDlRy1Np+vvg
+	xVnk34bog6bJEXPpd1W0ZhX/6rrSohpzazwxYlJ0CsIiIqPW+tM023kd9Pj1/tI00TxpVr
+	7puIg/6gNeTx8rsKTuL0nS4IqNynK+s=
 From: andrey.konovalov@linux.dev
 To: Marco Elver <elver@google.com>
 Cc: Andrey Konovalov <andreyknvl@gmail.com>,
@@ -44,9 +44,9 @@ Cc: Andrey Konovalov <andreyknvl@gmail.com>,
 	linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org,
 	Andrey Konovalov <andreyknvl@google.com>
-Subject: [PATCH mm 07/11] kasan: respect CONFIG_KASAN_VMALLOC for kasan_flag_vmalloc
-Date: Thu, 21 Dec 2023 21:04:49 +0100
-Message-Id: <3e5c933c8f6b59bd587efb05c407964be951772c.1703188911.git.andreyknvl@google.com>
+Subject: [PATCH mm 08/11] kasan: check kasan_vmalloc_enabled in vmalloc tests
+Date: Thu, 21 Dec 2023 21:04:50 +0100
+Message-Id: <954456e50ac98519910c3e24a479a18eae62f8dd.1703188911.git.andreyknvl@google.com>
 In-Reply-To: <cover.1703188911.git.andreyknvl@google.com>
 References: <cover.1703188911.git.andreyknvl@google.com>
 Precedence: bulk
@@ -60,57 +60,87 @@ X-Migadu-Flow: FLOW_OUT
 
 From: Andrey Konovalov <andreyknvl@google.com>
 
-Never enable the kasan_flag_vmalloc static branch unless
-CONFIG_KASAN_VMALLOC is enabled.
-
-This does not fix any observable bugs (vmalloc annotations for the
-HW_TAGS mode are no-op with CONFIG_KASAN_VMALLOC disabled) but rather
-just cleans up the code.
+Check that vmalloc poisoning is not disabled via command line when
+running the vmalloc-related KASAN tests. Skip the tests otherwise.
 
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 ---
- mm/kasan/hw_tags.c | 7 +++++++
- mm/kasan/kasan.h   | 1 +
- 2 files changed, 8 insertions(+)
+ mm/kasan/hw_tags.c    |  1 +
+ mm/kasan/kasan.h      |  5 +++++
+ mm/kasan/kasan_test.c | 11 ++++++++++-
+ 3 files changed, 16 insertions(+), 1 deletion(-)
 
 diff --git a/mm/kasan/hw_tags.c b/mm/kasan/hw_tags.c
-index 06141bbc1e51..80f11a3eccd5 100644
+index 80f11a3eccd5..2b994092a2d4 100644
 --- a/mm/kasan/hw_tags.c
 +++ b/mm/kasan/hw_tags.c
-@@ -57,7 +57,11 @@ enum kasan_mode kasan_mode __ro_after_init;
- EXPORT_SYMBOL_GPL(kasan_mode);
- 
- /* Whether to enable vmalloc tagging. */
-+#ifdef CONFIG_KASAN_VMALLOC
- DEFINE_STATIC_KEY_TRUE(kasan_flag_vmalloc);
-+#else
-+DEFINE_STATIC_KEY_FALSE(kasan_flag_vmalloc);
-+#endif
+@@ -62,6 +62,7 @@ DEFINE_STATIC_KEY_TRUE(kasan_flag_vmalloc);
+ #else
+ DEFINE_STATIC_KEY_FALSE(kasan_flag_vmalloc);
+ #endif
++EXPORT_SYMBOL_GPL(kasan_flag_vmalloc);
  
  #define PAGE_ALLOC_SAMPLE_DEFAULT	1
  #define PAGE_ALLOC_SAMPLE_ORDER_DEFAULT	3
-@@ -119,6 +123,9 @@ static int __init early_kasan_flag_vmalloc(char *arg)
- 	if (!arg)
- 		return -EINVAL;
- 
-+	if (!IS_ENABLED(CONFIG_KASAN_VMALLOC))
-+		return 0;
-+
- 	if (!strcmp(arg, "off"))
- 		kasan_arg_vmalloc = KASAN_ARG_VMALLOC_OFF;
- 	else if (!strcmp(arg, "on"))
 diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
-index 5fbcc1b805bc..dee105ba32dd 100644
+index dee105ba32dd..acc1a9410f0d 100644
 --- a/mm/kasan/kasan.h
 +++ b/mm/kasan/kasan.h
-@@ -49,6 +49,7 @@ DECLARE_PER_CPU(long, kasan_page_alloc_skip);
+@@ -83,6 +83,11 @@ static inline bool kasan_sample_page_alloc(unsigned int order)
  
- static inline bool kasan_vmalloc_enabled(void)
+ #else /* CONFIG_KASAN_HW_TAGS */
+ 
++static inline bool kasan_vmalloc_enabled(void)
++{
++	return IS_ENABLED(CONFIG_KASAN_VMALLOC);
++}
++
+ static inline bool kasan_async_fault_possible(void)
  {
-+	/* Static branch is never enabled with CONFIG_KASAN_VMALLOC disabled. */
- 	return static_branch_likely(&kasan_flag_vmalloc);
- }
+ 	return false;
+diff --git a/mm/kasan/kasan_test.c b/mm/kasan/kasan_test.c
+index 1c77c73ff287..496154e38965 100644
+--- a/mm/kasan/kasan_test.c
++++ b/mm/kasan/kasan_test.c
+@@ -1540,6 +1540,9 @@ static void vmalloc_helpers_tags(struct kunit *test)
  
+ 	KASAN_TEST_NEEDS_CONFIG_ON(test, CONFIG_KASAN_VMALLOC);
+ 
++	if (!kasan_vmalloc_enabled())
++		kunit_skip(test, "Test requires kasan.vmalloc=on");
++
+ 	ptr = vmalloc(PAGE_SIZE);
+ 	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
+ 
+@@ -1574,6 +1577,9 @@ static void vmalloc_oob(struct kunit *test)
+ 
+ 	KASAN_TEST_NEEDS_CONFIG_ON(test, CONFIG_KASAN_VMALLOC);
+ 
++	if (!kasan_vmalloc_enabled())
++		kunit_skip(test, "Test requires kasan.vmalloc=on");
++
+ 	v_ptr = vmalloc(size);
+ 	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, v_ptr);
+ 
+@@ -1627,6 +1633,9 @@ static void vmap_tags(struct kunit *test)
+ 
+ 	KASAN_TEST_NEEDS_CONFIG_ON(test, CONFIG_KASAN_VMALLOC);
+ 
++	if (!kasan_vmalloc_enabled())
++		kunit_skip(test, "Test requires kasan.vmalloc=on");
++
+ 	p_page = alloc_pages(GFP_KERNEL, 1);
+ 	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, p_page);
+ 	p_ptr = page_address(p_page);
+@@ -1745,7 +1754,7 @@ static void match_all_not_assigned(struct kunit *test)
+ 		free_pages((unsigned long)ptr, order);
+ 	}
+ 
+-	if (!IS_ENABLED(CONFIG_KASAN_VMALLOC))
++	if (!kasan_vmalloc_enabled())
+ 		return;
+ 
+ 	for (i = 0; i < 256; i++) {
 -- 
 2.25.1
 
