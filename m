@@ -1,52 +1,52 @@
-Return-Path: <linux-kernel+bounces-8330-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8332-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60ECB81B5C7
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 13:28:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8745081B5CC
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 13:29:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 18AC3286112
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 12:28:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3C5A7284782
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 12:29:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DCCC6E5B6;
-	Thu, 21 Dec 2023 12:28:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53AC5745E2;
+	Thu, 21 Dec 2023 12:28:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="cncQcERW"
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="xHJ2Wx/r"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2041.outbound.protection.outlook.com [40.107.95.41])
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2052.outbound.protection.outlook.com [40.107.101.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1871573182;
-	Thu, 21 Dec 2023 12:28:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6089C6EB63;
+	Thu, 21 Dec 2023 12:28:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=d/YdpUEV5mN9QS3mPvqxK1Y4rL63lP8UOrHfJsYl9byFSea9vh42I3G3apkWTURppk2Regj3VooyJMXPN15EZrTFKn/wlikbnbcTKAR3BtEAKCr+SBm70FZICCs/klzQxjEAgyCW0C4QaqdJeXA7mTl5s+LQwZ0+Miu69cLpSFXQkx+yTQpDTa56PHNg5mQ1KMPDSyeJ132c2gKhpXqJYiEPJCVz2SyTEZyxKjc4PU34RgE98l1Q7+a9gST+Pr9veFcJm4IHl43L/ejLYzp+xwQwVNVeTng/zZyAfajyfrTgY16IPSoVodsHCJZTyazyllmiimvdwX8MK10n/Up1xg==
+ b=hJX0QM/APKnRH3DoNEhPQyhi1SC6KzMYl8QgW7H1/Bw3TyIfA83ZMrrkLFX+hSYiNnMhsf8IjLhbfyEpcqV7bzXKTEzU+0ApoVXKG6czLKeQixFWp7CmFqQaeiNewa1BUufxrRQKPx4L/o5cHWcZj0Cr+5x4tUNuXlG9bDosz5FN2sdwp3+3CjDgwC1SEWi8fX3BlkImktl7DmlW3GIlMofiP4LQOtn59pHX/NF35iY7X4hFRhxeJnylxj2zRg8hVslhv0H/jNu+6biQ0TbHPt4f/C2FDGwg9YOw9qkJ9aDpn9UzthyQfypvKNlgn/tUHiOCrqj6eBphW1Gy33GXZw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=GMi7616qcl1PQeaHO1efvzQDD9ZOZZTtUAIH7N6syMU=;
- b=bsks+dwv+v7AI0i0KGJ3ScIVPaeR40CMTFohUxcFm02PcUsDx9CRWRceEFdsCqEplydKQyHoJZiqe4SJkG6FvR3/XmvjcAEfRl3eqXSewBN5WemT44UiiUCKVQrUzLae7zaNkXh87t83Vfqtqf8hhWo9uU3q9vSCJPlvehrRfg/YlpUIp27PkgNx9wOY7ICmr7cdghiexNviFO4+ToRh3PYHGydygeIhrfxlKwK+hPt4/Z8CHZcEDxKJ4v6ubNDbOMoZ58Z4vYO8JHl5qbA92XNuUVmBi4GhhA1ybJww886dQST7y2e6gcXwZMU0beD7yISsdLmQrW899P+9kiAWmg==
+ bh=VErU1fMmjlFtdD+3d4U72Q2Ps5wUhnw8CIMaxVtrXFs=;
+ b=bEvWNBq+T0S426K1th0wCRMsPhomTieWPqNxXkGTPjfzy3giMq9+Tx0Ms/zEntcZf+VpDZqSO7c42bPKQsM6djBEtrDEb3GSjeOns4gMhZADvMspNcdEe454OIIfVlU2CJF4S0xO3IJD6999ddbR+XvpfVJT/sYiCjZWGp4ie+JXQekq52Afj4ki+hiqZnsPga1iH0lbAAUiZutTgmWLc4xxLOO3pBZdmYVCeeOzdAI3q3ZvT1+jiSlrHxH0BF1geTk5NAou+Z9hc7zTVQ2nFzzjVphySUuhO1o5GwaEeGwkky55Ybsg+uhj+BQUp3Fm8UZbr0KjoL/116LR1Dm5Yg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
  dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
  header.from=amd.com; dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GMi7616qcl1PQeaHO1efvzQDD9ZOZZTtUAIH7N6syMU=;
- b=cncQcERWmvsXsBsWwyyFiYQWbAtEJQhSJdaQPR3lVPqkdYjZvo4RNFA40jqtunZoKbgonuze7jZOkv55cb5G6DIlfRAqeZLRX5AyzyeIfBNsUZIwXA1SbPbOkOu7QppwIIhuCVoPtboHUBHIF9w81F81WuaCns8a830YXxt0ce0=
-Received: from MW4P221CA0004.NAMP221.PROD.OUTLOOK.COM (2603:10b6:303:8b::9) by
- SA1PR12MB8723.namprd12.prod.outlook.com (2603:10b6:806:385::12) with
+ bh=VErU1fMmjlFtdD+3d4U72Q2Ps5wUhnw8CIMaxVtrXFs=;
+ b=xHJ2Wx/rsJNnCcArvlTD30KUbjwPpKpgcQ1HP0WIKY8KU1mFYJeswIzxaQh/8fhGfcSpBbxutAxmerCxfn796p6RMKPMAOXafZ2jiLC/yr/bxS4+brp9HNly32Fezjmze59pOy0DPubmXY1QPhdWJ4LXA/qputDQ1sgh082Ecos=
+Received: from MW4P221CA0027.NAMP221.PROD.OUTLOOK.COM (2603:10b6:303:8b::32)
+ by CY5PR12MB6202.namprd12.prod.outlook.com (2603:10b6:930:25::8) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7113.18; Thu, 21 Dec
- 2023 12:28:06 +0000
-Received: from MWH0EPF000971E8.namprd02.prod.outlook.com
- (2603:10b6:303:8b:cafe::d3) by MW4P221CA0004.outlook.office365.com
- (2603:10b6:303:8b::9) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7113.20 via Frontend
- Transport; Thu, 21 Dec 2023 12:28:06 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.37; Thu, 21 Dec
+ 2023 12:28:19 +0000
+Received: from MWH0EPF000971E9.namprd02.prod.outlook.com
+ (2603:10b6:303:8b:cafe::4c) by MW4P221CA0027.outlook.office365.com
+ (2603:10b6:303:8b::32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7113.21 via Frontend
+ Transport; Thu, 21 Dec 2023 12:28:19 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=amd.com;
@@ -54,24 +54,26 @@ Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
  165.204.84.17 as permitted sender) receiver=protection.outlook.com;
  client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
 Received: from SATLEXMB04.amd.com (165.204.84.17) by
- MWH0EPF000971E8.mail.protection.outlook.com (10.167.243.68) with Microsoft
+ MWH0EPF000971E9.mail.protection.outlook.com (10.167.243.71) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7113.14 via Frontend Transport; Thu, 21 Dec 2023 12:28:05 +0000
+ 15.20.7113.14 via Frontend Transport; Thu, 21 Dec 2023 12:28:18 +0000
 Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
  (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Thu, 21 Dec
- 2023 06:28:04 -0600
+ 2023 06:28:08 -0600
 From: Michal Simek <michal.simek@amd.com>
 To: <linux-kernel@vger.kernel.org>, <monstr@monstr.eu>,
 	<michal.simek@xilinx.com>, <git@xilinx.com>
-CC: Conor Dooley <conor+dt@kernel.org>, Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>, Naman Trivedi Manojbhai
-	<naman.trivedimanojbhai@amd.com>, Rob Herring <robh+dt@kernel.org>, "Wolfram
- Sang" <wsa@kernel.org>, <devicetree@vger.kernel.org>, kishore Manne
-	<nava.kishore.manne@amd.com>, <linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH v3 1/4] dt-bindings: firmware: xilinx: Describe missing child nodes
-Date: Thu, 21 Dec 2023 13:27:54 +0100
-Message-ID: <1d7988cfadf3554d11f0779f96a670b4fd86ce5a.1703161663.git.michal.simek@amd.com>
+CC: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Conor Dooley
+	<conor+dt@kernel.org>, Damien Le Moal <dlemoal@kernel.org>, "Krzysztof
+ Kozlowski" <krzysztof.kozlowski+dt@linaro.org>, Mark Brown
+	<broonie@kernel.org>, Naman Trivedi Manojbhai
+	<naman.trivedimanojbhai@amd.com>, Rob Herring <robh+dt@kernel.org>,
+	<devicetree@vger.kernel.org>, kishore Manne <nava.kishore.manne@amd.com>,
+	<linux-arm-kernel@lists.infradead.org>
+Subject: [PATCH v3 2/4] dt-bindings: firmware: xilinx: Sort node names (clock-controller)
+Date: Thu, 21 Dec 2023 13:27:55 +0100
+Message-ID: <ccb6bd5f4d1d28983c73497ada596e893fece499.1703161663.git.michal.simek@amd.com>
 X-Mailer: git-send-email 2.36.1
 In-Reply-To: <cover.1703161663.git.michal.simek@amd.com>
 References: <cover.1703161663.git.michal.simek@amd.com>
@@ -81,7 +83,7 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3079; i=michal.simek@amd.com; h=from:subject:message-id; bh=xeHZ+H+fl1QI3vYy/F3AiECHNJ4UY923yqjJce1+Rs0=; b=owGbwMvMwCR4yjP1tKYXjyLjabUkhtQWfc/0ya9ffJoXt3BT6Ns/TgqTN2+8cblnqimnk3P+7 LXtWYYPO2JZGASZGGTFFFmkba6c2Vs5Y4rwxcNyMHNYmUCGMHBxCsBE1v5nmO/fYf1PRol3ifyt 7T9Vc5YttV5RNJ1hfqXTH5++3OusX4wX6P03Yws5Xpi1FAA=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1963; i=michal.simek@amd.com; h=from:subject:message-id; bh=+AUitpSOWAFg4BQgiuXqjcE60JxElkVfG2wS4gQ0ENU=; b=owGbwMvMwCR4yjP1tKYXjyLjabUkhtQWfU+B7X+CCp/OLjpc233q/3b195fSzh3cGxC6ySnyu +VUbcbCjlgWBkEmBlkxRRZpmytn9lbOmCJ88bAczBxWJpAhDFycAjCR/lkMCzpW3Nx/8O+WQNkv Yjvq/p11ynANi2CYn25tyBhTWf/rmXfh3SV2YWe8TojpAQA=
 X-Developer-Key: i=michal.simek@amd.com; a=openpgp; fpr=67350C9BF5CCEE9B5364356A377C7F21FE3D1F91
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
@@ -89,116 +91,77 @@ X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
  (10.181.40.145)
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MWH0EPF000971E8:EE_|SA1PR12MB8723:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0369c5c2-de71-4b02-1daa-08dc022048a1
+X-MS-TrafficTypeDiagnostic: MWH0EPF000971E9:EE_|CY5PR12MB6202:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1d31a156-7c52-457c-64f7-08dc02205075
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	kNCm0wc7Vt60DnZlQmuRCDMX8ztqp5M//hdVISFBmEKKZRf2ZrgK2Wu18a8qUnghoH1cz/bKnGDnnJ7YDjdYMwKZ9YR/ML3JRK2yReOY3VhprnN9oE2Qw0l3u4+21xJlVRwPoMMiU2deKfvnrrWljvtknfZJBYpQA0SXOrAiUGcNKn1lVMVZNx4U43RYELPp1tX5VZIfMvyLz08BeXvFnRMTs+FOzLQaftYiJ6YNj7kLLNKOC9wyYYvS/LGU3i5tvQz/z/U+WcsymypAIFJLm8dd3FYHCtmV7VYiHwEswtitKOzQ++V6P8lsNsrFmNILFXK7fxMFwgYXuLsVMbNSnTkDOZPVKf7PGNJdXB5ObDDGcDTZ+lFEaj6APQOzojzH66BZeAwQSPjdq+EBc1HXXC+lQjWOs2/tVuszu5NqlIRsAjlhDJy3BjpzFLlmQq7Ec/YVH7HclTi2Mw7lJ7OjCupUYY2CLfi20+veiFNNw348NMuAsNT3EO8bY6Vzr+Gmfr55aK/eB2gOAYNuT8haLQA1q9QWIOazRC3o282ZARcQv2ncQ++lpqeEiJcToxg5Dkkk5yKFPwVzmazHtv68sW1veeFSOO2eZeO9hhR3WyDNXE4gJi0tbxE+3QeJm+lwOEOVwKs/ATbBIIUDUuXLtC7gamCn1HYvsLLLIJhmWirDRYaF1fTSRBHSqAorO7pbs3/4SVItAvPxqFpiPI+UN6vcHJkOSBiNiOL6SR9OKM+51QpKP9VqZdr2YVr7AbMBnzOQy75sqmkvxPL8WmsUAIPVV1q55VrDcBQGNyWHzYA=
+	nTbgs/jc6qsgTiJe87TNBBpTsVhUErAjXg0rEPDXscyRM7IY8FCTz5Cq35qdP2s3ZI8meQeySc5iowaQ0+nBp7brgNAIMkzOBHeGxSWuJ07iDcFEmhKdb4JYehenCCu8TX23Oo0KEoeBnBFb+2Mh0WWvS17JYLL6ESOjz1EhKwxvR5CnUoccccb5k+0x5Kn9gyAph0VAB7OOeYK9t//nnKhLbd1oYQwoVE2naCgiUOf6NViLsD36Z5gv1RZrpy2V/a/vPoZ/LC6nu24wImFQl0iYi8ArKUtZTTwbOUdBUxoKUyTiuMiuWUg+5cqoRsG0kSlA/nGznIZ1b9sfwcGa1nqfXWU2hytT2CRn6n7AHp1h1OuuUWwobF+apfqtUEA2LG/uh8B1oNApjW3ZqlfLoQ8PpD3v+oxFIRRcPTTFPTbTYQKCugG5gzc7Yad95pRn6+vyQc3q4aN+vgEsUnWHBZ37WH973du351cDLR4x0QAKnes6h1JCpxDtR9Vs98KCZt8XJpVkc1fRBf0zCmeVVdUwiPKrTk3sm9/k+WhvOLzShrZqqHq0BppnrZCXDNGQzKjWGtQVzoGqIufeOl2/e6S7u20ufZlWI44bOAaPgMqwP7jHsqJBPEZdsL5s4Jp93v6PIrhdehHREh85dJaMT6dCG1JHkV+SuCAZIZ4cvne/jx4MFFdU3F0AgFwEfH/FOjVeDE+UoBWqsKwTeZN4OnWpN9PKUREACNIvgEKLPpkr28zN/nSCKKzXlDUgt37GfVV/CvW2Dmgez54VHQUpkJUJVswKgwv+X4RpmmFRKlBQNF0suesYbACNEbgfrD90a7jcJcKvI/Zlj4B6wifVNA==
 X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(396003)(376002)(346002)(136003)(230922051799003)(82310400011)(1800799012)(451199024)(186009)(64100799003)(40470700004)(36840700001)(46966006)(2906002)(81166007)(5660300002)(2616005)(70586007)(16526019)(110136005)(54906003)(8676002)(47076005)(36860700001)(40480700001)(8936002)(70206006)(478600001)(44832011)(4326008)(86362001)(82740400003)(356005)(41300700001)(6666004)(26005)(316002)(83380400001)(336012)(426003)(40460700003)(36756003)(36900700001)(2101003);DIR:OUT;SFP:1101;
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(376002)(346002)(396003)(136003)(230922051799003)(230173577357003)(230273577357003)(186009)(1800799012)(82310400011)(64100799003)(451199024)(40470700004)(36840700001)(46966006)(54906003)(316002)(6666004)(478600001)(26005)(47076005)(2616005)(36860700001)(336012)(16526019)(426003)(41300700001)(7416002)(2906002)(5660300002)(70206006)(44832011)(110136005)(4326008)(8676002)(70586007)(8936002)(83380400001)(82740400003)(40460700003)(356005)(36756003)(40480700001)(86362001)(81166007)(2101003)(36900700001);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Dec 2023 12:28:05.8932
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Dec 2023 12:28:18.9972
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0369c5c2-de71-4b02-1daa-08dc022048a1
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1d31a156-7c52-457c-64f7-08dc02205075
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	MWH0EPF000971E8.namprd02.prod.outlook.com
+	MWH0EPF000971E9.namprd02.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB8723
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR12MB6202
 
-Firmware node has more than fpga, aes and clock child nodes but also power,
-reset, gpio, pinctrl and pcap which are not described yet.
-All of them have binding in separate files but there is missing connection
-to firmware node that's why describe it.
+Nodes should be sorted that's why move clock-controller to the top of list.
 
 Signed-off-by: Michal Simek <michal.simek@amd.com>
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
 
-Changes in v3:
-- s/power-controller/power-management/g
-- extend example
+(no changes since v2)
 
 Changes in v2:
-- Sort nodes by name
-- Rename zynqmp-power to power-controller
-- Keep only single patch for easier handling as done in v1
+- New patch in series
 
- .../firmware/xilinx/xlnx,zynqmp-firmware.yaml | 50 +++++++++++++++++++
- 1 file changed, 50 insertions(+)
+ .../firmware/xilinx/xlnx,zynqmp-firmware.yaml  | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
 diff --git a/Documentation/devicetree/bindings/firmware/xilinx/xlnx,zynqmp-firmware.yaml b/Documentation/devicetree/bindings/firmware/xilinx/xlnx,zynqmp-firmware.yaml
-index 98945220c33c..884917edb19d 100644
+index 884917edb19d..51dc4e3afd25 100644
 --- a/Documentation/devicetree/bindings/firmware/xilinx/xlnx,zynqmp-firmware.yaml
 +++ b/Documentation/devicetree/bindings/firmware/xilinx/xlnx,zynqmp-firmware.yaml
-@@ -41,6 +41,37 @@ properties:
+@@ -41,6 +41,15 @@ properties:
    "#power-domain-cells":
      const: 1
  
-+  gpio:
-+    $ref: /schemas/gpio/xlnx,zynqmp-gpio-modepin.yaml#
-+    description: The gpio node describes connect to PS_MODE pins via firmware
-+      interface.
++  clock-controller:
++    $ref: /schemas/clock/xlnx,versal-clk.yaml#
++    description: The clock controller is a hardware block of Xilinx versal
++      clock tree. It reads required input clock frequencies from the devicetree
++      and acts as clock provider for all clock consumers of PS clocks.list of
++      clock specifiers which are external input clocks to the given clock
++      controller.
 +    type: object
 +
-+  pcap:
-+    $ref: /schemas/fpga/xlnx,zynqmp-pcap-fpga.yaml
-+    description: The ZynqMP SoC uses the PCAP (Processor Configuration Port) to
-+      configure the Programmable Logic (PL). The configuration uses the
-+      firmware interface.
-+    type: object
-+
-+  pinctrl:
-+    $ref: /schemas/pinctrl/xlnx,zynqmp-pinctrl.yaml#
-+    description: The pinctrl node provides access to pinconfig and pincontrol
-+      functionality available in firmware.
-+    type: object
-+
-+  power-management:
-+    $ref: /schemas/power/reset/xlnx,zynqmp-power.yaml#
-+    description: The zynqmp-power node describes the power management
-+      configurations. It will control remote suspend/shutdown interfaces.
-+    type: object
-+
-+  reset-controller:
-+    $ref: /schemas/reset/xlnx,zynqmp-reset.yaml#
-+    description: The reset-controller node describes connection to the reset
-+      functionality via firmware interface.
-+    type: object
-+
-   versal-fpga:
-     $ref: /schemas/fpga/xlnx,versal-fpga.yaml#
-     description: Compatible of the FPGA device.
-@@ -73,7 +104,26 @@ examples:
-     firmware {
-       zynqmp_firmware: zynqmp-firmware {
-         #power-domain-cells = <1>;
-+        gpio {
-+          compatible = "xlnx,zynqmp-gpio-modepin";
-+          gpio-controller;
-+          #gpio-cells = <2>;
-+        };
-+        pcap {
-+          compatible = "xlnx,zynqmp-pcap-fpga";
-+        };
-+        pinctrl {
-+          compatible = "xlnx,zynqmp-pinctrl";
-         };
-+        power-management {
-+          compatible = "xlnx,zynqmp-power";
-+          interrupts = <0 35 4>;
-+        };
-+        reset-controller {
-+          compatible = "xlnx,zynqmp-reset";
-+          #reset-cells = <1>;
-+        };
-+      };
-     };
+   gpio:
+     $ref: /schemas/gpio/xlnx,zynqmp-gpio-modepin.yaml#
+     description: The gpio node describes connect to PS_MODE pins via firmware
+@@ -84,15 +93,6 @@ properties:
+       vector.
+     type: object
  
-     sata {
+-  clock-controller:
+-    $ref: /schemas/clock/xlnx,versal-clk.yaml#
+-    description: The clock controller is a hardware block of Xilinx versal
+-      clock tree. It reads required input clock frequencies from the devicetree
+-      and acts as clock provider for all clock consumers of PS clocks.list of
+-      clock specifiers which are external input clocks to the given clock
+-      controller.
+-    type: object
+-
+ required:
+   - compatible
+ 
 -- 
 2.36.1
 
