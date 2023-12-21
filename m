@@ -1,146 +1,182 @@
-Return-Path: <linux-kernel+bounces-8140-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8142-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09D5781B28A
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 10:37:48 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC8E581B296
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 10:38:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BA19B287945
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 09:37:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0313EB29961
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 09:38:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF7934C623;
-	Thu, 21 Dec 2023 09:32:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C58DF4CB5F;
+	Thu, 21 Dec 2023 09:33:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="wPttn67a"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kCFdrBkF"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-vs1-f48.google.com (mail-vs1-f48.google.com [209.85.217.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E37B54C609
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 09:32:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-vs1-f48.google.com with SMTP id ada2fe7eead31-4669c751e52so27358137.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 01:32:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1703151147; x=1703755947; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OyY4mdyAupWFIlLPs9X7YkxcEJUGvfcgSLNoWs9Uhs4=;
-        b=wPttn67aQ4F6f373BIdfEdYCMa5QlhAaSxS+ymj7z0QVQVuzteToTcJz8gc+aZiPWn
-         +9C3titwRmRKk+vocLX/4PKbyQlf6q/oz1D3Egrc6Bdzha5kJ/MIBW/a/CEze3PcY99+
-         OSdH26W6HxoC7yEjh5esph7dYdR+mkEUQ7cifoWqmDrq/Ry6YcWBeMGHbTlY2sFmEZWq
-         jXkfsgMlwDWbmUcrCWCvxdTZ/F13qdwBi9Lzc/dlzInrOznt7+dpGaVzMliPiOI/cjkh
-         TH/ccxFjL7H7RpiSH9G+Lfl/UZPNhGoOAiEa7R7WJ1+k3gmepW0mP2tGOKhJvLR0Isx6
-         MrnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703151147; x=1703755947;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OyY4mdyAupWFIlLPs9X7YkxcEJUGvfcgSLNoWs9Uhs4=;
-        b=EgvAZLGFc6SO//tzpDyGt/mtl1bspoauAW4M3qMdCFu7Z4Ll14/BWQapBebFMQpCRQ
-         PlMKtS0sgAfaIeUwf54sQ6QF7bwA4CbqYJtbZEF8nbSD2bhnMgJuBgmZVMeiFlRK74HH
-         pwffXeiriyD4IAkuL1Yf71qE+Qizbq2U55Jm5pvMu5zbYZzKLbc3Wpo9XwN5JK74dPKr
-         30JBdyEVNNGpgxZRKihaPDaBenYToKMl3d7qzDMCuYKYaB0H9eAT0QebkuVYtbN5XSWC
-         1cxy19hffT/FbDKthqUKu/QLMoQ7OROJyvYlsrEtuZtxgppG4chUWIAueZvsLEX6kOye
-         P1Tg==
-X-Gm-Message-State: AOJu0YyO9nsAiiPQ8ZHz9Aa1+nAqZHYelWF+d1sKI8C8m0oEhU1qyeEF
-	gl7MAl3N/gHbULY3wV1Dc+6cZhgd4VOvzw/uYtqxPA==
-X-Google-Smtp-Source: AGHT+IEkwVPubXgzWg5dFIkGFVTlHElpt879SUONLleVKD7u5tPDhhN0keFPSGT1s9u0e5UucfnwJXN2XmsLPsDjGfw=
-X-Received: by 2002:a05:6102:441d:b0:466:3496:b66f with SMTP id
- df29-20020a056102441d00b004663496b66fmr310132vsb.35.1703151146804; Thu, 21
- Dec 2023 01:32:26 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AECDD4C3CD;
+	Thu, 21 Dec 2023 09:33:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1703151182; x=1734687182;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=RNfmASP2goLFqQvl0CMtUIBdraEA3ADsaIbtIGPBOE4=;
+  b=kCFdrBkFWkh9rs6uEA4wopi062hNIcV+MXQhYdvipCiV1QwA4IqDings
+   EXoO+oyPsBHlOaxb1x7N4N+BIhews9CcY4WHjhSIRMEHr+NdtQUjyBBVV
+   HDcmNCfLyZlukP+cYOzSABj0nGUQRUougMyPHuA6dBZqP9fOb5hV+rSiP
+   /DKXe/JnQm9HMv8/xVVjuXuK0H2hjZTAUnBB1uXouBLNU61FaLQhkTAGW
+   6I/SGE6PHme/8ZQvsJ45Y/jM0nP8riyMSfqg/ipDuYhBWb5nEpT3rm/TK
+   opHlJT7TOhhtPKsxIKldQgeODhd8MOTRR+G6AKTaFvJJd0U06voQ9cyOe
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10930"; a="3188441"
+X-IronPort-AV: E=Sophos;i="6.04,293,1695711600"; 
+   d="scan'208";a="3188441"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Dec 2023 01:33:02 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10930"; a="810918114"
+X-IronPort-AV: E=Sophos;i="6.04,293,1695711600"; 
+   d="scan'208";a="810918114"
+Received: from inlubt0316.iind.intel.com ([10.191.20.213])
+  by orsmga001.jf.intel.com with ESMTP; 21 Dec 2023 01:32:55 -0800
+From: lakshmi.sowjanya.d@intel.com
+To: tglx@linutronix.de,
+	jstultz@google.com,
+	giometti@enneenne.com,
+	corbet@lwn.net,
+	linux-kernel@vger.kernel.org
+Cc: x86@kernel.org,
+	netdev@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	intel-wired-lan@lists.osuosl.org,
+	andriy.shevchenko@linux.intel.com,
+	eddie.dong@intel.com,
+	christopher.s.hall@intel.com,
+	jesse.brandeburg@intel.com,
+	davem@davemloft.net,
+	alexandre.torgue@foss.st.com,
+	joabreu@synopsys.com,
+	mcoquelin.stm32@gmail.com,
+	perex@perex.cz,
+	linux-sound@vger.kernel.org,
+	anthony.l.nguyen@intel.com,
+	pandith.n@intel.com,
+	mallikarjunappa.sangannavar@intel.com,
+	thejesh.reddy.t.r@intel.com,
+	lakshmi.sowjanya.d@intel.com
+Subject: [RFC PATCH v2 00/10] Add support for Intel PPS Generator
+Date: Thu, 21 Dec 2023 15:02:44 +0530
+Message-Id: <20231221093254.9599-1-lakshmi.sowjanya.d@intel.com>
+X-Mailer: git-send-email 2.35.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231221012040.17763-1-warthog618@gmail.com> <20231221012040.17763-2-warthog618@gmail.com>
-In-Reply-To: <20231221012040.17763-2-warthog618@gmail.com>
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Thu, 21 Dec 2023 10:32:15 +0100
-Message-ID: <CAMRc=McSOij2kChZh-zCLBP75cxmnnHSqKg2=uk9dEDJquKZhg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/5] gpiolib: cdev: add gpio_device locking wrapper
- around gpio_ioctl()
-To: Kent Gibson <warthog618@gmail.com>
-Cc: linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, 
-	linus.walleij@linaro.org, andy@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Thu, Dec 21, 2023 at 2:21=E2=80=AFAM Kent Gibson <warthog618@gmail.com> =
-wrote:
->
-> While the GPIO cdev gpio_ioctl() call is in progress, the kernel can
-> call gpiochip_remove() which will set gdev->chip to NULL, after which
-> any subsequent access will cause a crash.
->
-> gpio_ioctl() was overlooked by the previous fix to protect syscalls
-> (bdbbae241a04), so add protection for that.
->
-> Fixes: bdbbae241a04 ("gpiolib: protect the GPIO device against being drop=
-ped while in use by user-space")
-> Fixes: d7c51b47ac11 ("gpio: userspace ABI for reading/writing GPIO lines"=
-)
-> Fixes: 3c0d9c635ae2 ("gpiolib: cdev: support GPIO_V2_GET_LINE_IOCTL and G=
-PIO_V2_LINE_GET_VALUES_IOCTL")
-> Fixes: aad955842d1c ("gpiolib: cdev: support GPIO_V2_GET_LINEINFO_IOCTL a=
-nd GPIO_V2_GET_LINEINFO_WATCH_IOCTL")
-> Signed-off-by: Kent Gibson <warthog618@gmail.com>
-> ---
->  drivers/gpio/gpiolib-cdev.c | 16 ++++++++++++----
->  1 file changed, 12 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/gpio/gpiolib-cdev.c b/drivers/gpio/gpiolib-cdev.c
-> index 744734405912..9155c54acc1e 100644
-> --- a/drivers/gpio/gpiolib-cdev.c
-> +++ b/drivers/gpio/gpiolib-cdev.c
-> @@ -2598,10 +2598,7 @@ static int lineinfo_unwatch(struct gpio_chardev_da=
-ta *cdev, void __user *ip)
->         return 0;
->  }
->
-> -/*
-> - * gpio_ioctl() - ioctl handler for the GPIO chardev
-> - */
-> -static long gpio_ioctl(struct file *file, unsigned int cmd, unsigned lon=
-g arg)
-> +static long gpio_ioctl_unlocked(struct file *file, unsigned int cmd, uns=
-igned long arg)
->  {
->         struct gpio_chardev_data *cdev =3D file->private_data;
->         struct gpio_device *gdev =3D cdev->gdev;
-> @@ -2638,6 +2635,17 @@ static long gpio_ioctl(struct file *file, unsigned=
- int cmd, unsigned long arg)
->         }
->  }
->
-> +/*
-> + * gpio_ioctl() - ioctl handler for the GPIO chardev
-> + */
-> +static long gpio_ioctl(struct file *file, unsigned int cmd, unsigned lon=
-g arg)
-> +{
-> +       struct gpio_chardev_data *cdev =3D file->private_data;
-> +
-> +       return call_ioctl_locked(file, cmd, arg, cdev->gdev,
-> +                                gpio_ioctl_unlocked);
-> +}
-> +
->  #ifdef CONFIG_COMPAT
->  static long gpio_ioctl_compat(struct file *file, unsigned int cmd,
->                               unsigned long arg)
-> --
-> 2.39.2
->
+From: Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>
 
-I applied this. I'll send it upstream tomorrow and once it's in
-master, I'll pick up the rest on Monday.
+The goal of the PPS(Pulse Per Second) hardware/software is to generate a
+signal from the system on a wire so that some third-party hardware can
+observe that signal and judge how close the system's time is to another
+system or piece of hardware.
 
-Bart
+Existing methods (like parallel ports) require software to flip a bit at
+just the right time to create a PPS signal. Many things can prevent
+software from doing this precisely. This (Timed I/O) method is better
+because software only "arms" the hardware in advance and then depends on
+the hardware to "fire" and flip the signal at just the right time.
+
+To generate a PPS signal with this new hardware, the kernel wakes up
+twice a second, once for 1->0 edge and other for the 0->1 edge. It does
+this shortly (~10ms) before the actual change in the signal needs to be
+made. It computes the TSC value at which edge will happen, convert to a
+value hardware understands and program this value to Timed I/O hardware.
+The actual edge transition happens without any further action from the
+kernel.
+
+The result here is a signal coming out of the system that is roughly
+1,000 times more accurate than the old methods. If the system is heavily
+loaded, the difference in accuracy is larger in old methods.
+Facebook and Google are the customers that use this feature. 
+
+Application Interface:
+The API to use Timed I/O is very simple. It is enabled and disabled by
+writing a '1' or '0' value to the sysfs enable attribute associated with
+the Timed I/O PPS device. Each Timed I/O pin is represented by a PPS
+device. When enabled, a pulse-per-second(PPS) synchronized with the
+system clock is continuously produced on the Timed I/O pin, otherwise it
+is pulled low.
+
+The Timed I/O signal on the motherboard is enabled in the BIOS setup.
+
+This patchset is dependent on [1]
+
+References:
+https://en.wikipedia.org/wiki/Pulse-per-second_signal
+https://drive.google.com/file/d/1vkBRRDuELmY8I3FlfOZaEBp-DxLW6t_V/view
+https://youtu.be/JLUTT-lrDqw
+
+Patch 1 adds base clock properties in clocksource structure
+Patch 2 adds function to convert realtime to base clock
+Patch 3 - 7 removes reference to convert_art_to_tsc function across
+drivers
+Patch 8 adds the pps(pulse per second) generator tio driver to the pps
+subsystem.
+Patch 9 documentation and usage of the pps tio generator module.
+Patch 10 includes documentation for sysfs interface.
+
+[1] https://lore.kernel.org/netdev/20231215220612.173603-2-peter.hilber@opensynergy.com/T/
+
+Please help to review the changes.
+
+Thanks in advance,
+Sowjanya
+
+Lakshmi Sowjanya D (5):
+  x86/tsc: Add base clock properties in clocksource structure
+  timekeeping: Add function to convert realtime to base clock
+  pps: generators: Add PPS Generator TIO Driver
+  Documentation: driver-api: pps: Add Intel Timed I/O PPS generator
+  ABI: pps: Add ABI documentation for Intel TIO
+
+Thomas Gleixner (5):
+  e10002: remove convert_art_to_tsc()
+  igc: remove convert_art_to_tsc()
+  stmmac: intel: remove convert_art_to_tsc()
+  ALSA: hda: remove convert_art_to_tsc()
+  ice/ptp: remove convert_art_to_tsc()
+
+ .../ABI/testing/sysfs-platform-pps-tio        |   7 +
+ Documentation/driver-api/pps.rst              |  22 ++
+ arch/x86/include/asm/tsc.h                    |   3 -
+ arch/x86/kernel/tsc.c                         |  94 ++-----
+ drivers/net/ethernet/intel/e1000e/ptp.c       |   3 +-
+ drivers/net/ethernet/intel/ice/ice_ptp.c      |   2 +-
+ drivers/net/ethernet/intel/igc/igc_ptp.c      |   6 +-
+ .../net/ethernet/stmicro/stmmac/dwmac-intel.c |   3 +-
+ drivers/pps/generators/Kconfig                |  16 ++
+ drivers/pps/generators/Makefile               |   1 +
+ drivers/pps/generators/pps_gen_tio.c          | 238 ++++++++++++++++++
+ include/linux/clocksource.h                   |  27 ++
+ include/linux/clocksource_ids.h               |   1 +
+ include/linux/timekeeping.h                   |   6 +
+ kernel/time/timekeeping.c                     | 112 ++++++++-
+ sound/pci/hda/hda_controller.c                |   3 +-
+ 16 files changed, 459 insertions(+), 85 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-platform-pps-tio
+ create mode 100644 drivers/pps/generators/pps_gen_tio.c
+
+-- 
+2.35.3
+
 
