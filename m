@@ -1,111 +1,165 @@
-Return-Path: <linux-kernel+bounces-8717-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8718-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 04AFA81BB66
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 16:57:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id F2D3081BB68
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 16:58:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AD79E282E63
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 15:57:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ADD5E281D3C
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 15:58:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DCBB55E4D;
-	Thu, 21 Dec 2023 15:57:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71D0E55E4D;
+	Thu, 21 Dec 2023 15:58:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b="p8MjdsOc"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aHCs1OiF"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59B6B539FD;
-	Thu, 21 Dec 2023 15:56:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hugovil.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
-	; s=x; h=Subject:Content-Transfer-Encoding:Mime-Version:Message-Id:Cc:To:From
-	:Date:subject:date:message-id:reply-to;
-	bh=JCLYMxeRwt5JrQfRfdHodCm2prGrLkM65PPIWmowE3A=; b=p8MjdsOcSA6R1jyYUyjMYwdd1/
-	9tgAI41l716pDbFL0Btga1Klf/Cp9g9+ttKFa2UCs45kM0l7qqWiz3VLtaMgPbPa1N+y1TIZBPeZk
-	9tNo5RX7PiQc5u3PWtxZaca2IBuyF5EAO182otm24gXTcxGqx//pjmQEanincCvqUtpE=;
-Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:49388 helo=pettiford)
-	by mail.hugovil.com with esmtpa (Exim 4.92)
-	(envelope-from <hugo@hugovil.com>)
-	id 1rGLPb-0006IC-LX; Thu, 21 Dec 2023 10:56:40 -0500
-Date: Thu, 21 Dec 2023 10:56:39 -0500
-From: Hugo Villeneuve <hugo@hugovil.com>
-To: Andy Shevchenko <andriy.shevchenko@intel.com>
-Cc: gregkh@linuxfoundation.org, jirislaby@kernel.org, jringle@gridpoint.com,
- kubakici@wp.pl, phil@raspberrypi.org, bo.svangard@embeddedart.se,
- linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org, Hugo Villeneuve
- <hvilleneuve@dimonoff.com>, stable@vger.kernel.org, Yury Norov
- <yury.norov@gmail.com>
-Message-Id: <20231221105639.17910de5e7d7a486834bd856@hugovil.com>
-In-Reply-To: <ZYMK-l03S86Nw19I@smile.fi.intel.com>
-References: <20231219171903.3530985-1-hugo@hugovil.com>
-	<20231219171903.3530985-3-hugo@hugovil.com>
-	<ZYMK-l03S86Nw19I@smile.fi.intel.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83FBA55E41;
+	Thu, 21 Dec 2023 15:58:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-55359dc0290so1715128a12.1;
+        Thu, 21 Dec 2023 07:58:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703174295; x=1703779095; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=2ge32C67y6VL/tOuymk4ghO3Zqyctvc0EUYmoNeC+rk=;
+        b=aHCs1OiFPLNLSAOkspRFOdr903JQa+a2GQDuFWjxMFFjuhguulavIeqXjTZaNwMWwd
+         XJcE6PArQvbo/4L2oJhGeJe8d9o1bcExmBYEoNWFRqgUDPrqbPaRh2AXn3BKWASbw07f
+         +Y9eqwmkqc67Xgch31+aH+felDj9r0INAjkzXcj25+Kk8OKHfQwh/oegfaH/bftv1nBd
+         SPC8sEyjE95SLV9was+j0LSIS3S0QLd2NQcqqBVGF9Ook7cHruKxy1du5EAVcTdNdaHW
+         FytqQ0mg9EZAvG4ncUbssIDwVR9fEvxqA69rHnfVCjhlFvMENhPm0vpX+1HzCq37LhSE
+         1Oqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703174295; x=1703779095;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2ge32C67y6VL/tOuymk4ghO3Zqyctvc0EUYmoNeC+rk=;
+        b=cifNwpEV2b4VW09W80mpJ0okvm2FGyOwcoTJE3ahEa+/4dlcwfrmKmOq6qdQBEPWGd
+         +Uk/9AdhS8cNkjETun0uozYWD+n/MHLiftf+W3e5Www3awd7AHjyN3NQel615Nx8SvlA
+         wKqA2N7l1vKFMgS87QjqX5ICDNV8wqE8CKmzPwwYkEpVW0UAKlNsyDR83aWGawa4BIcO
+         x27V2WQb30xa/dao+lNaOJ13WHvA7+rh1IGpnZpUo/uaSFK1Rj3X+HyUP1nuEb8sGnJD
+         K3w65X3xfsadeRNIAnFr35wG08jZh6E/is05ivQNOfyCx8+71qx313ekR+3c8a9xLmA0
+         YGkw==
+X-Gm-Message-State: AOJu0YwsO2ROyhz7yC6yKYPuea94XQvS8ovqTorAlWmvMtOP1OsXvK/0
+	JvIYNu2JONdXje4Eyr9jrg==
+X-Google-Smtp-Source: AGHT+IFQKXVMkj4zyFWzLvwTphebmbg25nOOyfIZuy7V6OS9xs9j1VkjX2huLDnGvHVVWCzK9/wYCQ==
+X-Received: by 2002:a50:8d1b:0:b0:554:1100:99e9 with SMTP id s27-20020a508d1b000000b00554110099e9mr1032558eds.9.1703174294607;
+        Thu, 21 Dec 2023 07:58:14 -0800 (PST)
+Received: from ?IPV6:2a02:810b:f40:4300:b601:5984:d94a:3021? ([2a02:810b:f40:4300:b601:5984:d94a:3021])
+        by smtp.gmail.com with ESMTPSA id g14-20020aa7d1ce000000b0055122551f98sm1334250edp.6.2023.12.21.07.58.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Dec 2023 07:58:14 -0800 (PST)
+Message-ID: <a82481ca-b578-49a4-b0d0-974b6ee65c98@gmail.com>
+Date: Thu, 21 Dec 2023 16:58:13 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 70.80.174.168
-X-SA-Exim-Mail-From: hugo@hugovil.com
-X-Spam-Level: 
-X-Spam-Report: 
-	* -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-	* -0.0 T_SCC_BODY_TEXT_LINE No description available.
-	* -3.8 NICE_REPLY_A Looks like a legit reply (A)
-Subject: Re: [PATCH 02/18] serial: sc16is7xx: fix invalid sc16is7xx_lines
- bitfield in case of probe error
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/3] ARM: dts: rockchip: Add psci for rk3036
+To: Andy Yan <andy.yan@rock-chips.com>, Andy Yan <andyshrk@163.com>,
+ heiko@sntech.de
+Cc: krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
+ zhengxing@rock-chips.com
+References: <20231218105523.2478315-1-andyshrk@163.com>
+ <20231218105523.2478315-2-andyshrk@163.com>
+ <da10e2fc-3179-4bd5-88ed-b4d5f64a7191@gmail.com>
+ <28216be5-810f-40d6-850b-a0fc590ffa3c@rock-chips.com>
+Content-Language: en-US, de-DE
+From: Alex Bee <knaerzche@gmail.com>
+In-Reply-To: <28216be5-810f-40d6-850b-a0fc590ffa3c@rock-chips.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Wed, 20 Dec 2023 17:40:42 +0200
-Andy Shevchenko <andriy.shevchenko@intel.com> wrote:
+Hi Andy,
 
-> On Tue, Dec 19, 2023 at 12:18:46PM -0500, Hugo Villeneuve wrote:
-> > From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
-> > 
-> > If an error occurs during probing, the sc16is7xx_lines bitfield may be left
-> > in a state that doesn't represent the correct state of lines allocation.
-> > 
-> > For example, in a system with two SC16 devices, if an error occurs only
-> > during probing of channel (port) B of the second device, sc16is7xx_lines
-> > final state will be 00001011b instead of the expected 00000011b.
-> > 
-> > This is caused in part because of the "i--" in the for/loop located in
-> > the out_ports: error path.
-> > 
-> > Fix this by checking the return value of uart_add_one_port() and set line
-> > allocation bit only if this was successful. This allows the refactor of
-> > the obfuscated for(i--...) loop in the error path, and properly call
-> > uart_remove_one_port() only when needed, and properly unset line allocation
-> > bits.
-> > 
-> > Also use same mechanism in remove() when calling uart_remove_one_port().
-> 
-> Yes, this seems to be the correct one to fix the problem described in
-> the patch 1. I dunno why the patch 1 even exists.
+Am 21.12.23 um 02:07 schrieb Andy Yan:
+> Hi Alex:
+>
+> On 12/20/23 19:16, Alex Bee wrote:
+>> Hi Andy,
+>> Am 18.12.23 um 11:55 schrieb Andy Yan:
+>>> From: Andy Yan <andy.yan@rock-chips.com>
+>>>
+>>> The system will hang at bringup secondary CPUs
+>>> without psci node.
+>>>
+>>> Signed-off-by: Andy Yan <andy.yan@rock-chips.com>
+>>>
+>>> ---
+>>>
+>>> (no changes since v1)
+>>>
+>>>   arch/arm/boot/dts/rockchip/rk3036.dtsi | 5 +++++
+>>>   1 file changed, 5 insertions(+)
+>>>
+>>> diff --git a/arch/arm/boot/dts/rockchip/rk3036.dtsi 
+>>> b/arch/arm/boot/dts/rockchip/rk3036.dtsi
+>>> index 78686fc72ce6..5344803442a1 100644
+>>> --- a/arch/arm/boot/dts/rockchip/rk3036.dtsi
+>>> +++ b/arch/arm/boot/dts/rockchip/rk3036.dtsi
+>>> @@ -67,6 +67,11 @@ display-subsystem {
+>>>           ports = <&vop_out>;
+>>>       };
+>>> +    psci {
+>>> +        compatible = "arm,psci-1.0";
+>>> +        method = "smc";
+>>> +    };
+>>> +
+>> I don't think that's an good idea. 
+>
+> Why?
+It's only what I've been told before: We shoudn't add properties which
+depend on non-upstream software (if an upstream alternative exists). Also
+I'm not sure what happens if somebody doesn't use downstream bootloader
+and PSCI can't be found: Would the board still be able to boot?
+>
+>> You most likely need that because you have downstream bootloader 
+>> installed on this board. PSCI implementation takes place in TEE-OS 
+>> for Rockchips ARM SoCs. There is no support for RK3036 in upstream 
+>> op-tee OS. It's pretty much the same for RK3128 and RK3288.
+>> If you use upstream u-boot it should be good as-is.
+>
+> Unfortunately, upstream u-boot also cannot boot up on this board.
+> At present, I haven't had time to debug what is going on.
+>
+> Another reason I want to use downstream u-boot it is: I try run
+> this board with mainline just because i want to test some community
+> patches about inno-hdmi driver, as you said "the inno-hdmi driver 
+> currently gets a lot of attention"[0]
+>
+Thanks for helping testing this.
 
-Hi,
-this will indeed fix the problem described in patch 1.
+Alex
 
-However, if I remove patch 1, and I simulate the same probe error as
-described in patch 1, now we get stuck forever when trying to 
-remove the driver. This is something that I observed before and
-that patch 1 also corrected.
-
-The problem is caused in sc16is7xx_remove() when calling this function
-
-    kthread_flush_worker(&s->kworker);
-
-I am not sure how best to handle that without patch 1.
-
-Hugo Villeneuve
+> With a downstream u-boot I can easy switch between upstream kernel and 
+> downstream kernel(no need to replace other components)
+> if I found some function is not work as expected.
+>
+>
+> [0]https://patchwork.kernel.org/project/linux-rockchip/cover/20231219170100.188800-1-knaerzche@gmail.com/ 
+>
+>>
+>> Alex
+>>>       timer {
+>>>           compatible = "arm,armv7-timer";
+>>>           arm,cpu-registers-not-fw-configured;
+>>
+>>
+>> _______________________________________________
+>> Linux-rockchip mailing list
+>> Linux-rockchip@lists.infradead.org
+>> http://lists.infradead.org/mailman/listinfo/linux-rockchip
 
