@@ -1,69 +1,47 @@
-Return-Path: <linux-kernel+bounces-9066-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9067-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94F2F81BFC7
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 21:55:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D80F681BFCD
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 22:00:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C73C91C23F9D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 20:55:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 939EC1F258BB
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 21:00:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAF607691E;
-	Thu, 21 Dec 2023 20:55:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 932F976DA3;
+	Thu, 21 Dec 2023 21:00:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PdEgArsV"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ODAjMawt"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DF2C55E6C;
-	Thu, 21 Dec 2023 20:55:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703192127; x=1734728127;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=0w8QXE+4um/f5qVFcFax66VvCFBNWrGXVxaOHPrwoC8=;
-  b=PdEgArsV64sNjfL79uEHaPxoMfe5PY/SRnXkLboQLqCohwPsnf0aqNpc
-   bNNyHfrYC4pZIgQDoSGk3Xq2gvI9U7OhFykYiLPgDDUshg6d8lRuLnaNF
-   By3z49z7ooxoWNfyIpUcjaBxLzGIc8lx2RSHpKJuBszLogQPq7o4vSlMf
-   yRiomA4gqcecBQKSlTK7eBadkr/JdnKJLP+NB6fhcOM4r++Ky9cl/TH3U
-   LSUiYk5d08aV9mY9+fhO2dZdsnoTRs4J1pMuvbWEsRcWWsE/7cSfRzPTt
-   6wNquGdpfopGmeRkVdX1Q0ql9StGY5gufISyEG8gAnBEzz6jXs+vWQp43
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10931"; a="460370082"
-X-IronPort-AV: E=Sophos;i="6.04,294,1695711600"; 
-   d="scan'208";a="460370082"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Dec 2023 12:55:26 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10931"; a="920436865"
-X-IronPort-AV: E=Sophos;i="6.04,294,1695711600"; 
-   d="scan'208";a="920436865"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga001.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Dec 2023 12:55:24 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rGQ4f-00000007yda-13KS;
-	Thu, 21 Dec 2023 22:55:21 +0200
-Date: Thu, 21 Dec 2023 22:55:20 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: Qu Wenruo <wqu@suse.com>, Alexey Dobriyan <adobriyan@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-btrfs@vger.kernel.org,
-	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	linux-kernel@vger.kernel.org, David Sterba <dsterba@suse.cz>
-Subject: Re: [PATCH 1/2] lib/strtox: introduce kstrtoull_suffix() helper
-Message-ID: <ZYSmOCcqbBbbFx-s@smile.fi.intel.com>
-References: <ZYL5CI4aEyVnabhe@smile.fi.intel.com>
- <15cf089f-be9a-4762-ae6b-4791efca6b44@gmx.com>
- <ZYQo6DB4nQj58iUg@smile.fi.intel.com>
- <cf3808eb-0c8f-4a51-b2b4-14eb33b88992@gmx.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1E42768FC;
+	Thu, 21 Dec 2023 20:59:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2C7FC433C8;
+	Thu, 21 Dec 2023 20:59:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703192399;
+	bh=M+RgHeXr3acAWpXB/Z7oGyBX8646M4biQdV6RYlPSGU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ODAjMawtAcLPRa6U4932mGjc8JQ72iM9SZvC/x7JWopB77qQgbcmhxCDCpPvJ7MCh
+	 KrtvOw21Nc2hldrMA01qbn1xOPzqjxM3exs3ZH5QphQIUPtPInSDVKOsEJFhN59T04
+	 aY2qTUfr2cWmCf6NmATJthVLcgD0RuhadhH9TQTE1pwCoM0CnY4ORJwnejygjOXiZY
+	 GFE2KlWbbiWRqio4375L9QFjnCoLD0WQ7OK3FeUO5TqtMK+sx6a9k8UUw2jZkTxP/D
+	 SjyMjWaFVWOgHy2oqKb6ZWyd5SUEctmtrKvC2r0nZzP9axWDNqzLjyiATSr152FYei
+	 N5xI3ik81GTTg==
+Received: (nullmailer pid 82152 invoked by uid 1000);
+	Thu, 21 Dec 2023 20:59:58 -0000
+Date: Thu, 21 Dec 2023 14:59:58 -0600
+From: Rob Herring <robh@kernel.org>
+To: Christoph Winklhofer <cj.winklhofer@gmail.com>
+Cc: krzysztof.kozlowski@linaro.org, conor+dt@kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 1/2] dt-bindings: w1: UART 1-wire bus
+Message-ID: <20231221205958.GA73493-robh@kernel.org>
+References: <20231221065049.30703-1-cj.winklhofer@gmail.com>
+ <20231221065049.30703-2-cj.winklhofer@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -72,32 +50,75 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cf3808eb-0c8f-4a51-b2b4-14eb33b88992@gmx.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20231221065049.30703-2-cj.winklhofer@gmail.com>
 
-On Fri, Dec 22, 2023 at 07:07:31AM +1030, Qu Wenruo wrote:
-> On 2023/12/21 22:30, Andy Shevchenko wrote:
-
-...
-
-> Then what about going the following path for the whole memparse() rabbit
-> hole?
+On Thu, Dec 21, 2023 at 07:50:47AM +0100, Christoph Winklhofer wrote:
+> Add device tree binding for UART 1-wire bus.
 > 
-> - Mark the old memparse() deprecated
-> - Add a new function memparse_safe() (or rename the older one to
->   __memparse, and let the new one to be named memparse()?)
-> - Add unit test for the new memparse_safe() or whatever the name is
-> - Try my best to migrate as many call sites as possible
->   Only the two btrfs ones I'm 100% confident for now
+> Signed-off-by: Christoph Winklhofer <cj.winklhofer@gmail.com>
+> ---
+>  .../devicetree/bindings/w1/w1-uart.yaml       | 44 +++++++++++++++++++
+>  1 file changed, 44 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/w1/w1-uart.yaml
 > 
-> Would that be a sounding plan?
+> diff --git a/Documentation/devicetree/bindings/w1/w1-uart.yaml b/Documentation/devicetree/bindings/w1/w1-uart.yaml
+> new file mode 100644
+> index 000000000000..93d83c42c407
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/w1/w1-uart.yaml
+> @@ -0,0 +1,44 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/w1/w1-uart.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: UART 1-Wire Bus
+> +
+> +maintainers:
+> +  - Christoph Winklhofer <cj.winklhofer@gmail.com>
+> +
+> +description: |
+> +  UART 1-wire bus. Utilizes the UART interface via the Serial Device Bus
+> +  to create the 1-Wire timing patterns.
+> +
+> +  The UART peripheral must support full-duplex and operate in open-drain
+> +  mode. The timing patterns are generated by a specific combination of
+> +  baud-rate and transmitted byte, which corresponds to a 1-Wire read bit,
+> +  write bit or reset pulse.
+> +
+> +  The default baud-rate for reset and presence detection is 9600 and for
+> +  a 1-Wire read or write operation 115200. In case the actual baud-rate
+> +  is different from the requested one, the transmitted byte is adapted
+> +  to generate the 1-Wire timing patterns.
+> +
+> +  https://www.analog.com/en/technical-articles/using-a-uart-to-implement-a-1wire-bus-master.html
+> +
+> +
+> +properties:
+> +  compatible:
+> +    const: w1-uart
+> +
+> +required:
+> +  - compatible
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    serial {
+> +      onewire {
 
-As long as it does not break any ABI (like kernel command line parsing),
-sounds good to me.
-
--- 
-With Best Regards,
-Andy Shevchenko
+Have you tried this in an actual DT? Assuming the UART node has a 
+schema, it should be a warning because child node names are explicit in 
+serial.yaml unfortunately. IOW, you need to add "onewire" to 
+serial.yaml.
 
 
+> +        compatible = "w1-uart";
+> +      };
+> +    };
+> -- 
+> 2.43.0
+> 
 
