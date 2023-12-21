@@ -1,170 +1,185 @@
-Return-Path: <linux-kernel+bounces-8344-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8346-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E14E81B5FC
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 13:32:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 835B181B5FF
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 13:32:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C18CA1C21A93
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 12:32:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A69B41C239FC
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 12:32:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BC8576DB9;
-	Thu, 21 Dec 2023 12:30:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D26426EB7D;
+	Thu, 21 Dec 2023 12:31:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="2zzrC1FT";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="t3AZ6zEZ";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="2zzrC1FT";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="t3AZ6zEZ"
+	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="U8VvYhpU"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D9A276DA9;
-	Thu, 21 Dec 2023 12:30:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 4A91921E5D;
-	Thu, 21 Dec 2023 12:30:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1703161833; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fJLSNwQ5QmsjQ47r9hAM+XCcwY6F9aRMICRP236PlLc=;
-	b=2zzrC1FT6sbYm5erWRGdcj452e0MRI86LSx9WwGcTyTgOF1exeUEod25I0+10RUjbCXd8B
-	C2CHDbVJNPji8K6fQQFACMk96XkdStoHcWFADDg3igxcU0s3qdOPPLDSwivvtQMClhoPuy
-	pfvThCa0HLwsVHa3BQ1BqwOovuZUOQw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1703161833;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fJLSNwQ5QmsjQ47r9hAM+XCcwY6F9aRMICRP236PlLc=;
-	b=t3AZ6zEZEVtWLXJ6S10yo2RxRnYCZwil/s7orPWjCDjdekCGUZCXW42APzi52EUI/giupA
-	Gv37yos5nh174rCw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1703161833; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fJLSNwQ5QmsjQ47r9hAM+XCcwY6F9aRMICRP236PlLc=;
-	b=2zzrC1FT6sbYm5erWRGdcj452e0MRI86LSx9WwGcTyTgOF1exeUEod25I0+10RUjbCXd8B
-	C2CHDbVJNPji8K6fQQFACMk96XkdStoHcWFADDg3igxcU0s3qdOPPLDSwivvtQMClhoPuy
-	pfvThCa0HLwsVHa3BQ1BqwOovuZUOQw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1703161833;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fJLSNwQ5QmsjQ47r9hAM+XCcwY6F9aRMICRP236PlLc=;
-	b=t3AZ6zEZEVtWLXJ6S10yo2RxRnYCZwil/s7orPWjCDjdekCGUZCXW42APzi52EUI/giupA
-	Gv37yos5nh174rCw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 408FB13AB5;
-	Thu, 21 Dec 2023 12:30:33 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id /928D+kvhGVvcAAAD6G6ig
-	(envelope-from <jack@suse.cz>); Thu, 21 Dec 2023 12:30:33 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id E57DFA07E3; Thu, 21 Dec 2023 13:30:28 +0100 (CET)
-Date: Thu, 21 Dec 2023 13:30:28 +0100
-From: Jan Kara <jack@suse.cz>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Jan Kara <jack@suse.cz>, linux-mm@kvack.org,
-	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	Jan Kara <jack@suse.com>, David Howells <dhowells@redhat.com>,
-	Brian Foster <bfoster@redhat.com>, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 07/17] writeback: Factor writeback_get_batch() out of
- write_cache_pages()
-Message-ID: <20231221123028.gzkqd43bmdupcekz@quack3>
-References: <20231218153553.807799-1-hch@lst.de>
- <20231218153553.807799-8-hch@lst.de>
- <20231221111743.sppmjkyah3u4ao6g@quack3>
- <20231221122233.GC17956@lst.de>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD4D06E5B6;
+	Thu, 21 Dec 2023 12:31:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3BL8lG7H012122;
+	Thu, 21 Dec 2023 13:31:20 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=selector1; bh=taptUeW
+	ufNXHyemueP2x8NUNC0EjLHeC6TmVKFcUkU4=; b=U8VvYhpUpd/NLziemRido/T
+	/XsbHkSOg9M78/aStLHKEMma7XByzjU+7UWKzjsoJQCEzHZPreFfFIsMw5UHrWVt
+	jR2tDkcWshduOq4JcLaTkylMaCLV5s9tT/wO2D2lCVCK9F+kL45ddbz3xQntnxnI
+	ULCVxmaPPFXEYAOypfQpBjetUfFAFoHaymLI8QCT0oHTCqFGpmNeHFYrnErhdAgE
+	aCT+8DYGKcFmb0xEzofXkaPW+gFikrxoWbC9VpM+5IHKqyowigQ5KmWuQfBo7867
+	+Vt8wG6P1M5LapDDdvwZgfdvam5LvhwSEFLlgm91cMEOYlaBV/iopi+ORuQ/dPQ=
+	=
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3v13nhq5cm-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 21 Dec 2023 13:31:19 +0100 (CET)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 4F4AC100053;
+	Thu, 21 Dec 2023 13:31:18 +0100 (CET)
+Received: from Webmail-eu.st.com (shfdag1node2.st.com [10.75.129.70])
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 431962747C2;
+	Thu, 21 Dec 2023 13:31:18 +0100 (CET)
+Received: from localhost (10.252.25.159) by SHFDAG1NODE2.st.com (10.75.129.70)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 21 Dec
+ 2023 13:31:15 +0100
+From: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
+To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Neil Armstrong
+	<neil.armstrong@linaro.org>,
+        Jessica Zhang <quic_jesszhan@quicinc.com>,
+        Sam
+ Ravnborg <sam@ravnborg.org>,
+        Maarten Lankhorst
+	<maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof
+ Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre
+ Torgue <alexandre.torgue@foss.st.com>,
+        Yannick Fertre
+	<yannick.fertre@foss.st.com>,
+        Raphael Gallais-Pou
+	<raphael.gallais-pou@foss.st.com>,
+        Philippe Cornu
+	<philippe.cornu@foss.st.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Lad
+ Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Thierry Reding
+	<thierry.reding@gmail.com>
+CC: <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: [PATCH v1 5/8] drm/stm: ltdc: add lvds pixel clock
+Date: Thu, 21 Dec 2023 13:30:34 +0100
+Message-ID: <20231221123037.418851-6-raphael.gallais-pou@foss.st.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231221122233.GC17956@lst.de>
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -0.92
-X-Spamd-Result: default: False [-0.92 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_SEVEN(0.00)[9];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.12)[66.81%]
-X-Spam-Flag: NO
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: EQNCAS1NODE4.st.com (10.75.129.82) To SHFDAG1NODE2.st.com
+ (10.75.129.70)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-21_05,2023-12-20_01,2023-05-22_02
 
-On Thu 21-12-23 13:22:33, Christoph Hellwig wrote:
-> On Thu, Dec 21, 2023 at 12:17:43PM +0100, Jan Kara wrote:
-> > > +static void writeback_get_batch(struct address_space *mapping,
-> > > +		struct writeback_control *wbc)
-> > > +{
-> > > +	folio_batch_release(&wbc->fbatch);
-> > > +	cond_resched();
-> > 
-> > I'd prefer to have cond_resched() explicitely in the writeback loop instead
-> > of hidden here in writeback_get_batch() where it logically does not make
-> > too much sense to me...
-> 
-> Based on the final state after this series, where would you place it?
+The STM32MP25x display subsystem presents a mux which feeds the loopback
+pixel clock of the current bridge in use into the LTDC. This mux is only
+accessible through sysconfig registers which is not yet available in the
+STM32MP25x common clock framework.
 
-I guess writeback_get_folio() would be fine... Which is where it naturally
-lands with the inlining I already suggested so probably nothing to do here.
+While waiting for a complete update of the clock framework, this would
+allow to use the LVDS.
 
-> (That beeing said there is a discussion underway on lkml to maybe
->  kill cond_resched entirely as part of sorting out the preemption
->  model mess, at that point this would become a moot point anyway)
-> 
-> > >  	} else {
-> > > -		index = wbc->range_start >> PAGE_SHIFT;
-> > > +		wbc->index = wbc->range_start >> PAGE_SHIFT;
-> > >  		end = wbc->range_end >> PAGE_SHIFT;
-> > >  	}
-> > 
-> > Maybe we should have:
-> > 	end = wbc_end(wbc);
-> > 
-> > when we have the helper? But I guess this gets cleaned up in later patches
-> > anyway so whatever.
-> 
-> Yeah, this end just goes away.  I can convert it here, but that feels
-> like pointless churn to me.
+Signed-off-by: Raphael Gallais-Pou <raphael.gallais-pou@st.com>
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+---
+ drivers/gpu/drm/stm/ltdc.c | 18 ++++++++++++++++++
+ drivers/gpu/drm/stm/ltdc.h |  1 +
+ 2 files changed, 19 insertions(+)
 
-Agreed. Just leave it alone.
-
-								Honza
+diff --git a/drivers/gpu/drm/stm/ltdc.c b/drivers/gpu/drm/stm/ltdc.c
+index 67064f47a4cb..1cf9f16e56cc 100644
+--- a/drivers/gpu/drm/stm/ltdc.c
++++ b/drivers/gpu/drm/stm/ltdc.c
+@@ -838,6 +838,12 @@ ltdc_crtc_mode_valid(struct drm_crtc *crtc,
+ 	int target_max = target + CLK_TOLERANCE_HZ;
+ 	int result;
+ 
++	if (ldev->lvds_clk) {
++		result = clk_round_rate(ldev->lvds_clk, target);
++		DRM_DEBUG_DRIVER("lvds pixclk rate target %d, available %d\n",
++				 target, result);
++	}
++
+ 	result = clk_round_rate(ldev->pixel_clk, target);
+ 
+ 	DRM_DEBUG_DRIVER("clk rate target %d, available %d\n", target, result);
+@@ -1898,6 +1904,8 @@ void ltdc_suspend(struct drm_device *ddev)
+ 	clk_disable_unprepare(ldev->pixel_clk);
+ 	if (ldev->bus_clk)
+ 		clk_disable_unprepare(ldev->bus_clk);
++	if (ldev->lvds_clk)
++		clk_disable_unprepare(ldev->lvds_clk);
+ }
+ 
+ int ltdc_resume(struct drm_device *ddev)
+@@ -1918,6 +1926,12 @@ int ltdc_resume(struct drm_device *ddev)
+ 			return -ENODEV;
+ 		}
+ 	}
++	if (ldev->lvds_clk) {
++		if (clk_prepare_enable(ldev->lvds_clk)) {
++			DRM_ERROR("Unable to prepare lvds clock\n");
++			return -ENODEV;
++		}
++	}
+ 
+ 	return 0;
+ }
+@@ -1989,6 +2003,10 @@ int ltdc_load(struct drm_device *ddev)
+ 		}
+ 	}
+ 
++	ldev->lvds_clk = devm_clk_get(dev, "lvds");
++	if (IS_ERR(ldev->lvds_clk))
++		ldev->lvds_clk = NULL;
++
+ 	rstc = devm_reset_control_get_exclusive(dev, NULL);
+ 
+ 	mutex_init(&ldev->err_lock);
+diff --git a/drivers/gpu/drm/stm/ltdc.h b/drivers/gpu/drm/stm/ltdc.h
+index 155d8e4a7c6b..662650a0fae2 100644
+--- a/drivers/gpu/drm/stm/ltdc.h
++++ b/drivers/gpu/drm/stm/ltdc.h
+@@ -44,6 +44,7 @@ struct ltdc_device {
+ 	void __iomem *regs;
+ 	struct regmap *regmap;
+ 	struct clk *pixel_clk;	/* lcd pixel clock */
++	struct clk *lvds_clk;	/* lvds pixel clock */
+ 	struct clk *bus_clk;	/* bus clock */
+ 	struct mutex err_lock;	/* protecting error_status */
+ 	struct ltdc_caps caps;
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.25.1
+
 
