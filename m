@@ -1,165 +1,179 @@
-Return-Path: <linux-kernel+bounces-8442-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8443-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 610C481B734
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 14:20:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D26A781B73A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 14:21:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 191BE28221B
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 13:20:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 112631C21A66
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 13:21:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 290E274E1D;
-	Thu, 21 Dec 2023 13:19:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 026D2745CF;
+	Thu, 21 Dec 2023 13:21:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=fastmail.org header.i=@fastmail.org header.b="si9zh+Df";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="8202oWHk"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4327745CD;
-	Thu, 21 Dec 2023 13:19:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CCA05C433C7;
-	Thu, 21 Dec 2023 13:19:20 +0000 (UTC)
-Date: Thu, 21 Dec 2023 13:19:18 +0000
-From: Catalin Marinas <catalin.marinas@arm.com>
-To: Oliver Upton <oliver.upton@linux.dev>
-Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Jason Gunthorpe <jgg@nvidia.com>, ankita@nvidia.com, maz@kernel.org,
-	suzuki.poulose@arm.com, yuzenghui@huawei.com, will@kernel.org,
-	alex.williamson@redhat.com, kevin.tian@intel.com,
-	yi.l.liu@intel.com, ardb@kernel.org, akpm@linux-foundation.org,
-	gshan@redhat.com, linux-mm@kvack.org, aniketa@nvidia.com,
-	cjia@nvidia.com, kwankhede@nvidia.com, targupta@nvidia.com,
-	vsethi@nvidia.com, acurrid@nvidia.com, apopple@nvidia.com,
-	jhubbard@nvidia.com, danw@nvidia.com, mochs@nvidia.com,
-	kvmarm@lists.linux.dev, kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	james.morse@arm.com
-Subject: Re: [PATCH v3 2/2] kvm: arm64: set io memory s2 pte as normalnc for
- vfio pci devices
-Message-ID: <ZYQ7VjApH1v1QwTW@arm.com>
-References: <20231208164709.23101-1-ankita@nvidia.com>
- <20231208164709.23101-3-ankita@nvidia.com>
- <ZXicemDzXm8NShs1@arm.com>
- <20231212181156.GO3014157@nvidia.com>
- <ZXoOieQN7rBiLL4A@linux.dev>
- <ZXsjv+svp44YjMmh@lpieralisi>
- <ZXszoQ48pZ7FnQNV@linux.dev>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D3BD73197
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 13:21:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fastmail.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastmail.org
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailout.west.internal (Postfix) with ESMTP id 742153200344;
+	Thu, 21 Dec 2023 08:21:17 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Thu, 21 Dec 2023 08:21:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.org; h=
+	cc:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm2; t=1703164876; x=1703251276; bh=bV++sLoCKQ
+	gJ+lj7w4YvC2Lo6bB5KluwR+HnqfYUAU0=; b=si9zh+DfJ4tYBb9C+jEspGf9Fv
+	fhov0F2ZJ+6JdN+tGPdez6GdMkFHyLQq26Q8oLNndlH9jkXrUW2yId5o7jma1nO9
+	SYehdx9gUjaVXPRaOJ/KXwFAb1W2Dty1/7MkJTXaItPklvtB8l2jBJ6t2SCCb9Q8
+	4I38eWgSE71ykLYH/q4in6R8Uuw3atsN2jy8AW5sH0TiGSJM2XQ1FYRSdgdF/4dx
+	vsNe4Fa8YyMSwXQuOyaR3LGXCv3vCdDJxMMWBh8B8EIpyRZPtcLw2OmChRZnKoai
+	UV6vq5Kwvit+JJVuwrtOyOBFM5gSe0oH15JdkpNkOROLychsT8D3y6PqQJzA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1703164876; x=1703251276; bh=bV++sLoCKQgJ+lj7w4YvC2Lo6bB5
+	KluwR+HnqfYUAU0=; b=8202oWHkWr71DV/9U8BVNu487+QC0S8tQG36HJQG4KkO
+	FC6bIDAmZG51GvgfeBmvtGcHM3uH17qE7TYkcJd/qz2ki/BFmh2qbOJWPNK45L3U
+	jYY2MmN9w15zwK2SQXpPGKfbRcG+SSQw0MJ9ZJVbhE3+eV74k2WKNy/AmW0JVcMT
+	2SWbE6QEBaR5xlcbXHINRZFrAS1rWqxYPdk5sNTiwVBZQkMmsiaYls0HK0uLfdER
+	fR7+RTYecvz6018mXS9E1UhwhYBJB2aqegX3v6e2+yZkLmvFoEtDkLCYygA5ZDL7
+	l13ms/JDuxX+9KsFqQKdaXRzDA+sgWLrE4UcPGV2KQ==
+X-ME-Sender: <xms:zDuEZVijIzhsbSNLWZNiYN2SIgf1jKx5p_WhkrqTKaVyM77ILmI3yQ>
+    <xme:zDuEZaC4AxnS7liA8-ZCrcaVu09rkB_RVn_pX8VgxKKDPfedyTPMlIsDwVqwdmq1n
+    _rflZ6aBfIJ6Yh6sAA>
+X-ME-Received: <xmr:zDuEZVG0VelFcR-uIXvI-B-lZxs5bhWO0EWF9GkwZh4Nkh664_8bXeMJtfg1ZoQydlWPTOlJWrP43P2VgeKpNR5MOkE>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdduhedgvdehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfhgfhffvvefuffgjkfggtgesghdtreertdertdenucfhrhhomhepifgrrhih
+    ucftohhokhgrrhguuceoghgrrhihrhhoohhkrghrugesfhgrshhtmhgrihhlrdhorhhgqe
+    enucggtffrrghtthgvrhhnpeeileehheehtdeiveduffdugfdtgfevjeffudfgtefgteff
+    udfhhffftedvieeggeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
+    hlfhhrohhmpehgrghrhihrohhokhgrrhgusehfrghsthhmrghilhdrohhrgh
+X-ME-Proxy: <xmx:zDuEZaT4DRejBwF2UKGY5EByogHs_fUHtzuPcwRnW6e8-PNpoC6tbw>
+    <xmx:zDuEZSz6yQk7xl1ObS99mnsFe7RgLOtbnmOTbIe7Ievk6XCDm7eYWA>
+    <xmx:zDuEZQ6pOevWa3YY6ZXh5RUDb6w_b7_WwP1hDsGjES_Rl6aOirPvXw>
+    <xmx:zDuEZd-gke77gAOv1FKjd5TWtk7-QEAFMLY8ceJHMs8_K3RqhtuU9Q>
+Feedback-ID: ifd194980:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 21 Dec 2023 08:21:16 -0500 (EST)
+References: <20231221031004.14779-1-garyrookard@fastmail.org>
+ <2023122137-account-vitality-9a72@gregkh> <875y0rog7j.fsf@fastmail.org>
+ <2023122129-underpay-zit-7ec5@gregkh>
+User-agent: mu4e 1.10.8; emacs 29.1
+From: Gary Rookard <garyrookard@fastmail.org>
+To: Greg KH <gregkh@linuxfoundation.org>
+Cc: philipp.g.hortmann@gmail.com, linux-staging@lists.linux.dev,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/5] staging: rtl8192e: rename variable
+ HTInitializeBssDesc and (4) other
+Date: Thu, 21 Dec 2023 08:19:55 -0500
+In-reply-to: <2023122129-underpay-zit-7ec5@gregkh>
+Message-ID: <871qbfofme.fsf@fastmail.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZXszoQ48pZ7FnQNV@linux.dev>
+Content-Type: multipart/signed; boundary="=-=-=";
+	micalg=pgp-sha256; protocol="application/pgp-signature"
 
-Catching up on emails before going on holiday (again).
+--=-=-=
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Dec 14, 2023 at 04:56:01PM +0000, Oliver Upton wrote:
-> On Thu, Dec 14, 2023 at 04:48:15PM +0100, Lorenzo Pieralisi wrote:
-> > > AFAICT, the only reason PCI devices can get the blanket treatment of
-> > > Normal-NC at stage-2 is because userspace has a Device-* mapping and can't
-> > > speculatively load from the alias. This feels a bit hacky, and maybe we
-> > > should prioritize an interface for mapping a device into a VM w/o a
-> > > valid userspace mapping.
-> > 
-> > FWIW - I have tried to summarize the reasoning behind PCIe devices
-> > Normal-NC default stage-2 safety in a document that I have just realized
-> > now it has become this series cover letter, I don't think the PCI blanket
-> > treatment is related *only* to the current user space mappings (ie
-> > BTW, AFAICS it is also *possible* at present to map a prefetchable BAR through
-> > sysfs with Normal-NC memory attributes in the host at the same time a PCI
-> > device is passed-through to a guest with VFIO - and therefore we have a
-> > dev-nGnRnE stage-1 mapping for it. Don't think anyone does that - what for -
-> > but it is possible and KVM would not know about it).
-> > 
-> > Again, FWIW, we were told (source Arm ARM) mismatched aliases concerning
-> > device-XXX vs Normal-NC are not problematic as long as the transactions
-> > issued for the related mappings are independent (and none of the
-> > mappings is cacheable).
-> > 
-> > I appreciate this is not enough to give everyone full confidence on
-> > this solution robustness - that's why I wrote that up so that we know
-> > what we are up against and write KVM interfaces accordingly.
-> 
-> Apologies, I didn't mean to question what's going on here from the
-> hardware POV. My concern was more from the kernel + user interfaces POV,
-> this all seems to work (specifically for PCI) by maintaining an
-> intentional mismatch between the VFIO stage-1 and KVM stage-2 mappings.
 
-If you stare at it long enough, the mismatch starts to look fine ;).
-Even if you have the VFIO stage 1 Normal NC, KVM stage 2 Normal NC, you
-can still have the guest setting stage 1 to Device and introduce an
-architectural mismatch. These aliases have some bad reputation but the
-behaviour is constrained architecturally.
+Greg KH <gregkh@linuxfoundation.org> writes:
 
-IMHO we should move on from this attribute mismatch since we can't fully
-solve it anyway and focus instead on what the device, system can
-tolerate, who's responsible for deciding which MMIO ranges can be mapped
-as Normal NC. There are a few options here (talking in the PCIe context
-but it can be extended to other VFIO mappings):
+> On Thu, Dec 21, 2023 at 08:06:13AM -0500, Gary Rookard wrote:
+>>=20
+>> Greg KH <gregkh@linuxfoundation.org> writes:
+>>=20
+>> > On Wed, Dec 20, 2023 at 10:09:59PM -0500, Gary Rookard wrote:
+>> >> Hi,
+>> >>=20
+>> >> This patch series renames (5) different variables with
+>> >> the checkpatch coding style issue, Avoid CamelCase.
+>> >>=20
+>> >> Patch 1/5) rename variable HTInitializeBssDesc
+>> >> Patch 2/5) rename variable HTResetSelfAndSavePeerSetting
+>> >> Patch 3/5) rename variable HTCCheck
+>> >> Patch 4/5) rename variable HTSetConnectBwModeCallback
+>> >> Patch 5/5) rename variable ePeerHTSpecVer
+>> >>=20
+>> >> Signed-off-by: Gary Rookard <garyrookard@fastmail.org>
+>> >>=20
+>> >> Gary Rookard (5):
+>> >>   staging: rtl8192e: rename variable HTInitializeBssDesc
+>> >>   staging: rtl8192e: rename variable HTResetSelfAndSavePeerSetting
+>> >>   staging: rtl8192e: rename variable HTCCheck
+>> >>   staging: rtl8192e: rename variable HTSetConnectBwModeCallback
+>> >>   staging: rtl8192e: rename variable ePeerHTSpecVer
+>> >>=20
+>> >>  drivers/staging/rtl8192e/rtl819x_HT.h     |  2 +-
+>> >>  drivers/staging/rtl8192e/rtl819x_HTProc.c | 16 ++++++++--------
+>> >>  drivers/staging/rtl8192e/rtllib.h         |  6 +++---
+>> >>  drivers/staging/rtl8192e/rtllib_rx.c      |  6 +++---
+>> >>  drivers/staging/rtl8192e/rtllib_softmac.c |  6 +++---
+>> >>  5 files changed, 18 insertions(+), 18 deletions(-)
+>> >
+>> > I see 2 different patch series here sent to the list, both seeming to =
+do
+>> > the same thing?
+>> >
+>> > confused,
+>> >
+>> > greg k-h
+>>=20
+>> Sorry that was caused by an address typo
+>> so it got resent to linux-staging..
+>> new setup on different distro
+>
+> Please send a v2 of this then.
+>
+> thanks,
+>
+> greg k-h
 
-1. The VMM is responsible for intra-BAR relaxation of the KVM stage 2:
-   a) via the stage 1 VFIO mapping attributes - Device or Normal
-   b) via other means (e.g. ioctl(<range>)) while the stage 1 VFIO stays
-      Device
+Okay, will do.
 
-2. KVM decides the intra-BAR relaxation irrespective of the VFIO stage 1
-   attributes (VMM mapping)
+Regards,
+Gary
+=2D-=20
+Sent with my mu4e on Void Linux.
 
-3. KVM decides the full-BAR relaxation with the guest responsible for
-   the intra-BAR attributes. As with (2), that's irrespective of the
-   VFIO stage 1 host mapping
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Whichever option we pick, it won't be the host forcing the Normal NC
-mapping, that's still a guest decision and the host only allowing it.
+-----BEGIN PGP SIGNATURE-----
 
-(1) needs specific device knowledge in the VMM or a VFIO-specific driver
-(or both if the VMM isn't fully trusted to request the right
-attributes). (2) moves the device-specific knowledge to KVM or a
-combination of KVM and VFIO-specific driver. Things can get a lot worse
-if the Device vs Normal ranges within a BAR are configurable and needs
-some paravirtualised interface for the guest to agree with the host.
-
-These patches aim for (3) but only if the host VFIO driver deems it safe
-(hence PCIe only for now). I find this an acceptable compromise.
-
-If we really want to avoid any aliases (though I think we are spending
-too many cycles on something that's not a real issue), the only way is
-to have fd-based mappings in KVM so that there's no VMM alias. After
-that we need to choose between (2) and (3) since the VMM may no longer
-be able to probe the device and figure out which ranges need what
-attributes.
-
-> If we add more behind-the-scenes tricks to get other MMIO mappings
-> working in the future then this whole interaction will get even
-> hairier. At least if we follow the stage-1 attributes (where possible)
-> then we can document some sort of expected behavior in KVM. The VMM would
-> need know if the device has read side-effects, as the only way to get a
-> Normal-NC mapping in the guest would be to have one at stage-1.
-
-I don't think KVM or the VMM should attempt to hand-hold the guest and
-ensure that it maps an MMIO with read side-effects appropriately. The
-guest driver can do this by itself or get incorrect hw behaviour. Such
-hand-holding is only needed if the speculative loads have wider system
-implications but we concluded that it's not the case for PCIe. Even with
-a Device mapping, the guest can always issue random reads from an
-assigned MMIO range and cause side-effects.
-
-> Kinda stinks to make the VMM aware of the device, but IMO it is a
-> fundamental limitation of the way we back memslots right now.
-
-As I mentioned above, the limitation may be more complex if the
-intra-BAR attributes are not something readily available in the device
-documentation. Maybe Jason or Ankit can shed some light here: are those
-intra-BAR ranges configurable by the (guest) driver or they are already
-pre-configured by firmware and the driver only needs to probe them?
-
-Anyway, about to go on the Christmas break, so most likely I'll follow
-up in January. Happy holidays!
-
--- 
-Catalin
+iQJNBAEBCAA3FiEE92Mpdr0+Cqw+uCNR5J46Hep3K4QFAmWEO+kZHGdhcnlyb29r
+YXJkQGZhc3RtYWlsLm9yZwAKCRDknjod6ncrhDVuD/9kUuCyIxj9T6bnUa1ul7jF
+SQAHaWX9DRpxAj6aeFbJ8vvPtdBnh5T4V3E/TZEyp3YG+4vpWlV8VNs/6KgeV0iU
+g3hdwi2mt+ZsOUGE842MI6qEkysppiHObclehSIgLz7FqL2W+hBrXOyNqWfmr9Qw
+aChhDibeM46SEaX5iYrd64qtY6NS6PMAbm4gBn3V5Ne+vrhuA9jgu63EE90kXZ5V
+q9aop2I4IhOGwKtp8lPtdPOVAXgm5WIUAQK7a15yGzUj4T1/kJfy2aK8x2lakG3J
+osbv1C88CvkJF08WB+lHG0FwS0HFGFv16XUUeNd3ymXqhhnvkPspTJn8JLY7+/8m
+Jg5xOrKV4WGeOOlBDogczZDAwqMTeJZ+MJsnpcZMvnHWtqNb+zkfFpD5XMagkGjB
+JLGHIbIoi1qxOSSRYslv5JTLUqFUQ50rZTYf6tGQgId7P6Mg6PBigLjwCscIjtxd
+M7GBr0FXssNFR8jhYJQC8v8faK53rwQDWWV902Vc/vUDMtOYfLVxWe2i8h4eeoSH
+xndgDiSzvqb0vYJLED/tdL4t52SffnCRs1Oqvtpsda57fhvBn8SMyIw9rGDTf1yk
+asSOhdvpxAvG2F5E69qy81NcS+HTn1E5D0UnBPmuZPT4XGTSopsCaMtK1PA7+Vl/
+Uifu2Xo4PtcWyBvvxBDt5Q==
+=L5Nv
+-----END PGP SIGNATURE-----
+--=-=-=--
 
