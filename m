@@ -1,142 +1,133 @@
-Return-Path: <linux-kernel+bounces-7748-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7749-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BEB3481AC93
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 03:21:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB03881AC95
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 03:21:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 74B74287ABA
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 02:21:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 330161C2288B
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 02:21:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA3F9258B;
-	Thu, 21 Dec 2023 02:20:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC3571FCF;
+	Thu, 21 Dec 2023 02:21:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=flygoat.com header.i=@flygoat.com header.b="eBwbc/vS";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="9b+5WMMO"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out28-38.mail.aliyun.com (out28-38.mail.aliyun.com [115.124.28.38])
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B30B1843;
-	Thu, 21 Dec 2023 02:20:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sjterm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sjterm.com
-X-Alimail-AntiSpam:AC=CONTINUE;BC=0.08253946|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.759945-0.00196268-0.238092;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047199;MF=fuyao@sjterm.com;NM=1;PH=DS;RN=16;RT=16;SR=0;TI=SMTPD_---.VpJwiCT_1703125249;
-Received: from localhost(mailfrom:fuyao@sjterm.com fp:SMTPD_---.VpJwiCT_1703125249)
-          by smtp.aliyun-inc.com;
-          Thu, 21 Dec 2023 10:20:50 +0800
-Date: Thu, 21 Dec 2023 10:20:49 +0800
-From: fuyao <fuyao@sjterm.com>
-To: Andre Przywara <andre.przywara@arm.com>
-Cc: fuyao <fuyao1697@cyg.com>, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Samuel Holland <samuel@sholland.org>,
-	Alexandre TORGUE <alexandre.torgue@st.com>,
-	Enric Balletbo i Serra <eballetbo@gmail.com>,
-	Baruch Siach <baruch@tkos.co.il>,
-	Paul Barker <paul.barker@sancloud.com>, devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RESEND] ARM: dts: sun8i: r40: open the regulator aldo1
-Message-ID: <ZYOhAQi7XeLUuAC9@debian.cyg>
-Mail-Followup-To: Andre Przywara <andre.przywara@arm.com>,
-	fuyao <fuyao1697@cyg.com>, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Samuel Holland <samuel@sholland.org>,
-	Alexandre TORGUE <alexandre.torgue@st.com>,
-	Enric Balletbo i Serra <eballetbo@gmail.com>,
-	Baruch Siach <baruch@tkos.co.il>,
-	Paul Barker <paul.barker@sancloud.com>, devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-References: <ZYKjYypuAx7gNuam@debian.cyg>
- <20231220150400.0f32e2a5@donnerap.manchester.arm.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BE451843;
+	Thu, 21 Dec 2023 02:21:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=flygoat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flygoat.com
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+	by mailout.nyi.internal (Postfix) with ESMTP id A2DC55C02BB;
+	Wed, 20 Dec 2023 21:21:46 -0500 (EST)
+Received: from imap44 ([10.202.2.94])
+  by compute3.internal (MEProxy); Wed, 20 Dec 2023 21:21:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
+	cc:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm3; t=1703125306;
+	 x=1703211706; bh=u4Mi26pZJKyRO9fetP7V1s8Zt2g/ERIujlW54YGgiXg=; b=
+	eBwbc/vSeN+oifqqPfn4rQ/wC99kqiy8XKqgN9vcENnhpxuZ8mnCTDfv6tmg1C1h
+	W2Nh7VL9JRYhls71S8OhCWLnNJ++aGMBEUjotmCXGdb5aqkeRtYcp9QRN2z5lbSf
+	rvEPMkfELnbPokg7TndubGCSNpeX29e9WnA4b6rG6+xKBDtPzz1teZq5JHn7Lpii
+	PU0Apxl8D2oifv4LqwVOW5+urQxuCi8xhvYW935HXzXypsC7iOzAho0T02PSgk02
+	kNE1Q6NTLzsaapCb1ftPAEc8/T+B3RqVuln7QpS0Gei1SKgbclBLGFvRhJrO0gsw
+	93Mt5Uy6HeZGcSI3exjUIQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1703125306; x=
+	1703211706; bh=u4Mi26pZJKyRO9fetP7V1s8Zt2g/ERIujlW54YGgiXg=; b=9
+	b+5WMMODPhB1eHvwmjFnIAKgsdqhCJoNNOMCKPcjBrCAxSwg8RAWkgs0O/zuGKtQ
+	qDWqoc7fNqNuDxSnO+FDUaJpp1Nv/0OyYd0UVcgw4GJiFZSfDxhxJ1jdZmAD4PUU
+	pILlpUJDDwb55rFNLJO9ZEMEY90qXqUevrgVzBV6KoQPe1HJ/R/Zy8gVXlBeGzsR
+	NhWE22gslYkkzPTIgXTqiaJIL7m/djwFZHWFKLdm+7kQCrwCznWJF4LK59ch+JNW
+	SiO50nvhFXU0osca0XuXBZcMpn5bHlgybkeRTugL8et5XhZ5veHY76xxLucQZ2Hd
+	RwiumlKRu9NKuPPIzSsqw==
+X-ME-Sender: <xms:OqGDZWM-GmB7838DFkcktNeym6sytM6YqSrhbzYqSFbzXbH0UOXc6Q>
+    <xme:OqGDZU-ecyRMcl_wKWF_yY0ON3cz0OKnrFTKkA3b3pcxJcKp-e4i2U-_c6TtJeQSL
+    _5XaiOUxK0dZ_QZBSk>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvddufedggeeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdfl
+    ihgrgihunhcujggrnhhgfdcuoehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtoh
+    hmqeenucggtffrrghtthgvrhhnpeeihfdukeelvdduiedtieetieekvdegjefhteelhfdv
+    veelvddvffeflefglefhueenucffohhmrghinhepgihktggurdgtohhmnecuvehluhhsth
+    gvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepjhhirgiguhhnrdihrghn
+    ghesfhhlhihgohgrthdrtghomh
+X-ME-Proxy: <xmx:OqGDZdS5qc_S8fpjFlX-7R1PZL3gxzNI3TcVs8Dv_UbazI0ScI9a7A>
+    <xmx:OqGDZWsDjFQ14oKk9kTCBMswB_MKLbly-RhP6cyf0_xdAvDwhIG3CA>
+    <xmx:OqGDZedal_fSklLlz7YQPyahX5HqMfpjW9RkWyMyhj43DqiK_gkVlg>
+    <xmx:OqGDZWm9PN--iWvz5YLej6wTUrCsVG7OCMIi0jX_iRGlcOGgCfllPw>
+Feedback-ID: ifd894703:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 5C2BD36A0076; Wed, 20 Dec 2023 21:21:46 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-1364-ga51d5fd3b7-fm-20231219.001-ga51d5fd3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231220150400.0f32e2a5@donnerap.manchester.arm.com>
-Organization: work_work_work
+Message-Id: <96543d4c-f08e-443d-9a85-9257fc4f4b6c@app.fastmail.com>
+In-Reply-To: <ZYNaFhFp/+q+/Z0Z@alpha.franken.de>
+References: <20231029-mips_debug_ll-v1-0-d7a491e8c278@flygoat.com>
+ <ZYNaFhFp/+q+/Z0Z@alpha.franken.de>
+Date: Thu, 21 Dec 2023 02:21:26 +0000
+From: "Jiaxun Yang" <jiaxun.yang@flygoat.com>
+To: "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>
+Cc: "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/8] MIPS: Unify low-level debugging functionalities
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Dec 20, 2023 at 03:04:00PM +0000, Andre Przywara wrote:
-> On Wed, 20 Dec 2023 16:18:43 +0800
-> fuyao <fuyao1697@cyg.com> wrote:
-> 
-> Hi,
-> 
-> > the aldo1 is connect regulator pin which power the TV.
-> 
-> What do you mean with that? That ALDO1 is connected to VCC-TVOUT and/or
-> VCC-TVIN on the R40 SoC?
 
-The ALDO1 is connected to VCC-TVOUT on the R40 Soc.
 
-> 
-> > The USB core use TV ref as reference Voltage.
-> 
-> The USB core in the SoC? So pin VCC-USB, which requires 3.3V, the same
-> voltage as the TV pins?
-> Which means this doesn't really have much to do with TV, it's just that
-> USB and also "TV" are supplied by ALDO1?
+=E5=9C=A82023=E5=B9=B412=E6=9C=8820=E6=97=A5=E5=8D=81=E4=BA=8C=E6=9C=88 =
+=E4=B8=8B=E5=8D=889:18=EF=BC=8CThomas Bogendoerfer=E5=86=99=E9=81=93=EF=BC=9A
+> On Sun, Oct 29, 2023 at 02:53:01AM +0000, Jiaxun Yang wrote:
+>> The plan is to elimiate platform specific early_printk and
+>> cps-vec-ns16550 by debug_ll and earlycon.
+>
+> https://xkcd.com/927/ ?
+>
+> sorry I don't think that just another new function is good approach.
+> Doing this will end up with another method for early debugging and
+> all other will stay.
 
-The internal USB PHY requires a reference voltage. It seems that in
-order to save costs, the reference voltage of the TVOUT module is used.
+To summarize how are we going to handle low-level debugging after this s=
+eries:
+1. You are lucky enough that the problem happens after console system in=
+itialized
+   and you have stack working: go earlycon, or on very few old platforms=
+ with platform
+   early_printk
+2. You are debugging zboot: debug_ll
+3. You are debugging SMP bootstrap code like cps-vec: debug_ll
+4. Your kernel crashed at the middle of no where before trap_init: debug=
+_ll
 
-> 
-> > Signed-off-by: fuyao <fuyao1697@cyg.com>
-> > ---
-> >  arch/arm/boot/dts/allwinner/sun8i-r40-feta40i.dtsi | 7 +++++++
-> >  1 file changed, 7 insertions(+)
-> > 
-> > diff --git a/arch/arm/boot/dts/allwinner/sun8i-r40-feta40i.dtsi b/arch/arm/boot/dts/allwinner/sun8i-r40-feta40i.dtsi
-> > index 9f39b5a2bb35..8906170461df 100644
-> > --- a/arch/arm/boot/dts/allwinner/sun8i-r40-feta40i.dtsi
-> > +++ b/arch/arm/boot/dts/allwinner/sun8i-r40-feta40i.dtsi
-> > @@ -42,6 +42,13 @@ &pio {
-> >  	vcc-pg-supply = <&reg_dldo1>;
-> >  };
-> >  
-> > +&reg_aldo1 {
-> > +	regulator-always-on;
-> 
-> So did USB never work before, with the DT as in mainline?
-> 
+Thanks
+>
+> Thomas.
+>
+> --=20
+> Crap can work. Given enough thrust pigs will fly, but it's not necessa=
+rily a
+> good idea.                                                [ RFC1925, 2=
+.3 ]
 
-The USB can work, but is unstable. Occasionally disconnected because of
-the D+/D- electrical characteristics.
-
-> For always-on regulators it would be good to see some rationale why this
-> cannot be referenced by its consumer. If it is really supplying the USB
-> core, that would be a reason, because we don't have a good way of
-> describing this.
-> 
-> > +	regulator-min-microvolt = <3300000>;
-> > +	regulator-max-microvolt = <3300000>;
-> > +	regulator-name = "vcc-aldo1";
-> 
-> Regulators should be named after their users, so use something like:
-> 	regulator-name = "vcc-3v3-tv-usb";
-> 
-
-thanks.
-
-> That then also serves as documentation of why this is always on.
-> 
-> Cheers,
-> Andre
-> 
-> > +};
-> > +
-> >  &reg_aldo2 {
-> >  	regulator-always-on;
-> >  	regulator-min-microvolt = <1800000>;
-> 
-
+--=20
+- Jiaxun
 
