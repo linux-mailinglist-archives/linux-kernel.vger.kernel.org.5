@@ -1,130 +1,118 @@
-Return-Path: <linux-kernel+bounces-7897-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7898-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B402C81AED9
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 07:38:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C9AA81AEDC
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 07:39:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 360021F2414B
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 06:38:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1849E28662D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 06:38:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4192C143;
-	Thu, 21 Dec 2023 06:38:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EBC8125DA;
+	Thu, 21 Dec 2023 06:38:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="eR23sT/o"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jBtKBo2Z"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9C0DB672
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 06:38:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-50e587fb62fso662850e87.2
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 22:38:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703140703; x=1703745503; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=CGBzfoVWQeWg66Ydxo92nkSE2f64Queno0k21jGjqUE=;
-        b=eR23sT/oGUIP5z7xhrTLeKCY33QVcGYs4XltPVR+x5ad0nAStFZ/Ao4ALVfiN1CnTE
-         ftk7OSH4z540HPW1up5H+/5urXgIx+gqC0fyy56e6BnLhkj20HO1wkvclFRy/y8SAF9k
-         AzZQfQZrDYSCYQEuP6Zo6A+juW3POJu+KoJ3uBJt2ZF4KOL4cPFg3Kb6vZk2btBzuw8D
-         C2KiHpBi8NAXW1r2SjQGHCOhPaTannunh1HWitVGeMA9WFSNZbDNIWjxuoVd31sd+lzQ
-         f0JBzk0izZ03h+V0u/oLclag31DKIcXsJCI0Gg3zt/lDt847cU7aErKV4wYXQ0WOIev0
-         6ecQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703140703; x=1703745503;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=CGBzfoVWQeWg66Ydxo92nkSE2f64Queno0k21jGjqUE=;
-        b=Ka+aPewNZtEKUWdtvHrKmVOTg8tl3mSd9a1tZBy5TKRT7P3wDMFkFVHnuciHGhzXrh
-         nDFoSWiOVz0E9G9x5sSlNbefbyCPYF5SPxld9cjtZueA/4cUvDVoCQ7it2BvyU4+tauK
-         GgkAG6MRVPsQ2B/qkr1i9XnAiIvKjPbPAxTK2cgLgGcjbIQXP5FpprVG3UgJkxy17/Zm
-         nHBJ8QH8syLSlvumqZ4j5NpjOyP6ozmB4sss43GciXJben9yYBbq5ZsHr4DP/PkBvfMM
-         sikTEESzHdt0N14Uk0f4n6jo0VCT0T7K7xmRpqWax9N9ZTL963BWXshpkN3Z6M6S2KBN
-         sgEQ==
-X-Gm-Message-State: AOJu0YxnzTIeC/Z7mmST+hHyqUSRuDUkiOaAc9poYuItncdSqNioHSWO
-	vsCAAj8HOCO2ddI2JDCTIjSwjudXYWG2FsuTFGvAmg==
-X-Google-Smtp-Source: AGHT+IESedrNBL/v9jaLMU7PAQwtay088jXuies4dyTaNlIT931tV2Qh5dKyyDOzNLIptrzbMA5Qx8Ng8r5BAFoxbdA=
-X-Received: by 2002:a05:6512:1113:b0:50e:51fa:1d3b with SMTP id
- l19-20020a056512111300b0050e51fa1d3bmr1203596lfg.93.1703140702673; Wed, 20
- Dec 2023 22:38:22 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BE5B11733;
+	Thu, 21 Dec 2023 06:38:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9343DC433C8;
+	Thu, 21 Dec 2023 06:38:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703140716;
+	bh=Yhl/ykyxVA6LA1kDZOxQMgUP3Z7vfjny1ZSJoKucqog=;
+	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+	b=jBtKBo2ZiBpDcT422t0EOms8MP/5gNWYSaAN1ggNe2OggUvouJznOezeC94w6b1Z6
+	 cTAX5Rrnp/va+W1GfKitWezNesm2EIoqYKPnvu3vIdjaTTgEiJr58GuXy1Oc3CZXX8
+	 KK5lDh23OJ6Vj1fHORrGFO7wWF8ZjKASNFD2//xaAjVwp0lu1KPO1TqVgpKvSmANOq
+	 veWV8V6Fndry8QbjxQkrO1LIM9K5eVkZbu3uQ2cb6Sy3VAcnohMYZlsKq6cNomkKM7
+	 Cz0u9b+SIwnDAo/oLZzh5fiv29mgP6wX2hJeVDCVRb9BE7fnU/ychZW+Yrv9DsR9zl
+	 RdooDQ6blXDIw==
+From: Kalle Valo <kvalo@kernel.org>
+To: "Ma, Jun" <majun@amd.com>
+Cc: Mario Limonciello <mario.limonciello@amd.com>,  Johannes Berg
+ <johannes@sipsolutions.net>,  "David S . Miller" <davem@davemloft.net>,
+  Eric Dumazet <edumazet@google.com>,  Jakub Kicinski <kuba@kernel.org>,
+  Paolo Abeni <pabeni@redhat.com>,  "open list:MAC80211"
+ <linux-wireless@vger.kernel.org>,  "open list:NETWORKING [GENERAL]"
+ <netdev@vger.kernel.org>,  open list <linux-kernel@vger.kernel.org>,  Jun
+ Ma <Jun.ma2@amd.com>
+Subject: Re: [PATCH] wifi: mac80211: Use subsystem appropriate debug call
+References: <20231215145439.57286-1-mario.limonciello@amd.com>
+	<87frzzsfoi.fsf@kernel.org>
+	<46bf6ed5-31f6-48f4-b63d-f532e163204e@amd.com>
+Date: Thu, 21 Dec 2023 08:38:32 +0200
+In-Reply-To: <46bf6ed5-31f6-48f4-b63d-f532e163204e@amd.com> (Jun Ma's message
+	of "Thu, 21 Dec 2023 13:57:50 +0800")
+Message-ID: <87cyv0oyaf.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231215073119.543560-1-ilias.apalodimas@linaro.org>
- <6fddeb22-0906-e04c-3a84-7836bef9ffa2@huawei.com> <CAC_iWjLiOdUqLmRHjZmwv9QBsBvYNV=zn30JrRbJa05qMyDBmw@mail.gmail.com>
- <fb0f33d8-d09a-57fc-83b0-ccf152277355@huawei.com> <CAC_iWjKH5ZCUwVWc2EisfjeLVF=ko967hqpdAc7G4FdsZCq7NA@mail.gmail.com>
- <d853acde-7d69-c715-4207-fb77da1fb203@huawei.com>
-In-Reply-To: <d853acde-7d69-c715-4207-fb77da1fb203@huawei.com>
-From: Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Date: Thu, 21 Dec 2023 08:37:46 +0200
-Message-ID: <CAC_iWjL04RRFCU13yejUONvvY0dzYO1scAzNOC+auWpFDctzAA@mail.gmail.com>
-Subject: Re: [PATCH net-next] page_pool: Rename frag_users to frag_cnt
-To: Yunsheng Lin <linyunsheng@huawei.com>
-Cc: netdev@vger.kernel.org, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 
-Hi Yunsheng,
+"Ma, Jun" <majun@amd.com> writes:
 
-On Thu, 21 Dec 2023 at 04:07, Yunsheng Lin <linyunsheng@huawei.com> wrote:
+> Hi,
 >
-> On 2023/12/20 15:56, Ilias Apalodimas wrote:
-> > Hi Yunsheng,
-> >>>>>  #ifdef CONFIG_PAGE_POOL_STATS
-> >>>>>       /* these stats are incremented while in softirq context */
-> >>>>> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-> >>>>> index 9b203d8660e4..19a56a52ac8f 100644
-> >>>>> --- a/net/core/page_pool.c
-> >>>>> +++ b/net/core/page_pool.c
-> >>>>> @@ -659,7 +659,7 @@ EXPORT_SYMBOL(page_pool_put_page_bulk);
-> >>>>>  static struct page *page_pool_drain_frag(struct page_pool *pool,
-> >>>>>                                        struct page *page)
-> >>>>>  {
-> >>>>> -     long drain_count = BIAS_MAX - pool->frag_users;
-> >>>>> +     long drain_count = BIAS_MAX - pool->frag_cnt;
-> >>>>
-> >>>> drain_count = pool->refcnt_bais;
-> >>>
-> >>> I think this is a typo right? This still remains
-> >>
-> >> It would be better to invert logic too, as it is mirroring:
-> >>
-> >> https://elixir.bootlin.com/linux/v6.7-rc5/source/mm/page_alloc.c#L4745
-> >
-> > This is still a bit confusing for me since the actual bias is the
-> > number of fragments that you initially split the page. But I am fine
-> Acctually there are two bais numbers for a page used by
-> page_pool_alloc_frag().
-> the one for page->pp_ref_count, which already use the BIAS_MAX, which
-> indicates the initial bais number:
-> https://elixir.bootlin.com/linux/latest/source/net/core/page_pool.c#L779
+> On 12/18/2023 11:17 PM, Kalle Valo wrote:
+>> Mario Limonciello <mario.limonciello@amd.com> writes:
+>> 
+>>> mac80211 doesn't use dev_dbg() but instead various macros from
+>>> net/mac80211/debug.h. Adjust wbrf code to use wiphy_dbg() instead.
+>>>
+>>> Cc: Jun Ma <Jun.ma2@amd.com>
+>>> Reported-by: kvalo@kernel.org
+>>> Closes:
+>>> https://lore.kernel.org/amd-gfx/8bd60010-7534-4c22-9337-c4219946d8d6@amd.com/T/#mfe2f29372c45130d27745912faf33d9f7ce50118
+>>> Fixes: d34be4310cbe ("wifi: mac80211: Add support for WBRF features")
+>>> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+>>> ---
+>>>  net/mac80211/wbrf.c | 4 ++--
+>>>  1 file changed, 2 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/net/mac80211/wbrf.c b/net/mac80211/wbrf.c
+>>> index a05c5b971789..12c23e14f884 100644
+>>> --- a/net/mac80211/wbrf.c
+>>> +++ b/net/mac80211/wbrf.c
+>>> @@ -23,8 +23,8 @@ void ieee80211_check_wbrf_support(struct ieee80211_local *local)
+>>>  		return;
+>>>  
+>>>  	local->wbrf_supported = acpi_amd_wbrf_supported_producer(dev);
+>>> -	dev_dbg(dev, "WBRF is %s supported\n",
+>>> -		local->wbrf_supported ? "" : "not");
+>>> +	wiphy_dbg(wiphy, "WBRF is %s supported\n",
+>>> +		  local->wbrf_supported ? "" : "not");
+>>>  }
+>> 
+>> This won't work, I still see the debug message:
+>> 
+>> [  333.765867] ieee80211 phy0: WBRF is not supported
+>> 
+>> The issue seems to be that mac80211 defines DEBUG in
+>> net/mac80211/Makefile:
+>> 
+>> ccflags-y += -DDEBUG
+>> 
+>> That -DDEBUG should be cleaned up, but I think separately. It's just
+>> that I cannot come up with any good proposal, all the macros in
+>> net/mac80211/debug.h require sdata and we don't have that in this stage.
+>> Any ideas?
 >
-> Another one for pool->frag_users indicating the runtime bais number, which
-> need changing when a page is split into more fragments:
-> https://elixir.bootlin.com/linux/latest/source/net/core/page_pool.c#L776
-> https://elixir.bootlin.com/linux/latest/source/net/core/page_pool.c#L783
+> I will submit a patch that only compiles wbrf.c when CONFIG_AMD_WBRF=y
 
-I know, and that's exactly what my commit message explains.  Also,
-that's the reason that the rename was 'frag_cnt' on v1.
+But does this mean that the debug is still printed when CONFIG_AMD_WBRF
+is enabled? And I would assume all distros enable that, right?
 
-/Ilias
->
-> > with having a common approach. I'll send the rename again shortly, and
-> > I can send the logic invert a bit later (or feel free to send it,
-> > since it was your idea).
-> >
-> > Thanks
-> > /Ilias
-> > .
-> >
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
