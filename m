@@ -1,219 +1,111 @@
-Return-Path: <linux-kernel+bounces-8285-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8286-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A8F6D81B4EC
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 12:30:17 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A9FB81B4EE
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 12:31:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CD0581C238E1
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 11:30:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BF233B22AB3
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 11:31:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 731C36BB5F;
-	Thu, 21 Dec 2023 11:30:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D3EC6BB57;
+	Thu, 21 Dec 2023 11:30:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="R5hSwd5l";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="aBv5zKwx";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="bSqK6InS";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="KAYg9i7z"
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="TMUq8aL5"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 539EF6A34B;
-	Thu, 21 Dec 2023 11:30:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 78E901FDAA;
-	Thu, 21 Dec 2023 11:30:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1703158204; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=collHDGGumjW8qJbYtol2//lRSPeWpd6YSa6qeEokGw=;
-	b=R5hSwd5ljiBreUag5bpe26RA2Dib9xWRSV/QlS/3nrZjR3YvcP5lqg0EKSpmh0aXFdPdFC
-	jNQnjf4KAlEnJVvKa+FKM+XVUasXG4un0cpuI3bD7XNao3NCIzDzIazds9JSISDvWluSyY
-	ePYN6JLvZWw1EmfLOEj+fZ14TxWc0kQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1703158204;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=collHDGGumjW8qJbYtol2//lRSPeWpd6YSa6qeEokGw=;
-	b=aBv5zKwxXGp22hWnr06AJDGuNmzdxlk6VCN5FWEIT8F6L8UdmTiy/pcZN8ezyLfo8GO07Q
-	g1wSq6RJMSKIeBCQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1703158203; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=collHDGGumjW8qJbYtol2//lRSPeWpd6YSa6qeEokGw=;
-	b=bSqK6InSzvg37MNHX9AIIVbyuK05c1VwhItUctNBqWE0yoPGIAEAnMDcteL0MLv+bbKc/z
-	e+ODmi4h6YvZtwWPsrAYX03/RKcam2FBLV/i3D36KVY7Cdt1LcEdd8tNEP8L07zjPqp7of
-	KZvAnEgWO/KYXCt/Qankm1sAxyQ6tZI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1703158203;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=collHDGGumjW8qJbYtol2//lRSPeWpd6YSa6qeEokGw=;
-	b=KAYg9i7zFcAH75mXRS/00Q5UnZXz80vQjKHM4zwbrMdKc8EPSx5zheHSAbZYlae6RSCeyt
-	dcFNZ9qVnFAOW4AA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6D47E13725;
-	Thu, 21 Dec 2023 11:30:03 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id Bu+uGrshhGXdWwAAD6G6ig
-	(envelope-from <jack@suse.cz>); Thu, 21 Dec 2023 11:30:03 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 1FE0EA07E3; Thu, 21 Dec 2023 12:29:59 +0100 (CET)
-Date: Thu, 21 Dec 2023 12:29:59 +0100
-From: Jan Kara <jack@suse.cz>
-To: Christoph Hellwig <hch@lst.de>
-Cc: linux-mm@kvack.org, "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	Jan Kara <jack@suse.com>, David Howells <dhowells@redhat.com>,
-	Brian Foster <bfoster@redhat.com>, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 12/17] writeback: Factor writeback_iter_init() out of
- write_cache_pages()
-Message-ID: <20231221112959.du2lplmxa2uquuf6@quack3>
-References: <20231218153553.807799-1-hch@lst.de>
- <20231218153553.807799-13-hch@lst.de>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C58C06AB8F;
+	Thu, 21 Dec 2023 11:30:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3BLBUiNf034805;
+	Thu, 21 Dec 2023 05:30:44 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1703158244;
+	bh=6XD1jb8MxKl/t5iIscqlDyNbd90j4JalDS5QKVzFyrc=;
+	h=From:To:CC:Subject:Date;
+	b=TMUq8aL5Gak5v0NumMGMQVYa9q6cVI9MSX/CH/RBxwbQLwl8wRsg895HuITotTugp
+	 f+X9EAC19VBIXot0+q3PKw9Xj031YScr4dDXhFPfgY31URtKPTUh8hV5rzL/6BF0Uk
+	 V9sD8/YbaY0ApMEOyTpdCXbdcwNcwbl8g7HvXb44=
+Received: from DFLE101.ent.ti.com (dfle101.ent.ti.com [10.64.6.22])
+	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3BLBUiiZ007840
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Thu, 21 Dec 2023 05:30:44 -0600
+Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 21
+ Dec 2023 05:30:43 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 21 Dec 2023 05:30:43 -0600
+Received: from localhost (jayesh-hp-probook-440-g8-notebook-pc.dhcp.ti.com [172.24.227.112])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3BLBUhP9024306;
+	Thu, 21 Dec 2023 05:30:43 -0600
+From: Jayesh Choudhary <j-choudhary@ti.com>
+To: <nm@ti.com>, <vigneshr@ti.com>
+CC: <kristo@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <a-bhatia1@ti.com>, <rogerq@kernel.org>, <sabiya.d@ti.com>,
+        <u-kumar1@ti.com>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <j-choudhary@ti.com>
+Subject: [PATCH] arm64: dts: ti: k3-am69-sk: remove assigned-clock-parents for unused VP
+Date: Thu, 21 Dec 2023 17:00:42 +0530
+Message-ID: <20231221113042.48492-1-j-choudhary@ti.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231218153553.807799-13-hch@lst.de>
-X-Spam-Level: *
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=bSqK6InS;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=KAYg9i7z
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-1.24 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_SEVEN(0.00)[8];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[lst.de:email,suse.cz:dkim,suse.cz:email,infradead.org:email,suse.com:email];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.23)[72.50%];
-	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
-X-Spam-Score: -1.24
-X-Rspamd-Queue-Id: 78E901FDAA
-X-Spam-Flag: NO
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Mon 18-12-23 16:35:48, Christoph Hellwig wrote:
-> From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-> 
-> Make it return the first folio in the batch so that we can use it
-> in a typical for() pattern.
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+VP2 and VP3 are unused video ports and VP3 share the same parent
+clock as VP1 causing issue with pixel clock setting for HDMI (VP1).
+So remove the parent clocks for unused VPs.
 
-Looks good. Feel free to add:
+Fixes: 6f8605fd7d11 ("arm64: dts: ti: k3-am69-sk: Add DP and HDMI support")
+Reported-by: Nishanth Menon <nm@ti.com>
+Closes: https://storage.kernelci.org/mainline/master/v6.7-rc6/arm64/defconfig/gcc-10/lab-ti/baseline-nfs-am69_sk-fs.txt
+Signed-off-by: Jayesh Choudhary <j-choudhary@ti.com>
+---
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+Local testing log for HDMI on AM69-SK:
+<https://gist.github.com/Jayesh2000/517395cd85eb28d65b8ee4568cefb809>
 
-								Honza
+ arch/arm64/boot/dts/ti/k3-am69-sk.dts | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-> ---
->  mm/page-writeback.c | 39 ++++++++++++++++++++-------------------
->  1 file changed, 20 insertions(+), 19 deletions(-)
-> 
-> diff --git a/mm/page-writeback.c b/mm/page-writeback.c
-> index 70f42fd9a95b5d..efcfffa800884d 100644
-> --- a/mm/page-writeback.c
-> +++ b/mm/page-writeback.c
-> @@ -2442,6 +2442,22 @@ static bool should_writeback_folio(struct address_space *mapping,
->  	return true;
->  }
->  
-> +static struct folio *writeback_iter_init(struct address_space *mapping,
-> +		struct writeback_control *wbc)
-> +{
-> +	if (wbc->range_cyclic)
-> +		wbc->index = mapping->writeback_index; /* prev offset */
-> +	else
-> +		wbc->index = wbc->range_start >> PAGE_SHIFT;
-> +
-> +	if (wbc->sync_mode == WB_SYNC_ALL || wbc->tagged_writepages)
-> +		tag_pages_for_writeback(mapping, wbc->index, wbc_end(wbc));
-> +
-> +	wbc->err = 0;
-> +	folio_batch_init(&wbc->fbatch);
-> +	return writeback_get_next(mapping, wbc);
-> +}
-> +
->  /**
->   * write_cache_pages - walk the list of dirty pages of the given address space and write all of them.
->   * @mapping: address space structure to write
-> @@ -2477,29 +2493,14 @@ int write_cache_pages(struct address_space *mapping,
->  		      struct writeback_control *wbc, writepage_t writepage,
->  		      void *data)
->  {
-> +	struct folio *folio;
->  	int error;
-> -	pgoff_t end;		/* Inclusive */
->  
-> -	if (wbc->range_cyclic) {
-> -		wbc->index = mapping->writeback_index; /* prev offset */
-> -		end = -1;
-> -	} else {
-> -		wbc->index = wbc->range_start >> PAGE_SHIFT;
-> -		end = wbc->range_end >> PAGE_SHIFT;
-> -	}
-> -	if (wbc->sync_mode == WB_SYNC_ALL || wbc->tagged_writepages)
-> -		tag_pages_for_writeback(mapping, wbc->index, end);
-> -
-> -	folio_batch_init(&wbc->fbatch);
-> -	wbc->err = 0;
-> -
-> -	for (;;) {
-> -		struct folio *folio = writeback_get_next(mapping, wbc);
-> +	for (folio = writeback_iter_init(mapping, wbc);
-> +	     folio;
-> +	     folio = writeback_get_next(mapping, wbc)) {
->  		unsigned long nr;
->  
-> -		if (!folio)
-> -			break;
-> -
->  		folio_lock(folio);
->  		if (!should_writeback_folio(mapping, wbc, folio)) {
->  			folio_unlock(folio);
-> -- 
-> 2.39.2
-> 
+diff --git a/arch/arm64/boot/dts/ti/k3-am69-sk.dts b/arch/arm64/boot/dts/ti/k3-am69-sk.dts
+index 8da591579868..370980eb59b0 100644
+--- a/arch/arm64/boot/dts/ti/k3-am69-sk.dts
++++ b/arch/arm64/boot/dts/ti/k3-am69-sk.dts
+@@ -918,13 +918,9 @@ &dss {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&dss_vout0_pins_default>;
+ 	assigned-clocks = <&k3_clks 218 2>,
+-			  <&k3_clks 218 5>,
+-			  <&k3_clks 218 14>,
+-			  <&k3_clks 218 18>;
++			  <&k3_clks 218 5>;
+ 	assigned-clock-parents = <&k3_clks 218 3>,
+-				 <&k3_clks 218 7>,
+-				 <&k3_clks 218 16>,
+-				 <&k3_clks 218 22>;
++				 <&k3_clks 218 7>;
+ };
+ 
+ &serdes_wiz4 {
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.25.1
+
 
