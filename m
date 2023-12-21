@@ -1,109 +1,133 @@
-Return-Path: <linux-kernel+bounces-8657-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8659-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B6E581BAB5
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 16:27:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AAC0281BAB9
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 16:28:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5E34A1C25AF5
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 15:27:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6825528D4B1
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 15:28:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AF8B59916;
-	Thu, 21 Dec 2023 15:26:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEA4259930;
+	Thu, 21 Dec 2023 15:26:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bp/howPs"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="PVVrDZW8"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8B3958229;
-	Thu, 21 Dec 2023 15:25:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE8F8C433C8;
-	Thu, 21 Dec 2023 15:25:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703172359;
-	bh=bOn20U9lRPRlbVYe+5E72j85AFisfz3+P+95H5MAc04=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=bp/howPs7iub2Al7Z8sBtYS3cyJPnK2yVP+txsU/o6SIivy282qZpAPrDGcOphc72
-	 16ak6461Hb3ipSsrOAjaf0XT+43Ehjo2gFPAF2rRaszCPJJt29Pr5e5Lg/0a9SrE/9
-	 X51lMzhzuIdG7ju29EbQbyo4l2qE2mvOaCBXk6/qjeTguM3BRhHp4KSIZWPCxNb9lG
-	 /fk1XgqbfLz0Scyae+akKN8YM3fjBCxQanDDhMiqXy9QPM0rUKEbQoz0W1/xuNsOsR
-	 N0+iIwdY4A640o4oHqjmmAuhPqjCHFFRjXmwmfN74omuD7QecQvUiZILLw5yxCk5qH
-	 VKchfyUFwZ8LQ==
-Date: Thu, 21 Dec 2023 15:25:53 +0000
-From: Lee Jones <lee@kernel.org>
-To: Andre Przywara <andre.przywara@arm.com>
-Cc: fuyao <fuyao1697@cyg.com>, Chen-Yu Tsai <wens@csie.org>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Samuel Holland <samuel@sholland.org>,
-	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-	linux-kernel@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
-	maijianzhang <maijianzhang@allwinnertech.com>
-Subject: Re: [PATCH RESEND] iio: adc: sun4i-gpadc-iio: adaptation interrupt
- number
-Message-ID: <20231221152553.GM10102@google.com>
-References: <YxmR5SPPY18O7LaG@google.com>
- <YwdhTlk+9h+9Mrwm@scg>
- <20231220115412.65bbc8c7@donnerap.manchester.arm.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDFF662812;
+	Thu, 21 Dec 2023 15:26:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 5DF4A1C0008;
+	Thu, 21 Dec 2023 15:26:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1703172364;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XnimU0svkWDNRKLCz0ZHPlRmfQ2Z7rDvpCfZmcxrsRA=;
+	b=PVVrDZW8xJ8POwGPVj8PmC3/ImUj1UkPGA2n10kyjrVPwnsbr49JHOiasX5HibWVMGoPVD
+	Dp8D1cj2DYgjaGFsv3bUuEsUjLpT5yskbduq7VJ+NeiKYiVxKZJmoAhhkeulSd0729r2Dg
+	/nPjzT+NiDc9HznVjwzGGrNng9opes3zrTD3f972m0kq+dTQcD0qq43P+WtShk0eBKZB5x
+	lZzwS7JwMHBSNEMg3jMVoOpnOKjF4sxmUlnwSt3HK4L4IZipz0V4QBy/GmHEg4ShUTnwdV
+	xAT7a3nzHojAC1XjgJgY+Lg5zxdso+Il1ydaz0DrQG+x7eLxWBd2EpwO9C3V4A==
+From: Gregory CLEMENT <gregory.clement@bootlin.com>
+To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Paul Burton <paulburton@kernel.org>, linux-mips@vger.kernel.org, Jiaxun
+ Yang <jiaxun.yang@flygoat.com>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Vladimir
+ Kondratiev <vladimir.kondratiev@mobileye.com>, Tawfik Bayouk
+ <tawfik.bayouk@mobileye.com>, Alexandre Belloni
+ <alexandre.belloni@bootlin.com>, =?utf-8?Q?Th=C3=A9o?= Lebrun
+ <theo.lebrun@bootlin.com>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH v5 00/22] Add support for the Mobileye EyeQ5 SoC
+In-Reply-To: <ZYRR7zIZax7yUgsZ@alpha.franken.de>
+References: <20231212163459.1923041-1-gregory.clement@bootlin.com>
+ <878r5vctdg.fsf@BL-laptop> <ZYNhbQjMbAH6I0kI@alpha.franken.de>
+ <87frzwasxo.fsf@BL-laptop> <ZYRR7zIZax7yUgsZ@alpha.franken.de>
+Date: Thu, 21 Dec 2023 16:26:02 +0100
+Message-ID: <87a5q3bmr9.fsf@BL-laptop>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231220115412.65bbc8c7@donnerap.manchester.arm.com>
+Content-Type: text/plain
+X-GND-Sasl: gregory.clement@bootlin.com
 
-On Wed, 20 Dec 2023, Andre Przywara wrote:
+Thomas Bogendoerfer <tsbogend@alpha.franken.de> writes:
 
-> On Wed, 20 Dec 2023 15:23:17 +0800
-> fuyao <fuyao1697@cyg.com> wrote:
-> 
-> Hi,
-> 
-> > __platform_get_irq_byname determinies whether the interrupt
-> > number is 0 and returns EINVAL.
-> 
-> can you please say what this fixes, exactly? Is something not working at
-> the moment? Can you please provide parts of the error message?
-> 
-> And maybe expand the explanation a bit more? For instance mention that the
-> identifiers are used as IRQ resource numbers, where 0 is treated specially.
-> 
-> Cheers,
-> Andre
-> 
-> > 
-> > Signed-off-by: fuyao <fuyao1697@cyg.com>
+> On Thu, Dec 21, 2023 at 08:57:55AM +0100, Gregory CLEMENT wrote:
+>> I do not oppose the addition of a new platform, even though, like
+>> Jiaxun, I would prefer to avoid duplicating code. The only thing
+>> preventing the use of the same kernel for EyeQ5 and other platforms is
+>> the starting address.
+>
+> there shouldn't be code duplication.
+>
+> My rough idea would be something like
 
-You have to use your full real name as well.
+Thanks for the feedback, I am going to test it.
 
-> > Acked-by: Jernej Skrabec <jernej.skrabec@gmail.com>
-> > ---
-> >  include/linux/mfd/sun4i-gpadc.h | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/include/linux/mfd/sun4i-gpadc.h b/include/linux/mfd/sun4i-gpadc.h
-> > index ea0ccf33a459..021f820f9d52 100644
-> > --- a/include/linux/mfd/sun4i-gpadc.h
-> > +++ b/include/linux/mfd/sun4i-gpadc.h
-> > @@ -81,8 +81,8 @@
-> >  #define SUN4I_GPADC_TEMP_DATA				0x20
-> >  #define SUN4I_GPADC_DATA				0x24
-> >  
-> > -#define SUN4I_GPADC_IRQ_FIFO_DATA			0
-> > -#define SUN4I_GPADC_IRQ_TEMP_DATA			1
-> > +#define SUN4I_GPADC_IRQ_FIFO_DATA			1
-> > +#define SUN4I_GPADC_IRQ_TEMP_DATA			2
-> >  
-> >  /* 10s delay before suspending the IP */
-> >  #define SUN4I_GPADC_AUTOSUSPEND_DELAY			10000
-> 
+>
+> diff --git a/arch/mips/Kbuild b/arch/mips/Kbuild
+> index af2967bffb73..d683993ed331 100644
+> --- a/arch/mips/Kbuild
+> +++ b/arch/mips/Kbuild
+> @@ -17,6 +17,7 @@ obj- := $(platform-y)
+>  # mips object files
+>  # The object files are linked as core-y files would be linked
+>  
+> +obj-y += generic/
+>  obj-y += kernel/
+>  obj-y += mm/
+>  obj-y += net/
+> diff --git a/arch/mips/generic/Makefile b/arch/mips/generic/Makefile
+> index e37a59bae0a6..56011d738441 100644
+> --- a/arch/mips/generic/Makefile
+> +++ b/arch/mips/generic/Makefile
+> @@ -4,9 +4,9 @@
+>  # Author: Paul Burton <paul.burton@mips.com>
+>  #
+>  
+> -obj-y += init.o
+> -obj-y += irq.o
+> -obj-y += proc.o
+> +obj-$(CONFIG_MACH_GENERIC_CORE) += init.o
+> +obj-$(CONFIG_MACH_GENERIC_CORE) += irq.o
+> +obj-$(CONFIG_MACH_GENERIC_CORE) += proc.o
+>  
+>  obj-$(CONFIG_YAMON_DT_SHIM)            += yamon-dt.o
+>  obj-$(CONFIG_LEGACY_BOARD_SEAD3)       += board-sead3.o
+>
+> so everyboady needing these parts of a generic kernel is able
+> to take it.
+>
+>> Therefore, if it were possible to have a relocatable kernel, this
+>> issue would disappear.
+>
+> yes. There is support for relocatable kernel, so what are we missing
+> there ?
+
+But in arch/mips/generic/Platform we have:
+
+load-$(CONFIG_MIPS_GENERIC)    += 0xffffffff80100000
+
+So, the load address is defined during compilation; for example, I don't
+think there is such a mechanism currently for ARM. hat's what I mean by
+'relocatable,' but perhaps it's not exactly what you have in mind.
+
+Gregory
 
 -- 
-Lee Jones [李琼斯]
+Gregory Clement, Bootlin
+Embedded Linux and Kernel engineering
+http://bootlin.com
 
