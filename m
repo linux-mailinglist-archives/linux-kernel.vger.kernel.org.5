@@ -1,89 +1,90 @@
-Return-Path: <linux-kernel+bounces-7869-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7870-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2226881AE81
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 06:46:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 84D5381AE82
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 06:47:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B450C1F24598
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 05:46:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6E2511C22F4E
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 05:47:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B67CAD59;
-	Thu, 21 Dec 2023 05:46:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E10D8BA4B;
+	Thu, 21 Dec 2023 05:47:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="d54lMIzE"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="V1Sdgytx"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6BE3AD51;
-	Thu, 21 Dec 2023 05:46:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 963C0C433C7;
-	Thu, 21 Dec 2023 05:46:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703137592;
-	bh=h1bfl0BThbn+znFHsBBkIqcPm3nn5itg9uL9y4qM708=;
-	h=From:To:Cc:Subject:Date:From;
-	b=d54lMIzEhERrTY69qDJs/DKSwJh07RqS1cgcu933M6H1O6yylDHQfOjWFi77elOuU
-	 6ftMFpU1F7x7spBakm25NkX/9HLcB9lFWj0FfnZA9dZzlT7005VbrGZ3Up2vyDM+1R
-	 tqtDigi9vkY9XxRyjF2DYDGlAqFQFrJxpPTjuMmVNGEXpd7/m9kNxPguN4LgWZueyW
-	 b7A8Mxwhqp4U7EWM9foGegFKNMG0l5tSRqBbOgoyoZWRG7hcF3MLPkPyQpEQRn2UJF
-	 KAwiR70M3zCCJN9hdUj9XyhS1O8wrFVndN8mQrvwaP4KUId+u8XbI71D11XT0b7OrI
-	 6FKhhNjz8gb/g==
-From: guoren@kernel.org
-To: chenhuacai@kernel.org,
-	kernel@xen0n.name,
-	zhangqing@loongson.cn,
-	huqi@loongson.cn
-Cc: loongarch@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	Guo Ren <guoren@linux.alibaba.com>,
-	Guo Ren <guoren@kernel.org>
-Subject: [PATCH] loongarch: mm: Remove unused TASK_SIZE_MIN
-Date: Thu, 21 Dec 2023 00:46:24 -0500
-Message-Id: <20231221054624.2208019-1-guoren@kernel.org>
-X-Mailer: git-send-email 2.40.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94CCABA30
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 05:47:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Content-Type: text/plain;
+	charset=us-ascii
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1703137659;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aoopr+ccNsQyXfz/YUalVeZvDB+jSnnz+aOkdBpWeU0=;
+	b=V1Sdgytx1Nwd2uNmlTnQaQ+xhip20uNc/DB/VFV6TjM1CbAernGsYjcKqpbioQHmELDDvz
+	vWexG8icTH1CE/sFCW1/irRY6i/mDg/oa7Pz/wz9L3LL2roWytU5ZslpeYJlI2mMh+Iqcr
+	uuI5N17JNexTHXbTozmaub+p5p7jPoo=
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+Subject: Re: [PATCH v2 04/40] mm/rmap: introduce and use
+ hugetlb_try_dup_anon_rmap()
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Muchun Song <muchun.song@linux.dev>
+In-Reply-To: <20231220224504.646757-5-david@redhat.com>
+Date: Thu, 21 Dec 2023 13:47:01 +0800
+Cc: LKML <linux-kernel@vger.kernel.org>,
+ Linux-MM <linux-mm@kvack.org>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+ Hugh Dickins <hughd@google.com>,
+ Ryan Roberts <ryan.roberts@arm.com>,
+ Yin Fengwei <fengwei.yin@intel.com>,
+ Mike Kravetz <mike.kravetz@oracle.com>,
+ Peter Xu <peterx@redhat.com>
+Content-Transfer-Encoding: 7bit
+Message-Id: <7A77CCE2-92F1-47D5-BCCC-C520210ED3EF@linux.dev>
+References: <20231220224504.646757-1-david@redhat.com>
+ <20231220224504.646757-5-david@redhat.com>
+To: David Hildenbrand <david@redhat.com>
+X-Migadu-Flow: FLOW_OUT
 
-From: Guo Ren <guoren@linux.alibaba.com>
 
-Remove TASK_SIZE_MIN because it's not used anymore.
 
-Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-Signed-off-by: Guo Ren <guoren@kernel.org>
----
- arch/loongarch/include/asm/processor.h | 2 --
- 1 file changed, 2 deletions(-)
+> On Dec 21, 2023, at 06:44, David Hildenbrand <david@redhat.com> wrote:
+> 
+> hugetlb rmap handling differs quite a lot from "ordinary" rmap code.
+> For example, hugetlb currently only supports entire mappings, and treats
+> any mapping as mapped using a single "logical PTE". Let's move it out
+> of the way so we can overhaul our "ordinary" rmap.
+> implementation/interface.
+> 
+> So let's introduce and use hugetlb_try_dup_anon_rmap() to make all
+> hugetlb handling use dedicated hugetlb_* rmap functions.
+> 
+> Add sanity checks that we end up with the right folios in the right
+> functions.
+> 
+> Note that is_device_private_page() does not apply to hugetlb.
+> 
+> Reviewed-by: Yin Fengwei <fengwei.yin@intel.com>
+> Reviewed-by: Ryan Roberts <ryan.roberts@arm.com>
+> Signed-off-by: David Hildenbrand <david@redhat.com>
 
-diff --git a/arch/loongarch/include/asm/processor.h b/arch/loongarch/include/asm/processor.h
-index c3bc44b5f5b3..99c80396f63a 100644
---- a/arch/loongarch/include/asm/processor.h
-+++ b/arch/loongarch/include/asm/processor.h
-@@ -20,7 +20,6 @@
- #ifdef CONFIG_32BIT
- 
- #define TASK_SIZE	0x80000000UL
--#define TASK_SIZE_MIN	TASK_SIZE
- #define STACK_TOP_MAX	TASK_SIZE
- 
- #define TASK_IS_32BIT_ADDR 1
-@@ -33,7 +32,6 @@
- #define TASK_SIZE64     (0x1UL << ((cpu_vabits > VA_BITS) ? VA_BITS : cpu_vabits))
- 
- #define TASK_SIZE	(test_thread_flag(TIF_32BIT_ADDR) ? TASK_SIZE32 : TASK_SIZE64)
--#define TASK_SIZE_MIN	TASK_SIZE32
- #define STACK_TOP_MAX	TASK_SIZE64
- 
- #define TASK_SIZE_OF(tsk)						\
--- 
-2.40.1
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
 
+Thanks.
 
