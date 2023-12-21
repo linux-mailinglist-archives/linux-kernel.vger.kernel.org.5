@@ -1,232 +1,121 @@
-Return-Path: <linux-kernel+bounces-8910-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8911-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCD9981BE13
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 19:21:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0DD3481BE14
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 19:23:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7408C284F59
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 18:21:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B2C531F22B32
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 18:23:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2CF364A95;
-	Thu, 21 Dec 2023 18:20:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1535C63517;
+	Thu, 21 Dec 2023 18:23:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=inria.fr header.i=@inria.fr header.b="nLL1/ijT"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="rAQ34tOX"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail3-relais-sop.national.inria.fr (mail3-relais-sop.national.inria.fr [192.134.164.104])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF9EF64A92
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 18:20:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=inria.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=inria.fr
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC9C4634F5
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 18:23:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-54744e66d27so1094a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 10:23:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=inria.fr; s=dc;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=s7KUwBWtWUe2NZnyUJ8GGqFH2mINn56ixFbgVWLnJ0Y=;
-  b=nLL1/ijTm18r8A4jxJwBVnQROuIeFu1JaldkCyIJRwD4lCRnsxdh8zD6
-   WWhtBNemUfJYzQeaHh7x5INYAJCbch/H6PI95uJMMwNx9viR2Dz9Cmw1Q
-   VfxeGNJ0kHn3zpmCNVyiHaPLYGHyXbZ06i04YNV2oAoOHJTzjD/33HLrd
-   c=;
-Authentication-Results: mail3-relais-sop.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=julia.lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
-X-IronPort-AV: E=Sophos;i="6.04,294,1695679200"; 
-   d="scan'208";a="75117676"
-Received: from dt-lawall.paris.inria.fr ([128.93.67.65])
-  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Dec 2023 19:20:37 +0100
-Date: Thu, 21 Dec 2023 19:20:35 +0100 (CET)
-From: Julia Lawall <julia.lawall@inria.fr>
-To: Vincent Guittot <vincent.guittot@linaro.org>
-cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-    Dietmar Eggemann <dietmar.eggemann@arm.com>, Mel Gorman <mgorman@suse.de>, 
-    linux-kernel@vger.kernel.org
-Subject: Re: EEVDF and NUMA balancing
-In-Reply-To: <CAKfTPtCRN_eWgVdK2-h6E_ifJKwwJEtMjeNjB=5DXZFWyBS+tQ@mail.gmail.com>
-Message-ID: <93112fbe-30be-eab8-427c-5d4670a0f94e@inria.fr>
-References: <alpine.DEB.2.22.394.2310032059060.3220@hadrien> <20231003215159.GJ1539@noisy.programming.kicks-ass.net> <alpine.DEB.2.22.394.2310041358420.3108@hadrien> <20231004120544.GA6307@noisy.programming.kicks-ass.net> <alpine.DEB.2.22.394.2310041822170.3108@hadrien>
- <20231004174801.GE19999@noisy.programming.kicks-ass.net> <alpine.DEB.2.22.394.2310041958380.3108@hadrien> <20231009102949.GC14330@noisy.programming.kicks-ass.net> <b8ab29de-1775-46e-dd75-cdf98be8b0@inria.fr> <CAKfTPtBhWwk9sf9F1=KwubiAWFDC2A9ZT-SSJ+tgFxme1cFmYA@mail.gmail.com>
- <alpine.DEB.2.22.394.2312182302310.3361@hadrien> <CAKfTPtALEFtrapi3Kk97KLGQN4259eEQEwwftVUK4RG42Vgoyw@mail.gmail.com> <98b3df1-79b7-836f-e334-afbdd594b55@inria.fr> <CAKfTPtCRN_eWgVdK2-h6E_ifJKwwJEtMjeNjB=5DXZFWyBS+tQ@mail.gmail.com>
+        d=google.com; s=20230601; t=1703183020; x=1703787820; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ji2hJdOh2AMJJzZjAydWcJirZrXR1RsLO+qH+PANSOc=;
+        b=rAQ34tOXylN1QgtOwDMs1bnacBzdvfq240g00qbC/Xb1YKCKOVsG6EaQKlBAXpFgiQ
+         E300t4yIjSjfbHZmMDnE93sca0mn+/1PFLRv3eUKfYnOw4SYsM0lDVKktWEBIPfUBRel
+         ulm5LVuNF+8sL2aGuW4Hk+YR6qEjk8yQqP6sz8+ulLrpoVkYCBs7beROOtMSs68bWh1z
+         iQkqPp9lK0cvna9TuXV/l0TM0MOy0FjDqRKxXaIkCKyS1YJeYOz/Dg9yWQCWK5fotofl
+         FnmOdfjdlLVDTtSJLV3QlKaLMPRVKLTMnp92U6zZg2EPHTNzuKNLf1gZoSf62OzY6pJv
+         jTkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703183020; x=1703787820;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ji2hJdOh2AMJJzZjAydWcJirZrXR1RsLO+qH+PANSOc=;
+        b=KgKeCJfDgRun9rfDUVnlNUmUzY7+uFyvb3E3lxwaj8ZqlCgDwFpfBa7zujvoM0tpD2
+         WhFL/8K6qrj/tlORGmagJ/na4M9+EEX7l+5iaPU+rptUxDyy/7HngK32byJXb2IIkDjv
+         /ZgiLdLH2ZShHqVgyyaFhFTInQJZfjH168YYLe2iTI4JCfL9G7HRkyhCoYBz4mdxUX+R
+         vo5jWVTeSfbRaJfe2PZtgCXh3yPy3DEUuV1C/Wq1hSIEWSVaiQDmgcoLfImLtNavxqQI
+         SFtflBgMSKZahPTjbShJZKTOr9OVk+uktO/SfDukxUvzHIvR615QSsLiOdOY7v9KMRwK
+         xsuw==
+X-Gm-Message-State: AOJu0YydxY7TbM8v9NvHXE6MWkIeLNftUJYVdPG/oHiVJfn2sA6qpBQC
+	7o88ArPhagPkFscCV14Yp/AHD1DQ8VyEcnvbJy2v2WRnk4M=
+X-Google-Smtp-Source: AGHT+IGYoyVAH9rP8s/3taTF8wVdnDKhcmaVTocTc4BnvsLSuoqHpbuXXDd/z/qjrkjb4ulv/pvi56pNnXUdCP7IM7s=
+X-Received: by 2002:a50:c109:0:b0:551:9870:472 with SMTP id
+ l9-20020a50c109000000b0055198700472mr123135edf.1.1703183020025; Thu, 21 Dec
+ 2023 10:23:40 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <20231220001856.3710363-1-jstultz@google.com> <20231220001856.3710363-9-jstultz@google.com>
+ <a76adfd2-a17d-4342-af7e-5d17cf10dab7@arm.com>
+In-Reply-To: <a76adfd2-a17d-4342-af7e-5d17cf10dab7@arm.com>
+From: John Stultz <jstultz@google.com>
+Date: Thu, 21 Dec 2023 10:23:26 -0800
+Message-ID: <CANDhNCpZShTa7s6WjeLeCkuLeTPQarqg94jbE2hHTNp=E6t3vQ@mail.gmail.com>
+Subject: Re: [PATCH v7 08/23] sched: Split scheduler and execution contexts
+To: Metin Kaya <metin.kaya@arm.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
+	Joel Fernandes <joelaf@google.com>, Qais Yousef <qyousef@google.com>, Ingo Molnar <mingo@redhat.com>, 
+	Juri Lelli <juri.lelli@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>, 
+	Dietmar Eggemann <dietmar.eggemann@arm.com>, Valentin Schneider <vschneid@redhat.com>, 
+	Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, 
+	Zimuzo Ezeozue <zezeozue@google.com>, Youssef Esmat <youssefesmat@google.com>, 
+	Mel Gorman <mgorman@suse.de>, Daniel Bristot de Oliveira <bristot@redhat.com>, Will Deacon <will@kernel.org>, 
+	Waiman Long <longman@redhat.com>, Boqun Feng <boqun.feng@gmail.com>, 
+	"Paul E. McKenney" <paulmck@kernel.org>, Xuewen Yan <xuewen.yan94@gmail.com>, 
+	K Prateek Nayak <kprateek.nayak@amd.com>, Thomas Gleixner <tglx@linutronix.de>, kernel-team@android.com, 
+	"Connor O'Brien" <connoro@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-
-
-On Wed, 20 Dec 2023, Vincent Guittot wrote:
-
-> On Tue, 19 Dec 2023 at 18:51, Julia Lawall <julia.lawall@inria.fr> wrote:
+On Thu, Dec 21, 2023 at 2:44=E2=80=AFAM Metin Kaya <metin.kaya@arm.com> wro=
+te:
+>
+> On 20/12/2023 12:18 am, John Stultz wrote:
+> > From: Peter Zijlstra <peterz@infradead.org>
 > >
-> > > > One CPU has 2 threads, and the others have one.  The one with two threads
-> > > > is returned as the busiest one.  But nothing happens, because both of them
-> > > > prefer the socket that they are on.
-> > >
-> > > This explains way load_balance uses migrate_util and not migrate_task.
-> > > One CPU with 2 threads can be overloaded
-> > >
-> > > ok, so it seems that your 1st problem is that you have 2 threads on
-> > > the same CPU whereas you should have an idle core in this numa node.
-> > > All cores are sharing the same LLC, aren't they ?
+> > Let's define the scheduling context as all the scheduler state
+> > in task_struct for the task selected to run, and the execution
+> > context as all state required to actually run the task.
 > >
-> > Sorry, not following this.
-> >
-> > Socket 1 has N-1 threads, and thus an idle CPU.
-> > Socket 2 has N+1 threads, and thus one CPU with two threads.
-> >
-> > Socket 1 tries to steal from that one CPU with two threads, but that
-> > fails, because both threads prefer being on Socket 2.
-> >
-> > Since most (or all?) of the threads on Socket 2 perfer being on Socket 2.
-> > the only hope for Socket 1 to fill in its idle core is active balancing.
-> > But active balancing is not triggered because of migrate_util and because
-> > CPU_NEWLY_IDLE prevents the failure counter from ebing increased.
+> > Currently both are intertwined in task_struct. We want to
+> > logically split these such that we can use the scheduling
+> > context of the task selected to be scheduled, but use the
+> > execution context of a different task to actually be run.
 >
->  CPU_NEWLY_IDLE load_balance doesn't aims to do active load balance so
-> you should focus on the CPU_NEWLY_IDLE load_balance
+> Should we update Documentation/kernel-hacking/hacking.rst (line #348:
+> :c:macro:`current`) or another appropriate doc to announce separation of
+> scheduling & execution contexts?
 
-I'm still perplexed why a core that has been idle for 1 second or more is
-considered to be newly idle.
+So I like this suggestion, but the hacking.rst file feels a little too
+general to be getting into the subtleties of scheduler internals.
+The splitting of the scheduler context and the execution context
+really is just a scheduler detail, as everything else will still deal
+just with the execution context as before. So it's really only for
+scheduler accounting that we utilize the "rq_selected"  scheduler
+context.
 
->
-> >
-> > The part that I am currently missing to understand is that when I convert
-> > CPU_NEWLY_IDLE to CPU_IDLE, it typically picks a CPU with only one thread
-> > as busiest.  I have the impression that the fbq_type intervenes to cause
->
-> find_busiest_queue skips rqs which only have threads preferring being
-> in there. So it selects another rq with a thread that doesn't prefer
-> its current node.
->
-> do you know what is the value of env->fbq_type ?
+Maybe something under Documentation/scheduler/ would be more
+appropriate? Though the documents there are all pretty focused on
+particular sched classes, and not much on the core logic that is most
+affected by this conceptual change. I guess maybe adding
+sched-core.txt document might be useful to have for this sort of
+detail (though a bit daunting to write from scratch).
 
-I have seen one trace in which it is all.  There are 33 tasks on one
-socket, and they are all considered to have a preference for that socket.
-
-But I have another trace in which it is regular.  There are 33 tasks on
-the socket, but only 32 have a preference.
-
->
-> need_active_balance() probably needs a new condition for the numa case
-> where the busiest queue can't be selected and we have to trigger an
-> active load_balance on a rq with only 1 thread but that is not running
-> on its preferred node. Something like the untested below :
->
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index e5da5eaab6ce..de1474191488 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -11150,6 +11150,24 @@ imbalanced_active_balance(struct lb_env *env)
->         return 0;
->  }
->
-> +static inline bool
-> +numa_active_balance(struct lb_env *env)
-> +{
-> +       struct sched_domain *sd = env->sd;
-> +
-> +       /*
-> +        * We tried to migrate only a !numa task or a task on wrong node but
-> +        * the busiest queue with such task has only 1 running task. Previous
-> +        * attempt has failed so force the migration of such task.
-> +        */
-> +       if ((env->fbq_type < all) &&
-> +           (env->src_rq->cfs.h_nr_running == 1) &&
-> +           (sd->nr_balance_failed > 0))
-
-The last condition will still be a problem because of CPU_NEWLY_IDLE.  The
-nr_balance_failed counter doesn't get incremented very often.
-
-julia
-
-> +               return 1;
-> +
-> +       return 0;
-> +}
-> +
->  static int need_active_balance(struct lb_env *env)
->  {
->         struct sched_domain *sd = env->sd;
-> @@ -11176,6 +11194,9 @@ static int need_active_balance(struct lb_env *env)
->         if (env->migration_type == migrate_misfit)
->                 return 1;
->
-> +       if (numa_active_balance(env))
-> +               return 1;
-> +
->         return 0;
->  }
->
->
-> > it to avoid the CPU with two threads that already prefer Socket 2.  But I
-> > don't know at the moment why that is the case.  In any case, it's fine to
-> > active balance from a CPU with only one thread, because Socket 2 will
-> > even itself out afterwards.
-> >
-> > >
-> > > You should not have more than 1 thread per CPU when there are N+1
-> > > threads on a node with N cores / 2N CPUs.
-> >
-> > Hmm, I think there is a miscommunication about cores and CPUs.  The
-> > machine has two sockets with 16 physical cores each, and thus 32
-> > hyperthreads.  There are 64 threads running.
->
-> Ok, I have been confused by what you wrote previously:
-> " The context is that there are 2N threads running on 2N cores, one thread
-> gets NUMA balanced to the other socket, leaving N+1 threads on one socket
-> and N-1 threads on the other socket."
->
-> I have assumed that there were N cores and 2N CPUs per socket as you
-> mentioned Intel Xeon 6130 in the commit message . My previous emails
-> don't apply at all with N CPUs per socket and the group_overloaded is
-> correct.
->
->
->
-> >
-> > julia
-> >
-> > > This will enable the
-> > > load_balance to try to migrate a task instead of some util(ization)
-> > > and you should reach the active load balance.
-> > >
-> > > >
-> > > > > In theory you should have the
-> > > > > local "group_has_spare" and the busiest "group_fully_busy" (at most).
-> > > > > This means that no group should be overloaded and load_balance should
-> > > > > not try to migrate utli but only task
-> > > >
-> > > > I didn't collect information about the groups.  I will look into that.
-> > > >
-> > > > julia
-> > > >
-> > > > >
-> > > > >
-> > > > > >
-> > > > > > and changing the above test to:
-> > > > > >
-> > > > > >         if ((env->migration_type == migrate_task || env->migration_type == migrate_util) &&
-> > > > > >             (sd->nr_balance_failed > sd->cache_nice_tries+2))
-> > > > > >
-> > > > > > seems to solve the problem.
-> > > > > >
-> > > > > > I will test this on more applications.  But let me know if the above
-> > > > > > solution seems completely inappropriate.  Maybe it violates some other
-> > > > > > constraints.
-> > > > > >
-> > > > > > I have no idea why this problem became more visible with EEVDF.  It seems
-> > > > > > to have to do with the time slices all turning out to be the same.  I got
-> > > > > > the same behavior in 6.5 by overwriting the timeslice calculation to
-> > > > > > always return 1.  But I don't see the connection between the timeslice and
-> > > > > > the behavior of the idle task.
-> > > > > >
-> > > > > > thanks,
-> > > > > > julia
-> > > > >
-> > >
->
+thanks
+-john
 
