@@ -1,38 +1,38 @@
-Return-Path: <linux-kernel+bounces-7838-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7840-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21A1281AE12
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 05:36:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B61281AE15
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 05:38:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CA7221F230DF
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 04:36:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CE4E11F2479E
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 04:38:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C097A8F48;
-	Thu, 21 Dec 2023 04:36:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF2668BED;
+	Thu, 21 Dec 2023 04:38:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PudtbnkL"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cUwqrrQw"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 039CBAD31;
-	Thu, 21 Dec 2023 04:36:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5EA1DC433C8;
-	Thu, 21 Dec 2023 04:36:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 081AA8C00;
+	Thu, 21 Dec 2023 04:38:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67187C433C8;
+	Thu, 21 Dec 2023 04:38:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703133385;
-	bh=Ye0z8hSnZkvGRVITl2wlNpanlqLTvzdlfbhdatzGoR4=;
+	s=k20201202; t=1703133494;
+	bh=EoN6l1+DooB0CJ/UZoJpfudxWXvrGj8uF1Np3H6ZHmE=;
 	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-	b=PudtbnkLI0SC9Z0NDsUUSzMU0ipAjqo60oSzraQ7xsNN3sdgdBZAAUxAiLxBLQcxm
-	 C3r9vtGIiK4fwmrQce1zVRLHaZD+6R1nASG367QBQV0YIgHS10p7UUpjKFcOP9fhuV
-	 M0dPvCvdsLHf3kD/dx9weNUjr8R575aiZvYX27vMePLLepvRuWwrXz6BsR6fDcHTll
-	 Lanq0JZV+JeXdzeAQRndBdLNx2P02z2ViR6g1fozSAe30hXvqka96EGodMSbJzaWYM
-	 P+2XObkg0V6nk0JfnilGyuUV2PZLi6oaBTdKjRsZL59k89Nbsgf1GWNO+sYPOdVqPA
-	 lHZkPIkJ7EDtQ==
-Message-ID: <d0fe9a3302f8c367a26dd5b4b1b29c68.sboyd@kernel.org>
+	b=cUwqrrQwQh8SPx3VgsGUy7jxNJDcj4wMWHpM5mIiU1Lu/YzJ2tqGwxykGIBTFk67z
+	 kIwB74j0yhQdLBp6HGAwdte9/dYFssNjaWcZsaLLbjDQihG2HrD5W9s5fd2NY3sFS7
+	 BLnRtm4/uhcABV6V6qyDetDJFIOyomef7vA53jasWi7HyUO9a4tgfUA7n8s7WTuaNp
+	 E8rJDIPrjVVvPStejHSsI7U8bqB4N0DBzE3sZU2Yl6uE0O57je90tO5zjywGO6rzRY
+	 EvideAuyhMoruVqVGgSdZvxigk7lXySpx5lwa8dsoQdUEkpwH78njGpXEorI36PsZp
+	 jgR5FEu04FWcw==
+Message-ID: <2c37cada9bb4be59bf06fa9a9df81e07.sboyd@kernel.org>
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -41,48 +41,36 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20231220-sa8295p-gpu-v1-2-d8cdf2257f97@quicinc.com>
-References: <20231220-sa8295p-gpu-v1-0-d8cdf2257f97@quicinc.com> <20231220-sa8295p-gpu-v1-2-d8cdf2257f97@quicinc.com>
-Subject: Re: [PATCH 2/8] clk: qcom: gdsc: Enable supply reglator in GPU GX handler
+In-Reply-To: <20231219232442.2460166-2-cristian.ciocaltea@collabora.com>
+References: <20231219232442.2460166-1-cristian.ciocaltea@collabora.com> <20231219232442.2460166-2-cristian.ciocaltea@collabora.com>
+Subject: Re: [PATCH 1/2] clk: starfive: Add flags argument to JH71X0__MUX macro
 From: Stephen Boyd <sboyd@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Bjorn Andersson <quic_bjorande@quicinc.com>
-To: Bjorn Andersson <andersson@kernel.org>, Bjorn Andersson <quic_bjorande@quicinc.com>, Catalin Marinas <catalin.marinas@arm.com>, Conor Dooley <conor+dt@kernel.org>, Johan Hovold <johan+linaro@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Michael Turquette <mturquette@baylibre.com>, Rob Herring <robh+dt@kernel.org>, Taniya Das <quic_tdas@quicinc.com>, Ulf Hansson <ulf.hansson@linaro.org>, Will Deacon <will@kernel.org>
-Date: Wed, 20 Dec 2023 20:36:23 -0800
+Cc: linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org, kernel@collabora.com, Emil Renner Berthing <emil.renner.berthing@canonical.com>, Jacob Keller <jacob.e.keller@intel.com>
+To: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>, Emil Renner Berthing <kernel@esmil.dk>, Hal Feng <hal.feng@starfivetech.com>, Michael Turquette <mturquette@baylibre.com>
+Date: Wed, 20 Dec 2023 20:38:12 -0800
 User-Agent: alot/0.10
 
-Quoting Bjorn Andersson (2023-12-20 19:50:36)
-> The GX GDSC is modelled to aid the GMU in powering down the GPU in the
-> event that the GPU crashes, so that it can be restarted again. But in
-> the event that the power-domain is supplied through a dedicated
-> regulator (in contrast to being a subdomin of another power-domain),
-> something needs to turn that regulator on, both to make sure things are
-> powered and to match the operation in gdsc_disable().
+Quoting Cristian Ciocaltea (2023-12-19 15:24:39)
+> From: Emil Renner Berthing <emil.renner.berthing@canonical.com>
 >=20
-> Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
+> This flag is needed to add the CLK_SET_RATE_PARENT flag on the gmac_tx
+> clock on the JH7100, which in turn is needed by the dwmac-starfive
+> driver to set the clock properly for 1000, 100 and 10 Mbps links.
+>=20
+> This change was mostly made using coccinelle:
+>=20
+> @ match @
+> expression idx, name, nparents;
+> @@
+>  JH71X0__MUX(
+> -idx, name, nparents,
+> +idx, name, 0, nparents,
+>  ...)
+>=20
+> Signed-off-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+> Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+> Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
 > ---
->  drivers/clk/qcom/gdsc.c | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
->=20
-> diff --git a/drivers/clk/qcom/gdsc.c b/drivers/clk/qcom/gdsc.c
-> index 5358e28122ab..d1139c895503 100644
-> --- a/drivers/clk/qcom/gdsc.c
-> +++ b/drivers/clk/qcom/gdsc.c
-> @@ -557,7 +557,13 @@ void gdsc_unregister(struct gdsc_desc *desc)
->   */
->  int gdsc_gx_do_nothing_enable(struct generic_pm_domain *domain)
->  {
-> +       struct gdsc *sc =3D domain_to_gdsc(domain);
-> +       int ret =3D 0;
-> +
->         /* Do nothing but give genpd the impression that we were successf=
-ul */
 
-Update this comment.
-
-> -       return 0;
-> +       if (sc->rsupply)
-> +               ret =3D regulator_enable(sc->rsupply);
-> +
-> +       return ret;
->  }
+Applied to clk-next
 
