@@ -1,108 +1,122 @@
-Return-Path: <linux-kernel+bounces-9182-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9183-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB20781C200
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 00:35:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 31E3B81C206
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 00:37:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 532E8285EB4
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 23:35:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E393F284E3D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 23:37:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C35B79491;
-	Thu, 21 Dec 2023 23:34:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDE9978E92;
+	Thu, 21 Dec 2023 23:37:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="2RQevUcQ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IFPfwwSq"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D21378E72;
-	Thu, 21 Dec 2023 23:34:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=PLpFzJBkRIVRbImC6LLkmU60cfDt3U7Bi6p9cnlmj6Q=; b=2RQevUcQbjUPI2JVCGpeo4x++E
-	9R+a4V/PtRyXUsT77FI45fG2H0u4FUrjQFyFWiiaIKgXEljawZdEc1V2X1ETptA6sChNACCd4nkUh
-	0Av/T8LiuIK6Fkyx540+WgkU5x7wSn6wo8zCxSelqrMvxd2njXs5QI6GghrSnqOZZcQM1oqT22mRq
-	q9SXqvq0jtkZHbNBZqH2lbjQlatN8Xoj66XMuQhkM38GIoWXhY542sZmt1eUdqTAHo3bEIlKjasod
-	fMrgDoJlJJYIh4kA+KCLWYBp7HbP9aFHp8+H6vVFohxOJ649PzcOPZ8uFtBw31acuW4Apu0Bls9S1
-	XiCYC5ZA==;
-Received: from [50.53.46.231] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1rGSZ2-004RWi-2C;
-	Thu, 21 Dec 2023 23:34:52 +0000
-Message-ID: <65d0c378-2126-4746-bb68-99ca97b6e069@infradead.org>
-Date: Thu, 21 Dec 2023 15:34:52 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4018178E72;
+	Thu, 21 Dec 2023 23:37:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56196C433C8;
+	Thu, 21 Dec 2023 23:37:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703201867;
+	bh=nnpMukxOhsVF7BzbFrvuDgvY90F7VruqUihV1nw0oCw=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=IFPfwwSqoJx11Au4847wkAJ57ApKlof/puk9gHkjRB8F97pnhvsazcmVz2tVDkEg1
+	 5xO/fkD9XyOMF28iCK2tR3UAgw4N32m3/DCN3Ul2WdYyxhgziwcVHnqq3ecaZNBjKD
+	 YaFdTQi/AE3I67fXFgfMeZlc4ztBb7Qp1ig27TeOYBkhe0PW6pJ4uvGXLxAiKhIZPO
+	 l0eJDGkS3ah/b+jtafvBxpBYBr/hqoepIpANuJiXLK6vFV+SR4vwUa7ugvrBzEdzvy
+	 8DQNbedMvCz9zg1Ge30JrXLLnMenDxontZajN9DSBlZVZcwaxA7gHN1qkNnr3rJB1m
+	 8cfVWx3yuYhXQ==
+From: SeongJae Park <sj@kernel.org>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org,
+	patches@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	torvalds@linux-foundation.org,
+	akpm@linux-foundation.org,
+	linux@roeck-us.net,
+	shuah@kernel.org,
+	patches@kernelci.org,
+	lkft-triage@lists.linaro.org,
+	pavel@denx.de,
+	jonathanh@nvidia.com,
+	f.fainelli@gmail.com,
+	sudipm.mukherjee@gmail.com,
+	srw@sladewatkins.net,
+	rwarsow@gmx.de,
+	conor@kernel.org,
+	allen.lkml@gmail.com,
+	damon@lists.linux.dev,
+	SeongJae Park <sj@kernel.org>
+Subject: Re: [PATCH 5.15 000/159] 5.15.145-rc1 review
+Date: Thu, 21 Dec 2023 23:37:44 +0000
+Message-Id: <20231221233744.43299-1-sj@kernel.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231220160931.251686445@linuxfoundation.org>
+References: 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/3] nvdimm/dimm_devs: fix kernel-doc for function params
-Content-Language: en-US
-To: Ira Weiny <ira.weiny@intel.com>, linux-kernel@vger.kernel.org
-Cc: Dan Williams <dan.j.williams@intel.com>,
- Vishal Verma <vishal.l.verma@intel.com>, Dave Jiang <dave.jiang@intel.com>,
- nvdimm@lists.linux.dev
-References: <20231207210545.24056-1-rdunlap@infradead.org>
- <20231207210545.24056-2-rdunlap@infradead.org>
- <6584bc064ea54_5580229435@iweiny-mobl.notmuch>
- <6584bd663bd30_576052949c@iweiny-mobl.notmuch>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <6584bd663bd30_576052949c@iweiny-mobl.notmuch>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-Hi Ira,
+Hello,
 
-On 12/21/23 14:34, Ira Weiny wrote:
-> Ira Weiny wrote:
->> Randy Dunlap wrote:
+
+On Wed, 20 Dec 2023 17:07:45 +0100 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+
+> This is the start of the stable review cycle for the 5.15.145 release.
+> There are 159 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> [snip]
+> Responses should be made by Fri, 22 Dec 2023 16:08:59 +0000.
+> Anything received after that time might be too late.
 > 
->>> diff -- a/drivers/nvdimm/dimm_devs.c b/drivers/nvdimm/dimm_devs.c
->>> --- a/drivers/nvdimm/dimm_devs.c
->>> +++ b/drivers/nvdimm/dimm_devs.c
->>> @@ -53,7 +53,10 @@ static int validate_dimm(struct nvdimm_d
->>>  
->>>  /**
->>>   * nvdimm_init_nsarea - determine the geometry of a dimm's namespace area
->>> - * @nvdimm: dimm to initialize
->>> + * @ndd: dimm to initialize
->>> + *
->>> + * Returns: %0 if the area is already valid, -errno on error,
->>
->> This is good...
->>
->>> ...otherwise an
->>> + * ND_CMD_* status code.
->>
->> I don't see where any of the ->ndctl() calls return an ND_CMD_* status
->> code.  What am I missing?
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.145-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
+> and the diffstat can be found below.
 
-Probably nothing.
-Yes, please drop that/fix that when you merge it.
-Thanks.
+This rc kernel passes DAMON functionality test[1] on my test machine.
+Attaching the test results summary below.  Please note that I retrieved the
+kernel from linux-stable-rc tree[2].
 
-> If you agree that this should be dropped I can clean it up as I'm trying
-> to prep the nvdimm tree now and was hoping to take this series.
-> 
-> Ira
-> 
->>
->> The rest looks good,
->> Ira
+Tested-by: SeongJae Park <sj@kernel.org>
 
--- 
-#Randy
-https://people.kernel.org/tglx/notes-about-netiquette
-https://subspace.kernel.org/etiquette.html
+[1] https://github.com/awslabs/damon-tests/tree/next/corr
+[2] e7911feb56b7 ("Linux 5.15.145-rc1")
+
+Thanks,
+SJ
+
+[...]
+
+---
+
+ok 1 selftests: damon: debugfs_attrs.sh
+ok 1 selftests: damon-tests: kunit.sh
+ok 2 selftests: damon-tests: huge_count_read_write.sh
+ok 3 selftests: damon-tests: buffer_overflow.sh
+ok 4 selftests: damon-tests: rm_contexts.sh
+ok 5 selftests: damon-tests: record_null_deref.sh
+ok 6 selftests: damon-tests: dbgfs_target_ids_read_before_terminate_race.sh
+ok 7 selftests: damon-tests: dbgfs_target_ids_pid_leak.sh
+ok 8 selftests: damon-tests: damo_tests.sh
+ok 9 selftests: damon-tests: masim-record.sh
+ok 10 selftests: damon-tests: build_i386.sh
+ok 11 selftests: damon-tests: build_arm64.sh
+ok 12 selftests: damon-tests: build_i386_idle_flag.sh
+ok 13 selftests: damon-tests: build_i386_highpte.sh
+ok 14 selftests: damon-tests: build_nomemcg.sh
+ [33m
+ [92mPASS [39m
 
