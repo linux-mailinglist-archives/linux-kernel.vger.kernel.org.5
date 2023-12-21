@@ -1,86 +1,150 @@
-Return-Path: <linux-kernel+bounces-9184-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9185-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3854D81C209
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 00:39:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 443FA81C20B
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 00:41:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EA203284EF7
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 23:38:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DE4231F23B18
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 23:41:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBA0879496;
-	Thu, 21 Dec 2023 23:38:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F05279490;
+	Thu, 21 Dec 2023 23:41:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="lLtS1+Ui"
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="Acc1blG3"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0952B78E92;
-	Thu, 21 Dec 2023 23:38:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=XMT4r+72XxvS/xBUd8oRTVMPCIfc6GAAQaHu5rj89Gw=; b=lLtS1+Uiaxpgi56fQlx/fgWqBd
-	mOchIHIxLUvD4M1tn64Bar8uDQO57us/W9YF9twMImwvFP068qCeK21ybWKNPs7bbOQYWjt01d//i
-	OX+W9EdhPh6f+8/xDUjkN6w9+Df05MZ2HMpxIrKZS7lGrfckCuuRStM3E83719ou1OPE8d3WoJYZ/
-	o1ThmsOTaK0USmlg12iwrCMaxxtLtxoL7k/yf+1PD0haXHyJLn3XPWhN/5JxIEGlM0MKwb9aSsCXI
-	f+2VIhQQ/gKFOkKfjKKFG6zciZA/NkADBqYTOewtX2S7AT8kijdn2sY7f31JHkfhKXtO/paabGWdI
-	NYw88h7g==;
-Received: from [50.53.46.231] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1rGScs-004RxN-26;
-	Thu, 21 Dec 2023 23:38:50 +0000
-Message-ID: <6ec27515-d2c1-48f1-8935-55f0ae48e72b@infradead.org>
-Date: Thu, 21 Dec 2023 15:38:50 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7E9977635;
+	Thu, 21 Dec 2023 23:41:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1703202090;
+	bh=kAL68R42L/qHAwP3JxvpwmzbbtwIJ3XAu/35EiD4ahE=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=Acc1blG3oMWT2dr9u55ZJgDMl7JfxhLW6ndcXO+u4Q+sQvTFGOnpECI0TJHKNUbgZ
+	 UgCrgqrnRdKAC9JzwmMI37vyPcTwm6ku+o0CYOOcr8qcq/IKFpsfizr+ABEVJGym0Z
+	 OTZwD2GRPydkGgJnDvakX/BBfVzQuTz6nnT70s+MHupbUnhb2lu6KKI49TfXvP4dTA
+	 s26qRU7VbXaGNvNZbkUol8clgDDdtoHsx0onoT86i+J03c15CI0afUWZF7VnSW2mz7
+	 oM7IobYzhvMv+4BStnKNDEQbVakuhEHrYVwQfK3jXps/AOXhkho+teDapEmVoA/ecX
+	 5pANnCHvLx66A==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4Sx6QK4LL1z4wcJ;
+	Fri, 22 Dec 2023 10:41:29 +1100 (AEDT)
+Date: Fri, 22 Dec 2023 10:41:28 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Christian Brauner <brauner@kernel.org>, Andrew Morton
+ <akpm@linux-foundation.org>
+Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>, David Howells
+ <dhowells@redhat.com>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the vfs-brauner tree
+Message-ID: <20231222104128.395c9f7b@canb.auug.org.au>
+In-Reply-To: <20231221111847.689ea41f@canb.auug.org.au>
+References: <20231221111847.689ea41f@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] hwmon: clarify intent of fan min/max
-Content-Language: en-US
-To: Ivor Wanders <ivor@iwanders.net>
-Cc: corbet@lwn.net, jdelvare@suse.com, linux-doc@vger.kernel.org,
- linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux@roeck-us.net, luzmaximilian@gmail.com
-References: <40285311-8adc-4ca9-86ce-27c8b723a102@infradead.org>
- <20231221233133.14978-1-ivor@iwanders.net>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20231221233133.14978-1-ivor@iwanders.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/.cm1.unLtjyuD5TDODiIrCG";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
+--Sig_/.cm1.unLtjyuD5TDODiIrCG
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
+Hi all,
 
-On 12/21/23 15:31, Ivor Wanders wrote:
-> This adds a link to the hwmon sysfs attributes in the hwmon patch
-> submission bullet points. It also adds an explanation denoting the
-> intent of the fan min and max attributes.
-> 
-> Signed-off-by: Ivor Wanders <ivor@iwanders.net>
+On Thu, 21 Dec 2023 11:18:47 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> After merging the vfs-brauner tree, today's linux-next build (powerpc
+> ppc64_defconfig) failed like this:
+>=20
+> fs/netfs/buffered_write.c: In function 'netfs_kill_pages':
+> fs/netfs/buffered_write.c:569:17: error: implicit declaration of function=
+ 'generic_error_remove_page'; did you mean 'generic_error_remove_folio'? [-=
+Werror=3Dimplicit-function-declaration]
+>   569 |                 generic_error_remove_page(mapping, folio_page(fol=
+io, 0));
+>       |                 ^~~~~~~~~~~~~~~~~~~~~~~~~
+>       |                 generic_error_remove_folio
+>=20
+> Caused by commit
+>=20
+>   dec5b4af52dc ("netfs: Provide a writepages implementation")
+>=20
+> interacting with commit
+>=20
+>   af7628d6ec19 ("fs: convert error_remove_page to error_remove_folio")
+>=20
+> from the mm-stable tree.
+>=20
+> I have applied the following merge resolution patch:
 
-LGTM. Thanks.
-(other than telling us what changed from v1 to v2)
+The resolution is now:
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Thu, 21 Dec 2023 11:08:57 +1100
+Subject: [PATCH] fixup for "netfs: Provide a writepages implementation"
 
-> ---
->  Documentation/hwmon/submitting-patches.rst |  4 +++-
->  Documentation/hwmon/sysfs-interface.rst    | 12 +++++++++---
->  2 files changed, 12 insertions(+), 4 deletions(-)
-> 
+interacting with
 
+  af7628d6ec19 ("fs: convert error_remove_page to error_remove_folio")
 
--- 
-#Randy
-https://people.kernel.org/tglx/notes-about-netiquette
-https://subspace.kernel.org/etiquette.html
+from the mm-stable tree.
+
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+---
+ fs/netfs/buffered_write.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/netfs/buffered_write.c b/fs/netfs/buffered_write.c
+index a739805dd394..d7ce424b9188 100644
+--- a/fs/netfs/buffered_write.c
++++ b/fs/netfs/buffered_write.c
+@@ -566,7 +566,7 @@ static void netfs_kill_pages(struct address_space *mapp=
+ing,
+ 			folio_end_fscache(folio);
+ 		folio_end_writeback(folio);
+ 		folio_lock(folio);
+-		generic_error_remove_page(mapping, &folio->page);
++		generic_error_remove_folio(mapping, folio);
+ 		folio_unlock(folio);
+ 		folio_put(folio);
+=20
+--=20
+2.43.0
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/.cm1.unLtjyuD5TDODiIrCG
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmWEzSgACgkQAVBC80lX
+0Gy67Qf/dBCQz53014sVyhGXcSUBCZ6wcBh0sJ5qVPDzKbel88D531CbblYRGh5r
+B+mPM1JkjciKQPuxszrmdIaaILv1b0vdgCgor1htROIX3GP9+x9G1Zj8jUQDg3B0
+Ot7cCLupwrkv7pVdNPJxZcCvBhx5DvvHTJQCJ21xJbc17NSvOvj/Sy5DpFN/ILHc
+H2KmLX2EjabRf8I1QiGMa5K/JCi9s23CfkqxdCrR8tYWRq5hB9qFzKtrPjKHdBWT
+5cDMslFP/ptvZ4eabzEy+Rt4i7Db6KM2rUtWk60wgVd6nM+xXPhLqMjngk01aVGl
+gC3LxwzZhQ/UxWYwA95eUmYc55iCGg==
+=q7oI
+-----END PGP SIGNATURE-----
+
+--Sig_/.cm1.unLtjyuD5TDODiIrCG--
 
