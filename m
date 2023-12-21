@@ -1,121 +1,158 @@
-Return-Path: <linux-kernel+bounces-8911-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8912-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0DD3481BE14
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 19:23:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF3D381BE16
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 19:25:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B2C531F22B32
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 18:23:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B3D931C23B4B
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 18:25:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1535C63517;
-	Thu, 21 Dec 2023 18:23:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB65C64A85;
+	Thu, 21 Dec 2023 18:25:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="rAQ34tOX"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="LFncI2M3"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC9C4634F5
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 18:23:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-54744e66d27so1094a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 10:23:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1703183020; x=1703787820; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ji2hJdOh2AMJJzZjAydWcJirZrXR1RsLO+qH+PANSOc=;
-        b=rAQ34tOXylN1QgtOwDMs1bnacBzdvfq240g00qbC/Xb1YKCKOVsG6EaQKlBAXpFgiQ
-         E300t4yIjSjfbHZmMDnE93sca0mn+/1PFLRv3eUKfYnOw4SYsM0lDVKktWEBIPfUBRel
-         ulm5LVuNF+8sL2aGuW4Hk+YR6qEjk8yQqP6sz8+ulLrpoVkYCBs7beROOtMSs68bWh1z
-         iQkqPp9lK0cvna9TuXV/l0TM0MOy0FjDqRKxXaIkCKyS1YJeYOz/Dg9yWQCWK5fotofl
-         FnmOdfjdlLVDTtSJLV3QlKaLMPRVKLTMnp92U6zZg2EPHTNzuKNLf1gZoSf62OzY6pJv
-         jTkQ==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6E8563503
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 18:25:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1703183129;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=Ho/Hcsth5WNcdfU5/xCubS2uTkEJrrPZyZ0Y0+D6Mac=;
+	b=LFncI2M30ih+5nhct24Iq925GUx2ayayi0ltMUJTy1szTBMETGUUywts836Qz1YY3cNnbc
+	h2+PcYqDY9bLa0zUKaMbDTc3ukIHOx0kXJCP8pCw7FRQLwTjOGbVhmFSQbe/Nts6U4B90m
+	wg9ALsVaeyKixr1E7fdKw4Up8CgQg/s=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-665-DVb8lrUBMjCfJlBDbaqlJA-1; Thu, 21 Dec 2023 13:25:28 -0500
+X-MC-Unique: DVb8lrUBMjCfJlBDbaqlJA-1
+Received: by mail-qv1-f70.google.com with SMTP id 6a1803df08f44-67ee87ff6bfso11214616d6.3
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 10:25:28 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703183020; x=1703787820;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ji2hJdOh2AMJJzZjAydWcJirZrXR1RsLO+qH+PANSOc=;
-        b=KgKeCJfDgRun9rfDUVnlNUmUzY7+uFyvb3E3lxwaj8ZqlCgDwFpfBa7zujvoM0tpD2
-         WhFL/8K6qrj/tlORGmagJ/na4M9+EEX7l+5iaPU+rptUxDyy/7HngK32byJXb2IIkDjv
-         /ZgiLdLH2ZShHqVgyyaFhFTInQJZfjH168YYLe2iTI4JCfL9G7HRkyhCoYBz4mdxUX+R
-         vo5jWVTeSfbRaJfe2PZtgCXh3yPy3DEUuV1C/Wq1hSIEWSVaiQDmgcoLfImLtNavxqQI
-         SFtflBgMSKZahPTjbShJZKTOr9OVk+uktO/SfDukxUvzHIvR615QSsLiOdOY7v9KMRwK
-         xsuw==
-X-Gm-Message-State: AOJu0YydxY7TbM8v9NvHXE6MWkIeLNftUJYVdPG/oHiVJfn2sA6qpBQC
-	7o88ArPhagPkFscCV14Yp/AHD1DQ8VyEcnvbJy2v2WRnk4M=
-X-Google-Smtp-Source: AGHT+IGYoyVAH9rP8s/3taTF8wVdnDKhcmaVTocTc4BnvsLSuoqHpbuXXDd/z/qjrkjb4ulv/pvi56pNnXUdCP7IM7s=
-X-Received: by 2002:a50:c109:0:b0:551:9870:472 with SMTP id
- l9-20020a50c109000000b0055198700472mr123135edf.1.1703183020025; Thu, 21 Dec
- 2023 10:23:40 -0800 (PST)
+        d=1e100.net; s=20230601; t=1703183128; x=1703787928;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Ho/Hcsth5WNcdfU5/xCubS2uTkEJrrPZyZ0Y0+D6Mac=;
+        b=RP29z4Hk4kr8GkGmJUD0yuWoWQ6pbZm04XJA5aSDwHb+xyK0cpJwFgM/7yayiaCWZd
+         52eUCOHWBAy6da9BmtpvjUGZh5yqe8SNvxE1v38hI6lLi/pnwt48rltpkyePtNZHCtyO
+         nMytQKCJdkYOHgBz+tmXy1fuJSJb6PHJey2PszTiQp4f7ZAgw9ZMXBFqjejG0qJ1UTAz
+         owfmzfsConZqF8kCk8WKaA/Lk102NPB1y9Qo8Ia+lJ2/npA1oXT6CLMinlEMXbuNT8b3
+         VXVYQhFT4WNh+1lWmzoujh7l6sj5rzgMVlt7mACIpJOaWoxBlXZT+DvsdgSDmJC1LPbK
+         2AqQ==
+X-Gm-Message-State: AOJu0YyC7K7fpOoVUYdDpu7159xmWCLa6qzmJp/2jwi31K8rd/tiPMBO
+	O5dcywDb74zw857cLa1n7eFj9NIDslEP9At2R1STChUNTBtjs/D/1nLWyJ3WPWRVCVLs8UlcViU
+	IsdXj/W3MgJ07rwdZXzzxzlq6RB65XwAb
+X-Received: by 2002:a05:6214:238e:b0:67f:6eee:3214 with SMTP id fw14-20020a056214238e00b0067f6eee3214mr75392qvb.89.1703183127841;
+        Thu, 21 Dec 2023 10:25:27 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IElKhU75dRI9W3ZOnTjXDmnKOYqwcpW/uzTdiUJ9Us0xcxEU8rldcNCBiJuFaoPkew12OzOUQ==
+X-Received: by 2002:a05:6214:238e:b0:67f:6eee:3214 with SMTP id fw14-20020a056214238e00b0067f6eee3214mr75367qvb.89.1703183127602;
+        Thu, 21 Dec 2023 10:25:27 -0800 (PST)
+Received: from [192.168.1.163] ([2600:1700:1ff0:d0e0::37])
+        by smtp.gmail.com with ESMTPSA id da7-20020a05621408c700b0067f2c03d4adsm779605qvb.100.2023.12.21.10.25.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Dec 2023 10:25:27 -0800 (PST)
+From: Andrew Halaney <ahalaney@redhat.com>
+Subject: [PATCH RFC v2 00/11] scsi: ufs: Remove overzealous memory barriers
+Date: Thu, 21 Dec 2023 12:25:17 -0600
+Message-Id: <20231221-ufs-reset-ensure-effect-before-delay-v2-0-75af2a9bae51@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231220001856.3710363-1-jstultz@google.com> <20231220001856.3710363-9-jstultz@google.com>
- <a76adfd2-a17d-4342-af7e-5d17cf10dab7@arm.com>
-In-Reply-To: <a76adfd2-a17d-4342-af7e-5d17cf10dab7@arm.com>
-From: John Stultz <jstultz@google.com>
-Date: Thu, 21 Dec 2023 10:23:26 -0800
-Message-ID: <CANDhNCpZShTa7s6WjeLeCkuLeTPQarqg94jbE2hHTNp=E6t3vQ@mail.gmail.com>
-Subject: Re: [PATCH v7 08/23] sched: Split scheduler and execution contexts
-To: Metin Kaya <metin.kaya@arm.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
-	Joel Fernandes <joelaf@google.com>, Qais Yousef <qyousef@google.com>, Ingo Molnar <mingo@redhat.com>, 
-	Juri Lelli <juri.lelli@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>, 
-	Dietmar Eggemann <dietmar.eggemann@arm.com>, Valentin Schneider <vschneid@redhat.com>, 
-	Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, 
-	Zimuzo Ezeozue <zezeozue@google.com>, Youssef Esmat <youssefesmat@google.com>, 
-	Mel Gorman <mgorman@suse.de>, Daniel Bristot de Oliveira <bristot@redhat.com>, Will Deacon <will@kernel.org>, 
-	Waiman Long <longman@redhat.com>, Boqun Feng <boqun.feng@gmail.com>, 
-	"Paul E. McKenney" <paulmck@kernel.org>, Xuewen Yan <xuewen.yan94@gmail.com>, 
-	K Prateek Nayak <kprateek.nayak@amd.com>, Thomas Gleixner <tglx@linutronix.de>, kernel-team@android.com, 
-	"Connor O'Brien" <connoro@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAA2DhGUC/5WNQQrCMBQFr1L+2i9J1Jq4EgQP4Fa6iM2LDWgrS
+ VsspXc39AYu5z2YmSkhBiQ6FTNFjCGFrs2gNgXVjW2f4OAykxJqJ5XQPPjEEQk9o01DBMN71D0
+ /4LtMDi87cQlRamPcYS8NZdUnwofvmrnT7XqhKo9NSH0XpzU9yvX6rzJKlqyt8Fq5oxUG5wjX2
+ H5bd2+qlmX5AbOnynjeAAAA
+To: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, 
+ Manivannan Sadhasivam <mani@kernel.org>, 
+ "James E.J. Bottomley" <jejb@linux.ibm.com>, 
+ "Martin K. Petersen" <martin.petersen@oracle.com>, 
+ Yaniv Gardi <ygardi@codeaurora.org>, Dov Levenglick <dovl@codeaurora.org>, 
+ Hannes Reinecke <hare@suse.de>, Subhash Jadavani <subhashj@codeaurora.org>, 
+ Gilad Broner <gbroner@codeaurora.org>, 
+ Venkat Gopalakrishnan <venkatg@codeaurora.org>, 
+ Janek Kotas <jank@cadence.com>, Alim Akhtar <alim.akhtar@samsung.com>, 
+ Avri Altman <avri.altman@wdc.com>, Bart Van Assche <bvanassche@acm.org>, 
+ Anjana Hari <quic_ahari@quicinc.com>, Dolev Raviv <draviv@codeaurora.org>, 
+ Can Guo <quic_cang@quicinc.com>
+Cc: Will Deacon <will@kernel.org>, linux-arm-msm@vger.kernel.org, 
+ linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Andrew Halaney <ahalaney@redhat.com>, 
+ Manivannan Sadhasivam <mani@kernel.org>
+X-Mailer: b4 0.12.3
 
-On Thu, Dec 21, 2023 at 2:44=E2=80=AFAM Metin Kaya <metin.kaya@arm.com> wro=
-te:
->
-> On 20/12/2023 12:18 am, John Stultz wrote:
-> > From: Peter Zijlstra <peterz@infradead.org>
-> >
-> > Let's define the scheduling context as all the scheduler state
-> > in task_struct for the task selected to run, and the execution
-> > context as all state required to actually run the task.
-> >
-> > Currently both are intertwined in task_struct. We want to
-> > logically split these such that we can use the scheduling
-> > context of the task selected to be scheduled, but use the
-> > execution context of a different task to actually be run.
->
-> Should we update Documentation/kernel-hacking/hacking.rst (line #348:
-> :c:macro:`current`) or another appropriate doc to announce separation of
-> scheduling & execution contexts?
+This is an RFC because I'm not all the confident in this topic. UFS has
+a lot of mb() variants used, most with comments saying "ensure this
+takes effect before continuing". mb()'s aren't really the way to
+guarantee that, a read back is the best method.
 
-So I like this suggestion, but the hacking.rst file feels a little too
-general to be getting into the subtleties of scheduler internals.
-The splitting of the scheduler context and the execution context
-really is just a scheduler detail, as everything else will still deal
-just with the execution context as before. So it's really only for
-scheduler accounting that we utilize the "rq_selected"  scheduler
-context.
+Some of these though I think could go a step further and remove the mb()
+variant without a read back. As far as I can tell there's no real reason
+to ensure it takes effect in most cases (there's no delay() or anything
+afterwards, and eventually another readl()/writel() happens which is by
+definition ordered).
 
-Maybe something under Documentation/scheduler/ would be more
-appropriate? Though the documents there are all pretty focused on
-particular sched classes, and not much on the core logic that is most
-affected by this conceptual change. I guess maybe adding
-sched-core.txt document might be useful to have for this sort of
-detail (though a bit daunting to write from scratch).
+In this current series I don't do that as I wasn't totally convinced,
+but it should be considered when reviewing.
 
-thanks
--john
+Hopefully this series gets enough interest where we can confidently
+merge the final result after review helps improve it.
+
+I'll be travelling a good bit the next 2ish weeks, so expect little
+response until my return.
+
+Thanks in advance for the help,
+Andrew
+
+Signed-off-by: Andrew Halaney <ahalaney@redhat.com>
+---
+Changes in v2:
+- Added review tags for original patch
+- Added new patches to address all other memory barriers used
+
+- Link to v1: https://lore.kernel.org/r/20231208-ufs-reset-ensure-effect-before-delay-v1-1-8a0f82d7a09e@redhat.com
+
+---
+Andrew Halaney (11):
+      scsi: ufs: qcom: Perform read back after writing reset bit
+      scsi: ufs: qcom: Perform read back after writing REG_UFS_SYS1CLK_1US
+      scsi: ufs: qcom: Perform read back after writing testbus config
+      scsi: ufs: qcom: Perform read back after writing unipro mode
+      scsi: ufs: qcom: Perform read back after writing CGC enable
+      scsi: ufs: cdns-pltfrm: Perform read back after writing HCLKDIV
+      scsi: ufs: core: Perform read back after writing UTP_TASK_REQ_LIST_BASE_H
+      scsi: ufs: core: Perform read back after disabling interrupts
+      scsi: ufs: core: Perform read back after disabling UIC_COMMAND_COMPL
+      scsi: ufs: core: Perform read back to commit doorbell
+      scsi: ufs: core: Perform read back before writing run/stop regs
+
+ drivers/ufs/core/ufshcd.c      | 10 +++++-----
+ drivers/ufs/host/cdns-pltfrm.c |  2 +-
+ drivers/ufs/host/ufs-qcom.c    | 14 ++++++--------
+ drivers/ufs/host/ufs-qcom.h    | 12 ++++++------
+ 4 files changed, 18 insertions(+), 20 deletions(-)
+---
+base-commit: 20d857259d7d10cd0d5e8b60608455986167cfad
+change-id: 20231208-ufs-reset-ensure-effect-before-delay-6e06899d5419
+
+Best regards,
+-- 
+Andrew Halaney <ahalaney@redhat.com>
+
 
