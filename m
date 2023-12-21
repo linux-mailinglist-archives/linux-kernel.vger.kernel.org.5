@@ -1,117 +1,176 @@
-Return-Path: <linux-kernel+bounces-8808-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8809-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 06DEA81BC8A
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 18:01:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E89A281BC8C
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 18:01:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 57B6AB239F2
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 17:01:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5F6A8B25CE1
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 17:01:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34AB658229;
-	Thu, 21 Dec 2023 17:01:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 896BF627E1;
+	Thu, 21 Dec 2023 17:01:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b="vZvD55Of"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="MOY7DnoZ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C14276AD6;
-	Thu, 21 Dec 2023 17:01:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hugovil.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
-	; s=x; h=Subject:Content-Transfer-Encoding:Mime-Version:Message-Id:Cc:To:From
-	:Date:subject:date:message-id:reply-to;
-	bh=B4CQ1XhxEhN3/jq/xBpStBFHE0rLx7trdKlpNSEDOVc=; b=vZvD55OfvJcd3C21Muin8ZLNRo
-	VVJGYu17KwmOHoYeEnmk5FlLXdTBM151MzreMNqblqV4T5N9HYA6spMabH2nw22QKiXURcwzgtGWm
-	oGWoatN4bBY20+KvF6ZXh4KXGghdeuFsvkpdcN99HW932CpAgeEprsHSWBZxgFL9icug=;
-Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:58656 helo=pettiford)
-	by mail.hugovil.com with esmtpa (Exim 4.92)
-	(envelope-from <hugo@hugovil.com>)
-	id 1rGMPr-00076l-6X; Thu, 21 Dec 2023 12:00:59 -0500
-Date: Thu, 21 Dec 2023 12:00:58 -0500
-From: Hugo Villeneuve <hugo@hugovil.com>
-To: Andy Shevchenko <andriy.shevchenko@intel.com>
-Cc: gregkh@linuxfoundation.org, jirislaby@kernel.org, jringle@gridpoint.com,
- kubakici@wp.pl, phil@raspberrypi.org, linux-kernel@vger.kernel.org,
- linux-serial@vger.kernel.org, Hugo Villeneuve <hvilleneuve@dimonoff.com>
-Message-Id: <20231221120058.adb45fd82ff054d29f1f1972@hugovil.com>
-In-Reply-To: <ZYRt9QDnZFozRJRD@smile.fi.intel.com>
-References: <20231219171903.3530985-1-hugo@hugovil.com>
-	<20231219171903.3530985-10-hugo@hugovil.com>
-	<ZYMNSqFgAhId-lQ2@smile.fi.intel.com>
-	<20231221114103.557409e9875a0f2f95eacfb6@hugovil.com>
-	<ZYRt9QDnZFozRJRD@smile.fi.intel.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74FA059924
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 17:01:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1703178072;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=MTJ5ESIOyUqDB8n0Xz8qCRHr+4/Mt0yPLsVWj0QhBx4=;
+	b=MOY7DnoZ/b4FCXh9kHlVaPLlKuclFCkcs8rUZSDU0W6Is84CQAhj92KZhQARqQUABoObPG
+	k6+q50o6e16WkpnCLGcpmsrL59ETVcye9fwD9O+WUhoIp3EwVk78GjR2RC22ftxhSaaZE9
+	FS1IJWVIVcblQN8y+Tji8jfgfPXc9t8=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-575-qt-fjS7nMii7M50Cqo9KZA-1; Thu, 21 Dec 2023 12:01:10 -0500
+X-MC-Unique: qt-fjS7nMii7M50Cqo9KZA-1
+Received: by mail-ed1-f69.google.com with SMTP id 4fb4d7f45d1cf-553dd5dfba8so1124468a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 09:01:10 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703178069; x=1703782869;
+        h=content-transfer-encoding:mime-version:user-agent:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=MTJ5ESIOyUqDB8n0Xz8qCRHr+4/Mt0yPLsVWj0QhBx4=;
+        b=tZDYrtZ7KOhGm3lk9sHPIFmqMSVuU+fPbNjE0H8ELLtgJNtWtUUfKcjxLUF/gutxh2
+         xYitHA/glOCjvAjHfwoySpSjhz/ze98z5sUgdq7OA0YA/OOlKK2y1BTvVnewoyGnuKVX
+         fmgkEA2a99sbHVudOKDmozBobPFWdj7JCNeZCf8Ba/0NTiGF1VpVKxlincU/TmSswb/p
+         d3inaJ46jd8AINk8eaJOb4YfnnUYSviXAc+H0dkCXQ6E5ccU9bbaaI9yDN8A2eZFmT85
+         IMGmMw6+KWcFnuTyYmXBT4jpgzgYpHGOGX1HNaW4OW+VhMvQbvY1vZYgzOGylKruj0AH
+         q77A==
+X-Gm-Message-State: AOJu0YwfxBE+4P/ATIHa6v0R9CPKflwJFJsMG/SYpecW2wuWa65lEyVP
+	k4zYf2uR5KrbZZm9cUiI8snCI89b4b957kYD4xjzsUHcZR3ja2XKBD3Y/MWxY+klZ7v+lnRFZer
+	PYYB6ZpYaN1Ewy2nSWb9zCBb9
+X-Received: by 2002:aa7:cf99:0:b0:552:fccb:c3b0 with SMTP id z25-20020aa7cf99000000b00552fccbc3b0mr1154658edx.25.1703178069310;
+        Thu, 21 Dec 2023 09:01:09 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IG7+Kx8aYbDCznZCj24KpGmL00NeWvL5EXT10506ac0wUHvn3R/Pf/ORUj9FK42eGybxOZbwA==
+X-Received: by 2002:aa7:cf99:0:b0:552:fccb:c3b0 with SMTP id z25-20020aa7cf99000000b00552fccbc3b0mr1154644edx.25.1703178069009;
+        Thu, 21 Dec 2023 09:01:09 -0800 (PST)
+Received: from starship ([77.137.131.62])
+        by smtp.gmail.com with ESMTPSA id f20-20020a056402195400b005543f50e53asm258311edz.93.2023.12.21.09.01.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Dec 2023 09:01:08 -0800 (PST)
+Message-ID: <c7fdb72fc8ae79148a7be6c1668f6310f98b468c.camel@redhat.com>
+Subject: Re: [PATCH v2 1/3] KVM: x86: Make the hardcoded APIC bus frequency
+ vm variable
+From: Maxim Levitsky <mlevitsk@redhat.com>
+To: Isaku Yamahata <isaku.yamahata@linux.intel.com>, Sean Christopherson
+	 <seanjc@google.com>
+Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org,
+ linux-kernel@vger.kernel.org,  isaku.yamahata@gmail.com, Paolo Bonzini
+ <pbonzini@redhat.com>,  erdemaktas@google.com, Vishal Annapurve
+ <vannapurve@google.com>, Jim Mattson <jmattson@google.com>
+Date: Thu, 21 Dec 2023 19:01:06 +0200
+In-Reply-To: <20231219014045.GA2639779@ls.amr.corp.intel.com>
+References: <cover.1699936040.git.isaku.yamahata@intel.com>
+	 <1c12f378af7de16d7895f8badb18c3b1715e9271.1699936040.git.isaku.yamahata@intel.com>
+	 <938efd3cfcb25d828deab0cc0ba797177cc69602.camel@redhat.com>
+	 <ZXo54VNuIqbMsYv-@google.com>
+	 <aa7aa5ea5b112a0ec70c6276beb281e19c052f0e.camel@redhat.com>
+	 <ZXswR04H9Tl7xlyj@google.com>
+	 <20231219014045.GA2639779@ls.amr.corp.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 70.80.174.168
-X-SA-Exim-Mail-From: hugo@hugovil.com
-X-Spam-Level: 
-X-Spam-Report: 
-	* -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-	* -0.0 T_SCC_BODY_TEXT_LINE No description available.
-	* -3.8 NICE_REPLY_A Looks like a legit reply (A)
-Subject: Re: [PATCH 09/18] serial: sc16is7xx: add macro for max number of
- UART ports
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 
-On Thu, 21 Dec 2023 18:55:17 +0200
-Andy Shevchenko <andriy.shevchenko@intel.com> wrote:
-
-> On Thu, Dec 21, 2023 at 11:41:03AM -0500, Hugo Villeneuve wrote:
-> > On Wed, 20 Dec 2023 17:50:34 +0200
-> > Andy Shevchenko <andriy.shevchenko@intel.com> wrote:
-> > > On Tue, Dec 19, 2023 at 12:18:53PM -0500, Hugo Villeneuve wrote:
+On Mon, 2023-12-18 at 17:40 -0800, Isaku Yamahata wrote:
+> On Thu, Dec 14, 2023 at 08:41:43AM -0800,
+> Sean Christopherson <seanjc@google.com> wrote:
 > 
-> ...
-> 
-> > > > -	if (count < 0 || count > ARRAY_SIZE(irda_port))
-> > > > +	if (count < 0 || count > SC16IS7XX_MAX_PORTS)
+> > On Thu, Dec 14, 2023, Maxim Levitsky wrote:
+> > > On Wed, 2023-12-13 at 15:10 -0800, Sean Christopherson wrote:
+> > > > Upstream KVM's non-TDX behavior is fine, because KVM doesn't advertise support
+> > > > for CPUID 0x15, i.e. doesn't announce to host userspace that it's safe to expose
+> > > > CPUID 0x15 to the guest.  Because TDX makes exposing CPUID 0x15 mandatory, KVM
+> > > > needs to be taught to correctly emulate the guest's APIC bus frequency, a.k.a.
+> > > > the TDX guest core crystal frequency of 25Mhz.
 > > > 
-> > > ARRAY_SIZE() is more robust than this. What if you change to support different
-> > > devices where this won't be as defined?
+> > > I assume that TDX doesn't allow to change the CPUID 0x15 leaf.
 > > 
-> > not sure that I understand your point, because SC16IS7XX_MAX_PORTS is
-> > the maximum for all devices supported by this driver. The irda_port
-> > array always has a fixed number of elements set to SC16IS7XX_MAX_PORTS,
-> > even if the device that we are probing has only one port for example.
-> 
-> For current models of the device, yes. Who knows the future?
-> Also, ARRAY_SIZE() make it less points to update if ever needed.
-> 
-> > But I can change it back to ARRAY_SIZE(irda_port) if you want.
-> 
-> Please change it back.
-> 
-> > > >  		return;
-> 
-> ...
-> 
-> > > > +	WARN_ON(devtype->nr_uart > SC16IS7XX_MAX_PORTS);
+> > Correct.  I meant to call that out below, but left my sentence half-finished.  It
+> > was supposed to say:
+> > 
+> >   I halfheartedly floated the idea of "fixing" the TDX module/architecture to either
+> >   use 1Ghz as the base frequency or to allow configuring the base frequency
+> >   advertised to the guest.
+> > 
+> > > > I halfheartedly floated the idea of "fixing" the TDX module/architecture to either
+> > > > use 1Ghz as the base frequency (off list), but it definitely isn't a hill worth
+> > > > dying on since the KVM changes are relatively simple.
+> > > > 
+> > > > https://lore.kernel.org/all/ZSnIKQ4bUavAtBz6@google.com
+> > > > 
 > > > 
-> > > Not sure about this, perhaps it's fine.
-> > 
-> > This check is only there if we add support for a new device and we
-> > incorrectly set nr_uart to an incorrect value, which will cause other
-> > problems anyway, of course :)
-> > 
-> > This could be removed.
+> > > Best regards,
+> > > 	Maxim Levitsky
 > 
-> Let's remove. We can add it back in case something like this (quite unlikely)
-> happens.
+> The followings are the updated version of the commit message.
+> 
+> 
+> KVM: x86: Make the hardcoded APIC bus frequency VM variable
+> 
+> The TDX architecture hard-codes the APIC bus frequency to 25MHz in the
+> CPUID leaf 0x15.  The
+> TDX mandates it to be exposed and doesn't allow the VMM to override
+> its value.  The KVM APIC timer emulation hard-codes the frequency to
+> 1GHz.  It doesn't unconditionally enumerate it to the guest unless the
+> user space VMM sets the CPUID leaf 0x15 by KVM_SET_CPUID.
+> 
+> If the CPUID leaf 0x15 is enumerated, the guest kernel uses it as the
+> APIC bus frequency.  If not, the guest kernel measures the frequency
+> based on other known timers like the ACPI timer or the legacy PIT.
+> The TDX guest kernel gets timer interrupt more times by 1GHz / 25MHz.
+> 
+> To ensure that the guest doesn't have a conflicting view of the APIC
+> bus frequency, allow the userspace to tell KVM to use the same
+> frequency that TDX mandates instead of the default 1Ghz.
 
-Ok, will do both for v2.
+Looks great!
 
-Hugo Villeneuve
+In theory this gives me an idea that KVM could parse the guest CPUID leaf
+0x15 and deduce the frequency from it automatically instead of a new capability,
+but I understand that this is (also in theory) not backward compatible assuming
+that some hypervisors already expose this leaf for some reason,
+thus a new capability will be needed anyway.
+
+Thus I have no more complaints, and thanks for addressing my feedback!
+
+Best regards,
+	Maxim Levitsky
+
+> 
+> There are several options to address this.
+> 1. Make the KVM able to configure APIC bus frequency (This patch).
+>    Pros: It resembles the existing hardware.  The recent Intel CPUs
+>    adapts 25MHz.
+>    Cons: Require the VMM to emulate the APIC timer at 25MHz.
+> 2. Make the TDX architecture enumerate CPUID 0x15 to configurable
+>    frequency or not enumerate it.
+>    Pros: Any APIC bus frequency is allowed.
+>    Cons: Deviation from the real hardware.
+> 3. Make the TDX guest kernel use 1GHz when it's running on KVM.
+>    Cons: The kernel ignores CPUID leaf 0x15.
+> 
+> 
+
+
 
