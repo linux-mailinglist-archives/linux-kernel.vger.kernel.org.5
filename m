@@ -1,226 +1,363 @@
-Return-Path: <linux-kernel+bounces-8253-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8254-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B13881B481
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 11:56:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB17981B489
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 11:58:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 41D38284401
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 10:56:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6E3D6B20EEA
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 10:58:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BF696AB8F;
-	Thu, 21 Dec 2023 10:56:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 744BA6AB88;
+	Thu, 21 Dec 2023 10:58:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Umbk7IX3"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+Received: from mail-oi1-f177.google.com (mail-oi1-f177.google.com [209.85.167.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31BCA6BB33;
-	Thu, 21 Dec 2023 10:56:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
-Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
-	by fd01.gateway.ufhost.com (Postfix) with ESMTP id 6ECBA7FC9;
-	Thu, 21 Dec 2023 18:56:24 +0800 (CST)
-Received: from EXMBX171.cuchost.com (172.16.6.91) by EXMBX166.cuchost.com
- (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 21 Dec
- 2023 18:56:24 +0800
-Received: from [192.168.125.85] (113.72.145.47) by EXMBX171.cuchost.com
- (172.16.6.91) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 21 Dec
- 2023 18:56:23 +0800
-Message-ID: <8c417157-8884-4e91-8912-0344e71f82c2@starfivetech.com>
-Date: Thu, 21 Dec 2023 18:56:22 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EF9B6A029;
+	Thu, 21 Dec 2023 10:58:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f177.google.com with SMTP id 5614622812f47-3bb7376957eso454762b6e.1;
+        Thu, 21 Dec 2023 02:58:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703156315; x=1703761115; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=31QSY6Ad828ZC5dwczDw26yr6rSk4396NaizMRkH6ME=;
+        b=Umbk7IX3TsRy8Fy9GXPf92Mb8kxcDJTD+AMFfCvsbLSaUOP6f3N0x+RZpFqlaR1CsD
+         d2AJV9v6c51onuF/ZriRAiLl3s5x5/9hJrwCuNo5TazUdbH2sjwiaq1NdDLOdd8JjIdV
+         7HzRj+JsPmbFHdcHi40s96JsXHCf7Z8iJjg91djYNNBCyJPKnWWDD4hCC6U/hEaYwLnq
+         yXTKTi9RaqrUZNUC2VkupFl+9WHhQ3M1lJTyIhEzK2G+Wf9kQVtYM2d9BuPIL2eEy0y/
+         VPa5jkylCTadptSCZIOF0NuLKlvaaZcpj6b6fXhDwDvD2b5329Ks5gi0VLbNBfZ4yY4J
+         0H+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703156315; x=1703761115;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=31QSY6Ad828ZC5dwczDw26yr6rSk4396NaizMRkH6ME=;
+        b=TDulno8yE96bH12g/K8rP6NOt8AVGC4a5qkcq01+oqUjJTBmCM+DkhP4tUgjRvt1a8
+         1EKLZe4SAe+SSIg6jY1LhGfW3nMgMe+m1M9OMGDWtJx28UTgJ+FmRr9Uz1bHwjG+S9R5
+         N3BMgJ8YLMaWAyg1tKV9ynM0T7MhzEZs3qzu+Hjz7vAVwdRdyxdj6ea5AaoyOqMaH1jA
+         OjxL9ziIK4uz2w7eO/tB/WBn6W54IJhfiiJD0IJwsul6wb3YzsVlaLSowGfIK9UVz13U
+         bGl+GXX+lu3p/8YufajdjnFebfCzRubKJ1cqQZSLSJTznAF71JpVrrQwa9XgSzN4OIwB
+         jXPQ==
+X-Gm-Message-State: AOJu0YxgTBU3+51uD+CJfTP1esjxoRJ9xxOuaigTp2FBBHOZuALdnsbu
+	BMEMrnLGChPuva1R6f+/ocg3QDoRUtTpuf9K35Y=
+X-Google-Smtp-Source: AGHT+IEwwewAvB3CSZ02cyLCVmPmGQ/DQmQB0UzTYkcFu/L5l9DjX10NgzHEZuSnNb4BqKw8juR6MwOCR4YGG7zTz7Y=
+X-Received: by 2002:a05:6808:21a6:b0:3b9:e87b:d963 with SMTP id
+ be38-20020a05680821a600b003b9e87bd963mr27966835oib.85.1703156315316; Thu, 21
+ Dec 2023 02:58:35 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v13 15/21] PCI: microchip: Add event irqchip field to host
- port and add PLDA irqchip
-Content-Language: en-US
-To: Conor Dooley <conor@kernel.org>, =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?=
-	<kw@linux.com>, Rob Herring <robh+dt@kernel.org>, Bjorn Helgaas
-	<bhelgaas@google.com>, Lorenzo Pieralisi <lpieralisi@kernel.org>, "Daire
- McNamara" <daire.mcnamara@microchip.com>, Emil Renner Berthing
-	<emil.renner.berthing@canonical.com>, Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>
-CC: <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-riscv@lists.infradead.org>, <linux-pci@vger.kernel.org>, Paul Walmsley
-	<paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou
-	<aou@eecs.berkeley.edu>, Philipp Zabel <p.zabel@pengutronix.de>, Mason Huo
-	<mason.huo@starfivetech.com>, Leyfoon Tan <leyfoon.tan@starfivetech.com>,
-	Kevin Xie <kevin.xie@starfivetech.com>
-References: <20231214072839.2367-1-minda.chen@starfivetech.com>
- <20231214072839.2367-16-minda.chen@starfivetech.com>
-From: Minda Chen <minda.chen@starfivetech.com>
-In-Reply-To: <20231214072839.2367-16-minda.chen@starfivetech.com>
+From: xingwei lee <xrivendell7@gmail.com>
+Date: Thu, 21 Dec 2023 18:58:24 +0800
+Message-ID: <CABOYnLzhrQ25C_vjthTZZhZCjQrL-HC4=MKmYG0CyoG6hKpbnw@mail.gmail.com>
+Subject: KMSAN: uninit-value in io_rw_fail
+To: axboe@kernel.dk, syzbot+12dde80bf174ac8ae285@syzkaller.appspotmail.com
+Cc: asml.silence@gmail.com, io-uring@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, 
+	glider@google.com
 Content-Type: text/plain; charset="UTF-8"
-X-ClientProxiedBy: EXCAS066.cuchost.com (172.16.6.26) To EXMBX171.cuchost.com
- (172.16.6.91)
-X-YovoleRuleAgent: yovoleflag
-Content-Transfer-Encoding: quoted-printable
+
+Hello I found a bug in io_uring and comfirmed at the latest upstream
+mainine linux.
+TITLE: KMSAN: uninit-value in io_rw_fail
+and I find this bug maybe existed in the
+https://syzkaller.appspot.com/bug?extid=12dde80bf174ac8ae285 but do
+not have a stable reproducer.
+However, I generate a stable reproducer and comfirmed in the latest mainline.
+
+If you fix this issue, please add the following tag to the commit:
+Reported-by: xingwei lee <xrivendell7@gmail.com>
+
+kernel: mainline a4aebe936554dac6a91e5d091179c934f8325708
+kernel config: https://syzkaller.appspot.com/text?tag=KernelConfig&x=4a65fa9f077ead01
+with KMSAN enabled
+compiler: Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
 
 
+=* repro.c =*
+#define _GNU_SOURCE
 
-On 2023/12/14 15:28, Minda Chen wrote:
-> PolarFire PCIE event IRQs includes PLDA local interrupts and PolarFire
-> their own IRQs. PolarFire PCIe event irq_chip ops using an event_desc t=
-o
-> unify different IRQ register addresses. On PLDA sides, PLDA irqchip cod=
-es
-> only require to set PLDA local interrupt register. So the PLDA irqchip =
-ops
-> codes can not be extracted from PolarFire codes.
->=20
-> To support PLDA its own event IRQ process, implements PLDA irqchip ops =
-and
-> add event irqchip field to struct pcie_plda_rp.
->=20
-> Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
-> ---
->  .../pci/controller/plda/pcie-microchip-host.c | 65 ++++++++++++++++++-
->  drivers/pci/controller/plda/pcie-plda.h       |  3 +
->  2 files changed, 67 insertions(+), 1 deletion(-)
->=20
-Hi Conor
-   Could you take time to review this patch?  For I using event irq chip =
-instead of event ops and the whole patch have been changed.  I think it's=
- better=20
-   And I added the implementation of PLDA event irqchip  and make it easi=
-er to claim the necessity of the modification.
-   If you approve this, I will add back the review tag. Thanks
+#include <dirent.h>
+#include <endian.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <signal.h>
+#include <stdarg.h>
+#include <stdbool.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/mman.h>
+#include <sys/prctl.h>
+#include <sys/stat.h>
+#include <sys/syscall.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <time.h>
+#include <unistd.h>
 
-Hi Lorenzo
-   Have you reviewed this patch=EF=BC=9F Does the commit message and the =
-codes are can be approved =EF=BC=9FThanks
+#ifndef __NR_io_uring_enter
+#define __NR_io_uring_enter 426
+#endif
+#ifndef __NR_io_uring_setup
+#define __NR_io_uring_setup 425
+#endif
 
-> diff --git a/drivers/pci/controller/plda/pcie-microchip-host.c b/driver=
-s/pci/controller/plda/pcie-microchip-host.c
-> index fd0d92c3d03f..ff40c1622173 100644
-> --- a/drivers/pci/controller/plda/pcie-microchip-host.c
-> +++ b/drivers/pci/controller/plda/pcie-microchip-host.c
-> @@ -771,6 +771,63 @@ static struct irq_chip mc_event_irq_chip =3D {
->  	.irq_unmask =3D mc_unmask_event_irq,
->  };
-> > +static u32 plda_hwirq_to_mask(int hwirq)
-> +{
-> +	u32 mask;
-> +
-> +	if (hwirq < EVENT_PM_MSI_INT_INTX)
-> +		mask =3D BIT(hwirq + A_ATR_EVT_POST_ERR_SHIFT);
-> +	else if (hwirq =3D=3D EVENT_PM_MSI_INT_INTX)
-> +		mask =3D PM_MSI_INT_INTX_MASK;
-> +	else
-> +		mask =3D BIT(hwirq + PM_MSI_TO_MASK_OFFSET);
-> +
-> +	return mask;
-> +}
-> +
-> +static void plda_ack_event_irq(struct irq_data *data)
-> +{
-> +	struct plda_pcie_rp *port =3D irq_data_get_irq_chip_data(data);
-> +
-> +	writel_relaxed(plda_hwirq_to_mask(data->hwirq),
-> +		       port->bridge_addr + ISTATUS_LOCAL);
-> +}
-> +
-> +static void plda_mask_event_irq(struct irq_data *data)
-> +{
-> +	struct plda_pcie_rp *port =3D irq_data_get_irq_chip_data(data);
-> +	u32 mask, val;
-> +
-> +	mask =3D plda_hwirq_to_mask(data->hwirq);
-> +
-> +	raw_spin_lock(&port->lock);
-> +	val =3D readl_relaxed(port->bridge_addr + IMASK_LOCAL);
-> +	val &=3D ~mask;
-> +	writel_relaxed(val, port->bridge_addr + IMASK_LOCAL);
-> +	raw_spin_unlock(&port->lock);
-> +}
-> +
-> +static void plda_unmask_event_irq(struct irq_data *data)
-> +{
-> +	struct plda_pcie_rp *port =3D irq_data_get_irq_chip_data(data);
-> +	u32 mask, val;
-> +
-> +	mask =3D plda_hwirq_to_mask(data->hwirq);
-> +
-> +	raw_spin_lock(&port->lock);
-> +	val =3D readl_relaxed(port->bridge_addr + IMASK_LOCAL);
-> +	val |=3D mask;
-> +	writel_relaxed(val, port->bridge_addr + IMASK_LOCAL);
-> +	raw_spin_unlock(&port->lock);
-> +}
-> +
-> +static struct irq_chip plda_event_irq_chip =3D {
-> +	.name =3D "PLDA PCIe EVENT",
-> +	.irq_ack =3D plda_ack_event_irq,
-> +	.irq_mask =3D plda_mask_event_irq,
-> +	.irq_unmask =3D plda_unmask_event_irq,
-> +};
-> +
->  static const struct plda_event_ops plda_event_ops =3D {
->  	.get_events =3D plda_get_events,
->  };
-> @@ -778,7 +835,9 @@ static const struct plda_event_ops plda_event_ops =3D=
- {
->  static int plda_pcie_event_map(struct irq_domain *domain, unsigned int=
- irq,
->  			       irq_hw_number_t hwirq)
->  {
-> -	irq_set_chip_and_handler(irq, &mc_event_irq_chip, handle_level_irq);
-> +	struct plda_pcie_rp *port =3D (void *)domain->host_data;
-> +
-> +	irq_set_chip_and_handler(irq, port->event_irq_chip, handle_level_irq)=
-;
->  	irq_set_chip_data(irq, domain->host_data);
-> =20
->  	return 0;
-> @@ -963,6 +1022,9 @@ static int plda_init_interrupts(struct platform_de=
-vice *pdev,
->  	if (!port->event_ops)
->  		port->event_ops =3D &plda_event_ops;
-> =20
-> +	if (!port->event_irq_chip)
-> +		port->event_irq_chip =3D &plda_event_irq_chip;
-> +
->  	ret =3D plda_pcie_init_irq_domains(port);
->  	if (ret) {
->  		dev_err(dev, "failed creating IRQ domains\n");
-> @@ -1040,6 +1102,7 @@ static int mc_platform_init(struct pci_config_win=
-dow *cfg)
->  		return ret;
-> =20
->  	port->plda.event_ops =3D &mc_event_ops;
-> +	port->plda.event_irq_chip =3D &mc_event_irq_chip;
-> =20
->  	/* Address translation is up; safe to enable interrupts */
->  	ret =3D plda_init_interrupts(pdev, &port->plda, &mc_event);
-> diff --git a/drivers/pci/controller/plda/pcie-plda.h b/drivers/pci/cont=
-roller/plda/pcie-plda.h
-> index dd8bc2750bfc..24ac50c458dc 100644
-> --- a/drivers/pci/controller/plda/pcie-plda.h
-> +++ b/drivers/pci/controller/plda/pcie-plda.h
-> @@ -128,6 +128,8 @@
->   * DMA end : reserved for vendor implement
->   */
-> =20
-> +#define PM_MSI_TO_MASK_OFFSET			19
-> +
->  struct plda_pcie_rp;
-> =20
->  struct plda_event_ops {
-> @@ -150,6 +152,7 @@ struct plda_pcie_rp {
->  	raw_spinlock_t lock;
->  	struct plda_msi msi;
->  	const struct plda_event_ops *event_ops;
-> +	const struct irq_chip *event_irq_chip;
->  	void __iomem *bridge_addr;
->  	int num_events;
->  };
+static void sleep_ms(uint64_t ms) { usleep(ms * 1000); }
+
+static uint64_t current_time_ms(void) {
+ struct timespec ts;
+ if (clock_gettime(CLOCK_MONOTONIC, &ts)) exit(1);
+ return (uint64_t)ts.tv_sec * 1000 + (uint64_t)ts.tv_nsec / 1000000;
+}
+
+static bool write_file(const char* file, const char* what, ...) {
+ char buf[1024];
+ va_list args;
+ va_start(args, what);
+ vsnprintf(buf, sizeof(buf), what, args);
+ va_end(args);
+ buf[sizeof(buf) - 1] = 0;
+ int len = strlen(buf);
+ int fd = open(file, O_WRONLY | O_CLOEXEC);
+ if (fd == -1) return false;
+ if (write(fd, buf, len) != len) {
+   int err = errno;
+   close(fd);
+   errno = err;
+   return false;
+ }
+ close(fd);
+ return true;
+}
+
+#define SIZEOF_IO_URING_SQE 64
+#define SIZEOF_IO_URING_CQE 16
+#define SQ_HEAD_OFFSET 0
+#define SQ_TAIL_OFFSET 64
+#define SQ_RING_MASK_OFFSET 256
+#define SQ_RING_ENTRIES_OFFSET 264
+#define SQ_FLAGS_OFFSET 276
+#define SQ_DROPPED_OFFSET 272
+#define CQ_HEAD_OFFSET 128
+#define CQ_TAIL_OFFSET 192
+#define CQ_RING_MASK_OFFSET 260
+#define CQ_RING_ENTRIES_OFFSET 268
+#define CQ_RING_OVERFLOW_OFFSET 284
+#define CQ_FLAGS_OFFSET 280
+#define CQ_CQES_OFFSET 320
+
+struct io_sqring_offsets {
+ uint32_t head;
+ uint32_t tail;
+ uint32_t ring_mask;
+ uint32_t ring_entries;
+ uint32_t flags;
+ uint32_t dropped;
+ uint32_t array;
+ uint32_t resv1;
+ uint64_t resv2;
+};
+
+struct io_cqring_offsets {
+ uint32_t head;
+ uint32_t tail;
+ uint32_t ring_mask;
+ uint32_t ring_entries;
+ uint32_t overflow;
+ uint32_t cqes;
+ uint64_t resv[2];
+};
+
+struct io_uring_params {
+ uint32_t sq_entries;
+ uint32_t cq_entries;
+ uint32_t flags;
+ uint32_t sq_thread_cpu;
+ uint32_t sq_thread_idle;
+ uint32_t features;
+ uint32_t resv[4];
+ struct io_sqring_offsets sq_off;
+ struct io_cqring_offsets cq_off;
+};
+
+#define IORING_OFF_SQ_RING 0
+#define IORING_OFF_SQES 0x10000000ULL
+
+static long syz_io_uring_setup(volatile long a0, volatile long a1,
+                              volatile long a2, volatile long a3) {
+ uint32_t entries = (uint32_t)a0;
+ struct io_uring_params* setup_params = (struct io_uring_params*)a1;
+ void** ring_ptr_out = (void**)a2;
+ void** sqes_ptr_out = (void**)a3;
+ uint32_t fd_io_uring = syscall(__NR_io_uring_setup, entries, setup_params);
+ uint32_t sq_ring_sz =
+     setup_params->sq_off.array + setup_params->sq_entries * sizeof(uint32_t);
+ uint32_t cq_ring_sz = setup_params->cq_off.cqes +
+                       setup_params->cq_entries * SIZEOF_IO_URING_CQE;
+ uint32_t ring_sz = sq_ring_sz > cq_ring_sz ? sq_ring_sz : cq_ring_sz;
+ *ring_ptr_out =
+     mmap(0, ring_sz, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_POPULATE,
+          fd_io_uring, IORING_OFF_SQ_RING);
+ uint32_t sqes_sz = setup_params->sq_entries * SIZEOF_IO_URING_SQE;
+ *sqes_ptr_out = mmap(0, sqes_sz, PROT_READ | PROT_WRITE,
+                      MAP_SHARED | MAP_POPULATE, fd_io_uring, IORING_OFF_SQES);
+ uint32_t* array =
+     (uint32_t*)((uintptr_t)*ring_ptr_out + setup_params->sq_off.array);
+ for (uint32_t index = 0; index < entries; index++) array[index] = index;
+ return fd_io_uring;
+}
+
+static long syz_io_uring_submit(volatile long a0, volatile long a1,
+                               volatile long a2) {
+ char* ring_ptr = (char*)a0;
+ char* sqes_ptr = (char*)a1;
+ char* sqe = (char*)a2;
+ uint32_t sq_ring_mask = *(uint32_t*)(ring_ptr + SQ_RING_MASK_OFFSET);
+ uint32_t* sq_tail_ptr = (uint32_t*)(ring_ptr + SQ_TAIL_OFFSET);
+ uint32_t sq_tail = *sq_tail_ptr & sq_ring_mask;
+ char* sqe_dest = sqes_ptr + sq_tail * SIZEOF_IO_URING_SQE;
+ memcpy(sqe_dest, sqe, SIZEOF_IO_URING_SQE);
+ uint32_t sq_tail_next = *sq_tail_ptr + 1;
+ __atomic_store_n(sq_tail_ptr, sq_tail_next, __ATOMIC_RELEASE);
+ return 0;
+}
+
+static void kill_and_wait(int pid, int* status) {
+ kill(-pid, SIGKILL);
+ kill(pid, SIGKILL);
+ for (int i = 0; i < 100; i++) {
+   if (waitpid(-1, status, WNOHANG | __WALL) == pid) return;
+   usleep(1000);
+ }
+ DIR* dir = opendir("/sys/fs/fuse/connections");
+ if (dir) {
+   for (;;) {
+     struct dirent* ent = readdir(dir);
+     if (!ent) break;
+     if (strcmp(ent->d_name, ".") == 0 || strcmp(ent->d_name, "..") == 0)
+       continue;
+     char abort[300];
+     snprintf(abort, sizeof(abort), "/sys/fs/fuse/connections/%s/abort",
+              ent->d_name);
+     int fd = open(abort, O_WRONLY);
+     if (fd == -1) {
+       continue;
+     }
+     if (write(fd, abort, 1) < 0) {
+     }
+     close(fd);
+   }
+   closedir(dir);
+ } else {
+ }
+ while (waitpid(-1, status, __WALL) != pid) {
+ }
+}
+
+static void setup_test() {
+ prctl(PR_SET_PDEATHSIG, SIGKILL, 0, 0, 0);
+ setpgrp();
+ write_file("/proc/self/oom_score_adj", "1000");
+}
+
+static void execute_one(void);
+
+#define WAIT_FLAGS __WALL
+
+static void loop(void) {
+ int iter = 0;
+ for (;; iter++) {
+   int pid = fork();
+   if (pid < 0) exit(1);
+   if (pid == 0) {
+     setup_test();
+     execute_one();
+     exit(0);
+   }
+   int status = 0;
+   uint64_t start = current_time_ms();
+   for (;;) {
+     if (waitpid(-1, &status, WNOHANG | WAIT_FLAGS) == pid) break;
+     sleep_ms(1);
+     if (current_time_ms() - start < 5000) continue;
+     kill_and_wait(pid, &status);
+     break;
+   }
+ }
+}
+
+uint64_t r[3] = {0xffffffffffffffff, 0x0, 0x0};
+
+void execute_one(void) {
+ intptr_t res = 0;
+ *(uint32_t*)0x200001c4 = 0;
+ *(uint32_t*)0x200001c8 = 0x10100;
+ *(uint32_t*)0x200001cc = 0;
+ *(uint32_t*)0x200001d0 = 0;
+ *(uint32_t*)0x200001d8 = -1;
+ memset((void*)0x200001dc, 0, 12);
+ res = -1;
+ res = syz_io_uring_setup(/*entries=*/0x24f7, /*params=*/0x200001c0,
+                          /*ring_ptr=*/0x20000040, /*sqes_ptr=*/0x20000100);
+ if (res != -1) {
+   r[0] = res;
+   r[1] = *(uint64_t*)0x20000040;
+   r[2] = *(uint64_t*)0x20000100;
+ }
+ *(uint8_t*)0x20000740 = 2;
+ *(uint8_t*)0x20000741 = 0x10;
+ *(uint16_t*)0x20000742 = 0;
+ *(uint32_t*)0x20000744 = 0;
+ *(uint64_t*)0x20000748 = 0;
+ *(uint64_t*)0x20000750 = 0;
+ *(uint32_t*)0x20000758 = 0xfffffe08;
+ *(uint32_t*)0x2000075c = 0;
+ *(uint64_t*)0x20000760 = 0;
+ *(uint16_t*)0x20000768 = 0;
+ *(uint16_t*)0x2000076a = 0;
+ memset((void*)0x2000076c, 0, 20);
+ syz_io_uring_submit(/*ring_ptr=*/r[1], /*sqes_ptr=*/r[2], /*sqe=*/0x20000740);
+ syscall(__NR_io_uring_enter, /*fd=*/r[0], /*to_submit=*/0x2d3e,
+         /*min_complete=*/0, /*flags=*/0ul, /*sigmask=*/0ul, /*size=*/0ul);
+}
+int main(void) {
+ syscall(__NR_mmap, /*addr=*/0x1ffff000ul, /*len=*/0x1000ul, /*prot=*/0ul,
+         /*flags=*/0x32ul, /*fd=*/-1, /*offset=*/0ul);
+ syscall(__NR_mmap, /*addr=*/0x20000000ul, /*len=*/0x1000000ul, /*prot=*/7ul,
+         /*flags=*/0x32ul, /*fd=*/-1, /*offset=*/0ul);
+ syscall(__NR_mmap, /*addr=*/0x21000000ul, /*len=*/0x1000ul, /*prot=*/0ul,
+         /*flags=*/0x32ul, /*fd=*/-1, /*offset=*/0ul);
+ loop();
+ return 0;
+}
+
+
+=* repro.txt =*
+r0 = syz_io_uring_setup(0x24f7, &(0x7f00000001c0)={0x0, 0x0, 0x10100},
+&(0x7f0000000040)=<r1=>0x0, &(0x7f0000000100)=<r2=>0x0)
+syz_io_uring_submit(r1, r2, &(0x7f0000000740)=@IORING_OP_WRITEV={0x2,
+0x10, 0x0, @fd_index, 0x0, 0x0, 0xfffffffffffffe08})
+io_uring_enter(r0, 0x2d3e, 0x0, 0x0, 0x0, 0x0)
+
+
+Please also see:
+https://gist.github.com/xrivendell7/0adf878b11e3a71676e1dc696e1c9398
+I hope it helps.
+Thanks!
+
+Best regards.
+xingwei Lee
 
