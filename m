@@ -1,90 +1,90 @@
-Return-Path: <linux-kernel+bounces-9187-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9188-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0052581C214
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 00:46:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF44081C217
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 00:47:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 966DE1F25167
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 23:46:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8CF17288283
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 23:47:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A71B379479;
-	Thu, 21 Dec 2023 23:46:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E59F47949C;
+	Thu, 21 Dec 2023 23:47:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="fyDSnKZy"
+	dkim=pass (1024-bit key) header.d=iwanders.net header.i=@iwanders.net header.b="N+6XTxKl"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com [209.85.219.175])
+Received: from mail-qk1-f182.google.com (mail-qk1-f182.google.com [209.85.222.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7FAF78E9D
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 23:46:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-dbd739853easo1238794276.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 15:46:22 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA68A79479
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 23:47:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iwanders.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iwanders.net
+Received: by mail-qk1-f182.google.com with SMTP id af79cd13be357-78117e97becso67134385a.3
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 15:47:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1703202381; x=1703807181; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=C5yx1D4sy7Cq5xnSJGT/Y8ISb8yXl+5GPlJ3CTgBqlQ=;
-        b=fyDSnKZy0Tc6WHuq9MNrw2Q9bKBZMm8Jyf0nItmRhcYRD50M70EgPaHX6fW0/XQOsK
-         EVM2mzNXKR++YEYmmPwqDqE8y5IGTowaDbeSK42I/ha+7MiMJaZ5EbwbRICQR/ap7TOF
-         nqbqWxw8iYyM1vAXPCR4Um0pxfpadvKm0RLTI=
+        d=iwanders.net; s=google; t=1703202425; x=1703807225; darn=vger.kernel.org;
+        h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=fsVUD3VufeS//NudK1mZpNpNjqh483A+CiJoPn/HOt0=;
+        b=N+6XTxKlaC2HK9apPi5lF5yA9U9+v9+igO+KUZKmWzb0n3Us6OAR6OM3G+JISOmwz9
+         31dKEVtXKscWJtAEgklym9CqFS23Ek/8S17VlPx3WyqrVtq6ZYEzH2+EDIPr+3SFdVGr
+         ux3u6ihviErkgeJXwFumSuIsCxF8qzfb+wwKQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703202381; x=1703807181;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=C5yx1D4sy7Cq5xnSJGT/Y8ISb8yXl+5GPlJ3CTgBqlQ=;
-        b=OT1DgSsnU9sNJAN8zvEmFcRPUaBZNCBtjmTzFMARqMRKBD+xf+wxqYWx+VJktHmekk
-         QMZexEEeNxSpiXSJOXvIrhPX+V5gZQ9LNELbB911YqQNMfjC9XfPeOKJsMixH1zkWZct
-         D4M9CETKcM7VDcHIbfSh+/ojYG+9EoHcEHhaWQH+tZdxCqhQ280y9A4WBIV5KmMq/o0F
-         W/cyCwbRdj3eZGpkzrN6ICSAecwRJ0JnzNCLZA/w5XaNiMt9j3hVXZIhksSVEN4tsOdh
-         Ox0WVjJnin1ExsDabyKyGoumi5CwRUHgRbc1+r6XsEhqFKfuD7W5chTkeiVQ/N34z9/T
-         1+qQ==
-X-Gm-Message-State: AOJu0YzR+QSHN+mtBdtsVXzIgrEQSrxZfaVRdnlbuhCk/NgRAEGIytXa
-	wF++YDeb0/qsgM8L7n6SDZ/dXyKl1mzaTiUR4vuq8Nbbi+em
-X-Google-Smtp-Source: AGHT+IHQuqPUTWtpvEWWlBXrPZ7P2rJCDTvZXPGIY5MnJ0dX/9smRrJ/j9aAo6gegLAC+pvb0F1tQqld2angQtN2hv0=
-X-Received: by 2002:a25:8387:0:b0:dbd:c3cf:2433 with SMTP id
- t7-20020a258387000000b00dbdc3cf2433mr366468ybk.84.1703202381711; Thu, 21 Dec
- 2023 15:46:21 -0800 (PST)
+        d=1e100.net; s=20230601; t=1703202425; x=1703807225;
+        h=references:in-reply-to:message-id:date:subject:cc:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fsVUD3VufeS//NudK1mZpNpNjqh483A+CiJoPn/HOt0=;
+        b=FvBFouc4G85L1osQHj5gZZ9AaNs6ILjdl3i0UHJ7bOq93LGqMhR5fxdbiM2CT5BSpM
+         RluFrDs/TVahztN0t0/PGuG6cq23bgi+9U7kBUurPagN+XrI4pBsX766jOgdbZIaaZXf
+         a6ncHsLCFuHrDkra5X1csr5/w0OSgD7qeBBNKyMH083VZJj2ZBpZvV0ibS7sgJtGCwUK
+         QiFFxq8B/x6r8E4zGSP5uE5vIhngyktJg/7kaLAcCsWe+ldRrI/hBkjoBGydRgFkXgux
+         dQooQZkiSQtlTNCFo1sLtuH2KiHPSJp55uxlSdoOBKDGxra7HEXdoV2Sb9iLgIv/7z9R
+         AQJg==
+X-Gm-Message-State: AOJu0YxxdzyVReLa3fUuevtjJrycH8jGcg9ojihIXYSFe+SMuJrJI0ml
+	A2sueN7TWG7QLJRkMoCIVE1m9ifiU/TpJA==
+X-Google-Smtp-Source: AGHT+IGgeO55s3ldTAPyX28iP11/SY4z5r1rs1DkQ2IuOS9AvdwQW3R4/9nO6dEIKqII2xWc9D4G0Q==
+X-Received: by 2002:a05:620a:2843:b0:77e:fba3:757f with SMTP id h3-20020a05620a284300b0077efba3757fmr680867qkp.119.1703202424838;
+        Thu, 21 Dec 2023 15:47:04 -0800 (PST)
+Received: from eagle.lan (24-246-30-234.cable.teksavvy.com. [24.246.30.234])
+        by smtp.gmail.com with ESMTPSA id j5-20020a05620a000500b0077d74f884d9sm993080qki.117.2023.12.21.15.47.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Dec 2023 15:47:04 -0800 (PST)
+From: Ivor Wanders <ivor@iwanders.net>
+To: rdunlap@infradead.org
+Cc: corbet@lwn.net,
+	ivor@iwanders.net,
+	jdelvare@suse.com,
+	linux-doc@vger.kernel.org,
+	linux-hwmon@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux@roeck-us.net,
+	luzmaximilian@gmail.com
+Subject: Re: [PATCH v2] hwmon: clarify intent of fan min/max
+Date: Thu, 21 Dec 2023 18:46:46 -0500
+Message-Id: <20231221234646.15776-1-ivor@iwanders.net>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <6ec27515-d2c1-48f1-8935-55f0ae48e72b@infradead.org>
+References: <6ec27515-d2c1-48f1-8935-55f0ae48e72b@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20231220235459.2965548-1-markhas@chromium.org>
- <20231220165423.v2.20.I38ac58ab04985a404ed6551eb5813fa7841ef410@changeid> <ZYRD9Y3Y_jd1NBs8@smile.fi.intel.com>
-In-Reply-To: <ZYRD9Y3Y_jd1NBs8@smile.fi.intel.com>
-From: Mark Hasemeyer <markhas@chromium.org>
-Date: Thu, 21 Dec 2023 16:46:11 -0700
-Message-ID: <CANg-bXDLC_+mxFU+dHyCx1K=HKTwwGw+r__6_++Co2-viTbsgQ@mail.gmail.com>
-Subject: Re: [PATCH v2 20/22] device property: Modify fwnode irq_get() to use resource
-To: Andy Shevchenko <andriy.shevchenko@intel.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Tzung-Bi Shih <tzungbi@kernel.org>, 
-	Raul Rangel <rrangel@chromium.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Rob Herring <robh@kernel.org>, Sudeep Holla <sudeep.holla@arm.com>, 
-	Daniel Scally <djrscally@gmail.com>, Frank Rowand <frowand.list@gmail.com>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	Heikki Krogerus <heikki.krogerus@linux.intel.com>, Len Brown <lenb@kernel.org>, 
-	"Rafael J. Wysocki" <rafael@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
-	Sakari Ailus <sakari.ailus@linux.intel.com>, devicetree@vger.kernel.org, 
-	linux-acpi@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
 
-> > -int fwnode_irq_get(const struct fwnode_handle *fwnode, unsigned int index)
-> > +int fwnode_irq_get_resource(const struct fwnode_handle *fwnode,
-> > +                         unsigned int index, struct resource *r)
->
-> It's perfectly fine to replace ) by , on the previous line, no need
-> to make it shorter.
+> (other than telling us what changed from v1 to v2)
 
-That puts the line at 115 chars? checkpatch.pl allows a maximum line
-length of 100. I can bump the 'index' argument up a line and keep it
-to a length of 95?
+Appreciate the feedback! I'm new to this, so basically it means always
+use --cover-letter, I also noticed that I should have probably added some
+'to' entries, the command suggested by lore moved the original 'to' fields
+to 'cc'. I'll be more diligent with the changelog in future contributions.
+
+Change was incorporating the feedback from [1], changing the comma into a
+period for all three changed sysfs entries.
+
+~Ivor
+
+[1]: https://lore.kernel.org/linux-hwmon/40285311-8adc-4ca9-86ce-27c8b723a102@infradead.org/
 
