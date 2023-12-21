@@ -1,71 +1,127 @@
-Return-Path: <linux-kernel+bounces-7856-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7880-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 497F881AE53
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 06:22:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE94D81AEA4
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 07:10:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DD9F41F24B67
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 05:22:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F162F1C224ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 06:09:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD395AD5C;
-	Thu, 21 Dec 2023 05:22:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SceD/I7f"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DE66BA29;
+	Thu, 21 Dec 2023 06:09:51 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07AE09477;
-	Thu, 21 Dec 2023 05:22:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 89F1DC433C7;
-	Thu, 21 Dec 2023 05:22:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703136126;
-	bh=Lw+V06Yn69FY5ftFPf3ftY+ZYPlSO27puJXjTIAOhvI=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=SceD/I7fZMJQVPJeQCz4+hXcLeJdSbQ+ojU3Wv70G9lQRrJiDTEcTArGtlaa4/J4q
-	 gOorr/63yLEWwI7z0gp2s+10TuVIxi9W4cRaKfxg/pD4yv44y7rIepRNmtXR5bcb7W
-	 Rio49uJzDQ31MvS6mlggzYZ+mj/KC0Twm1QCcG8W+oLGeuREWjPuiXITee38KvORj5
-	 Ic4bXlP+SfEkE3MQgwFOpK139eZdXU5S9uVmdIiNka2jty5LCFG8WzpTANbCaoKItf
-	 R/KaWlgISOZJhTkR05TOnfbiNlraABrvxqdr2ypTx6pVw7zFcc0NHdSyRn0X3pyF6o
-	 uwSv/3CQi/mtA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 789A5D8C988;
-	Thu, 21 Dec 2023 05:22:06 +0000 (UTC)
-Subject: Re: [GIT PULL] smb3 client fixes
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <CAH2r5mvnbV3AxWeibhBaL7UtfZ7ko18-1SZg2LN0U0YNgvJ6Cg@mail.gmail.com>
-References: <CAH2r5mvnbV3AxWeibhBaL7UtfZ7ko18-1SZg2LN0U0YNgvJ6Cg@mail.gmail.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <CAH2r5mvnbV3AxWeibhBaL7UtfZ7ko18-1SZg2LN0U0YNgvJ6Cg@mail.gmail.com>
-X-PR-Tracked-Remote: git://git.samba.org/sfrench/cifs-2.6.git tags/6.7-rc6-smb3-client-fixes
-X-PR-Tracked-Commit-Id: 12d1e301bdfd1f2e2f371432dedef7cce8f01c4a
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: eee7f5b48e20c585dc8069b3ab8abdcabd0afded
-Message-Id: <170313612648.796.18134558177984902202.pr-tracker-bot@kernel.org>
-Date: Thu, 21 Dec 2023 05:22:06 +0000
-To: Steve French <smfrench@gmail.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, CIFS <linux-cifs@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7CE8AD58;
+	Thu, 21 Dec 2023 06:09:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 33DD31A0230;
+	Thu, 21 Dec 2023 07:04:28 +0100 (CET)
+Received: from aprdc01srsp001v.ap-rdc01.nxp.com (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
+	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id EDD721A014A;
+	Thu, 21 Dec 2023 07:04:27 +0100 (CET)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 70AC21802201;
+	Thu, 21 Dec 2023 14:04:26 +0800 (+08)
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
+To: robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	shawnguo@kernel.org,
+	s.hauer@pengutronix.de,
+	kernel@pengutronix.de,
+	festevam@gmail.com,
+	linux-imx@nxp.com,
+	devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] arm64: dts: imx8mm-evk: Add PDM micphone sound card support
+Date: Thu, 21 Dec 2023 13:23:07 +0800
+Message-Id: <1703136188-7222-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 
-The pull request you sent on Wed, 20 Dec 2023 22:08:56 -0600:
+Add PDM micphone sound card support, configure the pinmux.
 
-> git://git.samba.org/sfrench/cifs-2.6.git tags/6.7-rc6-smb3-client-fixes
+This sound card supports recording sound from PDM micphone
+and convert the PDM format data to PCM data.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/eee7f5b48e20c585dc8069b3ab8abdcabd0afded
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+---
+ arch/arm64/boot/dts/freescale/imx8mm-evk.dtsi | 34 +++++++++++++++++++
+ 1 file changed, 34 insertions(+)
 
-Thank you!
-
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm-evk.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-evk.dtsi
+index b53104ed8919..9679786dac51 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mm-evk.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mm-evk.dtsi
+@@ -151,6 +151,18 @@ simple-audio-card,codec {
+ 			clocks = <&clk IMX8MM_CLK_SAI3_ROOT>;
+ 		};
+ 	};
++
++	sound-micfil {
++		compatible = "fsl,imx-audio-card";
++		model = "micfil-audio";
++		pri-dai-link {
++			link-name = "micfil hifi";
++			format = "i2s";
++			cpu {
++				sound-dai = <&micfil>;
++			};
++		};
++	};
+ };
+ 
+ &A53_0 {
+@@ -434,6 +446,16 @@ &lcdif {
+ 	status = "okay";
+ };
+ 
++&micfil {
++	#sound-dai-cells = <0>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_pdm>;
++	assigned-clocks = <&clk IMX8MM_CLK_PDM>;
++	assigned-clock-parents = <&clk IMX8MM_AUDIO_PLL1_OUT>;
++	assigned-clock-rates = <196608000>;
++	status = "okay";
++};
++
+ &mipi_csi {
+ 	status = "okay";
+ 
+@@ -636,6 +658,18 @@ MX8MM_IOMUXC_GPIO1_IO05_GPIO1_IO5       0x41
+ 		>;
+ 	};
+ 
++	pinctrl_pdm: pdmgrp {
++		fsl,pins = <
++			MX8MM_IOMUXC_SAI5_MCLK_SAI5_MCLK        0xd6
++			MX8MM_IOMUXC_SAI5_RXC_PDM_CLK           0xd6
++			MX8MM_IOMUXC_SAI5_RXFS_SAI5_RX_SYNC     0xd6
++			MX8MM_IOMUXC_SAI5_RXD0_PDM_DATA0        0xd6
++			MX8MM_IOMUXC_SAI5_RXD1_PDM_DATA1        0xd6
++			MX8MM_IOMUXC_SAI5_RXD2_PDM_DATA2        0xd6
++			MX8MM_IOMUXC_SAI5_RXD3_PDM_DATA3        0xd6
++		>;
++	};
++
+ 	pinctrl_pmic: pmicirqgrp {
+ 		fsl,pins = <
+ 			MX8MM_IOMUXC_GPIO1_IO03_GPIO1_IO3		0x141
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.34.1
+
 
