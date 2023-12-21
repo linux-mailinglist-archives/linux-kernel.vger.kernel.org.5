@@ -1,59 +1,49 @@
-Return-Path: <linux-kernel+bounces-7830-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7831-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95AD581ADE7
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 05:12:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA5D181ADE8
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 05:16:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4978E286EC5
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 04:12:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DDA2E1C21CCF
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 04:16:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15BD079E0;
-	Thu, 21 Dec 2023 04:12:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45C1F7465;
+	Thu, 21 Dec 2023 04:16:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Wo9RKi5b"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="hKekoeAY"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CBF26FB9
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 04:12:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1703131962;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LYwTBqplqqI5GDQJ4vYImBgIRehExp2gFU18Pdx2r5A=;
-	b=Wo9RKi5bEPXdf1J4jO3NHnYX5tVfS53mGaOavN9UcUgDFWy1v13EZtMLfdphfawunRazZX
-	n+gPes63UrFTnSnk6tuMQV078dhsXH3RfOZ5KC+W2rJ1Zu34ODn9KYchLuRo4PQOEmq8Ol
-	tlBjsWEmbiPdYjo7B/pTnq/dliZ84eQ=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-346-PbxvE6g8MM-gJ25qgLEakw-1; Wed,
- 20 Dec 2023 23:12:38 -0500
-X-MC-Unique: PbxvE6g8MM-gJ25qgLEakw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2CD242999B21;
-	Thu, 21 Dec 2023 04:12:38 +0000 (UTC)
-Received: from localhost (unknown [10.72.116.38])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 7503840C6EB9;
-	Thu, 21 Dec 2023 04:12:37 +0000 (UTC)
-Date: Thu, 21 Dec 2023 12:12:34 +0800
-From: Baoquan He <bhe@redhat.com>
-To: Huang Shijie <shijie@os.amperecomputing.com>
-Cc: vgoyal@redhat.com, dyoung@redhat.com, kexec@lists.infradead.org,
-	linux-kernel@vger.kernel.org, patches@amperecomputing.com
-Subject: Re: [PATCH] crash_core: export vmemmap when CONFIG_SPARSEMEM_VMEMMAP
- is enabled
-Message-ID: <ZYO7MvpT9yWWfjO7@MiWiFi-R3L-srv>
-References: <20231127020727.25296-1-shijie@os.amperecomputing.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00127945A;
+	Thu, 21 Dec 2023 04:16:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=9fu9ycNjYnh+jMIffCCFUrHb5XSgNNhRHsHudZOD1U4=; b=hKekoeAYg/rDawz5RlczPsQxTw
+	FbJT6TQ/p5XH1uX/o1xNv0G7RwUKs979dkcSf9bdh8J2O5Ndx6YwfkTRl0DgPUhrKo9+pDTHkbn/O
+	BomJKJeDHCTiFPP5arVtnHQTwF55V060pPAjYwVtcT4Wo62YpeSK1DKMb9BSaiNpfwUn/uQnw/PY/
+	d71QvyIk992VEnb1fbjUdMhlwUQFrEv/6o+ooZRLpFtS16cvZERfzA2k6zay9yrT+GJteQT4COUjO
+	0tSA7ljvQDKMUK7eQhLODDSWWxnYyvr5nRpz5THDzpQ9TMs0ELWTP6UbEPs3/euDXKsl2ai0lk/68
+	/GjocBuw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1rGAU6-004eJy-UH; Thu, 21 Dec 2023 04:16:35 +0000
+Date: Thu, 21 Dec 2023 04:16:34 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: Pasha Tatashin <pasha.tatashin@soleen.com>
+Cc: akpm@linux-foundation.org, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org, rientjes@google.com,
+	dwmw2@infradead.org, baolu.lu@linux.intel.com, joro@8bytes.org,
+	will@kernel.org, robin.murphy@arm.com, iommu@lists.linux.dev
+Subject: Re: [RFC 0/3] iommu/intel: Free empty page tables on unmaps
+Message-ID: <ZYO8IqiHeqs8LktJ@casper.infradead.org>
+References: <20231221031915.619337-1-pasha.tatashin@soleen.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,45 +52,27 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231127020727.25296-1-shijie@os.amperecomputing.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
+In-Reply-To: <20231221031915.619337-1-pasha.tatashin@soleen.com>
 
-On 11/27/23 at 10:07am, Huang Shijie wrote:
-> In memory_model.h, if CONFIG_SPARSEMEM_VMEMMAP is configed,
-> kernel will use vmemmap to do the __pfn_to_page/page_to_pfn,
-> and kernel will not use the "classic sparse" to do the
-> __pfn_to_page/page_to_pfn.
+On Thu, Dec 21, 2023 at 03:19:12AM +0000, Pasha Tatashin wrote:
+> This series frees empty page tables on unmaps. It intends to be a
+> low overhead feature.
 > 
-> So export the vmemmap when CONFIG_SPARSEMEM_VMEMMAP is configed.
-> This makes the user applications (crash, etc) get faster
-> pfn_to_page/page_to_pfn operations too.
+> The read-writer lock is used to synchronize page table, but most of
+> time the lock is held is reader. It is held as a writer for short
+> period of time when unmapping a page that is bigger than the current
+> iova request. For all other cases this lock is read-only.
 > 
-> Signed-off-by: Huang Shijie <shijie@os.amperecomputing.com>
-> ---
->  kernel/crash_core.c | 3 +++
->  1 file changed, 3 insertions(+)
+> page->refcount is used in order to track number of entries at each page
+> table.
 
-Ack this one as it's needed by crash utility patches.
+Have I not put enough DANGER signs up around the page refcount?
 
-Acked-by: Baoquan He <bhe@redhat.com>
+ * If you want to use the refcount field, it must be used in such a way
+ * that other CPUs temporarily incrementing and then decrementing the
+ * refcount does not cause problems.  On receiving the page from
+ * alloc_pages(), the refcount will be positive.
 
-> 
-> diff --git a/kernel/crash_core.c b/kernel/crash_core.c
-> index efe87d501c8c..9653c4177191 100644
-> --- a/kernel/crash_core.c
-> +++ b/kernel/crash_core.c
-> @@ -765,6 +765,9 @@ static int __init crash_save_vmcoreinfo_init(void)
->  	VMCOREINFO_SYMBOL(mem_map);
->  	VMCOREINFO_SYMBOL(contig_page_data);
->  #endif
-> +#ifdef CONFIG_SPARSEMEM_VMEMMAP
-> +	VMCOREINFO_SYMBOL_ARRAY(vmemmap);
-> +#endif
->  #ifdef CONFIG_SPARSEMEM
->  	VMCOREINFO_SYMBOL_ARRAY(mem_section);
->  	VMCOREINFO_LENGTH(mem_section, NR_SECTION_ROOTS);
-> -- 
-> 2.40.1
-> 
-
+You can't use refcount for your purpose, and honestly I'm shocked you
+haven't seen any of your WARNings trigger.
 
