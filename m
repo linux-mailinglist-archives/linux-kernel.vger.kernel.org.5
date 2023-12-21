@@ -1,163 +1,114 @@
-Return-Path: <linux-kernel+bounces-8241-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8242-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 105BE81B450
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 11:49:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14D9481B454
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 11:50:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8B898B25CC2
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 10:49:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 39DF61C245FE
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 10:50:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1AF36A34B;
-	Thu, 21 Dec 2023 10:49:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE8466BB26;
+	Thu, 21 Dec 2023 10:49:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="mugoYsI8"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jnRhr4mf"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40D906EB4D;
-	Thu, 21 Dec 2023 10:49:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74463C433C7;
-	Thu, 21 Dec 2023 10:49:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1703155778;
-	bh=LhqCfCVPwytiqliSfMH3BV35/UgE/I1uDNJzZrI9ZPc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=mugoYsI8oZi1OCgLEy8hn7PjZyRMSHhJwsekUOz7yFXzPs/Jn21rgbS7Qp8KSVn5m
-	 z8v+WQzVPqiHKrkMZFkpj4xCmQgzisjMrKpnBtadDrbTvo8KWUbYdsdZ6VufyJ3uch
-	 TuLgie5gpDPMD5Tnt21OHTjo90W0vB7hoKes4hj0=
-Date: Thu, 21 Dec 2023 11:49:36 +0100
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Gui-Dong Han <2045gemini@gmail.com>
-Cc: ivan.orlov0322@gmail.com, surenb@google.com, 42.hyeyoo@gmail.com,
-	Liam.Howlett@oracle.com, linux-usb@vger.kernel.org,
-	linux-kernel@vger.kernel.org, baijiaju1990@outlook.com,
-	BassCheck <bass@buaa.edu.cn>
-Subject: Re: [PATCH] usb: mon: Fix atomicity violation in mon_bin_vma_fault
-Message-ID: <2023122104-favoring-lavender-94a9@gregkh>
-References: <20231221104034.4851-1-2045gemini@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EE4F6979B;
+	Thu, 21 Dec 2023 10:49:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C15DC433C7;
+	Thu, 21 Dec 2023 10:49:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703155793;
+	bh=VBUvj5yamNCjbS7Ufz44ltWWNJCZRuRqgGoz+FefXwg=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=jnRhr4mf7h4Bw3N/PZQ+i5o80xVfCisdmwET/pyaSalcUrpIhu0TyySt8Mw1g29V/
+	 2D2MSAE6bxaz7wldi2gCB3+g/ibg1yIGtAnSwNAvHv/fIHPOTjpVUXsSJ9mnY6A0ue
+	 21+Phn7ToZunqe6Bsw5dpiWToypWat4VMMgB5xhT3gypwwmO7dWPzfErO5I2W5dNuu
+	 R9MlJmyBMJuuqLatWd1BoALFPQBF+YauGmC4VHdLjqoPFHv5hjZNYmoTzmJKuWwWVs
+	 if++SqppcI8V2st7tUqHZSjzcwaKcsgCiFINufRsp0pkCzGooHTB3EgoXhbIg1e2eX
+	 Pqvg0OW5PSkyg==
+Date: Thu, 21 Dec 2023 10:49:40 +0000
+From: Jonathan Cameron <jic23@kernel.org>
+To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc: Lars-Peter Clausen <lars@metafoo.de>, linux-kernel@vger.kernel.org,
+ kernel-janitors@vger.kernel.org, linux-iio@vger.kernel.org
+Subject: Re: [PATCH] iio: buffer: Use IIO_SEPARATE instead of a hard-coded 0
+Message-ID: <20231221104940.7e9d7b0f@jic23-huawei>
+In-Reply-To: <1d17f57423172fcb9d9797cfe7c8282f356049c2.1702831285.git.christophe.jaillet@wanadoo.fr>
+References: <1d17f57423172fcb9d9797cfe7c8282f356049c2.1702831285.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231221104034.4851-1-2045gemini@gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Thu, Dec 21, 2023 at 06:40:34PM +0800, Gui-Dong Han wrote:
-> In mon_bin_vma_fault():
-> 	offset = vmf->pgoff << PAGE_SHIFT;
-> 	if (offset >= rp->b_size)
-> 		return VM_FAULT_SIGBUS;
-> 	chunk_idx = offset / CHUNK_SIZE;
-> 	pageptr = rp->b_vec[chunk_idx].pg;
-> The code is executed without holding any lock.
+On Sun, 17 Dec 2023 17:41:45 +0100
+Christophe JAILLET <christophe.jaillet@wanadoo.fr> wrote:
+
+> Use an explicit IIO_SEPARATE instead of 0 for the 'shared_by' parameter
+> when calling __iio_add_chan_devattr().
 > 
-> In mon_bin_vma_close():
-> 	spin_lock_irqsave(&rp->b_lock, flags);
-> 	rp->mmap_active--;
-> 	spin_unlock_irqrestore(&rp->b_lock, flags);
+> For some reason, commit 3704432fb1fd ("iio: refactor info mask and ext_info
+> attribute creation.") updated only 1 place out of 4.
+> Update the remaining ones now.
 > 
-> In mon_bin_ioctl():
-> 	spin_lock_irqsave(&rp->b_lock, flags);
-> 	if (rp->mmap_active) {
-> 		...
-> 	} else {
-> 		...
-> 		kfree(rp->b_vec);
-> 		rp->b_vec  = vec;
-> 		rp->b_size = size;
-> 		...
-> 	}
-> 	spin_unlock_irqrestore(&rp->b_lock, flags);
-> 
-> Concurrent execution of mon_bin_vma_fault() with mon_bin_vma_close() and
-> mon_bin_ioctl() could lead to atomicity violations. mon_bin_vma_fault()
-> accesses rp->b_size and rp->b_vec without locking, risking array
-> out-of-bounds access or use-after-free bugs due to possible modifications
-> in mon_bin_ioctl().
-> 
-> This possible bug is found by an experimental static analysis tool
-> developed by our team. This tool analyzes the locking APIs to extract
-> function pairs that can be concurrently executed, and then analyzes the
-> instructions in the paired functions to identify possible concurrency
-> bugs including data races and atomicity violations. The above possible
-> bug is reported, when our tool analyzes the source code of Linux 6.2.
-> 
-> To address this issue, it is proposed to add a spin lock pair in
-> mon_bin_vma_fault() to ensure atomicity. With this patch applied, our tool
-> never reports the possible bug, with the kernel configuration allyesconfig
-> for x86_64. Due to the lack of associated hardware, we cannot test the
-> patch in runtime testing, and just verify it according to the code logic.
-> 
-> Fixes: 6f23ee1fefdc1 ("USB: add binary API to usbmon")
-> Reported-by: BassCheck <bass@buaa.edu.cn>
-> Signed-off-by: Gui-Dong Han <2045gemini@gmail.com>
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Makes sense
+
+Applied to the togreg branch of iio.git.
+
+It's fairly unlikely I'll get another pull request out unless the final
+6.7 release isn't until after the new year for some reason.
+
+As such, this is probably now 6.9 material
+
+Thanks,
+
+Jonathan
+
 > ---
->  drivers/usb/mon/mon_bin.c | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
+>  drivers/iio/industrialio-buffer.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 > 
-> diff --git a/drivers/usb/mon/mon_bin.c b/drivers/usb/mon/mon_bin.c
-> index 9ca9305243fe..509cd1b8ff13 100644
-> --- a/drivers/usb/mon/mon_bin.c
-> +++ b/drivers/usb/mon/mon_bin.c
-> @@ -1250,12 +1250,16 @@ static vm_fault_t mon_bin_vma_fault(struct vm_fault *vmf)
->  	struct mon_reader_bin *rp = vmf->vma->vm_private_data;
->  	unsigned long offset, chunk_idx;
->  	struct page *pageptr;
-> -
-> +	unsigned long flags;
-> +	spin_lock_irqsave(&rp->b_lock, flags);
->  	offset = vmf->pgoff << PAGE_SHIFT;
-> -	if (offset >= rp->b_size)
-> +	if (offset >= rp->b_size) {
-> +		spin_unlock_irqrestore(&rp->b_lock, flags);
->  		return VM_FAULT_SIGBUS;
-> +	}
->  	chunk_idx = offset / CHUNK_SIZE;
->  	pageptr = rp->b_vec[chunk_idx].pg;
-> +	spin_unlock_irqrestore(&rp->b_lock, flags);
->  	get_page(pageptr);
->  	vmf->page = pageptr;
->  	return 0;
-> -- 
-> 2.34.1
-> 
-> 
+> diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-buffer.c
+> index 09c41e9ccf87..b581a7e80566 100644
+> --- a/drivers/iio/industrialio-buffer.c
+> +++ b/drivers/iio/industrialio-buffer.c
+> @@ -616,7 +616,7 @@ static int iio_buffer_add_channel_sysfs(struct iio_dev *indio_dev,
+>  				     &iio_show_fixed_type,
+>  				     NULL,
+>  				     0,
+> -				     0,
+> +				     IIO_SEPARATE,
+>  				     &indio_dev->dev,
+>  				     buffer,
+>  				     &buffer->buffer_attr_list);
+> @@ -629,7 +629,7 @@ static int iio_buffer_add_channel_sysfs(struct iio_dev *indio_dev,
+>  					     &iio_scan_el_show,
+>  					     &iio_scan_el_store,
+>  					     chan->scan_index,
+> -					     0,
+> +					     IIO_SEPARATE,
+>  					     &indio_dev->dev,
+>  					     buffer,
+>  					     &buffer->buffer_attr_list);
+> @@ -639,7 +639,7 @@ static int iio_buffer_add_channel_sysfs(struct iio_dev *indio_dev,
+>  					     &iio_scan_el_ts_show,
+>  					     &iio_scan_el_ts_store,
+>  					     chan->scan_index,
+> -					     0,
+> +					     IIO_SEPARATE,
+>  					     &indio_dev->dev,
+>  					     buffer,
+>  					     &buffer->buffer_attr_list);
 
-Hi,
-
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
-
-You are receiving this message because of the following common error(s)
-as indicated below:
-
-
-- You have marked a patch with a "Fixes:" tag for a commit that is in an
-  older released kernel, yet you do not have a cc: stable line in the
-  signed-off-by area at all, which means that the patch will not be
-  applied to any older kernel releases.  To properly fix this, please
-  follow the documented rules in the
-  Documentation/process/stable-kernel-rules.rst file for how to resolve
-  this.
-
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
-
-thanks,
-
-greg k-h's patch email bot
 
