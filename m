@@ -1,118 +1,160 @@
-Return-Path: <linux-kernel+bounces-8310-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8311-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6481F81B569
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 13:00:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 00E8581B56A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 13:01:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C433F287686
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 12:00:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B19E32875CD
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 12:01:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E01336E59A;
-	Thu, 21 Dec 2023 12:00:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDB676E585;
+	Thu, 21 Dec 2023 12:01:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HJeIRufo"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15A9B6BB3D;
-	Thu, 21 Dec 2023 12:00:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Swprt3Wtwz4f3jZR;
-	Thu, 21 Dec 2023 19:59:58 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id DAB961A0552;
-	Thu, 21 Dec 2023 19:59:59 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP1 (Coremail) with SMTP id cCh0CgB3xw26KIRl_5H6EA--.61666S2;
-	Thu, 21 Dec 2023 19:59:58 +0800 (CST)
-Subject: Re: [syzbot] [mm?] BUG: unable to handle kernel paging request in
- copy_from_kernel_nofault
-To: Thomas Gleixner <tglx@linutronix.de>, bpf <bpf@vger.kernel.org>
-Cc: syzbot <syzbot+72aa0161922eba61b50e@syzkaller.appspotmail.com>,
- akpm@linux-foundation.org, bp@alien8.de, bp@suse.de,
- dave.hansen@linux.intel.com, hpa@zytor.com, linux-kernel@vger.kernel.org,
- linux-mm@kvack.org, luto@kernel.org, mingo@redhat.com,
- netdev@vger.kernel.org, peterz@infradead.org,
- syzkaller-bugs@googlegroups.com, x86@kernel.org, Jann Horn
- <jannh@google.com>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- John Fastabend <john.fastabend@gmail.com>
-References: <000000000000c84343060a850bd0@google.com> <87jzqb1133.ffs@tglx>
- <CAG48ez06TZft=ATH1qh2c5mpS5BT8UakwNkzi6nvK5_djC-4Nw@mail.gmail.com>
- <87r0jwquhv.ffs@tglx>
-From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <e24b125c-8ff4-9031-6c53-67ff2e01f316@huaweicloud.com>
-Date: Thu, 21 Dec 2023 19:59:54 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49D176DD18;
+	Thu, 21 Dec 2023 12:00:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1703160058; x=1734696058;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=HUgYg3Z9o2yXh3C+bSwBC9vytvmB1fqomhibW+F8MgE=;
+  b=HJeIRufo0vZRNrE95XlecUcArUoo2hrCcDZ5R1BAiBdZZ7Xtuuz04Hut
+   gp3KztthXpGfN1GgSxfTOij8k8uACeVGz5xUrfGnM+GSVKvPfkNdf+m2f
+   JwEKpJ3rqVxlEF2mzRrGM+aHcNNLqj1w0T9x8ZAkhz/u5r/57QgZL0+2v
+   gctyKo4arQIwJhBX9VOcg/cyqKMpEaMMoiFvekIjDMsxxm1q6znRZrQVo
+   tVEWwVXq9UTU8ORjInU4IOu5hXwIyaYDG/SknmHvjwjsqNYp6aPIZ3OTr
+   q3KTDf2BHXCdZKrNFVaVWAmRBuRSG0mQihpMxL7sFXcSVfNIm2tKBZf2c
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10930"; a="462406717"
+X-IronPort-AV: E=Sophos;i="6.04,293,1695711600"; 
+   d="scan'208";a="462406717"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Dec 2023 04:00:47 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10930"; a="900082435"
+X-IronPort-AV: E=Sophos;i="6.04,293,1695711600"; 
+   d="scan'208";a="900082435"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga004.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Dec 2023 04:00:43 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rGHjF-00000007qPi-1MKb;
+	Thu, 21 Dec 2023 14:00:41 +0200
+Date: Thu, 21 Dec 2023 14:00:40 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: Qu Wenruo <wqu@suse.com>, Alexey Dobriyan <adobriyan@gmail.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-btrfs@vger.kernel.org,
+	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+	linux-kernel@vger.kernel.org, David Sterba <dsterba@suse.cz>
+Subject: Re: [PATCH 1/2] lib/strtox: introduce kstrtoull_suffix() helper
+Message-ID: <ZYQo6DB4nQj58iUg@smile.fi.intel.com>
+References: <ZYL5CI4aEyVnabhe@smile.fi.intel.com>
+ <15cf089f-be9a-4762-ae6b-4791efca6b44@gmx.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <87r0jwquhv.ffs@tglx>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-CM-TRANSID:cCh0CgB3xw26KIRl_5H6EA--.61666S2
-X-Coremail-Antispam: 1UD129KBjvdXoWruF1kGryUCFWDXr13ZFW3Awb_yoWkKFcEq3
-	42934kurZ7uF42yr1xtr4a9r1rtw4kArWFq398ArWavFnIva9xG395trZ3Ww4UGwnagFZ3
-	JFW5Z3srKrnI9jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbIxYFVCjjxCrM7AC8VAFwI0_Xr0_Wr1l1xkIjI8I6I8E6xAIw20E
-	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
-	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x02
-	67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxV
-	AFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2
-	j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7x
-	kEbVWUJVW8JwACjcxG0xvEwIxGrwACI402YVCY1x02628vn2kIc2xKxwCYjI0SjxkI62AI
-	1cAE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWr
-	XwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
-	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAF
-	wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
-	7IU13rcDUUUUU==
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <15cf089f-be9a-4762-ae6b-4791efca6b44@gmx.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-Hi Thomas,
+On Thu, Dec 21, 2023 at 07:08:08AM +1030, Qu Wenruo wrote:
+> On 2023/12/21 00:54, Andy Shevchenko wrote:
+> > On Wed, Dec 20, 2023 at 08:31:09PM +1030, Qu Wenruo wrote:
+> > > On 2023/12/20 20:24, Alexey Dobriyan wrote:
+> > > > > Just as mentioned in the comment of memparse(), the simple_stroull()
+> > > > > usage can lead to overflow all by itself.
+> > > > 
+> > > > which is the root cause...
+> > > > 
+> > > > I don't like one char suffixes. They are easy to integrate but then the
+> > > > _real_ suffixes are "MiB", "GiB", etc.
+> > > > 
+> > > > If you care only about memparse(), then using _parse_integer() can be
+> > > > arranged. I don't see why not.
+> > > 
+> > > Well, personally speaking I don't think we should even support the suffix at
+> > > all, at least for the only two usage inside btrfs.
+> > > 
+> > > But unfortunately I'm not the one to do the final call, and the final call
+> > > is to keep the suffix behavior...
+> > > 
+> > > And indeed using _parse_integer() with _parse_interger_fixup_radix() would
+> > > be better, as we don't need to extend the _kstrtoull() code base.
+> > 
+> > My comment on the first patch got vanished due to my MTA issues, but I'll try
+> > to summarize my point here.
+> > 
+> > First of all, I do not like the naming, it's too vague. What kind of suffix?
+> > Do we suppose to have suffix in the input? What will be the behaviour w/o
+> > suffix?  And so on...
+> 
+> I really like David Sterb to hear this though.
 
-On 12/9/2023 5:01 AM, Thomas Gleixner wrote:
-> diff --git a/arch/x86/mm/maccess.c b/arch/x86/mm/maccess.c
-> index 6993f026adec..8e846833aa37 100644
-> --- a/arch/x86/mm/maccess.c
-> +++ b/arch/x86/mm/maccess.c
-> @@ -3,6 +3,8 @@
->  #include <linux/uaccess.h>
->  #include <linux/kernel.h>
->  
-> +#include <uapi/asm/vsyscall.h>
-> +
->  #ifdef CONFIG_X86_64
->  bool copy_from_kernel_nofault_allowed(const void *unsafe_src, size_t size)
->  {
-> @@ -15,6 +17,9 @@ bool copy_from_kernel_nofault_allowed(const void *unsafe_src, size_t size)
->  	if (vaddr < TASK_SIZE_MAX + PAGE_SIZE)
->  		return false;
->  
-> +	if ((vaddr & PAGE_MASK) == VSYSCALL_ADDR)
-> +		return false;
-> +
->  	/*
->  	 * Allow everything during early boot before 'x86_virt_bits'
->  	 * is initialized.  Needed for instruction decoding in early
+Me too, I like to hear opinions. But I will fight for the best we can do here.
 
-Tested-by: Hou Tao <houtao1@huawei.com>
+> To me, we should mark memparse() as deprecated as soon as possible, not
+> spreading the damn pandemic to any newer code.
 
-Could you please post a formal patch for the fix ? The patch fixes the
-oops when using bpf_probe_read_kernel() or similar bpf helpers [1] to
-read from vsyscall address and you can take my tested-by tag if it is
-necessary.
+Send a patch!
 
-[1]:
-https://lore.kernel.org/bpf/CABOYnLynjBoFZOf3Z4BhaZkc5hx_kHfsjiW+UWLoB=w33LvScw@mail.gmail.com/
+> The "convenience" is not an excuse to use incorrect code.
+
+I do not object this.
+
+> > Second, if it's a problem in memparse(), just fix it and that's all.
+> 
+> Nope, the memparse() itself doesn't have any way to indicate errors.
+> 
+> It's not fixable in the first place, as long as you want a drop-in solution.
+> 
+> > Third, as Alexey said, we have metric and byte suffixes and they are different.
+> > Supporting one without the other is just adding to the existing confusion.
+> > 
+> > Last, but not least, we do NOT accept new code in the lib/ without test cases.
+> > 
+> > So, that said here is my formal NAK for this series (at least in this form).
+> 
+> Then why there is the hell of memparse() in the first place?
+
+You have all means to investigate.
+It used to be setup_mem() till 9b0f5889b12b ("Linux 2.2.18pre9"),
+which in turn was split from setup_arch() in 716454f016a9 ("Import
+2.1.121pre1")... Looking deeper seems it comes as a parser at hand
+for the mem= command line parameter very long time ago.
+
+> It doesn't have test case (we have cmdline_kunit, but it doesn't test
+> memparse() at all), nor the proper error detection.
+
+Exactly! Someone's job to add this. And the best is the one who touches
+the code. See how cmdline_kunit appears.
+
+> I'm fine to get my patch rejected, but why the hell of memparse() is
+> here in the first place?
+> It doesn't fit any of the standard you mentioned.
+
+So, what standard did we have in above mentioned (prehistorical) time?
+
+> > P.S> The Subject should start with either kstrtox: or lib/kstrtox.c.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
 
