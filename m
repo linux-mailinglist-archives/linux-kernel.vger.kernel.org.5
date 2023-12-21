@@ -1,174 +1,94 @@
-Return-Path: <linux-kernel+bounces-7768-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7771-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB0D881ACD3
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 03:59:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53FEF81ACD8
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 04:01:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7825CB2468E
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 02:59:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8494B282934
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 03:01:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E14EE6AB3;
-	Thu, 21 Dec 2023 02:58:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="epYHyAl7"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4751D9463;
+	Thu, 21 Dec 2023 03:01:21 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FCB24691;
-	Thu, 21 Dec 2023 02:58:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2cc259392a6so2918521fa.2;
-        Wed, 20 Dec 2023 18:58:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703127533; x=1703732333; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6bBzkO/x8C7pW+ybw+V7AQ5yP+2vx9qyk2y1ClRHSZw=;
-        b=epYHyAl7TiA75ynKga5al2BKz1HG4HUHczes0Xfbr3Z+dTwcBCehybaT4KHMWS10uO
-         yG9alFvIbmjCL64lHfimte6bpdTeyQNQs5S2oMZqS+OVuFJ4+f+1oLvUvUZEMDKtIjpi
-         TSBI10xhk/jW1ddVgR3YG6VUtUJa+TDpzL5FEKgfE9UXdImGQwatqGZG9O0wlmgfol0x
-         vr9GEPdtVRIWpMrEJImxDzIIUmzzVsFBl/iRCre8JdPiakhjPQwNWKsxfZlFU53offK5
-         yEusJCTZ0/ybWG3cepjXmIbxkREi2ipognsGq3yWwFIue1P1/Bfx2IRU6X4IYzWR6gtg
-         e0+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703127533; x=1703732333;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6bBzkO/x8C7pW+ybw+V7AQ5yP+2vx9qyk2y1ClRHSZw=;
-        b=HYd+ibw9j9lph2x+VxtCKy2IP16IgMlC4D99D8IM8Rs7iPBs/WZThE8djeUr04+R0m
-         sOw5BP47/7Ow2b3biS4CI1UeOttLSCKAuEJ5vupTjXoOjRvp+Rbjna/JPXiJQjlr0acy
-         c4t7/FCPKH76K1En4jmJVfngL+ny1BsQvyVxEcyIVYm0/jBcInAmiENETX3zf5xoO/iv
-         KvSKe8rjdSl39cnAPZpKSZikiAJ/LTCWNevSNssip6gSuWRwXUbAxByYciG3syymNc1n
-         57rRpyNAYfRiyqYTFN4kVPE8sQfCiOSMo5mMjwddo4q9tLl8cqjrs4AWXbI/YOXb4Nol
-         +H9w==
-X-Gm-Message-State: AOJu0YzPRXqDFqHi34JtY0kzBRzx/fQNYO43M1w7Vusm7othV2JUIL5c
-	50bUN/NxwZMejgKrh7DkDUi9Jt1MDwvFG9T8yBI=
-X-Google-Smtp-Source: AGHT+IGJHPrvnGt2Ru34bEuu9VEKW4Ddr4y1BwS+bbHJIUMRrvHhhF9Knr8M3TPrt5vBdMTPh9CciXS8rGxFOeFA2n4=
-X-Received: by 2002:a2e:95d2:0:b0:2cc:7c8c:574b with SMTP id
- y18-20020a2e95d2000000b002cc7c8c574bmr1956176ljh.77.1703127532313; Wed, 20
- Dec 2023 18:58:52 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0D698F52;
+	Thu, 21 Dec 2023 03:01:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: 7b55f3bcf43a41c4aec9b6ba6e278ec2-20231221
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.33,REQID:ada57bc5-8679-49e8-bb38-eba6e84ae9bd,IP:15,
+	URL:0,TC:0,Content:0,EDM:25,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTI
+	ON:release,TS:35
+X-CID-INFO: VERSION:1.1.33,REQID:ada57bc5-8679-49e8-bb38-eba6e84ae9bd,IP:15,UR
+	L:0,TC:0,Content:0,EDM:25,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+	:release,TS:35
+X-CID-META: VersionHash:364b77b,CLOUDID:c4e40082-8d4f-477b-89d2-1e3bdbef96d1,B
+	ulkID:231221110100PRPDICKD,BulkQuantity:0,Recheck:0,SF:66|24|72|19|44|102,
+	TC:nil,Content:0,EDM:5,IP:-2,URL:11|1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL
+	:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_FSI,TF_CID_SPAM_ULN,TF_CID_SPAM_SNR,TF_CID_SPAM_FSD
+X-UUID: 7b55f3bcf43a41c4aec9b6ba6e278ec2-20231221
+Received: from node4.com.cn [(39.156.73.12)] by mailgw
+	(envelope-from <liyouhong@kylinos.cn>)
+	(Generic MTA)
+	with ESMTP id 1660399244; Thu, 21 Dec 2023 11:00:58 +0800
+Received: from node4.com.cn (localhost [127.0.0.1])
+	by node4.com.cn (NSMail) with SMTP id D699016001CD7;
+	Thu, 21 Dec 2023 11:00:57 +0800 (CST)
+X-ns-mid: postfix-6583AA69-6562031
+Received: from localhost.localdomain (unknown [172.20.185.164])
+	by node4.com.cn (NSMail) with ESMTPA id 5302416001CD7;
+	Thu, 21 Dec 2023 03:00:57 +0000 (UTC)
+From: YouHong Li <liyouhong@kylinos.cn>
+To: jgross@suse.com
+Cc: linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	liyouhong <liyouhong@kylinos.cn>,
+	k2ci <kernel-bot@kylinos.cn>
+Subject: [PATCH] drivers/block/xen-blkback/common.h: Fix spelling typo in comment
+Date: Thu, 21 Dec 2023 11:00:14 +0800
+Message-Id: <20231221030014.1319663-1-liyouhong@kylinos.cn>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1702371136.git.haibo1.xu@intel.com> <0343a9e4bfa8011fbb6bca0286cee7eab1f17d5d.1702371136.git.haibo1.xu@intel.com>
- <8734vy832j.wl-maz@kernel.org> <CAJve8onc0WN5g98aOVBmJx15wFBAqfBKJ+ufoLY+oqYyVL+=3A@mail.gmail.com>
- <f98879dc24f948f7a8a7b5374a32bc04@kernel.org> <CAJve8ona7g=LxW1YeRB_FqGodF973H=A3b2m8054gmzK=Z7_ww@mail.gmail.com>
- <87zfy5t1qt.wl-maz@kernel.org>
-In-Reply-To: <87zfy5t1qt.wl-maz@kernel.org>
-From: Haibo Xu <xiaobo55x@gmail.com>
-Date: Thu, 21 Dec 2023 10:58:40 +0800
-Message-ID: <CAJve8o=nTsAwwgSib4vOLXjOWSMV2+J+BFsUZ57OdAK7eW8q8A@mail.gmail.com>
-Subject: Re: [PATCH v4 11/11] KVM: selftests: Enable tunning of err_margin_us
- in arch timer test
-To: Marc Zyngier <maz@kernel.org>
-Cc: Haibo Xu <haibo1.xu@intel.com>, ajones@ventanamicro.com, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, Paolo Bonzini <pbonzini@redhat.com>, 
-	Shuah Khan <shuah@kernel.org>, Oliver Upton <oliver.upton@linux.dev>, 
-	James Morse <james.morse@arm.com>, Suzuki K Poulose <suzuki.poulose@arm.com>, 
-	Zenghui Yu <yuzenghui@huawei.com>, Anup Patel <anup@brainfault.org>, 
-	Atish Patra <atishp@atishpatra.org>, Guo Ren <guoren@kernel.org>, 
-	Mayuresh Chitale <mchitale@ventanamicro.com>, Greentime Hu <greentime.hu@sifive.com>, 
-	wchen <waylingii@gmail.com>, Conor Dooley <conor.dooley@microchip.com>, 
-	Heiko Stuebner <heiko@sntech.de>, Minda Chen <minda.chen@starfivetech.com>, 
-	Samuel Holland <samuel@sholland.org>, Jisheng Zhang <jszhang@kernel.org>, 
-	Sean Christopherson <seanjc@google.com>, Peter Xu <peterx@redhat.com>, Like Xu <likexu@tencent.com>, 
-	Vipin Sharma <vipinsh@google.com>, 
-	Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>, Aaron Lewis <aaronlewis@google.com>, 
-	Thomas Huth <thuth@redhat.com>, linux-kernel@vger.kernel.org, 
-	linux-riscv@lists.infradead.org, kvm@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	kvmarm@lists.linux.dev, kvm-riscv@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Dec 20, 2023 at 9:58=E2=80=AFPM Marc Zyngier <maz@kernel.org> wrote=
-:
->
-> On Wed, 20 Dec 2023 13:51:24 +0000,
-> Haibo Xu <xiaobo55x@gmail.com> wrote:
-> >
-> > On Wed, Dec 20, 2023 at 5:00=E2=80=AFPM Marc Zyngier <maz@kernel.org> w=
-rote:
-> > >
-> > > On 2023-12-20 06:50, Haibo Xu wrote:
-> > > > On Wed, Dec 20, 2023 at 2:22=E2=80=AFAM Marc Zyngier <maz@kernel.or=
-g> wrote:
-> > > >>
-> > > >> On Tue, 12 Dec 2023 09:31:20 +0000,
-> > > >> Haibo Xu <haibo1.xu@intel.com> wrote:
-> > > >> > diff --git a/tools/testing/selftests/kvm/include/timer_test.h b/=
-tools/testing/selftests/kvm/include/timer_test.h
-> > > >> > index 968257b893a7..b1d405e7157d 100644
-> > > >> > --- a/tools/testing/selftests/kvm/include/timer_test.h
-> > > >> > +++ b/tools/testing/selftests/kvm/include/timer_test.h
-> > > >> > @@ -22,6 +22,7 @@ struct test_args {
-> > > >> >       int nr_iter;
-> > > >> >       int timer_period_ms;
-> > > >> >       int migration_freq_ms;
-> > > >> > +     int timer_err_margin_us;
-> > > >>
-> > > >> ... except that you are storing it as a signed value. Some consist=
-ency
-> > > >> wouldn't hurt, really, and would avoid issues when passing large
-> > > >> values.
-> > > >>
-> > > >
-> > > > Yes, it's more proper to use an unsigned int for the non-negative e=
-rror
-> > > > margin.
-> > > > Storing as signed here is just to keep the type consistent with tha=
-t
-> > > > of timer_period_ms
-> > > > since there will be '+' operation in other places.
-> > > >
-> > > >         tools/testing/selftests/kvm/aarch64/arch_timer.c
-> > > >         /* Setup a timeout for the interrupt to arrive */
-> > > >          udelay(msecs_to_usecs(test_args.timer_period_ms) +
-> > > >              test_args.timer_err_margin_us);
-> > >
-> > > But that's exactly why using a signed quantity is wrong.
-> > > What does it mean to have a huge *negative* margin?
-> > >
-> >
-> > Hi Marc,
-> >
-> > I agree that negative values are meaningless for the margin.
-> > If I understand correctly, the negative margin should be filtered by
-> > assertion in atoi_non_negative().
->
-> No. Please.
->
-> atoi_non_negative() returns a uint32_t, which is what it should do.
-> The bug is squarely in the use of an 'int' to store such value, and it
-> is the *storage* that turns a positive value into a negative one.
->
+From: liyouhong <liyouhong@kylinos.cn>
 
-Thanks for the detailed info!
+Fix spelling typo in comment.
 
-May I understand that your concern is mainly for a platform with 64bit int =
-type,
-which may trigger the positive to negative convert?
+Reported-by: k2ci <kernel-bot@kylinos.cn>
+Signed-off-by: liyouhong <liyouhong@kylinos.cn>
 
-If so, I think we may need to do a clean up for the test code since
-several other
-places have the same issue.
+diff --git a/drivers/block/xen-blkback/common.h b/drivers/block/xen-blkba=
+ck/common.h
+index 40f67bfc052d..c64253d3bb40 100644
+--- a/drivers/block/xen-blkback/common.h
++++ b/drivers/block/xen-blkback/common.h
+@@ -132,7 +132,7 @@ struct blkif_x86_32_request {
+ struct blkif_x86_64_request_rw {
+ 	uint8_t        nr_segments;  /* number of segments                   */
+ 	blkif_vdev_t   handle;       /* only for read/write requests         */
+-	uint32_t       _pad1;        /* offsetof(blkif_reqest..,u.rw.id)=3D=3D8=
+  */
++	uint32_t       _pad1;        /* offsetof(blkif_request..,u.rw.id)=3D=3D=
+8  */
+ 	uint64_t       id;
+ 	blkif_sector_t sector_number;/* start sector idx on disk (r/w only)  */
+ 	struct blkif_request_segment seg[BLKIF_MAX_SEGMENTS_PER_REQUEST];
+--=20
+2.34.1
 
-Regards,
-Haibo
-
->         M.
->
-> --
-> Without deviation from the norm, progress is not possible.
 
