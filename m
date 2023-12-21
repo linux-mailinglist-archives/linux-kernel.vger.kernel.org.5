@@ -1,52 +1,52 @@
-Return-Path: <linux-kernel+bounces-8199-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8200-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44E9381B38C
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 11:30:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4EB0481B38D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 11:30:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1C1D0B22F85
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 10:30:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0A20C286FCB
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 10:30:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D95DE487B3;
-	Thu, 21 Dec 2023 10:30:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D65295275A;
+	Thu, 21 Dec 2023 10:30:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="kb9TS5kG"
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="GP0l4ope"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0C3B1DA35
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 10:30:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB079524BA
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 10:30:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3BLAU7Mb016150;
-	Thu, 21 Dec 2023 04:30:07 -0600
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3BLAUDlJ112064;
+	Thu, 21 Dec 2023 04:30:13 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1703154607;
-	bh=inQKoPNZLeZ1cwGBY9kLHmeSPB9ellZ0jwcj4lbGv3I=;
-	h=From:To:CC:Subject:Date;
-	b=kb9TS5kGFH1uKCpofsi3eAG09Lr8zYL7zPblMEN/VpCdDQ/UvQNeiEUjokz3JCxcg
-	 vDEQkn+S6ccTqgFBE1myZ0XflcKJbkRNX49Vs1ER53T/wC8xngV42p82mj0ERbN9k+
-	 GZnEr7TC/yUEWhvFI6PVLCxYrUJcWhGY7qZR4ksc=
-Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
-	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3BLAU7uh016174
+	s=ti-com-17Q1; t=1703154613;
+	bh=FV2RhUD9SV7SdTWfY8qp4/5H5gSClJNwlc4iyQYL4y8=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References;
+	b=GP0l4opeE0TY7YZxiMxyUovZ7rJ5at0Qfb4HhLnC3wvEFzvANT4afVo2ziCiQamuD
+	 m5QMhAniQh5SzAKvLWp4nFs7/pbY73UlYYqrvS1JpYrqDbmnpSKlTGRBYU+oENDf/O
+	 l+xXYczOuK+aVlwZi/UM9IkqTcebMDrVkdrJjvbQ=
+Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3BLAUDaR030054
 	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Thu, 21 Dec 2023 04:30:07 -0600
-Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+	Thu, 21 Dec 2023 04:30:13 -0600
+Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 21
- Dec 2023 04:30:06 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ Dec 2023 04:30:13 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 21 Dec 2023 04:30:06 -0600
+ Frontend Transport; Thu, 21 Dec 2023 04:30:13 -0600
 Received: from localhost (chintan-thinkstation-p360-tower.dhcp.ti.com [172.24.227.220])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3BLAU6Rv065632;
-	Thu, 21 Dec 2023 04:30:06 -0600
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3BLAUCqW087744;
+	Thu, 21 Dec 2023 04:30:12 -0600
 From: Chintan Vankar <c-vankar@ti.com>
 To: Maxime Ripard <mripard@kernel.org>,
         =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?=
@@ -60,10 +60,12 @@ To: Maxime Ripard <mripard@kernel.org>,
  I <kishon@kernel.org>,
         Vinod Koul <vkoul@kernel.org>
 CC: <linux-kernel@vger.kernel.org>, <linux-phy@lists.infradead.org>
-Subject: [RFC PATCH 1/2] phy: ti: gmii-sel: Enable SGMII mode for J784S4
-Date: Thu, 21 Dec 2023 15:59:55 +0530
-Message-ID: <20231221102956.754617-1-c-vankar@ti.com>
+Subject: [RFC PATCH 2/2] phy: ti: j721e-wiz: Add SGMII support in WIZ driver for J784S4
+Date: Thu, 21 Dec 2023 15:59:56 +0530
+Message-ID: <20231221102956.754617-2-c-vankar@ti.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231221102956.754617-1-c-vankar@ti.com>
+References: <20231221102956.754617-1-c-vankar@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,28 +76,26 @@ Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-TI's J784S4 SoC supports SGMII mode with the CPSW9G instance of the CPSW
-Ethernet Switch. Thus, enable it by adding SGMII mode to the list of the
-corresponding extra_modes member.
+Enable full rate divider configuration support for J784S4_WIZ_10G
+for SGMII.
 
 Signed-off-by: Chintan Vankar <c-vankar@ti.com>
 ---
- drivers/phy/ti/phy-gmii-sel.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/phy/ti/phy-j721e-wiz.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/phy/ti/phy-gmii-sel.c b/drivers/phy/ti/phy-gmii-sel.c
-index bc847d3879f7..0f4818adb440 100644
---- a/drivers/phy/ti/phy-gmii-sel.c
-+++ b/drivers/phy/ti/phy-gmii-sel.c
-@@ -248,7 +248,7 @@ static const
- struct phy_gmii_sel_soc_data phy_gmii_sel_cpsw9g_soc_j784s4 = {
- 	.use_of_data = true,
- 	.regfields = phy_gmii_sel_fields_am654,
--	.extra_modes = BIT(PHY_INTERFACE_MODE_QSGMII) |
-+	.extra_modes = BIT(PHY_INTERFACE_MODE_QSGMII) | BIT(PHY_INTERFACE_MODE_SGMII) |
- 		       BIT(PHY_INTERFACE_MODE_USXGMII),
- 	.num_ports = 8,
- 	.num_qsgmii_main_ports = 2,
+diff --git a/drivers/phy/ti/phy-j721e-wiz.c b/drivers/phy/ti/phy-j721e-wiz.c
+index fc3cd98c60ff..00d7e6a6de03 100644
+--- a/drivers/phy/ti/phy-j721e-wiz.c
++++ b/drivers/phy/ti/phy-j721e-wiz.c
+@@ -1240,6 +1240,7 @@ static int wiz_phy_fullrt_div(struct wiz *wiz, int lane)
+ 	case J721E_WIZ_10G:
+ 	case J7200_WIZ_10G:
+ 	case J721S2_WIZ_10G:
++	case J784S4_WIZ_10G:
+ 		if (wiz->lane_phy_type[lane] == PHY_TYPE_SGMII)
+ 			return regmap_field_write(wiz->p0_fullrt_div[lane], 0x2);
+ 		break;
 -- 
 2.34.1
 
