@@ -1,263 +1,140 @@
-Return-Path: <linux-kernel+bounces-8032-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8042-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11C8481B0DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 09:59:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C31481B152
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 10:04:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B98DE283D6A
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 08:59:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9FAC71F21AD4
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 09:04:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C6E0208A2;
-	Thu, 21 Dec 2023 08:58:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VigeQnGA"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FB594E636;
+	Thu, 21 Dec 2023 08:59:31 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D95A82031D;
-	Thu, 21 Dec 2023 08:58:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D1671C433C8;
-	Thu, 21 Dec 2023 08:58:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703149136;
-	bh=wm1PdQNBEorVmceg+YsKLt+qojEwDpCAuzfzZgHVPgE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=VigeQnGAvfmjN1u9Rrte0ikdLP8ceGGjw8Is02oIVlhEtVlzAbWrmwsKtby8x308u
-	 2krFnQHVp1O4cm1aa1JE4uAPUuE8+hf6EFP/zrmSy3o/vcqKbAoov58W4fWhkF0f0f
-	 bGCT5uDgSpcu2gOyddd1xZELcbRHGsWRqhkOpHh/cMGZWOcX69DHMaqT8MTv4PF9FS
-	 w9UBSRNz6CRuSLrhl8L5FdtjxrZCnyY74iMVcleiK0Zsp4IKYSuH6fzbAl6dbD3TgX
-	 U2u0z0H8KtqM7UHaXfLjnf+73p5B3856lJiwZA7GBJNtdvEbXtxycchxCdcBdLaXfV
-	 aHRQ406P7hitw==
-Date: Thu, 21 Dec 2023 09:58:53 +0100
-From: Maxime Ripard <mripard@kernel.org>
-To: "H. Nikolaus Schaller" <hns@goldelico.com>
-Cc: Andrew Davis <afd@ti.com>, Frank Binns <frank.binns@imgtec.com>, 
-	Donald Robson <donald.robson@imgtec.com>, Matt Coster <matt.coster@imgtec.com>, 
-	Adam Ford <aford173@gmail.com>, Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Thomas Zimmermann <tzimmermann@suse.de>, 
-	Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>, 
-	Jernej Skrabec <jernej.skrabec@gmail.com>, Samuel Holland <samuel@sholland.org>, 
-	=?utf-8?Q?Beno=C3=AEt?= Cousson <bcousson@baylibre.com>, Tony Lindgren <tony@atomide.com>, Nishanth Menon <nm@ti.com>, 
-	Vignesh Raghavendra <vigneshr@ti.com>, Tero Kristo <kristo@kernel.org>, 
-	Paul Cercueil <paul@crapouillou.net>, dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-sunxi@lists.linux.dev, linux-omap@vger.kernel.org, linux-mips@vger.kernel.org
-Subject: Re: [PATCH RFC 01/10] dt-bindings: gpu: Add PowerVR Series5 SGX GPUs
-Message-ID: <nzqeqwof44e3nxjz6lsxmxcfh235unbu343br45esxh6vinskp@xvjydpxhvsuk>
-References: <23livt5mcc64bb6lkeec2uxp5cyn4wfekwaj6wzrjnrkndvwgj@6tveqglqpr4v>
- <B3A1B8A7-0363-4ECB-AFBF-576FECA569FA@goldelico.com>
- <vawv2mwhonuyvgmp7uox4rfgdcjwg5fa7hmbcfgl3wiase6e4p@tyavpclppfvu>
- <6BC60156-89E2-4734-BD00-B49A9A6C1D7A@goldelico.com>
- <6gpehpoz54f5lxhmvirqbfwmq7dpgiroy27cljpvu66wtn7aqy@lgrh7wysyxnp>
- <D8AB6CC4-DCA5-40DD-A311-94A16FF59254@goldelico.com>
- <oobcl2kfsuph27er7rflfqvt3lu6athufomxv5chf3uctx4emh@x6rzjtlskhbf>
- <F58855EC-D87D-4747-A363-0E7AA5DB1AEC@goldelico.com>
- <22cny5aumc5wafsrjd3j55zcjbjf2viip64kfbjiqis2grtd6t@wg5dxeuzil6l>
- <3E03E913-48E1-49EC-A6C9-EAC1612E65E7@goldelico.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB79A4D5A3;
+	Thu, 21 Dec 2023 08:59:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4SwkrW0S8yz4f3js2;
+	Thu, 21 Dec 2023 16:59:23 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id C8FC41A0948;
+	Thu, 21 Dec 2023 16:59:25 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+	by APP1 (Coremail) with SMTP id cCh0CgDnNw5d_oNlEQPvEA--.24929S12;
+	Thu, 21 Dec 2023 16:59:25 +0800 (CST)
+From: Yu Kuai <yukuai1@huaweicloud.com>
+To: axboe@kernel.dk,
+	roger.pau@citrix.com,
+	colyli@suse.de,
+	kent.overstreet@gmail.com,
+	joern@lazybastard.org,
+	miquel.raynal@bootlin.com,
+	richard@nod.at,
+	vigneshr@ti.com,
+	sth@linux.ibm.com,
+	hoeppner@linux.ibm.com,
+	hca@linux.ibm.com,
+	gor@linux.ibm.com,
+	agordeev@linux.ibm.com,
+	jejb@linux.ibm.com,
+	martin.petersen@oracle.com,
+	clm@fb.com,
+	josef@toxicpanda.com,
+	dsterba@suse.com,
+	viro@zeniv.linux.org.uk,
+	brauner@kernel.org,
+	nico@fluxnic.net,
+	xiang@kernel.org,
+	chao@kernel.org,
+	tytso@mit.edu,
+	adilger.kernel@dilger.ca,
+	jack@suse.com,
+	konishi.ryusuke@gmail.com,
+	willy@infradead.org,
+	akpm@linux-foundation.org,
+	hare@suse.de,
+	p.raghav@samsung.com
+Cc: linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	xen-devel@lists.xenproject.org,
+	linux-bcache@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	linux-s390@vger.kernel.org,
+	linux-scsi@vger.kernel.org,
+	linux-bcachefs@vger.kernel.org,
+	linux-btrfs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-erofs@lists.ozlabs.org,
+	linux-ext4@vger.kernel.org,
+	linux-nilfs@vger.kernel.org,
+	yukuai3@huawei.com,
+	yukuai1@huaweicloud.com,
+	yi.zhang@huawei.com,
+	yangerkun@huawei.com
+Subject: [PATCH RFC v3 for-6.8/block 08/17] bio: export bio_add_folio_nofail()
+Date: Thu, 21 Dec 2023 16:57:03 +0800
+Message-Id: <20231221085712.1766333-9-yukuai1@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20231221085712.1766333-1-yukuai1@huaweicloud.com>
+References: <20231221085712.1766333-1-yukuai1@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="cuiar5zluuku2kr2"
-Content-Disposition: inline
-In-Reply-To: <3E03E913-48E1-49EC-A6C9-EAC1612E65E7@goldelico.com>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgDnNw5d_oNlEQPvEA--.24929S12
+X-Coremail-Antispam: 1UD129KBjvdXoW7Xw4rur1rtr17JFyUCF18AFb_yoW3Wrg_AF
+	n293W8Wan7G3WSk3Wvyay8AFZYvw1rurWY9FZ3JF9xZF1DJFnak340yr40vrn5CFykKw43
+	u3yDXryayw47JjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbqxFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAVCq3wA2048vs2
+	IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28E
+	F7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWxJr0_Gc
+	Wl84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1l
+	e2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI
+	8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwAC
+	jcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka0x
+	kIwI1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AK
+	xVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26rWY6r4UJwCIc4
+	0Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1I6r4UMIIF0xvE2Ix0cI8IcVCY1x0267AK
+	xVW8Jr0_Cr1UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JV
+	WxJwCI42IY6I8E87Iv6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7VUbmZ
+	X7UUUUU==
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
+From: Yu Kuai <yukuai3@huawei.com>
 
---cuiar5zluuku2kr2
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Currently btrfs is using __bio_add_page() in write_dev_supers(). In order
+to convert to use folio for bdev in btrfs, export bio_add_folio_nofail()
+so that it can replace __bio_add_page().
 
-On Mon, Dec 18, 2023 at 11:54:47AM +0100, H. Nikolaus Schaller wrote:
->=20
->=20
-> > Am 18.12.2023 um 11:14 schrieb Maxime Ripard <mripard@kernel.org>:
-> >=20
-> > On Mon, Dec 18, 2023 at 10:28:09AM +0100, H. Nikolaus Schaller wrote:
-> >> Hi Maxime,
-> >>=20
-> >>> Am 15.12.2023 um 14:33 schrieb Maxime Ripard <mripard@kernel.org>:
-> >>>=20
-> >>>>>=20
-> >>>>> It's for a separate architecture, with a separate driver, maintaine=
-d out
-> >>>>> of tree by a separate community, with a separate set of requirement=
-s as
-> >>>>> evidenced by the other thread. And that's all fine in itself, but
-> >>>>> there's very little reason to put these two bindings in the same fi=
-le.
-> >>>>>=20
-> >>>>> We could also turn this around, why is it important that it's in the
-> >>>>> same file?
-> >>>>=20
-> >>>> Same vendor. And enough similarity in architectures, even a logical =
-sequence
-> >>>> of development of versions (SGX =3D Version 5, Rogue =3D Version 6+)=
- behind.
-> >>>> (SGX and Rogue seem to be just trade names for their architecture de=
-velopment).
-> >>>=20
-> >>> Again, none of that matters for *where* the binding is stored.
-> >>=20
-> >> So what then speaks against extending the existing bindings file as pr=
-oposed
-> >> here?
-> >=20
-> > I mean, apart from everything you quoted, then sure, nothing speaks
-> > against it.
-> >=20
-> >>>> AFAIK bindings should describe hardware and not communities or drive=
-rs
-> >>>> or who is currently maintaining it. The latter can change, the first=
- not.
-> >>>=20
-> >>> Bindings are supposed to describe hardware indeed. Nothing was ever s=
-aid
-> >>> about where those bindings are supposed to be located.
-> >>>=20
-> >>> There's hundreds of other YAML bindings describing devices of the same
-> >>> vendors and different devices from the same generation.
-> >>=20
-> >> Usually SoC seem to be split over multiple files by subsystem. Not by =
-versions
-> >> or generations. If the subsystems are similar enough they share the sa=
-me bindings
-> >> doc instead of having one for each generation duplicating a lot of cod=
-e.
-> >>=20
-> >> Here is a comparable example that combines multiple vendors and genera=
-tions:
-> >>=20
-> >> Documentation/devicetree/bindings/usb/generic-ehci.yaml
-> >=20
-> > EHCI is a single interface for USB2.0 controllers. It's a standard API,
-> > and is made of a single driver that requires minor modifications to deal
-> > with multiple devices.
-> >=20
-> > We're very far from the same situation here.
->=20
-> How far are we really?
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+---
+ block/bio.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-There's one binding for one driver. You suggest one binding for two drivers.
+diff --git a/block/bio.c b/block/bio.c
+index b9642a41f286..c7459839ca40 100644
+--- a/block/bio.c
++++ b/block/bio.c
+@@ -1122,6 +1122,7 @@ void bio_add_folio_nofail(struct bio *bio, struct folio *folio, size_t len,
+ 	WARN_ON_ONCE(off > UINT_MAX);
+ 	__bio_add_page(bio, &folio->page, len, off);
+ }
++EXPORT_SYMBOL_GPL(bio_add_folio_nofail);
+ 
+ /**
+  * bio_add_folio - Attempt to add part of a folio to a bio.
+-- 
+2.39.2
 
-> And, it is the purpose of the driver to handle different cases.
->=20
-> That there are currently two drivers is just a matter of history and
-> not a necessity.
-
-Cool, so what you're saying is that your plan is to support those GPUs
-upstream in the imagination driver?
-
-I guess we should delay this patch until we see that series then.
-
-> >>> If anything it'll make it easier for you. I'm really not sure why it =
-is
-> >>> controversial and you're fighting this so hard.
-> >>=20
-> >> Well, you made it controversial by proposing to split what IMHO belong=
-s together.
-> >=20
-> > No, reviews aren't controversial.
-> > The controversy started when you chose
-> > to oppose it while you could have just rolled with it.
->=20
-> Well, you asked
->=20
-> "I think it would be best to have a separate file for this, img,sgx.yaml
-> maybe?"
->=20
-> and
->=20
-> "Because it's more convenient?"
->=20
-> I understood that as an invitation for discussing the pros and cons
-> and working out the most convenient solution. And that involves
-> playing the devil's advocate which of course is controversial by
-> principle.
->=20
-> Now, IMHO all the pros and cons are on the table and the question is
-> who makes a decision how to go.
-
-You haven't listed any pro so far, you're claiming that the one I raise
-are irrelevant.
-
-> >> I feel that the original patch is good enough for its purpose and foll=
-ows
-> >> some design pattern that can be deduced from other binding docs.
-> >=20
-> > [citation needed]
->=20
-> Joke: Documentation/devicetree/bindings/* - I am not aware of a formal an=
-alysis of course.
->=20
-> But see my example for ehci. It follows the pattern I mean. If clocks, re=
-gs, interrupts,
-> resets, and more properties are (almost) the same, then group them and ju=
-st differentiate
-> by different compatible strings.
-
-Again, EHCI is not something you can compare to. It's a binding to
-support a standard interface. You don't have the same interface and your
-driver will need to be different.
-
-And more importantly: bindings are meant to describe the hardware
-itself. How it's supported in Linux is irrelevant to the discussion.
-
-So, we could have: 10 drivers for the same binding, or 1 driver for 10
-bindings. The two notions are orthogonal.
-
-> If necessary use some - if: clauses.
->=20
-> It is the task of drivers to handle the details.
->
-> As my other (maybe more important) comment to this patch did indicate we =
-IMHO can easily
-> live with something like
->=20
-> +      - items:
-> +          - enum:
-> +              - ti,am62-gpu # IMG AXE GPU model/revision is fully discov=
-erable
-> +              - ti,omap3430-gpu # sgx530 Rev 121
-> +              - ti,omap3630-gpu # sgx530 Rev 125
-> +              - ingenic,jz4780-gpu # sgx540 Rev 130
-> +              - ti,omap4430-gpu # sgx540 Rev 120
-> +              - allwinner,sun6i-a31-gpu # sgx544 MP2 Rev 115
-> +              - ti,omap4470-gpu # sgx544 MP1 Rev 112
-> +              - ti,omap5432-gpu # sgx544 MP2 Rev 105
-> +              - ti,am5728-gpu # sgx544 MP2 Rev 116
-> +              - ti,am6548-gpu # sgx544 MP1 Rev 117
->=20
-> And leave it to drivers using a table to deduce the generation and
-> revision or read it out from the chip. And there can even be different
-> drivers handling only a subset of the potential compatibles.
->=20
-> Then the currently-out-of-tree driver for the sgx5 can be reworked in
-> less than half an hour without loosing functionality.
-
-Again, you're making it harder than it needs to be for no particular
-reason other than the potential file name clash that can be addressed.
-
-Maxime
-
---cuiar5zluuku2kr2
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZYP+RAAKCRDj7w1vZxhR
-xXV6AQDDDrZBXTND+ZA5tJYZObZh1JN/uWCGtddmC+cdKRRazAD/TBl0erAktvMo
-xAQxFlpjvE94vKEMqz+0P/uaY9m2fQQ=
-=z99/
------END PGP SIGNATURE-----
-
---cuiar5zluuku2kr2--
 
