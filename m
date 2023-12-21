@@ -1,64 +1,64 @@
-Return-Path: <linux-kernel+bounces-7987-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7988-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5AB4781B02B
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 09:20:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D743A81B034
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 09:21:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D90001F22670
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 08:20:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 235B4B225C8
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 08:21:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E83A168A6;
-	Thu, 21 Dec 2023 08:20:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8D6F16431;
+	Thu, 21 Dec 2023 08:20:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="KQsfNdBT"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="MhDPG6GN"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90E951642E
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 08:19:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D05015AC3
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 08:20:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a234938c7f3so50060966b.2
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 00:19:59 -0800 (PST)
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-50e55f97606so780089e87.1
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 00:20:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703146798; x=1703751598; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1703146848; x=1703751648; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=l/Oi4HtAn4tEeOeSBvZ5kOQ4IEe6nPEOYrXOm9jL8kI=;
-        b=KQsfNdBTF39sgjfB6w+hrgJxIbaUjy8z6hyzBo9KwLx5m/Ny3AvWm4x53wcT7jx/Db
-         aCcBfBIYwrN+5jXoIB0vcJxrzdoV2nQOmfx7e14N4aCMdFGeYybM7O3OFZspVFzVBKHz
-         PSAzLOSeSy3EqWPvORtKVcWvaNcFDbyHTCSdK5UC1WnwWRPL768JH68MhtqK7cnoCBlh
-         LueXdwZ+ViulSoVwrSgVUFPQnEKzMNoO/+YBeU3qW+1hLROCAr9LRGy9jr4DzVEEQmKV
-         qWoG4uGEN9FVwh0D1CCMD9rfVYa0+sc0o7rjRZJJuH2ZZuxtUa/AAcBYhYLCoPk6DoZg
-         QH3A==
+        bh=r4o29WQBzTF84xFF7dpFsFiRQpl9hdgHiI7WEKT6wg8=;
+        b=MhDPG6GNbDyJnLNDq/Ke6mPPIztQBXU95wcCMWexpQxjJG+BKZxlE+w5pltQQH9oRC
+         htlkViSW8q+Mo+abzUhRpCPhmW5EJydPB3pPozyNvD5Je8wviED2l/7yGg24L73QQQRv
+         c4U3LDs5gH0MNJG7tb98XGluca1yjH5IiPvNQHfMg8Q+xCLwW3DvqSp9E+Dqq6Gpf1iL
+         HPgQ+oeQZxe8CH99T1iCUoUchk6u1fX3PKamhu8Q/BLhsHcTQlVwg3wSybKzf/iZBR9r
+         qGEYNF4I6eZwFTrRqk1oXMlkE9ERrMyQvAyq0Oz5v9Ja2bTQzfb/OrV4/HNZpaW+I3Je
+         8duA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703146798; x=1703751598;
+        d=1e100.net; s=20230601; t=1703146848; x=1703751648;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=l/Oi4HtAn4tEeOeSBvZ5kOQ4IEe6nPEOYrXOm9jL8kI=;
-        b=SxJ+h9BX3UZ0lnxFpU7YXEHXgndqNz1Y6mBapvNlFKN3Yy9b4c+v0ptvWK9Gt4zRAI
-         hfCrXGdZtXk3/Mt4VyZOP1Q5x+q9NEJyjFPuLccTgN4csFX5Paf3Kxk+eqdICJ0Xa3d8
-         1hzlXQ0uPZWMx9JvWiIGZOOCrh9cAZzM9fbqyPAqe6xlyzYHwihmyvtsjosOm1CLFvKI
-         iZZt5ZCwYW9KKJ2C9gXdupCVj21EE60+6Sw46litQvOXW6BjUrVohQPwPmcgW3W80YfF
-         GfgPU1a2nv3jWGUB2km5v484kDWVT9jaLBa+rXwIttFITsihpQIvDSgJ4tOg6vEKNOMP
-         2D5g==
-X-Gm-Message-State: AOJu0Yyc+zHEufwnkQOnrdHV+5RVSPI0k8UmPkTAmbCMmalT8ZfhR7w3
-	HSCg4PnPw3Gj8X+HOlVn6Kdv/g==
-X-Google-Smtp-Source: AGHT+IGsEVQpMwL+xrqsluaAnI7MapypACMt13CiLut4ihC5EDf1irwhlBT7Zrk9+BEv34QNR2Acvw==
-X-Received: by 2002:a17:906:7386:b0:a14:b151:72e6 with SMTP id f6-20020a170906738600b00a14b15172e6mr9189560ejl.21.1703146797800;
-        Thu, 21 Dec 2023 00:19:57 -0800 (PST)
+        bh=r4o29WQBzTF84xFF7dpFsFiRQpl9hdgHiI7WEKT6wg8=;
+        b=CJvM9T5Y3mOiSTAoAjXt2EtLwKTxexpz9HKfo2Xsz2k81L1r1hB6A5HRbLyKz/Hqwa
+         iXlC1e/j62eT/RhwOrQUID/+IHQbka/OvuozYlFqXFCSU/thedlSQ4FEoNiIhQi24JEs
+         24dTm7PRNzb6AD0nIYl5zU6DAMuaTAqf6HZH2V0GkuQwCahMlwduU6oUlh8EQLChQG2Y
+         p0/uOnH4ZQ5Zgtxywsx1AahESgwDtI9dMjV4WmkSEqOm0BP3c7wJ6/ODvdrXZxyKPvQq
+         YySWr7IF9OUw8oYnpJcN9QA95ZABHs4KeiMGuqx2olCEkb5/2K1iCB8n02AcvvgAndFU
+         3DzA==
+X-Gm-Message-State: AOJu0YyYNuts1/p4OOtMPlS+nVjtA9YTICYAfnJxEzWkHMvhWDLAy/Y+
+	olAS2ljSZVICQAaGuKFDguem2w==
+X-Google-Smtp-Source: AGHT+IF6j/xEo+V+emagAgbodcosd6j6iP+7qeDzepO7VvQ7VzZtmrS4tKh4dw+s39fElkjhleZRjA==
+X-Received: by 2002:a05:6512:510:b0:50e:3221:e559 with SMTP id o16-20020a056512051000b0050e3221e559mr3614864lfb.31.1703146848408;
+        Thu, 21 Dec 2023 00:20:48 -0800 (PST)
 Received: from [192.168.0.22] ([78.10.206.178])
-        by smtp.gmail.com with ESMTPSA id n19-20020a170906689300b00a269597d17bsm686650ejr.147.2023.12.21.00.19.56
+        by smtp.gmail.com with ESMTPSA id n19-20020a170906689300b00a269597d17bsm686650ejr.147.2023.12.21.00.20.47
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Dec 2023 00:19:57 -0800 (PST)
-Message-ID: <5abb125e-eca8-41d8-813b-7573daaa23a0@linaro.org>
-Date: Thu, 21 Dec 2023 09:19:55 +0100
+        Thu, 21 Dec 2023 00:20:48 -0800 (PST)
+Message-ID: <9035aff7-49e6-49cf-a8f8-619d3b53c4a5@linaro.org>
+Date: Thu, 21 Dec 2023 09:20:47 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,21 +66,19 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4] dt-bindings: net: wireless: mt76: add interrupts
- description for MT7986
+Subject: Re: [PATCH v2 1/2] dt-bindings: hwmon: Add NCT7363Y documentation
 Content-Language: en-US
-To: Peter Chiu <chui-hao.chiu@mediatek.com>, Felix Fietkau <nbd@nbd.name>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-Cc: Conor Dooley <conor+dt@kernel.org>, Lorenzo Bianconi
- <lorenzo@kernel.org>, Ryder Lee <ryder.lee@mediatek.com>,
- Shayne Chen <shayne.chen@mediatek.com>, Sean Wang <sean.wang@mediatek.com>,
- Kalle Valo <kvalo@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- linux-wireless@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org
-References: <20231221032648.641-1-chui-hao.chiu@mediatek.com>
+To: Ban Feng <baneric926@gmail.com>, Rob Herring <robh@kernel.org>
+Cc: devicetree@vger.kernel.org, corbet@lwn.net, kwliu@nuvoton.com,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, jdelvare@suse.com,
+ kcfeng0@nuvoton.com, krzysztof.kozlowski+dt@linaro.org,
+ linux-hwmon@vger.kernel.org, openbmc@lists.ozlabs.org, robh+dt@kernel.org,
+ Bonnie_Lo@wiwynn.com, conor+dt@kernel.org, DELPHINE_CHIU@wiwynn.com,
+ linux@roeck-us.net
+References: <20231219080021.2048889-1-kcfeng0@nuvoton.com>
+ <20231219080021.2048889-2-kcfeng0@nuvoton.com>
+ <170297774900.1297817.5593278746406765111.robh@kernel.org>
+ <CALz278aJ08fOU2XZMZJJ2Ocp+XwovJ0+nHK-=0dWqbXf+522OA@mail.gmail.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -126,21 +124,35 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231221032648.641-1-chui-hao.chiu@mediatek.com>
+In-Reply-To: <CALz278aJ08fOU2XZMZJJ2Ocp+XwovJ0+nHK-=0dWqbXf+522OA@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 21/12/2023 04:26, Peter Chiu wrote:
-> The mt7986 can support four interrupts to distribute the interrupts
-> to different CPUs.
+On 21/12/2023 01:44, Ban Feng wrote:
+> Hi Rob,
 > 
-> Signed-off-by: Peter Chiu <chui-hao.chiu@mediatek.com>
-> ---
-> v2: Change to use description instead of using items.
-> v3: Change to use items and set different minItems for mediatek,mt7986-wmac
-> v4: Move allOf after required and remove duplicated blank line.
+> On Tue, Dec 19, 2023 at 5:22 PM Rob Herring <robh@kernel.org> wrote:
+>>
+>>
+>> On Tue, 19 Dec 2023 16:00:20 +0800, baneric926@gmail.com wrote:
+>>> From: Ban Feng <kcfeng0@nuvoton.com>
+>>>
+>>> Adding bindings for the Nuvoton NCT7363Y Fan Controller
+>>>
+>>> Signed-off-by: Ban Feng <kcfeng0@nuvoton.com>
+>>> ---
+>>>  .../bindings/hwmon/nuvoton,nct7363.yaml       | 62 +++++++++++++++++++
+>>>  MAINTAINERS                                   |  6 ++
+>>>  2 files changed, 68 insertions(+)
+>>>  create mode 100644 Documentation/devicetree/bindings/hwmon/nuvoton,nct7363.yaml
+>>>
+>>
+>> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+>> on your patch (DT_CHECKER_FLAGS is new in v5.13):
+> 
+> Our design is based on [1], and adds fan-common.yaml to
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Nothing in the patch or cover letter described the dependency.
 
 Best regards,
 Krzysztof
