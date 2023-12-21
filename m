@@ -1,191 +1,103 @@
-Return-Path: <linux-kernel+bounces-7710-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7711-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C6BE81ABE2
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 01:49:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C628181ABE4
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 01:50:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 53E37287688
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 00:49:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 840DA287686
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 00:50:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B440187E;
-	Thu, 21 Dec 2023 00:49:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49A1410F5;
+	Thu, 21 Dec 2023 00:50:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marcan.st header.i=@marcan.st header.b="yAC+tX25"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fUbY0xlr"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail.marcansoft.com (marcansoft.com [212.63.210.85])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f42.google.com (mail-io1-f42.google.com [209.85.166.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CD9910FF;
-	Thu, 21 Dec 2023 00:49:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=marcan.st
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marcan.st
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: marcan@marcan.st)
-	by mail.marcansoft.com (Postfix) with ESMTPSA id 2810541EC4;
-	Thu, 21 Dec 2023 00:49:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=marcan.st; s=default;
-	t=1703119764; bh=CqQ+Tm1lCQF1aHtQ7ijDsp2WEslXk+ZdGq6SK1W3+lY=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=yAC+tX25PsMIYont0Bqq8ekIDkQ3fVnUYZYFaGmlIEvwZpaNECIsG8O2s/7H5Fdof
-	 OlnNnUlMhE96JEZFYEGn689vPtHrjz1F+/eDmOUBApby1g+dHTonR7r2p055V2VcGb
-	 AN5c3f6bcFWym2zItaxkEHLptXs/T3Bk93HR4QXC0d5/MDmJHT1UHElrbAOM8u+KsU
-	 o+lDOXFb78qOEyZG9GLU0UtUqsrXqRQqWqLru++MYv61qCJ3T5586vyMlFQtemgqS8
-	 56iQtdBskdv2JsasVK7qN8JjGY/b7thUTFdF58ENRrpMLnrwdTywXHEMkh9i5yfx1V
-	 TR1+SiHfc99uw==
-Message-ID: <d5e26dd4-483d-4662-ba83-5cb19187b24a@marcan.st>
-Date: Thu, 21 Dec 2023 09:49:17 +0900
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64C567F0;
+	Thu, 21 Dec 2023 00:50:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-io1-f42.google.com with SMTP id ca18e2360f4ac-7b7fe0ae57bso11863839f.0;
+        Wed, 20 Dec 2023 16:50:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703119832; x=1703724632; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BqxZyPIm5tE52kVQmZ74eT+BOOkp647sWKEQUJpbsZE=;
+        b=fUbY0xlrGTWEW+hG3axxUB+3ciJNdojo6dtVSBR/LEu0cXvWLzq+IgS2YXnpL5NyeL
+         uhOpftaGhwrJ3BnZOMc9D+sywfb8g8xO0SOmXQuoceRX21KRGqN7OoTk+2Bky8nkkdYR
+         zqmFxqUmm7actCOMwjwJFs73IWJAv3866P2h1efbHLExxycPMaohS0UawAicwLcSkLpr
+         qrTTDqaPTxkQ5KRhlO5P7B7EboKP9S5BUprtI7GTwXBhLNGuAeyPA2gMVwu4DuDyUZg+
+         iDJwUO4/+UbGpC58H2hrM/3zbUmHYJ0riSD/QFp5yuXo+1kLpIIpQ/Kk5df2VBlpHm1d
+         IbEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703119832; x=1703724632;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BqxZyPIm5tE52kVQmZ74eT+BOOkp647sWKEQUJpbsZE=;
+        b=as+S8oiJDEH1L89SEbAbdbQLX/SJA6cibd95vbp8ENg9qNPOaMmZsVKFuaO9rZd++2
+         bR6i2sozfEXORYOebRXHdcd4DyJqdyI3Gwci2qkav0B1ffp8FCHdU2Bo1tnwWfPcilY3
+         wi+H1Lx/5SFN909lRISNcepe1pOPGhLhrdztwOQsUuQKTnf9/hhUpLiwbdmP3PIZmccK
+         zx7Ya7IrdIU47okzZKYNre2Ql32ZYzXvlMU+os9JN9igrHoT1u0oi453L1jBxI9WcYxm
+         MsrX8XPSr+hUMxC4QCOM85n9IbUE3q6M0lJGvR7yZ4h6YCqOetobum0Zpjac4oYy76IO
+         NunQ==
+X-Gm-Message-State: AOJu0YynQWqis0C+L3nEZQPpmzXGecmXEi/laYaIRrbC68Ar9wQwfCno
+	+IdsSrqQ0RpyecwadnwbKybSY6iV57Mx0H6SH0w=
+X-Google-Smtp-Source: AGHT+IFvcePCft0/m9LYDHk+AjGrrmPztrI7RSQFfyZ9I6Ws65U3aVgYVG18rGNg03iYgploDuQ5pLbVqNrdXP/xdxU=
+X-Received: by 2002:a5d:97d4:0:b0:7b7:c8cd:7552 with SMTP id
+ k20-20020a5d97d4000000b007b7c8cd7552mr9196880ios.36.1703119832306; Wed, 20
+ Dec 2023 16:50:32 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] wifi: brcmfmac: cfg80211: Use WSEC to set SAE password
-Content-Language: en-US
-To: Arend van Spriel <arend.vanspriel@broadcom.com>,
- Kalle Valo <kvalo@kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Daniel Berlin <dberlin@dberlin.org>, Arend van Spriel
- <aspriel@gmail.com>, Franky Lin <franky.lin@broadcom.com>,
- Hante Meuleman <hante.meuleman@broadcom.com>,
- SHA-cyfmac-dev-list@infineon.com, asahi@lists.linux.dev,
- brcm80211-dev-list.pdl@broadcom.com, linux-kernel@vger.kernel.org,
- linux-wireless@vger.kernel.org, David Airlie <airlied@redhat.com>,
- Daniel Vetter <daniel@ffwll.ch>
-References: <20231107-brcmfmac-wpa3-v1-1-4c7db8636680@marcan.st>
- <170281231651.2255653.7498073085103487666.kvalo@kernel.org>
- <18c80d15e30.279b.9b12b7fc0a3841636cfb5e919b41b954@broadcom.com>
- <1b51997f-2994-46e8-ac58-90106d1c486d@marcan.st>
- <c392f901-789a-42e2-8cf7-5e246365a1ca@broadcom.com>
- <CAF4BwTXNtu30DAgBXo4auDaDK0iWc9Ch8f=EH+facQ-_F-oMUQ@mail.gmail.com>
- <87r0jiqmnx.fsf@kernel.org> <01bd8c68-1b9c-49b2-8ace-1c7d1b5192ad@marcan.st>
- <CAHk-=whDLKZZEuxU_jEhZRdeWjXAkL8=J_JRk2Ar6wp9UK3h2w@mail.gmail.com>
- <871qbhqio8.fsf@kernel.org> <4c89b71e-8667-40fe-add0-205748de51ef@marcan.st>
- <bdb078c0-2f45-485a-86a0-bb7d0b5e3516@broadcom.com>
-From: Hector Martin <marcan@marcan.st>
-In-Reply-To: <bdb078c0-2f45-485a-86a0-bb7d0b5e3516@broadcom.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20231207192406.3809579-1-nphamcs@gmail.com> <CAJD7tkZXS-UJVAFfvxJ0nNgTzWBiqepPYA4hEozi01_qktkitg@mail.gmail.com>
+ <20231218144431.GB19167@cmpxchg.org> <CAJD7tkakMjE1sNfexLzooptDyQS4YZf5DmuoywnSFD7JTbh9BA@mail.gmail.com>
+ <20231220051523.GB23822@cmpxchg.org> <CAJD7tkbzVjYxykracNW729xKTqFdpk5Hw5k94Epc_uSvUP1g=g@mail.gmail.com>
+ <20231220145025.GC23822@cmpxchg.org> <CAJD7tkbmWcEvsfF8i+HrRetTVu6v4fKFn2WL0RLsHNheu=5wVw@mail.gmail.com>
+In-Reply-To: <CAJD7tkbmWcEvsfF8i+HrRetTVu6v4fKFn2WL0RLsHNheu=5wVw@mail.gmail.com>
+From: Nhat Pham <nphamcs@gmail.com>
+Date: Wed, 20 Dec 2023 16:50:20 -0800
+Message-ID: <CAKEwX=OM0-auqDz9E1=_tC9n=KMFCs7JBYM1OhcZsOiH6cJmHw@mail.gmail.com>
+Subject: Re: [PATCH v6] zswap: memcontrol: implement zswap writeback disabling
+To: Yosry Ahmed <yosryahmed@google.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, akpm@linux-foundation.org, tj@kernel.org, 
+	lizefan.x@bytedance.com, cerasuolodomenico@gmail.com, sjenning@redhat.com, 
+	ddstreet@ieee.org, vitaly.wool@konsulko.com, mhocko@kernel.org, 
+	roman.gushchin@linux.dev, shakeelb@google.com, muchun.song@linux.dev, 
+	hughd@google.com, corbet@lwn.net, konrad.wilk@oracle.com, 
+	senozhatsky@chromium.org, rppt@kernel.org, linux-mm@kvack.org, 
+	kernel-team@meta.com, linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, 
+	david@ixit.cz, chrisl@kernel.org, Wei Xu <weixugc@google.com>, 
+	Yu Zhao <yuzhao@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Wed, Dec 20, 2023 at 4:24=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com>=
+ wrote:
+>
+> We can agree to disagree here, I am not trying to block this anyway.
+> But let's at least document this in the commit message/docs/code
+> (wherever it makes sense) -- that recurrent failures (e.g.
+> incompressible memory) may keep going back to zswap only to get
+> rejected, so workloads prone to this may observe some reclaim
+> inefficiency.
 
+I'll add the following caveat:
 
-On 2023/12/21 4:36, Arend van Spriel wrote:
-> On 12/20/2023 7:14 PM, Hector Martin wrote:
->>
->>
->> On 2023/12/20 19:20, Kalle Valo wrote:
->>> Linus Torvalds <torvalds@linux-foundation.org> writes:
->>>
->>>>> Just recently a patch was posted to remove the Infineon list from
->>>>> MAINTAINERS because that company cares so little they have literally
->>>>> stopped accepting emails from us. Meanwhile they are telling their
->>>>> customers that they do not recommend upstream brcmfmac and they should
->>>>> use their downstream driver [1].
->>>>
->>>> Unquestionably broadcom is not helping maintain things, and I think it
->>>> should matter.
->>>>
->>>> As Hector says, they point to their random driver dumps on their site
->>>> that you can't even download unless you are a "Broadcom community
->>>> member" or whatever, and hey - any company that works that way should
->>>> be seen as pretty much hostile to any actual maintenance and proper
->>>> development.
->>>
->>> Sadly this is the normal in the wireless world. All vendors focus on the
->>> latest generation, currently it's Wi-Fi 7, and lose interest on older
->>> generations. And vendors lose focus on the upstream drivers even faster,
->>> usually after a customer project ends.
->>>
->>> So in practise what we try to do is keep the drivers working somehow on
->>> our own, even after the vendors are long gone. If we would deliberately
->>> allow breaking drivers because vendor/corporations don't support us, I
->>> suspect we would have sevaral broken drivers in upstream.
->>>
->>>> If Daniel and Hector are responsive to actual problem reports for the
->>>> changes they cause, I do think that should count a lot.
->>>
->>> Sure, but they could also respect to the review comments. I find Arend's
->>> proposal is reasonable and that's what I would implement in v2. We
->>> (linux-wireless) make abstractions to workaround firmware problems or
->>> interface conflicts all the time, just look at ath10k for example. I
->>> would not be surprised if we need to add even more abstractions to
->>> brcmfmac in the future. And Arend is the expert here, he has best
->>> knowledge of Broadcom devices and I trust him.
->>>
->>> Has anyone even investigated what it would need to implement Arend's
->>> proposal? At least I don't see any indication of that.
->>
->> Of course we can implement it (and we will as we actually got a report
->> of this patch breaking Cypress now, finally).
->>
->> The question was never whether it could be done, we're already doing a
->> bunch of abstractions to deal with just the Broadcom-only side of things
->> too. The point I was trying to make is that we need to *know* what
->> firmware abstractions we need and *why* they are needed. We can't just
->> say, for every change, "well, nobody knows if the existing code works or
->> not, so let's just add an abstraction just in case the change breaks
->> something". As far as anyone involved in the discussions until now could
->> tell, this code was just something some Cypress person dumped upstream,
->> and nobody involved was being responsive to any of our inquiries, so
->> there was no way to be certain it worked at all, whether it was
->> supported in public firmware, or anything else.
->>
->> *Now* that we know the existing code is actually functional and not just
->> dead/broken, and that the WSEC approach is conversely not functional on
->> the Cypress firmwares, it makes sense to introduce an abstraction.
-> 
-> Just a quick look in the git history could have told you that it was not 
-> just dumped upstream and at least one person was using it and extended 
-> it for 802.11r support (fast-roaming):
-> 
-> 
-> author	Paweł Drewniak <czajernia@gmail.com>	2021-08-24 23:13:30 +0100
-> committer	Kalle Valo <kvalo@codeaurora.org>	2021-08-29 11:33:07 +0300
-> commit	4b51de063d5310f1fb297388b7955926e63e45c9 (patch)
-> tree	ba2ccb5cbd055d482a8daa263f5e53531c07667f 
-> /drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
-> parent	81f9ebd43659320a88cae8ed5124c50b4d47ab66 (diff)
-> download	wireless-4b51de063d5310f1fb297388b7955926e63e45c9.tar.gz
-> brcmfmac: Add WPA3 Personal with FT to supported cipher suites
-> This allows the driver to connect to BSSIDs supporting SAE with 802.11r.
-> Tested on Raspberry Pi 4 Model B (STA) and UniFi 6LR/OpenWRT 21.02.0-rc2.
-> AP was set to 'sae-mixed' (WPA2/3 Personal).
-> 
-> Signed-off-by: Paweł Drewniak <czajernia@gmail.com>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-> Link: https://lore.kernel.org/r/20210824221330.3847139-1-czajernia@gmail.com
+Note that if the store failures are recurring (for e.g if the pages are
+incompressible), users can observe reclaim inefficiency after disabling
+writeback (because the same pages might be rejected again and again).
 
-Sure, but we also had user reports of it *not* actually working (maybe
-it regressed?). We didn't know whether it was functional with the
-linux-firmware blobs in any way, I wanted confirmation of that. And we
-also didn't know that the patch *would* break it at all; perhaps the
-Cypress firmware had also grown support for the WSEC mechanism.
-
-That's why I wanted someone to actually confirm the code worked (in some
-subset of cases) and the patch didn't, before starting to introduce
-conditionals. There is, of course, also the element that the Cypress
-side has been long unmaintained, and if nobody is testing/giving
-feedback/complaining, perhaps it's better to err on the side of maybe
-breaking something and see if that gets someone to come out of the
-woodwork if it really breaks, rather than tiptoeing around the code
-without knowing what's going on and without anyone actually testing things.
-
-It's not about this *specific* patch, it's about the general situation
-of not being able to touch firmware interfaces "just in case Cypress
-breaks" being unsustainable in the long term. I wasn't pushing back
-because I think this particular one will be hard, I was pushing back
-because I can read the tea leaves and see this is not going to end well
-if it's the approach we start taking for everything. We *need* someone
-to be testing patches on Cypress, we can't just "try not to touch it"
-and cross our fingers. That just ends in disaster, we are not going to
-succeed in not breaking it either way and it's going to make the driver
-worse.
-
-- Hector
+to the zswap documentation and the cgroup documentation then? I'll
+repeat this caveat in both places for self-containment purposes.
 
