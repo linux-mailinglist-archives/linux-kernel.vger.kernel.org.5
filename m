@@ -1,90 +1,99 @@
-Return-Path: <linux-kernel+bounces-9188-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9189-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF44081C217
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 00:47:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 962E681C219
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 00:48:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8CF17288283
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 23:47:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D0ABC28818C
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 23:48:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E59F47949C;
-	Thu, 21 Dec 2023 23:47:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B305A7949C;
+	Thu, 21 Dec 2023 23:48:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=iwanders.net header.i=@iwanders.net header.b="N+6XTxKl"
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="BWMu3BZe"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-qk1-f182.google.com (mail-qk1-f182.google.com [209.85.222.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA68A79479
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 23:47:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iwanders.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iwanders.net
-Received: by mail-qk1-f182.google.com with SMTP id af79cd13be357-78117e97becso67134385a.3
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 15:47:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=iwanders.net; s=google; t=1703202425; x=1703807225; darn=vger.kernel.org;
-        h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=fsVUD3VufeS//NudK1mZpNpNjqh483A+CiJoPn/HOt0=;
-        b=N+6XTxKlaC2HK9apPi5lF5yA9U9+v9+igO+KUZKmWzb0n3Us6OAR6OM3G+JISOmwz9
-         31dKEVtXKscWJtAEgklym9CqFS23Ek/8S17VlPx3WyqrVtq6ZYEzH2+EDIPr+3SFdVGr
-         ux3u6ihviErkgeJXwFumSuIsCxF8qzfb+wwKQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703202425; x=1703807225;
-        h=references:in-reply-to:message-id:date:subject:cc:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fsVUD3VufeS//NudK1mZpNpNjqh483A+CiJoPn/HOt0=;
-        b=FvBFouc4G85L1osQHj5gZZ9AaNs6ILjdl3i0UHJ7bOq93LGqMhR5fxdbiM2CT5BSpM
-         RluFrDs/TVahztN0t0/PGuG6cq23bgi+9U7kBUurPagN+XrI4pBsX766jOgdbZIaaZXf
-         a6ncHsLCFuHrDkra5X1csr5/w0OSgD7qeBBNKyMH083VZJj2ZBpZvV0ibS7sgJtGCwUK
-         QiFFxq8B/x6r8E4zGSP5uE5vIhngyktJg/7kaLAcCsWe+ldRrI/hBkjoBGydRgFkXgux
-         dQooQZkiSQtlTNCFo1sLtuH2KiHPSJp55uxlSdoOBKDGxra7HEXdoV2Sb9iLgIv/7z9R
-         AQJg==
-X-Gm-Message-State: AOJu0YxxdzyVReLa3fUuevtjJrycH8jGcg9ojihIXYSFe+SMuJrJI0ml
-	A2sueN7TWG7QLJRkMoCIVE1m9ifiU/TpJA==
-X-Google-Smtp-Source: AGHT+IGgeO55s3ldTAPyX28iP11/SY4z5r1rs1DkQ2IuOS9AvdwQW3R4/9nO6dEIKqII2xWc9D4G0Q==
-X-Received: by 2002:a05:620a:2843:b0:77e:fba3:757f with SMTP id h3-20020a05620a284300b0077efba3757fmr680867qkp.119.1703202424838;
-        Thu, 21 Dec 2023 15:47:04 -0800 (PST)
-Received: from eagle.lan (24-246-30-234.cable.teksavvy.com. [24.246.30.234])
-        by smtp.gmail.com with ESMTPSA id j5-20020a05620a000500b0077d74f884d9sm993080qki.117.2023.12.21.15.47.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Dec 2023 15:47:04 -0800 (PST)
-From: Ivor Wanders <ivor@iwanders.net>
-To: rdunlap@infradead.org
-Cc: corbet@lwn.net,
-	ivor@iwanders.net,
-	jdelvare@suse.com,
-	linux-doc@vger.kernel.org,
-	linux-hwmon@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux@roeck-us.net,
-	luzmaximilian@gmail.com
-Subject: Re: [PATCH v2] hwmon: clarify intent of fan min/max
-Date: Thu, 21 Dec 2023 18:46:46 -0500
-Message-Id: <20231221234646.15776-1-ivor@iwanders.net>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <6ec27515-d2c1-48f1-8935-55f0ae48e72b@infradead.org>
-References: <6ec27515-d2c1-48f1-8935-55f0ae48e72b@infradead.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E64181E539;
+	Thu, 21 Dec 2023 23:48:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1703202491;
+	bh=dPcPlZZ/3+BlR9SMPW2sPi39/Bw7K8p0ujRfhfIcXUI=;
+	h=Date:From:To:Cc:Subject:From;
+	b=BWMu3BZeRdtjmAb1NLBdXIl8gwclrYeNtIRzIGrvAJ5R7EFNtRj6zeDP5F0qmvSqQ
+	 KGsisxbDtgcvNJnRhCmVNjXtfDZmuF2s9pWb6cbZRUwBowznFlOWitFinDVn9o7XUn
+	 Fw3uanPB/tK7v5vfKYD6968QcAT18P9El68pWg1vLKJi1OVAyXwb1aMSDnzQjlAONy
+	 KefovvFGhhSsUlJdJJ1yw+5djemSFjN7fI/HMMLqutQ9QPtE3AxLQGnf6ic2K7BpqC
+	 HNEpCEiPcH3JDNoP2pja6vjzZnUq0eLGp7GCXNIMUvidXUoKKK3tYG38UgJDb+pjRx
+	 bxM/sAeeafbjg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4Sx6Z325SZz4wyS;
+	Fri, 22 Dec 2023 10:48:11 +1100 (AEDT)
+Date: Fri, 22 Dec 2023 10:48:10 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Masahiro Yamada <masahiroy@kernel.org>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
+ Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: duplicate patches in the kbuild tree
+Message-ID: <20231222104810.32247f14@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/_IuK8lgYRuUyxzeCY+jXDma";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-> (other than telling us what changed from v1 to v2)
+--Sig_/_IuK8lgYRuUyxzeCY+jXDma
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Appreciate the feedback! I'm new to this, so basically it means always
-use --cover-letter, I also noticed that I should have probably added some
-'to' entries, the command suggested by lore moved the original 'to' fields
-to 'cc'. I'll be more diligent with the changelog in future contributions.
+Hi all,
 
-Change was incorporating the feedback from [1], changing the comma into a
-period for all three changed sysfs entries.
+The following commits are also in the kbuild-fixes tree as different
+commits (but the same patches):
 
-~Ivor
+  44028378399f ("gen_compile_commands.py: fix path resolve with symlinks in=
+ it")
+  888a50f6f93a ("MAINTAINERS: Add scripts/clang-tools to Kbuild section")
 
-[1]: https://lore.kernel.org/linux-hwmon/40285311-8adc-4ca9-86ce-27c8b723a102@infradead.org/
+These are commits
+
+  7cdb9dd97e6e ("gen_compile_commands.py: fix path resolve with symlinks in=
+ it")
+  e231092d19b8 ("MAINTAINERS: Add scripts/clang-tools to Kbuild section")
+
+in the kbuild-fixes tree.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/_IuK8lgYRuUyxzeCY+jXDma
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmWEzroACgkQAVBC80lX
+0Gzw5QgAosJ1R2aaccK5u3Cd+afF8luLDudddUD9N7CYC+Dkl99N4sWr7LubX1PP
+/Yiy7qxbO02a4+5B/ctTjST8g5SWIcj3ai5hg2IkVS8WF+x3J2H0Ydv3QWtgbrOx
+Df7bZ6gJWFicF4GkKPD9l6LLCubmSINy0e3V7zejmdxuGRT5F6jMfPZhdG76+dtL
+IlcDVeXCQoz4iqAOTBPpY73OHM2yvvCQ9re018JcMYjMtzyJzEI8s/+c7JtqWhYL
+IY2vgwEAOUGfmNEuTDrpOqECf4uC7KNmX3yMSjVS2iGK0L44uENImLIsc6F9/9qL
+RJHzRU4VfBH4aS9B5yWOr/aRB3Oy+w==
+=tKOv
+-----END PGP SIGNATURE-----
+
+--Sig_/_IuK8lgYRuUyxzeCY+jXDma--
 
