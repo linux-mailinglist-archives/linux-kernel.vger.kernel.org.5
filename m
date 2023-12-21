@@ -1,506 +1,298 @@
-Return-Path: <linux-kernel+bounces-8170-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8171-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7077581B307
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 11:01:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8365381B30B
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 11:03:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 27EC42880A1
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 10:01:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3892F288137
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 10:03:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0ECA54F205;
-	Thu, 21 Dec 2023 10:01:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 768174D5A2;
+	Thu, 21 Dec 2023 10:02:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="vpuHieIl"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="PKp3Tgws"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2077.outbound.protection.outlook.com [40.107.237.77])
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 808C14D585
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 10:01:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QuDqK+SXElLsi1tkQRexUgnsGRaO7TXf8/yJSn5VvX9Kcf6cBMoP6C9Ssjox6C5CoBx14Op5Udp3leVijcLWTjJu64oyCQDOCN3g1NLrBp+92nLFwKoS4WMRXghuDZ0wWcbsR2BriWfWfHfYcdc32Fkn5Qsq2itrjMYzH9AUkMDgY3IA7U28cBoFpQ9RN0DCi8LScXOKUYaoC782PSh+1zyPDoJ+jwQVEZiT2mn55tkaDm/dr4iC+m0S61V7lm3OEN/K/BXnZr1Uf60JiyOqYgrk/r9SFkynOpp6CtY9Ja00rF7fjTBELArY/SH4NVPYCAMiYRD221GfVRfAUQXGaw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=gHNcwTZj0hcfTUOw9plfr4Kg0xXKcc2wqMwIiqAMTQ8=;
- b=fpHGGI25sUnzQEzpYYw1A4GDb6KWx1llEViYsfp7FXGLxJE/RcqpOAHkEhlymfkryEXkWpzi9hRgrPTx0ee/rlYi1pHhH+KumQ+o+xBKEeRCBUKC4TTAEO1KtViMT82C7lhMa+d1eSjdvdwpjHNNGvKKz/OQRO2fYYhOdR0A2xydBbZtgGRoNFDVIem46Q+niSN9vMSQHzChnG+TsqjnbqkWUqBOXZ9ogDKjgH6eNehSHDBsprNAqHj3IU4BNxG5Ab2QwBVOEHoH2voKBe99uX01UoqzT8PXvszKFf4GMNBlv5gqNEKxxTeLrnZn6mNENHHJJ7Fvvg7aJ50V77TakQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=chromium.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gHNcwTZj0hcfTUOw9plfr4Kg0xXKcc2wqMwIiqAMTQ8=;
- b=vpuHieIlH5hQbb+JXnjFcECEHgey7//cjl2gSP5bfBZDEO189Nx+MyyTvjmSsPcJfYdcYUD15JNizLJeJ4qUPMWDthxC/90doxQduSBWeeFiGp2ofXzvU5L/shkv+tr+wzReBK1KCaovbYdVedk107+fnQ1sB/uRWqV12F1DwOE=
-Received: from SJ0PR03CA0131.namprd03.prod.outlook.com (2603:10b6:a03:33c::16)
- by SA0PR12MB4382.namprd12.prod.outlook.com (2603:10b6:806:9a::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7113.21; Thu, 21 Dec
- 2023 10:01:13 +0000
-Received: from MWH0EPF000971E5.namprd02.prod.outlook.com
- (2603:10b6:a03:33c:cafe::80) by SJ0PR03CA0131.outlook.office365.com
- (2603:10b6:a03:33c::16) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7113.21 via Frontend
- Transport; Thu, 21 Dec 2023 10:01:13 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- MWH0EPF000971E5.mail.protection.outlook.com (10.167.243.73) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7113.14 via Frontend Transport; Thu, 21 Dec 2023 10:01:13 +0000
-Received: from jenkins-julia.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Thu, 21 Dec
- 2023 04:00:50 -0600
-From: Julia Zhang <julia.zhang@amd.com>
-To: Gurchetan Singh <gurchetansingh@chromium.org>, Chia-I Wu
-	<olvaffe@gmail.com>, David Airlie <airlied@redhat.com>, Gerd Hoffmann
-	<kraxel@redhat.com>, <linux-kernel@vger.kernel.org>,
-	<dri-devel@lists.freedesktop.org>, <amd-gfx@lists.freedesktop.org>,
-	<virtualization@lists.linux-foundation.org>
-CC: Alex Deucher <alexander.deucher@amd.com>,
-	=?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>, Daniel Vetter
-	<daniel@ffwll.ch>, David Airlie <airlied@gmail.com>, Erik Faye-Lund
-	<kusmabite@gmail.com>, =?UTF-8?q?Marek=20Ol=C5=A1=C3=A1k?=
-	<marek.olsak@amd.com>, Pierre-Eric Pelloux-Prayer
-	<pierre-eric.pelloux-prayer@amd.com>, Honglei Huang <honglei1.huang@amd.com>,
-	Chen Jiqian <Jiqian.Chen@amd.com>, Huang Rui <ray.huang@amd.com>, "Daniel
- Stone" <daniels@collabora.com>, Julia Zhang <julia.zhang@amd.com>
-Subject: [PATCH 1/1] drm/virtio: Implement RESOURCE_GET_LAYOUT ioctl
-Date: Thu, 21 Dec 2023 18:00:16 +0800
-Message-ID: <20231221100016.4022353-2-julia.zhang@amd.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231221100016.4022353-1-julia.zhang@amd.com>
-References: <20231221100016.4022353-1-julia.zhang@amd.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30D934D139;
+	Thu, 21 Dec 2023 10:02:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BL632AR027441;
+	Thu, 21 Dec 2023 10:02:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=eIhslZe7UNJWw+2/xkMCyP2sZjkXXlkXaycwr2cInJo=; b=PK
+	p3Tgwsz2Q0nYULkzUT+ZgLUqQIXn6HDFiELGh1MbrJ4nemMnJQFdL6To6MZbM7UE
+	U7Hx3ypzIVwdSsRnCFVVJ+sG69x9+e0ZfOQ2L5eLKTiw6vzHLBpsWPzLyH83/J4m
+	4P5tKD+rC4HwRTy3Y1YlBud5YDu/31YTsYtnDxSp98OgRLffdcxCjxnoXDJf9RUT
+	ZxoqACK6aOWUYJqP8bQkhwPJhj6MeKQ2r6v2cRT1hg5IDWluMu6xSNS8Zpl3TLlc
+	vSu86hniq9XlKhstPAjDEWL5D11ocMkkfnfE+frIMutpu3Sj+me7++A04CKP3BS5
+	jbz1sAn4rpxz90wN5IEA==
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v3wt9uy96-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 21 Dec 2023 10:02:27 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BLA2Q8T003098
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 21 Dec 2023 10:02:26 GMT
+Received: from [10.216.61.186] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 21 Dec
+ 2023 02:02:18 -0800
+Message-ID: <7b32b7a7-bc64-4102-a6bf-3c3fc8d979ac@quicinc.com>
+Date: Thu, 21 Dec 2023 15:32:10 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MWH0EPF000971E5:EE_|SA0PR12MB4382:EE_
-X-MS-Office365-Filtering-Correlation-Id: 75d78449-e3af-47a9-2e5f-08dc020bc3c0
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	YfQyJp1i9LR1mJEG56UZ7a2yV9LP7zjtwY2btcaiCSRDNevWyJsp/Zh98FuRd6uoHgAd9NVn3HJ4s4Hye0Ak2xkKJEv6ZswXgFQ+hY59AaUTkwZj9MolsOk9OaCRXSSHc9Dc9WZ6IUkgEt8DARM4yf7dKWHLCTyzW/RB+3htFMpOOhUVKr727khEhakzUwuQygo6Rl65Ra2cnRNhwNROi5wEgTnqaEXCWh19jXOX+nB3878u6+607M9fkP/Qy2BwoRzH422wdSxZCqMp6ovD+1WEMd/VGOuhYnC2UYCOgE4z5hXD8Vnvi9D+SuGh/lO2R/xBos7nCN1fVhnYOyvnc2CqQkKt8Oo6A1q30Lu+HIOz2zhhyskgt3jKUo6l8Z/iy1H3BE17ZKnD0B5nPdMXp6BYk7YpIQ6dTsNkfDMYJdguoWmx1op72KS71f8ievuyBs2SAg+NrCP4v0g/qFTDburEeqHqp7MMxsiXgDxisAm6lnGxi3q8vSV14+H7Viwaghgo0J6otnDywxCuHBM1M6upA4vXrAt8Y1Jb+F93fYX4yawzulClr2ci50Ajf4lelTqDW6RXJvfI7mxODSkKOWOtNnlFOyVW5dOiQGmLJKPLUP3V+q2/bWc9jcBv0Uddae+kSn9rXM+SA6tZLZpOorefQGnbL8I3Glqazj6mO8+X3o/JcfXLgAGJ4Pl2GDVyt0b2Oo5/SATh8bXJ5G94cKghQTwODzt4ro7cnfCQ1QIC+ZpENqZTJ21g1R4nhShuBrx7asXf2Ta+1Bf48qZMWw==
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(376002)(346002)(136003)(396003)(230922051799003)(1800799012)(186009)(82310400011)(451199024)(64100799003)(36840700001)(40470700004)(46966006)(70586007)(70206006)(110136005)(1076003)(54906003)(26005)(40480700001)(2616005)(36860700001)(40460700003)(478600001)(83380400001)(8676002)(4326008)(8936002)(316002)(6666004)(16526019)(426003)(336012)(7696005)(36756003)(44832011)(7416002)(47076005)(5660300002)(30864003)(2906002)(356005)(81166007)(82740400003)(41300700001)(86362001)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Dec 2023 10:01:13.0409
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 75d78449-e3af-47a9-2e5f-08dc020bc3c0
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	MWH0EPF000971E5.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4382
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 3/5] iommu/arm-smmu: introduction of ACTLR for custom
+ prefetcher settings
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+CC: <will@kernel.org>, <robin.murphy@arm.com>, <joro@8bytes.org>,
+        <konrad.dybcio@linaro.org>, <jsnitsel@redhat.com>,
+        <quic_bjorande@quicinc.com>, <mani@kernel.org>,
+        <quic_eberman@quicinc.com>, <robdclark@chromium.org>,
+        <u.kleine-koenig@pengutronix.de>, <robh@kernel.org>,
+        <vladimir.oltean@nxp.com>, <quic_pkondeti@quicinc.com>,
+        <quic_molvera@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <iommu@lists.linux.dev>,
+        <linux-kernel@vger.kernel.org>, <qipl.kernel.upstream@quicinc.com>
+References: <20231220133808.5654-1-quic_bibekkum@quicinc.com>
+ <20231220133808.5654-4-quic_bibekkum@quicinc.com>
+ <CAA8EJpo8X+jfi20N9P7kUshxe6_7pwQe8G0Q02JDuB8ozH7hLA@mail.gmail.com>
+Content-Language: en-US
+From: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+In-Reply-To: <CAA8EJpo8X+jfi20N9P7kUshxe6_7pwQe8G0Q02JDuB8ozH7hLA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: lVyDttDIxiuOZXZl6dwZKU75og74uHEy
+X-Proofpoint-GUID: lVyDttDIxiuOZXZl6dwZKU75og74uHEy
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxlogscore=999
+ spamscore=0 lowpriorityscore=0 mlxscore=0 suspectscore=0 adultscore=0
+ clxscore=1015 impostorscore=0 bulkscore=0 priorityscore=1501
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2312210074
 
-From: Daniel Stone <daniels@collabora.com>
 
-Add a new ioctl to allow the guest VM to discover how the guest
-actually allocated the underlying buffer, which allows buffers to
-be used for GL<->Vulkan interop and through standard window systems.
-It's also a step towards properly supporting modifiers in the guest.
 
-Signed-off-by: Daniel Stone <daniels@collabora.com>
-Co-developed-by: Julia Zhang <julia.zhang@amd.com> # support query
-stride before it's created
-Signed-off-by: Julia Zhang <julia.zhang@amd.com>
----
- drivers/gpu/drm/virtio/virtgpu_drv.c   |  1 +
- drivers/gpu/drm/virtio/virtgpu_drv.h   | 22 ++++++++-
- drivers/gpu/drm/virtio/virtgpu_ioctl.c | 66 ++++++++++++++++++++++++++
- drivers/gpu/drm/virtio/virtgpu_kms.c   |  8 +++-
- drivers/gpu/drm/virtio/virtgpu_vq.c    | 63 ++++++++++++++++++++++++
- include/uapi/drm/virtgpu_drm.h         | 21 ++++++++
- include/uapi/linux/virtio_gpu.h        | 30 ++++++++++++
- 7 files changed, 208 insertions(+), 3 deletions(-)
+On 12/21/2023 6:06 AM, Dmitry Baryshkov wrote:
+> On Wed, 20 Dec 2023 at 15:39, Bibek Kumar Patro
+> <quic_bibekkum@quicinc.com> wrote:
+>>
+>> Currently in Qualcomm  SoCs the default prefetch is set to 1 which allows
+>> the TLB to fetch just the next page table. MMU-500 features ACTLR
+>> register which is implementation defined and is used for Qualcomm SoCs
+>> to have a custom prefetch setting enabling TLB to prefetch the next set
+>> of page tables accordingly allowing for faster translations.
+>>
+>> ACTLR value is unique for each SMR (Stream matching register) and stored
+>> in a pre-populated table. This value is set to the register during
+>> context bank initialisation.
+>>
+>> Signed-off-by: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+>> ---
+>>   drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 45 ++++++++++++++++++++++
+>>   drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h |  6 ++-
+>>   drivers/iommu/arm/arm-smmu/arm-smmu.c      |  5 ++-
+>>   drivers/iommu/arm/arm-smmu/arm-smmu.h      |  5 +++
+>>   4 files changed, 58 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+>> index 20c9836d859b..1cefdd0ca110 100644
+>> --- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+>> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+>> @@ -24,6 +24,12 @@
+>>   #define CPRE                   (1 << 1)
+>>   #define CMTLB                  (1 << 0)
+>>
+>> +struct actlr_config {
+>> +       u16 sid;
+>> +       u16 mask;
+>> +       u32 actlr;
+>> +};
+>> +
+>>   static struct qcom_smmu *to_qcom_smmu(struct arm_smmu_device *smmu)
+>>   {
+>>          return container_of(smmu, struct qcom_smmu, smmu);
+>> @@ -215,9 +221,38 @@ static bool qcom_adreno_can_do_ttbr1(struct arm_smmu_device *smmu)
+>>          return true;
+>>   }
+>>
+>> +static void qcom_smmu_set_actlr(struct device *dev, struct arm_smmu_device *smmu, int cbndx,
+>> +               const struct actlr_config *actlrcfg)
+>> +{
+>> +       struct arm_smmu_master_cfg *cfg = dev_iommu_priv_get(dev);
+>> +       struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
+>> +       struct arm_smmu_smr *smr;
+>> +       u16 mask;
+>> +       int idx;
+>> +       u16 id;
+>> +       int i;
+>> +
+>> +       for (; actlrcfg->sid || actlrcfg->mask || actlrcfg->actlr; actlrcfg++) {
+>> +               id = actlrcfg->sid;
+>> +               mask = actlrcfg->mask;
+>> +
+>> +               for_each_cfg_sme(cfg, fwspec, i, idx) {
+>> +                       smr = &smmu->smrs[idx];
+>> +                       if (smr_is_subset(smr, id, mask)) {
+>> +                               arm_smmu_cb_write(smmu, cbndx, ARM_SMMU_CB_ACTLR,
+>> +                                               actlrcfg->actlr);
+>> +                               break;
+>> +                       }
+>> +               }
+>> +       }
+>> +}
+>> +
+>>   static int qcom_adreno_smmu_init_context(struct arm_smmu_domain *smmu_domain,
+>>                  struct io_pgtable_cfg *pgtbl_cfg, struct device *dev)
+>>   {
+>> +       struct arm_smmu_device *smmu = smmu_domain->smmu;
+>> +       struct qcom_smmu *qsmmu = to_qcom_smmu(smmu);
+>> +       int cbndx = smmu_domain->cfg.cbndx;
+>>          struct adreno_smmu_priv *priv;
+>>
+>>          smmu_domain->cfg.flush_walk_prefer_tlbiasid = true;
+>> @@ -248,6 +283,9 @@ static int qcom_adreno_smmu_init_context(struct arm_smmu_domain *smmu_domain,
+>>          priv->set_stall = qcom_adreno_smmu_set_stall;
+>>          priv->resume_translation = qcom_adreno_smmu_resume_translation;
+>>
+>> +       if (qsmmu->data->actlrcfg_gfx)
+>> +               qcom_smmu_set_actlr(dev, smmu, cbndx, qsmmu->data->actlrcfg_gfx);
+> 
+> There was a feedback point against v4 that there can be more than two
+> (apps + gpu) SMMU devices. No, we can not use additional compat
+> strings, the SMMU units are compatible with each other.
 
-diff --git a/drivers/gpu/drm/virtio/virtgpu_drv.c b/drivers/gpu/drm/virtio/virtgpu_drv.c
-index 4334c7608408..98061b714b98 100644
---- a/drivers/gpu/drm/virtio/virtgpu_drv.c
-+++ b/drivers/gpu/drm/virtio/virtgpu_drv.c
-@@ -148,6 +148,7 @@ static unsigned int features[] = {
- 	VIRTIO_GPU_F_RESOURCE_UUID,
- 	VIRTIO_GPU_F_RESOURCE_BLOB,
- 	VIRTIO_GPU_F_CONTEXT_INIT,
-+	VIRTIO_GPU_F_RESOURCE_QUERY_LAYOUT,
- };
- static struct virtio_driver virtio_gpu_driver = {
- 	.feature_table = features,
-diff --git a/drivers/gpu/drm/virtio/virtgpu_drv.h b/drivers/gpu/drm/virtio/virtgpu_drv.h
-index 96365a772f77..bb5edcfeda54 100644
---- a/drivers/gpu/drm/virtio/virtgpu_drv.h
-+++ b/drivers/gpu/drm/virtio/virtgpu_drv.h
-@@ -214,6 +214,16 @@ struct virtio_gpu_drv_cap_cache {
- 	atomic_t is_valid;
- };
- 
-+struct virtio_gpu_query_info {
-+	uint32_t num_planes;
-+	uint64_t modifier;
-+	struct {
-+		uint64_t offset;
-+		uint32_t stride;
-+	} planes[VIRTIO_GPU_MAX_RESOURCE_PLANES];
-+	atomic_t is_valid;
-+};
-+
- struct virtio_gpu_device {
- 	struct drm_device *ddev;
- 
-@@ -246,6 +256,7 @@ struct virtio_gpu_device {
- 	bool has_resource_blob;
- 	bool has_host_visible;
- 	bool has_context_init;
-+	bool has_resource_query_layout;
- 	struct virtio_shm_region host_visible_region;
- 	struct drm_mm host_visible_mm;
- 
-@@ -277,7 +288,7 @@ struct virtio_gpu_fpriv {
- };
- 
- /* virtgpu_ioctl.c */
--#define DRM_VIRTIO_NUM_IOCTLS 12
-+#define DRM_VIRTIO_NUM_IOCTLS 13
- extern struct drm_ioctl_desc virtio_gpu_ioctls[DRM_VIRTIO_NUM_IOCTLS];
- void virtio_gpu_create_context(struct drm_device *dev, struct drm_file *file);
- 
-@@ -420,6 +431,15 @@ virtio_gpu_cmd_set_scanout_blob(struct virtio_gpu_device *vgdev,
- 				uint32_t width, uint32_t height,
- 				uint32_t x, uint32_t y);
- 
-+int
-+virtio_gpu_cmd_get_resource_layout(struct virtio_gpu_device *vgdev,
-+				   struct virtio_gpu_query_info *bo_info,
-+				   uint32_t width,
-+				   uint32_t height,
-+				   uint32_t format,
-+				   uint32_t bind,
-+				   uint32_t hw_res_handle);
-+
- /* virtgpu_display.c */
- int virtio_gpu_modeset_init(struct virtio_gpu_device *vgdev);
- void virtio_gpu_modeset_fini(struct virtio_gpu_device *vgdev);
-diff --git a/drivers/gpu/drm/virtio/virtgpu_ioctl.c b/drivers/gpu/drm/virtio/virtgpu_ioctl.c
-index b24b11f25197..216c04314177 100644
---- a/drivers/gpu/drm/virtio/virtgpu_ioctl.c
-+++ b/drivers/gpu/drm/virtio/virtgpu_ioctl.c
-@@ -107,6 +107,9 @@ static int virtio_gpu_getparam_ioctl(struct drm_device *dev, void *data,
- 	case VIRTGPU_PARAM_SUPPORTED_CAPSET_IDs:
- 		value = vgdev->capset_id_mask;
- 		break;
-+	case VIRTGPU_PARAM_RESOURCE_QUERY_LAYOUT:
-+		value = vgdev->has_resource_query_layout ? 1 : 0;
-+		break;
- 	default:
- 		return -EINVAL;
- 	}
-@@ -668,6 +671,65 @@ static int virtio_gpu_context_init_ioctl(struct drm_device *dev,
- 	return ret;
- }
- 
-+static int virtio_gpu_resource_query_layout_ioctl(struct drm_device *dev,
-+						  void *data,
-+						  struct drm_file *file)
-+{
-+	struct drm_virtgpu_resource_query_layout *args = data;
-+	struct virtio_gpu_device *vgdev = dev->dev_private;
-+	struct drm_gem_object *obj = NULL;
-+	struct virtio_gpu_object *bo = NULL;
-+	struct virtio_gpu_query_info bo_info = {0};
-+	int ret = 0;
-+	int i;
-+
-+	if (!vgdev->has_resource_query_layout) {
-+		DRM_ERROR("failing: no RQL on host\n");
-+		return -EINVAL;
-+	}
-+
-+	if (args->handle > 0) {
-+		obj = drm_gem_object_lookup(file, args->handle);
-+		if (obj == NULL) {
-+			DRM_ERROR("invalid handle 0x%x\n", args->handle);
-+			return -ENOENT;
-+		}
-+		bo = gem_to_virtio_gpu_obj(obj);
-+	}
-+
-+	ret = virtio_gpu_cmd_get_resource_layout(vgdev, &bo_info, args->width,
-+						 args->height, args->format,
-+						 args->bind, bo ? bo->hw_res_handle : 0);
-+	if (ret)
-+		goto out;
-+
-+	ret = wait_event_timeout(vgdev->resp_wq,
-+				 atomic_read(&bo_info.is_valid),
-+				 5 * HZ);
-+	if (!ret)
-+		goto out;
-+
-+valid:
-+	smp_rmb();
-+	WARN_ON(atomic_read(&bo_info.is_valid));
-+	args->num_planes = bo_info.num_planes;
-+	args->modifier = bo_info.modifier;
-+	for (i = 0; i < args->num_planes; i++) {
-+		args->planes[i].offset = bo_info.planes[i].offset;
-+		args->planes[i].stride = bo_info.planes[i].stride;
-+	}
-+	for (; i < VIRTIO_GPU_MAX_RESOURCE_PLANES; i++) {
-+		args->planes[i].offset = 0;
-+		args->planes[i].stride = 0;
-+	}
-+	ret = 0;
-+
-+out:
-+	if (obj)
-+		drm_gem_object_put(obj);
-+	return ret;
-+}
-+
- struct drm_ioctl_desc virtio_gpu_ioctls[DRM_VIRTIO_NUM_IOCTLS] = {
- 	DRM_IOCTL_DEF_DRV(VIRTGPU_MAP, virtio_gpu_map_ioctl,
- 			  DRM_RENDER_ALLOW),
-@@ -707,4 +769,8 @@ struct drm_ioctl_desc virtio_gpu_ioctls[DRM_VIRTIO_NUM_IOCTLS] = {
- 
- 	DRM_IOCTL_DEF_DRV(VIRTGPU_CONTEXT_INIT, virtio_gpu_context_init_ioctl,
- 			  DRM_RENDER_ALLOW),
-+
-+	DRM_IOCTL_DEF_DRV(VIRTGPU_RESOURCE_QUERY_LAYOUT,
-+			  virtio_gpu_resource_query_layout_ioctl,
-+			  DRM_RENDER_ALLOW),
- };
-diff --git a/drivers/gpu/drm/virtio/virtgpu_kms.c b/drivers/gpu/drm/virtio/virtgpu_kms.c
-index 5a3b5aaed1f3..4f34f4145910 100644
---- a/drivers/gpu/drm/virtio/virtgpu_kms.c
-+++ b/drivers/gpu/drm/virtio/virtgpu_kms.c
-@@ -175,6 +175,9 @@ int virtio_gpu_init(struct virtio_device *vdev, struct drm_device *dev)
- 	if (virtio_has_feature(vgdev->vdev, VIRTIO_GPU_F_RESOURCE_BLOB)) {
- 		vgdev->has_resource_blob = true;
- 	}
-+	if (virtio_has_feature(vgdev->vdev, VIRTIO_GPU_F_RESOURCE_QUERY_LAYOUT)) {
-+		vgdev->has_resource_query_layout = true;
-+	}
- 	if (virtio_get_shm_region(vgdev->vdev, &vgdev->host_visible_region,
- 				  VIRTIO_GPU_SHM_ID_HOST_VISIBLE)) {
- 		if (!devm_request_mem_region(&vgdev->vdev->dev,
-@@ -204,8 +207,9 @@ int virtio_gpu_init(struct virtio_device *vdev, struct drm_device *dev)
- 		 vgdev->has_resource_blob ? '+' : '-',
- 		 vgdev->has_host_visible ? '+' : '-');
- 
--	DRM_INFO("features: %ccontext_init\n",
--		 vgdev->has_context_init ? '+' : '-');
-+	DRM_INFO("features: %ccontext_init %cresource_query_layout\n",
-+		 vgdev->has_context_init ? '+' : '-',
-+		 vgdev->has_resource_query_layout ? '+' : '-');
- 
- 	ret = virtio_find_vqs(vgdev->vdev, 2, vqs, callbacks, names, NULL);
- 	if (ret) {
-diff --git a/drivers/gpu/drm/virtio/virtgpu_vq.c b/drivers/gpu/drm/virtio/virtgpu_vq.c
-index b1a00c0c25a7..26998a3ac4c2 100644
---- a/drivers/gpu/drm/virtio/virtgpu_vq.c
-+++ b/drivers/gpu/drm/virtio/virtgpu_vq.c
-@@ -1302,3 +1302,66 @@ void virtio_gpu_cmd_set_scanout_blob(struct virtio_gpu_device *vgdev,
- 
- 	virtio_gpu_queue_ctrl_buffer(vgdev, vbuf);
- }
-+
-+static void virtio_gpu_cmd_get_resource_layout_cb(struct virtio_gpu_device *vgdev,
-+						  struct virtio_gpu_vbuffer *vbuf)
-+{
-+	struct virtio_gpu_resp_resource_layout *resp =
-+		(struct virtio_gpu_resp_resource_layout *)vbuf->resp_buf;
-+	struct virtio_gpu_query_info *bo_info = vbuf->resp_cb_data;
-+	int i;
-+
-+	vbuf->resp_cb_data = NULL;
-+
-+	if (resp->hdr.type != VIRTIO_GPU_RESP_OK_RESOURCE_LAYOUT) {
-+		atomic_set(&bo_info->is_valid, 0);
-+		goto out;
-+	}
-+
-+	bo_info->modifier = le64_to_cpu(resp->modifier);
-+	bo_info->num_planes = le32_to_cpu(resp->num_planes);
-+	for (i = 0; i < bo_info->num_planes; i++) {
-+		bo_info->planes[i].stride = le32_to_cpu(resp->planes[i].stride);
-+		bo_info->planes[i].offset = le32_to_cpu(resp->planes[i].offset);
-+	}
-+	smp_wmb();
-+	atomic_set(&bo_info->is_valid, 1);
-+
-+out:
-+	wake_up_all(&vgdev->resp_wq);
-+}
-+
-+int virtio_gpu_cmd_get_resource_layout(struct virtio_gpu_device *vgdev,
-+				       struct virtio_gpu_query_info *bo_info,
-+				       uint32_t width,
-+				       uint32_t height,
-+				       uint32_t format,
-+				       uint32_t bind,
-+				       uint32_t hw_res_handle)
-+{
-+	struct virtio_gpu_resource_query_layout *cmd_p;
-+	struct virtio_gpu_vbuffer *vbuf;
-+	void *resp_buf;
-+
-+	resp_buf = kzalloc(sizeof(struct virtio_gpu_resp_resource_layout),
-+			   GFP_KERNEL);
-+	if (!resp_buf)
-+		return -ENOMEM;
-+
-+	cmd_p = virtio_gpu_alloc_cmd_resp
-+		(vgdev, &virtio_gpu_cmd_get_resource_layout_cb, &vbuf,
-+		 sizeof(*cmd_p), sizeof(struct virtio_gpu_resp_resource_layout),
-+		 resp_buf);
-+	memset(cmd_p, 0, sizeof(*cmd_p));
-+
-+	cmd_p->hdr.type = cpu_to_le32(VIRTIO_GPU_CMD_RESOURCE_QUERY_LAYOUT);
-+	cmd_p->resource_id = cpu_to_le32(hw_res_handle);
-+	cmd_p->width = cpu_to_le32(width);
-+	cmd_p->height = cpu_to_le32(height);
-+	cmd_p->format = cpu_to_le32(format);
-+	cmd_p->bind = cpu_to_le32(bind);
-+	vbuf->resp_cb_data = bo_info;
-+
-+	virtio_gpu_queue_ctrl_buffer(vgdev, vbuf);
-+	return 0;
-+}
-diff --git a/include/uapi/drm/virtgpu_drm.h b/include/uapi/drm/virtgpu_drm.h
-index b1d0e56565bc..66f7c0fa1d4d 100644
---- a/include/uapi/drm/virtgpu_drm.h
-+++ b/include/uapi/drm/virtgpu_drm.h
-@@ -48,6 +48,7 @@ extern "C" {
- #define DRM_VIRTGPU_GET_CAPS  0x09
- #define DRM_VIRTGPU_RESOURCE_CREATE_BLOB 0x0a
- #define DRM_VIRTGPU_CONTEXT_INIT 0x0b
-+#define DRM_VIRTGPU_RESOURCE_QUERY_LAYOUT 0x0c
- 
- #define VIRTGPU_EXECBUF_FENCE_FD_IN	0x01
- #define VIRTGPU_EXECBUF_FENCE_FD_OUT	0x02
-@@ -97,6 +98,7 @@ struct drm_virtgpu_execbuffer {
- #define VIRTGPU_PARAM_CROSS_DEVICE 5 /* Cross virtio-device resource sharing  */
- #define VIRTGPU_PARAM_CONTEXT_INIT 6 /* DRM_VIRTGPU_CONTEXT_INIT */
- #define VIRTGPU_PARAM_SUPPORTED_CAPSET_IDs 7 /* Bitmask of supported capability set ids */
-+#define VIRTGPU_PARAM_RESOURCE_QUERY_LAYOUT 8 /* DRM_VIRTGPU_RESOURCE_QUERY_LAYOUT (also needs cap) */
- 
- struct drm_virtgpu_getparam {
- 	__u64 param;
-@@ -211,6 +213,21 @@ struct drm_virtgpu_context_init {
- 	__u64 ctx_set_params;
- };
- 
-+#define VIRTIO_GPU_MAX_RESOURCE_PLANES 4
-+struct drm_virtgpu_resource_query_layout {
-+	__u32 handle;
-+	__u32 width;
-+	__u32 height;
-+	__u32 format;
-+	__u32 bind;
-+	__u32 num_planes;
-+	__u64 modifier;
-+	struct {
-+		__u64 offset;
-+		__u32 stride;
-+	} planes[VIRTIO_GPU_MAX_RESOURCE_PLANES];
-+};
-+
- /*
-  * Event code that's given when VIRTGPU_CONTEXT_PARAM_POLL_RINGS_MASK is in
-  * effect.  The event size is sizeof(drm_event), since there is no additional
-@@ -261,6 +278,10 @@ struct drm_virtgpu_context_init {
- 	DRM_IOWR(DRM_COMMAND_BASE + DRM_VIRTGPU_CONTEXT_INIT,		\
- 		struct drm_virtgpu_context_init)
- 
-+#define DRM_IOCTL_VIRTGPU_RESOURCE_QUERY_LAYOUT				\
-+	DRM_IOWR(DRM_COMMAND_BASE + DRM_VIRTGPU_RESOURCE_QUERY_LAYOUT,	\
-+		struct drm_virtgpu_resource_query_layout)
-+
- #if defined(__cplusplus)
- }
- #endif
-diff --git a/include/uapi/linux/virtio_gpu.h b/include/uapi/linux/virtio_gpu.h
-index f556fde07b76..547575232376 100644
---- a/include/uapi/linux/virtio_gpu.h
-+++ b/include/uapi/linux/virtio_gpu.h
-@@ -65,6 +65,11 @@
-  */
- #define VIRTIO_GPU_F_CONTEXT_INIT        4
- 
-+/*
-+ * VIRTIO_GPU_CMD_RESOURCE_QUERY_LAYOUT
-+ */
-+#define VIRTIO_GPU_F_RESOURCE_QUERY_LAYOUT 5
-+
- enum virtio_gpu_ctrl_type {
- 	VIRTIO_GPU_UNDEFINED = 0,
- 
-@@ -95,6 +100,7 @@ enum virtio_gpu_ctrl_type {
- 	VIRTIO_GPU_CMD_SUBMIT_3D,
- 	VIRTIO_GPU_CMD_RESOURCE_MAP_BLOB,
- 	VIRTIO_GPU_CMD_RESOURCE_UNMAP_BLOB,
-+	VIRTIO_GPU_CMD_RESOURCE_QUERY_LAYOUT,
- 
- 	/* cursor commands */
- 	VIRTIO_GPU_CMD_UPDATE_CURSOR = 0x0300,
-@@ -108,6 +114,7 @@ enum virtio_gpu_ctrl_type {
- 	VIRTIO_GPU_RESP_OK_EDID,
- 	VIRTIO_GPU_RESP_OK_RESOURCE_UUID,
- 	VIRTIO_GPU_RESP_OK_MAP_INFO,
-+	VIRTIO_GPU_RESP_OK_RESOURCE_LAYOUT,
- 
- 	/* error responses */
- 	VIRTIO_GPU_RESP_ERR_UNSPEC = 0x1200,
-@@ -453,4 +460,27 @@ struct virtio_gpu_resource_unmap_blob {
- 	__le32 padding;
- };
- 
-+/* VIRTIO_GPU_CMD_RESOURCE_QUERY_LAYOUT */
-+struct virtio_gpu_resource_query_layout {
-+	struct virtio_gpu_ctrl_hdr hdr;
-+	__le32 resource_id;
-+	__le32 width;
-+	__le32 height;
-+	__le32 format;
-+	__le32 bind;
-+};
-+
-+
-+/* VIRTIO_GPU_RESP_OK_RESOURCE_LAYOUT */
-+#define VIRTIO_GPU_RES_MAX_PLANES 4
-+struct virtio_gpu_resp_resource_layout {
-+	struct virtio_gpu_ctrl_hdr hdr;
-+	__le64 modifier;
-+	__le32 num_planes;
-+	struct virtio_gpu_resource_plane {
-+		__le64 offset;
-+		__le32 stride;
-+	} planes[VIRTIO_GPU_RES_MAX_PLANES];
-+};
-+
- #endif
--- 
-2.34.1
+Just to understand better, did you mean if in the below check
+[inside arm-smmu-qcom.c file during qcom_smmu_create()], "else" has two 
+things? (Currently adreno_impl for gpu smmu, else for only
+apps smmu)
 
+          if (np && of_device_is_compatible(np, "qcom,adreno-smmu"))
+                  impl = data->adreno_impl;
+          else
+                  impl = data->impl;
+
+> Please add
+> matching between the smmu and particular actlr table using the IO
+> address of the SMMU block.
+> 
+
+The ACTLR table for each smmu will have A IO address attached, so based 
+on IO address we can apply ACTLR.
+Is this your proposal((IMO hardcoding IO in driver won't be viable, 
+isn't it?), or in smmu DT we would need to set the IO?
+
+
+Thanks & regards,
+Bibek
+
+>> +
+>>          return 0;
+>>   }
+>>
+>> @@ -274,6 +312,13 @@ static const struct of_device_id qcom_smmu_client_of_match[] __maybe_unused = {
+>>   static int qcom_smmu_init_context(struct arm_smmu_domain *smmu_domain,
+>>                  struct io_pgtable_cfg *pgtbl_cfg, struct device *dev)
+>>   {
+>> +       struct arm_smmu_device *smmu = smmu_domain->smmu;
+>> +       struct qcom_smmu *qsmmu = to_qcom_smmu(smmu);
+>> +       int cbndx = smmu_domain->cfg.cbndx;
+>> +
+>> +       if (qsmmu->data->actlrcfg)
+>> +               qcom_smmu_set_actlr(dev, smmu, cbndx, qsmmu->data->actlrcfg);
+>> +
+> 
+> One issue occured to me, while I was reviewing the patchset. The ACTLR
+> settings are related to the whole SMMU setup, but we are applying them
+> each time there is an SMMU context init (in other words, one per each
+> domain). Is that correct? Or it's just that there is no better place
+> for initialising the global register set? Would it be better to
+> reprogram the ACTLR registers which are related just to this
+> particular domain?
+> 
+>>          smmu_domain->cfg.flush_walk_prefer_tlbiasid = true;
+>>
+>>          return 0;
+>> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h
+>> index f3b91963e234..cb4cb402c202 100644
+>> --- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h
+>> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h
+>> @@ -1,6 +1,6 @@
+>>   /* SPDX-License-Identifier: GPL-2.0-only */
+>>   /*
+>> - * Copyright (c) 2022, Qualcomm Innovation Center, Inc. All rights reserved.
+>> + * Copyright (c) 2023, Qualcomm Innovation Center, Inc. All rights reserved.
+>>    */
+>>
+>>   #ifndef _ARM_SMMU_QCOM_H
+>> @@ -24,7 +24,11 @@ struct qcom_smmu_config {
+>>          const u32 *reg_offset;
+>>   };
+>>
+>> +struct actlr_config;
+>> +
+>>   struct qcom_smmu_match_data {
+>> +       const struct actlr_config *actlrcfg;
+>> +       const struct actlr_config *actlrcfg_gfx;
+>>          const struct qcom_smmu_config *cfg;
+>>          const struct arm_smmu_impl *impl;
+>>          const struct arm_smmu_impl *adreno_impl;
+>> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+>> index d6d1a2a55cc0..0c7f700b27dd 100644
+>> --- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
+>> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+>> @@ -990,9 +990,10 @@ static int arm_smmu_find_sme(struct arm_smmu_device *smmu, u16 id, u16 mask)
+>>                   * expect simply identical entries for this case, but there's
+>>                   * no harm in accommodating the generalisation.
+>>                   */
+>> -               if ((mask & smrs[i].mask) == mask &&
+>> -                   !((id ^ smrs[i].id) & ~smrs[i].mask))
+>> +
+>> +               if (smr_is_subset(&smrs[i], id, mask))
+>>                          return i;
+>> +
+>>                  /*
+>>                   * If the new entry has any other overlap with an existing one,
+>>                   * though, then there always exists at least one stream ID
+>> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.h b/drivers/iommu/arm/arm-smmu/arm-smmu.h
+>> index 703fd5817ec1..2e4f65412c6b 100644
+>> --- a/drivers/iommu/arm/arm-smmu/arm-smmu.h
+>> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu.h
+>> @@ -501,6 +501,11 @@ static inline void arm_smmu_writeq(struct arm_smmu_device *smmu, int page,
+>>                  writeq_relaxed(val, arm_smmu_page(smmu, page) + offset);
+>>   }
+>>
+>> +static inline bool smr_is_subset(struct arm_smmu_smr *smrs, u16 id, u16 mask)
+>> +{
+>> +       return (mask & smrs->mask) == mask && !((id ^ smrs->id) & ~smrs->mask);
+>> +}
+>> +
+>>   #define ARM_SMMU_GR0           0
+>>   #define ARM_SMMU_GR1           1
+>>   #define ARM_SMMU_CB(s, n)      ((s)->numpage + (n))
+>> --
+>> 2.17.1
+>>
+> 
+> 
 
