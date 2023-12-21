@@ -1,146 +1,139 @@
-Return-Path: <linux-kernel+bounces-7809-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7808-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C89C81AD82
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 04:29:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38E6681AD7F
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 04:28:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D3977B22A17
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 03:29:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E90852835A5
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 03:28:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE5B58F5C;
-	Thu, 21 Dec 2023 03:28:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EEE65249;
+	Thu, 21 Dec 2023 03:28:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="KeMUfv2r"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UuweDkXY"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B57378BED;
-	Thu, 21 Dec 2023 03:28:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BL3Mm9p002224;
-	Thu, 21 Dec 2023 03:28:28 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=ptFIPM1CW1CWOKLq9bwEV8p6w0+7bVuEzH3rN9cUK8Y=; b=Ke
-	MUfv2ruDpf97bEHbIc6uLJ4yiKbaF+aviplKAm9aM5ew1HOa01vxMxoi32u7MDgI
-	1LBluX+ybfxmLbFkuqV/aNQaBWNKHDBImCsjazSo5h3UqUTswffa6KSb4cFHc5YP
-	tU0JaKBsM8jDcNsSLzv1rlcOf081lpQGmDTO59ykQ7QcKCA5ekC/x3DoNGLEXm40
-	PTEGuYt6dopDUwtXGI+3vKXT2OC80/Z0jwyI80SKrw354QXD0zNYx7apgjO8038H
-	yl6+qexI8YM0sxF6PAOGHuJY4A4fYL5M7OicSjJR/zM/NecVLjPv7OJGfX4mINEx
-	TYusw+srSlXgG00URgiQ==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v4d89g1cb-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 21 Dec 2023 03:28:27 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BL3SRNF004471
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 21 Dec 2023 03:28:27 GMT
-Received: from [10.239.133.49] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 20 Dec
- 2023 19:28:22 -0800
-Message-ID: <8e5e9603-456b-4956-be03-b866feeeafb4@quicinc.com>
-Date: Thu, 21 Dec 2023 11:28:19 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E36B4A19;
+	Thu, 21 Dec 2023 03:28:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-6d741fb7c8eso364095b3a.2;
+        Wed, 20 Dec 2023 19:28:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703129322; x=1703734122; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=2cwy609ViDO/5NGng780dz2Zp63VE09X7quZEZMkNVo=;
+        b=UuweDkXYNG7TvokCgZUI6iiWpO1b/oEc61DvpZ0oYaal5frSWave4akjw9F3vGnVH9
+         1ksNr8ECIboUqgEABgfwLXO5edW+MQcIhb5lxSiXE38wZjNE8sojd7yiMFTFhYeCwyFf
+         ihs8iWtrtPUrI+gZn6KFpJwZgldlWv7C6Z6ZRSifpIrC1LKct4Hyq6BChk5Og1O3atc9
+         y/0YD/M/7mHMdwsvniFPzl5waOjsrNado+foyILZ7SFUmFft7GJFgHT6Smfr/IWNZQSF
+         aVWDR00RUNCbzH9Zy/YL8iD9kYPmHfHOXmfUU+wxY2CTmtTgYkcpbbj2EMaQREykEJ7G
+         QYEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703129322; x=1703734122;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2cwy609ViDO/5NGng780dz2Zp63VE09X7quZEZMkNVo=;
+        b=TnomvDpQklWpxQ/sIXYJrRd2GQEXrcdmSwRwJ8urPIea2GN7QCGLW/bwQ1QDmLE48R
+         zJPOu11/S70/5VXkUZBITRfKVOA1kHTr3nJVIZKeuaAbC4aLXU/3H6PhHOZKIhAX3hGO
+         PoylbHiXc1xSPnIxcH5P6AlpYVpRJsysp4OgSJ96OP955wKbc6r/b4JdmsGnOlHChUw1
+         DmQHi+ZTb6xNfu6Tt4cITbgRh0wjSY9aXXSugN5gSKakYbYhJMjPPV1Tom594UKVgs1n
+         fPfJxJhNOO5AW5+pkcJgZojQ3NvL/mqEqILMNQffTZLsrgKv3jx8Ds0pcXMAAn4wBj58
+         3RUw==
+X-Gm-Message-State: AOJu0Yw+aBU9GfrXfqY4LRD8WCx1+3hR2dC6COBfRDzMAU6wvuRcob9q
+	zBwPFRnXOQKffyP3Yu4lFl4=
+X-Google-Smtp-Source: AGHT+IH00C6bByvTzePNj6kiL3xYMrwqwS66Re6fu1otTnsCDa97TAOATj8PHde+3hqCHgKc+xTfCw==
+X-Received: by 2002:a05:6a21:a59e:b0:195:7f2:d556 with SMTP id gd30-20020a056a21a59e00b0019507f2d556mr175918pzc.76.1703129321812;
+        Wed, 20 Dec 2023 19:28:41 -0800 (PST)
+Received: from archie.me ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id x29-20020a63171d000000b005c60cdb08f0sm537606pgl.0.2023.12.20.19.28.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Dec 2023 19:28:41 -0800 (PST)
+Received: by archie.me (Postfix, from userid 1000)
+	id 135E41028B29B; Thu, 21 Dec 2023 10:28:36 +0700 (WIB)
+Date: Thu, 21 Dec 2023 10:28:36 +0700
+From: Bagas Sanjaya <bagasdotme@gmail.com>
+To: Linux ALSA Development <alsa-devel@alsa-project.org>,
+	patches@opensource.cirrus.com,
+	Linux Sound System <linux-sound@vger.kernel.org>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc: James Schulman <james.schulman@cirrus.com>,
+	David Rhodes <david.rhodes@cirrus.com>,
+	Richard Fitzgerald <rf@opensource.cirrus.com>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	Kailang Yang <kailang@realtek.com>,
+	Stefan Binding <sbinding@opensource.cirrus.com>,
+	"Luke D. Jones" <luke@ljones.dev>,
+	Andy Chi <andy.chi@canonical.com>,
+	Shenghao Ding <shenghao-ding@ti.com>,
+	Matthew Anderson <ruinairas1992@gmail.com>,
+	Luka Guzenko <l.guzenko@web.de>, Yuchi Yang <yangyuchi66@gmail.com>,
+	Vitaly Rodionov <vitalyr@opensource.cirrus.com>,
+	Lucas Tanure <tanure@linux.com>, Fae <faenkhauser@gmail.com>,
+	Albert Tseng <tsengalb99@gmail.com>,
+	Lukas Voreck <overloader@tutanota.com>
+Subject: Fwd: No sound drivers on HP Envy x360 ey0xxx
+Message-ID: <ZYOw5OVHGugrEP30@archie.me>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 1/2] dt-bindings: arm: coresight: Update the pattern of
- ete node name
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Mathieu Poirier
-	<mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        "Mike Leach" <mike.leach@linaro.org>,
-        James Clark <james.clark@arm.com>, Leo
- Yan <leo.yan@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson
-	<andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring
-	<robh+dt@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-CC: <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Tingwei Zhang <quic_tingweiz@quicinc.com>,
-        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
-        Tao Zhang
-	<quic_taozha@quicinc.com>, <coresight@lists.linaro.org>
-References: <20231220140538.13136-1-quic_jinlmao@quicinc.com>
- <20231220140538.13136-2-quic_jinlmao@quicinc.com>
- <79f88d35-17cc-43b0-bb22-3c854f89d961@linaro.org>
-From: Jinlong Mao <quic_jinlmao@quicinc.com>
-In-Reply-To: <79f88d35-17cc-43b0-bb22-3c854f89d961@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: mT7ntKNZG1VD1l8KAksTUPmAU4eV8W-n
-X-Proofpoint-ORIG-GUID: mT7ntKNZG1VD1l8KAksTUPmAU4eV8W-n
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 clxscore=1015
- suspectscore=0 lowpriorityscore=0 spamscore=0 priorityscore=1501
- adultscore=0 impostorscore=0 mlxscore=0 bulkscore=0 malwarescore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2312210023
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="+dEZltS9BeS27wKC"
+Content-Disposition: inline
 
 
+--+dEZltS9BeS27wKC
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 12/20/2023 11:50 PM, Krzysztof Kozlowski wrote:
-> On 20/12/2023 15:05, Mao Jinlong wrote:
->> Update the suffix for ete node name to be with "-".
->>
->> Signed-off-by: Mao Jinlong <quic_jinlmao@quicinc.com>
->> ---
->>   .../bindings/arm/arm,embedded-trace-extension.yaml          | 6 +++---
->>   1 file changed, 3 insertions(+), 3 deletions(-)
->>
->> diff --git a/Documentation/devicetree/bindings/arm/arm,embedded-trace-extension.yaml b/Documentation/devicetree/bindings/arm/arm,embedded-trace-extension.yaml
->> index f725e6940993..cbf583d34029 100644
->> --- a/Documentation/devicetree/bindings/arm/arm,embedded-trace-extension.yaml
->> +++ b/Documentation/devicetree/bindings/arm/arm,embedded-trace-extension.yaml
->> @@ -23,7 +23,7 @@ description: |
->>   
->>   properties:
->>     $nodename:
->> -    pattern: "^ete([0-9a-f]+)$"
->> +    pattern: "^ete-([0-9a-f]+)$"
-> 
-> My concerns are not resolved. Why is it here in the first place?
+Hi all,
 
-Hi Krzysztof,
+I'm forwarding a Bugzilla report [1], as many developers don't take a look
+on Bugzilla. The reporter (Lukas Voreck <overloader@tutanota.com>, Cc'ed)
+wrote:
 
-ETE is acronym of embedded trace extension. The number of the name is 
-the same as the number of the CPU it belongs to.
+> On an HP Envy x360 ey0xxx (and probably similar devices) there is no soun=
+d from
+> the internal Speakers whatsoever.
+>=20
+> Currently I'm using the patch found here
+> https://lore.kernel.org/all/20220811053950.11810-1-faenkhauser@gmail.com/=
+T/ But
+> with newer kernel versions that patch wont work, It will fail to build (t=
+ested
+> with 6.6.6)
+>=20
+> This is my first issue here and my first encounter with hardware issues, =
+if I
+> can provide more Info, please let me know
 
-Hi Suzuki,
+Thanks.
 
-Please help to comment on this.
+[1]: https://bugzilla.kernel.org/show_bug.cgi?id=3D218280
 
-Thanks
-Jinlong Mao
+--=20
+An old man doll... just what I always wanted! - Clara
 
-> 
-> Best regards,
-> Krzysztof
-> 
+--+dEZltS9BeS27wKC
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZYOw4AAKCRD2uYlJVVFO
+o+30AP9EIaHIVpT2Tk9XjLbrg50ewBz3Z3mvGhVSq6v27g3+HQEA6qlS4qEIndJ2
+SDQa7Hq1fx5Hiw8C+z8pJ9doxVysyQo=
+=qIw/
+-----END PGP SIGNATURE-----
+
+--+dEZltS9BeS27wKC--
 
