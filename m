@@ -1,72 +1,72 @@
-Return-Path: <linux-kernel+bounces-8913-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8914-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 548A981BE1A
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 19:25:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2BA1B81BE1C
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 19:26:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 86E601C23442
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 18:25:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5DD5A1C2475C
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 18:26:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1D8763516;
-	Thu, 21 Dec 2023 18:25:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A952A65187;
+	Thu, 21 Dec 2023 18:25:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="bWptXRJx"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UoTwTWS0"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDEF764AA6
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 18:25:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A23F76350E
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 18:25:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1703183135;
+	s=mimecast20190719; t=1703183136;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=nPTRfp6XgPJwYrXbStNGHlrTw26cplB52DVfER92OzE=;
-	b=bWptXRJx4M7BotI5My+z0VZwohOVVpW8ngty1KB+rdcG8vRe7bnTpaudsSQ/9ToothL+E1
-	B3sStTZogqiS2TZEdX8FM4HzJHTNK9yaEGMjp2RwJmX0UybGfjPntBb4qOfGUgrPjxR8Kf
-	eK2xEuheTFwbjXwlhjERW150U4CSKx0=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=V5DIcTT5Lroakb0MY1T0EdVJKAtxjaPCe5FVxbyPj6I=;
+	b=UoTwTWS0lbXAG1PtFStjACVNiIz1QJWR7kWXLqmFXO6+3bYFPVjFJSuOkMyj4VV5MnWXyt
+	gUa/ll/VA7zqgFC3mZP5s09FVts5s+sSv73/NLk+hB7kUT/AwG+1rR1FjlnNKlErYRafhb
+	Vrk6FvZNwDfK72kCMoES3Tdocwy5YOw=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-20-exrD3z_aPg-Fdp3y3bN1qw-1; Thu, 21 Dec 2023 13:25:34 -0500
-X-MC-Unique: exrD3z_aPg-Fdp3y3bN1qw-1
-Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-67f6ea46545so15151116d6.1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 10:25:34 -0800 (PST)
+ us-mta-76-0IWSGrvdM5WWjKSdCq5o8Q-1; Thu, 21 Dec 2023 13:25:35 -0500
+X-MC-Unique: 0IWSGrvdM5WWjKSdCq5o8Q-1
+Received: by mail-qv1-f71.google.com with SMTP id 6a1803df08f44-67ef8bbfe89so16626556d6.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 10:25:35 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703183130; x=1703787930;
+        d=1e100.net; s=20230601; t=1703183135; x=1703787935;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=nPTRfp6XgPJwYrXbStNGHlrTw26cplB52DVfER92OzE=;
-        b=sll+2ovG20McdjqNOSYtpoeD5SFw6mFVkGtEUYOssUO/C5+kkG6kC7VBkkHoCdQJox
-         5z83FaT4Q+1Rl/JRNy8CJ0JoAnoYcGkowFSpMBNL6letTnIa/CslNi6VI/YGfy20ALDW
-         ISKTZ+vdIxcjeY5acxmyk/jPc2o8/Hfq2JElSrpiXUlHI5S8z0332rxO9+JKo+2jAwZq
-         4M1fYJS8BfJw72yJlr52897GroHRbmmv5vBy9FiKVMAYsIVAnmrbRWRq0cp2uPZkMqQS
-         hzs7HLulSLQv7OhFO+9OS4ygkHq5LXWR9a63hhWL4WQ1YCbpeAJdkvE0K7yOGj8nhEPe
-         R/kQ==
-X-Gm-Message-State: AOJu0Yyi40wfPgf9HcAN04DpOEgmra8dIbbsyMZwDEFCRrtHbdFwcoeH
-	gmwVXGi50fMEtZncFFa/yLI6BMeRtQQPi0OuKB3PplDTv5BUiDUIBL1Gi2OKHEsK2a00B7DqhB6
-	EEluGUffhEhr/4Evvt9bN86YdW35rs7yN
-X-Received: by 2002:a05:6214:c64:b0:67f:6bd0:4943 with SMTP id t4-20020a0562140c6400b0067f6bd04943mr151778qvj.70.1703183130104;
-        Thu, 21 Dec 2023 10:25:30 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEwaPbIS2XIOdrdnhMg3BXONESa5HLJNkdw6HTKr2QVRgSJuJ/M2fMoxfftCl/PZa0g5/UEVA==
-X-Received: by 2002:a05:6214:c64:b0:67f:6bd0:4943 with SMTP id t4-20020a0562140c6400b0067f6bd04943mr151756qvj.70.1703183129835;
-        Thu, 21 Dec 2023 10:25:29 -0800 (PST)
+        bh=V5DIcTT5Lroakb0MY1T0EdVJKAtxjaPCe5FVxbyPj6I=;
+        b=EvMPAbVtD+VcOpMvtX8lDQpSqOppa5XVaYVkD7B3xA3SxdwGZcrSTlVv7A8Sd+qt85
+         Di282smpiJpDY5YizwhZePXVbTa3c7uc1xEjv0xnxGOasTQ2UGZ7gjpEQ2rq8eA+s7WA
+         FqOmawaStaYD8h2GpdPES2UHaJV1uNChDrgiULS8BOiWLFN9V9szad0sNQ0xsLNb+l8d
+         Peod2D+qBvTMa67FWclX3vTk+1qBOzmCiFlrZcJweZrqVdCr+XRZ+hJLNpH6GGvJqp9r
+         lzIJIagbSadb92Nx39Skot6gFa08EGxh/PiZR5/B013yVk3LGFwkcIdZ2v9NPPHmB4XO
+         fckQ==
+X-Gm-Message-State: AOJu0Yzt1FtCHtesaJiisDxbQj2jKw2KXXwmaHPdWEzC47OS8DO1tLqn
+	TKYSzfj+SNxBCLF0oH46fy0YtIbpqk/nPdVPwo+z5BR8c3AkQAj9v7BJCRs/nFbjjuGMvmZSqXO
+	Laj7u4rFsZoibJKGBwH4eBp2UP3aG8fP6
+X-Received: by 2002:a05:6214:1948:b0:67c:d2fd:3e3f with SMTP id q8-20020a056214194800b0067cd2fd3e3fmr172132qvk.27.1703183134902;
+        Thu, 21 Dec 2023 10:25:34 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHpc21i8CXWcL7uGVYN0nuNkhKxkO1wr9OVN8ezMhEFu/TuLI+a1iHq3RjIIe+4CssICPiVQw==
+X-Received: by 2002:a05:6214:1948:b0:67c:d2fd:3e3f with SMTP id q8-20020a056214194800b0067cd2fd3e3fmr172113qvk.27.1703183134657;
+        Thu, 21 Dec 2023 10:25:34 -0800 (PST)
 Received: from [192.168.1.163] ([2600:1700:1ff0:d0e0::37])
-        by smtp.gmail.com with ESMTPSA id da7-20020a05621408c700b0067f2c03d4adsm779605qvb.100.2023.12.21.10.25.27
+        by smtp.gmail.com with ESMTPSA id da7-20020a05621408c700b0067f2c03d4adsm779605qvb.100.2023.12.21.10.25.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Dec 2023 10:25:28 -0800 (PST)
+        Thu, 21 Dec 2023 10:25:30 -0800 (PST)
 From: Andrew Halaney <ahalaney@redhat.com>
-Date: Thu, 21 Dec 2023 12:25:18 -0600
-Subject: [PATCH RFC v2 01/11] scsi: ufs: qcom: Perform read back after
- writing reset bit
+Date: Thu, 21 Dec 2023 12:25:19 -0600
+Subject: [PATCH RFC v2 02/11] scsi: ufs: qcom: Perform read back after
+ writing REG_UFS_SYS1CLK_1US
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,7 +75,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231221-ufs-reset-ensure-effect-before-delay-v2-1-75af2a9bae51@redhat.com>
+Message-Id: <20231221-ufs-reset-ensure-effect-before-delay-v2-2-75af2a9bae51@redhat.com>
 References: <20231221-ufs-reset-ensure-effect-before-delay-v2-0-75af2a9bae51@redhat.com>
 In-Reply-To: <20231221-ufs-reset-ensure-effect-before-delay-v2-0-75af2a9bae51@redhat.com>
 To: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
@@ -93,13 +93,11 @@ To: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
  Can Guo <quic_cang@quicinc.com>
 Cc: Will Deacon <will@kernel.org>, linux-arm-msm@vger.kernel.org, 
  linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Andrew Halaney <ahalaney@redhat.com>, 
- Manivannan Sadhasivam <mani@kernel.org>
+ Andrew Halaney <ahalaney@redhat.com>
 X-Mailer: b4 0.12.3
 
-Currently, the reset bit for the UFS provided reset controller (used by
-its phy) is written to, and then a mb() happens to try and ensure that
-hit the device. Immediately afterwards a usleep_range() occurs.
+Currently after writing to REG_UFS_SYS1CLK_1US a mb() is used to ensure
+that write has gone through to the device.
 
 mb() ensure that the write completes, but completion doesn't mean that
 it isn't stored in a buffer somewhere. The recommendation for
@@ -110,49 +108,29 @@ be seen over here:
 
     https://youtu.be/i6DayghhA8Q?si=MiyxB5cKJXSaoc01&t=1678
 
-Let's do that to ensure the bit hits the device. By doing so and
-guaranteeing the ordering against the immediately following
-usleep_range(), the mb() can safely be removed.
+Let's do that to ensure the bit hits the device. Because the mb()'s
+purpose wasn't to add extra ordering (on top of the ordering guaranteed
+by writel()/readl()), it can safely be removed.
 
-Fixes: 81c0fc51b7a7 ("ufs-qcom: add support for Qualcomm Technologies Inc platforms")
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Fixes: f06fcc7155dc ("scsi: ufs-qcom: add QUniPro hardware support and power optimizations")
 Signed-off-by: Andrew Halaney <ahalaney@redhat.com>
 ---
- drivers/ufs/host/ufs-qcom.h | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ drivers/ufs/host/ufs-qcom.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/ufs/host/ufs-qcom.h b/drivers/ufs/host/ufs-qcom.h
-index 9dd9a391ebb7..b9de170983c9 100644
---- a/drivers/ufs/host/ufs-qcom.h
-+++ b/drivers/ufs/host/ufs-qcom.h
-@@ -151,10 +151,10 @@ static inline void ufs_qcom_assert_reset(struct ufs_hba *hba)
- 	ufshcd_rmwl(hba, UFS_PHY_SOFT_RESET, UFS_PHY_SOFT_RESET, REG_UFS_CFG1);
+diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
+index 480787048e75..4c15c8a1d058 100644
+--- a/drivers/ufs/host/ufs-qcom.c
++++ b/drivers/ufs/host/ufs-qcom.c
+@@ -501,7 +501,7 @@ static int ufs_qcom_cfg_timers(struct ufs_hba *hba, u32 gear,
+ 		 * make sure above write gets applied before we return from
+ 		 * this function.
+ 		 */
+-		mb();
++		ufshcd_readl(hba, REG_UFS_SYS1CLK_1US);
+ 	}
  
- 	/*
--	 * Make sure assertion of ufs phy reset is written to
--	 * register before returning
-+	 * Dummy read to ensure the write takes effect before doing any sort
-+	 * of delay
- 	 */
--	mb();
-+	ufshcd_readl(hba, REG_UFS_CFG1);
- }
- 
- static inline void ufs_qcom_deassert_reset(struct ufs_hba *hba)
-@@ -162,10 +162,10 @@ static inline void ufs_qcom_deassert_reset(struct ufs_hba *hba)
- 	ufshcd_rmwl(hba, UFS_PHY_SOFT_RESET, 0, REG_UFS_CFG1);
- 
- 	/*
--	 * Make sure de-assertion of ufs phy reset is written to
--	 * register before returning
-+	 * Dummy read to ensure the write takes effect before doing any sort
-+	 * of delay
- 	 */
--	mb();
-+	ufshcd_readl(hba, REG_UFS_CFG1);
- }
- 
- /* Host controller hardware version: major.minor.step */
+ 	return 0;
 
 -- 
 2.43.0
