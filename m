@@ -1,137 +1,96 @@
-Return-Path: <linux-kernel+bounces-7729-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7730-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A8D881AC48
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 02:41:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D90981AC4A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 02:42:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7FAB4B24C86
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 01:41:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 712541C22AF8
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 01:42:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F347D1864;
-	Thu, 21 Dec 2023 01:41:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B747B17E9;
+	Thu, 21 Dec 2023 01:42:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=flygoat.com header.i=@flygoat.com header.b="qP4ZUHgO";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="VcXLEK9g"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="dM8SPboV"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30FC41115;
-	Thu, 21 Dec 2023 01:41:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=flygoat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flygoat.com
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-	by mailout.nyi.internal (Postfix) with ESMTP id 254E45C0341;
-	Wed, 20 Dec 2023 20:41:07 -0500 (EST)
-Received: from imap44 ([10.202.2.94])
-  by compute3.internal (MEProxy); Wed, 20 Dec 2023 20:41:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
-	cc:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm3; t=1703122867;
-	 x=1703209267; bh=5O5AQ0+tqOBAkYTlZ0FO8VXCTltW/nIkbjRn79BnPxk=; b=
-	qP4ZUHgOxW/4Uzclh5jlJQisbZKURwt/X3Rjg5ZF21GmwOpmmG1+7oAqu1o845lx
-	SpObjMkUbatyHnNNMTWKxP07wfvyJZNn5DQzQ2/3Fu588Vca6QnogUOnSPdzqLaI
-	3r00n8dCtT1wWDNVL6FdaY9jXFTWwUZvLBHEMvjhiBEcOkom+jDEEj7A//JgQUWF
-	aWMyGc9tSrwdSJ1e84b8KxZ2crsB0BAhBOix0oNmr8uYAy0IiHBVWJgPNVsftWP8
-	dB81XouA/kekll+E/Ayyxo3sLg7rl27Ce3XHPISk/AiVBuGijkjBuDUjUcOuggZv
-	FRCNe5FziENZTu3xp0IKCA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1703122867; x=
-	1703209267; bh=5O5AQ0+tqOBAkYTlZ0FO8VXCTltW/nIkbjRn79BnPxk=; b=V
-	cXLEK9g9Ehrm8LlFPzGhYu+lfNq3N4JwZEAxL9Q9GUEvV+QufaDDrh27LOkXBIAl
-	+zL8AGE0eR8WJHqm6pviV5Nn0ntHDFdFm1T2VgtVRFNnjzt2ca9F3QSnMSDq/Wdp
-	vsKILgcE4C9ICuUXXp72uBU5E15flfsKYzq1qZVe7evrlwAYo4EaOcSbyIq14wNI
-	+RmeX+mX5WRmWcDqfzomV4MffVvEzP25tAWRZ/w65tGebiaMG8G6/AKgMMoHVySq
-	LHa/tPahvWC3VnSQbdo/s+w0Ozdl+Cq9Xj4cSPCuMb2EB97H58UhZDAQ1kBtP6LP
-	Jh17Io7zfK4xwIY8gB8Jg==
-X-ME-Sender: <xms:speDZTUFNeh03S8F_bbAZ1gtIT9pl8UbMsEAR6GEM4JkicNHuAmMHA>
-    <xme:speDZbnxEoxphbv-dXg3yHWhw2oWmb66dwi1_7DcvaqB5DiSPXbmctl8mIXtioy6m
-    ZaySIPOklXWbG9GrwM>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvddufedgfeejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdfl
-    ihgrgihunhcujggrnhhgfdcuoehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtoh
-    hmqeenucggtffrrghtthgvrhhnpeeihfdukeelvdduiedtieetieekvdegjefhteelhfdv
-    veelvddvffeflefglefhueenucffohhmrghinhepgihktggurdgtohhmnecuvehluhhsth
-    gvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepjhhirgiguhhnrdihrghn
-    ghesfhhlhihgohgrthdrtghomh
-X-ME-Proxy: <xmx:speDZfZ5KeV_fmVoHCO1jSR5jxVITFDXA240TX9Fc2lAkbLRc7mIoA>
-    <xmx:speDZeVd592AUFYWlnghFcYAkICBmiIcPa_4sqeTQtttpWzG5IP9Qw>
-    <xmx:speDZdl8Prv4zSwTZPO0LonhA4Qd7LV_JtVoGu0ky--spyHvsdkOAg>
-    <xmx:s5eDZcuf8994_vG9PGiECBlfQp53OPbtenC5IZcM2Qq5DxiTNkqftA>
-Feedback-ID: ifd894703:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 93C1936A0076; Wed, 20 Dec 2023 20:41:06 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1364-ga51d5fd3b7-fm-20231219.001-ga51d5fd3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AE584416
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 01:42:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a1fae88e66eso27031466b.3
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 17:42:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1703122944; x=1703727744; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xQaeuehoPaO3pr13bWE/WXu451v/qATRA3gTcbFlLWc=;
+        b=dM8SPboVYxCx22ZWHIV3tXCbezGMEC0Pm9cqzn+8FVnZ2i5iZQrB9GVP/vAbktQlid
+         KU9eFNGYkx5zzAufV+jxW2a0TwQgyqNke0z+sB+g2lJj/yG5A971ATonE2P2on8DBqv/
+         UeoFwZfyq8H1jGX1cfpc66U+wagYl/YVWWwzM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703122944; x=1703727744;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xQaeuehoPaO3pr13bWE/WXu451v/qATRA3gTcbFlLWc=;
+        b=t8E38DNkknow1MhW0jY8WFOYN+hQoGrA5VwEPT224kHGEvdPbsegmw4ZQxAsFLrp9a
+         XAkMybxtTpi6ayE2Q6Lfjb18GuA2oNZlKxu2QyWnxnZt4joqmyJuBCHK5VNWbbYLSe07
+         dRK1wfpMxM+Dv93wiPQIY8TILD3WadOeWb8lQIOoxvg+mcsrhzIiy9u+4KFxi9SRonGm
+         rkgByVW2JXmGfI17BcXVSWHjeXLw/tLEs4vBDgukeL0t5PjbsY9DGMh26fqKENIIvZh6
+         P/5aKlCDZBcgOAj6wLnLvn90Q8uJPOdvWUIQOwMsDw0189kP94Ieo0vuvIOwzggTQc8y
+         LiPQ==
+X-Gm-Message-State: AOJu0YzPQ41LXkdYLVzuEGqikPAdavHuz88h1xpixu/kqqVCeuXBQHZ9
+	oJqMAe+PXk/FgmTmaUlw9mQjZ6vsvoVmqRyI7E8=
+X-Google-Smtp-Source: AGHT+IEbSh1scNxvZPP5p7QB19/NGq79kyZNFBoS727DEsf+zzQ5fgpoMAM2TrZXo1TgVD2zwj8h1w==
+X-Received: by 2002:a17:906:1b10:b0:a23:6d76:4c7c with SMTP id o16-20020a1709061b1000b00a236d764c7cmr2230492ejg.107.1703122944355;
+        Wed, 20 Dec 2023 17:42:24 -0800 (PST)
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com. [209.85.221.52])
+        by smtp.gmail.com with ESMTPSA id lc5-20020a170906f90500b00a235dfe6b4fsm400690ejb.204.2023.12.20.17.42.22
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Dec 2023 17:42:23 -0800 (PST)
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-336695c4317so217396f8f.3
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 17:42:22 -0800 (PST)
+X-Received: by 2002:a05:6000:1cd:b0:336:7ddc:79c8 with SMTP id
+ t13-20020a05600001cd00b003367ddc79c8mr294876wrx.1.1703122942318; Wed, 20 Dec
+ 2023 17:42:22 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <2a2f69f9-f987-4f96-9c5b-3aaaea29bbbc@app.fastmail.com>
-In-Reply-To: <ZYNaFhFp/+q+/Z0Z@alpha.franken.de>
-References: <20231029-mips_debug_ll-v1-0-d7a491e8c278@flygoat.com>
- <ZYNaFhFp/+q+/Z0Z@alpha.franken.de>
-Date: Thu, 21 Dec 2023 01:40:46 +0000
-From: "Jiaxun Yang" <jiaxun.yang@flygoat.com>
-To: "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>
-Cc: "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/8] MIPS: Unify low-level debugging functionalities
-Content-Type: text/plain;charset=utf-8
+References: <20231220090135.1028991-1-yu-hao.lin@nxp.com>
+In-Reply-To: <20231220090135.1028991-1-yu-hao.lin@nxp.com>
+From: Brian Norris <briannorris@chromium.org>
+Date: Wed, 20 Dec 2023 17:42:06 -0800
+X-Gmail-Original-Message-ID: <CA+ASDXOLPWfS2M9J7CXWSP=dWw=mVOA41Ti_RGd2kRGTfcrinw@mail.gmail.com>
+Message-ID: <CA+ASDXOLPWfS2M9J7CXWSP=dWw=mVOA41Ti_RGd2kRGTfcrinw@mail.gmail.com>
+Subject: Re: [PATCH] wifi: mwifiex: fix uninitialized firmware_stat
+To: David Lin <yu-hao.lin@nxp.com>
+Cc: linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	kvalo@kernel.org, francesco@dolcini.it, tsung-hsien.hsieh@nxp.com, 
+	stable@vger.kernel.org, kernel test robot <lkp@intel.com>, Dan Carpenter <error27@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-
-
-=E5=9C=A82023=E5=B9=B412=E6=9C=8820=E6=97=A5=E5=8D=81=E4=BA=8C=E6=9C=88 =
-=E4=B8=8B=E5=8D=889:18=EF=BC=8CThomas Bogendoerfer=E5=86=99=E9=81=93=EF=BC=9A
-> On Sun, Oct 29, 2023 at 02:53:01AM +0000, Jiaxun Yang wrote:
->> The plan is to elimiate platform specific early_printk and
->> cps-vec-ns16550 by debug_ll and earlycon.
+On Wed, Dec 20, 2023 at 1:02=E2=80=AFAM David Lin <yu-hao.lin@nxp.com> wrot=
+e:
 >
-> https://xkcd.com/927/ ?
+> Variable firmware_stat is possilbe to be used without initialization.
 >
-> sorry I don't think that just another new function is good approach.
-> Doing this will end up with another method for early debugging and
-> all other will stay.
-All others will go (one of two already gone).
+> Signed-off-by: David Lin <yu-hao.lin@nxp.com>
+> Fixes: 1c5d463c0770 ("wifi: mwifiex: add extra delay for firmware ready")
+> Cc: stable@vger.kernel.org
+> Reported-by: kernel test robot <lkp@intel.com>
+> Reported-by: Dan Carpenter <error27@gmail.com>
+> Closes: https://lore.kernel.org/r/202312192236.ZflaWYCw-lkp@intel.com/
 
-The thing is, I tried to get cps-vec-16550 and zboot work with UHI
-semihosting, and soon find out that they are doing exactly the same
-thing. So I tried to unify them.
-
-I miss the good old day on Arm system that I can use handy debug_ll
-functions for every low level debugging purpose, thus I just copied the
-whole design.
-
-There won't be any new debugging functions, zboot one already merged
-into debug_ll in this series, cps-vec-ns16550 will be merged as well,
-I've got patches prepared locally but depending on my XKPHYS changes.
-
-We have extra functionality to debug early exception as well, that will
-certainly make bring-up process easier.
-
-Thanks.
->
-> Thomas.
->
-> --=20
-> Crap can work. Given enough thrust pigs will fly, but it's not necessa=
-rily a
-> good idea.                                                [ RFC1925, 2=
-.3 ]
-
---=20
-- Jiaxun
+Acked-by: Brian Norris <briannorris@chromium.org>
 
