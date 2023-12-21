@@ -1,24 +1,24 @@
-Return-Path: <linux-kernel+bounces-9019-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9020-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 02AA981BF56
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 21:05:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE3C981BF57
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 21:05:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8D84A1F24F12
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 20:05:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 899B0285A38
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 20:05:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3504A745DA;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 672FB745ED;
 	Thu, 21 Dec 2023 20:05:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ca6Xr6Os"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="oUd4oho2"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
+Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42C9373191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDEF973197
 	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 20:05:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
@@ -29,10 +29,10 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=+hJyqXb/2fG9kaa/Bl39ZO/TtJVAZ8OgDJUIBMdnwuM=;
-	b=ca6Xr6Os/Z3oFun+6KyDxiIacA2tRaVxTTFDHDXDXQXtiQWsYC5+HPech6L4MV3aDTlI07
-	j3QG0NjRC9B+YgnnxEmb3EgpisveCkpCHQQWA6eNmn+8rbL4RjMp1UGbU7g5fyeyc5HMZ8
-	qEqcpGuZ87c1j2vSIZxFI6Ddhg+Wa5s=
+	bh=25+JPAVVR93qloIeZBPh87TvRbXcdeZ++9g3nzTCJ2g=;
+	b=oUd4oho2PQFVBsMx441Y1BJ9xZLJRj3/NEa+HI+PvsMu+h8/Evf4eJR6JIIS7+fS93FGb7
+	Ih/Fyn0cbQWAZzwK+nS3P7ZRUaf95dp2MAee2vmD/jR6DwOerV5e/55LchsDaXoVGmFMIn
+	0QPWF12bI5PU1x2N2e+NkASW14dnAIM=
 From: andrey.konovalov@linux.dev
 To: Marco Elver <elver@google.com>
 Cc: Andrey Konovalov <andreyknvl@gmail.com>,
@@ -44,9 +44,9 @@ Cc: Andrey Konovalov <andreyknvl@gmail.com>,
 	linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org,
 	Andrey Konovalov <andreyknvl@google.com>
-Subject: [PATCH mm 01/11] kasan/arm64: improve comments for KASAN_SHADOW_START/END
-Date: Thu, 21 Dec 2023 21:04:43 +0100
-Message-Id: <140108ca0b164648c395a41fbeecb0601b1ae9e1.1703188911.git.andreyknvl@google.com>
+Subject: [PATCH mm 02/11] mm, kasan: use KASAN_TAG_KERNEL instead of 0xff
+Date: Thu, 21 Dec 2023 21:04:44 +0100
+Message-Id: <71db9087b0aebb6c4dccbc609cc0cd50621533c7.1703188911.git.andreyknvl@google.com>
 In-Reply-To: <cover.1703188911.git.andreyknvl@google.com>
 References: <cover.1703188911.git.andreyknvl@google.com>
 Precedence: bulk
@@ -60,123 +60,65 @@ X-Migadu-Flow: FLOW_OUT
 
 From: Andrey Konovalov <andreyknvl@google.com>
 
-Unify and improve the comments for KASAN_SHADOW_START/END definitions
-from include/asm/kasan.h and include/asm/memory.h.
-
-Also put both definitions together in include/asm/memory.h.
-
-Also clarify the related BUILD_BUG_ON checks in mm/kasan_init.c.
+Use the KASAN_TAG_KERNEL marco instead of open-coding 0xff in the mm
+code. This macro is provided by include/linux/kasan-tags.h, which does
+not include any other headers, so it's safe to include it into mm.h
+without causing circular include dependencies.
 
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 ---
- arch/arm64/include/asm/kasan.h  | 22 +------------------
- arch/arm64/include/asm/memory.h | 38 +++++++++++++++++++++++++++------
- arch/arm64/mm/kasan_init.c      |  5 +++++
- 3 files changed, 38 insertions(+), 27 deletions(-)
+ include/linux/kasan.h | 1 +
+ include/linux/mm.h    | 4 ++--
+ mm/page_alloc.c       | 2 +-
+ 3 files changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm64/include/asm/kasan.h b/arch/arm64/include/asm/kasan.h
-index 12d5f47f7dbe..7eefc525a9df 100644
---- a/arch/arm64/include/asm/kasan.h
-+++ b/arch/arm64/include/asm/kasan.h
-@@ -15,29 +15,9 @@
+diff --git a/include/linux/kasan.h b/include/linux/kasan.h
+index d49e3d4c099e..dbb06d789e74 100644
+--- a/include/linux/kasan.h
++++ b/include/linux/kasan.h
+@@ -4,6 +4,7 @@
  
- #if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)
+ #include <linux/bug.h>
+ #include <linux/kasan-enabled.h>
++#include <linux/kasan-tags.h>
+ #include <linux/kernel.h>
+ #include <linux/static_key.h>
+ #include <linux/types.h>
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index a422cc123a2d..8b2e4841e817 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -1815,7 +1815,7 @@ static inline void vma_set_access_pid_bit(struct vm_area_struct *vma)
  
-+asmlinkage void kasan_early_init(void);
- void kasan_init(void);
--
--/*
-- * KASAN_SHADOW_START: beginning of the kernel virtual addresses.
-- * KASAN_SHADOW_END: KASAN_SHADOW_START + 1/N of kernel virtual addresses,
-- * where N = (1 << KASAN_SHADOW_SCALE_SHIFT).
-- *
-- * KASAN_SHADOW_OFFSET:
-- * This value is used to map an address to the corresponding shadow
-- * address by the following formula:
-- *     shadow_addr = (address >> KASAN_SHADOW_SCALE_SHIFT) + KASAN_SHADOW_OFFSET
-- *
-- * (1 << (64 - KASAN_SHADOW_SCALE_SHIFT)) shadow addresses that lie in range
-- * [KASAN_SHADOW_OFFSET, KASAN_SHADOW_END) cover all 64-bits of virtual
-- * addresses. So KASAN_SHADOW_OFFSET should satisfy the following equation:
-- *      KASAN_SHADOW_OFFSET = KASAN_SHADOW_END -
-- *				(1ULL << (64 - KASAN_SHADOW_SCALE_SHIFT))
-- */
--#define _KASAN_SHADOW_START(va)	(KASAN_SHADOW_END - (1UL << ((va) - KASAN_SHADOW_SCALE_SHIFT)))
--#define KASAN_SHADOW_START      _KASAN_SHADOW_START(vabits_actual)
--
- void kasan_copy_shadow(pgd_t *pgdir);
--asmlinkage void kasan_early_init(void);
- 
- #else
- static inline void kasan_init(void) { }
-diff --git a/arch/arm64/include/asm/memory.h b/arch/arm64/include/asm/memory.h
-index fde4186cc387..0f139cb4467b 100644
---- a/arch/arm64/include/asm/memory.h
-+++ b/arch/arm64/include/asm/memory.h
-@@ -65,15 +65,41 @@
- #define KERNEL_END		_end
- 
- /*
-- * Generic and tag-based KASAN require 1/8th and 1/16th of the kernel virtual
-- * address space for the shadow region respectively. They can bloat the stack
-- * significantly, so double the (minimum) stack size when they are in use.
-+ * Generic and Software Tag-Based KASAN modes require 1/8th and 1/16th of the
-+ * kernel virtual address space for storing the shadow memory respectively.
-+ *
-+ * The mapping between a virtual memory address and its corresponding shadow
-+ * memory address is defined based on the formula:
-+ *
-+ *     shadow_addr = (addr >> KASAN_SHADOW_SCALE_SHIFT) + KASAN_SHADOW_OFFSET
-+ *
-+ * where KASAN_SHADOW_SCALE_SHIFT is the order of the number of bits that map
-+ * to a single shadow byte and KASAN_SHADOW_OFFSET is a constant that offsets
-+ * the mapping. Note that KASAN_SHADOW_OFFSET does not point to the start of
-+ * the shadow memory region.
-+ *
-+ * Based on this mapping, we define two constants:
-+ *
-+ *     KASAN_SHADOW_START: the start of the shadow memory region;
-+ *     KASAN_SHADOW_END: the end of the shadow memory region.
-+ *
-+ * KASAN_SHADOW_END is defined first as the shadow address that corresponds to
-+ * the upper bound of possible virtual kernel memory addresses UL(1) << 64
-+ * according to the mapping formula.
-+ *
-+ * KASAN_SHADOW_START is defined second based on KASAN_SHADOW_END. The shadow
-+ * memory start must map to the lowest possible kernel virtual memory address
-+ * and thus it depends on the actual bitness of the address space.
-+ *
-+ * As KASAN inserts redzones between stack variables, this increases the stack
-+ * memory usage significantly. Thus, we double the (minimum) stack size.
-  */
- #if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)
- #define KASAN_SHADOW_OFFSET	_AC(CONFIG_KASAN_SHADOW_OFFSET, UL)
--#define KASAN_SHADOW_END	((UL(1) << (64 - KASAN_SHADOW_SCALE_SHIFT)) \
--					+ KASAN_SHADOW_OFFSET)
--#define PAGE_END		(KASAN_SHADOW_END - (1UL << (vabits_actual - KASAN_SHADOW_SCALE_SHIFT)))
-+#define KASAN_SHADOW_END	((UL(1) << (64 - KASAN_SHADOW_SCALE_SHIFT)) + KASAN_SHADOW_OFFSET)
-+#define _KASAN_SHADOW_START(va)	(KASAN_SHADOW_END - (UL(1) << ((va) - KASAN_SHADOW_SCALE_SHIFT)))
-+#define KASAN_SHADOW_START	_KASAN_SHADOW_START(vabits_actual)
-+#define PAGE_END		KASAN_SHADOW_START
- #define KASAN_THREAD_SHIFT	1
- #else
- #define KASAN_THREAD_SHIFT	0
-diff --git a/arch/arm64/mm/kasan_init.c b/arch/arm64/mm/kasan_init.c
-index 555285ebd5af..4c7ad574b946 100644
---- a/arch/arm64/mm/kasan_init.c
-+++ b/arch/arm64/mm/kasan_init.c
-@@ -170,6 +170,11 @@ asmlinkage void __init kasan_early_init(void)
+ static inline u8 page_kasan_tag(const struct page *page)
  {
- 	BUILD_BUG_ON(KASAN_SHADOW_OFFSET !=
- 		KASAN_SHADOW_END - (1UL << (64 - KASAN_SHADOW_SCALE_SHIFT)));
-+	/*
-+	 * We cannot check the actual value of KASAN_SHADOW_START during build,
-+	 * as it depends on vabits_actual. As a best-effort approach, check
-+	 * potential values calculated based on VA_BITS and VA_BITS_MIN.
-+	 */
- 	BUILD_BUG_ON(!IS_ALIGNED(_KASAN_SHADOW_START(VA_BITS), PGDIR_SIZE));
- 	BUILD_BUG_ON(!IS_ALIGNED(_KASAN_SHADOW_START(VA_BITS_MIN), PGDIR_SIZE));
- 	BUILD_BUG_ON(!IS_ALIGNED(KASAN_SHADOW_END, PGDIR_SIZE));
+-	u8 tag = 0xff;
++	u8 tag = KASAN_TAG_KERNEL;
+ 
+ 	if (kasan_enabled()) {
+ 		tag = (page->flags >> KASAN_TAG_PGSHIFT) & KASAN_TAG_MASK;
+@@ -1844,7 +1844,7 @@ static inline void page_kasan_tag_set(struct page *page, u8 tag)
+ static inline void page_kasan_tag_reset(struct page *page)
+ {
+ 	if (kasan_enabled())
+-		page_kasan_tag_set(page, 0xff);
++		page_kasan_tag_set(page, KASAN_TAG_KERNEL);
+ }
+ 
+ #else /* CONFIG_KASAN_SW_TAGS || CONFIG_KASAN_HW_TAGS */
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 7ea9c33320bf..51e85760877a 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -1059,7 +1059,7 @@ static inline bool should_skip_kasan_poison(struct page *page, fpi_t fpi_flags)
+ 	if (IS_ENABLED(CONFIG_KASAN_GENERIC))
+ 		return deferred_pages_enabled();
+ 
+-	return page_kasan_tag(page) == 0xff;
++	return page_kasan_tag(page) == KASAN_TAG_KERNEL;
+ }
+ 
+ static void kernel_init_pages(struct page *page, int numpages)
 -- 
 2.25.1
 
