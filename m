@@ -1,167 +1,184 @@
-Return-Path: <linux-kernel+bounces-9074-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9075-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5EA8E81BFED
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 22:12:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A47F981BFEF
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 22:13:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 14E852867D1
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 21:12:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2EAD71F25E9D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 21:13:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DEF376DAD;
-	Thu, 21 Dec 2023 21:12:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AE0376DB5;
+	Thu, 21 Dec 2023 21:13:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="WB0oxVna"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="q28p3H6T"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA44C6280F;
-	Thu, 21 Dec 2023 21:12:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=googlemail.com
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-40d3c4bfe45so12595285e9.1;
-        Thu, 21 Dec 2023 13:12:41 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DDD476DAE
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 21:13:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-40d2764c0f2so15155395e9.2
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 13:13:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20230601; t=1703193160; x=1703797960; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Q4Cbsukg0G3muNGOdfceGuCWeyDTmVu8AAhb+DgFIkI=;
-        b=WB0oxVna3wSylCA8jCD15INYJLvftWNViGIlL+D93XCa6iL3JIT1IrXtmk9j+37gaw
-         Vut++3Xe4muxExe7PI+jabgkXm+ymvsiEFoVQudOCQIbx6lEbI45qkjq/cxWUQbBjcwc
-         0NhxPpHzOKT1YZX/jsazWPp/FAhk9JS+6G2E+LSHi9a0yZ/JQgsyX+N8IICZau7KwJix
-         nqoALmgbkdfFTUR02RWwUYeoBl2BNXvp1niyl7soB2IDAwCL86CVFGitTrQv/ssSa+a5
-         /v/hjxzUNh41/Dau7r4E1kEd4aDn+Begps3J6xKYSuER4Dnu7QHxEgmcFl7mILrPMn0K
-         vZMA==
+        d=linaro.org; s=google; t=1703193184; x=1703797984; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=GdMlmaV9AC7XvOLSkLsEav9XnreEWiVniTZV6CZEpk4=;
+        b=q28p3H6TBjI5NmTShE0CsG4Nov/c5hTdRCcx5Vc+gjoZpqV1HLn4EuncBEf6o0TT/m
+         VnTtneGUaUGjrq5A0gKk31Q+x6cwirQP1/vJqAvIm3zftSZHLugnB3IszlDuGLNvHKpp
+         lQDdDZlYgMwev1HdVwSzMx8aK/6RzSfEA3AIEIBYwHJ+xaOtQTMbm4m9/5ZX3T1bGNOz
+         RtyX1ZeKfay5KBt1yn0d+lvg65IYztqZdFCI0dO0GLlReaJVfES4JouIguxz5tIW0T/l
+         XInqh5vSryGwd34N7mDckN/2karryvM0Ll6FPgmZgv9l+jQs346wtcmlSHmJuDdPHa0C
+         Nr7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703193160; x=1703797960;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1703193184; x=1703797984;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Q4Cbsukg0G3muNGOdfceGuCWeyDTmVu8AAhb+DgFIkI=;
-        b=fg33kqsuEcGQJkBTN2ZyG0CCk0gd37eFKA/zXYaqpCeGf7BDU9tkw4BfoSFK8g6p8h
-         bghXhHc+7WpOkdKgsyBPqz54FDDeUwdqym9Cez4QlBqk5gFdufIWV/hwhS3p9hDAiSGG
-         L5lQqjszPRO++bmAP7SBrnSyzGo64DLfjj69avWBIT2YU1Up2CwKuSp0uav2o7xIMpIS
-         08EPMfAoxWC3xf3mOpaCK5swv63yuUWrAk7MbdgpnmYYyrKWvWuOV56A9GjNsqZatNCf
-         rbX5JVs5aaWlLSfPsdjVYtrwzHAE/MHolfUN2X+hqr3XzTwZZN85tckkirArpvXyCFCp
-         Y83A==
-X-Gm-Message-State: AOJu0YwtD69KoSVqDSk7fAGXl/f70dQxelxiCgJDAIbSt5xdqFqRhZlE
-	+A8/u646spzvNcW5YQNRdauIAw2CNzg=
-X-Google-Smtp-Source: AGHT+IHmELJUnkQDo5KJjUSCQrDQziZzRPhiuycQ2ms54XOnISGI1jfghQbrIMYzE02RPLo8s0fN8w==
-X-Received: by 2002:a05:600c:ccf:b0:40d:3d57:eaf5 with SMTP id fk15-20020a05600c0ccf00b0040d3d57eaf5mr105640wmb.164.1703193159410;
-        Thu, 21 Dec 2023 13:12:39 -0800 (PST)
-Received: from localhost.localdomain (dynamic-2a01-0c23-b96c-7a00-0000-0000-0000-0e63.c23.pool.telefonica.de. [2a01:c23:b96c:7a00::e63])
-        by smtp.googlemail.com with ESMTPSA id uz16-20020a170907119000b00a2685eca385sm1341669ejb.195.2023.12.21.13.12.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Dec 2023 13:12:38 -0800 (PST)
-From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-To: lgirdwood@gmail.com,
-	broonie@kernel.org,
-	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-	linux-pwm@vger.kernel.org,
-	linux-amlogic@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Dmitry Rokosov <ddrokosov@sberdevices.ru>,
-	Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Subject: [RFC PATCH v1] regulator: pwm-regulator: Fix continuous get_voltage for disabled PWM
-Date: Thu, 21 Dec 2023 22:12:22 +0100
-Message-ID: <20231221211222.1380658-1-martin.blumenstingl@googlemail.com>
-X-Mailer: git-send-email 2.43.0
+        bh=GdMlmaV9AC7XvOLSkLsEav9XnreEWiVniTZV6CZEpk4=;
+        b=rNZkW9X0nyUay4+Fy5rE+Q5Jtxl4/TK2D/pkBgKnufP45OnP9YXxIpW95m178EMDkJ
+         AUjHYn62cFL5lxh94LcYq4rT8UKMQmGq4eD9mFkutXM7XEUIXfhC6IKGmXJbisI7O8/7
+         Vh/TwF4sh/Hu+OP5YuKZhfjSrw98KDVaTsO2NZRj+Y0S7OvFIF/Dlb7cb4szn6t7rOTT
+         2uzCmtHdQ447iXdNUMCM6rm5ZeSDlr+lsODattFAYLalcNIP9YggdgEhsComl7I2ISP+
+         0uScRzjvpF9DTjIeZ+9D+lf4bo+sMHb0bsTqVU70eTDdfFxeRA6D1NzfakHl/FvqSkrZ
+         wI8Q==
+X-Gm-Message-State: AOJu0Yw+ijK2kxvnakte2vji8i9K+Lv23zr/kB0mGyPLt381PaZxRRMW
+	psLs9UExN6cmJwO90wRYnbKa1F8zEa36HA==
+X-Google-Smtp-Source: AGHT+IEaptAlsGu2FAQRl6GgDxH92kk3R15a9/9ALjxi45/P5iqrlZBjTJFycViFTuu/3edjunSGWw==
+X-Received: by 2002:a05:600c:1908:b0:40d:3452:e791 with SMTP id j8-20020a05600c190800b0040d3452e791mr179835wmq.127.1703193184340;
+        Thu, 21 Dec 2023 13:13:04 -0800 (PST)
+Received: from [192.168.0.22] ([78.10.206.178])
+        by smtp.gmail.com with ESMTPSA id d17-20020a170906345100b00a26af0a6845sm520953ejb.9.2023.12.21.13.13.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Dec 2023 13:13:03 -0800 (PST)
+Message-ID: <b2b9d95e-dcc7-4a3e-b4b4-14d5af964b96@linaro.org>
+Date: Thu, 21 Dec 2023 22:13:01 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 0/2] w1: add UART w1 bus driver
+To: Christoph Winklhofer <cj.winklhofer@gmail.com>, robh+dt@kernel.org,
+ conor+dt@kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231221065049.30703-1-cj.winklhofer@gmail.com>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231221065049.30703-1-cj.winklhofer@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Odroid-C1 uses a Monolithic Power Systems MP2161 controlled via PWM for
-the VDDEE voltage supply of the Meson8b SoC. Commit 6b9352f3f8a1 ("pwm:
-meson: modify and simplify calculation in meson_pwm_get_state") results
-in my Odroid-C1 crashing with memory corruption in many different places
-(seemingly at random). It turns out that this is due to a currently not
-supported corner case.
+On 21/12/2023 07:50, Christoph Winklhofer wrote:
+> Hello!
+> 
+> Krzysztof, thank your very much for your feedback!
+> 
+> This patch contains a driver for a 1-Wire bus over UART. The driver
+> utilizes the UART interface via the Serial Device Bus to create the
+> 1-Wire timing patterns.
+> 
+> Version 1
+> 
 
-The VDDEE regulator can generate between 860mV (duty cycle of ~91%) and
-1140mV (duty cycle of 0%). We consider it to be enabled by the bootloader
-(which is why it has the regulator-boot-on flag in .dts) as well as
-being always-on (which is why it has the regulator-always-on flag in
-.dts) because the VDDEE voltage is required for the Meson8b SoC to work.
-The public S805 datasheet [0] states on page 17 (where "A5" refers to the
-Cortex-A5 CPU cores):
-  [...] So if EE domains is shut off, A5 memory is also shut off. That
-  does not matter. Before EE power domain is shut off, A5 should be shut
-  off at first.
+You already sent v1, so this is v2:
 
-It turns out that at least some bootloader versions are keeping the PWM
-output disabled. This is not a problem due to the specific design of the
-regulator: when the PWM output is disabled the output pin is pulled LOW,
-effectively achieving a 0% duty cycle (which in return means that VDDEE
-voltage is at 1140mV).
-
-The problem comes when the pwm-regulator driver tries to initialize the
-PWM output. To do so it reads the current state from the hardware, which
-is:
-  period: 3666ns
-  duty cycle: 3333ns (= ~91%)
-  enabled: false
-Then those values are translated using the continuous voltage range to
-860mV.
-Later, when the regulator is being enabled (either by the regulator core
-due to the always-on flag or first consumer - in this case the lima
-driver for the Mali-450 GPU) the pwm-regulator driver tries to keep the
-voltage (at 860mV) and just enable the PWM output. This is when things
-start to go wrong as the typical voltage used for VDDEE is 1100mV.
-
-Commit 6b9352f3f8a1 ("pwm: meson: modify and simplify calculation in
-meson_pwm_get_state") triggers above condition as before that change
-period and duty cycle were both at 0. Since the change to the pwm-meson
-driver is considered correct the solution is to be found in the
-pwm-regulator driver which now considers the voltage to be at the
-minimum or maximum (depending on whether the polarity is inverted) if
-the PWM output is disabled. This makes the VDDEE regulator on Odroid-C1
-read 1140mV while the PWM output is disabled, so all following steps try
-to keep the 1140mV until any regulator consumer (such as the lima
-driver's devfreq implementation) tries to set a different voltage
-(1100mV is the target voltage).
-
-[0] https://dn.odroid.com/S805/Datasheet/S805_Datasheet%20V0.8%2020150126.pdf
-
-Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+b4 diff '<20231221065049.30703-1-cj.winklhofer@gmail.com>'
+Grabbing thread from
+lore.kernel.org/all/20231221065049.30703-1-cj.winklhofer@gmail.com/t.mbox.gz
 ---
-Sending this as RFC as I'm not 100% sure if this is the correct way to
-solve my problem. Reverting commit 6b9352f3f8a1 (which I found via git
-bisect) also works, but it seems hacky.
+Analyzing 4 messages in the thread
+ERROR: Could not auto-find previous revision
+       Run "b4 am -T" manually, then "b4 diff -m mbx1 mbx2"
 
-Once we agreed on the "correct" solution I will add Fixes tags as needed
+I still cannot find the changelog. Does it mean nothing improved?
 
 
- drivers/regulator/pwm-regulator.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+> - In v1, the driver requests a baud-rate (9600 for reset and 115200 for
+> write/read) and tries to adapt the transmitted byte according to the
+> actual baud-rate returned from serdev. Is this the correct direction or
+> should the baud-rate be specified in the device-tree? Alternatively,
+> it could make sense to specify the minimum and maximum times for the
+> 1-Wire operations in the device-tree, instead of using hard-coded ones
+> similar as in "Figure 11. Configuration tab" of the linked document
+> "Using UART to Implement a 1-Wire Bus Master".
 
-diff --git a/drivers/regulator/pwm-regulator.c b/drivers/regulator/pwm-regulator.c
-index 2aff6db748e2..30402ee18392 100644
---- a/drivers/regulator/pwm-regulator.c
-+++ b/drivers/regulator/pwm-regulator.c
-@@ -157,7 +157,12 @@ static int pwm_regulator_get_voltage(struct regulator_dev *rdev)
- 
- 	pwm_get_state(drvdata->pwm, &pstate);
- 
--	voltage = pwm_get_relative_duty_cycle(&pstate, duty_unit);
-+	if (pstate.enabled)
-+		voltage = pwm_get_relative_duty_cycle(&pstate, duty_unit);
-+	else if (max_uV_duty < min_uV_duty)
-+		voltage = max_uV_duty;
-+	else
-+		voltage = min_uV_duty;
- 
- 	/*
- 	 * The dutycycle for min_uV might be greater than the one for max_uV.
--- 
-2.43.0
+Depends, are these hardware properties? Are these runtime? What do they
+depend on?
+
+> 
+> - In addition, the received byte is now protected with a mutex - instead
+> of the atomic, which I used before due to the concurrent store and load.
+> 
+> - Receiving more than one byte results in an error, since the w1-uart
+> driver is the only writer, it writes a single-byte and should receive
+> a single byte.
+> 
+> Changes:
+> - support different baud-rates
+> - fix variable names, errno-returns, wrong define CONFIG_OF
+> - fix log flooding
+> - fix locking problem for serdev-receive and w1-master reset/touch
+> - fix driver remove (error-path for rxtx-function)
+> - add documentation for dt-binding
+
+So this looks like changelog. Please make it explicit - move it to the
+beginning of cover letter and say "changes in v2".
+
+
+Best regards,
+Krzysztof
 
 
