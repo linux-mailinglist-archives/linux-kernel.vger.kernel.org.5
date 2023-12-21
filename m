@@ -1,793 +1,697 @@
-Return-Path: <linux-kernel+bounces-8233-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8235-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92D4381B416
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 11:44:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6EE9281B41F
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 11:45:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B6CA81C2474C
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 10:44:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 24F33283219
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 10:45:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22A506D1A4;
-	Thu, 21 Dec 2023 10:44:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 839296A018;
+	Thu, 21 Dec 2023 10:44:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="u/hKQd0E"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37F6A6BB55
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 10:44:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7C6B32F4;
-	Thu, 21 Dec 2023 02:44:44 -0800 (PST)
-Received: from [10.57.87.54] (unknown [10.57.87.54])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 199693F5A1;
-	Thu, 21 Dec 2023 02:43:55 -0800 (PST)
-Message-ID: <a76adfd2-a17d-4342-af7e-5d17cf10dab7@arm.com>
-Date: Thu, 21 Dec 2023 10:43:54 +0000
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C97A16EB66;
+	Thu, 21 Dec 2023 10:44:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3774BC433C9;
+	Thu, 21 Dec 2023 10:44:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703155456;
+	bh=9tw2dZ2efTYlHIxVUEmyFNNoxEM7K4qqLa+qeZQxZ0o=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=u/hKQd0EvVkb/jhdyFp78BqGTiZW5R40wmdMNrjA75rmwPoswkyFsoxiSsXcsRNtw
+	 +wHZWlJRa1jB9bigcQcdOn42dotMk7taW3Z21BphIBDZL8TBvjgZBpnyNaliiR/XaR
+	 lABGwkSoWqzV+5I+vWfI+sblaOWiTHG5N7awAjqXyU3ikMsmsidjpN96PzgmAli9TJ
+	 TfRyS6CcbsUh9m4ogAY2EtW5JZ8r1SmuZHGB4INegawB9xR1Jyf5pY2zXMc+yyEPkO
+	 eYWmVRciHGqSOyF7XyiCVuaTTydcQC2vsvPFNDNPSwGEyBkRxgvPoyTdli6QgeqnEk
+	 H9iiyw1HGguIA==
+Date: Thu, 21 Dec 2023 10:44:03 +0000
+From: Jonathan Cameron <jic23@kernel.org>
+To: Jean-Baptiste Maneyrol <Jean-Baptiste.Maneyrol@tdk.com>
+Cc: Hiten Chauhan <hiten.chauhan@siliconsignals.io>, "lars@metafoo.de"
+ <lars@metafoo.de>, "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3] Added tilt interrupt support in inv_icm42600
+Message-ID: <20231221104403.3680cb24@jic23-huawei>
+In-Reply-To: <FR3P281MB17572C7F829D96564AE61B0DCE96A@FR3P281MB1757.DEUP281.PROD.OUTLOOK.COM>
+References: <20231117151446.49738-1-hiten.chauhan@siliconsignals.io>
+	<FR3P281MB17576C325FD416F14DCE4B7FCEB4A@FR3P281MB1757.DEUP281.PROD.OUTLOOK.COM>
+	<MAXPR01MB4118176054665C88E3C6FAE7EABFA@MAXPR01MB4118.INDPRD01.PROD.OUTLOOK.COM>
+	<FR3P281MB1757E3C062BA1D363B6D7E80CEBDA@FR3P281MB1757.DEUP281.PROD.OUTLOOK.COM>
+	<MAXPR01MB41180BBF8B6743966FB0B135EA8AA@MAXPR01MB4118.INDPRD01.PROD.OUTLOOK.COM>
+	<FR3P281MB1757AC113CAD4072B85BB695CE8AA@FR3P281MB1757.DEUP281.PROD.OUTLOOK.COM>
+	<20231210112038.6c4613d3@jic23-huawei>
+	<MAXPR01MB4118D846300DD45ED8866235EA90A@MAXPR01MB4118.INDPRD01.PROD.OUTLOOK.COM>
+	<20231220122708.740c9ff9@jic23-huawei>
+	<FR3P281MB17572C7F829D96564AE61B0DCE96A@FR3P281MB1757.DEUP281.PROD.OUTLOOK.COM>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Metin Kaya <metin.kaya@arm.com>
-Subject: Re: [PATCH v7 08/23] sched: Split scheduler and execution contexts
-To: John Stultz <jstultz@google.com>, LKML <linux-kernel@vger.kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>, Joel Fernandes
- <joelaf@google.com>, Qais Yousef <qyousef@google.com>,
- Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>,
- Dietmar Eggemann <dietmar.eggemann@arm.com>,
- Valentin Schneider <vschneid@redhat.com>,
- Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
- Zimuzo Ezeozue <zezeozue@google.com>, Youssef Esmat
- <youssefesmat@google.com>, Mel Gorman <mgorman@suse.de>,
- Daniel Bristot de Oliveira <bristot@redhat.com>,
- Will Deacon <will@kernel.org>, Waiman Long <longman@redhat.com>,
- Boqun Feng <boqun.feng@gmail.com>, "Paul E. McKenney" <paulmck@kernel.org>,
- Xuewen Yan <xuewen.yan94@gmail.com>, K Prateek Nayak
- <kprateek.nayak@amd.com>, Thomas Gleixner <tglx@linutronix.de>,
- kernel-team@android.com, Connor O'Brien <connoro@google.com>
-References: <20231220001856.3710363-1-jstultz@google.com>
- <20231220001856.3710363-9-jstultz@google.com>
-Content-Language: en-US
-In-Reply-To: <20231220001856.3710363-9-jstultz@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-On 20/12/2023 12:18 am, John Stultz wrote:
-> From: Peter Zijlstra <peterz@infradead.org>
-> 
-> Let's define the scheduling context as all the scheduler state
-> in task_struct for the task selected to run, and the execution
-> context as all state required to actually run the task.
-> 
-> Currently both are intertwined in task_struct. We want to
-> logically split these such that we can use the scheduling
-> context of the task selected to be scheduled, but use the
-> execution context of a different task to actually be run.
+On Wed, 20 Dec 2023 13:29:49 +0000
+Jean-Baptiste Maneyrol <Jean-Baptiste.Maneyrol@tdk.com> wrote:
 
-Should we update Documentation/kernel-hacking/hacking.rst (line #348: 
-:c:macro:`current`) or another appropriate doc to announce separation of 
-scheduling & execution contexts?
+> Hi Jonhathan, Hiten,
+>=20
+> I can be of some help to explain the feature.
+>=20
+> This Tilt feature is the implementation of the TILT_DETECTOR sensor from =
+Android system. The angle computed is between gravity vectors. The 1st one =
+is computed as a reference when turning the feature on, and the 2nd is cont=
+inuously evaluated on a time frame. When the angle between these 2 gravity =
+vectors is large enough, a tilt event is generated.
+>=20
+> Here are the TILT_DETECTOR specs from Android system:
+>     /**
+>      * WAKE_UP_TILT_DETECTOR
+>      * reporting-mode: special (setDelay has no impact)
+>      *
+>      * A sensor of this type generates an event each time a tilt event is
+>      * detected. A tilt event must be generated if the direction of the
+>      * 2-seconds window average gravity changed by at least 35 degrees si=
+nce the
+>      * activation or the last trigger of the sensor.
+>      *
+>      *  reference_estimated_gravity =3D average of accelerometer measurem=
+ents over
+>      *  the first 1 second after activation or the estimated gravity at t=
+he last
+>      *  trigger.
+>      *
+>      *  current_estimated_gravity =3D average of accelerometer measuremen=
+ts over
+>      *  the last 2 seconds.
+>      *
+>      *  trigger when
+>      *     angle(reference_estimated_gravity, current_estimated_gravity)
+>      *       > 35 degrees
+>      *
+>      * Large accelerations without a change in phone orientation must not
+>      * trigger a tilt event.
+>      * For example, a sharp turn or strong acceleration while driving a c=
+ar
+>      * must not trigger a tilt event, even though the angle of the average
+>      * acceleration might vary by more than 35 degrees.
+>      *
+>      * Typically, this sensor is implemented with the help of only an
+>      * accelerometer. Other sensors can be used as well if they do not in=
+crease
+>      * the power consumption significantly. This is a low power sensor th=
+at
+>      * must allow the AP to go into suspend mode. Do not emulate this sen=
+sor
+>      * in the HAL.
+>      * Like other wake up sensors, the driver is expected to a hold a wak=
+e_lock
+>      * with a timeout of 200 ms while reporting this event. The only allo=
+wed
+>      * return value is 1.0.
+>      *
+>      * Implement only the wake-up version of this sensor.
+>      */
+>=20
+>=20
+> Hope it helps to better understand.
 
-> 
-> To this purpose, introduce rq_selected() macro to point to the
-> task_struct selected from the runqueue by the scheduler, and
-> will be used for scheduler state, and preserve rq->curr to
-> indicate the execution context of the task that will actually be
-> run.
-> 
-> NOTE: Peter previously mentioned he didn't like the name
-> "rq_selected()", but I've not come up with a better alternative.
-> I'm very open to other name proposals.
-> 
-> Question for Peter: Dietmar suggested you'd prefer I drop the
-> conditionalization of the scheduler context pointer on the rq
-> (so rq_selected() would be open coded as rq->curr_selected or
-> whatever we agree on for a name), but I'd think in the
-> !CONFIG_PROXY_EXEC case we'd want to avoid the wasted pointer
-> and its use (since it curr_selected would always be == curr)?
-> If I'm wrong I'm fine switching this, but would appreciate
-> clarification.
-> 
-> Cc: Joel Fernandes <joelaf@google.com>
-> Cc: Qais Yousef <qyousef@google.com>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Juri Lelli <juri.lelli@redhat.com>
-> Cc: Vincent Guittot <vincent.guittot@linaro.org>
-> Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
-> Cc: Valentin Schneider <vschneid@redhat.com>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Ben Segall <bsegall@google.com>
-> Cc: Zimuzo Ezeozue <zezeozue@google.com>
-> Cc: Youssef Esmat <youssefesmat@google.com>
-> Cc: Mel Gorman <mgorman@suse.de>
-> Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Waiman Long <longman@redhat.com>
-> Cc: Boqun Feng <boqun.feng@gmail.com>
-> Cc: "Paul E. McKenney" <paulmck@kernel.org>
-> Cc: Xuewen Yan <xuewen.yan94@gmail.com>
-> Cc: K Prateek Nayak <kprateek.nayak@amd.com>
-> Cc: Metin Kaya <Metin.Kaya@arm.com>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: kernel-team@android.com
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> Signed-off-by: Juri Lelli <juri.lelli@redhat.com>
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> Link: https://lkml.kernel.org/r/20181009092434.26221-5-juri.lelli@redhat.com
-> [add additional comments and update more sched_class code to use
->   rq::proxy]
-> Signed-off-by: Connor O'Brien <connoro@google.com>
-> [jstultz: Rebased and resolved minor collisions, reworked to use
->   accessors, tweaked update_curr_common to use rq_proxy fixing rt
->   scheduling issues]
-> Signed-off-by: John Stultz <jstultz@google.com>
-> ---
-> v2:
-> * Reworked to use accessors
-> * Fixed update_curr_common to use proxy instead of curr
-> v3:
-> * Tweaked wrapper names
-> * Swapped proxy for selected for clarity
-> v4:
-> * Minor variable name tweaks for readability
-> * Use a macro instead of a inline function and drop
->    other helper functions as suggested by Peter.
-> * Remove verbose comments/questions to avoid review
->    distractions, as suggested by Dietmar
-> v5:
-> * Add CONFIG_PROXY_EXEC option to this patch so the
->    new logic can be tested with this change
-> * Minor fix to grab rq_selected when holding the rq lock
-> v7:
-> * Minor spelling fix and unused argument fixes suggested by
->    Metin Kaya
-> * Switch to curr_selected for consistency, and minor rewording
->    of commit message for clarity
-> * Rename variables selected instead of curr when we're using
->    rq_selected()
-> * Reduce macros in CONFIG_SCHED_PROXY_EXEC ifdef sections,
->    as suggested by Metin Kaya
-> ---
->   kernel/sched/core.c     | 46 ++++++++++++++++++++++++++---------------
->   kernel/sched/deadline.c | 35 ++++++++++++++++---------------
->   kernel/sched/fair.c     | 18 ++++++++--------
->   kernel/sched/rt.c       | 40 +++++++++++++++++------------------
->   kernel/sched/sched.h    | 35 +++++++++++++++++++++++++++++--
->   5 files changed, 109 insertions(+), 65 deletions(-)
-> 
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index e06558fb08aa..0ce34f5c0e0c 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -822,7 +822,7 @@ static enum hrtimer_restart hrtick(struct hrtimer *timer)
->   
->   	rq_lock(rq, &rf);
->   	update_rq_clock(rq);
-> -	rq->curr->sched_class->task_tick(rq, rq->curr, 1);
-> +	rq_selected(rq)->sched_class->task_tick(rq, rq_selected(rq), 1);
->   	rq_unlock(rq, &rf);
->   
->   	return HRTIMER_NORESTART;
-> @@ -2242,16 +2242,18 @@ static inline void check_class_changed(struct rq *rq, struct task_struct *p,
->   
->   void wakeup_preempt(struct rq *rq, struct task_struct *p, int flags)
->   {
-> -	if (p->sched_class == rq->curr->sched_class)
-> -		rq->curr->sched_class->wakeup_preempt(rq, p, flags);
-> -	else if (sched_class_above(p->sched_class, rq->curr->sched_class))
-> +	struct task_struct *selected = rq_selected(rq);
-> +
-> +	if (p->sched_class == selected->sched_class)
-> +		selected->sched_class->wakeup_preempt(rq, p, flags);
-> +	else if (sched_class_above(p->sched_class, selected->sched_class))
->   		resched_curr(rq);
->   
->   	/*
->   	 * A queue event has occurred, and we're going to schedule.  In
->   	 * this case, we can save a useless back to back clock update.
->   	 */
-> -	if (task_on_rq_queued(rq->curr) && test_tsk_need_resched(rq->curr))
-> +	if (task_on_rq_queued(selected) && test_tsk_need_resched(rq->curr))
->   		rq_clock_skip_update(rq);
->   }
->   
-> @@ -2780,7 +2782,7 @@ __do_set_cpus_allowed(struct task_struct *p, struct affinity_context *ctx)
->   		lockdep_assert_held(&p->pi_lock);
->   
->   	queued = task_on_rq_queued(p);
-> -	running = task_current(rq, p);
-> +	running = task_current_selected(rq, p);
->   
->   	if (queued) {
->   		/*
-> @@ -5600,7 +5602,7 @@ unsigned long long task_sched_runtime(struct task_struct *p)
->   	 * project cycles that may never be accounted to this
->   	 * thread, breaking clock_gettime().
->   	 */
-> -	if (task_current(rq, p) && task_on_rq_queued(p)) {
-> +	if (task_current_selected(rq, p) && task_on_rq_queued(p)) {
->   		prefetch_curr_exec_start(p);
->   		update_rq_clock(rq);
->   		p->sched_class->update_curr(rq);
-> @@ -5668,7 +5670,8 @@ void scheduler_tick(void)
->   {
->   	int cpu = smp_processor_id();
->   	struct rq *rq = cpu_rq(cpu);
-> -	struct task_struct *curr = rq->curr;
-> +	/* accounting goes to the selected task */
-> +	struct task_struct *selected;
->   	struct rq_flags rf;
->   	unsigned long thermal_pressure;
->   	u64 resched_latency;
-> @@ -5679,16 +5682,17 @@ void scheduler_tick(void)
->   	sched_clock_tick();
->   
->   	rq_lock(rq, &rf);
-> +	selected = rq_selected(rq);
->   
->   	update_rq_clock(rq);
->   	thermal_pressure = arch_scale_thermal_pressure(cpu_of(rq));
->   	update_thermal_load_avg(rq_clock_thermal(rq), rq, thermal_pressure);
-> -	curr->sched_class->task_tick(rq, curr, 0);
-> +	selected->sched_class->task_tick(rq, selected, 0);
->   	if (sched_feat(LATENCY_WARN))
->   		resched_latency = cpu_resched_latency(rq);
->   	calc_global_load_tick(rq);
->   	sched_core_tick(rq);
-> -	task_tick_mm_cid(rq, curr);
-> +	task_tick_mm_cid(rq, selected);
->   
->   	rq_unlock(rq, &rf);
->   
-> @@ -5697,8 +5701,8 @@ void scheduler_tick(void)
->   
->   	perf_event_task_tick();
->   
-> -	if (curr->flags & PF_WQ_WORKER)
-> -		wq_worker_tick(curr);
-> +	if (selected->flags & PF_WQ_WORKER)
-> +		wq_worker_tick(selected);
->   
->   #ifdef CONFIG_SMP
->   	rq->idle_balance = idle_cpu(cpu);
-> @@ -5763,6 +5767,12 @@ static void sched_tick_remote(struct work_struct *work)
->   		struct task_struct *curr = rq->curr;
->   
->   		if (cpu_online(cpu)) {
-> +			/*
-> +			 * Since this is a remote tick for full dynticks mode,
-> +			 * we are always sure that there is no proxy (only a
-> +			 * single task is running).
-> +			 */
-> +			SCHED_WARN_ON(rq->curr != rq_selected(rq));
->   			update_rq_clock(rq);
->   
->   			if (!is_idle_task(curr)) {
-> @@ -6685,6 +6695,7 @@ static void __sched notrace __schedule(unsigned int sched_mode)
->   	}
->   
->   	next = pick_next_task(rq, prev, &rf);
-> +	rq_set_selected(rq, next);
->   	clear_tsk_need_resched(prev);
->   	clear_preempt_need_resched();
->   #ifdef CONFIG_SCHED_DEBUG
-> @@ -7185,7 +7196,7 @@ void rt_mutex_setprio(struct task_struct *p, struct task_struct *pi_task)
->   
->   	prev_class = p->sched_class;
->   	queued = task_on_rq_queued(p);
-> -	running = task_current(rq, p);
-> +	running = task_current_selected(rq, p);
->   	if (queued)
->   		dequeue_task(rq, p, queue_flag);
->   	if (running)
-> @@ -7275,7 +7286,7 @@ void set_user_nice(struct task_struct *p, long nice)
->   	}
->   
->   	queued = task_on_rq_queued(p);
-> -	running = task_current(rq, p);
-> +	running = task_current_selected(rq, p);
->   	if (queued)
->   		dequeue_task(rq, p, DEQUEUE_SAVE | DEQUEUE_NOCLOCK);
->   	if (running)
-> @@ -7868,7 +7879,7 @@ static int __sched_setscheduler(struct task_struct *p,
->   	}
->   
->   	queued = task_on_rq_queued(p);
-> -	running = task_current(rq, p);
-> +	running = task_current_selected(rq, p);
->   	if (queued)
->   		dequeue_task(rq, p, queue_flags);
->   	if (running)
-> @@ -9295,6 +9306,7 @@ void __init init_idle(struct task_struct *idle, int cpu)
->   	rcu_read_unlock();
->   
->   	rq->idle = idle;
-> +	rq_set_selected(rq, idle);
->   	rcu_assign_pointer(rq->curr, idle);
->   	idle->on_rq = TASK_ON_RQ_QUEUED;
->   #ifdef CONFIG_SMP
-> @@ -9384,7 +9396,7 @@ void sched_setnuma(struct task_struct *p, int nid)
->   
->   	rq = task_rq_lock(p, &rf);
->   	queued = task_on_rq_queued(p);
-> -	running = task_current(rq, p);
-> +	running = task_current_selected(rq, p);
->   
->   	if (queued)
->   		dequeue_task(rq, p, DEQUEUE_SAVE);
-> @@ -10489,7 +10501,7 @@ void sched_move_task(struct task_struct *tsk)
->   
->   	update_rq_clock(rq);
->   
-> -	running = task_current(rq, tsk);
-> +	running = task_current_selected(rq, tsk);
->   	queued = task_on_rq_queued(tsk);
->   
->   	if (queued)
-> diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
-> index 6140f1f51da1..9cf20f4ac5f9 100644
-> --- a/kernel/sched/deadline.c
-> +++ b/kernel/sched/deadline.c
-> @@ -1150,7 +1150,7 @@ static enum hrtimer_restart dl_task_timer(struct hrtimer *timer)
->   #endif
->   
->   	enqueue_task_dl(rq, p, ENQUEUE_REPLENISH);
-> -	if (dl_task(rq->curr))
-> +	if (dl_task(rq_selected(rq)))
->   		wakeup_preempt_dl(rq, p, 0);
->   	else
->   		resched_curr(rq);
-> @@ -1273,7 +1273,7 @@ static u64 grub_reclaim(u64 delta, struct rq *rq, struct sched_dl_entity *dl_se)
->    */
->   static void update_curr_dl(struct rq *rq)
->   {
-> -	struct task_struct *curr = rq->curr;
-> +	struct task_struct *curr = rq_selected(rq);
->   	struct sched_dl_entity *dl_se = &curr->dl;
->   	s64 delta_exec, scaled_delta_exec;
->   	int cpu = cpu_of(rq);
-> @@ -1784,7 +1784,7 @@ static int find_later_rq(struct task_struct *task);
->   static int
->   select_task_rq_dl(struct task_struct *p, int cpu, int flags)
->   {
-> -	struct task_struct *curr;
-> +	struct task_struct *curr, *selected;
->   	bool select_rq;
->   	struct rq *rq;
->   
-> @@ -1795,6 +1795,7 @@ select_task_rq_dl(struct task_struct *p, int cpu, int flags)
->   
->   	rcu_read_lock();
->   	curr = READ_ONCE(rq->curr); /* unlocked access */
-> +	selected = READ_ONCE(rq_selected(rq));
->   
->   	/*
->   	 * If we are dealing with a -deadline task, we must
-> @@ -1805,9 +1806,9 @@ select_task_rq_dl(struct task_struct *p, int cpu, int flags)
->   	 * other hand, if it has a shorter deadline, we
->   	 * try to make it stay here, it might be important.
->   	 */
-> -	select_rq = unlikely(dl_task(curr)) &&
-> +	select_rq = unlikely(dl_task(selected)) &&
->   		    (curr->nr_cpus_allowed < 2 ||
-> -		     !dl_entity_preempt(&p->dl, &curr->dl)) &&
-> +		     !dl_entity_preempt(&p->dl, &selected->dl)) &&
->   		    p->nr_cpus_allowed > 1;
->   
->   	/*
-> @@ -1870,7 +1871,7 @@ static void check_preempt_equal_dl(struct rq *rq, struct task_struct *p)
->   	 * let's hope p can move out.
->   	 */
->   	if (rq->curr->nr_cpus_allowed == 1 ||
-> -	    !cpudl_find(&rq->rd->cpudl, rq->curr, NULL))
-> +	    !cpudl_find(&rq->rd->cpudl, rq_selected(rq), NULL))
->   		return;
->   
->   	/*
-> @@ -1909,7 +1910,7 @@ static int balance_dl(struct rq *rq, struct task_struct *p, struct rq_flags *rf)
->   static void wakeup_preempt_dl(struct rq *rq, struct task_struct *p,
->   				  int flags)
->   {
-> -	if (dl_entity_preempt(&p->dl, &rq->curr->dl)) {
-> +	if (dl_entity_preempt(&p->dl, &rq_selected(rq)->dl)) {
->   		resched_curr(rq);
->   		return;
->   	}
-> @@ -1919,7 +1920,7 @@ static void wakeup_preempt_dl(struct rq *rq, struct task_struct *p,
->   	 * In the unlikely case current and p have the same deadline
->   	 * let us try to decide what's the best thing to do...
->   	 */
-> -	if ((p->dl.deadline == rq->curr->dl.deadline) &&
-> +	if ((p->dl.deadline == rq_selected(rq)->dl.deadline) &&
->   	    !test_tsk_need_resched(rq->curr))
->   		check_preempt_equal_dl(rq, p);
->   #endif /* CONFIG_SMP */
-> @@ -1954,7 +1955,7 @@ static void set_next_task_dl(struct rq *rq, struct task_struct *p, bool first)
->   	if (hrtick_enabled_dl(rq))
->   		start_hrtick_dl(rq, p);
->   
-> -	if (rq->curr->sched_class != &dl_sched_class)
-> +	if (rq_selected(rq)->sched_class != &dl_sched_class)
->   		update_dl_rq_load_avg(rq_clock_pelt(rq), rq, 0);
->   
->   	deadline_queue_push_tasks(rq);
-> @@ -2268,8 +2269,8 @@ static int push_dl_task(struct rq *rq)
->   	 * can move away, it makes sense to just reschedule
->   	 * without going further in pushing next_task.
->   	 */
-> -	if (dl_task(rq->curr) &&
-> -	    dl_time_before(next_task->dl.deadline, rq->curr->dl.deadline) &&
-> +	if (dl_task(rq_selected(rq)) &&
-> +	    dl_time_before(next_task->dl.deadline, rq_selected(rq)->dl.deadline) &&
->   	    rq->curr->nr_cpus_allowed > 1) {
->   		resched_curr(rq);
->   		return 0;
-> @@ -2394,7 +2395,7 @@ static void pull_dl_task(struct rq *this_rq)
->   			 * deadline than the current task of its runqueue.
->   			 */
->   			if (dl_time_before(p->dl.deadline,
-> -					   src_rq->curr->dl.deadline))
-> +					   rq_selected(src_rq)->dl.deadline))
->   				goto skip;
->   
->   			if (is_migration_disabled(p)) {
-> @@ -2435,9 +2436,9 @@ static void task_woken_dl(struct rq *rq, struct task_struct *p)
->   	if (!task_on_cpu(rq, p) &&
->   	    !test_tsk_need_resched(rq->curr) &&
->   	    p->nr_cpus_allowed > 1 &&
-> -	    dl_task(rq->curr) &&
-> +	    dl_task(rq_selected(rq)) &&
->   	    (rq->curr->nr_cpus_allowed < 2 ||
-> -	     !dl_entity_preempt(&p->dl, &rq->curr->dl))) {
-> +	     !dl_entity_preempt(&p->dl, &rq_selected(rq)->dl))) {
->   		push_dl_tasks(rq);
->   	}
->   }
-> @@ -2612,12 +2613,12 @@ static void switched_to_dl(struct rq *rq, struct task_struct *p)
->   		return;
->   	}
->   
-> -	if (rq->curr != p) {
-> +	if (rq_selected(rq) != p) {
->   #ifdef CONFIG_SMP
->   		if (p->nr_cpus_allowed > 1 && rq->dl.overloaded)
->   			deadline_queue_push_tasks(rq);
->   #endif
-> -		if (dl_task(rq->curr))
-> +		if (dl_task(rq_selected(rq)))
->   			wakeup_preempt_dl(rq, p, 0);
->   		else
->   			resched_curr(rq);
-> @@ -2646,7 +2647,7 @@ static void prio_changed_dl(struct rq *rq, struct task_struct *p,
->   	if (!rq->dl.overloaded)
->   		deadline_queue_pull_task(rq);
->   
-> -	if (task_current(rq, p)) {
-> +	if (task_current_selected(rq, p)) {
->   		/*
->   		 * If we now have a earlier deadline task than p,
->   		 * then reschedule, provided p is still on this
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 1251fd01a555..07216ea3ed53 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -1157,7 +1157,7 @@ static s64 update_curr_se(struct rq *rq, struct sched_entity *curr)
->    */
->   s64 update_curr_common(struct rq *rq)
->   {
-> -	struct task_struct *curr = rq->curr;
-> +	struct task_struct *curr = rq_selected(rq);
->   	s64 delta_exec;
->   
->   	delta_exec = update_curr_se(rq, &curr->se);
-> @@ -1203,7 +1203,7 @@ static void update_curr(struct cfs_rq *cfs_rq)
->   
->   static void update_curr_fair(struct rq *rq)
->   {
-> -	update_curr(cfs_rq_of(&rq->curr->se));
-> +	update_curr(cfs_rq_of(&rq_selected(rq)->se));
->   }
->   
->   static inline void
-> @@ -6611,7 +6611,7 @@ static void hrtick_start_fair(struct rq *rq, struct task_struct *p)
->   		s64 delta = slice - ran;
->   
->   		if (delta < 0) {
-> -			if (task_current(rq, p))
-> +			if (task_current_selected(rq, p))
->   				resched_curr(rq);
->   			return;
->   		}
-> @@ -6626,7 +6626,7 @@ static void hrtick_start_fair(struct rq *rq, struct task_struct *p)
->    */
->   static void hrtick_update(struct rq *rq)
->   {
-> -	struct task_struct *curr = rq->curr;
-> +	struct task_struct *curr = rq_selected(rq);
->   
->   	if (!hrtick_enabled_fair(rq) || curr->sched_class != &fair_sched_class)
->   		return;
-> @@ -8235,7 +8235,7 @@ static void set_next_buddy(struct sched_entity *se)
->    */
->   static void check_preempt_wakeup_fair(struct rq *rq, struct task_struct *p, int wake_flags)
->   {
-> -	struct task_struct *curr = rq->curr;
-> +	struct task_struct *curr = rq_selected(rq);
->   	struct sched_entity *se = &curr->se, *pse = &p->se;
->   	struct cfs_rq *cfs_rq = task_cfs_rq(curr);
->   	int next_buddy_marked = 0;
-> @@ -8268,7 +8268,7 @@ static void check_preempt_wakeup_fair(struct rq *rq, struct task_struct *p, int
->   	 * prevents us from potentially nominating it as a false LAST_BUDDY
->   	 * below.
->   	 */
-> -	if (test_tsk_need_resched(curr))
-> +	if (test_tsk_need_resched(rq->curr))
->   		return;
->   
->   	/* Idle tasks are by definition preempted by non-idle tasks. */
-> @@ -9252,7 +9252,7 @@ static bool __update_blocked_others(struct rq *rq, bool *done)
->   	 * update_load_avg() can call cpufreq_update_util(). Make sure that RT,
->   	 * DL and IRQ signals have been updated before updating CFS.
->   	 */
-> -	curr_class = rq->curr->sched_class;
-> +	curr_class = rq_selected(rq)->sched_class;
->   
->   	thermal_pressure = arch_scale_thermal_pressure(cpu_of(rq));
->   
-> @@ -12640,7 +12640,7 @@ prio_changed_fair(struct rq *rq, struct task_struct *p, int oldprio)
->   	 * our priority decreased, or if we are not currently running on
->   	 * this runqueue and our priority is higher than the current's
->   	 */
-> -	if (task_current(rq, p)) {
-> +	if (task_current_selected(rq, p)) {
->   		if (p->prio > oldprio)
->   			resched_curr(rq);
->   	} else
-> @@ -12743,7 +12743,7 @@ static void switched_to_fair(struct rq *rq, struct task_struct *p)
->   		 * kick off the schedule if running, otherwise just see
->   		 * if we can still preempt the current task.
->   		 */
-> -		if (task_current(rq, p))
-> +		if (task_current_selected(rq, p))
->   			resched_curr(rq);
->   		else
->   			wakeup_preempt(rq, p, 0);
-> diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
-> index 9cdea3ea47da..2682cec45aaa 100644
-> --- a/kernel/sched/rt.c
-> +++ b/kernel/sched/rt.c
-> @@ -530,7 +530,7 @@ static void dequeue_rt_entity(struct sched_rt_entity *rt_se, unsigned int flags)
->   
->   static void sched_rt_rq_enqueue(struct rt_rq *rt_rq)
->   {
-> -	struct task_struct *curr = rq_of_rt_rq(rt_rq)->curr;
-> +	struct task_struct *curr = rq_selected(rq_of_rt_rq(rt_rq));
->   	struct rq *rq = rq_of_rt_rq(rt_rq);
->   	struct sched_rt_entity *rt_se;
->   
-> @@ -1000,7 +1000,7 @@ static int sched_rt_runtime_exceeded(struct rt_rq *rt_rq)
->    */
->   static void update_curr_rt(struct rq *rq)
->   {
-> -	struct task_struct *curr = rq->curr;
-> +	struct task_struct *curr = rq_selected(rq);
->   	struct sched_rt_entity *rt_se = &curr->rt;
->   	s64 delta_exec;
->   
-> @@ -1545,7 +1545,7 @@ static int find_lowest_rq(struct task_struct *task);
->   static int
->   select_task_rq_rt(struct task_struct *p, int cpu, int flags)
->   {
-> -	struct task_struct *curr;
-> +	struct task_struct *curr, *selected;
->   	struct rq *rq;
->   	bool test;
->   
-> @@ -1557,6 +1557,7 @@ select_task_rq_rt(struct task_struct *p, int cpu, int flags)
->   
->   	rcu_read_lock();
->   	curr = READ_ONCE(rq->curr); /* unlocked access */
-> +	selected = READ_ONCE(rq_selected(rq));
->   
->   	/*
->   	 * If the current task on @p's runqueue is an RT task, then
-> @@ -1585,8 +1586,8 @@ select_task_rq_rt(struct task_struct *p, int cpu, int flags)
->   	 * systems like big.LITTLE.
->   	 */
->   	test = curr &&
-> -	       unlikely(rt_task(curr)) &&
-> -	       (curr->nr_cpus_allowed < 2 || curr->prio <= p->prio);
-> +	       unlikely(rt_task(selected)) &&
-> +	       (curr->nr_cpus_allowed < 2 || selected->prio <= p->prio);
->   
->   	if (test || !rt_task_fits_capacity(p, cpu)) {
->   		int target = find_lowest_rq(p);
-> @@ -1616,12 +1617,8 @@ select_task_rq_rt(struct task_struct *p, int cpu, int flags)
->   
->   static void check_preempt_equal_prio(struct rq *rq, struct task_struct *p)
->   {
-> -	/*
-> -	 * Current can't be migrated, useless to reschedule,
-> -	 * let's hope p can move out.
-> -	 */
->   	if (rq->curr->nr_cpus_allowed == 1 ||
-> -	    !cpupri_find(&rq->rd->cpupri, rq->curr, NULL))
-> +	    !cpupri_find(&rq->rd->cpupri, rq_selected(rq), NULL))
->   		return;
->   
->   	/*
-> @@ -1664,7 +1661,9 @@ static int balance_rt(struct rq *rq, struct task_struct *p, struct rq_flags *rf)
->    */
->   static void wakeup_preempt_rt(struct rq *rq, struct task_struct *p, int flags)
->   {
-> -	if (p->prio < rq->curr->prio) {
-> +	struct task_struct *curr = rq_selected(rq);
-> +
-> +	if (p->prio < curr->prio) {
->   		resched_curr(rq);
->   		return;
->   	}
-> @@ -1682,7 +1681,7 @@ static void wakeup_preempt_rt(struct rq *rq, struct task_struct *p, int flags)
->   	 * to move current somewhere else, making room for our non-migratable
->   	 * task.
->   	 */
-> -	if (p->prio == rq->curr->prio && !test_tsk_need_resched(rq->curr))
-> +	if (p->prio == curr->prio && !test_tsk_need_resched(rq->curr))
->   		check_preempt_equal_prio(rq, p);
->   #endif
->   }
-> @@ -1707,7 +1706,7 @@ static inline void set_next_task_rt(struct rq *rq, struct task_struct *p, bool f
->   	 * utilization. We only care of the case where we start to schedule a
->   	 * rt task
->   	 */
-> -	if (rq->curr->sched_class != &rt_sched_class)
-> +	if (rq_selected(rq)->sched_class != &rt_sched_class)
->   		update_rt_rq_load_avg(rq_clock_pelt(rq), rq, 0);
->   
->   	rt_queue_push_tasks(rq);
-> @@ -1988,6 +1987,7 @@ static struct task_struct *pick_next_pushable_task(struct rq *rq)
->   
->   	BUG_ON(rq->cpu != task_cpu(p));
->   	BUG_ON(task_current(rq, p));
-> +	BUG_ON(task_current_selected(rq, p));
->   	BUG_ON(p->nr_cpus_allowed <= 1);
->   
->   	BUG_ON(!task_on_rq_queued(p));
-> @@ -2020,7 +2020,7 @@ static int push_rt_task(struct rq *rq, bool pull)
->   	 * higher priority than current. If that's the case
->   	 * just reschedule current.
->   	 */
-> -	if (unlikely(next_task->prio < rq->curr->prio)) {
-> +	if (unlikely(next_task->prio < rq_selected(rq)->prio)) {
->   		resched_curr(rq);
->   		return 0;
->   	}
-> @@ -2375,7 +2375,7 @@ static void pull_rt_task(struct rq *this_rq)
->   			 * p if it is lower in priority than the
->   			 * current task on the run queue
->   			 */
-> -			if (p->prio < src_rq->curr->prio)
-> +			if (p->prio < rq_selected(src_rq)->prio)
->   				goto skip;
->   
->   			if (is_migration_disabled(p)) {
-> @@ -2419,9 +2419,9 @@ static void task_woken_rt(struct rq *rq, struct task_struct *p)
->   	bool need_to_push = !task_on_cpu(rq, p) &&
->   			    !test_tsk_need_resched(rq->curr) &&
->   			    p->nr_cpus_allowed > 1 &&
-> -			    (dl_task(rq->curr) || rt_task(rq->curr)) &&
-> +			    (dl_task(rq_selected(rq)) || rt_task(rq_selected(rq))) &&
->   			    (rq->curr->nr_cpus_allowed < 2 ||
-> -			     rq->curr->prio <= p->prio);
-> +			     rq_selected(rq)->prio <= p->prio);
->   
->   	if (need_to_push)
->   		push_rt_tasks(rq);
-> @@ -2505,7 +2505,7 @@ static void switched_to_rt(struct rq *rq, struct task_struct *p)
->   		if (p->nr_cpus_allowed > 1 && rq->rt.overloaded)
->   			rt_queue_push_tasks(rq);
->   #endif /* CONFIG_SMP */
-> -		if (p->prio < rq->curr->prio && cpu_online(cpu_of(rq)))
-> +		if (p->prio < rq_selected(rq)->prio && cpu_online(cpu_of(rq)))
->   			resched_curr(rq);
->   	}
->   }
-> @@ -2520,7 +2520,7 @@ prio_changed_rt(struct rq *rq, struct task_struct *p, int oldprio)
->   	if (!task_on_rq_queued(p))
->   		return;
->   
-> -	if (task_current(rq, p)) {
-> +	if (task_current_selected(rq, p)) {
->   #ifdef CONFIG_SMP
->   		/*
->   		 * If our priority decreases while running, we
-> @@ -2546,7 +2546,7 @@ prio_changed_rt(struct rq *rq, struct task_struct *p, int oldprio)
->   		 * greater than the current running task
->   		 * then reschedule.
->   		 */
-> -		if (p->prio < rq->curr->prio)
-> +		if (p->prio < rq_selected(rq)->prio)
->   			resched_curr(rq);
->   	}
->   }
-> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-> index 3e0e4fc8734b..6ea1dfbe502a 100644
-> --- a/kernel/sched/sched.h
-> +++ b/kernel/sched/sched.h
-> @@ -994,7 +994,10 @@ struct rq {
->   	 */
->   	unsigned int		nr_uninterruptible;
->   
-> -	struct task_struct __rcu	*curr;
-> +	struct task_struct __rcu	*curr;       /* Execution context */
-> +#ifdef CONFIG_SCHED_PROXY_EXEC
-> +	struct task_struct __rcu	*curr_selected; /* Scheduling context (policy) */
-> +#endif
->   	struct task_struct	*idle;
->   	struct task_struct	*stop;
->   	unsigned long		next_balance;
-> @@ -1189,6 +1192,20 @@ DECLARE_PER_CPU_SHARED_ALIGNED(struct rq, runqueues);
->   #define cpu_curr(cpu)		(cpu_rq(cpu)->curr)
->   #define raw_rq()		raw_cpu_ptr(&runqueues)
->   
-> +#ifdef CONFIG_SCHED_PROXY_EXEC
-> +#define rq_selected(rq)		((rq)->curr_selected)
-> +static inline void rq_set_selected(struct rq *rq, struct task_struct *t)
-> +{
-> +	rcu_assign_pointer(rq->curr_selected, t);
-> +}
-> +#else
-> +#define rq_selected(rq)		((rq)->curr)
-> +static inline void rq_set_selected(struct rq *rq, struct task_struct *t)
-> +{
-> +	/* Do nothing */
-> +}
-> +#endif
-> +
->   struct sched_group;
->   #ifdef CONFIG_SCHED_CORE
->   static inline struct cpumask *sched_group_span(struct sched_group *sg);
-> @@ -2112,11 +2129,25 @@ static inline u64 global_rt_runtime(void)
->   	return (u64)sysctl_sched_rt_runtime * NSEC_PER_USEC;
->   }
->   
-> +/*
-> + * Is p the current execution context?
-> + */
->   static inline int task_current(struct rq *rq, struct task_struct *p)
->   {
->   	return rq->curr == p;
->   }
->   
-> +/*
-> + * Is p the current scheduling context?
-> + *
-> + * Note that it might be the current execution context at the same time if
-> + * rq->curr == rq_selected() == p.
-> + */
-> +static inline int task_current_selected(struct rq *rq, struct task_struct *p)
-> +{
-> +	return rq_selected(rq) == p;
-> +}
-> +
->   static inline int task_on_cpu(struct rq *rq, struct task_struct *p)
->   {
->   #ifdef CONFIG_SMP
-> @@ -2280,7 +2311,7 @@ struct sched_class {
->   
->   static inline void put_prev_task(struct rq *rq, struct task_struct *prev)
->   {
-> -	WARN_ON_ONCE(rq->curr != prev);
-> +	WARN_ON_ONCE(rq_selected(rq) != prev);
->   	prev->sched_class->put_prev_task(rq, prev);
->   }
->   
+Thanks - that is indeed very useful.  A reference to this in the driver
+would be a good idea. =20
+
+I'm open to suggestions on how to describe this. Maybe we just need to
+use the gesture route? (I'm not keen on that unless it's the last resort
+as it provides no real grouping of channel types or expectations on scaling
+etc).  Or we could use a new rotation channel modifier for 'tilt' and
+just document that as relative to a 'reference' value. Effectively treat
+it like we treat quaternions or Euler angles for rotation.  If the channel
+was exposed, we'd then support explicitly resetting it but here it is event
+only so I suppose just using the event enable is enough.
+
+in_rot_tilt_*
+
+The averaging makes this even messier. I guess that's there to effectively
+remove the non gravity component and we should probably just not bother
+describing it.  If it is useful to do so we could add it as a form of event
+signal filter.
+
+Jonathan
+
+>=20
+> Thanks,
+> JB
+>=20
+>=20
+> From: Jonathan Cameron <jic23@kernel.org>
+> Sent: Wednesday, December 20, 2023 13:27
+> To: Hiten Chauhan <hiten.chauhan@siliconsignals.io>
+> Cc: Jean-Baptiste Maneyrol <Jean-Baptiste.Maneyrol@tdk.com>; lars@metafoo=
+.de <lars@metafoo.de>; linux-iio@vger.kernel.org <linux-iio@vger.kernel.org=
+>; linux-kernel@vger.kernel.org <linux-kernel@vger.kernel.org>
+> Subject: Re: [PATCH v3] Added tilt interrupt support in inv_icm42600=20
+> =C2=A0
+> On Mon, 18 Dec 2023 06:=E2=80=8A36:=E2=80=8A28 +0000 Hiten Chauhan <hiten=
+.=E2=80=8Achauhan@=E2=80=8Asiliconsignals.=E2=80=8Aio> wrote: > Hi Jonathan=
+, > > 1. As per the datasheet for tilt interrupt, there is no direction, an=
+gle, or axis. Tilt only gets reported beyond 35*=20
+> ZjQcmQRYFpfptBannerStart
+> This Message Is From an External Sender=20
+> This message came from outside your organization.=20
+> =C2=A0
+> ZjQcmQRYFpfptBannerEnd
+> On Mon, 18 Dec 2023 06:36:28 +0000
+> Hiten Chauhan <hiten.chauhan@siliconsignals.io> wrote:
+>=20
+> > Hi Jonathan,
+> >=20
+> >   1.   As per the datasheet for tilt interrupt, there is no direction, =
+angle, or axis. Tilt only gets reported beyond 35* angle. =20
+>=20
+> This can still be exposed by providing the threshold parameter but making=
+ it
+> read only. This seems to be axis free tilt which is unusual and a bit tri=
+cky
+> to define as we normally define rotations around a particular axis.
+> So whatever we do is going to be something that userspace won't really kn=
+ow
+> how to deal with. One option is to do what we allow for single axis
+> rotation sensors and have in_rot channel (no modifier) then defines events
+> for that.
+>=20
+> Given how poorly defined this is on the datasheet I think that's the best=
+ we can do.
+>=20
+> Tilt has to be relative to something, but there is no information as to w=
+hat. Is it
+> relative to orientation when the feature is enabled?  Is it relative to s=
+ome
+> reference plane?  I can't find any indication of which.
+>=20
+> Jonathan
+>=20
+>=20
+>=20
+>=20
+> >   2.  For the userspace application what I can suggest is, that when ti=
+lt gets detected we can share accelerometer x,y,z as per theory(Please corr=
+ect me here if I am wrong) =20
+>=20
+>=20
+> >   3.  In such a case, what is the recommended design?
+> >=20
+> > Thanks &Regards,
+> > Hiten Chauhan
+> > ________________________________
+> > From: Jonathan Cameron <jic23@kernel.org>
+> > Sent: Sunday, December 10, 2023 4:50 PM
+> > To: Jean-Baptiste Maneyrol <Jean-Baptiste.Maneyrol@tdk.com>
+> > Cc: Hiten Chauhan <hiten.chauhan@siliconsignals.io>; lars@metafoo.de <l=
+ars@metafoo.de>; linux-iio@vger.kernel.org <linux-iio@vger.kernel.org>; lin=
+ux-kernel@vger.kernel.org <linux-kernel@vger.kernel.org>
+> > Subject: Re: [PATCH v3] Added tilt interrupt support in inv_icm42600
+> >=20
+> > On Fri, 8 Dec 2023 15:37:32 +0000
+> > Jean-Baptiste Maneyrol <Jean-Baptiste.Maneyrol@tdk.com> wrote:
+> >  =20
+> > > Hi Hiten,
+> > >
+> > > you can define property that are shared between channels by defining =
+them inside info_mask_shared_by_type or info_mask_shared_by_all filed. As d=
+one for scale or for sampling_frequency.
+> > >
+> > > Thanks,
+> > > JB
+> > >
+> > >
+> > > From: Hiten Chauhan <hiten.chauhan@siliconsignals.io>
+> > > Sent: Friday, December 8, 2023 15:14
+> > > To: Jean-Baptiste Maneyrol <Jean-Baptiste.Maneyrol@tdk.com>; jic23@ke=
+rnel.org <jic23@kernel.org>; lars@metafoo.de <lars@metafoo.de>; linux-iio@v=
+ger.kernel.org <linux-iio@vger.kernel.org>; linux-kernel@vger.kernel.org <l=
+inux-kernel@vger.kernel.org>
+> > > Cc: kernel test robot <lkp@intel.com>
+> > > Subject: Re: [PATCH v3] Added tilt interrupt support in inv_icm42600
+> > >
+> > > Hi Jean,
+> > >
+> > > As per your suggestions (thanks for this), I have looked into creatin=
+g channels instead of custom sysfs entries.
+> > >
+> > > I have looked into an example of "mma9551.c".
+> > >
+> > > Now, by comparing the datasheet of mma9551 and inv_icm42600, in mma95=
+51 they provide X, Y, and Z tilt interrupt registers.
+> > > But in the case of inv_icm42600, there is only one register to receiv=
+e interrupt for tilt.   =20
+> >=20
+> > Just to check.  Can you tell which axis the tilt event was on, or is it=
+ simply 'tilted somehow?' From a look
+> > at the datasheet its 'tilted by 35 degrees in some direction'
+> > There are a couple of ways we can report this case if that's what you h=
+ave.  There is a modifier for
+> > X_OR_Y_OR_Z and we have several users already.  With hindsight that's a=
+ bad design option and we should have
+> > just reported it on each axis but there is precedence for doing it with=
+ this modifier so we are stuck with that.
+> > Maybe we should consider adding an explicit X_OR_Y_OR_Z Channel that ju=
+st has events. The risk is that
+> > existing userspace software won't expect that so might not know what to=
+ do.
+> >=20
+> > For event controls, it's fine if one control affects multiple events.  =
+So enabling tilt_x may well enable tilt_y
+> > and tilt_z as well.  User space is meant to cope with getting events it=
+ didn't explicitly request.
+> >=20
+> > Jonathan
+> >  =20
+> > >
+> > > It appears hardware limitation in our case, so can you please suggest=
+ here how we can overcome this?
+> > >
+> > > Appreciate your feedback.
+> > >
+> > > --
+> > > Thanks and Regards,
+> > > Hiten Chauhan
+> > >
+> > >
+> > >
+> > > From: Jean-Baptiste Maneyrol <Jean-Baptiste.Maneyrol@tdk.com>
+> > > Sent: Monday, November 27, 2023 4:08 PM
+> > > To: Hiten Chauhan <hiten.chauhan@siliconsignals.io>; jic23@kernel.org=
+ <jic23@kernel.org>; lars@metafoo.de <lars@metafoo.de>; linux-iio@vger.kern=
+el.org <linux-iio@vger.kernel.org>; linux-kernel@vger.kernel.org <linux-ker=
+nel@vger.kernel.org>
+> > > Cc: kernel test robot <lkp@intel.com>
+> > > Subject: Re: [PATCH v3] Added tilt interrupt support in inv_icm42600
+> > >
+> > > Hello Hiten,
+> > >
+> > > this is more complex than that.
+> > >
+> > > First, you need to use pm_runtime functions to handle chip on/off sta=
+te (you can have a look inside inv_icm42600_accel.c for direct reg access h=
+ow it is done).
+> > >
+> > > You cannot directly write inside PWR_MGMT0 register, otherwise you ar=
+e overwriting sensor states. For example with your code, if the chip buffer=
+ is running with accel and gyro on, when turning the tilt on it will power =
+off gyro and move accel in low-power mode. We really don't want that.
+> > >
+> > > We need to track the existing power states, and only do the required =
+changes. For that, you can use inv_icm42600_set_accel_conf() for turning ac=
+cel on. But you will have to add support and handle correctly the INV_ICM42=
+600_SENSOR_MODE_LOW_POWER sensor mode and the associated filtering (INV_ICM=
+42600_FILTER_AVG_1X can be sufficient for tilt).
+> > >
+> > > This is the multiplexing I was speaking off. That's more complex than=
+ it first seems. If power is not very important for you, you can simplify t=
+hings by just setting the accel to low-noise mode when turning it on with i=
+nv_icm42600_set_accel_conf().
+> > >
+> > > For testing your tilt implementation, you need to turn it on/off whil=
+e data buffer is off and while data buffer is on, and check that it doesn't=
+ impact the data flow (accel and gyro have to stay turned on in low-noise m=
+ode).
+> > >
+> > > Thanks.
+> > >
+> > > Best regards,
+> > > JB
+> > >
+> > > From: Hiten Chauhan <hiten.chauhan@siliconsignals.io>
+> > > Sent: Saturday, November 25, 2023 08:05
+> > > To: Jean-Baptiste Maneyrol <Jean-Baptiste.Maneyrol@tdk.com>; jic23@ke=
+rnel.org <jic23@kernel.org>; lars@metafoo.de <lars@metafoo.de>; linux-iio@v=
+ger.kernel.org <linux-iio@vger.kernel.org>; linux-kernel@vger.kernel.org <l=
+inux-kernel@vger.kernel.org>
+> > > Cc: kernel test robot <lkp@intel.com>
+> > > Subject: Re: [PATCH v3] Added tilt interrupt support in inv_icm42600
+> > >
+> > > Hello Jean, Thanks for your support, For the first issue can I use "s=
+truct iio_event_spec" for tilt interrupt instead of a custom sysfs file? In=
+ the second issue I have just disabled tilt related register so when I turn=
+ tilt off other
+> > > ZjQcmQRYFpfptBannerStart
+> > > This Message Is From an External Sender
+> > > This message came from outside your organization.
+> > >
+> > > ZjQcmQRYFpfptBannerEnd
+> > > Hello Jean,
+> > >
+> > > Thanks for your support,
+> > >
+> > > For the first issue can I use "struct iio_event_spec" for tilt interr=
+upt instead of a custom sysfs file?
+> > >
+> > > In the second issue I have just disabled tilt related register so whe=
+n I turn tilt off other functionality on the accelerometer will work fine. =
+can you please cross-check?
+> > >
+> > > Thanks & Regards,
+> > > Hiten Chauhan
+> > >
+> > > From: Jean-Baptiste Maneyrol <Jean-Baptiste.Maneyrol@tdk.com>
+> > > Sent: Monday, November 20, 2023 7:48 PM
+> > > To: Hiten Chauhan <hiten.chauhan@siliconsignals.io>; jic23@kernel.org=
+ <jic23@kernel.org>; lars@metafoo.de <lars@metafoo.de>; linux-iio@vger.kern=
+el.org <linux-iio@vger.kernel.org>; linux-kernel@vger.kernel.org <linux-ker=
+nel@vger.kernel.org>
+> > > Cc: kernel test robot <lkp@intel.com>
+> > > Subject: Re: [PATCH v3] Added tilt interrupt support in inv_icm42600
+> > >
+> > > Hello Hiten,
+> > >
+> > > thanks for your patch.
+> > >
+> > > I see first a big issue at the root. Tilt event is something that sho=
+uld be reported as an IIO event, not in a custom sysfs file. Jonathan can c=
+onfirm this, but this is my understanding.
+> > >
+> > > Second issue, there is no multiplexing between the tilt and normal da=
+ta sampling. Meaning turning tilt off will stop the data output of the chip=
+ if it was on. And turning data output off will stop tilt functionnality. A=
+ll these things have to be multiplexed together and chip power off/on must =
+be centralized.
+> > >
+> > > Thanks for your work.
+> > >
+> > > Best regards,
+> > > JB
+> > >
+> > > From: Hiten Chauhan <hiten.chauhan@siliconsignals.io>
+> > > Sent: Friday, November 17, 2023 16:14
+> > > To: Jean-Baptiste Maneyrol <Jean-Baptiste.Maneyrol@tdk.com>; jic23@ke=
+rnel.org <jic23@kernel.org>; lars@metafoo.de <lars@metafoo.de>; linux-iio@v=
+ger.kernel.org <linux-iio@vger.kernel.org>; linux-kernel@vger.kernel.org <l=
+inux-kernel@vger.kernel.org>
+> > > Cc: Hiten Chauhan <hiten.chauhan@siliconsignals.io>; kernel test robo=
+t <lkp@intel.com>
+> > > Subject: [PATCH v3] Added tilt interrupt support in inv_icm42600
+> > >
+> > > Description: Add new device attribute to enable and disable Tilt inte=
+rrupt from kernel user space Signed-off-by: Hiten Chauhan <hiten.=E2=80=8Ac=
+hauhan@=E2=80=8Asiliconsignals.=E2=80=8Aio> Reported-by: kernel test robot =
+<lkp@=E2=80=8Aintel.=E2=80=8Acom> Closes: [[https:=E2=80=8A//urldefense.=E2=
+=80=8Acom/v3/__https:=E2=80=8A//lore.=E2=80=8Akernel.=E2=80=8Aorg/oe-kbuild=
+-all/202311170235.=E2=80=8AHaVJnmWa-lkp@=E2=80=8Aintel.=E2=80=8Acom/__;!!Ft=
+rhtPsWDhZ6tw!Abqqh_UwyEydZ0xeIy7YQwPWb_knCM2hsJJWavoAq3igeGccV4RZI87CTV__lZ=
+gfBjZytNesx5cUc_RXsP6mu9lmvUGZg_rGWg$[lore[.=E2=80=8A]kernel[.=E2=80=8A]org=
+]]https:=E2=80=8A//urldefense.=E2=80=8Acom/v3/__https:=E2=80=8A//lore.=E2=
+=80=8Akernel.=E2=80=8Aorg/oe-kbuild-all/202311170235.=E2=80=8AHaVJnmWa-lkp@=
+=E2=80=8Aintel.=E2=80=8Acom/__;!!FtrhtPsWDhZ6tw!Abqqh_UwyEydZ0xeIy7YQwPWb_k=
+nCM2hsJJWavoAq3igeGccV4RZI87CTV__lZgfBjZytNesx5cUc_RXsP6mu9lmvUGZg_rGWg$[lo=
+re[.=E2=80=8A]kernel[.=E2=80=8A]org]https:=E2=80=8A//urldefense.=E2=80=8Aco=
+m/v3/__https:=E2=80=8A//lore.=E2=80=8Akernel.=E2=80=8Aorg/oe-kbuild-all/202=
+311170235.=E2=80=8AHaVJnmWa-lkp@=E2=80=8Aintel.=E2=80=8Acom/__;!!FtrhtPsWDh=
+Z6tw!Abqqh_UwyEydZ0xeIy7YQwPWb_knCM2hsJJWavoAq3igeGccV4RZI87CTV__lZgfBjZytN=
+esx5cUc_RXsP6mu9lmvUGZg_rGWg$[lore[.=E2=80=8A]kernel[.=E2=80=8A]org]]https:=
+=E2=80=8A//urldefense.=E2=80=8Acom/v3/__https:=E2=80=8A//lore.=E2=80=8Akern=
+el.=E2=80=8Aorg/oe-kbuild-all/202311170235.=E2=80=8AHaVJnmWa-lkp@=E2=80=8Ai=
+ntel.=E2=80=8Acom/__;!!FtrhtPsWDhZ6tw!Abqqh_UwyEydZ0xeIy7YQwPWb_knCM2hsJJWa=
+voAq3igeGccV4RZI87CTV__lZgfBjZytNesx5cUc_RXsP6mu9lmvUGZg_rGWg$[lore[.=E2=80=
+=8A]kernel[.=E2=80=8A]org]
+> > > ZjQcmQRYFpfptBannerStart
+> > > This Message Is From an Untrusted Sender
+> > > You have not previously corresponded with this sender.
+> > >
+> > > ZjQcmQRYFpfptBannerEnd
+> > > Description:
+> > > Add new device attribute to enable and disable
+> > > Tilt interrupt from kernel user space
+> > >
+> > > Signed-off-by: Hiten Chauhan <hiten.chauhan@siliconsignals.io>
+> > >
+> > > Reported-by: kernel test robot <lkp@intel.com>
+> > > Closes: https://urldefense.com/v3/__https://lore.kernel.org/oe-kbuild=
+-all/202311170235.HaVJnmWa-lkp@intel.com/__;!!FtrhtPsWDhZ6tw!Abqqh_UwyEydZ0=
+xeIy7YQwPWb_knCM2hsJJWavoAq3igeGccV4RZI87CTV__lZgfBjZytNesx5cUc_RXsP6mu9lmv=
+UGZg_rGWg$[lore[.]kernel[.]org]
+> >> ---
+> > >  drivers/iio/imu/inv_icm42600/inv_icm42600.h   |  24 ++++
+> > >  .../iio/imu/inv_icm42600/inv_icm42600_accel.c | 129 ++++++++++++++++=
+++
+> > >  2 files changed, 153 insertions(+)
+> > >
+> > > diff --git a/drivers/iio/imu/inv_icm42600/inv_icm42600.h b/drivers/ii=
+o/imu/inv_icm42600/inv_icm42600.h
+> > > index 0e290c807b0f..39ed39e77deb 100644
+> > > --- a/drivers/iio/imu/inv_icm42600/inv_icm42600.h
+> > > +++ b/drivers/iio/imu/inv_icm42600/inv_icm42600.h
+> > > @@ -187,6 +187,8 @@ struct inv_icm42600_state {
+> > >  #define INV_ICM42600_FIFO_CONFIG_STOP_ON_FULL           \
+> > >                  FIELD_PREP(INV_ICM42600_FIFO_CONFIG_MASK, 2)
+> > >
+> > > +#define INV_ICM42600_REG_MASK        GENMASK(7, 0)
+> > > +
+> > >  /* all sensor data are 16 bits (2 registers wide) in big-endian */
+> > >  #define INV_ICM42600_REG_TEMP_DATA                      0x001D
+> > >  #define INV_ICM42600_REG_ACCEL_DATA_X                   0x001F
+> > > @@ -239,6 +241,7 @@ struct inv_icm42600_state {
+> > >  #define INV_ICM42600_REG_PWR_MGMT0                      0x004E
+> > >  #define INV_ICM42600_PWR_MGMT0_TEMP_DIS                 BIT(5)
+> > >  #define INV_ICM42600_PWR_MGMT0_IDLE                     BIT(4)
+> > > +#define INV_ICM42600_PWR_ACCEL_MODE                    BIT(1)
+> > >  #define INV_ICM42600_PWR_MGMT0_GYRO(_mode)              \
+> > >                  FIELD_PREP(GENMASK(3, 2), (_mode))
+> > >  #define INV_ICM42600_PWR_MGMT0_ACCEL(_mode)             \
+> > > @@ -306,6 +309,21 @@ struct inv_icm42600_state {
+> > >  #define INV_ICM42600_WHOAMI_ICM42622                    0x46
+> > >  #define INV_ICM42600_WHOAMI_ICM42631                    0x5C
+> > >
+> > > +/* Register configs for tilt interrupt */
+> > > +#define INV_ICM42605_REG_APEX_CONFIG4                  0x4043
+> > > +#define INV_ICM42605_APEX_CONFIG4_MASK                 GENMASK(7, 0)
+> > > +
+> > > +#define INV_ICM42605_REG_APEX_CONFIG0                  0x0056
+> > > +#define INV_ICM42605_APEX_CONFIG0_TILT_ENABLE          BIT(4)
+> > > +#define INV_ICM42605_APEX_CONFIG0                      BIT(1)
+> > > +
+> > > +#define INV_ICM42605_REG_INTF_CONFIG1                   0x404D
+> > > +#define INV_ICM42605_INTF_CONFIG1_MASK                  GENMASK(5, 0)
+> > > +#define INV_ICM42605_INTF_CONFIG1_TILT_DET_INT1_EN      BIT(3)
+> > > +
+> > > +#define INV_ICM42605_REG_INT_STATUS3                   0x0038
+> > > +
+> > > +
+> > >  /* User bank 1 (MSB 0x10) */
+> > >  #define INV_ICM42600_REG_SENSOR_CONFIG0                 0x1003
+> > >  #define INV_ICM42600_SENSOR_CONFIG0_ZG_DISABLE          BIT(5)
+> > > @@ -364,6 +382,8 @@ typedef int (*inv_icm42600_bus_setup)(struct inv_=
+icm42600_state *);
+> > >  extern const struct regmap_config inv_icm42600_regmap_config;
+> > >  extern const struct dev_pm_ops inv_icm42600_pm_ops;
+> > >
+> > > +extern uint8_t inv_icm42605_int_reg;
+> > > +
+> > >  const struct iio_mount_matrix *
+> > >  inv_icm42600_get_mount_matrix(const struct iio_dev *indio_dev,
+> > >                                const struct iio_chan_spec *chan);
+> > > @@ -395,4 +415,8 @@ struct iio_dev *inv_icm42600_accel_init(struct in=
+v_icm42600_state *st);
+> > >
+> > >  int inv_icm42600_accel_parse_fifo(struct iio_dev *indio_dev);
+> > >
+> > > +int inv_icm42605_generate_tilt_interrupt(struct inv_icm42600_state *=
+st);
+> > > +
+> > > +int inv_icm42605_disable_tilt_interrupt(struct inv_icm42600_state *s=
+t);
+> > > +
+> > >  #endif
+> > > diff --git a/drivers/iio/imu/inv_icm42600/inv_icm42600_accel.c b/driv=
+ers/iio/imu/inv_icm42600/inv_icm42600_accel.c
+> > > index b1e4fde27d25..311f6ea09e64 100644
+> > > --- a/drivers/iio/imu/inv_icm42600/inv_icm42600_accel.c
+> > > +++ b/drivers/iio/imu/inv_icm42600/inv_icm42600_accel.c
+> > > @@ -47,6 +47,8 @@
+> > >                  .ext_info =3D _ext_info,                            =
+      \
+> > >          }
+> > >
+> > > +uint8_t inv_icm42605_int_reg;
+> > > +
+> > >  enum inv_icm42600_accel_scan {
+> > >          INV_ICM42600_ACCEL_SCAN_X,
+> > >          INV_ICM42600_ACCEL_SCAN_Y,
+> > > @@ -60,6 +62,68 @@ static const struct iio_chan_spec_ext_info inv_icm=
+42600_accel_ext_infos[] =3D {
+> > >          {},
+> > >  };
+> > >
+> > > +static ssize_t tilt_interrupt_show(struct device *dev,
+> > > +                              struct device_attribute *attr, char *b=
+uf)
+> > > +{
+> > > +       struct inv_icm42600_state *st =3D dev_get_drvdata(dev);
+> > > +       unsigned int val;
+> > > +       int ret;
+> > > +
+> > > +       ret =3D regmap_read(st->map, inv_icm42605_int_reg, &val);
+> > > +
+> > > +       if (ret !=3D 0)
+> > > +               return ret;
+> > > +
+> > > +       snprintf(buf, PAGE_SIZE, "Read reg %x value %x\n", inv_icm426=
+05_int_reg, val);
+> > > +
+> > > +       return strlen(buf);
+> > > +}
+> > > +
+> > > +static ssize_t tilt_interrupt_store(struct device *dev,
+> > > +               struct device_attribute *attr, const char *buf,
+> > > +               size_t count)
+> > > +{
+> > > +       struct inv_icm42600_state *st =3D dev_get_drvdata(dev);
+> > > +       int ret;
+> > > +       int value;
+> > > +
+> > > +       if (!st)
+> > > +               return -EINVAL;
+> > > +
+> > > +       if (kstrtoint(buf, 10, &value))
+> > > +               return -EINVAL;
+> > > +
+> > > +       inv_icm42605_int_reg =3D INV_ICM42605_REG_INT_STATUS3;
+> > > +
+> > > +       switch (value) {
+> > > +       case 1:
+> > > +               ret =3D inv_icm42605_generate_tilt_interrupt(st);
+> > > +               if (ret !=3D 0)
+> > > +                       return -EIO;
+> > > +               break;
+> > > +       case 0:
+> > > +               ret =3D inv_icm42605_disable_tilt_interrupt(st);
+> > > +               if (ret !=3D 0)
+> > > +                       return -EIO;
+> > > +               break;
+> > > +       default:
+> > > +               return -EINVAL;
+> > > +       }
+> > > +
+> > > +       return count;
+> > > +}
+> > > +
+> > > +static DEVICE_ATTR_RW(tilt_interrupt);
+> > > +
+> > > +static struct attribute *icm42605_attrs[] =3D {
+> > > +       &dev_attr_tilt_interrupt.attr,
+> > > +       NULL,
+> > > +};
+> > > +
+> > > +static const struct attribute_group icm42605_attrs_group =3D {
+> > > +       .attrs =3D icm42605_attrs,
+> > > +};
+> > > +
+> > >  static const struct iio_chan_spec inv_icm42600_accel_channels[] =3D {
+> > >          INV_ICM42600_ACCEL_CHAN(IIO_MOD_X, INV_ICM42600_ACCEL_SCAN_X,
+> > >                                  inv_icm42600_accel_ext_infos),
+> > > @@ -702,6 +766,7 @@ static const struct iio_info inv_icm42600_accel_i=
+nfo =3D {
+> > >          .update_scan_mode =3D inv_icm42600_accel_update_scan_mode,
+> > >          .hwfifo_set_watermark =3D inv_icm42600_accel_hwfifo_set_wate=
+rmark,
+> > >          .hwfifo_flush_to_buffer =3D inv_icm42600_accel_hwfifo_flush,
+> > > +       .attrs =3D &icm42605_attrs_group,
+> > >  };
+> > >
+> > >  struct iio_dev *inv_icm42600_accel_init(struct inv_icm42600_state *s=
+t)
+> > > @@ -791,3 +856,67 @@ int inv_icm42600_accel_parse_fifo(struct iio_dev=
+ *indio_dev)
+> > >
+> > >          return 0;
+> > >  }
+> > > +
+> > > +int inv_icm42605_generate_tilt_interrupt(struct inv_icm42600_state *=
+st)
+> > > +{
+> > > +       int ret;
+> > > +       int val;
+> > > +       char sleep =3D 10;
+> > > +
+> > > +       ret =3D regmap_update_bits(st->map, INV_ICM42605_REG_APEX_CON=
+FIG4,
+> > > +                                INV_ICM42605_APEX_CONFIG4_MASK, 0);
+> > > +       if (ret)
+> > > +               return ret;
+> > > +
+> > > +       val =3D INV_ICM42600_PWR_ACCEL_MODE;
+> > > +       ret =3D regmap_write(st->map, INV_ICM42600_REG_PWR_MGMT0, val=
+);
+> > > +       if (ret)
+> > > +               return ret;
+> > > +
+> > > +       val =3D INV_ICM42605_APEX_CONFIG0;
+> > > +       ret =3D regmap_write(st->map, INV_ICM42605_REG_APEX_CONFIG0, =
+val);
+> > > +       if (ret)
+> > > +               return ret;
+> > > +
+> > > +       val =3D INV_ICM42600_SIGNAL_PATH_RESET_DMP_MEM_RESET;
+> > > +       ret =3D regmap_write(st->map, INV_ICM42600_REG_SIGNAL_PATH_RE=
+SET, val);
+> > > +       if (ret)
+> > > +               return ret;
+> > > +
+> > > +       msleep(sleep);
+> > > +
+> > > +       val =3D INV_ICM42600_SIGNAL_PATH_RESET_DMP_INIT_EN;
+> > > +       ret =3D regmap_write(st->map, INV_ICM42600_REG_SIGNAL_PATH_RE=
+SET, val);
+> > > +       if (ret)
+> > > +               return ret;
+> > > +
+> > > +       val =3D INV_ICM42605_APEX_CONFIG0_TILT_ENABLE |
+> > > +             INV_ICM42605_APEX_CONFIG0;
+> > > +       ret =3D regmap_write(st->map, INV_ICM42605_REG_APEX_CONFIG0, =
+val);
+> > > +       if (ret)
+> > > +               return ret;
+> > > +
+> > > +       ret =3D regmap_update_bits(st->map, INV_ICM42605_REG_INTF_CON=
+FIG1,
+> > > +                                INV_ICM42605_INTF_CONFIG1_MASK,
+> > > +                                INV_ICM42605_INTF_CONFIG1_TILT_DET_I=
+NT1_EN);
+> > > +       if (ret)
+> > > +               return ret;
+> > > +
+> > > +       return 0;
+> > > +}
+> > > +
+> > > +int inv_icm42605_disable_tilt_interrupt(struct inv_icm42600_state *s=
+t)
+> > > +{
+> > > +       int ret;
+> > > +
+> > > +       ret =3D regmap_write(st->map, INV_ICM42605_REG_APEX_CONFIG0, =
+0);
+> > > +       if (ret)
+> > > +               return ret;
+> > > +
+> > > +       ret =3D regmap_update_bits(st->map, INV_ICM42605_REG_INTF_CON=
+FIG1,
+> > > +                       INV_ICM42605_INTF_CONFIG1_MASK, 0);
+> > > +       if (ret)
+> > > +               return ret;
+> > > +
+> > > +       return 0;
+> > > +}
+> > >
+> > > base-commit: b85ea95d086471afb4ad062012a4d73cd328fa86   =20
+> >  =20
+>=20
 
 
