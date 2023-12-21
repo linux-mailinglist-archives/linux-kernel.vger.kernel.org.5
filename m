@@ -1,175 +1,185 @@
-Return-Path: <linux-kernel+bounces-8963-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8966-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B66BD81BE91
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 19:58:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8CDCF81BEA1
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 19:59:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 713C72874BB
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 18:58:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2C0641F25878
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 18:59:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00C6C6519F;
-	Thu, 21 Dec 2023 18:58:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E462697A6;
+	Thu, 21 Dec 2023 18:59:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="d5bmne/a"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="JjtQylcU"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB44A11733;
-	Thu, 21 Dec 2023 18:58:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-40d4103aed7so7877555e9.3;
-        Thu, 21 Dec 2023 10:58:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703185104; x=1703789904; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:references:to:from:subject
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=nHklhKkIDpRGAbC6EyVSS7Ick/sDdM+0PSLDLsMKiVc=;
-        b=d5bmne/a4VJxS+hiGc2Yr83v6DnHjuSi75qggz918SXOjma6FXGn9xOiF/ziNlRfF2
-         vvYbwNwK0MjcgpMpOX7WOH8SfqclxgEshPOVmIzguxU3LvYt9dZrIXDscph6sY+SVHkJ
-         cbjXHYsRiN2u8OXNGn8TT5/d2FhzyrWRAgVy3kXcVlVnnqSP5YVakblBLujr8UnGLrKG
-         vZgb0IUfD/VRKnnbPzrjaxfCtIi0lH4AeRwsi/OjVQ8AfXQMfoER5tSygxx1NQCx8tjO
-         PoA/LCGndHInAeC25zDmii5zmvWR5ZGS8ubWdqsxhral1rH5LoD3lFwtQ5/Cy6MlKze5
-         0RuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703185104; x=1703789904;
-        h=content-transfer-encoding:in-reply-to:references:to:from:subject
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=nHklhKkIDpRGAbC6EyVSS7Ick/sDdM+0PSLDLsMKiVc=;
-        b=qWDjOM2wrHTfwfIBBr/1DuVOIlCaIqAfZxj83t6jJY8XM0OidGMvTsrc+btE9JZRJW
-         JdYnQJ1xZv1c8TwffDejQk5L2xjwruBuwQG4X5VFuMtMKwXBEZr9NYvjFITAzOj+PWD4
-         rKeHyydrOgd+vI6IXr9GKE8JZTZcgqZMFdXaVLif/RtVe+4dq193HD4Fbxnmt+R4Eya/
-         FO7FFEq/rHvggLYv9XMbr+DW77S3zau0qmlToUbBtfz4ypvUwdB/ISJ9JqKM2p2sicbF
-         g3tmW7vHj+o/xFkPtqDWTze52vwvGNdUQ/V3KncVU5I9/TqdMOXoa1qlRxOY/RPKq+jh
-         NDaw==
-X-Gm-Message-State: AOJu0YzLZ93hT1ln8VXu6N5xHKtE7015loQu6sGBHUJeqLM2JtsTwzRH
-	XDRHfY4dzjdq6yCtgHvOTl4=
-X-Google-Smtp-Source: AGHT+IEZRGhr19YcFmW2jepDNMeTHfZ2bFIrwD4JzHi58QljsW8CqhwZmLFiGx8I968xig1nuKm0UQ==
-X-Received: by 2002:a05:600c:4496:b0:40d:41d4:d29e with SMTP id e22-20020a05600c449600b0040d41d4d29emr104917wmo.187.1703185103884;
-        Thu, 21 Dec 2023 10:58:23 -0800 (PST)
-Received: from debian ([146.70.204.204])
-        by smtp.gmail.com with ESMTPSA id p6-20020a05600c468600b004053e9276easm11868269wmo.32.2023.12.21.10.58.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Dec 2023 10:58:23 -0800 (PST)
-Message-ID: <32febbc9-e603-4400-addd-bdb97ce56c1d@gmail.com>
-Date: Thu, 21 Dec 2023 19:57:51 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 190B565195;
+	Thu, 21 Dec 2023 18:59:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BL6u9Im023368;
+	Thu, 21 Dec 2023 18:58:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=qcppdkim1; bh=hpHPtZW
+	aw3gLN2+ydRk1QiUGlappUp3Wu5lFIFS1vhQ=; b=JjtQylcUf+iqihlf1CZdkRX
+	TgkTCDPPEHMQ5yEs9moVTMDp9nPB6XTEcg2N8k605FRU3RKSuKDHw2+Y2SCHggd6
+	L0O/ppokeDacV2h9D3GyQVsEpUg0pdhiVLC+CByvBGdbr/GJka0rpqXa7lVHsUmf
+	AhPyGJVUtxWemBAxoucqmz2QUE88Bqha/W2PL8xHhOAn57DPiRGKUtl9P9BG1kU2
+	xY0jRGIuYDL2OsieS7WR+lh12AUhGAcgSIP3JgKo22GA7leg7dy/XEx3qqi2Djqh
+	YzXmQe8mjH0F54T+dgBWTD8VKdqXif7fE47DGlrgCQDnYTbJn7n3C0XoViiXmCA=
+	=
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v4d89k19u-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 21 Dec 2023 18:58:57 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BLIwuqn008603
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 21 Dec 2023 18:58:56 GMT
+Received: from hu-amelende-lv.qualcomm.com (10.49.16.6) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Thu, 21 Dec 2023 10:58:56 -0800
+From: Anjelique Melendez <quic_amelende@quicinc.com>
+To: <pavel@ucw.cz>, <lee@kernel.org>, <thierry.reding@gmail.com>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <agross@kernel.org>, <andersson@kernel.org>
+CC: <luca.weiss@fairphone.com>, <konrad.dybcio@linaro.org>,
+        <u.kleine-koenig@pengutronix.de>, <quic_subbaram@quicinc.com>,
+        <quic_gurus@quicinc.com>, <linux-leds@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-pwm@vger.kernel.org>,
+        "Anjelique
+ Melendez" <quic_amelende@quicinc.com>
+Subject: [PATCH v8 0/7] Add support for LUT PPG
+Date: Thu, 21 Dec 2023 10:58:30 -0800
+Message-ID: <20231221185838.28440-1-quic_amelende@quicinc.com>
+X-Mailer: git-send-email 2.41.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: [PATCH net-next 2/3] net: gro: parse ipv6 ext headers without frag0
-From: Richard Gobert <richardbgobert@gmail.com>
-To: davem@davemloft.net, dsahern@kernel.org, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, shuah@kernel.org,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-kselftest@vger.kernel.org
-References: <f4eff69d-3917-4c42-8c6b-d09597ac4437@gmail.com>
-In-Reply-To: <f4eff69d-3917-4c42-8c6b-d09597ac4437@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: gQ3n5OTmzJQImalnt7ef-tEsESk8A8te
+X-Proofpoint-ORIG-GUID: gQ3n5OTmzJQImalnt7ef-tEsESk8A8te
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 clxscore=1011
+ suspectscore=0 lowpriorityscore=0 spamscore=0 priorityscore=1501
+ adultscore=0 impostorscore=0 mlxscore=0 bulkscore=0 malwarescore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2312210144
 
-This commit utilizes a new helper function, ipv6_gro_pull_exthdrs, which
-is used in ipv6_gro_receive to pull ipv6 ext headers instead of
-ipv6_gso_pull_exthdrs. To use ipv6_gso_pull_exthdr, pskb_pull and
-__skb_push must be used, and frag0 must be invalidated. This commit
-removes unnecessary code around the call to ipv6_gso_pull_exthdrs and
-enables the frag0 fast path in IPv6 packets with ext headers.
+In certain PMICs, LUT pattern and LPG configuration is stored in SDAM
+modules instead of LUT peripheral. This feature is called PPG.
 
-Signed-off-by: Richard Gobert <richardbgobert@gmail.com>
----
- net/ipv6/ip6_offload.c | 51 +++++++++++++++++++++++++++++++++---------
- 1 file changed, 41 insertions(+), 10 deletions(-)
+This change series adds support for PPG. Thanks!
+Changes since v7:
+  - Patch 4/7
+    - Initialize hi/lo_pause variables in lpg_pattern_set()
+Changes since v6:
+  - Patch 2/7
+    - Removed required by constraint on PPG dt properties
+Changes since v5:
+  - Patch 4/7
+    - Update logic so that multicolor led device triggers pattern
+      on all LEDs at the same time
+    - Update nitpicks from Lee
+  - Patch 5/7
+    - Update nitpicks from Lee
+Changes since v4:
+  - Patch 3/7
+    - Get rid of r/w helpers
+    - Use regmap_read_poll_timeout() in qcom_pbs_wait_for_ack()
+    - Update error path in qcom_pbs_trigger_event()
+    - Fix reverse christmas tree
+  - Patch 4/7
+    - Get rid of r/w helpers
+    - Update variables to use "sdam" instead of "nvmem"
+    - Fix comments
+    - Fix reverse christmas tree
+    - Update lpg_pattern_set() logic
+  - Patch 5/7
+    - Removed sdam_lut_base from lpg_data
+Changes since v3:
+  - Patch 4/7
+    - Fix function returns
+    - Move register definition to top of file
+    - Revert max_brightness and probe accidental changes
+    - Combine init_sdam() and parse_sdam()
+    - Change error prints in probe to use dev_err_probe
+    - Remove ppg_en variable
+    - Update when pbs triggers are set/cleared
+  - Patch 6/7
+    - Remove use of nvmem_count
+    - Move register definition to top of file
+    - Remove lpg_get_sdam_lut_idx()
+Changes since v2:
+  - Patch 1/7
+    - Fix dt_binding_check error
+    - Rename binding file to match compatible
+    - Iclude SoC specific comptaibles
+  - Patch 2/7
+    - Update nvmem-names list
+  - Patch 3/7
+    - Update EXPORT_SYMBOL to EXPORT_SYMBOL_GPL
+    - Fix return/break logic in qcom_pbs_wait_for_ack()
+    - Update iterators to be int
+    - Add constants
+    - Fix function calls in qcom_pbs_trigger_event()
+    - Remove unnessary comments
+    - Return -EPROBE_DEFER from get_pbs_client_device()
+Changes since v1:
+  - Patch 1/7
+    - Fix dt_binding_check errors
+    - Update binding description
+  - Path 2/7
+    - Fix dt_binding_check errors
+    - Update per variant constraints
+    - Update nvmem description
+  - Patch 3/7
+    - Update get_pbs_client_device()
+    - Drop use of printk
+    - Remove unused function
 
-diff --git a/net/ipv6/ip6_offload.c b/net/ipv6/ip6_offload.c
-index 0e0b5fed0995..a3b8d9127dbb 100644
---- a/net/ipv6/ip6_offload.c
-+++ b/net/ipv6/ip6_offload.c
-@@ -37,6 +37,40 @@
- 		INDIRECT_CALL_L4(cb, f2, f1, head, skb);	\
- })
- 
-+static int ipv6_gro_pull_exthdrs(struct sk_buff *skb, int off, int proto)
-+{
-+	const struct net_offload *ops = NULL;
-+	struct ipv6_opt_hdr *opth;
-+
-+	for (;;) {
-+		int len;
-+
-+		ops = rcu_dereference(inet6_offloads[proto]);
-+
-+		if (unlikely(!ops))
-+			break;
-+
-+		if (!(ops->flags & INET6_PROTO_GSO_EXTHDR))
-+			break;
-+
-+		opth = skb_gro_header(skb, off + 8, off);
-+		if (unlikely(!opth))
-+			break;
-+
-+		len = ipv6_optlen(opth);
-+
-+		opth = skb_gro_header(skb, off + len, off);
-+		if (unlikely(!opth))
-+			break;
-+		proto = opth->nexthdr;
-+
-+		off += len;
-+	}
-+
-+	skb_gro_pull(skb, off - skb_network_offset(skb));
-+	return proto;
-+}
-+
- static int ipv6_gso_pull_exthdrs(struct sk_buff *skb, int proto)
- {
- 	const struct net_offload *ops = NULL;
-@@ -203,28 +237,25 @@ INDIRECT_CALLABLE_SCOPE struct sk_buff *ipv6_gro_receive(struct list_head *head,
- 		goto out;
- 
- 	skb_set_network_header(skb, off);
--	skb_gro_pull(skb, sizeof(*iph));
--	skb_set_transport_header(skb, skb_gro_offset(skb));
- 
--	flush += ntohs(iph->payload_len) != skb_gro_len(skb);
-+	flush += ntohs(iph->payload_len) != skb->len - hlen;
- 
- 	proto = iph->nexthdr;
- 	ops = rcu_dereference(inet6_offloads[proto]);
- 	if (!ops || !ops->callbacks.gro_receive) {
--		pskb_pull(skb, skb_gro_offset(skb));
--		skb_gro_frag0_invalidate(skb);
--		proto = ipv6_gso_pull_exthdrs(skb, proto);
--		skb_gro_pull(skb, -skb_transport_offset(skb));
--		skb_reset_transport_header(skb);
--		__skb_push(skb, skb_gro_offset(skb));
-+		proto = ipv6_gro_pull_exthdrs(skb, hlen, proto);
- 
- 		ops = rcu_dereference(inet6_offloads[proto]);
- 		if (!ops || !ops->callbacks.gro_receive)
- 			goto out;
- 
--		iph = ipv6_hdr(skb);
-+		iph = skb_gro_network_header(skb);
-+	} else {
-+		skb_gro_pull(skb, sizeof(*iph));
- 	}
- 
-+	skb_set_transport_header(skb, skb_gro_offset(skb));
-+
- 	NAPI_GRO_CB(skb)->proto = proto;
- 
- 	flush--;
+Anjelique Melendez (7):
+  dt-bindings: soc: qcom: Add qcom,pbs bindings
+  dt-bindings: leds: leds-qcom-lpg: Add support for LPG PPG
+  soc: qcom: add QCOM PBS driver
+  leds: rgb: leds-qcom-lpg: Add support for PPG through single SDAM
+  leds: rgb: leds-qcom-lpg: Update PMI632 lpg_data to support PPG
+  leds: rgb: leds-qcom-lpg: Include support for PPG with dedicated LUT
+    SDAM
+  leds: rgb: Update PM8350C lpg_data to support two-nvmem PPG Scheme
+
+ .../bindings/leds/leds-qcom-lpg.yaml          |  82 ++++-
+ .../bindings/soc/qcom/qcom,pbs.yaml           |  46 +++
+ drivers/leds/rgb/leds-qcom-lpg.c              | 348 ++++++++++++++++--
+ drivers/soc/qcom/Kconfig                      |   9 +
+ drivers/soc/qcom/Makefile                     |   1 +
+ drivers/soc/qcom/qcom-pbs.c                   | 243 ++++++++++++
+ include/linux/soc/qcom/qcom-pbs.h             |  30 ++
+ 7 files changed, 728 insertions(+), 31 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/soc/qcom/qcom,pbs.yaml
+ create mode 100644 drivers/soc/qcom/qcom-pbs.c
+ create mode 100644 include/linux/soc/qcom/qcom-pbs.h
+
 -- 
-2.36.1
+2.41.0
 
 
