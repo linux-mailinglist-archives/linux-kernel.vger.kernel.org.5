@@ -1,84 +1,101 @@
-Return-Path: <linux-kernel+bounces-9004-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9005-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26E2181BF2A
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 20:33:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 21BB181BF2D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 20:36:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 592F31C241CD
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 19:33:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CD0631F240EA
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 19:36:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CFAC6A005;
-	Thu, 21 Dec 2023 19:33:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A0C3651BD;
+	Thu, 21 Dec 2023 19:36:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b="pXihLVnJ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCBC7651AC
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 19:33:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7b7f98e777cso118238239f.3
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 11:33:07 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703187187; x=1703791987;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=tRRWrtmdQ4QO34KNLqgmYN4+lhvlz7DaWL6jC1udznc=;
-        b=rvQOUC5EV0TRg+8+/zMNz2B3329c83hNOxfvpkH/Xu9w2HTLLdHKVZCdl1Kt33Z1WC
-         2RNGYTjFd05u3iOnv61RBYvIgMrQR8aOuR0roM3MZ9Yae+G6LXezMH3fET9ByPsGgQzJ
-         UGQ3XWQHOLlyoKlAXHb2/aSfKwCGjs5Ab/jsLh/zNNL5rBkgzCK/a16G8aYzlRCtg+AO
-         zRBVdbFqAFb3eCvtjCNmpNoM0hIz1xwo9fqG58K2vG7SHV7sje8g6NWHJSE6OKhTt4fY
-         gW/qNDSeB7reeXhWGDk3iJcZ/sgm6d7Sis9zKjB4YWq+cv2Qm80bPJlpBuzQ6foW/pJu
-         RlZw==
-X-Gm-Message-State: AOJu0Yzx1wGhhclMAL23t9P+4tNZnTJBFnlg33MoMqMjRjB89/IEO9a2
-	W8E2xSktGlW3D/jSHMLXXP5SKAbA/h4AYhoDic9w0LM6XhfA
-X-Google-Smtp-Source: AGHT+IGTvqe52vto9JB/yF38DIK1v4clMaMiDt988+wbSuKG+wXwGC+P4I1+eCdSOmFi9qV3g78/GGs5f3pwusB6JkcqF8F3ur3q
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14A1A33988;
+	Thu, 21 Dec 2023 19:36:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hugovil.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
+	; s=x; h=Subject:Content-Transfer-Encoding:Mime-Version:Message-Id:Cc:To:From
+	:Date:subject:date:message-id:reply-to;
+	bh=vPc8thH3C7HWk4KTsdpmJPeYei58JpYABE0eXOWLITk=; b=pXihLVnJV0TtPIGJgQBjxclwAX
+	5Bb/jRQwN2oSZS2a+1T9sC0aWOcHeWzpzTn46B4/Kek2A5ADwbNIvEUY9wwI1Jwd2jacpt2mULHsw
+	jC89PIRAnPmOulL4ayxTfNxdNdJWMPMn5kW3HXc1hGpfA2iDzZZmzv5Euyp/b5oMpgdk=;
+Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:51258 helo=pettiford)
+	by mail.hugovil.com with esmtpa (Exim 4.92)
+	(envelope-from <hugo@hugovil.com>)
+	id 1rGOpl-0000GN-VW; Thu, 21 Dec 2023 14:35:54 -0500
+Date: Thu, 21 Dec 2023 14:35:53 -0500
+From: Hugo Villeneuve <hugo@hugovil.com>
+To: Andy Shevchenko <andriy.shevchenko@intel.com>
+Cc: gregkh@linuxfoundation.org, jirislaby@kernel.org, jringle@gridpoint.com,
+ kubakici@wp.pl, phil@raspberrypi.org, bo.svangard@embeddedart.se,
+ linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org, Hugo Villeneuve
+ <hvilleneuve@dimonoff.com>, stable@vger.kernel.org
+Message-Id: <20231221143553.57a180880d30b86257ee9b7c@hugovil.com>
+In-Reply-To: <ZYMPBz3BbOzSCEog@smile.fi.intel.com>
+References: <20231219171903.3530985-1-hugo@hugovil.com>
+	<20231219171903.3530985-16-hugo@hugovil.com>
+	<ZYMPBz3BbOzSCEog@smile.fi.intel.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-Received: by 2002:a05:6638:2b19:b0:46c:e185:86f0 with SMTP id
- fm25-20020a0566382b1900b0046ce18586f0mr11914jab.4.1703187187041; Thu, 21 Dec
- 2023 11:33:07 -0800 (PST)
-Date: Thu, 21 Dec 2023 11:33:07 -0800
-In-Reply-To: <000000000000f3d57d060d0556a1@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000450dee060d0a2bc3@google.com>
-Subject: Re: [syzbot] [net?] WARNING: ODEBUG bug in advance_sched
-From: syzbot <syzbot+ec9b5cce58002d184fb6@syzkaller.appspotmail.com>
-To: davem@davemloft.net, edumazet@google.com, jhs@mojatatu.com, 
-	jiri@resnulli.us, kuba@kernel.org, leandro.maciel.dorileo@intel.com, 
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, pabeni@redhat.com, 
-	syzkaller-bugs@googlegroups.com, vedang.patel@intel.com, 
-	vinicius.gomes@intel.com, xiyou.wangcong@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 70.80.174.168
+X-SA-Exim-Mail-From: hugo@hugovil.com
+X-Spam-Level: 
+X-Spam-Report: 
+	* -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+	* -0.0 T_SCC_BODY_TEXT_LINE No description available.
+	* -3.8 NICE_REPLY_A Looks like a legit reply (A)
+Subject: Re: [PATCH 15/18] serial: sc16is7xx: pass R/W buffer in FIFO
+ functions
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 
-syzbot has bisected this issue to:
+On Wed, 20 Dec 2023 17:57:59 +0200
+Andy Shevchenko <andriy.shevchenko@intel.com> wrote:
 
-commit 7b9eba7ba0c1b24df42b70b62d154b284befbccf
-Author: Leandro Dorileo <leandro.maciel.dorileo@intel.com>
-Date:   Mon Apr 8 17:12:17 2019 +0000
+> On Tue, Dec 19, 2023 at 12:18:59PM -0500, Hugo Villeneuve wrote:
+> > From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+> > 
+> > To simplify function by avoiding cast.
+> > 
+> > This is similar to what is done in max310x driver.
+> 
+> ...
+> 
+> > ---
+> > If deemed appropriate for stable kernel backporting:
+> 
+> I don't think it's eligible.
 
-    net/sched: taprio: fix picos_per_byte miscalculation
+No problem.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=116aaa79e80000
-start commit:   1a44b0073b92 Merge tag 'ovl-fixes-6.7-rc7' of git://git.ke..
-git tree:       upstream
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=136aaa79e80000
-console output: https://syzkaller.appspot.com/x/log.txt?x=156aaa79e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=314e9ad033a7d3a7
-dashboard link: https://syzkaller.appspot.com/bug?extid=ec9b5cce58002d184fb6
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12d5bc6ee80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1465cbd6e80000
 
-Reported-by: syzbot+ec9b5cce58002d184fb6@syzkaller.appspotmail.com
-Fixes: 7b9eba7ba0c1 ("net/sched: taprio: fix picos_per_byte miscalculation")
+> > ---
+> 
+> I don't see the necessity of the change, OTOH it's harmless.
+> The problem is that commit message is basically "Yeah, we
+> do cargo cult." Because I haven't seen what casting you are
+> talking about.
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+I'll try to reword the commit message.
+
+And replace cast with something like "... to remove additional struct
+sc16is7xx_port variable..."
+
+Hugo Villeneuve
 
