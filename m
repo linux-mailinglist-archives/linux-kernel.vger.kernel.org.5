@@ -1,100 +1,77 @@
-Return-Path: <linux-kernel+bounces-7850-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7851-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8631C81AE37
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 06:00:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C67F81AE3F
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 06:02:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3CE8F1F24AF9
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 05:00:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D1DAF1F23141
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 05:02:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C59D7AD49;
-	Thu, 21 Dec 2023 05:00:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eOhDLYMh"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF5D7945A;
+	Thu, 21 Dec 2023 05:02:08 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A288945A;
-	Thu, 21 Dec 2023 05:00:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 7E8ABC433CB;
-	Thu, 21 Dec 2023 05:00:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703134824;
-	bh=nD8BeL3m4gN7DXI9mnUAEuRD4P2PBgojyF1Th0AEJ44=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=eOhDLYMhd0QZL+HWVBkJE1v9EpGu+iCbO7Jeh5wofbFbh+Ty+/JL+TtNTcgswHYM/
-	 UQa7UpS8/RAEGLag+b7w80a8fwe35VzXiSV67TM0adt9H0g3pe27cwYKYZRM7o3kxw
-	 uc/f1v79/fi/yypIsRvusnEmO/6NKK8G9eZLLQMXf7IoJs7g5QDEUNSYAyZzMkGKdW
-	 Lz0Aq4F6Yp/27Rf/7wrqJkG2F9EaJ1IlVFYWVAwyGk0JH13nFO3FYMF8qjF5uVf+bU
-	 PF2thDYqW7E/CBr6zQeqY4gKbgnDJ0qbM183FgTr8SKY1A97vdHz4pmo2cNRsyO9Je
-	 UA8zYla4JCYUw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 5FFF8D8C98B;
-	Thu, 21 Dec 2023 05:00:24 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3627B8F47
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 05:02:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7b711ddbf1aso51751539f.0
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 21:02:06 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703134926; x=1703739726;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=VoTgpIwQmRPapYLG1S/Wc3pmTPJUvTVGVk/Kw0DmP/0=;
+        b=VZHWS+x3sYaQL7/0jbZvwKLYJc0jiibMBxGBkehqQGW2yynktzhiIq5Sloqne1hSnm
+         V6x7YAm3TPBlMrDgK35qFMexYtyNqiPT+49evloCVRTOORo8XdO5THD2Lhs0gNjn7wiK
+         y3HSPv5X5A95yo2nQJQa1Z7zjHmUg9epDtaqPgZheKeiJDkOKG3jrfuwEOcxS9BtyRqW
+         lK9FJlwB/2cynTfP7ypG6s8Sr53r7QErmMjS79nnXBeu5UALcCOK33rKQAAxKGqywsV+
+         /lS4qJ9daju1Jfx0cbU2EO6aE2oVu20NshGw8ga1q2+94B0rB4oFqcfgOzI9X1B/XkxA
+         /lyA==
+X-Gm-Message-State: AOJu0YxDdGr3ElmcDTmo7J+qhSJLWp/0gvoYGd/OOIbbNsIRPvPnnVGJ
+	yX6VlkLH7vHxXtyrmPFqljzX8nRzfSTY1Cq5SrgK7ySWD2we
+X-Google-Smtp-Source: AGHT+IGBJPSofT7YbyU1BW5v+QeQOWbPbt494vo9633iA0QpHJ1252vw9ZiCsxfCK9EkBLi25VzQdj5PbmZSLL5Ut8hN4oQ3lhgZ
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2] libbpf: Fix NULL pointer dereference in
- bpf_object__collect_prog_relos
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170313482438.22190.7805144869864343062.git-patchwork-notify@kernel.org>
-Date: Thu, 21 Dec 2023 05:00:24 +0000
-References: <20231221033947.154564-1-liuxin350@huawei.com>
-In-Reply-To: <20231221033947.154564-1-liuxin350@huawei.com>
-To: Xin Liu <liuxin350@huawei.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- martin.lau@linux.dev, song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
- kpsingh@kernel.org, sdf@google.com, haoluo@google.com, jolsa@kernel.org,
- bpf@vger.kernel.org, linux-kernel@vger.kernel.org, yanan@huawei.com,
- wuchangye@huawei.com, xiesongyang@huawei.com, kongweibin2@huawei.com,
- tianmuyang@huawei.com, zhangmingyi5@huawei.com
+X-Received: by 2002:a92:cd8e:0:b0:35f:989c:a85b with SMTP id
+ r14-20020a92cd8e000000b0035f989ca85bmr1235336ilb.6.1703134926397; Wed, 20 Dec
+ 2023 21:02:06 -0800 (PST)
+Date: Wed, 20 Dec 2023 21:02:06 -0800
+In-Reply-To: <20231221043616.1182-1-hdanton@sina.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000004ae62a060cfe00ad@google.com>
+Subject: Re: [syzbot] [net?] KASAN: slab-use-after-free Read in taprio_dump
+From: syzbot <syzbot+d4d8c0fd15a0abe39bcf@syzkaller.appspotmail.com>
+To: hdanton@sina.com, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-Hello:
+Hello,
 
-This patch was applied to bpf/bpf-next.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-On Thu, 21 Dec 2023 11:39:47 +0800 you wrote:
-> From: Mingyi Zhang <zhangmingyi5@huawei.com>
-> 
-> An issue occurred while reading an ELF file in libbpf.c during fuzzing:
-> 
-> 	Program received signal SIGSEGV, Segmentation fault.
-> 	0x0000000000958e97 in bpf_object.collect_prog_relos () at libbpf.c:4206
-> 	4206 in libbpf.c
-> 	(gdb) bt
-> 	#0 0x0000000000958e97 in bpf_object.collect_prog_relos () at libbpf.c:4206
-> 	#1 0x000000000094f9d6 in bpf_object.collect_relos () at libbpf.c:6706
-> 	#2 0x000000000092bef3 in bpf_object_open () at libbpf.c:7437
-> 	#3 0x000000000092c046 in bpf_object.open_mem () at libbpf.c:7497
-> 	#4 0x0000000000924afa in LLVMFuzzerTestOneInput () at fuzz/bpf-object-fuzzer.c:16
-> 	#5 0x000000000060be11 in testblitz_engine::fuzzer::Fuzzer::run_one ()
-> 	#6 0x000000000087ad92 in tracing::span::Span::in_scope ()
-> 	#7 0x00000000006078aa in testblitz_engine::fuzzer::util::walkdir ()
-> 	#8 0x00000000005f3217 in testblitz_engine::entrypoint::main::{{closure}} ()
-> 	#9 0x00000000005f2601 in main ()
-> 	(gdb)
-> 
-> [...]
+Reported-and-tested-by: syzbot+d4d8c0fd15a0abe39bcf@syzkaller.appspotmail.com
 
-Here is the summary with links:
-  - [v2] libbpf: Fix NULL pointer dereference in bpf_object__collect_prog_relos
-    https://git.kernel.org/bpf/bpf-next/c/929154ac3b88
+Tested on:
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+commit:         d5b235ec Merge branch 'for-next/core' into for-kernelci
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=10924b06e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f36ea342ce412b14
+dashboard link: https://syzkaller.appspot.com/bug?extid=d4d8c0fd15a0abe39bcf
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: arm64
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=177ca826e80000
 
-
+Note: testing is done by a robot and is best-effort only.
 
