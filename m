@@ -1,106 +1,110 @@
-Return-Path: <linux-kernel+bounces-9091-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9092-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5390181C05C
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 22:41:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24B6281C05F
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 22:41:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 868CA1C23DCE
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 21:41:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 25C601C23ED8
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 21:41:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36FD278E66;
-	Thu, 21 Dec 2023 21:40:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F21BD7763A;
+	Thu, 21 Dec 2023 21:41:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Y21p367r"
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="h2J3pc0d"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C88077631;
-	Thu, 21 Dec 2023 21:40:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-5c85e8fdd2dso13247257b3.2;
-        Thu, 21 Dec 2023 13:40:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703194813; x=1703799613; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aTI1OFjrcWP9wgBoTfoCNiKxKyxMm5mLbCOryqiWA0U=;
-        b=Y21p367rKxW+BNuYUgZ0OFuFUkqXHpP8WU9laH/juigbd5fvlD1XGgUdVpLTYQN9dS
-         Sx+rqRXak7buykyJInCwMrCvMiQ58T5/AmXzsQaK2wOBV2HBuKqYn+F2MXS7+Ap5GyOi
-         mRJ5mPb6Qt+Y+gj4ONPq2jWKSs19a2EUimfdodj2o2e8WuiKoxb5sAQp221TiQrQbFuX
-         6iybGtRNjn/BIk/YaV4NRR89MUFyjF1fZVOkf9FlHEZUU/gR9dds2bJJ6uBJt8gd00d7
-         Zxt3od+X+pgnZZTuIXf/w+m1UBqFIriEIC1Y6DK5LF+qJn1Q89R9NQu1fYvuK7QyH867
-         iULg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703194813; x=1703799613;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=aTI1OFjrcWP9wgBoTfoCNiKxKyxMm5mLbCOryqiWA0U=;
-        b=GzS7LarW47xk6m6IJh0HyBkSBznVEAAwS1O0JKu/wqXkEjBC6EG42LSGiV5NIaGVoN
-         SHVelXhXOcXB0IiyHuJwk6D8/jnSrdwDPhUY8rTntrd47+xBF/7tOqpGH+BVJlAtxheC
-         gKUWwoLJTVPIjq+dSrwIvQ0Il+DHFIZlI8+Fw+Kjnx6XSlrRRvPqAptuzUq0LhJPnV6g
-         hoW+cE8cQwYuA+nacvWOAtNu+4A0sBOcJorxG7JEU3/C7sxu/km4rEn12hZoI6eaIaPg
-         AQNgnlmShL42IqSpnGF+6Umcmb2ulTsL+3SUk2pxlBv7jsWhrxneIov1igfEZj1yEswZ
-         WdOg==
-X-Gm-Message-State: AOJu0YwVkxCzTPZIVJUguQdAC/pm/H+w+xjGfbcnczOC1BpW4oHCtcTQ
-	8MDje2I18vOQBaZv2qYmiFGY0uGTzHTwrJ7+Hv4=
-X-Google-Smtp-Source: AGHT+IFZQggkJXTtouCLXwdPMeMSiEljIujIGL/TQToBqai5Bv73z4gb+uuZ/oV29fvBWdlUPqLqoM2bsALFvLVk4+I=
-X-Received: by 2002:a25:dc8c:0:b0:db5:4b23:534 with SMTP id
- y134-20020a25dc8c000000b00db54b230534mr423500ybe.17.1703194813258; Thu, 21
- Dec 2023 13:40:13 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4D9E768EF;
+	Thu, 21 Dec 2023 21:41:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1703194881;
+	bh=LLwn0bXTzEtLZgXJFyrR3N2SO0obanZicVjfnAtabY8=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=h2J3pc0dezuHGyBx9ILXQdBVbip9cMvAV0c5L4jNW/TwqWUHeoF/HNqMlCZHv4DdX
+	 I7RQ9M59jtMOXlmGbvh7InQSlA6Lvn1EAiQi1FKLsxaLKSlUXvMIBalPyk5hqtDV8g
+	 TRQco/5kEtu24kUtXQUzagE1ITRjyqRLlpRUziNv4Udk9SBOV+mS3OuM817ytu/Uni
+	 UPsCHSubStJ31WaiWyPpmgP9btO+0MelRGqBg8Z7A7GgBPb/n3nJU8NYa/K9yZpzY1
+	 c5PK9s0OKfFoYzQe99ko4aEY39KaxzQ5bt5oRErRfTmVCF4HQMbMmeqOMTmZ48wwNm
+	 ++DMU4U0xAKDQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4Sx3lj0cmHz4xNG;
+	Fri, 22 Dec 2023 08:41:20 +1100 (AEDT)
+Date: Fri, 22 Dec 2023 08:41:20 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Marcel Holtmann <marcel@holtmann.org>, Johan Hedberg
+ <johan.hedberg@gmail.com>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
+ Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: duplicate patches in the bluetooth tree
+Message-ID: <20231222084120.2700e077@canb.auug.org.au>
+In-Reply-To: <20231221122425.5bcaee70@canb.auug.org.au>
+References: <20231221122425.5bcaee70@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <e2b943eca92abebbf035447b3569f09a7176c770.1702366951.git.viresh.kumar@linaro.org>
-In-Reply-To: <e2b943eca92abebbf035447b3569f09a7176c770.1702366951.git.viresh.kumar@linaro.org>
-From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date: Thu, 21 Dec 2023 22:40:02 +0100
-Message-ID: <CANiq72mKL3_1Cfe3EQ8RN+_R3kjs96vgHtjO9CCXD-+p2CzQDg@mail.gmail.com>
-Subject: Re: [PATCH V2] docs: rust: Clarify that 'rustup override' applies to
- build directory
-To: Viresh Kumar <viresh.kumar@linaro.org>
-Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
-	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
-	Alice Ryhl <aliceryhl@google.com>, Jonathan Corbet <corbet@lwn.net>, 
-	Vincent Guittot <vincent.guittot@linaro.org>, rust-for-linux@vger.kernel.org, 
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/Wf7ME7ys3kMae_t9=Xb6gOF";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+
+--Sig_/Wf7ME7ys3kMae_t9=Xb6gOF
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 12, 2023 at 8:44=E2=80=AFAM Viresh Kumar <viresh.kumar@linaro.o=
-rg> wrote:
->
-> Rustup override is required to be set for the build directory and not
-> necessarily the kernel source tree (unless the build directory is its
-> subdir).
->
-> Clarify the same in quick-start guide.
->
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+Hi all,
 
-Since we are not going to use v3 given we will not have the
-`rustupoverride` Make target, I have applied this one. It is also the
-one that got more `Reviewed-by`s, I think Andreas preferred too and
-Masahiro was kind enough to be OK applying this one instead of his
-(which would need to be rebased and submitted to the list), so I went
-with that one. Tiago's concern is still there though (i.e. the script
-is relative to the source tree), but we can improve things further
-later (perhaps if we add a script for this sort of thing).
+On Thu, 21 Dec 2023 12:24:25 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> The following commits are also in the net tree as different commits
+> (but the same patches):
+>=20
+>   01edddb9f366 ("Bluetooth: hci_core: Fix hci_conn_hash_lookup_cis")
+>   27a4852d53c1 ("Bluetooth: hci_event: Fix not checking if HCI_OP_INQUIRY=
+ has been sent")
+>   315a4c9045df ("Bluetooth: af_bluetooth: Fix Use-After-Free in bt_sock_r=
+ecvmsg")
+>   37044639ad5e ("Bluetooth: hci_event: shut up a false-positive warning")
+>   6ab75888baf7 ("Bluetooth: MGMT/SMP: Fix address type when using SMP ove=
+r BREDR/LE")
+>   8127ee3d7e0f ("Bluetooth: Fix not notifying when connection encryption =
+changes")
+>   8d79bc35fb81 ("Bluetooth: Fix deadlock in vhci_send_frame")
+>   aaa600f30fad ("Bluetooth: Add more enc key size check")
+>   b207711da3d7 ("Bluetooth: L2CAP: Send reject on command corrupted reque=
+st")
 
-Applied to `rust-next` (reworded and fixed quotes for `--path` and
-`set`) -- thanks everyone!
+These are now duplicating commits in Linus' tree.
 
+--=20
 Cheers,
-Miguel
+Stephen Rothwell
+
+--Sig_/Wf7ME7ys3kMae_t9=Xb6gOF
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmWEsQAACgkQAVBC80lX
+0Gwyrwf/VF3T8NPf0gjFL/oMwa0JveXBwLhmYFnyh+s+eBtDOpaOP8z5j7IWEVFl
+qdfV2+3Hx9PPfcmjdEpmx9/WqvYzapciOPNGT/3SUqg297te0FLEPrm/Jvy8gkh/
+QiyElLR4fFYbOjtm6BWRgDWM43PRGw63MdKQLY6Ij+h8QfScwd3icJmuLhPf8mQ2
+JC6xej8Kyu1A5FnXikhE7du+EX78M9SIK9sMJKWozbuxy8npzUsFAOrvreIvh0jI
+9v+xMM93Wtyz8O4r0/u8TtCjpB2Ebyvn54utugB3p00zhzRd3bYTGhuxRf/ufMKi
+OK/DNwD9ivWaSftQN1J8M3dvO5CCDA==
+=+Z/8
+-----END PGP SIGNATURE-----
+
+--Sig_/Wf7ME7ys3kMae_t9=Xb6gOF--
 
