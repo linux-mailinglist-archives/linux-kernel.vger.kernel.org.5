@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-8356-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8357-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9FF4A81B629
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 13:44:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69A5481B62E
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 13:44:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CE3651C23526
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 12:44:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1E485288B5B
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 12:44:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0BBD6F60B;
-	Thu, 21 Dec 2023 12:44:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69D8873489;
+	Thu, 21 Dec 2023 12:44:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="y3K+6euP"
+	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="alQB5M45"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx08-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5009F6EB4F;
-	Thu, 21 Dec 2023 12:44:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 195DF73183;
+	Thu, 21 Dec 2023 12:44:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
-Received: from pps.filterd (m0369457.ppops.net [127.0.0.1])
-	by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3BLAdZ6g025826;
-	Thu, 21 Dec 2023 13:43:54 +0100
+Received: from pps.filterd (m0288072.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3BL7rESg026222;
+	Thu, 21 Dec 2023 13:43:57 +0100
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
 	:mime-version:content-transfer-encoding:content-type; s=
-	selector1; bh=wAIVUm7V9taORVR8870mPd+pd5ISYdF2B1dtf5GRRcM=; b=y3
-	K+6euPfK7azugWDU6Ih4R0UqJhZucMNX9f/c3ZFWaM4jpZrLVpLeAhsJVfzadQcq
-	2uyETEohBpdPpKxr9b0xwHssTlqlhDcmODMmI/eRdAkm1IizRejxSjqP1a8E0qSR
-	PFYo6j02GGb5hN2UcYp2B7J9TKeclBo2L2FLcgPqDoXIoWTQDKSi+kCmpaYOJX/f
-	X0Yrd0ht3FF/c0yFL7bI1ul1SXSYSvDgLBzS3dsB18ZQ4herW272HKRAlWxpLB6h
-	96hmt0ldDWJ9Gc7j7/g/6eNzgH0Wqqd27RPWMrhRNAiwoFd0+gii/GJYTgm46+5M
-	iMGlpp3Ec7amuijskZGQ==
+	selector1; bh=xJ81R9NAdDJJiqPYazGrWf5dZ1/fmMyctvdLKM1z2P0=; b=al
+	QB5M454PeMSS+B42e7govm3PbzaS+uwUW1gIFAEUl6KV4TY+nU8uNXRUvWOraU1x
+	39aeIF0TKhtMZWLAqbJ/sqRuFKa6sW8b/CcTc/bnX4XwFdPVDvwNWNhh6KH7uLVC
+	6ru8FW2PgmFpzXeQvCfbk1WYOjgh9MY/oS+3JmrDJDZt3HyNdT/0MKfxdHDkcJIV
+	8RCQkqxd06GKtj5nxTthwXTsQVvrFVUBs/Z2RaJSx38MEAP0UHeJgEweRe0BDddE
+	DIjOsYfaYHjcZqhNMZOWQSPObpTfB1bwG0vIhW8Ww0gfZN87ZXP/qU0vSj6RpPBW
+	4/51RRPJTcu3VaTfxQAQ==
 Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3v3q810q1d-1
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3v126m819k-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 21 Dec 2023 13:43:54 +0100 (CET)
+	Thu, 21 Dec 2023 13:43:57 +0100 (CET)
 Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 1E33810005F;
-	Thu, 21 Dec 2023 13:43:53 +0100 (CET)
+	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id A861110005F;
+	Thu, 21 Dec 2023 13:43:55 +0100 (CET)
 Received: from Webmail-eu.st.com (shfdag1node2.st.com [10.75.129.70])
-	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 155A7280A11;
-	Thu, 21 Dec 2023 13:43:53 +0100 (CET)
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 9B9BC280A11;
+	Thu, 21 Dec 2023 13:43:55 +0100 (CET)
 Received: from localhost (10.252.25.159) by SHFDAG1NODE2.st.com (10.75.129.70)
  with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 21 Dec
- 2023 13:43:52 +0100
+ 2023 13:43:55 +0100
 From: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
 To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
         Neil Armstrong
@@ -84,9 +84,9 @@ CC: <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>,
         <linux-stm32@st-md-mailman.stormreply.com>,
         <linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH RESEND v1 1/8] dt-bindings: panel: lvds: Append edt,etml0700z9ndha in panel-lvds
-Date: Thu, 21 Dec 2023 13:43:32 +0100
-Message-ID: <20231221124339.420119-2-raphael.gallais-pou@foss.st.com>
+Subject: [PATCH RESEND v1 2/8] dt-bindings: display: add dt-bindings for STM32 LVDS device
+Date: Thu, 21 Dec 2023 13:43:33 +0100
+Message-ID: <20231221124339.420119-3-raphael.gallais-pou@foss.st.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20231221124339.420119-1-raphael.gallais-pou@foss.st.com>
 References: <20231221124339.420119-1-raphael.gallais-pou@foss.st.com>
@@ -104,26 +104,134 @@ X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-12-21_06,2023-12-20_01,2023-05-22_02
 
-List EDT ETML0700Z9NDHA in the LVDS panel enumeration.
+Add dt-binding file for "st,stm32-lvds" compatible.
 
 Signed-off-by: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
 ---
- Documentation/devicetree/bindings/display/panel/panel-lvds.yaml | 2 ++
- 1 file changed, 2 insertions(+)
+ .../bindings/display/st,stm32-lvds.yaml       | 114 ++++++++++++++++++
+ 1 file changed, 114 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/display/st,stm32-lvds.yaml
 
-diff --git a/Documentation/devicetree/bindings/display/panel/panel-lvds.yaml b/Documentation/devicetree/bindings/display/panel/panel-lvds.yaml
-index 9f1016551e0b..3fb24393529c 100644
---- a/Documentation/devicetree/bindings/display/panel/panel-lvds.yaml
-+++ b/Documentation/devicetree/bindings/display/panel/panel-lvds.yaml
-@@ -42,6 +42,8 @@ properties:
-           - auo,b101ew05
-           # Chunghwa Picture Tubes Ltd. 7" WXGA (800x1280) TFT LCD LVDS panel
-           - chunghwa,claa070wp03xg
-+          # EDT ETML0700Z9NDHA 7.0" WSVGA (1024x600) color TFT LCD LVDS panel
-+          - edt,etml0700z9ndha
-           # HannStar Display Corp. HSD101PWW2 10.1" WXGA (1280x800) LVDS panel
-           - hannstar,hsd101pww2
-           # Hydis Technologies 7" WXGA (800x1280) TFT LCD LVDS panel
+diff --git a/Documentation/devicetree/bindings/display/st,stm32-lvds.yaml b/Documentation/devicetree/bindings/display/st,stm32-lvds.yaml
+new file mode 100644
+index 000000000000..d72c9088133c
+--- /dev/null
++++ b/Documentation/devicetree/bindings/display/st,stm32-lvds.yaml
+@@ -0,0 +1,114 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/display/st,stm32-lvds.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: STMicroelectronics STM32 LVDS Display Interface Transmitter
++
++maintainers:
++  - Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
++  - Yannick Fertre <yannick.fertre@foss.st.com>
++
++description: |
++  The STMicroelectronics STM32 LVDS Display Interface Transmitter handles the
++  LVDS protocol: it maps the pixels received from the upstream Pixel-DMA (LTDC)
++  onto the LVDS PHY.
++
++  It regroups three sub blocks:
++    - LVDS host: handles the LVDS protocol (FPD / OpenLDI) and maps its input
++      pixels onto the data lanes of the PHY
++    - LVDS PHY: parallelize the data and drives the LVDS data lanes
++    - LVDS wrapper: handles top-level settings
++
++  The LVDS controller driver supports the following high-level features:
++    - FDP-Link-I and OpenLDI (v0.95) protocols
++    - Single-Link or Dual-Link operation
++    - Single-Display or Double-Display (with the same content duplicated on both)
++    - Flexible Bit-Mapping, including JEIDA and VESA
++    - RGB888 or RGB666 output
++    - Synchronous design, with one input pixel per clock cycle
++
++properties:
++  "#clock-cells":
++    const: 0
++
++  compatible:
++    const: st,stm32-lvds
++
++  reg:
++    maxItems: 1
++
++  clocks:
++    items:
++      - description: APB peripheral clock
++      - description: Reference clock for the internal PLL
++
++  clock-names:
++    items:
++      - const: pclk
++      - const: ref
++
++  resets:
++    maxItems: 1
++
++  ports:
++    $ref: /schemas/graph.yaml#/properties/ports
++
++    properties:
++      port@0:
++        $ref: /schemas/graph.yaml#/properties/port
++        description: |
++          LVDS input port node, connected to the LTDC RGB output port.
++
++      port@1:
++        $ref: /schemas/graph.yaml#/properties/port
++        description: |
++          LVDS output port node, connected to a panel or bridge input port.
++
++required:
++  - "#clock-cells"
++  - compatible
++  - reg
++  - clocks
++  - clock-names
++  - resets
++  - ports
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/bus/stm32mp25_sys_bus.h>
++    #include <dt-bindings/clock/stm32mp25-clks.h>
++    #include <dt-bindings/reset/stm32mp25-resets.h>
++
++    lvds: lvds@48060000 {
++        #clock-cells = <0>;
++        compatible = "st,stm32-lvds";
++        reg = <0x48060000 0x2000>;
++        clocks = <&rcc CK_BUS_LVDS>, <&rcc CK_KER_LVDSPHY>;
++        clock-names = "pclk", "ref";
++        resets = <&rcc LVDS_R>;
++
++        ports {
++            #address-cells = <1>;
++            #size-cells = <0>;
++
++            port@0 {
++                reg = <0>;
++                lvds_in: endpoint {
++                   remote-endpoint = <&ltdc_ep1_out>;
++                };
++            };
++
++            port@1 {
++                reg = <1>;
++                lvds_out0: endpoint {
++                   remote-endpoint = <&lvds_panel_in>;
++                };
++            };
++        };
++    };
++
++...
 -- 
 2.25.1
 
