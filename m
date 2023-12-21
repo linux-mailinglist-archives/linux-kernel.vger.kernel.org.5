@@ -1,204 +1,154 @@
-Return-Path: <linux-kernel+bounces-7739-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7741-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C307781AC77
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 03:01:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 95FF881AC7B
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 03:03:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7B90828282A
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 02:01:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5462A282A15
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 02:03:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D962A944;
-	Thu, 21 Dec 2023 02:01:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87DA64A20;
+	Thu, 21 Dec 2023 02:03:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fvl5fdhk"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="jAPL8Jwg"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-io1-f51.google.com (mail-io1-f51.google.com [209.85.166.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0619C945A;
-	Thu, 21 Dec 2023 02:01:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f51.google.com with SMTP id ca18e2360f4ac-7b7fdde8b54so12756439f.1;
-        Wed, 20 Dec 2023 18:01:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703124085; x=1703728885; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7uprnz/jjYuy4jWp8M6YseVkbWg8KRWXhaIAky0jmfE=;
-        b=fvl5fdhkGCMSY4JACtoE5vZEE0OZ5mvM5hc/zaI0tobA2ZmXV0w5QWqYAXIhfvhdR3
-         qzee0RVDbtCM6+9YCwFYnS+/mP+MQdmFdg19YU15PCKZC+6VjmXgqkwL/g4KjsfW4Ibk
-         0odUQKp38Rqic+FTfD+FLUUhzBq3F4lW1DGqJXJpLNI+/g85mA+D2qVwZECHiUhbtbjd
-         1C4pxbpuBXD+u94iW/HadP649b/wmqI14iI1JJE0cr2YQr9QLdWc8bLcHPbxhF8ZUxQH
-         xoKGZKIgzltMwZMGS6eRkB9B1CcmJkerTpE2ztDeV5dj1kBcszWdZSmXYX7gNDIj7/65
-         l0GA==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 680DC4685
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 02:03:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1703124199;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=YVgqAvwwX5PZ+K0StsYhb5ohbh7FF/syTZKMQDbQ9v4=;
+	b=jAPL8Jwg23l7HJeW1GkOm9ldKLhHBOPycIPxQrjyJAdBAZHBtGulL2nDEB4WIkq3CNuJMi
+	hKzoKRfR8+Ta6cq5fYmwAFswQ2YXQjfFYVg0V2ujzRyF1uy6KVPmyjMMf4iA2lPwr4w7sS
+	i99Xx77kwoH43jTGAIGrQR2TilxqX5o=
+Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com
+ [209.85.210.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-380-nXHPj2HIO5qztw95hNczLg-1; Wed, 20 Dec 2023 21:03:17 -0500
+X-MC-Unique: nXHPj2HIO5qztw95hNczLg-1
+Received: by mail-pf1-f198.google.com with SMTP id d2e1a72fcca58-6d8d059a790so369040b3a.0
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 18:03:17 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703124085; x=1703728885;
+        d=1e100.net; s=20230601; t=1703124196; x=1703728996;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=7uprnz/jjYuy4jWp8M6YseVkbWg8KRWXhaIAky0jmfE=;
-        b=QmkDB2coY1A7hecqxdYSm8mnXFiM4d6nQDmU7iktU+AYFQPiQjuSxiGzPRXIyb2nn6
-         E0r13MTApr1wtySm71cq0kTYVojFFlRjFb7yVfTqf2Oq7Vu6fCRrtXa+1cjB2j6dJwQT
-         iP0hl1pUVFDg1H3mPCudWX6vnXRR25qwx2TI/aJU3xwjtH1wIrTAdAWyuOe4Zsdb4wpt
-         IfAbBVnare7cGOAWHQ/dwnfaBV+rzi4Nj52epboRdRkUyFD+5TVi8WqkPZwO1POF0fvL
-         3bbAUcw9gbI1KVCH8xAuT3b4eiZGRofXBGtttYVGjbLJmximCtfejLWYGJRvGpQYFtjU
-         wsjA==
-X-Gm-Message-State: AOJu0YxPh0MDMn7wQPtygLkLttPWqW/4j5+Znwrg3YO0Iz20hAsxTtq7
-	ztzT3qrV6rf6lDYokq4K3l6PhDFMkU/zz0XMqX0=
-X-Google-Smtp-Source: AGHT+IHR51LjiWdOebtbBexnDeSV//C/Noc4zDv9CvLklzYhekwRS6kGUobGMBJIQkMj3Tu/WQhPg+zbFBnbMgKV5YM=
-X-Received: by 2002:a6b:3f56:0:b0:7b9:232c:eeb3 with SMTP id
- m83-20020a6b3f56000000b007b9232ceeb3mr2763300ioa.6.1703124084910; Wed, 20 Dec
- 2023 18:01:24 -0800 (PST)
+        bh=YVgqAvwwX5PZ+K0StsYhb5ohbh7FF/syTZKMQDbQ9v4=;
+        b=EGBcR6SsK5Nc4niJ3SLJ96nQlFzvUWtgwQuNHUp/30g/nSzNx8aqMKFe69rvjziu7G
+         +2zVqPP3M8AGvzpVOLjPvAgDj9rH2Zcyo/Aw6QLCAc+5k4AIchNbqLw4ZgfEdffMpHWw
+         nuCTfPixyrNnReQkKrvHxI3T09t581dLOFitAMCxBU3nGK+120+lzW0T2wBuX+qcrJm4
+         9HkuWNLOB/9R4AXDbolFwW/XDnAXSJnCfnfK/untCStzhT4L8dT1VtyAKOT7ttTLY35S
+         S/L0G6Hx8eZB3hQZVkeFGsp4e645gfvq9+uejKxriDIRZsBqUc9YHGidaGUa6uMYJ5cN
+         EgkA==
+X-Gm-Message-State: AOJu0Yx4XBLq75KJCCb5LyqOzXXYjFf1X2w/0acHKlwQeDm8WxZkyW1Z
+	mJIp4b5ctGmiiBtjks6cShoHcFlJTu322hJ/gyGEiEA3xZEZReN2mLcoIg0xPfwz2ShYTOgjepy
+	netvQg8cdDLMGOM0e45LBfASI4sI5/W8Mk5EOZSEk
+X-Received: by 2002:a05:6a00:708:b0:6d9:46f4:4226 with SMTP id 8-20020a056a00070800b006d946f44226mr2361713pfl.20.1703124196278;
+        Wed, 20 Dec 2023 18:03:16 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IF/KGKYSCtd/fkWAWhBJnYkjiak2fMrNDbFAXlC8oYYs9VT364GRHf9AqL3ddt2MNKwq9lVLHfwyUtJQ0JG1u4=
+X-Received: by 2002:a05:6a00:708:b0:6d9:46f4:4226 with SMTP id
+ 8-20020a056a00070800b006d946f44226mr2361704pfl.20.1703124196001; Wed, 20 Dec
+ 2023 18:03:16 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231220152653.3273778-1-schatzberg.dan@gmail.com> <20231220152653.3273778-2-schatzberg.dan@gmail.com>
-In-Reply-To: <20231220152653.3273778-2-schatzberg.dan@gmail.com>
-From: Nhat Pham <nphamcs@gmail.com>
-Date: Wed, 20 Dec 2023 18:01:14 -0800
-Message-ID: <CAKEwX=NppvrRFLJzksQ5noHmWHEfWmyiVA2DyhMcY3Lh9dgJ3w@mail.gmail.com>
-Subject: Re: [PATCH v5 1/2] mm: add defines for min/max swappiness
-To: Dan Schatzberg <schatzberg.dan@gmail.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Yosry Ahmed <yosryahmed@google.com>, Huan Yang <link@vivo.com>, linux-kernel@vger.kernel.org, 
-	cgroups@vger.kernel.org, linux-mm@kvack.org, Tejun Heo <tj@kernel.org>, 
-	Zefan Li <lizefan.x@bytedance.com>, Jonathan Corbet <corbet@lwn.net>, 
-	Michal Hocko <mhocko@kernel.org>, Shakeel Butt <shakeelb@google.com>, 
-	Muchun Song <muchun.song@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, 
-	Kefeng Wang <wangkefeng.wang@huawei.com>, SeongJae Park <sj@kernel.org>, 
-	"Vishal Moola (Oracle)" <vishal.moola@gmail.com>, Yue Zhao <findns94@gmail.com>
+References: <20231219180858.120898-1-dtatulea@nvidia.com> <20231219180858.120898-3-dtatulea@nvidia.com>
+ <CACGkMEv7xQkZYJAgAUK6C3oUrZ9vuUJdTKRzihXcNPb-iWdpJw@mail.gmail.com>
+ <CACGkMEsaaDGi63__YrvsTC1HqgTaEWHvGokK1bJS5+m1XYM-6w@mail.gmail.com> <CAJaqyWdoaj8a7q1KrGqWmkYvAw_R_p0utcWvDvkyVm1nUOAxrA@mail.gmail.com>
+In-Reply-To: <CAJaqyWdoaj8a7q1KrGqWmkYvAw_R_p0utcWvDvkyVm1nUOAxrA@mail.gmail.com>
+From: Jason Wang <jasowang@redhat.com>
+Date: Thu, 21 Dec 2023 10:03:05 +0800
+Message-ID: <CACGkMEuM7bXxsxHUs_SodiDQ2+akrLqqzWZBJSZEcnMASUkb+g@mail.gmail.com>
+Subject: Re: [PATCH vhost v4 02/15] vdpa: Add VHOST_BACKEND_F_CHANGEABLE_VQ_ADDR_IN_SUSPEND
+ flag
+To: Eugenio Perez Martin <eperezma@redhat.com>
+Cc: Dragos Tatulea <dtatulea@nvidia.com>, "Michael S . Tsirkin" <mst@redhat.com>, 
+	Si-Wei Liu <si-wei.liu@oracle.com>, Saeed Mahameed <saeedm@nvidia.com>, 
+	Leon Romanovsky <leon@kernel.org>, virtualization@lists.linux-foundation.org, 
+	Gal Pressman <gal@nvidia.com>, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Parav Pandit <parav@nvidia.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Dec 20, 2023 at 7:27=E2=80=AFAM Dan Schatzberg <schatzberg.dan@gmai=
-l.com> wrote:
+On Wed, Dec 20, 2023 at 9:32=E2=80=AFPM Eugenio Perez Martin
+<eperezma@redhat.com> wrote:
 >
-> We use the constants 0 and 200 in a few places in the mm code when
-> referring to the min and max swappiness. This patch adds MIN_SWAPPINESS
-> and MAX_SWAPPINESS #defines to improve clarity. There are no functional
-> changes.
+> On Wed, Dec 20, 2023 at 5:06=E2=80=AFAM Jason Wang <jasowang@redhat.com> =
+wrote:
+> >
+> > On Wed, Dec 20, 2023 at 11:46=E2=80=AFAM Jason Wang <jasowang@redhat.co=
+m> wrote:
+> > >
+> > > On Wed, Dec 20, 2023 at 2:09=E2=80=AFAM Dragos Tatulea <dtatulea@nvid=
+ia.com> wrote:
+> > > >
+> > > > The virtio spec doesn't allow changing virtqueue addresses after
+> > > > DRIVER_OK. Some devices do support this operation when the device i=
+s
+> > > > suspended. The VHOST_BACKEND_F_CHANGEABLE_VQ_ADDR_IN_SUSPEND flag
+> > > > advertises this support as a backend features.
+> > >
+> > > There's an ongoing effort in virtio spec to introduce the suspend sta=
+te.
+> > >
+> > > So I wonder if it's better to just allow such behaviour?
+> >
+> > Actually I mean, allow drivers to modify the parameters during suspend
+> > without a new feature.
+> >
 >
-> Signed-off-by: Dan Schatzberg <schatzberg.dan@gmail.com>
-> ---
->  include/linux/swap.h |  2 ++
->  mm/memcontrol.c      |  2 +-
->  mm/vmscan.c          | 14 +++++++-------
->  3 files changed, 10 insertions(+), 8 deletions(-)
+> That would be ideal, but how do userland checks if it can suspend +
+> change properties + resume?
+
+As discussed, it looks to me the only device that supports suspend is
+simulator and it supports change properties.
+
+E.g:
+
+static int vdpasim_set_vq_address(struct vdpa_device *vdpa, u16 idx,
+                                  u64 desc_area, u64 driver_area,
+                                  u64 device_area)
+{
+        struct vdpasim *vdpasim =3D vdpa_to_sim(vdpa);
+        struct vdpasim_virtqueue *vq =3D &vdpasim->vqs[idx];
+
+        vq->desc_addr =3D desc_area;
+        vq->driver_addr =3D driver_area;
+        vq->device_addr =3D device_area;
+
+        return 0;
+}
+
 >
-> diff --git a/include/linux/swap.h b/include/linux/swap.h
-> index f6dd6575b905..e2ab76c25b4a 100644
-> --- a/include/linux/swap.h
-> +++ b/include/linux/swap.h
-> @@ -407,6 +407,8 @@ extern unsigned long try_to_free_pages(struct zonelis=
-t *zonelist, int order,
->
->  #define MEMCG_RECLAIM_MAY_SWAP (1 << 1)
->  #define MEMCG_RECLAIM_PROACTIVE (1 << 2)
-> +#define MIN_SWAPPINESS 0
-> +#define MAX_SWAPPINESS 200
->  extern unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *mem=
-cg,
->                                                   unsigned long nr_pages,
->                                                   gfp_t gfp_mask,
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index b226090fd906..fbe9f02dd206 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -4337,7 +4337,7 @@ static int mem_cgroup_swappiness_write(struct cgrou=
-p_subsys_state *css,
->  {
->         struct mem_cgroup *memcg =3D mem_cgroup_from_css(css);
->
-> -       if (val > 200)
-> +       if (val > MAX_SWAPPINESS)
->                 return -EINVAL;
->
->         if (!mem_cgroup_is_root(memcg))
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index 9dd8977de5a2..d91963e2d47f 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -183,7 +183,7 @@ struct scan_control {
->  #endif
->
->  /*
-> - * From 0 .. 200.  Higher means more swappy.
-> + * From 0 .. MAX_SWAPPINESS.  Higher means more swappy.
->   */
->  int vm_swappiness =3D 60;
->
-> @@ -2403,7 +2403,7 @@ static void get_scan_count(struct lruvec *lruvec, s=
-truct scan_control *sc,
->         ap =3D swappiness * (total_cost + 1);
->         ap /=3D anon_cost + 1;
->
-> -       fp =3D (200 - swappiness) * (total_cost + 1);
-> +       fp =3D (MAX_SWAPPINESS - swappiness) * (total_cost + 1);
->         fp /=3D file_cost + 1;
->
->         fraction[0] =3D ap;
-> @@ -4400,7 +4400,7 @@ static int get_type_to_scan(struct lruvec *lruvec, =
-int swappiness, int *tier_idx
->  {
->         int type, tier;
->         struct ctrl_pos sp, pv;
-> -       int gain[ANON_AND_FILE] =3D { swappiness, 200 - swappiness };
-> +       int gain[ANON_AND_FILE] =3D { swappiness, MAX_SWAPPINESS - swappi=
-ness };
->
->         /*
->          * Compare the first tier of anon with that of file to determine =
-which
-> @@ -4436,7 +4436,7 @@ static int isolate_folios(struct lruvec *lruvec, st=
-ruct scan_control *sc, int sw
->         /*
->          * Try to make the obvious choice first. When anon and file are b=
-oth
->          * available from the same generation, interpret swappiness 1 as =
-file
-> -        * first and 200 as anon first.
-> +        * first and MAX_SWAPPINESS as anon first.
->          */
->         if (!swappiness)
->                 type =3D LRU_GEN_FILE;
-> @@ -4444,7 +4444,7 @@ static int isolate_folios(struct lruvec *lruvec, st=
-ruct scan_control *sc, int sw
->                 type =3D LRU_GEN_ANON;
->         else if (swappiness =3D=3D 1)
->                 type =3D LRU_GEN_FILE;
-> -       else if (swappiness =3D=3D 200)
-> +       else if (swappiness =3D=3D MAX_SWAPPINESS)
->                 type =3D LRU_GEN_ANON;
->         else
->                 type =3D get_type_to_scan(lruvec, swappiness, &tier);
-> @@ -5398,9 +5398,9 @@ static int run_cmd(char cmd, int memcg_id, int nid,=
- unsigned long seq,
->
->         lruvec =3D get_lruvec(memcg, nid);
->
-> -       if (swappiness < 0)
-> +       if (swappiness < MIN_SWAPPINESS)
->                 swappiness =3D get_swappiness(lruvec, sc);
-> -       else if (swappiness > 200)
-> +       else if (swappiness > MAX_SWAPPINESS)
->                 goto done;
->
->         switch (cmd) {
-> --
-> 2.39.3
+> The only way that comes to my mind is to make sure all parents return
+> error if userland tries to do it, and then fallback in userland.
+
+Yes.
+
+> I'm
+> ok with that, but I'm not sure if the current master & previous kernel
+> has a coherent behavior. Do they return error? Or return success
+> without changing address / vq state?
+
+We probably don't need to worry too much here, as e.g set_vq_address
+could fail even without suspend (just at uAPI level).
+
+Thanks
+
 >
 
-Sorry for being late to the party :) Was preoccupied with zswap convos.
-
-Hmm these are all the occurrences of 0 and 200 (in the context of
-swappiness) I can dig out. So, FWIW:
-Reviewed-by: Nhat Pham <nphamcs@gmail.com>
 
