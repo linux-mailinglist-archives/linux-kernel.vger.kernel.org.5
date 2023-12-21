@@ -1,111 +1,167 @@
-Return-Path: <linux-kernel+bounces-8629-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8631-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A6B381BA60
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 16:16:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4044F81BA64
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 16:16:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7876F1F24E52
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 15:16:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E75AB1F2365B
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 15:16:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1BF54B15B;
-	Thu, 21 Dec 2023 15:16:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A48D750254;
+	Thu, 21 Dec 2023 15:16:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LI1zAhr8"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="oCV4Ghlm"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B159B52F60;
-	Thu, 21 Dec 2023 15:16:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-54c79968ffbso991371a12.3;
-        Thu, 21 Dec 2023 07:16:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703171773; x=1703776573; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=TqbYPdC+pzdSRXmHEIhagjUyGTTzN7gMcr6zGrguEvA=;
-        b=LI1zAhr8VGz2Vn3/49osDKl/ZycprmJFaqEfF5QZOFI8mfOZPnX4WspxID/24bwMgZ
-         kX46tVh0ztM+78kdV3Uw/Mev+8EaFCbTT9RKk0mgsRKW5YfAcgx0cH2/rseg3rqeQWa+
-         9mT9/2S3BN7CEdNw8XMuigfKxcV/1Y3538bZvpCbsYt6hjC4tn9w924ooAt5kqcd8/MZ
-         RwTi96RgB0FYrrFLFBBWLt5dV9/5fcSWYXyJFiX6g5tqRcmz2wGcVOIiqlFLqEN/9dgT
-         TeWNLk91HnFXDxCxcp5scKAe8iaV2R206hS/wV9yRmkQrYN3UOyLS/5G1hxeO8SPsh7D
-         Qc9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703171773; x=1703776573;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=TqbYPdC+pzdSRXmHEIhagjUyGTTzN7gMcr6zGrguEvA=;
-        b=AwNcWYJn/iQnW4k5guMXgEmUmNxwlbap6pRuKRBTwhUHTnQAAuH2z9MifwL84ojSOD
-         8KoXPmLFGYEFReeYjPchBZ7QvBxEcDSOcUwfSk/eX07mSlwSG2JMAPLF/2cDs3XYzLbC
-         aLlKQcyTKpDkoqKrepN3LhSCp9rtuBKtp6CZIcDHaJ0FCrYKY8AEB/HZ3YuC4i4bW4gV
-         0F4SznGQst1x+CA6dz3kMs+fpo9k7jkY+si44SNBG8TzN4GtGWFPktgsj9ctnqRkO3mg
-         jfoxlSC/JlBmsDOJWiT+MAX0Ahagaky7cPgydNpP7mvs5kwMM6lRDomCMabdu+qOewic
-         Ltyw==
-X-Gm-Message-State: AOJu0Yw8fZfE9dyvZphzuv4qH5xLfP8rXwRki5vVj9JP94UOtKa+Peac
-	FJddze2ilRu2aj28tgEtd48=
-X-Google-Smtp-Source: AGHT+IHJjhFl8aucUSYY9VqO85+850iDGfZwpNYK/Qur+Y7lQw4rO6QDuDU6rtJXE5crDceVW8fznQ==
-X-Received: by 2002:a50:cdcf:0:b0:553:d641:a662 with SMTP id h15-20020a50cdcf000000b00553d641a662mr1897345edj.16.1703171772730;
-        Thu, 21 Dec 2023 07:16:12 -0800 (PST)
-Received: from skbuf ([188.27.185.68])
-        by smtp.gmail.com with ESMTPSA id o15-20020aa7d3cf000000b00553a094dd5csm1273484edr.32.2023.12.21.07.16.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Dec 2023 07:16:10 -0800 (PST)
-Date: Thu, 21 Dec 2023 17:16:07 +0200
-From: Vladimir Oltean <olteanv@gmail.com>
-To: =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
-Cc: Daniel Golle <daniel@makrotopia.org>,
-	Landen Chao <Landen.Chao@mediatek.com>,
-	DENG Qingfang <dqfext@gmail.com>,
-	Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	David Bauer <mail@david-bauer.net>, mithat.guner@xeront.com,
-	erkin.bozoglu@xeront.com, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH net-next] net: dsa: mt7530: register OF node for internal
- MDIO bus
-Message-ID: <20231221151607.ujobhh4aet4obxdz@skbuf>
-References: <20231220173539.59071-1-arinc.unal@arinc9.com>
- <20231220173539.59071-1-arinc.unal@arinc9.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DF184E1B0;
+	Thu, 21 Dec 2023 15:16:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BLEur8K012177;
+	Thu, 21 Dec 2023 15:16:34 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=qcppdkim1; bh=KxELH7v
+	9ITZOwsllWmWfZmzJThagjN0t4hjGlBiSjc4=; b=oCV4Ghlm96tCyPXkKLf4ccw
+	FHNhKPc8QMqGnHUa7px5hmUpmhP+js19SF+wBJ8v6xZDse5Gnt2gX6W9GiMAgDWm
+	Z7XS/oTv1fZsAE7tdmYUe6evIEjIjfqAK5l796c5Xjl9DKffN39nsHys8cN/H5BI
+	hWKEyr593jxM/ETKREhaODEZWDtUnecpWLHiu1exvPJ/doiBCyWwqH/tQQZrguZA
+	QebIOI7AcoS7BoHi1LOWISVTuY2DMxeifOnAO+jCWPeWQh1YPRv/ufeJK0HE7NEn
+	KkcG5bachFT/JM1wLK3DpjMVD3I/OIlxB1xHIsbv09G0+1sTmiH5Aqm81k+W/zg=
+	=
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v4pq386pw-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 21 Dec 2023 15:16:34 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BLFGXJZ013592
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 21 Dec 2023 15:16:33 GMT
+Received: from hu-kriskura-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Thu, 21 Dec 2023 07:16:30 -0800
+From: Krishna Kurapati <quic_kriskura@quicinc.com>
+To: Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Greg Kroah-Hartman
+	<gregkh@linuxfoundation.org>
+CC: <linux-kernel@vger.kernel.org>, <linux-usb@vger.kernel.org>,
+        <quic_ppratap@quicinc.com>, <quic_jackp@quicinc.com>,
+        Krishna Kurapati
+	<quic_kriskura@quicinc.com>
+Subject: [PATCH v2] usb: dwc3: gadget: Ignore dwc3 interrupt if GEVNTCOUNT reads corrupt value
+Date: Thu, 21 Dec 2023 20:46:20 +0530
+Message-ID: <20231221151620.16030-1-quic_kriskura@quicinc.com>
+X-Mailer: git-send-email 2.42.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231220173539.59071-1-arinc.unal@arinc9.com>
- <20231220173539.59071-1-arinc.unal@arinc9.com>
+Content-Type: text/plain
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: Em5qpkGqSDNHFIOHKxtysObEv8P-wvrO
+X-Proofpoint-ORIG-GUID: Em5qpkGqSDNHFIOHKxtysObEv8P-wvrO
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 phishscore=0 lowpriorityscore=0 bulkscore=0 spamscore=0
+ mlxscore=0 clxscore=1015 impostorscore=0 mlxlogscore=842 adultscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2312210115
 
-On Wed, Dec 20, 2023 at 07:35:39PM +0200, Arınç ÜNAL wrote:
-> From: David Bauer <mail@david-bauer.net>
-> 
-> The MT753x switches provide a switch-internal MDIO bus for the embedded
-> PHYs.
-> 
-> Register a OF sub-node on the switch OF-node for this internal MDIO bus.
-> This allows to configure the embedded PHYs using device-tree.
-> 
-> Signed-off-by: David Bauer <mail@david-bauer.net>
-> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
-> Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
-> ---
+In the current implementation, the check_event_buf call reads the
+GEVNTCOUNT register to determine the amount of event data generated
+and copies it from ev->buf to ev->cache after masking interrupt.
 
-Can you please not assign "bus" to ds->user_mii_bus unless there is no
-"mdio" OF node? We don't need ds->user_mii_bus populated when it is
-described in device tree.
+During copy if the amount of data to be copied is more than
+(length - lpos), we fill the ev->cache till the end of 4096 byte
+buffer allocated and then start filling from the top (lpos = 0).
+
+In one instance of SMMU crash it is observed that GEVNTCOUNT register
+reads more than 4096 bytes:
+
+dwc3_readl   base=0xffffffc0091dc000  offset=50188  value=63488
+
+(offset = 50188 -> 0xC40C)  -> reads 63488 bytes
+
+As per crash dump:
+dwc->lpos = 2056
+
+and evt->buf is at 0xFFFFFFC009185000 and the crash is at
+0xFFFFFFC009186000. The diff which is exactly 0x1000 bytes.
+
+We first memcpy 2040 bytes from (buf + lpos) to (buf + 0x1000).
+
+And then we copy the rest of the data (64388 - 2040) from beginning
+of dwc->ev_buf. While doing so we go beyond bounds as we are trying
+to memcpy 62348 bytes into a 4K buffer resulting in crash.
+
+Fix this by ignoring the interrupt when GEVNTCOUNT register reads a
+value more than the event ring allocated.
+
+Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
+---
+Changes in v2:
+Instead of fixing amount of data being copied from ring, ignored
+the interrupt when count is corrupt as per suggestion from Thinh.
+
+Link to v1:
+https://lore.kernel.org/all/20230521100330.22478-1-quic_kriskura@quicinc.com/
+
+ drivers/usb/dwc3/gadget.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
+index 858fe4c299b7..e27933fdcce3 100644
+--- a/drivers/usb/dwc3/gadget.c
++++ b/drivers/usb/dwc3/gadget.c
+@@ -4451,6 +4451,7 @@ static irqreturn_t dwc3_thread_interrupt(int irq, void *_evt)
+ static irqreturn_t dwc3_check_event_buf(struct dwc3_event_buffer *evt)
+ {
+ 	struct dwc3 *dwc = evt->dwc;
++	int ret = IRQ_WAKE_THREAD;
+ 	u32 amount;
+ 	u32 count;
+ 
+@@ -4480,6 +4481,12 @@ static irqreturn_t dwc3_check_event_buf(struct dwc3_event_buffer *evt)
+ 	if (!count)
+ 		return IRQ_NONE;
+ 
++	if (count > evt->length) {
++		dev_err(dwc->dev, "GEVTCOUNT corrupt\n");
++		ret = IRQ_NONE;
++		goto done;
++	}
++
+ 	evt->count = count;
+ 	evt->flags |= DWC3_EVENT_PENDING;
+ 
+@@ -4493,9 +4500,10 @@ static irqreturn_t dwc3_check_event_buf(struct dwc3_event_buffer *evt)
+ 	if (amount < count)
+ 		memcpy(evt->cache, evt->buf, count - amount);
+ 
++done:
+ 	dwc3_writel(dwc->regs, DWC3_GEVNTCOUNT(0), count);
+ 
+-	return IRQ_WAKE_THREAD;
++	return ret;
+ }
+ 
+ static irqreturn_t dwc3_interrupt(int irq, void *_evt)
+-- 
+2.42.0
+
 
