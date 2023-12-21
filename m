@@ -1,91 +1,90 @@
-Return-Path: <linux-kernel+bounces-8557-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8554-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 06E6B81B95D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 15:15:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D3CE81B952
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 15:11:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 99D901F216BE
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 14:15:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0C0CD28218B
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 14:11:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06CED6D6DD;
-	Thu, 21 Dec 2023 14:15:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F134C6D6C8;
+	Thu, 21 Dec 2023 14:10:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="EwdpX4On"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="IOvhHpn1"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB1A06D6D8
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 14:15:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703168129; x=1734704129;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=iMrCzrWJJr1u3QicO//ObHnKRcxYI0V8zbYVzyhczoU=;
-  b=EwdpX4OnO0wfZcSJu9F+0w60dCT8D7vEBuhuHY+e1D9T+CX/xMk8B3E0
-   GQTnc0Ku9dUQQ3lxZqg9btCiC/8aWEWxNeS/ot3ehPiJkXDrvg/sLfw/u
-   njJaYbyOiv9W5UQpJaf5CoxKjytLcsE+y0pMQZ+gSC4WvHkttL7Ipustl
-   sAvSHtBZ//EUxzufMYslXeGf7dF/OE4KhL2g5PrJHqP981Q/FvlpvzvuU
-   HMRsZ0Vh3HJS9+bbqcGWLT7gclIMXyBfDv09nsbOLIVWfVN7xD6uzubUm
-   7cYH8qF86QnbCO57ZOA7VU0B5Z8/sGigqr7zKJeQOis+EfMx4ueJls34U
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10930"; a="2813496"
-X-IronPort-AV: E=Sophos;i="6.04,293,1695711600"; 
-   d="scan'208";a="2813496"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Dec 2023 06:15:28 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10930"; a="810978509"
-X-IronPort-AV: E=Sophos;i="6.04,293,1695711600"; 
-   d="scan'208";a="810978509"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga001.jf.intel.com with ESMTP; 21 Dec 2023 06:15:26 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id D9C0EE6; Thu, 21 Dec 2023 16:09:25 +0200 (EET)
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>,
-	linux-kernel@vger.kernel.org
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 1/1] pvpanic: Kill duplicate PCI_VENDOR_ID_REDHAT definition
-Date: Thu, 21 Dec 2023 16:09:21 +0200
-Message-ID: <20231221140921.2760432-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B35C16D6C1
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 14:10:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1703167855;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=LxkfOE9TRkgl5fLvj/IAktRXgSqIyb2OVdHrT5FumGw=;
+	b=IOvhHpn1LbRQAAjRk7Bycs+lJ95F+xEnHErMg5VoGfjpDlQpT93QVLO9FsbkwfG7woawOE
+	zGvYuuCAtubGS/Qm5jiHfnO0kW3Cfqkqv2TZBcbpx4oU4M30ln/isHDn1iHT1L+F92D8Vr
+	lvfe5hjV+9uc5pU2eg0JIRE/OeoQZN0=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-503-ovpxtsK2Oia-sK79T5Mx-Q-1; Thu, 21 Dec 2023 09:10:51 -0500
+X-MC-Unique: ovpxtsK2Oia-sK79T5Mx-Q-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id CD8FC85A58C;
+	Thu, 21 Dec 2023 14:10:50 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.39.195.169])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id AAFD11121306;
+	Thu, 21 Dec 2023 14:10:49 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+	Kingdom.
+	Registered in England and Wales under Company Registration No. 3798903
+From: David Howells <dhowells@redhat.com>
+In-Reply-To: <20231221085849.1463-1-abelova@astralinux.ru>
+References: <20231221085849.1463-1-abelova@astralinux.ru>
+To: Anastasia Belova <abelova@astralinux.ru>
+Cc: dhowells@redhat.com, Marc Dionne <marc.dionne@auristor.com>,
+    linux-afs@lists.infradead.org, linux-kernel@vger.kernel.org,
+    lvc-project@linuxtesting.org
+Subject: Re: [PATCH] afs: remove redundant overwriting of ret
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1660753.1703167849.1@warthog.procyon.org.uk>
+Date: Thu, 21 Dec 2023 14:10:49 +0000
+Message-ID: <1660754.1703167849@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
 
-PCI_VENDOR_ID_REDHAT is already defined in pci_ids.h. Kill the dup.
+Anastasia Belova <abelova@astralinux.ru> wrote:
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/misc/pvpanic/pvpanic-pci.c | 1 -
- 1 file changed, 1 deletion(-)
+> @@ -409,7 +409,6 @@ static int afs_update_cell(struct afs_cell *cell)
+>  		if (ret == -ENOMEM)
+>  			goto out_wake;
+>  
+> -		ret = -ENOMEM;
+>  		vllist = afs_alloc_vlserver_list(0);
+>  		if (!vllist)
+>  			goto out_wake;
 
-diff --git a/drivers/misc/pvpanic/pvpanic-pci.c b/drivers/misc/pvpanic/pvpanic-pci.c
-index 689af4c28c2a..c5fb6298cb8d 100644
---- a/drivers/misc/pvpanic/pvpanic-pci.c
-+++ b/drivers/misc/pvpanic/pvpanic-pci.c
-@@ -15,7 +15,6 @@
- 
- #include "pvpanic.h"
- 
--#define PCI_VENDOR_ID_REDHAT             0x1b36
- #define PCI_DEVICE_ID_REDHAT_PVPANIC     0x0011
- 
- MODULE_AUTHOR("Mihai Carabas <mihai.carabas@oracle.com>");
--- 
-2.43.0.rc1.1.gbec44491f096
+This isn't a sufficient fix.
+
+Yes, you're right, we need to keep ret - but we do need to set -ENOMEM if
+!vllist if ret does not hold an error.
+
+David
 
 
