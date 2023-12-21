@@ -1,64 +1,64 @@
-Return-Path: <linux-kernel+bounces-9050-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9051-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B33B81BF9D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 21:35:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E80781BFA1
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 21:36:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BAE1E28672B
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 20:35:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 443C4286677
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 20:36:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4AF3768F1;
-	Thu, 21 Dec 2023 20:35:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A8E1768F4;
+	Thu, 21 Dec 2023 20:36:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ozG1/mMN"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="zgvzMIh5"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77440BA2F
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 20:35:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1727768E2
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 20:36:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-54cd2281ccbso1421349a12.2
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 12:35:10 -0800 (PST)
+Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2cc63b3ed71so16015231fa.3
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 12:36:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703190909; x=1703795709; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1703190999; x=1703795799; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=3+bnCfuqypwFonnfISUOS9qyfCdx/0Td8/OjPLUaArk=;
-        b=ozG1/mMNBsMDdfWEBgma51BGGzxUUTQAuSWnIFXDCdcueVxHjgbqBd0+BOdEsQvBrG
-         baUR4HwasBTYFuFiChnUh1F6qJEMaLl6ZJYyVOJykRJnPVTGXfj2H930nv4p/gEu2v5D
-         crLVo8y+I7eNw5sCfEqZLOI6t7XRDMf1kN4DYgYn1CdxyCCWjmipl3L3tNEdOKNrkDFq
-         6yTcauf25XsvUH0u/GU2Wb8k7Mn7zBeKbX6PxT4lKFQjhE/YCyLdgxx6IOsvVddXZ5Kj
-         ebjj2rSBOYk7S0CEyqN+30dc0BezvcwCcXSYPn6YeSR9qR8W3lYpMly/kFlyr6JdfYyV
-         0oBg==
+        bh=QNpfDCJAonGBMBz8546mnqWdYnvp44SklWS+RUeJXKo=;
+        b=zgvzMIh5fg0tazryQsmkRpMAEMefT9bGW489mG9x+QHrndSZoS9PXEGGBiHY7PVq9g
+         OOeUbi59HHWUZuRFhtULA3u7+MOyxKoLPdHuLJi3r9iCBUE8u11nvKcTRONO6EfLwuNn
+         D0Yb5+vbaofGUt9ttfwNGFvGn02JbRrEHE4XZ+C+1+pAGUaGIIU99b7rivxJh6m8VE16
+         3qVlLwI6jNwmdAvb12xqlH8BM4B5R6I6/GwUYCUSVYoe/eq2td80dceDfjcntoYOJOLo
+         4fkzl74wlvJquR9l4AB5XzNs9JJ8Q5AeDudtwnjEjPL3r2nneb4RZuICmtWn/TsST3Xr
+         nQZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703190909; x=1703795709;
+        d=1e100.net; s=20230601; t=1703190999; x=1703795799;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3+bnCfuqypwFonnfISUOS9qyfCdx/0Td8/OjPLUaArk=;
-        b=QsLlmt2d2O7j9Nz+SbZLwDQcUIwNBdKk3CM75TC3jp3LqgQ+SZR8TjHVayuvUW71dm
-         l2Y/af231f9/iknj96rh0Etw1e6FvFSBVZDQnNMB1UuwJVa5lV5HGkaZA+zXd/1wC3ao
-         YFfbI3BEVj6iIgSG/c7gQxFxufpkf6yoJmgxqZi+YRT89Aoh2EE1SrEThFS6N13gnecu
-         FJOlxV81xpR5e4lXIngSC/c33jP6vL6keYnYu7K+PW5ggtbZ4k9X7ab2RilwjpHcQhlY
-         8mlgLVz0dYauQYENLVudZzYZ6lzMIua8FPEMAwLFEGz91Qq+7Viy0CB+H75/9Js7MUaz
-         dxew==
-X-Gm-Message-State: AOJu0YweOdY1nhc8DgtjZJ8w3O4ZIvZSBUZ7seqkKLWKZBQs74CqF2Hq
-	PzWRIWS00dfgKPOMK4sLCXNer3QUuRxbhw==
-X-Google-Smtp-Source: AGHT+IF1+XIgEDWCs8rjHGs0cOBiCtU2/PeEl/J3hSteSXmbdj6lcwTXI9Ap0rtNHUCLh7nuL5X1Ug==
-X-Received: by 2002:a05:6402:b0f:b0:553:886e:9896 with SMTP id bm15-20020a0564020b0f00b00553886e9896mr87365edb.70.1703190909607;
-        Thu, 21 Dec 2023 12:35:09 -0800 (PST)
+        bh=QNpfDCJAonGBMBz8546mnqWdYnvp44SklWS+RUeJXKo=;
+        b=lirSQTfpZFREMlIC2fhyb2r3on1CukoGCUnM95uwieEzhMPyQfYu4i3Y2zQuJVF3jT
+         TIXXrHIPEiJCBjUOGRf+HAEdltlnRVd7KQ1BjA106bt0ibXiCIYWAvmQcQP7Bxe7Q/sv
+         HdDk5HelPy7x+PUEWNr/2fHvT8EZ7k+80HfEqtUoBu3+SRx8UXvtb7Yqix85yfBafOiz
+         HcnPzG2TLKwIRvGLehJC1ENWinaLy/aKw3ih8JYfxd4z1/IYC1aXQdWFaX9hLtm3AVKI
+         Yk9gSBwozvlc2QAQWkF9RFnEKXo2k/QPqHvPIxOMWXywDFxDPEJq8BkZQgu9J7dhiTeI
+         WjHg==
+X-Gm-Message-State: AOJu0YyXNu2VNef8VTINNhXhhEqzE+qAFHiqmW+k0T8F9Q/WYz7RpkCC
+	RCO+oSfJ7WURvCwCQDc9Ayey7I+zM6DGyg==
+X-Google-Smtp-Source: AGHT+IFdKq0z8t9OmsOH9m9Fc1RpF9FK++78Vnv7chqqUzLDHlCJ9asogU5EEARo69ApJqYNOI5LKw==
+X-Received: by 2002:a05:651c:10:b0:2cc:9f68:e552 with SMTP id n16-20020a05651c001000b002cc9f68e552mr82026lja.10.1703190998877;
+        Thu, 21 Dec 2023 12:36:38 -0800 (PST)
 Received: from [192.168.0.22] ([78.10.206.178])
-        by smtp.gmail.com with ESMTPSA id bf25-20020a0564021a5900b0055286b1bfc2sm1620741edb.25.2023.12.21.12.35.08
+        by smtp.gmail.com with ESMTPSA id bf25-20020a0564021a5900b0055286b1bfc2sm1620741edb.25.2023.12.21.12.36.37
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Dec 2023 12:35:09 -0800 (PST)
-Message-ID: <e2a4b1dd-1975-4b7a-a432-2b5b06ecf653@linaro.org>
-Date: Thu, 21 Dec 2023 21:35:08 +0100
+        Thu, 21 Dec 2023 12:36:38 -0800 (PST)
+Message-ID: <88834783-5aea-46d2-82cc-dd22cb4473f5@linaro.org>
+Date: Thu, 21 Dec 2023 21:36:37 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,16 +66,31 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/5] dt-bindings: phy: cadence-torrent: Add optional
- input reference clock for PLL1
+Subject: Re: [PATCH RESEND v1 2/8] dt-bindings: display: add dt-bindings for
+ STM32 LVDS device
 Content-Language: en-US
-To: Swapnil Jakhade <sjakhade@cadence.com>, vkoul@kernel.org,
- kishon@kernel.org, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
- conor+dt@kernel.org, linux-phy@lists.infradead.org,
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Cc: mparab@cadence.com, rogerq@kernel.org, s-vadapalli@ti.com
-References: <20231221162051.2131202-1-sjakhade@cadence.com>
- <20231221162051.2131202-2-sjakhade@cadence.com>
+To: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ Neil Armstrong <neil.armstrong@linaro.org>,
+ Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Yannick Fertre <yannick.fertre@foss.st.com>,
+ Philippe Cornu <philippe.cornu@foss.st.com>,
+ Philipp Zabel <p.zabel@pengutronix.de>,
+ Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+ Thierry Reding <thierry.reding@gmail.com>
+Cc: dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.org
+References: <20231221124339.420119-1-raphael.gallais-pou@foss.st.com>
+ <20231221124339.420119-3-raphael.gallais-pou@foss.st.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -121,18 +136,23 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231221162051.2131202-2-sjakhade@cadence.com>
+In-Reply-To: <20231221124339.420119-3-raphael.gallais-pou@foss.st.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 21/12/2023 17:20, Swapnil Jakhade wrote:
-> Add a new optional input reference clock (pll1_refclk) for PLL1.
-> Update bindings to support dual reference clock multilink configurations.
+On 21/12/2023 13:43, Raphael Gallais-Pou wrote:
+> Add dt-binding file for "st,stm32-lvds" compatible.
 > 
-> Signed-off-by: Swapnil Jakhade <sjakhade@cadence.com>
+> Signed-off-by: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
+> ---
 
+I don't know why this was resend, nothing explains it, but I already
+commented on other version.
 
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Please respond to comments there.
+
+In the future, unless it is obvious resend over 2 weeks, say why you are
+doing it and what changed.
 
 Best regards,
 Krzysztof
