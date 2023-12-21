@@ -1,312 +1,278 @@
-Return-Path: <linux-kernel+bounces-8572-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8573-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2735B81B991
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 15:31:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7A0A81B994
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 15:31:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9D0F91F24BDC
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 14:31:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 207EF1C25562
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 14:31:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA9D4360A3;
-	Thu, 21 Dec 2023 14:31:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69A73433C3;
+	Thu, 21 Dec 2023 14:31:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="VLxm6WxL"
+	dkim=pass (1024-bit key) header.d=auristor.com header.i=jaltman@auristor.com header.b="EvdVxCaw"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sequoia-grove.ad.secure-endpoints.com (sequoia-grove.ad.secure-endpoints.com [208.125.0.235])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BFD536097
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 14:30:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1703169059;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Zig8qc3IDsKkD4ExqdB1/amOsrM6X3FD08f8jHvUYWI=;
-	b=VLxm6WxLl1sK+6UjgLU3HUwr55UUWcuyaLFZtiRIY0SYewREWZOEiplBOkVjcpj3RYh9BU
-	15Kx+GXWP/KWl5u+XIM83XvozXDuxuEvcmdeav1rmAtaf2aDLEZvt2Cfcaym9b/xPYiBv6
-	DAQqjonDJYfPrGibHGyq7zALA+DvDr4=
-Received: from mail-oi1-f199.google.com (mail-oi1-f199.google.com
- [209.85.167.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-58-go9lAmeINbyeKYrSSaUFHg-1; Thu, 21 Dec 2023 09:30:57 -0500
-X-MC-Unique: go9lAmeINbyeKYrSSaUFHg-1
-Received: by mail-oi1-f199.google.com with SMTP id 5614622812f47-3b88ac1f09cso787002b6e.2
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 06:30:57 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703169052; x=1703773852;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Zig8qc3IDsKkD4ExqdB1/amOsrM6X3FD08f8jHvUYWI=;
-        b=DkDwQ2WNLnIM4oSgZdWXTFBfC6Xe+jccgwmgT/6SD3tp3ZiN+0ghMrIslc7ZowQDR6
-         BNLzbKQoH/WIpZAzMv9BhViD+b5S0W4CwReutVgz8myD9lwd0tQFP/yFT7Kz9GaP5DbP
-         kXfj2du6jPvYs3i9niDaAqn8oQgKr0yA8AQYVjdYhAwGG0WMf32BLXFt3dcjgWCFzO9d
-         oj4RekwaNdYHc6OKJFovwlD3PSanJgyNsR425v2XJlv8m3thNGHifTMJv4H3Qdyr6R2c
-         CSd82NMcxDoypql9siDCCem6dAptcjfWPdQU6tbUaoOwtJlQgTTG7/c7XBptc3AzRhAN
-         /9Hg==
-X-Gm-Message-State: AOJu0YxS5A17Fyxgr6TASUUtbs9q0KpCzRWFx3noDbuAHlH0JIGY3t3T
-	gqA6AQRLarqm4+7j12kvlApv3vYTa2emIlCM+RYYraKc5NTBpOdvTpdOoNP2QcCCOrsE7CQboRH
-	UcE1ivXwcthAWXYqN1DaGAtkw
-X-Received: by 2002:a05:6808:3a13:b0:3b9:e779:8a0e with SMTP id gr19-20020a0568083a1300b003b9e7798a0emr24604046oib.1.1703169052141;
-        Thu, 21 Dec 2023 06:30:52 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGh5JWE7xwkRuEZs5f8huoPHHsEpTlNPmCqmNG9XaohXtJYkwK7dgrejxTjPDpZalyNe4H8Tw==
-X-Received: by 2002:a05:6808:3a13:b0:3b9:e779:8a0e with SMTP id gr19-20020a0568083a1300b003b9e7798a0emr24604029oib.1.1703169051803;
-        Thu, 21 Dec 2023 06:30:51 -0800 (PST)
-Received: from fedora ([2600:1700:1ff0:d0e0::37])
-        by smtp.gmail.com with ESMTPSA id d11-20020a0cfe8b000000b0067f14259eb7sm658817qvs.76.2023.12.21.06.30.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Dec 2023 06:30:51 -0800 (PST)
-Date: Thu, 21 Dec 2023 08:30:49 -0600
-From: Andrew Halaney <ahalaney@redhat.com>
-To: Sneh Shah <quic_snehshah@quicinc.com>
-Cc: Vinod Koul <vkoul@kernel.org>, 
-	Bhupesh Sharma <bhupesh.sharma@linaro.org>, Alexandre Torgue <alexandre.torgue@foss.st.com>, 
-	Jose Abreu <joabreu@synopsys.com>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
-	Paolo Abeni <pabeni@redhat.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
-	netdev@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
-	linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, kernel@quicinc.com
-Subject: Re: [PATCH net-next] net: stmmac: dwmac-qcom-ethqos: Add support for
- 2.5G SGMII
-Message-ID: <vvlnwiobrgcwuam6lkud2np5xqocj6asjf627j3gekkhm4hfp5@vhdd47fyortm>
-References: <20231218071118.21879-1-quic_snehshah@quicinc.com>
- <4zbf5fmijxnajk7kygcjrcusf6tdnuzsqqboh23nr6f3rb3c4g@qkfofhq7jmv6>
- <8b80ab09-8444-4c3d-83b0-c7dbf5e58658@quicinc.com>
- <wvzhz4fmtheculsiag4t2pn2kaggyle2mzhvawbs4m5isvqjto@lmaonvq3c3e7>
- <8f94489d-5f0e-4166-a14e-4959098a5c80@quicinc.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A1E23608F
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 14:31:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=auristor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=auristor.com
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/relaxed;
+	d=auristor.com; s=MDaemon; r=y; t=1703169061; x=1703773861;
+	i=jaltman@auristor.com; q=dns/txt; h=Message-ID:Date:
+	MIME-Version:User-Agent:Subject:Content-Language:To:Cc:
+	References:From:Organization:In-Reply-To:Content-Type; bh=+3d0Ry
+	2xDdh0t0fujTvzMGj6NMBsKhvYQgGqDB7Ezy4=; b=EvdVxCaww5Y7PsRwuZrZzz
+	AUmDPUH/kA7FMhz4/HOqiFDzOq7d8eo2OyZ+Kmh3+ooQHQA2edPP6vlIXsVbw3x4
+	vBlUz1SUXbx2cBgs5we8CeHff3WGQYjeAcN8QzLpB0eiDUktPg64HoLK/50PeXPK
+	rSKju4dyln1fAYnt/i/gM=
+X-MDAV-Result: clean
+X-MDAV-Processed: sequoia-grove.ad.secure-endpoints.com, Thu, 21 Dec 2023 09:31:01 -0500
+Received: from [IPV6:2603:7000:73c:c800:969b:c070:cc58:a112] by auristor.com (IPv6:2001:470:1f07:f77:28d9:68fb:855d:c2a5) (MDaemon PRO v23.5.1) 
+	with ESMTPSA id md5001003765425.msg; Thu, 21 Dec 2023 09:31:00 -0500
+X-Spam-Processed: sequoia-grove.ad.secure-endpoints.com, Thu, 21 Dec 2023 09:31:00 -0500
+	(not processed: message from trusted or authenticated source)
+X-MDRemoteIP: 2603:7000:73c:c800:969b:c070:cc58:a112
+X-MDHelo: [IPV6:2603:7000:73c:c800:969b:c070:cc58:a112]
+X-MDArrival-Date: Thu, 21 Dec 2023 09:31:00 -0500
+X-MDOrigin-Country: US, NA
+X-Authenticated-Sender: jaltman@auristor.com
+X-Return-Path: prvs=17191febf5=jaltman@auristor.com
+X-Envelope-From: jaltman@auristor.com
+X-MDaemon-Deliver-To: linux-kernel@vger.kernel.org
+Message-ID: <7557e6c5-bc69-4e89-bb0e-b1d754afb3cf@auristor.com>
+Date: Thu, 21 Dec 2023 09:30:53 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8f94489d-5f0e-4166-a14e-4959098a5c80@quicinc.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] afs: Fix overwriting of result of DNS query
+Content-Language: en-US
+To: David Howells <dhowells@redhat.com>,
+ Anastasia Belova <abelova@astralinux.ru>,
+ Marc Dionne <marc.dionne@auristor.com>
+Cc: linux-afs@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org
+References: <1700862.1703168632@warthog.procyon.org.uk>
+From: Jeffrey E Altman <jaltman@auristor.com>
+Organization: AuriStor, Inc.
+In-Reply-To: <1700862.1703168632@warthog.procyon.org.uk>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256; boundary="------------ms010009090505040106020008"
+X-MDCFSigsAdded: auristor.com
 
-On Thu, Dec 21, 2023 at 02:23:57PM +0530, Sneh Shah wrote:
-> 
-> 
-> On 12/20/2023 9:29 PM, Andrew Halaney wrote:
-> > On Wed, Dec 20, 2023 at 01:02:45PM +0530, Sneh Shah wrote:
-> >>
-> >>
-> >> On 12/18/2023 9:50 PM, Andrew Halaney wrote:
-> >>> On Mon, Dec 18, 2023 at 12:41:18PM +0530, Sneh Shah wrote:
-> >>>> Serdes phy needs to operate at 2500 mode for 2.5G speed and 1000
-> >>>> mode for 1G/100M/10M speed.
-> >>>> Added changes to configure serdes phy and mac based on link speed.
-> >>>>
-> >>>> Signed-off-by: Sneh Shah <quic_snehshah@quicinc.com>
-> >>>> ---
-> >>>>  .../stmicro/stmmac/dwmac-qcom-ethqos.c        | 31 +++++++++++++++++--
-> >>>>  1 file changed, 29 insertions(+), 2 deletions(-)
-> >>>>
-> >>>> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
-> >>>> index d3bf42d0fceb..b3a28dc19161 100644
-> >>>> --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
-> >>>> +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
-> >>>> @@ -21,6 +21,7 @@
-> >>>>  #define RGMII_IO_MACRO_CONFIG2		0x1C
-> >>>>  #define RGMII_IO_MACRO_DEBUG1		0x20
-> >>>>  #define EMAC_SYSTEM_LOW_POWER_DEBUG	0x28
-> >>>> +#define ETHQOS_MAC_AN_CTRL		0xE0
-> >>>>  
-> >>>>  /* RGMII_IO_MACRO_CONFIG fields */
-> >>>>  #define RGMII_CONFIG_FUNC_CLK_EN		BIT(30)
-> >>>> @@ -78,6 +79,10 @@
-> >>>>  #define ETHQOS_MAC_CTRL_SPEED_MODE		BIT(14)
-> >>>>  #define ETHQOS_MAC_CTRL_PORT_SEL		BIT(15)
-> >>>>  
-> >>>> +/*ETHQOS_MAC_AN_CTRL bits */
-> >>>> +#define ETHQOS_MAC_AN_CTRL_RAN			BIT(9)
-> >>>> +#define ETHQOS_MAC_AN_CTRL_ANE			BIT(12)
-> >>>> +
-> >>>
-> >>> nit: space please add a space before ETHQOS_MAC_AN_CTRL
-> >>>
-> >> will take care of this in next patch
-> >>
-> >>>>  struct ethqos_emac_por {
-> >>>>  	unsigned int offset;
-> >>>>  	unsigned int value;
-> >>>> @@ -109,6 +114,7 @@ struct qcom_ethqos {
-> >>>>  	unsigned int num_por;
-> >>>>  	bool rgmii_config_loopback_en;
-> >>>>  	bool has_emac_ge_3;
-> >>>> +	unsigned int serdes_speed;
-> > 
-> > Another nit as I look closer: I think this should be grouped by phy_mode
-> > etc just for readability.
-> Didn't get this. can you please elaborate more?
+This is a cryptographically signed message in MIME format.
 
-I meant instead of this:
+--------------ms010009090505040106020008
+Content-Type: multipart/alternative;
+ boundary="------------xy77y20BS4hMZGduEHK0piGj"
 
-    struct qcom_ethqos {
-	    struct platform_device *pdev;
-	    void __iomem *rgmii_base;
-	    void __iomem *mac_base;
-	    int (*configure_func)(struct qcom_ethqos *ethqos);
+--------------xy77y20BS4hMZGduEHK0piGj
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-	    unsigned int link_clk_rate;
-	    struct clk *link_clk;
-	    struct phy *serdes_phy;
-	    unsigned int speed;
-	    phy_interface_t phy_mode;
+On 12/21/2023 9:23 AM, David Howells wrote:
+> In afs_update_cell(), ret is the result of the DNS lookup and the errors
+> are to be handled by a switch - however, the value gets clobbered in
+> between by setting it to -ENOMEM in case afs_alloc_vlserver_list() fails.
+>
+> Fix this by moving the setting of -ENOMEM into the error handling for OOM
+> failure.  Further, only do it if we don't have an alternative error to
+> return.
+>
+> Found by Linux Verification Center (linuxtesting.org) with SVACE.  Based on
+> a patch from Anastasia Belova[1].
+>
+> Fixes: d5c32c89b208 ("afs: Fix cell DNS lookup")
+> Signed-off-by: David Howells<dhowells@redhat.com>
+> cc: Anastasia Belova<abelova@astralinux.ru>
+> cc: Marc Dionne<marc.dionne@auristor.com>
+> cc:linux-afs@lists.infradead.org
+> cc:lvc-project@linuxtesting.org
+> Link:https://lore.kernel.org/r/20231221085849.1463-1-abelova@astralinux.ru/  [1]
+>
+> ---
+>   fs/afs/cell.c |    6 ++++--
+>   1 file changed, 4 insertions(+), 2 deletions(-)
+>
+> diff --git a/fs/afs/cell.c b/fs/afs/cell.c
+> index 988c2ac7cece..926cb1188eba 100644
+> --- a/fs/afs/cell.c
+> +++ b/fs/afs/cell.c
+> @@ -409,10 +409,12 @@ static int afs_update_cell(struct afs_cell *cell)
+>   		if (ret == -ENOMEM)
+>   			goto out_wake;
+>   
+> -		ret = -ENOMEM;
+>   		vllist = afs_alloc_vlserver_list(0);
+> -		if (!vllist)
+> +		if (!vllist) {
+> +			if (ret >= 0)
+> +				ret = -ENOMEM;
+>   			goto out_wake;
+> +		}
+>   
+>   		switch (ret) {
+>   		case -ENODATA:
+>
+Reviewed-by: Jeffrey Altman <jaltman@auristor.com>
 
-	    const struct ethqos_emac_por *por;
-	    unsigned int num_por;
-	    bool rgmii_config_loopback_en;
-	    bool has_emac_ge_3;
-	    unsigned int serdes_speed;
-    };
+--------------xy77y20BS4hMZGduEHK0piGj
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-I think this would make more logical sense:
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+  <body>
+    <div class="moz-cite-prefix">On 12/21/2023 9:23 AM, David Howells
+      wrote:<br>
+    </div>
+    <blockquote type="cite"
+      cite="mid:1700862.1703168632@warthog.procyon.org.uk">
+      <pre class="moz-quote-pre" wrap="">In afs_update_cell(), ret is the result of the DNS lookup and the errors
+are to be handled by a switch - however, the value gets clobbered in
+between by setting it to -ENOMEM in case afs_alloc_vlserver_list() fails.
 
-    struct qcom_ethqos {
-	    struct platform_device *pdev;
-	    void __iomem *rgmii_base;
-	    void __iomem *mac_base;
-	    int (*configure_func)(struct qcom_ethqos *ethqos);
+Fix this by moving the setting of -ENOMEM into the error handling for OOM
+failure.  Further, only do it if we don't have an alternative error to
+return.
 
-	    unsigned int link_clk_rate;
-	    struct clk *link_clk;
-	    struct phy *serdes_phy;
-	    unsigned int serdes_speed;
-	    unsigned int speed;
-	    phy_interface_t phy_mode;
+Found by Linux Verification Center (linuxtesting.org) with SVACE.  Based on
+a patch from Anastasia Belova[1].
 
-	    const struct ethqos_emac_por *por;
-	    unsigned int num_por;
-	    bool rgmii_config_loopback_en;
-	    bool has_emac_ge_3;
-    };
+Fixes: d5c32c89b208 ("afs: Fix cell DNS lookup")
+Signed-off-by: David Howells <a class="moz-txt-link-rfc2396E" href="mailto:dhowells@redhat.com">&lt;dhowells@redhat.com&gt;</a>
+cc: Anastasia Belova <a class="moz-txt-link-rfc2396E" href="mailto:abelova@astralinux.ru">&lt;abelova@astralinux.ru&gt;</a>
+cc: Marc Dionne <a class="moz-txt-link-rfc2396E" href="mailto:marc.dionne@auristor.com">&lt;marc.dionne@auristor.com&gt;</a>
+cc: <a class="moz-txt-link-abbreviated" href="mailto:linux-afs@lists.infradead.org">linux-afs@lists.infradead.org</a>
+cc: <a class="moz-txt-link-abbreviated" href="mailto:lvc-project@linuxtesting.org">lvc-project@linuxtesting.org</a>
+Link: <a class="moz-txt-link-freetext" href="https://lore.kernel.org/r/20231221085849.1463-1-abelova@astralinux.ru/">https://lore.kernel.org/r/20231221085849.1463-1-abelova@astralinux.ru/</a> [1]
 
-It is definitely nit picking though :)
-> > 
-> >>>>  };
-> >>>>  
-> >>>>  static int rgmii_readl(struct qcom_ethqos *ethqos, unsigned int offset)
-> >>>> @@ -600,27 +606,47 @@ static int ethqos_configure_rgmii(struct qcom_ethqos *ethqos)
-> >>>>  
-> >>>>  static int ethqos_configure_sgmii(struct qcom_ethqos *ethqos)
-> >>>>  {
-> >>>> -	int val;
-> >>>> -
-> >>>> +	int val, mac_an_value;
-> >>>>  	val = readl(ethqos->mac_base + MAC_CTRL_REG);
-> >>>> +	mac_an_value = readl(ethqos->mac_base + ETHQOS_MAC_AN_CTRL);
-> >>>>  
-> >>>>  	switch (ethqos->speed) {
-> >>>> +	case SPEED_2500:
-> >>>> +		val &= ~ETHQOS_MAC_CTRL_PORT_SEL;
-> >>>> +		rgmii_updatel(ethqos, RGMII_CONFIG2_RGMII_CLK_SEL_CFG,
-> >>>> +			      RGMII_CONFIG2_RGMII_CLK_SEL_CFG,
-> >>>> +			      RGMII_IO_MACRO_CONFIG2);
-> >>>> +		if (ethqos->serdes_speed != SPEED_2500)
-> >>>> +			phy_set_speed(ethqos->serdes_phy, ethqos->speed);
-> >>>> +		mac_an_value &= ~ETHQOS_MAC_AN_CTRL_ANE;
-> >>>> +		break;
-> >>>>  	case SPEED_1000:
-> >>>>  		val &= ~ETHQOS_MAC_CTRL_PORT_SEL;
-> >>>>  		rgmii_updatel(ethqos, RGMII_CONFIG2_RGMII_CLK_SEL_CFG,
-> >>>>  			      RGMII_CONFIG2_RGMII_CLK_SEL_CFG,
-> >>>>  			      RGMII_IO_MACRO_CONFIG2);
-> >>>> +		if (ethqos->serdes_speed != SPEED_1000)
-> >>>> +			phy_set_speed(ethqos->serdes_phy, ethqos->speed);
-> >>>> +		mac_an_value |= ETHQOS_MAC_AN_CTRL_RAN | ETHQOS_MAC_AN_CTRL_ANE;
-> >>>>  		break;
-> >>>>  	case SPEED_100:
-> >>>>  		val |= ETHQOS_MAC_CTRL_PORT_SEL | ETHQOS_MAC_CTRL_SPEED_MODE;
-> >>>> +		if (ethqos->serdes_speed != SPEED_1000)
-> >>>> +			phy_set_speed(ethqos->serdes_phy, ethqos->speed);
-> >>>> +		mac_an_value |= ETHQOS_MAC_AN_CTRL_RAN | ETHQOS_MAC_AN_CTRL_ANE;
-> >>>>  		break;
-> >>>>  	case SPEED_10:
-> >>>>  		val |= ETHQOS_MAC_CTRL_PORT_SEL;
-> >>>>  		val &= ~ETHQOS_MAC_CTRL_SPEED_MODE;
-> >>>> +		if (ethqos->serdes_speed != SPEED_1000)
-> >>>> +			phy_set_speed(ethqos->serdes_phy, ethqos->speed);
-> >>>> +		mac_an_value |= ETHQOS_MAC_AN_CTRL_RAN | ETHQOS_MAC_AN_CTRL_ANE;
-> >>>>  		break;
-> >>>>  	}
-> >>>>  
-> >>>>  	writel(val, ethqos->mac_base + MAC_CTRL_REG);
-> >>>> +	writel(mac_an_value, ethqos->mac_base + ETHQOS_MAC_AN_CTRL);
-> >>>> +	ethqos->serdes_speed = ethqos->speed;
-> >>>
-> >>> I see these bits are generic and there's some functions in stmmac_pcs.h
-> >>> that muck with these...
-> >>>
-> >>> Could you help me understand if this really should be Qualcomm specific,
-> >>> or if this is something that should be considered for the more core bits
-> >>> of the driver? I feel in either case we should take advantage of the
-> >>> common definitions in that file if possible.
-> >>>
-> >> we do have function dwmac_ctrl_ane in core driver which updates same registers. However, it does not have the option to reset ANE bit, it can only set bits. For SPEED_2500 we need to reset ANE bit. Hence I am adding it here. Not sure if we can extend dwmac_ctrl_ane function to reset bits as well.
-> > 
-> > I'd evaluate if you can update that function to clear the ANE bit when
-> > the ane boolean is false. From the usage I see I feel that makes sense,
-> > but correct me if you think I'm wrong.
-> > At the very least let's use the defines from there, and possibly add a
-> > new function if clearing is not acceptable in dwmac_ctrl_ane().
-> > 
-> > Stepping back, I was asking in general is the need to muck with ANE here
-> > is a Qualcomm specific problem, or is that a generic thing that should be
-> > handled in the core (and the phy_set_speed() bit stay here)? i.e. would
-> > any dwmac5 based IP need to do something like this for SPEED_2500?
-> I think disabling ANE for SPEED_2500 is generic not specific to qualcomm. Even in dwxgmac2 versions also we need to disable ANE for SPEED_2500. Autoneg clause 37 stadard doesn't support 2500 speed. So we need to disable autoneg for speed 2500
+---
+ fs/afs/cell.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-Another nit, sorry for being so picky. Can you please wrap your emails
-to around 80 characters? That's the general etiquette when replying
-on-list, makes it easier to read (similar to say a commit message).
+diff --git a/fs/afs/cell.c b/fs/afs/cell.c
+index 988c2ac7cece..926cb1188eba 100644
+--- a/fs/afs/cell.c
++++ b/fs/afs/cell.c
+@@ -409,10 +409,12 @@ static int afs_update_cell(struct afs_cell *cell)
+ 		if (ret == -ENOMEM)
+ 			goto out_wake;
+ 
+-		ret = -ENOMEM;
+ 		vllist = afs_alloc_vlserver_list(0);
+-		if (!vllist)
++		if (!vllist) {
++			if (ret &gt;= 0)
++				ret = -ENOMEM;
+ 			goto out_wake;
++		}
+ 
+ 		switch (ret) {
+ 		case -ENODATA:
 
-Thanks for explaining that. Then in my opinion based on what you've said
-I think the disabling of ANE for SPEED_2500 should be done outside of
-the Qualcomm platform code.
+</pre>
+    </blockquote>
+    <p>Reviewed-by: Jeffrey Altman <a class="moz-txt-link-rfc2396E" href="mailto:jaltman@auristor.com">&lt;jaltman@auristor.com&gt;</a></p>
+    <p><span style="white-space: pre-wrap">
+</span></p>
+  </body>
+</html>
 
-Note, I'm struggling to keep up with the standards at play here, so if
-someone else who's a bit more wise on these topics has an opinion I'd
-listen to them. I find myself rewatching this presentation from
-Maxime/Antoine as a primer on all of this:
+--------------xy77y20BS4hMZGduEHK0piGj--
 
-    https://www.youtube.com/watch?v=K962S9gTBVM
+--------------ms010009090505040106020008
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
-If anyone's got any recommended resources for me to read in particular I
-am all ears.
-
-I'll be out the next 2-3 weeks, so don't wait for any responses from me
-:)
-
-Thanks,
-Andrew
-
-> 
-> > 
-> >>>>  
-> >>>>  	return val;
-> >>>>  }
-> >>>> @@ -789,6 +815,7 @@ static int qcom_ethqos_probe(struct platform_device *pdev)
-> >>>>  				     "Failed to get serdes phy\n");
-> >>>>  
-> >>>>  	ethqos->speed = SPEED_1000;
-> >>>> +	ethqos->serdes_speed = SPEED_1000;
-> >>>>  	ethqos_update_link_clk(ethqos, SPEED_1000);
-> >>>>  	ethqos_set_func_clk_en(ethqos);
-> >>>>  
-> >>>> -- 
-> >>>> 2.17.1
-> >>>>
-> >>>
-> >>
-> > 
-> 
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCC
+DHEwggXSMIIEuqADAgECAhBAAYJpmi/rPn/F0fJyDlzMMA0GCSqGSIb3DQEBCwUAMDoxCzAJ
+BgNVBAYTAlVTMRIwEAYDVQQKEwlJZGVuVHJ1c3QxFzAVBgNVBAMTDlRydXN0SUQgQ0EgQTEz
+MB4XDTIyMDgwNDE2MDQ0OFoXDTI1MTAzMTE2MDM0OFowcDEvMC0GCgmSJomT8ixkAQETH0Ew
+MTQxMEQwMDAwMDE4MjY5OUEyRkQyMDAwMjMzQ0QxGTAXBgNVBAMTEEplZmZyZXkgRSBBbHRt
+YW4xFTATBgNVBAoTDEF1cmlTdG9yIEluYzELMAkGA1UEBhMCVVMwggEiMA0GCSqGSIb3DQEB
+AQUAA4IBDwAwggEKAoIBAQCkC7PKBBZnQqDKPtZPMLAy77zo2DPvwtGnd1hNjPvbXrpGxUb3
+xHZRtv179LHKAOcsY2jIctzieMxf82OMyhpBziMPsFAG/ukihBMFj3/xEeZVso3K27pSAyyN
+fO/wJ0rX7G+ges22Dd7goZul8rPaTJBIxbZDuaykJMGpNq4PQ8VPcnYZx+6b+nJwJJoJ46kI
+EEfNh3UKvB/vM0qtxS690iAdgmQIhTl+qfXq4IxWB6b+3NeQxgR6KLU4P7v88/tvJTpxIKkg
+9xj89ruzeThyRFd2DSe3vfdnq9+g4qJSHRXyTft6W3Lkp7UWTM4kMqOcc4VSRdufVKBQNXjG
+IcnhAgMBAAGjggKcMIICmDAOBgNVHQ8BAf8EBAMCBPAwgYQGCCsGAQUFBwEBBHgwdjAwBggr
+BgEFBQcwAYYkaHR0cDovL2NvbW1lcmNpYWwub2NzcC5pZGVudHJ1c3QuY29tMEIGCCsGAQUF
+BzAChjZodHRwOi8vdmFsaWRhdGlvbi5pZGVudHJ1c3QuY29tL2NlcnRzL3RydXN0aWRjYWEx
+My5wN2MwHwYDVR0jBBgwFoAULbfeG1l+KpguzeHUG+PFEBJe6RQwCQYDVR0TBAIwADCCASsG
+A1UdIASCASIwggEeMIIBGgYLYIZIAYb5LwAGAgEwggEJMEoGCCsGAQUFBwIBFj5odHRwczov
+L3NlY3VyZS5pZGVudHJ1c3QuY29tL2NlcnRpZmljYXRlcy9wb2xpY3kvdHMvaW5kZXguaHRt
+bDCBugYIKwYBBQUHAgIwga0MgapUaGlzIFRydXN0SUQgQ2VydGlmaWNhdGUgaGFzIGJlZW4g
+aXNzdWVkIGluIGFjY29yZGFuY2Ugd2l0aCBJZGVuVHJ1c3QncyBUcnVzdElEIENlcnRpZmlj
+YXRlIFBvbGljeSBmb3VuZCBhdCBodHRwczovL3NlY3VyZS5pZGVudHJ1c3QuY29tL2NlcnRp
+ZmljYXRlcy9wb2xpY3kvdHMvaW5kZXguaHRtbDBFBgNVHR8EPjA8MDqgOKA2hjRodHRwOi8v
+dmFsaWRhdGlvbi5pZGVudHJ1c3QuY29tL2NybC90cnVzdGlkY2FhMTMuY3JsMB8GA1UdEQQY
+MBaBFGphbHRtYW5AYXVyaXN0b3IuY29tMB0GA1UdDgQWBBQB+nzqgljLocLTsiUn2yWqEc2s
+gjAdBgNVHSUEFjAUBggrBgEFBQcDAgYIKwYBBQUHAwQwDQYJKoZIhvcNAQELBQADggEBAJwV
+eycprp8Ox1npiTyfwc5QaVaqtoe8Dcg2JXZc0h4DmYGW2rRLHp8YL43snEV93rPJVk6B2v4c
+WLeQfaMrnyNeEuvHx/2CT44cdLtaEk5zyqo3GYJYlLcRVz6EcSGHv1qPXgDT0xB/25etwGYq
+utYF4Chkxu4KzIpq90eDMw5ajkexw+8ARQz4N5+d6NRbmMCovd7wTGi8th/BZvz8hgKUiUJo
+Qle4wDxrdXdnIhCP7g87InXKefWgZBF4VX21t2+hkc04qrhIJlHrocPG9mRSnnk2WpsY0MXt
+a8ivbVKtfpY7uSNDZSKTDi1izEFH5oeQdYRkgIGb319a7FjslV8wggaXMIIEf6ADAgECAhBA
+AXA7OrqBjMk8rp4OuNQSMA0GCSqGSIb3DQEBCwUAMEoxCzAJBgNVBAYTAlVTMRIwEAYDVQQK
+EwlJZGVuVHJ1c3QxJzAlBgNVBAMTHklkZW5UcnVzdCBDb21tZXJjaWFsIFJvb3QgQ0EgMTAe
+Fw0yMDAyMTIyMTA3NDlaFw0zMDAyMTIyMTA3NDlaMDoxCzAJBgNVBAYTAlVTMRIwEAYDVQQK
+EwlJZGVuVHJ1c3QxFzAVBgNVBAMTDlRydXN0SUQgQ0EgQTEzMIIBIjANBgkqhkiG9w0BAQEF
+AAOCAQ8AMIIBCgKCAQEAu6sUO01SDD99PM+QdZkNxKxJNt0NgQE+Zt6ixaNP0JKSjTd+SG5L
+wqxBWjnOgI/3dlwgtSNeN77AgSs+rA4bK4GJ75cUZZANUXRKw/et8pf9Qn6iqgB63OdHxBN/
+15KbM3HR+PyiHXQoUVIevCKW8nnlWnnZabT1FejOhRRKVUg5HACGOTfnCOONrlxlg+m1Vjgn
+o1uNqNuLM/jkD1z6phNZ/G9IfZGI0ppHX5AA/bViWceX248VmefNhSR14ADZJtlAAWOi2un0
+3bqrBPHA9nDyXxI8rgWLfUP5rDy8jx2hEItg95+ORF5wfkGUq787HBjspE86CcaduLka/Bk2
+VwIDAQABo4IChzCCAoMwEgYDVR0TAQH/BAgwBgEB/wIBADAOBgNVHQ8BAf8EBAMCAYYwgYkG
+CCsGAQUFBwEBBH0wezAwBggrBgEFBQcwAYYkaHR0cDovL2NvbW1lcmNpYWwub2NzcC5pZGVu
+dHJ1c3QuY29tMEcGCCsGAQUFBzAChjtodHRwOi8vdmFsaWRhdGlvbi5pZGVudHJ1c3QuY29t
+L3Jvb3RzL2NvbW1lcmNpYWxyb290Y2ExLnA3YzAfBgNVHSMEGDAWgBTtRBnA0/AGi+6ke75C
+5yZUyI42djCCASQGA1UdIASCARswggEXMIIBEwYEVR0gADCCAQkwSgYIKwYBBQUHAgEWPmh0
+dHBzOi8vc2VjdXJlLmlkZW50cnVzdC5jb20vY2VydGlmaWNhdGVzL3BvbGljeS90cy9pbmRl
+eC5odG1sMIG6BggrBgEFBQcCAjCBrQyBqlRoaXMgVHJ1c3RJRCBDZXJ0aWZpY2F0ZSBoYXMg
+YmVlbiBpc3N1ZWQgaW4gYWNjb3JkYW5jZSB3aXRoIElkZW5UcnVzdCdzIFRydXN0SUQgQ2Vy
+dGlmaWNhdGUgUG9saWN5IGZvdW5kIGF0IGh0dHBzOi8vc2VjdXJlLmlkZW50cnVzdC5jb20v
+Y2VydGlmaWNhdGVzL3BvbGljeS90cy9pbmRleC5odG1sMEoGA1UdHwRDMEEwP6A9oDuGOWh0
+dHA6Ly92YWxpZGF0aW9uLmlkZW50cnVzdC5jb20vY3JsL2NvbW1lcmNpYWxyb290Y2ExLmNy
+bDAdBgNVHQ4EFgQULbfeG1l+KpguzeHUG+PFEBJe6RQwHQYDVR0lBBYwFAYIKwYBBQUHAwIG
+CCsGAQUFBwMEMA0GCSqGSIb3DQEBCwUAA4ICAQB/7BKcygLX6Nl4a03cDHt7TLdPxCzFvDF2
+bkVYCFTRX47UfeomF1gBPFDee3H/IPlLRmuTPoNt0qjdpfQzmDWN95jUXLdLPRToNxyaoB5s
+0hOhcV6H08u3FHACBif55i0DTDzVSaBv0AZ9h1XeuGx4Fih1Vm3Xxz24GBqqVudvPRLyMJ7u
+6hvBqTIKJ53uCs3dyQLZT9DXnp+kJv8y7ZSAY+QVrI/dysT8avtn8d7k7azNBkfnbRq+0e88
+QoBnel6u+fpwbd5NLRHywXeH+phbzULCa+bLPRMqJaW2lbhvSWrMHRDy3/d8HvgnLCBFK2s4
+Spns4YCN4xVcbqlGWzgolHCKUH39vpcsDo1ymZFrJ8QR6ihIn8FmJ5oKwAnnd/G6ADXFC9bu
+db9+532phSAXOZrrecIQn+vtP366PC+aClAPsIIDJDsotS5z4X2JUFsNIuEgXGqhiKE7SuZb
+rFG9sdcLprSlJN7TsRDc0W2b9nqwD+rj/5MN0C+eKwha+8ydv0+qzTyxPP90KRgaegGowC4d
+UsZyTk2n4Z3MuAHX5nAZL/Vh/SyDj/ajorV44yqZBzQ3ChKhXbfUSwe2xMmygA2Z5DRwMRJn
+p/BscizYdNk2WXJMTnH+wVLN8sLEwEtQR4eTLoFmQvrK2AMBS9kW5sBkMzINt/ZbbcZ3F+eA
+MDGCAxQwggMQAgEBME4wOjELMAkGA1UEBhMCVVMxEjAQBgNVBAoTCUlkZW5UcnVzdDEXMBUG
+A1UEAxMOVHJ1c3RJRCBDQSBBMTMCEEABgmmaL+s+f8XR8nIOXMwwDQYJYIZIAWUDBAIBBQCg
+ggGXMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIzMTIyMTE0
+MzA1M1owLwYJKoZIhvcNAQkEMSIEIJyQYDdi599/aEAr+ZKtMcRb298h3j8VclLqS/CNXUj7
+MF0GCSsGAQQBgjcQBDFQME4wOjELMAkGA1UEBhMCVVMxEjAQBgNVBAoTCUlkZW5UcnVzdDEX
+MBUGA1UEAxMOVHJ1c3RJRCBDQSBBMTMCEEABgmmaL+s+f8XR8nIOXMwwXwYLKoZIhvcNAQkQ
+AgsxUKBOMDoxCzAJBgNVBAYTAlVTMRIwEAYDVQQKEwlJZGVuVHJ1c3QxFzAVBgNVBAMTDlRy
+dXN0SUQgQ0EgQTEzAhBAAYJpmi/rPn/F0fJyDlzMMGwGCSqGSIb3DQEJDzFfMF0wCwYJYIZI
+AWUDBAEqMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzAOBggqhkiG9w0DAgICAIAwDQYIKoZI
+hvcNAwICAUAwBwYFKw4DAgcwDQYIKoZIhvcNAwICASgwDQYJKoZIhvcNAQEBBQAEggEAMlmM
+sMb1pD520W0shnwOZzEX9Rr/AhxhWlhK2UlbmWRej8hdH52q3x75x487OZ+IS1TSiZ9+qozx
+PgGvyCSZCQUclFOf3rTg2ZPFcliIkq4CR1kXnr9XBk3lC8ius3aSGolrVGdFbbiYAy6T1VJG
+CFAGM72my2UNo8Bfv9eERALGRVw1CUvEVFu73+z6UTTYc9DE5fBfyJxE8KfV3ncDxgKozFPQ
+hcCS6VP9pc0R+wlKhCP/SIgAa0KDoVrFj5Vzn9/ipzJlw+ucLeBlpG6CK1mgjDyUETPJsYt6
+iwdmBGmR6OEnxLwB/nYPCuaaoAAke5LoIZ0mT1S328Z2ubJMfQAAAAAAAA==
+--------------ms010009090505040106020008--
 
 
