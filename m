@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-9157-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9159-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15E3881C1B2
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 00:19:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8307881C1B8
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 00:19:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ABE1D1F233B4
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 23:18:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EB4901F2373C
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 23:19:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD2FB79485;
-	Thu, 21 Dec 2023 23:18:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 814BA79963;
+	Thu, 21 Dec 2023 23:18:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b="GBb1eiuB"
+	dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b="YZmyiQCH"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B864F78E9B;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B861078E8F;
 	Thu, 21 Dec 2023 23:18:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hugovil.com
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
 	; s=x; h=Subject:Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Cc:To
 	:From:subject:date:message-id:reply-to;
-	bh=A3JAYH++UPopmKfr9YU5rDrgJ9jbknex8l6qeuhRBCw=; b=GBb1eiuB8wx1VRFGn1/vm+Itdz
-	Nt6/GXzoZ518e4gHtXDuK1v1/xgaFAn6k8TwdIO6ZUQwzoDy9v25d4kJlT0yGrGtPuSg8ndT2Ys0G
-	OpRMhencbdjRXmRJRVyC9ps9w+bzCh/92gQDhGi6md8k9FLhH4dRL2dldSwBV+a05j68=;
+	bh=zFCvSODRlDhyfhkyYaxqYDprC5OQrJQqCGo9MKePm3A=; b=YZmyiQCHE5e0ItphwBphKivjgL
+	nVggYMT39w3kM1I/N43fofJjfKo4DXFbuQjJgZEqHiBEJ4R+CfdrCY8onz3tqcghDErcE0V5v1LWs
+	lAlxUVMKR3FmJgkdZ4qcg0kkG+CEe6KmW108t33MEu3/gUzf7wmfZNfKiajkRFYHmni0=;
 Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:52484 helo=pettiford.lan)
 	by mail.hugovil.com with esmtpa (Exim 4.92)
 	(envelope-from <hugo@hugovil.com>)
-	id 1rGSJE-00025W-BA; Thu, 21 Dec 2023 18:18:32 -0500
+	id 1rGSJF-00025W-G7; Thu, 21 Dec 2023 18:18:34 -0500
 From: Hugo Villeneuve <hugo@hugovil.com>
 To: gregkh@linuxfoundation.org,
 	jirislaby@kernel.org,
@@ -41,10 +41,14 @@ To: gregkh@linuxfoundation.org,
 Cc: linux-kernel@vger.kernel.org,
 	linux-serial@vger.kernel.org,
 	hugo@hugovil.com,
-	Hugo Villeneuve <hvilleneuve@dimonoff.com>
-Date: Thu, 21 Dec 2023 18:18:07 -0500
-Message-Id: <20231221231823.2327894-1-hugo@hugovil.com>
+	Hugo Villeneuve <hvilleneuve@dimonoff.com>,
+	stable@vger.kernel.org,
+	Yury Norov <yury.norov@gmail.com>
+Date: Thu, 21 Dec 2023 18:18:08 -0500
+Message-Id: <20231221231823.2327894-2-hugo@hugovil.com>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20231221231823.2327894-1-hugo@hugovil.com>
+References: <20231221231823.2327894-1-hugo@hugovil.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -58,75 +62,131 @@ X-Spam-Level:
 X-Spam-Report: 
 	* -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
 	* -0.0 T_SCC_BODY_TEXT_LINE No description available.
-Subject: [PATCH v2 00/16] serial: sc16is7xx: fixes, cleanups and improvements
+Subject: [PATCH v2 01/16] serial: sc16is7xx: fix invalid sc16is7xx_lines bitfield in case of probe error
 X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
 X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 
 From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
 
-Hello,
-this patch series brings a few fixes, clean-ups and improvements to the
-sc16is7xx driver.
+If an error occurs during probing, the sc16is7xx_lines bitfield may be left
+in a state that doesn't represent the correct state of lines allocation.
 
-Some of the patches have been suggested by Andy Shevchenko following this
-dicussion:
+For example, in a system with two SC16 devices, if an error occurs only
+during probing of channel (port) B of the second device, sc16is7xx_lines
+final state will be 00001011b instead of the expected 00000011b.
 
-Link: https://lore.kernel.org/all/CAHp75VebCZckUrNraYQj9k=Mrn2kbYs1Lx26f5-8rKJ3RXeh-w@mail.gmail.com/
+This is caused in part because of the "i--" in the for/loop located in
+the out_ports: error path.
 
-I have tested the changes on a custom board with two SC16IS752 DUART over
-a SPI interface using a Variscite IMX8MN NANO SOM. The four UARTs are
-configured in RS-485 mode.
+Fix this by checking the return value of uart_add_one_port() and set line
+allocation bit only if this was successful. This allows the refactor of
+the obfuscated for(i--...) loop in the error path, and properly call
+uart_remove_one_port() only when needed, and properly unset line allocation
+bits.
 
-I did not test the change on a SC16is7xx using I2C interface, as my custom
-board is only using SPI.
+Also use same mechanism in remove() when calling uart_remove_one_port().
 
-Thank you.
+Fixes: c64349722d14 ("sc16is7xx: support multiple devices")
+Cc: stable@vger.kernel.org
+Cc: Yury Norov <yury.norov@gmail.com>
+Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+---
+ drivers/tty/serial/sc16is7xx.c | 44 ++++++++++++++--------------------
+ 1 file changed, 18 insertions(+), 26 deletions(-)
 
-Link: [v1] https://lore.kernel.org/all/20231219171903.3530985-1-hugo@hugovil.com/
-
-Changes for V2:
-- Invert statements in "improve do/while loop in sc16is7xx_irq()".
-- Drop patch "use in_range() for DT properties bound checks" at Andy's
-  suggestion.
-- Drop patch "fix whitespace in sc16is7xx_startup() comments".
-- Drop patch "fix segfault when removing driver".
-- Fix some commit descriptions after reviews.
-- Remove casting in spi_get_device_match_data() and i2c_get_match_data(),
-  and use dev_err_probe().
-- Fix indentation and comments style.
-- Add patch to fix SPI default frequency if unspecified and merge it with
-  patch "use HZ_PER_MHZ macro to improve readability".
-- Add patch to detect wrong SPI mode.
-- Optimize struct sc16is7xx_one based on Andy's comment and running pahole.
-- Use git diff histogram algo when generating patches.
-- Revert to ARRAY_SIZE() macro in "add macro for max number of UART ports"
-  and remove WARN_ON().
-
-Hugo Villeneuve (16):
-  serial: sc16is7xx: fix invalid sc16is7xx_lines bitfield in case of
-    probe error
-  serial: sc16is7xx: add check for unsupported SPI modes during probe
-  serial: sc16is7xx: set safe default SPI clock frequency
-  serial: sc16is7xx: remove obsolete loop in sc16is7xx_port_irq()
-  serial: sc16is7xx: improve do/while loop in sc16is7xx_irq()
-  serial: sc16is7xx: use DECLARE_BITMAP for sc16is7xx_lines bitfield
-  serial: sc16is7xx: use spi_get_device_match_data()
-  serial: sc16is7xx: use i2c_get_match_data()
-  serial: sc16is7xx: add driver name to struct uart_driver
-  serial: sc16is7xx: add macro for max number of UART ports
-  serial: sc16is7xx: add explicit return for some switch default cases
-  serial: sc16is7xx: replace hardcoded divisor value with BIT() macro
-  serial: sc16is7xx: drop unneeded MODULE_ALIAS
-  serial: sc16is7xx: refactor FIFO access functions to increase
-    commonality
-  serial: sc16is7xx: reorder code to remove prototype declarations
-  serial: sc16is7xx: refactor EFR lock
-
- drivers/tty/serial/sc16is7xx.c | 386 ++++++++++++++++-----------------
- 1 file changed, 184 insertions(+), 202 deletions(-)
-
-
-base-commit: 43f012df3c1e979966524f79b5371fde6545488a
+diff --git a/drivers/tty/serial/sc16is7xx.c b/drivers/tty/serial/sc16is7xx.c
+index e40e4a99277e..17b90f971f96 100644
+--- a/drivers/tty/serial/sc16is7xx.c
++++ b/drivers/tty/serial/sc16is7xx.c
+@@ -407,19 +407,6 @@ static void sc16is7xx_port_update(struct uart_port *port, u8 reg,
+ 	regmap_update_bits(one->regmap, reg, mask, val);
+ }
+ 
+-static int sc16is7xx_alloc_line(void)
+-{
+-	int i;
+-
+-	BUILD_BUG_ON(SC16IS7XX_MAX_DEVS > BITS_PER_LONG);
+-
+-	for (i = 0; i < SC16IS7XX_MAX_DEVS; i++)
+-		if (!test_and_set_bit(i, &sc16is7xx_lines))
+-			break;
+-
+-	return i;
+-}
+-
+ static void sc16is7xx_power(struct uart_port *port, int on)
+ {
+ 	sc16is7xx_port_update(port, SC16IS7XX_IER_REG,
+@@ -1550,6 +1537,13 @@ static int sc16is7xx_probe(struct device *dev,
+ 		     SC16IS7XX_IOCONTROL_SRESET_BIT);
+ 
+ 	for (i = 0; i < devtype->nr_uart; ++i) {
++		s->p[i].port.line = find_first_zero_bit(&sc16is7xx_lines,
++							SC16IS7XX_MAX_DEVS);
++		if (s->p[i].port.line >= SC16IS7XX_MAX_DEVS) {
++			ret = -ERANGE;
++			goto out_ports;
++		}
++
+ 		/* Initialize port data */
+ 		s->p[i].port.dev	= dev;
+ 		s->p[i].port.irq	= irq;
+@@ -1569,14 +1563,8 @@ static int sc16is7xx_probe(struct device *dev,
+ 		s->p[i].port.rs485_supported = sc16is7xx_rs485_supported;
+ 		s->p[i].port.ops	= &sc16is7xx_ops;
+ 		s->p[i].old_mctrl	= 0;
+-		s->p[i].port.line	= sc16is7xx_alloc_line();
+ 		s->p[i].regmap		= regmaps[i];
+ 
+-		if (s->p[i].port.line >= SC16IS7XX_MAX_DEVS) {
+-			ret = -ENOMEM;
+-			goto out_ports;
+-		}
+-
+ 		mutex_init(&s->p[i].efr_lock);
+ 
+ 		ret = uart_get_rs485_mode(&s->p[i].port);
+@@ -1594,8 +1582,13 @@ static int sc16is7xx_probe(struct device *dev,
+ 		kthread_init_work(&s->p[i].tx_work, sc16is7xx_tx_proc);
+ 		kthread_init_work(&s->p[i].reg_work, sc16is7xx_reg_proc);
+ 		kthread_init_delayed_work(&s->p[i].ms_work, sc16is7xx_ms_proc);
++
+ 		/* Register port */
+-		uart_add_one_port(&sc16is7xx_uart, &s->p[i].port);
++		ret = uart_add_one_port(&sc16is7xx_uart, &s->p[i].port);
++		if (ret)
++			goto out_ports;
++
++		set_bit(s->p[i].port.line, &sc16is7xx_lines);
+ 
+ 		/* Enable EFR */
+ 		sc16is7xx_port_write(&s->p[i].port, SC16IS7XX_LCR_REG,
+@@ -1653,10 +1646,9 @@ static int sc16is7xx_probe(struct device *dev,
+ #endif
+ 
+ out_ports:
+-	for (i--; i >= 0; i--) {
+-		uart_remove_one_port(&sc16is7xx_uart, &s->p[i].port);
+-		clear_bit(s->p[i].port.line, &sc16is7xx_lines);
+-	}
++	for (i = 0; i < devtype->nr_uart; i++)
++		if (test_and_clear_bit(s->p[i].port.line, &sc16is7xx_lines))
++			uart_remove_one_port(&sc16is7xx_uart, &s->p[i].port);
+ 
+ 	kthread_stop(s->kworker_task);
+ 
+@@ -1678,8 +1670,8 @@ static void sc16is7xx_remove(struct device *dev)
+ 
+ 	for (i = 0; i < s->devtype->nr_uart; i++) {
+ 		kthread_cancel_delayed_work_sync(&s->p[i].ms_work);
+-		uart_remove_one_port(&sc16is7xx_uart, &s->p[i].port);
+-		clear_bit(s->p[i].port.line, &sc16is7xx_lines);
++		if (test_and_clear_bit(s->p[i].port.line, &sc16is7xx_lines))
++			uart_remove_one_port(&sc16is7xx_uart, &s->p[i].port);
+ 		sc16is7xx_power(&s->p[i].port, 0);
+ 	}
+ 
 -- 
 2.39.2
 
