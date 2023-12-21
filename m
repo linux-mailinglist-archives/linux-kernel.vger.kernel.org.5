@@ -1,59 +1,92 @@
-Return-Path: <linux-kernel+bounces-8307-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8308-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18E5C81B54D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 12:53:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 103C081B54E
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 12:54:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 49B231C24D06
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 11:53:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B6BA22855AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 11:54:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04B496E59D;
-	Thu, 21 Dec 2023 11:53:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 502016E2D2;
+	Thu, 21 Dec 2023 11:53:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="YBWEViC8"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="oLST258I";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="yT7a2fho";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="oLST258I";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="yT7a2fho"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 458C96D1BF;
-	Thu, 21 Dec 2023 11:53:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48F97C433C8;
-	Thu, 21 Dec 2023 11:53:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1703159618;
-	bh=9F3/qY0cutpNDstJcL0vWDIU0kGQbc9WJFFcC7ONXR8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=YBWEViC8peSP97B4GVtN/b9ZMnFpTFSCfSCXTvs9sDwrOkQuAXoz5R/cpgoli+vVS
-	 MEMoVVff3fFLIfpfN6vi1ZurcRLrm+w+je3b3DLGNd2yaVnwAgPxinIx9zwh+HHZEW
-	 6u06M4hZvbfT3imPqjcQVUzdMSP8vBn3qs1l47Fk=
-Date: Thu, 21 Dec 2023 12:53:36 +0100
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Bagas Sanjaya <bagasdotme@gmail.com>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Linux Networking <netdev@vger.kernel.org>,
-	Linux Kernel Janitors <kernel-janitors@vger.kernel.org>,
-	Kees Cook <keescook@chromium.org>, Jakub Kicinski <kuba@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	"Jiri Slaby (SUSE)" <jirislaby@kernel.org>,
-	Justin Stitt <justinstitt@google.com>,
-	Kunwu Chan <chentao@kylinos.cn>,
-	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	Nathan Chancellor <nathan@kernel.org>,
-	"Steven Rostedt (Google)" <rostedt@goodmis.org>,
-	Karsten Keil <isdn@linux-pingi.de>,
-	Karsten Keil <keil@b1-systems.de>,
-	YouHong Li <liyouhong@kylinos.cn>
-Subject: Re: [PATCH net 1/2] MAINTAINERS: Remove Karsten Keil
-Message-ID: <2023122125-departure-squishier-95d4@gregkh>
-References: <20231221091419.11764-1-bagasdotme@gmail.com>
- <20231221091419.11764-2-bagasdotme@gmail.com>
- <2023122156-diocese-movie-3d75@gregkh>
- <ZYQYUgZrewi2Up50@archie.me>
- <2023122116-favoring-roulette-554f@gregkh>
- <ZYQgGxKOKqIe4TIL@archie.me>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 309346F602;
+	Thu, 21 Dec 2023 11:53:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 67FD121E44;
+	Thu, 21 Dec 2023 11:53:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1703159625; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=L31YACKSQsFcxxfW7VaGnizvEvAwj2sWxxztR/WkIj8=;
+	b=oLST258IANtlkxNQE9+eUj/nMzwZaADtIVJFFeGRl7JvU++VyCiEKxyyl/kbPS8Qyz2KkE
+	N0xXsBjrFHwTmG4VyIqWO30F+dSFRuVmPWkXt+7TQSY/6i3dMYNmfG0QleHKge+Xd7f4TK
+	qQ2J+8+5di4lO3Rg/wKKvpm403CaCqo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1703159625;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=L31YACKSQsFcxxfW7VaGnizvEvAwj2sWxxztR/WkIj8=;
+	b=yT7a2fhoGycH/mU51y5QnFa1RIGX8wiVt4CKtTT910qi9O1PvEtRjgUX0lcnM7Hke2+qO9
+	FOpVzS8omBa8gpBA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1703159625; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=L31YACKSQsFcxxfW7VaGnizvEvAwj2sWxxztR/WkIj8=;
+	b=oLST258IANtlkxNQE9+eUj/nMzwZaADtIVJFFeGRl7JvU++VyCiEKxyyl/kbPS8Qyz2KkE
+	N0xXsBjrFHwTmG4VyIqWO30F+dSFRuVmPWkXt+7TQSY/6i3dMYNmfG0QleHKge+Xd7f4TK
+	qQ2J+8+5di4lO3Rg/wKKvpm403CaCqo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1703159625;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=L31YACKSQsFcxxfW7VaGnizvEvAwj2sWxxztR/WkIj8=;
+	b=yT7a2fhoGycH/mU51y5QnFa1RIGX8wiVt4CKtTT910qi9O1PvEtRjgUX0lcnM7Hke2+qO9
+	FOpVzS8omBa8gpBA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5D78313AB5;
+	Thu, 21 Dec 2023 11:53:45 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id WfrcFkknhGXyYwAAD6G6ig
+	(envelope-from <jack@suse.cz>); Thu, 21 Dec 2023 11:53:45 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 17115A07E3; Thu, 21 Dec 2023 12:53:45 +0100 (CET)
+Date: Thu, 21 Dec 2023 12:53:45 +0100
+From: Jan Kara <jack@suse.cz>
+To: Christoph Hellwig <hch@lst.de>
+Cc: linux-mm@kvack.org, "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+	Jan Kara <jack@suse.com>, David Howells <dhowells@redhat.com>,
+	Brian Foster <bfoster@redhat.com>, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 16/17] writeback: Remove a use of write_cache_pages()
+ from do_writepages()
+Message-ID: <20231221115345.jaqzljtj2s675vjr@quack3>
+References: <20231218153553.807799-1-hch@lst.de>
+ <20231218153553.807799-17-hch@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,61 +95,99 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZYQgGxKOKqIe4TIL@archie.me>
+In-Reply-To: <20231218153553.807799-17-hch@lst.de>
+X-Spam-Level: 
+X-Spam-Level: 
+X-Spamd-Result: default: False [-0.52 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 RCPT_COUNT_SEVEN(0.00)[8];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.com:email];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-0.92)[86.25%]
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Score: -0.52
+X-Spam-Flag: NO
 
-On Thu, Dec 21, 2023 at 06:23:07PM +0700, Bagas Sanjaya wrote:
-> On Thu, Dec 21, 2023 at 11:54:02AM +0100, Greg Kroah-Hartman wrote:
-> > On Thu, Dec 21, 2023 at 05:49:54PM +0700, Bagas Sanjaya wrote:
-> > > On Thu, Dec 21, 2023 at 10:32:09AM +0100, Greg Kroah-Hartman wrote:
-> > > > On Thu, Dec 21, 2023 at 04:14:18PM +0700, Bagas Sanjaya wrote:
-> > > > > He's no longer active maintaining ISDN/mISDN subsystem: his last message
-> > > > > on kernel mailing lists was three years ago [1] and last commit activity
-> > > > > from him was 1e1589ad8b5cb5 ("mISDN: Support DR6 indication in mISDNipac
-> > > > > driver") in 2016 when he gave Acked-by: from his @b1-systems.de address.
-> > > > > 
-> > > > > Move him to CREDITS, as netdev people should already handle ISDN/mISDN
-> > > > > patches.
-> > > > > 
-> > > > > Link: https://lore.kernel.org/r/0ee243a9-9937-ad26-0684-44b18e772662@linux-pingi.de/ [1]
-> > > > > Cc: Karsten Keil <isdn@linux-pingi.de>
-> > > > > Cc: Karsten Keil <keil@b1-systems.de>
-> > > > > Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
-> > > > 
-> > > > Are you sure he's not active?  It doesn't take much work to keep an old
-> > > > subsystem like this alive, last I remember, real changes were accepted
-> > > > just fine.
-> > > 
-> > > As for LKML messages, yes; he doesn't post any new messages since 2020.
-> > > 
-> > > > 
-> > > > Perhaps just don't send coding style cleanups to old subsystems?  :)
-> > > > 
-> > > > I would not take these unless Karsten agrees that he no longer wants to
-> > > > maintain this.
-> > > 
-> > > OK, I will send a private message to him asking for continuing maintainer
-> > > role. If there's no response from him by the new year, then it's safe to
-> > > route this through net tree instead (hence [PATCH net]).
-> > 
-> > Why are you arbritrarily saying that "no response in 2 weeks, during the
-> > time of the year almost all of Europe is on vacation, means we drop
-> > someone from the MAINTAINERS file"?
-> > 
+On Mon 18-12-23 16:35:52, Christoph Hellwig wrote:
+> From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 > 
-> Because I'm impatient.
+> Use the new for_each_writeback_folio() directly instead of indirecting
+> through a callback.
+> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-Then kernel development might not be the best thing to work on as
-patience is required here.
+Looks good. Feel free to add:
 
-> Maybe I can wait for right timing to reroll once
-> Karsten agrees to remove his MAINTAINERS entry.
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-That's up to Karsten, not you.
+								Honza
 
-Again, please relax, slow down, and perhaps work on something more
-technical, like actual kernel fixes?
-
-thanks,
-
-greg k-h
+> ---
+>  mm/page-writeback.c | 27 +++++++++++++++------------
+>  1 file changed, 15 insertions(+), 12 deletions(-)
+> 
+> diff --git a/mm/page-writeback.c b/mm/page-writeback.c
+> index fbffd30a9cc93f..d3c2c78e0c67ce 100644
+> --- a/mm/page-writeback.c
+> +++ b/mm/page-writeback.c
+> @@ -2564,13 +2564,21 @@ int write_cache_pages(struct address_space *mapping,
+>  }
+>  EXPORT_SYMBOL(write_cache_pages);
+>  
+> -static int writepage_cb(struct folio *folio, struct writeback_control *wbc,
+> -		void *data)
+> +static int writeback_use_writepage(struct address_space *mapping,
+> +		struct writeback_control *wbc)
+>  {
+> -	struct address_space *mapping = data;
+> -	int ret = mapping->a_ops->writepage(&folio->page, wbc);
+> -	mapping_set_error(mapping, ret);
+> -	return ret;
+> +	struct blk_plug plug;
+> +	struct folio *folio;
+> +	int err;
+> +
+> +	blk_start_plug(&plug);
+> +	for_each_writeback_folio(mapping, wbc, folio, err) {
+> +		err = mapping->a_ops->writepage(&folio->page, wbc);
+> +		mapping_set_error(mapping, err);
+> +	}
+> +	blk_finish_plug(&plug);
+> +
+> +	return err;
+>  }
+>  
+>  int do_writepages(struct address_space *mapping, struct writeback_control *wbc)
+> @@ -2586,12 +2594,7 @@ int do_writepages(struct address_space *mapping, struct writeback_control *wbc)
+>  		if (mapping->a_ops->writepages) {
+>  			ret = mapping->a_ops->writepages(mapping, wbc);
+>  		} else if (mapping->a_ops->writepage) {
+> -			struct blk_plug plug;
+> -
+> -			blk_start_plug(&plug);
+> -			ret = write_cache_pages(mapping, wbc, writepage_cb,
+> -						mapping);
+> -			blk_finish_plug(&plug);
+> +			ret = writeback_use_writepage(mapping, wbc);
+>  		} else {
+>  			/* deal with chardevs and other special files */
+>  			ret = 0;
+> -- 
+> 2.39.2
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
