@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-7801-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7802-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB65481AD2D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 04:19:48 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D624481AD2F
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 04:20:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 48C6F283A3F
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 03:19:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0B560B24E7A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 03:20:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E68298F48;
-	Thu, 21 Dec 2023 03:19:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55016AD59;
+	Thu, 21 Dec 2023 03:19:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=soleen.com header.i=@soleen.com header.b="Fe8eTqkr"
+	dkim=pass (2048-bit key) header.d=soleen.com header.i=@soleen.com header.b="U/kdJhYI"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-qk1-f182.google.com (mail-qk1-f182.google.com [209.85.222.182])
+Received: from mail-qk1-f176.google.com (mail-qk1-f176.google.com [209.85.222.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAB314427
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 03:19:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95C345248
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 03:19:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=soleen.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=soleen.com
-Received: by mail-qk1-f182.google.com with SMTP id af79cd13be357-7811db57cb4so17311085a.0
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 19:19:21 -0800 (PST)
+Received: by mail-qk1-f176.google.com with SMTP id af79cd13be357-77f9c7d35deso16039885a.1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 19:19:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=soleen.com; s=google; t=1703128761; x=1703733561; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=mGmYN/slxAgBeZjp+ZQs88mMzGzd5XnAVtjIWHCDIHA=;
-        b=Fe8eTqkrvUEvuHdlfK0989Y56i0ewKkeikgkKm4o3BceLgczzf3dW7OMFgZAbEGMyI
-         FIcorCOHFnsGdfMhe/vN1MM9IQbfy+a+AoqOZEiB+8f0G73vnXGGAnIytZE+cA09omcL
-         G31AlRomLMgp9EA2gkjSouLunftC4MwflOB0h3SZluP8AybjGKhzWvrDmj9tYyHpKAVi
-         kGF/ZrPncicNraJF4HaS8nVLMQu9RFH9pAjs1abtK3Q003P10YFTe5AbLfx289E/Nr1F
-         nIbUt9cE6EhfEl0g7ORkBzDokxo3cU7FEnYjx/CHKvyMVvDWy9xEPDMlr2DvaL7HjHTF
-         /o5w==
+        bh=1AmuHXuEhInFkqtbi2Boe13e6hcYidcEU++H5mZtuKg=;
+        b=U/kdJhYITr3gShRYsJi6KSCuHG02j1yWuwc0YFoNUeHiUY8/j958BDLfMlFVo1Mht6
+         FUGKfMLp2kBe+Cop/xfaulyo3hD12/cGfgp50Hv0qb0afKZReaCozXAPWrehQnsNzlcr
+         Neol11iCbllbYAOWpF/j6diMnG7VWYABff+K1AHpoLet+J9ZRx35aRs1lmtGcvgFOnuL
+         WNmloJHygmzi0fjaAf1tvWY78YLrNIvwGwb6dL89ucCyqoM1HogNQjUuEc+pMduoszne
+         24aa+BtF/vgQnQMws0JWt5eLtRbo+YyVaoOSziSVO3skyBfmafCn2qWaic1kLKH8zJeL
+         TxQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1703128761; x=1703733561;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=mGmYN/slxAgBeZjp+ZQs88mMzGzd5XnAVtjIWHCDIHA=;
-        b=o7TdSTjMoBPfvMJ7AZzjc8wB9jLSw7CGg9VDbBZ2i8y/9jnMXz+6uBYedmQ1B7or1q
-         l9lgFtzLRbmea1NvN4O5i33aci8Ip0bMMVnfNqc59XZKoqP680zkZQuwvnuODW8WLhZX
-         jPjO+yj6bTrs1kmbZbNdIFjENLUU30PyKR2nROlg5Yz6ucSXelYYlMcK129bBRmPEHJo
-         qwZuYFBWzl7c7pwM/byp8Q+iaL7R8QfzxaMvwmGlTBaoBnTiW1BL3e8dlCikMQfWMwrq
-         p13Fw9Esyo5zUyK0i/p2hYGTQczMN4blh81RjIlWLdDZU4ztrLVET4LG5FzK1Y5cL2NZ
-         X2Qw==
-X-Gm-Message-State: AOJu0YwhFGPNl6BJgTYPc6tzJ3+BZJjZMip45XysM3tgPCIkAr9DF+57
-	auXApNOWc0vBi7VMLjHn43sZmwjKExZjjuNGL0A=
-X-Google-Smtp-Source: AGHT+IGNYrBgDx+nvC9AuuwI67vV1vM61BysWepXxnQdaZCSvAikEGaalUvebM9KlNFAOPYa+XowDw==
-X-Received: by 2002:ae9:e64d:0:b0:781:1ae:5aa1 with SMTP id x13-20020ae9e64d000000b0078101ae5aa1mr52489qkl.29.1703128760786;
-        Wed, 20 Dec 2023 19:19:20 -0800 (PST)
+        bh=1AmuHXuEhInFkqtbi2Boe13e6hcYidcEU++H5mZtuKg=;
+        b=ejM5t9jipeE4IN8ZHzNE6wfcK5h7W4xjYKH2/N1EcDj7Hp52LXMY2McEKhz1CdViJp
+         ncefpnhNtIf3IEADlIGuLsflgZDquEM9ddAvsE30q/8hN2oRXvuB6szXeJE+wdLQZnCL
+         CSsoxeAYmpYjKVwznLvS+XNvTqmu/+1aXxfpn/SX2gUJjzdf+6UukrI4p43GLoy9POmS
+         8gun2pp/R36jwlHbOFoGIOHZhBKOf4I1hgd3rvl+Foss2QtFRvkQXpMMfhr//FwCTCXX
+         6BInJZ0+QcgsxCwnWR9a8t/80gBEwEIND8zu0ca4JOi0qLDRH2uGkuCZqW0L0qD7Vagk
+         IcbA==
+X-Gm-Message-State: AOJu0Yw7+2yZGjwP2vlunag6u93GBZv/S1LAYdeo4nRgSSI4Iep3PNZO
+	+2bZ0jZBFb91s90rmhulZ/+L8w==
+X-Google-Smtp-Source: AGHT+IHF5zSXhAGcOI9AIkZshfFia5huQM56CGqHZFlyV5V3eI/TVjPw6Y6m+SE7x4iKtWD/m0z+kg==
+X-Received: by 2002:a05:620a:4891:b0:774:cf9:b206 with SMTP id ea17-20020a05620a489100b007740cf9b206mr19223447qkb.42.1703128761561;
+        Wed, 20 Dec 2023 19:19:21 -0800 (PST)
 Received: from soleen.c.googlers.com.com (55.87.194.35.bc.googleusercontent.com. [35.194.87.55])
-        by smtp.gmail.com with ESMTPSA id m18-20020a05620a221200b0077d85695db4sm371893qkh.99.2023.12.20.19.19.19
+        by smtp.gmail.com with ESMTPSA id m18-20020a05620a221200b0077d85695db4sm371893qkh.99.2023.12.20.19.19.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Dec 2023 19:19:19 -0800 (PST)
+        Wed, 20 Dec 2023 19:19:21 -0800 (PST)
 From: Pasha Tatashin <pasha.tatashin@soleen.com>
 To: akpm@linux-foundation.org,
 	linux-mm@kvack.org,
@@ -69,9 +69,9 @@ To: akpm@linux-foundation.org,
 	will@kernel.org,
 	robin.murphy@arm.com,
 	iommu@lists.linux.dev
-Subject: [RFC 2/3] iommu/intel: synchronize page table map and unmap operations
-Date: Thu, 21 Dec 2023 03:19:14 +0000
-Message-ID: <20231221031915.619337-3-pasha.tatashin@soleen.com>
+Subject: [RFC 3/3] iommu/intel: free empty page tables on unmaps
+Date: Thu, 21 Dec 2023 03:19:15 +0000
+Message-ID: <20231221031915.619337-4-pasha.tatashin@soleen.com>
 X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
 In-Reply-To: <20231221031915.619337-1-pasha.tatashin@soleen.com>
 References: <20231221031915.619337-1-pasha.tatashin@soleen.com>
@@ -83,140 +83,188 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Since, we are going to update  parent page table entries when lower
-level page tables become emtpy and we add them to the free list.
-We need a way to synchronize the operation.
+When page tables become empty, add them to the freelist so that they
+can also be freed.
 
-Use domain->pgd_lock to protect all map and unmap operations.
-This is reader/writer lock. At the beginning everything is going to be
-read only mode, however, later, when free page table on unmap is added
-we will add a writer section as well.
+This is means that a page tables that are outside of the imediat iova
+range might be freed as well, therefore, only in the case where such
+page tables are going to be freed, we take the writer lock.
 
 Signed-off-by: Pasha Tatashin <pasha.tatashin@soleen.com>
 ---
- drivers/iommu/intel/iommu.c | 21 +++++++++++++++++++--
- drivers/iommu/intel/iommu.h |  3 +++
- 2 files changed, 22 insertions(+), 2 deletions(-)
+ drivers/iommu/intel/iommu.c | 92 +++++++++++++++++++++++++++++++------
+ 1 file changed, 78 insertions(+), 14 deletions(-)
 
 diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-index 4688ef797161..733f25b277a3 100644
+index 733f25b277a3..141dc106fb01 100644
 --- a/drivers/iommu/intel/iommu.c
 +++ b/drivers/iommu/intel/iommu.c
-@@ -1082,11 +1082,13 @@ static void dma_pte_free_pagetable(struct dmar_domain *domain,
- 				   unsigned long last_pfn,
- 				   int retain_level)
+@@ -1130,7 +1130,7 @@ static void dma_pte_list_pagetables(struct dmar_domain *domain,
+ static void dma_pte_clear_level(struct dmar_domain *domain, int level,
+ 				struct dma_pte *pte, unsigned long pfn,
+ 				unsigned long start_pfn, unsigned long last_pfn,
+-				struct list_head *freelist)
++				struct list_head *freelist, int *freed_level)
  {
-+	read_lock(&domain->pgd_lock);
- 	dma_pte_clear_range(domain, start_pfn, last_pfn);
+ 	struct dma_pte *first_pte = NULL, *last_pte = NULL;
  
- 	/* We don't need lock here; nobody else touches the iova range */
- 	dma_pte_free_level(domain, agaw_to_level(domain->agaw), retain_level,
- 			   domain->pgd, 0, start_pfn, last_pfn);
-+	read_unlock(&domain->pgd_lock);
- 
- 	/* free pgd */
- 	if (start_pfn == 0 && last_pfn == DOMAIN_MAX_PFN(domain->gaw)) {
-@@ -1179,9 +1181,11 @@ static void domain_unmap(struct dmar_domain *domain, unsigned long start_pfn,
+@@ -1156,11 +1156,48 @@ static void dma_pte_clear_level(struct dmar_domain *domain, int level,
+ 				first_pte = pte;
+ 			last_pte = pte;
+ 		} else if (level > 1) {
++			struct dma_pte *npte = phys_to_virt(dma_pte_addr(pte));
++			struct page *npage = virt_to_page(npte);
++
+ 			/* Recurse down into a level that isn't *entirely* obsolete */
+-			dma_pte_clear_level(domain, level - 1,
+-					    phys_to_virt(dma_pte_addr(pte)),
++			dma_pte_clear_level(domain, level - 1, npte,
+ 					    level_pfn, start_pfn, last_pfn,
+-					    freelist);
++					    freelist, freed_level);
++
++			/*
++			 * Free next level page table if it became empty.
++			 *
++			 * We only holding the reader lock, and it is possible
++			 * that other threads are accessing page table as
++			 * readers as well. We can only free page table that
++			 * is outside of the request IOVA space only if
++			 * we grab the writer lock. Since we need to drop reader
++			 * lock, we are incrementing the refcount in the npage
++			 * so it (and the current page table) does not
++			 * dissappear due to concurrent unmapping threads.
++			 *
++			 * Store the size maximum size of the freed page table
++			 * into freed_level, so the size of the IOTLB flush
++			 * can be determined.
++			 */
++			if (freed_level && page_count(npage) == 1) {
++				page_ref_inc(npage);
++				read_unlock(&domain->pgd_lock);
++				write_lock(&domain->pgd_lock);
++				if (page_count(npage) == 2) {
++					dma_clear_pte(pte);
++
++					if (!first_pte)
++						first_pte = pte;
++
++					last_pte = pte;
++					list_add_tail(&npage->lru, freelist);
++					*freed_level = level;
++				}
++				write_unlock(&domain->pgd_lock);
++				read_lock(&domain->pgd_lock);
++				page_ref_dec(npage);
++			}
+ 		}
+ next:
+ 		pfn = level_pfn + level_size(level);
+@@ -1175,7 +1212,8 @@ static void dma_pte_clear_level(struct dmar_domain *domain, int level,
+    the page tables, and may have cached the intermediate levels. The
+    pages can only be freed after the IOTLB flush has been done. */
+ static void domain_unmap(struct dmar_domain *domain, unsigned long start_pfn,
+-			 unsigned long last_pfn, struct list_head *freelist)
++			 unsigned long last_pfn, struct list_head *freelist,
++			 int *level)
+ {
+ 	if (WARN_ON(!domain_pfn_supported(domain, last_pfn)) ||
  	    WARN_ON(start_pfn > last_pfn))
- 		return;
- 
-+	read_lock(&domain->pgd_lock);
+@@ -1184,7 +1222,8 @@ static void domain_unmap(struct dmar_domain *domain, unsigned long start_pfn,
+ 	read_lock(&domain->pgd_lock);
  	/* we don't need lock here; nobody else touches the iova range */
  	dma_pte_clear_level(domain, agaw_to_level(domain->agaw),
- 			    domain->pgd, 0, start_pfn, last_pfn, freelist);
-+	read_unlock(&domain->pgd_lock);
+-			    domain->pgd, 0, start_pfn, last_pfn, freelist);
++			    domain->pgd, 0, start_pfn, last_pfn, freelist,
++			    level);
+ 	read_unlock(&domain->pgd_lock);
  
  	/* free pgd */
- 	if (start_pfn == 0 && last_pfn == DOMAIN_MAX_PFN(domain->gaw)) {
-@@ -2217,6 +2221,7 @@ __domain_mapping(struct dmar_domain *domain, unsigned long iov_pfn,
+@@ -1524,11 +1563,11 @@ static void domain_flush_pasid_iotlb(struct intel_iommu *iommu,
  
- 	pteval = ((phys_addr_t)phys_pfn << VTD_PAGE_SHIFT) | attr;
+ static void iommu_flush_iotlb_psi(struct intel_iommu *iommu,
+ 				  struct dmar_domain *domain,
+-				  unsigned long pfn, unsigned int pages,
++				  unsigned long pfn, unsigned long pages,
+ 				  int ih, int map)
+ {
+-	unsigned int aligned_pages = __roundup_pow_of_two(pages);
+-	unsigned int mask = ilog2(aligned_pages);
++	unsigned long aligned_pages = __roundup_pow_of_two(pages);
++	unsigned long mask = ilog2(aligned_pages);
+ 	uint64_t addr = (uint64_t)pfn << VTD_PAGE_SHIFT;
+ 	u16 did = domain_id_iommu(domain, iommu);
  
-+	read_lock(&domain->pgd_lock);
- 	while (nr_pages > 0) {
- 		uint64_t tmp;
+@@ -1872,7 +1911,8 @@ static void domain_exit(struct dmar_domain *domain)
+ 	if (domain->pgd) {
+ 		LIST_HEAD(freelist);
  
-@@ -2226,8 +2231,10 @@ __domain_mapping(struct dmar_domain *domain, unsigned long iov_pfn,
- 
- 			pte = pfn_to_dma_pte(domain, iov_pfn, &largepage_lvl,
- 					     gfp);
--			if (!pte)
-+			if (!pte) {
-+				read_unlock(&domain->pgd_lock);
- 				return -ENOMEM;
-+			}
- 			first_pte = pte;
- 
- 			lvl_pages = lvl_to_nr_pages(largepage_lvl);
-@@ -2287,6 +2294,7 @@ __domain_mapping(struct dmar_domain *domain, unsigned long iov_pfn,
- 			pte = NULL;
- 		}
+-		domain_unmap(domain, 0, DOMAIN_MAX_PFN(domain->gaw), &freelist);
++		domain_unmap(domain, 0, DOMAIN_MAX_PFN(domain->gaw), &freelist,
++			     NULL);
+ 		put_pages_list(&freelist);
  	}
-+	read_unlock(&domain->pgd_lock);
  
- 	return 0;
- }
-@@ -4013,6 +4021,7 @@ static int md_domain_init(struct dmar_domain *domain, int guest_width)
- 	domain->pgd = alloc_pgtable_page(domain->nid, GFP_ATOMIC);
- 	if (!domain->pgd)
- 		return -ENOMEM;
-+	rwlock_init(&domain->pgd_lock);
- 	domain_flush_cache(domain, domain->pgd, PAGE_SIZE);
- 	return 0;
- }
-@@ -4247,11 +4256,15 @@ static size_t intel_iommu_unmap(struct iommu_domain *domain,
+@@ -3579,7 +3619,8 @@ static int intel_iommu_memory_notifier(struct notifier_block *nb,
+ 			struct intel_iommu *iommu;
+ 			LIST_HEAD(freelist);
+ 
+-			domain_unmap(si_domain, start_vpfn, last_vpfn, &freelist);
++			domain_unmap(si_domain, start_vpfn, last_vpfn,
++				     &freelist, NULL);
+ 
+ 			rcu_read_lock();
+ 			for_each_active_iommu(iommu, drhd)
+@@ -4253,6 +4294,7 @@ static size_t intel_iommu_unmap(struct iommu_domain *domain,
+ 				struct iommu_iotlb_gather *gather)
+ {
+ 	struct dmar_domain *dmar_domain = to_dmar_domain(domain);
++	bool queued = iommu_iotlb_gather_queued(gather);
  	unsigned long start_pfn, last_pfn;
  	int level = 0;
  
-+	read_lock(&dmar_domain->pgd_lock);
- 	/* Cope with horrid API which requires us to unmap more than the
- 	   size argument if it happens to be a large-page mapping. */
- 	if (unlikely(!pfn_to_dma_pte(dmar_domain, iova >> VTD_PAGE_SHIFT,
--				     &level, GFP_ATOMIC)))
-+				     &level, GFP_ATOMIC))) {
-+		read_unlock(&dmar_domain->pgd_lock);
- 		return 0;
-+	}
-+	read_unlock(&dmar_domain->pgd_lock);
+@@ -4272,7 +4314,16 @@ static size_t intel_iommu_unmap(struct iommu_domain *domain,
+ 	start_pfn = iova >> VTD_PAGE_SHIFT;
+ 	last_pfn = (iova + size - 1) >> VTD_PAGE_SHIFT;
  
- 	if (size < VTD_PAGE_SIZE << level_to_offset_bits(level))
- 		size = VTD_PAGE_SIZE << level_to_offset_bits(level);
-@@ -4315,8 +4328,10 @@ static phys_addr_t intel_iommu_iova_to_phys(struct iommu_domain *domain,
- 	int level = 0;
- 	u64 phys = 0;
+-	domain_unmap(dmar_domain, start_pfn, last_pfn, &gather->freelist);
++	/*
++	 * pass level only if !queued, which means we will do iotlb
++	 * flush callback before freeing pages from freelist.
++	 *
++	 * When level is passed domain_unamp will attempt to add empty
++	 * page tables to freelist, and pass the level number of the highest
++	 * page table that was added to the freelist.
++	 */
++	domain_unmap(dmar_domain, start_pfn, last_pfn, &gather->freelist,
++		     queued ? NULL : &level);
  
-+	read_lock(&dmar_domain->pgd_lock);
- 	pte = pfn_to_dma_pte(dmar_domain, iova >> VTD_PAGE_SHIFT, &level,
- 			     GFP_ATOMIC);
-+	read_unlock(&dmar_domain->pgd_lock);
- 	if (pte && dma_pte_present(pte))
- 		phys = dma_pte_addr(pte) +
- 			(iova & (BIT_MASK(level_to_offset_bits(level) +
-@@ -4919,8 +4934,10 @@ static int intel_iommu_read_and_clear_dirty(struct iommu_domain *domain,
- 		struct dma_pte *pte;
- 		int lvl = 0;
- 
-+		read_lock(&dmar_domain->pgd_lock);
- 		pte = pfn_to_dma_pte(dmar_domain, iova >> VTD_PAGE_SHIFT, &lvl,
- 				     GFP_ATOMIC);
-+		read_unlock(&dmar_domain->pgd_lock);
- 		pgsize = level_size(lvl) << VTD_PAGE_SHIFT;
- 		if (!pte || !dma_pte_present(pte)) {
- 			iova += pgsize;
-diff --git a/drivers/iommu/intel/iommu.h b/drivers/iommu/intel/iommu.h
-index f1ea508f45bd..cb0577ec5166 100644
---- a/drivers/iommu/intel/iommu.h
-+++ b/drivers/iommu/intel/iommu.h
-@@ -618,6 +618,9 @@ struct dmar_domain {
- 		struct {
- 			/* virtual address */
- 			struct dma_pte	*pgd;
+ 	if (dmar_domain->max_addr == iova + size)
+ 		dmar_domain->max_addr = iova;
+@@ -4281,8 +4332,21 @@ static size_t intel_iommu_unmap(struct iommu_domain *domain,
+ 	 * We do not use page-selective IOTLB invalidation in flush queue,
+ 	 * so there is no need to track page and sync iotlb.
+ 	 */
+-	if (!iommu_iotlb_gather_queued(gather))
+-		iommu_iotlb_gather_add_page(domain, gather, iova, size);
++	if (!queued) {
++		size_t sz = size;
 +
-+			/* Synchronizes pgd map/unmap operations */
-+			rwlock_t	pgd_lock;
- 			/* max guest address width */
- 			int		gaw;
- 			/*
++		/*
++		 * Increase iova and sz for flushing if level was returned,
++		 * as it means we also are freeing some page tables.
++		 */
++		if (level) {
++			unsigned long pgsize = level_size(level) << VTD_PAGE_SHIFT;
++
++			iova = ALIGN_DOWN(iova, pgsize);
++			sz = ALIGN(size, pgsize);
++		}
++		iommu_iotlb_gather_add_page(domain, gather, iova, sz);
++	}
+ 
+ 	return size;
+ }
 -- 
 2.43.0.472.g3155946c3a-goog
 
