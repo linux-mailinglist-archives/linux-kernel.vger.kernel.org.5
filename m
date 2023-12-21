@@ -1,124 +1,129 @@
-Return-Path: <linux-kernel+bounces-7715-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7716-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9ECC281AC0B
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 02:15:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B59B481AC11
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 02:18:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 624801F21138
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 01:15:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 565B1B24124
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 01:18:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A7E3187E;
-	Thu, 21 Dec 2023 01:15:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C65BE7484;
+	Thu, 21 Dec 2023 01:17:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="Zku1rCNH"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EAF015B7;
-	Thu, 21 Dec 2023 01:15:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4SwXYL0mjyz4f3k5n;
-	Thu, 21 Dec 2023 09:15:34 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.252])
-	by mail.maildlp.com (Postfix) with ESMTP id 7A1F91A0180;
-	Thu, 21 Dec 2023 09:15:35 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP3 (Coremail) with SMTP id _Ch0CgD3fr2zkYNl5e2LEA--.23425S2;
-	Thu, 21 Dec 2023 09:15:32 +0800 (CST)
-Subject: Re: BUG: unable to handle kernel paging request in
- bpf_probe_read_compat_str
-To: Yonghong Song <yonghong.song@linux.dev>,
- xingwei lee <xrivendell7@gmail.com>
-Cc: ast@kernel.org, jolsa@kernel.org, daniel@iogearbox.net,
- john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
- haoluo@google.com, rostedt@goodmis.org, mhiramat@kernel.org,
- mathieu.desnoyers@efficios.com, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- song@kernel.org
-References: <CABOYnLynjBoFZOf3Z4BhaZkc5hx_kHfsjiW+UWLoB=w33LvScw@mail.gmail.com>
- <cde2ebc4-7e7d-56be-5f08-6d261142189e@huaweicloud.com>
- <2327d4aa-68f5-48d4-9296-7d5df15502b1@linux.dev>
-From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <6568a839-be3c-6898-4e56-95436ea18069@huaweicloud.com>
-Date: Thu, 21 Dec 2023 09:15:31 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DAB463A1;
+	Thu, 21 Dec 2023 01:17:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1703121469;
+	bh=ImrbhovL+zpeBkOo5ww6KMLF2TXyWi5NzTB91XFg0FU=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=Zku1rCNHdOHu2kfJq0PZb3nW1Wvv5o7zGzUt1VP0wwXSnYq1EhrS+yKiWmGUGmI2f
+	 ZRIAGoqO5qYTdTxVPGcnVInh4htXbPr9nNwchIxbFD+tra2bkmFFOdsEELCzcuVNtq
+	 jWrXgTiSouX39aZwiOGoIN2/1hMvmGAS/z+H+M/ggKrUSGfOpwLvVzDcEKIGsK6REY
+	 cJSqdnClPzcOFqLvRDgoxBTkVKNYw603AOHpIC8WnVZYAz4vXAgwQiDButAv7yXS8U
+	 mkqHjDFDXtyjQtAISBpsbs/qB46I2qVRoy2ERidDRcgcZOeoB1FqTE0hur4imw6Mgt
+	 k3wJBHvTQKWhA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4SwXbx1DM4z4wd0;
+	Thu, 21 Dec 2023 12:17:49 +1100 (AEDT)
+Date: Thu, 21 Dec 2023 12:17:45 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc: Fabio Estevam <festevam@denx.de>, Zhang Rui <rui.zhang@intel.com>, Linux
+ Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the thermal tree
+Message-ID: <20231221121745.2771ab8a@canb.auug.org.au>
+In-Reply-To: <c2a170ea-39e8-49bf-9aeb-60eb20a22454@linaro.org>
+References: <20231219103457.4e034e9a@canb.auug.org.au>
+	<68012fb93e0057f62c03a5d9b01237c4@denx.de>
+	<c2a170ea-39e8-49bf-9aeb-60eb20a22454@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <2327d4aa-68f5-48d4-9296-7d5df15502b1@linux.dev>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-CM-TRANSID:_Ch0CgD3fr2zkYNl5e2LEA--.23425S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7AFyfJF1Dur18XrW7XFyUAwb_yoW8Ar1rp3
-	y5Ga9YyrZ8Xr1xAws7t348Xa4Ivw4fGa15WrW8try7u3s09rnaya1vvay3CrZIqr10gF4x
-	trs0qa9Igr1UXrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv2b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
-	07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
-	02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_
-	WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
-	CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAF
-	wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
-	7IU1zuWJUUUUU==
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+Content-Type: multipart/signed; boundary="Sig_/Pwu/KAh5DGTsDjKpWgLYzm4";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-Hi,
+--Sig_/Pwu/KAh5DGTsDjKpWgLYzm4
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-On 12/21/2023 1:50 AM, Yonghong Song wrote:
->
-> On 12/20/23 1:19 AM, Hou Tao wrote:
->> Hi,
->>
->> On 12/14/2023 11:40 AM, xingwei lee wrote:
->>> Hello I found a bug in net/bpf in the lastest upstream linux and
->>> comfired in the lastest net tree and lastest net bpf titled BUG:
->>> unable to handle kernel paging request in bpf_probe_read_compat_str
->>>
->>> If you fix this issue, please add the following tag to the commit:
->>> Reported-by: xingwei Lee <xrivendell7@gmail.com>
->>>
->>> kernel: net 9702817384aa4a3700643d0b26e71deac0172cfd / bpf
->>> 2f2fee2bf74a7e31d06fc6cb7ba2bd4dd7753c99
->>> Kernel config:
->>> https://syzkaller.appspot.com/text?tag=KernelConfig&x=b50bd31249191be8
->>>
->>> in the lastest bpf tree, the crash like:
->>>
->>> TITLE: BUG: unable to handle kernel paging request in
->>> bpf_probe_read_compat_str
->>> CORRUPTED: false ()
->>> MAINTAINERS (TO): [akpm@linux-foundation.org linux-mm@kvack.org]
->>> MAINTAINERS (CC): [linux-kernel@vger.kernel.org]
->>>
->>> BUG: unable to handle page fault for address: ff0
->> Thanks for the report and reproducer. The output is incomplete. It
->> should be: "BUG: unable to handle page fault for address:
->> ffffffffff600000". The address is a vsyscall address, so
->> handle_page_fault() considers that the fault address is in userspace
->> instead of kernel space, and there will be no fix-up for the exception
->> and oops happened. Will post a fix and a selftest for it.
->
-> There is a proposed fix here:
->
-> https://lore.kernel.org/bpf/87r0jwquhv.ffs@tglx/
->
-> Not sure the fix in the above link is merged to some upstream branch
-> or not.
+Hi Daniel,
 
-It seems it has not been merged. will ping Thomas later.
+On Tue, 19 Dec 2023 18:59:14 +0100 Daniel Lezcano <daniel.lezcano@linaro.or=
+g> wrote:
+>
+> On 19/12/2023 03:10, Fabio Estevam wrote:
+> >=20
+> > On 18/12/2023 20:34, Stephen Rothwell wrote: =20
+> >> Hi all,
+> >>
+> >> After merging the thermal tree, today's linux-next build (x86_64
+> >> allmodconfig) failed like this:
+> >>
+> >> ERROR: modpost: "__hw_protection_shutdown"
+> >> [drivers/platform/chrome/cros_ec_lpcs.ko] undefined!
+> >>
+> >> Caused by commit
+> >>
+> >> =C2=A0 726edaad90f6 ("thermal/core: Prepare for introduction of therma=
+l >> reboot") =20
+> >=20
+> > Thanks for reporting.
+> >=20
+> > Daniel,
+> >=20
+> > Could you please squash the following fix to the commit above?
+> >=20
+> > diff --git a/kernel/reboot.c b/kernel/reboot.c
+> > index 07eb6537ed8b..f814568525f1 100644
+> > --- a/kernel/reboot.c
+> > +++ b/kernel/reboot.c
+> > @@ -1002,6 +1002,7 @@ void __hw_protection_shutdown(const char *reason,=
+ > int ms_until_forced, bool shut
+> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (shutdown)
+> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 orderly_poweroff(true);
+> >  =C2=A0}
+> > +EXPORT_SYMBOL_GPL(__hw_protection_shutdown); =20
+>=20
+> Yeah, I've done it
 
+Forgot to push out?
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/Pwu/KAh5DGTsDjKpWgLYzm4
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmWDkjkACgkQAVBC80lX
+0GwiuQf/WHt1ViM+2dq8s9X1CmgWhoAFblnctgEGXTq8oeyjwtfvHKtGTJGKf3wS
+AellQ835ruI8IH8HyHgnGF9z1oa6/zz8L0GbiwS9ttJrAsnQZ34JsU+wKnYYvj7a
+1/dEeLE7UdQz1GlVe8z70Sf5FM8Xt5SdsTeVgjDsgayYiqGNT+R5qrGK3Cwx91O/
+XIlcPXfqtpc4btmvcryrgnvKUEZQWDe5ghL9kbc5/hxwcC8wRo9Fxexg//RP/jCv
+9zlQBf5FmcGSaX35rm9wZB63msPZicciP78ViRftkLH1yyNpKF0JrtCr8gdX2udA
+nqB86w9hOuwFqavF1d1Nsx+i7+CFCg==
+=6+mI
+-----END PGP SIGNATURE-----
+
+--Sig_/Pwu/KAh5DGTsDjKpWgLYzm4--
 
