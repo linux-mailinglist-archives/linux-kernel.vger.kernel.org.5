@@ -1,108 +1,111 @@
-Return-Path: <linux-kernel+bounces-8716-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8717-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9EBBB81BB62
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 16:55:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 04AFA81BB66
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 16:57:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5AB262811B7
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 15:55:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AD79E282E63
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 15:57:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83CF855E47;
-	Thu, 21 Dec 2023 15:55:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DCBB55E4D;
+	Thu, 21 Dec 2023 15:57:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mnHjE07U"
+	dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b="p8MjdsOc"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6AEF53A1D
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 15:55:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C32DC433C9;
-	Thu, 21 Dec 2023 15:55:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703174140;
-	bh=oYeU6vuYtU1xXqhDf4oLE8y9AeEh1sjx1Oz8lnC92vM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=mnHjE07UhFwc1hEL4I5XEOg7CsoeSyJveoyJZMzxO2vop/iaZvDtejcVqxhqQ7qQG
-	 R1yDpgSBLVtz+Fz7Mgfzwzkn9qIEoGy0Xwrcj4qbRAgykP0v4dZxZ6lfk7lBlyOrzJ
-	 C/Swfws8TeaOWJ5qiOB6eHcB1/Cu3P8MFUs6VNr5d03x50BvM/wxY3Imj+UYfeAtiD
-	 FCKO9sN7DZq2EEpgHj015kRSdDB4PoIAbQw9Vb3pJJGoZobisBwGqDztuxhVqFfisG
-	 dY/7Vmj1h/dAARIi4V2oycBQ24VshUH8Q3josZz9l0A/Ef6BT+B0L2saEKBzHoA2nO
-	 Jf1XPqpG/Phiw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-	id B1233403EF; Thu, 21 Dec 2023 12:55:37 -0300 (-03)
-Date: Thu, 21 Dec 2023 12:55:37 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Jing Zhang <renyu.zj@linux.alibaba.com>
-Cc: kajoljain <kjain@linux.ibm.com>,
-	Sukadev Bhattiprolu <sukadev@linux.vnet.ibm.com>,
-	Ian Rogers <irogers@google.com>, Heiko Carstens <hca@linux.ibm.com>,
-	Thomas Richter <tmricht@linux.ibm.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
-	linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH] perf vendor events: Remove UTF-8 characters from cmn.json
-Message-ID: <ZYRf-ZYIifg8InFJ@kernel.org>
-References: <1703138593-50486-1-git-send-email-renyu.zj@linux.alibaba.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59B6B539FD;
+	Thu, 21 Dec 2023 15:56:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hugovil.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
+	; s=x; h=Subject:Content-Transfer-Encoding:Mime-Version:Message-Id:Cc:To:From
+	:Date:subject:date:message-id:reply-to;
+	bh=JCLYMxeRwt5JrQfRfdHodCm2prGrLkM65PPIWmowE3A=; b=p8MjdsOcSA6R1jyYUyjMYwdd1/
+	9tgAI41l716pDbFL0Btga1Klf/Cp9g9+ttKFa2UCs45kM0l7qqWiz3VLtaMgPbPa1N+y1TIZBPeZk
+	9tNo5RX7PiQc5u3PWtxZaca2IBuyF5EAO182otm24gXTcxGqx//pjmQEanincCvqUtpE=;
+Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:49388 helo=pettiford)
+	by mail.hugovil.com with esmtpa (Exim 4.92)
+	(envelope-from <hugo@hugovil.com>)
+	id 1rGLPb-0006IC-LX; Thu, 21 Dec 2023 10:56:40 -0500
+Date: Thu, 21 Dec 2023 10:56:39 -0500
+From: Hugo Villeneuve <hugo@hugovil.com>
+To: Andy Shevchenko <andriy.shevchenko@intel.com>
+Cc: gregkh@linuxfoundation.org, jirislaby@kernel.org, jringle@gridpoint.com,
+ kubakici@wp.pl, phil@raspberrypi.org, bo.svangard@embeddedart.se,
+ linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org, Hugo Villeneuve
+ <hvilleneuve@dimonoff.com>, stable@vger.kernel.org, Yury Norov
+ <yury.norov@gmail.com>
+Message-Id: <20231221105639.17910de5e7d7a486834bd856@hugovil.com>
+In-Reply-To: <ZYMK-l03S86Nw19I@smile.fi.intel.com>
+References: <20231219171903.3530985-1-hugo@hugovil.com>
+	<20231219171903.3530985-3-hugo@hugovil.com>
+	<ZYMK-l03S86Nw19I@smile.fi.intel.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1703138593-50486-1-git-send-email-renyu.zj@linux.alibaba.com>
-X-Url: http://acmel.wordpress.com
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 70.80.174.168
+X-SA-Exim-Mail-From: hugo@hugovil.com
+X-Spam-Level: 
+X-Spam-Report: 
+	* -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+	* -0.0 T_SCC_BODY_TEXT_LINE No description available.
+	* -3.8 NICE_REPLY_A Looks like a legit reply (A)
+Subject: Re: [PATCH 02/18] serial: sc16is7xx: fix invalid sc16is7xx_lines
+ bitfield in case of probe error
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 
-Em Thu, Dec 21, 2023 at 02:03:13PM +0800, Jing Zhang escreveu:
-> cmn.json contains UTF-8 characters in brief description which
-> could break the perf build on some distros.
-> 
-> Fix this issue by removing the UTF-8 characters from cmn.json.
-> 
-> without the fix:
-> $find tools/perf/pmu-events/ -name "*.json" | xargs file -i | grep -v us-ascii
-> tools/perf/pmu-events/arch/arm64/arm/cmn/sys/cmn.json:                   application/json; charset=utf-8
-> 
-> with the fix:
-> $file -i tools/perf/pmu-events/arch/arm64/arm/cmn/sys/cmn.json
-> tools/perf/pmu-events/arch/arm64/arm/cmn/sys/cmn.json: text/plain; charset=us-ascii
+On Wed, 20 Dec 2023 17:40:42 +0200
+Andy Shevchenko <andriy.shevchenko@intel.com> wrote:
 
-Thanks, applied!
-
-- Arnaldo
- 
-> Fixes: 0b4de7bdf46c5215 ("perf jevents: Add support for Arm CMN PMU aliasing")
-> Reported-by: Arnaldo Carvalho de Melo <acme@kernel.com>
-> Signed-off-by: Jing Zhang <renyu.zj@linux.alibaba.com>
-> ---
->  tools/perf/pmu-events/arch/arm64/arm/cmn/sys/cmn.json | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> On Tue, Dec 19, 2023 at 12:18:46PM -0500, Hugo Villeneuve wrote:
+> > From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+> > 
+> > If an error occurs during probing, the sc16is7xx_lines bitfield may be left
+> > in a state that doesn't represent the correct state of lines allocation.
+> > 
+> > For example, in a system with two SC16 devices, if an error occurs only
+> > during probing of channel (port) B of the second device, sc16is7xx_lines
+> > final state will be 00001011b instead of the expected 00000011b.
+> > 
+> > This is caused in part because of the "i--" in the for/loop located in
+> > the out_ports: error path.
+> > 
+> > Fix this by checking the return value of uart_add_one_port() and set line
+> > allocation bit only if this was successful. This allows the refactor of
+> > the obfuscated for(i--...) loop in the error path, and properly call
+> > uart_remove_one_port() only when needed, and properly unset line allocation
+> > bits.
+> > 
+> > Also use same mechanism in remove() when calling uart_remove_one_port().
 > 
-> diff --git a/tools/perf/pmu-events/arch/arm64/arm/cmn/sys/cmn.json b/tools/perf/pmu-events/arch/arm64/arm/cmn/sys/cmn.json
-> index 428605c..5ec157c 100644
-> --- a/tools/perf/pmu-events/arch/arm64/arm/cmn/sys/cmn.json
-> +++ b/tools/perf/pmu-events/arch/arm64/arm/cmn/sys/cmn.json
-> @@ -107,7 +107,7 @@
->  		"EventName": "hnf_qos_hh_retry",
->  		"EventidCode": "0xe",
->  		"NodeType": "0x5",
-> -		"BriefDescription": "Counts number of times a HighHigh priority request is protocolretried at the HN‑F.",
-> +		"BriefDescription": "Counts number of times a HighHigh priority request is protocolretried at the HN-F.",
->  		"Unit": "arm_cmn",
->  		"Compat": "(434|436|43c|43a).*"
->  	},
-> -- 
-> 1.8.3.1
-> 
+> Yes, this seems to be the correct one to fix the problem described in
+> the patch 1. I dunno why the patch 1 even exists.
 
--- 
+Hi,
+this will indeed fix the problem described in patch 1.
 
-- Arnaldo
+However, if I remove patch 1, and I simulate the same probe error as
+described in patch 1, now we get stuck forever when trying to 
+remove the driver. This is something that I observed before and
+that patch 1 also corrected.
+
+The problem is caused in sc16is7xx_remove() when calling this function
+
+    kthread_flush_worker(&s->kworker);
+
+I am not sure how best to handle that without patch 1.
+
+Hugo Villeneuve
 
