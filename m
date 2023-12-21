@@ -1,310 +1,308 @@
-Return-Path: <linux-kernel+bounces-8208-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8209-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D10881B3AA
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 11:33:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1004581B3AC
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 11:34:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B1E8C1C24592
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 10:33:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 349C31C23545
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 10:34:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E4336E2A1;
-	Thu, 21 Dec 2023 10:32:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 280926E5AF;
+	Thu, 21 Dec 2023 10:32:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="Z1imS8EF"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="xVOO1AJj"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx08-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D3116DD0C;
-	Thu, 21 Dec 2023 10:32:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
-Received: from pps.filterd (m0369457.ppops.net [127.0.0.1])
-	by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3BLAIA5j023361;
-	Thu, 21 Dec 2023 11:31:56 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	selector1; bh=99YJf+8k0EOTgNd7hulokQbW66/Zhks58YSOFbxIzr4=; b=Z1
-	imS8EF3InYuxiSY/kECbMDOBUaFdAj9OnLX08a45a+Davt7scl4IJKmjKDxnESQK
-	kRuRGydvWcZEnY5rIIOqdRhkJEZUAQJrHAOakmLO/dXGHApOtasrpse71OlUG70a
-	GriChM/6p+fL4svvq/cvDCssFRKUxBQWwAy4a2mUXyrV0qu7N8pdaEo4M2MtEsZb
-	1B2XZutX4AyWnmTItSFp/dVyJZ7nbM7iySTJxEcQiwZBsYSbpuWnQ1JMcoC1eNR4
-	Q2xLPgj5Edq8ZbJ1kJLAAp/RxYEi066K57jPTQf2tJIbRflC4kLt2aY0MrSEJGhX
-	hl6lOeknqyk2/LU5k0UQ==
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3v3q8104mr-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 21 Dec 2023 11:31:56 +0100 (CET)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 0FEFD100053;
-	Thu, 21 Dec 2023 11:31:55 +0100 (CET)
-Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id EDF9524551B;
-	Thu, 21 Dec 2023 11:31:54 +0100 (CET)
-Received: from [10.201.21.240] (10.201.21.240) by SHFDAG1NODE1.st.com
- (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 21 Dec
- 2023 11:31:54 +0100
-Message-ID: <21f758cb-ae25-4d74-905c-0d4820f00070@foss.st.com>
-Date: Thu, 21 Dec 2023 11:31:53 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFB39675BC
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 10:32:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-5e840338607so4832457b3.2
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 02:32:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1703154745; x=1703759545; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=QH0RrHp3BbVq3x0TcnWEn70gx4fcFHG3l/rgwq9Zzao=;
+        b=xVOO1AJjClx6ZInQssG5VCKwRF4w3qH0es/wR3uGCPeIUvpzwOhZAjyPjSFjUXFtlU
+         oHOZKt4VD2DjT1GSbme8jvsfjWjhskGgDA/Xe82bup2M03ESEPLeDb6lr9yi25vIJiET
+         zUoxzrcs9LbrRAmcRHxWa1RlbcyxfsaoogS7ew6SLZZ8D3RzW8sWdOA0u32mTh6ZlzrR
+         8mF8y11INy6wkqj7aYRabshqkP4mLGueA0LlYCRXP2jilTIElqdxjICrw91BXXjv0eCI
+         VMfzbku/fqXTy4zTNGLxI9UTQiSQEnnjg9Y/lxPVlu1FYW4mDrS2C7UCis32cjsuqBjH
+         2M+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703154745; x=1703759545;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=QH0RrHp3BbVq3x0TcnWEn70gx4fcFHG3l/rgwq9Zzao=;
+        b=DHZ/iGpzUh3oqQaxhUDwDVIwlMEZuKGYPBw5GEZ0lBJeZxKPEKhm2S4Jjewv+6HrF8
+         vh7CxJ5s25rd6FWYUuPMWt58jDZH+5cjvKkqb1qJduvM56W+x+WG34Jfli98vlnlg40t
+         DjAs8ijz7WlOdlIg0TekfBU5qzkW4vh5j2w2hrt3b1yKRJLMEtBXp3LQCuaB4f79ap5o
+         ij2+pOcib99+BE1sISCeYUm/Mabh21MR1qeX4mfwOgOqbCechNVYgxb5hIG2ta3bLwtc
+         JYoI58nlBRD5Xh/Fm71zHepT+n3F9ac+yvW0Kk1YyN1iI68YyigOUvPeVxvi8Uv0wFpY
+         pFZg==
+X-Gm-Message-State: AOJu0Yxyf61pEdbP8LLsVweLJ79XfPg35Zt+ScGDw3CE2aicDgiZOH34
+	zGZdbQjU3hOWvbyiDilohgRKB7h5JHkZBc1fVObDtA==
+X-Google-Smtp-Source: AGHT+IEDCA6TTwRZViV0lqKVy39Uwh2vsaYqgEwFHnRhf+6Q177re6i4SkHhOtg0CPX6CtP0tEwle+bwjnGkABKknC8=
+X-Received: by 2002:a0d:e84c:0:b0:5e6:81f8:b2ea with SMTP id
+ r73-20020a0de84c000000b005e681f8b2eamr723855ywe.96.1703154744760; Thu, 21 Dec
+ 2023 02:32:24 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 1/2] clk: stm32: introduce clocks for STM32MP257
- platform
-Content-Language: en-US
-To: Stephen Boyd <sboyd@kernel.org>,
-        Alexandre Torgue
-	<alexandre.torgue@foss.st.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof
- Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Maxime Coquelin
-	<mcoquelin.stm32@gmail.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>
-CC: <linux-clk@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-References: <20231219130909.265091-1-gabriel.fernandez@foss.st.com>
- <20231219130909.265091-2-gabriel.fernandez@foss.st.com>
- <c98539f99030f174583d7ee36802b4b9.sboyd@kernel.org>
-From: Gabriel FERNANDEZ <gabriel.fernandez@foss.st.com>
-In-Reply-To: <c98539f99030f174583d7ee36802b4b9.sboyd@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE1.st.com
- (10.75.129.69)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-21_04,2023-12-20_01,2023-05-22_02
+References: <20231220133808.5654-1-quic_bibekkum@quicinc.com>
+ <20231220133808.5654-4-quic_bibekkum@quicinc.com> <CAA8EJpo8X+jfi20N9P7kUshxe6_7pwQe8G0Q02JDuB8ozH7hLA@mail.gmail.com>
+ <7b32b7a7-bc64-4102-a6bf-3c3fc8d979ac@quicinc.com>
+In-Reply-To: <7b32b7a7-bc64-4102-a6bf-3c3fc8d979ac@quicinc.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Thu, 21 Dec 2023 12:32:13 +0200
+Message-ID: <CAA8EJpo6LdBQm5q=r2+ETBwhKL3YkUsPDuzA2MGCqb-1R_9b7w@mail.gmail.com>
+Subject: Re: [PATCH v6 3/5] iommu/arm-smmu: introduction of ACTLR for custom
+ prefetcher settings
+To: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+Cc: will@kernel.org, robin.murphy@arm.com, joro@8bytes.org, 
+	konrad.dybcio@linaro.org, jsnitsel@redhat.com, quic_bjorande@quicinc.com, 
+	mani@kernel.org, quic_eberman@quicinc.com, robdclark@chromium.org, 
+	u.kleine-koenig@pengutronix.de, robh@kernel.org, vladimir.oltean@nxp.com, 
+	quic_pkondeti@quicinc.com, quic_molvera@quicinc.com, 
+	linux-arm-msm@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	iommu@lists.linux.dev, linux-kernel@vger.kernel.org, 
+	qipl.kernel.upstream@quicinc.com
+Content-Type: text/plain; charset="UTF-8"
 
+On Thu, 21 Dec 2023 at 12:02, Bibek Kumar Patro
+<quic_bibekkum@quicinc.com> wrote:
+>
+>
+>
+> On 12/21/2023 6:06 AM, Dmitry Baryshkov wrote:
+> > On Wed, 20 Dec 2023 at 15:39, Bibek Kumar Patro
+> > <quic_bibekkum@quicinc.com> wrote:
+> >>
+> >> Currently in Qualcomm  SoCs the default prefetch is set to 1 which allows
+> >> the TLB to fetch just the next page table. MMU-500 features ACTLR
+> >> register which is implementation defined and is used for Qualcomm SoCs
+> >> to have a custom prefetch setting enabling TLB to prefetch the next set
+> >> of page tables accordingly allowing for faster translations.
+> >>
+> >> ACTLR value is unique for each SMR (Stream matching register) and stored
+> >> in a pre-populated table. This value is set to the register during
+> >> context bank initialisation.
+> >>
+> >> Signed-off-by: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+> >> ---
+> >>   drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 45 ++++++++++++++++++++++
+> >>   drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h |  6 ++-
+> >>   drivers/iommu/arm/arm-smmu/arm-smmu.c      |  5 ++-
+> >>   drivers/iommu/arm/arm-smmu/arm-smmu.h      |  5 +++
+> >>   4 files changed, 58 insertions(+), 3 deletions(-)
+> >>
+> >> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+> >> index 20c9836d859b..1cefdd0ca110 100644
+> >> --- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+> >> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+> >> @@ -24,6 +24,12 @@
+> >>   #define CPRE                   (1 << 1)
+> >>   #define CMTLB                  (1 << 0)
+> >>
+> >> +struct actlr_config {
+> >> +       u16 sid;
+> >> +       u16 mask;
+> >> +       u32 actlr;
+> >> +};
+> >> +
+> >>   static struct qcom_smmu *to_qcom_smmu(struct arm_smmu_device *smmu)
+> >>   {
+> >>          return container_of(smmu, struct qcom_smmu, smmu);
+> >> @@ -215,9 +221,38 @@ static bool qcom_adreno_can_do_ttbr1(struct arm_smmu_device *smmu)
+> >>          return true;
+> >>   }
+> >>
+> >> +static void qcom_smmu_set_actlr(struct device *dev, struct arm_smmu_device *smmu, int cbndx,
+> >> +               const struct actlr_config *actlrcfg)
+> >> +{
+> >> +       struct arm_smmu_master_cfg *cfg = dev_iommu_priv_get(dev);
+> >> +       struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
+> >> +       struct arm_smmu_smr *smr;
+> >> +       u16 mask;
+> >> +       int idx;
+> >> +       u16 id;
+> >> +       int i;
+> >> +
+> >> +       for (; actlrcfg->sid || actlrcfg->mask || actlrcfg->actlr; actlrcfg++) {
+> >> +               id = actlrcfg->sid;
+> >> +               mask = actlrcfg->mask;
+> >> +
+> >> +               for_each_cfg_sme(cfg, fwspec, i, idx) {
+> >> +                       smr = &smmu->smrs[idx];
+> >> +                       if (smr_is_subset(smr, id, mask)) {
+> >> +                               arm_smmu_cb_write(smmu, cbndx, ARM_SMMU_CB_ACTLR,
+> >> +                                               actlrcfg->actlr);
+> >> +                               break;
+> >> +                       }
+> >> +               }
+> >> +       }
+> >> +}
+> >> +
+> >>   static int qcom_adreno_smmu_init_context(struct arm_smmu_domain *smmu_domain,
+> >>                  struct io_pgtable_cfg *pgtbl_cfg, struct device *dev)
+> >>   {
+> >> +       struct arm_smmu_device *smmu = smmu_domain->smmu;
+> >> +       struct qcom_smmu *qsmmu = to_qcom_smmu(smmu);
+> >> +       int cbndx = smmu_domain->cfg.cbndx;
+> >>          struct adreno_smmu_priv *priv;
+> >>
+> >>          smmu_domain->cfg.flush_walk_prefer_tlbiasid = true;
+> >> @@ -248,6 +283,9 @@ static int qcom_adreno_smmu_init_context(struct arm_smmu_domain *smmu_domain,
+> >>          priv->set_stall = qcom_adreno_smmu_set_stall;
+> >>          priv->resume_translation = qcom_adreno_smmu_resume_translation;
+> >>
+> >> +       if (qsmmu->data->actlrcfg_gfx)
+> >> +               qcom_smmu_set_actlr(dev, smmu, cbndx, qsmmu->data->actlrcfg_gfx);
+> >
+> > There was a feedback point against v4 that there can be more than two
+> > (apps + gpu) SMMU devices. No, we can not use additional compat
+> > strings, the SMMU units are compatible with each other.
+>
+> Just to understand better, did you mean if in the below check
+> [inside arm-smmu-qcom.c file during qcom_smmu_create()], "else" has two
+> things? (Currently adreno_impl for gpu smmu, else for only
+> apps smmu)
 
-On 12/20/23 23:16, Stephen Boyd wrote:
-> Quoting gabriel.fernandez@foss.st.com (2023-12-19 05:09:08)
->> diff --git a/drivers/clk/stm32/clk-stm32mp25.c b/drivers/clk/stm32/clk-stm32mp25.c
->> new file mode 100644
->> index 000000000000..313e022c6142
->> --- /dev/null
->> +++ b/drivers/clk/stm32/clk-stm32mp25.c
->> @@ -0,0 +1,1826 @@
->> +// SPDX-License-Identifier: GPL-2.0-only
->> +/*
->> + * Copyright (C) STMicroelectronics 2023 - All Rights Reserved
->> + * Author: Gabriel Fernandez <gabriel.fernandez@foss.st.com> for STMicroelectronics.
->> + */
->> +
->> +#include <linux/clk.h>
->> +#include <linux/of_address.h>
->> +#include <linux/platform_device.h>
->> +
->> +#include "clk-stm32-core.h"
->> +#include "reset-stm32.h"
->> +#include "stm32mp25_rcc.h"
->> +
->> +#include <dt-bindings/clock/st,stm32mp25-rcc.h>
->> +#include <dt-bindings/reset/st,stm32mp25-rcc.h>
->> +
->> +static const struct clk_parent_data adc12_src[] = {
->> +       { .name = "ck_flexgen_46" },
-> This is a new driver. Don't use .name here. Instead use .index or .hw
-> and if that can't work then use .fw_name.
-
-These parent clocks are managed by a secure world and exposed through SCMI.
-
-If I use .index or .fw_name, do I have to expose 122 clocks in my DT node ?
-
-This will significantly increase the size of the DT file
-
-             clock-names = "hse", "hsi", ..., "ck_scmi_stm500";
-             clocks = <&scmi_clk CK_SCMI_HSE>, <&scmi_clk CK_SCMI_HSI>,  
-... ,   <&scmi_clk CK_SCMI_STM500>;
+qcom,adreno-smmu is quite unique here, this is the only distinctive
+substring. We do not have such compat strings for any other of SMMU
+nodes.
 
 >
->> +       { .name = "ck_icn_ls_mcu" },
->> +};
->> +
->> +static const struct clk_parent_data adc3_src[] = {
->> +       { .name = "ck_flexgen_47" },
->> +       { .name = "ck_icn_ls_mcu" },
->> +       { .name = "ck_flexgen_46" },
->> +};
-> [...]
->> +static struct clk_stm32_composite ck_ker_usb3pciephy = {
->> +       .gate_id = GATE_USB3PCIEPHY,
->> +       .mux_id = MUX_USB3PCIEPHY,
->> +       .div_id = NO_STM32_DIV,
->> +       .hw.init = CLK_HW_INIT_PARENTS_DATA("ck_ker_usb3pciephy", usb3pciphy_src,
->> +                                           &clk_stm32_composite_ops, 0),
->> +};
->> +
->> +/* USB3 DRD */
->> +static struct clk_stm32_gate ck_icn_m_usb3dr = {
->> +       .gate_id = GATE_USB3DR,
->> +       .hw.init = CLK_HW_INIT("ck_icn_m_usb3dr", "ck_icn_hsl", &clk_stm32_gate_ops, 0),
->> +};
->> +
->> +static struct clk_stm32_gate ck_ker_usb2phy2 = {
->> +       .gate_id = GATE_USB3DR,
->> +       .hw.init = CLK_HW_INIT("ck_ker_usb2phy2", "ck_flexgen_58", &clk_stm32_gate_ops, 0),
->> +};
->> +
->> +/* USBTC */
->> +static struct clk_stm32_gate ck_icn_p_usbtc = {
->> +       .gate_id = GATE_USBTC,
->> +       .hw.init = CLK_HW_INIT("ck_icn_p_usbtc", "ck_icn_apb4", &clk_stm32_gate_ops, 0),
-> Please stop using strings to match parents, i.e. don't use CLK_HW_INIT.
+>           if (np && of_device_is_compatible(np, "qcom,adreno-smmu"))
+>                   impl = data->adreno_impl;
+>           else
+>                   impl = data->impl;
 >
->> +};
->> +
->> +static struct clk_stm32_gate ck_ker_usbtc = {
->> +       .gate_id = GATE_USBTC,
->> +       .hw.init = CLK_HW_INIT("ck_ker_usbtc", "ck_flexgen_35", &clk_stm32_gate_ops, 0),
->> +};
->> +
->> +/* VDEC / VENC */
->> +static struct clk_stm32_gate ck_icn_p_vdec = {
->> +       .gate_id = GATE_VDEC,
->> +       .hw.init = CLK_HW_INIT("ck_icn_p_vdec", "ck_icn_apb4", &clk_stm32_gate_ops, 0),
->> +};
->> +
->> +static struct clk_stm32_gate ck_icn_p_venc = {
->> +       .gate_id = GATE_VENC,
->> +       .hw.init = CLK_HW_INIT("ck_icn_p_venc", "ck_icn_apb4", &clk_stm32_gate_ops, 0),
->> +};
->> +
->> +/* VREF */
->> +static struct clk_stm32_gate ck_icn_p_vref = {
->> +       .gate_id = GATE_VREF,
->> +       .hw.init = CLK_HW_INIT("ck_icn_p_vref", "ck_icn_apb3", &clk_stm32_gate_ops, 0),
->> +};
->> +
->> +/* WWDG */
->> +static struct clk_stm32_gate ck_icn_p_wwdg1 = {
->> +       .gate_id = GATE_WWDG1,
->> +       .hw.init = CLK_HW_INIT("ck_icn_p_wwdg1", "ck_icn_apb3", &clk_stm32_gate_ops, 0),
->> +};
->> +
->> +static struct clk_stm32_gate ck_icn_p_wwdg2 = {
->> +       .gate_id = GATE_WWDG2,
->> +       .hw.init = CLK_HW_INIT("ck_icn_p_wwdg2", "ck_icn_ls_mcu", &clk_stm32_gate_ops, 0),
->> +};
->> +
->> +enum security_clk {
->> +       SECF_NONE,
-> What is the use of this single value enum?
-
-Yes, just a define is enough for the moment. I will have more 
-definitions in my next series to introduce
-
-security (clocks could be managed by a secure world or not).
-
->> +};
->> +
->> +static const struct clock_config stm32mp25_clock_cfg[] = {
->> +       STM32_GATE_CFG(CK_BUS_ETH1,             ck_icn_p_eth1,          SECF_NONE),
->> +       STM32_GATE_CFG(CK_BUS_ETH2,             ck_icn_p_eth2,          SECF_NONE),
-> [....]
->> +
->> +static const struct of_device_id stm32mp25_match_data[] = {
->> +       {
->> +               .compatible = "st,stm32mp25-rcc",
->> +               .data = &stm32mp25_data,
->> +       },
-> One line please:
+> > Please add
+> > matching between the smmu and particular actlr table using the IO
+> > address of the SMMU block.
+> >
 >
->   	{ .compatible = "st,stm32mp25-rcc", .data = &stm32mp25_data, },
+> The ACTLR table for each smmu will have A IO address attached, so based
+> on IO address we can apply ACTLR.
+> Is this your proposal((IMO hardcoding IO in driver won't be viable,
+> isn't it?), or in smmu DT we would need to set the IO?
 
-ok
+Unfortunately, I meant exactly that: hardcoding addresses of the SMMU
+register spaces. see drivers/gpu/drm/msm/dsi_cfg.c
+Then during device probe the driver can match the IO address to the
+list of the per-platform ACTLR tables and select the correct one.
+Then you don't even need a special actlrcfg_gfx. The GFX will fall
+into the main schema.
 
 >
->> +       { }
->> +};
->> +MODULE_DEVICE_TABLE(of, stm32mp25_match_data);
->> +
->> +static int get_clock_deps(struct device *dev)
-> What is the explanation for this function?
-
-It 's to manage the dependency with the SCMI clock driver.
-
-
->> +{
->> +       static const char * const clock_deps_name[] = {
->> +               "hsi", "hse", "msi", "lsi", "lse",
->> +       };
->> +       int i;
->> +
->> +       for (i = 0; i < ARRAY_SIZE(clock_deps_name); i++) {
->> +               struct clk *clk;
->> +
->> +               clk = of_clk_get_by_name(dev_of_node(dev), clock_deps_name[i]);
->> +               if (IS_ERR(clk))
->> +                       return PTR_ERR(clk);
->> +
->> +               clk_put(clk);
->> +       }
->> +
->> +       return 0;
->> +}
->> +
->> +static int stm32mp25_rcc_clocks_probe(struct platform_device *pdev)
->> +{
->> +       struct device *dev = &pdev->dev;
->> +       void __iomem *base;
->> +       int ret;
->> +
->> +       ret = get_clock_deps(dev);
->> +       if (ret)
->> +               return ret;
->> +
->> +       base = devm_of_iomap(dev, dev->of_node, 0, NULL);
-> Use platform device APIs.
 >
->> +       if (WARN_ON(IS_ERR(base)))
->> +               return PTR_ERR(base);
->> +
->> +       return stm32_rcc_init(dev, stm32mp25_match_data, base);
->> +}
->> +
->> +static int stm32mp25_rcc_clocks_remove(struct platform_device *pdev)
->> +{
->> +       struct device *dev = &pdev->dev;
->> +       struct device_node *child, *np = dev_of_node(dev);
->> +
->> +       for_each_available_child_of_node(np, child)
->> +               of_clk_del_provider(child);
-> Add the providers with devm?
-
-ok
-
-
+> Thanks & regards,
+> Bibek
 >
->> +
->> +       return 0;
->> +}
->> +
->> +static struct platform_driver stm32mp25_rcc_clocks_driver = {
->> +       .driver = {
->> +               .name = "stm32mp25_rcc",
->> +               .of_match_table = stm32mp25_match_data,
->> +       },
->> +       .probe = stm32mp25_rcc_clocks_probe,
->> +       .remove = stm32mp25_rcc_clocks_remove,
->> +};
->> +
->> +static int __init stm32mp25_clocks_init(void)
->> +{
->> +       return platform_driver_register(&stm32mp25_rcc_clocks_driver);
->> +}
->> +
->> +core_initcall(stm32mp25_clocks_init);
+> >> +
+> >>          return 0;
+> >>   }
+> >>
+> >> @@ -274,6 +312,13 @@ static const struct of_device_id qcom_smmu_client_of_match[] __maybe_unused = {
+> >>   static int qcom_smmu_init_context(struct arm_smmu_domain *smmu_domain,
+> >>                  struct io_pgtable_cfg *pgtbl_cfg, struct device *dev)
+> >>   {
+> >> +       struct arm_smmu_device *smmu = smmu_domain->smmu;
+> >> +       struct qcom_smmu *qsmmu = to_qcom_smmu(smmu);
+> >> +       int cbndx = smmu_domain->cfg.cbndx;
+> >> +
+> >> +       if (qsmmu->data->actlrcfg)
+> >> +               qcom_smmu_set_actlr(dev, smmu, cbndx, qsmmu->data->actlrcfg);
+> >> +
+> >
+> > One issue occured to me, while I was reviewing the patchset. The ACTLR
+> > settings are related to the whole SMMU setup, but we are applying them
+> > each time there is an SMMU context init (in other words, one per each
+> > domain). Is that correct? Or it's just that there is no better place
+> > for initialising the global register set? Would it be better to
+> > reprogram the ACTLR registers which are related just to this
+> > particular domain?
+> >
+> >>          smmu_domain->cfg.flush_walk_prefer_tlbiasid = true;
+> >>
+> >>          return 0;
+> >> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h
+> >> index f3b91963e234..cb4cb402c202 100644
+> >> --- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h
+> >> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h
+> >> @@ -1,6 +1,6 @@
+> >>   /* SPDX-License-Identifier: GPL-2.0-only */
+> >>   /*
+> >> - * Copyright (c) 2022, Qualcomm Innovation Center, Inc. All rights reserved.
+> >> + * Copyright (c) 2023, Qualcomm Innovation Center, Inc. All rights reserved.
+> >>    */
+> >>
+> >>   #ifndef _ARM_SMMU_QCOM_H
+> >> @@ -24,7 +24,11 @@ struct qcom_smmu_config {
+> >>          const u32 *reg_offset;
+> >>   };
+> >>
+> >> +struct actlr_config;
+> >> +
+> >>   struct qcom_smmu_match_data {
+> >> +       const struct actlr_config *actlrcfg;
+> >> +       const struct actlr_config *actlrcfg_gfx;
+> >>          const struct qcom_smmu_config *cfg;
+> >>          const struct arm_smmu_impl *impl;
+> >>          const struct arm_smmu_impl *adreno_impl;
+> >> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+> >> index d6d1a2a55cc0..0c7f700b27dd 100644
+> >> --- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
+> >> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+> >> @@ -990,9 +990,10 @@ static int arm_smmu_find_sme(struct arm_smmu_device *smmu, u16 id, u16 mask)
+> >>                   * expect simply identical entries for this case, but there's
+> >>                   * no harm in accommodating the generalisation.
+> >>                   */
+> >> -               if ((mask & smrs[i].mask) == mask &&
+> >> -                   !((id ^ smrs[i].id) & ~smrs[i].mask))
+> >> +
+> >> +               if (smr_is_subset(&smrs[i], id, mask))
+> >>                          return i;
+> >> +
+> >>                  /*
+> >>                   * If the new entry has any other overlap with an existing one,
+> >>                   * though, then there always exists at least one stream ID
+> >> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.h b/drivers/iommu/arm/arm-smmu/arm-smmu.h
+> >> index 703fd5817ec1..2e4f65412c6b 100644
+> >> --- a/drivers/iommu/arm/arm-smmu/arm-smmu.h
+> >> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu.h
+> >> @@ -501,6 +501,11 @@ static inline void arm_smmu_writeq(struct arm_smmu_device *smmu, int page,
+> >>                  writeq_relaxed(val, arm_smmu_page(smmu, page) + offset);
+> >>   }
+> >>
+> >> +static inline bool smr_is_subset(struct arm_smmu_smr *smrs, u16 id, u16 mask)
+> >> +{
+> >> +       return (mask & smrs->mask) == mask && !((id ^ smrs->id) & ~smrs->mask);
+> >> +}
+> >> +
+> >>   #define ARM_SMMU_GR0           0
+> >>   #define ARM_SMMU_GR1           1
+> >>   #define ARM_SMMU_CB(s, n)      ((s)->numpage + (n))
+> >> --
+> >> 2.17.1
+> >>
+> >
+> >
+
+
+
+-- 
+With best wishes
+Dmitry
 
