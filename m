@@ -1,144 +1,98 @@
-Return-Path: <linux-kernel+bounces-8406-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8407-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2644D81B6B8
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 13:59:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9937481B6B9
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 13:59:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CEDB4281987
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 12:59:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 36E4C1F2578E
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 12:59:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D62278E70;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72FF278E81;
 	Thu, 21 Dec 2023 12:54:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="DCxRq+s5"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E80F078E69;
-	Thu, 21 Dec 2023 12:54:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=alpha.franken.de
-Received: from hutton.arch.nue2.suse.org (unknown [10.168.144.140])
-	by smtp-out1.suse.de (Postfix) with ESMTP id F40F421E19;
-	Thu, 21 Dec 2023 12:54:04 +0000 (UTC)
-From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: linux-mips@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 1/2] MIPS: Allow vectored interrupt handler to reside everywhere for 64bit
-Date: Thu, 21 Dec 2023 13:54:03 +0100
-Message-Id: <20231221125405.229100-1-tsbogend@alpha.franken.de>
-X-Mailer: git-send-email 2.35.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3A6978E77;
+	Thu, 21 Dec 2023 12:54:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1703163250; x=1734699250;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=KVFHOpXbzwoAIXf8gXY9j1kHL/E5YUzBG75/DA7278s=;
+  b=DCxRq+s5WlCKpjw6t9s6v4mi8gy55zrQjtJeK2BGVMUtz/3chyIjtZ11
+   uMg3ZK62tLqF/NAxTDpImVEfbxOyrEQ4mDFDfWOeW8mLdIe6M22nJig1R
+   +QIAn2zfnIz0gX5UeJLyTJ1AlgNWnIAKBzXUAOCht9hmYn3TB0SqxsLZr
+   MCLtRpearou33qjpG0fqi3AsD4SVNjEWfMyIu0Du1KrdHV6NHykhq357V
+   u0Wztr0HefnME5kMqIgqEQubmZ91L54aJyg3YL0eUfupEV2xeM65uqekA
+   WLzBP+EmojUh9bgzRGQJmZN+gDRwaDq6ge2eqxGPNHMpY/xoEpQ8cDE/C
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10930"; a="9351253"
+X-IronPort-AV: E=Sophos;i="6.04,293,1695711600"; 
+   d="scan'208";a="9351253"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Dec 2023 04:54:09 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10930"; a="900098018"
+X-IronPort-AV: E=Sophos;i="6.04,293,1695711600"; 
+   d="scan'208";a="900098018"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga004.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Dec 2023 04:54:07 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rGIYu-00000007r2R-1Glo;
+	Thu, 21 Dec 2023 14:54:04 +0200
+Date: Thu, 21 Dec 2023 14:54:03 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Linus Walleij <linus.walleij@linaro.org>,
+	Kent Gibson <warthog618@gmail.com>, linux-gpio@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH v3 2/2] gpio: sysfs: drop tabs from local variable
+ declarations
+Message-ID: <ZYQ1a_nQZ1GWg3gg@smile.fi.intel.com>
+References: <20231221091547.57352-1-brgl@bgdev.pl>
+ <20231221091547.57352-2-brgl@bgdev.pl>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Score: 4.90
-X-Spamd-Result: default: False [4.90 / 50.00];
-	 ARC_NA(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 R_MISSING_CHARSET(2.50)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 TO_DN_NONE(0.00)[];
-	 BROKEN_CONTENT_TYPE(1.50)[];
-	 RCPT_COUNT_TWO(0.00)[2];
-	 MID_CONTAINS_FROM(1.00)[];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 RCVD_COUNT_ZERO(0.00)[0];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+]
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Level: ****
-X-Spam-Flag: NO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231221091547.57352-2-brgl@bgdev.pl>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-Setting up vector interrupts worked only with handlers, which resided
-in CKSEG0 space. This limits the kernel placement for 64bit platforms.
-By patching in the offset into vi_handlers[] instead of the full
-handler address, the vectored exception handler can load the
-address by itself and jump to it.
+On Thu, Dec 21, 2023 at 10:15:47AM +0100, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> 
+> Older code has an annoying habit of putting tabs between the type and the
+> name of the variable. This doesn't really add to readability and newer
+> code doesn't do it so make the entire file consistent.
 
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
----
- arch/mips/kernel/genex.S | 8 ++++----
- arch/mips/kernel/traps.c | 9 +++------
- 2 files changed, 7 insertions(+), 10 deletions(-)
+...
 
-diff --git a/arch/mips/kernel/genex.S b/arch/mips/kernel/genex.S
-index b6de8e88c1bd..a572ce36a24f 100644
---- a/arch/mips/kernel/genex.S
-+++ b/arch/mips/kernel/genex.S
-@@ -272,18 +272,17 @@ NESTED(except_vec_vi, 0, sp)
- 	.set	push
- 	.set	noreorder
- 	PTR_LA	v1, except_vec_vi_handler
--FEXPORT(except_vec_vi_lui)
--	lui	v0, 0		/* Patched */
- 	jr	v1
- FEXPORT(except_vec_vi_ori)
--	 ori	v0, 0		/* Patched */
-+	 ori	v0, zero, 0		/* Offset in vi_handlers[] */
- 	.set	pop
- 	END(except_vec_vi)
- EXPORT(except_vec_vi_end)
- 
- /*
-  * Common Vectored Interrupt code
-- * Complete the register saves and invoke the handler which is passed in $v0
-+ * Complete the register saves and invoke the handler, $v0 holds
-+ * offset into vi_handlers[]
-  */
- NESTED(except_vec_vi_handler, 0, sp)
- 	SAVE_TEMP
-@@ -331,6 +330,7 @@ NESTED(except_vec_vi_handler, 0, sp)
- 	/* Save task's sp on IRQ stack so that unwinding can follow it */
- 	LONG_S	s1, 0(sp)
- 2:
-+	PTR_L	v0, vi_handlers(v0)
- 	jalr	v0
- 
- 	/* Restore sp */
-diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
-index 246c6a6b0261..d90b18908692 100644
---- a/arch/mips/kernel/traps.c
-+++ b/arch/mips/kernel/traps.c
-@@ -2091,16 +2091,14 @@ static void *set_vi_srs_handler(int n, vi_handler_t addr, int srs)
- 		 * If no shadow set is selected then use the default handler
- 		 * that does normal register saving and standard interrupt exit
- 		 */
--		extern const u8 except_vec_vi[], except_vec_vi_lui[];
-+		extern const u8 except_vec_vi[];
- 		extern const u8 except_vec_vi_ori[], except_vec_vi_end[];
- 		extern const u8 rollback_except_vec_vi[];
- 		const u8 *vec_start = using_rollback_handler() ?
- 				      rollback_except_vec_vi : except_vec_vi;
- #if defined(CONFIG_CPU_MICROMIPS) || defined(CONFIG_CPU_BIG_ENDIAN)
--		const int lui_offset = except_vec_vi_lui - vec_start + 2;
- 		const int ori_offset = except_vec_vi_ori - vec_start + 2;
- #else
--		const int lui_offset = except_vec_vi_lui - vec_start;
- 		const int ori_offset = except_vec_vi_ori - vec_start;
- #endif
- 		const int handler_len = except_vec_vi_end - vec_start;
-@@ -2119,10 +2117,9 @@ static void *set_vi_srs_handler(int n, vi_handler_t addr, int srs)
- #else
- 				handler_len);
- #endif
--		h = (u16 *)(b + lui_offset);
--		*h = (handler >> 16) & 0xffff;
-+		/* insert offset into vi_handlers[] */
- 		h = (u16 *)(b + ori_offset);
--		*h = (handler & 0xffff);
-+		*h = n * sizeof(handler);
- 		local_flush_icache_range((unsigned long)b,
- 					 (unsigned long)(b+handler_len));
- 	}
+> +	long gpio;
+> +	struct gpio_desc *desc;
+> +	int status;
+
+Not fully reversed xmas tree order...
+
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+
 -- 
-2.35.3
+With Best Regards,
+Andy Shevchenko
+
 
 
