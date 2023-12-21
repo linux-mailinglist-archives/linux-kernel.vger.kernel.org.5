@@ -1,231 +1,207 @@
-Return-Path: <linux-kernel+bounces-7908-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7907-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C9B181AEFA
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 07:57:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D2B081AEF8
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 07:56:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 966FD1F244C7
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 06:57:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8E13C1F24346
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 06:56:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79BCAD29F;
-	Thu, 21 Dec 2023 06:56:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DA8BBE62;
+	Thu, 21 Dec 2023 06:56:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="ZBbI+85O"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="b2bfbSOH"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56AE5C2E3
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 06:56:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
-	by mailout1.samsung.com (KnoxPortal) with ESMTP id 20231221065639epoutp015e486700a71797795bdbc24379ecf5e6~ixnFfJdX-2133721337epoutp01N
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 06:56:39 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20231221065639epoutp015e486700a71797795bdbc24379ecf5e6~ixnFfJdX-2133721337epoutp01N
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1703141799;
-	bh=9gFL3uCthOMnQkTwrbPanBRwPVZKyEWGArY0eovPAM8=;
-	h=From:To:Cc:Subject:Date:References:From;
-	b=ZBbI+85OF6bbY1/CxE4PVDNoRdJqz9mMYEP9pm+SScfJI3wFUjoQ51HTqtrN8DN7P
-	 MyV6k5LRdVBBI59tNl61HEWxC6i+nEHKbYf/I89NtVl+HPdHdVL9FXt0Exc5ia4Wat
-	 g7L07k52Xdjr5QKS9zicIEjzA80sfD7aaDEEs4sU=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-	epcas1p4.samsung.com (KnoxPortal) with ESMTP id
-	20231221065638epcas1p4bd597d940f7b5477bec514586d2dfdb3~ixnEy-5Ad1052110521epcas1p4E;
-	Thu, 21 Dec 2023 06:56:38 +0000 (GMT)
-Received: from epsmges1p5.samsung.com (unknown [182.195.36.225]) by
-	epsnrtp4.localdomain (Postfix) with ESMTP id 4Swh6s74hXz4x9Pv; Thu, 21 Dec
-	2023 06:56:37 +0000 (GMT)
-Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
-	epsmges1p5.samsung.com (Symantec Messaging Gateway) with SMTP id
-	BB.0F.10025.5A1E3856; Thu, 21 Dec 2023 15:56:37 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-	epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
-	20231221065637epcas1p203dcd5cfb1d4a3964fff9543a041d78d~ixnDvEQvp2639826398epcas1p2V;
-	Thu, 21 Dec 2023 06:56:37 +0000 (GMT)
-Received: from epsmgms1p2new.samsung.com (unknown [182.195.42.42]) by
-	epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-	20231221065637epsmtrp134b2375a6dabf4539c8f416dedb1a507~ixnDs1CTz3242132421epsmtrp1U;
-	Thu, 21 Dec 2023 06:56:37 +0000 (GMT)
-X-AuditID: b6c32a39-9d9ff70000002729-94-6583e1a5ee57
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-	epsmgms1p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
-	D3.72.08817.5A1E3856; Thu, 21 Dec 2023 15:56:37 +0900 (KST)
-Received: from localhost.localdomain (unknown [10.253.100.232]) by
-	epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-	20231221065637epsmtip2a3a1ef3dce1a1ec17cf901744b8b121e~ixnDXVdkT2484324843epsmtip2t;
-	Thu, 21 Dec 2023 06:56:37 +0000 (GMT)
-From: Chanwoo Lee <cw9316.lee@samsung.com>
-To: alim.akhtar@samsung.com, avri.altman@wdc.com, bvanassche@acm.org,
-	jejb@linux.ibm.com, martin.petersen@oracle.com, peter.wang@mediatek.com,
-	chu.stanley@gmail.com, matthias.bgg@gmail.com,
-	angelogioacchino.delregno@collabora.com, stanley.chu@mediatek.com,
-	quic_cang@quicinc.com, mani@kernel.org, quic_asutoshd@quicinc.com,
-	powen.kao@mediatek.com, quic_nguyenb@quicinc.com,
-	yang.lee@linux.alibaba.com, beanhuo@micron.com, Arthur.Simchaev@wdc.com,
-	ebiggers@google.com, linux-scsi@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org
-Cc: grant.jung@samsung.com, jt77.jang@samsung.com, dh0421.hwang@samsung.com,
-	sh043.lee@samsung.com, ChanWoo Lee <cw9316.lee@samsung.com>
-Subject: [PATCH v2] ufs: mcq: Adding a function for MCQ enable
-Date: Thu, 21 Dec 2023 15:56:08 +0900
-Message-Id: <20231221065608.9899-1-cw9316.lee@samsung.com>
-X-Mailer: git-send-email 2.29.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFDBBC2C6;
+	Thu, 21 Dec 2023 06:56:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-5c66b093b86so1181919a12.0;
+        Wed, 20 Dec 2023 22:56:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703141802; x=1703746602; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=UEtEt++hhmQprHsmNzuao+3x/xY9EBfmLNIQ2caP2ME=;
+        b=b2bfbSOHrtWP0FEqxOX3TCEXIUNR/0OlKn0bQy/LMmibG8bwl2DuxcUVlIy4kJ9Wlu
+         C4apg1zHM4eGgWPj8w4pUmJi9qgZVGbU6fUxN1xbn2t5VQqIV9q5AzV8ecvWhlDGAGNT
+         UQZNi3FOhz5IKGO1SSCBI+cpmadqgypxcWeUnoI2uP9qVhu4L3RbqpJFETxbqNe+cwlR
+         ryCc7NHp3jrhoDrM7/VVDDXN7gQjN6IGbaY1qRin/ykPpfbwDkeY5yjrNKeH4c/Q+IaV
+         tP4maWxruf6R4NMxRe7zu75xs8DSLffkSuJ3XEjpYdfOwk02fxU4L6iQ37qqcW9Xl/+/
+         4w0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703141802; x=1703746602;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UEtEt++hhmQprHsmNzuao+3x/xY9EBfmLNIQ2caP2ME=;
+        b=bYQCjwaEmzTkp1eLGLA83lHWGnfNV5/TnfLKC3ZH74XG2e1zY2SGizyOA2wOXbuOGI
+         A+Nrq64+3ZnvcUBakGSj1WxwDLJWn4Bp1nmN8pYurOAV7HmeaCT6dlurGz7TZb/FGtW6
+         bO1fXKXvc0CheCl7BZFrtHSHkLSuZfSM06FMmEPIUQRNPLJGI3iCIOn5yP3T+fbTX/KT
+         NmA7lwsCYySVKLV3EgxteKglc/w9jogDyH6LyWWcrNlZ1XyrChhPZnWT1H0uTGeHGLtB
+         nG6tGgPctBfgI3n4lx8cweEHQmGPPndomYCLtbhs8u0H5byvOx/lbrrmEKHpzLWBV6iv
+         pynw==
+X-Gm-Message-State: AOJu0YxQ4b8bYMK3fx3NSZN0cfaIQi/dMabfr5o/gtZvuPt7gSL7Ua5B
+	FGHjfHs18h3HaCYegFRUi5s=
+X-Google-Smtp-Source: AGHT+IGOcBb85kPB2NAjer3W1zoymTt2tLScYSZwOMMxzAbb+/4OGwChG9GHN9fy0S6j858l24HXEw==
+X-Received: by 2002:a17:90a:df14:b0:28b:bdf1:fd25 with SMTP id gp20-20020a17090adf1400b0028bbdf1fd25mr313549pjb.11.1703141801836;
+        Wed, 20 Dec 2023 22:56:41 -0800 (PST)
+Received: from archie.me ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id so17-20020a17090b1f9100b0028658c6209dsm4890665pjb.2.2023.12.20.22.56.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Dec 2023 22:56:41 -0800 (PST)
+Received: by archie.me (Postfix, from userid 1000)
+	id E694B101D8A8C; Thu, 21 Dec 2023 13:56:36 +0700 (WIB)
+Date: Thu, 21 Dec 2023 13:56:36 +0700
+From: Bagas Sanjaya <bagasdotme@gmail.com>
+To: Max Kellermann <max.kellermann@ionos.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Linux CGroups <cgroups@vger.kernel.org>
+Subject: Re: [PATCH v2 1/2] kernel/cgroup: use kernfs_create_dir_ns()
+Message-ID: <ZYPhpKOewFkYIDFL@archie.me>
+References: <20231208093310.297233-1-max.kellermann@ionos.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA01Ta0xTZxjO13N6WnDMQ2XuGxpW6zYirEChwIcBHJFsZ2PZ2OXXloWd0LNC
-	oJf1IsNk4ChyqYqiTKWiIIPCkK6kXERWkJaFjo0pF0WQEEBGBCMKCA4ZjrUUN/8975Pn+d73
-	eb+8XIyXz/Hlpso1jEpOpwsIT7yla0+wsHpSx4T8fD4cTVxoIdDAjxAVFhvZaPbJTQLZJgtx
-	dHr+CYaW+q9i6OxveWzUMdTDQf2Xctlo9amZgyqHW1io9W4vB1mmhthosK2MQIO6foCO3Gol
-	UOd8HUA1jn9YKCc3DDUv/s1Gc2PrOLpYcB5HJ4caCPT9jIODctY6cFTdPALQg++6wFs7qcEb
-	CVTrWBWgrhjGOFSFRUtZ6goJ6spkFHWishNQjVXZVG7PVZz6y1xAUAvTt3Gq2JpFFTXVAeqR
-	xY/K7zzCStz6WVp0CkNLGBWfkScrJKlyaYwg4ZOk/UnhESEioSgKRQr4clrGxAji308Uvp2a
-	7lyNgH+ATtc6qURarRYEx0arFFoNw09RqDUxAkYpSVdGKIPUtEytlUuD5IxmrygkJDTcKfwy
-	LaWrY4qt7N35TV/J9kPgFNQDDy4kxbBqfZnlwjyyFcBho1YPPJ14EcAzOivhLh4DaDtnZOsB
-	d8PRbcpw8+0AXrL14e5iCcCcu/cwl4ggA+Bod4KL9yFncDhtrGW5CozUA7hq0+OuftvIWNiw
-	eHkD4+TrcGLoNMeFvci98FixFbjnexWujR/F3Lw37Cn9c0OPOXld8znM9Sgkf/CAlY9MbLch
-	HlabB1huvA3eczRx3NgXzh7P47gNOgAv3ndsuk8AuLQwSrhV+6DusI5wZcDIPdDcFuzu9iJ8
-	sHx0M78XLMjjudWvwTL9NeLZ+wvDU5szULCr7yRwyXnkF/BxueIE8DM8F8HwXATD/70qAFYH
-	tjNKtUzKqEXK8P8+Mlkhs4CNiwiIagVn5uaD7IDFBXYAuZjAx6u9MIfheUnozIOMSpGk0qYz
-	ajsIdy61GPN9KVnhPCm5JkkkjgoRR4SKUVhUWITgZa/eGwcYHimlNUwawygZ1TMfi+vhe4hV
-	0Gq4ExYo1+2X6D/99R0yPLKiqM0k03dKPs79/I6k/PauHddrFt5c42fWrTwspu3l0kz/xbJu
-	fkznRIzQT3Ph/lokHbdLeqrhp/cM9LH2rHph79zgG/b4F0ZKSsiFLfHr7/5hxXYn2G+FFvkH
-	ZJrzqfGh5f5YUy17aWqW2ve12bvUKPSR1gfFzc78nmFdEYyu9gUEmU1BfhkTiy0TvezSkkbH
-	9IA5UwW5uuoPxjOmcV1T/cODK/Em6/Gtnteyz/puaXB8FK37dndXcrAx8PpXS8PsnF8sH8Zl
-	1wZetuywiguiCw/XaEZeuSmz2QxNRovYOwU1+D+d54P8rK7G1AUBrk6hRQGYSk3/C5urgJia
-	BAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA02RfVDLcRzH77vfw351pp/q+EqnjDx0pyKnL0c4h99dOo7zFIedftZOm2wl
-	+aOy7dSWnjA0SWJcG8lSVk1bLTHH9cSQ2ynPIlYhJWF17vz3vtf7de/PHx8K87bifpRIkshK
-	JYJ4PumJV9n4AXN1XQo2rKODhzqLqkjUVgqRKv8ygT4MPiZRfZcKR6dcgxj62mrB0Jn7RwlU
-	57BzUatBSaChX9e5qORpFQeZ3j3gIuMrB4HaawpJ1K5oBSjriYlEVpceoCt3RzhIrgxHlX0/
-	CdTj/I2jC5nncHTcUU4izfu7XCQfrsORrvIZQJ+P2MByf6b9URRjcl4CTLXWyWWKjUmMUa8i
-	mequRUxeiRUwFZfSGKXdgjMD1zNJpvdNB87km1OZnJt6wPQbpzIZ1izOeq8YzyWxbLzoICsN
-	jdztGWere0UkPPA/1HJyYjo4AdWAoiC9ADZdS1YDT8qbrgVQ90ODqYHHX+4Hay3N5JjjA202
-	2ZjTB6DT/p1wc5IOhs+boty6Ly0noFId6HYwOg/Ai496Rnd86EhY3ncLd2ecDoKdjlNcd+bR
-	i2F2vhmM3QqAwy+OYWN8ArQXvB71sb9cUXkWywPjtf9V2v+qYsDRg8lsgkwsFMvmJcyXsMkh
-	MoFYliQRhuzZLzaC0ScHB5uAWe8KaQAcCjQASGF8X95tlZz15sUKUg6z0v27pEnxrKwBTKFw
-	/iTe94/Zsd60UJDI7mPZBFb6r+VQHn7pnEmxmh0r78yO1jjqSzICVMve7R7YGt2vHnGsaItJ
-	zh1qvBF2r3Ny+tXOhzNVkRviDKff2geflCkHI4SKJuR71o/rKmu2XKgXCZIOWmq7jw+Z10wp
-	lu9sdPbD4YqWxqXlU4tCX256fl8aYZxO+NRHFJ3fluoVZpgWFJg68E2HWjeOHKAXSgptIZhH
-	WUnPnrTMovgwl3yBskahywvcYpjDwSMTpd3XVOsHiC2/yvYOa7OEYMOncYLEn9vbl2m+1sw2
-	LN8c9SUg25rdlGLMeRYqWu1fED69t2FtRuGsY9rwq+Kg8yLSq892Irp0Y/W6Ga9Ls1y3VhWc
-	NltMOblcw0w8t5mPy+IE84IxqUzwBxykXBJTAwAA
-X-CMS-MailID: 20231221065637epcas1p203dcd5cfb1d4a3964fff9543a041d78d
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20231221065637epcas1p203dcd5cfb1d4a3964fff9543a041d78d
-References: <CGME20231221065637epcas1p203dcd5cfb1d4a3964fff9543a041d78d@epcas1p2.samsung.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="MF3osqI6+GUgm1Na"
+Content-Disposition: inline
+In-Reply-To: <20231208093310.297233-1-max.kellermann@ionos.com>
 
-From: ChanWoo Lee <cw9316.lee@samsung.com>
 
-The REG_UFS_MEM_CFG register is too general(broad)
-and it is difficult to know the meaning only with a value of 0x1.
-So far, comments were required.
+--MF3osqI6+GUgm1Na
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Therefore, I have added new functions and defines
-to improve code readability/reusability.
+On Fri, Dec 08, 2023 at 10:33:09AM +0100, Max Kellermann wrote:
+> By passing the fsugid to kernfs_create_dir_ns(), we don't need
+> cgroup_kn_set_ugid() any longer.  That function was added for exactly
+> this purpose by commit 49957f8e2a43 ("cgroup: newly created dirs and
+> files should be owned by the creator").
+>=20
+> Eliminating this piece of duplicate code means we benefit from future
+> improvements to kernfs_create_dir_ns(); for example, both are lacking
+> S_ISGID support currently, which my next patch will add to
+> kernfs_create_dir_ns().  It cannot (easily) be added to
+> cgroup_kn_set_ugid() because we can't dereference struct kernfs_iattrs
+> from there.
+>=20
+> Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
+> Acked-by: Tejun Heo <tj@kernel.org>
+> --
+> v1 -> v2: 12-digit commit id
+> ---
+>  kernel/cgroup/cgroup.c | 31 ++++---------------------------
+>  1 file changed, 4 insertions(+), 27 deletions(-)
+>=20
+> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+> index 4b9ff41ca603..a844b421fd83 100644
+> --- a/kernel/cgroup/cgroup.c
+> +++ b/kernel/cgroup/cgroup.c
+> @@ -4169,20 +4169,6 @@ static struct kernfs_ops cgroup_kf_ops =3D {
+>  	.seq_show		=3D cgroup_seqfile_show,
+>  };
+> =20
+> -/* set uid and gid of cgroup dirs and files to that of the creator */
+> -static int cgroup_kn_set_ugid(struct kernfs_node *kn)
+> -{
+> -	struct iattr iattr =3D { .ia_valid =3D ATTR_UID | ATTR_GID,
+> -			       .ia_uid =3D current_fsuid(),
+> -			       .ia_gid =3D current_fsgid(), };
+> -
+> -	if (uid_eq(iattr.ia_uid, GLOBAL_ROOT_UID) &&
+> -	    gid_eq(iattr.ia_gid, GLOBAL_ROOT_GID))
+> -		return 0;
+> -
+> -	return kernfs_setattr(kn, &iattr);
+> -}
+> -
+>  static void cgroup_file_notify_timer(struct timer_list *timer)
+>  {
+>  	cgroup_file_notify(container_of(timer, struct cgroup_file,
+> @@ -4195,25 +4181,18 @@ static int cgroup_add_file(struct cgroup_subsys_s=
+tate *css, struct cgroup *cgrp,
+>  	char name[CGROUP_FILE_NAME_MAX];
+>  	struct kernfs_node *kn;
+>  	struct lock_class_key *key =3D NULL;
+> -	int ret;
+> =20
+>  #ifdef CONFIG_DEBUG_LOCK_ALLOC
+>  	key =3D &cft->lockdep_key;
+>  #endif
+>  	kn =3D __kernfs_create_file(cgrp->kn, cgroup_file_name(cgrp, cft, name),
+>  				  cgroup_file_mode(cft),
+> -				  GLOBAL_ROOT_UID, GLOBAL_ROOT_GID,
+> +				  current_fsuid(), current_fsgid(),
+>  				  0, cft->kf_ops, cft,
+>  				  NULL, key);
+>  	if (IS_ERR(kn))
+>  		return PTR_ERR(kn);
+> =20
+> -	ret =3D cgroup_kn_set_ugid(kn);
+> -	if (ret) {
+> -		kernfs_remove(kn);
+> -		return ret;
+> -	}
+> -
+>  	if (cft->file_offset) {
+>  		struct cgroup_file *cfile =3D (void *)css + cft->file_offset;
+> =20
+> @@ -5616,7 +5595,9 @@ static struct cgroup *cgroup_create(struct cgroup *=
+parent, const char *name,
+>  		goto out_cancel_ref;
+> =20
+>  	/* create the directory */
+> -	kn =3D kernfs_create_dir(parent->kn, name, mode, cgrp);
+> +	kn =3D kernfs_create_dir_ns(parent->kn, name, mode,
+> +				  current_fsuid(), current_fsgid(),
+> +				  cgrp, NULL);
+>  	if (IS_ERR(kn)) {
+>  		ret =3D PTR_ERR(kn);
+>  		goto out_stat_exit;
+> @@ -5761,10 +5742,6 @@ int cgroup_mkdir(struct kernfs_node *parent_kn, co=
+nst char *name, umode_t mode)
+>  	 */
+>  	kernfs_get(cgrp->kn);
+> =20
+> -	ret =3D cgroup_kn_set_ugid(cgrp->kn);
+> -	if (ret)
+> -		goto out_destroy;
+> -
+>  	ret =3D css_populate_dir(&cgrp->self);
+>  	if (ret)
+>  		goto out_destroy;
 
-Signed-off-by: ChanWoo Lee <cw9316.lee@samsung.com>
+No noticeable regressions with this patch applied.
 
-* v1->v2:
-   1) Excluding ESI_ENABLE
-   2) Replace with ufshcd_rmwl, BIT()
-   3) Separating hba->mcq_enabled
----
- drivers/ufs/core/ufs-mcq.c      | 6 ++++++
- drivers/ufs/core/ufshcd.c       | 4 +---
- drivers/ufs/host/ufs-mediatek.c | 4 +---
- include/ufs/ufshcd.h            | 1 +
- include/ufs/ufshci.h            | 3 +++
- 5 files changed, 12 insertions(+), 6 deletions(-)
+Tested-by: Bagas Sanjaya <bagasdotme@gmail.com>
 
-diff --git a/drivers/ufs/core/ufs-mcq.c b/drivers/ufs/core/ufs-mcq.c
-index 0787456c2b89..edc752e55878 100644
---- a/drivers/ufs/core/ufs-mcq.c
-+++ b/drivers/ufs/core/ufs-mcq.c
-@@ -399,6 +399,12 @@ void ufshcd_mcq_enable_esi(struct ufs_hba *hba)
- }
- EXPORT_SYMBOL_GPL(ufshcd_mcq_enable_esi);
- 
-+void ufshcd_mcq_enable(struct ufs_hba *hba)
-+{
-+	ufshcd_rmwl(hba, MCQ_MODE_SELECT, MCQ_MODE_SELECT, REG_UFS_MEM_CFG);
-+}
-+EXPORT_SYMBOL_GPL(ufshcd_mcq_enable);
-+
- void ufshcd_mcq_config_esi(struct ufs_hba *hba, struct msi_msg *msg)
- {
- 	ufshcd_writel(hba, msg->address_lo, REG_UFS_ESILBA);
-diff --git a/drivers/ufs/core/ufshcd.c b/drivers/ufs/core/ufshcd.c
-index ae9936fc6ffb..30df6f6a72c6 100644
---- a/drivers/ufs/core/ufshcd.c
-+++ b/drivers/ufs/core/ufshcd.c
-@@ -8723,9 +8723,7 @@ static void ufshcd_config_mcq(struct ufs_hba *hba)
- 	hba->host->can_queue = hba->nutrs - UFSHCD_NUM_RESERVED;
- 	hba->reserved_slot = hba->nutrs - UFSHCD_NUM_RESERVED;
- 
--	/* Select MCQ mode */
--	ufshcd_writel(hba, ufshcd_readl(hba, REG_UFS_MEM_CFG) | 0x1,
--		      REG_UFS_MEM_CFG);
-+	ufshcd_mcq_enable(hba);
- 	hba->mcq_enabled = true;
- 
- 	dev_info(hba->dev, "MCQ configured, nr_queues=%d, io_queues=%d, read_queue=%d, poll_queues=%d, queue_depth=%d\n",
-diff --git a/drivers/ufs/host/ufs-mediatek.c b/drivers/ufs/host/ufs-mediatek.c
-index fc61790d289b..1048add66419 100644
---- a/drivers/ufs/host/ufs-mediatek.c
-+++ b/drivers/ufs/host/ufs-mediatek.c
-@@ -1219,9 +1219,7 @@ static int ufs_mtk_link_set_hpm(struct ufs_hba *hba)
- 		ufs_mtk_config_mcq(hba, false);
- 		ufshcd_mcq_make_queues_operational(hba);
- 		ufshcd_mcq_config_mac(hba, hba->nutrs);
--		/* Enable MCQ mode */
--		ufshcd_writel(hba, ufshcd_readl(hba, REG_UFS_MEM_CFG) | 0x1,
--			      REG_UFS_MEM_CFG);
-+		ufshcd_mcq_enable(hba);
- 	}
- 
- 	if (err)
-diff --git a/include/ufs/ufshcd.h b/include/ufs/ufshcd.h
-index d862c8ddce03..a96c45fa4b4b 100644
---- a/include/ufs/ufshcd.h
-+++ b/include/ufs/ufshcd.h
-@@ -1257,6 +1257,7 @@ unsigned long ufshcd_mcq_poll_cqe_lock(struct ufs_hba *hba,
- 					 struct ufs_hw_queue *hwq);
- void ufshcd_mcq_make_queues_operational(struct ufs_hba *hba);
- void ufshcd_mcq_enable_esi(struct ufs_hba *hba);
-+void ufshcd_mcq_enable(struct ufs_hba *hba);
- void ufshcd_mcq_config_esi(struct ufs_hba *hba, struct msi_msg *msg);
- 
- int ufshcd_opp_config_clks(struct device *dev, struct opp_table *opp_table,
-diff --git a/include/ufs/ufshci.h b/include/ufs/ufshci.h
-index d5accacae6bc..2a6989a70671 100644
---- a/include/ufs/ufshci.h
-+++ b/include/ufs/ufshci.h
-@@ -282,6 +282,9 @@ enum {
- /* UTMRLRSR - UTP Task Management Request Run-Stop Register 80h */
- #define UTP_TASK_REQ_LIST_RUN_STOP_BIT		0x1
- 
-+/* REG_UFS_MEM_CFG - Global Config Registers 300h */
-+#define MCQ_MODE_SELECT 	BIT(0)
-+
- /* CQISy - CQ y Interrupt Status Register  */
- #define UFSHCD_MCQ_CQIS_TAIL_ENT_PUSH_STS	0x1
- 
--- 
-2.29.0
+--=20
+An old man doll... just what I always wanted! - Clara
 
+--MF3osqI6+GUgm1Na
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZYPhnwAKCRD2uYlJVVFO
+o90vAQDDn55gsGPiaCKeuPg75TssDbT5TrTVA4bncC2D1RsxcAEAxMKDFyns+uYR
+wZ6IxDR+1liL6ADVLXNTLi1xVPi5OA8=
+=FLCG
+-----END PGP SIGNATURE-----
+
+--MF3osqI6+GUgm1Na--
 
