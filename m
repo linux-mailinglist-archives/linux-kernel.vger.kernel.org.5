@@ -1,147 +1,99 @@
-Return-Path: <linux-kernel+bounces-9039-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9041-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96B2B81BF7D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 21:14:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 62DB881BF82
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 21:19:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 52FA32859D5
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 20:14:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1FC1628624F
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 20:19:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82300745C7;
-	Thu, 21 Dec 2023 20:14:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B550D745C9;
+	Thu, 21 Dec 2023 20:19:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="0L6pdioM"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Uo4abMHv"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
+Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FC98651B3
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 20:14:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-50e68243b67so223359e87.1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 12:14:24 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E02FE745C7
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 20:19:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-28bf27be6c4so531751a91.1
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 12:19:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1703189662; x=1703794462; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ijpi7yL8jJKP/LTHTn6tiHQRczMxthGLWkutDiKOvB4=;
-        b=0L6pdioMDuF165iiRuns8H9PItu+bNbcYNV0g829gJER/VJRzdDg+VBtilu4gA0RHo
-         1nEUgqn5lSJAxY4oFxR9xn5EeJCB/PB30IurC//Mp+yOj4bfGlbm8s+vC1KHX44tgtZy
-         CryJA26h7KZ7+PyfFmCFlSzzRCnFyV75Qng97AkQgOMiYlnGy1fXfr0BWBuWEYXSBuFg
-         BLG7/xQhiBQb7Lm54WXKu3hBuV6yKy93BeNkzehiGqhiIZlx42S47c2e/FMKjwTioBzd
-         AlIErK6fQz8CwbGEYJWTDlUtKhZcx4IEHi2nLiJrQYI+qjtO4yqriEliOTtS2/Upwzc0
-         D5YA==
+        d=gmail.com; s=20230601; t=1703189987; x=1703794787; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Gssvy5smjz8a5SJrD6j08da6bZEPTZEaRbn1KUt4UuQ=;
+        b=Uo4abMHvR3kusy1Om58iJETpugQnHrdiRthE4D6+I7asAdiT5IczdxT+dGgvja+2qt
+         QPIWWEfNdvLNL8APH3+GV702z9EUrCfmZMjYEOP9SYbPky9Y4K5rORCYCwzCKhtBlp8l
+         PC+3BoFP0E3Gk06lNXtb/AsyMru76obWA0wIazunwRuafSwnjUKO5iPJy66hn/kiTPQ2
+         xcv+zzt1DB4z8cbAqnmtWLJU+97OgL79idJlEhmebK/UQyWusLTn6xjov6BaRHNyVfg6
+         s0VC0xfrOAc79zCHws6bkVJUMl7UGZtiMd+agTNZHrm3uNLwoOGmzcBkVlI70LvqaWYf
+         6zmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703189662; x=1703794462;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ijpi7yL8jJKP/LTHTn6tiHQRczMxthGLWkutDiKOvB4=;
-        b=j4lPPfvCk0S8fTgl2iK+ndqUuip0ArIpnuvJGhMkG3+xgT/jbQ8rEu6AEyxzckqvuL
-         nvMCf1BM0MnwpijAS+D+1lHMqvaK7hB8aJTWujMBlX9am6Q7g1xi7vhYy5eBJ9cvum4O
-         41LYG8KrKWe3Q++qptLPLIHCxAFMPzismZChNk9LZTwxiCaWB7F0aGiMMuzj30pkrUg9
-         XnkEcUdbmM1No+wtW9VFqHnU/0K2MSbzdDoSid06fpS6X3eesNGCepvuJjlyT+OgXgc4
-         7NDTSuLM9qQSMt98jNJqlOPPB9rW5+UZRTYq8AkabqpERaYD1hxhfL5fuiGy8z3qgi0n
-         UsGA==
-X-Gm-Message-State: AOJu0YwEeBck4bHYQBfGAfdG9eey3CNDKaeYV7dGRQYZiaEig0wxp+Nr
-	0s3TQ3Knqo08PSMU/x1IwbYurGBrAOpQBCpjZ2uPlnkYCFgX
-X-Google-Smtp-Source: AGHT+IHBnrac0FEpnHGgr+WUxPanK1JDmNnibxTtSW5ojDg1dk13bRfTTGEW38UxwbiZtW29eD+v3LwcFyB1OtSnzHw=
-X-Received: by 2002:a05:6512:3767:b0:50e:644a:d384 with SMTP id
- z7-20020a056512376700b0050e644ad384mr83656lft.129.1703189662207; Thu, 21 Dec
- 2023 12:14:22 -0800 (PST)
+        d=1e100.net; s=20230601; t=1703189987; x=1703794787;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Gssvy5smjz8a5SJrD6j08da6bZEPTZEaRbn1KUt4UuQ=;
+        b=khmpdKG/1rG2uNyQxKTERizVjCsqRD/9voTKyJR2MF6vOKyz6Ga5BynUImbzh31m9v
+         Jbm2gTIDnCnP7Dm4kV/3L9TGIdFAJ500rxHnSRaSiYnwSakooq8damYaZFnr01TAZrPr
+         ad7OdlU+6TwzMbRFMjvfT5ZNoJaR1bvLwnlb8F+8oyadYaBR4mdQ4MvibwOaGQkitbWY
+         cX6xqPF4n9kei4bsRAK+3YG9l4qX3GROr6pOU0uQKsdd+NcNmZ3wHuP16EsgYh4V4ljP
+         C9lg4HqJxjf9HhVF3LhuS6NoddeNT0f6uQiHxNi3NFZj9/BPyODvaPZvfKj7SDPz49r3
+         2+rw==
+X-Gm-Message-State: AOJu0YzQtA3wq+Iyw/SbEu2aerOALRXi9vVRYl8XTd+JY6Wu9moay1jn
+	823LfJ1lgboixCssNldBiGd2j4/QKFvCaRDvZlg=
+X-Google-Smtp-Source: AGHT+IHS5EXZjgpp2fJkrvuuqF8/IpGeWCj1CjncaEw1dze4kKh4Kr6ER64TVAJIZej89ke+4GkFOFbLK40jeIcuYpU=
+X-Received: by 2002:a17:90a:ad92:b0:28c:194:8de1 with SMTP id
+ s18-20020a17090aad9200b0028c01948de1mr317153pjq.63.1703189987119; Thu, 21 Dec
+ 2023 12:19:47 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231221183540.168428-1-andrey.konovalov@linux.dev> <20231221183540.168428-4-andrey.konovalov@linux.dev>
-In-Reply-To: <20231221183540.168428-4-andrey.konovalov@linux.dev>
-From: Marco Elver <elver@google.com>
-Date: Thu, 21 Dec 2023 21:13:44 +0100
-Message-ID: <CANpmjNMJM0zp9qmxh0MkAfKTLgzkcxyraGMp6JKSf9YquW4WMg@mail.gmail.com>
-Subject: Re: [PATCH mm 4/4] kasan: simplify kasan_complete_mode_report_info
- for tag-based modes
-To: andrey.konovalov@linux.dev
-Cc: Andrew Morton <akpm@linux-foundation.org>, Juntong Deng <juntong.deng@outlook.com>, 
-	Andrey Konovalov <andreyknvl@gmail.com>, Alexander Potapenko <glider@google.com>, 
+References: <20231221183540.168428-1-andrey.konovalov@linux.dev>
+ <20231221183540.168428-2-andrey.konovalov@linux.dev> <CANpmjNPGBMD6XsPpdL-ix8VTuWAwV-jmBjLpC66Z5y543j0DuA@mail.gmail.com>
+In-Reply-To: <CANpmjNPGBMD6XsPpdL-ix8VTuWAwV-jmBjLpC66Z5y543j0DuA@mail.gmail.com>
+From: Andrey Konovalov <andreyknvl@gmail.com>
+Date: Thu, 21 Dec 2023 21:19:36 +0100
+Message-ID: <CA+fCnZcMRT2p07PLqXnm3p=YFOq9SDR_74fbnA+x1BtFuotCjA@mail.gmail.com>
+Subject: Re: [PATCH mm 2/4] kasan: reuse kasan_track in kasan_stack_ring_entry
+To: Marco Elver <elver@google.com>
+Cc: andrey.konovalov@linux.dev, Andrew Morton <akpm@linux-foundation.org>, 
+	Juntong Deng <juntong.deng@outlook.com>, Alexander Potapenko <glider@google.com>, 
 	Dmitry Vyukov <dvyukov@google.com>, Andrey Ryabinin <ryabinin.a.a@gmail.com>, kasan-dev@googlegroups.com, 
 	linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
 	Andrey Konovalov <andreyknvl@google.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 21 Dec 2023 at 19:35, <andrey.konovalov@linux.dev> wrote:
+On Thu, Dec 21, 2023 at 9:11=E2=80=AFPM Marco Elver <elver@google.com> wrot=
+e:
 >
-> From: Andrey Konovalov <andreyknvl@google.com>
+> On Thu, 21 Dec 2023 at 19:35, <andrey.konovalov@linux.dev> wrote:
+> >
+> > From: Andrey Konovalov <andreyknvl@google.com>
+> >
+> > Avoid duplicating fields of kasan_track in kasan_stack_ring_entry:
+> > reuse the structure.
 >
-> memcpy the alloc/free tracks when collecting the information about a bad
-> access instead of copying fields one by one.
->
-> Fixes: 5d4c6ac94694 ("kasan: record and report more information")
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> No functional change?
 
-Reviewed-by: Marco Elver <elver@google.com>
+Yes, no functional changes in this and the following patches in the series.
 
-> ---
->  mm/kasan/report_tags.c | 23 ++++-------------------
->  1 file changed, 4 insertions(+), 19 deletions(-)
+> > Fixes: 5d4c6ac94694 ("kasan: record and report more information")
+> > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 >
-> diff --git a/mm/kasan/report_tags.c b/mm/kasan/report_tags.c
-> index 688b9d70b04a..d15f8f580e2c 100644
-> --- a/mm/kasan/report_tags.c
-> +++ b/mm/kasan/report_tags.c
-> @@ -27,15 +27,6 @@ static const char *get_common_bug_type(struct kasan_report_info *info)
->         return "invalid-access";
->  }
->
-> -#ifdef CONFIG_KASAN_EXTRA_INFO
-> -static void kasan_complete_extra_report_info(struct kasan_track *track,
-> -                                        struct kasan_stack_ring_entry *entry)
-> -{
-> -       track->cpu = entry->track.cpu;
-> -       track->timestamp = entry->track.timestamp;
-> -}
-> -#endif /* CONFIG_KASAN_EXTRA_INFO */
-> -
->  void kasan_complete_mode_report_info(struct kasan_report_info *info)
->  {
->         unsigned long flags;
-> @@ -80,11 +71,8 @@ void kasan_complete_mode_report_info(struct kasan_report_info *info)
->                         if (free_found)
->                                 break;
->
-> -                       info->free_track.pid = entry->track.pid;
-> -                       info->free_track.stack = entry->track.stack;
-> -#ifdef CONFIG_KASAN_EXTRA_INFO
-> -                       kasan_complete_extra_report_info(&info->free_track, entry);
-> -#endif /* CONFIG_KASAN_EXTRA_INFO */
-> +                       memcpy(&info->free_track, &entry->track,
-> +                              sizeof(info->free_track));
+> Reviewed-by: Marco Elver <elver@google.com>
 
-Not sure why the line break is necessary.
-
->                         free_found = true;
->
->                         /*
-> @@ -98,11 +86,8 @@ void kasan_complete_mode_report_info(struct kasan_report_info *info)
->                         if (alloc_found)
->                                 break;
->
-> -                       info->alloc_track.pid = entry->track.pid;
-> -                       info->alloc_track.stack = entry->track.stack;
-> -#ifdef CONFIG_KASAN_EXTRA_INFO
-> -                       kasan_complete_extra_report_info(&info->alloc_track, entry);
-> -#endif /* CONFIG_KASAN_EXTRA_INFO */
-> +                       memcpy(&info->alloc_track, &entry->track,
-> +                              sizeof(info->alloc_track));
->                         alloc_found = true;
->
->                         /*
-> --
-> 2.25.1
->
+Thank you!
 
