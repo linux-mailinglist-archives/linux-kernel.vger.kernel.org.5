@@ -1,61 +1,72 @@
-Return-Path: <linux-kernel+bounces-7717-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7718-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B78481AC14
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 02:20:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8D1F81AC17
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 02:21:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BFDEF1F23D21
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 01:20:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7F1A82875B0
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 01:21:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF7531C0F;
-	Thu, 21 Dec 2023 01:20:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6004817E9;
+	Thu, 21 Dec 2023 01:21:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="XN5NDvce"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RXUdcbAj"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C65A1843
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 01:20:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1703121620;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=05/gGXwu4G9G5CVMcyqF1teUWZJnFEE29xJF1dhhZkM=;
-	b=XN5NDvceoqovRgrqtQYs4n2HxQMZ5uwf5BSO0L3QUHrZgIeYMwaAdkCEJDTG6KZ5qwkaIS
-	PzgwpFvkgo5vALXlThmW+yHjO+7WyjJlZbGdB15U8p5mZblEsJ0xKkXrUYAYIsOQR77MnO
-	juAFQX1yawmuQn2BzN+Mof/xyL/Xj9c=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-35-91vIO2hwOo-TLWRpjIb-GQ-1; Wed,
- 20 Dec 2023 20:20:17 -0500
-X-MC-Unique: 91vIO2hwOo-TLWRpjIb-GQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 083021C18CC2;
-	Thu, 21 Dec 2023 01:20:17 +0000 (UTC)
-Received: from llong.com (unknown [10.22.33.206])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id DE3D21121306;
-	Thu, 21 Dec 2023 01:20:15 +0000 (UTC)
-From: Waiman Long <longman@redhat.com>
-To: Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Will Deacon <will@kernel.org>,
-	Boqun Feng <boqun.feng@gmail.com>
-Cc: linux-kernel@vger.kernel.org,
-	Zeng Heng <zengheng4@huawei.com>,
-	Waiman Long <longman@redhat.com>
-Subject: [PATCH] locking/osq_lock: Minimize access to node->prev's cacheline
-Date: Wed, 20 Dec 2023 20:19:53 -0500
-Message-Id: <20231221011953.1611615-1-longman@redhat.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71E054404;
+	Thu, 21 Dec 2023 01:20:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-6d9338bc11fso287241b3a.1;
+        Wed, 20 Dec 2023 17:20:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703121657; x=1703726457; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=oEv+hdHh4Z2txdpbzpok/LPO5P0UTDSHNAO1ulhD6LQ=;
+        b=RXUdcbAjyMLJrIslWnW3NDObskwMFO81FIlnCKMazmjI9OvBZhJDI4LPc9aU6kHD4c
+         a8Y/GmxKF/qeBGI4zQxoOZ3aD1nboUVV3zSXV+QUA2acGbeCRD2/kvekWG/njmM9dZCT
+         JOGe9pumXuBPaCuM4yHh0Eu5I5zOzElJx8A2MCgtoYMY7FYO8Ok2ZnqBw+hxJm9fl8mW
+         tScoY56OMZEQril78nqsX2eaCu7uNeGyo+cPQHwjAhPqg2sYVwb2LOfVm0d+wqLISPAr
+         Dmt9eicuey34BXJRGPUNKK6HpAJ+oez4na8t444MABmcZ2VgmrHcqUFILKhRnCnPo2Z+
+         V8ww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703121657; x=1703726457;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=oEv+hdHh4Z2txdpbzpok/LPO5P0UTDSHNAO1ulhD6LQ=;
+        b=Xcdjbg9BwW0wnCU5YPYEupVrVpzAeZ+EV7AQCqx3r46FZBV0vewaIhXEModyMFJIvi
+         vic3RILpFF+vGcjn07t2jml9YUO5EnbXHG2JddepltgqFOElYrG0VP0sCf/puNnFj0tx
+         +PlsiXBunAUxrHu1LqjEyWViHMQWirpHbm5qBkiu1hkPrhwLXBOunEN0LDvfcrBTbu/E
+         SGayCAJ5apKyjbe2OzEwpVG9gMGcoInLhBvYWNBeauAhB6k/83zDPxZEMJd/2vGbKDOw
+         n3eoTKxsT45LNQrcWR+qmxfvCRfFelmI+CQ0Qnqkdfu/q2dmmy5zGT7k6KdaQbaEH2Gf
+         8JQg==
+X-Gm-Message-State: AOJu0YzoU/sW5NOOK9MkTjeFmeEud730nZYv//el+kjKQonpOPtlGZtY
+	ga3YaukWfb2v1jz+W/L5JKunWYi/pOM=
+X-Google-Smtp-Source: AGHT+IEUQPpPOxhc6gUsDu12VItJqcur2P1kZv1vKKKYleFUep88LfiX1NcXB00Apxiwi5m9nRKDsA==
+X-Received: by 2002:a05:6a20:12d4:b0:194:dee3:3120 with SMTP id v20-20020a056a2012d400b00194dee33120mr821411pzg.94.1703121657564;
+        Wed, 20 Dec 2023 17:20:57 -0800 (PST)
+Received: from rigel.home.arpa (60-241-235-125.tpgi.com.au. [60.241.235.125])
+        by smtp.gmail.com with ESMTPSA id x1-20020a056a00270100b006d088356541sm375959pfv.104.2023.12.20.17.20.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Dec 2023 17:20:57 -0800 (PST)
+From: Kent Gibson <warthog618@gmail.com>
+To: linux-kernel@vger.kernel.org,
+	linux-gpio@vger.kernel.org,
+	brgl@bgdev.pl,
+	linus.walleij@linaro.org,
+	andy@kernel.org
+Cc: Kent Gibson <warthog618@gmail.com>
+Subject: [PATCH v2 0/5] gpiolib: cdev: guard tidying
+Date: Thu, 21 Dec 2023 09:20:35 +0800
+Message-Id: <20231221012040.17763-1-warthog618@gmail.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -63,89 +74,48 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
 
-When CONFIG_PARAVIRT_SPINLOCKS is on, osq_lock() will spin on both
-node's and node->prev's cachelines while waiting for its node->locked
-value to be set.  That can cause cacheline contention with another
-CPU modifying the node->prev's cacheline. The reason for accessing
-node->prev's cacheline is to read the node->prev->cpu value as a
-parameter value for the vcpu_is_preempted() call. However this value
-is a constant as long as node->prev doesn't change.
+This series contains some tidying up of gpiolib-cdev following the
+recent adoption of guard().
 
-Minimize that contention by caching the node->prev and node->prev->cpu
-values and updating the cached values and accessing node->prev's
-cacheline iff node->prev changes.
+The first patch is a fix to protect gpio_ioctl() from having the
+gpio chip removed while the ioctl is in progress.
 
-By running an osq_lock/unlock microbenchmark which repeatedly calls
-osq_lock/unlock in a loop with 96 locking threads running on a 2-socket
-96-CPU machine, the locking rates before and after this patch were:
+The next couple of patches are minor fixes inspired by recent
+submissions and reviews for gpiolib.c.
 
-  Before patch: 1701 kops/s
-  After patch:  3052 kops/s
-  % Change:     +79.4%
+Patch 2 adds a missing include.
 
-It can be seen that this patch enables a rather significant performance
-boost to the OSQ lock.
+Patch 3 switches allocation of struct linereq from kzalloc() to
+kvzalloc() as it can be larger than one page - even more so after the
+recent relocation of debounce_period_us.
 
-Signed-off-by: Waiman Long <longman@redhat.com>
----
- kernel/locking/osq_lock.c | 22 ++++++++++++++++++++--
- 1 file changed, 20 insertions(+), 2 deletions(-)
+The final two patches replace wrapper functions with guards.
 
-diff --git a/kernel/locking/osq_lock.c b/kernel/locking/osq_lock.c
-index d5610ad52b92..6d7218f4b6e4 100644
---- a/kernel/locking/osq_lock.c
-+++ b/kernel/locking/osq_lock.c
-@@ -87,12 +87,29 @@ osq_wait_next(struct optimistic_spin_queue *lock,
- 	return next;
- }
- 
-+#ifndef vcpu_is_preempted
-+#define prev_vcpu_is_preempted(n, p, c)	false
-+#else
-+static inline bool prev_vcpu_is_preempted(struct optimistic_spin_node *node,
-+					  struct optimistic_spin_node **pprev,
-+					  int *ppvcpu)
-+{
-+	struct optimistic_spin_node *prev = READ_ONCE(node->prev);
-+
-+	if (prev != *pprev) {
-+		*pprev = prev;
-+		*ppvcpu = node_cpu(prev);
-+	}
-+	return vcpu_is_preempted(*ppvcpu);
-+}
-+#endif
-+
- bool osq_lock(struct optimistic_spin_queue *lock)
- {
- 	struct optimistic_spin_node *node = this_cpu_ptr(&osq_node);
- 	struct optimistic_spin_node *prev, *next;
- 	int curr = encode_cpu(smp_processor_id());
--	int old;
-+	int old, pvcpu;
- 
- 	node->locked = 0;
- 	node->next = NULL;
-@@ -110,6 +127,7 @@ bool osq_lock(struct optimistic_spin_queue *lock)
- 
- 	prev = decode_cpu(old);
- 	node->prev = prev;
-+	pvcpu = node_cpu(prev);
- 
- 	/*
- 	 * osq_lock()			unqueue
-@@ -141,7 +159,7 @@ bool osq_lock(struct optimistic_spin_queue *lock)
- 	 * polling, be careful.
- 	 */
- 	if (smp_cond_load_relaxed(&node->locked, VAL || need_resched() ||
--				  vcpu_is_preempted(node_cpu(node->prev))))
-+				  prev_vcpu_is_preempted(node, &prev, &pvcpu)))
- 		return true;
- 
- 	/* unqueue */
--- 
-2.39.3
+Patch 4 tidies up the functions that use a guard on the linereq
+config_mutex.
+
+Patch 5 tidies up the functions that use a guard on the gpio_device.
+
+Changes v1 -> v2:
+ - add patch 1 to protect gpio_ioctl() from chip removal
+ - improve commit comment (patch 3)
+ - use guard(rwsem_read) rather than rolling our own (patch 5)
+
+Cheers,
+Kent.
+
+Kent Gibson (5):
+  gpiolib: cdev: add gpio_device locking wrapper around gpio_ioctl()
+  gpiolib: cdev: include overflow.h
+  gpiolib: cdev: allocate linereq using kvzalloc()
+  gpiolib: cdev: replace locking wrappers for config_mutex with guards
+  gpiolib: cdev: replace locking wrappers for gpio_device with guards
+
+ drivers/gpio/gpiolib-cdev.c | 257 ++++++++++--------------------------
+ 1 file changed, 70 insertions(+), 187 deletions(-)
+
+--
+2.39.2
 
 
