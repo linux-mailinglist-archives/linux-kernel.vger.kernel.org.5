@@ -1,157 +1,134 @@
-Return-Path: <linux-kernel+bounces-8744-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8745-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6439381BBA6
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 17:15:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44F0281BBA8
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 17:15:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 171BD28DF3D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 16:15:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D8B7A1F25FB5
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 16:15:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1922D5991A;
-	Thu, 21 Dec 2023 16:13:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF6325990F;
+	Thu, 21 Dec 2023 16:13:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LQbBRiV2"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="I7diH669"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 506D75821A;
-	Thu, 21 Dec 2023 16:13:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4218C433CB;
-	Thu, 21 Dec 2023 16:13:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703175195;
-	bh=KVesujFyxk8g+PzjFWaKsdIwlbPbsy9MmO8ani2Ia+Q=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=LQbBRiV2NxFUlEtQl9y5+GPe98N7iyUbmlEtAJYC69/jn5YMiEp1tfhq/lyTEFOGn
-	 fdRPQMVVnE1xFlCoa3XIHzGdf2/7FfSm0loSmFlaeWDW8gPEfT2ZfXlukBd0aLLy3l
-	 qyiWwUipdrLQHBBDY5IUzQV8xVXYAc33ENr9DFcqCc6Y9YMfJgrKshGdN+bVjWdwBy
-	 bIdM8FsrbnbjT4D4d0E8htI1K0bodi1FkJ9SREYSRULMgFLxVKZsBEwJ/J/v8aTcye
-	 9aqYrHcTGq0q68Eln1R4BfbgPOBj3TOIWa44/Gr7WzeQQ5Mx7DQgLLYpNiUfQp9Uhz
-	 3GYgpXjn6n3QA==
-Date: Thu, 21 Dec 2023 16:12:58 +0000
-From: Jonathan Cameron <jic23@kernel.org>
-To: Paul Cercueil <paul@crapouillou.net>
-Cc: Lars-Peter Clausen <lars@metafoo.de>, Sumit Semwal
- <sumit.semwal@linaro.org>, Christian =?UTF-8?B?S8O2bmln?=
- <christian.koenig@amd.com>, Vinod Koul <vkoul@kernel.org>, Jonathan Corbet
- <corbet@lwn.net>, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- dmaengine@vger.kernel.org, linux-iio@vger.kernel.org,
- linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
- linaro-mm-sig@lists.linaro.org, Nuno =?UTF-8?B?U8Oh?=
- <noname.nuno@gmail.com>, Michael Hennerich <Michael.Hennerich@analog.com>
-Subject: Re: [PATCH v5 7/8] iio: buffer-dmaengine: Support new DMABUF based
- userspace API
-Message-ID: <20231221161258.056f5ce4@jic23-huawei>
-In-Reply-To: <20231219175009.65482-8-paul@crapouillou.net>
-References: <20231219175009.65482-1-paul@crapouillou.net>
-	<20231219175009.65482-8-paul@crapouillou.net>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF13059923;
+	Thu, 21 Dec 2023 16:13:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1703175219; x=1734711219;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=+F0n8TqaU3oiITLxGriRbvSDLCslujIfieiK6InccLQ=;
+  b=I7diH669UfxPCG95lThkDW8LBCJVk8pmLb5JVHg2eWMO0v2GEcQT58oQ
+   RKDjYUn7N9ts/Y/q5Umg81PJaj9fOy3ucOFq0xphiN2j1OZN84vBtEDKr
+   +XO18u3j+sj0IfDq8k1z79GKOfsW1IQElT5aKB5CG33WZN2oND2UMa8e+
+   oEz3rzzmQxJDzNzQxCCNzRfVrj6qAAA/JJJJ/CZTyXnQLiJinttwv02B1
+   Bi9Ftzg2ezZ4XM7BnAZgI8GU6l17g7hVITDpudPbcBMWPEYp8DcnAkh/d
+   0gdEM79P7ry1KkV5pb0BEl3Lqjh6AyAzy2eiya7D6qiN/j6RVuf6zWTjj
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10931"; a="2828552"
+X-IronPort-AV: E=Sophos;i="6.04,293,1695711600"; 
+   d="scan'208";a="2828552"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Dec 2023 08:13:39 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10931"; a="900142098"
+X-IronPort-AV: E=Sophos;i="6.04,293,1695711600"; 
+   d="scan'208";a="900142098"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga004.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Dec 2023 08:13:35 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rGLfx-00000007tKW-2X53;
+	Thu, 21 Dec 2023 18:13:33 +0200
+Date: Thu, 21 Dec 2023 18:13:33 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Linus Walleij <linus.walleij@linaro.org>,
+	Kent Gibson <warthog618@gmail.com>, linux-gpio@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [RFC PATCH] gpiolib: remove extra_checks
+Message-ID: <ZYRkLfYnU3WZEWPa@smile.fi.intel.com>
+References: <20231219201102.41639-1-brgl@bgdev.pl>
+ <ZYL0MWAQ-frYLnZq@smile.fi.intel.com>
+ <CACRpkdZB-5DN5NYJNGheDJnNWRt8x4LwgOQpL4NDyX2JSn+_9g@mail.gmail.com>
+ <CAMRc=MfLXxfzhKDc9e3jRF9mdVo=9UnC9O+i9s-uGm2pEa7vMg@mail.gmail.com>
+ <ZYQ09RIq1R8xmn_k@smile.fi.intel.com>
+ <CAMRc=MfYG09UUfqfuE89Or4HsP8QWUBJXCvuPPhe+vx0JiZF4w@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMRc=MfYG09UUfqfuE89Or4HsP8QWUBJXCvuPPhe+vx0JiZF4w@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Tue, 19 Dec 2023 18:50:08 +0100
-Paul Cercueil <paul@crapouillou.net> wrote:
+On Thu, Dec 21, 2023 at 02:00:39PM +0100, Bartosz Golaszewski wrote:
+> On Thu, Dec 21, 2023 at 1:52 PM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
+> > On Thu, Dec 21, 2023 at 10:26:03AM +0100, Bartosz Golaszewski wrote:
+> > > On Wed, Dec 20, 2023 at 4:28 PM Linus Walleij <linus.walleij@linaro.org> wrote:
 
-> Use the functions provided by the buffer-dma core to implement the
-> DMABUF userspace API in the buffer-dmaengine IIO buffer implementation.
+...
+
+> > > Defining DEBUG makes sense to
+> > > enable dev_dbg() messages.
+> >
+> > Exactly!
+> >
+> > > CONFIG_DEBUG_GPIO is used by one driver
+> >
+> > By all drivers which are using pr_debug() / dev_dbg().
+> > I am using it a lot in my development process (actually I have it enabled
+> > in all my kernel configurations).
 > 
-> Since we want to be able to transfer an arbitrary number of bytes and
-> not necesarily the full DMABUF, the associated scatterlist is converted
-> to an array of DMA addresses + lengths, which is then passed to
-> dmaengine_prep_slave_dma_array().
-> 
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-One question inline. Otherwise looks fine to me.
+> I'm not saying we should remove it. It'll stay defined in the Makefile
+> and remain seamless for debug messages. I just want to get rid of that
+> ugly extra_checks variable which has very little impact.
 
-J
-> 
-> ---
-> v3: Use the new dmaengine_prep_slave_dma_array(), and adapt the code to
->     work with the new functions introduced in industrialio-buffer-dma.c.
-> 
-> v5: - Use the new dmaengine_prep_slave_dma_vec().
->     - Restrict to input buffers, since output buffers are not yet
->       supported by IIO buffers.
-> ---
->  .../buffer/industrialio-buffer-dmaengine.c    | 52 ++++++++++++++++---
->  1 file changed, 46 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/iio/buffer/industrialio-buffer-dmaengine.c b/drivers/iio/buffer/industrialio-buffer-dmaengine.c
-> index 5f85ba38e6f6..825d76a24a67 100644
-> --- a/drivers/iio/buffer/industrialio-buffer-dmaengine.c
-> +++ b/drivers/iio/buffer/industrialio-buffer-dmaengine.c
-> @@ -64,15 +64,51 @@ static int iio_dmaengine_buffer_submit_block(struct iio_dma_buffer_queue *queue,
->  	struct dmaengine_buffer *dmaengine_buffer =
->  		iio_buffer_to_dmaengine_buffer(&queue->buffer);
->  	struct dma_async_tx_descriptor *desc;
-> +	unsigned int i, nents;
-> +	struct scatterlist *sgl;
-> +	struct dma_vec *vecs;
-> +	size_t max_size;
->  	dma_cookie_t cookie;
-> +	size_t len_total;
->  
-> -	block->bytes_used = min(block->size, dmaengine_buffer->max_size);
-> -	block->bytes_used = round_down(block->bytes_used,
-> -			dmaengine_buffer->align);
-> +	if (queue->buffer.direction != IIO_BUFFER_DIRECTION_IN) {
-> +		/* We do not yet support output buffers. */
-> +		return -EINVAL;
-> +	}
->  
-> -	desc = dmaengine_prep_slave_single(dmaengine_buffer->chan,
-> -		block->phys_addr, block->bytes_used, DMA_DEV_TO_MEM,
-> -		DMA_PREP_INTERRUPT);
-> +	if (block->sg_table) {
-> +		sgl = block->sg_table->sgl;
-> +		nents = sg_nents_for_len(sgl, block->bytes_used);
+I agree that extra_checks is unusual (or as Linus put it "non-standard")
+thingy. And I agree that removal is for good.
 
-Are we guaranteed the length in the sglist is enough?  If not this
-can return an error code.
+My question here solely about that WARN_ON(). Do we need it always be enabled
+or not?
 
+> > > to enable code that can lead to undefined behavior (should it maybe be
+> > > #if 0?).
+> >
+> > I don't know what you are talking about here.
+> 
+> I'm talking about drivers/gpio/gpio-tps65219.c and its usage of
+> CONFIG_DEBUG_GPIO.
 
-> +
-> +		vecs = kmalloc_array(nents, sizeof(*vecs), GFP_KERNEL);
-> +		if (!vecs)
-> +			return -ENOMEM;
-> +
-> +		len_total = block->bytes_used;
-> +
-> +		for (i = 0; i < nents; i++) {
-> +			vecs[i].addr = sg_dma_address(sgl);
-> +			vecs[i].len = min(sg_dma_len(sgl), len_total);
-> +			len_total -= vecs[i].len;
-> +
-> +			sgl = sg_next(sgl);
-> +		}
-> +
-> +		desc = dmaengine_prep_slave_dma_vec(dmaengine_buffer->chan,
-> +						    vecs, nents, DMA_DEV_TO_MEM,
-> +						    DMA_PREP_INTERRUPT);
-> +		kfree(vecs);
-> +	} else {
-> +		max_size = min(block->size, dmaengine_buffer->max_size);
-> +		max_size = round_down(max_size, dmaengine_buffer->align);
-> +		block->bytes_used = max_size;
-> +
-> +		desc = dmaengine_prep_slave_single(dmaengine_buffer->chan,
-> +						   block->phys_addr,
-> +						   block->bytes_used,
-> +						   DMA_DEV_TO_MEM,
-> +						   DMA_PREP_INTERRUPT);
-> +	}
->  	if (!desc)
->  		return -ENOMEM;
->  
+Oh, that one should probably be
+
+#if 0
+	...
+#endif
+
+or
+
+	if (0) {
+		...
+	}
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
 
