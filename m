@@ -1,126 +1,95 @@
-Return-Path: <linux-kernel+bounces-8701-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8702-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0062681BB41
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 16:46:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BD43181BB42
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 16:47:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AAB031F28FD7
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 15:46:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5BBF61F291EF
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 15:47:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AA3B53A17;
-	Thu, 21 Dec 2023 15:46:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6AD153A07;
+	Thu, 21 Dec 2023 15:47:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="FDr8+EXO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VrvCX2NR"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E3EC539FD
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 15:46:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1d3d3f0afc4so2362305ad.1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 07:46:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1703173592; x=1703778392; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=1Lh0BKtyrN6yro9u80s5vCgpZBYXmKXJHEdT+0k/Q74=;
-        b=FDr8+EXO9DzACRVq9DLbzrnmCMNMI58h9+3DztlZjs9++HEKGqUcCzoRjMsbTZEQXD
-         +LkHEP189HUbtFaeScq4wZRZv4FMI/yi0+JHV7ptTfufOIG23V9JxP45P7CLTSZQi0RJ
-         K32/0kdCSe/kllBQlJW+RZz40vHoCHRjYpfP9yZBy0YMSJAmsHS48svKo+DDY9G4WsDj
-         L5dcBRUui3BQKQCtqITkRF4aGtyy89Xdwfei7RDJ5ZaUHWdiHYUzYluEk87bp3eobJn/
-         YtomhUz5O1s8m+WZGd9nHMlj+S4cOd2Xcjlq6XbjvcEf+WYUIhhTg2DqqfzwyBAKs2yZ
-         5+QQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703173592; x=1703778392;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1Lh0BKtyrN6yro9u80s5vCgpZBYXmKXJHEdT+0k/Q74=;
-        b=iK/NTRHySjXrdKK2zvl6nFXBGvHvmrr1o80aAt11GTagDHtX1dJ9F+rgvThjR1LWT2
-         yJjfH3DDr+dXWwPGB+bdwGqBJPux8W/7X7vWAvdCAbw7x8HfQ3klPOq5TPMRYWwqqGjm
-         2N6jhBiN9qyYXcxwUy/FxWp9RzvFRgfhLzMl0TgzVI8HKxYXtYMVoi8fXF4dTIkrvK6Y
-         +bRMUOwNlcfKo1/IWqZTVUfc1AdH8JUTIxa5tJ5ywZlxLNMMNvG6/9mgqty1W6rh/IYS
-         9pPURH51ECgYsiyxkW3m4Gbc7HUlBaFythI06XhJ2Nq+jHt1cZaHeGX+grdDcf0m49Dx
-         1Cbw==
-X-Gm-Message-State: AOJu0Yz5DR76ZYi7aE9W4YDI/nEcsstMNAk1keq5ssGI2leuE3Lj2iUE
-	Oodu8NBLGa3eIU4lTqkqKL5JvA==
-X-Google-Smtp-Source: AGHT+IE2VNshP+sAbnUUrOxFL6xMZpyArSCAn7aqXcXGUtjj8frJbojM4Xg7E+9w5FA1jvSOWwmbzA==
-X-Received: by 2002:a17:902:e88c:b0:1d3:f2df:da26 with SMTP id w12-20020a170902e88c00b001d3f2dfda26mr4798309plg.1.1703173592555;
-        Thu, 21 Dec 2023 07:46:32 -0800 (PST)
-Received: from [192.168.1.150] ([198.8.77.194])
-        by smtp.gmail.com with ESMTPSA id be10-20020a170902aa0a00b001d3c3d486bfsm1784959plb.163.2023.12.21.07.46.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Dec 2023 07:46:32 -0800 (PST)
-Message-ID: <c64745d9-4a85-49c0-9df7-f687b18c2c00@kernel.dk>
-Date: Thu, 21 Dec 2023 08:46:30 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08192539FB
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 15:47:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51CF0C433C8;
+	Thu, 21 Dec 2023 15:47:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703173630;
+	bh=kiqcXfXL35XMTeW6LgSFV5UBR45DHKjf0aHb7WV1Q6o=;
+	h=From:To:Cc:Subject:Date:From;
+	b=VrvCX2NRzdN56Vj6vo6B2owEq0363n04aNvjwwnCDzGzAwP8C+WlYYEAG/YbPxFYc
+	 X9q0XurKsMmHBVFyXRtadePJJoRivLqTBgfiZGPCkiM1ByqZbFYi84FbeUlIBdd5ya
+	 pIBVPuyfrZKqxUTH61mHbux0ojhnBR3oowvTfilT9EUNm6EEG7JrWrMNTYGsRXydOS
+	 KJb+/QUX1wz04E5XjTEOB7bRQ9wowlmjjzxpiuFnvvTUadPEsFeXTsdXyiZVxuftOx
+	 2KZry1dmY59wIrVGh1jY5rRbi1Dl8fVj+ES2RmLwjP5TXwxa/+LRRZ3EOxFIubJiLE
+	 DSz5aN2+eY0Gg==
+From: guoren@kernel.org
+To: linux-kernel@vger.kernel.org,
+	paul.walmsley@sifive.com,
+	palmer@dabbelt.com,
+	alexghiti@rivosinc.com,
+	charlie@rivosinc.com,
+	xiao.w.wang@intel.com,
+	guoren@kernel.org,
+	david@redhat.com,
+	panqinglin2020@iscas.ac.cn,
+	rick.p.edgecombe@intel.com,
+	willy@infradead.org,
+	bjorn@rivosinc.com,
+	conor.dooley@microchip.com,
+	cleger@rivosinc.com,
+	leobras@redhat.com
+Cc: linux-riscv@lists.infradead.org,
+	Guo Ren <guoren@linux.alibaba.com>
+Subject: [PATCH V2 0/4] riscv: mm: Fixup & Optimize COMPAT code 
+Date: Thu, 21 Dec 2023 10:46:57 -0500
+Message-Id: <20231221154702.2267684-1-guoren@kernel.org>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: KMSAN: uninit-value in io_rw_fail
-Content-Language: en-US
-To: xingwei lee <xrivendell7@gmail.com>,
- syzbot+12dde80bf174ac8ae285@syzkaller.appspotmail.com
-Cc: asml.silence@gmail.com, io-uring@vger.kernel.org,
- linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
- glider@google.com
-References: <CABOYnLzhrQ25C_vjthTZZhZCjQrL-HC4=MKmYG0CyoG6hKpbnw@mail.gmail.com>
-From: Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <CABOYnLzhrQ25C_vjthTZZhZCjQrL-HC4=MKmYG0CyoG6hKpbnw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 12/21/23 3:58 AM, xingwei lee wrote:
-> Hello I found a bug in io_uring and comfirmed at the latest upstream
-> mainine linux.
-> TITLE: KMSAN: uninit-value in io_rw_fail
-> and I find this bug maybe existed in the
-> https://syzkaller.appspot.com/bug?extid=12dde80bf174ac8ae285 but do
-> not have a stable reproducer.
-> However, I generate a stable reproducer and comfirmed in the latest mainline.
+From: Guo Ren <guoren@linux.alibaba.com>
 
-I took a look at that one and can't see anything wrong, is that one
-still triggering? In any case, this one is different, as it's the writev
-path. Can you try the below?
+When the task is in COMPAT mode, the TASK_SIZE should be 2GB, so
+STACK_TOP_MAX and arch_get_mmap_end must be limited to 2 GB. This series
+fixes the problem made by commit: add2cc6b6515 ("RISC-V: mm: Restrict
+address space for sv39,sv48,sv57") and optimizes the related coding
+convention of TASK_SIZE.
 
-diff --git a/io_uring/rw.c b/io_uring/rw.c
-index 4943d683508b..0c856726b15d 100644
---- a/io_uring/rw.c
-+++ b/io_uring/rw.c
-@@ -589,15 +589,19 @@ static inline int io_rw_prep_async(struct io_kiocb *req, int rw)
- 	struct iovec *iov;
- 	int ret;
- 
-+	iorw->bytes_done = 0;
-+	iorw->free_iovec = NULL;
-+
- 	/* submission path, ->uring_lock should already be taken */
- 	ret = io_import_iovec(rw, req, &iov, &iorw->s, 0);
- 	if (unlikely(ret < 0))
- 		return ret;
- 
--	iorw->bytes_done = 0;
--	iorw->free_iovec = iov;
--	if (iov)
-+	if (iov) {
-+		iorw->free_iovec = iov;
- 		req->flags |= REQ_F_NEED_CLEANUP;
-+	}
-+
- 	return 0;
- }
- 
+Changelog:
+v2:
+ - Separate rename from fixup
+ - Add STACK_TOP_MAX fixup for compat
+ - Add Cleanup & rename patches
+
+v1:
+https://lore.kernel.org/linux-riscv/20231219111701.1886903-1-guoren@kernel.org/
+
+Guo Ren (4):
+  riscv: mm: Fixup compat mode boot failure
+  riscv: mm: Fixup compat arch_get_mmap_end
+  riscv: mm: Remove unused TASK_SIZE_MIN
+  riscv: mm: Optimize TASK_SIZE definition
+
+ arch/riscv/include/asm/pgtable.h   | 9 ++++-----
+ arch/riscv/include/asm/processor.h | 6 ++----
+ 2 files changed, 6 insertions(+), 9 deletions(-)
 
 -- 
-Jens Axboe
+2.40.1
 
 
