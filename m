@@ -1,82 +1,88 @@
-Return-Path: <linux-kernel+bounces-8157-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8158-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9F5D81B2C7
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 10:43:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F22B81B2CF
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 10:43:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7B3B31F25592
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 09:43:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0FED61F25773
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 09:43:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64515225D6;
-	Thu, 21 Dec 2023 09:39:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CE2420DFD;
+	Thu, 21 Dec 2023 09:43:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="5XZrPvtR"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4171C4BAAF;
-	Thu, 21 Dec 2023 09:39:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.105])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Swlkk5RrszZdLr;
-	Thu, 21 Dec 2023 17:39:26 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (unknown [7.185.36.74])
-	by mail.maildlp.com (Postfix) with ESMTPS id 602FC140257;
-	Thu, 21 Dec 2023 17:39:34 +0800 (CST)
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 21 Dec
- 2023 17:39:34 +0800
-Subject: Re: [PATCH net-next] page_pool: Rename frag_users to frag_cnt
-To: Ilias Apalodimas <ilias.apalodimas@linaro.org>
-CC: <netdev@vger.kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>, "David
- S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub
- Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	<linux-kernel@vger.kernel.org>
-References: <20231215073119.543560-1-ilias.apalodimas@linaro.org>
- <6fddeb22-0906-e04c-3a84-7836bef9ffa2@huawei.com>
- <CAC_iWjLiOdUqLmRHjZmwv9QBsBvYNV=zn30JrRbJa05qMyDBmw@mail.gmail.com>
- <fb0f33d8-d09a-57fc-83b0-ccf152277355@huawei.com>
- <CAC_iWjKH5ZCUwVWc2EisfjeLVF=ko967hqpdAc7G4FdsZCq7NA@mail.gmail.com>
- <d853acde-7d69-c715-4207-fb77da1fb203@huawei.com>
- <CAC_iWjL04RRFCU13yejUONvvY0dzYO1scAzNOC+auWpFDctzAA@mail.gmail.com>
- <0dfffe91-2bd4-2151-cf71-ef29bf562767@huawei.com>
- <CAC_iWjJBcXu=Zz=UtDj1vR-s5+jhFx8GYoYpqOi-bQX7S3XgbA@mail.gmail.com>
-From: Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <560730d0-937c-0497-e823-26c6cf72bff1@huawei.com>
-Date: Thu, 21 Dec 2023 17:39:33 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CDD4156D8;
+	Thu, 21 Dec 2023 09:43:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=X16oCJLiTMUjK1QrUQVpZcvDyy1UpSquWsrn1qrLg+g=; b=5XZrPvtR6GcAOFbNOPwM2tjOjl
+	zzYANILj6kT/skDTabX6fwwldY3PnWRhJZ9Z8jFisqeCOh23ThbFuFNX9sokUyvxcJ+uqh2dYJmsN
+	kbjBVSizUvj3ScpW0IUu+LSslkegJPsqDg9hPB1DHp5IEm1n5WRV/AOkfkCtrlZOLryc=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rGFaH-003Urr-PY; Thu, 21 Dec 2023 10:43:17 +0100
+Date: Thu, 21 Dec 2023 10:43:17 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Christian Marangi <ansuelsmth@gmail.com>
+Cc: Rob Herring <robh@kernel.org>, Heiner Kallweit <hkallweit1@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Florian Fainelli <f.fainelli@gmail.com>, netdev@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Tobias Waldekranz <tobias@waldekranz.com>
+Subject: Re: [net-next PATCH v4 1/4] dt-bindings: net: phy: Document new LEDs
+ polarity property
+Message-ID: <ce55a08f-ebe0-4e1b-a235-695e71611203@lunn.ch>
+References: <20231215212244.1658-1-ansuelsmth@gmail.com>
+ <20231215212244.1658-2-ansuelsmth@gmail.com>
+ <20231220152209.GA229412-robh@kernel.org>
+ <6583705d.050a0220.6e903.083d@mx.google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAC_iWjJBcXu=Zz=UtDj1vR-s5+jhFx8GYoYpqOi-bQX7S3XgbA@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemm500005.china.huawei.com (7.185.36.74)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6583705d.050a0220.6e903.083d@mx.google.com>
 
-On 2023/12/21 16:24, Ilias Apalodimas wrote:
-> 
->> But if we use 'bias' as part of the name, isn't that more reasonable to set
->> both of the bias number to BIAS_MAX initially, and decrement the runtime
->> bais number every time the page is split to more fragments?
-> 
-> I think it's a matter of taste and how you interpret BIAS_MAX. In any
-> case, page_pool_drain_frag() will eventually set the *real* number of
-> references. But since the code can get complicated I like the idea of
-> making it identical to the mm subsystem tracking.
-> 
-> Can we just merge v2 and me or you can send the logic inversion
-> patches right after. They are orthogonal to the rename anyway
+> On the marvell10g series we are discussing of using tristate or not. We
+> notice tristate might be confusing, would it be better to use
+> inactive-high-impedance ?
 
-It is fine by me.
-And I can send the logic inversion patch if v2 is merged.
+The pincfg-node.yaml binding has:
+
+  drive-open-drain:
+    oneOf:
+      - type: boolean
+      - $ref: /schemas/types.yaml#/definitions/uint32
+        const: 1    # No known cases of 0
+        deprecated: true
+    description: drive with open drain
+
+  drive-open-source:
+    type: boolean
+    description: drive with open source
+
+I'm not sure what the deprecated means. Is it that a value is
+deprecated, not the property as a whole?
+
+	Andrew
 
