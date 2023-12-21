@@ -1,38 +1,38 @@
-Return-Path: <linux-kernel+bounces-9024-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9025-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4D4D81BF62
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 21:06:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7936F81BF63
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 21:06:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E887F1C229F0
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 20:06:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 35BDC288F0E
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 20:06:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 068EF745ED;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51AD0745FA;
 	Thu, 21 Dec 2023 20:06:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="b9Brp+Gw"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="UQy5FdaO"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
+Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F678745CC
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E833745CE
 	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 20:06:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1703189164;
+	t=1703189165;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=gSZaD965ObbhfRb2wl16gx9k0NFu/9CcW8O4J7mEceM=;
-	b=b9Brp+GwaAs8486L9eFNPsKBa+ZcAtwpfYQSQNwgNbwsobfM5YdIdTv7QlTk+BZjKdK9i+
-	vM+1DvB2mrXJOSHWT8Ex00o2C9qkxJuCHnbWABmaNBRFH42VhSFNwm8VJ/Zi/RdPA/9XKa
-	vQ9svxQBNSQqoxiVPrTTZhhN4tftlRM=
+	bh=FJl4ImE4TRrDXvrAPN+dS4cgTUzwQEr6h+ILfia+IPo=;
+	b=UQy5FdaOJP3WHcVUkGmBl3aQkcqo5p6PbagnBT8wp0ljLIpod/Ojsrg7YfgnIjF56yHZRq
+	Hho7BHFtctI8tiFKBQkJ21sW2wiU4BcM7mHrjBDpphYej6wGMhj1TMy2nV0GXg97lpUgq8
+	tU7rBZD5CJd5flB9JqJlXxWqDy6GX1E=
 From: andrey.konovalov@linux.dev
 To: Marco Elver <elver@google.com>
 Cc: Andrey Konovalov <andreyknvl@gmail.com>,
@@ -44,9 +44,9 @@ Cc: Andrey Konovalov <andreyknvl@gmail.com>,
 	linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org,
 	Andrey Konovalov <andreyknvl@google.com>
-Subject: [PATCH mm 06/11] kasan: clean up is_kfence_address checks
-Date: Thu, 21 Dec 2023 21:04:48 +0100
-Message-Id: <1065732315ef4e141b6177d8f612232d4d5bc0ab.1703188911.git.andreyknvl@google.com>
+Subject: [PATCH mm 07/11] kasan: respect CONFIG_KASAN_VMALLOC for kasan_flag_vmalloc
+Date: Thu, 21 Dec 2023 21:04:49 +0100
+Message-Id: <3e5c933c8f6b59bd587efb05c407964be951772c.1703188911.git.andreyknvl@google.com>
 In-Reply-To: <cover.1703188911.git.andreyknvl@google.com>
 References: <cover.1703188911.git.andreyknvl@google.com>
 Precedence: bulk
@@ -60,181 +60,56 @@ X-Migadu-Flow: FLOW_OUT
 
 From: Andrey Konovalov <andreyknvl@google.com>
 
-1. Do not untag addresses that are passed to is_kfence_address: it
-   tolerates tagged addresses.
+Never enable the kasan_flag_vmalloc static branch unless
+CONFIG_KASAN_VMALLOC is enabled.
 
-2. Move is_kfence_address checks from internal KASAN functions
-   (kasan_poison/unpoison, etc.) to external-facing ones.
-
-   Note that kasan_poison/unpoison are never called outside of KASAN/slab
-   code anymore; the comment is wrong, so drop it.
-
-3. Simplify/reorganize the code around the updated checks.
+This does not fix any observable bugs (vmalloc annotations for the
+HW_TAGS mode are no-op with CONFIG_KASAN_VMALLOC disabled) but rather
+just cleans up the code.
 
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 ---
- mm/kasan/common.c | 26 +++++++++++++++++---------
- mm/kasan/kasan.h  | 16 ++--------------
- mm/kasan/shadow.c | 12 ------------
- 3 files changed, 19 insertions(+), 35 deletions(-)
+ mm/kasan/hw_tags.c | 7 +++++++
+ mm/kasan/kasan.h   | 1 +
+ 2 files changed, 8 insertions(+)
 
-diff --git a/mm/kasan/common.c b/mm/kasan/common.c
-index f4255e807b74..86adf80cc11a 100644
---- a/mm/kasan/common.c
-+++ b/mm/kasan/common.c
-@@ -79,6 +79,9 @@ EXPORT_SYMBOL(kasan_disable_current);
+diff --git a/mm/kasan/hw_tags.c b/mm/kasan/hw_tags.c
+index 06141bbc1e51..80f11a3eccd5 100644
+--- a/mm/kasan/hw_tags.c
++++ b/mm/kasan/hw_tags.c
+@@ -57,7 +57,11 @@ enum kasan_mode kasan_mode __ro_after_init;
+ EXPORT_SYMBOL_GPL(kasan_mode);
  
- void __kasan_unpoison_range(const void *address, size_t size)
- {
-+	if (is_kfence_address(address))
-+		return;
+ /* Whether to enable vmalloc tagging. */
++#ifdef CONFIG_KASAN_VMALLOC
+ DEFINE_STATIC_KEY_TRUE(kasan_flag_vmalloc);
++#else
++DEFINE_STATIC_KEY_FALSE(kasan_flag_vmalloc);
++#endif
+ 
+ #define PAGE_ALLOC_SAMPLE_DEFAULT	1
+ #define PAGE_ALLOC_SAMPLE_ORDER_DEFAULT	3
+@@ -119,6 +123,9 @@ static int __init early_kasan_flag_vmalloc(char *arg)
+ 	if (!arg)
+ 		return -EINVAL;
+ 
++	if (!IS_ENABLED(CONFIG_KASAN_VMALLOC))
++		return 0;
 +
- 	kasan_unpoison(address, size, false);
- }
- 
-@@ -218,9 +221,6 @@ static inline bool poison_slab_object(struct kmem_cache *cache, void *object,
- 	tagged_object = object;
- 	object = kasan_reset_tag(object);
- 
--	if (is_kfence_address(object))
--		return false;
--
- 	if (unlikely(nearest_obj(cache, virt_to_slab(object), object) != object)) {
- 		kasan_report_invalid_free(tagged_object, ip, KASAN_REPORT_INVALID_FREE);
- 		return true;
-@@ -247,7 +247,12 @@ static inline bool poison_slab_object(struct kmem_cache *cache, void *object,
- bool __kasan_slab_free(struct kmem_cache *cache, void *object,
- 				unsigned long ip, bool init)
- {
--	bool buggy_object = poison_slab_object(cache, object, ip, init);
-+	bool buggy_object;
-+
-+	if (is_kfence_address(object))
-+		return false;
-+
-+	buggy_object = poison_slab_object(cache, object, ip, init);
- 
- 	return buggy_object ? true : kasan_quarantine_put(cache, object);
- }
-@@ -359,7 +364,7 @@ void * __must_check __kasan_kmalloc(struct kmem_cache *cache, const void *object
- 	if (unlikely(object == NULL))
- 		return NULL;
- 
--	if (is_kfence_address(kasan_reset_tag(object)))
-+	if (is_kfence_address(object))
- 		return (void *)object;
- 
- 	/* The object has already been unpoisoned by kasan_slab_alloc(). */
-@@ -417,7 +422,7 @@ void * __must_check __kasan_krealloc(const void *object, size_t size, gfp_t flag
- 	if (unlikely(object == ZERO_SIZE_PTR))
- 		return (void *)object;
- 
--	if (is_kfence_address(kasan_reset_tag(object)))
-+	if (is_kfence_address(object))
- 		return (void *)object;
- 
- 	/*
-@@ -483,6 +488,9 @@ bool __kasan_mempool_poison_object(void *ptr, unsigned long ip)
- 		return true;
- 	}
- 
-+	if (is_kfence_address(ptr))
-+		return false;
-+
- 	slab = folio_slab(folio);
- 	return !poison_slab_object(slab->slab_cache, ptr, ip, false);
- }
-@@ -492,9 +500,6 @@ void __kasan_mempool_unpoison_object(void *ptr, size_t size, unsigned long ip)
- 	struct slab *slab;
- 	gfp_t flags = 0; /* Might be executing under a lock. */
- 
--	if (is_kfence_address(kasan_reset_tag(ptr)))
--		return;
--
- 	slab = virt_to_slab(ptr);
- 
- 	/*
-@@ -507,6 +512,9 @@ void __kasan_mempool_unpoison_object(void *ptr, size_t size, unsigned long ip)
- 		return;
- 	}
- 
-+	if (is_kfence_address(ptr))
-+		return;
-+
- 	/* Unpoison the object and save alloc info for non-kmalloc() allocations. */
- 	unpoison_slab_object(slab->slab_cache, ptr, size, flags);
- 
+ 	if (!strcmp(arg, "off"))
+ 		kasan_arg_vmalloc = KASAN_ARG_VMALLOC_OFF;
+ 	else if (!strcmp(arg, "on"))
 diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
-index 1c34511090d7..5fbcc1b805bc 100644
+index 5fbcc1b805bc..dee105ba32dd 100644
 --- a/mm/kasan/kasan.h
 +++ b/mm/kasan/kasan.h
-@@ -466,35 +466,23 @@ static inline u8 kasan_random_tag(void) { return 0; }
+@@ -49,6 +49,7 @@ DECLARE_PER_CPU(long, kasan_page_alloc_skip);
  
- static inline void kasan_poison(const void *addr, size_t size, u8 value, bool init)
+ static inline bool kasan_vmalloc_enabled(void)
  {
--	addr = kasan_reset_tag(addr);
--
--	/* Skip KFENCE memory if called explicitly outside of sl*b. */
--	if (is_kfence_address(addr))
--		return;
--
- 	if (WARN_ON((unsigned long)addr & KASAN_GRANULE_MASK))
- 		return;
- 	if (WARN_ON(size & KASAN_GRANULE_MASK))
- 		return;
- 
--	hw_set_mem_tag_range((void *)addr, size, value, init);
-+	hw_set_mem_tag_range(kasan_reset_tag(addr), size, value, init);
++	/* Static branch is never enabled with CONFIG_KASAN_VMALLOC disabled. */
+ 	return static_branch_likely(&kasan_flag_vmalloc);
  }
- 
- static inline void kasan_unpoison(const void *addr, size_t size, bool init)
- {
- 	u8 tag = get_tag(addr);
- 
--	addr = kasan_reset_tag(addr);
--
--	/* Skip KFENCE memory if called explicitly outside of sl*b. */
--	if (is_kfence_address(addr))
--		return;
--
- 	if (WARN_ON((unsigned long)addr & KASAN_GRANULE_MASK))
- 		return;
- 	size = round_up(size, KASAN_GRANULE_SIZE);
- 
--	hw_set_mem_tag_range((void *)addr, size, tag, init);
-+	hw_set_mem_tag_range(kasan_reset_tag(addr), size, tag, init);
- }
- 
- static inline bool kasan_byte_accessible(const void *addr)
-diff --git a/mm/kasan/shadow.c b/mm/kasan/shadow.c
-index 0154d200be40..30625303d01a 100644
---- a/mm/kasan/shadow.c
-+++ b/mm/kasan/shadow.c
-@@ -135,10 +135,6 @@ void kasan_poison(const void *addr, size_t size, u8 value, bool init)
- 	 */
- 	addr = kasan_reset_tag(addr);
- 
--	/* Skip KFENCE memory if called explicitly outside of sl*b. */
--	if (is_kfence_address(addr))
--		return;
--
- 	if (WARN_ON((unsigned long)addr & KASAN_GRANULE_MASK))
- 		return;
- 	if (WARN_ON(size & KASAN_GRANULE_MASK))
-@@ -175,14 +171,6 @@ void kasan_unpoison(const void *addr, size_t size, bool init)
- 	 */
- 	addr = kasan_reset_tag(addr);
- 
--	/*
--	 * Skip KFENCE memory if called explicitly outside of sl*b. Also note
--	 * that calls to ksize(), where size is not a multiple of machine-word
--	 * size, would otherwise poison the invalid portion of the word.
--	 */
--	if (is_kfence_address(addr))
--		return;
--
- 	if (WARN_ON((unsigned long)addr & KASAN_GRANULE_MASK))
- 		return;
  
 -- 
 2.25.1
