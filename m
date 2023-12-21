@@ -1,83 +1,80 @@
-Return-Path: <linux-kernel+bounces-8590-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8592-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0804B81B9DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 15:52:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B8B8C81B9DF
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 15:53:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9C874B21B96
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 14:52:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 26370B21D2F
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 14:53:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 953133608D;
-	Thu, 21 Dec 2023 14:51:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAA81360AA;
+	Thu, 21 Dec 2023 14:53:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="xCoT8n1O"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
+Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF5051DFF1
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 14:51:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-202-qEY6d-hKMgeVYQ6t5d40fg-1; Thu, 21 Dec 2023 14:51:44 +0000
-X-MC-Unique: qEY6d-hKMgeVYQ6t5d40fg-1
-Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
- (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Thu, 21 Dec
- 2023 14:51:29 +0000
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Thu, 21 Dec 2023 14:51:29 +0000
-From: David Laight <David.Laight@ACULAB.COM>
-To: 'Steven Rostedt' <rostedt@goodmis.org>
-CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-trace-kernel@vger.kernel.org" <linux-trace-kernel@vger.kernel.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Andrew Morton
-	<akpm@linux-foundation.org>, Tzvetomir Stoyanov <tz.stoyanov@gmail.com>,
-	Vincent Donnefort <vdonnefort@google.com>, Kent Overstreet
-	<kent.overstreet@gmail.com>
-Subject: RE: [PATCH v5 02/15] ring-buffer: Page size per ring buffer
-Thread-Topic: [PATCH v5 02/15] ring-buffer: Page size per ring buffer
-Thread-Index: AQHaMqz+dUnedT4aZk+oEbt0Pk2DGrCx3FFAgABHoICAAVLeAIAAVVeAgAAIyTA=
-Date: Thu, 21 Dec 2023 14:51:29 +0000
-Message-ID: <8b75519445ad458394439feed0ce6288@AcuMS.aculab.com>
-References: <20231219185414.474197117@goodmis.org>
-	<20231219185628.009147038@goodmis.org>
-	<84d3b41a72bd43dbb9d44921ef535c92@AcuMS.aculab.com>
-	<20231220080129.3453bca8@gandalf.local.home>
-	<30f49370d7ae494ab1afca5cf602ab55@AcuMS.aculab.com>
- <20231221091947.3b35d5d8@gandalf.local.home>
-In-Reply-To: <20231221091947.3b35d5d8@gandalf.local.home>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB42536086
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 14:53:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <bf45f0f7-8772-4f95-94b5-0078ac20b8b7@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1703170421;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=9DWCbTtactyPz1Ws+U8aJ3Iw5YuEjx40PPU3oVvJZrA=;
+	b=xCoT8n1ObOYoSEUUPhIGGLeX4YPTL/MN07zCk5cwewehpLQMiprAiSqmiJUrYxg+tvgz1x
+	cttuLlvMIbfbw1qezKnOW6X8vD8SyK+owcw+MwgYR9nJveI3rxseT2wm1g3kGs0obJobCJ
+	teGbrbyyerrrO2NcVfKtF1jkHyqU5Lc=
+Date: Thu, 21 Dec 2023 22:53:26 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
+Subject: Re: [v5,43/44] drm/sun4i: hdmi: Consolidate atomic_check and
+ mode_valid
 Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+To: Maxime Ripard <mripard@kernel.org>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>, Emma Anholt <emma@anholt.net>,
+ Jonathan Corbet <corbet@lwn.net>, Sandy Huang <hjc@rock-chips.com>,
+ =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
+ Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>,
+ Samuel Holland <samuel@sholland.org>
+Cc: linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, Hans Verkuil <hverkuil@xs4all.nl>,
+ linux-rockchip@lists.infradead.org, linux-sunxi@lists.linux.dev,
+ linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
+References: <20231207-kms-hdmi-connector-state-v5-43-6538e19d634d@kernel.org>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Sui Jingfeng <sui.jingfeng@linux.dev>
+In-Reply-To: <20231207-kms-hdmi-connector-state-v5-43-6538e19d634d@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-> I think 1kb units is perfectly fine (patch 15 changes to kb units). The
-> interface says its to define the minimal size of the sub-buffer, not the
-> actual size.
+Hi,
 
-I didn't read that far through :-(
 
-=09David
+On 2023/12/7 23:50, Maxime Ripard wrote:
+> atomic_check and mode_valid do not check for the same things which can
+> lead to surprising result if the userspace commits a mode that didn't go
+> through mode_valid. Let's merge the two implementations into a function
+> called by both.
+>
+> Signed-off-by: Maxime Ripard <mripard@kernel.org>
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1=
-PT, UK
-Registration No: 1397386 (Wales)
+
+Acked-by: Sui Jingfeng <sui.jingfeng@linux.dev>
 
 
