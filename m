@@ -1,114 +1,188 @@
-Return-Path: <linux-kernel+bounces-9002-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9003-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 595BE81BF27
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 20:30:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B78481BF28
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 20:31:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5A9011C23FFE
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 19:30:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 13F06283AE4
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 19:31:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D1BD6E2A1;
-	Thu, 21 Dec 2023 19:30:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AFE0651B5;
+	Thu, 21 Dec 2023 19:31:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="G2djKotT"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5E9B634F7;
-	Thu, 21 Dec 2023 19:30:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=acm.org
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F72C651AC
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 19:31:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1d3e6c86868so9593975ad.1;
-        Thu, 21 Dec 2023 11:30:34 -0800 (PST)
+Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6d7609cb6d2so766912b3a.1
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 11:31:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703187108; x=1703791908; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fJYWaKMWlPWX97f2qeaiw6ZVBBad2oJe+BJ9C0VEsB0=;
+        b=G2djKotTB+tNFUnloXzi9JCUGSyihmeLACraDPzcthcTc/5jUm6md0N6fQzzT+8Fqs
+         Mn5EJtC3t9VUarBJEd2dcEzzUpg/jAVEgbUfR9S81EsjtKaAwsMXEZ8lQ4IhJ0yXCHNv
+         sdCp7fF6T0ylnlb79G+aMSWVM/P1TO7FBA+ntV90WrUe+/PYQ6IIjqFx1uCVtAT2dIl6
+         H8Zu3YrClL0Chp3gh6XTD3eRatUOjwq/lFDu5P9vklWilX8zKVIr2r0mzDpW0o5r7YhU
+         2rCYbpopzpIdTlQanofKeciKnDUvHvKsvnOraOgii7hvra0oG1V6umNEJscoPJBnlT42
+         kxDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703187034; x=1703791834;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=PaCuQQl7ykZXPvtbV2jmLW6ZX1gazXmMk5DzScPV8kQ=;
-        b=wdjEQhQ9NpKcxy7MVLjIdsHVOMIS/mjRE8yT/82e9JLp4ji0Y+0tFHJ9MSQIHLvAhs
-         WMO3zMEEBl/6vjQ/jeLcZ6z/32J8dW+UFft19pt7kSjFrr8wVbJBOM6RLr3MSRi28bkM
-         VXRnizyuYkdXMBg7Eta5z0np4X4WpNY9QS20fQE8dbGNanJifJfhpOAcwCZ+vjF5OR6n
-         HTTRC7Eaea6STKs8nsTAAjVt9k8VHBxGY4MOYDTnmqfzz9XpqTKOknHaKY+a7+Y95GD8
-         ETW6vSZZ8ar1bfjrKPOioT4GWfvWjuYkz0qcw1/wHUsJxJi+lotJBIuFUamQkWxwWnBT
-         x2Cg==
-X-Gm-Message-State: AOJu0YwfxjNSweosfpsCV87gEtB18h1n3owWWVdfTfPmHPl4x+P4jVn9
-	S/HDHSO7UHc+sQUniH018ho=
-X-Google-Smtp-Source: AGHT+IGepjzFq9j/dF+YLX4nSwBc5YNSkf3wiaTW8FLOAYRR3psWsCWFF+YYf0IUgwZDQFzHrxazLQ==
-X-Received: by 2002:a17:902:b195:b0:1d0:afea:78a8 with SMTP id s21-20020a170902b19500b001d0afea78a8mr113124plr.106.1703187033971;
-        Thu, 21 Dec 2023 11:30:33 -0800 (PST)
-Received: from ?IPV6:2620:0:1000:8411:872c:d7b7:41e9:3edd? ([2620:0:1000:8411:872c:d7b7:41e9:3edd])
-        by smtp.gmail.com with ESMTPSA id l17-20020a170902eb1100b001bf11cf2e21sm1995752plb.210.2023.12.21.11.30.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Dec 2023 11:30:33 -0800 (PST)
-Message-ID: <ca0b2a81-c0a0-4392-bcc1-5590caf699c7@acm.org>
-Date: Thu, 21 Dec 2023 11:30:31 -0800
+        d=1e100.net; s=20230601; t=1703187108; x=1703791908;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fJYWaKMWlPWX97f2qeaiw6ZVBBad2oJe+BJ9C0VEsB0=;
+        b=lrrmiNU/Pa+nW35EHHe4HXOnbtsKTeY4eOyyxWTXDN/kualRAUhXNegVuKMjfMPv2c
+         NA+bg+cjxYzoMhrBRs5Tv39BoUGSDGyLAxiBm2mXuat54TQl9rgzYd63+uo6JmKEyflw
+         VdYBa7hOG2hsaAFAVfouuALXheAvpXkUlfIcWjLVX0yd/O7/LrmIDgK+Uvjsanz0olLb
+         QdidLimMEDzrigu49FIcRVqwZyabIgeYgnMoNMlHdo7lr1VwIzjf75SA+bEtTP42CkDr
+         NxmixmhQ4axO/xoB8dwJWgCKMKtYjDXOXWr9ZPvecGFAJCvxoewVXI+EmG+sZVvy85Ni
+         FL0g==
+X-Gm-Message-State: AOJu0YxL6gAMIlyRz6kOl5cHBOIZaPDgH84M+Z5sDuuba1U8rjAPNzvK
+	wsXuRqCvfv2jYanOzkH8YqTuYwT21gblIngAQG7+BmsmjFM=
+X-Google-Smtp-Source: AGHT+IF1nSEyK+v7jFyDMyGt7xnp/BX7BfxF1dJtoL9nqSxt83vxJI4pZry6n5b36QuxaxBn1qEBSZokGGtz5KKOltw=
+X-Received: by 2002:a05:6a20:4ca2:b0:194:dafc:d7ca with SMTP id
+ fq34-20020a056a204ca200b00194dafcd7camr161710pzb.41.1703187107667; Thu, 21
+ Dec 2023 11:31:47 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC v3 07/11] scsi: ufs: core: Perform read back after
- writing UTP_TASK_REQ_LIST_BASE_H
-Content-Language: en-US
-To: Andrew Halaney <ahalaney@redhat.com>, Andy Gross <agross@kernel.org>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>,
- Manivannan Sadhasivam <mani@kernel.org>,
- "James E.J. Bottomley" <jejb@linux.ibm.com>,
- "Martin K. Petersen" <martin.petersen@oracle.com>,
- Hannes Reinecke <hare@suse.de>, Janek Kotas <jank@cadence.com>,
- Alim Akhtar <alim.akhtar@samsung.com>, Avri Altman <avri.altman@wdc.com>,
- Can Guo <quic_cang@quicinc.com>
-Cc: Will Deacon <will@kernel.org>, linux-arm-msm@vger.kernel.org,
- linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231221-ufs-reset-ensure-effect-before-delay-v3-0-2195a1b66d2e@redhat.com>
- <20231221-ufs-reset-ensure-effect-before-delay-v3-7-2195a1b66d2e@redhat.com>
-From: Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <20231221-ufs-reset-ensure-effect-before-delay-v3-7-2195a1b66d2e@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20231220054123.1266001-1-maskray@google.com> <CAHbLzkpZomZBHVkSpCiK-hZUoZi4x2N6MB=PtFj-cBHOVhYs7Q@mail.gmail.com>
+ <CAFP8O3+5fKcGS8xEY5=DHqsN0YdybEY178nM+cXRY1bbQXV4WQ@mail.gmail.com>
+In-Reply-To: <CAFP8O3+5fKcGS8xEY5=DHqsN0YdybEY178nM+cXRY1bbQXV4WQ@mail.gmail.com>
+From: Yang Shi <shy828301@gmail.com>
+Date: Thu, 21 Dec 2023 11:31:35 -0800
+Message-ID: <CAHbLzkpTKcceY19EASdDu=yhm+mFCzEAfhwX338hCxPAjpOPtw@mail.gmail.com>
+Subject: Re: [PATCH] mm: remove VM_EXEC requirement for THP eligibility
+To: Fangrui Song <maskray@google.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org, 
+	Song Liu <songliubraving@fb.com>, Miaohe Lin <linmiaohe@huawei.com>, 
+	linux-kernel@vger.kernel.org, Zhouyi Zhou <zhouzhouyi@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 12/21/23 11:09, Andrew Halaney wrote:
-> Currently, the UTP_TASK_REQ_LIST_BASE_L/UTP_TASK_REQ_LIST_BASE_H regs
-> are written to and then completed with an mb().
-> 
-> mb() ensure that the write completes, but completion doesn't mean that
-> it isn't stored in a buffer somewhere. The recommendation for
-> ensuring these bits have taken effect on the device is to perform a read
-> back to force it to make it all the way to the device. This is
-> documented in device-io.rst and a talk by Will Deacon on this can
-> be seen over here:
-> 
->      https://youtu.be/i6DayghhA8Q?si=MiyxB5cKJXSaoc01&t=1678
-> 
-> Let's do that to ensure the bits hit the device. Because the mb()'s
-> purpose wasn't to add extra ordering (on top of the ordering guaranteed
-> by writel()/readl()), it can safely be removed.
-> 
-> Fixes: 88441a8d355d ("scsi: ufs: core: Add hibernation callbacks")
-> Signed-off-by: Andrew Halaney <ahalaney@redhat.com>
-> ---
->   drivers/ufs/core/ufshcd.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/ufs/core/ufshcd.c b/drivers/ufs/core/ufshcd.c
-> index d1e33328ff3f..7bfb556e5b8e 100644
-> --- a/drivers/ufs/core/ufshcd.c
-> +++ b/drivers/ufs/core/ufshcd.c
-> @@ -10351,7 +10351,7 @@ int ufshcd_system_restore(struct device *dev)
->   	 * are updated with the latest queue addresses. Only after
->   	 * updating these addresses, we can queue the new commands.
->   	 */
-> -	mb();
-> +	ufshcd_readl(hba, REG_UTP_TASK_REQ_LIST_BASE_H);
->   
->   	/* Resuming from hibernate, assume that link was OFF */
->   	ufshcd_set_link_off(hba);
+On Wed, Dec 20, 2023 at 8:53=E2=80=AFPM Fangrui Song <maskray@google.com> w=
+rote:
+>
+> On Wed, Dec 20, 2023 at 3:42=E2=80=AFPM Yang Shi <shy828301@gmail.com> wr=
+ote:
+> >
+> > On Tue, Dec 19, 2023 at 9:41=E2=80=AFPM Fangrui Song <maskray@google.co=
+m> wrote:
+> > >
+> > > Commit e6be37b2e7bd ("mm/huge_memory.c: add missing read-only THP
+> > > checking in transparent_hugepage_enabled()") introduced the VM_EXEC
+> > > requirement, which is not strictly needed.
+> > >
+> > > lld's default --rosegment option and GNU ld's -z separate-code option
+> > > (default on Linux/x86 since binutils 2.31) create a read-only PT_LOAD
+> > > segment without the PF_X flag, which should be eligible for THP.
+> > >
+> > > Certain architectures support medium and large code models, where
+> > > .lrodata may be placed in a separate read-only PT_LOAD segment, which
+> > > should be eligible for THP as well.
+> >
+> > Yeah, it doesn't have to be VM_EXEC. The original implementation was
+> > restricted to VM_EXEC to minimize the blast radius and the targe use
+> > case is for large text segments. Out of curiosity, did you see any
+> > noticeable improvement with this change?
+>
+> Hi Yang,
+>
+> Thanks for the comment. Frankly, I am not familiar with huge pages...
+> I noticed this VM_EXEC condition when I was writing this
+> hugepage-related section in
+> https://maskray.me/blog/2023-12-17-exploring-the-section-layout-in-linker=
+-output#transparent-huge-pages-for-mapped-files
+> (Thanks to Alexander Monakov's comment about
+> CONFIG_READ_ONLY_THP_FOR_FS in
+> https://mazzo.li/posts/check-huge-page.html).
 
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+Thanks for sharing the article, learnt something about linker and loader.
+
+>
+> As dTLB for read-only data is also an important optimization of
+> file-backed THP, it seems straightforward that we should drop the
+> VM_EXEC condition :)
+
+Yeah, as long as the use case is valid, it is definitely fine to lift
+the restriction.
+
+>
+> On my Arch linux machine, the r--p page gets split if I invoke
+> madvise(__ehdr_start, HPAGE_SIZE, MADV_HUGEPAGE) I haven't figured out
+> why it behaves so in the presence of the VM_EXEC check.
+
+What do you mean about "split"? THP got split into small pages? It
+depends on the address of __ehdr_start. If it is in the middle of a
+VMA, the VMA is going to be split due to the different huge page
+attributes.
+
+>
+> % g++ test.cc -o ~/tmp/test -O2 -fuse-ld=3Dlld
+> -Wl,-z,max-page-size=3D2097152 && sudo ~/tmp/test
+> __ehdr_start: 0x55f3b1c00000
+> 55f3b1c00000-55f3b1e00000 r--p 00000000 103:03 555277119
+>   /home/ray/tmp/test
+> 55f3b1e00000-55f3b1e01000 r--p 00200000 103:03 555277119
+>   /home/ray/tmp/test
+> 55f3b2000000-55f3b2002000 r-xp 00200000 103:03 555277119
+>   /home/ray/tmp/test
+> 55f3b2201000-55f3b2202000 r--p 00201000 103:03 555277119
+>   /home/ray/tmp/test
+> 55f3b2401000-55f3b2402000 rw-p 00201000 103:03 555277119
+>   /home/ray/tmp/test
+> 55f3b3a9a000-55f3b3abb000 rw-p 00000000 00:00 0                          =
+[heap]
+>
+>
+> It'd be greatly appreciated if someone familiar with
+> CONFIG_READ_ONLY_THP_FOR_FS could provide some notes on how to use
+> this feature:)
+
+I think your blog covered all the points. If you don't mind, you could
+add some notes in Documentation/admin-guide/mm/transhuge.rst.
+
+>
+> > >
+> > > Signed-off-by: Fangrui Song <maskray@google.com>
+> > > ---
+> > >  include/linux/huge_mm.h | 1 -
+> > >  1 file changed, 1 deletion(-)
+> > >
+> > > diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
+> > > index fa0350b0812a..4c9e67e9000f 100644
+> > > --- a/include/linux/huge_mm.h
+> > > +++ b/include/linux/huge_mm.h
+> > > @@ -126,7 +126,6 @@ static inline bool file_thp_enabled(struct vm_are=
+a_struct *vma)
+> > >         inode =3D vma->vm_file->f_inode;
+> > >
+> > >         return (IS_ENABLED(CONFIG_READ_ONLY_THP_FOR_FS)) &&
+> > > -              (vma->vm_flags & VM_EXEC) &&
+> > >                !inode_is_open_for_write(inode) && S_ISREG(inode->i_mo=
+de);
+> > >  }
+> > >
+> > > --
+> > > 2.43.0.472.g3155946c3a-goog
+> > >
+>
+>
+>
+> --
+> =E5=AE=8B=E6=96=B9=E7=9D=BF
 
