@@ -1,168 +1,146 @@
-Return-Path: <linux-kernel+bounces-8878-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8879-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8623581BD96
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 18:49:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED0E081BD97
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 18:50:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E89271F26B7C
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 17:49:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 78CC6288D76
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 17:50:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B76BE634E4;
-	Thu, 21 Dec 2023 17:48:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=t-8ch.de header.i=@t-8ch.de header.b="CmB6F+Fg"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDC3E634E5;
+	Thu, 21 Dec 2023 17:50:22 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F27E0BA2F
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 17:48:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=t-8ch.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=t-8ch.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=t-8ch.de; s=mail;
-	t=1703180932; bh=C/ChlUmQCKhGe7wGz3t23vSOKzvHdGPImPjw/3MzxyE=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=CmB6F+Fgv3X1lNpF47sxSHcGT9nfMCT+OJh7refMhpJpmMH4qdP6qr6FOeRq+JEwk
-	 ShkOwufY0NwqJ90aOtpUDUGSQ1DcS69HtLdjzLXx0wmVvUtuVmPHDOQHJ0MdazuCli
-	 CZV5+7SLgqurbR4j4cRBOqfQ95XkgX//x7LDg33c=
-Date: Thu, 21 Dec 2023 18:48:49 +0100 (GMT+01:00)
-From: =?UTF-8?Q?Thomas_Wei=C3=9Fschuh_?= <thomas@t-8ch.de>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>,
-	linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Message-ID: <c37fecee-f5b2-497f-a48d-2a2faf6697d9@t-8ch.de>
-In-Reply-To: <20231221144447.2762077-1-andriy.shevchenko@linux.intel.com>
-References: <20231221144447.2762077-1-andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH v1 1/1] pvpanic: Don't use "proxy" headers
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FBB5BA2F;
+	Thu, 21 Dec 2023 17:50:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44821C433C8;
+	Thu, 21 Dec 2023 17:50:21 +0000 (UTC)
+Date: Thu, 21 Dec 2023 12:51:24 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Vincent Donnefort <vdonnefort@google.com>
+Cc: mhiramat@kernel.org, linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, kernel-team@android.com
+Subject: Re: [PATCH v9 1/2] ring-buffer: Introducing ring-buffer mapping
+ functions
+Message-ID: <20231221125124.49ee8201@gandalf.local.home>
+In-Reply-To: <20231221173523.3015715-2-vdonnefort@google.com>
+References: <20231221173523.3015715-1-vdonnefort@google.com>
+	<20231221173523.3015715-2-vdonnefort@google.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Correlation-ID: <c37fecee-f5b2-497f-a48d-2a2faf6697d9@t-8ch.de>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Dec 21, 2023 15:44:55 Andy Shevchenko <andriy.shevchenko@linux.intel.com>:
+On Thu, 21 Dec 2023 17:35:22 +0000
+Vincent Donnefort <vdonnefort@google.com> wrote:
 
-> Update header inclusions to follow IWYU (Include What You Use)
-> principle.
->
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-
-Reviewed-by: Thomas Wei=C3=9Fschuh <linux@weissschuh.net>
-
-Note:
-This also drops the unused include of the UAPI header
-which could be mentioned in the changelog.
-
-> ---
-> drivers/misc/pvpanic/pvpanic-mmio.c |=C2=A0 7 +++----
-> drivers/misc/pvpanic/pvpanic-pci.c=C2=A0 |=C2=A0 5 +----
-> drivers/misc/pvpanic/pvpanic.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 12 +++++++=
-+----
-> drivers/misc/pvpanic/pvpanic.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 5 ++=
-+++
-> 4 files changed, 17 insertions(+), 12 deletions(-)
->
-> diff --git a/drivers/misc/pvpanic/pvpanic-mmio.c b/drivers/misc/pvpanic/p=
-vpanic-mmio.c
-> index 9715798acce3..f3f2113a54a7 100644
-> --- a/drivers/misc/pvpanic/pvpanic-mmio.c
-> +++ b/drivers/misc/pvpanic/pvpanic-mmio.c
-> @@ -7,16 +7,15 @@
-> =C2=A0 *=C2=A0 Copyright (C) 2021 Oracle.
-> =C2=A0 */
->
-> +#include <linux/device.h>
-> +#include <linux/err.h>
-> #include <linux/io.h>
-> -#include <linux/kernel.h>
-> +#include <linux/ioport.h>
-> #include <linux/kexec.h>
-> #include <linux/mod_devicetable.h>
-> #include <linux/module.h>
-> #include <linux/platform_device.h>
-> #include <linux/types.h>
-> -#include <linux/slab.h>
-> -
-> -#include <uapi/misc/pvpanic.h>
->
-> #include "pvpanic.h"
->
-> diff --git a/drivers/misc/pvpanic/pvpanic-pci.c b/drivers/misc/pvpanic/pv=
-panic-pci.c
-> index c5fb6298cb8d..9ad20e82785b 100644
-> --- a/drivers/misc/pvpanic/pvpanic-pci.c
-> +++ b/drivers/misc/pvpanic/pvpanic-pci.c
-> @@ -5,13 +5,10 @@
-> =C2=A0 *=C2=A0 Copyright (C) 2021 Oracle.
-> =C2=A0 */
->
-> -#include <linux/kernel.h>
-> +#include <linux/errno.h>
-> #include <linux/module.h>
-> #include <linux/pci.h>
-> #include <linux/types.h>
-> -#include <linux/slab.h>
-> -
-> -#include <uapi/misc/pvpanic.h>
->
-> #include "pvpanic.h"
->
-> diff --git a/drivers/misc/pvpanic/pvpanic.c b/drivers/misc/pvpanic/pvpani=
-c.c
-> index 305b367e0ce3..df3457ce1cb1 100644
-> --- a/drivers/misc/pvpanic/pvpanic.c
-> +++ b/drivers/misc/pvpanic/pvpanic.c
-> @@ -8,16 +8,20 @@
-> =C2=A0 */
->
-> #include <linux/device.h>
-> +#include <linux/errno.h>
-> +#include <linux/gfp_types.h>
-> #include <linux/io.h>
-> -#include <linux/kernel.h>
-> #include <linux/kexec.h>
-> +#include <linux/kstrtox.h>
-> +#include <linux/limits.h>
-> +#include <linux/list.h>
-> #include <linux/mod_devicetable.h>
-> #include <linux/module.h>
-> -#include <linux/platform_device.h>
-> #include <linux/panic_notifier.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/spinlock.h>
-> +#include <linux/sysfs.h>
-> #include <linux/types.h>
-> -#include <linux/cdev.h>
-> -#include <linux/list.h>
->
-> #include <uapi/misc/pvpanic.h>
->
-> diff --git a/drivers/misc/pvpanic/pvpanic.h b/drivers/misc/pvpanic/pvpani=
-c.h
-> index 46ffb10438ad..a42fa760eed5 100644
-> --- a/drivers/misc/pvpanic/pvpanic.h
-> +++ b/drivers/misc/pvpanic/pvpanic.h
-> @@ -8,6 +8,11 @@
-> #ifndef PVPANIC_H_
-> #define PVPANIC_H_
->
-> +#include <linux/compiler_types.h>
+> @@ -739,6 +747,22 @@ static __always_inline bool full_hit(struct trace_buffer *buffer, int cpu, int f
+>  	return (dirty * 100) > (full * nr_pages);
+>  }
+>  
+> +static void rb_update_meta_page(struct ring_buffer_per_cpu *cpu_buffer)
+> +{
+> +	if (unlikely(READ_ONCE(cpu_buffer->mapped))) {
+> +		/* Ensure the meta_page is ready */
+> +		smp_rmb();
+> +		WRITE_ONCE(cpu_buffer->meta_page->entries,
+> +			   local_read(&cpu_buffer->entries));
+> +		WRITE_ONCE(cpu_buffer->meta_page->overrun,
+> +			   local_read(&cpu_buffer->overrun));
+> +		WRITE_ONCE(cpu_buffer->meta_page->subbufs_touched,
+> +			   local_read(&cpu_buffer->pages_touched));
+> +		WRITE_ONCE(cpu_buffer->meta_page->subbufs_lost,
+> +			   local_read(&cpu_buffer->pages_lost));
+> +	}
+> +}
 > +
-> +struct attribute_group;
-> +struct device;
+>  /*
+>   * rb_wake_up_waiters - wake up tasks waiting for ring buffer input
+>   *
+> @@ -749,6 +773,18 @@ static void rb_wake_up_waiters(struct irq_work *work)
+>  {
+>  	struct rb_irq_work *rbwork = container_of(work, struct rb_irq_work, work);
+>  
+> +	if (rbwork->is_cpu_buffer) {
+> +		struct ring_buffer_per_cpu *cpu_buffer;
 > +
-> int devm_pvpanic_probe(struct device *dev, void __iomem *base);
-> extern const struct attribute_group *pvpanic_dev_groups[];
->
-> --
-> 2.43.0.rc1.1.gbec44491f096
+> +		cpu_buffer = container_of(rbwork, struct ring_buffer_per_cpu,
+> +					  irq_work);
+> +		/*
+> +		 * If the waiter is a cpu_buffer, this might be due to a
+> +		 * userspace mapping. Let's update the meta-page.
+> +		 */
+> +		rb_update_meta_page(cpu_buffer);
+> +	}
+> +
+>  	wake_up_all(&rbwork->waiters);
+>  	if (rbwork->full_waiters_pending || rbwork->wakeup_full) {
+>  		rbwork->wakeup_full = false;
 
+
+I think this code would be cleaner if we did:
+
+static void rb_update_meta_page(strucrt rb_irq_work *rbwork)
+{
+	struct ring_buffer_per_cpu *cpu_buffer;
+
+	if (!rbwork->is_cpu_buffer)
+		return;
+
+	/*
+	 * If the waiter is a cpu_buffer, this might be due to a
+	 * userspace mapping. Let's update the meta-page.
+	 */
+	cpu_buffer = container_of(rbwork, struct ring_buffer_per_cpu,
+				  irq_work);
+
+	if (unlikely(READ_ONCE(cpu_buffer->mapped))) {
+
+// I don't think we need the "unlikely"
+
+		/* Ensure the meta_page is ready */
+		smp_rmb();
+		WRITE_ONCE(cpu_buffer->meta_page->entries,
+			   local_read(&cpu_buffer->entries));
+		WRITE_ONCE(cpu_buffer->meta_page->overrun,
+			   local_read(&cpu_buffer->overrun));
+		WRITE_ONCE(cpu_buffer->meta_page->subbufs_touched,
+			   local_read(&cpu_buffer->pages_touched));
+		WRITE_ONCE(cpu_buffer->meta_page->subbufs_lost,
+			   local_read(&cpu_buffer->pages_lost));
+	}
+}
+
+/*
+ * rb_wake_up_waiters - wake up tasks waiting for ring buffer input
+ *
+ * Schedules a delayed work to wake up any task that is blocked on the
+ * ring buffer waiters queue.
+ */
+static void rb_wake_up_waiters(struct irq_work *work)
+{
+	struct rb_irq_work *rbwork = container_of(work, struct rb_irq_work, work);
+
+	rb_update_meta_page(cpu_buffer);
+
+	wake_up_all(&rbwork->waiters);
+	if (rbwork->full_waiters_pending || rbwork->wakeup_full) {
+		rbwork->wakeup_full = false;
+		rbwork->full_waiters_pending = false;
+		wake_up_all(&rbwork->full_waiters);
+	}
+}
+
+
+-- Steve
 
