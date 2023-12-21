@@ -1,118 +1,251 @@
-Return-Path: <linux-kernel+bounces-9064-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9065-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B1E181BFC4
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 21:50:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4BBB881BFC6
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 21:54:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5E5771C236D9
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 20:50:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7077A1C23F05
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 20:53:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4359976915;
-	Thu, 21 Dec 2023 20:50:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97658768E8;
+	Thu, 21 Dec 2023 20:53:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="SBV1VhVx"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="XuhNNn69"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2352365198
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 20:50:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1d3eae5c1d7so8819675ad.2
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 12:50:31 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52DB455E6C
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 20:53:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-qt1-f179.google.com with SMTP id d75a77b69052e-4279f38b5a3so4757731cf.2
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 12:53:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703191831; x=1703796631; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=uOfPj2Q+q1GabvEBW4PAKeTZk6gTmtF2RR9hYTuA4J8=;
-        b=SBV1VhVxPmsAUlOq2QZNx24UnYMKq/KRmPC3bBkRqYV5pV754N2PduuA+MSKlUm8uw
-         jLyqMCUT3BtvDqwUCXHBmemDpU0zle2mBilhbEELob0RgLahMWDcQZpG7fEtZI1/NF+k
-         JNKGzcKHPP29tjhMuIY2+5C6cxakoKOd7ow0LS0HN6rOpEaM5fBsLsa/R/zSsXU/Q/1U
-         vM0h4iikr0mBVPjZQ7vUv4cVrmDa1VRzGst/Ey/0FSYn1JHdH3Sx/9CuA6BhkXzuiC45
-         O8mFzmsSBTtDZRMfbeU0yLCq5nfjXjAN1p0Vbb8HK1NmAP5xh+rN2W9fuLDJ2DoloQ51
-         YgVw==
+        d=chromium.org; s=google; t=1703192028; x=1703796828; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=oQWMc7M+wzRM7UmMzwXFG9SRQvb3tuSqFuCjeGNEfBI=;
+        b=XuhNNn69+BHcyWe9hdtoxR7CevlbHXoYHnfhDYiJ7ts1y4JGM2HpCHG9QDNNR11AdJ
+         EVw4yxk7exT0v+2W+QFsFx6+BBqevu85ELy6/rmq0JuZUVu+Y80IHX+4xQGhwNrHZMyu
+         CVYdOuWm5scg0lbLJyErcTLi99rs75W/BsS/c=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703191831; x=1703796631;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1703192028; x=1703796828;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=uOfPj2Q+q1GabvEBW4PAKeTZk6gTmtF2RR9hYTuA4J8=;
-        b=Z6d1HTRPoFtoc8jrTW9jgVFLIFelO/Bu3b9B+qgxFD92jbwzDnYXwd/msLICidKVj2
-         fR9hOMpcNjZWsIP1oFe+7olm7ZyIEBvnN5TctWV1wiqMR3NyL0o1pEVPxiWngs/sWJkX
-         XsSftMucBSW0SyKb0tYfnwyXlFRv19HUueclguyZaKfBHQOvMOIT/wczTDAEnlGfeKKL
-         QPiNS5eKMYK4UhOTwJC9fRYeH5GEgsWnuMnOWaC335Ls7CDt9bjtkk+GWfPA1YYGHyqu
-         4g5urk8q2lgZmI0TEjtKqDaiSGw7noYu+1HlujUJhZJFGxPWMasdOAqUHDbuQKNONzNN
-         zYHw==
-X-Gm-Message-State: AOJu0YwxMt/LKhx83F0qTFLRTx1QaWOybuwVy1+P3KRd1zd0HTqpvFah
-	S2nT14PejwUaobeEFlLKJqyK+jprMeeWHpCGLmwEASFyXSbUkg==
-X-Google-Smtp-Source: AGHT+IHKZxWcvBlzV0V4OljK+4Tlcyto05jSa9J5gRhYLyHMyIxZUUwz7TUiMSriCf+Rjrem1VSHEg==
-X-Received: by 2002:a17:902:ecce:b0:1d4:15ec:1c7b with SMTP id a14-20020a170902ecce00b001d415ec1c7bmr268745plh.40.1703191831403;
-        Thu, 21 Dec 2023 12:50:31 -0800 (PST)
-Received: from vps.terceiro.xyz (vps.terceiro.xyz. [191.101.235.31])
-        by smtp.gmail.com with ESMTPSA id y2-20020a17090264c200b001d1d5fb96f9sm2116738pli.27.2023.12.21.12.50.30
+        bh=oQWMc7M+wzRM7UmMzwXFG9SRQvb3tuSqFuCjeGNEfBI=;
+        b=TqTVI4poVMqOb4fBZmeWn6JuOPhZyxV77cZgTnDCLTRCIfh5YF3KE0h/W9Rlnp+ic8
+         nBrr0viSPhOdQWAgWfYxR6/eIYwMB8asgIGZp6mdjJS/6deLvmcIVPSCPbZXugvrSPCe
+         dZtUVgEttaUIrzS6R4ezg2hSs1rvrsRnfPC00pD0DwZQAhgpCqMHdnlEQx7JSo66qQWB
+         YShuyCHqHgNThSDTAbVYO+EttMpNzvj5m1OoEJDKMSZn8Zuj/6i+Y6uPXoB7QO3HUJ+H
+         oOz6HbDjEBfcQSRn4IxuaInzZ9J4YojaShI3O6yHBc9yH3oPmNYUL0ZW0B4kU9A6Avlk
+         HRnQ==
+X-Gm-Message-State: AOJu0Yw3PwDxU1HoWSaHo2sq2rABynYM4Zc1OzPljor7Vq6Yl1l9RKjh
+	nISPXNAFHPZ6ScJw/rfyP/swrQw3Z1kA
+X-Google-Smtp-Source: AGHT+IGuIa1CJqo9+jVleCR/wTBAH11MKB2rRmgZTpmmgj3RqtHu6dtLI2ULGAhE0uCQiqDj1l7Eaw==
+X-Received: by 2002:a05:622a:353:b0:423:98ba:1f74 with SMTP id r19-20020a05622a035300b0042398ba1f74mr404811qtw.58.1703192028148;
+        Thu, 21 Dec 2023 12:53:48 -0800 (PST)
+Received: from eshimanovich.nyc.corp.google.com ([2620:0:1003:314:e906:87a1:555b:7b14])
+        by smtp.gmail.com with ESMTPSA id fz22-20020a05622a5a9600b004277e7b3fdfsm1158590qtb.56.2023.12.21.12.53.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Dec 2023 12:50:30 -0800 (PST)
-Received: from localhost (unknown [IPv6:2804:14d:7224:8745:26f4:3599:ce80:10])
-	by vps.terceiro.xyz (Postfix) with ESMTPSA id 6AC5543EA0;
-	Thu, 21 Dec 2023 17:50:28 -0300 (-03)
-From: Antonio Terceiro <antonio.terceiro@linaro.org>
-To: Shuah Khan <shuah@kernel.org>
-Cc: linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2] selftests: uevent: use shared makefile library
-Date: Thu, 21 Dec 2023 17:49:08 -0300
-Message-ID: <20231221204908.341677-2-antonio.terceiro@linaro.org>
-X-Mailer: git-send-email 2.43.0
+        Thu, 21 Dec 2023 12:53:47 -0800 (PST)
+From: Esther Shimanovich <eshimanovich@chromium.org>
+Date: Thu, 21 Dec 2023 15:53:42 -0500
+Subject: [PATCH v4] PCI: Relabel JHL6540 on Lenovo X1 Carbon 7,8
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20231221-thunderbolt-pci-patch-4-v4-1-2e136e57c9bc@chromium.org>
+X-B4-Tracking: v=1; b=H4sIANWlhGUC/43NTQ6CMBCG4auQrq3pHxRceQ/jorQDbSKUtEA0h
+ LtbWBmj0eX7JfPMgiIEBxGdsgUFmF10vk8hDhnSVvUtYGdSI0YYp4xWeLRTbyDU/jbiQTs8qFF
+ bLDAYkFTXJedaoHQ9BGjcfZcv19TWxdGHx/5optv625wpplhACVxK3hBVnbUNvnNTd/ShRRs7s
+ z8plijQzEjViFxV9QeKv1CMfKd4okheNIZKKg0p3qh1XZ/6ZpwfVwEAAA==
+To: Bjorn Helgaas <bhelgaas@google.com>
+Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Rajat Jain <rajatja@google.com>, 
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>, 
+ Esther Shimanovich <eshimanovich@chromium.org>
+X-Mailer: b4 0.12.3
 
-This makes the uevent selftests build not write to the source tree
-unconditionally, as that breaks out of tree builds when the source tree
-is read-only. It also avoids leaving a git repository in a dirty state
-after a build.
+On Lenovo X1 Carbon Gen 7/8 devices, when a platform enables a policy to
+distrust removable PCI devices, the build-in USB-C ports stop working at
+all.
+This happens because these X1 Carbon models have a unique feature; a
+Thunderbolt controller that is discrete from the SoC. The software sees
+this controller, and incorrectly assumes it is a removable PCI device,
+even though it is fixed to the computer and is wired to the computer's
+own USB-C ports.
 
-v2: drop spurious extra SPDX-License-Identifier
+Relabel all the components of the JHL6540 controller as DEVICE_FIXED,
+and where applicable, external_facing.
 
-Signed-off-by: Antonio Terceiro <antonio.terceiro@linaro.org>
+Ensure that the security policy to distrust external PCI devices works
+as intended, and that the device's USB-C ports are able to enumerate
+even when the policy is enabled.
+
+Signed-off-by: Esther Shimanovich <eshimanovich@chromium.org>
 ---
- tools/testing/selftests/uevent/Makefile | 15 +++------------
- 1 file changed, 3 insertions(+), 12 deletions(-)
+Changes in v4:
+- replaced a dmi check in the rootport quirk with a subsystem vendor and
+  device check.
+- Link to v3: https://lore.kernel.org/r/20231220-thunderbolt-pci-patch-4-v3-1-056fd1717d06@chromium.org
 
-diff --git a/tools/testing/selftests/uevent/Makefile b/tools/testing/selftests/uevent/Makefile
-index f7baa9aa2932..872969f42694 100644
---- a/tools/testing/selftests/uevent/Makefile
-+++ b/tools/testing/selftests/uevent/Makefile
-@@ -1,17 +1,8 @@
- # SPDX-License-Identifier: GPL-2.0
- all:
+Changes in v3:
+- removed redundant dmi check, as the subsystem vendor check is
+  sufficient
+- switched to PCI_VENDOR_ID_LENOVO instead of hex code
+- Link to v2: https://lore.kernel.org/r/20231219-thunderbolt-pci-patch-4-v2-1-ec2d7af45a9b@chromium.org
+
+Changes in v2:
+- nothing new, v1 was just a test run to see if the ASCII diagram would
+  be rendered properly in mutt and k-9
+- for folks using gmail, make sure to select "show original" on the top
+  right, as otherwise the diagram will be garbled by the standard
+  non-monospace font
+- Link to v1: https://lore.kernel.org/r/20231219-thunderbolt-pci-patch-4-v1-1-4e8e3773f0a9@chromium.org
+---
+ drivers/pci/quirks.c | 112 +++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 112 insertions(+)
+
+diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
+index ea476252280a..34e43323ff14 100644
+--- a/drivers/pci/quirks.c
++++ b/drivers/pci/quirks.c
+@@ -3873,6 +3873,118 @@ DECLARE_PCI_FIXUP_SUSPEND_LATE(PCI_VENDOR_ID_INTEL,
+ 			       quirk_apple_poweroff_thunderbolt);
+ #endif
  
--include ../lib.mk
--
--.PHONY: all clean
--
--BINARIES := uevent_filtering
--CFLAGS += -Wl,-no-as-needed -Wall
-+CFLAGS += -Wl,-no-as-needed -Wall $(KHDR_INCLUDES)
- 
--uevent_filtering: uevent_filtering.c ../kselftest.h ../kselftest_harness.h
--	$(CC) $(CFLAGS) $< -o $@
-+TEST_GEN_PROGS = uevent_filtering
- 
--TEST_PROGS += $(BINARIES)
--EXTRA_CLEAN := $(BINARIES)
--
--all: $(BINARIES)
-+include ../lib.mk
++/*
++ * On most ThinkPad Carbon 7/8s, JHL6540 Thunderbolt 3 bridges are set
++ * incorrectly as DEVICE_REMOVABLE despite being built into the device.
++ * This is the side effect of a unique hardware configuration.
++ *
++ * Normally, Thunderbolt functionality is integrated to the SoC and
++ * its root ports.
++ *
++ *                          Most devices:
++ *                    root port --> USB-C port
++ *
++ * But X1 Carbon Gen 7/8 uses Whiskey Lake and Comet Lake SoC, which
++ * don't come with Thunderbolt functionality. Therefore, a discrete
++ * Thunderbolt Host PCI controller was added between the root port and
++ * the USB-C port.
++ *
++ *                        Thinkpad Carbon 7/8s
++ *                 (w/ Whiskey Lake and Comet Lake SoC):
++ *                root port -->  JHL6540   --> USB-C port
++ *
++ * Because the root port is labeled by FW as "ExternalFacingPort", as
++ * required by the DMAR ACPI spec, the JHL6540 chip is inaccurately
++ * labeled as DEVICE_REMOVABLE by the kernel pci driver.
++ * Therefore, the built-in USB-C ports do not enumerate when policies
++ * forbidding external pci devices are enforced.
++ *
++ * This fix relabels the pci components in the built-in JHL6540 chip as
++ * DEVICE_FIXED, ensuring that the built-in USB-C ports always enumerate
++ * properly as intended.
++ *
++ * This fix also labels the external facing components of the JHL6540 as
++ * external_facing, so that the pci attach policy works as intended.
++ *
++ * The ASCII diagram below describes the pci layout of the JHL6540 chip.
++ *
++ *                         Root Port
++ *                 [8086:02b4] or [8086:9db4]
++ *                             |
++ *                        JHL6540 Chip
++ *     __________________________________________________
++ *    |                      Bridge                      |
++ *    |        PCI ID ->  [8086:15d3]                    |
++ *    |         DEVFN ->      (00)                       |
++ *    |       _________________|__________________       |
++ *    |      |           |            |           |      |
++ *    |    Bridge     Bridge        Bridge      Bridge   |
++ *    | [8086:15d3] [8086:15d3]  [8086:15d3] [8086:15d3] |
++ *    |    (00)        (08)         (10)        (20)     |
++ *    |      |           |            |           |      |
++ *    |     NHI          |     USB Controller     |      |
++ *    | [8086:15d2]      |       [8086:15d4]      |      |
++ *    |    (00)          |          (00)          |      |
++ *    |      |___________|            |___________|      |
++ *    |____________|________________________|____________|
++ *                 |                        |
++ *             USB-C Port               USB-C Port
++ *
++ *
++ * Based on what a JHL6549 pci component's pci id, subsystem device id
++ * and devfn are, we can infer if it is fixed and if it faces a usb port;
++ * which would mean it is external facing.
++ * This quirk uses these values to identify the pci components and set the
++ * properties accordingly.
++ */
++static void carbon_X1_fixup_relabel_alpine_ridge(struct pci_dev *dev)
++{
++	/* Is this JHL6540 PCI component embedded in a Lenovo device? */
++	if (dev->subsystem_vendor != PCI_VENDOR_ID_LENOVO)
++		return;
++
++	/* Is this JHL6540 PCI component embedded in an X1 Carbon Gen 7/8? */
++	if (dev->subsystem_device != 0x22be && // Gen 8
++	    dev->subsystem_device != 0x2292) { // Gen 7
++		return;
++	}
++
++	dev_set_removable(&dev->dev, DEVICE_FIXED);
++
++	/* Not all 0x15d3 components are external facing */
++	if (dev->device == 0x15d3 &&
++	    dev->devfn != 0x08 &&
++	    dev->devfn != 0x20) {
++		return;
++	}
++
++	dev->external_facing = true;
++}
++
++/*
++ * We also need to relabel the root port as a consequence of changing
++ * the JHL6540's PCIE hierarchy.
++ */
++static void carbon_X1_fixup_rootport_not_removable(struct pci_dev *dev)
++{
++	/* Is this JHL6540 PCI component embedded in a Lenovo device? */
++	if (dev->subsystem_vendor != PCI_VENDOR_ID_LENOVO)
++		return;
++
++	/* Is this JHL6540 PCI component embedded in an X1 Carbon Gen 7/8? */
++	if (dev->subsystem_device != 0x22be && // Gen 8
++	    dev->subsystem_device != 0x2292) { // Gen 7
++		return;
++	}
++
++	dev->external_facing = false;
++}
++DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_INTEL, 0x15d3, carbon_X1_fixup_relabel_alpine_ridge);
++DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_INTEL, 0x15d2, carbon_X1_fixup_relabel_alpine_ridge);
++DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_INTEL, 0x15d4, carbon_X1_fixup_relabel_alpine_ridge);
++DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_INTEL, 0x02b4, carbon_X1_fixup_rootport_not_removable);
++DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_INTEL, 0x9db4, carbon_X1_fixup_rootport_not_removable);
++
+ /*
+  * Following are device-specific reset methods which can be used to
+  * reset a single function if other methods (e.g. FLR, PM D0->D3) are
+
+---
+base-commit: b85ea95d086471afb4ad062012a4d73cd328fa86
+change-id: 20231219-thunderbolt-pci-patch-4-ede71cb833c4
+
+Best regards,
 -- 
-2.43.0
+Esther Shimanovich <eshimanovich@chromium.org>
 
 
