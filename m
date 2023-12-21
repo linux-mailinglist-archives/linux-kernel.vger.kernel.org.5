@@ -1,112 +1,168 @@
-Return-Path: <linux-kernel+bounces-8192-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8194-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CAC8481B364
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 11:18:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D5EA81B369
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 11:20:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 08E101C25058
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 10:18:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8CBD92864BD
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 10:20:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C2754F60D;
-	Thu, 21 Dec 2023 10:18:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58A4E51C3A;
+	Thu, 21 Dec 2023 10:20:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aUrvf1v6"
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="GLCWmb80"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+Received: from mail-vk1-f171.google.com (mail-vk1-f171.google.com [209.85.221.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5059E4F203
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 10:18:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1d3e05abcaeso4279605ad.1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 02:18:09 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32FB551C33
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 10:20:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-vk1-f171.google.com with SMTP id 71dfb90a1353d-4b6be94d512so989331e0c.1
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 02:20:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703153888; x=1703758688; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=M6NIr38DFBWDZyn+9oG1rPeiRckvDgmloLxDUP+lGxk=;
-        b=aUrvf1v6dXaeJi5Q+VXgTqFktHaI0S4bl7JejXh9wtIMAn3S/D1We8FqHWVJeBK4Ev
-         7ZyYv96HxRgW8g8K+4+s0pYQf9BR1We2/A1hYCKgq9Q+G1BMs0DLmaHVXbFneKt9ni6x
-         WuzXTQrosNbgxdgWUstb2lf3oaGh2fAY+ZKbtDtgaURCuNOpsXx5/UU788LyoTGJdOjF
-         Z9U5IQRFHWiOMrQVGuxa6gLrmT6cmnUZHRTc24IsdEuyi+yFn5C05FrJlGfN9uUStpyg
-         iBrXnwR09amuJ3/mxodjiQQo0ht5IEsE7SolcwuqXraMyubDr3bPhB5+SIA18aBTXq5F
-         4LIA==
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1703154007; x=1703758807; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=03hQ4xDH3ZdArEtlBeQWM6+JQhq7YbGI4xUxwEElpFc=;
+        b=GLCWmb80ulkj1cUuoQsoImKjrKl/pUq3AfImb4zTiiU+VQW6YbCXDCpZXoewFr1EkO
+         z7ItTfR2EUJdwJDMXfeuThrRc+3B1cipuMRp1vwK9ToybzEPkkjJ7hnobAKeBf6OJbl7
+         pn5GShfu1BGCeYYRtLv8l+Iq93NlH8s4mfr9wPdzTJ44QexmusTt5LIkbnajPoneG6wF
+         KWvXgJO17G3Qi9PylOA4UvgNMPWmIyKpgNw4VerBcDoxOmuLVV7z8PF6F5YIRKbH5hE2
+         TXW5fx7ZOLKV5UciY1K5gTuFrVTnfq4xN4xKIYGUFixoVikXYmE+SBgXDTiz6iZOk1pA
+         7neg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703153888; x=1703758688;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=M6NIr38DFBWDZyn+9oG1rPeiRckvDgmloLxDUP+lGxk=;
-        b=Xt5Q6qOMrZqxkPXGPCfSO4YqAuPyD3725XgiKqCq8Acf4i5hNHPxUD4HN3MxSAgEyI
-         uUNxkfgJH/SJlja8oS47VvGhff4j4E3vK/l9/GbrNhVkEMcSmQHDh1izld215PWvicn8
-         o7s+aw34BeHrCh7FaMPSY43FVDi+8sdtYS+ikGy95qZjkfgjKD6AT+CiDjgdmurNp1Ok
-         q0enlymSPkMzMvxktX6kmXcMdr+knz/GzqB4NQ8Twdtdgaygi7/zS80WQCmYYbR8PQlU
-         yDeOnS4CHubHmHrhgVq90kijmvu/fBjD97S69VX6BU6XwJHEtjSA6ZEnhQm3W15YJMFN
-         3kpg==
-X-Gm-Message-State: AOJu0YzJUj4oNLifbgO6W4FsUw4b3nqfDyHQQtSZgDVP6vpQWC1s5J+1
-	yVqS6Tk8ED47aTz1xPG4+qeq+NjEb8U=
-X-Google-Smtp-Source: AGHT+IGeSMifuSlZ3eGvRhBSncLQrvYxQzUJxE3dTXFno94ky3upBk44K71olMO1EOoTRq1QNEd2lQ==
-X-Received: by 2002:a17:902:7848:b0:1d3:2d73:e1ae with SMTP id e8-20020a170902784800b001d32d73e1aemr8568885pln.109.1703153888223;
-        Thu, 21 Dec 2023 02:18:08 -0800 (PST)
-Received: from code.. ([144.202.108.46])
-        by smtp.gmail.com with ESMTPSA id a17-20020a170902ee9100b001d0c418174fsm1255375pld.117.2023.12.21.02.18.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Dec 2023 02:18:08 -0800 (PST)
-From: Yuntao Wang <ytcoode@gmail.com>
-To: linux-kernel@vger.kernel.org,
-	x86@kernel.org
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Baoquan He <bhe@redhat.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Simon Horman <horms@kernel.org>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Yuntao Wang <ytcoode@gmail.com>
-Subject: [PATCH] x86/kexec: fix incorrect end address passed to kernel_ident_mapping_init()
-Date: Thu, 21 Dec 2023 18:17:02 +0800
-Message-ID: <20231221101702.20956-1-ytcoode@gmail.com>
-X-Mailer: git-send-email 2.43.0
+        d=1e100.net; s=20230601; t=1703154007; x=1703758807;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=03hQ4xDH3ZdArEtlBeQWM6+JQhq7YbGI4xUxwEElpFc=;
+        b=LyWoOWlbw2FQCjU4dDdZxPPXJoru7Q0dZd5Ex9HaUnNM4E+Iv44y+oYM4tFpj009JH
+         gLhwS7tVvwQ9Pl4COiRxuelnRsIabXU6TdNgMMpLJ1Gfntn2gsDLE7aXwrDSPckkF7/4
+         s8mqwVz3HrJzny6uiXDcYzlmo1Z09e9KixOmiYeZP4+rF9zhOSixcB0Yof04EwW5M31Y
+         KwhhsisrlK+Nrx0w87+l5f7z0rjYlDLZ0wizb2bosCqZaf3SpL3BaqU/I3dAcyE+UmcQ
+         7C8uR4vL/KTc3qPaHx4/5Vm7zSLMYfO/WZKuWuJUOkOuUB6FOKKfvGfnxXi1VUIaufQL
+         nu6w==
+X-Gm-Message-State: AOJu0YzoxqHxHXqG4JdsileluCyY1ThhJq419UXS9x4HJ4Y6m2Ry3QVN
+	YQabOBXGTx7qk7L/Quus29FYmR0lOVlSsk11mMaJw6zBE/gRAg==
+X-Google-Smtp-Source: AGHT+IF7JcaUe7esEAOgMsDE8x43U2N9OCJ++O3rTCKcYNxpvMih3JiYiKgj/YASzRkyb5lC7vXlxWIfVjMTcmMVpJQ=
+X-Received: by 2002:a05:6122:3119:b0:4b6:dbc2:1079 with SMTP id
+ cg25-20020a056122311900b004b6dbc21079mr168382vkb.0.1703154006993; Thu, 21 Dec
+ 2023 02:20:06 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20231219101620.4617-1-xiongxin@kylinos.cn> <20231220022901.29158-1-xiongxin@kylinos.cn>
+In-Reply-To: <20231220022901.29158-1-xiongxin@kylinos.cn>
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+Date: Thu, 21 Dec 2023 11:19:55 +0100
+Message-ID: <CAMRc=Md7ODHUSe2fa37NazgJoV5aGXRh1Pp24LcFc49=UXgnwA@mail.gmail.com>
+Subject: Re: [PATCH v5] gpio: dwapb: mask/unmask IRQ when disable/enale it
+To: xiongxin <xiongxin@kylinos.cn>
+Cc: fancer.lancer@gmail.com, hoan@os.amperecomputing.com, 
+	linus.walleij@linaro.org, andy@kernel.org, linux-gpio@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, stable@kernel.org, 
+	Riwen Lu <luriwen@kylinos.cn>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-kernel_ident_mapping_init() takes an exclusive memory range [pstart, pend)
-where pend is not included in the range, while res represents an inclusive
-memory range [start, end] where end is considered part of the range.
+On Wed, Dec 20, 2023 at 3:29=E2=80=AFAM xiongxin <xiongxin@kylinos.cn> wrot=
+e:
+>
+> In the hardware implementation of the I2C HID driver based on DesignWare
+> GPIO IRQ chip, when the user continues to use the I2C HID device in the
+> suspend process, the I2C HID interrupt will be masked after the resume
+> process is finished.
+>
+> This is because the disable_irq()/enable_irq() of the DesignWare GPIO
+> driver does not synchronize the IRQ mask register state. In normal use
+> of the I2C HID procedure, the GPIO IRQ irq_mask()/irq_unmask() functions
+> are called in pairs. In case of an exception, i2c_hid_core_suspend()
+> calls disable_irq() to disable the GPIO IRQ. With low probability, this
+> causes irq_unmask() to not be called, which causes the GPIO IRQ to be
+> masked and not unmasked in enable_irq(), raising an exception.
+>
+> Add synchronization to the masked register state in the
+> dwapb_irq_enable()/dwapb_irq_disable() function. mask the GPIO IRQ
+> before disabling it. After enabling the GPIO IRQ, unmask the IRQ.
+>
+> Fixes: 7779b3455697 ("gpio: add a driver for the Synopsys DesignWare APB =
+GPIO block")
+> Cc: stable@kernel.org
+> Co-developed-by: Riwen Lu <luriwen@kylinos.cn>
+> Signed-off-by: Riwen Lu <luriwen@kylinos.cn>
+> Signed-off-by: xiongxin <xiongxin@kylinos.cn>
+> Acked-by: Serge Semin <fancer.lancer@gmail.com>
+> Reviewed-by: Andy Shevchenko <andy@kernel.org>
+> ---
+> v5:
+>         * fix typo in patch description
+> v4:
+>         * Add patch tag information
+> v3:
+>         * Modify the submitter's information
+> v2:
+>         * Resubmit the patch to fix this exception from the DesignWare
+>           GPIO driver side
+> v1:
+>         * Resolve the exception from the IRQ core layer. (key point not
+>           found correctly)
+> ---
+>  drivers/gpio/gpio-dwapb.c | 12 ++++++++----
+>  1 file changed, 8 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/gpio/gpio-dwapb.c b/drivers/gpio/gpio-dwapb.c
+> index 4a4f61bf6c58..8c59332429c2 100644
+> --- a/drivers/gpio/gpio-dwapb.c
+> +++ b/drivers/gpio/gpio-dwapb.c
+> @@ -282,13 +282,15 @@ static void dwapb_irq_enable(struct irq_data *d)
+>  {
+>         struct gpio_chip *gc =3D irq_data_get_irq_chip_data(d);
+>         struct dwapb_gpio *gpio =3D to_dwapb_gpio(gc);
+> +       irq_hw_number_t hwirq =3D irqd_to_hwirq(d);
+>         unsigned long flags;
+>         u32 val;
+>
+>         raw_spin_lock_irqsave(&gc->bgpio_lock, flags);
+> -       val =3D dwapb_read(gpio, GPIO_INTEN);
+> -       val |=3D BIT(irqd_to_hwirq(d));
+> +       val =3D dwapb_read(gpio, GPIO_INTEN) | BIT(hwirq);
+>         dwapb_write(gpio, GPIO_INTEN, val);
+> +       val =3D dwapb_read(gpio, GPIO_INTMASK) & ~BIT(hwirq);
+> +       dwapb_write(gpio, GPIO_INTMASK, val);
+>         raw_spin_unlock_irqrestore(&gc->bgpio_lock, flags);
+>  }
+>
+> @@ -296,12 +298,14 @@ static void dwapb_irq_disable(struct irq_data *d)
+>  {
+>         struct gpio_chip *gc =3D irq_data_get_irq_chip_data(d);
+>         struct dwapb_gpio *gpio =3D to_dwapb_gpio(gc);
+> +       irq_hw_number_t hwirq =3D irqd_to_hwirq(d);
+>         unsigned long flags;
+>         u32 val;
+>
+>         raw_spin_lock_irqsave(&gc->bgpio_lock, flags);
+> -       val =3D dwapb_read(gpio, GPIO_INTEN);
+> -       val &=3D ~BIT(irqd_to_hwirq(d));
+> +       val =3D dwapb_read(gpio, GPIO_INTMASK) | BIT(hwirq);
+> +       dwapb_write(gpio, GPIO_INTMASK, val);
+> +       val =3D dwapb_read(gpio, GPIO_INTEN) & ~BIT(hwirq);
+>         dwapb_write(gpio, GPIO_INTEN, val);
+>         raw_spin_unlock_irqrestore(&gc->bgpio_lock, flags);
+>  }
+> --
+> 2.34.1
+>
 
-Therefore, passing res->end directly to kernel_ident_mapping_init() is
-incorrect, the correct end address should be `res->end + 1`.
+Queued for fixes, thanks!
 
-Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
----
- arch/x86/kernel/machine_kexec_64.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/x86/kernel/machine_kexec_64.c b/arch/x86/kernel/machine_kexec_64.c
-index 6f8df998890e..bc0a5348b4a6 100644
---- a/arch/x86/kernel/machine_kexec_64.c
-+++ b/arch/x86/kernel/machine_kexec_64.c
-@@ -44,7 +44,7 @@ static int mem_region_callback(struct resource *res, void *arg)
- 	struct init_pgtable_data *data = arg;
- 
- 	return kernel_ident_mapping_init(data->info, data->level4p,
--					 res->start, res->end);
-+					 res->start, res->end + 1);
- }
- 
- static int
--- 
-2.43.0
-
+Bartosz
 
