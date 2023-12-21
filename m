@@ -1,146 +1,122 @@
-Return-Path: <linux-kernel+bounces-8335-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8331-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C822581B5D4
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 13:29:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4782981B5C9
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 13:28:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7E93D2892DC
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 12:29:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0194328604B
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 12:28:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63F6C760B8;
-	Thu, 21 Dec 2023 12:28:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA23A6EB64;
+	Thu, 21 Dec 2023 12:28:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="2IcttrlW"
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="MWZwkPPr"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2079.outbound.protection.outlook.com [40.107.94.79])
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C34674E18;
-	Thu, 21 Dec 2023 12:28:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=oA+EpWuDycCIgbKrN3Glb/SE0T0PoLP42iEG6sBQXUTzN/IYlWWvpbvXYFL5vib8NkdVBq3zytGB23Maewp6dXYIaYhI/7S73z+ErwYhFR2uxXQUKgpGc6F+huT13nsnaOWF/X4CCaQuvADAkEvJ3l4a/KEqDtcUTrg1o7UEoP+CpnmrcFdBdCiz5jJ11Adcr5FRHe+auBQrw4wYm0xEY/5Nhx6Jb3sDe+1D59dVhTx0ki2LgwqpSF+p406Zpym9CppHJFq11J0oeU3HLTq6yvUVk8GbotOBSD53BlHU3P1YGYLzyLvDB/xgnD9+b0EyovamIK018YvBVoMTUoShPw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=uO8Hkqf3nYkoWcd7AbiWmGc0BbzDrlT8pIaCDOVOBH4=;
- b=iQYfzr5Y/lJlcYKXyBy776tkphb0N6TM6MR06SvDKGZug8y9Mm8OildRDDuGqQz/LbI60KBPeeJSM9j9MOXdDh958pDqFAewdU8qd2YYXD0+jhADmvTSMjHrqvYDeZ7dndwd7qHvXbpf2gH/cfHTweM/HXwFoen8DVIS4025b6ZuRWwDaGAA30p/IFd2NczcVj2G58o+e7Eggo9mfe9eiomDF+w2Ehj++1ZAnh0Cpw7JIlh6KMTnxBzUY7/aRHm13V/0xbirrnh3ic6FGGXWmgtscnn6eYeRe0kImQHyeK8kOvzle5TRay7fCn34IdbtfMB0mP1WNNfVoM0vyBz3Jg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uO8Hkqf3nYkoWcd7AbiWmGc0BbzDrlT8pIaCDOVOBH4=;
- b=2IcttrlWW1dPoToL8+EvXKaG+nTRrxpAzZF7sU1IhpYJDie7zmx+c56beDc7G059wAIz3sPaCw9jn+uoWMtmkYABhX/A7fLw0dVBXVPJ2pl4KjPPeoH5wr+DOcfZDjTwfP50XeYJVpmVqZprcEITFmIcSyr+IkOjiPPRZStD4sI=
-Received: from MW4P221CA0018.NAMP221.PROD.OUTLOOK.COM (2603:10b6:303:8b::23)
- by BN9PR12MB5258.namprd12.prod.outlook.com (2603:10b6:408:11f::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7113.21; Thu, 21 Dec
- 2023 12:28:27 +0000
-Received: from MWH0EPF000971E9.namprd02.prod.outlook.com
- (2603:10b6:303:8b:cafe::92) by MW4P221CA0018.outlook.office365.com
- (2603:10b6:303:8b::23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7113.18 via Frontend
- Transport; Thu, 21 Dec 2023 12:28:26 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- MWH0EPF000971E9.mail.protection.outlook.com (10.167.243.71) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7113.14 via Frontend Transport; Thu, 21 Dec 2023 12:28:26 +0000
-Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Thu, 21 Dec
- 2023 06:28:24 -0600
-From: Michal Simek <michal.simek@amd.com>
-To: <linux-kernel@vger.kernel.org>, <monstr@monstr.eu>,
-	<michal.simek@xilinx.com>, <git@xilinx.com>
-CC: Conor Dooley <conor+dt@kernel.org>, Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>, Laurent Pinchart
-	<laurent.pinchart@ideasonboard.com>, Parth Gajjar <parth.gajjar@amd.com>,
-	Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>, Rob Herring
-	<robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH v3 4/4] arm64: zynqmp: Rename zynqmp-power node to power-management
-Date: Thu, 21 Dec 2023 13:27:57 +0100
-Message-ID: <bf24cde92c2b9e2824847687fab69fc25c533d53.1703161663.git.michal.simek@amd.com>
-X-Mailer: git-send-email 2.36.1
-In-Reply-To: <cover.1703161663.git.michal.simek@amd.com>
-References: <cover.1703161663.git.michal.simek@amd.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 538C46EB63;
+	Thu, 21 Dec 2023 12:28:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3BLCS68v015162;
+	Thu, 21 Dec 2023 06:28:06 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1703161686;
+	bh=5AimOjX8mVtl/H74cpa+H08a66kuDuPQZ9w/xBNEu9w=;
+	h=Date:From:To:CC:Subject:References:In-Reply-To;
+	b=MWZwkPPr7eTZA4xXasV4hbZ43I5+TV/CtuF/ezXGIVUxv0/hwrXHdhfMv4pbWLhH+
+	 zlDbHv7+MAcn45N4Z2JxuPbaXf0iem/7TMUHthDKUJJBTDQE/Tc2dXoJdZQihF/NCq
+	 DuSn6Wr6AjdTKsJUuiwE7TOpa/+uAmy+1A394O50=
+Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3BLCS5Ch117361
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Thu, 21 Dec 2023 06:28:05 -0600
+Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 21
+ Dec 2023 06:28:05 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 21 Dec 2023 06:28:05 -0600
+Received: from localhost (uda0133052.dhcp.ti.com [128.247.81.232])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3BLCS5gA090270;
+	Thu, 21 Dec 2023 06:28:05 -0600
+Date: Thu, 21 Dec 2023 06:28:05 -0600
+From: Nishanth Menon <nm@ti.com>
+To: Jayesh Choudhary <j-choudhary@ti.com>
+CC: <vigneshr@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <a-bhatia1@ti.com>, <rogerq@kernel.org>, <sabiya.d@ti.com>,
+        <u-kumar1@ti.com>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH] arm64: dts: ti: k3-am69-sk: remove
+ assigned-clock-parents for unused VP
+Message-ID: <20231221122805.3kl5mujtk2npvrmf@skiing>
+References: <20231221113042.48492-1-j-choudhary@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=928; i=michal.simek@amd.com; h=from:subject:message-id; bh=UqwBcwhjjOZze1EbwhuQ03cJrt3vxRGVfDSVVLHBiMU=; b=owGbwMvMwCR4yjP1tKYXjyLjabUkhtQWfS+biZphGv4+vzoE9H3CP1079+nX+RXdW0+rR6XeD 2WXXlffEcvCIMjEICumyCJtc+XM3soZU4QvHpaDmcPKBDKEgYtTACYSK8owP16iTzcjayl73qXI Y+9tZ83aoW5/kmF+zDKZM6EOvYervXOMqt5IPFePfW0PAA==
-X-Developer-Key: i=michal.simek@amd.com; a=openpgp; fpr=67350C9BF5CCEE9B5364356A377C7F21FE3D1F91
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MWH0EPF000971E9:EE_|BN9PR12MB5258:EE_
-X-MS-Office365-Filtering-Correlation-Id: bc475010-6988-49ef-68ba-08dc0220550a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	NMNRzzTkoeYKbC23mU6l6nFTuMNyLRyHMxL7Ul61EUXuN9wZDAZVGTCEdSsmAwBElSJM4DSfYqX06jyzFm07X80jMAs92fnKEpXbSWcH1dj72g3731s0YQmXCuPkiJ5xN9B5Fu9FI7hCFmJWiAQohDEY2Kh38UAooRXoBiKh12qbzrsCUlxrZ6SHQRw9hbIBMz+knxb7mjRB46aIbB9kJbLofyo8S5m5uNYgvwS6RzRvvY8f+2BckkPYzu4K2ifZlAqC5ooDQKTdJqPuiNiaq9ru7Jtv6+1k83wgRHPmW0Wcg3nhPbubLYJelGVZ5sTjjGvZBQxCjuVAkXp5MRkqv23Hp05Lf1g+pyajkeD2kMKwNWwoyw8OjvA5d5d5CUAZVxooafNzAnB+FlZigFLZu5zKXQyJuYaS29G8CM3QMj5PMkFU2+irFJlVpM8LRW5hgSMBKSUKMKRm6WDAT8Htq4aF4z0giY3N7oUufRUk2z5XG7Gm0tWTDUsNEqbBDwCd74U67r2GgQAo0MNFX3NagNZfHWzihjWMQ7zmKraOPnZYLVawDufdCV+jNBtxUNP/V0puUnrUpdpyXoK8IfizCVkPATq6fnzPsKlLbFa2oWyEYyXGqh7WAcBXAIkxeBx3Zh0hmGFIfARLE3v+VhNED/2Y/KOOzjqz5nWimtlY7Q93EUYv/NeTtqt7iHiTSYixdph/fD8Jsi5b0beH7/GV4lpsW/IkBxzsyzSN9gBZSeCUb2M1m8G3zyX8+ZTHMdHTovoYfkrx3QbIbVC2PBhtaaSvi6TMdXs2rfJcVjQy0P8=
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(396003)(376002)(136003)(346002)(230922051799003)(64100799003)(451199024)(186009)(82310400011)(1800799012)(46966006)(40470700004)(36840700001)(40460700003)(16526019)(426003)(336012)(2616005)(26005)(6666004)(36860700001)(47076005)(83380400001)(4326008)(44832011)(8676002)(8936002)(41300700001)(4744005)(2906002)(478600001)(316002)(5660300002)(110136005)(70586007)(70206006)(54906003)(36756003)(82740400003)(86362001)(356005)(81166007)(40480700001)(2101003)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Dec 2023 12:28:26.7159
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: bc475010-6988-49ef-68ba-08dc0220550a
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	MWH0EPF000971E9.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR12MB5258
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20231221113042.48492-1-j-choudhary@ti.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Rename zynqmp-power node name to power-management which is more aligned
-with generic node name recommendation.
+On 17:00-20231221, Jayesh Choudhary wrote:
+> VP2 and VP3 are unused video ports and VP3 share the same parent
+> clock as VP1 causing issue with pixel clock setting for HDMI (VP1).
+> So remove the parent clocks for unused VPs.
+> 
+> Fixes: 6f8605fd7d11 ("arm64: dts: ti: k3-am69-sk: Add DP and HDMI support")
+> Reported-by: Nishanth Menon <nm@ti.com>
+> Closes: https://storage.kernelci.org/mainline/master/v6.7-rc6/arm64/defconfig/gcc-10/lab-ti/baseline-nfs-am69_sk-fs.txt
+> Signed-off-by: Jayesh Choudhary <j-choudhary@ti.com>
+> ---
+> 
+> Local testing log for HDMI on AM69-SK:
+> <https://gist.github.com/Jayesh2000/517395cd85eb28d65b8ee4568cefb809>
 
-Signed-off-by: Michal Simek <michal.simek@amd.com>
----
+Has this been always failing or just something introduced in rc6? I know
+I noticed this in rc6.. so wondering..
 
-Changes in v3:
-- s/power-controller/power-management/g
-- update subject and commit message to match sed above
+> 
+>  arch/arm64/boot/dts/ti/k3-am69-sk.dts | 8 ++------
+>  1 file changed, 2 insertions(+), 6 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/ti/k3-am69-sk.dts b/arch/arm64/boot/dts/ti/k3-am69-sk.dts
+> index 8da591579868..370980eb59b0 100644
+> --- a/arch/arm64/boot/dts/ti/k3-am69-sk.dts
+> +++ b/arch/arm64/boot/dts/ti/k3-am69-sk.dts
+> @@ -918,13 +918,9 @@ &dss {
+>  	pinctrl-names = "default";
+>  	pinctrl-0 = <&dss_vout0_pins_default>;
+>  	assigned-clocks = <&k3_clks 218 2>,
+> -			  <&k3_clks 218 5>,
+> -			  <&k3_clks 218 14>,
+> -			  <&k3_clks 218 18>;
+> +			  <&k3_clks 218 5>;
+>  	assigned-clock-parents = <&k3_clks 218 3>,
+> -				 <&k3_clks 218 7>,
+> -				 <&k3_clks 218 16>,
+> -				 <&k3_clks 218 22>;
+> +				 <&k3_clks 218 7>;
+>  };
+>  
+>  &serdes_wiz4 {
+> -- 
+> 2.25.1
+> 
 
-Changes in v2:
-- New patch is series
-
- arch/arm64/boot/dts/xilinx/zynqmp.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/arm64/boot/dts/xilinx/zynqmp.dtsi b/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
-index eaba466804bc..ea1a9ba16246 100644
---- a/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
-+++ b/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
-@@ -186,7 +186,7 @@ zynqmp_firmware: zynqmp-firmware {
- 			method = "smc";
- 			bootph-all;
- 
--			zynqmp_power: zynqmp-power {
-+			zynqmp_power: power-management {
- 				bootph-all;
- 				compatible = "xlnx,zynqmp-power";
- 				interrupt-parent = <&gic>;
 -- 
-2.36.1
-
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
 
