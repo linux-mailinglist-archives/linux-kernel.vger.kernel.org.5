@@ -1,120 +1,204 @@
-Return-Path: <linux-kernel+bounces-7738-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7739-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8F2281AC74
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 02:58:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C307781AC77
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 03:01:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A704228784B
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 01:58:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7B90828282A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 02:01:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BF7363C4;
-	Thu, 21 Dec 2023 01:58:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D962A944;
+	Thu, 21 Dec 2023 02:01:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eH5PmCz8"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fvl5fdhk"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
+Received: from mail-io1-f51.google.com (mail-io1-f51.google.com [209.85.166.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98AE25239
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 01:58:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0619C945A;
+	Thu, 21 Dec 2023 02:01:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-50e587fb62fso461843e87.2
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 17:58:39 -0800 (PST)
+Received: by mail-io1-f51.google.com with SMTP id ca18e2360f4ac-7b7fdde8b54so12756439f.1;
+        Wed, 20 Dec 2023 18:01:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703123917; x=1703728717; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1703124085; x=1703728885; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ErAEEiT3RhrIXvHzreTCpHV5zkBsSIfKV0fdWMIpUMQ=;
-        b=eH5PmCz8iqAiwTjyf2qpv7I3y8ymORvdSoT3hKOReu/FFsgKhRxSzyln9UbEQZwb4n
-         vy5c1GpG1RbeHUE8O2EbW4RzDhnHEcnVy09tmtHio8Tr8tCOSNiZtYY4jJP8oHUPSEBl
-         kKgGeMglEqvIQM0GV/h/NLMMoqlb6Hpd55DXn4G3yCBB74GdyZDmxk8S4ifOO5p1pRcP
-         NJMbAE0Pn/R9BF/vfZNYyyCFLsxx0KpYi/vbDcXpZ9yCq/iC8mz7l08eWQn7phfPlX30
-         6UFPPAVc7nNoJcdFwQp2teTX9QA844HBApaH1Ux5Oxrf8qQmpK8TYLgGBUfmE/hAmh+t
-         9flg==
+        bh=7uprnz/jjYuy4jWp8M6YseVkbWg8KRWXhaIAky0jmfE=;
+        b=fvl5fdhkGCMSY4JACtoE5vZEE0OZ5mvM5hc/zaI0tobA2ZmXV0w5QWqYAXIhfvhdR3
+         qzee0RVDbtCM6+9YCwFYnS+/mP+MQdmFdg19YU15PCKZC+6VjmXgqkwL/g4KjsfW4Ibk
+         0odUQKp38Rqic+FTfD+FLUUhzBq3F4lW1DGqJXJpLNI+/g85mA+D2qVwZECHiUhbtbjd
+         1C4pxbpuBXD+u94iW/HadP649b/wmqI14iI1JJE0cr2YQr9QLdWc8bLcHPbxhF8ZUxQH
+         xoKGZKIgzltMwZMGS6eRkB9B1CcmJkerTpE2ztDeV5dj1kBcszWdZSmXYX7gNDIj7/65
+         l0GA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703123917; x=1703728717;
+        d=1e100.net; s=20230601; t=1703124085; x=1703728885;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ErAEEiT3RhrIXvHzreTCpHV5zkBsSIfKV0fdWMIpUMQ=;
-        b=feaHLrbwhUCgSTO5jGYw5sf77jQVPfsgRm16m1RzAlI6rjxIn2sbozaB1HQksoQvU3
-         6kjCpeyvh80TDeKqHRgm9A7CNwdZBUBbtrF2AR9c29cLwhkUXuv9AVqyG3ZMEpgXMYcR
-         EC1SCMr1dpy0V7PSmVHfdXe93clQil1CCQgJHY0w3xCAgpaolhi/WurxFM33sFeCSQsS
-         5/H+Z7Zt/jtqyo7eI8trB9oiVbBjJcTsoaw1bz19ESBjUN772xJcqNBBZ3wY65Yk8K8D
-         7+Kmecbz1FMVpIUV2cIuYAWF03rC62oOmIVXhTW1RsXZEik4HYr8Nqx7RTEs9qULPxfc
-         GO6A==
-X-Gm-Message-State: AOJu0YyVMzC5d1ZWRZPoxjgw2dAY1JFZ3vq96chhtQlngQOF8hf0kPg0
-	3aZchWsWn7B0a4eJJ6R5jSkkbat/Jdvt2P1WVicZNuTv
-X-Google-Smtp-Source: AGHT+IHMqhXwYu59CmMuePryKXW2xxWXRW1jObGnLa7i6A5j56gEB0lfNOSdq+FGpJILArPhBxoPpVVe9iHlFXhibHU=
-X-Received: by 2002:a05:6512:3687:b0:50e:384c:6982 with SMTP id
- d7-20020a056512368700b0050e384c6982mr2896047lfs.42.1703123917349; Wed, 20 Dec
- 2023 17:58:37 -0800 (PST)
+        bh=7uprnz/jjYuy4jWp8M6YseVkbWg8KRWXhaIAky0jmfE=;
+        b=QmkDB2coY1A7hecqxdYSm8mnXFiM4d6nQDmU7iktU+AYFQPiQjuSxiGzPRXIyb2nn6
+         E0r13MTApr1wtySm71cq0kTYVojFFlRjFb7yVfTqf2Oq7Vu6fCRrtXa+1cjB2j6dJwQT
+         iP0hl1pUVFDg1H3mPCudWX6vnXRR25qwx2TI/aJU3xwjtH1wIrTAdAWyuOe4Zsdb4wpt
+         IfAbBVnare7cGOAWHQ/dwnfaBV+rzi4Nj52epboRdRkUyFD+5TVi8WqkPZwO1POF0fvL
+         3bbAUcw9gbI1KVCH8xAuT3b4eiZGRofXBGtttYVGjbLJmximCtfejLWYGJRvGpQYFtjU
+         wsjA==
+X-Gm-Message-State: AOJu0YxPh0MDMn7wQPtygLkLttPWqW/4j5+Znwrg3YO0Iz20hAsxTtq7
+	ztzT3qrV6rf6lDYokq4K3l6PhDFMkU/zz0XMqX0=
+X-Google-Smtp-Source: AGHT+IHR51LjiWdOebtbBexnDeSV//C/Noc4zDv9CvLklzYhekwRS6kGUobGMBJIQkMj3Tu/WQhPg+zbFBnbMgKV5YM=
+X-Received: by 2002:a6b:3f56:0:b0:7b9:232c:eeb3 with SMTP id
+ m83-20020a6b3f56000000b007b9232ceeb3mr2763300ioa.6.1703124084910; Wed, 20 Dec
+ 2023 18:01:24 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231220102948.1963798-1-zhaoyang.huang@unisoc.com> <ZYL2rbD5UTz3s8gg@casper.infradead.org>
-In-Reply-To: <ZYL2rbD5UTz3s8gg@casper.infradead.org>
-From: Zhaoyang Huang <huangzhaoyang@gmail.com>
-Date: Thu, 21 Dec 2023 09:58:25 +0800
-Message-ID: <CAGWkznFcMkkqsKJSyHJfts9ZiYsxxg_dFTccieQ4+boRDJgG4g@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/1] mm: mark folio accessed in minor fault
-To: Matthew Wilcox <willy@infradead.org>
-Cc: "zhaoyang.huang" <zhaoyang.huang@unisoc.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org, steve.kang@unisoc.com
+References: <20231220152653.3273778-1-schatzberg.dan@gmail.com> <20231220152653.3273778-2-schatzberg.dan@gmail.com>
+In-Reply-To: <20231220152653.3273778-2-schatzberg.dan@gmail.com>
+From: Nhat Pham <nphamcs@gmail.com>
+Date: Wed, 20 Dec 2023 18:01:14 -0800
+Message-ID: <CAKEwX=NppvrRFLJzksQ5noHmWHEfWmyiVA2DyhMcY3Lh9dgJ3w@mail.gmail.com>
+Subject: Re: [PATCH v5 1/2] mm: add defines for min/max swappiness
+To: Dan Schatzberg <schatzberg.dan@gmail.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Yosry Ahmed <yosryahmed@google.com>, Huan Yang <link@vivo.com>, linux-kernel@vger.kernel.org, 
+	cgroups@vger.kernel.org, linux-mm@kvack.org, Tejun Heo <tj@kernel.org>, 
+	Zefan Li <lizefan.x@bytedance.com>, Jonathan Corbet <corbet@lwn.net>, 
+	Michal Hocko <mhocko@kernel.org>, Shakeel Butt <shakeelb@google.com>, 
+	Muchun Song <muchun.song@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, 
+	Kefeng Wang <wangkefeng.wang@huawei.com>, SeongJae Park <sj@kernel.org>, 
+	"Vishal Moola (Oracle)" <vishal.moola@gmail.com>, Yue Zhao <findns94@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Dec 20, 2023 at 10:14=E2=80=AFPM Matthew Wilcox <willy@infradead.or=
-g> wrote:
+On Wed, Dec 20, 2023 at 7:27=E2=80=AFAM Dan Schatzberg <schatzberg.dan@gmai=
+l.com> wrote:
 >
-> On Wed, Dec 20, 2023 at 06:29:48PM +0800, zhaoyang.huang wrote:
-> > From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
-> >
-> > Inactive mapped folio will be promoted to active only when it is
-> > scanned in shrink_inactive_list, while the vfs folio will do this
-> > immidiatly when it is accessed. These will introduce two affections:
-> >
-> > 1. NR_ACTIVE_FILE is not accurate as expected.
-> > 2. Low reclaiming efficiency caused by dummy nactive folio which should
-> >    be kept as earlier as shrink_active_list.
-> >
-> > I would like to suggest mark the folio be accessed in minor fault to
-> > solve this situation.
+> We use the constants 0 and 200 in a few places in the mm code when
+> referring to the min and max swappiness. This patch adds MIN_SWAPPINESS
+> and MAX_SWAPPINESS #defines to improve clarity. There are no functional
+> changes.
 >
-> This isn't going to be as effective as you imagine.  Almost all file
-> faults are handled through filemap_map_pages().  So I must ask, what
-> testing have you done with this patch?
+> Signed-off-by: Dan Schatzberg <schatzberg.dan@gmail.com>
+> ---
+>  include/linux/swap.h |  2 ++
+>  mm/memcontrol.c      |  2 +-
+>  mm/vmscan.c          | 14 +++++++-------
+>  3 files changed, 10 insertions(+), 8 deletions(-)
 >
-> And while you're gathering data, what effect would this patch have on you=
-r
-> workloads?
-Thanks for heads-up, I am out of date for readahead mechanism. My goal
-is to have mapped file pages behave like other pages which could be
-promoted immediately when they are accessed. I will update the patch
-and provide benchmark data in new patch set.
+> diff --git a/include/linux/swap.h b/include/linux/swap.h
+> index f6dd6575b905..e2ab76c25b4a 100644
+> --- a/include/linux/swap.h
+> +++ b/include/linux/swap.h
+> @@ -407,6 +407,8 @@ extern unsigned long try_to_free_pages(struct zonelis=
+t *zonelist, int order,
+>
+>  #define MEMCG_RECLAIM_MAY_SWAP (1 << 1)
+>  #define MEMCG_RECLAIM_PROACTIVE (1 << 2)
+> +#define MIN_SWAPPINESS 0
+> +#define MAX_SWAPPINESS 200
+>  extern unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *mem=
+cg,
+>                                                   unsigned long nr_pages,
+>                                                   gfp_t gfp_mask,
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index b226090fd906..fbe9f02dd206 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -4337,7 +4337,7 @@ static int mem_cgroup_swappiness_write(struct cgrou=
+p_subsys_state *css,
+>  {
+>         struct mem_cgroup *memcg =3D mem_cgroup_from_css(css);
+>
+> -       if (val > 200)
+> +       if (val > MAX_SWAPPINESS)
+>                 return -EINVAL;
+>
+>         if (!mem_cgroup_is_root(memcg))
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index 9dd8977de5a2..d91963e2d47f 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -183,7 +183,7 @@ struct scan_control {
+>  #endif
+>
+>  /*
+> - * From 0 .. 200.  Higher means more swappy.
+> + * From 0 .. MAX_SWAPPINESS.  Higher means more swappy.
+>   */
+>  int vm_swappiness =3D 60;
+>
+> @@ -2403,7 +2403,7 @@ static void get_scan_count(struct lruvec *lruvec, s=
+truct scan_control *sc,
+>         ap =3D swappiness * (total_cost + 1);
+>         ap /=3D anon_cost + 1;
+>
+> -       fp =3D (200 - swappiness) * (total_cost + 1);
+> +       fp =3D (MAX_SWAPPINESS - swappiness) * (total_cost + 1);
+>         fp /=3D file_cost + 1;
+>
+>         fraction[0] =3D ap;
+> @@ -4400,7 +4400,7 @@ static int get_type_to_scan(struct lruvec *lruvec, =
+int swappiness, int *tier_idx
+>  {
+>         int type, tier;
+>         struct ctrl_pos sp, pv;
+> -       int gain[ANON_AND_FILE] =3D { swappiness, 200 - swappiness };
+> +       int gain[ANON_AND_FILE] =3D { swappiness, MAX_SWAPPINESS - swappi=
+ness };
+>
+>         /*
+>          * Compare the first tier of anon with that of file to determine =
+which
+> @@ -4436,7 +4436,7 @@ static int isolate_folios(struct lruvec *lruvec, st=
+ruct scan_control *sc, int sw
+>         /*
+>          * Try to make the obvious choice first. When anon and file are b=
+oth
+>          * available from the same generation, interpret swappiness 1 as =
+file
+> -        * first and 200 as anon first.
+> +        * first and MAX_SWAPPINESS as anon first.
+>          */
+>         if (!swappiness)
+>                 type =3D LRU_GEN_FILE;
+> @@ -4444,7 +4444,7 @@ static int isolate_folios(struct lruvec *lruvec, st=
+ruct scan_control *sc, int sw
+>                 type =3D LRU_GEN_ANON;
+>         else if (swappiness =3D=3D 1)
+>                 type =3D LRU_GEN_FILE;
+> -       else if (swappiness =3D=3D 200)
+> +       else if (swappiness =3D=3D MAX_SWAPPINESS)
+>                 type =3D LRU_GEN_ANON;
+>         else
+>                 type =3D get_type_to_scan(lruvec, swappiness, &tier);
+> @@ -5398,9 +5398,9 @@ static int run_cmd(char cmd, int memcg_id, int nid,=
+ unsigned long seq,
+>
+>         lruvec =3D get_lruvec(memcg, nid);
+>
+> -       if (swappiness < 0)
+> +       if (swappiness < MIN_SWAPPINESS)
+>                 swappiness =3D get_swappiness(lruvec, sc);
+> -       else if (swappiness > 200)
+> +       else if (swappiness > MAX_SWAPPINESS)
+>                 goto done;
+>
+>         switch (cmd) {
+> --
+> 2.39.3
+>
 
->
-> diff --git a/mm/filemap.c b/mm/filemap.c
-> index 2e6b1daac6cd..8cecf82dcc5a 100644
-> --- a/mm/filemap.c
-> +++ b/mm/filemap.c
-> @@ -3418,6 +3418,7 @@ static struct folio *next_uptodate_folio(struct xa_=
-state *xas,
->                 max_idx =3D DIV_ROUND_UP(i_size_read(mapping->host), PAGE=
-_SIZE);
->                 if (xas->xa_index >=3D max_idx)
->                         goto unlock;
-> +               folio_mark_accessed(folio);
->                 return folio;
->  unlock:
->                 folio_unlock(folio);
->
+Sorry for being late to the party :) Was preoccupied with zswap convos.
+
+Hmm these are all the occurrences of 0 and 200 (in the context of
+swappiness) I can dig out. So, FWIW:
+Reviewed-by: Nhat Pham <nphamcs@gmail.com>
 
