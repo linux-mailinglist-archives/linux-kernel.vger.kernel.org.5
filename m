@@ -1,52 +1,52 @@
-Return-Path: <linux-kernel+bounces-8799-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8800-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD43F81BC6F
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 17:56:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4034E81BC72
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 17:56:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 838EA285B07
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 16:56:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AAE901F2220B
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 16:56:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBB026350F;
-	Thu, 21 Dec 2023 16:54:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7ADA64A93;
+	Thu, 21 Dec 2023 16:54:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="ONmXltIa"
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="IasY44lk"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from EUR01-DB5-obe.outbound.protection.outlook.com (mail-db5eur01on2053.outbound.protection.outlook.com [40.107.15.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CAC1634F8;
-	Thu, 21 Dec 2023 16:54:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E1F463503;
+	Thu, 21 Dec 2023 16:54:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=di20RUglnkTR40FVPLINJiUKyI0tUGoY4mXMB0rKT+Qu93PcHExbkebEJx8rKrEEAOIAbv0/e3mfcZ0n7FVO/zj+UjwkvbDS7pjD4Xe2uggfSMw/gOSUsgUgSX938dz+LQYDuC7rpfxK4q/0nt5GiP7oI148Mrj/GW5SdcauNAVD3d4hHQQvQf6nsO8hWgpjVAXQEojfBsIIzhMFDojSDDuazrbb8Gm5FxdWRkv/tZ+3zCZi/TeWWBMJQfQwCZyCcPkhbbTgjo/rB078V9GfvUNKfE7trPMBm/a9+I48V9fJu6n4evLCk6jVnchLJhIqEaXU+7nt9ZmwAWyLGBk9Lw==
+ b=bP/H7UlzxF2QmcfAx8HdmaIjpxKVtdslBtOpdyrRjsqt/NxJCmnfxmgvHq3uGLDLu3PXHro8H6L0g/0Yct5PwjnW91bfzpp9hd2h1cs1xrzMBAZQnORevcZACiDzS8LVFsAAAM8dUyiBkh1L9PRnqJhAaxZklDvecOZLCcdsw8d7TNeChcYG1Bcb7x6bqWzPDRzSH+/dgjtrRrHzeTCUuqtQxXJ77XsmALxthH6bFfSyCamClIGjx3ad7bPvzl0QH2ti1OF4Xpb7soSbEYw8FwKFbZ8Grth0Vad9QjaOmaP0ppowoQHAJo8rWBwThP+eQGtuXPuTyOyEhxr0fhGMMQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=1uU/DgeUPYPON4N4JAteu/Ha75T2xugBeu8V8eh6toY=;
- b=iarZ9iICei29MyyzmRC4Fs7YIfKU6G2SesDb+2PmwvL8fwljDcsemUZLPRPJgBjAqgoMpBEYIy/c2d+NNA1ezJ9VDUIVf+T8MWdnZy5vT2fb9WWErXBT3+40h2R5+YY48Gf+tUgSb7xP1xlIyBMMJusWV1VsRiuApyW3apg1vFw0+0gQn25QzSAc2amIiqVrpFmJZI2OBuV4cXwUsSgK8Dko51yb898EmSpRqldJdtpkP7f5ivnt9Gk5x4vwiA9QKnJzrwdo9XIJ8rbI+9TEI8quFu0Xf2GRJrpBbPFn9k0HkDBnh+G/MEP+co0yqd+QmnwG1kV4YxADt/pkcgGhgA==
+ bh=IqLzhXm7w+Z4S953PqAan6WN230SCZ/ZGpCHh5sp2NE=;
+ b=FsT2V5f95TOnV2QCJnYIxocodzsasSUfeK1vxMooCruyNC6+FZV+3gwKR8AmU/ujlg8uQJuTWjPuaKzknSd4p86DtRV/MQKy0EvVob/hll/mnk9xxhnDyvNh7s/tqnxniz32sUFl28nJQdsoaAXeER9fZfatPSjmum6lvBTHedPC43WzgJzp7ylhoAbHxsRdwUBAQKEZGYkcrKIoHbDBRRrIBuGmxZG9b6if7/Y0E0/EiSApMyNg2JLiykkL9oBunKTVdkCwuCkrZCLJNtXAblfcExObg1yLo6G0ExtYv/FiNRDrZVBkaeJFGk7UY/DXbRmBLsnTiZ3iYDO379YCCw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
  header.d=nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1uU/DgeUPYPON4N4JAteu/Ha75T2xugBeu8V8eh6toY=;
- b=ONmXltIatheBfEKmaTmTngg/2qeGGGOc80OCZurpiTw9630ASqN3fjqUy35jRBAUL+iTGu44RHMtGHkueJTrzBOzUmdjCybNilARqb4VNiV5bQd+EZNJiHt8Qh07jmdIf0PFtLx3zb6tTKn94PGKf1hgUKWGJ+cfIzanyULTPA8=
+ bh=IqLzhXm7w+Z4S953PqAan6WN230SCZ/ZGpCHh5sp2NE=;
+ b=IasY44lkS26oNEmdNqlNRwsIJPplF4Efo762T7UvDqCTKpFny8f1VEAinPIxEkCrJmfVAhR8J2FjX6rwhmC5YEVVRllI4/9MSYnuAeumUFaZwOCs2vUFUGmhJ6UCj2p/BnTkt0J5qWpH9j347h2sw5EzfgXYiwjhZZlSrLmZmD8=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nxp.com;
 Received: from AM6PR04MB4838.eurprd04.prod.outlook.com (2603:10a6:20b:4::16)
  by PR3PR04MB7324.eurprd04.prod.outlook.com (2603:10a6:102:91::9) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7113.21; Thu, 21 Dec
- 2023 16:54:49 +0000
+ 2023 16:54:52 +0000
 Received: from AM6PR04MB4838.eurprd04.prod.outlook.com
  ([fe80::95f5:5118:258f:ee40]) by AM6PR04MB4838.eurprd04.prod.outlook.com
  ([fe80::95f5:5118:258f:ee40%7]) with mapi id 15.20.7113.019; Thu, 21 Dec 2023
- 16:54:49 +0000
+ 16:54:52 +0000
 From: Frank Li <Frank.Li@nxp.com>
 To: peter.chen@kernel.org,
 	cugyly@163.com
@@ -58,9 +58,9 @@ Cc: Frank.Li@nxp.com,
 	linux-usb@vger.kernel.org,
 	pawell@cadence.com,
 	rogerq@kernel.org
-Subject: [PATCH 3/4] usb: cdns3: Fix uvc fail when DMA cross 4k boundery since sg  enabled
-Date: Thu, 21 Dec 2023 11:54:25 -0500
-Message-Id: <20231221165426.1590866-4-Frank.Li@nxp.com>
+Subject: [PATCH 4/4] Revert "usb: gadget: f_uvc: change endpoint allocation in uvc_function_bind()"
+Date: Thu, 21 Dec 2023 11:54:26 -0500
+Message-Id: <20231221165426.1590866-5-Frank.Li@nxp.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231221165426.1590866-1-Frank.Li@nxp.com>
 References: <20231221165426.1590866-1-Frank.Li@nxp.com>
@@ -77,129 +77,95 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: AM6PR04MB4838:EE_|PR3PR04MB7324:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5c8d98d5-cf49-4643-2ba5-08dc02458b93
+X-MS-Office365-Filtering-Correlation-Id: 4927bfe6-e06e-4ad7-0454-08dc02458d32
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	WE2zLfTzEZMwScuzu+NVdlE5v9zOFvqLR7mySFaUqZgcS0gLhgqCc94Xqsn43MYvp1AE1obpLdHBj27ysEPdEpRpBthtIQV1yEynQQbyFipaIC0siosYQ3UtI0f5okOrqeydgW7I3wYJLiiAVeYT0BQ1YWIz3Nlj/2oHz4OoHYKAdw5GCMmF5BDmI2JU69/yxDDXWpI7Xj1fUqzjzsdME8GaLKG7zQv1yAvx4/ichRCH/VCI9xLxcVEDkxAs0LPOFca+WTiKGMM7WuDOSMaoxfxNHuptYRI6VjWUpgEIlV4QkYtEsUgOjKMUTHnVVcXYb1QNBIS/Hc5+2UCZUUVOT41DkZiH/purfU1ptiI0JfP1O9bc4jm9W+vFO21aHrv8EYgjlrVrGor+x1fWwBsN+tMHNaAw+hF6SF6w0OyH8IOzeMKlNQeWrGLaVo75egrV23G7Dh+DsPL/pzQLazPtNhYWCfo3FFJ0FcObtizoApy0A800E8g5WLK60EbOyMLFOog4EwO+AhRv801cnvphqDh4nxHrNLLea+vvernLhszzJADyRZYYx/Qz3ZNMFnzVLSRpXut3kBpYTZudnghjlWpwXCU9+/IZkosTLAD9QjKVFJqHGgMtXcwrpln263Fx
+	vd5K+vbCdtN8PTC7YdHoWxWVNlDokVYUEnJi7d2Q1vRoVJJ9TfJUlLleLSt3KvnwkEisD2nIHhAKmYa6CSaYhoUhn30/Qriwf17SBXRb3YD8brgY3CFWmQOv9EajRcMpo7jBlDsKi6cRHG92zOl/oIN5/7MAD0XsQ7bbG87oeTDo2m+tyHaBllYhjA3PpoFpe9taiurrmBqlJo38tJnyE9y16DfdrBaXzybDhbMu6RxXTeJ+ArNaxKkktHptOGOnSNJ+Re3zUaGzxIIS4BmWrJaO0zYSeIMPA1oYTEwaIvrJJb0iJOS2sxHNzoQy8egVU7taP2675CCACwlwQgr1LQaWn5jmVhyeIBlFJJM54yiauHfgxpVTk263rzkDt/oVtAIyBBR0KDzUAgXDlJlX2Q1j/s9WePWyrP44TtVHC/sk3Z9vFLXzUTsLRRk4lLY7HybF5YujonAd0iSVz5mVxoQl3MXdniIomFSzalI/J2BR1jZo7im8FP2zK0f7yx7TF4ZSSw/WDPfcGlohWPl5QdsqkEym1VGh44Fa8+Zhxs8gw8jRO88byDx+09QWPcXuqM/hNpJ4t1MfpTLCD9MOfwiS+c0HCYXoLjOu1VVws3he6k/jZlsv3edzUEFDSReW
 X-Forefront-Antispam-Report:
 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4838.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(366004)(346002)(376002)(39860400002)(230922051799003)(64100799003)(451199024)(186009)(1800799012)(2616005)(6512007)(6666004)(26005)(6506007)(1076003)(52116002)(83380400001)(4326008)(8676002)(8936002)(41300700001)(2906002)(6486002)(478600001)(316002)(5660300002)(66946007)(66476007)(66556008)(36756003)(86362001)(38100700002)(38350700005);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?Y8jF0os8liuFVHaGnXzg3B0qfiiYY+zaf/8/GUF/xfKqNGqIn13wSILtPv8V?=
- =?us-ascii?Q?eA+dX+GwhR3bUOpNGfs5nofxf2hWhgj9Snbn0bYQOB0lFvVTjj9yv489E6HT?=
- =?us-ascii?Q?DoTCLyeSmkt1DgCBCnoo5MLQy9w8jlbq+gawsWM96OI/i6X6Cpt0wFVXwLo7?=
- =?us-ascii?Q?9wFgRL+9sh0En1r7hR/b79WpzE5WwjN1raFQHE9zSNp9qnTv3v6/+UhpLbdd?=
- =?us-ascii?Q?PHGASesCdeoXFlkCPuBLJiuO3gUqisefuLhTSJFP7DvjYEqcNEHcZo4mnPfG?=
- =?us-ascii?Q?jd20zjpcrVH5ELhhuCydfK5oYIjnxhsCy8JitRcTZEI2zDsgH65n3fNlIU2Y?=
- =?us-ascii?Q?SPidsOLy6D79Zsr24/uvEqU5CQRbxAnyLQzlTb7xwAOVmdXcyYt2zd9AhV0H?=
- =?us-ascii?Q?Q1cCazclp8quECe+o1tb+I19uG5Uv3Qw9EcOYKjPSNSZFjvH1+silKyVi1D4?=
- =?us-ascii?Q?1rD9oA7G3fRcYgK7qq1h4fixffwWk38NZCR7f0Pb2rUKzL9zRuT9p60fjpG/?=
- =?us-ascii?Q?0qPdmzlcJ0Rsd7im2AHY2U09ibVMMY6nvZhA/VrGJw/CXc7gT8qRF6qDBI1O?=
- =?us-ascii?Q?PndoUps8UkZDpokJZkeDhEn1G9ef2HiJtAdvoULRn1ISurvXTJR8Hhb7lcXC?=
- =?us-ascii?Q?+5qpT0Ya3AOCpikGeZlzmBUXPh0W6w/h4adBzB25CiE4dLrZN+mNtaHKpfx0?=
- =?us-ascii?Q?3/x/sdc3VQRCxxq4aoY17alX1RtrXdqpxA+e8CdVFPSrbZfjoj4aFZXtaYy8?=
- =?us-ascii?Q?PA1CzNirOYpn+d1pM7ajwe0ciAUxzHSSqqm0quwaj/fSo245oUBnBXLIt2Y+?=
- =?us-ascii?Q?i4qyp3Cm6Ij4hjlUgK3x5plgiIA4VGwJ+8hntJwzaAjRPUonhDP0CjyrrRrx?=
- =?us-ascii?Q?UB7z1lun8GSiDXDIZOeMNcd8qExWWVctUcpLkNCDv8dBYNo2IBglDk8OCF70?=
- =?us-ascii?Q?gWLY7/bW8QqKNxgf04BZLWsiigi+CwsbzehceDDTm7DulAeNjnQhqQ1bFsFP?=
- =?us-ascii?Q?F+x8ZljHHxCIAG1AOxEbRiZuRquzoE0fuKUHay/YpqlSraSii+14cJiIvhSw?=
- =?us-ascii?Q?l2ahr3/ffFUE74Gf+rinYRtaSCy7uf3I4CSFfMxeYCNMk2f7spHxEQHuD5jP?=
- =?us-ascii?Q?ieDMFPFVX5StgJM2TDspVED/Fq3JM0AEAEyCrFjz2EiuI8KSK6SVf1zNuEvc?=
- =?us-ascii?Q?2jnbD8Ej/TlQ/EpDV3rN8hJGXbk0JADSd/9fYv1dWBFkiRMWLedWlTQddM3l?=
- =?us-ascii?Q?6rTQt937NcuMr1b/vmdBKh2+Ci/l+hiQXeFdM/KnQM+q7E6E8iC92MP0X2xC?=
- =?us-ascii?Q?w6pWpPkC2P9Uugea03ngvT+dXvzPIUP4SGg6N/c8ps6TlFWQ9jZHsEp4IWvE?=
- =?us-ascii?Q?1PRg6JDfQ3aneo0bPcq3RJ5G74LQh/iCsOKrkjxY/qdG/L96H4qvMjUZjBgR?=
- =?us-ascii?Q?GcfQwuxzpMFC0bJEoSDBzSkq0aY2lItss7hjxv/XpMcs9uEBb1ZiQH2Z581t?=
- =?us-ascii?Q?OOhmEXjWCmuljuUOMNYyweHOgUyw8ipaNrhRJ7K/N3ZSWSdnjCeT3saAZ5+c?=
- =?us-ascii?Q?FKXrHCM3yCh4ewSryKw7W9/6fbRAsex8nU0NLOL/?=
+	=?us-ascii?Q?fj2Sab4oPmLafOSZ6T45riIbVP1QZ7RLKkHqmIgtTmtsTfebH6SBmv17DzCd?=
+ =?us-ascii?Q?vZPcchx0v+EhRUeWUJbeOm/bwKIyQZTX7h/ggJjxPFyUEALal7irsY3OGcE5?=
+ =?us-ascii?Q?P2InlsXhSyuNifcPAEP64urKN7+KI1w/V2kFBWYgtMfXntjYvVTRz7e8mELq?=
+ =?us-ascii?Q?xuIZrt7mO2ABrU+LJ7dVDVAC+xIEcKE1GcD7sf2XOr2QHaMOULvJTIo2OCTS?=
+ =?us-ascii?Q?sedQYInVHnXniJRh3XkfijL0pViYfi22OZAGxi6R10ZEr6KwWzKjGgDfhjxl?=
+ =?us-ascii?Q?0AhEnJ+8b1u/mK/IdX7UrFHZtcHcA5T8ZoKEiiBXnmY0e3J+TRcC94uMZ+gZ?=
+ =?us-ascii?Q?mwWkWIQNlpPXrxHldmvjmYumh4w7LcCG9isg7SIW0QrMmOzHCCjzu8ZP6uRa?=
+ =?us-ascii?Q?GhDSy3jsRMyauZuXLYuBOkIV2m359cQd6J+8YEd2bV4A/ROr4EGcerAaUaQH?=
+ =?us-ascii?Q?dzaS4mykti8GybtTAaMUONIZfAJ+O7U1FszChtzc3fdlelwN9gjyDFtWjDjo?=
+ =?us-ascii?Q?sy2DM1f2Z+ubF0u6xalu2rxCToj05QBsvoqHR+xUCce2+2fv/TJyNnc0nfAL?=
+ =?us-ascii?Q?rEIOCbpIbKi+j+cfLSkXmlF/NNJhn99VvzJ2g3Brs1oeWa0EV1AWxab8USCe?=
+ =?us-ascii?Q?ez6LAr+klKsdQX4dA4YrEyNPdAIo265BclT5EQ2lDbPk5BUVGDc0K9pKsCs+?=
+ =?us-ascii?Q?YjiABgV4bOhJRd+SWxASiIx8d5zUZ+JWwe7fIHeBJmTWb7BPJs6Z6DZgS6Mp?=
+ =?us-ascii?Q?GULwdVFFTOJcD30qDwMD2a0i3Ehi/uoy78A1m47HEq/03eoMDouuquPuCgow?=
+ =?us-ascii?Q?YO1XwgfvIh6zllpfInCeC3V5k15peXw8H0zLl/l3wKzoSv9BABqvc303gTJp?=
+ =?us-ascii?Q?65Ht6SsJ4HfZUu0CWcIWJy8R3PAxpwzhI6NLW2dJj++EPNEnD0UGazy2LPmd?=
+ =?us-ascii?Q?7STEdTSJ4S5hkF1A9SE/W7mMPaykxYzeCBgTzCVvsR5Rp6zTtGq+PHKm6swS?=
+ =?us-ascii?Q?D1pNhA/M+2wEZ7BebNOQRIB/+4XG48cggeKFFGxVy/np2V6qs6Mpm0CcRUWC?=
+ =?us-ascii?Q?nz2N6zWUfLAGxWgVXo2ZS99RFVe0X2yez1lkGxg+TlLEjw8S6p8n0LTMmJPK?=
+ =?us-ascii?Q?ssPxi5XRe16zTP8RCQCXBEzNPb6vnieTOGpvcoqSKbteySzbGCrGx1eH2+5r?=
+ =?us-ascii?Q?QF92HQgMuslQWAPGwovhaayXX8aTZD4vxXX5vKNbHJ/P9aBcJhHoYOIzMGFf?=
+ =?us-ascii?Q?VNbU6fjo4sVtX967atxHXAjZhgYWulXLtbtbmc1Lj9OW1Co7GPBYyv3brcf5?=
+ =?us-ascii?Q?/bdxKT6Ku9JzvAhnfv09SNKMZdKskjS7knkSg0fMWltp2lluG/e9/4FHiK10?=
+ =?us-ascii?Q?pfrUxJZGjYQLbtsUiTPC5Be6EtpbcB/QydCgbnSMyYwYvtX97EHHhvF3MiAZ?=
+ =?us-ascii?Q?4DdU/dMge6zSQRqnrEnPUCR25J4mpkNu+6YY9YjUbiJl80qiRRawVsqfk/qx?=
+ =?us-ascii?Q?h6t+BQNI/hce9JpUVmoHe0clSdYaCGWaH99Vsbw0bD5HtCEcwK9nfXLwXOK6?=
+ =?us-ascii?Q?cC8foswuZA6EjljakgiwnOQDvtuwMM39WuhMZhNP?=
 X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5c8d98d5-cf49-4643-2ba5-08dc02458b93
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4927bfe6-e06e-4ad7-0454-08dc02458d32
 X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4838.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Dec 2023 16:54:49.8727
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Dec 2023 16:54:52.5966
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: CbDQy+yb43jLakY7y5XMSYg7UeOVIF9PHEIQHyjYGoTC3tj63RL29haW6u4vKmPdzjY+rUbM22P3kNAgYFYRNw==
+X-MS-Exchange-CrossTenant-UserPrincipalName: Zbfeu7dtY9yy8jjzuRx9ymsZAHCth4jlcnTtRb+gdDhKGNdzeVUG3icyoLgF8slVBEfVH27DuSJMktXZLkll0Q==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR3PR04MB7324
 
-Supposed DMA cross 4k bounder problem should be fixed at DEV_VER_V2, but
-still met problem when do ISO transfer if sg enabled.
+This reverts commit 3c5b006f3ee800b4bd9ed37b3a8f271b8560126e.
 
-Data pattern likes below when sg enabled, package size is 1k and mult is 2
-	[UVC Header(8B) ] [data(3k - 8)] ...
+gadget_is_{super|dual}speed() API check UDC controller capitblity. It
+should pass down highest speed endpoint descriptor to UDC controller. So
+UDC controller driver can reserve enough resource at check_config(),
+especially mult and maxburst. So UDC driver (such as cdns3) can know need
+at least (mult + 1) * (maxburst + 1) * wMaxPacketSize internal memory for
+this uvc functions.
 
-The received data at offset 0xd000 will get 0xc000 data, len 0x70. Error
-happen position as below pattern:
-	0xd000: wrong
-	0xe000: wrong
-	0xf000: correct
-	0x10000: wrong
-	0x11000: wrong
-	0x12000: correct
-	...
-
-To avoid DMA cross 4k bounder at ISO transfer, reduce burst len according
-to start DMA address's alignment.
-
-Fixes: 7733f6c32e36 ("usb: cdns3: Add Cadence USB3 DRD Driver")
 Signed-off-by: Frank Li <Frank.Li@nxp.com>
 ---
- drivers/usb/cdns3/cdns3-gadget.c | 32 +++++++++++++++++++++++++++++++-
- 1 file changed, 31 insertions(+), 1 deletion(-)
+ drivers/usb/gadget/function/f_uvc.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/usb/cdns3/cdns3-gadget.c b/drivers/usb/cdns3/cdns3-gadget.c
-index 4c6893af22dde..aeca902ab6cc4 100644
---- a/drivers/usb/cdns3/cdns3-gadget.c
-+++ b/drivers/usb/cdns3/cdns3-gadget.c
-@@ -1120,6 +1120,7 @@ static int cdns3_ep_run_transfer(struct cdns3_endpoint *priv_ep,
- 	u32 togle_pcs = 1;
- 	int sg_iter = 0;
- 	int num_trb_req;
-+	int trb_burst;
- 	int num_trb;
- 	int address;
- 	u32 control;
-@@ -1243,7 +1244,36 @@ static int cdns3_ep_run_transfer(struct cdns3_endpoint *priv_ep,
- 			total_tdl += DIV_ROUND_UP(length,
- 					       priv_ep->endpoint.maxpacket);
+diff --git a/drivers/usb/gadget/function/f_uvc.c b/drivers/usb/gadget/function/f_uvc.c
+index faa398109431f..cc4e08c8169b4 100644
+--- a/drivers/usb/gadget/function/f_uvc.c
++++ b/drivers/usb/gadget/function/f_uvc.c
+@@ -719,13 +719,21 @@ uvc_function_bind(struct usb_configuration *c, struct usb_function *f)
+ 	}
+ 	uvc->enable_interrupt_ep = opts->enable_interrupt_ep;
  
--		trb->length |= cpu_to_le32(TRB_BURST_LEN(priv_ep->trb_burst_size) |
-+		trb_burst = priv_ep->trb_burst_size;
+-	ep = usb_ep_autoconfig(cdev->gadget, &uvc_fs_streaming_ep);
++	if (gadget_is_superspeed(c->cdev->gadget))
++		ep = usb_ep_autoconfig_ss(cdev->gadget, &uvc_ss_streaming_ep,
++					  &uvc_ss_streaming_comp);
++	else if (gadget_is_dualspeed(cdev->gadget))
++		ep = usb_ep_autoconfig(cdev->gadget, &uvc_hs_streaming_ep);
++	else
++		ep = usb_ep_autoconfig(cdev->gadget, &uvc_fs_streaming_ep);
 +
-+		/*
-+		 * Supposed DMA cross 4k bounder problem should be fixed at DEV_VER_V2, but still
-+		 * met problem when do ISO transfer if sg enabled.
-+		 *
-+		 * Data pattern likes below when sg enabled, package size is 1k and mult is 2
-+		 *       [UVC Header(8B) ] [data(3k - 8)] ...
-+		 *
-+		 * The received data at offset 0xd000 will get 0xc000 data, len 0x70. Error happen
-+		 * as below pattern:
-+		 *	0xd000: wrong
-+		 *	0xe000: wrong
-+		 *	0xf000: correct
-+		 *	0x10000: wrong
-+		 *	0x11000: wrong
-+		 *	0x12000: correct
-+		 *	...
-+		 *
-+		 * But it is still unclear about why error have not happen below 0xd000, it should
-+		 * cross 4k bounder. But anyway, the below code can fix this problem.
-+		 *
-+		 * To avoid DMA cross 4k bounder at ISO transfer, reduce burst len according to 16.
-+		 */
-+		if (priv_ep->type == USB_ENDPOINT_XFER_ISOC && priv_dev->dev_ver <= DEV_VER_V2)
-+			if (ALIGN_DOWN(trb->buffer, SZ_4K) !=
-+			    ALIGN_DOWN(trb->buffer + length, SZ_4K))
-+				trb_burst = 16;
-+
-+		trb->length |= cpu_to_le32(TRB_BURST_LEN(trb_burst) |
- 					TRB_LEN(length));
- 		pcs = priv_ep->pcs ? TRB_CYCLE : 0;
+ 	if (!ep) {
+ 		uvcg_info(f, "Unable to allocate streaming EP\n");
+ 		goto error;
+ 	}
+ 	uvc->video.ep = ep;
+ 
++	uvc_fs_streaming_ep.bEndpointAddress = uvc->video.ep->address;
+ 	uvc_hs_streaming_ep.bEndpointAddress = uvc->video.ep->address;
+ 	uvc_ss_streaming_ep.bEndpointAddress = uvc->video.ep->address;
  
 -- 
 2.34.1
