@@ -1,93 +1,123 @@
-Return-Path: <linux-kernel+bounces-7759-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7758-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F374581ACBA
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 03:46:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6EDC081ACB7
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 03:45:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B01DA287B34
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 02:46:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 243921F23C83
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 02:45:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B2194419;
-	Thu, 21 Dec 2023 02:45:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B734E441A;
+	Thu, 21 Dec 2023 02:45:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="iiWvjyLm"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B63A24696;
-	Thu, 21 Dec 2023 02:45:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: 1fa981e0a9ac4fb8b6eeedb8fe97a0db-20231221
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.33,REQID:0714505d-1e12-4565-826b-5a7d1ba633c9,IP:25,
-	URL:0,TC:0,Content:0,EDM:25,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTI
-	ON:release,TS:45
-X-CID-INFO: VERSION:1.1.33,REQID:0714505d-1e12-4565-826b-5a7d1ba633c9,IP:25,UR
-	L:0,TC:0,Content:0,EDM:25,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-	:release,TS:45
-X-CID-META: VersionHash:364b77b,CLOUDID:79b50082-8d4f-477b-89d2-1e3bdbef96d1,B
-	ulkID:231221104536RFASABPQ,BulkQuantity:0,Recheck:0,SF:72|19|44|66|24|102,
-	TC:nil,Content:0,EDM:5,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,
-	OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
-X-UUID: 1fa981e0a9ac4fb8b6eeedb8fe97a0db-20231221
-Received: from node4.com.cn [(39.156.73.12)] by mailgw
-	(envelope-from <liyouhong@kylinos.cn>)
-	(Generic MTA)
-	with ESMTP id 417191506; Thu, 21 Dec 2023 10:45:33 +0800
-Received: from node4.com.cn (localhost [127.0.0.1])
-	by node4.com.cn (NSMail) with SMTP id 9059416001CD7;
-	Thu, 21 Dec 2023 10:45:33 +0800 (CST)
-X-ns-mid: postfix-6583A6CD-18814229
-Received: from localhost.localdomain (unknown [172.20.185.164])
-	by node4.com.cn (NSMail) with ESMTPA id 5E8A016001CD7;
-	Thu, 21 Dec 2023 02:45:31 +0000 (UTC)
-From: YouHong Li <liyouhong@kylinos.cn>
-To: paulus@samba.org
-Cc: linux-ppp@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	davem@davemloft.net,
-	liyouhong <liyouhong@kylinos.cn>,
-	k2ci <kernel-bot@kylinos.cn>
-Subject: [PATCH] drivers/net/ppp/ppp_async.c: Fix spelling typo in comment
-Date: Thu, 21 Dec 2023 10:44:48 +0800
-Message-Id: <20231221024448.1317341-1-liyouhong@kylinos.cn>
-X-Mailer: git-send-email 2.34.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E7163C34;
+	Thu, 21 Dec 2023 02:45:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1703126730;
+	bh=4JUUkyq4Szf2FSLo/m+X1SFuBiyu9JLbhik0x5Gd5lU=;
+	h=Date:From:To:Cc:Subject:From;
+	b=iiWvjyLmySbjYGHbpm4TDCKsdaA28J+R0REpM+lcfjXuIvRpmIZOO7pDr8vw3ekH1
+	 SY4zm7AdPgvialOdj1ceqvza5A2KvvAvvqHC+AvN9R0LlgSQWU2URcPYfKXYR2zJXx
+	 eH/XgignUCT2GEpNObkiCyQVcHZIFzVHPk/vYM+R5shtVEk7/wraijBJShynGxVvTc
+	 vbVeHzNq10Xnzwx6qfS4gNiIH6B/ptiNSf11Vhp30FOp7tdMsGht8XP0U8qfG48Z7W
+	 aaznfA+NI4YFiPinGVWtAViVaO/3hmV0fxmxUjPp8uRQ6K2aGc+U2+l7UdjgzxsEd7
+	 n8hUZKj5bF79g==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4SwZY53yx6z4xGC;
+	Thu, 21 Dec 2023 13:45:28 +1100 (AEDT)
+Date: Thu, 21 Dec 2023 13:45:27 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Jens Axboe <axboe@kernel.dk>, David Sterba <dsterba@suse.cz>
+Cc: Christoph Hellwig <hch@lst.de>, David Sterba <dsterba@suse.com>, Linux
+ Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the block tree with the btrfs tree
+Message-ID: <20231221134527.38493677@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/ubuOmb9ut+BJKLRVkyv6T+I";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+
+--Sig_/ubuOmb9ut+BJKLRVkyv6T+I
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
 
-From: liyouhong <liyouhong@kylinos.cn>
+Hi all,
 
-Fix spelling typo in comment
+Today's linux-next merge of the block tree got a conflict in:
 
-Reported-by: k2ci <kernel-bot@kylinos.cn>
-Signed-off-by: liyouhong <liyouhong@kylinos.cn>
+  fs/btrfs/zoned.h
 
-diff --git a/drivers/net/ppp/ppp_async.c b/drivers/net/ppp/ppp_async.c
-index fbaaa8c102a1..840da924708b 100644
---- a/drivers/net/ppp/ppp_async.c
-+++ b/drivers/net/ppp/ppp_async.c
-@@ -533,7 +533,7 @@ ppp_async_encode(struct asyncppp *ap)
- 	proto =3D get_unaligned_be16(data);
-=20
- 	/*
--	 * LCP packets with code values between 1 (configure-reqest)
-+	 * LCP packets with code values between 1 (configure-request)
- 	 * and 7 (code-reject) must be sent as though no options
- 	 * had been negotiated.
- 	 */
+between commit:
+
+  eefaf0a1a6f1 ("btrfs: fix typos found by codespell")
+
+from the btrfs tree and commit:
+
+  7437bb73f087 ("block: remove support for the host aware zone model")
+
+from the block tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
 --=20
-2.34.1
+Cheers,
+Stephen Rothwell
 
+diff --cc fs/btrfs/zoned.h
+index f24a5ffb7807,bc1b540c1597..000000000000
+--- a/fs/btrfs/zoned.h
++++ b/fs/btrfs/zoned.h
+@@@ -319,8 -323,8 +319,8 @@@ static inline bool btrfs_check_device_z
+  			(bdev_zone_sectors(bdev) << SECTOR_SHIFT);
+  	}
+ =20
+ -	/* Do not allow Host Manged zoned device */
+ +	/* Do not allow Host Managed zoned device. */
+- 	return bdev_zoned_model(bdev) !=3D BLK_ZONED_HM;
++ 	return !bdev_is_zoned(bdev);
+  }
+ =20
+  static inline bool btrfs_check_super_location(struct btrfs_device *device=
+, u64 pos)
+
+--Sig_/ubuOmb9ut+BJKLRVkyv6T+I
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmWDpscACgkQAVBC80lX
+0Gy96ggAhDofuBU3W/sZc+bvZ1KvpgZLxYrW2i8B0BNQYp3liP1j9Nki2WTYQ88Z
+nQ19IBL6RFf9c4YriQ6W5N+mrW2UUZXTfNpS/XBLwrokGN5yfh0GD5vIlTFRLTKE
+CCnehcDr4GMd2Yre+jbr2CeS5d2u38PyY7jTosK4alwAKUO3NemDcFl8oO5y+3HJ
+dbhXxQzog4cacB+Z4X54pz2NLFpwVHI/Arlz1Q3gTymqpjciut9bxGv2ErDH8tdi
+LXuMwh/ywI9TGCYVYrr/Gc4yL+UANqkrpJ0jSD65d7ThymyHwex7CwsfZ8Q5dOF4
+4Gims0dr+xCyoP9koHaprhgmGwFwTA==
+=A2P9
+-----END PGP SIGNATURE-----
+
+--Sig_/ubuOmb9ut+BJKLRVkyv6T+I--
 
