@@ -1,282 +1,118 @@
-Return-Path: <linux-kernel+bounces-7889-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7890-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F0B681AEBF
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 07:26:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1EC2381AEC4
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 07:27:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 90FEF1F24172
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 06:26:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7FF2FB23916
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 06:27:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D83C6B673;
-	Thu, 21 Dec 2023 06:26:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71154B673;
+	Thu, 21 Dec 2023 06:27:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EsSFWHsP"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx2.zhaoxin.com (mx2.zhaoxin.com [203.110.167.99])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64DC3B654
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 06:26:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zhaoxin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zhaoxin.com
-X-ASG-Debug-ID: 1703139979-1eb14e740b040b0002-xx1T2L
-Received: from ZXSHMBX3.zhaoxin.com (ZXSHMBX3.zhaoxin.com [10.28.252.165]) by mx2.zhaoxin.com with ESMTP id c5eegCnApH9lyKf5 (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NO); Thu, 21 Dec 2023 14:26:22 +0800 (CST)
-X-Barracuda-Envelope-From: LeoLiu-oc@zhaoxin.com
-X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.165
-Received: from ZXBJMBX03.zhaoxin.com (10.29.252.7) by ZXSHMBX3.zhaoxin.com
- (10.28.252.165) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 21 Dec
- 2023 14:26:19 +0800
-Received: from xin.lan (10.32.64.1) by ZXBJMBX03.zhaoxin.com (10.29.252.7)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 21 Dec
- 2023 14:26:03 +0800
-X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.165
-From: LeoLiu-oc <LeoLiu-oc@zhaoxin.com>
-X-Barracuda-RBL-Trusted-Forwarder: 10.29.252.7
-To: <olivia@selenic.com>, <herbert@gondor.apana.org.au>,
-	<jiajie.ho@starfivetech.com>, <conor.dooley@microchip.com>,
-	<martin@kaiser.cx>, <mmyangfl@gmail.com>, <jenny.zhang@starfivetech.com>,
-	<robh@kernel.org>, <l.stelmach@samsung.com>, <ardb@kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>
-CC: <CobeChen@zhaoxin.com>, <TonyWWang@zhaoxin.com>, <YunShen@zhaoxin.com>,
-	<LeoLiu@zhaoxin.com>, LeoLiuoc <LeoLiu-oc@zhaoxin.com>
-Subject: [PATCH v3] hwrng: add Zhaoxin rng driver base on rep_xstore instruction
-Date: Thu, 21 Dec 2023 14:26:02 +0800
-X-ASG-Orig-Subj: [PATCH v3] hwrng: add Zhaoxin rng driver base on rep_xstore instruction
-Message-ID: <20231221062602.799432-1-LeoLiu-oc@zhaoxin.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231107070900.496827-1-LeoLiu-oc@zhaoxin.com>
-References: <20231107070900.496827-1-LeoLiu-oc@zhaoxin.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EAFBB64A;
+	Thu, 21 Dec 2023 06:27:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2cc5ee69960so3710621fa.0;
+        Wed, 20 Dec 2023 22:27:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703140045; x=1703744845; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=bUYlaraZvgnaRvFqkhplZceJUCJIoSDu2V8+PBmaGqw=;
+        b=EsSFWHsPnf+kXl/Hy67PcxREhy+BXSRmaiiyK5+3XezWyLjU9ElUkSdVBwONlbPrCz
+         r5kwZnMMdp2aw6iS4HE3ojc8NK+j169S1hzj3PzXnGfAuN22BzRVjlu3dffyA0MwrQF7
+         YnHAmVnLANfOVe8cqRJBjTtevPTUzfJMyIOpZ/dapyq4dJQBWu5X/m1DO8c2cmn5jhoy
+         9qGZsC2sV9xBm0KReS+z6hLNPYse9IH3yUltG2CsItNgc6APJjT45SIaOkJTH9IqWAv/
+         6v6nWBJlbOBUlYw00UwNlrsrddqzDbgjLuwGNMuV5L1vPenvHe1E6soXmcTg0puf7gSD
+         f5iw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703140045; x=1703744845;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=bUYlaraZvgnaRvFqkhplZceJUCJIoSDu2V8+PBmaGqw=;
+        b=WTHuZt1x5Fsab+tB20vS8LI06aM27tmpeG3Av4U4l6KDwvY4KRazuSJlZflgFieGr9
+         R+IzT/LS4QJp+eB6WL2Xp/3QNgT/GAo8y1OFpzPcgVDrNevAaR8QF1leaxE/yJF2CX5d
+         T1AC7FuHE+7kdTYrXE0CasCE+5QEq9EfPw0Z/9mUY8nWp5JCRN0wphY/4qVkgJOw1wI1
+         RgTFmpUxwT+p77MiopHgqf/VodUbCfKD8hm1G+2k4kqzaE1poAkK4ZPsj4BxpTPuI7WY
+         nX3pgBiXBFYiU94YlJEjTyMcwuu3JcKao+5Q52xc3oMMjAiUpOeTq4fr6pJ/Ff/RaB4e
+         SeWA==
+X-Gm-Message-State: AOJu0YywH/X3nUe/7CnoWLFsl73VpRkjfybm7KpELlVNTI6VbgjRs3gu
+	mA2bBmM2lD4ITrgk3gVFPQsX1YdhBjeJ6VaKzejkH3KZjQ5BNg==
+X-Google-Smtp-Source: AGHT+IGr8ds7tM65bV+bO56xsNx4q7k1kqiJPSfw32j4yZhvpd7vwHajRGCzWtcY0f4421/kv2STDbiUZ0+mBiaj/5o=
+X-Received: by 2002:a2e:9106:0:b0:2cc:778a:f67e with SMTP id
+ m6-20020a2e9106000000b002cc778af67emr1769164ljg.46.1703140045023; Wed, 20 Dec
+ 2023 22:27:25 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: zxbjmbx1.zhaoxin.com (10.29.252.163) To
- ZXBJMBX03.zhaoxin.com (10.29.252.7)
-X-Barracuda-Connect: ZXSHMBX3.zhaoxin.com[10.28.252.165]
-X-Barracuda-Start-Time: 1703139981
-X-Barracuda-Encrypted: ECDHE-RSA-AES128-GCM-SHA256
-X-Barracuda-URL: https://10.28.252.36:4443/cgi-mod/mark.cgi
-X-Virus-Scanned: by bsmtpd at zhaoxin.com
-X-Barracuda-Scan-Msg-Size: 6401
-X-Barracuda-BRTS-Status: 1
-X-Barracuda-Bayes: INNOCENT GLOBAL 0.0000 1.0000 -2.0210
-X-Barracuda-Spam-Score: -2.02
-X-Barracuda-Spam-Status: No, SCORE=-2.02 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=9.0 tests=
-X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.118357
-	Rule breakdown below
-	 pts rule name              description
-	---- ---------------------- --------------------------------------------------
+References: <20231212065147.3475413-1-jim.t90615@gmail.com>
+ <20231212065147.3475413-4-jim.t90615@gmail.com> <ZXnNRoGmeibdRAwq@smile.fi.intel.com>
+In-Reply-To: <ZXnNRoGmeibdRAwq@smile.fi.intel.com>
+From: Jim Liu <jim.t90615@gmail.com>
+Date: Thu, 21 Dec 2023 14:27:13 +0800
+Message-ID: <CAKUZ0+EDdBnPdY828L3DUTHKyXX209cJEuFWBs7xff_6bbDWPg@mail.gmail.com>
+Subject: Re: [PATCH v9 3/3] gpio: nuvoton: Add Nuvoton NPCM sgpio driver
+To: Andy Shevchenko <andy@kernel.org>
+Cc: JJLIU0@nuvoton.com, KWLIU@nuvoton.com, linus.walleij@linaro.org, 
+	brgl@bgdev.pl, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, 
+	conor+dt@kernel.org, linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, openbmc@lists.ozlabs.org
+Content-Type: text/plain; charset="UTF-8"
 
-From: LeoLiuoc <LeoLiu-oc@zhaoxin.com>
+Hi Andy
 
-Add support for Zhaoxin hardware random number generator.
-This driver base on rep_xstore instruction and uses the same
-X86_FEATURE_XSTORE as via-rng driver. Therefore, modify the x86_cpu_id
-array in the via-rng driver, so that the corresponding driver can be
-correctly loader on respective platforms.
+Thanks for your comments.
+I will modify it in the next version.
 
-v1 -> v2:
-1. Fix assembler code errors
-2. Remove redundant CPU model check codes
+But some description as below
 
-v2 -> v3:
-1. Optimize code details based on the kernel style
 
-Signed-off-by: LeoLiuoc <LeoLiu-oc@zhaoxin.com>
----
- drivers/char/hw_random/Kconfig       | 12 ++++
- drivers/char/hw_random/Makefile      |  1 +
- drivers/char/hw_random/via-rng.c     | 10 +--
- drivers/char/hw_random/zhaoxin-rng.c | 95 ++++++++++++++++++++++++++++
- 4 files changed, 113 insertions(+), 5 deletions(-)
- create mode 100644 drivers/char/hw_random/zhaoxin-rng.c
 
-diff --git a/drivers/char/hw_random/Kconfig b/drivers/char/hw_random/Kconfig
-index 442c40efb200..3c1c4fa1203c 100644
---- a/drivers/char/hw_random/Kconfig
-+++ b/drivers/char/hw_random/Kconfig
-@@ -152,6 +152,18 @@ config HW_RANDOM_VIA
- 
- 	  If unsure, say Y.
- 
-+config HW_RANDOM_ZHAOXIN
-+	tristate "Zhaoxin HW Random Number Generator support"
-+	depends on X86
-+	help
-+	  This driver provides kernel-side support for the Random Number
-+	  Generator hardware found on Zhaoxin based motherboards.
-+
-+	  To compile this driver as a module, choose M here: the
-+	  module will be called zhaoxin-rng.
-+
-+	  If unsure, say Y.
-+
- config HW_RANDOM_IXP4XX
- 	tristate "Intel IXP4xx NPU HW Pseudo-Random Number Generator support"
- 	depends on ARCH_IXP4XX || COMPILE_TEST
-diff --git a/drivers/char/hw_random/Makefile b/drivers/char/hw_random/Makefile
-index 32549a1186dc..ef5b3ae0794d 100644
---- a/drivers/char/hw_random/Makefile
-+++ b/drivers/char/hw_random/Makefile
-@@ -14,6 +14,7 @@ obj-$(CONFIG_HW_RANDOM_GEODE) += geode-rng.o
- obj-$(CONFIG_HW_RANDOM_N2RNG) += n2-rng.o
- n2-rng-y := n2-drv.o n2-asm.o
- obj-$(CONFIG_HW_RANDOM_VIA) += via-rng.o
-+obj-$(CONFIG_HW_RANDOM_ZHAOXIN) += zhaoxin-rng.o
- obj-$(CONFIG_HW_RANDOM_EXYNOS) += exynos-trng.o
- obj-$(CONFIG_HW_RANDOM_IXP4XX) += ixp4xx-rng.o
- obj-$(CONFIG_HW_RANDOM_OMAP) += omap-rng.o
-diff --git a/drivers/char/hw_random/via-rng.c b/drivers/char/hw_random/via-rng.c
-index a9a0a3b09c8b..285505b4d620 100644
---- a/drivers/char/hw_random/via-rng.c
-+++ b/drivers/char/hw_random/via-rng.c
-@@ -35,7 +35,7 @@
- #include <asm/cpufeature.h>
- #include <asm/fpu/api.h>
- 
--
-+static const struct x86_cpu_id via_rng_cpu_ids[];
- 
- 
- enum {
-@@ -135,7 +135,7 @@ static int via_rng_init(struct hwrng *rng)
- 	 * is always enabled if CPUID rng_en is set.  There is no
- 	 * RNG configuration like it used to be the case in this
- 	 * register */
--	if (((c->x86 == 6) && (c->x86_model >= 0x0f))  || (c->x86 > 6)){
-+	if ((c->x86 == 6) && (c->x86_model >= 0x0f)) {
- 		if (!boot_cpu_has(X86_FEATURE_XSTORE_EN)) {
- 			pr_err(PFX "can't enable hardware RNG "
- 				"if XSTORE is not enabled\n");
-@@ -196,7 +196,7 @@ static int __init via_rng_mod_init(void)
- {
- 	int err;
- 
--	if (!boot_cpu_has(X86_FEATURE_XSTORE))
-+	if (!x86_match_cpu(via_rng_cpu_ids))
- 		return -ENODEV;
- 
- 	pr_info("VIA RNG detected\n");
-@@ -217,8 +217,8 @@ static void __exit via_rng_mod_exit(void)
- }
- module_exit(via_rng_mod_exit);
- 
--static struct x86_cpu_id __maybe_unused via_rng_cpu_id[] = {
--	X86_MATCH_FEATURE(X86_FEATURE_XSTORE, NULL),
-+static struct x86_cpu_id via_rng_cpu_id[] = {
-+	X86_MATCH_VENDOR_FAM_FEATURE(CENTAUR, 6, X86_FEATURE_XSTORE, NULL),
- 	{}
- };
- MODULE_DEVICE_TABLE(x86cpu, via_rng_cpu_id);
-diff --git a/drivers/char/hw_random/zhaoxin-rng.c b/drivers/char/hw_random/zhaoxin-rng.c
-new file mode 100644
-index 000000000000..3e5770df9948
---- /dev/null
-+++ b/drivers/char/hw_random/zhaoxin-rng.c
-@@ -0,0 +1,95 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * RNG driver for Zhaoxin RNGs
-+ *
-+ * Copyright 2023 (c) Zhaoxin Semiconductor Co., Ltd
-+ */
-+
-+#include <asm/cpu_device_id.h>
-+#include <asm/fpu/api.h>
-+#include <crypto/padlock.h>
-+#include <linux/cpufeature.h>
-+#include <linux/delay.h>
-+#include <linux/hw_random.h>
-+#include <linux/io.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+
-+enum {
-+	ZHAOXIN_RNG_CHUNK_8		= 0x00, /* 64 rand bits, 64 stored bits */
-+	ZHAOXIN_RNG_CHUNK_4		= 0x01, /* 32 rand bits, 32 stored bits */
-+	ZHAOXIN_RNG_CHUNK_2		= 0x02, /* 16 rand bits, 32 stored bits */
-+	ZHAOXIN_RNG_CHUNK_1		= 0x03, /*  8 rand bits, 32 stored bits */
-+	ZHAOXIN_RNG_MAX_SIZE	= (128 * 1024),
-+};
-+
-+static int zhaoxin_rng_init(struct hwrng *rng)
-+{
-+	if (!boot_cpu_has(X86_FEATURE_XSTORE_EN)) {
-+		pr_err(PFX "can't enable hardware RNG if XSTORE is not enabled\n");
-+		return -ENODEV;
-+	}
-+
-+	return 0;
-+}
-+
-+static inline int rep_xstore(size_t size, size_t factor, void *result)
-+{
-+	asm(".byte 0xf3, 0x0f, 0xa7, 0xc0"
-+		: "=m"(*(size_t *)result), "+c"(size), "+d"(factor), "+D"(result));
-+
-+	return 0;
-+}
-+
-+static int zhaoxin_rng_read(struct hwrng *rng, void *data, size_t max, bool wait)
-+{
-+	if (max > ZHAOXIN_RNG_MAX_SIZE)
-+		max = ZHAOXIN_RNG_MAX_SIZE;
-+
-+	rep_xstore(max, ZHAOXIN_RNG_CHUNK_1, data);
-+
-+	return max;
-+}
-+
-+static struct hwrng zhaoxin_rng = {
-+	.name = "zhaoxin",
-+	.init = zhaoxin_rng_init,
-+	.read = zhaoxin_rng_read,
-+};
-+
-+static const struct x86_cpu_id zhaoxin_rng_cpu_ids[] = {
-+	X86_MATCH_VENDOR_FAM_FEATURE(ZHAOXIN, 6, X86_FEATURE_XSTORE, NULL),
-+	X86_MATCH_VENDOR_FAM_FEATURE(ZHAOXIN, 7, X86_FEATURE_XSTORE, NULL),
-+	X86_MATCH_VENDOR_FAM_FEATURE(CENTAUR, 7, X86_FEATURE_XSTORE, NULL),
-+	{}
-+};
-+MODULE_DEVICE_TABLE(x86cpu, zhaoxin_rng_cpu_ids);
-+
-+static int __init zhaoxin_rng_mod_init(void)
-+{
-+	int err;
-+
-+	if (!x86_match_cpu(zhaoxin_rng_cpu_ids)) {
-+		pr_err(PFX "The CPU isn't support XSTORE.\n");
-+		return -ENODEV;
-+	}
-+
-+	pr_info("Zhaoxin RNG detected\n");
-+
-+	err = hwrng_register(&zhaoxin_rng);
-+	if (err)
-+		pr_err(PFX "RNG registering failed (%d)\n", err);
-+
-+	return err;
-+}
-+module_init(zhaoxin_rng_mod_init);
-+
-+static void __exit zhaoxin_rng_mod_exit(void)
-+{
-+	hwrng_unregister(&zhaoxin_rng);
-+}
-+module_exit(zhaoxin_rng_mod_exit);
-+
-+MODULE_DESCRIPTION("H/W RNG driver for Zhaoxin CPUs");
-+MODULE_AUTHOR("YunShen@zhaoxin.com");
-+MODULE_LICENSE("GPL");
--- 
-2.34.1
+> > +static int npcm_sgpio_init_port(struct npcm_sgpio *gpio)
+> > +{
+> > +     u8 in_port, out_port, set_port, reg;
+> > +
+> > +     in_port = GPIO_BANK(gpio->nin_sgpio);
+> > +     if (GPIO_BIT(gpio->nin_sgpio) > 0)
+> > +             in_port += 1;
+>
+> This is strange... So, you are telling that offsets start from 1 and not 0?
+>
+> > +     out_port = GPIO_BANK(gpio->nout_sgpio);
+> > +     if (GPIO_BIT(gpio->nout_sgpio) > 0)
+> > +             out_port += 1;
+>
+> Ditto.
+>
+Yes,  if the customer has defined the in/out pins the offsets start from 1.
+The NPCM_IOXCFG2_PORT register is the set number of in/out ports.
+NPCM_IOXCFG2_PORT register define as below:
+0~3 bit is the number of input ports
+4~7 bit is the number of output ports
+Each module can support 8 input ports and 8 output ports.
+> ...
+>
+> > +     set_port = ((out_port & NPCM_IOXCFG2_PORT) << 4) | (in_port & NPCM_IOXCFG2_PORT);
+>
+> Outer parentheses are redundant.
+>
+> ...
+>
 
+Best regards,
+Jim
 
