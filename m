@@ -1,126 +1,163 @@
-Return-Path: <linux-kernel+bounces-8604-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8542-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD5E581BA0E
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 16:00:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8249381B92D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 15:04:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 37B2EB248EA
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 15:00:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DB0AB283E10
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 14:04:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9778438DC9;
-	Thu, 21 Dec 2023 14:59:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 715A555E60;
+	Thu, 21 Dec 2023 13:57:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="CVERI9Cz"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="dyjI6cK0"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 684B4539E4;
-	Thu, 21 Dec 2023 14:59:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703170797; x=1734706797;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=OoapTPukjShzEohQxJsr9nMKqKZQxWObxkyyNaa2x2o=;
-  b=CVERI9Cz7w/UOXBmVypCObeprp4Dik3z4YE2uu/CDu25zSo+ajYIN6CQ
-   nytYl/+NNNFY5R9GjXge6OnWy9k7EBa2kuDNGz6vVyrPcdG8ByMNa00je
-   gp2CI8lAJLAdwkervr/4/hUCt9yEftljlJYR8+Bc+pCQ6oANjCa3KyEn7
-   yjtsSni0xMtzF+uGGlTeQCTF7PpIQAJhhBgUhJKteswSNGFuXzylD4Cv2
-   2ik3aUbpYdcibEUzhbJ35OlCQpQtD1c1ctMUQYGDcKcl1Jw+gMZg3aJYa
-   XpYztKL3w2spkJOyYmyfdCizXgAvG65INdT8hnPFqMExcPS/1qUnUsHwD
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10930"; a="2811584"
-X-IronPort-AV: E=Sophos;i="6.04,293,1695711600"; 
-   d="scan'208";a="2811584"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Dec 2023 06:59:55 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10930"; a="900120139"
-X-IronPort-AV: E=Sophos;i="6.04,293,1695711600"; 
-   d="scan'208";a="900120139"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga004.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Dec 2023 06:59:49 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@intel.com>)
-	id 1rGJWv-00000007rjT-2rCh;
-	Thu, 21 Dec 2023 15:56:05 +0200
-Date: Thu, 21 Dec 2023 15:56:05 +0200
-From: Andy Shevchenko <andriy.shevchenko@intel.com>
-To: Mark Hasemeyer <markhas@chromium.org>
-Cc: LKML <linux-kernel@vger.kernel.org>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Tzung-Bi Shih <tzungbi@kernel.org>,
-	Raul Rangel <rrangel@chromium.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Rob Herring <robh@kernel.org>, Sudeep Holla <sudeep.holla@arm.com>,
-	Daniel Scally <djrscally@gmail.com>,
-	Frank Rowand <frowand.list@gmail.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-	Len Brown <lenb@kernel.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Sakari Ailus <sakari.ailus@linux.intel.com>,
-	devicetree@vger.kernel.org, linux-acpi@vger.kernel.org
-Subject: Re: [PATCH v2 20/22] device property: Modify fwnode irq_get() to use
- resource
-Message-ID: <ZYRD9Y3Y_jd1NBs8@smile.fi.intel.com>
-References: <20231220235459.2965548-1-markhas@chromium.org>
- <20231220165423.v2.20.I38ac58ab04985a404ed6551eb5813fa7841ef410@changeid>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C39CB55E52
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 13:57:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-5e745891a69so8278897b3.2
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 05:57:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1703167046; x=1703771846; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wVLL5bW0YfWBSEGexgyYtg+trVF7bli3OEKILg9N7tk=;
+        b=dyjI6cK0RNC/IWBwTtNidlkB7BN3iZzMev+4M6CvQ+hAT3+pC5XX+1vyA0su5Eg9Fw
+         1rku3VHCDc2yGu9NHIwfSn46+zDqvKMEPvI/lE2z284B24Q1ufHxWjVLer51aW2gwpQZ
+         zxlYjnyjBbE+0r9wzX1c5liQ4C17F9i2p0+W2e3bG1BiIcTozcrAiO2gCG1SF5yUxlQl
+         N5krboA+joOtQbBWjgyu2H7KJkJTDPK8o9tqGhlNpVj/rivdYRMq+LQJLId59Gwp6jj2
+         ylV+AMNabrzN9X+M9e95fjr6qiHNR9mjMoZJl5RebvbxuRBHbLTw9RyZ2Hpt9pWnSkFZ
+         bPdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703167046; x=1703771846;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wVLL5bW0YfWBSEGexgyYtg+trVF7bli3OEKILg9N7tk=;
+        b=MNeHsLLyg5l91Wih1WwKThBBqvwqaipwnt210haZEzAhUn2PGF5M80Gx/7gGCyUrBu
+         ZHLIFaxoP8mE5jdS9rJMZ7THul/L0OknL0NUZjcVOYaxVC2XQUxPU/lXyySJdSyBgqYO
+         Eq6iad6O77ScXglKx/uyRThpybuNSWvPM8gN55HCepl0WR51jTrOnYADWMdIRRorUmJG
+         Rkxvy7+xArhNaxK9/rQ2lQFaKahVgkFSKYmLcTDnmfdwHdxyKgfnIJUmCDKCc+L2dwjQ
+         B+3Wn7wN7k9Jl4jgIp6gPJOaPvEnwyROsJeJYshycCzYsUvhPUiNdWQU5HULeLAz9yQK
+         lN+A==
+X-Gm-Message-State: AOJu0Yx3K7CtKTtMyc8FAH20ZIUv2gkLPYcYj4lzAEMXx9VbGB/2uwi2
+	70wz3hBXs2bKLtmgwCNn9257ovzobtp69IpPo7IGhCqkIVH70X3jlMc=
+X-Google-Smtp-Source: AGHT+IFZ1qcBfCLgb/cLThThc+4qRwsmiFwVndI+yAxTHyzBnGORoB5NRPxyw4AHtrKddus3UTta0WhtQOhSqN6hFts=
+X-Received: by 2002:a81:52c8:0:b0:5e7:5a66:9a9 with SMTP id
+ g191-20020a8152c8000000b005e75a6609a9mr1202944ywb.90.1703167045735; Thu, 21
+ Dec 2023 05:57:25 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231220165423.v2.20.I38ac58ab04985a404ed6551eb5813fa7841ef410@changeid>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20231221083622.3445726-1-yuklin.soo@starfivetech.com> <20231221083622.3445726-2-yuklin.soo@starfivetech.com>
+In-Reply-To: <20231221083622.3445726-2-yuklin.soo@starfivetech.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Thu, 21 Dec 2023 14:57:14 +0100
+Message-ID: <CACRpkdYL8wK2vX7P7p4QvU9VV2CPjRv_aXiLqO+07MMCCKKk4Q@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/6] dt-bindings: pinctrl: starfive: add JH8100
+ pinctrl bindings
+To: Alex Soo <yuklin.soo@starfivetech.com>
+Cc: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, Hal Feng <hal.feng@starfivetech.com>, 
+	Ley Foon Tan <leyfoon.tan@starfivetech.com>, 
+	Jianlong Huang <jianlong.huang@starfivetech.com>, Emil Renner Berthing <kernel@esmil.dk>, 
+	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Conor Dooley <conor+dt@kernel.org>, Drew Fustini <drew@beagleboard.org>, linux-gpio@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-riscv@lists.infradead.org, Paul Walmsley <paul.walmsley@sifive.com>, 
+	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Dec 20, 2023 at 04:54:34PM -0700, Mark Hasemeyer wrote:
-> The underlying ACPI and OF subsystems provide their own APIs which
-> provide IRQ information as a struct resource. This allows callers to get
-> more information about the IRQ by looking at the resource flags.  For
+Hi Alex,
 
-Double space when other lines have a single space.
+thanks for your patch!
 
-> example, whether or not an IRQ is wake capable.
+On Thu, Dec 21, 2023 at 9:36=E2=80=AFAM Alex Soo <yuklin.soo@starfivetech.c=
+om> wrote:
 
-Suggested-by?
+> Add dt-binding documentation and header file for JH8100 pinctrl
+> driver.
+>
+> Signed-off-by: Alex Soo <yuklin.soo@starfivetech.com>
+> Reviewed-by: Ley Foon Tan <leyfoon.tan@starfivetech.com>
+(...)
+> +title: StarFive JH8100 AON Pin Controller
 
-...
+If AON means "always-on" then spell that out in the title, the world has
+too many opaque TLAs.
 
-> -int fwnode_irq_get(const struct fwnode_handle *fwnode, unsigned int index)
-> +int fwnode_irq_get_resource(const struct fwnode_handle *fwnode,
-> +			    unsigned int index, struct resource *r)
+title: StarFive JH8100 AON (always-on) Pin Controller
 
-It's perfectly fine to replace ) by , on the previous line, no need
-to make it shorter.
+(...)
+> +        properties:
+> +          pinmux:
+> +            description: |
+> +              The list of GPIOs and their mux settings or function selec=
+t.
+> +              The GPIOMUX and PINMUX macros are used to configure the
+> +              I/O multiplexing and function selection respectively.
+> +
+> +          bias-disable: true
+> +
+> +          bias-pull-up:
+> +            type: boolean
+> +
+> +          bias-pull-down:
+> +            type: boolean
+> +
+> +          drive-strength:
+> +            enum: [ 2, 4, 8, 12 ]
 
-...
+Milliamperes? Then spell that out in a description:
 
-> +int fwnode_irq_get(const struct fwnode_handle *fwnode, unsigned int index)
-> +{
-> +	struct resource r;
+> +  Voltage regulator supply the actual voltage to the GPIO bank while the=
+ syscon register
+> +  configuration in bit [1:0] indicates the current voltage setting.
+> +
+> +  +------+------+-------------------+
+> +  | Bit1 | Bit0 | Reference Voltage |
+> +  +------+------+-------------------+
+> +  |  0   |  0   |     3.3 V         |
+> +  +------+------+-------------------+
+> +  |  1   |  x   |     1.8 V         |
+> +  +------+------+-------------------+
+> +
+> +  To increase the device voltage, set bit [1:0] to the new operating sta=
+te first before
+> +  raising the actual voltage to the higher operating point.
+> +
+> +  To decrease the device voltage, hold bit [1:0] to the current operatin=
+g state until
+> +  the actual voltage has stabilized at the lower operating point before =
+changing the
+> +  setting.
+> +
+> +  Alternatively, a device voltage change can always be initiated by firs=
+t setting syscon
+> +  register bit [1:0] =3D 0, the safe 3.3V startup condition, before chan=
+ging the device
+> +  voltage. Then once the actual voltage is changed and has stabilized at=
+ the new operating
+> +  point, bit [1:0] can be reset as appropriate.
 
-	struct resource r = {};
+Actually: where is this information even used?
 
-?
+> +          slew-rate:
+> +            maximum: 1
 
-> +	return fwnode_irq_get_resource(fwnode, index, &r);
-> +}
+Milliseconds? Write unit in description please.
 
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Yours,
+Linus Walleij
 
