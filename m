@@ -1,247 +1,172 @@
-Return-Path: <linux-kernel+bounces-8973-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8974-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6695B81BEC1
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 20:01:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9253181BEC5
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 20:03:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E8856288410
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 19:01:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3CC391C2187F
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 19:03:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DB97651B4;
-	Thu, 21 Dec 2023 18:59:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68E70651A0;
+	Thu, 21 Dec 2023 19:03:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lHqSD+RS"
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="QHvihfx+"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+Received: from mail-oa1-f45.google.com (mail-oa1-f45.google.com [209.85.160.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDE266518D;
-	Thu, 21 Dec 2023 18:59:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-40c339d2b88so11206565e9.3;
-        Thu, 21 Dec 2023 10:59:30 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EE09627E3
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 19:03:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-oa1-f45.google.com with SMTP id 586e51a60fabf-1f03d9ad89fso763441fac.1
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 11:03:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703185169; x=1703789969; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:references:to:from:subject
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=prT5zhWN3Xwvhx/dTTcm4J0NQjHP/BjQ2cfs9rXhsKs=;
-        b=lHqSD+RSsDjFxrJEMe6Qoe0zxcgBrD8zkmFqYW2ePmh1XtshVem307PtC0MQTXorx7
-         U86y1TFVtneYga/IBKShDqaEuwSPrDMC6hAFRC/XHPOxnZy3ccUUXfCX0LPtiUiTVbef
-         N/QrKNyKvH+POorpXyer4+0kO109HKNfNHAow5jog92QlImDbjlhQDt9mpGlO/pcNYOB
-         fH08xKdweRr/Hw1IpzNvAq70R9Aqh5yvYQueazOVN3DDzoD+Hya2w61IutNPiQqeE5vc
-         m5gra0d/KGRjD3FO1CTVRBISJ6itpbgmVf4jWX2hn1sncKj7H/9rEyn0ZX+aW+WtzpTY
-         yMQw==
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1703185414; x=1703790214; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=S8E3wEmEl8khAD92xQyPHbsm2TZrkNBkE9+5wPLVsBE=;
+        b=QHvihfx+QwDN1VHVyh2FgN5NGFqMmiUFu8NzLJ2pFYsIJ4yNpUDYJt6CrbTgrO41bC
+         fXOz2st/vEdMJ/jFkpNDqwGdoMYf0tUHG8eC1IipS8dk4eciqtCCObmq042BFfrSss67
+         JdBaHTJlQAacsrbitWRKzq1J9QPPr98JsmO5phiEMv4O7F76YET3xeewUWSElJpWvkL7
+         GdFoPr0CLULeV7xnx6ftOe/9oU6LR7YZlpQme9CPzE1F8tMATEZ9ldwPY+dTRCkjuUEs
+         XC16wp0orNqJWlzKM1APefyWSjcxMKaAxD804gLCKqwl4lmRCrsAQII66qwSgbqrIShP
+         ckUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703185169; x=1703789969;
-        h=content-transfer-encoding:in-reply-to:references:to:from:subject
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=prT5zhWN3Xwvhx/dTTcm4J0NQjHP/BjQ2cfs9rXhsKs=;
-        b=M8cY33Dm+uC+WieVo2jfP3FKC+DnHs9FMn94wwXSoHN4LZ+kOdDbNSv1gQqrE2qj1y
-         aqhPc63ppSFL+i9YEAXlSbY2djkys47rJs9qxcAoz4RcT68y8l9cwDR5sli9jmzN5yRy
-         rITspeehYoWPUQRwxttSjzyjNI0WslFymlrynOxfZKe9q98vE2R0/ajCP3DPp1cQTOrJ
-         RNbR99nItDFxENyU6dhLK5tqPE4t8kHmFpvQpgCH+ExKMZyF8YglXJKsn+GQVUeuItti
-         vw/XXofUVSET0ahN0PNY1jLdrMWN2b527NwYW3PxnS/SsYx5kPANwycnp8gadVsa4zcS
-         CLXQ==
-X-Gm-Message-State: AOJu0Yxk94nxpJg7I/5yi9v20fDJBxdpuE9OIh4EOSE3RBnuVBbkx/uJ
-	Pf29nkewFTQA0JuJJDANAd8=
-X-Google-Smtp-Source: AGHT+IGcfjzOQgIK3oE5a0xkZ7F3VXQnA2OqVx/WoldDgtxZW8s2O5rFIGVBr5oJ6hVqxbxAUbsFww==
-X-Received: by 2002:a05:600c:4f0f:b0:40c:2cc5:4539 with SMTP id l15-20020a05600c4f0f00b0040c2cc54539mr99103wmq.23.1703185168870;
-        Thu, 21 Dec 2023 10:59:28 -0800 (PST)
-Received: from debian ([146.70.204.204])
-        by smtp.gmail.com with ESMTPSA id p6-20020a05600c468600b004053e9276easm11868269wmo.32.2023.12.21.10.59.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Dec 2023 10:59:28 -0800 (PST)
-Message-ID: <641157c0-f224-4910-874d-7906a48d914b@gmail.com>
-Date: Thu, 21 Dec 2023 19:58:59 +0100
+        d=1e100.net; s=20230601; t=1703185414; x=1703790214;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=S8E3wEmEl8khAD92xQyPHbsm2TZrkNBkE9+5wPLVsBE=;
+        b=KEgxONzOosLocccRr9cROhnKlg1RQUjH2gc9ibKK2Osa1tHY9HcdMjZceeSDn9ppLQ
+         ShgLH7XRK3yKUKa+Ua7zOPS4JpuXbdLBXgvcZVjhRaXbzndk9g24DwF7EJ3XzH69VlEA
+         tJZs3hMkFarkKzhlcaw6nMYbzUrfF3prHTGZ6wNHIMIsC+3lsu37RgFux1vDqkXjZsSM
+         UfWM7aQ+O+VWauLFop5mRUV0v8a5Fy15yVeZqiXIYElWcEHn8Y8q/6Gkd2gBC/8zSFx3
+         tPFcF+AgTe5XbEJF7Q/rDwRIrqgWDxeRLmzvGF4KzU7vxALl1F5Au8cQhVJycim/MF3Z
+         M+tA==
+X-Gm-Message-State: AOJu0YyWtvoKdkE59iD8rAu3A3ISKhgy/UGtJ6FpwmPqMFfbNoaEDbe+
+	nRtZN/IqDaO5ygVCLNYa7T3NyDLKpwRANt40mW/WlHN9nERls6JgC1jIHmiKxho=
+X-Google-Smtp-Source: AGHT+IFuUzdtc/tkGQt0c3FRS3IbVe0aoSkfgXl1TJRxaMRPjqq/jHMelEvOCi4BP3w9hhEK3aOcn5oXAR+XSJNPoHo=
+X-Received: by 2002:a05:6870:648b:b0:1fb:75a:6d4c with SMTP id
+ cz11-20020a056870648b00b001fb075a6d4cmr292671oab.115.1703185414671; Thu, 21
+ Dec 2023 11:03:34 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: [PATCH net-next 3/3] selftests/net: fix GRO coalesce test and add ext
-From: Richard Gobert <richardbgobert@gmail.com>
-To: davem@davemloft.net, dsahern@kernel.org, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, shuah@kernel.org,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-kselftest@vger.kernel.org
-References: <f4eff69d-3917-4c42-8c6b-d09597ac4437@gmail.com>
-In-Reply-To: <f4eff69d-3917-4c42-8c6b-d09597ac4437@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20231221184316.24506-1-brgl@bgdev.pl> <20231221184316.24506-3-brgl@bgdev.pl>
+In-Reply-To: <20231221184316.24506-3-brgl@bgdev.pl>
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+Date: Thu, 21 Dec 2023 20:03:23 +0100
+Message-ID: <CAMRc=Mdz7fVOOcN80YV1hGMqqhDVNM+1Da3BysaZG=9+P1oMAQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] gpiolib: pin GPIO devices in place during descriptor lookup
+To: Linus Walleij <linus.walleij@linaro.org>, 
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Kent Gibson <warthog618@gmail.com>
+Cc: linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Currently there is no test which checks that IPv6 extension header packets
-successfully coalesce. This commit adds a test, which verifies two IPv6
-packets with HBH extension headers do coalesce.
+On Thu, Dec 21, 2023 at 7:43=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.pl>=
+ wrote:
+>
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+>
+> There's time between when we locate the relevant descriptor during
+> lookup and when we actually take the reference to its parent GPIO
+> device where - if the GPIO device in question is removed - we'll end up
+> with a dangling pointer to freed memory. Make sure devices cannot be
+> removed until we hold a new reference to the device.
+>
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> ---
+>  drivers/gpio/gpiolib.c | 40 +++++++++++++++++++++++-----------------
+>  1 file changed, 23 insertions(+), 17 deletions(-)
+>
+> diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
+> index 1baeb6778ec6..8a15b8f6b50e 100644
+> --- a/drivers/gpio/gpiolib.c
+> +++ b/drivers/gpio/gpiolib.c
+> @@ -4147,27 +4147,33 @@ static struct gpio_desc *gpiod_find_and_request(s=
+truct device *consumer,
+>         struct gpio_desc *desc;
+>         int ret;
+>
+> -       desc =3D gpiod_find_by_fwnode(fwnode, consumer, con_id, idx, &fla=
+gs, &lookupflags);
+> -       if (gpiod_not_found(desc) && platform_lookup_allowed) {
+> +       scoped_guard(rwsem_read, &gpio_devices_sem) {
 
-I changed the receive socket filter to accept a packet with one extension
-header. This change exposed a bug in the fragment test -- the old BPF did
-not accept the fragment packet. I updated correct_num_packets in the
-fragment test accordingly.
+I am too sleep deprived to be coding. This doesn't make sense because
+if we are held at the write semaphore in gpiodev_release() then it's
+already too late as the device is being removed already and we'll
+still end up with a dangling pointer.
 
-Signed-off-by: Richard Gobert <richardbgobert@gmail.com>
----
- tools/testing/selftests/net/gro.c | 78 ++++++++++++++++++++++++++++---
- 1 file changed, 71 insertions(+), 7 deletions(-)
+Should we hold off any reference putting for all GPIO devices when a
+descriptor lookup is in progress?
 
-diff --git a/tools/testing/selftests/net/gro.c b/tools/testing/selftests/net/gro.c
-index 30024d0ed373..4ee34dca8e5f 100644
---- a/tools/testing/selftests/net/gro.c
-+++ b/tools/testing/selftests/net/gro.c
-@@ -71,6 +71,10 @@
- #define MAX_PAYLOAD (IP_MAXPACKET - sizeof(struct tcphdr) - sizeof(struct ipv6hdr))
- #define NUM_LARGE_PKT (MAX_PAYLOAD / MSS)
- #define MAX_HDR_LEN (ETH_HLEN + sizeof(struct ipv6hdr) + sizeof(struct tcphdr))
-+#define MIN_EXTHDR_SIZE 8   /* minimum size of IPv6 extension header */
-+
-+#define ipv6_optlen(p)  (((p)->hdrlen+1) << 3) /* calculate IPv6 extension header len */
-+
- 
- static const char *addr6_src = "fdaa::2";
- static const char *addr6_dst = "fdaa::1";
-@@ -104,7 +108,7 @@ static void setup_sock_filter(int fd)
- 	const int dport_off = tcp_offset + offsetof(struct tcphdr, dest);
- 	const int ethproto_off = offsetof(struct ethhdr, h_proto);
- 	int optlen = 0;
--	int ipproto_off;
-+	int ipproto_off, opt_ipproto_off;
- 	int next_off;
- 
- 	if (proto == PF_INET)
-@@ -116,14 +120,27 @@ static void setup_sock_filter(int fd)
- 	if (strcmp(testname, "ip") == 0) {
- 		if (proto == PF_INET)
- 			optlen = sizeof(struct ip_timestamp);
--		else
--			optlen = sizeof(struct ip6_frag);
-+		else {
-+			// same size for HBH and Fragment extension header types
-+			optlen = MIN_EXTHDR_SIZE;
-+			opt_ipproto_off = ETH_HLEN + sizeof(struct ipv6hdr) +
-+				offsetof(struct ip6_ext, ip6e_nxt);
-+		}
- 	}
- 
-+	/*
-+	 * this filter validates the following:
-+	 *	- packet is IPv4/IPv6 according to the running test.
-+	 *	- packet is TCP. Also handles the case of one extension header and then TCP.
-+	 *	- checks the packet tcp dport equals to DPORT.
-+	 *     (also handles the case of one extension header and then TCP.)
-+	 */
- 	struct sock_filter filter[] = {
- 			BPF_STMT(BPF_LD  + BPF_H   + BPF_ABS, ethproto_off),
--			BPF_JUMP(BPF_JMP + BPF_JEQ + BPF_K, ntohs(ethhdr_proto), 0, 7),
-+			BPF_JUMP(BPF_JMP + BPF_JEQ + BPF_K, ntohs(ethhdr_proto), 0, 9),
- 			BPF_STMT(BPF_LD  + BPF_B   + BPF_ABS, ipproto_off),
-+			BPF_JUMP(BPF_JMP + BPF_JEQ + BPF_K, IPPROTO_TCP, 2, 0),
-+			BPF_STMT(BPF_LD  + BPF_B   + BPF_ABS, opt_ipproto_off),
- 			BPF_JUMP(BPF_JMP + BPF_JEQ + BPF_K, IPPROTO_TCP, 0, 5),
- 			BPF_STMT(BPF_LD  + BPF_H   + BPF_ABS, dport_off),
- 			BPF_JUMP(BPF_JMP + BPF_JEQ + BPF_K, DPORT, 2, 0),
-@@ -576,6 +593,39 @@ static void add_ipv4_ts_option(void *buf, void *optpkt)
- 	iph->check = checksum_fold(iph, sizeof(struct iphdr) + optlen, 0);
- }
- 
-+static void add_ipv6_exthdr(void *buf, void *optpkt, __u8 exthdr_type)
-+{
-+	struct ipv6_opt_hdr *hbh_hdr = (struct ipv6_opt_hdr *)(optpkt + tcp_offset);
-+	struct ipv6hdr *iph = (struct ipv6hdr *)(optpkt + ETH_HLEN);
-+	int opt_len;
-+
-+	hbh_hdr->hdrlen = 0;
-+	hbh_hdr->nexthdr = IPPROTO_TCP;
-+	opt_len = ipv6_optlen(hbh_hdr);
-+
-+	memcpy(optpkt, buf, tcp_offset);
-+	memcpy(optpkt + tcp_offset + MIN_EXTHDR_SIZE, buf + tcp_offset,
-+		sizeof(struct tcphdr) + PAYLOAD_LEN);
-+
-+	iph->nexthdr = exthdr_type;
-+	iph->payload_len = htons(ntohs(iph->payload_len) + MIN_EXTHDR_SIZE);
-+}
-+
-+/* Send IPv6 packet with extension header */
-+static void send_ipv6_exthdr(int fd, struct sockaddr_ll *daddr)
-+{
-+	static char buf[MAX_HDR_LEN + PAYLOAD_LEN];
-+	static char exthdr_pck[sizeof(buf) + MIN_EXTHDR_SIZE];
-+
-+	create_packet(buf, 0, 0, PAYLOAD_LEN, 0);
-+	add_ipv6_exthdr(buf, exthdr_pck, IPPROTO_HOPOPTS);
-+	write_packet(fd, exthdr_pck, total_hdr_len + PAYLOAD_LEN + MIN_EXTHDR_SIZE, daddr);
-+
-+	create_packet(buf, PAYLOAD_LEN * 1, 0, PAYLOAD_LEN, 0);
-+	add_ipv6_exthdr(buf, exthdr_pck, IPPROTO_HOPOPTS);
-+	write_packet(fd, exthdr_pck, total_hdr_len + PAYLOAD_LEN + MIN_EXTHDR_SIZE, daddr);
-+}
-+
- /* IPv4 options shouldn't coalesce */
- static void send_ip_options(int fd, struct sockaddr_ll *daddr)
- {
-@@ -697,7 +747,7 @@ static void send_fragment6(int fd, struct sockaddr_ll *daddr)
- 		create_packet(buf, PAYLOAD_LEN * i, 0, PAYLOAD_LEN, 0);
- 		write_packet(fd, buf, bufpkt_len, daddr);
- 	}
--
-+	sleep(1);
- 	create_packet(buf, PAYLOAD_LEN * 2, 0, PAYLOAD_LEN, 0);
- 	memset(extpkt, 0, extpkt_len);
- 
-@@ -760,6 +810,7 @@ static void check_recv_pkts(int fd, int *correct_payload,
- 	vlog("}, Total %d packets\nReceived {", correct_num_pkts);
- 
- 	while (1) {
-+		ip_ext_len = 0;
- 		pkt_size = recv(fd, buffer, IP_MAXPACKET + ETH_HLEN + 1, 0);
- 		if (pkt_size < 0)
- 			error(1, errno, "could not receive");
-@@ -767,7 +818,7 @@ static void check_recv_pkts(int fd, int *correct_payload,
- 		if (iph->version == 4)
- 			ip_ext_len = (iph->ihl - 5) * 4;
- 		else if (ip6h->version == 6 && ip6h->nexthdr != IPPROTO_TCP)
--			ip_ext_len = sizeof(struct ip6_frag);
-+			ip_ext_len = MIN_EXTHDR_SIZE;
- 
- 		tcph = (struct tcphdr *)(buffer + tcp_offset + ip_ext_len);
- 
-@@ -880,7 +931,14 @@ static void gro_sender(void)
- 			sleep(1);
- 			write_packet(txfd, fin_pkt, total_hdr_len, &daddr);
- 		} else if (proto == PF_INET6) {
-+			sleep(1);
- 			send_fragment6(txfd, &daddr);
-+			sleep(1);
-+			write_packet(txfd, fin_pkt, total_hdr_len, &daddr);
-+
-+			sleep(1);
-+			send_ipv6_exthdr(txfd, &daddr);
-+			sleep(1);
- 			write_packet(txfd, fin_pkt, total_hdr_len, &daddr);
- 		}
- 	} else if (strcmp(testname, "large") == 0) {
-@@ -997,7 +1055,13 @@ static void gro_receiver(void)
- 			 */
- 			printf("fragmented ip6 doesn't coalesce: ");
- 			correct_payload[0] = PAYLOAD_LEN * 2;
--			check_recv_pkts(rxfd, correct_payload, 2);
-+			correct_payload[1] = PAYLOAD_LEN;
-+			correct_payload[2] = PAYLOAD_LEN;
-+			check_recv_pkts(rxfd, correct_payload, 3);
-+
-+			correct_payload[0] = PAYLOAD_LEN * 2;
-+			printf("ipv6 with extension header DOES coalesce: ");
-+			check_recv_pkts(rxfd, correct_payload, 1);
- 		}
- 	} else if (strcmp(testname, "large") == 0) {
- 		int offset = proto == PF_INET ? 20 : 0;
--- 
-2.36.1
+Bart
 
+> +               desc =3D gpiod_find_by_fwnode(fwnode, consumer, con_id, i=
+dx,
+> +                                           &flags, &lookupflags);
+> +               if (gpiod_not_found(desc) && platform_lookup_allowed) {
+> +                       /*
+> +                        * Either we are not using DT or ACPI, or their l=
+ookup
+> +                        * did not return a result. In that case, use pla=
+tform
+> +                        * lookup as a fallback.
+> +                        */
+> +                       dev_dbg(consumer,
+> +                               "using lookup tables for GPIO lookup\n");
+> +                       desc =3D gpiod_find(consumer, con_id, idx, &looku=
+pflags);
+> +               }
+> +
+> +               if (IS_ERR(desc)) {
+> +                       dev_dbg(consumer, "No GPIO consumer %s found\n",
+> +                               con_id);
+> +                       return desc;
+> +               }
+> +
+>                 /*
+> -                * Either we are not using DT or ACPI, or their lookup di=
+d not
+> -                * return a result. In that case, use platform lookup as =
+a
+> -                * fallback.
+> +                * If a connection label was passed use that, else attemp=
+t to
+> +                * use the device name as label
+>                  */
+> -               dev_dbg(consumer, "using lookup tables for GPIO lookup\n"=
+);
+> -               desc =3D gpiod_find(consumer, con_id, idx, &lookupflags);
+> +               ret =3D gpiod_request(desc, label);
+>         }
+>
+> -       if (IS_ERR(desc)) {
+> -               dev_dbg(consumer, "No GPIO consumer %s found\n", con_id);
+> -               return desc;
+> -       }
+> -
+> -       /*
+> -        * If a connection label was passed use that, else attempt to use
+> -        * the device name as label
+> -        */
+> -       ret =3D gpiod_request(desc, label);
+>         if (ret) {
+>                 if (!(ret =3D=3D -EBUSY && flags & GPIOD_FLAGS_BIT_NONEXC=
+LUSIVE))
+>                         return ERR_PTR(ret);
+> --
+> 2.40.1
+>
 
