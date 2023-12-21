@@ -1,167 +1,162 @@
-Return-Path: <linux-kernel+bounces-8533-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8535-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8459381B910
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 15:01:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14BC281B917
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 15:02:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3C2B82859F8
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 14:01:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 307921C25ACD
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 14:01:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A2AF78E67;
-	Thu, 21 Dec 2023 13:49:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE31A7691B;
+	Thu, 21 Dec 2023 13:51:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="RUZiik/+";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="cgD2IAt6"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="F3oIk2pK"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE64B77F0D
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 13:49:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sakamocchi.jp
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-	by mailout.nyi.internal (Postfix) with ESMTP id D11055C0245;
-	Thu, 21 Dec 2023 08:49:04 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Thu, 21 Dec 2023 08:49:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
-	 h=cc:cc:content-transfer-encoding:content-type:date:date:from
-	:from:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to; s=fm2; t=1703166544; x=
-	1703252944; bh=W8++sea8gpKHCOGyelCyTGYcLj9Ir33YrV0oYJ5xXSE=; b=R
-	UZiik/+ck8ZzHIB7lL6s21SNYE+Ngd+LozderYS/PIpndT4Toj5lx6jIWExBXw6I
-	1gp4PXOFkXTAn/ZKeMZM56exWQaXTh3OPBKw3r/NlGJqB3KPHtgNGH8EXL84wUkd
-	5JmEdRkL2BAY+ceAk92FQXDC+4Gc1qMhqbFMqE6eSXa5Lbn0NTckb5e1Ty7Szvxf
-	6VzVSO7KjmNEmIuHjY4Kkbv2It9XZUmaugEvfL7ehyS/i5W49xcUiozEtg+yafqg
-	vNInN8l8o0D6c1h2ePTOtPY3EYI6siRLp7Y2bMTmF5L6id2tQTmxKZmq+pF3jkNg
-	ntiUFvfzg7uZBI6k2wxrA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1703166544; x=
-	1703252944; bh=W8++sea8gpKHCOGyelCyTGYcLj9Ir33YrV0oYJ5xXSE=; b=c
-	gD2IAt6c6aWChOdUR0j84/+MaaKxq/URdhAfpe7raKyD9zzFhcmZiR3CrTI7NrUJ
-	d2AXmpsmXfR7YV5MgWUNY2u/rJwmN2sYM/cbsdDJ1VbLnqDFx9udTEIdZk4maSHq
-	gIpdg9yFwOecJHo95kgcPVELLRr8aD7d+fFQV9aM2/FbRI2VghojS3R8lrl71wR1
-	frXnSggDSKe/83GC4gE8wR7AiYrACmVVQ9f7Bw/7eBH6snrhDUFBhn1fx9aQdjUS
-	zE7OYbjZI00Yo1Ybf1Y2ZCJa86WKjfku07xCWeY903Vu3G/SEebH2A/3Z13S/FyJ
-	F3P1Ys8mCCX2lHP4N12ig==
-X-ME-Sender: <xms:UEKEZeP05umdr83bRx6iXQU_9IwsQEdqNM1geFMr2zcsRWK6PrYxOA>
-    <xme:UEKEZc9SlPr_UwE43v0g1wLEpJeVb14Om6vmmHYmcPgZnVzzErG6DhbUN1V8rUaxw
-    QvmRRq_aBAj7g990n8>
-X-ME-Received: <xmr:UEKEZVSUwcPPJy7Zjsyr7DKPe2dNI_fQqjNSXl7n1W3OGyc9w4U-Y_gpTNkLzmgcLW1jYRgAKrvSf8yYW9fRxrVmDSyJO-hx5N_V6bl7VRy90g>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdduhedgfeduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvfevufffkffojghfggfgsedtke
-    ertdertddtnecuhfhrohhmpefvrghkrghshhhiucfurghkrghmohhtohcuoehoqdhtrghk
-    rghshhhisehsrghkrghmohgttghhihdrjhhpqeenucggtffrrghtthgvrhhnpedvjefgje
-    euvdfguddukeelveetgfdtvefhtdfffeeigfevueetffeivdffkedvtdenucevlhhushht
-    vghrufhiiigvpedunecurfgrrhgrmhepmhgrihhlfhhrohhmpehoqdhtrghkrghshhhise
-    hsrghkrghmohgttghhihdrjhhp
-X-ME-Proxy: <xmx:UEKEZesLAx80osSuAtqOs-o_pFZ8tprXNDiK-nnyk0L6gXawb76Tsg>
-    <xmx:UEKEZWf56PO6CL4kLB7EiCvMjApFhAqnRJULilxDDa8Qx7Kjgfgj3g>
-    <xmx:UEKEZS1XH-hTnZxA4fCiOrbkqiVD87XaHXfYoMzHCv_cSl_GlUK3Tw>
-    <xmx:UEKEZaGJGa1mJfWv_7_b3wH0jCWEfay3kirHOVbUqGt61fdP3PUxPg>
-Feedback-ID: ie8e14432:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 21 Dec 2023 08:49:03 -0500 (EST)
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-To: linux1394-devel@lists.sourceforge.net,
-	linux-kernel@vger.kernel.org
-Cc: adamg@pobox.com
-Subject: [PATCH v2 8/8] firewire: core: change modalias of unit device with backward incompatibility
-Date: Thu, 21 Dec 2023 22:48:49 +0900
-Message-Id: <20231221134849.603857-9-o-takashi@sakamocchi.jp>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231221134849.603857-1-o-takashi@sakamocchi.jp>
-References: <20231221134849.603857-1-o-takashi@sakamocchi.jp>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6621E745DA;
+	Thu, 21 Dec 2023 13:51:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1703166695; x=1734702695;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=MW/VQMh0lV18jKfLyDKMM1MKJVVzFTeS8LzjzUBd4Mo=;
+  b=F3oIk2pK9K+aty22CTcVX2VDLZtQ804YcVsu0zeX0KXeF6QqdtlohILk
+   k3sHJ6IIyKlrYls8ADagkA8uYEu8lOBqe5vGapIrAYMCx+OIqlgRzPZ9j
+   OKDJIOuNZ8IrTpICUVGCDPJAThG7eSSoRmdBwbfhWkulvCLOPP8mh9Omg
+   n5DfuM/y4/+X+UOA1QUO4m2ZJ8m5fyCzztCxYBFj00nojRGs4ySugouEC
+   l/q7gz2hqgd1FJ/4BdVmWP+NtVt3U1AmwAJ0fQX4R8X7QDaNtwswNKR+X
+   l4xXThjfpXO8NIee6tuiWQ/kMV2sIvwJ9BVXE73N3AL54JPXSI4QtYZdQ
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10930"; a="399804414"
+X-IronPort-AV: E=Sophos;i="6.04,293,1695711600"; 
+   d="scan'208";a="399804414"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Dec 2023 05:51:18 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10930"; a="920329264"
+X-IronPort-AV: E=Sophos;i="6.04,293,1695711600"; 
+   d="scan'208";a="920329264"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga001.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Dec 2023 05:51:15 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@intel.com>)
+	id 1rGJSC-00000007rfr-0jfj;
+	Thu, 21 Dec 2023 15:51:12 +0200
+Date: Thu, 21 Dec 2023 15:51:11 +0200
+From: Andy Shevchenko <andriy.shevchenko@intel.com>
+To: Mark Hasemeyer <markhas@chromium.org>
+Cc: LKML <linux-kernel@vger.kernel.org>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Tzung-Bi Shih <tzungbi@kernel.org>,
+	Raul Rangel <rrangel@chromium.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Rob Herring <robh@kernel.org>, Sudeep Holla <sudeep.holla@arm.com>,
+	Mika Westerberg <mika.westerberg@linux.intel.com>,
+	Wolfram Sang <wsa@kernel.org>, linux-acpi@vger.kernel.org,
+	linux-i2c@vger.kernel.org
+Subject: Re: [PATCH v2 02/22] i2c: acpi: Modify i2c_acpi_get_irq() to use
+ resource
+Message-ID: <ZYRCz-FiG_w71qhB@smile.fi.intel.com>
+References: <20231220235459.2965548-1-markhas@chromium.org>
+ <20231220165423.v2.2.Ib65096357993ff602e7dd0000dd59a36571c48d8@changeid>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231220165423.v2.2.Ib65096357993ff602e7dd0000dd59a36571c48d8@changeid>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-As the last part of support for legacy layout of configuration ROM, this
-commit traverses vendor directory as well as root directory when
-constructing modalias for unit device. The change brings loss of backward
-compatibility since it can fill model field ('mo') which is 0 at current
-implementation in the case. However, we can be optimistic against
-regression for unit drivers in kernel, due to some points:
+On Wed, Dec 20, 2023 at 04:54:16PM -0700, Mark Hasemeyer wrote:
+> The i2c_acpi_irq_context structure provides redundant information that
+> can be provided with struct resource.
+> 
+> Refactor i2c_acpi_get_irq() to use struct resource instead of struct
+> i2c_acpi_irq_context.
 
-1. ALSA drivers for audio and music units use the model fields to match
-   device, however all of supported devices does not have such legacy
-   layout.
-2. the other unit drivers (e.g. sbp2) does not use the model field to
-   match device.
+Suggested-by?
 
-The rest of concern is user space application. The most of applications
-just take care of node device and does not use the modalias of unit
-device, thus the change does not affect to them. But systemd project is
-known to get affects from the change since it includes hwdb to take udev
-to configure fw character device conveniently. I have a plan to work for
-systemd so that the access permission of character device could be kept
-across the change.
+...
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- drivers/firewire/core-device.c           | 21 +++++++++++++++++++--
- drivers/firewire/device-attribute-test.c |  2 +-
- 2 files changed, 20 insertions(+), 3 deletions(-)
+>  static int i2c_acpi_add_irq_resource(struct acpi_resource *ares, void *data)
+>  {
+> -	struct i2c_acpi_irq_context *irq_ctx = data;
+> -	struct resource r;
+> +	struct resource *r = data;
 
-diff --git a/drivers/firewire/core-device.c b/drivers/firewire/core-device.c
-index 029ba0ff7083..829b3d590ccd 100644
---- a/drivers/firewire/core-device.c
-+++ b/drivers/firewire/core-device.c
-@@ -153,8 +153,25 @@ static void get_ids(const u32 *directory, int *id)
- 
- static void get_modalias_ids(const struct fw_unit *unit, int *id)
- {
--	get_ids(&fw_parent_device(unit)->config_rom[ROOT_DIR_OFFSET], id);
--	get_ids(unit->directory, id);
-+	const u32 *root_directory = &fw_parent_device(unit)->config_rom[ROOT_DIR_OFFSET];
-+	const u32 *directories[] = {NULL, NULL, NULL};
-+	const u32 *vendor_directory;
-+	int i;
-+
-+	directories[0] = root_directory;
-+
-+	// Legacy layout of configuration ROM described in Annex 1 of 'Configuration ROM for AV/C
-+	// Devices 1.0 (December 12, 2000, 1394 Trading Association, TA Document 1999027)'.
-+	vendor_directory = search_directory(root_directory, CSR_VENDOR);
-+	if (!vendor_directory) {
-+		directories[1] = unit->directory;
-+	} else {
-+		directories[1] = vendor_directory;
-+		directories[2] = unit->directory;
-+	}
-+
-+	for (i = 0; i < ARRAY_SIZE(directories) && !!directories[i]; ++i)
-+		get_ids(directories[i], id);
- }
- 
- static bool match_ids(const struct ieee1394_device_id *id_table, int *id)
-diff --git a/drivers/firewire/device-attribute-test.c b/drivers/firewire/device-attribute-test.c
-index da2a4a09bf84..2f123c6b0a16 100644
---- a/drivers/firewire/device-attribute-test.c
-+++ b/drivers/firewire/device-attribute-test.c
-@@ -178,7 +178,7 @@ static void device_attr_legacy_avc(struct kunit *test)
- 	};
- 	struct device *node_dev = (struct device *)&node.device;
- 	struct device *unit0_dev = (struct device *)&unit0.device;
--	static const int unit0_expected_ids[] = {0x00012345, 0x00000000, 0x00abcdef, 0x00543210};
-+	static const int unit0_expected_ids[] = {0x00012345, 0x00fedcba, 0x00abcdef, 0x00543210};
- 	char *buf = kunit_kzalloc(test, PAGE_SIZE, GFP_KERNEL);
- 	int ids[4] = {0, 0, 0, 0};
- 
+> -	if (irq_ctx->irq > 0)
+> +	if (r->start > 0)
+>  		return 1;
+
+Checking flags is more robust.
+
+	if (r->flags)
+		return 1;
+
+> -	if (!acpi_dev_resource_interrupt(ares, 0, &r))
+> +	if (!acpi_dev_resource_interrupt(ares, 0, r))
+>  		return 1;
+>  
+> -	irq_ctx->irq = i2c_dev_irq_from_resources(&r, 1);
+> -	irq_ctx->wake_capable = r.flags & IORESOURCE_IRQ_WAKECAPABLE;
+> +	i2c_dev_irq_from_resources(r, 1);
+>  
+>  	return 1; /* No need to add resource to the list */
+>  }
+
+...
+
+> +	if (IS_ERR_OR_NULL(r))
+> +		return -EINVAL;
+
+Hmm... Do we expect this to be an error pointer in some cases?
+
+...
+
+> +	ret = acpi_dev_get_gpio_irq_resource(adev, NULL, 0, r);
+> +	if (!ret)
+> +		return r->start;
+>  
+> -	return irq_ctx.irq;
+> +	return ret;
+
+What's wrong with the standard pattern?
+
+	if (ret)
+		return ret;
+	...
+	return ...;
+
+...
+
+> +			struct resource r = {0};
+
+'0' is redundant.
+
+...
+
+> +			irq = i2c_acpi_get_irq(client, &r);
+> +			if (irq > 0 && r.flags & IORESOURCE_IRQ_WAKECAPABLE)
+
+Why checking just flags is not enough?
+
+>  				client->flags |= I2C_CLIENT_WAKE;
+
 -- 
-2.39.2
+With Best Regards,
+Andy Shevchenko
+
 
 
