@@ -1,322 +1,105 @@
-Return-Path: <linux-kernel+bounces-8264-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8265-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 276EC81B4AE
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 12:09:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 422FE81B4B1
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 12:11:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4B4AD1C21A2D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 11:09:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CC47F1F251AD
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 11:11:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16EC76ABB9;
-	Thu, 21 Dec 2023 11:09:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A1776ABBA;
+	Thu, 21 Dec 2023 11:11:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="obs2lYdW";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="5L7BcSKB";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="obs2lYdW";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="5L7BcSKB"
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="Dbb3N+HA"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7000B6AB9F;
-	Thu, 21 Dec 2023 11:09:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 5A5D21FB42;
-	Thu, 21 Dec 2023 11:09:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1703156956; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=CGCpOt7yvJg/Baj+l7YgN3+pIt5pBMerQ6avhaamLRk=;
-	b=obs2lYdW0IeMmDnRh6+mcqyBv/dpPm3iKtRwHtHPDd36hOxZ25aiXvp8oPyqWdQVxmxD7x
-	81hr71UhhdB8zKPAZCe9/+RlKWYEht6DCQuInTI/VbnwLbnHr46ITW2Q3J9auW/TfQhaiq
-	IJGbNhP3BvQyvZ3OJP+o3PSdnO4KC2Y=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1703156956;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=CGCpOt7yvJg/Baj+l7YgN3+pIt5pBMerQ6avhaamLRk=;
-	b=5L7BcSKBF7aiALiaurswhJ1TzRUjwbgqVCWEhJmBQAaJyoDHG25mK/Af88nyVWAdKB7Fgh
-	bNdjy+joWa5X5aDA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1703156956; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=CGCpOt7yvJg/Baj+l7YgN3+pIt5pBMerQ6avhaamLRk=;
-	b=obs2lYdW0IeMmDnRh6+mcqyBv/dpPm3iKtRwHtHPDd36hOxZ25aiXvp8oPyqWdQVxmxD7x
-	81hr71UhhdB8zKPAZCe9/+RlKWYEht6DCQuInTI/VbnwLbnHr46ITW2Q3J9auW/TfQhaiq
-	IJGbNhP3BvQyvZ3OJP+o3PSdnO4KC2Y=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1703156956;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=CGCpOt7yvJg/Baj+l7YgN3+pIt5pBMerQ6avhaamLRk=;
-	b=5L7BcSKBF7aiALiaurswhJ1TzRUjwbgqVCWEhJmBQAaJyoDHG25mK/Af88nyVWAdKB7Fgh
-	bNdjy+joWa5X5aDA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3E02313725;
-	Thu, 21 Dec 2023 11:09:16 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id vT7BDtwchGWwVAAAD6G6ig
-	(envelope-from <jack@suse.cz>); Thu, 21 Dec 2023 11:09:16 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id A1706A07E3; Thu, 21 Dec 2023 12:09:15 +0100 (CET)
-Date: Thu, 21 Dec 2023 12:09:15 +0100
-From: Jan Kara <jack@suse.cz>
-To: Christoph Hellwig <hch@lst.de>
-Cc: linux-mm@kvack.org, "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	Jan Kara <jack@suse.com>, David Howells <dhowells@redhat.com>,
-	Brian Foster <bfoster@redhat.com>, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 06/17] writeback: Factor out writeback_finish()
-Message-ID: <20231221110915.kl2c45mepzzcqnbj@quack3>
-References: <20231218153553.807799-1-hch@lst.de>
- <20231218153553.807799-7-hch@lst.de>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F04B56A02F;
+	Thu, 21 Dec 2023 11:11:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3BLBAq1v122527;
+	Thu, 21 Dec 2023 05:10:52 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1703157052;
+	bh=QmXACMYRAncvaes6ymYI0iABfyRzCf/v2jYHx0VjiXg=;
+	h=From:To:CC:Subject:Date;
+	b=Dbb3N+HAhf8TWCggogCK90QFBYwAIM7OvHkJ8UA01C+Y6LjjDgLKkYnsPzU1VhTi+
+	 GP29/yHzIKYjyw6i73gGes6dbeRjlZbAjRo5vSetr8SfV8mEikD28+TlbkqOVWdBvx
+	 djCgLf5r+L1uiRiCMIDafH+CIBcrhS3um4EsRYec=
+Received: from DFLE107.ent.ti.com (dfle107.ent.ti.com [10.64.6.28])
+	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3BLBAqQr049082
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Thu, 21 Dec 2023 05:10:52 -0600
+Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 21
+ Dec 2023 05:10:52 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 21 Dec 2023 05:10:52 -0600
+Received: from localhost (chintan-thinkstation-p360-tower.dhcp.ti.com [172.24.227.220])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3BLBAp7d113056;
+	Thu, 21 Dec 2023 05:10:52 -0600
+From: Chintan Vankar <c-vankar@ti.com>
+To: Dan Carpenter <dan.carpenter@linaro.org>,
+        Grygorii Strashko
+	<grygorii.strashko@ti.com>,
+        Roger Quadros <rogerq@kernel.org>,
+        "Siddharth
+ Vadapalli" <s-vadapalli@ti.com>,
+        Paolo Abeni <pabeni@redhat.com>, "Jakub
+ Kicinski" <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S.
+ Miller" <davem@davemloft.net>
+CC: <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        Chintan Vankar
+	<c-vankar@ti.com>
+Subject: [RFC PATCH net-next] net: ethernet: ti: am65-cpsw-nuss: Enable SGMII mode for J784S4 CPSW9G
+Date: Thu, 21 Dec 2023 16:40:46 +0530
+Message-ID: <20231221111046.761843-1-c-vankar@ti.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231218153553.807799-7-hch@lst.de>
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -3.80
-X-Spamd-Result: default: False [-3.80 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-0.998];
-	 RCPT_COUNT_SEVEN(0.00)[8];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,infradead.org:email,lst.de:email,suse.com:email];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Flag: NO
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Mon 18-12-23 16:35:42, Christoph Hellwig wrote:
-> From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-> 
-> Instead of having a 'done' variable that controls the nested loops,
-> have a writeback_finish() that can be returned directly.  This involves
-> keeping more things in writeback_control, but it's just moving stuff
-> allocated on the stack to being allocated slightly earlier on the stack.
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> [hch: heavily rebased, reordered and commented struct writeback_control]
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+TI's J784S4 SoC supports SGMII mode with CPSW9G instance of the CPSW
+Ethernet Switch. Thus, enable it by adding SGMII mode to the
+extra_modes member of the "j784s4_cpswxg_pdata" SoC data.
 
-Looks good. Feel free to add:
+Signed-off-by: Chintan Vankar <c-vankar@ti.com>
+---
+ drivers/net/ethernet/ti/am65-cpsw-nuss.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
-
-> ---
->  include/linux/writeback.h |  6 +++
->  mm/page-writeback.c       | 79 ++++++++++++++++++++-------------------
->  2 files changed, 47 insertions(+), 38 deletions(-)
-> 
-> diff --git a/include/linux/writeback.h b/include/linux/writeback.h
-> index 833ec38fc3e0c9..390f2dd03cf27e 100644
-> --- a/include/linux/writeback.h
-> +++ b/include/linux/writeback.h
-> @@ -11,6 +11,7 @@
->  #include <linux/flex_proportions.h>
->  #include <linux/backing-dev-defs.h>
->  #include <linux/blk_types.h>
-> +#include <linux/pagevec.h>
->  
->  struct bio;
->  
-> @@ -40,6 +41,7 @@ enum writeback_sync_modes {
->   * in a manner such that unspecified fields are set to zero.
->   */
->  struct writeback_control {
-> +	/* public fields that can be set and/or consumed by the caller: */
->  	long nr_to_write;		/* Write this many pages, and decrement
->  					   this for each page written */
->  	long pages_skipped;		/* Pages which were not written */
-> @@ -77,6 +79,10 @@ struct writeback_control {
->  	 */
->  	struct swap_iocb **swap_plug;
->  
-> +	/* internal fields used by the ->writepages implementation: */
-> +	struct folio_batch fbatch;
-> +	int err;
-> +
->  #ifdef CONFIG_CGROUP_WRITEBACK
->  	struct bdi_writeback *wb;	/* wb this writeback is issued under */
->  	struct inode *inode;		/* inode being written out */
-> diff --git a/mm/page-writeback.c b/mm/page-writeback.c
-> index c798c0d6d0abb4..564d5faf562ba7 100644
-> --- a/mm/page-writeback.c
-> +++ b/mm/page-writeback.c
-> @@ -2360,6 +2360,29 @@ void tag_pages_for_writeback(struct address_space *mapping,
->  }
->  EXPORT_SYMBOL(tag_pages_for_writeback);
->  
-> +static void writeback_finish(struct address_space *mapping,
-> +		struct writeback_control *wbc, pgoff_t done_index)
-> +{
-> +	folio_batch_release(&wbc->fbatch);
-> +
-> +	/*
-> +	 * For range cyclic writeback we need to remember where we stopped so
-> +	 * that we can continue there next time we are called.  If  we hit the
-> +	 * last page and there is more work to be done, wrap back to the start
-> +	 * of the file.
-> +	 *
-> +	 * For non-cyclic writeback we always start looking up at the beginning
-> +	 * of the file if we are called again, which can only happen due to
-> +	 * -ENOMEM from the file system.
-> +	 */
-> +	if (wbc->range_cyclic) {
-> +		if (wbc->err || wbc->nr_to_write <= 0)
-> +			mapping->writeback_index = done_index;
-> +		else
-> +			mapping->writeback_index = 0;
-> +	}
-> +}
-> +
->  /**
->   * write_cache_pages - walk the list of dirty pages of the given address space and write all of them.
->   * @mapping: address space structure to write
-> @@ -2395,17 +2418,12 @@ int write_cache_pages(struct address_space *mapping,
->  		      struct writeback_control *wbc, writepage_t writepage,
->  		      void *data)
->  {
-> -	int ret = 0;
-> -	int done = 0;
->  	int error;
-> -	struct folio_batch fbatch;
->  	int nr_folios;
->  	pgoff_t index;
->  	pgoff_t end;		/* Inclusive */
-> -	pgoff_t done_index;
->  	xa_mark_t tag;
->  
-> -	folio_batch_init(&fbatch);
->  	if (wbc->range_cyclic) {
->  		index = mapping->writeback_index; /* prev offset */
->  		end = -1;
-> @@ -2419,22 +2437,23 @@ int write_cache_pages(struct address_space *mapping,
->  	} else {
->  		tag = PAGECACHE_TAG_DIRTY;
->  	}
-> -	done_index = index;
-> -	while (!done && (index <= end)) {
-> +
-> +	folio_batch_init(&wbc->fbatch);
-> +	wbc->err = 0;
-> +
-> +	while (index <= end) {
->  		int i;
->  
->  		nr_folios = filemap_get_folios_tag(mapping, &index, end,
-> -				tag, &fbatch);
-> +				tag, &wbc->fbatch);
->  
->  		if (nr_folios == 0)
->  			break;
->  
->  		for (i = 0; i < nr_folios; i++) {
-> -			struct folio *folio = fbatch.folios[i];
-> +			struct folio *folio = wbc->fbatch.folios[i];
->  			unsigned long nr;
->  
-> -			done_index = folio->index;
-> -
->  			folio_lock(folio);
->  
->  			/*
-> @@ -2481,6 +2500,9 @@ int write_cache_pages(struct address_space *mapping,
->  				folio_unlock(folio);
->  				error = 0;
->  			}
-> +		
-> +			if (error && !wbc->err)
-> +				wbc->err = error;
->  
->  			/*
->  			 * For integrity sync  we have to keep going until we
-> @@ -2496,38 +2518,19 @@ int write_cache_pages(struct address_space *mapping,
->  			 * off and media errors won't choke writeout for the
->  			 * entire file.
->  			 */
-> -			if (error && !ret)
-> -				ret = error;
-> -			if (wbc->sync_mode == WB_SYNC_NONE) {
-> -				if (ret || wbc->nr_to_write <= 0) {
-> -					done_index = folio->index + nr;
-> -					done = 1;
-> -					break;
-> -				}
-> +			if (wbc->sync_mode == WB_SYNC_NONE &&
-> +			    (wbc->err || wbc->nr_to_write <= 0)) {
-> +				writeback_finish(mapping, wbc,
-> +						folio->index + nr);
-> +				return error;
->  			}
->  		}
-> -		folio_batch_release(&fbatch);
-> +		folio_batch_release(&wbc->fbatch);
->  		cond_resched();
->  	}
->  
-> -	/*
-> -	 * For range cyclic writeback we need to remember where we stopped so
-> -	 * that we can continue there next time we are called.  If  we hit the
-> -	 * last page and there is more work to be done, wrap back to the start
-> -	 * of the file.
-> -	 *
-> -	 * For non-cyclic writeback we always start looking up at the beginning
-> -	 * of the file if we are called again, which can only happen due to
-> -	 * -ENOMEM from the file system.
-> -	 */
-> -	if (wbc->range_cyclic) {
-> -		if (done)
-> -			mapping->writeback_index = done_index;
-> -		else
-> -			mapping->writeback_index = 0;
-> -	}
-> -
-> -	return ret;
-> +	writeback_finish(mapping, wbc, 0);
-> +	return 0;
->  }
->  EXPORT_SYMBOL(write_cache_pages);
->  
-> -- 
-> 2.39.2
-> 
+diff --git a/drivers/net/ethernet/ti/am65-cpsw-nuss.c b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
+index 7651f90f51f2..9aa5a6108521 100644
+--- a/drivers/net/ethernet/ti/am65-cpsw-nuss.c
++++ b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
+@@ -2855,7 +2855,8 @@ static const struct am65_cpsw_pdata j784s4_cpswxg_pdata = {
+ 	.quirks = 0,
+ 	.ale_dev_id = "am64-cpswxg",
+ 	.fdqring_mode = K3_RINGACC_RING_MODE_MESSAGE,
+-	.extra_modes = BIT(PHY_INTERFACE_MODE_QSGMII) | BIT(PHY_INTERFACE_MODE_USXGMII),
++	.extra_modes = BIT(PHY_INTERFACE_MODE_QSGMII) | BIT(PHY_INTERFACE_MODE_SGMII) |
++		       BIT(PHY_INTERFACE_MODE_USXGMII),
+ };
+ 
+ static const struct of_device_id am65_cpsw_nuss_of_mtable[] = {
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.34.1
+
 
