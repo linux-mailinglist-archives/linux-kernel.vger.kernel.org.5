@@ -1,97 +1,163 @@
-Return-Path: <linux-kernel+bounces-8596-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8578-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12A8381B9F6
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 15:56:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B3C1081B9B1
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 15:39:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C27132889B9
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 14:56:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6F769285693
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 14:39:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C89C0539E2;
-	Thu, 21 Dec 2023 14:56:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBA8E249E1;
+	Thu, 21 Dec 2023 14:39:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="BIeVcr/I"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFD17360B4;
-	Thu, 21 Dec 2023 14:55:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
-Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1rGKSr-0002PV-00; Thu, 21 Dec 2023 15:55:57 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-	id AD3D4C0A2B; Thu, 21 Dec 2023 15:38:20 +0100 (CET)
-Date: Thu, 21 Dec 2023 15:38:20 +0100
-From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Gregory CLEMENT <gregory.clement@bootlin.com>
-Cc: Paul Burton <paulburton@kernel.org>, linux-mips@vger.kernel.org,
-	Jiaxun Yang <jiaxun.yang@flygoat.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
-	Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	=?iso-8859-1?Q?Th=E9o?= Lebrun <theo.lebrun@bootlin.com>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Philippe =?iso-8859-1?Q?Mathieu-Daud=E9?= <philmd@linaro.org>,
-	Florian Fainelli <florian.fainelli@broadcom.com>
-Subject: Re: [PATCH v5 01/22] MIPS: compressed: Use correct instruction for
- 64 bit code
-Message-ID: <ZYRN3FMH4od3QX+i@alpha.franken.de>
-References: <20231212163459.1923041-1-gregory.clement@bootlin.com>
- <20231212163459.1923041-2-gregory.clement@bootlin.com>
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCA7C1D69C
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 14:39:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-54744e66d27so13072a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 06:39:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1703169556; x=1703774356; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rjcA0ZHCISKFLd/dhu8u4Y90/L5gD9s8eTEB1hR8ro0=;
+        b=BIeVcr/IKELXEmmHxqDHv6z8zM8YyEmKwR+w9WfKabjsW3PS4/UdM/VkOyY/J34h+0
+         WwI2UtNRq1EFXYzQoSDcTQU2Z5qZ0h3j1914PSAzg/eGhU6mxSwjbxwMETlNpF+TqnmL
+         w79XygQcY0l3eGR9CTEi2dGYiFjta0kkuCv6r4R6WfrednET6XzCvRADfwVmc1Y6PCyq
+         xU3lhC/zU6cGwvT4DUQTbz5kFcuPD00ic+wswanV33xnnAQdh911jYQDRiwWbSqZP8b6
+         T0Xae89ZYODyi0BgnzchWxOxFHRcupH2KzV10Y9JBVMuQHZSg+haHcVIkpRj61QxRj5H
+         jaKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703169556; x=1703774356;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rjcA0ZHCISKFLd/dhu8u4Y90/L5gD9s8eTEB1hR8ro0=;
+        b=LqGIBvXgGPVLO/0oVnlRnYBuiR/h0YcwdPVUQzcoAAsQOvg3UftxOfhDB2nZnPpZ8w
+         +azfxEHMXbehw9oLNdf4CB8Yi02GrZdtCjvYmKaPMBCCxH/ybtApeh2gTjrQ8STxvCUH
+         qfsvWbxXeq1eGMyPz3mno/WBLJe+zMXMqXyFUAlBc8H7sL58QW30lXEdjECPns6Lduv5
+         rxzyey0KuBdxGb1OYWeftsMj3uFg2HBl5QucylkSZelsu+sJLf3sipNzk2ZJYR8lIHNc
+         c/w8nS9ZwhY4Z9Vo+pyjrBdD9DnPH/CLxKk+78jGoU9hEydsOP5p79Eh3OovKBL0Hv7m
+         xaAw==
+X-Gm-Message-State: AOJu0Yy7g7+cENs8Grk0T0jJ6Znq+iPo6rtFFvcAIvCLKvuHS+8EWT1I
+	ZorUzv0sdyhUKpIZtB/DPOBkq+YCAZ6yiYjp46Cb5Ja9hPi9
+X-Google-Smtp-Source: AGHT+IHadjkxej2zeqN8fIo7mtrLDexZz9HuN8LRIdrgV5tCw5yHEITs55wde2zBc3MpKO0nkT81+bMWqsG0mRCI6U4=
+X-Received: by 2002:a50:c109:0:b0:551:9870:472 with SMTP id
+ l9-20020a50c109000000b0055198700472mr78217edf.1.1703169555925; Thu, 21 Dec
+ 2023 06:39:15 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231212163459.1923041-2-gregory.clement@bootlin.com>
+References: <cover.1699936040.git.isaku.yamahata@intel.com>
+ <1c12f378af7de16d7895f8badb18c3b1715e9271.1699936040.git.isaku.yamahata@intel.com>
+ <938efd3cfcb25d828deab0cc0ba797177cc69602.camel@redhat.com>
+ <ZXo54VNuIqbMsYv-@google.com> <aa7aa5ea5b112a0ec70c6276beb281e19c052f0e.camel@redhat.com>
+ <ZXswR04H9Tl7xlyj@google.com> <20231219014045.GA2639779@ls.amr.corp.intel.com>
+ <CALMp9eRgWct3bb5en0=geT0HmMemipkzXkjL9kmEAV+1yJg-pw@mail.gmail.com>
+ <20231219081104.GB2639779@ls.amr.corp.intel.com> <ZYNlhKCcOHgjTcFZ@google.com>
+ <5cf35021-c81f-43e3-9d0d-69604fc4fa59@intel.com>
+In-Reply-To: <5cf35021-c81f-43e3-9d0d-69604fc4fa59@intel.com>
+From: Jim Mattson <jmattson@google.com>
+Date: Thu, 21 Dec 2023 06:39:04 -0800
+Message-ID: <CALMp9eRqQqOK8n7jSiop9J2NORWVM-0bztbjMmo3npp4W1Tm8Q@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] KVM: x86: Make the hardcoded APIC bus frequency vm variable
+To: Xiaoyao Li <xiaoyao.li@intel.com>
+Cc: Sean Christopherson <seanjc@google.com>, Isaku Yamahata <isaku.yamahata@linux.intel.com>, 
+	Maxim Levitsky <mlevitsk@redhat.com>, isaku.yamahata@intel.com, kvm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com, 
+	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com, 
+	Vishal Annapurve <vannapurve@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 12, 2023 at 05:34:33PM +0100, Gregory CLEMENT wrote:
-> The code clearing BSS already use macro or use correct instruction
-> depending if the CPU is 32 bits or 64 bits. However, a few
-> instructions remained 32 bits only.
-> 
-> By using the accurate MACRO, it is now possible to deal with memory
-> address beyond 32 bits. As a side effect, when using 64bits processor,
-> it also divides the loop number needed to clear the BSS by 2.
-> 
-> Reviewed-by: Philippe Mathieu-Daudé <philmd@linaro.org>
-> Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
-> Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
-> ---
->  arch/mips/boot/compressed/head.S | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/mips/boot/compressed/head.S b/arch/mips/boot/compressed/head.S
-> index 5795d0af1e1b2..d237a834b85ee 100644
-> --- a/arch/mips/boot/compressed/head.S
-> +++ b/arch/mips/boot/compressed/head.S
-> @@ -25,8 +25,8 @@
->  	/* Clear BSS */
->  	PTR_LA	a0, _edata
->  	PTR_LA	a2, _end
-> -1:	sw	zero, 0(a0)
-> -	addiu	a0, a0, 4
-> +1:	PTR_S	zero, 0(a0)
-> +	PTR_ADDIU a0, a0, PTRSIZE
->  	bne	a2, a0, 1b
->  
->  	PTR_LA	a0, (.heap)	     /* heap address */
-> -- 
-> 2.42.0
+On Wed, Dec 20, 2023 at 9:44=E2=80=AFPM Xiaoyao Li <xiaoyao.li@intel.com> w=
+rote:
+>
+> On 12/21/2023 6:07 AM, Sean Christopherson wrote:
+> > On Tue, Dec 19, 2023, Isaku Yamahata wrote:
+> >> On Mon, Dec 18, 2023 at 07:53:45PM -0800, Jim Mattson <jmattson@google=
+.com> wrote:
+> >>>> There are several options to address this.
+> >>>> 1. Make the KVM able to configure APIC bus frequency (This patch).
+> >>>>     Pros: It resembles the existing hardware.  The recent Intel CPUs
+> >>>>     adapts 25MHz.
+> >>>>     Cons: Require the VMM to emulate the APIC timer at 25MHz.
+> >>>> 2. Make the TDX architecture enumerate CPUID 0x15 to configurable
+> >>>>     frequency or not enumerate it.
+> >>>>     Pros: Any APIC bus frequency is allowed.
+> >>>>     Cons: Deviation from the real hardware.
+> >
+> > I don't buy this as a valid Con.  TDX is one gigantic deviation from re=
+al hardware,
+> > and since TDX obviously can't guarantee the APIC timer is emulated at t=
+he correct
+> > frequency, there can't possibly be any security benefits.  If this were=
+ truly a
+> > Con that anyone cared about, we would have gotten patches to "fix" KVM =
+a long time
+> > ago.
+> >
+> > If the TDX module wasn't effectively hardware-defined software, i.e. wa=
+s actually
+> > able to adapt at the speed of software, then fixing this in TDX would b=
+e a complete
+> > no-brainer.
+> >
+> > The KVM uAPI required to play nice is relatively minor, so I'm not tota=
+lly opposed
+> > to adding it.  But I totally agree with Jim that forcing KVM to change =
+13+ years
+> > of behavior just because someone at Intel decided that 25MHz was a good=
+ number is
+> > ridiculous.
+>
+> I believe 25MHz was chosen because it's the value from hardware that
+> supports TDX and it is not going to change for the following known
+> generations that support TDX.
+>
+> It's mainly the core crystal frequency. Yes, it also represents the APIC
+> frequency when it's enumerated in CPUID 0x15. However, it also relates
+> other things, like intel-pt MTC Freq. If it is configured to other value
+> different from hardware, I think it will break the correctness of
+> INTEL-PT MTC packets in TDs.
 
-applied to mips-next.
+LOL! That suggests that no one is really using KVM's Intel PT virtualizatio=
+n.
 
-Thomas.
+This is certainly a compelling reason for having a variable frequency
+virtual APIC. Thank you!
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+> >>>> 3. Make the TDX guest kernel use 1GHz when it's running on KVM.
+> >>>>     Cons: The kernel ignores CPUID leaf 0x15.
+> >>>
+> >>> 4. Change CPUID.15H under TDX to report the crystal clock frequency a=
+s 1 GHz.
+> >>> Pro: This has been the virtual APIC frequency for KVM guests for 13 y=
+ears.
+> >>> Pro: This requires changing only one hard-coded constant in TDX.
+> >>>
+> >>> I see no compelling reason to complicate KVM with support for
+> >>> configurable APIC frequencies, and I see no advantages to doing so.
+> >>
+> >> Because TDX isn't specific to KVM, it should work with other VMM techn=
+ologies.
+> >> If we'd like to go for this route, the frequency would be configurable=
+.  What
+> >> frequency should be acceptable securely is obscure.  25MHz has long hi=
+story with
+> >> the real hardware.
+> >
+>
 
