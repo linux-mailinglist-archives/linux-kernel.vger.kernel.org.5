@@ -1,278 +1,217 @@
-Return-Path: <linux-kernel+bounces-8573-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8574-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7A0A81B994
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 15:31:52 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15F5F81B996
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 15:32:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 207EF1C25562
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 14:31:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EF659B21AD9
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 14:32:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69A73433C3;
-	Thu, 21 Dec 2023 14:31:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA52E1D6BD;
+	Thu, 21 Dec 2023 14:32:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=auristor.com header.i=jaltman@auristor.com header.b="EvdVxCaw"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="UF4OojNF"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from sequoia-grove.ad.secure-endpoints.com (sequoia-grove.ad.secure-endpoints.com [208.125.0.235])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A1E23608F
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 14:31:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=auristor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=auristor.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/relaxed;
-	d=auristor.com; s=MDaemon; r=y; t=1703169061; x=1703773861;
-	i=jaltman@auristor.com; q=dns/txt; h=Message-ID:Date:
-	MIME-Version:User-Agent:Subject:Content-Language:To:Cc:
-	References:From:Organization:In-Reply-To:Content-Type; bh=+3d0Ry
-	2xDdh0t0fujTvzMGj6NMBsKhvYQgGqDB7Ezy4=; b=EvdVxCaww5Y7PsRwuZrZzz
-	AUmDPUH/kA7FMhz4/HOqiFDzOq7d8eo2OyZ+Kmh3+ooQHQA2edPP6vlIXsVbw3x4
-	vBlUz1SUXbx2cBgs5we8CeHff3WGQYjeAcN8QzLpB0eiDUktPg64HoLK/50PeXPK
-	rSKju4dyln1fAYnt/i/gM=
-X-MDAV-Result: clean
-X-MDAV-Processed: sequoia-grove.ad.secure-endpoints.com, Thu, 21 Dec 2023 09:31:01 -0500
-Received: from [IPV6:2603:7000:73c:c800:969b:c070:cc58:a112] by auristor.com (IPv6:2001:470:1f07:f77:28d9:68fb:855d:c2a5) (MDaemon PRO v23.5.1) 
-	with ESMTPSA id md5001003765425.msg; Thu, 21 Dec 2023 09:31:00 -0500
-X-Spam-Processed: sequoia-grove.ad.secure-endpoints.com, Thu, 21 Dec 2023 09:31:00 -0500
-	(not processed: message from trusted or authenticated source)
-X-MDRemoteIP: 2603:7000:73c:c800:969b:c070:cc58:a112
-X-MDHelo: [IPV6:2603:7000:73c:c800:969b:c070:cc58:a112]
-X-MDArrival-Date: Thu, 21 Dec 2023 09:31:00 -0500
-X-MDOrigin-Country: US, NA
-X-Authenticated-Sender: jaltman@auristor.com
-X-Return-Path: prvs=17191febf5=jaltman@auristor.com
-X-Envelope-From: jaltman@auristor.com
-X-MDaemon-Deliver-To: linux-kernel@vger.kernel.org
-Message-ID: <7557e6c5-bc69-4e89-bb0e-b1d754afb3cf@auristor.com>
-Date: Thu, 21 Dec 2023 09:30:53 -0500
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DF213608D
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 14:32:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-54744e66d27so12959a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 06:32:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1703169123; x=1703773923; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IZ2azlvSqFCZX8jb2QITC8fbT5+vgCFvbH7RV3zxDzc=;
+        b=UF4OojNFQ4HWe9YK+pwWgyE5PDsB0NrSiXLqTR0Qnj2Ri088RxNmJSGExoxQdZWiUC
+         DZi5yOlnWk8nKoJ8oJpwdHmtCgWhQQRwlPuSdASNDGN0hVPysShCka5syfXEttchvqM/
+         tMgP/isZ9MV+T4oDtwPkSbuQtGqc+fLzSPI2y8v4BLte5qKjk2ktDA+0rFgCrR5wKeu7
+         koSpN2Clv/F9M/J7JYgg4TZwfly6OZJ0erkT7SbelHeCGBfK4kBckR2Ni5CljbtI2p2k
+         as9fvnN+4JChoBFrKFw3uP34/XXHYf8V3JABxDU2g+speGa++V//0ZRA5WadVRcvhI5K
+         4UEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703169123; x=1703773923;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=IZ2azlvSqFCZX8jb2QITC8fbT5+vgCFvbH7RV3zxDzc=;
+        b=bmVpa+ZlC1OP4tN/SHRiRl7h25J72tSX9BWIYQJbgQ5VK23MUrwEAY2B0r8npRCu+1
+         PCW2VxeNy1IanxLuec18bs3qNjG9hgLNXABGggeydKAbmkstiKQ4l41i8Fh5QZBNClsy
+         FeeXvFzsSTack316uqtrhxcIH/jwFEYzr1//bRxyv/dLjuHYiWN8IV2mzfMq3bxkhK3v
+         DIpaIGTkOcyg/YiJg+wfLNnHwq5p2DkMstyZHtUM2fGWcYNFUXcepfESsb48H4b19WAR
+         ozz88mYBXQvMrT3WcCuGx4xeEJeWomAg6yfvMVoX0zTyf3H1dLWJMqs1y/YE98vFh52q
+         Q8BA==
+X-Gm-Message-State: AOJu0YwycF5brAFUUI5qhCKxq/aIwsiXMBFzR8WR+D8Lv7gjomVJsh+V
+	kTHUYuhmPFrLnkjrgpcUJdo4tYFEDpaylEX5N0TGAn9yLsFs
+X-Google-Smtp-Source: AGHT+IHMWzYEbgP04SLDFsLT0lc+p/y3I3VmZDVD0uJFDXWiJxfT5AF9q9m7VvwlOsfQ5IWzPYUDWQX0j2s3riUqbYA=
+X-Received: by 2002:a50:8e08:0:b0:553:5578:2fc9 with SMTP id
+ 8-20020a508e08000000b0055355782fc9mr90879edw.5.1703169122494; Thu, 21 Dec
+ 2023 06:32:02 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] afs: Fix overwriting of result of DNS query
-Content-Language: en-US
-To: David Howells <dhowells@redhat.com>,
- Anastasia Belova <abelova@astralinux.ru>,
- Marc Dionne <marc.dionne@auristor.com>
-Cc: linux-afs@lists.infradead.org, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org
-References: <1700862.1703168632@warthog.procyon.org.uk>
-From: Jeffrey E Altman <jaltman@auristor.com>
-Organization: AuriStor, Inc.
-In-Reply-To: <1700862.1703168632@warthog.procyon.org.uk>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256; boundary="------------ms010009090505040106020008"
-X-MDCFSigsAdded: auristor.com
+References: <20231023192217.426455-1-dima@arista.com> <20231023192217.426455-2-dima@arista.com>
+In-Reply-To: <20231023192217.426455-2-dima@arista.com>
+From: Eric Dumazet <edumazet@google.com>
+Date: Thu, 21 Dec 2023 15:31:49 +0100
+Message-ID: <CANn89i+Uwg87xAS9m8fm1f1daQj-YyugperN3HnvgbB6g+hOuw@mail.gmail.com>
+Subject: Re: [PATCH v16 net-next 01/23] net/tcp: Prepare tcp_md5sig_pool for TCP-AO
+To: Dmitry Safonov <dima@arista.com>
+Cc: David Ahern <dsahern@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Jakub Kicinski <kuba@kernel.org>, "David S. Miller" <davem@davemloft.net>, linux-kernel@vger.kernel.org, 
+	Andy Lutomirski <luto@amacapital.net>, Ard Biesheuvel <ardb@kernel.org>, 
+	Bob Gilligan <gilligan@arista.com>, Dan Carpenter <error27@gmail.com>, 
+	David Laight <David.Laight@aculab.com>, Dmitry Safonov <0x7f454c46@gmail.com>, 
+	Donald Cassidy <dcassidy@redhat.com>, Eric Biggers <ebiggers@kernel.org>, 
+	"Eric W. Biederman" <ebiederm@xmission.com>, Francesco Ruggeri <fruggeri05@gmail.com>, 
+	"Gaillardetz, Dominik" <dgaillar@ciena.com>, Herbert Xu <herbert@gondor.apana.org.au>, 
+	Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>, Ivan Delalande <colona@arista.com>, 
+	Leonard Crestez <cdleonard@gmail.com>, "Nassiri, Mohammad" <mnassiri@ciena.com>, 
+	Salam Noureddine <noureddine@arista.com>, Simon Horman <horms@kernel.org>, 
+	"Tetreault, Francois" <ftetreau@ciena.com>, netdev@vger.kernel.org, 
+	Steen Hegelund <Steen.Hegelund@microchip.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-This is a cryptographically signed message in MIME format.
-
---------------ms010009090505040106020008
-Content-Type: multipart/alternative;
- boundary="------------xy77y20BS4hMZGduEHK0piGj"
-
---------------xy77y20BS4hMZGduEHK0piGj
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-
-On 12/21/2023 9:23 AM, David Howells wrote:
-> In afs_update_cell(), ret is the result of the DNS lookup and the errors
-> are to be handled by a switch - however, the value gets clobbered in
-> between by setting it to -ENOMEM in case afs_alloc_vlserver_list() fails.
+On Mon, Oct 23, 2023 at 9:22=E2=80=AFPM Dmitry Safonov <dima@arista.com> wr=
+ote:
 >
-> Fix this by moving the setting of -ENOMEM into the error handling for OOM
-> failure.  Further, only do it if we don't have an alternative error to
-> return.
+> TCP-AO, similarly to TCP-MD5, needs to allocate tfms on a slow-path,
+> which is setsockopt() and use crypto ahash requests on fast paths,
+> which are RX/TX softirqs. Also, it needs a temporary/scratch buffer
+> for preparing the hash.
 >
-> Found by Linux Verification Center (linuxtesting.org) with SVACE.  Based on
-> a patch from Anastasia Belova[1].
+> Rework tcp_md5sig_pool in order to support other hashing algorithms
+> than MD5. It will make it possible to share pre-allocated crypto_ahash
+> descriptors and scratch area between all TCP hash users.
 >
-> Fixes: d5c32c89b208 ("afs: Fix cell DNS lookup")
-> Signed-off-by: David Howells<dhowells@redhat.com>
-> cc: Anastasia Belova<abelova@astralinux.ru>
-> cc: Marc Dionne<marc.dionne@auristor.com>
-> cc:linux-afs@lists.infradead.org
-> cc:lvc-project@linuxtesting.org
-> Link:https://lore.kernel.org/r/20231221085849.1463-1-abelova@astralinux.ru/  [1]
+> Internally tcp_sigpool calls crypto_clone_ahash() API over pre-allocated
+> crypto ahash tfm. Kudos to Herbert, who provided this new crypto API.
 >
-> ---
->   fs/afs/cell.c |    6 ++++--
->   1 file changed, 4 insertions(+), 2 deletions(-)
+> I was a little concerned over GFP_ATOMIC allocations of ahash and
+> crypto_request in RX/TX (see tcp_sigpool_start()), so I benchmarked both
+> "backends" with different algorithms, using patched version of iperf3[2].
+> On my laptop with i7-7600U @ 2.80GHz:
 >
-> diff --git a/fs/afs/cell.c b/fs/afs/cell.c
-> index 988c2ac7cece..926cb1188eba 100644
-> --- a/fs/afs/cell.c
-> +++ b/fs/afs/cell.c
-> @@ -409,10 +409,12 @@ static int afs_update_cell(struct afs_cell *cell)
->   		if (ret == -ENOMEM)
->   			goto out_wake;
->   
-> -		ret = -ENOMEM;
->   		vllist = afs_alloc_vlserver_list(0);
-> -		if (!vllist)
-> +		if (!vllist) {
-> +			if (ret >= 0)
-> +				ret = -ENOMEM;
->   			goto out_wake;
-> +		}
->   
->   		switch (ret) {
->   		case -ENODATA:
+>                          clone-tfm                per-CPU-requests
+> TCP-MD5                  2.25 Gbits/sec           2.30 Gbits/sec
+> TCP-AO(hmac(sha1))       2.53 Gbits/sec           2.54 Gbits/sec
+> TCP-AO(hmac(sha512))     1.67 Gbits/sec           1.64 Gbits/sec
+> TCP-AO(hmac(sha384))     1.77 Gbits/sec           1.80 Gbits/sec
+> TCP-AO(hmac(sha224))     1.29 Gbits/sec           1.30 Gbits/sec
+> TCP-AO(hmac(sha3-512))    481 Mbits/sec            480 Mbits/sec
+> TCP-AO(hmac(md5))        2.07 Gbits/sec           2.12 Gbits/sec
+> TCP-AO(hmac(rmd160))     1.01 Gbits/sec            995 Mbits/sec
+> TCP-AO(cmac(aes128))     [not supporetd yet]      2.11 Gbits/sec
 >
-Reviewed-by: Jeffrey Altman <jaltman@auristor.com>
+> So, it seems that my concerns don't have strong grounds and per-CPU
+> crypto_request allocation can be dropped/removed from tcp_sigpool once
+> ciphers get crypto_clone_ahash() support.
+>
+> [1]: https://lore.kernel.org/all/ZDefxOq6Ax0JeTRH@gondor.apana.org.au/T/#=
+u
+> [2]: https://github.com/0x7f454c46/iperf/tree/tcp-md5-ao
+> Signed-off-by: Dmitry Safonov <dima@arista.com>
+> Reviewed-by: Steen Hegelund <Steen.Hegelund@microchip.com>
+> Acked-by: David Ahern <dsahern@kernel.org>
+>
 
---------------xy77y20BS4hMZGduEHK0piGj
-Content-Type: text/html; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+...
 
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  </head>
-  <body>
-    <div class="moz-cite-prefix">On 12/21/2023 9:23 AM, David Howells
-      wrote:<br>
-    </div>
-    <blockquote type="cite"
-      cite="mid:1700862.1703168632@warthog.procyon.org.uk">
-      <pre class="moz-quote-pre" wrap="">In afs_update_cell(), ret is the result of the DNS lookup and the errors
-are to be handled by a switch - however, the value gets clobbered in
-between by setting it to -ENOMEM in case afs_alloc_vlserver_list() fails.
+> +int tcp_sigpool_alloc_ahash(const char *alg, size_t scratch_size)
+> +{
+> +       int i, ret;
+> +
+> +       /* slow-path */
+> +       mutex_lock(&cpool_mutex);
+> +       ret =3D sigpool_reserve_scratch(scratch_size);
+> +       if (ret)
+> +               goto out;
+> +       for (i =3D 0; i < cpool_populated; i++) {
+> +               if (!cpool[i].alg)
+> +                       continue;
+> +               if (strcmp(cpool[i].alg, alg))
+> +                       continue;
+> +
+> +               if (kref_read(&cpool[i].kref) > 0)
+> +                       kref_get(&cpool[i].kref);
 
-Fix this by moving the setting of -ENOMEM into the error handling for OOM
-failure.  Further, only do it if we don't have an alternative error to
-return.
+This sequence is racy.
 
-Found by Linux Verification Center (linuxtesting.org) with SVACE.  Based on
-a patch from Anastasia Belova[1].
+You must use kref_get_unless_zero().
 
-Fixes: d5c32c89b208 ("afs: Fix cell DNS lookup")
-Signed-off-by: David Howells <a class="moz-txt-link-rfc2396E" href="mailto:dhowells@redhat.com">&lt;dhowells@redhat.com&gt;</a>
-cc: Anastasia Belova <a class="moz-txt-link-rfc2396E" href="mailto:abelova@astralinux.ru">&lt;abelova@astralinux.ru&gt;</a>
-cc: Marc Dionne <a class="moz-txt-link-rfc2396E" href="mailto:marc.dionne@auristor.com">&lt;marc.dionne@auristor.com&gt;</a>
-cc: <a class="moz-txt-link-abbreviated" href="mailto:linux-afs@lists.infradead.org">linux-afs@lists.infradead.org</a>
-cc: <a class="moz-txt-link-abbreviated" href="mailto:lvc-project@linuxtesting.org">lvc-project@linuxtesting.org</a>
-Link: <a class="moz-txt-link-freetext" href="https://lore.kernel.org/r/20231221085849.1463-1-abelova@astralinux.ru/">https://lore.kernel.org/r/20231221085849.1463-1-abelova@astralinux.ru/</a> [1]
+> +               else
+> +                       kref_init(&cpool[i].kref);
+> +               ret =3D i;
+> +               goto out;
+> +       }
+> +
+> +
 
----
- fs/afs/cell.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+syzbot reported:
 
-diff --git a/fs/afs/cell.c b/fs/afs/cell.c
-index 988c2ac7cece..926cb1188eba 100644
---- a/fs/afs/cell.c
-+++ b/fs/afs/cell.c
-@@ -409,10 +409,12 @@ static int afs_update_cell(struct afs_cell *cell)
- 		if (ret == -ENOMEM)
- 			goto out_wake;
- 
--		ret = -ENOMEM;
- 		vllist = afs_alloc_vlserver_list(0);
--		if (!vllist)
-+		if (!vllist) {
-+			if (ret &gt;= 0)
-+				ret = -ENOMEM;
- 			goto out_wake;
-+		}
- 
- 		switch (ret) {
- 		case -ENODATA:
-
-</pre>
-    </blockquote>
-    <p>Reviewed-by: Jeffrey Altman <a class="moz-txt-link-rfc2396E" href="mailto:jaltman@auristor.com">&lt;jaltman@auristor.com&gt;</a></p>
-    <p><span style="white-space: pre-wrap">
-</span></p>
-  </body>
-</html>
-
---------------xy77y20BS4hMZGduEHK0piGj--
-
---------------ms010009090505040106020008
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCC
-DHEwggXSMIIEuqADAgECAhBAAYJpmi/rPn/F0fJyDlzMMA0GCSqGSIb3DQEBCwUAMDoxCzAJ
-BgNVBAYTAlVTMRIwEAYDVQQKEwlJZGVuVHJ1c3QxFzAVBgNVBAMTDlRydXN0SUQgQ0EgQTEz
-MB4XDTIyMDgwNDE2MDQ0OFoXDTI1MTAzMTE2MDM0OFowcDEvMC0GCgmSJomT8ixkAQETH0Ew
-MTQxMEQwMDAwMDE4MjY5OUEyRkQyMDAwMjMzQ0QxGTAXBgNVBAMTEEplZmZyZXkgRSBBbHRt
-YW4xFTATBgNVBAoTDEF1cmlTdG9yIEluYzELMAkGA1UEBhMCVVMwggEiMA0GCSqGSIb3DQEB
-AQUAA4IBDwAwggEKAoIBAQCkC7PKBBZnQqDKPtZPMLAy77zo2DPvwtGnd1hNjPvbXrpGxUb3
-xHZRtv179LHKAOcsY2jIctzieMxf82OMyhpBziMPsFAG/ukihBMFj3/xEeZVso3K27pSAyyN
-fO/wJ0rX7G+ges22Dd7goZul8rPaTJBIxbZDuaykJMGpNq4PQ8VPcnYZx+6b+nJwJJoJ46kI
-EEfNh3UKvB/vM0qtxS690iAdgmQIhTl+qfXq4IxWB6b+3NeQxgR6KLU4P7v88/tvJTpxIKkg
-9xj89ruzeThyRFd2DSe3vfdnq9+g4qJSHRXyTft6W3Lkp7UWTM4kMqOcc4VSRdufVKBQNXjG
-IcnhAgMBAAGjggKcMIICmDAOBgNVHQ8BAf8EBAMCBPAwgYQGCCsGAQUFBwEBBHgwdjAwBggr
-BgEFBQcwAYYkaHR0cDovL2NvbW1lcmNpYWwub2NzcC5pZGVudHJ1c3QuY29tMEIGCCsGAQUF
-BzAChjZodHRwOi8vdmFsaWRhdGlvbi5pZGVudHJ1c3QuY29tL2NlcnRzL3RydXN0aWRjYWEx
-My5wN2MwHwYDVR0jBBgwFoAULbfeG1l+KpguzeHUG+PFEBJe6RQwCQYDVR0TBAIwADCCASsG
-A1UdIASCASIwggEeMIIBGgYLYIZIAYb5LwAGAgEwggEJMEoGCCsGAQUFBwIBFj5odHRwczov
-L3NlY3VyZS5pZGVudHJ1c3QuY29tL2NlcnRpZmljYXRlcy9wb2xpY3kvdHMvaW5kZXguaHRt
-bDCBugYIKwYBBQUHAgIwga0MgapUaGlzIFRydXN0SUQgQ2VydGlmaWNhdGUgaGFzIGJlZW4g
-aXNzdWVkIGluIGFjY29yZGFuY2Ugd2l0aCBJZGVuVHJ1c3QncyBUcnVzdElEIENlcnRpZmlj
-YXRlIFBvbGljeSBmb3VuZCBhdCBodHRwczovL3NlY3VyZS5pZGVudHJ1c3QuY29tL2NlcnRp
-ZmljYXRlcy9wb2xpY3kvdHMvaW5kZXguaHRtbDBFBgNVHR8EPjA8MDqgOKA2hjRodHRwOi8v
-dmFsaWRhdGlvbi5pZGVudHJ1c3QuY29tL2NybC90cnVzdGlkY2FhMTMuY3JsMB8GA1UdEQQY
-MBaBFGphbHRtYW5AYXVyaXN0b3IuY29tMB0GA1UdDgQWBBQB+nzqgljLocLTsiUn2yWqEc2s
-gjAdBgNVHSUEFjAUBggrBgEFBQcDAgYIKwYBBQUHAwQwDQYJKoZIhvcNAQELBQADggEBAJwV
-eycprp8Ox1npiTyfwc5QaVaqtoe8Dcg2JXZc0h4DmYGW2rRLHp8YL43snEV93rPJVk6B2v4c
-WLeQfaMrnyNeEuvHx/2CT44cdLtaEk5zyqo3GYJYlLcRVz6EcSGHv1qPXgDT0xB/25etwGYq
-utYF4Chkxu4KzIpq90eDMw5ajkexw+8ARQz4N5+d6NRbmMCovd7wTGi8th/BZvz8hgKUiUJo
-Qle4wDxrdXdnIhCP7g87InXKefWgZBF4VX21t2+hkc04qrhIJlHrocPG9mRSnnk2WpsY0MXt
-a8ivbVKtfpY7uSNDZSKTDi1izEFH5oeQdYRkgIGb319a7FjslV8wggaXMIIEf6ADAgECAhBA
-AXA7OrqBjMk8rp4OuNQSMA0GCSqGSIb3DQEBCwUAMEoxCzAJBgNVBAYTAlVTMRIwEAYDVQQK
-EwlJZGVuVHJ1c3QxJzAlBgNVBAMTHklkZW5UcnVzdCBDb21tZXJjaWFsIFJvb3QgQ0EgMTAe
-Fw0yMDAyMTIyMTA3NDlaFw0zMDAyMTIyMTA3NDlaMDoxCzAJBgNVBAYTAlVTMRIwEAYDVQQK
-EwlJZGVuVHJ1c3QxFzAVBgNVBAMTDlRydXN0SUQgQ0EgQTEzMIIBIjANBgkqhkiG9w0BAQEF
-AAOCAQ8AMIIBCgKCAQEAu6sUO01SDD99PM+QdZkNxKxJNt0NgQE+Zt6ixaNP0JKSjTd+SG5L
-wqxBWjnOgI/3dlwgtSNeN77AgSs+rA4bK4GJ75cUZZANUXRKw/et8pf9Qn6iqgB63OdHxBN/
-15KbM3HR+PyiHXQoUVIevCKW8nnlWnnZabT1FejOhRRKVUg5HACGOTfnCOONrlxlg+m1Vjgn
-o1uNqNuLM/jkD1z6phNZ/G9IfZGI0ppHX5AA/bViWceX248VmefNhSR14ADZJtlAAWOi2un0
-3bqrBPHA9nDyXxI8rgWLfUP5rDy8jx2hEItg95+ORF5wfkGUq787HBjspE86CcaduLka/Bk2
-VwIDAQABo4IChzCCAoMwEgYDVR0TAQH/BAgwBgEB/wIBADAOBgNVHQ8BAf8EBAMCAYYwgYkG
-CCsGAQUFBwEBBH0wezAwBggrBgEFBQcwAYYkaHR0cDovL2NvbW1lcmNpYWwub2NzcC5pZGVu
-dHJ1c3QuY29tMEcGCCsGAQUFBzAChjtodHRwOi8vdmFsaWRhdGlvbi5pZGVudHJ1c3QuY29t
-L3Jvb3RzL2NvbW1lcmNpYWxyb290Y2ExLnA3YzAfBgNVHSMEGDAWgBTtRBnA0/AGi+6ke75C
-5yZUyI42djCCASQGA1UdIASCARswggEXMIIBEwYEVR0gADCCAQkwSgYIKwYBBQUHAgEWPmh0
-dHBzOi8vc2VjdXJlLmlkZW50cnVzdC5jb20vY2VydGlmaWNhdGVzL3BvbGljeS90cy9pbmRl
-eC5odG1sMIG6BggrBgEFBQcCAjCBrQyBqlRoaXMgVHJ1c3RJRCBDZXJ0aWZpY2F0ZSBoYXMg
-YmVlbiBpc3N1ZWQgaW4gYWNjb3JkYW5jZSB3aXRoIElkZW5UcnVzdCdzIFRydXN0SUQgQ2Vy
-dGlmaWNhdGUgUG9saWN5IGZvdW5kIGF0IGh0dHBzOi8vc2VjdXJlLmlkZW50cnVzdC5jb20v
-Y2VydGlmaWNhdGVzL3BvbGljeS90cy9pbmRleC5odG1sMEoGA1UdHwRDMEEwP6A9oDuGOWh0
-dHA6Ly92YWxpZGF0aW9uLmlkZW50cnVzdC5jb20vY3JsL2NvbW1lcmNpYWxyb290Y2ExLmNy
-bDAdBgNVHQ4EFgQULbfeG1l+KpguzeHUG+PFEBJe6RQwHQYDVR0lBBYwFAYIKwYBBQUHAwIG
-CCsGAQUFBwMEMA0GCSqGSIb3DQEBCwUAA4ICAQB/7BKcygLX6Nl4a03cDHt7TLdPxCzFvDF2
-bkVYCFTRX47UfeomF1gBPFDee3H/IPlLRmuTPoNt0qjdpfQzmDWN95jUXLdLPRToNxyaoB5s
-0hOhcV6H08u3FHACBif55i0DTDzVSaBv0AZ9h1XeuGx4Fih1Vm3Xxz24GBqqVudvPRLyMJ7u
-6hvBqTIKJ53uCs3dyQLZT9DXnp+kJv8y7ZSAY+QVrI/dysT8avtn8d7k7azNBkfnbRq+0e88
-QoBnel6u+fpwbd5NLRHywXeH+phbzULCa+bLPRMqJaW2lbhvSWrMHRDy3/d8HvgnLCBFK2s4
-Spns4YCN4xVcbqlGWzgolHCKUH39vpcsDo1ymZFrJ8QR6ihIn8FmJ5oKwAnnd/G6ADXFC9bu
-db9+532phSAXOZrrecIQn+vtP366PC+aClAPsIIDJDsotS5z4X2JUFsNIuEgXGqhiKE7SuZb
-rFG9sdcLprSlJN7TsRDc0W2b9nqwD+rj/5MN0C+eKwha+8ydv0+qzTyxPP90KRgaegGowC4d
-UsZyTk2n4Z3MuAHX5nAZL/Vh/SyDj/ajorV44yqZBzQ3ChKhXbfUSwe2xMmygA2Z5DRwMRJn
-p/BscizYdNk2WXJMTnH+wVLN8sLEwEtQR4eTLoFmQvrK2AMBS9kW5sBkMzINt/ZbbcZ3F+eA
-MDGCAxQwggMQAgEBME4wOjELMAkGA1UEBhMCVVMxEjAQBgNVBAoTCUlkZW5UcnVzdDEXMBUG
-A1UEAxMOVHJ1c3RJRCBDQSBBMTMCEEABgmmaL+s+f8XR8nIOXMwwDQYJYIZIAWUDBAIBBQCg
-ggGXMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIzMTIyMTE0
-MzA1M1owLwYJKoZIhvcNAQkEMSIEIJyQYDdi599/aEAr+ZKtMcRb298h3j8VclLqS/CNXUj7
-MF0GCSsGAQQBgjcQBDFQME4wOjELMAkGA1UEBhMCVVMxEjAQBgNVBAoTCUlkZW5UcnVzdDEX
-MBUGA1UEAxMOVHJ1c3RJRCBDQSBBMTMCEEABgmmaL+s+f8XR8nIOXMwwXwYLKoZIhvcNAQkQ
-AgsxUKBOMDoxCzAJBgNVBAYTAlVTMRIwEAYDVQQKEwlJZGVuVHJ1c3QxFzAVBgNVBAMTDlRy
-dXN0SUQgQ0EgQTEzAhBAAYJpmi/rPn/F0fJyDlzMMGwGCSqGSIb3DQEJDzFfMF0wCwYJYIZI
-AWUDBAEqMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzAOBggqhkiG9w0DAgICAIAwDQYIKoZI
-hvcNAwICAUAwBwYFKw4DAgcwDQYIKoZIhvcNAwICASgwDQYJKoZIhvcNAQEBBQAEggEAMlmM
-sMb1pD520W0shnwOZzEX9Rr/AhxhWlhK2UlbmWRej8hdH52q3x75x487OZ+IS1TSiZ9+qozx
-PgGvyCSZCQUclFOf3rTg2ZPFcliIkq4CR1kXnr9XBk3lC8ius3aSGolrVGdFbbiYAy6T1VJG
-CFAGM72my2UNo8Bfv9eERALGRVw1CUvEVFu73+z6UTTYc9DE5fBfyJxE8KfV3ncDxgKozFPQ
-hcCS6VP9pc0R+wlKhCP/SIgAa0KDoVrFj5Vzn9/ipzJlw+ucLeBlpG6CK1mgjDyUETPJsYt6
-iwdmBGmR6OEnxLwB/nYPCuaaoAAke5LoIZ0mT1S328Z2ubJMfQAAAAAAAA==
---------------ms010009090505040106020008--
-
+refcount_t: addition on 0; use-after-free.
+WARNING: CPU: 2 PID: 31702 at lib/refcount.c:25
+refcount_warn_saturate+0x1ca/0x210 lib/refcount.c:25
+Modules linked in:
+CPU: 2 PID: 31702 Comm: syz-executor.3 Not tainted
+6.7.0-rc6-syzkaller-00044-g1a44b0073b92 #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS
+1.16.2-debian-1.16.2-1 04/01/2014
+RIP: 0010:refcount_warn_saturate+0x1ca/0x210 lib/refcount.c:25
+Code: ff 89 de e8 58 a3 25 fd 84 db 0f 85 e6 fe ff ff e8 1b a8 25 fd
+c6 05 9a 88 a1 0a 01 90 48 c7 c7 00 9d 2e 8b e8 b7 ec eb fc 90 <0f> 0b
+90 90 e9 c3 fe ff ff e8 f8 a7 25 fd c6 05 75 88 a1 0a 01 90
+RSP: 0018:ffffc900296df850 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffc9002c40a000
+RDX: 0000000000040000 RSI: ffffffff814db526 RDI: 0000000000000001
+RBP: ffffffff92b5b7b0 R08: 0000000000000001 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000002 R12: 0000000000000010
+R13: ffffffff92b5b7b0 R14: 0000000000000001 R15: 0000000000000000
+FS: 0000000000000000(0000) GS:ffff88802c800000(0063) knlGS:00000000f7efdb40
+CS: 0010 DS: 002b ES: 002b CR0: 0000000080050033
+CR2: 00000000f7354000 CR3: 0000000050ee3000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+<TASK>
+__refcount_add include/linux/refcount.h:199 [inline]
+__refcount_inc include/linux/refcount.h:250 [inline]
+refcount_inc include/linux/refcount.h:267 [inline]
+kref_get include/linux/kref.h:45 [inline]
+tcp_sigpool_alloc_ahash+0x9cb/0xce0 net/ipv4/tcp_sigpool.c:166
+tcp_md5_alloc_sigpool+0x1b/0x40 net/ipv4/tcp.c:4379
+tcp_md5_do_add+0x192/0x460 net/ipv4/tcp_ipv4.c:1403
+tcp_v6_parse_md5_keys+0x68d/0x860 net/ipv6/tcp_ipv6.c:676
+do_tcp_setsockopt+0x1302/0x2880 net/ipv4/tcp.c:3644
+tcp_setsockopt+0xd4/0x100 net/ipv4/tcp.c:3726
+do_sock_setsockopt+0x222/0x470 net/socket.c:2311
+__sys_setsockopt+0x1a6/0x270 net/socket.c:2334
+__do_sys_setsockopt net/socket.c:2343 [inline]
+__se_sys_setsockopt net/socket.c:2340 [inline]
+__ia32_sys_setsockopt+0xbc/0x150 net/socket.c:2340
+do_syscall_32_irqs_on arch/x86/entry/common.c:165 [inline]
+__do_fast_syscall_32+0x62/0xe0 arch/x86/entry/common.c:321
+do_fast_syscall_32+0x33/0x70 arch/x86/entry/common.c:346
+entry_SYSENTER_compat_after_hwframe+0x70/0x7a
+RIP: 0023:0xf7f02579
+Code: b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00
+00 00 00 00 00 00 00 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a
+59 c3 90 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
+RSP: 002b:00000000f7efd5ac EFLAGS: 00000292 ORIG_RAX: 000000000000016e
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000000006
+RDX: 000000000000000e RSI: 0000000020000000 RDI: 00000000000000d8
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000292 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
 
