@@ -1,163 +1,195 @@
-Return-Path: <linux-kernel+bounces-8940-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8941-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1C9481BE59
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 19:38:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9DB4381BE5A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 19:40:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 95D252816E4
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 18:38:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1548A1F250C8
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 18:40:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7189064A9A;
-	Thu, 21 Dec 2023 18:38:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32C3E634F7;
+	Thu, 21 Dec 2023 18:40:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="aJdx07Mp"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JlyTC187"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5732C1F601
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 18:38:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-54c5d041c23so1259580a12.2
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 10:38:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703183922; x=1703788722; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=kI54ctZ1zxG+ccdO4E1v3hg0oukkXhIS/AujWXv6nbk=;
-        b=aJdx07MpdCCDbnrFsvGqYAGgJnQWwMKFx0Z6sFbiD2Oj9VZHn4+9daaYxDvi2OYBmy
-         BMqsy///Bbk+1eFfN9GEWgOnBdUO8eeJi4EOV9hXMiqJjdtKSuSSRdNJSK/d/kOXS0q+
-         BV4zhRfBQ/f/rvepoJJXIUaL63rUjmA6sTyTspJ4ch4Bz86DRbfY5MFa4EFzYb4j+gOg
-         FjNnF0Vpa9/EfVxrCc/Lc/9I5gkBlcsBrnjjmyjuwyHCUJ7BbAYBjeZFavuLPJgbqujS
-         VeJCr7HoYJiNgpHW4mh2Xwsk7yum2Eys4X46DPhRieD/48IdkfkbrMF2PtlCpTINPAyA
-         GKrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703183922; x=1703788722;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kI54ctZ1zxG+ccdO4E1v3hg0oukkXhIS/AujWXv6nbk=;
-        b=T75qGoyza7yvhqT/9BZR1BDLSCIRAwVxNKi5Hy31eX65RZifRA/1EhIzfBPioh6JhQ
-         /H6gRg0zwnrwQZ7sM3Wlqb573RTq1B66DILI43CL+g+rAi4NbSgxNoCt6nSGgQWiz3uT
-         NI/ndxycUOiygBtM2xbtMTbTBhl2aljtUVysJ6CeIZI13fOIwAomiF08H395hJl/bbCY
-         6nC8tHRny3OQX929XnPej2yyG86ojpn8HqkATQpzUamk4zHV3Q10OJiHMzgUd0dX+ol4
-         Jkg+TqmcPGfQhFibiTKB6P5P1TGtLUKt0gqU03NhMEqUDpIXeY62GgAblDszxf6yK+Je
-         KQmw==
-X-Gm-Message-State: AOJu0YxYgT+CzLwtgLh+vWaf7W+/DwhEH821u5tZzQT5g6tdcA4PYRZH
-	SYAMAe0iHl726g4cmPTINZ2n1qdPbn/uNA==
-X-Google-Smtp-Source: AGHT+IHyZfJMfImeN75ulfr22BZwFPBycinBR2C+7RRdUe+0tz/AbkB5F2RdVRHbzhRyMH0NKKyshg==
-X-Received: by 2002:aa7:d44b:0:b0:554:42fd:aa8a with SMTP id q11-20020aa7d44b000000b0055442fdaa8amr5121edr.149.1703183922561;
-        Thu, 21 Dec 2023 10:38:42 -0800 (PST)
-Received: from [192.168.0.22] ([78.10.206.178])
-        by smtp.gmail.com with ESMTPSA id b10-20020a0564021f0a00b00552d45bd8e7sm1498888edb.77.2023.12.21.10.38.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Dec 2023 10:38:42 -0800 (PST)
-Message-ID: <50dceec0-3a43-4363-8404-d701f726acc0@linaro.org>
-Date: Thu, 21 Dec 2023 19:38:40 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 729671E48C;
+	Thu, 21 Dec 2023 18:40:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E76CAC433C7;
+	Thu, 21 Dec 2023 18:40:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703184022;
+	bh=At7MJq6a9azHyge0sGLLxHrWIxQcSiYN5CzRufMVb4w=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=JlyTC1875d3tcryZQ2Cs4IZZQ3dJ+6tr+IwwRXMBmWDavagzrxhaUEAfaG0mIE3WC
+	 uEFf6Uu5123YbaTzjRMTmBDZEQVprQjt4h4DhzLYYP3zA6zhxC4P3ARQtVFWRLT732
+	 4+YUQfKruWzEMX/AgEZkJUpwfdn4Es2NfuNmZ3Bvp9WaHcEo0jK0rvVv0ro8P9UAq+
+	 yF6DqylE/Wt5WYKT0GgfAnBhumslKaiZCdtUB0hO4WXEqVDnepD/wcANbcLZAFRPPn
+	 tdePLXxtN1ExadyndGmzwoicPMGysZ2bZ2cYVGFQnG0QOKuo5rg7++yiZMxpOY/tiE
+	 iL9AFKR6cgjAw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 7B5D4CE08ED; Thu, 21 Dec 2023 10:40:21 -0800 (PST)
+Date: Thu, 21 Dec 2023 10:40:21 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Uladzislau Rezki <urezki@gmail.com>
+Cc: RCU <rcu@vger.kernel.org>, Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
+	Boqun Feng <boqun.feng@gmail.com>, Hillf Danton <hdanton@sina.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
+	Frederic Weisbecker <frederic@kernel.org>
+Subject: Re: [PATCH v3 4/7] rcu: Improve handling of synchronize_rcu() users
+Message-ID: <650554ca-17f6-4119-ab4e-42239c958c73@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20231128080033.288050-1-urezki@gmail.com>
+ <20231128080033.288050-5-urezki@gmail.com>
+ <579f86e0-e03e-4ab3-9a85-a62064bcf2a1@paulmck-laptop>
+ <ZYQY8bB3zpywfBxO@pc636>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 06/22] ARM: dts: samsung: exynos5420: Enable
- cros-ec-spi as wake source
-To: Mark Hasemeyer <markhas@chromium.org>
-Cc: LKML <linux-kernel@vger.kernel.org>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Tzung-Bi Shih <tzungbi@kernel.org>, Raul Rangel <rrangel@chromium.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>,
- Andy Shevchenko <andriy.shevchenko@intel.com>, Rob Herring
- <robh@kernel.org>, Sudeep Holla <sudeep.holla@arm.com>,
- Alim Akhtar <alim.akhtar@samsung.com>, Conor Dooley <conor+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org
-References: <20231220235459.2965548-1-markhas@chromium.org>
- <20231220165423.v2.6.I06b059021de1bf6103e60a73211f078f2af75d17@changeid>
- <7199b7b7-238e-45de-96f1-0f04d0fa718d@linaro.org>
- <CANg-bXD+TVHO3o6f66fJXQ7AtXxPY00TQqjvX2vwk9PyTd1ZaA@mail.gmail.com>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <CANg-bXD+TVHO3o6f66fJXQ7AtXxPY00TQqjvX2vwk9PyTd1ZaA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZYQY8bB3zpywfBxO@pc636>
 
-On 21/12/2023 19:29, Mark Hasemeyer wrote:
->> You do not need this property, if driver assumes that. Just enable it
->> unconditionally.
+On Thu, Dec 21, 2023 at 11:52:33AM +0100, Uladzislau Rezki wrote:
+> On Tue, Dec 19, 2023 at 05:37:56PM -0800, Paul E. McKenney wrote:
+> > On Tue, Nov 28, 2023 at 09:00:30AM +0100, Uladzislau Rezki (Sony) wrote:
+> > > From: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
+> > > 
+> > > Currently, processing of the next batch of rcu_synchronize nodes
+> > > for the new grace period, requires doing a llist reversal operation
+> > > to find the tail element of the list. This can be a very costly
+> > > operation (high number of cache misses) for a long list.
+> > > 
+> > > To address this, this patch introduces a "dummy-wait-node" entity.
+> > > At every grace period init, a new wait node is added to the llist.
+> > > This wait node is used as wait tail for this new grace period.
+> > > 
+> > > This allows lockless additions of new rcu_synchronize nodes in the
+> > > rcu_sr_normal_add_req(), while the cleanup work executes and does
+> > > the progress. The dummy nodes are removed on next round of cleanup
+> > > work execution.
+> > > 
+> > > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> > > Signed-off-by: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
+> > 
+> > This says that Uladzislau created the patch and that Neeraj
+> > acted as maintainer.  I am guessing that you both worked on it,
+> > in which case is should have the Co-developed-by tags as shown in
+> > Documentation/process/submitting-patches.rst.  Could you please update
+> > these to reflect the actual origin?
+> > 
+> Right. We both worked on it. Neeraj is an author whereas i should mark
+> myself as a Co-developed-by. This is a correct way. Thank you for
+> pointing on it!
+
+Sounds good, thank you!
+
+> > One question below toward the end.  There are probably others that I
+> > should be asking, but I have to start somewhere.  ;-)
+> > 
+> Good :)
 > 
-> The goal of this patch series is to change exactly that: to prevent
-> the driver from unconditionally enabling the irq for wake.
-
-But why? What is the problem being solved? Is unconditional wakeup in
-the driver incorrect? If so, mention it shortly in the commit msg, what
-is rationale because existing one does not justify this change.
-
-> The driver works across numerous buses (spi, uart, i2c, lpc) and
-> supports DT and ACPI.
-> SPI+DT systems all happen to need irq wake enabled.
+> > >  
+> > >  /*
+> > >   * Helper function for rcu_gp_init().
+> > >   */
+> > > -static void rcu_sr_normal_gp_init(void)
+> > > +static bool rcu_sr_normal_gp_init(void)
+> > >  {
+> > > -	struct llist_node *head, *tail;
+> > > +	struct llist_node *first;
+> > > +	struct llist_node *wait_head;
+> > > +	bool start_new_poll = false;
+> > >  
+> > > -	if (llist_empty(&sr.srs_next))
+> > > -		return;
+> > > +	first = READ_ONCE(sr.srs_next.first);
+> > > +	if (!first || rcu_sr_is_wait_head(first))
+> > > +		return start_new_poll;
+> > > +
+> > > +	wait_head = rcu_sr_get_wait_head();
+> > > +	if (!wait_head) {
+> > > +		// Kick another GP to retry.
+> > > +		start_new_poll = true;
+> > > +		return start_new_poll;
+> > > +	}
+> > >  
+> > > -	tail = llist_del_all(&sr.srs_next);
+> > > -	head = llist_reverse_order(tail);
+> > > +	/* Inject a wait-dummy-node. */
+> > > +	llist_add(wait_head, &sr.srs_next);
+> > >  
+> > >  	/*
+> > > -	 * A waiting list of GP should be empty on this step,
+> > > -	 * since a GP-kthread, rcu_gp_init() -> gp_cleanup(),
+> > > +	 * A waiting list of rcu_synchronize nodes should be empty on
+> > > +	 * this step, since a GP-kthread, rcu_gp_init() -> gp_cleanup(),
+> > >  	 * rolls it over. If not, it is a BUG, warn a user.
+> > >  	 */
+> > > -	WARN_ON_ONCE(!llist_empty(&sr.srs_wait));
+> > > +	WARN_ON_ONCE(sr.srs_wait_tail != NULL);
+> > > +	sr.srs_wait_tail = wait_head;
+> > > +	ASSERT_EXCLUSIVE_WRITER(sr.srs_wait_tail);
+> > >  
+> > > -	WRITE_ONCE(sr.srs_wait_tail, tail);
+> > > -	__llist_add_batch(head, tail, &sr.srs_wait);
+> > > +	return start_new_poll;
+> > >  }
+> > >  
+> > >  static void rcu_sr_normal_add_req(struct rcu_synchronize *rs)
+> > > @@ -1493,6 +1684,7 @@ static noinline_for_stack bool rcu_gp_init(void)
+> > >  	unsigned long mask;
+> > >  	struct rcu_data *rdp;
+> > >  	struct rcu_node *rnp = rcu_get_root();
+> > > +	bool start_new_poll;
+> > >  
+> > >  	WRITE_ONCE(rcu_state.gp_activity, jiffies);
+> > >  	raw_spin_lock_irq_rcu_node(rnp);
+> > > @@ -1517,11 +1709,15 @@ static noinline_for_stack bool rcu_gp_init(void)
+> > >  	/* Record GP times before starting GP, hence rcu_seq_start(). */
+> > >  	rcu_seq_start(&rcu_state.gp_seq);
+> > >  	ASSERT_EXCLUSIVE_WRITER(rcu_state.gp_seq);
+> > > -	rcu_sr_normal_gp_init();
+> > > +	start_new_poll = rcu_sr_normal_gp_init();
+> > >  	trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq, TPS("start"));
+> > >  	rcu_poll_gp_seq_start(&rcu_state.gp_seq_polled_snap);
+> > >  	raw_spin_unlock_irq_rcu_node(rnp);
+> > >  
+> > > +	// New poll request after rnp unlock
+> > > +	if (start_new_poll)
+> > > +		(void) start_poll_synchronize_rcu();
+> > 
+> > You lost me on this one.  Anything that got moved to the wait list
+> > should be handled by the current grace period, right?  Or is the
+> > problem that rcu_sr_normal_gp_init() is being invoked after the call
+> > to rcu_seq_start()?  If that is the case, could it be moved ahead so
+> > that we don't need the extra grace period?
+> > 
+> > Or am I missing something subtle here?
+> > 
+> The problem is that, we are limited in number of "wait-heads" which we
+> add as a marker node for this/current grace period. If there are more clients
+> and there is no a wait-head available it means that a system, the deferred
+> kworker, is slow in processing callbacks, thus all wait-nodes are in use.
 > 
->> I don't think anything from previous discussion was
->> resolved.
-> 
-> Which previous discussion do you mean? In v1 it was suggested to split
+> That is why we need an extra grace period. Basically to repeat our try one
+> more time, i.e. it might be that a current grace period is not able to handle
+> users due to the fact that a system is doing really slow, but this is rather
+> a corner case and is not a problem.
 
-https://lore.kernel.org/all/20231213221124.GB2115075-robh@kernel.org/
+But in that case, the real issue is not the need for an extra grace
+period, but rather the need for the wakeup processing to happen, correct?
+Or am I missing something subtle here?
 
-
-Best regards,
-Krzysztof
-
+							Thanx, Paul
 
