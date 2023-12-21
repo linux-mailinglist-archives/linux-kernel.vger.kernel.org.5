@@ -1,129 +1,111 @@
-Return-Path: <linux-kernel+bounces-8261-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8262-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 24A1581B4A3
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 12:04:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B77A581B4A8
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 12:07:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ABCEE1F25E1E
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 11:04:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E94031C23317
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 11:07:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B365D6BB51;
-	Thu, 21 Dec 2023 11:04:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EUoPh49m"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 478736ABB4;
+	Thu, 21 Dec 2023 11:07:03 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com [209.85.167.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 015176BB29;
-	Thu, 21 Dec 2023 11:04:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58B35C433C7;
-	Thu, 21 Dec 2023 11:04:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703156672;
-	bh=TDLMCFaG9iF23iCXhZOU0JoIuuWfRNEqblfM8hy8xvs=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=EUoPh49m8aTvyeCHkfDHfKZrqlD/vPcrGAerxnsdXEcMdnehbZ3ZEedRcT1OtQ2J/
-	 hJRc3dC2F3YN3nyu2jmduA/FVttZ1TTXkHraK5E6+QdibhLxoKuA98BGE4VsVwJCCV
-	 qj1VT5X1K4Tq4yugwZRBHpi9q5FRsdaxYACIA/m+jdWCYe3wH9g7OCUcsto03Xryio
-	 Uz/ws5qB2TKkbDVBQZ9fK1ycCAsVvyepgD713pQ5nCYHsG0wjwoPR19xkWk80gsVc9
-	 SUr1+j24/QRRKO0orl6aDu4DFOcLKqm9u2/qNugYpjZuYKVR7d9/ZOlk4Mfz5Ybrvm
-	 jp4IMblXnLNdg==
-Date: Thu, 21 Dec 2023 11:04:17 +0000
-From: Jonathan Cameron <jic23@kernel.org>
-To: Petre Rodan <petre.rodan@subdimension.ro>
-Cc: linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
- devicetree@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>, Lars-Peter
- Clausen <lars@metafoo.de>, Rob Herring <robh+dt@kernel.org>,
- linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [PATCH 1/2] dt-bindings: iio: pressure: honeywell,mprls0025pa
-Message-ID: <20231221110417.0bd5b002@jic23-huawei>
-In-Reply-To: <ZYMjhfAbWfw9vUdd@sunspire>
-References: <20231219130230.32584-1-petre.rodan@subdimension.ro>
-	<20231219130230.32584-2-petre.rodan@subdimension.ro>
-	<20231220151645.16ada807@jic23-huawei>
-	<ZYMjhfAbWfw9vUdd@sunspire>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A1DE4120C;
+	Thu, 21 Dec 2023 11:07:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f179.google.com with SMTP id 5614622812f47-3ba32e9554bso152237b6e.1;
+        Thu, 21 Dec 2023 03:07:01 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703156820; x=1703761620;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KFySEnepUE+tDIi+pM++FTPD8l5vR/6BAzQA3Eq9QBI=;
+        b=TcN/a1CMQhkmPbONm+8IZ+nttxmPSze4HZOdv7QTISbjc1Gz2egch1Z38sYz+cUlO4
+         pEmNe9s69Pocy4cUvxhnzzJvhyD1QciYHTec9wMdfYBOMrqLzH6rQGv5Y/ID+7aeGA/g
+         MZS+n0mbkqbFa+Uu3XfZ54nK5oIvuDBG55T79rexiafKgGAjREzzQwaTruMRMUjcqZQG
+         lBS3oeNYWTIR4QUeGbm2LYgzgMMWb72q6asP5gErOBJUgDkSUnoyLhUXl710bY/OIenV
+         5xJolMj+swlfAfBrrw5e/ztrS1MKZ4V7mtcBcWmnEhwv8448MazJ+LfuI7PZ387GZA9J
+         FhSA==
+X-Gm-Message-State: AOJu0Yynb84NzQ4dHxwAW5r9pOUSvx4OHfqYL2jnV3F/Z6kSITslm4BY
+	1KrKxmDZz+gIDEJi60RpmI4vK357n9ubxtRnt70=
+X-Google-Smtp-Source: AGHT+IFccL6Z2EozfxozVM+x3rnOqtP5HKLCPF2ejd6EdNcwGQZ4mIq/rAebsMlg8Gb8tYZb2RRqGanQUw3wiHS8YAo=
+X-Received: by 2002:a05:6820:2484:b0:591:4861:6b02 with SMTP id
+ cq4-20020a056820248400b0059148616b02mr25687361oob.1.1703156820529; Thu, 21
+ Dec 2023 03:07:00 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20231221055144.24862-1-rdunlap@infradead.org>
+In-Reply-To: <20231221055144.24862-1-rdunlap@infradead.org>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Thu, 21 Dec 2023 12:06:48 +0100
+Message-ID: <CAJZ5v0j5mcxRMQR3T+tmuL89Y+GjrWYwK_hj+fYikczp=Ey3Fw@mail.gmail.com>
+Subject: Re: [PATCH] thermal: cpuidle_cooling: fix kernel-doc warning and a spello
+To: Randy Dunlap <rdunlap@infradead.org>
+Cc: linux-kernel@vger.kernel.org, Amit Daniel Kachhap <amit.kachhap@gmail.com>, 
+	Daniel Lezcano <daniel.lezcano@linaro.org>, Viresh Kumar <viresh.kumar@linaro.org>, 
+	Lukasz Luba <lukasz.luba@arm.com>, "Rafael J . Wysocki" <rafael@kernel.org>, Zhang Rui <rui.zhang@intel.com>, 
+	linux-pm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 20 Dec 2023 19:25:25 +0200
-Petre Rodan <petre.rodan@subdimension.ro> wrote:
+On Thu, Dec 21, 2023 at 6:51=E2=80=AFAM Randy Dunlap <rdunlap@infradead.org=
+> wrote:
+>
+> Correct one misuse of kernel-doc notation and one spelling error as
+> reported by codespell.
+>
+> cpuidle_cooling.c:152: warning: cannot understand function prototype: 'st=
+ruct thermal_cooling_device_ops cpuidle_cooling_ops =3D '
+>
+> For the kernel-doc warning, don't use "/**" for a comment on data.
+> kernel-doc can be used for structure declarations but not definitions.
+>
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Amit Daniel Kachhap <amit.kachhap@gmail.com>
+> Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
+> Cc: Viresh Kumar <viresh.kumar@linaro.org>
+> Cc: Lukasz Luba <lukasz.luba@arm.com>
+> Cc: Rafael J. Wysocki <rafael@kernel.org>
+> Cc: Zhang Rui <rui.zhang@intel.com>
+> Cc: linux-pm@vger.kernel.org
+> ---
+>  drivers/thermal/cpuidle_cooling.c |    4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff -- a/drivers/thermal/cpuidle_cooling.c b/drivers/thermal/cpuidle_coo=
+ling.c
+> --- a/drivers/thermal/cpuidle_cooling.c
+> +++ b/drivers/thermal/cpuidle_cooling.c
+> @@ -66,7 +66,7 @@ static unsigned int cpuidle_cooling_runt
+>   * @state : a pointer to the state variable to be filled
+>   *
+>   * The function always returns 100 as the injection ratio. It is
+> - * percentile based for consistency accross different platforms.
+> + * percentile based for consistency across different platforms.
+>   *
+>   * Return: The function can not fail, it is always zero
+>   */
+> @@ -146,7 +146,7 @@ static int cpuidle_cooling_set_cur_state
+>         return 0;
+>  }
+>
+> -/**
+> +/*
+>   * cpuidle_cooling_ops - thermal cooling device ops
+>   */
+>  static struct thermal_cooling_device_ops cpuidle_cooling_ops =3D {
 
-> hi Jonathan,
-> 
-> On Wed, Dec 20, 2023 at 03:16:45PM +0000, Jonathan Cameron wrote:
-> > On Tue, 19 Dec 2023 15:02:20 +0200
-> > Petre Rodan <petre.rodan@subdimension.ro> wrote:  
-> > >    honeywell,pmin-pascal:
-> > >      description:
-> > >        Minimum pressure value the sensor can measure in pascal.
-> > > +      To be specified only if honeywell,pressure-triplet is set to "NA".  
-> > That just added a backwards compatibility break.  It would be fine
-> > if there was a default: NA for honeywell,pressure-triplet or a check that either
-> > one or the other was supplied (which I'd prefer).  Thus old bindings will work
-> > and new ones also supported.  
-> 
-> ok, I see your reasoning. but in this second scenario that you prefer how can we
-> propery define the 'required:' block? an equivalent to
-> 
-> required:
->   - compatible
->   - reg
->   - (honeywell,pmin-pascal && honeywell,pmax-pascal) || honeywell,pressure-triplet
->   - honeywell,transfer-function
-
-Yes, it would end up something like that.  There are exclusive or examples in tree.
-I think something like dac/adi,ad3552r.yaml
- should work.
-
-oneOf:
-  - required:
-      - honeywell,pmin-pascal
-      - honeywell,pmax-pascal
-  - required:
-      - honeywell,pressure-triplet
-
-but you will want to try all the cases to make sure that works (my ability to
-figure these ones out is tricky).
-
-+ you ideally want to exclude them all being set which is fiddlier.
-
-Some similar examples but they are based on a value in the property. I'm not
-sure how you check for it just being defined.
-
-Something along lines of.
-
-allOf:
-  - if:
-      properties:
-        honeywell,pressure-triplet
-    then:
-      properties:
-        honeywell,pmin-pascal: false
-        honeywell,pmax-pascal: false
-
-Might work?  I always end up trawling the kernel to find a similar example for cases but
-can't find anything closer right now.
-
-Jonathan
-
-   
-
-
-
-> 
-> 
-> thanks,
-> peter
-
+Applied as 6.8 material, thanks!
 
