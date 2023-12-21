@@ -1,225 +1,162 @@
-Return-Path: <linux-kernel+bounces-8570-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8571-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7761081B983
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 15:26:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 060A881B98D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 15:31:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6A4F51C25B52
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 14:26:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B2314286389
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 14:31:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63ACE3608A;
-	Thu, 21 Dec 2023 14:26:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 603111D6A9;
+	Thu, 21 Dec 2023 14:30:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=auristor.com header.i=jaltman@auristor.com header.b="C3WNTlPS"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sqxSU2SK"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from sequoia-grove.ad.secure-endpoints.com (sequoia-grove.ad.secure-endpoints.com [208.125.0.235])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86BCE539E6
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 14:26:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=auristor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=auristor.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/relaxed;
-	d=auristor.com; s=MDaemon; r=y; t=1703168790; x=1703773590;
-	i=jaltman@auristor.com; q=dns/txt; h=Message-ID:Date:
-	MIME-Version:User-Agent:Subject:Content-Language:To:Cc:
-	References:From:Organization:In-Reply-To:Content-Type; bh=nvDyKU
-	FC0GqXa4uV0mmUtQ3QwY/3ImUOmACY/eQymUE=; b=C3WNTlPSJup877sjZdBxeC
-	I0PylAt+5pDUh0VEa+j564Wje+GvSfln4KTfWReeUc57g4twuJ9kqybWm6A8imum
-	GBJpA08/YEK1d3NchwQoFg5r+lnpTsXaO/IDvCSBaDls1t0cMiRv27f6pTjYP262
-	WU050Mu5uUdawb7ZMx5Xw=
-X-MDAV-Result: clean
-X-MDAV-Processed: sequoia-grove.ad.secure-endpoints.com, Thu, 21 Dec 2023 09:26:30 -0500
-Received: from [IPV6:2603:7000:73c:c800:969b:c070:cc58:a112] by auristor.com (IPv6:2001:470:1f07:f77:28d9:68fb:855d:c2a5) (MDaemon PRO v23.5.1) 
-	with ESMTPSA id md5001003765418.msg; Thu, 21 Dec 2023 09:26:29 -0500
-X-Spam-Processed: sequoia-grove.ad.secure-endpoints.com, Thu, 21 Dec 2023 09:26:29 -0500
-	(not processed: message from trusted or authenticated source)
-X-MDRemoteIP: 2603:7000:73c:c800:969b:c070:cc58:a112
-X-MDHelo: [IPV6:2603:7000:73c:c800:969b:c070:cc58:a112]
-X-MDArrival-Date: Thu, 21 Dec 2023 09:26:29 -0500
-X-MDOrigin-Country: US, NA
-X-Authenticated-Sender: jaltman@auristor.com
-X-Return-Path: prvs=17191febf5=jaltman@auristor.com
-X-Envelope-From: jaltman@auristor.com
-X-MDaemon-Deliver-To: linux-kernel@vger.kernel.org
-Message-ID: <2362714a-4f73-4f5c-b26e-7b88bb408bc8@auristor.com>
-Date: Thu, 21 Dec 2023 09:26:20 -0500
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0522659;
+	Thu, 21 Dec 2023 14:30:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B2CAC433D9;
+	Thu, 21 Dec 2023 14:30:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703169054;
+	bh=OEBZ6p63sjTkW3Yk5dnKU9NG+4OMfKh+D8wi0t4gbvI=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=sqxSU2SKjq4jOLnNVZKMvhtezYvRUhITev29n1eiJrV6KHKvK32a8N98JqBX13gKL
+	 +OkLSfVCc3pzXUKumWzd8RaPCjYAwA973k5lQ76XhEmd+S7RXbidLj6h6HPA+h/b2r
+	 v3sRJtJ5dfX13Z7Z76mRY3LOMhO3pP0mLxgGXLPa7KTvnm8/lsQrEkpQ8qLZH9hlEZ
+	 n7vQnD6jJNsAadbmFeX1RN5dtVKvJGl+H6tDI0fi9xh/y5LAKBq+1/rAFx7nxlp5Km
+	 3yXJa3ji+YQKhFXvmhHmEtnohhBo7FoiVQ+FXOWM1JwUqZWRzFTA2Ul2lhc3QRZZrH
+	 hdVi0NLA+r0jQ==
+Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-50e587fb62fso1304383e87.2;
+        Thu, 21 Dec 2023 06:30:53 -0800 (PST)
+X-Gm-Message-State: AOJu0YwP/JWlLcoVW8/OERTr0SDf01aPew4QPzazR/wmwYbpxGXFkL0m
+	BVpglwNlC3+hZBNM+bROnKnsL+J/OfDIM5Z5ZwU=
+X-Google-Smtp-Source: AGHT+IHPdxcsw7CIc8Zz9R57s+h3yCpmC0MOks9IUm441YI5k7PHlncS4N04abFTrQMbhLyNWoHo0BpkrAZ7Up7QGeI=
+X-Received: by 2002:ac2:419a:0:b0:50c:222b:2489 with SMTP id
+ z26-20020ac2419a000000b0050c222b2489mr9235479lfh.135.1703169052253; Thu, 21
+ Dec 2023 06:30:52 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 0/3] afs: Fix dynamic root interaction with failing DNS
- lookups
-Content-Language: en-US
-To: David Howells <dhowells@redhat.com>,
- Markus Suvanto <markus.suvanto@gmail.com>,
- Marc Dionne <marc.dionne@auristor.com>
-Cc: linux-afs@lists.infradead.org, keyrings@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231221134558.1659214-1-dhowells@redhat.com>
-From: Jeffrey E Altman <jaltman@auristor.com>
-Organization: AuriStor, Inc.
-In-Reply-To: <20231221134558.1659214-1-dhowells@redhat.com>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256; boundary="------------ms020205010406090109050502"
-X-MDCFSigsAdded: auristor.com
+References: <20230926194242.2732127-1-sjg@chromium.org> <20230926194242.2732127-2-sjg@chromium.org>
+ <BN9PR11MB5483FF3039913334C7EA83E1E6AEA@BN9PR11MB5483.namprd11.prod.outlook.com>
+ <CAMj1kXFG92NpL7T7YocOup0xLKyopt3MnSCp0RL8cLzozzJz7A@mail.gmail.com>
+ <BN9PR11MB548303B09536EB1577472029E6B3A@BN9PR11MB5483.namprd11.prod.outlook.com>
+ <CAPnjgZ36t8g7E=0MSJyaV8-QKv9RVYe47Jd5E=NU-mFM4LWBQA@mail.gmail.com>
+ <CAMj1kXHAEeK7x2f13k_JV3Xcw61nNLasyvXQf+mKwKekQ48EpQ@mail.gmail.com>
+ <BN9PR11MB548334E0DA6495C438FBFDE1E6BBA@BN9PR11MB5483.namprd11.prod.outlook.com>
+ <BN9PR11MB548314DDE8D4C9503103D51CE6BBA@BN9PR11MB5483.namprd11.prod.outlook.com>
+ <CAMj1kXHbM+ArLgNZgnmiok4gOfv6QLYxzyB9OCwfhEkJ2xGK_g@mail.gmail.com> <BN9PR11MB5483C2FBCD07DE61DCCDB523E6BCA@BN9PR11MB5483.namprd11.prod.outlook.com>
+In-Reply-To: <BN9PR11MB5483C2FBCD07DE61DCCDB523E6BCA@BN9PR11MB5483.namprd11.prod.outlook.com>
+From: Ard Biesheuvel <ardb@kernel.org>
+Date: Thu, 21 Dec 2023 15:30:40 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXHmu=ykgBMRiFqG4_ra3FJtHa=GASoMUJswdMFa9v4Xgw@mail.gmail.com>
+Message-ID: <CAMj1kXHmu=ykgBMRiFqG4_ra3FJtHa=GASoMUJswdMFa9v4Xgw@mail.gmail.com>
+Subject: Re: [PATCH v7 2/2] schemas: Add some common reserved-memory usages
+To: "Chiu, Chasel" <chasel.chiu@intel.com>
+Cc: Simon Glass <sjg@chromium.org>, 
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Rob Herring <robh@kernel.org>, "Tan, Lean Sheng" <sheng.tan@9elements.com>, 
+	lkml <linux-kernel@vger.kernel.org>, Dhaval Sharma <dhaval@rivosinc.com>, 
+	"Brune, Maximilian" <maximilian.brune@9elements.com>, Yunhui Cui <cuiyunhui@bytedance.com>, 
+	"Dong, Guo" <guo.dong@intel.com>, Tom Rini <trini@konsulko.com>, 
+	ron minnich <rminnich@gmail.com>, "Guo, Gua" <gua.guo@intel.com>, 
+	"linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>, U-Boot Mailing List <u-boot@lists.denx.de>
+Content-Type: text/plain; charset="UTF-8"
 
-This is a cryptographically signed message in MIME format.
+On Tue, 28 Nov 2023 at 21:31, Chiu, Chasel <chasel.chiu@intel.com> wrote:
+>
+>
+>
+>
+> > -----Original Message-----
+> > From: Ard Biesheuvel <ardb@kernel.org>
+> > Sent: Tuesday, November 28, 2023 10:08 AM
+> > To: Chiu, Chasel <chasel.chiu@intel.com>
+> > Cc: Simon Glass <sjg@chromium.org>; devicetree@vger.kernel.org; Mark Rutland
+> > <mark.rutland@arm.com>; Rob Herring <robh@kernel.org>; Tan, Lean Sheng
+> > <sheng.tan@9elements.com>; lkml <linux-kernel@vger.kernel.org>; Dhaval
+> > Sharma <dhaval@rivosinc.com>; Brune, Maximilian
+> > <maximilian.brune@9elements.com>; Yunhui Cui <cuiyunhui@bytedance.com>;
+> > Dong, Guo <guo.dong@intel.com>; Tom Rini <trini@konsulko.com>; ron minnich
+> > <rminnich@gmail.com>; Guo, Gua <gua.guo@intel.com>; linux-
+> > acpi@vger.kernel.org; U-Boot Mailing List <u-boot@lists.denx.de>
+> > Subject: Re: [PATCH v7 2/2] schemas: Add some common reserved-memory
+> > usages
+> >
+> > You are referring to a 2000 line patch so it is not 100% clear where to look tbh.
+> >
+> >
+> > On Tue, 21 Nov 2023 at 19:37, Chiu, Chasel <chasel.chiu@intel.com> wrote:
+> > >
+> > >
+> > > In PR, UefiPayloadPkg/Library/FdtParserLib/FdtParserLib.c, line 268 is for
+> > related example code.
+> > >
+> >
+> > That refers to a 'memory-allocation' node, right? How does that relate to the
+> > 'reserved-memory' node?
+> >
+> > And crucially, how does this clarify in which way "runtime-code" and "runtime-
+> > data" reservations are being used?
+> >
+> > Since the very beginning of this discussion, I have been asking repeatedly for
+> > examples that describe the wider context in which these reservations are used.
+> > The "runtime" into runtime-code and runtime-data means that these regions have
+> > a special significance to the operating system, not just to the next bootloader
+> > stage. So I want to understand exactly why it is necessary to describe these
+> > regions in a way where the operating system might be expected to interpret this
+> > information and act upon it.
+> >
+>
+>
+> I think runtime code and data today are mainly for supporting UEFI runtime services - some BIOS functions for OS to utilize, OS may follow below ACPI spec to treat them as reserved range:
+> https://uefi.org/specs/ACPI/6.5/15_System_Address_Map_Interfaces.html#uefi-memory-types-and-mapping-to-acpi-address-range-types
+>
+> Like I mentioned earlier, that PR is still in early phase and has not reflected all the required changes yet, but the idea is to build gEfiMemoryTypeInformationGuid HOB from FDT reserved-memory nodes.
+> UEFI generic Payload has DxeMain integrated, however Memory Types are platform-specific, for example, some platforms may need bigger runtime memory for their implementation, that's why we want such FDT reserved-memory node to tell DxeMain.
+>
 
---------------ms020205010406090109050502
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+> The Payload flow will be like this:
+>   Payload creates built-in default MemoryTypes table ->
+>     FDT reserved-memory node to override if required (this also ensures the same memory map cross boots so ACPI S4 works) ->
+>       Build gEfiMemoryTypeInformationGuid HOB by "platfom specific" MemoryTypes Table ->
+>         DxeMain/GCD to consume this MemoryTypes table and setup memory service ->
+>           Install memory types table to UEFI system table.Configuration table...
+>
+> Note: if Payload built-in default MemoryTypes table works fine for the platform, then FDT reserved-memory node does not need to provide such 'usage' compatible strings. (optional)
+> This FDT node could allow flexibility/compatibility without rebuilding Payload binary.
+>
+> Not sure if I answered all your questions, please highlight which area you need more information.
+>
 
-On 12/21/2023 8:45 AM, David Howells wrote:
-> Hi Markus, Marc,
->
-> Here's a set of fixes to improve the interaction of arbitrary lookups in
-> the AFS dynamic root that hit DNS lookup failures[1]:
->
->   (1) Always delete unused (particularly negative) dentries as soon as
->       possible so that they don't prevent future lookups from retrying.
->
->   (2) Fix the handling of new-style negative DNS lookups in ->lookup() to
->       make them return ENOENT so that userspace doesn't get confused when
->       stat succeeds but the following open on the looked up file then fails.
->
->   (3) Fix key handling so that DNS lookup results are reclaimed as soon as
->       they expire rather than sitting round either forever or for an
->       additional 5 mins beyond a set expiry time returning EKEYEXPIRED.
->
-> The patches can be found here:
->
-> 	https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/log/?h=afs-fixes
->
-> Thanks,
-> David
->
-> Link: https://bugzilla.kernel.org/show_bug.cgi?id=216637 [1]
-> Link: https://lore.kernel.org/r/20231211163412.2766147-1-dhowells@redhat.com/ # v1
-> Link: https://lore.kernel.org/r/20231211213233.2793525-1-dhowells@redhat.com/ # v2
-> Link: https://lore.kernel.org/r/20231212144611.3100234-1-dhowells@redhat.com/ # v3
->
-> Changes
-> =======
-> ver #4)
->   - Reduce the negative timeout from 10s to 1s.
->
-> ver #3)
->   - Rebased to v6.7-rc5 which has an additional afs patch.
->   - Don't add to TIME64_MAX (ie. permanent) when checking expiry time.
->
-> ver #2)
->   - Fix signed-unsigned comparison when checking return val.
->
-> David Howells (3):
->    afs: Fix the dynamic root's d_delete to always delete unused dentries
->    afs: Fix dynamic root lookup DNS check
->    keys, dns: Allow key types (eg. DNS) to be reclaimed immediately on
->      expiry
->
->   fs/afs/dynroot.c           | 31 +++++++++++++++++--------------
->   include/linux/key-type.h   |  1 +
->   net/dns_resolver/dns_key.c | 10 +++++++++-
->   security/keys/gc.c         | 31 +++++++++++++++++++++----------
->   security/keys/internal.h   | 11 ++++++++++-
->   security/keys/key.c        | 15 +++++----------
->   security/keys/proc.c       |  2 +-
->   7 files changed, 64 insertions(+), 37 deletions(-)
->
->
-> _______________________________________________
-> linux-afs mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-afs
+The gEfiMemoryTypeInformationGuid HOB typically carries platform
+defaults, and the actual memory type information is kept in a
+non-volatile EFI variable, which gets updated when the memory usage
+changes. Is this different for UefiPayloadPkg?
 
-Reviewed-by: Jeffrey Altman <jaltman@auristor.com>
+(For those among the cc'ees less versed in EFI/EDK2: when you get the
+'config changed -rebooting' message from the boot firmware, it
+typically means that this memory type table has changed, and a reboot
+is necessary.)
 
+So the platform init needs to read this variable, or get the
+information in a different way. I assume it is the payload, not the
+platform init that updates the variable when necessary. This means the
+information flows from payload(n) to platform init(n+1), where n is a
+monotonic index tracking consecutive boots of the system.
 
---------------ms020205010406090109050502
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCC
-DHEwggXSMIIEuqADAgECAhBAAYJpmi/rPn/F0fJyDlzMMA0GCSqGSIb3DQEBCwUAMDoxCzAJ
-BgNVBAYTAlVTMRIwEAYDVQQKEwlJZGVuVHJ1c3QxFzAVBgNVBAMTDlRydXN0SUQgQ0EgQTEz
-MB4XDTIyMDgwNDE2MDQ0OFoXDTI1MTAzMTE2MDM0OFowcDEvMC0GCgmSJomT8ixkAQETH0Ew
-MTQxMEQwMDAwMDE4MjY5OUEyRkQyMDAwMjMzQ0QxGTAXBgNVBAMTEEplZmZyZXkgRSBBbHRt
-YW4xFTATBgNVBAoTDEF1cmlTdG9yIEluYzELMAkGA1UEBhMCVVMwggEiMA0GCSqGSIb3DQEB
-AQUAA4IBDwAwggEKAoIBAQCkC7PKBBZnQqDKPtZPMLAy77zo2DPvwtGnd1hNjPvbXrpGxUb3
-xHZRtv179LHKAOcsY2jIctzieMxf82OMyhpBziMPsFAG/ukihBMFj3/xEeZVso3K27pSAyyN
-fO/wJ0rX7G+ges22Dd7goZul8rPaTJBIxbZDuaykJMGpNq4PQ8VPcnYZx+6b+nJwJJoJ46kI
-EEfNh3UKvB/vM0qtxS690iAdgmQIhTl+qfXq4IxWB6b+3NeQxgR6KLU4P7v88/tvJTpxIKkg
-9xj89ruzeThyRFd2DSe3vfdnq9+g4qJSHRXyTft6W3Lkp7UWTM4kMqOcc4VSRdufVKBQNXjG
-IcnhAgMBAAGjggKcMIICmDAOBgNVHQ8BAf8EBAMCBPAwgYQGCCsGAQUFBwEBBHgwdjAwBggr
-BgEFBQcwAYYkaHR0cDovL2NvbW1lcmNpYWwub2NzcC5pZGVudHJ1c3QuY29tMEIGCCsGAQUF
-BzAChjZodHRwOi8vdmFsaWRhdGlvbi5pZGVudHJ1c3QuY29tL2NlcnRzL3RydXN0aWRjYWEx
-My5wN2MwHwYDVR0jBBgwFoAULbfeG1l+KpguzeHUG+PFEBJe6RQwCQYDVR0TBAIwADCCASsG
-A1UdIASCASIwggEeMIIBGgYLYIZIAYb5LwAGAgEwggEJMEoGCCsGAQUFBwIBFj5odHRwczov
-L3NlY3VyZS5pZGVudHJ1c3QuY29tL2NlcnRpZmljYXRlcy9wb2xpY3kvdHMvaW5kZXguaHRt
-bDCBugYIKwYBBQUHAgIwga0MgapUaGlzIFRydXN0SUQgQ2VydGlmaWNhdGUgaGFzIGJlZW4g
-aXNzdWVkIGluIGFjY29yZGFuY2Ugd2l0aCBJZGVuVHJ1c3QncyBUcnVzdElEIENlcnRpZmlj
-YXRlIFBvbGljeSBmb3VuZCBhdCBodHRwczovL3NlY3VyZS5pZGVudHJ1c3QuY29tL2NlcnRp
-ZmljYXRlcy9wb2xpY3kvdHMvaW5kZXguaHRtbDBFBgNVHR8EPjA8MDqgOKA2hjRodHRwOi8v
-dmFsaWRhdGlvbi5pZGVudHJ1c3QuY29tL2NybC90cnVzdGlkY2FhMTMuY3JsMB8GA1UdEQQY
-MBaBFGphbHRtYW5AYXVyaXN0b3IuY29tMB0GA1UdDgQWBBQB+nzqgljLocLTsiUn2yWqEc2s
-gjAdBgNVHSUEFjAUBggrBgEFBQcDAgYIKwYBBQUHAwQwDQYJKoZIhvcNAQELBQADggEBAJwV
-eycprp8Ox1npiTyfwc5QaVaqtoe8Dcg2JXZc0h4DmYGW2rRLHp8YL43snEV93rPJVk6B2v4c
-WLeQfaMrnyNeEuvHx/2CT44cdLtaEk5zyqo3GYJYlLcRVz6EcSGHv1qPXgDT0xB/25etwGYq
-utYF4Chkxu4KzIpq90eDMw5ajkexw+8ARQz4N5+d6NRbmMCovd7wTGi8th/BZvz8hgKUiUJo
-Qle4wDxrdXdnIhCP7g87InXKefWgZBF4VX21t2+hkc04qrhIJlHrocPG9mRSnnk2WpsY0MXt
-a8ivbVKtfpY7uSNDZSKTDi1izEFH5oeQdYRkgIGb319a7FjslV8wggaXMIIEf6ADAgECAhBA
-AXA7OrqBjMk8rp4OuNQSMA0GCSqGSIb3DQEBCwUAMEoxCzAJBgNVBAYTAlVTMRIwEAYDVQQK
-EwlJZGVuVHJ1c3QxJzAlBgNVBAMTHklkZW5UcnVzdCBDb21tZXJjaWFsIFJvb3QgQ0EgMTAe
-Fw0yMDAyMTIyMTA3NDlaFw0zMDAyMTIyMTA3NDlaMDoxCzAJBgNVBAYTAlVTMRIwEAYDVQQK
-EwlJZGVuVHJ1c3QxFzAVBgNVBAMTDlRydXN0SUQgQ0EgQTEzMIIBIjANBgkqhkiG9w0BAQEF
-AAOCAQ8AMIIBCgKCAQEAu6sUO01SDD99PM+QdZkNxKxJNt0NgQE+Zt6ixaNP0JKSjTd+SG5L
-wqxBWjnOgI/3dlwgtSNeN77AgSs+rA4bK4GJ75cUZZANUXRKw/et8pf9Qn6iqgB63OdHxBN/
-15KbM3HR+PyiHXQoUVIevCKW8nnlWnnZabT1FejOhRRKVUg5HACGOTfnCOONrlxlg+m1Vjgn
-o1uNqNuLM/jkD1z6phNZ/G9IfZGI0ppHX5AA/bViWceX248VmefNhSR14ADZJtlAAWOi2un0
-3bqrBPHA9nDyXxI8rgWLfUP5rDy8jx2hEItg95+ORF5wfkGUq787HBjspE86CcaduLka/Bk2
-VwIDAQABo4IChzCCAoMwEgYDVR0TAQH/BAgwBgEB/wIBADAOBgNVHQ8BAf8EBAMCAYYwgYkG
-CCsGAQUFBwEBBH0wezAwBggrBgEFBQcwAYYkaHR0cDovL2NvbW1lcmNpYWwub2NzcC5pZGVu
-dHJ1c3QuY29tMEcGCCsGAQUFBzAChjtodHRwOi8vdmFsaWRhdGlvbi5pZGVudHJ1c3QuY29t
-L3Jvb3RzL2NvbW1lcmNpYWxyb290Y2ExLnA3YzAfBgNVHSMEGDAWgBTtRBnA0/AGi+6ke75C
-5yZUyI42djCCASQGA1UdIASCARswggEXMIIBEwYEVR0gADCCAQkwSgYIKwYBBQUHAgEWPmh0
-dHBzOi8vc2VjdXJlLmlkZW50cnVzdC5jb20vY2VydGlmaWNhdGVzL3BvbGljeS90cy9pbmRl
-eC5odG1sMIG6BggrBgEFBQcCAjCBrQyBqlRoaXMgVHJ1c3RJRCBDZXJ0aWZpY2F0ZSBoYXMg
-YmVlbiBpc3N1ZWQgaW4gYWNjb3JkYW5jZSB3aXRoIElkZW5UcnVzdCdzIFRydXN0SUQgQ2Vy
-dGlmaWNhdGUgUG9saWN5IGZvdW5kIGF0IGh0dHBzOi8vc2VjdXJlLmlkZW50cnVzdC5jb20v
-Y2VydGlmaWNhdGVzL3BvbGljeS90cy9pbmRleC5odG1sMEoGA1UdHwRDMEEwP6A9oDuGOWh0
-dHA6Ly92YWxpZGF0aW9uLmlkZW50cnVzdC5jb20vY3JsL2NvbW1lcmNpYWxyb290Y2ExLmNy
-bDAdBgNVHQ4EFgQULbfeG1l+KpguzeHUG+PFEBJe6RQwHQYDVR0lBBYwFAYIKwYBBQUHAwIG
-CCsGAQUFBwMEMA0GCSqGSIb3DQEBCwUAA4ICAQB/7BKcygLX6Nl4a03cDHt7TLdPxCzFvDF2
-bkVYCFTRX47UfeomF1gBPFDee3H/IPlLRmuTPoNt0qjdpfQzmDWN95jUXLdLPRToNxyaoB5s
-0hOhcV6H08u3FHACBif55i0DTDzVSaBv0AZ9h1XeuGx4Fih1Vm3Xxz24GBqqVudvPRLyMJ7u
-6hvBqTIKJ53uCs3dyQLZT9DXnp+kJv8y7ZSAY+QVrI/dysT8avtn8d7k7azNBkfnbRq+0e88
-QoBnel6u+fpwbd5NLRHywXeH+phbzULCa+bLPRMqJaW2lbhvSWrMHRDy3/d8HvgnLCBFK2s4
-Spns4YCN4xVcbqlGWzgolHCKUH39vpcsDo1ymZFrJ8QR6ihIn8FmJ5oKwAnnd/G6ADXFC9bu
-db9+532phSAXOZrrecIQn+vtP366PC+aClAPsIIDJDsotS5z4X2JUFsNIuEgXGqhiKE7SuZb
-rFG9sdcLprSlJN7TsRDc0W2b9nqwD+rj/5MN0C+eKwha+8ydv0+qzTyxPP90KRgaegGowC4d
-UsZyTk2n4Z3MuAHX5nAZL/Vh/SyDj/ajorV44yqZBzQ3ChKhXbfUSwe2xMmygA2Z5DRwMRJn
-p/BscizYdNk2WXJMTnH+wVLN8sLEwEtQR4eTLoFmQvrK2AMBS9kW5sBkMzINt/ZbbcZ3F+eA
-MDGCAxQwggMQAgEBME4wOjELMAkGA1UEBhMCVVMxEjAQBgNVBAoTCUlkZW5UcnVzdDEXMBUG
-A1UEAxMOVHJ1c3RJRCBDQSBBMTMCEEABgmmaL+s+f8XR8nIOXMwwDQYJYIZIAWUDBAIBBQCg
-ggGXMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIzMTIyMTE0
-MjYyMFowLwYJKoZIhvcNAQkEMSIEIOOMUj5Gb4YPiHHtFVfZWrncSotZoNpk8Yw3W8bpqKMS
-MF0GCSsGAQQBgjcQBDFQME4wOjELMAkGA1UEBhMCVVMxEjAQBgNVBAoTCUlkZW5UcnVzdDEX
-MBUGA1UEAxMOVHJ1c3RJRCBDQSBBMTMCEEABgmmaL+s+f8XR8nIOXMwwXwYLKoZIhvcNAQkQ
-AgsxUKBOMDoxCzAJBgNVBAYTAlVTMRIwEAYDVQQKEwlJZGVuVHJ1c3QxFzAVBgNVBAMTDlRy
-dXN0SUQgQ0EgQTEzAhBAAYJpmi/rPn/F0fJyDlzMMGwGCSqGSIb3DQEJDzFfMF0wCwYJYIZI
-AWUDBAEqMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzAOBggqhkiG9w0DAgICAIAwDQYIKoZI
-hvcNAwICAUAwBwYFKw4DAgcwDQYIKoZIhvcNAwICASgwDQYJKoZIhvcNAQEBBQAEggEAFZ7k
-zc8Fmhs+k8jbW6IjF4E2bT4QkwJXwLNn0ex6U05su+JmRu4jlE5eGlZ8GDhadoIzt5rrOwqH
-W+9AbLaysFl3awXfQluU3MQ8fl7Ow+Ymfb+11qY5bWibj9zwfHZa+fanPRsv/aIwmwCdV0G2
-x9q751NamXe8/pDBo+LqBE35+76ts2T1ocyynh7UCMF/W3ucUOODsknCza34WiZPiorEbC01
-xk8c5QCGkLNNQTh5BytCZbO/OvvztGCQ0JYbx2JhYdIX3VJrbG47X+215pcFxsmmdB+CVtC5
-9uJc9q8fhd7+ofNyZ6rRAdShK9nBA1G9PofmcNCbG+FydrAxtgAAAAAAAA==
---------------ms020205010406090109050502--
-
+Can you explain how the DT fits into this? How are the runtime-code
+and runtime-data memory reservation nodes under /reserved-memory used
+to implement this information exchange between platform init and
+payload? And how do the HOB and the EFI variable fit into this
+picture?
 
