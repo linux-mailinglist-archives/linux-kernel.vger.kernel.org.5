@@ -1,77 +1,77 @@
-Return-Path: <linux-kernel+bounces-8581-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8583-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66C0981B9BB
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 15:41:52 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2603781B9C3
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 15:44:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 997541C215EC
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 14:41:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A91DDB20EF3
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 14:44:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23AF33608D;
-	Thu, 21 Dec 2023 14:41:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AB1336095;
+	Thu, 21 Dec 2023 14:43:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="atejqCvs"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="CKXSo6yr"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D0441D69C;
-	Thu, 21 Dec 2023 14:41:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31C6AC433C8;
-	Thu, 21 Dec 2023 14:41:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703169702;
-	bh=EVUMYl3rOlHtN/K6V9hi9IeUlzUhMbQYqoThI5xvNHg=;
-	h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
-	b=atejqCvskyYhQxXzNXFV6zuf9UR1fIL0CqfG4VlLwRt6ReMNwXqKiEpjvy5Srdbjo
-	 aIAoXM7fxtWEgsF4Vl7SCvoXfWvWcgIGLlH6FHcrAHUQTxHWxnAhJfgAUZXFNmbTjH
-	 78KXRF43V6YN+eQQAqbsBn6hNVAwHSXDW/Mne5Q7swkujLyi+VRAOiAPJi7224VyXx
-	 tZDoTBwuXAuHy7bUAlP+5ZM6vjZj5lbjnQTTDoMXrCH43D9jAxvLp1irrd391jcA2N
-	 8cGw1UxMsDDlaNynY+mgmlw9gm7pjgel+C5JVXv2sKLoJvtoWB0LfBe2P2yBhK/fdn
-	 gjEa9yzYV5CkA==
-Content-Type: text/plain; charset="utf-8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBA841D6A9
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 14:43:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <df5406ae-aca4-459f-bf70-4a5efbf3864e@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1703169828;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xTV/q8RDwQu2LAWOhY4c4geyJjIHSwAWDVPGvEOOSYc=;
+	b=CKXSo6yrxKSN0Z8ODEsMtrBgLszB1j8X4f8dzgGkYKd2FeNBHAKA9hH3JBjYZwj8N4RTzm
+	WcJ0AkAOZ4JHapVZoAiuDoJBw71qorIYsCmlSj/KS5f7quMEZLvsu88Mz7iEvseAahRn2k
+	OjZh1xAZriJIFgVj7GQ/uTBoOc1BdrI=
+Date: Thu, 21 Dec 2023 22:43:39 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Subject: Re: [v5,41/44] drm/sun4i: hdmi: Move mode_set into enable
+Content-Language: en-US
+To: Maxime Ripard <mripard@kernel.org>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>, Emma Anholt <emma@anholt.net>,
+ Jonathan Corbet <corbet@lwn.net>, Sandy Huang <hjc@rock-chips.com>,
+ =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
+ Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>,
+ Samuel Holland <samuel@sholland.org>
+Cc: linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, Hans Verkuil <hverkuil@xs4all.nl>,
+ linux-rockchip@lists.infradead.org, linux-sunxi@lists.linux.dev,
+ linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
+References: <20231207-kms-hdmi-connector-state-v5-41-6538e19d634d@kernel.org>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Sui Jingfeng <sui.jingfeng@linux.dev>
+In-Reply-To: <20231207-kms-hdmi-connector-state-v5-41-6538e19d634d@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH v2] wifi: mwifiex: fix uninitialized firmware_stat
-From: Kalle Valo <kvalo@kernel.org>
-In-Reply-To: <20231221015511.1032128-1-yu-hao.lin@nxp.com>
-References: <20231221015511.1032128-1-yu-hao.lin@nxp.com>
-To: David Lin <yu-hao.lin@nxp.com>
-Cc: linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
- briannorris@chromium.org, francesco@dolcini.it, tsung-hsien.hsieh@nxp.com,
- David Lin <yu-hao.lin@nxp.com>, stable@vger.kernel.org,
- kernel test robot <lkp@intel.com>, Dan Carpenter <error27@gmail.com>
-User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.11.2
-Message-ID: <170316969802.1243375.17807414549323669608.kvalo@kernel.org>
-Date: Thu, 21 Dec 2023 14:41:40 +0000 (UTC)
+X-Migadu-Flow: FLOW_OUT
 
-David Lin <yu-hao.lin@nxp.com> wrote:
+Hi,
 
-> Variable firmware_stat is possible to be used without initialization.
-> 
-> Signed-off-by: David Lin <yu-hao.lin@nxp.com>
-> Fixes: 1c5d463c0770 ("wifi: mwifiex: add extra delay for firmware ready")
-> Cc: stable@vger.kernel.org
-> Reported-by: kernel test robot <lkp@intel.com>
-> Reported-by: Dan Carpenter <error27@gmail.com>
-> Closes: https://lore.kernel.org/r/202312192236.ZflaWYCw-lkp@intel.com/
-> Acked-by: Brian Norris <briannorris@chromium.org>
 
-Patch applied to wireless-next.git, thanks.
+On 2023/12/7 23:50, Maxime Ripard wrote:
+> We're not doing anything special in atomic_mode_set so we can simply
+> merge it into atomic_enable.
+>
+> Signed-off-by: Maxime Ripard <mripard@kernel.org>
 
-3df95e265924 wifi: mwifiex: fix uninitialized firmware_stat
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20231221015511.1032128-1-yu-hao.lin@nxp.com/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+Acked-by: Sui Jingfeng <sui.jingfeng@linux.dev>
 
 
