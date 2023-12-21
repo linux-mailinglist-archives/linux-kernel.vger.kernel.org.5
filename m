@@ -1,140 +1,88 @@
-Return-Path: <linux-kernel+bounces-9142-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9143-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 838BE81C13B
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 23:52:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2FC881C13F
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 23:55:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8C48A1C247B9
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 22:52:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 922001F25F48
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 22:55:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4065078E9D;
-	Thu, 21 Dec 2023 22:52:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA04078E90;
+	Thu, 21 Dec 2023 22:55:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XNLxSN+7"
+	dkim=pass (1024-bit key) header.d=iwanders.net header.i=@iwanders.net header.b="UnF8TEXi"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oi1-f177.google.com (mail-oi1-f177.google.com [209.85.167.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78BAC78E64;
-	Thu, 21 Dec 2023 22:52:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8F25C433C8;
-	Thu, 21 Dec 2023 22:52:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703199141;
-	bh=2Fl8vOhQ64Y7+GgI7caXKohE+Cft0TcjWAivLqeuiFQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=XNLxSN+70e8qMK73Id71VXLGuAaG3NTghRPhaZpVfAD2rF/O45r/AQ3iqsrWqacAE
-	 U4eipX3qpFy7P8RiHpK8b9sL+ue0nyzfspB9FI1EA+iR0szp/pHUzZagySvSzQ5qLF
-	 EyHNw/jWoYr6RCBT2PWpHfj68Vyts84fRPDcdCGnL3u/1SErtA5td8dmoalY9/qjHL
-	 XEnxuVi5SZBgpyXT4cpbEeqgJ+qvDbAYZVOGdOypLMfZUME8fXP9deNNZLT4vY3VIO
-	 NGVNEr3+aYhQ+ScrV5rhEIyI/G549Zx1GnmhyCH6Q+tdLNMIgrYdIc9xkshr7Yy9rG
-	 Rwpzdwx520EZQ==
-Received: (nullmailer pid 234434 invoked by uid 1000);
-	Thu, 21 Dec 2023 22:52:18 -0000
-Date: Thu, 21 Dec 2023 16:52:18 -0600
-From: Rob Herring <robh@kernel.org>
-To: Frank Li <Frank.Li@nxp.com>
-Cc: manivannan.sadhasivam@linaro.org, bhelgaas@google.com, conor+dt@kernel.org, devicetree@vger.kernel.org, festevam@gmail.com, helgaas@kernel.org, hongxing.zhu@nxp.com, imx@lists.linux.dev, kernel@pengutronix.de, krzysztof.kozlowski+dt@linaro.org, krzysztof.kozlowski@linaro.org, kw@linux.com, l.stach@pengutronix.de, linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com, linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org, lpieralisi@kernel.org, s.hauer@pengutronix.de, shawnguo@kernel.org
-Subject: Re: [PATCH v5 11/16] dt-bindings: imx6q-pcie: Add imx95 pcie
- compatible string
-Message-ID: <20231221225218.GA232422-robh@kernel.org>
-References: <20231220213615.1561528-1-Frank.Li@nxp.com>
- <20231220213615.1561528-12-Frank.Li@nxp.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 228AA78E77
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 22:55:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iwanders.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iwanders.net
+Received: by mail-oi1-f177.google.com with SMTP id 5614622812f47-3ba14203a34so1063420b6e.1
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 14:55:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=iwanders.net; s=google; t=1703199325; x=1703804125; darn=vger.kernel.org;
+        h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=wqXIOVr+zzGcBTuOnYOshrpme+1OoQLq7CD3XZTWNYk=;
+        b=UnF8TEXiS4x9F9YYTnX7J/n5HYzBqrH6eIFSrtNYm/gR1txdNnZP83Wq6Ubqg278Ap
+         zFr31wXp9hf+nAVHB75rBDkx0einNYjcg4Hp1X2HW/J1aFUHIS3Igo1/dIDHvY9lHVaC
+         gQ3IqaLmMXayimQNv2e0Jo0LrKYQ5kXsQEE8k=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703199325; x=1703804125;
+        h=references:in-reply-to:message-id:date:subject:cc:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wqXIOVr+zzGcBTuOnYOshrpme+1OoQLq7CD3XZTWNYk=;
+        b=VVAIWuRrFMlLmUHDi4eFvO5h4GsXVJ5FYcOdRSL3D0plpmYUjBwZiguHMqLOzJ7YHe
+         JSJtjsg3anGLJ8BGTFH5ZGfSkKQOUl9COBHfSjGJmKaejm6S9M7R/iY3mC5BBBHpC1JR
+         7TcCmaBox2Sq5lrhIbnfd4eXz2cLbpXJGZu01+FCkmc4DvmNG1U13JPGIt8T0e2otaJt
+         oUUhSip9syIKu6ZOrNlxs3oFMu9jHo85duZkRQfGmppzcdMBZYIz3IyTWAT7fLTYYxoq
+         nFCH9ZSuIKxv3tg9VpkZI6KDNGzrYLhVJFtBR8UsuSvPJup3Waa/2iVn+1hp/hIwrB45
+         yfAw==
+X-Gm-Message-State: AOJu0YyqWnaGAiGTTeX6Mwi1+M8Kbwlikr3iMIYKDof1gK2EAfmQ35+U
+	iUR7unMBnaxQvyLbJdz9nbwDNtUBzDrqDg==
+X-Google-Smtp-Source: AGHT+IGb5yHPr5yL48MF5WsWm9Y7cxl8mGGDhYBlsAeD26LEAwYhBDQIvfRTLO6USodEGOeVJKAM+g==
+X-Received: by 2002:a05:6808:648d:b0:3bb:8958:363e with SMTP id fh13-20020a056808648d00b003bb8958363emr178887oib.118.1703199325253;
+        Thu, 21 Dec 2023 14:55:25 -0800 (PST)
+Received: from eagle.lan (24-246-30-234.cable.teksavvy.com. [24.246.30.234])
+        by smtp.gmail.com with ESMTPSA id g20-20020ad457b4000000b0067f454b5307sm924400qvx.108.2023.12.21.14.55.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Dec 2023 14:55:24 -0800 (PST)
+From: Ivor Wanders <ivor@iwanders.net>
+To: linux@roeck-us.net
+Cc: corbet@lwn.net,
+	hdegoede@redhat.com,
+	ivor@iwanders.net,
+	jdelvare@suse.com,
+	linux-doc@vger.kernel.org,
+	linux-hwmon@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	luzmaximilian@gmail.com,
+	markgross@kernel.org
+Subject: Re: [PATCH 1/2] hwmon: add fan speed monitoring driver for Surface devices
+Date: Thu, 21 Dec 2023 17:55:21 -0500
+Message-Id: <20231221225521.11671-1-ivor@iwanders.net>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <ab8a1ff3-6d01-4331-ba5d-d677d1ad80b5@roeck-us.net>
+References: <ab8a1ff3-6d01-4331-ba5d-d677d1ad80b5@roeck-us.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231220213615.1561528-12-Frank.Li@nxp.com>
 
-On Wed, Dec 20, 2023 at 04:36:10PM -0500, Frank Li wrote:
-> From: Richard Zhu <hongxing.zhu@nxp.com>
-> 
-> Add i.MX95 PCIe "fsl,imx95-pcie" compatible string.
-> Add "atu" and "app" to reg-names.
-> 
-> Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
-> ---
-> 
-> Notes:
->     Change from v2 to v3
->     - Remove krzy's ACK tag
->     - Add condition check for imx95, which required more reg-names then old
->     platform, so need Krzy review again,
->     
->     Change from v1 to v2
->     - add Krzy's ACK tag
-> 
->  .../bindings/pci/fsl,imx6q-pcie-common.yaml    |  1 +
->  .../bindings/pci/fsl,imx6q-pcie.yaml           | 18 ++++++++++++++++++
->  2 files changed, 19 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie-common.yaml b/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie-common.yaml
-> index a284a27c5e873..1b63089ff0aee 100644
-> --- a/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie-common.yaml
-> +++ b/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie-common.yaml
-> @@ -207,6 +207,7 @@ allOf:
->                  - fsl,imx6sx-pcie
->                  - fsl,imx6q-pcie
->                  - fsl,imx6qp-pcie
-> +                - fsl,imx95-pcie
->                  - fsl,imx6sx-pcie-ep
->                  - fsl,imx6q-pcie-ep
->                  - fsl,imx6qp-pcie-ep
-> diff --git a/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.yaml b/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.yaml
-> index f20d4f0e3cb6c..8633c622bd178 100644
-> --- a/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.yaml
-> +++ b/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.yaml
-> @@ -29,6 +29,7 @@ properties:
->        - fsl,imx8mq-pcie
->        - fsl,imx8mm-pcie
->        - fsl,imx8mp-pcie
-> +      - fsl,imx95-pcie
->  
->    clocks:
->      minItems: 3
-> @@ -80,6 +81,22 @@ required:
->  allOf:
->    - $ref: /schemas/pci/snps,dw-pcie.yaml#
->    - $ref: /schemas/pci/fsl,imx6q-pcie-common.yaml#
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          enum:
-> +            - fsl,imx95-pcie
-> +    then:
-> +      properties:
-> +        reg:
-> +          minItems: 4
-> +        reg-names:
-> +          items:
-> +            - const: dbi
-> +            - const: atu
-> +            - const: app
-> +            - const: config
+> No, sorry. Limit attributes are supposed to be used to program limits,
+> not to report constant values to userspace
 
-Add new entries to the end. Originally, you had dbi and config. Add ata 
-and app on the end.
+Thank you for this feedback, I've proposed improvements to the
+documentation in [1] that clarify this. I will incorporate this feedback
+and submit a second version.
 
-> +
->    - if:
->        properties:
->          compatible:
-> @@ -101,6 +118,7 @@ allOf:
->          compatible:
->            enum:
->              - fsl,imx8mq-pcie
-> +            - fsl,imx95-pcie
->      then:
->        properties:
->          clocks:
-> -- 
-> 2.34.1
-> 
+~Ivor
+
+[1]: https://lore.kernel.org/linux-hwmon/20231221225149.11295-1-ivor@iwanders.net/T/
 
