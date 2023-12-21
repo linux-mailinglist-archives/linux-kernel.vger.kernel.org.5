@@ -1,218 +1,117 @@
-Return-Path: <linux-kernel+bounces-8520-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8522-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3427A81B8FB
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 14:57:39 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B283381B8FF
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 14:58:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9F28C1F21362
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 13:57:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3C2FBB27168
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 13:58:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5FB362809;
-	Thu, 21 Dec 2023 13:47:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="i3kZuJfC"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2ACAD6351B;
+	Thu, 21 Dec 2023 13:47:31 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+Received: from mail-oa1-f41.google.com (mail-oa1-f41.google.com [209.85.160.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92E2058227;
-	Thu, 21 Dec 2023 13:46:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74AEA62815;
+	Thu, 21 Dec 2023 13:47:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-54c77e0835bso1036086a12.2;
-        Thu, 21 Dec 2023 05:46:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703166418; x=1703771218; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=d1tAZ8GdByb8q0+1M5iM8QIUCHX6alVx7yOZ8zoIeaQ=;
-        b=i3kZuJfCn3yhFaazQkbPcbHhrgHajoXjf2+yNM4z9ldlmVZ5QV4tVZ01IsJl+D0TCr
-         NtTuth/AvRz/6rzUhH5RILWlkz2HKCeV9Nyp+hBqd9NmBUZ2fq0klg1ZmntWtc+QOU9u
-         JyLwv4SdzadD/X1e+nYNFNfgU5ws1hvYaSuWsSXRdTvIZx/fd9PFtUlBwxiCXpZdoHcv
-         MX070QgUA2PRpjW6CNLVGWEwCWw6o4eeKvEbo5jpqoS93GnMa0yibmW0yVZhzw+XfxE0
-         bNVgAECy4mp5NfbyEYsRyKDfJO+8ovUvpKKD73fd5/Tb/9aWFsqXgG/CkuRLsgmU55ia
-         ksBg==
+Received: by mail-oa1-f41.google.com with SMTP id 586e51a60fabf-1ff010595f6so24904fac.1;
+        Thu, 21 Dec 2023 05:47:29 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703166418; x=1703771218;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=d1tAZ8GdByb8q0+1M5iM8QIUCHX6alVx7yOZ8zoIeaQ=;
-        b=GaBERB5x5obPL7XALxxRDK5uILBQmADjYMON4h9ipoGEaAcYU2W5nYIRvvVWpi+pAn
-         QYq2xi/aRsX4NQ795u7Kh7sBTIBjcWfSoY/s5R2TD3m04oLUOxqKzRPAwCkzh3LcLhvn
-         xl63fzocqRzGDxB8pypDtBQj9cdyqQ6Yf52z3Tb9HM8mWSDBiXuxrozCfDf65NjtTZ4m
-         0+hVauWFkWv0khwPqX5SUwFo2AyPPfiMdayKk/xiouLKmO3LXh7namd8vwjVpTtJbQlV
-         czSNx2tNyWmRkL6ILdWuSa8ZAsfll+MKyy0oWoBx9Bu+QXC4JvGyxG+S1dHYZU6EWf+N
-         A/lQ==
-X-Gm-Message-State: AOJu0YyhiVHzL/5NauobS+bZ2zHyOwRY6VtcidYLel3+UkTGUStVKbr+
-	cdIYO4M7AKChk9MCqvo0Hg==
-X-Google-Smtp-Source: AGHT+IHXd7MayCVwis6kd4X/xob72svSWV/OODq5cZ/Go8Rd7wNoGd/LEEF1HL3PA7jhTNXGBqQP7A==
-X-Received: by 2002:a50:8e17:0:b0:553:68b2:31e3 with SMTP id 23-20020a508e17000000b0055368b231e3mr3672745edw.30.1703166417679;
-        Thu, 21 Dec 2023 05:46:57 -0800 (PST)
-Received: from ?IPV6:2a02:810b:f40:4300:1c49:5d1e:f6f3:77a0? ([2a02:810b:f40:4300:1c49:5d1e:f6f3:77a0])
-        by smtp.gmail.com with ESMTPSA id i21-20020a0564020f1500b0055344b92fb6sm1185290eda.75.2023.12.21.05.46.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Dec 2023 05:46:57 -0800 (PST)
-Message-ID: <b03a7ddc-65c5-44c3-a563-d52ee938148a@gmail.com>
-Date: Thu, 21 Dec 2023 14:46:56 +0100
+        d=1e100.net; s=20230601; t=1703166448; x=1703771248;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=I18+KHcYU9LVNWT1j7IeCdABeIX+wJlsSl36dw3cVlY=;
+        b=bvJ9zBDH1AWPQE3nj7DT4Kfrz7PGax5ZxG/NyGFsh/1QPvHZZsCpJmqIMh71g68SAL
+         45xRY40DSJitBHDP8zNm38sQ78bqfOm+DKGefi7Vbl10peNbyoUyK9QoUE2ncjHhR4EA
+         PGV5gkAyNBtoSiOI4WvM/Sx5tuvsGpvKOgX44+Oi403iSB0glIjlsDRwgnttHf8tmhUn
+         obiYc0BjLdDhdcW52jRtjrnZasKZHFTYtcw7bOuWcMZUel4nnMy54O4vSIOnsBwVAeJv
+         b5IrQQ+VkKI5Jv2LPkzRTfK9Af5RiDHO4tebAbrwXkDomSdm2uSdCtFHwhy2iagmz0jI
+         0J+g==
+X-Gm-Message-State: AOJu0Yw3lQrkm2npPKEnatv3M2ULLCm5sT6iL4tehNyAv8p1sn8Gjpre
+	Wi620yqIdgP0/VPWF7jKNmwhG2AnYvOtKhdlRWg=
+X-Google-Smtp-Source: AGHT+IGycU/rvF2NFQOBvNN7qjABSTsNMm2yrNgLN4uoMxiE/BM8qZZhhBVbQ3EDbrA1Avz3Q6swQf6aZEwjAeXf3+E=
+X-Received: by 2002:a05:6870:b028:b0:1fb:e5f:c530 with SMTP id
+ y40-20020a056870b02800b001fb0e5fc530mr39465533oae.4.1703166448497; Thu, 21
+ Dec 2023 05:47:28 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 0/5] Add support for video hardware codec of
- STMicroelectronics STM32 SoC series
-Content-Language: en-US, de-DE
-To: Adam Ford <aford173@gmail.com>
-Cc: Hugues FRUCHET <hugues.fruchet@foss.st.com>,
- Nicolas Dufresne <nicolas.dufresne@collabora.com>,
- Marco Felsch <m.felsch@pengutronix.de>,
- Philipp Zabel <p.zabel@pengutronix.de>,
- Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
- Sakari Ailus <sakari.ailus@linux.intel.com>,
- Benjamin Gaignard <benjamin.gaignard@collabora.com>,
- Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
- Benjamin Mugnier <benjamin.mugnier@foss.st.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>, linux-kernel@vger.kernel.org,
- Daniel Almeida <daniel.almeida@collabora.com>,
- Heiko Stuebner <heiko@sntech.de>, Hans Verkuil <hverkuil@xs4all.nl>,
- Rob Herring <robh+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>,
- linux-stm32@st-md-mailman.stormreply.com,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
- devicetree@vger.kernel.org, Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- linux-media@vger.kernel.org, Alexandre Torgue
- <alexandre.torgue@foss.st.com>,
- Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-References: <20231221084723.2152034-1-hugues.fruchet@foss.st.com>
- <769a1510-f8d2-4095-9879-42f413141dee@gmail.com>
- <a240d2ac-db0e-481b-8d13-3ae76cfd2fe7@foss.st.com>
- <e5ba1e14-4bbf-43e3-933a-fee6d4b90641@gmail.com>
- <CAHCN7xJ3Ktn+TnoOYdnNvKTddGCfLp4OQ+gM0WonWj-aqnsGuA@mail.gmail.com>
-From: Alex Bee <knaerzche@gmail.com>
-In-Reply-To: <CAHCN7xJ3Ktn+TnoOYdnNvKTddGCfLp4OQ+gM0WonWj-aqnsGuA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <918945b6-8959-4228-b642-396ae346b20a@kernel.org>
+In-Reply-To: <918945b6-8959-4228-b642-396ae346b20a@kernel.org>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Thu, 21 Dec 2023 14:47:17 +0100
+Message-ID: <CAJZ5v0goP-468FT0pw5AeAYd8sQamdc1-64pyrEdFwbWHO4WfQ@mail.gmail.com>
+Subject: Re: [GIT PULL] devfreq next for 6.8
+To: Chanwoo Choi <chanwoo@kernel.org>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, 
+	"open list:DEVICE FREQUENCY (DEVFREQ)" <linux-pm@vger.kernel.org>, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Chanwoo Choi <cw00.choi@samsung.com>, 
+	MyungJoo Ham <myungjoo.ham@samsung.com>, Kyungmin Park <kyungmin.park@samsung.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-
-Am 21.12.23 um 14:38 schrieb Adam Ford:
-> On Thu, Dec 21, 2023 at 7:31 AM Alex Bee <knaerzche@gmail.com> wrote:
->> Hi Hugues,
->>
->> Am 21.12.23 um 14:08 schrieb Hugues FRUCHET:
->>> Hi Alex,
->>>
->>> This is because VDEC and VENC are two separated IPs with their own
->>> hardware resources and no links between both.
->>> On future SoCs, VDEC can ship on its own, same for VENC.
->>>
->> I think that's what the driver is/was designed for :)
->>
->> I don't  think there _has_ to be a link between variants in the same file.
->> For Rockchip we only had the issue that there _is_ a link (shared
->> resources) between encoder and decoder and they had (for that reason) to be
->> defined has a _single_ variant. And there is no reason you can ship decoder
->> and encoder seperated when you have two variants (with different
->> compatibles).
->> For Rockchip and iMX those files are even containing variants for completly
->> different generations / different SoCs. I had to cleanup this mess for
-> The i.MX8M Mini and Plus have different power domains for encoder and
-> decoders as well as different clocks.  Keeping them separate would
-> almost be necessary.
-I guess there is missunderstanding: I didn't say the two STM variants
-should be merged in one variant, but the two variants should be within the
-same _file_, like the other platforms are doing :)
-> adam
+On Tue, Dec 19, 2023 at 12:03=E2=80=AFAM Chanwoo Choi <chanwoo@kernel.org> =
+wrote:
 >
->> Rockchip once - and it was no fun :) Anyways: It's up to the maintainers I
->> guess - I just wanted to ask if I missunderstand something here.
->>
->> Greetings,
->>
->> Alex
->>
->>> Hoping that this clarify.
->>>
->>> Best regards,
->>> Hugues.
->>>
->>> On 12/21/23 13:40, Alex Bee wrote:
->>>> Hi Hugues, Hi Nicolas,
->>>>
->>>> is there any specific reason I'm not understanding / seeing why this
->>>> is added in two seperate vdec* / venc* files and not a single vpu*
->>>> file? Is it only for the seperate clocks (-names) / irqs (-names) /
->>>> callbacks? Those are defined per variant and perfectly fit in a
->>>> single file holding one vdec and one venc variant.
->>>>
->>>> Alex
->>>>
->>>> Am 21.12.23 um 09:47 schrieb Hugues Fruchet:
->>>>> This patchset introduces support for VDEC video hardware decoder
->>>>> and VENC video hardware encoder of STMicroelectronics STM32MP25
->>>>> SoC series.
->>>>>
->>>>> This initial support implements H264 decoding, VP8 decoding and
->>>>> JPEG encoding.
->>>>>
->>>>> This has been tested on STM32MP257F-EV1 evaluation board.
->>>>>
->>>>> ===========
->>>>> = history =
->>>>> ===========
->>>>> version 5:
->>>>>      - Precise that video decoding as been successfully tested up to
->>>>> full HD
->>>>>      - Add Nicolas Dufresne reviewed-by
->>>>>
->>>>> version 4:
->>>>>      - Fix comments from Nicolas about dropping encoder raw steps
->>>>>
->>>>> version 3:
->>>>>      - Fix remarks from Krzysztof Kozlowski:
->>>>>       - drop "items", we keep simple enum in such case
->>>>>       - drop second example - it is the same as the first
->>>>>      - Drop unused node labels as suggested by Conor Dooley
->>>>>      - Revisit min/max resolutions as suggested by Nicolas Dufresne
->>>>>
->>>>> version 2:
->>>>>      - Fix remarks from Krzysztof Kozlowski on v1:
->>>>>       - single video-codec binding for both VDEC/VENC
->>>>>       - get rid of "-names"
->>>>>       - use of generic node name "video-codec"
->>>>>
->>>>> version 1:
->>>>>     - Initial submission
->>>>>
->>>>> Hugues Fruchet (5):
->>>>>     dt-bindings: media: Document STM32MP25 VDEC & VENC video codecs
->>>>>     media: hantro: add support for STM32MP25 VDEC
->>>>>     media: hantro: add support for STM32MP25 VENC
->>>>>     arm64: dts: st: add video decoder support to stm32mp255
->>>>>     arm64: dts: st: add video encoder support to stm32mp255
->>>>>
->>>>>    .../media/st,stm32mp25-video-codec.yaml       |  50 ++++++++
->>>>>    arch/arm64/boot/dts/st/stm32mp251.dtsi        |  12 ++
->>>>>    arch/arm64/boot/dts/st/stm32mp255.dtsi        |  17 +++
->>>>>    drivers/media/platform/verisilicon/Kconfig    |  14 ++-
->>>>>    drivers/media/platform/verisilicon/Makefile   |   4 +
->>>>>    .../media/platform/verisilicon/hantro_drv.c   |   4 +
->>>>>    .../media/platform/verisilicon/hantro_hw.h    |   2 +
->>>>>    .../platform/verisilicon/stm32mp25_vdec_hw.c  |  92 ++++++++++++++
->>>>>    .../platform/verisilicon/stm32mp25_venc_hw.c  | 115
->>>>> ++++++++++++++++++
->>>>>    9 files changed, 307 insertions(+), 3 deletions(-)
->>>>>    create mode 100644
->>>>> Documentation/devicetree/bindings/media/st,stm32mp25-video-codec.yaml
->>>>>    create mode 100644
->>>>> drivers/media/platform/verisilicon/stm32mp25_vdec_hw.c
->>>>>    create mode 100644
->>>>> drivers/media/platform/verisilicon/stm32mp25_venc_hw.c
->>>>>
+> Dear Rafael,
+>
+> This is devfreq-next pull request for v6.8. I add detailed description of
+> this pull request on the following tag. Please pull devfreq with
+> following updates.
+>
+> Best Regards,
+> Chanwoo Choi
+>
+>
+> The following changes since commit b85ea95d086471afb4ad062012a4d73cd328fa=
+86:
+>
+>   Linux 6.7-rc1 (2023-11-12 16:19:07 -0800)
+>
+> are available in the Git repository at:
+>
+>   git://git.kernel.org/pub/scm/linux/kernel/git/chanwoo/linux.git tags/de=
+vfreq-next-for-6.8
+>
+> for you to fetch changes up to aed5ed595960c6d301dcd4ed31aeaa7a8054c0c6:
+>
+>   PM / devfreq: Synchronize devfreq_monitor_[start/stop] (2023-12-19 07:5=
+8:27 +0900)
+>
+> ----------------------------------------------------------------
+> Update devfreq next for v6.8
+>
+> Detailed description for this pull request:
+> 1. Fix buffer overflow of trans_stat_show sysfs node on devfreq core
+> - Fix buffer overflow of trans_stat_show sysfs node to replace
+>   sprintf with scnprintf and then replace it with sysfs_emit
+>   according to the syfs guide.
+>
+> 2. Fix the timer list corruption when frequent switching of governor
+> by synchronizing the devfreq_moniotr_start and _stop function.
+> ----------------------------------------------------------------
+>
+> Christian Marangi (2):
+>       PM / devfreq: Fix buffer overflow in trans_stat_show
+>       PM / devfreq: Convert to use sysfs_emit_at() API
+>
+> Mukesh Ojha (1):
+>       PM / devfreq: Synchronize devfreq_monitor_[start/stop]
+>
+>  Documentation/ABI/testing/sysfs-class-devfreq |  3 +
+>  drivers/devfreq/devfreq.c                     | 80 ++++++++++++++++++++-=
+------
+>  2 files changed, 62 insertions(+), 21 deletions(-)
+
+Pulled and added to the linux-next branch in linux-pm.git, thanks!
 
