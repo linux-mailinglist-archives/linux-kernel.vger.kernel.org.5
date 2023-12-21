@@ -1,145 +1,119 @@
-Return-Path: <linux-kernel+bounces-8213-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8214-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48DA881B3BB
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 11:37:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6614A81B3BD
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 11:37:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DD4C8B234F5
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 10:37:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1C405282A8F
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 10:37:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38DD969799;
-	Thu, 21 Dec 2023 10:37:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92C7267203;
+	Thu, 21 Dec 2023 10:37:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ecG/RIxA"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hVlujhbF"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 216EF6A00A;
-	Thu, 21 Dec 2023 10:37:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1d3e05abcaeso4347415ad.1;
-        Thu, 21 Dec 2023 02:37:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703155036; x=1703759836; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=IO8ymlIh0gwHq3H5R4Z60V2oV0umNMIZNVLXryGviuo=;
-        b=ecG/RIxA/2o3CmvCfRjiQz4EdwhgY6JzxAa9+gs/Ro1jgMa+ivK6HQDee2tRjnNR2/
-         zWyzhH1VfsXz1EVI4tPFHC6XC/VoChjUGz67QOHuVoi7MtSfBHKcO0xhXOa2K14fMo4a
-         akmozCAl78OLvlQiQBBh8rW4L0sjvUK1V6M9zqAK8uwA1DUTgp05jOJK0ZyQTKdJ+Nk0
-         AMj8RnUyHi2dO/bLtb3H0LMAmC3/P6lZQTov7Qegpe4ncOdyE85JpWpXJnOeS7z4VIds
-         07cGq4qEouTpY50VmL4DT1sP9+h+pTmLOpddiNUa++cnIootjflV/wNF/U15l0oPKDJJ
-         qScw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703155036; x=1703759836;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=IO8ymlIh0gwHq3H5R4Z60V2oV0umNMIZNVLXryGviuo=;
-        b=irfFEDJ0PhR5aJnTE9jZVIgtJAR1WdGyKJy55rdm2eCvBwq0HjqYML/+VbW3nJWuJF
-         sJcXtdYDBpce0aRXkHYUDR/dEjsgzyfQ2d1SLHQZXYhYRY6IS85IDlfPBb5wYwqVc8FL
-         t3wA4xtf3mRyYJ0CX0or/QHFmSHb9uAJz8wS7SChN7KIdVA5OgdnNoKf4+8djUQDWiDp
-         nc+0nr9/Y7F10cLoeXLJYxjE8tghbjqZmlCcsE8jU7ENVz/9C0cj87olDrN1Kr+HPj6U
-         J1ineJNNwkCoy5JRadvcqvCu1d7DY9jYy8RV9+iYefE2wrSUpITfIjKnPXRIDu9XsI0T
-         Z77Q==
-X-Gm-Message-State: AOJu0YyhIsD2XZVMg/WgxxQLs+f/jDiqed5obA6+2dUNpxULEkvsiUpM
-	GolZbLAI+ufA9lR7/+T4yxk=
-X-Google-Smtp-Source: AGHT+IGGapBB/ZVyZ5dQirjzaEf8Bd8ICbenKipZ4RF+MCrODOjbzrEx3sy7ioh372Oew4KHI3OMJw==
-X-Received: by 2002:a17:902:c406:b0:1d0:44f6:ccb9 with SMTP id k6-20020a170902c40600b001d044f6ccb9mr12403732plk.65.1703155036374;
-        Thu, 21 Dec 2023 02:37:16 -0800 (PST)
-Received: from g2039B650.. ([2001:da8:203:a502:3f:1d17:2d9c:d20])
-        by smtp.gmail.com with ESMTPSA id w19-20020a170902d3d300b001d3eb987bb6sm1301005plb.149.2023.12.21.02.37.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Dec 2023 02:37:15 -0800 (PST)
-From: Gui-Dong Han <2045gemini@gmail.com>
-To: mchehab@kernel.org,
-	hverkuil-cisco@xs4all.nl,
-	gregkh@linuxfoundation.org,
-	mcgrof@kernel.org
-Cc: linux-media@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	baijiaju1990@outlook.com,
-	Gui-Dong Han <2045gemini@gmail.com>,
-	BassCheck <bass@buaa.edu.cn>
-Subject: [PATCH] [media] xc4000: Fix atomicity violation in xc4000_get_frequency
-Date: Thu, 21 Dec 2023 18:37:07 +0800
-Message-Id: <20231221103707.4129-1-2045gemini@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C93D6A00A;
+	Thu, 21 Dec 2023 10:37:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1703155043; x=1734691043;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Ke4J4uyPnsfHC4InqtLGeta3zbE3qTWCL7jxGbalv6U=;
+  b=hVlujhbF1ngPfEcY1kK7/Jzjyj0uNHGOfte+1LYSMGIY3OxWXiqtEK6V
+   y0EipQGZMkoxoU0+DjcPDDfzpmhr9IpOUBmtIDMXGwcO9cASj1tRcxcz/
+   FUp93IbC4vniMZeOyg+v8h8EMgi/NuednfZ7NnAmPGFP/GHuHEtBPZow0
+   b4iZhrdrCD+BdBSzHbKx5QmJRU76rN0k5nkSVSD/YA5tz7FpKRRSy73Jq
+   dTH37OrvG0zXjsRs+aWdbb3Dkzv3YZUYNEj43gVPrJQecthCNNFwk6uaS
+   GjtO6nqbqf56ZSESjRjiE8gXw0Uq+pRKHMyBVeDBm0+b9U5E0nz4b4Cfm
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10930"; a="2789852"
+X-IronPort-AV: E=Sophos;i="6.04,293,1695711600"; 
+   d="scan'208";a="2789852"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Dec 2023 02:37:22 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10930"; a="726393319"
+X-IronPort-AV: E=Sophos;i="6.04,293,1695711600"; 
+   d="scan'208";a="726393319"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga003.jf.intel.com with ESMTP; 21 Dec 2023 02:37:20 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1001)
+	id BBDE4B8; Thu, 21 Dec 2023 12:37:18 +0200 (EET)
+Date: Thu, 21 Dec 2023 12:37:18 +0200
+From: Mika Westerberg <mika.westerberg@linux.intel.com>
+To: Greg KH <greg@kroah.com>
+Cc: Werner Sembach <wse@tuxedocomputers.com>,
+	Andreas Noever <andreas.noever@gmail.com>,
+	Michael Jamet <michael.jamet@intel.com>,
+	Yehezkel Bernat <YehezkelShB@gmail.com>, linux-usb@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] thunderbolt: Reduce retry timeout to speed up boot for
+ some devices
+Message-ID: <20231221103718.GC2543524@black.fi.intel.com>
+References: <20231220150956.230227-1-wse@tuxedocomputers.com>
+ <2e00a0dc-5911-44ee-8c50-a8482eb44197@tuxedocomputers.com>
+ <2023122012-spruce-unsteady-e187@gregkh>
+ <e7c768aa-a071-4590-ab1a-d80738dce1e5@tuxedocomputers.com>
+ <2023122056-snowflake-visor-1262@gregkh>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <2023122056-snowflake-visor-1262@gregkh>
 
-In xc4000_get_frequency():
-	*freq = priv->freq_hz + priv->freq_offset;
-The code accesses priv->freq_hz and priv->freq_offset without holding any
-lock.
+Hi,
 
-In xc4000_set_params():
-	// Code that updates priv->freq_hz and priv->freq_offset
-	...
+On Wed, Dec 20, 2023 at 06:30:53PM +0100, Greg KH wrote:
+> On Wed, Dec 20, 2023 at 05:41:01PM +0100, Werner Sembach wrote:
+> > 
+> > Am 20.12.23 um 17:04 schrieb Greg KH:
+> > > On Wed, Dec 20, 2023 at 04:23:15PM +0100, Werner Sembach wrote:
+> > > > Am 20.12.23 um 16:09 schrieb Werner Sembach:
+> > > > > This is a followup to "thunderbolt: Workaround an IOMMU fault on certain
+> > > > > systems with Intel Maple Ridge".
+> > > > > 
+> > > > > It seems like the timeout can be reduced to 250ms. This reduces the overall
+> > > > > delay caused by the retires to ~1s. This is about the time other things
+> > > > > being initialized in parallel need anyway*, so like this the effective boot
+> > > > > time is no longer compromised.
+> > > > > 
+> > > > > *I only had a single device available for my measurements: A Clevo X170KM-G
+> > > > > desktop replacement notebook.
+> > > > > 
+> > > > > Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
+> > > > I wonder if this could also land in stable? Or would it be to risky?
+> > > If it's really a bugfix now, why would it _not_ be relevant for stable?
+> > 
+> > Because it changes a timeout that could cause issues if set to low: This
+> > Patch sets to to 250ms. Set to 50ms it causes issues, currently it's 2000ms,
+> > 2 people tested that 250ms is enough, but i don't know if this is a big
+> > enough sample size for stable.
+> 
+> Remember, the next kernel will be a stable kernel tree, just like the
+> one after that.  If it's good enough for Linus's tree, why wouldn't it
+> be good enough for all stable trees?  Either it works or it doesn't,
+> none of this "we will break things when you move to a new kernel" stuff
+> please.
 
-xc4000_get_frequency() and xc4000_set_params() may execute concurrently,
-risking inconsistent reads of priv->freq_hz and priv->freq_offset. Since
-these related data may update during reading, it can result in incorrect
-frequency calculation, leading to atomicity violations.
+Since this is kind of "improvement" over already functioning code, I
+would put it to v6.8 and not to stable trees. This way it gets more some
+more exposure before landing to distro kernels.
 
-This possible bug is found by an experimental static analysis tool
-developed by our team. This tool analyzes the locking APIs to extract
-function pairs that can be concurrently executed, and then analyzes the
-instructions in the paired functions to identify possible concurrency bugs
-including data races and atomicity violations. The above possible bug is
-reported when our tool analyzes the source code of Linux 6.2.
-
-To address this issue, it is proposed to add a mutex lock pair in
-xc4000_get_frequency() to ensure atomicity. With this patch applied, our
-tool no longer reports the possible bug, with the kernel configuration
-allyesconfig for x86_64. Due to the lack of associated hardware, we cannot
-test the patch in runtime testing, and just verify it according to the
-code logic.
-
-Fixes: 4c07e32884ab6 ("[media] xc4000: Fix get_frequency()")
-Reported-by: BassCheck <bass@buaa.edu.cn>
-Signed-off-by: Gui-Dong Han <2045gemini@gmail.com>
----
- drivers/media/tuners/xc4000.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/media/tuners/xc4000.c b/drivers/media/tuners/xc4000.c
-index 57ded9ff3f04..29bc63021c5a 100644
---- a/drivers/media/tuners/xc4000.c
-+++ b/drivers/media/tuners/xc4000.c
-@@ -1515,10 +1515,10 @@ static int xc4000_get_frequency(struct dvb_frontend *fe, u32 *freq)
- {
- 	struct xc4000_priv *priv = fe->tuner_priv;
- 
-+	mutex_lock(&priv->lock);
- 	*freq = priv->freq_hz + priv->freq_offset;
- 
- 	if (debug) {
--		mutex_lock(&priv->lock);
- 		if ((priv->cur_fw.type
- 		     & (BASE | FM | DTV6 | DTV7 | DTV78 | DTV8)) == BASE) {
- 			u16	snr = 0;
-@@ -1529,8 +1529,8 @@ static int xc4000_get_frequency(struct dvb_frontend *fe, u32 *freq)
- 				return 0;
- 			}
- 		}
--		mutex_unlock(&priv->lock);
- 	}
-+	mutex_unlock(&priv->lock);
- 
- 	dprintk(1, "%s()\n", __func__);
- 
--- 
-2.34.1
-
+It would be nice to get Tested-by from the folks involved on that
+bugzilla as well, if that's possible. I can try this on my side on a
+Maple Ridge based system (that does not have the original issue) so that
+we know that it does not cause any issues on them.
 
