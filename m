@@ -1,123 +1,95 @@
-Return-Path: <linux-kernel+bounces-9177-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9178-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FB0781C1EF
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 00:25:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D4B5381C1F3
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 00:26:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4C23B28AD5E
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 23:25:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6E86D1F26C81
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 23:26:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2C327B3BE;
-	Thu, 21 Dec 2023 23:23:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A703179485;
+	Thu, 21 Dec 2023 23:26:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="rIee9BHF"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="kvP9wjFW"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC98E7B3AE
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 23:23:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--shakeelb.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-db402e6f61dso1739083276.3
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 15:23:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1703201025; x=1703805825; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=cU9mOyLPoF6ZxNM7jnDLVtHU9dKeo3lsrx7E6D/L6sI=;
-        b=rIee9BHFH3w3Z9YC28rgKtx4jr66VuXGwN+IQzUx04pSGohOdVOf65JlJd+b4wY7CT
-         mb2d02bNRGYDyjAmCf35ji7Qo5w4J6W+uR4MoHcrA3sFVi28tEvIqu3o/tuL/eMBSSlx
-         TaWrPrRdCXBVUHD5I6urFnQzzUSZvivuA/lTJVfOncmM1YtQxtJrw1vAKIpLQOPwujKu
-         LYs2vQJkbg8cK+SfRZsV9vxpYa8hXE+XQSj1cYSgol5uj8GAPrT59Wdv9tQezatc4EEF
-         xdCeqO6owtLWCZn/5FT8/qdhBI8a2hex6djOc5zW5mtvTPyd1qdJ0symVw27M5UT+I7u
-         EWng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703201025; x=1703805825;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cU9mOyLPoF6ZxNM7jnDLVtHU9dKeo3lsrx7E6D/L6sI=;
-        b=aKcCPInP57k2eB+TCmWx1sUjrVvFpa+eZr+Q+aKjlKnQKJ1iCMwgwRNZdhwmPZ276/
-         YbtMVri3ZPAbupuHixVJ5BuH2nm3L9JkENcWLsKyJIk9c6IO3IcyszkRlV626BWMqfZj
-         MZ3ySSn6cm+9Tmg0QUY44TNLQGL81z5xm0+pLmskVtCSEvOvh19Oxz1xq/tgIqVXi8Fq
-         Iq3fAg8yJONsbRgDPDD6JhY2fFQ9OWB5FeSgneKQz6khmzr6HqfA7WTwR5ilXTseEF0Y
-         OvoKAH7iq9mr8sBFnxFp9FXZ8vrQP6nHr/w+JlGkNs8EMHNa1idG68fYFWLkDYMjO0Nw
-         7SzQ==
-X-Gm-Message-State: AOJu0YxMNFp4SSzn4GM1kOObtxQGJU5epn/m8QQ/hawcNr4ksI8eVXYP
-	9gtjmBYjb9ub7hs13ArVtNuH6HpKrgcXOtOM0R2m
-X-Google-Smtp-Source: AGHT+IHWiT1s/e6el8Gbfa2jmdYfbMdaJTd+pS4T1tXJHPKsVM+5WAmrvhPrUoUOQ5Wk4tJyK70wKIQ5Qx+mgg==
-X-Received: from shakeelb.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:262e])
- (user=shakeelb job=sendgmr) by 2002:a25:bcc2:0:b0:db5:47c1:e82d with SMTP id
- l2-20020a25bcc2000000b00db547c1e82dmr189052ybm.6.1703201025720; Thu, 21 Dec
- 2023 15:23:45 -0800 (PST)
-Date: Thu, 21 Dec 2023 23:23:43 +0000
-In-Reply-To: <20231220214505.2303297-3-almasrymina@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3356676DC3;
+	Thu, 21 Dec 2023 23:26:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=8FYhv/qb+6/MBCl737xyFJbR/0xxh2L787E/+trTVXo=; b=kvP9wjFWyiraV1SOjfOPVNjTjS
+	oqlBA+ejSgPpDEbhyNjpSGI+/CfpCQOz7/briNvxNOhMAqiz1Strqjm9jwG6C8kaIJ63SPChOt7xr
+	4GW0jDHKWYE6Gh0uUvhRTGDqOEHBQt+az6dl5nWfOZVbYglDtQ9oJqr306rVExdqBke/lbVf857SB
+	5Y8B/GV/nGqHgs3slEolu4B4EpernRodgCifB1uSCA2qC/ISBcXn/D7PjFIowDmP/TICdxfsQkt9j
+	4JWMOf9LDtZimdw74lRIvu1md4PAnFI91qoEVi18cNKu1RsFi21Xtfvc8DUwGV6U27Bm0OzyCN/kH
+	3aG0aCrQ==;
+Received: from [50.53.46.231] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1rGSQW-004Qlx-1J;
+	Thu, 21 Dec 2023 23:26:04 +0000
+Message-ID: <dad49b21-f7f5-435a-88fd-6505add3acf4@infradead.org>
+Date: Thu, 21 Dec 2023 15:26:04 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20231220214505.2303297-1-almasrymina@google.com> <20231220214505.2303297-3-almasrymina@google.com>
-Message-ID: <20231221232343.qogdsoavt7z45dfc@google.com>
-Subject: Re: [PATCH net-next v3 2/3] net: introduce abstraction for network memory
-From: Shakeel Butt <shakeelb@google.com>
-To: Mina Almasry <almasrymina@google.com>
-Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, kvm@vger.kernel.org, 
-	virtualization@lists.linux.dev, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Stefan Hajnoczi <stefanha@redhat.com>, Stefano Garzarella <sgarzare@redhat.com>, 
-	David Howells <dhowells@redhat.com>, Jason Gunthorpe <jgg@nvidia.com>, 
-	"Christian =?utf-8?B?S8O2bmln?=" <christian.koenig@amd.com>, Yunsheng Lin <linyunsheng@huawei.com>, 
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 3/3] nvdimm/namespace: fix kernel-doc for function params
+Content-Language: en-US
+To: Ira Weiny <ira.weiny@intel.com>, linux-kernel@vger.kernel.org
+Cc: Dan Williams <dan.j.williams@intel.com>,
+ Vishal Verma <vishal.l.verma@intel.com>, Dave Jiang <dave.jiang@intel.com>,
+ nvdimm@lists.linux.dev
+References: <20231207210545.24056-1-rdunlap@infradead.org>
+ <20231207210545.24056-3-rdunlap@infradead.org>
+ <6584bce9d01cc_55802294dc@iweiny-mobl.notmuch>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <6584bce9d01cc_55802294dc@iweiny-mobl.notmuch>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Dec 20, 2023 at 01:45:01PM -0800, Mina Almasry wrote:
-> Add the netmem_ref type, an abstraction for network memory.
-> 
-> To add support for new memory types to the net stack, we must first
-> abstract the current memory type. Currently parts of the net stack
-> use struct page directly:
-> 
-> - page_pool
-> - drivers
-> - skb_frag_t
-> 
-> Originally the plan was to reuse struct page* for the new memory types,
-> and to set the LSB on the page* to indicate it's not really a page.
-> However, for compiler type checking we need to introduce a new type.
-> 
-> netmem_ref is introduced to abstract the underlying memory type. Currently
-> it's a no-op abstraction that is always a struct page underneath. In
-> parallel there is an undergoing effort to add support for devmem to the
-> net stack:
-> 
-> https://lore.kernel.org/netdev/20231208005250.2910004-1-almasrymina@google.com/
-> 
-> Signed-off-by: Mina Almasry <almasrymina@google.com>
-> 
-> ---
-> 
-> v3:
-> 
-> - Modify struct netmem from a union of struct page + new types to an opaque
->   netmem_ref type.  I went with:
-> 
->   +typedef void *__bitwise netmem_ref;
-> 
->   rather than this that Jakub recommended:
-> 
->   +typedef unsigned long __bitwise netmem_ref;
-> 
->   Because with the latter the compiler issues warnings to cast NULL to
->   netmem_ref. I hope that's ok.
-> 
 
-Can you share what the warning was? You might just need __force
-attribute. However you might need this __force a lot. I wonder if you
-can just follow struct encoded_page example verbatim here.
 
+On 12/21/23 14:32, Ira Weiny wrote:
+> Randy Dunlap wrote:
+> 
+> [snip]
+> 
+>> @@ -1656,8 +1664,10 @@ static int select_pmem_id(struct nd_regi
+>>  /**
+>>   * create_namespace_pmem - validate interleave set labelling, retrieve label0
+>>   * @nd_region: region with mappings to validate
+>> - * @nspm: target namespace to create
+>> + * @nd_mapping: container of dpa-resource-root + labels
+>>   * @nd_label: target pmem namespace label to evaluate
+>> + *
+>> + * Returns: the created &struct device on success or -errno on error
+> 
+> NIT: should this be ERR_PTR(-errno) on error?
+
+Oh, for sure. Thanks for catching that.
+
+> Generally good to me though.
+> 
+> Reviewed-by: Ira Weiny <ira.weiny@intel.com>
+> 
+>>   */
+>>  static struct device *create_namespace_pmem(struct nd_region *nd_region,
+>>  					    struct nd_mapping *nd_mapping,
+
+-- 
+#Randy
+https://people.kernel.org/tglx/notes-about-netiquette
+https://subspace.kernel.org/etiquette.html
 
