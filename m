@@ -1,174 +1,118 @@
-Return-Path: <linux-kernel+bounces-8309-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8310-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32CFE81B557
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 12:54:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6481F81B569
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 13:00:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6427E1C22DF3
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 11:54:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C433F287686
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 12:00:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6390C6E2D2;
-	Thu, 21 Dec 2023 11:54:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="FaC/jpxL";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="tDOhWt+0";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="FaC/jpxL";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="tDOhWt+0"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E01336E59A;
+	Thu, 21 Dec 2023 12:00:06 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CE956A02A;
-	Thu, 21 Dec 2023 11:54:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 75BDC1FB73;
-	Thu, 21 Dec 2023 11:54:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1703159677; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=2M7C0GoB7X8XAnxaAgw9zOcBEuLiI+H/k44O2aeGnkY=;
-	b=FaC/jpxLTx/SFyAVWKmjOvXA97rWeI26wRgraGOiIvumbUYeYgm8HnDW+GaZfRAD+3K13G
-	70RzarMo/xBV8tlymkKoirCLoG+QX1to/RLOkqLeZEdLh/uU5X0cwCDxTtTF+orwDRgl2P
-	5wClfvEV0WUHZILqkwO5CWHtDsXYsbs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1703159677;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=2M7C0GoB7X8XAnxaAgw9zOcBEuLiI+H/k44O2aeGnkY=;
-	b=tDOhWt+0l/bQ27UXfO4HoW7dToZgy13cJ2qKXi8v0qGC9cg3XscO1pobNP7+VUNSk2vDV0
-	i/2sgKfIazW7QzCg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1703159677; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=2M7C0GoB7X8XAnxaAgw9zOcBEuLiI+H/k44O2aeGnkY=;
-	b=FaC/jpxLTx/SFyAVWKmjOvXA97rWeI26wRgraGOiIvumbUYeYgm8HnDW+GaZfRAD+3K13G
-	70RzarMo/xBV8tlymkKoirCLoG+QX1to/RLOkqLeZEdLh/uU5X0cwCDxTtTF+orwDRgl2P
-	5wClfvEV0WUHZILqkwO5CWHtDsXYsbs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1703159677;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=2M7C0GoB7X8XAnxaAgw9zOcBEuLiI+H/k44O2aeGnkY=;
-	b=tDOhWt+0l/bQ27UXfO4HoW7dToZgy13cJ2qKXi8v0qGC9cg3XscO1pobNP7+VUNSk2vDV0
-	i/2sgKfIazW7QzCg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6A1A113AB5;
-	Thu, 21 Dec 2023 11:54:37 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id F3/iGX0nhGVEZAAAD6G6ig
-	(envelope-from <jack@suse.cz>); Thu, 21 Dec 2023 11:54:37 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 2D5BBA07E3; Thu, 21 Dec 2023 12:54:37 +0100 (CET)
-Date: Thu, 21 Dec 2023 12:54:37 +0100
-From: Jan Kara <jack@suse.cz>
-To: Christoph Hellwig <hch@lst.de>
-Cc: linux-mm@kvack.org, "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	Jan Kara <jack@suse.com>, David Howells <dhowells@redhat.com>,
-	Brian Foster <bfoster@redhat.com>, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 17/17] writeback: update the kerneldoc comment for
- tag_pages_for_writeback
-Message-ID: <20231221115437.nyxxipfyezn6jrzt@quack3>
-References: <20231218153553.807799-1-hch@lst.de>
- <20231218153553.807799-18-hch@lst.de>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15A9B6BB3D;
+	Thu, 21 Dec 2023 12:00:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Swprt3Wtwz4f3jZR;
+	Thu, 21 Dec 2023 19:59:58 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id DAB961A0552;
+	Thu, 21 Dec 2023 19:59:59 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+	by APP1 (Coremail) with SMTP id cCh0CgB3xw26KIRl_5H6EA--.61666S2;
+	Thu, 21 Dec 2023 19:59:58 +0800 (CST)
+Subject: Re: [syzbot] [mm?] BUG: unable to handle kernel paging request in
+ copy_from_kernel_nofault
+To: Thomas Gleixner <tglx@linutronix.de>, bpf <bpf@vger.kernel.org>
+Cc: syzbot <syzbot+72aa0161922eba61b50e@syzkaller.appspotmail.com>,
+ akpm@linux-foundation.org, bp@alien8.de, bp@suse.de,
+ dave.hansen@linux.intel.com, hpa@zytor.com, linux-kernel@vger.kernel.org,
+ linux-mm@kvack.org, luto@kernel.org, mingo@redhat.com,
+ netdev@vger.kernel.org, peterz@infradead.org,
+ syzkaller-bugs@googlegroups.com, x86@kernel.org, Jann Horn
+ <jannh@google.com>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ John Fastabend <john.fastabend@gmail.com>
+References: <000000000000c84343060a850bd0@google.com> <87jzqb1133.ffs@tglx>
+ <CAG48ez06TZft=ATH1qh2c5mpS5BT8UakwNkzi6nvK5_djC-4Nw@mail.gmail.com>
+ <87r0jwquhv.ffs@tglx>
+From: Hou Tao <houtao@huaweicloud.com>
+Message-ID: <e24b125c-8ff4-9031-6c53-67ff2e01f316@huaweicloud.com>
+Date: Thu, 21 Dec 2023 19:59:54 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231218153553.807799-18-hch@lst.de>
-X-Spam-Level: 
-X-Spam-Level: 
-X-Spamd-Result: default: False [-2.60 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 RCPT_COUNT_SEVEN(0.00)[8];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.com:email];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Score: -2.60
-X-Spam-Flag: NO
+In-Reply-To: <87r0jwquhv.ffs@tglx>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-CM-TRANSID:cCh0CgB3xw26KIRl_5H6EA--.61666S2
+X-Coremail-Antispam: 1UD129KBjvdXoWruF1kGryUCFWDXr13ZFW3Awb_yoWkKFcEq3
+	42934kurZ7uF42yr1xtr4a9r1rtw4kArWFq398ArWavFnIva9xG395trZ3Ww4UGwnagFZ3
+	JFW5Z3srKrnI9jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbIxYFVCjjxCrM7AC8VAFwI0_Xr0_Wr1l1xkIjI8I6I8E6xAIw20E
+	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
+	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x02
+	67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxV
+	AFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2
+	j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7x
+	kEbVWUJVW8JwACjcxG0xvEwIxGrwACI402YVCY1x02628vn2kIc2xKxwCYjI0SjxkI62AI
+	1cAE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWr
+	XwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAF
+	wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
+	7IU13rcDUUUUU==
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
-On Mon 18-12-23 16:35:53, Christoph Hellwig wrote:
-> Don't refer to write_cache_pages, which now is just a wrapper for the
-> writeback iterator.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+Hi Thomas,
 
-Looks good. Feel free to add:
-
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
-
-> ---
->  mm/page-writeback.c | 14 +++++++-------
->  1 file changed, 7 insertions(+), 7 deletions(-)
-> 
-> diff --git a/mm/page-writeback.c b/mm/page-writeback.c
-> index d3c2c78e0c67ce..bc69044fd063e8 100644
-> --- a/mm/page-writeback.c
-> +++ b/mm/page-writeback.c
-> @@ -2325,18 +2325,18 @@ void __init page_writeback_init(void)
->  }
+On 12/9/2023 5:01 AM, Thomas Gleixner wrote:
+> diff --git a/arch/x86/mm/maccess.c b/arch/x86/mm/maccess.c
+> index 6993f026adec..8e846833aa37 100644
+> --- a/arch/x86/mm/maccess.c
+> +++ b/arch/x86/mm/maccess.c
+> @@ -3,6 +3,8 @@
+>  #include <linux/uaccess.h>
+>  #include <linux/kernel.h>
 >  
->  /**
-> - * tag_pages_for_writeback - tag pages to be written by write_cache_pages
-> + * tag_pages_for_writeback - tag pages to be written by writeback
->   * @mapping: address space structure to write
->   * @start: starting page index
->   * @end: ending page index (inclusive)
->   *
->   * This function scans the page range from @start to @end (inclusive) and tags
-> - * all pages that have DIRTY tag set with a special TOWRITE tag. The idea is
-> - * that write_cache_pages (or whoever calls this function) will then use
-> - * TOWRITE tag to identify pages eligible for writeback.  This mechanism is
-> - * used to avoid livelocking of writeback by a process steadily creating new
-> - * dirty pages in the file (thus it is important for this function to be quick
-> - * so that it can tag pages faster than a dirtying process can create them).
-> + * all pages that have DIRTY tag set with a special TOWRITE tag.  The caller
-> + * can then use the TOWRITE tag to identify pages eligible for writeback.
-> + * This mechanism is used to avoid livelocking of writeback by a process
-> + * steadily creating new dirty pages in the file (thus it is important for this
-> + * function to be quick so that it can tag pages faster than a dirtying process
-> + * can create them).
->   */
->  void tag_pages_for_writeback(struct address_space *mapping,
->  			     pgoff_t start, pgoff_t end)
-> -- 
-> 2.39.2
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> +#include <uapi/asm/vsyscall.h>
+> +
+>  #ifdef CONFIG_X86_64
+>  bool copy_from_kernel_nofault_allowed(const void *unsafe_src, size_t size)
+>  {
+> @@ -15,6 +17,9 @@ bool copy_from_kernel_nofault_allowed(const void *unsafe_src, size_t size)
+>  	if (vaddr < TASK_SIZE_MAX + PAGE_SIZE)
+>  		return false;
+>  
+> +	if ((vaddr & PAGE_MASK) == VSYSCALL_ADDR)
+> +		return false;
+> +
+>  	/*
+>  	 * Allow everything during early boot before 'x86_virt_bits'
+>  	 * is initialized.  Needed for instruction decoding in early
+
+Tested-by: Hou Tao <houtao1@huawei.com>
+
+Could you please post a formal patch for the fix ? The patch fixes the
+oops when using bpf_probe_read_kernel() or similar bpf helpers [1] to
+read from vsyscall address and you can take my tested-by tag if it is
+necessary.
+
+[1]:
+https://lore.kernel.org/bpf/CABOYnLynjBoFZOf3Z4BhaZkc5hx_kHfsjiW+UWLoB=w33LvScw@mail.gmail.com/
+
 
