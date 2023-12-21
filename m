@@ -1,106 +1,81 @@
-Return-Path: <linux-kernel+bounces-8874-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8877-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC70381BD8F
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 18:46:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D097A81BD93
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 18:46:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4BA401F22CE7
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 17:46:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8E124285918
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 17:46:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D8716350F;
-	Thu, 21 Dec 2023 17:45:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACFAA62813;
+	Thu, 21 Dec 2023 17:46:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Z4DkLeUF"
+	dkim=pass (1024-bit key) header.d=t-8ch.de header.i=@t-8ch.de header.b="Ih4TXrhJ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C7E562814
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 17:45:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703180753; x=1734716753;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=tFf9EJ5PzOxrBSz+mhHyS8wwHlo6vAQBCTWgJ7+dwIA=;
-  b=Z4DkLeUF7aZyG/mVBJjHoAixg0nJUEiXpiUAjskt/FZt+4sFuRmhYW6z
-   eKFkLaJ9egO701GWo2Q6yCQAto6zvyxcOstDgVYrWFmoWJQ3ppWcHXPLs
-   VJiQk1tL/q+y5pAi7GXmxF4Kygjr3r7Fhu0xOLTIvoJgaZowH8Bp8WVG3
-   xWNczGhSH048CmtHVPFJPHflvWoeG+BLAXnWsqMnZ2yHSru5QOpCd7lru
-   g755uRhgP974GajI6h2Gr0p4VhdBNKpFw7Xad+LKO8rQp5UeTHmu+1Ht/
-   MDV56MOg4IqTPYHYBvjgfLiEl1xm+2mPKzcIzQuwAD1k7NZR1A93zIk5a
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10931"; a="395737629"
-X-IronPort-AV: E=Sophos;i="6.04,294,1695711600"; 
-   d="scan'208";a="395737629"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Dec 2023 09:45:52 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10931"; a="780266908"
-X-IronPort-AV: E=Sophos;i="6.04,294,1695711600"; 
-   d="scan'208";a="780266908"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga007.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Dec 2023 09:45:50 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rGN7E-00000007ueD-1335;
-	Thu, 21 Dec 2023 19:45:48 +0200
-Date: Thu, 21 Dec 2023 19:45:47 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Aleksandrs Vinarskis <alex.vinarskis@gmail.com>
-Cc: Lee Jones <lee@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 1/1] mfd: intel-lpss: Switch to generalized quirk table
-Message-ID: <ZYR5y4tLG9cXspvB@smile.fi.intel.com>
-References: <20231221171113.35714-1-alex.vinarskis@gmail.com>
- <ZYR5bh596slWaqjF@smile.fi.intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9EA2634EE
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 17:46:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=t-8ch.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=t-8ch.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=t-8ch.de; s=mail;
+	t=1703180789; bh=+ZCY1Qb2wMJBWyRbH4gw2JjGYZOSVk0BBR18YWiBWHE=;
+	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+	b=Ih4TXrhJGO63OjfUer/xhFtgnwW+rp5QcUo4dOkslFQzIKa4yMDdFCGsrrAErmcvX
+	 EykpJ+U+muxvWeW9c7Zo3RVkRtmvROms7anDynYIAMs4N1L+5NPONSUEArD4mEu6Pp
+	 0tMXr7G/sQnzCQF3Yb1HZTUmPo1zh4t8VtokTZhA=
+Date: Thu, 21 Dec 2023 18:46:26 +0100 (GMT+01:00)
+From: =?UTF-8?Q?Thomas_Wei=C3=9Fschuh_?= <thomas@t-8ch.de>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>,
+	linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Message-ID: <28a235ff-bb1c-4d4f-a2a8-db29fb16af45@t-8ch.de>
+In-Reply-To: <20231221140921.2760432-1-andriy.shevchenko@linux.intel.com>
+References: <20231221140921.2760432-1-andriy.shevchenko@linux.intel.com>
+Subject: Re: [PATCH v1 1/1] pvpanic: Kill duplicate PCI_VENDOR_ID_REDHAT
+ definition
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZYR5bh596slWaqjF@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Correlation-ID: <28a235ff-bb1c-4d4f-a2a8-db29fb16af45@t-8ch.de>
 
-On Thu, Dec 21, 2023 at 07:44:14PM +0200, Andy Shevchenko wrote:
-> On Thu, Dec 21, 2023 at 06:11:13PM +0100, Aleksandrs Vinarskis wrote:
+Dec 21, 2023 15:15:32 Andy Shevchenko <andriy.shevchenko@linux.intel.com>:
 
-...
+> PCI_VENDOR_ID_REDHAT is already defined in pci_ids.h. Kill the dup.
+>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-> > +static const struct pci_device_id quirk_ids[] = {
-> >  	/* Microsoft Surface Go (version 1) I2C4 */
-> > -	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_INTEL, 0x9d64, 0x152d, 0x1182), },
-> > +	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_INTEL, 0x9d64, 0x152d, 0x1182),
-> > +		.driver_data = QUIRK_IGNORE_RESOURCE_CONFLICTS },
-> >  	/* Microsoft Surface Go 2 I2C4 */
-> > -	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_INTEL, 0x9d64, 0x152d, 0x1237), },
-> > +	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_INTEL, 0x9d64, 0x152d, 0x1237),
-> > +		.driver_data = QUIRK_IGNORE_RESOURCE_CONFLICTS },
-> >  	{ }
-> >  };
-> 
-> I would suggest to look at the existing style, as I also in doubts on the
-> above. Perhaps the following is more common in MFD subsystem?
-> 
-> 	{
-> 		PCI_DEVICE_SUB(PCI_VENDOR_ID_INTEL, 0x9d64, 0x152d, 0x1237),
-> 		.driver_data = QUIRK_IGNORE_RESOURCE_CONFLICTS
+Reviewed-by: Thomas Wei=C3=9Fschuh <linux@weissschuh.net>
 
-Ah, and in this form we usually leave trailing comma as we don't know
-the future (possible, but quite unlikely, new fields in the structure).
-
-> 	},
-
--- 
-With Best Regards,
-Andy Shevchenko
-
+> ---
+> drivers/misc/pvpanic/pvpanic-pci.c | 1 -
+> 1 file changed, 1 deletion(-)
+>
+> diff --git a/drivers/misc/pvpanic/pvpanic-pci.c b/drivers/misc/pvpanic/pv=
+panic-pci.c
+> index 689af4c28c2a..c5fb6298cb8d 100644
+> --- a/drivers/misc/pvpanic/pvpanic-pci.c
+> +++ b/drivers/misc/pvpanic/pvpanic-pci.c
+> @@ -15,7 +15,6 @@
+>
+> #include "pvpanic.h"
+>
+> -#define PCI_VENDOR_ID_REDHAT=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0x1b36
+> #define PCI_DEVICE_ID_REDHAT_PVPANIC=C2=A0=C2=A0=C2=A0=C2=A0 0x0011
+>
+> MODULE_AUTHOR("Mihai Carabas <mihai.carabas@oracle.com>");
+> --
+> 2.43.0.rc1.1.gbec44491f096
 
 
