@@ -1,669 +1,159 @@
-Return-Path: <linux-kernel+bounces-8274-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8275-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 537CF81B4D0
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 12:22:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id F062C81B4D1
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 12:23:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0A3BA284C39
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 11:22:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 908971F2553C
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 11:23:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60C166BB3D;
-	Thu, 21 Dec 2023 11:22:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFA6C6BB3D;
+	Thu, 21 Dec 2023 11:23:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M8E4c7pH"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="g0jUaNeW"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18AE06BB32
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 11:22:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 947CA6D1DC;
+	Thu, 21 Dec 2023 11:23:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6d946beebe6so359919b3a.1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 03:22:47 -0800 (PST)
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-50e60d67e6aso379262e87.1;
+        Thu, 21 Dec 2023 03:23:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703157767; x=1703762567; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=TXyQwDY5DUr/rkY0tUNI7v4b+58kNrYSUl7JoOuNlt0=;
-        b=M8E4c7pH7ip49Flb4BIH4WAhNK8vpdUvYev/9HSkmCxiVYZPgSSqfLwJFFhi8LPkUm
-         BGxrYBafsr3jnx8ArnXzFnCwJUvGo4SG1zuELDranm2PWpmfT1XQ6bJeoYHjWsD8A4Rl
-         M6qONvRqLF21gfY8xRV8vV5rpDaseKUhPNn4OLMcdnxwAWkYexSVTl7WSTrVwJSf511o
-         rpbHgrPlkqKSBsNXJAxRO5KTwMBCq09m4mL39NS4U07cRQW4tu1Q1+m0ZiDsaDnMbyU7
-         krIpemP3dLzSM2HNp4sMc6tqe6DQJn5qNgOpr6N+BjHtazV+gM27aUDEfSwekgoo1cd2
-         urVg==
+        d=gmail.com; s=20230601; t=1703157783; x=1703762583; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=PePSp+PbF4BfBMSUYpDpriXKuCCpPeH9Cv6eaY4BwCk=;
+        b=g0jUaNeWGvJqfg27V6l9P1tqufMKQpCWmK31BQXcThZsmYXEh5jHpXNsPHHAaAhhSo
+         MfJwHawI6pv8zno8ZgXCVdka3UxcLI8L/1y9FJJX0Zzn5IQ0suewTa377EFn9fIlVSIt
+         Lm5HOK/d9O+yGw6KkNmGZ7M7QHaw6RdgvB9M5+kbNW0Y3X7NlUR3RovZ4A3asbxDotde
+         s8N+EZelTl6nrZ5iPux0E4c+T8KShQKiwxovUHTjzpV3AnR3pUezWvazlZKpTjG/icJm
+         ZWMbNAZXCFeIGmTiDJByHvXPpt51uA4bOLKdBJsz2azuOeu2sEbkW8qgNAB2kpBQTTgn
+         TgFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703157767; x=1703762567;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=TXyQwDY5DUr/rkY0tUNI7v4b+58kNrYSUl7JoOuNlt0=;
-        b=NER9LgsFhab27XDNuO2zxtm7udhOkMsMjKYG7oZv2LEFR+0CSB0hkyr/Tj3nCFhIKz
-         APOIkjT2udz7k5pKzbXJYsfqbiycx49MBigdS1+R4eG0DRs/1IrgdV0RvyUOv5w4jUo/
-         lodO2DiX7pxNZPLl/1WNynSSr9i9wfdXi2I1avffHkOCv7DjPY1jRWffgQEWmS2asolt
-         y6xNIrZ86J2lu7H5cgR0wZOhi/YypEw1lR6r4rZc4WYz7Czc7XjmDrgS9YhKc+sQR1Br
-         7DBVgAHPDPEeughJUcqhDeQuubiNz0TtFJhbmd09i7A6kdlCEIkfR7PM5KG8Tl72RGPl
-         pGOQ==
-X-Gm-Message-State: AOJu0YwMep9vyR9MldmBCStFyZ1RhH+b0QY6bwh+WrUI3VSgdqeHKvIr
-	fQiGS1KOyufVdQ576+0/rThBIenJyKjmSemQ+PQ=
-X-Google-Smtp-Source: AGHT+IEnzCO0R7hE72IpVt5dCWEeerHyvwfg+vciA0+IlsaALl0JyWeW5ja7I8JMNy4fl9wmzudWQF5S3Xp1JHKt73w=
-X-Received: by 2002:a05:6a00:1c9b:b0:6d7:977e:f31d with SMTP id
- y27-20020a056a001c9b00b006d7977ef31dmr4814901pfw.7.1703157767153; Thu, 21 Dec
- 2023 03:22:47 -0800 (PST)
+        d=1e100.net; s=20230601; t=1703157783; x=1703762583;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PePSp+PbF4BfBMSUYpDpriXKuCCpPeH9Cv6eaY4BwCk=;
+        b=iFA+rBjouIPEb9iF8u08voAo0VxiI/2nYejFWFpvQa7y0t8vZaHuneDYZKgimDgdd5
+         zFaWQqpE+Qz4scKKIOfv+gh4MRYBml/IMlqO6rYmF2PJ+d4KjwSb3esF7xhySJhBjSPx
+         LG41MwK0bBDry/06+RiCfFuq+2DdkgrKZu92+IxfVPo1AShy4AJS4UpwkLn3VPCtIOoC
+         lSAOyUe2vZKL5Ab4wOueaNFhsZffNNNx2eNitaWmS8RK2K2+uXWVhDN1c4GcC9VJeAZ8
+         JXlST3IxJD0IPrvxwUw1LyWFbhgUvlnNkeXAgZZVY8fA7G1DYRrgmU4z/IS4YP+l6yss
+         5ZdA==
+X-Gm-Message-State: AOJu0YzrKnlAWmjvlAK4EH3Hs9ytrMcjv9M76/rQfq8pTqZrCiw97wm3
+	a+W7O9tkeplcxKKu8MeDqO4=
+X-Google-Smtp-Source: AGHT+IFBBp4Oy8m5Thz79K804egyupbldOYQy2a6Eg/NfMOP2Fzg7uzMtXqNfeBtm6p72qcok3aPpQ==
+X-Received: by 2002:a05:6512:4c1:b0:50e:535f:f325 with SMTP id w1-20020a05651204c100b0050e535ff325mr363256lfq.9.1703157783213;
+        Thu, 21 Dec 2023 03:23:03 -0800 (PST)
+Received: from pc636 (host-90-233-221-204.mobileonline.telia.com. [90.233.221.204])
+        by smtp.gmail.com with ESMTPSA id h4-20020a056512220400b0050e3904848esm242057lfu.56.2023.12.21.03.23.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Dec 2023 03:23:02 -0800 (PST)
+From: Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date: Thu, 21 Dec 2023 12:22:59 +0100
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: "Uladzislau Rezki (Sony)" <urezki@gmail.com>, RCU <rcu@vger.kernel.org>,
+	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
+	Boqun Feng <boqun.feng@gmail.com>, Hillf Danton <hdanton@sina.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
+	Frederic Weisbecker <frederic@kernel.org>
+Subject: Re: [PATCH v3 5/7] rcu: Support direct wake-up of synchronize_rcu()
+ users
+Message-ID: <ZYQgE_dJnoADxN0a@pc636>
+References: <20231128080033.288050-1-urezki@gmail.com>
+ <20231128080033.288050-6-urezki@gmail.com>
+ <e04f30bf-9793-4c42-a9a9-24c8f3545f3f@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: xingwei lee <xrivendell7@gmail.com>
-Date: Thu, 21 Dec 2023 19:22:35 +0800
-Message-ID: <CABOYnLzF-=We2hgUmWn_xPt5-1UfzGaEiaw6br6Ts9VqoEqqFg@mail.gmail.com>
-Subject: Re: [syzbot] KMSAN: uninit-value in bpf_prog_run_generic_xdp
-To: syzbot+0e6ddb1ef80986bdfe64@syzkaller.appspotmail.com
-Cc: ben-linux@fluff.org, bp@alien8.de, daniel.sneddon@linux.intel.com, 
-	dave.hansen@linux.intel.com, glider@google.com, hpa@zytor.com, 
-	linux-kernel@vger.kernel.org, mingo@redhat.com, pbonzini@redhat.com, 
-	sathyanarayanan.kuppuswamy@linux.intel.com, syzkaller-bugs@googlegroups.com, 
-	Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e04f30bf-9793-4c42-a9a9-24c8f3545f3f@paulmck-laptop>
 
-Hello I reprudced this bug and comfirme triggered in the latest
-net/bpf/bpf-next tree.
+On Tue, Dec 19, 2023 at 05:46:11PM -0800, Paul E. McKenney wrote:
+> On Tue, Nov 28, 2023 at 09:00:31AM +0100, Uladzislau Rezki (Sony) wrote:
+> > This patch introduces a small enhancement which allows to do a
+> > direct wake-up of synchronize_rcu() callers. It occurs after a
+> > completion of grace period, thus by the gp-kthread.
+> > 
+> > Number of clients is limited by the hard-coded maximum allowed
+> > threshold. The remaining part, if still exists is deferred to
+> > a main worker.
+> > 
+> > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> 
+> Nice optimization!
+> 
+> One question below.
+> 
+> > ---
+> >  kernel/rcu/tree.c | 39 +++++++++++++++++++++++++++++++++++++--
+> >  1 file changed, 37 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > index d7b48996825f..69663a6d5050 100644
+> > --- a/kernel/rcu/tree.c
+> > +++ b/kernel/rcu/tree.c
+> > @@ -1384,6 +1384,12 @@ static void rcu_poll_gp_seq_end_unlocked(unsigned long *snap)
+> >  		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+> >  }
+> >  
+> > +/*
+> > + * A max threshold for synchronize_rcu() users which are
+> > + * awaken directly by the rcu_gp_kthread(). Left part is
+> > + * deferred to the main worker.
+> > + */
+> > +#define SR_MAX_USERS_WAKE_FROM_GP 5
+> >  #define SR_NORMAL_GP_WAIT_HEAD_MAX 5
+> >  
+> >  struct sr_wait_node {
+> > @@ -1617,7 +1623,8 @@ static DECLARE_WORK(sr_normal_gp_cleanup, rcu_sr_normal_gp_cleanup_work);
+> >   */
+> >  static void rcu_sr_normal_gp_cleanup(void)
+> >  {
+> > -	struct llist_node *wait_tail;
+> > +	struct llist_node *wait_tail, *head, *rcu;
+> > +	int done = 0;
+> >  
+> >  	wait_tail = sr.srs_wait_tail;
+> >  	if (wait_tail == NULL)
+> > @@ -1626,11 +1633,39 @@ static void rcu_sr_normal_gp_cleanup(void)
+> >  	sr.srs_wait_tail = NULL;
+> >  	ASSERT_EXCLUSIVE_WRITER(sr.srs_wait_tail);
+> >  
+> > +	WARN_ON_ONCE(!rcu_sr_is_wait_head(wait_tail));
+> > +	head = wait_tail->next;
+> > +
+> > +	/*
+> > +	 * Process (a) and (d) cases. See an illustration. Apart of
+> > +	 * that it handles the scenario when all clients are done,
+> > +	 * wait-head is released if last. The worker is not kicked.
+> > +	 */
+> > +	llist_for_each_safe(rcu, head, head) {
+> 
+> This does appear to be a clever way to save eight bytes on the stack,
+> but is our stack space really so restricted?  We are being invoked from
+> the RCU GP kthread, which isn't using much stack, right?
+> 
+> If so, let's spend the extra local variable and spare the reader a
+> trip to the llist_for_each_safe() definition.
+> 
+OK, you mean to go with an extra "next" variable to use it in the
+llist-loop. I will change it accordingly!
 
-kernel: bpf-next fc3a5534e2a8855427403113cbeb54af5837bbe0
-kernel config: https://syzkaller.appspot.com/text?tag=KernelConfig&x=4a65fa9f077ead01
-with KMSAN enabled
-compiler: Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-
-=* repro.c =*
-#define _GNU_SOURCE
-
-#include <arpa/inet.h>
-#include <dirent.h>
-#include <endian.h>
-#include <errno.h>
-#include <fcntl.h>
-#include <linux/capability.h>
-#include <linux/genetlink.h>
-#include <linux/if_addr.h>
-#include <linux/if_ether.h>
-#include <linux/if_link.h>
-#include <linux/if_tun.h>
-#include <linux/in6.h>
-#include <linux/ip.h>
-#include <linux/neighbour.h>
-#include <linux/net.h>
-#include <linux/netlink.h>
-#include <linux/rtnetlink.h>
-#include <linux/tcp.h>
-#include <linux/veth.h>
-#include <net/if.h>
-#include <net/if_arp.h>
-#include <netinet/in.h>
-#include <sched.h>
-#include <signal.h>
-#include <stdarg.h>
-#include <stdbool.h>
-#include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/ioctl.h>
-#include <sys/mount.h>
-#include <sys/prctl.h>
-#include <sys/resource.h>
-#include <sys/socket.h>
-#include <sys/stat.h>
-#include <sys/syscall.h>
-#include <sys/time.h>
-#include <sys/types.h>
-#include <sys/uio.h>
-#include <sys/wait.h>
-#include <time.h>
-#include <unistd.h>
-
-#ifndef __NR_bpf
-#define __NR_bpf 321
-#endif
-
-static void sleep_ms(uint64_t ms) { usleep(ms * 1000); }
-
-static uint64_t current_time_ms(void) {
- struct timespec ts;
- if (clock_gettime(CLOCK_MONOTONIC, &ts)) exit(1);
- return (uint64_t)ts.tv_sec * 1000 + (uint64_t)ts.tv_nsec / 1000000;
-}
-
-static bool write_file(const char* file, const char* what, ...) {
- char buf[1024];
- va_list args;
- va_start(args, what);
- vsnprintf(buf, sizeof(buf), what, args);
- va_end(args);
- buf[sizeof(buf) - 1] = 0;
- int len = strlen(buf);
- int fd = open(file, O_WRONLY | O_CLOEXEC);
- if (fd == -1) return false;
- if (write(fd, buf, len) != len) {
-   int err = errno;
-   close(fd);
-   errno = err;
-   return false;
- }
- close(fd);
- return true;
-}
-
-struct nlmsg {
- char* pos;
- int nesting;
- struct nlattr* nested[8];
- char buf[4096];
-};
-
-static void netlink_init(struct nlmsg* nlmsg, int typ, int flags,
-                        const void* data, int size) {
- memset(nlmsg, 0, sizeof(*nlmsg));
- struct nlmsghdr* hdr = (struct nlmsghdr*)nlmsg->buf;
- hdr->nlmsg_type = typ;
- hdr->nlmsg_flags = NLM_F_REQUEST | NLM_F_ACK | flags;
- memcpy(hdr + 1, data, size);
- nlmsg->pos = (char*)(hdr + 1) + NLMSG_ALIGN(size);
-}
-
-static void netlink_attr(struct nlmsg* nlmsg, int typ, const void* data,
-                        int size) {
- struct nlattr* attr = (struct nlattr*)nlmsg->pos;
- attr->nla_len = sizeof(*attr) + size;
- attr->nla_type = typ;
- if (size > 0) memcpy(attr + 1, data, size);
- nlmsg->pos += NLMSG_ALIGN(attr->nla_len);
-}
-
-static int netlink_send_ext(struct nlmsg* nlmsg, int sock, uint16_t reply_type,
-                           int* reply_len, bool dofail) {
- if (nlmsg->pos > nlmsg->buf + sizeof(nlmsg->buf) || nlmsg->nesting) exit(1);
- struct nlmsghdr* hdr = (struct nlmsghdr*)nlmsg->buf;
- hdr->nlmsg_len = nlmsg->pos - nlmsg->buf;
- struct sockaddr_nl addr;
- memset(&addr, 0, sizeof(addr));
- addr.nl_family = AF_NETLINK;
- ssize_t n = sendto(sock, nlmsg->buf, hdr->nlmsg_len, 0,
-                    (struct sockaddr*)&addr, sizeof(addr));
- if (n != (ssize_t)hdr->nlmsg_len) {
-   if (dofail) exit(1);
-   return -1;
- }
- n = recv(sock, nlmsg->buf, sizeof(nlmsg->buf), 0);
- if (reply_len) *reply_len = 0;
- if (n < 0) {
-   if (dofail) exit(1);
-   return -1;
- }
- if (n < (ssize_t)sizeof(struct nlmsghdr)) {
-   errno = EINVAL;
-   if (dofail) exit(1);
-   return -1;
- }
- if (hdr->nlmsg_type == NLMSG_DONE) return 0;
- if (reply_len && hdr->nlmsg_type == reply_type) {
-   *reply_len = n;
-   return 0;
- }
- if (n < (ssize_t)(sizeof(struct nlmsghdr) + sizeof(struct nlmsgerr))) {
-   errno = EINVAL;
-   if (dofail) exit(1);
-   return -1;
- }
- if (hdr->nlmsg_type != NLMSG_ERROR) {
-   errno = EINVAL;
-   if (dofail) exit(1);
-   return -1;
- }
- errno = -((struct nlmsgerr*)(hdr + 1))->error;
- return -errno;
-}
-
-static int netlink_send(struct nlmsg* nlmsg, int sock) {
- return netlink_send_ext(nlmsg, sock, 0, NULL, true);
-}
-
-static int netlink_query_family_id(struct nlmsg* nlmsg, int sock,
-                                  const char* family_name, bool dofail) {
- struct genlmsghdr genlhdr;
- memset(&genlhdr, 0, sizeof(genlhdr));
- genlhdr.cmd = CTRL_CMD_GETFAMILY;
- netlink_init(nlmsg, GENL_ID_CTRL, 0, &genlhdr, sizeof(genlhdr));
- netlink_attr(nlmsg, CTRL_ATTR_FAMILY_NAME, family_name,
-              strnlen(family_name, GENL_NAMSIZ - 1) + 1);
- int n = 0;
- int err = netlink_send_ext(nlmsg, sock, GENL_ID_CTRL, &n, dofail);
- if (err < 0) {
-   return -1;
- }
- uint16_t id = 0;
- struct nlattr* attr = (struct nlattr*)(nlmsg->buf + NLMSG_HDRLEN +
-                                        NLMSG_ALIGN(sizeof(genlhdr)));
- for (; (char*)attr < nlmsg->buf + n;
-      attr = (struct nlattr*)((char*)attr + NLMSG_ALIGN(attr->nla_len))) {
-   if (attr->nla_type == CTRL_ATTR_FAMILY_ID) {
-     id = *(uint16_t*)(attr + 1);
-     break;
-   }
- }
- if (!id) {
-   errno = EINVAL;
-   return -1;
- }
- recv(sock, nlmsg->buf, sizeof(nlmsg->buf), 0);
- return id;
-}
-
-static void netlink_device_change(struct nlmsg* nlmsg, int sock,
-                                 const char* name, bool up, const char* master,
-                                 const void* mac, int macsize,
-                                 const char* new_name) {
- struct ifinfomsg hdr;
- memset(&hdr, 0, sizeof(hdr));
- if (up) hdr.ifi_flags = hdr.ifi_change = IFF_UP;
- hdr.ifi_index = if_nametoindex(name);
- netlink_init(nlmsg, RTM_NEWLINK, 0, &hdr, sizeof(hdr));
- if (new_name) netlink_attr(nlmsg, IFLA_IFNAME, new_name, strlen(new_name));
- if (master) {
-   int ifindex = if_nametoindex(master);
-   netlink_attr(nlmsg, IFLA_MASTER, &ifindex, sizeof(ifindex));
- }
- if (macsize) netlink_attr(nlmsg, IFLA_ADDRESS, mac, macsize);
- int err = netlink_send(nlmsg, sock);
- if (err < 0) {
- }
-}
-
-static int netlink_add_addr(struct nlmsg* nlmsg, int sock, const char* dev,
-                           const void* addr, int addrsize) {
- struct ifaddrmsg hdr;
- memset(&hdr, 0, sizeof(hdr));
- hdr.ifa_family = addrsize == 4 ? AF_INET : AF_INET6;
- hdr.ifa_prefixlen = addrsize == 4 ? 24 : 120;
- hdr.ifa_scope = RT_SCOPE_UNIVERSE;
- hdr.ifa_index = if_nametoindex(dev);
- netlink_init(nlmsg, RTM_NEWADDR, NLM_F_CREATE | NLM_F_REPLACE, &hdr,
-              sizeof(hdr));
- netlink_attr(nlmsg, IFA_LOCAL, addr, addrsize);
- netlink_attr(nlmsg, IFA_ADDRESS, addr, addrsize);
- return netlink_send(nlmsg, sock);
-}
-
-static void netlink_add_addr4(struct nlmsg* nlmsg, int sock, const char* dev,
-                             const char* addr) {
- struct in_addr in_addr;
- inet_pton(AF_INET, addr, &in_addr);
- int err = netlink_add_addr(nlmsg, sock, dev, &in_addr, sizeof(in_addr));
- if (err < 0) {
- }
-}
-
-static void netlink_add_addr6(struct nlmsg* nlmsg, int sock, const char* dev,
-                             const char* addr) {
- struct in6_addr in6_addr;
- inet_pton(AF_INET6, addr, &in6_addr);
- int err = netlink_add_addr(nlmsg, sock, dev, &in6_addr, sizeof(in6_addr));
- if (err < 0) {
- }
-}
-
-static void netlink_add_neigh(struct nlmsg* nlmsg, int sock, const char* name,
-                             const void* addr, int addrsize, const void* mac,
-                             int macsize) {
- struct ndmsg hdr;
- memset(&hdr, 0, sizeof(hdr));
- hdr.ndm_family = addrsize == 4 ? AF_INET : AF_INET6;
- hdr.ndm_ifindex = if_nametoindex(name);
- hdr.ndm_state = NUD_PERMANENT;
- netlink_init(nlmsg, RTM_NEWNEIGH, NLM_F_EXCL | NLM_F_CREATE, &hdr,
-              sizeof(hdr));
- netlink_attr(nlmsg, NDA_DST, addr, addrsize);
- netlink_attr(nlmsg, NDA_LLADDR, mac, macsize);
- int err = netlink_send(nlmsg, sock);
- if (err < 0) {
- }
-}
-
-static struct nlmsg nlmsg;
-
-static int tunfd = -1;
-
-#define TUN_IFACE "syz_tun"
-#define LOCAL_MAC 0xaaaaaaaaaaaa
-#define REMOTE_MAC 0xaaaaaaaaaabb
-#define LOCAL_IPV4 "172.20.20.170"
-#define REMOTE_IPV4 "172.20.20.187"
-#define LOCAL_IPV6 "fe80::aa"
-#define REMOTE_IPV6 "fe80::bb"
-
-#define IFF_NAPI 0x0010
-
-static void initialize_tun(void) {
- tunfd = open("/dev/net/tun", O_RDWR | O_NONBLOCK);
- if (tunfd == -1) {
-   printf("tun: can't open /dev/net/tun: please enable CONFIG_TUN=y\n");
-   printf("otherwise fuzzing or reproducing might not work as intended\n");
-   return;
- }
- const int kTunFd = 200;
- if (dup2(tunfd, kTunFd) < 0) exit(1);
- close(tunfd);
- tunfd = kTunFd;
- struct ifreq ifr;
- memset(&ifr, 0, sizeof(ifr));
- strncpy(ifr.ifr_name, TUN_IFACE, IFNAMSIZ);
- ifr.ifr_flags = IFF_TAP | IFF_NO_PI;
- if (ioctl(tunfd, TUNSETIFF, (void*)&ifr) < 0) {
-   exit(1);
- }
- char sysctl[64];
- sprintf(sysctl, "/proc/sys/net/ipv6/conf/%s/accept_dad", TUN_IFACE);
- write_file(sysctl, "0");
- sprintf(sysctl, "/proc/sys/net/ipv6/conf/%s/router_solicitations", TUN_IFACE);
- write_file(sysctl, "0");
- int sock = socket(AF_NETLINK, SOCK_RAW, NETLINK_ROUTE);
- if (sock == -1) exit(1);
- netlink_add_addr4(&nlmsg, sock, TUN_IFACE, LOCAL_IPV4);
- netlink_add_addr6(&nlmsg, sock, TUN_IFACE, LOCAL_IPV6);
- uint64_t macaddr = REMOTE_MAC;
- struct in_addr in_addr;
- inet_pton(AF_INET, REMOTE_IPV4, &in_addr);
- netlink_add_neigh(&nlmsg, sock, TUN_IFACE, &in_addr, sizeof(in_addr),
-                   &macaddr, ETH_ALEN);
- struct in6_addr in6_addr;
- inet_pton(AF_INET6, REMOTE_IPV6, &in6_addr);
- netlink_add_neigh(&nlmsg, sock, TUN_IFACE, &in6_addr, sizeof(in6_addr),
-                   &macaddr, ETH_ALEN);
- macaddr = LOCAL_MAC;
- netlink_device_change(&nlmsg, sock, TUN_IFACE, true, 0, &macaddr, ETH_ALEN,
-                       NULL);
- close(sock);
-}
-
-static int read_tun(char* data, int size) {
- if (tunfd < 0) return -1;
- int rv = read(tunfd, data, size);
- if (rv < 0) {
-   if (errno == EAGAIN || errno == EBADFD) return -1;
-   exit(1);
- }
- return rv;
-}
-
-static long syz_emit_ethernet(volatile long a0, volatile long a1,
-                             volatile long a2) {
- if (tunfd < 0) return (uintptr_t)-1;
- uint32_t length = a0;
- char* data = (char*)a1;
- return write(tunfd, data, length);
-}
-
-static void flush_tun() {
- char data[1000];
- while (read_tun(&data[0], sizeof(data)) != -1) {
- }
-}
-
-#define MAX_FDS 30
-
-static void setup_common() {
- if (mount(0, "/sys/fs/fuse/connections", "fusectl", 0, 0)) {
- }
-}
-
-static void setup_binderfs() {
- if (mkdir("/dev/binderfs", 0777)) {
- }
- if (mount("binder", "/dev/binderfs", "binder", 0, NULL)) {
- }
- if (symlink("/dev/binderfs", "./binderfs")) {
- }
-}
-
-static void loop();
-
-static void sandbox_common() {
- prctl(PR_SET_PDEATHSIG, SIGKILL, 0, 0, 0);
- setsid();
- struct rlimit rlim;
- rlim.rlim_cur = rlim.rlim_max = (200 << 20);
- setrlimit(RLIMIT_AS, &rlim);
- rlim.rlim_cur = rlim.rlim_max = 32 << 20;
- setrlimit(RLIMIT_MEMLOCK, &rlim);
- rlim.rlim_cur = rlim.rlim_max = 136 << 20;
- setrlimit(RLIMIT_FSIZE, &rlim);
- rlim.rlim_cur = rlim.rlim_max = 1 << 20;
- setrlimit(RLIMIT_STACK, &rlim);
- rlim.rlim_cur = rlim.rlim_max = 128 << 20;
- setrlimit(RLIMIT_CORE, &rlim);
- rlim.rlim_cur = rlim.rlim_max = 256;
- setrlimit(RLIMIT_NOFILE, &rlim);
- if (unshare(CLONE_NEWNS)) {
- }
- if (mount(NULL, "/", NULL, MS_REC | MS_PRIVATE, NULL)) {
- }
- if (unshare(CLONE_NEWIPC)) {
- }
- if (unshare(0x02000000)) {
- }
- if (unshare(CLONE_NEWUTS)) {
- }
- if (unshare(CLONE_SYSVSEM)) {
- }
- typedef struct {
-   const char* name;
-   const char* value;
- } sysctl_t;
- static const sysctl_t sysctls[] = {
-     {"/proc/sys/kernel/shmmax", "16777216"},
-     {"/proc/sys/kernel/shmall", "536870912"},
-     {"/proc/sys/kernel/shmmni", "1024"},
-     {"/proc/sys/kernel/msgmax", "8192"},
-     {"/proc/sys/kernel/msgmni", "1024"},
-     {"/proc/sys/kernel/msgmnb", "1024"},
-     {"/proc/sys/kernel/sem", "1024 1048576 500 1024"},
- };
- unsigned i;
- for (i = 0; i < sizeof(sysctls) / sizeof(sysctls[0]); i++)
-   write_file(sysctls[i].name, sysctls[i].value);
-}
-
-static int wait_for_loop(int pid) {
- if (pid < 0) exit(1);
- int status = 0;
- while (waitpid(-1, &status, __WALL) != pid) {
- }
- return WEXITSTATUS(status);
-}
-
-static void drop_caps(void) {
- struct __user_cap_header_struct cap_hdr = {};
- struct __user_cap_data_struct cap_data[2] = {};
- cap_hdr.version = _LINUX_CAPABILITY_VERSION_3;
- cap_hdr.pid = getpid();
- if (syscall(SYS_capget, &cap_hdr, &cap_data)) exit(1);
- const int drop = (1 << CAP_SYS_PTRACE) | (1 << CAP_SYS_NICE);
- cap_data[0].effective &= ~drop;
- cap_data[0].permitted &= ~drop;
- cap_data[0].inheritable &= ~drop;
- if (syscall(SYS_capset, &cap_hdr, &cap_data)) exit(1);
-}
-
-static int do_sandbox_none(void) {
- if (unshare(CLONE_NEWPID)) {
- }
- int pid = fork();
- if (pid != 0) return wait_for_loop(pid);
- setup_common();
- sandbox_common();
- drop_caps();
- if (unshare(CLONE_NEWNET)) {
- }
- write_file("/proc/sys/net/ipv4/ping_group_range", "0 65535");
- initialize_tun();
- setup_binderfs();
- loop();
- exit(1);
-}
-
-static void kill_and_wait(int pid, int* status) {
- kill(-pid, SIGKILL);
- kill(pid, SIGKILL);
- for (int i = 0; i < 100; i++) {
-   if (waitpid(-1, status, WNOHANG | __WALL) == pid) return;
-   usleep(1000);
- }
- DIR* dir = opendir("/sys/fs/fuse/connections");
- if (dir) {
-   for (;;) {
-     struct dirent* ent = readdir(dir);
-     if (!ent) break;
-     if (strcmp(ent->d_name, ".") == 0 || strcmp(ent->d_name, "..") == 0)
-       continue;
-     char abort[300];
-     snprintf(abort, sizeof(abort), "/sys/fs/fuse/connections/%s/abort",
-              ent->d_name);
-     int fd = open(abort, O_WRONLY);
-     if (fd == -1) {
-       continue;
-     }
-     if (write(fd, abort, 1) < 0) {
-     }
-     close(fd);
-   }
-   closedir(dir);
- } else {
- }
- while (waitpid(-1, status, __WALL) != pid) {
- }
-}
-
-static void setup_test() {
- prctl(PR_SET_PDEATHSIG, SIGKILL, 0, 0, 0);
- setpgrp();
- write_file("/proc/self/oom_score_adj", "1000");
- flush_tun();
-}
-
-static void close_fds() {
- for (int fd = 3; fd < MAX_FDS; fd++) close(fd);
-}
-
-static void execute_one(void);
-
-#define WAIT_FLAGS __WALL
-
-static void loop(void) {
- int iter = 0;
- for (;; iter++) {
-   int pid = fork();
-   if (pid < 0) exit(1);
-   if (pid == 0) {
-     setup_test();
-     execute_one();
-     close_fds();
-     exit(0);
-   }
-   int status = 0;
-   uint64_t start = current_time_ms();
-   for (;;) {
-     if (waitpid(-1, &status, WNOHANG | WAIT_FLAGS) == pid) break;
-     sleep_ms(1);
-     if (current_time_ms() - start < 5000) continue;
-     kill_and_wait(pid, &status);
-     break;
-   }
- }
-}
-
-uint64_t r[3] = {0xffffffffffffffff, 0xffffffffffffffff, 0x0};
-
-void execute_one(void) {
- intptr_t res = 0;
- res = syscall(__NR_socket, /*domain=*/2ul, /*type=*/1ul, /*proto=*/0);
- if (res != -1) r[0] = res;
- *(uint32_t*)0x20000100 = 6;
- *(uint32_t*)0x20000104 = 4;
- *(uint64_t*)0x20000108 = 0x20000200;
- memcpy((void*)0x20000200,
-        "\x18\x02\x00\x00\xfd\xff\xff\xff\x00\x00\x00\x00\x00\x00\x00\x00\x85"
-        "\x00\x00\x00\x2c\x00\x00\x00\x95",
-        25);
- *(uint64_t*)0x20000110 = 0x20000040;
- memcpy((void*)0x20000040, "GPL\000", 4);
- *(uint32_t*)0x20000118 = 0;
- *(uint32_t*)0x2000011c = 0;
- *(uint64_t*)0x20000120 = 0;
- *(uint32_t*)0x20000128 = 0;
- *(uint32_t*)0x2000012c = 0;
- memset((void*)0x20000130, 0, 16);
- *(uint32_t*)0x20000140 = 0;
- *(uint32_t*)0x20000144 = 0;
- *(uint32_t*)0x20000148 = -1;
- *(uint32_t*)0x2000014c = 8;
- *(uint64_t*)0x20000150 = 0;
- *(uint32_t*)0x20000158 = 0;
- *(uint32_t*)0x2000015c = 0x10;
- *(uint64_t*)0x20000160 = 0;
- *(uint32_t*)0x20000168 = 0;
- *(uint32_t*)0x2000016c = 0;
- *(uint32_t*)0x20000170 = 0;
- *(uint32_t*)0x20000174 = 0;
- *(uint64_t*)0x20000178 = 0;
- *(uint64_t*)0x20000180 = 0;
- *(uint32_t*)0x20000188 = 0x10;
- *(uint32_t*)0x2000018c = 0;
- res = syscall(__NR_bpf, /*cmd=*/5ul, /*arg=*/0x20000100ul, /*size=*/0x90ul);
- if (res != -1) r[1] = res;
- memcpy((void*)0x20000180, "syz_tun\000\000\000\000\000\000\000\000\000", 16);
- res = syscall(__NR_ioctl, /*fd=*/r[0], /*cmd=*/0x8933, /*arg=*/0x20000180ul);
- if (res != -1) r[2] = *(uint32_t*)0x20000190;
- *(uint32_t*)0x20000000 = r[1];
- *(uint32_t*)0x20000004 = r[2];
- *(uint32_t*)0x20000008 = 0x25;
- *(uint32_t*)0x2000000c = 0;
- *(uint32_t*)0x20000010 = 0;
- syscall(__NR_bpf, /*cmd=*/0x1cul, /*arg=*/0x20000000ul, /*size=*/0x10ul);
- memset((void*)0x20000f00, 170, 5);
- *(uint8_t*)0x20000f05 = 0xaa;
- memset((void*)0x20000f06, 0, 6);
- *(uint16_t*)0x20000f0c = htobe16(0);
- syz_emit_ethernet(/*len=*/0xfdef, /*packet=*/0x20000f00, /*frags=*/0);
-}
-int main(void) {
- syscall(__NR_mmap, /*addr=*/0x1ffff000ul, /*len=*/0x1000ul, /*prot=*/0ul,
-         /*flags=*/0x32ul, /*fd=*/-1, /*offset=*/0ul);
- syscall(__NR_mmap, /*addr=*/0x20000000ul, /*len=*/0x1000000ul, /*prot=*/7ul,
-         /*flags=*/0x32ul, /*fd=*/-1, /*offset=*/0ul);
- syscall(__NR_mmap, /*addr=*/0x21000000ul, /*len=*/0x1000ul, /*prot=*/0ul,
-         /*flags=*/0x32ul, /*fd=*/-1, /*offset=*/0ul);
- do_sandbox_none();
- return 0;
-}
-
-
-=* repro.txt =*
-r0 = socket$inet_tcp(0x2, 0x1, 0x0)
-r1 = bpf$BPF_PROG_RAW_TRACEPOINT_LOAD(0x5, &(0x7f0000000100)={0x6,
-0x4, &(0x7f0000000200)=ANY=[@ANYBLOB="18020000fdffffff0000000000000000850000002c00000095"],
-&(0x7f0000000040)='GPL\x00'}, 0x90)
-ioctl$sock_SIOCGIFINDEX(r0, 0x8933, &(0x7f0000000180)={'syz_tun\x00', <r2=>0x0})
-bpf$BPF_LINK_CREATE_XDP(0x1c, &(0x7f0000000000)={r1, r2}, 0x10)
-syz_emit_ethernet(0xfdef, &(0x7f0000000f00)={@local, @empty, @void}, 0x0)
-
-
-See aslo https://gist.github.com/xrivendell7/c971ada013151e3b5a5f3f69f8f9ce63
-
-I hope it helps.
-
-Best regards.
-xingwei Lee
+--
+Uladzislau Rezki
 
