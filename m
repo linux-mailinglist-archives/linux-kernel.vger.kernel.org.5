@@ -1,331 +1,210 @@
-Return-Path: <linux-kernel+bounces-7797-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7773-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9585981AD18
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 04:15:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A1CC81ACE4
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 04:09:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B99741C21FF6
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 03:15:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D8E172828FD
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 03:09:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5183F15AE2;
-	Thu, 21 Dec 2023 03:13:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B3E3525F;
+	Thu, 21 Dec 2023 03:08:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="MI4XujK7"
+	dkim=pass (2048-bit key) header.d=nabijaczleweli.xyz header.i=@nabijaczleweli.xyz header.b="DXdlXzR/"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+Received: from tarta.nabijaczleweli.xyz (tarta.nabijaczleweli.xyz [139.28.40.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E72A156D8;
-	Thu, 21 Dec 2023 03:13:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703128407; x=1734664407;
-  h=date:from:to:cc:subject:message-id:reply-to:references:
-   in-reply-to:mime-version;
-  bh=yqGZnOsPRSanbKwFQUT3CCZ3nNCgXQ0X0q4YGNcSHbY=;
-  b=MI4XujK7HrzeXAKbMXVqujtVUMgTNUxJrZjfyGlpaKQ+ymTFtQ9IxUbA
-   BnKVRwNc/7E45uVSsleXpsAejHSr3nMU5MiXU5TYH15Sf2PPPWWw9/iB9
-   bzbV+j2pL2AZXP09eHfo6JmI3YIB3o9yJuioBvR7VLCCog5Clq6SyEkUF
-   z7LwcStCL4AuAyhZYRtaYfd/gUAecL9vkSR8z2tgqacS8Y2xBNsH1arXh
-   b11pyxhhzIMCtNMFH6/NBrKZ4DRbreQltHAp6zqjHBaByvk3Ac6tsjrk7
-   DoQ21aqLOxh2vXzWwERyF6kM/ISpBAwj+BOUYQOprZc1RwhxlJLt2VHke
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10930"; a="14596502"
-X-IronPort-AV: E=Sophos;i="6.04,293,1695711600"; 
-   d="scan'208";a="14596502"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Dec 2023 19:13:27 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,293,1695711600"; 
-   d="scan'208";a="24817237"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by orviesa001.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 20 Dec 2023 19:13:27 -0800
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 20 Dec 2023 19:13:26 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 20 Dec 2023 19:13:26 -0800
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Wed, 20 Dec 2023 19:13:26 -0800
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (104.47.57.40) by
- edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Wed, 20 Dec 2023 19:13:25 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VaV7aLeQtz+hE6I61cdVr1aBEbs7mXalwRcYZJ4+q1OKQxjBq/K2/ZZzOLIhg5Q0eVkMQxYZSQMu+NKuvbP+cLQRgR2Jo+M3+jJxUuwfXzmKtkLuQ0OLy3l34Nr0APDsNH/a/bGTOpHcP/yiw2zISvMaadfvVh3QbhipygboG/iuj4lw8AywUeBMoDIqNxH+5IHlfMWXKDpk/Hem4xtaf5N942xaoj/wGqK9CyxZj1NaXya5QnflFI8G46Ud3CAB9A5CLrnmqkDau/6bN96l9xa1RtM5PbxQrngE82hzMs7aZUyE9W+PVkDQp4MkV/nwm99AQ4LzIYi82LOGjoo+hA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=U1kToOOWznFbB8IgBYVpggVSF5INMvYTpmdq+BhIlnQ=;
- b=KdhZfSVzefM/8l8x41p8JYWKGoB2NhR3xc7pHhKf79jUeREqkturYXp35LMjghbHmtW02ghmYH7Zeql+ZKcAOLqxzQrI2KZgur1ozwGm1wqjQwO5ChzXdTya+SzVwjWdt3T+TN1xpooke8DDqoBUM2CX3VOjGiYZ6GX/L18kJqlQB8wbLj3smb1PqquS3CD9O5KgG2ZNw8Znnx0MwzxyGiqEq8r+MFoO55M2/sy9En1/O0MpAToP2ZDIM413V12TJBYVVzwAigtH7V4+m8DXiDfadVK5rEwHEKzRAwbUnMzViNEtmik5zgFy8uqlU/jxe4EdWR4/NEVHL5r2sioNHg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DS7PR11MB5966.namprd11.prod.outlook.com (2603:10b6:8:71::6) by
- PH8PR11MB7142.namprd11.prod.outlook.com (2603:10b6:510:22e::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7113.19; Thu, 21 Dec
- 2023 03:13:23 +0000
-Received: from DS7PR11MB5966.namprd11.prod.outlook.com
- ([fe80::32a9:54b8:4253:31d4]) by DS7PR11MB5966.namprd11.prod.outlook.com
- ([fe80::32a9:54b8:4253:31d4%4]) with mapi id 15.20.7113.019; Thu, 21 Dec 2023
- 03:13:23 +0000
-Date: Thu, 21 Dec 2023 10:44:11 +0800
-From: Yan Zhao <yan.y.zhao@intel.com>
-To: Sean Christopherson <seanjc@google.com>
-CC: Kevin Tian <kevin.tian@intel.com>, "kvm@vger.kernel.org"
-	<kvm@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "dri-devel@lists.freedesktop.org"
-	<dri-devel@lists.freedesktop.org>, "pbonzini@redhat.com"
-	<pbonzini@redhat.com>, "olvaffe@gmail.com" <olvaffe@gmail.com>, Zhiyuan Lv
-	<zhiyuan.lv@intel.com>, Zhenyu Z Wang <zhenyu.z.wang@intel.com>, Yongwei Ma
-	<yongwei.ma@intel.com>, "vkuznets@redhat.com" <vkuznets@redhat.com>,
-	"wanpengli@tencent.com" <wanpengli@tencent.com>, "jmattson@google.com"
-	<jmattson@google.com>, "joro@8bytes.org" <joro@8bytes.org>,
-	"gurchetansingh@chromium.org" <gurchetansingh@chromium.org>,
-	"kraxel@redhat.com" <kraxel@redhat.com>, Yiwei Zhang <zzyiwei@google.com>
-Subject: Re: [RFC PATCH] KVM: Introduce KVM VIRTIO device
-Message-ID: <ZYOme3WddWOV2J5d@yzhao56-desk.sh.intel.com>
-Reply-To: Yan Zhao <yan.y.zhao@intel.com>
-References: <20231214103520.7198-1-yan.y.zhao@intel.com>
- <BN9PR11MB5276BE04CBB6D07039086D658C93A@BN9PR11MB5276.namprd11.prod.outlook.com>
- <ZXzx1zXfZ6GV9TgI@google.com>
- <ZYEbhadnn6+clzX9@yzhao56-desk.sh.intel.com>
- <ZYJOTLwreD+8l4gU@yzhao56-desk.sh.intel.com>
- <ZYOfJ_QWG01aL8Hl@google.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <ZYOfJ_QWG01aL8Hl@google.com>
-X-ClientProxiedBy: SG3P274CA0003.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:be::15)
- To DS7PR11MB5966.namprd11.prod.outlook.com (2603:10b6:8:71::6)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91EB24416;
+	Thu, 21 Dec 2023 03:08:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nabijaczleweli.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nabijaczleweli.xyz
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=nabijaczleweli.xyz;
+	s=202305; t=1703128121;
+	bh=5pox7i0LMU5pswbZv4sORhQwC0BFgjzW/OuspbzrSpE=;
+	h=Date:From:Cc:Subject:From;
+	b=DXdlXzR/L5iIRsDgYOWlaiLPjOc+fnFTfX+ltbyhDtkXM/SxONn7FPJLXGLuLOrzK
+	 Pg5fkjgCgX0VbDEwsDvDTxmshnruk1Kbey43wgtPpmbXlJd66IFzC/KdRcacVGXUyX
+	 Ae/HVgQw0TjmPmwlMwr6yAdUkMN8fCxx1VrMUDmoHUF2/GMMJ514kIJ8x5/ZkskMNm
+	 rgc/iDLOax+DC5ZJbYklMCTj4K7tdaGWmdK4UcgLDm/Up0UiM/Pb9oqyPyslXr+3xk
+	 gnLgzMVzEUw/qRsfiM8F300FP7jlbvCCnmQ4YVZ/wPjuslpgG9hyT7a10bgUm9G7sp
+	 qSkA2UsVKz2Kw==
+Received: from tarta.nabijaczleweli.xyz (unknown [192.168.1.250])
+	by tarta.nabijaczleweli.xyz (Postfix) with ESMTPSA id AB3F313C4C;
+	Thu, 21 Dec 2023 04:08:41 +0100 (CET)
+Date: Thu, 21 Dec 2023 04:08:41 +0100
+From: 
+	Ahelenia =?utf-8?Q?Ziemia=C5=84ska?= <nabijaczleweli@nabijaczleweli.xyz>
+Cc: Jens Axboe <axboe@kernel.dk>, Christian Brauner <brauner@kernel.org>, 
+	Alexander Viro <viro@zeniv.linux.org.uk>, linux-fsdevel@vger.kernel.org, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jirislaby@kernel.org>, 
+	Miklos Szeredi <miklos@szeredi.hu>, Vivek Goyal <vgoyal@redhat.com>, 
+	Stefan Hajnoczi <stefanha@redhat.com>, Eric Dumazet <edumazet@google.com>, 
+	"David S. Miller" <davem@davemloft.net>, David Ahern <dsahern@kernel.org>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Wenjia Zhang <wenjia@linux.ibm.com>, Jan Karcher <jaka@linux.ibm.com>, 
+	"D. Wythe" <alibuda@linux.alibaba.com>, Tony Lu <tonylu@linux.alibaba.com>, 
+	Wen Gu <guwen@linux.alibaba.com>, Boris Pismenny <borisp@nvidia.com>, 
+	John Fastabend <john.fastabend@gmail.com>, David Howells <dhowells@redhat.com>, 
+	Shigeru Yoshida <syoshida@redhat.com>, Peilin Ye <peilin.ye@bytedance.com>, 
+	Kuniyuki Iwashima <kuniyu@amazon.com>, Alexander Mikhalitsyn <alexander@mihalicyn.com>, 
+	Daan De Meyer <daan.j.demeyer@gmail.com>, linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org, 
+	virtualization@lists.linux.dev, netdev@vger.kernel.org, linux-s390@vger.kernel.org, 
+	Alejandro Colomar <alx@kernel.org>, linux-man@vger.kernel.org
+Subject: [PATCH v2 00/11] Avoid unprivileged splice(file->)/(->socket) pipe
+ exclusion
+Message-ID: <cover.1703126594.git.nabijaczleweli@nabijaczleweli.xyz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS7PR11MB5966:EE_|PH8PR11MB7142:EE_
-X-MS-Office365-Filtering-Correlation-Id: e10bacdd-12d0-449a-7e2d-08dc01d2ca3c
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: dFncHqHRldd/l0sJ69pJ1+jbjZmUeUv9C9/aJZudxnFvVRDY/CjNNqY43K98CEmkLkKmSXFjKLHmxGEuRfh9G7ST/c/hRqYMf3ZAG1O7Pdbrh9CeiQsu3xXmugUXBClwiSiGlAimklFoz/U3O3rUi7r0S/eES+HsaEMF4kAgkUGwSnwrEXE4+zNFmzqrgtSZLosdmTdO7OaPSlnBS0PugD7oYdNoLEQxXlemeSXyPpYI3exjppTx5ZCogn8mEEGPo5gAIrEjhabqVxj1W5N4V/yXnhtoW1e5m+LST/Y2M7pNmM7ixvi4JxB/gCWcMA/HLg8FkEQWh/wwkmpUZbePhnS29e9H/eUOafwcd7zA2rVZBbxK24rIzBpCp0zh0r4i8AWB1sMPSMHMLflfg7VFqID41mFO0ZeiNTAzS3EY64XqCDgLMO6X1AhuhYr1owVv51JbsF5w5+J442r9tVlS5eNdqgOCLqMEwrGGbB8iG5hfTUOB3hy6Zkt1OD6brveRs33T2aQ9zr1ak82h7D4HjTsMuvdUFyUuIaWiyLbe1xfHrf1SDFYpg0qtJL1gUJCe
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR11MB5966.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(376002)(136003)(366004)(346002)(396003)(230922051799003)(451199024)(186009)(1800799012)(64100799003)(38100700002)(5660300002)(7416002)(3450700001)(2906002)(86362001)(82960400001)(6512007)(26005)(6506007)(66556008)(66476007)(66946007)(54906003)(6916009)(316002)(6666004)(41300700001)(6486002)(83380400001)(478600001)(8676002)(8936002)(4326008);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?JbkwAnnfnyCrLhAg83BMepMSKf7gMW2q0Tj9p+KHW+DdH9Y0uP9wis/GeTYt?=
- =?us-ascii?Q?A1iXhuUwnZqGMu91YPc/hjPRLRNypAYdER+OPI9/5qFcw+dwE8HJP4PipThf?=
- =?us-ascii?Q?sucVXTxYenKbj4t4fdFEvvMpbQs0Tgmf7ylk4cW163vzFKn0+8DZhkEf7lX5?=
- =?us-ascii?Q?KV0U2uy9+l4/ZgME5iYOB0TwzTv4MNGVLGuFy/xs9grCfOpDdQyszmIGObDX?=
- =?us-ascii?Q?Yn3L8JCmLHQltQ79uY9gVQfC2TSnpVCru70LW7NxdAuLfgxLVjn/R85oCmUR?=
- =?us-ascii?Q?Rpwx7k8dZXCdRPiPMYWhhfr37p9JA4fBRT3Sx9OCH+j+YMjP4kfSX9lF9kO/?=
- =?us-ascii?Q?+HMGlTYEOKcstGRkdK+Fk2VaeWeNmLWxg+HV9rPxCgRZgIMxAuiPM7BoFRLy?=
- =?us-ascii?Q?fvfQjvqW0V/85onf/BIxl09Yjr2Wg6YwTSw7hTcQ9Wk5BGF79vnI8C9+9SbG?=
- =?us-ascii?Q?GLwym/EnYLJAc8VEZqkO/a4UOlELNmfa6/sxmuIFj3LFtK6W9qd/lxsA07NO?=
- =?us-ascii?Q?VEB0pJ0SAxYyozydHvE00phqALPrbnMs4UgolABzGqoa9se89JKq6nR5lOnn?=
- =?us-ascii?Q?eUyer5gKbyZNwIX1qC4A6g3xRpn170/1kaLRwmRjoII00/XI6upaJkPxlk9A?=
- =?us-ascii?Q?Za+F66yhkV0M0djvFlv0y7iC4zAqgo+ni20hzokbIZ+fmnXaSuZncrvfcRol?=
- =?us-ascii?Q?jAzRYVIgexW+gzi7sF/u3cfZWdiquWdeOtGV7BupHfEWHo5kPPy4D1ZuNk+R?=
- =?us-ascii?Q?SfFCNXXAZ4whOYtL7FOx4hMKqWiSFH/JnwLguPge4+BDYDCmKM3z4sd2SwmL?=
- =?us-ascii?Q?c3lRiJomhdTyRA3ghq4mmQUNdKfdzpzAhy2WBai7Q/MYqpQRr0p98EBBjm0V?=
- =?us-ascii?Q?auxOGHEJVhw+mX5n4KqiAApTxzItDPTqPabuQn3gpQdGnvGEQNtvxOV2Jox/?=
- =?us-ascii?Q?eAvIwHWrPBZe9tbtgsVBCh2+M8SBs/yMIqzVPsXPY3zr2BGLAanai5TJyRD8?=
- =?us-ascii?Q?VZL8/+GBGVOKwdMX6tKW20hVr7knFudflqLDfKNlnJAZFfhU3HwZRIc6pNVB?=
- =?us-ascii?Q?0NtRNg0RNfwN/C4QHWcP3lES3JxdB+FlPvloaBJakt+FTHpm1Zo2h4IuyI9X?=
- =?us-ascii?Q?ZCpdDKvFHJC/6WCryY7NWuyzhkroW2vpIkdr0EVSIztZCQudBAN0dSlmPFK4?=
- =?us-ascii?Q?TBK1r7LdfL8twzDdP/MFVIe07EVYzy4zDwWL6eR0KTkPqGULNuZm2hPuZ9Mx?=
- =?us-ascii?Q?TCR/x036BE3GB5ZTWulR0Ay7GCXjgDC7DGu1cmkG9200p4PrgeB3Tr9KG1mm?=
- =?us-ascii?Q?IAq+m1z6k7k/kB7sXOCBiVtsO4TlJQOynvxf6Vl8W5GceIheGtO/mf7O39lg?=
- =?us-ascii?Q?1iEUiCipi2ddx/yTXTpMn+MTxLSNW1zTKeQvF4T8wgnt1av076HFkpFVGrrq?=
- =?us-ascii?Q?Oxx0HsNT9qOcGL7aACN+9PXR6J/z44yB3zsFPXTATSdmaA/eQxguvlhqHgX1?=
- =?us-ascii?Q?z6XgHWJ4JGBlD8PtyyZToqMl6xYI+K4vpTqbubbNV+06K4TrqxmfMvZ1/Rh1?=
- =?us-ascii?Q?Krm+BKehGySwfmEsy4PrBYbW3FXRgYKO5DGyh/Ac?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: e10bacdd-12d0-449a-7e2d-08dc01d2ca3c
-X-MS-Exchange-CrossTenant-AuthSource: DS7PR11MB5966.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Dec 2023 03:13:22.8602
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: t0dXTi6IWdCtbCyvx/YB+6EHhS39wiZCPlrTyjY/kyE7KLnUVlzp6E1LQ0dy699DJt8U1wHCLOCcuFxx9Ip2qw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR11MB7142
-X-OriginatorOrg: intel.com
-
-On Wed, Dec 20, 2023 at 06:12:55PM -0800, Sean Christopherson wrote:
-> On Wed, Dec 20, 2023, Yan Zhao wrote:
-> > On Tue, Dec 19, 2023 at 12:26:45PM +0800, Yan Zhao wrote:
-> > > On Mon, Dec 18, 2023 at 07:08:51AM -0800, Sean Christopherson wrote:
-> > > > > > Implementation Consideration
-> > > > > > ===
-> > > > > > There is a previous series [1] from google to serve the same purpose to
-> > > > > > let KVM be aware of virtio GPU's noncoherent DMA status. That series
-> > > > > > requires a new memslot flag, and special memslots in user space.
-> > > > > > 
-> > > > > > We don't choose to use memslot flag to request honoring guest memory
-> > > > > > type.
-> > > > > 
-> > > > > memslot flag has the potential to restrict the impact e.g. when using
-> > > > > clflush-before-read in migration?
-> > > > 
-> > > > Yep, exactly.  E.g. if KVM needs to ensure coherency when freeing memory back to
-> > > > the host kernel, then the memslot flag will allow for a much more targeted
-> > > > operation.
-> > > > 
-> > > > > Of course the implication is to honor guest type only for the selected slot
-> > > > > in KVM instead of applying to the entire guest memory as in previous series
-> > > > > (which selects this way because vmx_get_mt_mask() is in perf-critical path
-> > > > > hence not good to check memslot flag?)
-> > > > 
-> > > > Checking a memslot flag won't impact performance.  KVM already has the memslot
-> > > > when creating SPTEs, e.g. the sole caller of vmx_get_mt_mask(), make_spte(), has
-> > > > access to the memslot.
-> > > > 
-> > > > That isn't coincidental, KVM _must_ have the memslot to construct the SPTE, e.g.
-> > > > to retrieve the associated PFN, update write-tracking for shadow pages, etc.
-> > > > 
-> > > Hi Sean,
-> > > Do you prefer to introduce a memslot flag KVM_MEM_DMA or KVM_MEM_WC?
-> > > For KVM_MEM_DMA, KVM needs to
-> > > (a) search VMA for vma->vm_page_prot and convert it to page cache mode (with
-> > >     pgprot2cachemode()? ), or
-> > > (b) look up memtype of the PFN, by calling lookup_memtype(), similar to that in
-> > >     pat_pfn_immune_to_uc_mtrr().
-> > > 
-> > > But pgprot2cachemode() and lookup_memtype() are not exported by x86 code now.
-> > > 
-> > > For KVM_MEM_WC, it requires user to ensure the memory is actually mapped
-> > > to WC, right?
-> > > 
-> > > Then, vmx_get_mt_mask() just ignores guest PAT and programs host PAT as EPT type
-> > > for the special memslot only, as below.
-> > > Is this understanding correct?
-> > > 
-> > > static u8 vmx_get_mt_mask(struct kvm_vcpu *vcpu, gfn_t gfn, bool is_mmio)
-> > > {
-> > >         if (is_mmio)                                                                           
-> > >                 return MTRR_TYPE_UNCACHABLE << VMX_EPT_MT_EPTE_SHIFT;                          
-> > >                                                                                                
-> > >         if (gfn_in_dma_slot(vcpu->kvm, gfn)) {                                                 
-> > >                 u8 type = MTRR_TYPE_WRCOMB;                                      
-> > >                 //u8 type = pat_pfn_memtype(pfn);                                
-> > >                 return (type << VMX_EPT_MT_EPTE_SHIFT) | VMX_EPT_IPAT_BIT;       
-> > >         }                                                                                      
-> > >                                                                                                
-> > >         if (!kvm_arch_has_noncoherent_dma(vcpu->kvm))                            
-> > >                 return (MTRR_TYPE_WRBACK << VMX_EPT_MT_EPTE_SHIFT) | VMX_EPT_IPAT_BIT;         
-> > >                                                                                                
-> > >         if (kvm_read_cr0_bits(vcpu, X86_CR0_CD)) {                                             
-> > >                 if (kvm_check_has_quirk(vcpu->kvm, KVM_X86_QUIRK_CD_NW_CLEARED))               
-> > >                         return MTRR_TYPE_WRBACK << VMX_EPT_MT_EPTE_SHIFT;                      
-> > >                 else                                                                           
-> > >                         return (MTRR_TYPE_UNCACHABLE << VMX_EPT_MT_EPTE_SHIFT) | 
-> > >                                 VMX_EPT_IPAT_BIT;                                
-> > >         }                                                                        
-> > >                                                                                  
-> > >         return kvm_mtrr_get_guest_memory_type(vcpu, gfn) << VMX_EPT_MT_EPTE_SHIFT;
-> > > }
-> > > 
-> > > BTW, since the special memslot must be exposed to guest as virtio GPU BAR in
-> > > order to prevent other guest drivers from access, I wonder if it's better to
-> > > include some keyword like VIRTIO_GPU_BAR in memslot flag name.
-> > Another choice is to add a memslot flag KVM_MEM_HONOR_GUEST_PAT, then user
-> > (e.g. QEMU) does special treatment to this kind of memslots (e.g. skipping
-> > reading/writing to them in general paths).
-> > 
-> > @@ -7589,26 +7589,29 @@ static u8 vmx_get_mt_mask(struct kvm_vcpu *vcpu, gfn_t gfn, bool is_mmio)
-> >         if (is_mmio)
-> >                 return MTRR_TYPE_UNCACHABLE << VMX_EPT_MT_EPTE_SHIFT;
-> > 
-> > +       if (in_slot_honor_guest_pat(vcpu->kvm, gfn))
-> > +               return kvm_mtrr_get_guest_memory_type(vcpu, gfn) << VMX_EPT_MT_EPTE_SHIFT;
-> 
-> This is more along the lines of what I was thinking, though the name should be
-> something like KVM_MEM_NON_COHERENT_DMA, i.e. not x86 specific and not contradictory
-> for AMD (which already honors guest PAT).
-> 
-> I also vote to deliberately ignore MTRRs, i.e. start us on the path of ripping
-> those out.  This is a new feature, so we have the luxury of defining KVM's ABI
-> for that feature, i.e. can state that on x86 it honors guest PAT, but not MTRRs.
-> 
-> Like so?
-Yes, this looks good to me. Will refine the patch in the recommended way.
-Only one remaining question from me is if we could allow user to set the flag
-to every slot.
-If user is allowed to set the flag to system ram slot, it may cause problem,
-since guest drivers (other than the paravirt one) may have chance to get
-allocated memory in this ram slot and make its PAT setting take effect, which
-is not desired.
-
-Do we need to find a way to limit the eligible slots?
-e.g. check VMAs of the slot to ensure its vm_flags include VM_IO and VM_PFNMAP.
-
-Or, just trust user?
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="wvvwnibat3ajd753"
+Content-Disposition: inline
+User-Agent: NeoMutt/20231103-116-3b855e-dirty
 
 
-> 
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index d21f55f323ea..ed527acb2bd3 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -7575,7 +7575,8 @@ static int vmx_vm_init(struct kvm *kvm)
->         return 0;
->  }
->  
-> -static u8 vmx_get_mt_mask(struct kvm_vcpu *vcpu, gfn_t gfn, bool is_mmio)
-> +static u8 vmx_get_mt_mask(struct kvm_vcpu *vcpu, gfn_t gfn, bool is_mmio,
-> +                         struct kvm_memory_slot *slot)
->  {
->         /* We wanted to honor guest CD/MTRR/PAT, but doing so could result in
->          * memory aliases with conflicting memory types and sometimes MCEs.
-> @@ -7598,6 +7599,9 @@ static u8 vmx_get_mt_mask(struct kvm_vcpu *vcpu, gfn_t gfn, bool is_mmio)
->         if (is_mmio)
->                 return MTRR_TYPE_UNCACHABLE << VMX_EPT_MT_EPTE_SHIFT;
->  
-> +       if (kvm_memslot_has_non_coherent_dma(slot))
-> +               return MTRR_TYPE_WRBACK << VMX_EPT_MT_EPTE_SHIFT;
-> +
->         if (!kvm_arch_has_noncoherent_dma(vcpu->kvm))
->                 return (MTRR_TYPE_WRBACK << VMX_EPT_MT_EPTE_SHIFT) | VMX_EPT_IPAT_BIT;
-> 
-> I like the idea of pulling the memtype from the host, but if we can make that
-> work then I don't see the need for a special memslot flag, i.e. just do it for
-> *all* SPTEs on VMX.  I don't think we need a VMA for that, e.g. we should be able
-> to get the memtype from the host PTEs, just like we do the page size.
-Right.
-Besides, after reading host PTEs, we still need to decode the bits to memtype in
-platform specific way and convert the type to EPT type.
+--wvvwnibat3ajd753
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> 
-> KVM_MEM_WC is a hard "no" for me.  It's far too x86 centric, and as you alluded
-> to, it requires coordination from the guest, i.e. is effectively limited to
-> paravirt scenarios.
-Got it!
-> 
-> > +
-> >         if (!kvm_arch_has_noncoherent_dma(vcpu->kvm))
-> >                 return (MTRR_TYPE_WRBACK << VMX_EPT_MT_EPTE_SHIFT) | VMX_EPT_IPAT_BIT;
-> > 
-> >         if (kvm_read_cr0_bits(vcpu, X86_CR0_CD)) {
-> >                 if (kvm_check_has_quirk(vcpu->kvm, KVM_X86_QUIRK_CD_NW_CLEARED))
-> >                         return MTRR_TYPE_WRBACK << VMX_EPT_MT_EPTE_SHIFT;
-> >                 else
-> >                         return (MTRR_TYPE_UNCACHABLE << VMX_EPT_MT_EPTE_SHIFT) |
-> >                                 VMX_EPT_IPAT_BIT;
-> >         }
-> > 
-> >         return kvm_mtrr_get_guest_memory_type(vcpu, gfn) << VMX_EPT_MT_EPTE_SHIFT;
-> >  }
+Hi!
+
+As it stands, splice(file -> pipe):
+1. locks the pipe,
+2. does a read from the file,
+3. unlocks the pipe.
+
+When the file resides on a normal filesystem, this isn't an issue
+because the filesystem has been defined as trusted by root having
+mounted it.
+
+But when the file is actually IPC (FUSE) or is just IPC (sockets)
+or is a tty, this means that the pipe lock will be held for an
+attacker-controlled length of time, and during that time every
+process trying to read from, write to, open, or close the pipe
+enters an uninterruptible sleep, and will only exit it if the
+splicing process is killed.
+
+This trivially denies service to:
+* any hypothetical pipe-based log collexion system
+* all nullmailer installations
+* me, personally, when I'm pasting stuff into qemu -serial chardev:pipe
+
+A symmetric situation happens for splicing(pipe -> socket):
+the pipe is locked for as long as the socket is full.
+
+This follows:
+1. https://lore.kernel.org/linux-fsdevel/qk6hjuam54khlaikf2ssom6custxf5is2e=
+kkaequf4hvode3ls@zgf7j5j4ubvw/t/#u
+2. a security@ thread rooted in
+   <irrrblivicfc7o3lfq7yjm2lrxq35iyya4gyozlohw24gdzyg7@azmluufpdfvu>
+3. https://nabijaczleweli.xyz/content/blogn_t/011-linux-splice-exclusion.ht=
+ml
+4. https://lore.kernel.org/lkml/cover.1697486714.git.nabijaczleweli@nabijac=
+zleweli.xyz/t/#u  (v1)
+   https://lore.kernel.org/lkml/1cover.1697486714.git.nabijaczleweli@nabija=
+czleweli.xyz/t/#u (resend)
+   https://lore.kernel.org/lkml/2cover.1697486714.git.nabijaczleweli@nabija=
+czleweli.xyz/t/#u (reresend)
+5. https://lore.kernel.org/lkml/dtexwpw6zcdx7dkx3xj5gyjp5syxmyretdcbcdtvrnu=
+kd4vvuh@tarta.nabijaczleweli.xyz/t/#u
+   (relay_file_splice_read removal)
+
+1-7/11 request MSG_DONTWAIT (sockets)/IOCB_NOWAIT (generic) on the read
+
+  8/11 removes splice_read from tty completely
+
+  9/11 removes splice_read from FUSE filesystems
+       (except virtiofs which has normal mounting security semantics,
+        but is handled via FUSE code)
+
+ 10/11 allows splice_read from FUSE filesystems mounted by real root
+       (this matches the blessing received by non-FUSE network filesystems)
+
+ 11/11 requests MSG_DONTWAIT for splice(pipe -> socket).
+
+ 12/11 has the man-pages patch with draft wording.
+
+All but 5/11 (AF_SMC) have been tested and embed shell programs to
+repro them. AIUI I'd need an s390 machine for it? It's trivial.
+
+6/11 (AF_KCM) also fixes kcm_splice_read() passing SPLICE_F_*-style
+flags to skb_recv_datagram(), which takes MSG_*-style flags. I don't
+think they did anything anyway? But.
+
+There are two implementations that definitely sleep all the time
+and I didn't touch them:
+  tracing_splice_read_pipe
+  tracing_buffers_splice_read (dropped in v2, v1 4/11)
+the semantics are lost on me, but they're in debugfs/tracefs, so
+it doesn't matter if they block so long as they work, and presumably
+they do right now.
+
+There is also relay_file_splice_read (dropped in v2, v1 5/11),
+which isn't an implementation at all because it's dead code, broken,
+and removed in -mm.
+
+The diffs in 1-7,11/11 are unchanged, save for a rebase in 7/11.
+8/11 replaces the file type test in v1 10/11.
+9/11 and 10/11 are new in v2.
+
+Ahelenia Ziemia=C5=84ska (11):
+  splice: copy_splice_read: do the I/O with IOCB_NOWAIT
+  af_unix: unix_stream_splice_read: always request MSG_DONTWAIT
+  fuse: fuse_dev_splice_read: use nonblocking I/O
+  net/smc: smc_splice_read: always request MSG_DONTWAIT
+  kcm: kcm_splice_read: always request MSG_DONTWAIT
+  tls/sw: tls_sw_splice_read: always request non-blocking I/O
+  net/tcp: tcp_splice_read: always do non-blocking reads
+  tty: splice_read: disable
+  fuse: file: limit splice_read to virtiofs
+  fuse: allow splicing from filesystems mounted by real root
+  splice: splice_to_socket: always request MSG_DONTWAIT
+
+ drivers/tty/tty_io.c |  2 --
+ fs/fuse/dev.c        | 10 ++++++----
+ fs/fuse/file.c       | 17 ++++++++++++++++-
+ fs/fuse/fuse_i.h     |  4 ++++
+ fs/fuse/inode.c      |  2 ++
+ fs/fuse/virtio_fs.c  |  1 +
+ fs/splice.c          |  5 ++---
+ net/ipv4/tcp.c       | 32 +++-----------------------------
+ net/kcm/kcmsock.c    |  2 +-
+ net/smc/af_smc.c     |  6 +-----
+ net/tls/tls_sw.c     |  5 ++---
+ net/unix/af_unix.c   |  5 +----
+ 12 files changed, 39 insertions(+), 52 deletions(-)
+
+base-commit: 2cf4f94d8e8646803f8fb0facf134b0cd7fb691a
+--
+2.39.2
+
+--wvvwnibat3ajd753
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEfWlHToQCjFzAxEFjvP0LAY0mWPEFAmWDrDQACgkQvP0LAY0m
+WPEekg/9F4adsL71PkFdGw11nhaSsR5MlS4f0o0RB/vJ8ovxAphdBOm3/tw+nNZF
+s8aO5IMhGs2S/CNTrib2VxnptiRy4Z9zYEaZ84QIvk5W4ZjymxfwFo4gCFpY2A2v
+x8B2/eyaI3mMfkfR7XLcZEoVJzoqk3mQg+Izp3eJ6LEzqqrn+CSIGnb/x8WgItv/
+bHX4swZp5YSfFOf3nDtcFV7SNCQDj+2pUqHxiJ/Lg0sgsp9OuEroQTXg31sL/haO
+nyKBCqz7X/vqteRxk1XeVjXKKl0J9s32/ZXc8TliW0NAIweTK6IRMNQgiNMMPj3M
+oO0PmLO0DJklimGE/zIpnhZ2n33FkmU2AjBm8C4v+AJIsmFGcOO9/76tDwxr1qiu
+zXp8mZKclgMeEIlPm6i3NONyZ6iB1sS5+FTh5nRuWGocU5FNq7fD3pij6sK7fYnt
+NiyM+78LHOO3mYHkOy369j7YU4F4TA8B1kLxAYJcSgK8Sd0DzrS3E20GgxATBVbA
+RX8LHM8mbhI/yqc6EfBrhTnaZwzjR+lZcXCwu23rnVvy7t9Qjndrp+d+bVuXF14f
+9urOe+GfktjuCQEtsEe3BihoXwir6Mu89xJPldUwrTzrPbOiskDJY3jfqjNAkb8D
+t0OMbEFJyrwqeV8rbzGl04F9wg5ETnAeIfkj56H//PnU0VzbKaI=
+=zGSt
+-----END PGP SIGNATURE-----
+
+--wvvwnibat3ajd753--
 
