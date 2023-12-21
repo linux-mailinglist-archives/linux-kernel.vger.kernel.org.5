@@ -1,249 +1,166 @@
-Return-Path: <linux-kernel+bounces-8102-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8103-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94F2481B232
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 10:25:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6E0A81B236
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 10:26:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B5F6C1F214E4
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 09:25:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DB14E1C2380E
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 09:26:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEE6D4E1BD;
-	Thu, 21 Dec 2023 09:15:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DA6F4EB53;
+	Thu, 21 Dec 2023 09:17:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="Cx9lHpSm"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="v3Odo/Te"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CE404E1A6
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 09:15:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-40d12b56a38so5840115e9.2
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 01:15:53 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0BF14F1FF
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 09:17:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a235500d0e1so56577966b.2
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 01:17:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1703150151; x=1703754951; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NqPLJ6oGhesOpUeH8RDsWzpFrAHJgLqGLt68wHy7+K4=;
-        b=Cx9lHpSmITKbNqDXQ041/9uh+RIhudMfS15fwK43jt56i0kykVEn2KOYPORLEWCmYx
-         6OEJXOs5AqZHFJoMHofdD7Qcc01mpn6Py4s0dseqzTMY2/7D/zLT6YwxTPFUtjXAhCSm
-         jcP8t59q6d/jKiwiMIrpDpUq7IibIVQBXR4Tuef+UEFNcCR5meykm/97ZHy69n6tHq5z
-         S6SJlu1jKtZbeCUNjHo2/Dv1JviT7JifkvM9+1BqUSlAhQwQB7nI37D2nfVSMlcaxOwg
-         UVav7V7kxAjyK3QbggbyJlR+V6Kt3KfwkWL+zDCUuXSNBYugdQSRgzLor6iJwyBKWuiX
-         Xyaw==
+        d=linaro.org; s=google; t=1703150246; x=1703755046; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=WFjrd8ZhQwAnSAwyee7sJ0A+pcsNZeHIawZTCBgrAgw=;
+        b=v3Odo/TefgLx245S5vlA0rtC++dbkQ8rShwxRtGHlH3BX7HWR2PGGwuTdkd7gToyBv
+         6kPo8FKjx3N8RBgTBVyLwDjDUQ+tV/j8ivX1iAqDdZxHRyx7vHBIcAeKtIl/h/bkDz46
+         +Mus3ZEkQhCwWuOEdDTVcBROcoJsQY2bKmm/n0hmY3/kiTFchCiMk6tftRMu7f5O6DlJ
+         ZQ2+xaDioY+h3Vz950/omLDSdMM7sBKBoQ1vdy/6FjxHtwHp99TzxKFnSs+apSEqJ8pT
+         gUZaEqPtbeDJ1/jyvcjbyzP+u5Es9Fs5NuyjJJV1wESAtEg9+mB9suGqFI94fo2eYZgk
+         NX1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703150151; x=1703754951;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=NqPLJ6oGhesOpUeH8RDsWzpFrAHJgLqGLt68wHy7+K4=;
-        b=SxKC7l3GjCHJlrmJoIFDO7MeY8YOUXqVpHVsRoOgyvJ2vybKBUs+nGPRVZIwDJw212
-         WnocdnHMGPXViUPX4sW74RS9i6+MyWJevOOdlVMfIa3csOSYKXxuKlmfcEe9ByYUqK7o
-         Cw3eBuwDTWwIqjv501PzcDZ+/T7ODu46a6iSKlQYmvEa0nl3OuW1x62W6L894oY45TCU
-         nYqIUctKFzOJWvf700yqYyeHO3V9Y0wwXXxVOaSQOkbV0Cx0DUgtsV/0Ul0TPPwZZQkL
-         DSxcJUgU2Xtmsw5T0EDTGALaveCmkBZ6BmstgxzyiIKYhli6dWaFmOqi6dDKRTtuGOZe
-         HrUg==
-X-Gm-Message-State: AOJu0YwNDY6DwHxnyunJcpnmlfp5Oa6hp5LMD+EA/j24VJYEmjE1A2tN
-	qbCUZ2/Rp3/DRvAHvpdNwEVmag==
-X-Google-Smtp-Source: AGHT+IEy67Vr293UO0kwikiiUBHyQBFn4s8jwO15j99Sei1gJ6ldVDJkxiinn4oI3TVBGaXyQzR0SA==
-X-Received: by 2002:a7b:cd08:0:b0:40d:1930:d1de with SMTP id f8-20020a7bcd08000000b0040d1930d1demr253971wmj.373.1703150151717;
-        Thu, 21 Dec 2023 01:15:51 -0800 (PST)
-Received: from brgl-uxlite.. ([2a02:8440:c20c:e072:65b3:1998:74df:2809])
-        by smtp.gmail.com with ESMTPSA id s13-20020a05600c45cd00b0040d414b57e8sm122157wmo.26.2023.12.21.01.15.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Dec 2023 01:15:51 -0800 (PST)
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-To: Linus Walleij <linus.walleij@linaro.org>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Kent Gibson <warthog618@gmail.com>
-Cc: linux-gpio@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: [PATCH v3 2/2] gpio: sysfs: drop tabs from local variable declarations
-Date: Thu, 21 Dec 2023 10:15:47 +0100
-Message-Id: <20231221091547.57352-2-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20231221091547.57352-1-brgl@bgdev.pl>
-References: <20231221091547.57352-1-brgl@bgdev.pl>
+        d=1e100.net; s=20230601; t=1703150246; x=1703755046;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=WFjrd8ZhQwAnSAwyee7sJ0A+pcsNZeHIawZTCBgrAgw=;
+        b=ldFYoxEHwx7r4YxgQ+D6CGZ/ez7Qt76l47yFg0XlMTYUm+e+Y53yIfT4Gkoi0vT3AV
+         uoyIq8+toWfsfLJM52vm7c9npjxPGSITzhH25ofrjpMFvIIyO2aT0dCk9VQroevGwz/V
+         ODFcweMEGc2XeAOnIfQOXnuuvyVlQB3IdkxuswLafHDtHNuHzmi6LiHJ6J8IpaHQmWvR
+         8A2+V3jbUo/spl1ydFqxQ71dey6GeObBLb5XbKtWVjjVcBZmmEJG7jzf6YxN5XnS5TGv
+         YHEmAJnMjdN6ixKAonivzGHx2LncjnMxbbcmjElXALre+u5URrHyyTQzOktO79vSu2u7
+         R/5w==
+X-Gm-Message-State: AOJu0YxkLJbUhOB2If5ijcHLEteLjGNK1Kopbs4MyHwZRMWd0WMjdkLN
+	y4E2EWy6qguRo3OiBPNSweRzWg==
+X-Google-Smtp-Source: AGHT+IHsXptoWJRqZd6XW34Sl5XGljArW+umpmHVR0efKcTbidWYnb0iQwcpHRvoq6cRsPZeZ8wTaQ==
+X-Received: by 2002:a17:906:608:b0:a19:a19b:788b with SMTP id s8-20020a170906060800b00a19a19b788bmr10128210ejb.78.1703150246166;
+        Thu, 21 Dec 2023 01:17:26 -0800 (PST)
+Received: from [192.168.0.22] ([78.10.206.178])
+        by smtp.gmail.com with ESMTPSA id z27-20020a17090674db00b00a26aa045d48sm244336ejl.117.2023.12.21.01.17.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Dec 2023 01:17:25 -0800 (PST)
+Message-ID: <413297a8-5006-4c8c-9a62-5cd31c51125b@linaro.org>
+Date: Thu, 21 Dec 2023 10:17:24 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/4] dt-bindings: firmware: xilinx: Describe missing
+ child nodes
+Content-Language: en-US
+To: Michal Simek <michal.simek@amd.com>, linux-kernel@vger.kernel.org,
+ monstr@monstr.eu, michal.simek@xilinx.com, git@xilinx.com
+Cc: Conor Dooley <conor+dt@kernel.org>, Jassi Brar
+ <jassisinghbrar@gmail.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Mark Brown <broonie@kernel.org>,
+ Naman Trivedi Manojbhai <naman.trivedimanojbhai@amd.com>,
+ Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+ kishore Manne <nava.kishore.manne@amd.com>,
+ linux-arm-kernel@lists.infradead.org
+References: <cover.1703066422.git.michal.simek@amd.com>
+ <12d012d7ee372e43142bc4a56b0bbf3cb9c51c34.1703066422.git.michal.simek@amd.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <12d012d7ee372e43142bc4a56b0bbf3cb9c51c34.1703066422.git.michal.simek@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+On 20/12/2023 11:00, Michal Simek wrote:
+> +  gpio:
+> +    $ref: /schemas/gpio/xlnx,zynqmp-gpio-modepin.yaml#
+> +    description: The gpio node describes connect to PS_MODE pins via firmware
+> +      interface.
+> +    type: object
+> +
+> +  pcap:
+> +    $ref: /schemas/fpga/xlnx,zynqmp-pcap-fpga.yaml
+> +    description: The ZynqMP SoC uses the PCAP (Processor Configuration Port) to
+> +      configure the Programmable Logic (PL). The configuration uses the
+> +      firmware interface.
+> +    type: object
+> +
+> +  pinctrl:
+> +    $ref: /schemas/pinctrl/xlnx,zynqmp-pinctrl.yaml#
+> +    description: The pinctrl node provides access to pinconfig and pincontrol
+> +      functionality available in firmware.
+> +    type: object
+> +
+> +  power-controller:
+> +    $ref: /schemas/power/reset/xlnx,zynqmp-power.yaml#
 
-Older code has an annoying habit of putting tabs between the type and the
-name of the variable. This doesn't really add to readability and newer
-code doesn't do it so make the entire file consistent.
+This should be "power-controller" only if it is a power domain provider.
+Is it? Bot's report suggest it is not, therefore I suggested
+power-management.
 
-Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
----
-v1 -> v2:
-- drop more tabs where my regex didn't find them before
+Also, please extend the example. The top-level example for complex
+devices should be complete. Apologies for not bringing it earlier.
 
-v2 ->v3:
-- arrange variables we're touching in a reverse x-mass tree
-
- drivers/gpio/gpiolib-sysfs.c | 65 ++++++++++++++++++------------------
- 1 file changed, 32 insertions(+), 33 deletions(-)
-
-diff --git a/drivers/gpio/gpiolib-sysfs.c b/drivers/gpio/gpiolib-sysfs.c
-index ae4fc013b675..4f7d4c00dac6 100644
---- a/drivers/gpio/gpiolib-sysfs.c
-+++ b/drivers/gpio/gpiolib-sysfs.c
-@@ -165,10 +165,10 @@ static irqreturn_t gpio_sysfs_irq(int irq, void *priv)
- /* Caller holds gpiod-data mutex. */
- static int gpio_sysfs_request_irq(struct device *dev, unsigned char flags)
- {
--	struct gpiod_data	*data = dev_get_drvdata(dev);
--	struct gpio_desc	*desc = data->desc;
--	unsigned long		irq_flags;
--	int			ret;
-+	struct gpiod_data *data = dev_get_drvdata(dev);
-+	struct gpio_desc *desc = data->desc;
-+	unsigned long irq_flags;
-+	int ret;
- 
- 	data->irq = gpiod_to_irq(desc);
- 	if (data->irq < 0)
-@@ -259,7 +259,7 @@ static ssize_t edge_store(struct device *dev,
- 		struct device_attribute *attr, const char *buf, size_t size)
- {
- 	struct gpiod_data *data = dev_get_drvdata(dev);
--	ssize_t	status = size;
-+	ssize_t status = size;
- 	int flags;
- 
- 	flags = sysfs_match_string(trigger_names, buf);
-@@ -292,10 +292,11 @@ static DEVICE_ATTR_RW(edge);
- /* Caller holds gpiod-data mutex. */
- static int gpio_sysfs_set_active_low(struct device *dev, int value)
- {
--	struct gpiod_data	*data = dev_get_drvdata(dev);
--	struct gpio_desc	*desc = data->desc;
--	int			status = 0;
--	unsigned int		flags = data->irq_flags;
-+	struct gpiod_data *data = dev_get_drvdata(dev);
-+	unsigned int flags = data->irq_flags;
-+	struct gpio_desc *desc = data->desc;
-+	int status = 0;
-+
- 
- 	if (!!test_bit(FLAG_ACTIVE_LOW, &desc->flags) == !!value)
- 		return 0;
-@@ -331,9 +332,9 @@ static ssize_t active_low_show(struct device *dev,
- static ssize_t active_low_store(struct device *dev,
- 		struct device_attribute *attr, const char *buf, size_t size)
- {
--	struct gpiod_data	*data = dev_get_drvdata(dev);
--	ssize_t			status;
--	long			value;
-+	struct gpiod_data *data = dev_get_drvdata(dev);
-+	ssize_t status;
-+	long value;
- 
- 	status = kstrtol(buf, 0, &value);
- 	if (status)
-@@ -399,7 +400,7 @@ static const struct attribute_group *gpio_groups[] = {
- static ssize_t base_show(struct device *dev,
- 			       struct device_attribute *attr, char *buf)
- {
--	const struct gpio_chip	*chip = dev_get_drvdata(dev);
-+	const struct gpio_chip *chip = dev_get_drvdata(dev);
- 
- 	return sysfs_emit(buf, "%d\n", chip->base);
- }
-@@ -408,7 +409,7 @@ static DEVICE_ATTR_RO(base);
- static ssize_t label_show(struct device *dev,
- 			       struct device_attribute *attr, char *buf)
- {
--	const struct gpio_chip	*chip = dev_get_drvdata(dev);
-+	const struct gpio_chip *chip = dev_get_drvdata(dev);
- 
- 	return sysfs_emit(buf, "%s\n", chip->label ?: "");
- }
-@@ -417,7 +418,7 @@ static DEVICE_ATTR_RO(label);
- static ssize_t ngpio_show(struct device *dev,
- 			       struct device_attribute *attr, char *buf)
- {
--	const struct gpio_chip	*chip = dev_get_drvdata(dev);
-+	const struct gpio_chip *chip = dev_get_drvdata(dev);
- 
- 	return sysfs_emit(buf, "%u\n", chip->ngpio);
- }
-@@ -441,11 +442,10 @@ static ssize_t export_store(const struct class *class,
- 				const struct class_attribute *attr,
- 				const char *buf, size_t len)
- {
--	long			gpio;
--	struct gpio_desc	*desc;
--	int			status;
--	struct gpio_chip	*gc;
--	int			offset;
-+	struct gpio_desc *desc;
-+	struct gpio_chip *gc;
-+	int status, offset;
-+	long gpio;
- 
- 	status = kstrtol(buf, 0, &gpio);
- 	if (status < 0)
-@@ -493,9 +493,9 @@ static ssize_t unexport_store(const struct class *class,
- 				const struct class_attribute *attr,
- 				const char *buf, size_t len)
- {
--	long			gpio;
--	struct gpio_desc	*desc;
--	int			status;
-+	long gpio;
-+	struct gpio_desc *desc;
-+	int status;
- 
- 	status = kstrtol(buf, 0, &gpio);
- 	if (status < 0)
-@@ -556,14 +556,13 @@ static struct class gpio_class = {
-  */
- int gpiod_export(struct gpio_desc *desc, bool direction_may_change)
- {
--	struct gpio_chip	*chip;
--	struct gpio_device	*gdev;
--	struct gpiod_data	*data;
--	unsigned long		flags;
--	int			status;
--	const char		*ioname = NULL;
--	struct device		*dev;
--	int			offset;
-+	const char *ioname = NULL;
-+	struct gpio_device *gdev;
-+	struct gpiod_data *data;
-+	struct gpio_chip *chip;
-+	unsigned long flags;
-+	struct device *dev;
-+	int status, offset;
- 
- 	/* can't export until sysfs is available ... */
- 	if (!class_is_registered(&gpio_class)) {
-@@ -730,9 +729,9 @@ EXPORT_SYMBOL_GPL(gpiod_unexport);
- 
- int gpiochip_sysfs_register(struct gpio_device *gdev)
- {
--	struct device	*dev;
--	struct device	*parent;
- 	struct gpio_chip *chip = gdev->chip;
-+	struct device *parent;
-+	struct device *dev;
- 
- 	/*
- 	 * Many systems add gpio chips for SOC support very early,
--- 
-2.40.1
+Best regards,
+Krzysztof
 
 
