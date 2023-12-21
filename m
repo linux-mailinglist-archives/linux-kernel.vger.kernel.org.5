@@ -1,178 +1,145 @@
-Return-Path: <linux-kernel+bounces-8212-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8213-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22A3A81B3B8
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 11:35:45 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48DA881B3BB
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 11:37:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D2DB228243A
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 10:35:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DD4C8B234F5
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 10:37:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66AF669299;
-	Thu, 21 Dec 2023 10:35:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38DD969799;
+	Thu, 21 Dec 2023 10:37:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ecG/RIxA"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AC6D6978E;
-	Thu, 21 Dec 2023 10:35:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BAA052F4;
-	Thu, 21 Dec 2023 02:36:18 -0800 (PST)
-Received: from pluto (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 05D2E3F5A1;
-	Thu, 21 Dec 2023 02:35:32 -0800 (PST)
-Date: Thu, 21 Dec 2023 10:35:30 +0000
-From: Cristian Marussi <cristian.marussi@arm.com>
-To: Xinglong Yang <xinglong.yang@cixtech.com>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
-	"sudeep.holla@arm.com" <sudeep.holla@arm.com>,
-	"vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
-	"stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: Re: [PATCH] firmware: arm_scmi: Check Mailbox/SMT channel for
- consistency
-Message-ID: <ZYQU8n7btB17nvuc@pluto>
-References: <20231220172112.763539-1-cristian.marussi@arm.com>
- <PUZPR06MB54988A8170D462FC8EE43A05F095A@PUZPR06MB5498.apcprd06.prod.outlook.com>
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 216EF6A00A;
+	Thu, 21 Dec 2023 10:37:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1d3e05abcaeso4347415ad.1;
+        Thu, 21 Dec 2023 02:37:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703155036; x=1703759836; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=IO8ymlIh0gwHq3H5R4Z60V2oV0umNMIZNVLXryGviuo=;
+        b=ecG/RIxA/2o3CmvCfRjiQz4EdwhgY6JzxAa9+gs/Ro1jgMa+ivK6HQDee2tRjnNR2/
+         zWyzhH1VfsXz1EVI4tPFHC6XC/VoChjUGz67QOHuVoi7MtSfBHKcO0xhXOa2K14fMo4a
+         akmozCAl78OLvlQiQBBh8rW4L0sjvUK1V6M9zqAK8uwA1DUTgp05jOJK0ZyQTKdJ+Nk0
+         AMj8RnUyHi2dO/bLtb3H0LMAmC3/P6lZQTov7Qegpe4ncOdyE85JpWpXJnOeS7z4VIds
+         07cGq4qEouTpY50VmL4DT1sP9+h+pTmLOpddiNUa++cnIootjflV/wNF/U15l0oPKDJJ
+         qScw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703155036; x=1703759836;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=IO8ymlIh0gwHq3H5R4Z60V2oV0umNMIZNVLXryGviuo=;
+        b=irfFEDJ0PhR5aJnTE9jZVIgtJAR1WdGyKJy55rdm2eCvBwq0HjqYML/+VbW3nJWuJF
+         sJcXtdYDBpce0aRXkHYUDR/dEjsgzyfQ2d1SLHQZXYhYRY6IS85IDlfPBb5wYwqVc8FL
+         t3wA4xtf3mRyYJ0CX0or/QHFmSHb9uAJz8wS7SChN7KIdVA5OgdnNoKf4+8djUQDWiDp
+         nc+0nr9/Y7F10cLoeXLJYxjE8tghbjqZmlCcsE8jU7ENVz/9C0cj87olDrN1Kr+HPj6U
+         J1ineJNNwkCoy5JRadvcqvCu1d7DY9jYy8RV9+iYefE2wrSUpITfIjKnPXRIDu9XsI0T
+         Z77Q==
+X-Gm-Message-State: AOJu0YyhIsD2XZVMg/WgxxQLs+f/jDiqed5obA6+2dUNpxULEkvsiUpM
+	GolZbLAI+ufA9lR7/+T4yxk=
+X-Google-Smtp-Source: AGHT+IGGapBB/ZVyZ5dQirjzaEf8Bd8ICbenKipZ4RF+MCrODOjbzrEx3sy7ioh372Oew4KHI3OMJw==
+X-Received: by 2002:a17:902:c406:b0:1d0:44f6:ccb9 with SMTP id k6-20020a170902c40600b001d044f6ccb9mr12403732plk.65.1703155036374;
+        Thu, 21 Dec 2023 02:37:16 -0800 (PST)
+Received: from g2039B650.. ([2001:da8:203:a502:3f:1d17:2d9c:d20])
+        by smtp.gmail.com with ESMTPSA id w19-20020a170902d3d300b001d3eb987bb6sm1301005plb.149.2023.12.21.02.37.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Dec 2023 02:37:15 -0800 (PST)
+From: Gui-Dong Han <2045gemini@gmail.com>
+To: mchehab@kernel.org,
+	hverkuil-cisco@xs4all.nl,
+	gregkh@linuxfoundation.org,
+	mcgrof@kernel.org
+Cc: linux-media@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	baijiaju1990@outlook.com,
+	Gui-Dong Han <2045gemini@gmail.com>,
+	BassCheck <bass@buaa.edu.cn>
+Subject: [PATCH] [media] xc4000: Fix atomicity violation in xc4000_get_frequency
+Date: Thu, 21 Dec 2023 18:37:07 +0800
+Message-Id: <20231221103707.4129-1-2045gemini@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <PUZPR06MB54988A8170D462FC8EE43A05F095A@PUZPR06MB5498.apcprd06.prod.outlook.com>
+Content-Transfer-Encoding: 8bit
 
-On Thu, Dec 21, 2023 at 10:31:29AM +0000, Xinglong Yang wrote:
-> Hi, Cristian
-> 
-> This patch successfully solves the bug.
-> 
+In xc4000_get_frequency():
+	*freq = priv->freq_hz + priv->freq_offset;
+The code accesses priv->freq_hz and priv->freq_offset without holding any
+lock.
 
-Hi Xinglong,
+In xc4000_set_params():
+	// Code that updates priv->freq_hz and priv->freq_offset
+	...
 
-thanks for reporting and testing !
+xc4000_get_frequency() and xc4000_set_params() may execute concurrently,
+risking inconsistent reads of priv->freq_hz and priv->freq_offset. Since
+these related data may update during reading, it can result in incorrect
+frequency calculation, leading to atomicity violations.
 
-Cristian
+This possible bug is found by an experimental static analysis tool
+developed by our team. This tool analyzes the locking APIs to extract
+function pairs that can be concurrently executed, and then analyzes the
+instructions in the paired functions to identify possible concurrency bugs
+including data races and atomicity violations. The above possible bug is
+reported when our tool analyzes the source code of Linux 6.2.
 
-> From: Cristian Marussi <cristian.marussi@arm.com> Sent: Thursday, December 21, 2023 1:21 AM
-> > On reception of a completion interrupt the SMT memory area is accessed to
-> > retrieve the message header at first and then, if the message sequence
-> > number identifies a transaction which is still pending, the related
-> > payload is fetched too.
-> >
-> > When an SCMI command times out the channel ownership remains with the
-> > platform until eventually a late reply is received and, as a consequence,
-> > any further transmission attempt remains pending, waiting for the channel
-> > to be relinquished by the platform.
-> >
-> > Once that late reply is received the channel ownership is given back
-> > to the agent and any pending request is then allowed to proceed and
-> > overwrite the SMT area of the just delivered late reply; then the wait for
-> > the reply to the new request starts.
-> >
-> > It has been observed that the spurious IRQ related to the late reply can
-> > be wrongly associated with the freshly enqueued request: when that
-> > happens
-> > the SCMI stack in-flight lookup procedure is fooled by the fact that the
-> > message header now present in the SMT area is related to the new pending
-> > transaction, even though the real reply has still to arrive.
-> >
-> > This race-condition on the A2P channel can be detected by looking at the
-> > channel status bits: a genuine reply from the platform will have set the
-> > channel free bit before triggering the completion IRQ.
-> >
-> > Add a consistency check to validate such condition in the A2P ISR.
-> >
-> > Reported-by: Xinglong Yang <xinglong.yang@cixtech.com>
-> > Closes:
-> > https://lore.k/
-> > ernel.org%2Fall%2FPUZPR06MB54981E6FA00D82BFDBB864FBF08DA%40PUZP
-> > R06MB5498.apcprd06.prod.outlook.com%2F&data=05%7C02%7Cxinglong.ya
-> > ng%40cixtech.com%7C669e9ff5e6764a77791208dc01801b8e%7C0409f77ae53
-> > d4d23943eccade7cb4811%7C1%7C0%7C638386896955072826%7CUnknown%
-> > 7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haW
-> > wiLCJXVCI6Mn0%3D%7C3000%7C%7C%7C&sdata=T1DOD7KfY%2FJNJHacHtX
-> > d5wcfde%2Fd5UDqGvyW4vuYwYU%3D&reserved=0
-> > Fixes: 5c8a47a5a91d ("firmware: arm_scmi: Make scmi core independent of
-> > the transport type")
-> > CC: stable@vger.kernel.org # 5.15+
-> > Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
-> > ---
-> >  drivers/firmware/arm_scmi/common.h  |  1 +
-> >  drivers/firmware/arm_scmi/mailbox.c | 14 ++++++++++++++
-> >  drivers/firmware/arm_scmi/shmem.c   |  6 ++++++
-> >  3 files changed, 21 insertions(+)
-> >
-> > diff --git a/drivers/firmware/arm_scmi/common.h
-> > b/drivers/firmware/arm_scmi/common.h
-> > index 3b7c68a11fd0..0956c2443840 100644
-> > --- a/drivers/firmware/arm_scmi/common.h
-> > +++ b/drivers/firmware/arm_scmi/common.h
-> > @@ -329,6 +329,7 @@ void shmem_fetch_notification(struct
-> > scmi_shared_mem __iomem *shmem,
-> >  void shmem_clear_channel(struct scmi_shared_mem __iomem *shmem);
-> >  bool shmem_poll_done(struct scmi_shared_mem __iomem *shmem,
-> >                      struct scmi_xfer *xfer);
-> > +bool shmem_channel_free(struct scmi_shared_mem __iomem *shmem);
-> >
-> >  /* declarations for message passing transports */
-> >  struct scmi_msg_payld;
-> > diff --git a/drivers/firmware/arm_scmi/mailbox.c
-> > b/drivers/firmware/arm_scmi/mailbox.c
-> > index 19246ed1f01f..b8d470417e8f 100644
-> > --- a/drivers/firmware/arm_scmi/mailbox.c
-> > +++ b/drivers/firmware/arm_scmi/mailbox.c
-> > @@ -45,6 +45,20 @@ static void rx_callback(struct mbox_client *cl, void *m)
-> >  {
-> >         struct scmi_mailbox *smbox = client_to_scmi_mailbox(cl);
-> >
-> > +       /*
-> > +        * An A2P IRQ is NOT valid when received while the platform still has
-> > +        * the ownership of the channel, because the platform at first releases
-> > +        * the SMT channel and then sends the completion interrupt.
-> > +        *
-> > +        * This addresses a possible race condition in which a spurious IRQ from
-> > +        * a previous timed-out reply which arrived late could be wrongly
-> > +        * associated with the next pending transaction.
-> > +        */
-> > +       if (cl->knows_txdone && !shmem_channel_free(smbox->shmem)) {
-> > +               dev_warn(smbox->cinfo->dev, "Ignoring spurious A2P IRQ !\n");
-> > +               return;
-> > +       }
-> > +
-> >         scmi_rx_callback(smbox->cinfo, shmem_read_header(smbox->shmem),
-> > NULL);
-> >  }
-> >
-> > diff --git a/drivers/firmware/arm_scmi/shmem.c
-> > b/drivers/firmware/arm_scmi/shmem.c
-> > index 87b4f4d35f06..517d52fb3bcb 100644
-> > --- a/drivers/firmware/arm_scmi/shmem.c
-> > +++ b/drivers/firmware/arm_scmi/shmem.c
-> > @@ -122,3 +122,9 @@ bool shmem_poll_done(struct scmi_shared_mem
-> > __iomem *shmem,
-> >                 (SCMI_SHMEM_CHAN_STAT_CHANNEL_ERROR |
-> >                  SCMI_SHMEM_CHAN_STAT_CHANNEL_FREE);
-> >  }
-> > +
-> > +bool shmem_channel_free(struct scmi_shared_mem __iomem *shmem)
-> > +{
-> > +       return (ioread32(&shmem->channel_status) &
-> > +                       SCMI_SHMEM_CHAN_STAT_CHANNEL_FREE);
-> > +}
-> > --
-> > 2.34.1
-> 
-> Thanks,
-> Xinglong
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+To address this issue, it is proposed to add a mutex lock pair in
+xc4000_get_frequency() to ensure atomicity. With this patch applied, our
+tool no longer reports the possible bug, with the kernel configuration
+allyesconfig for x86_64. Due to the lack of associated hardware, we cannot
+test the patch in runtime testing, and just verify it according to the
+code logic.
+
+Fixes: 4c07e32884ab6 ("[media] xc4000: Fix get_frequency()")
+Reported-by: BassCheck <bass@buaa.edu.cn>
+Signed-off-by: Gui-Dong Han <2045gemini@gmail.com>
+---
+ drivers/media/tuners/xc4000.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/media/tuners/xc4000.c b/drivers/media/tuners/xc4000.c
+index 57ded9ff3f04..29bc63021c5a 100644
+--- a/drivers/media/tuners/xc4000.c
++++ b/drivers/media/tuners/xc4000.c
+@@ -1515,10 +1515,10 @@ static int xc4000_get_frequency(struct dvb_frontend *fe, u32 *freq)
+ {
+ 	struct xc4000_priv *priv = fe->tuner_priv;
+ 
++	mutex_lock(&priv->lock);
+ 	*freq = priv->freq_hz + priv->freq_offset;
+ 
+ 	if (debug) {
+-		mutex_lock(&priv->lock);
+ 		if ((priv->cur_fw.type
+ 		     & (BASE | FM | DTV6 | DTV7 | DTV78 | DTV8)) == BASE) {
+ 			u16	snr = 0;
+@@ -1529,8 +1529,8 @@ static int xc4000_get_frequency(struct dvb_frontend *fe, u32 *freq)
+ 				return 0;
+ 			}
+ 		}
+-		mutex_unlock(&priv->lock);
+ 	}
++	mutex_unlock(&priv->lock);
+ 
+ 	dprintk(1, "%s()\n", __func__);
+ 
+-- 
+2.34.1
+
 
