@@ -1,116 +1,208 @@
-Return-Path: <linux-kernel+bounces-8491-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8492-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D36D981B884
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 14:48:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D7EAF81B893
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 14:49:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8F6A228DC11
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 13:48:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 66B581F269A4
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 13:49:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D2CB651B9;
-	Thu, 21 Dec 2023 13:26:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 751D776099;
+	Thu, 21 Dec 2023 13:29:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Sy3gvo9/"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A1u+yrJn"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57DE1651A0
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 13:26:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-40d41555f9dso2474115e9.2
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 05:26:51 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BE177609B;
+	Thu, 21 Dec 2023 13:29:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1d3cfb1568eso6929655ad.1;
+        Thu, 21 Dec 2023 05:29:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703165209; x=1703770009; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=SMPrASf3ODXGRhZpHsz7iXMp47vCIZq5ovBAGA4a71o=;
-        b=Sy3gvo9/EHraSGUSEoHDLjQGleobDL/EEQrRYLNwytsCliPxT/AOws7pt0nItHBBE3
-         dYKM0gGlg/bdIgj8nQzkPHndkgyRhsl13vTFA3idLFIsq/BiPvmrq3tVtnBFIahHxBWQ
-         B7opeDt/gzfDb6t/pQc07Ex9pdCGYxvYta1XGf9mHdXrlmqz9j2C/U2XprjDP1utuFJ/
-         +kPSantktg5HsO+YAVWYph9jMonlnCWVvB99heChfqc342XTXpOf8Mfxv69YB6z9HIx4
-         7BWqTETMb75ZWEUpbXsNV8RwZwEAm1WhmSO2e34jKeU7nv4qFYmCYmVbZQ2XWTi6H9QS
-         8Xjg==
+        d=gmail.com; s=20230601; t=1703165391; x=1703770191; darn=vger.kernel.org;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KYWiDqA/xVqURnqXRXqj1df8Wv23bEonDjlL7ZycWBs=;
+        b=A1u+yrJnfkyNq3+pCed94353DWTMDfeIV5OF/83Pk7YzpMCuXIu0sSPApIsc5zs5CB
+         hL4mcdmebYqDh4Nev7gP+i6zMbqjMoMYkplSXDNQHiVQ/OPmDuSVcYwSwxjAFwfUNBea
+         urvrHWsQYbycvWNNAC87SKZhTRcl1UOTxqWWH5rUXQhQBEIJghpK0lKZtD86E/qehJOU
+         hnwxUmIOGDtiT7vUX0E5sCNSHCgPtKw4XI20hH98zXHgozeGCW6zFYRE8EIKTTLe4NKx
+         ltpMnsKbjUxpAUxLEe+0C32/9kKXuC8eYO2/Mps8a4KSwGLc0G3KRxgDjzQlql+k6gmC
+         7Wlg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703165209; x=1703770009;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=SMPrASf3ODXGRhZpHsz7iXMp47vCIZq5ovBAGA4a71o=;
-        b=UfMu7x5sUHDbvV0l7emHrM10hXs9JZsClw16mjTL9B6Bf30ownrjqq+j6XVwIFHos1
-         GVY1Rl7I8XFuBdgNSSr8BjMTFLgJ6L0tWtgfkssLNoQCEO4HoXmSDGZgU0K3KlPji5lU
-         Ba6p8ecYxtsWUohpzXMD0u8cRX0V59pxqhlveYfnZ/vj+NzNRjKx3hUfPwIRxKhyJ6BI
-         1ELOWID9WgjSwNw7dWSYO177EDRUzgdwo1OBM5cmHp/4L81DOqqZY1iD+Em1ojnlqo41
-         qd3Ib98Rsn/bUIRT9P/ZbDzyEqXc/Y8Ohw6c76ncipKHOvYXDrKJT6PEyv65uDPPJ8Os
-         vmAA==
-X-Gm-Message-State: AOJu0YzoL+rqca9yH2HToXVD8H7nly6fV6H4aacSxNz09V4GSUJXSzoA
-	B+W9ALR2CvH1lpicDLuaVEOov6HyiJGASsrxpD8=
-X-Google-Smtp-Source: AGHT+IEeghN5G3QXjl0IENGXHhTPSRqw9N5h3DGK3ORdaEBST8xwxARBbpDbhVI/iDBFrRNCqI6lNg==
-X-Received: by 2002:a05:600c:3d16:b0:40d:1748:d0b7 with SMTP id bh22-20020a05600c3d1600b0040d1748d0b7mr763385wmb.101.1703165209533;
-        Thu, 21 Dec 2023 05:26:49 -0800 (PST)
-Received: from hackbox.lan ([79.115.23.25])
-        by smtp.gmail.com with ESMTPSA id u4-20020a05600c138400b0040c03c3289bsm3338756wmf.37.2023.12.21.05.26.48
+        d=1e100.net; s=20230601; t=1703165391; x=1703770191;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KYWiDqA/xVqURnqXRXqj1df8Wv23bEonDjlL7ZycWBs=;
+        b=XGNngtKy810F5QrPAfFFbRPCPO2xTcDYBGNv+4U+6xA+cVKw8jimH8BXP+nl3AkvLX
+         UQnHK81SdRUsOV+gjWhhJuAkHBIrRSLBT4zK71AdDMcBmO4fR+O4yUktOnNRPErUJ5oN
+         SPVx9PYslsqEP9XmkX75lTaJCtp3NaLwuttI8IFwvqaj/pJkK6YOaYyVHrF28LGI6x1p
+         hz7ivZRtlBCOWd4Jj9MNRV+Qo+NLo176++FnNnR9OgRyqmsqPe0QgPTPQhHfQhIqVU0y
+         bPSj9DJxzAKKTcSXQWRHQZJn67Gun58KO0Em5VMmaEVnl5NfweQc4XdjyyUet6oYZscu
+         OOng==
+X-Gm-Message-State: AOJu0YxclgxisTW3xxYbqRD7OK6voyAGCNDoTqSPDCE6rnDBt/VIOkhZ
+	gzNoJtvl/It2FpImAdq/ekV/unBHHis=
+X-Google-Smtp-Source: AGHT+IFFoM0rhYvpy9+Lbrf0OF4O0nZ9UnuICWHyRxK6jqe62Ztv/naVB+Q23U7A2DwZEymCG5+hcw==
+X-Received: by 2002:a17:903:2347:b0:1d3:c730:f0a2 with SMTP id c7-20020a170903234700b001d3c730f0a2mr7762164plh.118.1703165390748;
+        Thu, 21 Dec 2023 05:29:50 -0800 (PST)
+Received: from ruipeng-ThinkCentre-M730e-N010.company.local (014136220210.static.ctinets.com. [14.136.220.210])
+        by smtp.gmail.com with ESMTPSA id 28-20020a17090a1a1c00b0028b3539cd97sm4372382pjk.20.2023.12.21.05.29.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Dec 2023 05:26:49 -0800 (PST)
-From: Abel Vesa <abel.vesa@linaro.org>
-To: Mike Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>
-Cc: NXP Linux Team <linux-imx@nxp.com>,
-	linux-clk@vger.kernel.org,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] clk: imx: Updates for v6.8
-Date: Thu, 21 Dec 2023 15:26:34 +0200
-Message-Id: <20231221132634.3008144-1-abel.vesa@linaro.org>
-X-Mailer: git-send-email 2.34.1
+        Thu, 21 Dec 2023 05:29:50 -0800 (PST)
+From: Ruipeng Qi <ruipengqi7@gmail.com>
+To: corbet@lwn.net,
+	rafael.j.wysocki@intel.com,
+	gregkh@linuxfoundation.org,
+	bagasdotme@gmail.com,
+	carlos.bilbao@amd.com,
+	vegard.nossum@oracle.com
+Cc: skhan@linuxfoundation.org,
+	srinivas.pandruvada@linux.intel.com,
+	qiruipeng@lixiang.com,
+	linux@leemhuis.info,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [RFC PATCH 3/7] doc: Add osdump guide
+Date: Thu, 21 Dec 2023 21:29:43 +0800
+Message-Id: <20231221132943.653-1-ruipengqi7@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-The following changes since commit b85ea95d086471afb4ad062012a4d73cd328fa86:
+From: qiruipeng <qiruipeng@lixiang.com>
 
-  Linux 6.7-rc1 (2023-11-12 16:19:07 -0800)
+Add osdump guide for the users who try to compile with osdump enabled,
+use, and analysis real system problem.
 
-are available in the Git repository at:
+Signed-off-by: qiruipeng <qiruipeng@lixiang.com>
+---
+ Documentation/admin-guide/index.rst  |  1 +
+ Documentation/admin-guide/osdump.rst | 94 ++++++++++++++++++++++++++++
+ 2 files changed, 95 insertions(+)
+ create mode 100644 Documentation/admin-guide/osdump.rst
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/abelvesa/linux.git/ tags/clk-imx-6.8
+diff --git a/Documentation/admin-guide/index.rst b/Documentation/admin-guide/index.rst
+index 43ea35613dfc..1212ff4d130e 100644
+--- a/Documentation/admin-guide/index.rst
++++ b/Documentation/admin-guide/index.rst
+@@ -116,6 +116,7 @@ configure specific aspects of kernel behavior to your liking.
+    mono
+    namespaces/index
+    numastat
++   osdump
+    parport
+    perf-security
+    pm/index
+diff --git a/Documentation/admin-guide/osdump.rst b/Documentation/admin-guide/osdump.rst
+new file mode 100644
+index 000000000000..5738b03ff684
+--- /dev/null
++++ b/Documentation/admin-guide/osdump.rst
+@@ -0,0 +1,94 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++===================================================
++Documentation for osdump - The Os Minidump Solution
++===================================================
++
++Overview
++========
++
++Osdump is a new crash dumping solution aiming at specific embedded
++devices within Automotive or Industrial having the following features:
++ - limited memory.
++ - require quick reboots after system faults.
++
++To minimize the dump file size and maximize the dump process speed,
++Osdump provides the following features:
++ - excludes userspace memory, focusing solely on resolving OS-related issues.
++ - eliminates constant data such as text segments.
++ - core OS data for dumping, this includes:
++    - static allocated bss and data segments
++    - dynamic data such as:
++       - slub data for small-sized data
++       - some large-sized data alloced in pages.
++ - compresses dump data to help reduce dump file size
++
++Considering the large volume of non-contiguous data, a binary data format is
++used directly.
++
++By utilizing the dump file and vmlinux, a standard elf format file can be
++reassembled and parsed using crash tool.
++
++Declare
++========
++Mainly test on arm64 with 2G DDR, selecting slub as SLAB allocator, 39-bit for
++address space size.
++
++Configure and Build
++===================
++
++Kernel config
++-------------
++Disable CRASH_CORE, SLUB_DEBUG, and SLUB_TINY, and then select CONFIG_OS_MINIDUMP.
++
++Dts config
++----------
++Add one reserved region for osdump. Its size depends DDR size you are using. Here
++add one 16M reserved region with 2G's DDR.
++
++osdump {
++	compatible = "osdump";
++	reg = <0 0x64000000 0 0x1000000>;
++};
++
++Build the image after you have done with configuration.
++
++Trigger one panic and analysis it
++=================================
++
++0) Precondition
++---------------
++DDR won't poweroff during panic. Its content should not be lose.
++
++1) Generate dump file
++---------------------
++When a panic occurs, it will dump core data into specific reserved region.
++
++echo c > /proc/sysrq-trigger
++
++2) Get dump file
++----------------
++When system reboot from panic, run the following command to get dump file.
++
++cat /proc/osdump > ./osdump
++
++Got 13M dump file on my side.
++
++3) Run crash tool to generate standard elf file
++-----------------------------------------------
++
++crash --enable_raw_dumpfile ./vmlinux ./osdump  -m vabits_actual=39 --machdep\
++	kimage_voffset=0xffffffbf8f000000 --machdep phys_offset=0x80000000
++
++Add new feature for crash tool that reassemble a standard elf format file with
++the dump file and vmlinux. Will submit this patch later.
++
++4) Analysis with crash tool
++---------------------------
++
++crash ./vmlinux ./osdump_elf
++
++
++Note
++====
++disable when select CRASH_CORE, SLUB_DEBUG, or SLUB_TINY.
+-- 
+2.17.1
 
-for you to fetch changes up to f52f00069888e410cec718792b3e314624f209ea:
-
-  clk: imx: pll14xx: change naming of fvco to fout (2023-12-21 15:00:00 +0200)
-
-----------------------------------------------------------------
-i.MX clocks changes for 6.8
-
-- Document bindings for i.MX93 ANATOP clock driver
-- Free clk_node in SCU driver for resource with different owner
-- Update the LVDS clocks to be compatible with SCU firmware 1.15
-- Fix the name of the fvco in pll14xx by renaming it to fout
-
-----------------------------------------------------------------
-Alexander Stein (1):
-      clk: imx: clk-imx8qxp: fix LVDS bypass, pixel and phy clocks
-
-Kuan-Wei Chiu (1):
-      clk: imx: scu: Fix memory leak in __imx_clk_gpr_scu()
-
-Peng Fan (1):
-      dt-bindings: clock: support i.MX93 ANATOP clock module
-
-Shengjiu Wang (1):
-      clk: imx: pll14xx: change naming of fvco to fout
-
- .../bindings/clock/fsl,imx93-anatop.yaml           | 42 ++++++++++++++++++++++
- drivers/clk/imx/clk-imx8qxp.c                      | 24 ++++++++++---
- drivers/clk/imx/clk-pll14xx.c                      | 23 ++++++------
- drivers/clk/imx/clk-scu.c                          |  4 ++-
- 4 files changed, 77 insertions(+), 16 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/clock/fsl,imx93-anatop.yaml
 
