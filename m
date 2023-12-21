@@ -1,296 +1,133 @@
-Return-Path: <linux-kernel+bounces-8210-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8211-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2618481B3AF
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 11:34:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC75C81B3B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 11:35:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2FE6C1C255D8
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 10:34:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EE3A41C24804
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 10:35:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82673697B1;
-	Thu, 21 Dec 2023 10:33:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8416B697A9;
+	Thu, 21 Dec 2023 10:34:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b="PaE0ZMR+"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="R2cVRFVZ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B546D69799
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 10:33:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ew.tq-group.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87A896978F
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 10:34:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-5df49931b4eso7458597b3.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 02:34:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1703154800; x=1734690800;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=arYnRdf1QdNyi//6LefTyoCxnnz8QHpTtprbXj91ge0=;
-  b=PaE0ZMR+MCcRIKVKIBuL1iNK0Cz3MQq5oQ3j3fB4/yrJxYUoydXWF44p
-   +1ZPhPeNcm9Md1UQQIG4cz7+OWRaIY8zd+t5Fr6KPCFVRi5mNkO85tZrB
-   9vBlj9PAX/0BqcN9+3AHiAZvPmsPUnMBK5qmUwRnyXjYh/4/zoUb3x7ll
-   BxpMVOUPXxkUewwJTgZ29Rt7YGliI6JmiYgZdL9yzprXxeH+ujpwA9lw1
-   SEVifrtiNVg4BZNXk2ZGvPYBtc7yb/qfBtzM/YTxlBGpDHEMu4QLRCQZv
-   k+rV4q9qoextZ4N81zcEAj46tudzXxv0XMXiYzz+0jQZhHQhs9LWeYBTF
-   w==;
-X-IronPort-AV: E=Sophos;i="6.04,293,1695679200"; 
-   d="scan'208";a="34629820"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 21 Dec 2023 11:33:13 +0100
-Received: from [192.168.2.128] (SCHIFFERM-M2.tq-net.de [10.121.53.15])
-	by vtuxmail01.tq-net.de (Postfix) with ESMTPA id 51BBA280075;
-	Thu, 21 Dec 2023 11:33:13 +0100 (CET)
-Message-ID: <207e08e3942f88dc9809686e9b602224bb65930e.camel@ew.tq-group.com>
-Subject: Re: powerpc: several early boot regressions on MPC52xx
-From: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-To: Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc: "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, 
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux@ew.tq-group.com" <linux@ew.tq-group.com>,  Michael Ellerman
- <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, "Aneesh Kumar
- K.V" <aneesh.kumar@kernel.org>, "Naveen N.Rao"
- <naveen.n.rao@linux.ibm.com>,  Anatolij Gustschin <agust@denx.de>
-Date: Thu, 21 Dec 2023 11:33:12 +0100
-In-Reply-To: <5ac30d2e-8688-436c-8357-1ee287a5719b@csgroup.eu>
-References: <46a002f7fe894c7c7ed8324e48e9cd226e428894.camel@ew.tq-group.com>
-	 <277b815c-0d73-4f33-ba00-d89b9a0cdb35@csgroup.eu>
-	 <c24f49402864ab7f828f583886a1b469fc3607fe.camel@ew.tq-group.com>
-	 <5ac30d2e-8688-436c-8357-1ee287a5719b@csgroup.eu>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+        d=linaro.org; s=google; t=1703154891; x=1703759691; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=k1jggwYkG4hQyycQm/RtNvDfA67fuZq9Z5qOm74FzWI=;
+        b=R2cVRFVZK8yYhOW2cQy2NMWE6yMdB8Vpaknnm8gwCF9Zzsp8NPIjlsyO730w+Z9uWq
+         aLlHOLrLELiJzSm7HyXg6+J+Fwbz6ge/mocVKj8XVdGB9aquYgeDVQv811IKR2Dx7Wht
+         pg57sswTJBa51l5hvJ0JwjkXmxUg9kOrmnR3nmia05j2qsIfOHlX6ZYzMyQ46KmP5Mrm
+         gU4huELdFVHqMVD8Rk2X3lCGIEWZ4+huDzrDG/vyx880MQQXrffKaa68woz3ocioScli
+         C3xrjJ5PiO81X2gYwuWyvpWkfi6cDubS3PHtJH0DhCwnjiV4F7M4DkNMSMSDl5xIlq42
+         XrUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703154891; x=1703759691;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=k1jggwYkG4hQyycQm/RtNvDfA67fuZq9Z5qOm74FzWI=;
+        b=uaSJhKxNrVHEf7lfbCN0OJbCmW3oiPKJ1PtlVs18yW/GRpfEk/Nzd2pIzn3VcuWdmb
+         GhJ4s0xFQychmPkZ7tkfKdOnu4rCDY228agVkQ/CUubCwNwU4lJJdZjOuvmNRchDIXCU
+         gZqQP77sJkhMZtFpfs4v+nKUg2KCrg2bibd0UuaaFLdLq4hDxkV+05ztQblVCm2pdjyU
+         NCMvzfvVIQZJ2F5NxSD/M6tC8/bRm0n8u838nWIgKAlfXiEaSEvGnmlLI1PPlwwVTzV2
+         e0HE27Fyq6/DwtLLFVWuPxo7SIhLWVHlBQklyMH4Z2H2numWHa7aH/0SwmSySYYzH0Cd
+         lRkA==
+X-Gm-Message-State: AOJu0Yw7nYJnpuXKxordGgrVl2WhJmu+wOjGy8j6KxdL9NA90Pyd5Gc1
+	M1EQ9ZjMS2OoYXgvsAF8kFzLwH3PfKSGGWxJQYLZnw==
+X-Google-Smtp-Source: AGHT+IGfnie6/2dvOxBU6HIqheolQzMJV+6Zo4QAQEchMvhcGdYYrIohHNPC1JpbJAdq0YamseBDZvDZglYO6CXJ7tE=
+X-Received: by 2002:a0d:c5c3:0:b0:5d7:1940:b384 with SMTP id
+ h186-20020a0dc5c3000000b005d71940b384mr1196055ywd.80.1703154891585; Thu, 21
+ Dec 2023 02:34:51 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20231220-fp5-pmic-glink-v1-0-2a1f8e3c661c@fairphone.com>
+ <8d042095-1e09-45cc-9762-909fe8d663a9@linaro.org> <CXTU5MLN0YDS.29PPV8KZF8G9R@fairphone.com>
+In-Reply-To: <CXTU5MLN0YDS.29PPV8KZF8G9R@fairphone.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Thu, 21 Dec 2023 12:34:40 +0200
+Message-ID: <CAA8EJpoD3x=kVLu4x2yLtAqCp=wmGSU4ssq5Oj_SD5VQ=GyAYQ@mail.gmail.com>
+Subject: Re: [PATCH 0/3] Fairphone 5 PMIC-GLINK support (USB-C, charger, fuel gauge)
+To: Luca Weiss <luca.weiss@fairphone.com>
+Cc: Konrad Dybcio <konrad.dybcio@linaro.org>, Bjorn Andersson <andersson@kernel.org>, 
+	Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Heikki Krogerus <heikki.krogerus@linux.intel.com>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, cros-qcom-dts-watchers@chromium.org, 
+	~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org, 
+	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, 2023-12-20 at 14:55 +0000, Christophe Leroy wrote:
-> > Le 19/12/2023 =C3=A0 14:34, Matthias Schiffer a =C3=A9crit=C2=A0:
-> > > > [Vous ne recevez pas souvent de courriers de matthias.schiffer@ew.t=
-q-group.com. D=C3=A9couvrez pourquoi ceci est important =C3=A0 https://aka.=
-ms/LearnAboutSenderIdentification ]
-> > > >=20
-> > > > On Mon, 2023-12-18 at 19:48 +0000, Christophe Leroy wrote:
-> > > > > > Hi Matthias,
-> > > > > >=20
-> > > > > > Le 18/12/2023 =C3=A0 14:48, Matthias Schiffer a =C3=A9crit :
-> > > > > > > > Hi all,
-> > > > > > > >=20
-> > > > > > > > I'm currently in the process of porting our ancient TQM5200=
- SoM to a modern kernel, and I've
-> > > > > > > > identified a number of regressions that cause early boot fa=
-ilures (before the UART console has been
-> > > > > > > > initialized) with arch/powerpc/configs/52xx/tqm5200_defconf=
-ig.
-> > > > > >=20
-> > > > > > "modern" kernel =3D=3D> which version ?
-> > > >=20
-> > > > Hi Christophe,
-> > > >=20
-> > > > I was testing with torvalds/master as of yesterday, and bisected ev=
-erything from 4.14 to identify
-> > > > the commits related to the issues. For my current project, 6.1.y or=
- 6.6.y will likely be our kernel
-> > > > of choice, but I'd also like to get mainline to a working state aga=
-in if possible.
-> > > >=20
-> > > > > >=20
-> > > > > > > >=20
-> > > > > > > > Issue 1) Boot fails with CONFIG_PPC_KUAP enabled (enabled b=
-y default since 9f5bd8f1471d7
-> > > > > > > > "powerpc/32s: Activate KUAP and KUEP by default"). The reas=
-on is a number of of_iomap() calls in
-> > > > > > > > arch/powerpc/platforms/52xx that should be early_ioremap().
-> > > > > >=20
-> > > > > > Can you give more details and what leads you to that conclusion=
- ?
-> > > > > >=20
-> > > > > > There should be no relation between KUAP and of_iomap()/early_i=
-oremap().
-> > > > > > Problem is likely somewhere else.
-> > > >=20
-> > > > You are entirely right, the warnings about early_ioremap() were a r=
-ed hering. I can't reproduce any
-> > > > difference in boot behavior anymore I thought I was seeing when cha=
-nging the of_iomap() to
-> > > > early_ioremap(). I assume I got confused by testing for too many va=
-riables at once (kernel version +
-> > > > 2 Kconfig settings).
-> > > >=20
-> > > >=20
-> > > > > >=20
-> > > > > > > >=20
-> > > > > > > > I can fix this up easy enough for mpc5200_simple by changin=
-g mpc5200_setup_xlb_arbiter() to use
-> > > > > > > > early_ioremap() and moving mpc52xx_map_common_devices() fro=
-m the setup_arch to the init hook (one
-> > > > > > > > side effect is that mpc52xx_restart() only works a bit late=
-r, as it requires the mpc52xx_wdt mapping
-> > > > > > > > from mpc52xx_map_common_devices(); I'm not sure if there is=
- a better solution).
-> > > > > > > >=20
-> > > > > > > > For the other 52xx platforms (efika, lite5200, media5200) t=
-hings are a bit more chaotic, and they
-> > > > > > > > create several more temporary mappings from setup_arch. Eit=
-her they should all be moved to the init
-> > > > > > > > hook as well, or be converted to early_ioremap(), but I can=
-'t tell which is more appropriate. As a
-> > > > > > > > first step, I would propose a patch that fixes this for the=
- simple platforms and leaves the other
-> > > > > > > > ones unchanged.
-> > > > > > > >=20
-> > > > > > > > (Side note: I also found that before 16132529cee58 ("powerp=
-c/32s: Rework Kernel Userspace Access
-> > > > > > > > Protection"), boot would succeed even with KUAP enabled wit=
-hout changing the incorrect of_iomap(); I
-> > > > > > > > guess the old implementation was more lenient about the inc=
-orrect calls that the kernel warns
-> > > > > > > > about?)
-> > > > > >=20
-> > > > > > Interesting.
-> > > > > > Again, there shouldn't be any impact of those incorrect calls. =
-They are
-> > > > > > correct calls, it is just an historical method that we want to =
-get rid
-> > > > > > of on day.
-> > > > > > Could you then provide the dmesg of what/how it works here ? An=
-d then
-> > > > > > I'd also be interested in a dump of /sys/kernel/debug/kernel_pa=
-ge_tables
-> > > > > > and /sys/kernel/debug/powerpc/block_address_translation
-> > > > > > and /sys/kernel/debug/powerpc/segment_registers
-> > > > > >=20
-> > > > > > For that you'll need CONFIG_PTDUMP_DEBUGFS
-> > > >=20
-> > > > As it turns out, whatever issue existed with KUAP at the time when =
-it was changed to enabled by
-> > > > default for 32s (which was in 5.14) has been resolved in current ma=
-inline. Current torvalds/master
-> > > > boots fine with KUAP enabled, and only CONFIG_STRICT_KERNEL_RWX bre=
-aks the boot.
-> > > >=20
-> > > > > >=20
-> > > > > > > >=20
-> > > > > > > > Issue 2) Boot fails with CONFIG_STRICT_KERNEL_RWX enabled, =
-which is also the default nowadays.
-> > > > > > > >=20
-> > > > > > > > I have not found the cause of this boot failure yet; is the=
-re any way to debug this if the failure
-> > > > > > > > happens before the UART is available and I currently don't =
-have JTAG for this hardware?
-> > > > > >=20
-> > > > > > Shouldn't happen before UART is available, strict enforcement i=
-s
-> > > > > > perfomed by mark_readonly() and free_initmem() in the middle of
-> > > > > > kernel_init(). UART should be ON long before that.
-> > > > > >=20
-> > > > > > So it must be something in the setup that collides with CONFIG_=
-KUAP and
-> > > > > > CONFIG_STRICT_KERNEL_RWX.
-> > > > > >=20
-> > > > > > Could you send dmesg of when it works (ie without
-> > > > > > CONFIG_KUAP/CONFIG_STRICT_KERNEL_RWX) and when it doesn't work =
-if you
-> > > > > > get some initial stuff ?
-> > > >=20
-> > > > Here's the UART output of a working boot (CONFIG_STRICT_KERNEL_RWX =
-disabled; I have slightly
-> > > > extended tqm5200.dts to enable UART output of the cuImage wrapper):
-> > > >=20
-> > ...
-> > > >=20
-> > > > When boot doesn't work, the last messages I see are from the cuImag=
-e wrapper ("Finalizing device
-> > > > tree... flat tree at ...). The panic is expected, there is no rootf=
-s/initramfs in my current setup.
-> > > >=20
-> >=20
-> > Ok, so let's focus on CONFIG_STRICT_KERNEL_RWX then.
-> >=20
-> > The most efficient would be if you were able to activation your UART=
-=20
-> > console earlier and/or implement some PPC_EARLY_DEBUG stuff to see wher=
-e=20
-> > it fails.
-> >=20
-> > In your dmesg output, "Kernel memory protection not selected by kernel=
-=20
-> > config" is when the strict RWX gets activated when selected. Your UART=
-=20
-> > is enabled before that so if there was a problem with some driver=20
-> > writing in a RO area, it would be seen.
-> >=20
-> > One thing that came into my mind is that your CPU may have only 4 BATs=
-=20
-> > instead of 8. But I hacked the definition for the e300c2 CPU and my=20
-> > board still boots with only 4 BATs so it is not that.
-> > The thing is that to work properly, BATs should at least cover all=20
-> > kernel. But I built your kernel with your .config and GCC 11.3 and I go=
-t=20
-> > something that fits within 8M with the RO part stopping at 4M, so you'l=
-l=20
-> > have one 4M BAT set RO, then another 4M BAT set RW, one 8M and one 16M=
-=20
-> > BAT. It won't cover your entire 128M memory but shouldn't be a problem,=
-=20
-> > just less performant.
+On Thu, 21 Dec 2023 at 09:33, Luca Weiss <luca.weiss@fairphone.com> wrote:
+>
+> On Wed Dec 20, 2023 at 1:32 PM CET, Konrad Dybcio wrote:
+> > On 20.12.2023 11:02, Luca Weiss wrote:
+> > > This series adds all the necessary bits to enable USB-C role switching,
+> > > charger and fuel gauge (all via pmic-glink) on Fairphone 5.
+> > >
+> > > One thing that could be made different is the pmic-glink compatible.
+> > > I've chosen to use qcm6490 compatible for it and not sc7280 since
+> > > there's plenty of firmware variety on sc7280-based platforms and they
+> > > might require different quirks in the future, so limit this PDOS quirk
+> > > to just qcm6490 for now.
+> > >
+> > > If someone thinks it should be qcom,sc7280-pmic-glink, please let me
+> > > know :)
+> > IMO it's best to continue using the "base soc" (which just so happened
+> > to fall onto sc7280 this time around) for all compatibles, unless the
+> > derivatives actually had changes
+>
+> Hi Konrad,
+>
+> I think at some point I asked Dmitry what he thought and he mentioned
+> qcm6490. Even found the message again:
+>
+> > well, since it is a firmware thing, you might want to emphasise that.
+> > So from my POV qcm6490 makes more sense
+>
+> But yeah since it's likely that sc7280 firmware behaves the same as
+> qcm6490 firmware it's probably okay to use sc7280 compatible, worst case
+> we change it later :) I'll send a v2 with those changes.
 
-Hi Christophe,
+Worst case we end up with sc7280 which has yet another slightly
+different UCSI / PMIC GLINK implementation, but the compatible string
+is already taken.
+I still suppose that this should be a qcm6490-related string.
 
-this seems indeed have something to do with the issue. mmu_mapin_ram() cont=
-ains a
-strict_kernel_rwx_enabled() check that explains the early boot failure (and=
- as this is a runtime
-check, I can actually make the kernel boot by passing rodata=3Doff on the c=
-mdline!). I've added debug
-output show me the addresses in mmu_mapin_ram(): base=3D00000000 top=3D0800=
-0000 border=3D00400000.
-Modifying mmu_mapin_ram() to always use the !strict_kernel_rwx_enabled() pa=
-th makes the kernel boot
-until mark_readonly().
-
-Removing MMU_FTR_USE_HIGH_BATS from mmu_features or changing find_free_bat(=
-) to only use 4 BATs
-regardless of MMU_FTR_USE_HIGH_BATS results in a working kernel, but it is =
-unclear to me why that
-would be necessary, as the MPC5200B manual clearly states that it has 8.
-
-Regards,
-Matthias
-
-> >=20
-> > So what ? You said the size of the kernel is a problem for your=20
-> > bootloader. Could it be that ? When built with CONFIG_STRICT_KERNEL_RWX=
-,=20
-> > __end_rodata is aligned to 0xc0400000 whereas without=20
-> > CONFIG_STRICT_KERNEL_RWX __end_rodata is at 0xc038c000 and so the end o=
-f=20
-> > the kernel (seen from System.map) is 0xc0055e000 with=20
-> > CONFIG_STRICT_KERNEL_RWX and 0xc04de000 without it.
-> >=20
-> > One thing you can try is to see if it works without=20
-> > CONFIG_STRICT_KERNEL_RWX but with CONFIG_DATA_SHIFT forced to 22 which=
-=20
-> > is the value set when CONFIG_STRICT_KERNEL_RWX is selected.
-> > To be able to set that value, you'll have to hack arch/powerpc/Kconfig=
-=20
-> > directly and force it to select value 22 regardless of=20
-> > CONFIG_STRICT_KERNEL_RWX
+>
+> Regards
+> Luca
+>
+> >
+> > as far as firmware goes, I *think* CrOS doesn't even have PMIC_GLINK?
+> > There are however WoA 7280 laptops which totally should have it.. Would
+> > be nice to hunt some down and see if they report different stuff to
+> > what's there on android firmware
+> >
+> > Konrad
+>
 
 
-
-> >=20
-> > Christophe
-
---=20
-TQ-Systems GmbH | M=C3=BChlstra=C3=9Fe 2, Gut Delling | 82229 Seefeld, Germ=
-any
-Amtsgericht M=C3=BCnchen, HRB 105018
-Gesch=C3=A4ftsf=C3=BChrer: Detlef Schneider, R=C3=BCdiger Stahl, Stefan Sch=
-neider
-https://www.tq-group.com/
+-- 
+With best wishes
+Dmitry
 
