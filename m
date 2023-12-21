@@ -1,73 +1,76 @@
-Return-Path: <linux-kernel+bounces-8337-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8338-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB6D081B5E4
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 13:30:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5B5381B5E7
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 13:30:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6B2D81F2331B
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 12:30:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7721C2851B9
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 12:30:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79AB2745C5;
-	Thu, 21 Dec 2023 12:29:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 870CD745DA;
+	Thu, 21 Dec 2023 12:29:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SoBDDMEa"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB6256F601;
-	Thu, 21 Dec 2023 12:29:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
-Received: by verein.lst.de (Postfix, from userid 2407)
-	id AD52568B05; Thu, 21 Dec 2023 13:29:10 +0100 (CET)
-Date: Thu, 21 Dec 2023 13:29:10 +0100
-From: Christoph Hellwig <hch@lst.de>
-To: Jan Kara <jack@suse.cz>
-Cc: Christoph Hellwig <hch@lst.de>, linux-mm@kvack.org,
-	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	Jan Kara <jack@suse.com>, David Howells <dhowells@redhat.com>,
-	Brian Foster <bfoster@redhat.com>, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 15/17] writeback: Add for_each_writeback_folio()
-Message-ID: <20231221122910.GF17956@lst.de>
-References: <20231218153553.807799-1-hch@lst.de> <20231218153553.807799-16-hch@lst.de> <20231221115149.ke74ddapwb7q6fdz@quack3>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D78306E5AA;
+	Thu, 21 Dec 2023 12:29:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32218C433C8;
+	Thu, 21 Dec 2023 12:29:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703161777;
+	bh=PoxtAVe0j4/90nOVvQGxKKA/OruAhyMaLvS2TdzLSMI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=SoBDDMEaJ4bux3ThhKN3Z2K52Pwnq/Q3z90b621BFqbvSkNeojFC1l5cO2G0KAAqe
+	 7OoPn8BPGaav2dVvaj+4VIOc6TENMuZ5QICLgWQh11TVQbjjxZABqXUP0cxSiQmsm9
+	 s4NR/qqT0Wp4GciuGm3UGijcNKc4nzdi2GSTA5E3yYtpaF4PJ6uSi0kyZ1wi6vruWC
+	 fHLU26uJdLX50a/ZV0HFo0FPhhE1ttpWmWg/joMdP59NBp2e2u4Lga5bF46n+nnRIz
+	 oi03J4ySXOLXH+2tgNafO7wHUiSB5noagu8+CVHRximDMg5+W97kxNTPJSnS5llCDv
+	 RTuOFPWT/feUQ==
+Date: Thu, 21 Dec 2023 13:29:33 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Jens Axboe <axboe@kernel.dk>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: duplicate patches in the block tree
+Message-ID: <20231221-notieren-abbaggern-98327276ee4c@brauner>
+References: <20231221135602.12bf82f5@canb.auug.org.au>
+ <f31dae39-7c62-453a-8ca5-bd0b0e58769f@kernel.dk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231221115149.ke74ddapwb7q6fdz@quack3>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <f31dae39-7c62-453a-8ca5-bd0b0e58769f@kernel.dk>
 
-On Thu, Dec 21, 2023 at 12:51:49PM +0100, Jan Kara wrote:
-> On Mon 18-12-23 16:35:51, Christoph Hellwig wrote:
-> > From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+On Wed, Dec 20, 2023 at 08:11:34PM -0700, Jens Axboe wrote:
+> On 12/20/23 7:56 PM, Stephen Rothwell wrote:
+> > Hi all,
 > > 
-> > Wrap up the iterator with a nice bit of syntactic sugar.  Now the
-> > caller doesn't need to know about wbc->err and can just return error,
-> > not knowing that the iterator took care of storing errors correctly.
+> > The following commits are also in the vfs-brauner tree as different
+> > commits (but the same patches):
 > > 
-> > Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> > Signed-off-by: Christoph Hellwig <hch@lst.de>
+> >   24fa3ae9467f ("file: remove pointless wrapper")
+> >   253ca8678d30 ("Improve __fget_files_rcu() code generation (and thus __fget_light())")
+> >   372a34e66fb7 ("fs: replace f_rcuhead with f_task_work")
+> >   4e94ddfe2aab ("file: remove __receive_fd()")
+> >   7cb537b6f6d7 ("file: massage cleanup of files that failed to open")
+> >   a88c955fcfb4 ("file: s/close_fd_get_file()/file_close_fd()/g")
+> >   eac9189c9619 ("file: stop exposing receive_fd_user()")
 > 
-> Not sure if the trick with 'error' variable isn't a bit too clever for us
-> ;) We'll see how many bugs it will cause in the future...
+> Hmm confused, assumed vfs.file got rebased again, but doesn't look to be
+> the case. Christian?
 
-It's a bit too much syntactic sugar for my taste, but if we want a magic
-for macro I can't really see a good way around it.  I personally wouldn't
-mind a version where the writeback_get_folio moves out of
-writeback_iter_init and the pattern would look more like:
-
-	writeback_iter_init(mapping, wbc);
-	while ((folio = writeback_iter_next(mapping, wbc, folio))) {
-		wbc->err = <do something>
-	}
-
-	return wbc->err;
-
+Nope, vfs.file definitely didn't get rebased. That was just me being
+stupid and not merging vfs.file cleanly into vfs.all. Sorry about this.
+Fixed now.
 
