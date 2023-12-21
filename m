@@ -1,197 +1,198 @@
-Return-Path: <linux-kernel+bounces-8782-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8783-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1632A81BC27
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 17:38:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 892C481BC29
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 17:38:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0DE9A1C24057
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 16:38:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3D4561F2551D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 16:38:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 222B61643D;
-	Thu, 21 Dec 2023 16:38:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E7C655E59;
+	Thu, 21 Dec 2023 16:38:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="B3VG7w5b"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E3EC1DA43;
-	Thu, 21 Dec 2023 16:38:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=kernel.org
-X-IronPort-AV: E=McAfee;i="6600,9927,10931"; a="3235101"
-X-IronPort-AV: E=Sophos;i="6.04,293,1695711600"; 
-   d="scan'208";a="3235101"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Dec 2023 08:38:16 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10931"; a="847160659"
-X-IronPort-AV: E=Sophos;i="6.04,293,1695711600"; 
-   d="scan'208";a="847160659"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga004.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Dec 2023 08:38:13 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andy@kernel.org>)
-	id 1rGM3m-00000007tct-14wL;
-	Thu, 21 Dec 2023 18:38:10 +0200
-Date: Thu, 21 Dec 2023 18:38:09 +0200
-From: Andy Shevchenko <andy@kernel.org>
-To: Nick Desaulniers <ndesaulniers@google.com>
-Cc: tanzirh@google.com, Kees Cook <keescook@chromium.org>,
-	linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Nick DeSaulniers <nnn@google.com>,
-	Andrew Morton <akpm@linux-foundation.org>, llvm@lists.linux.dev,
-	Greg KH <gregkh@linuxfoundation.org>,
-	Alexander Viro <viro@zeniv.linux.org.uk>
-Subject: Re: [PATCH v3 2/2] lib/string: shrink lib/string.i via IWYU
-Message-ID: <ZYRp8cn_4pwyBe_m@smile.fi.intel.com>
-References: <20231218-libstringheader-v3-0-500bd58f0f75@google.com>
- <20231218-libstringheader-v3-2-500bd58f0f75@google.com>
- <ZYG83l5AW_zVw2aR@smile.fi.intel.com>
- <CAKwvOd=OXOHAiwue98jfqZ=TJSe21ecfgtf6jEihy8F=0EvWnA@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 708B21DA43
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 16:38:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57E64C433C8;
+	Thu, 21 Dec 2023 16:38:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703176725;
+	bh=HMdNywSAZfSjSugR4FE+3Y2J7vabtmdpKRNrrpSocdU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=B3VG7w5bBN2UShWNRNdDg2SO7lXblJ1jRLHQpVLu0gL06rWJ5pvDgZOr3ba3kr/75
+	 /7MsabqFrC3XZKGEoDCoqEhDNfq28Gxk98KviVTvT9LUq+xBY91nLYNZ9CxvfToAp2
+	 UBzSO15X/MjTIThzAUKWuskpSoBX7xawXY2OyXusVSL5rtx1yfGlg2aScWB+GNG0li
+	 7iQ9bylvPVAIVEZM7sYz1ANO1sBzNWJo49Mwfm+zx44w6q2rtOWgfd4mvVawESZF7I
+	 Bmd3nWAWbT49ki+ZBZKBaLrJt6BEU90yUxAb6zrhZ/jTeRwZgyej/ul/HW2GXmeoKU
+	 KKP3xo+o0/Cqg==
+Date: Thu, 21 Dec 2023 22:08:41 +0530
+From: Vinod Koul <vkoul@kernel.org>
+To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Cc: broonie@kernel.org, alsa-devel@alsa-project.org,
+	Basavaraj.Hiregoudar@amd.com, Sunil-kumar.Dommati@amd.com,
+	pierre-louis.bossart@linux.intel.com, vinod.koul@intel.com,
+	venkataprasad.potturu@amd.com,
+	Bard Liao <yung-chuan.liao@linux.intel.com>,
+	Sanyog Kale <sanyog.r.kale@intel.com>,
+	open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 04/12] drivers: soundwire: refactor soundwire pads enable
+Message-ID: <ZYRqEbVADgU4fNtB@matsya>
+References: <20231221073558.3181911-1-Vijendar.Mukunda@amd.com>
+ <20231221073558.3181911-5-Vijendar.Mukunda@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAKwvOd=OXOHAiwue98jfqZ=TJSe21ecfgtf6jEihy8F=0EvWnA@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20231221073558.3181911-5-Vijendar.Mukunda@amd.com>
 
-On Tue, Dec 19, 2023 at 08:43:01AM -0800, Nick Desaulniers wrote:
-> On Tue, Dec 19, 2023 at 7:55 AM Andy Shevchenko <andy@kernel.org> wrote:
-> > On Mon, Dec 18, 2023 at 06:44:48PM +0000, tanzirh@google.com wrote:
-
-...
-
-> > >  #define __NO_FORTIFY
-> > >  #include <linux/types.h>
-> > > -#include <linux/string.h>
-> > > -#include <linux/ctype.h>
-> > > -#include <linux/kernel.h>
-> > > -#include <linux/export.h>
-> > > +#include <linux/bits.h>
-> > >  #include <linux/bug.h>
-> > >  #include <linux/errno.h>
-> > > -#include <linux/slab.h>
-> >
-> > > -
-> >
-> > Why this blank is removed?
+On 21-12-23, 13:05, Vijendar Mukunda wrote:
+> As sdw pads enable sequence is executed only once, invoke it
+> from probe sequence.
 > 
-> The automation isn't aware of any convention around having blank lines
-> separate linux/* vs asm/*.  Is that a convention we have throughout
-> the kernel, or just this file?
+> Program required pads for both manager instances
+> based on link_mask during probe sequence. This will avoid
+> acquiring mutex lock.
 
-There is no documented conventions like this. Probably one has to add some,
-let's say, recommendations.
+something wrong with your editor to have this formatting, you can use
+upto 80 chars here!
 
-This way (alphabetical ordering and grouping) it is easier to maintain and
-in long term makes easier (less possible conflicts) when backporting.
 
-> If we rerun the automation on this file after Tanzir's patch here, we
-> get no further changes.  If we manually touch up the results, then
-> rerun the automation, it will undo the manual touch ups.
+> Remove unnecessary delay after programming ACP_SW_PAD_KEEPER_EN
+> register.
 > 
-> I don't mind saying "you might have to manually touch up the results
-> of the automation to comply with <link to documentation on stated
-> kernel policy/style guide>" but on the other hand I also think it
-> would be nice if other folks run the automation so that they don't get
-> additional changes.  I'd like to avoid drive-by patches that just undo
-> any manual touch ups.
-
-I agree with this, but we have many maintainers and reviewers and some
-ask one way, the others another way and so on... Without documentation
-one can use a common sense and rationale behind it.
-
-I don't really care about blank lines (however grouping is still done
-as of today in this file), but I do care about ordering and grouping.
-
-...
-
-> > > +#include <linux/linkage.h>
-> > > +#include <linux/stddef.h>
-> > > +#include <linux/string.h>
-> > > +#include <linux/ctype.h>
-> > >  #include <asm/unaligned.h>
-> > > -#include <asm/byteorder.h>
-> > > +#include <asm/rwonce.h>
-> > >  #include <asm/word-at-a-time.h>
-> > >  #include <asm/page.h>
-> >
-> > Sort this group alphabetically as well.
+> Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+> ---
+>  drivers/soundwire/amd_init.c    | 45 +++++++++++++++++++++++++++++++++
+>  drivers/soundwire/amd_manager.c | 18 -------------
+>  2 files changed, 45 insertions(+), 18 deletions(-)
 > 
-> By default the automation sorts the result.  I asked Tanzir to
-> explicitly disable that; otherwise the resulting diffstat is hard to
-> tell precisely what was removed/added vs simply moved.
-> 
-> If he kept the default behavior, I highly suspect the feedback would
-> have been along the lines of "please don't sort the result; I can't
-> tell what moved vs was added or removed."
+> diff --git a/drivers/soundwire/amd_init.c b/drivers/soundwire/amd_init.c
+> index 5c9569d9ad01..b3b3c7266384 100644
+> --- a/drivers/soundwire/amd_init.c
+> +++ b/drivers/soundwire/amd_init.c
+> @@ -15,6 +15,47 @@
+>  
+>  #include "amd_init.h"
+>  
+> +#define ACP_PAD_PULLDOWN_CTRL				0x0001448
+> +#define ACP_SW_PAD_KEEPER_EN				0x0001454
+> +#define AMD_SDW_PAD_PULLDOWN_CTRL_ENABLE_MASK		0x7f9a
+> +#define AMD_SDW0_PAD_PULLDOWN_CTRL_ENABLE_MASK		0x7f9f
+> +#define AMD_SDW1_PAD_PULLDOWN_CTRL_ENABLE_MASK		0x7ffa
+> +#define AMD_SDW0_PAD_EN_MASK				1
+> +#define AMD_SDW1_PAD_EN_MASK				0x10
+> +#define AMD_SDW_PAD_EN_MASK	(AMD_SDW0_PAD_EN_MASK | AMD_SDW1_PAD_EN_MASK)
+> +
+> +static int amd_enable_sdw_pads(void __iomem *mmio, u32 link_mask, struct device *dev)
+> +{
+> +	u32 val;
+> +	u32 pad_keeper_en_mask, pad_pulldown_ctrl_mask;
+> +
+> +	switch (link_mask) {
+> +	case 1:
+> +		pad_keeper_en_mask = AMD_SDW0_PAD_EN_MASK;
+> +		pad_pulldown_ctrl_mask = AMD_SDW0_PAD_PULLDOWN_CTRL_ENABLE_MASK;
+> +		break;
+> +	case 2:
+> +		pad_keeper_en_mask = AMD_SDW1_PAD_EN_MASK;
+> +		pad_pulldown_ctrl_mask = AMD_SDW1_PAD_PULLDOWN_CTRL_ENABLE_MASK;
+> +		break;
+> +	case 3:
+> +		pad_keeper_en_mask = AMD_SDW_PAD_EN_MASK;
+> +		pad_pulldown_ctrl_mask = AMD_SDW_PAD_PULLDOWN_CTRL_ENABLE_MASK;
+> +		break;
+> +	default:
+> +		dev_err(dev, "No SDW Links are enabled\n");
+> +		return -ENODEV;
+> +	}
+> +
+> +	val = readl(mmio + ACP_SW_PAD_KEEPER_EN);
+> +	val |= pad_keeper_en_mask;
+> +	writel(val, mmio + ACP_SW_PAD_KEEPER_EN);
+> +	val = readl(mmio + ACP_PAD_PULLDOWN_CTRL);
+> +	val &= pad_pulldown_ctrl_mask;
+> +	writel(val, mmio + ACP_PAD_PULLDOWN_CTRL);
 
-Do you have such examples IRL?
+updatel() local macro?
 
-In any case, how would you satisfy the maintainer's request which asks for
-sorting?
+> +	return 0;
+> +}
+> +
+>  static int sdw_amd_cleanup(struct sdw_amd_ctx *ctx)
+>  {
+>  	int i;
+> @@ -37,6 +78,7 @@ static struct sdw_amd_ctx *sdw_amd_probe_controller(struct sdw_amd_res *res)
+>  	struct platform_device_info pdevinfo[2];
+>  	u32 link_mask;
+>  	int count, index;
+> +	int ret;
+>  
+>  	if (!res)
+>  		return NULL;
+> @@ -50,6 +92,9 @@ static struct sdw_amd_ctx *sdw_amd_probe_controller(struct sdw_amd_res *res)
+>  
+>  	count = res->count;
+>  	dev_dbg(&adev->dev, "Creating %d SDW Link devices\n", count);
+> +	ret = amd_enable_sdw_pads(res->mmio_base, res->link_mask, res->parent);
+> +	if (ret)
+> +		return NULL;
+>  
+>  	/*
+>  	 * we need to alloc/free memory manually and can't use devm:
+> diff --git a/drivers/soundwire/amd_manager.c b/drivers/soundwire/amd_manager.c
+> index c27b0b0f33a6..1427cccfc309 100644
+> --- a/drivers/soundwire/amd_manager.c
+> +++ b/drivers/soundwire/amd_manager.c
+> @@ -26,23 +26,6 @@
+>  
+>  #define to_amd_sdw(b)	container_of(b, struct amd_sdw_manager, bus)
+>  
+> -static void amd_enable_sdw_pads(struct amd_sdw_manager *amd_manager)
+> -{
+> -	u32 sw_pad_pulldown_val;
+> -	u32 val;
+> -
+> -	mutex_lock(amd_manager->acp_sdw_lock);
+> -	val = readl(amd_manager->acp_mmio + ACP_SW_PAD_KEEPER_EN);
+> -	val |= amd_manager->reg_mask->sw_pad_enable_mask;
+> -	writel(val, amd_manager->acp_mmio + ACP_SW_PAD_KEEPER_EN);
+> -	usleep_range(1000, 1500);
+> -
+> -	sw_pad_pulldown_val = readl(amd_manager->acp_mmio + ACP_PAD_PULLDOWN_CTRL);
+> -	sw_pad_pulldown_val &= amd_manager->reg_mask->sw_pad_pulldown_mask;
+> -	writel(sw_pad_pulldown_val, amd_manager->acp_mmio + ACP_PAD_PULLDOWN_CTRL);
+> -	mutex_unlock(amd_manager->acp_sdw_lock);
 
-> Perhaps we should add another commit on the series that manually sorts
-> the results _after_ the automation?
+so the code is copied from a GPL declared file to now and GPL + BSD one!
+Have you had lawyers look into this... why change one file license ?
 
-I have no objections for this way (doing it in a two separate changes).
-With the proposed you can satisfy any maintainer basically. Ones who
-do not want sorting, may skip that patch, indeed.
-
-> Do we have anything in Documentation/process/coding-style.rst about
-> sorting headers? There's a blip about clang-format sorting them, but
-> we don't have strong guidance along the lines of "you ought to sort
-> your includes (when you don't have special cases like x-macros)."
-
-Actually there is a rising trend to follow clang-format.
-I have no idea what it does, but my rationale is explained above.
-
-...
-
-> > > +#include <vdso/limits.h>
-> >
-> > Just use linux/limits.h.
-> >
-> > VDSO is a very special UAPI case. So it's even stricter rule
-> > than for asm/ for using anything from there.
-> 
-> We can add a special rule for this, Tanzir, please add. And remember
-> to re-measure the results of that change for this patch's commit
-> message.
-
-Yes, please do.
-
-...
-
-> > Expected result:
-> >
-> > #include <linux/bits.h>
-> > #include <linux/bug.h>
-> > #include <linux/ctype.h>
-> > #include <linux/errno.h>
-> > #include <linux/limits.h>
-> > #include <linux/linkage.h>
-> > #include <linux/stddef.h>
-> > #include <linux/string.h>
-> > #include <linux/types.h>
-> >
-> > #include <asm/page.h>
-> > #include <asm/rwonce.h>
-> > #include <asm/unaligned.h>
-> > #include <asm/word-at-a-time.h>
-
-So, let's have above with one or two patches.
+> -}
+> -
+>  static int amd_init_sdw_manager(struct amd_sdw_manager *amd_manager)
+>  {
+>  	u32 val;
+> @@ -872,7 +855,6 @@ int amd_sdw_manager_start(struct amd_sdw_manager *amd_manager)
+>  
+>  	prop = &amd_manager->bus.prop;
+>  	if (!prop->hw_disabled) {
+> -		amd_enable_sdw_pads(amd_manager);
+>  		ret = amd_init_sdw_manager(amd_manager);
+>  		if (ret)
+>  			return ret;
+> -- 
+> 2.34.1
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+~Vinod
 
