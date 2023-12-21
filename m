@@ -1,135 +1,108 @@
-Return-Path: <linux-kernel+bounces-7844-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7845-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7CF6E81AE23
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 05:50:35 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB42681AE25
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 05:52:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A1E421C22341
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 04:50:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6B537B23A39
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 04:52:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDF428C1A;
-	Thu, 21 Dec 2023 04:50:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B87078F5C;
+	Thu, 21 Dec 2023 04:52:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=windriver.com header.i=@windriver.com header.b="JnIBrTLY"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="KWpQE0/Z"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0b-0064b401.pphosted.com (mx0b-0064b401.pphosted.com [205.220.178.238])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oa1-f54.google.com (mail-oa1-f54.google.com [209.85.160.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D2728828
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 04:50:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=windriver.com
-Received: from pps.filterd (m0250812.ppops.net [127.0.0.1])
-	by mx0a-0064b401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BL4avfP030101;
-	Thu, 21 Dec 2023 04:50:18 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=windriver.com;
-	 h=from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	PPS06212021; bh=7JkIncfRxyQ+Fej3GFTekTiPTesvlqx4ud148+UtSbo=; b=
-	JnIBrTLYeKG+l0/0Rm4HTBce2nsHDhD5kdmAsipJOM9oCiKpujQavNPupz8n9Mqr
-	yQIihjbyhNF94kQelGClcpm5jog9B9Fci1DJnuX7TR+uXwATJkv6G4ws4ClOtHJI
-	nNP0iALcD0Nh5oYHLYwvx5au5Hf9IeK+l8uKZu6WKw4w9k/NeYU6+0N3shXMlHFo
-	V5HHNzU60tKVWD5laJR5KfGMI9jNi/9+clm/yqKtsuQ2ElMONAuDQyaq5HYp8L9Y
-	bpUkPMVa9rWJ+dbZA4LqPtDGEdEYkBguboJuaibS6z8bN9spfgVhms/yMmylUvLq
-	NnMmhpl1zIvKvDdXnCsz+Q==
-Received: from ala-exchng01.corp.ad.wrs.com (ala-exchng01.wrs.com [147.11.82.252])
-	by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 3v12v5wqxh-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-	Thu, 21 Dec 2023 04:50:17 +0000 (GMT)
-Received: from ala-exchng01.corp.ad.wrs.com (147.11.82.252) by
- ala-exchng01.corp.ad.wrs.com (147.11.82.252) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 20 Dec 2023 20:50:23 -0800
-Received: from pek-lpd-ccm6.wrs.com (147.11.136.210) by
- ala-exchng01.corp.ad.wrs.com (147.11.82.252) with Microsoft SMTP Server id
- 15.1.2507.35 via Frontend Transport; Wed, 20 Dec 2023 20:50:21 -0800
-From: Lizhi Xu <lizhi.xu@windriver.com>
-To: <syzbot+2f73ed585f115e98aee8@syzkaller.appspotmail.com>
-CC: <linux-kernel@vger.kernel.org>, <syzkaller-bugs@googlegroups.com>
-Subject: task hung in exfat_write_inode
-Date: Thu, 21 Dec 2023 12:50:14 +0800
-Message-ID: <20231221045014.3986230-1-lizhi.xu@windriver.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <000000000000db858c05f06f30b0@google.com>
-References: <000000000000db858c05f06f30b0@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8237A8F52
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 04:52:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-oa1-f54.google.com with SMTP id 586e51a60fabf-2037ef59df0so52335fac.1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 20:52:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google; t=1703134354; x=1703739154; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Bz5m5ul72l4RhCvdkAAZDejQ0Cy9sHzUwoLbrF+jVCs=;
+        b=KWpQE0/ZIZe0PHUnoHO0XzhADJujxKQGCrEEIiJcvvpuzPpkaJr2JxebOkM+Rrkopt
+         RoS6DfRdA4r66Rnwr3xcogsXp2tiMiBoRIeI5C8JK4wu70CGNx7s8NL7fRoqha/mrW9V
+         fr51hZ69Tj5k+x6qy1Bs9WDWZKe/e/1XhdBlo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703134354; x=1703739154;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Bz5m5ul72l4RhCvdkAAZDejQ0Cy9sHzUwoLbrF+jVCs=;
+        b=pDnqqWVdLDj/6WDhgXhHoW18Dv7MQ2ToBIRO+aVVri3F4eGtGLZQWBxIuD2JRhSrGL
+         RLO70uvxBr/yiiAIRyeskLcrZaBVNKHF+8rWG3PjYpR8fEkiF6bXqbKLDm4Kjv/on/yh
+         TslcSOdMa5NOb0oFctYkrbWuJBVVWCTqdSIJg4QBmI3F8m55OSXsjHtbZX230L60Gqbb
+         mB/0ZjpntOhtWLUP5GmQh9IeCPnRoKE6XvD0PJg/qcpdCNUGhWiGWmctKHJEaQ+17Lqw
+         BkECaOAjPXQAT9gNk6HtRf8Itf7pthdL4iNwPkAGfQ+v3jGkC2EPRbWrYkboWhgceKOk
+         EiFQ==
+X-Gm-Message-State: AOJu0YzZpjb2IvqoshrUQxCn22a5StGu93qx6+r3jfS8D6Y6HmZNumqP
+	BKGqezjmSjnoBp9JqJOaJlCFbQ==
+X-Google-Smtp-Source: AGHT+IFU6YIKltqtyRWS5Fq80oW1ZM2e2tj8nwLk0KoDFlFz6ocQhueT3KZ7ESKWk7sxooIZC+jWPA==
+X-Received: by 2002:a4a:a581:0:b0:591:cdc0:f28d with SMTP id d1-20020a4aa581000000b00591cdc0f28dmr12232023oom.0.1703134354564;
+        Wed, 20 Dec 2023 20:52:34 -0800 (PST)
+Received: from [192.168.1.128] ([38.175.170.29])
+        by smtp.gmail.com with ESMTPSA id j12-20020a02a68c000000b0046b70c98d41sm289714jam.26.2023.12.20.20.52.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Dec 2023 20:52:33 -0800 (PST)
+Message-ID: <56301ac9-ca34-44fa-b18b-9c779fe9b24a@linuxfoundation.org>
+Date: Wed, 20 Dec 2023 21:52:32 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: 4ciVVk5SHtqahktTgA_Y_-OLRdR_qJb2
-X-Proofpoint-GUID: 4ciVVk5SHtqahktTgA_Y_-OLRdR_qJb2
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-16_25,2023-11-16_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- impostorscore=0 suspectscore=0 bulkscore=0 phishscore=0 mlxlogscore=551
- priorityscore=1501 spamscore=0 clxscore=1011 adultscore=0
- lowpriorityscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2311290000 definitions=main-2312210033
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 5.15 000/159] 5.15.145-rc1 review
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
+Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+ torvalds@linux-foundation.org, akpm@linux-foundation.org,
+ linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+ lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+ f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, srw@sladewatkins.net,
+ rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com,
+ Shuah Khan <skhan@linuxfoundation.org>
+References: <20231220160931.251686445@linuxfoundation.org>
+Content-Language: en-US
+From: Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <20231220160931.251686445@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git f9ff5644bcc0
+On 12/20/23 09:07, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.15.145 release.
+> There are 159 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Fri, 22 Dec 2023 16:08:59 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.145-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-diff --git a/fs/exfat/fatent.c b/fs/exfat/fatent.c
-index 56b870d9cc0d..a40e0f5ca67c 100644
---- a/fs/exfat/fatent.c
-+++ b/fs/exfat/fatent.c
-@@ -149,7 +149,7 @@ static int __exfat_free_cluster(struct inode *inode, struct exfat_chain *p_chain
- {
- 	struct super_block *sb = inode->i_sb;
- 	struct exfat_sb_info *sbi = EXFAT_SB(sb);
--	int cur_cmap_i, next_cmap_i;
-+	int cur_cmap_i, next_cmap_i, ei = 0;
- 	unsigned int num_clusters = 0;
- 	unsigned int clu;
- 
-@@ -176,8 +176,11 @@ static int __exfat_free_cluster(struct inode *inode, struct exfat_chain *p_chain
- 
- 	if (p_chain->flags == ALLOC_NO_FAT_CHAIN) {
- 		unsigned int last_cluster = p_chain->dir + p_chain->size - 1;
-+		printk("b dir: %u, s: %u, nc: %u\n", p_chain->dir, p_chain->size, num_clusters);
- 		do {
- 			bool sync = false;
-+			if (ei > 100)
-+				break;
- 
- 			if (clu < last_cluster)
- 				next_cmap_i =
-@@ -192,12 +195,17 @@ static int __exfat_free_cluster(struct inode *inode, struct exfat_chain *p_chain
- 			exfat_clear_bitmap(inode, clu, (sync && IS_DIRSYNC(inode)));
- 			clu++;
- 			num_clusters++;
-+			ei++;
- 		} while (num_clusters < p_chain->size);
-+		printk("e dir: %u, s: %u, nc: %u, e: %d\n", p_chain->dir, p_chain->size, num_clusters, ei);
- 	} else {
-+		printk("b2 dir: %u, s: %u, nc: %u\n", p_chain->dir, p_chain->size, num_clusters);
- 		do {
- 			bool sync = false;
- 			unsigned int n_clu = clu;
- 			int err = exfat_get_next_cluster(sb, &n_clu);
-+			if (ei > 100)
-+				break;
- 
- 			if (err || n_clu == EXFAT_EOF_CLUSTER)
- 				sync = true;
-@@ -213,10 +221,12 @@ static int __exfat_free_cluster(struct inode *inode, struct exfat_chain *p_chain
- 			exfat_clear_bitmap(inode, clu, (sync && IS_DIRSYNC(inode)));
- 			clu = n_clu;
- 			num_clusters++;
-+			ei++;
- 
- 			if (err)
- 				goto dec_used_clus;
- 		} while (clu != EXFAT_EOF_CLUSTER);
-+		printk("e2 dir: %u, s: %u, nc: %u, e: %d\n", p_chain->dir, p_chain->size, num_clusters, ei);
- 	}
- 
- dec_used_clus:
+Compiled and booted on my test system. No dmesg regressions.
+
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+
+thanks,
+-- Shuah
 
