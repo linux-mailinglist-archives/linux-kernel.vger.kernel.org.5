@@ -1,188 +1,155 @@
-Return-Path: <linux-kernel+bounces-8552-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8553-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 754C981B94C
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 15:08:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 310D481B94F
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 15:08:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3069A2852AC
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 14:08:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D9DFB1F291E8
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 14:08:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEE0C55E52;
-	Thu, 21 Dec 2023 14:06:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 957EE6D6DA;
+	Thu, 21 Dec 2023 14:07:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nls8uA/Y"
+	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="VwVRVV2U"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C03EB6D6D4;
-	Thu, 21 Dec 2023 14:06:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1d3eae5c1d7so5488465ad.2;
-        Thu, 21 Dec 2023 06:06:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703167595; x=1703772395; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=HeYY+B/0an9doKVtx7kHfVX+n7t8supsqIk+dco+MIo=;
-        b=nls8uA/YhhqZRnbAyD4lmr/DsUyI0fOW7UuFhYmrY/aaOpcfQzWHa66qpWOI9nVgME
-         SCSThKCLh29eg8e9/GRQ05CCpw8qbWv2uQqwb7UB6lJ1m4ut6bpg/egwQtjh4fJ4kyFC
-         nuFhcMO7fJLwju8NWw2cX2NYnbBLEoXPDMgeQA7GzRpypJTvhPhWED3pIxhuJp/s2uji
-         GMkEwsxmgbpdbuzokpFkph33CrYeg1GNlIL7AfHcO93r2FKaPszlYOjFQ3KdvR1IifBQ
-         1OjPn0XlWvf7Q6zpOSmEghYe4nmWmCKI/mY+LsT2odrnKPnOkFXEoexNLm6+y7N1wn/b
-         PEbw==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DF856D6C8
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 14:07:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
+Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com [209.85.167.72])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id AECC73F16B
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 14:07:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+	s=20210705; t=1703167658;
+	bh=YSFGFVOxlECeWrb1201TBHQMqNul2EH+RYRBpW3Owdk=;
+	h=From:In-Reply-To:References:Mime-Version:Date:Message-ID:Subject:
+	 To:Cc:Content-Type;
+	b=VwVRVV2UVwXjf8JlJDzV3fN24W/UzOytMCEbJrXi7MlRdL8UvxWG8XKQCNiRX2IEu
+	 LXuDXj4OhJql4WQkiytPmQ+ZYvYYBIxnB7cYN6aB13g9cHm5yHZL0bNiU9vobyeWlD
+	 RXtbFcpaEEbrt9gJOvYAaTGiYpFwyn+m1wyagzV/vQy5usCyIa2S3QLLJ+pifiAlDw
+	 yQeyPdjUDeoJvFWrSHFWC9FOHgZ11pPWDUVKyXkwMp9H+A5+Hgu2JAqB/KVPbZn2+d
+	 qxlm8NiaSF/J+KKi6/nG8cZ8m9WPjY3/KNZnxG/F2jF2Iw84lp8pnZ090oI9pCzo5+
+	 w5hAHPGJJA/Ug==
+Received: by mail-lf1-f72.google.com with SMTP id 2adb3069b0e04-50e4dfdb01dso717960e87.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 06:07:38 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703167595; x=1703772395;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HeYY+B/0an9doKVtx7kHfVX+n7t8supsqIk+dco+MIo=;
-        b=rnCeY+YVv1OAAfHC7uAIA+qnB9lMH1tV2mfLxCufjvToXqwxr5U6u9TH3oZodblIU6
-         aPOlqkrNsSnMbDm8+T/8L9F3Tgh8gbpYemuXF7dkRBW3FLwDt5ugRcctUHC8iNA2UOhY
-         qbTyIz+quC70wu6zZQ292MtsSSXJfbUDLUoEX8FyCysq9KB9lh3Csw4XSrH5AWDgGJV0
-         V3CfiSRZXwPwFOgfchWMgd1Y+C2ViYxFmf25INdWrbwu5Qf3qLucQ8fbF/h4pAwiS0AM
-         5661u2AOnFEKFgRkoztNFpf0kdTjH8GbWPhzDR9fjNYwrFin0NPPzTuM7puHx3CEXkD0
-         xGow==
-X-Gm-Message-State: AOJu0YyHQghrKHp4Rv9zRN2qqVmfaJpj+y0d1n6Gysmtmz6LWWeJPn4U
-	9cgdAWiPFUeChUXkdq4OUsU=
-X-Google-Smtp-Source: AGHT+IEaqrSjm0IZ1a6acVewPpBsKczPCHT9IPDk2tpoKnvcbLP5Yuo2cBtidGgtLaaCcCnZVwLsjA==
-X-Received: by 2002:a17:902:cec1:b0:1d4:53b:c8ea with SMTP id d1-20020a170902cec100b001d4053bc8eamr722173plg.137.1703167594899;
-        Thu, 21 Dec 2023 06:06:34 -0800 (PST)
-Received: from archie.me ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id ix2-20020a170902f80200b001d3f1ca06b0sm1671360plb.233.2023.12.21.06.06.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Dec 2023 06:06:34 -0800 (PST)
-Received: by archie.me (Postfix, from userid 1000)
-	id 521BB10206DCF; Thu, 21 Dec 2023 21:06:29 +0700 (WIB)
-Date: Thu, 21 Dec 2023 21:06:28 +0700
-From: Bagas Sanjaya <bagasdotme@gmail.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Linux Networking <netdev@vger.kernel.org>,
-	Linux Kernel Janitors <kernel-janitors@vger.kernel.org>,
-	Kees Cook <keescook@chromium.org>, Jakub Kicinski <kuba@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	"Jiri Slaby (SUSE)" <jirislaby@kernel.org>,
-	Justin Stitt <justinstitt@google.com>,
-	Kunwu Chan <chentao@kylinos.cn>,
-	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	Nathan Chancellor <nathan@kernel.org>,
-	"Steven Rostedt (Google)" <rostedt@goodmis.org>,
-	Karsten Keil <isdn@linux-pingi.de>,
-	Karsten Keil <keil@b1-systems.de>,
-	YouHong Li <liyouhong@kylinos.cn>
-Subject: Re: [PATCH net 1/2] MAINTAINERS: Remove Karsten Keil
-Message-ID: <ZYRGZInfXmIfmAF7@archie.me>
-References: <20231221091419.11764-1-bagasdotme@gmail.com>
- <20231221091419.11764-2-bagasdotme@gmail.com>
- <2023122156-diocese-movie-3d75@gregkh>
- <ZYQYUgZrewi2Up50@archie.me>
- <2023122116-favoring-roulette-554f@gregkh>
- <ZYQgGxKOKqIe4TIL@archie.me>
- <2023122125-departure-squishier-95d4@gregkh>
+        d=1e100.net; s=20230601; t=1703167658; x=1703772458;
+        h=content-transfer-encoding:cc:to:subject:message-id:date
+         :mime-version:references:in-reply-to:from:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=YSFGFVOxlECeWrb1201TBHQMqNul2EH+RYRBpW3Owdk=;
+        b=Mku8UmN4aCYIz6qzvcKKDQbXNvjRCuQKUZNjPzplbCmcc99JlZ44AJt3IQrGJ56lHv
+         yDyeWeZV7tNRUymY7ShHGFLVLyx9LydR2/w9Xd6Yv2D46feTZWZRhzLFsIeyok21PLov
+         STn1M9w0E7I9Q0itKpECcftwLGJfY0fJlxg5vV1uCVsoSrI4D6uiq6j9f5IA5RuzULO4
+         u2HXvSmcgRPNIsMvzHmrVeQEqM/zmmd4CIrvwf7kDXB5aNcBwysJJi+eXbm/lDwkrykp
+         6wMJqps+NNG+pO4e/1kTqIwMMMgqMfgT0+srQesdoqtkanEvOHNyLT/TYdkScs8o/ozo
+         XouQ==
+X-Gm-Message-State: AOJu0YzKkEx6Ftoj1LcW8FOkQ4pir4ix3EWtLUogdrSwoUHnfzkK699W
+	WLPJuVR4k7zmJWYLrm6bVfKaj60BU3y+X0O3n97hp9vRrfb5LMbz2ONxtLg3cMSEWXs+wdKlTmo
+	ZQeiMtSKe1rL+pdTEHfcp+UtUMSEiMKz7+LqRih6vU61kkPY02GZpT/0U9g==
+X-Received: by 2002:ac2:5617:0:b0:50e:29c1:f829 with SMTP id v23-20020ac25617000000b0050e29c1f829mr3635667lfd.74.1703167658224;
+        Thu, 21 Dec 2023 06:07:38 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGplfpPbW0FT9ATmbiZqm1++et4V4L718raZzPodJBABIbwHrAdrNT6mNWONQxZ+jsDmjLpy/oSnYqjsp61ks4=
+X-Received: by 2002:ac2:5617:0:b0:50e:29c1:f829 with SMTP id
+ v23-20020ac25617000000b0050e29c1f829mr3635656lfd.74.1703167657892; Thu, 21
+ Dec 2023 06:07:37 -0800 (PST)
+Received: from 348282803490 named unknown by gmailapi.google.com with
+ HTTPREST; Thu, 21 Dec 2023 09:07:36 -0500
+From: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+In-Reply-To: <CACRpkdbx7BOoHzbGd6n5p=Ho3GhMcujwUzQam0jLe6Ysg+xsNg@mail.gmail.com>
+References: <20231215143906.3651122-1-emil.renner.berthing@canonical.com>
+ <20231215143906.3651122-2-emil.renner.berthing@canonical.com>
+ <20231215202137.GA317624-robh@kernel.org> <CAJM55Z9pBpYfwpxPH7bUumuosVDn9DHLSBngW6CtG7aK_z+_bQ@mail.gmail.com>
+ <CACRpkdYT+jf4=dk3Y9cwa_=aYCihVq93N-iT0RUbtT2-+PX69w@mail.gmail.com>
+ <CAJM55Z8osSFxKi_7=aRkEr+U3vAq0TS93OggnRzyPpssNuuJ3Q@mail.gmail.com> <CACRpkdbx7BOoHzbGd6n5p=Ho3GhMcujwUzQam0jLe6Ysg+xsNg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="peM86azSLoLfqTfS"
-Content-Disposition: inline
-In-Reply-To: <2023122125-departure-squishier-95d4@gregkh>
-
-
---peM86azSLoLfqTfS
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Mime-Version: 1.0
+Date: Thu, 21 Dec 2023 09:07:36 -0500
+Message-ID: <CAJM55Z8SwyNEqw4HWRd7G8Y9rdtOGtKy-KbzDorqohdK3nZg0A@mail.gmail.com>
+Subject: Re: [PATCH v1 1/8] dt-bindings: pinctrl: Add thead,th1520-pinctrl bindings
+To: Linus Walleij <linus.walleij@linaro.org>, 
+	Emil Renner Berthing <emil.renner.berthing@canonical.com>
+Cc: Rob Herring <robh@kernel.org>, linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org, 
+	Hoan Tran <hoan@os.amperecomputing.com>, Serge Semin <fancer.lancer@gmail.com>, 
+	Bartosz Golaszewski <brgl@bgdev.pl>, Andy Shevchenko <andy@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Jisheng Zhang <jszhang@kernel.org>, Guo Ren <guoren@kernel.org>, Fu Wei <wefu@redhat.com>, 
+	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Dec 21, 2023 at 12:53:36PM +0100, Greg Kroah-Hartman wrote:
-> On Thu, Dec 21, 2023 at 06:23:07PM +0700, Bagas Sanjaya wrote:
-> > On Thu, Dec 21, 2023 at 11:54:02AM +0100, Greg Kroah-Hartman wrote:
-> > > On Thu, Dec 21, 2023 at 05:49:54PM +0700, Bagas Sanjaya wrote:
-> > > > On Thu, Dec 21, 2023 at 10:32:09AM +0100, Greg Kroah-Hartman wrote:
-> > > > > On Thu, Dec 21, 2023 at 04:14:18PM +0700, Bagas Sanjaya wrote:
-> > > > > > He's no longer active maintaining ISDN/mISDN subsystem: his las=
-t message
-> > > > > > on kernel mailing lists was three years ago [1] and last commit=
- activity
-> > > > > > from him was 1e1589ad8b5cb5 ("mISDN: Support DR6 indication in =
-mISDNipac
-> > > > > > driver") in 2016 when he gave Acked-by: from his @b1-systems.de=
- address.
-> > > > > >=20
-> > > > > > Move him to CREDITS, as netdev people should already handle ISD=
-N/mISDN
-> > > > > > patches.
-> > > > > >=20
-> > > > > > Link: https://lore.kernel.org/r/0ee243a9-9937-ad26-0684-44b18e7=
-72662@linux-pingi.de/ [1]
-> > > > > > Cc: Karsten Keil <isdn@linux-pingi.de>
-> > > > > > Cc: Karsten Keil <keil@b1-systems.de>
-> > > > > > Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
-> > > > >=20
-> > > > > Are you sure he's not active?  It doesn't take much work to keep =
-an old
-> > > > > subsystem like this alive, last I remember, real changes were acc=
-epted
-> > > > > just fine.
-> > > >=20
-> > > > As for LKML messages, yes; he doesn't post any new messages since 2=
-020.
-> > > >=20
-> > > > >=20
-> > > > > Perhaps just don't send coding style cleanups to old subsystems? =
- :)
-> > > > >=20
-> > > > > I would not take these unless Karsten agrees that he no longer wa=
-nts to
-> > > > > maintain this.
-> > > >=20
-> > > > OK, I will send a private message to him asking for continuing main=
-tainer
-> > > > role. If there's no response from him by the new year, then it's sa=
-fe to
-> > > > route this through net tree instead (hence [PATCH net]).
-> > >=20
-> > > Why are you arbritrarily saying that "no response in 2 weeks, during =
+Linus Walleij wrote:
+> On Thu, Dec 21, 2023 at 1:28=E2=80=AFPM Emil Renner Berthing
+> <emil.renner.berthing@canonical.com> wrote:
+> > Linus Walleij wrote:
+> > > On Sat, Dec 16, 2023 at 2:57=E2=80=AFPM Emil Renner Berthing
+> > > <emil.renner.berthing@canonical.com> wrote:
+> > >
+> > > > > > +          thead,strong-pull-up:
+> > > > > > +            oneOf:
+> > > > > > +              - type: boolean
+> > > > > > +              - $ref: /schemas/types.yaml#/definitions/uint32
+> > > > > > +                enum: [ 0, 2100 ]
+> > > > > > +            description: Enable or disable strong 2.1kOhm pull=
+-up.
+> > > > >
+> > > > > bias-pull-up can already specify the strength in Ohms.
+> > > >
+> > > > The strong pull up is a separate bit that can be enabled independen=
+tly from the
+> > > > regular pull-up/down, so in theory you could enable both the regula=
+r pull-up
+> > > > and the strong pull-up at the same time, or even the regular poll-d=
+own and the
+> > > > strong pull-up which is probably not advised.
+> > >
+> > > bias-pull-up; <- Just regular pulling up the ordinary
+> > > bias-pull-up =3D <100>; <- Same thing if the ordinary is 100 Ohm (fig=
+ure out what
+> > >   resistance it actually is....)
+> > > bias-pull-up =3D <21000000>; <- strong pull up
+> > > bias-pull-up =3D <21000100>; <- both at the same time
+> >
+> > Hmm.. the two pull-ups combined would be a stronger pull-up, eg. lower
+> > resistance, right? So you'd need to calculate it using
+> > https://en.wikipedia.org/wiki/Series_and_parallel_circuits#Resistance_u=
+nits_2
+>
+> Yeah hehe elementary electronics beats me, of course it is in parallel.
+>
+> > The problem is that the documentation doesn't actually mention what wil=
+l happen
+> > if you combine the strong pull-up with the regular bias.
+>
+> So why even allow it then?
+>
+> Do the people designing boards using this have better documentation than =
+what
+> you have? Then either get that documentation or just don't give them
+> too much rope.
+
+We can certainly prevent Linux from ever combining the strong pull-up with =
 the
-> > > time of the year almost all of Europe is on vacation, means we drop
-> > > someone from the MAINTAINERS file"?
-> > >=20
-> >=20
-> > Because I'm impatient.
->=20
-> Then kernel development might not be the best thing to work on as
-> patience is required here.
->=20
-> > Maybe I can wait for right timing to reroll once
-> > Karsten agrees to remove his MAINTAINERS entry.
->=20
-> That's up to Karsten, not you.
->=20
-> Again, please relax, slow down, and perhaps work on something more
-> technical, like actual kernel fixes?
+regular bias, but that doesn't mean that the vendor u-boot can't find a use=
+ for
+it and might hand over pins in such states Linux then wouldn't know how to
+handle.
 
-OK, thanks!
-
---=20
-An old man doll... just what I always wanted! - Clara
-
---peM86azSLoLfqTfS
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZYRGYAAKCRD2uYlJVVFO
-ozyGAP0XcaEQNG9bvpBMWxVQSIG7yeRUDESyR/RgSsfYHGWS+wEA548W5hUxYiHm
-fhnCJUKNLdB/n9K1C5tkWnWv2kReNQw=
-=IUn+
------END PGP SIGNATURE-----
-
---peM86azSLoLfqTfS--
+If you think its better we could just postpone that problem to when/if it e=
+ver
+happens.
 
