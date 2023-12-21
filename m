@@ -1,308 +1,163 @@
-Return-Path: <linux-kernel+bounces-8424-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8425-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED87C81B6F1
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 14:05:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E184881B6F5
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 14:06:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1DAEA1C25B6D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 13:05:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9E09F28924A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 13:06:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD1B27319A;
-	Thu, 21 Dec 2023 13:05:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00B3E745CD;
+	Thu, 21 Dec 2023 13:06:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="U7VLTATd"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iplUKz3+"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30042697A0;
-	Thu, 21 Dec 2023 13:05:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-	by mx07-00178001.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BL93V38026783;
-	Thu, 21 Dec 2023 14:05:05 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	selector1; bh=qKB5MFFD1Jhsz7q6UhIrZ8SdYwmTMombWQWBCfbDjMA=; b=U7
-	VLTATdz5V+RXI86ihxwUPSOQX1CT/3D6FGYvhvOiT2Zwra2HHLVSwWXtCABUu469
-	JONexw9XjyaiI9WtYT2zqUStBD4+ktYm7gdGcoXnb7K0auDO9xiHnZEx4Ow74zON
-	GFZM7oX0Y7Hi5hfVQax1zYhxsk24j1RGPJW7fkpHoBFeZHUbPxHBUQEUbWAInZkL
-	5bbX9bolyrFiosOMeUjKZltNfqIkRjyxb8UrdEw9IYwvESHWii7/HVtQ7pnaP986
-	i68sQmYZJrdRwuY1dpsW5zGKinpv285ADwX/jDdIBMIH45uFN5rTnZVoZ4bUFCWU
-	QL30ajLV8cj68tU8t3AA==
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3v11w97htr-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 21 Dec 2023 14:05:05 +0100 (CET)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 1B898100066;
-	Thu, 21 Dec 2023 14:05:04 +0100 (CET)
-Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 0992D2C38A1;
-	Thu, 21 Dec 2023 14:05:04 +0100 (CET)
-Received: from [10.201.20.120] (10.201.20.120) by SHFDAG1NODE1.st.com
- (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 21 Dec
- 2023 14:05:02 +0100
-Message-ID: <70ed583e-af57-43e5-91a4-daa0568e83ab@foss.st.com>
-Date: Thu, 21 Dec 2023 14:05:01 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D7E56E2A1
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 13:06:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6d97b7c8efdso180847b3a.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 05:06:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703163965; x=1703768765; darn=vger.kernel.org;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7+JuPQ8wqNJlzJagstC7ldl3dtxeJYdR1Fvwuzn2zf0=;
+        b=iplUKz3+zQcfMeyQMO8Y9loBTzLdNZqEdpDyazs+MV+GPR4gY/BIjBj2y7qTE2fPmV
+         HgQcXqTL4gff6A34X0/xg8uDNeR8Hn5Bkm2qF2U3Z0/ONbdD53hI+wk+JqQ5toW+EqqY
+         RU8ZwSNpIJxX7cLrCWs29e0NFI2ndzr55/63JmOGS9vfz/+yRd12dqZphx8BS57wI9Ji
+         lz9wzu1UJ+6XACApXDMRFIeBNGJ+FnP2CGJWpQHVa3gyiZ2bxb3dahKhEIHvCRWnz4xJ
+         B3GoHRkzRXEBHn68zbXw/PT7Nhdww3fcAds00SBQ3Hkbq4VCI/XYrxN2n5IN46LnYzT6
+         ZmwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703163965; x=1703768765;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7+JuPQ8wqNJlzJagstC7ldl3dtxeJYdR1Fvwuzn2zf0=;
+        b=FoKCCW7cFsi5aZWuGyBg1KQ3/NzSB/7YzBiAXOyl73ZZpFiPyjM1adbBBl/+tZYatM
+         +dQ8Gn47myt1PC/AXofsp+WE0SwnIXYmv90ze4JfBCiz0KMgXviZH5CvcXfmv9HjXD/I
+         2/9U+TfsNfphpIQYxMiVzWG7QBfHwygEZMFVQnvV6LUMl5rbC8/07ozH4dYLhGaxJyPT
+         oljqNAiFd9prY0ZUEHK8tZqfTFEXqrru1qmlKZ/1nw/3PPb4rC3/QA668iYV3kY8K2Nr
+         Zp+yBhX6Jt2BaWB+InfB88wdWs3Q51fRkIy1ZlmCIOZ2w8mBEa+zqn63MMGIba8HKiwa
+         A5ag==
+X-Gm-Message-State: AOJu0Yy2bjKblXu2NK4xgCCSUZM1+lvviARppKUrHiBv3oXi3hz+LLYm
+	MR9D/Z2QS6H5W0BHI81w56M=
+X-Google-Smtp-Source: AGHT+IHy7BDWEANLiGAImZQLqW1L1FrUfcyW89dxfgSoRdp/XfgRewLLnqOMWdZvV7yq1pzZCQwpXA==
+X-Received: by 2002:a05:6a00:982:b0:6d8:1493:5a89 with SMTP id u2-20020a056a00098200b006d814935a89mr5469741pfg.59.1703163964996;
+        Thu, 21 Dec 2023 05:06:04 -0800 (PST)
+Received: from ruipeng-ThinkCentre-M730e-N010.company.local (014136220210.static.ctinets.com. [14.136.220.210])
+        by smtp.gmail.com with ESMTPSA id m2-20020a62f202000000b006d97eaba6cesm289326pfh.21.2023.12.21.05.05.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Dec 2023 05:06:04 -0800 (PST)
+From: Ruipeng Qi <ruipengqi7@gmail.com>
+To: catalin.marinas@arm.com,
+	will@kernel.org,
+	bhe@redhat.com,
+	vgoyal@redhat.com,
+	dyoung@redhat.com,
+	linux-kernel@vger.kernel.org,
+	kexec@lists.infradead.org
+Cc: zalbassam@google.com,
+	dianders@chromium.org,
+	mark.rutland@arm.com,
+	lecopzer.chen@mediatek.com,
+	maz@kernel.org,
+	arnd@arndb.de,
+	yury.norov@gmail.com,
+	brauner@kernel.org,
+	mcgrof@kernel.org,
+	maninder1.s@samsung.com,
+	michael.christie@oracle.com,
+	samitolvanen@google.com,
+	linux-arm-kernel@lists.infradead.org,
+	qiruipeng@lixiang.com
+Subject: [RFC PATCH 0/7] osdump: Add one new os minidump module
+Date: Thu, 21 Dec 2023 21:05:55 +0800
+Message-Id: <20231221130555.32551-1-ruipengqi7@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 3/5] media: hantro: add support for STM32MP25 VENC
-Content-Language: en-US
-To: Sebastian Fricke <sebastian.fricke@collabora.com>
-CC: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-        Philipp Zabel
-	<p.zabel@pengutronix.de>,
-        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        Sakari Ailus
-	<sakari.ailus@linux.intel.com>,
-        Benjamin Gaignard
-	<benjamin.gaignard@collabora.com>,
-        Laurent Pinchart
-	<laurent.pinchart+renesas@ideasonboard.com>,
-        Daniel Almeida
-	<daniel.almeida@collabora.com>,
-        Benjamin Mugnier
-	<benjamin.mugnier@foss.st.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Mauro
- Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil@xs4all.nl>, <linux-media@vger.kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <linux-rockchip@lists.infradead.org>,
-        Marco Felsch <m.felsch@pengutronix.de>, Adam Ford <aford173@gmail.com>
-References: <20231221084723.2152034-1-hugues.fruchet@foss.st.com>
- <20231221084723.2152034-4-hugues.fruchet@foss.st.com>
- <20231221111837.4u22pmba7jd3hinj@basti-XPS-13-9310>
-From: Hugues FRUCHET <hugues.fruchet@foss.st.com>
-In-Reply-To: <20231221111837.4u22pmba7jd3hinj@basti-XPS-13-9310>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: EQNCAS1NODE3.st.com (10.75.129.80) To SHFDAG1NODE1.st.com
- (10.75.129.69)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-21_06,2023-12-20_01,2023-05-22_02
 
-Hi Sebastian,
+From: qiruipeng <qiruipeng@lixiang.com>
 
-Yes, feel free to fix the two comments !
+Osdump is a new crash dumping solution aiming at specific embedded
+devices within automotive or Industrial.
+ - limited memory.
+ - reboot as soon as possible when system fault.
 
-BR,
-Hugues.
+In order to reduce dump file size and speed up dump process, it has the
+following features:
+ - no userspace memory, just designed for solving os issues.
+ - no const data, such as text segment
+ - dump core os data only.
+   - bss, data segments which alloc static.
+   - dynamic data
+     - slub data for little size data.
+     - some large size data.
+ - compress dump data to reduce dump file size.
 
-On 12/21/23 12:18, Sebastian Fricke wrote:
-> Hey Hugues,
-> 
-> one small comment below, if it should turn out to be the only problem I
-> can fix it myself for the pull request.
-> 
-> On 21.12.2023 09:47, Hugues Fruchet wrote:
->> Add support for STM32MP25 VENC video hardware encoder.
->> Support of JPEG encoding.
->> VENC has its own reset/clock/irq.
->>
->> Signed-off-by: Hugues Fruchet <hugues.fruchet@foss.st.com>
->> Reviewed-by: Nicolas Dufresne <nicolas.dufresne@collabora.com>
->> ---
->> drivers/media/platform/verisilicon/Makefile   |   3 +-
->> .../media/platform/verisilicon/hantro_drv.c   |   1 +
->> .../media/platform/verisilicon/hantro_hw.h    |   1 +
->> .../platform/verisilicon/stm32mp25_venc_hw.c  | 115 ++++++++++++++++++
->> 4 files changed, 119 insertions(+), 1 deletion(-)
->> create mode 100644 drivers/media/platform/verisilicon/stm32mp25_venc_hw.c
->>
->> diff --git a/drivers/media/platform/verisilicon/Makefile 
->> b/drivers/media/platform/verisilicon/Makefile
->> index 5854e0f0dd32..3bf43fdbedc1 100644
->> --- a/drivers/media/platform/verisilicon/Makefile
->> +++ b/drivers/media/platform/verisilicon/Makefile
->> @@ -41,4 +41,5 @@ hantro-vpu-$(CONFIG_VIDEO_HANTRO_SUNXI) += \
->>         sunxi_vpu_hw.o
->>
->> hantro-vpu-$(CONFIG_VIDEO_HANTRO_STM32MP25) += \
->> -        stm32mp25_vdec_hw.o
->> +        stm32mp25_vdec_hw.o \
->> +        stm32mp25_venc_hw.o
->> diff --git a/drivers/media/platform/verisilicon/hantro_drv.c 
->> b/drivers/media/platform/verisilicon/hantro_drv.c
->> index 2db27c333924..4d97a8ac03de 100644
->> --- a/drivers/media/platform/verisilicon/hantro_drv.c
->> +++ b/drivers/media/platform/verisilicon/hantro_drv.c
->> @@ -736,6 +736,7 @@ static const struct of_device_id of_hantro_match[] 
->> = {
->> #endif
->> #ifdef CONFIG_VIDEO_HANTRO_STM32MP25
->>     { .compatible = "st,stm32mp25-vdec", .data = 
->> &stm32mp25_vdec_variant, },
->> +    { .compatible = "st,stm32mp25-venc", .data = 
->> &stm32mp25_venc_variant, },
->> #endif
->>     { /* sentinel */ }
->> };
->> diff --git a/drivers/media/platform/verisilicon/hantro_hw.h 
->> b/drivers/media/platform/verisilicon/hantro_hw.h
->> index b7eccc1a96fc..70c72e9d11d5 100644
->> --- a/drivers/media/platform/verisilicon/hantro_hw.h
->> +++ b/drivers/media/platform/verisilicon/hantro_hw.h
->> @@ -407,6 +407,7 @@ extern const struct hantro_variant 
->> rk3588_vpu981_variant;
->> extern const struct hantro_variant sama5d4_vdec_variant;
->> extern const struct hantro_variant sunxi_vpu_variant;
->> extern const struct hantro_variant stm32mp25_vdec_variant;
->> +extern const struct hantro_variant stm32mp25_venc_variant;
->>
->> extern const struct hantro_postproc_ops hantro_g1_postproc_ops;
->> extern const struct hantro_postproc_ops hantro_g2_postproc_ops;
->> diff --git a/drivers/media/platform/verisilicon/stm32mp25_venc_hw.c 
->> b/drivers/media/platform/verisilicon/stm32mp25_venc_hw.c
->> new file mode 100644
->> index 000000000000..0ff0f073b922
->> --- /dev/null
->> +++ b/drivers/media/platform/verisilicon/stm32mp25_venc_hw.c
->> @@ -0,0 +1,115 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/*
->> + * STM32MP25 VENC video encoder driver
->> + *
->> + * Copyright (C) STMicroelectronics SA 2022
->> + * Authors: Hugues Fruchet <hugues.fruchet@foss.st.com>
->> + *          for STMicroelectronics.
->> + *
->> + */
->> +
->> +#include <linux/clk.h>
->> +#include <linux/delay.h>
->> +#include <linux/reset.h>
->> +
->> +#include "hantro.h"
->> +#include "hantro_jpeg.h"
->> +#include "hantro_h1_regs.h"
->> +
->> +/*
->> + * Supported formats.
->> + */
->> +
->> +static const struct hantro_fmt stm32mp25_venc_fmts[] = {
->> +    {
->> +        .fourcc = V4L2_PIX_FMT_YUV420M,
->> +        .codec_mode = HANTRO_MODE_NONE,
->> +        .enc_fmt = ROCKCHIP_VPU_ENC_FMT_YUV420P,
->> +    },
->> +    {
->> +        .fourcc = V4L2_PIX_FMT_NV12M,
->> +        .codec_mode = HANTRO_MODE_NONE,
->> +        .enc_fmt = ROCKCHIP_VPU_ENC_FMT_YUV420SP,
->> +    },
->> +    {
->> +        .fourcc = V4L2_PIX_FMT_YUYV,
->> +        .codec_mode = HANTRO_MODE_NONE,
->> +        .enc_fmt = ROCKCHIP_VPU_ENC_FMT_YUYV422,
->> +    },
->> +    {
->> +        .fourcc = V4L2_PIX_FMT_UYVY,
->> +        .codec_mode = HANTRO_MODE_NONE,
->> +        .enc_fmt = ROCKCHIP_VPU_ENC_FMT_UYVY422,
->> +    },
->> +    {
->> +        .fourcc = V4L2_PIX_FMT_JPEG,
->> +        .codec_mode = HANTRO_MODE_JPEG_ENC,
->> +        .max_depth = 2,
->> +        .header_size = JPEG_HEADER_SIZE,
->> +        .frmsize = {
->> +            .min_width = 96,
->> +            .max_width = FMT_4K_WIDTH,
->> +            .step_width = MB_DIM,
->> +            .min_height = 96,
->> +            .max_height = FMT_4K_HEIGHT,
->> +            .step_height = MB_DIM,
->> +        },
->> +    },
->> +};
->> +
->> +static irqreturn_t stm32mp25_venc_irq(int irq, void *dev_id)
->> +{
->> +    struct hantro_dev *vpu = dev_id;
->> +    enum vb2_buffer_state state;
->> +    u32 status;
->> +
->> +    status = vepu_read(vpu, H1_REG_INTERRUPT);
->> +    state = (status & H1_REG_INTERRUPT_FRAME_RDY) ?
->> +        VB2_BUF_STATE_DONE : VB2_BUF_STATE_ERROR;
->> +
->> +    vepu_write(vpu, H1_REG_INTERRUPT_BIT, H1_REG_INTERRUPT);
->> +
->> +    hantro_irq_done(vpu, state);
->> +
->> +    return IRQ_HANDLED;
->> +}
->> +
->> +static void stm32mp25_venc_reset(struct hantro_ctx *ctx)
->> +{
->> +}
->> +
->> +/*
->> + * Supported codec ops.
->> + */
->> +
->> +static const struct hantro_codec_ops stm32mp25_venc_codec_ops[] = {
->> +    [HANTRO_MODE_JPEG_ENC] = {
->> +        .run = hantro_h1_jpeg_enc_run,
->> +        .reset = stm32mp25_venc_reset,
->> +        .done = hantro_h1_jpeg_enc_done,
->> +    },
->> +};
->> +
->> +/*
->> + * Variants.
->> + */
->> +
->> +static const struct hantro_irq stm32mp25_venc_irqs[] = {
->> +    { "venc", stm32mp25_venc_irq },
->> +};
->> +
->> +static const char * const stm32mp25_venc_clk_names[] = {
->> +    "venc-clk"
->> +};
->> +
->> +const struct hantro_variant stm32mp25_venc_variant = {
->> +    .enc_fmts = stm32mp25_venc_fmts,
->> +    .num_enc_fmts = ARRAY_SIZE(stm32mp25_venc_fmts),
->> +    .codec = HANTRO_JPEG_ENCODER,
->> +    .codec_ops = stm32mp25_venc_codec_ops,
->> +    .irqs = stm32mp25_venc_irqs,
->> +    .num_irqs = ARRAY_SIZE(stm32mp25_venc_irqs),
->> +    .clk_names = stm32mp25_venc_clk_names,
->> +    .num_clocks = ARRAY_SIZE(stm32mp25_venc_clk_names)
->> +};
->> +
-> 
-> There is an superfluous new line here.
-> 
-> Greetings,
-> Sebastian
-> 
->> -- 
->> 2.25.1
->>
->>
+consist of large massive of uncontinuous data,so use binary data format
+directly.
+
+reasemble a standard elf format file with dump file and vmlinux, and
+then parse it with crash tool.
+
+Signed-off-by: qiruipeng <qiruipeng@lixiang.com>
+
+qiruipeng (7):
+  [RFC PATCH 1/7] osdump: Add one new os minidump module
+  [RFC PATCH 2/7] osdump: reuse some code from crash_core to get
+    vmcoreinfo
+  [RFC PATCH 3/7] doc: Add osdump guide
+  [RFC PATCH 4/7] dt-bindings: reserved-memory: Support osdump module
+  [RFC PATCH 5/7] sched: access to runqueues by function
+  [RFC PATCH 6/7] mm/slub: make slab data more observable
+  [RFC PATCH 7/7] panic: invoke osdump when panic
+
+ Documentation/admin-guide/index.rst           |   1 +
+ Documentation/admin-guide/osdump.rst          |  94 +++
+ .../bindings/reserved-memory/osdump.yaml      |  45 ++
+ arch/arm64/Kconfig                            | 169 +++++
+ arch/arm64/kernel/Makefile                    |   1 +
+ drivers/of/platform.c                         |   1 +
+ include/linux/buildid.h                       |   3 +-
+ include/linux/osdump.h                        |   7 +
+ kernel/Makefile                               |   2 +
+ kernel/crash_core_mini.c                      | 275 ++++++++
+ kernel/osdump/Makefile                        |   1 +
+ kernel/osdump/compr.c                         | 252 ++++++++
+ kernel/osdump/core.c                          | 608 ++++++++++++++++++
+ kernel/osdump/extern.h                        |  13 +
+ kernel/osdump/inode.c                         |  77 +++
+ kernel/osdump/internal.h                      |  95 +++
+ kernel/panic.c                                |   7 +
+ kernel/printk/printk.c                        |   2 +-
+ kernel/sched/core.c                           |   8 +
+ lib/buildid.c                                 |   3 +-
+ mm/slab.h                                     |   2 +
+ mm/slub.c                                     |  38 +-
+ 22 files changed, 1700 insertions(+), 4 deletions(-)
+ create mode 100644 Documentation/admin-guide/osdump.rst
+ create mode 100644 Documentation/devicetree/bindings/reserved-memory/osdump.yaml
+ create mode 100644 include/linux/osdump.h
+ create mode 100644 kernel/crash_core_mini.c
+ create mode 100644 kernel/osdump/Makefile
+ create mode 100644 kernel/osdump/compr.c
+ create mode 100644 kernel/osdump/core.c
+ create mode 100644 kernel/osdump/extern.h
+ create mode 100644 kernel/osdump/inode.c
+ create mode 100644 kernel/osdump/internal.h
+
+-- 
+2.17.1
+
 
