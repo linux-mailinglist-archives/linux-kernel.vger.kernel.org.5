@@ -1,113 +1,175 @@
-Return-Path: <linux-kernel+bounces-7683-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7688-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE9A981AB98
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 01:19:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC49181ABA2
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 01:24:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ACB79286DF5
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 00:19:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 987FA287242
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 00:24:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEED91367;
-	Thu, 21 Dec 2023 00:19:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B76764F;
+	Thu, 21 Dec 2023 00:24:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="E8lOxwu0"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ix0cdLIp"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAC3110EB
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 00:19:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a2696852965so201661366b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 16:19:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1703117939; x=1703722739; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/mYEduXCSX53GxkPa+3HzLZx264zuWEFs+pArKbO8ws=;
-        b=E8lOxwu0k2StF/mgd9M5IdUJUlM7u/C3m0ggaJS8Ouaptnvp9Amaoaoq/2LNfGZ75s
-         +85dlkjuuqi0qJV57WxAZRss4ZV1WtvvfEYT7VBKHq/TbeP5SOEU4f7ntfJ17Rn9y0W5
-         ZJykDLcAuJiB7zfm+SABQOO0CVZEzLL5puBDU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703117939; x=1703722739;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/mYEduXCSX53GxkPa+3HzLZx264zuWEFs+pArKbO8ws=;
-        b=s//TnMdYHcY9D/SsrjuKgo0LRRhCLYeK70h+Dk1lIwFdJke44/vT5bPsOkAUQ9Pjs8
-         nDwskSjDM6A8EwlGLYrw5FEvRyP0xaab69FMtym5ClKi0gmUZCZo08yFK8/aW7G7/9mm
-         VbHvoyucM3US2bjaahmTMcos7SrjHKlAS7chsLVkHrck5jAjvRkk5jsrwIy6sgf69t4t
-         js8qOYPdz7RLG+lBYY+jG1Zi4QQGiwhUBR7zTCpH9q4pBK/86CbtQMWaO70bVZHMT6aB
-         LC4FqsKaeKG5HWw2avltIX4rRHY2oWtS2qqNVOaQ0dVK+EuG1dZ8DMZ7WFTrmJ34rhHV
-         BetQ==
-X-Gm-Message-State: AOJu0YzS64uBm9qQ3r3oqE97di5uLRjEs9whOcpfqmH/CYndAAStSTKl
-	VHXgMIJ+qzYfhvkYjxsbIJOVUtnyLW0L8Yy9j76sVINe
-X-Google-Smtp-Source: AGHT+IGqtncv2qRAvtgYkizHsPsCf/C9RwQCBlZtRj8UsjBI/N5hXQPwkjkhLsd2nXj24UNJh36kTQ==
-X-Received: by 2002:a17:906:74d8:b0:a26:859a:87bf with SMTP id z24-20020a17090674d800b00a26859a87bfmr2489352ejl.4.1703117938734;
-        Wed, 20 Dec 2023 16:18:58 -0800 (PST)
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com. [209.85.208.48])
-        by smtp.gmail.com with ESMTPSA id z17-20020a170906715100b00a26966683e3sm353378ejj.144.2023.12.20.16.18.58
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Dec 2023 16:18:58 -0800 (PST)
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-548ae9a5eeaso1956a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 16:18:58 -0800 (PST)
-X-Received: by 2002:a50:c316:0:b0:553:773b:b7b2 with SMTP id
- a22-20020a50c316000000b00553773bb7b2mr3837edb.6.1703117488506; Wed, 20 Dec
- 2023 16:11:28 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB8F5370;
+	Thu, 21 Dec 2023 00:24:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1703118281; x=1734654281;
+  h=from:subject:date:message-id:mime-version:
+   content-transfer-encoding:to:cc;
+  bh=QzeXiqvA/RcvyC4x0SwVxlIEq7c/c29xjKXw4I1UKu4=;
+  b=ix0cdLIpo3YhMsPrwTGe/sUikJ0SOXumbotXjdyT6F2TCvpn1QHNJAQ3
+   o7m+9BqzdmZew+xuUGxX4/8uIp//H1cbc0xIJgTgTwqMgYbuyMyMHzhqo
+   fmhiQxWto3EJTMSRbJ1EoBYSmzd9yAzkaMKpEkpM1lW+TB54c5g7avXBw
+   wTSImBZw0qK0CdKFEswp31GNf7K4w3C0mH9nsfZUufiUM4hYjMVGAIN28
+   iohDp9DYG9mxIQGKpiM/FJPzwu4MSmaEJf2lD/JyVMoBiuOBvN7pAmihC
+   Tq/vLtlYZG4hmIsF1l55g8IZUGg1B0459gt7VQCksNFsI5i6gQtdVS+Wj
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10930"; a="2730042"
+X-IronPort-AV: E=Sophos;i="6.04,292,1695711600"; 
+   d="scan'208";a="2730042"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Dec 2023 16:24:38 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10930"; a="1023661604"
+X-IronPort-AV: E=Sophos;i="6.04,292,1695711600"; 
+   d="scan'208";a="1023661604"
+Received: from iweiny-desk3.amr.corp.intel.com (HELO localhost) ([10.212.30.219])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Dec 2023 16:24:37 -0800
+From: Ira Weiny <ira.weiny@intel.com>
+Subject: [PATCH v5 0/9] efi/cxl-cper: Report CPER CXL component events
+ through trace events
+Date: Wed, 20 Dec 2023 16:17:27 -0800
+Message-Id: <20231220-cxl-cper-v5-0-1bb8a4ca2c7a@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231220235459.2965548-1-markhas@chromium.org> <20231220165423.v2.15.I870e2c3490e7fc27a8f6bc41dba23b3dfacd2d13@changeid>
-In-Reply-To: <20231220165423.v2.15.I870e2c3490e7fc27a8f6bc41dba23b3dfacd2d13@changeid>
-From: Doug Anderson <dianders@chromium.org>
-Date: Wed, 20 Dec 2023 16:11:16 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=XwT62H+eBH-PRfQPH-X17_BmWQd5wrHTj6o8Zxkf72sQ@mail.gmail.com>
-Message-ID: <CAD=FV=XwT62H+eBH-PRfQPH-X17_BmWQd5wrHTj6o8Zxkf72sQ@mail.gmail.com>
-Subject: Re: [PATCH v2 15/22] arm64: dts: qcom: sdm845: Enable cros-ec-spi as
- wake source
-To: Mark Hasemeyer <markhas@chromium.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Tzung-Bi Shih <tzungbi@kernel.org>, 
-	Raul Rangel <rrangel@chromium.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Andy Shevchenko <andriy.shevchenko@intel.com>, Rob Herring <robh@kernel.org>, 
-	Sudeep Holla <sudeep.holla@arm.com>, Bjorn Andersson <andersson@kernel.org>, 
-	Conor Dooley <conor+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
-	cros-qcom-dts-watchers@chromium.org, devicetree@vger.kernel.org, 
-	linux-arm-msm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIABeEg2UC/3XNS27DIBCA4atErEvF8BibrnqPqgsYoEFK7AgsK
+ 1XkuxdnFbn2cmD++R6sxpJjZR+nBytxzjWPQxvM24nR2Q0/kefQZiaFVAIFcLpfON1i4RJTol5
+ ZQkLW1r2rkfviBjqvwdXVKZb141Ziyven8fXd5nOu01h+n+QM6+vO9Rm44NZ6p1XqU9eJzzxM8
+ fJO43W9eRAEsAkcQe88vgSrOssjSbZQgQ6WFDov5H8JJGwDAkArhHdo+q2kjiTVQgG9DQipswZ
+ 3JbUJuhR6VCGIIM1W0keSbqHuvLcCEigTdyWzCQR4DM5rnSi8Ssuy/AH4mFYSKAIAAA==
+To: Dan Williams <dan.j.williams@intel.com>, 
+ Jonathan Cameron <jonathan.cameron@huawei.com>, 
+ Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>, 
+ Shiju Jose <shiju.jose@huawei.com>
+Cc: Yazen Ghannam <yazen.ghannam@amd.com>, 
+ Davidlohr Bueso <dave@stgolabs.net>, Dave Jiang <dave.jiang@intel.com>, 
+ Alison Schofield <alison.schofield@intel.com>, 
+ Vishal Verma <vishal.l.verma@intel.com>, Ard Biesheuvel <ardb@kernel.org>, 
+ linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-cxl@vger.kernel.org, Ira Weiny <ira.weiny@intel.com>, 
+ Jonathan Cameron <Jonathan.Cameron@Huawei.com>, 
+ "Rafael J. Wysocki" <rafael@kernel.org>, 
+ Bjorn Helgaas <bhelgaas@google.com>
+X-Mailer: b4 0.13-dev-2539e
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1703118276; l=3656;
+ i=ira.weiny@intel.com; s=20221222; h=from:subject:message-id;
+ bh=QzeXiqvA/RcvyC4x0SwVxlIEq7c/c29xjKXw4I1UKu4=;
+ b=vMkwSiVffu+Am0wL3komMMO/XzimqrJwRo6xKY6gKVhu2XzhmRSUS2NDKlLseINxWLVRN5gBP
+ OzHqVvI2XvRDGVriOOpedSLS2gS9Ub+ljvE6u5HItDIBvnRDRcPkzzS
+X-Developer-Key: i=ira.weiny@intel.com; a=ed25519;
+ pk=brwqReAJklzu/xZ9FpSsMPSQ/qkSalbg6scP3w809Ec=
 
-Hi,
+Series status/background
+========================
 
-On Wed, Dec 20, 2023 at 3:55=E2=80=AFPM Mark Hasemeyer <markhas@chromium.or=
-g> wrote:
->
-> The cros_ec driver currently assumes that cros-ec-spi compatible device
-> nodes are a wakeup-source even though the wakeup-source property is not
-> defined.
->
-> Add the wakeup-source property to all cros-ec-spi compatible device
-> nodes to match expected behavior.
->
-> Signed-off-by: Mark Hasemeyer <markhas@chromium.org>
-> ---
->
-> Changes in v2:
-> -Split by arch/soc
->
->  arch/arm64/boot/dts/qcom/sdm845-cheza.dtsi | 1 +
->  1 file changed, 1 insertion(+)
+Smita has been a great help with this series.  Thank you again!
 
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
+Smita's testing found that the GHES code ended up printing the events
+twice.  This version avoids the duplicate print by calling the callback
+from the GHES code instead of the EFI code as suggested by Dan.
+
+Dependencies
+============
+
+NOTE this series still depends on Dan's addition of a device guard[1].
+Therefore, the base commit is not a stable commit.  I've pushed a branch
+with this commit included for testing if folks are interested.[2]
+
+[1] https://lore.kernel.org/all/170250854466.1522182.17555361077409628655.stgit@dwillia2-xfh.jf.intel.com/
+[2] https://github.com/weiny2/linux-kernel/tree/cxl-cper-2023-12-20
+
+Cover letter
+============
+
+CXL Component Events, as defined by EFI 2.10 Section N.2.14, wrap a
+mostly CXL event payload in an EFI Common Platform Error Record (CPER)
+record.  If a device is configured for firmware first CXL event records
+are not sent directly to the host.
+
+The CXL sub-system uniquely has DPA to HPA translation information.  It
+also already has event format tracing.  Restructure the code to make
+sharing the data between CPER/event logs most efficient.  Then send the
+CXL CPER records to the CXL sub-system for processing.
+
+With event logs the events interrupt the driver directly.  In the EFI
+case events are wrapped with device information which allows the CXL
+subsystem to identify the PCI device.
+
+Previous version considered matching the memdev differently.  However,
+the most robust was to find the PCI device via Bus, Device, Function and
+use the PCI device to find the driver data.
+
+CPER records are identified with GUID's while CXL event logs contain
+UUID's.  The UUID is reported for all events no matter the source.
+While the UUID is redundant for the known events the UUID's are already
+used by rasdaemon.  To keep compatibility UUIDs are still reported.
+
+In addition this series cleans up the UUID defines.
+
+Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+---
+Changes in v5:
+- Smita/djbw: trigger trace from ghes_do_proc()
+- Jonathan: split out pci scoped based functions to it's own patch
+- Jonathan: remove unneeded static uuid variables
+- Smita/djbw: trace an unknown event type as a generic with null UUID
+- Jonathan: code clean ups
+- Link to v4: https://lore.kernel.org/r/20231215-cxl-cper-v4-0-01b6dab44fcd@intel.com
+
+---
+Ira Weiny (9):
+      cxl/trace: Pass uuid explicitly to event traces
+      cxl/events: Promote CXL event structures to a core header
+      cxl/events: Create common event UUID defines
+      cxl/events: Remove passing a UUID to known event traces
+      cxl/events: Separate UUID from event structures
+      cxl/events: Create a CXL event union
+      acpi/ghes: Process CXL Component Events
+      PCI: Define scoped based management functions
+      cxl/pci: Register for and process CPER events
+
+ drivers/acpi/apei/ghes.c     |  88 +++++++++++++++++++++++
+ drivers/cxl/core/mbox.c      |  87 +++++++++++------------
+ drivers/cxl/core/trace.h     |  14 ++--
+ drivers/cxl/cxlmem.h         | 110 +++++++----------------------
+ drivers/cxl/pci.c            |  58 ++++++++++++++-
+ include/linux/cxl-event.h    | 162 ++++++++++++++++++++++++++++++++++++++++++
+ include/linux/pci.h          |   2 +
+ tools/testing/cxl/test/mem.c | 163 ++++++++++++++++++++++++-------------------
+ 8 files changed, 476 insertions(+), 208 deletions(-)
+---
+base-commit: 6436863dfabce0d7ac416c8dc661fd513b967d39
+change-id: 20230601-cxl-cper-26ffc839c6c6
+
+Best regards,
+-- 
+Ira Weiny <ira.weiny@intel.com>
+
 
