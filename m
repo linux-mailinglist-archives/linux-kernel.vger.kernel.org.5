@@ -1,162 +1,280 @@
-Return-Path: <linux-kernel+bounces-8278-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8280-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 897AD81B4D6
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 12:24:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6436481B4DC
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 12:25:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4228C2889DF
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 11:24:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E4E601F25B60
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 11:25:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6516B6BB51;
-	Thu, 21 Dec 2023 11:24:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EF7C6E2DF;
+	Thu, 21 Dec 2023 11:24:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LjzRbNfF"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="BTe4KvlF";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="nyqi6SfY";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="BTe4KvlF";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="nyqi6SfY"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D9376AB8F
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 11:24:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-40d3352b525so6869115e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 03:24:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703157876; x=1703762676; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rGkZwIdmLi60ShwVAK7ggKym2AkjQZ0+N0ICnJdPIpA=;
-        b=LjzRbNfFZjNeoDaQifr5t7h6v5whBuT9gmVP+/pk6xxXp3y8pSVmpKh3FokSy0TNG6
-         VGOU3KLZqaEr32KYbBlf7ssv7z6afx1WnPaSreCAVgzRvSgvInvVBI+/XzPB3ugd7yeV
-         +cm6xAbeEjs1QKSoZUhf4kObMzAtrwq4ZEoDSmz549Y5SxjH8CzJhGrJpuY9Giiz2O7t
-         muOs8LszmE4+pGSyus0dRxLUjoNxMKbb6RVm5Nf+QrOoMxbU9pso25SrkC87V5BLKNdZ
-         eFEl1Oal3hnXBn3h+2DXgfjhOGs9EWdWwOhv6+TsrAmdCmMyc6S62RJAn7fgJBt7MYIS
-         8qZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703157876; x=1703762676;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rGkZwIdmLi60ShwVAK7ggKym2AkjQZ0+N0ICnJdPIpA=;
-        b=b5cEIlt+GVxaqTwOvc/LojtRq3vG7BMmMSG2HK1KpzEBTWBgC2aRnXMwwEXIFKnRzG
-         0xVKnk8RwqkYwfCzqVyHCu3fKUxvbHDerFiDfPi/ZuEtjmwoaH7sYvVcOOC1bBLBUPGG
-         21okqR7zeEPpPlb0IzJaoGKUtadiEVUqjtaMlU9OgNAOv/kABnu9R3CyiwYEQ5FQ6qit
-         Tc+HmPO2OFDjJJJkCxAoEiKxkG88kTK5yZAdlIqdcYWr7cfF7R8FkihYPFbRpt7pHhy9
-         A/aTKQXMbWV8/Moe2iJlyleVk/bEdoWcUJRv/E/ViOWOTEfiPWn/76OojkQaGR5jkOzE
-         eYgg==
-X-Gm-Message-State: AOJu0Yxq7zSGAnDiHdGrK1UVvK0gdp/vHInutNwqIaICQ9ikKETb9Hbk
-	0GKe49uE3OfmFqQyzJkdsg==
-X-Google-Smtp-Source: AGHT+IEY0zeOkEmWqxzOZOz9OMEjZ8EZ5dx8hGr56e2e8YMsAf+s1y30sszRmEvQ0vIVdg0Em94KmQ==
-X-Received: by 2002:a05:600c:4445:b0:40c:2d85:3a01 with SMTP id v5-20020a05600c444500b0040c2d853a01mr657257wmn.161.1703157876018;
-        Thu, 21 Dec 2023 03:24:36 -0800 (PST)
-Received: from alex-pc-ubuntu.lan (31-10-153-16.cgn.dynamic.upc.ch. [31.10.153.16])
-        by smtp.gmail.com with ESMTPSA id d24-20020adfa418000000b003368d3437d5sm111465wra.44.2023.12.21.03.24.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Dec 2023 03:24:35 -0800 (PST)
-From: Aleksandrs Vinarskis <alex.vinarskis@gmail.com>
-To: sbinding@opensource.cirrus.com
-Cc: alex.vinarskis@gmail.com,
-	alsa-devel@alsa-project.org,
-	david.rhodes@cirrus.com,
-	james.schulman@cirrus.com,
-	josbeir@gmail.com,
-	linux-kernel@vger.kernel.org,
-	patches@opensource.cirrus.com,
-	perex@perex.cz,
-	stuarth@opensource.cirrus.com,
-	tiwai@suse.com,
-	tiwai@suse.de
-Subject: Re: [PATCH v2 1/2] ALSA: hda: cs35l41: Safety-guard against capped SPI speed
-Date: Thu, 21 Dec 2023 12:24:34 +0100
-Message-Id: <20231221112434.13730-1-alex.vinarskis@gmail.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <8170413d-07a8-4e77-b43d-78cd9e4ea76f@opensource.cirrus.com>
-References: <8170413d-07a8-4e77-b43d-78cd9e4ea76f@opensource.cirrus.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3399A6E2A0;
+	Thu, 21 Dec 2023 11:24:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 36D911FB42;
+	Thu, 21 Dec 2023 11:24:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1703157894; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=gpLOwhQDWouiGcVDXpIifh6pZTYZjbA5NrwZ5EtKOwU=;
+	b=BTe4KvlFeMKXD4GzKy6tugrUnZv+8GzxU8Pl0LlKXOQ8e1voM9n0fr4cv+0IC0ZpEedEV7
+	1QYzLhM6wXotz9D48H4nwucDCrJdEjXQyg/jhvF6IFr+C1Mf015IAL5D7OpPL/Y+GrUF0R
+	HLAEoehPBvcnIQu73kjH5HYmqp9eOCY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1703157894;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=gpLOwhQDWouiGcVDXpIifh6pZTYZjbA5NrwZ5EtKOwU=;
+	b=nyqi6SfYR/+bfXNK4QMDxTcneXkkOuV59UF9iRYKAfmZVx7KGCkj8RRbxSGBYW0jgY8ZjO
+	TCwKp/mJyF2cm7Dg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1703157894; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=gpLOwhQDWouiGcVDXpIifh6pZTYZjbA5NrwZ5EtKOwU=;
+	b=BTe4KvlFeMKXD4GzKy6tugrUnZv+8GzxU8Pl0LlKXOQ8e1voM9n0fr4cv+0IC0ZpEedEV7
+	1QYzLhM6wXotz9D48H4nwucDCrJdEjXQyg/jhvF6IFr+C1Mf015IAL5D7OpPL/Y+GrUF0R
+	HLAEoehPBvcnIQu73kjH5HYmqp9eOCY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1703157894;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=gpLOwhQDWouiGcVDXpIifh6pZTYZjbA5NrwZ5EtKOwU=;
+	b=nyqi6SfYR/+bfXNK4QMDxTcneXkkOuV59UF9iRYKAfmZVx7KGCkj8RRbxSGBYW0jgY8ZjO
+	TCwKp/mJyF2cm7Dg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 27C1B13725;
+	Thu, 21 Dec 2023 11:24:54 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 8VZvCYYghGVCWgAAD6G6ig
+	(envelope-from <jack@suse.cz>); Thu, 21 Dec 2023 11:24:54 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id AC402A07E3; Thu, 21 Dec 2023 12:24:53 +0100 (CET)
+Date: Thu, 21 Dec 2023 12:24:53 +0100
+From: Jan Kara <jack@suse.cz>
+To: Christoph Hellwig <hch@lst.de>
+Cc: linux-mm@kvack.org, "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+	Jan Kara <jack@suse.com>, David Howells <dhowells@redhat.com>,
+	Brian Foster <bfoster@redhat.com>, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 09/17] writeback: Simplify the loops in
+ write_cache_pages()
+Message-ID: <20231221112453.4gggfki67lxwtor7@quack3>
+References: <20231218153553.807799-1-hch@lst.de>
+ <20231218153553.807799-10-hch@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231218153553.807799-10-hch@lst.de>
+X-Spam-Level: 
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -3.80
+X-Spamd-Result: default: False [-3.80 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-0.998];
+	 RCPT_COUNT_SEVEN(0.00)[8];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,lst.de:email,suse.com:email,infradead.org:email];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%]
+X-Spam-Flag: NO
 
-Sorry for incorrect expression and confusion, it is indeed not the driver
-that hangs. What I meant is that _computer_ "hangs" on wake up from
-suspend. Unlike boot, where driver does not delay boot process, on wake up
-from suspend it seems it does - after lid was opened/power button pressed,
-with firmware loading taking ~180seconds in total, computer still has
-black screen and is irresponsive for said duration, which is completely
-unacceptable.
-
-I do not have enough expertise in particular area, but it sounds very weird
-to me that audio driver is delaying system wake up process at first place.
-Was this intentional? I would assume/guess most correct solution would be
-for driver to run non-blocking, like it does on boot, but again, I am not
-too familiar with the subject.
-
-> (~80s per amp) to load the firmware.
-
-Besides firmware loading, there are general initialization/communication
-taking place as well. I have disabled firmware loading to try: at a speed
-of 3051Hz, it takes ~16 seconds on boot (non blocking, so not a big deal)
-and ~7-8 seconds on wake up from suspend (blocking, so it is still not
-acceptable).
-
-I am myself extremely exited to get support for 9530 in upstream, but I am
-just afraid that such a big wake up delay is a huge hit on a end user, and
-would affect everyone with 9530 where intel-lpss patch was not applied yet.
-
-> Instead I would prefer that we instead disable the loading of the 
-> firmware in this case.
-> Without loading firmware, the volume is much lower, but at least you 
-> still have audio.
-
-This indeed sounds like a better approach, I did not think of that. This
-should work much better for generic cases, but unfortunately, will still
-not prevent devices with _extremely_ slow SPI from badly affecting UX
-
-Taking into account the above, and unless driver being blocking on wake up
-can be resolved, perhaps it would makes sense to do both?
-a) Your suggestion - disable firmware loading if SPI speed is not in MHz
-range and
-b) Do not initialize device at all, if SPI speed is ridiculously low (like
-for example 3051 Hz)?
-
-I have tested on 9530 without firmware loading, with SPI speed set to
-50000Hz: it delays wake up by ~0.9-1 seconds. Subjectively, I think this is
-the maximum acceptable delay.
-
-> I have a patch to do that, which I was planning on pushing up 
-> (hopefully) today.
-
-Thanks for following up on this!
-
+On Mon 18-12-23 16:35:45, Christoph Hellwig wrote:
+> From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 > 
-> Thanks,
+> Collapse the two nested loops into one.  This is needed as a step
+> towards turning this into an iterator.
 > 
-> Stefan
+> Note that this drops the "index <= end" check in the previous outer loop
+> and just relies on filemap_get_folios_tag() to return 0 entries when
+> index > end.  This actually has a subtle implication when end == -1
+> because then the returned index will be -1 as well and thus if there is
+> page present on index -1, we could be looping indefinitely. But as the
+> comment in filemap_get_folios_tag documents this as already broken anyway
+> we should not worry about it here either.  The fix for that would
+> probably a change to the filemap_get_folios_tag() calling convention.
 > 
-> >   		/*
-> >   		 * Manually set the Chip Select for the second amp <cs_gpio_index> in the node.
-> >   		 * This is only supported for systems with 2 amps, since we cannot expand the
-> > @@ -219,8 +232,6 @@ static int generic_dsd_config(struct cs35l41_hda *cs35l41, struct device *physde
-> >   		 * first.
-> >   		 */
-> >   		if (cfg->cs_gpio_index >= 0) {
-> > -			spi = to_spi_device(cs35l41->dev);
-> > -
-> >   			if (cfg->num_amps != 2) {
-> >   				dev_warn(cs35l41->dev,
-> >   					 "Cannot update SPI CS, Number of Amps (%d) != 2\n",
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> [hch: updated the commit log based on feedback from Jan Kara]
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-FYI intel-lpss patch was submitted for review [1]. However, as it is in
-different tree, it cannot be guaranteed that it will be always applied
-when your patch for 9530 and other Dell devices will be applied, which is
-why I am insisting on safety guard against _extremely_ low SPI speeds.
+Looks good. Feel free to add:
 
-[1]: https://lore.kernel.org/all/20231220205621.8575-1-alex.vinarskis@gmail.com/
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+								Honza
+
+> ---
+>  mm/page-writeback.c | 94 ++++++++++++++++++++++-----------------------
+>  1 file changed, 46 insertions(+), 48 deletions(-)
+> 
+> diff --git a/mm/page-writeback.c b/mm/page-writeback.c
+> index 2a004c0b9bdfbf..c7983ea3040be4 100644
+> --- a/mm/page-writeback.c
+> +++ b/mm/page-writeback.c
+> @@ -2473,6 +2473,7 @@ int write_cache_pages(struct address_space *mapping,
+>  {
+>  	int error;
+>  	pgoff_t end;		/* Inclusive */
+> +	int i = 0;
+>  
+>  	if (wbc->range_cyclic) {
+>  		wbc->index = mapping->writeback_index; /* prev offset */
+> @@ -2487,63 +2488,60 @@ int write_cache_pages(struct address_space *mapping,
+>  	folio_batch_init(&wbc->fbatch);
+>  	wbc->err = 0;
+>  
+> -	while (wbc->index <= end) {
+> -		int i;
+> -
+> -		writeback_get_batch(mapping, wbc);
+> +	for (;;) {
+> +		struct folio *folio;
+> +		unsigned long nr;
+>  
+> +		if (i == wbc->fbatch.nr) {
+> +			writeback_get_batch(mapping, wbc);
+> +			i = 0;
+> +		}
+>  		if (wbc->fbatch.nr == 0)
+>  			break;
+>  
+> -		for (i = 0; i < wbc->fbatch.nr; i++) {
+> -			struct folio *folio = wbc->fbatch.folios[i];
+> -			unsigned long nr;
+> +		folio = wbc->fbatch.folios[i++];
+>  
+> -			folio_lock(folio);
+> -			if (!should_writeback_folio(mapping, wbc, folio)) {
+> -				folio_unlock(folio);
+> -				continue;
+> -			}
+> +		folio_lock(folio);
+> +		if (!should_writeback_folio(mapping, wbc, folio)) {
+> +			folio_unlock(folio);
+> +			continue;
+> +		}
+>  
+> -			trace_wbc_writepage(wbc, inode_to_bdi(mapping->host));
+> +		trace_wbc_writepage(wbc, inode_to_bdi(mapping->host));
+>  
+> -			error = writepage(folio, wbc, data);
+> -			nr = folio_nr_pages(folio);
+> -			wbc->nr_to_write -= nr;
+> +		error = writepage(folio, wbc, data);
+> +		nr = folio_nr_pages(folio);
+> +		wbc->nr_to_write -= nr;
+>  
+> -			/*
+> -			 * Handle the legacy AOP_WRITEPAGE_ACTIVATE magic return
+> -			 * value.  Eventually all instances should just unlock
+> -			 * the folio themselves and return 0;
+> -			 */
+> -			if (error == AOP_WRITEPAGE_ACTIVATE) {
+> -				folio_unlock(folio);
+> -				error = 0;
+> -			}
+> -		
+> -			if (error && !wbc->err)
+> -				wbc->err = error;
+> +		/*
+> +		 * Handle the legacy AOP_WRITEPAGE_ACTIVATE magic return value.
+> +		 * Eventually all instances should just unlock the folio
+> +		 * themselves and return 0;
+> +		 */
+> +		if (error == AOP_WRITEPAGE_ACTIVATE) {
+> +			folio_unlock(folio);
+> +			error = 0;
+> +		}
+>  
+> -			/*
+> -			 * For integrity sync  we have to keep going until we
+> -			 * have written all the folios we tagged for writeback
+> -			 * prior to entering this loop, even if we run past
+> -			 * wbc->nr_to_write or encounter errors.  This is
+> -			 * because the file system may still have state to clear
+> -			 * for each folio.   We'll eventually return the first
+> -			 * error encountered.
+> -			 *
+> -			 * For background writeback just push done_index past
+> -			 * this folio so that we can just restart where we left
+> -			 * off and media errors won't choke writeout for the
+> -			 * entire file.
+> -			 */
+> -			if (wbc->sync_mode == WB_SYNC_NONE &&
+> -			    (wbc->err || wbc->nr_to_write <= 0)) {
+> -				writeback_finish(mapping, wbc,
+> -						folio->index + nr);
+> -				return error;
+> -			}
+> +		if (error && !wbc->err)
+> +			wbc->err = error;
+> +
+> +		/*
+> +		 * For integrity sync  we have to keep going until we have
+> +		 * written all the folios we tagged for writeback prior to
+> +		 * entering this loop, even if we run past wbc->nr_to_write or
+> +		 * encounter errors.  This is because the file system may still
+> +		 * have state to clear for each folio.   We'll eventually return
+> +		 * the first error encountered.
+> +		 *
+> +		 * For background writeback just push done_index past this folio
+> +		 * so that we can just restart where we left off and media
+> +		 * errors won't choke writeout for the entire file.
+> +		 */
+> +		if (wbc->sync_mode == WB_SYNC_NONE &&
+> +		    (wbc->err || wbc->nr_to_write <= 0)) {
+> +			writeback_finish(mapping, wbc, folio->index + nr);
+> +			return error;
+>  		}
+>  	}
+>  
+> -- 
+> 2.39.2
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
