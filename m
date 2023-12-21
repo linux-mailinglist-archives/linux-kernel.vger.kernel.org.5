@@ -1,141 +1,117 @@
-Return-Path: <linux-kernel+bounces-7967-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7968-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D849581AFE0
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 08:58:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F34781AFE3
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 08:59:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 08F701C23A09
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 07:58:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A30761F26E43
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 07:59:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90A4C156DD;
-	Thu, 21 Dec 2023 07:58:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="QSZcROZe"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B91FB156F7;
+	Thu, 21 Dec 2023 07:59:47 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCDAA156CB;
-	Thu, 21 Dec 2023 07:57:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id E9FB6C0005;
-	Thu, 21 Dec 2023 07:57:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1703145476;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Eu7zR58/A5+I3jTzwSMEK0TkRVpJ1QTPYfi7nQg/PvU=;
-	b=QSZcROZeH5xz0kU7AXaeCSVNQDDY/yRKDMO84ECGwrv+GFwT6JcSGyk+j+ExUYYE45UKcO
-	+m9M0bV36VLrUKgJwml5glXA4QQlpdMac06dm5t9dzyb2BU6Kw55z9Rvi+CCCrDtYIdePU
-	ti2HesGllHP9yUVabUVkyWttW2BJD9QFGPcHiJJ+n4Aup2MotqcmgytldZs98Ms6+oayGR
-	ZskP6bsS9dQm5lZez74JW5VcsigxhcHKVwMDN8YJxdsTuTsAkrh1B8vOvdNLX3yOShaVqR
-	HOxjkFHq0TnHUzv1DmVEea9IPpBZxRl7k+Gg6qQ+M/IxVAUc/jmfSFVMFz67FA==
-From: Gregory CLEMENT <gregory.clement@bootlin.com>
-To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Paul Burton <paulburton@kernel.org>, linux-mips@vger.kernel.org, Jiaxun
- Yang <jiaxun.yang@flygoat.com>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Vladimir
- Kondratiev <vladimir.kondratiev@mobileye.com>, Tawfik Bayouk
- <tawfik.bayouk@mobileye.com>, Alexandre Belloni
- <alexandre.belloni@bootlin.com>, =?utf-8?Q?Th=C3=A9o?= Lebrun
- <theo.lebrun@bootlin.com>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v5 00/22] Add support for the Mobileye EyeQ5 SoC
-In-Reply-To: <ZYNhbQjMbAH6I0kI@alpha.franken.de>
-References: <20231212163459.1923041-1-gregory.clement@bootlin.com>
- <878r5vctdg.fsf@BL-laptop> <ZYNhbQjMbAH6I0kI@alpha.franken.de>
-Date: Thu, 21 Dec 2023 08:57:55 +0100
-Message-ID: <87frzwasxo.fsf@BL-laptop>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30E17156C9;
+	Thu, 21 Dec 2023 07:59:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4SwjW71nyQz1Q78M;
+	Thu, 21 Dec 2023 15:59:15 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (unknown [7.185.36.74])
+	by mail.maildlp.com (Postfix) with ESMTPS id 46AD6140499;
+	Thu, 21 Dec 2023 15:59:33 +0800 (CST)
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 21 Dec
+ 2023 15:59:33 +0800
+Subject: Re: [PATCH net-next] page_pool: Rename frag_users to frag_cnt
+To: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+CC: <netdev@vger.kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>, "David
+ S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub
+ Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	<linux-kernel@vger.kernel.org>
+References: <20231215073119.543560-1-ilias.apalodimas@linaro.org>
+ <6fddeb22-0906-e04c-3a84-7836bef9ffa2@huawei.com>
+ <CAC_iWjLiOdUqLmRHjZmwv9QBsBvYNV=zn30JrRbJa05qMyDBmw@mail.gmail.com>
+ <fb0f33d8-d09a-57fc-83b0-ccf152277355@huawei.com>
+ <CAC_iWjKH5ZCUwVWc2EisfjeLVF=ko967hqpdAc7G4FdsZCq7NA@mail.gmail.com>
+ <d853acde-7d69-c715-4207-fb77da1fb203@huawei.com>
+ <CAC_iWjL04RRFCU13yejUONvvY0dzYO1scAzNOC+auWpFDctzAA@mail.gmail.com>
+From: Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <0dfffe91-2bd4-2151-cf71-ef29bf562767@huawei.com>
+Date: Thu, 21 Dec 2023 15:59:32 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-GND-Sasl: gregory.clement@bootlin.com
+In-Reply-To: <CAC_iWjL04RRFCU13yejUONvvY0dzYO1scAzNOC+auWpFDctzAA@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
 
-Hello Thomas,
+On 2023/12/21 14:37, Ilias Apalodimas wrote:
+> Hi Yunsheng,
+> 
+> On Thu, 21 Dec 2023 at 04:07, Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>>
+>> On 2023/12/20 15:56, Ilias Apalodimas wrote:
+>>> Hi Yunsheng,
+>>>>>>>  #ifdef CONFIG_PAGE_POOL_STATS
+>>>>>>>       /* these stats are incremented while in softirq context */
+>>>>>>> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
+>>>>>>> index 9b203d8660e4..19a56a52ac8f 100644
+>>>>>>> --- a/net/core/page_pool.c
+>>>>>>> +++ b/net/core/page_pool.c
+>>>>>>> @@ -659,7 +659,7 @@ EXPORT_SYMBOL(page_pool_put_page_bulk);
+>>>>>>>  static struct page *page_pool_drain_frag(struct page_pool *pool,
+>>>>>>>                                        struct page *page)
+>>>>>>>  {
+>>>>>>> -     long drain_count = BIAS_MAX - pool->frag_users;
+>>>>>>> +     long drain_count = BIAS_MAX - pool->frag_cnt;
+>>>>>>
+>>>>>> drain_count = pool->refcnt_bais;
+>>>>>
+>>>>> I think this is a typo right? This still remains
+>>>>
+>>>> It would be better to invert logic too, as it is mirroring:
+>>>>
+>>>> https://elixir.bootlin.com/linux/v6.7-rc5/source/mm/page_alloc.c#L4745
+>>>
+>>> This is still a bit confusing for me since the actual bias is the
+>>> number of fragments that you initially split the page. But I am fine
+>> Acctually there are two bais numbers for a page used by
+>> page_pool_alloc_frag().
+>> the one for page->pp_ref_count, which already use the BIAS_MAX, which
+>> indicates the initial bais number:
+>> https://elixir.bootlin.com/linux/latest/source/net/core/page_pool.c#L779
+>>
+>> Another one for pool->frag_users indicating the runtime bais number, which
+>> need changing when a page is split into more fragments:
+>> https://elixir.bootlin.com/linux/latest/source/net/core/page_pool.c#L776
+>> https://elixir.bootlin.com/linux/latest/source/net/core/page_pool.c#L783
+> 
+> I know, and that's exactly what my commit message explains.  Also,
+> that's the reason that the rename was 'frag_cnt' on v1.
+> 
 
-Thanks for your fedback
+Yes, I think we do not need to invert logic when the naming is frag_users
+or frag_cnt.
 
-> On Fri, Dec 15, 2023 at 05:39:39PM +0100, Gregory CLEMENT wrote:
->> Hello Thomas,
->> 
->> > Hello,
->> >
->> > The EyeQ5 SoC from Mobileye is based on the MIPS I6500 architecture
->> > and features multiple controllers such as the classic UART, I2C, SPI,
->> > as well as CAN-FD, PCIe, Octal/Quad SPI Flash interface, Gigabit
->> > Ethernet, MIPI CSI-2, and eMMC 5.1. It also includes a Hardware
->> > Security Module, Functional Safety Hardware, and MJPEG encoder.
->> >
->> > One peculiarity of this SoC is that the physical address of the DDDR
->> > exceeds 32 bits. Given that the architecture is 64 bits, this is not
->> > an issue, but it requires some changes in how the mips64 is currently
->> > managed during boot.
->> >
->> > In this fifth version, there aren't many changes, mostly just tweaking
->> > commit messages based on Sergey's feedback and fixing up the code
->> > style. But, the real reason for this series is a bit of a whoopsie on
->> > my end. It turns out, despite what I confidently claimed in the last
->> > round, some configuration tweaks were missing. All sorted now, though!
->> >
->> 
->> A few weeks ago, you were concerned about the introduction of the
->> specific kconfig CONFIG_USE_XKPHYS to support EyeQ5, and you wanted us
->> to set up a new platform instead. Since then, Jiaxun proposed a series
->> that was merged here to provide more generic support.
->
-> well, there is more to improve and stuff I don't like in Jaixun series.
-> For example misusing CONFIG_PHYSICAL_START to force a load address via config
-> (IMHO it's already a hack for CRASH_DUMP).
->
-> As there is your series and Jiaxun series, where should I comment more
-> detailed ?
+But if we use 'bias' as part of the name, isn't that more reasonable to set
+both of the bias number to BIAS_MAX initially, and decrement the runtime
+bais number every time the page is split to more fragmemts?
 
-I think you could start on Jiaxun series but the one merged in my
-series, because I already had a few fixes for it.
-
->
->> I had other issues in the initial series, and I think that now I've
->> fixed all of them. So, I would like to know what your opinion is now
->> about this series.
->> 
->> Will you accept it, or do you still think that a new platform has to be
->> set up?
->
-> things have improved, but I'm still in favor to use a new platform.
-> And my main point stays. A "generic" kernel compiled for EyeQ5 will
-> just run on that platform, which doesn't sound generic to me.
-
-I do not oppose the addition of a new platform, even though, like
-Jiaxun, I would prefer to avoid duplicating code. The only thing
-preventing the use of the same kernel for EyeQ5 and other platforms is
-the starting address. Therefore, if it were possible to have a
-relocatable kernel, this issue would disappear.
-
-However, while waiting for your feedback on Jiaxun's part, I will
-attempt to add a new platform to assess exactly what the implications
-are.
-
-Gregory
-
->
-> Thomas.
->
-> -- 
-> Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-> good idea.                                                [ RFC1925, 2.3 ]
-
--- 
-Gregory Clement, Bootlin
-Embedded Linux and Kernel engineering
-http://bootlin.com
+> 
 
