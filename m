@@ -1,190 +1,155 @@
-Return-Path: <linux-kernel+bounces-7810-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7807-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44EC181AD84
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 04:30:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C54A681AD7B
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 04:27:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D76E21F23448
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 03:30:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DDD961C22490
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 03:27:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 818C48F54;
-	Thu, 21 Dec 2023 03:30:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 742CE63D5;
+	Thu, 21 Dec 2023 03:26:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="L/RCuuyg"
+	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="F5RWXqHP"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp-relay-canonical-0.canonical.com (smtp-relay-canonical-0.canonical.com [185.125.188.120])
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE6C38BFA;
-	Thu, 21 Dec 2023 03:30:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
-Received: from localhost.localdomain (1.general.khfeng.us.vpn [10.172.68.174])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 8938A4137C;
-	Thu, 21 Dec 2023 03:22:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20210705; t=1703128982;
-	bh=JDoM9KmI2fADFTTBZyhTDsMQjnYqWfo8M3InT6pF8C0=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
-	b=L/RCuuygH3nkZok0q+OQmCLG1t82JOr+LJxC0TJLTlGTMdhm/kznRpEl6a1b5Z9+d
-	 jH3ch5c2vhmzl7yuO9fMcqU8ozw54Lj0U3LgYNNELnipGYavWdEg9pD76OJPaPKXdl
-	 SXl3ANcKr/iAHBjhX++S3tOooxXDa2mRQ9v6fMOCZKvXM5ZB6CKhbb7fsXy+Pll9om
-	 VynDqo5EbbJn0upDiH86NXjimahnccMPj2AIc6nVdeEvONJZdYkFcMTW9kHoEAJbTO
-	 DxAMSozl6Yg2gBEL/9l0LSnPjKOgZglb2yXWiRBWx+jyKgPDhlFzyqE/AgspUVBiwx
-	 TojLeQerzAxZg==
-From: Kai-Heng Feng <kai.heng.feng@canonical.com>
-To: adrian.hunter@intel.com,
-	ulf.hansson@linaro.org
-Cc: Kai-Heng Feng <kai.heng.feng@canonical.com>,
-	Victor Shih <victor.shih@genesyslogic.com.tw>,
-	Ben Chuang <benchuanggli@gmail.com>,
-	linux-mmc@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2] mmc: sdhci-pci-gli: GL975x: Mask rootport's replay timer timeout during suspend
-Date: Thu, 21 Dec 2023 11:21:47 +0800
-Message-Id: <20231221032147.434647-1-kai.heng.feng@canonical.com>
-X-Mailer: git-send-email 2.34.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDA604C64;
+	Thu, 21 Dec 2023 03:26:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
+X-UUID: c7d0b8c89fb011eeba30773df0976c77-20231221
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+	h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=qlh/VbDYXlXEU1JaXc715148R0jpddLs+ZhwUrdEA90=;
+	b=F5RWXqHPPTCwYDeM+Zckon9CTQAHP5hBqWehQOEoNSgOYogk8NQyQmBOGY8G2n6A9J67oAMM5+fW04FcKAjjXzHsIH/XNv85ENYea1vWUkO6gHze/aXIjYOc0qQbb/VQUpH9JXiNScjFx+4ohb/TRvw6ni6hLkfCos4TE4Rk0zY=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.35,REQID:0cb7be99-254d-456c-9198-ace6eb0f5d96,IP:0,U
+	RL:0,TC:0,Content:-25,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
+	N:release,TS:-25
+X-CID-META: VersionHash:5d391d7,CLOUDID:3b18688d-e2c0-40b0-a8fe-7c7e47299109,B
+	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+	RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
+	DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-UUID: c7d0b8c89fb011eeba30773df0976c77-20231221
+Received: from mtkmbs11n1.mediatek.inc [(172.21.101.185)] by mailgw02.mediatek.com
+	(envelope-from <chui-hao.chiu@mediatek.com>)
+	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+	with ESMTP id 1023971889; Thu, 21 Dec 2023 11:26:51 +0800
+Received: from mtkmbs11n1.mediatek.inc (172.21.101.185) by
+ mtkmbs11n1.mediatek.inc (172.21.101.185) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Thu, 21 Dec 2023 11:26:49 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
+ mtkmbs11n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Thu, 21 Dec 2023 11:26:49 +0800
+From: Peter Chiu <chui-hao.chiu@mediatek.com>
+To: Felix Fietkau <nbd@nbd.name>, Rob Herring <robh+dt@kernel.org>, Krzysztof
+ Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+CC: Conor Dooley <conor+dt@kernel.org>, Lorenzo Bianconi <lorenzo@kernel.org>,
+	Ryder Lee <ryder.lee@mediatek.com>, Shayne Chen <shayne.chen@mediatek.com>,
+	Sean Wang <sean.wang@mediatek.com>, Kalle Valo <kvalo@kernel.org>, Matthias
+ Brugger <matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
+	<angelogioacchino.delregno@collabora.com>, <linux-wireless@vger.kernel.org>,
+	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>,
+	Peter Chiu <chui-hao.chiu@mediatek.com>
+Subject: [PATCH v4] dt-bindings: net: wireless: mt76: add interrupts description for MT7986
+Date: Thu, 21 Dec 2023 11:26:48 +0800
+Message-ID: <20231221032648.641-1-chui-hao.chiu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-MTK: N
 
-Spamming `lspci -vv` can still observe the replay timer timeout error
-even after commit 015c9cbcf0ad ("mmc: sdhci-pci-gli: GL9750: Mask the
-replay timer timeout of AER"), albeit with a lower reproduce rate.
+The mt7986 can support four interrupts to distribute the interrupts
+to different CPUs.
 
-Such AER interrupt can still prevent the system from suspending, so let
-root port mask and unmask replay timer timeout during suspend and
-resume, respectively.
-
-Cc: Victor Shih <victor.shih@genesyslogic.com.tw>
-Cc: Ben Chuang <benchuanggli@gmail.com>
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Signed-off-by: Peter Chiu <chui-hao.chiu@mediatek.com>
 ---
-v2:
- - Change subject to reflect it works on GL9750 & GL9755
- - Fix when aer_cap is missing
- 
- drivers/mmc/host/sdhci-pci-core.c |  2 +-
- drivers/mmc/host/sdhci-pci-gli.c  | 55 +++++++++++++++++++++++++++++--
- drivers/mmc/host/sdhci-pci.h      |  1 +
- 3 files changed, 55 insertions(+), 3 deletions(-)
+v2: Change to use description instead of using items.
+v3: Change to use items and set different minItems for mediatek,mt7986-wmac
+v4: Move allOf after required and remove duplicated blank line.
+---
+ .../bindings/net/wireless/mediatek,mt76.yaml  | 32 ++++++++++++++++---
+ 1 file changed, 27 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/mmc/host/sdhci-pci-core.c b/drivers/mmc/host/sdhci-pci-core.c
-index 025b31aa712c..59ae4da72974 100644
---- a/drivers/mmc/host/sdhci-pci-core.c
-+++ b/drivers/mmc/host/sdhci-pci-core.c
-@@ -68,7 +68,7 @@ static int sdhci_pci_init_wakeup(struct sdhci_pci_chip *chip)
- 	return 0;
- }
+diff --git a/Documentation/devicetree/bindings/net/wireless/mediatek,mt76.yaml b/Documentation/devicetree/bindings/net/wireless/mediatek,mt76.yaml
+index 252207adbc54..0c6835db397f 100644
+--- a/Documentation/devicetree/bindings/net/wireless/mediatek,mt76.yaml
++++ b/Documentation/devicetree/bindings/net/wireless/mediatek,mt76.yaml
+@@ -19,9 +19,6 @@ description: |
+   Alternatively, it can specify the wireless part of the MT7628/MT7688
+   or MT7622/MT7986 SoC.
  
--static int sdhci_pci_suspend_host(struct sdhci_pci_chip *chip)
-+int sdhci_pci_suspend_host(struct sdhci_pci_chip *chip)
- {
- 	int i, ret;
+-allOf:
+-  - $ref: ieee80211.yaml#
+-
+ properties:
+   compatible:
+     enum:
+@@ -38,7 +35,12 @@ properties:
+       MT7986 should contain 3 regions consys, dcm, and sku, in this order.
  
-diff --git a/drivers/mmc/host/sdhci-pci-gli.c b/drivers/mmc/host/sdhci-pci-gli.c
-index 77911a57b12c..54943e9df835 100644
---- a/drivers/mmc/host/sdhci-pci-gli.c
-+++ b/drivers/mmc/host/sdhci-pci-gli.c
-@@ -1429,6 +1429,55 @@ static int sdhci_pci_gli_resume(struct sdhci_pci_chip *chip)
- 	return sdhci_pci_resume_host(chip);
- }
+   interrupts:
+-    maxItems: 1
++    minItems: 1
++    items:
++      - description: major interrupt for rings
++      - description: additional interrupt for ring 19
++      - description: additional interrupt for ring 4
++      - description: additional interrupt for ring 5
  
-+#ifdef CONFIG_PCIEAER
-+static void mask_replay_timer_timeout(struct pci_dev *pdev)
-+{
-+	struct pci_dev *parent = pci_upstream_bridge(pdev);
-+	u32 val;
-+
-+	if (!parent || !parent->aer_cap)
-+		return;
-+
-+	pci_read_config_dword(parent, parent->aer_cap + PCI_ERR_COR_MASK, &val);
-+	val |= PCI_ERR_COR_REP_TIMER;
-+	pci_write_config_dword(parent, parent->aer_cap + PCI_ERR_COR_MASK, val);
-+}
-+
-+static void unmask_replay_timer_timeout(struct pci_dev *pdev)
-+{
-+	struct pci_dev *parent = pci_upstream_bridge(pdev);
-+	u32 val;
-+
-+	if (!parent || !parent->aer_cap)
-+		return;
-+
-+	pci_read_config_dword(pdev, parent->aer_cap + PCI_ERR_COR_MASK, &val);
-+	val &= ~PCI_ERR_COR_REP_TIMER;
-+	pci_write_config_dword(pdev, parent->aer_cap + PCI_ERR_COR_MASK, val);
-+}
-+#else
-+static inline void mask_replay_timer_timeout(struct pci_dev *pdev) { }
-+static inline void unmask_replay_timer_timeout(struct pci_dev *pdev) {  }
-+#endif
-+
-+static int sdhci_pci_gl975x_suspend(struct sdhci_pci_chip *chip)
-+{
-+	mask_replay_timer_timeout(chip->pdev);
-+
-+	return sdhci_pci_suspend_host(chip);
-+}
-+
-+static int sdhci_pci_gl975x_resume(struct sdhci_pci_chip *chip)
-+{
-+	int ret;
-+
-+	ret = sdhci_pci_gli_resume(chip);
-+
-+	unmask_replay_timer_timeout(chip->pdev);
-+
-+	return ret;
-+}
-+
- static int gl9763e_resume(struct sdhci_pci_chip *chip)
- {
- 	struct sdhci_pci_slot *slot = chip->slots[0];
-@@ -1547,7 +1596,8 @@ const struct sdhci_pci_fixes sdhci_gl9755 = {
- 	.probe_slot	= gli_probe_slot_gl9755,
- 	.ops            = &sdhci_gl9755_ops,
- #ifdef CONFIG_PM_SLEEP
--	.resume         = sdhci_pci_gli_resume,
-+	.suspend	= sdhci_pci_gl975x_suspend,
-+	.resume         = sdhci_pci_gl975x_resume,
- #endif
- };
+   power-domains:
+     maxItems: 1
+@@ -217,6 +219,23 @@ required:
+   - compatible
+   - reg
  
-@@ -1570,7 +1620,8 @@ const struct sdhci_pci_fixes sdhci_gl9750 = {
- 	.probe_slot	= gli_probe_slot_gl9750,
- 	.ops            = &sdhci_gl9750_ops,
- #ifdef CONFIG_PM_SLEEP
--	.resume         = sdhci_pci_gli_resume,
-+	.suspend	= sdhci_pci_gl975x_suspend,
-+	.resume         = sdhci_pci_gl975x_resume,
- #endif
- };
++allOf:
++  - $ref: ieee80211.yaml#
++  - if:
++      properties:
++        compatible:
++          contains:
++            enum:
++              - mediatek,mt7986-wmac
++    then:
++      properties:
++        interrupts:
++          minItems: 4
++    else:
++      properties:
++        interrupts:
++          maxItems: 1
++
+ unevaluatedProperties: false
  
-diff --git a/drivers/mmc/host/sdhci-pci.h b/drivers/mmc/host/sdhci-pci.h
-index 153704f812ed..19253dce687d 100644
---- a/drivers/mmc/host/sdhci-pci.h
-+++ b/drivers/mmc/host/sdhci-pci.h
-@@ -190,6 +190,7 @@ static inline void *sdhci_pci_priv(struct sdhci_pci_slot *slot)
- }
- 
- #ifdef CONFIG_PM_SLEEP
-+int sdhci_pci_suspend_host(struct sdhci_pci_chip *chip);
- int sdhci_pci_resume_host(struct sdhci_pci_chip *chip);
- #endif
- int sdhci_pci_enable_dma(struct sdhci_host *host);
+ examples:
+@@ -293,7 +312,10 @@ examples:
+         reg = <0x18000000 0x1000000>,
+               <0x10003000 0x1000>,
+               <0x11d10000 0x1000>;
+-        interrupts = <GIC_SPI 213 IRQ_TYPE_LEVEL_HIGH>;
++        interrupts = <GIC_SPI 213 IRQ_TYPE_LEVEL_HIGH>,
++                     <GIC_SPI 214 IRQ_TYPE_LEVEL_HIGH>,
++                     <GIC_SPI 215 IRQ_TYPE_LEVEL_HIGH>,
++                     <GIC_SPI 216 IRQ_TYPE_LEVEL_HIGH>;
+         clocks = <&topckgen 50>,
+                  <&topckgen 62>;
+         clock-names = "mcu", "ap2conn";
 -- 
-2.34.1
+2.18.0
 
 
