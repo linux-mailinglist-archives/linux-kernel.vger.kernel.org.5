@@ -1,150 +1,291 @@
-Return-Path: <linux-kernel+bounces-8867-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8868-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2732581BD68
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 18:38:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A45381BD69
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 18:38:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A9AF81F225D7
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 17:38:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C3665283D14
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 17:38:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30259634FE;
-	Thu, 21 Dec 2023 17:38:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FD6D6280D;
+	Thu, 21 Dec 2023 17:38:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="CTeVqL2I"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="TZlJtQv9"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C7A062803
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 17:38:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a26988a86f0so123498966b.3
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 09:38:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703180286; x=1703785086; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=fYV6Mgy0TcRWTlCyc11+Vk7sT6RhTqsahWi2Z8G0VL0=;
-        b=CTeVqL2IcUQ/fKRAQUifFGLFSAbrx1QvqXa+gj3WHbV7eL6LHMpYzG0TbCjtU5a3/A
-         qE77qghI7rOaXVIeN24c1gXdlK17aKLId6udXzfXMvp4DnGsBUATAu7LkpVyk65fpVQZ
-         n7GvLy6MYnzkZ7qFetiphzqleYuUtA2h5gd2cGp2brqo3sjDQ6kR/EhJ8GeejU7eNl96
-         COb7NJ9DmHPuZwyFylQdLnHK4ntC/Q8u1/CrSWEvj4krdeOstDmGHAya58DtBP/s7IoD
-         IfFNjz8MA7T0XLaTuUc03J8NWa6arnYrdpAj7Mf1SBrOmB6s22mVCOJNxP37++oPgtSN
-         74jw==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D853362804
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 17:38:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1703180326;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=juVK00ddSooe55Wxw0xrmMZR0SUwFjF9BwCfKHEAVkA=;
+	b=TZlJtQv9Ca6X3wjAUudhQvSlgoOE2oxR8wELG8atcdBwrJZNHO5qlZXaL6pbEXxVF0fkhk
+	4m68TgjlNSV6WNpiGhD1yl6uzuALe+uarOvV8InwaaDolhKl9lhGeJGevoF9f+Fxm3VnIQ
+	NvT0dR+TywlTV/98SN6ghNIKlCh56j8=
+Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
+ [209.85.208.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-504-KjLEusJkNtis1a1FOpAJcQ-1; Thu, 21 Dec 2023 12:38:45 -0500
+X-MC-Unique: KjLEusJkNtis1a1FOpAJcQ-1
+Received: by mail-lj1-f199.google.com with SMTP id 38308e7fff4ca-2cca7b80b20so303011fa.1
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 09:38:45 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703180286; x=1703785086;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fYV6Mgy0TcRWTlCyc11+Vk7sT6RhTqsahWi2Z8G0VL0=;
-        b=UohstwP7oBg9e1dGGD7Lad+YwnlSVpxZUG1F9EtMYEynq+jGNenxhJ1F0SMpJyD+6o
-         t9JgLSIcgTrhbrhpvY75eH5gQsUPxVL+q9Nl4GiXxug79j1pEbJ0bkjGSiPQ62yuai5a
-         c0Xg6HXgAES6nWlMG6wpoI9hpGH+g/NzPh9W3F0tJk6Yr6NgvhKdzrF4AnYOSt1NmoKW
-         7Wdhgb8xL6zd7mYYqzd4Yw/DzZmprMMvptDBQj9PEpAsaQUd0dflf2ZpofrZENoApIQZ
-         xYpK21KvG3ayItnWTrmi4wQlfn+2mtYdC8sdfEBFaKEo6WwNT4oyBj0pnWW+dSTaaSST
-         8Y6A==
-X-Gm-Message-State: AOJu0YzIsahYTo1//UJdp68INoCrSed11CSWO3FA+WVSv44MtKY8EIdX
-	Isb8Ud6l1d9xEWXlsP71BI8UvM0WljX3+A==
-X-Google-Smtp-Source: AGHT+IEdqFiUIfBBbwZGgA63S7UPMnB1PCiHJNgwpO7VLugKfjxoPp1n1pET+PXhvir5KVNbcDTVbQ==
-X-Received: by 2002:a17:906:4716:b0:a23:619f:9e68 with SMTP id y22-20020a170906471600b00a23619f9e68mr58293ejq.150.1703180286520;
-        Thu, 21 Dec 2023 09:38:06 -0800 (PST)
-Received: from [192.168.0.22] ([78.10.206.178])
-        by smtp.gmail.com with ESMTPSA id mf8-20020a1709071a4800b00a26a4b935b0sm928176ejc.166.2023.12.21.09.38.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Dec 2023 09:38:06 -0800 (PST)
-Message-ID: <56f277f5-3f2a-492a-a84c-0e0a3e3dd475@linaro.org>
-Date: Thu, 21 Dec 2023 18:38:04 +0100
+        d=1e100.net; s=20230601; t=1703180324; x=1703785124;
+        h=content-transfer-encoding:mime-version:user-agent:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=juVK00ddSooe55Wxw0xrmMZR0SUwFjF9BwCfKHEAVkA=;
+        b=tSWVndj90/Y3MSFJ0FTEXU4+3V+yfMFw5Mh8WZwCkV/3TG0ht2ge3uIsV+rDdqSTZl
+         GbGQpi16bvL2kf0yBF4+lAbHERMzG4R+X/KNcauUQDBU+V8twYI6VW2A3DBXEL4hHgBK
+         g/fZLNy+UYra9DO4A9G784gVy+R3M6vCGjsW/3exqlU57VZ0e78sL6Kab9+YGhZAqSkh
+         m6Ip1cI9j8wrGokFY65BMocnL+MjrJ3Kus9J5bbSiFKiA7aco1ywsQtQnDadP2uXIAs5
+         fF/A6pL720IvNV2ybwpA0Jsg5Z0cdlRZPZN8fLbFzpiTXfT9zdFElgfGgsgunw1bq6aT
+         06sg==
+X-Gm-Message-State: AOJu0YwaTowwOGvHrKnINC4zNMFQUht69Mp3s4Rj+K2Wj6LQstuy9amD
+	/mLeSFuWHzRGksFSmPBcQZssMxrW7oJnPpom1eRsin33DHJAPAohC2gqvJKrJhrJHwnTmOhcGcF
+	jbSQNSorMe4yqNueokIUkt353
+X-Received: by 2002:a05:651c:198b:b0:2cc:a6a4:ec with SMTP id bx11-20020a05651c198b00b002cca6a400ecmr148342ljb.21.1703180323708;
+        Thu, 21 Dec 2023 09:38:43 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFnweRe91tHmInwNUi/xnrrP6CH2qZagS31A4zsvAsC2eiha3LOwPVqxwx9Co0G4mdUQnTUjA==
+X-Received: by 2002:a05:651c:198b:b0:2cc:a6a4:ec with SMTP id bx11-20020a05651c198b00b002cca6a400ecmr148339ljb.21.1703180323308;
+        Thu, 21 Dec 2023 09:38:43 -0800 (PST)
+Received: from starship ([77.137.131.62])
+        by smtp.gmail.com with ESMTPSA id n6-20020aa7c786000000b0054c9df4317dsm1443322eds.7.2023.12.21.09.38.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Dec 2023 09:38:42 -0800 (PST)
+Message-ID: <9dd04b84f0d37a44e07add77f62c931cba7743a7.camel@redhat.com>
+Subject: Re: [PATCH v3 4/4] KVM: selftests: Add test case for x86
+ apic_bus_clock_frequency
+From: Maxim Levitsky <mlevitsk@redhat.com>
+To: Isaku Yamahata <isaku.yamahata@intel.com>, kvm@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>, 
+ erdemaktas@google.com, Sean Christopherson <seanjc@google.com>, Vishal
+ Annapurve <vannapurve@google.com>, Jim Mattson <jmattson@google.com>,
+ Xiaoyao Li <xiaoyao.li@intel.com>
+Cc: isaku.yamahata@gmail.com
+Date: Thu, 21 Dec 2023 19:38:40 +0200
+In-Reply-To: <f738cb171c6d47b72b5e608777cf64fa3958183a.1702974319.git.isaku.yamahata@intel.com>
+References: <cover.1702974319.git.isaku.yamahata@intel.com>
+	 <f738cb171c6d47b72b5e608777cf64fa3958183a.1702974319.git.isaku.yamahata@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] dt-bindings: iio: hmc425a: add entry for LTC6373
-Content-Language: en-US
-To: Dumitru Ceclan <mitrutzceclan@gmail.com>
-Cc: Lars-Peter Clausen <lars@metafoo.de>, Jonathan Cameron
- <jic23@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, linux-iio@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- Ceclan Dumitru <dumitru.ceclan@analog.com>
-References: <20231221113842.25957-1-mitrutzceclan@gmail.com>
- <20231221113842.25957-2-mitrutzceclan@gmail.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231221113842.25957-2-mitrutzceclan@gmail.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 21/12/2023 12:38, Dumitru Ceclan wrote:
+On Tue, 2023-12-19 at 00:34 -0800, Isaku Yamahata wrote:
+> Test if the apic bus clock frequency is exptected to the configured value.
+Typo.
+> Set APIC TMICT to the maximum value and busy wait for 100 msec (any value
+> is okay) with tsc value, and read TMCCT. Calculate apic bus clock frequency
+> based on TSC frequency.
+> 
+> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+> ---
+> Changes v3:
+> - Use 1.5GHz instead of 1GHz as frequency.
+> 
+> Changes v2:
+> - Newly added.
+> ---
+>  tools/testing/selftests/kvm/Makefile          |   1 +
+>  .../selftests/kvm/include/x86_64/apic.h       |   7 +
+>  .../kvm/x86_64/apic_bus_clock_test.c          | 135 ++++++++++++++++++
+>  3 files changed, 143 insertions(+)
+>  create mode 100644 tools/testing/selftests/kvm/x86_64/apic_bus_clock_test.c
+> 
+> diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
+> index 963435959a92..e07ec9c1dbd1 100644
+> --- a/tools/testing/selftests/kvm/Makefile
+> +++ b/tools/testing/selftests/kvm/Makefile
+> @@ -116,6 +116,7 @@ TEST_GEN_PROGS_x86_64 += x86_64/vmx_invalid_nested_guest_state
+>  TEST_GEN_PROGS_x86_64 += x86_64/vmx_set_nested_state_test
+>  TEST_GEN_PROGS_x86_64 += x86_64/vmx_tsc_adjust_test
+>  TEST_GEN_PROGS_x86_64 += x86_64/vmx_nested_tsc_scaling_test
+> +TEST_GEN_PROGS_x86_64 += x86_64/apic_bus_clock_test
+>  TEST_GEN_PROGS_x86_64 += x86_64/xapic_ipi_test
+>  TEST_GEN_PROGS_x86_64 += x86_64/xapic_state_test
+>  TEST_GEN_PROGS_x86_64 += x86_64/xcr0_cpuid_test
+> diff --git a/tools/testing/selftests/kvm/include/x86_64/apic.h b/tools/testing/selftests/kvm/include/x86_64/apic.h
+> index bed316fdecd5..866a58d5fa11 100644
+> --- a/tools/testing/selftests/kvm/include/x86_64/apic.h
+> +++ b/tools/testing/selftests/kvm/include/x86_64/apic.h
+> @@ -60,6 +60,13 @@
+>  #define		APIC_VECTOR_MASK	0x000FF
+>  #define	APIC_ICR2	0x310
+>  #define		SET_APIC_DEST_FIELD(x)	((x) << 24)
+> +#define APIC_LVT0       0x350
+> +#define         APIC_LVT_TIMER_ONESHOT          (0 << 17)
+> +#define         APIC_LVT_TIMER_PERIODIC         (1 << 17)
+> +#define         APIC_LVT_TIMER_TSCDEADLINE      (2 << 17)
+> +#define APIC_TMICT	0x380
+> +#define APIC_TMCCT	0x390
+> +#define APIC_TDCR	0x3E0
 >  
-> +allOf:
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            const: adi,ltc6373
+>  void apic_disable(void);
+>  void xapic_enable(void);
+> diff --git a/tools/testing/selftests/kvm/x86_64/apic_bus_clock_test.c b/tools/testing/selftests/kvm/x86_64/apic_bus_clock_test.c
+> new file mode 100644
+> index 000000000000..e7896d703e7d
+> --- /dev/null
+> +++ b/tools/testing/selftests/kvm/x86_64/apic_bus_clock_test.c
+> @@ -0,0 +1,135 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +#define _GNU_SOURCE /* for program_invocation_short_name */
 > +
-> +    then:
-> +      properties:
-> +        ctrl-gpios:
-> +          minItems: 3
-> +          maxItems: 3
+> +#include "apic.h"
+> +#include "test_util.h"
+> +
+> +/*
+> + * Pick one convenient value, 1.5Ghz.  No special meaning and different from
+> + * the default value, 1Ghz.
+> + */
+> +#define TSC_HZ			(1500 * 1000 * 1000ULL)
+> +
+> +/* Wait for 100 msec, not too long, not too short value. */
+> +#define LOOP_MSEC		100ULL
+> +#define TSC_WAIT_DELTA		(TSC_HZ / 1000 * LOOP_MSEC)
+> +
+> +/* Pick up typical value.  Different enough from the default value, 1GHz.  */
+> +#define APIC_BUS_CLOCK_FREQ	(25 * 1000 * 1000ULL)
+> +
+> +static void guest_code(void)
+> +{
+> +	/* Possible tdcr values and its divide count. */
+> +	struct {
+> +		u32 tdcr;
+> +		u32 divide_count;
+> +	} tdcrs[] = {
+> +		{0x0, 2},
+> +		{0x1, 4},
+> +		{0x2, 8},
+> +		{0x3, 16},
+> +		{0x8, 32},
+> +		{0x9, 64},
+> +		{0xa, 128},
+> +		{0xb, 1},
+> +	};
+> +
+> +	u32 tmict, tmcct;
+> +	u64 tsc0, tsc1;
+> +	int i;
+> +
+> +	asm volatile("cli");
+> +
+> +	xapic_enable();
+> +
+> +	/*
+> +	 * Setup one-shot timer.  Because we don't fire the interrupt, the
+> +	 * vector doesn't matter.
+> +	 */
+> +	xapic_write_reg(APIC_LVT0, APIC_LVT_TIMER_ONESHOT);
+> +
+> +	for (i = 0; i < ARRAY_SIZE(tdcrs); i++) {
+> +		xapic_write_reg(APIC_TDCR, tdcrs[i].tdcr);
+> +
+> +		/* Set the largest value to not trigger the interrupt. */
+> +		tmict = ~0;
+> +		xapic_write_reg(APIC_TMICT, tmict);
+> +
+> +		/* Busy wait for LOOP_MSEC */
+> +		tsc0 = rdtsc();
+> +		tsc1 = tsc0;
+> +		while (tsc1 - tsc0 < TSC_WAIT_DELTA)
+> +			tsc1 = rdtsc();
+> +
+> +		/* Read apic timer and tsc */
+> +		tmcct = xapic_read_reg(APIC_TMCCT);
+> +		tsc1 = rdtsc();
+> +
+> +		/* Stop timer */
+> +		xapic_write_reg(APIC_TMICT, 0);
+> +
+> +		/* Report it. */
+> +		GUEST_SYNC_ARGS(tdcrs[i].divide_count, tmict - tmcct,
+> +				tsc1 - tsc0, 0, 0);
+> +	}
+> +
+> +	GUEST_DONE();
+> +}
+> +
+> +void test_apic_bus_clock(struct kvm_vcpu *vcpu)
+> +{
+> +	bool done = false;
+> +	struct ucall uc;
+> +
+> +	while (!done) {
+> +		vcpu_run(vcpu);
+> +		TEST_ASSERT_KVM_EXIT_REASON(vcpu, KVM_EXIT_IO);
+> +
+> +		switch (get_ucall(vcpu, &uc)) {
+> +		case UCALL_DONE:
+> +			done = true;
+> +			break;
+> +		case UCALL_ABORT:
+> +			REPORT_GUEST_ASSERT(uc);
+> +			break;
+> +		case UCALL_SYNC: {
+> +			u32 divide_counter = uc.args[1];
+> +			u32 apic_cycles = uc.args[2];
+> +			u64 tsc_cycles = uc.args[3];
+> +			u64 freq;
+> +
+> +			TEST_ASSERT(tsc_cycles > 0,
+> +				    "tsc cycles must not be zero.");
+> +
+> +			/* Allow 1% slack. */
+> +			freq = apic_cycles * divide_counter * TSC_HZ / tsc_cycles;
+> +			TEST_ASSERT(freq < APIC_BUS_CLOCK_FREQ * 101 / 100,
+> +				    "APIC bus clock frequency is too large");
+> +			TEST_ASSERT(freq > APIC_BUS_CLOCK_FREQ * 99 / 100,
+> +				    "APIC bus clock frequency is too small");
+> +			break;
+> +		}
+> +		default:
+> +			TEST_FAIL("Unknown ucall %lu", uc.cmd);
+> +			break;
+> +		}
+> +	}
+> +}
+> +
+> +int main(int argc, char *argv[])
+> +{
+> +	struct kvm_vm *vm;
+> +	struct kvm_vcpu *vcpu;
+> +
+> +	vm = __vm_create(VM_MODE_DEFAULT, 1, 0);
+> +	vm_ioctl(vm, KVM_SET_TSC_KHZ, (void *) (TSC_HZ / 1000));
+> +	/*  KVM_CAP_X86_BUS_FREQUENCY_CONTROL requires that no vcpu is created. */
+> +	vm_enable_cap(vm, KVM_CAP_X86_BUS_FREQUENCY_CONTROL,
+> +		      APIC_BUS_CLOCK_FREQ);
+> +	vcpu = vm_vcpu_add(vm, 0, guest_code);
+> +
+> +	virt_pg_map(vm, APIC_DEFAULT_GPA, APIC_DEFAULT_GPA);
+> +
+> +	test_apic_bus_clock(vcpu);
+> +	kvm_vm_free(vm);
+> +}
 
-Test your DTS first. This leads to errors. :(
-You miss minItems top-level and here else:.
+
+
+Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
 
 Best regards,
-Krzysztof
+	Maxim Levitsky
+
 
 
