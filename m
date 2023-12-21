@@ -1,137 +1,212 @@
-Return-Path: <linux-kernel+bounces-8248-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8249-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86F7D81B46D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 11:52:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2252481B46E
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 11:53:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 287EE1F254A9
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 10:52:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 747D6B22637
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 10:53:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4155F6BB34;
-	Thu, 21 Dec 2023 10:52:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A91596ABB5;
+	Thu, 21 Dec 2023 10:52:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YtpvG06C"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CxIbWDFD"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ot1-f49.google.com (mail-ot1-f49.google.com [209.85.210.49])
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CBDA697A6;
-	Thu, 21 Dec 2023 10:52:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E29D6ABA8;
+	Thu, 21 Dec 2023 10:52:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f49.google.com with SMTP id 46e09a7af769-6d9f7af8918so485071a34.0;
-        Thu, 21 Dec 2023 02:52:23 -0800 (PST)
+Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-50e2d00f99cso805776e87.0;
+        Thu, 21 Dec 2023 02:52:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703155942; x=1703760742; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1703155957; x=1703760757; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=3V2bqFbXFz6uzfuAS3EMaj60alCFn4Hya5TWFrc6X7E=;
-        b=YtpvG06CYl+FDHybVEb/ZxQDQEiWnV6BGj3Mhgop3OA4nD4yg7p10pyWofpy2el8wi
-         nWwqpCHpyjQy8A1YA23kfs4z22AZarQK0Tkm4984RmxDeg7zZ6HCbpllQQiVuuyB/FpV
-         5ty+IAcU2r49/ha3tu9acrRycY8Z4QOHc2xK/tQDr0neVTss3chybcjQnDo/2PXch7Xv
-         34KY9/Zq73sI+fUwagP+pm1/sORUCmm20H/IiHzoU3bmSdz8ZugcoS1hxZBMYjVTqM/o
-         K251G3q0/DrNTkVMLsxpHgnGwW5FvdwRZquZ7CVyPQgRhdPJQhfaxHCIjDFT3MClDL1Y
-         AP5w==
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=wXeJSWQttpNj1maCXyG2iZVXFgkKzJKf8+HIAsLW66g=;
+        b=CxIbWDFD5ILr+d7IxufYk8YEuRNtrxdFVu1Q6isLZ8L0FVIO1TuC7o2eUNupVRWvb+
+         /9bglVoE37uArFflUpBwWTG69Sh2fpFsD2S4AXU7kZBgD6ccvgmft07FgU0OSc5fJLD5
+         KK6bon5dGdpNYUQQWU2EnAQ8EjGok2pTacQb4HbGsB1SKtH+lmLqNL3ueMHQUFZ25mzJ
+         VwY6uUFDWlPOIoqoQ5pGnRbDmqxu1sGKzT3CId7X/Pf5+LYCVKDhFIMMMkjLTd3EVyRC
+         blCnH4fOcpQlpPeeR0tL5gJeVI/W2GzRohvw+MaJ1pnGD649zGI27MWwMvTFcIDiIJKb
+         Y4fw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703155942; x=1703760742;
+        d=1e100.net; s=20230601; t=1703155957; x=1703760757;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=3V2bqFbXFz6uzfuAS3EMaj60alCFn4Hya5TWFrc6X7E=;
-        b=EsbUTWFQ8pc8ewjhy5I9cw5NxZvZtGJUiKKfUwx80Mzi58Zri7yPEmL5wK1E+Tdkfe
-         AX/jYQ5EEZ/HZBBLKTs6+5l5Fom7I1huJ0HsoRHfjOafXZCXYRWPMQ/j4qruQJqDLnvx
-         zCi10IUme6FlSTbYuT5h6IAu6MQS6qeDMSji+Wh7gKgmzY/Bl/VdixAxElKefY5mmESE
-         5HfZAM+eMtsWCgasauuJc5GiHw99gZ+Gz4JlMftxtHBviVHQw0jwqL/r948J1w3x61jS
-         C//A2SAisbB1j6xLXmboVZSe1ZsKh6QUmdpKrlOau9ZlwnVAFJi0AXGH2qlPYNs5WWkk
-         klVg==
-X-Gm-Message-State: AOJu0Yzi6XBxn2Vq6kR9hns4ubneQ4Nz7PaCYMras20Dl7L6Hd3M6Y5e
-	LBPsBocS65bMcs1K9bMA/Lc=
-X-Google-Smtp-Source: AGHT+IFl2rzPibrLT4xBwUK8vXKFc6W5IyhD8xzAPhynxnUm6Us+9LLSahTk+9jzj64K1Mvvu6RZXg==
-X-Received: by 2002:a05:6359:a0f:b0:172:e0d4:43c9 with SMTP id el15-20020a0563590a0f00b00172e0d443c9mr964626rwb.10.1703155941859;
-        Thu, 21 Dec 2023 02:52:21 -0800 (PST)
-Received: from archie.me ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id q20-20020aa79834000000b006d978ad1c56sm598412pfl.54.2023.12.21.02.52.21
+        bh=wXeJSWQttpNj1maCXyG2iZVXFgkKzJKf8+HIAsLW66g=;
+        b=QeUvbEo3s87azdiYPaVYITKSU0qJ3UxIo0J8UNHe/yHF8Oyw5QsQnWxDtnECHrLjjY
+         ZplLkzwc6Og1zZZfXPyXC6WKy/Jnxa2XFvBb33ptj5iGKCcXPkjJCMsthoZWLYRIrOZW
+         XjtbKvU/CpGng36CEoYnP7emuyZGdtZL8wciUjiqm1AVLgInrhp7o8Zi6SDlEydLq5U6
+         pUkopl38bWCTQzDtxFdYhnSzSU6E71HmklMolEQaB3PYqqET/D7kAj5emBI5mwltP/Ce
+         XN4xpQgYt1Y8iZeA+1PgWcaWW8ZmPqXtzRuXpOlzHUR8aVGwQRzYlqbXmdue899IZl0n
+         7A+g==
+X-Gm-Message-State: AOJu0YzFc3LYXyUEXYWo9j3HereaJUEb+y7X4p5IuWaTMUpVqzubSbdT
+	sjnINUnpHY2qPytq8/3Osw8=
+X-Google-Smtp-Source: AGHT+IFCsY4zSd6nXYXHvSGYiO+Fc4mE4T0uJLXoQGdb4VRopAw06vaFmkc3v+Ww+4SA29aL7Dqf7g==
+X-Received: by 2002:a05:6512:3a8:b0:50e:6328:26c4 with SMTP id v8-20020a05651203a800b0050e632826c4mr124395lfp.78.1703155956816;
+        Thu, 21 Dec 2023 02:52:36 -0800 (PST)
+Received: from pc636 (host-90-233-221-204.mobileonline.telia.com. [90.233.221.204])
+        by smtp.gmail.com with ESMTPSA id g14-20020a0565123b8e00b0050e40a2bc97sm238542lfv.13.2023.12.21.02.52.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Dec 2023 02:52:21 -0800 (PST)
-Received: by archie.me (Postfix, from userid 1000)
-	id DE4F01025E0AC; Thu, 21 Dec 2023 17:52:16 +0700 (WIB)
-Date: Thu, 21 Dec 2023 17:52:16 +0700
-From: Bagas Sanjaya <bagasdotme@gmail.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Linux Networking <netdev@vger.kernel.org>,
-	Linux Kernel Janitors <kernel-janitors@vger.kernel.org>,
-	Kees Cook <keescook@chromium.org>, Jakub Kicinski <kuba@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	"Jiri Slaby (SUSE)" <jirislaby@kernel.org>,
-	Justin Stitt <justinstitt@google.com>,
-	Kunwu Chan <chentao@kylinos.cn>,
-	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	Nathan Chancellor <nathan@kernel.org>,
-	"Steven Rostedt (Google)" <rostedt@goodmis.org>,
-	Karsten Keil <isdn@linux-pingi.de>,
-	Karsten Keil <keil@b1-systems.de>,
-	YouHong Li <liyouhong@kylinos.cn>
-Subject: Re: [PATCH net 0/2] ISDN/mISDN maintenanceship cleanup
-Message-ID: <ZYQY4OW4U28OY-i0@archie.me>
-References: <20231221091419.11764-1-bagasdotme@gmail.com>
- <ba2ac330-d977-4637-93bc-99ee953faab8@gmail.com>
- <2023122121-yiddish-unproven-d793@gregkh>
+        Thu, 21 Dec 2023 02:52:36 -0800 (PST)
+From: Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date: Thu, 21 Dec 2023 11:52:33 +0100
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: "Uladzislau Rezki (Sony)" <urezki@gmail.com>, RCU <rcu@vger.kernel.org>,
+	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
+	Boqun Feng <boqun.feng@gmail.com>, Hillf Danton <hdanton@sina.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
+	Frederic Weisbecker <frederic@kernel.org>
+Subject: Re: [PATCH v3 4/7] rcu: Improve handling of synchronize_rcu() users
+Message-ID: <ZYQY8bB3zpywfBxO@pc636>
+References: <20231128080033.288050-1-urezki@gmail.com>
+ <20231128080033.288050-5-urezki@gmail.com>
+ <579f86e0-e03e-4ab3-9a85-a62064bcf2a1@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="mrhndHuSUZHXM3O1"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2023122121-yiddish-unproven-d793@gregkh>
+In-Reply-To: <579f86e0-e03e-4ab3-9a85-a62064bcf2a1@paulmck-laptop>
 
+On Tue, Dec 19, 2023 at 05:37:56PM -0800, Paul E. McKenney wrote:
+> On Tue, Nov 28, 2023 at 09:00:30AM +0100, Uladzislau Rezki (Sony) wrote:
+> > From: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
+> > 
+> > Currently, processing of the next batch of rcu_synchronize nodes
+> > for the new grace period, requires doing a llist reversal operation
+> > to find the tail element of the list. This can be a very costly
+> > operation (high number of cache misses) for a long list.
+> > 
+> > To address this, this patch introduces a "dummy-wait-node" entity.
+> > At every grace period init, a new wait node is added to the llist.
+> > This wait node is used as wait tail for this new grace period.
+> > 
+> > This allows lockless additions of new rcu_synchronize nodes in the
+> > rcu_sr_normal_add_req(), while the cleanup work executes and does
+> > the progress. The dummy nodes are removed on next round of cleanup
+> > work execution.
+> > 
+> > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> > Signed-off-by: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
+> 
+> This says that Uladzislau created the patch and that Neeraj
+> acted as maintainer.  I am guessing that you both worked on it,
+> in which case is should have the Co-developed-by tags as shown in
+> Documentation/process/submitting-patches.rst.  Could you please update
+> these to reflect the actual origin?
+> 
+Right. We both worked on it. Neeraj is an author whereas i should mark
+myself as a Co-developed-by. This is a correct way. Thank you for
+pointing on it!
 
---mrhndHuSUZHXM3O1
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+>
+> One question below toward the end.  There are probably others that I
+> should be asking, but I have to start somewhere.  ;-)
+> 
+Good :)
 
-On Thu, Dec 21, 2023 at 10:32:58AM +0100, Greg Kroah-Hartman wrote:
-> On Thu, Dec 21, 2023 at 04:17:37PM +0700, Bagas Sanjaya wrote:
-> > On 12/21/23 16:14, Bagas Sanjaya wrote:
-> > > When I'm looking at simple typofix against ISDN subsystem [1], I find
-> > > out more about subsystem activity. It turns out that the subsystem
-> > > maintainer has been inactive since 3 years ago. And also, when I test
-> > > sending "Lorem ipsum" message to the subsystem mailing list, it gets
-> > > bounced.
-> > >=20
-> >=20
-> > Oops, sorry not adding the link.
-> >=20
-> > [1]: https://lore.kernel.org/lkml/20231221024758.1317603-1-liyouhong@ky=
-linos.cn/
->=20
-> I too like to ignore pointless changes like this at times.  Just because
-> others do, does NOT mean that the subsystem is not being maintained.
+> >  
+> >  /*
+> >   * Helper function for rcu_gp_init().
+> >   */
+> > -static void rcu_sr_normal_gp_init(void)
+> > +static bool rcu_sr_normal_gp_init(void)
+> >  {
+> > -	struct llist_node *head, *tail;
+> > +	struct llist_node *first;
+> > +	struct llist_node *wait_head;
+> > +	bool start_new_poll = false;
+> >  
+> > -	if (llist_empty(&sr.srs_next))
+> > -		return;
+> > +	first = READ_ONCE(sr.srs_next.first);
+> > +	if (!first || rcu_sr_is_wait_head(first))
+> > +		return start_new_poll;
+> > +
+> > +	wait_head = rcu_sr_get_wait_head();
+> > +	if (!wait_head) {
+> > +		// Kick another GP to retry.
+> > +		start_new_poll = true;
+> > +		return start_new_poll;
+> > +	}
+> >  
+> > -	tail = llist_del_all(&sr.srs_next);
+> > -	head = llist_reverse_order(tail);
+> > +	/* Inject a wait-dummy-node. */
+> > +	llist_add(wait_head, &sr.srs_next);
+> >  
+> >  	/*
+> > -	 * A waiting list of GP should be empty on this step,
+> > -	 * since a GP-kthread, rcu_gp_init() -> gp_cleanup(),
+> > +	 * A waiting list of rcu_synchronize nodes should be empty on
+> > +	 * this step, since a GP-kthread, rcu_gp_init() -> gp_cleanup(),
+> >  	 * rolls it over. If not, it is a BUG, warn a user.
+> >  	 */
+> > -	WARN_ON_ONCE(!llist_empty(&sr.srs_wait));
+> > +	WARN_ON_ONCE(sr.srs_wait_tail != NULL);
+> > +	sr.srs_wait_tail = wait_head;
+> > +	ASSERT_EXCLUSIVE_WRITER(sr.srs_wait_tail);
+> >  
+> > -	WRITE_ONCE(sr.srs_wait_tail, tail);
+> > -	__llist_add_batch(head, tail, &sr.srs_wait);
+> > +	return start_new_poll;
+> >  }
+> >  
+> >  static void rcu_sr_normal_add_req(struct rcu_synchronize *rs)
+> > @@ -1493,6 +1684,7 @@ static noinline_for_stack bool rcu_gp_init(void)
+> >  	unsigned long mask;
+> >  	struct rcu_data *rdp;
+> >  	struct rcu_node *rnp = rcu_get_root();
+> > +	bool start_new_poll;
+> >  
+> >  	WRITE_ONCE(rcu_state.gp_activity, jiffies);
+> >  	raw_spin_lock_irq_rcu_node(rnp);
+> > @@ -1517,11 +1709,15 @@ static noinline_for_stack bool rcu_gp_init(void)
+> >  	/* Record GP times before starting GP, hence rcu_seq_start(). */
+> >  	rcu_seq_start(&rcu_state.gp_seq);
+> >  	ASSERT_EXCLUSIVE_WRITER(rcu_state.gp_seq);
+> > -	rcu_sr_normal_gp_init();
+> > +	start_new_poll = rcu_sr_normal_gp_init();
+> >  	trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq, TPS("start"));
+> >  	rcu_poll_gp_seq_start(&rcu_state.gp_seq_polled_snap);
+> >  	raw_spin_unlock_irq_rcu_node(rnp);
+> >  
+> > +	// New poll request after rnp unlock
+> > +	if (start_new_poll)
+> > +		(void) start_poll_synchronize_rcu();
+> 
+> You lost me on this one.  Anything that got moved to the wait list
+> should be handled by the current grace period, right?  Or is the
+> problem that rcu_sr_normal_gp_init() is being invoked after the call
+> to rcu_seq_start()?  If that is the case, could it be moved ahead so
+> that we don't need the extra grace period?
+> 
+> Or am I missing something subtle here?
+> 
+The problem is that, we are limited in number of "wait-heads" which we
+add as a marker node for this/current grace period. If there are more clients
+and there is no a wait-head available it means that a system, the deferred
+kworker, is slow in processing callbacks, thus all wait-nodes are in use.
 
-Unless maintainers in question agree after their inactivity.
+That is why we need an extra grace period. Basically to repeat our try one
+more time, i.e. it might be that a current grace period is not able to handle
+users due to the fact that a system is doing really slow, but this is rather
+a corner case and is not a problem.
 
-Ciao!
-
---=20
-An old man doll... just what I always wanted! - Clara
-
---mrhndHuSUZHXM3O1
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZYQY4AAKCRD2uYlJVVFO
-oyzDAQDV0vQYfA1X7q9/0rAvwBI4TYCCe68k3H+T31bEqvwjWwEAwFw+NsdY7K/O
-rO+vF4hMLPGDdjm3BRdpB5MsdoouKgk=
-=NBX+
------END PGP SIGNATURE-----
-
---mrhndHuSUZHXM3O1--
+--
+Uladzislau Rezki
 
