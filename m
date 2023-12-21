@@ -1,133 +1,104 @@
-Return-Path: <linux-kernel+bounces-8560-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8561-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1EA081B968
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 15:16:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F56981B96B
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 15:17:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9A656282EA2
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 14:16:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CFCCF286C1C
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 14:17:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2026D6D6E8;
-	Thu, 21 Dec 2023 14:16:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hd9y6upk"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86EC96D6EF;
+	Thu, 21 Dec 2023 14:17:44 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+Received: from mail-ot1-f52.google.com (mail-ot1-f52.google.com [209.85.210.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FA866D6D7;
-	Thu, 21 Dec 2023 14:16:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1A506D6C0;
+	Thu, 21 Dec 2023 14:17:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-54c70c70952so1029532a12.3;
-        Thu, 21 Dec 2023 06:16:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703168199; x=1703772999; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=DIEY4iCG9As6cQdv6wbONXBVAHgbPQaouukGekCBLE8=;
-        b=hd9y6upkbIssdtp6skphS4rLlh/m/mv9v/tNdXXJfAfZTJZNv/MwH6J0JcePDXArsa
-         KXHxQ3tu32w/8CJlvizVcrdHqDhH8fvct/vQqqQpdz/kxxMaE0zZdD1SI4N9zczB/ut1
-         v1SzRusSCa5v87gsIt5PxqZONby1YkZfQHZ/yIGgzNNCPAdLhRMfN4nVjelGVK2tmEXg
-         XrqrRcpLptljg+TLfyudsbBdTdfEQ+VtL19oCYZxFMpSlzFJu5K0S26BLCuc7J8vUQRX
-         92Z5CRaBqd1L+8MtHIJZ44NTTlzodO2RKHmMCzwZX1S/mNSDpBYh9GZKPGapUF4rLUk+
-         vC+Q==
+Received: by mail-ot1-f52.google.com with SMTP id 46e09a7af769-6dbb9d03b5eso100008a34.1;
+        Thu, 21 Dec 2023 06:17:41 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703168199; x=1703772999;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DIEY4iCG9As6cQdv6wbONXBVAHgbPQaouukGekCBLE8=;
-        b=dzceUa7sKFbS4NnyEfQy+BdaQyC++rbdin4WQZ7a25UQWUcdhIwLiynY/ZS6sRWOX2
-         ll/t8nrIlbMOgALuSW+jDTJZ3EjtuiJDufOa6eXQ4rpDnLqU+3zB35qRzr1WAGR79298
-         CNQJGwvBMMfMVQ573UIm0hd5mmoNgmaVsidZVswX00xJgWVzPq2XNWUnG2oXtxuWpcPf
-         AimphVijrXKpQg0iajYlnvBT+EiDTGNPYp+CpaEfJ+QpnwwPkCG6ndDj0iNvJD+4l013
-         B7LKeypR+AfR0tZjr+Vl1fZecgGiewu5MFbXPJZjdhCXCLnN+LhKcavilb5uaYlE1GRk
-         jjPA==
-X-Gm-Message-State: AOJu0Yw6AxQ4JX6SiVqNtjkefRWMEXRWN/NwrWbFpJexnuU6EUdtZM9v
-	7P03eVqtOfeM2ttzQbyGiYc=
-X-Google-Smtp-Source: AGHT+IFRIdfRI8THjDslvYwU3U7ujKzlabDcX+NozESRFAg62HS2QVAClRNzJDoYXL7uUgYwZbK2Uw==
-X-Received: by 2002:a17:907:9703:b0:a26:97dd:2110 with SMTP id jg3-20020a170907970300b00a2697dd2110mr1421320ejc.62.1703168199344;
-        Thu, 21 Dec 2023 06:16:39 -0800 (PST)
-Received: from debian ([93.184.186.109])
-        by smtp.gmail.com with ESMTPSA id ie17-20020a170906df1100b00a26ac1363c8sm374892ejc.94.2023.12.21.06.16.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Dec 2023 06:16:38 -0800 (PST)
-Date: Thu, 21 Dec 2023 15:16:36 +0100
-From: Dimitri Fedrau <dima.fedrau@gmail.com>
-To: Stefan Eichenberger <eichest@gmail.com>
-Cc: Andrew Lunn <andrew@lunn.ch>, Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 4/4] net: phy: marvell-88q2xxx: add driver for the
- Marvell 88Q2220 PHY
-Message-ID: <20231221141636.GA122124@debian>
-References: <20231219093554.GA6393@debian>
- <20231221072853.107678-1-dima.fedrau@gmail.com>
- <20231221072853.107678-5-dima.fedrau@gmail.com>
- <ZYRCDTWgHbM2qAom@eichest-laptop>
+        d=1e100.net; s=20230601; t=1703168260; x=1703773060;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=iBHSazj3p+MLo+y/uvsliBm5vLXGA+IDGINMZnlhLjU=;
+        b=b0YdAvzTy8XW9rHfrp9OvDcG6df+eCtjbwRZSopAewKrlsz5LV3X2iK6ZpX1kmxsS+
+         vxtRNGhBCGPrMN4i4qQP+HKrMIuxWWTP5h9GPaFjJC6pvJ0yWYZbgIhF+JCf85IKeP8U
+         Q6UUPbpwxVBLAmJNIcozoWXo8QWkwbq/XLqo266MSPqddIPpqy6qbsWe74zsNSnd9VxV
+         Nnh9DGoamR5OHQ8PMERoJdGtdK/HMY6Izq/SNbl/RXFXh8PDX7UDY8jvKzTJ5QvQ3PRL
+         lhoKvHW8vB06eCwWEd/KPGk8YZNN4NC/Zs3fbqnAD0GU6LgAE265cXkOUr1xWui0eaeq
+         IAKA==
+X-Gm-Message-State: AOJu0YygwXY4+3BLWsXDWxMz0o+oYf3c/7H+e8xm16gPisBVhfPUKvvw
+	u4mjqGjaMbPx8XCblt6T4KbQJbQBu8xWLLDP7XZOhZDzuvM=
+X-Google-Smtp-Source: AGHT+IEj20FBnmLZ/ARdh0C0RK0hJmU/LJkWL9Ggrx3TW+UsEGgW147R1BWJygWWzB9l/UjKt/sx9R3eMBp8DiHLGNY=
+X-Received: by 2002:a05:6820:258a:b0:593:e53b:2df1 with SMTP id
+ cs10-20020a056820258a00b00593e53b2df1mr7893445oob.1.1703168260730; Thu, 21
+ Dec 2023 06:17:40 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZYRCDTWgHbM2qAom@eichest-laptop>
+References: <20231215072405.65887-1-luoxueqin@kylinos.cn>
+In-Reply-To: <20231215072405.65887-1-luoxueqin@kylinos.cn>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Thu, 21 Dec 2023 15:17:29 +0100
+Message-ID: <CAJZ5v0g5PdOiRVB08zvi1gBqFU5LKm4O0FaFdH-FC=eQKyNNGA@mail.gmail.com>
+Subject: Re: [PATCH -next] ACPICA: Replace strncpy() with strscpy_pad() for dest
+To: xueqin Luo <luoxueqin@kylinos.cn>
+Cc: robert.moore@intel.com, rafael.j.wysocki@intel.com, lenb@kernel.org, 
+	linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Am Thu, Dec 21, 2023 at 02:47:57PM +0100 schrieb Stefan Eichenberger:
-> Hi Dimitri,
+On Fri, Dec 15, 2023 at 8:24=E2=80=AFAM xueqin Luo <luoxueqin@kylinos.cn> w=
+rote:
 >
-Hi Stefan,
-
-> On Thu, Dec 21, 2023 at 08:28:51AM +0100, Dimitri Fedrau wrote:
-> > Add a driver for the Marvell 88Q2220. This driver allows to detect the
-> > link, switch between 100BASE-T1 and 1000BASE-T1 and switch between
-> > master and slave mode and autonegotiation.
-> > 
-> > Signed-off-by: Dimitri Fedrau <dima.fedrau@gmail.com>
-> 
-> I tried to make your patch work in my setup but I'm unable to force a
-> link speed. Were you able to force a different link speed with the
-> following command?
-> ethtool -s eth0 speed 100 autoneg off
+> While it is safe to use strncpy in this case, the advice is to move to
+> strscpy_pad[1].
 >
+> Link: https://www.kernel.org/doc/html/latest/process/deprec:qated.html#st=
+rncpy-on-nul-terminated-strings [1]
+> Signed-off-by: xueqin Luo <luoxueqin@kylinos.cn>
+> ---
+>  drivers/acpi/acpica/utnonansi.c | 3 +--
 
-I tested following modes, which all worked:
+ACPICA code comes from an external project.  The proper way of
+modifying it is to submit a pull request to the upstream ACPICA
+project on GitHub.  Once this pull request has been merged upstream, a
+Linux patch containing a Link: tag to the corresponding upstream pull
+request can be submitted.
 
-ethtool -s eth0 autoneg on master-slave forced-master
-ethtool -s eth0 autoneg on master-slave preferred-master
-ethtool -s eth0 autoneg on master-slave preferred-slave
-ethtool -s eth0 autoneg on master-slave forced-slave
+Thanks!
 
-ethtool -s eth0 autoneg on master-slave forced-master speed 100
-ethtool -s eth0 autoneg on master-slave preferred-master speed 100
-ethtool -s eth0 autoneg on master-slave preferred-slave	speed 100
-ethtool -s eth0 autoneg on master-slave forced-slave speed 100
-
-ethtool -s eth0 autoneg off master-slave forced-master speed 1000
-ethtool -s eth0 autoneg off master-slave preferred-master speed 1000
-ethtool -s eth0 autoneg off master-slave preferred-slave speed 1000
-ethtool -s eth0 autoneg off master-slave forced-slave speed 1000
-
-ethtool -s eth0 autoneg off master-slave forced-master speed 100
-ethtool -s eth0 autoneg off master-slave preferred-master speed 100
-ethtool -s eth0 autoneg off master-slave preferred-slave speed 100
-ethtool -s eth0 autoneg off master-slave forced-slave speed 100
-
-Without setting the master-slave option it didn't work. I think its
-mandatory.
-
-> Regards,
-> Stefan
-
-Best regards,
-Stefan
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+>
+> diff --git a/drivers/acpi/acpica/utnonansi.c b/drivers/acpi/acpica/utnona=
+nsi.c
+> index ff0802ace19b..3a7952be6545 100644
+> --- a/drivers/acpi/acpica/utnonansi.c
+> +++ b/drivers/acpi/acpica/utnonansi.c
+> @@ -168,8 +168,7 @@ void acpi_ut_safe_strncpy(char *dest, char *source, a=
+cpi_size dest_size)
+>  {
+>         /* Always terminate destination string */
+>
+> -       strncpy(dest, source, dest_size);
+> -       dest[dest_size - 1] =3D 0;
+> +       strscpy_pad(dest, source, dest_size);
+>  }
+>
+>  #endif
+> --
+> 2.34.1
+>
+>
 
