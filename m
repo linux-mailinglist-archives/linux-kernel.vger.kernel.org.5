@@ -1,48 +1,48 @@
-Return-Path: <linux-kernel+bounces-8770-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8771-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61BEC81BC03
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 17:30:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2826381BC07
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 17:30:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1E6A1285641
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 16:30:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D8394285841
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 16:30:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8125358229;
-	Thu, 21 Dec 2023 16:30:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8BB759925;
+	Thu, 21 Dec 2023 16:30:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WVEMAgwX"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Fp5e5FmG"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9382859902;
-	Thu, 21 Dec 2023 16:30:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 465E9C433C7;
-	Thu, 21 Dec 2023 16:29:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34C1B539E1;
+	Thu, 21 Dec 2023 16:30:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF84FC433C9;
+	Thu, 21 Dec 2023 16:30:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703176201;
-	bh=X0qSBvf7Mbhm4GVx+NgoSROHhDHP4ul/RH27a/ieHP8=;
+	s=k20201202; t=1703176207;
+	bh=83451ZJNa2oE8B4jg2S6tz3gXgTpBh6IzXZ1MYdeve4=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=WVEMAgwXCgJyR2kjyQOg0mEcMxty6AQpfqaof6j2BxOy66KvhpWSqP9RMmVHbRaMc
-	 +C+ZcJsIAXS9SfPrQ22RFek286AZ9IjuC4skdhQ/ODgE0AcNsNCRvTrT77jzmnqy0V
-	 PZ8M4VC6RhXwO3iZZ5M6pdFSUxwYMVWc7o2WO0Q1tHcLKkOIncZgiAkJKNh7H6zjFU
-	 D7ULZHI0MHddCGhurzuLDWxWxzywqyJKevXKHCmj5Uur2SsvFt5wXR0x2eH4tbhhcY
-	 UfPGvO8XkY/T+7wYBs+sZlTJ5Lmrl5dEMyTFIiFHPxQCvSpGoEGSdaSB9DIn8tlw0K
-	 cJnpWzGK2g0BQ==
+	b=Fp5e5FmG/k6dg01M2cMcPX7q3Nm5Vg1C5X12e8JJ8X2Y97CXJsnGaRot/UWYNz9Qx
+	 e93q75aswpuTqQiz50c1MeTCq8AvzQFtAhkI2gCXlxU0LdaLDw3wlGT2Fh8ps6fKT7
+	 LDyumijcqHh6kLWPmd0e9teJHQ6+GEXIZzyKDBwouVWEDP4isR53ctFvssj/3uUlSD
+	 2qrlNvwcdwBFaOmfCqOJkHjH6fR9ZFWGIwwIGb/jds9579XjCjzSXQ2H+fgT9JmCkE
+	 CcLrNtOZNRcXF1kv/RiUnFsV5uhPUFcoZlvaIoN/LKUziZY/ADDi8hqR+fv7iWMOAH
+	 ovymRRc85B4zQ==
 From: Vinod Koul <vkoul@kernel.org>
-To: linux-kernel@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>
-Cc: kernel test robot <lkp@intel.com>, 
- Linus Walleij <linus.walleij@linaro.org>, 
- linux-arm-kernel@lists.infradead.org, dmaengine@vger.kernel.org
-In-Reply-To: <20231218060834.19222-1-rdunlap@infradead.org>
-References: <20231218060834.19222-1-rdunlap@infradead.org>
-Subject: Re: [PATCH] dmaengine: std_dma40: fix kernel-doc warnings and
- spelling
-Message-Id: <170317619891.683420.428561244511510954.b4-ty@kernel.org>
-Date: Thu, 21 Dec 2023 21:59:58 +0530
+To: Paul Cercueil <paul@crapouillou.net>
+Cc: Lars-Peter Clausen <lars@metafoo.de>, 
+ =?utf-8?q?Nuno_S=C3=A1?= <noname.nuno@gmail.com>, 
+ Michael Hennerich <Michael.Hennerich@analog.com>, dmaengine@vger.kernel.org, 
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20231215131313.23840-1-paul@crapouillou.net>
+References: <20231215131313.23840-1-paul@crapouillou.net>
+Subject: Re: [PATCH v2 0/5] axi-dmac: Add support for scatter-gather
+Message-Id: <170317620531.683420.14062668423937258500.b4-ty@kernel.org>
+Date: Thu, 21 Dec 2023 22:00:05 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -54,20 +54,32 @@ Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.12.3
 
 
-On Sun, 17 Dec 2023 22:08:34 -0800, Randy Dunlap wrote:
-> Correct kernel-doc warnings as reported by kernel test robot:
+On Fri, 15 Dec 2023 14:13:08 +0100, Paul Cercueil wrote:
+> V2 of my patchset which introduces scatter-gather transfers support to
+> the axi-dmac driver.
 > 
-> ste_dma40.c:57: warning: Excess struct member 'dev_tx' description in 'stedma40_platform_data'
-> ste_dma40.c:57: warning: Excess struct member 'dev_rx' description in 'stedma40_platform_data'
-> 
-> Correct spellos as reported by codespell.
+> I updated patch [1/5] with your feedback. Patch [4/5] was updated as
+> well, so that cyclic transfers are restarted properly in the EOT. This
+> was a bug in my V1, but it was fixed here just for bisectability, as the
+> new patch [5/5] will improve cyclic transfers by linking the last
+> descriptor to the first one in a SG chain, which means that the EOT IRQ
+> only needs to call the callback associated with the cyclic transfer, and
+> the EOT IRQ can be masked if there is no callback associated with it.
 > 
 > [...]
 
 Applied, thanks!
 
-[1/1] dmaengine: std_dma40: fix kernel-doc warnings and spelling
-      commit: 71a5197e2b872afeef8ade3099ffc4050466b542
+[1/5] dmaengine: axi-dmac: Small code cleanup
+      commit: a2ab7045389feab1c26ebab105a8ad6bce74a4a7
+[2/5] dmaengine: axi-dmac: Allocate hardware descriptors
+      commit: 3f8fd25936ee5f52596f10d420f650c5b5e3285f
+[3/5] dmaengine: axi-dmac: Add support for scatter-gather transfers
+      commit: e97dc7435972d28ac7d96d199d4aedb868d04fd8
+[4/5] dmaengine: axi-dmac: Use only EOT interrupts when doing scatter-gather
+      commit: 238f68a08e19a612b8912c8697901e9982f97811
+[5/5] dmaengine: axi-dmac: Improve cyclic DMA transfers in SG mode
+      commit: f60dfe0c561a8f1b8e30d3770997cbaa636f57f9
 
 Best regards,
 -- 
