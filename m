@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-9165-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9164-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE2AC81C1C9
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 00:20:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 821A781C1CA
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 00:20:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9AB78289286
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 23:20:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B41CD1C21A81
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 23:20:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96D4F7BEE7;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96F537BEE8;
 	Thu, 21 Dec 2023 23:18:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b="Z9yr0to8"
+	dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b="MVQQxVsu"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BA777996E;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98D0F7996B;
 	Thu, 21 Dec 2023 23:18:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hugovil.com
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
 	; s=x; h=Subject:Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Cc:To
 	:From:subject:date:message-id:reply-to;
-	bh=B8RBGDPahS1ur3p/qDWPcwo9Bjx7+cKK6Lcpi1YUSeY=; b=Z9yr0to82hgy4fEwx7xE+MyGoL
-	i8W04uc9+R/QyDLpaR8MEjtRFyhgx9EHAYJzmbiv1CH3T1ENHW+BPU4orjoWJKpSWioxAvuEL6TDy
-	N8fuIylfXYMeOLaa8oUm2GCCvloikxthW8IQOaWjyrPKq/zsSLh6Dr09eYszDBD8xZlo=;
+	bh=1D+dxnnl4V5IiyIxDqSn6oylZMa3p3hHDTTttZBVpxA=; b=MVQQxVsuzFn032/hFu/ov74Tzo
+	VH9rvd/gFqcq2AttJTmrumHZIPspMr5p4GikMwwRdIQ+elrPS5lQ6GAO3zFO7fZh1pwZBQyKlbby5
+	2zvff891t9QTScC+HBqe/mWHcvJMzrlA1ciI4cr3aKLZE3HyuvQGKheio/06TjxHy/UY=;
 Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:52484 helo=pettiford.lan)
 	by mail.hugovil.com with esmtpa (Exim 4.92)
 	(envelope-from <hugo@hugovil.com>)
-	id 1rGSJL-00025W-83; Thu, 21 Dec 2023 18:18:40 -0500
+	id 1rGSJM-00025W-Ls; Thu, 21 Dec 2023 18:18:40 -0500
 From: Hugo Villeneuve <hugo@hugovil.com>
 To: gregkh@linuxfoundation.org,
 	jirislaby@kernel.org,
@@ -42,9 +42,9 @@ Cc: linux-kernel@vger.kernel.org,
 	linux-serial@vger.kernel.org,
 	hugo@hugovil.com,
 	Hugo Villeneuve <hvilleneuve@dimonoff.com>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Date: Thu, 21 Dec 2023 18:18:13 -0500
-Message-Id: <20231221231823.2327894-7-hugo@hugovil.com>
+	Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Thu, 21 Dec 2023 18:18:14 -0500
+Message-Id: <20231221231823.2327894-8-hugo@hugovil.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231221231823.2327894-1-hugo@hugovil.com>
 References: <20231221231823.2327894-1-hugo@hugovil.com>
@@ -61,77 +61,45 @@ X-Spam-Level:
 X-Spam-Report: 
 	* -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
 	* -0.0 T_SCC_BODY_TEXT_LINE No description available.
-Subject: [PATCH v2 06/16] serial: sc16is7xx: use DECLARE_BITMAP for sc16is7xx_lines bitfield
+Subject: [PATCH v2 07/16] serial: sc16is7xx: use spi_get_device_match_data()
 X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
 X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 
 From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
 
-Replace the explicit sc16is7xx_lines bitfield declaration with the generic
-macro DECLARE_BITMAP() to reserve just enough memory to contain all
-required bits.
+Use preferred spi_get_device_match_data() instead of
+device_get_match_data() and spi_get_device_id() to get the driver match
+data.
 
-This also improves code self-documentation by showing the maximum number
-of bits required.
-
-This conversion now makes sc16is7xx_lines an array, so drop the "&" before
-sc16is7xx_lines in all bit access functions.
-
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
 ---
- drivers/tty/serial/sc16is7xx.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/tty/serial/sc16is7xx.c | 12 +++---------
+ 1 file changed, 3 insertions(+), 9 deletions(-)
 
 diff --git a/drivers/tty/serial/sc16is7xx.c b/drivers/tty/serial/sc16is7xx.c
-index 8d257208cbf3..42e1b4c70ed6 100644
+index 42e1b4c70ed6..4161d692df40 100644
 --- a/drivers/tty/serial/sc16is7xx.c
 +++ b/drivers/tty/serial/sc16is7xx.c
-@@ -347,7 +347,7 @@ struct sc16is7xx_port {
- 	struct sc16is7xx_one		p[];
- };
+@@ -1742,15 +1742,9 @@ static int sc16is7xx_spi_probe(struct spi_device *spi)
+ 	if (ret)
+ 		return ret;
  
--static unsigned long sc16is7xx_lines;
-+static DECLARE_BITMAP(sc16is7xx_lines, SC16IS7XX_MAX_DEVS);
+-	if (spi->dev.of_node) {
+-		devtype = device_get_match_data(&spi->dev);
+-		if (!devtype)
+-			return -ENODEV;
+-	} else {
+-		const struct spi_device_id *id_entry = spi_get_device_id(spi);
+-
+-		devtype = (struct sc16is7xx_devtype *)id_entry->driver_data;
+-	}
++	devtype = spi_get_device_match_data(spi);
++	if (!devtype)
++		return dev_err_probe(&spi->dev, -ENODEV, "Failed to match device\n");
  
- static struct uart_driver sc16is7xx_uart = {
- 	.owner		= THIS_MODULE,
-@@ -1536,7 +1536,7 @@ static int sc16is7xx_probe(struct device *dev,
- 		     SC16IS7XX_IOCONTROL_SRESET_BIT);
- 
- 	for (i = 0; i < devtype->nr_uart; ++i) {
--		s->p[i].port.line = find_first_zero_bit(&sc16is7xx_lines,
-+		s->p[i].port.line = find_first_zero_bit(sc16is7xx_lines,
- 							SC16IS7XX_MAX_DEVS);
- 		if (s->p[i].port.line >= SC16IS7XX_MAX_DEVS) {
- 			ret = -ERANGE;
-@@ -1587,7 +1587,7 @@ static int sc16is7xx_probe(struct device *dev,
- 		if (ret)
- 			goto out_ports;
- 
--		set_bit(s->p[i].port.line, &sc16is7xx_lines);
-+		set_bit(s->p[i].port.line, sc16is7xx_lines);
- 
- 		/* Enable EFR */
- 		sc16is7xx_port_write(&s->p[i].port, SC16IS7XX_LCR_REG,
-@@ -1646,7 +1646,7 @@ static int sc16is7xx_probe(struct device *dev,
- 
- out_ports:
- 	for (i = 0; i < devtype->nr_uart; i++)
--		if (test_and_clear_bit(s->p[i].port.line, &sc16is7xx_lines))
-+		if (test_and_clear_bit(s->p[i].port.line, sc16is7xx_lines))
- 			uart_remove_one_port(&sc16is7xx_uart, &s->p[i].port);
- 
- 	kthread_stop(s->kworker_task);
-@@ -1669,7 +1669,7 @@ static void sc16is7xx_remove(struct device *dev)
- 
- 	for (i = 0; i < s->devtype->nr_uart; i++) {
- 		kthread_cancel_delayed_work_sync(&s->p[i].ms_work);
--		if (test_and_clear_bit(s->p[i].port.line, &sc16is7xx_lines))
-+		if (test_and_clear_bit(s->p[i].port.line, sc16is7xx_lines))
- 			uart_remove_one_port(&sc16is7xx_uart, &s->p[i].port);
- 		sc16is7xx_power(&s->p[i].port, 0);
- 	}
+ 	for (i = 0; i < devtype->nr_uart; i++) {
+ 		regcfg.name = sc16is7xx_regmap_name(i);
 -- 
 2.39.2
 
