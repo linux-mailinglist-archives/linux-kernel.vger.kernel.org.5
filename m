@@ -1,111 +1,157 @@
-Return-Path: <linux-kernel+bounces-8168-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8169-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A2AA81B300
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 10:58:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CFB1B81B304
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 11:01:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4E4931F23630
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 09:58:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5CAC0287D27
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 10:01:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E22450261;
-	Thu, 21 Dec 2023 09:58:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D7CD4D5A6;
+	Thu, 21 Dec 2023 10:01:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="z/ryT7sP"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2041.outbound.protection.outlook.com [40.107.236.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 983D64F5E8
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 09:58:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=guanghuifeng@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0VyxGrK9_1703152663;
-Received: from VM20190228-102.tbsite.net(mailfrom:guanghuifeng@linux.alibaba.com fp:SMTPD_---0VyxGrK9_1703152663)
-          by smtp.aliyun-inc.com;
-          Thu, 21 Dec 2023 17:57:51 +0800
-From: Guanghui Feng <guanghuifeng@linux.alibaba.com>
-To: gregkh@linuxfoundation.org
-Cc: linux-kernel@vger.kernel.org,
-	baolin.wang@linux.alibaba.com,
-	alikernel-developer@linux.alibaba.com
-Subject: [PATCH v2] uio: Fix use-after-free in uio_open
-Date: Thu, 21 Dec 2023 17:57:43 +0800
-Message-Id: <1703152663-59949-1-git-send-email-guanghuifeng@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1703132808-14322-1-git-send-email-guanghuifeng@linux.alibaba.com>
-References: <1703132808-14322-1-git-send-email-guanghuifeng@linux.alibaba.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D9F04D590
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 10:01:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=m0Ew2dtPc6oQhx3eoWAqf8xS+o/P51fetzU5kg6vzv7t7UkWPiFnmB1j03D4bpUeyRbrwvyYFj0qCCy/fxBhJzFExLja+jpMYQiW85jWBTuLUSK64lbJXLx1Ex/ffBIrrZc0SPnL621G72UnPeQkfGPzzdtx0r26GiAABvMgHR8cGZR8PC29mZjFfIhfaodH8o4nCMp6V+tcs292HQrS3SpaHNRNd89WqRnQ0maS72NlF/r0n/J5rbEZG2+edlNK02NJauyj4g0vS2IG2D5HUieV4fUSRvfHYb6/IY9wuODXjZDy1J36lhbb42byV0ipsvlNO/BZWUayezsgyVTJJQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=kIqUW4wHlwuRx/2Dx9D0HbGlKskmFLu/rdd8JsqSDDs=;
+ b=H68cHQQkCov2oOJiQmTpx66K+a210mScsnT1noJrghaTDeqhhs1Vn+573LRO1oDzDBJikfaRbDuNor/2GHV1Wvj9uZ+d9iXN72V5QOlSGZieaskYKRzl4kMTylP1MXuCCqodQdiOQj5lS+F/VuNtdf+UYkZL/FyrtmQSItpg7HUkYWeGlMuDwX8fRKUbaXfAOVmUaDCQnAdu2IPSnS73GCc8sAJp9xtbK5+yac5aei3wYs1C5geMlyOboXrb3FpvXN0RtMszHXmuB2WNfToZ9Y0Y1J87AFujDwHM7LH87qOjZfyC+vHTsdtwPdsLb3w6rD0bitd0nr2QQd4Nyq0NrQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=chromium.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kIqUW4wHlwuRx/2Dx9D0HbGlKskmFLu/rdd8JsqSDDs=;
+ b=z/ryT7sPSUO0qwEFyXZqhKPGBi00EHlymTyfoL0nbsaaLxIlZ/Ui2b+/eXmWPOXw0fHhHxdxWZtAkLjXZv59vaO2kjMGGCgbnSeQcfhDXWTZyr46wZup3QMwb2SjHLtye1v/mpyE9A4aLjb5JJn42/azZ3w82D3VxarjYBrpOMA=
+Received: from SJ0PR03CA0126.namprd03.prod.outlook.com (2603:10b6:a03:33c::11)
+ by IA0PR12MB8693.namprd12.prod.outlook.com (2603:10b6:208:48e::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7113.18; Thu, 21 Dec
+ 2023 10:01:12 +0000
+Received: from MWH0EPF000971E5.namprd02.prod.outlook.com
+ (2603:10b6:a03:33c:cafe::22) by SJ0PR03CA0126.outlook.office365.com
+ (2603:10b6:a03:33c::11) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7113.21 via Frontend
+ Transport; Thu, 21 Dec 2023 10:01:11 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ MWH0EPF000971E5.mail.protection.outlook.com (10.167.243.73) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7113.14 via Frontend Transport; Thu, 21 Dec 2023 10:01:11 +0000
+Received: from jenkins-julia.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Thu, 21 Dec
+ 2023 04:00:45 -0600
+From: Julia Zhang <julia.zhang@amd.com>
+To: Gurchetan Singh <gurchetansingh@chromium.org>, Chia-I Wu
+	<olvaffe@gmail.com>, David Airlie <airlied@redhat.com>, Gerd Hoffmann
+	<kraxel@redhat.com>, <linux-kernel@vger.kernel.org>,
+	<dri-devel@lists.freedesktop.org>, <amd-gfx@lists.freedesktop.org>,
+	<virtualization@lists.linux-foundation.org>
+CC: Alex Deucher <alexander.deucher@amd.com>,
+	=?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>, Daniel Vetter
+	<daniel@ffwll.ch>, David Airlie <airlied@gmail.com>, Erik Faye-Lund
+	<kusmabite@gmail.com>, =?UTF-8?q?Marek=20Ol=C5=A1=C3=A1k?=
+	<marek.olsak@amd.com>, Pierre-Eric Pelloux-Prayer
+	<pierre-eric.pelloux-prayer@amd.com>, Honglei Huang <honglei1.huang@amd.com>,
+	Chen Jiqian <Jiqian.Chen@amd.com>, Huang Rui <ray.huang@amd.com>, Julia Zhang
+	<julia.zhang@amd.com>
+Subject: [PATCH v2 0/1]  Implementation of resource_query_layout
+Date: Thu, 21 Dec 2023 18:00:15 +0800
+Message-ID: <20231221100016.4022353-1-julia.zhang@amd.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MWH0EPF000971E5:EE_|IA0PR12MB8693:EE_
+X-MS-Office365-Filtering-Correlation-Id: f21830e3-4559-4470-e980-08dc020bc2d8
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	PywOhVOVcwjMNVb3y3nXMhFDc/0kzY80NASvX0DG0LmxQetXCP7S7v35WNG8CZa2+vimDBy7tJNLXDkXp12WPiGJBjdSISz7anAVPEP7XQoZNpIzeNkS+eAp4YdXQQo+F4nkhLU741QtCykWQRjcAqpzARq5k94KbTeaq6DJ/Lkl7JyIRXHpAyF/UhlaaQIfdPe1qIDW6ZniSxzhX1FiMNFvjuQq77dVhysnOGB0SnQuJ1uXRwrDmTr76bv8GEs1OAeIuPHYi6p3oyjPRqcMBSiXd41JG2LM4DBdcHo/MGTTiM2uEsXkZ+Qua1DOrXu8ymeZsZjr6ITW38jBIHnzsVtpVD3ERwEef94i7welivNeyb8783DCPTB8RvM/RFJjEESFPLHmTjaxfO1OcEeaGhfcbOmgA9bhmXAwBb2UJTkAz38jqsUDk2VnjSMa6SUMS4LV1nY221rHrVcPf1LRzpfDQ5tI8kEo55S2wvFJRksxoOoyIOGjDcFyQjSL0PG9/aMCZiPuZMU7hNERfCiLXqSJsBGalHwyD0HkDSN54CbIGUbdyK15rxwNx+qNnwV1f5w5UMgACJ54HlBScZWbcfY/USz3qMl5ZOBqCkuOk037DOUdlbwXCUarGUAS8F8AMqlNW6V9Dwybe+dR7KH/txU+1HScvmfsWqS46+6Sw2woQJ1SSvXfgbiQ5yjajS9WLmOBvkGWWxDcmd52fjEvSbqrQCidYzgjBW6P2yREYamCUaLLgHvnjlvgUbaAASUYMi6AQw8dP+uLfjpwqq3Yzg==
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(136003)(396003)(376002)(346002)(230922051799003)(186009)(1800799012)(64100799003)(82310400011)(451199024)(46966006)(36840700001)(40470700004)(336012)(6666004)(1076003)(2616005)(16526019)(26005)(426003)(7696005)(7416002)(47076005)(83380400001)(478600001)(110136005)(8676002)(36860700001)(4326008)(41300700001)(54906003)(5660300002)(44832011)(70206006)(316002)(70586007)(356005)(82740400003)(81166007)(8936002)(86362001)(36756003)(2906002)(40460700003)(40480700001)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Dec 2023 10:01:11.5252
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: f21830e3-4559-4470-e980-08dc020bc2d8
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	MWH0EPF000971E5.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB8693
 
-core-1				core-2
--------------------------------------------------------
-uio_unregister_device		uio_open
-				idev = idr_find()
-device_unregister(&idev->dev)
-put_device(&idev->dev)
-uio_device_release
-				get_device(&idev->dev)
-kfree(idev)
-uio_free_minor(minor)
-				uio_release
-				put_device(&idev->dev)
-				kfree(idev)
--------------------------------------------------------
+Hi all,
 
-In the core-1 uio_unregister_device(), the device_unregister will kfree
-idev when the idev->dev kobject ref is 1. But after core-1
-device_unregister, put_device and before doing kfree, the core-2 may
-get_device. Then:
-1. After core-1 kfree idev, the core-2 will do use-after-free for idev.
-2. When core-2 do uio_release and put_device, the idev will be double
-   freed.
+Sorry to late reply. This is v2 of the implementation of
+resource_query_layout. This adds a new ioctl to let guest query information
+of host resource, which is originally from Daniel Stone. We add some
+changes to support query the correct stride of host resource before it's
+created, which is to support to blit data from dGPU to virtio iGPU for dGPU
+prime feature. 
 
-To address this issue, we can get idev atomic & inc idev reference with
-minor_lock.
+Changes from v1 to v2:
+-Squash two patches to a single patch. 
+-A small modification of VIRTIO_GPU_F_RESOURCE_QUERY_LAYOUT
 
-Fixes: 57c5f4df0a5a ("uio: fix crash after the device is unregistered")
-Signed-off-by: Guanghui Feng <guanghuifeng@linux.alibaba.com>
-Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
----
- drivers/uio/uio.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/uio/uio.c b/drivers/uio/uio.c
-index 62082d6..2d572f6 100644
---- a/drivers/uio/uio.c
-+++ b/drivers/uio/uio.c
-@@ -466,13 +466,13 @@ static int uio_open(struct inode *inode, struct file *filep)
- 
- 	mutex_lock(&minor_lock);
- 	idev = idr_find(&uio_idr, iminor(inode));
--	mutex_unlock(&minor_lock);
- 	if (!idev) {
- 		ret = -ENODEV;
-+		mutex_unlock(&minor_lock);
- 		goto out;
- 	}
--
- 	get_device(&idev->dev);
-+	mutex_unlock(&minor_lock);
- 
- 	if (!try_module_get(idev->owner)) {
- 		ret = -ENODEV;
-@@ -1064,9 +1064,8 @@ void uio_unregister_device(struct uio_info *info)
- 	wake_up_interruptible(&idev->wait);
- 	kill_fasync(&idev->async_queue, SIGIO, POLL_HUP);
- 
--	device_unregister(&idev->dev);
--
- 	uio_free_minor(minor);
-+	device_unregister(&idev->dev);
- 
- 	return;
- }
+Below is description of v1:
+This add implementation of resource_query_layout to get the information of
+how the host has actually allocated the buffer. This function is now used
+to query the stride for guest linear resource for dGPU prime on guest VMs.
+
+v1 of kernel side:
+ https:
+//lore.kernel.org/xen-devel/20231110074027.24862-1-julia.zhang@amd.com/T/#t
+
+v1 of qemu side:
+https:
+//lore.kernel.org/qemu-devel/20231110074027.24862-1-julia.zhang@amd.com/T/#t
+
+Daniel Stone (1):
+  drm/virtio: Implement RESOURCE_GET_LAYOUT ioctl
+
+ drivers/gpu/drm/virtio/virtgpu_drv.c   |  1 +
+ drivers/gpu/drm/virtio/virtgpu_drv.h   | 22 ++++++++-
+ drivers/gpu/drm/virtio/virtgpu_ioctl.c | 66 ++++++++++++++++++++++++++
+ drivers/gpu/drm/virtio/virtgpu_kms.c   |  8 +++-
+ drivers/gpu/drm/virtio/virtgpu_vq.c    | 63 ++++++++++++++++++++++++
+ include/uapi/drm/virtgpu_drm.h         | 21 ++++++++
+ include/uapi/linux/virtio_gpu.h        | 30 ++++++++++++
+ 7 files changed, 208 insertions(+), 3 deletions(-)
+
 -- 
-1.8.3.1
+2.34.1
 
 
