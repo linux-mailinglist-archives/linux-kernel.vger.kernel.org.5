@@ -1,203 +1,163 @@
-Return-Path: <linux-kernel+bounces-7732-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7733-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E2C981AC5D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 02:51:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 082CD81AC64
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 02:56:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E27962878C1
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 01:51:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8174C1F23A86
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 01:56:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1459B185D;
-	Thu, 21 Dec 2023 01:51:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F09A23D9;
+	Thu, 21 Dec 2023 01:55:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="L+cBbBvy"
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="NEDEVnMZ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-oa1-f44.google.com (mail-oa1-f44.google.com [209.85.160.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2079.outbound.protection.outlook.com [40.107.8.79])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24B6315AE
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 01:51:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-oa1-f44.google.com with SMTP id 586e51a60fabf-1fab887fab8so194552fac.0
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 17:51:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1703123501; x=1703728301; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RAWSfxg1miex9VPUVo9Ilnw4CJ41/kT47/lxOaa6acg=;
-        b=L+cBbBvywJugQiUmbh8/I7h9oPeWCP2bcMsUfZC43646uita9Pzli9My9x5EyBRdXH
-         xHWkqMgbv3x4QHrZ2d7pNq1Op+woJDWTd17vmj3kDaM/m8um7jDoH2DYqoMxxDMynGm9
-         1AdQu7XoHiErFao9LGMYdkAug+L6Rf0m0dw7T0Dsv3KWOqv3dUQ/N7RhgbwVSyspLcmu
-         aCrLWHWfXHLDXNEDQVqOrcyazyVu3hiVmkMVGCYYMrl94OORHloKvUix6F2Xr2VPKmR7
-         CLXFgO2BYGzmN+y2m29wwakATlE5AcITIK0mCbXC1qOEj5IxOdogVVTsZAd6IhCWggXI
-         7oGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703123501; x=1703728301;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=RAWSfxg1miex9VPUVo9Ilnw4CJ41/kT47/lxOaa6acg=;
-        b=FL+FA0Hd843mz3ZScb6g0JCme3OZfbI0JoIyUR3iZN8Op82tUwcu7feEw0X38FpnYc
-         RVwftbrSEDT6ob8Hwb9zjguruMY0zl8TZ/QZwVnia32ZW5faD6Atld/kr3TOR1J7Nd88
-         CMm1y63crpLE8/rA50u6X5czDom+pwqt4klGgf0mBMh1mh/bJs5VbzJdW82tI1mzjrdr
-         5YG11VHbKKf9KigWONJyKQ6HwWOxoKehNXy4CGFP6IIIVqEfGMZcdY3wCwLbj+5v0yow
-         fB4s0fZUd5KYQo4zuSxT87VWrI5lgzPkcWfvddabN6lUSrRDqW4yu/QSS2iEa1m26Sjj
-         qehQ==
-X-Gm-Message-State: AOJu0YyipK+CoMajWkuCGRDHW7s1bkzEpj6YLAjSMxE75o+zWjTkJqQb
-	l077+jlB+boPQ+ZtYRRZrn2ZjR7QC0BB/AZJ+UAAWA==
-X-Google-Smtp-Source: AGHT+IGN8PP7Ek6OmvKkh+7+/vTCnhK7cnIN5E/W9H5dAyu3VY2JS7fSNFsVpuoOstd0OaOISNlEDGsV6vgYcUy4Mus=
-X-Received: by 2002:a05:6871:4d4:b0:203:4038:dfd5 with SMTP id
- n20-20020a05687104d400b002034038dfd5mr782420oai.94.1703123500988; Wed, 20 Dec
- 2023 17:51:40 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF4C6184C;
+	Thu, 21 Dec 2023 01:55:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=f8FTGfVU/AjFoeNoWQ3flzLdlbAuIfxjpvtP6C3wE/W2LhPfd4j1uyA1Wn3UGLmFITlu4KX4ga44zwNNfgybU0z3n6o++h9ZU9xmxvmXpcacCrwhZPBbdQfggqfB/HnwVr0UvfWOzQwfDIV06HorIssMR+gjkcRaHJWP/E41IXInRYK0cACoGukaLiWVY+6BYYWec+zdol9TRmZunFpG/nTPT4snRhIiHzQ/YjNf6uQVL8wjkSByLeHLW5XBoRPpwsSRqlm+N7DY+DQx3vAS3x1vsVoGIDidzGqrkGF0oq6HvS8rfdXmhKMQo7GUJziRRTDOYuW1m74jwrWJPSAzRA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=uKudgzDyEN0SHJhiq9UuhDS3i4B7jAKsqGj7ubi5gdw=;
+ b=GQrSa05IlUDhRZ7VNCrHw9/+9gWwqdHdvoh3WxVszE04RWfMPTYbmJqLC+RElml0BN6+ogZJMNnTwrMKB13k2BQRUZkZWonrPjl8UxvSCVCdeaKJPwVF0z7BKUTXTQrYNgd69bqeYHwAedJDYE/NPpIUHaZQIGuXFlli8yN2HIsr7hp4svQbOJe6ZYd4kt7r77nIKB5y+PYhtqUCylUtpRAPtf6FooD2xOJkdEpjGlIsNHuBsFZ9mxTVyqS0ujre4PiyRZzO43xwdFFzIw5Wvaou0vsunhdzOmoG9odyDrqqVU88lM/r8xvfU8uT6CG9OhBoZ8n0cha1+DQFdc/IMQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=uKudgzDyEN0SHJhiq9UuhDS3i4B7jAKsqGj7ubi5gdw=;
+ b=NEDEVnMZhQ7fMKAntrH1W1xfJQEfdo6hRYpDvfNe1WrHA99sAuRZKSzefNdFAl1f1EmaqxAXGYcKVYfP1z09kvARVNxJciBFgW4mMTExdpmSKHL7lRQvs4G8ipBj1qtfrxHtgl8bm5EroGo1796lQVVJCSc5EB2NWbSuKNo7wvc=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from DU0PR04MB9636.eurprd04.prod.outlook.com (2603:10a6:10:320::21)
+ by AS8PR04MB7943.eurprd04.prod.outlook.com (2603:10a6:20b:2a1::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7113.18; Thu, 21 Dec
+ 2023 01:55:48 +0000
+Received: from DU0PR04MB9636.eurprd04.prod.outlook.com
+ ([fe80::1f29:340e:75ac:d14a]) by DU0PR04MB9636.eurprd04.prod.outlook.com
+ ([fe80::1f29:340e:75ac:d14a%7]) with mapi id 15.20.7113.016; Thu, 21 Dec 2023
+ 01:55:48 +0000
+From: David Lin <yu-hao.lin@nxp.com>
+To: linux-wireless@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	briannorris@chromium.org,
+	kvalo@kernel.org,
+	francesco@dolcini.it,
+	tsung-hsien.hsieh@nxp.com,
+	David Lin <yu-hao.lin@nxp.com>,
+	stable@vger.kernel.org,
+	kernel test robot <lkp@intel.com>,
+	Dan Carpenter <error27@gmail.com>
+Subject: [PATCH v2] wifi: mwifiex: fix uninitialized firmware_stat
+Date: Thu, 21 Dec 2023 09:55:11 +0800
+Message-Id: <20231221015511.1032128-1-yu-hao.lin@nxp.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SG2PR04CA0190.apcprd04.prod.outlook.com
+ (2603:1096:4:14::28) To DU0PR04MB9636.eurprd04.prod.outlook.com
+ (2603:10a6:10:320::21)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231220103428.61758-1-cuiyunhui@bytedance.com>
- <594df6bc-0207-46f6-aa81-dcf1f3665917@ghiti.fr> <20231220-bash-booting-2dc46e8c41f7@spud>
-In-Reply-To: <20231220-bash-booting-2dc46e8c41f7@spud>
-From: yunhui cui <cuiyunhui@bytedance.com>
-Date: Thu, 21 Dec 2023 09:51:29 +0800
-Message-ID: <CAEEQ3w=_i6cDkt-j+xDZ1oanbScA9o8NpV-KU0s4-w=ZJ1U6cA@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH] riscv: put va_kernel_xip_pa_offset into CONFIG_XIP_KERNEL
-To: Conor Dooley <conor@kernel.org>
-Cc: Alexandre Ghiti <alex@ghiti.fr>, paul.walmsley@sifive.com, palmer@dabbelt.com, 
-	aou@eecs.berkeley.edu, ajones@ventanamicro.com, alexghiti@rivosinc.com, 
-	anup@brainfault.org, samitolvanen@google.com, rppt@kernel.org, 
-	panqinglin2020@iscas.ac.cn, linux-riscv@lists.infradead.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DU0PR04MB9636:EE_|AS8PR04MB7943:EE_
+X-MS-Office365-Filtering-Correlation-Id: 01cb0b67-3520-44ea-cdad-08dc01c7f3c6
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	xZOMFbXDCZAKr5y8AkTSln/vpQpND1bT63YcY4n/lWjCd3FDxbQ4rcsj1kTYceHaeZLpqSPNfZ4NFduVhW3hI7M/DTzAjgu+MwTEVoTorg5mPFkg8NmvxOrUZAvJKnIKHJ6SKhPL4KH2DI0rU1cXqj4YzmRynrpcX/3KTrYbf1fmYk3rxev3i+3N2uzkJancQekrZfh2AOhB6iRoRVforHDW5+ZNQNHruMZ8tIoy92VnCv2XVkSKUWKwtZ6WLy9fwD6Ld+Fe15SxKsKtjab6NaFoCmYxZu4FgasruF9QzV+EYqdZtyHsusPAjyo30F2Xt9iZBiTTdwnpNuawKJZHpQTYZ1ZiofpII3d1/KhvuIyUHTZr5gL8olwJWJHCpq10Fg/zsVkBpaEWwOmD8DREnrDPjnFaNg/HT93dhpVUIzkvLmcajLIQfckFVD7SxjczIFNDwBrv7oYJobQFZKwOuu0AFnvzM5T1VvK06/WnOh3Vzn97GTsnLURl8/fHF293T0SvQV6O74AhPkxnE9Rhjl8BmbcORhUPcUvMtD31M+UhpW65ysfCu6w6Tn5Uhrzckk+QzwVNEr4Do7YrSMDxCeNZLGiM3D7GiunhOUigsuA=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9636.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(346002)(396003)(136003)(39860400002)(230922051799003)(451199024)(186009)(1800799012)(64100799003)(41300700001)(6666004)(6506007)(86362001)(52116002)(26005)(1076003)(478600001)(2616005)(6512007)(8936002)(38350700005)(2906002)(36756003)(5660300002)(8676002)(4326008)(6486002)(966005)(83380400001)(6916009)(66946007)(316002)(66476007)(54906003)(66556008)(38100700002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?q3lZfLtO6VoZg+olfaMLLJdkzd2yCcKplUeq8awdJJfLmNfTdUTsWHoLdowf?=
+ =?us-ascii?Q?IvFZ//4JWyoAv3HqZ7o9u2LiPbTaF3jgVAjbl2URJdpnxDPJYz6ldem+6BXm?=
+ =?us-ascii?Q?q9IgMAOxrzIyHRJHW9dQP2XV+VD1GJrurH6y06a30+GXq3ylqaM6i1WscB4Z?=
+ =?us-ascii?Q?hBd+QcbGMSDc3kITsnAY2cbw1poXia0WBbfebbfGgAK74DCcJuSv+1wsyffW?=
+ =?us-ascii?Q?M3aaHP9JDxROSjFWlyKvl09Odroz5+iO8L/63GuhhCSwY96uCZ+T2qbHt2dv?=
+ =?us-ascii?Q?RLOGKxg4yYfIatdKqGtxbKOEbAnTaE/MNw5G00FDSPMYJXO9Q4VxeKpiTkeF?=
+ =?us-ascii?Q?1iUC0WCaNEpZNvpvd5J045qxTP88bvpFB3L1PI8apCbpFW1P+0zW9tgNvu47?=
+ =?us-ascii?Q?NtxtGTZrj0zMYkk/JHVRx/dmEfXLpGEozdl46fOyfAIqlK8/E9owZEwNVSQT?=
+ =?us-ascii?Q?1m0WWxKx9TwnVChzK729ZGDfqj1uFTfb5+GLOyHm7Wqb6kkDgfKvUH2wxVMT?=
+ =?us-ascii?Q?Hk4qTVhGG2cDDTBB/RwibXqpRjI2h1Rjgh2NHbDBuUQPaNWZZgLYT2wGXTSS?=
+ =?us-ascii?Q?p+iR1DW0q3K+2gUYZ7hjQAtQmQfLURvK1DjL0/beJvIXG0ZWKxReQkn0sPd2?=
+ =?us-ascii?Q?WMbkwckmIdlC2zx9WyRGbXSoJJp/gYrtCI2TWHRRpKumpPJ0MKDCSSh9KT7B?=
+ =?us-ascii?Q?rp71IHyd/F63iKXHyOqB6trnhs6N62/8fUEQhVH6GdrPjuCj+fiIeZjHlffH?=
+ =?us-ascii?Q?D7JC8uDtA99BsRcJSF5KAbPmVPexkAMeyVr4+8vw3FLUAtH6WCbjRuWCc63i?=
+ =?us-ascii?Q?xZ/p1WzzxJ3+GQsJM03NB4xJy83WgvyS5pjiYGxnoLZuY6p1Fk0GwvYmELqh?=
+ =?us-ascii?Q?8tbVUgF7ijtv+LWxTxdwsLqJNtIrkJExaeCK6E4axJf1QQmLhd6IuRW0bM13?=
+ =?us-ascii?Q?V8p6pL7banGHO7lP0V0igSk7Oer1qG1Fvaw6qqcKoL7ofqeXdQVQCmpq9CDc?=
+ =?us-ascii?Q?LKZazB8iplyCDP1lXLAtEKN5DEU8HF9YDvsjNOt91Ypjfit6xaYJWdc1ph67?=
+ =?us-ascii?Q?wiMVfZNTbMXop38T5m81bIqMPShZcji7rxeUlbdbKAgJAI4mAZ6LEgPNg0se?=
+ =?us-ascii?Q?93sLADe+crNN+gSw5FYknyOLBe92FgzqXiWI91fOFQa1XJLUJEDMNjNVK9uj?=
+ =?us-ascii?Q?hCNxlKOB1npske7ZMSos5k1yjzKVOa3VvToLofTsQp/aIY5kkrLTBxSYN73S?=
+ =?us-ascii?Q?FfOFq8z8jlbk/ZvbO13LRG5Qgb6dK7qzpcJpnMSbarRGj2dFPbLE4X078gck?=
+ =?us-ascii?Q?SSVEnMQ1icY5wwmUldDk/MmbEahU5PHuBucqB3F+wq6BP5O+NiiQLMsUfY8i?=
+ =?us-ascii?Q?lQkX/+6yBDoxEbLWM12tImH6FnDaZMGuZqi4JrvOHKGc9xTr4FxsmbfRczPM?=
+ =?us-ascii?Q?+Sau4gtw3cxeYPXXxXDhS++dMU4vhUdHY9x2Ol1ipvoSSJ5n1uCZslUTa/H0?=
+ =?us-ascii?Q?IaZknky1T1kMfJy4Egk6e6xhZ8X7R4yJU6uMM/CAOuWKoZdaVCAzyB1MClnp?=
+ =?us-ascii?Q?XGXOK1fL9TzGuxlU78mbsbO89Tuy1mcNxlKbEB47?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 01cb0b67-3520-44ea-cdad-08dc01c7f3c6
+X-MS-Exchange-CrossTenant-AuthSource: DU0PR04MB9636.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Dec 2023 01:55:48.2938
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 1CydgajJnE0KN023wN/gUL7cvzhzREXgDFyDYuInoGe88q+UDE5P2fSIKcWQGNTvEylYyUIFHn3FqHXs3Q4IWg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB7943
 
-Hi Conor=EF=BC=8CAlex
+Variable firmware_stat is possible to be used without initialization.
 
-On Thu, Dec 21, 2023 at 6:35=E2=80=AFAM Conor Dooley <conor@kernel.org> wro=
-te:
->
-> On Wed, Dec 20, 2023 at 10:14:59PM +0100, Alexandre Ghiti wrote:
-> > Hi Yunhui,
-> >
-> > On 20/12/2023 11:34, Yunhui Cui wrote:
-> > > opitmize the kernel_mapping_pa_to_va() and kernel_mapping_va_to_pa().
-> > >
-> > > Signed-off-by: Yunhui Cui <cuiyunhui@bytedance.com>
-> > > ---
-> > >   arch/riscv/include/asm/page.h | 33 ++++++++++++++++++++------------=
--
-> > >   1 file changed, 20 insertions(+), 13 deletions(-)
-> > >
-> > > diff --git a/arch/riscv/include/asm/page.h b/arch/riscv/include/asm/p=
-age.h
-> > > index 5488ecc337b6..0d2b479d02cd 100644
-> > > --- a/arch/riscv/include/asm/page.h
-> > > +++ b/arch/riscv/include/asm/page.h
-> > > @@ -113,8 +113,8 @@ struct kernel_mapping {
-> > >     unsigned long va_pa_offset;
-> > >     /* Offset between kernel mapping virtual address and kernel load =
-address */
-> > >     unsigned long va_kernel_pa_offset;
-> > > -   unsigned long va_kernel_xip_pa_offset;
-> > >   #ifdef CONFIG_XIP_KERNEL
-> > > +   unsigned long va_kernel_xip_pa_offset;
-> > >     uintptr_t xiprom;
-> > >     uintptr_t xiprom_sz;
-> > >   #endif
-> > > @@ -134,12 +134,25 @@ extern phys_addr_t phys_ram_base;
-> > >   #else
-> > >   void *linear_mapping_pa_to_va(unsigned long x);
-> > >   #endif
-> > > -#define kernel_mapping_pa_to_va(y) ({                               =
-       \
-> > > -   unsigned long _y =3D (unsigned long)(y);                         =
-         \
-> > > -   (IS_ENABLED(CONFIG_XIP_KERNEL) && _y < phys_ram_base) ?          =
-       \
-> > > -           (void *)(_y + kernel_map.va_kernel_xip_pa_offset) :      =
-       \
-> > > -           (void *)(_y + kernel_map.va_kernel_pa_offset + XIP_OFFSET=
-);     \
-> > > -   })
-> > > +
-> > > +#ifdef CONFIG_XIP_KERNEL
-> > > +#define kernel_mapping_pa_to_va(y)                                  =
-               \
-> > > +   (((unsigned long)(y) < phys_ram_base) ?                          =
-               \
-> > > +           (void *)((unsigned long)(y) + kernel_map.va_kernel_xip_pa=
-_offset) :     \
-> > > +           (void *)((unsigned long)(y) + kernel_map.va_kernel_pa_off=
-set + XIP_OFFSET))
-> > > +
-> > > +#define kernel_mapping_va_to_pa(y)                                  =
-       \
-> > > +   (((unsigned long)(y) < kernel_map.virt_addr + XIP_OFFSET) ?      =
-       \
-> > > +           ((unsigned long)(y) - kernel_map.va_kernel_xip_pa_offset)=
- :     \
-> > > +           ((unsigned long)(y) - kernel_map.va_kernel_pa_offset - XI=
-P_OFFSET))
-> > > +#else
-> > > +#define kernel_mapping_pa_to_va(y)                                  =
-       \
-> > > +   ((void *)((unsigned long)(y) + kernel_map.va_kernel_pa_offset + X=
-IP_OFFSET))
-> > > +
-> > > +#define kernel_mapping_va_to_pa(y)                                  =
-       \
-> > > +   ((unsigned long)(y) - kernel_map.va_kernel_pa_offset - XIP_OFFSET=
-)
-> > > +#endif
-> > > +
-> > >   #define __pa_to_va_nodebug(x)             linear_mapping_pa_to_va(x=
-)
-> > >   #ifndef CONFIG_DEBUG_VIRTUAL
-> > > @@ -147,12 +160,6 @@ void *linear_mapping_pa_to_va(unsigned long x);
-> > >   #else
-> > >   phys_addr_t linear_mapping_va_to_pa(unsigned long x);
-> > >   #endif
-> > > -#define kernel_mapping_va_to_pa(y) ({                               =
-               \
-> > > -   unsigned long _y =3D (unsigned long)(y);                         =
-         \
-> > > -   (IS_ENABLED(CONFIG_XIP_KERNEL) && _y < kernel_map.virt_addr + XIP=
-_OFFSET) ? \
-> > > -           (_y - kernel_map.va_kernel_xip_pa_offset) :              =
-       \
-> > > -           (_y - kernel_map.va_kernel_pa_offset - XIP_OFFSET);      =
-       \
-> > > -   })
-> > >   #define __va_to_pa_nodebug(x)     ({                               =
-               \
-> > >     unsigned long _x =3D x;                                          =
-         \
-> >
-> >
-> > Not sure using #ifdef optimizes anything since the compiler should do t=
-he
-> > same with the IS_ENABLED(CONFIG_XIP_KERNEL) and it does not really impr=
-ove
-> > the readability of this file which is already overloaded with #ifdef, s=
-o I
-> > don't think this change is needed.
->
-> I would say that we explicitly do not want to move things that are
-> guarded by IS_ENABLED() to ifdeffery. In fact, we should move things in
-> the other direction if possible, especially for stuff like XIP_KERNEL
-> that nobody ever build tests.
+Signed-off-by: David Lin <yu-hao.lin@nxp.com>
+Fixes: 1c5d463c0770 ("wifi: mwifiex: add extra delay for firmware ready")
+Cc: stable@vger.kernel.org
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <error27@gmail.com>
+Closes: https://lore.kernel.org/r/202312192236.ZflaWYCw-lkp@intel.com/
 
-The point of this patch is that logically, like xiprom and xiprom_sz,
-stuct kernel_mapping.va_kernel_xip_pa_offset should be included in
-CONFIG_XIP_KERNEL.
+---
 
-I believe we can agree on this, right?
+v2:
+   - corrected spelling error: possilbe -> possible.
+---
+ drivers/net/wireless/marvell/mwifiex/sdio.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks,
-Yunhui
+diff --git a/drivers/net/wireless/marvell/mwifiex/sdio.c b/drivers/net/wireless/marvell/mwifiex/sdio.c
+index ef3e68d1059c..75f53c2f1e1f 100644
+--- a/drivers/net/wireless/marvell/mwifiex/sdio.c
++++ b/drivers/net/wireless/marvell/mwifiex/sdio.c
+@@ -779,7 +779,7 @@ static int mwifiex_check_fw_status(struct mwifiex_adapter *adapter,
+ {
+ 	struct sdio_mmc_card *card = adapter->card;
+ 	int ret = 0;
+-	u16 firmware_stat;
++	u16 firmware_stat = 0;
+ 	u32 tries;
+ 
+ 	for (tries = 0; tries < poll_num; tries++) {
+
+base-commit: 783004b6dbda2cfe9a552a4cc9c1d168a2068f6c
+prerequisite-patch-id: ee10b03f813ab1e72d05c59aef4e07a26afdf678
+-- 
+2.25.1
+
 
