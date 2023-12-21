@@ -1,454 +1,108 @@
-Return-Path: <linux-kernel+bounces-8803-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8804-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4905581BC79
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 17:57:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EBC1981BC7E
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 17:59:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C3EDC288158
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 16:57:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 76989B224AD
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 16:59:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF40A59910;
-	Thu, 21 Dec 2023 16:56:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C361D5822B;
+	Thu, 21 Dec 2023 16:59:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ShvUzgiw"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="BaSqGs76"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 257AC58224
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 16:56:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <35550a06-c1fe-4e96-9705-ba0474cd94d1@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1703177775;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AED05821E
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 16:59:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1703177939;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dMCYkMM2NSBZF87b2hNzRnFk+D/F+OEGKsL46dDU7h4=;
-	b=ShvUzgiwN2CpaC4h3xQRpkNdujC5TKt+MX9IBeeqT6MHDREB/iR30ttLGjJpsxVoJBJBZ7
-	kYKxwhESWKKCW5xkC8i4dd6GwOVNog94jESNef5HbWqvDhGhhIkNgjjtyk5q4wHpX6wfQY
-	gsPjqFtyejxdHV5Rkmfv8s7CiW5cGrM=
-Date: Thu, 21 Dec 2023 16:56:09 +0000
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=YfzgPU3MkfaqMkHywTBvwxBqqqhijQZYQX1JEq3yLos=;
+	b=BaSqGs762xxaBKLh8zl0g+GTMPoiR2NxJ6iMau8Kjs2jpGGjNiQrEUSgZtZBxF/bEezK0o
+	4TABIiyLvAROtZsksiIVACQxknv+lfmNaKBCjFZ8qggHtq1E/qh4lo+mP8LvDBX/1BQvsJ
+	Sav72rQdrtmy9p2s5UZu/V6J2c/dvTA=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-146-iAYrCm-EMAiboEnHJGc83A-1; Thu, 21 Dec 2023 11:58:57 -0500
+X-MC-Unique: iAYrCm-EMAiboEnHJGc83A-1
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-40c3cea4c19so8821955e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 08:58:57 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703177936; x=1703782736;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=YfzgPU3MkfaqMkHywTBvwxBqqqhijQZYQX1JEq3yLos=;
+        b=VqoATI+FTk7QrNb2yM+X0fsfDQb2IE8eOEfSOT/nhQAmrlEhGFk7rq2ua9CpaPdr92
+         taM1T+7ZQ4MBgSdL+D+gtyon64X3d24a4a/ugirwgJyWB5X9ZeClPup6mYfrQxwlAoP6
+         rnJqgwPmRJ2XGj0T/mDI9w4MeCF8A22pDf0se4Ml8TnboIneLLpNOkNlXVD6tJWRcaw0
+         laU+JALmvN6y6BUEOp8rkobOdXskyQgjFLWWyeNUjHpalV7UQVLLPWcb9I+xkCiEhu1S
+         71HO53OM00z3LoV9NYh7CrvhXKka+sFt5koEy1ThzuXqgCJYwMmG3TiQpGIVDm0lBBmO
+         v/4Q==
+X-Gm-Message-State: AOJu0YzK7yDtJ46jXnEuSG6oUEvdh91c5V1MXuuAt7GiICniIYHvCyQP
+	Az31z7BGnZyDoFc4lKUvv72bOeejNQk0Ix59xwmp10YymwWjA4TzbRafcYYWjn48wJvvdc9MAlY
+	Bmc+y9DyF9P6rX1bsQ9m62t1PoxbV3gc=
+X-Received: by 2002:a7b:c8d7:0:b0:40d:3bd1:3dc9 with SMTP id f23-20020a7bc8d7000000b0040d3bd13dc9mr2459wml.219.1703177936726;
+        Thu, 21 Dec 2023 08:58:56 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEbByqWtAWAPFMSK5jVspKSO6YeLOYJty6KrgKSNfnZjI5LmzBWOfBm3dl7JgTsSMglSsII3Q==
+X-Received: by 2002:a7b:c8d7:0:b0:40d:3bd1:3dc9 with SMTP id f23-20020a7bc8d7000000b0040d3bd13dc9mr2454wml.219.1703177936454;
+        Thu, 21 Dec 2023 08:58:56 -0800 (PST)
+Received: from klayman.redhat.com (net-2-34-31-72.cust.vodafonedsl.it. [2.34.31.72])
+        by smtp.gmail.com with ESMTPSA id v14-20020a05600c444e00b0040c58e410a3sm11874745wmn.14.2023.12.21.08.58.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Dec 2023 08:58:56 -0800 (PST)
+From: Marco Pagani <marpagan@redhat.com>
+To: Luis Chamberlain <mcgrof@kernel.org>
+Cc: Marco Pagani <marpagan@redhat.com>,
+	linux-modules@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] kernel/module: improve documentation for try_module_get()
+Date: Thu, 21 Dec 2023 17:58:47 +0100
+Message-ID: <20231221165848.150041-1-marpagan@redhat.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v1] ptp: ocp: add Adva timecard support
-Content-Language: en-US
-To: Sagi Maimon <maimon.sagi@gmail.com>, richardcochran@gmail.com,
- jonathan.lemon@gmail.com
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231221153755.2690-1-maimon.sagi@gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Vadim Fedorenko <vadim.fedorenko@linux.dev>
-In-Reply-To: <20231221153755.2690-1-maimon.sagi@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 
-On 21/12/2023 15:37, Sagi Maimon wrote:
-> Adding support for the Adva timecard.
-> The card uses different drivers to provide access to the
-> firmware SPI flash (Altera based).
-> Other parts of the code are the same and could be reused.
-> 
-> Signed-off-by: Sagi Maimon <maimon.sagi@gmail.com>
-> ---
->   drivers/ptp/ptp_ocp.c | 257 ++++++++++++++++++++++++++++++++++++++++--
->   1 file changed, 247 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/ptp/ptp_ocp.c b/drivers/ptp/ptp_ocp.c
-> index 4021d3d325f9..73e91b8a2887 100644
-> --- a/drivers/ptp/ptp_ocp.c
-> +++ b/drivers/ptp/ptp_ocp.c
-> @@ -34,6 +34,9 @@
->   #define PCI_VENDOR_ID_OROLIA			0x1ad7
->   #define PCI_DEVICE_ID_OROLIA_ARTCARD		0xa000
->   
-> +#define PCI_VENDOR_ID_ADVA			0xad5a
-> +#define PCI_DEVICE_ID_ADVA_TIMECARD		0x0400
-> +
->   static struct class timecard_class = {
->   	.name		= "timecard",
->   };
-> @@ -63,6 +66,13 @@ struct ocp_reg {
->   	u32	status_drift;
->   };
->   
-> +struct servo_val {
-> +	u32	servo_offset_p_val;
-> +	u32	servo_offset_i_val;
-> +	u32	servo_drift_p_val;
-> +	u32	servo_drift_i_val;
-> +};
-> +
+The sentence "this call will fail if the module is already being
+removed" is potentially confusing and may contradict the rest of the
+documentation. If one tries to get a module that has already been
+removed using a stale pointer, the kernel will crash.
 
-I don't really like naming here. Let's go with ptp_ocp prefix first.
-Then it's more like configuration rather than actual values, so I would
-say ptp_ocp_servo_conf is better here. And let's remove "_val" - no real
-need for this suffix.
+Signed-off-by: Marco Pagani <marpagan@redhat.com>
+---
+ include/linux/module.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
->   #define OCP_CTRL_ENABLE		BIT(0)
->   #define OCP_CTRL_ADJUST_TIME	BIT(1)
->   #define OCP_CTRL_ADJUST_OFFSET	BIT(2)
-> @@ -401,6 +411,12 @@ static const struct ocp_attr_group fb_timecard_groups[];
->   
->   static const struct ocp_attr_group art_timecard_groups[];
->   
-> +static int ptp_ocp_adva_board_init(struct ptp_ocp *bp, struct ocp_resource *r);
-> +
-> +static const struct ocp_attr_group adva_timecard_groups[];
-> +
-> +static const struct ocp_sma_op ocp_adva_sma_op;
-> +
->   struct ptp_ocp_eeprom_map {
->   	u16	off;
->   	u16	len;
-> @@ -835,10 +851,122 @@ static struct ocp_resource ocp_art_resource[] = {
->   	{ }
->   };
->   
-> +static struct ocp_resource ocp_adva_resource[] = {
-> +	{
-> +		OCP_MEM_RESOURCE(reg),
-> +		.offset = 0x01000000, .size = 0x10000,
-> +	},
-> +	{
-> +		OCP_EXT_RESOURCE(ts0),
-> +		.offset = 0x01010000, .size = 0x10000, .irq_vec = 1,
-> +		.extra = &(struct ptp_ocp_ext_info) {
-> +			.index = 0,
-> +			.irq_fcn = ptp_ocp_ts_irq,
-> +			.enable = ptp_ocp_ts_enable,
-> +		},
-> +	},
-> +	{
-> +		OCP_EXT_RESOURCE(ts1),
-> +		.offset = 0x01020000, .size = 0x10000, .irq_vec = 2,
-> +		.extra = &(struct ptp_ocp_ext_info) {
-> +			.index = 1,
-> +			.irq_fcn = ptp_ocp_ts_irq,
-> +			.enable = ptp_ocp_ts_enable,
-> +		},
-> +	},
-> +	{
-> +		OCP_EXT_RESOURCE(ts2),
-> +		.offset = 0x01060000, .size = 0x10000, .irq_vec = 6,
-> +		.extra = &(struct ptp_ocp_ext_info) {
-> +			.index = 2,
-> +			.irq_fcn = ptp_ocp_ts_irq,
-> +			.enable = ptp_ocp_ts_enable,
-> +		},
-> +	},
-> +	/* Timestamp for PHC and/or PPS generator */
-> +	{
-> +		OCP_EXT_RESOURCE(pps),
-> +		.offset = 0x010C0000, .size = 0x10000, .irq_vec = 0,
-> +		.extra = &(struct ptp_ocp_ext_info) {
-> +			.index = 5,
-> +			.irq_fcn = ptp_ocp_ts_irq,
-> +			.enable = ptp_ocp_ts_enable,
-> +		},
-> +	},
-> +	{
-> +		OCP_EXT_RESOURCE(signal_out[0]),
-> +		.offset = 0x010D0000, .size = 0x10000, .irq_vec = 11,
-> +		.extra = &(struct ptp_ocp_ext_info) {
-> +			.index = 1,
-> +			.irq_fcn = ptp_ocp_signal_irq,
-> +			.enable = ptp_ocp_signal_enable,
-> +		},
-> +	},
-> +	{
-> +		OCP_MEM_RESOURCE(pps_to_ext),
-> +		.offset = 0x01030000, .size = 0x10000,
-> +	},
-> +	{
-> +		OCP_MEM_RESOURCE(pps_to_clk),
-> +		.offset = 0x01040000, .size = 0x10000,
-> +	},
-> +	{
-> +		OCP_MEM_RESOURCE(tod),
-> +		.offset = 0x01050000, .size = 0x10000,
-> +	},
-> +	{
-> +		OCP_MEM_RESOURCE(image),
-> +		.offset = 0x00020000, .size = 0x1000,
-> +	},
-> +	{
-> +		OCP_MEM_RESOURCE(pps_select),
-> +		.offset = 0x00130000, .size = 0x1000,
-> +	},
-> +	{
-> +		OCP_MEM_RESOURCE(sma_map1),
-> +		.offset = 0x00140000, .size = 0x1000,
-> +	},
-> +	{
-> +		OCP_MEM_RESOURCE(sma_map2),
-> +		.offset = 0x00220000, .size = 0x1000,
-> +	},
-> +	{
-> +		OCP_SERIAL_RESOURCE(gnss_port),
-> +		.offset = 0x00160000 + 0x1000, .irq_vec = 3,
-> +		.extra = &(struct ptp_ocp_serial_port) {
-> +			.baud = 9600,
-> +		},
-> +	},
-> +	{
-> +			OCP_MEM_RESOURCE(freq_in[0]),
-> +			.offset = 0x01200000, .size = 0x10000,
-> +	},
-> +	{
-> +			OCP_SPI_RESOURCE(spi_flash),
-> +			.offset = 0x00310400, .size = 0x10000, .irq_vec = 9,
-> +			.extra = &(struct ptp_ocp_flash_info) {
-> +				.name = "spi_altera", .pci_offset = 0,
-> +				.data_size = sizeof(struct altera_spi_platform_data),
-> +				.data = &(struct altera_spi_platform_data) {
-> +					.num_chipselect = 1,
-> +					.num_devices = 1,
-> +					.devices = &(struct spi_board_info) {
-> +						.modalias = "spi-nor",
-> +					},
-> +				},
-> +			},
-> +	},
-> +	{
-> +		.setup = ptp_ocp_adva_board_init,
-> +	},
-> +	{ }
-> +};
-> +
->   static const struct pci_device_id ptp_ocp_pcidev_id[] = {
->   	{ PCI_DEVICE_DATA(FACEBOOK, TIMECARD, &ocp_fb_resource) },
->   	{ PCI_DEVICE_DATA(CELESTICA, TIMECARD, &ocp_fb_resource) },
->   	{ PCI_DEVICE_DATA(OROLIA, ARTCARD, &ocp_art_resource) },
-> +	{ PCI_DEVICE_DATA(ADVA, TIMECARD, &ocp_adva_resource) },
->   	{ }
->   };
->   MODULE_DEVICE_TABLE(pci, ptp_ocp_pcidev_id);
-> @@ -917,6 +1045,27 @@ static const struct ocp_selector ptp_ocp_art_sma_out[] = {
->   	{ }
->   };
->   
-> +static const struct ocp_selector ptp_ocp_adva_sma_in[] = {
-> +	{ .name = "10Mhz",	.value = 0x0000,      .frequency = 10000000},
-> +	{ .name = "PPS1",	.value = 0x0001,      .frequency = 1 },
-> +	{ .name = "PPS2",	.value = 0x0002,      .frequency = 1 },
-> +	{ .name = "TS1",	.value = 0x0004,      .frequency = 0 },
-> +	{ .name = "TS2",	.value = 0x0008,      .frequency = 0 },
-> +	{ .name = "FREQ1",	.value = 0x0100,      .frequency = 0 },
-> +	{ .name = "None",	.value = SMA_DISABLE, .frequency = 0 },
-> +	{ }
-> +};
-> +
-> +static const struct ocp_selector ptp_ocp_adva_sma_out[] = {
-> +	{ .name = "10Mhz",	.value = 0x0000,  .frequency = 10000000},
-> +	{ .name = "PHC",	.value = 0x0001,  .frequency = 1 },
-> +	{ .name = "GNSS1",	.value = 0x0004,  .frequency = 1 },
-> +	{ .name = "GEN1",	.value = 0x0040 },
-> +	{ .name = "GND",	.value = 0x2000 },
-> +	{ .name = "VCC",	.value = 0x4000 },
-> +	{ }
-> +};
-> +
->   struct ocp_sma_op {
->   	const struct ocp_selector *tbl[2];
->   	void (*init)(struct ptp_ocp *bp);
-> @@ -1363,20 +1512,20 @@ ptp_ocp_estimate_pci_timing(struct ptp_ocp *bp)
->   }
->   
->   static int
-> -ptp_ocp_init_clock(struct ptp_ocp *bp)
-> +ptp_ocp_init_clock(struct ptp_ocp *bp, struct servo_val *servo_vals)
->   {
->   	struct timespec64 ts;
->   	u32 ctrl;
->   
-> +
+diff --git a/include/linux/module.h b/include/linux/module.h
+index a98e188cf37b..08364d5cbc07 100644
+--- a/include/linux/module.h
++++ b/include/linux/module.h
+@@ -668,7 +668,7 @@ extern void __module_get(struct module *module);
+  * @module: the module we should check for
+  *
+  * Only try to get a module reference count if the module is not being removed.
+- * This call will fail if the module is already being removed.
++ * This call will fail if the module is in the process of being removed.
+  *
+  * Care must also be taken to ensure the module exists and is alive prior to
+  * usage of this call. This can be gauranteed through two means:
+-- 
+2.43.0
 
-no need for the second empty line
-
->   	ctrl = OCP_CTRL_ENABLE;
->   	iowrite32(ctrl, &bp->reg->ctrl);
->   
-> -	/* NO DRIFT Correction */
-> -	/* offset_p:i 1/8, offset_i: 1/16, drift_p: 0, drift_i: 0 */
-> -	iowrite32(0x2000, &bp->reg->servo_offset_p);
-> -	iowrite32(0x1000, &bp->reg->servo_offset_i);
-> -	iowrite32(0,	  &bp->reg->servo_drift_p);
-> -	iowrite32(0,	  &bp->reg->servo_drift_i);
-> +	/* servo configuration */
-> +	iowrite32(servo_vals->servo_offset_p_val, &bp->reg->servo_offset_p);
-> +	iowrite32(servo_vals->servo_offset_i_val, &bp->reg->servo_offset_i);
-> +	iowrite32(servo_vals->servo_drift_p_val, &bp->reg->servo_drift_p);
-> +	iowrite32(servo_vals->servo_drift_p_val, &bp->reg->servo_drift_i);
->   
->   	/* latch servo values */
->   	ctrl |= OCP_CTRL_ADJUST_SERVO;
-> @@ -2362,6 +2511,14 @@ static const struct ocp_sma_op ocp_fb_sma_op = {
->   	.set_output	= ptp_ocp_sma_fb_set_output,
->   };
->   
-> +static const struct ocp_sma_op ocp_adva_sma_op = {
-> +	.tbl		= { ptp_ocp_adva_sma_in, ptp_ocp_adva_sma_out },
-> +	.init		= ptp_ocp_sma_fb_init,
-> +	.get		= ptp_ocp_sma_fb_get,
-> +	.set_inputs	= ptp_ocp_sma_fb_set_inputs,
-> +	.set_output	= ptp_ocp_sma_fb_set_output,
-> +};
-> +
->   static int
->   ptp_ocp_set_pins(struct ptp_ocp *bp)
->   {
-> @@ -2420,6 +2577,7 @@ static int
->   ptp_ocp_fb_board_init(struct ptp_ocp *bp, struct ocp_resource *r)
->   {
->   	int err;
-> +	struct servo_val servo_vals;
->   
->   	bp->flash_start = 1024 * 4096;
->   	bp->eeprom_map = fb_eeprom_map;
-> @@ -2441,7 +2599,14 @@ ptp_ocp_fb_board_init(struct ptp_ocp *bp, struct ocp_resource *r)
->   		return err;
->   	ptp_ocp_sma_init(bp);
->   
-> -	return ptp_ocp_init_clock(bp);
-> +	/* NO DRIFT Correction */
-> +	/* offset_p:i 1/8, offset_i: 1/16, drift_p: 0, drift_i: 0 */
-> +	servo_vals.servo_offset_p_val = 0x2000;
-> +	servo_vals.servo_offset_i_val = 0x1000;
-> +	servo_vals.servo_drift_p_val = 0;
-> +	servo_vals.servo_drift_p_val = 0;
-
-instead of adding this to every particular initialization function,
-struct ptp_ocp_servo_conf can be put to .extra field of the resource
-holding init function. This will move all configuration points to the
-list of card-specific resources, the place to have differences of cards
-and will make the code cleaner and eliminate all these local structs.
-We can potentially create another static function to configure servo
-part, but it's up to you.
-
-> +
-> +	return ptp_ocp_init_clock(bp, &servo_vals);
->   }
->   
->   static bool
-> @@ -2583,6 +2748,7 @@ static int
->   ptp_ocp_art_board_init(struct ptp_ocp *bp, struct ocp_resource *r)
->   {
->   	int err;
-> +	struct servo_val servo_vals;
->   
->   	bp->flash_start = 0x1000000;
->   	bp->eeprom_map = art_eeprom_map;
-> @@ -2603,7 +2769,49 @@ ptp_ocp_art_board_init(struct ptp_ocp *bp, struct ocp_resource *r)
->   	if (err)
->   		return err;
->   
-> -	return ptp_ocp_init_clock(bp);
-> +	/* NO DRIFT Correction */
-> +	/* offset_p:i 1/8, offset_i: 1/16, drift_p: 0, drift_i: 0 */
-> +	servo_vals.servo_offset_p_val = 0x2000;
-> +	servo_vals.servo_offset_i_val = 0x1000;
-> +	servo_vals.servo_drift_p_val = 0;
-> +	servo_vals.servo_drift_p_val = 0;
-> +
-> +	return ptp_ocp_init_clock(bp, &servo_vals);
-> +}
-> +
-> +/* ADVA specific board initializers; last "resource" registered. */
-> +static int
-> +ptp_ocp_adva_board_init(struct ptp_ocp *bp, struct ocp_resource *r)
-> +{
-> +	int err;
-> +	struct servo_val servo_vals;
-> +
-> +	bp->flash_start = 0xA00000;
-> +	bp->fw_version = ioread32(&bp->image->version);
-> +	bp->sma_op = &ocp_adva_sma_op;
-> +
-> +	ptp_ocp_fb_set_version(bp);
-> +
-> +	ptp_ocp_tod_init(bp);
-> +	ptp_ocp_nmea_out_init(bp);
-> +	ptp_ocp_signal_init(bp);
-> +
-> +	err = ptp_ocp_attr_group_add(bp, adva_timecard_groups);
-> +	if (err)
-> +		return err;
-> +
-> +	err = ptp_ocp_set_pins(bp);
-> +	if (err)
-> +		return err;
-> +	ptp_ocp_sma_init(bp);
-> +
-> +	/* offset_p:i 3/4, offset_i: 1/16, drift_p: 0, drift_i: 0 */
-> +	servo_vals.servo_offset_p_val = 0xc000;
-> +	servo_vals.servo_offset_i_val = 0x1000;
-> +	servo_vals.servo_drift_p_val = 0;
-> +	servo_vals.servo_drift_p_val = 0;
-> +
-> +	return ptp_ocp_init_clock(bp, &servo_vals);
->   }
->   
->   static ssize_t
-> @@ -3578,6 +3786,35 @@ static const struct ocp_attr_group art_timecard_groups[] = {
->   	{ },
->   };
->   
-> +static struct attribute *adva_timecard_attrs[] = {
-> +	&dev_attr_serialnum.attr,
-> +	&dev_attr_gnss_sync.attr,
-> +	&dev_attr_clock_source.attr,
-> +	&dev_attr_available_clock_sources.attr,
-> +	&dev_attr_sma1.attr,
-> +	&dev_attr_sma2.attr,
-> +	&dev_attr_sma3.attr,
-> +	&dev_attr_sma4.attr,
-> +	&dev_attr_available_sma_inputs.attr,
-> +	&dev_attr_available_sma_outputs.attr,
-> +	&dev_attr_clock_status_drift.attr,
-> +	&dev_attr_clock_status_offset.attr,
-> +	&dev_attr_ts_window_adjust.attr,
-> +	&dev_attr_tod_correction.attr,
-> +	NULL,
-> +};
-> +
-> +static const struct attribute_group adva_timecard_group = {
-> +	.attrs = adva_timecard_attrs,
-> +};
-> +
-> +static const struct ocp_attr_group adva_timecard_groups[] = {
-> +	{ .cap = OCP_CAP_BASIC,	    .group = &adva_timecard_group },
-> +	{ .cap = OCP_CAP_SIGNAL,    .group = &fb_timecard_signal0_group },
-> +	{ .cap = OCP_CAP_FREQ,	    .group = &fb_timecard_freq0_group },
-> +	{ },
-> +};
-> +
->   static void
->   gpio_input_map(char *buf, struct ptp_ocp *bp, u16 map[][2], u16 bit,
->   	       const char *def)
-
-starting from here ...
-
-> @@ -4492,7 +4729,7 @@ ptp_ocp_remove(struct pci_dev *pdev)
->   	cancel_delayed_work_sync(&bp->sync_work);
->   	for (i = 0; i < OCP_SMA_NUM; i++) {
->   		if (bp->sma[i].dpll_pin) {
-> -			dpll_pin_unregister(bp->dpll, bp->sma[i].dpll_pin, &dpll_pins_ops, bp);
-> +			dpll_pin_unregister(bp->dpll, bp->sma[i].dpll_pin, &dpll_pins_ops, &bp->sma[i]);
->   			dpll_pin_put(bp->sma[i].dpll_pin);
->   		}
->   	}
-
-the chuck is already in a different patch and is reviewed actually, no
-need to post it again.
 
