@@ -1,155 +1,199 @@
-Return-Path: <linux-kernel+bounces-8174-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8175-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E0E081B326
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 11:06:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88E9481B327
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 11:07:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B12111C24314
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 10:06:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 00C801F2454B
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 10:07:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDA694F1E9;
-	Thu, 21 Dec 2023 10:06:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7FF44E1B1;
+	Thu, 21 Dec 2023 10:06:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="mI7F/UnV"
+	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="qv0LSSxp"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+Received: from smtp-fw-80007.amazon.com (smtp-fw-80007.amazon.com [99.78.197.218])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EBF04D5A6;
-	Thu, 21 Dec 2023 10:06:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BL63EN3028172;
-	Thu, 21 Dec 2023 10:05:54 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:mime-version:content-type; s=
-	qcppdkim1; bh=Kq8VbpDqe3FOuWKJfLOXUx2yB0WHYeTuEVaPSqZj6UE=; b=mI
-	7F/UnVBAk9r3yMw+NjTPcVp69U+6DhGZxr4OvhXoc3okMkg/HtRGPlCepskrXw/F
-	9zanMNBT1diPhrrv1/UsbHD9mxN2fNy4rQBvdglNVuj03DHMPS6amZcDJOfHMXuk
-	N21w6vx3Neu3pqy8w40f2p4LbBGXDvhqX5M2dtuh6YqAt8ZQQ66fMLPeATpds6fj
-	DLjqqwtCvypJB48n3MM4RAdBv6CoE8Clv66RoIo9RY0qyhvJezsfi2ztzbW2cZeu
-	HFWBXf7uj1CTsJg9u/tPGnWXRi+NdJVP8XAsJEXDqoE590tDyqaTGZdrjwthZoQy
-	kOwdkKL1jdxH0xpkk9GQ==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v3v33c83c-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 21 Dec 2023 10:05:53 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BLA5qV1006123
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 21 Dec 2023 10:05:52 GMT
-Received: from sarannya-linux.qualcomm.com (10.80.80.8) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68A3920DFD;
+	Thu, 21 Dec 2023 10:06:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1703153216; x=1734689216;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=HZe6bD/qHm3dskiYKZHzsiMLgW2/NYT+z0VlpbmM9vk=;
+  b=qv0LSSxpkBHf9TVA6SjzL9K7ERm9eCMFWy7aywdyCb5wYZlI0/IjN+wf
+   kCx41OQn69g+lyWcnwGU5SLcAVP/Lh4aqdLepzPJEgBJwfpIBFgyPiLkF
+   Moy3Droejqpk+eEkJxXQSXVxVL+lmkYC2zW2QOVlzV3PE2DuNCizqRhWk
+   w=;
+X-IronPort-AV: E=Sophos;i="6.04,293,1695686400"; 
+   d="scan'208";a="261741335"
+Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-pdx-2b-m6i4x-7fa2de02.us-west-2.amazon.com) ([10.25.36.210])
+  by smtp-border-fw-80007.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Dec 2023 10:06:52 +0000
+Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (pdx2-ws-svc-p26-lb5-vlan2.pdx.amazon.com [10.39.38.66])
+	by email-inbound-relay-pdx-2b-m6i4x-7fa2de02.us-west-2.amazon.com (Postfix) with ESMTPS id BCCEA40D64;
+	Thu, 21 Dec 2023 10:06:50 +0000 (UTC)
+Received: from EX19MTAUWB002.ant.amazon.com [10.0.21.151:31957]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.27.188:2525] with esmtp (Farcaster)
+ id d4d316ca-c2f2-4f76-b72e-af626142e488; Thu, 21 Dec 2023 10:06:50 +0000 (UTC)
+X-Farcaster-Flow-ID: d4d316ca-c2f2-4f76-b72e-af626142e488
+Received: from EX19D020UWC004.ant.amazon.com (10.13.138.149) by
+ EX19MTAUWB002.ant.amazon.com (10.250.64.231) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Thu, 21 Dec 2023 02:05:47 -0800
-From: Sarannya S <quic_sarannya@quicinc.com>
-To: <quic_bjorande@quicinc.com>, <bjorn.andersson@kernel.org>,
-        <andersson@kernel.org>, <quic_clew@quicinc.com>,
-        <mathieu.poirier@linaro.org>
-CC: <linux-kernel@vger.kernel.org>, <quic_sarannya@quicinc.com>,
-        <linux-arm-msm@vger.kernel.org>, <linux-remoteproc@vger.kernel.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        "David S. Miller"
-	<davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>, Jakub Kicinski
-	<kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "open list:NETWORKING
- [GENERAL]" <netdev@vger.kernel.org>
-Subject: [PATCH V1 1/1] net: qrtr: ns: Ignore ENODEV failures in ns
-Date: Thu, 21 Dec 2023 15:35:35 +0530
-Message-ID: <1703153136-3607-1-git-send-email-quic_sarannya@quicinc.com>
-X-Mailer: git-send-email 2.7.4
+ 15.2.1118.40; Thu, 21 Dec 2023 10:06:42 +0000
+Received: from [0.0.0.0] (10.253.83.51) by EX19D020UWC004.ant.amazon.com
+ (10.13.138.149) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 21 Dec
+ 2023 10:06:40 +0000
+Message-ID: <e2655687-38ba-4e5b-9573-32eb12fb0583@amazon.com>
+Date: Thu, 21 Dec 2023 11:06:38 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: IRYirnL3ks9jCOZ42oyKBpMvPWsk6E75
-X-Proofpoint-GUID: IRYirnL3ks9jCOZ42oyKBpMvPWsk6E75
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 spamscore=0
- mlxscore=0 malwarescore=0 mlxlogscore=724 clxscore=1011 priorityscore=1501
- adultscore=0 suspectscore=0 lowpriorityscore=0 bulkscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2311290000
- definitions=main-2312210074
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] tracing / synthetic: Disable events after testing in
+ synth_event_gen_test_init()
+Content-Language: en-US
+To: Steven Rostedt <rostedt@goodmis.org>, LKML <linux-kernel@vger.kernel.org>,
+	Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>
+CC: Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
+	<mathieu.desnoyers@efficios.com>, Tom Zanussi <zanussi@kernel.org>
+References: <20231220111525.2f0f49b0@gandalf.local.home>
+From: Alexander Graf <graf@amazon.com>
+In-Reply-To: <20231220111525.2f0f49b0@gandalf.local.home>
+X-ClientProxiedBy: EX19D040UWB003.ant.amazon.com (10.13.138.8) To
+ EX19D020UWC004.ant.amazon.com (10.13.138.149)
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Transfer-Encoding: base64
 
-From: Chris Lew <quic_clew@quicinc.com>
-
-Ignore the ENODEV failures returned by kernel_sendmsg(). These errors
-indicate that either the local port has been closed or the remote has
-gone down. Neither of these scenarios are fatal and will eventually be
-handled through packets that are later queued on the control port.
-
-Signed-off-by: Chris Lew <quic_clew@quicinc.com>
-Signed-off-by: Sarannya Sasikumar <quic_sarannya@quicinc.com>
----
- net/qrtr/ns.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
-
-diff --git a/net/qrtr/ns.c b/net/qrtr/ns.c
-index abb0c70..8234339 100644
---- a/net/qrtr/ns.c
-+++ b/net/qrtr/ns.c
-@@ -157,7 +157,7 @@ static int service_announce_del(struct sockaddr_qrtr *dest,
- 	msg.msg_namelen = sizeof(*dest);
- 
- 	ret = kernel_sendmsg(qrtr_ns.sock, &msg, &iv, 1, sizeof(pkt));
--	if (ret < 0)
-+	if (ret < 0 && ret != -ENODEV)
- 		pr_err("failed to announce del service\n");
- 
- 	return ret;
-@@ -188,7 +188,7 @@ static void lookup_notify(struct sockaddr_qrtr *to, struct qrtr_server *srv,
- 	msg.msg_namelen = sizeof(*to);
- 
- 	ret = kernel_sendmsg(qrtr_ns.sock, &msg, &iv, 1, sizeof(pkt));
--	if (ret < 0)
-+	if (ret < 0 && ret != -ENODEV)
- 		pr_err("failed to send lookup notification\n");
- }
- 
-@@ -207,6 +207,9 @@ static int announce_servers(struct sockaddr_qrtr *sq)
- 	xa_for_each(&node->servers, index, srv) {
- 		ret = service_announce_new(sq, srv);
- 		if (ret < 0) {
-+			if (ret == -ENODEV)
-+				continue;
-+
- 			pr_err("failed to announce new service\n");
- 			return ret;
- 		}
-@@ -369,7 +372,7 @@ static int ctrl_cmd_bye(struct sockaddr_qrtr *from)
- 		msg.msg_namelen = sizeof(sq);
- 
- 		ret = kernel_sendmsg(qrtr_ns.sock, &msg, &iv, 1, sizeof(pkt));
--		if (ret < 0) {
-+		if (ret < 0 && ret != -ENODEV) {
- 			pr_err("failed to send bye cmd\n");
- 			return ret;
- 		}
-@@ -443,7 +446,7 @@ static int ctrl_cmd_del_client(struct sockaddr_qrtr *from,
- 		msg.msg_namelen = sizeof(sq);
- 
- 		ret = kernel_sendmsg(qrtr_ns.sock, &msg, &iv, 1, sizeof(pkt));
--		if (ret < 0) {
-+		if (ret < 0 && ret != -ENODEV) {
- 			pr_err("failed to send del client cmd\n");
- 			return ret;
- 		}
--- 
-2.7.4
+SGkgU3RldmUsCgpPbiAyMC4xMi4yMyAxNzoxNSwgU3RldmVuIFJvc3RlZHQgd3JvdGU6Cj4KPiBG
+cm9tOiAiU3RldmVuIFJvc3RlZHQgKEdvb2dsZSkiIDxyb3N0ZWR0QGdvb2RtaXMub3JnPgo+Cj4g
+VGhlIHN5bnRoX2V2ZW50X2dlbl90ZXN0IG1vZHVsZSBjYW4gYmUgYnVpbHQgaW4sIGlmIHNvbWVv
+bmUgd2FudHMgdG8gcnVuCj4gdGhlIHRlc3RzIGF0IGJvb3QgdXAgYW5kIG5vdCBoYXZlIHRvIGxv
+YWQgdGhlbS4KPgo+IFRoZSBzeW50aF9ldmVudF9nZW5fdGVzdF9pbml0KCkgZnVuY3Rpb24gY3Jl
+YXRlcyBhbmQgZW5hYmxlcyB0aGUgc3ludGhldGljCj4gZXZlbnRzIGFuZCBydW5zIGl0cyB0ZXN0
+cy4KPgo+IFRoZSBzeW50aF9ldmVudF9nZW5fdGVzdF9leGl0KCkgZGlzYWJsZXMgdGhlIGV2ZW50
+cyBpdCBjcmVhdGVkIGFuZAo+IGRlc3Ryb3lzIHRoZSBldmVudHMuCj4KPiBJZiB0aGUgbW9kdWxl
+IGlzIGJ1aWx0aW4sIHRoZSBldmVudHMgYXJlIG5ldmVyIGRpc2FibGVkLiBUaGUgaXNzdWUgaXMs
+IHRoZQo+IGV2ZW50cyBzaG91bGQgYmUgZGlzYWJsZSBhZnRlciB0aGUgdGVzdHMgYXJlIHJ1bi4g
+VGhpcyBjb3VsZCBiZSBhbiBpc3N1ZQo+IGlmIHRoZSByZXN0IG9mIHRoZSBib290IHVwIHRlc3Rz
+IGFyZSBlbmFibGVkLCBhcyB0aGV5IGV4cGVjdCB0aGUgZXZlbnRzIHRvCj4gYmUgaW4gYSBrbm93
+biBzdGF0ZSBiZWZvcmUgdGVzdGluZy4gVGhhdCBrbm93biBzdGF0ZSBoYXBwZW5zIHRvIGJlCj4g
+ZGlzYWJsZWQuCj4KPiBXaGVuIENPTkZJR19TWU5USF9FVkVOVF9HRU5fVEVTVD15IGFuZCBDT05G
+SUdfRVZFTlRfVFJBQ0VfU1RBUlRVUF9URVNUPXkKPiBhIHdhcm5pbmcgd2lsbCB0cmlnZ2VyOgo+
+Cj4gICBSdW5uaW5nIHRlc3RzIG9uIHRyYWNlIGV2ZW50czoKPiAgIFRlc3RpbmcgZXZlbnQgY3Jl
+YXRlX3N5bnRoX3Rlc3Q6Cj4gICBFbmFibGVkIGV2ZW50IGR1cmluZyBzZWxmIHRlc3QhCj4gICAt
+LS0tLS0tLS0tLS1bIGN1dCBoZXJlIF0tLS0tLS0tLS0tLS0KPiAgIFdBUk5JTkc6IENQVTogMiBQ
+SUQ6IDEgYXQga2VybmVsL3RyYWNlL3RyYWNlX2V2ZW50cy5jOjQxNTAgZXZlbnRfdHJhY2Vfc2Vs
+Zl90ZXN0cysweDFjMi8weDQ4MAo+ICAgTW9kdWxlcyBsaW5rZWQgaW46Cj4gICBDUFU6IDIgUElE
+OiAxIENvbW06IHN3YXBwZXIvMCBOb3QgdGFpbnRlZCA2LjcuMC1yYzItdGVzdC0wMDAzMS1nYjgw
+M2Q3YzY2NGQ1LWRpcnR5ICMyNzYKPiAgIEhhcmR3YXJlIG5hbWU6IFFFTVUgU3RhbmRhcmQgUEMg
+KFEzNSArIElDSDksIDIwMDkpLCBCSU9TIDEuMTYuMi1kZWJpYW4tMS4xNi4yLTEgMDQvMDEvMjAx
+NAo+ICAgUklQOiAwMDEwOmV2ZW50X3RyYWNlX3NlbGZfdGVzdHMrMHgxYzIvMHg0ODAKPiAgIENv
+ZGU6IGJiIGU4IGEyIGFiIDVkIGZjIDQ4IDhkIDdiIDQ4IGU4IGY5IDNkIDk5IGZjIDQ4IDhiIDcz
+IDQ4IDQwIGY2IGM2IDAxIDBmIDg0IGQ2IGZlIGZmIGZmIDQ4IGM3IGM3IDIwIGI2IGFkIGJiIGU4
+IDdmIGFiIDVkIGZjIDkwIDwwZj4gMGIgOTAgNDggODkgZGYgZTggZDMgM2QgOTkgZmMgNDggOGIg
+MWIgNGMgMzkgZjMgMGYgODUgMmMgZmYgZmYKPiAgIFJTUDogMDAwMDpmZmZmYzkwMDAwMDFmZGMw
+IEVGTEFHUzogMDAwMTAyNDYKPiAgIFJBWDogMDAwMDAwMDAwMDAwMDAyOSBSQlg6IGZmZmY4ODgx
+MDM5OWNhODAgUkNYOiAwMDAwMDAwMDAwMDAwMDAwCj4gICBSRFg6IDAwMDAwMDAwMDAwMDAwMDAg
+UlNJOiBmZmZmZmZmZmI5ZjE5NDc4IFJESTogZmZmZjg4ODIzYzczNGU2NAo+ICAgUkJQOiBmZmZm
+ODg4MTAzOTlmMzAwIFIwODogMDAwMDAwMDAwMDAwMDAwMCBSMDk6IGZmZmZmYmZmZjc5ZWIzMmEK
+PiAgIFIxMDogZmZmZmZmZmZiY2Y1OTk1NyBSMTE6IDAwMDAwMDAwMDAwMDAwMDEgUjEyOiBmZmZm
+ODg4MTA0MDY4MDkwCj4gICBSMTM6IGZmZmZmZmZmYmM4OWYwYTAgUjE0OiBmZmZmZmZmZmJjOGEw
+ZjA4IFIxNTogMDAwMDAwMDAwMDAwMDA3OAo+ICAgRlM6ICAwMDAwMDAwMDAwMDAwMDAwKDAwMDAp
+IEdTOmZmZmY4ODgyM2M3MDAwMDAoMDAwMCkga25sR1M6MDAwMDAwMDAwMDAwMDAwMAo+ICAgQ1M6
+ICAwMDEwIERTOiAwMDAwIEVTOiAwMDAwIENSMDogMDAwMDAwMDA4MDA1MDAzMwo+ICAgQ1IyOiAw
+MDAwMDAwMDAwMDAwMDAwIENSMzogMDAwMDAwMDFmNjI4MjAwMSBDUjQ6IDAwMDAwMDAwMDAxNzBl
+ZjAKPiAgIENhbGwgVHJhY2U6Cj4gICAgPFRBU0s+Cj4gICAgPyBfX3dhcm4rMHhhNS8weDIwMAo+
+ICAgID8gZXZlbnRfdHJhY2Vfc2VsZl90ZXN0cysweDFjMi8weDQ4MAo+ICAgID8gcmVwb3J0X2J1
+ZysweDFmNi8weDIyMAo+ICAgID8gaGFuZGxlX2J1ZysweDZmLzB4OTAKPiAgICA/IGV4Y19pbnZh
+bGlkX29wKzB4MTcvMHg1MAo+ICAgID8gYXNtX2V4Y19pbnZhbGlkX29wKzB4MWEvMHgyMAo+ICAg
+ID8gdHJhY2VyX3ByZWVtcHRfb24rMHg3OC8weDFjMAo+ICAgID8gZXZlbnRfdHJhY2Vfc2VsZl90
+ZXN0cysweDFjMi8weDQ4MAo+ICAgID8gX19wZnhfZXZlbnRfdHJhY2Vfc2VsZl90ZXN0c19pbml0
+KzB4MTAvMHgxMAo+ICAgIGV2ZW50X3RyYWNlX3NlbGZfdGVzdHNfaW5pdCsweDI3LzB4ZTAKPiAg
+ICBkb19vbmVfaW5pdGNhbGwrMHhkNi8weDNjMAo+ICAgID8gX19wZnhfZG9fb25lX2luaXRjYWxs
+KzB4MTAvMHgxMAo+ICAgID8ga2FzYW5fc2V0X3RyYWNrKzB4MjUvMHgzMAo+ICAgID8gcmN1X2lz
+X3dhdGNoaW5nKzB4MzgvMHg2MAo+ICAgIGtlcm5lbF9pbml0X2ZyZWVhYmxlKzB4MzI0LzB4NDUw
+Cj4gICAgPyBfX3BmeF9rZXJuZWxfaW5pdCsweDEwLzB4MTAKPiAgICBrZXJuZWxfaW5pdCsweDFm
+LzB4MWUwCj4gICAgPyBfcmF3X3NwaW5fdW5sb2NrX2lycSsweDMzLzB4NTAKPiAgICByZXRfZnJv
+bV9mb3JrKzB4MzQvMHg2MAo+ICAgID8gX19wZnhfa2VybmVsX2luaXQrMHgxMC8weDEwCj4gICAg
+cmV0X2Zyb21fZm9ya19hc20rMHgxYi8weDMwCj4gICAgPC9UQVNLPgo+Cj4gVGhpcyBpcyBiZWNh
+dXNlIHRoZSBzeW50aF9ldmVudF9nZW5fdGVzdF9pbml0KCkgbGVmdCB0aGUgc3ludGhldGljIGV2
+ZW50cwo+IHRoYXQgaXQgY3JlYXRlZCBlbmFibGVkLiBCeSBoYXZpbmcgaXQgZGlzYWJsZSB0aGVt
+IGFmdGVyIHRlc3RpbmcsIHRoZQo+IG90aGVyIHNlbGZ0ZXN0cyB3aWxsIHJ1biBmaW5lLgo+Cj4g
+Q2M6IHN0YWJsZUB2Z2VyLmtlcm5lbC5vcmcKPiBGaXhlczogOWZlNDFlZmFjYTA4NCAoInRyYWNp
+bmc6IEFkZCBzeW50aCBldmVudCBnZW5lcmF0aW9uIHRlc3QgbW9kdWxlIikKPiBSZXBvcnRlZC1i
+eTogQWxleGFuZGVyIEdyYWYgPGdyYWZAYW1hem9uLmNvbT4KPiBTaWduZWQtb2ZmLWJ5OiBTdGV2
+ZW4gUm9zdGVkdCAoR29vZ2xlKSA8cm9zdGVkdEBnb29kbWlzLm9yZz4KCgpUaGFua3MgYSBidW5j
+aCBmb3IgdGhlIHN1cGVyIHF1aWNrIHR1cm5hcm91bmQgdGltZSBmb3IgdGhlIGZpeCEgSSBjYW4g
+CmNvbmZpcm0gdGhhdCBJJ20gbm8gbG9uZ2VyIHNlZWluZyB0aGUgd2FybmluZyA6KQoKVGVzdGVk
+LWJ5OiBBbGV4YW5kZXIgR3JhZiA8Z3JhZkBhbWF6b24uY29tPgoKCkRvIHdlIG5lZWQgYW5vdGhl
+ciBzaW1pbGFyIHBhdGNoIGZvciB0aGUga3Byb2JlIHNlbGYgdGVzdHM/IFRoZSBiZWxvdyBpcyAK
+d2l0aCA1NWNiNWY0MzY4OWQ3IHBsdXMgYW4gdW5yZWxhdGVkIGluaXRyZCBwYXRjaCBwbHVzIHRo
+aXMgcGF0Y2ggYW5kIAp0aGUgZm9sbG93aW5nIC5jb25maWc6IGh0dHA6Ly9jc2dyYWYuZGUvdG1w
+Mi9jb25maWctZnRyYWNlLnh6CgpbwqAgOTE5LjcxNzEzNF0gVGVzdGluZyBhbGwgZXZlbnRzOiBP
+SwpbwqAgOTI0LjQxODE5NF0gVGVzdGluZyBmdHJhY2UgZmlsdGVyOiBPSwpbwqAgOTI0LjQxODg4
+N10gdHJhY2Vfa3Byb2JlOiBUZXN0aW5nIGtwcm9iZSB0cmFjaW5nOgpbwqAgOTI0LjQyNDI0NF0g
+LS0tLS0tLS0tLS0tWyBjdXQgaGVyZSBdLS0tLS0tLS0tLS0tClvCoCA5MjQuNDI0OTUyXSBXQVJO
+SU5HOiBDUFU6IDIgUElEOiAxIGF0IAprZXJuZWwvdHJhY2UvdHJhY2Vfa3Byb2JlLmM6MjA3MyBr
+cHJvYmVfdHJhY2Vfc2VsZl90ZXN0c19pbml0KzB4MTkyLzB4NTQwClvCoCA5MjQuNDI1NjU5XSBN
+b2R1bGVzIGxpbmtlZCBpbjoKW8KgIDkyNC40MjU4ODZdIENQVTogMiBQSUQ6IDEgQ29tbTogc3dh
+cHBlci8wIE5vdCB0YWludGVkIAo2LjcuMC1yYzYtMDAwMjQtZ2MxMDY5OGFkM2M5YSAjMjk4ClvC
+oCA5MjQuNDI2NDQ4XSBIYXJkd2FyZSBuYW1lOiBRRU1VIFN0YW5kYXJkIFBDIChRMzUgKyBJQ0g5
+LCAyMDA5KSwgQklPUyAKcmVsLTEuMTYuMi0wLWdlYTFiN2EwNzMzOTAtcHJlYnVpbHQucWVtdS5v
+cmcgMDQvMDEvMjAxNApbwqAgOTI0LjQyNzIzMF0gUklQOiAwMDEwOmtwcm9iZV90cmFjZV9zZWxm
+X3Rlc3RzX2luaXQrMHgxOTIvMHg1NDAKW8KgIDkyNC40Mjc2MzldIENvZGU6IDdlIDEwIDc0IDNi
+IDQ4IDhiIDM2IDQ4IDM5IGQ2IDc1IGYyIDBmIDBiIDQ4IGM3IGM3IAo1OCA3MSA3OSBhNSBlOCBl
+ZSAzZSA1YSBmZSA0OCBjNyBjNyAyMCAzOCBiNyBhNSBlOCBhMiA1MSA2OCBmZSA4NSBjMCA3NCAK
+MzMgPDBmPiAwYiA0OCBjNyBjNyAzOCA3MyA3OSBhNSBlOCBkMCAzZSA1YSBmZSBlOCA0YiA2NCA2
+MiBmZSBlYiAyMyA0OApbwqAgOTI0LjQyODkyMl0gUlNQOiAwMDAwOmZmZmZhYjUwODAwMWJlNTgg
+RUZMQUdTOiAwMDAxMDI4NgpbwqAgOTI0LjQyOTI4OF0gUkFYOiAwMDAwMDAwMGZmZmZmZmYwIFJC
+WDogMDAwMDAwMDAwMDAwMDA1YSBSQ1g6IAowMDAwMDAwMDAwMDAwMjAyClvCoCA5MjQuNDI5ODAw
+XSBSRFg6IDAwMDAwMDAwMDAwMDAwMDAgUlNJOiAwMDAwMDAwMDAwMDJlOTcwIFJESTogCmZmZmZm
+ZmZmYTViNzA4YTAKW8KgIDkyNC40MzAyOTVdIFJCUDogMDAwMDAwMDAwMDAwMDAwMCBSMDg6IDAw
+MDAwMDAwMDAwMDAwMDEgUjA5OiAKZmZmZmZmZmZhNDg1NWE5MApbwqAgOTI0LjQzMDc5NF0gUjEw
+OiAwMDAwMDAwMDAwMDAwMDA3IFIxMTogMDAwMDAwMDAwMDAwMDI4YSBSMTI6IAowMDAwMDAwMDAw
+MDAwMDAxClvCoCA5MjQuNDMxMjg2XSBSMTM6IGZmZmZmZmZmYTVjYzlhMDAgUjE0OiBmZmZmOGNl
+YzgxYmViZTAwIFIxNTogCmZmZmZmZmZmYTYxOWYwZjAKW8KgIDkyNC40MzE3ODVdIEZTOsKgIDAw
+MDAwMDAwMDAwMDAwMDAoMDAwMCkgR1M6ZmZmZjhjZWNmOTEwMDAwMCgwMDAwKSAKa25sR1M6MDAw
+MDAwMDAwMDAwMDAwMApbwqAgOTI0LjQzMjM0Nl0gQ1M6wqAgMDAxMCBEUzogMDAwMCBFUzogMDAw
+MCBDUjA6IDAwMDAwMDAwODAwNTAwMzMKW8KgIDkyNC40MzI3NDhdIENSMjogMDAwMDAwMDAwMDAw
+MDAwMCBDUjM6IDAwMDAwMDAwNDg4M2UwMDEgQ1I0OiAKMDAwMDAwMDAwMDM3MDZmMApbwqAgOTI0
+LjQzMzI0Nl0gRFIwOiAwMDAwMDAwMDAwMDAwMDAwIERSMTogMDAwMDAwMDAwMDAwMDAwMCBEUjI6
+IAowMDAwMDAwMDAwMDAwMDAwClvCoCA5MjQuNDMzNzM5XSBEUjM6IDAwMDAwMDAwMDAwMDAwMDAg
+RFI2OiAwMDAwMDAwMGZmZmUwZmYwIERSNzogCjAwMDAwMDAwMDAwMDA0MDAKW8KgIDkyNC40MzQy
+MzNdIENhbGwgVHJhY2U6ClvCoCA5MjQuNDM0NDE4XcKgIDxUQVNLPgpbwqAgOTI0LjQzNDU2OV3C
+oCA/IF9fd2FybisweDdkLzB4MTQwClvCoCA5MjQuNDM0ODA3XcKgID8ga3Byb2JlX3RyYWNlX3Nl
+bGZfdGVzdHNfaW5pdCsweDE5Mi8weDU0MApbwqAgOTI0LjQzNTE3Ml3CoCA/IHJlcG9ydF9idWcr
+MHhmOC8weDFlMApbwqAgOTI0LjQzNTQzMF3CoCA/IGhhbmRsZV9idWcrMHgzZi8weDcwClvCoCA5
+MjQuNDM1Njc3XcKgID8gZXhjX2ludmFsaWRfb3ArMHgxMy8weDYwClvCoCA5MjQuNDM1OTU0XcKg
+ID8gYXNtX2V4Y19pbnZhbGlkX29wKzB4MTYvMHgyMApbwqAgOTI0LjQzNjI0OV3CoCA/IHJkaW5p
+dF9zZXR1cCsweDQwLzB4NDAKW8KgIDkyNC40MzY1MDldwqAgPyB0cmFjZV9rcHJvYmVfcmVsZWFz
+ZSsweDcwLzB4YjAKW8KgIDkyNC40MzY4MjJdwqAgPyBrcHJvYmVfdHJhY2Vfc2VsZl90ZXN0c19p
+bml0KzB4MTkyLzB4NTQwClvCoCA5MjQuNDM3MTg5XcKgID8ga3Byb2JlX3RyYWNlX3NlbGZfdGVz
+dHNfaW5pdCsweDQyMS8weDU0MApbwqAgOTI0LjQzNzU1MV3CoCA/IGluaXRfa3Byb2JlX3RyYWNl
+KzB4MWIwLzB4MWIwClvCoCA5MjQuNDM3ODU1XcKgIGRvX29uZV9pbml0Y2FsbCsweDQ0LzB4MjAw
+ClvCoCA5MjQuNDM4MTMxXcKgIGtlcm5lbF9pbml0X2ZyZWVhYmxlKzB4MWU4LzB4MzMwClvCoCA5
+MjQuNDM4NDM5XcKgID8gcmVzdF9pbml0KzB4ZDAvMHhkMApbwqAgOTI0LjQzODY4Ml3CoCBrZXJu
+ZWxfaW5pdCsweDE2LzB4MTMwClvCoCA5MjQuNDM4OTQzXcKgIHJldF9mcm9tX2ZvcmsrMHgzMC8w
+eDUwClvCoCA5MjQuNDM5MjAyXcKgID8gcmVzdF9pbml0KzB4ZDAvMHhkMApbwqAgOTI0LjQzOTQ0
+NV3CoCByZXRfZnJvbV9mb3JrX2FzbSsweDExLzB4MjAKW8KgIDkyNC40Mzk3MzRdwqAgPC9UQVNL
+PgpbwqAgOTI0LjQzOTg5M10gLS0tWyBlbmQgdHJhY2UgMDAwMDAwMDAwMDAwMDAwMCBdLS0tClvC
+oCA5MjQuNDQwMjE3XSB0cmFjZV9rcHJvYmU6IGVycm9yIG9uIGNsZWFuaW5nIHVwIHByb2Jlcy4K
+W8KgIDkyNC40NDA1NzVdIE5HOiBTb21lIHRlc3RzIGFyZSBmYWlsZWQuIFBsZWFzZSBjaGVjayB0
+aGVtLgoKCkFsZXgKCgoKCkFtYXpvbiBEZXZlbG9wbWVudCBDZW50ZXIgR2VybWFueSBHbWJICkty
+YXVzZW5zdHIuIDM4CjEwMTE3IEJlcmxpbgpHZXNjaGFlZnRzZnVlaHJ1bmc6IENocmlzdGlhbiBT
+Y2hsYWVnZXIsIEpvbmF0aGFuIFdlaXNzCkVpbmdldHJhZ2VuIGFtIEFtdHNnZXJpY2h0IENoYXJs
+b3R0ZW5idXJnIHVudGVyIEhSQiAxNDkxNzMgQgpTaXR6OiBCZXJsaW4KVXN0LUlEOiBERSAyODkg
+MjM3IDg3OQoKCg==
 
 
