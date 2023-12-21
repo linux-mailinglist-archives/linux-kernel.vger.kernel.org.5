@@ -1,115 +1,110 @@
-Return-Path: <linux-kernel+bounces-8786-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8789-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A833A81BC32
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 17:41:55 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 421B681BC55
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 17:49:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DB08C1C25CB8
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 16:41:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C8B46B213A4
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 16:49:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5113F627F6;
-	Thu, 21 Dec 2023 16:41:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AF185821B;
+	Thu, 21 Dec 2023 16:48:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b="pgifOCnJ"
+	dkim=pass (2048-bit key) header.d=dh-electronics.com header.i=@dh-electronics.com header.b="uWToZ210"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D938F5990C;
-	Thu, 21 Dec 2023 16:41:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hugovil.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
-	; s=x; h=Subject:Content-Transfer-Encoding:Mime-Version:Message-Id:Cc:To:From
-	:Date:subject:date:message-id:reply-to;
-	bh=2Q9t7C2SbakvEAyAANdhIwq7Q4HehUia7VOTnZPPwiY=; b=pgifOCnJRKp+1KXkCqOoMeIv9u
-	LcIdf+l31BfdI0vRUkZhsKr7bqtZC3rps8Dx6aYNRki/LvfO6Tp/na2xkN7OfvciIYIISVkruYaOq
-	lOmTU93KEZhVF1BxZs69F79xYWoDyggojQFSOr8T7Lj4rXmj0Gk6RnnGmhx+9LdRsLwc=;
-Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:53502 helo=pettiford)
-	by mail.hugovil.com with esmtpa (Exim 4.92)
-	(envelope-from <hugo@hugovil.com>)
-	id 1rGM6a-0006rz-0Y; Thu, 21 Dec 2023 11:41:05 -0500
-Date: Thu, 21 Dec 2023 11:41:03 -0500
-From: Hugo Villeneuve <hugo@hugovil.com>
-To: Andy Shevchenko <andriy.shevchenko@intel.com>
-Cc: gregkh@linuxfoundation.org, jirislaby@kernel.org, jringle@gridpoint.com,
- kubakici@wp.pl, phil@raspberrypi.org, linux-kernel@vger.kernel.org,
- linux-serial@vger.kernel.org, Hugo Villeneuve <hvilleneuve@dimonoff.com>
-Message-Id: <20231221114103.557409e9875a0f2f95eacfb6@hugovil.com>
-In-Reply-To: <ZYMNSqFgAhId-lQ2@smile.fi.intel.com>
-References: <20231219171903.3530985-1-hugo@hugovil.com>
-	<20231219171903.3530985-10-hugo@hugovil.com>
-	<ZYMNSqFgAhId-lQ2@smile.fi.intel.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Received: from mx4.securetransport.de (mx4.securetransport.de [178.254.6.145])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61B6D59913;
+	Thu, 21 Dec 2023 16:48:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=dh-electronics.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dh-electronics.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dh-electronics.com;
+	s=dhelectronicscom; t=1703177282;
+	bh=OUBsafXMgbKKwKeKHW98AeHHiie/LjHIzcQ1dOpPqmk=;
+	h=From:To:CC:Subject:Date:From;
+	b=uWToZ210+ervwTOs4Ip2PpJgyPW1ATQ/lckRtuORI2LreWnWqz5y8blQhBQjyhJYo
+	 ru+ycX+P+48pwDQKGknznVNcHTnAV/74kYhXciLhaRZH/9ooD8P4T9I7JQ81fTKslo
+	 Rc5EbEAwZCKd6tVjyGYHoWF3RkLeWt7wm/+I34ew0aP5HUy57++xj1C996/na0PnUg
+	 6z+3DGjD3DkxJPsmxYTJNU8K8fonIBu4Z1vt2qtrOjqXNMnGsApzqXG781h09afQvm
+	 hpDF9m3z4LN9CNTh7+TnxiTwCIgyO2vUFpH3c1gZHodttpgb5TjvfLn9kjCxcIcfb9
+	 EoZU6V7q1o4qg==
+From: Christoph Niedermaier <cniedermaier@dh-electronics.com>
+To: <linux-arm-kernel@lists.infradead.org>
+CC: Christoph Niedermaier <cniedermaier@dh-electronics.com>, Rob Herring
+	<robh+dt@kernel.org>, Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+	Shawn Guo <shawnguo@kernel.org>, Marek Vasut <marex@denx.de>, Fabio Estevam
+	<festevam@denx.de>, NXP Linux Team <linux-imx@nxp.com>,
+	<kernel@dh-electronics.com>, <devicetree@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: [PATCH] ARM: dts: imx6ull-dhcor: Remove 900MHz operating point
+Date: Thu, 21 Dec 2023 17:46:33 +0100
+Message-ID: <20231221164633.2029-1-cniedermaier@dh-electronics.com>
+X-klartext: yes
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 70.80.174.168
-X-SA-Exim-Mail-From: hugo@hugovil.com
-X-Spam-Level: 
-X-Spam-Report: 
-	* -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-	* -0.0 T_SCC_BODY_TEXT_LINE No description available.
-	* -3.8 NICE_REPLY_A Looks like a legit reply (A)
-Subject: Re: [PATCH 09/18] serial: sc16is7xx: add macro for max number of
- UART ports
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
+MIME-Version: 1.0
+Content-Type: text/plain
 
-On Wed, 20 Dec 2023 17:50:34 +0200
-Andy Shevchenko <andriy.shevchenko@intel.com> wrote:
+Due to CPU lifetime consideration of the SoC manufacturer [1] and
+the preferred area of operation in the industrial related
+environment, set the maximum frequency for each DHCOM i.MX6ULL to
+792MHz, as with the industrial type. This is done by removing the
+operating point at 900MHz and set the clock-frequency to 792000000.
 
-> On Tue, Dec 19, 2023 at 12:18:53PM -0500, Hugo Villeneuve wrote:
-> > From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
-> > 
-> > Add macro to hold the maximum number of UART ports per IC/device.
-> 
-> ...
-> 
-> > -	if (count < 0 || count > ARRAY_SIZE(irda_port))
-> > +	if (count < 0 || count > SC16IS7XX_MAX_PORTS)
-> 
-> ARRAY_SIZE() is more robust than this. What if you change to support different
-> devices where this won't be as defined?
+[1] https://www.nxp.com/docs/en/application-note/AN5337.pdf
 
-Hi,
-not sure that I understand your point, because SC16IS7XX_MAX_PORTS is
-the maximum for all devices supported by this driver. The irda_port
-array always has a fixed number of elements set to SC16IS7XX_MAX_PORTS,
-even if the device that we are probing has only one port for example.
+Signed-off-by: Christoph Niedermaier <cniedermaier@dh-electronics.com>
+---
+Cc: Rob Herring <robh+dt@kernel.org>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Cc: Conor Dooley <conor+dt@kernel.org>
+Cc: Shawn Guo <shawnguo@kernel.org>
+Cc: Marek Vasut <marex@denx.de>
+Cc: Fabio Estevam <festevam@denx.de>
+Cc: NXP Linux Team <linux-imx@nxp.com>
+Cc: kernel@dh-electronics.com
+Cc: devicetree@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+To: linux-arm-kernel@lists.infradead.org
+---
+ arch/arm/boot/dts/nxp/imx/imx6ull-dhcor-som.dtsi | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-But I can change it back to ARRAY_SIZE(irda_port) if you want.
+diff --git a/arch/arm/boot/dts/nxp/imx/imx6ull-dhcor-som.dtsi b/arch/arm/boot/dts/nxp/imx/imx6ull-dhcor-som.dtsi
+index 45315adfaa86..75486e1b0c15 100644
+--- a/arch/arm/boot/dts/nxp/imx/imx6ull-dhcor-som.dtsi
++++ b/arch/arm/boot/dts/nxp/imx/imx6ull-dhcor-som.dtsi
+@@ -28,10 +28,14 @@
+ 	/*
+ 	 * Due to the design as a solderable SOM, there are no capacitors
+ 	 * below the SoC, therefore higher voltages are required.
++	 * Due to CPU lifetime consideration of the SoC manufacturer and
++	 * the preferred area of operation in the industrial related
++	 * environment, set the maximum frequency for each DHCOM i.MX6ULL
++	 * to 792MHz, as with the industrial type.
+ 	 */
++	clock-frequency = <792000000>;
+ 	operating-points = <
+ 		/* kHz	uV */
+-		900000	1275000
+ 		792000	1250000 /* Voltage increased */
+ 		528000	1175000
+ 		396000	1025000
+@@ -39,7 +43,6 @@
+ 	>;
+ 	fsl,soc-operating-points = <
+ 		/* KHz	uV */
+-		900000	1250000
+ 		792000	1250000 /* Voltage increased */
+ 		528000	1175000
+ 		396000	1175000
+-- 
+2.11.0
 
-> 
-> >  		return;
-> 
-> ...
-> 
-> > -	if (count < 0 || count > ARRAY_SIZE(mctrl_port))
-> > +	if (count < 0 || count > SC16IS7XX_MAX_PORTS)
-> >  		return 0;
-> 
-> Ditto.
-> 
-> ...
-> 
-> > +	WARN_ON(devtype->nr_uart > SC16IS7XX_MAX_PORTS);
-> 
-> Not sure about this, perhaps it's fine.
-
-This check is only there if we add support for a new device and we
-incorrectly set nr_uart to an incorrect value, which will cause other
-problems anyway, of course :)
-
-This could be removed.
-
-Hugo Villeneuve
 
