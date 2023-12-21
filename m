@@ -1,111 +1,120 @@
-Return-Path: <linux-kernel+bounces-8432-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8433-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C47A281B710
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 14:12:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8677C81B712
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 14:13:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 63B861F241C2
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 13:12:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B7D3D1C23DE6
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 13:13:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67D57745CB;
-	Thu, 21 Dec 2023 13:12:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B163745CD;
+	Thu, 21 Dec 2023 13:12:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="GUnH9Qt/";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="p7M16dhp"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-oi1-f174.google.com (mail-oi1-f174.google.com [209.85.167.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 476576F602;
-	Thu, 21 Dec 2023 13:12:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=auristor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f174.google.com with SMTP id 5614622812f47-3bb69f38855so492222b6e.1;
-        Thu, 21 Dec 2023 05:12:35 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703164354; x=1703769154;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=J9sf1n32OXYC12G8mzkhZo6OE4CGgDXLFkI6meoazzQ=;
-        b=TQR80AjVvK3TrN8fDmO8pnO/Kihdlahs/6ZRCvH0nehhziO9phOBIGBap0wk1TRz7T
-         FAPKpIsHY3BpHAwgB7hFpayeA8DmVdX3DlLpCvjs6YC5d46jiYCGBEqALPP2M9bQzKbT
-         Db//A3IJDdZkmZOVJpLbqFL8rs45ZMDOJzvFVyQ/VusHvQGtXRpPysnjsAIyOb0YbM+g
-         Z+LpIM2gLE7C4X5RgRHRdQDsoFDD3aJTNfvPgUrAAHQ845PwrwTxa03VX21HyBgzjxEn
-         5e1ucv7kDcaVjCFWG+lXonJqfmmyIuY2mYuuSajzeN/F+TbCbQ/BP3xGnm6/WiTpsISA
-         kbmQ==
-X-Gm-Message-State: AOJu0YzKDqT8kwu/Q8gEHFhXjfX+Y9o7skPzubCo+X8CuYiAlo4Z7RRZ
-	E3lM5Cod9w+FOcf4LnPS/dCmWRNhBXagYg==
-X-Google-Smtp-Source: AGHT+IFsMAY7qX/6ThEvAPcatTeAg5u2Su4PY3IDFWeoA+u1fj64OLZu9mTwEMF4XKas62EIGR6QYA==
-X-Received: by 2002:a05:6358:6a46:b0:173:aea:cd6a with SMTP id c6-20020a0563586a4600b001730aeacd6amr1561024rwh.33.1703164354126;
-        Thu, 21 Dec 2023 05:12:34 -0800 (PST)
-Received: from hemlock.fiveisland.rocks ([2001:470:1d:225:6d9:f5ff:fe15:325d])
-        by smtp.gmail.com with ESMTPSA id fe15-20020a05622a4d4f00b00425b3fd33f2sm805639qtb.90.2023.12.21.05.12.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Dec 2023 05:12:32 -0800 (PST)
-From: Marc Dionne <marc.dionne@auristor.com>
-To: netdev@vger.kernel.org,
-	Jordan Rife <jrife@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Eric Dumazet <edumazet@google.com>,
-	"David S. Miller" <davem@davemloft.net>
-Cc: Willem de Bruijn <willemb@google.com>,
-	Simon Horman <horms@kernel.org>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] net: Save and restore msg_namelen in sock_sendmsg
-Date: Thu, 21 Dec 2023 09:12:30 -0400
-Message-ID: <20231221131230.2025000-1-marc.dionne@auristor.com>
-X-Mailer: git-send-email 2.43.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 111087319B
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 13:12:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sakamocchi.jp
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+	by mailout.nyi.internal (Postfix) with ESMTP id 0BAFA5C026A;
+	Thu, 21 Dec 2023 08:12:53 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Thu, 21 Dec 2023 08:12:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
+	 h=cc:cc:content-type:content-type:date:date:from:from
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:subject:subject:to:to; s=fm2; t=1703164373; x=
+	1703250773; bh=uXnfqe1/rU5Aj6adZ7mG3BFBjzWeNfv+XHLSvTxStnE=; b=G
+	UnH9Qt/FUEQiuy1jgaUF7A+hqkfFqCPgGsoaMkD5JMh3gjjmjoYsGPvDX18PZ4QB
+	p6gyDyhd33voMPf9ri06Fkyet3aG/wtt06N+Q7lewMrv+6tKLlpS6tREuUmlHsi+
+	x65oQeKjHi2EeLGHUC5SE5KY9xITbCCkmjQki47voqxu02BHQHNTGTGkYzjtauvW
+	Yz708NY4lA2j2v1NxmBJD0sTVXY2rijhYrbBbwFrqjazRL661A2IMuXK/Fq+Cay5
+	Ev9DeSFS08Phni23dKduuZNNoMF9OfkUW90XypuouVwNPcK11KPPcdxa+G7LNKJQ
+	18ig3Zt39cuq7NBrdGfKQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1703164373; x=1703250773; bh=uXnfqe1/rU5Aj6adZ7mG3BFBjzWe
+	Nfv+XHLSvTxStnE=; b=p7M16dhp0a4dq8aSnsYzOggQ2rkPmBWvRLD8p4iIYRzV
+	ORQgsO6UyMk0smn+csU7OG+i5SCyMfdS8DdMWBjXUkUcgWWRpt5jjESfHScWkulg
+	zNYiuijuHBldwMMvxz3ZTKja3ki5sfYf7LJ1OTkvJakfDvvZadYuQmLAAv48WZJL
+	nAHXX4+yKxToDU1lupJXQbkPvWH0q1OSHo0PvtRoqAnwaY23rU8q88FMnUJFkRIN
+	H7Zmo5kZvSAdSPPCH8hnyQXrsgQ3ygGtTPKqWfE2X95C9lqDSN8tvKAEz+ZDuLQk
+	sbiWKPTuDbNR0/SXCKroQd/8IFkNmG8EklTU425yqw==
+X-ME-Sender: <xms:1DmEZdpvz8pLu10F3xL1Ta8BD2DIr8g7xf4N_pFZeAUMlV656a94hQ>
+    <xme:1DmEZfqXvin6FR-QuviCB-y-8Acus729BX4e0o5Vq_lF5zu98X5KiMAW4nWzEZMRa
+    rW3o--GJXITK_9Ozk4>
+X-ME-Received: <xmr:1DmEZaOpieD_-li-87_Fa3EUyIsNdz_d8nNJwaDr3Xa7LIEjW1CZR-bkm48NaEkLAuW6Hw-cnVwHCwsgqEEaMRqHaFL_r-cIukE>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdduhedgvdegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepvfgrkhgr
+    shhhihcuufgrkhgrmhhothhouceoohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhird
+    hjpheqnecuggftrfgrthhtvghrnhephefhhfettefgkedvieeuffevveeufedtlefhjeei
+    ieetvdelfedtgfefuedukeeunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpe
+    hmrghilhhfrhhomhepohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjph
+X-ME-Proxy: <xmx:1DmEZY4YLUqCsIJnDl9DfSRh_X6-_QAXZFiCP_plrzmSJ8XDJXmc2Q>
+    <xmx:1DmEZc7MbhyWuszAWqeUsuUQszmz1w1qDEwCBjZe31iGsjMHPWqBrA>
+    <xmx:1DmEZQjk_Jm0MpfKKa9JcsHsaPj_bB9PZ26zk-hxHsGz4iScwQBx1g>
+    <xmx:1TmEZaRn7WscGuc4BkTr65rz6FUNBawEeIByAxm6on9B3AGVxAc9zQ>
+Feedback-ID: ie8e14432:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 21 Dec 2023 08:12:51 -0500 (EST)
+Date: Thu, 21 Dec 2023 22:12:48 +0900
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: Adam Goldman <adamg@pobox.com>
+Cc: linux1394-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 7/8] firewire: core: detect model name for legacy layout
+ of configuration ROM
+Message-ID: <20231221131248.GA603497@workstation.local>
+Mail-Followup-To: Adam Goldman <adamg@pobox.com>,
+	linux1394-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+References: <20231220041806.39816-1-o-takashi@sakamocchi.jp>
+ <20231220041806.39816-8-o-takashi@sakamocchi.jp>
+ <ZYQ0gNwDsocA9QS7@iguana.lan>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZYQ0gNwDsocA9QS7@iguana.lan>
 
-Commit 86a7e0b69bd5 ("net: prevent rewrite of msg_name in
-sock_sendmsg()") made sock_sendmsg save the incoming msg_name pointer
-and restore it before returning, to insulate the caller against
-msg_name being changed by the called code.  If the address length
-was also changed however, we may return with an inconsistent structure
-where the length doesn't match the address, and attempts to reuse it may
-lead to lost packets.
+Hi,
 
-For example, a kernel that doesn't have commit 1c5950fc6fe9 ("udp6: fix
-potential access to stale information") will replace a v4 mapped address
-with its ipv4 equivalent, and shorten namelen accordingly from 28 to 16.
-If the caller attempts to reuse the resulting msg structure, it will have
-the original ipv6 (v4 mapped) address but an incorrect v4 length.
+On Thu, Dec 21, 2023 at 04:50:08AM -0800, Adam Goldman wrote:
+> Hi,
+> 
+> > -	ret = fw_csr_string(dir, attr->key, buf, bufsize);
+> > +	for (i = 0; i < ARRAY_SIZE(directories) && !!directories[i]; ++i) {
+> > +		int result = fw_csr_string(directories[i], attr->key, buf, bufsize);
+> > +		// Detected.
+> > +		if (result >= 0)
+> > +			ret = result;
+> > +	}
+> >  
+> >  	if (ret >= 0) {
+> 
+> ret is an automatic variable with no initializer. Unless you initialize 
+> it (to -ENOENT), this is UB.
 
-Fixes: 86a7e0b69bd5 ("net: prevent rewrite of msg_name in sock_sendmsg()")
-Signed-off-by: Marc Dionne <marc.dionne@auristor.com>
----
- net/socket.c | 2 ++
- 1 file changed, 2 insertions(+)
+Indeed. The uninitialized value is going to be evaluated. I'll send take
+2 patchset later.
 
-diff --git a/net/socket.c b/net/socket.c
-index 3379c64217a4..89d79205bf50 100644
---- a/net/socket.c
-+++ b/net/socket.c
-@@ -757,6 +757,7 @@ int sock_sendmsg(struct socket *sock, struct msghdr *msg)
- {
- 	struct sockaddr_storage *save_addr = (struct sockaddr_storage *)msg->msg_name;
- 	struct sockaddr_storage address;
-+	int save_len = msg->msg_namelen;
- 	int ret;
- 
- 	if (msg->msg_name) {
-@@ -766,6 +767,7 @@ int sock_sendmsg(struct socket *sock, struct msghdr *msg)
- 
- 	ret = __sock_sendmsg(sock, msg);
- 	msg->msg_name = save_addr;
-+	msg->msg_namelen = save_len;
- 
- 	return ret;
- }
--- 
-2.43.0
 
+Thanks
+
+Takashi Sakamoto
 
