@@ -1,47 +1,52 @@
-Return-Path: <linux-kernel+bounces-8608-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8617-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DFE9F81BA1A
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 16:03:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E9F781BA2A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 16:05:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1E5211C21025
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 15:03:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3EFD31F27455
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 15:05:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C9C6539F1;
-	Thu, 21 Dec 2023 15:02:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF8E0539F9;
+	Thu, 21 Dec 2023 15:03:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="jSoF5Ebn"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9565B3608F;
-	Thu, 21 Dec 2023 15:02:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.234])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4SwtvM1xJwz1wn6J;
-	Thu, 21 Dec 2023 23:02:23 +0800 (CST)
-Received: from dggpeml500021.china.huawei.com (unknown [7.185.36.21])
-	by mail.maildlp.com (Postfix) with ESMTPS id 2F9A61400DB;
-	Thu, 21 Dec 2023 23:02:39 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by dggpeml500021.china.huawei.com
- (7.185.36.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 21 Dec
- 2023 23:02:38 +0800
-From: Baokun Li <libaokun1@huawei.com>
-To: <linux-ext4@vger.kernel.org>
-CC: <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
-	<ritesh.list@gmail.com>, <linux-kernel@vger.kernel.org>,
-	<yi.zhang@huawei.com>, <yangerkun@huawei.com>, <yukuai3@huawei.com>,
-	<libaokun1@huawei.com>
-Subject: [PATCH v2 3/8] ext4: regenerate buddy after block freeing failed if under fc replay
-Date: Thu, 21 Dec 2023 23:05:53 +0800
-Message-ID: <20231221150558.2740823-4-libaokun1@huawei.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20231221150558.2740823-1-libaokun1@huawei.com>
-References: <20231221150558.2740823-1-libaokun1@huawei.com>
+Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.219])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25F5E539F7
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 15:03:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=wxvSD
+	Li8T65lvh5EvTZQCJASQPtLkSwryZZLIIX8yC0=; b=jSoF5EbnbK07t/MiYUm2l
+	wSfdYgrQzo1DXwC7fzJx0/RYm/SufECkaYwm3yfqi9Gylbrgq961fir5/KB7O3iI
+	hEp8H2BWjzrg85msFeKLr7uXR7t7TA6GO1wTqk5K/AAOKkEZhKyTcMqdhGI98Vg1
+	wx/3gO3idv9CReA6lOONvc=
+Received: from localhost.localdomain (unknown [120.229.19.61])
+	by zwqz-smtp-mta-g0-1 (Coremail) with SMTP id _____wDnb4aSU4Rl_YYfEQ--.29751S2;
+	Thu, 21 Dec 2023 23:02:45 +0800 (CST)
+From: Junwen Wu <wudaemon@163.com>
+To: mingo@redhat.com,
+	laoar.shao@gmail.com,
+	peterz@infradead.org,
+	juri.lelli@redhat.com,
+	vincent.guittot@linaro.org,
+	dietmar.eggemann@arm.com,
+	rostedt@goodmis.org,
+	bsegall@google.com
+Cc: mgorman@suse.de,
+	bristot@redhat.com,
+	vschneid@redhat.com,
+	linux-kernel@vger.kernel.org,
+	Junwen Wu <wudaemon@163.com>
+Subject: [PATCH v2] sched/rt: Fix rt task's sched latency statistics error in sched_stat_wait trace_point
+Date: Thu, 21 Dec 2023 15:02:38 +0000
+Message-Id: <20231221150238.856960-1-wudaemon@163.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,62 +54,53 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml500021.china.huawei.com (7.185.36.21)
+X-CM-TRANSID:_____wDnb4aSU4Rl_YYfEQ--.29751S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWrZF17Zw1UtF4ktryUtryDGFg_yoW8Jr45p3
+	909a92va1qqay2qa1xuFs7ur15Wwn3J342gF97Jw1ftF4Yyrn0qwnIvw4agrWv9rykCF1x
+	tF40yrZxKa10vFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0piKZX7UUUUU=
+X-CM-SenderInfo: 5zxgtvxprqqiywtou0bp/1tbisBRNbWV4G7fD9QABsC
 
-This reverts [Fixes] under fast commit replay. When we are freeing blocks
-that have already been freed, the buddy may be corrupted, and we need to
-regenerate the buddy when the fast commit is being replayed in order to
-avoid using an corrupted buddy, since it will not mark the group block
-bitmap as corrupted at that point.
+When enable sched_stat_wait trace_point, some rt tasks sched latency
+so long, like this:
+sched_stat_wait: comm=rcu_preempt pid=14 delay=4936139545261 [ns]
+Rt task has low latency, it must have a bug. When rt task balance off
+source cpu, dequeue operation not update the sched_statistics, so follow
+update_stats_wait_end_fair update method.
 
-Reported-by: Jan Kara <jack@suse.cz>
-Fixes: 6bd97bf273bd ("ext4: remove redundant mb_regenerate_buddy()")
-Signed-off-by: Baokun Li <libaokun1@huawei.com>
+Signed-off-by: Junwen Wu <wudaemon@163.com>
 ---
- fs/ext4/mballoc.c | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+Changes since v1:
+https://lore.kernel.org/all/20231218150322.788382-1-wudaemon@163.com/
 
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index a95fa6e2b0f9..f6131ba514c8 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -1233,6 +1233,24 @@ void ext4_mb_generate_buddy(struct super_block *sb,
- 	atomic64_add(period, &sbi->s_mb_generation_time);
- }
+ kernel/sched/rt.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
+index 6aaf0a3d6081..6a2600213991 100644
+--- a/kernel/sched/rt.c
++++ b/kernel/sched/rt.c
+@@ -1360,12 +1360,19 @@ update_stats_dequeue_rt(struct rt_rq *rt_rq, struct sched_rt_entity *rt_se,
+ 			int flags)
+ {
+ 	struct task_struct *p = NULL;
++	struct rq *rq = rq_of_rt_se(rt_se);
  
-+static void mb_regenerate_buddy(struct ext4_buddy *e4b)
-+{
-+	int count;
-+	int order = 1;
-+	void *buddy;
-+
-+	while ((buddy = mb_find_buddy(e4b, order++, &count)))
-+		mb_set_bits(buddy, 0, count);
-+
-+	e4b->bd_info->bb_fragments = 0;
-+	memset(e4b->bd_info->bb_counters, 0,
-+		sizeof(*e4b->bd_info->bb_counters) *
-+		(e4b->bd_sb->s_blocksize_bits + 2));
-+
-+	ext4_mb_generate_buddy(e4b->bd_sb, e4b->bd_buddy,
-+		e4b->bd_bitmap, e4b->bd_group, e4b->bd_info);
-+}
-+
- /* The buddy information is attached the buddy cache inode
-  * for convenience. The information regarding each group
-  * is loaded via ext4_mb_load_buddy. The information involve
-@@ -1921,6 +1939,8 @@ static void mb_free_blocks(struct inode *inode, struct ext4_buddy *e4b,
- 			ext4_mark_group_bitmap_corrupted(
- 				sb, e4b->bd_group,
- 				EXT4_GROUP_INFO_BBITMAP_CORRUPT);
-+		} else {
-+			mb_regenerate_buddy(e4b);
- 		}
- 		goto done;
- 	}
+ 	if (!schedstat_enabled())
+ 		return;
+ 
+ 	if (rt_entity_is_task(rt_se))
+ 		p = rt_task_of(rt_se);
++	 /*
++	  * Mark the end of the wait period
++	  * if dequeueing a waiting task.
++	  */
++	if (p && (p != rq->curr))
++		update_stats_wait_end_rt(rt_rq, rt_se);
+ 
+ 	if ((flags & DEQUEUE_SLEEP) && p) {
+ 		unsigned int state;
 -- 
-2.31.1
+2.34.1
 
 
