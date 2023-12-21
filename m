@@ -1,41 +1,45 @@
-Return-Path: <linux-kernel+bounces-8605-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8610-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B40881BA12
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 16:00:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A8CE81BA1D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 16:03:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CC3A3289013
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 15:00:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CC7471C243A4
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 15:03:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F3234F20E;
-	Thu, 21 Dec 2023 15:00:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CgsYL0TR"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 048A355E66;
+	Thu, 21 Dec 2023 15:02:48 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA2AC3608F;
-	Thu, 21 Dec 2023 15:00:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 78990C433C8;
-	Thu, 21 Dec 2023 15:00:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703170823;
-	bh=zSxKdeMV7i+o2DwR5Chw6s112MhrvoSfwPZaBaf4654=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=CgsYL0TRYEOHZZfRLjbpGiE8iqIMFzwj13wiHDOd/Q6kTpjOmWensDD8nADSeIPOj
-	 X4xw/RmBvqlsHcJ3Efq8WVjFiZ2H+xe5C4e4DaZ0dZxvf2xCRy+Z8fEQnkzwi750p2
-	 rFJsVo1BOTi1L1rAU63TRAKYft3xHRLAJ1t+Cuhd3mwh6u8FM1oz/7sgkpdJdP/uMp
-	 bqugytxvVXzoSoZXavNpUlQ+qq8ErUCWAzrvaciJiDGaLeVIrLSYItlcjIdJPU3jJE
-	 ONfmIFkcT9vcUcW6KwMII2SmkXFS37KEMcAWBIMozVXbxAFKGdtOOOdMxVNit9Fkqq
-	 NJRl9Sc3sUsVA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 5E9EEDD4EE5;
-	Thu, 21 Dec 2023 15:00:23 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A701955E4B;
+	Thu, 21 Dec 2023 15:02:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.162.254])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4SwttY6RLXzvSQw;
+	Thu, 21 Dec 2023 23:01:41 +0800 (CST)
+Received: from dggpeml500021.china.huawei.com (unknown [7.185.36.21])
+	by mail.maildlp.com (Postfix) with ESMTPS id 8FFA118001D;
+	Thu, 21 Dec 2023 23:02:37 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by dggpeml500021.china.huawei.com
+ (7.185.36.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 21 Dec
+ 2023 23:02:37 +0800
+From: Baokun Li <libaokun1@huawei.com>
+To: <linux-ext4@vger.kernel.org>
+CC: <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
+	<ritesh.list@gmail.com>, <linux-kernel@vger.kernel.org>,
+	<yi.zhang@huawei.com>, <yangerkun@huawei.com>, <yukuai3@huawei.com>,
+	<libaokun1@huawei.com>
+Subject: [PATCH v2 0/8] ext4: fix divide error in mb_update_avg_fragment_size()
+Date: Thu, 21 Dec 2023 23:05:50 +0800
+Message-ID: <20231221150558.2740823-1-libaokun1@huawei.com>
+X-Mailer: git-send-email 2.31.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -43,40 +47,35 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [net-next PATCH] net: phy: at803x: remove extra space after cast
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170317082338.5769.2881350995739706971.git-patchwork-notify@kernel.org>
-Date: Thu, 21 Dec 2023 15:00:23 +0000
-References: <20231217232739.27065-1-ansuelsmth@gmail.com>
-In-Reply-To: <20231217232739.27065-1-ansuelsmth@gmail.com>
-To: Christian Marangi <ansuelsmth@gmail.com>
-Cc: andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
- davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpeml500021.china.huawei.com (7.185.36.21)
 
-Hello:
+V1->V2:
+  Fixed some things pointed out by Jan Kara.
+  Fixed more cases where blocks could be allocated from corrupted groups.
 
-This patch was applied to netdev/net-next.git (main)
-by Paolo Abeni <pabeni@redhat.com>:
+[V1]: https://lore.kernel.org/all/20231218141814.1477338-1-libaokun1@huawei.com/
 
-On Mon, 18 Dec 2023 00:27:39 +0100 you wrote:
-> Remove extra space after cast as reported by checkpatch to keep code
-> clean.
-> 
-> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
-> ---
->  drivers/net/phy/at803x.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+Baokun Li (8):
+  ext4: fix double-free of blocks due to wrong extents moved_len
+  ext4: do not trim the group with corrupted block bitmap
+  ext4: regenerate buddy after block freeing failed if under fc replay
+  ext4: avoid bb_free and bb_fragments inconsistency in mb_free_blocks()
+  ext4: avoid dividing by 0 in mb_update_avg_fragment_size() when block
+    bitmap corrupt
+  ext4: avoid allocating blocks from corrupted group in
+    ext4_mb_try_best_found()
+  ext4: avoid allocating blocks from corrupted group in
+    ext4_mb_find_by_goal()
+  ext4: mark the group block bitmap as corrupted before reporting an
+    error
 
-Here is the summary with links:
-  - [net-next] net: phy: at803x: remove extra space after cast
-    https://git.kernel.org/netdev/net-next/c/fc9d7264ddc3
+ fs/ext4/mballoc.c     | 76 +++++++++++++++++++++++++++++--------------
+ fs/ext4/move_extent.c |  6 ++--
+ 2 files changed, 53 insertions(+), 29 deletions(-)
 
-You are awesome, thank you!
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.31.1
 
 
