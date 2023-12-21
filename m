@@ -1,86 +1,93 @@
-Return-Path: <linux-kernel+bounces-7757-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7759-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0458A81ACB4
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 03:43:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F374581ACBA
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 03:46:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B4EB9287C17
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 02:43:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B01DA287B34
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 02:46:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDC664685;
-	Thu, 21 Dec 2023 02:43:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B2194419;
+	Thu, 21 Dec 2023 02:45:55 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7D044416;
-	Thu, 21 Dec 2023 02:42:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gondor.apana.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-	by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-	id 1rG91K-00DGnB-B3; Thu, 21 Dec 2023 10:42:47 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Thu, 21 Dec 2023 10:42:57 +0800
-Date: Thu, 21 Dec 2023 10:42:57 +0800
-From: Herbert Xu <herbert@gondor.apana.org.au>
-To: syzbot <syzbot+8ffb0839a24e9c6bfa76@syzkaller.appspotmail.com>
-Cc: davem@davemloft.net, linux-crypto@vger.kernel.org,
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-	Edward Adam Davis <eadavis@qq.com>
-Subject: [PATCH] crypto: skcipher - Pass statesize for simple lskcipher
- instances
-Message-ID: <ZYOmMW9bwehnl+NT@gondor.apana.org.au>
-References: <000000000000d52e14060cc9c551@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B63A24696;
+	Thu, 21 Dec 2023 02:45:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: 1fa981e0a9ac4fb8b6eeedb8fe97a0db-20231221
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.33,REQID:0714505d-1e12-4565-826b-5a7d1ba633c9,IP:25,
+	URL:0,TC:0,Content:0,EDM:25,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTI
+	ON:release,TS:45
+X-CID-INFO: VERSION:1.1.33,REQID:0714505d-1e12-4565-826b-5a7d1ba633c9,IP:25,UR
+	L:0,TC:0,Content:0,EDM:25,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+	:release,TS:45
+X-CID-META: VersionHash:364b77b,CLOUDID:79b50082-8d4f-477b-89d2-1e3bdbef96d1,B
+	ulkID:231221104536RFASABPQ,BulkQuantity:0,Recheck:0,SF:72|19|44|66|24|102,
+	TC:nil,Content:0,EDM:5,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,
+	OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
+X-UUID: 1fa981e0a9ac4fb8b6eeedb8fe97a0db-20231221
+Received: from node4.com.cn [(39.156.73.12)] by mailgw
+	(envelope-from <liyouhong@kylinos.cn>)
+	(Generic MTA)
+	with ESMTP id 417191506; Thu, 21 Dec 2023 10:45:33 +0800
+Received: from node4.com.cn (localhost [127.0.0.1])
+	by node4.com.cn (NSMail) with SMTP id 9059416001CD7;
+	Thu, 21 Dec 2023 10:45:33 +0800 (CST)
+X-ns-mid: postfix-6583A6CD-18814229
+Received: from localhost.localdomain (unknown [172.20.185.164])
+	by node4.com.cn (NSMail) with ESMTPA id 5E8A016001CD7;
+	Thu, 21 Dec 2023 02:45:31 +0000 (UTC)
+From: YouHong Li <liyouhong@kylinos.cn>
+To: paulus@samba.org
+Cc: linux-ppp@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	davem@davemloft.net,
+	liyouhong <liyouhong@kylinos.cn>,
+	k2ci <kernel-bot@kylinos.cn>
+Subject: [PATCH] drivers/net/ppp/ppp_async.c: Fix spelling typo in comment
+Date: Thu, 21 Dec 2023 10:44:48 +0800
+Message-Id: <20231221024448.1317341-1-liyouhong@kylinos.cn>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <000000000000d52e14060cc9c551@google.com>
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Dec 18, 2023 at 06:43:27AM -0800, syzbot wrote:
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    17cb8a20bde6 Add linux-next specific files for 20231215
-> git tree:       linux-next
-> console+strace: https://syzkaller.appspot.com/x/log.txt?x=1129f3b6e80000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=ec104439b5dbc583
-> dashboard link: https://syzkaller.appspot.com/bug?extid=8ffb0839a24e9c6bfa76
-> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17d23c01e80000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14cfe021e80000
+From: liyouhong <liyouhong@kylinos.cn>
 
----8<---
-When ecb is used to wrap an lskcipher, the statesize isn't set
-correctly.  Fix this by making the simple instance creator set
-the statesize.
+Fix spelling typo in comment
 
-Reported-by: syzbot+8ffb0839a24e9c6bfa76@syzkaller.appspotmail.com
-Reported-by: Edward Adam Davis <eadavis@qq.com>
-Fixes: 662ea18d089b ("crypto: skcipher - Make use of internal state")
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Reported-by: k2ci <kernel-bot@kylinos.cn>
+Signed-off-by: liyouhong <liyouhong@kylinos.cn>
 
-diff --git a/crypto/lskcipher.c b/crypto/lskcipher.c
-index a06008e112f3..0b6dd8aa21f2 100644
---- a/crypto/lskcipher.c
-+++ b/crypto/lskcipher.c
-@@ -642,6 +642,7 @@ struct lskcipher_instance *lskcipher_alloc_instance_simple(
- 	inst->alg.co.min_keysize = cipher_alg->co.min_keysize;
- 	inst->alg.co.max_keysize = cipher_alg->co.max_keysize;
- 	inst->alg.co.ivsize = cipher_alg->co.base.cra_blocksize;
-+	inst->alg.co.statesize = cipher_alg->co.statesize;
- 
- 	/* Use struct crypto_lskcipher * by default, can be overridden */
- 	inst->alg.co.base.cra_ctxsize = sizeof(struct crypto_lskcipher *);
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+diff --git a/drivers/net/ppp/ppp_async.c b/drivers/net/ppp/ppp_async.c
+index fbaaa8c102a1..840da924708b 100644
+--- a/drivers/net/ppp/ppp_async.c
++++ b/drivers/net/ppp/ppp_async.c
+@@ -533,7 +533,7 @@ ppp_async_encode(struct asyncppp *ap)
+ 	proto =3D get_unaligned_be16(data);
+=20
+ 	/*
+-	 * LCP packets with code values between 1 (configure-reqest)
++	 * LCP packets with code values between 1 (configure-request)
+ 	 * and 7 (code-reject) must be sent as though no options
+ 	 * had been negotiated.
+ 	 */
+--=20
+2.34.1
+
 
