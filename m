@@ -1,124 +1,114 @@
-Return-Path: <linux-kernel+bounces-9152-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9151-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B745F81C1A2
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 00:12:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DFD3F81C1A0
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 00:11:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D954A1C24E18
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 23:12:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 19E291C24E21
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 23:11:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3FCA79475;
-	Thu, 21 Dec 2023 23:12:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5146F78E9F;
+	Thu, 21 Dec 2023 23:11:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=danm.net header.i=@danm.net header.b="cXXV+fkJ"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ZyBoOTbs"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mr85p00im-zteg06022001.me.com (mr85p00im-zteg06022001.me.com [17.58.23.193])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2794C77620
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 23:12:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=danm.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=danm.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=danm.net; s=sig1;
-	t=1703200347; bh=DCyDcGB+njyvZgduAOSYZ57kEuruZLX4DxL5rDhZZEc=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version;
-	b=cXXV+fkJVcexXshAtBA9kqoVzxZi82it4LAoVoRl4eliL18HhCFsbd8RyT/tzi1Ks
-	 m7aaW3XhS8S+TqeuoeNyJ7IcQTl1s4KDvYUu07QGPU/Z6Pem/dO33pLm7xZ35AtckL
-	 FcNdEAmrnYLHV8jJgahIucatEc0iQgtfQLGeipUJeL0KtQLPx1eUKBDE5G/DyNc3k0
-	 9dwLiRv2OwdHFU3jW3zQlhkrcX1agIKHQBMw4loHfRMDhWzIBy6kM8DZumG+tyBtqP
-	 dLuyeGgN5vb5Mb/+WL40zWSOBvIqMB24o1Rsx8uBodbrBJ1uYD+X2W2Fpc7oi8NNXZ
-	 A3hlQld2axaNw==
-Received: from hitch.danm.net (mr38p00im-dlb-asmtp-mailmevip.me.com [17.57.152.18])
-	by mr85p00im-zteg06022001.me.com (Postfix) with ESMTPSA id A7BD2800127;
-	Thu, 21 Dec 2023 23:12:26 +0000 (UTC)
-From: Dan Moulding <dan@danm.net>
-To: dan@danm.net
-Cc: Alex Henrie <alexhenrie24@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	David Ahern <dsahern@kernel.org>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [REGRESSION] net/ipv6/addrconf: Temporary addresses with short lifetimes generating when they shouldn't, causing applications to fail
-Date: Thu, 21 Dec 2023 16:10:57 -0700
-Message-ID: <20231221231115.12402-1-dan@danm.net>
-X-Mailer: git-send-email 2.41.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55AEF745E6
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 23:11:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--tanzirh.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-db4004a8aa9so1513443276.1
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 15:11:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1703200269; x=1703805069; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=+yOLP80MSa9iKNeNSW+2YmDpottMY5fEPpejkDDUSHQ=;
+        b=ZyBoOTbsw2ZOI1SOlOCfE1eZykTdoR2Vm90Os+2VU4Uj1Zntoekyh7r7RsxRninv/3
+         7U3eyIGffPVQIoF7N3QIyXL3Fe3bmgbNRruzkTn5rE6LF82SxOtXQ+Ij5QLl7ee7/mwn
+         xmaTBpliubJcAmBjxhjYj8SGBhiOqvf9RTqYTME4AEUCzKkEsidkw89AqCWXXhp2ClkV
+         CxYn865VJgKANC3d+OyZk5CZafBzJZR7GcTQNyheMUBDHVp7oZg3bSFgvviUR4ELKj8V
+         3oHoFwrCY9TqDFSd9QrYZlAH7oOudSm/OsEJEF1UJByBzo0DYsWtJK7B1hwLC0dWtWmL
+         j/nQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703200269; x=1703805069;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+yOLP80MSa9iKNeNSW+2YmDpottMY5fEPpejkDDUSHQ=;
+        b=qfFAUDE4KknXUEpl0yMzb+Gs+7UqW2DKI0e5s6ELzD7EXhqe3vSr3eQO7sO2vVIbmj
+         n8JWpiE7cWugGbYTrSUU/C6A4cuVzeHKIecX9jZEuEej7+ocm2fPbKTY7UNF0CEfEWWV
+         YDa4Fe8PKxNHoXD1leBFy3YN7BG97eafFF2jAy7US6l5xu2+9vzcgfp9xZ3Q8HmwGFts
+         0UNxwvE3VuwpbgfQZjy3cQOZ+W06X/4OXkMIdLzwK+2XLyl7lF0/yXkYXStjcGafjBct
+         sk9+hT1PDqRyo6BRuhO90hIV4mKtvzbUQRn9YNYEpyrw9aL44uDIy+7oXTPMYOPa8Gb7
+         0i9Q==
+X-Gm-Message-State: AOJu0Yw4ZlvaT4HY5DUmKLdao0qjY2GGp6Rk3HbwqIBrPzXlcfJPukvN
+	K4H6Lo1ZGTgyNYn3OXNJYRVSg5H8aIIU31l9qq8=
+X-Google-Smtp-Source: AGHT+IH6mmiklx10ZZqi3bnaIQdND8Xn32ZNvnrJuQf0gyxQ1P5XAiJO5gLEdmiM51ZMieviFKMDBGG/5HS6
+X-Received: from tanz.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:c4a])
+ (user=tanzirh job=sendgmr) by 2002:a05:6902:541:b0:dbd:716d:3102 with SMTP id
+ z1-20020a056902054100b00dbd716d3102mr13608ybs.0.1703200269346; Thu, 21 Dec
+ 2023 15:11:09 -0800 (PST)
+Date: Thu, 21 Dec 2023 23:11:01 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-ORIG-GUID: 2x4J6n-3fdC5FS1JBV_-vkus0m_RhcGg
-X-Proofpoint-GUID: 2x4J6n-3fdC5FS1JBV_-vkus0m_RhcGg
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-21_11,2023-12-21_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 malwarescore=0 spamscore=0
- phishscore=0 clxscore=1030 mlxlogscore=528 adultscore=0 suspectscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2308100000 definitions=main-2312210177
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAATGhGUC/x3MMQqAMAxA0auUzBZMVBCvIg6liZrBKg2IULy7x
+ fEP7xcwySoGkyuQ5VbTM9XAxkHcQ9rEK9cGaqlDIvTBjk1SRfEOzNkjD7GPjDRKB1VdWVZ9/uO 8vO8HFFOnUWEAAAA=
+X-Developer-Key: i=tanzirh@google.com; a=ed25519; pk=UeRjcUcv5W9AeLGEbAe2+0LptQpcY+o1Zg0LHHo7VN4=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1703200267; l=935;
+ i=tanzirh@google.com; s=20231204; h=from:subject:message-id;
+ bh=OFfC6lpIaC3E+xjFYayuCYFLYBCLF7zqmJeV59imeT4=; b=+3+zWFxZ1NzSTGoxze6B8DcKskn9MEQFJE4P9hc+slQVT5dQG/GGHTrNeRJ8g2IC+NEjkW7aQ
+ oQSi8QcoDq+Avax3TRqrT1zcNDo456c/GZ6hGPNGA/POyxZJBnEkgDZ
+X-Mailer: b4 0.12.4
+Message-ID: <20231221-asmgenericvaddr-v1-1-742b170c914e@google.com>
+Subject: [PATCH] mm/damon/vaddr: changed asm-generic/mman-common.h to linux/mman.h
+From: Tanzir Hasan <tanzirh@google.com>
+To: SeongJae Park <sj@kernel.org>, Andrew Morton <akpm@linux-foundation.org>
+Cc: damon@lists.linux.dev, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	Nick Desaulniers <nnn@google.com>, Al Viro <viro@zeniv.linux.org.uk>, 
+	Tanzir Hasan <tanzirh@google.com>
+Content-Type: text/plain; charset="utf-8"
 
-I started running v6.7-rc5 on a desktop and began having problems
-where Chromium would frequently fail to load pages and give an
-"ERR_NETWORK_CHANGED" message instead. I also noticed instability in
-avahi-daemon (it would stop resolving local names and/or consume 100%
-CPU). Eventually I discovered that what is happening is that new
-temporary IPv6 addresses for a ULA address are being generated once
-every second, with very short preferred lifetimes (and I had an
-interface with thousands of such temporary addresses). I also found
-that it seems to be triggered when one of the devices on the network
-sends a router advertisement with a prefix that has a preferred
-lifetime of 0 (presumably it's sending that because it wants to
-deprecate that prefix).
+asm-generic/mman-common.h can be replaced by linux/mman.h and the file
+will still build correctly. It is an asm-generic file which should be
+avoided if possible.
 
-I bisected it to commit 629df6701c8a ("net: ipv6/addrconf: clamp
-preferred_lft to the minimum required"). Upon reviewing that change, I
-see that it has changed when generation of temporary addresses will be
-allowed. I believe that change might have inadvertently caused the
-kernel to violate RFC 4941 and might need to be reverted.
+Suggested-by: Al Viro <viro@zeniv.linux.org.uk>
+Signed-off-by: Tanzir Hasan <tanzirh@google.com>
+---
+ mm/damon/vaddr.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-In particular RFC 4941 specifies that the preferred lifetime of a
-temporary address must not be greater than the preferred lifetime of
-the public address it is derived from. However, this change allows a
-temporary address to be generated with a preferred lifetime greater
-than the public address' preferred lifetime.
+diff --git a/mm/damon/vaddr.c b/mm/damon/vaddr.c
+index a4d1f63c5b23..1741e0751e01 100644
+--- a/mm/damon/vaddr.c
++++ b/mm/damon/vaddr.c
+@@ -7,9 +7,9 @@
+ 
+ #define pr_fmt(fmt) "damon-va: " fmt
+ 
+-#include <asm-generic/mman-common.h>
+ #include <linux/highmem.h>
+ #include <linux/hugetlb.h>
++#include <linux/mman.h>
+ #include <linux/mmu_notifier.h>
+ #include <linux/page_idle.h>
+ #include <linux/pagewalk.h>
 
-From RFC 4941:
+---
+base-commit: 9a6b294ab496650e9f270123730df37030911b55
+change-id: 20231221-asmgenericvaddr-1d5c4cd128e3
 
-    4.  When creating a temporary address, the lifetime values MUST be
-        derived from the corresponding prefix as follows:
+Best regards,
+-- 
+Tanzir Hasan <tanzirh@google.com>
 
-        *  Its Valid Lifetime is the lower of the Valid Lifetime of the
-           public address or TEMP_VALID_LIFETIME.
-
-        *  Its Preferred Lifetime is the lower of the Preferred Lifetime
-           of the public address or TEMP_PREFERRED_LIFETIME -
-           DESYNC_FACTOR.
-
-Previously temporary addresses would not be generated for an interface
-if the administratively configured preferred lifetime on that
-interface was too short. This change tries to avoid that, and allow
-generating temporary addresses even on interfaces with very short
-configured lifetimes, by simply increasing the preferred lifetime of
-the generated address. However, doing so runs afoul of the above
-requirement. It allows the preferred lifetime of the temporary address
-to be increased to a value that is larger than the public address'
-preferred lifetime. For example, in my case where the router
-advertisement causes the public address' preferred lifetime to be set
-to 0, the current code allows a temporary address to be generated with
-a preferred lifetime of (regen_advance + age + 1), which is obviously
-greater than 0. It also, in my case, leads to new temporary addresses
-with very short lifetimes being generated, about once every second,
-leading to the application-level issues I described above.
-
-Cheers,
-
--- Dan
 
