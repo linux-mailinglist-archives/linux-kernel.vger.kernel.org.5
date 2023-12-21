@@ -1,99 +1,82 @@
-Return-Path: <linux-kernel+bounces-8156-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8157-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3B2F81B2C5
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 10:43:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D9F5D81B2C7
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 10:43:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 027D31C22230
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 09:43:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7B3B31F25592
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 09:43:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8FF821344;
-	Thu, 21 Dec 2023 09:39:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64515225D6;
+	Thu, 21 Dec 2023 09:39:40 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from bg1.exmail.qq.com (bg1.exmail.qq.com [114.132.65.219])
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D2CC21A17
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 09:39:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shingroup.cn
-X-QQ-mid: bizesmtp90t1703151503t28eopg7
-Received: from HX01040022.powercore.com.cn ( [223.112.234.130])
-	by bizesmtp.qq.com (ESMTP) with 
-	id ; Thu, 21 Dec 2023 17:38:21 +0800 (CST)
-X-QQ-SSF: 01400000000000B0B000000A0000000
-X-QQ-FEAT: +ynUkgUhZJnjMoY4gOOx27e0bd5FjgOXH7xQMXerutlnj6SyN+ZyFlxFHokp/
-	b+Z/WaNSkU7Nawdh3Dx3auVcz3fXEJDb3Ye37GaLRPm3qU4yQYJA/9n4hPdYZR90NJXuS7n
-	Tjww8M7lMdbqKmxiCpOZ8/Ld+MbJSWhJ5X7M3xa5QsllHEw0pa/pNp4NUtrsxf7z8h/RHov
-	Mn6Jeg8p4gwdDZ3STEnXmp0PIBjB7OHPrXJkQMf7V8kg9wskjJAt6D67tKgUQVSerSvLGXK
-	yl7/Qsr/9FvWOZ2VoUDEOjyLXJX6EX8nv3ug+TjSrMtFgHvBpzzKJR/lfC4jY8gVrnDwuvq
-	+KfivO6I/Y3Nn/O4oR/Ji42Ah/jGu+ZRBU9RUz8d0+hsGgSG2qrtankkq3W0ZutS0RNTgEb
-	yiJTxRoJ/Gw=
-X-QQ-GoodBg: 2
-X-BIZMAIL-ID: 12415120465097514307
-From: "JiaLong.Yang" <jialong.yang@shingroup.cn>
-To: Will Deacon <will@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>
-Cc: shenghui.qu@shingroup.cn,
-	ke.zhao@shingroup.cn,
-	zhijie.ren@shingroup.cn,
-	"JiaLong.Yang" <jialong.yang@shingroup.cn>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] perf/arm_smmuv3: Omit the two judgements which done in framework
-Date: Thu, 21 Dec 2023 17:38:01 +0800
-Message-Id: <20231221093802.20612-1-jialong.yang@shingroup.cn>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4171C4BAAF;
+	Thu, 21 Dec 2023 09:39:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.105])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Swlkk5RrszZdLr;
+	Thu, 21 Dec 2023 17:39:26 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (unknown [7.185.36.74])
+	by mail.maildlp.com (Postfix) with ESMTPS id 602FC140257;
+	Thu, 21 Dec 2023 17:39:34 +0800 (CST)
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 21 Dec
+ 2023 17:39:34 +0800
+Subject: Re: [PATCH net-next] page_pool: Rename frag_users to frag_cnt
+To: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+CC: <netdev@vger.kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>, "David
+ S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub
+ Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	<linux-kernel@vger.kernel.org>
+References: <20231215073119.543560-1-ilias.apalodimas@linaro.org>
+ <6fddeb22-0906-e04c-3a84-7836bef9ffa2@huawei.com>
+ <CAC_iWjLiOdUqLmRHjZmwv9QBsBvYNV=zn30JrRbJa05qMyDBmw@mail.gmail.com>
+ <fb0f33d8-d09a-57fc-83b0-ccf152277355@huawei.com>
+ <CAC_iWjKH5ZCUwVWc2EisfjeLVF=ko967hqpdAc7G4FdsZCq7NA@mail.gmail.com>
+ <d853acde-7d69-c715-4207-fb77da1fb203@huawei.com>
+ <CAC_iWjL04RRFCU13yejUONvvY0dzYO1scAzNOC+auWpFDctzAA@mail.gmail.com>
+ <0dfffe91-2bd4-2151-cf71-ef29bf562767@huawei.com>
+ <CAC_iWjJBcXu=Zz=UtDj1vR-s5+jhFx8GYoYpqOi-bQX7S3XgbA@mail.gmail.com>
+From: Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <560730d0-937c-0497-e823-26c6cf72bff1@huawei.com>
+Date: Thu, 21 Dec 2023 17:39:33 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:shingroup.cn:qybglogicsvrgz:qybglogicsvrgz6a-1
+In-Reply-To: <CAC_iWjJBcXu=Zz=UtDj1vR-s5+jhFx8GYoYpqOi-bQX7S3XgbA@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
 
-'event->attr.type != event->pmu->type' has been done in
-core.c::perf_init_event() ,core.c::perf_event_modify_attr(), etc.
+On 2023/12/21 16:24, Ilias Apalodimas wrote:
+> 
+>> But if we use 'bias' as part of the name, isn't that more reasonable to set
+>> both of the bias number to BIAS_MAX initially, and decrement the runtime
+>> bais number every time the page is split to more fragments?
+> 
+> I think it's a matter of taste and how you interpret BIAS_MAX. In any
+> case, page_pool_drain_frag() will eventually set the *real* number of
+> references. But since the code can get complicated I like the idea of
+> making it identical to the mm subsystem tracking.
+> 
+> Can we just merge v2 and me or you can send the logic inversion
+> patches right after. They are orthogonal to the rename anyway
 
-This PMU is an uncore one. The core framework has disallowed
-uncore-task events. So the judgement to event->cpu < 0 is no mean.
-
-The two judgements have been done in kernel/events/core.c
-
-Signed-off-by: JiaLong.Yang <jialong.yang@shingroup.cn>
----
- drivers/perf/arm_smmuv3_pmu.c | 8 --------
- 1 file changed, 8 deletions(-)
-
-diff --git a/drivers/perf/arm_smmuv3_pmu.c b/drivers/perf/arm_smmuv3_pmu.c
-index 6303b82566f9..8ea4a3227165 100644
---- a/drivers/perf/arm_smmuv3_pmu.c
-+++ b/drivers/perf/arm_smmuv3_pmu.c
-@@ -401,19 +401,11 @@ static int smmu_pmu_event_init(struct perf_event *event)
- 	int group_num_events = 1;
- 	u16 event_id;
- 
--	if (event->attr.type != event->pmu->type)
--		return -ENOENT;
--
- 	if (hwc->sample_period) {
- 		dev_dbg(dev, "Sampling not supported\n");
- 		return -EOPNOTSUPP;
- 	}
- 
--	if (event->cpu < 0) {
--		dev_dbg(dev, "Per-task mode not supported\n");
--		return -EOPNOTSUPP;
--	}
--
- 	/* Verify specified event is supported on this PMU */
- 	event_id = get_event(event);
- 	if (event_id < SMMU_PMCG_ARCH_MAX_EVENTS &&
--- 
-2.25.1
-
+It is fine by me.
+And I can send the logic inversion patch if v2 is merged.
 
