@@ -1,121 +1,203 @@
-Return-Path: <linux-kernel+bounces-7737-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7732-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5457881AC72
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 02:58:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E2C981AC5D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 02:51:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 56B871C23411
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 01:58:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E27962878C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 01:51:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAD624683;
-	Thu, 21 Dec 2023 01:58:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1459B185D;
+	Thu, 21 Dec 2023 01:51:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="L+cBbBvy"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+Received: from mail-oa1-f44.google.com (mail-oa1-f44.google.com [209.85.160.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 646AE3D86;
-	Thu, 21 Dec 2023 01:58:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
-Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
-	by fd01.gateway.ufhost.com (Postfix) with ESMTP id 3DCDF7FFC;
-	Thu, 21 Dec 2023 09:58:32 +0800 (CST)
-Received: from EXMBX061.cuchost.com (172.16.6.61) by EXMBX166.cuchost.com
- (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 21 Dec
- 2023 09:58:32 +0800
-Received: from [192.168.125.131] (113.72.145.47) by EXMBX061.cuchost.com
- (172.16.6.61) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 21 Dec
- 2023 09:58:31 +0800
-Message-ID: <ec9f653d-7078-4efc-b1b6-bbd7a74a1c18@starfivetech.com>
-Date: Thu, 21 Dec 2023 09:50:10 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24B6315AE
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 01:51:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-oa1-f44.google.com with SMTP id 586e51a60fabf-1fab887fab8so194552fac.0
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 17:51:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1703123501; x=1703728301; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RAWSfxg1miex9VPUVo9Ilnw4CJ41/kT47/lxOaa6acg=;
+        b=L+cBbBvywJugQiUmbh8/I7h9oPeWCP2bcMsUfZC43646uita9Pzli9My9x5EyBRdXH
+         xHWkqMgbv3x4QHrZ2d7pNq1Op+woJDWTd17vmj3kDaM/m8um7jDoH2DYqoMxxDMynGm9
+         1AdQu7XoHiErFao9LGMYdkAug+L6Rf0m0dw7T0Dsv3KWOqv3dUQ/N7RhgbwVSyspLcmu
+         aCrLWHWfXHLDXNEDQVqOrcyazyVu3hiVmkMVGCYYMrl94OORHloKvUix6F2Xr2VPKmR7
+         CLXFgO2BYGzmN+y2m29wwakATlE5AcITIK0mCbXC1qOEj5IxOdogVVTsZAd6IhCWggXI
+         7oGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703123501; x=1703728301;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=RAWSfxg1miex9VPUVo9Ilnw4CJ41/kT47/lxOaa6acg=;
+        b=FL+FA0Hd843mz3ZScb6g0JCme3OZfbI0JoIyUR3iZN8Op82tUwcu7feEw0X38FpnYc
+         RVwftbrSEDT6ob8Hwb9zjguruMY0zl8TZ/QZwVnia32ZW5faD6Atld/kr3TOR1J7Nd88
+         CMm1y63crpLE8/rA50u6X5czDom+pwqt4klGgf0mBMh1mh/bJs5VbzJdW82tI1mzjrdr
+         5YG11VHbKKf9KigWONJyKQ6HwWOxoKehNXy4CGFP6IIIVqEfGMZcdY3wCwLbj+5v0yow
+         fB4s0fZUd5KYQo4zuSxT87VWrI5lgzPkcWfvddabN6lUSrRDqW4yu/QSS2iEa1m26Sjj
+         qehQ==
+X-Gm-Message-State: AOJu0YyipK+CoMajWkuCGRDHW7s1bkzEpj6YLAjSMxE75o+zWjTkJqQb
+	l077+jlB+boPQ+ZtYRRZrn2ZjR7QC0BB/AZJ+UAAWA==
+X-Google-Smtp-Source: AGHT+IGN8PP7Ek6OmvKkh+7+/vTCnhK7cnIN5E/W9H5dAyu3VY2JS7fSNFsVpuoOstd0OaOISNlEDGsV6vgYcUy4Mus=
+X-Received: by 2002:a05:6871:4d4:b0:203:4038:dfd5 with SMTP id
+ n20-20020a05687104d400b002034038dfd5mr782420oai.94.1703123500988; Wed, 20 Dec
+ 2023 17:51:40 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 2/3] clocksource: Add JH7110 timer driver
-To: Emil Renner Berthing <emil.renner.berthing@canonical.com>
-CC: Daniel Lezcano <daniel.lezcano@linaro.org>, Thomas Gleixner
-	<tglx@linutronix.de>, Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	<linux-riscv@lists.infradead.org>, <devicetree@vger.kernel.org>, Rob Herring
-	<robh+dt@kernel.org>, Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>, Paul Walmsley
-	<paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou
-	<aou@eecs.berkeley.edu>, Philipp Zabel <p.zabel@pengutronix.de>, Walker Chen
-	<walker.chen@starfivetech.com>, <linux-kernel@vger.kernel.org>, Conor Dooley
-	<conor@kernel.org>
-References: <20231219145402.7879-1-xingyu.wu@starfivetech.com>
- <20231219145402.7879-3-xingyu.wu@starfivetech.com>
- <CAJM55Z_X9b=TJt7343kQ68ndN1MvH-rFM9hyEZMJRvQnOk72Yg@mail.gmail.com>
-Content-Language: en-US
-From: Xingyu Wu <xingyu.wu@starfivetech.com>
-In-Reply-To: <CAJM55Z_X9b=TJt7343kQ68ndN1MvH-rFM9hyEZMJRvQnOk72Yg@mail.gmail.com>
+References: <20231220103428.61758-1-cuiyunhui@bytedance.com>
+ <594df6bc-0207-46f6-aa81-dcf1f3665917@ghiti.fr> <20231220-bash-booting-2dc46e8c41f7@spud>
+In-Reply-To: <20231220-bash-booting-2dc46e8c41f7@spud>
+From: yunhui cui <cuiyunhui@bytedance.com>
+Date: Thu, 21 Dec 2023 09:51:29 +0800
+Message-ID: <CAEEQ3w=_i6cDkt-j+xDZ1oanbScA9o8NpV-KU0s4-w=ZJ1U6cA@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH] riscv: put va_kernel_xip_pa_offset into CONFIG_XIP_KERNEL
+To: Conor Dooley <conor@kernel.org>
+Cc: Alexandre Ghiti <alex@ghiti.fr>, paul.walmsley@sifive.com, palmer@dabbelt.com, 
+	aou@eecs.berkeley.edu, ajones@ventanamicro.com, alexghiti@rivosinc.com, 
+	anup@brainfault.org, samitolvanen@google.com, rppt@kernel.org, 
+	panqinglin2020@iscas.ac.cn, linux-riscv@lists.infradead.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: EXCAS061.cuchost.com (172.16.6.21) To EXMBX061.cuchost.com
- (172.16.6.61)
-X-YovoleRuleAgent: yovoleflag
+Content-Transfer-Encoding: quoted-printable
 
-On 2023/12/20 21:59, Emil Renner Berthing wrote:
-> Xingyu Wu wrote:
->> Add timer driver for the StarFive JH7110 SoC and select it by
->> CONFIG_SOC_STARFIVE.
->>
->> This timer has four free-running and independent 32-bit counters.
->> Each channel(counter) can trigger an interrupt when timeout even
->> CPU is sleeping. So this timer is used as global timer and register
->> clockevent for each CPU core after riscv-timer registration on the
->> StarFive JH7110 SoC.
->>
->> Signed-off-by: Xingyu Wu <xingyu.wu@starfivetech.com>
->> ---
->>  MAINTAINERS                        |   7 +
->>  arch/riscv/Kconfig.socs            |   1 +
->>  drivers/clocksource/Kconfig        |   9 +
->>  drivers/clocksource/Makefile       |   1 +
->>  drivers/clocksource/timer-jh7110.c | 360 +++++++++++++++++++++++++++++
->>  include/linux/cpuhotplug.h         |   1 +
->>  6 files changed, 379 insertions(+)
->>  create mode 100644 drivers/clocksource/timer-jh7110.c
->>
->> diff --git a/MAINTAINERS b/MAINTAINERS
->> index 9104430e148e..fe0e803606a5 100644
->> --- a/MAINTAINERS
->> +++ b/MAINTAINERS
->> @@ -20617,6 +20617,13 @@ S:	Maintained
->>  F:	Documentation/devicetree/bindings/sound/starfive,jh7110-tdm.yaml
->>  F:	sound/soc/starfive/jh7110_tdm.c
->>
->> +STARFIVE JH7110 TIMER DRIVER
->> +M:	Samin Guo <samin.guo@starfivetech.com>
-> 
-> Last time I sent a mail to samin.guo@starfivetech.com it bounced. Was that just
-> a temporary error?
-> 
-> /Emil
+Hi Conor=EF=BC=8CAlex
 
-Oh, This email has been deactivated and I don't have his other personal email.
-I had dropped it in the driver but forget it here.
-Will fix.
+On Thu, Dec 21, 2023 at 6:35=E2=80=AFAM Conor Dooley <conor@kernel.org> wro=
+te:
+>
+> On Wed, Dec 20, 2023 at 10:14:59PM +0100, Alexandre Ghiti wrote:
+> > Hi Yunhui,
+> >
+> > On 20/12/2023 11:34, Yunhui Cui wrote:
+> > > opitmize the kernel_mapping_pa_to_va() and kernel_mapping_va_to_pa().
+> > >
+> > > Signed-off-by: Yunhui Cui <cuiyunhui@bytedance.com>
+> > > ---
+> > >   arch/riscv/include/asm/page.h | 33 ++++++++++++++++++++------------=
+-
+> > >   1 file changed, 20 insertions(+), 13 deletions(-)
+> > >
+> > > diff --git a/arch/riscv/include/asm/page.h b/arch/riscv/include/asm/p=
+age.h
+> > > index 5488ecc337b6..0d2b479d02cd 100644
+> > > --- a/arch/riscv/include/asm/page.h
+> > > +++ b/arch/riscv/include/asm/page.h
+> > > @@ -113,8 +113,8 @@ struct kernel_mapping {
+> > >     unsigned long va_pa_offset;
+> > >     /* Offset between kernel mapping virtual address and kernel load =
+address */
+> > >     unsigned long va_kernel_pa_offset;
+> > > -   unsigned long va_kernel_xip_pa_offset;
+> > >   #ifdef CONFIG_XIP_KERNEL
+> > > +   unsigned long va_kernel_xip_pa_offset;
+> > >     uintptr_t xiprom;
+> > >     uintptr_t xiprom_sz;
+> > >   #endif
+> > > @@ -134,12 +134,25 @@ extern phys_addr_t phys_ram_base;
+> > >   #else
+> > >   void *linear_mapping_pa_to_va(unsigned long x);
+> > >   #endif
+> > > -#define kernel_mapping_pa_to_va(y) ({                               =
+       \
+> > > -   unsigned long _y =3D (unsigned long)(y);                         =
+         \
+> > > -   (IS_ENABLED(CONFIG_XIP_KERNEL) && _y < phys_ram_base) ?          =
+       \
+> > > -           (void *)(_y + kernel_map.va_kernel_xip_pa_offset) :      =
+       \
+> > > -           (void *)(_y + kernel_map.va_kernel_pa_offset + XIP_OFFSET=
+);     \
+> > > -   })
+> > > +
+> > > +#ifdef CONFIG_XIP_KERNEL
+> > > +#define kernel_mapping_pa_to_va(y)                                  =
+               \
+> > > +   (((unsigned long)(y) < phys_ram_base) ?                          =
+               \
+> > > +           (void *)((unsigned long)(y) + kernel_map.va_kernel_xip_pa=
+_offset) :     \
+> > > +           (void *)((unsigned long)(y) + kernel_map.va_kernel_pa_off=
+set + XIP_OFFSET))
+> > > +
+> > > +#define kernel_mapping_va_to_pa(y)                                  =
+       \
+> > > +   (((unsigned long)(y) < kernel_map.virt_addr + XIP_OFFSET) ?      =
+       \
+> > > +           ((unsigned long)(y) - kernel_map.va_kernel_xip_pa_offset)=
+ :     \
+> > > +           ((unsigned long)(y) - kernel_map.va_kernel_pa_offset - XI=
+P_OFFSET))
+> > > +#else
+> > > +#define kernel_mapping_pa_to_va(y)                                  =
+       \
+> > > +   ((void *)((unsigned long)(y) + kernel_map.va_kernel_pa_offset + X=
+IP_OFFSET))
+> > > +
+> > > +#define kernel_mapping_va_to_pa(y)                                  =
+       \
+> > > +   ((unsigned long)(y) - kernel_map.va_kernel_pa_offset - XIP_OFFSET=
+)
+> > > +#endif
+> > > +
+> > >   #define __pa_to_va_nodebug(x)             linear_mapping_pa_to_va(x=
+)
+> > >   #ifndef CONFIG_DEBUG_VIRTUAL
+> > > @@ -147,12 +160,6 @@ void *linear_mapping_pa_to_va(unsigned long x);
+> > >   #else
+> > >   phys_addr_t linear_mapping_va_to_pa(unsigned long x);
+> > >   #endif
+> > > -#define kernel_mapping_va_to_pa(y) ({                               =
+               \
+> > > -   unsigned long _y =3D (unsigned long)(y);                         =
+         \
+> > > -   (IS_ENABLED(CONFIG_XIP_KERNEL) && _y < kernel_map.virt_addr + XIP=
+_OFFSET) ? \
+> > > -           (_y - kernel_map.va_kernel_xip_pa_offset) :              =
+       \
+> > > -           (_y - kernel_map.va_kernel_pa_offset - XIP_OFFSET);      =
+       \
+> > > -   })
+> > >   #define __va_to_pa_nodebug(x)     ({                               =
+               \
+> > >     unsigned long _x =3D x;                                          =
+         \
+> >
+> >
+> > Not sure using #ifdef optimizes anything since the compiler should do t=
+he
+> > same with the IS_ENABLED(CONFIG_XIP_KERNEL) and it does not really impr=
+ove
+> > the readability of this file which is already overloaded with #ifdef, s=
+o I
+> > don't think this change is needed.
+>
+> I would say that we explicitly do not want to move things that are
+> guarded by IS_ENABLED() to ifdeffery. In fact, we should move things in
+> the other direction if possible, especially for stuff like XIP_KERNEL
+> that nobody ever build tests.
+
+The point of this patch is that logically, like xiprom and xiprom_sz,
+stuct kernel_mapping.va_kernel_xip_pa_offset should be included in
+CONFIG_XIP_KERNEL.
+
+I believe we can agree on this, right?
 
 Thanks,
-Xingyu Wu
-
-> 
->> +M:	Xingyu Wu <xingyu.wu@starfivetech.com>
->> +S:	Supported
->> +F:	Documentation/devicetree/bindings/timer/starfive,jh7110-timer.yaml
->> +F:	drivers/clocksource/timer-jh7110.c
->> +
->>  STARFIVE JH71X0 CLOCK DRIVERS
->>  M:	Emil Renner Berthing <kernel@esmil.dk>
->>  M:	Hal Feng <hal.feng@starfivetech.com>
-
+Yunhui
 
