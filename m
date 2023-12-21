@@ -1,127 +1,135 @@
-Return-Path: <linux-kernel+bounces-9097-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9098-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92B0C81C06A
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 22:45:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B2FCD81C06C
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 22:46:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4D3F228630C
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 21:45:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6897F1F25E36
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 21:46:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94A4F7763B;
-	Thu, 21 Dec 2023 21:44:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D70C17764D;
+	Thu, 21 Dec 2023 21:45:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="ZDd7CR/Q"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ADBE342C"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-io1-f52.google.com (mail-io1-f52.google.com [209.85.166.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2758F768EF
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 21:44:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-io1-f52.google.com with SMTP id ca18e2360f4ac-7ba97708c38so5200439f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 13:44:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1703195093; x=1703799893; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=LnneZFzTlHoKpJav6pEJp8aS2hixrEs69ZIqivt6hIA=;
-        b=ZDd7CR/QKngp8eIJy37FgFsozuboDa7s0JJ++M+9i4AWIoDeAOobCa7GjEgWta+5BY
-         bLViSAxwci49FDwKW2P+LAOPPYh7AYg6TZ/5DWyhvd1o89ZZWSiZGWQf2fRGxkc4MjV0
-         +9WxUfz0DmPX8eaXO8i8rUgzHE8+irtETEWsE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703195093; x=1703799893;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=LnneZFzTlHoKpJav6pEJp8aS2hixrEs69ZIqivt6hIA=;
-        b=lOq2KBlYEtSdoWGDM9lxwO4YbHiU1yLz0B5NTu89+hPEPZbAJvR4AIJEv/QHO0TKEe
-         cNNkGo4ViBxdpzLbRsTwZ1dksi7+xqCedIkWZx3u09oqYpg7Ti0LSnZobJ+ZTXOBSk6e
-         4akberKkkXyvwwM/htf/CeXjQZvErUnI0F+teeexfcSLYc74adNPjH6syKsNRcppF49s
-         uZkYYkqFmZCJlwUmOpMDmNvW2Att7yqUmjgOKhO8A+G5XJASxfJokBq0mEiIQqHZ/efx
-         Rb/RJpI0/rj9VqHRlhi8/ZTXimt5+H9zZY/e7wCpWh3el/+XoGVvdgPLFfwlxM4DaBD0
-         OYnw==
-X-Gm-Message-State: AOJu0YycobR8B690D9CNqK2nXoaWF7TryI/spNEXbB1i1KJx5PTlz/ek
-	NIbsBdQnvbcYP/oHB+Wvi9hfBVcbnyphgA==
-X-Google-Smtp-Source: AGHT+IEYgGoYkLnYECtboI3j/v5GUOG7Gg8Lu3bCOZrY6xy2jYmBgojj3Q7otHob1Gx4HWvSA2oBMg==
-X-Received: by 2002:a05:6e02:174c:b0:35f:b559:c2c7 with SMTP id y12-20020a056e02174c00b0035fb559c2c7mr653248ill.3.1703195093260;
-        Thu, 21 Dec 2023 13:44:53 -0800 (PST)
-Received: from [192.168.1.128] ([38.175.170.29])
-        by smtp.gmail.com with ESMTPSA id a8-20020a92d108000000b0035d58d00b7bsm713639ilb.56.2023.12.21.13.44.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Dec 2023 13:44:52 -0800 (PST)
-Message-ID: <f38374bd-bb1f-451e-9d34-9c38029ffd15@linuxfoundation.org>
-Date: Thu, 21 Dec 2023 14:44:52 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2024F7763F;
+	Thu, 21 Dec 2023 21:45:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B07CC433C7;
+	Thu, 21 Dec 2023 21:45:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703195154;
+	bh=83bBQ6XdYV+b245TrPV5X70W705tvEUmPr+27VTkDWs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ADBE342CEuehovJUfEtzqzj2OyhTetXi14tPpYxDO7AM4igyIOHb/nWI1Awj8kXnf
+	 RbRsHBS0HBFrXWBG4KSmId++/nhUkEecE0B/2iGFVCvHr/bThsC0LVmX9F2Rq2Lo0A
+	 R8qYWqdHH/a0raPrMw5Z/G4W2SS9zOGuYzbvbxpBa/wgLh9lyR6ZelCDgb5SAKnfNP
+	 riEaGwoEoQbXleP/NdapGbXap4qjV0BV7UfDepGKXxsgKmRpYOesBTS43SF99Ll/JC
+	 5wmoXCnfaTab4MPo44Gd3OJjvZv838G4WZE9/7c9GsNKoZjfIWtO3fZ22gPppV72z3
+	 mQDuCUQqRlPTQ==
+Date: Thu, 21 Dec 2023 21:45:49 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc: lgirdwood@gmail.com,
+	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
+	linux-pwm@vger.kernel.org, linux-amlogic@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Dmitry Rokosov <ddrokosov@sberdevices.ru>
+Subject: Re: [RFC PATCH v1] regulator: pwm-regulator: Fix continuous
+ get_voltage for disabled PWM
+Message-ID: <0c99b575-5cf2-4bd6-8cfd-af19f5fd58da@sirena.org.uk>
+References: <20231221211222.1380658-1-martin.blumenstingl@googlemail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] selftests: uevent: use shared makefile library
-Content-Language: en-US
-To: Antonio Terceiro <antonio.terceiro@linaro.org>,
- Shuah Khan <shuah@kernel.org>
-Cc: linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
- Shuah Khan <skhan@linuxfoundation.org>
-References: <20231221204908.341677-2-antonio.terceiro@linaro.org>
-From: Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <20231221204908.341677-2-antonio.terceiro@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="3vE+9f8hy4pxOJqe"
+Content-Disposition: inline
+In-Reply-To: <20231221211222.1380658-1-martin.blumenstingl@googlemail.com>
+X-Cookie: Results are not typical.
 
-On 12/21/23 13:49, Antonio Terceiro wrote:
-> This makes the uevent selftests build not write to the source tree
-> unconditionally, as that breaks out of tree builds when the source tree
-> is read-only. It also avoids leaving a git repository in a dirty state
-> after a build.
-> 
 
-Why can't you do that using make O= directive.
+--3vE+9f8hy4pxOJqe
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> v2: drop spurious extra SPDX-License-Identifier
-> 
-> Signed-off-by: Antonio Terceiro <antonio.terceiro@linaro.org>
-> ---
->   tools/testing/selftests/uevent/Makefile | 15 +++------------
->   1 file changed, 3 insertions(+), 12 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/uevent/Makefile b/tools/testing/selftests/uevent/Makefile
-> index f7baa9aa2932..872969f42694 100644
-> --- a/tools/testing/selftests/uevent/Makefile
-> +++ b/tools/testing/selftests/uevent/Makefile
-> @@ -1,17 +1,8 @@
->   # SPDX-License-Identifier: GPL-2.0
->   all:
->   
-> -include ../lib.mk
-> -
-> -.PHONY: all clean
-> -
-> -BINARIES := uevent_filtering
-> -CFLAGS += -Wl,-no-as-needed -Wall
-> +CFLAGS += -Wl,-no-as-needed -Wall $(KHDR_INCLUDES)
->   
-> -uevent_filtering: uevent_filtering.c ../kselftest.h ../kselftest_harness.h
-> -	$(CC) $(CFLAGS) $< -o $@
-> +TEST_GEN_PROGS = uevent_filtering
->   
-> -TEST_PROGS += $(BINARIES)
-> -EXTRA_CLEAN := $(BINARIES)
-> -
-> -all: $(BINARIES)
-> +include ../lib.mk
+On Thu, Dec 21, 2023 at 10:12:22PM +0100, Martin Blumenstingl wrote:
 
-This change doesn't get the intended result of not writing to
-source tree. Binaries will still be written to the source
-tree unless O= is specified.
+> It turns out that at least some bootloader versions are keeping the PWM
+> output disabled. This is not a problem due to the specific design of the
+> regulator: when the PWM output is disabled the output pin is pulled LOW,
+> effectively achieving a 0% duty cycle (which in return means that VDDEE
+> voltage is at 1140mV).
 
-thanks,
--- Shuah
+Hrm.  Perhaps the regulator should figure out that it's on with a
+minimum voltage of 1.14V in this case - AIUI that broadly corresponds to
+your change except for the fact that it doesn't recognise that there's
+actually an output in this case since it assumes that disabling the PWM
+disables the output which isn't the case with this hardware.  We'd need
+to know more about the PWM in that case though I think.
 
+> The problem comes when the pwm-regulator driver tries to initialize the
+> PWM output. To do so it reads the current state from the hardware, which
+> is:
+>   period: 3666ns
+>   duty cycle: 3333ns (= ~91%)
+>   enabled: false
+> Then those values are translated using the continuous voltage range to
+> 860mV.
+
+> Later, when the regulator is being enabled (either by the regulator core
+> due to the always-on flag or first consumer - in this case the lima
+> driver for the Mali-450 GPU) the pwm-regulator driver tries to keep the
+> voltage (at 860mV) and just enable the PWM output. This is when things
+> start to go wrong as the typical voltage used for VDDEE is 1100mV.
+
+So, the constraints say that the 860mV voltage is within range.  Where
+does the requirement for 1.1V come from in this situation?  Is it just
+that lima hasn't started yet and requires the 1.1V for hardware init
+(and presumably power on) even if it can use a lower voltage at runtime?
+
+> @@ -157,7 +157,12 @@ static int pwm_regulator_get_voltage(struct regulator_dev *rdev)
+
+> -       voltage = pwm_get_relative_duty_cycle(&pstate, duty_unit);
+> +       if (pstate.enabled)
+> +               voltage = pwm_get_relative_duty_cycle(&pstate, duty_unit);
+> +       else if (max_uV_duty < min_uV_duty)
+> +               voltage = max_uV_duty;
+> +       else
+> +               voltage = min_uV_duty;
+
+AFAICT this means that enabling the PWM changes the voltage read back
+which isn't what we expect (other than a change from 0 to target) and is
+likely to cause issues.  get_voltage() should not change after an
+enable(), and indeed I'm unclear how this change works?  I'd expect a
+change in the init_state() function, possibly one that programs the PWM
+to reflect the actual hardware state but I'm not 100% confident on that
+without digging into the PWM API more.
+
+--3vE+9f8hy4pxOJqe
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmWEsgwACgkQJNaLcl1U
+h9Azcwf/YiAYc+dIL60gpDG2EdW6ZdJE1MooApraQXp3hekHxQgjfTpijmrwPwz0
+u9iWtTxs3pyDB8AwLsQkblCCyGIc667VsSltlM1HJPyRqnWJpJU3ntfkyKrElHAO
+zZwIFxr3etFy5hpwsgGr387RY5XivXOPI8bXE4WBboQYjHw76XOfGIwZdcQOtVil
++67CxcqImFxvbu8qwwJIHvwt+Dzgn0xdwg6Gl5hazuzO7ponnuQKXfTvfcSzpfLy
+C1jIjwa1j1piPynPTyCAueOP+1zPe2+7UeV8y0m9mqc1y8mejMLFNbvU5+hLDj8V
+axE2b+894gMAtr7oHYyIb6urVYKk3w==
+=yfVG
+-----END PGP SIGNATURE-----
+
+--3vE+9f8hy4pxOJqe--
 
