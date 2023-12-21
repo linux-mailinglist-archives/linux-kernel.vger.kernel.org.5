@@ -1,162 +1,117 @@
-Return-Path: <linux-kernel+bounces-8535-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8537-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14BC281B917
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 15:02:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3381881B91B
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 15:02:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 307921C25ACD
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 14:01:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E1938285B73
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 14:02:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE31A7691B;
-	Thu, 21 Dec 2023 13:51:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="F3oIk2pK"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C8A378E62;
+	Thu, 21 Dec 2023 13:53:22 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6621E745DA;
-	Thu, 21 Dec 2023 13:51:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703166695; x=1734702695;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=MW/VQMh0lV18jKfLyDKMM1MKJVVzFTeS8LzjzUBd4Mo=;
-  b=F3oIk2pK9K+aty22CTcVX2VDLZtQ804YcVsu0zeX0KXeF6QqdtlohILk
-   k3sHJ6IIyKlrYls8ADagkA8uYEu8lOBqe5vGapIrAYMCx+OIqlgRzPZ9j
-   OKDJIOuNZ8IrTpICUVGCDPJAThG7eSSoRmdBwbfhWkulvCLOPP8mh9Omg
-   n5DfuM/y4/+X+UOA1QUO4m2ZJ8m5fyCzztCxYBFj00nojRGs4ySugouEC
-   l/q7gz2hqgd1FJ/4BdVmWP+NtVt3U1AmwAJ0fQX4R8X7QDaNtwswNKR+X
-   l4xXThjfpXO8NIee6tuiWQ/kMV2sIvwJ9BVXE73N3AL54JPXSI4QtYZdQ
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10930"; a="399804414"
-X-IronPort-AV: E=Sophos;i="6.04,293,1695711600"; 
-   d="scan'208";a="399804414"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Dec 2023 05:51:18 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10930"; a="920329264"
-X-IronPort-AV: E=Sophos;i="6.04,293,1695711600"; 
-   d="scan'208";a="920329264"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga001.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Dec 2023 05:51:15 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@intel.com>)
-	id 1rGJSC-00000007rfr-0jfj;
-	Thu, 21 Dec 2023 15:51:12 +0200
-Date: Thu, 21 Dec 2023 15:51:11 +0200
-From: Andy Shevchenko <andriy.shevchenko@intel.com>
-To: Mark Hasemeyer <markhas@chromium.org>
-Cc: LKML <linux-kernel@vger.kernel.org>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Tzung-Bi Shih <tzungbi@kernel.org>,
-	Raul Rangel <rrangel@chromium.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Rob Herring <robh@kernel.org>, Sudeep Holla <sudeep.holla@arm.com>,
-	Mika Westerberg <mika.westerberg@linux.intel.com>,
-	Wolfram Sang <wsa@kernel.org>, linux-acpi@vger.kernel.org,
-	linux-i2c@vger.kernel.org
-Subject: Re: [PATCH v2 02/22] i2c: acpi: Modify i2c_acpi_get_irq() to use
- resource
-Message-ID: <ZYRCz-FiG_w71qhB@smile.fi.intel.com>
-References: <20231220235459.2965548-1-markhas@chromium.org>
- <20231220165423.v2.2.Ib65096357993ff602e7dd0000dd59a36571c48d8@changeid>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 671FA7765B;
+	Thu, 21 Dec 2023 13:53:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=I-love.SAKURA.ne.jp
+Received: from fsav414.sakura.ne.jp (fsav414.sakura.ne.jp [133.242.250.113])
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 3BLDqPBm014091;
+	Thu, 21 Dec 2023 22:52:25 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav414.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav414.sakura.ne.jp);
+ Thu, 21 Dec 2023 22:52:25 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav414.sakura.ne.jp)
+Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+	(authenticated bits=0)
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 3BLDqONe014083
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+	Thu, 21 Dec 2023 22:52:25 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Message-ID: <f2fefbfd-0ec9-4d4a-b065-bf68ad8e1641@I-love.SAKURA.ne.jp>
+Date: Thu, 21 Dec 2023 22:52:20 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231220165423.v2.2.Ib65096357993ff602e7dd0000dd59a36571c48d8@changeid>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+User-Agent: Mozilla Thunderbird
+Subject: Re: [syzbot] [fs?] INFO: trying to register non-static key in
+ debugfs_file_get
+Content-Language: en-US
+To: syzbot <syzbot+fb20af23d0671a82c9a2@syzkaller.appspotmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Johannes Berg <johannes.berg@intel.com>,
+        syzkaller-bugs@googlegroups.com
+References: <000000000000fc306f060d052b5f@google.com>
+Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        rafael@kernel.org
+From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+In-Reply-To: <000000000000fc306f060d052b5f@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Dec 20, 2023 at 04:54:16PM -0700, Mark Hasemeyer wrote:
-> The i2c_acpi_irq_context structure provides redundant information that
-> can be provided with struct resource.
-> 
-> Refactor i2c_acpi_get_irq() to use struct resource instead of struct
-> i2c_acpi_irq_context.
+#syz fix: Revert "debugfs: annotate debugfs handlers vs. removal with lockdep"
 
-Suggested-by?
+By the way, use of cmpxchg() implies that this path might run in parallel?
+If yes, I think you need to finish lockdep_init_map() before cmpxchg(), or
+concurrently running threads might reach lock_map_acquire_read() before
+lockdep_init_map() completes...
 
-...
+        d_fsd = READ_ONCE(dentry->d_fsdata);
+        if (!((unsigned long)d_fsd & DEBUGFS_FSDATA_IS_REAL_FOPS_BIT)) {
+                fsd = d_fsd;
+        } else {
+                fsd = kmalloc(sizeof(*fsd), GFP_KERNEL);
+                if (!fsd)
+                        return -ENOMEM;
 
->  static int i2c_acpi_add_irq_resource(struct acpi_resource *ares, void *data)
->  {
-> -	struct i2c_acpi_irq_context *irq_ctx = data;
-> -	struct resource r;
-> +	struct resource *r = data;
+                fsd->real_fops = (void *)((unsigned long)d_fsd &
+                                        ~DEBUGFS_FSDATA_IS_REAL_FOPS_BIT);
+                refcount_set(&fsd->active_users, 1);
+                init_completion(&fsd->active_users_drained);
+                if (cmpxchg(&dentry->d_fsdata, d_fsd, fsd) != d_fsd) {
+                        kfree(fsd);
+                        fsd = READ_ONCE(dentry->d_fsdata);
+                }
++#ifdef CONFIG_LOCKDEP
++               fsd->lock_name = kasprintf(GFP_KERNEL, "debugfs:%pd", dentry);
++               lockdep_register_key(&fsd->key);
++               lockdep_init_map(&fsd->lockdep_map, fsd->lock_name ?: "debugfs",
++                                &fsd->key, 0);
++#endif
+        }
 
-> -	if (irq_ctx->irq > 0)
-> +	if (r->start > 0)
->  		return 1;
+        /*
+         * In case of a successful cmpxchg() above, this check is
+         * strictly necessary and must follow it, see the comment in
+         * __debugfs_remove_file().
+         * OTOH, if the cmpxchg() hasn't been executed or wasn't
+         * successful, this serves the purpose of not starving
+         * removers.
+         */
+        if (d_unlinked(dentry))
+                return -EIO;
 
-Checking flags is more robust.
+        if (!refcount_inc_not_zero(&fsd->active_users))
+                return -EIO;
 
-	if (r->flags)
-		return 1;
++       lock_map_acquire_read(&fsd->lockdep_map);
 
-> -	if (!acpi_dev_resource_interrupt(ares, 0, &r))
-> +	if (!acpi_dev_resource_interrupt(ares, 0, r))
->  		return 1;
->  
-> -	irq_ctx->irq = i2c_dev_irq_from_resources(&r, 1);
-> -	irq_ctx->wake_capable = r.flags & IORESOURCE_IRQ_WAKECAPABLE;
-> +	i2c_dev_irq_from_resources(r, 1);
->  
->  	return 1; /* No need to add resource to the list */
->  }
 
-...
-
-> +	if (IS_ERR_OR_NULL(r))
-> +		return -EINVAL;
-
-Hmm... Do we expect this to be an error pointer in some cases?
-
-...
-
-> +	ret = acpi_dev_get_gpio_irq_resource(adev, NULL, 0, r);
-> +	if (!ret)
-> +		return r->start;
->  
-> -	return irq_ctx.irq;
-> +	return ret;
-
-What's wrong with the standard pattern?
-
-	if (ret)
-		return ret;
-	...
-	return ...;
-
-...
-
-> +			struct resource r = {0};
-
-'0' is redundant.
-
-...
-
-> +			irq = i2c_acpi_get_irq(client, &r);
-> +			if (irq > 0 && r.flags & IORESOURCE_IRQ_WAKECAPABLE)
-
-Why checking just flags is not enough?
-
->  				client->flags |= I2C_CLIENT_WAKE;
-
--- 
-With Best Regards,
-Andy Shevchenko
-
+On 2023/12/21 22:35, syzbot wrote:
+> HEAD commit:    b10a3ccaf6e3 Merge tag 'loongarch-fixes-6.7-2' of git://gi..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=1278f06ce80000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=70dcde26e6b912e5
+> dashboard link: https://syzkaller.appspot.com/bug?extid=fb20af23d0671a82c9a2
+> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
 
 
