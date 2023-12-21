@@ -1,152 +1,103 @@
-Return-Path: <linux-kernel+bounces-8946-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8947-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BE3C81BE68
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 19:43:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CA7F81BE6B
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 19:45:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 74E561C24280
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 18:43:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6DA721C247EE
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 18:45:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96CF56519E;
-	Thu, 21 Dec 2023 18:43:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8A4164ABD;
+	Thu, 21 Dec 2023 18:44:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="22lf7zBK"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dTlMHxwG"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81CD464A80
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 18:43:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-40d05ebe642so13664785e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 10:43:24 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B69655B1ED;
+	Thu, 21 Dec 2023 18:44:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-40b5155e154so13615005e9.3;
+        Thu, 21 Dec 2023 10:44:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1703184202; x=1703789002; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=caPc62PO2k3hY6zqjKKh6pA90RRGF5zHw9ThpEEdfos=;
-        b=22lf7zBK7u4qE+hMxNups1XvYOc6P1DLx7h1WSzRsI+HOxOdPlMYCsTBgAO/vnNalz
-         uKT3/D8tLF5Hu9VhQzkomsLBM6Oh52eP72sqdJm/qKX2O0FRmtrun/tkTFcmN2GLhLhv
-         iH87I9frC6iwns0XR/lWHPkB6s9uc5vQO4RykyPQCQna+A7JpMeWxNZwg3Avy6xXrI+0
-         XEUZ/53WU3TvrJcWPbkGz63Ae2LT6iy/OQVj/MnTJzECi5oooJpd3OCme++o3JHlQoZr
-         44MaybPKgRJWvMJOg8TQcdr3dohy/nmII43oHSHJm+2iHWg99dKjp0F+IPdmzwUFYZ/W
-         bUvQ==
+        d=gmail.com; s=20230601; t=1703184294; x=1703789094; darn=vger.kernel.org;
+        h=content-transfer-encoding:to:subject:from:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=ntx7s0uRV0mp2r8zWsvNB9qnCJ5QsvZ3Jpv2yv8Rzbw=;
+        b=dTlMHxwGSNjMVPZVkfkVEwtfKPW7p+xNSz20Awi4FOBl0qbeda0CK2J/tmlRA6mmAp
+         VFKnCBlBV15fXYmU32ralnO1+VbElH8yotEc+aB1UJxEmMpdJq/oQLbpxIP1+c22z35F
+         7VBmtUXy46nFEfq/MbbenS8aZDMxrrfyrXCOU7VDA3rF+6c01cC2PwztJH/I5lT3mQMx
+         /qF1gMn0dMJ8u2KDkw08sPAgUBTDov8khKacz4wKTd+PqRV8zY0/hkdZ4hdimYU8anv1
+         Yo8l4B2s/bTzBxcqE56AeaxvZfRoOBjemUq2si5DTwhW0XsHwM127D2cYNWek2WQn5Nk
+         odHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703184202; x=1703789002;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=caPc62PO2k3hY6zqjKKh6pA90RRGF5zHw9ThpEEdfos=;
-        b=j0Zp0uGdR8/cOSGwzBvTZkYRQwmUJmn3FYOQnBuomYWwUTvvSCurbkE8zgsLvs96u1
-         NDspQvZZdbQmE790OVXHms/KATNHcvi2Mt+xCSd1sPwfkNLhpx0dSPmbhNeCUl98oDaT
-         IZ7DymyuR3g4uJ6bgQouPYG+cZv0219fIL9wOWXwLSFxl5JIRvFqNxBX18nC1E53LFWe
-         hK6WJeWivkREWBe0rBoeg71I1aq1bHuHh+Z1WUHWA4eyYxtcWyloKdHgEB/SxFIsS1+D
-         1/CZdG/HhvN35v6CdQCKpsjjJxSoBSR3Bm5VWYPCHO1czEBaU6l18US4EhP4Y9Y781ZM
-         bbrA==
-X-Gm-Message-State: AOJu0Yx7Zf6zuwv5vBHe8bEOsUov8IIBDLIsGISXZXg94iRh+PxIKIq3
-	TnRgBsWcUpnRXawvDvVnyODsVKfMEjzitQ==
-X-Google-Smtp-Source: AGHT+IFbU5OLYMJJhjrDxQMIpLizL9R5CCWumfMpRONFOBqZt3EbyalrOJqABQxYouHoTeWtcDCtqA==
-X-Received: by 2002:a05:600c:190e:b0:40b:5e26:2379 with SMTP id j14-20020a05600c190e00b0040b5e262379mr78889wmq.42.1703184202724;
-        Thu, 21 Dec 2023 10:43:22 -0800 (PST)
-Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:7701:a2c3:cba4:74db])
-        by smtp.gmail.com with ESMTPSA id t20-20020a05600c199400b0040c42681fcesm4188059wmq.15.2023.12.21.10.43.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Dec 2023 10:43:22 -0800 (PST)
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-To: Linus Walleij <linus.walleij@linaro.org>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Kent Gibson <warthog618@gmail.com>
-Cc: linux-gpio@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: [PATCH 2/2] gpiolib: pin GPIO devices in place during descriptor lookup
-Date: Thu, 21 Dec 2023 19:43:16 +0100
-Message-Id: <20231221184316.24506-3-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20231221184316.24506-1-brgl@bgdev.pl>
-References: <20231221184316.24506-1-brgl@bgdev.pl>
+        d=1e100.net; s=20230601; t=1703184294; x=1703789094;
+        h=content-transfer-encoding:to:subject:from:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ntx7s0uRV0mp2r8zWsvNB9qnCJ5QsvZ3Jpv2yv8Rzbw=;
+        b=KTU9WGxMccnMLElAjOYtp2s8zvboh59Ks+Ch8BLAax4CpJZUtDlpyUQW0KxetUSnUd
+         vZSAjiKXQaelVCfS3j28YRNJTtIFkkXExXaC7H+FSADMJe0NCYI+0wgsll7STEk0psEJ
+         vvMh4GFszihhgoQ5rssu7nsXCet/llb3CnJIwqIgRuT0TkCkjaEJVZU5Rt7GV/RB5tNR
+         Z6lL7iqel5WVEVVY3/8h7ZIWH9eJEQrAdpZOeBvIHJ2DtQPZ4hOsDF9Ilz87eeP7/R95
+         xvLk5z+4bwXLbTCMx1gQZ/t8QM7i963arxbxKAh1gIEtGZuIqk/7XhROb8+3r+95OUgX
+         X54A==
+X-Gm-Message-State: AOJu0YyHCuHJO22p3Y/lzcsHHQV91Gxqre4w5NoAo/4sZH+QjAZQ0fex
+	ROcS46s8+mQhNkZG6MEaZH4=
+X-Google-Smtp-Source: AGHT+IEHfvTA00m83GwRhaHI0yXC1lou9gcvK7/JhPDyAgarVWZ1ehCvpTJA55yuV8gPBaeKKVCYeQ==
+X-Received: by 2002:a05:600c:1f07:b0:40c:314a:42e with SMTP id bd7-20020a05600c1f0700b0040c314a042emr81041wmb.246.1703184293889;
+        Thu, 21 Dec 2023 10:44:53 -0800 (PST)
+Received: from debian ([146.70.204.204])
+        by smtp.gmail.com with ESMTPSA id l4-20020a05600c1d0400b0040d3276ba19sm4212714wms.25.2023.12.21.10.44.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Dec 2023 10:44:53 -0800 (PST)
+Message-ID: <f4eff69d-3917-4c42-8c6b-d09597ac4437@gmail.com>
+Date: Thu, 21 Dec 2023 19:44:13 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From: Richard Gobert <richardbgobert@gmail.com>
+Subject: [PATCH net-next 0/3] net: gro: reduce extension header parsing
+ overhead
+To: davem@davemloft.net, dsahern@kernel.org, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com, shuah@kernel.org,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-
-There's time between when we locate the relevant descriptor during
-lookup and when we actually take the reference to its parent GPIO
-device where - if the GPIO device in question is removed - we'll end up
-with a dangling pointer to freed memory. Make sure devices cannot be
-removed until we hold a new reference to the device.
-
-Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
----
- drivers/gpio/gpiolib.c | 40 +++++++++++++++++++++++-----------------
- 1 file changed, 23 insertions(+), 17 deletions(-)
-
-diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
-index 1baeb6778ec6..8a15b8f6b50e 100644
---- a/drivers/gpio/gpiolib.c
-+++ b/drivers/gpio/gpiolib.c
-@@ -4147,27 +4147,33 @@ static struct gpio_desc *gpiod_find_and_request(struct device *consumer,
- 	struct gpio_desc *desc;
- 	int ret;
+This series attempts to reduce parsing overhead of IPv6 extension headers
+in GRO and GSO, by removing extension header specific code and enabling
+the frag0 fast path.
  
--	desc = gpiod_find_by_fwnode(fwnode, consumer, con_id, idx, &flags, &lookupflags);
--	if (gpiod_not_found(desc) && platform_lookup_allowed) {
-+	scoped_guard(rwsem_read, &gpio_devices_sem) {
-+		desc = gpiod_find_by_fwnode(fwnode, consumer, con_id, idx,
-+					    &flags, &lookupflags);
-+		if (gpiod_not_found(desc) && platform_lookup_allowed) {
-+			/*
-+			 * Either we are not using DT or ACPI, or their lookup
-+			 * did not return a result. In that case, use platform
-+			 * lookup as a fallback.
-+			 */
-+			dev_dbg(consumer,
-+				"using lookup tables for GPIO lookup\n");
-+			desc = gpiod_find(consumer, con_id, idx, &lookupflags);
-+		}
-+
-+		if (IS_ERR(desc)) {
-+			dev_dbg(consumer, "No GPIO consumer %s found\n",
-+				con_id);
-+			return desc;
-+		}
-+
- 		/*
--		 * Either we are not using DT or ACPI, or their lookup did not
--		 * return a result. In that case, use platform lookup as a
--		 * fallback.
-+		 * If a connection label was passed use that, else attempt to
-+		 * use the device name as label
- 		 */
--		dev_dbg(consumer, "using lookup tables for GPIO lookup\n");
--		desc = gpiod_find(consumer, con_id, idx, &lookupflags);
-+		ret = gpiod_request(desc, label);
- 	}
- 
--	if (IS_ERR(desc)) {
--		dev_dbg(consumer, "No GPIO consumer %s found\n", con_id);
--		return desc;
--	}
--
--	/*
--	 * If a connection label was passed use that, else attempt to use
--	 * the device name as label
--	 */
--	ret = gpiod_request(desc, label);
- 	if (ret) {
- 		if (!(ret == -EBUSY && flags & GPIOD_FLAGS_BIT_NONEXCLUSIVE))
- 			return ERR_PTR(ret);
+The following changes were made:
+- Specific unnecessary HBH conditionals were removed by adding HBH offload
+  to inet6_offloads
+- Added a utility function to support frag0 fast path in ipv6_gro_receive
+- Added self-test for IPv6 packets with extension headers in GRO
+
+Richard
+
+Richard Gobert (3):
+  net: gso: add HBH extension header offload support
+  net: gro: parse ipv6 ext headers without frag0 invalidation
+  selftests/net: fix GRO coalesce test and add ext header coalesce test
+
+ net/ipv6/exthdrs_offload.c        | 11 +++++
+ net/ipv6/ip6_offload.c            | 76 ++++++++++++++++++++----------
+ tools/testing/selftests/net/gro.c | 78 ++++++++++++++++++++++++++++---
+ 3 files changed, 134 insertions(+), 31 deletions(-)
+
 -- 
-2.40.1
+2.36.1
+
 
 
