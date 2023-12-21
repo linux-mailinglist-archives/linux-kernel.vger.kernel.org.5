@@ -1,607 +1,172 @@
-Return-Path: <linux-kernel+bounces-8759-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8760-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA89B81BBDE
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 17:22:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D4FD581BBE0
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 17:22:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 32A1B1F27A05
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 16:22:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F0E771C24ADC
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 16:22:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C102D59903;
-	Thu, 21 Dec 2023 16:21:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1F6755E7B;
+	Thu, 21 Dec 2023 16:22:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cadence.com header.i=@cadence.com header.b="W3H4y06l";
-	dkim=pass (1024-bit key) header.d=cadence.com header.i=@cadence.com header.b="V/L0rGm2"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="sF5pEYQz"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0a-0014ca01.pphosted.com (mx0b-0014ca01.pphosted.com [208.86.201.193])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF7C155E50;
-	Thu, 21 Dec 2023 16:21:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cadence.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cadence.com
-Received: from pps.filterd (m0042333.ppops.net [127.0.0.1])
-	by mx0b-0014ca01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BLFmVg7001276;
-	Thu, 21 Dec 2023 08:21:05 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-type; s=proofpoint; bh=SLuD+0xPLEmSLkrGoU4
-	lHLX3ZIaF1qD3LHHUTpUpBmA=; b=W3H4y06lc6c09iG9trHYO4Szc4sdMiTVa9m
-	jl/EPs+/GbHvU1svvinhjkckF59roLD6+grq07efMslZjfXwxlLcTRhH33haoGen
-	W4IvNe/7DKTP1bUXTVF0qgQGpJ1RgVG93A9OVvMhpdoPpkLFSz269Uw90G6XJqEF
-	iOPPkDV3kb4JS8mFZgeEw1JkFue8ESdNfupW7HVIAkoOUZRHEQAh/Fd4Xozy1iHL
-	4S9NtGcNQ74p9/oAXXbDOphUrE0Y/VGdBMJmNDFvThpTijPsYy6Pk5zb3zFvDdXz
-	A9nCDj8N9CzoaNOJ3JrT5rZPiDCQyAEFN8s//jn1TjF1H2WWLIw==
-Received: from nam02-sn1-obe.outbound.protection.outlook.com (mail-sn1nam02lp2040.outbound.protection.outlook.com [104.47.57.40])
-	by mx0b-0014ca01.pphosted.com (PPS) with ESMTPS id 3v18bydrtm-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 21 Dec 2023 08:21:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SLuD+0xPLEmSLkrGoU4lHLX3ZIaF1qD3LHHUTpUpBmA=;
- b=V/L0rGm2gDJ4REHKn9f15ZR+0nzqXO0BzRqywOKkzfrmJUkNMZBUgGOmh14hmiUKdm70CKPaCIQN+7QkF1qx+Zla5aYNnM5kwSZYUBDNEu21AXo7W1RTjnVOhH4kaBjhdPMSJZF37yuswV/QRvCZxEu8qIEAt/1M0dTAS7n5jm0=
-Received: from BN8PR12CA0030.namprd12.prod.outlook.com (2603:10b6:408:60::43)
- by DS0PR07MB9848.namprd07.prod.outlook.com (2603:10b6:8:15d::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7113.18; Thu, 21 Dec
- 2023 16:21:02 +0000
-Received: from BN8NAM12FT096.eop-nam12.prod.protection.outlook.com
- (2603:10b6:408:60:cafe::ce) by BN8PR12CA0030.outlook.office365.com
- (2603:10b6:408:60::43) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7113.18 via Frontend
- Transport; Thu, 21 Dec 2023 16:21:02 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 158.140.1.147)
- smtp.mailfrom=cadence.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=cadence.com;
-Received-SPF: Pass (protection.outlook.com: domain of cadence.com designates
- 158.140.1.147 as permitted sender) receiver=protection.outlook.com;
- client-ip=158.140.1.147; helo=sjmaillnx1.cadence.com; pr=C
-Received: from sjmaillnx1.cadence.com (158.140.1.147) by
- BN8NAM12FT096.mail.protection.outlook.com (10.13.182.174) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7113.9 via Frontend Transport; Thu, 21 Dec 2023 16:21:01 +0000
-Received: from maileu4.global.cadence.com (eudvw-maileu4.cadence.com [10.160.110.201])
-	by sjmaillnx1.cadence.com (8.14.4/8.14.4) with ESMTP id 3BLGKv1K005150
-	(version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 21 Dec 2023 08:20:59 -0800
-Received: from maileu4.global.cadence.com (10.160.110.201) by
- maileu4.global.cadence.com (10.160.110.201) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Thu, 21 Dec 2023 17:20:55 +0100
-Received: from cadence.com (10.160.88.83) by maileu4.global.cadence.com
- (10.160.110.201) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.7 via Frontend
- Transport; Thu, 21 Dec 2023 17:20:55 +0100
-Received: from vleu-orange.cadence.com (localhost [127.0.0.1])
-	by cadence.com (8.15.2/8.15.2) with ESMTP id 3BLGKuwo2131267;
-	Thu, 21 Dec 2023 17:20:56 +0100
-Received: (from sjakhade@localhost)
-	by vleu-orange.cadence.com (8.15.2/8.15.2/Submit) id 3BLGKuh32131266;
-	Thu, 21 Dec 2023 17:20:56 +0100
-From: Swapnil Jakhade <sjakhade@cadence.com>
-To: <vkoul@kernel.org>, <kishon@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <linux-phy@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>
-CC: <mparab@cadence.com>, <sjakhade@cadence.com>, <rogerq@kernel.org>,
-        <s-vadapalli@ti.com>
-Subject: [PATCH v3 5/5] phy: cadence-torrent: Add USXGMII(156.25MHz) + SGMII/QSGMII(100MHz) multilink config for TI J7200
-Date: Thu, 21 Dec 2023 17:20:51 +0100
-Message-ID: <20231221162051.2131202-6-sjakhade@cadence.com>
-X-Mailer: git-send-email 2.15.0
-In-Reply-To: <20231221162051.2131202-1-sjakhade@cadence.com>
-References: <20231221162051.2131202-1-sjakhade@cadence.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C56D55E56
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 16:22:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2cb21afa6c1so12833121fa.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 08:22:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1703175746; x=1703780546; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=VjZrOu1vNy6ETyMv+NRF/EhX3hI9S08Tn7D6q6+ilbE=;
+        b=sF5pEYQznktHnD11Rbw5ZeKT24rdzfdBLlbRYxH0Ku3XLehdSNPjRVq1IEdk4dw5qO
+         7Xs0QMP9+2vMao8oqO/UcpsPM5/VLDs59XWtF6y2XAY2+NpD06GsD0y8svZ/0n9sBJap
+         TGnKvYjegUDDbuLlXq8yLrzlV2pBXHm3Ps8R6NSSTWb80uvUu79n81g2EWdb7kyg5FIz
+         ROn42wM/x9qZBJJsReerzQfZqbsoJgexHQMTp6lowQ4vX/zPz+4TnoOqFaoZXgdQecri
+         wFAdpWm3oj37Tc/9ZW9hvhKZUYYU5Bdwruub0CZM1FMj16CuTQne90llG4Omq549bohh
+         Jvew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703175746; x=1703780546;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=VjZrOu1vNy6ETyMv+NRF/EhX3hI9S08Tn7D6q6+ilbE=;
+        b=wRAXjhDZSwRq1l9+g9BGEf+VDNqohDopc6E/r2kEfKPsMzWAEfsAzgNcGZTjkHqD3N
+         xY+LW40r15JYwYlqn0A+kEqpWPa/KQNJSbWkTKwTLad3MCrqOb4uP+BkCRfJqYSlO/vi
+         VnJVxa0UN4HLyRl/dpBBO4EXrE7EpI8F9H7OKWlMzAo0XeX/MyO+Jox/NzLQ+6I4qsCa
+         q1CHpPkgKYENxBRWhE92pYPi5emMRmgsi0L0jFjGoMpTG/38EINK0P55fMKHVcJ3BgTA
+         UD22AIyXnhEcPSmOoNty485lWhL2G+XPdde6Ii+hX2HAgysgj1jmx02j7mlSgssfcVTD
+         KQCQ==
+X-Gm-Message-State: AOJu0YwQTih15xvzD50a8lCdgp5rC7IUuvQ+JJyw1fEeZMuLUs+Gyjsb
+	enp9RFRNCduCJX089JDZHuGMjQ==
+X-Google-Smtp-Source: AGHT+IFoA3k+Gf7BVhk0WsuCRWcAwD+M66ow89F4MDHhJB54KvoTpdZvgc9+9G0jxR/9RK3LQBA7Pw==
+X-Received: by 2002:a2e:97d2:0:b0:2cc:a583:e0b6 with SMTP id m18-20020a2e97d2000000b002cca583e0b6mr273376ljj.82.1703175745685;
+        Thu, 21 Dec 2023 08:22:25 -0800 (PST)
+Received: from [192.168.0.22] ([78.10.206.178])
+        by smtp.gmail.com with ESMTPSA id j13-20020a170906254d00b009fea232316bsm1109245ejb.193.2023.12.21.08.22.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Dec 2023 08:22:25 -0800 (PST)
+Message-ID: <2c54c808-fa46-48fe-82d4-7628f5c799c5@linaro.org>
+Date: Thu, 21 Dec 2023 17:22:24 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-CrossPremisesHeadersFilteredBySendConnector: maileu4.global.cadence.com
-X-OrganizationHeadersPreserved: maileu4.global.cadence.com
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN8NAM12FT096:EE_|DS0PR07MB9848:EE_
-X-MS-Office365-Filtering-Correlation-Id: d3cce17d-732b-42b2-bda5-08dc0240d2cd
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	LwPeycG9eEXjkxnnMUflwWjqLgWyjyfavUSU9UzJCP1bHkG5U8T+reEPeGOLPNfS7rCOehcUKOqdIjWIfT/+3vQnEWnTjJmFGa5MwdvfftanZV+JrUlySq8JInlZwEXd2pizONfUP103eRfxAt3N3v5eElN7nF0k5Zix2f9PSR4JxIg2D0M9AneDNnK2NmwmASMIdCw1lm/zvyyAd632aKg6IN/0RG1UDoT1DBB7CXSaAYPT1VBo+4VU5IhqEEeR/ozuYeC+doS/y27zwbGNVIrgR5vXD3N4cIBgDc6JnkdFGUrWxU4rnTg16fCpKaqIWjzCW9oZry2pKlXPwYxgCXRIHaEOplrFlK5HfiLpENAuyrsfhNn2EcVcrjQERbXRAg7aO3wDl23Q9xJ/ro9sV1gJ1zCYjREBKaUQTl8n615J787g/G9Z/Y6/PEcv2B08bEGzbpiMevRJMFvj5hAe68n7pjtDo+pbRTtUNpKobVOiC+y86YCzZy+YaxEtbdAvh6SRaWEY6SHPCkfyCaX3w9+C15vbqriaGo40K9gNNSsC4QITUHMaLNPOjybCfkZZDV6JkbH1h8XfL69XKYUi1yj84wqT6QrH+mQegkYYYeDxrJuWBlXT2aKrFPJ0HljJypDudyU8N2VlDtIukEVhMjcjhm6HczaWFSonjE8aF/qwsCArgu5T34FldRUoIelg+j8082i8KAsPOT8QRIfR0DQ6sVdhu4OJ6+YzZDvXeTZf2bGoqW0fN1WKC0PLCzO7Q6+GfkKVu1tl09z+RNh73z7k7exHmZqsf+XMBpo2uXA1GSKJrYAvNGz8ybYSVGMe
-X-Forefront-Antispam-Report: 
-	CIP:158.140.1.147;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:sjmaillnx1.cadence.com;PTR:unknown.Cadence.COM;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(346002)(136003)(396003)(376002)(230922051799003)(230173577357003)(230273577357003)(82310400011)(451199024)(1800799012)(186009)(64100799003)(46966006)(36840700001)(40470700004)(42186006)(30864003)(2906002)(5660300002)(40480700001)(7416002)(7636003)(8676002)(1076003)(2616005)(70586007)(110136005)(70206006)(478600001)(47076005)(316002)(36860700001)(8936002)(4326008)(86362001)(356005)(82740400003)(6666004)(83380400001)(336012)(40460700003)(26005)(426003)(41300700001)(36756003)(54906003)(2101003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: cadence.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Dec 2023 16:21:01.5441
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: d3cce17d-732b-42b2-bda5-08dc0240d2cd
-X-MS-Exchange-CrossTenant-Id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=d36035c5-6ce6-4662-a3dc-e762e61ae4c9;Ip=[158.140.1.147];Helo=[sjmaillnx1.cadence.com]
-X-MS-Exchange-CrossTenant-AuthSource: 
-	BN8NAM12FT096.eop-nam12.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR07MB9848
-X-Proofpoint-ORIG-GUID: 3tq3oGzg4mhrbHLO_XtrBekt_sybeiim
-X-Proofpoint-GUID: 3tq3oGzg4mhrbHLO_XtrBekt_sybeiim
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-02_01,2023-11-30_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check score=0
- priorityscore=1501 impostorscore=0 lowpriorityscore=0 clxscore=1015
- suspectscore=0 mlxlogscore=999 mlxscore=0 bulkscore=0 phishscore=0
- malwarescore=0 spamscore=0 adultscore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.19.0-2311290000
- definitions=main-2312210124
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 4/7] dt-bindings: reserved-memory: Support osdump
+ module
+Content-Language: en-US
+To: Ruipeng Qi <ruipengqi7@gmail.com>, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+Cc: qiruipeng@lixiang.com, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20231221133158.729-1-ruipengqi7@gmail.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231221133158.729-1-ruipengqi7@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Add a separate compatible and registers map table for TI J7200.
-TI J7200 uses Torrent SD0805 version which is a special version
-derived from Torrent SD0801 with some differences in register
-configurations.
+On 21/12/2023 14:31, Ruipeng Qi wrote:
+> From: qiruipeng <qiruipeng@lixiang.com>
+> 
+> Add bindings to allow osdump module to store dump in reserved-memory
+> region named "osdump".
+> 
+> Signed-off-by: qiruipeng <qiruipeng@lixiang.com>
 
-Add register sequences for USXGMII(156.25MHz) + SGMII/QSGMII(100MHz)
-multilink config for TI J7200. USXGMII uses PLL0 and SGMII/QSGMII
-uses PLL1.
+I have some doubts whether you used your name or just email address as
+name...
 
-Signed-off-by: Swapnil Jakhade <sjakhade@cadence.com>
----
- drivers/phy/cadence/phy-cadence-torrent.c | 410 ++++++++++++++++++++++
- 1 file changed, 410 insertions(+)
+> ---
+>  .../bindings/reserved-memory/osdump.yaml      | 45 +++++++++++++++++++
+>  1 file changed, 45 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/reserved-memory/osdump.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/reserved-memory/osdump.yaml b/Documentation/devicetree/bindings/reserved-memory/osdump.yaml
+> new file mode 100644
+> index 000000000000..149bf0204e68
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/reserved-memory/osdump.yaml
+> @@ -0,0 +1,45 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/reserved-memory/osdump.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: OS minidump module
+> +
+> +description: |
+> +  Specifies that the reserved memory region can be used for OS minidump
+> +  module.
 
-diff --git a/drivers/phy/cadence/phy-cadence-torrent.c b/drivers/phy/cadence/phy-cadence-torrent.c
-index 38828b15d8b1..b6a1611d1a96 100644
---- a/drivers/phy/cadence/phy-cadence-torrent.c
-+++ b/drivers/phy/cadence/phy-cadence-torrent.c
-@@ -3170,6 +3170,55 @@ static struct cdns_torrent_vals ml_sgmii_pll1_100_no_ssc_cmn_vals = {
- 	.num_regs = ARRAY_SIZE(ml_sgmii_pll1_100_no_ssc_cmn_regs),
- };
- 
-+/* TI J7200, Multilink USXGMII, using PLL0, 156.25 MHz Ref clk, no SSC */
-+static struct cdns_reg_pairs j7200_ml_usxgmii_pll0_156_25_no_ssc_cmn_regs[] = {
-+	{0x0014, CMN_SSM_BIAS_TMR},
-+	{0x0028, CMN_PLLSM0_PLLPRE_TMR},
-+	{0x00A4, CMN_PLLSM0_PLLLOCK_TMR},
-+	{0x0062, CMN_BGCAL_INIT_TMR},
-+	{0x0062, CMN_BGCAL_ITER_TMR},
-+	{0x0014, CMN_IBCAL_INIT_TMR},
-+	{0x0018, CMN_TXPUCAL_INIT_TMR},
-+	{0x0005, CMN_TXPUCAL_ITER_TMR},
-+	{0x0018, CMN_TXPDCAL_INIT_TMR},
-+	{0x0005, CMN_TXPDCAL_ITER_TMR},
-+	{0x024A, CMN_RXCAL_INIT_TMR},
-+	{0x0005, CMN_RXCAL_ITER_TMR},
-+	{0x000B, CMN_SD_CAL_REFTIM_START},
-+	{0x0132, CMN_SD_CAL_PLLCNT_START},
-+	{0x0014, CMN_PLL0_DSM_FBH_OVRD_M0},
-+	{0x0005, CMN_PLL0_DSM_FBL_OVRD_M0},
-+	{0x061B, CMN_PLL0_VCOCAL_INIT_TMR},
-+	{0x0019, CMN_PLL0_VCOCAL_ITER_TMR},
-+	{0x1354, CMN_PLL0_VCOCAL_REFTIM_START},
-+	{0x1354, CMN_PLL0_VCOCAL_PLLCNT_START},
-+	{0x0003, CMN_PLL0_VCOCAL_TCTRL},
-+	{0x0138, CMN_PLL0_LOCK_REFCNT_START},
-+	{0x0138, CMN_PLL0_LOCK_PLLCNT_START}
-+};
-+
-+static struct cdns_torrent_vals j7200_ml_usxgmii_pll0_156_25_no_ssc_cmn_vals = {
-+	.reg_pairs = j7200_ml_usxgmii_pll0_156_25_no_ssc_cmn_regs,
-+	.num_regs = ARRAY_SIZE(j7200_ml_usxgmii_pll0_156_25_no_ssc_cmn_regs),
-+};
-+
-+/* TI J7200, Multilink SGMII/QSGMII, using PLL1, 100 MHz Ref clk, no SSC */
-+static struct cdns_reg_pairs j7200_ml_sgmii_pll1_100_no_ssc_cmn_regs[] = {
-+	{0x0028, CMN_PLLSM1_PLLPRE_TMR},
-+	{0x00A4, CMN_PLLSM1_PLLLOCK_TMR},
-+	{0x0028, CMN_PDIAG_PLL1_CP_PADJ_M0},
-+	{0x001E, CMN_PLL1_DSM_FBH_OVRD_M0},
-+	{0x000C, CMN_PLL1_DSM_FBL_OVRD_M0},
-+	{0x0003, CMN_PLL1_VCOCAL_TCTRL},
-+	{0x007F, CMN_TXPUCAL_TUNE},
-+	{0x007F, CMN_TXPDCAL_TUNE}
-+};
-+
-+static struct cdns_torrent_vals j7200_ml_sgmii_pll1_100_no_ssc_cmn_vals = {
-+	.reg_pairs = j7200_ml_sgmii_pll1_100_no_ssc_cmn_regs,
-+	.num_regs = ARRAY_SIZE(j7200_ml_sgmii_pll1_100_no_ssc_cmn_regs),
-+};
-+
- /* PCIe and USXGMII link configuration */
- static struct cdns_reg_pairs pcie_usxgmii_link_cmn_regs[] = {
- 	{0x0003, PHY_PLL_CFG},
-@@ -4041,6 +4090,50 @@ static struct cdns_torrent_vals sgmii_100_no_ssc_rx_ln_vals = {
- 	.num_regs = ARRAY_SIZE(sgmii_100_no_ssc_rx_ln_regs),
- };
- 
-+/* TI J7200, multilink SGMII */
-+static struct cdns_reg_pairs j7200_sgmii_100_no_ssc_tx_ln_regs[] = {
-+	{0x07A2, TX_RCVDET_ST_TMR},
-+	{0x00F3, TX_PSC_A0},
-+	{0x04A2, TX_PSC_A2},
-+	{0x04A2, TX_PSC_A3 },
-+	{0x0000, TX_TXCC_CPOST_MULT_00},
-+	{0x00B3, DRV_DIAG_TX_DRV},
-+	{0x0002, XCVR_DIAG_PSC_OVRD},
-+	{0x4000, XCVR_DIAG_RXCLK_CTRL}
-+};
-+
-+static struct cdns_torrent_vals j7200_sgmii_100_no_ssc_tx_ln_vals = {
-+	.reg_pairs = j7200_sgmii_100_no_ssc_tx_ln_regs,
-+	.num_regs = ARRAY_SIZE(j7200_sgmii_100_no_ssc_tx_ln_regs),
-+};
-+
-+static struct cdns_reg_pairs j7200_sgmii_100_no_ssc_rx_ln_regs[] = {
-+	{0x0014, RX_SDCAL0_INIT_TMR},
-+	{0x0062, RX_SDCAL0_ITER_TMR},
-+	{0x0014, RX_SDCAL1_INIT_TMR},
-+	{0x0062, RX_SDCAL1_ITER_TMR},
-+	{0x091D, RX_PSC_A0},
-+	{0x0900, RX_PSC_A2},
-+	{0x0100, RX_PSC_A3},
-+	{0x03C7, RX_REE_GCSM1_EQENM_PH1},
-+	{0x01C7, RX_REE_GCSM1_EQENM_PH2},
-+	{0x0000, RX_DIAG_DFE_CTRL},
-+	{0x0019, RX_REE_TAP1_CLIP},
-+	{0x0019, RX_REE_TAP2TON_CLIP},
-+	{0x0098, RX_DIAG_NQST_CTRL},
-+	{0x0C01, RX_DIAG_DFE_AMP_TUNE_2},
-+	{0x0000, RX_DIAG_DFE_AMP_TUNE_3},
-+	{0x0000, RX_DIAG_PI_CAP},
-+	{0x0010, RX_DIAG_PI_RATE},
-+	{0x0001, RX_DIAG_ACYA},
-+	{0x018C, RX_CDRLF_CNFG}
-+};
-+
-+static struct cdns_torrent_vals j7200_sgmii_100_no_ssc_rx_ln_vals = {
-+	.reg_pairs = j7200_sgmii_100_no_ssc_rx_ln_regs,
-+	.num_regs = ARRAY_SIZE(j7200_sgmii_100_no_ssc_rx_ln_regs),
-+};
-+
- /* SGMII 100 MHz Ref clk, internal SSC */
- static struct cdns_reg_pairs sgmii_100_int_ssc_cmn_regs[] = {
- 	{0x0004, CMN_PLL0_DSM_DIAG_M0},
-@@ -4174,6 +4267,51 @@ static struct cdns_torrent_vals qsgmii_100_no_ssc_rx_ln_vals = {
- 	.num_regs = ARRAY_SIZE(qsgmii_100_no_ssc_rx_ln_regs),
- };
- 
-+/* TI J7200, multilink QSGMII */
-+static struct cdns_reg_pairs j7200_qsgmii_100_no_ssc_tx_ln_regs[] = {
-+	{0x07A2, TX_RCVDET_ST_TMR},
-+	{0x00F3, TX_PSC_A0},
-+	{0x04A2, TX_PSC_A2},
-+	{0x04A2, TX_PSC_A3 },
-+	{0x0000, TX_TXCC_CPOST_MULT_00},
-+	{0x0011, TX_TXCC_MGNFS_MULT_100},
-+	{0x0003, DRV_DIAG_TX_DRV},
-+	{0x0002, XCVR_DIAG_PSC_OVRD},
-+	{0x4000, XCVR_DIAG_RXCLK_CTRL}
-+};
-+
-+static struct cdns_torrent_vals j7200_qsgmii_100_no_ssc_tx_ln_vals = {
-+	.reg_pairs = j7200_qsgmii_100_no_ssc_tx_ln_regs,
-+	.num_regs = ARRAY_SIZE(j7200_qsgmii_100_no_ssc_tx_ln_regs),
-+};
-+
-+static struct cdns_reg_pairs j7200_qsgmii_100_no_ssc_rx_ln_regs[] = {
-+	{0x0014, RX_SDCAL0_INIT_TMR},
-+	{0x0062, RX_SDCAL0_ITER_TMR},
-+	{0x0014, RX_SDCAL1_INIT_TMR},
-+	{0x0062, RX_SDCAL1_ITER_TMR},
-+	{0x091D, RX_PSC_A0},
-+	{0x0900, RX_PSC_A2},
-+	{0x0100, RX_PSC_A3},
-+	{0x03C7, RX_REE_GCSM1_EQENM_PH1},
-+	{0x01C7, RX_REE_GCSM1_EQENM_PH2},
-+	{0x0000, RX_DIAG_DFE_CTRL},
-+	{0x0019, RX_REE_TAP1_CLIP},
-+	{0x0019, RX_REE_TAP2TON_CLIP},
-+	{0x0098, RX_DIAG_NQST_CTRL},
-+	{0x0C01, RX_DIAG_DFE_AMP_TUNE_2},
-+	{0x0000, RX_DIAG_DFE_AMP_TUNE_3},
-+	{0x0000, RX_DIAG_PI_CAP},
-+	{0x0010, RX_DIAG_PI_RATE},
-+	{0x0001, RX_DIAG_ACYA},
-+	{0x018C, RX_CDRLF_CNFG}
-+};
-+
-+static struct cdns_torrent_vals j7200_qsgmii_100_no_ssc_rx_ln_vals = {
-+	.reg_pairs = j7200_qsgmii_100_no_ssc_rx_ln_regs,
-+	.num_regs = ARRAY_SIZE(j7200_qsgmii_100_no_ssc_rx_ln_regs),
-+};
-+
- /* QSGMII 100 MHz Ref clk, internal SSC */
- static struct cdns_reg_pairs qsgmii_100_int_ssc_cmn_regs[] = {
- 	{0x0004, CMN_PLL0_DSM_DIAG_M0},
-@@ -4843,6 +4981,274 @@ static const struct cdns_torrent_data ti_j721e_map_torrent = {
- 	},
- };
- 
-+/* TI J7200 (Torrent SD0805) */
-+static struct cdns_torrent_vals_entry ti_j7200_cmn_vals_entries[] = {
-+	{CDNS_TORRENT_KEY(CLK_19_2_MHZ, CLK_19_2_MHZ, TYPE_DP, TYPE_NONE, NO_SSC), &sl_dp_19_2_no_ssc_cmn_vals},
-+	{CDNS_TORRENT_KEY(CLK_25_MHZ, CLK_25_MHZ, TYPE_DP, TYPE_NONE, NO_SSC), &sl_dp_25_no_ssc_cmn_vals},
-+
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_DP, TYPE_NONE, NO_SSC), &sl_dp_100_no_ssc_cmn_vals},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_DP, TYPE_PCIE, NO_SSC), &dp_100_no_ssc_cmn_vals},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_DP, TYPE_USB, NO_SSC), &sl_dp_100_no_ssc_cmn_vals},
-+
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_PCIE, TYPE_NONE, NO_SSC), NULL},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_PCIE, TYPE_NONE, EXTERNAL_SSC), NULL},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_PCIE, TYPE_NONE, INTERNAL_SSC), &sl_pcie_100_int_ssc_cmn_vals},
-+
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_PCIE, TYPE_SGMII, NO_SSC), &pcie_100_no_ssc_cmn_vals},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_PCIE, TYPE_SGMII, EXTERNAL_SSC), &pcie_100_no_ssc_cmn_vals},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_PCIE, TYPE_SGMII, INTERNAL_SSC), &pcie_100_int_ssc_cmn_vals},
-+
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_PCIE, TYPE_QSGMII, NO_SSC), &pcie_100_no_ssc_cmn_vals},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_PCIE, TYPE_QSGMII, EXTERNAL_SSC), &pcie_100_no_ssc_cmn_vals},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_PCIE, TYPE_QSGMII, INTERNAL_SSC), &pcie_100_int_ssc_cmn_vals},
-+
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_PCIE, TYPE_USB, NO_SSC), &pcie_100_no_ssc_cmn_vals},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_PCIE, TYPE_USB, EXTERNAL_SSC), &pcie_100_no_ssc_cmn_vals},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_PCIE, TYPE_USB, INTERNAL_SSC), &pcie_100_int_ssc_cmn_vals},
-+
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_PCIE, TYPE_DP, NO_SSC), NULL},
-+
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_SGMII, TYPE_NONE, NO_SSC), &sl_sgmii_100_no_ssc_cmn_vals},
-+
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_SGMII, TYPE_PCIE, NO_SSC), &sgmii_100_no_ssc_cmn_vals},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_SGMII, TYPE_PCIE, EXTERNAL_SSC), &sgmii_100_no_ssc_cmn_vals},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_SGMII, TYPE_PCIE, INTERNAL_SSC), &sgmii_100_int_ssc_cmn_vals},
-+
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_SGMII, TYPE_USB, NO_SSC), &sgmii_100_no_ssc_cmn_vals},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_SGMII, TYPE_USB, EXTERNAL_SSC), &sgmii_100_no_ssc_cmn_vals},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_SGMII, TYPE_USB, INTERNAL_SSC), &sgmii_100_no_ssc_cmn_vals},
-+
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_QSGMII, TYPE_NONE, NO_SSC), &sl_qsgmii_100_no_ssc_cmn_vals},
-+
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_QSGMII, TYPE_PCIE, NO_SSC), &qsgmii_100_no_ssc_cmn_vals},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_QSGMII, TYPE_PCIE, EXTERNAL_SSC), &qsgmii_100_no_ssc_cmn_vals},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_QSGMII, TYPE_PCIE, INTERNAL_SSC), &qsgmii_100_int_ssc_cmn_vals},
-+
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_QSGMII, TYPE_USB, NO_SSC), &qsgmii_100_no_ssc_cmn_vals},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_QSGMII, TYPE_USB, EXTERNAL_SSC), &qsgmii_100_no_ssc_cmn_vals},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_QSGMII, TYPE_USB, INTERNAL_SSC), &qsgmii_100_no_ssc_cmn_vals},
-+
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_USB, TYPE_NONE, NO_SSC), &sl_usb_100_no_ssc_cmn_vals},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_USB, TYPE_NONE, EXTERNAL_SSC), &sl_usb_100_no_ssc_cmn_vals},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_USB, TYPE_NONE, INTERNAL_SSC), &sl_usb_100_int_ssc_cmn_vals},
-+
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_USB, TYPE_PCIE, NO_SSC), &usb_100_no_ssc_cmn_vals},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_USB, TYPE_PCIE, EXTERNAL_SSC), &usb_100_no_ssc_cmn_vals},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_USB, TYPE_PCIE, INTERNAL_SSC), &usb_100_int_ssc_cmn_vals},
-+
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_USB, TYPE_SGMII, NO_SSC), &sl_usb_100_no_ssc_cmn_vals},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_USB, TYPE_SGMII, EXTERNAL_SSC), &sl_usb_100_no_ssc_cmn_vals},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_USB, TYPE_SGMII, INTERNAL_SSC), &sl_usb_100_int_ssc_cmn_vals},
-+
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_USB, TYPE_QSGMII, NO_SSC), &sl_usb_100_no_ssc_cmn_vals},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_USB, TYPE_QSGMII, EXTERNAL_SSC), &sl_usb_100_no_ssc_cmn_vals},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_USB, TYPE_QSGMII, INTERNAL_SSC), &sl_usb_100_int_ssc_cmn_vals},
-+
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_USB, TYPE_DP, NO_SSC), &usb_100_no_ssc_cmn_vals},
-+
-+	{CDNS_TORRENT_KEY(CLK_156_25_MHZ, CLK_156_25_MHZ, TYPE_USXGMII, TYPE_NONE, NO_SSC), &sl_usxgmii_156_25_no_ssc_cmn_vals},
-+
-+	/* Dual refclk */
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_156_25_MHZ, TYPE_PCIE, TYPE_USXGMII, NO_SSC), NULL},
-+
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_156_25_MHZ, TYPE_SGMII, TYPE_USXGMII, NO_SSC), &j7200_ml_sgmii_pll1_100_no_ssc_cmn_vals},
-+
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_156_25_MHZ, TYPE_QSGMII, TYPE_USXGMII, NO_SSC), &j7200_ml_sgmii_pll1_100_no_ssc_cmn_vals},
-+
-+	{CDNS_TORRENT_KEY(CLK_156_25_MHZ, CLK_100_MHZ, TYPE_USXGMII, TYPE_PCIE, NO_SSC), &ml_usxgmii_pll1_156_25_no_ssc_cmn_vals},
-+	{CDNS_TORRENT_KEY(CLK_156_25_MHZ, CLK_100_MHZ, TYPE_USXGMII, TYPE_SGMII, NO_SSC), &j7200_ml_usxgmii_pll0_156_25_no_ssc_cmn_vals},
-+	{CDNS_TORRENT_KEY(CLK_156_25_MHZ, CLK_100_MHZ, TYPE_USXGMII, TYPE_QSGMII, NO_SSC), &j7200_ml_usxgmii_pll0_156_25_no_ssc_cmn_vals},
-+};
-+
-+static struct cdns_torrent_vals_entry ti_j7200_tx_ln_vals_entries[] = {
-+	{CDNS_TORRENT_KEY(CLK_19_2_MHZ, CLK_19_2_MHZ, TYPE_DP, TYPE_NONE, NO_SSC), &sl_dp_19_2_no_ssc_tx_ln_vals},
-+	{CDNS_TORRENT_KEY(CLK_25_MHZ, CLK_25_MHZ, TYPE_DP, TYPE_NONE, NO_SSC), &sl_dp_25_no_ssc_tx_ln_vals},
-+
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_DP, TYPE_NONE, NO_SSC), &sl_dp_100_no_ssc_tx_ln_vals},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_DP, TYPE_PCIE, NO_SSC), &dp_100_no_ssc_tx_ln_vals},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_DP, TYPE_USB, NO_SSC), &dp_100_no_ssc_tx_ln_vals},
-+
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_PCIE, TYPE_NONE, NO_SSC), NULL},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_PCIE, TYPE_NONE, EXTERNAL_SSC), NULL},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_PCIE, TYPE_NONE, INTERNAL_SSC), NULL},
-+
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_PCIE, TYPE_SGMII, NO_SSC), NULL},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_PCIE, TYPE_SGMII, EXTERNAL_SSC), NULL},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_PCIE, TYPE_SGMII, INTERNAL_SSC), NULL},
-+
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_PCIE, TYPE_QSGMII, NO_SSC), NULL},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_PCIE, TYPE_QSGMII, EXTERNAL_SSC), NULL},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_PCIE, TYPE_QSGMII, INTERNAL_SSC), NULL},
-+
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_PCIE, TYPE_USB, NO_SSC), NULL},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_PCIE, TYPE_USB, EXTERNAL_SSC), NULL},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_PCIE, TYPE_USB, INTERNAL_SSC), NULL},
-+
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_PCIE, TYPE_DP, NO_SSC), NULL},
-+
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_SGMII, TYPE_NONE, NO_SSC), &ti_sgmii_100_no_ssc_tx_ln_vals},
-+
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_SGMII, TYPE_PCIE, NO_SSC), &ti_sgmii_100_no_ssc_tx_ln_vals},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_SGMII, TYPE_PCIE, EXTERNAL_SSC), &ti_sgmii_100_no_ssc_tx_ln_vals},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_SGMII, TYPE_PCIE, INTERNAL_SSC), &ti_sgmii_100_no_ssc_tx_ln_vals},
-+
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_SGMII, TYPE_USB, NO_SSC), &ti_sgmii_100_no_ssc_tx_ln_vals},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_SGMII, TYPE_USB, EXTERNAL_SSC), &ti_sgmii_100_no_ssc_tx_ln_vals},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_SGMII, TYPE_USB, INTERNAL_SSC), &ti_sgmii_100_no_ssc_tx_ln_vals},
-+
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_QSGMII, TYPE_NONE, NO_SSC), &ti_qsgmii_100_no_ssc_tx_ln_vals},
-+
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_QSGMII, TYPE_PCIE, NO_SSC), &ti_qsgmii_100_no_ssc_tx_ln_vals},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_QSGMII, TYPE_PCIE, EXTERNAL_SSC), &ti_qsgmii_100_no_ssc_tx_ln_vals},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_QSGMII, TYPE_PCIE, INTERNAL_SSC), &ti_qsgmii_100_no_ssc_tx_ln_vals},
-+
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_QSGMII, TYPE_USB, NO_SSC), &ti_qsgmii_100_no_ssc_tx_ln_vals},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_QSGMII, TYPE_USB, EXTERNAL_SSC), &ti_qsgmii_100_no_ssc_tx_ln_vals},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_QSGMII, TYPE_USB, INTERNAL_SSC), &ti_qsgmii_100_no_ssc_tx_ln_vals},
-+
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_USB, TYPE_NONE, NO_SSC), &usb_100_no_ssc_tx_ln_vals},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_USB, TYPE_NONE, EXTERNAL_SSC), &usb_100_no_ssc_tx_ln_vals},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_USB, TYPE_NONE, INTERNAL_SSC), &usb_100_no_ssc_tx_ln_vals},
-+
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_USB, TYPE_PCIE, NO_SSC), &usb_100_no_ssc_tx_ln_vals},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_USB, TYPE_PCIE, EXTERNAL_SSC), &usb_100_no_ssc_tx_ln_vals},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_USB, TYPE_PCIE, INTERNAL_SSC), &usb_100_no_ssc_tx_ln_vals},
-+
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_USB, TYPE_SGMII, NO_SSC), &usb_100_no_ssc_tx_ln_vals},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_USB, TYPE_SGMII, EXTERNAL_SSC), &usb_100_no_ssc_tx_ln_vals},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_USB, TYPE_SGMII, INTERNAL_SSC), &usb_100_no_ssc_tx_ln_vals},
-+
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_USB, TYPE_QSGMII, NO_SSC), &usb_100_no_ssc_tx_ln_vals},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_USB, TYPE_QSGMII, EXTERNAL_SSC), &usb_100_no_ssc_tx_ln_vals},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_USB, TYPE_QSGMII, INTERNAL_SSC), &usb_100_no_ssc_tx_ln_vals},
-+
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_USB, TYPE_DP, NO_SSC), &usb_100_no_ssc_tx_ln_vals},
-+
-+	{CDNS_TORRENT_KEY(CLK_156_25_MHZ, CLK_156_25_MHZ, TYPE_USXGMII, TYPE_NONE, NO_SSC), &usxgmii_156_25_no_ssc_tx_ln_vals},
-+
-+	/* Dual refclk */
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_156_25_MHZ, TYPE_PCIE, TYPE_USXGMII, NO_SSC), NULL},
-+
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_156_25_MHZ, TYPE_SGMII, TYPE_USXGMII, NO_SSC), &j7200_sgmii_100_no_ssc_tx_ln_vals},
-+
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_156_25_MHZ, TYPE_QSGMII, TYPE_USXGMII, NO_SSC), &j7200_qsgmii_100_no_ssc_tx_ln_vals},
-+
-+	{CDNS_TORRENT_KEY(CLK_156_25_MHZ, CLK_100_MHZ, TYPE_USXGMII, TYPE_PCIE, NO_SSC), &ml_usxgmii_156_25_no_ssc_tx_ln_vals},
-+	{CDNS_TORRENT_KEY(CLK_156_25_MHZ, CLK_100_MHZ, TYPE_USXGMII, TYPE_SGMII, NO_SSC), &usxgmii_156_25_no_ssc_tx_ln_vals},
-+	{CDNS_TORRENT_KEY(CLK_156_25_MHZ, CLK_100_MHZ, TYPE_USXGMII, TYPE_QSGMII, NO_SSC), &usxgmii_156_25_no_ssc_tx_ln_vals},
-+};
-+
-+static struct cdns_torrent_vals_entry ti_j7200_rx_ln_vals_entries[] = {
-+	{CDNS_TORRENT_KEY(CLK_19_2_MHZ, CLK_19_2_MHZ, TYPE_DP, TYPE_NONE, NO_SSC), &sl_dp_19_2_no_ssc_rx_ln_vals},
-+	{CDNS_TORRENT_KEY(CLK_25_MHZ, CLK_25_MHZ, TYPE_DP, TYPE_NONE, NO_SSC), &sl_dp_25_no_ssc_rx_ln_vals},
-+
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_DP, TYPE_NONE, NO_SSC), &sl_dp_100_no_ssc_rx_ln_vals},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_DP, TYPE_PCIE, NO_SSC), &dp_100_no_ssc_rx_ln_vals},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_DP, TYPE_USB, NO_SSC), &dp_100_no_ssc_rx_ln_vals},
-+
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_PCIE, TYPE_NONE, NO_SSC), &pcie_100_no_ssc_rx_ln_vals},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_PCIE, TYPE_NONE, EXTERNAL_SSC), &pcie_100_no_ssc_rx_ln_vals},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_PCIE, TYPE_NONE, INTERNAL_SSC), &pcie_100_no_ssc_rx_ln_vals},
-+
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_PCIE, TYPE_SGMII, NO_SSC), &pcie_100_no_ssc_rx_ln_vals},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_PCIE, TYPE_SGMII, EXTERNAL_SSC), &pcie_100_no_ssc_rx_ln_vals},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_PCIE, TYPE_SGMII, INTERNAL_SSC), &pcie_100_no_ssc_rx_ln_vals},
-+
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_PCIE, TYPE_QSGMII, NO_SSC), &pcie_100_no_ssc_rx_ln_vals},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_PCIE, TYPE_QSGMII, EXTERNAL_SSC), &pcie_100_no_ssc_rx_ln_vals},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_PCIE, TYPE_QSGMII, INTERNAL_SSC), &pcie_100_no_ssc_rx_ln_vals},
-+
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_PCIE, TYPE_USB, NO_SSC), &pcie_100_no_ssc_rx_ln_vals},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_PCIE, TYPE_USB, EXTERNAL_SSC), &pcie_100_no_ssc_rx_ln_vals},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_PCIE, TYPE_USB, INTERNAL_SSC), &pcie_100_no_ssc_rx_ln_vals},
-+
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_PCIE, TYPE_DP, NO_SSC), &pcie_100_no_ssc_rx_ln_vals},
-+
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_SGMII, TYPE_NONE, NO_SSC), &sgmii_100_no_ssc_rx_ln_vals},
-+
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_SGMII, TYPE_PCIE, NO_SSC), &sgmii_100_no_ssc_rx_ln_vals},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_SGMII, TYPE_PCIE, EXTERNAL_SSC), &sgmii_100_no_ssc_rx_ln_vals},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_SGMII, TYPE_PCIE, INTERNAL_SSC), &sgmii_100_no_ssc_rx_ln_vals},
-+
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_SGMII, TYPE_USB, NO_SSC), &sgmii_100_no_ssc_rx_ln_vals},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_SGMII, TYPE_USB, EXTERNAL_SSC), &sgmii_100_no_ssc_rx_ln_vals},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_SGMII, TYPE_USB, INTERNAL_SSC), &sgmii_100_no_ssc_rx_ln_vals},
-+
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_QSGMII, TYPE_NONE, NO_SSC), &qsgmii_100_no_ssc_rx_ln_vals},
-+
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_QSGMII, TYPE_PCIE, NO_SSC), &qsgmii_100_no_ssc_rx_ln_vals},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_QSGMII, TYPE_PCIE, EXTERNAL_SSC), &qsgmii_100_no_ssc_rx_ln_vals},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_QSGMII, TYPE_PCIE, INTERNAL_SSC), &qsgmii_100_no_ssc_rx_ln_vals},
-+
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_QSGMII, TYPE_USB, NO_SSC), &qsgmii_100_no_ssc_rx_ln_vals},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_QSGMII, TYPE_USB, EXTERNAL_SSC), &qsgmii_100_no_ssc_rx_ln_vals},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_QSGMII, TYPE_USB, INTERNAL_SSC), &qsgmii_100_no_ssc_rx_ln_vals},
-+
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_USB, TYPE_NONE, NO_SSC), &usb_100_no_ssc_rx_ln_vals},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_USB, TYPE_NONE, EXTERNAL_SSC), &usb_100_no_ssc_rx_ln_vals},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_USB, TYPE_NONE, INTERNAL_SSC), &usb_100_no_ssc_rx_ln_vals},
-+
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_USB, TYPE_PCIE, NO_SSC), &usb_100_no_ssc_rx_ln_vals},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_USB, TYPE_PCIE, EXTERNAL_SSC), &usb_100_no_ssc_rx_ln_vals},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_USB, TYPE_PCIE, INTERNAL_SSC), &usb_100_no_ssc_rx_ln_vals},
-+
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_USB, TYPE_SGMII, NO_SSC), &usb_100_no_ssc_rx_ln_vals},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_USB, TYPE_SGMII, EXTERNAL_SSC), &usb_100_no_ssc_rx_ln_vals},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_USB, TYPE_SGMII, INTERNAL_SSC), &usb_100_no_ssc_rx_ln_vals},
-+
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_USB, TYPE_QSGMII, NO_SSC), &usb_100_no_ssc_rx_ln_vals},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_USB, TYPE_QSGMII, EXTERNAL_SSC), &usb_100_no_ssc_rx_ln_vals},
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_USB, TYPE_QSGMII, INTERNAL_SSC), &usb_100_no_ssc_rx_ln_vals},
-+
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_100_MHZ, TYPE_USB, TYPE_DP, NO_SSC), &usb_100_no_ssc_rx_ln_vals},
-+
-+	{CDNS_TORRENT_KEY(CLK_156_25_MHZ, CLK_156_25_MHZ, TYPE_USXGMII, TYPE_NONE, NO_SSC), &usxgmii_156_25_no_ssc_rx_ln_vals},
-+
-+	/* Dual refclk */
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_156_25_MHZ, TYPE_PCIE, TYPE_USXGMII, NO_SSC), &pcie_100_no_ssc_rx_ln_vals},
-+
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_156_25_MHZ, TYPE_SGMII, TYPE_USXGMII, NO_SSC), &j7200_sgmii_100_no_ssc_rx_ln_vals},
-+
-+	{CDNS_TORRENT_KEY(CLK_100_MHZ, CLK_156_25_MHZ, TYPE_QSGMII, TYPE_USXGMII, NO_SSC), &j7200_qsgmii_100_no_ssc_rx_ln_vals},
-+
-+	{CDNS_TORRENT_KEY(CLK_156_25_MHZ, CLK_100_MHZ, TYPE_USXGMII, TYPE_PCIE, NO_SSC), &ml_usxgmii_156_25_no_ssc_rx_ln_vals},
-+	{CDNS_TORRENT_KEY(CLK_156_25_MHZ, CLK_100_MHZ, TYPE_USXGMII, TYPE_SGMII, NO_SSC), &usxgmii_156_25_no_ssc_rx_ln_vals},
-+	{CDNS_TORRENT_KEY(CLK_156_25_MHZ, CLK_100_MHZ, TYPE_USXGMII, TYPE_QSGMII, NO_SSC), &usxgmii_156_25_no_ssc_rx_ln_vals},
-+};
-+
-+static const struct cdns_torrent_data ti_j7200_map_torrent = {
-+	.block_offset_shift = 0x0,
-+	.reg_offset_shift = 0x1,
-+	.link_cmn_vals_tbl = {
-+		.entries = link_cmn_vals_entries,
-+		.num_entries = ARRAY_SIZE(link_cmn_vals_entries),
-+	},
-+	.xcvr_diag_vals_tbl = {
-+		.entries = xcvr_diag_vals_entries,
-+		.num_entries = ARRAY_SIZE(xcvr_diag_vals_entries),
-+	},
-+	.pcs_cmn_vals_tbl = {
-+		.entries = pcs_cmn_vals_entries,
-+		.num_entries = ARRAY_SIZE(pcs_cmn_vals_entries),
-+	},
-+	.phy_pma_cmn_vals_tbl = {
-+		.entries = j721e_phy_pma_cmn_vals_entries,
-+		.num_entries = ARRAY_SIZE(j721e_phy_pma_cmn_vals_entries),
-+	},
-+	.cmn_vals_tbl = {
-+		.entries = ti_j7200_cmn_vals_entries,
-+		.num_entries = ARRAY_SIZE(ti_j7200_cmn_vals_entries),
-+	},
-+	.tx_ln_vals_tbl = {
-+		.entries = ti_j7200_tx_ln_vals_entries,
-+		.num_entries = ARRAY_SIZE(ti_j7200_tx_ln_vals_entries),
-+	},
-+	.rx_ln_vals_tbl = {
-+		.entries = ti_j7200_rx_ln_vals_entries,
-+		.num_entries = ARRAY_SIZE(ti_j7200_rx_ln_vals_entries),
-+	},
-+};
-+
- static const struct of_device_id cdns_torrent_phy_of_match[] = {
- 	{
- 		.compatible = "cdns,torrent-phy",
-@@ -4852,6 +5258,10 @@ static const struct of_device_id cdns_torrent_phy_of_match[] = {
- 		.compatible = "ti,j721e-serdes-10g",
- 		.data = &ti_j721e_map_torrent,
- 	},
-+	{
-+		.compatible = "ti,j7200-serdes-10g",
-+		.data = &ti_j7200_map_torrent,
-+	},
- 	{}
- };
- MODULE_DEVICE_TABLE(of, cdns_torrent_phy_of_match);
--- 
-2.25.1
+I don't see any explanation why this is needed and what you are
+describing here. Use simply reserved memory.
+
+If you need any osdump, then work with minidump series. Some time ago we
+were asking people to come with their needs. I did not get any other
+series, so no clue what you are doing, but just in case:
+NAK for second "minidump" clone.
+
+
+Best regards,
+Krzysztof
 
 
