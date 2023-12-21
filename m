@@ -1,226 +1,144 @@
-Return-Path: <linux-kernel+bounces-7745-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7746-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B3F981AC87
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 03:13:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61AC981AC8A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 03:14:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E77471F2454C
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 02:13:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BEC21283B2F
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 02:14:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99F0C1FCF;
-	Thu, 21 Dec 2023 02:13:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F6571FA0;
+	Thu, 21 Dec 2023 02:14:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Hz2VW0RL"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CJdJxtyl"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+Received: from mail-pl1-f195.google.com (mail-pl1-f195.google.com [209.85.214.195])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7356C1843
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 02:12:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dbdac48c6aeso461764276.3
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 18:12:58 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6709E5239;
+	Thu, 21 Dec 2023 02:14:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f195.google.com with SMTP id d9443c01a7336-1d03f03cda9so1025585ad.0;
+        Wed, 20 Dec 2023 18:14:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1703124777; x=1703729577; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=qZL4eZ6u9CkNNM8zLim6V4IndhkBqKjZUwKwl+b+dig=;
-        b=Hz2VW0RLT2wu1n6xcs1cm6UhLe1h8ll/pa54CAUjY09etFDQyvnmK7L9axYzKKVbCn
-         FlTRemeJ0+MMRmnBbqk0azbkpFEqbCJaIpUGvDc7dMtZ8wsnNauVe8BbjLA+UGlNMchV
-         lmclyOQ0363DR9+77iJFQh6RNapZL5IU3vA9pIXcJTfjrw4gstnQtDktoZX4y3NvOVVt
-         DRwM175xWXPRk4QEOi74mNXThiFTfLBiNhQEH/AwXMob2Awms+3ZBk0lvGtOsCryJ/vc
-         HaPyIESvw7JWjWOOpoqYcbNOzq9adQpkiKJI3acon+2kqXp00mgoWpTvkbvNzD0u59i2
-         B/eg==
+        d=gmail.com; s=20230601; t=1703124858; x=1703729658; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=WL++AB9fEIg1cmTcH4bF69I0i+DU0llPfZn2l0Zd/Hg=;
+        b=CJdJxtylFdG3wbewoQG+3LqW9frrHZE0w94JMaNb70KbkwKSVXV4v5rVLk44p4GtB2
+         W2+7IfjxobIERVDzFOGOUojArLxwjZ67OtssYJzpg/KXPSsWakGsO7dFrOXrFn8FU7n4
+         Nkrt4cgwBpQRh4RLxjJM9dQrOsRyOUPQRvxAkHzHWeuzFkNVW5MghjaPwzTvztWF7WPv
+         yS0+FDwqfY7Pqv+2zPpFBYYX+fgKPUyYbPzDdr+hQZKow+6rlJ1Z6uVOTCKzC0u8CMDA
+         n5DDBGXru1MUykM0Ugt8bGPLgt7jMpExhKFJCjOTD6v6V4N2AWdm0I57dD6fitxkHjd9
+         kF8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703124777; x=1703729577;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qZL4eZ6u9CkNNM8zLim6V4IndhkBqKjZUwKwl+b+dig=;
-        b=Li1H7bIXRGMsaA2Pbi2Xarkl+Am8hVKPnMnWX80UVA6zRe8QVP+xh7HiAAdn2Uqx6W
-         m7Y0X5eXJR1cRfsXP6UV/JJWH0TmNgs8v1SPdz8ZD7TAASjEJF4BcfdKJonoeI8lHJht
-         lMkbLkOOm68g8MVMGyEZHG2pzRbYF/k27XkdKvZoH0K5yyWPqswpHasPcVzYS3jWhw1k
-         uY0QuZgfuev5jjVTM9ucaF6XQKcfJnu7/V4fQ0FbIyi0VBHuXoo2eCsCR07fcii911vc
-         emgfWOEYASlZskVI4NkkEgpkxsFoEuudqknd1zoowKA9yjcWRmnHtCCzpKMHAK+s+R+G
-         XL0g==
-X-Gm-Message-State: AOJu0YxDzpRkKjKiWVF2xptYVe7ai2OxCa/hox90E9q/ynb05/UNQwUS
-	vnM9NWjOzBKyg4HzRHRHwh0ojhaNwcg=
-X-Google-Smtp-Source: AGHT+IHZcmSZfB7sL8/DN2qPbVmszZ2Jby/ac3YVH1l0ZSD4QHL8Y190bGfTeBcn+OFXVpkLGzQYnrzycAs=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:664d:0:b0:dbd:bf0f:6fff with SMTP id
- z13-20020a25664d000000b00dbdbf0f6fffmr260745ybm.1.1703124777494; Wed, 20 Dec
- 2023 18:12:57 -0800 (PST)
-Date: Wed, 20 Dec 2023 18:12:55 -0800
-In-Reply-To: <ZYJOTLwreD+8l4gU@yzhao56-desk.sh.intel.com>
+        d=1e100.net; s=20230601; t=1703124858; x=1703729658;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=WL++AB9fEIg1cmTcH4bF69I0i+DU0llPfZn2l0Zd/Hg=;
+        b=IWjhl1gDSTBBSxvrPV/KNgNLCalzUQrOhiwu4YbIOAhLt53Cwn0pKSYcVSQi+iI/tD
+         /qvuVct+1jnWE9v57baJWypYkGAdZaWKdiXKZSR/+8v4a9aN5F5cZB/RD05y27GQ7m/T
+         SouHfj73zN9RPLjsa+SNSUCLlUbADfEUTSfABTbYXVYOQEyXpcSWpB4tm/LjdDgIKwYw
+         420YGjZn9aPmisFGcJ88B8VSaS8tNTkf+3R4ekt6uMgbRg0rpTs8/vXc3ReqIfg89xN0
+         LJTQTn9KDOdkwfQfO7f9VWr3BiAUIh7NTBbIya6k0mdgaRWA9kJQTyl2ZuFKIfNub/u0
+         fZoQ==
+X-Gm-Message-State: AOJu0YzNFXi7XX1WQ2MPDzu/D1WNl8/7ukUysPUP/KzKWK2SX73QkVLB
+	rZH/Qjfjbk5E4g03XoUf1xE=
+X-Google-Smtp-Source: AGHT+IGwFP91a18RpuxtpHPd7L2kZvYwl+quhbkCGdcqcS1J4Q94aNm2kW9YRAmUNgaF3AZtl0Ma8g==
+X-Received: by 2002:a17:902:d2cb:b0:1d3:99c9:5454 with SMTP id n11-20020a170902d2cb00b001d399c95454mr17688921plc.4.1703124857671;
+        Wed, 20 Dec 2023 18:14:17 -0800 (PST)
+Received: from [127.0.0.1] (061239074230.ctinets.com. [61.239.74.230])
+        by smtp.gmail.com with ESMTPSA id t9-20020a170902bc4900b001d3aafd228dsm397249plz.75.2023.12.20.18.14.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Dec 2023 18:14:17 -0800 (PST)
+Message-ID: <a2634a6e-6630-4db7-8b66-81b315038f9e@gmail.com>
+Date: Thu, 21 Dec 2023 10:14:09 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20231214103520.7198-1-yan.y.zhao@intel.com> <BN9PR11MB5276BE04CBB6D07039086D658C93A@BN9PR11MB5276.namprd11.prod.outlook.com>
- <ZXzx1zXfZ6GV9TgI@google.com> <ZYEbhadnn6+clzX9@yzhao56-desk.sh.intel.com> <ZYJOTLwreD+8l4gU@yzhao56-desk.sh.intel.com>
-Message-ID: <ZYOfJ_QWG01aL8Hl@google.com>
-Subject: Re: [RFC PATCH] KVM: Introduce KVM VIRTIO device
-From: Sean Christopherson <seanjc@google.com>
-To: Yan Zhao <yan.y.zhao@intel.com>
-Cc: Kevin Tian <kevin.tian@intel.com>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
-	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, 
-	"pbonzini@redhat.com" <pbonzini@redhat.com>, "olvaffe@gmail.com" <olvaffe@gmail.com>, 
-	Zhiyuan Lv <zhiyuan.lv@intel.com>, Zhenyu Z Wang <zhenyu.z.wang@intel.com>, 
-	Yongwei Ma <yongwei.ma@intel.com>, "vkuznets@redhat.com" <vkuznets@redhat.com>, 
-	"wanpengli@tencent.com" <wanpengli@tencent.com>, "jmattson@google.com" <jmattson@google.com>, 
-	"joro@8bytes.org" <joro@8bytes.org>, 
-	"gurchetansingh@chromium.org" <gurchetansingh@chromium.org>, "kraxel@redhat.com" <kraxel@redhat.com>, 
-	Yiwei Zhang <zzyiwei@google.com>
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] net: sched: em_text: fix possible memory leak in
+ em_text_destroy()
+To: Jamal Hadi Salim <jhs@mojatatu.com>
+Cc: xiyou.wangcong@gmail.com, jiri@resnulli.us, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, tgraf@suug.ch,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231220030838.11751-1-hbh25y@gmail.com>
+ <CAM0EoMnPgKFK5uyx5YJUYc1F7U0058aYOQb6H6ewcz9Y8OouAw@mail.gmail.com>
+ <CAM0EoM=4ZRteGbjAdBuLGtbM_qpnJoUuky-Yj+i+3FOqXXra+Q@mail.gmail.com>
+Content-Language: en-US
+From: Hangyu Hua <hbh25y@gmail.com>
+In-Reply-To: <CAM0EoM=4ZRteGbjAdBuLGtbM_qpnJoUuky-Yj+i+3FOqXXra+Q@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Wed, Dec 20, 2023, Yan Zhao wrote:
-> On Tue, Dec 19, 2023 at 12:26:45PM +0800, Yan Zhao wrote:
-> > On Mon, Dec 18, 2023 at 07:08:51AM -0800, Sean Christopherson wrote:
-> > > > > Implementation Consideration
-> > > > > ===
-> > > > > There is a previous series [1] from google to serve the same purpose to
-> > > > > let KVM be aware of virtio GPU's noncoherent DMA status. That series
-> > > > > requires a new memslot flag, and special memslots in user space.
-> > > > > 
-> > > > > We don't choose to use memslot flag to request honoring guest memory
-> > > > > type.
-> > > > 
-> > > > memslot flag has the potential to restrict the impact e.g. when using
-> > > > clflush-before-read in migration?
-> > > 
-> > > Yep, exactly.  E.g. if KVM needs to ensure coherency when freeing memory back to
-> > > the host kernel, then the memslot flag will allow for a much more targeted
-> > > operation.
-> > > 
-> > > > Of course the implication is to honor guest type only for the selected slot
-> > > > in KVM instead of applying to the entire guest memory as in previous series
-> > > > (which selects this way because vmx_get_mt_mask() is in perf-critical path
-> > > > hence not good to check memslot flag?)
-> > > 
-> > > Checking a memslot flag won't impact performance.  KVM already has the memslot
-> > > when creating SPTEs, e.g. the sole caller of vmx_get_mt_mask(), make_spte(), has
-> > > access to the memslot.
-> > > 
-> > > That isn't coincidental, KVM _must_ have the memslot to construct the SPTE, e.g.
-> > > to retrieve the associated PFN, update write-tracking for shadow pages, etc.
-> > > 
-> > Hi Sean,
-> > Do you prefer to introduce a memslot flag KVM_MEM_DMA or KVM_MEM_WC?
-> > For KVM_MEM_DMA, KVM needs to
-> > (a) search VMA for vma->vm_page_prot and convert it to page cache mode (with
-> >     pgprot2cachemode()? ), or
-> > (b) look up memtype of the PFN, by calling lookup_memtype(), similar to that in
-> >     pat_pfn_immune_to_uc_mtrr().
-> > 
-> > But pgprot2cachemode() and lookup_memtype() are not exported by x86 code now.
-> > 
-> > For KVM_MEM_WC, it requires user to ensure the memory is actually mapped
-> > to WC, right?
-> > 
-> > Then, vmx_get_mt_mask() just ignores guest PAT and programs host PAT as EPT type
-> > for the special memslot only, as below.
-> > Is this understanding correct?
-> > 
-> > static u8 vmx_get_mt_mask(struct kvm_vcpu *vcpu, gfn_t gfn, bool is_mmio)
-> > {
-> >         if (is_mmio)                                                                           
-> >                 return MTRR_TYPE_UNCACHABLE << VMX_EPT_MT_EPTE_SHIFT;                          
-> >                                                                                                
-> >         if (gfn_in_dma_slot(vcpu->kvm, gfn)) {                                                 
-> >                 u8 type = MTRR_TYPE_WRCOMB;                                      
-> >                 //u8 type = pat_pfn_memtype(pfn);                                
-> >                 return (type << VMX_EPT_MT_EPTE_SHIFT) | VMX_EPT_IPAT_BIT;       
-> >         }                                                                                      
-> >                                                                                                
-> >         if (!kvm_arch_has_noncoherent_dma(vcpu->kvm))                            
-> >                 return (MTRR_TYPE_WRBACK << VMX_EPT_MT_EPTE_SHIFT) | VMX_EPT_IPAT_BIT;         
-> >                                                                                                
-> >         if (kvm_read_cr0_bits(vcpu, X86_CR0_CD)) {                                             
-> >                 if (kvm_check_has_quirk(vcpu->kvm, KVM_X86_QUIRK_CD_NW_CLEARED))               
-> >                         return MTRR_TYPE_WRBACK << VMX_EPT_MT_EPTE_SHIFT;                      
-> >                 else                                                                           
-> >                         return (MTRR_TYPE_UNCACHABLE << VMX_EPT_MT_EPTE_SHIFT) | 
-> >                                 VMX_EPT_IPAT_BIT;                                
-> >         }                                                                        
-> >                                                                                  
-> >         return kvm_mtrr_get_guest_memory_type(vcpu, gfn) << VMX_EPT_MT_EPTE_SHIFT;
-> > }
-> > 
-> > BTW, since the special memslot must be exposed to guest as virtio GPU BAR in
-> > order to prevent other guest drivers from access, I wonder if it's better to
-> > include some keyword like VIRTIO_GPU_BAR in memslot flag name.
-> Another choice is to add a memslot flag KVM_MEM_HONOR_GUEST_PAT, then user
-> (e.g. QEMU) does special treatment to this kind of memslots (e.g. skipping
-> reading/writing to them in general paths).
+On 21/12/2023 00:05, Jamal Hadi Salim wrote:
+> On Wed, Dec 20, 2023 at 6:55 AM Jamal Hadi Salim <jhs@mojatatu.com> wrote:
+>>
+>> Hi Hangyu,
+>> While the fix looks correct - can you please describe how you came
+>> across this issue? Was it a tool or by inspection? Do you have a text
+>> case that triggered something etc, etc.
+
+I discovered this accidentally when I used gdb to debug a program that 
+uses em_text. And I think putting the code in the commit log will will 
+make it too bulky.
+
+>>
+>> On Tue, Dec 19, 2023 at 10:09 PM Hangyu Hua <hbh25y@gmail.com> wrote:
+>>>
+>>> m->data needs to be freed when em_text_destroy is called.
+>>>
+>>> Fixes: d675c989ed2d ("[PKT_SCHED]: Packet classification based on textsearch (ematch)")
+>>> Signed-off-by: Hangyu Hua <hbh25y@gmail.com>
+>>> ---
+>>>   net/sched/em_text.c | 4 +++-
+>>>   1 file changed, 3 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/net/sched/em_text.c b/net/sched/em_text.c
+>>> index 6f3c1fb2fb44..b9d5d4dca2c9 100644
+>>> --- a/net/sched/em_text.c
+>>> +++ b/net/sched/em_text.c
+>>> @@ -97,8 +97,10 @@ static int em_text_change(struct net *net, void *data, int len,
+>>>
+>>>   static void em_text_destroy(struct tcf_ematch *m)
+>>>   {
+>>> -       if (EM_TEXT_PRIV(m) && EM_TEXT_PRIV(m)->config)
+>>> +       if (EM_TEXT_PRIV(m) && EM_TEXT_PRIV(m)->config) {
+>>>                  textsearch_destroy(EM_TEXT_PRIV(m)->config);
+>>> +               kfree(m->data);
+>>> +       }
+>>>   }
+>>>
+>>
 > 
-> @@ -7589,26 +7589,29 @@ static u8 vmx_get_mt_mask(struct kvm_vcpu *vcpu, gfn_t gfn, bool is_mmio)
->         if (is_mmio)
->                 return MTRR_TYPE_UNCACHABLE << VMX_EPT_MT_EPTE_SHIFT;
+> the bot just complained about needing a cast, use this:
+> struct text_match *
+
+I see. I will send a v2 later.
+
+Thanks,
+Hangyu
+
 > 
-> +       if (in_slot_honor_guest_pat(vcpu->kvm, gfn))
-> +               return kvm_mtrr_get_guest_memory_type(vcpu, gfn) << VMX_EPT_MT_EPTE_SHIFT;
-
-This is more along the lines of what I was thinking, though the name should be
-something like KVM_MEM_NON_COHERENT_DMA, i.e. not x86 specific and not contradictory
-for AMD (which already honors guest PAT).
-
-I also vote to deliberately ignore MTRRs, i.e. start us on the path of ripping
-those out.  This is a new feature, so we have the luxury of defining KVM's ABI
-for that feature, i.e. can state that on x86 it honors guest PAT, but not MTRRs.
-
-Like so?
-
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index d21f55f323ea..ed527acb2bd3 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -7575,7 +7575,8 @@ static int vmx_vm_init(struct kvm *kvm)
-        return 0;
- }
- 
--static u8 vmx_get_mt_mask(struct kvm_vcpu *vcpu, gfn_t gfn, bool is_mmio)
-+static u8 vmx_get_mt_mask(struct kvm_vcpu *vcpu, gfn_t gfn, bool is_mmio,
-+                         struct kvm_memory_slot *slot)
- {
-        /* We wanted to honor guest CD/MTRR/PAT, but doing so could result in
-         * memory aliases with conflicting memory types and sometimes MCEs.
-@@ -7598,6 +7599,9 @@ static u8 vmx_get_mt_mask(struct kvm_vcpu *vcpu, gfn_t gfn, bool is_mmio)
-        if (is_mmio)
-                return MTRR_TYPE_UNCACHABLE << VMX_EPT_MT_EPTE_SHIFT;
- 
-+       if (kvm_memslot_has_non_coherent_dma(slot))
-+               return MTRR_TYPE_WRBACK << VMX_EPT_MT_EPTE_SHIFT;
-+
-        if (!kvm_arch_has_noncoherent_dma(vcpu->kvm))
-                return (MTRR_TYPE_WRBACK << VMX_EPT_MT_EPTE_SHIFT) | VMX_EPT_IPAT_BIT;
-
-I like the idea of pulling the memtype from the host, but if we can make that
-work then I don't see the need for a special memslot flag, i.e. just do it for
-*all* SPTEs on VMX.  I don't think we need a VMA for that, e.g. we should be able
-to get the memtype from the host PTEs, just like we do the page size.
-
-KVM_MEM_WC is a hard "no" for me.  It's far too x86 centric, and as you alluded
-to, it requires coordination from the guest, i.e. is effectively limited to
-paravirt scenarios.
-
-> +
->         if (!kvm_arch_has_noncoherent_dma(vcpu->kvm))
->                 return (MTRR_TYPE_WRBACK << VMX_EPT_MT_EPTE_SHIFT) | VMX_EPT_IPAT_BIT;
-> 
->         if (kvm_read_cr0_bits(vcpu, X86_CR0_CD)) {
->                 if (kvm_check_has_quirk(vcpu->kvm, KVM_X86_QUIRK_CD_NW_CLEARED))
->                         return MTRR_TYPE_WRBACK << VMX_EPT_MT_EPTE_SHIFT;
->                 else
->                         return (MTRR_TYPE_UNCACHABLE << VMX_EPT_MT_EPTE_SHIFT) |
->                                 VMX_EPT_IPAT_BIT;
->         }
-> 
->         return kvm_mtrr_get_guest_memory_type(vcpu, gfn) << VMX_EPT_MT_EPTE_SHIFT;
->  }
+> cheers,
+> jamal
+>> Acked-by: Jamal Hadi Salim <jhs@mojatatu.com>
+>>
+>> cheers,
+>> jamal
+>>
+>>>   static int em_text_dump(struct sk_buff *skb, struct tcf_ematch *m)
+>>> --
+>>> 2.34.1
+>>>
 
