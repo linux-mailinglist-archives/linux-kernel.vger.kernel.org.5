@@ -1,99 +1,73 @@
-Return-Path: <linux-kernel+bounces-8566-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8568-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F317B81B977
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 15:24:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FFE981B97F
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 15:26:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 770F8B209D6
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 14:24:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A00631C241D3
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 14:26:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4C2C6D6F8;
-	Thu, 21 Dec 2023 14:24:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCC2836089;
+	Thu, 21 Dec 2023 14:26:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="cwJcp4RE"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C9396D6D9
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 14:24:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3065C433C9;
-	Thu, 21 Dec 2023 14:24:42 +0000 (UTC)
-Date: Thu, 21 Dec 2023 09:25:45 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc: Naveen N Rao <naveen@kernel.org>, "linuxppc-dev@lists.ozlabs.org"
- <linuxppc-dev@lists.ozlabs.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, Michael Ellerman <mpe@ellerman.id.au>,
- Nicholas Piggin <npiggin@gmail.com>, "Aneesh Kumar K.V"
- <aneesh.kumar@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Florent
- Revest <revest@chromium.org>, Masami Hiramatsu <mhiramat@kernel.org>
-Subject: Re: [RFC PATCH 6/9] powerpc/ftrace: Update and move function
- profile instructions out-of-line
-Message-ID: <20231221092545.1b696eb6@gandalf.local.home>
-In-Reply-To: <e2e467a3-7283-4f22-8cd9-2d1875f60e92@csgroup.eu>
-References: <cover.1702045299.git.naveen@kernel.org>
-	<39363eb6b1857f26f9fa51808ad48b0121899b84.1702045299.git.naveen@kernel.org>
-	<e2e467a3-7283-4f22-8cd9-2d1875f60e92@csgroup.eu>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF42E6D6F6;
+	Thu, 21 Dec 2023 14:26:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=83/j5i4zu7kqHHtpPzIPW+ZpoOyRgtDx/AwjGXsP4d0=; b=cwJcp4REq06xDi2EuWB7Mu15O+
+	SIru0EgHZgeOqPQGhSGuE9UYDynRzuTUYT63EuotMXZDPHkR983oGZPVzE1Sv8Mb0ep7wgin1C4lf
+	sZN2cZdXb7AH8orVwquiluVXqHpj6eBE6gPPV3RJZpOdSsQubor8CA5p5dPtEyL9YKjo=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rGJzo-003WBO-5E; Thu, 21 Dec 2023 15:25:56 +0100
+Date: Thu, 21 Dec 2023 15:25:56 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Dimitri Fedrau <dima.fedrau@gmail.com>
+Cc: Stefan Eichenberger <eichest@gmail.com>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 4/4] net: phy: marvell-88q2xxx: add driver for the
+ Marvell 88Q2220 PHY
+Message-ID: <59fed161-6c08-4537-b02d-19e67e342dd8@lunn.ch>
+References: <20231219093554.GA6393@debian>
+ <20231221072853.107678-1-dima.fedrau@gmail.com>
+ <20231221072853.107678-5-dima.fedrau@gmail.com>
+ <ZYRCDTWgHbM2qAom@eichest-laptop>
+ <20231221141636.GA122124@debian>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231221141636.GA122124@debian>
 
-On Thu, 21 Dec 2023 10:46:08 +0000
-Christophe Leroy <christophe.leroy@csgroup.eu> wrote:
+> Without setting the master-slave option it didn't work. I think its
+> mandatory.
 
-> > To enable ftrace, the nop at function entry is changed to an
-> > unconditional branch to 'tramp'. The call to ftrace_caller() may be
-> > updated to ftrace_regs_caller() depending on the registered ftrace ops.
-> > On 64-bit powerpc, we additionally change the instruction at 'tramp' to
-> > 'mflr r0' from an unconditional branch back to func+4. This is so that
-> > functions entered through the GEP can skip the function profile sequence
-> > unless ftrace is enabled.
-> > 
-> > With the context_switch microbenchmark on a P9 machine, there is a
-> > performance improvement of ~6% with this patch applied, going from 650k
-> > context switches to 690k context switches without ftrace enabled. With
-> > ftrace enabled, the performance was similar at 86k context switches.  
-> 
-> Wondering how significant that context_switch micorbenchmark is.
-> 
-> I ran it on both mpc885 and mpc8321 and I'm a bit puzzled by some of the 
-> results:
-> # ./context_switch --no-fp
-> Using threads with yield on cpus 0/0 touching FP:no altivec:no vector:no 
-> vdso:no
-> 
-> On 885, I get the following results before and after your patch.
-> 
-> CONFIG_FTRACE not selected : 44,9k
-> CONFIG_FTRACE selected, before : 32,8k
-> CONFIG_FTRACE selected, after : 33,6k
-> 
-> All this is with CONFIG_INIT_STACK_ALL_ZERO which is the default. But 
-> when I select CONFIG_INIT_STACK_NONE, the CONFIG_FTRACE not selected 
-> result is only 34,4.
-> 
-> On 8321:
-> 
-> CONFIG_FTRACE not selected : 100,3k
-> CONFIG_FTRACE selected, before : 72,5k
-> CONFIG_FTRACE selected, after : 116k
-> 
-> So the results look odd to me.
+I don't think it is. The PHY should have a default setting for
+master-slave. Often its based on the typical use case. If its
+typically inside a switch, then it should default to prefer-master. If
+its typically in an end system, then it should be prefer-slave.
 
-
-BTW, CONFIG_FTRACE just enables the tracing system (I would like to change
-that to CONFIG_TRACING, but not sure if I can without breaking .configs all
-over the place).
-
-The nops for ftrace is enabled with CONFIG_FUNCTION_TRACER.
-
--- Steve
+    Andrew
 
