@@ -1,131 +1,140 @@
-Return-Path: <linux-kernel+bounces-9141-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9142-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9167081C138
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 23:52:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 838BE81C13B
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 23:52:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4EFE1288A2A
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 22:52:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8C48A1C247B9
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 22:52:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A9AC79466;
-	Thu, 21 Dec 2023 22:51:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4065078E9D;
+	Thu, 21 Dec 2023 22:52:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=iwanders.net header.i=@iwanders.net header.b="H70j47SG"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XNLxSN+7"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-qv1-f46.google.com (mail-qv1-f46.google.com [209.85.219.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 919B578E7D
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 22:51:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iwanders.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iwanders.net
-Received: by mail-qv1-f46.google.com with SMTP id 6a1803df08f44-67f47b15fa3so7782776d6.1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 14:51:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=iwanders.net; s=google; t=1703199115; x=1703803915; darn=vger.kernel.org;
-        h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=nRr/sJytJ/lyMmoQqltmQuZwEfSFP9l8D/4B29sx8i8=;
-        b=H70j47SGN5x8H28BTc2BBCQjEdQHsGJhZa6WHRU18+3ciIpQ+Zom8BY+B64dwL1ieT
-         zfSa0bOXKrwK0HQnqwf/cEwwGFtQMuVOiCf5FZ/i1+XF1sUUEAHrDaTag0FNhKHiaRE9
-         m1LW0UeB5DzE7fOiANP8B4KSZmsCd4tm4dIIM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703199115; x=1703803915;
-        h=references:in-reply-to:message-id:date:subject:cc:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nRr/sJytJ/lyMmoQqltmQuZwEfSFP9l8D/4B29sx8i8=;
-        b=sQteYjk7iZdQTka7UskYlLDqROwLgFz01PAuFy55399bvyJX9kJEHs8chhaEpRDKaZ
-         HCUWMECgEvOua3WOS20w/4gJffVuqEGw51ArAsR8iiH5OpNy6k7l9OkPeRIJ+aDfCBkt
-         beANjvxnYll/nNZ4YIxKVfF3wzJqupqNU8ioySHvVa4OwVkwDU+1fSZ4cqInLon9G5Az
-         pJ7QMbEbalwNq1wL1SqAm+Ysyh5JNgmPPYlHRZiHMeRLisXL4DG3Au2OEJV/3zempYmG
-         aZFlRWfPIoiV+ggHGmQNaeHtmEhHu8S+GgBXQ4sr0pnY7ltsyQ2x1FQLKsUxCn1FDYVG
-         dgUQ==
-X-Gm-Message-State: AOJu0YxfSqR95ulS+/ByH2xq2f4lcwxhmYgu6RNzuLva5CH8XUIbDIC8
-	ZW0RPJVyds3k3B/HXywMQpRKq9ifkFciLQ==
-X-Google-Smtp-Source: AGHT+IE3eAdqozXayjo0dl6yz5rMb8wGX66JaWar5KgZT8yTQxgUmYjsOhKAdDGDYnhFzf7YQ4pxsw==
-X-Received: by 2002:a05:6214:19cc:b0:67f:5ab:364c with SMTP id j12-20020a05621419cc00b0067f05ab364cmr475903qvc.70.1703199115427;
-        Thu, 21 Dec 2023 14:51:55 -0800 (PST)
-Received: from eagle.lan (24-246-30-234.cable.teksavvy.com. [24.246.30.234])
-        by smtp.gmail.com with ESMTPSA id a15-20020a0cefcf000000b0067f812c4a58sm782733qvt.60.2023.12.21.14.51.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Dec 2023 14:51:54 -0800 (PST)
-From: Ivor Wanders <ivor@iwanders.net>
-To: Jean Delvare <jdelvare@suse.com>,
-	Guenter Roeck <linux@roeck-us.net>,
-	Jonathan Corbet <corbet@lwn.net>
-Cc: Ivor Wanders <ivor@iwanders.net>,
-	linux-hwmon@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Maximilian Luz <luzmaximilian@gmail.com>
-Subject: [PATCH 1/1] hwmon: clarify intent of fan min/max
-Date: Thu, 21 Dec 2023 17:51:49 -0500
-Message-Id: <20231221225149.11295-2-ivor@iwanders.net>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20231221225149.11295-1-ivor@iwanders.net>
-References: <20231221225149.11295-1-ivor@iwanders.net>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78BAC78E64;
+	Thu, 21 Dec 2023 22:52:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8F25C433C8;
+	Thu, 21 Dec 2023 22:52:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703199141;
+	bh=2Fl8vOhQ64Y7+GgI7caXKohE+Cft0TcjWAivLqeuiFQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=XNLxSN+70e8qMK73Id71VXLGuAaG3NTghRPhaZpVfAD2rF/O45r/AQ3iqsrWqacAE
+	 U4eipX3qpFy7P8RiHpK8b9sL+ue0nyzfspB9FI1EA+iR0szp/pHUzZagySvSzQ5qLF
+	 EyHNw/jWoYr6RCBT2PWpHfj68Vyts84fRPDcdCGnL3u/1SErtA5td8dmoalY9/qjHL
+	 XEnxuVi5SZBgpyXT4cpbEeqgJ+qvDbAYZVOGdOypLMfZUME8fXP9deNNZLT4vY3VIO
+	 NGVNEr3+aYhQ+ScrV5rhEIyI/G549Zx1GnmhyCH6Q+tdLNMIgrYdIc9xkshr7Yy9rG
+	 Rwpzdwx520EZQ==
+Received: (nullmailer pid 234434 invoked by uid 1000);
+	Thu, 21 Dec 2023 22:52:18 -0000
+Date: Thu, 21 Dec 2023 16:52:18 -0600
+From: Rob Herring <robh@kernel.org>
+To: Frank Li <Frank.Li@nxp.com>
+Cc: manivannan.sadhasivam@linaro.org, bhelgaas@google.com, conor+dt@kernel.org, devicetree@vger.kernel.org, festevam@gmail.com, helgaas@kernel.org, hongxing.zhu@nxp.com, imx@lists.linux.dev, kernel@pengutronix.de, krzysztof.kozlowski+dt@linaro.org, krzysztof.kozlowski@linaro.org, kw@linux.com, l.stach@pengutronix.de, linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com, linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org, lpieralisi@kernel.org, s.hauer@pengutronix.de, shawnguo@kernel.org
+Subject: Re: [PATCH v5 11/16] dt-bindings: imx6q-pcie: Add imx95 pcie
+ compatible string
+Message-ID: <20231221225218.GA232422-robh@kernel.org>
+References: <20231220213615.1561528-1-Frank.Li@nxp.com>
+ <20231220213615.1561528-12-Frank.Li@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231220213615.1561528-12-Frank.Li@nxp.com>
 
-This adds a link to the hwmon sysfs attributes in the hwmon patch
-submission bullet points. It also adds an explanation denoting the
-intent of the fan min and max attributes.
+On Wed, Dec 20, 2023 at 04:36:10PM -0500, Frank Li wrote:
+> From: Richard Zhu <hongxing.zhu@nxp.com>
+> 
+> Add i.MX95 PCIe "fsl,imx95-pcie" compatible string.
+> Add "atu" and "app" to reg-names.
+> 
+> Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
+> ---
+> 
+> Notes:
+>     Change from v2 to v3
+>     - Remove krzy's ACK tag
+>     - Add condition check for imx95, which required more reg-names then old
+>     platform, so need Krzy review again,
+>     
+>     Change from v1 to v2
+>     - add Krzy's ACK tag
+> 
+>  .../bindings/pci/fsl,imx6q-pcie-common.yaml    |  1 +
+>  .../bindings/pci/fsl,imx6q-pcie.yaml           | 18 ++++++++++++++++++
+>  2 files changed, 19 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie-common.yaml b/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie-common.yaml
+> index a284a27c5e873..1b63089ff0aee 100644
+> --- a/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie-common.yaml
+> +++ b/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie-common.yaml
+> @@ -207,6 +207,7 @@ allOf:
+>                  - fsl,imx6sx-pcie
+>                  - fsl,imx6q-pcie
+>                  - fsl,imx6qp-pcie
+> +                - fsl,imx95-pcie
+>                  - fsl,imx6sx-pcie-ep
+>                  - fsl,imx6q-pcie-ep
+>                  - fsl,imx6qp-pcie-ep
+> diff --git a/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.yaml b/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.yaml
+> index f20d4f0e3cb6c..8633c622bd178 100644
+> --- a/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.yaml
+> +++ b/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.yaml
+> @@ -29,6 +29,7 @@ properties:
+>        - fsl,imx8mq-pcie
+>        - fsl,imx8mm-pcie
+>        - fsl,imx8mp-pcie
+> +      - fsl,imx95-pcie
+>  
+>    clocks:
+>      minItems: 3
+> @@ -80,6 +81,22 @@ required:
+>  allOf:
+>    - $ref: /schemas/pci/snps,dw-pcie.yaml#
+>    - $ref: /schemas/pci/fsl,imx6q-pcie-common.yaml#
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          enum:
+> +            - fsl,imx95-pcie
+> +    then:
+> +      properties:
+> +        reg:
+> +          minItems: 4
+> +        reg-names:
+> +          items:
+> +            - const: dbi
+> +            - const: atu
+> +            - const: app
+> +            - const: config
 
-Signed-off-by: Ivor Wanders <ivor@iwanders.net>
----
- Documentation/hwmon/submitting-patches.rst |  4 +++-
- Documentation/hwmon/sysfs-interface.rst    | 12 +++++++++---
- 2 files changed, 12 insertions(+), 4 deletions(-)
+Add new entries to the end. Originally, you had dbi and config. Add ata 
+and app on the end.
 
-diff --git a/Documentation/hwmon/submitting-patches.rst b/Documentation/hwmon/submitting-patches.rst
-index 6482c4f13..d634c41d7 100644
---- a/Documentation/hwmon/submitting-patches.rst
-+++ b/Documentation/hwmon/submitting-patches.rst
-@@ -141,7 +141,9 @@ increase the chances of your change being accepted.
- 
- * When deciding which sysfs attributes to support, look at the chip's
-   capabilities. While we do not expect your driver to support everything the
--  chip may offer, it should at least support all limits and alarms.
-+  chip may offer, it should at least support all limits and alarms. Only
-+  add attributes that follow the intent of the attributes, as described in
-+  Documentation/hwmon/sysfs-interface.rst.
- 
- * Last but not least, please check if a driver for your chip already exists
-   before starting to write a new driver. Especially for temperature sensors,
-diff --git a/Documentation/hwmon/sysfs-interface.rst b/Documentation/hwmon/sysfs-interface.rst
-index f76e9f8cc..72dd5e02d 100644
---- a/Documentation/hwmon/sysfs-interface.rst
-+++ b/Documentation/hwmon/sysfs-interface.rst
-@@ -167,13 +167,19 @@ Fans
- ****
- 
- `fan[1-*]_min`
--		Fan minimum value
-+		Fan minimum value, this is intended as a way to specify
-+		the desired minimum speed to the device if the device
-+		supports that. It is not intended for communicating
-+		a constant that denotes the lowest possible fan speed.
- 
- `fan[1-*]_max`
--		Fan maximum value
-+		Fan maximum value, this is intended as a way to specify
-+		the desired maximum speed to the device if the device
-+		supports that. It is not intended for communicating
-+		a constant that denotes the highest possible fan speed.
- 
- `fan[1-*]_input`
--		Fan input value.
-+		Fan input value, this is the fan's current speed.
- 
- `fan[1-*]_div`
- 		Fan divisor.
--- 
-2.17.1
-
+> +
+>    - if:
+>        properties:
+>          compatible:
+> @@ -101,6 +118,7 @@ allOf:
+>          compatible:
+>            enum:
+>              - fsl,imx8mq-pcie
+> +            - fsl,imx95-pcie
+>      then:
+>        properties:
+>          clocks:
+> -- 
+> 2.34.1
+> 
 
