@@ -1,64 +1,64 @@
-Return-Path: <linux-kernel+bounces-7982-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7983-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2429981B014
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 09:14:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A82CD81B018
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 09:14:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C49FD282ABC
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 08:14:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 339401F21644
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 08:14:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EDC115AFC;
-	Thu, 21 Dec 2023 08:13:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F5A015AE7;
+	Thu, 21 Dec 2023 08:14:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="vnPbTShv"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="VEdOmYJg"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FB5B156F7
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 08:13:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AA7615AD5
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 08:14:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a22deb95d21so54250066b.3
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 00:13:54 -0800 (PST)
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a2699ee30d1so38903566b.2
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 00:14:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703146433; x=1703751233; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1703146484; x=1703751284; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=GDY8x7O4NvLF3mHLvKVyiF7jBNNYo0lUVO4kH9ZMRxc=;
-        b=vnPbTShvitCUpLYGrnqZAYyq2G6MelgekZKN2C0EELL0qrfDHsOjmHz4lC9Dd0ZsNm
-         KeCjddluft9y8H2eohM5PEWYArIVb+88p5a4hMw1aiBezMSUT+ALsdXd1IXS87lOKoHK
-         kK+gsdMoK1QgEFKOitBw/7pwjLePGAIa0YtB5zJHy/733zULyEe19nNcOMq6eFplyRPi
-         inwscetYaKq81CVP/RkByKLG+A56qP1GtZaDxHy7qtIw837Nl+veq2qnsfcAAN9iWHl6
-         1yZi3tth2oCRDD8qnwMWtqXMz9oLMOQ4MGFIdZUzvwZWFoZAcrBi0WmznhiI+MCNv2qv
-         Ki6A==
+        bh=CFiIVy5eub4bZACFCmk9Dc5sqachQ3QbkbfYt+THpVo=;
+        b=VEdOmYJghcrU+5Ktv1OoNK2A/L4yUiQcI4HS9W3kuIBTwwvc9rDduzp4vKjI5EaQfx
+         Af6T7c3d2gAHWVi0Qk4WHxL49PGF5jRIkItqiyozcutJyRaNX2d4IGC+XDnX7n/V+l4z
+         eXnWD4rlDZmE9YCmfrarm4DY5S985rqygmL2hK4BgLfUscqUieW5q5yL4orJl44V1ICl
+         Oxs1OGpGDxBTZnjXDjjEMaGvX/dSZFpPuWIl/3SDp/OBel23OyMb2C8MbzVIz53iqwbH
+         mc24wcIe2VcyT/X3gciEs0AEULDLACSfl2IOTPRzfywmljZ1Jg42hH5z4DIYMmP8Jn+b
+         wKYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703146433; x=1703751233;
+        d=1e100.net; s=20230601; t=1703146484; x=1703751284;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GDY8x7O4NvLF3mHLvKVyiF7jBNNYo0lUVO4kH9ZMRxc=;
-        b=sODcIHpBEkx7uvkmX4wHDQRhPMLRy1pmm4+d4Uh/RLYWbz0tfti2Hl6gwrF1rAVgqn
-         Ln/dKjqHW6RHGBJ7Ssl05dZo4wdYQWUC0SoxzfNbo8ZeZt35ojbCYX7oYpgsiJMzAPmd
-         iolAzjy+4O3VP6iVuOnrpcfAAtWxg0rgUL0fKJqsLmFQCnTA0shanXh1gi+6W3wF9yXf
-         2jfH4ltdvnodxQKEmrMN088RPX40JuEQoPzbCHqYVQSf9g4oMypRKE9aBuTBHDw0HkUP
-         kkScppz32/LM1ws2MR3pX/Tp4sDMDjf2UKVyiNbHBSh8oGxktMJteDrnpVyqwPHzmhWN
-         CMuA==
-X-Gm-Message-State: AOJu0YzgoEj/S4WMilHYfbRO9ZgnmYjjzaB34d22IXx/jkCP0Wxco2zK
-	C6jyHwdlSa8aC6SQSFONHTGMeg==
-X-Google-Smtp-Source: AGHT+IEEoI80XxRuz8xOBx+WhI9LWy61dDl/w3BAF7+2+B2aynw0N+urmNFO14yH3JWWyDxWtQk3qQ==
-X-Received: by 2002:a17:906:457:b0:a23:68ed:e2ad with SMTP id e23-20020a170906045700b00a2368ede2admr2962160eja.125.1703146433323;
-        Thu, 21 Dec 2023 00:13:53 -0800 (PST)
+        bh=CFiIVy5eub4bZACFCmk9Dc5sqachQ3QbkbfYt+THpVo=;
+        b=xUOuAo1WEQGv74JKjIXEdelP6pDrP+enhbafog92etjGPtIn2cBREIEXBHPx1omYZk
+         QKfpjp7SXG8mtWsHcE9wz42abCn/C4jrqN8AUD5CZGIlZWPwH3F+M5thdxr7YnMV7E45
+         cWDZcejJ+9JuBjAClcikpkNJgfP6BuCFWjsTfd2VenamVHPEP2Ay08sge/Muo+w8hM3f
+         PuHb4Gu/oyfCE9bI7KHab45/mIKlG8CJM3WAIxcU4p0+5OThfBHnIaHHMMYAU8AHYvQY
+         G9wwVLe/m5Vk/wDy8fVpbscKgZ/E/bk/vFCfnyGTKFDsoHnwtpOtQU2iQIo5c28pLJdH
+         bqCw==
+X-Gm-Message-State: AOJu0YwXQoincTXYY/0KkwEHy5s9B+1OSTrjQsoYt+SREO/ICfenx7yc
+	Vedp5aZJwKhUPkWFYShoQyCLaA==
+X-Google-Smtp-Source: AGHT+IHINUSqjLTFFFqCSIQeVayzTPqU2JGlCg0h55ba7Xw75Iw7twJhizYVYUpg3dz8i7rXZU/lHQ==
+X-Received: by 2002:a17:906:5205:b0:a23:58e5:da9e with SMTP id g5-20020a170906520500b00a2358e5da9emr3076014ejm.36.1703146484403;
+        Thu, 21 Dec 2023 00:14:44 -0800 (PST)
 Received: from [192.168.0.22] ([78.10.206.178])
-        by smtp.gmail.com with ESMTPSA id dt6-20020a170906b78600b00a2699f9d5b1sm677712ejb.177.2023.12.21.00.13.52
+        by smtp.gmail.com with ESMTPSA id dt6-20020a170906b78600b00a2699f9d5b1sm677712ejb.177.2023.12.21.00.14.43
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Dec 2023 00:13:52 -0800 (PST)
-Message-ID: <bc1731e0-0770-4bc9-abd7-239733a03d95@linaro.org>
-Date: Thu, 21 Dec 2023 09:13:52 +0100
+        Thu, 21 Dec 2023 00:14:43 -0800 (PST)
+Message-ID: <7199b7b7-238e-45de-96f1-0f04d0fa718d@linaro.org>
+Date: Thu, 21 Dec 2023 09:14:43 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,8 +66,8 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 03/22] Documentation: devicetree: Clarify wording for
- wakeup-source property
+Subject: Re: [PATCH v2 06/22] ARM: dts: samsung: exynos5420: Enable
+ cros-ec-spi as wake source
 Content-Language: en-US
 To: Mark Hasemeyer <markhas@chromium.org>, LKML <linux-kernel@vger.kernel.org>
 Cc: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
@@ -75,11 +75,12 @@ Cc: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
  Konrad Dybcio <konrad.dybcio@linaro.org>,
  Andy Shevchenko <andriy.shevchenko@intel.com>, Rob Herring
  <robh@kernel.org>, Sudeep Holla <sudeep.holla@arm.com>,
- Conor Dooley <conor+dt@kernel.org>,
+ Alim Akhtar <alim.akhtar@samsung.com>, Conor Dooley <conor+dt@kernel.org>,
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
+ Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org
 References: <20231220235459.2965548-1-markhas@chromium.org>
- <20231220165423.v2.3.I1016a45ac9e8daf8a9ebc9854ab90ec3542e7c30@changeid>
+ <20231220165423.v2.6.I06b059021de1bf6103e60a73211f078f2af75d17@changeid>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -125,30 +126,22 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231220165423.v2.3.I1016a45ac9e8daf8a9ebc9854ab90ec3542e7c30@changeid>
+In-Reply-To: <20231220165423.v2.6.I06b059021de1bf6103e60a73211f078f2af75d17@changeid>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 On 21/12/2023 00:54, Mark Hasemeyer wrote:
-> The wording in the current documentation is a little strong. The
-> intention was not to fix any particular interrupt as wakeup capable but
-> leave those details to the device. It wasn't intended to enforce any
-> rules as what can be or can't be a wakeup interrupt.
+> The cros_ec driver currently assumes that cros-ec-spi compatible device
+> nodes are a wakeup-source even though the wakeup-source property is not
+> defined.
 > 
-> Soften the wording to not mandate that the 'wakeup-source' property be
-> used, and clarify what it means when an interrupt is marked (or not
-> marked) for wakeup.
+> Add the wakeup-source property to all cros-ec-spi compatible device
+> nodes to match expected behavior.
 > 
-> Link: https://lore.kernel.org/all/ZYAjxxHcCOgDVMTQ@bogus/
-> Link: https://lore.kernel.org/all/CAL_Jsq+MYwOG40X26cYmO9EkZ9xqWrXDi03MaRfxnV-+VGkXWQ@mail.gmail.com/
-> Signed-off-by: Mark Hasemeyer <markhas@chromium.org>
 
-Please use subject prefixes matching the subsystem. You can get them for
-example with `git log --oneline -- DIRECTORY_OR_FILE` on the directory
-your patch is touching.
-
-You nicely skipped all my filters... No need to resend to fix this, but
-fix it if sending a new version.
+You do not need this property, if driver assumes that. Just enable it
+unconditionally. I don't think anything from previous discussion was
+resolved.
 
 Best regards,
 Krzysztof
