@@ -1,65 +1,64 @@
-Return-Path: <linux-kernel+bounces-7971-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7974-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 03F0781AFEF
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 09:02:56 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A97DD81AFF9
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 09:04:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 807451F27762
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 08:02:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E3A36B2136F
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 08:04:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6BE015ADF;
-	Thu, 21 Dec 2023 08:02:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFCB415E9B;
+	Thu, 21 Dec 2023 08:04:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="TImqD6Zz"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="y21Q/4nu"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77DA0156D7
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 08:02:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD8BF171BC
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 08:04:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a234938c7f3so48153566b.2
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 00:02:43 -0800 (PST)
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a235500d0e1so48315266b.2
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 00:04:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703145762; x=1703750562; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=ObjpKKsnJKpmQ7Ch+WEC9pMBWTA+P86GBMNxJkiSckk=;
-        b=TImqD6ZzBrOzMvszcLRvpO3+1Pa6DxL0q6Fj2g5ev10DLRtgwKlJyYR/XaL3KkIieQ
-         n+TyXTp19tRLL1SrLF4lnMXCXHkjFAtATuNQccZmqnYb+h30yWuElw1uC7TFZoqRlNnD
-         ao2t6NyGjrOE8/vUU7CmPrBP+Bwz5fqeDipkH53BWPkofEtpJbmJs2U+Ha+6apyWD7t1
-         iH1iqQHfLS2eG1KGxCZuO/or2b8Um0Q5jP2RW8+OvdahESqGNS7Oug0rlreNvt0IyvCz
-         iWGKUhM4w9fFY70Ee3oWDjnvSgAW3Et2a6V0wk2FXN2DvXIMtUJW+vcAoGs82YjiV5yU
-         l4ZA==
+        d=linaro.org; s=google; t=1703145846; x=1703750646; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=rZ3EgJBFwrcoVo0x7FF2XBy23R5zWqDNweyq7hF92Xc=;
+        b=y21Q/4nubZxNvE4iaPceQn3FC9djLrq15pxNabyxtRNraZt1znDbReXOG6ctGLaCW6
+         DF+rcmspE0mgMkdYUfYTodGFvmQzxCUvHSQ9yqLIpo5+MtqbhY/Xs2z4N128f4b9L9PF
+         frosukRXqPe8gqoftOh5U7N/e4xE9Jpemdy23KhzkOO542yT8BxTClxFoN1MnL6xXvZn
+         GZv8NOS53fD5IkJTsDKYuOXGwGl3CGVxCZ/4jAqOCGBrRC2K1u3VGdeJsMOeRXZ1xYDS
+         YpMWpISkrvIlD4OUwLQ0bLhZw6p1fDETCdQ6dqO6ir66W5MjX2LhS31k5ax21vFZ7tWI
+         4dEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703145762; x=1703750562;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ObjpKKsnJKpmQ7Ch+WEC9pMBWTA+P86GBMNxJkiSckk=;
-        b=HM78ncExLVN74jF6WWdR8jyECR4Yi2ouuOiLmkK5VQ/XdKUgREq9Qg74TSlqvAOmSi
-         Nwz7IIuv0f+taJGJ4QxDSAt/QuYWXnOMPwAp/Dlr246fOnkq8W9zdDNiHA7UfBwOUUAS
-         rwj7ALNWXZFOpHqD07GJrM11TLHtRVygnx6WuzG5XW7g0LqzNv78IExIak6XB05Y6KUF
-         QuAtwb6eoix6c5xTzmm1SVxnJsnOBldi7VcanRQbGmTRpwJjasaTzOuDVnkPPZl9eKtG
-         ++deRjdZRx8AC3x+jnMQPm4UhT9IOf5W7Btp+ZdvVvp7z2p+FS1D3EyPIBKptphPGPYv
-         fxUQ==
-X-Gm-Message-State: AOJu0YwLwOrBI0WDN08yoM3AWO+3ptmWWBmjaGUQ1cRnbvkO56vBIZDK
-	Oo2IKUGZa6QvBHDy4Tf8YD0Hwg==
-X-Google-Smtp-Source: AGHT+IEqMfiWsAZ/aXh8TsZOzhL3WmvGzT96BvH8AOFV/i1xh8v3UXcfoo6Q3/kv/IYeiVs1inqYYg==
-X-Received: by 2002:a17:906:589:b0:a1d:bef8:ce9d with SMTP id 9-20020a170906058900b00a1dbef8ce9dmr10138163ejn.81.1703145761696;
-        Thu, 21 Dec 2023 00:02:41 -0800 (PST)
+        d=1e100.net; s=20230601; t=1703145846; x=1703750646;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rZ3EgJBFwrcoVo0x7FF2XBy23R5zWqDNweyq7hF92Xc=;
+        b=Q3xAjx+7qOUD1eoTXS3X++b/Xi1N6um0S4ks8VRKIhN2T41Dylp0q99IbqTkTGSVjo
+         bi3+BZiYFiyL3110fMfkkzTBUmYNZ69TiKsx1gQ1mMydgfANNo5crxRfQ0hq6KKSXQj9
+         zOsSqQa0z8EUoAH4A7foT4HmUG9gGpNE+l4mET4zd4Hx3iCHvYc77Wi/7dIzqIpR5WqW
+         Es5gpwmzmJIFfYtzDHs3fyqpUPq7OPWHW3S5WSUTUoMRWbr/cCcNB/lVKYyxScKGLElh
+         MBFKXyxBbeOjLoxafzAIdNhUUZ2xmfJCv9eL3PDrWIGQsU/5emC4AVOPl4VISrKefG8F
+         Czyg==
+X-Gm-Message-State: AOJu0YyyaWtI80vkA4wxLS4ocbB2Ys8qyXpyJipDwjeh6Rss6g9ccwU7
+	7PO1vnNX/k0eXryhhhH7nOZ4Cg==
+X-Google-Smtp-Source: AGHT+IFlLf/Y8txPOazZFFIbWprrfrvwwiSUa02b2iZjD/FdJ5o9tWd17tCYfFEumi8+76SEor2ClQ==
+X-Received: by 2002:a17:906:b4b:b0:a23:633a:79c2 with SMTP id v11-20020a1709060b4b00b00a23633a79c2mr3410151ejg.94.1703145846007;
+        Thu, 21 Dec 2023 00:04:06 -0800 (PST)
 Received: from [192.168.0.22] ([78.10.206.178])
-        by smtp.gmail.com with ESMTPSA id zx13-20020a170907348d00b00a26881eeda6sm662421ejb.99.2023.12.21.00.02.40
+        by smtp.gmail.com with ESMTPSA id zx13-20020a170907348d00b00a26881eeda6sm662421ejb.99.2023.12.21.00.04.04
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Dec 2023 00:02:41 -0800 (PST)
-Message-ID: <5397da38-80e9-4e75-806d-0b92b2b5d475@linaro.org>
-Date: Thu, 21 Dec 2023 09:02:40 +0100
+        Thu, 21 Dec 2023 00:04:05 -0800 (PST)
+Message-ID: <bea6c2ed-c47b-4bbe-8cda-6e28fd2fcea8@linaro.org>
+Date: Thu, 21 Dec 2023 09:04:04 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -67,12 +66,27 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] regulator: MAINTAINERS: add status for IRQ helpers
-To: Matti Vaittinen <mazziesaccount@gmail.com>,
- Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
-References: <20231218102845.41875-1-krzysztof.kozlowski@linaro.org>
- <cbc4247c-323b-4f4e-8963-fcad7da9528e@gmail.com>
+Subject: Re: [PATCH V2 1/3] dt-bindings: iio: adc: Add QCOM PMIC5 Gen3 ADC
+ bindings
 Content-Language: en-US
+To: Jishnu Prakash <quic_jprakash@quicinc.com>, jic23@kernel.org,
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+ daniel.lezcano@linaro.org, dmitry.baryshkov@linaro.org,
+ linus.walleij@linaro.org, linux-arm-msm@vger.kernel.org,
+ andriy.shevchenko@linux.intel.com, quic_subbaram@quicinc.com,
+ quic_collinsd@quicinc.com, quic_amelende@quicinc.com,
+ quic_kamalw@quicinc.com, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, marijn.suijten@somainline.org
+Cc: lars@metafoo.de, luca@z3ntu.xyz, linux-iio@vger.kernel.org,
+ lee@kernel.org, rafael@kernel.org, rui.zhang@intel.com, lukasz.luba@arm.com,
+ cros-qcom-dts-watchers@chromium.org, sboyd@kernel.org,
+ linux-pm@vger.kernel.org, linux-arm-msm-owner@vger.kernel.org,
+ kernel@quicinc.com
+References: <20231116032530.753192-1-quic_jprakash@quicinc.com>
+ <20231116032530.753192-2-quic_jprakash@quicinc.com>
+ <832053f4-bd5d-4e58-81bb-1a8188e7f364@linaro.org>
+ <716cf526-59e3-e755-0a47-ff9ae496e87c@quicinc.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -118,64 +132,47 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <cbc4247c-323b-4f4e-8963-fcad7da9528e@gmail.com>
+In-Reply-To: <716cf526-59e3-e755-0a47-ff9ae496e87c@quicinc.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 21/12/2023 07:17, Matti Vaittinen wrote:
+On 21/12/2023 09:00, Jishnu Prakash wrote:
 > Hi Krzysztof,
 > 
-> On 12/18/23 12:28, Krzysztof Kozlowski wrote:
->> Each maintainer entry should have a status field:
+> On 11/16/2023 5:13 PM, Krzysztof Kozlowski wrote:
+>> On 16/11/2023 04:25, Jishnu Prakash wrote:
+>>> For the PMIC5-Gen3 type PMICs, ADC peripheral is present in HW for the
+>>> following PMICs: PMK8550, PM8550, PM8550B and PM8550VX PMICs.
+>>>
+>> A nit, subject: drop second/last, redundant "bindings". The
+>> "dt-bindings" prefix is already stating that these are bindings.
 >>
->>    $ ./scripts/get_maintainer.pl --self-test=sections
->>    ./MAINTAINERS:23368: warning: section without status
+>>>   
+>>>     reg:
+>>> -    description: VADC base address in the SPMI PMIC register map
+>>> -    maxItems: 1
+>> NAK.
 >>
->> Fixes: d55444adedae ("MAINTAINERS: Add reviewer for regulator irq_helpers")
->> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->> ---
->>   MAINTAINERS | 1 +
->>   1 file changed, 1 insertion(+)
+>> I wrote it multiple times. You canno remove the widest constraints from
+>> top-level property.
 >>
->> diff --git a/MAINTAINERS b/MAINTAINERS
->> index 30322190a72f..6fd22db830f5 100644
->> --- a/MAINTAINERS
->> +++ b/MAINTAINERS
->> @@ -23367,6 +23367,7 @@ K:	regulator_get_optional
->>   
->>   VOLTAGE AND CURRENT REGULATOR IRQ HELPERS
->>   R:	Matti Vaittinen <mazziesaccount@gmail.com>
->> +S:	Maintained
 > 
-> Isn't that a bit odd seeing the M: - entry is missing as well?
+>>>     '#io-channel-cells':
+>>>       const: 1
+>>>   
+>>>     interrupts:
+>>> -    maxItems: 1
+>> No, srsly. We went through it.
 > 
-> This entry falls under the drivers/regulator, and as such, is maintained 
-> by Mark (and the "umbrella" entry VOLTAGE AND CURRENT REGULATOR 
-> FRAMEWORK has all needed bits and pieces, like the M: and S:).
 > 
-> I think the current MAINTAINERS entries reflect the reality. Mark (and 
-> Liam) are THE regulator guy(s). I am just doing bits and pieces here and 
-> there, like reviewing the changes to these helpers.
+> Is it fine if I add the bindings for ADC5 Gen3 in a new file? It's not 
+> just for the reg and interrupts properties, I think it would make sense 
+> to have a new file as ADC5 Gen3 is a new device combining the functions 
+> of the existing QCOM VADC and ADC_TM devices.
+> 
 
-And your piece needs S: to explain whether you do odd fixes, maintaining
-or supporting. Although I understand questioning this with only R:, but
-I would argue that it still applies - reviewing odd fixes, reviewing
-unpaid or paid.
+The patch is no longer in my mailbox, that was more than a month ago.
 
-> 
-> I guess that from a technical POV duplicating the S: and M: here is a 
-> bit pointless, and as all duplicates, adds overhead when changes are done.
-
-M: is optional, anyway the M: field from regulators count, but status
-can be different than from the parent.
-
-> I am happy with the existing entries, but seems like everyone else is 
-> not. Still, having S: without M: can be a source of confusion. If S: is 
-> required, maybe add Mark as M: here as well. (Or if this is not Ok with 
-> Mark, switch my R to M - which in my opinion is still a bit pointless as 
-> the changes to drivers/regulator/irq_helpers.c will flow through Mark's 
-> hands in any case :] )
-> 
 Best regards,
 Krzysztof
 
