@@ -1,431 +1,369 @@
-Return-Path: <linux-kernel+bounces-8166-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8167-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A190781B2FA
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 10:56:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B19781B2FE
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 10:57:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C577C1C239E0
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 09:56:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8FAF71C238D2
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 09:57:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BA6A4F884;
-	Thu, 21 Dec 2023 09:56:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EACC54D593;
+	Thu, 21 Dec 2023 09:57:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="kMss3NnO"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="C6mSVE0X"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD5604F203
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 09:56:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-5e7415df4d6so13975487b3.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 01:56:39 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 331214D139
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 09:57:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-40d3dfcc1a4so3735625e9.2
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 01:57:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703152599; x=1703757399; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=i86WWCv3hv5GoQdCMK76RM5UpOhcDn7MONJ3V9hm4PU=;
-        b=kMss3NnOQ+VptQMOM48DRdQWBAyLaMUCLWoDFCvidspWFZOKaljCpdZW3IcwATtp5Z
-         QmWluZpxhavMsd4lfPckURY6ZPE315p6BKf1RinHg2AvKzOpVh6pze02PVy9fsJVwFw5
-         qd622YiCwILWQhsPOREEd2afzN9PAszl6YOz1uJ4vlGzpl5JI12AcGGD3oMP5mIFLA5m
-         /sHUBz1XPM8g5iZkjGRUcgiFGyw9uG0UxHg8VjY3xWYJxXeO2XNVBiRpyMoi6mSlJQGT
-         u9XTRnRY9HCIzJtQwGDNY8ETX8ZiVRdxt5Cb5+4jqe/8sJTnVRq7xHwuTFyS6pBCDRrw
-         B9IQ==
+        d=broadcom.com; s=google; t=1703152662; x=1703757462; darn=vger.kernel.org;
+        h=in-reply-to:autocrypt:references:cc:to:subject:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=x8Z3UY1BLe+t4pqyWo+mYhUp86dVOGFhMJqE0u0yRjw=;
+        b=C6mSVE0X0MCC4FU8IJ/kEQXBy6HkekedPnnuCqQDJomlpFP7MguSp7OjEIjgpeQJVO
+         ttYPdkdgfgm/zfHJmXr5G/p+rQa93BtPef2F3cyClWtP8veigxScpWq8t07AifAIDGFV
+         nbb6OddstQ/DLtTQ274MzzybG+w0AHMbun9Hs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703152599; x=1703757399;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=i86WWCv3hv5GoQdCMK76RM5UpOhcDn7MONJ3V9hm4PU=;
-        b=I3t8lnmHS9pkmvqj5NjEIo1EAvpaEdCOyGP8ubhQBYTt06rTe5fmgI06inRhMcibZr
-         abHfCyMQkbQp7e/XoHKmRBxVtsVZHMVN3MRLRFxPdqWwrtS7tAIDO1TIS1vtP2DjJrQT
-         1RaT1xtMdoKZPXqc6Qo336X9AT8TEpk3seuB9TlBrGLSO8x2Io16fciKn8sHmMNcf52h
-         jNH6lHzaSAewX6S1qyXakE/mDJ64zleZejXSTUG9A8D6kwml2/4X9TyEvRV4H1nqErY1
-         cYBWa3Z1xD24Zq0FoL6G54SgpmnFBS/vjiyb7GjUc5pYYSbYXJz8CJId0hv6ZW665ro+
-         3PSQ==
-X-Gm-Message-State: AOJu0YwWVDdN5PD+oChbw/WcrbWAFZND8nawhlchPNgUilSfvgfiFDrG
-	iAk2sUVGAcXXtg583oRLC61SbdTImVmEPAkL5+by6Es/eLabaA==
-X-Google-Smtp-Source: AGHT+IFN3y6D22umgZiLv0ZEDtNyEDOes2MUdUQ4twffcZrDsvHNDjoTKJ9AWpHqiB3O04OhM9lPKv+yCf4rXN3qdWI=
-X-Received: by 2002:a81:498c:0:b0:5e0:8545:cc82 with SMTP id
- w134-20020a81498c000000b005e08545cc82mr186918ywa.39.1703152598723; Thu, 21
- Dec 2023 01:56:38 -0800 (PST)
+        d=1e100.net; s=20230601; t=1703152662; x=1703757462;
+        h=in-reply-to:autocrypt:references:cc:to:subject:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=x8Z3UY1BLe+t4pqyWo+mYhUp86dVOGFhMJqE0u0yRjw=;
+        b=LXTK7/X9kFizPNTARml6nnyEMjohtoAWU7/mhhshQ82qgTGOOAReMEG4U0Ogg+U0v1
+         VhTP3kSuRLwJBuJecfMxMWC/SgECWrdi88KwGsqvnivWutNYksrjqVEjTq8nmtoywTZp
+         nVUNkbt/HYRVs5JD6wwuK2hM7gbcZFzCQ+Psj7oXkpScJVqJ6ClH8CL+0830x18hfD2z
+         stYebzgO+6hZ3mnsedA8LLqzr37cHJXCuYusYVK/LNOolA7WX1W2L8bxvxn1jo2Kikpg
+         WV34dOhTRpm8Epoxr99XaEg3D32Zf0QxjZ8AWwdO0qa+DB13wpvYIXLLnsELZtea4OL5
+         ed3A==
+X-Gm-Message-State: AOJu0Yzftb7SiW+you46Sp9WzPRxYCSWPBkDhsGuN4T5wf+YGrPiRBbj
+	5GGDogUeqK/yzAXEAkKQ7iV+eA==
+X-Google-Smtp-Source: AGHT+IHnFyvKpxTlgrFjID1b6h1zu8Yb0SgU+JIt4HhycaslMcbNSGmdtil+RBccLpWBVJtt0Ssddg==
+X-Received: by 2002:a05:600c:141:b0:40d:4156:b6d4 with SMTP id w1-20020a05600c014100b0040d4156b6d4mr48355wmm.160.1703152662397;
+        Thu, 21 Dec 2023 01:57:42 -0800 (PST)
+Received: from [10.230.42.27] ([192.19.152.250])
+        by smtp.gmail.com with ESMTPSA id o4-20020a5d4744000000b003365e685102sm1629739wrs.29.2023.12.21.01.57.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Dec 2023 01:57:41 -0800 (PST)
+Message-ID: <31292508-f881-4457-a4bf-2ca0b8e8f435@broadcom.com>
+Date: Thu, 21 Dec 2023 10:57:37 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231219003106.8663-1-quic_tengfan@quicinc.com>
- <20231219003106.8663-2-quic_tengfan@quicinc.com> <457e336e-004c-4721-b58d-e9ada16dc04b@linaro.org>
- <a8f168da-14f7-4377-8dea-f282a3eac0a4@quicinc.com> <13b61d41-6045-499e-864b-51c6cb6eacf9@linaro.org>
- <38604415-b410-4995-9c4f-525536435699@quicinc.com> <CAA8EJpo07gE7ZeNP6wSGTLtmF_3PKQAKFyMRZ8dk1K+f7PAxrg@mail.gmail.com>
- <ad1547cf-0520-422d-a105-ec426f526d71@quicinc.com> <CAA8EJppwsezPV21Uw8xTn=ra8L2jfnkHoRghDPN96O5tJsOD7A@mail.gmail.com>
- <72305a35-02e6-4ff6-8251-01f986530c5d@quicinc.com> <A45746C4-54C9-48D2-9DB7-52B4B56854E6@linaro.org>
- <4e328cd8-9ef7-42ce-b592-7f2216c00c0b@quicinc.com> <CAA8EJprE8v3bhHfyZJM9SJT=ShJ-LQvk5mR=gpdAWXF2yANWbQ@mail.gmail.com>
- <e88787dc-ed03-42d2-a6e7-fb88bbc89357@quicinc.com>
-In-Reply-To: <e88787dc-ed03-42d2-a6e7-fb88bbc89357@quicinc.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Thu, 21 Dec 2023 11:56:27 +0200
-Message-ID: <CAA8EJpreeQDmSm_nGwnBXgMGNfS83jjYGTgLZ0tvft=xyBEZvw@mail.gmail.com>
-Subject: Re: [PATCH v3 1/1] arm64: dts: qcom: sm8550: remove
- address/size-cells from mdss_dsi1
-To: "Aiqun Yu (Maria)" <quic_aiquny@quicinc.com>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Tengfei Fan <quic_tengfan@quicinc.com>, 
-	andersson@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org, 
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
-	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, kernel@quicinc.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+From: Arend van Spriel <arend.vanspriel@broadcom.com>
+Subject: Re: [PATCH] wifi: brcmfmac: cfg80211: Use WSEC to set SAE password
+To: Hector Martin <marcan@marcan.st>, Kalle Valo <kvalo@kernel.org>,
+ Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Daniel Berlin <dberlin@dberlin.org>, Arend van Spriel
+ <aspriel@gmail.com>, Franky Lin <franky.lin@broadcom.com>,
+ Hante Meuleman <hante.meuleman@broadcom.com>, asahi@lists.linux.dev,
+ brcm80211-dev-list.pdl@broadcom.com, linux-kernel@vger.kernel.org,
+ linux-wireless@vger.kernel.org, David Airlie <airlied@redhat.com>,
+ Daniel Vetter <daniel@ffwll.ch>
+References: <20231107-brcmfmac-wpa3-v1-1-4c7db8636680@marcan.st>
+ <170281231651.2255653.7498073085103487666.kvalo@kernel.org>
+ <18c80d15e30.279b.9b12b7fc0a3841636cfb5e919b41b954@broadcom.com>
+ <1b51997f-2994-46e8-ac58-90106d1c486d@marcan.st>
+ <c392f901-789a-42e2-8cf7-5e246365a1ca@broadcom.com>
+ <CAF4BwTXNtu30DAgBXo4auDaDK0iWc9Ch8f=EH+facQ-_F-oMUQ@mail.gmail.com>
+ <87r0jiqmnx.fsf@kernel.org> <01bd8c68-1b9c-49b2-8ace-1c7d1b5192ad@marcan.st>
+ <CAHk-=whDLKZZEuxU_jEhZRdeWjXAkL8=J_JRk2Ar6wp9UK3h2w@mail.gmail.com>
+ <871qbhqio8.fsf@kernel.org> <4c89b71e-8667-40fe-add0-205748de51ef@marcan.st>
+ <bdb078c0-2f45-485a-86a0-bb7d0b5e3516@broadcom.com>
+ <d5e26dd4-483d-4662-ba83-5cb19187b24a@marcan.st>
+Autocrypt: addr=arend.vanspriel@broadcom.com; keydata=
+ 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
+In-Reply-To: <d5e26dd4-483d-4662-ba83-5cb19187b24a@marcan.st>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+	boundary="00000000000076d1c4060d0221d1"
 
-On Thu, 21 Dec 2023 at 10:49, Aiqun Yu (Maria) <quic_aiquny@quicinc.com> wr=
-ote:
->
->
->
-> On 12/21/2023 2:59 PM, Dmitry Baryshkov wrote:
-> > On Thu, 21 Dec 2023 at 03:57, Aiqun Yu (Maria) <quic_aiquny@quicinc.com=
-> wrote:
-> >>
-> >>
-> >>
-> >> On 12/20/2023 7:10 PM, Dmitry Baryshkov wrote:
-> >>> On 20 December 2023 12:33:07 EET, "Aiqun Yu (Maria)" <quic_aiquny@qui=
-cinc.com> wrote:
-> >>>>
-> >>>>
-> >>>> On 12/20/2023 3:06 PM, Dmitry Baryshkov wrote:
-> >>>>> On Wed, 20 Dec 2023 at 02:54, Aiqun Yu (Maria) <quic_aiquny@quicinc=
-.com> wrote:
-> >>>>>>
-> >>>>>>
-> >>>>>>
-> >>>>>> On 12/19/2023 6:21 PM, Dmitry Baryshkov wrote:
-> >>>>>>> On Tue, 19 Dec 2023 at 12:09, Aiqun Yu (Maria) <quic_aiquny@quici=
-nc.com> wrote:
-> >>>>>>>>
-> >>>>>>>>
-> >>>>>>>>
-> >>>>>>>> On 12/19/2023 5:41 PM, Krzysztof Kozlowski wrote:
-> >>>>>>>>> On 19/12/2023 10:36, Aiqun Yu (Maria) wrote:
-> >>>>>>>>>>
-> >>>>>>>>>>
-> >>>>>>>>>> On 12/19/2023 3:17 PM, Krzysztof Kozlowski wrote:
-> >>>>>>>>>>> On 19/12/2023 01:31, Tengfei Fan wrote:
-> >>>>>>>>>>>> The address/size-cells in mdss_dsi1 node have not ranges and=
- child also
-> >>>>>>>>>>>> have not reg, then this leads to dtc W=3D1 warnings:
-> >>>>>>>>>>>
-> >>>>>>>>>> Comments can be more readable:
-> >>>>>>>>>> "mdss_dsi1" node don't have "ranges" or child "reg" property, =
-while it
-> >>>>>>>>>> have address/size-cells properties. This caused
-> >>>>>>>>>> "avoid_unnecessary_addr_size" warning from dtb check.
-> >>>>>>>>>> Remove address/size-cells properties for "mdss_dsi1" node.
-> >>>>>>>>>>
-> >>>>>>>>>>> I cannot parse it. Address/size cells never have ranges or ch=
-ildren.
-> >>>>>>>>>>> They cannot have. These are uint32 properties.
-> >>>>>>>>>> Pls help to comment on the revised commit message. Every time =
-I write a
-> >>>>>>>>>> commit message, also takes a while for me to double confirm wh=
-ether
-> >>>>>>>>>> others can understand me correctly as well. Feel free to let u=
-s know if
-> >>>>>>>>>> it is not readable to you. It will help us as non-English nati=
-ve developers.
-> >>>>>>>>>>>
-> >>>>>>>>>>>>
-> >>>>>>>>>>>>         sm8550.dtsi:2937.27-2992.6: Warning (avoid_unnecessa=
-ry_addr_size): /soc@0/display-subsystem@ae00000/dsi@ae96000:
-> >>>>>>>>>>>>           unnecessary #address-cells/#size-cells without "ra=
-nges" or child "reg" property
-> >>>>>>>>>>>>
-> >>>>>>>>>>>>
-> >>>>>>>>>>>> Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> >>>>>>>>>>>> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
-> >>>>>>>>>>>> ---
-> >>>>>>>>>>>
-> >>>>>>>>>>> I disagreed with the patch before. You resubmit it without re=
-ally
-> >>>>>>>>>>> addressing my concerns.
-> >>>>>>>>>>>
-> >>>>>>>>>>> I am not sure if this is correct fix and I want to fix all of=
- such
-> >>>>>>>>>>> errors (there are multiple of them) in the same way. Feel fre=
-e to
-> >>>>>>>>>>> propose common solution based on arguments.
-> >>>>>>>>>> Per my understanding, "qcom,mdss-dsi-ctrl" driver node like "m=
-dss_dsi1"
-> >>>>>>>>>> don't need to have address/size-cells properties.
-> >>>>>>>>>
-> >>>>>>>>> Just because dtc says so? And what about bindings?
-> >>>>>>>> I don't find any reason why "qcom,mdss-dsi-ctrl" driver node nee=
-d to
-> >>>>>>>> have address/size-cells properties. Document Bindings should als=
-o be fixed.
-> >>>>>>>>>
-> >>>>>>>>>> Feel free to let us know whether there is different idea of
-> >>>>>>>>>> "address/size-cells" needed for the "qcom,mdss-dsi-ctrl" drive=
-r node.
-> >>>>>>>>>
-> >>>>>>>>> The bindings expressed that idea. If the binding is incorrect, =
-fix the
-> >>>>>>>>> binding and the DTS. If the binding is correct, provide rationa=
-le why it
-> >>>>>>>>> somehow does not apply here etc.
-> >>>>>>>> Our plan is to fix the bindings as well.
-> >>>>>>>>
-> >>>>>>>> In case you have missed the question, I just re-place it here:
-> >>>>>>>> While there are about 22 different soc dtsi and it's document bi=
-nding
-> >>>>>>>> files needed to be fixed. Shall we fix it for all qcom related s=
-oc usage
-> >>>>>>>> in one patch, or we'd better to split into different patches acc=
-ording
-> >>>>>>>> to soc specifically?
-> >>>>>>>
-> >>>>>>> Don't touch the bindings unless you understand what you are doing=
-.
-> >>>>>>> Your patch will be NAKed. There can be a DSI panel attached to th=
-e DSI
-> >>>>>>> host, which means there is a need for #address-cells / #size-cell=
-s.
-> >>>>>>>
-> >>>>>> Could you please help to elaborate more on details? Like what's th=
-e
-> >>>>>> right example here for the "qcom,mdss-dsi-ctrl" driver node needed=
- to
-> >>>>>> have "#address-cells"/"#size-cells".
-> >>>>>
-> >>>>> As I wrote, the attached DSI panels make use of #address-cells / #s=
-ize-cells.
-> >>>>>
-> >>>>> Please take a look at the sdm845-mtp.dts, which provides a complex
-> >>>>> enough example (a panel which is attached to both DSI0 and DSI1
-> >>>>> hosts).
-> >>>> I can see the panel example now.
-> >>>> While panel@0 likely node is not at in the binding that I've checked=
-. There are quite a few of binding document about the same driver. I checke=
-d 5 of the bindings document and moste of them are alike, and don't have th=
-e panel example.:(
-> >>>
-> >>> There is a single bindings documents describing MSM DSI controller, d=
-isplay/MSM/dsi-controller-main.yaml . It explicitly includes ../dsi-control=
-ler.yaml, which describes generic DSI host controller. The latter one inclu=
-des an example of the DSI panel. MSM DSI bindings do not have to include on=
-e, there is nothing platform specific there.
-> >>>
-> >>>
-> >>>>>
-> >>>>>> Thx to chime in that we have put a good amount of time here.
-> >>>>>
-> >>>>> Can't quite catch you here.
-> >>>>>
-> >>>>>>> Please stop wasting the time on dtc warning. The bindings (and th=
-e
-> >>>>>>> file) are correct.
-> >>>>>> I don't agree here.
-> >>>>>> Either it is a wrong usage of "#address-cells"/"#size-cells", or d=
-tc
-> >>>>>> warning should be fixed with this usage take into account.
-> >>>>>> "dtb check" will be a good guideline for developers to follow, I d=
-on't
-> >>>>>> think it is wasting time here.
-> >>>>>
-> >>>>> It is a guideline, but not a rule. No warnings by default is more o=
-f
-> >>>>> the rule. W=3D1 enables warnings that developers have to classify a=
-nd
-> >>>>> cope with.
-> >>>>>
-> >>>>> E.g. I don't think dtc correctly handles the case when there are bo=
-th
-> >>>>> with-address and no-address nodes (e.g. 'panel@0' and 'ports'). Not=
-e,
-> >>>>> I might be mistaken there.
-> >>>> Now I understand the issue, here is some thinking from my end, and w=
-elcome others to chime in with more ideas:
-> >>>> 1. Only put "#address-cells" "#size-cells" right before node of pane=
-l@0
-> >>>
-> >>> No. Cells specification is a property of the host/bus. As such they d=
-o not belong to the board DT file.
-> >> As "#address-cells" "#size-cells" is not marked as required properties
-> >> in the Document dsi-controller.yaml. Did it really needed even
-> >> "panel@[0-3]" is not present at current dsi node?
-> >> That's good that comes to the initial discussion of current patch here=
-. :)
-> >
-> > The #address-cells / #size-cells describe the addressing of the bus.
-> > The bus still continues to exist even with no panel being attached.
-> While even empty "panel@[0-3]" is not required to be written as long as
-> there is no panel being attached. Although the bus do have such kind of
-> 2 bits allocation.
-> >
-> >>
-> >> I can understand that "#address-cells" "#size-cells" cannot be device
-> >> tree overlayed by dtbo. While when there is no "panel@[0-3]" nodes sha=
-ll
-> >> we also remove "#address-cells" "#size-cells" properties for dsi node?
-> >
-> > But why?
-> The reason is that "#address-cells" "#size-cells" are not marked as
-> "required" properties in dsi-controller.yaml.
-> Also referenced the other bindings which "$ref:dsi-controller.yaml",
-> some of them also not have those 2 properties in dsi node.
+--00000000000076d1c4060d0221d1
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-And others (like ste,mcde.yaml or brcm,bcm2835-dsi0.yaml) explicitly
-have #cells in the example.
+- SHA-cyfmac-dev-list@infineon.com
 
->
-> Take below 2 examples(there are more of cause):
-> [1]
-> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tree/=
-Documentation/devicetree/bindings/display/amlogic,meson-g12a-dw-mipi-dsi.ya=
-ml
-> [2]
-> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tree/=
-Documentation/devicetree/bindings/display/bridge/toshiba,tc358768.yaml
->
-> >
-> >>>
-> >>>> 2. Align current binding document with "panel@0" examples.
-> >>>
-> >>> There is already a panel in dsi-controller.yaml. Adding another examp=
-le is optional. Do you also need an example with the external DSI bridge?
-> >> Current binding I am talking about is current patch binding file:
-> >> qcom,sm8550-mdss.yaml
-> >
-> > Why do you call it a patch? Also if you have read the description, you
-> > would have known that the bindings describe the Mobile Display
-> > Subsystem (MDSS) itself. And then it explicitly tells that the MDSS on
-> > that platform has (among others) DSI blocks with proper compatibles.
-> >
-> >> It have a ref to mdss-common.yaml,  but I cannot find the ref direct m=
-e
-> >> to dsi-controller.yaml.
-> >
-> > Because qcom,sm8550-mdss.yaml doesn't describe the DSI controller. I
-> > think I have already mentioned a file that describes the DSI
-> > controller, it is called display/msm/dsi-controller-main.yaml. Not the
-> > best name, but it is quickly revealed by grepping for either of the
-> > DSI compatible strings. And the dsi-controller-main.yaml has `  -
-> > $ref: ../dsi-controller.yaml#` string inside.
-> Let me try to describe this in a code way.
-> "qcom,sm8550-mdss.yaml" binding document is confusing me when it also
-> have same compatible string support in the binding.
+On 12/21/2023 1:49 AM, Hector Martin wrote:
+> 
+> 
+> On 2023/12/21 4:36, Arend van Spriel wrote:
+>> On 12/20/2023 7:14 PM, Hector Martin wrote:
+>>>
+>>>
+>>> On 2023/12/20 19:20, Kalle Valo wrote:
+>>>> Linus Torvalds <torvalds@linux-foundation.org> writes:
+>>>>
+>>>>>> Just recently a patch was posted to remove the Infineon list from
+>>>>>> MAINTAINERS because that company cares so little they have literally
+>>>>>> stopped accepting emails from us. Meanwhile they are telling their
+>>>>>> customers that they do not recommend upstream brcmfmac and they should
+>>>>>> use their downstream driver [1].
+>>>>>
+>>>>> Unquestionably broadcom is not helping maintain things, and I think it
+>>>>> should matter.
+>>>>>
+>>>>> As Hector says, they point to their random driver dumps on their site
+>>>>> that you can't even download unless you are a "Broadcom community
+>>>>> member" or whatever, and hey - any company that works that way should
+>>>>> be seen as pretty much hostile to any actual maintenance and proper
+>>>>> development.
+>>>>
+>>>> Sadly this is the normal in the wireless world. All vendors focus on the
+>>>> latest generation, currently it's Wi-Fi 7, and lose interest on older
+>>>> generations. And vendors lose focus on the upstream drivers even faster,
+>>>> usually after a customer project ends.
+>>>>
+>>>> So in practise what we try to do is keep the drivers working somehow on
+>>>> our own, even after the vendors are long gone. If we would deliberately
+>>>> allow breaking drivers because vendor/corporations don't support us, I
+>>>> suspect we would have sevaral broken drivers in upstream.
+>>>>
+>>>>> If Daniel and Hector are responsive to actual problem reports for the
+>>>>> changes they cause, I do think that should count a lot.
+>>>>
+>>>> Sure, but they could also respect to the review comments. I find Arend's
+>>>> proposal is reasonable and that's what I would implement in v2. We
+>>>> (linux-wireless) make abstractions to workaround firmware problems or
+>>>> interface conflicts all the time, just look at ath10k for example. I
+>>>> would not be surprised if we need to add even more abstractions to
+>>>> brcmfmac in the future. And Arend is the expert here, he has best
+>>>> knowledge of Broadcom devices and I trust him.
+>>>>
+>>>> Has anyone even investigated what it would need to implement Arend's
+>>>> proposal? At least I don't see any indication of that.
+>>>
+>>> Of course we can implement it (and we will as we actually got a report
+>>> of this patch breaking Cypress now, finally).
+>>>
+>>> The question was never whether it could be done, we're already doing a
+>>> bunch of abstractions to deal with just the Broadcom-only side of things
+>>> too. The point I was trying to make is that we need to *know* what
+>>> firmware abstractions we need and *why* they are needed. We can't just
+>>> say, for every change, "well, nobody knows if the existing code works or
+>>> not, so let's just add an abstraction just in case the change breaks
+>>> something". As far as anyone involved in the discussions until now could
+>>> tell, this code was just something some Cypress person dumped upstream,
+>>> and nobody involved was being responsive to any of our inquiries, so
+>>> there was no way to be certain it worked at all, whether it was
+>>> supported in public firmware, or anything else.
+>>>
+>>> *Now* that we know the existing code is actually functional and not just
+>>> dead/broken, and that the WSEC approach is conversely not functional on
+>>> the Cypress firmwares, it makes sense to introduce an abstraction.
+>>
+>> Just a quick look in the git history could have told you that it was not
+>> just dumped upstream and at least one person was using it and extended
+>> it for 802.11r support (fast-roaming):
+>>
+>>
+>> author	Paweł Drewniak <czajernia@gmail.com>	2021-08-24 23:13:30 +0100
+>> committer	Kalle Valo <kvalo@codeaurora.org>	2021-08-29 11:33:07 +0300
+>> commit	4b51de063d5310f1fb297388b7955926e63e45c9 (patch)
+>> tree	ba2ccb5cbd055d482a8daa263f5e53531c07667f
+>> /drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
+>> parent	81f9ebd43659320a88cae8ed5124c50b4d47ab66 (diff)
+>> download	wireless-4b51de063d5310f1fb297388b7955926e63e45c9.tar.gz
+>> brcmfmac: Add WPA3 Personal with FT to supported cipher suites
+>> This allows the driver to connect to BSSIDs supporting SAE with 802.11r.
+>> Tested on Raspberry Pi 4 Model B (STA) and UniFi 6LR/OpenWRT 21.02.0-rc2.
+>> AP was set to 'sae-mixed' (WPA2/3 Personal).
+>>
+>> Signed-off-by: Paweł Drewniak <czajernia@gmail.com>
+>> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+>> Link: https://lore.kernel.org/r/20210824221330.3847139-1-czajernia@gmail.com
+> 
+> Sure, but we also had user reports of it *not* actually working (maybe
+> it regressed?). We didn't know whether it was functional with the
+> linux-firmware blobs in any way, I wanted confirmation of that. And we
+> also didn't know that the patch *would* break it at all; perhaps the
+> Cypress firmware had also grown support for the WSEC mechanism.
+> 
+> That's why I wanted someone to actually confirm the code worked (in some
+> subset of cases) and the patch didn't, before starting to introduce
+> conditionals. There is, of course, also the element that the Cypress
+> side has been long unmaintained, and if nobody is testing/giving
+> feedback/complaining, perhaps it's better to err on the side of maybe
+> breaking something and see if that gets someone to come out of the
+> woodwork if it really breaks, rather than tiptoeing around the code
+> without knowing what's going on and without anyone actually testing things.
 
-Yes, it has. But there is a huge difference. The bindings file
-describes and qcom,sm8550-mdss device and then enforces that DSI
-controllers should be compatible with "qcom,sm8550-dsi-ctrl",
-"qcom,mdss-dsi-ctrl". In the same way it also binds SoC-specific
-compatible strings to all other subnodes.
+That is because you distrust the intent that Cypress was really 
+contributing. They were and I trusted them to not just throw in a 
+feature like WPA3. When Infineon took over they went mute. Upon 
+reviewing your patch (again) I also sent an email to them asking 
+specifically about the status of the sae_password interface. I did not 
+use the mailing list which indeed bounces these days (hence removed 
+them) but the last living soul that I had contact with about a year ago 
+whether they were still comitted to be involved. I guess out of 
+politeness or embarrassment I got confirmation they were and never heard 
+from him again. The query about the sae_password interface is still pending.
 
-> So I will suggest to
-> directly reference the "dsi-controller-main.yaml" in file
-> "qcom,sm8550-mdss.yaml" instead.
->
-> For example:
->
-> --- a/Documentation/devicetree/bindings/display/msm/qcom,sm8550-mdss.yaml
-> +++ b/Documentation/devicetree/bindings/display/msm/qcom,sm8550-mdss.yaml
->
-> @@ -55,14 +50,7 @@ patternProperties:
->             - const: qcom,sm8350-dp
->
->     "^dsi@[0-9a-f]+$":
-> -    type: object
-> -    additionalProperties: true
-> -
-> -    properties:
-> -      compatible:
-> -        items:
-> -          - const: qcom,sm8550-dsi-ctrl
-> -          - const: qcom,mdss-dsi-ctrl
-> +    $ref: ../dsi-controller-main.yaml#
+> It's not about this *specific* patch, it's about the general situation
+> of not being able to touch firmware interfaces "just in case Cypress
+> breaks" being unsustainable in the long term. I wasn't pushing back
+> because I think this particular one will be hard, I was pushing back
+> because I can read the tea leaves and see this is not going to end well
+> if it's the approach we start taking for everything. We *need* someone
+> to be testing patches on Cypress, we can't just "try not to touch it"
+> and cross our fingers. That just ends in disaster, we are not going to
+> succeed in not breaking it either way and it's going to make the driver
+> worse.
 
-Note, there is no ../dsi-controller-main.yaml, so you didn't check
-your patch (despite my request to do so).
-I can only hope that you meant `$ref: dsi-controller-main.yaml`
-instead of `$ref: ../dsi-controller.yaml`.
+I admire you ability of reading tea leaves. You saw the Grim I reckon. 
+Admittedly your responses on every comment from my side (or Kalle for 
+that matter) was polarizing every discussion. That is common way people 
+treat each other nowadays especially online where a conversation is just 
+a pile of text going shit. It does not bring out the best in me either, 
+but it was draining every ounce of energy from me so better end it by 
+stepping out.
 
->
-> With above unified reference change, it will be easier for other
-> developers to reference bindings files next time.
-> Also dsi@[0-9a-f] node in mdss node will be correctly fully described.
+I added the ground work for multi-vendor support, but have not decided 
+on the approach to take. Abstract per firmware interface primitive or 
+simply have a cfg80211.c and fwil_types.h per vendor OR implement a 
+vendor-specific cfg80211 callback and override the default callback 
+during the driver attach, ie. in brcmf_fwvid_wcc_attach(). The latter 
+duplicates things, but lean towards that as it may be easier on the 
+long-term. What do your tea leaves tell you ;-)
 
-If you cared to read mailing list discussions related to the
-corresponding patches, you would have noticed that this approach was
-considered and then abandoned.
-Two main reasons:
-- This causes dsi-controller-main.yaml schema to be evaluated twice
-for each of the DSI controller nodes.
-- This doesn't have the SoC binding. Thus with such schema it is
-possible to have top-level qcom,sm8550-mdss and then
-qcom,sdm845-dsi-ctrl beneath.
+Regards,
+Arend
 
-> >
-> >> In my opinion if the example have "#address-cells" "#size-cells", then
-> >> it's better to also include "panel@0" with "reg =3D <0>" to not confus=
-e.
-> >
-> > It is already there, see dsi-controller.yaml.
-> >
-> >>>> 3. Too many bindings files for driver "qcom,mdss-dsi-ctrl", shall we=
- align them into 1 binding files.
-> >>>
-> >>> There is just one.
-> >> Currently I mentioned bindings files was searched the compatible
-> >> "qcom,mdss-dsi-ctrl", and find binding docs like "qcom,sm8550-mdss.yam=
-l"
-> >> "qcom,sm8450-mdss.yaml" etc.
-> >> There is duplicate information on "qcom,sm8550-mdss.yaml" etc, while
-> >> "qcom,mdss-common.yaml" is not common enough for my understanding.
-> >
-> > If you had compared the qcom,SOC-mdss.yaml, you would have seen that
-> > they provide tight binding between compatible strings used for all the
-> > subblocks. The `mdss-common.yaml` describes MDSS common properties. It
-> > describes everything except the platform specifics. It can not be made
-> > more common. And there is no duplication.
-> >
-> > If you think you can improve the bindings, please send the patches.
-> I am thinking of a unified qcom,mdss.yaml instead of "qcom,*each
-> SOC*-mdss.yaml". I will try to have a patch.
 
-Please. Read the mailing list archives first.
+--00000000000076d1c4060d0221d1
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
-> > They must pass the `make dt_binding_check` check.
-> Thx for the remind.
-> >
-> >>>> 4. enhance the dtc warning check if we still want to have "#address-=
-cells" "#size-cells" even if there is no "panel@0" attached.
-> >>>
-> >>> In my opinion this is a way to go, if any. Did you include devicetree=
-@ ML and the corresponding maintainers into the discussion?
-> >> Already included devicetree@ ML at the very beginning.
-> >
-> > Good, thanks for the confirmation.
-> >
-> >> If the required properties part in each yaml is marked good enough, I
-> >> think it can be an input for avoid unnecessary dtc warnings.
-> >
-> > Patches are welcome.
-> Improving developer efficiency with unnecessary warnings is one of my
-> interest as well.
-> First of all, I'd better to make sure "Required properties" attribute in
-> current bindings are good enough. Let me try to get back on this in a
-> separate discuss session.
-
-Let me put some kind of a point here. Show us your code. Otherwise
-it's just an endless discussion.
-
---=20
-With best wishes
-Dmitry
+MIIQdwYJKoZIhvcNAQcCoIIQaDCCEGQCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
+gg3OMIIFDTCCA/WgAwIBAgIQeEqpED+lv77edQixNJMdADANBgkqhkiG9w0BAQsFADBMMSAwHgYD
+VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
+AxMKR2xvYmFsU2lnbjAeFw0yMDA5MTYwMDAwMDBaFw0yODA5MTYwMDAwMDBaMFsxCzAJBgNVBAYT
+AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBS
+MyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA
+vbCmXCcsbZ/a0fRIQMBxp4gJnnyeneFYpEtNydrZZ+GeKSMdHiDgXD1UnRSIudKo+moQ6YlCOu4t
+rVWO/EiXfYnK7zeop26ry1RpKtogB7/O115zultAz64ydQYLe+a1e/czkALg3sgTcOOcFZTXk38e
+aqsXsipoX1vsNurqPtnC27TWsA7pk4uKXscFjkeUE8JZu9BDKaswZygxBOPBQBwrA5+20Wxlk6k1
+e6EKaaNaNZUy30q3ArEf30ZDpXyfCtiXnupjSK8WU2cK4qsEtj09JS4+mhi0CTCrCnXAzum3tgcH
+cHRg0prcSzzEUDQWoFxyuqwiwhHu3sPQNmFOMwIDAQABo4IB2jCCAdYwDgYDVR0PAQH/BAQDAgGG
+MGAGA1UdJQRZMFcGCCsGAQUFBwMCBggrBgEFBQcDBAYKKwYBBAGCNxQCAgYKKwYBBAGCNwoDBAYJ
+KwYBBAGCNxUGBgorBgEEAYI3CgMMBggrBgEFBQcDBwYIKwYBBQUHAxEwEgYDVR0TAQH/BAgwBgEB
+/wIBADAdBgNVHQ4EFgQUljPR5lgXWzR1ioFWZNW+SN6hj88wHwYDVR0jBBgwFoAUj/BLf6guRSSu
+TVD6Y5qL3uLdG7wwegYIKwYBBQUHAQEEbjBsMC0GCCsGAQUFBzABhiFodHRwOi8vb2NzcC5nbG9i
+YWxzaWduLmNvbS9yb290cjMwOwYIKwYBBQUHMAKGL2h0dHA6Ly9zZWN1cmUuZ2xvYmFsc2lnbi5j
+b20vY2FjZXJ0L3Jvb3QtcjMuY3J0MDYGA1UdHwQvMC0wK6ApoCeGJWh0dHA6Ly9jcmwuZ2xvYmFs
+c2lnbi5jb20vcm9vdC1yMy5jcmwwWgYDVR0gBFMwUTALBgkrBgEEAaAyASgwQgYKKwYBBAGgMgEo
+CjA0MDIGCCsGAQUFBwIBFiZodHRwczovL3d3dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAN
+BgkqhkiG9w0BAQsFAAOCAQEAdAXk/XCnDeAOd9nNEUvWPxblOQ/5o/q6OIeTYvoEvUUi2qHUOtbf
+jBGdTptFsXXe4RgjVF9b6DuizgYfy+cILmvi5hfk3Iq8MAZsgtW+A/otQsJvK2wRatLE61RbzkX8
+9/OXEZ1zT7t/q2RiJqzpvV8NChxIj+P7WTtepPm9AIj0Keue+gS2qvzAZAY34ZZeRHgA7g5O4TPJ
+/oTd+4rgiU++wLDlcZYd/slFkaT3xg4qWDepEMjT4T1qFOQIL+ijUArYS4owpPg9NISTKa1qqKWJ
+jFoyms0d0GwOniIIbBvhI2MJ7BSY9MYtWVT5jJO3tsVHwj4cp92CSFuGwunFMzCCA18wggJHoAMC
+AQICCwQAAAAAASFYUwiiMA0GCSqGSIb3DQEBCwUAMEwxIDAeBgNVBAsTF0dsb2JhbFNpZ24gUm9v
+dCBDQSAtIFIzMRMwEQYDVQQKEwpHbG9iYWxTaWduMRMwEQYDVQQDEwpHbG9iYWxTaWduMB4XDTA5
+MDMxODEwMDAwMFoXDTI5MDMxODEwMDAwMFowTDEgMB4GA1UECxMXR2xvYmFsU2lnbiBSb290IENB
+IC0gUjMxEzARBgNVBAoTCkdsb2JhbFNpZ24xEzARBgNVBAMTCkdsb2JhbFNpZ24wggEiMA0GCSqG
+SIb3DQEBAQUAA4IBDwAwggEKAoIBAQDMJXaQeQZ4Ihb1wIO2hMoonv0FdhHFrYhy/EYCQ8eyip0E
+XyTLLkvhYIJG4VKrDIFHcGzdZNHr9SyjD4I9DCuul9e2FIYQebs7E4B3jAjhSdJqYi8fXvqWaN+J
+J5U4nwbXPsnLJlkNc96wyOkmDoMVxu9bi9IEYMpJpij2aTv2y8gokeWdimFXN6x0FNx04Druci8u
+nPvQu7/1PQDhBjPogiuuU6Y6FnOM3UEOIDrAtKeh6bJPkC4yYOlXy7kEkmho5TgmYHWyn3f/kRTv
+riBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGj
+QjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5N
+UPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEAS0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigH
+M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
+Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
+14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
+a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
+XzCCBVYwggQ+oAMCAQICDE79bW6SMzVJMuOi1zANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
+RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
+UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMjA5MTAxMTQzMjNaFw0yNTA5MTAxMTQzMjNaMIGV
+MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
+BgNVBAoTDUJyb2FkY29tIEluYy4xGTAXBgNVBAMTEEFyZW5kIFZhbiBTcHJpZWwxKzApBgkqhkiG
+9w0BCQEWHGFyZW5kLnZhbnNwcmllbEBicm9hZGNvbS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IB
+DwAwggEKAoIBAQDxOB8Yu89pZLsG9Ic8ZY3uGibuv+NRsij+E70OMJQIwugrByyNq5xgH0BI22vJ
+LT7VKCB6YJC88ewEFfYi3EKW/sn6RL16ImUM40beDmQ12WBquJRoxVNyoByNalmTOBNYR95ZQZJw
+1nrzaoJtK0XIsv0dNCUcLlAc+jHkngD+I0ptVuWoMO1BcJexqJf5iX2M1CdC8PXTh9g4FIQnG2mc
+2Gzj3QNJRLsZu1TLyOyBBIr/BE7UiY3RabgRzknBGAPmzhS+fmyM8OtM5BYBsFBrSUFtZZO2p/tf
+Nbc24J2zf2peoZ8MK+7WQqummYlOnz+FyDkA9EybeNMcS5C+xi/PAgMBAAGjggHdMIIB2TAOBgNV
+HQ8BAf8EBAMCBaAwgaMGCCsGAQUFBwEBBIGWMIGTME4GCCsGAQUFBzAChkJodHRwOi8vc2VjdXJl
+Lmdsb2JhbHNpZ24uY29tL2NhY2VydC9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAyMC5jcnQwQQYI
+KwYBBQUHMAGGNWh0dHA6Ly9vY3NwLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24y
+Y2EyMDIwME0GA1UdIARGMEQwQgYKKwYBBAGgMgEoCjA0MDIGCCsGAQUFBwIBFiZodHRwczovL3d3
+dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAJBgNVHRMEAjAAMEkGA1UdHwRCMEAwPqA8oDqG
+OGh0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20vZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3Js
+MCcGA1UdEQQgMB6BHGFyZW5kLnZhbnNwcmllbEBicm9hZGNvbS5jb20wEwYDVR0lBAwwCgYIKwYB
+BQUHAwQwHwYDVR0jBBgwFoAUljPR5lgXWzR1ioFWZNW+SN6hj88wHQYDVR0OBBYEFIikAXd8CEtv
+ZbDflDRnf3tuStPuMA0GCSqGSIb3DQEBCwUAA4IBAQCdS5XCYx6k2GGZui9DlFsFm75khkqAU7rT
+zBX04sJU1+B1wtgmWTVIzW7ugdtDZ4gzaV0S9xRhpDErjJaltxPbCylb1DEsLj+AIvBR34caW6ZG
+sQk444t0HPb29HnWYj+OllIGMbdJWr0/P95ZrKk2bP24ub3ZP/8SyzrohfIba9WZKMq6g2nTLZE3
+BtkeSGJx/8dy0h8YmRn+adOrxKXHxhSL8BNn8wsmIZyYWe6fRcBtO3Ks2DOLyHCdkoFlN8x9VUQF
+N2ulEgqCbRKkx+qNirW86eF138lr1gRxzclu/38ko//MmkAYR/+hP3WnBll7zbpIt0jc9wyFkSqH
+p8a1MYICbTCCAmkCAQEwazBbMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1z
+YTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMgUGVyc29uYWxTaWduIDIgQ0EgMjAyMAIMTv1t
+bpIzNUky46LXMA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCAhrkBS+9gXA2eNivyV
+OZGQNuCB0+TkGa+NbN1OultHAjAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJ
+BTEPFw0yMzEyMjEwOTU3NDJaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUDBAEqMAsGCWCGSAFl
+AwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsGCSqGSIb3DQEBBzAL
+BglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEA8FNjX8k6BL6yhhrWnNJlTrZzRvmucuAOf1gT
+EFtP5wFUnrTedxwRZHYaD342TQLkcQWKyNB6mzFAPgovsOtXb5F9sQIVRcNeEqPytqhR1zfozvcp
+FGgnmAIr/xgaEJSusc0W+i2Y9RTju9YhK5fPmK25pRGhRbkO/iGsZO6gN6xQM/3NavD4+7G4YzUb
+W2rY5lXxEl501p2N+6CfDzw3XXub73RtWksGkwm+HdNcVa/n6U4sC0DXeH7LtJW0WWIz5B8u2jcI
+DOvyIBstNcj9FbLXwCi8dwXy+hvmqNp/zbpwr6giOUKFu0FF3n/9G6Ii1A5LQ8tq3g6Xj4IzUY1t
+Kg==
+--00000000000076d1c4060d0221d1--
 
