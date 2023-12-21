@@ -1,155 +1,374 @@
-Return-Path: <linux-kernel+bounces-8664-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8665-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 492F881BACC
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 16:30:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3BFA681BACE
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 16:30:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7AD301C234B1
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 15:30:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C16211F2279E
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 15:30:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 637A2539E8;
-	Thu, 21 Dec 2023 15:30:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="LTii675s"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27AF4539EF;
+	Thu, 21 Dec 2023 15:30:38 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A96550254
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 15:30:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1703172625;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=cZkCmal2eYhdvEB2cLXCA/u0IOjOUAwA1vCuz38GOXU=;
-	b=LTii675sJT4kudqws48Hrz8Fx+ZDN+235FUhP7H8FKTaM4k4mQgKwKHYzjN4JT2QCjs+FJ
-	qa8JZVVQaNIdvHYW3rfwmbWwzsYqW1NwhZHoujvh2wIixbNLhptPFMglBFrY6EYwrkNXE/
-	DlruN2MGEUpmFz4iVDrqvIf6q90jn18=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-64-qYteG4chOteRcviwmUQYXg-1; Thu,
- 21 Dec 2023 10:30:19 -0500
-X-MC-Unique: qYteG4chOteRcviwmUQYXg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id EA317380606E;
-	Thu, 21 Dec 2023 15:30:17 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.39.195.169])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 6D5D62166B35;
-	Thu, 21 Dec 2023 15:30:15 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-	Kingdom.
-	Registered in England and Wales under Company Registration No. 3798903
-To: torvalds@linux-foundation.org
-cc: dhowells@redhat.com, Markus Suvanto <markus.suvanto@gmail.com>,
-    Marc Dionne <marc.dionne@auristor.com>,
-    Wang Lei <wang840925@gmail.com>, Jeff Layton <jlayton@redhat.com>,
-    Steve French <smfrench@gmail.com>,
-    Jarkko Sakkinen <jarkko@kernel.org>,
-    "David S. Miller" <davem@davemloft.net>,
-    Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
-    Paolo Abeni <pabeni@redhat.com>, linux-afs@lists.infradead.org,
-    keyrings@vger.kernel.org, linux-cifs@vger.kernel.org,
-    linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-    netdev@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-    linux-kernel@vger.kernel.org
-Subject: [GIT PULL] afs, dns: Fix dynamic root interaction with negative DNS
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4ED7539E6
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 15:30:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1DB602F4;
+	Thu, 21 Dec 2023 07:31:20 -0800 (PST)
+Received: from [10.1.25.50] (e132833.arm.com [10.1.25.50])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 63C2F3F64C;
+	Thu, 21 Dec 2023 07:30:30 -0800 (PST)
+Message-ID: <49fb9cc3-c91d-4e9d-b75f-b31a8b5b2a91@arm.com>
+Date: Thu, 21 Dec 2023 15:30:28 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1843327.1703172564.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-From: David Howells <dhowells@redhat.com>
-Date: Thu, 21 Dec 2023 15:30:14 +0000
-Message-ID: <1843374.1703172614@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7 13/23] sched: Start blocked_on chain processing in
+ find_proxy_task()
+Content-Language: en-US
+To: John Stultz <jstultz@google.com>, LKML <linux-kernel@vger.kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>, Joel Fernandes
+ <joelaf@google.com>, Qais Yousef <qyousef@google.com>,
+ Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
+ Vincent Guittot <vincent.guittot@linaro.org>,
+ Dietmar Eggemann <dietmar.eggemann@arm.com>,
+ Valentin Schneider <vschneid@redhat.com>,
+ Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
+ Zimuzo Ezeozue <zezeozue@google.com>, Youssef Esmat
+ <youssefesmat@google.com>, Mel Gorman <mgorman@suse.de>,
+ Daniel Bristot de Oliveira <bristot@redhat.com>,
+ Will Deacon <will@kernel.org>, Waiman Long <longman@redhat.com>,
+ Boqun Feng <boqun.feng@gmail.com>, "Paul E. McKenney" <paulmck@kernel.org>,
+ Xuewen Yan <xuewen.yan94@gmail.com>, K Prateek Nayak
+ <kprateek.nayak@amd.com>, Thomas Gleixner <tglx@linutronix.de>,
+ kernel-team@android.com, Valentin Schneider <valentin.schneider@arm.com>
+References: <20231220001856.3710363-1-jstultz@google.com>
+ <20231220001856.3710363-14-jstultz@google.com>
+From: Metin Kaya <metin.kaya@arm.com>
+In-Reply-To: <20231220001856.3710363-14-jstultz@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi Linus,
+On 20/12/2023 12:18 am, John Stultz wrote:
+> From: Peter Zijlstra <peterz@infradead.org>
+> 
+> Start to flesh out the real find_proxy_task() implementation,
+> but avoid the migration cases for now, in those cases just
+> deactivate the selected task and pick again.
+> 
+> To ensure the selected task or other blocked tasks in the chain
+> aren't migrated away while we're running the proxy, this patch
+> also tweaks CFS logic to avoid migrating selected or mutex
+> blocked tasks.
+> 
+> Cc: Joel Fernandes <joelaf@google.com>
+> Cc: Qais Yousef <qyousef@google.com>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Juri Lelli <juri.lelli@redhat.com>
+> Cc: Vincent Guittot <vincent.guittot@linaro.org>
+> Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
+> Cc: Valentin Schneider <vschneid@redhat.com>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: Ben Segall <bsegall@google.com>
+> Cc: Zimuzo Ezeozue <zezeozue@google.com>
+> Cc: Youssef Esmat <youssefesmat@google.com>
+> Cc: Mel Gorman <mgorman@suse.de>
+> Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Waiman Long <longman@redhat.com>
+> Cc: Boqun Feng <boqun.feng@gmail.com>
+> Cc: "Paul E. McKenney" <paulmck@kernel.org>
+> Cc: Metin Kaya <Metin.Kaya@arm.com>
+> Cc: Xuewen Yan <xuewen.yan94@gmail.com>
+> Cc: K Prateek Nayak <kprateek.nayak@amd.com>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: kernel-team@android.com
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> Signed-off-by: Juri Lelli <juri.lelli@redhat.com>
+> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+> Signed-off-by: Connor O'Brien <connoro@google.com>
+> [jstultz: This change was split out from the larger proxy patch]
+> Signed-off-by: John Stultz <jstultz@google.com>
+> ---
+> v5:
+> * Split this out from larger proxy patch
+> v7:
+> * Minor refactoring of core find_proxy_task() function
+> * Minor spelling and corrections suggested by Metin Kaya
+> * Dropped an added BUG_ON that was frequently tripped
+> * Minor commit message tweaks from Metin Kaya
+> ---
+>   kernel/sched/core.c | 154 +++++++++++++++++++++++++++++++++++++-------
+>   kernel/sched/fair.c |   9 ++-
+>   2 files changed, 137 insertions(+), 26 deletions(-)
+> 
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index f6bf3b62194c..42e25bbdfe6b 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -94,6 +94,7 @@
+>   #include "../workqueue_internal.h"
+>   #include "../../io_uring/io-wq.h"
+>   #include "../smpboot.h"
+> +#include "../locking/mutex.h"
+>   
+>   EXPORT_TRACEPOINT_SYMBOL_GPL(ipi_send_cpu);
+>   EXPORT_TRACEPOINT_SYMBOL_GPL(ipi_send_cpumask);
+> @@ -6609,6 +6610,15 @@ static bool try_to_deactivate_task(struct rq *rq, struct task_struct *p,
+>   
+>   #ifdef CONFIG_SCHED_PROXY_EXEC
+>   
+> +static inline struct task_struct *
+> +proxy_resched_idle(struct rq *rq, struct task_struct *next)
+> +{
+> +	put_prev_task(rq, next);
+> +	rq_set_selected(rq, rq->idle);
+> +	set_tsk_need_resched(rq->idle);
+> +	return rq->idle;
+> +}
+> +
+>   static bool proxy_deactivate(struct rq *rq, struct task_struct *next)
+>   {
+>   	unsigned long state = READ_ONCE(next->__state);
+> @@ -6618,48 +6628,138 @@ static bool proxy_deactivate(struct rq *rq, struct task_struct *next)
+>   		return false;
+>   	if (!try_to_deactivate_task(rq, next, state, true))
+>   		return false;
+> -	put_prev_task(rq, next);
+> -	rq_set_selected(rq, rq->idle);
+> -	resched_curr(rq);
+> +	proxy_resched_idle(rq, next);
+>   	return true;
+>   }
+>   
+>   /*
+> - * Initial simple proxy that just returns the task if it's waking
+> - * or deactivates the blocked task so we can pick something that
+> - * isn't blocked.
+> + * Find who @next (currently blocked on a mutex) can proxy for.
+> + *
+> + * Follow the blocked-on relation:
+> + *   task->blocked_on -> mutex->owner -> task...
+> + *
+> + * Lock order:
+> + *
+> + *   p->pi_lock
+> + *     rq->lock
+> + *       mutex->wait_lock
+> + *         p->blocked_lock
+> + *
+> + * Returns the task that is going to be used as execution context (the one
+> + * that is actually going to be put to run on cpu_of(rq)).
+>    */
+>   static struct task_struct *
+>   find_proxy_task(struct rq *rq, struct task_struct *next, struct rq_flags *rf)
+>   {
+> +	struct task_struct *owner = NULL;
+>   	struct task_struct *ret = NULL;
+> -	struct task_struct *p = next;
+> +	struct task_struct *p;
+>   	struct mutex *mutex;
+> +	int this_cpu = cpu_of(rq);
+>   
+> -	mutex = p->blocked_on;
+> -	/* Something changed in the chain, so pick again */
+> -	if (!mutex)
+> -		return NULL;
+>   	/*
+> -	 * By taking mutex->wait_lock we hold off concurrent mutex_unlock()
+> -	 * and ensure @owner sticks around.
+> +	 * Follow blocked_on chain.
+> +	 *
+> +	 * TODO: deadlock detection
+>   	 */
+> -	raw_spin_lock(&mutex->wait_lock);
+> -	raw_spin_lock(&p->blocked_lock);
+> +	for (p = next; task_is_blocked(p); p = owner) {
+> +		mutex = p->blocked_on;
+> +		/* Something changed in the chain, so pick again */
+> +		if (!mutex)
+> +			return NULL;
+>   
+> -	/* Check again that p is blocked with blocked_lock held */
+> -	if (!task_is_blocked(p) || mutex != p->blocked_on) {
+>   		/*
+> -		 * Something changed in the blocked_on chain and
+> -		 * we don't know if only at this level. So, let's
+> -		 * just bail out completely and let __schedule
+> -		 * figure things out (pick_again loop).
+> +		 * By taking mutex->wait_lock we hold off concurrent mutex_unlock()
+> +		 * and ensure @owner sticks around.
+>   		 */
+> -		goto out;
+> +		raw_spin_lock(&mutex->wait_lock);
+> +		raw_spin_lock(&p->blocked_lock);
+> +
+> +		/* Check again that p is blocked with blocked_lock held */
 
-Could you apply this, please?  It's intended to improve the interaction of
-arbitrary lookups in the AFS dynamic root that hit DNS lookup failures[1]
-where kafs behaves differently from openafs and causes some applications t=
-o
-fail that aren't expecting that.  Further, negative DNS results aren't
-getting removed and are causing failures to persist.
+Is this comment still valid?
 
- (1) Always delete unused (particularly negative) dentries as soon as
-     possible so that they don't prevent future lookups from retrying.
+> +		if (mutex != p->blocked_on) {
+> +			/*
+> +			 * Something changed in the blocked_on chain and
+> +			 * we don't know if only at this level. So, let's
+> +			 * just bail out completely and let __schedule
+> +			 * figure things out (pick_again loop).
+> +			 */
+> +			goto out;
+> +		}
+> +
+> +		owner = __mutex_owner(mutex);
+> +		if (!owner) {
+> +			ret = p;
+> +			goto out;
+> +		}
+> +
+> +		if (task_cpu(owner) != this_cpu) {
+> +			/* XXX Don't handle migrations yet */
+> +			if (!proxy_deactivate(rq, next))
+> +				ret = next;
+> +			goto out;
+> +		}
+> +
+> +		if (task_on_rq_migrating(owner)) {
+> +			/*
+> +			 * One of the chain of mutex owners is currently migrating to this
+> +			 * CPU, but has not yet been enqueued because we are holding the
+> +			 * rq lock. As a simple solution, just schedule rq->idle to give
+> +			 * the migration a chance to complete. Much like the migrate_task
+> +			 * case we should end up back in proxy(), this time hopefully with
 
- (2) Fix the handling of new-style negative DNS lookups in ->lookup() to
-     make them return ENOENT so that userspace doesn't get confused when
-     stat succeeds but the following open on the looked up file then fails=
-.
+s/proxy/find_proxy_task/
 
- (3) Fix key handling so that DNS lookup results are reclaimed almost as
-     soon as they expire rather than sitting round either forever or for a=
-n
-     additional 5 mins beyond a set expiry time returning EKEYEXPIRED.
-     They persist for 1s as /bin/ls will do a second stat call if the firs=
-t
-     fails.
+> +			 * all relevant tasks already enqueued.
+> +			 */
+> +			raw_spin_unlock(&p->blocked_lock);
+> +			raw_spin_unlock(&mutex->wait_lock);
+> +			return proxy_resched_idle(rq, next);
+> +		}
+> +
+> +		if (!owner->on_rq) {
+> +			/* XXX Don't handle blocked owners yet */
+> +			if (!proxy_deactivate(rq, next))
+> +				ret = next;
+> +			goto out;
+> +		}
+> +
+> +		if (owner == p) {
+> +			/*
+> +			 * It's possible we interleave with mutex_unlock like:
+> +			 *
+> +			 *				lock(&rq->lock);
+> +			 *				  find_proxy_task()
+> +			 * mutex_unlock()
+> +			 *   lock(&wait_lock);
+> +			 *   next(owner) = current->blocked_donor;
+> +			 *   unlock(&wait_lock);
+> +			 *
+> +			 *   wake_up_q();
+> +			 *     ...
+> +			 *       ttwu_runnable()
+> +			 *         __task_rq_lock()
+> +			 *				  lock(&wait_lock);
+> +			 *				  owner == p
+> +			 *
+> +			 * Which leaves us to finish the ttwu_runnable() and make it go.
+> +			 *
+> +			 * So schedule rq->idle so that ttwu_runnable can get the rq lock
+> +			 * and mark owner as running.
+> +			 */
+> +			raw_spin_unlock(&p->blocked_lock);
+> +			raw_spin_unlock(&mutex->wait_lock);
+> +			return proxy_resched_idle(rq, next);
+> +		}
+> +
+> +		/*
+> +		 * OK, now we're absolutely sure @owner is not blocked _and_
+> +		 * on this rq, therefore holding @rq->lock is sufficient to
+> +		 * guarantee its existence, as per ttwu_remote().
+> +		 */
+> +		raw_spin_unlock(&p->blocked_lock);
+> +		raw_spin_unlock(&mutex->wait_lock);
+>   	}
+>   
+> -	if (!proxy_deactivate(rq, next))
+> -		ret = p;
+> +	WARN_ON_ONCE(owner && !owner->on_rq);
+> +	return owner;
+> +
+>   out:
+>   	raw_spin_unlock(&p->blocked_lock);
+>   	raw_spin_unlock(&mutex->wait_lock);
+> @@ -6738,6 +6838,7 @@ static void __sched notrace __schedule(unsigned int sched_mode)
+>   	struct rq_flags rf;
+>   	struct rq *rq;
+>   	int cpu;
+> +	bool preserve_need_resched = false;
+>   
+>   	cpu = smp_processor_id();
+>   	rq = cpu_rq(cpu);
+> @@ -6798,9 +6899,12 @@ static void __sched notrace __schedule(unsigned int sched_mode)
+>   			rq_repin_lock(rq, &rf);
+>   			goto pick_again;
+>   		}
+> +		if (next == rq->idle && prev == rq->idle)
+> +			preserve_need_resched = true;
+>   	}
+>   
+> -	clear_tsk_need_resched(prev);
+> +	if (!preserve_need_resched)
+> +		clear_tsk_need_resched(prev);
+>   	clear_preempt_need_resched();
+>   #ifdef CONFIG_SCHED_DEBUG
+>   	rq->last_seen_need_resched_ns = 0;
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 085941db5bf1..954b41e5b7df 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -8905,6 +8905,9 @@ int can_migrate_task(struct task_struct *p, struct lb_env *env)
+>   	if (kthread_is_per_cpu(p))
+>   		return 0;
+>   
+> +	if (task_is_blocked(p))
+> +		return 0;
 
-Reviewed-by: Jeffrey Altman <jaltman@auristor.com>
+I think "We do not migrate tasks that are: ..." 
+(kernel/sched/fair.c:8897) comment needs to be updated for this change.
 
-Thanks,
-David
-
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=3D216637 [1]
-Link: https://lore.kernel.org/r/20231211163412.2766147-1-dhowells@redhat.c=
-om/ # v1
-Link: https://lore.kernel.org/r/20231211213233.2793525-1-dhowells@redhat.c=
-om/ # v2
-Link: https://lore.kernel.org/r/20231212144611.3100234-1-dhowells@redhat.c=
-om/ # v3
-Link: https://lore.kernel.org/r/20231221134558.1659214-1-dhowells@redhat.c=
-om/ # v4
----
-The following changes since commit ceb6a6f023fd3e8b07761ed900352ef574010bc=
-b:
-
-  Linux 6.7-rc6 (2023-12-17 15:19:28 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git tags=
-/afs-fixes-20231221
-
-for you to fetch changes up to 39299bdd2546688d92ed9db4948f6219ca1b9542:
-
-  keys, dns: Allow key types (eg. DNS) to be reclaimed immediately on expi=
-ry (2023-12-21 13:47:38 +0000)
-
-----------------------------------------------------------------
-AFS fixes
-
-----------------------------------------------------------------
-David Howells (3):
-      afs: Fix the dynamic root's d_delete to always delete unused dentrie=
-s
-      afs: Fix dynamic root lookup DNS check
-      keys, dns: Allow key types (eg. DNS) to be reclaimed immediately on =
-expiry
-
- fs/afs/dynroot.c           | 31 +++++++++++++++++--------------
- include/linux/key-type.h   |  1 +
- net/dns_resolver/dns_key.c | 10 +++++++++-
- security/keys/gc.c         | 31 +++++++++++++++++++++----------
- security/keys/internal.h   | 11 ++++++++++-
- security/keys/key.c        | 15 +++++----------
- security/keys/proc.c       |  2 +-
- 7 files changed, 64 insertions(+), 37 deletions(-)
+> +
+>   	if (!cpumask_test_cpu(env->dst_cpu, p->cpus_ptr)) {
+>   		int cpu;
+>   
+> @@ -8941,7 +8944,8 @@ int can_migrate_task(struct task_struct *p, struct lb_env *env)
+>   	/* Record that we found at least one task that could run on dst_cpu */
+>   	env->flags &= ~LBF_ALL_PINNED;
+>   
+> -	if (task_on_cpu(env->src_rq, p)) {
+> +	if (task_on_cpu(env->src_rq, p) ||
+> +	    task_current_selected(env->src_rq, p)) {
+>   		schedstat_inc(p->stats.nr_failed_migrations_running);
+>   		return 0;
+>   	}
+> @@ -8980,6 +8984,9 @@ static void detach_task(struct task_struct *p, struct lb_env *env)
+>   {
+>   	lockdep_assert_rq_held(env->src_rq);
+>   
+> +	BUG_ON(task_current(env->src_rq, p));
+> +	BUG_ON(task_current_selected(env->src_rq, p));
+> +
+>   	deactivate_task(env->src_rq, p, DEQUEUE_NOCLOCK);
+>   	set_task_cpu(p, env->dst_cpu);
+>   }
 
 
