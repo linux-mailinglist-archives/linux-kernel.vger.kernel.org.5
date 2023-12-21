@@ -1,70 +1,56 @@
-Return-Path: <linux-kernel+bounces-8423-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8424-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFC5C81B6ED
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 14:05:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED87C81B6F1
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 14:05:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7E08A1F2188E
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 13:05:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1DAEA1C25B6D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 13:05:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F9B8697A0;
-	Thu, 21 Dec 2023 13:04:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD1B27319A;
+	Thu, 21 Dec 2023 13:05:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gcQotWQ+"
+	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="U7VLTATd"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 902A3745CD
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 13:04:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1703163890;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=cKUbSujUcjmbQNVNTnGKXDlRz29Lyk23in1kHV5SnwU=;
-	b=gcQotWQ+m0ZW+T+03cqdoFhb5/Cg7Sns/2HyFf4jFDdKs5JnIgoG8ImFsPJXhb/sA5g/cY
-	r4pUe0WS/DkCqTeKNXDnHdMFEhvIDWn5aMB9I3Y74y78gYdkPkg13AsEWS+UgRplOa/dbM
-	ivVmDZnVXaeSINwI19PlPKDX82B1jYg=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-642-uuOyQurBM-SQ9J5z2PwaaA-1; Thu, 21 Dec 2023 08:04:47 -0500
-X-MC-Unique: uuOyQurBM-SQ9J5z2PwaaA-1
-Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-a1f99dd182dso37239366b.3
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 05:04:46 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703163886; x=1703768686;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cKUbSujUcjmbQNVNTnGKXDlRz29Lyk23in1kHV5SnwU=;
-        b=gQbiDvDiJdpnWUTnXqEnB/iEIiN6SapkZlB3bd2w/KhricM3Q/fRy4YCLgiczfgEcu
-         EoU3oqFz0Ow2xBqZNtZ4wnp4U1iJzZCsmCLhmRNFq/RebDDzl0HHwms5mDelgflwyF5g
-         F1PFF8tYGWrZW2WCTQWauzeArtUJGt++IxR1Wp2kMo3I0BARCqBJsJfyYTaouxCOT2uX
-         PjMwNB1+S/0epBaQqAByuFt7vdO//DwbRmnRbH132PWTHrrgq5F1c/SCeypoK+rTpLJG
-         O8IYl2W+mSaCpqJbvIaosnobbz09Qn0Luyz0Sq0KIrk7gGvYvLuBW9f1z6O55tlFSXzD
-         rO3Q==
-X-Gm-Message-State: AOJu0Yx44tPNQCsKLoXsRF2EZIvu+Hh+MXXMAyIofmYYGPFtoUwnpuVw
-	THugBPtw5lVJ/mpxg7nzFGsOk/OHFaUXMVwwI6bpFYYVWpLSDAQHy0KYs4OHUVAU5hvCLGdFxL7
-	EkTodmD7h2b8MniRFlrjG+Y7s
-X-Received: by 2002:a17:906:4c8e:b0:a1e:9d8b:1e86 with SMTP id q14-20020a1709064c8e00b00a1e9d8b1e86mr11143647eju.72.1703163886053;
-        Thu, 21 Dec 2023 05:04:46 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IG+itG5vbj8FUnUO+KnlZB9cMqpbrWwUxk4M61vw39M2ROTdOf09d0+KzfhLbDo/uyzujBEdg==
-X-Received: by 2002:a17:906:4c8e:b0:a1e:9d8b:1e86 with SMTP id q14-20020a1709064c8e00b00a1e9d8b1e86mr11143643eju.72.1703163885771;
-        Thu, 21 Dec 2023 05:04:45 -0800 (PST)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id ka23-20020a170907921700b00a236e9cfe74sm926599ejb.103.2023.12.21.05.04.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Dec 2023 05:04:44 -0800 (PST)
-Message-ID: <7c70b998-6d8c-426e-93d9-eabf9e3475af@redhat.com>
-Date: Thu, 21 Dec 2023 14:04:44 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30042697A0;
+	Thu, 21 Dec 2023 13:05:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BL93V38026783;
+	Thu, 21 Dec 2023 14:05:05 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	selector1; bh=qKB5MFFD1Jhsz7q6UhIrZ8SdYwmTMombWQWBCfbDjMA=; b=U7
+	VLTATdz5V+RXI86ihxwUPSOQX1CT/3D6FGYvhvOiT2Zwra2HHLVSwWXtCABUu469
+	JONexw9XjyaiI9WtYT2zqUStBD4+ktYm7gdGcoXnb7K0auDO9xiHnZEx4Ow74zON
+	GFZM7oX0Y7Hi5hfVQax1zYhxsk24j1RGPJW7fkpHoBFeZHUbPxHBUQEUbWAInZkL
+	5bbX9bolyrFiosOMeUjKZltNfqIkRjyxb8UrdEw9IYwvESHWii7/HVtQ7pnaP986
+	i68sQmYZJrdRwuY1dpsW5zGKinpv285ADwX/jDdIBMIH45uFN5rTnZVoZ4bUFCWU
+	QL30ajLV8cj68tU8t3AA==
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3v11w97htr-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 21 Dec 2023 14:05:05 +0100 (CET)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 1B898100066;
+	Thu, 21 Dec 2023 14:05:04 +0100 (CET)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 0992D2C38A1;
+	Thu, 21 Dec 2023 14:05:04 +0100 (CET)
+Received: from [10.201.20.120] (10.201.20.120) by SHFDAG1NODE1.st.com
+ (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 21 Dec
+ 2023 14:05:02 +0100
+Message-ID: <70ed583e-af57-43e5-91a4-daa0568e83ab@foss.st.com>
+Date: Thu, 21 Dec 2023 14:05:01 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -72,108 +58,251 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] platform/x86: hp-bioscfg: Removed needless asm-generic
-Content-Language: en-US, nl
-To: Nick Desaulniers <ndesaulniers@google.com>,
- Tanzir Hasan <tanzirh@google.com>
-Cc: Jorge Lopez <jorge.lopez2@hp.com>,
- =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
- platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
- Al Viro <viro@zeniv.linux.org.uk>
-References: <20231219-hp-password-v1-1-052fe7b6b7f1@google.com>
- <ZYM_gZAdEnczZiBz@google.com>
-From: Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <ZYM_gZAdEnczZiBz@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH v5 3/5] media: hantro: add support for STM32MP25 VENC
+Content-Language: en-US
+To: Sebastian Fricke <sebastian.fricke@collabora.com>
+CC: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+        Philipp Zabel
+	<p.zabel@pengutronix.de>,
+        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        Sakari Ailus
+	<sakari.ailus@linux.intel.com>,
+        Benjamin Gaignard
+	<benjamin.gaignard@collabora.com>,
+        Laurent Pinchart
+	<laurent.pinchart+renesas@ideasonboard.com>,
+        Daniel Almeida
+	<daniel.almeida@collabora.com>,
+        Benjamin Mugnier
+	<benjamin.mugnier@foss.st.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Mauro
+ Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil@xs4all.nl>, <linux-media@vger.kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <linux-rockchip@lists.infradead.org>,
+        Marco Felsch <m.felsch@pengutronix.de>, Adam Ford <aford173@gmail.com>
+References: <20231221084723.2152034-1-hugues.fruchet@foss.st.com>
+ <20231221084723.2152034-4-hugues.fruchet@foss.st.com>
+ <20231221111837.4u22pmba7jd3hinj@basti-XPS-13-9310>
+From: Hugues FRUCHET <hugues.fruchet@foss.st.com>
+In-Reply-To: <20231221111837.4u22pmba7jd3hinj@basti-XPS-13-9310>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: EQNCAS1NODE3.st.com (10.75.129.80) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-21_06,2023-12-20_01,2023-05-22_02
 
-Hi,
+Hi Sebastian,
 
-On 12/20/23 20:24, Nick Desaulniers wrote:
-> On Tue, Dec 19, 2023 at 10:10:52PM +0000, Tanzir Hasan wrote:
->> asm-generic/posix-types.h is obtained through bioscfg.h so there is no
->> need to include it.
+Yes, feel free to fix the two comments !
+
+BR,
+Hugues.
+
+On 12/21/23 12:18, Sebastian Fricke wrote:
+> Hey Hugues,
 > 
-> I verified that by:
-> 1. building with V=1
-> 2. taking the compiler invocation and adding -H
+> one small comment below, if it should turn out to be the only problem I
+> can fix it myself for the pull request.
 > 
-> . drivers/platform/x86/hp/hp-bioscfg/bioscfg.h
-> .. ./include/linux/wmi.h
-> ... ./include/linux/device.h
-> .... ./include/linux/dev_printk.h
-> ..... ./include/linux/compiler.h
-> ...... ./arch/x86/include/generated/asm/rwonce.h
-> ....... ./include/asm-generic/rwonce.h
-> ........ ./include/linux/kasan-checks.h
-> ......... ./include/linux/types.h
-> .......... ./include/uapi/linux/types.h
-> ........... ./arch/x86/include/generated/uapi/asm/types.h
-> ............ ./arch/x86/include/asm/posix_types.h
-> ............. ./arch/x86/include/uapi/asm/posix_types_64.h
-> .............. ./include/uapi/asm-generic/posix_types.h
-> 
->> It is also an asm-generic file which should be
->> avoided if possible.
-> 
-> Correct, though there is a linux/posix_types.h file.
-> 
-> biocfg.h hasn't seen any changes since introduction; perhaps some reference was
-> removed in follow up changes to passwdobj-attributes.c, but nothing stood out.
-> 
-> Regardless, this file builds just fine without either (asm/posix_types.h or
-> linux/posix_types.h), and asm-generic should not be used (as suggested by Al).
-> 
-> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-> Tested-by: Nick Desaulniers <ndesaulniers@google.com>
-
-Thank you both for the patch + review, I've applied this patch to my
-review-hans  branch:
-https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
-
-Once I've run some tests on this branch the patches there will be
-added to the platform-drivers-x86/for-next branch and eventually
-will be included in the pdx86 pull-request to Linus for the next
-merge-window.
-
-Regards,
-
-Hans
-
-
-
-
-
-
-
-
->> Suggest-by: Al Viro <viro@zeniv.linux.org.uk>
->> Signed-off-by: Tanzir Hasan <tanzirh@google.com>
+> On 21.12.2023 09:47, Hugues Fruchet wrote:
+>> Add support for STM32MP25 VENC video hardware encoder.
+>> Support of JPEG encoding.
+>> VENC has its own reset/clock/irq.
+>>
+>> Signed-off-by: Hugues Fruchet <hugues.fruchet@foss.st.com>
+>> Reviewed-by: Nicolas Dufresne <nicolas.dufresne@collabora.com>
 >> ---
->>  drivers/platform/x86/hp/hp-bioscfg/passwdobj-attributes.c | 1 -
->>  1 file changed, 1 deletion(-)
+>> drivers/media/platform/verisilicon/Makefile   |   3 +-
+>> .../media/platform/verisilicon/hantro_drv.c   |   1 +
+>> .../media/platform/verisilicon/hantro_hw.h    |   1 +
+>> .../platform/verisilicon/stm32mp25_venc_hw.c  | 115 ++++++++++++++++++
+>> 4 files changed, 119 insertions(+), 1 deletion(-)
+>> create mode 100644 drivers/media/platform/verisilicon/stm32mp25_venc_hw.c
 >>
->> diff --git a/drivers/platform/x86/hp/hp-bioscfg/passwdobj-attributes.c b/drivers/platform/x86/hp/hp-bioscfg/passwdobj-attributes.c
->> index 03d0188804ba..f7efe217a4bb 100644
->> --- a/drivers/platform/x86/hp/hp-bioscfg/passwdobj-attributes.c
->> +++ b/drivers/platform/x86/hp/hp-bioscfg/passwdobj-attributes.c
->> @@ -7,7 +7,6 @@
->>   */
->>  
->>  #include "bioscfg.h"
->> -#include <asm-generic/posix_types.h>
->>  
->>  GET_INSTANCE_ID(password);
->>  /*
+>> diff --git a/drivers/media/platform/verisilicon/Makefile 
+>> b/drivers/media/platform/verisilicon/Makefile
+>> index 5854e0f0dd32..3bf43fdbedc1 100644
+>> --- a/drivers/media/platform/verisilicon/Makefile
+>> +++ b/drivers/media/platform/verisilicon/Makefile
+>> @@ -41,4 +41,5 @@ hantro-vpu-$(CONFIG_VIDEO_HANTRO_SUNXI) += \
+>>         sunxi_vpu_hw.o
 >>
->> ---
->> base-commit: 3fb7c66ac51a87984e043d9f47b7a509e3f53906
->> change-id: 20231219-hp-password-19068dc438b5
+>> hantro-vpu-$(CONFIG_VIDEO_HANTRO_STM32MP25) += \
+>> -        stm32mp25_vdec_hw.o
+>> +        stm32mp25_vdec_hw.o \
+>> +        stm32mp25_venc_hw.o
+>> diff --git a/drivers/media/platform/verisilicon/hantro_drv.c 
+>> b/drivers/media/platform/verisilicon/hantro_drv.c
+>> index 2db27c333924..4d97a8ac03de 100644
+>> --- a/drivers/media/platform/verisilicon/hantro_drv.c
+>> +++ b/drivers/media/platform/verisilicon/hantro_drv.c
+>> @@ -736,6 +736,7 @@ static const struct of_device_id of_hantro_match[] 
+>> = {
+>> #endif
+>> #ifdef CONFIG_VIDEO_HANTRO_STM32MP25
+>>     { .compatible = "st,stm32mp25-vdec", .data = 
+>> &stm32mp25_vdec_variant, },
+>> +    { .compatible = "st,stm32mp25-venc", .data = 
+>> &stm32mp25_venc_variant, },
+>> #endif
+>>     { /* sentinel */ }
+>> };
+>> diff --git a/drivers/media/platform/verisilicon/hantro_hw.h 
+>> b/drivers/media/platform/verisilicon/hantro_hw.h
+>> index b7eccc1a96fc..70c72e9d11d5 100644
+>> --- a/drivers/media/platform/verisilicon/hantro_hw.h
+>> +++ b/drivers/media/platform/verisilicon/hantro_hw.h
+>> @@ -407,6 +407,7 @@ extern const struct hantro_variant 
+>> rk3588_vpu981_variant;
+>> extern const struct hantro_variant sama5d4_vdec_variant;
+>> extern const struct hantro_variant sunxi_vpu_variant;
+>> extern const struct hantro_variant stm32mp25_vdec_variant;
+>> +extern const struct hantro_variant stm32mp25_venc_variant;
 >>
->> Best regards,
+>> extern const struct hantro_postproc_ops hantro_g1_postproc_ops;
+>> extern const struct hantro_postproc_ops hantro_g2_postproc_ops;
+>> diff --git a/drivers/media/platform/verisilicon/stm32mp25_venc_hw.c 
+>> b/drivers/media/platform/verisilicon/stm32mp25_venc_hw.c
+>> new file mode 100644
+>> index 000000000000..0ff0f073b922
+>> --- /dev/null
+>> +++ b/drivers/media/platform/verisilicon/stm32mp25_venc_hw.c
+>> @@ -0,0 +1,115 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +/*
+>> + * STM32MP25 VENC video encoder driver
+>> + *
+>> + * Copyright (C) STMicroelectronics SA 2022
+>> + * Authors: Hugues Fruchet <hugues.fruchet@foss.st.com>
+>> + *          for STMicroelectronics.
+>> + *
+>> + */
+>> +
+>> +#include <linux/clk.h>
+>> +#include <linux/delay.h>
+>> +#include <linux/reset.h>
+>> +
+>> +#include "hantro.h"
+>> +#include "hantro_jpeg.h"
+>> +#include "hantro_h1_regs.h"
+>> +
+>> +/*
+>> + * Supported formats.
+>> + */
+>> +
+>> +static const struct hantro_fmt stm32mp25_venc_fmts[] = {
+>> +    {
+>> +        .fourcc = V4L2_PIX_FMT_YUV420M,
+>> +        .codec_mode = HANTRO_MODE_NONE,
+>> +        .enc_fmt = ROCKCHIP_VPU_ENC_FMT_YUV420P,
+>> +    },
+>> +    {
+>> +        .fourcc = V4L2_PIX_FMT_NV12M,
+>> +        .codec_mode = HANTRO_MODE_NONE,
+>> +        .enc_fmt = ROCKCHIP_VPU_ENC_FMT_YUV420SP,
+>> +    },
+>> +    {
+>> +        .fourcc = V4L2_PIX_FMT_YUYV,
+>> +        .codec_mode = HANTRO_MODE_NONE,
+>> +        .enc_fmt = ROCKCHIP_VPU_ENC_FMT_YUYV422,
+>> +    },
+>> +    {
+>> +        .fourcc = V4L2_PIX_FMT_UYVY,
+>> +        .codec_mode = HANTRO_MODE_NONE,
+>> +        .enc_fmt = ROCKCHIP_VPU_ENC_FMT_UYVY422,
+>> +    },
+>> +    {
+>> +        .fourcc = V4L2_PIX_FMT_JPEG,
+>> +        .codec_mode = HANTRO_MODE_JPEG_ENC,
+>> +        .max_depth = 2,
+>> +        .header_size = JPEG_HEADER_SIZE,
+>> +        .frmsize = {
+>> +            .min_width = 96,
+>> +            .max_width = FMT_4K_WIDTH,
+>> +            .step_width = MB_DIM,
+>> +            .min_height = 96,
+>> +            .max_height = FMT_4K_HEIGHT,
+>> +            .step_height = MB_DIM,
+>> +        },
+>> +    },
+>> +};
+>> +
+>> +static irqreturn_t stm32mp25_venc_irq(int irq, void *dev_id)
+>> +{
+>> +    struct hantro_dev *vpu = dev_id;
+>> +    enum vb2_buffer_state state;
+>> +    u32 status;
+>> +
+>> +    status = vepu_read(vpu, H1_REG_INTERRUPT);
+>> +    state = (status & H1_REG_INTERRUPT_FRAME_RDY) ?
+>> +        VB2_BUF_STATE_DONE : VB2_BUF_STATE_ERROR;
+>> +
+>> +    vepu_write(vpu, H1_REG_INTERRUPT_BIT, H1_REG_INTERRUPT);
+>> +
+>> +    hantro_irq_done(vpu, state);
+>> +
+>> +    return IRQ_HANDLED;
+>> +}
+>> +
+>> +static void stm32mp25_venc_reset(struct hantro_ctx *ctx)
+>> +{
+>> +}
+>> +
+>> +/*
+>> + * Supported codec ops.
+>> + */
+>> +
+>> +static const struct hantro_codec_ops stm32mp25_venc_codec_ops[] = {
+>> +    [HANTRO_MODE_JPEG_ENC] = {
+>> +        .run = hantro_h1_jpeg_enc_run,
+>> +        .reset = stm32mp25_venc_reset,
+>> +        .done = hantro_h1_jpeg_enc_done,
+>> +    },
+>> +};
+>> +
+>> +/*
+>> + * Variants.
+>> + */
+>> +
+>> +static const struct hantro_irq stm32mp25_venc_irqs[] = {
+>> +    { "venc", stm32mp25_venc_irq },
+>> +};
+>> +
+>> +static const char * const stm32mp25_venc_clk_names[] = {
+>> +    "venc-clk"
+>> +};
+>> +
+>> +const struct hantro_variant stm32mp25_venc_variant = {
+>> +    .enc_fmts = stm32mp25_venc_fmts,
+>> +    .num_enc_fmts = ARRAY_SIZE(stm32mp25_venc_fmts),
+>> +    .codec = HANTRO_JPEG_ENCODER,
+>> +    .codec_ops = stm32mp25_venc_codec_ops,
+>> +    .irqs = stm32mp25_venc_irqs,
+>> +    .num_irqs = ARRAY_SIZE(stm32mp25_venc_irqs),
+>> +    .clk_names = stm32mp25_venc_clk_names,
+>> +    .num_clocks = ARRAY_SIZE(stm32mp25_venc_clk_names)
+>> +};
+>> +
+> 
+> There is an superfluous new line here.
+> 
+> Greetings,
+> Sebastian
+> 
 >> -- 
->> Tanzir Hasan <tanzirh@google.com>
+>> 2.25.1
 >>
-> 
-
+>>
 
