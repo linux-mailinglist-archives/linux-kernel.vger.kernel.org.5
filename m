@@ -1,70 +1,68 @@
-Return-Path: <linux-kernel+bounces-8594-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8579-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9941181B9F2
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 15:56:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B642481B9B4
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 15:40:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 392DD1F24ABB
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 14:56:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3143E285412
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 14:40:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7004241840;
-	Thu, 21 Dec 2023 14:56:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFA8D1D6BD;
+	Thu, 21 Dec 2023 14:40:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pACkWHtc"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96B7F360AF;
-	Thu, 21 Dec 2023 14:55:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
-Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1rGKSr-0002PX-00; Thu, 21 Dec 2023 15:55:57 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-	id 27AA2C0A1E; Thu, 21 Dec 2023 15:40:08 +0100 (CET)
-Date: Thu, 21 Dec 2023 15:40:08 +0100
-From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Gregory CLEMENT <gregory.clement@bootlin.com>
-Cc: Paul Burton <paulburton@kernel.org>, linux-mips@vger.kernel.org,
-	Jiaxun Yang <jiaxun.yang@flygoat.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
-	Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	=?iso-8859-1?Q?Th=E9o?= Lebrun <theo.lebrun@bootlin.com>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v5 00/22] Add support for the Mobileye EyeQ5 SoC
-Message-ID: <ZYROSGUGk7h8conA@alpha.franken.de>
-References: <20231212163459.1923041-1-gregory.clement@bootlin.com>
- <878r5vctdg.fsf@BL-laptop>
- <ZYNhbQjMbAH6I0kI@alpha.franken.de>
- <87frzwasxo.fsf@BL-laptop>
- <87cyuzc3zi.fsf@BL-laptop>
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 218BBEDC
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 14:40:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4A0CC433C7;
+	Thu, 21 Dec 2023 14:40:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703169635;
+	bh=BQum2Pu1iU2MfE3l/A9uSN7XdYuuMtnSrftnoZMFHms=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=pACkWHtcHYNUCVbfS/Qexd6DvWVLlk/EjMfzJTH2qh9RH9I2CAcYSPFE4YFay/0O/
+	 e91tvACui+JgGyP5c2Fq8/NZyXFD+u9xGb4ZmWd7/Lon3nxFeZZ1cCYhiTyO9doPVG
+	 LyGOZZbb2Ht5yUwfxf+4X9Kd5CwCc0WpSlG8oXQhO+4IbCmqLYd5jkBYYWcczV9OFa
+	 AG/P3w2OrSJkeL8EPO73HYd+sheifFisjDy77cDsgdK+GOZTSoiCcDAJ0SXuHPIY27
+	 weATTXtl2F5XFE7OirpOoL7XjMatHFJhEFgZvKd2GagqckC5I11JiOxiHX7ciklEZ0
+	 ekmz5byg1HuZA==
+From: Lee Jones <lee@kernel.org>
+To: Lee Jones <lee@kernel.org>, Linus Walleij <linus.walleij@linaro.org>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20231214-ab8500-sysctrl-oneliner-v1-1-fd78a15c0b2f@linaro.org>
+References: <20231214-ab8500-sysctrl-oneliner-v1-1-fd78a15c0b2f@linaro.org>
+Subject: Re: (subset) [PATCH] mfd: ab8500-sysctrl: Drop ancient charger
+Message-Id: <170316963447.599575.18294304575878441440.b4-ty@kernel.org>
+Date: Thu, 21 Dec 2023 14:40:34 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87cyuzc3zi.fsf@BL-laptop>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Mailer: b4 0.12.3
 
-On Thu, Dec 21, 2023 at 10:13:53AM +0100, Gregory CLEMENT wrote:
-> > However, while waiting for your feedback on Jiaxun's part, I will
-> > attempt to add a new platform to assess exactly what the implications
-> > are.
+On Thu, 14 Dec 2023 19:26:31 +0100, Linus Walleij wrote:
+> The sysctrl driver was looking for an instance of the PM2301
+> charger but this has been deleted from the kernel and is not
+> used with the U8500 systems any more. Drop the string.
 > 
-> Is it possible for you to apply the first patch of this series, which is
-> only a fix?
+> 
 
-I had this already in my mind and done it just a few minutes ago.
+Applied, thanks!
 
-Thomas.
+[1/1] mfd: ab8500-sysctrl: Drop ancient charger
+      commit: 9aab3f5b572eca8f4f2c3ffbbf4aeecf7d5cadb9
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+--
+Lee Jones [李琼斯]
+
 
