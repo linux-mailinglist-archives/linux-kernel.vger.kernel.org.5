@@ -1,507 +1,128 @@
-Return-Path: <linux-kernel+bounces-7937-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7938-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 30DBE81AF74
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 08:30:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4FCB081AF78
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 08:33:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9D67D1F2741F
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 07:30:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8270C1C218BE
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 07:33:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83CB7182BF;
-	Thu, 21 Dec 2023 07:29:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FC41156CB;
+	Thu, 21 Dec 2023 07:33:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eI0noVOE"
+	dkim=pass (2048-bit key) header.d=fairphone.com header.i=@fairphone.com header.b="z6eef2g4"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E69BA18043;
-	Thu, 21 Dec 2023 07:29:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2cc6eecd319so4945691fa.1;
-        Wed, 20 Dec 2023 23:29:28 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22E9D14F76
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 07:33:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fairphone.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fairphone.com
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a269a271b5bso53091666b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 23:33:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703143767; x=1703748567; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=fairphone.com; s=fair; t=1703143989; x=1703748789; darn=vger.kernel.org;
+        h=in-reply-to:references:to:from:subject:cc:message-id:date
+         :content-transfer-encoding:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=PPdCSrZU/ppC+mMBGRL49lqPFHzTuO4Z9sjETscMlk4=;
-        b=eI0noVOEJ4PjwkWzqxGTCrsSWCVgRMcA8Lm4LLDsQfV/Ot6rgvUmum0PquGr/QMtF8
-         e18ltNEWngNzYLo7PCTz/McmW5R6sk/3Xfd6VyJu3GeACDSbvvUQ2HEG4M4bQe5jR+Xf
-         EhP4F6mXzaCDQEaB1hiV8AYPDh8Wcs1sCDaexljbzMhr07yYIT8IX0r5ca61AdHIYcVO
-         onZpX1GuiyCqxDCNUiC7KVsZwmxTFZeo2/ZgQExn1I728B/1ZNrpf1qEnqlKdP1EOOJK
-         29FVOUKvnAOoCBhh6G58O8eN6vN/9WhkLKqQdyRzTxeUbesgWvY2qc2wqFVA/Dq0Mbvu
-         0LLQ==
+        bh=/0VpDqqUIzOlKBhn2gCRz1W1Bf+NVsRHUpuRi9T9QvI=;
+        b=z6eef2g4EqmeXmxruoboMdtYIIFX7jty01jJp5XKrkyR4TFwFjSIN7HHR+QzwjjxYc
+         +dlYrwtyRhdZncCygQ5jmyJ+bhICblx1+Snz72UOCRywXqCmpiJIELkZhxP6KIyqmZ9X
+         X0Y3GOYccegVkSvgE9u5muEaNB4N5Zo6L/PDlIXH/F1tt0UqlIb4tMD7Q4Ki+1mNsA/j
+         6vcK+MN8ZR8Zq0F+9ORtg1hqDgV9tkPqBbv8VwnZXoaIu53S3MCbpodN91e2zQp/gkd2
+         6kIJgmpwrir/b1DBfNK967xY4hH1xVTpmOMWDi8SK/esDgndy/xpyDBUMQIuP6031Xk4
+         oF4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703143767; x=1703748567;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PPdCSrZU/ppC+mMBGRL49lqPFHzTuO4Z9sjETscMlk4=;
-        b=EC2D55oty3phnNKr784fGo4FH5fF23okYoum5eqWCuotwI3M43l314B0yM0js4XV7R
-         eqhdyc8X9JuEQRG+kikInWtg7RHd4eVKp1MSftEcU1f1hDuoKTdf0EvrHSTphPKme24r
-         CAcZG9twXfci85o/J+5mhSQz2l1+B1E0DTKfOjxbVST+dEv2baAlAckPfpCH8iUKLkcX
-         Q/l3qNApNCmkldXCSIuq+tf8rj6PJBUMsM5UPddgDvlaP9x93rjMMUwXEXMk6GPEuU4E
-         LGYlJPNZLo6F0LaofQksmKlQLlxeJngLTP1dA3z51XHhrRXRbiOKz80OzfZlsMkEYQCd
-         Wwcw==
-X-Gm-Message-State: AOJu0Yw36jAch+Yr1VfY7uMcZCW1NG45a2iV1k4HRCyk3dhrj4A4l3tA
-	h73Glk12aj7Zxacuq7lt6UwYzjPSn3G82w==
-X-Google-Smtp-Source: AGHT+IFMkCBhbH+bePn8Fz68KcxB5T/NMaWm2H8YzNHOFOoAZ7yDiyQzcVMePnpNAqLyT8dTNjkkKQ==
-X-Received: by 2002:a2e:9c8e:0:b0:2cc:5cf4:c394 with SMTP id x14-20020a2e9c8e000000b002cc5cf4c394mr4828585lji.15.1703143766822;
-        Wed, 20 Dec 2023 23:29:26 -0800 (PST)
-Received: from debian.fritz.box ([93.184.186.109])
-        by smtp.gmail.com with ESMTPSA id en22-20020a056402529600b00553830eb2fcsm787819edb.64.2023.12.20.23.29.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Dec 2023 23:29:26 -0800 (PST)
-From: Dimitri Fedrau <dima.fedrau@gmail.com>
-To: 
-Cc: Dimitri Fedrau <dima.fedrau@gmail.com>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Stefan Eichenberger <eichest@gmail.com>,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v3 4/4] net: phy: marvell-88q2xxx: add driver for the Marvell 88Q2220 PHY
-Date: Thu, 21 Dec 2023 08:28:51 +0100
-Message-Id: <20231221072853.107678-5-dima.fedrau@gmail.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231221072853.107678-1-dima.fedrau@gmail.com>
-References: <20231219093554.GA6393@debian>
- <20231221072853.107678-1-dima.fedrau@gmail.com>
+        d=1e100.net; s=20230601; t=1703143989; x=1703748789;
+        h=in-reply-to:references:to:from:subject:cc:message-id:date
+         :content-transfer-encoding:mime-version:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=/0VpDqqUIzOlKBhn2gCRz1W1Bf+NVsRHUpuRi9T9QvI=;
+        b=f3GJiSHYqf4851bGbdESMWYNP1kVAnOlRQjcQ2KLfFQ7ufg1sTm9xmmJXHYHN86vF1
+         0ME6mKGK1PNgehz3MLhl+kqHaTRFFLZXk/w2fJIFGY1u3L4yxJJ5fpxsiyvly7jZEylh
+         TwfXNyBpoOHra0BSaIG2GTcSdmQaIPGInWpjwueXss5WiXoAPR/SuQzeVisfH6/UUnbr
+         W0d/Kt087KFjpzBbVzn1kzgw/oe5D6w+/dn4XDPpW/gTvq/vGlOb6Ig8IM8GRziadB8V
+         y/Ua0duZEg8HHLg4x4In/V4NioWmprBjbDFjRrGXxDqKZHt3wpZRQPwlPrsnF9YwYrk6
+         QV4A==
+X-Gm-Message-State: AOJu0YxyKQBN0AOfKJjZl64S8S15Dk3xK+MbJ3bQYiaNwzkUkcgljCQb
+	dN5qe8mWCwo6R+BKmr5lgr21Sw==
+X-Google-Smtp-Source: AGHT+IH0oytZXCEplX5mnIjMU1XTUB7KsqnPxyVQVbzXWE5l7gbKRZ2BZnW985lnddzue73LNbDOQA==
+X-Received: by 2002:a17:906:f5a3:b0:a1f:5c21:a577 with SMTP id cm35-20020a170906f5a300b00a1f5c21a577mr12532478ejd.152.1703143989091;
+        Wed, 20 Dec 2023 23:33:09 -0800 (PST)
+Received: from localhost (2a02-8388-6584-6400-d322-7350-96d2-429d.cable.dynamic.v6.surfer.at. [2a02:8388:6584:6400:d322:7350:96d2:429d])
+        by smtp.gmail.com with ESMTPSA id wh14-20020a170906fd0e00b00a233efe6aa7sm641391ejb.51.2023.12.20.23.33.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Dec 2023 23:33:08 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Thu, 21 Dec 2023 08:33:07 +0100
+Message-Id: <CXTU5MLN0YDS.29PPV8KZF8G9R@fairphone.com>
+Cc: <~postmarketos/upstreaming@lists.sr.ht>, <phone-devel@vger.kernel.org>,
+ <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, <linux-usb@vger.kernel.org>
+Subject: Re: [PATCH 0/3] Fairphone 5 PMIC-GLINK support (USB-C, charger,
+ fuel gauge)
+From: "Luca Weiss" <luca.weiss@fairphone.com>
+To: "Konrad Dybcio" <konrad.dybcio@linaro.org>, "Bjorn Andersson"
+ <andersson@kernel.org>, "Rob Herring" <robh+dt@kernel.org>, "Krzysztof
+ Kozlowski" <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley"
+ <conor+dt@kernel.org>, "Heikki Krogerus" <heikki.krogerus@linux.intel.com>,
+ "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+ <cros-qcom-dts-watchers@chromium.org>, "Dmitry Baryshkov"
+ <dmitry.baryshkov@linaro.org>
+X-Mailer: aerc 0.15.2
+References: <20231220-fp5-pmic-glink-v1-0-2a1f8e3c661c@fairphone.com>
+ <8d042095-1e09-45cc-9762-909fe8d663a9@linaro.org>
+In-Reply-To: <8d042095-1e09-45cc-9762-909fe8d663a9@linaro.org>
 
-Add a driver for the Marvell 88Q2220. This driver allows to detect the
-link, switch between 100BASE-T1 and 1000BASE-T1 and switch between
-master and slave mode and autonegotiation.
+On Wed Dec 20, 2023 at 1:32 PM CET, Konrad Dybcio wrote:
+> On 20.12.2023 11:02, Luca Weiss wrote:
+> > This series adds all the necessary bits to enable USB-C role switching,
+> > charger and fuel gauge (all via pmic-glink) on Fairphone 5.
+> >=20
+> > One thing that could be made different is the pmic-glink compatible.
+> > I've chosen to use qcm6490 compatible for it and not sc7280 since
+> > there's plenty of firmware variety on sc7280-based platforms and they
+> > might require different quirks in the future, so limit this PDOS quirk
+> > to just qcm6490 for now.
+> >=20
+> > If someone thinks it should be qcom,sc7280-pmic-glink, please let me
+> > know :)
+> IMO it's best to continue using the "base soc" (which just so happened
+> to fall onto sc7280 this time around) for all compatibles, unless the
+> derivatives actually had changes
 
-Signed-off-by: Dimitri Fedrau <dima.fedrau@gmail.com>
----
- drivers/net/phy/marvell-88q2xxx.c | 310 ++++++++++++++++++++++++++++--
- include/linux/marvell_phy.h       |   1 +
- 2 files changed, 300 insertions(+), 11 deletions(-)
+Hi Konrad,
 
-diff --git a/drivers/net/phy/marvell-88q2xxx.c b/drivers/net/phy/marvell-88q2xxx.c
-index 1c3ff77de56b..4e930b5ffaef 100644
---- a/drivers/net/phy/marvell-88q2xxx.c
-+++ b/drivers/net/phy/marvell-88q2xxx.c
-@@ -27,6 +27,13 @@
- #define MDIO_MMD_PCS_MV_100BT1_STAT2_LINK	0x0004
- #define MDIO_MMD_PCS_MV_100BT1_STAT2_ANGE	0x0008
- 
-+#define MDIO_MMD_PCS_MV_RX_STAT			33328
-+
-+#define MDIO_MMD_AN_MV_STAT2			32794
-+#define MDIO_MMD_AN_MV_STAT2_AN_RESOLVED	0x0800
-+#define MDIO_MMD_AN_MV_STAT2_100BT1		0x2000
-+#define MDIO_MMD_AN_MV_STAT2_1000BT1		0x4000
-+
- static int mv88q2xxx_soft_reset(struct phy_device *phydev)
- {
- 	int ret;
-@@ -120,24 +127,87 @@ static int mv88q2xxx_read_link_100m(struct phy_device *phydev)
- 
- static int mv88q2xxx_read_link(struct phy_device *phydev)
- {
--	int ret;
--
- 	/* The 88Q2XXX PHYs do not have the PMA/PMD status register available,
- 	 * therefore we need to read the link status from the vendor specific
- 	 * registers depending on the speed.
- 	 */
-+
- 	if (phydev->speed == SPEED_1000)
--		ret = mv88q2xxx_read_link_gbit(phydev);
-+		return mv88q2xxx_read_link_gbit(phydev);
-+	else if (phydev->speed == SPEED_100)
-+		return mv88q2xxx_read_link_100m(phydev);
-+
-+	phydev->link = false;
-+	return 0;
-+}
-+
-+static int mv88q2xxx_read_master_slave_state(struct phy_device *phydev)
-+{
-+	int ret;
-+
-+	phydev->master_slave_state = MASTER_SLAVE_STATE_UNKNOWN;
-+	ret = phy_read_mmd(phydev, MDIO_MMD_AN, MDIO_MMD_AN_MV_STAT);
-+	if (ret < 0)
-+		return ret;
-+
-+	if (ret & MDIO_MMD_AN_MV_STAT_LOCAL_MASTER)
-+		phydev->master_slave_state = MASTER_SLAVE_STATE_MASTER;
- 	else
--		ret = mv88q2xxx_read_link_100m(phydev);
-+		phydev->master_slave_state = MASTER_SLAVE_STATE_SLAVE;
-+
-+	return 0;
-+}
-+
-+static int mv88q2xxx_read_aneg_speed(struct phy_device *phydev)
-+{
-+	int ret;
- 
--	return ret;
-+	phydev->speed = SPEED_UNKNOWN;
-+
-+	ret = phy_read_mmd(phydev, MDIO_MMD_AN, MDIO_MMD_AN_MV_STAT2);
-+	if (ret < 0)
-+		return ret;
-+
-+	if (!(ret & MDIO_MMD_AN_MV_STAT2_AN_RESOLVED))
-+		return 0;
-+
-+	if (ret & MDIO_MMD_AN_MV_STAT2_100BT1)
-+		phydev->speed = SPEED_100;
-+	else if (ret & MDIO_MMD_AN_MV_STAT2_1000BT1)
-+		phydev->speed = SPEED_1000;
-+
-+	return 0;
- }
- 
- static int mv88q2xxx_read_status(struct phy_device *phydev)
- {
- 	int ret;
- 
-+	if (phydev->autoneg == AUTONEG_ENABLE) {
-+		phydev->duplex = DUPLEX_FULL;
-+
-+		/* We have to get the negotiated speed first, otherwise we are
-+		 * not able to read the link.
-+		 */
-+		ret = mv88q2xxx_read_aneg_speed(phydev);
-+		if (ret < 0)
-+			return ret;
-+
-+		ret = mv88q2xxx_read_link(phydev);
-+		if (ret < 0)
-+			return ret;
-+
-+		ret = genphy_c45_read_lpa(phydev);
-+		if (ret < 0)
-+			return ret;
-+
-+		ret = genphy_c45_baset1_read_status(phydev);
-+		if (ret < 0)
-+			return ret;
-+
-+		return mv88q2xxx_read_master_slave_state(phydev);
-+	}
-+
- 	ret = mv88q2xxx_read_link(phydev);
- 	if (ret < 0)
- 		return ret;
-@@ -166,7 +236,9 @@ static int mv88q2xxx_get_features(struct phy_device *phydev)
- 	 * sequence provided by Marvell. Disable it for now until a proper
- 	 * workaround is found or a new PHY revision is released.
- 	 */
--	linkmode_clear_bit(ETHTOOL_LINK_MODE_Autoneg_BIT, phydev->supported);
-+	if (phydev->drv->phy_id == MARVELL_PHY_ID_88Q2110)
-+		linkmode_clear_bit(ETHTOOL_LINK_MODE_Autoneg_BIT,
-+				   phydev->supported);
- 
- 	return 0;
- }
-@@ -192,6 +264,9 @@ static int mv88q2xxx_config_init(struct phy_device *phydev)
- 	 */
- 	phydev->pma_extable = MDIO_PMA_EXTABLE_BT1;
- 
-+	if (phydev->drv->phy_id == MARVELL_PHY_ID_88Q2220)
-+		return 0;
-+
- 	/* Read the current PHY configuration */
- 	ret = genphy_c45_read_pma(phydev);
- 	if (ret)
-@@ -200,7 +275,7 @@ static int mv88q2xxx_config_init(struct phy_device *phydev)
- 	return mv88q2xxx_config_aneg(phydev);
- }
- 
--static int mv88q2xxxx_get_sqi(struct phy_device *phydev)
-+static int mv88q2xxx_get_sqi(struct phy_device *phydev)
- {
- 	int ret;
- 
-@@ -208,7 +283,8 @@ static int mv88q2xxxx_get_sqi(struct phy_device *phydev)
- 		/* Read the SQI from the vendor specific receiver status
- 		 * register
- 		 */
--		ret = phy_read_mmd(phydev, MDIO_MMD_PCS, 0x8230);
-+		ret = phy_read_mmd(phydev, MDIO_MMD_PCS,
-+				   MDIO_MMD_PCS_MV_RX_STAT);
- 		if (ret < 0)
- 			return ret;
- 
-@@ -230,11 +306,208 @@ static int mv88q2xxxx_get_sqi(struct phy_device *phydev)
- 	return ret & 0x0F;
- }
- 
--static int mv88q2xxxx_get_sqi_max(struct phy_device *phydev)
-+static int mv88q2xxx_get_sqi_max(struct phy_device *phydev)
- {
- 	return 15;
- }
- 
-+static int mv88q222x_soft_reset(struct phy_device *phydev)
-+{
-+	int ret;
-+
-+	/* Enable RESET of DCL */
-+	if (phydev->autoneg == AUTONEG_ENABLE || phydev->speed == SPEED_1000) {
-+		ret = phy_write_mmd(phydev, MDIO_MMD_PCS, 0xfe1b, 0x48);
-+		if (ret < 0)
-+			return ret;
-+	}
-+
-+	/* Soft reset */
-+	ret = phy_write_mmd(phydev, MDIO_MMD_PCS, MDIO_PCS_1000BT1_CTRL,
-+			    MDIO_PCS_1000BT1_CTRL_RESET);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = phy_write_mmd(phydev, MDIO_MMD_PCS, 0xffe4, 0xc);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* Disable RESET of DCL */
-+	if (phydev->autoneg == AUTONEG_ENABLE || phydev->speed == SPEED_1000)
-+		return phy_write_mmd(phydev, MDIO_MMD_PCS, 0xfe1b, 0x58);
-+	else
-+		return ret;
-+}
-+
-+static int mv88q222x_config_aneg_gbit(struct phy_device *phydev)
-+{
-+	int ret;
-+
-+	/* send_s detection threshold, slave and master */
-+	ret = phy_write_mmd(phydev, MDIO_MMD_AN, 0x8032, 0x2020);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = phy_write_mmd(phydev, MDIO_MMD_AN, 0x8031, 0xa28);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = phy_write_mmd(phydev, MDIO_MMD_AN, 0x8031, 0xc28);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* Disable DCL calibratin during tear down */
-+	ret = phy_write_mmd(phydev, MDIO_MMD_PCS, 0xffdb, 0xfc10);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* Disable RESET of DCL*/
-+	ret = phy_write_mmd(phydev, MDIO_MMD_PCS, 0xfe1b, 0x58);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* Turn CM Clamp ON */
-+	return phy_write_mmd(phydev, MDIO_MMD_PCS, 0xfe79, 0x4);
-+}
-+
-+static int mv88q222x_config_aneg_100m(struct phy_device *phydev)
-+{
-+	int ret;
-+
-+	/* Update Initial FFE Coefficients */
-+	ret = phy_write_mmd(phydev, MDIO_MMD_PCS, 0xfbba, 0xcb2);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = phy_write_mmd(phydev, MDIO_MMD_PCS, 0xfbbb, 0xc4a);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* Turn CM Clamp ON */
-+	return phy_write_mmd(phydev, MDIO_MMD_PCS, 0xfe79, 0x4);
-+}
-+
-+static int mv88q222x_config_aneg_preinit(struct phy_device *phydev)
-+{
-+	int ret, val, i;
-+
-+	/* Enable txdac */
-+	ret = phy_write_mmd(phydev, MDIO_MMD_PCS, 0x8033, 0x6801);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* Disable ANEG */
-+	ret = phy_write_mmd(phydev, MDIO_MMD_AN, MDIO_AN_T1_CTRL, 0x0);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* Set IEEE power down */
-+	ret = phy_write_mmd(phydev, MDIO_MMD_PMAPMD, MDIO_CTRL1,
-+			    MDIO_CTRL1_LPOWER | MDIO_PMA_CTRL1_SPEED1000);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* Exit standby state(internal state) */
-+	ret = phy_write_mmd(phydev, MDIO_MMD_PCS, 0xfe1b, 0x48);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* Set power management state breakpoint (internal state) */
-+	ret = phy_write_mmd(phydev, MDIO_MMD_PCS, 0xffe4, 0x6b6);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* Exit IEEE power down */
-+	ret = phy_write_mmd(phydev, MDIO_MMD_PMAPMD, MDIO_CTRL1, 0x0);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = phy_write_mmd(phydev, MDIO_MMD_PCS, MDIO_CTRL1, 0x0);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* Wait up to 5ms to enter to power management state, if we do not meet
-+	 * the target value, it is still ok to proceed
-+	 */
-+	for (i = 0; i < 5; i++) {
-+		val = phy_read_mmd(phydev, MDIO_MMD_PCS, 0xffe4);
-+		if (val == 0x6ba)
-+			break;
-+
-+		usleep_range(1000, 2000);
-+	}
-+
-+	/* Turn CM Clamp OFF */
-+	ret = phy_write_mmd(phydev, MDIO_MMD_PCS, 0xfe79, 0x0);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* mdi vcm */
-+	ret = phy_write_mmd(phydev, MDIO_MMD_PCS, 0xfe07, 0x125a);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = phy_write_mmd(phydev, MDIO_MMD_PCS, 0xfe09, 0x1288);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = phy_write_mmd(phydev, MDIO_MMD_PCS, 0xfe08, 0x2588);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = phy_write_mmd(phydev, MDIO_MMD_PCS, 0xfe11, 0x1105);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* aux_boost */
-+	return phy_write_mmd(phydev, MDIO_MMD_PCS, 0xfe72, 0x042c);
-+}
-+
-+static int mv88q222x_config_aneg_init_b0(struct phy_device *phydev)
-+{
-+	int ret;
-+
-+	ret = mv88q222x_config_aneg_preinit(phydev);
-+	if (ret < 0)
-+		return ret;
-+
-+	if (phydev->autoneg == AUTONEG_DISABLE) {
-+		if (phydev->speed == SPEED_100)
-+			return mv88q222x_config_aneg_100m(phydev);
-+		else
-+			return mv88q222x_config_aneg_gbit(phydev);
-+	}
-+
-+	ret = mv88q222x_config_aneg_100m(phydev);
-+	if (ret)
-+		return ret;
-+
-+	ret = mv88q222x_config_aneg_gbit(phydev);
-+	if (ret)
-+		return ret;
-+
-+	ret = phy_write_mmd(phydev, MDIO_MMD_PCS, 0xfe5f, 0xe8);
-+	if (ret)
-+		return ret;
-+
-+	return phy_write_mmd(phydev, MDIO_MMD_PCS, 0xfe05, 0x755c);
-+}
-+
-+static int mv88q222x_config_aneg(struct phy_device *phydev)
-+{
-+	int ret;
-+
-+	ret = mv88q222x_config_aneg_init_b0(phydev);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = genphy_c45_config_aneg(phydev);
-+	if (ret)
-+		return ret;
-+
-+	return mv88q222x_soft_reset(phydev);
-+}
-+
- static struct phy_driver mv88q2xxx_driver[] = {
- 	{
- 		.phy_id			= MARVELL_PHY_ID_88Q2110,
-@@ -246,8 +519,22 @@ static struct phy_driver mv88q2xxx_driver[] = {
- 		.read_status		= mv88q2xxx_read_status,
- 		.soft_reset		= mv88q2xxx_soft_reset,
- 		.set_loopback		= genphy_c45_loopback,
--		.get_sqi		= mv88q2xxxx_get_sqi,
--		.get_sqi_max		= mv88q2xxxx_get_sqi_max,
-+		.get_sqi		= mv88q2xxx_get_sqi,
-+		.get_sqi_max		= mv88q2xxx_get_sqi_max,
-+	},
-+	{
-+		.phy_id			= MARVELL_PHY_ID_88Q2220,
-+		.phy_id_mask		= MARVELL_PHY_ID_MASK,
-+		.name			= "mv88q2220",
-+		.get_features		= mv88q2xxx_get_features,
-+		.config_aneg		= mv88q222x_config_aneg,
-+		.aneg_done		= genphy_c45_aneg_done,
-+		.config_init		= mv88q2xxx_config_init,
-+		.read_status		= mv88q2xxx_read_status,
-+		.soft_reset		= mv88q222x_soft_reset,
-+		.set_loopback		= genphy_c45_loopback,
-+		.get_sqi		= mv88q2xxx_get_sqi,
-+		.get_sqi_max		= mv88q2xxx_get_sqi_max,
- 	},
- };
- 
-@@ -255,6 +542,7 @@ module_phy_driver(mv88q2xxx_driver);
- 
- static struct mdio_device_id __maybe_unused mv88q2xxx_tbl[] = {
- 	{ MARVELL_PHY_ID_88Q2110, MARVELL_PHY_ID_MASK },
-+	{ MARVELL_PHY_ID_88Q2220, MARVELL_PHY_ID_MASK },
- 	{ /*sentinel*/ }
- };
- MODULE_DEVICE_TABLE(mdio, mv88q2xxx_tbl);
-diff --git a/include/linux/marvell_phy.h b/include/linux/marvell_phy.h
-index 9b54c4f0677f..693eba9869e4 100644
---- a/include/linux/marvell_phy.h
-+++ b/include/linux/marvell_phy.h
-@@ -26,6 +26,7 @@
- #define MARVELL_PHY_ID_88E2110		0x002b09b0
- #define MARVELL_PHY_ID_88X2222		0x01410f10
- #define MARVELL_PHY_ID_88Q2110		0x002b0980
-+#define MARVELL_PHY_ID_88Q2220		0x002b0b20
- 
- /* Marvel 88E1111 in Finisar SFP module with modified PHY ID */
- #define MARVELL_PHY_ID_88E1111_FINISAR	0x01ff0cc0
--- 
-2.39.2
+I think at some point I asked Dmitry what he thought and he mentioned
+qcm6490. Even found the message again:
+
+> well, since it is a firmware thing, you might want to emphasise that.
+> So from my POV qcm6490 makes more sense
+
+But yeah since it's likely that sc7280 firmware behaves the same as
+qcm6490 firmware it's probably okay to use sc7280 compatible, worst case
+we change it later :) I'll send a v2 with those changes.
+
+Regards
+Luca
+
+>
+> as far as firmware goes, I *think* CrOS doesn't even have PMIC_GLINK?
+> There are however WoA 7280 laptops which totally should have it.. Would
+> be nice to hunt some down and see if they report different stuff to
+> what's there on android firmware
+>
+> Konrad
 
 
