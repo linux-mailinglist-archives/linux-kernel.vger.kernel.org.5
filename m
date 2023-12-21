@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-8704-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8705-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BAF881BB46
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 16:47:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2962381BB47
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 16:48:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 346711C25F26
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 15:47:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5C7E61C25F57
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 15:47:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B86353A08;
-	Thu, 21 Dec 2023 15:47:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F37525821D;
+	Thu, 21 Dec 2023 15:47:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cDlxg7WA"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CgB0V+Jg"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A625455E41;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5343258215
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 15:47:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98E87C433C9;
 	Thu, 21 Dec 2023 15:47:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8972C433C8;
-	Thu, 21 Dec 2023 15:47:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703173638;
-	bh=dOGyrLopRgWASgaIZLAx6CNRKKRLi1o/fzWOzw5hikY=;
+	s=k20201202; t=1703173641;
+	bh=6UdCU34QB2Jmf2RjW8+f6vf0kvi9jkFwVt1GuOPbhWU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=cDlxg7WA1eBIwKV7bwZmyHXskjpiO8H0zm7M2Ghzhr/xJdhhL6Xl5kRI6BWyYA5lD
-	 VBxAhJBQbB+9gO3Ag/gZJDFb+yKcYSbIwQNpD0ma517/zmjRtZImkNo7sEdHNxRaMo
-	 1gXtByNw8LvPKTENtE7Eyo0fI2WALLGGdtPJwJF36c/Jju3NFsv75uhnr92pS3Mkxz
-	 9QYAV4nD600gK2ZN6ikxvxtty6vjKnY3kXSgadf2i6U5AbJDy8ZsKxPN1iBVipFQBV
-	 fplnF8mxIeIWVezxJQwQjGSA/khdXnqsTghUjHSyjZpLYbroFFW3LkjSldkXwKqcCY
-	 8N6jkGpF6/EHQ==
+	b=CgB0V+JgevKv68oSzprvvmES0zf5NYWiDKBW18gsxXShgft2Goop1S8a7mLFoT5l0
+	 +rGKecm/9UuNuLwYdE7hr9fIyDiiecKjjmxLvtCUMUUZ6NT33DBHy3EuwYNty6beWu
+	 m54WfYoNUMG6eVMDoljKnDRfTixV1RYzkpy6afJ26+1JDdBk2BLAXU5lRJ4vQ+IEXr
+	 1vEwskikoDkcJ/KJDvRNqPxmSQO1F0g/laB/c+eybU+7+Wjt7Iq0Pqm8zUxoly/WQF
+	 c0HI0oKrzX8K3Dzj8b/JUteTjfZwqBiqJXiIlLAXpJEatNQCozmCg9lNjo5H/zk85n
+	 bazdYY014sD7g==
 From: guoren@kernel.org
 To: linux-kernel@vger.kernel.org,
 	paul.walmsley@sifive.com,
@@ -49,11 +49,10 @@ To: linux-kernel@vger.kernel.org,
 	cleger@rivosinc.com,
 	leobras@redhat.com
 Cc: linux-riscv@lists.infradead.org,
-	Guo Ren <guoren@linux.alibaba.com>,
-	stable@vger.kernel.org
-Subject: [PATCH V2 2/4] riscv: mm: Fixup compat arch_get_mmap_end
-Date: Thu, 21 Dec 2023 10:46:59 -0500
-Message-Id: <20231221154702.2267684-3-guoren@kernel.org>
+	Guo Ren <guoren@linux.alibaba.com>
+Subject: [PATCH V2 3/4] riscv: mm: Remove unused TASK_SIZE_MIN
+Date: Thu, 21 Dec 2023 10:47:00 -0500
+Message-Id: <20231221154702.2267684-4-guoren@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231221154702.2267684-1-guoren@kernel.org>
 References: <20231221154702.2267684-1-guoren@kernel.org>
@@ -67,41 +66,34 @@ Content-Transfer-Encoding: 8bit
 
 From: Guo Ren <guoren@linux.alibaba.com>
 
-When the task is in COMPAT mode, the arch_get_mmap_end should be 2GB,
-not TASK_SIZE_64. The TASK_SIZE has contained is_compat_mode()
-detection, so change the definition of STACK_TOP_MAX to TASK_SIZE
-directly.
+Remove TASK_SIZE_MIN because it's not used anymore.
 
-Cc: stable@vger.kernel.org
-Fixes: add2cc6b6515 ("RISC-V: mm: Restrict address space for sv39,sv48,sv57")
 Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
 Signed-off-by: Guo Ren <guoren@kernel.org>
 ---
- arch/riscv/include/asm/processor.h | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ arch/riscv/include/asm/pgtable.h | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/arch/riscv/include/asm/processor.h b/arch/riscv/include/asm/processor.h
-index f19f861cda54..1f538fc4448d 100644
---- a/arch/riscv/include/asm/processor.h
-+++ b/arch/riscv/include/asm/processor.h
-@@ -16,15 +16,13 @@
- 
+diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
+index 74ffb2178f54..e415582276ec 100644
+--- a/arch/riscv/include/asm/pgtable.h
++++ b/arch/riscv/include/asm/pgtable.h
+@@ -878,7 +878,6 @@ static inline pte_t pte_swp_clear_exclusive(pte_t pte)
+  */
  #ifdef CONFIG_64BIT
- #define DEFAULT_MAP_WINDOW	(UL(1) << (MMAP_VA_BITS - 1))
--#define STACK_TOP_MAX		TASK_SIZE_64
-+#define STACK_TOP_MAX		TASK_SIZE
+ #define TASK_SIZE_64	(PGDIR_SIZE * PTRS_PER_PGD / 2)
+-#define TASK_SIZE_MIN	(PGDIR_SIZE_L3 * PTRS_PER_PGD / 2)
  
- #define arch_get_mmap_end(addr, len, flags)			\
- ({								\
- 	unsigned long mmap_end;					\
- 	typeof(addr) _addr = (addr);				\
--	if ((_addr) == 0 || (IS_ENABLED(CONFIG_COMPAT) && is_compat_task())) \
--		mmap_end = STACK_TOP_MAX;			\
--	else if ((_addr) >= VA_USER_SV57)			\
-+	if ((_addr) == 0 || (_addr) >= VA_USER_SV57)		\
- 		mmap_end = STACK_TOP_MAX;			\
- 	else if ((((_addr) >= VA_USER_SV48)) && (VA_BITS >= VA_BITS_SV48)) \
- 		mmap_end = VA_USER_SV48;			\
+ #ifdef CONFIG_COMPAT
+ #define TASK_SIZE_32	(_AC(0x80000000, UL))
+@@ -890,7 +889,6 @@ static inline pte_t pte_swp_clear_exclusive(pte_t pte)
+ 
+ #else
+ #define TASK_SIZE	FIXADDR_START
+-#define TASK_SIZE_MIN	TASK_SIZE
+ #endif
+ 
+ #else /* CONFIG_MMU */
 -- 
 2.40.1
 
