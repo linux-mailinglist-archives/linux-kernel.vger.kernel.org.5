@@ -1,105 +1,143 @@
-Return-Path: <linux-kernel+bounces-9013-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9014-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5855381BF3F
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 20:51:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E91B781BF45
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 20:55:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8EC331C23F78
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 19:51:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8987C1F24454
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 19:55:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DEC820317;
-	Thu, 21 Dec 2023 19:51:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="VMKdh2gt"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0CEB7318F;
+	Thu, 21 Dec 2023 19:55:06 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A29B651B4
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 19:51:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=jkYZaGzPxkq2kteSU3jlRwqK1FmL8my5278X4xLgGkM=; b=VMKdh2gtMwrC3FAIuyqWrG9EQn
-	U28olh8j+a+NXdl4qQ84hTfiqSlI00X9abBsH8obLeyLcxgOuBI/rCKbTf1tfce4iVTnqhLRG5yNk
-	Dj5BJirDtX973eF2mf8ltVGphu/5yFP6FWk1n1rOKOJJ+5dZQ8zDQCP0nXoA8S8S3m4fsTjhsi56p
-	fvjc75daOgfV1wjzw+CQmSMy9a3L8t6BSiBB3P6qS2SuE/4rohcV1K4MvrASjRNc0Nv4S8UiPaQJy
-	qQWTBd/2jPjM1RL9c66u/iBMw5ZpEauG3HofqHTBpIL2CZhV0+3OxeEzsOmho2PsYVQRSp+ufDqu5
-	yvMzEBxQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1rGP4J-0061YK-D2; Thu, 21 Dec 2023 19:50:55 +0000
-Date: Thu, 21 Dec 2023 19:50:55 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: Fangrui Song <maskray@google.com>
-Cc: Yang Shi <shy828301@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-	Song Liu <songliubraving@fb.com>, Miaohe Lin <linmiaohe@huawei.com>,
-	linux-kernel@vger.kernel.org, Zhouyi Zhou <zhouzhouyi@gmail.com>
-Subject: Re: [PATCH] mm: remove VM_EXEC requirement for THP eligibility
-Message-ID: <ZYSXH58aQpI1SLr2@casper.infradead.org>
-References: <20231220054123.1266001-1-maskray@google.com>
- <CAHbLzkpZomZBHVkSpCiK-hZUoZi4x2N6MB=PtFj-cBHOVhYs7Q@mail.gmail.com>
- <CAFP8O3+5fKcGS8xEY5=DHqsN0YdybEY178nM+cXRY1bbQXV4WQ@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D54A773185;
+	Thu, 21 Dec 2023 19:55:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
+Received: from [192.168.1.104] (178.176.75.203) by msexch01.omp.ru
+ (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Thu, 21 Dec
+ 2023 22:54:52 +0300
+Subject: Re: [PATCH net-next v2 11/21] net: ravb: Move DBAT configuration to
+ the driver's ndo_open API
+To: claudiu beznea <claudiu.beznea@tuxon.dev>, <davem@davemloft.net>,
+	<edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+	<richardcochran@gmail.com>, <p.zabel@pengutronix.de>,
+	<yoshihiro.shimoda.uh@renesas.com>, <wsa+renesas@sang-engineering.com>,
+	<geert+renesas@glider.be>
+CC: <netdev@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, Claudiu Beznea
+	<claudiu.beznea.uj@bp.renesas.com>
+References: <20231214114600.2451162-1-claudiu.beznea.uj@bp.renesas.com>
+ <20231214114600.2451162-12-claudiu.beznea.uj@bp.renesas.com>
+ <a93c0673-2876-5bb2-29aa-0d0208b97b10@omp.ru>
+ <4721c4e6-cc0f-48bd-8b14-4a8217ada1fd@omp.ru>
+ <b17c6124-0b84-40b2-a254-cce617f73cf2@tuxon.dev>
+ <59ba595a-ab79-cc5d-feff-dad60e80c44f@omp.ru>
+ <3d4511bd-fd96-4281-a5cb-ac1765bded31@tuxon.dev>
+From: Sergey Shtylyov <s.shtylyov@omp.ru>
+Organization: Open Mobile Platform
+Message-ID: <3aa8a9f5-fe7b-1484-ac89-64b4a1d5face@omp.ru>
+Date: Thu, 21 Dec 2023 22:54:52 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAFP8O3+5fKcGS8xEY5=DHqsN0YdybEY178nM+cXRY1bbQXV4WQ@mail.gmail.com>
+In-Reply-To: <3d4511bd-fd96-4281-a5cb-ac1765bded31@tuxon.dev>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
+ (10.188.4.12)
+X-KSE-ServerInfo: msexch01.omp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 12/21/2023 19:37:26
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 59
+X-KSE-AntiSpam-Info: Lua profiles 182285 [Dec 21 2023]
+X-KSE-AntiSpam-Info: Version: 6.1.0.3
+X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
+X-KSE-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a
+X-KSE-AntiSpam-Info: {rep_avail}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: {relay has no DNS name}
+X-KSE-AntiSpam-Info: {SMTP from is not routable}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.75.203 in (user)
+ b.barracudacentral.org}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.75.203 in (user)
+ dbl.spamhaus.org}
+X-KSE-AntiSpam-Info:
+	d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;omp.ru:7.1.1;127.0.0.199:7.1.2
+X-KSE-AntiSpam-Info: ApMailHostAddress: 178.176.75.203
+X-KSE-AntiSpam-Info: {DNS response errors}
+X-KSE-AntiSpam-Info: Rate: 59
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
+ smtp.mailfrom=omp.ru;dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 12/21/2023 19:41:00
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 12/21/2023 5:11:00 PM
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
 
-On Wed, Dec 20, 2023 at 08:53:38PM -0800, Fangrui Song wrote:
-> Thanks for the comment. Frankly, I am not familiar with huge pages...
-> I noticed this VM_EXEC condition when I was writing this
-> hugepage-related section in
-> https://maskray.me/blog/2023-12-17-exploring-the-section-layout-in-linker-output#transparent-huge-pages-for-mapped-files
-> (Thanks to Alexander Monakov's comment about
-> CONFIG_READ_ONLY_THP_FOR_FS in
-> https://mazzo.li/posts/check-huge-page.html).
+On 12/20/23 2:41 PM, claudiu beznea wrote:
 
-CONFIG_READ_ONLY_THP_FOR_FS is a preliminary hack which solves some
-problems.  The real solution is using large folios, which at the moment
-means that you should test on XFS or AFS; filesystem authors have not
-been enthusiastic about adding support to their filesystems so far.
+[...]
 
-In your blog, you write:
+>>>>>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>>>>>>
+>>>>>> DBAT setup was done in the driver's probe API. As some IP variants switch
+>>>>>> to reset mode (and thus registers' content is lost) when setting clocks
+>>>>>> (due to module standby functionality) to be able to implement runtime PM
+>>>>>> move the DBAT configuration in the driver's ndo_open API.
+>>>>>>
+>>>>>> This commit prepares the code for the addition of runtime PM.
+>>>>>>
+>>>>>> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>>>>>
+>>>>> Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+>>>>>
+>>>>> [...]
+>>>>>> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
+>>>>>> index 04eaa1967651..6b8ca08be35e 100644
+>>>>>> --- a/drivers/net/ethernet/renesas/ravb_main.c
+>>>>>> +++ b/drivers/net/ethernet/renesas/ravb_main.c
+>>>>>> @@ -1822,6 +1822,7 @@ static int ravb_open(struct net_device *ndev)
+>>>>>>  		napi_enable(&priv->napi[RAVB_NC]);
+>>>>>>  
+>>>>>>  	ravb_set_delay_mode(ndev);
+>>>>>> +	ravb_write(ndev, priv->desc_bat_dma, DBAT);
+>>>>
+>>>>    Looking at it again, I suspect this belong in ravb_dmac_init()...
+>>>
+>>> ravb_dmac_init() is called from multiple places in this driver, e.g.,
+>>
+>>    It's purpose is to configure AVB-DMAC and DBAT is the AVB-DMAC register,
+>> right?
+> 
+> It is. But it is pointless to configure it more than one time after
+> ravb_open() has been called as the register content is not changed until IP
+> enters reset mode (though ravb_close() now).
 
-: In -z noseparate-code layouts, the file content starts somewhere at
-: the first page, potentially wasting half a huge page on unrelated
-: content. Switching to -z separate-code allows reclaiming the benefits
-: of the half huge page but increases the file size. Balancing
-: these aspects poses a challenge. One potential solution is using
-: fallocate(FALLOC_FL_PUNCH_HOLE), which introduces complexity into the
-: linker. However, this approach feels like a workaround to address a
-: kernel limitation. It would be preferable if a file-backed huge page
-: didn't necessitate a file offset aligned to a huge page boundary.
+   The same is true for the most registers set by ravb_dmac_init()!
 
-You should distinguish between file size (ie st_size in stat(3)) and
-amount of space occupied on storage (st_blocks).  The linker should be
-fine with creating a sparse file.  If it doesn't, cp --sparse will do
-the trick.
+[...]
 
-Yes, it's a kernel limitation that folios have to be aligned within the
-file as well as in both virtual and physical address space.  It's a huge
-complexity win to do that; I don't think we'd be able to tile the page
-cache effectively if we allowed folios to be placed at arbitrary offsets
-(I think it turns into a knapsack problem at that point).
-
-> As dTLB for read-only data is also an important optimization of
-> file-backed THP, it seems straightforward that we should drop the
-> VM_EXEC condition :)
-
-I'm not particularly enthusiastic about making CONFIG_READ_ONLY_THP_FOR_FS
-better.  Large folios are the future.  Indeed, I'd like to see
-CONFIG_READ_ONLY_THP_FOR_FS go away in the next year or two once
-btrfs and ext4 have support for large folios.
-
+MBR, Sergey
 
