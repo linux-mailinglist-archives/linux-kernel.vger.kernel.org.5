@@ -1,397 +1,291 @@
-Return-Path: <linux-kernel+bounces-8720-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8721-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 183F581BB76
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 17:05:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B109981BB7A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 17:05:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CD9A3288121
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 16:05:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 691CD28828F
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 16:05:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8ABE155E62;
-	Thu, 21 Dec 2023 16:05:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 827DA55E52;
+	Thu, 21 Dec 2023 16:05:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LQ/dRIxy"
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="eEDmGz8N";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="Z8AA3iNc";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="eEDmGz8N";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="Z8AA3iNc"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C613155E41;
-	Thu, 21 Dec 2023 16:05:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F4F5C433C7;
-	Thu, 21 Dec 2023 16:04:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703174702;
-	bh=XNhUqOfjLcvVCPjO3xJPt6Xx/mZDgeiWV3XsOhPh4Vk=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=LQ/dRIxyEykhaBg/e9Ihe5IbyYWnpkkkGKyOLTU93BFsq8+5ZOAgdmSAG9vOxvqWV
-	 kbc91kyOf+yyqvdR8roJQsivmoJq5JDH0nuBrkihYsQTIlHxseXIA5Ta0vZn79LUmY
-	 Gft3yaWQlqRKG7FnOpXXvKpZCq69Sm6Ft3vBVC17cFjXxpGehRofszd/tPmrEoPQx+
-	 gAIkXrdSDB3l8KZzS6mRXgQmKr/G9g1RRaAo91WbMrvRHXNMRDP32mj+Uta6RlQG/v
-	 yVzKRCqmgD9dc0JY4lHihSlQM0tqp3giTf/O0b4f3/T7NGM19qqVwZ42SX/78Hnh8v
-	 saLEUlh2E8xyw==
-Date: Thu, 21 Dec 2023 16:04:45 +0000
-From: Jonathan Cameron <jic23@kernel.org>
-To: Paul Cercueil <paul@crapouillou.net>
-Cc: Lars-Peter Clausen <lars@metafoo.de>, Sumit Semwal
- <sumit.semwal@linaro.org>, Christian =?UTF-8?B?S8O2bmln?=
- <christian.koenig@amd.com>, Vinod Koul <vkoul@kernel.org>, Jonathan Corbet
- <corbet@lwn.net>, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- dmaengine@vger.kernel.org, linux-iio@vger.kernel.org,
- linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
- linaro-mm-sig@lists.linaro.org, Nuno =?UTF-8?B?U8Oh?=
- <noname.nuno@gmail.com>, Michael Hennerich <Michael.Hennerich@analog.com>
-Subject: Re: [PATCH v5 6/8] iio: buffer-dma: Enable support for DMABUFs
-Message-ID: <20231221160445.0e3e5a8c@jic23-huawei>
-In-Reply-To: <20231219175009.65482-7-paul@crapouillou.net>
-References: <20231219175009.65482-1-paul@crapouillou.net>
-	<20231219175009.65482-7-paul@crapouillou.net>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E79B955E41
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 16:05:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 0070B21E45;
+	Thu, 21 Dec 2023 16:05:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1703174734; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type;
+	bh=Y0o6m2PLxPN/8wWQ2CD6ak5/tzc7u6pVRNRVvBJRC70=;
+	b=eEDmGz8NPM6vTqM3HQNPqYopGEM1VFEYqETqCXPpsQpj+X5zSG0Qc8ZSGj1ciEThznKgOR
+	eg8h4qznTtO2u/AXlPgwUi8xPo07NAHS4KD8TUnQ1NO93NkeEb06PKReEpL70IrQyC4Wpp
+	ChqrRo0V222WYhDTCuQu//b0pN7PUNM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1703174734;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type;
+	bh=Y0o6m2PLxPN/8wWQ2CD6ak5/tzc7u6pVRNRVvBJRC70=;
+	b=Z8AA3iNcBOX0PDGQCb6H1u1O4sLIWHwgxgtWukPnC6RTuXPUBHJoNWLeUz0XK+L1KSQKGq
+	zbRa5vz0hlvQncBg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1703174734; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type;
+	bh=Y0o6m2PLxPN/8wWQ2CD6ak5/tzc7u6pVRNRVvBJRC70=;
+	b=eEDmGz8NPM6vTqM3HQNPqYopGEM1VFEYqETqCXPpsQpj+X5zSG0Qc8ZSGj1ciEThznKgOR
+	eg8h4qznTtO2u/AXlPgwUi8xPo07NAHS4KD8TUnQ1NO93NkeEb06PKReEpL70IrQyC4Wpp
+	ChqrRo0V222WYhDTCuQu//b0pN7PUNM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1703174734;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type;
+	bh=Y0o6m2PLxPN/8wWQ2CD6ak5/tzc7u6pVRNRVvBJRC70=;
+	b=Z8AA3iNcBOX0PDGQCb6H1u1O4sLIWHwgxgtWukPnC6RTuXPUBHJoNWLeUz0XK+L1KSQKGq
+	zbRa5vz0hlvQncBg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E051613AB5;
+	Thu, 21 Dec 2023 16:05:33 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id mOG8Nk1ihGWWPAAAD6G6ig
+	(envelope-from <jwiesner@suse.de>); Thu, 21 Dec 2023 16:05:33 +0000
+Received: by incl.suse.cz (Postfix, from userid 1000)
+	id D4C92985FF; Thu, 21 Dec 2023 17:05:17 +0100 (CET)
+Date: Thu, 21 Dec 2023 17:05:17 +0100
+From: Jiri Wiesner <jwiesner@suse.de>
+To: linux-kernel@vger.kernel.org
+Cc: John Stultz <jstultz@google.com>, Thomas Gleixner <tglx@linutronix.de>,
+	Stephen Boyd <sboyd@kernel.org>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Feng Tang <feng.tang@intel.com>
+Subject: [PATCH] clocksource: Use proportional clocksource skew threshold
+Message-ID: <20231221160517.GA22919@incl>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Score: 5.29
+X-Spamd-Bar: +++++
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [5.29 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 BAYES_SPAM(5.10)[99.99%];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCPT_COUNT_FIVE(0.00)[6];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 MX_GOOD(-0.01)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,suse.de:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=eEDmGz8N;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=Z8AA3iNc
+X-Spam-Level: *****
+X-Rspamd-Queue-Id: 0070B21E45
 
-On Tue, 19 Dec 2023 18:50:07 +0100
-Paul Cercueil <paul@crapouillou.net> wrote:
+There have been reports of the watchdog marking clocksources unstable on
+machines 8 NUMA nodes:
+> clocksource: timekeeping watchdog on CPU373: Marking clocksource 'tsc' as unstable because the skew is too large:
+> clocksource:   'hpet' wd_nsec: 14523447520 wd_now: 5a749706 wd_last: 45adf1e0 mask: ffffffff
+> clocksource:   'tsc' cs_nsec: 14524115132 cs_now: 515ce2c5a96caa cs_last: 515cd9a9d83918 mask: ffffffffffffffff
+> clocksource:   'tsc' is current clocksource.
+> tsc: Marking TSC unstable due to clocksource watchdog
+> TSC found unstable after boot, most likely due to broken BIOS. Use 'tsc=unstable'.
+> sched_clock: Marking unstable (1950347883333462, 79649632569)<-(1950428279338308, -745776594)
+> clocksource: Checking clocksource tsc synchronization from CPU 400 to CPUs 0,46,52,54,138,208,392,397.
+> clocksource: Switched to clocksource hpet
 
-> Implement iio_dma_buffer_attach_dmabuf(), iio_dma_buffer_detach_dmabuf()
-> and iio_dma_buffer_transfer_dmabuf(), which can then be used by the IIO
-> DMA buffer implementations.
-> 
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> 
-Hi Paul,
+The measured clocksource skew - the absolute difference between cs_nsec
+and wd_nsec - was 668 microseconds:
+> cs_nsec - wd_nsec = 14524115132 - 14523447520 = 667612
 
-A few comments in here. Mostly places where the cleanup.h guard() stuff
-can simplify error paths.
+The kernel used 200 microseconds for the uncertainty_margin of both the
+clocksource and watchdog, resulting in a threshold of 400 microseconds.
+The discrepancy is that the measured clocksource skew was evaluated against
+a threshold suited for watchdog intervals of roughly WATCHDOG_INTERVAL,
+i.e. HZ >> 1. Both the cs_nsec and the wd_nsec value indicate that the
+actual watchdog interval was circa 14.5 seconds. Since the watchdog is
+executed in softirq context the expiration of the watchdog timer can get
+severely delayed on account of a ksoftirqd thread not getting to run in a
+timely manner. Surely, a system with such belated softirq execution is not
+working well and the scheduling issue should be looked into but the
+clocksource watchdog should be able to deal with it accordingly.
 
-Overall this looks reasonable to me.
+To keep the limit imposed by NTP (500 microseconds of skew per second),
+the margins must be scaled so that the threshold value is proportional to
+the length of the actual watchdog interval. The solution in the patch
+utilizes left-shifting to approximate the division by
+WATCHDOG_INTERVAL * NSEC_PER_SEC / HZ, which leads to slighly narrower
+margins and a slightly lower threshold for longer watchdog intervals.
 
-Jonathan
+Fixes: 2e27e793e280 ("clocksource: Reduce clocksource-skew threshold")
+Signed-off-by: Jiri Wiesner <jwiesner@suse.de>
+---
+ kernel/time/clocksource.c | 60 ++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 53 insertions(+), 7 deletions(-)
 
-> ---
-> v3: Update code to provide the functions that will be used as callbacks
->     for the new IOCTLs.
-> ---
->  drivers/iio/buffer/industrialio-buffer-dma.c | 157 +++++++++++++++++--
->  include/linux/iio/buffer-dma.h               |  26 +++
->  2 files changed, 170 insertions(+), 13 deletions(-)
-> 
-> diff --git a/drivers/iio/buffer/industrialio-buffer-dma.c b/drivers/iio/buffer/industrialio-buffer-dma.c
-> index 5610ba67925e..adb64f975064 100644
-> --- a/drivers/iio/buffer/industrialio-buffer-dma.c
-> +++ b/drivers/iio/buffer/industrialio-buffer-dma.c
-> @@ -14,6 +14,7 @@
->  #include <linux/poll.h>
->  #include <linux/iio/buffer_impl.h>
->  #include <linux/iio/buffer-dma.h>
-> +#include <linux/dma-buf.h>
->  #include <linux/dma-mapping.h>
->  #include <linux/sizes.h>
->  
-> @@ -94,14 +95,24 @@ static void iio_buffer_block_release(struct kref *kref)
->  {
->  	struct iio_dma_buffer_block *block = container_of(kref,
->  		struct iio_dma_buffer_block, kref);
-> +	struct iio_dma_buffer_queue *queue = block->queue;
->  
-> -	WARN_ON(block->state != IIO_BLOCK_STATE_DEAD);
-> +	WARN_ON(block->fileio && block->state != IIO_BLOCK_STATE_DEAD);
->  
-> -	dma_free_coherent(block->queue->dev, PAGE_ALIGN(block->size),
-> -					block->vaddr, block->phys_addr);
-> +	mutex_lock(&queue->lock);
->  
-> -	iio_buffer_put(&block->queue->buffer);
-> +	if (block->fileio) {
-> +		dma_free_coherent(queue->dev, PAGE_ALIGN(block->size),
-> +				  block->vaddr, block->phys_addr);
-> +		queue->num_fileio_blocks--;
-> +	}
-> +
-> +	queue->num_blocks--;
->  	kfree(block);
-> +
-> +	mutex_unlock(&queue->lock);
-> +
-> +	iio_buffer_put(&queue->buffer);
->  }
->  
->  static void iio_buffer_block_get(struct iio_dma_buffer_block *block)
-> @@ -163,7 +174,7 @@ static struct iio_dma_buffer_queue *iio_buffer_to_queue(struct iio_buffer *buf)
->  }
->  
->  static struct iio_dma_buffer_block *iio_dma_buffer_alloc_block(
-> -	struct iio_dma_buffer_queue *queue, size_t size)
-> +	struct iio_dma_buffer_queue *queue, size_t size, bool fileio)
->  {
->  	struct iio_dma_buffer_block *block;
->  
-> @@ -171,13 +182,16 @@ static struct iio_dma_buffer_block *iio_dma_buffer_alloc_block(
->  	if (!block)
->  		return NULL;
->  
-> -	block->vaddr = dma_alloc_coherent(queue->dev, PAGE_ALIGN(size),
-> -		&block->phys_addr, GFP_KERNEL);
-> -	if (!block->vaddr) {
-> -		kfree(block);
-> -		return NULL;
-> +	if (fileio) {
-> +		block->vaddr = dma_alloc_coherent(queue->dev, PAGE_ALIGN(size),
-> +						  &block->phys_addr, GFP_KERNEL);
-> +		if (!block->vaddr) {
-> +			kfree(block);
-> +			return NULL;
-> +		}
->  	}
->  
-> +	block->fileio = fileio;
->  	block->size = size;
->  	block->state = IIO_BLOCK_STATE_DONE;
->  	block->queue = queue;
-> @@ -186,6 +200,9 @@ static struct iio_dma_buffer_block *iio_dma_buffer_alloc_block(
->  
->  	iio_buffer_get(&queue->buffer);
->  
-> +	queue->num_blocks++;
-> +	queue->num_fileio_blocks += fileio;
-Adding a boolean is non intuitive.
-
-	if (fileio)
-		queue->num_fileio_blocks++;
-
-probably easier to read and compiler should be able to figure out how to
-optimise the condition away.
-
-> +
->  	return block;
->  }
->  
-> @@ -211,6 +228,9 @@ void iio_dma_buffer_block_done(struct iio_dma_buffer_block *block)
->  	_iio_dma_buffer_block_done(block);
->  	spin_unlock_irqrestore(&queue->list_lock, flags);
->  
-> +	if (!block->fileio)
-> +		iio_buffer_signal_dmabuf_done(block->attach, 0);
-> +
->  	iio_buffer_block_put_atomic(block);
->  	wake_up_interruptible_poll(&queue->buffer.pollq, EPOLLIN | EPOLLRDNORM);
->  }
-> @@ -237,10 +257,14 @@ void iio_dma_buffer_block_list_abort(struct iio_dma_buffer_queue *queue,
->  		list_del(&block->head);
->  		block->bytes_used = 0;
->  		_iio_dma_buffer_block_done(block);
-> +
-> +		if (!block->fileio)
-> +			iio_buffer_signal_dmabuf_done(block->attach, -EINTR);
->  		iio_buffer_block_put_atomic(block);
->  	}
->  	spin_unlock_irqrestore(&queue->list_lock, flags);
->  
-> +	queue->fileio.enabled = false;
-
-While this obviously doesn't need to be conditional if it can already be false
-it might be easier to follow the code flow it if didn't check if we were doing
-fileio or not before disabling it.
-
->  	wake_up_interruptible_poll(&queue->buffer.pollq, EPOLLIN | EPOLLRDNORM);
->  }
->  EXPORT_SYMBOL_GPL(iio_dma_buffer_block_list_abort);
-> @@ -261,6 +285,12 @@ static bool iio_dma_block_reusable(struct iio_dma_buffer_block *block)
->  	}
->  }
->  
-> +static bool iio_dma_buffer_fileio_mode(struct iio_dma_buffer_queue *queue)
-> +{
-> +	return queue->fileio.enabled ||
-> +		queue->num_blocks == queue->num_fileio_blocks;
-This is a little odd. So would be good have a comment on why this condition.
-Or rename the function to imply it's checking if enabled, or can be enabled.
-
-At first glanced I expected a function with this name to just be an accessor
-function. e.g.
-	return queue->fileio.enabled;
-
-> +}
-> +
->  /**
->   * iio_dma_buffer_request_update() - DMA buffer request_update callback
->   * @buffer: The buffer which to request an update
-> @@ -287,6 +317,12 @@ int iio_dma_buffer_request_update(struct iio_buffer *buffer)
->  
->  	mutex_lock(&queue->lock);
->  
-> +	queue->fileio.enabled = iio_dma_buffer_fileio_mode(queue);
-> +
-> +	/* If DMABUFs were created, disable fileio interface */
-> +	if (!queue->fileio.enabled)
-> +		goto out_unlock;
-> +
->  	/* Allocations are page aligned */
->  	if (PAGE_ALIGN(queue->fileio.block_size) == PAGE_ALIGN(size))
->  		try_reuse = true;
-> @@ -317,7 +353,7 @@ int iio_dma_buffer_request_update(struct iio_buffer *buffer)
->  			block = queue->fileio.blocks[i];
->  			if (block->state == IIO_BLOCK_STATE_DEAD) {
->  				/* Could not reuse it */
-> -				iio_buffer_block_put(block);
-> +				iio_buffer_block_put_atomic(block);
->  				block = NULL;
->  			} else {
->  				block->size = size;
-> @@ -327,7 +363,7 @@ int iio_dma_buffer_request_update(struct iio_buffer *buffer)
->  		}
->  
->  		if (!block) {
-> -			block = iio_dma_buffer_alloc_block(queue, size);
-> +			block = iio_dma_buffer_alloc_block(queue, size, true);
->  			if (!block) {
->  				ret = -ENOMEM;
->  				goto out_unlock;
-> @@ -363,7 +399,7 @@ static void iio_dma_buffer_fileio_free(struct iio_dma_buffer_queue *queue)
->  	for (i = 0; i < ARRAY_SIZE(queue->fileio.blocks); i++) {
->  		if (!queue->fileio.blocks[i])
->  			continue;
-> -		iio_buffer_block_put(queue->fileio.blocks[i]);
-> +		iio_buffer_block_put_atomic(queue->fileio.blocks[i]);
-
-For these cases that are atomic or not, it might be worth calling out why they need to be
-atomic.
-
->  		queue->fileio.blocks[i] = NULL;
->  	}
->  	queue->fileio.active_block = NULL;
-> @@ -384,8 +420,12 @@ static void iio_dma_buffer_submit_block(struct iio_dma_buffer_queue *queue,
->  
->  	block->state = IIO_BLOCK_STATE_ACTIVE;
->  	iio_buffer_block_get(block);
-> +
->  	ret = queue->ops->submit(queue, block);
->  	if (ret) {
-> +		if (!block->fileio)
-> +			iio_buffer_signal_dmabuf_done(block->attach, ret);
-> +
->  		/*
->  		 * This is a bit of a problem and there is not much we can do
->  		 * other then wait for the buffer to be disabled and re-enabled
-> @@ -588,6 +628,97 @@ size_t iio_dma_buffer_data_available(struct iio_buffer *buf)
->  }
->  EXPORT_SYMBOL_GPL(iio_dma_buffer_data_available);
->  
-> +struct iio_dma_buffer_block *
-> +iio_dma_buffer_attach_dmabuf(struct iio_buffer *buffer,
-> +			     struct dma_buf_attachment *attach)
-> +{
-> +	struct iio_dma_buffer_queue *queue = iio_buffer_to_queue(buffer);
-> +	struct iio_dma_buffer_block *block;
-> +	int err;
-> +
-> +	mutex_lock(&queue->lock);
-
-	guard(mutex)(&queue->lock);
-> +
-> +	/*
-> +	 * If the buffer is enabled and in fileio mode new blocks can't be
-> +	 * allocated.
-> +	 */
-> +	if (queue->fileio.enabled) {
-> +		err = -EBUSY;
-		return ERR_PTR(-EBUSY);
-> +		goto err_unlock;
-> +	}
-> +
-> +	block = iio_dma_buffer_alloc_block(queue, attach->dmabuf->size, false);
-> +	if (!block) {
-> +		err = -ENOMEM;
-
-		return 
-
-> +		goto err_unlock;
-> +	}
-> +
-> +	block->attach = attach;
-> +
-> +	/* Free memory that might be in use for fileio mode */
-> +	iio_dma_buffer_fileio_free(queue);
-> +
-> +	mutex_unlock(&queue->lock);
-
-Drop this as unneeded if you use guard()
-
-> +
-> +	return block;
-> +
-> +err_unlock:
-> +	mutex_unlock(&queue->lock);
-> +	return ERR_PTR(err);
-> +}
-> +EXPORT_SYMBOL_GPL(iio_dma_buffer_attach_dmabuf);
+diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
+index c108ed8a9804..a84c4c6f49e3 100644
+--- a/kernel/time/clocksource.c
++++ b/kernel/time/clocksource.c
+@@ -98,7 +98,8 @@ static u64 suspend_start;
+ /*
+  * Interval: 0.5sec.
+  */
+-#define WATCHDOG_INTERVAL (HZ >> 1)
++#define WATCHDOG_INTERVAL_SHIFT	1
++#define WATCHDOG_INTERVAL	(HZ >> WATCHDOG_INTERVAL_SHIFT)
+ 
+ /*
+  * Threshold: 0.0312s, when doubled: 0.0625s.
+@@ -121,7 +122,8 @@ static u64 suspend_start;
+ #define MAX_SKEW_USEC	(125 * WATCHDOG_INTERVAL / HZ)
+ #endif
+ 
+-#define WATCHDOG_MAX_SKEW (MAX_SKEW_USEC * NSEC_PER_USEC)
++#define WATCHDOG_MAX_SKEW	(MAX_SKEW_USEC * NSEC_PER_USEC)
++#define WATCHDOG_MIN_MARGIN	(2 * WATCHDOG_MAX_SKEW)
+ 
+ #ifdef CONFIG_CLOCKSOURCE_WATCHDOG
+ static void clocksource_watchdog_work(struct work_struct *work);
+@@ -395,16 +397,47 @@ static inline void clocksource_reset_watchdog(void)
+ 		cs->flags &= ~CLOCK_SOURCE_WATCHDOG;
+ }
+ 
++/* Scaled margin calculation */
++#define MARGIN_SCALE		24
++/* Bits needed for multiplication with WATCHDOG_MIN_MARGIN */
++#define MARGIN_MIN_BITS		(const_ilog2(WATCHDOG_MIN_MARGIN) + 1)
++/* 1UL << 30 approximates NSEC_PER_SEC */
++#define MARGIN_SHIFT		(30 - WATCHDOG_INTERVAL_SHIFT - MARGIN_SCALE)
++/* The result needs to fit into 32 bits */
++#define MARGIN_MAX_INTERVAL	(1ULL << (32 + MARGIN_SCALE - MARGIN_MIN_BITS \
++					  + MARGIN_SHIFT))
++
++/*
++ * Calculate the minimal uncertainty margin scaled by
++ * the length of the watchdog interval that elapsed since
++ * cs_last and wd_last. Since the watchdog is executed
++ * in softirq context the expiration of the timer can get
++ * severely delayed on account of a ksoftirqd thread not
++ * getting to run in a timely manner.
++ * Left-shifting is utilized to approximate the division by
++ * WATCHDOG_INTERVAL * NSEC_PER_SEC / HZ
++ */
++static u32 clocksource_calc_margin(int64_t interval)
++{
++	u64 tmp;
++
++	if (interval < 0)
++		return 0;
++	tmp = interval < MARGIN_MAX_INTERVAL ? interval : MARGIN_MAX_INTERVAL;
++	tmp >>= MARGIN_SHIFT;
++	tmp *= WATCHDOG_MIN_MARGIN;
++	return tmp >> MARGIN_SCALE;
++}
+ 
+ static void clocksource_watchdog(struct timer_list *unused)
+ {
+ 	u64 csnow, wdnow, cslast, wdlast, delta;
++	u32 scaled_cs_margin, scaled_wd_margin, md;
+ 	int next_cpu, reset_pending;
+ 	int64_t wd_nsec, cs_nsec;
+ 	struct clocksource *cs;
+ 	enum wd_read_status read_ret;
+ 	unsigned long extra_wait = 0;
+-	u32 md;
+ 
+ 	spin_lock(&watchdog_lock);
+ 	if (!watchdog_running)
+@@ -470,8 +503,19 @@ static void clocksource_watchdog(struct timer_list *unused)
+ 		if (atomic_read(&watchdog_reset_pending))
+ 			continue;
+ 
++		/*
++		 * Skip the check if CONFIG_CLOCKSOURCE_VALIDATE_LAST_CYCLE
++		 * detected the MSB of the mask in the delta or delta == mask.
++		 */
++		if (!wd_nsec || !cs_nsec)
++			continue;
++
+ 		/* Check the deviation from the watchdog clocksource. */
+-		md = cs->uncertainty_margin + watchdog->uncertainty_margin;
++		scaled_cs_margin = clocksource_calc_margin(cs_nsec);
++		scaled_wd_margin = clocksource_calc_margin(wd_nsec);
++		md = max(cs->uncertainty_margin, scaled_cs_margin);
++		md += max(watchdog->uncertainty_margin, scaled_wd_margin);
++
+ 		if (abs(cs_nsec - wd_nsec) > md) {
+ 			s64 cs_wd_msec;
+ 			s64 wd_msec;
+@@ -487,6 +531,8 @@ static void clocksource_watchdog(struct timer_list *unused)
+ 			wd_msec = div_s64_rem(wd_nsec, 1000 * 1000, &wd_rem);
+ 			pr_warn("                      Clocksource '%s' skewed %lld ns (%lld ms) over watchdog '%s' interval of %lld ns (%lld ms)\n",
+ 				cs->name, cs_nsec - wd_nsec, cs_wd_msec, watchdog->name, wd_nsec, wd_msec);
++			pr_warn("                      Max deviation: %u scaled_cs_margin: %u scaled_wd_margin: %u\n",
++				md, scaled_cs_margin, scaled_wd_margin);
+ 			if (curr_clocksource == cs)
+ 				pr_warn("                      '%s' is current clocksource.\n", cs->name);
+ 			else if (curr_clocksource)
+@@ -1138,12 +1184,12 @@ void __clocksource_update_freq_scale(struct clocksource *cs, u32 scale, u32 freq
+ 	 */
+ 	if (scale && freq && !cs->uncertainty_margin) {
+ 		cs->uncertainty_margin = NSEC_PER_SEC / (scale * freq);
+-		if (cs->uncertainty_margin < 2 * WATCHDOG_MAX_SKEW)
+-			cs->uncertainty_margin = 2 * WATCHDOG_MAX_SKEW;
++		if (cs->uncertainty_margin < WATCHDOG_MIN_MARGIN)
++			cs->uncertainty_margin = WATCHDOG_MIN_MARGIN;
+ 	} else if (!cs->uncertainty_margin) {
+ 		cs->uncertainty_margin = WATCHDOG_THRESHOLD;
+ 	}
+-	WARN_ON_ONCE(cs->uncertainty_margin < 2 * WATCHDOG_MAX_SKEW);
++	WARN_ON_ONCE(cs->uncertainty_margin < WATCHDOG_MIN_MARGIN);
+ 
+ 	/*
+ 	 * Ensure clocksources that have large 'mult' values don't overflow
+-- 
+2.35.3
 
 
-> +static int iio_dma_can_enqueue_block(struct iio_dma_buffer_block *block)
-> +{
-> +	struct iio_dma_buffer_queue *queue = block->queue;
-> +
-> +	/* If in fileio mode buffers can't be enqueued. */
-> +	if (queue->fileio.enabled)
-> +		return -EBUSY;
-> +
-> +	switch (block->state) {
-> +	case IIO_BLOCK_STATE_QUEUED:
-> +		return -EPERM;
-> +	case IIO_BLOCK_STATE_DONE:
-> +		return 0;
-> +	default:
-> +		return -EBUSY;
-
-Is this a real condition or just avoiding a compile warning?  If it's real
-I'd like the various states that lead to it be listed here just so we
-can more easily understand why -EBUSY is appropriate.
-
-> +	}
-> +}
-> +
-> +int iio_dma_buffer_enqueue_dmabuf(struct iio_buffer *buffer,
-> +				  struct iio_dma_buffer_block *block,
-> +				  struct sg_table *sgt,
-> +				  size_t size, bool cyclic)
-> +{
-> +	struct iio_dma_buffer_queue *queue = iio_buffer_to_queue(buffer);
-> +	int ret = 0;
-
-No need to init as it's always set.
-
-
-> +
-> +	mutex_lock(&queue->lock);
-
-guard(mutex)(&queue->lock);
-
-Then can do direct returns on error and not bother with the manual
-unlock.
-
-> +	ret = iio_dma_can_enqueue_block(block);
-> +	if (ret < 0)
-> +		goto out_mutex_unlock;
-> +
-> +	block->bytes_used = size;
-> +	block->cyclic = cyclic;
-> +	block->sg_table = sgt;
-> +
-> +	iio_dma_buffer_enqueue(queue, block);
-> +
-> +out_mutex_unlock:
-> +	mutex_unlock(&queue->lock);
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(iio_dma_buffer_enqueue_dmabuf);
-
-
+-- 
+Jiri Wiesner
+SUSE Labs
 
