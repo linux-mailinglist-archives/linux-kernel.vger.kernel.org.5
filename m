@@ -1,280 +1,1078 @@
-Return-Path: <linux-kernel+bounces-8237-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8238-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3A2881B429
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 11:46:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B77DA81B446
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 11:48:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E6AAD1C211C5
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 10:46:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CD97B1C21990
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 10:48:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABD39697A0;
-	Thu, 21 Dec 2023 10:46:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 493B3697A5;
+	Thu, 21 Dec 2023 10:47:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=csgroup.eu header.i=@csgroup.eu header.b="nfMpvJJU"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FH7uSR5J"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from FRA01-MR2-obe.outbound.protection.outlook.com (mail-mr2fra01on2052.outbound.protection.outlook.com [40.107.9.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C1BD21344
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 10:46:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=csgroup.eu
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=U39Htl6H8t7OpZi0jEVAfeqLL81XB0DmZ2EwvgyTJljJLLudj2yhplia0SBNej0wT/BcN8PS/ipTHsHveJd9hgCA9TtQxUvtXsHn/qeSlAcN/FLoCAohiSZki1CdJClAeVqi+PZHZL7UQjyeyenxjuU0K30S6swuHj7aq8cDaA6OqY4NIQmaB2NSSPNo+iL7N19LB+2mtfGOorUCXUuuVD3SSNl1YYAZYkwW4ToWoGxens7c7ZyPHbTfgQVFSGErT1q7aPTZ1kwbUmmn3pN6hLUVbbvLjZ7O2dVKqaFeW6iTXRbf1SUjNVXxB5u4x71CJ+JRFERABhq6BjqZnLlrtQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=kKKOmbCh9WmAyJ4ryetIBhoLb9F2IyiJ56LRqnIpqtE=;
- b=SjHBSazG3fXyq3NzVARal38Tt7j6bilsIczO6VwlYZcnsfBbNhF/HVREz9oU7K8IE2IdI/JolqPFF4M1cT0nELDDqKIZaNE6PKW3HIIEO+1qRiu4tE8xyh5CHsneDBwea7BKU7Tw51RXI5I1oX7ds+HL4UfCXBIDtES90bUPhPelOMuFkA57HCRdAznEyUAzDmPosBg5kyNz9NcCtp4I3+pXrc83zhQF4BzRp9e/jRoeJEBD0go/+pC+PdecR7+UrxA7vRAN6WAAvSNHLTTblfm84auzZBHcnAoDusC3jIJIQAl4PooLEN4NkcKFCr2KUcb+4JI2oCs+mLORJbY6Qw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=csgroup.eu; dmarc=pass action=none header.from=csgroup.eu;
- dkim=pass header.d=csgroup.eu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=csgroup.eu;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kKKOmbCh9WmAyJ4ryetIBhoLb9F2IyiJ56LRqnIpqtE=;
- b=nfMpvJJU8yoGnggrN0aXd57Hz1y48NzCvrakq5Zn4G8vs7WROpEdCf9iNHpva0WtiY3nvS3kxgxGGGJH6Dg/s+r8KrZGk5nZbuBruZyhqTp7+Kq7XcvxIhE258AGyhzzUzITlXnA3JHM1zP6P1k+yFhRS8O1IGVdtVKM15AAPMBgr2axMJFAvkbP8kFrQSvMre2PYtoKjhubz3DAYHdOGbuVmFoFzY8JImtFVDRe16bCme9/D16p1jCp+UiWtQt30TRlLNpvNVKqRPumYlpewFEjZIogXNucC2bPhwaOMxTgv0KiExAY90vx9WR/h8vlgQj+YGN6K14h0PyVtEi01A==
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:31::15)
- by PR1P264MB2096.FRAP264.PROD.OUTLOOK.COM (2603:10a6:102:1b0::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7113.21; Thu, 21 Dec
- 2023 10:46:08 +0000
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::f788:32b4:1c5e:f264]) by MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::f788:32b4:1c5e:f264%7]) with mapi id 15.20.7113.019; Thu, 21 Dec 2023
- 10:46:08 +0000
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
-To: Naveen N Rao <naveen@kernel.org>, "linuxppc-dev@lists.ozlabs.org"
-	<linuxppc-dev@lists.ozlabs.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>
-CC: Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin
-	<npiggin@gmail.com>, Aneesh Kumar K.V <aneesh.kumar@kernel.org>, Steven
- Rostedt <rostedt@goodmis.org>, Mark Rutland <mark.rutland@arm.com>, Florent
- Revest <revest@chromium.org>, Masami Hiramatsu <mhiramat@kernel.org>
-Subject: Re: [RFC PATCH 6/9] powerpc/ftrace: Update and move function profile
- instructions out-of-line
-Thread-Topic: [RFC PATCH 6/9] powerpc/ftrace: Update and move function profile
- instructions out-of-line
-Thread-Index: AQHaKfSSFFbB72zM4keIX1bFln/D9rCzoeSA
-Date: Thu, 21 Dec 2023 10:46:08 +0000
-Message-ID: <e2e467a3-7283-4f22-8cd9-2d1875f60e92@csgroup.eu>
-References: <cover.1702045299.git.naveen@kernel.org>
- <39363eb6b1857f26f9fa51808ad48b0121899b84.1702045299.git.naveen@kernel.org>
-In-Reply-To:
- <39363eb6b1857f26f9fa51808ad48b0121899b84.1702045299.git.naveen@kernel.org>
-Accept-Language: fr-FR, en-US
-Content-Language: fr-FR
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Mozilla Thunderbird
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=csgroup.eu;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MRZP264MB2988:EE_|PR1P264MB2096:EE_
-x-ms-office365-filtering-correlation-id: cbdb66f1-85ea-451e-5c80-08dc02120a07
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- 4DKZljucAPEHvjJx0aT4vgs0cjUXLfRdTSaFinqWjv5KVz0dKhL8bFfG/FPhJncUATJq0p1IDU4imGaIeeG9sBdIncHECUaqm8jMJSySjMeBLgCKz1rygIDAgM9K8VSc8gn6U8S+nR0HK7xnyI9LGKUgONelUzobThnfVBwwPrsB972NTt1VYO7GrJMdkmSXyhFYJ3hh2Aadrtxhi+8ajgTOn0UeCAPlkHxZ6FKLQyfte+SQHedxflZWgaPlejrDfsIXiP8WM2nCAsP+RciuMBEjXehQONe7Zk1O0HB64jPeMUP4y9PfZOepRUK6lZibAHC15m0rzPkwUl+XvntSyzbwr2PtT++9jf98YESd1N6qw3lZ9Q6CNyzoXKwCS17HIM70gK6RjkWsjrHGJktzIJJM4bqTXJUQ5XfvJ6aXiZWtuWjHT/pm9GdxryYRtSn2IlGzfcw8t7wXwVmx2GKTkYft+pXuIy4GS/7CjQ2QGyoPPRF3XXVjaA3UEEtDHRWv8vxAu0E1Z9eAdkq6nA76LuLU4tgtj/JDdYN4BaSEDMymCbsP7FVYQiwJIl28ng8XZvaIbVoLMb8FP7FCd1XE8RTJkf2DBt9JofU6bCok+bbLdftCMsdegOH6kRwtq3pD5w36hITcmHCDLPzU+6fQ60hUtGk9Mcs9qQtykTkI7CIEphJoSGu1FDV5SVUkNxcD
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(376002)(396003)(136003)(366004)(39860400002)(346002)(230922051799003)(451199024)(64100799003)(1800799012)(186009)(5660300002)(15650500001)(7416002)(2906002)(44832011)(86362001)(31696002)(122000001)(38100700002)(41300700001)(66556008)(91956017)(110136005)(66946007)(76116006)(64756008)(66446008)(66476007)(2616005)(54906003)(26005)(66574015)(71200400001)(316002)(36756003)(6512007)(6506007)(6486002)(31686004)(478600001)(38070700009)(8936002)(8676002)(83380400001)(4326008)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?aGRMaW94dGcvNjZCQzBPS3JhZlFHbDY3MmIwZU9RRHAxcHpkSG5JUzBCVFVX?=
- =?utf-8?B?bS9KYUkxRW1jVkc0QXhQVkFxU1BHeUNmQmhCbnBmRU1DdTV6bEg2Vnh1WDE3?=
- =?utf-8?B?VnZSUWhWK0l0RzU3eFM3MC84OVV0WDdmNVgyb1JMOVhpR05TMFQ3Y2tiaUtK?=
- =?utf-8?B?LzNJSlNDejRmOUZKYnA4bzYySUtrSDJRU0c4Z2NBYTY5VndpTHBzdStBcURJ?=
- =?utf-8?B?T0IxV3hzMFFPUWo4dEEyU05TRkJSUkRtMXgxbXpvMDM0SXhWdU9oODV1Y1Mz?=
- =?utf-8?B?NGZTaGxTUHBCMWYwWWdpbHN6SkJQdkFLcC9kMU16RGdVTDFsQ3c5aG1ub2Zh?=
- =?utf-8?B?RkVKbDZEUm4yZFJGYXFQUzFoa282c09WK0NJclFHMFBhMjRVWTVlMVprb3k4?=
- =?utf-8?B?WFJwbWtsNWd2TzlvSVVOaVh0bUlVdG5QakZMM1k2TWQ3L2c2NlM0c09EVzUx?=
- =?utf-8?B?dWNxT255anYxZDl3VzVUdWlmRWdmeUhrN05tNlJBeENmeVpGallBUk9oczBR?=
- =?utf-8?B?UGdrK1kvTEZhOTYyLzhtS3dIL0V6cDFGZ293dUZlMXFJcmNwcWRxSWU5VHk3?=
- =?utf-8?B?bEpHU1NHbGhUVGZtNDY5Zms2dkxsUkRSeUpueXhuOUtFMmVlSnVBUmZaNzJR?=
- =?utf-8?B?SWFsOXpGakRQMUFhcW5DNXlkczFKT0QydHVxK3JJRzFETWZZNXdvcGV5RCt3?=
- =?utf-8?B?dlBadWZuM2lseWtUaWx4TS8wbyttUXZyT2V6Z0NBdkpia1N5Vkx1WXZEQ20w?=
- =?utf-8?B?Qk1Wcy9XQS90aUpDUHpDdWNma1l3VmF2OE5kbDFjNlFsemtCSHZ5RjBud3E3?=
- =?utf-8?B?SlcvYnBMVVRYU1NwTWkrVm9VSExuVFVkanZZU0txWXIxSUlnM3pmN25tRmdn?=
- =?utf-8?B?enRXelEreWlvZmtDWDMzM1dJTlgvcDBRTmNyaHFyTlcydHVZZ0RHQzBZOW4w?=
- =?utf-8?B?MlJkYW1pYVRnU08rYjM2bjZGR21YbWJVbXNkZ0lzcHJmQitGcGVJZ1Nmdjl6?=
- =?utf-8?B?eU52VGQ2cTlLTzFJc3hKTXpMWTVsV0VGM2t4UndwbXV2RTRyb3VnSWNCSXEr?=
- =?utf-8?B?RlZaUS9PK2hwOC9rbHpvUUlPb2Q2QWY2RDBuS01Seml3M0N2MDVSL1k0YXZp?=
- =?utf-8?B?clZlSUJLa05pQnBsVndlR3N5NVA2Z1c4ckZrS3F1MnRiSnBqcXJZblVDOGRZ?=
- =?utf-8?B?UGttV3R1OU1FcW1yUU8vR0Q2TzJMalZPdmMrTUFtWEI4blA2dzRVV3V0TjJK?=
- =?utf-8?B?dG1SZzNXdTdLMWZGQnE4b2JZNXJmYjVwellDYUdrdENhcHRveGQ1c011U0dI?=
- =?utf-8?B?ZlJtZFNqdE5KRzRxYVBtYzY2ckV1ald5ZkpLb2k4T2krUXR5QU1nMjU3WGxi?=
- =?utf-8?B?UldhOXloQ0xrQS9PaVNhVzM0bHNmd2dXQzYvQUhSZEE0ZEJsSTBDdFNNNjdM?=
- =?utf-8?B?OG1UZ2wzMUo5V3IyV2pSaWljd05Fa1p0c0Y1WEtZaStEdUZoS0NsS3owUTh5?=
- =?utf-8?B?bGJWV2t4ZU16VDhxd05UeThkaGxHayt6VzRKaFdOV2c5bXZYcDZrZ2NsMjVE?=
- =?utf-8?B?d3dxbFlEaFdXa0tOY3dKZUJrbzJIbUFvZWFnVTFxOXB6SWpQdnFqa2RWTlZL?=
- =?utf-8?B?S0FIbEx0U0wvYXJvaXNiNUhDUnozOGdKMVlobHdocU12UnhBTDRUVnpyT1d5?=
- =?utf-8?B?eHJIdlpxQkJyZHFZVC9oWkVpdEE3MGpEOEpaSExlc29YUXIxRy9qbk1EVmdL?=
- =?utf-8?B?VVZvQTQ1MmNNMEQ1MW9oUGVtVDYvalNUbWtaYjZOakhLTTZmd0NIM05lS1Q5?=
- =?utf-8?B?MGNHaHJOVDNwYTg3QkIzYW5UWk4zTHlYU2M0UDdXbGNMV0hqWEo5d1A5bjUr?=
- =?utf-8?B?NjJtclFBdmhrNDBZOXcrV2lTWUVTLzBiSElBaU1ISndsNTU4SlYwcjliTEdu?=
- =?utf-8?B?Z1pKTGF6Tm1RdlhqcHgrT3F1eE1QWE5ZRk0xVFZBMnpYOCt6TFphc2Jac05j?=
- =?utf-8?B?LzNid2hGNFh6TTM4bTBSZHpBRmJXTERHbUpxRGtFdGtmTFJkekp2RVdESzFJ?=
- =?utf-8?B?NHo1aVVyYjU0ZjJ0SjJqVFovV2h4R3BTYWRReGQ2RjRJRHJ6MUJEWGMwRnMw?=
- =?utf-8?Q?zzaS0KxSQzHVWJFGGoYfVCd2L?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <15325E9B79CB67448DA0FA70A17DD5EA@FRAP264.PROD.OUTLOOK.COM>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B76074E14;
+	Thu, 21 Dec 2023 10:47:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a269a271b5bso77056366b.1;
+        Thu, 21 Dec 2023 02:47:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703155635; x=1703760435; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=xNJ0jtv09UWS6w6XQ1RoNiwHReqyTfpvRZA94x5Ry+I=;
+        b=FH7uSR5JoFkN3wfi6qAmNmsMQl6bFEXWJzj4vlNyM5uq0nVmOoo6GtNWGi0WWlnR+C
+         jyFINUnY3zjLnSCNt4V/pe67xZKrIUVjTI84MoOh79t8fidHV2jne//vCAAYJNFmZbgE
+         xSrCsoNBQZ7lt3NVLcy3duar3pX1QwHbjHBybYQzP4CzpDnxik4bN3en7mdJhdmd2RN8
+         sQEKbIR5hNU7sn/SSflprtKu4iJU7hDQbGI2Sa7BX0y+h1ZYTQrO+G+gscZ0p/LYlE6r
+         gsv+sLu8GztdIwY3+P9oFx61RBbr1kVzvh3C3uyWiVyCOxs0wiw47S1yXPMLxiEeUuYE
+         YMMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703155635; x=1703760435;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=xNJ0jtv09UWS6w6XQ1RoNiwHReqyTfpvRZA94x5Ry+I=;
+        b=MNuPTfFud7pMiwkkks/WlJD+am6v5k0mCZrsKSLqmobRBxS1j+RSbJ8mHXmO7bK0bZ
+         V5RQXNTITp8RCwtG+6AwLH3q4y8zG7UCzGCg5FpZ7xMGbF/QD9hxStvzOiA5E4HbbMTx
+         C8lJYRalBdVWS5th0qXfZIk3lWyzl+YVm1mDnCoz0unnhN3fNpRCnBB9261A6zwCvErY
+         UKEE76ulvjq/Jd6ut7MC9SbC+rG8sJMMDKr60lJ98hxSdzEdW41nVoFKoLf+WXVsDCpL
+         b10xleVaOOhJAOfYYw0wNF4g61qRHNWJ4nN/sDQnh62YFYcXyX/ATaj4PrD+6UOxkiS6
+         rIBw==
+X-Gm-Message-State: AOJu0YyPXLh+p+8FUDTMWm1xbMvIRoDhg/hna+4wAHRoFDZ/XirrTImg
+	GZtsROWIS5TzuxLQW8OZ3uP13ciBiLjTuOhv8qM=
+X-Google-Smtp-Source: AGHT+IFgTnJCK0I7hZ8qxk5ZFXcKbBJseClDBORN8F+OvGycsHG42G9BkrS7UxCpyCaEdZ+jYAECfazbt/MZktG9yKo=
+X-Received: by 2002:a17:906:103:b0:a19:f69e:1d3f with SMTP id
+ 3-20020a170906010300b00a19f69e1d3fmr10563335eje.71.1703155634216; Thu, 21 Dec
+ 2023 02:47:14 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: csgroup.eu
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: cbdb66f1-85ea-451e-5c80-08dc02120a07
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Dec 2023 10:46:08.0457
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 9914def7-b676-4fda-8815-5d49fb3b45c8
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 8AU8gEIvVigCwCSHeAhDW9sfZ8JRasBLCLZcvCXtRYll7TNGhvzllkB7mWRKs0KMziyqPSB5e0kHfBox5bBktmj4/STkEAZxz4syIJh80pE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR1P264MB2096
+References: <20231204214635.2916691-1-alessandro.carminati@gmail.com>
+In-Reply-To: <20231204214635.2916691-1-alessandro.carminati@gmail.com>
+From: Alessandro Carminati <alessandro.carminati@gmail.com>
+Date: Thu, 21 Dec 2023 11:46:36 +0100
+Message-ID: <CAPp5cGTNe0FKfxTxXpXcMkevn4TPTNq8Don7MNDc-KLfZLzp-g@mail.gmail.com>
+Subject: Re: [PATCH v7] scripts/link-vmlinux.sh: Add alias to duplicate
+ symbols for kallsyms
+To: Masahiro Yamada <masahiroy@kernel.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>, Steven Rostedt <rostedt@goodmis.org>, 
+	Daniel Bristot de Oliveira <bristot@kernel.org>, Josh Poimboeuf <jpoimboe@kernel.org>, 
+	Luis Chamberlain <mcgrof@kernel.org>, Nathan Chancellor <nathan@kernel.org>, 
+	Nick Desaulniers <ndesaulniers@google.com>, Nicolas Schier <nicolas@fjasle.eu>, 
+	Alexander Lobakin <aleksander.lobakin@intel.com>, Nick Alcock <nick.alcock@oracle.com>, 
+	Kris Van Hees <kris.van.hees@oracle.com>, Eugene Loh <eugene.loh@oracle.com>, 
+	Francis Laniel <flaniel@linux.microsoft.com>, Viktor Malik <vmalik@redhat.com>, 
+	Petr Mladek <pmladek@suse.com>, Tom Rix <trix@redhat.com>, linux-kbuild@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 
-DQoNCkxlIDA4LzEyLzIwMjMgw6AgMTc6MzAsIE5hdmVlbiBOIFJhbyBhIMOpY3JpdMKgOg0KPiBG
-dW5jdGlvbiBwcm9maWxlIHNlcXVlbmNlIG9uIHBvd2VycGMgaW5jbHVkZXMgdHdvIGluc3RydWN0
-aW9ucyBhdCB0aGUNCj4gYmVnaW5uaW5nIG9mIGVhY2ggZnVuY3Rpb246DQo+IA0KPiAJbWZscgly
-MA0KPiAJYmwJZnRyYWNlX2NhbGxlcg0KPiANCj4gVGhlIGNhbGwgdG8gZnRyYWNlX2NhbGxlcigp
-IGdldHMgbm9wJ2VkIG91dCBkdXJpbmcga2VybmVsIGJvb3QgYW5kIGlzDQo+IHBhdGNoZWQgaW4g
-d2hlbiBmdHJhY2UgaXMgZW5hYmxlZC4NCj4gDQo+IFRoZXJlIGFyZSB0d28gaXNzdWVzIHdpdGgg
-dGhpczoNCj4gMS4gVGhlICdtZmxyIHIwJyBpbnN0cnVjdGlvbiBhdCB0aGUgYmVnaW5uaW5nIG9m
-IGVhY2ggZnVuY3Rpb24gcmVtYWlucw0KPiAgICAgZXZlbiB0aG91Z2ggZnRyYWNlIGlzIG5vdCBi
-ZWluZyB1c2VkLg0KPiAyLiBXaGVuIGZ0cmFjZSBpcyBhY3RpdmF0ZWQsIHdlIHJldHVybiBmcm9t
-IGZ0cmFjZV9jYWxsZXIoKSB3aXRoIGEgYmN0cg0KPiAgICAgaW5zdHJ1Y3Rpb24gdG8gcHJlc2Vy
-dmUgcjAgYW5kIExSLCByZXN1bHRpbmcgaW4gdGhlIGxpbmsgc3RhY2sNCj4gICAgIGJlY29taW5n
-IHVuYmFsYW5jZWQuDQo+IA0KPiBUbyBhZGRyZXNzICgxKSwgd2UgaGF2ZSB0cmllZCB0byBub3An
-b3V0IHRoZSAnbWZsciByMCcgaW5zdHJ1Y3Rpb24gd2hlbg0KPiBub3AnaW5nIG91dCB0aGUgY2Fs
-bCB0byBmdHJhY2VfY2FsbGVyKCkgYW5kIHJlc3RvcmluZyBpdCB3aGVuIGVuYWJsaW5nDQo+IGZ0
-cmFjZS4gQnV0LCB0aGF0IHJlcXVpcmVkIGFkZGl0aW9uYWwgc3luY2hyb25pemF0aW9uIHNsb3dp
-bmcgZG93bg0KPiBmdHJhY2UgYWN0aXZhdGlvbi4gSXQgYWxzbyBsZWZ0IGFuIGFkZGl0aW9uYWwg
-bm9wIGluc3RydWN0aW9uIGF0IHRoZQ0KPiBiZWdpbm5pbmcgb2YgZWFjaCBmdW5jdGlvbiBhbmQg
-dGhhdCB3YXNuJ3QgZGVzaXJhYmxlIG9uIDMyLWJpdCBwb3dlcnBjLg0KPiANCj4gSW5zdGVhZCBv
-ZiB0aGF0LCBtb3ZlIHRoZSBmdW5jdGlvbiBwcm9maWxlIHNlcXVlbmNlIG91dC1vZi1saW5lIGxl
-YXZpbmcNCj4gYSBzaW5nbGUgbm9wIGF0IGZ1bmN0aW9uIGVudHJ5LiBPbiBmdHJhY2UgYWN0aXZh
-dGlvbiwgdGhlIG5vcCBpcyBjaGFuZ2VkDQo+IHRvIGFuIHVuY29uZGl0aW9uYWwgYnJhbmNoIHRv
-IHRoZSBvdXQtb2YtbGluZSBzZXF1ZW5jZSB0aGF0IGluIHR1cm4NCj4gY2FsbHMgZnRyYWNlX2Nh
-bGxlcigpLiBUaGlzIHJlbW92ZXMgdGhlIG5lZWQgZm9yIGNvbXBsZXggc3luY2hyb25pemF0aW9u
-DQo+IGR1cmluZyBmdHJhY2UgYWN0aXZhdGlvbiBhbmQgc2ltcGxpZmllcyB0aGUgY29kZS4gTW9y
-ZSBpbXBvcnRhbnRseSwgdGhpcw0KPiBpbXByb3ZlcyBwZXJmb3JtYW5jZSBvZiB0aGUga2VybmVs
-IHdoZW4gZnRyYWNlIGlzIG5vdCBpbiB1c2UuDQo+IA0KPiBUbyBhZGRyZXNzICgyKSwgY2hhbmdl
-IHRoZSBmdHJhY2UgdHJhbXBvbGluZSB0byByZXR1cm4gd2l0aCBhICdibHInDQo+IGluc3RydWN0
-aW9uIHdpdGggdGhlIG9yaWdpbmFsIHJldHVybiBhZGRyZXNzIGluIHIwIGludGFjdC4gVGhlbiwg
-YW4NCj4gYWRkaXRpb25hbCAnbXRsciByMCcgaW5zdHJ1Y3Rpb24gaW4gdGhlIGZ1bmN0aW9uIHBy
-b2ZpbGUgc2VxdWVuY2UgY2FuDQo+IG1vdmUgdGhlIGNvcnJlY3QgcmV0dXJuIGFkZHJlc3MgYmFj
-ayB0byBMUi4NCj4gDQo+IFdpdGggdGhlIGFib3ZlIHR3byBjaGFuZ2VzLCB0aGUgZnVuY3Rpb24g
-cHJvZmlsZSBzZXF1ZW5jZSBub3cgbG9va3MgbGlrZQ0KPiB0aGUgZm9sbG93aW5nOg0KPiANCj4g
-ICBbZnVuYzoJCSMgR0VQIC0tIDY0LWJpdCBwb3dlcnBjLCBvcHRpb25hbA0KPiAJYWRkaXMJcjIs
-cjEyLGltbTENCj4gCWFkZGkJcjIscjIsaW1tMl0NCj4gICAgdHJhbXA6DQo+IAltZmxyCXIwDQo+
-IAlibAlmdHJhY2VfY2FsbGVyDQo+IAltdGxyCXIwDQo+IAliCWZ1bmMNCj4gCW5vcA0KPiAJW25v
-cF0JIyA2NC1iaXQgcG93ZXJwYyBvbmx5DQo+ICAgIGZ1bmM6CQkjIExFUA0KPiAJbm9wDQo+IA0K
-PiBPbiAzMi1iaXQgcG93ZXJwYywgdGhlIGZ0cmFjZSBtY291bnQgdHJhbXBvbGluZSBpcyBub3cg
-Y29tcGxldGVseQ0KPiBvdXRzaWRlIHRoZSBmdW5jdGlvbi4gVGhpcyBpcyBhbHNvIHRoZSBjYXNl
-IG9uIDY0LWJpdCBwb3dlcnBjIGZvcg0KPiBmdW5jdGlvbnMgdGhhdCBkbyBub3QgbmVlZCBhIEdF
-UC4gSG93ZXZlciwgZm9yIGZ1bmN0aW9ucyB0aGF0IG5lZWQgYQ0KPiBHRVAsIHRoZSBhZGRpdGlv
-bmFsIGluc3RydWN0aW9ucyBhcmUgaW5zZXJ0ZWQgYmV0d2VlbiB0aGUgR0VQIGFuZCB0aGUNCj4g
-TEVQLiBTaW5jZSB3ZSBjYW4gb25seSBoYXZlIGEgZml4ZWQgbnVtYmVyIG9mIGluc3RydWN0aW9u
-cyBiZXR3ZWVuIEdFUA0KPiBhbmQgTEVQLCB3ZSBjaG9vc2UgdG8gZW1pdCA2IGluc3RydWN0aW9u
-cy4gRm91ciBvZiB0aG9zZSBpbnN0cnVjdGlvbnMNCj4gYXJlIHVzZWQgZm9yIHRoZSBmdW5jdGlv
-biBwcm9maWxlIHNlcXVlbmNlIGFuZCB0d28gaW5zdHJ1Y3Rpb24gc2xvdHMgYXJlDQo+IHJlc2Vy
-dmVkIGZvciBpbXBsZW1lbnRpbmcgc3VwcG9ydCBmb3IgRFlOQU1JQ19GVFJBQ0VfV0lUSF9DQUxM
-X09QUy4gT24NCj4gMzItYml0IHBvd2VycGMsIHdlIGVtaXQgb25lIGFkZGl0aW9uYWwgbm9wIGZv
-ciB0aGlzIHB1cnBvc2UgcmVzdWx0aW5nIGluDQo+IGEgdG90YWwgb2YgNSBub3BzIGJlZm9yZSBm
-dW5jdGlvbiBlbnRyeS4NCj4gDQo+IFRvIGVuYWJsZSBmdHJhY2UsIHRoZSBub3AgYXQgZnVuY3Rp
-b24gZW50cnkgaXMgY2hhbmdlZCB0byBhbg0KPiB1bmNvbmRpdGlvbmFsIGJyYW5jaCB0byAndHJh
-bXAnLiBUaGUgY2FsbCB0byBmdHJhY2VfY2FsbGVyKCkgbWF5IGJlDQo+IHVwZGF0ZWQgdG8gZnRy
-YWNlX3JlZ3NfY2FsbGVyKCkgZGVwZW5kaW5nIG9uIHRoZSByZWdpc3RlcmVkIGZ0cmFjZSBvcHMu
-DQo+IE9uIDY0LWJpdCBwb3dlcnBjLCB3ZSBhZGRpdGlvbmFsbHkgY2hhbmdlIHRoZSBpbnN0cnVj
-dGlvbiBhdCAndHJhbXAnIHRvDQo+ICdtZmxyIHIwJyBmcm9tIGFuIHVuY29uZGl0aW9uYWwgYnJh
-bmNoIGJhY2sgdG8gZnVuYys0LiBUaGlzIGlzIHNvIHRoYXQNCj4gZnVuY3Rpb25zIGVudGVyZWQg
-dGhyb3VnaCB0aGUgR0VQIGNhbiBza2lwIHRoZSBmdW5jdGlvbiBwcm9maWxlIHNlcXVlbmNlDQo+
-IHVubGVzcyBmdHJhY2UgaXMgZW5hYmxlZC4NCj4gDQo+IFdpdGggdGhlIGNvbnRleHRfc3dpdGNo
-IG1pY3JvYmVuY2htYXJrIG9uIGEgUDkgbWFjaGluZSwgdGhlcmUgaXMgYQ0KPiBwZXJmb3JtYW5j
-ZSBpbXByb3ZlbWVudCBvZiB+NiUgd2l0aCB0aGlzIHBhdGNoIGFwcGxpZWQsIGdvaW5nIGZyb20g
-NjUwaw0KPiBjb250ZXh0IHN3aXRjaGVzIHRvIDY5MGsgY29udGV4dCBzd2l0Y2hlcyB3aXRob3V0
-IGZ0cmFjZSBlbmFibGVkLiBXaXRoDQo+IGZ0cmFjZSBlbmFibGVkLCB0aGUgcGVyZm9ybWFuY2Ug
-d2FzIHNpbWlsYXIgYXQgODZrIGNvbnRleHQgc3dpdGNoZXMuDQoNCldvbmRlcmluZyBob3cgc2ln
-bmlmaWNhbnQgdGhhdCBjb250ZXh0X3N3aXRjaCBtaWNvcmJlbmNobWFyayBpcy4NCg0KSSByYW4g
-aXQgb24gYm90aCBtcGM4ODUgYW5kIG1wYzgzMjEgYW5kIEknbSBhIGJpdCBwdXp6bGVkIGJ5IHNv
-bWUgb2YgdGhlIA0KcmVzdWx0czoNCiMgLi9jb250ZXh0X3N3aXRjaCAtLW5vLWZwDQpVc2luZyB0
-aHJlYWRzIHdpdGggeWllbGQgb24gY3B1cyAwLzAgdG91Y2hpbmcgRlA6bm8gYWx0aXZlYzpubyB2
-ZWN0b3I6bm8gDQp2ZHNvOm5vDQoNCk9uIDg4NSwgSSBnZXQgdGhlIGZvbGxvd2luZyByZXN1bHRz
-IGJlZm9yZSBhbmQgYWZ0ZXIgeW91ciBwYXRjaC4NCg0KQ09ORklHX0ZUUkFDRSBub3Qgc2VsZWN0
-ZWQgOiA0NCw5aw0KQ09ORklHX0ZUUkFDRSBzZWxlY3RlZCwgYmVmb3JlIDogMzIsOGsNCkNPTkZJ
-R19GVFJBQ0Ugc2VsZWN0ZWQsIGFmdGVyIDogMzMsNmsNCg0KQWxsIHRoaXMgaXMgd2l0aCBDT05G
-SUdfSU5JVF9TVEFDS19BTExfWkVSTyB3aGljaCBpcyB0aGUgZGVmYXVsdC4gQnV0IA0Kd2hlbiBJ
-IHNlbGVjdCBDT05GSUdfSU5JVF9TVEFDS19OT05FLCB0aGUgQ09ORklHX0ZUUkFDRSBub3Qgc2Vs
-ZWN0ZWQgDQpyZXN1bHQgaXMgb25seSAzNCw0Lg0KDQpPbiA4MzIxOg0KDQpDT05GSUdfRlRSQUNF
-IG5vdCBzZWxlY3RlZCA6IDEwMCwzaw0KQ09ORklHX0ZUUkFDRSBzZWxlY3RlZCwgYmVmb3JlIDog
-NzIsNWsNCkNPTkZJR19GVFJBQ0Ugc2VsZWN0ZWQsIGFmdGVyIDogMTE2aw0KDQpTbyB0aGUgcmVz
-dWx0cyBsb29rIG9kZCB0byBtZS4NCg0KPiANCj4gVGhlIGRvd25zaWRlIG9mIHRoaXMgYXBwcm9h
-Y2ggaXMgdGhlIGluY3JlYXNlIGluIHZtbGludXggc2l6ZSwNCj4gZXNwZWNpYWxseSBvbiAzMi1i
-aXQgcG93ZXJwYy4gV2Ugbm93IGVtaXQgMyBhZGRpdGlvbmFsIGluc3RydWN0aW9ucyBmb3INCj4g
-ZWFjaCBmdW5jdGlvbiAoZXhjbHVkaW5nIHRoZSBvbmUgb3IgdHdvIGluc3RydWN0aW9ucyBmb3Ig
-c3VwcG9ydGluZw0KPiBEWU5BTUlDX0ZUUkFDRV9XSVRIX0NBTExfT1BTKS4gT24gNjQtYml0IHBv
-d2VycGMgd2l0aCB0aGUgY3VycmVudA0KPiBpbXBsZW1lbnRhdGlvbiBvZiAtZnBhdGNoYWJsZS1m
-dW5jdGlvbi1lbnRyeSB0aG91Z2gsIHRoaXMgaXMgbm90DQo+IGF2b2lkYWJsZSBzaW5jZSB3ZSBh
-cmUgZm9yY2VkIHRvIGVtaXQgNiBpbnN0cnVjdGlvbnMgYmV0d2VlbiB0aGUgR0VQIGFuZA0KPiB0
-aGUgTEVQIGV2ZW4gaWYgd2UgYXJlIHRvIG9ubHkgc3VwcG9ydCBEWU5BTUlDX0ZUUkFDRV9XSVRI
-X0NBTExfT1BTLg0KDQpUaGUgaW5jcmVhc2UgaXMgYWxtb3N0IDUlIG9uIHRoZSBmZXcgMzIgYml0
-cyBkZWZjb25maWcgSSBoYXZlIHRlc3RlZC4gDQpUaGF0J3MgYSBsb3QuDQoNCk9uIDMyIGJpdHMg
-cG93ZXJwYywgb25seSB0aGUgZTUwMCBoYXMgYSBsaW5rIHN0YWNrIHRoYXQgY291bGQgZW5kIHVw
-IA0KYmVpbmcgdW5iYWxhbmNlZC4gQ291bGQgd2Uga2VlcCB0aGUgYmN0ciBhbmQgYXZvaWQgdGhl
-IG10bHIgYW5kIHRoZSBqdW1wIA0KaW4gdGhlIHRyYW1wb2xpbmUgPw0KDQpPbiA4eHggYSBOT1Ag
-aXMgb25lIGN5Y2xlLCBhIHRha2VuIGJyYW5jaCBpcyAyIGN5Y2xlcywgYnV0IHRoZSBzZWNvbmQg
-DQpjeWNsZSBpcyBhIGJ1YmJsZSB0aGF0IG1vc3Qgb2YgdGhlIHRpbWUgZ2V0cyBmaWxsZWQgYnkg
-Zm9sbG93aW5nIA0Kb3BlcmF0aW9ucy4gT24gdGhlIDgzeHgsIGJyYW5jaGVzIGFuZCBOT1BzIGFy
-ZSBzdXBwb3NlZCB0byBiZSBzZWFtbGVzcy4NCg0KU28gaXMgdGhhdCBvdXQtb2YtbGluZSB0cmFt
-cG9saW5lIHJlYWxseSB3b3J0aCBpdCA/IE1heWJlIGtlZXBpbmcgdGhlIA0KZnRyYWNlIGluc3Ry
-dWN0aW9ucyBhdCB0aGUgYmVnaW5pbmcgYW5kIGp1c3QgcmVwbGFjaW5nIHRoZSBtZmxyIGJ5IGFu
-IA0KanVtcCB3aGVuIGZ0cmFjZSBpcyBvZmYgd291bGQgaGVscCByZWR1Y2UgdGhlIGZ0cmFjZSBp
-bnNucyBieSBvbmUgbW9yZSANCmluc3RydWN0aW9uLg0KDQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBO
-YXZlZW4gTiBSYW8gPG5hdmVlbkBrZXJuZWwub3JnPg0KPiAtLS0NCg0KPiBkaWZmIC0tZ2l0IGEv
-YXJjaC9wb3dlcnBjL2luY2x1ZGUvYXNtL2NvZGUtcGF0Y2hpbmcuaCBiL2FyY2gvcG93ZXJwYy9p
-bmNsdWRlL2FzbS9jb2RlLXBhdGNoaW5nLmgNCj4gaW5kZXggODRmNmNjZDdkZTdhLi45YTU0YmI5
-ZTBkZGUgMTAwNjQ0DQo+IC0tLSBhL2FyY2gvcG93ZXJwYy9pbmNsdWRlL2FzbS9jb2RlLXBhdGNo
-aW5nLmgNCj4gKysrIGIvYXJjaC9wb3dlcnBjL2luY2x1ZGUvYXNtL2NvZGUtcGF0Y2hpbmcuaA0K
-PiBAQCAtMTg1LDEwICsxODUsMjEgQEAgc3RhdGljIGlubGluZSB1bnNpZ25lZCBsb25nIHBwY19m
-dW5jdGlvbl9lbnRyeSh2b2lkICpmdW5jKQ0KPiAgIAkgKi8NCj4gICAJaWYgKCgoKCppbnNuICYg
-T1BfUlRfUkFfTUFTSykgPT0gQURESVNfUjJfUjEyKSB8fA0KPiAgIAkgICAgICgoKmluc24gJiBP
-UF9SVF9SQV9NQVNLKSA9PSBMSVNfUjIpKSAmJg0KPiAtCSAgICAoKCooaW5zbisxKSAmIE9QX1JU
-X1JBX01BU0spID09IEFERElfUjJfUjIpKQ0KPiArCSAgICAoKCooaW5zbisxKSAmIE9QX1JUX1JB
-X01BU0spID09IEFERElfUjJfUjIpKSB7DQo+ICsjaWZkZWYgQ09ORklHX0FSQ0hfVVNJTkdfUEFU
-Q0hBQkxFX0ZVTkNUSU9OX0VOVFJZDQoNCkNhbiB5b3UgcmVwbGFjZSBieSBJU19FTkFCTEVEKCkg
-Pw0KDQo+ICsJCS8qDQo+ICsJCSAqIEhldXJpc3RpYzogbG9vayBmb3IgdGhlICdtdGxyIHIwJyBp
-bnN0cnVjdGlvbiBhc3N1bWluZyBmdHJhY2UgaW5pdCBpcyBkb25lLg0KPiArCQkgKiBJZiBpdCBp
-cyBub3QgZm91bmQsIGxvb2sgZm9yIHR3byBjb25zZWN1dGl2ZSBub3BzIGFmdGVyIHRoZSBHRVAu
-DQo+ICsJCSAqIExvbmdlciB0ZXJtLCB3ZSByZWFsbHkgc2hvdWxkIGJlIHBhcnNpbmcgdGhlIHN5
-bWJvbCB0YWJsZSB0byBkZXRlcm1pbmUgTEVQLg0KPiArCQkgKi8NCj4gKwkJaWYgKCgqKGluc24r
-NCkgPT0gUFBDX1JBV19NVExSKF9SMCkpIHx8DQo+ICsJCSAgICAoKCooaW5zbisyKSA9PSBQUENf
-UkFXX05PUCgpICYmICooaW5zbiszKSA9PSBQUENfUkFXX05PUCgpKSkpDQo+ICsJCQlyZXR1cm4g
-KHVuc2lnbmVkIGxvbmcpKGluc24gKyA4KTsNCj4gKyNlbmRpZg0KPiAgIAkJcmV0dXJuICh1bnNp
-Z25lZCBsb25nKShpbnNuICsgMik7DQo+IC0JZWxzZQ0KPiArCX0gZWxzZSB7DQo+ICAgCQlyZXR1
-cm4gKHVuc2lnbmVkIGxvbmcpZnVuYzsNCj4gKwl9DQo+ICAgI2VsaWYgZGVmaW5lZChDT05GSUdf
-UFBDNjRfRUxGX0FCSV9WMSkNCj4gICAJLyoNCj4gICAJICogT24gUFBDNjQgQUJJdjEgdGhlIGZ1
-bmN0aW9uIHBvaW50ZXIgYWN0dWFsbHkgcG9pbnRzIHRvIHRoZQ0KDQo+IGRpZmYgLS1naXQgYS9h
-cmNoL3Bvd2VycGMva2VybmVsL3RyYWNlL2Z0cmFjZS5jIGIvYXJjaC9wb3dlcnBjL2tlcm5lbC90
-cmFjZS9mdHJhY2UuYw0KPiBpbmRleCAyOTU2MTk2Yzk4ZmYuLmQzYjQ5NDkxNDJhOCAxMDA2NDQN
-Cj4gLS0tIGEvYXJjaC9wb3dlcnBjL2tlcm5lbC90cmFjZS9mdHJhY2UuYw0KPiArKysgYi9hcmNo
-L3Bvd2VycGMva2VybmVsL3RyYWNlL2Z0cmFjZS5jDQoNCj4gQEAgLTIxNywxNSArMjc0LDYyIEBA
-IGludCBmdHJhY2VfaW5pdF9ub3Aoc3RydWN0IG1vZHVsZSAqbW9kLCBzdHJ1Y3QgZHluX2Z0cmFj
-ZSAqcmVjKQ0KPiAgIHsNCj4gICAJdW5zaWduZWQgbG9uZyBhZGRyLCBpcCA9IHJlYy0+aXA7DQo+
-ICAgCXBwY19pbnN0X3Qgb2xkLCBuZXc7DQo+IC0JaW50IHJldCA9IDA7DQo+ICsJaW50IGksIHJl
-dCA9IDA7DQo+ICsJdTMyIGZ0cmFjZV9tY291bnRfdHJhbXBfaW5zbnNbXSA9IHsNCj4gKyNpZmRl
-ZiBDT05GSUdfUFBDNjQNCj4gKwkJUFBDX1JBV19CUkFOQ0goRlRSQUNFX01DT1VOVF9UUkFNUF9P
-RkZTRVQgKyBNQ09VTlRfSU5TTl9TSVpFKSwNCj4gKyNlbHNlDQo+ICsJCVBQQ19SQVdfTUZMUihf
-UjApLA0KPiArI2VuZGlmDQoNCkNhbiBpdCBiZSBiYXNlZCBvbiBJU19FTkFCTEVEKENPTkZJR19Q
-UEM2NCkgaW5zdGVhZCA/DQoNCj4gKwkJUFBDX1JBV19CTCgwKSwgLyogYmwgZnRyYWNlX2NhbGxl
-ciAqLw0KPiArCQlQUENfUkFXX01UTFIoX1IwKSwgLyogYWxzbyBzZWUgdXBkYXRlIHBwY19mdW5j
-dGlvbl9lbnRyeSgpICovDQo+ICsJCVBQQ19SQVdfQlJBTkNIKEZUUkFDRV9NQ09VTlRfVFJBTVBf
-T0ZGU0VUIC0gTUNPVU5UX0lOU05fU0laRSAqIDIpDQo+ICsJfTsNCj4gKw0K
+gentle ping
+
+Il giorno lun 4 dic 2023 alle ore 22:47 Alessandro Carminati (Red Hat)
+<alessandro.carminati@gmail.com> ha scritto:
+>
+> In the kernel environment, situations frequently arise where identical
+> names are shared among symbols within both the core image and modules.
+> While this doesn't pose issues for the kernel's binary itself, it
+> complicates trace or probe operations using tools like kprobe.
+>
+> This patch introduces "kas_alias" to address this challenge.
+>
+> During the kernel's build process, just before linking the vmlinux
+> image in the "scripts/link-vmlinux.sh", symbol name frequencies are
+> collected.
+> This collection includes both the core kernel components and modules.
+> Subsequently, within the same action, the nm data relative to vmlinux
+> is modified by adding aliases based on the comprehensive symbol
+> information gathered.
+>
+> The collection process occurs in two phases:
+>
+> 1. First phase: Executed during the linking of vmlinux, "kas_alias" scans
+>    all symbols provided by the 'nm' data against the vmlinux core image
+>    and all objects used for module linkage. This phase requires all
+>    modules objects to be produced at this stage, thereby adding a vmlinux
+>    dependency for linking modules in 'scripts/Makefile.modfinal'.
+>
+> 2. Second phase: In a subsequent run in the same build, "kas_alias"
+>    processes module objects and injects aliases into the objects' symbol
+>    tables where necessary. This operation is done by modifying
+>    'scripts/Makefile.modfinal' to include an action for each processed
+>    module.
+>
+> Example:
+>
+> Consider the symbol "device_show", you can expect an output like the
+> following:
+>
+>  ~ # cat /proc/kallsyms | grep " name_show"
+> ffffcaa2bb4f01c8 t name_show
+> ffffcaa2bb4f01c8 t name_show@kernel_irq_irqdesc_c_264
+> ffffcaa2bb9c1a30 t name_show
+> ffffcaa2bb9c1a30 t name_show@drivers_pnp_card_c_186
+> ffffcaa2bbac4754 t name_show
+> ffffcaa2bbac4754 t name_show@drivers_regulator_core_c_678
+> ffffcaa2bbba4900 t name_show
+> ffffcaa2bbba4900 t name_show@drivers_base_power_wakeup_stats_c_93
+> ffffcaa2bbec4038 t name_show
+> ffffcaa2bbec4038 t name_show@drivers_rtc_sysfs_c_26
+> ffffcaa2bbecc920 t name_show
+> ffffcaa2bbecc920 t name_show@drivers_i2c_i2c_core_base_c_660
+> ffffcaa2bbed3840 t name_show
+> ffffcaa2bbed3840 t name_show@drivers_i2c_i2c_dev_c_100
+> ffffcaa2bbef7210 t name_show
+> ffffcaa2bbef7210 t name_show@drivers_pps_sysfs_c_66
+> ffffcaa2bbf03328 t name_show
+> ffffcaa2bbf03328 t name_show@drivers_hwmon_hwmon_c_72
+> ffffcaa2bbff6f3c t name_show
+> ffffcaa2bbff6f3c t name_show@drivers_remoteproc_remoteproc_sysfs_c_215
+> ffffcaa2bbff8d78 t name_show
+> ffffcaa2bbff8d78 t name_show@drivers_rpmsg_rpmsg_core_c_455
+> ffffcaa2bbfff7a4 t name_show
+> ffffcaa2bbfff7a4 t name_show@drivers_devfreq_devfreq_c_1395
+> ffffcaa2bc001f60 t name_show
+> ffffcaa2bc001f60 t name_show@drivers_extcon_extcon_c_389
+> ffffcaa2bc009890 t name_show
+> ffffcaa2bc009890 t name_show@drivers_iio_industrialio_core_c_1396
+> ffffcaa2bc01212c t name_show
+> ffffcaa2bc01212c t name_show@drivers_iio_industrialio_trigger_c_51
+> ffffcaa2bc025e2c t name_show
+> ffffcaa2bc025e2c t name_show@drivers_fpga_fpga_mgr_c_618
+> ffffcaa2a052102c t name_show    [hello]
+> ffffcaa2a052102c t name_show@hello_hello_c_8    [hello]
+> ffffcaa2a051955c t name_show    [rpmsg_char]
+> ffffcaa2a051955c t name_show@drivers_rpmsg_rpmsg_char_c_365     [rpmsg_char]
+>
+> where hello, is a plain helloworld module built OOT.
+>
+> Tested-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> Signed-off-by: Alessandro Carminati (Red Hat) <alessandro.carminati@gmail.com>
+>
+> ---
+>
+> NOTE1:
+> About the symbols name duplication that happens as consequence of the
+> inclusion compat_binfmt_elf.c does, it is evident that this corner is
+> inherently challenging the addr2line approach.
+> Attempting to conceal this limitation would be counterproductive.
+>
+> compat_binfmt_elf.c includes directly binfmt_elf.c, addr2line can't help
+> but report all functions and data declared by that file, coming from
+> binfmt_elf.c.
+>
+> My position is that, rather than producing a more complicated pipeline
+> to handle this corner case, it is better to fix the compat_binfmt_elf.c
+> anomaly.
+>
+> This patch does not deal with the two potentially problematic symbols
+> defined by compat_binfmt_elf.c
+>
+> Changes from v1:
+> * Integrated changes requested by Masami to exclude symbols with prefixes
+>   "_cfi" and "_pfx".
+> * Introduced a small framework to handle patterns that need to be excluded
+>   from the alias production.
+> * Excluded other symbols using the framework.
+> * Introduced the ability to discriminate between text and data symbols.
+> * Added two new config symbols in this version:
+>   CONFIG_KALLSYMS_ALIAS_DATA, which allows data for data, and
+>   CONFIG_KALLSYMS_ALIAS_DATA_ALL, which excludes all filters and provides
+>   an alias for each duplicated symbol.
+>
+> https://lore.kernel.org/all/20230711151925.1092080-1-alessandro.carminati@gmail.com/
+>
+> Changes from v2:
+> * Alias tags are created by querying DWARF information from the vmlinux.
+> * The filename + line number is normalized and appended to the original
+>   name.
+> * The tag begins with '@' to indicate the symbol source.
+> * Not a change, but worth mentioning, since the alias is added to the
+>   existing list, the old duplicated name is preserved, and the livepatch
+>   way of dealing with duplicates is maintained.
+> * Acknowledging the existence of scenarios where inlined functions
+>   declared in header files may result in multiple copies due to compiler
+>   behavior, though it is not actionable as it does not pose an operational
+>   issue.
+> * Highlighting a single exception where the same name refers to different
+>   functions: the case of "compat_binfmt_elf.c," which directly includes
+>   "binfmt_elf.c" producing identical function copies in two separate
+>   modules.
+>
+> https://lore.kernel.org/all/20230714150326.1152359-1-alessandro.carminati@gmail.com/
+>
+> Changes from v3:
+> * kas_alias was rewritten in Python to create a more concise and
+>   maintainable codebase.
+> * The previous automation process used by kas_alias to locate the vmlinux
+>   and the addr2line has been replaced with an explicit command-line switch
+>   for specifying these requirements.
+> * addr2line has been added into the main Makefile.
+> * A new command-line switch has been introduced, enabling users to extend
+>   the alias to global data names.
+>
+> https://lore.kernel.org/all/20230828080423.3539686-1-alessandro.carminati@gmail.com/
+>
+> Changes from v4:
+> * Fixed the O=<build dir> build issue
+> * The tool halts execution upon encountering major issues, thereby ensuring
+>   the pipeline is interrupted.
+> * A cmdline option to specify the source directory added.
+> * Minor code adjusments.
+> * Tested on mips32 and i386
+>
+> https://lore.kernel.org/all/20230919193948.465340-1-alessandro.carminati@gmail.com/
+>
+> Changes from v5:
+> * Regex filter extended to all symbols
+> * Alias creation extended to module objects
+> * Code cleaned and commented
+> * kas_alias verbose execution via KAS_ALIAS_DEBUG env variable
+> * CONFIG_KALLSYMS_ALIAS_SRCLINE selects KBUILD_BUILTIN to ensure no races
+>   during modules build
+> * Tested on x86_64, aarch64 and i386
+>
+> https://lore.kernel.org/all/20230927173516.1456594-1-alessandro.carminati@gmail.com/
+>
+> Changes from v6:
+> * Generate a file to facilitate the construction of custom OOT modules using aliases.
+>   In this context, it is needed to export the modules.symbfreq file, a product of
+>   the build.
+> * Previously, kas_alias was intended to run once, executing all tasks within the same
+>   session. In this version, two targets have been introduced to split the work into
+>   distinct phases: one for creating aliases for the core image and another for
+>   generating aliases for modules.
+> * The module aliases production statement has been inserted in the
+>   scripts/Makefile.modfinal. Instead of being executed individually for each module,
+>   it now runs once for all modules.
+> * The approach for excluding symbols in .init and .exit ELF sections has undergone a
+>   rewrite.
+> * kas_alias is now capable of applying aliases to OOT modules. However, for this to
+>   occur, the 'modules.symbfreq' file needs to be accessible during the build.
+>   If it is not found, aliases won't be added.
+>
+> https://lore.kernel.org/all/20231024201157.748254-1-alessandro.carminati@gmail.com/
+> ---
+>  Makefile                  |  14 +-
+>  init/Kconfig              |  22 ++
+>  scripts/Makefile.modfinal |  30 +-
+>  scripts/kas_alias.py      | 600 ++++++++++++++++++++++++++++++++++++++
+>  scripts/link-vmlinux.sh   |  27 +-
+>  5 files changed, 688 insertions(+), 5 deletions(-)
+>  create mode 100755 scripts/kas_alias.py
+>
+> diff --git a/Makefile b/Makefile
+> index 99db546fbb45..810a0cd21d20 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -479,6 +479,7 @@ OBJCOPY             = $(LLVM_PREFIX)llvm-objcopy$(LLVM_SUFFIX)
+>  OBJDUMP                = $(LLVM_PREFIX)llvm-objdump$(LLVM_SUFFIX)
+>  READELF                = $(LLVM_PREFIX)llvm-readelf$(LLVM_SUFFIX)
+>  STRIP          = $(LLVM_PREFIX)llvm-strip$(LLVM_SUFFIX)
+> +ADDR2LINE      = $(LLVM_PREFIX)llvm-addr2line$(LLVM_SUFFIX)
+>  else
+>  CC             = $(CROSS_COMPILE)gcc
+>  LD             = $(CROSS_COMPILE)ld
+> @@ -488,6 +489,7 @@ OBJCOPY             = $(CROSS_COMPILE)objcopy
+>  OBJDUMP                = $(CROSS_COMPILE)objdump
+>  READELF                = $(CROSS_COMPILE)readelf
+>  STRIP          = $(CROSS_COMPILE)strip
+> +ADDR2LINE      = $(CROSS_COMPILE)addr2line
+>  endif
+>  RUSTC          = rustc
+>  RUSTDOC                = rustdoc
+> @@ -591,7 +593,7 @@ export RUSTC_BOOTSTRAP := 1
+>  export ARCH SRCARCH CONFIG_SHELL BASH HOSTCC KBUILD_HOSTCFLAGS CROSS_COMPILE LD CC HOSTPKG_CONFIG
+>  export RUSTC RUSTDOC RUSTFMT RUSTC_OR_CLIPPY_QUIET RUSTC_OR_CLIPPY BINDGEN CARGO
+>  export HOSTRUSTC KBUILD_HOSTRUSTFLAGS
+> -export CPP AR NM STRIP OBJCOPY OBJDUMP READELF PAHOLE RESOLVE_BTFIDS LEX YACC AWK INSTALLKERNEL
+> +export CPP AR NM STRIP OBJCOPY OBJDUMP READELF ADDR2LINE PAHOLE RESOLVE_BTFIDS LEX YACC AWK INSTALLKERNEL
+>  export PERL PYTHON3 CHECK CHECKFLAGS MAKE UTS_MACHINE HOSTCXX
+>  export KGZIP KBZIP2 KLZOP LZMA LZ4 XZ ZSTD
+>  export KBUILD_HOSTCXXFLAGS KBUILD_HOSTLDFLAGS KBUILD_HOSTLDLIBS LDFLAGS_MODULE
+> @@ -1453,6 +1455,16 @@ KBUILD_BUILTIN := 1
+>  modules: vmlinux
+>  endif
+>
+> +# *.ko are usually independent of vmlinux, but CONFIG_KALLSYMS_ALIAS_SRCLINE
+> +# is another exception.
+> +# At the time when vmlinux is being linked, kas_alias operates on both vmlinux
+> +# and modules. To prevent races with modules, kas_alias needs to pause operations
+> +# while it is executed.
+> +ifdef CONFIG_KALLSYMS_ALIAS_SRCLINE
+> +KBUILD_BUILTIN := 1
+> +modules: vmlinux
+> +endif
+> +
+>  modules: modules_prepare
+>
+>  # Target to prepare building external modules
+> diff --git a/init/Kconfig b/init/Kconfig
+> index 9ffb103fc927..f68341b29576 100644
+> --- a/init/Kconfig
+> +++ b/init/Kconfig
+> @@ -1738,6 +1738,28 @@ config KALLSYMS_BASE_RELATIVE
+>           time constants, and no relocation pass is required at runtime to fix
+>           up the entries based on the runtime load address of the kernel.
+>
+> +config KALLSYMS_ALIAS_SRCLINE
+> +       bool "Produces alias for duplicated text symbols" if EXPERT
+> +       depends on KALLSYMS && DEBUG_INFO && !DEBUG_INFO_SPLIT
+> +       help
+> +         It is not uncommon for drivers or modules related to similar
+> +         peripherals to have symbols with the exact same name.
+> +         While this is not a problem for the kernel's binary itself, it
+> +         becomes an issue when attempting to trace or probe specific
+> +         functions using infrastructure like ftrace or kprobe.
+> +
+> +         This option addresses this challenge, producing alias for text
+> +         symbol names that include the file name and line where the symbols
+> +         are defined in the source code.
+> +
+> +config KALLSYMS_ALIAS_SRCLINE_DATA
+> +       bool "Produces alias also for global variables names"
+> +       depends on KALLSYMS_ALIAS_SRCLINE
+> +       help
+> +         Sometimes it can be useful to refer to global vars by name. Since
+> +         they suffer the same issue as text symbols, this config option
+> +         allows having aliases for global variables names too.
+> +
+>  # end of the "standard kernel features (expert users)" menu
+>
+>  # syscall, maps, verifier
+> diff --git a/scripts/Makefile.modfinal b/scripts/Makefile.modfinal
+> index 8568d256d6fb..acde29a46c6b 100644
+> --- a/scripts/Makefile.modfinal
+> +++ b/scripts/Makefile.modfinal
+> @@ -15,6 +15,32 @@ include $(srctree)/scripts/Makefile.lib
+>  # find all modules listed in modules.order
+>  modules := $(call read-file, $(MODORDER))
+>
+> +ifeq ($(KBUILD_BUILTIN),y)
+> +  ifeq ($(or $(CONFIG_DEBUG_INFO_BTF_MODULES),$(CONFIG_KALLSYMS_ALIAS_SRCLINE)),y)
+> +    VMLINUX_DEP := vmlinux
+> +  endif
+> +endif
+> +
+> +VMLINUX_DEP ?=
+> +
+> +ifeq ($(CONFIG_KALLSYMS_ALIAS_SRCLINE),y)
+> +  ifeq ($(CONFIG_KALLSYMS_ALIAS_SRCLINE_DATA),y)
+> +    KAS_DATA := --process_data
+> +  endif
+> +
+> +  ifdef KAS_ALIAS_DEBUG
+> +      DEBUG_FLAG := $(KAS_ALIAS_DEBUG)
+> +  else
+> +      DEBUG_FLAG := 0
+> +  endif
+> +
+> +  KAS_ALIAS_MODULE_CMD := $(srctree)/scripts/kas_alias.py --symbol_frequency $(extmod_prefix)modules.symbfreq \
+> +  --debug $(DEBUG_FLAG)  --nm $(NM) $(KAS_DATA) \
+> +  --addr2line $(ADDR2LINE) --basedir $(srctree) --separator @ \
+> +  single_module \
+> +  --objcopy $(OBJCOPY) --objdump $(OBJDUMP) --target-module
+> +endif
+> +
+>  __modfinal: $(modules:%.o=%.ko)
+>         @:
+>
+> @@ -30,6 +56,7 @@ quiet_cmd_cc_o_c = CC [M]  $@
+>
+>  quiet_cmd_ld_ko_o = LD [M]  $@
+>        cmd_ld_ko_o +=                                                   \
+> +       [ "$(KAS_ALIAS_MODULE_CMD)" != "" ] && $(KAS_ALIAS_MODULE_CMD) $<;      \
+>         $(LD) -r $(KBUILD_LDFLAGS)                                      \
+>                 $(KBUILD_LDFLAGS_MODULE) $(LDFLAGS_MODULE)              \
+>                 -T scripts/module.lds -o $@ $(filter %.o, $^)
+> @@ -52,7 +79,7 @@ if_changed_except = $(if $(call newer_prereqs_except,$(2))$(cmd-check),      \
+>         printf '%s\n' 'savedcmd_$@ := $(make-cmd)' > $(dot-target).cmd, @:)
+>
+>  # Re-generate module BTFs if either module's .ko or vmlinux changed
+> -%.ko: %.o %.mod.o scripts/module.lds $(and $(CONFIG_DEBUG_INFO_BTF_MODULES),$(KBUILD_BUILTIN),vmlinux) FORCE
+> +%.ko: %.o %.mod.o scripts/module.lds $(VMLINUX_DEP) FORCE
+>         +$(call if_changed_except,ld_ko_o,vmlinux)
+>  ifdef CONFIG_DEBUG_INFO_BTF_MODULES
+>         +$(if $(newer-prereqs),$(call cmd,btf_ko))
+> @@ -65,7 +92,6 @@ targets += $(modules:%.o=%.ko) $(modules:%.o=%.mod.o)
+>
+>  PHONY += FORCE
+>  FORCE:
+> -
+>  # Read all saved command lines and dependencies for the $(targets) we
+>  # may be building above, using $(if_changed{,_dep}). As an
+>  # optimization, we don't need to read them if the target does not
+> diff --git a/scripts/kas_alias.py b/scripts/kas_alias.py
+> new file mode 100755
+> index 000000000000..5b0517771389
+> --- /dev/null
+> +++ b/scripts/kas_alias.py
+> @@ -0,0 +1,600 @@
+> +#!/usr/bin/env python3
+> +# SPDX-License-Identifier: GPL-2.0-only
+> +#
+> +# Copyright (C) 2023 Red Hat, Inc. Alessandro Carminati <alessandro.carminati@gmail.com>
+> +#
+> +# kas_alias: Adds alias to duplicate symbols for the kallsyms output.
+> +
+> +import os
+> +import re
+> +import sys
+> +import inspect
+> +import argparse
+> +import subprocess
+> +from enum import Enum
+> +from collections import namedtuple
+> +
+> +# Regex representing symbols that need no alias
+> +regex_filter = [
+> +        "^__compound_literal\\.[0-9]+$",
+> +        "^__[wm]*key\\.[0-9]+$",
+> +        "^_*TRACE_SYSTEM.*$",
+> +        "^__already_done\\.[0-9]+$",
+> +        "^__msg\\.[0-9]+$",
+> +        "^__func__\\.[0-9]+$",
+> +        "^CSWTCH\\.[0-9]+$",
+> +        "^_rs\\.[0-9]+$",
+> +        "^___tp_str\\.[0-9]+$",
+> +        "^__flags\\.[0-9]+$",
+> +        "^___done\\.[0-9]+$",
+> +        "^__print_once\\.[0-9]+$",
+> +        "^___once_key\\.[0-9]+$",
+> +        "^__pfx_.*$",
+> +        "^__cfi_.*$",
+> +        "^\\.LC[0-9]+$",
+> +        "^\\.L[0-9]+.[0-9]+$",
+> +        "^__UNIQUE_ID_.*$",
+> +        "^symbols\\.[0-9]+$",
+> +        "^_note_[0-9]+$"
+> +        ]
+> +
+> +class DebugLevel(Enum):
+> +    PRODUCTION = 0
+> +    INFO = 1
+> +    DEBUG_BASIC = 2
+> +    DEBUG_MODULES = 3
+> +    DEBUG_ALL = 4
+> +
+> +class SeparatorType:
+> +    def __call__(self, separator):
+> +        if len(separator) != 1:
+> +            raise argparse.ArgumentTypeError("Separator must be a single character")
+> +        return separator
+> +
+> +Line = namedtuple('Line', ['address', 'type', 'name', 'addr_int'])
+> +
+> +def get_caller():
+> +    """
+> +    Used only to produce debug messages:
+> +    Gets the caller's caller name if any, "kas_alias" otherwise
+> +    Args:
+> +      None
+> +    Returns:
+> +      A string representing a name of a function.
+> +    """
+> +    stack = inspect.stack()
+> +    if len(stack) > 2:
+> +        caller = stack[2][0]
+> +        caller_name = caller.f_code.co_name
+> +        return caller_name
+> +    else:
+> +        return "kas_alias"
+> +
+> +def debug_print(config, print_debug_level, text):
+> +    """
+> +    Prints text if current debug level is greater or equal to print_debug_level.
+> +    Args:
+> +      current_debug_level: Application debug level specified by command line.
+> +      print_debug_level: Minimum debug level message should be printed.
+> +      text: string representing the message.
+> +    Returns:
+> +      Nothing.
+> +    """
+> +    if int(config.debug) >= print_debug_level:
+> +        print(f"{get_caller()}: " + text)
+> +
+> +def parse_nm_lines(config, lines, name_occurrences=None):
+> +    """
+> +    Parses a given nm output and returns the symbol list along with a hash of
+> +    symbol occurrences.
+> +    Args:
+> +      lines: List of tuples representing one nm line.
+> +      name_occurrences: Hash having the name as key, used to count names'
+> +                        occurrences.
+> +    Returns:
+> +      Creates a new line list proper for the nm output it parsed and, updates
+> +      the occurrences hash.
+> +    """
+> +    debug_print(config, DebugLevel.DEBUG_BASIC.value, "parse_nm_lines: parse start")
+> +
+> +    if name_occurrences is None:
+> +        name_occurrences = {}
+> +
+> +    symbol_list = []
+> +
+> +    for line in lines:
+> +        fields = line.strip().split()
+> +
+> +        if len(fields) >= 3:
+> +            address, type, name = fields[0], fields[1], ' '.join(fields[2:])
+> +            symbol_list.append(Line(address, type, name, int(address, 16)))
+> +            name_occurrences[name] = name_occurrences.get(name, 0) + 1
+> +
+> +    return symbol_list, name_occurrences
+> +
+> +def start_addr2line_process(binary_file, config):
+> +    """
+> +    Initializes an addr2line server process operating on the given ELF object.
+> +    Args:
+> +      binary_file: String representing the binary file name object of addr2line
+> +                   queries.
+> +      addr2line_file: String representing the addr2line executable name.
+> +    Returns:
+> +      Returns addr2line process descriptor.
+> +    """
+> +    debug_print(config, DebugLevel.DEBUG_BASIC.value, f"Starting addr2line process on {binary_file}")
+> +
+> +    try:
+> +        addr2line_process = subprocess.Popen([config.addr2line_file, '-fe',
+> +                                             binary_file],
+> +                                             stdin=subprocess.PIPE,
+> +                                             stdout=subprocess.PIPE,
+> +                                             stderr=subprocess.PIPE,
+> +                                             text=True)
+> +        return addr2line_process
+> +    except Exception as e:
+> +        debug_print(config, DebugLevel.PRODUCTION.value, f"Script terminated due to an error ({type(e).__name__}): {str(e)}")
+> +        sys.exit(-2)
+> +
+> +def addr2line_fetch_address(config, addr2line_process, address):
+> +    """
+> +    Queries a specific address using the active addr2line process.
+> +    Args:
+> +      addr2line_process: Descriptor of the addr2line process that is wanted to
+> +                         handle the query.
+> +      address: The address of the symbol that needs to be resolved.
+> +    Returns:
+> +      Returns a string representing the file and line number where the symbol
+> +      at the specified address has been defined. The address is normalized
+> +      before being returned.
+> +  """
+> +    debug_print(config, DebugLevel.DEBUG_ALL.value, f"Resolving {address}")
+> +
+> +    try:
+> +        addr2line_process.stdin.write(address + '\n')
+> +        addr2line_process.stdin.flush()
+> +        addr2line_process.stdout.readline().strip()
+> +        output = addr2line_process.stdout.readline().strip()
+> +
+> +        return os.path.normpath(output)
+> +    except Exception as e:
+> +        debug_print(config, DebugLevel.PRODUCTION.value, f"Script terminated due to an error ({type(e).__name__}): {str(e)}")
+> +        sys.exit(-2)
+> +
+> +def process_line(line, config, section_map):
+> +    """
+> +    Determines whether a duplicate item requires an alias or not.
+> +    Args:
+> +      line: nm line object that needs to be checked.
+> +      section_map: map correlating symbols and the ELF section they are from
+> +    Returns:
+> +      Returns true if the line needs to be processed, false otherwise.
+> +    """
+> +    debug_print(config, DebugLevel.DEBUG_ALL.value, f"Processing {line.address} {line.type} {line.name}")
+> +
+> +    # The module contains symbols that were discarded after being loaded. Typically,
+> +    # these symbols belong to the initialization function. These symbols have their
+> +    # address in the init section addresses, so this check prevents these symbols
+> +    # from being assigned aliases.
+> +    if section_map != None:
+> +       if line.name in section_map:
+> +          if (".init" in section_map[line.name] or ".exit" in section_map[line.name]):
+> +              return False
+> +       else:
+> +          return False
+> +
+> +    if config.process_data_sym:
+> +        return not (any(re.match(regex, line.name) for regex in regex_filter))
+> +    else:
+> +        return (line.type in {"T", "t"}) and (
+> +                not (any(re.match(regex, line.name) for regex in regex_filter)))
+> +
+> +def fetch_file_lines(config, filename):
+> +    """
+> +    Reads a text file and retrieves its content.
+> +    Args:
+> +      filename: String representing the name of the file that needs to be read.
+> +    Returns:
+> +      Returns a string list representing the lines read in the file.
+> +    """
+> +    debug_print(config, DebugLevel.DEBUG_BASIC.value, f"Fetch {filename}")
+> +
+> +    try:
+> +        with open(filename, 'r') as file:
+> +            lines = [line.strip() for line in file.readlines()]
+> +        return lines
+> +    except FileNotFoundError:
+> +        debug_print(config, DebugLevel.PRODUCTION.value, f"Script terminated due to an error ({type(FileNotFoundError).__name__}): {str(FileNotFoundError)}")
+> +        sys.exit(-2)
+> +
+> +def do_nm(filename, config):
+> +    """
+> +    Runs the nm command on a specified file.
+> +    Args:
+> +      filename: String representing the name of the file on which nm should
+> +      run against.
+> +      nm_executable: String representing the nm executable filename.
+> +    Returns:
+> +      Returns a strings list representing the nm output.
+> +    """
+> +    debug_print(config, DebugLevel.DEBUG_BASIC.value, f"executing {config.nm_file} -n {filename}")
+> +
+> +    try:
+> +        nm_output = subprocess.check_output([config.nm_file, '-n', filename],
+> +                      universal_newlines=True, stderr=subprocess.STDOUT).splitlines()
+> +        return nm_output
+> +    except subprocess.CalledProcessError as e:
+> +        debug_print(config, DebugLevel.PRODUCTION.value, f"Script terminated due to an error ({type(e).__name__}): {str(e)}")
+> +        sys.exit(-2)
+> +
+> +def make_objcpy_arg(config, line, decoration, section_map):
+> +    """
+> +    Produces an objcopy argument statement for a single alias to be added in a
+> +    module.
+> +    Args:
+> +      line: nm line object target for this iteration.
+> +      decoration: String representing the decoration (normalized addr2line
+> +                  output) to be added at the symbol name to have the alias.
+> +      section_map: map correlating symbols and the ELF section they are from
+> +    Returns:
+> +      Returns a string that directly maps the argument string objcopy should
+> +      use to add the alias.
+> +    """
+> +    try:
+> +        flag = "global" if line.type.isupper() else "local"
+> +        debug_print(config, DebugLevel.DEBUG_MODULES.value,
+> +                 f"{line.name + decoration}={section_map[line.name]}:0x{line.address},{flag}")
+> +        return (
+> +                "--add-symbol "
+> +                f"{line.name + decoration}={section_map[line.name]}:0x{line.address},{flag} "
+> +               )
+> +    except Exception:
+> +        debug_print(config, DebugLevel.PRODUCTION.value,
+> +              f"make_objcpy_arg warning: Skip alias for {line.name}"
+> +              f" type {line.type} because no corresponding section found.")
+> +        return ""
+> +
+> +def execute_objcopy(config, objcopy_args, object_file):
+> +    """
+> +    Uses objcopy to add aliases to a given module object file.
+> +    Since objcopy can't operate in place, the original object file is renamed
+> +    before operating on it. At function end, a new object file having the old
+> +    object's name is carrying the aliases for the duplicate symbols.
+> +    Args:
+> +      objcopy_executable: String representing the object copy executable file.
+> +      objcopy_args: Arguments (aliases to add to the object file) to be used
+> +                    in the objcopy execution command line.
+> +      object_file: Target object file (module object file) against which objcopy is executed.
+> +    Returns:
+> +      Nothing is returned, but as a side effect of this function execution,
+> +      the module's object file contains the aliases for duplicated symbols.
+> +    """
+> +    # Rename the original object file by adding a suffix
+> +    backup_file = object_file + '.orig'
+> +    debug_print(config, DebugLevel.DEBUG_MODULES.value, f"rename {object_file} to {backup_file}")
+> +    os.rename(object_file, backup_file)
+> +
+> +    full_command = (
+> +                    f"{config.objcopy_file} "
+> +                    f"{objcopy_args} {backup_file} {object_file}"
+> +                   )
+> +    debug_print(config, DebugLevel.DEBUG_MODULES.value, f"executing {full_command}")
+> +
+> +    try:
+> +        subprocess.run(full_command, shell=True, check=True)
+> +    except subprocess.CalledProcessError as e:
+> +        debug_print(config, DebugLevel.PRODUCTION.value, f"Script terminated due to an error ({type(e).__name__}): {str(e)}")
+> +        sys.exit(-2)
+> +
+> +def generate_decoration(line, config, addr2line_process):
+> +    """
+> +    Generates symbol decoration to be used to make the alias name, by
+> +    querying addr2line.
+> +    Args:
+> +      line: nm line object that needs an alias.
+> +      config: Object containing command line configuration.
+> +      addr2line_process: Descriptor of the addr2line process that serves
+> +                         the binary object where the symbol belongs.
+> +    Returns:
+> +      Returns a string representing the decoration for the given symbol,
+> +      or empty string if this can not be done. E.g., addr2line can't find
+> +      the point where the symbol is defined.
+> +    """
+> +    output = addr2line_fetch_address(config, addr2line_process, line.address)
+> +    base_dir = config.linux_base_dir + "/"
+> +    cwd = os.getcwd() + "/"
+> +    absolute_base_dir = os.path.abspath(os.path.join(cwd, base_dir))
+> +
+> +    if output.startswith(base_dir):
+> +        output = output[len(base_dir):]
+> +
+> +    if output.startswith(absolute_base_dir):
+> +        output = output[len(absolute_base_dir):]
+> +
+> +    if output.startswith('/'):
+> +            output = output[1:]
+> +
+> +    decoration = config.separator + "".join(
+> +        "_" if not c.isalnum() else c for c in output
+> +    )
+> +    # The addr2line can emit the special string "?:??" when addr2line can not find the
+> +    # specified address in the DWARF section that after normalization it becomes "____".
+> +    # In such cases, emitting an alias wouldn't make sense, so it is skipped.
+> +    if decoration != config.separator + "____":
+> +        return decoration
+> +    return ""
+> +
+> +def section_interesting(section):
+> +    """
+> +    checks if a section is of interest.
+> +    Args:
+> +      section: string representing the section needed to be tested.
+> +    Returns:
+> +      True if it is, False otherwise.
+> +    """
+> +    sections_regex = [r".text", r".data", r".bss", r".rodata"]
+> +
+> +    for pattern in sections_regex:
+> +        if re.search(pattern, section):
+> +            return True
+> +    return False
+> +
+> +def get_symbol2section(config, file_to_operate):
+> +    """
+> +    This function aims to produce a map{symbol_name]=section_name for
+> +    any given object file.
+> +    Args:
+> +      objdump_executable: String representing the objdump executable.
+> +      file_to_operate: file whose section names are wanted.
+> +    Returns:
+> +      Returns a map, where the key is the symbol name and the value is
+> +      a section name.
+> +    """
+> +    try:
+> +        output = subprocess.check_output(
+> +                   [config.objdump_file, '-h', file_to_operate],
+> +                   universal_newlines=True)
+> +        section_pattern = re.compile(r'^ *[0-9]+ ([.a-z_]+) +([0-9a-f]+).*$', re.MULTILINE)
+> +        section_names = section_pattern.findall(output)
+> +        result = {}
+> +        for section, section_siza in section_names:
+> +            if int(section_siza, 16) != 0 and section_interesting(section):
+> +                debug_print(config, DebugLevel.DEBUG_ALL.value, f"CMD => {config.objdump_file} -tj {section} {file_to_operate}")
+> +                try:
+> +                    output = subprocess.check_output(
+> +                           [config.objdump_file, '-tj', section, file_to_operate],
+> +                           universal_newlines=True)
+> +                except subprocess.CalledProcessError:
+> +                      pass
+> +                func_names_pattern = re.compile(r'[0-9a-f]+.* ([.a-zA-Z_][.A-Za-z_0-9]+)$', re.MULTILINE)
+> +                matches = func_names_pattern.findall(output)
+> +                for func_name in matches:
+> +                    result[func_name] = section
+> +
+> +
+> +    except Exception as e:
+> +        debug_print(config, DebugLevel.PRODUCTION.value, f"Script terminated due to an error ({type(e).__name__}): {str(e)}")
+> +        sys.exit(-2)
+> +    return result
+> +
+> +def produce_output_modules(config, symbol_list, name_occurrences,
+> +                           module_file_name, addr2line_process):
+> +    """
+> +    Computes the alias addition on a given module object file.
+> +    Args:
+> +      config: Object containing command line configuration.
+> +      symbol_list: List of tuples representing nm lines for the given object
+> +                   file.
+> +      name_occurrences: Hash that stores symbol occurrences for the build.
+> +      module_file_name: String representing the target moule object file.
+> +      addr2line_process: Descriptor of the addr2line process that is wanted to
+> +                         handle the query.
+> +    Returns:
+> +      Nothing is returned, but as a side effect of this function execution,
+> +      the module's object file contains the aliases for duplicated symbols.
+> +    """
+> +    debug_print(config, DebugLevel.DEBUG_ALL.value, "produce_output_modules computation starts here ")
+> +    objcopy_args = "";
+> +    args_cnt = 0
+> +    section_map = get_symbol2section(config, module_file_name)
+> +    for module_symbol in symbol_list:
+> +        debug_print(config, DebugLevel.DEBUG_ALL.value, f"--> Processing {module_symbol}")
+> +        try:
+> +            if (name_occurrences[module_symbol.name] > 1) and process_line(module_symbol, config, section_map):
+> +                decoration = generate_decoration(module_symbol, config, addr2line_process)
+> +                debug_print(config, DebugLevel.DEBUG_ALL.value, f"--- {module_symbol} occurred multiple times and is a candidate for alias: decoration '{decoration}'")
+> +                if decoration != "":
+> +                    objcopy_args = objcopy_args + make_objcpy_arg(config, module_symbol, decoration, section_map)
+> +                    args_cnt = args_cnt + 1
+> +                    if args_cnt > 50:
+> +                       debug_print(config, DebugLevel.DEBUG_MODULES.value, "Number of arguments high, split objcopy"
+> +                                   " call into multiple statements.")
+> +                       execute_objcopy(config, objcopy_args, module_file_name)
+> +                       args_cnt = 0
+> +                       objcopy_args = ""
+> +        except KeyError:
+> +            pass
+> +    execute_objcopy(config, objcopy_args, module_file_name)
+> +
+> +def produce_output_vmlinux(config, symbol_list, name_occurrences, addr2line_process):
+> +    """
+> +    Computes the alias addition for the core Linux on image.
+> +    Args:
+> +      config: Object containing command line configuration.
+> +      symbol_list: List of tuples representing nm lines for the given object
+> +                   file.
+> +      name_occurrences: Hash that stores symbol occurreces for the build.
+> +      addr2line_process: Descriptor of the addr2line process that is wanted to
+> +                         handle the query.
+> +    Returns:
+> +      Nothing is returned, but as a side effect of this function execution,
+> +      the core kernel image contains the aliases for duplicated symbols.
+> +    """
+> +    with open(config.output_file, 'w') as output_file:
+> +       for obj in symbol_list:
+> +            output_file.write(f"{obj.address} {obj.type} {obj.name}\n")
+> +            if (name_occurrences[obj.name] > 1) and process_line(obj, config, None):
+> +                decoration = generate_decoration(obj, config, addr2line_process)
+> +                debug_print(config,DebugLevel.DEBUG_ALL.value, f"Symbol {obj.name} appears multiple times, and decoration is {decoration}")
+> +                if decoration != "":
+> +                    debug_print(config, DebugLevel.DEBUG_ALL.value, f"Writing on {config.output_file} the additional '{obj.address} {obj.type} {obj.name + decoration}'")
+> +                    output_file.write(f"{obj.address} {obj.type} {obj.name + decoration}\n")
+> +
+> +def read_name_occurrences(config):
+> +    """
+> +    Reads symbol frequencies from the file specified in the 'config' argument.
+> +
+> +    If the file is not found, it gracefully returns an empty map.
+> +
+> +    Args:
+> +      config: A configuration object or dictionary containing necessary information
+> +              to locate the file.
+> +
+> +    Returns:
+> +      A map where keys represent symbol names and values represent their frequencies.
+> +    """
+> +    name_occurrences = {}
+> +    # This code reads occurrences of symbol names from a file containing both the core image
+> +    # and modules frequencies resulted from the computation of the "core_image" action.
+> +    # It reads from the file specified by command-line arguments; if the file doesn't exist
+> +    # or the filename isn't specified, it returns an empty map.
+> +    # The code relies on accessing and reading config.symbol_frequency_file containing
+> +    # symbol name frequencies.
+> +    # In a complete build, this file is generated during the "core image" action earlier
+> +    # in the build process.
+> +    # However, when building a custom OOT module, it is needed to ensure that this file
+> +    # is accessible in the current directory where the module source code is being built.
+> +    # Not having this file result in a module that have no aliases even if they are needed
+> +    if config.symbol_frequency_file is not None:
+> +        try:
+> +            with open(config.symbol_frequency_file, 'r') as file:
+> +                for line in file:
+> +                    key, value = line.strip().split(':')
+> +                    name_occurrences[key]=int(value)
+> +        except FileNotFoundError:
+> +            pass
+> +
+> +    return name_occurrences
+> +
+> +def check_aliases(config, module_nm_lines):
+> +   """
+> +   Flags modules that already have aliases based on the given 'module_nm_lines'.
+> +
+> +   This function takes in configuration details and a list of strings representing
+> +   the 'nm' command output for a specific module. It detects instances where a module
+> +   already possesses an alias, which might occur after a build interruption and restart.
+> +
+> +   The detection logic is straightforward: it examines if the separator character is
+> +   present in the symbol name. If found, it uses this separator to check if the
+> +   previous symbol shares the same name. This detection assumes 'nm' is invoked with
+> +   the '-n' flag, ensuring symbol sorting.
+> +
+> +   Args:
+> +     config: A configuration object or dictionary containing necessary information.
+> +     module_nm_lines: A list of strings representing the 'nm' command output for a module.
+> +
+> +   Returns:
+> +     True if the module_nm_lines contains aliases, False otherwise.
+> +   """
+> +   prev = None
+> +   for line in module_nm_lines:
+> +       if ('@' in line.name and line.name.split(config.separator)[0] == prev):
+> +           return False
+> +       prev = line.name
+> +   return True
+> +
+> +def main():
+> +    # Handles command-line arguments and generates a config object
+> +    parser = argparse.ArgumentParser(description='Add alias to multiple occurring symbols name in kallsyms')
+> +    subparsers = parser.add_subparsers(title='Subcommands', dest='action')
+> +    core_image_parser = subparsers.add_parser('core_image', help='Operates for in tree computation.')
+> +    core_image_parser.add_argument('-n', "--nmdata", dest="nm_data_file", required=True, help="Set vmlinux nm output file to use for core image.")
+> +    core_image_parser.add_argument('-o', "--outfile", dest="output_file", required=True, help="Set the vmlinux nm output file containing aliases.")
+> +    core_image_parser.add_argument('-v', "--vmlinux", dest="vmlinux_file", required=True, help="Set the vmlinux core image file.")
+> +    core_image_parser.add_argument('-m', "--modules_list", dest="module_list", required=True, help="Set the file containing the list of the modules object files.")
+> +
+> +    single_module_parser = subparsers.add_parser('single_module', help='Operates for out of tree computation.')
+> +    single_module_parser.add_argument('-c', "--objcopy", dest="objcopy_file", required=True, help="Set the objcopy executable to be used.")
+> +    single_module_parser.add_argument('-u', "--objdump", dest="objdump_file", required=True, help="Set objdump  executable to be used.")
+> +    single_module_parser.add_argument('-q', "--target-module", dest="target_module", required=False, help="Sets a tharget module to operate.")
+> +
+> +    parser.add_argument('-j', "--symbol_frequency", dest="symbol_frequency_file", required=True, help="Specify the symbol frequency needed to use for producing aliases")
+> +    parser.add_argument('-z', "--debug", dest="debug", required=False, help="Set the debug level.", choices=[f"{level.value}" for level in DebugLevel], default="1" )
+> +    parser.add_argument('-a', "--addr2line", dest="addr2line_file", required=True, help="Set the addr2line executable to be used.")
+> +    parser.add_argument('-b', "--basedir", dest="linux_base_dir", required=True, help="Set base directory of the source kernel code.")
+> +    parser.add_argument('-s', "--separator", dest="separator", required=False, help="Set separator, character that separates original name from the addr2line data in alias symbols.", default="@", type=SeparatorType())
+> +    parser.add_argument('-d', "--process_data", dest="process_data_sym", required=False, help="Requires the tool to process data symbols along with text symbols.", action='store_true')
+> +    parser.add_argument('-e', "--nm", dest="nm_file", required=True, help="Set the nm executable to be used.")
+> +
+> +    config = parser.parse_args()
+> +
+> +    try:
+> +        # The core_image target is utilized for gathering symbol statistics from the core image and modules,
+> +        # generating aliases for the core image. This target is designed to be invoked from scripts/link-vmlinux.sh
+> +        if config.action == 'core_image':
+> +            debug_print(config, DebugLevel.INFO.value,"Start core_image processing")
+> +
+> +            # Determine kernel source code base directory
+> +            if not config.linux_base_dir.startswith('/'):
+> +                config.linux_base_dir = os.path.normpath(os.getcwd() + "/" + config.linux_base_dir) + "/"
+> +            debug_print(config, DebugLevel.DEBUG_BASIC.value, f"Configuration: {config}")
+> +
+> +            debug_print(config, DebugLevel.INFO.value, "Process nm data from vmlinux")
+> +            # Process nm data from vmlinux
+> +            debug_print(config, DebugLevel.DEBUG_BASIC.value, f"fetch_file_lines({config.nm_data_file})")
+> +            vmlinux_nm_lines = fetch_file_lines(config, config.nm_data_file)
+> +            vmlinux_symbol_list, name_occurrences = parse_nm_lines(config, vmlinux_nm_lines)
+> +
+> +            debug_print(config, DebugLevel.INFO.value,"Process nm data for modules")
+> +            # Process nm data for modules
+> +            debug_print(config, DebugLevel.DEBUG_BASIC.value, f"fetch_file_lines({config.nm_data_file})")
+> +            module_list = fetch_file_lines(config, config.module_list)
+> +            module_symbol_list = {}
+> +            for module in module_list:
+> +                module_nm_lines = do_nm(module, config)
+> +                module_symbol_list[module], name_occurrences = parse_nm_lines(config, module_nm_lines, name_occurrences)
+> +
+> +            debug_print(config, DebugLevel.INFO.value, f"Save name_occurrences data: {config.symbol_frequency_file}")
+> +            with open(config.symbol_frequency_file, 'w') as file:
+> +                for key, value in name_occurrences.items():
+> +                    file.write(f"{key}:{value}\n")
+> +
+> +            debug_print(config, DebugLevel.INFO.value, "Produce file for vmlinux")
+> +            # Produce file for vmlinux
+> +            debug_print(config, DebugLevel.DEBUG_BASIC.value, f"addr2line_process({config.vmlinux_file}, {config.addr2line_file})")
+> +            addr2line_process = start_addr2line_process(config.vmlinux_file, config)
+> +            produce_output_vmlinux(config, vmlinux_symbol_list, name_occurrences, addr2line_process)
+> +            addr2line_process.stdin.close()
+> +            addr2line_process.stdout.close()
+> +            addr2line_process.stderr.close()
+> +            addr2line_process.wait()
+> +
+> +        # Expects to be called from scripts/Makefile.modfinal
+> +        elif config.action == 'single_module':
+> +             debug_print(config, DebugLevel.INFO.value,"Start single_module processing")
+> +             # read simbol name frequency file
+> +             name_occurrences = read_name_occurrences(config)
+> +             # scan current module
+> +             module_nm_lines = do_nm(config.target_module, config)
+> +             mudule_nm_data, _ = parse_nm_lines(config, module_nm_lines)
+> +             if check_aliases(config, mudule_nm_data,):
+> +                 debug_print(config, DebugLevel.DEBUG_BASIC.value, f"addr2line_process({config.target_module}, {config.addr2line_file})")
+> +                 addr2line_process = start_addr2line_process(config.target_module, config)
+> +                 debug_print(config, DebugLevel.DEBUG_BASIC.value,"adding aliases to module")
+> +                 produce_output_modules(config, mudule_nm_data, name_occurrences, config.target_module, addr2line_process)
+> +                 addr2line_process.stdin.close()
+> +                 addr2line_process.stdout.close()
+> +                 addr2line_process.stderr.close()
+> +                 addr2line_process.wait()
+> +             else:
+> +                 debug_print(config, DebugLevel.INFO.value,"module is already aliased, skipping")
+> +
+> +        else:
+> +            raise SystemExit("Script terminated: unknown action")
+> +
+> +    except Exception as e:
+> +        debug_print(config, DebugLevel.PRODUCTION.value, f"Script terminated due to an error ({type(e).__name__}): {str(e)}")
+> +        sys.exit(-2)
+> +
+> +if __name__ == "__main__":
+> +    main()
+> diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
+> index a432b171be82..31afac64d7ed 100755
+> --- a/scripts/link-vmlinux.sh
+> +++ b/scripts/link-vmlinux.sh
+> @@ -91,7 +91,12 @@ vmlinux_link()
+>
+>         # The kallsyms linking does not need debug symbols included.
+>         if [ "$output" != "${output#.tmp_vmlinux.kallsyms}" ] ; then
+> -               ldflags="${ldflags} ${wl}--strip-debug"
+> +               # The kallsyms linking does not need debug symbols included,
+> +               # unless the KALLSYMS_ALIAS_SRCLINE.
+> +               if ! is_enabled CONFIG_KALLSYMS_ALIAS_SRCLINE && \
+> +                  [ "$output" != "${output#.tmp_vmlinux.kallsyms}" ] ; then
+> +                       ldflags="${ldflags} ${wl}--strip-debug"
+> +               fi
+>         fi
+>
+>         if is_enabled CONFIG_VMLINUX_MAP; then
+> @@ -161,7 +166,24 @@ kallsyms()
+>         fi
+>
+>         info KSYMS ${2}
+> -       scripts/kallsyms ${kallsymopt} ${1} > ${2}
+> +       ALIAS=""
+> +       KAS_DATA=""
+> +       if is_enabled CONFIG_KALLSYMS_ALIAS_SRCLINE_DATA; then
+> +               KAS_DATA="--process_data"
+> +       fi
+> +       if is_enabled CONFIG_KALLSYMS_ALIAS_SRCLINE; then
+> +               ALIAS=".alias"
+> +               # You can use KAS_ALIAS_DEBUG=<debug level> in the make statements to enable
+> +               # verbose execution for kas_alias.
+> +               ${srctree}/scripts/kas_alias.py --symbol_frequency modules.symbfreq \
+> +                       --debug ${KAS_ALIAS_DEBUG:-0} \
+> +                       --addr2line ${ADDR2LINE} --basedir ${srctree} --nm ${NM} \
+> +                       --separator @ ${KAS_DATA} \
+> +                       core_image \
+> +                       --modules_list ${MODORDER} --vmlinux ${kallsyms_vmlinux} \
+> +                       --nmdata ${1} --outfile ${1}${ALIAS}
+> +       fi
+> +       scripts/kallsyms ${kallsymopt} ${1}${ALIAS} > ${2}
+>  }
+>
+>  # Perform one step in kallsyms generation, including temporary linking of
+> @@ -203,6 +225,7 @@ cleanup()
+>         rm -f System.map
+>         rm -f vmlinux
+>         rm -f vmlinux.map
+> +       find . -type f -name "*.orig" -exec rm {} \;
+>  }
+>
+>  # Use "make V=1" to debug this script
+> --
+> 2.34.1
+>
 
