@@ -1,214 +1,119 @@
-Return-Path: <linux-kernel+bounces-9102-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9103-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F89B81C078
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 22:50:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC68081C085
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 22:52:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3540C286F5D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 21:50:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2BFB91C22AFD
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 21:52:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 738FD7764A;
-	Thu, 21 Dec 2023 21:50:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B47C477F16;
+	Thu, 21 Dec 2023 21:51:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="heiNHdew"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="grvlhMPd"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 762A276DB6
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 21:50:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1d3ea8d0f9dso12985ad.1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 13:50:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1703195447; x=1703800247; darn=vger.kernel.org;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=h7yfxJvsikJZhOKTjSLdY1JkJCkAjTZJo6HtEDGAXes=;
-        b=heiNHdewuwzG0tUe/dRF5wofzriBYZ1Echhu2gQpsqiZybjrQEYYDA8QUxwonB71xf
-         Y1G+kLY9h7U4C/taujP8CCKjXU/ZNWr/rfbvAJwASxEgBo6GGufvYUCiVb8Q0ZA/bGTj
-         FPOeO6EIp9jP1CiJUYh5wniP0Q6On6edyehAF8h05G7eqaefgr0ZokGVfEce4Z1I1ybn
-         bZpXYKRhnTU2HG17IoYqMdlP7PN1/h/G4pH1mdBhtox8Vm6XBBadk4VhL/gAvlILKYQZ
-         x98ufoEHo397yIzl0K6lGOvTBfShelAUTPgMu7ql4Gf1oe7NxacLH8dQNoCHNjolB58n
-         UkcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703195447; x=1703800247;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=h7yfxJvsikJZhOKTjSLdY1JkJCkAjTZJo6HtEDGAXes=;
-        b=vwtpiHxc0mPWXBn6kqs1TKrMIdoC3gkcLCM+N0w2zevEzl3d0cQl0+m6ddWljzFJxS
-         zJMXRY5UbwrNuL4kryam3WBFOK2I4T839wUuQEhvO3sItL0hxkp/EK0RJS8CGRy2lGQj
-         dlHByMKDKuu34HlrP1qdFP1BWdPEDLYBAC6kQraJO2egEWSnyGhCjSRSZO/38odcsqp/
-         /QsU2GnZwzZOrToSAvR7ih4/l6zVfXEa3kdZGNVzJcGzQM1w8+Q/R6/2XQiiYhkbGzeK
-         Ww4bVjJ15fXscHxyFAGrKK+MYMcj5CwKd2+5z6n6oRcekz7ZsMtxt8XChoIR85PECptt
-         9Cvw==
-X-Gm-Message-State: AOJu0YzUSLY0neNreN+HxnW4HK47sLrmCKlz14q7j7306MSi6cvlmG9i
-	Bnoau3U9RYD96PjbCEL+OpUhuImn7zXr
-X-Google-Smtp-Source: AGHT+IH8TYaFbKwqTHpivSlxCp0sRH5qnfypD/tJasoimExGcqAbIjC4MsxNEHoSwa/ktrfqq/E/uA==
-X-Received: by 2002:a17:903:2310:b0:1d3:ddf9:df92 with SMTP id d16-20020a170903231000b001d3ddf9df92mr7401plh.3.1703195446557;
-        Thu, 21 Dec 2023 13:50:46 -0800 (PST)
-Received: from [2620:0:1008:15:184:1476:510:6ea1] ([2620:0:1008:15:184:1476:510:6ea1])
-        by smtp.gmail.com with ESMTPSA id y6-20020a170902700600b001d0ca40158dsm2101132plk.280.2023.12.21.13.50.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Dec 2023 13:50:45 -0800 (PST)
-Date: Thu, 21 Dec 2023 13:50:44 -0800 (PST)
-From: David Rientjes <rientjes@google.com>
-To: Ruipeng Qi <ruipengqi7@gmail.com>
-cc: cl@linux.com, penberg@kernel.org, iamjoonsoo.kim@lge.com, 
-    akpm@linux-foundation.org, vbabka@suse.cz, roman.gushchin@linux.dev, 
-    42.hyeyoo@gmail.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-    qiruipeng <qiruipeng@lixiang.com>
-Subject: Re: [RFC PATCH 6/7] mm/slub: make slab data more observable
-In-Reply-To: <20231221133717.882-1-ruipengqi7@gmail.com>
-Message-ID: <9cb6a9a3-25fb-22ca-8b62-52c60519bee2@google.com>
-References: <20231221133717.882-1-ruipengqi7@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C713A55E59;
+	Thu, 21 Dec 2023 21:51:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E29B9C433C9;
+	Thu, 21 Dec 2023 21:51:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703195502;
+	bh=wVhTpALcMiNCntelNMpcmyS353uCxC0tr69XZxUeP7w=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=grvlhMPdSPsEsMrM435z6Ee777r4kKrlEfU5VJO4IHAn4V7pnANe2YaPn9yqlGBHg
+	 U7IjIExcXlK1D9VjptD8QyQ+42pMJbqVtaZr9Lh6/W9NcKiHa/4Pi1lg/vqCN4EdnL
+	 6kO0lUSi+dNbPKTQgm7u7+8N5icMjEm+Xx0mdV8DwQ4PENu1D0ga/Kb1YDb+J4XM0f
+	 ANsuXOYE3cY800vWiRTMZq07yWnLPeaBKYK201IO8zMr9PmgVqaDHP5agM0fLCgIzx
+	 SLr/TsqKDLJRLArQCYcVOAdjwxzBrLiXnruS1js2v2YjfWlxH3LNi3VupaDmJHLxBr
+	 igbLYfklcAyjA==
+Received: (nullmailer pid 153686 invoked by uid 1000);
+	Thu, 21 Dec 2023 21:51:38 -0000
+Date: Thu, 21 Dec 2023 15:51:38 -0600
+From: Rob Herring <robh@kernel.org>
+To: Gatien Chevallier <gatien.chevallier@foss.st.com>
+Cc: pabeni@redhat.com, netdev@vger.kernel.org, lars@metafoo.de,
+	linux-media@vger.kernel.org, hugues.fruchet@foss.st.com,
+	olivier.moysan@foss.st.com, lee@kernel.org,
+	alexandre.torgue@foss.st.com, catalin.marinas@arm.com,
+	peng.fan@oss.nxp.com, linux-mmc@vger.kernel.org,
+	linux-phy@lists.infradead.org, linux-serial@vger.kernel.org,
+	robh+dt@kernel.org, wg@grandegger.com, arnaud.pouliquen@foss.st.com,
+	alsa-devel@alsa-project.org, linux-iio@vger.kernel.org,
+	vkoul@kernel.org, conor+dt@kernel.org, mkl@pengutronix.de,
+	Frank Rowand <frowand.list@gmail.com>, linux-crypto@vger.kernel.org,
+	edumazet@google.com, linux-kernel@vger.kernel.org,
+	dmaengine@vger.kernel.org, linux-spi@vger.kernel.org,
+	linux-usb@vger.kernel.org, linux-i2c@vger.kernel.org,
+	Oleksii Moisieiev <oleksii_moisieiev@epam.com>, arnd@kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com, davem@davemloft.net,
+	krzysztof.kozlowski+dt@linaro.org, ulf.hansson@linaro.org,
+	will@kernel.org, rcsekar@samsung.com,
+	linux-arm-kernel@lists.infradea, d.org@web.codeaurora.org,
+	kuba@kernel.org, mchehab@kernel.org, gregkh@linuxfoundation.org,
+	jic23@kernel.org, devicetree@vger.kernel.org,
+	richardcochran@gmail.com, Oleksii_Moisieiev@epam.com,
+	andi.shyti@kernel.org, herbert@gondor.apana.org.au,
+	fabrice.gasnier@foss.st.com
+Subject: Re: [PATCH v8 01/13] dt-bindings: document generic access controllers
+Message-ID: <170319549389.153568.1692332156021513651.robh@kernel.org>
+References: <20231212152356.345703-1-gatien.chevallier@foss.st.com>
+ <20231212152356.345703-2-gatien.chevallier@foss.st.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231212152356.345703-2-gatien.chevallier@foss.st.com>
 
-On Thu, 21 Dec 2023, Ruipeng Qi wrote:
 
-> From: qiruipeng <qiruipeng@lixiang.com>
+On Tue, 12 Dec 2023 16:23:44 +0100, Gatien Chevallier wrote:
+> From: Oleksii Moisieiev <Oleksii_Moisieiev@epam.com>
 > 
-> Osdump is interested in data stored within slab subsystem. Add full list
-> back into corresponding struct, and record full list within respective
-> functions instead of enabling SLUB_DEBUG directly, which will intruduce
-> sensible overhead.
+> Introducing of the generic access controllers bindings for the
+> access controller provider and consumer devices. Those bindings are
+> intended to allow a better handling of accesses to resources in a
+> hardware architecture supporting several compartments.
 > 
-> Signed-off-by: qiruipeng <qiruipeng@lixiang.com>
-
-Hi Ruipeng, please make sure to send your patch sets as a single email 
-thread (all patches 1-7 should be a reply to your 0/7 cover letter).
-
-There is some other feedback on previous patches in this series which 
-refers to alternatives, so I think the cover letter to the patch series 
-will need to spell out why we need a brand new solution to this.
-
-That said, from the slab perspective, this is basically splitting out a 
-part of SLUB_DEBUG into a single feature.  Likely best to propose it as a 
-feature that SLUB_DEBUG would then directly enable itself rather than 
-duplicating code in definitions.
-
-That is, assuming the question about why we need a new solution for this 
-can be resolved in the cover letter of a v2.
-
+> This patch is based on [1]. It is integrated in this patchset as it
+> provides a use-case for it.
+> 
+> Diffs with [1]:
+> 	- Rename feature-domain* properties to access-control* to narrow
+> 	  down the scope of the binding
+> 	- YAML errors and typos corrected.
+> 	- Example updated
+> 	- Some rephrasing in the binding description
+> 
+> [1]: https://lore.kernel.org/lkml/0c0a82bb-18ae-d057-562b
+> 
+> Signed-off-by: Oleksii Moisieiev <oleksii_moisieiev@epam.com>
+> Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
 > ---
->  mm/slab.h |  2 ++
->  mm/slub.c | 38 +++++++++++++++++++++++++++++++++++++-
->  2 files changed, 39 insertions(+), 1 deletion(-)
 > 
-> diff --git a/mm/slab.h b/mm/slab.h
-> index 3d07fb428393..a42a54c9c5de 100644
-> --- a/mm/slab.h
-> +++ b/mm/slab.h
-> @@ -799,6 +799,8 @@ struct kmem_cache_node {
->  	atomic_long_t nr_slabs;
->  	atomic_long_t total_objects;
->  	struct list_head full;
-> +#elif defined(CONFIG_OS_MINIDUMP)
-> +	struct list_head full;
->  #endif
->  #endif
->  
-> diff --git a/mm/slub.c b/mm/slub.c
-> index 63d281dfacdb..1a496ec945b6 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -1730,10 +1730,26 @@ static inline int check_object(struct kmem_cache *s, struct slab *slab,
->  static inline depot_stack_handle_t set_track_prepare(void) { return 0; }
->  static inline void set_track(struct kmem_cache *s, void *object,
->  			     enum track_item alloc, unsigned long addr) {}
-> +#ifndef CONFIG_OS_MINIDUMP
->  static inline void add_full(struct kmem_cache *s, struct kmem_cache_node *n,
->  					struct slab *slab) {}
->  static inline void remove_full(struct kmem_cache *s, struct kmem_cache_node *n,
->  					struct slab *slab) {}
-> +#else
-> +static inline void add_full(struct kmem_cache *s,
-> +	struct kmem_cache_node *n, struct slab *slab)
-> +{
-> +	lockdep_assert_held(&n->list_lock);
-> +	list_add(&slab->slab_list, &n->full);
-> +}
-> +
-> +static inline void remove_full(struct kmem_cache *s, struct kmem_cache_node *n, struct slab *slab)
-> +{
-> +	lockdep_assert_held(&n->list_lock);
-> +	list_del(&slab->slab_list);
-> +}
-> +#endif
-> +
->  slab_flags_t kmem_cache_flags(unsigned int object_size,
->  	slab_flags_t flags, const char *name)
->  {
-> @@ -2570,6 +2586,14 @@ static void deactivate_slab(struct kmem_cache *s, struct slab *slab,
->  		spin_lock_irqsave(&n->list_lock, flags);
->  	} else {
->  		mode = M_FULL_NOLIST;
-> +#ifdef CONFIG_OS_MINIDUMP
-> +		/*
-> +		 * Taking the spinlock removes the possibility that
-> +		 * acquire_slab() will see a slab that is frozen
-> +		 */
-> +		spin_lock_irqsave(&n->list_lock, flags);
-> +
-> +#endif
->  	}
->  
->  
-> @@ -2577,7 +2601,11 @@ static void deactivate_slab(struct kmem_cache *s, struct slab *slab,
->  				old.freelist, old.counters,
->  				new.freelist, new.counters,
->  				"unfreezing slab")) {
-> +#ifndef CONFIG_OS_MINIDUMP
->  		if (mode == M_PARTIAL)
-> +#else
-> +		if (mode != M_FREE)
-> +#endif
->  			spin_unlock_irqrestore(&n->list_lock, flags);
->  		goto redo;
->  	}
-> @@ -2592,6 +2620,10 @@ static void deactivate_slab(struct kmem_cache *s, struct slab *slab,
->  		discard_slab(s, slab);
->  		stat(s, FREE_SLAB);
->  	} else if (mode == M_FULL_NOLIST) {
-> +#ifdef CONFIG_OS_MINIDUMP
-> +		add_full(s, n, slab);
-> +		spin_unlock_irqrestore(&n->list_lock, flags);
-> +#endif
->  		stat(s, DEACTIVATE_FULL);
->  	}
->  }
-> @@ -4202,6 +4234,9 @@ init_kmem_cache_node(struct kmem_cache_node *n)
->  	atomic_long_set(&n->nr_slabs, 0);
->  	atomic_long_set(&n->total_objects, 0);
->  	INIT_LIST_HEAD(&n->full);
-> +#elif defined(CONFIG_OS_MINIDUMP)
-> +	INIT_LIST_HEAD(&n->full);
-> +
->  #endif
->  }
->  
-> @@ -5009,7 +5044,8 @@ static struct kmem_cache * __init bootstrap(struct kmem_cache *static_cache)
->  		list_for_each_entry(p, &n->partial, slab_list)
->  			p->slab_cache = s;
->  
-> -#ifdef CONFIG_SLUB_DEBUG
-> +#if defined(CONFIG_SLUB_DEBUG) || \
-> +	defined(CONFIG_OS_MINIDUMP)
->  		list_for_each_entry(p, &n->full, slab_list)
->  			p->slab_cache = s;
->  #endif
-> -- 
-> 2.17.1
+> Changes in V6:
+> 	- Renamed access-controller to access-controllers
+> 	- Example updated
+> 	- Removal of access-control-provider property
 > 
+> Changes in V5:
+> 	- Diffs with [1]
+> 	- Discarded the [IGNORE] tag as the patch is now part of the
+> 	  patchset
 > 
+>  .../access-controllers.yaml                   | 84 +++++++++++++++++++
+>  1 file changed, 84 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/access-controllers/access-controllers.yaml
+> 
+
+Reviewed-by: Rob Herring <robh@kernel.org>
+
 
