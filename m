@@ -1,180 +1,226 @@
-Return-Path: <linux-kernel+bounces-7744-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7745-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DAA6381AC85
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 03:10:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B3F981AC87
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 03:13:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 96D882835BC
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 02:10:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E77471F2454C
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 02:13:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E843B3C0F;
-	Thu, 21 Dec 2023 02:09:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99F0C1FCF;
+	Thu, 21 Dec 2023 02:13:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="Aubdeicm"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Hz2VW0RL"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8B5A184C;
-	Thu, 21 Dec 2023 02:09:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1703124588;
-	bh=SQPj3HUnBXBdCf7DMtt5ufwXC9cul2cKhzw9rtRPKJE=;
-	h=Date:From:To:Cc:Subject:From;
-	b=AubdeicmHTt5iSFlzJ8q1Whh+nIKxNLzB1hHPTAG1T6csV54TNdKExwM7OCexL3lo
-	 Zdlox/qu+Ajls/2/b7XOfFUdeEHWseHuSXQzpDM4oWpvED/CltUgR81ZuvOwvzGJAT
-	 q9nJaskMIcE3w2WWJFVdAP2I7pwKPtKp2Q5QF/bQabertGbnNQyDfJZQUPmm3R+wh3
-	 FY9hv4DGvuHSmJPx5Y51nyXh20RZoU1eZovPydtpnKl2IA5cq/f4MkOgwaYYvzbGSk
-	 5XVeYibhsm6bdoKcPbtcv08mRi9c9OThfksonBJ0uOaqk2aXluIFrZI+/UI3d2omnJ
-	 H45xYKNguSBlg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4SwYlv5Xgvz4xGC;
-	Thu, 21 Dec 2023 13:09:47 +1100 (AEDT)
-Date: Thu, 21 Dec 2023 13:09:46 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: David Miller <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Andrew Morton <akpm@linux-foundation.org>
-Cc: Networking <netdev@vger.kernel.org>, Mathis Marion
- <mathis.marion@silabs.com>, Christian Marangi <ansuelsmth@gmail.com>,
- Robert Marko <robimarko@gmail.com>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the net-next tree
-Message-ID: <20231221130946.7ed9a805@canb.auug.org.au>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7356C1843
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 02:12:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dbdac48c6aeso461764276.3
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 18:12:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1703124777; x=1703729577; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=qZL4eZ6u9CkNNM8zLim6V4IndhkBqKjZUwKwl+b+dig=;
+        b=Hz2VW0RLT2wu1n6xcs1cm6UhLe1h8ll/pa54CAUjY09etFDQyvnmK7L9axYzKKVbCn
+         FlTRemeJ0+MMRmnBbqk0azbkpFEqbCJaIpUGvDc7dMtZ8wsnNauVe8BbjLA+UGlNMchV
+         lmclyOQ0363DR9+77iJFQh6RNapZL5IU3vA9pIXcJTfjrw4gstnQtDktoZX4y3NvOVVt
+         DRwM175xWXPRk4QEOi74mNXThiFTfLBiNhQEH/AwXMob2Awms+3ZBk0lvGtOsCryJ/vc
+         HaPyIESvw7JWjWOOpoqYcbNOzq9adQpkiKJI3acon+2kqXp00mgoWpTvkbvNzD0u59i2
+         B/eg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703124777; x=1703729577;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=qZL4eZ6u9CkNNM8zLim6V4IndhkBqKjZUwKwl+b+dig=;
+        b=Li1H7bIXRGMsaA2Pbi2Xarkl+Am8hVKPnMnWX80UVA6zRe8QVP+xh7HiAAdn2Uqx6W
+         m7Y0X5eXJR1cRfsXP6UV/JJWH0TmNgs8v1SPdz8ZD7TAASjEJF4BcfdKJonoeI8lHJht
+         lMkbLkOOm68g8MVMGyEZHG2pzRbYF/k27XkdKvZoH0K5yyWPqswpHasPcVzYS3jWhw1k
+         uY0QuZgfuev5jjVTM9ucaF6XQKcfJnu7/V4fQ0FbIyi0VBHuXoo2eCsCR07fcii911vc
+         emgfWOEYASlZskVI4NkkEgpkxsFoEuudqknd1zoowKA9yjcWRmnHtCCzpKMHAK+s+R+G
+         XL0g==
+X-Gm-Message-State: AOJu0YxDzpRkKjKiWVF2xptYVe7ai2OxCa/hox90E9q/ynb05/UNQwUS
+	vnM9NWjOzBKyg4HzRHRHwh0ojhaNwcg=
+X-Google-Smtp-Source: AGHT+IHZcmSZfB7sL8/DN2qPbVmszZ2Jby/ac3YVH1l0ZSD4QHL8Y190bGfTeBcn+OFXVpkLGzQYnrzycAs=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:664d:0:b0:dbd:bf0f:6fff with SMTP id
+ z13-20020a25664d000000b00dbdbf0f6fffmr260745ybm.1.1703124777494; Wed, 20 Dec
+ 2023 18:12:57 -0800 (PST)
+Date: Wed, 20 Dec 2023 18:12:55 -0800
+In-Reply-To: <ZYJOTLwreD+8l4gU@yzhao56-desk.sh.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Fa.4Qy/BxRLuQekLcKhZ6B1";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Mime-Version: 1.0
+References: <20231214103520.7198-1-yan.y.zhao@intel.com> <BN9PR11MB5276BE04CBB6D07039086D658C93A@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <ZXzx1zXfZ6GV9TgI@google.com> <ZYEbhadnn6+clzX9@yzhao56-desk.sh.intel.com> <ZYJOTLwreD+8l4gU@yzhao56-desk.sh.intel.com>
+Message-ID: <ZYOfJ_QWG01aL8Hl@google.com>
+Subject: Re: [RFC PATCH] KVM: Introduce KVM VIRTIO device
+From: Sean Christopherson <seanjc@google.com>
+To: Yan Zhao <yan.y.zhao@intel.com>
+Cc: Kevin Tian <kevin.tian@intel.com>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, 
+	"pbonzini@redhat.com" <pbonzini@redhat.com>, "olvaffe@gmail.com" <olvaffe@gmail.com>, 
+	Zhiyuan Lv <zhiyuan.lv@intel.com>, Zhenyu Z Wang <zhenyu.z.wang@intel.com>, 
+	Yongwei Ma <yongwei.ma@intel.com>, "vkuznets@redhat.com" <vkuznets@redhat.com>, 
+	"wanpengli@tencent.com" <wanpengli@tencent.com>, "jmattson@google.com" <jmattson@google.com>, 
+	"joro@8bytes.org" <joro@8bytes.org>, 
+	"gurchetansingh@chromium.org" <gurchetansingh@chromium.org>, "kraxel@redhat.com" <kraxel@redhat.com>, 
+	Yiwei Zhang <zzyiwei@google.com>
+Content-Type: text/plain; charset="us-ascii"
 
---Sig_/Fa.4Qy/BxRLuQekLcKhZ6B1
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, Dec 20, 2023, Yan Zhao wrote:
+> On Tue, Dec 19, 2023 at 12:26:45PM +0800, Yan Zhao wrote:
+> > On Mon, Dec 18, 2023 at 07:08:51AM -0800, Sean Christopherson wrote:
+> > > > > Implementation Consideration
+> > > > > ===
+> > > > > There is a previous series [1] from google to serve the same purpose to
+> > > > > let KVM be aware of virtio GPU's noncoherent DMA status. That series
+> > > > > requires a new memslot flag, and special memslots in user space.
+> > > > > 
+> > > > > We don't choose to use memslot flag to request honoring guest memory
+> > > > > type.
+> > > > 
+> > > > memslot flag has the potential to restrict the impact e.g. when using
+> > > > clflush-before-read in migration?
+> > > 
+> > > Yep, exactly.  E.g. if KVM needs to ensure coherency when freeing memory back to
+> > > the host kernel, then the memslot flag will allow for a much more targeted
+> > > operation.
+> > > 
+> > > > Of course the implication is to honor guest type only for the selected slot
+> > > > in KVM instead of applying to the entire guest memory as in previous series
+> > > > (which selects this way because vmx_get_mt_mask() is in perf-critical path
+> > > > hence not good to check memslot flag?)
+> > > 
+> > > Checking a memslot flag won't impact performance.  KVM already has the memslot
+> > > when creating SPTEs, e.g. the sole caller of vmx_get_mt_mask(), make_spte(), has
+> > > access to the memslot.
+> > > 
+> > > That isn't coincidental, KVM _must_ have the memslot to construct the SPTE, e.g.
+> > > to retrieve the associated PFN, update write-tracking for shadow pages, etc.
+> > > 
+> > Hi Sean,
+> > Do you prefer to introduce a memslot flag KVM_MEM_DMA or KVM_MEM_WC?
+> > For KVM_MEM_DMA, KVM needs to
+> > (a) search VMA for vma->vm_page_prot and convert it to page cache mode (with
+> >     pgprot2cachemode()? ), or
+> > (b) look up memtype of the PFN, by calling lookup_memtype(), similar to that in
+> >     pat_pfn_immune_to_uc_mtrr().
+> > 
+> > But pgprot2cachemode() and lookup_memtype() are not exported by x86 code now.
+> > 
+> > For KVM_MEM_WC, it requires user to ensure the memory is actually mapped
+> > to WC, right?
+> > 
+> > Then, vmx_get_mt_mask() just ignores guest PAT and programs host PAT as EPT type
+> > for the special memslot only, as below.
+> > Is this understanding correct?
+> > 
+> > static u8 vmx_get_mt_mask(struct kvm_vcpu *vcpu, gfn_t gfn, bool is_mmio)
+> > {
+> >         if (is_mmio)                                                                           
+> >                 return MTRR_TYPE_UNCACHABLE << VMX_EPT_MT_EPTE_SHIFT;                          
+> >                                                                                                
+> >         if (gfn_in_dma_slot(vcpu->kvm, gfn)) {                                                 
+> >                 u8 type = MTRR_TYPE_WRCOMB;                                      
+> >                 //u8 type = pat_pfn_memtype(pfn);                                
+> >                 return (type << VMX_EPT_MT_EPTE_SHIFT) | VMX_EPT_IPAT_BIT;       
+> >         }                                                                                      
+> >                                                                                                
+> >         if (!kvm_arch_has_noncoherent_dma(vcpu->kvm))                            
+> >                 return (MTRR_TYPE_WRBACK << VMX_EPT_MT_EPTE_SHIFT) | VMX_EPT_IPAT_BIT;         
+> >                                                                                                
+> >         if (kvm_read_cr0_bits(vcpu, X86_CR0_CD)) {                                             
+> >                 if (kvm_check_has_quirk(vcpu->kvm, KVM_X86_QUIRK_CD_NW_CLEARED))               
+> >                         return MTRR_TYPE_WRBACK << VMX_EPT_MT_EPTE_SHIFT;                      
+> >                 else                                                                           
+> >                         return (MTRR_TYPE_UNCACHABLE << VMX_EPT_MT_EPTE_SHIFT) | 
+> >                                 VMX_EPT_IPAT_BIT;                                
+> >         }                                                                        
+> >                                                                                  
+> >         return kvm_mtrr_get_guest_memory_type(vcpu, gfn) << VMX_EPT_MT_EPTE_SHIFT;
+> > }
+> > 
+> > BTW, since the special memslot must be exposed to guest as virtio GPU BAR in
+> > order to prevent other guest drivers from access, I wonder if it's better to
+> > include some keyword like VIRTIO_GPU_BAR in memslot flag name.
+> Another choice is to add a memslot flag KVM_MEM_HONOR_GUEST_PAT, then user
+> (e.g. QEMU) does special treatment to this kind of memslots (e.g. skipping
+> reading/writing to them in general paths).
+> 
+> @@ -7589,26 +7589,29 @@ static u8 vmx_get_mt_mask(struct kvm_vcpu *vcpu, gfn_t gfn, bool is_mmio)
+>         if (is_mmio)
+>                 return MTRR_TYPE_UNCACHABLE << VMX_EPT_MT_EPTE_SHIFT;
+> 
+> +       if (in_slot_honor_guest_pat(vcpu->kvm, gfn))
+> +               return kvm_mtrr_get_guest_memory_type(vcpu, gfn) << VMX_EPT_MT_EPTE_SHIFT;
 
-Hi all,
+This is more along the lines of what I was thinking, though the name should be
+something like KVM_MEM_NON_COHERENT_DMA, i.e. not x86 specific and not contradictory
+for AMD (which already honors guest PAT).
 
-After merging the net-next tree, today's linux-next build (x86_64
-allmodconfig) failed like this:
+I also vote to deliberately ignore MTRRs, i.e. start us on the path of ripping
+those out.  This is a new feature, so we have the luxury of defining KVM's ABI
+for that feature, i.e. can state that on x86 it honors guest PAT, but not MTRRs.
 
-drivers/net/phy/aquantia/aquantia_firmware.c: In function 'aqr_fw_load_memo=
-ry':
-drivers/net/phy/aquantia/aquantia_firmware.c:135:23: error: implicit declar=
-ation of function 'crc_ccitt_false'; did you mean 'crc_ccitt_byte'? [-Werro=
-r=3Dimplicit-function-declaration]
-  135 |                 crc =3D crc_ccitt_false(crc, crc_data, sizeof(crc_d=
-ata));
-      |                       ^~~~~~~~~~~~~~~
-      |                       crc_ccitt_byte
+Like so?
 
-Caused by commit
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index d21f55f323ea..ed527acb2bd3 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -7575,7 +7575,8 @@ static int vmx_vm_init(struct kvm *kvm)
+        return 0;
+ }
+ 
+-static u8 vmx_get_mt_mask(struct kvm_vcpu *vcpu, gfn_t gfn, bool is_mmio)
++static u8 vmx_get_mt_mask(struct kvm_vcpu *vcpu, gfn_t gfn, bool is_mmio,
++                         struct kvm_memory_slot *slot)
+ {
+        /* We wanted to honor guest CD/MTRR/PAT, but doing so could result in
+         * memory aliases with conflicting memory types and sometimes MCEs.
+@@ -7598,6 +7599,9 @@ static u8 vmx_get_mt_mask(struct kvm_vcpu *vcpu, gfn_t gfn, bool is_mmio)
+        if (is_mmio)
+                return MTRR_TYPE_UNCACHABLE << VMX_EPT_MT_EPTE_SHIFT;
+ 
++       if (kvm_memslot_has_non_coherent_dma(slot))
++               return MTRR_TYPE_WRBACK << VMX_EPT_MT_EPTE_SHIFT;
++
+        if (!kvm_arch_has_noncoherent_dma(vcpu->kvm))
+                return (MTRR_TYPE_WRBACK << VMX_EPT_MT_EPTE_SHIFT) | VMX_EPT_IPAT_BIT;
 
-  e93984ebc1c8 ("net: phy: aquantia: add firmware load support")
+I like the idea of pulling the memtype from the host, but if we can make that
+work then I don't see the need for a special memslot flag, i.e. just do it for
+*all* SPTEs on VMX.  I don't think we need a VMA for that, e.g. we should be able
+to get the memtype from the host PTEs, just like we do the page size.
 
-interacting with commit
+KVM_MEM_WC is a hard "no" for me.  It's far too x86 centric, and as you alluded
+to, it requires coordination from the guest, i.e. is effectively limited to
+paravirt scenarios.
 
-  56ded2dd1a43 ("lib: crc_ccitt_false() is identical to crc_itu_t()")
-
-from the mm tree.
-
-I have applied the following merge fix patch:
-
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Thu, 21 Dec 2023 12:49:11 +1100
-Subject: [PATCH] fix up for "net: phy: aquantia: add firmware load support"
-
-interacting with commit
-
-  56ded2dd1a43 ("lib: crc_ccitt_false() is identical to crc_itu_t()")
-
-from the mm tree.
-
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- drivers/net/phy/aquantia/Kconfig             | 2 +-
- drivers/net/phy/aquantia/aquantia_firmware.c | 6 +++---
- 2 files changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/net/phy/aquantia/Kconfig b/drivers/net/phy/aquantia/Kc=
-onfig
-index a35de4b9b554..1a65678583cf 100644
---- a/drivers/net/phy/aquantia/Kconfig
-+++ b/drivers/net/phy/aquantia/Kconfig
-@@ -1,6 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0-only
- config AQUANTIA_PHY
- 	tristate "Aquantia PHYs"
--	select CRC_CCITT
-+	select CRC_ITU_T
- 	help
- 	  Currently supports the Aquantia AQ1202, AQ2104, AQR105, AQR405
-diff --git a/drivers/net/phy/aquantia/aquantia_firmware.c b/drivers/net/phy=
-/aquantia/aquantia_firmware.c
-index ff34d00d5a0e..0c9640ef153b 100644
---- a/drivers/net/phy/aquantia/aquantia_firmware.c
-+++ b/drivers/net/phy/aquantia/aquantia_firmware.c
-@@ -3,7 +3,7 @@
- #include <linux/bitfield.h>
- #include <linux/of.h>
- #include <linux/firmware.h>
--#include <linux/crc-ccitt.h>
-+#include <linux/crc-itu-t.h>
- #include <linux/nvmem-consumer.h>
-=20
- #include <asm/unaligned.h>
-@@ -132,7 +132,7 @@ static int aqr_fw_load_memory(struct phy_device *phydev=
-, u32 addr,
- 		crc_data[3] =3D word;
-=20
- 		/* ...calculate CRC as we load data... */
--		crc =3D crc_ccitt_false(crc, crc_data, sizeof(crc_data));
-+		crc =3D crc_itu_t(crc, crc_data, sizeof(crc_data));
- 	}
- 	/* ...gets CRC from MAILBOX after we have loaded the entire section... */
- 	up_crc =3D phy_read_mmd(phydev, MDIO_MMD_VEND1, VEND1_GLOBAL_MAILBOX_INTE=
-RFACE2);
-@@ -164,7 +164,7 @@ static int aqr_fw_boot(struct phy_device *phydev, const=
- u8 *data, size_t size,
- 		phydev_err(phydev, "bad firmware CRC in firmware\n");
- 		return ret;
- 	}
--	calculated_crc =3D crc_ccitt_false(0, data, size - sizeof(u16));
-+	calculated_crc =3D crc_itu_t(0, data, size - sizeof(u16));
- 	if (read_crc !=3D calculated_crc) {
- 		phydev_err(phydev, "bad firmware CRC: file 0x%04x calculated 0x%04x\n",
- 			   read_crc, calculated_crc);
---=20
-2.43.0
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/Fa.4Qy/BxRLuQekLcKhZ6B1
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmWDnmoACgkQAVBC80lX
-0Gzmfwf/QMypL/PxMl3HbvqpSQwtGBjPeOmrcx+lqyuw66CeHBYqVkOWnAS0yuDn
-N6KT6xeXOp/iYE9NekpidJzQ1GtPN/Ip9AtTnn54KiW0rLJDq2AEVZPV7dOPQu88
-6xDXJAM0c+7CRjSTWoDEINl/0AWLq0sePRStDwGCsVWKJfFTXPb/FjrtyGI9gsiB
-fzcBgN0zCeuYxD7Jy3em9ObVmtyVpG2yqYrgNaHlvUEnE2FNkl/O3efHuHuXuYnn
-kh22xaZZ+CXlBUncQCF/dsPX/N5Wcc/Bly5roJ7PizS3J6hxe5xBQck7yjocOGuH
-OKGO+ZaQ2BBCKp7UD4vPFy3uqaSylA==
-=ZdrR
------END PGP SIGNATURE-----
-
---Sig_/Fa.4Qy/BxRLuQekLcKhZ6B1--
+> +
+>         if (!kvm_arch_has_noncoherent_dma(vcpu->kvm))
+>                 return (MTRR_TYPE_WRBACK << VMX_EPT_MT_EPTE_SHIFT) | VMX_EPT_IPAT_BIT;
+> 
+>         if (kvm_read_cr0_bits(vcpu, X86_CR0_CD)) {
+>                 if (kvm_check_has_quirk(vcpu->kvm, KVM_X86_QUIRK_CD_NW_CLEARED))
+>                         return MTRR_TYPE_WRBACK << VMX_EPT_MT_EPTE_SHIFT;
+>                 else
+>                         return (MTRR_TYPE_UNCACHABLE << VMX_EPT_MT_EPTE_SHIFT) |
+>                                 VMX_EPT_IPAT_BIT;
+>         }
+> 
+>         return kvm_mtrr_get_guest_memory_type(vcpu, gfn) << VMX_EPT_MT_EPTE_SHIFT;
+>  }
 
