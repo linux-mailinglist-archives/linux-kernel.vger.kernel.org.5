@@ -1,94 +1,128 @@
-Return-Path: <linux-kernel+bounces-9084-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9086-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11F0D81C02F
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 22:33:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A09481C04D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 22:39:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2874E1C24938
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 21:33:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AFC61B21E72
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 21:39:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA25576DC4;
-	Thu, 21 Dec 2023 21:33:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0D4E77635;
+	Thu, 21 Dec 2023 21:39:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="QISh8r0/"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="K3q+iUQ4"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com [209.85.219.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D05FD76DAC;
-	Thu, 21 Dec 2023 21:33:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1703194406;
-	bh=ROgN9h3o+UMyHN9oVG+Riyd5yJvuM05ZwS4D+mUqzLI=;
-	h=Date:From:To:Cc:Subject:From;
-	b=QISh8r0/GnRE78Do+Phcq95YZUf0R/a6BXnj4rn+3NT0GOo6uBPAshvQ2JhGmdsU+
-	 Fuj0UrqIbO0VFO5qsoDW2eDkUWfyYuMQpbdkG6s4N+Cq1VYozIgpVy2AIhxnsNjlvK
-	 rFA2iZ4s5HnnI9imMIzf1AZSzuFKj51LPETTosZnd7sTgLUwbLqZr894MQqA4nDamE
-	 cszCIN2ViUARV24NGJll8messdsaddYEvsnv1JJLigLZR00YopTOsbQRDI06k4+dmr
-	 8CKwo9qmP8QxIBmVp6+Bl+/iVATaCaeMRqPtMiYNTc+2y0gMJX5myIRLzKhtfym4Od
-	 tIPb589q9WaXw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4Sx3ZZ0KGhz4wcH;
-	Fri, 22 Dec 2023 08:33:26 +1100 (AEDT)
-Date: Fri, 22 Dec 2023 08:33:25 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Steven Whitehouse <swhiteho@redhat.com>, Bob Peterson
- <rpeterso@redhat.com>
-Cc: Andreas Gruenbacher <agruenba@redhat.com>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commit in the gfs2 tree
-Message-ID: <20231222083325.65755cc4@canb.auug.org.au>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B83B976DDD;
+	Thu, 21 Dec 2023 21:39:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-dbdb124491cso1068694276.1;
+        Thu, 21 Dec 2023 13:39:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703194740; x=1703799540; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PXU/wSqHvT5f9DP/nkZcmoPPi2e4LA2mSngSGEQpvNg=;
+        b=K3q+iUQ4u+gHvM8f5spT0IYwGWoTLL0oy3G6BAVJAjuqMsOUFaMA7QGvGgTzLh24xS
+         rNMMFEwhorVJxvkYYqYgbioj31r7KKLE5N73o3FU/AeUL2neCAlp5sTVi//ChYav5fJT
+         6dgVOlWWToxULU369unxCnQGBz0ntMXwwLrAKY8zO/k1/nBwAo4E9wmLmlhXAlXhClbu
+         sKRbFb9eeFdqIRFN9cJO01iOPAkdOvGWVG/dumkDKYLOSHlQBGMfNQz9lmxPnSae2Ms5
+         ACsA1d1oDNGtxtloIbXpYpoQByMAqVAHFK2BKvewu+iK4+Gkhesu2bIqgc06XjRPnoxY
+         nyFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703194740; x=1703799540;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PXU/wSqHvT5f9DP/nkZcmoPPi2e4LA2mSngSGEQpvNg=;
+        b=AxTYOX8e49csFJ39IUZ+op668RpCcanQXH3RIY2AE2M0fQ8aeTU7Xpnlt3nO7Lrvh2
+         lsvCHWGdlamHs9kXLLmjz8t6zbb11GrQ7P7mkZtWqFjBqaSxw731havKxC0cK6ELq8Xp
+         WOo1oqeG3AwXm9maNrOWITxy7bUuQXFezG7g4zsavbuhCzD4PCK/pvC9mHdC+mPw8uFM
+         OZ4ZXpkdtqiBSn7ZDniRsQo2g8BK18rYDR1BYQHCqd9DsOKX93OHmds+BKD8D0Fgrvnf
+         FM+VKa+sVrr7li3eZO24RAclglqv5tAL3d4B81gLqsctrTq3hywm9DfRFTwmJ6V6/E7Z
+         mQOQ==
+X-Gm-Message-State: AOJu0YzYj+fw/Rbvq2ml5MKZL5CQ+cHsZNpxaxx57CPmQB9N+ajZkh0c
+	fPDm1gzxWrBHkUyWwQxwLpHumRLpFP3Pv3iumHI=
+X-Google-Smtp-Source: AGHT+IEhMe74JI+7lQZDzUiCsOMUeUyAr8WAul676bT3WI7OIr6gqXdlQpGTwTIT/+hE3RCkjK+kJGE8F59mVr5xOFU=
+X-Received: by 2002:a05:6902:604:b0:dbd:c25f:972b with SMTP id
+ d4-20020a056902060400b00dbdc25f972bmr372437ybt.56.1703194740681; Thu, 21 Dec
+ 2023 13:39:00 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/b584IAyaqMhiiF2wwgA2==o";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-
---Sig_/b584IAyaqMhiiF2wwgA2==o
-Content-Type: text/plain; charset=US-ASCII
+References: <20231215235428.243211-1-ojeda@kernel.org>
+In-Reply-To: <20231215235428.243211-1-ojeda@kernel.org>
+From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date: Thu, 21 Dec 2023 22:38:49 +0100
+Message-ID: <CANiq72kfpdNdCXtxFM-YVLuOp34u_edieX0q_a94-5kAxdGRWg@mail.gmail.com>
+Subject: Re: [PATCH] rust: support `srctree`-relative links
+To: Miguel Ojeda <ojeda@kernel.org>
+Cc: Wedson Almeida Filho <wedsonaf@gmail.com>, Alex Gaynor <alex.gaynor@gmail.com>, 
+	Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
+	Alice Ryhl <aliceryhl@google.com>, rust-for-linux@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, patches@lists.linux.dev, 
+	FUJITA Tomonori <fujita.tomonori@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+On Sat, Dec 16, 2023 at 12:54=E2=80=AFAM Miguel Ojeda <ojeda@kernel.org> wr=
+ote:
+>
+> Some of our links use relative paths in order to point to files in the
+> source tree, e.g.:
+>
+>     //! C header: [`include/linux/printk.h`](../../../../include/linux/pr=
+intk.h)
+>     /// [`struct mutex`]: ../../../../include/linux/mutex.h
+>
+> These are problematic because they are hard to maintain and do not suppor=
+t
+> `O=3D` builds.
+>
+> Instead, provide support for `srctree`-relative links, e.g.:
+>
+>     //! C header: [`include/linux/printk.h`](srctree/include/linux/printk=
+.h)
+>     /// [`struct mutex`]: srctree/include/linux/mutex.h
+>
+> The links are fixed after `rustdoc` generation to be based on the absolut=
+e
+> path to the source tree.
+>
+> Essentially, this is the automatic version of Tomonori's fix [1],
+> suggested by Gary [2].
+>
+> Suggested-by: Gary Guo <gary@garyguo.net>
+> Reported-by: FUJITA Tomonori <fujita.tomonori@gmail.com>
+> Closes: https://lore.kernel.org/r/20231026.204058.2167744626131849993.fuj=
+ita.tomonori@gmail.com [1]
+> Fixes: 48fadf440075 ("docs: Move rustdoc output, cross-reference it")
+> Link: https://lore.kernel.org/rust-for-linux/20231026154525.6d14b495@euge=
+o/ [2]
+> Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
 
-Commits
+Applied to `rust-next` -- thanks everyone!
 
-  1c47c16d9bde ("gfs2: Use wait_event_freezable_timeout() for freezable kth=
-read")
-  6650ff05e56f ("gfs2: Add missing set_freezable() for freezable kthread")
+By the way, since I didn't mention it: this obviously requires the
+source tree to be available at its path, so we may want to improve on
+that later (e.g. exporting the needed files in the output folder), but
+it is a strict improvement since it fixes the immediate issue, it
+cleans the paths already reducing the maintenance burden (i.e. we can
+keep the syntax even if we change the rest) and is a smaller change if
+we decide to send it to stable later.
 
-are missing a Signed-off-by from their committer.
-
---=20
 Cheers,
-Stephen Rothwell
-
---Sig_/b584IAyaqMhiiF2wwgA2==o
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmWEryUACgkQAVBC80lX
-0Gw/vQf/cUGxKHBHo992dKTip5hXTJ+vGbegBCdxSJ2T2cUhjdYn6ecjLtIQIsaF
-dmE3pWqI74DBbh8+No1rqvWz4i3w3ydUgv72xVtsaYtfn3mYOg+g3yV5k8QVqVgG
-Amjx62DBk7lyyc2jXF9gieltbiV18V5aBC66UWrzA47+8FOEvml5BhdBfIKl5upd
-3jSXhxJhVn5jvY119buRa2yt/m3hJT8/4zWhAgJzRm/OwhQNYTNUZD7PzymxsVvz
-SALNZJ7iUmhtcOqDB9zSKK5hlTdGrQ5gVDb280UiKwWp00nqXC68xoIuOGW4J1fQ
-QAnzjK/OJY+BBjRYW+zx92VIGN67Kg==
-=Xdyy
------END PGP SIGNATURE-----
-
---Sig_/b584IAyaqMhiiF2wwgA2==o--
+Miguel
 
