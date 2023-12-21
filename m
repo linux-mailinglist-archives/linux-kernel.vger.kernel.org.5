@@ -1,43 +1,43 @@
-Return-Path: <linux-kernel+bounces-8380-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8382-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D31681B66B
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 13:51:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D30481B66E
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 13:52:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 23FBC285A82
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 12:51:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2CFC91F25E2F
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 12:52:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0709478E70;
-	Thu, 21 Dec 2023 12:48:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0252C79472;
+	Thu, 21 Dec 2023 12:48:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="tAR+vkKM"
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="qVC94pb6"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0D0F77650;
-	Thu, 21 Dec 2023 12:48:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3EBD73183;
+	Thu, 21 Dec 2023 12:48:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1703162921;
-	bh=amWRBEfS8645R/5+LBfYIOcKFJwKDzDQq6B0ItRjNNs=;
+	s=mail; t=1703162922;
+	bh=ets5nsuLlL8i2zc6z+9zFMpYPN9x47J3B6r/zyrf0o0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=tAR+vkKMQ1u39cVeSDh2DBCkh9XH9qAL22s3UcNkoWfrbVuDHBMY60t4Tor+DLFp6
-	 4geaYoSj0SqKLFS7j+RfsM69lJ8xwkEpMmnwY6S2zIhrjNYLUh0vYTwErGLCwXwjvO
-	 foC0mdYFf3hBx2cxqI1Hi8vepM/0RsIUOEEXIhRuzqp5KVjGTqAyLGKWUVnd/754EG
-	 xmwNloeo32TNFu9rHHBephIMgTaY1p4dszg/9hoK6hcEpwjbDfPvy0vz9w/5IFjtMH
-	 1YSBUjj/vQibIgSVVuY3zf+nBHGrbEdmcZSY8q20devOG0gsMTigtorTVaqv1dcVEq
-	 oQGe1++PdpW/w==
+	b=qVC94pb6NlGn9J1easJVCRLh0S7amPjKMQr1Hz0ix0GAY1zpO8002qwQ4e+yEcwiT
+	 Uh/+Lm2zTx6s6uSsb/GV6X8/oXMSgEGdbBwdjk9BfhAt6fylqZWPlwQBQh/ftLnVyT
+	 6Ux63gwR4HWGbOGvDLBRxfX9senJxLWhGCbLLfQCxSjwpjZhyBlxiK5PiUovHK0EJ1
+	 YVjzXD7ZbzRZY2DkMWAHlGumKiRmCbHzAzO+5LHgijH7zGTBBANkPN9xk1xXRpZytz
+	 pXq5mR2+L1xtFxgOcqcXuydCj+lVO72M9DA0ZkHKKUd6Wiv3C3+mbaLEfnjDXhYE0T
+	 yZQ5l3sS30BCw==
 Received: from IcarusMOD.eternityproject.eu (cola.collaboradmins.com [195.201.22.229])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
 	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 161803782016;
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id D1843378201A;
 	Thu, 21 Dec 2023 12:48:41 +0000 (UTC)
 From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 To: daniel.lezcano@linaro.org
@@ -48,9 +48,9 @@ Cc: rafael@kernel.org,
 	linux-kernel@vger.kernel.org,
 	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
 	kernel@collabora.com
-Subject: [RFC PATCH 12/26] thermal: intel: int340x: Migrate to thermal_zone_device_register()
-Date: Thu, 21 Dec 2023 13:48:11 +0100
-Message-ID: <20231221124825.149141-13-angelogioacchino.delregno@collabora.com>
+Subject: [RFC PATCH 13/26] thermal: int340x: processor: Migrate to thermal_zone_device_register()
+Date: Thu, 21 Dec 2023 13:48:12 +0100
+Message-ID: <20231221124825.149141-14-angelogioacchino.delregno@collabora.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231221124825.149141-1-angelogioacchino.delregno@collabora.com>
 References: <20231221124825.149141-1-angelogioacchino.delregno@collabora.com>
@@ -70,69 +70,52 @@ Migrate to the new thermal zone device registration function.
 
 Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 ---
- .../int340x_thermal/int340x_thermal_zone.c    | 28 +++++++++----------
- 1 file changed, 14 insertions(+), 14 deletions(-)
+ .../processor_thermal_device_pci.c            | 23 +++++++++++--------
+ 1 file changed, 14 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/thermal/intel/int340x_thermal/int340x_thermal_zone.c b/drivers/thermal/intel/int340x_thermal/int340x_thermal_zone.c
-index a03b67579dd9..431f09ef65e6 100644
---- a/drivers/thermal/intel/int340x_thermal/int340x_thermal_zone.c
-+++ b/drivers/thermal/intel/int340x_thermal/int340x_thermal_zone.c
-@@ -118,19 +118,19 @@ static int int340x_thermal_read_trips(struct acpi_device *zone_adev,
- 	return trip_cnt;
- }
+diff --git a/drivers/thermal/intel/int340x_thermal/processor_thermal_device_pci.c b/drivers/thermal/intel/int340x_thermal/processor_thermal_device_pci.c
+index d7495571dd5d..1e7b9172e11d 100644
+--- a/drivers/thermal/intel/int340x_thermal/processor_thermal_device_pci.c
++++ b/drivers/thermal/intel/int340x_thermal/processor_thermal_device_pci.c
+@@ -242,13 +242,17 @@ static struct thermal_zone_device_ops tzone_ops = {
+ 	.set_trip_temp	= sys_set_trip_temp,
+ };
  
--static struct thermal_zone_params int340x_thermal_params = {
+-static struct thermal_zone_params tzone_params = {
 -	.governor_name = "user_space",
 -	.no_hwmon = true,
 -};
 -
- struct int34x_thermal_zone *int340x_thermal_zone_add(struct acpi_device *adev,
- 						     int (*get_temp) (struct thermal_zone_device *, int *))
+ static int proc_thermal_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
  {
 +	struct thermal_zone_device_params tzdp = {
++		.type = "TCPU_PCI",
 +		.tzp = {
 +			.governor_name = "user_space",
 +			.no_hwmon = true,
-+		}
++		},
++		.ops = &tzone_ops,
++		.mask = 1,
 +	};
- 	struct int34x_thermal_zone *int34x_zone;
- 	struct thermal_trip *zone_trips;
- 	unsigned long long trip_cnt = 0;
- 	unsigned long long hyst;
--	int trip_mask = 0;
- 	acpi_status status;
- 	int i, ret;
+ 	struct proc_thermal_device *proc_priv;
+ 	struct proc_thermal_pci *pci_info;
+ 	int irq_flag = 0, irq, ret;
+@@ -289,10 +293,11 @@ static int proc_thermal_pci_probe(struct pci_dev *pdev, const struct pci_device_
  
-@@ -153,7 +153,7 @@ struct int34x_thermal_zone *int340x_thermal_zone_add(struct acpi_device *adev,
- 	status = acpi_evaluate_integer(adev->handle, "PATC", NULL, &trip_cnt);
- 	if (ACPI_SUCCESS(status)) {
- 		int34x_zone->aux_trip_nr = trip_cnt;
--		trip_mask = BIT(trip_cnt) - 1;
-+		tzdp.mask = BIT(trip_cnt) - 1;
- 	}
+ 	psv_trip.temperature = get_trip_temp(pci_info);
  
- 	zone_trips = kzalloc(sizeof(*zone_trips) * (trip_cnt + INT340X_THERMAL_MAX_TRIP_COUNT),
-@@ -183,13 +183,13 @@ struct int34x_thermal_zone *int340x_thermal_zone_add(struct acpi_device *adev,
- 
- 	int34x_zone->lpat_table = acpi_lpat_get_conversion_table(adev->handle);
- 
--	int34x_zone->zone = thermal_zone_device_register_with_trips(
--							acpi_device_bid(adev),
--							zone_trips, trip_cnt,
--							trip_mask, int34x_zone,
--							int34x_zone->ops,
--							&int340x_thermal_params,
--							0, 0);
-+	tzdp.type = acpi_device_bid(adev);
-+	tzdp.ops = int34x_zone->ops;
-+	tzdp.devdata = int34x_zone;
-+	tzdp.trips = zone_trips;
-+	tzdp.num_trips = trip_cnt;
+-	pci_info->tzone = thermal_zone_device_register_with_trips("TCPU_PCI", &psv_trip,
+-							1, 1, pci_info,
+-							&tzone_ops,
+-							&tzone_params, 0, 0);
++	tzdp.devdata = pci_info;
++	tzdp.trips = &psv_trip;
++	tzdp.num_trips = 1;
 +
-+	int34x_zone->zone = thermal_zone_device_register(&tzdp);
- 	if (IS_ERR(int34x_zone->zone)) {
- 		ret = PTR_ERR(int34x_zone->zone);
- 		goto err_thermal_zone;
++	pci_info->tzone = thermal_zone_device_register(&tzdp);
+ 	if (IS_ERR(pci_info->tzone)) {
+ 		ret = PTR_ERR(pci_info->tzone);
+ 		goto err_del_legacy;
 -- 
 2.43.0
 
