@@ -1,308 +1,296 @@
-Return-Path: <linux-kernel+bounces-8209-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8210-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1004581B3AC
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 11:34:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2618481B3AF
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 11:34:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 349C31C23545
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 10:34:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2FE6C1C255D8
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 10:34:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 280926E5AF;
-	Thu, 21 Dec 2023 10:32:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82673697B1;
+	Thu, 21 Dec 2023 10:33:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="xVOO1AJj"
+	dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b="PaE0ZMR+"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFB39675BC
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 10:32:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-5e840338607so4832457b3.2
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 02:32:25 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B546D69799
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 10:33:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ew.tq-group.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703154745; x=1703759545; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=QH0RrHp3BbVq3x0TcnWEn70gx4fcFHG3l/rgwq9Zzao=;
-        b=xVOO1AJjClx6ZInQssG5VCKwRF4w3qH0es/wR3uGCPeIUvpzwOhZAjyPjSFjUXFtlU
-         oHOZKt4VD2DjT1GSbme8jvsfjWjhskGgDA/Xe82bup2M03ESEPLeDb6lr9yi25vIJiET
-         zUoxzrcs9LbrRAmcRHxWa1RlbcyxfsaoogS7ew6SLZZ8D3RzW8sWdOA0u32mTh6ZlzrR
-         8mF8y11INy6wkqj7aYRabshqkP4mLGueA0LlYCRXP2jilTIElqdxjICrw91BXXjv0eCI
-         VMfzbku/fqXTy4zTNGLxI9UTQiSQEnnjg9Y/lxPVlu1FYW4mDrS2C7UCis32cjsuqBjH
-         2M+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703154745; x=1703759545;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=QH0RrHp3BbVq3x0TcnWEn70gx4fcFHG3l/rgwq9Zzao=;
-        b=DHZ/iGpzUh3oqQaxhUDwDVIwlMEZuKGYPBw5GEZ0lBJeZxKPEKhm2S4Jjewv+6HrF8
-         vh7CxJ5s25rd6FWYUuPMWt58jDZH+5cjvKkqb1qJduvM56W+x+WG34Jfli98vlnlg40t
-         DjAs8ijz7WlOdlIg0TekfBU5qzkW4vh5j2w2hrt3b1yKRJLMEtBXp3LQCuaB4f79ap5o
-         ij2+pOcib99+BE1sISCeYUm/Mabh21MR1qeX4mfwOgOqbCechNVYgxb5hIG2ta3bLwtc
-         JYoI58nlBRD5Xh/Fm71zHepT+n3F9ac+yvW0Kk1YyN1iI68YyigOUvPeVxvi8Uv0wFpY
-         pFZg==
-X-Gm-Message-State: AOJu0Yxyf61pEdbP8LLsVweLJ79XfPg35Zt+ScGDw3CE2aicDgiZOH34
-	zGZdbQjU3hOWvbyiDilohgRKB7h5JHkZBc1fVObDtA==
-X-Google-Smtp-Source: AGHT+IEDCA6TTwRZViV0lqKVy39Uwh2vsaYqgEwFHnRhf+6Q177re6i4SkHhOtg0CPX6CtP0tEwle+bwjnGkABKknC8=
-X-Received: by 2002:a0d:e84c:0:b0:5e6:81f8:b2ea with SMTP id
- r73-20020a0de84c000000b005e681f8b2eamr723855ywe.96.1703154744760; Thu, 21 Dec
- 2023 02:32:24 -0800 (PST)
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1703154800; x=1734690800;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:content-transfer-encoding:mime-version;
+  bh=arYnRdf1QdNyi//6LefTyoCxnnz8QHpTtprbXj91ge0=;
+  b=PaE0ZMR+MCcRIKVKIBuL1iNK0Cz3MQq5oQ3j3fB4/yrJxYUoydXWF44p
+   +1ZPhPeNcm9Md1UQQIG4cz7+OWRaIY8zd+t5Fr6KPCFVRi5mNkO85tZrB
+   9vBlj9PAX/0BqcN9+3AHiAZvPmsPUnMBK5qmUwRnyXjYh/4/zoUb3x7ll
+   BxpMVOUPXxkUewwJTgZ29Rt7YGliI6JmiYgZdL9yzprXxeH+ujpwA9lw1
+   SEVifrtiNVg4BZNXk2ZGvPYBtc7yb/qfBtzM/YTxlBGpDHEMu4QLRCQZv
+   k+rV4q9qoextZ4N81zcEAj46tudzXxv0XMXiYzz+0jQZhHQhs9LWeYBTF
+   w==;
+X-IronPort-AV: E=Sophos;i="6.04,293,1695679200"; 
+   d="scan'208";a="34629820"
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+  by mx1.tq-group.com with ESMTP; 21 Dec 2023 11:33:13 +0100
+Received: from [192.168.2.128] (SCHIFFERM-M2.tq-net.de [10.121.53.15])
+	by vtuxmail01.tq-net.de (Postfix) with ESMTPA id 51BBA280075;
+	Thu, 21 Dec 2023 11:33:13 +0100 (CET)
+Message-ID: <207e08e3942f88dc9809686e9b602224bb65930e.camel@ew.tq-group.com>
+Subject: Re: powerpc: several early boot regressions on MPC52xx
+From: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+To: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, 
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux@ew.tq-group.com" <linux@ew.tq-group.com>,  Michael Ellerman
+ <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, "Aneesh Kumar
+ K.V" <aneesh.kumar@kernel.org>, "Naveen N.Rao"
+ <naveen.n.rao@linux.ibm.com>,  Anatolij Gustschin <agust@denx.de>
+Date: Thu, 21 Dec 2023 11:33:12 +0100
+In-Reply-To: <5ac30d2e-8688-436c-8357-1ee287a5719b@csgroup.eu>
+References: <46a002f7fe894c7c7ed8324e48e9cd226e428894.camel@ew.tq-group.com>
+	 <277b815c-0d73-4f33-ba00-d89b9a0cdb35@csgroup.eu>
+	 <c24f49402864ab7f828f583886a1b469fc3607fe.camel@ew.tq-group.com>
+	 <5ac30d2e-8688-436c-8357-1ee287a5719b@csgroup.eu>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231220133808.5654-1-quic_bibekkum@quicinc.com>
- <20231220133808.5654-4-quic_bibekkum@quicinc.com> <CAA8EJpo8X+jfi20N9P7kUshxe6_7pwQe8G0Q02JDuB8ozH7hLA@mail.gmail.com>
- <7b32b7a7-bc64-4102-a6bf-3c3fc8d979ac@quicinc.com>
-In-Reply-To: <7b32b7a7-bc64-4102-a6bf-3c3fc8d979ac@quicinc.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Thu, 21 Dec 2023 12:32:13 +0200
-Message-ID: <CAA8EJpo6LdBQm5q=r2+ETBwhKL3YkUsPDuzA2MGCqb-1R_9b7w@mail.gmail.com>
-Subject: Re: [PATCH v6 3/5] iommu/arm-smmu: introduction of ACTLR for custom
- prefetcher settings
-To: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
-Cc: will@kernel.org, robin.murphy@arm.com, joro@8bytes.org, 
-	konrad.dybcio@linaro.org, jsnitsel@redhat.com, quic_bjorande@quicinc.com, 
-	mani@kernel.org, quic_eberman@quicinc.com, robdclark@chromium.org, 
-	u.kleine-koenig@pengutronix.de, robh@kernel.org, vladimir.oltean@nxp.com, 
-	quic_pkondeti@quicinc.com, quic_molvera@quicinc.com, 
-	linux-arm-msm@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	iommu@lists.linux.dev, linux-kernel@vger.kernel.org, 
-	qipl.kernel.upstream@quicinc.com
-Content-Type: text/plain; charset="UTF-8"
 
-On Thu, 21 Dec 2023 at 12:02, Bibek Kumar Patro
-<quic_bibekkum@quicinc.com> wrote:
->
->
->
-> On 12/21/2023 6:06 AM, Dmitry Baryshkov wrote:
-> > On Wed, 20 Dec 2023 at 15:39, Bibek Kumar Patro
-> > <quic_bibekkum@quicinc.com> wrote:
-> >>
-> >> Currently in Qualcomm  SoCs the default prefetch is set to 1 which allows
-> >> the TLB to fetch just the next page table. MMU-500 features ACTLR
-> >> register which is implementation defined and is used for Qualcomm SoCs
-> >> to have a custom prefetch setting enabling TLB to prefetch the next set
-> >> of page tables accordingly allowing for faster translations.
-> >>
-> >> ACTLR value is unique for each SMR (Stream matching register) and stored
-> >> in a pre-populated table. This value is set to the register during
-> >> context bank initialisation.
-> >>
-> >> Signed-off-by: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
-> >> ---
-> >>   drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 45 ++++++++++++++++++++++
-> >>   drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h |  6 ++-
-> >>   drivers/iommu/arm/arm-smmu/arm-smmu.c      |  5 ++-
-> >>   drivers/iommu/arm/arm-smmu/arm-smmu.h      |  5 +++
-> >>   4 files changed, 58 insertions(+), 3 deletions(-)
-> >>
-> >> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-> >> index 20c9836d859b..1cefdd0ca110 100644
-> >> --- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-> >> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-> >> @@ -24,6 +24,12 @@
-> >>   #define CPRE                   (1 << 1)
-> >>   #define CMTLB                  (1 << 0)
-> >>
-> >> +struct actlr_config {
-> >> +       u16 sid;
-> >> +       u16 mask;
-> >> +       u32 actlr;
-> >> +};
-> >> +
-> >>   static struct qcom_smmu *to_qcom_smmu(struct arm_smmu_device *smmu)
-> >>   {
-> >>          return container_of(smmu, struct qcom_smmu, smmu);
-> >> @@ -215,9 +221,38 @@ static bool qcom_adreno_can_do_ttbr1(struct arm_smmu_device *smmu)
-> >>          return true;
-> >>   }
-> >>
-> >> +static void qcom_smmu_set_actlr(struct device *dev, struct arm_smmu_device *smmu, int cbndx,
-> >> +               const struct actlr_config *actlrcfg)
-> >> +{
-> >> +       struct arm_smmu_master_cfg *cfg = dev_iommu_priv_get(dev);
-> >> +       struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
-> >> +       struct arm_smmu_smr *smr;
-> >> +       u16 mask;
-> >> +       int idx;
-> >> +       u16 id;
-> >> +       int i;
-> >> +
-> >> +       for (; actlrcfg->sid || actlrcfg->mask || actlrcfg->actlr; actlrcfg++) {
-> >> +               id = actlrcfg->sid;
-> >> +               mask = actlrcfg->mask;
-> >> +
-> >> +               for_each_cfg_sme(cfg, fwspec, i, idx) {
-> >> +                       smr = &smmu->smrs[idx];
-> >> +                       if (smr_is_subset(smr, id, mask)) {
-> >> +                               arm_smmu_cb_write(smmu, cbndx, ARM_SMMU_CB_ACTLR,
-> >> +                                               actlrcfg->actlr);
-> >> +                               break;
-> >> +                       }
-> >> +               }
-> >> +       }
-> >> +}
-> >> +
-> >>   static int qcom_adreno_smmu_init_context(struct arm_smmu_domain *smmu_domain,
-> >>                  struct io_pgtable_cfg *pgtbl_cfg, struct device *dev)
-> >>   {
-> >> +       struct arm_smmu_device *smmu = smmu_domain->smmu;
-> >> +       struct qcom_smmu *qsmmu = to_qcom_smmu(smmu);
-> >> +       int cbndx = smmu_domain->cfg.cbndx;
-> >>          struct adreno_smmu_priv *priv;
-> >>
-> >>          smmu_domain->cfg.flush_walk_prefer_tlbiasid = true;
-> >> @@ -248,6 +283,9 @@ static int qcom_adreno_smmu_init_context(struct arm_smmu_domain *smmu_domain,
-> >>          priv->set_stall = qcom_adreno_smmu_set_stall;
-> >>          priv->resume_translation = qcom_adreno_smmu_resume_translation;
-> >>
-> >> +       if (qsmmu->data->actlrcfg_gfx)
-> >> +               qcom_smmu_set_actlr(dev, smmu, cbndx, qsmmu->data->actlrcfg_gfx);
-> >
-> > There was a feedback point against v4 that there can be more than two
-> > (apps + gpu) SMMU devices. No, we can not use additional compat
-> > strings, the SMMU units are compatible with each other.
->
-> Just to understand better, did you mean if in the below check
-> [inside arm-smmu-qcom.c file during qcom_smmu_create()], "else" has two
-> things? (Currently adreno_impl for gpu smmu, else for only
-> apps smmu)
+On Wed, 2023-12-20 at 14:55 +0000, Christophe Leroy wrote:
+> > Le 19/12/2023 =C3=A0 14:34, Matthias Schiffer a =C3=A9crit=C2=A0:
+> > > > [Vous ne recevez pas souvent de courriers de matthias.schiffer@ew.t=
+q-group.com. D=C3=A9couvrez pourquoi ceci est important =C3=A0 https://aka.=
+ms/LearnAboutSenderIdentification ]
+> > > >=20
+> > > > On Mon, 2023-12-18 at 19:48 +0000, Christophe Leroy wrote:
+> > > > > > Hi Matthias,
+> > > > > >=20
+> > > > > > Le 18/12/2023 =C3=A0 14:48, Matthias Schiffer a =C3=A9crit :
+> > > > > > > > Hi all,
+> > > > > > > >=20
+> > > > > > > > I'm currently in the process of porting our ancient TQM5200=
+ SoM to a modern kernel, and I've
+> > > > > > > > identified a number of regressions that cause early boot fa=
+ilures (before the UART console has been
+> > > > > > > > initialized) with arch/powerpc/configs/52xx/tqm5200_defconf=
+ig.
+> > > > > >=20
+> > > > > > "modern" kernel =3D=3D> which version ?
+> > > >=20
+> > > > Hi Christophe,
+> > > >=20
+> > > > I was testing with torvalds/master as of yesterday, and bisected ev=
+erything from 4.14 to identify
+> > > > the commits related to the issues. For my current project, 6.1.y or=
+ 6.6.y will likely be our kernel
+> > > > of choice, but I'd also like to get mainline to a working state aga=
+in if possible.
+> > > >=20
+> > > > > >=20
+> > > > > > > >=20
+> > > > > > > > Issue 1) Boot fails with CONFIG_PPC_KUAP enabled (enabled b=
+y default since 9f5bd8f1471d7
+> > > > > > > > "powerpc/32s: Activate KUAP and KUEP by default"). The reas=
+on is a number of of_iomap() calls in
+> > > > > > > > arch/powerpc/platforms/52xx that should be early_ioremap().
+> > > > > >=20
+> > > > > > Can you give more details and what leads you to that conclusion=
+ ?
+> > > > > >=20
+> > > > > > There should be no relation between KUAP and of_iomap()/early_i=
+oremap().
+> > > > > > Problem is likely somewhere else.
+> > > >=20
+> > > > You are entirely right, the warnings about early_ioremap() were a r=
+ed hering. I can't reproduce any
+> > > > difference in boot behavior anymore I thought I was seeing when cha=
+nging the of_iomap() to
+> > > > early_ioremap(). I assume I got confused by testing for too many va=
+riables at once (kernel version +
+> > > > 2 Kconfig settings).
+> > > >=20
+> > > >=20
+> > > > > >=20
+> > > > > > > >=20
+> > > > > > > > I can fix this up easy enough for mpc5200_simple by changin=
+g mpc5200_setup_xlb_arbiter() to use
+> > > > > > > > early_ioremap() and moving mpc52xx_map_common_devices() fro=
+m the setup_arch to the init hook (one
+> > > > > > > > side effect is that mpc52xx_restart() only works a bit late=
+r, as it requires the mpc52xx_wdt mapping
+> > > > > > > > from mpc52xx_map_common_devices(); I'm not sure if there is=
+ a better solution).
+> > > > > > > >=20
+> > > > > > > > For the other 52xx platforms (efika, lite5200, media5200) t=
+hings are a bit more chaotic, and they
+> > > > > > > > create several more temporary mappings from setup_arch. Eit=
+her they should all be moved to the init
+> > > > > > > > hook as well, or be converted to early_ioremap(), but I can=
+'t tell which is more appropriate. As a
+> > > > > > > > first step, I would propose a patch that fixes this for the=
+ simple platforms and leaves the other
+> > > > > > > > ones unchanged.
+> > > > > > > >=20
+> > > > > > > > (Side note: I also found that before 16132529cee58 ("powerp=
+c/32s: Rework Kernel Userspace Access
+> > > > > > > > Protection"), boot would succeed even with KUAP enabled wit=
+hout changing the incorrect of_iomap(); I
+> > > > > > > > guess the old implementation was more lenient about the inc=
+orrect calls that the kernel warns
+> > > > > > > > about?)
+> > > > > >=20
+> > > > > > Interesting.
+> > > > > > Again, there shouldn't be any impact of those incorrect calls. =
+They are
+> > > > > > correct calls, it is just an historical method that we want to =
+get rid
+> > > > > > of on day.
+> > > > > > Could you then provide the dmesg of what/how it works here ? An=
+d then
+> > > > > > I'd also be interested in a dump of /sys/kernel/debug/kernel_pa=
+ge_tables
+> > > > > > and /sys/kernel/debug/powerpc/block_address_translation
+> > > > > > and /sys/kernel/debug/powerpc/segment_registers
+> > > > > >=20
+> > > > > > For that you'll need CONFIG_PTDUMP_DEBUGFS
+> > > >=20
+> > > > As it turns out, whatever issue existed with KUAP at the time when =
+it was changed to enabled by
+> > > > default for 32s (which was in 5.14) has been resolved in current ma=
+inline. Current torvalds/master
+> > > > boots fine with KUAP enabled, and only CONFIG_STRICT_KERNEL_RWX bre=
+aks the boot.
+> > > >=20
+> > > > > >=20
+> > > > > > > >=20
+> > > > > > > > Issue 2) Boot fails with CONFIG_STRICT_KERNEL_RWX enabled, =
+which is also the default nowadays.
+> > > > > > > >=20
+> > > > > > > > I have not found the cause of this boot failure yet; is the=
+re any way to debug this if the failure
+> > > > > > > > happens before the UART is available and I currently don't =
+have JTAG for this hardware?
+> > > > > >=20
+> > > > > > Shouldn't happen before UART is available, strict enforcement i=
+s
+> > > > > > perfomed by mark_readonly() and free_initmem() in the middle of
+> > > > > > kernel_init(). UART should be ON long before that.
+> > > > > >=20
+> > > > > > So it must be something in the setup that collides with CONFIG_=
+KUAP and
+> > > > > > CONFIG_STRICT_KERNEL_RWX.
+> > > > > >=20
+> > > > > > Could you send dmesg of when it works (ie without
+> > > > > > CONFIG_KUAP/CONFIG_STRICT_KERNEL_RWX) and when it doesn't work =
+if you
+> > > > > > get some initial stuff ?
+> > > >=20
+> > > > Here's the UART output of a working boot (CONFIG_STRICT_KERNEL_RWX =
+disabled; I have slightly
+> > > > extended tqm5200.dts to enable UART output of the cuImage wrapper):
+> > > >=20
+> > ...
+> > > >=20
+> > > > When boot doesn't work, the last messages I see are from the cuImag=
+e wrapper ("Finalizing device
+> > > > tree... flat tree at ...). The panic is expected, there is no rootf=
+s/initramfs in my current setup.
+> > > >=20
+> >=20
+> > Ok, so let's focus on CONFIG_STRICT_KERNEL_RWX then.
+> >=20
+> > The most efficient would be if you were able to activation your UART=
+=20
+> > console earlier and/or implement some PPC_EARLY_DEBUG stuff to see wher=
+e=20
+> > it fails.
+> >=20
+> > In your dmesg output, "Kernel memory protection not selected by kernel=
+=20
+> > config" is when the strict RWX gets activated when selected. Your UART=
+=20
+> > is enabled before that so if there was a problem with some driver=20
+> > writing in a RO area, it would be seen.
+> >=20
+> > One thing that came into my mind is that your CPU may have only 4 BATs=
+=20
+> > instead of 8. But I hacked the definition for the e300c2 CPU and my=20
+> > board still boots with only 4 BATs so it is not that.
+> > The thing is that to work properly, BATs should at least cover all=20
+> > kernel. But I built your kernel with your .config and GCC 11.3 and I go=
+t=20
+> > something that fits within 8M with the RO part stopping at 4M, so you'l=
+l=20
+> > have one 4M BAT set RO, then another 4M BAT set RW, one 8M and one 16M=
+=20
+> > BAT. It won't cover your entire 128M memory but shouldn't be a problem,=
+=20
+> > just less performant.
 
-qcom,adreno-smmu is quite unique here, this is the only distinctive
-substring. We do not have such compat strings for any other of SMMU
-nodes.
+Hi Christophe,
 
->
->           if (np && of_device_is_compatible(np, "qcom,adreno-smmu"))
->                   impl = data->adreno_impl;
->           else
->                   impl = data->impl;
->
-> > Please add
-> > matching between the smmu and particular actlr table using the IO
-> > address of the SMMU block.
-> >
->
-> The ACTLR table for each smmu will have A IO address attached, so based
-> on IO address we can apply ACTLR.
-> Is this your proposal((IMO hardcoding IO in driver won't be viable,
-> isn't it?), or in smmu DT we would need to set the IO?
+this seems indeed have something to do with the issue. mmu_mapin_ram() cont=
+ains a
+strict_kernel_rwx_enabled() check that explains the early boot failure (and=
+ as this is a runtime
+check, I can actually make the kernel boot by passing rodata=3Doff on the c=
+mdline!). I've added debug
+output show me the addresses in mmu_mapin_ram(): base=3D00000000 top=3D0800=
+0000 border=3D00400000.
+Modifying mmu_mapin_ram() to always use the !strict_kernel_rwx_enabled() pa=
+th makes the kernel boot
+until mark_readonly().
 
-Unfortunately, I meant exactly that: hardcoding addresses of the SMMU
-register spaces. see drivers/gpu/drm/msm/dsi_cfg.c
-Then during device probe the driver can match the IO address to the
-list of the per-platform ACTLR tables and select the correct one.
-Then you don't even need a special actlrcfg_gfx. The GFX will fall
-into the main schema.
+Removing MMU_FTR_USE_HIGH_BATS from mmu_features or changing find_free_bat(=
+) to only use 4 BATs
+regardless of MMU_FTR_USE_HIGH_BATS results in a working kernel, but it is =
+unclear to me why that
+would be necessary, as the MPC5200B manual clearly states that it has 8.
 
->
->
-> Thanks & regards,
-> Bibek
->
-> >> +
-> >>          return 0;
-> >>   }
-> >>
-> >> @@ -274,6 +312,13 @@ static const struct of_device_id qcom_smmu_client_of_match[] __maybe_unused = {
-> >>   static int qcom_smmu_init_context(struct arm_smmu_domain *smmu_domain,
-> >>                  struct io_pgtable_cfg *pgtbl_cfg, struct device *dev)
-> >>   {
-> >> +       struct arm_smmu_device *smmu = smmu_domain->smmu;
-> >> +       struct qcom_smmu *qsmmu = to_qcom_smmu(smmu);
-> >> +       int cbndx = smmu_domain->cfg.cbndx;
-> >> +
-> >> +       if (qsmmu->data->actlrcfg)
-> >> +               qcom_smmu_set_actlr(dev, smmu, cbndx, qsmmu->data->actlrcfg);
-> >> +
-> >
-> > One issue occured to me, while I was reviewing the patchset. The ACTLR
-> > settings are related to the whole SMMU setup, but we are applying them
-> > each time there is an SMMU context init (in other words, one per each
-> > domain). Is that correct? Or it's just that there is no better place
-> > for initialising the global register set? Would it be better to
-> > reprogram the ACTLR registers which are related just to this
-> > particular domain?
-> >
-> >>          smmu_domain->cfg.flush_walk_prefer_tlbiasid = true;
-> >>
-> >>          return 0;
-> >> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h
-> >> index f3b91963e234..cb4cb402c202 100644
-> >> --- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h
-> >> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h
-> >> @@ -1,6 +1,6 @@
-> >>   /* SPDX-License-Identifier: GPL-2.0-only */
-> >>   /*
-> >> - * Copyright (c) 2022, Qualcomm Innovation Center, Inc. All rights reserved.
-> >> + * Copyright (c) 2023, Qualcomm Innovation Center, Inc. All rights reserved.
-> >>    */
-> >>
-> >>   #ifndef _ARM_SMMU_QCOM_H
-> >> @@ -24,7 +24,11 @@ struct qcom_smmu_config {
-> >>          const u32 *reg_offset;
-> >>   };
-> >>
-> >> +struct actlr_config;
-> >> +
-> >>   struct qcom_smmu_match_data {
-> >> +       const struct actlr_config *actlrcfg;
-> >> +       const struct actlr_config *actlrcfg_gfx;
-> >>          const struct qcom_smmu_config *cfg;
-> >>          const struct arm_smmu_impl *impl;
-> >>          const struct arm_smmu_impl *adreno_impl;
-> >> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c b/drivers/iommu/arm/arm-smmu/arm-smmu.c
-> >> index d6d1a2a55cc0..0c7f700b27dd 100644
-> >> --- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
-> >> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
-> >> @@ -990,9 +990,10 @@ static int arm_smmu_find_sme(struct arm_smmu_device *smmu, u16 id, u16 mask)
-> >>                   * expect simply identical entries for this case, but there's
-> >>                   * no harm in accommodating the generalisation.
-> >>                   */
-> >> -               if ((mask & smrs[i].mask) == mask &&
-> >> -                   !((id ^ smrs[i].id) & ~smrs[i].mask))
-> >> +
-> >> +               if (smr_is_subset(&smrs[i], id, mask))
-> >>                          return i;
-> >> +
-> >>                  /*
-> >>                   * If the new entry has any other overlap with an existing one,
-> >>                   * though, then there always exists at least one stream ID
-> >> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.h b/drivers/iommu/arm/arm-smmu/arm-smmu.h
-> >> index 703fd5817ec1..2e4f65412c6b 100644
-> >> --- a/drivers/iommu/arm/arm-smmu/arm-smmu.h
-> >> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu.h
-> >> @@ -501,6 +501,11 @@ static inline void arm_smmu_writeq(struct arm_smmu_device *smmu, int page,
-> >>                  writeq_relaxed(val, arm_smmu_page(smmu, page) + offset);
-> >>   }
-> >>
-> >> +static inline bool smr_is_subset(struct arm_smmu_smr *smrs, u16 id, u16 mask)
-> >> +{
-> >> +       return (mask & smrs->mask) == mask && !((id ^ smrs->id) & ~smrs->mask);
-> >> +}
-> >> +
-> >>   #define ARM_SMMU_GR0           0
-> >>   #define ARM_SMMU_GR1           1
-> >>   #define ARM_SMMU_CB(s, n)      ((s)->numpage + (n))
-> >> --
-> >> 2.17.1
-> >>
-> >
-> >
+Regards,
+Matthias
+
+> >=20
+> > So what ? You said the size of the kernel is a problem for your=20
+> > bootloader. Could it be that ? When built with CONFIG_STRICT_KERNEL_RWX=
+,=20
+> > __end_rodata is aligned to 0xc0400000 whereas without=20
+> > CONFIG_STRICT_KERNEL_RWX __end_rodata is at 0xc038c000 and so the end o=
+f=20
+> > the kernel (seen from System.map) is 0xc0055e000 with=20
+> > CONFIG_STRICT_KERNEL_RWX and 0xc04de000 without it.
+> >=20
+> > One thing you can try is to see if it works without=20
+> > CONFIG_STRICT_KERNEL_RWX but with CONFIG_DATA_SHIFT forced to 22 which=
+=20
+> > is the value set when CONFIG_STRICT_KERNEL_RWX is selected.
+> > To be able to set that value, you'll have to hack arch/powerpc/Kconfig=
+=20
+> > directly and force it to select value 22 regardless of=20
+> > CONFIG_STRICT_KERNEL_RWX
 
 
 
--- 
-With best wishes
-Dmitry
+> >=20
+> > Christophe
+
+--=20
+TQ-Systems GmbH | M=C3=BChlstra=C3=9Fe 2, Gut Delling | 82229 Seefeld, Germ=
+any
+Amtsgericht M=C3=BCnchen, HRB 105018
+Gesch=C3=A4ftsf=C3=BChrer: Detlef Schneider, R=C3=BCdiger Stahl, Stefan Sch=
+neider
+https://www.tq-group.com/
 
