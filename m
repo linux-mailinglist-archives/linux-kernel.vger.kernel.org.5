@@ -1,174 +1,262 @@
-Return-Path: <linux-kernel+bounces-7704-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7705-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B5B281ABC9
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 01:35:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17BA481ABCE
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 01:37:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2510CB249E7
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 00:34:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3A2601C22607
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 00:36:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACF5DEDE;
-	Thu, 21 Dec 2023 00:34:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E00C291D;
+	Thu, 21 Dec 2023 00:36:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="khF2KoQH"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="BEV+sPUZ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A21710EB;
-	Thu, 21 Dec 2023 00:34:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE6E0C433C7;
-	Thu, 21 Dec 2023 00:34:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703118887;
-	bh=iBBX7JrvE5c6etj+HPKaqOuXmJxPA0RAWYdmPd5igvY=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=khF2KoQHa8tpe46/f6GzkGV2sspQ9qFZK67JOqx7kqwYMHaxat/IJCGJ0ZhRku8CG
-	 8E3EG2lgZ6U5KTbpR2XTtguWvXqnuLX9xWk66UN0avv/skUOb4cvE/AcK3rSshgfQ1
-	 X72I8Ow2PwcIwEvEAOfWKrGbObe47lb1mFn+CPY/gfrmNX5JHflApxSTFE51XFkPfD
-	 ecmHgAVqeEEjUvbeRQE1bsY8uaVtNnfCenoFDzI7cRFrNl0ZyeXA+INFoQGgleYxyr
-	 ZUhVobRNn94otdYHDJmB0eLHZUsR/6YluvBv5gdgjX55V6xoAsakOk3mzrmjdztZKR
-	 Qe50Z87CHFcCw==
-Date: Thu, 21 Dec 2023 09:34:42 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Daniel =?UTF-8?B?RMOtYXo=?= <daniel.diaz@linaro.org>
-Cc: Mark Brown <broonie@kernel.org>, Naresh Kamboju
- <naresh.kamboju@linaro.org>, Linux ARM
- <linux-arm-kernel@lists.infradead.org>, open list
- <linux-kernel@vger.kernel.org>, lkft-triage@lists.linaro.org, linux-stable
- <stable@vger.kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Catalin Marinas <catalin.marinas@arm.com>, Steven Rostedt
- <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, Marc Zyngier
- <maz@kernel.org>
-Subject: Re: selftests: ftrace: Internal error: Oops: sve_save_state
-Message-Id: <20231221093442.3c4b84f0d39350f9deb4e51f@kernel.org>
-In-Reply-To: <CAEUSe7_9tE5K7NpsmaG_v_bTJaMGhVVSDRhMn1QYnr2z4vSg8w@mail.gmail.com>
-References: <CA+G9fYtEGe_DhY2Ms7+L7NKsLYUomGsgqpdBj+QwDLeSg=JhGg@mail.gmail.com>
-	<ad5b7442-385d-41db-9202-a36414460610@sirena.org.uk>
-	<CA+G9fYsbwWpDVR9KJXx8UO5MXsYT81uAJbLLNDnLianr8jmXUA@mail.gmail.com>
-	<63e92a6a-9cb7-4272-b524-ccaf997aceb3@sirena.org.uk>
-	<CAEUSe7_9tE5K7NpsmaG_v_bTJaMGhVVSDRhMn1QYnr2z4vSg8w@mail.gmail.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A4E02561
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 00:36:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-5d226f51f71so3060577b3.3
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 16:36:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1703119007; x=1703723807; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=52y1ahZduqjo40YChB9AlBxr/Q7JfDmE1qCPV60HNow=;
+        b=BEV+sPUZQiEHi+b598jT1pW9ox7HGauMYmDGaScDgLcvmoD7LJWmqC3GK8mmfzCANi
+         S+eqZXLYBcwJlycDB805+cGQ4uICCGGqLudjPeo3OKzjbhIejp5aWxH3feyz15t7seuP
+         aeeqwiZx1n6sL6Ox89Dd3Pgbdj5YyDGogaU/2otzZbkJ6v/PbrJE69XofPCRUnVNTFnT
+         GNSb4clxFXmFLJVlsY2S9YNRWFMMUPyK3eQn+xsEEMVHxm84rmfEb1QWkU1nFpcGeTem
+         fWP2dwGJ0OxiAmP/A3b1Uk40xve5i3V4gDts/AJsJrdJjwD6g9JhlOkQ2+u0cBfGJpYR
+         Kl6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703119007; x=1703723807;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=52y1ahZduqjo40YChB9AlBxr/Q7JfDmE1qCPV60HNow=;
+        b=Mq4ljM5J6TncYCIlEY51riMdoEMfdrfl/wJ7F0sozAIops3a79+aggIEiQKW5yI64R
+         EhnY1HvLFhMLaSu4xOc3z6FHLxSPV9p4Sy5+6488qS9mz02QLMvBMngAAtIG9so4edSt
+         i+PoRDjCIR8Yb8H6D0KsTFAFvji9iesAn+S7xOZa/7mW+l8f/yjyc+MQKOSf8s9POSTW
+         RKKS6w2T8uv55WktwLDigxwTyDyvfdLYks7+QYnjnJfdhgXAL4QZSLC3k2GaxPyr1hBW
+         36vhmBjHEf/D4z3SN+yUJlvek5qkyzBnWhjmOVblLfkQD/KtIkA5EUH6BBRox+bSlM/U
+         fmDQ==
+X-Gm-Message-State: AOJu0Yy/cLvjSdzrNrJP4uLZu/IsfFRlmD18dg1zHqE7VyQod9FLvkYM
+	bF3CveFY3cPSYGFvTDTf+hSw5Blr4PQ22rjStDZqkA==
+X-Google-Smtp-Source: AGHT+IHkHNcya337dTlfQKVl03lNUFLq/kH/h1Uu5qYMcQLaQ9Qh9EPbr4UnWajObHAKa98WA3uiYhYGCq7sUCNg0qw=
+X-Received: by 2002:a81:7346:0:b0:5e8:2919:e65d with SMTP id
+ o67-20020a817346000000b005e82919e65dmr578578ywc.81.1703119007370; Wed, 20 Dec
+ 2023 16:36:47 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0
+References: <20231220133808.5654-1-quic_bibekkum@quicinc.com> <20231220133808.5654-4-quic_bibekkum@quicinc.com>
+In-Reply-To: <20231220133808.5654-4-quic_bibekkum@quicinc.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Thu, 21 Dec 2023 02:36:36 +0200
+Message-ID: <CAA8EJpo8X+jfi20N9P7kUshxe6_7pwQe8G0Q02JDuB8ozH7hLA@mail.gmail.com>
+Subject: Re: [PATCH v6 3/5] iommu/arm-smmu: introduction of ACTLR for custom
+ prefetcher settings
+To: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+Cc: will@kernel.org, robin.murphy@arm.com, joro@8bytes.org, 
+	konrad.dybcio@linaro.org, jsnitsel@redhat.com, quic_bjorande@quicinc.com, 
+	mani@kernel.org, quic_eberman@quicinc.com, robdclark@chromium.org, 
+	u.kleine-koenig@pengutronix.de, robh@kernel.org, vladimir.oltean@nxp.com, 
+	quic_pkondeti@quicinc.com, quic_molvera@quicinc.com, 
+	linux-arm-msm@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	iommu@lists.linux.dev, linux-kernel@vger.kernel.org, 
+	qipl.kernel.upstream@quicinc.com
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Daniel,
+On Wed, 20 Dec 2023 at 15:39, Bibek Kumar Patro
+<quic_bibekkum@quicinc.com> wrote:
+>
+> Currently in Qualcomm  SoCs the default prefetch is set to 1 which allows
+> the TLB to fetch just the next page table. MMU-500 features ACTLR
+> register which is implementation defined and is used for Qualcomm SoCs
+> to have a custom prefetch setting enabling TLB to prefetch the next set
+> of page tables accordingly allowing for faster translations.
+>
+> ACTLR value is unique for each SMR (Stream matching register) and stored
+> in a pre-populated table. This value is set to the register during
+> context bank initialisation.
+>
+> Signed-off-by: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+> ---
+>  drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 45 ++++++++++++++++++++++
+>  drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h |  6 ++-
+>  drivers/iommu/arm/arm-smmu/arm-smmu.c      |  5 ++-
+>  drivers/iommu/arm/arm-smmu/arm-smmu.h      |  5 +++
+>  4 files changed, 58 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+> index 20c9836d859b..1cefdd0ca110 100644
+> --- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+> @@ -24,6 +24,12 @@
+>  #define CPRE                   (1 << 1)
+>  #define CMTLB                  (1 << 0)
+>
+> +struct actlr_config {
+> +       u16 sid;
+> +       u16 mask;
+> +       u32 actlr;
+> +};
+> +
+>  static struct qcom_smmu *to_qcom_smmu(struct arm_smmu_device *smmu)
+>  {
+>         return container_of(smmu, struct qcom_smmu, smmu);
+> @@ -215,9 +221,38 @@ static bool qcom_adreno_can_do_ttbr1(struct arm_smmu_device *smmu)
+>         return true;
+>  }
+>
+> +static void qcom_smmu_set_actlr(struct device *dev, struct arm_smmu_device *smmu, int cbndx,
+> +               const struct actlr_config *actlrcfg)
+> +{
+> +       struct arm_smmu_master_cfg *cfg = dev_iommu_priv_get(dev);
+> +       struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
+> +       struct arm_smmu_smr *smr;
+> +       u16 mask;
+> +       int idx;
+> +       u16 id;
+> +       int i;
+> +
+> +       for (; actlrcfg->sid || actlrcfg->mask || actlrcfg->actlr; actlrcfg++) {
+> +               id = actlrcfg->sid;
+> +               mask = actlrcfg->mask;
+> +
+> +               for_each_cfg_sme(cfg, fwspec, i, idx) {
+> +                       smr = &smmu->smrs[idx];
+> +                       if (smr_is_subset(smr, id, mask)) {
+> +                               arm_smmu_cb_write(smmu, cbndx, ARM_SMMU_CB_ACTLR,
+> +                                               actlrcfg->actlr);
+> +                               break;
+> +                       }
+> +               }
+> +       }
+> +}
+> +
+>  static int qcom_adreno_smmu_init_context(struct arm_smmu_domain *smmu_domain,
+>                 struct io_pgtable_cfg *pgtbl_cfg, struct device *dev)
+>  {
+> +       struct arm_smmu_device *smmu = smmu_domain->smmu;
+> +       struct qcom_smmu *qsmmu = to_qcom_smmu(smmu);
+> +       int cbndx = smmu_domain->cfg.cbndx;
+>         struct adreno_smmu_priv *priv;
+>
+>         smmu_domain->cfg.flush_walk_prefer_tlbiasid = true;
+> @@ -248,6 +283,9 @@ static int qcom_adreno_smmu_init_context(struct arm_smmu_domain *smmu_domain,
+>         priv->set_stall = qcom_adreno_smmu_set_stall;
+>         priv->resume_translation = qcom_adreno_smmu_resume_translation;
+>
+> +       if (qsmmu->data->actlrcfg_gfx)
+> +               qcom_smmu_set_actlr(dev, smmu, cbndx, qsmmu->data->actlrcfg_gfx);
 
-Would you know what ftrace selftest testcase script is running when
-this crash happened? I think it depends on the selftest version but
-I don't know which one you run.
+There was a feedback point against v4 that there can be more than two
+(apps + gpu) SMMU devices. No, we can not use additional compat
+strings, the SMMU units are compatible with each other. Please add
+matching between the smmu and particular actlr table using the IO
+address of the SMMU block.
 
-Thank you,
+> +
+>         return 0;
+>  }
+>
+> @@ -274,6 +312,13 @@ static const struct of_device_id qcom_smmu_client_of_match[] __maybe_unused = {
+>  static int qcom_smmu_init_context(struct arm_smmu_domain *smmu_domain,
+>                 struct io_pgtable_cfg *pgtbl_cfg, struct device *dev)
+>  {
+> +       struct arm_smmu_device *smmu = smmu_domain->smmu;
+> +       struct qcom_smmu *qsmmu = to_qcom_smmu(smmu);
+> +       int cbndx = smmu_domain->cfg.cbndx;
+> +
+> +       if (qsmmu->data->actlrcfg)
+> +               qcom_smmu_set_actlr(dev, smmu, cbndx, qsmmu->data->actlrcfg);
+> +
 
-On Wed, 20 Dec 2023 18:06:53 -0600
-Daniel Díaz <daniel.diaz@linaro.org> wrote:
+One issue occured to me, while I was reviewing the patchset. The ACTLR
+settings are related to the whole SMMU setup, but we are applying them
+each time there is an SMMU context init (in other words, one per each
+domain). Is that correct? Or it's just that there is no better place
+for initialising the global register set? Would it be better to
+reprogram the ACTLR registers which are related just to this
+particular domain?
 
-> Hello!
-> 
-> On Thu, 19 Oct 2023 at 11:26, Mark Brown <broonie@kernel.org> wrote:
-> > On Thu, Oct 19, 2023 at 09:07:02PM +0530, Naresh Kamboju wrote:
-> > > On Tue, 17 Oct 2023 at 17:52, Mark Brown <broonie@kernel.org> wrote:
-> [...]
-> > > > To confirm have you seen this on other stables as well or is this only
-> > > > v6.5?  For how long have you been seeing this?
-> >
-> > > This is only seen on 6.5.8-rc2 and seen only once.
-> > > I have checked on mainline / next and other stable branches and this crash
-> > > is not seen anywhere else.
-> >
-> > > However, I will keep checking them on other branches and next and mainline.
-> >
-> > I see.  If the bug has never been reproduced I don't think we can draw
-> > any conclusion about which branches are affected, I would be a bit
-> > surprised by something that affects v6.5 only.
-> 
-> We have been seeing this problem in other instances, specifically on
-> the following kernels:
-> * 5.15.132, 5.15.134-rc1, 5.15.135, 5.15.136-rc1, 5.15.142, 5.15.145-rc1
-> * 6.1.42, 6.1.43, 6.1.51-rc1, 6.1.56-rc1, 6.1.59-rc1, 6.1.63
-> * 6.3.10, 6.3.11
-> * 6.4.7
-> * 6.5.2, 6.5.10-rc2
-> 
-> Most recent case is for the current 5.15 RC. Decoded stack trace is here:
-> -----8<-----
->   <4>[   29.297166] ------------[ cut here ]------------
->   <4>[ 29.298039] WARNING: CPU: 1 PID: 220 at
-> arch/arm64/kernel/fpsimd.c:950 do_sve_acc
-> (/builds/linux/arch/arm64/kernel/fpsimd.c:950 (discriminator 1))
->   <4>[   29.300418] Modules linked in: fuse drm dm_mod ip_tables x_tables
->   <4>[   29.302720] CPU: 1 PID: 220 Comm: systemd-udevd Not tainted
-> 5.15.145-rc1 #1
->   <4>[   29.303601] Hardware name: linux,dummy-virt (DT)
->   <4>[   29.304804] pstate: 40400009 (nZcv daif +PAN -UAO -TCO -DIT
-> -SSBS BTYPE=--)
->   <4>[ 29.305615] pc : do_sve_acc
-> (/builds/linux/arch/arm64/kernel/fpsimd.c:950 (discriminator 1))
->   <4>[ 29.306499] lr : do_sve_acc
-> (/builds/linux/arch/arm64/include/asm/jump_label.h:38
-> /builds/linux/arch/arm64/include/asm/lse.h:24
-> /builds/linux/arch/arm64/include/asm/atomic.h:86
-> /builds/linux/include/linux/atomic/atomic-long.h:335
-> /builds/linux/include/asm-generic/bitops/atomic.h:42
-> /builds/linux/include/asm-generic/bitops/instrumented-atomic.h:71
-> /builds/linux/include/linux/thread_info.h:108
-> /builds/linux/arch/arm64/kernel/fpsimd.c:949)
->   <4>[   29.307466] sp : ffff8000083b3e60
->   <4>[   29.308447] x29: ffff8000083b3e60 x28: ffff0000c2f42000 x27:
-> 0000000000000000
->   <4>[   29.310500] x26: 0000000000000000 x25: 0000000000000000 x24:
-> 0000000000000000
->   <4>[   29.312034] x23: 0000000080001000 x22: 0000ffffb3c8a454 x21:
-> 00000000ffffffff
->   <4>[   29.313338] x20: 0000000064000000 x19: ffff0000c2f42000 x18:
-> 0000000000000000
->   <4>[   29.314636] x17: 0000000000000000 x16: 0000000000000000 x15:
-> 0000000000000000
->   <4>[   29.316090] x14: 0000000000000000 x13: 0000000000000000 x12:
-> 0000000000000000
->   <4>[   29.317096] x11: 0000000000000000 x10: 0000000000000000 x9 :
-> ffffb047a36178f4
->   <4>[   29.318131] x8 : ffff0000c2c4d888 x7 : 0000000000000000 x6 :
-> 0000000000000200
->   <4>[   29.319171] x5 : ffffb047a5c6f260 x4 : 0000000000000200 x3 :
-> 0000000000000001
->   <4>[   29.320180] x2 : 0000000000000000 x1 : ffff4fb95a329000 x0 :
-> 0000000000800800
->   <4>[   29.321599] Call trace:
->   <4>[ 29.321996] do_sve_acc
-> (/builds/linux/arch/arm64/kernel/fpsimd.c:950 (discriminator 1))
->   <4>[ 29.322674] el0_sve_acc
-> (/builds/linux/arch/arm64/include/asm/daifflags.h:28
-> /builds/linux/arch/arm64/kernel/entry-common.c:129
-> /builds/linux/arch/arm64/kernel/entry-common.c:138
-> /builds/linux/arch/arm64/kernel/entry-common.c:529)
->   <4>[ 29.323273] el0t_64_sync_handler
-> (/builds/linux/arch/arm64/kernel/entry-common.c:639)
->   <4>[ 29.323951] el0t_64_sync (/builds/linux/arch/arm64/kernel/entry.S:584)
->   <4>[   29.324598] ---[ end trace b31d3b95f436e1b5 ]---
-> ----->8-----
-> 
-> Complete log (and reproducer) here:
->   https://tuxapi.tuxsuite.com/v1/groups/linaro/projects/lkft/tests/2ZoYpOR79EjlFiAuFHeOWN2rwC3
-> 
-> Artifacts (including vmlinux and System.map) can be found here:
->   https://storage.tuxsuite.com/public/linaro/lkft/builds/2ZoYoIewSKk26jISEo4QlNaOvVR/
-> 
-> Greetings!
-> 
-> Daniel Díaz
-> daniel.diaz@linaro.org
+>         smmu_domain->cfg.flush_walk_prefer_tlbiasid = true;
+>
+>         return 0;
+> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h
+> index f3b91963e234..cb4cb402c202 100644
+> --- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h
+> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h
+> @@ -1,6 +1,6 @@
+>  /* SPDX-License-Identifier: GPL-2.0-only */
+>  /*
+> - * Copyright (c) 2022, Qualcomm Innovation Center, Inc. All rights reserved.
+> + * Copyright (c) 2023, Qualcomm Innovation Center, Inc. All rights reserved.
+>   */
+>
+>  #ifndef _ARM_SMMU_QCOM_H
+> @@ -24,7 +24,11 @@ struct qcom_smmu_config {
+>         const u32 *reg_offset;
+>  };
+>
+> +struct actlr_config;
+> +
+>  struct qcom_smmu_match_data {
+> +       const struct actlr_config *actlrcfg;
+> +       const struct actlr_config *actlrcfg_gfx;
+>         const struct qcom_smmu_config *cfg;
+>         const struct arm_smmu_impl *impl;
+>         const struct arm_smmu_impl *adreno_impl;
+> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+> index d6d1a2a55cc0..0c7f700b27dd 100644
+> --- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
+> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+> @@ -990,9 +990,10 @@ static int arm_smmu_find_sme(struct arm_smmu_device *smmu, u16 id, u16 mask)
+>                  * expect simply identical entries for this case, but there's
+>                  * no harm in accommodating the generalisation.
+>                  */
+> -               if ((mask & smrs[i].mask) == mask &&
+> -                   !((id ^ smrs[i].id) & ~smrs[i].mask))
+> +
+> +               if (smr_is_subset(&smrs[i], id, mask))
+>                         return i;
+> +
+>                 /*
+>                  * If the new entry has any other overlap with an existing one,
+>                  * though, then there always exists at least one stream ID
+> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.h b/drivers/iommu/arm/arm-smmu/arm-smmu.h
+> index 703fd5817ec1..2e4f65412c6b 100644
+> --- a/drivers/iommu/arm/arm-smmu/arm-smmu.h
+> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu.h
+> @@ -501,6 +501,11 @@ static inline void arm_smmu_writeq(struct arm_smmu_device *smmu, int page,
+>                 writeq_relaxed(val, arm_smmu_page(smmu, page) + offset);
+>  }
+>
+> +static inline bool smr_is_subset(struct arm_smmu_smr *smrs, u16 id, u16 mask)
+> +{
+> +       return (mask & smrs->mask) == mask && !((id ^ smrs->id) & ~smrs->mask);
+> +}
+> +
+>  #define ARM_SMMU_GR0           0
+>  #define ARM_SMMU_GR1           1
+>  #define ARM_SMMU_CB(s, n)      ((s)->numpage + (n))
+> --
+> 2.17.1
+>
 
 
 -- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+With best wishes
+Dmitry
 
