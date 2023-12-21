@@ -1,128 +1,88 @@
-Return-Path: <linux-kernel+bounces-7839-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7838-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78EE081AE13
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 05:36:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 21A1281AE12
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 05:36:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BA93FB24B10
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 04:36:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CA7221F230DF
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 04:36:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABCF879DC;
-	Thu, 21 Dec 2023 04:36:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C097A8F48;
+	Thu, 21 Dec 2023 04:36:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PudtbnkL"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail115-95.sinamail.sina.com.cn (mail115-95.sinamail.sina.com.cn [218.30.115.95])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B486AD31
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 04:36:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
-X-SMAIL-HELO: localhost.localdomain
-Received: from unknown (HELO localhost.localdomain)([113.88.49.212])
-	by sina.com (172.16.235.24) with ESMTP
-	id 6583C0C900000A3E; Thu, 21 Dec 2023 12:36:28 +0800 (CST)
-X-Sender: hdanton@sina.com
-X-Auth-ID: hdanton@sina.com
-Authentication-Results: sina.com;
-	 spf=none smtp.mailfrom=hdanton@sina.com;
-	 dkim=none header.i=none;
-	 dmarc=none action=none header.from=hdanton@sina.com
-X-SMAIL-MID: 21665445089237
-X-SMAIL-UIID: B4CE006B2F90456F9A9BAB35FC041D79-20231221-123628-1
-From: Hillf Danton <hdanton@sina.com>
-To: syzbot <syzbot+d4d8c0fd15a0abe39bcf@syzkaller.appspotmail.com>
-Cc: linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [net?] KASAN: slab-use-after-free Read in taprio_dump
-Date: Thu, 21 Dec 2023 12:36:15 +0800
-Message-Id: <20231221043616.1182-1-hdanton@sina.com>
-In-Reply-To: <0000000000000467ea060cc9a24b@google.com>
-References: <0000000000000467ea060cc9a24b@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 039CBAD31;
+	Thu, 21 Dec 2023 04:36:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5EA1DC433C8;
+	Thu, 21 Dec 2023 04:36:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703133385;
+	bh=Ye0z8hSnZkvGRVITl2wlNpanlqLTvzdlfbhdatzGoR4=;
+	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+	b=PudtbnkLI0SC9Z0NDsUUSzMU0ipAjqo60oSzraQ7xsNN3sdgdBZAAUxAiLxBLQcxm
+	 C3r9vtGIiK4fwmrQce1zVRLHaZD+6R1nASG367QBQV0YIgHS10p7UUpjKFcOP9fhuV
+	 M0dPvCvdsLHf3kD/dx9weNUjr8R575aiZvYX27vMePLLepvRuWwrXz6BsR6fDcHTll
+	 Lanq0JZV+JeXdzeAQRndBdLNx2P02z2ViR6g1fozSAe30hXvqka96EGodMSbJzaWYM
+	 P+2XObkg0V6nk0JfnilGyuUV2PZLi6oaBTdKjRsZL59k89Nbsgf1GWNO+sYPOdVqPA
+	 lHZkPIkJ7EDtQ==
+Message-ID: <d0fe9a3302f8c367a26dd5b4b1b29c68.sboyd@kernel.org>
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20231220-sa8295p-gpu-v1-2-d8cdf2257f97@quicinc.com>
+References: <20231220-sa8295p-gpu-v1-0-d8cdf2257f97@quicinc.com> <20231220-sa8295p-gpu-v1-2-d8cdf2257f97@quicinc.com>
+Subject: Re: [PATCH 2/8] clk: qcom: gdsc: Enable supply reglator in GPU GX handler
+From: Stephen Boyd <sboyd@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Bjorn Andersson <quic_bjorande@quicinc.com>
+To: Bjorn Andersson <andersson@kernel.org>, Bjorn Andersson <quic_bjorande@quicinc.com>, Catalin Marinas <catalin.marinas@arm.com>, Conor Dooley <conor+dt@kernel.org>, Johan Hovold <johan+linaro@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Michael Turquette <mturquette@baylibre.com>, Rob Herring <robh+dt@kernel.org>, Taniya Das <quic_tdas@quicinc.com>, Ulf Hansson <ulf.hansson@linaro.org>, Will Deacon <will@kernel.org>
+Date: Wed, 20 Dec 2023 20:36:23 -0800
+User-Agent: alot/0.10
 
-On Mon, 18 Dec 2023 06:33:26 -0800
-> HEAD commit:    d5b235ec8eab Merge branch 'for-next/core' into for-kernelci
-> git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15e40371e80000
+Quoting Bjorn Andersson (2023-12-20 19:50:36)
+> The GX GDSC is modelled to aid the GMU in powering down the GPU in the
+> event that the GPU crashes, so that it can be restarted again. But in
+> the event that the power-domain is supplied through a dedicated
+> regulator (in contrast to being a subdomin of another power-domain),
+> something needs to turn that regulator on, both to make sure things are
+> powered and to match the operation in gdsc_disable().
+>=20
+> Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
+> ---
+>  drivers/clk/qcom/gdsc.c | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/clk/qcom/gdsc.c b/drivers/clk/qcom/gdsc.c
+> index 5358e28122ab..d1139c895503 100644
+> --- a/drivers/clk/qcom/gdsc.c
+> +++ b/drivers/clk/qcom/gdsc.c
+> @@ -557,7 +557,13 @@ void gdsc_unregister(struct gdsc_desc *desc)
+>   */
+>  int gdsc_gx_do_nothing_enable(struct generic_pm_domain *domain)
+>  {
+> +       struct gdsc *sc =3D domain_to_gdsc(domain);
+> +       int ret =3D 0;
+> +
+>         /* Do nothing but give genpd the impression that we were successf=
+ul */
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git  d5b235ec8eab
+Update this comment.
 
---- x/net/sched/sch_taprio.c
-+++ y/net/sched/sch_taprio.c
-@@ -1941,6 +1941,9 @@ static int taprio_change(struct Qdisc *s
- 
- 	/* Protects against enqueue()/dequeue() */
- 	spin_lock_bh(qdisc_lock(sch));
-+	spin_lock_irqsave(&q->current_entry_lock, flags);
-+	oper = rtnl_dereference(q->oper_sched);
-+	admin = rtnl_dereference(q->admin_sched);
- 
- 	if (tb[TCA_TAPRIO_ATTR_TXTIME_DELAY]) {
- 		if (!TXTIME_ASSIST_IS_ENABLED(q->flags)) {
-@@ -1981,17 +1984,12 @@ static int taprio_change(struct Qdisc *s
- 	} else {
- 		setup_first_end_time(q, new_admin, start);
- 
--		/* Protects against advance_sched() */
--		spin_lock_irqsave(&q->current_entry_lock, flags);
--
- 		taprio_start_sched(sch, start, new_admin);
- 
- 		rcu_assign_pointer(q->admin_sched, new_admin);
- 		if (admin)
- 			call_rcu(&admin->rcu, taprio_free_sched_cb);
- 
--		spin_unlock_irqrestore(&q->current_entry_lock, flags);
--
- 		if (FULL_OFFLOAD_IS_ENABLED(q->flags))
- 			taprio_offload_config_changed(q);
- 	}
-@@ -2004,6 +2002,7 @@ static int taprio_change(struct Qdisc *s
- 				   "Size table not specified, frame length estimations may be inaccurate");
- 
- unlock:
-+	spin_unlock_irqrestore(&q->current_entry_lock, flags);
- 	spin_unlock_bh(qdisc_lock(sch));
- 
- free_sched:
-@@ -2393,6 +2392,7 @@ static int taprio_dump(struct Qdisc *sch
- 	struct sched_gate_list *oper, *admin;
- 	struct tc_mqprio_qopt opt = { 0 };
- 	struct nlattr *nest, *sched_nest;
-+	int active = hrtimer_cancel(&q->advance_timer);
- 
- 	oper = rtnl_dereference(q->oper_sched);
- 	admin = rtnl_dereference(q->admin_sched);
-@@ -2436,6 +2436,10 @@ static int taprio_dump(struct Qdisc *sch
- 	nla_nest_end(skb, sched_nest);
- 
- done:
-+	if (active)
-+		hrtimer_start(&q->advance_timer,
-+				hrtimer_get_expires(&q->advance_timer),
-+				HRTIMER_MODE_ABS);
- 	return nla_nest_end(skb, nest);
- 
- admin_error:
-@@ -2445,6 +2449,10 @@ options_error:
- 	nla_nest_cancel(skb, nest);
- 
- start_error:
-+	if (active)
-+		hrtimer_start(&q->advance_timer,
-+				hrtimer_get_expires(&q->advance_timer),
-+				HRTIMER_MODE_ABS);
- 	return -ENOSPC;
- }
- 
---
+> -       return 0;
+> +       if (sc->rsupply)
+> +               ret =3D regulator_enable(sc->rsupply);
+> +
+> +       return ret;
+>  }
 
