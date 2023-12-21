@@ -1,168 +1,146 @@
-Return-Path: <linux-kernel+bounces-8194-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8193-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D5EA81B369
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 11:20:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF7BB81B367
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 11:20:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8CBD92864BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 10:20:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9A2F728691B
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 10:20:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58A4E51C3A;
-	Thu, 21 Dec 2023 10:20:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DC994F890;
+	Thu, 21 Dec 2023 10:20:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="GLCWmb80"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="EudNFrUg"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-vk1-f171.google.com (mail-vk1-f171.google.com [209.85.221.171])
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32FB551C33
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 10:20:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-vk1-f171.google.com with SMTP id 71dfb90a1353d-4b6be94d512so989331e0c.1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 02:20:07 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12A634F20E
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 10:20:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-40c2db2ee28so7527225e9.2
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 02:20:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1703154007; x=1703758807; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=03hQ4xDH3ZdArEtlBeQWM6+JQhq7YbGI4xUxwEElpFc=;
-        b=GLCWmb80ulkj1cUuoQsoImKjrKl/pUq3AfImb4zTiiU+VQW6YbCXDCpZXoewFr1EkO
-         z7ItTfR2EUJdwJDMXfeuThrRc+3B1cipuMRp1vwK9ToybzEPkkjJ7hnobAKeBf6OJbl7
-         pn5GShfu1BGCeYYRtLv8l+Iq93NlH8s4mfr9wPdzTJ44QexmusTt5LIkbnajPoneG6wF
-         KWvXgJO17G3Qi9PylOA4UvgNMPWmIyKpgNw4VerBcDoxOmuLVV7z8PF6F5YIRKbH5hE2
-         TXW5fx7ZOLKV5UciY1K5gTuFrVTnfq4xN4xKIYGUFixoVikXYmE+SBgXDTiz6iZOk1pA
-         7neg==
+        d=linaro.org; s=google; t=1703153999; x=1703758799; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ncgABTCdGBw0CAzWbFnnfumaUfHdt8Nbmu7o0Ioedpw=;
+        b=EudNFrUgFuhO51GHl5kbFhUxOY6xTnWxpBf4IU3RBZbODu60kx6EILafDBa9tHF6H9
+         fdmPk5/DtO8gm6a9u4dB86oRrDfrUhLaE9zG1U5R0Y5IDNiXCuWj9C6324IZowPewl5d
+         9uQVlcr1xE5IR53Lg2AvcLXiWl/Fgr54apz7zF2mX+aXDY42nMe0q6rUv6o/Db45RMfh
+         h7j8xgh2tVTI2olgXxj0XckLsH3oNYF5D36WcFo6Rnm77m3LHmTrjQOPQff8OjvtVNu8
+         Ylm0qimlP8b+pciPi5TMzEIqAs+6JDztinVwr5oJx1aKSB1WCy1aNMve1Gd9P71kRo8D
+         kM9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703154007; x=1703758807;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=03hQ4xDH3ZdArEtlBeQWM6+JQhq7YbGI4xUxwEElpFc=;
-        b=LyWoOWlbw2FQCjU4dDdZxPPXJoru7Q0dZd5Ex9HaUnNM4E+Iv44y+oYM4tFpj009JH
-         gLhwS7tVvwQ9Pl4COiRxuelnRsIabXU6TdNgMMpLJ1Gfntn2gsDLE7aXwrDSPckkF7/4
-         s8mqwVz3HrJzny6uiXDcYzlmo1Z09e9KixOmiYeZP4+rF9zhOSixcB0Yof04EwW5M31Y
-         KwhhsisrlK+Nrx0w87+l5f7z0rjYlDLZ0wizb2bosCqZaf3SpL3BaqU/I3dAcyE+UmcQ
-         7C8uR4vL/KTc3qPaHx4/5Vm7zSLMYfO/WZKuWuJUOkOuUB6FOKKfvGfnxXi1VUIaufQL
-         nu6w==
-X-Gm-Message-State: AOJu0YzoxqHxHXqG4JdsileluCyY1ThhJq419UXS9x4HJ4Y6m2Ry3QVN
-	YQabOBXGTx7qk7L/Quus29FYmR0lOVlSsk11mMaJw6zBE/gRAg==
-X-Google-Smtp-Source: AGHT+IF7JcaUe7esEAOgMsDE8x43U2N9OCJ++O3rTCKcYNxpvMih3JiYiKgj/YASzRkyb5lC7vXlxWIfVjMTcmMVpJQ=
-X-Received: by 2002:a05:6122:3119:b0:4b6:dbc2:1079 with SMTP id
- cg25-20020a056122311900b004b6dbc21079mr168382vkb.0.1703154006993; Thu, 21 Dec
- 2023 02:20:06 -0800 (PST)
+        d=1e100.net; s=20230601; t=1703153999; x=1703758799;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ncgABTCdGBw0CAzWbFnnfumaUfHdt8Nbmu7o0Ioedpw=;
+        b=K2Eq9N9PE+pPKrmq/8aRD8fPI8x2pLP1hvt/CZX+SguArA3FZ9LlZetTe3IhZVPGnV
+         1iPNB8UhJTYKgFJCgjFDwuTD5wIua5ajL9pa/CrD+dyaOvY61LtlOuS8IwhKnvbCCe7y
+         aikO6R0ULdyEK6gfzAMlnvv0dYBzpSZpjaVEv/nH9/MlEDXlOljnNsvHyOx/m9OMMVFg
+         u5bgoU3yldzDVs3ot0MuGKfmVNULdBOIC50huDXd6BV/twIo6aCWuvBT73xGi0kW2ztM
+         q6AhUbyGBAZefc/7RizlYsSnPFGO0YmSzNi6ama7GQzkDCbfi+5/VYpFWnMKQfQCJDWv
+         2UYQ==
+X-Gm-Message-State: AOJu0YwAsTK04BSvOMm6zz0WyszwiiXbmBo0ZeNp9Kn5L6Eqvv8SHEyE
+	VaPSJKwVhmdAHFwbcpaZr6bGmg==
+X-Google-Smtp-Source: AGHT+IFg88O/OHFdh5msbuWj8UlRrpIJ55OkeR2K7Sdmc5pIObNzWxGViQXX4T11YRZDFKQZ5NwONw==
+X-Received: by 2002:a05:600c:34d3:b0:40d:18c4:d744 with SMTP id d19-20020a05600c34d300b0040d18c4d744mr634990wmq.97.1703153999252;
+        Thu, 21 Dec 2023 02:19:59 -0800 (PST)
+Received: from krzk-bin.. ([78.10.206.178])
+        by smtp.gmail.com with ESMTPSA id p9-20020a170907910900b00a26ac5e3683sm125186ejq.100.2023.12.21.02.19.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Dec 2023 02:19:58 -0800 (PST)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: Olof Johansson <olof@lixom.net>,
+	Arnd Bergmann <arnd@arndb.de>,
+	arm@kernel.org,
+	soc@kernel.org
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	linux-kernel@vger.kernel.org,
+	Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [GIT PULL] memory: drivers for v6.8, part two
+Date: Thu, 21 Dec 2023 11:19:56 +0100
+Message-Id: <20231221101956.16351-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231219101620.4617-1-xiongxin@kylinos.cn> <20231220022901.29158-1-xiongxin@kylinos.cn>
-In-Reply-To: <20231220022901.29158-1-xiongxin@kylinos.cn>
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Thu, 21 Dec 2023 11:19:55 +0100
-Message-ID: <CAMRc=Md7ODHUSe2fa37NazgJoV5aGXRh1Pp24LcFc49=UXgnwA@mail.gmail.com>
-Subject: Re: [PATCH v5] gpio: dwapb: mask/unmask IRQ when disable/enale it
-To: xiongxin <xiongxin@kylinos.cn>
-Cc: fancer.lancer@gmail.com, hoan@os.amperecomputing.com, 
-	linus.walleij@linaro.org, andy@kernel.org, linux-gpio@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, stable@kernel.org, 
-	Riwen Lu <luriwen@kylinos.cn>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Wed, Dec 20, 2023 at 3:29=E2=80=AFAM xiongxin <xiongxin@kylinos.cn> wrot=
-e:
->
-> In the hardware implementation of the I2C HID driver based on DesignWare
-> GPIO IRQ chip, when the user continues to use the I2C HID device in the
-> suspend process, the I2C HID interrupt will be masked after the resume
-> process is finished.
->
-> This is because the disable_irq()/enable_irq() of the DesignWare GPIO
-> driver does not synchronize the IRQ mask register state. In normal use
-> of the I2C HID procedure, the GPIO IRQ irq_mask()/irq_unmask() functions
-> are called in pairs. In case of an exception, i2c_hid_core_suspend()
-> calls disable_irq() to disable the GPIO IRQ. With low probability, this
-> causes irq_unmask() to not be called, which causes the GPIO IRQ to be
-> masked and not unmasked in enable_irq(), raising an exception.
->
-> Add synchronization to the masked register state in the
-> dwapb_irq_enable()/dwapb_irq_disable() function. mask the GPIO IRQ
-> before disabling it. After enabling the GPIO IRQ, unmask the IRQ.
->
-> Fixes: 7779b3455697 ("gpio: add a driver for the Synopsys DesignWare APB =
-GPIO block")
-> Cc: stable@kernel.org
-> Co-developed-by: Riwen Lu <luriwen@kylinos.cn>
-> Signed-off-by: Riwen Lu <luriwen@kylinos.cn>
-> Signed-off-by: xiongxin <xiongxin@kylinos.cn>
-> Acked-by: Serge Semin <fancer.lancer@gmail.com>
-> Reviewed-by: Andy Shevchenko <andy@kernel.org>
-> ---
-> v5:
->         * fix typo in patch description
-> v4:
->         * Add patch tag information
-> v3:
->         * Modify the submitter's information
-> v2:
->         * Resubmit the patch to fix this exception from the DesignWare
->           GPIO driver side
-> v1:
->         * Resolve the exception from the IRQ core layer. (key point not
->           found correctly)
-> ---
->  drivers/gpio/gpio-dwapb.c | 12 ++++++++----
->  1 file changed, 8 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/gpio/gpio-dwapb.c b/drivers/gpio/gpio-dwapb.c
-> index 4a4f61bf6c58..8c59332429c2 100644
-> --- a/drivers/gpio/gpio-dwapb.c
-> +++ b/drivers/gpio/gpio-dwapb.c
-> @@ -282,13 +282,15 @@ static void dwapb_irq_enable(struct irq_data *d)
->  {
->         struct gpio_chip *gc =3D irq_data_get_irq_chip_data(d);
->         struct dwapb_gpio *gpio =3D to_dwapb_gpio(gc);
-> +       irq_hw_number_t hwirq =3D irqd_to_hwirq(d);
->         unsigned long flags;
->         u32 val;
->
->         raw_spin_lock_irqsave(&gc->bgpio_lock, flags);
-> -       val =3D dwapb_read(gpio, GPIO_INTEN);
-> -       val |=3D BIT(irqd_to_hwirq(d));
-> +       val =3D dwapb_read(gpio, GPIO_INTEN) | BIT(hwirq);
->         dwapb_write(gpio, GPIO_INTEN, val);
-> +       val =3D dwapb_read(gpio, GPIO_INTMASK) & ~BIT(hwirq);
-> +       dwapb_write(gpio, GPIO_INTMASK, val);
->         raw_spin_unlock_irqrestore(&gc->bgpio_lock, flags);
->  }
->
-> @@ -296,12 +298,14 @@ static void dwapb_irq_disable(struct irq_data *d)
->  {
->         struct gpio_chip *gc =3D irq_data_get_irq_chip_data(d);
->         struct dwapb_gpio *gpio =3D to_dwapb_gpio(gc);
-> +       irq_hw_number_t hwirq =3D irqd_to_hwirq(d);
->         unsigned long flags;
->         u32 val;
->
->         raw_spin_lock_irqsave(&gc->bgpio_lock, flags);
-> -       val =3D dwapb_read(gpio, GPIO_INTEN);
-> -       val &=3D ~BIT(irqd_to_hwirq(d));
-> +       val =3D dwapb_read(gpio, GPIO_INTMASK) | BIT(hwirq);
-> +       dwapb_write(gpio, GPIO_INTMASK, val);
-> +       val =3D dwapb_read(gpio, GPIO_INTEN) & ~BIT(hwirq);
->         dwapb_write(gpio, GPIO_INTEN, val);
->         raw_spin_unlock_irqrestore(&gc->bgpio_lock, flags);
->  }
-> --
-> 2.34.1
->
+Hi,
 
-Queued for fixes, thanks!
+On top of previous pull request.
 
-Bartosz
+Best regards,
+Krzysztof
+
+
+The following changes since commit 4a23d0f9814c38308dc82b6dbc466666a400b27d:
+
+  memory: tegra: Protect SID override call under CONFIG_IOMMU_API (2023-12-06 11:22:24 +0100)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/krzk/linux-mem-ctrl.git tags/memory-controller-drv-6.8-2
+
+for you to fetch changes up to 365fcc03b6321f36eb7cbda8baa737238c387907:
+
+  memory: ti-emif-pm: Convert to platform remove callback returning void (2023-12-19 09:05:19 +0100)
+
+----------------------------------------------------------------
+Memory controller drivers for v6.8, part two
+
+Convert all drivers platform remove callback to the "remove_new" which
+returns void.  Usual rationale from Uwe:
+
+  The .remove() callback for a platform driver returns an int which
+  makes many driver authors wrongly assume it's possible to do error
+  handling by returning an error code. However the value returned is
+  ignored (apart from emitting a warning) and this typically results in
+  resource leaks.
+
+----------------------------------------------------------------
+Uwe Kleine-König (15):
+      memory: brcmstb_dpfe: Convert to platform remove callback returning void
+      memory: brcmstb_memc: Convert to platform remove callback returning void
+      memory: emif: Convert to platform remove callback returning void
+      memory: fsl-corenet-cf: Convert to platform remove callback returning void
+      memory: fsl_ifc: Convert to platform remove callback returning void
+      memory: jz4780-nemc: Convert to platform remove callback returning void
+      memory: mtk-smi: Convert to platform remove callback returning void
+      memory: omap-gpmc: Convert to platform remove callback returning void
+      memory: renesas-rpc-if: Convert to platform remove callback returning void
+      memory: exynos5422-dmc: Convert to platform remove callback returning void
+      memory: stm32-fmc2-ebi: Convert to platform remove callback returning void
+      memory: tegra186-emc: Convert to platform remove callback returning void
+      memory: tegra210-emc: Convert to platform remove callback returning void
+      memory: ti-aemif: Convert to platform remove callback returning void
+      memory: ti-emif-pm: Convert to platform remove callback returning void
+
+ drivers/memory/brcmstb_dpfe.c            |  6 ++----
+ drivers/memory/brcmstb_memc.c            |  6 ++----
+ drivers/memory/emif.c                    |  6 ++----
+ drivers/memory/fsl-corenet-cf.c          |  6 ++----
+ drivers/memory/fsl_ifc.c                 |  6 ++----
+ drivers/memory/jz4780-nemc.c             |  5 ++---
+ drivers/memory/mtk-smi.c                 | 10 ++++------
+ drivers/memory/omap-gpmc.c               |  6 ++----
+ drivers/memory/renesas-rpc-if.c          |  6 ++----
+ drivers/memory/samsung/exynos5422-dmc.c  |  6 ++----
+ drivers/memory/stm32-fmc2-ebi.c          |  6 ++----
+ drivers/memory/tegra/tegra186-emc.c      |  6 ++----
+ drivers/memory/tegra/tegra210-emc-core.c |  6 ++----
+ drivers/memory/ti-aemif.c                |  5 ++---
+ drivers/memory/ti-emif-pm.c              |  6 ++----
+ 15 files changed, 32 insertions(+), 60 deletions(-)
 
