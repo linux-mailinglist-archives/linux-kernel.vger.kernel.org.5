@@ -1,91 +1,164 @@
-Return-Path: <linux-kernel+bounces-8095-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8096-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8C8681B21E
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 10:23:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB2B581B222
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 10:24:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1654D1C246CD
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 09:23:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 324E41F251B7
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 09:24:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 062AA4B5BB;
-	Thu, 21 Dec 2023 09:11:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32C894BAAF;
+	Thu, 21 Dec 2023 09:13:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="Zbt+M9Fv"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="PzoE/Qrs"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27FB920DFD;
-	Thu, 21 Dec 2023 09:11:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07B60C433C8;
-	Thu, 21 Dec 2023 09:11:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1703149867;
-	bh=/WzNv9MnpdH5DL+RbcHgW/lhQEnlhmwuWZbe7H2FjoI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Zbt+M9FvnqygUuM7jlyguqNlW2VmMiyfgcxqdiEa3FDBXrccfvI55WRXCFP5zcIrl
-	 jWL/AidAA8QFWGEt6e6VJyeOh0sQv36uLT2RzJQCClFYma8Dl/19W5HYdmNAQLC4p8
-	 b/dZVANnIoJp+s3NmVmALYa6SKFkzZBaTHMVBI3A=
-Date: Thu, 21 Dec 2023 10:11:04 +0100
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: "Gan, Yi Fang" <yi.fang.gan@intel.com>
-Cc: Andrew Halaney <ahalaney@redhat.com>,
-	Javier Martinez Canillas <javierm@redhat.com>,
-	John Stultz <jstultz@google.com>,
-	"Rafael J . Wysocki" <rafael@kernel.org>,
-	Jens Axboe <axboe@kernel.dk>, Russell King <linux@armlinux.org.uk>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
-	netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	Looi Hong Aun <hong.aun.looi@intel.com>,
-	Voon Weifeng <weifeng.voon@intel.com>,
-	Song Yoong Siang <yoong.siang.song@intel.com>,
-	Lai Peter Jun Ann <peter.jun.ann.lai@intel.com>,
-	Choong Yong Liang <yong.liang.choong@intel.com>
-Subject: Re: [PATCH net v2 0/2] Fix phylink unloadable issue
-Message-ID: <2023122141-smuggling-confidant-d1d8@gregkh>
-References: <20231221085109.2830794-1-yi.fang.gan@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E49484BA98
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 09:13:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a2330a92ae6so66966066b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 01:13:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1703150028; x=1703754828; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=qskE60hERGmibIUEHX5TLuGnIvoAmwksGtaBHZkrRl0=;
+        b=PzoE/QrsHmtNBGHigOKiwQ7smRYgHG+4U/4KOdoF/rkdsUVpRUmqZScpCEe6v+ury8
+         /1l6FOiH4U1CEQlfX5BH18XJdCs2caZa9WhiAh08JlMN0BRZmRxXySdQzfOCKqdO0tDK
+         W0Us2WYAav3cpeMMPUFgSG6J2rGH+LKI1uStW/5YmTZab0VV8RvLxYByqOQ7xxTovrTF
+         gAxKcyK2eJxYReHKyCfq8WZH5026Zvsa0JNRzIVq794NzqZGNiludb66pHb71qZ8Ox3u
+         ++oYIfMcV5pfL4n18yYh/pSTkVMJwlVeqmIwtGdkroNCR8MAuXAhysEkaThhHn4WcYxR
+         c2hg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703150028; x=1703754828;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=qskE60hERGmibIUEHX5TLuGnIvoAmwksGtaBHZkrRl0=;
+        b=vKRs1YokWkJOiOOJaByDn/AmQmku7Z6911yq9xkhdqD2TLAK5umTCkfGBIeE7cJHOg
+         j4KdRNGMLszu4kLa+zYbrmQ2QIDB+GliVeBMWlJV2mXGKBn9hL7XyNg6+nJKTwxuntb6
+         3bjxwLTfI3p3oHSzaGRyycCTK/2TzBV7SMRlHBmml6wXg64zLUO5rn/fq9AQXFin1l1v
+         ndh+dNIOd5VyL/6ILFr9ZSl9PgrbWSBeMY5E65tZJhk6PEXK2jMUOeDmTPeZHO0PFEjq
+         LNRmKyJK9HJ849aOgQqkrTVOhcFwlRWKwE21/BoeAqraMQT9kCFSV1lx3FGMIdpF7ECH
+         Mt/Q==
+X-Gm-Message-State: AOJu0Yy5cS/MFy26s7BGJGtKaOCFpIYxElaBWkFLcD9axfpdytN5q9yA
+	j+in7KYHXw9r7gybR/0gb2ZW1w==
+X-Google-Smtp-Source: AGHT+IHSA9gKzWIah2AwWkX03H61vJxbWtPPe0FuJWHwznKPbHIr/KQ2g7out+AdbMiT8lBaQuz2AQ==
+X-Received: by 2002:a17:906:24a:b0:a23:6244:8370 with SMTP id 10-20020a170906024a00b00a2362448370mr2778742ejl.142.1703150028204;
+        Thu, 21 Dec 2023 01:13:48 -0800 (PST)
+Received: from [192.168.0.22] ([78.10.206.178])
+        by smtp.gmail.com with ESMTPSA id lz2-20020a170906fb0200b00a26aa845084sm201964ejb.17.2023.12.21.01.13.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Dec 2023 01:13:47 -0800 (PST)
+Message-ID: <497e6eda-a416-415a-b468-fe764c14a8aa@linaro.org>
+Date: Thu, 21 Dec 2023 10:13:46 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231221085109.2830794-1-yi.fang.gan@intel.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RESEND PATCH v5 1/2] dt-bindings: i2c: pca954x: Add custom
+ properties for MAX7357
+Content-Language: en-US
+To: Wolfram Sang <wsa@kernel.org>,
+ Naresh Solanki <naresh.solanki@9elements.com>,
+ Rob Herring <robh+dt@kernel.org>, Peter Rosin <peda@axentia.se>,
+ Andi Shyti <andi.shyti@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ Patrick Rudolph <patrick.rudolph@9elements.com>,
+ Rob Herring <robh@kernel.org>, linux-i2c@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231220082803.345153-1-naresh.solanki@9elements.com>
+ <ZYNTfKLFGrLq8qGY@shikoro>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <ZYNTfKLFGrLq8qGY@shikoro>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, Dec 21, 2023 at 04:51:07PM +0800, Gan, Yi Fang wrote:
-> Add module_exit_stub() for phylink module.
+On 20/12/2023 21:50, Wolfram Sang wrote:
+> On Wed, Dec 20, 2023 at 01:58:01PM +0530, Naresh Solanki wrote:
+>> From: Patrick Rudolph <patrick.rudolph@9elements.com>
+>>
+>> Maxim Max7357 has a configuration register to enable additional
+>> features. These features aren't enabled by default & its up to
+>> board designer to enable the same as it may have unexpected side effects.
+>>
+>> These should be validated for proper functioning & detection of devices
+>> in secondary bus as sometimes it can cause secondary bus being disabled.
+>>
+>> Add booleans for:
+>>  - maxim,isolate-stuck-channel
+>>  - maxim,send-flush-out-sequence
+>>  - maxim,preconnection-wiggle-test-enable
+>>
+>> Signed-off-by: Patrick Rudolph <patrick.rudolph@9elements.com>
+>> Signed-off-by: Naresh Solanki <naresh.solanki@9elements.com>
+>> Reviewed-by: Rob Herring <robh@kernel.org>
 > 
-> Changes since v1:
-> - Introduce a helper macro for module_exit() boilerplate
-> 
-> This series is the combination of following:
-> v1 with empty phylink_exit():
-> https://lore.kernel.org/all/20231127101603.807593-1-yi.fang.gan@intel.com/
-> v1 of module_exit_stub():
-> https://lore.kernel.org/all/20231212094352.2263283-1-yi.fang.gan@intel.com/
+> Rob, are you really OK with these bindings? They look more like
+> configuration instead of HW description to me.
 
-As I said before, no, this isn't ok.  Why just resubmit a patch when
-it's already been rejected?
+Some explanation was provided here:
+https://lore.kernel.org/all/CABqG17g8QOgU7cObe=4EMLbEC1PeZWxdPXt7zzFs35JGqpRbfg@mail.gmail.com/
 
-This patch series should NOT be accepted as-is, you know this!
+AFAIU, these properties are board-design choice.
 
-Also, you are not following the documented and REQUIRED rules for Intel
-developers to be submitting kernel patches, so on that reason alone
-these need to be rejected.
+Best regards,
+Krzysztof
 
-Please work with the Intel internel developers to do this correctly if
-you wish to submit this again in the future.
-
-greg k-h
 
