@@ -1,153 +1,151 @@
-Return-Path: <linux-kernel+bounces-8217-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8216-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0DE8B81B3E3
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 11:40:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E2E681B3E0
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 11:40:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 00F261C2345A
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 10:40:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F16FF1F257C6
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 10:40:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E7726AB9E;
-	Thu, 21 Dec 2023 10:39:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="PijBGgiT"
-X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E75C36A018;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7043B697A9;
 	Thu, 21 Dec 2023 10:39:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-	by mx0a-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BL6AEek014182;
-	Thu, 21 Dec 2023 04:39:03 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	PODMain02222019; bh=rNoek7i2hFRCbF498o2jHOYXWryLj1e8+AacX3XSeLs=; b=
-	PijBGgiTMMk/lKX+rDChXaawdFoWoo/wCCtCY6Q/h9oR7gOQrvrtJhraKZlB9scW
-	hXpzsTUuAFTo5OHnFkqh3kjWwDKjkc7Ng4eomcFkOUmxL3EShbArXvJqMNmuX4uJ
-	g17acFQgTFYBGfqdxCwVbLCyGsBnielHLpTHoGGqgrUe8Aw+mZqgs69nPRJSRVLO
-	Omq+4c/F0BTkkyBOWWAri0vWAqCn39bpGN9mTh+zDklzzSHiiUr85nAB1SSla8cx
-	h5uOcbufgZjkrd8z5sGrzRotFd+kdhRXy48GdyYr7Ou5Y9YsYP4nYL1CClxPioOg
-	L4qj0Svz6tLLWaPzmaJc3w==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3v1a627625-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 21 Dec 2023 04:39:02 -0600 (CST)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 21 Dec
- 2023 10:39:00 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.40 via Frontend Transport; Thu, 21 Dec 2023 10:39:00 +0000
-Received: from work-debian.ad.cirrus.com (unknown [198.61.64.187])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 3EC9311CC;
-	Thu, 21 Dec 2023 10:39:00 +0000 (UTC)
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
-To: <brendan.higgins@linux.dev>, <davidgow@google.com>, <rmoar@google.com>
-CC: <linux-kselftest@vger.kernel.org>, <kunit-dev@googlegroups.com>,
-        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
-        "Richard
- Fitzgerald" <rf@opensource.cirrus.com>
-Subject: [PATCH v2 2/2] kunit: Add example of kunit_activate_static_stub() with pointer-to-function
-Date: Thu, 21 Dec 2023 10:38:57 +0000
-Message-ID: <20231221103858.46010-2-rf@opensource.cirrus.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20231221103858.46010-1-rf@opensource.cirrus.com>
-References: <20231221103858.46010-1-rf@opensource.cirrus.com>
+X-Original-To: linux-kernel@vger.kernel.org
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98819760BA;
+	Thu, 21 Dec 2023 10:39:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CC9392F4;
+	Thu, 21 Dec 2023 02:39:55 -0800 (PST)
+Received: from donnerap.manchester.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DFC133F5A1;
+	Thu, 21 Dec 2023 02:39:08 -0800 (PST)
+Date: Thu, 21 Dec 2023 10:39:06 +0000
+From: Andre Przywara <andre.przywara@arm.com>
+To: fuyao <fuyao@sjterm.com>
+Cc: fuyao <fuyao1697@cyg.com>, Rob Herring <robh+dt@kernel.org>, Krzysztof
+ Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
+ <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec
+ <jernej.skrabec@gmail.com>, Samuel Holland <samuel@sholland.org>, Alexandre
+ TORGUE <alexandre.torgue@st.com>, Enric Balletbo i Serra
+ <eballetbo@gmail.com>, Baruch Siach <baruch@tkos.co.il>, Paul Barker
+ <paul.barker@sancloud.com>, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RESEND] ARM: dts: sun8i: r40: open the regulator aldo1
+Message-ID: <20231221103906.1830ef94@donnerap.manchester.arm.com>
+In-Reply-To: <ZYOhAQi7XeLUuAC9@debian.cyg>
+References: <ZYKjYypuAx7gNuam@debian.cyg>
+	<20231220150400.0f32e2a5@donnerap.manchester.arm.com>
+	<ZYOhAQi7XeLUuAC9@debian.cyg>
+Organization: ARM
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.32; aarch64-unknown-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: 90crQN90oj-4uhzrdwETgjBfHpjxCXbE
-X-Proofpoint-ORIG-GUID: 90crQN90oj-4uhzrdwETgjBfHpjxCXbE
-X-Proofpoint-Spam-Reason: safe
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Adds a variant of example_static_stub_test() that shows use of a
-pointer-to-function with kunit_activate_static_stub().
+On Thu, 21 Dec 2023 10:20:49 +0800
+fuyao <fuyao@sjterm.com> wrote:
 
-A const pointer to the add_one() function is declared. This
-pointer-to-function is passed to kunit_activate_static_stub() and
-kunit_deactivate_static_stub() instead of passing add_one directly.
+Hi,
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
----
-V2: Added comment for add_one_fn_ptr.
----
- lib/kunit/kunit-example-test.c | 35 ++++++++++++++++++++++++++++++++++
- 1 file changed, 35 insertions(+)
+thanks for the reply!
 
-diff --git a/lib/kunit/kunit-example-test.c b/lib/kunit/kunit-example-test.c
-index 359dbee10201..798924f7cc86 100644
---- a/lib/kunit/kunit-example-test.c
-+++ b/lib/kunit/kunit-example-test.c
-@@ -168,6 +168,16 @@ static int subtract_one(int i)
- 	return i - 1;
- }
- 
-+/*
-+ * If the function to be replaced is static within a module it is
-+ * useful to export a pointer to that function instead of having
-+ * to change the static function to a non-static exported function.
-+ *
-+ * This pointer simulates a module exporting a pointer to a static
-+ * function.
-+ */
-+static int (* const add_one_fn_ptr)(int i) = add_one;
-+
- /*
-  * This test shows the use of static stubs.
-  */
-@@ -187,6 +197,30 @@ static void example_static_stub_test(struct kunit *test)
- 	KUNIT_EXPECT_EQ(test, add_one(1), 2);
- }
- 
-+/*
-+ * This test shows the use of static stubs when the function being
-+ * replaced is provided as a pointer-to-function instead of the
-+ * actual function. This is useful for providing access to static
-+ * functions in a module by exporting a pointer to that function
-+ * instead of having to change the static function to a non-static
-+ * exported function.
-+ */
-+static void example_static_stub_using_fn_ptr_test(struct kunit *test)
-+{
-+	/* By default, function is not stubbed. */
-+	KUNIT_EXPECT_EQ(test, add_one(1), 2);
-+
-+	/* Replace add_one() with subtract_one(). */
-+	kunit_activate_static_stub(test, add_one_fn_ptr, subtract_one);
-+
-+	/* add_one() is now replaced. */
-+	KUNIT_EXPECT_EQ(test, add_one(1), 0);
-+
-+	/* Return add_one() to normal. */
-+	kunit_deactivate_static_stub(test, add_one_fn_ptr);
-+	KUNIT_EXPECT_EQ(test, add_one(1), 2);
-+}
-+
- static const struct example_param {
- 	int value;
- } example_params_array[] = {
-@@ -259,6 +293,7 @@ static struct kunit_case example_test_cases[] = {
- 	KUNIT_CASE(example_mark_skipped_test),
- 	KUNIT_CASE(example_all_expect_macros_test),
- 	KUNIT_CASE(example_static_stub_test),
-+	KUNIT_CASE(example_static_stub_using_fn_ptr_test),
- 	KUNIT_CASE(example_priv_test),
- 	KUNIT_CASE_PARAM(example_params_test, example_gen_params),
- 	KUNIT_CASE_SLOW(example_slow_test),
--- 
-2.30.2
+> On Wed, Dec 20, 2023 at 03:04:00PM +0000, Andre Przywara wrote:
+> > On Wed, 20 Dec 2023 16:18:43 +0800
+> > fuyao <fuyao1697@cyg.com> wrote:
+> > 
+> > Hi,
+> >   
+> > > the aldo1 is connect regulator pin which power the TV.  
+> > 
+> > What do you mean with that? That ALDO1 is connected to VCC-TVOUT and/or
+> > VCC-TVIN on the R40 SoC?  
+> 
+> The ALDO1 is connected to VCC-TVOUT on the R40 Soc.
+
+Ah, thanks for the confirmation.
+
+> > > The USB core use TV ref as reference Voltage.  
+> > 
+> > The USB core in the SoC? So pin VCC-USB, which requires 3.3V, the same
+> > voltage as the TV pins?
+> > Which means this doesn't really have much to do with TV, it's just that
+> > USB and also "TV" are supplied by ALDO1?  
+> 
+> The internal USB PHY requires a reference voltage. It seems that in
+> order to save costs, the reference voltage of the TVOUT module is used.
+
+Do you mean a USB *reference* voltage that is separate from the USB PHY
+power supply voltage, so pin VCC-USB on the SoC? And that it is internally
+connected to some TV-OUT related circuits? So that would apply to all
+devices using the R40 SoC then?
+
+Or is it simply that the SoC pins VCC-TVOUT and VCC-USB are connected
+together, on this SoM?
+Do you have access to some schematic? I couldn't find one online easily,
+so cannot check this myself.
+
+Thanks,
+Andre
+
+> > > Signed-off-by: fuyao <fuyao1697@cyg.com>
+> > > ---
+> > >  arch/arm/boot/dts/allwinner/sun8i-r40-feta40i.dtsi | 7 +++++++
+> > >  1 file changed, 7 insertions(+)
+> > > 
+> > > diff --git a/arch/arm/boot/dts/allwinner/sun8i-r40-feta40i.dtsi b/arch/arm/boot/dts/allwinner/sun8i-r40-feta40i.dtsi
+> > > index 9f39b5a2bb35..8906170461df 100644
+> > > --- a/arch/arm/boot/dts/allwinner/sun8i-r40-feta40i.dtsi
+> > > +++ b/arch/arm/boot/dts/allwinner/sun8i-r40-feta40i.dtsi
+> > > @@ -42,6 +42,13 @@ &pio {
+> > >  	vcc-pg-supply = <&reg_dldo1>;
+> > >  };
+> > >  
+> > > +&reg_aldo1 {
+> > > +	regulator-always-on;  
+> > 
+> > So did USB never work before, with the DT as in mainline?
+> >   
+> 
+> The USB can work, but is unstable. Occasionally disconnected because of
+> the D+/D- electrical characteristics.
+> 
+> > For always-on regulators it would be good to see some rationale why this
+> > cannot be referenced by its consumer. If it is really supplying the USB
+> > core, that would be a reason, because we don't have a good way of
+> > describing this.
+> >   
+> > > +	regulator-min-microvolt = <3300000>;
+> > > +	regulator-max-microvolt = <3300000>;
+> > > +	regulator-name = "vcc-aldo1";  
+> > 
+> > Regulators should be named after their users, so use something like:
+> > 	regulator-name = "vcc-3v3-tv-usb";
+> >   
+> 
+> thanks.
+> 
+> > That then also serves as documentation of why this is always on.
+> > 
+> > Cheers,
+> > Andre
+> >   
+> > > +};
+> > > +
+> > >  &reg_aldo2 {
+> > >  	regulator-always-on;
+> > >  	regulator-min-microvolt = <1800000>;  
+> >   
+> 
 
 
