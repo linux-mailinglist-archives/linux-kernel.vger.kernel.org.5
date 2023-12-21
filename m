@@ -1,162 +1,312 @@
-Return-Path: <linux-kernel+bounces-8571-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8572-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 060A881B98D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 15:31:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2735B81B991
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 15:31:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B2314286389
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 14:31:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9D0F91F24BDC
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 14:31:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 603111D6A9;
-	Thu, 21 Dec 2023 14:30:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA9D4360A3;
+	Thu, 21 Dec 2023 14:31:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sqxSU2SK"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="VLxm6WxL"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0522659;
-	Thu, 21 Dec 2023 14:30:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B2CAC433D9;
-	Thu, 21 Dec 2023 14:30:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703169054;
-	bh=OEBZ6p63sjTkW3Yk5dnKU9NG+4OMfKh+D8wi0t4gbvI=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=sqxSU2SKjq4jOLnNVZKMvhtezYvRUhITev29n1eiJrV6KHKvK32a8N98JqBX13gKL
-	 +OkLSfVCc3pzXUKumWzd8RaPCjYAwA973k5lQ76XhEmd+S7RXbidLj6h6HPA+h/b2r
-	 v3sRJtJ5dfX13Z7Z76mRY3LOMhO3pP0mLxgGXLPa7KTvnm8/lsQrEkpQ8qLZH9hlEZ
-	 n7vQnD6jJNsAadbmFeX1RN5dtVKvJGl+H6tDI0fi9xh/y5LAKBq+1/rAFx7nxlp5Km
-	 3yXJa3ji+YQKhFXvmhHmEtnohhBo7FoiVQ+FXOWM1JwUqZWRzFTA2Ul2lhc3QRZZrH
-	 hdVi0NLA+r0jQ==
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-50e587fb62fso1304383e87.2;
-        Thu, 21 Dec 2023 06:30:53 -0800 (PST)
-X-Gm-Message-State: AOJu0YwP/JWlLcoVW8/OERTr0SDf01aPew4QPzazR/wmwYbpxGXFkL0m
-	BVpglwNlC3+hZBNM+bROnKnsL+J/OfDIM5Z5ZwU=
-X-Google-Smtp-Source: AGHT+IHPdxcsw7CIc8Zz9R57s+h3yCpmC0MOks9IUm441YI5k7PHlncS4N04abFTrQMbhLyNWoHo0BpkrAZ7Up7QGeI=
-X-Received: by 2002:ac2:419a:0:b0:50c:222b:2489 with SMTP id
- z26-20020ac2419a000000b0050c222b2489mr9235479lfh.135.1703169052253; Thu, 21
- Dec 2023 06:30:52 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BFD536097
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 14:30:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1703169059;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Zig8qc3IDsKkD4ExqdB1/amOsrM6X3FD08f8jHvUYWI=;
+	b=VLxm6WxLl1sK+6UjgLU3HUwr55UUWcuyaLFZtiRIY0SYewREWZOEiplBOkVjcpj3RYh9BU
+	15Kx+GXWP/KWl5u+XIM83XvozXDuxuEvcmdeav1rmAtaf2aDLEZvt2Cfcaym9b/xPYiBv6
+	DAQqjonDJYfPrGibHGyq7zALA+DvDr4=
+Received: from mail-oi1-f199.google.com (mail-oi1-f199.google.com
+ [209.85.167.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-58-go9lAmeINbyeKYrSSaUFHg-1; Thu, 21 Dec 2023 09:30:57 -0500
+X-MC-Unique: go9lAmeINbyeKYrSSaUFHg-1
+Received: by mail-oi1-f199.google.com with SMTP id 5614622812f47-3b88ac1f09cso787002b6e.2
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 06:30:57 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703169052; x=1703773852;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Zig8qc3IDsKkD4ExqdB1/amOsrM6X3FD08f8jHvUYWI=;
+        b=DkDwQ2WNLnIM4oSgZdWXTFBfC6Xe+jccgwmgT/6SD3tp3ZiN+0ghMrIslc7ZowQDR6
+         BNLzbKQoH/WIpZAzMv9BhViD+b5S0W4CwReutVgz8myD9lwd0tQFP/yFT7Kz9GaP5DbP
+         kXfj2du6jPvYs3i9niDaAqn8oQgKr0yA8AQYVjdYhAwGG0WMf32BLXFt3dcjgWCFzO9d
+         oj4RekwaNdYHc6OKJFovwlD3PSanJgyNsR425v2XJlv8m3thNGHifTMJv4H3Qdyr6R2c
+         CSd82NMcxDoypql9siDCCem6dAptcjfWPdQU6tbUaoOwtJlQgTTG7/c7XBptc3AzRhAN
+         /9Hg==
+X-Gm-Message-State: AOJu0YxS5A17Fyxgr6TASUUtbs9q0KpCzRWFx3noDbuAHlH0JIGY3t3T
+	gqA6AQRLarqm4+7j12kvlApv3vYTa2emIlCM+RYYraKc5NTBpOdvTpdOoNP2QcCCOrsE7CQboRH
+	UcE1ivXwcthAWXYqN1DaGAtkw
+X-Received: by 2002:a05:6808:3a13:b0:3b9:e779:8a0e with SMTP id gr19-20020a0568083a1300b003b9e7798a0emr24604046oib.1.1703169052141;
+        Thu, 21 Dec 2023 06:30:52 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGh5JWE7xwkRuEZs5f8huoPHHsEpTlNPmCqmNG9XaohXtJYkwK7dgrejxTjPDpZalyNe4H8Tw==
+X-Received: by 2002:a05:6808:3a13:b0:3b9:e779:8a0e with SMTP id gr19-20020a0568083a1300b003b9e7798a0emr24604029oib.1.1703169051803;
+        Thu, 21 Dec 2023 06:30:51 -0800 (PST)
+Received: from fedora ([2600:1700:1ff0:d0e0::37])
+        by smtp.gmail.com with ESMTPSA id d11-20020a0cfe8b000000b0067f14259eb7sm658817qvs.76.2023.12.21.06.30.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Dec 2023 06:30:51 -0800 (PST)
+Date: Thu, 21 Dec 2023 08:30:49 -0600
+From: Andrew Halaney <ahalaney@redhat.com>
+To: Sneh Shah <quic_snehshah@quicinc.com>
+Cc: Vinod Koul <vkoul@kernel.org>, 
+	Bhupesh Sharma <bhupesh.sharma@linaro.org>, Alexandre Torgue <alexandre.torgue@foss.st.com>, 
+	Jose Abreu <joabreu@synopsys.com>, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+	Paolo Abeni <pabeni@redhat.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
+	netdev@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
+	linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, kernel@quicinc.com
+Subject: Re: [PATCH net-next] net: stmmac: dwmac-qcom-ethqos: Add support for
+ 2.5G SGMII
+Message-ID: <vvlnwiobrgcwuam6lkud2np5xqocj6asjf627j3gekkhm4hfp5@vhdd47fyortm>
+References: <20231218071118.21879-1-quic_snehshah@quicinc.com>
+ <4zbf5fmijxnajk7kygcjrcusf6tdnuzsqqboh23nr6f3rb3c4g@qkfofhq7jmv6>
+ <8b80ab09-8444-4c3d-83b0-c7dbf5e58658@quicinc.com>
+ <wvzhz4fmtheculsiag4t2pn2kaggyle2mzhvawbs4m5isvqjto@lmaonvq3c3e7>
+ <8f94489d-5f0e-4166-a14e-4959098a5c80@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230926194242.2732127-1-sjg@chromium.org> <20230926194242.2732127-2-sjg@chromium.org>
- <BN9PR11MB5483FF3039913334C7EA83E1E6AEA@BN9PR11MB5483.namprd11.prod.outlook.com>
- <CAMj1kXFG92NpL7T7YocOup0xLKyopt3MnSCp0RL8cLzozzJz7A@mail.gmail.com>
- <BN9PR11MB548303B09536EB1577472029E6B3A@BN9PR11MB5483.namprd11.prod.outlook.com>
- <CAPnjgZ36t8g7E=0MSJyaV8-QKv9RVYe47Jd5E=NU-mFM4LWBQA@mail.gmail.com>
- <CAMj1kXHAEeK7x2f13k_JV3Xcw61nNLasyvXQf+mKwKekQ48EpQ@mail.gmail.com>
- <BN9PR11MB548334E0DA6495C438FBFDE1E6BBA@BN9PR11MB5483.namprd11.prod.outlook.com>
- <BN9PR11MB548314DDE8D4C9503103D51CE6BBA@BN9PR11MB5483.namprd11.prod.outlook.com>
- <CAMj1kXHbM+ArLgNZgnmiok4gOfv6QLYxzyB9OCwfhEkJ2xGK_g@mail.gmail.com> <BN9PR11MB5483C2FBCD07DE61DCCDB523E6BCA@BN9PR11MB5483.namprd11.prod.outlook.com>
-In-Reply-To: <BN9PR11MB5483C2FBCD07DE61DCCDB523E6BCA@BN9PR11MB5483.namprd11.prod.outlook.com>
-From: Ard Biesheuvel <ardb@kernel.org>
-Date: Thu, 21 Dec 2023 15:30:40 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXHmu=ykgBMRiFqG4_ra3FJtHa=GASoMUJswdMFa9v4Xgw@mail.gmail.com>
-Message-ID: <CAMj1kXHmu=ykgBMRiFqG4_ra3FJtHa=GASoMUJswdMFa9v4Xgw@mail.gmail.com>
-Subject: Re: [PATCH v7 2/2] schemas: Add some common reserved-memory usages
-To: "Chiu, Chasel" <chasel.chiu@intel.com>
-Cc: Simon Glass <sjg@chromium.org>, 
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Rob Herring <robh@kernel.org>, "Tan, Lean Sheng" <sheng.tan@9elements.com>, 
-	lkml <linux-kernel@vger.kernel.org>, Dhaval Sharma <dhaval@rivosinc.com>, 
-	"Brune, Maximilian" <maximilian.brune@9elements.com>, Yunhui Cui <cuiyunhui@bytedance.com>, 
-	"Dong, Guo" <guo.dong@intel.com>, Tom Rini <trini@konsulko.com>, 
-	ron minnich <rminnich@gmail.com>, "Guo, Gua" <gua.guo@intel.com>, 
-	"linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>, U-Boot Mailing List <u-boot@lists.denx.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8f94489d-5f0e-4166-a14e-4959098a5c80@quicinc.com>
 
-On Tue, 28 Nov 2023 at 21:31, Chiu, Chasel <chasel.chiu@intel.com> wrote:
->
->
->
->
-> > -----Original Message-----
-> > From: Ard Biesheuvel <ardb@kernel.org>
-> > Sent: Tuesday, November 28, 2023 10:08 AM
-> > To: Chiu, Chasel <chasel.chiu@intel.com>
-> > Cc: Simon Glass <sjg@chromium.org>; devicetree@vger.kernel.org; Mark Rutland
-> > <mark.rutland@arm.com>; Rob Herring <robh@kernel.org>; Tan, Lean Sheng
-> > <sheng.tan@9elements.com>; lkml <linux-kernel@vger.kernel.org>; Dhaval
-> > Sharma <dhaval@rivosinc.com>; Brune, Maximilian
-> > <maximilian.brune@9elements.com>; Yunhui Cui <cuiyunhui@bytedance.com>;
-> > Dong, Guo <guo.dong@intel.com>; Tom Rini <trini@konsulko.com>; ron minnich
-> > <rminnich@gmail.com>; Guo, Gua <gua.guo@intel.com>; linux-
-> > acpi@vger.kernel.org; U-Boot Mailing List <u-boot@lists.denx.de>
-> > Subject: Re: [PATCH v7 2/2] schemas: Add some common reserved-memory
-> > usages
-> >
-> > You are referring to a 2000 line patch so it is not 100% clear where to look tbh.
-> >
-> >
-> > On Tue, 21 Nov 2023 at 19:37, Chiu, Chasel <chasel.chiu@intel.com> wrote:
-> > >
-> > >
-> > > In PR, UefiPayloadPkg/Library/FdtParserLib/FdtParserLib.c, line 268 is for
-> > related example code.
-> > >
-> >
-> > That refers to a 'memory-allocation' node, right? How does that relate to the
-> > 'reserved-memory' node?
-> >
-> > And crucially, how does this clarify in which way "runtime-code" and "runtime-
-> > data" reservations are being used?
-> >
-> > Since the very beginning of this discussion, I have been asking repeatedly for
-> > examples that describe the wider context in which these reservations are used.
-> > The "runtime" into runtime-code and runtime-data means that these regions have
-> > a special significance to the operating system, not just to the next bootloader
-> > stage. So I want to understand exactly why it is necessary to describe these
-> > regions in a way where the operating system might be expected to interpret this
-> > information and act upon it.
-> >
->
->
-> I think runtime code and data today are mainly for supporting UEFI runtime services - some BIOS functions for OS to utilize, OS may follow below ACPI spec to treat them as reserved range:
-> https://uefi.org/specs/ACPI/6.5/15_System_Address_Map_Interfaces.html#uefi-memory-types-and-mapping-to-acpi-address-range-types
->
-> Like I mentioned earlier, that PR is still in early phase and has not reflected all the required changes yet, but the idea is to build gEfiMemoryTypeInformationGuid HOB from FDT reserved-memory nodes.
-> UEFI generic Payload has DxeMain integrated, however Memory Types are platform-specific, for example, some platforms may need bigger runtime memory for their implementation, that's why we want such FDT reserved-memory node to tell DxeMain.
->
+On Thu, Dec 21, 2023 at 02:23:57PM +0530, Sneh Shah wrote:
+> 
+> 
+> On 12/20/2023 9:29 PM, Andrew Halaney wrote:
+> > On Wed, Dec 20, 2023 at 01:02:45PM +0530, Sneh Shah wrote:
+> >>
+> >>
+> >> On 12/18/2023 9:50 PM, Andrew Halaney wrote:
+> >>> On Mon, Dec 18, 2023 at 12:41:18PM +0530, Sneh Shah wrote:
+> >>>> Serdes phy needs to operate at 2500 mode for 2.5G speed and 1000
+> >>>> mode for 1G/100M/10M speed.
+> >>>> Added changes to configure serdes phy and mac based on link speed.
+> >>>>
+> >>>> Signed-off-by: Sneh Shah <quic_snehshah@quicinc.com>
+> >>>> ---
+> >>>>  .../stmicro/stmmac/dwmac-qcom-ethqos.c        | 31 +++++++++++++++++--
+> >>>>  1 file changed, 29 insertions(+), 2 deletions(-)
+> >>>>
+> >>>> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
+> >>>> index d3bf42d0fceb..b3a28dc19161 100644
+> >>>> --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
+> >>>> +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
+> >>>> @@ -21,6 +21,7 @@
+> >>>>  #define RGMII_IO_MACRO_CONFIG2		0x1C
+> >>>>  #define RGMII_IO_MACRO_DEBUG1		0x20
+> >>>>  #define EMAC_SYSTEM_LOW_POWER_DEBUG	0x28
+> >>>> +#define ETHQOS_MAC_AN_CTRL		0xE0
+> >>>>  
+> >>>>  /* RGMII_IO_MACRO_CONFIG fields */
+> >>>>  #define RGMII_CONFIG_FUNC_CLK_EN		BIT(30)
+> >>>> @@ -78,6 +79,10 @@
+> >>>>  #define ETHQOS_MAC_CTRL_SPEED_MODE		BIT(14)
+> >>>>  #define ETHQOS_MAC_CTRL_PORT_SEL		BIT(15)
+> >>>>  
+> >>>> +/*ETHQOS_MAC_AN_CTRL bits */
+> >>>> +#define ETHQOS_MAC_AN_CTRL_RAN			BIT(9)
+> >>>> +#define ETHQOS_MAC_AN_CTRL_ANE			BIT(12)
+> >>>> +
+> >>>
+> >>> nit: space please add a space before ETHQOS_MAC_AN_CTRL
+> >>>
+> >> will take care of this in next patch
+> >>
+> >>>>  struct ethqos_emac_por {
+> >>>>  	unsigned int offset;
+> >>>>  	unsigned int value;
+> >>>> @@ -109,6 +114,7 @@ struct qcom_ethqos {
+> >>>>  	unsigned int num_por;
+> >>>>  	bool rgmii_config_loopback_en;
+> >>>>  	bool has_emac_ge_3;
+> >>>> +	unsigned int serdes_speed;
+> > 
+> > Another nit as I look closer: I think this should be grouped by phy_mode
+> > etc just for readability.
+> Didn't get this. can you please elaborate more?
 
-> The Payload flow will be like this:
->   Payload creates built-in default MemoryTypes table ->
->     FDT reserved-memory node to override if required (this also ensures the same memory map cross boots so ACPI S4 works) ->
->       Build gEfiMemoryTypeInformationGuid HOB by "platfom specific" MemoryTypes Table ->
->         DxeMain/GCD to consume this MemoryTypes table and setup memory service ->
->           Install memory types table to UEFI system table.Configuration table...
->
-> Note: if Payload built-in default MemoryTypes table works fine for the platform, then FDT reserved-memory node does not need to provide such 'usage' compatible strings. (optional)
-> This FDT node could allow flexibility/compatibility without rebuilding Payload binary.
->
-> Not sure if I answered all your questions, please highlight which area you need more information.
->
+I meant instead of this:
 
-The gEfiMemoryTypeInformationGuid HOB typically carries platform
-defaults, and the actual memory type information is kept in a
-non-volatile EFI variable, which gets updated when the memory usage
-changes. Is this different for UefiPayloadPkg?
+    struct qcom_ethqos {
+	    struct platform_device *pdev;
+	    void __iomem *rgmii_base;
+	    void __iomem *mac_base;
+	    int (*configure_func)(struct qcom_ethqos *ethqos);
 
-(For those among the cc'ees less versed in EFI/EDK2: when you get the
-'config changed -rebooting' message from the boot firmware, it
-typically means that this memory type table has changed, and a reboot
-is necessary.)
+	    unsigned int link_clk_rate;
+	    struct clk *link_clk;
+	    struct phy *serdes_phy;
+	    unsigned int speed;
+	    phy_interface_t phy_mode;
 
-So the platform init needs to read this variable, or get the
-information in a different way. I assume it is the payload, not the
-platform init that updates the variable when necessary. This means the
-information flows from payload(n) to platform init(n+1), where n is a
-monotonic index tracking consecutive boots of the system.
+	    const struct ethqos_emac_por *por;
+	    unsigned int num_por;
+	    bool rgmii_config_loopback_en;
+	    bool has_emac_ge_3;
+	    unsigned int serdes_speed;
+    };
 
-Can you explain how the DT fits into this? How are the runtime-code
-and runtime-data memory reservation nodes under /reserved-memory used
-to implement this information exchange between platform init and
-payload? And how do the HOB and the EFI variable fit into this
-picture?
+I think this would make more logical sense:
+
+    struct qcom_ethqos {
+	    struct platform_device *pdev;
+	    void __iomem *rgmii_base;
+	    void __iomem *mac_base;
+	    int (*configure_func)(struct qcom_ethqos *ethqos);
+
+	    unsigned int link_clk_rate;
+	    struct clk *link_clk;
+	    struct phy *serdes_phy;
+	    unsigned int serdes_speed;
+	    unsigned int speed;
+	    phy_interface_t phy_mode;
+
+	    const struct ethqos_emac_por *por;
+	    unsigned int num_por;
+	    bool rgmii_config_loopback_en;
+	    bool has_emac_ge_3;
+    };
+
+It is definitely nit picking though :)
+> > 
+> >>>>  };
+> >>>>  
+> >>>>  static int rgmii_readl(struct qcom_ethqos *ethqos, unsigned int offset)
+> >>>> @@ -600,27 +606,47 @@ static int ethqos_configure_rgmii(struct qcom_ethqos *ethqos)
+> >>>>  
+> >>>>  static int ethqos_configure_sgmii(struct qcom_ethqos *ethqos)
+> >>>>  {
+> >>>> -	int val;
+> >>>> -
+> >>>> +	int val, mac_an_value;
+> >>>>  	val = readl(ethqos->mac_base + MAC_CTRL_REG);
+> >>>> +	mac_an_value = readl(ethqos->mac_base + ETHQOS_MAC_AN_CTRL);
+> >>>>  
+> >>>>  	switch (ethqos->speed) {
+> >>>> +	case SPEED_2500:
+> >>>> +		val &= ~ETHQOS_MAC_CTRL_PORT_SEL;
+> >>>> +		rgmii_updatel(ethqos, RGMII_CONFIG2_RGMII_CLK_SEL_CFG,
+> >>>> +			      RGMII_CONFIG2_RGMII_CLK_SEL_CFG,
+> >>>> +			      RGMII_IO_MACRO_CONFIG2);
+> >>>> +		if (ethqos->serdes_speed != SPEED_2500)
+> >>>> +			phy_set_speed(ethqos->serdes_phy, ethqos->speed);
+> >>>> +		mac_an_value &= ~ETHQOS_MAC_AN_CTRL_ANE;
+> >>>> +		break;
+> >>>>  	case SPEED_1000:
+> >>>>  		val &= ~ETHQOS_MAC_CTRL_PORT_SEL;
+> >>>>  		rgmii_updatel(ethqos, RGMII_CONFIG2_RGMII_CLK_SEL_CFG,
+> >>>>  			      RGMII_CONFIG2_RGMII_CLK_SEL_CFG,
+> >>>>  			      RGMII_IO_MACRO_CONFIG2);
+> >>>> +		if (ethqos->serdes_speed != SPEED_1000)
+> >>>> +			phy_set_speed(ethqos->serdes_phy, ethqos->speed);
+> >>>> +		mac_an_value |= ETHQOS_MAC_AN_CTRL_RAN | ETHQOS_MAC_AN_CTRL_ANE;
+> >>>>  		break;
+> >>>>  	case SPEED_100:
+> >>>>  		val |= ETHQOS_MAC_CTRL_PORT_SEL | ETHQOS_MAC_CTRL_SPEED_MODE;
+> >>>> +		if (ethqos->serdes_speed != SPEED_1000)
+> >>>> +			phy_set_speed(ethqos->serdes_phy, ethqos->speed);
+> >>>> +		mac_an_value |= ETHQOS_MAC_AN_CTRL_RAN | ETHQOS_MAC_AN_CTRL_ANE;
+> >>>>  		break;
+> >>>>  	case SPEED_10:
+> >>>>  		val |= ETHQOS_MAC_CTRL_PORT_SEL;
+> >>>>  		val &= ~ETHQOS_MAC_CTRL_SPEED_MODE;
+> >>>> +		if (ethqos->serdes_speed != SPEED_1000)
+> >>>> +			phy_set_speed(ethqos->serdes_phy, ethqos->speed);
+> >>>> +		mac_an_value |= ETHQOS_MAC_AN_CTRL_RAN | ETHQOS_MAC_AN_CTRL_ANE;
+> >>>>  		break;
+> >>>>  	}
+> >>>>  
+> >>>>  	writel(val, ethqos->mac_base + MAC_CTRL_REG);
+> >>>> +	writel(mac_an_value, ethqos->mac_base + ETHQOS_MAC_AN_CTRL);
+> >>>> +	ethqos->serdes_speed = ethqos->speed;
+> >>>
+> >>> I see these bits are generic and there's some functions in stmmac_pcs.h
+> >>> that muck with these...
+> >>>
+> >>> Could you help me understand if this really should be Qualcomm specific,
+> >>> or if this is something that should be considered for the more core bits
+> >>> of the driver? I feel in either case we should take advantage of the
+> >>> common definitions in that file if possible.
+> >>>
+> >> we do have function dwmac_ctrl_ane in core driver which updates same registers. However, it does not have the option to reset ANE bit, it can only set bits. For SPEED_2500 we need to reset ANE bit. Hence I am adding it here. Not sure if we can extend dwmac_ctrl_ane function to reset bits as well.
+> > 
+> > I'd evaluate if you can update that function to clear the ANE bit when
+> > the ane boolean is false. From the usage I see I feel that makes sense,
+> > but correct me if you think I'm wrong.
+> > At the very least let's use the defines from there, and possibly add a
+> > new function if clearing is not acceptable in dwmac_ctrl_ane().
+> > 
+> > Stepping back, I was asking in general is the need to muck with ANE here
+> > is a Qualcomm specific problem, or is that a generic thing that should be
+> > handled in the core (and the phy_set_speed() bit stay here)? i.e. would
+> > any dwmac5 based IP need to do something like this for SPEED_2500?
+> I think disabling ANE for SPEED_2500 is generic not specific to qualcomm. Even in dwxgmac2 versions also we need to disable ANE for SPEED_2500. Autoneg clause 37 stadard doesn't support 2500 speed. So we need to disable autoneg for speed 2500
+
+Another nit, sorry for being so picky. Can you please wrap your emails
+to around 80 characters? That's the general etiquette when replying
+on-list, makes it easier to read (similar to say a commit message).
+
+Thanks for explaining that. Then in my opinion based on what you've said
+I think the disabling of ANE for SPEED_2500 should be done outside of
+the Qualcomm platform code.
+
+Note, I'm struggling to keep up with the standards at play here, so if
+someone else who's a bit more wise on these topics has an opinion I'd
+listen to them. I find myself rewatching this presentation from
+Maxime/Antoine as a primer on all of this:
+
+    https://www.youtube.com/watch?v=K962S9gTBVM
+
+If anyone's got any recommended resources for me to read in particular I
+am all ears.
+
+I'll be out the next 2-3 weeks, so don't wait for any responses from me
+:)
+
+Thanks,
+Andrew
+
+> 
+> > 
+> >>>>  
+> >>>>  	return val;
+> >>>>  }
+> >>>> @@ -789,6 +815,7 @@ static int qcom_ethqos_probe(struct platform_device *pdev)
+> >>>>  				     "Failed to get serdes phy\n");
+> >>>>  
+> >>>>  	ethqos->speed = SPEED_1000;
+> >>>> +	ethqos->serdes_speed = SPEED_1000;
+> >>>>  	ethqos_update_link_clk(ethqos, SPEED_1000);
+> >>>>  	ethqos_set_func_clk_en(ethqos);
+> >>>>  
+> >>>> -- 
+> >>>> 2.17.1
+> >>>>
+> >>>
+> >>
+> > 
+> 
+
 
