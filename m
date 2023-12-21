@@ -1,82 +1,202 @@
-Return-Path: <linux-kernel+bounces-8109-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8116-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E91081B243
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 10:28:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0E3781B253
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 10:30:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 04C2D28877C
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 09:28:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 46820B28658
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 09:30:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23A57219F4;
-	Thu, 21 Dec 2023 09:22:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A9744BAAC;
+	Thu, 21 Dec 2023 09:25:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="peRf5dwv"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e+a1SPK9"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35768219E4;
-	Thu, 21 Dec 2023 09:22:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=bhUM1XijalfIIIJGc6XtFDdiTTA83ZKMMJW0N2PSJ5E=; b=peRf5dwvFRD8WvXs6Z1Jv+lm33
-	2s6gLOzX6ieSPJym3uodnNNcv5tgAS1xPHktD36vAWi8AzYsHtBx/GWobLW2AUJtOGoScRGqdRsKW
-	5n5opFOfsR1jZtcpvqnrBnBctByjfZi2wcV35PUV3pyOukIZYFlRb/KhLAPpGKryXsp8=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rGFGJ-003Udl-8V; Thu, 21 Dec 2023 10:22:39 +0100
-Date: Thu, 21 Dec 2023 10:22:39 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: "Gan, Yi Fang" <yi.fang.gan@intel.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Andrew Halaney <ahalaney@redhat.com>,
-	Javier Martinez Canillas <javierm@redhat.com>,
-	John Stultz <jstultz@google.com>,
-	"Rafael J . Wysocki" <rafael@kernel.org>,
-	Jens Axboe <axboe@kernel.dk>, Russell King <linux@armlinux.org.uk>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
-	netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	Looi Hong Aun <hong.aun.looi@intel.com>,
-	Voon Weifeng <weifeng.voon@intel.com>,
-	Song Yoong Siang <yoong.siang.song@intel.com>,
-	Lai Peter Jun Ann <peter.jun.ann.lai@intel.com>,
-	Choong Yong Liang <yong.liang.choong@intel.com>
-Subject: Re: [PATCH net v2 2/2] net: phylink: Add module_exit_stub()
-Message-ID: <0f85171e-cb9c-47dd-bb7d-f58537e24a54@lunn.ch>
-References: <20231221085109.2830794-1-yi.fang.gan@intel.com>
- <20231221085109.2830794-3-yi.fang.gan@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC6254B5C9;
+	Thu, 21 Dec 2023 09:25:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3CC26C433C7;
+	Thu, 21 Dec 2023 09:25:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703150706;
+	bh=AYGf91U8T/JqQeT9S7bNrsfYGOsBnl13+m+5Z2NMRpE=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=e+a1SPK9XQk98t/2P89QLYkpRHBpJS7KY21oexMqyE4ufnNnH1jA60n99byaXUQrG
+	 Whze4kMbMPwcMYcyZxxZthpvZeB86k4WI2aoo5qTNeHpb0hiPYhTvStJ316yvjfq6j
+	 dtlS3klVPy7VJSds3XBKmkSvuP/7RE7bHXFEPyxIYjUUoiWjQ+MzJJ2PQGgJxFGnDy
+	 JglUtTKXGsfwyIxsYSBqcJHYZBf1neH1h3xIwVrp65z5zJTs3+eRYQTEdLTc+zL4H0
+	 Oh8HDT/FEIfnZbhUeAp76Mhb5ygZSOHs3myvlqSoNxw9Mv3cIVXXSMpG/TFhnfbsqA
+	 MM/3QxvCERuTg==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1rGFIc-005wSL-VG;
+	Thu, 21 Dec 2023 09:25:03 +0000
+Date: Thu, 21 Dec 2023 09:25:02 +0000
+Message-ID: <86plyzaowh.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: Haibo Xu <xiaobo55x@gmail.com>
+Cc: Haibo Xu <haibo1.xu@intel.com>,
+	ajones@ventanamicro.com,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Shuah Khan <shuah@kernel.org>,
+	Oliver Upton <oliver.upton@linux.dev>,
+	James Morse <james.morse@arm.com>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Zenghui Yu <yuzenghui@huawei.com>,
+	Anup Patel <anup@brainfault.org>,
+	Atish Patra <atishp@atishpatra.org>,
+	Guo Ren <guoren@kernel.org>,
+	Mayuresh Chitale <mchitale@ventanamicro.com>,
+	Greentime Hu <greentime.hu@sifive.com>,
+	wchen <waylingii@gmail.com>,
+	Conor Dooley <conor.dooley@microchip.com>,
+	Heiko Stuebner <heiko@sntech.de>,
+	Minda Chen <minda.chen@starfivetech.com>,
+	Samuel Holland <samuel@sholland.org>,
+	Jisheng Zhang <jszhang@kernel.org>,
+	Sean Christopherson <seanjc@google.com>,
+	Peter Xu <peterx@redhat.com>,
+	Like Xu <likexu@tencent.com>,
+	Vipin Sharma <vipinsh@google.com>,
+	Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>,
+	Aaron Lewis <aaronlewis@google.com>,
+	Thomas Huth <thuth@redhat.com>,
+	linux-kernel@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	kvm@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	kvmarm@lists.linux.dev,
+	kvm-riscv@lists.infradead.org
+Subject: Re: [PATCH v4 11/11] KVM: selftests: Enable tunning of err_margin_us in arch timer test
+In-Reply-To: <CAJve8o=nTsAwwgSib4vOLXjOWSMV2+J+BFsUZ57OdAK7eW8q8A@mail.gmail.com>
+References: <cover.1702371136.git.haibo1.xu@intel.com>
+	<0343a9e4bfa8011fbb6bca0286cee7eab1f17d5d.1702371136.git.haibo1.xu@intel.com>
+	<8734vy832j.wl-maz@kernel.org>
+	<CAJve8onc0WN5g98aOVBmJx15wFBAqfBKJ+ufoLY+oqYyVL+=3A@mail.gmail.com>
+	<f98879dc24f948f7a8a7b5374a32bc04@kernel.org>
+	<CAJve8ona7g=LxW1YeRB_FqGodF973H=A3b2m8054gmzK=Z7_ww@mail.gmail.com>
+	<87zfy5t1qt.wl-maz@kernel.org>
+	<CAJve8o=nTsAwwgSib4vOLXjOWSMV2+J+BFsUZ57OdAK7eW8q8A@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231221085109.2830794-3-yi.fang.gan@intel.com>
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: xiaobo55x@gmail.com, haibo1.xu@intel.com, ajones@ventanamicro.com, paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu, pbonzini@redhat.com, shuah@kernel.org, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, anup@brainfault.org, atishp@atishpatra.org, guoren@kernel.org, mchitale@ventanamicro.com, greentime.hu@sifive.com, waylingii@gmail.com, conor.dooley@microchip.com, heiko@sntech.de, minda.chen@starfivetech.com, samuel@sholland.org, jszhang@kernel.org, seanjc@google.com, peterx@redhat.com, likexu@tencent.com, vipinsh@google.com, maciej.wieczor-retman@intel.com, aaronlewis@google.com, thuth@redhat.com, linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org, kvm@vger.kernel.org, linux-kselftest@vger.kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, kvm-riscv@lists.infradead.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-On Thu, Dec 21, 2023 at 04:51:09PM +0800, Gan, Yi Fang wrote:
-> In delete_module(), if mod->init callback is defined but mod->exit
-> callback is not defined, it will assume the module cannot be removed
-> and return EBUSY. The module_exit() is missing from current phylink
-> module drive causing failure while unloading it.
+On Thu, 21 Dec 2023 02:58:40 +0000,
+Haibo Xu <xiaobo55x@gmail.com> wrote:
+>=20
+> On Wed, Dec 20, 2023 at 9:58=E2=80=AFPM Marc Zyngier <maz@kernel.org> wro=
+te:
+> >
+> > On Wed, 20 Dec 2023 13:51:24 +0000,
+> > Haibo Xu <xiaobo55x@gmail.com> wrote:
+> > >
+> > > On Wed, Dec 20, 2023 at 5:00=E2=80=AFPM Marc Zyngier <maz@kernel.org>=
+ wrote:
+> > > >
+> > > > On 2023-12-20 06:50, Haibo Xu wrote:
+> > > > > On Wed, Dec 20, 2023 at 2:22=E2=80=AFAM Marc Zyngier <maz@kernel.=
+org> wrote:
+> > > > >>
+> > > > >> On Tue, 12 Dec 2023 09:31:20 +0000,
+> > > > >> Haibo Xu <haibo1.xu@intel.com> wrote:
+> > > > >> > diff --git a/tools/testing/selftests/kvm/include/timer_test.h =
+b/tools/testing/selftests/kvm/include/timer_test.h
+> > > > >> > index 968257b893a7..b1d405e7157d 100644
+> > > > >> > --- a/tools/testing/selftests/kvm/include/timer_test.h
+> > > > >> > +++ b/tools/testing/selftests/kvm/include/timer_test.h
+> > > > >> > @@ -22,6 +22,7 @@ struct test_args {
+> > > > >> >       int nr_iter;
+> > > > >> >       int timer_period_ms;
+> > > > >> >       int migration_freq_ms;
+> > > > >> > +     int timer_err_margin_us;
+> > > > >>
+> > > > >> ... except that you are storing it as a signed value. Some consi=
+stency
+> > > > >> wouldn't hurt, really, and would avoid issues when passing large
+> > > > >> values.
+> > > > >>
+> > > > >
+> > > > > Yes, it's more proper to use an unsigned int for the non-negative=
+ error
+> > > > > margin.
+> > > > > Storing as signed here is just to keep the type consistent with t=
+hat
+> > > > > of timer_period_ms
+> > > > > since there will be '+' operation in other places.
+> > > > >
+> > > > >         tools/testing/selftests/kvm/aarch64/arch_timer.c
+> > > > >         /* Setup a timeout for the interrupt to arrive */
+> > > > >          udelay(msecs_to_usecs(test_args.timer_period_ms) +
+> > > > >              test_args.timer_err_margin_us);
+> > > >
+> > > > But that's exactly why using a signed quantity is wrong.
+> > > > What does it mean to have a huge *negative* margin?
+> > > >
+> > >
+> > > Hi Marc,
+> > >
+> > > I agree that negative values are meaningless for the margin.
+> > > If I understand correctly, the negative margin should be filtered by
+> > > assertion in atoi_non_negative().
+> >
+> > No. Please.
+> >
+> > atoi_non_negative() returns a uint32_t, which is what it should do.
+> > The bug is squarely in the use of an 'int' to store such value, and it
+> > is the *storage* that turns a positive value into a negative one.
+> >
+>=20
+> Thanks for the detailed info!
+>=20
+> May I understand that your concern is mainly for a platform with
+> 64bit int type, which may trigger the positive to negative convert?
 
-You are missing justification it is actually safe to remove
-phylink. Maybe Russell King deliberately did not implement
-module_exit() because it can explode in interesting ways if it was?
+No. It specifically applies to architectures with a 32bit int type,
+which is... *EVERYTHING*. Here's a basic example:
 
-	Andrew
+<quote>
+#include <stdio.h>
+
+int main(int argc, char *argv[])
+{
+	int x =3D 1U << 31;
+
+	printf("%d (%d)\n", x, sizeof(x));
+	return 0;
+}
+</quote>
+
+which returns "-2147483648 (4)" on any platform.
+
+This really is basic C, and I am very worried that you don't see the
+issue. I strongly suggest that you go and read about the C type system
+before touching this code.
+
+	M.
+
+--=20
+Without deviation from the norm, progress is not possible.
 
