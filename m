@@ -1,81 +1,94 @@
-Return-Path: <linux-kernel+bounces-8398-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8399-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 900DD81B69B
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 13:56:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 241B881B69F
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 13:57:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B3EC41C2591B
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 12:56:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 492C51C25876
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 12:57:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8D1A745F7;
-	Thu, 21 Dec 2023 12:49:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A62E760BC;
+	Thu, 21 Dec 2023 12:49:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fnLq2VqO"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="aYX+PUDP";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="TcqsSQgI";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="R2BZ7hn9";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="IeTNXrpA"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EBF9745D9;
-	Thu, 21 Dec 2023 12:49:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-50e239c49d0so974511e87.2;
-        Thu, 21 Dec 2023 04:49:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703162968; x=1703767768; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=g/mzU2hT9PSnrGwqsNWl+y1l0fBpKuzZ5AOH7TNPFbk=;
-        b=fnLq2VqOvubnI8OOe7cTti8MNmir99Kh7WN5EiRLxEUiuqXej2pmYOYI3CQjYKl31L
-         kcSVzHzIi7d6mAvvCZ9XWX/HGV9Zk5Ubnul/g6EPGQvVWPxKh0VDHCmckSJOUWxpITRz
-         YjKXmkKBs48lSP7CRkIMSmYXt4hHZthXyfhJE04aWHwmAc4YkfLm9jPEGzql08N6eFbG
-         GCblC+yfyQjTT+/WEGTCGaqHyiO3/amrWgQi1+pg74jQ8FLlBWLOyn8qMjlolqXMMQCD
-         uBP1S/ljkVIX08nALp+zMXPRqe4aHzhiPYdiF1WaNZNbiqud+e8NKas+YSrrh7vZe+k1
-         6POg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703162968; x=1703767768;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=g/mzU2hT9PSnrGwqsNWl+y1l0fBpKuzZ5AOH7TNPFbk=;
-        b=Sp7n2jRdjaw5gABaYWKH2Y0qmAmNyJG/r+NMY0Cb6kzwMUztp1VD3NYSzN/yAdVqau
-         o5EJrWLF0f2NA94mFQ0Oj69dQM4jsF7vKuBjpXLoQIpT0OOcWvMpySCFYvlqOQiFbeCU
-         Vw8+benvlZcsZh0C2lZj8Rmd91XBgXDpuJZP/+3UTPJ+u8hL8KTVSXceJ+z84y1AH1tg
-         8OwAELO4CYbWlqCFD1ZbA7WiwyGTwxqHd5v4VYAQH3XyDjOEeUV6kf/p0Z+6y25QkvEr
-         eFRzuD6unVsu8j5u5FF/olz9wpjszMgvl21RPmJ9uzkBUK2oDV+/oiWhoErviF+r4TMt
-         LESw==
-X-Gm-Message-State: AOJu0YxNU7A7SMrLOmi5Vongf7kq7DBtn+rY6x6bma6UItSeo5u9UIhR
-	J23wM/v6OjwNdoakVV9lKqA=
-X-Google-Smtp-Source: AGHT+IGyV6f8UBheAjNEECK8PtWI9VmNULPlJgekTe+vJCU+PbbS1a1JmkG5ZHVdEmvAloCVKJ4sGA==
-X-Received: by 2002:ac2:596d:0:b0:50d:179b:b38d with SMTP id h13-20020ac2596d000000b0050d179bb38dmr8710227lfp.45.1703162967896;
-        Thu, 21 Dec 2023 04:49:27 -0800 (PST)
-Received: from mobilestation ([178.176.56.174])
-        by smtp.gmail.com with ESMTPSA id d19-20020a193853000000b0050bf16efc9csm266216lfj.308.2023.12.21.04.49.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Dec 2023 04:49:27 -0800 (PST)
-Date: Thu, 21 Dec 2023 15:49:23 +0300
-From: Serge Semin <fancer.lancer@gmail.com>
-To: Suraj Jaiswal <quic_jsuraj@quicinc.com>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
-Cc: Vinod Koul <vkoul@kernel.org>, 
-	Bhupesh Sharma <bhupesh.sharma@linaro.org>, Andy Gross <agross@kernel.org>, 
-	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	Conor Dooley <conor+dt@kernel.org>, Alexandre Torgue <alexandre.torgue@foss.st.com>, 
-	Jose Abreu <joabreu@synopsys.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
-	netdev@vger.kernel.org, linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
-	Prasad Sodagudi <psodagud@quicinc.com>, Andrew Halaney <ahalaney@redhat.com>, 
-	Rob Herring <robh@kernel.org>, kernel@quicinc.com
-Subject: Re: [PATCH net-next v8 3/3] net: stmmac: Add driver support for
- DWMAC5 common safety IRQ
-Message-ID: <yromhtr73rwsr6hizr4tq37vfvyzfue7wzpmufqyscwspzffza@uhfcrn573acd>
-References: <20231221073620.232619-1-quic_jsuraj@quicinc.com>
- <20231221073620.232619-4-quic_jsuraj@quicinc.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C97246EB7D;
+	Thu, 21 Dec 2023 12:49:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id D365A1FB78;
+	Thu, 21 Dec 2023 12:49:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1703162985; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=YrZXyGOsYC5rUgIHJCnybFxlYBJ8I6rwZ24IXGRHk8Q=;
+	b=aYX+PUDPiwPLsdWsA+khamFscBRGLYSeY2ILdRkuRaT+VMnlDcWacb39h/mQ04j4rgN2kS
+	dI5BMx+amHviopWzU9OUhGZI4Fi59fHc59sqfLYGdTmy8iEHHLaRkcdExM2Z0vNquSa6jv
+	BtP//v/31gvqjI5sCo6U6pq0gaPFyF4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1703162985;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=YrZXyGOsYC5rUgIHJCnybFxlYBJ8I6rwZ24IXGRHk8Q=;
+	b=TcqsSQgI6gNLghVXuqEBEEfO6TwRlB54fakTWjutN0ME3H058JRkzVMgpbzKEEyY1VCa3q
+	OVGy/iQfjje5boAA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1703162984; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=YrZXyGOsYC5rUgIHJCnybFxlYBJ8I6rwZ24IXGRHk8Q=;
+	b=R2BZ7hn9rGUWBx2CTeCrlKkG9Ca9/rixh8nfX1cdLu7O8tJy/yueJn64JkWVGzRFAcTZ39
+	nRJApmL6heGZZrxCcIHdMwaAim7+N+L8ticcZrwdVcgmfOakXFFl5l61UpLnnJtHV/Na5p
+	g9x3V3H3LpZRZGKjvKspETmBdNSClcM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1703162984;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=YrZXyGOsYC5rUgIHJCnybFxlYBJ8I6rwZ24IXGRHk8Q=;
+	b=IeTNXrpALi0+LKw3oaohZfnCYSaTGl1QZW/fr57jSMu9SiNDgVexIU4nN/Q1lorKPkKTkz
+	YFf3lQruumC6VUAw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C908813AB5;
+	Thu, 21 Dec 2023 12:49:44 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id tccNMWg0hGX/dgAAD6G6ig
+	(envelope-from <jack@suse.cz>); Thu, 21 Dec 2023 12:49:44 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 859EAA07E3; Thu, 21 Dec 2023 13:49:36 +0100 (CET)
+Date: Thu, 21 Dec 2023 13:49:36 +0100
+From: Jan Kara <jack@suse.cz>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Jan Kara <jack@suse.cz>, linux-mm@kvack.org,
+	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
+	Jan Kara <jack@suse.com>, David Howells <dhowells@redhat.com>,
+	Brian Foster <bfoster@redhat.com>, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 15/17] writeback: Add for_each_writeback_folio()
+Message-ID: <20231221124936.vmm2tjujoy6roxs4@quack3>
+References: <20231218153553.807799-1-hch@lst.de>
+ <20231218153553.807799-16-hch@lst.de>
+ <20231221115149.ke74ddapwb7q6fdz@quack3>
+ <20231221122910.GF17956@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -84,181 +97,79 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231221073620.232619-4-quic_jsuraj@quicinc.com>
+In-Reply-To: <20231221122910.GF17956@lst.de>
+X-Spam-Level: 
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [-2.81 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[9];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,infradead.org:email,suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%];
+	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=R2BZ7hn9;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=IeTNXrpA
+X-Spam-Score: -2.81
+X-Rspamd-Queue-Id: D365A1FB78
 
-Hi Suraj
-
-On Thu, Dec 21, 2023 at 01:06:20PM +0530, Suraj Jaiswal wrote:
-> Add support to listen HW safety IRQ like ECC(error
-> correction code), DPP(data path parity), FSM(finite state
-> machine) fault in common IRQ line.
+On Thu 21-12-23 13:29:10, Christoph Hellwig wrote:
+> On Thu, Dec 21, 2023 at 12:51:49PM +0100, Jan Kara wrote:
+> > On Mon 18-12-23 16:35:51, Christoph Hellwig wrote:
+> > > From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+> > > 
+> > > Wrap up the iterator with a nice bit of syntactic sugar.  Now the
+> > > caller doesn't need to know about wbc->err and can just return error,
+> > > not knowing that the iterator took care of storing errors correctly.
+> > > 
+> > > Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> > > Signed-off-by: Christoph Hellwig <hch@lst.de>
+> > 
+> > Not sure if the trick with 'error' variable isn't a bit too clever for us
+> > ;) We'll see how many bugs it will cause in the future...
 > 
-> Signed-off-by: Suraj Jaiswal <quic_jsuraj@quicinc.com>
+> It's a bit too much syntactic sugar for my taste, but if we want a magic
+> for macro I can't really see a good way around it.  I personally wouldn't
 
-Thanks for taking my notes into account. One more comment is further
-below.
+Agreed. The macro is kind of neat but a magic like this tends to bite us in
+surprising ways. E.g. if someone breaks out of the loop, things will go
+really wrong (missing writeback_finish() call). That would be actually a
+good usecase for the cleanup handlers PeterZ has been promoting - we could
+make sure writeback_finish() is called whenever we exit the loop block.
 
-> ---
->  drivers/net/ethernet/stmicro/stmmac/common.h  |  1 +
->  drivers/net/ethernet/stmicro/stmmac/stmmac.h  |  3 ++
->  .../net/ethernet/stmicro/stmmac/stmmac_main.c | 37 +++++++++++++++++++
->  .../ethernet/stmicro/stmmac/stmmac_platform.c |  8 ++++
->  4 files changed, 49 insertions(+)
+> mind a version where the writeback_get_folio moves out of
+> writeback_iter_init and the pattern would look more like:
 > 
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/common.h b/drivers/net/ethernet/stmicro/stmmac/common.h
-> index 721c1f8e892f..b9233b09b80f 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/common.h
-> +++ b/drivers/net/ethernet/stmicro/stmmac/common.h
-> @@ -344,6 +344,7 @@ enum request_irq_err {
->  	REQ_IRQ_ERR_ALL,
->  	REQ_IRQ_ERR_TX,
->  	REQ_IRQ_ERR_RX,
-> +	REQ_IRQ_ERR_SFTY,
->  	REQ_IRQ_ERR_SFTY_UE,
->  	REQ_IRQ_ERR_SFTY_CE,
->  	REQ_IRQ_ERR_LPI,
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac.h b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
-> index 9f89acf31050..ca3d93851bed 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac.h
-> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
-> @@ -31,6 +31,7 @@ struct stmmac_resources {
->  	int wol_irq;
->  	int lpi_irq;
->  	int irq;
-> +	int sfty_irq;
->  	int sfty_ce_irq;
->  	int sfty_ue_irq;
->  	int rx_irq[MTL_MAX_RX_QUEUES];
-> @@ -297,6 +298,7 @@ struct stmmac_priv {
->  	void __iomem *ptpaddr;
->  	void __iomem *estaddr;
->  	unsigned long active_vlans[BITS_TO_LONGS(VLAN_N_VID)];
-> +	int sfty_irq;
->  	int sfty_ce_irq;
->  	int sfty_ue_irq;
->  	int rx_irq[MTL_MAX_RX_QUEUES];
-> @@ -305,6 +307,7 @@ struct stmmac_priv {
->  	char int_name_mac[IFNAMSIZ + 9];
->  	char int_name_wol[IFNAMSIZ + 9];
->  	char int_name_lpi[IFNAMSIZ + 9];
-> +	char int_name_sfty[IFNAMSIZ + 10];
->  	char int_name_sfty_ce[IFNAMSIZ + 10];
->  	char int_name_sfty_ue[IFNAMSIZ + 10];
->  	char int_name_rx_irq[MTL_MAX_TX_QUEUES][IFNAMSIZ + 14];
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> index 47de466e432c..7d4e827dfeab 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> @@ -3592,6 +3592,10 @@ static void stmmac_free_irq(struct net_device *dev,
->  		if (priv->wol_irq > 0 && priv->wol_irq != dev->irq)
->  			free_irq(priv->wol_irq, dev);
->  		fallthrough;
-> +	case REQ_IRQ_ERR_SFTY:
-> +		if (priv->sfty_irq > 0 && priv->sfty_irq != dev->irq)
-> +			free_irq(priv->sfty_irq, dev);
-> +		fallthrough;
->  	case REQ_IRQ_ERR_WOL:
->  		free_irq(dev->irq, dev);
->  		fallthrough;
-> @@ -3661,6 +3665,23 @@ static int stmmac_request_irq_multi_msi(struct net_device *dev)
->  		}
->  	}
->  
-> +	/* Request the common Safety Feature Correctible/Uncorrectible
-> +	 * Error line in case of another line is used
-> +	 */
-> +	if (priv->sfty_irq > 0 && priv->sfty_irq != dev->irq) {
-> +		int_name = priv->int_name_sfty;
-> +		sprintf(int_name, "%s:%s", dev->name, "safety");
-> +		ret = request_irq(priv->sfty_irq, stmmac_safety_interrupt,
-> +				  0, int_name, dev);
-> +		if (unlikely(ret < 0)) {
-> +			netdev_err(priv->dev,
-> +				   "%s: alloc sfty MSI %d (error: %d)\n",
-> +				   __func__, priv->sfty_irq, ret);
-> +			irq_err = REQ_IRQ_ERR_SFTY;
-> +			goto irq_error;
-> +		}
-> +	}
-> +
->  	/* Request the Safety Feature Correctible Error line in
->  	 * case of another line is used
->  	 */
-> @@ -3798,6 +3819,21 @@ static int stmmac_request_irq_single(struct net_device *dev)
->  		}
->  	}
->  
-> +	/* Request the common Safety Feature Correctible/Uncorrectible
-> +	 * Error line in case of another line is used
-> +	 */
-> +	if (priv->sfty_irq > 0 && priv->sfty_irq != dev->irq) {
-
-> +		ret = request_irq(priv->sfty_irq, stmmac_safety_interrupt,
-> +				  IRQF_SHARED, dev->name, dev);
-
-Just noticed yesterday that stmmac_safety_interrupt() is also called
-from the stmmac_interrupt() handler which is supposed to be registered
-on the generic "mac" IRQ. Won't it cause races around the CSRs
-(doubtfully but still worth to note) and the errors handling
-(stmmac_global_err()) in case if both IRQs are raised simultaneously?
-At the very least it looks suspicious and worth double-checking.
-
-I also found out that nobody seemed to care that the same handler is
-registered on MAC, WoL and LPI IRQ lines. Hmm, no race-related
-problems have been reported so far for the platforms with separate
-WoL/LPI IRQs. It's either a lucky coincident or the IRQs are always
-assigned to the same CPU or the IRQs handle is indeed free of races.
-In anyway it looks suspicious too. At the very least AFAICS the DMA
-IRQ-handler is indeed racy on the status CSR access. It isn't
-cleared-on-read, but write-one-to-clear. So the statistics might be
-calculated more than once for the same CSR state. There might be some
-other problems I failed to spot on the first glance.
-
-David, Eric, Jacub, Paolo, your opinion about the note above?
-
--Serge(y)
-
-> +		if (unlikely(ret < 0)) {
-> +			netdev_err(priv->dev,
-> +				   "%s: ERROR: allocating the sfty IRQ %d (%d)\n",
-> +				   __func__, priv->sfty_irq, ret);
-> +			irq_err = REQ_IRQ_ERR_SFTY;
-> +			goto irq_error;
-> +		}
-> +	}
-> +
->  	return 0;
->  
->  irq_error:
-> @@ -7462,6 +7498,7 @@ int stmmac_dvr_probe(struct device *device,
->  	priv->dev->irq = res->irq;
->  	priv->wol_irq = res->wol_irq;
->  	priv->lpi_irq = res->lpi_irq;
-> +	priv->sfty_irq = res->sfty_irq;
->  	priv->sfty_ce_irq = res->sfty_ce_irq;
->  	priv->sfty_ue_irq = res->sfty_ue_irq;
->  	for (i = 0; i < MTL_MAX_RX_QUEUES; i++)
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-> index 70eadc83ca68..ab250161fd79 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-> @@ -743,6 +743,14 @@ int stmmac_get_platform_resources(struct platform_device *pdev,
->  		dev_info(&pdev->dev, "IRQ eth_lpi not found\n");
->  	}
->  
-> +	stmmac_res->sfty_irq =
-> +		platform_get_irq_byname_optional(pdev, "sfty");
-> +	if (stmmac_res->sfty_irq < 0) {
-> +		if (stmmac_res->sfty_irq == -EPROBE_DEFER)
-> +			return -EPROBE_DEFER;
-> +		dev_info(&pdev->dev, "IRQ safety IRQ not found\n");
-> +	}
-> +
->  	stmmac_res->addr = devm_platform_ioremap_resource(pdev, 0);
->  
->  	return PTR_ERR_OR_ZERO(stmmac_res->addr);
-> -- 
-> 2.25.1
+> 	writeback_iter_init(mapping, wbc);
+> 	while ((folio = writeback_iter_next(mapping, wbc, folio))) {
+> 		wbc->err = <do something>
+> 	}
 > 
-> 
+> 	return wbc->err;
+
+That would work for me as well. But I don't feel to strongly about this
+either way.
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
