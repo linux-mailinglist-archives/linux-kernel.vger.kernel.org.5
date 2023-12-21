@@ -1,119 +1,229 @@
-Return-Path: <linux-kernel+bounces-8565-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8567-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1E0C81B976
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 15:24:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C48781B97C
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 15:25:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3ADCCB21EFE
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 14:24:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E821B1F223AB
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 14:25:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FE7936081;
-	Thu, 21 Dec 2023 14:24:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFA0F36086;
+	Thu, 21 Dec 2023 14:25:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="JHPABv/z"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pc+AlV7s"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 817006D6F2
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 14:24:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1703168641;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=TW/reE9xPc0IHxJZcKvgnG2qRH9ttpPMFz80v6EmDTg=;
-	b=JHPABv/zyo5lbHovFzdXwhDDSaejD76wKkk/mZKGhGBWaURdnEuHUnoXgTcy0u7nqdLMwY
-	My7yfWO89uQakwshfuy8PkxgOi3FcFJjY+at+ZyqDhQYioHdaQhy1bLEOpUx65F/5+6nBt
-	ODPhnVrbdoqLS0yAYF5w7DPyJGdg7Sw=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-374-zQG30YRBP3awbjWww4paEA-1; Thu, 21 Dec 2023 09:23:55 -0500
-X-MC-Unique: zQG30YRBP3awbjWww4paEA-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 00113101A555;
-	Thu, 21 Dec 2023 14:23:55 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.39.195.169])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 48543492BC6;
-	Thu, 21 Dec 2023 14:23:53 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-	Kingdom.
-	Registered in England and Wales under Company Registration No. 3798903
-From: David Howells <dhowells@redhat.com>
-To: Anastasia Belova <abelova@astralinux.ru>,
-    Marc Dionne <marc.dionne@auristor.com>
-cc: dhowells@redhat.com, linux-afs@lists.infradead.org,
-    linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-    lvc-project@linuxtesting.org
-Subject: [PATCH] afs: Fix overwriting of result of DNS query
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30F676D6E7;
+	Thu, 21 Dec 2023 14:25:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A357C433C7;
+	Thu, 21 Dec 2023 14:25:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703168733;
+	bh=ocQ9EjUsxyh5+RDobb40P0qaPVGGj9nzip9H6VJRjIw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=pc+AlV7s1dtCyqu4IrWCCGACCZu9yLIdhMIzQRLpBXdoKWGiXBJxvM2Ds9jMZWG0k
+	 NUQt/C/vK8TGMgTuTBK5C3c5lmYkqfDw7TRsjzwPFwjLgWZkNodisFNfZTzS77Reiu
+	 yzt38yfyi6c2woJl0Ki98nG3tqtaWxmQ/PkWo9Col6uoxU8uc89d8JsY/AbaPZXAix
+	 f8STa19wkKXWWTI4qENq2qqU0REDMp+XRrQ8oxq7qyOZf4ISgdCWlinhYhiFT2a+7G
+	 S/Uk//E2GOQ3AnVgldnXvquQ3MiY9sDKHa4nFG/5CsIsfRk+6cTuzhppajYOL5MX4p
+	 xpKmbmqvyvSSg==
+Received: (nullmailer pid 3842774 invoked by uid 1000);
+	Thu, 21 Dec 2023 14:25:31 -0000
+Date: Thu, 21 Dec 2023 08:25:31 -0600
+From: Rob Herring <robh@kernel.org>
+To: Georgi Djakov <quic_c_gdjako@quicinc.com>
+Cc: krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, will@kernel.org, robin.murphy@arm.com, joro@8bytes.org, devicetree@vger.kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org, linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev, linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, quic_cgoldswo@quicinc.com, quic_sukadev@quicinc.com, quic_pdaly@quicinc.com, quic_sudaraja@quicinc.com, djakov@kernel.org
+Subject: Re: [PATCH v3 1/9] dt-bindings: iommu: Add Translation Buffer Unit
+ bindings
+Message-ID: <20231221142531.GA3730284-robh@kernel.org>
+References: <20231220060236.18600-1-quic_c_gdjako@quicinc.com>
+ <20231220060236.18600-2-quic_c_gdjako@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1700861.1703168632.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date: Thu, 21 Dec 2023 14:23:52 +0000
-Message-ID: <1700862.1703168632@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231220060236.18600-2-quic_c_gdjako@quicinc.com>
 
-In afs_update_cell(), ret is the result of the DNS lookup and the errors
-are to be handled by a switch - however, the value gets clobbered in
-between by setting it to -ENOMEM in case afs_alloc_vlserver_list() fails.
+On Tue, Dec 19, 2023 at 10:02:28PM -0800, Georgi Djakov wrote:
+> The "apps_smmu" on the Qualcomm sdm845 platform is an implementation
+> of the SMMU-500, that consists of a single TCU (Translation Control
+> Unit) and multiple TBUs (Translation Buffer Units). The TCU is already
+> being described in the generic SMMU DT schema. Add bindings for the
+> TBUs to describe their properties and resources that needs to be
+> managed in order to operate them.
+> 
+> In this DT schema, the TBUs are modelled as child devices of the TCU
+> and each of them is described with it's register space, clocks, power
+> domains, interconnects etc.
+> 
+> Signed-off-by: Georgi Djakov <quic_c_gdjako@quicinc.com>
+> ---
+>  .../devicetree/bindings/iommu/arm,smmu.yaml   | 31 ++++++++
+>  .../bindings/iommu/qcom,qsmmuv500-tbu.yaml    | 77 +++++++++++++++++++
+>  2 files changed, 108 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iommu/qcom,qsmmuv500-tbu.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/iommu/arm,smmu.yaml b/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
+> index a4042ae24770..a610af2c7e5e 100644
+> --- a/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
+> +++ b/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
+> @@ -235,6 +235,27 @@ properties:
+>        enabled for any given device.
+>      $ref: /schemas/types.yaml#/definitions/phandle
+>  
+> +  '#address-cells':
+> +    enum: [ 1, 2 ]
+> +
+> +  '#size-cells':
+> +    enum: [ 1, 2 ]
+> +
+> +  ranges: true
+> +
+> +patternProperties:
+> +  "^tbu@[0-9a-f]+":
 
-Fix this by moving the setting of -ENOMEM into the error handling for OOM
-failure.  Further, only do it if we don't have an alternative error to
-return.
+Missing '$' on the end.
 
-Found by Linux Verification Center (linuxtesting.org) with SVACE.  Based o=
-n
-a patch from Anastasia Belova[1].
+> +    description: The TBU child node(s)
+> +    type: object
+> +
+> +    properties:
+> +      stream-id-range:
+> +        $ref: /schemas/types.yaml#/definitions/uint32-array
+> +        description: Stream ID range (address and size) that is assigned by the TBU
+> +        items:
+> +          minItems: 2
+> +          maxItems: 2
 
-Fixes: d5c32c89b208 ("afs: Fix cell DNS lookup")
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: Anastasia Belova <abelova@astralinux.ru>
-cc: Marc Dionne <marc.dionne@auristor.com>
-cc: linux-afs@lists.infradead.org
-cc: lvc-project@linuxtesting.org
-Link: https://lore.kernel.org/r/20231221085849.1463-1-abelova@astralinux.r=
-u/ [1]
+This is allowing any property in the TBU nodes. This all needs to move 
+to a separate TBU schema.
 
----
- fs/afs/cell.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+> +
+>  required:
+>    - compatible
+>    - reg
+> @@ -312,6 +333,16 @@ allOf:
+>                      through the TCU's programming interface.
+>                  - description: bus clock required for the smmu ptw
+>  
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: qcom,sdm845-smmu-500
+> +    then:
+> +      patternProperties:
+> +        "^tbu@[0-9a-f]+":
+> +          $ref: qcom,qsmmuv500-tbu.yaml
 
-diff --git a/fs/afs/cell.c b/fs/afs/cell.c
-index 988c2ac7cece..926cb1188eba 100644
---- a/fs/afs/cell.c
-+++ b/fs/afs/cell.c
-@@ -409,10 +409,12 @@ static int afs_update_cell(struct afs_cell *cell)
- 		if (ret =3D=3D -ENOMEM)
- 			goto out_wake;
- =
+TBU nodes are allowed for all other SMMUs. Is that your intent? If not, 
+then the node definition up above should be removed and you would just 
+have this if/then schema.
 
--		ret =3D -ENOMEM;
- 		vllist =3D afs_alloc_vlserver_list(0);
--		if (!vllist)
-+		if (!vllist) {
-+			if (ret >=3D 0)
-+				ret =3D -ENOMEM;
- 			goto out_wake;
-+		}
- =
+> +
+>    - if:
+>        properties:
+>          compatible:
+> diff --git a/Documentation/devicetree/bindings/iommu/qcom,qsmmuv500-tbu.yaml b/Documentation/devicetree/bindings/iommu/qcom,qsmmuv500-tbu.yaml
+> new file mode 100644
+> index 000000000000..c4f148ae5f38
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/iommu/qcom,qsmmuv500-tbu.yaml
+> @@ -0,0 +1,77 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/iommu/qcom,qsmmuv500-tbu.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Qualcomm TBU (Translation Buffer Unit)
+> +
+> +maintainers:
+> +  - Georgi Djakov <quic_c_gdjako@quicinc.com>
+> +
+> +description:
+> +  The Qualcomm SMMU500 implementation consists of TCU and TBU. The TBU contains
+> +  a Translation Lookaside Buffer (TLB) that caches page tables. TBUs provides
+> +  debug features to trace and trigger debug transactions. There are multiple TBU
+> +  instances distributes with each client core.
+> +
+> +properties:
+> +
+> +  compatible:
+> +    const: qcom,qsmmuv500-tbu
+> +
+> +  reg:
+> +    items:
+> +      - description: Address and size of the TBU's register space.
+> +
+> +  clocks:
+> +    maxItems: 1
+> +
+> +  interconnects:
+> +    maxItems: 1
+> +
+> +  power-domains:
+> +    maxItems: 1
+> +
+> +  stream-id-range:
+> +    $ref: "arm,smmu.yaml#/patternProperties/^tbu@[0-9a-f]+/properties/stream-id-range"
 
- 		switch (ret) {
- 		case -ENODATA:
+No. We generally don't reference properties this way. Partly because not 
+all regex's work as a path.
 
+You need a base TBU schema of the common properties that is referenced 
+at the top level here. That should also solve the above problem.
+
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - stream-id-range
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/qcom,gcc-sdm845.h>
+> +    #include <dt-bindings/interconnect/qcom,icc.h>
+> +    #include <dt-bindings/interconnect/qcom,sdm845.h>
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +    #include <dt-bindings/power/qcom-rpmpd.h>
+> +
+> +    apps_smmu: iommu@15000000 {
+
+Drop unused labels.
+
+> +        compatible = "qcom,sdm845-smmu-500", "arm,mmu-500";
+> +        reg = <0x15000000 0x80000>;
+> +        ranges = <0 0 0 0 0xffffffff>;
+> +        #iommu-cells = <2>;
+> +        #global-interrupts = <1>;
+> +        interrupts = <GIC_SPI 65 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 343 IRQ_TYPE_LEVEL_HIGH>;
+> +        #address-cells = <2>;
+> +        #size-cells = <2>;
+> +
+> +        anoc_1_pcie_tbu: tbu@150e1000 {
+> +            compatible = "qcom,qsmmuv500-tbu";
+> +            reg = <0x0 0x150e1000 0x0 0x1000>;
+> +            clocks = <&gcc GCC_AGGRE_NOC_PCIE_TBU_CLK>;
+> +            interconnects = <&system_noc MASTER_GNOC_SNOC QCOM_ICC_TAG_ACTIVE_ONLY
+> +                             &config_noc SLAVE_IMEM_CFG QCOM_ICC_TAG_ACTIVE_ONLY>;
+> +            power-domains = <&gcc HLOS1_VOTE_AGGRE_NOC_MMU_PCIE_TBU_GDSC>;
+> +            stream-id-range = <0x1c00 0x400>;
+> +        };
+> +    };
+> +
+> +...
 
