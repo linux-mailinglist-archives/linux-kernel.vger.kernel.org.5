@@ -1,164 +1,192 @@
-Return-Path: <linux-kernel+bounces-8818-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8820-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F04B81BCAB
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 18:12:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2934381BCB4
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 18:12:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 71F131C21E2A
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 17:12:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D423B286EBE
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 17:12:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E798627E1;
-	Thu, 21 Dec 2023 17:11:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 436AE59924;
+	Thu, 21 Dec 2023 17:12:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="g/Ks9dfX"
+	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="Fq+Hnp7d"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx08-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70A505990D;
-	Thu, 21 Dec 2023 17:11:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-40c6ea99429so11290215e9.3;
-        Thu, 21 Dec 2023 09:11:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703178704; x=1703783504; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3hihuwD9LbPKxqf+5u/wIYAygOzw3x2ScxGnztieWIY=;
-        b=g/Ks9dfXIIRlAeccp1BL6Hc+uoIGLlwxajFeImZtV0TTPG2n/+RWHLuGHgVaLBTb4P
-         uccFoARcW26L7aDOTB3JSKh+lOk9Aci3+Qovryxhit7LQ6HzkPg2AdnjpwnGgbYvwKUU
-         3tfvHDpseJk696liEfp8TA3s0Vkn/9k9LyunA5jR62EvbyUVKo6ETbolTNRaVfeCyysv
-         +HMmIXJsDxaS4C8H49cW1zFYx23519wWrNQTShCPO85nNo1mIO9r7b3loNRXjYAE1x0M
-         4aOTj8AWJMenS/t9/V2PfQHTLOhVsCU9PiGmEtISFZ1pvOYGHRU1gYAQ1bJVGA1NUGeY
-         HykA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703178704; x=1703783504;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3hihuwD9LbPKxqf+5u/wIYAygOzw3x2ScxGnztieWIY=;
-        b=I+0hY+zeF/kFcPXjwRur8bBXW06ILEQqdMch6bXNlmxlAWXd5lSTAsaiHEtot2MnEO
-         +olIJGnQsaVz5GjOj2bjGmfaw3g9fbOlmcF0/gCXOidLZISbZDyUFgbpZFT/0+3oGppd
-         FA+ZTqKHGmMEzR3TTR+HdLNvmInVSIzNSb7d/p4cVnABuo1J4/oEu1MrArojqbrYOfY2
-         p5dD6aApeOFbA37dOJLHaNfFC8T0JKSn1Rf5yXWivpx7WRB4bpryZ40UmdPOFzkIV6z3
-         wJ0ChozBSp7JB9+j6RCpd3jFiNdUd/NqM7wEJbw5jj/GdvjgWLZclMr888ZdTkyq0TTW
-         siCA==
-X-Gm-Message-State: AOJu0YypXUqaKhI48mu/5p220ZwaR7xfB1BFNcZnxuagZxecKOegA05S
-	sjidWfRZ6DjenICilP4lfhk=
-X-Google-Smtp-Source: AGHT+IGBLVnxRHlRMvofJQB+iAIQbr0MCLIkNX2d66hvC70LVg7/zeoDCXf5ihKWKFF0V53VJ9pg5Q==
-X-Received: by 2002:a05:600c:b8f:b0:40c:3548:1f0e with SMTP id fl15-20020a05600c0b8f00b0040c35481f0emr15196wmb.64.1703178704340;
-        Thu, 21 Dec 2023 09:11:44 -0800 (PST)
-Received: from localhost.localdomain (host-95-250-248-68.retail.telecomitalia.it. [95.250.248.68])
-        by smtp.googlemail.com with ESMTPSA id m20-20020a05600c4f5400b0040c44b4a282sm4020727wmq.43.2023.12.21.09.11.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Dec 2023 09:11:44 -0800 (PST)
-From: Christian Marangi <ansuelsmth@gmail.com>
-To: Pavel Machek <pavel@ucw.cz>,
-	Lee Jones <lee@kernel.org>,
-	=?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Christian Marangi <ansuelsmth@gmail.com>,
-	Daniel Golle <daniel@makrotopia.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Li Zetao <lizetao1@huawei.com>,
-	linux-kernel@vger.kernel.org,
-	linux-leds@vger.kernel.org
-Subject: [PATCH v6 2/2] docs: ABI: sysfs-class-led-trigger-netdev: Document now hidable link_*
-Date: Thu, 21 Dec 2023 18:11:25 +0100
-Message-Id: <20231221171125.1732-2-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20231221171125.1732-1-ansuelsmth@gmail.com>
-References: <20231221171125.1732-1-ansuelsmth@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 214B15990A;
+	Thu, 21 Dec 2023 17:12:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
+Received: from pps.filterd (m0369457.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3BLGr2tN023358;
+	Thu, 21 Dec 2023 18:11:36 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	selector1; bh=dxmkweGMh19Sc2/yX4ifon/v2Dk/DFKokt/84XbR2Vo=; b=Fq
+	+Hnp7dUngZ5rsy/RLGFZ4LClwcMeEQR8kL2q2M+0gOv+WLeZbCGbPy5CKHDPFIOe
+	oNjzQW9qHatXHs3LQrxBb3p5R1lAhQZ1slZhH9vF/P2Po2gA9c1vH2XMxSKva8VS
+	Uxflg22Bov1nAOYarU24Aiwe54llbRSI1MkOWR/g/SVLkY+B00/Y9a8gry329PUI
+	qfiuU1P2QlEaCYyqP7l8FMMOVhCB+qpq9sOQSZHLV4PVhEW+QBFV4eThrpR/Eg+b
+	cEat7jY7Gwj0MFLnzJGEyFdi4spWqi72Vlt2ubPgmwWZtPJXafYbBRTSzdj68Lbr
+	Q47yKhiu5UP/xD+LMg0w==
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3v3q811wjx-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 21 Dec 2023 18:11:36 +0100 (CET)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 64770100053;
+	Thu, 21 Dec 2023 18:11:35 +0100 (CET)
+Received: from Webmail-eu.st.com (shfdag1node3.st.com [10.75.129.71])
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 2F006252E58;
+	Thu, 21 Dec 2023 18:11:35 +0100 (CET)
+Received: from [10.201.20.208] (10.201.20.208) by SHFDAG1NODE3.st.com
+ (10.75.129.71) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 21 Dec
+ 2023 18:11:34 +0100
+Message-ID: <5e007fe4-d6cd-4ec3-b9c1-ef7841e29851@foss.st.com>
+Date: Thu, 21 Dec 2023 18:11:33 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] dmaengine: add channel device name to channel
+ registration
+Content-Language: en-US
+To: Vinod Koul <vkoul@kernel.org>
+CC: Fenghua Yu <fenghua.yu@intel.com>, Dave Jiang <dave.jiang@intel.com>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20231213174021.3074759-1-amelie.delaunay@foss.st.com>
+ <ZYRkP-m_sra8qUNZ@matsya>
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+In-Reply-To: <ZYRkP-m_sra8qUNZ@matsya>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SHFCAS1NODE2.st.com (10.75.129.73) To SHFDAG1NODE3.st.com
+ (10.75.129.71)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-21_09,2023-12-21_02,2023-05-22_02
 
-Document now hidable link speed modes for the LED netdev trigger.
+Hi Vinod,
 
-Link speed modes are now showed only if the named network device
-supports them and are hidden if not.
+On 12/21/23 17:13, Vinod Koul wrote:
+> On 13-12-23, 18:40, Amelie Delaunay wrote:
+>> Channel device name is used for sysfs, but also by dmatest filter function.
+>>
+>> With dynamic channel registration, channels can be registered after dma
+>> controller registration. Users may want to have specific channel names.
+>>
+>> If name is NULL, the channel name relies on previous implementation,
+>> dma<controller_device_id>chan<channel_device_id>.
+> 
+> lgtm, where is the user for this..?
+> 
 
-Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
-Reviewed-by: Marek Behún <kabel@kernel.org>
----
-Changes v6:
-- Add Reviewed-by tag
-Changes v2:
-- Add this patch
+I'll send beginning of next year a DMA controller driver for STM32MP25 
+SoC family. It relies on the dynamic channel registration. It will be a 
+user of this dma_async_device_channel_register(struct dma_device 
+*device, struct dma_chan *chan, const char *name).
 
- .../ABI/testing/sysfs-class-led-trigger-netdev       | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+Regards,
+Amelie
 
-diff --git a/Documentation/ABI/testing/sysfs-class-led-trigger-netdev b/Documentation/ABI/testing/sysfs-class-led-trigger-netdev
-index a6c307c4befa..ed46b37ab8a2 100644
---- a/Documentation/ABI/testing/sysfs-class-led-trigger-netdev
-+++ b/Documentation/ABI/testing/sysfs-class-led-trigger-netdev
-@@ -88,6 +88,8 @@ Description:
- 		speed of 10MBps of the named network device.
- 		Setting this value also immediately changes the LED state.
- 
-+		Present only if the named network device supports 10Mbps link speed.
-+
- What:		/sys/class/leds/<led>/link_100
- Date:		Jun 2023
- KernelVersion:	6.5
-@@ -101,6 +103,8 @@ Description:
- 		speed of 100Mbps of the named network device.
- 		Setting this value also immediately changes the LED state.
- 
-+		Present only if the named network device supports 100Mbps link speed.
-+
- What:		/sys/class/leds/<led>/link_1000
- Date:		Jun 2023
- KernelVersion:	6.5
-@@ -114,6 +118,8 @@ Description:
- 		speed of 1000Mbps of the named network device.
- 		Setting this value also immediately changes the LED state.
- 
-+		Present only if the named network device supports 1000Mbps link speed.
-+
- What:		/sys/class/leds/<led>/link_2500
- Date:		Nov 2023
- KernelVersion:	6.8
-@@ -127,6 +133,8 @@ Description:
- 		speed of 2500Mbps of the named network device.
- 		Setting this value also immediately changes the LED state.
- 
-+		Present only if the named network device supports 2500Mbps link speed.
-+
- What:		/sys/class/leds/<led>/link_5000
- Date:		Nov 2023
- KernelVersion:	6.8
-@@ -140,6 +148,8 @@ Description:
- 		speed of 5000Mbps of the named network device.
- 		Setting this value also immediately changes the LED state.
- 
-+		Present only if the named network device supports 5000Mbps link speed.
-+
- What:		/sys/class/leds/<led>/link_10000
- Date:		Nov 2023
- KernelVersion:	6.8
-@@ -153,6 +163,8 @@ Description:
- 		speed of 10000Mbps of the named network device.
- 		Setting this value also immediately changes the LED state.
- 
-+		Present only if the named network device supports 10000Mbps link speed.
-+
- What:		/sys/class/leds/<led>/half_duplex
- Date:		Jun 2023
- KernelVersion:	6.5
--- 
-2.40.1
-
+>>
+>> Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+>> ---
+>>   drivers/dma/dmaengine.c   | 16 ++++++++++------
+>>   drivers/dma/idxd/dma.c    |  2 +-
+>>   include/linux/dmaengine.h |  3 ++-
+>>   3 files changed, 13 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/drivers/dma/dmaengine.c b/drivers/dma/dmaengine.c
+>> index b7388ae62d7f..7848428da2d6 100644
+>> --- a/drivers/dma/dmaengine.c
+>> +++ b/drivers/dma/dmaengine.c
+>> @@ -1037,7 +1037,8 @@ static int get_dma_id(struct dma_device *device)
+>>   }
+>>   
+>>   static int __dma_async_device_channel_register(struct dma_device *device,
+>> -					       struct dma_chan *chan)
+>> +					       struct dma_chan *chan,
+>> +					       const char *name)
+>>   {
+>>   	int rc;
+>>   
+>> @@ -1066,8 +1067,10 @@ static int __dma_async_device_channel_register(struct dma_device *device,
+>>   	chan->dev->device.parent = device->dev;
+>>   	chan->dev->chan = chan;
+>>   	chan->dev->dev_id = device->dev_id;
+>> -	dev_set_name(&chan->dev->device, "dma%dchan%d",
+>> -		     device->dev_id, chan->chan_id);
+>> +	if (!name)
+>> +		dev_set_name(&chan->dev->device, "dma%dchan%d", device->dev_id, chan->chan_id);
+>> +	else
+>> +		dev_set_name(&chan->dev->device, name);
+>>   	rc = device_register(&chan->dev->device);
+>>   	if (rc)
+>>   		goto err_out_ida;
+>> @@ -1087,11 +1090,12 @@ static int __dma_async_device_channel_register(struct dma_device *device,
+>>   }
+>>   
+>>   int dma_async_device_channel_register(struct dma_device *device,
+>> -				      struct dma_chan *chan)
+>> +				      struct dma_chan *chan,
+>> +				      const char *name)
+>>   {
+>>   	int rc;
+>>   
+>> -	rc = __dma_async_device_channel_register(device, chan);
+>> +	rc = __dma_async_device_channel_register(device, chan, name);
+>>   	if (rc < 0)
+>>   		return rc;
+>>   
+>> @@ -1200,7 +1204,7 @@ int dma_async_device_register(struct dma_device *device)
+>>   
+>>   	/* represent channels in sysfs. Probably want devs too */
+>>   	list_for_each_entry(chan, &device->channels, device_node) {
+>> -		rc = __dma_async_device_channel_register(device, chan);
+>> +		rc = __dma_async_device_channel_register(device, chan, NULL);
+>>   		if (rc < 0)
+>>   			goto err_out;
+>>   	}
+>> diff --git a/drivers/dma/idxd/dma.c b/drivers/dma/idxd/dma.c
+>> index 47a01893cfdb..101a265567a9 100644
+>> --- a/drivers/dma/idxd/dma.c
+>> +++ b/drivers/dma/idxd/dma.c
+>> @@ -269,7 +269,7 @@ static int idxd_register_dma_channel(struct idxd_wq *wq)
+>>   		desc->txd.tx_submit = idxd_dma_tx_submit;
+>>   	}
+>>   
+>> -	rc = dma_async_device_channel_register(dma, chan);
+>> +	rc = dma_async_device_channel_register(dma, chan, NULL);
+>>   	if (rc < 0) {
+>>   		kfree(idxd_chan);
+>>   		return rc;
+>> diff --git a/include/linux/dmaengine.h b/include/linux/dmaengine.h
+>> index 3df70d6131c8..cbad92cc3e0b 100644
+>> --- a/include/linux/dmaengine.h
+>> +++ b/include/linux/dmaengine.h
+>> @@ -1574,7 +1574,8 @@ int dma_async_device_register(struct dma_device *device);
+>>   int dmaenginem_async_device_register(struct dma_device *device);
+>>   void dma_async_device_unregister(struct dma_device *device);
+>>   int dma_async_device_channel_register(struct dma_device *device,
+>> -				      struct dma_chan *chan);
+>> +				      struct dma_chan *chan,
+>> +				      const char *name);
+>>   void dma_async_device_channel_unregister(struct dma_device *device,
+>>   					 struct dma_chan *chan);
+>>   void dma_run_dependencies(struct dma_async_tx_descriptor *tx);
+>> -- 
+>> 2.25.1
+> 
 
