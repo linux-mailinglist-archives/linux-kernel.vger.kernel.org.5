@@ -1,207 +1,140 @@
-Return-Path: <linux-kernel+bounces-8651-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8653-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17F7981BAA6
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 16:25:49 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B17F481BAAE
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 16:26:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3CBEC1C21E7D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 15:25:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 27100B25B8D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 15:26:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A6AC59912;
-	Thu, 21 Dec 2023 15:24:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D32055E41;
+	Thu, 21 Dec 2023 15:25:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="CFb1oPYU"
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="Or29DBYv"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2080.outbound.protection.outlook.com [40.107.22.80])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37A3958214
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 15:24:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-3368ae75082so382204f8f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 07:24:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703172258; x=1703777058; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EW4UFXmfryDRvAbEc3thu9hdl9GkSp2IgG/2/oPu1XE=;
-        b=CFb1oPYUVZuKtyxsTQYDiYV7XR5OXVAgJd9Mktt1mqjEsxGfoAnARasGZcvGTEpUAZ
-         TfO5HxearkFBts+C1t1eN+0xu5TAmysCFz/AIm3H7GDkPOvzmOgy0vJGyO14ERtH2HhL
-         1EgMxuMsGDBFA3EPclCqW9Y1BnsT2Q9lCgNIZlSsjHje6Vz1qEg7Umi9NTAqBbizXnTJ
-         kkTXbcEQdSFbxNsSW4B1AkYaoGhltwQYa5Ll8T3dZ77Yc483TOi1yNAIeWSycHHE5/Zx
-         ntAdq/QKAXi2/Sz6yASwTO7BWt1pGWNjc2OaAne9MkWlQBq46ZEZG8sADaZdXixBtdYS
-         Vffw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703172258; x=1703777058;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EW4UFXmfryDRvAbEc3thu9hdl9GkSp2IgG/2/oPu1XE=;
-        b=pfCqxeJStDnVqw5dT9nDBY3rAHrSle54zqGhWROFbolx1tzeoIiye1cqUrbvWn7sTz
-         mKJYWTf10+xKVylAbPhGpWpnZAHmem16snWiY8BRBsZTyZkadqxlQzfOT6T1exXiRQct
-         SWNMq2hMDD+akq7uEVbdoYuEP+0U8jM4Nddn+1mz/n2HF26YexSQFr/RghER0Pfb2o7f
-         pfi/ymRHq33C5UgSXTcG/ny0RJy0/GfGGPbj+3pqe+hcvQfmb98FdDZrm0HXzaBioxTh
-         QTbrgVyd2tS//r3fjKzlCR2sUMs0ma+2eXMsvH7oVC9nQKoVWrWXNQEVKOHCteEJJRgq
-         szRQ==
-X-Gm-Message-State: AOJu0YywhDGcG29hidiVaG4tk/YEDOTLmQCRzUQH44QyxSBs2wcR9a5F
-	EKhYU2fV1J5qWVgpAQY8d6yTCA==
-X-Google-Smtp-Source: AGHT+IFV4lp3HaT2elvrC1ZEK9+aGj2nsqqaqkLI2enYvIHG+UiSLXNYY15i3mv5tv1y2IdbLT/KwQ==
-X-Received: by 2002:a05:600c:3b25:b0:40c:6a61:23da with SMTP id m37-20020a05600c3b2500b0040c6a6123damr564633wms.41.1703172258515;
-        Thu, 21 Dec 2023 07:24:18 -0800 (PST)
-Received: from vingu-book.. ([2a01:e0a:f:6020:2db4:9d2a:db65:42d6])
-        by smtp.gmail.com with ESMTPSA id t3-20020a05600c450300b0040c4acaa4bfsm11466974wmo.19.2023.12.21.07.24.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Dec 2023 07:24:17 -0800 (PST)
-From: Vincent Guittot <vincent.guittot@linaro.org>
-To: catalin.marinas@arm.com,
-	will@kernel.org,
-	sudeep.holla@arm.com,
-	rafael@kernel.org,
-	viresh.kumar@linaro.org,
-	agross@kernel.org,
-	andersson@kernel.org,
-	konrad.dybcio@linaro.org,
-	mingo@redhat.com,
-	peterz@infradead.org,
-	juri.lelli@redhat.com,
-	dietmar.eggemann@arm.com,
-	rostedt@goodmis.org,
-	bsegall@google.com,
-	mgorman@suse.de,
-	bristot@redhat.com,
-	vschneid@redhat.com,
-	lukasz.luba@arm.com,
-	rui.zhang@intel.com,
-	mhiramat@kernel.org,
-	daniel.lezcano@linaro.org,
-	amit.kachhap@gmail.com,
-	linux@armlinux.org.uk,
-	corbet@lwn.net,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	linux-pm@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org
-Cc: Vincent Guittot <vincent.guittot@linaro.org>
-Subject: [PATCH v2 5/5] sched/pelt: Remove shift of thermal clock
-Date: Thu, 21 Dec 2023 16:24:07 +0100
-Message-Id: <20231221152407.436177-6-vincent.guittot@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231221152407.436177-1-vincent.guittot@linaro.org>
-References: <20231221152407.436177-1-vincent.guittot@linaro.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26D11539EA;
+	Thu, 21 Dec 2023 15:25:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=d4GNZSlsYlOlHDyuOeUN1w7W3MBZX2CQYDYefq1O+GG/9loyyOoWLcD20YAZgOHoVQRaXLp/wA2sLKhZn/qHWXiU2u1KnU9yh4yxaluDbky7nNitEB91c+lRJGj1YkiegaIwnX2kFAi7Si2Rug7eC7H29f84uE6g97dRNDzF7zjDilspBbzxs+sHe3kf5VFDf+FrqmyFyytGjZPLrtLy9VPDD7Nht/jlQW+CsiDxMTrKc30jsogzS4Es9Jab3EpRCggv1kHJJxIRDbBwI3hVp49sza3yTQbdkUGDnhDvrMLP7wwdiRs1lXS/1nWU+5GqGE+TeV72PXsqUCZxivDYGA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=b8RacpBiT+l7FpBNqT9HS0eotUvqnNAQNT8Hs8Ytc5E=;
+ b=WibYmurw026b9bXqvTRpRo+iI7UD/taJfmzq4+kmOX1KJy05C2Uv/X769JunyASur+ucp8cZ0hiREYWIlg8Xir95edum/T8dsfHlEXRIZoDvc1pqeVP2vhveBQwTORRD6/LxA9WcZ6PER2mATWizEM8Lqq4sfRB0cgnRRr4vLUrQqB9+d7x2A+ZiJ2/iFyf5ELBaQNLb7m+deJFW/8Hw5hHcqOxeVkluc7wKlzED5UTU57v5vBlDW7yAtzIYK6jSWV+OHr3m5Dl91qBdrMYu8rhqXf7UWNwSYx60ogzbvD2f61X1kNQY7TDLpOnMIOvNm64Cd9Gk+p9eOtQ7/Ks2dQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=b8RacpBiT+l7FpBNqT9HS0eotUvqnNAQNT8Hs8Ytc5E=;
+ b=Or29DBYvMEfJV3Z/qVSGOgqSGUVCkkic63pXYYFHsY7JNHRA953dQDUxi2roI87AqjJw1uVdHWqJ6fA9P8RCfa2aEoSp53b8tHky3L5msYhR6J7go4Yw/G9YYH8UP4O9a5PgYntIsOQsYBQ6xpBtd1u9QjZxblcUBchDnyNR3/s=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from AM0PR04MB6452.eurprd04.prod.outlook.com (2603:10a6:208:16d::21)
+ by VI1PR04MB9978.eurprd04.prod.outlook.com (2603:10a6:800:1d7::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7113.20; Thu, 21 Dec
+ 2023 15:25:10 +0000
+Received: from AM0PR04MB6452.eurprd04.prod.outlook.com
+ ([fe80::dd33:f07:7cfd:afa4]) by AM0PR04MB6452.eurprd04.prod.outlook.com
+ ([fe80::dd33:f07:7cfd:afa4%7]) with mapi id 15.20.7113.016; Thu, 21 Dec 2023
+ 15:25:10 +0000
+Date: Thu, 21 Dec 2023 17:25:06 +0200
+From: Vladimir Oltean <vladimir.oltean@nxp.com>
+To: Roger Quadros <rogerq@kernel.org>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, shuah@kernel.org, s-vadapalli@ti.com,
+	r-gunasekaran@ti.com, vigneshr@ti.com, srk@ti.com, horms@kernel.org,
+	p-varis@ti.com, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH net-next v11 02/10] selftests: forwarding: ethtool_mm:
+ fall back to aggregate if device does not report pMAC stats
+Message-ID: <20231221152506.yk4mlhyv2zkv57gc@skbuf>
+References: <20231219105805.80617-1-rogerq@kernel.org>
+ <20231219105805.80617-3-rogerq@kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231219105805.80617-3-rogerq@kernel.org>
+X-ClientProxiedBy: AM4PR0302CA0011.eurprd03.prod.outlook.com
+ (2603:10a6:205:2::24) To AM0PR04MB6452.eurprd04.prod.outlook.com
+ (2603:10a6:208:16d::21)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM0PR04MB6452:EE_|VI1PR04MB9978:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2177f6c5-f9f6-4662-9f32-08dc023904dd
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	fJSf8KvhWgSqZbZDvgjmDgLogzpFdF/coYPOkOyn4QvIvgaCGeUJQFlASBUUL/w68J3eDmxvaeHJ3NyU8/JuGnyO1cMZOm6YD/5kCdj7RymxJRttO7l2Ch0a0/+O6Jhd2FSYnWdDoVaJFUHG3BmCJE4EDFQNjNOMDQ/6uYOFZ9GZe9/wWE4EcEm9fjOQIUpv3JS8l+qpMYiiqHUfA3Qp3aNI5Ls1a7nTFfid+ZGUEbkTrg9/Hl4jsoS6qYSAxKeqoam1CdyykkzsHSzR8YMaCjEoiKYOrrRnVc1hAJxW/NDJmqIrzwxiJSpG+pbbhyiK21WIO2xRWRFKTtnmIJJoeWQeXy5W6U8QP6V4t8idpbAqtpV7jxPaYiWop11UiBePXIAWG6bvY+rHBpBqHjtGRWCg1YbiPmbdFOTmaz+Q//aIlBeHfm8aXEongAQlmuPe0p9hhEVFBewQbNhqX5NAjPY4c50HMWGSN26PG7vqCGsNk+yRZTYooe61orkFr2ttUruJdDtetrXEKn6imrNsxr/1+Kd4TZURAvy51F08oy+iWT1ZzFSGEEKxfDOyH3ct
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB6452.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(376002)(136003)(346002)(366004)(39860400002)(396003)(230922051799003)(1800799012)(64100799003)(186009)(451199024)(9686003)(26005)(6512007)(6666004)(1076003)(6506007)(86362001)(38100700002)(7416002)(4326008)(8936002)(8676002)(41300700001)(44832011)(66946007)(6916009)(66476007)(5660300002)(66556008)(6486002)(4744005)(2906002)(316002)(33716001)(478600001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?p9nBfiQb5SdiqBuBQyZ+49/SaDkVfhtuKjMZynn3NuuViR3o6/KxdFNwGZlH?=
+ =?us-ascii?Q?3ThzdqFQ9su7TIboj5E6L0B2meAsi4As2Jjycvqm9FpBtU6wnLxz01bEIJCE?=
+ =?us-ascii?Q?3GHwqXIF3g2DaOC+I5ud9dFx+ssXxBrHFvjd3x4Jc2eorvLhnBgKz/6xhQ38?=
+ =?us-ascii?Q?OgViPOIJ8qOv8T8yHqUF5y/nejZ74PRfa9j2+MQEw28OrQ0HUiJSGYTaf/RO?=
+ =?us-ascii?Q?xyVXcMjV9FxbYTpcA19J1qdwuhdAg23vM/VccFRBodDxv/g4dhUOKIXtrDGb?=
+ =?us-ascii?Q?J01ZW7oqaXQ0IJJLkzWEF2lHImHEA3RtaZHaWExCZ1KkomuomwqoTECNRJiS?=
+ =?us-ascii?Q?UD/fh6Og04mbpWMgFqUklhQWxsRZjHtacgEsV+H0Tss433RB2CCA5WEXKbNC?=
+ =?us-ascii?Q?Hzpa9FbfpSr24F0j+f/W0DeNJfFKL/AR+HkG4MTRGpRz2exRcKwXz7aiYIpN?=
+ =?us-ascii?Q?m5Jfcd0Lux16TY78jZDFhfIBAX7uEIb94x7X1U6KaTQZAaQV+siTIffsSsrz?=
+ =?us-ascii?Q?0lEaaQPuNCVFKHcKVPLc/fDXMJP6ldxVuh38oVXworQ+lXkg4ZAeUi674Nl3?=
+ =?us-ascii?Q?sDrjbdOEafed74zCCeBbfrHWE0fIZY6Mq4mEwYj3UIsFiiOCA4nftsT3YFi1?=
+ =?us-ascii?Q?BnmRhbsFgKr+0NULNGQMMANnBwT9hug2yN84S+kraXFh40jifTUjPcMx5K+F?=
+ =?us-ascii?Q?0s5PyskKET/ZxVFuTJU/UvAM6W3xtJnVtnHIiJpDDcQy8dtA61A1Emzlm7W4?=
+ =?us-ascii?Q?7lSag9s6+wylgcG6Y0VcWQpe3FSwOE89uRDkkwPOTElVDiVzTXQA8l67zwcY?=
+ =?us-ascii?Q?2zqZwaytACi/o1w6SUXWag9SvozII7/vpvq6nzwczcGHqFeuL/khouEXTuZH?=
+ =?us-ascii?Q?eATryqnJpxg23VOLqoU4ppGTEJ+w/fU+cO8604AEgJPbmdGHvOW/ICny05vR?=
+ =?us-ascii?Q?fCnxydOP5UDTya02yl+bVntCN5snVHfJiKj45+JNQOXTKWPAutxk0+MY0Jlt?=
+ =?us-ascii?Q?F/Y8vN5D94rj82Ah8DrC5vYQbQjetHb8e/119C4U6c00yqQJ7SVGCfwHLfbD?=
+ =?us-ascii?Q?+9T2/MZuZltelgood8EASmyNqh+H9zpfYch39Fmj/7JF3UwLmeheg/oqWi+K?=
+ =?us-ascii?Q?QKHuwEqOP32xLqg31mW3gH/LT8TqVlJnM1o+Z88R2rrThny6TP8uSPMnjeE9?=
+ =?us-ascii?Q?adtOWBKBd/BQngTaOE/vCAY3Yup96nqHQaIibUOCeZKz/UL1pnegeuBqqDi+?=
+ =?us-ascii?Q?P2+bKlc1RBe33tWnch+/W0BrvA2ZfBTmlJH6SqbgL+FvxzeSgkP7qKAa0jZp?=
+ =?us-ascii?Q?tZvz0bMijXM780jqN/y8BOJS8E5CyWkK0fiRQ3HQz6uso4Ft2TZIrnHQzSHY?=
+ =?us-ascii?Q?8MzFxMgiXLy29tCWBh3R8c9yy/xgDRG+uzKnGmwGg29Lho9tJHO2Z1+bsn42?=
+ =?us-ascii?Q?5A04yoOj8His5iXMrMCOaA/KlMXIKyH68r7+JzsIYYFaWVSCLNE4u7gCVJTX?=
+ =?us-ascii?Q?xzDlWDhAGlbw9rVRnxxlJtO/umbk9uTQzwVLVpv6JAEN0RXsZ4sBs2a38Lbv?=
+ =?us-ascii?Q?Ik2vINT7b0FDXkF94Zp8YTufAk3JWsp07Hq2qW923usTZ/APpvqeedvTRM3Z?=
+ =?us-ascii?Q?Bw=3D=3D?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2177f6c5-f9f6-4662-9f32-08dc023904dd
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB6452.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Dec 2023 15:25:09.9935
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: SiWbGrw+F0uS/ML55C+JrHKwud8rAmc6ZkzHHbrPsBbJdPd1uIumlTWSKgeqsWW1qGSi/R+MZGzkI2Q1a8w8Qg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB9978
 
-The optional shift of the clock used by thermal/hw load avg has been
-introduced to handle case where the signal was not always a high frequency
-hw signal. Now that cpufreq provides a signal for firmware and
-SW pressure, we can remove this exception and always keep this PELT signal
-aligned with other signals.
-Mark deprecated sched_thermal_decay_shift boot parameter.
+On Tue, Dec 19, 2023 at 12:57:57PM +0200, Roger Quadros wrote:
+> From: Vladimir Oltean <vladimir.oltean@nxp.com>
+> 
+> Some devices do not support individual 'pmac' and 'emac' stats.
+> For such devices, resort to 'aggregate' stats.
+> 
+> Cc: Shuah Khan <shuah@kernel.org>
+> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+> Tested-by: Roger Quadros <rogerq@kernel.org>
+> Signed-off-by: Roger Quadros <rogerq@kernel.org>
+> ---
 
-Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
----
- .../admin-guide/kernel-parameters.txt          |  1 +
- kernel/sched/core.c                            |  2 +-
- kernel/sched/fair.c                            | 10 ++--------
- kernel/sched/sched.h                           | 18 ------------------
- 4 files changed, 4 insertions(+), 27 deletions(-)
-
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 65731b060e3f..2ee15522b15d 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -5722,6 +5722,7 @@
- 			but is useful for debugging and performance tuning.
- 
- 	sched_thermal_decay_shift=
-+			[Deprecated]
- 			[KNL, SMP] Set a decay shift for scheduler thermal
- 			pressure signal. Thermal pressure signal follows the
- 			default decay period of other scheduler pelt
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index a6f084bdf1c5..c68e47bfd5ae 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -5670,7 +5670,7 @@ void scheduler_tick(void)
- 
- 	update_rq_clock(rq);
- 	hw_pressure = arch_scale_hw_pressure(cpu_of(rq));
--	update_hw_load_avg(rq_clock_hw(rq), rq, hw_pressure);
-+	update_hw_load_avg(rq_clock_task(rq), rq, hw_pressure);
- 	curr->sched_class->task_tick(rq, curr, 0);
- 	if (sched_feat(LATENCY_WARN))
- 		resched_latency = cpu_resched_latency(rq);
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index ce0d32f441a8..16d71e764131 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -78,15 +78,9 @@ static unsigned int normalized_sysctl_sched_base_slice	= 750000ULL;
- 
- const_debug unsigned int sysctl_sched_migration_cost	= 500000UL;
- 
--int sched_hw_decay_shift;
- static int __init setup_sched_thermal_decay_shift(char *str)
- {
--	int _shift = 0;
--
--	if (kstrtoint(str, 0, &_shift))
--		pr_warn("Unable to set scheduler thermal pressure decay shift parameter\n");
--
--	sched_hw_decay_shift = clamp(_shift, 0, 10);
-+	pr_warn("Ignoring the deprecated sched_thermal_decay_shift= option\n");
- 	return 1;
- }
- __setup("sched_thermal_decay_shift=", setup_sched_thermal_decay_shift);
-@@ -9271,7 +9265,7 @@ static bool __update_blocked_others(struct rq *rq, bool *done)
- 
- 	decayed = update_rt_rq_load_avg(now, rq, curr_class == &rt_sched_class) |
- 		  update_dl_rq_load_avg(now, rq, curr_class == &dl_sched_class) |
--		  update_hw_load_avg(rq_clock_hw(rq), rq, hw_pressure) |
-+		  update_hw_load_avg(now, rq, hw_pressure) |
- 		  update_irq_load_avg(rq, 0);
- 
- 	if (others_have_blocked(rq))
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 677d24202eec..6fc6718a1060 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -1520,24 +1520,6 @@ static inline u64 rq_clock_task(struct rq *rq)
- 	return rq->clock_task;
- }
- 
--/**
-- * By default the decay is the default pelt decay period.
-- * The decay shift can change the decay period in
-- * multiples of 32.
-- *  Decay shift		Decay period(ms)
-- *	0			32
-- *	1			64
-- *	2			128
-- *	3			256
-- *	4			512
-- */
--extern int sched_hw_decay_shift;
--
--static inline u64 rq_clock_hw(struct rq *rq)
--{
--	return rq_clock_task(rq) >> sched_hw_decay_shift;
--}
--
- static inline void rq_clock_skip_update(struct rq *rq)
- {
- 	lockdep_assert_rq_held(rq);
--- 
-2.34.1
-
+Tested-by: Vladimir Oltean <vladimir.oltean@nxp.com>
 
