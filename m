@@ -1,85 +1,85 @@
-Return-Path: <linux-kernel+bounces-7792-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7793-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A52981AD0F
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 04:14:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E578D81AD10
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 04:14:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3BE5A1C241A2
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 03:14:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 84ECC1F24C15
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 03:14:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBD8E3E498;
-	Thu, 21 Dec 2023 03:09:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B56A94A9AE;
+	Thu, 21 Dec 2023 03:10:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fastmail.org header.i=@fastmail.org header.b="an7Go/Er";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Cn7/Ke8a"
+	dkim=pass (2048-bit key) header.d=fastmail.org header.i=@fastmail.org header.b="EKPkf9Ue";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="9G18p7ek"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A918D38DD0
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 03:09:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54230495CA
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 03:10:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fastmail.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastmail.org
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-	by mailout.west.internal (Postfix) with ESMTP id 83A633200A30;
-	Wed, 20 Dec 2023 22:09:54 -0500 (EST)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+	by mailout.west.internal (Postfix) with ESMTP id 428353200A30;
+	Wed, 20 Dec 2023 22:10:00 -0500 (EST)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Wed, 20 Dec 2023 22:09:55 -0500
+  by compute3.internal (MEProxy); Wed, 20 Dec 2023 22:10:00 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.org; h=
 	cc:cc:content-transfer-encoding:content-type:date:date:from:from
 	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to; s=fm2; t=1703128194; x=
-	1703214594; bh=0bq2fN9Uza31d9KmzZhN4ub+BZ6fkGAQSHJ72vJy0/s=; b=a
-	n7Go/ErwMbHIwufWkoi0nbK8acgDnkErzr6/zmDEi35n+Md5I5jAew3IHsrSwuKS
-	v8f+O+KUZ/pEsgNUWffz3NkCfb6YgVtp67/9GzbK2ouquEAepPyaGH/lwi+cV82S
-	O2k/c/EUzklMWICo1bjSbafMO/1kODT16vt2nxrhZPuqRgbR/WzKgAbnA7jWUZa1
-	tczJtkiwJbqOntQUaJv2VnZLTK9XUrYbB4ezpil54pSxttrdgBFDlLeFEpvFBdVq
-	KPErxBu5xix7zQZIbPPUXL9Q8AGIn/1JzyN6y+FY0gnUnpoNBItdkbjcBcHQfXOb
-	sbPEHEjs/RlBU6VIlH+fA==
+	:reply-to:subject:subject:to:to; s=fm2; t=1703128199; x=
+	1703214599; bh=XWnAqBfJFUH3eglypfU2Un+KkV5x4RHsq5AWEE/Xgd4=; b=E
+	KPkf9UelKwxbA0vkfJfAP/CBgm9TLSyr0bLcg6G58owbLiMcwgJuM8dwn3Rm3xwB
+	hXAa9f49DGPRtW0CXz21P/JiGJFY9yVwD2+tXnjD6S5mpAtZshDL9TPuupL+G8zT
+	aQtJPsMzAQ/VPDl0NJKg7+5Ug1206wAEs1XjHlSBTMiTunj6v94mODB0vfqMlJO+
+	UG3nQHttxyZNiQtT/iWfVWR5nt5hT0j91z5w2m1OopLNM94CPwqCp416CLoBtSzB
+	4CidY2rt2cL7QB2RaFlGn8nV0ajxu9/vsNkHO52liauMFoHbTRgzUEeWzlwheLPS
+	MdiADhCXc190AKmKJZUaQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-transfer-encoding
 	:content-type:date:date:feedback-id:feedback-id:from:from
 	:in-reply-to:in-reply-to:message-id:mime-version:references
 	:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1703128194; x=
-	1703214594; bh=0bq2fN9Uza31d9KmzZhN4ub+BZ6fkGAQSHJ72vJy0/s=; b=C
-	n7/Ke8aTqE5dv2JoMDDjVB3orPHoSpaa4D52uqe3Z+/O1KfpCT8kURjmY3YbUtMi
-	4ICINHoldFYjRS+aAIFasDj5QMXVmptkme/phT+kA3B/NnofM5AvDoKo0oADrW9A
-	J7C4x2PosYRRNHLW97LnznBn2Th9OYCEcfgWehKrBueXHv4rBK1P9ZLBkhB2F0MX
-	sm/sgYVNGmltVMElk4IL/sjeDbjA3k3GKtAUlZzwMAmzYyv5Ah5/suaQ7VR+csRM
-	emGjI/78/3tbSAdc5kcyIhHm0pm0Z2YHIX9d5ViP7fM/Z1DjM78SJm0JDqe7nwQy
-	fT6lXVFtosbBETTcq1A/A==
-X-ME-Sender: <xms:gayDZc-czRjmUSR2MjZvRYr9FVIyYlmPEPSte9r99foAMpUQlN0BLA>
-    <xme:gayDZUvaN6OC2O0mUmBOGtUnt3kcJxShxLfdaEYdRPOmDDKp7FY1XbMkulU-Jme-3
-    XPwHWv0xXzV6BSABVY>
-X-ME-Received: <xmr:gayDZSCsa-vkJtJdXB-We7dK09JMM2dCaj8QoK75QEC25Ylmi4weyGVGqdiPXGOqZRaWvL54mZDjcQeC2w31mLZSHfTs6T0c>
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1703128199; x=
+	1703214599; bh=XWnAqBfJFUH3eglypfU2Un+KkV5x4RHsq5AWEE/Xgd4=; b=9
+	G18p7ekNrBlIzkaP8JO5nOBz1ROGnbctUy02XBv0ctwBpY4serq88lxpMUOHSUZD
+	OUb8UrnrMsjZ4KcDWMRSeeLKZU3qFY3F4bbyGV028cvam9soVUeb54gJ4OmAgs28
+	03QqQW0OdQMmMRRF6soq2iwb+KI+REfpEnnFp5Wz5dryxyNnERNONKY8vZXsaoyV
+	31RxIYUIT79DsL7739H0K/k0zvAjbEP7PDfjJa5f2B3T8y8+4KNELNmz8bOHO6HO
+	dH81CnqtGmcwTtsB9ytBeaO5eTn9CBaWJlCMwjiyosIZ9Bd7JAsMY39TEr7tO6Hm
+	ZQX9100TGZu6Bh7AIa+Kg==
+X-ME-Sender: <xms:h6yDZVkJgckqXWJIjLTNb-pcqwh0pWvfyIkoJ4IGNP0_VAdmW1-mOQ>
+    <xme:h6yDZQ0NWc6pLtCfMZPV53DGQlWynoZ9Z72eB36BHt30LS94T8-kKO9vRK-US4fMV
+    Vaxs-rCrwmbF9kOTfQ>
+X-ME-Received: <xmr:h6yDZbqUACOdTTfGlhioek1jDDKZKduVZAoaC6FDdxCT-nXPePNwNi-mORVK4RplzTxqQ1cVp7U_qfD9FXbF3ODO1-C_oEhA>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvddufedgheejucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucenucfjughrpefhvfevufffkffojghfggfgsedtke
     ertdertddtnecuhfhrohhmpefirghrhicutfhoohhkrghrugcuoehgrghrhihrohhokhgr
     rhgusehfrghsthhmrghilhdrohhrgheqnecuggftrfgrthhtvghrnhepkeeuvdffueduke
     egieeuffejhefgkeetfeehueelfeduuefgveellefhfefgjedvnecuvehluhhsthgvrhfu
-    ihiivgepudenucfrrghrrghmpehmrghilhhfrhhomhepghgrrhihrhhoohhkrghrugesfh
+    ihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghgrrhihrhhoohhkrghrugesfh
     grshhtmhgrihhlrdhorhhg
-X-ME-Proxy: <xmx:gayDZcd14Ku6BZty07oWb-LXNSOiwHHGe51XgwHkxB92cnPsIB7Ozw>
-    <xmx:gayDZRO0GjowENrw0XGV46-iKUAQ0aMqtNG_1o1bi3SIHb4kwNZ5nQ>
-    <xmx:gayDZWlakrdcjgDCFiQzXiexdedejMalGGUuxH5jpi_gT3lmVe0Aew>
-    <xmx:gqyDZSpE2r2Gy5j6OMFhk0uasKw9rttxQs3r6-AxYY7GJtR-j49xWA>
+X-ME-Proxy: <xmx:h6yDZVnbORkM56PXY2bQeqX1aDKm3fi25KD7Z3L7QI_DP4wZsnbxgw>
+    <xmx:h6yDZT0fBFm5H49Xh-4skq015DqXjB3Ytx_ZeHOCCMunh5_Ln2CoHQ>
+    <xmx:h6yDZUu39M1Y2Z43Qqk2nrFpoO2lHaYY8yMWm7bcd3fcAyLsnR-bQg>
+    <xmx:h6yDZUyb4oJcl7uDRsyFuls8RIQ816C_MaujFghlR-USupVWeHObSg>
 Feedback-ID: ifd194980:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 20 Dec 2023 22:09:53 -0500 (EST)
+ 20 Dec 2023 22:09:59 -0500 (EST)
 From: Gary Rookard <garyrookard@fastmail.org>
 To: gregkh@linuxfoundation.org,
 	philipp.g.hortmann@gmail.com
 Cc: linux-staging@list.linux.dev,
 	linux-kernel@vger.kernel.org,
 	Gary Rookard <garyrookard@fastmail.org>
-Subject: [PATCH 4/5] staging: rtl8192e: rename variable HTSetConnectBwModeCallback
-Date: Wed, 20 Dec 2023 22:10:03 -0500
-Message-ID: <20231221031004.14779-5-garyrookard@fastmail.org>
+Subject: [PATCH 5/5] staging: rtl8192e: rename variable ePeerHTSpecVer
+Date: Wed, 20 Dec 2023 22:10:04 -0500
+Message-ID: <20231221031004.14779-6-garyrookard@fastmail.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231221031004.14779-1-garyrookard@fastmail.org>
 References: <20231221031004.14779-1-garyrookard@fastmail.org>
@@ -92,33 +92,81 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
 Coding style issue, checkpatch Avoid CamelCase,
-rename it. HTSetConnectBwModeCallback -> ht_set_connect_bw_mode_callback
+rename it. ePeerHTSpecVer -> peer_ht_spec_ver
 
 Signed-off-by: Gary Rookard <garyrookard@fastmail.org>
 ---
- drivers/staging/rtl8192e/rtl819x_HTProc.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/staging/rtl8192e/rtl819x_HT.h     | 2 +-
+ drivers/staging/rtl8192e/rtl819x_HTProc.c | 6 +++---
+ drivers/staging/rtl8192e/rtllib_softmac.c | 4 ++--
+ 3 files changed, 6 insertions(+), 6 deletions(-)
 
+diff --git a/drivers/staging/rtl8192e/rtl819x_HT.h b/drivers/staging/rtl8192e/rtl819x_HT.h
+index 2911ea82dd17..68577bffb936 100644
+--- a/drivers/staging/rtl8192e/rtl819x_HT.h
++++ b/drivers/staging/rtl8192e/rtl819x_HT.h
+@@ -97,7 +97,7 @@ struct rt_hi_throughput {
+ 	u8 cur_bw_40mhz;
+ 	u8 cur_short_gi_40mhz;
+ 	u8 cur_short_gi_20mhz;
+-	enum ht_spec_ver ePeerHTSpecVer;
++	enum ht_spec_ver peer_ht_spec_ver;
+ 	struct ht_capab_ele SelfHTCap;
+ 	u8 PeerHTCapBuf[32];
+ 	u8 PeerHTInfoBuf[32];
 diff --git a/drivers/staging/rtl8192e/rtl819x_HTProc.c b/drivers/staging/rtl8192e/rtl819x_HTProc.c
-index 5698b48fdcc9..ac17d510a2a5 100644
+index ac17d510a2a5..6d0912f90198 100644
 --- a/drivers/staging/rtl8192e/rtl819x_HTProc.c
 +++ b/drivers/staging/rtl8192e/rtl819x_HTProc.c
-@@ -633,7 +633,7 @@ u8 ht_c_check(struct rtllib_device *ieee, u8 *pFrame)
- 	return false;
- }
+@@ -240,7 +240,7 @@ void ht_construct_capability_element(struct rtllib_device *ieee, u8 *pos_ht_cap,
+ 	}
+ 	memset(pos_ht_cap, 0, *len);
  
--static void HTSetConnectBwModeCallback(struct rtllib_device *ieee)
-+static void ht_set_connect_bw_mode_callback(struct rtllib_device *ieee)
- {
- 	struct rt_hi_throughput *ht_info = ieee->ht_info;
+-	if ((assoc) && (ht->ePeerHTSpecVer == HT_SPEC_VER_EWC)) {
++	if ((assoc) && (ht->peer_ht_spec_ver == HT_SPEC_VER_EWC)) {
+ 		static const u8	EWC11NHTCap[] = { 0x00, 0x90, 0x4c, 0x33 };
  
-@@ -695,5 +695,5 @@ void ht_set_connect_bw_mode(struct rtllib_device *ieee,
+ 		memcpy(pos_ht_cap, EWC11NHTCap, sizeof(EWC11NHTCap));
+@@ -525,7 +525,7 @@ void ht_initialize_ht_info(struct rtllib_device *ieee)
  
- 	ht_info->sw_bw_in_progress = true;
+ 	ht_info->sw_bw_in_progress = false;
  
--	HTSetConnectBwModeCallback(ieee);
-+	ht_set_connect_bw_mode_callback(ieee);
- }
+-	ht_info->ePeerHTSpecVer = HT_SPEC_VER_IEEE;
++	ht_info->peer_ht_spec_ver = HT_SPEC_VER_IEEE;
+ 
+ 	ht_info->current_rt2rt_aggregation = false;
+ 	ht_info->current_rt2rt_long_slot_time = false;
+@@ -569,7 +569,7 @@ void ht_reset_self_and_save_peer_setting(struct rtllib_device *ieee,
+ 	 */
+ 	if (pNetwork->bssht.bd_support_ht) {
+ 		ht_info->current_ht_support = true;
+-		ht_info->ePeerHTSpecVer = pNetwork->bssht.bd_ht_spec_ver;
++		ht_info->peer_ht_spec_ver = pNetwork->bssht.bd_ht_spec_ver;
+ 
+ 		if (pNetwork->bssht.bd_ht_cap_len > 0 &&
+ 		    pNetwork->bssht.bd_ht_cap_len <= sizeof(ht_info->PeerHTCapBuf))
+diff --git a/drivers/staging/rtl8192e/rtllib_softmac.c b/drivers/staging/rtl8192e/rtllib_softmac.c
+index 14f34e6a591a..953222d57f0e 100644
+--- a/drivers/staging/rtl8192e/rtllib_softmac.c
++++ b/drivers/staging/rtl8192e/rtllib_softmac.c
+@@ -866,7 +866,7 @@ rtllib_association_req(struct rtllib_network *beacon,
+ 		tag += osCcxVerNum.Length;
+ 	}
+ 	if (ieee->ht_info->current_ht_support && ieee->ht_info->enable_ht) {
+-		if (ieee->ht_info->ePeerHTSpecVer != HT_SPEC_VER_EWC) {
++		if (ieee->ht_info->peer_ht_spec_ver != HT_SPEC_VER_EWC) {
+ 			tag = skb_put(skb, ht_cap_len);
+ 			*tag++ = MFIE_TYPE_HT_CAP;
+ 			*tag++ = ht_cap_len - 2;
+@@ -900,7 +900,7 @@ rtllib_association_req(struct rtllib_network *beacon,
+ 	}
+ 
+ 	if (ieee->ht_info->current_ht_support && ieee->ht_info->enable_ht) {
+-		if (ieee->ht_info->ePeerHTSpecVer == HT_SPEC_VER_EWC) {
++		if (ieee->ht_info->peer_ht_spec_ver == HT_SPEC_VER_EWC) {
+ 			tag = skb_put(skb, ht_cap_len);
+ 			*tag++ = MFIE_TYPE_GENERIC;
+ 			*tag++ = ht_cap_len - 2;
 -- 
 2.43.0
 
