@@ -1,91 +1,148 @@
-Return-Path: <linux-kernel+bounces-8881-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8954-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D5D681BDA7
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 18:54:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC79581BE7E
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 19:51:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C67431F2555E
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 17:54:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 782F5283C97
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 18:51:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C333A634EF;
-	Thu, 21 Dec 2023 17:54:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B3F265193;
+	Thu, 21 Dec 2023 18:50:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="kooKke3E"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="NRSvr9xw"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68DCA634E2
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 17:53:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-50e4a637958so1422959e87.2
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 09:53:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1703181236; x=1703786036; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uyvnsyjEDwsUuLwMHfYUDOCjkLXxDADJ3gDmnw3h4uw=;
-        b=kooKke3ExWIs55KMR0sS95C5ojaPw04G7o/Ku8rr/b0D5t6O5XVMhK3gY2AqRPZx0F
-         Xi9gsDW87a+bvrFGcS9FPexLLboB+zN7feG72PZ1e80s9UhOKllBC+PWapkn9BZQZZRI
-         G9TB6mH+wfDbYcAvjOqAZ5BCwyPQIlkhTHTqYj7+jClty6VvLiSzdUXtapa8xw3NUczx
-         ZJEMzMmeHNygs7iaClaKfrAilgha+TTI1zMan+SyENaV9TqGnI6ktLsKKlbgroiUx6W7
-         qS1taynyQhDCDm2N4gGAucoRTl7Iv4tSrWBLPbfPFiVeZ39+bOAEcpifixOMtA1BFu5U
-         ELxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703181236; x=1703786036;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=uyvnsyjEDwsUuLwMHfYUDOCjkLXxDADJ3gDmnw3h4uw=;
-        b=F/i7k+Iuk5j0LZiKje/z7qzPN3Auk7fVmqRI1+/U09AJtjqTJ48TR1acn217kBZ2ql
-         0xTv17v59T56Sm/8PyGsEewQF0bioIlXFqgLr1HFNdNRIRCtHi5I4YKiw2lZtkgEFT9W
-         6dg3BtaCdN+Lb+MzEeFkx0GZzqwQu0104jhcMv6t2ZTVMWNbG5+D474TeDGyg15drcFY
-         mMfaNg+xTKebMD6PoCgoRYuJ9qTT01fqFH50w5P9dG5W+Qhr74Vn2z+Bfe9iUPyQs755
-         fm6ix+C9ye+9mK/aNXMtJo0AHjwbJp8gDmO9WXIRzhq0LSIT4EVSgv6/d3cjV8ZOI18v
-         2+tw==
-X-Gm-Message-State: AOJu0YwYyMTEFhzus+1pY3m39n3ewMbFeFO3qirO2vGmXVODU0+CBWmu
-	nvioNXEWXzjgATPewbv/x9TESvazNrqrXTvz7Lve0g==
-X-Google-Smtp-Source: AGHT+IE2ge4UK3B/28OyNJsYgBRrO+CoJIShGaRLGYuzONOCc/uFJ0mOz6/3Iza3du7r74b7GPBwMBxm/piGxU/FSfY=
-X-Received: by 2002:a05:6512:60d:b0:50e:5e48:2282 with SMTP id
- b13-20020a056512060d00b0050e5e482282mr412065lfe.146.1703181236297; Thu, 21
- Dec 2023 09:53:56 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77C636518B;
+	Thu, 21 Dec 2023 18:50:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1703184631; x=1734720631;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=6lqfECsnx9YNGz7mNu1P1q5RcYfS8nYI6pc/nxTM7UQ=;
+  b=NRSvr9xwu8uUsCJvIuUNMSq4vmzVfwdjoepfVThM+cj1amxFYXz1HfN4
+   aeGC0pFU0JNpOqZJu3snBaAIwYrRsY4Nhccg90CsH+07tC4mQV/NBdfiJ
+   QyEOTYO0FyfXRDDos3biRWv+ktHvIiu220Xdla3tN9f13bb8OArZgoLMh
+   eGW2nRaGFFrB5wXKXLd2kWYBu12kB1fEqGICz5xm95FsvMskLDNPQFjX/
+   XjX8U8qPFQJF5wu4q2+RZ7r+j80cRgSH9CsP4fmmZmlMzUU5PBLELdIg8
+   MILUq2Yp3fLFw2dnPLCar6VdLmL4yimdGQZboNThB1DKE1ntADzlqlC7s
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10931"; a="462463230"
+X-IronPort-AV: E=Sophos;i="6.04,294,1695711600"; 
+   d="scan'208";a="462463230"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Dec 2023 10:50:30 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10931"; a="920407804"
+X-IronPort-AV: E=Sophos;i="6.04,294,1695711600"; 
+   d="scan'208";a="920407804"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 21 Dec 2023 10:50:28 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+	id 93260B8; Thu, 21 Dec 2023 19:55:28 +0200 (EET)
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+	linux-gpio@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Linus Walleij <linus.walleij@linaro.org>,
+	Bartosz Golaszewski <brgl@bgdev.pl>,
+	Andy Shevchenko <andy@kernel.org>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 1/1] gpiolib: cdev: Split line_get_debounce_period() and use
+Date: Thu, 21 Dec 2023 19:55:27 +0200
+Message-ID: <20231221175527.2814506-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231220-optimize_checksum-v13-0-a73547e1cad8@rivosinc.com> <20231220-optimize_checksum-v13-2-a73547e1cad8@rivosinc.com>
-In-Reply-To: <20231220-optimize_checksum-v13-2-a73547e1cad8@rivosinc.com>
-From: Evan Green <evan@rivosinc.com>
-Date: Thu, 21 Dec 2023 09:53:19 -0800
-Message-ID: <CALs-HstooJ5z9T_M48jwQGbxiUdL-B8eFqqsi4-6TMrMJtz7mg@mail.gmail.com>
-Subject: Re: [PATCH v13 2/5] riscv: Add static key for misaligned accesses
-To: Charlie Jenkins <charlie@rivosinc.com>
-Cc: Palmer Dabbelt <palmer@dabbelt.com>, Conor Dooley <conor@kernel.org>, 
-	Samuel Holland <samuel.holland@sifive.com>, David Laight <David.Laight@aculab.com>, 
-	Xiao Wang <xiao.w.wang@intel.com>, linux-riscv@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Albert Ou <aou@eecs.berkeley.edu>, 
-	Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Wed, Dec 20, 2023 at 3:37=E2=80=AFPM Charlie Jenkins <charlie@rivosinc.c=
-om> wrote:
->
-> Support static branches depending on the value of misaligned accesses.
-> This will be used by a later patch in the series. All cpus must be
-> considered "fast" for this static branch to be flipped.
->
-> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+Instead of repeating the same code and reduce possible miss
+of READ_ONCE(), split line_get_debounce_period() heler out
+and use in the existing cases.
 
-You didn't pick up my tag from the last spin, so here it is again:
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/gpio/gpiolib-cdev.c | 23 ++++++++++++++---------
+ 1 file changed, 14 insertions(+), 9 deletions(-)
 
-Reviewed-by: Evan Green <evan@rivosinc.com>
+diff --git a/drivers/gpio/gpiolib-cdev.c b/drivers/gpio/gpiolib-cdev.c
+index 744734405912..c573820d5722 100644
+--- a/drivers/gpio/gpiolib-cdev.c
++++ b/drivers/gpio/gpiolib-cdev.c
+@@ -651,6 +651,16 @@ static struct line *supinfo_find(struct gpio_desc *desc)
+ 	return NULL;
+ }
+ 
++static unsigned int line_get_debounce_period(struct line *line)
++{
++	return READ_ONCE(line->debounce_period_us);
++}
++
++static inline bool line_has_supinfo(struct line *line)
++{
++	return line_get_debounce_period(line);
++}
++
+ static void supinfo_to_lineinfo(struct gpio_desc *desc,
+ 				struct gpio_v2_line_info *info)
+ {
+@@ -665,15 +675,10 @@ static void supinfo_to_lineinfo(struct gpio_desc *desc,
+ 
+ 	attr = &info->attrs[info->num_attrs];
+ 	attr->id = GPIO_V2_LINE_ATTR_ID_DEBOUNCE;
+-	attr->debounce_period_us = READ_ONCE(line->debounce_period_us);
++	attr->debounce_period_us = line_get_debounce_period(line);
+ 	info->num_attrs++;
+ }
+ 
+-static inline bool line_has_supinfo(struct line *line)
+-{
+-	return READ_ONCE(line->debounce_period_us);
+-}
+-
+ /*
+  * Checks line_has_supinfo() before and after the change to avoid unnecessary
+  * supinfo_tree access.
+@@ -846,7 +851,7 @@ static enum hte_return process_hw_ts(struct hte_ts_data *ts, void *p)
+ 		line->total_discard_seq++;
+ 		line->last_seqno = ts->seq;
+ 		mod_delayed_work(system_wq, &line->work,
+-		  usecs_to_jiffies(READ_ONCE(line->debounce_period_us)));
++				 usecs_to_jiffies(line_get_debounce_period(line)));
+ 	} else {
+ 		if (unlikely(ts->seq < line->line_seqno))
+ 			return HTE_CB_HANDLED;
+@@ -987,7 +992,7 @@ static irqreturn_t debounce_irq_handler(int irq, void *p)
+ 	struct line *line = p;
+ 
+ 	mod_delayed_work(system_wq, &line->work,
+-		usecs_to_jiffies(READ_ONCE(line->debounce_period_us)));
++			 usecs_to_jiffies(line_get_debounce_period(line)));
+ 
+ 	return IRQ_HANDLED;
+ }
+@@ -1215,7 +1220,7 @@ static int edge_detector_update(struct line *line,
+ 			gpio_v2_line_config_debounce_period(lc, line_idx);
+ 
+ 	if ((active_edflags == edflags) &&
+-	    (READ_ONCE(line->debounce_period_us) == debounce_period_us))
++	    (line_get_debounce_period(line) == debounce_period_us))
+ 		return 0;
+ 
+ 	/* sw debounced and still will be...*/
+-- 
+2.43.0.rc1.1.gbec44491f096
+
 
