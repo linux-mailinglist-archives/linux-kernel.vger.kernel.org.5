@@ -1,175 +1,282 @@
-Return-Path: <linux-kernel+bounces-7888-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7889-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5060581AEBA
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 07:24:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F0B681AEBF
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 07:26:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C668DB2395F
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 06:24:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 90FEF1F24172
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 06:26:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27ABDB669;
-	Thu, 21 Dec 2023 06:24:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="R9arYC3M"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D83C6B673;
+	Thu, 21 Dec 2023 06:26:34 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx2.zhaoxin.com (mx2.zhaoxin.com [203.110.167.99])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14D2AB647
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 06:24:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-5e7c1012a42so4890217b3.3
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 22:24:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703139877; x=1703744677; darn=vger.kernel.org;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Ux7YJblT1o8powK/wjkuBKhpWvZytW7tRyNBPemyUJo=;
-        b=R9arYC3MCyNQZOs4t3pssNXItrTvF1teV+ZvfddKPl8O243IOd6XfoYSQnf+Jt43y3
-         w0f8r7p9+dyp894hBppWdaOhNA+yb3Qpn3PAx8lFFSp0shpFvt3r+ymmEMpqgll5PEfx
-         9frcJxtzvdXx+CsPAVzyPawsBCrBWu74XM0YrGEY0lOP1OEa3whyAPZ4rRTqsNYCYnTu
-         5EXDm7vOCHtoVV/xisG+jRXXY77VYfXRnXRrXWavUHwWlF7qX9IEiJTiqvS7I0nXZ5nO
-         Iqu0H4VN6VV2M3BOWRDSBN/0UG3Je8QfPUJCpBNVGMDak2mLSNhJsAv0XEho5Bl9Kah2
-         WPJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703139877; x=1703744677;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Ux7YJblT1o8powK/wjkuBKhpWvZytW7tRyNBPemyUJo=;
-        b=NrivtSw2QK5kS7k/8/N+xOBP16Lf2WXh2mKb2jvVNVVt09wNag3rnHoXnSgwEI0A/P
-         jE2ch13MLsrXa1/L25DKZXcm7tWY0mUge8IBD/LWDFW8wC70O0Ah4xed8meiebizDG1R
-         BIrdvyuzgOtBfbmaj2mAZ68nJj0A+XBx94bMCDxGFJjR7SVeJSNCYLN/nCZ0bCcBN7CF
-         opDWUY9WPyF1orVb/GnRPN9QiIZwE3LoptCMNslR4CvhvAM7w9ov3cSFGUaS7AStLPkv
-         EnpKUVTC124txcvUnN0dlcXns5G5JOwBOmKrHhimvW332QBY1PXCwE24zWeW3yErLIk9
-         1Ixw==
-X-Gm-Message-State: AOJu0YzYtRlR4E7Dx1gu7qFO9rCOkmNzMsyZZuDROzxDWLnMFrN89SRQ
-	oZNoDKNFvYZtqQcaM5M13cT8cicgUkA=
-X-Google-Smtp-Source: AGHT+IFuAJjblgc/7Ui3sbx2gsEil3Z1ZjY6JjDD+m5xtP/zxyNAwsucb+9lei1yW3DRSsCdJC4EvQ==
-X-Received: by 2002:a0d:d990:0:b0:5e7:df55:3b1e with SMTP id b138-20020a0dd990000000b005e7df553b1emr937076ywe.12.1703139877000;
-        Wed, 20 Dec 2023 22:24:37 -0800 (PST)
-Received: from localhost.localdomain ([156.236.96.164])
-        by smtp.gmail.com with ESMTPSA id k1-20020a170902ba8100b001d2ed17751asm756765pls.261.2023.12.20.22.24.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Dec 2023 22:24:36 -0800 (PST)
-From: Yue Hu <zbestahu@gmail.com>
-To: xiang@kernel.org,
-	chao@kernel.org,
-	linux-erofs@lists.ozlabs.org
-Cc: jefflexu@linux.alibaba.com,
-	linux-kernel@vger.kernel.org,
-	Yue Hu <huyue2@coolpad.com>
-Subject: [PATCH] erofs: allow partially filled compressed bvecs
-Date: Thu, 21 Dec 2023 14:23:41 +0800
-Message-Id: <20231221062341.23901-1-zbestahu@gmail.com>
-X-Mailer: git-send-email 2.17.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64DC3B654
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 06:26:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zhaoxin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zhaoxin.com
+X-ASG-Debug-ID: 1703139979-1eb14e740b040b0002-xx1T2L
+Received: from ZXSHMBX3.zhaoxin.com (ZXSHMBX3.zhaoxin.com [10.28.252.165]) by mx2.zhaoxin.com with ESMTP id c5eegCnApH9lyKf5 (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NO); Thu, 21 Dec 2023 14:26:22 +0800 (CST)
+X-Barracuda-Envelope-From: LeoLiu-oc@zhaoxin.com
+X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.165
+Received: from ZXBJMBX03.zhaoxin.com (10.29.252.7) by ZXSHMBX3.zhaoxin.com
+ (10.28.252.165) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 21 Dec
+ 2023 14:26:19 +0800
+Received: from xin.lan (10.32.64.1) by ZXBJMBX03.zhaoxin.com (10.29.252.7)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 21 Dec
+ 2023 14:26:03 +0800
+X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.165
+From: LeoLiu-oc <LeoLiu-oc@zhaoxin.com>
+X-Barracuda-RBL-Trusted-Forwarder: 10.29.252.7
+To: <olivia@selenic.com>, <herbert@gondor.apana.org.au>,
+	<jiajie.ho@starfivetech.com>, <conor.dooley@microchip.com>,
+	<martin@kaiser.cx>, <mmyangfl@gmail.com>, <jenny.zhang@starfivetech.com>,
+	<robh@kernel.org>, <l.stelmach@samsung.com>, <ardb@kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>
+CC: <CobeChen@zhaoxin.com>, <TonyWWang@zhaoxin.com>, <YunShen@zhaoxin.com>,
+	<LeoLiu@zhaoxin.com>, LeoLiuoc <LeoLiu-oc@zhaoxin.com>
+Subject: [PATCH v3] hwrng: add Zhaoxin rng driver base on rep_xstore instruction
+Date: Thu, 21 Dec 2023 14:26:02 +0800
+X-ASG-Orig-Subj: [PATCH v3] hwrng: add Zhaoxin rng driver base on rep_xstore instruction
+Message-ID: <20231221062602.799432-1-LeoLiu-oc@zhaoxin.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231107070900.496827-1-LeoLiu-oc@zhaoxin.com>
+References: <20231107070900.496827-1-LeoLiu-oc@zhaoxin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: zxbjmbx1.zhaoxin.com (10.29.252.163) To
+ ZXBJMBX03.zhaoxin.com (10.29.252.7)
+X-Barracuda-Connect: ZXSHMBX3.zhaoxin.com[10.28.252.165]
+X-Barracuda-Start-Time: 1703139981
+X-Barracuda-Encrypted: ECDHE-RSA-AES128-GCM-SHA256
+X-Barracuda-URL: https://10.28.252.36:4443/cgi-mod/mark.cgi
+X-Virus-Scanned: by bsmtpd at zhaoxin.com
+X-Barracuda-Scan-Msg-Size: 6401
+X-Barracuda-BRTS-Status: 1
+X-Barracuda-Bayes: INNOCENT GLOBAL 0.0000 1.0000 -2.0210
+X-Barracuda-Spam-Score: -2.02
+X-Barracuda-Spam-Status: No, SCORE=-2.02 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=9.0 tests=
+X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.118357
+	Rule breakdown below
+	 pts rule name              description
+	---- ---------------------- --------------------------------------------------
 
-From: Yue Hu <huyue2@coolpad.com>
+From: LeoLiuoc <LeoLiu-oc@zhaoxin.com>
 
-In order to reduce memory footprints even further, let's allow
-partially filled compressed bvecs for readahead to bail out later.
+Add support for Zhaoxin hardware random number generator.
+This driver base on rep_xstore instruction and uses the same
+X86_FEATURE_XSTORE as via-rng driver. Therefore, modify the x86_cpu_id
+array in the via-rng driver, so that the corresponding driver can be
+correctly loader on respective platforms.
 
-Signed-off-by: Yue Hu <huyue2@coolpad.com>
+v1 -> v2:
+1. Fix assembler code errors
+2. Remove redundant CPU model check codes
+
+v2 -> v3:
+1. Optimize code details based on the kernel style
+
+Signed-off-by: LeoLiuoc <LeoLiu-oc@zhaoxin.com>
 ---
- fs/erofs/zdata.c | 36 +++++++++++++-----------------------
- 1 file changed, 13 insertions(+), 23 deletions(-)
+ drivers/char/hw_random/Kconfig       | 12 ++++
+ drivers/char/hw_random/Makefile      |  1 +
+ drivers/char/hw_random/via-rng.c     | 10 +--
+ drivers/char/hw_random/zhaoxin-rng.c | 95 ++++++++++++++++++++++++++++
+ 4 files changed, 113 insertions(+), 5 deletions(-)
+ create mode 100644 drivers/char/hw_random/zhaoxin-rng.c
 
-diff --git a/fs/erofs/zdata.c b/fs/erofs/zdata.c
-index a2c3e87d2f81..20a0cd415cf7 100644
---- a/fs/erofs/zdata.c
-+++ b/fs/erofs/zdata.c
-@@ -1202,34 +1202,27 @@ static int z_erofs_parse_in_bvecs(struct z_erofs_decompress_backend *be,
- 		struct z_erofs_bvec *bvec = &pcl->compressed_bvecs[i];
- 		struct page *page = bvec->page;
+diff --git a/drivers/char/hw_random/Kconfig b/drivers/char/hw_random/Kconfig
+index 442c40efb200..3c1c4fa1203c 100644
+--- a/drivers/char/hw_random/Kconfig
++++ b/drivers/char/hw_random/Kconfig
+@@ -152,6 +152,18 @@ config HW_RANDOM_VIA
  
--		/* compressed pages ought to be present before decompressing */
-+		/* compressed data ought to be valid before decompressing */
- 		if (!page) {
--			DBG_BUGON(1);
-+			err = -EIO;
- 			continue;
- 		}
- 		be->compressed_pages[i] = page;
+ 	  If unsure, say Y.
  
--		if (z_erofs_is_inline_pcluster(pcl)) {
-+		if (z_erofs_is_inline_pcluster(pcl) ||
-+		    erofs_page_is_managed(EROFS_SB(be->sb), page)) {
- 			if (!PageUptodate(page))
- 				err = -EIO;
- 			continue;
- 		}
++config HW_RANDOM_ZHAOXIN
++	tristate "Zhaoxin HW Random Number Generator support"
++	depends on X86
++	help
++	  This driver provides kernel-side support for the Random Number
++	  Generator hardware found on Zhaoxin based motherboards.
++
++	  To compile this driver as a module, choose M here: the
++	  module will be called zhaoxin-rng.
++
++	  If unsure, say Y.
++
+ config HW_RANDOM_IXP4XX
+ 	tristate "Intel IXP4xx NPU HW Pseudo-Random Number Generator support"
+ 	depends on ARCH_IXP4XX || COMPILE_TEST
+diff --git a/drivers/char/hw_random/Makefile b/drivers/char/hw_random/Makefile
+index 32549a1186dc..ef5b3ae0794d 100644
+--- a/drivers/char/hw_random/Makefile
++++ b/drivers/char/hw_random/Makefile
+@@ -14,6 +14,7 @@ obj-$(CONFIG_HW_RANDOM_GEODE) += geode-rng.o
+ obj-$(CONFIG_HW_RANDOM_N2RNG) += n2-rng.o
+ n2-rng-y := n2-drv.o n2-asm.o
+ obj-$(CONFIG_HW_RANDOM_VIA) += via-rng.o
++obj-$(CONFIG_HW_RANDOM_ZHAOXIN) += zhaoxin-rng.o
+ obj-$(CONFIG_HW_RANDOM_EXYNOS) += exynos-trng.o
+ obj-$(CONFIG_HW_RANDOM_IXP4XX) += ixp4xx-rng.o
+ obj-$(CONFIG_HW_RANDOM_OMAP) += omap-rng.o
+diff --git a/drivers/char/hw_random/via-rng.c b/drivers/char/hw_random/via-rng.c
+index a9a0a3b09c8b..285505b4d620 100644
+--- a/drivers/char/hw_random/via-rng.c
++++ b/drivers/char/hw_random/via-rng.c
+@@ -35,7 +35,7 @@
+ #include <asm/cpufeature.h>
+ #include <asm/fpu/api.h>
  
- 		DBG_BUGON(z_erofs_page_is_invalidated(page));
--		if (!z_erofs_is_shortlived_page(page)) {
--			if (erofs_page_is_managed(EROFS_SB(be->sb), page)) {
--				if (!PageUptodate(page))
--					err = -EIO;
--				continue;
--			}
--			z_erofs_do_decompressed_bvec(be, bvec);
--			*overlapped = true;
--		}
-+		if (z_erofs_is_shortlived_page(page))
-+			continue;
-+		z_erofs_do_decompressed_bvec(be, bvec);
-+		*overlapped = true;
- 	}
 -
--	if (err)
--		return err;
--	return 0;
-+	return err;
++static const struct x86_cpu_id via_rng_cpu_ids[];
+ 
+ 
+ enum {
+@@ -135,7 +135,7 @@ static int via_rng_init(struct hwrng *rng)
+ 	 * is always enabled if CPUID rng_en is set.  There is no
+ 	 * RNG configuration like it used to be the case in this
+ 	 * register */
+-	if (((c->x86 == 6) && (c->x86_model >= 0x0f))  || (c->x86 > 6)){
++	if ((c->x86 == 6) && (c->x86_model >= 0x0f)) {
+ 		if (!boot_cpu_has(X86_FEATURE_XSTORE_EN)) {
+ 			pr_err(PFX "can't enable hardware RNG "
+ 				"if XSTORE is not enabled\n");
+@@ -196,7 +196,7 @@ static int __init via_rng_mod_init(void)
+ {
+ 	int err;
+ 
+-	if (!boot_cpu_has(X86_FEATURE_XSTORE))
++	if (!x86_match_cpu(via_rng_cpu_ids))
+ 		return -ENODEV;
+ 
+ 	pr_info("VIA RNG detected\n");
+@@ -217,8 +217,8 @@ static void __exit via_rng_mod_exit(void)
  }
+ module_exit(via_rng_mod_exit);
  
- static int z_erofs_decompress_pcluster(struct z_erofs_decompress_backend *be,
-@@ -1238,7 +1231,7 @@ static int z_erofs_decompress_pcluster(struct z_erofs_decompress_backend *be,
- 	struct erofs_sb_info *const sbi = EROFS_SB(be->sb);
- 	struct z_erofs_pcluster *pcl = be->pcl;
- 	unsigned int pclusterpages = z_erofs_pclusterpages(pcl);
--	const struct z_erofs_decompressor *decompressor =
-+	const struct z_erofs_decompressor *decomp =
- 				&erofs_decompressors[pcl->algorithmformat];
- 	int i, err2;
- 	struct page *page;
-@@ -1274,10 +1267,8 @@ static int z_erofs_decompress_pcluster(struct z_erofs_decompress_backend *be,
- 	err2 = z_erofs_parse_in_bvecs(be, &overlapped);
- 	if (err2)
- 		err = err2;
--	if (err)
--		goto out;
--
--	err = decompressor->decompress(&(struct z_erofs_decompress_req) {
-+	if (!err)
-+		err = decomp->decompress(&(struct z_erofs_decompress_req) {
- 					.sb = be->sb,
- 					.in = be->compressed_pages,
- 					.out = be->decompressed_pages,
-@@ -1291,7 +1282,6 @@ static int z_erofs_decompress_pcluster(struct z_erofs_decompress_backend *be,
- 					.fillgaps = pcl->multibases,
- 				 }, be->pagepool);
- 
--out:
- 	/* must handle all compressed pages before actual file pages */
- 	if (z_erofs_is_inline_pcluster(pcl)) {
- 		page = pcl->compressed_bvecs[0].page;
-@@ -1302,7 +1292,7 @@ static int z_erofs_decompress_pcluster(struct z_erofs_decompress_backend *be,
- 			/* consider shortlived pages added when decompressing */
- 			page = be->compressed_pages[i];
- 
--			if (erofs_page_is_managed(sbi, page))
-+			if (!page || erofs_page_is_managed(sbi, page))
- 				continue;
- 			(void)z_erofs_put_shortlivedpage(be->pagepool, page);
- 			WRITE_ONCE(pcl->compressed_bvecs[i].page, NULL);
+-static struct x86_cpu_id __maybe_unused via_rng_cpu_id[] = {
+-	X86_MATCH_FEATURE(X86_FEATURE_XSTORE, NULL),
++static struct x86_cpu_id via_rng_cpu_id[] = {
++	X86_MATCH_VENDOR_FAM_FEATURE(CENTAUR, 6, X86_FEATURE_XSTORE, NULL),
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(x86cpu, via_rng_cpu_id);
+diff --git a/drivers/char/hw_random/zhaoxin-rng.c b/drivers/char/hw_random/zhaoxin-rng.c
+new file mode 100644
+index 000000000000..3e5770df9948
+--- /dev/null
++++ b/drivers/char/hw_random/zhaoxin-rng.c
+@@ -0,0 +1,95 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * RNG driver for Zhaoxin RNGs
++ *
++ * Copyright 2023 (c) Zhaoxin Semiconductor Co., Ltd
++ */
++
++#include <asm/cpu_device_id.h>
++#include <asm/fpu/api.h>
++#include <crypto/padlock.h>
++#include <linux/cpufeature.h>
++#include <linux/delay.h>
++#include <linux/hw_random.h>
++#include <linux/io.h>
++#include <linux/kernel.h>
++#include <linux/module.h>
++
++enum {
++	ZHAOXIN_RNG_CHUNK_8		= 0x00, /* 64 rand bits, 64 stored bits */
++	ZHAOXIN_RNG_CHUNK_4		= 0x01, /* 32 rand bits, 32 stored bits */
++	ZHAOXIN_RNG_CHUNK_2		= 0x02, /* 16 rand bits, 32 stored bits */
++	ZHAOXIN_RNG_CHUNK_1		= 0x03, /*  8 rand bits, 32 stored bits */
++	ZHAOXIN_RNG_MAX_SIZE	= (128 * 1024),
++};
++
++static int zhaoxin_rng_init(struct hwrng *rng)
++{
++	if (!boot_cpu_has(X86_FEATURE_XSTORE_EN)) {
++		pr_err(PFX "can't enable hardware RNG if XSTORE is not enabled\n");
++		return -ENODEV;
++	}
++
++	return 0;
++}
++
++static inline int rep_xstore(size_t size, size_t factor, void *result)
++{
++	asm(".byte 0xf3, 0x0f, 0xa7, 0xc0"
++		: "=m"(*(size_t *)result), "+c"(size), "+d"(factor), "+D"(result));
++
++	return 0;
++}
++
++static int zhaoxin_rng_read(struct hwrng *rng, void *data, size_t max, bool wait)
++{
++	if (max > ZHAOXIN_RNG_MAX_SIZE)
++		max = ZHAOXIN_RNG_MAX_SIZE;
++
++	rep_xstore(max, ZHAOXIN_RNG_CHUNK_1, data);
++
++	return max;
++}
++
++static struct hwrng zhaoxin_rng = {
++	.name = "zhaoxin",
++	.init = zhaoxin_rng_init,
++	.read = zhaoxin_rng_read,
++};
++
++static const struct x86_cpu_id zhaoxin_rng_cpu_ids[] = {
++	X86_MATCH_VENDOR_FAM_FEATURE(ZHAOXIN, 6, X86_FEATURE_XSTORE, NULL),
++	X86_MATCH_VENDOR_FAM_FEATURE(ZHAOXIN, 7, X86_FEATURE_XSTORE, NULL),
++	X86_MATCH_VENDOR_FAM_FEATURE(CENTAUR, 7, X86_FEATURE_XSTORE, NULL),
++	{}
++};
++MODULE_DEVICE_TABLE(x86cpu, zhaoxin_rng_cpu_ids);
++
++static int __init zhaoxin_rng_mod_init(void)
++{
++	int err;
++
++	if (!x86_match_cpu(zhaoxin_rng_cpu_ids)) {
++		pr_err(PFX "The CPU isn't support XSTORE.\n");
++		return -ENODEV;
++	}
++
++	pr_info("Zhaoxin RNG detected\n");
++
++	err = hwrng_register(&zhaoxin_rng);
++	if (err)
++		pr_err(PFX "RNG registering failed (%d)\n", err);
++
++	return err;
++}
++module_init(zhaoxin_rng_mod_init);
++
++static void __exit zhaoxin_rng_mod_exit(void)
++{
++	hwrng_unregister(&zhaoxin_rng);
++}
++module_exit(zhaoxin_rng_mod_exit);
++
++MODULE_DESCRIPTION("H/W RNG driver for Zhaoxin CPUs");
++MODULE_AUTHOR("YunShen@zhaoxin.com");
++MODULE_LICENSE("GPL");
 -- 
-2.17.1
+2.34.1
 
 
