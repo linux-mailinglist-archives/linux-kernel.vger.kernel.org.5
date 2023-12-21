@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-7934-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7935-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3240E81AF6C
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 08:29:45 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9BB3F81AF6E
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 08:30:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DDDE0286374
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 07:29:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E2F7AB2524A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 07:30:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC38A156FE;
-	Thu, 21 Dec 2023 07:29:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 973BC168D3;
+	Thu, 21 Dec 2023 07:29:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MzFM9HcM"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Tg2zd1Ol"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF5EF156EF;
-	Thu, 21 Dec 2023 07:29:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 793FA1642A;
+	Thu, 21 Dec 2023 07:29:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-50e18689828so605550e87.2;
-        Wed, 20 Dec 2023 23:29:17 -0800 (PST)
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-5532b348d30so492390a12.1;
+        Wed, 20 Dec 2023 23:29:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703143756; x=1703748556; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1703143760; x=1703748560; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=jjNyfg9b/oa8PqsdonOr0+sP3WwEoMGtYWMIoH9NCVc=;
-        b=MzFM9HcMGk/SHpHGn2yddyRZEUFTynpP5hQ9j5v2r5mBh+lBbp1/pv89clrFEfifF5
-         U8hwhhqDaiQ2JP0rrvnTX4RrckIxZ3s5igCGHEuZvhlUX08ab33657kSnwPOKGocj52a
-         sJF1wUtnE91ODf24Cmy4wW1k4d+8WBZJ/JCSv7ma/NOVSA1wyE8MR11Ss52Pz3Dm6/zP
-         YG3yfsdkbS0pD5nyohpniG1eLtIsuWF5V0/RDc3w537fE955CRsWu4cpzK2WPzhFjDEO
-         oAdFB4O963yRvjZCJ0QDvj+aX+X25YK96yE9X8gj5JSNGWUYlydUXfsd0+d5ZV2J6vmF
-         GZUg==
+        bh=ejo7wkMYCp9JjGzkF+F3cQyIjCmI1lLvd98NTJgc+sk=;
+        b=Tg2zd1Ol2h0Z/FC7cQDpL7o8GdJncVVsuG7JIoThkj3DdTSblxph5wkDYNg9pl0Xmg
+         tDnaZnuMBZ59Ts21vFvizoTcj5NfGmcCalPfVjH7U6z/bgDcCU7PdEnUX4xamjFDep5h
+         h0/UucoslLgqVSfFWG4mWQoYWLQi+a0EXzMnZTq7I15ci+Je8zrkK9m6AjYGrG6lOOVQ
+         vK8X+aIsonrz5URrhZGZx67R4FsM4TBdKqP9Ai4jeATCrEGZ2EX4QxDB14wcnjEqTci5
+         8/utjsf2XcME1hsyD5XSJcNES4b09QAIFmjYwpjYpPH+0I75L8NkGkk4ZEhWBZu6Ft2Q
+         bzQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703143756; x=1703748556;
+        d=1e100.net; s=20230601; t=1703143760; x=1703748560;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=jjNyfg9b/oa8PqsdonOr0+sP3WwEoMGtYWMIoH9NCVc=;
-        b=XNPM3AoaWnuy6ITIcr450aSOhCsK8orvCnhg+MYfaAE7k+KaoqJeT/T0hUeoYk6qBd
-         D92DfepyvTng8UO78q+iNbirs5nUSn7t1RM6r98pgZoInraEeos5/RcTPxNLF/9W+54g
-         GJT55Qun9ysmT1ril+MnCt8cOeDp27a9zfduHMTZ5LPnRCjVkIqsmSJzmntWwFOfJxwt
-         iHqyK/2km6TMwErIa0GV3jmVeTPUvomYcDHoI88jY3ITCVUY98oXIEzbJvgyZwty4nVb
-         S8fTN4VcecS8qh3sEcyTEFP3grzqu9vvHi80gpxupTWTbewlfk6D4oRGCnS6PbG+oCT4
-         wuZg==
-X-Gm-Message-State: AOJu0YwVCuO6iSNDyEBInaemPlZ73k/9LuWUfVx9C6Vm7TQvPT8E/0M0
-	fwJ36vVOVmKlJQY9/CqVmVQ=
-X-Google-Smtp-Source: AGHT+IEHCBGZ0DhiMdxR4anMGWX2eOZLz6T0JDXNpnpOMZ1qQ1tKA/raIEm5tx5reXntv2zgLwASpA==
-X-Received: by 2002:a05:6512:e98:b0:50e:5901:7916 with SMTP id bi24-20020a0565120e9800b0050e59017916mr658174lfb.128.1703143756106;
-        Wed, 20 Dec 2023 23:29:16 -0800 (PST)
+        bh=ejo7wkMYCp9JjGzkF+F3cQyIjCmI1lLvd98NTJgc+sk=;
+        b=gFqmRA5Q01dbHoPeoX6bYbck3/43EIoNJJFquuRfE2iBjOmo/XuOAjbBoQhQoaC5w5
+         JDnB2Bc56lmfJzJVbAOvcBVpSiNOiMnN6DABqbOKUCdo6Ijuml1xHuwSdu9TrNkDaB2z
+         S9mHczyyNYvfxOZM6WfKoKYKrxqUbecbpvExTK1diU5BUkGeZEfEm2ZFCD+a+lDY2yQK
+         aOdEkJOSS6sgefiUBA8rgNKoL1a6okr0u9tkS7BDlPcFpc4r4GFnZWrSXX7DDyTTJKl4
+         d7YFKDEPZIprxuTafYJPRlCRqyszElddscrEgUQhk8IRH6FiiGYVuQhUi57eXmnFyM9R
+         +cYg==
+X-Gm-Message-State: AOJu0Yx8HVdf0+nhDVBUhRQXTBsnnQenIAzBplBbo/d/DcSVz634k//i
+	qwGHNiHEmQQ+nRaH/rK+TA1L5P/dWUdXdA==
+X-Google-Smtp-Source: AGHT+IH7yGg/Ns5KOnK4mfcQDFx0W0vpoxuqVHVxZ8KxmZHCsbNzUNupXvfKONBQN/wk4wTuslrzOw==
+X-Received: by 2002:a50:a455:0:b0:552:3044:1df9 with SMTP id v21-20020a50a455000000b0055230441df9mr6605753edb.67.1703143759673;
+        Wed, 20 Dec 2023 23:29:19 -0800 (PST)
 Received: from debian.fritz.box ([93.184.186.109])
-        by smtp.gmail.com with ESMTPSA id en22-20020a056402529600b00553830eb2fcsm787819edb.64.2023.12.20.23.29.15
+        by smtp.gmail.com with ESMTPSA id en22-20020a056402529600b00553830eb2fcsm787819edb.64.2023.12.20.23.29.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Dec 2023 23:29:15 -0800 (PST)
+        Wed, 20 Dec 2023 23:29:19 -0800 (PST)
 From: Dimitri Fedrau <dima.fedrau@gmail.com>
 To: 
 Cc: Dimitri Fedrau <dima.fedrau@gmail.com>,
@@ -70,9 +70,9 @@ Cc: Dimitri Fedrau <dima.fedrau@gmail.com>,
 	Stefan Eichenberger <eichest@gmail.com>,
 	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v3 1/4] net: phy: Add BaseT1 auto-negotiation constants
-Date: Thu, 21 Dec 2023 08:28:48 +0100
-Message-Id: <20231221072853.107678-2-dima.fedrau@gmail.com>
+Subject: [PATCH v3 2/4] net: phy: Support 100/1000BT1 linkmode advertisements
+Date: Thu, 21 Dec 2023 08:28:49 +0100
+Message-Id: <20231221072853.107678-3-dima.fedrau@gmail.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231221072853.107678-1-dima.fedrau@gmail.com>
 References: <20231219093554.GA6393@debian>
@@ -85,27 +85,41 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Added constants for advertising 100BT1 and 1000BT1 in register BASE-T1
-auto-negotiation advertisement register [31:16] (Register 7.515)
+Extend helper functions mii_t1_adv_m_mod_linkmode_t and
+linkmode_adv_to_mii_t1_adv_m_t to support 100BT1 and 1000BT1 linkmode
+advertisements.
 
 Signed-off-by: Dimitri Fedrau <dima.fedrau@gmail.com>
 ---
- include/uapi/linux/mdio.h | 2 ++
- 1 file changed, 2 insertions(+)
+ include/linux/mdio.h | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/include/uapi/linux/mdio.h b/include/uapi/linux/mdio.h
-index d03863da180e..020ccc810d23 100644
---- a/include/uapi/linux/mdio.h
-+++ b/include/uapi/linux/mdio.h
-@@ -348,6 +348,8 @@
+diff --git a/include/linux/mdio.h b/include/linux/mdio.h
+index 007fd9c3e4b6..3d177f265cd3 100644
+--- a/include/linux/mdio.h
++++ b/include/linux/mdio.h
+@@ -372,6 +372,10 @@ static inline void mii_t1_adv_m_mod_linkmode_t(unsigned long *advertising, u32 l
+ {
+ 	linkmode_mod_bit(ETHTOOL_LINK_MODE_10baseT1L_Full_BIT,
+ 			 advertising, lpa & MDIO_AN_T1_ADV_M_B10L);
++	linkmode_mod_bit(ETHTOOL_LINK_MODE_100baseT1_Full_BIT,
++			 advertising, lpa & MDIO_AN_T1_ADV_M_100BT1);
++	linkmode_mod_bit(ETHTOOL_LINK_MODE_1000baseT1_Full_BIT,
++			 advertising, lpa & MDIO_AN_T1_ADV_M_1000BT1);
+ }
  
- /* BASE-T1 auto-negotiation advertisement register [31:16] */
- #define MDIO_AN_T1_ADV_M_B10L		0x4000	/* device is compatible with 10BASE-T1L */
-+#define MDIO_AN_T1_ADV_M_1000BT1	0x0080	/* advertise 1000BASE-T1 */
-+#define MDIO_AN_T1_ADV_M_100BT1		0x0020	/* advertise 100BASE-T1 */
- #define MDIO_AN_T1_ADV_M_MST		0x0010	/* advertise master preference */
+ /**
+@@ -408,6 +412,10 @@ static inline u32 linkmode_adv_to_mii_t1_adv_m_t(unsigned long *advertising)
  
- /* BASE-T1 auto-negotiation advertisement register [47:32] */
+ 	if (linkmode_test_bit(ETHTOOL_LINK_MODE_10baseT1L_Full_BIT, advertising))
+ 		result |= MDIO_AN_T1_ADV_M_B10L;
++	if (linkmode_test_bit(ETHTOOL_LINK_MODE_100baseT1_Full_BIT, advertising))
++		result |= MDIO_AN_T1_ADV_M_100BT1;
++	if (linkmode_test_bit(ETHTOOL_LINK_MODE_1000baseT1_Full_BIT, advertising))
++		result |= MDIO_AN_T1_ADV_M_1000BT1;
+ 
+ 	return result;
+ }
 -- 
 2.39.2
 
