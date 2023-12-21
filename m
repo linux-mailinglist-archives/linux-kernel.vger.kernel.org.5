@@ -1,40 +1,41 @@
-Return-Path: <linux-kernel+bounces-8885-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8886-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F10D81BDC1
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 19:01:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DC44581BDC3
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 19:01:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BC6F7289150
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 18:01:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 66C92289229
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 18:01:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21C5664A89;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E933964A97;
 	Thu, 21 Dec 2023 18:00:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="VVQVgJMQ"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="UGoakVxE"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D48D6280B;
-	Thu, 21 Dec 2023 18:00:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9400F634F9;
+	Thu, 21 Dec 2023 18:00:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 588621C0002;
-	Thu, 21 Dec 2023 18:00:49 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 5FF0F1C000B;
+	Thu, 21 Dec 2023 18:00:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1703181652;
+	t=1703181653;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=pLfUBXSK8a7cGIdBEXRdpdqUEl/s96oL7RSSS90KpDU=;
-	b=VVQVgJMQqrmyuC4x4YX5NgTvjic7GtS3r5Czbrg59f66MoRrtUKwgSN6qoNdxFHpgDwAmi
-	LMtx4pZ5TSltivhbRWFmGZ7xZFfxBSk15qJ14OHfwKjgDaSu/zK7Q9TeH2mU+ydtIPBAPj
-	d/SC8miSB+d+03JJuIZHMVcnCh04piZXX3LXjVFYjy8J5nvDnfd7J/iz74sSVWMQVJN6I4
-	dR1nCwGjlTNrz6WTJvSti3NBy2Dz8Sb3rtiQ2TBnimArttJB2Bo/Qc+bqWH1JHf8Xdo5bH
-	4jOk9sj7sqJ62PZnesPmHzUZtBRKlCv9AW5FQILjwBX6hw/yYpkR8AarsAeCqw==
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=JKTpkJ6pIUUyWzdbY/c6gXFptNPtOL0v8uXIEg8Ejd0=;
+	b=UGoakVxEG/vLnuvgV1eezDl4ns65G1qAw5bdginE6Y3s3mf4q+1CFch0+eKIKeCN114Xvb
+	aDvN5WKYeDKbTV8I51yqIk1NO71Hf290Q8IE+IT+Fj4Ra5ZwZTnQ1mhBbDEk1lvktF5sR8
+	gRD5NClF1g8w/2TrFPWWedyUtuHJYFpCAXdyqVKkrbirBUs/dD98PPVYMDQ/VWTEi3+STm
+	qXpo4z62C0w+72JdQPq1bm3Ul89ahz0CS1gtnmqO5JknVVD3887RC5MFAcT4dts7f12/Ft
+	V/wxgZZcD30s7+gS7G9/AMD+N4xVXaPtWCw2BfnD8zUnpUbIHQaLQsnwbMQs9Q==
 From: Maxime Chevallier <maxime.chevallier@bootlin.com>
 To: davem@davemloft.net
 Cc: Maxime Chevallier <maxime.chevallier@bootlin.com>,
@@ -60,10 +61,12 @@ Cc: Maxime Chevallier <maxime.chevallier@bootlin.com>,
 	Oleksij Rempel <o.rempel@pengutronix.de>,
 	=?UTF-8?q?Nicol=C3=B2=20Veronese?= <nicveronese@gmail.com>,
 	Simon Horman <horms@kernel.org>
-Subject: [PATCH net-next v5 00/13] Introduce PHY listing and link_topology tracking
-Date: Thu, 21 Dec 2023 19:00:33 +0100
-Message-ID: <20231221180047.1924733-1-maxime.chevallier@bootlin.com>
+Subject: [PATCH net-next v5 01/13] net: phy: Introduce ethernet link topology representation
+Date: Thu, 21 Dec 2023 19:00:34 +0100
+Message-ID: <20231221180047.1924733-2-maxime.chevallier@bootlin.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20231221180047.1924733-1-maxime.chevallier@bootlin.com>
+References: <20231221180047.1924733-1-maxime.chevallier@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -73,260 +76,391 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-GND-Sasl: maxime.chevallier@bootlin.com
 
-Hello everyone,
+Link topologies containing multiple network PHYs attached to the same
+net_device can be found when using a PHY as a media converter for use
+with an SFP connector, on which an SFP transceiver containing a PHY can
+be used.
 
-Here's a V5 of the multi-PHY support series.
+With the current model, the transceiver's PHY can't be used for
+operations such as cable testing, timestamping, macsec offload, etc.
 
-At a glance, besides some minor fixes and R'd-by from Andrew, one of the
-thing this series does is remove the ASSERT_RTNL() from the
-topo_add_phy/del_phy operations.
+The reason being that most of the logic for these configuration, coming
+from either ethtool netlink or ioctls tend to use netdev->phydev, which
+in multi-phy systems will reference the PHY closest to the MAC.
 
-These operations will take a PHY device and put it into the list of
-devices associated to a netdevice. The main thing to protect here is the
-list itself, but since we use xarrays, my naive understanding of it is
-that it contains its own protection scheme. There shouldn't be a need
-for more locking, as the insertion/deletion paths are already hooked
-into the PHY connection to a netdev, or disconnection from it.
+Introduce a numbering scheme allowing to enumerate PHY devices that
+belong to any netdev, which can in turn allow userspace to take more
+precise decisions with regard to each PHY's configuration.
 
-Now for the rest of the cover :
+The numbering is maintained per-netdev, in a phy_device_list.
+The numbering works similarly to a netdevice's ifindex, with
+identifiers that are only recycled once INT_MAX has been reached.
 
-As a remainder, this ongoing work aims ultimately at supporting complex
-link topologies that involve multiplexing multiple PHYs/SFPs on a single
-netdevice. As a first step, it's required that we are able to enumerate the
-PHYs on a given ethernet interface.
+This prevents races that could occur between PHY listing and SFP
+transceiver removal/insertion.
 
-By just doing so, we also improve already-existing use-cases, namely the
-copper SFP modules support when a media-converter is used (as we have 2
-PHYs on the link, but only one is referenced by net_device.phydev, which
-is used on a variety of netlink commands).
+The identifiers are assigned at phy_attach time, as the numbering
+depends on the netdevice the phy is attached to.
 
-The series is architectured as follows :
+Signed-off-by: Maxime Chevallier <maxime.chevallier@bootlin.com>
+---
+V5: - Dropped the ASSERT_RTNL()
+    - Made the phy_link_topo_get_phy inline
+V4: - Moved the phy_link_topo_init() code to an inline header function
+    - Made the code build without phylib
 
-- The first patch adds the notion of phy_link_topology, which tracks
-all PHYs attached to a netdevice.
+V3: - Renamed to phy_link_topology
+    - Added assertions for RTNL
+    - Various cleanups of leftover, unused test code
+    - Made the PHY index u32
 
-- Patches 2, 3 and 4 adds some plumbing into SFP and phylib to be able
-  to connect the dots when building the topology tree, to know which PHY
-  is connected to which SFP bus, trying not to be too invasive on phylib.
-
-- Patch 5 allows passing a PHY_INDEX to ethnl commands. I'm uncertain about
-  this, as there are at least 4 netlink commands ( 5 with the one introduced
-  in patch 7 ) that targets PHYs directly or indirectly, which to me makes
-  it worth-it to have a generic way to pass a PHY index to commands, however
-  the approach taken may be too generic.
-
-- Patch 6 is the netlink spec update + ethtool-user.c|h autogenerated code
-update (the autogenerated code triggers checkpatch warning though)
-
-- Patch 7 introduces a new netlink command set to list PHYs on a netdevice.
-It implements a custom DUMP and GET operation to allow filtered dumps,
-that lists all PHYs on a given netdevice. I couldn't use most of ethnl's
-plumbing though.
-
-- Patch 8 is the netlink spec update + ethtool-user.c|h update for that
-new command
-
-- Patch 8,9,10 and 11 updates the PLCA, strset, cable-test and pse netlink
-commands to use the user-provided PHY instead of net_device.phydev.
-
-- Finally patch 12 adds some documentation for this whole work.
-
-Examples
-========
-
-Here's a short overview of the kind of operations you can have regarding
-the PHY topology. These tests were performed on a MacchiatoBin, which
-has 3 interfaces :
-
-eth0 and eth1 have the following layout:
-
-MAC - PHY - SFP
-
-eth2 has this more classic topology :
-
-MAC - PHY - RJ45
-
-finally eth3 has the following topology :
-
-MAC - SFP
-
-When performing a dump with all interfaces down, we don't get any
-result, as no PHY has been attached to their respective net_device :
-
-# ./cli.py --spec specs/ethtool.yaml --schema genetlink-legacy.yaml --dump phy-get
-None
-
-The following output is with eth0, eth2 and eth3 up, but no SFP module
-inserted in none of the interfaces :
-
-# ./cli.py --spec specs/ethtool.yaml --schema genetlink-legacy.yaml --dump phy-get
-[{'downstream-sfp-name': 'sfp-eth0',
-  'drvname': 'mv88x3310',
-  'header': {'dev-index': 2, 'dev-name': 'eth0'},
-  'id': 0,
-  'index': 1,
-  'name': 'f212a600.mdio-mii:00',
-  'upstream-type': 'mac'},
- {'drvname': 'Marvell 88E1510',
-  'header': {'dev-index': 4, 'dev-name': 'eth2'},
-  'id': 21040593,
-  'index': 1,
-  'name': 'f212a200.mdio-mii:00',
-  'upstream-type': 'mac'}]
-
-
-And now is a dump operation with a copper SFP in the eth0 port :
-
-# ./cli.py --spec specs/ethtool.yaml --schema genetlink-legacy.yaml --dump phy-get
-[{'downstream-sfp-name': 'sfp-eth0',
-  'drvname': 'mv88x3310',
-  'header': {'dev-index': 2, 'dev-name': 'eth0'},
-  'id': 0,
-  'index': 1,
-  'name': 'f212a600.mdio-mii:00',
-  'upstream-type': 'mac'},
- {'drvname': 'Marvell 88E1111',
-  'header': {'dev-index': 2, 'dev-name': 'eth0'},
-  'id': 21040322,
-  'index': 2,
-  'name': 'i2c:sfp-eth0:16',
-  'upstream': {'index': 1, 'sfp-name': 'sfp-eth0'},
-  'upstream-type': 'phy'},
- {'drvname': 'Marvell 88E1510',
-  'header': {'dev-index': 4, 'dev-name': 'eth2'},
-  'id': 21040593,
-  'index': 1,
-  'name': 'f212a200.mdio-mii:00',
-  'upstream-type': 'mac'}]
-
- -- Note that this shouldn't actually work as the 88x3310 PHY doesn't allow
-a 1G SFP to be connected to its SFP interface, and I don't have a 10G copper SFP,
-so for the sake of the demo I applied the following modification, which
-of courses gives a non-functionnal link, but the PHY attach still works,
-which is what I want to demonstrate :
-
-@@ -488,7 +488,7 @@ static int mv3310_sfp_insert(void *upstream, const struct sfp_eeprom_id *id)
-
-        if (iface != PHY_INTERFACE_MODE_10GBASER) {
-                dev_err(&phydev->mdio.dev, "incompatible SFP module inserted\n");
--               return -EINVAL;
-+               //return -EINVAL;
-        }
-        return 0;
- }
-
-Finally an example of the filtered DUMP operation that Jakub suggested
-in V1 :
-
-# ./cli.py --spec specs/ethtool.yaml --schema genetlink-legacy.yaml \
-# --dump phy-get --json '{"header" : {"dev-name" : "eth0"}}'
-
-[{'downstream-sfp-name': 'sfp-eth0',
-  'drvname': 'mv88x3310',
-  'header': {'dev-index': 2, 'dev-name': 'eth0'},
-  'id': 0,
-  'index': 1,
-  'name': 'f212a600.mdio-mii:00',
-  'upstream-type': 'mac'},
- {'drvname': 'Marvell 88E1111',
-  'header': {'dev-index': 2, 'dev-name': 'eth0'},
-  'id': 21040322,
-  'index': 2,
-  'name': 'i2c:sfp-eth0:16',
-  'upstream': {'index': 1, 'sfp-name': 'sfp-eth0'},
-  'upstream-type': 'phy'}]
-
-And a classic GET operation allows querying a single PHY's info :
-
-# ./cli.py --spec specs/ethtool.yaml --schema genetlink-legacy.yaml \
-# --do phy-get --json '{"header" : {"dev-name" : "eth0", "phy-index" : 2}}'
-
-{'drvname': 'Marvell 88E1111',
- 'header': {'dev-index': 2, 'dev-name': 'eth0'},
- 'id': 21040322,
- 'index': 2,
- 'name': 'i2c:sfp-eth0:16',
- 'upstream': {'index': 1, 'sfp-name': 'sfp-eth0'},
- 'upstream-type': 'phy'}
-
-Changed in V5:
-- Removed the RTNL assertion in the topology ops
-- Made the phy_topo_get_phy inline
-- Fixed the PSE-PD multi-PHY support by re-adding a wrongly dropped
-  check
-- Fixed some typos in the documentation
-- Fixed reverse xmas trees
-
-Changes in V4:
-- Dropped the RFC flag
-- Made the net_device integration independent to having phylib enabled
-- Removed the autogenerated ethtool-user code for the YNL specs
-
-Changes in V3:
-- Added RTNL assertions where needed
-- Fixed issues in the DUMP code for PHY_GET, which crashed when running it
-  twice in a row
-- Added the documentation, and moved in-source docs around
-- renamed link_topology to phy_link_topology
-
-Changes in V2:
-- Added the DUMP operation
-- Added much more information in the reported data, to be able to reconstruct
-  precisely the topology tree
-- renamed phy_list to link_topology
-
-Maxime Chevallier (13):
-  net: phy: Introduce ethernet link topology representation
-  net: sfp: pass the phy_device when disconnecting an sfp module's PHY
-  net: phy: add helpers to handle sfp phy connect/disconnect
-  net: sfp: Add helper to return the SFP bus name
-  net: ethtool: Allow passing a phy index for some commands
-  netlink: specs: add phy-index as a header parameter
-  net: ethtool: Introduce a command to list PHYs on an interface
-  netlink: specs: add ethnl PHY_GET command set
-  net: ethtool: plca: Target the command to the requested PHY
-  net: ethtool: pse-pd: Target the command to the requested PHY
-  net: ethtool: cable-test: Target the command to the requested PHY
-  net: ethtool: strset: Allow querying phy stats by index
-  Documentation: networking: document phy_link_topology
-
- Documentation/netlink/specs/ethtool.yaml      |  68 ++++
- Documentation/networking/ethtool-netlink.rst  |  51 +++
- Documentation/networking/index.rst            |   1 +
- .../networking/phy-link-topology.rst          | 121 +++++++
- MAINTAINERS                                   |   2 +
- drivers/net/phy/Makefile                      |   2 +-
- drivers/net/phy/at803x.c                      |   2 +
- drivers/net/phy/marvell-88x2222.c             |   2 +
- drivers/net/phy/marvell.c                     |   2 +
- drivers/net/phy/marvell10g.c                  |   2 +
- drivers/net/phy/phy_device.c                  |  55 ++++
- drivers/net/phy/phy_link_topology.c           |  66 ++++
- drivers/net/phy/phylink.c                     |   3 +-
- drivers/net/phy/sfp-bus.c                     |  15 +-
- include/linux/netdevice.h                     |   4 +-
- include/linux/phy.h                           |   6 +
- include/linux/phy_link_topology.h             |  67 ++++
- include/linux/phy_link_topology_core.h        |  19 ++
- include/linux/sfp.h                           |   8 +-
- include/uapi/linux/ethtool.h                  |  16 +
- include/uapi/linux/ethtool_netlink.h          |  30 ++
- net/core/dev.c                                |   3 +
- net/ethtool/Makefile                          |   2 +-
- net/ethtool/cabletest.c                       |  12 +-
- net/ethtool/netlink.c                         |  33 ++
- net/ethtool/netlink.h                         |  12 +-
- net/ethtool/phy.c                             | 306 ++++++++++++++++++
- net/ethtool/plca.c                            |  13 +-
- net/ethtool/pse-pd.c                          |   9 +-
- net/ethtool/strset.c                          |  15 +-
- 30 files changed, 912 insertions(+), 35 deletions(-)
- create mode 100644 Documentation/networking/phy-link-topology.rst
+ MAINTAINERS                            |  2 +
+ drivers/net/phy/Makefile               |  2 +-
+ drivers/net/phy/phy_device.c           |  7 +++
+ drivers/net/phy/phy_link_topology.c    | 66 +++++++++++++++++++++++++
+ include/linux/netdevice.h              |  4 +-
+ include/linux/phy.h                    |  4 ++
+ include/linux/phy_link_topology.h      | 67 ++++++++++++++++++++++++++
+ include/linux/phy_link_topology_core.h | 19 ++++++++
+ include/uapi/linux/ethtool.h           | 16 ++++++
+ net/core/dev.c                         |  3 ++
+ 10 files changed, 188 insertions(+), 2 deletions(-)
  create mode 100644 drivers/net/phy/phy_link_topology.c
  create mode 100644 include/linux/phy_link_topology.h
  create mode 100644 include/linux/phy_link_topology_core.h
- create mode 100644 net/ethtool/phy.c
 
+diff --git a/MAINTAINERS b/MAINTAINERS
+index dda78b4ce707..f09b1d4e5487 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -7873,6 +7873,8 @@ F:	include/linux/mii.h
+ F:	include/linux/of_net.h
+ F:	include/linux/phy.h
+ F:	include/linux/phy_fixed.h
++F:	include/linux/phy_link_topology.h
++F:	include/linux/phy_link_topology_core.h
+ F:	include/linux/phylib_stubs.h
+ F:	include/linux/platform_data/mdio-bcm-unimac.h
+ F:	include/linux/platform_data/mdio-gpio.h
+diff --git a/drivers/net/phy/Makefile b/drivers/net/phy/Makefile
+index e35ea69d9cb4..a7a9640bfa3a 100644
+--- a/drivers/net/phy/Makefile
++++ b/drivers/net/phy/Makefile
+@@ -2,7 +2,7 @@
+ # Makefile for Linux PHY drivers
+ 
+ libphy-y			:= phy.o phy-c45.o phy-core.o phy_device.o \
+-				   linkmode.o
++				   linkmode.o phy_link_topology.o
+ mdio-bus-y			+= mdio_bus.o mdio_device.o
+ 
+ ifdef CONFIG_MDIO_DEVICE
+diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
+index 0c52a9eff188..d7c0812bd107 100644
+--- a/drivers/net/phy/phy_device.c
++++ b/drivers/net/phy/phy_device.c
+@@ -29,6 +29,7 @@
+ #include <linux/phy.h>
+ #include <linux/phylib_stubs.h>
+ #include <linux/phy_led_triggers.h>
++#include <linux/phy_link_topology.h>
+ #include <linux/pse-pd/pse.h>
+ #include <linux/property.h>
+ #include <linux/rtnetlink.h>
+@@ -1491,6 +1492,11 @@ int phy_attach_direct(struct net_device *dev, struct phy_device *phydev,
+ 
+ 		if (phydev->sfp_bus_attached)
+ 			dev->sfp_bus = phydev->sfp_bus;
++
++		err = phy_link_topo_add_phy(&dev->link_topo, phydev,
++					    PHY_UPSTREAM_MAC, dev);
++		if (err)
++			goto error;
+ 	}
+ 
+ 	/* Some Ethernet drivers try to connect to a PHY device before
+@@ -1819,6 +1825,7 @@ void phy_detach(struct phy_device *phydev)
+ 	if (dev) {
+ 		phydev->attached_dev->phydev = NULL;
+ 		phydev->attached_dev = NULL;
++		phy_link_topo_del_phy(&dev->link_topo, phydev);
+ 	}
+ 	phydev->phylink = NULL;
+ 
+diff --git a/drivers/net/phy/phy_link_topology.c b/drivers/net/phy/phy_link_topology.c
+new file mode 100644
+index 000000000000..34e7e08fbfc3
+--- /dev/null
++++ b/drivers/net/phy/phy_link_topology.c
+@@ -0,0 +1,66 @@
++// SPDX-License-Identifier: GPL-2.0+
++/*
++ * Infrastructure to handle all PHY devices connected to a given netdev,
++ * either directly or indirectly attached.
++ *
++ * Copyright (c) 2023 Maxime Chevallier<maxime.chevallier@bootlin.com>
++ */
++
++#include <linux/phy_link_topology.h>
++#include <linux/netdevice.h>
++#include <linux/phy.h>
++#include <linux/rtnetlink.h>
++#include <linux/xarray.h>
++
++int phy_link_topo_add_phy(struct phy_link_topology *topo,
++			  struct phy_device *phy,
++			  enum phy_upstream upt, void *upstream)
++{
++	struct phy_device_node *pdn;
++	int ret;
++
++	pdn = kzalloc(sizeof(*pdn), GFP_KERNEL);
++	if (!pdn)
++		return -ENOMEM;
++
++	pdn->phy = phy;
++	switch (upt) {
++	case PHY_UPSTREAM_MAC:
++		pdn->upstream.netdev = (struct net_device *)upstream;
++		if (phy_on_sfp(phy))
++			pdn->parent_sfp_bus = pdn->upstream.netdev->sfp_bus;
++		break;
++	case PHY_UPSTREAM_PHY:
++		pdn->upstream.phydev = (struct phy_device *)upstream;
++		if (phy_on_sfp(phy))
++			pdn->parent_sfp_bus = pdn->upstream.phydev->sfp_bus;
++		break;
++	default:
++		ret = -EINVAL;
++		goto err;
++	}
++	pdn->upstream_type = upt;
++
++	ret = xa_alloc_cyclic(&topo->phys, &phy->phyindex, pdn, xa_limit_32b,
++			      &topo->next_phy_index, GFP_KERNEL);
++	if (ret)
++		goto err;
++
++	return 0;
++
++err:
++	kfree(pdn);
++	return ret;
++}
++EXPORT_SYMBOL_GPL(phy_link_topo_add_phy);
++
++void phy_link_topo_del_phy(struct phy_link_topology *topo,
++			   struct phy_device *phy)
++{
++	struct phy_device_node *pdn = xa_erase(&topo->phys, phy->phyindex);
++
++	phy->phyindex = 0;
++
++	kfree(pdn);
++}
++EXPORT_SYMBOL_GPL(phy_link_topo_del_phy);
+diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+index 75c7725e5e4f..5baa5517f533 100644
+--- a/include/linux/netdevice.h
++++ b/include/linux/netdevice.h
+@@ -40,7 +40,6 @@
+ #include <net/dcbnl.h>
+ #endif
+ #include <net/netprio_cgroup.h>
+-
+ #include <linux/netdev_features.h>
+ #include <linux/neighbour.h>
+ #include <uapi/linux/netdevice.h>
+@@ -52,6 +51,7 @@
+ #include <net/net_trackers.h>
+ #include <net/net_debug.h>
+ #include <net/dropreason-core.h>
++#include <linux/phy_link_topology_core.h>
+ 
+ struct netpoll_info;
+ struct device;
+@@ -2047,6 +2047,7 @@ enum netdev_stat_type {
+  *	@fcoe_ddp_xid:	Max exchange id for FCoE LRO by ddp
+  *
+  *	@priomap:	XXX: need comments on this one
++ *	@link_topo:	Physical link topology tracking attached PHYs
+  *	@phydev:	Physical device may attach itself
+  *			for hardware timestamping
+  *	@sfp_bus:	attached &struct sfp_bus structure.
+@@ -2441,6 +2442,7 @@ struct net_device {
+ #if IS_ENABLED(CONFIG_CGROUP_NET_PRIO)
+ 	struct netprio_map __rcu *priomap;
+ #endif
++	struct phy_link_topology	link_topo;
+ 	struct phy_device	*phydev;
+ 	struct sfp_bus		*sfp_bus;
+ 	struct lock_class_key	*qdisc_tx_busylock;
+diff --git a/include/linux/phy.h b/include/linux/phy.h
+index e9e85d347587..9f21eb380475 100644
+--- a/include/linux/phy.h
++++ b/include/linux/phy.h
+@@ -544,6 +544,9 @@ struct macsec_ops;
+  * @drv: Pointer to the driver for this PHY instance
+  * @devlink: Create a link between phy dev and mac dev, if the external phy
+  *           used by current mac interface is managed by another mac interface.
++ * @phyindex: Unique id across the phy's parent tree of phys to address the PHY
++ *	      from userspace, similar to ifindex. A zero index means the PHY
++ *	      wasn't assigned an id yet.
+  * @phy_id: UID for this device found during discovery
+  * @c45_ids: 802.3-c45 Device Identifiers if is_c45.
+  * @is_c45:  Set to true if this PHY uses clause 45 addressing.
+@@ -643,6 +646,7 @@ struct phy_device {
+ 
+ 	struct device_link *devlink;
+ 
++	u32 phyindex;
+ 	u32 phy_id;
+ 
+ 	struct phy_c45_device_ids c45_ids;
+diff --git a/include/linux/phy_link_topology.h b/include/linux/phy_link_topology.h
+new file mode 100644
+index 000000000000..91902263ec0e
+--- /dev/null
++++ b/include/linux/phy_link_topology.h
+@@ -0,0 +1,67 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * PHY device list allow maintaining a list of PHY devices that are
++ * part of a netdevice's link topology. PHYs can for example be chained,
++ * as is the case when using a PHY that exposes an SFP module, on which an
++ * SFP transceiver that embeds a PHY is connected.
++ *
++ * This list can then be used by userspace to leverage individual PHY
++ * capabilities.
++ */
++#ifndef __PHY_LINK_TOPOLOGY_H
++#define __PHY_LINK_TOPOLOGY_H
++
++#include <linux/ethtool.h>
++#include <linux/phy_link_topology_core.h>
++
++struct xarray;
++struct phy_device;
++struct net_device;
++struct sfp_bus;
++
++struct phy_device_node {
++	enum phy_upstream upstream_type;
++
++	union {
++		struct net_device	*netdev;
++		struct phy_device	*phydev;
++	} upstream;
++
++	struct sfp_bus *parent_sfp_bus;
++
++	struct phy_device *phy;
++};
++
++static inline struct phy_device *
++phy_link_topo_get_phy(struct phy_link_topology *topo, u32 phyindex)
++{
++	struct phy_device_node *pdn = xa_load(&topo->phys, phyindex);
++
++	if (pdn)
++		return pdn->phy;
++
++	return NULL;
++}
++
++#if IS_ENABLED(CONFIG_PHYLIB)
++int phy_link_topo_add_phy(struct phy_link_topology *topo,
++			  struct phy_device *phy,
++			  enum phy_upstream upt, void *upstream);
++
++void phy_link_topo_del_phy(struct phy_link_topology *lt, struct phy_device *phy);
++
++#else
++static inline int phy_link_topo_add_phy(struct phy_link_topology *topo,
++					struct phy_device *phy,
++					enum phy_upstream upt, void *upstream)
++{
++	return 0;
++}
++
++static inline void phy_link_topo_del_phy(struct phy_link_topology *topo,
++					 struct phy_device *phy)
++{
++}
++#endif
++
++#endif /* __PHY_LINK_TOPOLOGY_H */
+diff --git a/include/linux/phy_link_topology_core.h b/include/linux/phy_link_topology_core.h
+new file mode 100644
+index 000000000000..78c75f909489
+--- /dev/null
++++ b/include/linux/phy_link_topology_core.h
+@@ -0,0 +1,19 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef __PHY_LINK_TOPOLOGY_CORE_H
++#define __PHY_LINK_TOPOLOGY_CORE_H
++
++struct xarray;
++
++struct phy_link_topology {
++	struct xarray phys;
++
++	u32 next_phy_index;
++};
++
++static inline void phy_link_topo_init(struct phy_link_topology *topo)
++{
++	xa_init_flags(&topo->phys, XA_FLAGS_ALLOC1);
++	topo->next_phy_index = 1;
++}
++
++#endif /* __PHY_LINK_TOPOLOGY_CORE_H */
+diff --git a/include/uapi/linux/ethtool.h b/include/uapi/linux/ethtool.h
+index 0787d561ace0..9cff798c6df9 100644
+--- a/include/uapi/linux/ethtool.h
++++ b/include/uapi/linux/ethtool.h
+@@ -2216,4 +2216,20 @@ struct ethtool_link_settings {
+ 	 * __u32 map_lp_advertising[link_mode_masks_nwords];
+ 	 */
+ };
++
++/**
++ * enum phy_upstream - Represents the upstream component a given PHY device
++ * is connected to, as in what is on the other end of the MII bus. Most PHYs
++ * will be attached to an Ethernet MAC controller, but in some cases, there's
++ * an intermediate PHY used as a media-converter, which will driver another
++ * MII interface as its output.
++ * @PHY_UPSTREAM_MAC: Upstream component is a MAC (a switch port,
++ *		      or ethernet controller)
++ * @PHY_UPSTREAM_PHY: Upstream component is a PHY (likely a media converter)
++ */
++enum phy_upstream {
++	PHY_UPSTREAM_MAC,
++	PHY_UPSTREAM_PHY,
++};
++
+ #endif /* _UAPI_LINUX_ETHTOOL_H */
+diff --git a/net/core/dev.c b/net/core/dev.c
+index b87504078320..476acd22956c 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -153,6 +153,7 @@
+ #include <linux/prandom.h>
+ #include <linux/once_lite.h>
+ #include <net/netdev_rx_queue.h>
++#include <linux/phy_link_topology_core.h>
+ 
+ #include "dev.h"
+ #include "net-sysfs.h"
+@@ -10872,6 +10873,8 @@ struct net_device *alloc_netdev_mqs(int sizeof_priv, const char *name,
+ #ifdef CONFIG_NET_SCHED
+ 	hash_init(dev->qdisc_hash);
+ #endif
++	phy_link_topo_init(&dev->link_topo);
++
+ 	dev->priv_flags = IFF_XMIT_DST_RELEASE | IFF_XMIT_DST_RELEASE_PERM;
+ 	setup(dev);
+ 
 -- 
 2.43.0
 
