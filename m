@@ -1,123 +1,98 @@
-Return-Path: <linux-kernel+bounces-7828-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7829-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD59F81ADE4
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 05:09:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B362881ADE5
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 05:09:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4A9891F244A3
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 04:09:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 77E62286763
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 04:09:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B29A06FDC;
-	Thu, 21 Dec 2023 04:09:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCB7E8BED;
+	Thu, 21 Dec 2023 04:09:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iN/u13mF"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="ae7VBn7j"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 772588BFA;
-	Thu, 21 Dec 2023 04:09:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2ca04b1cc37so3457261fa.1;
-        Wed, 20 Dec 2023 20:09:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703131748; x=1703736548; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=C46kmWTthThAJwVWVLgOdKWhTKLPOhQZ8tCfQwfEl1A=;
-        b=iN/u13mF6U0N80eP58huATRwo5bUhrqIclK7/epGyZYoHx/1D1WDmMtO78vbhIa7tC
-         X2vPsgk7T6wukdNfwrkK0eDB8pMP8GJiXINMayU5g3FzXA5X1lLwETqsfPM9hBeMNEvz
-         3g8h3UZCR5P5bDjisA5N8MYY/9jhiL+X65MGaV2nT1wy8ms3w5KI21BQ6IZe4IyDdL4M
-         /vpZStLRoR+Wqz+i9X9haFBk7qn6kC0ohjUPhArfu7f49LXEgW08w2V64+0/TFIa9n9U
-         ckIJlmmyWY+hpkYmXHk7yHvH2G4QpBevYv/OzyOcGAnukqaRGSP4pkkhBsMD3KY/zGBD
-         urCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703131748; x=1703736548;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=C46kmWTthThAJwVWVLgOdKWhTKLPOhQZ8tCfQwfEl1A=;
-        b=wK+R87wDJywbU9MCv5KooE47AbWUdwPnjr4fjaNcfoef6UTfqZ0hyAS34wHfHGGauT
-         6WLcC/4DkOTd7OS86OPYxZxfMoqFmbNeJlfeS7FlaWoQXM1356ngXkM5dGbuYlkzp7vJ
-         uvJmLLRQNAlBnfof8Qi+LZU9/HgpzDGBRDS3Hr8RqG+w740et7C9vOBpWP4qM0cWHZY/
-         aWEGrWeHNf21BZFzQESjz8LuEgm6V4vQaIhG+nGGPZCghs2ybngc7J0KcvRczqDgMaaQ
-         WKhoYfS88XUHIA+tzPvrCxn7p9f26ZcCNeJMLnQ9VZDVnWj6JYzSEI02aeLomlrQEWnC
-         Solw==
-X-Gm-Message-State: AOJu0YwIqvIjEbvWHIFxb1agd6Js/50/IJibJfCONNLVundjIuHp7Nlk
-	SZixNoD9d02zedAW8jrYz7j6j2OswGYn6BNxBqfMXdAQ
-X-Google-Smtp-Source: AGHT+IEPG6AL6kRIpXgvlRT1r2MGEr/O4X+6PKN5NfEDL2xQdSa7jJhQKCS963pqiq54Lk6FPKXgZaOeEX5w3h0gzHA=
-X-Received: by 2002:a2e:9f0a:0:b0:2cb:27ff:d663 with SMTP id
- u10-20020a2e9f0a000000b002cb27ffd663mr38122ljk.11.1703131748074; Wed, 20 Dec
- 2023 20:09:08 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1CC76FBC
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 04:09:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=p6d3JusNTbIjN7yfIOJ3VrarRe+uq8kWXbELto6+bKU=; b=ae7VBn7jMkc059d6wg7B4dq5V+
+	ghRqhxdB2VsgXmGDT17BciX/HOdKWPNmUr8MA9D1iCwa9WnpkiU+Tr+vkEqwp0xQJXjiraH0ilTmr
+	NDiEsri/7/8seTi1E1z1E1m01RXLSpTDKBHzS5a2IYXKV5AR0vP8AWsJzsYjHiBltqBMsIWM4WOUS
+	n8khQ8McUz6Ozv1Kd+Swr8o8p7tI05Dmn1+c/RmrJR2fQWfSgbVSBY5n8Y9jCAbZb2ImMwFO+t3in
+	0RhQNvghCDV/3I8B8Z7BcAS4GLmdspdPVy2YEsIFEyenkVE2VQMrl0H4A9MD1y1llLIxfX78tc/En
+	tpMY8/9w==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1rGAN2-004e2w-Tg; Thu, 21 Dec 2023 04:09:16 +0000
+Date: Thu, 21 Dec 2023 04:09:16 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: Zhaoyang Huang <huangzhaoyang@gmail.com>
+Cc: "zhaoyang.huang" <zhaoyang.huang@unisoc.com>,
+	Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org, steve.kang@unisoc.com
+Subject: Re: [RFC PATCH 1/1] mm: mark folio accessed in minor fault
+Message-ID: <ZYO6bLcCRYlo290g@casper.infradead.org>
+References: <20231220102948.1963798-1-zhaoyang.huang@unisoc.com>
+ <ZYL2rbD5UTz3s8gg@casper.infradead.org>
+ <CAGWkznFcMkkqsKJSyHJfts9ZiYsxxg_dFTccieQ4+boRDJgG4g@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Steve French <smfrench@gmail.com>
-Date: Wed, 20 Dec 2023 22:08:56 -0600
-Message-ID: <CAH2r5mvnbV3AxWeibhBaL7UtfZ7ko18-1SZg2LN0U0YNgvJ6Cg@mail.gmail.com>
-Subject: [GIT PULL] smb3 client fixes
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: CIFS <linux-cifs@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAGWkznFcMkkqsKJSyHJfts9ZiYsxxg_dFTccieQ4+boRDJgG4g@mail.gmail.com>
 
-Please pull the following changes since commit
-ceb6a6f023fd3e8b07761ed900352ef574010bcb:
+On Thu, Dec 21, 2023 at 09:58:25AM +0800, Zhaoyang Huang wrote:
+> On Wed, Dec 20, 2023 at 10:14 PM Matthew Wilcox <willy@infradead.org> wrote:
+> >
+> > On Wed, Dec 20, 2023 at 06:29:48PM +0800, zhaoyang.huang wrote:
+> > > From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+> > >
+> > > Inactive mapped folio will be promoted to active only when it is
+> > > scanned in shrink_inactive_list, while the vfs folio will do this
+> > > immidiatly when it is accessed. These will introduce two affections:
+> > >
+> > > 1. NR_ACTIVE_FILE is not accurate as expected.
+> > > 2. Low reclaiming efficiency caused by dummy nactive folio which should
+> > >    be kept as earlier as shrink_active_list.
+> > >
+> > > I would like to suggest mark the folio be accessed in minor fault to
+> > > solve this situation.
+> >
+> > This isn't going to be as effective as you imagine.  Almost all file
+> > faults are handled through filemap_map_pages().  So I must ask, what
+> > testing have you done with this patch?
+> >
+> > And while you're gathering data, what effect would this patch have on your
+> > workloads?
+> Thanks for heads-up, I am out of date for readahead mechanism. My goal
 
-  Linux 6.7-rc6 (2023-12-17 15:19:28 -0800)
+It's not a terribly new mechanism ... filemap_map_pages() was added nine
+years ago in 2014 by commit f1820361f83d
 
-are available in the Git repository at:
+> is to have mapped file pages behave like other pages which could be
+> promoted immediately when they are accessed. I will update the patch
+> and provide benchmark data in new patch set.
 
-  git://git.samba.org/sfrench/cifs-2.6.git tags/6.7-rc6-smb3-client-fixes
+Understood.  I don't know the history of this, so I'm not sure if the
+decision to not mark folios as accessed here was intentional or not.
+I suspect it's entirely unintentional.
 
-for you to fetch changes up to 12d1e301bdfd1f2e2f371432dedef7cce8f01c4a:
-
-  cifs: do not let cifs_chan_update_iface deallocate channels
-(2023-12-19 11:04:04 -0600)
-
-----------------------------------------------------------------
-Eight import client fixes, most also for stable
-- two multichannel reconnect fixes, one fixing an important
-refcounting problem that can lead to umount problems
-- atime fix
-- five fixes for various potential OOB accesses, including a CVE fix,
-and two additional
-  fixes for problems pointed out by Robert Morris's fuzzing investigating)
-
-----------------------------------------------------------------
-Paulo Alcantara (5):
-      smb: client: fix OOB in cifsd when receiving compounded resps
-      smb: client: fix OOB in SMB2_query_info_init()
-      smb: client: fix OOB in smbCalcSize()
-      smb: client: fix potential OOB in cifs_dump_detail()
-      smb: client: fix potential OOB in smb2_dump_detail()
-
-Shyam Prasad N (2):
-      cifs: fix a pending undercount of srv_count
-      cifs: do not let cifs_chan_update_iface deallocate channels
-
-Zizhi Wo (1):
-      fs: cifs: Fix atime update check
-
- fs/smb/client/cifs_debug.c | 12 +++++++-----
- fs/smb/client/cifsglob.h   |  3 ++-
- fs/smb/client/connect.c    |  7 ++++++-
- fs/smb/client/file.c       |  2 +-
- fs/smb/client/misc.c       |  4 ++++
- fs/smb/client/sess.c       | 50
-++++++++++++++++++------------------------------
- fs/smb/client/smb2misc.c   | 30 ++++++++++++++---------------
- fs/smb/client/smb2ops.c    | 25 +++++++++++++++---------
- fs/smb/client/smb2pdu.c    | 32 ++++++++++++++++++++++---------
- 9 files changed, 93 insertions(+), 72 deletions(-)
-
---
-Thanks,
-
-Steve
+By the way, rather than inserting an explicit call to folio_set_accessed()
+in filemap_fault(), change the filemap_get_folio() call to
+__filemap_get_folio() and add FGP_ACCESSED to the fgp flags.
 
