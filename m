@@ -1,238 +1,160 @@
-Return-Path: <linux-kernel+bounces-8555-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8556-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1797281B957
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 15:13:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6207081B958
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 15:13:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C38B2283FA2
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 14:13:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 027941F221B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 14:13:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 264CC6D6E8;
-	Thu, 21 Dec 2023 14:13:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E1FC6D6D7;
+	Thu, 21 Dec 2023 14:13:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BPIK2gWd"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ot1-f44.google.com (mail-ot1-f44.google.com [209.85.210.44])
+Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 479016D6D4;
-	Thu, 21 Dec 2023 14:13:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C65EA36084
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 14:13:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f44.google.com with SMTP id 46e09a7af769-6dbb72a1754so205874a34.0;
-        Thu, 21 Dec 2023 06:13:01 -0800 (PST)
+Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-6d94308279dso563701b3a.2
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 06:13:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703168017; x=1703772817; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=/54ktMLGsC/HbIUHpgdYFftx5wBmSSsuqjyv83RFiYA=;
+        b=BPIK2gWd458Mdi2ATW5BJcztaTXNGtHtYPvPwXrHU1WmEQ+IGiaYi2oyFDaGS9z39I
+         qf/NKmXvtaF2SXs4UAY5M/75Jiit5SdBjcwS7+owhe7mo8Mq1A+YXVfvPuC+O7zC9WSp
+         Eao5UKBCARYeLjxuVpeNUGu8lvyy+OSlPWw30jSiu1BunoFdZxsueDHX7lYH2BE2QjKM
+         9rkm7t5zBnFHo4QJ5GwO9pSadczT9lMOrlcbP0GlbLoR2JyuQKRNZf1iAjOlSHciD5+S
+         B2k68TyFObW+sAm7PkvVC4MdWBhODHGRRkflv/u8oxIzgsWMqqmkKccqGg9I45qLBiPM
+         lpWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703167980; x=1703772780;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=G/WbGoRshQ4VaQFeCygAMbZ4TZHbi2rym6nHpBDGXK4=;
-        b=gvDm2QATSOVMzDfJq3gfO2YtSCZT81KokCM85jTRBTcdzdAc+Vp/FK/9qya90uvDsq
-         WElOwKnd8HOud1+ZvGzsKH/J83iwqIILRWdS7GVMUdVbBqNzodL17EhV/0U69RvDkfXz
-         gS9t78oRU5DfdaYU+DrrBxYnbI2sPdpL6QKECC7EFYZ9ShLq0+yDu+EqaNrNDJO5kdMp
-         FP28u2CdVj4dCLhOfKDvdFGxEtHEm80C3yPdHH5p/nGMMdQLd2FShzmR5lYyN/wVpRSM
-         mFZkaQ83/diAERLGmMxWmaGSLcSBGgQPcaHqCqoQAyu5Q4pmr5JjMcgESuYr/spT2Q8n
-         gSww==
-X-Gm-Message-State: AOJu0YwcA7Ddm4IYk9Yjk8UrcQ9revMqrug8n3eI/fpjfzS3dEf/ECvC
-	havbyKHVOjxpeL9a1cPcBEZfdaNY98c2N87KC5A=
-X-Google-Smtp-Source: AGHT+IG7ayD+vIeXhXXVYd0QVilpfO8Q6f1ptPsa6AlyPvCxe/FOHZX56xr6bCFJsC6PH0SN4rS0VSOmVDUj44MqmHM=
-X-Received: by 2002:a4a:b803:0:b0:593:fbd5:10aa with SMTP id
- g3-20020a4ab803000000b00593fbd510aamr5926811oop.1.1703167980304; Thu, 21 Dec
- 2023 06:13:00 -0800 (PST)
+        d=1e100.net; s=20230601; t=1703168017; x=1703772817;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/54ktMLGsC/HbIUHpgdYFftx5wBmSSsuqjyv83RFiYA=;
+        b=JPno66t4K/EOL6m9nLj9PQHc89MHdZ5656aX4/SgQmOuc2VkSxh5rChaDoset98/q7
+         jjs52qwNFE3x5n26hJgNDRscnjVZt8t26NhqpIFs6tS72NU/xg/ZzQr4yno/pzntLGPW
+         wwespAgp/SjrWi5B8yX3YZgPe1wquXkM7uVcqLo08M0KOUPQuhJHqp+ea2ESR0ciwu2V
+         w+lFyBD2f5T77kcG/IejRxTG3ialwD13t0bJHKIN36cu4Av7GACkNcRgzJPq844qoy6V
+         e5cabCFtM5irwU/3z7WaOMj72NVMP9DMax1MfnLAcHjaV7Km7VPuU1V/umfHd3437Uyf
+         zFyg==
+X-Gm-Message-State: AOJu0YxVQFHaIgvJ3oojlktXEEEvsn2y0Wwrzx9C0w42eXr8UJW4UoT9
+	CK4ypUG3CvTvG75zrAGmM7nWH/iKiTfX/A==
+X-Google-Smtp-Source: AGHT+IEtaQfZsfB6upC3isHiwaxPkyOGymhFNYfry883ZoVaD4IQmGEfSnrGICbQDUWzb4eyA5kBFA==
+X-Received: by 2002:a05:6a00:1996:b0:6d9:3981:5903 with SMTP id d22-20020a056a00199600b006d939815903mr3268088pfl.0.1703168017089;
+        Thu, 21 Dec 2023 06:13:37 -0800 (PST)
+Received: from archie.me ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id u36-20020a056a0009a400b006d62cbf10b4sm1626440pfg.194.2023.12.21.06.13.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Dec 2023 06:13:36 -0800 (PST)
+Received: by archie.me (Postfix, from userid 1000)
+	id 3189010206DCF; Thu, 21 Dec 2023 21:13:32 +0700 (WIB)
+Date: Thu, 21 Dec 2023 21:13:32 +0700
+From: Bagas Sanjaya <bagasdotme@gmail.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Linux Staging Drivers <linux-staging@lists.linux.dev>
+Subject: Re: "Link in bio" instead of Link:/Closes: trailer
+Message-ID: <ZYRIDDD_XR5HdVJu@archie.me>
+References: <ZYQeZjN_3bPOdKKf@archie.me>
+ <2023122112-rigging-january-7618@gregkh>
+ <cc276c0e-99bb-4422-9771-d864db4287cb@gmail.com>
+ <2023122129-twisty-mumble-c667@gregkh>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231216001312.1160-1-jarredwhite@linux.microsoft.com>
-In-Reply-To: <20231216001312.1160-1-jarredwhite@linux.microsoft.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Thu, 21 Dec 2023 15:12:49 +0100
-Message-ID: <CAJZ5v0gZ39zJEGV7gQLg6Y0=ke1W7bctqtZ46K+SR9RT5Bx4Hg@mail.gmail.com>
-Subject: Re: [RESEND PATCH v2] acpi: Use access_width over register_width for
- system memory accesses
-To: Jarred White <jarredwhite@linux.microsoft.com>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
-	"open list:ACPI" <linux-acpi@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="Ki5XL8WJal0E6W8j"
+Content-Disposition: inline
+In-Reply-To: <2023122129-twisty-mumble-c667@gregkh>
+
+
+--Ki5XL8WJal0E6W8j
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, Dec 16, 2023 at 1:13=E2=80=AFAM Jarred White
-<jarredwhite@linux.microsoft.com> wrote:
->
-> To align with ACPI 6.3+, since bit_width can be any 8-bit value, we canno=
-t
-> depend on it being always on a clean 8b boundary.
+On Thu, Dec 21, 2023 at 02:10:03PM +0100, Greg Kroah-Hartman wrote:
+> On Thu, Dec 21, 2023 at 07:57:21PM +0700, Bagas Sanjaya wrote:
+> > On 12/21/23 18:51, Greg Kroah-Hartman wrote:
+> > > On Thu, Dec 21, 2023 at 06:15:50PM +0700, Bagas Sanjaya wrote:
+> > >> Hi all,
+> > >>
+> > >> Let's say that there is a content creator who submits her first kern=
+el
+> > >> patch (touching drivers/staging/ of course to get her feet wet).
+> > >> The patch supposes to fix a reported bug, with appropriate Fixes: ta=
+g.
+> > >> But instead of using Link: or Closes: tag to the actual bug report in
+> > >> the patch, she instead writes "Link to the bug report in my bio", as
+> > >> it is the norm in social media world. Here in the context, her bio is
+> > >> LinkedIn profile (IDK if there is a way to add arbitrary link there).
+> > >> The link in LinkedIn profile, when clicked, will list many links
+> > >> (including her usual social media campaigns and of course the bug re=
+port),
+> > >> which makes reviewers confused about which link to the bug report she
+> > >> means. In some cases, she may disambiguate by saying in the patch,
+> > >> "Link to the bug report no. 99", to refer to the specific link numbe=
+r.
+> > >>
+> > >> Is such practice a good idea?
+> > >=20
+> > > No.
+> >=20
+> > why?
+>=20
+> Exactly, why?  What problem are you trying to solve here that has
+> actually come up in any sort of frequency?
 
-So presumably, there are systems out there in which the platform
-firmware uses bit_width that is not on a clean 8-bit boundary.
+I was scratching my itch whether common social media practices (such as tha=
+t's
+being discussed here) can be applied to kernel development.
 
-It would be good to mention them here.
+>=20
+> "Link: " is something that should be used to point to a well-known and
+> stable reference for any future things, like red hat's bugzilla, or
+> lore.kernel.org.  It's not for random social-media link reputation
+> spamming, sorry.
 
-> Instead, use access_width
-> to determine the size and use the offset and width to shift and mask the
-> bits we want to read/write out. Make sure to add a check for system memor=
-y
-> since pcc redefines the access_width to subspace id.
+Understand.
 
-And it would be good to add a comment to the code for it too.
+>=20
+> The "proper" way to handle this is to have in your Linked-in, or
+> whatever social media site you like, a list of your committed patches in
+> the git.kernel.org tree, don't polute the kernel log please.
+>=20
 
->
-> Signed-off-by: Jarred White <jarredwhite@linux.microsoft.com>
-> ---
-> Original thread
-> https://lore.kernel.org/all/20230925180552.76071-1-jarredwhite@linux.micr=
-osoft.com/
-> ---
-> changelog:
-> v1-->v2:
->         1. Fixed coding style errors
->         2. Backwards compatibility with ioremapping of address still an
->            open question. Suggestions are welcomed.
->
->  drivers/acpi/cppc_acpi.c | 36 +++++++++++++++++++++++++++++++-----
->  1 file changed, 31 insertions(+), 5 deletions(-)
->
-> diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
-> index 7ff269a78c20..fb37e1727bf8 100644
-> --- a/drivers/acpi/cppc_acpi.c
-> +++ b/drivers/acpi/cppc_acpi.c
-> @@ -163,6 +163,13 @@ show_cppc_data(cppc_get_perf_caps, cppc_perf_caps, n=
-ominal_freq);
->  show_cppc_data(cppc_get_perf_ctrs, cppc_perf_fb_ctrs, reference_perf);
->  show_cppc_data(cppc_get_perf_ctrs, cppc_perf_fb_ctrs, wraparound_time);
->
-> +/* Use access_width to determine the total number of bits */
-> +#define ACCESS_WIDTH_TO_BITS(reg) 8 << ((reg)->access_width - 1)
+That's the elegant way.
 
-Consider adding parens around the entire expression, or you may get
-unexpected results.
+Thanks for explanation!
 
-> +
-> +/* Shift and apply the mask for CPC reads/writes */
-> +#define MASK_VAL(val) (((val) >> reg->bit_offset) &                    \
-> +                                       GENMASK((reg->bit_width), 0))
+--=20
+An old man doll... just what I always wanted! - Clara
 
-'reg' should be an argument of the macro or it will be prone to subtle mist=
-akes.
+--Ki5XL8WJal0E6W8j
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> +
->  static ssize_t show_feedback_ctrs(struct kobject *kobj,
->                 struct kobj_attribute *attr, char *buf)
->  {
-> @@ -777,6 +784,7 @@ int acpi_cppc_processor_probe(struct acpi_processor *=
-pr)
->                         } else if (gas_t->space_id =3D=3D ACPI_ADR_SPACE_=
-SYSTEM_MEMORY) {
->                                 if (gas_t->address) {
->                                         void __iomem *addr;
-> +                                       size_t access_width;
->
->                                         if (!osc_cpc_flexible_adr_space_c=
-onfirmed) {
->                                                 pr_debug("Flexible addres=
-s space capability not supported\n");
-> @@ -784,7 +792,8 @@ int acpi_cppc_processor_probe(struct acpi_processor *=
-pr)
->                                                         goto out_free;
->                                         }
->
-> -                                       addr =3D ioremap(gas_t->address, =
-gas_t->bit_width/8);
-> +                                       access_width =3D ACCESS_WIDTH_TO_=
-BITS(gas_t) / 8;
+-----BEGIN PGP SIGNATURE-----
 
-What would happen if the platform firmware incorrectly provided
-reg->access_witdh =3D=3D 0?
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZYRICwAKCRD2uYlJVVFO
+o2NQAP44SSFDD9rldUnNHUdaTP0OtROrwm9CyrQ4dUweSQqGQgEAl54b7oc1Uxbv
+bfcLEe4kCoXXRrRH2wtyTHHG8jCUxwc=
+=mAw/
+-----END PGP SIGNATURE-----
 
-> +                                       addr =3D ioremap(gas_t->address, =
-access_width);
->                                         if (!addr)
->                                                 goto out_free;
->                                         cpc_ptr->cpc_regs[i-2].sys_mem_va=
-ddr =3D addr;
-> @@ -980,6 +989,7 @@ int __weak cpc_write_ffh(int cpunum, struct cpc_reg *=
-reg, u64 val)
->  static int cpc_read(int cpu, struct cpc_register_resource *reg_res, u64 =
-*val)
->  {
->         void __iomem *vaddr =3D NULL;
-> +       int size;
->         int pcc_ss_id =3D per_cpu(cpu_pcc_subspace_idx, cpu);
->         struct cpc_reg *reg =3D &reg_res->cpc_entry.reg;
->
-> @@ -991,7 +1001,7 @@ static int cpc_read(int cpu, struct cpc_register_res=
-ource *reg_res, u64 *val)
->         *val =3D 0;
->
->         if (reg->space_id =3D=3D ACPI_ADR_SPACE_SYSTEM_IO) {
-> -               u32 width =3D 8 << (reg->access_width - 1);
-> +               u32 width =3D ACCESS_WIDTH_TO_BITS(reg);
->                 u32 val_u32;
->                 acpi_status status;
->
-> @@ -1015,7 +1025,12 @@ static int cpc_read(int cpu, struct cpc_register_r=
-esource *reg_res, u64 *val)
->                 return acpi_os_read_memory((acpi_physical_address)reg->ad=
-dress,
->                                 val, reg->bit_width);
->
-> -       switch (reg->bit_width) {
-> +       if (reg->space_id =3D=3D ACPI_ADR_SPACE_SYSTEM_MEMORY)
-> +               size =3D ACCESS_WIDTH_TO_BITS(reg);
-> +       else
-> +               size =3D reg->bit_width;
-> +
-> +       switch (size) {
->         case 8:
->                 *val =3D readb_relaxed(vaddr);
->                 break;
-> @@ -1034,18 +1049,22 @@ static int cpc_read(int cpu, struct cpc_register_=
-resource *reg_res, u64 *val)
->                 return -EFAULT;
->         }
->
-> +       if (reg->space_id =3D=3D ACPI_ADR_SPACE_SYSTEM_MEMORY)
-> +               *val =3D MASK_VAL(*val);
-> +
->         return 0;
->  }
->
->  static int cpc_write(int cpu, struct cpc_register_resource *reg_res, u64=
- val)
->  {
->         int ret_val =3D 0;
-> +       int size;
->         void __iomem *vaddr =3D NULL;
->         int pcc_ss_id =3D per_cpu(cpu_pcc_subspace_idx, cpu);
->         struct cpc_reg *reg =3D &reg_res->cpc_entry.reg;
->
->         if (reg->space_id =3D=3D ACPI_ADR_SPACE_SYSTEM_IO) {
-> -               u32 width =3D 8 << (reg->access_width - 1);
-> +               u32 width =3D ACCESS_WIDTH_TO_BITS(reg);
->                 acpi_status status;
->
->                 status =3D acpi_os_write_port((acpi_io_address)reg->addre=
-ss,
-> @@ -1067,7 +1086,14 @@ static int cpc_write(int cpu, struct cpc_register_=
-resource *reg_res, u64 val)
->                 return acpi_os_write_memory((acpi_physical_address)reg->a=
-ddress,
->                                 val, reg->bit_width);
->
-> -       switch (reg->bit_width) {
-> +       if (reg->space_id =3D=3D ACPI_ADR_SPACE_SYSTEM_MEMORY) {
-> +               size =3D ACCESS_WIDTH_TO_BITS(reg);
-> +               val =3D MASK_VAL(val);
-> +       } else {
-> +               size =3D reg->bit_width;
-> +       }
-> +
-> +       switch (size) {
->         case 8:
->                 writeb_relaxed(val, vaddr);
->                 break;
-> --
+--Ki5XL8WJal0E6W8j--
 
