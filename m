@@ -1,113 +1,139 @@
-Return-Path: <linux-kernel+bounces-8495-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8496-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BF5181B8A9
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 14:50:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BD46681B8AB
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 14:50:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0C8EA1F26A34
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 13:50:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5C6881F26A06
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 13:50:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65F9076DA0;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6DB576DAE;
 	Thu, 21 Dec 2023 13:35:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O5T3bJqN"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B99173188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E96B9745D2
 	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 13:35:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1d3ac87553bso5366905ad.3
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7ba7d72a52dso106733039f.0
         for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 05:35:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703165724; x=1703770524; darn=vger.kernel.org;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lpbNXhFlCORRf6AkvSh2wgzVLTEkJKKTFPLpVGEOCME=;
-        b=O5T3bJqNo+PF1Bprj9oyBDS50mBdccrE0/Tkt7GwxpgJCihe8qbig2SY+955HzXMk/
-         8QnTPCImJiRT+2rR0AeeDOfI234WLBm926g4/A2SVFWyYzGXaE8NLy4ff+M0u9FWAYbv
-         8xE5VFmQluZJJu1XewU1iotXWAqCtWapVsUokxWYovSO2oOZhmtDE91LFFePT0e5GTfG
-         JtjKhnRVR1z27wBIJ8sIXy/2yIyaYPvlslaDYxwwteKnH7laMQPzeb14X4ZDc8aemIfA
-         VTxq2saN0sOOGf+dBhw6WWnu+loNsZQKAm98u8JPGR37MqGgxUWVai61GFFFSWApQLXJ
-         Qxtw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1703165724; x=1703770524;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lpbNXhFlCORRf6AkvSh2wgzVLTEkJKKTFPLpVGEOCME=;
-        b=CihlXP+Qu6jDkP5G8WBFsEYxZTHXx97xuJI6juUHPhQthi5WYnAm/LHtx44bZIUaQ2
-         pZQBDQ1Ww7dpFZUVsPXEFwgCj18y5sznhVM5aSGYOe3x1LlTarXyD0u+7sEiMdHvjR0+
-         ntFyGleMoiXfMNyEmQV/7UrVw4bi4yfXfBDgcPmmBcKP+stYN8hmvlxgFGgZnqrooXRR
-         R5L7VoQu5zgoXDj87+PEZg6RhhNn2mC+ix2iA9EyW2J4Sl4KY6srmbKp2sHew+ICPLDd
-         xhBYnJ6SrZFYqzJtWQbed1oEciO1ZQS+07hWP1QNcT0pU89a7LpiNFrqNDNVrYH710be
-         njhw==
-X-Gm-Message-State: AOJu0Yzd1Qrpl5og+obnYJkRySNJPPZXW16GMrlTNtd5PvwM/H/cVCof
-	YnaHWEjrxn2/ETJJo0cY3jI=
-X-Google-Smtp-Source: AGHT+IHQB/1adBhOw6M05kil1uk7MvpXLyxW4ar/uBq7bbgpTrEI/T5zaZN0tDu5ypbgcf5IvrgjRA==
-X-Received: by 2002:a17:903:2288:b0:1d0:1e49:3f60 with SMTP id b8-20020a170903228800b001d01e493f60mr13075772plh.27.1703165723905;
-        Thu, 21 Dec 2023 05:35:23 -0800 (PST)
-Received: from ruipeng-ThinkCentre-M730e-N010.company.local (014136220210.static.ctinets.com. [14.136.220.210])
-        by smtp.gmail.com with ESMTPSA id u1-20020a170902e5c100b001cf658f20ecsm1621006plf.96.2023.12.21.05.35.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Dec 2023 05:35:23 -0800 (PST)
-From: Ruipeng Qi <ruipengqi7@gmail.com>
-To: mingo@redhat.com,
-	peterz@infradead.org,
-	juri.lelli@redhat.com,
-	vincent.guittot@linaro.org,
-	dietmar.eggemann@arm.com
-Cc: rostedt@goodmis.org,
-	bsegall@google.com,
-	mgorman@suse.de,
-	bristot@redhat.com,
-	vschneid@redhat.com,
-	linux-kernel@vger.kernel.org,
-	qiruipeng <qiruipeng@lixiang.com>
-Subject: [RFC PATCH 5/7] sched: access to runqueues by function
-Date: Thu, 21 Dec 2023 21:35:16 +0800
-Message-Id: <20231221133516.812-1-ruipengqi7@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=A9PxSjYP0rDRuNLT7k6jrNvuC4Up53pyn+x1KpRL05I=;
+        b=hw+hhBmMj8SHt/HWE22ORhVXOZ22bKrFgnU8fUOuednv1HUjratRMXLny2NOLwlC9u
+         Lwhv+FMxMjaIdMgebY3Nw0PknD9BgqhgJ2fObacDRNAI29w4Vw1yAmAZjnyJ17IdOKmS
+         eYDHljFv3Yuqtz4iYnSncdoxyGFlp5M2acPCA+0h6udxm7arHhkgNG04a8IG67B+llur
+         TxRDNfFY1etS40pNrKk6eR9w9uX7E6OaQaor56mrhY8xc9CYP2uSVRU/f6Yavwj8ij9l
+         f1jJqmo66L9avC9En426c+SwMg+8zQreiHZWVD5QptTExh4NmtOoP/he+NGayjvr40Zz
+         eMuA==
+X-Gm-Message-State: AOJu0YyYGPjFxTljtrfYlkg4LnqjCYT6mDgfvhicddwnZ1ze12AN2g3X
+	XOv69uGnKsV2mc3SZ/f9FyulOVQRJbqhBp+Ey2A2Fs1mHhUz
+X-Google-Smtp-Source: AGHT+IFavJ1J52T+Z0uMBCNJ4lTcjFFaA8fHTXSUhb4qBTxtcKc/Z5lJg3R1mCvAOjMQZD6RKYcg+ztLVFPTTAw7kho5wZLbTHJ3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+X-Received: by 2002:a05:6638:810c:b0:46b:e82:4120 with SMTP id
+ hl12-20020a056638810c00b0046b0e824120mr562614jab.5.1703165724207; Thu, 21 Dec
+ 2023 05:35:24 -0800 (PST)
+Date: Thu, 21 Dec 2023 05:35:24 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000fc306f060d052b5f@google.com>
+Subject: [syzbot] [fs?] INFO: trying to register non-static key in debugfs_file_get
+From: syzbot <syzbot+fb20af23d0671a82c9a2@syzkaller.appspotmail.com>
+To: gregkh@linuxfoundation.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, rafael@kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-From: qiruipeng <qiruipeng@lixiang.com>
+Hello,
 
-Osdump is interested with runqueues, so try to access to it through
-one new added function get_rq.
+syzbot found the following issue on:
 
-Signed-off-by: qiruipeng <qiruipeng@lixiang.com>
+HEAD commit:    b10a3ccaf6e3 Merge tag 'loongarch-fixes-6.7-2' of git://gi..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1278f06ce80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=70dcde26e6b912e5
+dashboard link: https://syzkaller.appspot.com/bug?extid=fb20af23d0671a82c9a2
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/ee4bb72d1747/disk-b10a3cca.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/35219c49fd40/vmlinux-b10a3cca.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/d3c8dc8aa792/bzImage-b10a3cca.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+fb20af23d0671a82c9a2@syzkaller.appspotmail.com
+
+INFO: trying to register non-static key.
+The code is fine but needs lockdep annotation, or maybe
+you didn't initialize this object before use?
+turning off the locking correctness validator.
+CPU: 0 PID: 5078 Comm: syz-executor.0 Not tainted 6.7.0-rc4-syzkaller-00384-gb10a3ccaf6e3 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/10/2023
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
+ assign_lock_key+0x234/0x270 kernel/locking/lockdep.c:976
+ register_lock_class+0x1cf/0x970 kernel/locking/lockdep.c:1289
+ __lock_acquire+0xd9/0x1fd0 kernel/locking/lockdep.c:5014
+ lock_acquire+0x1e3/0x530 kernel/locking/lockdep.c:5754
+ debugfs_file_get+0x545/0x6d0 fs/debugfs/file.c:135
+ open_proxy_open+0x56/0x490 fs/debugfs/file.c:269
+ do_dentry_open+0x8ff/0x1590 fs/open.c:948
+ do_open fs/namei.c:3622 [inline]
+ path_openat+0x2849/0x3290 fs/namei.c:3779
+ do_filp_open+0x234/0x490 fs/namei.c:3809
+ do_sys_openat2+0x13e/0x1d0 fs/open.c:1440
+ do_sys_open fs/open.c:1455 [inline]
+ __do_sys_openat fs/open.c:1471 [inline]
+ __se_sys_openat fs/open.c:1466 [inline]
+ __x64_sys_openat+0x247/0x290 fs/open.c:1466
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0x45/0x110 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+RIP: 0033:0x7f8cf7a7b721
+Code: 75 57 89 f0 25 00 00 41 00 3d 00 00 41 00 74 49 80 3d ea 17 10 00 00 74 6d 89 da 48 89 ee bf 9c ff ff ff b8 01 01 00 00 0f 05 <48> 3d 00 f0 ff ff 0f 87 93 00 00 00 48 8b 54 24 28 64 48 2b 14 25
+RSP: 002b:00007ffe0eccf310 EFLAGS: 00000202 ORIG_RAX: 0000000000000101
+RAX: ffffffffffffffda RBX: 0000000000000002 RCX: 00007f8cf7a7b721
+RDX: 0000000000000002 RSI: 00007f8cf7ac7551 RDI: 00000000ffffff9c
+RBP: 00007f8cf7ac7551 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000202 R12: 00007ffe0eccfa68
+R13: 0000000000000003 R14: 00007f8cf7b9c018 R15: 0000000000000000
+ </TASK>
+
+
 ---
- kernel/sched/core.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index a708d225c28e..217966111ea7 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -117,6 +117,14 @@ EXPORT_TRACEPOINT_SYMBOL_GPL(sched_compute_energy_tp);
- 
- DEFINE_PER_CPU_SHARED_ALIGNED(struct rq, runqueues);
- 
-+#ifdef CONFIG_OS_MINIDUMP
-+int get_rq(int cpu, void **rq)
-+{
-+	*rq = (cpu_rq(cpu));
-+	return sizeof(struct rq);
-+}
-+#endif
-+
- #ifdef CONFIG_SCHED_DEBUG
- /*
-  * Debugging: various feature bits
--- 
-2.17.1
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
