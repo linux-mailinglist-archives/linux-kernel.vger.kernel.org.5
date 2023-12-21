@@ -1,107 +1,199 @@
-Return-Path: <linux-kernel+bounces-8281-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8282-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 999E681B4DD
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 12:25:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D4E4481B4E0
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 12:26:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4FD101F25F11
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 11:25:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DEBCC1C2358A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 11:26:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A054D6BB54;
-	Thu, 21 Dec 2023 11:25:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDAB96BB5A;
+	Thu, 21 Dec 2023 11:26:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b="UVAEsq1w"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="o5lLzhrY";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="VeHvaUqg";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="o5lLzhrY";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="VeHvaUqg"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13BCA6EB67
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 11:25:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ellerman.id.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-	s=201909; t=1703157902;
-	bh=FEH0A7jz7vXNvZgR/E0+au0EVLX99YxTzXY6b6eAv40=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=UVAEsq1wLn9+mnU9rDvkKvREUHvZ2B1o29gMCbNQJsjq5rD2GZWCSsBfngwMoSb2H
-	 H07uyGdzhdeXKCnIyQsGSKsD1RQmIZmvo6m0nJGPQxEi4aJTMIHPRKVc80HkIt1Dx4
-	 +yscMrdXLBkI0dBELSx1XhFvg8znOKNTtHkXaC7SqNseL0XJmSuAPaXJi0IE/CedYj
-	 3xpTEwpE5ktNJRT8ralxe/O79+HB+gguAHbmgFD/o5ldHMz3w6mUlTbbuwuwW/QHOO
-	 Jz+vMLXteXdLEilwDkriX1qKyrQf9LxLDTskaLXJ0cwszCXR2ezv7NEz5RNf/SqcCR
-	 KetiZLajfYtFA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEDDB6AB8F;
+	Thu, 21 Dec 2023 11:26:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4Swp4Z2MYlz4xVd;
-	Thu, 21 Dec 2023 22:25:02 +1100 (AEDT)
-From: Michael Ellerman <mpe@ellerman.id.au>
-To: Ghanshyam Agrawal <ghanshyam1898@gmail.com>, mahesh@linux.ibm.com,
- oohall@gmail.com, npiggin@gmail.com, christophe.leroy@csgroup.eu
-Cc: Ghanshyam Agrawal <ghanshyam1898@gmail.com>,
- linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arch: powerpc: kernel: fixed some typos
-In-Reply-To: <20231215115857.575697-1-ghanshyam1898@gmail.com>
-References: <20231215115857.575697-1-ghanshyam1898@gmail.com>
-Date: Thu, 21 Dec 2023 22:25:01 +1100
-Message-ID: <87il4rlrw2.fsf@mail.lhotse>
+	by smtp-out1.suse.de (Postfix) with ESMTPS id C4FB821DBA;
+	Thu, 21 Dec 2023 11:26:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1703158004; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=E/mUSHSfPZ+Yf1KncGnQnYY22sxHKtN68QzA+lLUhQY=;
+	b=o5lLzhrYii6N3XBAgFNGNvhIXrHIy+LED3XqlesuqOKrq78YFXepc+WmeA7FHD4RuEIcgD
+	012odl2yj28G3yt/AeLEIE9nT+TyoU4feyI9lOJTP9GiSpPX/B9lpINRVsRexs0T1Vq9Ba
+	ShFRkETV0td7baTLVFi1rpOXr2wv3LM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1703158004;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=E/mUSHSfPZ+Yf1KncGnQnYY22sxHKtN68QzA+lLUhQY=;
+	b=VeHvaUqgMwgDvtJgqZqQ6+tExelDFer+HiKSJmXtH/rCR6jchWLO8pZHK2j70Hh85PKTmc
+	hFtAGU0zEKY1a+CQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1703158004; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=E/mUSHSfPZ+Yf1KncGnQnYY22sxHKtN68QzA+lLUhQY=;
+	b=o5lLzhrYii6N3XBAgFNGNvhIXrHIy+LED3XqlesuqOKrq78YFXepc+WmeA7FHD4RuEIcgD
+	012odl2yj28G3yt/AeLEIE9nT+TyoU4feyI9lOJTP9GiSpPX/B9lpINRVsRexs0T1Vq9Ba
+	ShFRkETV0td7baTLVFi1rpOXr2wv3LM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1703158004;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=E/mUSHSfPZ+Yf1KncGnQnYY22sxHKtN68QzA+lLUhQY=;
+	b=VeHvaUqgMwgDvtJgqZqQ6+tExelDFer+HiKSJmXtH/rCR6jchWLO8pZHK2j70Hh85PKTmc
+	hFtAGU0zEKY1a+CQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B695E13725;
+	Thu, 21 Dec 2023 11:26:44 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id D3FCLPQghGXHWgAAD6G6ig
+	(envelope-from <jack@suse.cz>); Thu, 21 Dec 2023 11:26:44 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 69F04A07E3; Thu, 21 Dec 2023 12:26:44 +0100 (CET)
+Date: Thu, 21 Dec 2023 12:26:44 +0100
+From: Jan Kara <jack@suse.cz>
+To: Christoph Hellwig <hch@lst.de>
+Cc: linux-mm@kvack.org, "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+	Jan Kara <jack@suse.com>, David Howells <dhowells@redhat.com>,
+	Brian Foster <bfoster@redhat.com>, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 10/17] pagevec: Add ability to iterate a queue
+Message-ID: <20231221112644.2ijv6c5zooclcqtm@quack3>
+References: <20231218153553.807799-1-hch@lst.de>
+ <20231218153553.807799-11-hch@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231218153553.807799-11-hch@lst.de>
+X-Spam-Level: 
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -0.82
+X-Spamd-Result: default: False [-0.82 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-0.998];
+	 RCPT_COUNT_SEVEN(0.00)[8];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,lst.de:email,infradead.org:email,suse.com:email];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-0.02)[52.12%]
+X-Spam-Flag: NO
 
-Ghanshyam Agrawal <ghanshyam1898@gmail.com> writes:
-> Fixed some typos
->
-> Signed-off-by: Ghanshyam Agrawal <ghanshyam1898@gmail.com>
+On Mon 18-12-23 16:35:46, Christoph Hellwig wrote:
+> From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+> 
+> Add a loop counter inside the folio_batch to let us iterate from 0-nr
+> instead of decrementing nr and treating the batch as a stack.  It would
+> generate some very weird and suboptimal I/O patterns for page writeback
+> to iterate over the batch as a stack.
+> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+
+Looks good. Feel free to add:
+
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+								Honza
+
 > ---
->  arch/powerpc/kernel/eeh_pe.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-
-Please also fix the case in arch/powerpc/include/asm/eeh.h
-
-The subject should use the correct prefix. You can see what it should be
-using:
-
-$ git log --oneline arch/powerpc/kernel/eeh_pe.c
-
-Please give the patch a better subject, not "some typos", tell me what
-misspelling you're fixing. Same comment for the commit description.
-
-> diff --git a/arch/powerpc/kernel/eeh_pe.c b/arch/powerpc/kernel/eeh_pe.c
-> index e0ce81279624..8e0c1a8b8641 100644
-> --- a/arch/powerpc/kernel/eeh_pe.c
-> +++ b/arch/powerpc/kernel/eeh_pe.c
-> @@ -24,10 +24,10 @@ static int eeh_pe_aux_size = 0;
->  static LIST_HEAD(eeh_phb_pe);
->  
->  /**
-> - * eeh_set_pe_aux_size - Set PE auxillary data size
-> - * @size: PE auxillary data size
-> + * eeh_set_pe_aux_size - Set PE auxiliary data size
-> + * @size: PE auxiliary data size
- 
-While you're changing it you could also mention what the units of the
-size are.
-
->   *
-> - * Set PE auxillary data size
-> + * Set PE auxiliary data size
- 
-This should gain a full stop at the end of the sentence.
-
+>  include/linux/pagevec.h | 18 ++++++++++++++++++
+>  1 file changed, 18 insertions(+)
+> 
+> diff --git a/include/linux/pagevec.h b/include/linux/pagevec.h
+> index 87cc678adc850b..fcc06c300a72c3 100644
+> --- a/include/linux/pagevec.h
+> +++ b/include/linux/pagevec.h
+> @@ -27,6 +27,7 @@ struct folio;
 >   */
->  void eeh_set_pe_aux_size(int size)
+>  struct folio_batch {
+>  	unsigned char nr;
+> +	unsigned char i;
+>  	bool percpu_pvec_drained;
+>  	struct folio *folios[PAGEVEC_SIZE];
+>  };
+> @@ -40,12 +41,14 @@ struct folio_batch {
+>  static inline void folio_batch_init(struct folio_batch *fbatch)
 >  {
+>  	fbatch->nr = 0;
+> +	fbatch->i = 0;
+>  	fbatch->percpu_pvec_drained = false;
+>  }
+>  
+>  static inline void folio_batch_reinit(struct folio_batch *fbatch)
+>  {
+>  	fbatch->nr = 0;
+> +	fbatch->i = 0;
+>  }
+>  
+>  static inline unsigned int folio_batch_count(struct folio_batch *fbatch)
+> @@ -75,6 +78,21 @@ static inline unsigned folio_batch_add(struct folio_batch *fbatch,
+>  	return folio_batch_space(fbatch);
+>  }
+>  
+> +/**
+> + * folio_batch_next - Return the next folio to process.
+> + * @fbatch: The folio batch being processed.
+> + *
+> + * Use this function to implement a queue of folios.
+> + *
+> + * Return: The next folio in the queue, or NULL if the queue is empty.
+> + */
+> +static inline struct folio *folio_batch_next(struct folio_batch *fbatch)
+> +{
+> +	if (fbatch->i == fbatch->nr)
+> +		return NULL;
+> +	return fbatch->folios[fbatch->i++];
+> +}
+> +
+>  void __folio_batch_release(struct folio_batch *pvec);
+>  
+>  static inline void folio_batch_release(struct folio_batch *fbatch)
 > -- 
-> 2.25.1
-
-
-cheers
+> 2.39.2
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
