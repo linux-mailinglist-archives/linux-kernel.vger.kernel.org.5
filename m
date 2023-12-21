@@ -1,157 +1,251 @@
-Return-Path: <linux-kernel+bounces-8694-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8696-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9659C81BB2D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 16:44:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4508F81BB33
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 16:45:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4BF54283DA3
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 15:44:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D5A1F284A79
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 15:45:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3C6B59933;
-	Thu, 21 Dec 2023 15:41:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8413362802;
+	Thu, 21 Dec 2023 15:43:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="dvBnDAZD"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="W0Lb/onC"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2071.outbound.protection.outlook.com [40.107.223.71])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6EA0745CD;
-	Thu, 21 Dec 2023 15:41:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gxvgwQ150iyoxc4y2M/YPtdlzQ0aqb7AuBHjRpETDejzrUmWu6mchnvVdRDoGFyNK+2c0iXokgkAVLPTTTazCfluTfBXcJ1basceiFkOtQGQ/3PcJLueMw5CrWRDFJerLi5SLBoRCDGpws5JjhP0Z1WAhQPXa0CAkvmHruztp1jahnJcvQPMEFJ7xSRvnUYjqA+KZZo6UoIPYnyYeJUaOUJWFN20y4fpj8SIIuZnE6jSUUun+tZphGVtZGl6Rjz93pk/2D3CZP6vQyKmfkSzHFbt9fGqWFZlTpQ9xe1KHZ1/j8b+a+6xDE7a7y9D2+6f+VbyJJrl6M6AYzywg12KJQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=A2y4ICxI7rCvs7zkEJV8fbXDdlk8MaBO0x9/XhapvEk=;
- b=nfpvjW9BXP02lfBEm5U1/pUs7TFNqcoHyBJCXUK3sofNFwl2Qu8RHdYzi+0tRPhRU8ZjsprwaxuxW1FXTVHtEy8qGN5rpyiXeoQKacm539tEQqxpoxEnKQLxLMGCElYLW1p1DnN6NeZi3zV/1xkQLfIdcDPGdGynRKGOIVAznssa+aF9JImcrYpQ/AUA9jZU1SH5Y/odF9fNUa8lKCLts6OfhY0zAjnxuQ7aDCpK10H+P6cm+YPHbM+fX5sAnxCd0TwjVTK3fhdlnWcTv8O0tBVKOQFBEvyzHsMxom7pG+Hof9QDkfg3Kn8p6Cvyr/E7tBwbYELYxGDzYd59wBMHUg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.161) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=A2y4ICxI7rCvs7zkEJV8fbXDdlk8MaBO0x9/XhapvEk=;
- b=dvBnDAZDbfaOy0SFfizJ+CGtdD44oPuiax4Uk/B5hzSCKTG9uvYVUgxhEoKH3mW09w3aSpB890IAlrFc4aqPdYOXA4ezposkVslEmDKr2H8Uj2lq+da5086rQde6OL0/6aC3oxkAtLVEG8G1GZRTqUaZkeIW6y5MTfxGb6AYA0JntfgsTw5F+vLnhkEEvBoUzlNuNvFdK4s/d6XxngAEMibi9df7wM2zUwCAu1tJFRSOi+VVTaMvN+7Hk21DIsGhFT3e5uiDKSvb0WKFbJBChSgYUcwxp2jFohCNM+G6WZhjf0T/Lf7kDmTCWgFItBRXkKI0VIjiq1a5JMNkNFQQWw==
-Received: from DM6PR03CA0038.namprd03.prod.outlook.com (2603:10b6:5:100::15)
- by PH8PR12MB7255.namprd12.prod.outlook.com (2603:10b6:510:224::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7113.20; Thu, 21 Dec
- 2023 15:41:09 +0000
-Received: from CY4PEPF0000E9D6.namprd05.prod.outlook.com
- (2603:10b6:5:100:cafe::db) by DM6PR03CA0038.outlook.office365.com
- (2603:10b6:5:100::15) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7113.20 via Frontend
- Transport; Thu, 21 Dec 2023 15:41:09 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.161) by
- CY4PEPF0000E9D6.mail.protection.outlook.com (10.167.241.80) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7113.14 via Frontend Transport; Thu, 21 Dec 2023 15:41:08 +0000
-Received: from rnnvmail205.nvidia.com (10.129.68.10) by mail.nvidia.com
- (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Thu, 21 Dec
- 2023 07:40:51 -0800
-Received: from rnnvmail205.nvidia.com (10.129.68.10) by rnnvmail205.nvidia.com
- (10.129.68.10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Thu, 21 Dec
- 2023 07:40:50 -0800
-Received: from sgarnayak-dt.nvidia.com (10.127.8.9) by mail.nvidia.com
- (10.129.68.10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41 via Frontend
- Transport; Thu, 21 Dec 2023 07:40:42 -0800
-From: <ankita@nvidia.com>
-To: <ankita@nvidia.com>, <jgg@nvidia.com>, <maz@kernel.org>,
-	<oliver.upton@linux.dev>, <suzuki.poulose@arm.com>, <yuzenghui@huawei.com>,
-	<catalin.marinas@arm.com>, <will@kernel.org>, <alex.williamson@redhat.com>,
-	<kevin.tian@intel.com>, <yi.l.liu@intel.com>, <ardb@kernel.org>,
-	<akpm@linux-foundation.org>, <gshan@redhat.com>, <mochs@nvidia.com>,
-	<lpieralisi@kernel.org>
-CC: <aniketa@nvidia.com>, <cjia@nvidia.com>, <kwankhede@nvidia.com>,
-	<targupta@nvidia.com>, <vsethi@nvidia.com>, <acurrid@nvidia.com>,
-	<apopple@nvidia.com>, <jhubbard@nvidia.com>, <danw@nvidia.com>,
-	<linux-mm@kvack.org>, <kvmarm@lists.linux.dev>, <kvm@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH v5 4/4] vfio: convey kvm that the vfio-pci device is wc safe
-Date: Thu, 21 Dec 2023 21:10:02 +0530
-Message-ID: <20231221154002.32622-5-ankita@nvidia.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20231221154002.32622-1-ankita@nvidia.com>
-References: <20231221154002.32622-1-ankita@nvidia.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA71E627F6;
+	Thu, 21 Dec 2023 15:43:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54B74C433C9;
+	Thu, 21 Dec 2023 15:43:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703173382;
+	bh=MWfBIeGV77ZPzBms8I8+8JYz2lrVS9wQV+KpBlK+plk=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=W0Lb/onCPnWS0E5hgE4x6WdFMxQ58Or6FUWxq/OSmNPXNwii2WmeCJnDV3xmnzq63
+	 dpprRWXsgzVCexyIyzaPWn8RroSwdqs33A4Yc5+7rVEes8I3SGaorNATbQm5hndX1i
+	 eVkALAkqwpcDyiJdeePD0xkX0ACVAohAzifciRfMu83zR2IYoNk6SGS91GF+ysh541
+	 0pm9tAkmDo4i1mluLF5Epv+PGKSmSTPAZ+PjJXI/z10w2XapnKpB+EIjMF4UCFpogy
+	 WIFpZjXCgriO3/tk56SjdZY6HSyyW3oSll3Vm75VVFwv/jQRTQknkzC6ggbRRlgI7G
+	 jXrBAZlOF2L/Q==
+Received: by mail-oa1-f50.google.com with SMTP id 586e51a60fabf-1f03d9ad89fso640217fac.1;
+        Thu, 21 Dec 2023 07:43:02 -0800 (PST)
+X-Gm-Message-State: AOJu0YyLF3XeX/aTAwi4sUWyTANupZeBIQJDeyKllq2ZgmRyNryZVPUt
+	j8EI99KGlUMcNhC0M9DnI0OCsflLWSg9ocYOk24=
+X-Google-Smtp-Source: AGHT+IE9BVu0bYISlDv2Jpo0rVXJUqkiAdxu0n5k9dGj9xn/BXpl6sZnvHFWGFOmYDL9miXoXD3caFx9cnasgkIkpgA=
+X-Received: by 2002:a05:6871:b0c:b0:204:31a1:9b84 with SMTP id
+ fq12-20020a0568710b0c00b0020431a19b84mr950136oab.64.1703173381696; Thu, 21
+ Dec 2023 07:43:01 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000E9D6:EE_|PH8PR12MB7255:EE_
-X-MS-Office365-Filtering-Correlation-Id: 453895de-1891-4115-a72c-08dc023b4084
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	CTZgWefPMY73vO3gv05CbkVLWHZuPIY1w1h7cJVnF/57L5xnoBQzSpLoXn55tg/bdkoUBa6/jpMsqw8AcadCUJTHWx/jmEBl9bk7TVQhZy0NatJFwK6Xc26KTGh16OEWqJIYcvcgsOJPVBGq7ajnoi9XIGpofwD0tzwQ9BIgKk8KdO2/1+DoCPbAGzzeiXxlLdAdp22lpBGdIMhfP+VJW+z6otHxJ03ZQBavq1l/s+8bbktqbD+WtmW/RGDrCIjP6Nepz2hshFoUF1IjfF7xNo/Z0szSlfqbv/6jtewUwQo3i8IApmzgDtX6djCAQGfAJejhwQqFO3/BXOi2sImjjb0bTlUxviSqqyVh8L0TlqY9NDV5cBUrL74agkK1vvwwGypBELLns5gqbKkJXG7tc2pr9UEdCSiVU9oKZ2HEFV9XFi5c4UWoBXImTEpgSRT8f25/CK+FQYv9GMyHTem/SdtI3HOoXzfLHt5WVh0LVOX0ERYDj4+b8UyRBwQxKYaSPDxkmNUlwvzWDOSzU7a9+4buoarm2VboK9wK89oD4FbVdptEWytJDC4IMReLiQqvRo4fYNDGhqszRSOX1gxsHSJg80ZI1HiKW62uvv9q+81MTB85tXhmLf74g/ypzSU/42ZrjiFcqeeKeNBWpntEh7Oh7+Okb0S3bTMXxxqYxVUYuGrx1DYhs+mTAsV49biY4hilc15aRngmGE6wOuC4O2WoCbGHzQgF6tdcAvv49KlrbDOhJsYnkepWTUU7dL1yOB6VdlHMCD/nr0NoCZ/E2E67+cVsHNo1SwbzUOH7LvLZ3E+36OJDtgz+i2hQzZHQ
-X-Forefront-Antispam-Report:
-	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(376002)(396003)(346002)(136003)(39860400002)(230922051799003)(186009)(64100799003)(451199024)(82310400011)(1800799012)(40470700004)(46966006)(36840700001)(921008)(86362001)(40480700001)(82740400003)(356005)(7636003)(40460700003)(36756003)(36860700001)(47076005)(83380400001)(1076003)(2616005)(26005)(336012)(426003)(7696005)(8676002)(110136005)(54906003)(478600001)(316002)(6666004)(70586007)(70206006)(8936002)(2906002)(2876002)(7416002)(5660300002)(4326008)(41300700001)(83996005)(2101003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Dec 2023 15:41:08.7591
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 453895de-1891-4115-a72c-08dc023b4084
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	CY4PEPF0000E9D6.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR12MB7255
+References: <20231122221814.139916-1-deller@kernel.org> <CAK7LNAQZO0g-B7UUEvdJWh3FhdhmWaaSaJyyEUoVoSYG0j8v-Q@mail.gmail.com>
+In-Reply-To: <CAK7LNAQZO0g-B7UUEvdJWh3FhdhmWaaSaJyyEUoVoSYG0j8v-Q@mail.gmail.com>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Fri, 22 Dec 2023 00:42:24 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASk=A4aeMuhUt4NGi5RHedcQ_WQrdN3r7S_x0euvsPUXA@mail.gmail.com>
+Message-ID: <CAK7LNASk=A4aeMuhUt4NGi5RHedcQ_WQrdN3r7S_x0euvsPUXA@mail.gmail.com>
+Subject: Re: [PATCH 0/4] Section alignment issues?
+To: deller@kernel.org
+Cc: linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, 
+	linux-modules@vger.kernel.org, linux-arch@vger.kernel.org, 
+	Luis Chamberlain <mcgrof@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Ankit Agrawal <ankita@nvidia.com>
+On Thu, Dec 21, 2023 at 10:40=E2=80=AFPM Masahiro Yamada <masahiroy@kernel.=
+org> wrote:
+>
+> On Thu, Nov 23, 2023 at 7:18=E2=80=AFAM <deller@kernel.org> wrote:
+> >
+> > From: Helge Deller <deller@gmx.de>
+> >
+> > While working on the 64-bit parisc kernel, I noticed that the __ksymtab=
+[]
+> > table was not correctly 64-bit aligned in many modules.
+> > The following patches do fix some of those issues in the generic code.
+> >
+> > But further investigation shows that multiple sections in the kernel an=
+d in
+> > modules are possibly not correctly aligned, and thus may lead to perfor=
+mance
+> > degregations at runtime (small on x86, huge on parisc, sparc and others=
+ which
+> > need exception handlers). Sometimes wrong alignments may also be simply=
+ hidden
+> > by the linker or kernel module loader which pulls in the sections by lu=
+ck with
+> > a correct alignment (e.g. because the previous section was aligned alre=
+ady).
+> >
+> > An objdump on a x86 module shows e.g.:
+> >
+> > ./kernel/net/netfilter/nf_log_syslog.ko:     file format elf64-x86-64
+> > Sections:
+> > Idx Name          Size      VMA               LMA               File of=
+f  Algn
+> >   0 .text         00001fdf  0000000000000000  0000000000000000  0000004=
+0  2**4
+> >                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
+> >   1 .init.text    000000f6  0000000000000000  0000000000000000  0000202=
+0  2**4
+> >                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
+> >   2 .exit.text    0000005c  0000000000000000  0000000000000000  0000212=
+0  2**4
+> >                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
+> >   3 .rodata.str1.8 000000dc  0000000000000000  0000000000000000  000021=
+80  2**3
+> >                   CONTENTS, ALLOC, LOAD, READONLY, DATA
+> >   4 .rodata.str1.1 0000030a  0000000000000000  0000000000000000  000022=
+5c  2**0
+> >                   CONTENTS, ALLOC, LOAD, READONLY, DATA
+> >   5 .rodata       000000b0  0000000000000000  0000000000000000  0000258=
+0  2**5
+> >                   CONTENTS, ALLOC, LOAD, READONLY, DATA
+> >   6 .modinfo      0000019e  0000000000000000  0000000000000000  0000263=
+0  2**0
+> >                   CONTENTS, ALLOC, LOAD, READONLY, DATA
+> >   7 .return_sites 00000034  0000000000000000  0000000000000000  000027c=
+e  2**0
+> >                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, DATA
+> >   8 .call_sites   0000029c  0000000000000000  0000000000000000  0000280=
+2  2**0
+> >                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, DATA
+> >
+> > In this example I believe the ".return_sites" and ".call_sites" should =
+have
+> > an alignment of at least 32-bit (4 bytes).
+> >
+> > On other architectures or modules other sections like ".altinstructions=
+" or
+> > "__ex_table" may show up wrongly instead.
+> >
+> > In general I think it would be beneficial to search for wrong alignment=
+s at
+> > link time, and maybe at runtime.
+> >
+> > The patch at the end of this cover letter
+> > - adds compile time checks to the "modpost" tool, and
+> > - adds a runtime check to the kernel module loader at runtime.
+> > And it will possibly show false positives too (!!!)
+> > I do understand that some of those sections are not performce critical
+> > and thus any alignment is OK.
+> >
+> > The modpost patch will emit at compile time such warnings (on x86-64 ke=
+rnel build):
+> >
+> > WARNING: modpost: vmlinux: section .initcall7.init (type 1, flags 2) ha=
+s alignment of 1, expected at least 4.
+> > Maybe you need to add ALIGN() to the modules.lds file (or fix modpost) =
+?
+> > WARNING: modpost: vmlinux: section .altinstructions (type 1, flags 2) h=
+as alignment of 1, expected at least 2.
+> > WARNING: modpost: vmlinux: section .initcall6.init (type 1, flags 2) ha=
+s alignment of 1, expected at least 4.
+> > WARNING: modpost: vmlinux: section .initcallearly.init (type 1, flags 2=
+) has alignment of 1, expected at least 4.
+> > WARNING: modpost: vmlinux: section .rodata.cst2 (type 1, flags 18) has =
+alignment of 2, expected at least 64.
+> > WARNING: modpost: vmlinux: section .static_call_tramp_key (type 1, flag=
+s 2) has alignment of 1, expected at least 8.
+> > WARNING: modpost: vmlinux: section .con_initcall.init (type 1, flags 2)=
+ has alignment of 1, expected at least 8.
+> > WARNING: modpost: vmlinux: section __bug_table (type 1, flags 3) has al=
+ignment of 1, expected at least 4.
+> > ...
+>
+>
+>
+>
+> modpost acts on vmlinux.o instead of vmlinux.
+>
+>
+> vmlinux.o is a relocatable ELF, which is not a real layout
+> because no linker script has been considered yet at this
+> point.
+>
+>
+> vmlinux is an executable ELF, produced by a linker,
+> with the linker script taken into consideration
+> to determine the final section/symbol layout.
+>
+>
+> So, checking this in modpost is meaningless.
+>
+>
+>
+> I did not check the module checking code, but
+> modules are also relocatable ELF.
 
-The code to map the MMIO in S2 as NormalNC is enabled when conveyed
-that the device is WC safe using a new flag VM_VFIO_ALLOW_WC.
 
-Make vfio-pci set the VM_VFIO_ALLOW_WC flag.
 
-This could be extended to other devices in the future once that
-is deemed safe.
+Sorry, I replied too early.
+(Actually I replied without reading your modpost code).
 
-Signed-off-by: Ankit Agrawal <ankita@nvidia.com>
-Suggested-by: Catalin Marinas <catalin.marinas@arm.com>
-Acked-by: Jason Gunthorpe <jgg@nvidia.com>
-Tested-by: Ankit Agrawal <ankita@nvidia.com>
----
- drivers/vfio/pci/vfio_pci_core.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Now, I understand what your checker is doing.
 
-diff --git a/drivers/vfio/pci/vfio_pci_core.c b/drivers/vfio/pci/vfio_pci_core.c
-index 1929103ee59a..c5ebca74b8a8 100644
---- a/drivers/vfio/pci/vfio_pci_core.c
-+++ b/drivers/vfio/pci/vfio_pci_core.c
-@@ -1863,7 +1863,8 @@ int vfio_pci_core_mmap(struct vfio_device *core_vdev, struct vm_area_struct *vma
- 	 * See remap_pfn_range(), called from vfio_pci_fault() but we can't
- 	 * change vm_flags within the fault handler.  Set them now.
- 	 */
--	vm_flags_set(vma, VM_IO | VM_PFNMAP | VM_DONTEXPAND | VM_DONTDUMP);
-+	vm_flags_set(vma, VM_VFIO_ALLOW_WC | VM_IO | VM_PFNMAP |
-+			VM_DONTEXPAND | VM_DONTDUMP);
- 	vma->vm_ops = &vfio_pci_mmap_ops;
- 
- 	return 0;
--- 
-2.17.1
 
+I did not test how many false positives are produced,
+but it catches several suspicious mis-alignments.
+
+
+However, I am not convinced with this warning.
+
+
++               warn("%s: section %s (type %d, flags %lu) has
+alignment of %d, expected at least %d.\n"
++                    "Maybe you need to add ALIGN() to the modules.lds
+file (or fix modpost) ?\n",
++                    modname, sec, sechdr->sh_type, sechdr->sh_flags,
+is_shalign, should_shalign);
++       }
+
+
+Adding ALGIN() hides the real problem.
+
+
+I think the real problem is that not enough alignment was requested
+in the code.
+
+
+For example, the right fix for ".initcall7.init" should be this:
+
+
+diff --git a/include/linux/init.h b/include/linux/init.h
+index 3fa3f6241350..650311e4b215 100644
+--- a/include/linux/init.h
++++ b/include/linux/init.h
+@@ -264,6 +264,7 @@ extern struct module __this_module;
+ #define ____define_initcall(fn, __stub, __name, __sec)         \
+        __define_initcall_stub(__stub, fn)                      \
+        asm(".section   \"" __sec "\", \"a\"            \n"     \
++           ".balign 4                                  \n"     \
+            __stringify(__name) ":                      \n"     \
+            ".long      " __stringify(__stub) " - .     \n"     \
+            ".previous                                  \n");   \
+
+
+
+Then, "this section requires at least 4 byte alignment"
+is recorded in the sh_addralign field.
+
+Then, the rest is the linker's job.
+
+We should not tweak the linker script.
+
+
+
+
+
+
+--
+Best Regards
+Masahiro Yamada
 
