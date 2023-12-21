@@ -1,98 +1,115 @@
-Return-Path: <linux-kernel+bounces-13800-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21312-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AAFA9821011
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 23:44:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 25E90828D69
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 20:32:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6633B282873
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Dec 2023 22:44:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C8A3C287B12
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 19:32:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93433C8D4;
-	Sun, 31 Dec 2023 22:44:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FDF03D548;
+	Tue,  9 Jan 2024 19:31:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=networkplumber-org.20230601.gappssmtp.com header.i=@networkplumber-org.20230601.gappssmtp.com header.b="sW0MsEYO"
-X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XIbX3DKg"
+Received: from mail-oi1-f178.google.com (mail-oi1-f178.google.com [209.85.167.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AA04C13B
-	for <linux-kernel@vger.kernel.org>; Sun, 31 Dec 2023 22:44:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=networkplumber.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=networkplumber.org
-Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-28cc07d8876so212584a91.1
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Dec 2023 14:44:24 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E5C93D3A7
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 19:31:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f178.google.com with SMTP id 5614622812f47-3bc4f49a3b6so3696352b6e.1
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 11:31:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=networkplumber-org.20230601.gappssmtp.com; s=20230601; t=1704062664; x=1704667464; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RGJrf2qGjaqs2Gg0g2FguVq8u9ZcCJz+T1LvcJxj27A=;
-        b=sW0MsEYOZ1iWtS9nk6L7vDOflUK+a0mm4mvPEmAO/Yr/ZipkIh99jfiwUWNZOZDjCs
-         bxYdcuijlTQRFjn+AP9zTGs0ypsaonJR2mOW0fiMZEWLp8g6SW6FaxJqaZlCW6v8bK0o
-         TDQ1eXSltNexPM5wMLnyiTxmRHgO4UlLHdVi3Po9B9DlB5ntCA7nwUunbukafHPzLwGt
-         nZ0n/eY35uMxyv768ninBtzgooBDz5HRo1zWw87GeYK6577d9JnbPD1ni6s2st+HyTF8
-         HV+p/pwvh86SdNm/EzuoRCyfzQZwrALyVjbelbESgKfIebC+BV3t0v4ifb82Wisobsto
-         Ox8g==
+        d=gmail.com; s=20230601; t=1704828714; x=1705433514; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=PBnpa/7xlrSbnA3Nm7BMZMZEN1FuSc8e9znQIZPVWWQ=;
+        b=XIbX3DKgtiILJc491zm91AZ4qAoZVsez7vEuHE5HvFamGShCGT5ugNYXpqnwsVdGoe
+         8SW5FN+Kb+1G8J0bdpf2wwfjl/BirTmPzWQGa73LLDAqRMdS0LsDnF/RNocG0UfiHCCk
+         +rsNc75+nDJJPzlKcXZlfOiuJvNMbkix6yunbvdBTO+kiCwBUlZc+F1Gv0RGnCrsLntk
+         fwfLWqzmqbkz1OkchYwhC3aFDaGfEn7XBDVhI5rK0d5z9pdEPtfsbn78hSpb+6h8/csJ
+         xmXB4Ge6iAWVTwYsTpsEQIDESDz7TpFPugF9Cks9vHqbhqIpFbx2eK0bPI/HuU3Udxnv
+         OH3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704062664; x=1704667464;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=RGJrf2qGjaqs2Gg0g2FguVq8u9ZcCJz+T1LvcJxj27A=;
-        b=ltOZAinUAVfHNhUAEJtqWAN/fqftwhlHTZH0gbqgTKPhx6Eszgb9DlcExnc+j5vUsT
-         0wvzf9mtaF6IBxa+d9dwMshIsZ+cLy0MOSoasOAqm0UbxOADOytHwT20KeP4PLEtPc2Q
-         YZcCeC3T2zwu/+qvajozEn2nRgznhKxzeuCufBBuqu0/oOjm4J4eq7+0qjCHljSL7DPQ
-         eAJS7GzHqKfWrb5gKXzgVJkY6Y0BaBYZoJGqxWEqZuSkKvbf4pplaCtGnpMt/QFXu5jd
-         6hcuQ0hLd1qoRSG8TNZhoAeDYKaeQUC2x55sEFdSGxes4mnstZ6Hc/oXmwlXZVy5W3e/
-         zQUA==
-X-Gm-Message-State: AOJu0YwAr6mZ0ryQS3yHNGJHm0aIzn6PBLBxF5zY/zVaRWVGueLO5Sos
-	G6uEXpnpSTVTO4+LvNvBixwdX/8+GFk8bQ==
-X-Google-Smtp-Source: AGHT+IHdx4qvzHy5wMxlbXk9zPFgwgAUCdUHgHgI3QLmX7llXrLOX8UAZbmD65BD02FlwA1TmYLrpA==
-X-Received: by 2002:aa7:920d:0:b0:6d9:e2ce:2e1f with SMTP id 13-20020aa7920d000000b006d9e2ce2e1fmr4456031pfo.31.1704062664418;
-        Sun, 31 Dec 2023 14:44:24 -0800 (PST)
-Received: from hermes.local (204-195-123-141.wavecable.com. [204.195.123.141])
-        by smtp.gmail.com with ESMTPSA id t22-20020aa79396000000b006d9b95034d9sm12293986pfe.211.2023.12.31.14.44.22
+        d=1e100.net; s=20230601; t=1704828714; x=1705433514;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=PBnpa/7xlrSbnA3Nm7BMZMZEN1FuSc8e9znQIZPVWWQ=;
+        b=eflbvygfiZBTDHrU+6oENhZxk6dAktdlBYEQI/GANtzXLTAoB5TuaMrR4n3VR94g2C
+         VJ7cZKqNDWs6S8tPEeDY8ubAEuNDmp9TktKG1WQat3SJu8DSRLr+d/8S9f063f7jnmO1
+         +ffZXmW3ZFHTSsJzBjnhuyLC60qV7FlEwq079CXClAkmFZtoIIJ4Ndz53btZHAYovr0y
+         HluCa2Do/dDAYlzSnUSuuUXw6r/FHE7PC/IAVhXPGrDWxcQRPCUQaYt9gBli///nwUOg
+         wxaD05u0BnNDe9g1h5iZxqV692IQPP7xj9Yu6ZTgGttAdlsSZPe9GWRIdFIaa2orE3wM
+         tcpA==
+X-Gm-Message-State: AOJu0YxVXk2a7C3AxBQ0BC5HeymAGyp2IWZMWOB+OCAtxhCpNs3zQR8x
+	CKvHNP7Y9r/ch77AU8j/cEQ=
+X-Google-Smtp-Source: AGHT+IH7zrV9oxl6TmkXukuqZboCYoT7R9fSIVyaATb0QfvPmgkY/BRdMdgTOF5M+7EcvrEZFU4bDg==
+X-Received: by 2002:a54:4709:0:b0:3bc:3c4a:44b with SMTP id k9-20020a544709000000b003bc3c4a044bmr7023972oik.106.1704828714635;
+        Tue, 09 Jan 2024 11:31:54 -0800 (PST)
+Received: from localhost.localdomain (c-67-174-241-145.hsd1.ca.comcast.net. [67.174.241.145])
+        by smtp.gmail.com with ESMTPSA id w2-20020a62c702000000b006d9a0059a9asm2173490pfg.172.2024.01.09.11.31.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 31 Dec 2023 14:44:22 -0800 (PST)
-Date: Sun, 31 Dec 2023 14:44:21 -0800
-From: Stephen Hemminger <stephen@networkplumber.org>
-To: Markus Elfring <Markus.Elfring@web.de>
-Cc: netdev@vger.kernel.org, kernel-janitors@vger.kernel.org, "David S.
- Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub
- Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Willem de
- Bruijn <willemdebruijn.kernel@gmail.com>, LKML
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] packet: Improve exception handling in fanout_add()
-Message-ID: <20231231144421.13ba1d04@hermes.local>
-In-Reply-To: <828bb442-29d0-4bb8-b90d-f200bdd4faf6@web.de>
-References: <828bb442-29d0-4bb8-b90d-f200bdd4faf6@web.de>
+        Tue, 09 Jan 2024 11:31:54 -0800 (PST)
+From: Yang Shi <shy828301@gmail.com>
+To: oliver.sang@intel.com,
+	riel@surriel.com,
+	fengwei.yin@intel.com,
+	willy@infradead.org,
+	cl@linux.com,
+	ying.huang@intel.com,
+	akpm@linux-foundation.org
+Cc: shy828301@gmail.com,
+	linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org
+Subject: [PATCH 1/2] mm: mmap: no need to call khugepaged_enter_vma() for stack
+Date: Wed, 20 Dec 2023 22:59:42 -0800
+Message-Id: <20231221065943.2803551-1-shy828301@gmail.com>
+X-Mailer: git-send-email 2.39.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On Sun, 31 Dec 2023 16:39:02 +0100
-Markus Elfring <Markus.Elfring@web.de> wrote:
+From: Yang Shi <yang@os.amperecomputing.com>
 
-> From: Markus Elfring <elfring@users.sourceforge.net>
-> Date: Sun, 31 Dec 2023 16:30:51 +0100
-> 
-> The kfree() function was called in some cases by the fanout_add() function
-> even if the passed variable contained a null pointer.
-> This issue was detected by using the Coccinelle software.
-> 
-> Thus use another label.
-> 
-> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+We avoid allocating THP for temporary stack, even tnough
+khugepaged_enter_vma() is called for stack VMAs, it actualy returns
+false.  So no need to call it in the first place at all.
 
-NAK
-kfree of null is perfectly fine. 
-There is no need for this patch.
+Signed-off-by: Yang Shi <yang@os.amperecomputing.com>
+---
+ mm/mmap.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/mm/mmap.c b/mm/mmap.c
+index b78e83d351d2..2ff79b1d1564 100644
+--- a/mm/mmap.c
++++ b/mm/mmap.c
+@@ -2046,7 +2046,6 @@ static int expand_upwards(struct vm_area_struct *vma, unsigned long address)
+ 		}
+ 	}
+ 	anon_vma_unlock_write(vma->anon_vma);
+-	khugepaged_enter_vma(vma, vma->vm_flags);
+ 	mas_destroy(&mas);
+ 	validate_mm(mm);
+ 	return error;
+@@ -2140,7 +2139,6 @@ int expand_downwards(struct vm_area_struct *vma, unsigned long address)
+ 		}
+ 	}
+ 	anon_vma_unlock_write(vma->anon_vma);
+-	khugepaged_enter_vma(vma, vma->vm_flags);
+ 	mas_destroy(&mas);
+ 	validate_mm(mm);
+ 	return error;
+-- 
+2.41.0
+
 
