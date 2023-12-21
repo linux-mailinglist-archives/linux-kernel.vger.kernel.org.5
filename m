@@ -1,163 +1,164 @@
-Return-Path: <linux-kernel+bounces-8425-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8427-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E184881B6F5
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 14:06:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CA0981B700
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 14:08:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9E09F28924A
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 13:06:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0D0E21F233B9
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 13:08:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00B3E745CD;
-	Thu, 21 Dec 2023 13:06:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15F9673184;
+	Thu, 21 Dec 2023 13:08:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iplUKz3+"
+	dkim=pass (2048-bit key) header.d=fastmail.org header.i=@fastmail.org header.b="WxgBRCLP";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="OTeaUDby"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D7E56E2A1
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 13:06:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6d97b7c8efdso180847b3a.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 05:06:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703163965; x=1703768765; darn=vger.kernel.org;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7+JuPQ8wqNJlzJagstC7ldl3dtxeJYdR1Fvwuzn2zf0=;
-        b=iplUKz3+zQcfMeyQMO8Y9loBTzLdNZqEdpDyazs+MV+GPR4gY/BIjBj2y7qTE2fPmV
-         HgQcXqTL4gff6A34X0/xg8uDNeR8Hn5Bkm2qF2U3Z0/ONbdD53hI+wk+JqQ5toW+EqqY
-         RU8ZwSNpIJxX7cLrCWs29e0NFI2ndzr55/63JmOGS9vfz/+yRd12dqZphx8BS57wI9Ji
-         lz9wzu1UJ+6XACApXDMRFIeBNGJ+FnP2CGJWpQHVa3gyiZ2bxb3dahKhEIHvCRWnz4xJ
-         B3GoHRkzRXEBHn68zbXw/PT7Nhdww3fcAds00SBQ3Hkbq4VCI/XYrxN2n5IN46LnYzT6
-         ZmwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703163965; x=1703768765;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7+JuPQ8wqNJlzJagstC7ldl3dtxeJYdR1Fvwuzn2zf0=;
-        b=FoKCCW7cFsi5aZWuGyBg1KQ3/NzSB/7YzBiAXOyl73ZZpFiPyjM1adbBBl/+tZYatM
-         +dQ8Gn47myt1PC/AXofsp+WE0SwnIXYmv90ze4JfBCiz0KMgXviZH5CvcXfmv9HjXD/I
-         2/9U+TfsNfphpIQYxMiVzWG7QBfHwygEZMFVQnvV6LUMl5rbC8/07ozH4dYLhGaxJyPT
-         oljqNAiFd9prY0ZUEHK8tZqfTFEXqrru1qmlKZ/1nw/3PPb4rC3/QA668iYV3kY8K2Nr
-         Zp+yBhX6Jt2BaWB+InfB88wdWs3Q51fRkIy1ZlmCIOZ2w8mBEa+zqn63MMGIba8HKiwa
-         A5ag==
-X-Gm-Message-State: AOJu0Yy2bjKblXu2NK4xgCCSUZM1+lvviARppKUrHiBv3oXi3hz+LLYm
-	MR9D/Z2QS6H5W0BHI81w56M=
-X-Google-Smtp-Source: AGHT+IHy7BDWEANLiGAImZQLqW1L1FrUfcyW89dxfgSoRdp/XfgRewLLnqOMWdZvV7yq1pzZCQwpXA==
-X-Received: by 2002:a05:6a00:982:b0:6d8:1493:5a89 with SMTP id u2-20020a056a00098200b006d814935a89mr5469741pfg.59.1703163964996;
-        Thu, 21 Dec 2023 05:06:04 -0800 (PST)
-Received: from ruipeng-ThinkCentre-M730e-N010.company.local (014136220210.static.ctinets.com. [14.136.220.210])
-        by smtp.gmail.com with ESMTPSA id m2-20020a62f202000000b006d97eaba6cesm289326pfh.21.2023.12.21.05.05.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Dec 2023 05:06:04 -0800 (PST)
-From: Ruipeng Qi <ruipengqi7@gmail.com>
-To: catalin.marinas@arm.com,
-	will@kernel.org,
-	bhe@redhat.com,
-	vgoyal@redhat.com,
-	dyoung@redhat.com,
-	linux-kernel@vger.kernel.org,
-	kexec@lists.infradead.org
-Cc: zalbassam@google.com,
-	dianders@chromium.org,
-	mark.rutland@arm.com,
-	lecopzer.chen@mediatek.com,
-	maz@kernel.org,
-	arnd@arndb.de,
-	yury.norov@gmail.com,
-	brauner@kernel.org,
-	mcgrof@kernel.org,
-	maninder1.s@samsung.com,
-	michael.christie@oracle.com,
-	samitolvanen@google.com,
-	linux-arm-kernel@lists.infradead.org,
-	qiruipeng@lixiang.com
-Subject: [RFC PATCH 0/7] osdump: Add one new os minidump module
-Date: Thu, 21 Dec 2023 21:05:55 +0800
-Message-Id: <20231221130555.32551-1-ruipengqi7@gmail.com>
-X-Mailer: git-send-email 2.17.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B2A36979B
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 13:08:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fastmail.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastmail.org
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailout.west.internal (Postfix) with ESMTP id 269933200AD1;
+	Thu, 21 Dec 2023 08:08:39 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Thu, 21 Dec 2023 08:08:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.org; h=
+	cc:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm2; t=1703164118; x=1703250518; bh=TSmi62AbKk
+	Ag1rP/36saQuYN5nGRz1D7HRB5YJAMmKw=; b=WxgBRCLP2yF/PaujaW7gO9nASx
+	MgiYNQpg+wbtYwfCR2KjKEbtt1TN46Sc5jP15PoK/2CtlI+D2w5GsHCCvsEE/G77
+	rcdsX5fbleY9THXENezD8mS8GNdQSdGP20g7/HGRwKcHo+FPqHziY5R4fH91M2qx
+	LN7KdGnD+1Tys0BdyrRUwlwVmV3aa0aN5OJDUSoObmuhBo+EuorsleZE/Q8lyMK/
+	xIlkGIA35QSqfJjE4jye2NiaO/1wV6mQG5yBTQT0/Nv1mSHFrq4RcVylTfXU1Aw1
+	+qGi7s8XWprWoL3niptY9WLY2ACWZZJkaiVegqW5azIEoenmjqKLI7KZHAfg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1703164118; x=1703250518; bh=TSmi62AbKkAg1rP/36saQuYN5nGR
+	z1D7HRB5YJAMmKw=; b=OTeaUDbySbg+p8N8/zE7JtImq+9CUznDsOVkcl2iFTAU
+	X9+qHdnlLSsWnXlunYr7+lOIWlAEWAckWqg7CpUHLk6KEZahYVtTBCfOswJ/PkWk
+	aOtJkhomD5kgaywYfaRZevTQCkTCjqGuYvF0BONuRvFXcHlC0FjCv5H0uBuTBcf4
+	yCiKeBcNQS+mmHKkD76qsvHKBRNFwqIbjWh2NlQUkLDE1Dnh53CIrMhYFOTA+Ang
+	rIDWJjWy8nS+CKMOfMZRyfPY+ZGLC3O7OU+28LENKaIWZAEKOJKzL5Zoz+/2+RY1
+	tgbR1o5CI9cRZKv6xpLfgVbrbBpgqzUryOKYhlr6iQ==
+X-ME-Sender: <xms:1jiEZdh-7mpORy7jfLfyHd3at1yWP2mm0RfD3oNw9evc0IqgwG3rzg>
+    <xme:1jiEZSAumFQjFfTULk2VVVS8YO_4hKTiMXJm88YgeyhHmDzX_0K5Q7B4oKGmNB1Va
+    WHAf53KIc9BHFA-628>
+X-ME-Received: <xmr:1jiEZdG7HPuATFHaR_wZEvVSssgtYp3IX13HfQfL4Nu1wJ5plXvjuNlx3szf469orS6Ejvo6Pkz5eIA7GsD09SMXhf4>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdduhedgvdegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfhgfhffvvefuffgjkfggtgesghdtreertdertdenucfhrhhomhepifgrrhih
+    ucftohhokhgrrhguuceoghgrrhihrhhoohhkrghrugesfhgrshhtmhgrihhlrdhorhhgqe
+    enucggtffrrghtthgvrhhnpeeileehheehtdeiveduffdugfdtgfevjeffudfgtefgteff
+    udfhhffftedvieeggeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
+    hlfhhrohhmpehgrghrhihrohhokhgrrhgusehfrghsthhmrghilhdrohhrgh
+X-ME-Proxy: <xmx:1jiEZSQqiWOVHzESqO-D7VuBpzKfVepTTyvHAZV2KCDIh5qPCiOPeQ>
+    <xmx:1jiEZawNt-pDPluggYu-8eE7OLhqrtxXCzonQV3dhrSyDlEjgc2bzg>
+    <xmx:1jiEZY72r6m2YG-_-R81edJpH3KkZoNS9BaqXInrinwaup7POiS4jQ>
+    <xmx:1jiEZV-kvX1-hn90rqqDYCmvJWTtPL8vvQWsfn_kXrrP2HLXygJtWg>
+Feedback-ID: ifd194980:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 21 Dec 2023 08:08:38 -0500 (EST)
+References: <20231221031004.14779-1-garyrookard@fastmail.org>
+ <2023122137-account-vitality-9a72@gregkh>
+User-agent: mu4e 1.10.8; emacs 29.1
+From: Gary Rookard <garyrookard@fastmail.org>
+To: Greg KH <gregkh@linuxfoundation.org>
+Cc: philipp.g.hortmann@gmail.com, linux-staging@list.linux.dev,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/5] staging: rtl8192e: rename variable
+ HTInitializeBssDesc and (4) other
+Date: Thu, 21 Dec 2023 08:06:13 -0500
+In-reply-to: <2023122137-account-vitality-9a72@gregkh>
+Message-ID: <875y0rog7j.fsf@fastmail.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="=-=-=";
+	micalg=pgp-sha256; protocol="application/pgp-signature"
 
-From: qiruipeng <qiruipeng@lixiang.com>
+--=-=-=
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-Osdump is a new crash dumping solution aiming at specific embedded
-devices within automotive or Industrial.
- - limited memory.
- - reboot as soon as possible when system fault.
 
-In order to reduce dump file size and speed up dump process, it has the
-following features:
- - no userspace memory, just designed for solving os issues.
- - no const data, such as text segment
- - dump core os data only.
-   - bss, data segments which alloc static.
-   - dynamic data
-     - slub data for little size data.
-     - some large size data.
- - compress dump data to reduce dump file size.
+Greg KH <gregkh@linuxfoundation.org> writes:
 
-consist of large massive of uncontinuous data,so use binary data format
-directly.
+> On Wed, Dec 20, 2023 at 10:09:59PM -0500, Gary Rookard wrote:
+>> Hi,
+>>=20
+>> This patch series renames (5) different variables with
+>> the checkpatch coding style issue, Avoid CamelCase.
+>>=20
+>> Patch 1/5) rename variable HTInitializeBssDesc
+>> Patch 2/5) rename variable HTResetSelfAndSavePeerSetting
+>> Patch 3/5) rename variable HTCCheck
+>> Patch 4/5) rename variable HTSetConnectBwModeCallback
+>> Patch 5/5) rename variable ePeerHTSpecVer
+>>=20
+>> Signed-off-by: Gary Rookard <garyrookard@fastmail.org>
+>>=20
+>> Gary Rookard (5):
+>>   staging: rtl8192e: rename variable HTInitializeBssDesc
+>>   staging: rtl8192e: rename variable HTResetSelfAndSavePeerSetting
+>>   staging: rtl8192e: rename variable HTCCheck
+>>   staging: rtl8192e: rename variable HTSetConnectBwModeCallback
+>>   staging: rtl8192e: rename variable ePeerHTSpecVer
+>>=20
+>>  drivers/staging/rtl8192e/rtl819x_HT.h     |  2 +-
+>>  drivers/staging/rtl8192e/rtl819x_HTProc.c | 16 ++++++++--------
+>>  drivers/staging/rtl8192e/rtllib.h         |  6 +++---
+>>  drivers/staging/rtl8192e/rtllib_rx.c      |  6 +++---
+>>  drivers/staging/rtl8192e/rtllib_softmac.c |  6 +++---
+>>  5 files changed, 18 insertions(+), 18 deletions(-)
+>
+> I see 2 different patch series here sent to the list, both seeming to do
+> the same thing?
+>
+> confused,
+>
+> greg k-h
 
-reasemble a standard elf format file with dump file and vmlinux, and
-then parse it with crash tool.
+Sorry that was caused by an address typo
+so it got resent to linux-staging..
+new setup on different distro
+Regards,
+Gary
+=2D-=20
+Sent with my mu4e on Void Linux.
 
-Signed-off-by: qiruipeng <qiruipeng@lixiang.com>
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
 
-qiruipeng (7):
-  [RFC PATCH 1/7] osdump: Add one new os minidump module
-  [RFC PATCH 2/7] osdump: reuse some code from crash_core to get
-    vmcoreinfo
-  [RFC PATCH 3/7] doc: Add osdump guide
-  [RFC PATCH 4/7] dt-bindings: reserved-memory: Support osdump module
-  [RFC PATCH 5/7] sched: access to runqueues by function
-  [RFC PATCH 6/7] mm/slub: make slab data more observable
-  [RFC PATCH 7/7] panic: invoke osdump when panic
+-----BEGIN PGP SIGNATURE-----
 
- Documentation/admin-guide/index.rst           |   1 +
- Documentation/admin-guide/osdump.rst          |  94 +++
- .../bindings/reserved-memory/osdump.yaml      |  45 ++
- arch/arm64/Kconfig                            | 169 +++++
- arch/arm64/kernel/Makefile                    |   1 +
- drivers/of/platform.c                         |   1 +
- include/linux/buildid.h                       |   3 +-
- include/linux/osdump.h                        |   7 +
- kernel/Makefile                               |   2 +
- kernel/crash_core_mini.c                      | 275 ++++++++
- kernel/osdump/Makefile                        |   1 +
- kernel/osdump/compr.c                         | 252 ++++++++
- kernel/osdump/core.c                          | 608 ++++++++++++++++++
- kernel/osdump/extern.h                        |  13 +
- kernel/osdump/inode.c                         |  77 +++
- kernel/osdump/internal.h                      |  95 +++
- kernel/panic.c                                |   7 +
- kernel/printk/printk.c                        |   2 +-
- kernel/sched/core.c                           |   8 +
- lib/buildid.c                                 |   3 +-
- mm/slab.h                                     |   2 +
- mm/slub.c                                     |  38 +-
- 22 files changed, 1700 insertions(+), 4 deletions(-)
- create mode 100644 Documentation/admin-guide/osdump.rst
- create mode 100644 Documentation/devicetree/bindings/reserved-memory/osdump.yaml
- create mode 100644 include/linux/osdump.h
- create mode 100644 kernel/crash_core_mini.c
- create mode 100644 kernel/osdump/Makefile
- create mode 100644 kernel/osdump/compr.c
- create mode 100644 kernel/osdump/core.c
- create mode 100644 kernel/osdump/extern.h
- create mode 100644 kernel/osdump/inode.c
- create mode 100644 kernel/osdump/internal.h
-
--- 
-2.17.1
-
+iQJNBAEBCAA3FiEE92Mpdr0+Cqw+uCNR5J46Hep3K4QFAmWEOPAZHGdhcnlyb29r
+YXJkQGZhc3RtYWlsLm9yZwAKCRDknjod6ncrhHYHEACsbVqzfvvL0x6zZAmeHJev
+EQBIDgGSghLpm8l+nw3SNetfY0Lxswgz0qS/XPYaKkwko0HSx8aRAwg/BCzG4jtA
++XzQbiV8se1FGawgeNitAc5/axT3gZkAXZHbCf9oU+rIO+sU/n9OlWb04OAeDjtN
+I7xYPKufkGO0SquDmostYwPMPpI3EbK1jhADBkQuhDo2BKxXSQ+KSut/+hIGUgKW
+koxXbUFTQSB1tMFlP3IzTUKv/HhiRB4F6M7uIXn0yab/IPxuikBcnRqi5/wWAzwz
+dhFfwZp6JNTUqahyD4qxF6Galxxo6dASBhsLV2XIyTMT+DsqgsGtrfkFDhnqa3Bi
+SSSJjp21uYhmUkKHfFecu65uS3KWLFtQi73li4OXFtABjoWlwjriWzTIOB9adPmk
+b3xxtcva+vj7/SZleFXqHjm6XrsFJmnRJhOoVDG/qCtYpXqdOZ0cHv7/JfLHTcX5
+BVgG20r4lWsMETO1b2Hz3Ur6LMK5zuE6k7NhjG13Sd8u5APgmsrNHdCyJkAe+YMf
+fz9baKuanOIh9TChfoBzbysk7HYOXVSH1qDEFPpszf2qsQZtw3HkbJldeCGDglLJ
+9zczLWR+68TvlKgPoMMcLXABvhSsTysE1mU7Y0Ry2ZgKm+YRFYtlrKnYmYyrTCCM
+dr9HoNjD2KaTDEknGBVrrQ==
+=eI5L
+-----END PGP SIGNATURE-----
+--=-=-=--
 
