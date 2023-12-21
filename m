@@ -1,167 +1,118 @@
-Return-Path: <linux-kernel+bounces-8631-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8632-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4044F81BA64
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 16:16:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8CD8381BA6B
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 16:17:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E75AB1F2365B
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 15:16:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 492B828642B
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 15:17:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A48D750254;
-	Thu, 21 Dec 2023 15:16:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4179A52F60;
+	Thu, 21 Dec 2023 15:17:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="oCV4Ghlm"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="meFCWKZ+"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DF184E1B0;
-	Thu, 21 Dec 2023 15:16:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BLEur8K012177;
-	Thu, 21 Dec 2023 15:16:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:mime-version
-	:content-transfer-encoding:content-type; s=qcppdkim1; bh=KxELH7v
-	9ITZOwsllWmWfZmzJThagjN0t4hjGlBiSjc4=; b=oCV4Ghlm96tCyPXkKLf4ccw
-	FHNhKPc8QMqGnHUa7px5hmUpmhP+js19SF+wBJ8v6xZDse5Gnt2gX6W9GiMAgDWm
-	Z7XS/oTv1fZsAE7tdmYUe6evIEjIjfqAK5l796c5Xjl9DKffN39nsHys8cN/H5BI
-	hWKEyr593jxM/ETKREhaODEZWDtUnecpWLHiu1exvPJ/doiBCyWwqH/tQQZrguZA
-	QebIOI7AcoS7BoHi1LOWISVTuY2DMxeifOnAO+jCWPeWQh1YPRv/ufeJK0HE7NEn
-	KkcG5bachFT/JM1wLK3DpjMVD3I/OIlxB1xHIsbv09G0+1sTmiH5Aqm81k+W/zg=
-	=
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v4pq386pw-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 21 Dec 2023 15:16:34 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BLFGXJZ013592
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 21 Dec 2023 15:16:33 GMT
-Received: from hu-kriskura-hyd.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Thu, 21 Dec 2023 07:16:30 -0800
-From: Krishna Kurapati <quic_kriskura@quicinc.com>
-To: Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Greg Kroah-Hartman
-	<gregkh@linuxfoundation.org>
-CC: <linux-kernel@vger.kernel.org>, <linux-usb@vger.kernel.org>,
-        <quic_ppratap@quicinc.com>, <quic_jackp@quicinc.com>,
-        Krishna Kurapati
-	<quic_kriskura@quicinc.com>
-Subject: [PATCH v2] usb: dwc3: gadget: Ignore dwc3 interrupt if GEVNTCOUNT reads corrupt value
-Date: Thu, 21 Dec 2023 20:46:20 +0530
-Message-ID: <20231221151620.16030-1-quic_kriskura@quicinc.com>
-X-Mailer: git-send-email 2.42.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73D031D6A9;
+	Thu, 21 Dec 2023 15:17:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1703171837; x=1734707837;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=EOkAr+xks6NnAFalQxZEayj9BKUN4na1y02YSzTzR8k=;
+  b=meFCWKZ+2wnslpRTe9fOgJ3Cp3m1TWmThPYt8dkFTdhSRdPVqda22qu2
+   vJsitH3b3xlQG56J0KPqAbZpuvYR8ogrF5fV3fp4Y1/lXFd47RrtWzcvy
+   8JB6u5lXURh/45ymmLM5Z24lnZQctSsRBQQu6quK9f+yYx4uybPtanXIO
+   TLJc9NT5dMiq9V0yJ2+8TrfXAplgJwFCbhRIBMdRQ4XoFS0Am57WyfR/k
+   thsiE06bTtHUI2P0BmNE7O9IzWSlZ5pGtH0a+0KUo35Ky/MOR7VxStgkY
+   UFDCQC7Y94KvN1cvrEYZHuoeBkrqyt5CbwyuqTUJTXu0MISTwvzg5G8T4
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10931"; a="3077406"
+X-IronPort-AV: E=Sophos;i="6.04,293,1695711600"; 
+   d="scan'208";a="3077406"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Dec 2023 07:17:16 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10931"; a="867338199"
+X-IronPort-AV: E=Sophos;i="6.04,293,1695711600"; 
+   d="scan'208";a="867338199"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by FMSMGA003.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Dec 2023 07:17:11 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@intel.com>)
+	id 1rGKnL-00000007sec-42uD;
+	Thu, 21 Dec 2023 17:17:07 +0200
+Date: Thu, 21 Dec 2023 17:17:07 +0200
+From: Andy Shevchenko <andriy.shevchenko@intel.com>
+To: Mark Hasemeyer <markhas@chromium.org>
+Cc: LKML <linux-kernel@vger.kernel.org>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Tzung-Bi Shih <tzungbi@kernel.org>,
+	Raul Rangel <rrangel@chromium.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Rob Herring <robh@kernel.org>, Sudeep Holla <sudeep.holla@arm.com>,
+	Bartosz Golaszewski <brgl@bgdev.pl>, Len Brown <lenb@kernel.org>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Mika Westerberg <mika.westerberg@linux.intel.com>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Wolfram Sang <wsa@kernel.org>, linux-acpi@vger.kernel.org,
+	linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org
+Subject: Re: [PATCH v2 01/22] gpiolib: acpi: Modify
+ acpi_dev_irq_wake_get_by() to use resource
+Message-ID: <ZYRW84GX-SOEKDIG@smile.fi.intel.com>
+References: <20231220235459.2965548-1-markhas@chromium.org>
+ <20231220165423.v2.1.Ifd0903f1c351e84376d71dbdadbd43931197f5ea@changeid>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: Em5qpkGqSDNHFIOHKxtysObEv8P-wvrO
-X-Proofpoint-ORIG-GUID: Em5qpkGqSDNHFIOHKxtysObEv8P-wvrO
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 phishscore=0 lowpriorityscore=0 bulkscore=0 spamscore=0
- mlxscore=0 clxscore=1015 impostorscore=0 mlxlogscore=842 adultscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2312210115
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231220165423.v2.1.Ifd0903f1c351e84376d71dbdadbd43931197f5ea@changeid>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-In the current implementation, the check_event_buf call reads the
-GEVNTCOUNT register to determine the amount of event data generated
-and copies it from ev->buf to ev->cache after masking interrupt.
+On Wed, Dec 20, 2023 at 04:54:15PM -0700, Mark Hasemeyer wrote:
+> Other information besides wake capability can be provided about GPIO
+> IRQs such as triggering, polarity, and sharability. Use resource flags
+> to provide this information to the caller if they want it.
+> 
+> This should keep the API more robust over time as flags are added,
+> modified, or removed. It also more closely matches acpi_irq_get() which
+> take a resource as an argument.
+> 
+> Rename the function to acpi_dev_get_gpio_irq_resource() to better
+> describe the function's new behavior.
 
-During copy if the amount of data to be copied is more than
-(length - lpos), we fill the ev->cache till the end of 4096 byte
-buffer allocated and then start filling from the top (lpos = 0).
+...
 
-In one instance of SMMU crash it is observed that GEVNTCOUNT register
-reads more than 4096 bytes:
+> +			*r = DEFINE_RES_IRQ(irq);
+> +			r->flags = acpi_dev_irq_flags(info.triggering, info.polarity,
+> +						      info.shareable, info.wake_capable);
 
-dwc3_readl   base=0xffffffc0091dc000  offset=50188  value=63488
+Looking at this I am wondering if we can actually to have
 
-(offset = 50188 -> 0xC40C)  -> reads 63488 bytes
+			unsigned long irq_flags;
+			...
+			irq_flags = acpi_dev_irq_flags(info.triggering, info.polarity,
+						       info.shareable, info.wake_capable);
+			*r = DEFINE_RES_NAMED(irq, 1, NULL, irq_flags);
 
-As per crash dump:
-dwc->lpos = 2056
+as we don't need to duplicate IORESOURCE_IRQ.
 
-and evt->buf is at 0xFFFFFFC009185000 and the crash is at
-0xFFFFFFC009186000. The diff which is exactly 0x1000 bytes.
-
-We first memcpy 2040 bytes from (buf + lpos) to (buf + 0x1000).
-
-And then we copy the rest of the data (64388 - 2040) from beginning
-of dwc->ev_buf. While doing so we go beyond bounds as we are trying
-to memcpy 62348 bytes into a 4K buffer resulting in crash.
-
-Fix this by ignoring the interrupt when GEVNTCOUNT register reads a
-value more than the event ring allocated.
-
-Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
----
-Changes in v2:
-Instead of fixing amount of data being copied from ring, ignored
-the interrupt when count is corrupt as per suggestion from Thinh.
-
-Link to v1:
-https://lore.kernel.org/all/20230521100330.22478-1-quic_kriskura@quicinc.com/
-
- drivers/usb/dwc3/gadget.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
-index 858fe4c299b7..e27933fdcce3 100644
---- a/drivers/usb/dwc3/gadget.c
-+++ b/drivers/usb/dwc3/gadget.c
-@@ -4451,6 +4451,7 @@ static irqreturn_t dwc3_thread_interrupt(int irq, void *_evt)
- static irqreturn_t dwc3_check_event_buf(struct dwc3_event_buffer *evt)
- {
- 	struct dwc3 *dwc = evt->dwc;
-+	int ret = IRQ_WAKE_THREAD;
- 	u32 amount;
- 	u32 count;
- 
-@@ -4480,6 +4481,12 @@ static irqreturn_t dwc3_check_event_buf(struct dwc3_event_buffer *evt)
- 	if (!count)
- 		return IRQ_NONE;
- 
-+	if (count > evt->length) {
-+		dev_err(dwc->dev, "GEVTCOUNT corrupt\n");
-+		ret = IRQ_NONE;
-+		goto done;
-+	}
-+
- 	evt->count = count;
- 	evt->flags |= DWC3_EVENT_PENDING;
- 
-@@ -4493,9 +4500,10 @@ static irqreturn_t dwc3_check_event_buf(struct dwc3_event_buffer *evt)
- 	if (amount < count)
- 		memcpy(evt->cache, evt->buf, count - amount);
- 
-+done:
- 	dwc3_writel(dwc->regs, DWC3_GEVNTCOUNT(0), count);
- 
--	return IRQ_WAKE_THREAD;
-+	return ret;
- }
- 
- static irqreturn_t dwc3_interrupt(int irq, void *_evt)
 -- 
-2.42.0
+With Best Regards,
+Andy Shevchenko
+
 
 
