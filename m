@@ -1,144 +1,111 @@
-Return-Path: <linux-kernel+bounces-8630-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8629-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7DFCE81BA62
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 16:16:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A6B381BA60
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 16:16:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1C05E1F238C5
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 15:16:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7876F1F24E52
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 15:16:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D759539F6;
-	Thu, 21 Dec 2023 15:16:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1BF54B15B;
+	Thu, 21 Dec 2023 15:16:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="kuGqfnHn"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LI1zAhr8"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B58E539F8;
-	Thu, 21 Dec 2023 15:16:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BLDw7fR026094;
-	Thu, 21 Dec 2023 15:16:09 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:date:subject:mime-version:content-type
-	:content-transfer-encoding:message-id:to:cc; s=qcppdkim1; bh=I/U
-	x/t5vBHviDOr73BQf5hZoG+ErO3yOItGQwBSmyt8=; b=kuGqfnHnPatmZBdibfh
-	t19WgGGHX9TTr+xxBpfmwmBrekpnOMLE1E2Aflc9zEjrscH1olUsdDFuhjtfN1EX
-	rCtD9mlS15yOgto27A6hZILQTNdt61Q6WnMPGjTBIVDlLPJfczMZV+pDp59GmN61
-	Wo/FYyX1ZkEJB4RaJnKzJ3bZ9bYm3vBJZPFH12iHhn+ZJInKBuhOLNSiqNq7gBf8
-	PMoYTB+CnUIdRKKrtcToelR+FFWqvkQKaf1Mlhc8WQMWvkRNk1Nun+U/0iw4P4HJ
-	yeZY83xEq08VVb7eCtJUMKu41vsu979VC+CCZkbgLHyqmdJ6SKwoD/KjPjF5Dt8W
-	ZgA==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v4pq386np-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 21 Dec 2023 15:16:09 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BLFG85m012246
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 21 Dec 2023 15:16:08 GMT
-Received: from [169.254.0.1] (10.49.16.6) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 21 Dec
- 2023 07:16:05 -0800
-From: Jeff Johnson <quic_jjohnson@quicinc.com>
-Date: Thu, 21 Dec 2023 07:16:04 -0800
-Subject: [PATCH] slimbus: qcom-ngd-ctrl: Make QMI message rules const
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B159B52F60;
+	Thu, 21 Dec 2023 15:16:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-54c79968ffbso991371a12.3;
+        Thu, 21 Dec 2023 07:16:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703171773; x=1703776573; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=TqbYPdC+pzdSRXmHEIhagjUyGTTzN7gMcr6zGrguEvA=;
+        b=LI1zAhr8VGz2Vn3/49osDKl/ZycprmJFaqEfF5QZOFI8mfOZPnX4WspxID/24bwMgZ
+         kX46tVh0ztM+78kdV3Uw/Mev+8EaFCbTT9RKk0mgsRKW5YfAcgx0cH2/rseg3rqeQWa+
+         9mT9/2S3BN7CEdNw8XMuigfKxcV/1Y3538bZvpCbsYt6hjC4tn9w924ooAt5kqcd8/MZ
+         RwTi96RgB0FYrrFLFBBWLt5dV9/5fcSWYXyJFiX6g5tqRcmz2wGcVOIiqlFLqEN/9dgT
+         TeWNLk91HnFXDxCxcp5scKAe8iaV2R206hS/wV9yRmkQrYN3UOyLS/5G1hxeO8SPsh7D
+         Qc9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703171773; x=1703776573;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=TqbYPdC+pzdSRXmHEIhagjUyGTTzN7gMcr6zGrguEvA=;
+        b=AwNcWYJn/iQnW4k5guMXgEmUmNxwlbap6pRuKRBTwhUHTnQAAuH2z9MifwL84ojSOD
+         8KoXPmLFGYEFReeYjPchBZ7QvBxEcDSOcUwfSk/eX07mSlwSG2JMAPLF/2cDs3XYzLbC
+         aLlKQcyTKpDkoqKrepN3LhSCp9rtuBKtp6CZIcDHaJ0FCrYKY8AEB/HZ3YuC4i4bW4gV
+         0F4SznGQst1x+CA6dz3kMs+fpo9k7jkY+si44SNBG8TzN4GtGWFPktgsj9ctnqRkO3mg
+         jfoxlSC/JlBmsDOJWiT+MAX0Ahagaky7cPgydNpP7mvs5kwMM6lRDomCMabdu+qOewic
+         Ltyw==
+X-Gm-Message-State: AOJu0Yw8fZfE9dyvZphzuv4qH5xLfP8rXwRki5vVj9JP94UOtKa+Peac
+	FJddze2ilRu2aj28tgEtd48=
+X-Google-Smtp-Source: AGHT+IHJjhFl8aucUSYY9VqO85+850iDGfZwpNYK/Qur+Y7lQw4rO6QDuDU6rtJXE5crDceVW8fznQ==
+X-Received: by 2002:a50:cdcf:0:b0:553:d641:a662 with SMTP id h15-20020a50cdcf000000b00553d641a662mr1897345edj.16.1703171772730;
+        Thu, 21 Dec 2023 07:16:12 -0800 (PST)
+Received: from skbuf ([188.27.185.68])
+        by smtp.gmail.com with ESMTPSA id o15-20020aa7d3cf000000b00553a094dd5csm1273484edr.32.2023.12.21.07.16.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Dec 2023 07:16:10 -0800 (PST)
+Date: Thu, 21 Dec 2023 17:16:07 +0200
+From: Vladimir Oltean <olteanv@gmail.com>
+To: =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+Cc: Daniel Golle <daniel@makrotopia.org>,
+	Landen Chao <Landen.Chao@mediatek.com>,
+	DENG Qingfang <dqfext@gmail.com>,
+	Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	David Bauer <mail@david-bauer.net>, mithat.guner@xeront.com,
+	erkin.bozoglu@xeront.com, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH net-next] net: dsa: mt7530: register OF node for internal
+ MDIO bus
+Message-ID: <20231221151607.ujobhh4aet4obxdz@skbuf>
+References: <20231220173539.59071-1-arinc.unal@arinc9.com>
+ <20231220173539.59071-1-arinc.unal@arinc9.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <20231221-qmi_elem_info-const-v1-1-81db0a9e6616@quicinc.com>
-X-B4-Tracking: v=1; b=H4sIALNWhGUC/22NQQrCMBBFryKzNtKJNjWuvIeUUsaJHbCJTWpRS
- u9uLLhz+R7892dIHIUTnDYzRJ4kSfAZcLsB6lp/YyXXzKALvUeNpRp6afjOfSPeBUXBp1EZqiq
- LlTtqLiEvH5GdvNbqpc7cSRpDfK8nE37tr2f+9iZUqJw9OGMLcq015+EpJJ52FHqol2X5AKSsF
- ue4AAAA
-To: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Srinivas Kandagatla
-	<srinivas.kandagatla@linaro.org>
-CC: <linux-arm-msm@vger.kernel.org>, <alsa-devel@alsa-project.org>,
-        <linux-kernel@vger.kernel.org>, <kernel@quicinc.com>,
-        Jeff Johnson
-	<quic_jjohnson@quicinc.com>
-X-Mailer: b4 0.12.3
-X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: y4lYcOS900awVgkkB0MX_DVKXLMKkamZ
-X-Proofpoint-ORIG-GUID: y4lYcOS900awVgkkB0MX_DVKXLMKkamZ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 phishscore=0 lowpriorityscore=0 bulkscore=0 spamscore=0
- mlxscore=0 clxscore=1015 impostorscore=0 mlxlogscore=892 adultscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2312210115
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231220173539.59071-1-arinc.unal@arinc9.com>
+ <20231220173539.59071-1-arinc.unal@arinc9.com>
 
-Commit ff6d365898d4 ("soc: qcom: qmi: use const for struct
-qmi_elem_info") allows QMI message encoding/decoding rules
-to be const, so do that for qcom-ngd-ctrl.c.
+On Wed, Dec 20, 2023 at 07:35:39PM +0200, Arınç ÜNAL wrote:
+> From: David Bauer <mail@david-bauer.net>
+> 
+> The MT753x switches provide a switch-internal MDIO bus for the embedded
+> PHYs.
+> 
+> Register a OF sub-node on the switch OF-node for this internal MDIO bus.
+> This allows to configure the embedded PHYs using device-tree.
+> 
+> Signed-off-by: David Bauer <mail@david-bauer.net>
+> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+> Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
+> ---
 
-Signed-off-by: Jeff Johnson <quic_jjohnson@quicinc.com>
----
- drivers/slimbus/qcom-ngd-ctrl.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/slimbus/qcom-ngd-ctrl.c b/drivers/slimbus/qcom-ngd-ctrl.c
-index 77aa6d26476c..efeba8275a66 100644
---- a/drivers/slimbus/qcom-ngd-ctrl.c
-+++ b/drivers/slimbus/qcom-ngd-ctrl.c
-@@ -220,7 +220,7 @@ struct slimbus_power_resp_msg_v01 {
- 	struct qmi_response_type_v01 resp;
- };
- 
--static struct qmi_elem_info slimbus_select_inst_req_msg_v01_ei[] = {
-+static const struct qmi_elem_info slimbus_select_inst_req_msg_v01_ei[] = {
- 	{
- 		.data_type  = QMI_UNSIGNED_4_BYTE,
- 		.elem_len   = 1,
-@@ -262,7 +262,7 @@ static struct qmi_elem_info slimbus_select_inst_req_msg_v01_ei[] = {
- 	},
- };
- 
--static struct qmi_elem_info slimbus_select_inst_resp_msg_v01_ei[] = {
-+static const struct qmi_elem_info slimbus_select_inst_resp_msg_v01_ei[] = {
- 	{
- 		.data_type  = QMI_STRUCT,
- 		.elem_len   = 1,
-@@ -284,7 +284,7 @@ static struct qmi_elem_info slimbus_select_inst_resp_msg_v01_ei[] = {
- 	},
- };
- 
--static struct qmi_elem_info slimbus_power_req_msg_v01_ei[] = {
-+static const struct qmi_elem_info slimbus_power_req_msg_v01_ei[] = {
- 	{
- 		.data_type  = QMI_UNSIGNED_4_BYTE,
- 		.elem_len   = 1,
-@@ -324,7 +324,7 @@ static struct qmi_elem_info slimbus_power_req_msg_v01_ei[] = {
- 	},
- };
- 
--static struct qmi_elem_info slimbus_power_resp_msg_v01_ei[] = {
-+static const struct qmi_elem_info slimbus_power_resp_msg_v01_ei[] = {
- 	{
- 		.data_type  = QMI_STRUCT,
- 		.elem_len   = 1,
-
----
-base-commit: bee0e7762ad2c6025b9f5245c040fcc36ef2bde8
-change-id: 20231215-qmi_elem_info-const-6c77917f82e5
-
+Can you please not assign "bus" to ds->user_mii_bus unless there is no
+"mdio" OF node? We don't need ds->user_mii_bus populated when it is
+described in device tree.
 
