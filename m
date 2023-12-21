@@ -1,226 +1,224 @@
-Return-Path: <linux-kernel+bounces-8366-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8365-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E814181B64A
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 13:47:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39F5D81B647
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 13:46:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 07200B222EC
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 12:47:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BAA6F1F239C0
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 12:46:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A37357317D;
-	Thu, 21 Dec 2023 12:47:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A0996EB52;
+	Thu, 21 Dec 2023 12:46:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="yMbGXGTb"
+	dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b="OKmNKqwg"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
+Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84B6F6F602;
-	Thu, 21 Dec 2023 12:46:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-	by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3BL8o3BO011875;
-	Thu, 21 Dec 2023 13:46:32 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	selector1; bh=f+RuX/Eia9uR2MHJdZssTap6bVCpuc5frqUe4l82QhE=; b=yM
-	bGXGTbRhCoPDtMjIarTTcmjFrL7lidjkKbrr1iUAEOGF+Z32SFEmzT2VnvYAQomy
-	F7vjYPDQi5JS8x1Etz6qc/wkHeNYnB/nUmJ15X3voaCAL9KslDlMgkERKsBN7YPy
-	6Khru6YrLUPcBZ3AoorbrZem1hY9ouN0/ZvyNv4fZIsDIjLTVMHTqRZE0DH0Dym8
-	EB4AMWT+VHsIQ2yMhPFf6QqO0omesZZSzminBoVMRbU7xtV5ByzxTjYqVYUYdtHp
-	ZQiGhEY1mYQOo+/iN1KxvKRBPbcaTp5MV3kwRIiNdLxnlIm14Wd4Nwn/h7HEXtrT
-	N2Sa8MXbl2BPPHIijlJw==
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3v13nhq73w-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 21 Dec 2023 13:46:32 +0100 (CET)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 80E5C100053;
-	Thu, 21 Dec 2023 13:46:30 +0100 (CET)
-Received: from Webmail-eu.st.com (shfdag1node2.st.com [10.75.129.70])
-	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 7655329D7E8;
-	Thu, 21 Dec 2023 13:46:30 +0100 (CET)
-Received: from localhost (10.252.25.159) by SHFDAG1NODE2.st.com (10.75.129.70)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 21 Dec
- 2023 13:46:29 +0100
-From: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
-To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Neil Armstrong
-	<neil.armstrong@linaro.org>,
-        Jessica Zhang <quic_jesszhan@quicinc.com>,
-        Sam
- Ravnborg <sam@ravnborg.org>,
-        Maarten Lankhorst
-	<maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof
- Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre
- Torgue <alexandre.torgue@foss.st.com>,
-        Yannick Fertre
-	<yannick.fertre@foss.st.com>,
-        Raphael Gallais-Pou
-	<raphael.gallais-pou@foss.st.com>,
-        Philippe Cornu
-	<philippe.cornu@foss.st.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Lad
- Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Thierry Reding
-	<thierry.reding@gmail.com>
-CC: <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH RESEND v1 8/8] arm64: dts: st: add display support on stm32mp257f-ev
-Date: Thu, 21 Dec 2023 13:43:39 +0100
-Message-ID: <20231221124339.420119-9-raphael.gallais-pou@foss.st.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231221124339.420119-1-raphael.gallais-pou@foss.st.com>
-References: <20231221124339.420119-1-raphael.gallais-pou@foss.st.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 209DC7319F
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 12:46:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ew.tq-group.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1703162794; x=1734698794;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=opoE9uZiWFk9LaorxyajJzGvmPeTHusLBPzDmEbOtoM=;
+  b=OKmNKqwgFUdUHtc9KqFiLA67+W0fvoP/b6OzyO9RPa72hjet8vPpetIr
+   NaoGOOhi7W776gkZfhb3sIu8lZpO4AWG6pYoMT/fGCH+XOfrUAx502OAV
+   BCPyhcawYeorHT2IXCXZCHEPtGPTG4eeR4SMH2RsniVKcgXXqquXlG5Ge
+   qAMKmnEaxo6iWpp1KOtQAZ1UGlSiJ8Ho3tQHaBaTeCKrS7NMFHzG5mWWW
+   tbwSHQkb31M2/VcR12CdQaupOvUqvguQ6HHNzA//tpbgXL+7HncGkbJ4A
+   Z0RvGgRK+ZiUS4hyT3d7P2XAOJ8WPq3Gb68TZZrcnh3TqRURSLHFrLsjl
+   Q==;
+X-IronPort-AV: E=Sophos;i="6.04,293,1695679200"; 
+   d="scan'208";a="34634644"
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+  by mx1.tq-group.com with ESMTP; 21 Dec 2023 13:46:24 +0100
+Received: from localhost.localdomain (SCHIFFERM-M2.tq-net.de [10.121.53.15])
+	by vtuxmail01.tq-net.de (Postfix) with ESMTPA id 0CC14280075;
+	Thu, 21 Dec 2023 13:46:24 +0100 (CET)
+From: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+To: Michael Ellerman <mpe@ellerman.id.au>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: Nicholas Piggin <npiggin@gmail.com>,
+	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-kernel@vger.kernel.org,
+	linux@ew.tq-group.com,
+	Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+Subject: [PATCH] powerpc/6xx: set High BAT Enable flag on G2 cores
+Date: Thu, 21 Dec 2023 13:45:38 +0100
+Message-ID: <20231221124538.159706-1-matthias.schiffer@ew.tq-group.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: EQNCAS1NODE4.st.com (10.75.129.82) To SHFDAG1NODE2.st.com
- (10.75.129.70)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-21_06,2023-12-20_01,2023-05-22_02
 
-This patch enables the following IPs on stm32mp257f-ev :
-  * LTDC
-  * LVDS
-  * WSVGA LVDS panel (1024x600)
-  * Panel backlight
-  * Ilitek touchescreen
+MMU_FTR_USE_HIGH_BATS is set for G2-based cores (G2_LE, e300cX), but the
+high BATs need to be enabled in HID2 to work. Add register definitions
+and introduce a G2 variant of __setup_cpu_603.
 
-Signed-off-by: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
+This fixes boot on CPUs like the MPC5200B with STRICT_KERNEL_RWX enabled.
+
+Fixes: e4d6654ebe6e ("powerpc/mm/32s: rework mmu_mapin_ram()")
+Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
 ---
- arch/arm64/boot/dts/st/stm32mp257f-ev1.dts | 79 ++++++++++++++++++++++
- 1 file changed, 79 insertions(+)
+ arch/powerpc/include/asm/cpu_setup.h      |  1 +
+ arch/powerpc/include/asm/reg.h            |  2 ++
+ arch/powerpc/kernel/cpu_setup_6xx.S       | 25 ++++++++++++++++++++++-
+ arch/powerpc/kernel/cpu_specs_book3s_32.h | 10 ++++-----
+ 4 files changed, 32 insertions(+), 6 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
-index 0ea8e69bfb3d..ca2da988d91c 100644
---- a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
-+++ b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
-@@ -29,6 +29,43 @@ memory@80000000 {
- 		reg = <0x0 0x80000000 0x1 0x0>;
- 	};
+
+I have only tested this on the MPC5200B (G2_LE), but according to the
+e300 manual, e300cX cores should behave the same.
+
+The Fixes tag is the best I could come up with - I believe that the
+underlying issue of setting USE_HIGH_BATS without actually enabling them
+is as old as Linux's PowerPC implementation, but the specific code
+causing the boot failure was added in the mentioned commit.
+
+Another issue I found in the code is that
+arch/powerpc/platforms/52xx/lite5200_sleep.S uses the SPRN_HID2 definition
+which does not refer to HID2 on the 5200... but that will be for someone
+else to fix, if there is still anyone left using that platform.
+
+
+diff --git a/arch/powerpc/include/asm/cpu_setup.h b/arch/powerpc/include/asm/cpu_setup.h
+index 30e2fe3895024..68d804e74d221 100644
+--- a/arch/powerpc/include/asm/cpu_setup.h
++++ b/arch/powerpc/include/asm/cpu_setup.h
+@@ -35,6 +35,7 @@ void __setup_cpu_750fx(unsigned long offset, struct cpu_spec *spec);
+ void __setup_cpu_7400(unsigned long offset, struct cpu_spec *spec);
+ void __setup_cpu_7410(unsigned long offset, struct cpu_spec *spec);
+ void __setup_cpu_745x(unsigned long offset, struct cpu_spec *spec);
++void __setup_cpu_g2(unsigned long offset, struct cpu_spec *spec);
  
-+	panel_lvds: panel-lvds {
-+		compatible = "edt,etml0700z9ndha", "panel-lvds";
-+		enable-gpios = <&gpiog 15 GPIO_ACTIVE_HIGH>;
-+		backlight = <&panel_lvds_backlight>;
-+		status = "okay";
+ void __setup_cpu_ppc970(unsigned long offset, struct cpu_spec *spec);
+ void __setup_cpu_ppc970MP(unsigned long offset, struct cpu_spec *spec);
+diff --git a/arch/powerpc/include/asm/reg.h b/arch/powerpc/include/asm/reg.h
+index 4ae4ab9090a2d..f5641fcd1da85 100644
+--- a/arch/powerpc/include/asm/reg.h
++++ b/arch/powerpc/include/asm/reg.h
+@@ -617,6 +617,8 @@
+ #endif
+ #define SPRN_HID2	0x3F8		/* Hardware Implementation Register 2 */
+ #define SPRN_HID2_GEKKO	0x398		/* Gekko HID2 Register */
++#define SPRN_HID2_G2	0x3F3		/* G2 HID2 Register */
++#define  HID2_HBE_G2	(1<<18)		/* High BAT Enable (G2) */
+ #define SPRN_IABR	0x3F2	/* Instruction Address Breakpoint Register */
+ #define SPRN_IABR2	0x3FA		/* 83xx */
+ #define SPRN_IBCR	0x135		/* 83xx Insn Breakpoint Control Reg */
+diff --git a/arch/powerpc/kernel/cpu_setup_6xx.S b/arch/powerpc/kernel/cpu_setup_6xx.S
+index f29ce3dd6140f..c67d32e04df9c 100644
+--- a/arch/powerpc/kernel/cpu_setup_6xx.S
++++ b/arch/powerpc/kernel/cpu_setup_6xx.S
+@@ -81,6 +81,20 @@ _GLOBAL(__setup_cpu_745x)
+ 	bl	setup_745x_specifics
+ 	mtlr	r5
+ 	blr
++_GLOBAL(__setup_cpu_g2)
++	mflr	r5
++BEGIN_MMU_FTR_SECTION
++	li	r10,0
++	mtspr	SPRN_SPRG_603_LRU,r10		/* init SW LRU tracking */
++END_MMU_FTR_SECTION_IFSET(MMU_FTR_NEED_DTLB_SW_LRU)
 +
-+		width-mm = <156>;
-+		height-mm = <92>;
-+		data-mapping = "vesa-24";
-+
-+		panel-timing {
-+			clock-frequency = <54000000>;
-+			hactive = <1024>;
-+			vactive = <600>;
-+			hfront-porch = <150>;
-+			hback-porch = <150>;
-+			hsync-len = <21>;
-+			vfront-porch = <24>;
-+			vback-porch = <24>;
-+			vsync-len = <21>;
-+		};
-+
-+		port {
-+			lvds_panel_in: endpoint {
-+				remote-endpoint = <&lvds_out0>;
-+			};
-+		};
-+	};
-+
-+	panel_lvds_backlight: panel-lvds-backlight {
-+		compatible = "gpio-backlight";
-+		gpios = <&gpioi 5 GPIO_ACTIVE_HIGH>;
-+		default-on;
-+		default-brightness-level = <0>;
-+		status = "okay";
-+	};
-+
- 	reserved-memory {
- 		#address-cells = <2>;
- 		#size-cells = <2>;
-@@ -63,6 +100,15 @@ &i2c2 {
- 	i2c-scl-falling-time-ns = <13>;
- 	clock-frequency = <400000>;
- 	status = "okay";
-+
-+	ili2511: ili2511@41 {
-+		compatible = "ilitek,ili251x";
-+		reg = <0x41>;
-+		interrupt-parent = <&gpioi>;
-+		interrupts = <13 IRQ_TYPE_EDGE_FALLING>;
-+		reset-gpios = <&gpiog 14 GPIO_ACTIVE_LOW>;
-+		status = "okay";
-+	};
- };
++BEGIN_FTR_SECTION
++	bl	__init_fpu_registers
++END_FTR_SECTION_IFCLR(CPU_FTR_FPU_UNAVAILABLE)
++	bl	setup_common_caches
++	bl	setup_g2_hid2
++	mtlr	r5
++	blr
  
- &i2c8 {
-@@ -75,6 +121,39 @@ &i2c8 {
- 	status = "disabled";
- };
+ /* Enable caches for 603's, 604, 750 & 7400 */
+ SYM_FUNC_START_LOCAL(setup_common_caches)
+@@ -115,6 +129,16 @@ SYM_FUNC_START_LOCAL(setup_604_hid0)
+ 	blr
+ SYM_FUNC_END(setup_604_hid0)
  
-+&ltdc {
-+	status = "okay";
++/* Enable high BATs for G2 (G2_LE, e300cX) */
++SYM_FUNC_START_LOCAL(setup_g2_hid2)
++	mfspr	r11,SPRN_HID2_G2
++	oris	r11,r11,HID2_HBE_G2@h
++	mtspr	SPRN_HID2_G2,r11
++	sync
++	isync
++	blr
++SYM_FUNC_END(setup_g2_hid2)
 +
-+	port {
-+		ltdc_ep0_out: endpoint {
-+			remote-endpoint = <&lvds_in>;
-+		};
-+	};
-+};
-+
-+&lvds {
-+	status = "okay";
-+
-+	ports {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		port@0 {
-+			reg = <0>;
-+			lvds_in: endpoint {
-+				remote-endpoint = <&ltdc_ep0_out>;
-+			};
-+		};
-+
-+		port@1 {
-+			reg = <1>;
-+			lvds_out0: endpoint {
-+				remote-endpoint = <&lvds_panel_in>;
-+			};
-+		};
-+	};
-+};
-+
- &sdmmc1 {
- 	pinctrl-names = "default", "opendrain", "sleep";
- 	pinctrl-0 = <&sdmmc1_b4_pins_a>;
+ /* 7400 <= rev 2.7 and 7410 rev = 1.0 suffer from some
+  * erratas we work around here.
+  * Moto MPC710CE.pdf describes them, those are errata
+@@ -495,4 +519,3 @@ _GLOBAL(__restore_cpu_setup)
+ 	mtcr	r7
+ 	blr
+ _ASM_NOKPROBE_SYMBOL(__restore_cpu_setup)
+-
+diff --git a/arch/powerpc/kernel/cpu_specs_book3s_32.h b/arch/powerpc/kernel/cpu_specs_book3s_32.h
+index 3714634d194a1..83f054fcf837c 100644
+--- a/arch/powerpc/kernel/cpu_specs_book3s_32.h
++++ b/arch/powerpc/kernel/cpu_specs_book3s_32.h
+@@ -69,7 +69,7 @@ static struct cpu_spec cpu_specs[] __initdata = {
+ 		.mmu_features		= MMU_FTR_USE_HIGH_BATS,
+ 		.icache_bsize		= 32,
+ 		.dcache_bsize		= 32,
+-		.cpu_setup		= __setup_cpu_603,
++		.cpu_setup		= __setup_cpu_g2,
+ 		.machine_check		= machine_check_generic,
+ 		.platform		= "ppc603",
+ 	},
+@@ -83,7 +83,7 @@ static struct cpu_spec cpu_specs[] __initdata = {
+ 		.mmu_features		= MMU_FTR_USE_HIGH_BATS,
+ 		.icache_bsize		= 32,
+ 		.dcache_bsize		= 32,
+-		.cpu_setup		= __setup_cpu_603,
++		.cpu_setup		= __setup_cpu_g2,
+ 		.machine_check		= machine_check_83xx,
+ 		.platform		= "ppc603",
+ 	},
+@@ -96,7 +96,7 @@ static struct cpu_spec cpu_specs[] __initdata = {
+ 		.mmu_features		= MMU_FTR_USE_HIGH_BATS | MMU_FTR_NEED_DTLB_SW_LRU,
+ 		.icache_bsize		= 32,
+ 		.dcache_bsize		= 32,
+-		.cpu_setup		= __setup_cpu_603,
++		.cpu_setup		= __setup_cpu_g2,
+ 		.machine_check		= machine_check_83xx,
+ 		.platform		= "ppc603",
+ 	},
+@@ -109,7 +109,7 @@ static struct cpu_spec cpu_specs[] __initdata = {
+ 		.mmu_features		= MMU_FTR_USE_HIGH_BATS | MMU_FTR_NEED_DTLB_SW_LRU,
+ 		.icache_bsize		= 32,
+ 		.dcache_bsize		= 32,
+-		.cpu_setup		= __setup_cpu_603,
++		.cpu_setup		= __setup_cpu_g2,
+ 		.machine_check		= machine_check_83xx,
+ 		.num_pmcs		= 4,
+ 		.platform		= "ppc603",
+@@ -123,7 +123,7 @@ static struct cpu_spec cpu_specs[] __initdata = {
+ 		.mmu_features		= MMU_FTR_USE_HIGH_BATS | MMU_FTR_NEED_DTLB_SW_LRU,
+ 		.icache_bsize		= 32,
+ 		.dcache_bsize		= 32,
+-		.cpu_setup		= __setup_cpu_603,
++		.cpu_setup		= __setup_cpu_g2,
+ 		.machine_check		= machine_check_83xx,
+ 		.num_pmcs		= 4,
+ 		.platform		= "ppc603",
 -- 
-2.25.1
-
+TQ-Systems GmbH | Mühlstraße 2, Gut Delling | 82229 Seefeld, Germany
+Amtsgericht München, HRB 105018
+Geschäftsführer: Detlef Schneider, Rüdiger Stahl, Stefan Schneider
+https://www.tq-group.com/
 
