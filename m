@@ -1,172 +1,162 @@
-Return-Path: <linux-kernel+bounces-7980-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7981-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DC0481B00E
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 09:11:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 09BF081B010
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 09:12:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D0B19B22483
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 08:11:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2DC901C22BF7
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 08:12:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 836BD15ADF;
-	Thu, 21 Dec 2023 08:11:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3848F15AEB;
+	Thu, 21 Dec 2023 08:12:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VaRZpFET"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="koSiH874"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D05E217728;
-	Thu, 21 Dec 2023 08:11:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17C59C433C8;
-	Thu, 21 Dec 2023 08:11:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703146307;
-	bh=/+ZyvbnXDl0xdqwufIhudNlc3aUzUEcu7XOoEwQcEQ0=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=VaRZpFETZDpotxN24QZQlU/SJNqJtgwA06kPabYDQ7eaOe9c+hrktzUSS2L39473k
-	 DRPFwpqfFKvmAbSUzsiJFfmwNKaW0I87sFgjy+1EUq/RauOppk3j4LHBa9guoupu3n
-	 5xbGnQuN0px7fWYtscOLlEm42eIcotA6e+AJK07vncRQ3+cmTUi3CeuLma6DsNRTBC
-	 G3ez/qCdRrgsm74YFQrGpPoGbZWMWHVMbvtzq7MtWxCxeKTqSNSKlS8yefewBlm47R
-	 sKQOpdvA7kZ/MgXKfNW5YyUAorSgWhj4Qbxwv6Bhn+lJJ9RDwU1iWejTqBHgymbGv+
-	 DEIU7uWVkzVzg==
-Date: Thu, 21 Dec 2023 17:11:44 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
- <linux-trace-kernel@vger.kernel.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Alexander Graf <graf@amazon.com>, Tom Zanussi <zanussi@kernel.org>
-Subject: Re: [PATCH] tracing / synthetic: Disable events after testing in
- synth_event_gen_test_init()
-Message-Id: <20231221171144.e95f0e55bcd62a6e9e08b8a4@kernel.org>
-In-Reply-To: <20231220111525.2f0f49b0@gandalf.local.home>
-References: <20231220111525.2f0f49b0@gandalf.local.home>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1412E168A3
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 08:12:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-54c77e0835bso619831a12.2
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 00:12:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1703146360; x=1703751160; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=PMwwJtmC2mecPsqY9i7UuR/4xKJj2rkigXKOfKmkhDY=;
+        b=koSiH8747tX5PUypwEPgArBl2Z2pz6KatD1wpy5h7x472kbf2A89CgNAoA+chJnuMA
+         PegZgAjnrDuu31KstMNejzv4Qoccri6qxIK473oJb6CIxPzRzbhyvLwyGWjACgEr9Rup
+         Qwa7/fkHUHPRAr9O5JKvlQbP6yNNpuCyAeB4v30ggAEDEc1AgTsNfnxpcvwmbbJREpko
+         w3EXc+NES6OKnF6qja/YRxPsXiJZ9lP+hphFIGVBZLDTm3KGqFaY24wDjiUqPD0itfEf
+         hegcsMgXczBwG9KDedLYQ2NvmoR11/qDKWZqLgIRedekQfVOxgifYOvbzxRn7jQIzhRg
+         Iv3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703146360; x=1703751160;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=PMwwJtmC2mecPsqY9i7UuR/4xKJj2rkigXKOfKmkhDY=;
+        b=h8ebIsziK4hCbVRYXVD68K1RnMRWMzf3oc4xbrhZ6bZdfECjvHtfcpNODmsMxsWZa7
+         ZHegz/3eax0orTiCnsyP8pNuhwE3Tyuhpmu2rk+hJN/LrOU66a+ZG7oLRdrXh1lYMWDe
+         Swzx3m8ISvF5gXOFcOhGf8BU7oZujTM0ky1euwVTm979jtAzTs5FG5QOguAqLi5lFzb0
+         AmZQLAUTaZb9Q8O5WwZ8yMKR0csrWHXULL82dqOc90Y7cVN8uzK/tZ+m4351yF5MXaVr
+         rvHSJVdBVrAwqildda6Yc8yszcoWUu1UNj5WIfn/2pKIXAfTx5iQhw1t7Q0egJQ1Wcdv
+         GjtQ==
+X-Gm-Message-State: AOJu0Ywby/LW0oOeykzZXZtSJQjjL1r/wpdMk3WtJJhZARt8vS82S7e3
+	3Ozs2M+u6BFR+BoeoQrIOiGxmw==
+X-Google-Smtp-Source: AGHT+IHFYhPFdo8vZ0DhaBItCxX2miOh16U1wNUaV6t500AYW83wFk1Y4oggyAZpEF0nlTYRo1QfBA==
+X-Received: by 2002:a17:906:2a86:b0:a02:609a:5c6c with SMTP id l6-20020a1709062a8600b00a02609a5c6cmr8716244eje.44.1703146360295;
+        Thu, 21 Dec 2023 00:12:40 -0800 (PST)
+Received: from [192.168.0.22] ([78.10.206.178])
+        by smtp.gmail.com with ESMTPSA id dt6-20020a170906b78600b00a2699f9d5b1sm677712ejb.177.2023.12.21.00.12.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Dec 2023 00:12:39 -0800 (PST)
+Message-ID: <c41ff7c8-48d6-4f4f-a9df-aafe953a2e98@linaro.org>
+Date: Thu, 21 Dec 2023 09:12:38 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 1/2] dt-bindings: arm: coresight: Update the pattern of
+ ete node name
+Content-Language: en-US
+To: Jinlong Mao <quic_jinlmao@quicinc.com>,
+ Mathieu Poirier <mathieu.poirier@linaro.org>,
+ Suzuki K Poulose <suzuki.poulose@arm.com>, Mike Leach
+ <mike.leach@linaro.org>, James Clark <james.clark@arm.com>,
+ Leo Yan <leo.yan@linaro.org>, Andy Gross <agross@kernel.org>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Tingwei Zhang <quic_tingweiz@quicinc.com>,
+ Yuanfang Zhang <quic_yuanfang@quicinc.com>,
+ Tao Zhang <quic_taozha@quicinc.com>, coresight@lists.linaro.org
+References: <20231220140538.13136-1-quic_jinlmao@quicinc.com>
+ <20231220140538.13136-2-quic_jinlmao@quicinc.com>
+ <79f88d35-17cc-43b0-bb22-3c854f89d961@linaro.org>
+ <8e5e9603-456b-4956-be03-b866feeeafb4@quicinc.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <8e5e9603-456b-4956-be03-b866feeeafb4@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On Wed, 20 Dec 2023 11:15:25 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
+On 21/12/2023 04:28, Jinlong Mao wrote:
+>>> diff --git a/Documentation/devicetree/bindings/arm/arm,embedded-trace-extension.yaml b/Documentation/devicetree/bindings/arm/arm,embedded-trace-extension.yaml
+>>> index f725e6940993..cbf583d34029 100644
+>>> --- a/Documentation/devicetree/bindings/arm/arm,embedded-trace-extension.yaml
+>>> +++ b/Documentation/devicetree/bindings/arm/arm,embedded-trace-extension.yaml
+>>> @@ -23,7 +23,7 @@ description: |
+>>>   
+>>>   properties:
+>>>     $nodename:
+>>> -    pattern: "^ete([0-9a-f]+)$"
+>>> +    pattern: "^ete-([0-9a-f]+)$"
+>>
+>> My concerns are not resolved. Why is it here in the first place?
+> 
+> Hi Krzysztof,
+> 
+> ETE is acronym of embedded trace extension. The number of the name is 
+> the same as the number of the CPU it belongs to.
 
-> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-> 
-> The synth_event_gen_test module can be built in, if someone wants to run
-> the tests at boot up and not have to load them.
-> 
-> The synth_event_gen_test_init() function creates and enables the synthetic
-> events and runs its tests.
-> 
-> The synth_event_gen_test_exit() disables the events it created and
-> destroys the events.
-> 
-> If the module is builtin, the events are never disabled. The issue is, the
-> events should be disable after the tests are run. This could be an issue
-> if the rest of the boot up tests are enabled, as they expect the events to
-> be in a known state before testing. That known state happens to be
-> disabled.
-> 
-> When CONFIG_SYNTH_EVENT_GEN_TEST=y and CONFIG_EVENT_TRACE_STARTUP_TEST=y
-> a warning will trigger:
-> 
->  Running tests on trace events:
->  Testing event create_synth_test:
->  Enabled event during self test!
->  ------------[ cut here ]------------
->  WARNING: CPU: 2 PID: 1 at kernel/trace/trace_events.c:4150 event_trace_self_tests+0x1c2/0x480
->  Modules linked in:
->  CPU: 2 PID: 1 Comm: swapper/0 Not tainted 6.7.0-rc2-test-00031-gb803d7c664d5-dirty #276
->  Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
->  RIP: 0010:event_trace_self_tests+0x1c2/0x480
->  Code: bb e8 a2 ab 5d fc 48 8d 7b 48 e8 f9 3d 99 fc 48 8b 73 48 40 f6 c6 01 0f 84 d6 fe ff ff 48 c7 c7 20 b6 ad bb e8 7f ab 5d fc 90 <0f> 0b 90 48 89 df e8 d3 3d 99 fc 48 8b 1b 4c 39 f3 0f 85 2c ff ff
->  RSP: 0000:ffffc9000001fdc0 EFLAGS: 00010246
->  RAX: 0000000000000029 RBX: ffff88810399ca80 RCX: 0000000000000000
->  RDX: 0000000000000000 RSI: ffffffffb9f19478 RDI: ffff88823c734e64
->  RBP: ffff88810399f300 R08: 0000000000000000 R09: fffffbfff79eb32a
->  R10: ffffffffbcf59957 R11: 0000000000000001 R12: ffff888104068090
->  R13: ffffffffbc89f0a0 R14: ffffffffbc8a0f08 R15: 0000000000000078
->  FS:  0000000000000000(0000) GS:ffff88823c700000(0000) knlGS:0000000000000000
->  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->  CR2: 0000000000000000 CR3: 00000001f6282001 CR4: 0000000000170ef0
->  Call Trace:
->   <TASK>
->   ? __warn+0xa5/0x200
->   ? event_trace_self_tests+0x1c2/0x480
->   ? report_bug+0x1f6/0x220
->   ? handle_bug+0x6f/0x90
->   ? exc_invalid_op+0x17/0x50
->   ? asm_exc_invalid_op+0x1a/0x20
->   ? tracer_preempt_on+0x78/0x1c0
->   ? event_trace_self_tests+0x1c2/0x480
->   ? __pfx_event_trace_self_tests_init+0x10/0x10
->   event_trace_self_tests_init+0x27/0xe0
->   do_one_initcall+0xd6/0x3c0
->   ? __pfx_do_one_initcall+0x10/0x10
->   ? kasan_set_track+0x25/0x30
->   ? rcu_is_watching+0x38/0x60
->   kernel_init_freeable+0x324/0x450
->   ? __pfx_kernel_init+0x10/0x10
->   kernel_init+0x1f/0x1e0
->   ? _raw_spin_unlock_irq+0x33/0x50
->   ret_from_fork+0x34/0x60
->   ? __pfx_kernel_init+0x10/0x10
->   ret_from_fork_asm+0x1b/0x30
->   </TASK>
-> 
-> This is because the synth_event_gen_test_init() left the synthetic events
-> that it created enabled. By having it disable them after testing, the
-> other selftests will run fine.
-> 
+This is obvious and was not my question.
 
-Ah, OK. It has to clean up the testing events.
+Best regards,
+Krzysztof
 
-Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-
-Thank you,
-
-> Cc: stable@vger.kernel.org
-> Fixes: 9fe41efaca084 ("tracing: Add synth event generation test module")
-> Reported-by: Alexander Graf <graf@amazon.com>
-> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-> ---
->  kernel/trace/synth_event_gen_test.c | 11 +++++++++++
->  1 file changed, 11 insertions(+)
-> 
-> diff --git a/kernel/trace/synth_event_gen_test.c b/kernel/trace/synth_event_gen_test.c
-> index 8dfe85499d4a..354c2117be43 100644
-> --- a/kernel/trace/synth_event_gen_test.c
-> +++ b/kernel/trace/synth_event_gen_test.c
-> @@ -477,6 +477,17 @@ static int __init synth_event_gen_test_init(void)
->  
->  	ret = test_trace_synth_event();
->  	WARN_ON(ret);
-> +
-> +	/* Disable when done */
-> +	trace_array_set_clr_event(gen_synth_test->tr,
-> +				  "synthetic",
-> +				  "gen_synth_test", false);
-> +	trace_array_set_clr_event(empty_synth_test->tr,
-> +				  "synthetic",
-> +				  "empty_synth_test", false);
-> +	trace_array_set_clr_event(create_synth_test->tr,
-> +				  "synthetic",
-> +				  "create_synth_test", false);
->   out:
->  	return ret;
->  }
-> -- 
-> 2.42.0
-> 
-
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
