@@ -1,151 +1,98 @@
-Return-Path: <linux-kernel+bounces-7875-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7876-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40FEB81AE92
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 06:58:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D8B281AE95
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 06:59:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F12A9285387
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 05:58:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 50E811C22F80
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 05:59:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3234DD2FF;
-	Thu, 21 Dec 2023 05:58:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="Vs3XnrV2"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2092AB669;
+	Thu, 21 Dec 2023 05:59:29 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+Received: from bg5.exmail.qq.com (bg5.exmail.qq.com [43.155.80.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8B19C2E6;
-	Thu, 21 Dec 2023 05:58:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1703138287;
-	bh=W9WVhROU+IkzZLwkcXujAUaruo43ab/6jRxwxCmucCQ=;
-	h=Date:From:To:Cc:Subject:From;
-	b=Vs3XnrV2DBaQye1qqFRU4nZywhbLwz/LF0l9b3l4mN+9cwK5d8CqBypB26Ab0T3xy
-	 6cTaRexp+nnVR/VUQw93kuDu0VrVy1RGqAwwy9Ee58MWHhqMZ1s6rRzrTN5bQgzA+Q
-	 S1WsHC7SK6Gjz7oibeZpp3CiIq7cs1R7Gys5TJnNHwoCpw/echOXiZ9sBflu8fRr/f
-	 QhZdjZPoKz3Duntd1azZtX8+1Qdwr4dRLfCw71vrPOXy9PMBcJF8sddOXcZSQ+Actf
-	 QHA/TrNyNlW1P4SChFzu0oH+M5Zvy03CuAeaQc+nC1OU/Xh1MSN7cOQAcDL+zbqiBQ
-	 J5/qJm+f32IAQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4SwfqL44kgz4wbr;
-	Thu, 21 Dec 2023 16:58:06 +1100 (AEDT)
-Date: Thu, 21 Dec 2023 16:58:05 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Lee Jones <lee@kernel.org>, Thierry Reding <thierry.reding@gmail.com>
-Cc: Sean Young <sean@mess.org>, Flavio Suligoi <f.suligoi@asem.it>, Linux
- Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the pwm tree
-Message-ID: <20231221165805.0c4771c1@canb.auug.org.au>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58F39B641;
+	Thu, 21 Dec 2023 05:59:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shingroup.cn
+X-QQ-mid: bizesmtp75t1703138317tn34i1sc
+Received: from HX01040022.powercore.com.cn ( [223.112.234.130])
+	by bizesmtp.qq.com (ESMTP) with 
+	id ; Thu, 21 Dec 2023 13:58:35 +0800 (CST)
+X-QQ-SSF: 01400000000000B0B000000A0000000
+X-QQ-FEAT: nA8mzCjPbKhGBn850sgwajtUoZgKOipjl+h8F581A/U2+hRYQkbNcWxNRxow0
+	apbv73toR/zQqt2GGAA5mM21WzAVvDatAK2HNZZD6zJpe/A+Z2Mtpc32+rVpapci+0+wmtL
+	pUz3N6rERb2me6XbELidjMV5/YjqYlZ4D5Bce2WD+zhs6viEBOgqSRkxLlBuvNxv9OqgUJj
+	yQQMxPsNyCEaNPDPx7TaF5OLfOQEyo3sY5eYbzV3/a2isEN+cdKaRoJTQQBbgwuWxFSGB0M
+	GR186SNKaIIBkcC7HVrBBRMpYyJfsWZVux6Mpbu4hmXjj/Tj3eE7xz1gjsfQF9VKHp4KHHB
+	ksnk8nFYpJv7oxTkjlJ8YcBjd4Q2a65btgzbHJMLgJ83M/uZezkrhxRWnpwYENE0B0Ea0KH
+	h91AgqX/qEHn809BUI9HCsLUCyP+arVX
+X-QQ-GoodBg: 2
+X-BIZMAIL-ID: 4987725630253096874
+From: "JiaLong.Yang" <jialong.yang@shingroup.cn>
+To: Alex Shi <alexs@kernel.org>,
+	Yanteng Si <siyanteng@loongson.cn>,
+	Jonathan Corbet <corbet@lwn.net>
+Cc: shenghui.qu@shingroup.cn,
+	ke.zhao@shingroup.cn,
+	zhijie.ren@shingroup.cn,
+	"JiaLong.Yang" <jialong.yang@shingroup.cn>,
+	Zenghui Yu <zenghui.yu@linux.dev>,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH V2] Docs/zh_CN: Fix the meaning of DEBUG to pr_debug()
+Date: Thu, 21 Dec 2023 13:58:32 +0800
+Message-Id: <20231221055832.4374-1-jialong.yang@shingroup.cn>
+In-Reply-To: <340cbb78-3e68-4584-8e11-313f7f86fd34@loongson.cn>
+References: 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/V1ol2N+FvGoGBHhVCu54mCy";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:shingroup.cn:qybglogicsvrgz:qybglogicsvrgz6a-1
 
---Sig_/V1ol2N+FvGoGBHhVCu54mCy
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+We know the macro DEBUG will make pr_debug() save the formatted
+string into final binary. But the translation in chinese gives a
+opposite meaning.
 
-Hi all,
-
-After merging the backlight tree, today's linux-next build (x86_64
-allmodconfig) failed like this:
-
-drivers/video/backlight/mp3309c.c: In function 'mp3309c_bl_update_status':
-drivers/video/backlight/mp3309c.c:134:23: error: implicit declaration of fu=
-nction 'pwm_apply_state'; did you mean 'pwm_apply_args'? [-Werror=3Dimplici=
-t-function-declaration]
-  134 |                 ret =3D pwm_apply_state(chip->pwmd, &pwmstate);
-      |                       ^~~~~~~~~~~~~~~
-      |                       pwm_apply_args
-
-Caused by commit
-
-  c748a6d77c06 ("pwm: Rename pwm_apply_state() to pwm_apply_might_sleep()")
-
-interacting with commit
-
-  2e914516a58c ("backlight: mp3309c: Add support for MPS MP3309C")
-
-from the backlight tree.
-
-I have appplied the following merge fix patch.
-
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Thu, 21 Dec 2023 16:13:37 +1100
-Subject: [PATCH] fix up for "backlight: mp3309c: Add support for MPS MP3309=
-C"
-
-from the backlight tree interacting with commit
-
-  c748a6d77c06 ("pwm: Rename pwm_apply_state() to pwm_apply_might_sleep()")
-
-from the pwm tree.
-
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: JiaLong.Yang <jialong.yang@shingroup.cn>
+link: https://lore.kernel.org/lkml/a9cbebd8-dd6e-d81c-471f-f40dcc7196ea@linux.dev/
+Reviewed-by: Zenghui Yu <zenghui.yu@linux.dev>
+link: https://lore.kernel.org/lkml/340cbb78-3e68-4584-8e11-313f7f86fd34@loongson.cn/
+Acked-by: Yanteng Si <siyanteng@loongson.cn>
 ---
- drivers/video/backlight/mp3309c.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/video/backlight/mp3309c.c b/drivers/video/backlight/mp=
-3309c.c
-index 34d71259fac1..b0d9aef6942b 100644
---- a/drivers/video/backlight/mp3309c.c
-+++ b/drivers/video/backlight/mp3309c.c
-@@ -131,7 +131,7 @@ static int mp3309c_bl_update_status(struct backlight_de=
-vice *bl)
- 					    chip->pdata->levels[brightness],
- 					    chip->pdata->levels[chip->pdata->max_brightness]);
- 		pwmstate.enabled =3D true;
--		ret =3D pwm_apply_state(chip->pwmd, &pwmstate);
-+		ret =3D pwm_apply_might_sleep(chip->pwmd, &pwmstate);
- 		if (ret)
- 			return ret;
-=20
-@@ -393,7 +393,7 @@ static int mp3309c_probe(struct i2c_client *client)
- 					    chip->pdata->default_brightness,
- 					    chip->pdata->max_brightness);
- 		pwmstate.enabled =3D true;
--		ret =3D pwm_apply_state(chip->pwmd, &pwmstate);
-+		ret =3D pwm_apply_might_sleep(chip->pwmd, &pwmstate);
- 		if (ret)
- 			return dev_err_probe(chip->dev, ret,
- 					     "error setting pwm device\n");
---=20
-2.43.0
+V2: add commit info.
+Maybe now I have known about the process of patch.
+Sorry for wasting time of yours.
 
---=20
-Cheers,
-Stephen Rothwell
+ Documentation/translations/zh_CN/core-api/printk-basics.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---Sig_/V1ol2N+FvGoGBHhVCu54mCy
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+diff --git a/Documentation/translations/zh_CN/core-api/printk-basics.rst b/Documentation/translations/zh_CN/core-api/printk-basics.rst
+index 59c6efb3fc41..cafa01bccff2 100644
+--- a/Documentation/translations/zh_CN/core-api/printk-basics.rst
++++ b/Documentation/translations/zh_CN/core-api/printk-basics.rst
+@@ -100,7 +100,7 @@ printk()的用法通常是这样的::
+ 
+ 为了调试，还有两个有条件编译的宏：
+ pr_debug()和pr_devel()，除非定义了 ``DEBUG`` (或者在pr_debug()的情况下定义了
+-``CONFIG_DYNAMIC_DEBUG`` )，否则它们会被编译。
++``CONFIG_DYNAMIC_DEBUG`` )，否则它们不会被编译。
+ 
+ 
+ 函数接口
+-- 
+2.25.1
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmWD0+0ACgkQAVBC80lX
-0Gwpcgf/QoObjAEU4FGHKar8ldO1j/e87uJFegGqZXmSYkUNnDT6CkOdSG5Csk0u
-q6AIBGqQML5cuG/QFgLaNtg+7ZvbwfG5kzAXUYJG9MTWLp7GHXO/omSsnvNmZBwe
-//prFdmkw90HwIigWCS6PpBq9QxbJW6bTzVd/56QLsKxy6a7SaEwL/TLFNMpRWBR
-N5kVBXf07veREM39cqmLBL/JtawQTziLhw+gX2Zb3e3yBVGcaz88j2C9od8BuLMI
-kqutrcehxIOe0in/GG3/sES+/tAzsECjZkYy5xMB7yJYrQ1ngfnfYVbpA8B/X7qf
-QpLp2I4aUSyMVGQfiEtf9sKrX/VKDg==
-=Vrbr
------END PGP SIGNATURE-----
-
---Sig_/V1ol2N+FvGoGBHhVCu54mCy--
 
