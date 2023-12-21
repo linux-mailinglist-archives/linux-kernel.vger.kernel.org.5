@@ -1,160 +1,80 @@
-Return-Path: <linux-kernel+bounces-8256-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8258-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A6E081B48F
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 12:00:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 039F881B495
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 12:02:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3DDBE1C21D77
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 11:00:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 97978B216E0
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 11:02:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9560E6ABA8;
-	Thu, 21 Dec 2023 11:00:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="KOX9jgSm";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="a5SMVjtV";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="KOX9jgSm";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="a5SMVjtV"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6A866ABBC;
+	Thu, 21 Dec 2023 11:02:06 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.astralinux.ru (mail.astralinux.ru [217.74.38.119])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 598126A02D;
-	Thu, 21 Dec 2023 10:59:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 6E4B91FB42;
-	Thu, 21 Dec 2023 10:59:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1703156397; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=npajW/mlWHrdK3reJzYC8iKJhiyMeovPiW3SxiW3PpU=;
-	b=KOX9jgSmKdCXnbQ05qeZeEyD/jTUeiSMMXmb78ldAvYlyvqNxabY3TB6ALwaCCgEyDa3n8
-	EQBTpLoWyijBPOZDfC7W01R28BIHiyE+Ib/rJ+U27Bc44UXCjZagaGjB0rz+mDtleJUkuA
-	MTvZYEbT7KizaGn9vezvjOCPie+ZLSc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1703156397;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=npajW/mlWHrdK3reJzYC8iKJhiyMeovPiW3SxiW3PpU=;
-	b=a5SMVjtV5OgcuJnDegg+TTnF73BGoJXfTmVoKqFOhRO7o8ahluGCw/YOn/2FC3YHdka5M8
-	jkBuR0SECJwCKcAw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1703156397; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=npajW/mlWHrdK3reJzYC8iKJhiyMeovPiW3SxiW3PpU=;
-	b=KOX9jgSmKdCXnbQ05qeZeEyD/jTUeiSMMXmb78ldAvYlyvqNxabY3TB6ALwaCCgEyDa3n8
-	EQBTpLoWyijBPOZDfC7W01R28BIHiyE+Ib/rJ+U27Bc44UXCjZagaGjB0rz+mDtleJUkuA
-	MTvZYEbT7KizaGn9vezvjOCPie+ZLSc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1703156397;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=npajW/mlWHrdK3reJzYC8iKJhiyMeovPiW3SxiW3PpU=;
-	b=a5SMVjtV5OgcuJnDegg+TTnF73BGoJXfTmVoKqFOhRO7o8ahluGCw/YOn/2FC3YHdka5M8
-	jkBuR0SECJwCKcAw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 59D5213725;
-	Thu, 21 Dec 2023 10:59:57 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id GXLsFa0ahGVRUQAAD6G6ig
-	(envelope-from <jack@suse.cz>); Thu, 21 Dec 2023 10:59:57 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 22EBAA07E3; Thu, 21 Dec 2023 11:59:57 +0100 (CET)
-Date: Thu, 21 Dec 2023 11:59:57 +0100
-From: Jan Kara <jack@suse.cz>
-To: Christoph Hellwig <hch@lst.de>
-Cc: linux-mm@kvack.org, "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	Jan Kara <jack@suse.com>, David Howells <dhowells@redhat.com>,
-	Brian Foster <bfoster@redhat.com>, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 05/17] writeback: remove a duplicate prototype for
- tag_pages_for_writeback
-Message-ID: <20231221105957.havwaqt4ijlu6l65@quack3>
-References: <20231218153553.807799-1-hch@lst.de>
- <20231218153553.807799-6-hch@lst.de>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 103BA6A34B;
+	Thu, 21 Dec 2023 11:02:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=astralinux.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=astralinux.ru
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.astralinux.ru (Postfix) with ESMTP id CB1C31868D3B;
+	Thu, 21 Dec 2023 14:01:58 +0300 (MSK)
+Received: from mail.astralinux.ru ([127.0.0.1])
+	by localhost (rbta-msk-vsrv-mail01.astralinux.ru [127.0.0.1]) (amavisd-new, port 10032)
+	with ESMTP id gt00sCmcMSre; Thu, 21 Dec 2023 14:01:58 +0300 (MSK)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.astralinux.ru (Postfix) with ESMTP id 7DA651868CE0;
+	Thu, 21 Dec 2023 14:01:58 +0300 (MSK)
+X-Virus-Scanned: amavisd-new at astralinux.ru
+Received: from mail.astralinux.ru ([127.0.0.1])
+	by localhost (rbta-msk-vsrv-mail01.astralinux.ru [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id GtlX3tkcyl9n; Thu, 21 Dec 2023 14:01:58 +0300 (MSK)
+Received: from new-mail.astralinux.ru (unknown [10.177.185.102])
+	by mail.astralinux.ru (Postfix) with ESMTPS id E00AB1867B5E;
+	Thu, 21 Dec 2023 14:01:57 +0300 (MSK)
+Received: from rbta-msk-lt-156703.astralinux.ru (unknown [10.177.232.135])
+	by new-mail.astralinux.ru (Postfix) with ESMTPA id 4SwnYx0D5MzfYkm;
+	Thu, 21 Dec 2023 14:01:56 +0300 (MSK)
+From: Alexey Panov <apanov@astralinux.ru>
+To: stable@vger.kernel.org,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Alexey Panov <apanov@astralinux.ru>,
+	ericvh@kernel.org,
+	lucho@ionkov.net,
+	asmadeus@codewreck.org,
+	linux_oss@crudebyte.com,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	v9fs@lists.linux.dev,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	lvc-project@linuxtesting.org
+Subject: [PATCH 5.10 0/1] 9p/net: fix possible memory leak in p9_check_errors()
+Date: Thu, 21 Dec 2023 14:01:21 +0300
+Message-Id: <20231221110122.9838-1-apanov@astralinux.ru>
+X-Mailer: git-send-email 2.30.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231218153553.807799-6-hch@lst.de>
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -0.80
-X-Spamd-Result: default: False [-0.80 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-0.998];
-	 RCPT_COUNT_SEVEN(0.00)[8];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[lst.de:email,suse.com:email,infradead.org:email,suse.cz:email];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.00)[28.53%]
-X-Spam-Flag: NO
+Content-Transfer-Encoding: quoted-printable
 
-On Mon 18-12-23 16:35:41, Christoph Hellwig wrote:
-> From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> [hch: split from a larger patch]
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Syzkaller reports "memory leak in p9pdu_readf" in 5.10 stable releases.
+I've attached reproducers in Bugzilla [1].
 
-Sure. Feel free to add:
+The problem has been fixed by the following patch which can be applied
+to the 5.10 branch.
+The fix is already present in all stable branches starting from 5.15.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+[1] https://bugzilla.kernel.org/show_bug.cgi?id=3D218235
 
-								Honza
-
-> ---
->  include/linux/writeback.h | 2 --
->  1 file changed, 2 deletions(-)
-> 
-> diff --git a/include/linux/writeback.h b/include/linux/writeback.h
-> index 083387c00f0c8b..833ec38fc3e0c9 100644
-> --- a/include/linux/writeback.h
-> +++ b/include/linux/writeback.h
-> @@ -364,8 +364,6 @@ bool wb_over_bg_thresh(struct bdi_writeback *wb);
->  typedef int (*writepage_t)(struct folio *folio, struct writeback_control *wbc,
->  				void *data);
->  
-> -void tag_pages_for_writeback(struct address_space *mapping,
-> -			     pgoff_t start, pgoff_t end);
->  int write_cache_pages(struct address_space *mapping,
->  		      struct writeback_control *wbc, writepage_t writepage,
->  		      void *data);
-> -- 
-> 2.39.2
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Found by Linux Verification Center (linuxtesting.org) with Syzkaller.
 
