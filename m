@@ -1,55 +1,58 @@
-Return-Path: <linux-kernel+bounces-8141-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8153-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9ACE681B291
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 10:38:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D7A0281B2BC
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 10:42:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4ECA31F213D0
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 09:38:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6978AB29EDC
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 09:42:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C11294C3DD;
-	Thu, 21 Dec 2023 09:33:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9041F4E1B2;
+	Thu, 21 Dec 2023 09:34:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="BLJzAzGQ"
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="u64MZeWy"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 059434C62E;
-	Thu, 21 Dec 2023 09:33:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0FD97C433C8;
-	Thu, 21 Dec 2023 09:33:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1703151180;
-	bh=9kXYBVe4VWyKcPg64mG3ckbqdxWdTNeCpzP3dYVryAA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=BLJzAzGQRPwBe+PoloppF5S1uECFhHshoXmhM+VK32/qhheiowOVMir0LDmM6lr7z
-	 wtnEQJiPxEZTU2KRGcQrbUniBw8KtTRTcBW/D3zKiq5PK0cxfAYUQ6CvSet5YktSpl
-	 jMVaNdg8Sil9YxSumf3ryg1pucK0oBTEqay6YUH8=
-Date: Thu, 21 Dec 2023 10:32:58 +0100
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Bagas Sanjaya <bagasdotme@gmail.com>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Linux Networking <netdev@vger.kernel.org>,
-	Linux Kernel Janitors <kernel-janitors@vger.kernel.org>,
-	Kees Cook <keescook@chromium.org>, Jakub Kicinski <kuba@kernel.org>,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D77B4D138;
+	Thu, 21 Dec 2023 09:34:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=eQNfhfsFjzJYZH5PnVQia77yspljqRwYnwLxrRqg9go=; b=u64MZeWyy0onASveXCvIqnXSiD
+	LGk90559UkYXU5K85QQi7++MG9hL64nCbLSYSgi548v/oMJRDdXKK3XV2Hb8L/yM8p/ejDNgATl1e
+	G3GXqSfxKvxVCWtmW3VZlRoZT6s2xKEac7KM6FYTX9or6sSmBplv5ZNs2tkggUvTF7PU=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rGFRx-003Ulg-T5; Thu, 21 Dec 2023 10:34:41 +0100
+Date: Thu, 21 Dec 2023 10:34:41 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Rob Herring <robh@kernel.org>
+Cc: Christian Marangi <ansuelsmth@gmail.com>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
 	"David S. Miller" <davem@davemloft.net>,
-	"Jiri Slaby (SUSE)" <jirislaby@kernel.org>,
-	Justin Stitt <justinstitt@google.com>,
-	Kunwu Chan <chentao@kylinos.cn>,
-	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	Nathan Chancellor <nathan@kernel.org>,
-	"Steven Rostedt (Google)" <rostedt@goodmis.org>,
-	Karsten Keil <isdn@linux-pingi.de>,
-	Karsten Keil <keil@b1-systems.de>,
-	YouHong Li <liyouhong@kylinos.cn>
-Subject: Re: [PATCH net 0/2] ISDN/mISDN maintenanceship cleanup
-Message-ID: <2023122121-yiddish-unproven-d793@gregkh>
-References: <20231221091419.11764-1-bagasdotme@gmail.com>
- <ba2ac330-d977-4637-93bc-99ee953faab8@gmail.com>
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Florian Fainelli <f.fainelli@gmail.com>, netdev@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Tobias Waldekranz <tobias@waldekranz.com>
+Subject: Re: [net-next PATCH v4 1/4] dt-bindings: net: phy: Document new LEDs
+ polarity property
+Message-ID: <42ddbe25-8acd-4959-ae84-269e943f7c84@lunn.ch>
+References: <20231215212244.1658-1-ansuelsmth@gmail.com>
+ <20231215212244.1658-2-ansuelsmth@gmail.com>
+ <20231220152209.GA229412-robh@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -58,23 +61,15 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ba2ac330-d977-4637-93bc-99ee953faab8@gmail.com>
+In-Reply-To: <20231220152209.GA229412-robh@kernel.org>
 
-On Thu, Dec 21, 2023 at 04:17:37PM +0700, Bagas Sanjaya wrote:
-> On 12/21/23 16:14, Bagas Sanjaya wrote:
-> > When I'm looking at simple typofix against ISDN subsystem [1], I find
-> > out more about subsystem activity. It turns out that the subsystem
-> > maintainer has been inactive since 3 years ago. And also, when I test
-> > sending "Lorem ipsum" message to the subsystem mailing list, it gets
-> > bounced.
-> > 
-> 
-> Oops, sorry not adding the link.
-> 
-> [1]: https://lore.kernel.org/lkml/20231221024758.1317603-1-liyouhong@kylinos.cn/
+> I do worry this continues to evolve until we've re-created the pinctrl 
+> binding...
 
-I too like to ignore pointless changes like this at times.  Just because
-others do, does NOT mean that the subsystem is not being maintained.
+Hi Rob
 
-greg k-h
+What is you opinion of the pinctrl binding? Should we just copy parts
+of it?
+
+     Andrew
 
