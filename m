@@ -1,134 +1,126 @@
-Return-Path: <linux-kernel+bounces-8750-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8754-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D80AF81BBB9
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 17:17:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69E4581BBD2
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 17:20:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9285428E970
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 16:17:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9C2711C22DF0
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 16:20:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E18CA55E5F;
-	Thu, 21 Dec 2023 16:16:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9365C55E72;
+	Thu, 21 Dec 2023 16:20:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="GNGmWCPI"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XO0qnS8H"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF1BA53A17
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 16:16:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-517ab9a4a13so746677a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 08:16:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703175410; x=1703780210; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=JNDwzkyVbVWHRlDqAlVAzcdYLL04NDJIY3AGS0xxeec=;
-        b=GNGmWCPI+4bPB0jMcjqWv2dQRgdruXpnDSHIN9F6ahzC9Bxnx1Av3pcA31WDlSKJsJ
-         mb2e6rz3HOfBOHEvoNnLKUXqTSEYqaxkn1jwRaq+ytg/cdRV+oX07TX59AYsclRHXymd
-         2164+EOsTiF8fE0+PF2Zu3DyTcL9jNeN0qECmvbZnPV49MkPLQ114M/ZVH+DREkajZQY
-         n/SzRM9pKi59mhLMiJYkHAHF2VCyXA1LHf5Sb+cD8/eETCoEd1MLCnxX4UJZtAIchVcL
-         uh6BaPX+dl9dgFxIOEo2Ac5VxMUng+bwpCM/WzejNR6rrbKiUL0bItbg6QG0x+jEm7f6
-         wq2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703175410; x=1703780210;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=JNDwzkyVbVWHRlDqAlVAzcdYLL04NDJIY3AGS0xxeec=;
-        b=ne6VnwDgbpUmFb7Pd8jTO1b/3qG+sJmzN6O/NCjVL2uEcKgrDzKTYgvyXo8RWYtCo7
-         xWjme/9F5pa8V7KxmrIuIFpBP4B//68VmIOzXJGL5I9agBseOluRwJrDGJh2z7Y1Wk0b
-         VS3VlWHlHTVWAW10FndbZa/PCjFSXKxEFRUZYPB7UrQ1SLisv4cFhfig/8pg5HLDbj1h
-         /14KjcHdjHdL3vVQcPN+Oe6EfWXmdZlxq8xk15eIX5o1KgW+7xLG9dEcV5LOGFyY6+BJ
-         Ui3Uucy4+n0ayU6PvvMU+CIK6cRvILCJaso+iZxAiVO1B6/QlOEXS6M0FiGcK9qTz7Ou
-         0NxA==
-X-Gm-Message-State: AOJu0Yyr59IRsN5S74biKh8Pui/BFHHgS+YOKsfOgyfbWAFEDDGqMujv
-	G0zwYXyXPjxzyzirBIYjRW7gmkKQaAgCKzTGjxkVEak2x+RPUTQabifvCA==
-X-Google-Smtp-Source: AGHT+IGINn7Xjp4T4JuWPq/y5NwX1YFNwZ5TaxZPwiRcnvRwn7M9zvqX0GjDaZz5uuqvzAHwqY8zeL30wI2SCXnzy7Q=
-X-Received: by 2002:a17:90b:3547:b0:28b:da84:164c with SMTP id
- lt7-20020a17090b354700b0028bda84164cmr1835002pjb.81.1703175410067; Thu, 21
- Dec 2023 08:16:50 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C57258237;
+	Thu, 21 Dec 2023 16:20:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1703175608; x=1734711608;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=+LUViFjrhWFYO8ZP8kMqmQZazZVfADjajAChlASICpI=;
+  b=XO0qnS8HmvHOXmpBXWf3stDlBCQR93JVPtK6j35OkKBAZJhw3rkiX5ay
+   2OwFlXF+Fq/ymZ9+JTCZ5gfj6tKbd9pFQGQ7f3cwqme2aCPG3T93cPLDj
+   46TD7yJ9cuERNTCPMnU2O/4Rvdu39GullLtsEet0HMlzZxSzayKOJqAXg
+   xkjFBUGpWdXVdBnXXkxdq3mAuZ9gUSx3iqpmDW0znuk4CXcPDF4owHEDj
+   6RgsfZhMtRgGXsygSRTFNtXA3yY2c/IamMQFMyjNxdqwBMIrmf8FTRxhD
+   N217m6PIRAdaSXXRFxBKfPjKVTZpitWCojTH+nnm/5N76ZlSjTNc7bqJr
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10931"; a="2829595"
+X-IronPort-AV: E=Sophos;i="6.04,293,1695711600"; 
+   d="scan'208";a="2829595"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Dec 2023 08:20:08 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10931"; a="805653548"
+X-IronPort-AV: E=Sophos;i="6.04,293,1695711600"; 
+   d="scan'208";a="805653548"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga008.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Dec 2023 08:20:03 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@intel.com>)
+	id 1rGLiy-00000007tMe-1CxJ;
+	Thu, 21 Dec 2023 18:16:40 +0200
+Date: Thu, 21 Dec 2023 18:16:40 +0200
+From: Andy Shevchenko <andriy.shevchenko@intel.com>
+To: Hugo Villeneuve <hugo@hugovil.com>
+Cc: gregkh@linuxfoundation.org, jirislaby@kernel.org, jringle@gridpoint.com,
+	kubakici@wp.pl, phil@raspberrypi.org, bo.svangard@embeddedart.se,
+	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+	Hugo Villeneuve <hvilleneuve@dimonoff.com>, stable@vger.kernel.org,
+	Yury Norov <yury.norov@gmail.com>
+Subject: Re: [PATCH 02/18] serial: sc16is7xx: fix invalid sc16is7xx_lines
+ bitfield in case of probe error
+Message-ID: <ZYRk6NpuUJvVEmOZ@smile.fi.intel.com>
+References: <20231219171903.3530985-1-hugo@hugovil.com>
+ <20231219171903.3530985-3-hugo@hugovil.com>
+ <ZYMK-l03S86Nw19I@smile.fi.intel.com>
+ <20231221105639.17910de5e7d7a486834bd856@hugovil.com>
+ <20231221111337.2c1af5bbe4920268dac25e8f@hugovil.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231220065522.351915-1-sshegde@linux.vnet.ibm.com>
- <CAKfTPtCRoLULQkRTZcJfXvSSqZYV2oRN0a3_AFiuqD7k0LtL-Q@mail.gmail.com> <85230ed0-26a0-4f08-aab0-f0a6ce03abe8@linux.vnet.ibm.com>
-In-Reply-To: <85230ed0-26a0-4f08-aab0-f0a6ce03abe8@linux.vnet.ibm.com>
-From: Vincent Guittot <vincent.guittot@linaro.org>
-Date: Thu, 21 Dec 2023 17:16:38 +0100
-Message-ID: <CAKfTPtBYRT9oOoLwZ-Gg3KVdK+2iJnPaXaWfiuebnGEOOArH0Q@mail.gmail.com>
-Subject: Re: [PATCH] sched: move access of avg_rt and avg_dl into existing
- helper functions
-To: Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
-Cc: mingo@kernel.org, peterz@infradead.org, dietmar.eggemann@arm.com, 
-	linux-kernel@vger.kernel.org, srikar@linux.vnet.ibm.com, yu.c.chen@intel.com, 
-	tim.c.chen@linux.intel.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231221111337.2c1af5bbe4920268dac25e8f@hugovil.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-Hi Shrikanth,
+On Thu, Dec 21, 2023 at 11:13:37AM -0500, Hugo Villeneuve wrote:
+> On Thu, 21 Dec 2023 10:56:39 -0500
+> Hugo Villeneuve <hugo@hugovil.com> wrote:
+> > On Wed, 20 Dec 2023 17:40:42 +0200
+> > Andy Shevchenko <andriy.shevchenko@intel.com> wrote:
 
-On Wed, 20 Dec 2023 at 15:49, Shrikanth Hegde
-<sshegde@linux.vnet.ibm.com> wrote:
->
->
->
-> On 12/20/23 7:29 PM, Vincent Guittot wrote:
->
-> Hi Vincent, thanks for taking a look.
->
-> > On Wed, 20 Dec 2023 at 07:55, Shrikanth Hegde
-> > <sshegde@linux.vnet.ibm.com> wrote:
-> >>
+...
 
-[...]
+> > this will indeed fix the problem described in patch 1.
+> > 
+> > However, if I remove patch 1, and I simulate the same probe error as
+> > described in patch 1, now we get stuck forever when trying to 
+> > remove the driver. This is something that I observed before and
+> > that patch 1 also corrected.
+> > 
+> > The problem is caused in sc16is7xx_remove() when calling this function
+> > 
+> >     kthread_flush_worker(&s->kworker);
+> > 
+> > I am not sure how best to handle that without patch 1.
+> 
+> Also, if we manage to get past kthread_flush_worker() and 
+> kthread_stop() (commented out for testing purposes), we get another bug:
+> 
+> # rmmod sc16is7xx
+> ...
+> crystal-duart-24m already disabled
+> WARNING: CPU: 2 PID: 340 at drivers/clk/clk.c:1090
+> clk_core_disable+0x1b0/0x1e0
+> ...
+> Call trace:
+> clk_core_disable+0x1b0/0x1e0
+> clk_disable+0x38/0x60
+> sc16is7xx_remove+0x1e4/0x240 [sc16is7xx]
+> 
+> This one is caused by calling clk_disable_unprepare(). But
+> clk_disable_unprepare() has already been called in probe error handling
+> code. Patch 1 also fixed this...
 
-> >> -#ifdef CONFIG_HAVE_SCHED_AVG_IRQ
-> >> -       if (READ_ONCE(rq->avg_irq.util_avg))
-> >> +       if (cpu_util_irq(rq))
-> >
-> > cpu_util_irq doesn't call READ_ONCE()
-> >
->
->
-> I see. Actually it would be right if cpu_util_irq does call READ_ONCE no?
+Word "fixed" is incorrect. "Papered over" is what it did.
 
-Yes, cpu_util_irq should call READ_ONCE()
+-- 
+With Best Regards,
+Andy Shevchenko
 
->
-> Sorry i havent yet understood the memory barriers in details. Please correct me
-> if i am wrong here,
-> since ___update_load_avg(&rq->avg_irq, 1) does use WRITE_ONCE and reading out this
-> value using cpu_util_irq on a different CPU should use READ_ONCE no?
 
-Yes
-
->
-> >
-> >>                 return true;
-> >> -#endif
-> >>
-> >>         return false;
-> >>  }
-> >> @@ -9481,8 +9479,8 @@ static unsigned long scale_rt_capacity(int cpu)
-> >>          * avg_thermal.load_avg tracks thermal pressure and the weighted
-> >>          * average uses the actual delta max capacity(load).
-> >>          */
-> >> -       used = READ_ONCE(rq->avg_rt.util_avg);
-> >> -       used += READ_ONCE(rq->avg_dl.util_avg);
-> >> +       used = cpu_util_rt(rq);
-> >> +       used += cpu_util_dl(rq);
-> >>         used += thermal_load_avg(rq);
-> >>
-> >>         if (unlikely(used >= max))
-> >> --
-> >> 2.39.3
-> >>
 
