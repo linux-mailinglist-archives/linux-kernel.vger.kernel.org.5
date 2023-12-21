@@ -1,114 +1,104 @@
-Return-Path: <linux-kernel+bounces-7681-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7680-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A885781AB95
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 01:17:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 382BE81AB8C
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 01:11:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DAD901C23933
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 00:17:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6ADB71C239C4
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 00:11:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59B36625;
-	Thu, 21 Dec 2023 00:17:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02E44291D;
+	Thu, 21 Dec 2023 00:11:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Ao0zN5c8"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KfAlNjWq"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E77E181
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 00:17:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-55361b7f38eso284621a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 16:17:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1703117854; x=1703722654; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZAV5X+k1qQI1nOHUSW7EkdUMeMAYS/98mQ/cpqxd4GY=;
-        b=Ao0zN5c8zV3VPNmJ7fIu/iYd8SkNJBOHePjTYpwPIzCXoShNQJXY1tcJ2PX1FZxkPb
-         JntXZW3mEVk6SRy35Vj/W+7Q0oHvP8jlBISE2ZiT6R2E+rR9UGbGuhVEDjZR5ge2R9rv
-         pm/4qJXBEzFzvYTCRpNanv6maJSOGfgsZB9m4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703117854; x=1703722654;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZAV5X+k1qQI1nOHUSW7EkdUMeMAYS/98mQ/cpqxd4GY=;
-        b=ZDJRbwn5WzoUzAf+auSXJXw69vzuGLUh/yegMidNJCGelU94hW1NpGdZuSQlOVnSy7
-         0Gm9NhSQLW+57rRD+AfU27n04CAS2X03gcVpvrDyHAcupIRtDkOL01XXCW+Kq9JRaAc0
-         l2VV9V7tsFIH6DTRo0po3evReSBqYUtQabm7XDRHYb6AJCJSa2eZPWwCLW0Kz9/UiUPT
-         xpWhkcejK377MA9RYRUosV1/80LfaBadZ6jGsxhdCYW4BW+RIEjkjDrdtIlJ423xuDPx
-         Va0San2C6b1vuqYcGRcj7P+8GCZ4C9bUBQyQeWAFeVeIeAiMuVeGESXnpqVAdwCZXB+r
-         gClw==
-X-Gm-Message-State: AOJu0Yzy1vFxynzTdj3klZ/m0PestA0SY1heQqNfosfTBXsZL8HDbSZo
-	+TqTvRpEyk60UGDGih4SqM5SR8r4RA0qi6nsSaoV+3Uk
-X-Google-Smtp-Source: AGHT+IGaky/xYoJL4esuEzHCOteS5kdez39zCLgr5zG472yHsCCl+vCiAKzr2xx4RT9k1bwZLrR8sA==
-X-Received: by 2002:a50:c311:0:b0:553:dcc7:f797 with SMTP id a17-20020a50c311000000b00553dcc7f797mr591687edb.56.1703117854635;
-        Wed, 20 Dec 2023 16:17:34 -0800 (PST)
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com. [209.85.128.41])
-        by smtp.gmail.com with ESMTPSA id i21-20020a0564020f1500b0055344b92fb6sm427031eda.75.2023.12.20.16.17.34
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Dec 2023 16:17:34 -0800 (PST)
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-40c3963f9fcso8685e9.1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 16:17:34 -0800 (PST)
-X-Received: by 2002:a50:f60d:0:b0:553:6de7:43d7 with SMTP id
- c13-20020a50f60d000000b005536de743d7mr3379edn.6.1703117474444; Wed, 20 Dec
- 2023 16:11:14 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 499AF28E6;
+	Thu, 21 Dec 2023 00:11:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5FC56C433C9;
+	Thu, 21 Dec 2023 00:11:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703117466;
+	bh=Bz8idteeUHPKAAs0PCjUkD6k7n9yUjKkLX+v+lcT8e8=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=KfAlNjWqhlxPDWK8fmG6O2z7RyNS3K3swU0NYssYUhsCeVeXFjf7Zsubgspuluh2u
+	 e01huwdy6R6lj9Tvu6c8lpBGuepGWSN+b0h6N41nxicnLL2J9GPFXgZ1ExQb37NU9B
+	 tG6MReEDLCKRpMAmf0qyoSdmnyUKy0ArDS+BV2Ldk7UrT7hEVleYEj/wRWBHEP+/GL
+	 avf6Lg850UiZKUF5/i/xI7O8XVCFtCpR+8o3die0vDtMJRyDQfFQwH42oP3kyHSPt3
+	 FJcm2p+pJyuWFq080JdpJBB+XdetzEnYV6JPBMrS2mqAvJC1BLi/Vs7Zm5PPElp7pD
+	 syNkn1NfxQO7w==
+Date: Thu, 21 Dec 2023 09:11:01 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, Mark
+ Rutland <mark.rutland@arm.com>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, Andrew Morton
+ <akpm@linux-foundation.org>, Tzvetomir Stoyanov <tz.stoyanov@gmail.com>,
+ Vincent Donnefort <vdonnefort@google.com>, Kent Overstreet
+ <kent.overstreet@gmail.com>
+Subject: Re: [PATCH v5 04/15] ring-buffer: Set new size of the ring buffer
+ sub page
+Message-Id: <20231221091101.c518d74654d507af07c53eb1@kernel.org>
+In-Reply-To: <20231220115602.1903bf77@gandalf.local.home>
+References: <20231219185414.474197117@goodmis.org>
+	<20231219185628.588995543@goodmis.org>
+	<20231221013456.cc03acc7b565cfa9a15cbe87@kernel.org>
+	<20231220115602.1903bf77@gandalf.local.home>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20231220235459.2965548-1-markhas@chromium.org> <20231220165423.v2.14.I7ea3f53272c9b7cd77633adfd18058ba443eed96@changeid>
-In-Reply-To: <20231220165423.v2.14.I7ea3f53272c9b7cd77633adfd18058ba443eed96@changeid>
-From: Doug Anderson <dianders@chromium.org>
-Date: Wed, 20 Dec 2023 16:10:56 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=WE=HhcBQVVtbm7ev3-MQzeaXuoaRL7WYr0c7-Uhv_v3w@mail.gmail.com>
-Message-ID: <CAD=FV=WE=HhcBQVVtbm7ev3-MQzeaXuoaRL7WYr0c7-Uhv_v3w@mail.gmail.com>
-Subject: Re: [PATCH v2 14/22] arm64: dts: qcom: sc7280: Enable cros-ec-spi as
- wake source
-To: Mark Hasemeyer <markhas@chromium.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Tzung-Bi Shih <tzungbi@kernel.org>, 
-	Raul Rangel <rrangel@chromium.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Andy Shevchenko <andriy.shevchenko@intel.com>, Rob Herring <robh@kernel.org>, 
-	Sudeep Holla <sudeep.holla@arm.com>, Bjorn Andersson <andersson@kernel.org>, 
-	Conor Dooley <conor+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
-	cros-qcom-dts-watchers@chromium.org, devicetree@vger.kernel.org, 
-	linux-arm-msm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Hi,
+On Wed, 20 Dec 2023 11:56:02 -0500
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-On Wed, Dec 20, 2023 at 3:55=E2=80=AFPM Mark Hasemeyer <markhas@chromium.or=
-g> wrote:
->
-> The cros_ec driver currently assumes that cros-ec-spi compatible device
-> nodes are a wakeup-source even though the wakeup-source property is not
-> defined.
->
-> Add the wakeup-source property to all cros-ec-spi compatible device
-> nodes to match expected behavior.
->
-> Signed-off-by: Mark Hasemeyer <markhas@chromium.org>
-> ---
->
-> Changes in v2:
-> -Split by arch/soc
->
->  arch/arm64/boot/dts/qcom/sc7280-herobrine.dtsi | 1 +
->  arch/arm64/boot/dts/qcom/sc7280-idp-ec-h1.dtsi | 1 +
->  2 files changed, 2 insertions(+)
+> On Thu, 21 Dec 2023 01:34:56 +0900
+> Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
+> 
+> > On Tue, 19 Dec 2023 13:54:18 -0500
+> > Steven Rostedt <rostedt@goodmis.org> wrote:
+> > 
+> > > From: "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+> > > 
+> > > There are two approaches when changing the size of the ring buffer
+> > > sub page:
+> > >  1. Destroying all pages and allocating new pages with the new size.
+> > >  2. Allocating new pages, copying the content of the old pages before
+> > >     destroying them.
+> > > The first approach is easier, it is selected in the proposed
+> > > implementation. Changing the ring buffer sub page size is supposed to
+> > > not happen frequently. Usually, that size should be set only once,
+> > > when the buffer is not in use yet and is supposed to be empty.
+> > > 
+> > > Link: https://lore.kernel.org/linux-trace-devel/20211213094825.61876-5-tz.stoyanov@gmail.com
+> > >   
+> > 
+> > OK, this actually reallocate the sub buffers when a new order is set.
+> > BTW, with this change, if we set a new order, the total buffer size will be
+> > changed too? Or reserve the total size? I think either is OK but it should
+> > be described in the document. (e.g. if it is changed, user should set the
+> > order first and set the total size later.)
+> > 
+> 
+> Patch 11 keeps the same size of the buffer. As I would think that would be
+> what the user would expect. And not only that, it breaks the latency
+> tracers if it doesn't keep the same size.
 
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
+Got it!
+
+Thanks!
+
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
