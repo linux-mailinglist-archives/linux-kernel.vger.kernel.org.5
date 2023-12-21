@@ -1,136 +1,147 @@
-Return-Path: <linux-kernel+bounces-7970-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7972-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91AA081AFEE
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 09:02:16 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91ACB81AFF0
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 09:03:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C4EB01C233D3
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 08:02:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 334FCB242E2
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 08:02:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 746FC17735;
-	Thu, 21 Dec 2023 08:01:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EC5615AF5;
+	Thu, 21 Dec 2023 08:02:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="A56F+kNL"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PE9adloT"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CF64168DC;
-	Thu, 21 Dec 2023 08:01:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BL63Ybt000962;
-	Thu, 21 Dec 2023 08:01:23 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=HmVP3IU1SjpxqjTkq5j6cDNuXbEN5+VhE5eP5wjabgI=; b=A5
-	6F+kNLktkSss3iY2gwhBbj24ZYZD+cI0rHoZ0zwnh82v9HzfGNOgFueg1eabfkZ4
-	Iua5x2XosAu4nTUcy0D/cqYbE4QslvkPwuZPaU/MWUvsksRTBpjVlSA7AbCr793r
-	8vaQnl6IKcZIjznrbg+aUPD1obrFVlY4+k1/F7lcCaWAbFY6J7kI7HMvtkNEa4dU
-	DbKodidSVQcCxJCPraRCdONuh98DnYPdyCu7BVNddRgyixFuxYN+uZ4CAgQDaSon
-	1ZeccaPB9zaI+Hi0t1PrP5aBT8fN98ugb/qeBa+N/1ncbs00YYj+TrTg2ushY4sB
-	Rer8D+KHFHZ5JS/QL+BQ==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v4dwx0xm0-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 21 Dec 2023 08:01:22 +0000 (GMT)
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BL81L69016990
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 21 Dec 2023 08:01:21 GMT
-Received: from [10.216.32.244] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 21 Dec
- 2023 00:01:12 -0800
-Message-ID: <6b4ba9ab-7f5a-6733-5cd0-d0b8da80b3d1@quicinc.com>
-Date: Thu, 21 Dec 2023 13:31:08 +0530
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3447F156DA
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 08:02:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1d2e6e14865so3688095ad.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 00:02:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703145763; x=1703750563; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=kHNHNkxPChwYV/cJG0BrAlWZ4xpohppGcHR/JIHLocU=;
+        b=PE9adloTm81qO2cAWS4JCQq2qm3Nq44BXXxIKVR55KFH4+KFwXDkdlqJCIl2c1Kh5N
+         qg8OcRnJvQgzP7Xs4toTkOjBu10+Dw1hm317QpmZ2m+HhDHj2ed2mLDbkF32sZ5calI/
+         IvydIn/gTphFspMd94clmNEroXhTRC4n389E81g7gbiB3N8IzXPJqATH8zhAgWwX3TYA
+         X99rFrPOfQ3boez6zhVC5KaIQ196zRCUWZQ0+EmEhWtnH4GvDA/Q5VqwsBMIxMfnlWFK
+         ZF0vk4NlJ0YoOuhI/OYoz7QnApuneahsjjAwEPUfhG87fl8CtwntMC4XzplYXyZpRkwt
+         ExHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703145763; x=1703750563;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kHNHNkxPChwYV/cJG0BrAlWZ4xpohppGcHR/JIHLocU=;
+        b=X8YTQWlcfpYdVC/utr1+zL1gfGmxxePZwHwkOHHP3gN/PGGeg0Ofgs3AthsMzcnsfS
+         4AjYxwp6A1fAq0CUqYZi3PQu8su1jhvxAFt0pCO9HVJeQ/0hrQU1o1g0ZwaEbsaILxzh
+         JKjZp7rSKnvZF+ACyP0ODA1Y0fvSMHIxJSp/pjo5DU4NL56j5ZaZ/px/14r91iXJKhnj
+         i4pmJP0jRTort5hwlazLXJ1lVPws7cNJOLfWne0igNPcCLjp3/xoVDK+jdV5aFYmP3me
+         xDaHJmsj+6YVtT3ia60eeCdHln+P+SiQ8ekgt7pDVD9x0TsyVgTjGZoo8b3wzRs9t6W8
+         J6Xw==
+X-Gm-Message-State: AOJu0YwtcVRTfL6swBJbqyfYU2LnemGNgd8KbifAm1wxWiwmfGA/2Ali
+	CtsPNLZ7biNwS2x+Cr+AhAY=
+X-Google-Smtp-Source: AGHT+IF2eeZvasNcamfi7XJ3xTETWNM7R/hEg6K4F5PXh8uZy6dPonc+SRCZGCvdELZNpGbK4ymeBw==
+X-Received: by 2002:a17:90a:fc88:b0:28b:eb71:5e6e with SMTP id ci8-20020a17090afc8800b0028beb715e6emr354280pjb.81.1703145763335;
+        Thu, 21 Dec 2023 00:02:43 -0800 (PST)
+Received: from DESKTOP-IM4PCEA.localdomain ([49.206.131.209])
+        by smtp.gmail.com with ESMTPSA id 29-20020a17090a1a5d00b0028b0424a4bcsm5307787pjl.54.2023.12.21.00.02.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Dec 2023 00:02:42 -0800 (PST)
+Date: Thu, 21 Dec 2023 13:32:29 +0530
+From: "<Mintu Patel>" <mintupatel89@gmail.com>
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: badolevishal1116@gmail.com, chinmoyghosh2001@gmail.com,
+	linux-kernel@vger.kernel.org, mingo@redhat.com, rostedt@goodmis.org,
+	vimal.kumar32@gmail.com, will@kernel.org
+Subject: Re: [PATCH v2] rt_spin_lock: To list the correct owner of
+ rt_spin_lock
+Message-ID: <20231221080229.GA38@DESKTOP-IM4PCEA.localdomain>
+References: <20220619142038.1274-1-mintupatel89@gmail.com>
+ <20220627161136.3468-1-mintupatel89@gmail.com>
+ <20231206185837.GB9899@noisy.programming.kicks-ass.net>
+ <20231207170130.GA78@DESKTOP-IM4PCEA.localdomain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.1
-Subject: Re: [PATCH 06/11] iio: adc: Add QCOM PMIC5 Gen3 ADC bindings
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, <agross@kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linus.walleij@linaro.org>, <Jonathan.Cameron@huawei.com>,
-        <sboyd@kernel.org>, <dmitry.baryshkov@linaro.org>,
-        <quic_subbaram@quicinc.com>, <quic_collinsd@quicinc.com>,
-        <quic_kamalw@quicinc.com>, <marijn.suijten@somainline.org>,
-        <andriy.shevchenko@linux.intel.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio
-	<konrad.dybcio@linaro.org>, Luca Weiss <luca@z3ntu.xyz>,
-        <linux-iio@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>
-CC: <linux-arm-msm-owner@vger.kernel.org>
-References: <20230708072835.3035398-1-quic_jprakash@quicinc.com>
- <20230708072835.3035398-7-quic_jprakash@quicinc.com>
- <bb225c12-f017-fac3-45f1-c828a10553e2@linaro.org>
- <99070bce-6188-82eb-c92c-cf7a323394e2@quicinc.com>
- <c4ef9cac-15ac-4c2c-9f9a-cb9e740e2900@linaro.org>
- <06d0f06a-7a5a-44d1-0bad-27f56bfc1421@quicinc.com>
- <e469039c-9370-4718-9081-98a203c62e77@linaro.org>
-From: Jishnu Prakash <quic_jprakash@quicinc.com>
-In-Reply-To: <e469039c-9370-4718-9081-98a203c62e77@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: SgOsP3SemRNaoZg_pUYcdpLv83saZw_C
-X-Proofpoint-GUID: SgOsP3SemRNaoZg_pUYcdpLv83saZw_C
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- impostorscore=0 lowpriorityscore=0 bulkscore=0 adultscore=0 mlxscore=0
- mlxlogscore=724 phishscore=0 clxscore=1011 suspectscore=0 spamscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2312210058
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231207170130.GA78@DESKTOP-IM4PCEA.localdomain>
 
-Hi Krzysztof
+On Thu, Dec 07, 2023 at 10:31:30PM +0530, <Mintu Patel> wrote:
+> On Wed, Dec 06, 2023 at 07:58:37PM +0100, Peter Zijlstra wrote:
+> > On Mon, Jun 27, 2022 at 09:41:38PM +0530, Mintu Patel wrote:
+> > >    rt_spin_lock is actually mutex on RT Kernel so it goes for contention
+> > >    for lock. Currently owners of rt_spin_lock are decided before actual
+> > >    acquiring of lock. This patch would depict the correct owner of
+> > >    rt_spin_lock. The patch would help in solving crashes and deadlock
+> > >    due to race condition of lock
+> > > 
+> > > acquiring rt_spin_lock        acquired the lock       released the lock
+> > >                     <-------->                <------->
+> > >                     contention period         Held period
+> > > 
+> > > Thread1                             Thread2
+> > > _try_to_take_rt_mutex+0x95c+0x74    enqueue_task_dl+0x8cc/0x8dc
+> > > rt_spin_lock_slowlock_locked+0xac+2 rt_mutex_setprio+0x28c/0x574
+> > > rt_spin_lock_slowlock+0x5c/0x90     task_blocks_rt_mutex+0x240/0x310
+> > > rt_spin_lock+0x58/0x5c              rt_spin_lock_slowlock_locked+0xac/0x2
+> > > driverA_acquire_lock+0x28/0x56      rt_spin_lock_slowlock+0x5c/0x90
+> > > 				    rt_spin_lock+0x58/0x5c
+> > >                                     driverB_acquire_lock+0x48/0x6c
+> > > 
+> > > As per above call traces sample, Thread1 acquired the rt_spin_lock and
+> > > went to critical section on the other hand Thread2 kept trying to acquire
+> > > the same rt_spin_lock held by Thread1 ie contention period is too high.
+> > > Finally Thread2 entered to dl queue due to high held time of the lock by
+> > > Thread1. The below patch would help us to know the correct owner of
+> > > rt_spin_lock and point us the driver's critical section. Respective
+> > > driver need to be debugged for longer held period of lock.
+> > > 
+> > >    ex: cat /sys/kernel/debug/tracing/trace
+> > > 
+> > >    kworker/u13:0-150   [003] .....11   202.761025: rt_spinlock_acquire:
+> > > Process: kworker/u13:0 is acquiring lock: &kbdev->hwaccess_lock
+> > >    kworker/u13:0-150   [003] .....11   202.761039: rt_spinlock_acquired:
+> > > Process: kworker/u13:0 has acquired lock: &kbdev->hwaccess_lock
+> > >    kworker/u13:0-150   [003] .....11   202.761042: rt_spinlock_released:
+> > > Process: kworker/u13:0 has released lock: &kbdev->hwaccess_lock
+> > > 
+> > 
+> > The above is word salad and makes no sense. No other lock has special
+> > tracing like this, so rt_lock doesn't need it either.
+> > 
+> Hi Peter,
+> 
+> As per current implementation of rt_spin_lock tracing mechanism on RTLinux, 
+> if more than one threads are trying to acquire a rt_spin_lock,
+> then multiple threads are assigned as owners of the same lock, more over
+> only one thread is actual owner of lock and others are still
+> contending for the same lock. Such trace logs can mislead the developers
+> during debugging of critical issues like deadlock, crashes etc
+> 
+> The above patch would generate rt_spin_lock locking traces which would
+> depict correct owner of the lock and other thread details which 
+> are trying to acquire the lock.
+> 
+> Regards,
+> Mintu Patel 
 
-On 11/16/2023 5:16 PM, Krzysztof Kozlowski wrote:
-> On 16/11/2023 04:23, Jishnu Prakash wrote:
->> Hi Krzysztof,
->>
->> On 10/23/2023 12:06 PM, Krzysztof Kozlowski wrote:
->>> You cannot remove constraints from an entry. 
->>
->> In this case, minItems: 1 will remain true for all other ADC devices
->> documented here, but it will not be true for ADC5 Gen3, as this one can
->> have multiple base addresses if more than one SDAM is used for ADC. I'll
->> update this separately for each compatible, keeping it the same for the
->> older ones, hope that should work.
-> BTW, you disagree with me and send new version 2 minutes later.
-> Basically you did not leave me any time to respond to you.
->
-> That's not how the process works.
+Hi Peter,
 
+Hope you got a chance to check the reply.
 
-Sorry about this, I'll make sure not to repeat this.
-
-Thanks,
-
-Jishnu
-
-
->
-> Best regards,
-> Krzysztof
->
+Regards,
+Mintu Patel
 
