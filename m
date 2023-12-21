@@ -1,34 +1,64 @@
-Return-Path: <linux-kernel+bounces-8088-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8089-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25C5D81B208
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 10:21:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C76081B20B
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 10:21:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BA629B27825
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 09:21:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F40931F24ACA
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 09:21:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 135E83399E;
-	Thu, 21 Dec 2023 09:06:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27A723C693;
+	Thu, 21 Dec 2023 09:06:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="GmiA1a0Q"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D965D4E60F;
-	Thu, 21 Dec 2023 09:06:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=molgen.mpg.de
-Received: from [192.168.0.4] (ip5f5af5c1.dynamic.kabel-deutschland.de [95.90.245.193])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: pmenzel)
-	by mx.molgen.mpg.de (Postfix) with ESMTPSA id B47F161E5FE3B;
-	Thu, 21 Dec 2023 10:05:19 +0100 (CET)
-Message-ID: <f7bf2cbf-0ff4-4d97-8d50-024ad1c9efec@molgen.mpg.de>
-Date: Thu, 21 Dec 2023 10:05:18 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9510839AE5
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 09:06:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-550dd0e3304so693809a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 01:06:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1703149573; x=1703754373; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=lI766jzUYUWJ3P/E5rSlAvRcPNQkWVEH2r/Nzkx4/F8=;
+        b=GmiA1a0QtmgguBNgbUex+ltA5M3DZSvCyv8fPSb6KOG4PwDphIh8f6eJ/PM5AbvscB
+         tenRSVKFrArYW5gKb0KKuPmIgIycNNAUCLn1kH3iVcQQij4R3Do1cEsM874adaOYn8yp
+         1dmpcgILqaWYMsNPkesELTwn85kRWMI3lTLsfErxAnsumvIrdXPRUA+be1JTMqofN0/R
+         DhmOUw1zEwCqCqgxQPqLvmqRJqq8nK8Aiwm2MXfHZ3uFMDdplUkbzuGyys7iE3ZJWfnJ
+         LBjO7cvf6EXMpPj15ULX4ff8nllRhAePgvoAVXkf1tNtA6RSvjcPGaM38znvDwz68ZbI
+         yCNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703149573; x=1703754373;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=lI766jzUYUWJ3P/E5rSlAvRcPNQkWVEH2r/Nzkx4/F8=;
+        b=rwPA6+4fmUqB2I//QZR4JoWkLdwReJPmgJpro0DIhSNK/foL38KcTWC21OFYKFk10X
+         MSSrW60+uG+h6fbxC/RfXtStT1A2nwS7o1/A5X/higqbe+jZoNr3ajaUNJcRwvuUc2fc
+         mhV5K3Mqmx4BRdBAZJVa74g7+h4sbZQ+u88FS3uTr6XaeHRqC3cv9PP089FN4E1PAYUV
+         ciMAGbMhkS8+ki86xfq9mnV8P48Wql3f4LxurWvxHDoK+gR3Bqy1WUDcKEItXcz/FPix
+         zbbYXe5QG2lv8MymsGkvcDP/3oh7jcr+QilDjhzaJnHONhLeOgZIA/EIBkVf9k20z5rD
+         kRAw==
+X-Gm-Message-State: AOJu0YwkZcvAb+bqgSfts18dJfD0at/HeP955BjI3oCibAZvK0RWyPiG
+	7lYsreKdzs44CixXeWLZagkm28YP0p/5h6YBJZn8LQ==
+X-Google-Smtp-Source: AGHT+IGxx6jNlVOIn0bybhJ5v14ynu0QE7zYmiCtUwNN+dfm93hxFMGyPP23QX5YQi6JsfrY8q0oIg==
+X-Received: by 2002:a17:906:d84:b0:a1c:85bc:e9ca with SMTP id m4-20020a1709060d8400b00a1c85bce9camr11190221eji.13.1703149572749;
+        Thu, 21 Dec 2023 01:06:12 -0800 (PST)
+Received: from [192.168.0.22] ([78.10.206.178])
+        by smtp.gmail.com with ESMTPSA id lo27-20020a170906fa1b00b00a23365f1290sm715492ejb.218.2023.12.21.01.06.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Dec 2023 01:06:12 -0800 (PST)
+Message-ID: <e5373897-b868-4b6a-a140-19f80a6cdbb3@linaro.org>
+Date: Thu, 21 Dec 2023 10:06:10 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -36,71 +66,79 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] Bluetooth: hci_sync: fix hogp device suspend bug
-To: 15013537245@163.com
-Cc: marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com,
- linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
- zhongjun.yu@quectel.com, Clancy Shang <clancy.shang@quectel.com>
-References: <20231221071621.1154462-1-15013537245@163.com>
+Subject: Re: [PATCH 1/2] dt-bindings: hwmon: ina2xx: Add label property
 Content-Language: en-US
-From: Paul Menzel <pmenzel@molgen.mpg.de>
-In-Reply-To: <20231221071621.1154462-1-15013537245@163.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+To: Michal Simek <michal.simek@amd.com>, linux-kernel@vger.kernel.org,
+ monstr@monstr.eu, michal.simek@xilinx.com, git@xilinx.com
+Cc: Conor Dooley <conor+dt@kernel.org>, Guenter Roeck <linux@roeck-us.net>,
+ Jean Delvare <jdelvare@suse.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+ linux-hwmon@vger.kernel.org
+References: <6f3c57d08984c1978569d3918cb38eb295c0c67d.1703077926.git.michal.simek@amd.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <6f3c57d08984c1978569d3918cb38eb295c0c67d.1703077926.git.michal.simek@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Dear Clancy,
-
-
-Thank you for your patch.
-
-
-Am 21.12.23 um 08:16 schrieb 15013537245@163.com:
-> From: clancy shang <clancy.shang@quectel.com>
-
-Not important, but you might want to start your name with a capital letter.
-
-> when Bluetooth enter suspend, and disconnect everything with the diconnect
-
-1.  enter*s*
-2.  disconnect*s*
-3.  … the di*s*connect …
-
-> reason code of 0x15,the hogp device could not into sleep and continued
-
-Please add a space after the comma.
-
-> advertizing. when use the diconnect reason code of 0x13, the hogp device
-
-1.  adverti*s*ing
-2.  di*s*connect
-
-> into sleep succeeded.
-
-going into
-
-What device is it exactly?
-
-> Signed-off-by: clancy shang <clancy.shang@quectel.com>
-> ---
->   net/bluetooth/hci_sync.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+On 20/12/2023 14:12, Michal Simek wrote:
+> Add a label property to allow a custom name to be used for identifying
+> a device on the board. This is useful when multiple devices are present on
+> the same board. Similar change was done by commit ffae65fb1ae4
+> ("dt-bindings: spi: spi-cadence: Add label property").
 > 
-> diff --git a/net/bluetooth/hci_sync.c b/net/bluetooth/hci_sync.c
-> index d85a7091a116..16b5420c32d0 100644
-> --- a/net/bluetooth/hci_sync.c
-> +++ b/net/bluetooth/hci_sync.c
-> @@ -5927,7 +5927,7 @@ int hci_suspend_sync(struct hci_dev *hdev)
->   
->   	if (hci_conn_count(hdev)) {
->   		/* Soft disconnect everything (power off) */
-> -		err = hci_disconnect_all_sync(hdev, HCI_ERROR_REMOTE_POWER_OFF);
-> +		err = hci_disconnect_all_sync(hdev, HCI_ERROR_REMOTE_USER_TERM);
->   		if (err) {
->   			/* Set state to BT_RUNNING so resume doesn't notify */
->   			hdev->suspend_state = BT_RUNNING;
+> Signed-off-by: Michal Simek <michal.simek@amd.com>
+> ---
+> 
+> zcu102 is using this feature
 
+Is the driver or driver core parsing it?
 
-Kind regards,
+Best regards,
+Krzysztof
 
-Paul
 
