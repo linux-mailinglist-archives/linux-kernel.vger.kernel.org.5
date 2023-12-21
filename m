@@ -1,168 +1,330 @@
-Return-Path: <linux-kernel+bounces-7910-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7911-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDDC981AEFE
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 07:58:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61F7381AF01
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 07:59:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 943DD2875E1
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 06:58:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DE8C81F24C13
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 06:59:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8ED6BE62;
-	Thu, 21 Dec 2023 06:58:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 410AF13FF4;
+	Thu, 21 Dec 2023 06:59:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="P2CGQMti"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-il1-f180.google.com (mail-il1-f180.google.com [209.85.166.180])
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0AEBBA33
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 06:58:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nrubsig.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f180.google.com with SMTP id e9e14a558f8ab-35fcf7a999aso2473075ab.1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 22:58:29 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23EB7C143
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 06:59:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-5e7d306ee27so4913927b3.3
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 22:59:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1703141977; x=1703746777; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=V5qjfhA6k6Ypy5X9ehKiyPOQQXjASHEE/ZIK1E7N2ew=;
+        b=P2CGQMti4MKDnyuvyP3VOw6ryj8I+bTfyxxz8qCgu/C2aWMccGTmHsMRjcDetOUA1f
+         tlo3pgqPwH4AOTDP3aW2VoZZ3gUuARh8nl1DLVIQ2rpsKU5AKfhWM5Js7SeyHIVWG6cc
+         S+IRGu3HxScjkNH63IN4lG0h6A//tBBbweNNHeG8VFVtI7sEGVf3ZWpVyW/S3Rs0bTfk
+         ieqwdOcs8ja4rD85Chsco2xqWvCx3nQoeU6At7+W55OZuXbMRVlk22XmJ4Wd0kR+nqfT
+         +zQG1OY1QbPYIm9CgbZDOu9cHXFbukqHAjn5KtFuLW5Rtjvfis8NacxIUyhtPYRn+bWJ
+         c5ug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703141909; x=1703746709;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=F33JpJCGkVMAPFCqhQGDy7W529WxuPQzQDW2IWFcVg0=;
-        b=Bmu6GKRBxr7op6r+aeAG5kFO1KANZDHHQvxTUzfrCFDFK/llYpftuaAokNrJiMTX9Z
-         /w2rvAD8I/XCnoCZMfpa5uKJZx3R/6YIzkdrGsMkJ8B9iNi8re5I4nN+IsMC6ANSy7Tg
-         zRHptPf8LLW1Ria+qHTslvn04Acl/0JJleCGYu/tjNbEX6mrc1E8eNRRJbiI8BRgM4VU
-         r9rWfyJE3O2oDe/68Hb4nCxqn6wzqX6MTPyG1eaaWzB3KF+c+2L3oHZusuc31lW6FZpu
-         sQ/qeF+6RYr4cMqxVJqeo0NIwkMmhGUBSBnRMwPNGZQ/T1E7p24XpVWzHiPM1y7sy4dm
-         nyYw==
-X-Gm-Message-State: AOJu0YybmXJtG5rvfVtxK1w/kFGHDPbUxxEPDaV1IcPKUzvpsUOlWTdd
-	LQ362xGMf/iU6X10zKnZN1g0biss2uCfpAMf9WarLfbUYIg=
-X-Google-Smtp-Source: AGHT+IHSMFNOTN8S2FDbHXvNpdlVFEYdfgqOGU/DJbrFFNn9BXOx0k0lPo7HTNp/r10yOmtp5jquT79bf2jCvcAQKnk=
-X-Received: by 2002:a05:6e02:1caa:b0:35d:59b3:2f86 with SMTP id
- x10-20020a056e021caa00b0035d59b32f86mr190327ill.27.1703141908722; Wed, 20 Dec
- 2023 22:58:28 -0800 (PST)
+        d=1e100.net; s=20230601; t=1703141977; x=1703746777;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=V5qjfhA6k6Ypy5X9ehKiyPOQQXjASHEE/ZIK1E7N2ew=;
+        b=Hik0EdZUxcPnmUUMyknIMBT6sv3ADTt3iCOyPWKwtsadEDY/5+XNGL/ZZqLAUl3ZVt
+         but7CsihBs7hBSrLPQr0eTDLHzGTMM61BUYsUv4dI9pAFqGgDUYz65tJGYK7WdiAaWqz
+         Kc3Yvpb/Zs7I9webA4QeF9BrvfDH+4cLBYeopBvnTZGEmocHxJnLfYFOX++KZeTNL610
+         DY7/e+I71dUWRIdOpNOTOplpCGi4ivxdo/RPSfLDKmHY4GROhhV1LnuVXyOrCDijNGDx
+         rwqE5CA9Br9nPRcM2rQUOaALWaOCVSQ8w80McDBSCmRljbNJHeZF9ih27SOZXJo0RrO2
+         ZTNg==
+X-Gm-Message-State: AOJu0YxFVUhrDzdtHooozLw8wYFyowKbkokva3nWgRJqH/+DM+OCgZPK
+	hOSw9F98Xubx4SeHca5aVOI9ConV0djNnBXx4ABAaw==
+X-Google-Smtp-Source: AGHT+IFqFiB3IB7LrK51HWjhrRIYQJgjOnrJYmn8pNi0p8qjjT6T3gvmXs3CRS7GmIAp4IPo1O/4VsuGKfWlPqXV92M=
+X-Received: by 2002:a0d:ff47:0:b0:5d7:1940:7d63 with SMTP id
+ p68-20020a0dff47000000b005d719407d63mr928434ywf.58.1703141976999; Wed, 20 Dec
+ 2023 22:59:36 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Roland Mainz <roland.mainz@nrubsig.org>
-Date: Thu, 21 Dec 2023 07:58:02 +0100
-Message-ID: <CAKAoaQ=U9iMbZ+TpoJ_Tim+cA653D291F1icMW_txdA8ysrv8w@mail.gmail.com>
-Subject: nsfd goes BOOOM with allocation failure in |nfsd_shutdown_threads()| ...
-To: linux-kernel@vger.kernel.org
+References: <20231219003106.8663-1-quic_tengfan@quicinc.com>
+ <20231219003106.8663-2-quic_tengfan@quicinc.com> <457e336e-004c-4721-b58d-e9ada16dc04b@linaro.org>
+ <a8f168da-14f7-4377-8dea-f282a3eac0a4@quicinc.com> <13b61d41-6045-499e-864b-51c6cb6eacf9@linaro.org>
+ <38604415-b410-4995-9c4f-525536435699@quicinc.com> <CAA8EJpo07gE7ZeNP6wSGTLtmF_3PKQAKFyMRZ8dk1K+f7PAxrg@mail.gmail.com>
+ <ad1547cf-0520-422d-a105-ec426f526d71@quicinc.com> <CAA8EJppwsezPV21Uw8xTn=ra8L2jfnkHoRghDPN96O5tJsOD7A@mail.gmail.com>
+ <72305a35-02e6-4ff6-8251-01f986530c5d@quicinc.com> <A45746C4-54C9-48D2-9DB7-52B4B56854E6@linaro.org>
+ <4e328cd8-9ef7-42ce-b592-7f2216c00c0b@quicinc.com>
+In-Reply-To: <4e328cd8-9ef7-42ce-b592-7f2216c00c0b@quicinc.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Thu, 21 Dec 2023 08:59:25 +0200
+Message-ID: <CAA8EJprE8v3bhHfyZJM9SJT=ShJ-LQvk5mR=gpdAWXF2yANWbQ@mail.gmail.com>
+Subject: Re: [PATCH v3 1/1] arm64: dts: qcom: sm8550: remove
+ address/size-cells from mdss_dsi1
+To: "Aiqun Yu (Maria)" <quic_aiquny@quicinc.com>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Tengfei Fan <quic_tengfan@quicinc.com>, 
+	andersson@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org, 
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
+	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, kernel@quicinc.com
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi!
+On Thu, 21 Dec 2023 at 03:57, Aiqun Yu (Maria) <quic_aiquny@quicinc.com> wr=
+ote:
+>
+>
+>
+> On 12/20/2023 7:10 PM, Dmitry Baryshkov wrote:
+> > On 20 December 2023 12:33:07 EET, "Aiqun Yu (Maria)" <quic_aiquny@quici=
+nc.com> wrote:
+> >>
+> >>
+> >> On 12/20/2023 3:06 PM, Dmitry Baryshkov wrote:
+> >>> On Wed, 20 Dec 2023 at 02:54, Aiqun Yu (Maria) <quic_aiquny@quicinc.c=
+om> wrote:
+> >>>>
+> >>>>
+> >>>>
+> >>>> On 12/19/2023 6:21 PM, Dmitry Baryshkov wrote:
+> >>>>> On Tue, 19 Dec 2023 at 12:09, Aiqun Yu (Maria) <quic_aiquny@quicinc=
+.com> wrote:
+> >>>>>>
+> >>>>>>
+> >>>>>>
+> >>>>>> On 12/19/2023 5:41 PM, Krzysztof Kozlowski wrote:
+> >>>>>>> On 19/12/2023 10:36, Aiqun Yu (Maria) wrote:
+> >>>>>>>>
+> >>>>>>>>
+> >>>>>>>> On 12/19/2023 3:17 PM, Krzysztof Kozlowski wrote:
+> >>>>>>>>> On 19/12/2023 01:31, Tengfei Fan wrote:
+> >>>>>>>>>> The address/size-cells in mdss_dsi1 node have not ranges and c=
+hild also
+> >>>>>>>>>> have not reg, then this leads to dtc W=3D1 warnings:
+> >>>>>>>>>
+> >>>>>>>> Comments can be more readable:
+> >>>>>>>> "mdss_dsi1" node don't have "ranges" or child "reg" property, wh=
+ile it
+> >>>>>>>> have address/size-cells properties. This caused
+> >>>>>>>> "avoid_unnecessary_addr_size" warning from dtb check.
+> >>>>>>>> Remove address/size-cells properties for "mdss_dsi1" node.
+> >>>>>>>>
+> >>>>>>>>> I cannot parse it. Address/size cells never have ranges or chil=
+dren.
+> >>>>>>>>> They cannot have. These are uint32 properties.
+> >>>>>>>> Pls help to comment on the revised commit message. Every time I =
+write a
+> >>>>>>>> commit message, also takes a while for me to double confirm whet=
+her
+> >>>>>>>> others can understand me correctly as well. Feel free to let us =
+know if
+> >>>>>>>> it is not readable to you. It will help us as non-English native=
+ developers.
+> >>>>>>>>>
+> >>>>>>>>>>
+> >>>>>>>>>>        sm8550.dtsi:2937.27-2992.6: Warning (avoid_unnecessary_=
+addr_size): /soc@0/display-subsystem@ae00000/dsi@ae96000:
+> >>>>>>>>>>          unnecessary #address-cells/#size-cells without "range=
+s" or child "reg" property
+> >>>>>>>>>>
+> >>>>>>>>>>
+> >>>>>>>>>> Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> >>>>>>>>>> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
+> >>>>>>>>>> ---
+> >>>>>>>>>
+> >>>>>>>>> I disagreed with the patch before. You resubmit it without real=
+ly
+> >>>>>>>>> addressing my concerns.
+> >>>>>>>>>
+> >>>>>>>>> I am not sure if this is correct fix and I want to fix all of s=
+uch
+> >>>>>>>>> errors (there are multiple of them) in the same way. Feel free =
+to
+> >>>>>>>>> propose common solution based on arguments.
+> >>>>>>>> Per my understanding, "qcom,mdss-dsi-ctrl" driver node like "mds=
+s_dsi1"
+> >>>>>>>> don't need to have address/size-cells properties.
+> >>>>>>>
+> >>>>>>> Just because dtc says so? And what about bindings?
+> >>>>>> I don't find any reason why "qcom,mdss-dsi-ctrl" driver node need =
+to
+> >>>>>> have address/size-cells properties. Document Bindings should also =
+be fixed.
+> >>>>>>>
+> >>>>>>>> Feel free to let us know whether there is different idea of
+> >>>>>>>> "address/size-cells" needed for the "qcom,mdss-dsi-ctrl" driver =
+node.
+> >>>>>>>
+> >>>>>>> The bindings expressed that idea. If the binding is incorrect, fi=
+x the
+> >>>>>>> binding and the DTS. If the binding is correct, provide rationale=
+ why it
+> >>>>>>> somehow does not apply here etc.
+> >>>>>> Our plan is to fix the bindings as well.
+> >>>>>>
+> >>>>>> In case you have missed the question, I just re-place it here:
+> >>>>>> While there are about 22 different soc dtsi and it's document bind=
+ing
+> >>>>>> files needed to be fixed. Shall we fix it for all qcom related soc=
+ usage
+> >>>>>> in one patch, or we'd better to split into different patches accor=
+ding
+> >>>>>> to soc specifically?
+> >>>>>
+> >>>>> Don't touch the bindings unless you understand what you are doing.
+> >>>>> Your patch will be NAKed. There can be a DSI panel attached to the =
+DSI
+> >>>>> host, which means there is a need for #address-cells / #size-cells.
+> >>>>>
+> >>>> Could you please help to elaborate more on details? Like what's the
+> >>>> right example here for the "qcom,mdss-dsi-ctrl" driver node needed t=
+o
+> >>>> have "#address-cells"/"#size-cells".
+> >>>
+> >>> As I wrote, the attached DSI panels make use of #address-cells / #siz=
+e-cells.
+> >>>
+> >>> Please take a look at the sdm845-mtp.dts, which provides a complex
+> >>> enough example (a panel which is attached to both DSI0 and DSI1
+> >>> hosts).
+> >> I can see the panel example now.
+> >> While panel@0 likely node is not at in the binding that I've checked. =
+There are quite a few of binding document about the same driver. I checked =
+5 of the bindings document and moste of them are alike, and don't have the =
+panel example.:(
+> >
+> > There is a single bindings documents describing MSM DSI controller, dis=
+play/MSM/dsi-controller-main.yaml . It explicitly includes ../dsi-controlle=
+r.yaml, which describes generic DSI host controller. The latter one include=
+s an example of the DSI panel. MSM DSI bindings do not have to include one,=
+ there is nothing platform specific there.
+> >
+> >
+> >>>
+> >>>> Thx to chime in that we have put a good amount of time here.
+> >>>
+> >>> Can't quite catch you here.
+> >>>
+> >>>>> Please stop wasting the time on dtc warning. The bindings (and the
+> >>>>> file) are correct.
+> >>>> I don't agree here.
+> >>>> Either it is a wrong usage of "#address-cells"/"#size-cells", or dtc
+> >>>> warning should be fixed with this usage take into account.
+> >>>> "dtb check" will be a good guideline for developers to follow, I don=
+'t
+> >>>> think it is wasting time here.
+> >>>
+> >>> It is a guideline, but not a rule. No warnings by default is more of
+> >>> the rule. W=3D1 enables warnings that developers have to classify and
+> >>> cope with.
+> >>>
+> >>> E.g. I don't think dtc correctly handles the case when there are both
+> >>> with-address and no-address nodes (e.g. 'panel@0' and 'ports'). Note,
+> >>> I might be mistaken there.
+> >> Now I understand the issue, here is some thinking from my end, and wel=
+come others to chime in with more ideas:
+> >> 1. Only put "#address-cells" "#size-cells" right before node of panel@=
+0
+> >
+> > No. Cells specification is a property of the host/bus. As such they do =
+not belong to the board DT file.
+> As "#address-cells" "#size-cells" is not marked as required properties
+> in the Document dsi-controller.yaml. Did it really needed even
+> "panel@[0-3]" is not present at current dsi node?
+> That's good that comes to the initial discussion of current patch here. :=
+)
 
-----
+The #address-cells / #size-cells describe the addressing of the bus.
+The bus still continues to exist even with no panel being attached.
 
-Is this a known bug - nfsd goes "boooom" in a regular basis, once or
-twice a week (kernel is stock Debian Linux "5.10.0-22-rt-amd64", NFSv4
-client is both Debian Linux NFSv4 /home on the same machine and
-Windows NFSv4 client (git
-https://github.com/kofemann/ms-nfs41-client/commit/0be33d4eceeb7be668d6252f06c79394100e98e0)
-compiling Cygwin gcc in two instances in a Win10 VMware VM):
----- snip ----
-Dec 21 03:47:22 derfwpc5131 kernel: nfsd: page allocation failure:
-order:4, mode:0x40dc0(GFP_KERNEL|__GFP_COMP|__GFP_ZERO),
-nodemask=(null),cpuset=/,mems_allowed=0
-Dec 21 03:47:22 derfwpc5131 kernel: CPU: 4 PID: 938 Comm: nfsd
-Tainted: G           OE     5.10.0-22-rt-amd64 #1 Debian 5.10.178-3
-Dec 21 03:47:22 derfwpc5131 kernel: Hardware name: FUJITSU ESPRIMO
-P500/D2991-A1, BIOS V4.6.4.0 R1.9.0 for D2991-A1x 11/22/2011
-Dec 21 03:47:22 derfwpc5131 kernel: Call Trace:
-Dec 21 03:47:22 derfwpc5131 kernel:  dump_stack+0x6b/0x83
-Dec 21 03:47:22 derfwpc5131 kernel:  warn_alloc+0x138/0x160
-Dec 21 03:47:22 derfwpc5131 kernel:  ? __alloc_pages_direct_compact+0x13c/0x160
-Dec 21 03:47:22 derfwpc5131 kernel:
-__alloc_pages_slowpath.constprop.0+0xd2a/0xd60
-Dec 21 03:47:22 derfwpc5131 kernel:  __alloc_pages_nodemask+0x330/0x360
-Dec 21 03:47:22 derfwpc5131 kernel:  kmalloc_order+0x28/0x100
-Dec 21 03:47:22 derfwpc5131 kernel:  kmalloc_order_trace+0x19/0xc0
-Dec 21 03:47:22 derfwpc5131 kernel:
-nfs4svc_decode_compoundargs+0x1c4/0x4e0 [nfsd]
-Dec 21 03:47:22 derfwpc5131 kernel:  nfsd_dispatch+0x74/0x190 [nfsd]
-Dec 21 03:47:22 derfwpc5131 kernel:  svc_process_common+0x4c4/0x760 [sunrpc]
-Dec 21 03:47:22 derfwpc5131 kernel:  ? nfsd_svc+0x330/0x330 [nfsd]
-Dec 21 03:47:22 derfwpc5131 kernel:  ? nfsd_shutdown_threads+0x90/0x90 [nfsd]
-Dec 21 03:47:22 derfwpc5131 kernel:  svc_process+0xb7/0xf0 [sunrpc]
-Dec 21 03:47:22 derfwpc5131 kernel:  nfsd+0xed/0x150 [nfsd]
-Dec 21 03:47:22 derfwpc5131 kernel:  kthread+0x184/0x1a0
-Dec 21 03:47:22 derfwpc5131 kernel:  ? __kthread_parkme+0xa0/0xa0
-Dec 21 03:47:22 derfwpc5131 kernel:  ret_from_fork+0x1f/0x30
-Dec 21 03:47:22 derfwpc5131 kernel: Mem-Info:
-Dec 21 03:47:22 derfwpc5131 kernel: active_anon:877124
-inactive_anon:1712597 isolated_anon:0
-                                     active_file:2886463
-inactive_file:2349094 isolated_file:0
-                                     unevictable:5345 dirty:41979 writeback:0
-                                     slab_reclaimable:129086
-slab_unreclaimable:62421
-                                     mapped:2173650 shmem:2222800
-pagetables:11932 bounce:0
-                                     free:78612 free_pcp:165 free_cma:0
-Dec 21 03:47:22 derfwpc5131 kernel: Node 0 active_anon:3508496kB
-inactive_anon:6850388kB active_file:11545852kB inactive_file:9396376kB
-unevictable:21380kB isolated(anon):0kB isolated(file):0kB
-mapped:8694600kB dirty:167916kB writeback:0kB shmem:8891200kB
-writeback_tmp:0kB kernel_stack:14240kB all_unreclaimable? no
-Dec 21 03:47:22 derfwpc5131 kernel: Node 0 DMA free:11264kB min:8kB
-low:20kB high:32kB reserved_highatomic:0KB active_anon:0kB
-inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB
-writepending:0kB present:15984kB managed:15360kB mlocked:0kB
-pagetables:0kB bounce:0kB free_pcp:0kB local_pcp:0kB free_cma:0kB
-Dec 21 03:47:22 derfwpc5131 kernel: lowmem_reserve[]: 0 2850 31933 31933 31933
-Dec 21 03:47:22 derfwpc5131 kernel: Node 0 DMA32 free:118320kB
-min:2040kB low:4956kB high:7872kB reserved_highatomic:0KB
-active_anon:54420kB inactive_anon:128020kB active_file:848044kB
-inactive_file:1680696kB unevictable:0kB writepending:224kB
-present:3033892kB managed:2968356kB mlocked:0kB pagetables:108kB
-bounce:0kB free_pcp:0kB local_pcp:0kB free_cma:0kB
-Dec 21 03:47:22 derfwpc5131 kernel: lowmem_reserve[]: 0 0 29083 29083 29083
-Dec 21 03:47:22 derfwpc5131 kernel: Node 0 Normal free:184864kB
-min:20824kB low:50604kB high:80384kB reserved_highatomic:2048KB
-active_anon:3454076kB inactive_anon:6722368kB active_file:10697808kB
-inactive_file:7715632kB unevictable:21380kB writepending:167692kB
-present:30406656kB managed:29788648kB mlocked:64kB pagetables:47620kB
-bounce:0kB free_pcp:664kB local_pcp:344kB free_cma:0kB
-Dec 21 03:47:22 derfwpc5131 kernel: lowmem_reserve[]: 0 0 0 0 0
-Dec 21 03:47:22 derfwpc5131 kernel: Node 0 DMA: 0*4kB 0*8kB 0*16kB
-0*32kB 0*64kB 0*128kB 0*256kB 0*512kB 1*1024kB (U) 1*2048kB (M)
-2*4096kB (M) = 11264kB
-Dec 21 03:47:22 derfwpc5131 kernel: Node 0 DMA32: 2816*4kB (UME)
-1184*8kB (UME) 135*16kB (UME) 197*32kB (UME) 24*64kB (UME) 403*128kB
-(UM) 139*256kB (M) 4*512kB (UM) 0*1024kB 0*2048kB 0*4096kB = 119952kB
-Dec 21 03:47:22 derfwpc5131 kernel: Node 0 Normal: 20111*4kB (UME)
-7934*8kB (UME) 2449*16kB (UMEH) 78*32kB (UEH) 7*64kB (H) 5*128kB (H)
-2*256kB (H) 0*512kB 0*1024kB 0*2048kB 0*4096kB = 187196kB
-Dec 21 03:47:22 derfwpc5131 kernel: Node 0 hugepages_total=0
-hugepages_free=0 hugepages_surp=0 hugepages_size=2048kB
-Dec 21 03:47:22 derfwpc5131 kernel: 7487517 total pagecache pages
-Dec 21 03:47:22 derfwpc5131 kernel: 29084 pages in swap cache
-Dec 21 03:47:22 derfwpc5131 kernel: Swap cache stats: add 510992,
-delete 481907, find 455115/506520
-Dec 21 03:47:22 derfwpc5131 kernel: Free swap  = 32781168kB
-Dec 21 03:47:22 derfwpc5131 kernel: Total swap = 33554428kB
-Dec 21 03:47:22 derfwpc5131 kernel: 8364133 pages RAM
-Dec 21 03:47:22 derfwpc5131 kernel: 0 pages HighMem/MovableOnly
-Dec 21 03:47:22 derfwpc5131 kernel: 171042 pages reserved
-Dec 21 03:47:22 derfwpc5131 kernel: 0 pages hwpoisoned
----- snip ----
+>
+> I can understand that "#address-cells" "#size-cells" cannot be device
+> tree overlayed by dtbo. While when there is no "panel@[0-3]" nodes shall
+> we also remove "#address-cells" "#size-cells" properties for dsi node?
 
-The Win10 NFSv4 client at that point lost the NFSv4 session,
-recovered, and the gcc build continued without problems.
+But why?
 
-Is the |nfsd_shutdown_threads()| in the stacktrace "normal", or is
-nfsd really shutting down at this moment ?
+> >
+> >> 2. Align current binding document with "panel@0" examples.
+> >
+> > There is already a panel in dsi-controller.yaml. Adding another example=
+ is optional. Do you also need an example with the external DSI bridge?
+> Current binding I am talking about is current patch binding file:
+> qcom,sm8550-mdss.yaml
 
-----
+Why do you call it a patch? Also if you have read the description, you
+would have known that the bindings describe the Mobile Display
+Subsystem (MDSS) itself. And then it explicitly tells that the MDSS on
+that platform has (among others) DSI blocks with proper compatibles.
 
-Bye,
-Roland
--- 
-  __ .  . __
- (o.\ \/ /.o) roland.mainz@nrubsig.org
-  \__\/\/__/  MPEG specialist, C&&JAVA&&Sun&&Unix programmer
-  /O /==\ O\  TEL +49 641 3992797
- (;O/ \/ \O;)
+> It have a ref to mdss-common.yaml,  but I cannot find the ref direct me
+> to dsi-controller.yaml.
+
+Because qcom,sm8550-mdss.yaml doesn't describe the DSI controller. I
+think I have already mentioned a file that describes the DSI
+controller, it is called display/msm/dsi-controller-main.yaml. Not the
+best name, but it is quickly revealed by grepping for either of the
+DSI compatible strings. And the dsi-controller-main.yaml has `  -
+$ref: ../dsi-controller.yaml#` string inside.
+
+> In my opinion if the example have "#address-cells" "#size-cells", then
+> it's better to also include "panel@0" with "reg =3D <0>" to not confuse.
+
+It is already there, see dsi-controller.yaml.
+
+> >> 3. Too many bindings files for driver "qcom,mdss-dsi-ctrl", shall we a=
+lign them into 1 binding files.
+> >
+> > There is just one.
+> Currently I mentioned bindings files was searched the compatible
+> "qcom,mdss-dsi-ctrl", and find binding docs like "qcom,sm8550-mdss.yaml"
+> "qcom,sm8450-mdss.yaml" etc.
+> There is duplicate information on "qcom,sm8550-mdss.yaml" etc, while
+> "qcom,mdss-common.yaml" is not common enough for my understanding.
+
+If you had compared the qcom,SOC-mdss.yaml, you would have seen that
+they provide tight binding between compatible strings used for all the
+subblocks. The `mdss-common.yaml` describes MDSS common properties. It
+describes everything except the platform specifics. It can not be made
+more common. And there is no duplication.
+
+If you think you can improve the bindings, please send the patches.
+They must pass the `make dt_binding_check` check.
+
+> >> 4. enhance the dtc warning check if we still want to have "#address-ce=
+lls" "#size-cells" even if there is no "panel@0" attached.
+> >
+> > In my opinion this is a way to go, if any. Did you include devicetree@ =
+ML and the corresponding maintainers into the discussion?
+> Already included devicetree@ ML at the very beginning.
+
+Good, thanks for the confirmation.
+
+> If the required properties part in each yaml is marked good enough, I
+> think it can be an input for avoid unnecessary dtc warnings.
+
+Patches are welcome.
+
+> >
+> >>
+> >> @krzy here I try to answer your comments here as well.
+> >> I am disagree on leave the warning as it is. And want to do something =
+to improve this. Ideas above.
+> >> Let me know if any comments is not right addressed from your comments.
+
+--=20
+With best wishes
+Dmitry
 
