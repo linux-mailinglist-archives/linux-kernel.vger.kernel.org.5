@@ -1,89 +1,127 @@
-Return-Path: <linux-kernel+bounces-9094-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9095-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D060181C063
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 22:42:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14C3D81C067
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 22:43:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8D286283A40
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 21:42:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4661C1C203BF
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 21:43:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E774377644;
-	Thu, 21 Dec 2023 21:42:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BD7677F07;
+	Thu, 21 Dec 2023 21:42:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KKywA1WD"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eK+FQoFU"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
+Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1889B76DBB;
-	Thu, 21 Dec 2023 21:42:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 883E27762C;
+	Thu, 21 Dec 2023 21:42:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-dbdd013c68bso681181276.2;
-        Thu, 21 Dec 2023 13:42:42 -0800 (PST)
+Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-28bc870c540so1001754a91.2;
+        Thu, 21 Dec 2023 13:42:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703194962; x=1703799762; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qc6DvoHCBo6SR0ql109kb11eHuEG/z5z0j0o6Yh0aEs=;
-        b=KKywA1WDE/ACl6IjRDzJydVy6Lrnl30SacU/U6zNQEWOVqBsIjClyPKTFUfYt/MJ84
-         HRL0sMrxXvr4pqjbPDG9JAu5/ggrDIjGLaY5SKX9o+Ijao29j9QgzShp6Lf4mIm4wNZ0
-         LhV7jnKm80QlQH1kaytk1DtLNccJNojEXrkYdPmi0y4oo4PxvgECpFOVIPP9UMB7Lc1c
-         ARzjR8UeEjtffemL8szTyrAbCkUjM71Hhf2omv/HcqN+qihkA1YO7RcUnlVzksvtMzdO
-         QedwCiFlDjY4C7NNB0s4iTqdw1guqqF99r5fRn4K9gDyphvZrsgJK/wFkyxCaOJe8lJW
-         y4fQ==
+        d=gmail.com; s=20230601; t=1703194964; x=1703799764; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=BXPgr2T6k2cqQM51LPyd+8bHsl0/1iqBgZw3ozm4OmM=;
+        b=eK+FQoFUPU8P0LDUwnlXlF0RVzLlKDDKunolM4fz5VpgQ/NqC8MgWwM3N3/7tfxhTI
+         ImqosN4pbZ0Yq/yw+TE+sYYhdRfDYQlMnNXLcDI+h2bmFUa3EuRkOHICCNKUxmWUAZAb
+         Nqt/WTXJ9xiVnQzpGYY/mFoPX3I4ia4OGC75sqObfvyhqW9yJMxGwpboSrQBIcf4NGEy
+         /m8vNXdGm2WvgrRTJpc6mlU2b1Dv2fTM6dgo9gTrtwhgOSmCRG/l8z6mjAXfgnt8RbSg
+         riC0zVBqtBk6Hum/npER+Rd0+B3YpgqLHGVX9dKt4GPuX56Sh03GoBi4l7iDGE9nVuig
+         6kmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703194962; x=1703799762;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qc6DvoHCBo6SR0ql109kb11eHuEG/z5z0j0o6Yh0aEs=;
-        b=EPkfp2aIZD3ys6I0nk1GgPGzeuEN5Mk9PKv8i7MHXS0jVhi8OAqCAf0q41yId9CJOU
-         5eFBMi92g50bYsBclkX2r6GdSyuieJyxLW8+PEJevhnP90gEKpgsFenhhU/G9BXjWMZh
-         elh3s2dLx2dW3ccIurRJSnIs3ZMQoz3WJ8eqZeBiez/aNNGbw+4jnPq2Gc/5jZ8tbhb8
-         GbUQwj/G0diXAqgylSrt48X8T4f+EMkbTe1T8l3t0L865ibb7cb+7jvEy+E+dUt/TvcS
-         XuAJc63WbgGu6exCcTY0gyqsLLQyUr4fqj7874lx94cFf3cOPfLFtDZqhUegzDvUKUWg
-         tHZQ==
-X-Gm-Message-State: AOJu0YwXkXGuZyPhjwplVJ3N/atSf1+6vs4QzUoU91WOUPCEmWj+R/DB
-	nmhvV10xzIQb3izg07n8I387d+Cf21Brlcgn714=
-X-Google-Smtp-Source: AGHT+IEDxN5fCuZZQgeRAfx8XcLajEsgJW1NOnjf/1K4gD06U74Wnhm26W0sYXsjWx1oM6A96HMSn3m5EMWm/hq7iIU=
-X-Received: by 2002:a25:6914:0:b0:dbd:c9dc:8751 with SMTP id
- e20-20020a256914000000b00dbdc9dc8751mr380198ybc.102.1703194962157; Thu, 21
- Dec 2023 13:42:42 -0800 (PST)
+        d=1e100.net; s=20230601; t=1703194964; x=1703799764;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=BXPgr2T6k2cqQM51LPyd+8bHsl0/1iqBgZw3ozm4OmM=;
+        b=MHvax+rZu4w2Z9ClboKbkMG3RMTMHtrKhLIchLKjXdVm/OKX9UMLIMK/IzT+o0Dw7l
+         1B+nKuvPHozQz8fwhOgs4VG3JdG79z0gpwDTIalN/jJ30wwNc8n2OUsiwKg0MeGUSR2v
+         ZJFwCvzOtwm6zTsxIThhNnLmtUugKx3xr6SICYUXbKw7ehs2ViC5CDkIyDKgmgcBLnEL
+         5Jzf4MbgBntSNGjqeINWspKWaHOT/zBPgCO88RZhHjm34CbAq40FdB3/gdzTis9CBohh
+         qU9TBeinDE5Y44UO6q8kAw91gzXUVYrCvnMjJbMDkKs4H7njC2CN+SkKPYbHdouLYf06
+         g4OQ==
+X-Gm-Message-State: AOJu0Yyo92sO2XeNyz2nL7qpNiLwXPmjigKRb4WX6iYQ+5XeWrB3bunm
+	uf/dLw89G0JjTCQfN6yyvN0=
+X-Google-Smtp-Source: AGHT+IFXgwvw7NCQiXUJrDPOJqYvUyH5h3zVjuOWbcYEagdQHOCFWNaI2Vs852k/Nvm2+CpNQB64dg==
+X-Received: by 2002:a17:90a:cc05:b0:28b:e25a:9c25 with SMTP id b5-20020a17090acc0500b0028be25a9c25mr376993pju.10.1703194963716;
+        Thu, 21 Dec 2023 13:42:43 -0800 (PST)
+Received: from localhost ([121.167.227.144])
+        by smtp.gmail.com with ESMTPSA id ei8-20020a17090ae54800b0028bd9f88576sm2262757pjb.26.2023.12.21.13.42.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Dec 2023 13:42:43 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Fri, 22 Dec 2023 06:42:40 +0900
+From: Tejun Heo <tj@kernel.org>
+To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc: Josef Bacik <josef@toxicpanda.com>, Jens Axboe <axboe@kernel.dk>,
+	Shaohua Li <shli@fb.com>, linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org, cgroups@vger.kernel.org,
+	linux-block@vger.kernel.org
+Subject: Re: [PATCH] blk-throttle: Fix some potential string truncation in
+ tg_prfill_limit()
+Message-ID: <ZYSxUPan9qPNE5Bk@mtj.duckdns.org>
+References: <0461f1d69c84cf5a98ae57012856dace757d319e.1702731206.git.christophe.jaillet@wanadoo.fr>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231214092958.377061-1-ojeda@kernel.org>
-In-Reply-To: <20231214092958.377061-1-ojeda@kernel.org>
-From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date: Thu, 21 Dec 2023 22:42:31 +0100
-Message-ID: <CANiq72mzBnHTZqsy+VN3dbHy1OF0DcSiknULpgMnxy_-FZRk4g@mail.gmail.com>
-Subject: Re: [PATCH] rust: upgrade to Rust 1.74.1
-To: Miguel Ojeda <ojeda@kernel.org>
-Cc: Wedson Almeida Filho <wedsonaf@gmail.com>, Alex Gaynor <alex.gaynor@gmail.com>, 
-	Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
-	Alice Ryhl <aliceryhl@google.com>, rust-for-linux@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, patches@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <0461f1d69c84cf5a98ae57012856dace757d319e.1702731206.git.christophe.jaillet@wanadoo.fr>
 
-On Thu, Dec 14, 2023 at 10:30=E2=80=AFAM Miguel Ojeda <ojeda@kernel.org> wr=
-ote:
->
-> This is the next upgrade to the Rust toolchain, from 1.73.0 to 1.74.1
-> (i.e. the latest) [1].
+On Sat, Dec 16, 2023 at 01:54:56PM +0100, Christophe JAILLET wrote:
+> When compiled with W=1, we get:
+>   block/blk-throttle.c: In function ‘tg_prfill_limit’:
+>   block/blk-throttle.c:1539:74: error: ‘snprintf’ output may be truncated before the last format character [-Werror=format-truncation=]
+>    1539 |                         snprintf(idle_time, sizeof(idle_time), " idle=%lu",
+>         |                                                                          ^
+>   block/blk-throttle.c:1539:25: note: ‘snprintf’ output between 8 and 27 bytes into a destination of size 26
+>    1539 |                         snprintf(idle_time, sizeof(idle_time), " idle=%lu",
+>         |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>    1540 |                                 tg->idletime_threshold_conf);
+>         |                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>   block/blk-throttle.c:1546:43: error: ‘%lu’ directive output may be truncated writing between 1 and 20 bytes into a region of size 17 [-Werror=format-truncation=]
+>    1546 |                                 " latency=%lu", tg->latency_target_conf);
+>         |                                           ^~~
+>   block/blk-throttle.c:1546:33: note: directive argument in the range [0, 18446744073709551614]
+>    1546 |                                 " latency=%lu", tg->latency_target_conf);
+>         |                                 ^~~~~~~~~~~~~~
+>   block/blk-throttle.c:1545:25: note: ‘snprintf’ output between 11 and 30 bytes into a destination of size 26
+>    1545 |                         snprintf(latency_time, sizeof(latency_time),
+>         |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>    1546 |                                 " latency=%lu", tg->latency_target_conf);
+>         |                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> 
+> In order to fix it, remove all the intermediate buffers and write directly
+> into the 'sf' seq_file.
+> 
+> Fixes: ada75b6e5b2a ("blk-throttle: add interface to configure idle time threshold")
+> Fixes: ec80991d6fc2 ("blk-throttle: add interface for per-cgroup target latency")
 
-Applied to `rust-next` -- thanks everyone!
+I'm not sure Fixes tags are necessary here given that this isn't something
+we'd hit in practice.
 
-Cheers,
-Miguel
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+
+Looks fine to me, so:
+
+  Acked-by: Tejun Heo <tj@kernel.org>
+
+But, can you please briefly explain how you tested the patch?
+
+Thanks.
+
+-- 
+tejun
 
