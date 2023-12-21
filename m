@@ -1,361 +1,219 @@
-Return-Path: <linux-kernel+bounces-7685-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-7686-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E32781AB9C
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 01:20:03 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E070F81AB9D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 01:23:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B2D41281E57
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 00:20:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 40BE0B24715
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 00:23:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 228462912;
-	Thu, 21 Dec 2023 00:19:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5ACB6623;
+	Thu, 21 Dec 2023 00:22:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="yPxz0u4l"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="n4WrS0y5"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9107928E1
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 00:19:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a269a271b5bso25199666b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Dec 2023 16:19:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1703117991; x=1703722791; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wuiGIGRCemwNH8PWp5epsekKJJKgPaBxQM1YEsDyA0M=;
-        b=yPxz0u4l8veIy8FticoO04hxfTh0thXOdzxcZ8Bls2Kba03Opp5rCd0mljXameqfZu
-         ekv2X/l4SoPwbuxgsfJ3syLflGdH5+70hf5IkWtgck+4mUIH8eCKEj569jC1SpBNiQS+
-         XAYwqp65mTmtIuarpBmwehH12a0rJbZ+xTTnYN3ftEqpRDIs6zz5KQauzJIrsv0rWPh7
-         eY7o07/GPy4Rl0940/CxCcijqBFpn5DHHfjMTJHUeZNvnHOlnppC+HzdpQtXfzundCKw
-         yAfxvwZxJfppdHAqkdkfgw6+zGy7sURG2WzIodlVoO6sAEopCTPExaj/2F0V0hih0/am
-         Otrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703117991; x=1703722791;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wuiGIGRCemwNH8PWp5epsekKJJKgPaBxQM1YEsDyA0M=;
-        b=Ztp0ebyXg5VT8jLtB4sE9lvc5BatIju3ewa80D5NaVDqxvPVaB39zwrizAZHBY6co9
-         YLHUBu+Yxl9M6JNmaT1Xk8Bj/85DbDHneQypGce5+IQhHgnVvp45RHimuoZZrfZNdUBH
-         cbgctkZtTYXg1pu3rf34ZLkRh/hvWDq8Qk52KAbSljMxRz0boaWF6gNPH5VjinAgOGn+
-         XDp8k3Zm/VByt+yVNgbaSG66qaxj7XQSJQgutojlrQnc/hup6B3S3VxLUTATtdSbZmBp
-         tYONWrwrGjVg8suM+3rxOJ8HCWPjeOI6YOxdTlfN/lxPm/expG3YprPtOLlI2sCzsZnl
-         hyeQ==
-X-Gm-Message-State: AOJu0YyPN0x1NwERoINTmJyz8BoS4onEWS+oJv8QLbgdvNPmU9k6N3lz
-	G+6GBWakyQCFnABdsPUraKJDS0STobLWN9rPPDkrVQ==
-X-Google-Smtp-Source: AGHT+IGCUEqkemJZ+j/E16kaAot3yn8ee9J81XvCCoUDLEhPnbkXG/xvpLfo9Bb0s56i6+X1dN14NlonUC3H+ZcWGgg=
-X-Received: by 2002:a17:906:49:b0:a23:f50:6cff with SMTP id
- 9-20020a170906004900b00a230f506cffmr6167990ejg.111.1703117990663; Wed, 20 Dec
- 2023 16:19:50 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D306B10F5;
+	Thu, 21 Dec 2023 00:22:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1703118171; x=1734654171;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=mdY1l42X8JBVaRlakT3crvMF2ZHjnHftkRuHy/+Iwrw=;
+  b=n4WrS0y5Bb0cwEWzQr7NfqoBLVXPmdoLgDSOZIoGfaTPXKiogKCk0lAa
+   c6DBrMgtlwdmxuVmxc9Tja9t+mZOi/HU0LqcH2heew4QhQIjIgWxRqgxh
+   DWFWf7N8Gl8/hH6tNRTEN8ZMasTYWHWGtF0wAmYUTdyCpTOP/1gbzbYbZ
+   LdSvnzmoRuQ76iCnnaPK+82PVXQcBvhEsHEVbKY25T7gEiR6K8VcaWZxK
+   1qaQjB/k19AvcGxIFJjHTuyr6KSWY7Eq8UuuBxyiM3jfdajJliAmRIQMj
+   r4YlqzpKHgaoctfTwlQr8Xj6nKiYFOOQsoDuF9/qIxzOowvbSN1LEOI/6
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10930"; a="460232235"
+X-IronPort-AV: E=Sophos;i="6.04,292,1695711600"; 
+   d="scan'208";a="460232235"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Dec 2023 16:22:51 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10930"; a="752743328"
+X-IronPort-AV: E=Sophos;i="6.04,292,1695711600"; 
+   d="scan'208";a="752743328"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by orsmga006.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 20 Dec 2023 16:22:51 -0800
+Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 20 Dec 2023 16:22:50 -0800
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Wed, 20 Dec 2023 16:22:50 -0800
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.41) by
+ edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Wed, 20 Dec 2023 16:22:49 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hQyPKxfG7LqVggEvUH8y7FC6b4UdoL2BPb9+84+ksBVuMYBAaUMUPLgl0BtKgRaUTbsYfDhTWDVct650b33WAzW0Ko9r3icbPFY4HtIkVwQNiOWheTm6y8cD5UFNsq8pZdObb77NIMa6VO7AqfA+Ey1979gN0MgfvOMJICK9qTf7km4CCHUGysuEZycOiR4n5Deh3G69vZOgQMMauFQWHfLwG9FyQCbUxCuQMboaqdLmVr3fVqeg2/nt1L8fUz5Z0XS9p7NFN4Vcd5iSQJLIyFxdehtTaVe+lf51bcNaKOOOB+nXidzm0wj9yULZqzSgoNYq17uYNIS398APBdPEVg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=7Gsaf45vGbGztUq0ezPS6LcRi7xoa2v3V/OefgXEDsA=;
+ b=YC3QE3h8vTAZKYJ0VuDKm5JPGG3yEUHejJocGnpRoiYJTZaAAHVPp5t3nrOu1YuQVkWqTDfCfBu7G8fPZ+80sQXUgIS1P1O+h2GhgSxvN1TSFDGnBhaRM1xDeNtoiBgeB5PjUdgxapQMJao9McCPQQb1OjiqIncgFZvcm5KIeV8AmBZ3sRpl/oJ0rojkQAMPnAhjjorYDaXrcDS941oAGjfwSZnZdUsVXa4xan1m8+dQsK54gwtfonwylZ/X4ehFMjicqpmcvXnN2674JTzRtjbSlnYWedL6zNQiiqoLMFqROBMW3M8Hk90a2Kl6ChXzc4wynJq3bVVM7P/fSNKdgg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH8PR11MB8107.namprd11.prod.outlook.com (2603:10b6:510:256::6)
+ by MW4PR11MB6837.namprd11.prod.outlook.com (2603:10b6:303:221::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7113.18; Thu, 21 Dec
+ 2023 00:22:48 +0000
+Received: from PH8PR11MB8107.namprd11.prod.outlook.com
+ ([fe80::6362:763e:f84b:4169]) by PH8PR11MB8107.namprd11.prod.outlook.com
+ ([fe80::6362:763e:f84b:4169%5]) with mapi id 15.20.7091.034; Thu, 21 Dec 2023
+ 00:22:48 +0000
+Date: Wed, 20 Dec 2023 16:22:44 -0800
+From: Dan Williams <dan.j.williams@intel.com>
+To: Jonathan Cameron <Jonathan.Cameron@huawei.com>, Dan Williams
+	<dan.j.williams@intel.com>
+CC: Ira Weiny <ira.weiny@intel.com>, Fan Ni <nifan.cxl@gmail.com>, Dave Jiang
+	<dave.jiang@intel.com>, <linux-cxl@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, Huai-Cheng Kuo <hchkuo@avery-design.com.tw>
+Subject: Re: [PATCH v2 2/2] cxl/cdat: Fix header sum value in CDAT checksum
+Message-ID: <6583855481d71_837462947@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+References: <20231117-fix-cdat-cs-v2-0-715399976d4d@intel.com>
+ <20231117-fix-cdat-cs-v2-2-715399976d4d@intel.com>
+ <20231218123339.000024fc@Huawei.com>
+ <6580d26a74294_1bbb129489@iweiny-mobl.notmuch>
+ <6580d606467d1_715492946@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+ <20231219165845.0000100e@Huawei.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20231219165845.0000100e@Huawei.com>
+X-ClientProxiedBy: MW4PR04CA0276.namprd04.prod.outlook.com
+ (2603:10b6:303:89::11) To PH8PR11MB8107.namprd11.prod.outlook.com
+ (2603:10b6:510:256::6)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231213-zswap-dstmem-v3-0-4eac09b94ece@bytedance.com>
- <20231213-zswap-dstmem-v3-6-4eac09b94ece@bytedance.com> <CAF8kJuOv+k0TcKJhs8wEWi20=B84bomj5BvpUAHvj6k3A+WE5A@mail.gmail.com>
- <CAKEwX=P=frZmEXm26uTBN05gqLXoL-Shgk5P=EsMpYR16dW-sw@mail.gmail.com>
- <CAJD7tkb2gWz1uQ7C6NQ7mAB=QQgaKHSwDFr0XS9ZrGFPOP1tTQ@mail.gmail.com> <2a22e9b5-dc8c-4c4d-81c2-2f4e1850cf3d@bytedance.com>
-In-Reply-To: <2a22e9b5-dc8c-4c4d-81c2-2f4e1850cf3d@bytedance.com>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Wed, 20 Dec 2023 16:19:14 -0800
-Message-ID: <CAJD7tkb_F9FH=HxnU9pOEfh=r_34ZT6-aff+KBVimNh8V1E1jA@mail.gmail.com>
-Subject: Re: [PATCH v3 6/6] mm/zswap: directly use percpu mutex and buffer in load/store
-To: Chengming Zhou <zhouchengming@bytedance.com>
-Cc: Nhat Pham <nphamcs@gmail.com>, Chris Li <chrisl@kernel.org>, 
-	Seth Jennings <sjenning@redhat.com>, Vitaly Wool <vitaly.wool@konsulko.com>, 
-	Dan Streetman <ddstreet@ieee.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH8PR11MB8107:EE_|MW4PR11MB6837:EE_
+X-MS-Office365-Filtering-Correlation-Id: c51a2b89-a4e4-49e8-85ca-08dc01baf541
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: o8ZvymaB59i2R7HzVBnAu/F+HidNyxDclFC4gew/CyFXfKLUJVliXV72FO3k/nMtSmg3cmz0LIJ2z5R9Y1pQKeEDMD3vn2ShPYktwk46uwtpnLI9VTacU/twU5waXFSu7ILM7bSHmgOFrsRqZoYZ2zxFuHGNjP5hhh9Fc3DnssIVCJyp/hkEC7eSE5oWzReETfEk9mdp6v+nMc6hk1ZJ2GO/9IKi1S//DpTWNl/RXmaBVC91uJ0BVutOwFhxLpIPDEXCCPG5jkY4Cz8g+6vUYwbRXNtwMorxnIAsjxNKwRTJyKoYIVtbuAPdcJlnH63bqF6CFZ8LOjcrQjIAQmAJOhV+hS/nkWdIDnY7IgWMZZf4xDbChEhiCw8GN05LWZLfrhJdgG8yYXwzSqAC0rbeuWjGnuSWSdwvtuF1iuPD04mAFt5DdMDP4SBJ5tv4G3+3+Xe19bINK6B5IUtT9ztA1FLtfkMQjgwLXifly74H68XzS9tbsrP+IIkAECmtSnxPmxIQhynUO1yFd5wqzq07vqcCkASud8aEwxxcuvylYO8=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB8107.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(39860400002)(346002)(376002)(366004)(396003)(230922051799003)(451199024)(186009)(64100799003)(1800799012)(9686003)(6512007)(41300700001)(6486002)(66476007)(316002)(66556008)(110136005)(66946007)(54906003)(966005)(83380400001)(478600001)(5660300002)(6506007)(6666004)(4326008)(26005)(2906002)(8676002)(8936002)(86362001)(38100700002)(82960400001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?DeGKqRNMz2GrlTxfxci7TDMWDBNbCoSidjaA0sBVNkg7ySDY9yL0Ov4uvTDf?=
+ =?us-ascii?Q?nLWzT8bX27zo2tNGOJmLxAG0NymSsidgT/6SfKpIN1WSrAwTg8WJ+B8wqnUW?=
+ =?us-ascii?Q?IEGTjJTJxhj54mKrM/apC8qFqE7t+zI8XUMGTGjADn79pEvgoEe/gCLGG5HE?=
+ =?us-ascii?Q?6ZRBbchGYYtWJ2UQfGTt3MsFAv0LEWDvuwPZ2k+dm6B07vYz4qH3fWnJYNjs?=
+ =?us-ascii?Q?TgpgPAVnfNpvEyX3NkOrXx3QlncCT34qjHXXh6cSzW9L9XlowZ1iFz08tSOe?=
+ =?us-ascii?Q?2xSVski51mr41YxKc4cfLQrB2sfGLXrytZ+bBNsqr2oUCmrGna/YhaNQbYQd?=
+ =?us-ascii?Q?TgG8GpWxFMvl+1pfFG/BAkC4r4YLzAH4hND5UrRRcnoEHjKD/KweWHE83IAA?=
+ =?us-ascii?Q?tcuh42NyjTFXg3byZax11sVnh6wiKUG3ZivwzZbi4lJzc1K/hP4+5teMk5nv?=
+ =?us-ascii?Q?pq6ObEDpphaLfryZJ/oQCuCGZ4TLTTuVP0YiosqAA0vqm3kUC1aORavrWTkA?=
+ =?us-ascii?Q?B4JfuSmKYglqEwYP3++XGJOkE9azebxHMjKxV3oG0EC551xzDeCAWfR/KMz6?=
+ =?us-ascii?Q?eEw7MsQ1dkpcKuQtWmc+hevokAXIeVO+VGMPLQalO0FdS0F8y3nA7dZz4m2D?=
+ =?us-ascii?Q?t/VtWd7Yuz4xelz+dvQiRymv8B7tSA1VeHFFKCi0dowtMUjB5wWWj34TrCtT?=
+ =?us-ascii?Q?muf5f0B2g3VbRwu8xckTQZjhGXcOMCwOs4jTGsFSQnt8PWTJYdyvUdNnnupI?=
+ =?us-ascii?Q?zFQnMGXX4ZJB7Nu7TN1iVvgSAVHDfg9xUzutjEGOPQqRoJzPxuT+ut9oLk93?=
+ =?us-ascii?Q?c05gqpQGW3ClNs17Q2LIDjZyKKmj3RGq0ganKD3f1y/WrXl6rRlDqArSs2SD?=
+ =?us-ascii?Q?J27cd9jpjQNvqH9til2zXLhnZu/tAQzjriFvWZ56Ktkl3Cx70PLGB+5rjsBt?=
+ =?us-ascii?Q?8PUQQggfTvCl/kr4SVUX4MTWW9jqPtumD49i61QhhVzblvqLbsKG9cJkDdUw?=
+ =?us-ascii?Q?8aDFGMHa/XL11BK4gVazp8eCIcNGj+hBqXQr+PpEp84EUBDi6gLF0fmNU2IS?=
+ =?us-ascii?Q?fNXliTKp92223Uebk8G5gNla3RlSBXYQpsS2T4KMW+sonpmifbV+jz5Oo/2v?=
+ =?us-ascii?Q?0zIsAbIbXqh3pVDdVHDk0ZuiEFhnpEfG11qBrOUYyknIcRPmQ8XcfSDx0ECw?=
+ =?us-ascii?Q?9X0fKslEIqkwqgURNd2EGKK3taO+OyTIYOtbiarWITTnNYgZRgG/4MUloZ/D?=
+ =?us-ascii?Q?IFEXSExw8w7yvF8Ece+xbAVEP1HH7BNi8wNxD9HnooNjnb8Pc+SrwkKaNVda?=
+ =?us-ascii?Q?OCmof6rCZbzJZ2XOuN1aAmNxTUCqRZ6QAAT98pSCH56e02LsPJsuH+o8ia8Z?=
+ =?us-ascii?Q?TqcsGFsvfcZcyHJmBOgDoF7dGNwOMGrfcxDlZez4O/XNWZUT68eHd36AdfIN?=
+ =?us-ascii?Q?wNykRYcFlqcabx4TvcKPDPDbPYH8XT2mvf7Rbf6SmyoTz2/a0Qd/yLVz0Aj1?=
+ =?us-ascii?Q?sQd0YkNZs5GdwaMIW6ingWqFiil9U9l600nNoeOH6vBs2hzuOdptrx4ybtiq?=
+ =?us-ascii?Q?YLKRtnQ50BtVXsoOSGCXRvggCndzAoOjGREYLkMn77ukbAlrYio7Up+WfIYC?=
+ =?us-ascii?Q?HA=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: c51a2b89-a4e4-49e8-85ca-08dc01baf541
+X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB8107.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Dec 2023 00:22:47.2571
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: WJx2vxZ2rWbtEqX64fRQKBq8IbnmEKFu6vBWVCve6J3n0GB7g5GjHECtW8a1XSiwo5tf/tMqLdBQs9F8NEDk/T96JepsnuSUJjzAUehOUSI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR11MB6837
+X-OriginatorOrg: intel.com
 
-On Wed, Dec 20, 2023 at 4:20=E2=80=AFAM Chengming Zhou
-<zhouchengming@bytedance.com> wrote:
->
-> On 2023/12/20 05:39, Yosry Ahmed wrote:
-> > On Tue, Dec 19, 2023 at 10:43=E2=80=AFAM Nhat Pham <nphamcs@gmail.com> =
-wrote:
-> >>
-> >> On Tue, Dec 19, 2023 at 5:29=E2=80=AFAM Chris Li <chrisl@kernel.org> w=
-rote:
-> >>>
-> >>> Hi Chengming and Yosry,
-> >>>
-> >>> On Mon, Dec 18, 2023 at 3:50=E2=80=AFAM Chengming Zhou
-> >>> <zhouchengming@bytedance.com> wrote:
-> >>>>
-> >>>> Since the introduce of reusing the dstmem in the load path, it seems
-> >>>> confusing that we are now using acomp_ctx->dstmem and acomp_ctx->mut=
-ex
-> >>>> now for purposes other than what the naming suggests.
-> >>>>
-> >>>> Yosry suggested removing these two fields from acomp_ctx, and direct=
-ly
-> >>>> using zswap_dstmem and zswap_mutex in both the load and store paths,
-> >>>> rename them, and add proper comments above their definitions that th=
-ey
-> >>>> are for generic percpu buffering on the load and store paths.
-> >>>>
-> >>>> So this patch remove dstmem and mutex from acomp_ctx, and rename the
-> >>>> zswap_dstmem to zswap_buffer, using the percpu mutex and buffer on
-> >>>> the load and store paths.
-> >>>
-> >>> Sorry joining this discussion late.
-> >>>
-> >>> I get the rename of "dstmem" to "buffer". Because the buffer is used
-> >>> for both load and store as well. What I don't get is that, why do we
-> >>> move it out of the acomp_ctx struct. Now we have 3 per cpu entry:
-> >>> buffer, mutex and acomp_ctx. I think we should do the reverse, fold
-> >>> this three per cpu entry into one struct the acomp_ctx. Each per_cpu
-> >>> load() has a sequence of dance around the cpu id and disable preempt
-> >>> etc, while each of the struct member load is just a plan memory load.
-> >>> It seems to me it would be more optimal to combine this three per cpu
-> >>> entry into acomp_ctx. Just do the per cpu for the acomp_ctx once.
-> >>
-> >> I agree with Chris. From a practicality POV, what Chris says here
-> >> makes sense. From a semantic POV, this buffer is only used in
-> >> (de)compression contexts - be it in store, load, or writeback - so it
-> >> belonging to the orignal struct still makes sense to me. Why separate
-> >> it out, without any benefits. Just rename the old field buffer or
-> >> zswap_buffer and call it a day? It will be a smaller patch too!
-> >>
-> >
-> > My main concern is that the struct name is specific for the crypto
-> > acomp stuff, but that buffer and mutex are not.
-> > How about we keep it in the struct, but refactor the struct as follows:
-> >
-> > struct zswap_ctx {
-> >     struct {
-> >         struct crypto_acomp *acomp;
-> >         struct acomp_req *req;
-> >         struct crypto_wait wait;
-> >     }  acomp_ctx;
-> >     u8 *dstmem;
-> >     struct mutex *mutex;
-> > };
-> >
-> > , and then rename zswap_pool.acomp_ctx to zswap_pool.ctx?
->
-> I think there are two viewpoints here, both works ok to me.
->
-> The first is from ownship or lifetime, these percpu mutex and dstmem
-> are shared between all pools, so no one pool own the mutex and dstmem,
-> nor does the percpu acomp_ctx in each pool.
->
-> The second is from usage, these percpu mutex and dstmem are used by
-> the percpu acomp_ctx in each pool, so it's easy to use to put pointers
-> to them in the percpu acomp_ctx.
->
-> Actually I think it's simpler to let the percpu acomp_ctx has its own
-> mutex and dstmem, which in fact are the necessary parts when it use
-> the acomp interfaces.
->
-> This way, we could delete the percpu mutex and dstmem, and its hotplugs,
-> and not shared anymore between all pools. Maybe we would have many pools
-> at the same time in the future, like different compression algorithm or
-> different zpool for different memcg workloads. Who knows? :-)
->
-> So how about this patch below? Just RFC.
+Jonathan Cameron wrote:
+> On Mon, 18 Dec 2023 15:30:14 -0800
+> Dan Williams <dan.j.williams@intel.com> wrote:
+> 
+> > Ira Weiny wrote:
+> > > Jonathan Cameron wrote:  
+> > > > On Wed, 29 Nov 2023 17:33:04 -0800
+> > > > Ira Weiny <ira.weiny@intel.com> wrote:
+> > > >   
+> > > 
+> > > [snip]
+> > >   
+> > > > > [1] https://lore.kernel.org/all/20231116-fix-cdat-devm-free-v1-1-b148b40707d7@intel.com/
+> > > > > 
+> > > > > Fixes: aba578bdace5 ("hw/cxl/cdat: CXL CDAT Data Object Exchange implementation")
+> > > > > Cc: Huai-Cheng Kuo <hchkuo@avery-design.com.tw>
+> > > > > Signed-off-by: Ira Weiny <ira.weiny@intel.com>  
+> > > > 
+> > > > This only becomes a problem with the addition of DCDs so I'm not going to rush it in.  
+> > > 
+> > > That makes sense.
+> > >   
+> > > > Btw cc qemu-devel on qemu patches!
+> > > >   
+> > > 
+> > > Ah...  yea my bad.  
+> > 
+> > Might I also ask for a more prominent way to quickly identify kernel vs
+> > qemu patches, like a "[QEMU PATCH]" prefix? I tend to look for "hw/" in
+> > the diff path names, but the kernel vs qemu question is ambiguous when
+> > looking at the linux-cxl Patchwork queue.
+> I'm not sure if the QEMU maintainers would be that keen on a tag there.
+> Maybe just stick qemu/cxl: in the cover letter naming as a prefix?
+> [PATCH 0/4] qemu/cxl: Whatever the change is
 
-The general approach looks fine to me, although I still prefer we
-reorganize the struct as Chris and I discussed: rename
-crypto_acomp_ctx to a generic name, add a (anonymous) struct for the
-crypto_acomp stuff, rename dstmem to buffer or so.
++1 from me.
 
-I think we can also make the mutex a static part of the struct, any
-advantage to dynamically allocating it?
+> > @Jonathan, what do you think of having the kernel patchwork-bot watch
+> > your tree for updating patch state (if it is not happening already).
+> My QEMU tree is a bit intermittent and frequently rebased as I'm juggling
+> too many patches. Not sure we'd get a good match.  Mind you I've
+> never tried the bot so not even sure how to configure it.
 
->
-> Subject: [PATCH] mm/zswap: make each acomp_ctx has its own mutex and dstm=
-em
->
-> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
-> ---
->  include/linux/cpuhotplug.h |  1 -
->  mm/zswap.c                 | 86 ++++++++++++--------------------------
->  2 files changed, 26 insertions(+), 61 deletions(-)
->
-> diff --git a/include/linux/cpuhotplug.h b/include/linux/cpuhotplug.h
-> index efc0c0b07efb..c3e06e21766a 100644
-> --- a/include/linux/cpuhotplug.h
-> +++ b/include/linux/cpuhotplug.h
-> @@ -124,7 +124,6 @@ enum cpuhp_state {
->         CPUHP_ARM_BL_PREPARE,
->         CPUHP_TRACE_RB_PREPARE,
->         CPUHP_MM_ZS_PREPARE,
-> -       CPUHP_MM_ZSWP_MEM_PREPARE,
->         CPUHP_MM_ZSWP_POOL_PREPARE,
->         CPUHP_KVM_PPC_BOOK3S_PREPARE,
->         CPUHP_ZCOMP_PREPARE,
-> diff --git a/mm/zswap.c b/mm/zswap.c
-> index 2c349fd88904..37301f1a80a9 100644
-> --- a/mm/zswap.c
-> +++ b/mm/zswap.c
-> @@ -694,63 +694,31 @@ static void zswap_alloc_shrinker(struct zswap_pool =
-*pool)
->  /*********************************
->  * per-cpu code
->  **********************************/
-> -static DEFINE_PER_CPU(u8 *, zswap_dstmem);
-> -/*
-> - * If users dynamically change the zpool type and compressor at runtime,=
- i.e.
-> - * zswap is running, zswap can have more than one zpool on one cpu, but =
-they
-> - * are sharing dtsmem. So we need this mutex to be per-cpu.
-> - */
-> -static DEFINE_PER_CPU(struct mutex *, zswap_mutex);
-> -
-> -static int zswap_dstmem_prepare(unsigned int cpu)
-> -{
-> -       struct mutex *mutex;
-> -       u8 *dst;
-> -
-> -       dst =3D kmalloc_node(PAGE_SIZE, GFP_KERNEL, cpu_to_node(cpu));
-> -       if (!dst)
-> -               return -ENOMEM;
-> -
-> -       mutex =3D kmalloc_node(sizeof(*mutex), GFP_KERNEL, cpu_to_node(cp=
-u));
-> -       if (!mutex) {
-> -               kfree(dst);
-> -               return -ENOMEM;
-> -       }
-> -
-> -       mutex_init(mutex);
-> -       per_cpu(zswap_dstmem, cpu) =3D dst;
-> -       per_cpu(zswap_mutex, cpu) =3D mutex;
-> -       return 0;
-> -}
-> -
-> -static int zswap_dstmem_dead(unsigned int cpu)
-> -{
-> -       struct mutex *mutex;
-> -       u8 *dst;
-> -
-> -       mutex =3D per_cpu(zswap_mutex, cpu);
-> -       kfree(mutex);
-> -       per_cpu(zswap_mutex, cpu) =3D NULL;
-> -
-> -       dst =3D per_cpu(zswap_dstmem, cpu);
-> -       kfree(dst);
-> -       per_cpu(zswap_dstmem, cpu) =3D NULL;
-> -
-> -       return 0;
-> -}
-> -
->  static int zswap_cpu_comp_prepare(unsigned int cpu, struct hlist_node *n=
-ode)
->  {
->         struct zswap_pool *pool =3D hlist_entry(node, struct zswap_pool, =
-node);
->         struct crypto_acomp_ctx *acomp_ctx =3D per_cpu_ptr(pool->acomp_ct=
-x, cpu);
->         struct crypto_acomp *acomp;
->         struct acomp_req *req;
-> +       int ret =3D 0;
-> +
-> +       acomp_ctx->dstmem =3D kmalloc_node(PAGE_SIZE, GFP_KERNEL, cpu_to_=
-node(cpu));
-> +       if (!acomp_ctx->dstmem)
-> +               return -ENOMEM;
-> +
-> +       acomp_ctx->mutex =3D kmalloc_node(sizeof(struct mutex), GFP_KERNE=
-L, cpu_to_node(cpu));
-> +       if (!acomp_ctx->mutex) {
-> +               ret =3D -ENOMEM;
-> +               goto mutex_fail;
-> +       }
-> +       mutex_init(acomp_ctx->mutex);
->
->         acomp =3D crypto_alloc_acomp_node(pool->tfm_name, 0, 0, cpu_to_no=
-de(cpu));
->         if (IS_ERR(acomp)) {
->                 pr_err("could not alloc crypto acomp %s : %ld\n",
->                                 pool->tfm_name, PTR_ERR(acomp));
-> -               return PTR_ERR(acomp);
-> +               ret =3D PTR_ERR(acomp);
-> +               goto acomp_fail;
->         }
->         acomp_ctx->acomp =3D acomp;
->
-> @@ -758,8 +726,8 @@ static int zswap_cpu_comp_prepare(unsigned int cpu, s=
-truct hlist_node *node)
->         if (!req) {
->                 pr_err("could not alloc crypto acomp_request %s\n",
->                        pool->tfm_name);
-> -               crypto_free_acomp(acomp_ctx->acomp);
-> -               return -ENOMEM;
-> +               ret =3D -ENOMEM;
-> +               goto req_fail;
->         }
->         acomp_ctx->req =3D req;
->
-> @@ -772,10 +740,15 @@ static int zswap_cpu_comp_prepare(unsigned int cpu,=
- struct hlist_node *node)
->         acomp_request_set_callback(req, CRYPTO_TFM_REQ_MAY_BACKLOG,
->                                    crypto_req_done, &acomp_ctx->wait);
->
-> -       acomp_ctx->mutex =3D per_cpu(zswap_mutex, cpu);
-> -       acomp_ctx->dstmem =3D per_cpu(zswap_dstmem, cpu);
-> -
->         return 0;
-> +req_fail:
-> +       crypto_free_acomp(acomp_ctx->acomp);
-> +acomp_fail:
-> +       kfree(acomp_ctx->mutex);
-> +mutex_fail:
-> +       kfree(acomp_ctx->dstmem);
-> +
-> +       return ret;
->  }
->
->  static int zswap_cpu_comp_dead(unsigned int cpu, struct hlist_node *node=
-)
-> @@ -788,6 +761,8 @@ static int zswap_cpu_comp_dead(unsigned int cpu, stru=
-ct hlist_node *node)
->                         acomp_request_free(acomp_ctx->req);
->                 if (!IS_ERR_OR_NULL(acomp_ctx->acomp))
->                         crypto_free_acomp(acomp_ctx->acomp);
-> +               kfree(acomp_ctx->mutex);
-> +               kfree(acomp_ctx->dstmem);
->         }
->
->         return 0;
-> @@ -1901,13 +1876,6 @@ static int zswap_setup(void)
->                 goto cache_fail;
->         }
->
-> -       ret =3D cpuhp_setup_state(CPUHP_MM_ZSWP_MEM_PREPARE, "mm/zswap:pr=
-epare",
-> -                               zswap_dstmem_prepare, zswap_dstmem_dead);
-> -       if (ret) {
-> -               pr_err("dstmem alloc failed\n");
-> -               goto dstmem_fail;
-> -       }
-> -
->         ret =3D cpuhp_setup_state_multi(CPUHP_MM_ZSWP_POOL_PREPARE,
->                                       "mm/zswap_pool:prepare",
->                                       zswap_cpu_comp_prepare,
-> @@ -1939,8 +1907,6 @@ static int zswap_setup(void)
->         if (pool)
->                 zswap_pool_destroy(pool);
->  hp_fail:
-> -       cpuhp_remove_state(CPUHP_MM_ZSWP_MEM_PREPARE);
-> -dstmem_fail:
->         kmem_cache_destroy(zswap_entry_cache);
->  cache_fail:
->         /* if built-in, we aren't unloaded on failure; don't allow use */
-> --
-> 2.20.1
->
+Here's the documentation:
+https://korg.docs.kernel.org/patchwork/index.html
+
+The basics are you just point the bot at kernel tree and whenever that
+tree is updated it checks if any of the new commits match patchwork
+patches by git-patch-id (or equivalent). Rebases are ok as it will just
+"re-accept" the patch with new commit id. The main benefit it has is
+transitioning patches to the Accepted state, or Mainline state depending
+on what branch you tell it represents those states.
+
+It does require a git.kernel.org tree to monitor, but we might already
+get benefit from just pointing it to:
+
+https://git.kernel.org/pub/scm/virt/kvm/mst/qemu.git/
+
+...to automatically mark patches as "Accepted". The "Superseded" state
+comes for free with the existing patchwork-bot monitoring of the
+linux-cxl@ list.
 
