@@ -1,212 +1,267 @@
-Return-Path: <linux-kernel+bounces-8123-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-8136-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3585481B267
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 10:32:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 415D381B281
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 10:36:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E0EAF288BB9
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 09:32:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ED91F2848FB
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Dec 2023 09:36:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 007434CB3E;
-	Thu, 21 Dec 2023 09:29:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 884A55100D;
+	Thu, 21 Dec 2023 09:30:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="OZ9rk4li"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="AgAxTj55";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="AgAxTj55"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9882B41235
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 09:29:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1703150954;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=Q6K90sRODmbMWwtU9tNxvUv67L4upvPo7RF/ZdrIftQ=;
-	b=OZ9rk4li7MLtDlacO3QfI2asB8MYFHCNUSgp145M6lgiFl8/KtWcuqxLNl97ypue84urB4
-	BS0V78x6z/gZm1tVdJP/IIfHFFfLJf0i0mWg8VKY0jZbllpUSf/JqtG68OFt5KK0h5+N5X
-	JPhsBN3XzPcrDGpDo6s9ZTKJhJxO3DQ=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-124-VX3mDQWMMHuPI-6PVJCIUw-1; Thu, 21 Dec 2023 04:29:12 -0500
-X-MC-Unique: VX3mDQWMMHuPI-6PVJCIUw-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-40c691ffb32so4934005e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 01:29:12 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703150951; x=1703755751;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Q6K90sRODmbMWwtU9tNxvUv67L4upvPo7RF/ZdrIftQ=;
-        b=rPvU1PjARRIsoeii5Gt/7z8W7MZkCtYtgm9rBB91ROpKQFA8js02CJriO5hwV6Hx80
-         ODQaHe1GfidWExLF56J2MKpk6dSuazdECtalTNti6gp4Rcfd0T5HmWcrb9A/gx3gDwf5
-         kpZ2EJRBLh1TW1f89x9so7VRRujJjzjtObjyR6RA17LLKjhjgdfdiAE/3jYNwMjNms4W
-         LuWh6q0CvCKY0I7UwyYXqdwA0uzWI6rMpo/CSkjHrHktFFH1x0SCmlgJKuvqnMAeE3x+
-         UQtq3z5dRHgqcnLYaHvouQvyVQI20KdaYjYgRQcIqawRhmJYW04y+CnQKw8bmoFu4d/Y
-         LBVw==
-X-Gm-Message-State: AOJu0YzZNhENyrfCICYvrLXaWAEkLsA5BEWXECxxdPWgCbw+6jHsy3kL
-	SeJ7lZbd4vIBAONcjC4xTegDK9XS+hBeeZbCjTpOIMktJSTOyzC+/H9wderkMgiXhnpARsktlbQ
-	ArG6i+L0fEhmxlyt9cgHRxXYa
-X-Received: by 2002:a05:600c:714:b0:40c:708b:cf3c with SMTP id i20-20020a05600c071400b0040c708bcf3cmr361268wmn.48.1703150951046;
-        Thu, 21 Dec 2023 01:29:11 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHrKvcg5mOUfP/Ss7z7G6/twkyy79D97a8tGWQva5Ve1rkclRMtSNtdCjUOZhjwCZ+O4i4aZw==
-X-Received: by 2002:a05:600c:714:b0:40c:708b:cf3c with SMTP id i20-20020a05600c071400b0040c708bcf3cmr361256wmn.48.1703150950601;
-        Thu, 21 Dec 2023 01:29:10 -0800 (PST)
-Received: from [10.32.64.237] (nat-pool-muc-t.redhat.com. [149.14.88.26])
-        by smtp.gmail.com with ESMTPSA id fm13-20020a05600c0c0d00b0040b37f107c4sm2664041wmb.16.2023.12.21.01.29.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Dec 2023 01:29:10 -0800 (PST)
-Message-ID: <71f2ceb0-ee76-4832-ace5-24403ba54283@redhat.com>
-Date: Thu, 21 Dec 2023 10:29:09 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E420D4F8B4;
+	Thu, 21 Dec 2023 09:30:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 3AA9F1FB5E;
+	Thu, 21 Dec 2023 09:30:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1703151000; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=H4HSDhkn3mbzmn+HYU4/3nbaXxmpHuloAKvKi9O9PuU=;
+	b=AgAxTj55I08NGUtiw7xFFRpCJA9QY9GYswORVLiK6V8E/0xB8HJFqZg7nkUOPXh+xTjrtF
+	itfvWm1l5RiV7Yp/cQ0k17lUCDF+jZh9y1zcEZsDNVwHBRFx0Qp4yApRMvZXqkpK1CabC7
+	JuC/t2PNhuMfCWcaCH3mDiJgqGnZyo0=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1703151000; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=H4HSDhkn3mbzmn+HYU4/3nbaXxmpHuloAKvKi9O9PuU=;
+	b=AgAxTj55I08NGUtiw7xFFRpCJA9QY9GYswORVLiK6V8E/0xB8HJFqZg7nkUOPXh+xTjrtF
+	itfvWm1l5RiV7Yp/cQ0k17lUCDF+jZh9y1zcEZsDNVwHBRFx0Qp4yApRMvZXqkpK1CabC7
+	JuC/t2PNhuMfCWcaCH3mDiJgqGnZyo0=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EC01213725;
+	Thu, 21 Dec 2023 09:29:59 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id MaiZNpcFhGU2MgAAD6G6ig
+	(envelope-from <mhocko@suse.com>); Thu, 21 Dec 2023 09:29:59 +0000
+Date: Thu, 21 Dec 2023 10:29:59 +0100
+From: Michal Hocko <mhocko@suse.com>
+To: Dan Schatzberg <schatzberg.dan@gmail.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Yosry Ahmed <yosryahmed@google.com>, Huan Yang <link@vivo.com>,
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+	linux-mm@kvack.org, Tejun Heo <tj@kernel.org>,
+	Zefan Li <lizefan.x@bytedance.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Shakeel Butt <shakeelb@google.com>,
+	Muchun Song <muchun.song@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Kefeng Wang <wangkefeng.wang@huawei.com>,
+	SeongJae Park <sj@kernel.org>,
+	"Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
+	Nhat Pham <nphamcs@gmail.com>, Yue Zhao <findns94@gmail.com>
+Subject: Re: [PATCH v5 2/2] mm: add swapiness= arg to memory.reclaim
+Message-ID: <ZYQFlynE7CU_Fjoc@tiehlicka>
+References: <20231220152653.3273778-1-schatzberg.dan@gmail.com>
+ <20231220152653.3273778-3-schatzberg.dan@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 04/40] mm/rmap: introduce and use
- hugetlb_try_dup_anon_rmap()
-To: Matthew Wilcox <willy@infradead.org>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
- Andrew Morton <akpm@linux-foundation.org>, Hugh Dickins <hughd@google.com>,
- Ryan Roberts <ryan.roberts@arm.com>, Yin Fengwei <fengwei.yin@intel.com>,
- Mike Kravetz <mike.kravetz@oracle.com>, Muchun Song <muchun.song@linux.dev>,
- Peter Xu <peterx@redhat.com>
-References: <20231220224504.646757-1-david@redhat.com>
- <20231220224504.646757-5-david@redhat.com>
- <ZYPBt6v0JY3QI3QW@casper.infradead.org>
-Content-Language: en-US
-From: David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <ZYPBt6v0JY3QI3QW@casper.infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231220152653.3273778-3-schatzberg.dan@gmail.com>
+X-Spam-Level: 
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [-1.31 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 R_RATELIMIT(0.00)[to_ip_from(RLsgd6kpfonsu388crrfsk7e3y)];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_TRACE(0.00)[suse.com:+];
+	 MX_GOOD(-0.01)[];
+	 FREEMAIL_TO(0.00)[gmail.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 BAYES_HAM(-3.00)[100.00%];
+	 ARC_NA(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	 FROM_HAS_DN(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 RCPT_COUNT_TWELVE(0.00)[19];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,suse.com:email];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[cmpxchg.org,linux.dev,google.com,vivo.com,vger.kernel.org,kvack.org,kernel.org,bytedance.com,lwn.net,linux-foundation.org,huawei.com,gmail.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[];
+	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=AgAxTj55
+X-Spam-Score: -1.31
+X-Rspamd-Queue-Id: 3AA9F1FB5E
 
-On 21.12.23 05:40, Matthew Wilcox wrote:
-> On Wed, Dec 20, 2023 at 11:44:28PM +0100, David Hildenbrand wrote:
->> hugetlb rmap handling differs quite a lot from "ordinary" rmap code.
->> For example, hugetlb currently only supports entire mappings, and treats
->> any mapping as mapped using a single "logical PTE". Let's move it out
->> of the way so we can overhaul our "ordinary" rmap.
->> implementation/interface.
->>
->> So let's introduce and use hugetlb_try_dup_anon_rmap() to make all
->> hugetlb handling use dedicated hugetlb_* rmap functions.
->>
->> Add sanity checks that we end up with the right folios in the right
->> functions.
->>
->> Note that is_device_private_page() does not apply to hugetlb.
->>
->> Reviewed-by: Yin Fengwei <fengwei.yin@intel.com>
->> Reviewed-by: Ryan Roberts <ryan.roberts@arm.com>
->> Signed-off-by: David Hildenbrand <david@redhat.com>
+On Wed 20-12-23 07:26:51, Dan Schatzberg wrote:
+> Allow proactive reclaimers to submit an additional swappiness=<val>
+> argument to memory.reclaim. This overrides the global or per-memcg
+> swappiness setting for that reclaim attempt.
 > 
-> Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> For example:
 > 
-
-Thanks!
-
->> +static inline bool folio_needs_cow_for_dma(struct vm_area_struct *vma,
->> +					  struct folio *folio)
+> echo "2M swappiness=0" > /sys/fs/cgroup/memory.reclaim
 > 
-> I particularly like it that you introduced this.
-
-And a later patch even removes page_needs_cow_for_dma() :)
-
-
-A note that we have one remaining user of page_maybe_dma_pinned(). 
-Instead of converting that code to folios, we should probably just 
-remove that pte_is_pinned() handling completely: it's inconsistent (only 
-checks PTEs) and cannot handle concurrent GUP-fast. It's a leftover from 
-the COW issues we had before PageAnonExclusive. [I've had patch lying 
-around to do that for a long time, but never sent it]
-
+> will perform reclaim on the rootcg with a swappiness setting of 0 (no
+> swap) regardless of the vm.swappiness sysctl setting.
 > 
->> +static inline int hugetlb_try_dup_anon_rmap(struct folio *folio,
->> +		struct vm_area_struct *vma)
->> +{
->> +	VM_WARN_ON_FOLIO(!folio_test_hugetlb(folio), folio);
->> +	VM_WARN_ON_FOLIO(!folio_test_anon(folio), folio);
->> +
->> +	if (PageAnonExclusive(&folio->page)) {
+> Userspace proactive reclaimers use the memory.reclaim interface to
+> trigger reclaim. The memory.reclaim interface does not allow for any way
+> to effect the balance of file vs anon during proactive reclaim. The only
+> approach is to adjust the vm.swappiness setting. However, there are a
+> few reasons we look to control the balance of file vs anon during
+> proactive reclaim, separately from reactive reclaim:
 > 
-> I wonder if we need a folio_test_hugetlb_anon_exclusive() to make this
-> a little more ergonomic?
+> * Swapout should be limited to manage SSD write endurance. In near-OOM
+> situations we are fine with lots of swap-out to avoid OOMs. As these are
+> typically rare events, they have relatively little impact on write
+> endurance. However, proactive reclaim runs continuously and so its
+> impact on SSD write endurance is more significant. Therefore it is
+> desireable to control swap-out for proactive reclaim separately from
+> reactive reclaim
 > 
->> +		if (unlikely(folio_needs_cow_for_dma(vma, folio)))
->> +			return -EBUSY;
->> +		ClearPageAnonExclusive(&folio->page);
+> * Some userspace OOM killers like systemd-oomd[1] support OOM killing on
+> swap exhaustion. This makes sense if the swap exhaustion is triggered
+> due to reactive reclaim but less so if it is triggered due to proactive
+> reclaim (e.g. one could see OOMs when free memory is ample but anon is
+> just particularly cold). Therefore, it's desireable to have proactive
+> reclaim reduce or stop swap-out before the threshold at which OOM
+> killing occurs.
 > 
-> ... and set/clear variants.
+> In the case of Meta's Senpai proactive reclaimer, we adjust
+> vm.swappiness before writes to memory.reclaim[2]. This has been in
+> production for nearly two years and has addressed our needs to control
+> proactive vs reactive reclaim behavior but is still not ideal for a
+> number of reasons:
 > 
+> * vm.swappiness is a global setting, adjusting it can race/interfere
+> with other system administration that wishes to control vm.swappiness.
+> In our case, we need to disable Senpai before adjusting vm.swappiness.
+> 
+> * vm.swappiness is stateful - so a crash or restart of Senpai can leave
+> a misconfigured setting. This requires some additional management to
+> record the "desired" setting and ensure Senpai always adjusts to it.
+> 
+> With this patch, we avoid these downsides of adjusting vm.swappiness
+> globally.
 
-I thought about that as well, and even going a step further and instead 
-of having PageAnonExclusive checks outside rmap code, have something 
-like the following instead:
+Thank you for extending the changelog with usecases!
 
-hugetlb_test_anon_rmap_exclusive()
-folio_test_anon_rmap_exclusive_[pte|pmd]()
+> [1]https://www.freedesktop.org/software/systemd/man/latest/systemd-oomd.service.html
+> [2]https://github.com/facebookincubator/oomd/blob/main/src/oomd/plugins/Senpai.cpp#L585-L598
+> 
+> Signed-off-by: Dan Schatzberg <schatzberg.dan@gmail.com>
+> ---
+>  Documentation/admin-guide/cgroup-v2.rst | 18 ++++----
+>  include/linux/swap.h                    |  3 +-
+>  mm/memcontrol.c                         | 56 ++++++++++++++++++++-----
+>  mm/vmscan.c                             | 13 +++++-
+>  4 files changed, 69 insertions(+), 21 deletions(-)
 
-I added that to my TODO list, because it results again in a bigger 
-patchset (especially also in GUP).
+LGTM
+Acked-by: Michal Hocko <mhocko@suse.com.
 
+Just one minor thing. It would be really great to prevent from potential
+incorrect use of mem_cgroup_swappiness. This should be internal function
+to memcg. Now, having scan_control internal to vmscan.c makes that
+harder and moving it out to swap.h or internal.h sounds overreaching.
+
+We could do this at least to reduce those mistakes. I can make it a
+proper patch if this seems reasonable or you can fold it into your patch
+directly.
+--- 
+
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index f98dff23b758..5f3a182e9515 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -92,8 +92,10 @@ struct scan_control {
+ 	unsigned long	anon_cost;
+ 	unsigned long	file_cost;
+ 
+-	/* Swappiness value for reclaim. NULL will fall back to per-memcg/global value */
++#ifdef CONFIG_MEMCG
++	/* Swappiness value for reclaim. Always use sc_swappiness()! */
+ 	int *swappiness;
++#endif
+ 
+ 	/* Can active folios be deactivated as part of reclaim? */
+ #define DEACTIVATE_ANON 1
+@@ -230,6 +232,13 @@ static bool writeback_throttling_sane(struct scan_control *sc)
+ #endif
+ 	return false;
+ }
++
++static int sc_swappiness(struct scan_control *sc, struct mem_cgroup *memcg)
++{
++	if (sc->swappiness)
++		return *sc->swappiness;
++	return mem_cgroup_swappiness(memcg);
++}
+ #else
+ static bool cgroup_reclaim(struct scan_control *sc)
+ {
+@@ -245,6 +254,10 @@ static bool writeback_throttling_sane(struct scan_control *sc)
+ {
+ 	return true;
+ }
++static int sc_swappiness(struct scan_control *sc, struct mem_cgroup *memcg)
++{
++	return READ_ONCE(vm_swappiness);
++}
+ #endif
+ 
+ static void set_task_reclaim_state(struct task_struct *task,
+@@ -2330,8 +2343,7 @@ static void get_scan_count(struct lruvec *lruvec, struct scan_control *sc,
+ 	struct pglist_data *pgdat = lruvec_pgdat(lruvec);
+ 	struct mem_cgroup *memcg = lruvec_memcg(lruvec);
+ 	unsigned long anon_cost, file_cost, total_cost;
+-	int swappiness = sc->swappiness ?
+-		*sc->swappiness : mem_cgroup_swappiness(memcg);
++	int swappiness = sc_swappiness(sc, memcg);
+ 	u64 fraction[ANON_AND_FILE];
+ 	u64 denominator = 0;	/* gcc */
+ 	enum scan_balance scan_balance;
+@@ -2612,10 +2624,7 @@ static int get_swappiness(struct lruvec *lruvec, struct scan_control *sc)
+ 	    mem_cgroup_get_nr_swap_pages(memcg) < MIN_LRU_BATCH)
+ 		return 0;
+ 
+-	if (sc->swappiness)
+-		return *sc->swappiness;
+-
+-	return mem_cgroup_swappiness(memcg);
++	return sc_swappiness(sc, memcg);
+ }
+ 
+ static int get_nr_gens(struct lruvec *lruvec, int type)
 -- 
-Cheers,
-
-David / dhildenb
-
+Michal Hocko
+SUSE Labs
 
