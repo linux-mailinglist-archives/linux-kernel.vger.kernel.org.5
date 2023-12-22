@@ -1,66 +1,65 @@
-Return-Path: <linux-kernel+bounces-9470-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9471-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 56BFC81C621
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 09:02:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8191281C623
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 09:04:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7A3121C22262
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 08:02:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 374FD1F26084
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 08:04:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C066DC147;
-	Fri, 22 Dec 2023 08:02:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAADAF9D2;
+	Fri, 22 Dec 2023 08:03:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="F5Yw4m/I"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="qSCXkzVU"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E6B29449
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 08:02:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-336990fb8fbso42247f8f.1
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 00:02:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703232129; x=1703836929; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=6l7PqFYjCtepvXE0Gj1HI9GmgWPHL+JynlGGhARAcRk=;
-        b=F5Yw4m/I/Y9dMJqs+k7QID6oRwMKpj/E7KAjBUHhL4v2kU6Wy1yNxqnYqiHHa113o5
-         PWhbVwTGLuUl0Eq8cKOxIVZfs1ecCZG3+djr8CbqGT1AKg3QIHOA6/6o3GpROF07DQnC
-         kWbViXT7WHNLeatIrrReNJ813Onau7p+Qs8mN12TR/yusArERHmoXuZgy6iLWcEWooel
-         M9rDwtZGQDql2Y3qTunwVvtdGcl+Flp8wKBEu31SgRe92LkJW03Z+d53ilx8478HmMD3
-         Ueh/rMjTEYfhxTgr+6HKkKwkpx1/p6OogCtjvVq3LjazHAJ4X0Kf0Sf91AOYT4Pev+dx
-         Amfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703232129; x=1703836929;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=6l7PqFYjCtepvXE0Gj1HI9GmgWPHL+JynlGGhARAcRk=;
-        b=q0Dfd+wfgD7hiRcNN6uNM2rxBF8obKz4hTBRYwxzryXz++tZ3N2rRzoz2FZLcA4E8i
-         FjO3GrOiywvTxHDEcjcHh2aEpJ/n1B0rX0XQZoLGImY+ER9vzuBykcYVNrsIMfIJbnjt
-         if5dJSXCeg1RlSb2gXpOMyGQMGbb1wvsjm7ilW/Iy2gLLv/LllkpMD9TmhklMQmRuC0O
-         SzUqV/cgeRyEYojINn2oI1Gy9NTuB+cLbU/oiI+iioUsk7p0C9q0JMaN7bBISDVWjy/x
-         qR2kGbH2oDlTCoxqcd+BV8UCLRkUxuM5Ra35r8VoBDYiFpOBvlWmt4g2vYzF9GCdsCrg
-         7Czw==
-X-Gm-Message-State: AOJu0Yya1xakZiOHkURIZAtsJAZQF4ejBGXk66CWa8pDrfkvZtOAA04t
-	D/sGPmi2tSEZXhZUekUpq4/G8sZkBgcw2A==
-X-Google-Smtp-Source: AGHT+IG2Uwav0FGOVhKVAxjBPwyl2olfKJQY9m5tA3Inmu3WeCTCkaoYyT396Pi2DMCK54+dNomilg==
-X-Received: by 2002:adf:f8cf:0:b0:336:4ed5:56bf with SMTP id f15-20020adff8cf000000b003364ed556bfmr467046wrq.64.1703232129263;
-        Fri, 22 Dec 2023 00:02:09 -0800 (PST)
-Received: from ?IPV6:2a01:e0a:982:cbb0:6d8d:fe46:4f99:9799? ([2a01:e0a:982:cbb0:6d8d:fe46:4f99:9799])
-        by smtp.gmail.com with ESMTPSA id f5-20020adff8c5000000b003367dad4a58sm3694002wrq.70.2023.12.22.00.02.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Dec 2023 00:02:08 -0800 (PST)
-Message-ID: <e41db6d2-2c3c-4dbe-a01c-6587fc762e68@linaro.org>
-Date: Fri, 22 Dec 2023 09:02:04 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6EF7DF42
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 08:03:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.vnet.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.vnet.ibm.com
+Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BM5r0sg006796;
+	Fri, 22 Dec 2023 08:02:33 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=FV9B2b+HGXT7OKPmJl68SHf1c/HoXIpbqG4dQf9XRiI=;
+ b=qSCXkzVUNrP8f1rgSSsNuxH8MlYpHL962W5ck+Kw1h9brWAqNyNxNvGsVD4MHa1kG1z4
+ /xOw1lwFW3Jr1/Ury8gPeneJw/T1FCwpbis+be1rvNLIR65a4TfmlGhdN8fCYuZeguJi
+ Wrt16qUMZPCGJez47OdUuG2jzGHiMADxu0RYPD/oUskrYr53tVL8mzFcrhWAVEmn9fDD
+ 3YOTRAK8rMeOSpvznAZT2DiazlVDBp6f947Y+d1HmDn2F/TciixEw9gjornJOf9vvwI9
+ NQM6VtLzMWx46+Q0TtrSdXQbdTBL83dm7SV3yzZU/mB5N1qxbOVZsAqjRFFFO4KwTY0h 8A== 
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v54pmu353-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 22 Dec 2023 08:02:32 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BM7oY8X029718;
+	Fri, 22 Dec 2023 08:02:31 GMT
+Received: from smtprelay01.wdc07v.mail.ibm.com ([172.16.1.68])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3v1p7t2a39-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 22 Dec 2023 08:02:31 +0000
+Received: from smtpav05.dal12v.mail.ibm.com (smtpav05.dal12v.mail.ibm.com [10.241.53.104])
+	by smtprelay01.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BM82Umt31916682
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 22 Dec 2023 08:02:30 GMT
+Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 77A305806B;
+	Fri, 22 Dec 2023 08:02:30 +0000 (GMT)
+Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 961A258052;
+	Fri, 22 Dec 2023 08:02:27 +0000 (GMT)
+Received: from [9.43.121.41] (unknown [9.43.121.41])
+	by smtpav05.dal12v.mail.ibm.com (Postfix) with ESMTP;
+	Fri, 22 Dec 2023 08:02:27 +0000 (GMT)
+Message-ID: <e265378b-f81b-4c4c-9192-b383340c9be0@linux.vnet.ibm.com>
+Date: Fri, 22 Dec 2023 13:32:26 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -68,101 +67,99 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-From: neil.armstrong@linaro.org
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH linux-next] drm/panel: Simplify with dev_err_probe()
-Content-Language: en-US, fr
-To: yang.guang5@zte.com.cn, hanxu5@huaqin.corp-partner.google.com
-Cc: jiang.xuexin@zte.com.cn, chen.haonan2@zte.com.cn, cgel.zte@gmail.com,
- quic_jesszhan@quicinc.com, sam@ravnborg.org,
- maarten.lankhorst@linux.intel.com, mripard@kernel.org, tzimmermann@suse.de,
- airlied@gmail.com, daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org
-References: <202312201048538333616@zte.com.cn>
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro Developer Services
-In-Reply-To: <202312201048538333616@zte.com.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Subject: Re: [PATCH] sched: move access of avg_rt and avg_dl into existing
+ helper functions
+Content-Language: en-US
+To: Vincent Guittot <vincent.guittot@linaro.org>,
+        Ingo Molnar <mingo@kernel.org>
+Cc: peterz@infradead.org, dietmar.eggemann@arm.com,
+        linux-kernel@vger.kernel.org, srikar@linux.vnet.ibm.com,
+        yu.c.chen@intel.com, tim.c.chen@linux.intel.com
+References: <20231220065522.351915-1-sshegde@linux.vnet.ibm.com>
+ <CAKfTPtCRoLULQkRTZcJfXvSSqZYV2oRN0a3_AFiuqD7k0LtL-Q@mail.gmail.com>
+ <85230ed0-26a0-4f08-aab0-f0a6ce03abe8@linux.vnet.ibm.com>
+ <CAKfTPtBYRT9oOoLwZ-Gg3KVdK+2iJnPaXaWfiuebnGEOOArH0Q@mail.gmail.com>
+From: Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
+In-Reply-To: <CAKfTPtBYRT9oOoLwZ-Gg3KVdK+2iJnPaXaWfiuebnGEOOArH0Q@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: jYyvHv4UnEQcTHd85w2znM3pR34fb_9C
+X-Proofpoint-GUID: jYyvHv4UnEQcTHd85w2znM3pR34fb_9C
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-22_04,2023-12-21_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ impostorscore=0 clxscore=1015 lowpriorityscore=0 spamscore=0 bulkscore=0
+ mlxlogscore=999 adultscore=0 suspectscore=0 malwarescore=0 mlxscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2312220056
 
-On 20/12/2023 03:48, yang.guang5@zte.com.cn wrote:
-> From: Yang Guang <yang.guang5@zte.com.cn>
-> 
-> dev_err_probe() can check if the error code is -EPROBE_DEFER
-> and can return the error code, replacing dev_err() with it
-> simplifies the code.
-> 
-> Signed-off-by: Chen Haonan <chen.haonan2@zte.com.cn>
 
-Got the following checkpatch error:
-ERROR:NO_AUTHOR_SIGN_OFF: Missing Signed-off-by: line by nominal patch author 'Yang Guang <yang.guang5@zte.com.cn>'
 
-Thanks,
-Neil
+On 12/21/23 9:46 PM, Vincent Guittot wrote:
+> Hi Shrikanth,
+> 
+> On Wed, 20 Dec 2023 at 15:49, Shrikanth Hegde
+> <sshegde@linux.vnet.ibm.com> wrote:
+>>
+>>
+>>
+>> On 12/20/23 7:29 PM, Vincent Guittot wrote:
+>>
+>> Hi Vincent, thanks for taking a look.
+>>
+>>> On Wed, 20 Dec 2023 at 07:55, Shrikanth Hegde
+>>> <sshegde@linux.vnet.ibm.com> wrote:
+>>>>
+> 
+> [...]
+> 
+>>>> -#ifdef CONFIG_HAVE_SCHED_AVG_IRQ
+>>>> -       if (READ_ONCE(rq->avg_irq.util_avg))
+>>>> +       if (cpu_util_irq(rq))
+>>>
+>>> cpu_util_irq doesn't call READ_ONCE()
+>>>
+>>
+>>
+>> I see. Actually it would be right if cpu_util_irq does call READ_ONCE no?
+> 
+> Yes, cpu_util_irq should call READ_ONCE()
+> 
 
-> ---
->   drivers/gpu/drm/panel/panel-boe-himax8279d.c | 18 ++++++------------
->   1 file changed, 6 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/panel/panel-boe-himax8279d.c b/drivers/gpu/drm/panel/panel-boe-himax8279d.c
-> index 11b64acbe8a9..e225840b0d67 100644
-> --- a/drivers/gpu/drm/panel/panel-boe-himax8279d.c
-> +++ b/drivers/gpu/drm/panel/panel-boe-himax8279d.c
-> @@ -854,26 +854,20 @@ static int panel_add(struct panel_info *pinfo)
-> 
->   	pinfo->pp18_gpio = devm_gpiod_get(dev, "pp18", GPIOD_OUT_HIGH);
->   	if (IS_ERR(pinfo->pp18_gpio)) {
-> -		ret = PTR_ERR(pinfo->pp18_gpio);
-> -		if (ret != -EPROBE_DEFER)
-> -			dev_err(dev, "failed to get pp18 gpio: %d\n", ret);
-> -		return ret;
-> +		return dev_err_probe(dev, PTR_ERR(pinfo->pp18_gpio),
-> +							 "failed to get pp18 gpio\n");
->   	}
-> 
->   	pinfo->pp33_gpio = devm_gpiod_get(dev, "pp33", GPIOD_OUT_HIGH);
->   	if (IS_ERR(pinfo->pp33_gpio)) {
-> -		ret = PTR_ERR(pinfo->pp33_gpio);
-> -		if (ret != -EPROBE_DEFER)
-> -			dev_err(dev, "failed to get pp33 gpio: %d\n", ret);
-> -		return ret;
-> +		return	dev_err_probe(dev, PTR_ERR(pinfo->pp33_gpio),
-> +							 "failed to get pp33 gpio\n");
->   	}
-> 
->   	pinfo->enable_gpio = devm_gpiod_get(dev, "enable", GPIOD_OUT_HIGH);
->   	if (IS_ERR(pinfo->enable_gpio)) {
-> -		ret = PTR_ERR(pinfo->enable_gpio);
-> -		if (ret != -EPROBE_DEFER)
-> -			dev_err(dev, "failed to get enable gpio: %d\n", ret);
-> -		return ret;
-> +		return	dev_err_probe(dev, PTR_ERR(pinfo->enable_gpio),
-> +						 "failed to get enable gpio\n");
->   	}
-> 
->   	drm_panel_init(&pinfo->base, dev, &panel_funcs,
+Ok. 
 
+Sorry I forgot to mention about avg_irq. 
+I will send out v2 with the above change of READ_ONCE added soon. 
+
+>>
+>> Sorry i havent yet understood the memory barriers in details. Please correct me
+>> if i am wrong here,
+>> since ___update_load_avg(&rq->avg_irq, 1) does use WRITE_ONCE and reading out this
+>> value using cpu_util_irq on a different CPU should use READ_ONCE no?
+> 
+> Yes
+> 
+>>
+>>>
+>>>>                 return true;
+>>>> -#endif
+>>>>
+>>>>         return false;
+>>>>  }
+>>>> @@ -9481,8 +9479,8 @@ static unsigned long scale_rt_capacity(int cpu)
+>>>>          * avg_thermal.load_avg tracks thermal pressure and the weighted
+>>>>          * average uses the actual delta max capacity(load).
+>>>>          */
+>>>> -       used = READ_ONCE(rq->avg_rt.util_avg);
+>>>> -       used += READ_ONCE(rq->avg_dl.util_avg);
+>>>> +       used = cpu_util_rt(rq);
+>>>> +       used += cpu_util_dl(rq);
+>>>>         used += thermal_load_avg(rq);
+>>>>
+>>>>         if (unlikely(used >= max))
+>>>> --
+>>>> 2.39.3
+>>>>
 
