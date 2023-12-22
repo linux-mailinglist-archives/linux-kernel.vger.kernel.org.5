@@ -1,107 +1,105 @@
-Return-Path: <linux-kernel+bounces-9738-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9739-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 321C681CA75
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 14:02:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE14181CA7B
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 14:04:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8F91228625D
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 13:02:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7FB691F23A42
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 13:04:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E44951A598;
-	Fri, 22 Dec 2023 13:02:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A62919465;
+	Fri, 22 Dec 2023 13:04:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dZ1e9KhT"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pm5QMgQ4"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8A5D199CE
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 13:02:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1703250136;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=2kygMq0mAMv991cW3YZ7Hd3ppnOgYBjhmi7vw/LesYI=;
-	b=dZ1e9KhTvX+xKy8AnVwJ6n0jAVcEDevkFHa/uRAfZnWhmcJ8q7/tu8JHPUfIE8b1AIUd6n
-	Ydo6uigR79tiBBozV1myyNWlw3vhgeiy4KnPkgd/daBX60dde+m1uCmH15Me49CfNUQ9PY
-	+G1xU0xT2377d/fUt54zr6dWSvrxpwo=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-15--QeBZETQMO6dAe6PTzC6cQ-1; Fri,
- 22 Dec 2023 08:02:12 -0500
-X-MC-Unique: -QeBZETQMO6dAe6PTzC6cQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 5329D386914F;
-	Fri, 22 Dec 2023 13:02:11 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.39.195.169])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 82A9251E3;
-	Fri, 22 Dec 2023 13:02:07 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-	Kingdom.
-	Registered in England and Wales under Company Registration No. 3798903
-From: David Howells <dhowells@redhat.com>
-In-Reply-To: <20231221132400.1601991-5-dhowells@redhat.com>
-References: <20231221132400.1601991-5-dhowells@redhat.com> <20231221132400.1601991-1-dhowells@redhat.com>
-To: Jeff Layton <jlayton@kernel.org>
-Cc: dhowells@redhat.com, Gao Xiang <xiang@kernel.org>,
-    Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
-    Jeffle Xu <jefflexu@linux.alibaba.com>,
-    Steve French <smfrench@gmail.com>,
-    Matthew Wilcox <willy@infradead.org>,
-    Marc Dionne <marc.dionne@auristor.com>,
-    Paulo Alcantara <pc@manguebit.com>,
-    Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
-    Dominique Martinet <asmadeus@codewreck.org>,
-    Eric Van Hensbergen <ericvh@kernel.org>,
-    Ilya Dryomov <idryomov@gmail.com>,
-    Christian Brauner <christian@brauner.io>, linux-cachefs@redhat.com,
-    linux-afs@lists.infradead.org, linux-cifs@vger.kernel.org,
-    linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-    v9fs@lists.linux.dev, linux-fsdevel@vger.kernel.org,
-    linux-mm@kvack.org, netdev@vger.kernel.org,
-    linux-kernel@vger.kernel.org, linux-erofs@lists.ozlabs.org
-Subject: [PATCH] Fix EROFS Kconfig
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1A26179AE;
+	Fri, 22 Dec 2023 13:04:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42371C433C8;
+	Fri, 22 Dec 2023 13:03:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703250242;
+	bh=P6RchKud5vgMjzbvRjvY3ZB1//7tLLhnXqUKBSc92I0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=pm5QMgQ4DLb1krxsWqV35IGAmLhCCz25h2kZ38RlD06CeeuKavLCsKuBniU2q85Fq
+	 729zCkjw8x/amd5OacXBI9y8bcqVi+BhXVvJNp5wxzuAfbwetJL2Hfue28eQ4c+fTl
+	 3W81bX555/Lq51zVZxD8xs50tUIGCido9PcQY5UGHIPKliwou2l3Y6aBMopPO6OhsI
+	 zrg+3lBsUeWxNYErcFskeA7I2AwUlb4ecrONZeV3s//WUuguZrWFXdYP98vYy1tuWj
+	 TovdIyInkeiYE8LNXQ81wRn5kF103bz5zu5BRmxhbNAPI5aUYle+Qr5l8/oLrP2xMn
+	 mQiwk3W5uSQqQ==
+Date: Fri, 22 Dec 2023 13:03:56 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Xingyu Wu <xingyu.wu@starfivetech.com>
+Cc: Conor Dooley <conor@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+	Claudiu Beznea <Claudiu.Beznea@microchip.com>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor.dooley@microchip.com>,
+	Walker Chen <walker.chen@starfivetech.com>,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	alsa-devel@alsa-project.org, linux-sound@vger.kernel.org
+Subject: Re: [PATCH v1 1/2] dt-bindings: ASoC: Add Cadence I2S controller for
+ StarFive JH8100 SoC
+Message-ID: <229ffec0-3a8d-4ce8-a4bb-ef6ece639ad8@sirena.org.uk>
+References: <20231221033223.73201-1-xingyu.wu@starfivetech.com>
+ <20231221033223.73201-2-xingyu.wu@starfivetech.com>
+ <20231221-saddlebag-tricolor-d02a17d66795@spud>
+ <f1210b31-25af-4cbd-b73e-2a72aa6c41bf@sirena.org.uk>
+ <11c932a8-5596-4186-9c9d-ec8ca5a6ea35@starfivetech.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <2265064.1703250126.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date: Fri, 22 Dec 2023 13:02:06 +0000
-Message-ID: <2265065.1703250126@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="w+SYfEWNEZ7TqPiO"
+Content-Disposition: inline
+In-Reply-To: <11c932a8-5596-4186-9c9d-ec8ca5a6ea35@starfivetech.com>
+X-Cookie: Familiarity breeds attempt.
 
-This needs an additional change (see attached).
 
-diff --git a/fs/erofs/Kconfig b/fs/erofs/Kconfig
-index 1d318f85232d..1949763e66aa 100644
---- a/fs/erofs/Kconfig
-+++ b/fs/erofs/Kconfig
-@@ -114,7 +114,8 @@ config EROFS_FS_ZIP_DEFLATE
- =
+--w+SYfEWNEZ7TqPiO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
- config EROFS_FS_ONDEMAND
- 	bool "EROFS fscache-based on-demand read support"
--	depends on CACHEFILES_ONDEMAND && (EROFS_FS=3Dm && FSCACHE || EROFS_FS=3D=
-y && FSCACHE=3Dy)
-+	depends on CACHEFILES_ONDEMAND && FSCACHE && \
-+		(EROFS_FS=3Dm && NETFS_SUPPORT || EROFS_FS=3Dy && NETFS_SUPPORT=3Dy)
- 	default n
- 	help
- 	  This permits EROFS to use fscache-backed data blobs with on-demand
+On Fri, Dec 22, 2023 at 05:55:14PM +0800, Xingyu Wu wrote:
 
+> The Cadence I2S can support 8 channels. But on the JH8100 SoC, two
+> instances of this just provide 4 channels to use, one just provides 2
+> channels, and the other one can provide 8 channels. Should I use the
+> property name of 'jh8100,i2s-max-channels' instead for some special
+> instances on the JH8100 SoC?
+
+No, your current name is fine if the binding is generic for all Cadence
+users.  I do think it would be good to have a separate compatible for
+these two channel instances, if there's been one customisation there may
+well have been others.
+
+Please fix your mail client to word wrap within paragraphs at something
+substantially less than 80 columns.  Doing this makes your messages much
+easier to read and reply to.
+
+--w+SYfEWNEZ7TqPiO
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmWFiTsACgkQJNaLcl1U
+h9At3gf9HMiV97V67JGVkqTyZ1zrmOry8r0gKK8wtSM1JZMTyh+tLXWfvH3z5QF+
+7R4AzB7A+oYf8tMW7lTlkWL2SFXaWHXL57EgRuWJ72f9/pSQeOVsCdyPb/SlTDho
+DXCYHa/88/UPXJeQmvV7spyAvPbMcgid6rThjtPUXPhIH1TzhuwOTDf4jbBRScwe
+bpwsDzd4Tp31yJSGHJ+fmCWfCY5aMBg32/4a9PUmkgLtFzNXbs2T4d4nz3TQxIQW
+yGSB0T5OfmrTi/l8UZX0OicD4M5P6EF6YPSq/t1tz/h3n7Dr44zdeI6eOrbIv3BR
+7ini0mK6YD9+oBUCxvPHtKrUS0fHCA==
+=sDbc
+-----END PGP SIGNATURE-----
+
+--w+SYfEWNEZ7TqPiO--
 
