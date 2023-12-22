@@ -1,165 +1,203 @@
-Return-Path: <linux-kernel+bounces-9417-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9418-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DA6481C53B
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 07:42:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40C7E81C53D
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 07:45:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9D45E1F2635C
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 06:42:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB514287238
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 06:45:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75B288F61;
-	Fri, 22 Dec 2023 06:42:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EBB98F49;
+	Fri, 22 Dec 2023 06:45:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="vM1orHdg"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5DDA8F49;
-	Fri, 22 Dec 2023 06:42:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.234])
-	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4SxHkX5yS8z1R5Yr;
-	Fri, 22 Dec 2023 14:41:08 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (unknown [7.185.36.74])
-	by mail.maildlp.com (Postfix) with ESMTPS id 55F071400FD;
-	Fri, 22 Dec 2023 14:42:24 +0800 (CST)
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Fri, 22 Dec
- 2023 14:42:23 +0800
-Subject: Re: [RFC PATCH net-next v1 4/4] net: page_pool: use netmem_t instead
- of struct page in API
-To: Mina Almasry <almasrymina@google.com>
-CC: Shakeel Butt <shakeelb@google.com>, Jakub Kicinski <kuba@kernel.org>,
-	<linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-	<bpf@vger.kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar
-	<mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
-	<dave.hansen@linux.intel.com>, <x86@kernel.org>, "H. Peter Anvin"
-	<hpa@zytor.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J.
- Wysocki" <rafael@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>,
-	=?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>, Michael Chan
-	<michael.chan@broadcom.com>, "David S. Miller" <davem@davemloft.net>, Eric
- Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Alexei
- Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper
- Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>,
-	Wei Fang <wei.fang@nxp.com>, Shenwei Wang <shenwei.wang@nxp.com>, Clark Wang
-	<xiaoning.wang@nxp.com>, NXP Linux Team <linux-imx@nxp.com>, Jeroen de Borst
-	<jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>,
-	Shailend Chand <shailend@google.com>, Yisen Zhuang <yisen.zhuang@huawei.com>,
-	Salil Mehta <salil.mehta@huawei.com>, Jesse Brandeburg
-	<jesse.brandeburg@intel.com>, Tony Nguyen <anthony.l.nguyen@intel.com>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>, Marcin Wojtas
-	<mw@semihalf.com>, Russell King <linux@armlinux.org.uk>, Sunil Goutham
-	<sgoutham@marvell.com>, Geetha sowjanya <gakula@marvell.com>, Subbaraya
- Sundeep <sbhatta@marvell.com>, hariprasad <hkelam@marvell.com>, Felix Fietkau
-	<nbd@nbd.name>, John Crispin <john@phrozen.org>, Sean Wang
-	<sean.wang@mediatek.com>, Mark Lee <Mark-MC.Lee@mediatek.com>, Lorenzo
- Bianconi <lorenzo@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Saeed
- Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Horatiu
- Vultur <horatiu.vultur@microchip.com>, <UNGLinuxDriver@microchip.com>, "K. Y.
- Srinivasan" <kys@microsoft.com>, Haiyang Zhang <haiyangz@microsoft.com>, Wei
- Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>, Jassi Brar
-	<jaswinder.singh@linaro.org>, Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>, Jose Abreu
-	<joabreu@synopsys.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Siddharth Vadapalli <s-vadapalli@ti.com>, Ravi Gunasekaran
-	<r-gunasekaran@ti.com>, Roger Quadros <rogerq@kernel.org>, Jiawen Wu
-	<jiawenwu@trustnetic.com>, Mengyuan Lou <mengyuanlou@net-swift.com>, Ronak
- Doshi <doshir@vmware.com>, VMware PV-Drivers Reviewers
-	<pv-drivers@vmware.com>, Ryder Lee <ryder.lee@mediatek.com>, Shayne Chen
-	<shayne.chen@mediatek.com>, Kalle Valo <kvalo@kernel.org>, Juergen Gross
-	<jgross@suse.com>, Stefano Stabellini <sstabellini@kernel.org>, Oleksandr
- Tyshchenko <oleksandr_tyshchenko@epam.com>, Andrii Nakryiko
-	<andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu
-	<song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, KP Singh
-	<kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
-	<haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Stefan Hajnoczi
-	<stefanha@redhat.com>, Stefano Garzarella <sgarzare@redhat.com>, Shuah Khan
-	<shuah@kernel.org>, =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>,
-	Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers
-	<ndesaulniers@google.com>, Bill Wendling <morbo@google.com>, Justin Stitt
-	<justinstitt@google.com>, Jason Gunthorpe <jgg@nvidia.com>, Willem de Bruijn
-	<willemdebruijn.kernel@gmail.com>
-References: <20231214020530.2267499-1-almasrymina@google.com>
- <20231214020530.2267499-5-almasrymina@google.com>
- <ddffff98-f3de-6a5d-eb26-636dacefe9aa@huawei.com>
- <CAHS8izO2nDHuxKau8iLcAmnho-1TYkzW09MBZ80+JzOo9YyVFA@mail.gmail.com>
- <20231215021114.ipvdx2bwtxckrfdg@google.com>
- <20231215190126.1040fa12@kernel.org>
- <CALvZod5myy2SvuCMNmqjjYeNONqSArV+8y8mrkfnNeog8WLjng@mail.gmail.com>
- <CAHS8izOLBtjHOqbTS_PiTNe+rTE=jboDWDM9zS108B57vVNcwA@mail.gmail.com>
- <CAHS8izMkCwv3jak9KUHeDUrkwBNNpdYk4voEX7Cbp7mTpNAQdA@mail.gmail.com>
- <54f226ef-df2d-9f32-fa3f-e846d6510758@huawei.com>
- <CAHS8izP63wXGH+Q3y1H=ycT=AHYnhGveBnuyF_rYioAjZ=Hn=g@mail.gmail.com>
-From: Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <7c6d35e3-165f-5883-1c1b-fce82c976028@huawei.com>
-Date: Fri, 22 Dec 2023 14:42:23 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8DDB79C4
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 06:45:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-40c3963f9fcso25855e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 22:45:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1703227545; x=1703832345; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qQ4VfcRvr0MADFt4gCHCPAhzbnR2i2y5RChAnLHuZ/E=;
+        b=vM1orHdgYDaOcBsPQnrq5T8f12NJIMzs4yVIobZ6V9itLssgZw/5SH1gBIbGZjOknY
+         UFvJirywsJoQm6uSybsK7RoAybtOpatTR6uj71hO5t/c62W20aWzWn9+fp3kANn6hbjm
+         6IzphoeODgqfiXIx2czi47jPataaehhLzmeqtqlkDkBZ29LLBUuxSPPQqv4hXLUT0VaH
+         YzcQCyl1G135fSHlKXbp8ie0cbTGAJ35H2rTJpmdbFS8/MncXjfR1vC0A2cC8YlmBL4m
+         IL1mFl06bPALou0+FRAnZMTmdSPq5qs6M2AVcAXR5mWgzSWnct5Gim/3uUeYRkFol7I7
+         0xzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703227545; x=1703832345;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qQ4VfcRvr0MADFt4gCHCPAhzbnR2i2y5RChAnLHuZ/E=;
+        b=hckGSL1muCpj8Be8aTqcuyIt9YjmR3MmfAT5XOq4Yw2+RCHhva2aFWBnl6nC3fhM6B
+         BX0loal+S6PgMd+k+0IeT8apivarRLbD1NVebBri8nUIc0GJyOvXrcxbuALfw24yrWtj
+         SNAk4bofUdytxrlfR9DFgeB6e6e4qprspt0vQJqoXf47guPbMMHHCQTdKnSLtUaRCGz6
+         i51hdipMtcb6bI+sUlEriNwj+YLSaMVOv6KWJbMM9aOFZukEl5Z4eYfNbdNYm9+5EUQJ
+         s43lyr7CguXv8xM0FrlDxQnWXx4ZRNK6t2do4m7S36xVGbWCMGCzDhV4WMlH2PzpRMq6
+         1rzQ==
+X-Gm-Message-State: AOJu0YxnLIKGOmMnU7bJOAgnG3TrQx7/T132oeW7Lc8bWS3QxwsJ4iik
+	Xmxg6xYgWDoz4tQWyHzG01GBoG86Ca3uqPSUu3J1wxzXYNRp
+X-Google-Smtp-Source: AGHT+IFV/k1kQj4oUD0tJUKcq5ukW7isBwambmMGS4xUkqeUxUKXb7h7vP7wEadJ3FoUpA4Nj8uDdmBRzatjDO7i/YE=
+X-Received: by 2002:a05:600c:4e4c:b0:40d:3f65:7e8b with SMTP id
+ e12-20020a05600c4e4c00b0040d3f657e8bmr51366wmq.1.1703227545006; Thu, 21 Dec
+ 2023 22:45:45 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAHS8izP63wXGH+Q3y1H=ycT=AHYnhGveBnuyF_rYioAjZ=Hn=g@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemm500005.china.huawei.com (7.185.36.74)
+References: <20231220102948.1963798-1-zhaoyang.huang@unisoc.com>
+ <ZYL2rbD5UTz3s8gg@casper.infradead.org> <CAGWkznFcMkkqsKJSyHJfts9ZiYsxxg_dFTccieQ4+boRDJgG4g@mail.gmail.com>
+ <ZYO6bLcCRYlo290g@casper.infradead.org> <CAOUHufZ-hAAB+9iL3K-YokN4oVJoiC9dVQ+6zLu-M4Ag52TY5g@mail.gmail.com>
+ <CAGWkznGUvPeWkjcy42dudx_+n19dr7SU3B3GGO6JovXHB-Vyzg@mail.gmail.com>
+ <CAOUHufajdi7LjyJWNoDx7RP_i9mmN8j9dBqO7GC4A6YNPNnygw@mail.gmail.com>
+ <CAGWkznFb2vn_+2ho7BQ1cqVDx0cyFzoffS3_nk4hYUNuRSsVGw@mail.gmail.com>
+ <CAOUHufZYqeTyZ7e_QyHnEuo8V0Z-9BD5XyNsMMx8Xp1eK5aNkQ@mail.gmail.com> <1703226522421.22653@unisoc.com>
+In-Reply-To: <1703226522421.22653@unisoc.com>
+From: Yu Zhao <yuzhao@google.com>
+Date: Thu, 21 Dec 2023 23:45:06 -0700
+Message-ID: <CAOUHufZtgkQXWpRWhTrAgFSwqxEMteDyqhxcduHuDt6B-cvpQg@mail.gmail.com>
+Subject: Re: reply: [RFC PATCH 1/1] mm: mark folio accessed in minor fault
+To: =?UTF-8?B?6buE5pyd6ZizIChaaGFveWFuZyBIdWFuZyk=?= <zhaoyang.huang@unisoc.com>
+Cc: Zhaoyang Huang <huangzhaoyang@gmail.com>, Matthew Wilcox <willy@infradead.org>, 
+	Andrew Morton <akpm@linux-foundation.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	=?UTF-8?B?5bq357qq5ruoIChTdGV2ZSBLYW5nKQ==?= <Steve.Kang@unisoc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2023/12/22 5:22, Mina Almasry wrote:
-> On Thu, Dec 21, 2023 at 3:32 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
->>
->> On 2023/12/20 11:01, Mina Almasry wrote:
->>
->> ...
->>
->>>>>> Perhaps we should aim to not export netmem_to_page(),
->>>>>> prevent modules from accessing it directly.
->>>>>
->>>>> +1.
->>>>
->>>
->>> I looked into this, but it turns out it's a slightly bigger change
->>> that needs some refactoring to make it work. There are few places
->>> where I believe I need to add netmem_to_page() that are exposed to the
->>> drivers via inline helpers, these are:
->>>
->>> - skb_frag_page(), which returns NULL if the netmem is not a page, but
->>> needs to do a netmem_to_page() to return the page otherwise.
->>
->> Is it possible to introduce something like skb_frag_netmem() for
->> netmem? so that we can keep most existing users of skb_frag_page()
->> unchanged and avoid adding additional checking overhead for existing
->> users.
->>
-> 
-> In my experience most current skb_frag_page() users need specifically
-> the struct page*. Example is illegal_highdma() which
-> PageHighMem(skb_frag_page())
+On Thu, Dec 21, 2023 at 11:29=E2=80=AFPM =E9=BB=84=E6=9C=9D=E9=98=B3 (Zhaoy=
+ang Huang)
+<zhaoyang.huang@unisoc.com> wrote:
+>
+>
+> On Thu, Dec 21, 2023 at 10:53=E2=80=AFPM Zhaoyang Huang <huangzhaoyang@gm=
+ail.com> wrote:
+> >
+> > On Thu, Dec 21, 2023 at 2:33=E2=80=AFPM Yu Zhao <yuzhao@google.com> wro=
+te:
+> > >
+> > > On Wed, Dec 20, 2023 at 11:28=E2=80=AFPM Zhaoyang Huang <huangzhaoyan=
+g@gmail.com> wrote:
+> > > >
+> > > > On Thu, Dec 21, 2023 at 12:53=E2=80=AFPM Yu Zhao <yuzhao@google.com=
+> wrote:
+> > > > >
+> > > > > On Wed, Dec 20, 2023 at 9:09=E2=80=AFPM Matthew Wilcox <willy@inf=
+radead.org> wrote:
+> > > > > >
+> > > > > > On Thu, Dec 21, 2023 at 09:58:25AM +0800, Zhaoyang Huang wrote:
+> > > > > > > On Wed, Dec 20, 2023 at 10:14=E2=80=AFPM Matthew Wilcox <will=
+y@infradead.org> wrote:
+> > > > > > > >
+> > > > > > > > On Wed, Dec 20, 2023 at 06:29:48PM +0800, zhaoyang.huang wr=
+ote:
+> > > > > > > > > From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+> > > > > > > > >
+> > > > > > > > > Inactive mapped folio will be promoted to active only whe=
+n it is
+> > > > > > > > > scanned in shrink_inactive_list, while the vfs folio will=
+ do this
+> > > > > > > > > immidiatly when it is accessed. These will introduce two =
+affections:
+> > > > > > > > >
+> > > > > > > > > 1. NR_ACTIVE_FILE is not accurate as expected.
+> > > > > > > > > 2. Low reclaiming efficiency caused by dummy nactive foli=
+o which should
+> > > > > > > > >    be kept as earlier as shrink_active_list.
+> > > > > > > > >
+> > > > > > > > > I would like to suggest mark the folio be accessed in min=
+or fault to
+> > > > > > > > > solve this situation.
+> > > > > > > >
+> > > > > > > > This isn't going to be as effective as you imagine.  Almost=
+ all file
+> > > > > > > > faults are handled through filemap_map_pages().  So I must =
+ask, what
+> > > > > > > > testing have you done with this patch?
+> > > > > > > >
+> > > > > > > > And while you're gathering data, what effect would this pat=
+ch have on your
+> > > > > > > > workloads?
+> > > > > > > Thanks for heads-up, I am out of date for readahead mechanism=
+. My goal
+> > > > > >
+> > > > > > It's not a terribly new mechanism ... filemap_map_pages() was a=
+dded nine
+> > > > > > years ago in 2014 by commit f1820361f83d
+> > > > > >
+> > > > > > > is to have mapped file pages behave like other pages which co=
+uld be
+> > > > > > > promoted immediately when they are accessed. I will update th=
+e patch
+> > > > > > > and provide benchmark data in new patch set.
+> > > > > >
+> > > > > > Understood.  I don't know the history of this, so I'm not sure =
+if the
+> > > > > > decision to not mark folios as accessed here was intentional or=
+ not.
+> > > > > > I suspect it's entirely unintentional.
+> > > > >
+> > > > > It's intentional. For the active/inactive LRU, all folios start
+> > > > > inactive. The first scan of a folio transfers the A-bit (if it's =
+set
+> > > > > during the initial fault) to PG_referenced; the second scan of th=
+is
+> > > > > folio, if the A-bit is set again, moves it to the active list. Th=
+is
+> > > > > way single-use folios, i.e., folios mapped for file streaming, ca=
+n be
+> > > > > reclaimed quickly, since they are "demoted" rather than "promoted=
+" on
+> > > > > the second scan. This RFC would regress memory streaming workload=
+s.
+> > > > Thanks. Please correct me if I am wrong. IMO, there will be no
+> > > > minor-fault for single-use folios
+> > >
+> > > Why not? What prevents a specific *access pattern* from triggering mi=
+nor faults?
+> > Please find the following chart for mapped page state machine
+> > transfication.
+>
+> > I'm not sure what you are asking me to look at -- is the following
+> > trying to illustrate something related to my question above?
+>
+> sorry for my fault on table generation, resend it, I am trying to present=
+ how RFC performs in a page's stat transfer
+>
+> 1. RFC behaves the same as the mainline in (1)(2)
+> 2. VM_EXEC mapped pages are activated earlier than mainline which help im=
+prove scan efficiency in (3)(4)
+> 3. none VM_EXEC mapped pages are dropped as vfs pages do during 3rd scan.
+>
+> (1)
+>                                   1st access         shrink_active_list  =
+            1st scan(shink_folio_list)       2nd scan(shrink_folio_list')
+> mainline                     INA/UNR                        NA           =
+               INA/REF                               DROP
+> RFC                           INA/UNR                        NA          =
+                 INA/REF                              DROP
 
-For illegal_highdma() case, is it possible to use something like
-skb_readabe_frag() checking to avoid calling skb_frag_page() for netmem?
+I don't think this is the case -- with this RFC, *readahead* folios,
+which are added into pagecache as INA/UNR, become PG_referenced upon
+the initial fault (first access), i.e., INA/REF. The first scan will
+actually activate them, i.e., they become ACT/UNR, because they have
+both PG_referenced and the A-bit.
 
-> 
-> But RFC v5 adds skb_frag_netmem() for callsites that want a netmem and
-> don't care about specifically a page:
-> 
-> https://patchwork.kernel.org/project/netdevbpf/patch/20231218024024.3516870-10-almasrymina@google.com/
-> 
->>> - The helpers inside skb_add_rx_frag(), which needs to do a
->>> netmem_to_page() to set skb->pfmemalloc.
->>
->> Similar as above, perhaps introduce something like skb_add_rx_netmem_frag()?
->>
-> 
-> Yes, v3 of this series adds skb_add_rx_frag_netmem():
-> 
-> https://patchwork.kernel.org/project/netdevbpf/patch/20231220214505.2303297-4-almasrymina@google.com/
+So it doesn't behave the same way the mainline does for the first case
+you listed. (I didn't look at the rest of the cases.)
 
