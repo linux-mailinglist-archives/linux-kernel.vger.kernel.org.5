@@ -1,161 +1,238 @@
-Return-Path: <linux-kernel+bounces-9262-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9263-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6391881C312
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 03:28:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42E2281C318
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 03:30:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9841FB231FA
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 02:28:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 80B001F24DE5
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 02:30:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0764423D5;
-	Fri, 22 Dec 2023 02:27:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCE99139D;
+	Fri, 22 Dec 2023 02:30:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="IlC0YDpU"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="f2Udiv4T"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2609C20FB
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 02:27:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
-X-UUID: b23d8236a07111eeba30773df0976c77-20231222
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-	h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=NyTkqDg6WwLWozuY326EMKGpYj8UeiaEZFzqtwEMEr0=;
-	b=IlC0YDpUMP6uCJgd4TE56w04PaWtdh9/2wg4Zvu/aQ8uxu2u8YWPbu4GdSlbGBB/i91ofvda989ATT6DKmeq6nRGPO83Wbdj2zq0Zz7j5hCZ8SI3lIWCSV79D8VlVkNFeK2jKZHJbL5o8wvWAC1lsd8wqQKo8riyt7mfnEMu7Mg=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.35,REQID:16c15945-8520-4ac7-9c0b-2746997e149e,IP:0,U
-	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-	release,TS:0
-X-CID-META: VersionHash:5d391d7,CLOUDID:dc995c2e-1ab8-4133-9780-81938111c800,B
-	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-	RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
-	DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR
-X-UUID: b23d8236a07111eeba30773df0976c77-20231222
-Received: from mtkmbs13n2.mediatek.inc [(172.21.101.108)] by mailgw02.mediatek.com
-	(envelope-from <boy.wu@mediatek.com>)
-	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 855502034; Fri, 22 Dec 2023 10:27:47 +0800
-Received: from mtkmbs13n2.mediatek.inc (172.21.101.108) by
- MTKMBS14N1.mediatek.inc (172.21.101.75) with Microsoft SMTP Server
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFFFF179B2;
+	Fri, 22 Dec 2023 02:30:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1703212243; x=1734748243;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=aQwc/6AH+8eXLpxU1k0LRU2Xq3unMg7R4BPmr6bOZ9c=;
+  b=f2Udiv4TQRxrhhPac+hhYlQWdhoyOjxdAkI6VjoNlsQmfseAmD0ULfLn
+   PjBYR6/58AZDozcTku/8lW+/UEPPIIF44FzD9YHeO0/rA//ka2RtakVfn
+   ZeCLOMlqZRGd94n3N8FtexsS18WsqNy1V7r/3IyEUfscKQRKv4BMRlwGt
+   9gDSieNtwy4ojC4g2baun3lC3VBkxg4ayUPKfnvSlpnSxR2DQz/8/H2iX
+   nKLZM45HrrSlEp2YnvfG4cjQ6FOHT8KQ49zAWRI3cLA7vBJNGqESjAev2
+   5grXYP7t5umb2bLEOQe2B3LtQoyyNc13udx7GDKjpeefrrUSgajTVcQTA
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10931"; a="394961087"
+X-IronPort-AV: E=Sophos;i="6.04,294,1695711600"; 
+   d="scan'208";a="394961087"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Dec 2023 18:30:42 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10931"; a="847316554"
+X-IronPort-AV: E=Sophos;i="6.04,294,1695711600"; 
+   d="scan'208";a="847316554"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by fmsmga004.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 21 Dec 2023 18:30:42 -0800
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 21 Dec 2023 18:30:41 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 21 Dec 2023 18:30:41 -0800
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Thu, 21 Dec 2023 18:30:41 -0800
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.169)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Fri, 22 Dec 2023 10:27:45 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
- mtkmbs13n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Fri, 22 Dec 2023 10:27:45 +0800
-From: boy.wu <boy.wu@mediatek.com>
-To: Russell King <linux@armlinux.org.uk>, Matthias Brugger
-	<matthias.bgg@gmail.com>
-CC: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, "Boy
- Wu" <boy.wu@mediatek.com>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>, <linux-mediatek@lists.infradead.org>
-Subject: [PATCH] arm: kasan: clear stale stack poison
-Date: Fri, 22 Dec 2023 10:27:41 +0800
-Message-ID: <20231222022741.8223-1-boy.wu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+ 15.1.2507.35; Thu, 21 Dec 2023 18:30:41 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WOSDjlQfpPu+5zzapl6E2xMPCmCvsXC2AvHBfVLQFXNAgXTFEzCnZkEAD0hI6suaGDNdQGPBdIetwb8c1A4xNgXoJtIJrdBRUkFb1Y6Lr5k2dLMbeS1UQH0tif5vUdHm5nsVO08dbPWLITXrSLhF/jkK0HVFyiMEkhKu1lYRrxcc+K22+FaMHURvd6sbGUkUUdRHExm4jKezdQKT1sKZorayYBPeIQx5Xnmed1WL/f54LfESJ+Q14N9/tX8s9K85loDO8swlNKy/uxnC+wYl9XxcN3G74hHYheFUjf15AWaEs/LNJALCvoKeVuIHjwzBuL4+1fvkLTcXvgxT8ncUdA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=wIyoyU5pzH6LP7E7QZznJrSZPXhzddKe2OgcxHm6GdM=;
+ b=U8vddERIBY+NhdPARTmfkPP/YqSakg7zkDN+SBb5MIYY59OoA0OiPIZ41TW5IhaztjFyfayrLz/iRM/ElLzUoWumGMJ66PDWaJQX5rResHWN2oL2MRj3BWk4d4sxceOM/figCz0KVtW2SWq1uUjA2XY9zyUKQj28/txzxUYQYp2rCZrcwC9g+wveRWBff5G0lJcVmngqYDLxTqUf+rsMtOIaSpgl5HYg3SM5nTWhUNoO8MXRRhJFwZA0fzjUYLIsM0X8KmoKn5AXI9XAf/HvB0xmobWl7USmfbdVEgiWBEDbRnFm1r4gilrxNDlakgg+F/cKcrqsuLm1lk5XycbdSg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from BN9PR11MB5276.namprd11.prod.outlook.com (2603:10b6:408:135::18)
+ by DM4PR11MB7350.namprd11.prod.outlook.com (2603:10b6:8:105::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7113.21; Fri, 22 Dec
+ 2023 02:30:38 +0000
+Received: from BN9PR11MB5276.namprd11.prod.outlook.com
+ ([fe80::e7a4:a757:2f2e:f96a]) by BN9PR11MB5276.namprd11.prod.outlook.com
+ ([fe80::e7a4:a757:2f2e:f96a%3]) with mapi id 15.20.7113.019; Fri, 22 Dec 2023
+ 02:30:38 +0000
+From: "Tian, Kevin" <kevin.tian@intel.com>
+To: "Liu, Yi L" <yi.l.liu@intel.com>, "joro@8bytes.org" <joro@8bytes.org>,
+	"alex.williamson@redhat.com" <alex.williamson@redhat.com>, "jgg@nvidia.com"
+	<jgg@nvidia.com>, "robin.murphy@arm.com" <robin.murphy@arm.com>,
+	"baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>
+CC: "cohuck@redhat.com" <cohuck@redhat.com>, "eric.auger@redhat.com"
+	<eric.auger@redhat.com>, "nicolinc@nvidia.com" <nicolinc@nvidia.com>,
+	"kvm@vger.kernel.org" <kvm@vger.kernel.org>, "mjrosato@linux.ibm.com"
+	<mjrosato@linux.ibm.com>, "chao.p.peng@linux.intel.com"
+	<chao.p.peng@linux.intel.com>, "yi.y.sun@linux.intel.com"
+	<yi.y.sun@linux.intel.com>, "peterx@redhat.com" <peterx@redhat.com>,
+	"jasowang@redhat.com" <jasowang@redhat.com>,
+	"shameerali.kolothum.thodi@huawei.com"
+	<shameerali.kolothum.thodi@huawei.com>, "lulu@redhat.com" <lulu@redhat.com>,
+	"suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
+	"iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>, "Duan,
+ Zhenzhong" <zhenzhong.duan@intel.com>, "joao.m.martins@oracle.com"
+	<joao.m.martins@oracle.com>, "Zeng, Xin" <xin.zeng@intel.com>, "Zhao, Yan Y"
+	<yan.y.zhao@intel.com>, "j.granados@samsung.com" <j.granados@samsung.com>
+Subject: RE: [PATCH v7 1/9] iommu: Add cache_invalidate_user op
+Thread-Topic: [PATCH v7 1/9] iommu: Add cache_invalidate_user op
+Thread-Index: AQHaNCP0IeMzW8Cr3UyiyyXlg+qo4rC0kdQA
+Date: Fri, 22 Dec 2023 02:30:38 +0000
+Message-ID: <BN9PR11MB5276CE7AE7E2FDA1D8A045298C94A@BN9PR11MB5276.namprd11.prod.outlook.com>
+References: <20231221153948.119007-1-yi.l.liu@intel.com>
+ <20231221153948.119007-2-yi.l.liu@intel.com>
+In-Reply-To: <20231221153948.119007-2-yi.l.liu@intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BN9PR11MB5276:EE_|DM4PR11MB7350:EE_
+x-ms-office365-filtering-correlation-id: d2602e25-d1e8-4fd7-2e7c-08dc0295fc7a
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: QSDtkjHX3t5oFv3Yr98pGxSImm8mKw2JOZtVKPXV4OkL1QMPx/KfllMGsm2r9a+5j8wkFqfmnLoZM5t8b5KTIDGWp838kwnpbAciK1r2FCuql1C4hmVHrARLGBIIPHWFh01O0GSQrxwnGjOrSAXTpNaGF/T+kuFI6us46yGlk4+hxE+82FR0sKBrx/16gA1X8S21b1jEc2rZMO5QvNWYJ0CVXC3IyitQRvzFB5j+wxzoXp2csJYfXeqFRTGduacg2SVVcdxMSp4lYSIwuzMuTCKoshUKLoeXIUZoCmupS+MK+MjfTJaueMwe2W8PuklItmOVflapAzpPsisi9p2XblO8qkbQLeGGZ62JobVHvqiFELNCUxBeusjcy0yuhbSbGFILfNRcm6ItoFVgmATTIk1xAPmdN2s5iNlxEdwXDgg/kumQnKK+Se+Nm6ruoiay5jbUyM4vkPK+amiigCwyfcwDOLR9owgwXK9zcpXYbm1wU+jyDs33fKX6+fSzK+GSoK63E/xJ5suju1yw7CZCTsctnDakHrLQ0FOW4wpLR+/VD/L6jzQJ2PiRV+mFHArZSqpR3Qt/8FklnDVhLTvTQllOqYfiClYBhy7Lcbud8OoxVRxUTFAO8kt9C1Eq+Zmz
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5276.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(39860400002)(396003)(366004)(136003)(376002)(230922051799003)(64100799003)(451199024)(186009)(1800799012)(83380400001)(82960400001)(33656002)(86362001)(41300700001)(122000001)(38100700002)(5660300002)(8676002)(4326008)(8936002)(110136005)(52536014)(316002)(54906003)(64756008)(66556008)(66946007)(76116006)(66446008)(66476007)(9686003)(26005)(478600001)(7416002)(6506007)(7696005)(71200400001)(2906002)(38070700009)(55016003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?zQVFt/ngODD9OLvd6UDBgeKyoy2vw2t2+wqJfzJXkK6L/3kaAA8w2uuJ53t9?=
+ =?us-ascii?Q?MXHhF+MJPcdFNvlAt5jwDe3QMvkKEL5wTieDYXFsOk1vi8uSLXpdF5o5yBb/?=
+ =?us-ascii?Q?SNnzL7sungahGVDfVM3cyGqTBj8MoGfHGtshpgapLsXBoN9YvocqmnxeptyS?=
+ =?us-ascii?Q?HdK3dRRkYBJZD0RHPppg1g+EITc/ZVmOG399rmZ1KJqswCqwvt9llmbynIl3?=
+ =?us-ascii?Q?kUmXMW2JPmxJbW1IW/RJlH/iT3kJK6VQrAmp/5TSTG7uVhau/nVgLX2TtAMp?=
+ =?us-ascii?Q?kVAlYoKX08BtWpIaQV/QxlcCbD6c1sKrjzCice5/4L+w+2F9sa3YTvhtDvSw?=
+ =?us-ascii?Q?URBsr+GVC1tkqH1jBfSXYMdciW3FjOz+QT/NrcdlML815Hxsjjlasd3Hr1tg?=
+ =?us-ascii?Q?p/GAoPJcL/g41Gtmhv+NLpR4I3P1QN3Hq8TlavEeXaYIF296qWJ80dVTyk07?=
+ =?us-ascii?Q?gqCIYHLHx7DARJpt37qD8DXA++L7U8q4kV4t2yNURrxS4aK8PySuZHCgKdA3?=
+ =?us-ascii?Q?laYxZjY3DBsxhte5O0OQ4jAdATf0I2yTDqP4exdG3c3IhH+oXEHcB1W964on?=
+ =?us-ascii?Q?moYJyn5JaGAMVx7o52NWrRqGh+omrBk0xPY4GbCixcntT/Bl1YQU3HsCAClj?=
+ =?us-ascii?Q?sCQVp9t7kW4gpSGyClAma9HklFQRjaEeBprPxVHUO1C/NzvfLu98Tu188X//?=
+ =?us-ascii?Q?MiB92GHtj4b6kcGtwkVdUB3Jw9dbhlVD/jV83R+lVjJIkUSRX9SXLKBjbEDI?=
+ =?us-ascii?Q?YBT/lXmst64iKiSrKFMZSpEDIquWG90nJihKtgaXCy89xpIlxOkZiEjUbVTZ?=
+ =?us-ascii?Q?eAKW1Lt0TbT/dsFijJUGhFfaaWMDWjWlN3uM17TJJ7TIy1CU2E410Ypl5SWr?=
+ =?us-ascii?Q?Jx1AweKSej7gNKBEqthpwnEGFAiGxtxklIgV5S/VRGjdrgmZg8h4TdXMd5cr?=
+ =?us-ascii?Q?JkRB4xH0KRXJfu7fq0tobWTl0uRkiF40wYeMB0zTsdIqpPrTq2gMDe3R//b6?=
+ =?us-ascii?Q?Uzd6QEut8fl0sbhHNj9ArqOwtPdHim+DUtF1W1q5ICx6h0CmHAyUH5aAFOKC?=
+ =?us-ascii?Q?35Fdflu6QCaZiKcWprclQRX3M8FkmwJr6U6/YsuyLIK8QMjvysxrAVh7HB1J?=
+ =?us-ascii?Q?A9bIMGC873rGe5zK7hzHSMv0qDhCQ3k3BUShP90/9batIjVjTDHWyPVk2hjQ?=
+ =?us-ascii?Q?naXgyaDwnE7xqC9CcLT9lpLMb/FXGBzzdw8vfB8vEFVDFWjyym/ELkxUbp65?=
+ =?us-ascii?Q?Q55wElufMoj2IaXP/JXtTiIqdiwHrq5Gehg3PC75SC7npgm6XOjU634MV52r?=
+ =?us-ascii?Q?2XEYyDgYhXp1uAbv98mAB7gEpQKCgLZLpKBOWAuzSZS1RBChP6uN/Uyw2KUL?=
+ =?us-ascii?Q?em/lY0EQgnBUGrLXVI7xe1BuhiDJgnWcINt+VmJxhBwoQaQh0BmzkkcfrgOX?=
+ =?us-ascii?Q?UOyHxHQWa7e+nzvOh3u1l83IZULZf5pf/qlBTGLJP7Ap84n2JONxAjYhnkr6?=
+ =?us-ascii?Q?hfV6ZSzBWPrZ6JBbDyk1qhlrfbpcS/Cuj1v8BaiNI2HPz6v+4JihozTqD71A?=
+ =?us-ascii?Q?EHDVzVmvgPKWvHpdlhX6gsWmhdrFW0HslToUpElU?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-AS-Result: No-10-0.324100-8.000000
-X-TMASE-MatchedRID: 20do18fyep2bGHSBj+j5WSZm6wdY+F8Kndls9F9zmi3iKUaoIhea7bhd
-	ARHnUbVtXlLd88Celdep0cCmigWLzBmNqsUuotRsws9cphnKwlE+B+IaKi3iScT0k564D5qWs+7
-	m6nszghjxDYFUSVeB0XYZHJmPi+HdwvvHoQOeXvMdxBAG5/hkWzAKasuXH5J1UekjLrC3lTDcEz
-	4YkwgVzQzW4ChLfVzzVA/7+pWI2BUdEFCjPPS3/4xVBvj1jbcjfS0Ip2eEHnyTitjWv6+zCBe9C
-	QaLe2PP9xS3mVzWUuBUNjjpwwGmR0kTDcsujd29Bt7dzXQLbrOkxotN8IwXgCM61xnO7ygbYFoo
-	uYX2FOxpt6xIInG8AJdldkdUVkLNgatYyy5QTYH1F4nEZm2WUnmVKZusLp922v9OjYWA2uMMswg
-	45VMfPadst5iAforfWoC08z/YUWKUTGVAhB5EbQ==
-X-TM-AS-User-Approved-Sender: No
-X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10-0.324100-8.000000
-X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-SNTS-SMTP:
-	CAED9D811469AD88D9567D7625B732FCBAC2B7218D7F85C3EE9A8A5D81258E732000:8
-X-MTK: N
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5276.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d2602e25-d1e8-4fd7-2e7c-08dc0295fc7a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Dec 2023 02:30:38.8790
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 77olGAPO1bS/xdDuxGP/9ZexDUIvxujioWM7Ge12G2Sgb2ZC2aaBXmos/7g/k35S47o31H4YC/cTbURTxUFS9Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB7350
+X-OriginatorOrg: intel.com
 
-From: Boy Wu <boy.wu@mediatek.com>
+> From: Liu, Yi L <yi.l.liu@intel.com>
+> Sent: Thursday, December 21, 2023 11:40 PM
+>=20
+> From: Lu Baolu <baolu.lu@linux.intel.com>
+>=20
+> The updates of the PTEs in the nested page table will be propagated to th=
+e
+> hardware caches on both IOMMU (IOTLB) and devices (DevTLB/ATC).
 
-We found below OOB crash:
+this is incorrect. the scope of this cmd is driver specific.
 
-[   33.452494] ==================================================================
-[   33.453513] BUG: KASAN: stack-out-of-bounds in refresh_cpu_vm_stats.constprop.0+0xcc/0x2ec
-[   33.454660] Write of size 164 at addr c1d03d30 by task swapper/0/0
-[   33.455515]
-[   33.455767] CPU: 0 PID: 0 Comm: swapper/0 Tainted: G           O       6.1.25-mainline #1
-[   33.456880] Hardware name: Generic DT based system
-[   33.457555]  unwind_backtrace from show_stack+0x18/0x1c
-[   33.458326]  show_stack from dump_stack_lvl+0x40/0x4c
-[   33.459072]  dump_stack_lvl from print_report+0x158/0x4a4
-[   33.459863]  print_report from kasan_report+0x9c/0x148
-[   33.460616]  kasan_report from kasan_check_range+0x94/0x1a0
-[   33.461424]  kasan_check_range from memset+0x20/0x3c
-[   33.462157]  memset from refresh_cpu_vm_stats.constprop.0+0xcc/0x2ec
-[   33.463064]  refresh_cpu_vm_stats.constprop.0 from tick_nohz_idle_stop_tick+0x180/0x53c
-[   33.464181]  tick_nohz_idle_stop_tick from do_idle+0x264/0x354
-[   33.465029]  do_idle from cpu_startup_entry+0x20/0x24
-[   33.465769]  cpu_startup_entry from rest_init+0xf0/0xf4
-[   33.466528]  rest_init from arch_post_acpi_subsys_init+0x0/0x18
-[   33.467397]
-[   33.467644] The buggy address belongs to stack of task swapper/0/0
-[   33.468493]  and is located at offset 112 in frame:
-[   33.469172]  refresh_cpu_vm_stats.constprop.0+0x0/0x2ec
-[   33.469917]
-[   33.470165] This frame has 2 objects:
-[   33.470696]  [32, 76) 'global_zone_diff'
-[   33.470729]  [112, 276) 'global_node_diff'
-[   33.471294]
-[   33.472095] The buggy address belongs to the physical page:
-[   33.472862] page:3cd72da8 refcount:1 mapcount:0 mapping:00000000 index:0x0 pfn:0x41d03
-[   33.473944] flags: 0x1000(reserved|zone=0)
-[   33.474565] raw: 00001000 ed741470 ed741470 00000000 00000000 00000000 ffffffff 00000001
-[   33.475656] raw: 00000000
-[   33.476050] page dumped because: kasan: bad access detected
-[   33.476816]
-[   33.477061] Memory state around the buggy address:
-[   33.477732]  c1d03c00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-[   33.478630]  c1d03c80: 00 00 00 00 00 00 00 00 f1 f1 f1 f1 00 00 00 00
-[   33.479526] >c1d03d00: 00 04 f2 f2 f2 f2 00 00 00 00 00 00 f1 f1 f1 f1
-[   33.480415]                                                ^
-[   33.481195]  c1d03d80: 00 00 00 00 00 00 00 00 00 00 04 f3 f3 f3 f3 f3
-[   33.482088]  c1d03e00: f3 f3 f3 f3 00 00 00 00 00 00 00 00 00 00 00 00
-[   33.482978] ==================================================================
+>=20
+> Add a new domain op cache_invalidate_user for the userspace to flush the
+> hardware caches for a nested domain through iommufd. No wrapper for it,
+> as it's only supposed to be used by iommufd. Then, pass in invalidation
+> requests in form of a user data array conatining a number of invalidation
+> data entries.
+>=20
+> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+> Reviewed-by: Kevin Tian <kevin.tian@intel.com>
+> Signed-off-by: Nicolin Chen <nicolinc@nvidia.com>
+> Signed-off-by: Yi Liu <yi.l.liu@intel.com>
+> ---
+>  include/linux/iommu.h | 27 +++++++++++++++++++++++++++
+>  1 file changed, 27 insertions(+)
+>=20
+> diff --git a/include/linux/iommu.h b/include/linux/iommu.h
+> index 6291aa7b079b..5c4a17f13761 100644
+> --- a/include/linux/iommu.h
+> +++ b/include/linux/iommu.h
+> @@ -284,6 +284,24 @@ struct iommu_user_data {
+>  	size_t len;
+>  };
+>=20
+> +/**
+> + * struct iommu_user_data_array - iommu driver specific user space data
+> array
+> + * @type: The data type of all the entries in the user buffer array
+> + * @uptr: Pointer to the user buffer array for copy_from_user()
 
-We find the root cause of this OOB is that arm does not clear stale stack
-poison in the case of cpuidle.
+remove 'for copy_from_user();
 
-This patch refer to arch/arm64/kernel/sleep.S to resolve this issue.
+> + * @entry_len: The fixed-width length of a entry in the array, in bytes
 
-Signed-off-by: Boy Wu <boy.wu@mediatek.com>
----
- arch/arm/kernel/sleep.S | 4 ++++
- 1 file changed, 4 insertions(+)
+s/a/an/
 
-diff --git a/arch/arm/kernel/sleep.S b/arch/arm/kernel/sleep.S
-index a86a1d4f3461..93afd1005b43 100644
---- a/arch/arm/kernel/sleep.S
-+++ b/arch/arm/kernel/sleep.S
-@@ -127,6 +127,10 @@ cpu_resume_after_mmu:
- 	instr_sync
- #endif
- 	bl	cpu_init		@ restore the und/abt/irq banked regs
-+#if defined(CONFIG_KASAN) && defined(CONFIG_KASAN_STACK)
-+	mov	r0, sp
-+	bl	kasan_unpoison_task_stack_below
-+#endif
- 	mov	r0, #0			@ return zero on success
- 	ldmfd	sp!, {r4 - r11, pc}
- ENDPROC(cpu_resume_after_mmu)
--- 
-2.18.0
+> + * @entry_num: The number of total entries in the array
+> + *
+> + * A array having a @entry_num number of @entry_len sized entries, each
+
+the first sentence is redundant.
+
+> entry is
+> + * user space data, an uAPI defined in include/uapi/linux/iommufd.h wher=
+e
+> @type
+> + * is also defined as enum iommu_xyz_data_type.
+
+I'd just say:
+
+"The user buffer includes an array of requests with format defined=20
+in include/uapi/linux/iommufd.h"
 
 
