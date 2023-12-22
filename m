@@ -1,194 +1,138 @@
-Return-Path: <linux-kernel+bounces-9840-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9841-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 615EF81CC3D
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 16:31:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5257A81CC3F
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 16:32:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C43421F22EF1
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 15:31:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 03E7B1F21FB3
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 15:32:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 090592376C;
-	Fri, 22 Dec 2023 15:31:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 377022376A;
+	Fri, 22 Dec 2023 15:32:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fiu2c4+D"
+	dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org header.b="Vq3XtAKP"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [80.241.56.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 557682374E;
-	Fri, 22 Dec 2023 15:31:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DDFC0C433C9;
-	Fri, 22 Dec 2023 15:30:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703259061;
-	bh=23ZSgydLBjVaFt3Yh6iH3wKTYlOFVd0dReO3P9a3WPI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=fiu2c4+DyXf9b4Jvi8L/cb8nKSCRMRBJMm/YgnQxeu47HYF15yOKuH3i5ohYQva3D
-	 3jAcIppjekZ7hTzmyUlB05Y7iNry4mn13lE3Z104W0YhKVBgN6QjvlTJrwSh/gEYnn
-	 2SnfbD2v6nystt5+rl2VKxIcDAUj1ztMm97mMi+PCi55crmseZPPXwwxTFMobob4SS
-	 k4hUhJ+sHeADAZW9PTPltqZd0FWa22IYUgAYGv/x1MD3SWtN90KoL6oBNCF5qFlTZH
-	 m5Jk6mwczAunaSanA2wOnLc7kkKl8bvB2Eex4rxSYmRI7uQDB0yOXiebj69/aNjAtE
-	 N3Zmczbr6MXNg==
-Date: Fri, 22 Dec 2023 15:30:55 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: "Manne, Nava kishore" <nava.kishore.manne@amd.com>,
-	"mdf@kernel.org" <mdf@kernel.org>,
-	"hao.wu@intel.com" <hao.wu@intel.com>,
-	"yilun.xu@intel.com" <yilun.xu@intel.com>,
-	"trix@redhat.com" <trix@redhat.com>,
-	"robh+dt@kernel.org" <robh+dt@kernel.org>,
-	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
-	"conor+dt@kernel.org" <conor+dt@kernel.org>,
-	"Simek, Michal" <michal.simek@amd.com>,
-	"mathieu.poirier@linaro.org" <mathieu.poirier@linaro.org>,
-	"Levinsky, Ben" <ben.levinsky@amd.com>,
-	"Potthuri, Sai Krishna" <sai.krishna.potthuri@amd.com>,
-	"Shah, Tanmay" <tanmay.shah@amd.com>,
-	"dhaval.r.shah@amd.com" <dhaval.r.shah@amd.com>,
-	"arnd@arndb.de" <arnd@arndb.de>,
-	"Datta, Shubhrajyoti" <shubhrajyoti.datta@amd.com>,
-	"linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [RFC PATCH 1/3] dt-bindings: fpga: Add support for user-key
- encrypted bitstream loading
-Message-ID: <20231222-unisexual-construct-573e79a488c9@spud>
-References: <20231122054404.3764288-1-nava.kishore.manne@amd.com>
- <20231122054404.3764288-2-nava.kishore.manne@amd.com>
- <20231122-exert-gleeful-e4476851c489@spud>
- <DM6PR12MB3993F0EC4930E68C54299B36CDB8A@DM6PR12MB3993.namprd12.prod.outlook.com>
- <20231124-tweezers-slug-0349a2188802@spud>
- <a90d980e-71a1-4b90-b1cb-66ac45d79031@linaro.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0E0623756;
+	Fri, 22 Dec 2023 15:32:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mailbox.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mailbox.org
+Received: from smtp102.mailbox.org (smtp102.mailbox.org [10.196.197.102])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4SxWWG05Rvz9spK;
+	Fri, 22 Dec 2023 16:32:10 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
+	t=1703259130;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=ytwj4enigpebjuVSwLojekI3OkVmtpcFeL6R4n0BjP0=;
+	b=Vq3XtAKPZ0jRLkZxeoXBSEcgnTgFZMM36b9lC9YYcL07TGZoexcgBj7t+NfIRdO7jYvdZi
+	yKZa8DuXhStNGT/+2zVPzKjZM0zW0rl62XJ3A63w5pRD4erP8S1+ukIc7n6rA5Bie1diA2
+	LaSryEeAoBlAruaRTznmB7m7kQ6IzFXKdfM6CAK2gwqhGdtkSiJkW0UeV6Ij39gpR2f/RV
+	i60m5o0N+vgGUUjyHyWI77gBy0ZLzFjgO/x+8Y7uNr4TCzd+RpDijsL3abr99bVf13Y5kC
+	lBAguNuQ19V2IP8+u1UzZgck//Fjw4Fa7+wPKZs+JtdEgvWUOe+YwO03UEaDiw==
+Message-ID: <3a29c0a6-9b53-433d-a83d-5b68a87c1155@mailbox.org>
+Date: Fri, 22 Dec 2023 16:32:07 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="XAy0YcFeJXVfbE74"
-Content-Disposition: inline
-In-Reply-To: <a90d980e-71a1-4b90-b1cb-66ac45d79031@linaro.org>
+To: jkosina@suse.com
+Cc: benjamin.tissoires@redhat.com, iam@valdikss.org.ru, jekhor@gmail.com,
+ linux-input@vger.kernel.org, linux-kernel@vger.kernel.org, me@khvoinitsky.org
+References: <nycvar.YFH.7.76.2312121445510.24250@cbobk.fhfr.pm>
+Content-Language: en-US
+From: "Uli v. d. Ohe" <u-v@mailbox.org>
+Autocrypt: addr=u-v@mailbox.org; keydata=
+ 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
+Subject: Re: [PATCH] HID: lenovo: Restrict detection of patched firmware only
+ to USB cptkbd
+In-Reply-To: <nycvar.YFH.7.76.2312121445510.24250@cbobk.fhfr.pm>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-MBO-RS-META: eyjr3fgybci59dgcb7wbuh5ujqsxncau
+X-MBO-RS-ID: 5efe9ed3d9cfa6c68b3
 
+I get buggy middle button scrolling behavior on my USB Compact Keyboard 
+(i.e., "1st gen") with original, unmodified firmware and the patch (of 
+Sep. 23).
 
---XAy0YcFeJXVfbE74
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Sometimes the keyboard sends REL_X events while the middle button is 
+pressed. Thus the old "workaround" is disabled and middle button 
+scrolling henceforth exhibits the known buggy behavior.
 
-On Fri, Nov 24, 2023 at 04:46:06PM +0100, Krzysztof Kozlowski wrote:
-> On 24/11/2023 13:48, Conor Dooley wrote:
-> > On Fri, Nov 24, 2023 at 06:35:19AM +0000, Manne, Nava kishore wrote:
-> >> Hi Conor,
-> >>
-> >> 	Thanks for providing the review comments.
-> >> Please find my response inline.
-> >>
-> >>> -----Original Message-----
-> >>> From: Conor Dooley <conor@kernel.org>
-> >>> Sent: Wednesday, November 22, 2023 10:21 PM
-> >>> To: Manne, Nava kishore <nava.kishore.manne@amd.com>
-> >>> Cc: mdf@kernel.org; hao.wu@intel.com; yilun.xu@intel.com;
-> >>> trix@redhat.com; robh+dt@kernel.org; krzysztof.kozlowski+dt@linaro.or=
-g;
-> >>> conor+dt@kernel.org; Simek, Michal <michal.simek@amd.com>;
-> >>> mathieu.poirier@linaro.org; Levinsky, Ben <ben.levinsky@amd.com>;
-> >>> Potthuri, Sai Krishna <sai.krishna.potthuri@amd.com>; Shah, Tanmay
-> >>> <tanmay.shah@amd.com>; dhaval.r.shah@amd.com; arnd@arndb.de;
-> >>> Datta, Shubhrajyoti <shubhrajyoti.datta@amd.com>; linux-
-> >>> fpga@vger.kernel.org; devicetree@vger.kernel.org; linux-
-> >>> kernel@vger.kernel.org; linux-arm-kernel@lists.infradead.org
-> >>> Subject: Re: [RFC PATCH 1/3] dt-bindings: fpga: Add support for user-=
-key
-> >>> encrypted bitstream loading
-> >>>
-> >>> On Wed, Nov 22, 2023 at 11:14:02AM +0530, Nava kishore Manne wrote:
-> >>>> Adds =E2=80=98encrypted-key-name=E2=80=99 property to support user-k=
-ey encrypted
-> >>>> bitstream loading use case.
-> >>>>
-> >>>> Signed-off-by: Nava kishore Manne <nava.kishore.manne@amd.com>
-> >>>> ---
-> >>>>  .../devicetree/bindings/fpga/fpga-region.txt  | 32
-> >>>> +++++++++++++++++++
-> >>>
-> >>> Is there a reason that this has not yet been converted to yaml?
-> >>>
-> >> I am not sure about the complication involved here why it's not conver=
-ted to yaml format.
-> >> Due to time constraints, I couldn=E2=80=99t spend much time so I have =
-used this existing legacy format
-> >> to add my changes.
-> >>
-> >>>>  1 file changed, 32 insertions(+)
-> >>>>
-> >>>> diff --git a/Documentation/devicetree/bindings/fpga/fpga-region.txt
-> >>>> b/Documentation/devicetree/bindings/fpga/fpga-region.txt
-> >>>> index 528df8a0e6d8..309334558b3f 100644
-> >>>> --- a/Documentation/devicetree/bindings/fpga/fpga-region.txt
-> >>>> +++ b/Documentation/devicetree/bindings/fpga/fpga-region.txt
-> >>>> @@ -177,6 +177,9 @@ Optional properties:
-> >>>>  	it indicates that the FPGA has already been programmed with this
-> >>> image.
-> >>>>  	If this property is in an overlay targeting an FPGA region, it is a
-> >>>>  	request to program the FPGA with that image.
-> >>>> +- encrypted-key-name : should contain the name of an encrypted key =
-file
-> >>> located
-> >>>> +	on the firmware search path. It will be used to decrypt the FPGA
-> >>> image
-> >>>> +	file with user-key.
-> >>>
-> >>> I might be misreading things, but your driver code seems to assume th=
-at this
-> >>> is an aes key. Nothing here seems to document that this is supposed t=
-o be a
-> >>> key of a particular type.
-> >>>
-> >>
-> >> Yes, these changes are intended to add the support for Aes user-key en=
-crypted bitstream loading use case.
-> >> Will fix it in v2, something like below.
-> >> aes-key-file-name : Should contain the AES key file name on the firmwa=
-re search path.
-> >> 		      The key file contains the AES key and it will be used to decry=
-pt the FPGA image.
-> >=20
-> > Then when someone comes along looking for a different type of encryption
-> > we will end up with national-pride-foo-file-name etc. I think I'd rather
-> > have a second property that notes what type of cipher is being used and
-> > if that property is not present default to AES.
->=20
-> I wonder why does it need to be in DT in the first place? Why it cannot
-> be appended to the FPGA binary image itself? Which also points to
-> dubious security aspect of this approach... Shipping FPGA encrypted
-> image with its decryption key sounds like marvelous idea.
->=20
-> Even if this is suitable, why not using more arguments of firmware-name?
-> This would scale even for multiple FPGA firmwares with different keys
-> (although such need seems unlikely).
+Explicitly, I can confirm that the following values occur, leading to 
+erroneous disabling of the workaround:
 
-In case it is not clear (given the month's delay here), this question is
-for the submitter of the series to answer, not me.
+cptkbd_data->middlebutton_state == 1
+usage->type == 2 [i.e., EV_REL]
+usage->code == 0 [i.e., REL_X]
 
-Cheers,
-Conor.
+The keyboard is identified by lsusb as:
+ID 17ef:6047 Lenovo ThinkPad Compact Keyboard with TrackPoint
 
---XAy0YcFeJXVfbE74
-Content-Type: application/pgp-signature; name="signature.asc"
+This was tested with kernel 6.1.67 which contains the backported patch 
+(commit 6e2076cad8873cc2a9f96e4becab35425c3656dc).
 
------BEGIN PGP SIGNATURE-----
+I didn't test the latest patch of Dec. 12. However, I don't expect it to 
+fix my issue as the only added condition
+hdev->product == USB_DEVICE_ID_LENOVO_CUSBKBD
+should be satisfied, which I understand is also the intention. 
+(USB_DEVICE_ID_LENOVO_CUSBKBD == 0x6047, which is the device ID of my 
+keyboard as reported by lsusb.)
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZYWrrwAKCRB4tDGHoIJi
-0iV4AQCOA/sumQaZWvBIwXh31tq8aPk1uVs5Vun98uUmt3fpDQD/SdpxFirYLQdV
-vk6FO14J53pFjO9lA0nJNFRM6Pju1Qo=
-=7XH3
------END PGP SIGNATURE-----
-
---XAy0YcFeJXVfbE74--
+Best regards,
+Uli
 
