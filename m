@@ -1,263 +1,153 @@
-Return-Path: <linux-kernel+bounces-10087-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10088-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8CFD881CFDD
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 23:42:57 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE08681CFE0
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 23:44:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1A9C81F23205
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 22:42:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AE249B23A44
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 22:44:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F47C1EB47;
-	Fri, 22 Dec 2023 22:42:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56E152E84D;
+	Fri, 22 Dec 2023 22:43:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="K+5VMif8"
+	dkim=pass (1024-bit key) header.d=os.amperecomputing.com header.i=@os.amperecomputing.com header.b="Q4BKrtyD"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2094.outbound.protection.outlook.com [40.107.92.94])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C0A72FC3A
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 22:42:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-db99bad7745so2210124276.0
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 14:42:47 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E860A2FC37
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 22:43:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=os.amperecomputing.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=os.amperecomputing.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XE4OTKftI0rH6hnSMPsYVrP4JltdQrwJar1LP4w+GSsQzsHPAr6j/yskk7pPcUS76+oaZ+YvWdY+sah5pxNkbcWHZILPaSMFm4MF8aMmQWR1MXYhQ+4U1rfOwFq0PkUsAmjuCbpomf/+kwUjpARGEzkEuDy6381uUJTwNx8MSQHxnq0ffVNZpY751tUhr3gtvw35UZM3987uoaKmoZqXxKJaE3ti6nZGWF9VgJ3uEtPqQ1b3mcR6CPHzf1ghwgPjX+PTQ0YjHd/hZXdQy2J5ygNmyqyaqubALaS/UCQZIZqLd2HYR6a8XfvScfrtgezytvngXwyCoGUgzRQQ968kAA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=1uw+O1kwUFNPtghzeARFI8lNac+Yh9qplvIyGK0lhYo=;
+ b=DJl16iMwsiah9mfWp3BAF7EBp3Z+LNAO++WT1romgBdZFjZ9p8SPWaG3+zcE8E2Hs388TUspeOuYfPnJenbnbbukCh0wMyYvQ3prqFg+QJPbmQQ/5xU2ILDzX34Muy+OFjx/OIYg4gwnZ035bDY0ykjGpU/kZZnTSmaHPSXk2vKgt3UEfceh1vko1dDD2m9MiJ6vUNgtBvtGv/9lyYUZkbuysVjQlAFKnCEjkGEKH2LiLlvAvYuJO7WhczkAUMq++vdXvd+bIThP+I+QYiHn87OLV/AJpQqTS0BQ4GYidnMIB3M7Nkns8uk6zZJTJf2YKJJvWnF5exhJ7TLN4QbMVA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
+ header.from=os.amperecomputing.com; dkim=pass
+ header.d=os.amperecomputing.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1703284966; x=1703889766; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KRfe3st5Sq+6jYTfqEvbxYNV9ZVvDUCiVKsaDs8UPZg=;
-        b=K+5VMif8LmUVhet8VzLt6mVJhCBoGNnaoIxsrljT0Q6T54IoHW10u3wR8DIt+fNPPt
-         NKR1RUPxXYfmD/clpgWa8hnxPL62rcosSc9OOokVxveCfThOff6TZprb7Qk8YZodK/p6
-         xbrwGTHsCD1Mdgg5rYTNCL4VNu3U5izRw0XfgfCxwIVAMt82oQs7Y2yVEsIpynbXk/Vi
-         vwMorZ8tdjGvE0tBbHLg2LI3FbqaCSXRa9LG0WdJX9ePxgT781gQlGXXwQOl9N/Ohw3g
-         1pEbcRryz0EbMLiyIAMH7Oj2QbqKuIS7JHi9d1MG41SvoitLmS8TRFo6j5YbkzjT12vX
-         252A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703284966; x=1703889766;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KRfe3st5Sq+6jYTfqEvbxYNV9ZVvDUCiVKsaDs8UPZg=;
-        b=tu5hYpo9U4Tljx/dXSAPvfi+NXzujA8GZrOUEE6nNVFhNveTnGelywnQ9LpwP3cBmo
-         Lbf4JSE5f3NyhOKoyMWzKPA15TmrteS+jSF28nANJ9J4BbOt7UzrUBM2du4XVF3II9Xm
-         RsVNIA8riKKRSrotJ5QHJIT/TcyitsyqVs+5yXXYXFhIZtGy4bQm2vKnaoe5PoYllwKZ
-         Gcj6DU15QB/ydPOnhpW1NIx84aPliBx4QvDpz0xMimRdXd2hz9SrjB5JcNtaFFFzqkJa
-         +w8Fai7rEpKspVujhMFoFx0YNUj/2WXHxpZqckEFVmv6J2kPtQBNuWe0opTtDhZcqQSJ
-         Xz+w==
-X-Gm-Message-State: AOJu0YzpCAyUUWmkmDnOH/vytkyRBrfk5ZzqoUoFGfwLFhdxqIJud+H9
-	BJ4RKKw9+wSCcqduYYj/fPakAwi/7z1r5yIL5jcollqQYEHb
-X-Google-Smtp-Source: AGHT+IHhe8gtJ2Jy890CtHKaIWwDsBVan3b58VTz5sDuWmxN3cj/Uo7ROSdRdcB3Nvh6s8vP9wSpox+867vdOU3UAHQ=
-X-Received: by 2002:a25:dccc:0:b0:db7:dacf:2f3a with SMTP id
- y195-20020a25dccc000000b00db7dacf2f3amr1626639ybe.129.1703284966179; Fri, 22
- Dec 2023 14:42:46 -0800 (PST)
+ d=os.amperecomputing.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1uw+O1kwUFNPtghzeARFI8lNac+Yh9qplvIyGK0lhYo=;
+ b=Q4BKrtyDM5SbYQbiJEZhYYltNqUY++T7RDAWJFtliY6ZMzB+g+I0VtdRbdskACU9HWsjJQGyRRXfSuD722FgjeWwVAt9zWrshVvLhis9V6Q+N4Kz7rrMi67LE3F9ZurLHr7fObpxJsaMQntmGZ627PZ1SCt3AMEzZ0vgWDTy9Hk=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=os.amperecomputing.com;
+Received: from PH0PR01MB8024.prod.exchangelabs.com (2603:10b6:510:287::6) by
+ SA0PR01MB6282.prod.exchangelabs.com (2603:10b6:806:e6::16) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7113.21; Fri, 22 Dec 2023 22:43:48 +0000
+Received: from PH0PR01MB8024.prod.exchangelabs.com
+ ([fe80::5036:18a6:c477:2320]) by PH0PR01MB8024.prod.exchangelabs.com
+ ([fe80::5036:18a6:c477:2320%5]) with mapi id 15.20.7113.019; Fri, 22 Dec 2023
+ 22:43:48 +0000
+From: Carl Worth <carl@os.amperecomputing.com>
+To: James Morse <james.morse@arm.com>, x86@kernel.org,
+ linux-kernel@vger.kernel.org
+Cc: Fenghua Yu <fenghua.yu@intel.com>, Reinette Chatre
+ <reinette.chatre@intel.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo
+ Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, H Peter Anvin
+ <hpa@zytor.com>, Babu Moger <Babu.Moger@amd.com>, James Morse
+ <james.morse@arm.com>, shameerali.kolothum.thodi@huawei.com, D Scott
+ Phillips OS <scott@os.amperecomputing.com>, lcherian@marvell.com,
+ bobo.shaobowang@huawei.com, tan.shaopeng@fujitsu.com,
+ baolin.wang@linux.alibaba.com, Jamie Iles <quic_jiles@quicinc.com>, Xin
+ Hao <xhao@linux.alibaba.com>, peternewman@google.com,
+ dfustini@baylibre.com, amitsinght@marvell.com
+Subject: Re: [PATCH v8 00/24] x86/resctrl: monitored closid+rmid together,
+ separate arch/fs locking
+In-Reply-To: <20231215174343.13872-1-james.morse@arm.com>
+References: <20231215174343.13872-1-james.morse@arm.com>
+Date: Fri, 22 Dec 2023 14:43:43 -0800
+Message-ID: <874jg9rh7k.fsf@rasp.cworth.amperemail.amperecomputing.com>
+Content-Type: text/plain
+X-ClientProxiedBy: CH0PR03CA0379.namprd03.prod.outlook.com
+ (2603:10b6:610:119::6) To PH0PR01MB8024.prod.exchangelabs.com
+ (2603:10b6:510:287::6)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230921061641.273654-1-mic@digikod.net> <20230921061641.273654-4-mic@digikod.net>
- <CAHC9VhQTvFp+i=j7t+55EnG44xg=Pmvkh=Oq=e7ddJWDZXLeSA@mail.gmail.com> <20231221.eij3poa3Se4b@digikod.net>
-In-Reply-To: <20231221.eij3poa3Se4b@digikod.net>
-From: Paul Moore <paul@paul-moore.com>
-Date: Fri, 22 Dec 2023 17:42:35 -0500
-Message-ID: <CAHC9VhRiUOe9enkCOko0mGehxt+2tbJNGoJm=jmauhZSPFvzRg@mail.gmail.com>
-Subject: Re: [RFC PATCH v1 3/7] landlock: Log ruleset creation and release
-To: =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>
-Cc: Eric Paris <eparis@redhat.com>, James Morris <jmorris@namei.org>, 
-	"Serge E . Hallyn" <serge@hallyn.com>, Ben Scarlato <akhna@google.com>, 
-	=?UTF-8?Q?G=C3=BCnther_Noack?= <gnoack@google.com>, 
-	Jeff Xu <jeffxu@google.com>, Jorge Lucangeli Obes <jorgelo@google.com>, 
-	Konstantin Meskhidze <konstantin.meskhidze@huawei.com>, Shervin Oloumi <enlightened@google.com>, 
-	audit@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-security-module@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR01MB8024:EE_|SA0PR01MB6282:EE_
+X-MS-Office365-Filtering-Correlation-Id: cfa46b63-518d-4b18-cf1a-08dc033f7617
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	+v1RYH0+KzuHP4L95chfGM+bmDfZAvFdA3F24mKtg26E1oWKhi+Euvtev9O0WXa9LhJjpKaeMWHeBWjSP5GJLFT9WnqTsSbPa7K/e7zqnrehpo+yhD9aTeBaweYfKKhnj4pCSVmZwsO2YNhNiBPzzJh6TP42dOKLQqvwRjtROElsbBanWQpJ0vWo699CyA7CQ5YkE8lyJu3D0EwVzbYo2R9oUAkHFheAEN34guPm2M8FbHgVC1Xfe/ltHAR1wwKo5WPf8bh73136Q4N7nNq3Z5vqRC8ITDhNclbQ67VUqXGbx/Za3HzRrmg2ibXlHX1rTyAjEEftZ91lbjGS9HAPCDGKfGzU0meIIezkkpo3xf5x0MrqpN9OUFEc1VnppoGdNRWEohNZe54yg0nEBhqZXsYK8z+utqE9kvbLVd8qmb43clawjoFjCI+SU2hIS/Phznd/aY9gVQl5iVddszBsYJSuMKIOdEYmJfqbjcs4sj2uwyw5TArmlQ0IjWiD94rx01NzD60voptCjvdx/i8K4oFGhCQe7htQ61SxlVJo+fZyjR6zWEK7drQE/jUofLXiqPmlZKlpyEqyAT++LuKGBq1w/hpnPZ85tsy7yJpt0hnCVAbYz18MkEqWSwSoYRry
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR01MB8024.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(376002)(346002)(39850400004)(136003)(230922051799003)(186009)(1800799012)(64100799003)(451199024)(5660300002)(6512007)(6666004)(6506007)(478600001)(52116002)(9686003)(6486002)(26005)(83380400001)(8676002)(4326008)(8936002)(38350700005)(41300700001)(2906002)(86362001)(38100700002)(66556008)(4744005)(66946007)(316002)(66476007)(54906003)(7416002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?16Uq4/LyY4MRDiwwD/b6p7GwPeGUJklknpiy5Pzq714h7m6jXMbiHEoRmlF1?=
+ =?us-ascii?Q?yW3iPWEk1WjAkx98IkfOQmlR4dp1sOLRHWBss1ZzBb0Yq4kbNyiB6U7uCSwR?=
+ =?us-ascii?Q?HyMwYt+fkLsZk2ai8dtG7IifZujLGEmjxfSgV7lOLma2pSYATzaNnyu4YQ+M?=
+ =?us-ascii?Q?/udgc5kNkZuFRP+0gcu/w1nXXqAnO8K1pyjsPMIGuchDCSnZhTc/i7KOWRzF?=
+ =?us-ascii?Q?+Bvbzt3hzi3V0fzvXjVZM11I7trQ8h8qdbwAjaws/OkGjFsAPVy3HYqMsW4K?=
+ =?us-ascii?Q?tIt7Z5rc/1SR6n2xfUK4lACmUwDQMmJ0MH64c806rY+AkpO0uccmGEa6zVON?=
+ =?us-ascii?Q?ZvVGCxI7d9lhKIJOh26Cw+K3U7r5MRGzfqYdaVklx9M6FROELmO2DmVtmeIX?=
+ =?us-ascii?Q?Lrmohmi5wfGl66I6FW6jbTnHnOJfYI56tFCupOQprTdgkKgmSFGfMV8ourR3?=
+ =?us-ascii?Q?1A7cWT0C6qRtqIrwybmz/MPm2d5hpsQtDXrc8mZ3cUTKu23hSkSV/Kx3T8Qf?=
+ =?us-ascii?Q?1Hva+CPF1NVX/U9u0XYnGeH5RUim6JKBL4lm38NsJ1q78G4njJVf7079JOiz?=
+ =?us-ascii?Q?nXWwMCrVKYJHHlQwu2V8lwOtSfzOOM04j3fhahtbeJKKqWofDDRKNJ0CRYAV?=
+ =?us-ascii?Q?QCX2RD7G679GI9NnQ8zQbFX9fUg37hF0/7LzlucXO9WEroRag0Bu7MSNPPLZ?=
+ =?us-ascii?Q?DwXRhM2CGLlmtdGJDy6q/dKbJ1TenR87dgbux2i7KJzxIvtf5xWc9BtIm7r9?=
+ =?us-ascii?Q?Sr0cgK+2JEY4AJw9ez3rx/A6vnDLunIWmOrs5nKYipSL37rUrfTgEBBq20dD?=
+ =?us-ascii?Q?XhhQx865Ob1O/n1bKpm6eFhftlSb/W69PCPiCWrDJ4+I0qhLSIJ7s5yGZXXF?=
+ =?us-ascii?Q?ytrDKnt8SZuXVAw6hEK/v6fwf28xsttoHcaGBr9JBtk0bCSgMhNV5FT4g5Ls?=
+ =?us-ascii?Q?kjRbBoEgHmzbZPDStutWASYdD/1+ecBSR3AIA/Gs6jDHAHPwqBu58dLLBbZ8?=
+ =?us-ascii?Q?ewW6CumvvOlmTp449PpsP+nDvYZSfqhfRM1rR2Nsnx+AgpNGj7qq+HffudMn?=
+ =?us-ascii?Q?YSfAg3erPjDJ2OIqDWKgHS4YHV8XjdXzw/nM7NYQjPd29VBgu7+0bYmsNbBF?=
+ =?us-ascii?Q?e3Sq1W01tEMzDL2g6v7vmKxid34ryxqTnw0L9NfDXjjhd4nAfEc7g8q6yRJW?=
+ =?us-ascii?Q?9HqEHjS1YRrvG3ivQQ2N8n5MPzJMujClp+Lz23O8jbd1YrvBmc6y2RLhDYi+?=
+ =?us-ascii?Q?A0t/1C2l/bU1igwUY6TgloOCwO5HWXYUK7+611l7zdrcLxypis+XCsVyPbJR?=
+ =?us-ascii?Q?/LVVkmPQ0Y93fUwq0uDvITF7C/UHqEzxCwhLaK8wd4MyBWRWce7Frm7+fmiw?=
+ =?us-ascii?Q?nhwlzoY/vQaC2M8DdMkFqVBmHmib1LHXq+1XvImlRmxMGtNfD3OjzntWf/GM?=
+ =?us-ascii?Q?dfHntlH5GzmFJDDxKbfeLEqRnZwT22p+Vsj9GCllLxUV81/y6L97qPlqmPIi?=
+ =?us-ascii?Q?nUytynOv2lm6PwGKE20OcUQYosFCuzZrfXh77h5G96grCbaM1ZJMpI+5OZmJ?=
+ =?us-ascii?Q?Lg8/bXXoKIUA7sMdEmXcZOWnL4wgdWsO0wZ5blpHi3sdeYtFG0InjXRIZJBo?=
+ =?us-ascii?Q?d37D+HeuPGZbq3l9RDrM0+I=3D?=
+X-OriginatorOrg: os.amperecomputing.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cfa46b63-518d-4b18-cf1a-08dc033f7617
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR01MB8024.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Dec 2023 22:43:48.1733
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 92VuehLEmexrj5PloUWkoI3S6OhLeelV9bX78jGJFqGhxKTwwfD/H1sTHoVXFGMIh1he1fHN5sY5U4IhTiUo6+b0z1G+8w4CYzmspST7BTc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR01MB6282
 
-On Thu, Dec 21, 2023 at 1:45=E2=80=AFPM Micka=C3=ABl Sala=C3=BCn <mic@digik=
-od.net> wrote:
-> On Wed, Dec 20, 2023 at 04:22:15PM -0500, Paul Moore wrote:
-> > On Thu, Sep 21, 2023 at 2:17=E2=80=AFAM Micka=C3=ABl Sala=C3=BCn <mic@d=
-igikod.net> wrote:
-> > >
-> > > Add audit support for ruleset/domain creation and release ...
-
-...
-
-> > > +/* Inspired by dump_common_audit_data(). */
-> > > +static void log_task(struct audit_buffer *const ab)
-> > > +{
-> > > +       /* 16 bytes (TASK_COMM_LEN) */
-> > > +       char comm[sizeof(current->comm)];
-> > > +
-> > > +       /*
-> > > +        * Uses task_pid_nr() instead of task_tgid_nr() because of ho=
-w
-> > > +        * credentials and Landlock work.
-> > > +        */
-> > > +       audit_log_format(ab, "tid=3D%d comm=3D", task_pid_nr(current)=
-);
-> > > +       audit_log_untrustedstring(ab,
-> > > +                                 memcpy(comm, current->comm, sizeof(=
-comm)));
-> > > +}
-> >
-> > Depending on how log_task() is used, it may be redundant with respect
-> > to the existing SYSCALL record.  Yes, there is already redundancy with
-> > the AVC record, but that is a legacy problem and not something we can
-> > easily fix, but given that the Landlock records are new we have an
-> > opportunity to do things properly :)
+James Morse <james.morse@arm.com> writes:
+> This series does two things, it changes resctrl to call resctrl_arch_rmid_read()
+> in a way that works for MPAM, and it separates the locking so that the arch code
+> and filesystem code don't have to share a mutex. I tried to split this as two
+> series, but these touch similar call sites, so it would create more work.
 >
-> Indeed, it would make it simpler too. I wasn't sure how standalone a
-> record should be, but I guess there tools should be able to look for a
-> set of related records (e.g. event with a SYSCALL record matching a PID
-> and a LANDLOCK record).
+> (What's MPAM? See the cover letter of the first series. [1])
 
-I believe ausearch will output the entire event when it matches on a
-field in one of the event's records.
+Thanks, James. This is really useful for us at Ampere since it enables
+the MPAM driver on top of this series.
 
-> > > +void landlock_log_create_ruleset(struct landlock_ruleset *const rule=
-set)
-> > > +{
-> > > +       struct audit_buffer *ab;
-> > > +
-> > > +       WARN_ON_ONCE(ruleset->id);
-> > > +
-> > > +       ab =3D audit_log_start(audit_context(), GFP_ATOMIC, AUDIT_LAN=
-DLOCK);
-> > > +       if (!ab)
-> > > +               /* audit_log_lost() call */
-> > > +               return;
-> > > +
-> > > +       ruleset->id =3D atomic64_inc_return(&ruleset_and_domain_count=
-er);
-> > > +       log_task(ab);
-> > > +       audit_log_format(ab,
-> > > +                        " op=3Dcreate-ruleset ruleset=3D%llu handled=
-_access_fs=3D",
-> > > +                        ruleset->id);
-> >
-> > "handled_access_fs" seems a bit long for a field name, is there any
-> > reason why it couldn't simply be "access_fs" or something similar?
->
-> "handled_access_fs" is from the landlock_create_ruleset(2) API, so I'd
-> like to use the same name.
+I've tested this series on an Ampere implementation, by successfully
+using resctrl to configure and exercise MPAM functionality. I can't
+speak to the effects of the refactor on x86 since I have not tested that
+all.
 
-Okay, that's a reasonable reason.
+For the series:
 
-> However, because the types of handled access
-> rights for a ruleset will expand (e.g. we now have a
-> handled_access_net), I'm wondering if it would be better to keep this
-> (growing) one-line record or if we should use several records for a
-> ruleset creation (i.e. one line per type of handled access righs).
+Tested-by: Carl Worth <carl@os.amperecomputing.com>
 
-I think it would be better to have a single record for rulesets rather
-than multiple records all dealing with rulesets.
-
-> > > +               id =3D ruleset->hierarchy->id;
-> > > +               WARN_ON_ONCE(ruleset->id);
-> > > +       } else {
-> > > +               name =3D "ruleset";
-> > > +               id =3D ruleset->id;
-> > > +       }
-> > > +       WARN_ON_ONCE(!id);
-> > > +
-> > > +       /*
-> > > +        * Because this might be called by kernel threads, logging
-> > > +        * related task information with log_task() would be useless.
-> > > +        */
-> > > +       audit_log_format(ab, "op=3Drelease-%s %s=3D%llu", name, name,=
- id);
-> >
-> > This starts to get a little tricky.  The general guidance is that for
-> > a given audit record type, e.g. AUDIT_LANDLOCK, there should be no
-> > change in presence or ordering of fields, yet in
-> > landlock_log_create_ruleset() we log the permission information and
-> > here in landlock_log_release_ruleset() we do not.  The easy fix is to
-> > record the permission information here as well, or simply use a
-> > "handled_access_fs=3D?" placeholder.  Something to keep in mind as you
-> > move forward.
->
-> OK, I used different "op" to specify the related fields, but I should
-> use a dedicated record type when it makes sense instead. My reasoning
-> was that it would be easier to filter on one or two record types, but
-> I like the fixed set of fields per record type.
->
-> I plan to add a few record types, something like that:
->
-> For a ruleset creation event, several grouped records:
-> - AUDIT_LANDLOCK_RULESET: "id=3D[new ruleset ID] op=3Dcreate"
-> - AUDIT_LANDLOCK_ACCESS: "type=3D[fs or net] rights=3D[bitmask]"
-
-I'm guessing that LANDLOCK_RULESET would be for policy changes, and
-LANDLOCK_ACCESS would be for individual access grants or denials?  If
-so, that looks reasonable.
-
-> For rule addition, several records per landlock_add_rule(2) call.
-> Example with a path_beneath rule:
-> - AUDIT_LANDLOCK_RULESET: "id=3D[ruleset ID] op=3Dadd_rule"
-> - AUDIT_LANDLOCK_PATH: "scope=3Dbeneath path=3D[file path] dev=3D ino=3D"
-> - AUDIT_LANDLOCK_ACCESS: "type=3Dfs rights=3D[bitmask]"
-
-I worry that LANDLOCK_PATH is too much of a duplicate for the existing
-PATH record.  Assuming the "scope=3D" field is important, could it live
-in the LANDLOCK_ACCESS record and then you could do away with the
-dedicated LANDLOCK_PATH record?  Oh, wait ... this is to record the
-policy, not a individual access request, gotcha.  If that is the case
-and RULESET, PATH, ACCESS are all used simply to record the policy
-information I might suggest creation of an AUDIT_LANDLOCK_POLICY
-record that captures all of the above.  If you think that is too
-cumbersome, then perhaps you can do the object/access-specific record
-type, e.g. AUDIT_LANDLOCK_POLICY_FS and AUDIT_LANDLOCK_POLICY_NET.
-
-You also shouldn't reuse the "type=3D" field.  Steve gets grumpy when
-people reuse field names for different things.  You can find a
-reasonably complete list of fields here:
-https://github.com/linux-audit/audit-documentation/blob/main/specs/fields/f=
-ield-dictionary.csv
-
-> For domain creation/restriction:
-> - AUDIT_LANDLOCK_DOMAIN: "id=3D[new domain ID] op=3Dcreate"
-> - AUDIT_LANDLOCK_RULESET: "id=3D[ruleset ID] op=3Duse"
-
-I imagine you could capture this in the policy record type?
-
-> For ruleset release:
-> - AUDIT_LANDLOCK_RULESET: "id=3D[ruleset ID] op=3Drelease"
->
-> For domain release:
-> - AUDIT_LANDLOCK_DOMAIN: "id=3D[domain ID] op=3Drelease"
-
-Same with the above two.
-
-> For denied FS access:
-> - AUDIT_LANDLOCK_DENIAL: "id=3D[domain ID] op=3Dmkdir"
-> - AUDIT_LANDLOCK_PATH: "scope=3Dexact path=3D[file path] dev=3D ino=3D"
-
-I would use a single record type, i.e. AUDIT_LANDLOCK_ACCESS, to
-capture both access granted and denied events.  I'd also omit the
-dedicated LANDLOCK_PATH record here in favor of the generic PATH
-record (see my comments above).
-
-> For denied net access:
-> - AUDIT_LANDLOCK_DENIAL: "id=3D[domain ID] op=3Dconnect"
-> - AUDIT_LANDLOCK_PORT: "port=3D"
-
-I would look at the SOCKADDR record type instead of introducing a new
-LANDLOCK_PORT type.
-
-> I guess it will still be OK to expand a record type with new appended
-> fields right? For instance, could we append a "flags" field to a
-> AUDIT_LANDLOCK_RULESET record (because it may not make sense to create a
-> dedicated record type for that)?
-
-Of course, one can always add fields to an existing record type with
-the understanding that they MUST be added to the end.
-
---=20
-paul-moore.com
+-Carl
 
