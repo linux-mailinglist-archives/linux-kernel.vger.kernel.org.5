@@ -1,201 +1,89 @@
-Return-Path: <linux-kernel+bounces-9337-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9338-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5FCD381C44D
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 05:43:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C52A481C44E
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 05:46:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 848F11C24E36
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 04:43:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7529428543B
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 04:46:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40F8763B9;
-	Fri, 22 Dec 2023 04:43:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 822FB539F;
+	Fri, 22 Dec 2023 04:46:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gfYgaZlU"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="aLvB0/0X"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CA67567E;
-	Fri, 22 Dec 2023 04:43:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F1D5C433D9;
-	Fri, 22 Dec 2023 04:43:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703220215;
-	bh=BYc4P52QVmcfkosbCiaZHm30PAhBdMV15eIFZyXrt/w=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=gfYgaZlUKTevwbQZJYf85rCQkvZ/2dCJYNFbjX4MpLQkTDUUEUs/gP6VgkDORJWb8
-	 39mKyH0Ale/2tztSN7oPpMMX8AVjmR7C80Ec+Qj7ylvDdMCuhODKMjmh5TDF4Lx3uC
-	 39ErfF6Mps6iJFaHEwyXAzkQ5Nu128Yd2sJxWJ6nY/94L7qUCSZHLV5/sCN8oYauqI
-	 N4dax9yGxlcrjoMrDAaNl8IZ8xR0Hgym3gVh5HxSmMIEXzMN9t6gLELtElUW7lppYm
-	 5IIc6FIgr1lxlCyWzmaSZamTNwe7g9rYswUzFs4QlJqViWD7UPJhQ8/YWKRjrzaesf
-	 HqqLBcybWwv9w==
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-54c5d041c23so1618396a12.2;
-        Thu, 21 Dec 2023 20:43:34 -0800 (PST)
-X-Gm-Message-State: AOJu0YytadRPiSCTOB0XqmO/s3m45VWprQlEDvyaGXODOQIe0CytCEIY
-	TCTvxTJibSkPq7cbEJu0nyBPftsm5URCyTdo52M=
-X-Google-Smtp-Source: AGHT+IEUijHJ57JnutUHpUy3p1Ku8NBY/+d6W1M5E/W4tJng1EyPnpTmpp3MlXrvJ8ydAe+kadGKjzYldx2WjsB5z0k=
-X-Received: by 2002:a50:935c:0:b0:553:aa33:7876 with SMTP id
- n28-20020a50935c000000b00553aa337876mr152031eda.31.1703220213485; Thu, 21 Dec
- 2023 20:43:33 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB5324680;
+	Fri, 22 Dec 2023 04:45:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+	Content-ID:Content-Description:In-Reply-To:References;
+	bh=vToPUnmN/oarZ/hFlZN6gbMr1MxOMg0QMOvO7BUHMxM=; b=aLvB0/0XIIBheIueWG+PGbXLD4
+	ND/RT/jNr+W2ma814MPZt8oqaIi/mNkPNTqx/XrreansEPhPwFfjaGk6ws5LlHN1CZIIxRPC/Koy8
+	iUToKssdMQcdY4fvvT4zX0PRtUBX/PQQMY0K6jvTeqe4vC65Iq12a7us+DtfI8yfVUkCLCjyBr4Zg
+	r/ywM+AEkfDPoeZs2zsoQEPtJGSHrXf0MbuH7OTPq4AEEdiV0uUFAtpOAYhPeKfoR4T9C9kzu+1NJ
+	OO4GCRw0rWBf3Jw6l3YIAPxb/91bsZmBVxSuUi8abbLgSvgcm1AcQXBdzFO8xYbwgSEeADeVHKm60
+	qe9/jqhQ==;
+Received: from [50.53.46.231] (helo=bombadil.infradead.org)
+	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1rGXQ3-004sg6-1u;
+	Fri, 22 Dec 2023 04:45:56 +0000
+From: Randy Dunlap <rdunlap@infradead.org>
+To: linux-kernel@vger.kernel.org
+Cc: Randy Dunlap <rdunlap@infradead.org>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	WANG Xuerui <kernel@xen0n.name>,
+	loongarch@lists.linux.dev,
+	Kent Overstreet <kent.overstreet@gmail.com>
+Subject: [PATCH v2] LoongArch: signal.c: add header file to fix build error
+Date: Thu, 21 Dec 2023 20:45:54 -0800
+Message-ID: <20231222044554.25656-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231220-optimize_checksum-v13-0-a73547e1cad8@rivosinc.com>
- <20231220-optimize_checksum-v13-2-a73547e1cad8@rivosinc.com>
- <CAJF2gTR9ZxLZwEs=TMeih+vEEuuxNHRkgLsG2ShjXPEZ-G44_w@mail.gmail.com> <ZYTobxPZVNct4toQ@ghost>
-In-Reply-To: <ZYTobxPZVNct4toQ@ghost>
-From: Guo Ren <guoren@kernel.org>
-Date: Fri, 22 Dec 2023 12:43:22 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTTBweJTVw1m1WuJ6LNKrB_U83sdtkiZAk-NLND6sqdMZQ@mail.gmail.com>
-Message-ID: <CAJF2gTTBweJTVw1m1WuJ6LNKrB_U83sdtkiZAk-NLND6sqdMZQ@mail.gmail.com>
-Subject: Re: [PATCH v13 2/5] riscv: Add static key for misaligned accesses
-To: Charlie Jenkins <charlie@rivosinc.com>
-Cc: Palmer Dabbelt <palmer@dabbelt.com>, Conor Dooley <conor@kernel.org>, 
-	Samuel Holland <samuel.holland@sifive.com>, David Laight <David.Laight@aculab.com>, 
-	Xiao Wang <xiao.w.wang@intel.com>, Evan Green <evan@rivosinc.com>, 
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	linux-arch@vger.kernel.org, Paul Walmsley <paul.walmsley@sifive.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Fri, Dec 22, 2023 at 9:37=E2=80=AFAM Charlie Jenkins <charlie@rivosinc.c=
-om> wrote:
->
-> On Fri, Dec 22, 2023 at 08:33:18AM +0800, Guo Ren wrote:
-> > On Thu, Dec 21, 2023 at 7:38=E2=80=AFAM Charlie Jenkins <charlie@rivosi=
-nc.com> wrote:
-> > >
-> > > Support static branches depending on the value of misaligned accesses=
-.
-> > > This will be used by a later patch in the series. All cpus must be
-> > > considered "fast" for this static branch to be flipped.
-> > >
-> > > Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
-> > > ---
-> > >  arch/riscv/include/asm/cpufeature.h |  2 ++
-> > >  arch/riscv/kernel/cpufeature.c      | 30 +++++++++++++++++++++++++++=
-+++
-> > >  2 files changed, 32 insertions(+)
-> > >
-> > > diff --git a/arch/riscv/include/asm/cpufeature.h b/arch/riscv/include=
-/asm/cpufeature.h
-> > > index a418c3112cd6..7b129e5e2f07 100644
-> > > --- a/arch/riscv/include/asm/cpufeature.h
-> > > +++ b/arch/riscv/include/asm/cpufeature.h
-> > > @@ -133,4 +133,6 @@ static __always_inline bool riscv_cpu_has_extensi=
-on_unlikely(int cpu, const unsi
-> > >         return __riscv_isa_extension_available(hart_isa[cpu].isa, ext=
-);
-> > >  }
-> > >
-> > > +DECLARE_STATIC_KEY_FALSE(fast_misaligned_access_speed_key);
-> > > +
-> > >  #endif
-> > > diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufe=
-ature.c
-> > > index b3785ffc1570..095eb6ebdcaa 100644
-> > > --- a/arch/riscv/kernel/cpufeature.c
-> > > +++ b/arch/riscv/kernel/cpufeature.c
-> > > @@ -10,6 +10,7 @@
-> > >  #include <linux/bitmap.h>
-> > >  #include <linux/cpuhotplug.h>
-> > >  #include <linux/ctype.h>
-> > > +#include <linux/jump_label.h>
-> > >  #include <linux/log2.h>
-> > >  #include <linux/memory.h>
-> > >  #include <linux/module.h>
-> > > @@ -728,6 +729,35 @@ void riscv_user_isa_enable(void)
-> > >                 csr_set(CSR_SENVCFG, ENVCFG_CBZE);
-> > >  }
-> > >
-> > > +DEFINE_STATIC_KEY_FALSE(fast_misaligned_access_speed_key);
-> > > +
-> > > +static int set_unaligned_access_static_branches(void)
-> > > +{
-> > > +       /*
-> > > +        * This will be called after check_unaligned_access_all_cpus =
-so the
-> > > +        * result of unaligned access speed for all cpus will be avai=
-lable.
-> > > +        */
-> > > +
-> > > +       int cpu;
-> > > +       bool fast_misaligned_access_speed =3D true;
-> > > +
-> > > +       for_each_online_cpu(cpu) {
-> > Each online_cpu? Is there any offline_cpu that is no
-> > fast_misaligned_access_speed?
->
-> I think instead of checking offline cpus, it would make more sense to
-> adjust the static branch when offline cpus come online. Since
-> riscv_online_cpu is called when a new CPU comes online, I can update the
-> static branch inside of that function.
->
-> >
-> > Move into your riscv_online_cpu for each CPU, and use stop_machine for
-> > synchronization.
-> >
->
-> I do not understand what you mean by "Move into your riscv_online_cpu
-> for each CPU", but I am assuming you are referring to updating the
-> static branch inside of riscv_online_cpu.
-I mean in:
-arch/riscv/kernel/cpufeature.c: riscv_online_cpu()
+loongarch's signal.c uses rseq_signal_deliver() so it should
+pull in the appropriate header to prevent a build error:
 
-Yes,"adjust the static branch when offline cpus come online ..."
+../arch/loongarch/kernel/signal.c: In function 'handle_signal':
+../arch/loongarch/kernel/signal.c:1034:9: error: implicit declaration of function 'rseq_signal_deliver' [-Werror=implicit-function-declaration]
+ 1034 |         rseq_signal_deliver(ksig, regs);
+      |         ^~~~~~~~~~~~~~~~~~~
 
->
-> I believe any race condition that could be solved by stop_machine will
-> become irrelevent by ensuring that the static branch is updated when a
-> new cpu comes online.
-Em...  stop_machine may be not necessary.
+Fixes: b74baf4ad05b ("LoongArch: Add signal handling support")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Huacai Chen <chenhuacai@kernel.org>
+Cc: WANG Xuerui <kernel@xen0n.name>
+Cc: loongarch@lists.linux.dev
+Cc: Kent Overstreet <kent.overstreet@gmail.com>
+---
+v2: repair Cc: list
 
->
-> - Charlie
->
-> > > +               int this_perf =3D per_cpu(misaligned_access_speed, cp=
-u);
-> > > +
-> > > +               if (this_perf !=3D RISCV_HWPROBE_MISALIGNED_FAST) {
-> > > +                       fast_misaligned_access_speed =3D false;
-> > > +                       break;
-> > > +               }
-> > > +       }
-> > > +
-> > > +       if (fast_misaligned_access_speed)
-> > > +               static_branch_enable(&fast_misaligned_access_speed_ke=
-y);
-> > > +
-> > > +       return 0;
-> > > +}
-> > > +
-> > > +arch_initcall_sync(set_unaligned_access_static_branches);
-> > > +
-> > >  #ifdef CONFIG_RISCV_ALTERNATIVE
-> > >  /*
-> > >   * Alternative patch sites consider 48 bits when determining when to=
- patch
-> > >
-> > > --
-> > > 2.43.0
-> > >
-> > >
-> >
-> >
-> > --
-> > Best Regards
-> >  Guo Ren
+ arch/loongarch/kernel/signal.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-
-
---=20
-Best Regards
- Guo Ren
+diff -- a/arch/loongarch/kernel/signal.c b/arch/loongarch/kernel/signal.c
+--- a/arch/loongarch/kernel/signal.c
++++ b/arch/loongarch/kernel/signal.c
+@@ -15,6 +15,7 @@
+ #include <linux/context_tracking.h>
+ #include <linux/entry-common.h>
+ #include <linux/irqflags.h>
++#include <linux/rseq.h>
+ #include <linux/sched.h>
+ #include <linux/mm.h>
+ #include <linux/personality.h>
 
