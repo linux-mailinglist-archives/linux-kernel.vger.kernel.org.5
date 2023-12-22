@@ -1,73 +1,111 @@
-Return-Path: <linux-kernel+bounces-9587-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9589-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0CFFF81C7EE
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 11:14:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94F1E81C818
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 11:24:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A06001F2552B
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 10:14:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4F78D2887E8
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 10:24:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB96517993;
-	Fri, 22 Dec 2023 10:13:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D92EB156DE;
+	Fri, 22 Dec 2023 10:24:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="G+qCJUK0"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="doFUtE6l"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oi1-f178.google.com (mail-oi1-f178.google.com [209.85.167.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DF7E17983
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 10:13:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA186C433C8;
-	Fri, 22 Dec 2023 10:13:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703240036;
-	bh=B3Fb3xaBgAJ3MicHOvgzp7hskRNgdGEtl2qTy05aZKc=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=G+qCJUK04/auFikiWz2Ec6e1QyGnDMaDk/BjJ6UjmfbvmdGHIVtL/xid3226FLyey
-	 LZbEvlhvKqa0+cbCXc2jwqJF+BJ7IhhwGOgQBa9N+jaXHtUJUfXavuGyCVPb3xJ6uz
-	 LZnTnndvZLr2kUBgkd4EiaHDIyZeSeRQwqUcyUvIuM0/Xbr6ZY3u1cZ/512MFR5AGk
-	 ih5F8IZFArvpur1Gl1bwnujZa4+solwWvlXmpfGXi07qvy0CpsgQvqu7gYC/qiXKqZ
-	 EwsUZEEgOnGfSipSUoZNRHq87B6J74q9BiUxifiSrvmUkSjFC9eqiYZflVuj2QCk2K
-	 vZPVD2CPBystw==
-Message-ID: <15424f2b-601c-44b0-83a8-19d69d7c92cf@kernel.org>
-Date: Fri, 22 Dec 2023 12:13:53 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0A8214A82
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 10:24:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f178.google.com with SMTP id 5614622812f47-3b9f8c9307dso1460141b6e.0
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 02:24:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703240646; x=1703845446; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:reply-to:message-id:date
+         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=gqSwQxD2fbJPgUWI2ZYQp2p14IC1JkNGTdv/EQhR7s4=;
+        b=doFUtE6lEf0Y+/gNYJHbqFMUaVa2U0rS4Q/AGXQhPrXHoIYVMI1j2niy6Fx+oAL/tu
+         e/j7CYEIlTx5BmZjvwpi4VHrXkWTcsEUOQ2FTZ3u/azjBCHA2bC34h3ADhU0f6QoZuUJ
+         2gKhmuaULyCUFin9YtH4GiPOxbufzf2lNS8n5+9JflYT1afvcNtdbO3CWs9Ah2B96PLt
+         ClkqPWZFc4jqoKOKGI/Qy9VK/a98mYy/15aqt96tPyBXY7uTrMpV1q023yAD1O9VRXvM
+         qFEBGXIRyTIAPFed1imWxeH0YUkzZKCBYZgpeEIH8wu7lvGZgd1YoEZ2q9PYv/4va+Gt
+         14rg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703240646; x=1703845446;
+        h=content-transfer-encoding:mime-version:reply-to:message-id:date
+         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gqSwQxD2fbJPgUWI2ZYQp2p14IC1JkNGTdv/EQhR7s4=;
+        b=SdiIwQtO585SxJ1Ov22lrwcmFaf3+3U36rCeYO0QwAqV9ySBC3cZFQcAasW8APk4Tv
+         R4Ccd5TIQWI9RZws2TJDLQ7KidLHnq9CRRuqsM0w2w+8exfVlvn7jQYvDWbbcvvnp/bl
+         oBdfbkjQAL1ZyUlfmS20uNoKU7b4x/MOlg3fEmyvvMDIgVMEJpwT8MZ7FMKzx0XCIXfd
+         bEBgP350yx6EJeoo9x+vUxT3PR/kRHbQ9x9KgMKcK/RwrutkVIO5ckCQv4EUy0wIF23X
+         49A+EcUUsIZZuvUlrlGVNz7PMeYd5Op9fTWoFN9RTLlHlxNdgjZYx0RM6Tl3bgSn88fz
+         tcBg==
+X-Gm-Message-State: AOJu0YzSkzlGxGecAhmHoJkPtgSg4jDxdOPAOBt7pr8JX2vEArDC/IGi
+	+DmF9xvsfQgU4VkQf6igJHE=
+X-Google-Smtp-Source: AGHT+IEJa5V83giUnWT10v5sm3MCod/3MLsT57MZYMEmnJ7bVD0I31MCuTB3XHt55809YhFqtspSXg==
+X-Received: by 2002:a05:6808:2e4b:b0:3bb:721d:8ac9 with SMTP id gp11-20020a0568082e4b00b003bb721d8ac9mr1551420oib.18.1703240645875;
+        Fri, 22 Dec 2023 02:24:05 -0800 (PST)
+Received: from KASONG-MB2.tencent.com ([103.7.29.31])
+        by smtp.gmail.com with ESMTPSA id gx1-20020a056a001e0100b006d9912e9a77sm364074pfb.6.2023.12.22.02.24.03
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Fri, 22 Dec 2023 02:24:05 -0800 (PST)
+From: Kairui Song <ryncsn@gmail.com>
+To: linux-mm@kvack.org
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Yu Zhao <yuzhao@google.com>,
+	linux-kernel@vger.kernel.org,
+	Kairui Song <kasong@tencent.com>
+Subject: [PATCH 0/3] mm, lru_gen: batch update pages when aging
+Date: Fri, 22 Dec 2023 18:22:52 +0800
+Message-ID: <20231222102255.56993-1-ryncsn@gmail.com>
+X-Mailer: git-send-email 2.43.0
+Reply-To: Kairui Song <kasong@tencent.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 2/2] phy: ti: j721e-wiz: Add SGMII support in WIZ
- driver for J784S4
-Content-Language: en-US
-To: Chintan Vankar <c-vankar@ti.com>, Maxime Ripard <mripard@kernel.org>,
- =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
- Sinthu Raja <sinthu.raja@ti.com>, Andrew Davis <afd@ti.com>,
- Siddharth Vadapalli <s-vadapalli@ti.com>,
- Kishon Vijay Abraham I <kishon@kernel.org>, Vinod Koul <vkoul@kernel.org>
-Cc: linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org
-References: <20231221102956.754617-1-c-vankar@ti.com>
- <20231221102956.754617-2-c-vankar@ti.com>
-From: Roger Quadros <rogerq@kernel.org>
-In-Reply-To: <20231221102956.754617-2-c-vankar@ti.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
+From: Kairui Song <kasong@tencent.com>
 
+Currently when MGLRU ages, it moves the pages one by one and updates mm
+counter page by page, which is correct but the overhead can be optimized
+by batching these operations.
 
-On 21/12/2023 12:29, Chintan Vankar wrote:
-> Enable full rate divider configuration support for J784S4_WIZ_10G
-> for SGMII.
-> 
-> Signed-off-by: Chintan Vankar <c-vankar@ti.com>
+Batch moving also has a good effect on LRU ordering. Currently when
+MGLRU ages, it walks the LRU backward, and the protected pages are moved to
+the tail of newer gen one by one, which reverses the order of pages in
+LRU. Moving them in batches can help keep their order, only in a small
+scope though due to the scan limit of MAX_LRU_BATCH pages.
 
-Reviewed-by: Roger Quadros <rogerq@kernel.org>
+I noticed a higher performance gain if there are a lot of pages getting
+protected, but hard to reproduce, so instead I tested using a simpler
+benchmark, memtier, also for a more generic result. The main overhead
+here is not aging but the result is also looking good:
+
+Average result of 18 test runs:
+
+Before:           44017.78 Ops/sec
+After patch 1-3:  44890.50 Ops/sec (+1.8%)
+
+Kairui Song (3):
+  mm, lru_gen: batch update counters on againg
+  mm, lru_gen: move pages in bulk when aging
+  mm, lru_gen: try to prefetch next page when canning LRU
+
+ mm/vmscan.c | 140 ++++++++++++++++++++++++++++++++++++++++++++++------
+ 1 file changed, 124 insertions(+), 16 deletions(-)
 
 -- 
-cheers,
--roger
+2.43.0
+
 
