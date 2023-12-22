@@ -1,105 +1,95 @@
-Return-Path: <linux-kernel+bounces-9282-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9283-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 310D281C362
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 04:20:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E7F3E81C364
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 04:21:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DB860287B63
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 03:20:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A65D1287EA3
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 03:21:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23D3B1844;
-	Fri, 22 Dec 2023 03:20:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBEFF6111;
+	Fri, 22 Dec 2023 03:20:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kR7GdQSK"
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="WrYFKhHW"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28F878F49;
-	Fri, 22 Dec 2023 03:20:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703215225; x=1734751225;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=zwvJZipX1RTKD4/apP3DQT5aXdl1Ua3N+TL6Z4LeVts=;
-  b=kR7GdQSKpDF9xKZp+Zp6qw2mcy2fbJAu/7b4G2nsYCFhZUQDKV2A0RJ/
-   cQPV12uSzzk57ggl/Azb+vD0TawyaHDpefVsgl7xmA80q+jvxYKURGnQg
-   rmN20ryA9ut6bLjYn067LAvErK0TFUJfcd8lqOoL+ElfZyrnCpKl92U9q
-   j/NZrQmOIJMzIw9rmHWVTwxK9dpLyD5QSoVwZmZYu1kHwq7SzYfcenQtY
-   Yz+e9tSiZFCprUXfM7P8iqKxGolEPvpBXwBnPcPuOaJnAKVkVucZ3IFhN
-   2Fo7uIliMUOmzsAYw2MC1s7UB2i7wUewf3Ghxu4oBL7VTIojFxtKEijP2
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10931"; a="3307293"
-X-IronPort-AV: E=Sophos;i="6.04,294,1695711600"; 
-   d="scan'208";a="3307293"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Dec 2023 19:20:24 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10931"; a="805820544"
-X-IronPort-AV: E=Sophos;i="6.04,294,1695711600"; 
-   d="scan'208";a="805820544"
-Received: from zhaohaif-mobl.ccr.corp.intel.com (HELO [10.93.26.36]) ([10.93.26.36])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Dec 2023 19:20:20 -0800
-Message-ID: <589b2dbc-325b-404f-a387-b1c99a064d15@linux.intel.com>
-Date: Fri, 22 Dec 2023 11:20:18 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26FB65390;
+	Fri, 22 Dec 2023 03:20:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1703215250;
+	bh=G9TXpmNKFKLIUns+8NwaoYpBd9ZtZAQPwkvxTt9wCtM=;
+	h=Date:From:To:Cc:Subject:From;
+	b=WrYFKhHWsi3WZdZTFoTxdXgezf6PoX9UveWE/Q2xGLcjiCLLg0XFcSvD3soF9iPBx
+	 CV68q4gaojMC7Ec/50ire5bmXkamNfqQDIK7zx4CEuNphtfmQ5o48X9wXc2VjAaOnJ
+	 e+nvTYWr1lNhOoZ2apRhYRCe/6tPr9v2TZbxQ+IYJoi7d4tw3f6mHoL7abM0FU+7lB
+	 8yeIVrqIFSsxxpcY2iM/Ptr9gx73nul8h1CyyUvp8IFvwgSfk2oq/dXWb+DJbMCyBK
+	 +7/pi3y6i/aKkwZDou+2YVsr6CNiAOMPFuxkdeNOC2Rajx//YEodcYMmRySUCS6Mg8
+	 11RQhVTTAulUg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4SxCHP6Mkyz4wby;
+	Fri, 22 Dec 2023 14:20:49 +1100 (AEDT)
+Date: Fri, 22 Dec 2023 14:20:49 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Tejun Heo <tj@kernel.org>, Greg KH <greg@kroah.com>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
+ Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: duplicate patchs in the cgroup tree
+Message-ID: <20231222142049.397619e5@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] iommu/vt-d: don's issue devTLB flush request when
- device is disconnected
-To: Lukas Wunner <lukas@wunner.de>, Robin Murphy <robin.murphy@arm.com>
-Cc: bhelgaas@google.com, baolu.lu@linux.intel.com, dwmw2@infradead.org,
- will@kernel.org, linux-pci@vger.kernel.org, iommu@lists.linux.dev,
- linux-kernel@vger.kernel.org, Haorong Ye <yehaorong@bytedance.com>
-References: <20231213034637.2603013-1-haifeng.zhao@linux.intel.com>
- <20231213034637.2603013-3-haifeng.zhao@linux.intel.com>
- <20231213104417.GA31964@wunner.de>
- <3b7742c4-bbae-4a78-a5a6-30df936a17d4@arm.com>
- <20231221104254.GB12714@wunner.de>
-From: Ethan Zhao <haifeng.zhao@linux.intel.com>
-In-Reply-To: <20231221104254.GB12714@wunner.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/OJADucNWvGw_tPz_/tAIriZ";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
+--Sig_/OJADucNWvGw_tPz_/tAIriZ
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On 12/21/2023 6:42 PM, Lukas Wunner wrote:
-> On Wed, Dec 13, 2023 at 11:54:05AM +0000, Robin Murphy wrote:
->> I think if we want to ensure ATCs are invalidated on hot-unplug we need an
->> additional pre-removal notifier to take care of that, and that step would
->> then want to distinguish between an orderly removal where cleaning up is
->> somewhat meaningful, and a surprise removal where it definitely isn't.
-> Even if a user starts the process for orderly removal, the device may be
-> surprise-removed *during* that process.  So we cannot assume that the
-> device is actually accessible if orderly removal has been initiated.
-> If the form factor supports surprise removal, the device may be gone
+Hi all,
 
-There is no hardware lock to prevent user powerring-off/removing
+The following commit is also in the driver-core tree as a different commit
+(but the same patchs):
 
-the supprise-removal capable device before issuing ATS invalidation
+  2bf46683842b ("kernel/cgroup: use kernfs_create_dir_ns()")
 
-request but after checking device connection state, the no target
+This is commit
 
-request still possibly be sent.
+  fe3de0102bc8 ("kernel/cgroup: use kernfs_create_dir_ns()")
 
+in the driver-core tree.
 
-Thanks,
+--=20
+Cheers,
+Stephen Rothwell
 
-Ethan
+--Sig_/OJADucNWvGw_tPz_/tAIriZ
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-> at any time.
->
-> Thanks,
->
-> Lukas
->
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmWFAJEACgkQAVBC80lX
+0GzbTwf7B/aa0Q0mbQ/bNvPCXeECAFFHIFBtKatNcOWEQrzOcMi8dC/wPbxtvwB7
+U1kIWF4gob14pJtjs87pUydNKZJ1EVBZ2eNetS3G3tqf8OCG9Vbh1KhDy9203exX
+fI8AgPZD7jhoG/UIBFjx6eRfAOnFAnPPLyt9S5sqXIuQbh2ipkUuuCCAaM1Mgkhy
+4dmqEUF2Gh1YWJwtPMRu9ROZOX6ZtqHuMRByw51cV45BV3ttWjxEHKDjBAf46r2O
+yX/VRiM7DUMzyJ9asLwgUOpxjbGXK8luItUYycgB5JLCUaSzQBi46SqN5wxE1A3k
+hbcen2A6bOH7bhV+eRDuSDE67V19zA==
+=4fE+
+-----END PGP SIGNATURE-----
+
+--Sig_/OJADucNWvGw_tPz_/tAIriZ--
 
