@@ -1,140 +1,87 @@
-Return-Path: <linux-kernel+bounces-10108-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10109-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D350D81D056
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 00:15:57 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70F2281D058
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 00:16:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5746A1F22ADA
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 23:15:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E9F3FB24347
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 23:16:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD1D233CF5;
-	Fri, 22 Dec 2023 23:15:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="R+NqSMdb"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34DB435EE3;
+	Fri, 22 Dec 2023 23:16:04 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from relay.hostedemail.com (smtprelay0013.hostedemail.com [216.40.44.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76ECC33CD5
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 23:15:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1703286947;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=qWoEtrdNPasYMgjNknGsXEce5LCOLCYkYpqGX/DZgy0=;
-	b=R+NqSMdbik/2JQt/mwPPY1QpiKYd3Z2RM8M0FrHB398AB3rxCtxpyZd4tvSE7yV7MGfFXk
-	b3+bDzkJaZmbKkfwVckUbPGIuBCrnVdXTcHayaQKE4jsmavIROV1VLrnNF4RAAr8awd6BZ
-	omp38sWo1V557D4GwlJDsHZf7X3xK7k=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-616-MJJUghEpN5mPW4RiWMpvTg-1; Fri,
- 22 Dec 2023 18:15:45 -0500
-X-MC-Unique: MJJUghEpN5mPW4RiWMpvTg-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 73CCE1C0514C;
-	Fri, 22 Dec 2023 23:15:45 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 56FA6492BC6;
-	Fri, 22 Dec 2023 23:15:45 +0000 (UTC)
-From: Paolo Bonzini <pbonzini@redhat.com>
-To: torvalds@linux-foundation.org
-Cc: linux-kernel@vger.kernel.org,
-	kvm@vger.kernel.org
-Subject: [GIT PULL] KVM fixes for Linux 6.7-rc7
-Date: Fri, 22 Dec 2023 18:15:44 -0500
-Message-Id: <20231222231544.3333693-1-pbonzini@redhat.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4212335F08
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 23:16:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=perches.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=perches.com
+Received: from omf14.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay01.hostedemail.com (Postfix) with ESMTP id 25AC91C18F6;
+	Fri, 22 Dec 2023 23:15:55 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf14.hostedemail.com (Postfix) with ESMTPA id 1B2202F;
+	Fri, 22 Dec 2023 23:15:52 +0000 (UTC)
+Message-ID: <2b294dc33ea64d1d605cf146741d92677b13006a.camel@perches.com>
+Subject: Re: [PATCH] checkpatch: ignore deleted lines for comment context
+From: Joe Perches <joe@perches.com>
+To: Andreas Dilger <adilger@whamcloud.com>, Andy Whitcroft
+ <apw@canonical.com>
+Cc: linux-kernel@vger.kernel.org, Andreas Dilger <adilger@dilger.ca>
+Date: Fri, 22 Dec 2023 15:15:52 -0800
+In-Reply-To: <20231222230551.95425-1-adilger@whamcloud.com>
+References: <20231222230551.95425-1-adilger@whamcloud.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
+X-Rspamd-Queue-Id: 1B2202F
+X-Stat-Signature: 5yyep1gtej9546mqjphbfijenq453ew5
+X-Rspamd-Server: rspamout05
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX18+H6BsdhjeerElRaYNGOIFSDXjpfyiOjg=
+X-HE-Tag: 1703286952-821529
+X-HE-Meta: U2FsdGVkX18dC6vbJYTiWeNzbzEaTsD/YvjoDuhszMpjmaknWpG43WBy0u1en70s2QJyT+nXawavE4dTXsTBsr+1Dwg8C2bYDfG0usEW5T8YVBTFp3HK1S9K49Zg4NrG1c2yqiMe7DWMd4gCASoGQPHY3JAkt49lXkZAkzkRyljcohT7qYnyUlhI+LVw53oH9R8xn6LmK4NmlSvAs3kwySTL/StH5TSG9Ruws7RXo9bAOTp+eaLpkPNBdXyvP88Ry2+tyfp7hJ+zBXHbKqjz2WeYsthQNeT5yyB0W9tivSTvZ/DbhmuNguJnrHGwnhU16PJdWghGbx38W2y5Rvuk631YC3y1n38PLYmNR0e6GS8aWaTu+3OzUPcLbv7w+i6D
 
-Linus,
+On Fri, 2023-12-22 at 16:05 -0700, Andreas Dilger wrote:
+> From: Andreas Dilger <adilger@dilger.ca>
+>=20
+> Don't consider lines being removed by a patch as part of a comment.
+> Otherwise, false "WARNING: memory barrier without comment" and similar
+> issues can be reported when a comment does exist on the previous line.
+>=20
+> For example, a change like below was previously incorrectly flagged:
+>=20
+> 	/* matched by smp_store_release() in some_function() */
+>  -	if (smp_load_acquire(&list->tail) =3D=3D head))
+>  +	if (smp_load_acquire(&list->tail) =3D=3D head) && flags =3D=3D 0)
+>=20
+> Signed-off-by: Andreas Dilger <adilger@dilger.ca>
 
-The following changes since commit a39b6ac3781d46ba18193c9dbb2110f31e9bffe9:
+OK, but:
 
-  Linux 6.7-rc5 (2023-12-10 14:33:40 -0800)
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+[]
+> @@ -1972,7 +1972,8 @@ sub ctx_locate_comment {
+>  	$current_comment =3D '';
+>  	for (my $linenr =3D $first_line; $linenr < $end_line; $linenr++) {
+>  		my $line =3D $rawlines[$linenr - 1];
+> -		#warn "           $line\n";
+> +		#warn "LINE($linenr): $line\n";
 
-are available in the Git repository at:
+This is a superfluous change
 
-  https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
-
-for you to fetch changes up to ef5b28372c565128bdce7a59bc78402a8ce68e1b:
-
-  Merge tag 'kvm-riscv-fixes-6.7-1' of https://github.com/kvm-riscv/linux into kvm-master (2023-12-22 18:05:07 -0500)
-
-----------------------------------------------------------------
-RISC-V
-
-- Fix a race condition in updating external interrupt for
-  trap-n-emulated IMSIC swfile
-
-- Fix print_reg defaults in get-reg-list selftest
-
-ARM:
-
-- Ensure a vCPU's redistributor is unregistered from the MMIO bus
-  if vCPU creation fails
-
-- Fix building KVM selftests for arm64 from the top-level Makefile
-
-x86:
-
-- Fix breakage for SEV-ES guests that use XSAVES.
-
-Selftests:
-
-- Fix bad use of strcat(), by not using strcat() at all
-
-----------------------------------------------------------------
-Andrew Jones (1):
-      KVM: riscv: selftests: Fix get-reg-list print_reg defaults
-
-Marc Zyngier (5):
-      KVM: arm64: vgic: Simplify kvm_vgic_destroy()
-      KVM: arm64: vgic: Add a non-locking primitive for kvm_vgic_vcpu_destroy()
-      KVM: arm64: vgic: Force vcpu vgic teardown on vcpu destroy
-      KVM: arm64: vgic: Ensure that slots_lock is held in vgic_register_all_redist_iodevs()
-      KVM: Convert comment into an assertion in kvm_io_bus_register_dev()
-
-Michael Roth (1):
-      KVM: SEV: Do not intercept accesses to MSR_IA32_XSS for SEV-ES guests
-
-Oliver Upton (1):
-      KVM: selftests: Ensure sysreg-defs.h is generated at the expected path
-
-Paolo Bonzini (3):
-      KVM: selftests: Fix dynamic generation of configuration names
-      Merge tag 'kvmarm-fixes-6.7-2' of git://git.kernel.org/pub/scm/linux/kernel/git/kvmarm/kvmarm into kvm-master
-      Merge tag 'kvm-riscv-fixes-6.7-1' of https://github.com/kvm-riscv/linux into kvm-master
-
-Yong-Xuan Wang (1):
-      RISCV: KVM: update external interrupt atomically for IMSIC swfile
-
- arch/arm64/kvm/arm.c                             |  2 +-
- arch/arm64/kvm/vgic/vgic-init.c                  | 55 ++++++++++++++----------
- arch/arm64/kvm/vgic/vgic-mmio-v3.c               |  4 +-
- arch/arm64/kvm/vgic/vgic.h                       |  1 +
- arch/riscv/kvm/aia_imsic.c                       | 13 ++++++
- arch/x86/kvm/svm/sev.c                           | 19 ++++++++
- arch/x86/kvm/svm/svm.c                           |  1 +
- arch/x86/kvm/svm/svm.h                           |  2 +-
- tools/testing/selftests/kvm/Makefile             | 26 ++++++-----
- tools/testing/selftests/kvm/get-reg-list.c       |  9 ++--
- tools/testing/selftests/kvm/riscv/get-reg-list.c | 10 +++--
- virt/kvm/kvm_main.c                              |  3 +-
- 12 files changed, 101 insertions(+), 44 deletions(-)
+> +		next if ($line =3D~ /^-/); # ignore lines removed by patch
+>  		if ($linenr =3D=3D $first_line and $line =3D~ m@^.\s*\*@) {
+>  			$in_comment =3D 1;
+>  		}
 
 
