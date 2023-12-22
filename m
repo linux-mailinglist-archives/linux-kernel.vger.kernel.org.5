@@ -1,674 +1,309 @@
-Return-Path: <linux-kernel+bounces-9858-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9859-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5E2E81CC76
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 16:58:35 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 160AF81CC77
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 16:59:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 52C4E1F224FE
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 15:58:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8553CB224CB
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 15:59:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6941241F5;
-	Fri, 22 Dec 2023 15:58:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1916C241F3;
+	Fri, 22 Dec 2023 15:59:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="CBkoEhMF"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A4F0241E0;
-	Fri, 22 Dec 2023 15:58:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7AB7F2F4;
-	Fri, 22 Dec 2023 07:59:08 -0800 (PST)
-Received: from pluto (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 864633F738;
-	Fri, 22 Dec 2023 07:58:19 -0800 (PST)
-Date: Fri, 22 Dec 2023 15:58:16 +0000
-From: Cristian Marussi <cristian.marussi@arm.com>
-To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Cc: Sudeep Holla <sudeep.holla@arm.com>, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Oleksii Moisieiev <oleksii_moisieiev@epam.com>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-gpio@vger.kernel.org,
-	Peng Fan <peng.fan@nxp.com>
-Subject: Re: [PATCH 5/7] firmware: arm_scmi: Add SCMI v3.2 pincontrol
- protocol basic support
-Message-ID: <ZYWyGKEZi5YLYeQu@pluto>
-References: <20231215-pinctrl-scmi-v1-0-0fe35e4611f7@nxp.com>
- <20231215-pinctrl-scmi-v1-5-0fe35e4611f7@nxp.com>
+Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB990241E4
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 15:59:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-28bfdf3cd12so941582a91.3
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 07:59:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1703260762; x=1703865562; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=OAR7QlHd39RQ33GYs0BoNsJCPx6aNi6FZcLgvPLmh3E=;
+        b=CBkoEhMFP3jw3I2fasjhvaHbdgGV1lSlARnX5gXuYJdri2+IG0BoRSxbzxO3Ey09/i
+         kyN4TDMwVJt9XZU+KIOeLC5gxGFKsQhuz6LWdXXGG1DWf24fpyIcCcAhP8IL1/XGSruO
+         6GVWKG5E1O36YgLdRd6bEU4zyVoInIV0cMLJl8tTI8YnJddrMiolsV4bcG7rVUQQyU+K
+         hBO+DG4L4JDouDay0X/vPPfeJZhiIWjDmf4hF7IUt4TjjbjR43cKaL/rAXL7oeEyTki8
+         EWFK4USr51VXGpS6IF+s2DI28UbnWz3QuMXo/wzcv7yOzPZJDZ4PuCJGyucfOjW1DuiR
+         lB2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703260762; x=1703865562;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=OAR7QlHd39RQ33GYs0BoNsJCPx6aNi6FZcLgvPLmh3E=;
+        b=kEM1L95ouMy8KoviscDbqCfr6TOJKmevRkVwIw/wf7y0v9hLbN5Ggip7KhEMSQwt0K
+         QHffNXVFSs2XPY7uRNwQvNZtGib6+PMmIKipnWpdUHnqtbe7tIo2+wae2DskZxiUBliU
+         zpK6bo/mA1q+ysZd5Fv2sn3iTlyLRG8sfJWZtRhs3gy6ke0yxcIPQxzGwNjSI63RuXcU
+         h2YWH9OXier4ZmkjW2tP2TyyDrZKilQhI1Dgt8lWGZARAXaafF/q5RpsRwbxS0e5HmgX
+         cZg4H1vwAlpEO0lxxYzUTEwW6ZjNKmrDbdGwAYis+sdKWsk+KSlmp0gByB49KknCcpL0
+         zwyA==
+X-Gm-Message-State: AOJu0Yx+AB90jeF4Cx2wVMJBi0lQ1RxV4Z6PXyP3nXhZUpdpqnCpcQgz
+	qa7Z+nHcnXJ7G0M0AIQ49N4ZglkTIlBK9nA+gWrDewitKCbXUA==
+X-Google-Smtp-Source: AGHT+IF1CDHood9WwJKUlVFKWIquva0sD6z01MQONOf4aUyXUyk11+pscJE2oIeVOK78wHsk+NVf/Jy7opyvLv8L/+A=
+X-Received: by 2002:a17:90a:784e:b0:28a:c616:ff1c with SMTP id
+ y14-20020a17090a784e00b0028ac616ff1cmr814372pjl.97.1703260762031; Fri, 22 Dec
+ 2023 07:59:22 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231215-pinctrl-scmi-v1-5-0fe35e4611f7@nxp.com>
+References: <alpine.DEB.2.22.394.2310032059060.3220@hadrien>
+ <20231003215159.GJ1539@noisy.programming.kicks-ass.net> <alpine.DEB.2.22.394.2310041358420.3108@hadrien>
+ <20231004120544.GA6307@noisy.programming.kicks-ass.net> <alpine.DEB.2.22.394.2310041822170.3108@hadrien>
+ <20231004174801.GE19999@noisy.programming.kicks-ass.net> <alpine.DEB.2.22.394.2310041958380.3108@hadrien>
+ <20231009102949.GC14330@noisy.programming.kicks-ass.net> <b8ab29de-1775-46e-dd75-cdf98be8b0@inria.fr>
+ <CAKfTPtBhWwk9sf9F1=KwubiAWFDC2A9ZT-SSJ+tgFxme1cFmYA@mail.gmail.com>
+ <alpine.DEB.2.22.394.2312182302310.3361@hadrien> <CAKfTPtALEFtrapi3Kk97KLGQN4259eEQEwwftVUK4RG42Vgoyw@mail.gmail.com>
+ <98b3df1-79b7-836f-e334-afbdd594b55@inria.fr> <CAKfTPtCRN_eWgVdK2-h6E_ifJKwwJEtMjeNjB=5DXZFWyBS+tQ@mail.gmail.com>
+ <93112fbe-30be-eab8-427c-5d4670a0f94e@inria.fr> <CAKfTPtAeFvrZxApK3RruWwCjMxbQvOkU+_YgZSo4QPT_AD6FxA@mail.gmail.com>
+ <9dc451b5-9dd8-89f2-1c9c-7c358faeaad@inria.fr>
+In-Reply-To: <9dc451b5-9dd8-89f2-1c9c-7c358faeaad@inria.fr>
+From: Vincent Guittot <vincent.guittot@linaro.org>
+Date: Fri, 22 Dec 2023 16:59:10 +0100
+Message-ID: <CAKfTPtDCsLnDnVje9maP5s-L7TbtSu4CvF19xHOxbkvSNd7vZg@mail.gmail.com>
+Subject: Re: EEVDF and NUMA balancing
+To: Julia Lawall <julia.lawall@inria.fr>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Dietmar Eggemann <dietmar.eggemann@arm.com>, Mel Gorman <mgorman@suse.de>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri, Dec 15, 2023 at 07:56:33PM +0800, Peng Fan (OSS) wrote:
-> From: Oleksii Moisieiev <Oleksii_Moisieiev@epam.com>
-> 
-> Add basic implementation of the SCMI v3.2 pincontrol protocol.
-> 
+On Fri, 22 Dec 2023 at 16:00, Julia Lawall <julia.lawall@inria.fr> wrote:
+>
+>
+>
+> On Fri, 22 Dec 2023, Vincent Guittot wrote:
+>
+> > On Thu, 21 Dec 2023 at 19:20, Julia Lawall <julia.lawall@inria.fr> wrote:
+> > >
+> > >
+> > >
+> > > On Wed, 20 Dec 2023, Vincent Guittot wrote:
+> > >
+> > > > On Tue, 19 Dec 2023 at 18:51, Julia Lawall <julia.lawall@inria.fr> wrote:
+> > > > >
+> > > > > > > One CPU has 2 threads, and the others have one.  The one with two threads
+> > > > > > > is returned as the busiest one.  But nothing happens, because both of them
+> > > > > > > prefer the socket that they are on.
+> > > > > >
+> > > > > > This explains way load_balance uses migrate_util and not migrate_task.
+> > > > > > One CPU with 2 threads can be overloaded
+> > > > > >
+> > > > > > ok, so it seems that your 1st problem is that you have 2 threads on
+> > > > > > the same CPU whereas you should have an idle core in this numa node.
+> > > > > > All cores are sharing the same LLC, aren't they ?
+> > > > >
+> > > > > Sorry, not following this.
+> > > > >
+> > > > > Socket 1 has N-1 threads, and thus an idle CPU.
+> > > > > Socket 2 has N+1 threads, and thus one CPU with two threads.
+> > > > >
+> > > > > Socket 1 tries to steal from that one CPU with two threads, but that
+> > > > > fails, because both threads prefer being on Socket 2.
+> > > > >
+> > > > > Since most (or all?) of the threads on Socket 2 perfer being on Socket 2.
+> > > > > the only hope for Socket 1 to fill in its idle core is active balancing.
+> > > > > But active balancing is not triggered because of migrate_util and because
+> > > > > CPU_NEWLY_IDLE prevents the failure counter from ebing increased.
+> > > >
+> > > >  CPU_NEWLY_IDLE load_balance doesn't aims to do active load balance so
+> > > > you should focus on the CPU_NEWLY_IDLE load_balance
+> > >
+> > > I'm still perplexed why a core that has been idle for 1 second or more is
+> > > considered to be newly idle.
+> >
+> > CPU_NEWLY_IDLE load balance is called when the scheduler was
+> > scheduling something that just migrated or went back to sleep and
+> > doesn't have anything to schedule so it tries to  pull a task from
+> > somewhere else.
+> >
+> > But you should still have some CPU_IDLE load balance according to your
+> > description where one CPU of the socket remains idle and those will
+> > increase the nr_balance_failed
+>
+> This happens.  But not often.
+>
+> > I'm surprised that you have mainly CPU_NEWLY_IDLE. Do you know the reason ?
+>
+> No.  They come from do_idle calling the scheduler.  I will look into why
+> this happens so often.
 
-Hi
+Hmm, the CPU was idle and received a need resched which triggered the
+scheduler but there was nothing to schedule so it goes back to idle
+after running a newly_idle _load_balance.
 
-> Signed-off-by: Oleksii Moisieiev <oleksii_moisieiev@epam.com>
-> Co-developed-by: Peng Fan <peng.fan@nxp.com>
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> ---
->  MAINTAINERS                           |   6 +
->  drivers/firmware/arm_scmi/Makefile    |   1 +
->  drivers/firmware/arm_scmi/driver.c    |   2 +
->  drivers/firmware/arm_scmi/pinctrl.c   | 927 ++++++++++++++++++++++++++++++++++
->  drivers/firmware/arm_scmi/protocols.h |   1 +
->  include/linux/scmi_protocol.h         |  46 ++
->  6 files changed, 983 insertions(+)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index b589218605b4..8d971adeee22 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -21180,6 +21180,12 @@ F:	include/linux/sc[mp]i_protocol.h
->  F:	include/trace/events/scmi.h
->  F:	include/uapi/linux/virtio_scmi.h
->  
-> +SYSTEM CONTROL MANAGEMENT INTERFACE (SCMI) PINCTRL DRIVER
-> +M:	Oleksii Moisieiev <oleksii_moisieiev@epam.com>
-> +L:	linux-arm-kernel@lists.infradead.org
-> +S:	Maintained
-> +F:	drivers/firmware/arm_scmi/pinctrl.c
-> +
->  SYSTEM RESET/SHUTDOWN DRIVERS
->  M:	Sebastian Reichel <sre@kernel.org>
->  L:	linux-pm@vger.kernel.org
-> diff --git a/drivers/firmware/arm_scmi/Makefile b/drivers/firmware/arm_scmi/Makefile
-> index a7bc4796519c..8e3874ff1544 100644
-> --- a/drivers/firmware/arm_scmi/Makefile
-> +++ b/drivers/firmware/arm_scmi/Makefile
-> @@ -11,6 +11,7 @@ scmi-transport-$(CONFIG_ARM_SCMI_HAVE_MSG) += msg.o
->  scmi-transport-$(CONFIG_ARM_SCMI_TRANSPORT_VIRTIO) += virtio.o
->  scmi-transport-$(CONFIG_ARM_SCMI_TRANSPORT_OPTEE) += optee.o
->  scmi-protocols-y = base.o clock.o perf.o power.o reset.o sensors.o system.o voltage.o powercap.o
-> +scmi-protocols-y += pinctrl.o
->  scmi-module-objs := $(scmi-driver-y) $(scmi-protocols-y) $(scmi-transport-y)
->  
->  obj-$(CONFIG_ARM_SCMI_PROTOCOL) += scmi-core.o
-> diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
-> index 3174da57d832..1cf9f5d4f7bd 100644
-> --- a/drivers/firmware/arm_scmi/driver.c
-> +++ b/drivers/firmware/arm_scmi/driver.c
-> @@ -3057,6 +3057,7 @@ static int __init scmi_driver_init(void)
->  	scmi_voltage_register();
->  	scmi_system_register();
->  	scmi_powercap_register();
-> +	scmi_pinctrl_register();
->  
->  	return platform_driver_register(&scmi_driver);
->  }
-> @@ -3074,6 +3075,7 @@ static void __exit scmi_driver_exit(void)
->  	scmi_voltage_unregister();
->  	scmi_system_unregister();
->  	scmi_powercap_unregister();
-> +	scmi_pinctrl_unregister();
->  
->  	scmi_transports_exit();
->  
-> diff --git a/drivers/firmware/arm_scmi/pinctrl.c b/drivers/firmware/arm_scmi/pinctrl.c
-> new file mode 100644
-> index 000000000000..a25c8edcedd2
-> --- /dev/null
-> +++ b/drivers/firmware/arm_scmi/pinctrl.c
-> @@ -0,0 +1,927 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * System Control and Management Interface (SCMI) Pinctrl Protocol
-> + *
-> + * Copyright (C) 2023 EPAM
-> + */
-> +
-> +#include <linux/module.h>
-> +#include <linux/pinctrl/pinconf-generic.h>
-> +#include <linux/scmi_protocol.h>
-> +#include <linux/slab.h>
-> +
-> +#include "common.h"
-> +#include "protocols.h"
-> +
-> +/* Updated only after ALL the mandatory features for that version are merged */
-> +#define SCMI_PROTOCOL_SUPPORTED_VERSION                0x40000
-> +
-> +#define REG_TYPE_BITS GENMASK(9, 8)
-> +#define REG_CONFIG GENMASK(7, 0)
-> +
-> +#define GET_GROUPS_NR(x)	le32_get_bits((x), GENMASK(31, 16))
-> +#define GET_PINS_NR(x)		le32_get_bits((x), GENMASK(15, 0))
-> +#define GET_FUNCTIONS_NR(x)	le32_get_bits((x), GENMASK(15, 0))
-> +
-> +#define EXT_NAME_FLAG(x)	le32_get_bits((x), BIT(31))
-> +#define NUM_ELEMS(x)		le32_get_bits((x), GENMASK(15, 0))
-> +
-> +#define REMAINING(x)		le32_get_bits((x), GENMASK(31, 16))
-> +#define RETURNED(x)		le32_get_bits((x), GENMASK(11, 0))
-> +
-> +enum scmi_pinctrl_protocol_cmd {
-> +	PINCTRL_ATTRIBUTES = 0x3,
-> +	PINCTRL_LIST_ASSOCIATIONS = 0x4,
-> +	PINCTRL_CONFIG_GET = 0x5,
-> +	PINCTRL_CONFIG_SET = 0x6,
-> +	PINCTRL_FUNCTION_SELECT = 0x7,
-> +	PINCTRL_REQUEST = 0x8,
-> +	PINCTRL_RELEASE = 0x9,
-> +	PINCTRL_NAME_GET = 0xa,
-> +	PINCTRL_SET_PERMISSIONS = 0xb
-> +};
-> +
-> +struct scmi_msg_conf_set {
-> +	__le32 identifier;
-> +	__le32 attributes;
-> +	__le32 configs[];
-> +};
-> +
-> +struct scmi_msg_conf_get {
-> +	__le32 identifier;
-> +	__le32 attributes;
-> +};
-> +
-> +struct scmi_resp_conf_get {
-> +	__le32 num_configs;
-> +	__le32 configs[];
-> +};
-> +
-> +struct scmi_msg_pinctrl_protocol_attributes {
-> +	__le32 attributes_low;
-> +	__le32 attributes_high;
-> +};
-> +
-> +struct scmi_msg_pinctrl_attributes {
-> +	__le32 identifier;
-> +	__le32 flags;
-> +};
-> +
-> +struct scmi_resp_pinctrl_attributes {
-> +	__le32 attributes;
-> +	u8 name[SCMI_SHORT_NAME_MAX_SIZE];
-> +};
-> +
-> +struct scmi_msg_pinctrl_list_assoc {
-> +	__le32 identifier;
-> +	__le32 flags;
-> +	__le32 index;
-> +};
-> +
-> +struct scmi_resp_pinctrl_list_assoc {
-> +	__le32 flags;
-> +	__le16 array[];
-> +};
-> +
-> +struct scmi_msg_func_set {
-> +	__le32 identifier;
-> +	__le32 function_id;
-> +	__le32 flags;
-> +};
-> +
-> +struct scmi_msg_request {
-> +	__le32 identifier;
-> +	__le32 flags;
-> +};
-> +
-> +struct scmi_group_info {
-> +	char name[SCMI_MAX_STR_SIZE];
-> +	bool present;
-> +	unsigned int *group_pins;
-> +	unsigned int nr_pins;
-> +};
-> +
-> +struct scmi_function_info {
-> +	char name[SCMI_MAX_STR_SIZE];
-> +	bool present;
-> +	unsigned int *groups;
-> +	unsigned int nr_groups;
-> +};
-> +
-> +struct scmi_pin_info {
-> +	char name[SCMI_MAX_STR_SIZE];
-> +	bool present;
-> +};
-> +
-> +struct scmi_pinctrl_info {
-> +	u32 version;
-> +	int nr_groups;
-> +	int nr_functions;
-> +	int nr_pins;
-> +	struct scmi_group_info *groups;
-> +	struct scmi_function_info *functions;
-> +	struct scmi_pin_info *pins;
-> +};
-> +
-> +static int scmi_pinctrl_attributes_get(const struct scmi_protocol_handle *ph,
-> +				       struct scmi_pinctrl_info *pi)
-> +{
-> +	int ret;
-> +	struct scmi_xfer *t;
-> +	struct scmi_msg_pinctrl_protocol_attributes *attr;
-> +
-> +	ret = ph->xops->xfer_get_init(ph, PROTOCOL_ATTRIBUTES, 0, sizeof(*attr), &t);
-> +	if (ret)
-> +		return ret;
-> +
-> +	attr = t->rx.buf;
-> +
-> +	ret = ph->xops->do_xfer(ph, t);
-> +	if (!ret) {
-> +		pi->nr_functions = GET_FUNCTIONS_NR(attr->attributes_high);
-> +		pi->nr_groups = GET_GROUPS_NR(attr->attributes_low);
-> +		pi->nr_pins = GET_PINS_NR(attr->attributes_low);
-> +	}
-> +
-> +	ph->xops->xfer_put(ph, t);
-> +	return ret;
-> +}
-> +
-> +static int scmi_pinctrl_count_get(const struct scmi_protocol_handle *ph,
-> +				  enum scmi_pinctrl_selector_type type)
-> +{
-> +	struct scmi_pinctrl_info *pi = ph->get_priv(ph);
-> +
-> +	switch (type) {
-> +	case PIN_TYPE:
-> +		return pi->nr_pins;
-> +	case GROUP_TYPE:
-> +		return pi->nr_groups;
-> +	case FUNCTION_TYPE:
-> +		return pi->nr_functions;
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +}
-> +
-> +static int scmi_pinctrl_validate_id(const struct scmi_protocol_handle *ph,
-> +				    u32 identifier,
-> +				    enum scmi_pinctrl_selector_type type)
-> +{
-> +	int value;
-> +
-> +	value = scmi_pinctrl_count_get(ph, type);
-> +	if (value < 0)
-> +		return value;
-> +
-> +	if (identifier >= value)
-> +		return -EINVAL;
-> +
-> +	return 0;
-> +}
-> +
-> +static int scmi_pinctrl_attributes(const struct scmi_protocol_handle *ph,
-> +				   enum scmi_pinctrl_selector_type type,
-> +				   u32 selector, char *name,
-> +				   unsigned int *n_elems)
-> +{
-> +	int ret;
-> +	struct scmi_xfer *t;
-> +	struct scmi_msg_pinctrl_attributes *tx;
-> +	struct scmi_resp_pinctrl_attributes *rx;
-> +
-> +	if (!name)
-> +		return -EINVAL;
-> +
-> +	ret = scmi_pinctrl_validate_id(ph, selector, type);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = ph->xops->xfer_get_init(ph, PINCTRL_ATTRIBUTES, sizeof(*tx), sizeof(*rx), &t);
-> +	if (ret)
-> +		return ret;
-> +
-> +	tx = t->tx.buf;
-> +	rx = t->rx.buf;
-> +	tx->identifier = cpu_to_le32(selector);
-> +	tx->flags = cpu_to_le32(type);
-> +
-> +	ret = ph->xops->do_xfer(ph, t);
-> +	if (!ret) {
-> +		if (n_elems)
-> +			*n_elems = NUM_ELEMS(rx->attributes);
-> +
-> +		strscpy(name, rx->name, SCMI_SHORT_NAME_MAX_SIZE);
-> +	}
-> +
-> +	ph->xops->xfer_put(ph, t);
-> +
-> +	/*
-> +	 * If supported overwrite short name with the extended one;
-> +	 * on error just carry on and use already provided short name.
-> +	 */
-> +	if (!ret && EXT_NAME_FLAG(rx->attributes))
-> +		ph->hops->extended_name_get(ph, PINCTRL_NAME_GET, selector,
-> +					    (u32 *)&type, name,
-> +					    SCMI_MAX_STR_SIZE);
-> +	return ret;
-> +}
-> +
-> +struct scmi_pinctrl_ipriv {
-> +	u32 selector;
-> +	enum scmi_pinctrl_selector_type type;
-> +	unsigned int *array;
-> +};
-> +
-> +static void iter_pinctrl_assoc_prepare_message(void *message,
-> +					       unsigned int desc_index,
-> +					       const void *priv)
-> +{
-> +	struct scmi_msg_pinctrl_list_assoc *msg = message;
-> +	const struct scmi_pinctrl_ipriv *p = priv;
-> +
-> +	msg->identifier = cpu_to_le32(p->selector);
-> +	msg->flags = cpu_to_le32(p->type);
-> +	/* Set the number of OPPs to be skipped/already read */
-> +	msg->index = cpu_to_le32(desc_index);
-> +}
-> +
-> +static int iter_pinctrl_assoc_update_state(struct scmi_iterator_state *st,
-> +					   const void *response, void *priv)
-> +{
-> +	const struct scmi_resp_pinctrl_list_assoc *r = response;
-> +
-> +	st->num_returned = RETURNED(r->flags);
-> +	st->num_remaining = REMAINING(r->flags);
-> +
-> +	return 0;
-> +}
-> +
-> +static int
-> +iter_pinctrl_assoc_process_response(const struct scmi_protocol_handle *ph,
-> +				    const void *response,
-> +				    struct scmi_iterator_state *st, void *priv)
-> +{
-> +	const struct scmi_resp_pinctrl_list_assoc *r = response;
-> +	struct scmi_pinctrl_ipriv *p = priv;
-> +
-> +	p->array[st->desc_index + st->loop_idx] =
-> +		le16_to_cpu(r->array[st->loop_idx]);
-> +
-> +	return 0;
-> +}
-> +
-> +static int scmi_pinctrl_list_associations(const struct scmi_protocol_handle *ph,
-> +					  u32 selector,
-> +					  enum scmi_pinctrl_selector_type type,
-> +					  u16 size, unsigned int *array)
-> +{
-> +	int ret;
-> +	void *iter;
-> +	struct scmi_iterator_ops ops = {
-> +		.prepare_message = iter_pinctrl_assoc_prepare_message,
-> +		.update_state = iter_pinctrl_assoc_update_state,
-> +		.process_response = iter_pinctrl_assoc_process_response,
-> +	};
-> +	struct scmi_pinctrl_ipriv ipriv = {
-> +		.selector = selector,
-> +		.type = type,
-> +		.array = array,
-> +	};
-> +
-> +	if (!array || !size || type == PIN_TYPE)
-> +		return -EINVAL;
-> +
-> +	ret = scmi_pinctrl_validate_id(ph, selector, type);
-> +	if (ret)
-> +		return ret;
-> +
-> +	iter = ph->hops->iter_response_init(ph, &ops, size,
-> +					    PINCTRL_LIST_ASSOCIATIONS,
-> +					    sizeof(struct scmi_msg_pinctrl_list_assoc),
-> +					    &ipriv);
-> +
-> +	if (IS_ERR(iter))
-> +		return PTR_ERR(iter);
-> +
-> +	return ph->hops->iter_response_run(iter);
-> +}
-> +
-> +struct scmi_conf_get_ipriv {
-> +	u32 selector;
-> +	enum scmi_pinctrl_selector_type type;
-> +	u8 all;
-> +	u8 *config_types;
-> +	unsigned long *config_values;
-> +};
-> +
-> +static void iter_pinctrl_conf_get_prepare_message(void *message,
-> +						  unsigned int desc_index,
-> +						  const void *priv)
-> +{
-> +	struct scmi_msg_conf_get *msg = message;
-> +	const struct scmi_conf_get_ipriv *p = priv;
-> +	u32 attributes;
-> +
-> +	msg->identifier = cpu_to_le32(p->selector);
-        ^^^^^
+>
+> >
+> > >
+> > > >
+> > > > >
+> > > > > The part that I am currently missing to understand is that when I convert
+> > > > > CPU_NEWLY_IDLE to CPU_IDLE, it typically picks a CPU with only one thread
+> > > > > as busiest.  I have the impression that the fbq_type intervenes to cause
+> > > >
+> > > > find_busiest_queue skips rqs which only have threads preferring being
+> > > > in there. So it selects another rq with a thread that doesn't prefer
+> > > > its current node.
+> > > >
+> > > > do you know what is the value of env->fbq_type ?
+> > >
+> > > I have seen one trace in which it is all.  There are 33 tasks on one
+> > > socket, and they are all considered to have a preference for that socket.
+> >
+> > With env->fbq_type == all, load_balance and find_busiest_queue should
+> > be able to select the actual busiest queue with 2 threads.
+>
+> That's what it does.  But nothing can be stolen because there is no active
+> balancing.
 
-> +	attributes = FIELD_PREP(BIT(18), p->all) |
-> +		     FIELD_PREP(GENMASK(17, 16), p->type);
-> +
-> +	if (p->all)
-> +		attributes |= FIELD_PREP(GENMASK(15, 8), desc_index);
-> +	else
-> +		attributes |= FIELD_PREP(GENMASK(7, 0), p->config_types[0]);
-> +
-> +	msg->attributes = cpu_to_le32(attributes);
-> +	msg->identifier = cpu_to_le32(p->selector);
-Duplicated .. see above ^^^^
+My patch below should enable to pull a task from the 1st idle load
+balance that fails
 
-> +}
-> +
-> +static int iter_pinctrl_conf_get_update_state(struct scmi_iterator_state *st,
-> +					      const void *response, void *priv)
-> +{
-> +	const struct scmi_resp_conf_get *r = response;
-> +
-> +	st->num_returned = le32_get_bits(r->num_configs, GENMASK(7, 0));
-> +	st->num_remaining = le32_get_bits(r->num_configs, GENMASK(31, 24));
-> +
-
-You use the same iterators for both config_get and config_get_all() with proper
-conditional ifs (and that is fine) BUT also here you should take care of
-the case in which !p->all because in such a case the spec says that the
-r->num_configs field should be ignored, which means that the platform
-could return 0 or garbage, and you should assume insetad that
-
-      if (!p->all) {
-      		st->num_returned = 1;
-		st->num_remaining = 0;
-      }
-
-...if not the iterator could not work.
-
-(I still have to emulate and test this on my setup though...but at first
-sight it is out of spec as it is now...)
-
-> +	return 0;
-> +}
-> +
-> +static int iter_pinctrl_conf_get_process_response(const struct scmi_protocol_handle *ph,
-> +						  const void *response,
-> +						  struct scmi_iterator_state *st, void *priv)
-> +{
-> +	const struct scmi_resp_conf_get *r = response;
-> +	struct scmi_conf_get_ipriv *p = priv;
-> +
-> +	if (!p->all) {
-> +		if (p->config_types[0] !=
-> +		    le32_get_bits(r->configs[st->loop_idx * 2], GENMASK(7, 0)))
-> +			return -EINVAL;
-> +	} else {
-> +		p->config_types[st->desc_index + st->loop_idx] =
-> +			le32_get_bits(r->configs[st->loop_idx * 2], GENMASK(7, 0));
-> +	}
-> +
-> +	p->config_values[st->desc_index + st->loop_idx] =
-> +		le32_to_cpu(r->configs[st->loop_idx * 2 + 1]);
-> +
-> +	return 0;
-> +}
-> +
-> +static int scmi_pinctrl_config_get(const struct scmi_protocol_handle *ph,
-> +				   u32 selector,
-> +				   enum scmi_pinctrl_selector_type type,
-> +				   u8 config_type, unsigned long *config_value)
-> +{
-> +	int ret;
-> +	void *iter;
-> +	struct scmi_iterator_ops ops = {
-> +		.prepare_message = iter_pinctrl_conf_get_prepare_message,
-> +		.update_state = iter_pinctrl_conf_get_update_state,
-> +		.process_response = iter_pinctrl_conf_get_process_response,
-> +	};
-> +	struct scmi_conf_get_ipriv ipriv = {
-> +		.selector = selector,
-> +		.type = type,
-> +		.all = 0,
-> +		.config_types = &config_type,
-> +		.config_values = config_value,
-> +	};
-> +
-> +	if (!config_value || type == FUNCTION_TYPE)
-> +		return -EINVAL;
-> +
-> +	ret = scmi_pinctrl_validate_id(ph, selector, type);
-> +	if (ret)
-> +		return ret;
-> +
-> +	iter = ph->hops->iter_response_init(ph, &ops, 1, PINCTRL_CONFIG_GET,
-> +					    sizeof(struct scmi_msg_conf_get),
-> +					    &ipriv);
-> +
-> +	if (IS_ERR(iter))
-> +		return PTR_ERR(iter);
-> +
-> +	return ph->hops->iter_response_run(iter);
-> +}
-> +
-> +static int scmi_pinctrl_config_get_all(const struct scmi_protocol_handle *ph,
-> +				       u32 selector,
-> +				       enum scmi_pinctrl_selector_type type,
-> +				       u16 size, u8 *config_types,
-> +				       unsigned long *config_values)
-> +{
-> +	int ret;
-> +	void *iter;
-> +	struct scmi_iterator_ops ops = {
-> +		.prepare_message = iter_pinctrl_conf_get_prepare_message,
-> +		.update_state = iter_pinctrl_conf_get_update_state,
-> +		.process_response = iter_pinctrl_conf_get_process_response,
-> +	};
-> +	struct scmi_conf_get_ipriv ipriv = {
-> +		.selector = selector,
-> +		.type = type,
-> +		.all = 1,
-> +		.config_types = config_types,
-> +		.config_values = config_values,
-> +	};
-> +
-> +	if (!config_values || !config_types || type == FUNCTION_TYPE)
-> +		return -EINVAL;
-> +
-> +	ret = scmi_pinctrl_validate_id(ph, selector, type);
-> +	if (ret)
-> +		return ret;
-> +
-> +	iter = ph->hops->iter_response_init(ph, &ops, size, PINCTRL_CONFIG_GET,
-> +					    sizeof(struct scmi_msg_conf_get),
-> +					    &ipriv);
-> +
-> +	if (IS_ERR(iter))
-> +		return PTR_ERR(iter);
-> +
-> +	return ph->hops->iter_response_run(iter);
-> +}
-> +
-> +static int scmi_pinctrl_config_set(const struct scmi_protocol_handle *ph,
-> +				   u32 selector,
-> +				   enum scmi_pinctrl_selector_type type,
-> +				   unsigned long *configs, unsigned int nr_configs)
-> +{
-> +	struct scmi_xfer *t;
-> +	struct scmi_msg_conf_set *tx;
-> +	u32 attributes;
-> +	int ret, i;
-> +	unsigned int configs_in_chunk, conf_num = 0;
-> +	unsigned int chunk;
-> +	int max_msg_size = ph->hops->get_max_msg_size(ph);
-> +
-> +	if (!configs || type == FUNCTION_TYPE)
-> +		return -EINVAL;
-> +
-> +	ret = scmi_pinctrl_validate_id(ph, selector, type);
-> +	if (ret)
-> +		return ret;
-> +
-> +	configs_in_chunk = (max_msg_size - sizeof(*tx)) / (sizeof(unsigned long) * 2);
-> +	while (conf_num < nr_configs) {
-> +		chunk = (nr_configs - conf_num > configs_in_chunk) ? configs_in_chunk :
-> +			nr_configs - conf_num;
-> +
-> +		ret = ph->xops->xfer_get_init(ph, PINCTRL_CONFIG_SET,
-> +					      sizeof(*tx) + chunk * 2 * sizeof(unsigned long),
-> +					      0, &t);
-> +		if (ret)
-> +			return ret;
-> +
-> +		tx = t->tx.buf;
-> +		tx->identifier = cpu_to_le32(selector);
-> +		attributes = FIELD_PREP(GENMASK(1, 0), type) |
-> +			FIELD_PREP(GENMASK(9, 2), chunk);
-> +		tx->attributes = cpu_to_le32(attributes);
-> +
-
-The chunking seems good to me till here, BUT these last lines should not be like:
-
-> +		for (i = 0; i < chunk; i++) {
-> +			tx->configs[i * 2] = cpu_to_le32(pinconf_to_config_param(configs[i]));
-
-			tx->configs[i * 2] = cpu_to_le32(pinconf_to_config_param(configs[conf_num + i]));
-
-> +			tx->configs[i * 2 + 1] =
-> +				cpu_to_le32(pinconf_to_config_argument(configs[i]));
-
-				cpu_to_le32(pinconf_to_config_argument(configs[conf_num + i]));
-
-..sice you are indexing the provided configs inside a chunk loop ?
-(still to be properly 'fully' tested too...)
-
-> +		}
-> +
-> +		ret = ph->xops->do_xfer(ph, t);
-> +
-> +		ph->xops->xfer_put(ph, t);
-> +
-> +		if (ret)
-> +			break;
-> +
-> +		conf_num += chunk;
-> +	}
-> +
-> +	return ret;
-> +}
-
-As said, I'll plan to exercise a bit more these interfaces directly BUT
-as it is now my basic test case using the original generic pinctrl scmi
-driver is still working after these latest changes.
-
-Thanks,
-Cristian
+>
+> >
+> > But then I imagine that can_migrate/ migrate_degrades_locality
+> > prevents to detach the task
+>
+> Exactly.
+>
+> julia
+>
+> > >
+> > > But I have another trace in which it is regular.  There are 33 tasks on
+> > > the socket, but only 32 have a preference.
+> > >
+> > > >
+> > > > need_active_balance() probably needs a new condition for the numa case
+> > > > where the busiest queue can't be selected and we have to trigger an
+> > > > active load_balance on a rq with only 1 thread but that is not running
+> > > > on its preferred node. Something like the untested below :
+> > > >
+> > > > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > > > index e5da5eaab6ce..de1474191488 100644
+> > > > --- a/kernel/sched/fair.c
+> > > > +++ b/kernel/sched/fair.c
+> > > > @@ -11150,6 +11150,24 @@ imbalanced_active_balance(struct lb_env *env)
+> > > >         return 0;
+> > > >  }
+> > > >
+> > > > +static inline bool
+> > > > +numa_active_balance(struct lb_env *env)
+> > > > +{
+> > > > +       struct sched_domain *sd = env->sd;
+> > > > +
+> > > > +       /*
+> > > > +        * We tried to migrate only a !numa task or a task on wrong node but
+> > > > +        * the busiest queue with such task has only 1 running task. Previous
+> > > > +        * attempt has failed so force the migration of such task.
+> > > > +        */
+> > > > +       if ((env->fbq_type < all) &&
+> > > > +           (env->src_rq->cfs.h_nr_running == 1) &&
+> > > > +           (sd->nr_balance_failed > 0))
+> > >
+> > > The last condition will still be a problem because of CPU_NEWLY_IDLE.  The
+> > > nr_balance_failed counter doesn't get incremented very often.
+> >
+> > It waits for at least 1 failed CPU_IDLE load_balance
+> >
+> > >
+> > > julia
+> > >
+> > > > +               return 1;
+> > > > +
+> > > > +       return 0;
+> > > > +}
+> > > > +
+> > > >  static int need_active_balance(struct lb_env *env)
+> > > >  {
+> > > >         struct sched_domain *sd = env->sd;
+> > > > @@ -11176,6 +11194,9 @@ static int need_active_balance(struct lb_env *env)
+> > > >         if (env->migration_type == migrate_misfit)
+> > > >                 return 1;
+> > > >
+> > > > +       if (numa_active_balance(env))
+> > > > +               return 1;
+> > > > +
+> > > >         return 0;
+> > > >  }
+> > > >
+> > > >
+> > > > > it to avoid the CPU with two threads that already prefer Socket 2.  But I
+> > > > > don't know at the moment why that is the case.  In any case, it's fine to
+> > > > > active balance from a CPU with only one thread, because Socket 2 will
+> > > > > even itself out afterwards.
+> > > > >
+> > > > > >
+> > > > > > You should not have more than 1 thread per CPU when there are N+1
+> > > > > > threads on a node with N cores / 2N CPUs.
+> > > > >
+> > > > > Hmm, I think there is a miscommunication about cores and CPUs.  The
+> > > > > machine has two sockets with 16 physical cores each, and thus 32
+> > > > > hyperthreads.  There are 64 threads running.
+> > > >
+> > > > Ok, I have been confused by what you wrote previously:
+> > > > " The context is that there are 2N threads running on 2N cores, one thread
+> > > > gets NUMA balanced to the other socket, leaving N+1 threads on one socket
+> > > > and N-1 threads on the other socket."
+> > > >
+> > > > I have assumed that there were N cores and 2N CPUs per socket as you
+> > > > mentioned Intel Xeon 6130 in the commit message . My previous emails
+> > > > don't apply at all with N CPUs per socket and the group_overloaded is
+> > > > correct.
+> > > >
+> > > >
+> > > >
+> > > > >
+> > > > > julia
+> > > > >
+> > > > > > This will enable the
+> > > > > > load_balance to try to migrate a task instead of some util(ization)
+> > > > > > and you should reach the active load balance.
+> > > > > >
+> > > > > > >
+> > > > > > > > In theory you should have the
+> > > > > > > > local "group_has_spare" and the busiest "group_fully_busy" (at most).
+> > > > > > > > This means that no group should be overloaded and load_balance should
+> > > > > > > > not try to migrate utli but only task
+> > > > > > >
+> > > > > > > I didn't collect information about the groups.  I will look into that.
+> > > > > > >
+> > > > > > > julia
+> > > > > > >
+> > > > > > > >
+> > > > > > > >
+> > > > > > > > >
+> > > > > > > > > and changing the above test to:
+> > > > > > > > >
+> > > > > > > > >         if ((env->migration_type == migrate_task || env->migration_type == migrate_util) &&
+> > > > > > > > >             (sd->nr_balance_failed > sd->cache_nice_tries+2))
+> > > > > > > > >
+> > > > > > > > > seems to solve the problem.
+> > > > > > > > >
+> > > > > > > > > I will test this on more applications.  But let me know if the above
+> > > > > > > > > solution seems completely inappropriate.  Maybe it violates some other
+> > > > > > > > > constraints.
+> > > > > > > > >
+> > > > > > > > > I have no idea why this problem became more visible with EEVDF.  It seems
+> > > > > > > > > to have to do with the time slices all turning out to be the same.  I got
+> > > > > > > > > the same behavior in 6.5 by overwriting the timeslice calculation to
+> > > > > > > > > always return 1.  But I don't see the connection between the timeslice and
+> > > > > > > > > the behavior of the idle task.
+> > > > > > > > >
+> > > > > > > > > thanks,
+> > > > > > > > > julia
+> > > > > > > >
+> > > > > >
+> > > >
+> >
 
