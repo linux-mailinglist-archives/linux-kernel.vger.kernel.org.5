@@ -1,125 +1,155 @@
-Return-Path: <linux-kernel+bounces-9693-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9690-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 445D081C9B8
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 13:08:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8286681C9AE
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 13:07:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EFC062874B5
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 12:08:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7342E1C25180
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 12:07:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 569BE182D8;
-	Fri, 22 Dec 2023 12:08:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AKjWkAsh"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19F3F179B3;
+	Fri, 22 Dec 2023 12:07:40 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23021182A8;
-	Fri, 22 Dec 2023 12:08:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-40d4a7f0d17so989305e9.1;
-        Fri, 22 Dec 2023 04:08:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703246916; x=1703851716; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=wLmNJV1KCwtCk4AJyZ66y9UiWpbx0XO2tfF5Ht++t+4=;
-        b=AKjWkAshUtHbqIvFrQI0NqlA/25ztuRopsGnPS3hvlR2rjRjRekvK2ulhAWZHNfP/b
-         udeW6zzchVSjKGtxhf1a0bsNBFn1MMRMGwjp/Wr3sBHrRYRoopJ+RrsLHhJbRN8P7iX7
-         QNODP3Ye1U862UebOPkQCTYJARBdfMWRyjtP9gzYV1KhceaaJQUamF1D27axrV8+5X3p
-         G+PAcO5UFEM2w4pPCmtc13UtEMlGQerlhFFmie7/eACIgGcDEaUFIrx0NNg9Fyk64U48
-         iJXlqmwIR4pJp4P7/LvCTey69xYQbgnF5+FKL6BymRv0zwWPgqQdjMiuaHTIA0pKqAKT
-         8ROg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703246916; x=1703851716;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wLmNJV1KCwtCk4AJyZ66y9UiWpbx0XO2tfF5Ht++t+4=;
-        b=DecvjThc7HJnXEObVdG24YB8ZNX7M2JGMRyKTzrjhI4rpV3v0OkIsgINdfhlthMcPR
-         TX1FNEQ6kKR8/6zE4XPBDjqBe+y7+Isc0/cUcgYCP1zuc3so1BU98yPo40zrWCJ+vECU
-         ZBx6UhoOShh8w14n1CVymnwPMamNpwKuiyXgFW5fk/EMeOWHLaC4YpMAKOF15deAJAsp
-         PybaY1XS3xX9m1DTinrc0M7V4/RHuAzlbr6t7Nw0jvc4tdB0aIgsEV941orHEfJtk43u
-         r3/ov4GWcVqL1akN0Nj4HZtQl1L4MURVXZ+B/WCaEyawftDR5Ua1lG7f+41sBr0PtMWS
-         laXA==
-X-Gm-Message-State: AOJu0YzK+lsA7V4P1jfSgNQKeK/h9Qi3dCetC4Bajb7mfXMSRzGu2/eW
-	Ysu23DwCr1JPCor36dwRt0E=
-X-Google-Smtp-Source: AGHT+IHoGTr2p2JAjQmbfoEPN/+cqVGVjgmUq+aoT4KXXzWTti1FsgE83RW6pxbzizHKFOXmgyzILw==
-X-Received: by 2002:a05:600c:5409:b0:40c:357e:289 with SMTP id he9-20020a05600c540900b0040c357e0289mr649594wmb.65.1703246916101;
-        Fri, 22 Dec 2023 04:08:36 -0800 (PST)
-Received: from [192.168.0.101] (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.googlemail.com with ESMTPSA id w19-20020a05600c475300b0040c4620b9fasm6658024wmo.11.2023.12.22.04.08.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Dec 2023 04:08:35 -0800 (PST)
-Message-ID: <75cd2090-857e-4082-bbc1-e3726235bda1@gmail.com>
-Date: Fri, 22 Dec 2023 12:08:33 +0000
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 099AB17992
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 12:07:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.17])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4SxQtg3Wp9z1FFJF;
+	Fri, 22 Dec 2023 20:03:39 +0800 (CST)
+Received: from kwepemi500024.china.huawei.com (unknown [7.221.188.100])
+	by mail.maildlp.com (Postfix) with ESMTPS id 6FC711A0172;
+	Fri, 22 Dec 2023 20:07:25 +0800 (CST)
+Received: from huawei.com (10.175.103.91) by kwepemi500024.china.huawei.com
+ (7.221.188.100) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Fri, 22 Dec
+ 2023 20:07:24 +0800
+From: Zeng Heng <zengheng4@huawei.com>
+To: <mingo@redhat.com>, <will@kernel.org>, <peterz@infradead.org>,
+	<longman@redhat.com>, <boqun.feng@gmail.com>
+CC: <xiexiuqi@huawei.com>, <liwei391@huawei.com>,
+	<linux-kernel@vger.kernel.org>
+Subject: [PATCH v2] locking/osq_lock: Avoid false sharing in optimistic_spin_node
+Date: Fri, 22 Dec 2023 20:10:40 +0800
+Message-ID: <20231222121040.2635879-1-zengheng4@huawei.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH][next] wifi: rtw89: mac: Fix spelling mistakes "notfify"
- -> "notify"
-To: Ping-Ke Shih <pkshih@realtek.com>, Kalle Valo <kvalo@kernel.org>,
- "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
-Cc: "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20231220141831.10063-1-colin.i.king@gmail.com>
- <2839b824a2a04aab9514ce89b3735e52@realtek.com>
-Content-Language: en-US
-From: "Colin King (gmail)" <colin.i.king@gmail.com>
-In-Reply-To: <2839b824a2a04aab9514ce89b3735e52@realtek.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemi500024.china.huawei.com (7.221.188.100)
 
-On 22/12/2023 00:19, Ping-Ke Shih wrote:
-> 
-> 
->> -----Original Message-----
->> From: Colin Ian King <colin.i.king@gmail.com>
->> Sent: Wednesday, December 20, 2023 10:19 PM
->> To: Ping-Ke Shih <pkshih@realtek.com>; Kalle Valo <kvalo@kernel.org>; linux-wireless@vger.kernel.org
->> Cc: kernel-janitors@vger.kernel.org; linux-kernel@vger.kernel.org
->> Subject: [PATCH][next] wifi: rtw89: mac: Fix spelling mistakes "notfify" -> "notify"
->>
->> There are two spelling mistakes in rtw89_err error messages. Fix these
->> and also add space between [ERR] and message text.
->>
->> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
-> 
-> Acked-by: Ping-Ke Shih <pkshih@realtek.com>
-> 
-> Thanks for the correctness. Could I know the tool you used to find out these
-> typo?
+Using the UnixBench test suite, we clearly find that osq_lock() cause
+extremely high overheads with perf tool in the File Copy items:
 
-Sure,
+Overhead  Shared Object            Symbol
+  94.25%  [kernel]                 [k] osq_lock
+   0.74%  [kernel]                 [k] rwsem_spin_on_owner
+   0.32%  [kernel]                 [k] filemap_get_read_batch
 
-https://github.com/ColinIanKing/kernelscan
+In response to this, we conducted an analysis and made some gains:
 
-It needs the american dictionary, installed in /usr/share/dict e.g.
-apt-get install wamerican
+In the prologue of osq_lock(), it set `cpu` member of percpu struct
+optimistic_spin_node with the local cpu id, after that the value of the
+percpu struct would never change in fact. Based on that, we can regard
+the `cpu` member as a constant variable.
 
-and then spellcheck with:
+In the meanwhile, other members of the percpu struct like next, prev and
+locked are frequently modified by osq_lock() and osq_unlock() which are
+called by rwsem, mutex and so on. However, that would invalidate the cache
+of the cpu member on other CPUs.
 
-./kernelscan -k path-to-code-you-want-to-scan
+Therefore, we can place padding here and split them into different cache
+lines to avoid cache misses when the next CPU is spinning to check other
+node's cpu member by vcpu_is_preempted().
 
-I run kernelscan on the entire linux-next source daily and diff the 
-days's results with the previous day using the meld diff tool.
+Here provide the UnixBench full-core test result based on v6.6 as below:
+Machine Intel(R) Xeon(R) Gold 6248 CPU, 40 cores, 80 threads
+Run the command of "./Run -c 80 -i 3" over 20 times and take the average.
 
-Colin
+System Benchmarks Index Values           Without Patch   With Patch     Diff
+Dhrystone 2 using register variables         185518.38    185329.56   -0.10%
+Double-Precision Whetstone                    79330.46     79268.22   -0.08%
+Execl Throughput                               9725.14     10390.18    6.84%
+File Copy 1024 bufsize 2000 maxblocks          1658.42      2035.55   22.74%
+File Copy 256 bufsize 500 maxblocks            1086.54      1316.96   21.21%
+File Copy 4096 bufsize 8000 maxblocks          3610.42      4152.79   15.02%
+Pipe Throughput                               69325.18     69913.85    0.85%
+Pipe-based Context Switching                  14026.32     14703.07    4.82%
+Process Creation                               8329.94      8355.31    0.30%
+Shell Scripts (1 concurrent)                  38942.41     41518.39    6.61%
+Shell Scripts (8 concurrent)                  37762.35     40224.49    6.52%
+System Call Overhead                           4064.44      4004.45   -1.48%
+                                                                    ========
+System Benchmarks Index Score                 13634.17     14560.71    6.80%
 
+Signed-off-by: Zeng Heng <zengheng4@huawei.com>
+---
+v1->v2: fix compile issue
 
-> 
-> Ping-Ke
-> 
-> 
+ include/linux/osq_lock.h  | 10 +++++++++-
+ kernel/locking/osq_lock.c |  8 +++++++-
+ 2 files changed, 16 insertions(+), 2 deletions(-)
+
+diff --git a/include/linux/osq_lock.h b/include/linux/osq_lock.h
+index 5581dbd3bd34..1883c31bf536 100644
+--- a/include/linux/osq_lock.h
++++ b/include/linux/osq_lock.h
+@@ -2,6 +2,8 @@
+ #ifndef __LINUX_OSQ_LOCK_H
+ #define __LINUX_OSQ_LOCK_H
+
++#include <linux/cache.h>
++
+ /*
+  * An MCS like lock especially tailored for optimistic spinning for sleeping
+  * lock implementations (mutex, rwsem, etc).
+@@ -9,7 +11,13 @@
+ struct optimistic_spin_node {
+ 	struct optimistic_spin_node *next, *prev;
+ 	int locked; /* 1 if lock acquired */
+-	int cpu; /* encoded CPU # + 1 value */
++
++	CACHELINE_PADDING(_pad1_);
++	/*
++	 * Stores an encoded CPU # + 1 value.
++	 * Only read by other cpus, so split into different cache lines.
++	 */
++	int cpu;
+ };
+
+ struct optimistic_spin_queue {
+diff --git a/kernel/locking/osq_lock.c b/kernel/locking/osq_lock.c
+index d5610ad52b92..17618d62343f 100644
+--- a/kernel/locking/osq_lock.c
++++ b/kernel/locking/osq_lock.c
+@@ -96,7 +96,13 @@ bool osq_lock(struct optimistic_spin_queue *lock)
+
+ 	node->locked = 0;
+ 	node->next = NULL;
+-	node->cpu = curr;
++	/*
++	 * After this cpu member is initialized for the first time, it
++	 * would no longer change in fact. That could avoid cache misses
++	 * when spin and access the cpu member by other CPUs.
++	 */
++	if (node->cpu != curr)
++		node->cpu = curr;
+
+ 	/*
+ 	 * We need both ACQUIRE (pairs with corresponding RELEASE in
+--
+2.25.1
 
 
