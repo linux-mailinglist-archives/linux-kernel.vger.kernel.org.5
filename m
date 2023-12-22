@@ -1,121 +1,130 @@
-Return-Path: <linux-kernel+bounces-9457-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9459-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81A5B81C5E3
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 08:42:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E83281C5E7
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 08:46:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 24951B23769
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 07:42:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D2C18284ABF
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 07:46:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 046B3BE47;
-	Fri, 22 Dec 2023 07:42:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B231C2F0;
+	Fri, 22 Dec 2023 07:46:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="mAkhGk8Y"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="FquMzAHJ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DE469449;
-	Fri, 22 Dec 2023 07:42:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BM6o7eA009878;
-	Fri, 22 Dec 2023 07:41:19 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=TNfxueRdhFsROCa7UCw3+se29LjpxvuBSP4v4Lyt9kg=; b=mA
-	khGk8YYrlkB/QMYmZbmzAJR18SvwUt+N3EebVIzObKDr2GpChOBRCAwiTrIt6voa
-	tI8ZxjboYomvnZKE6Q6dkYKgxbUAfHFnnawi7U0iuFSb7ieyZXki32/4Ir8U3xgd
-	VH3OlbssjdohlXoNuWUMNmQhYA0wvvD5WRcP45i1KYNlB+eZF5QpSMpilcXj9Aov
-	xvr2+GMn5Ylkpiy3ocHSV8F3cGjdS83hDz62me/JsqQlenXbhSKyk1yHQskjLNKv
-	reHRMh/KlpzZ+B0Smu38kjsNzS9Hu31vMd+TgH7mSUF+NFt0zSfjKABM1MBpc5nR
-	cXB6AGMtFcl73EPDPcxQ==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v4tue9fxg-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 22 Dec 2023 07:41:18 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BM7fHSo004357
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 22 Dec 2023 07:41:17 GMT
-Received: from [10.253.15.135] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 21 Dec
- 2023 23:41:13 -0800
-Message-ID: <ad95e193-1216-46ae-9f7d-2967a24d7a12@quicinc.com>
-Date: Fri, 22 Dec 2023 15:41:11 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F33EC15D
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 07:46:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1703231192;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=8joa0SqsNw6lghVtjrUIlISHZyZgU8xVLriDEJzMbbU=;
+	b=FquMzAHJ+zcTVfeUbtR9TY0Z38R7TWI89Y4Gb55kI9+8inWgXJqVgUiaq7Sg/dY21/ZCxR
+	d7vUGz/t9k9MxfiocJk7AP5yZES9N7tXvejYMGG0+2Z5k0JAk4wwQ9Wzj+6W7YeIzMZDXy
+	5A7dEllcNE57H2oSsG7o6yo/aEmrPQQ=
+Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com
+ [209.85.210.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-494-2OpfMAr-OsmGJ4JhEwhfzA-1; Fri, 22 Dec 2023 02:46:31 -0500
+X-MC-Unique: 2OpfMAr-OsmGJ4JhEwhfzA-1
+Received: by mail-ot1-f71.google.com with SMTP id 46e09a7af769-6dbb0a1c894so1769866a34.3
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 23:46:31 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703231190; x=1703835990;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8joa0SqsNw6lghVtjrUIlISHZyZgU8xVLriDEJzMbbU=;
+        b=ud0znSaTqON0CkA5qcyu17B+tnue1GYkhdsDCLT5pmy9XRwqxvHf0rhbh8a9wrOxRT
+         CVVNDb12qbIHC6NuzsEUntJrgWS9O8YUwTLOKjj8CSUIqdx0C5ak3XByPDExl2u0BURS
+         29/+soXZTpdKMlK3qTqBQdIzKqFXl7l5e6ieKNpCDzzf4Coc2rXhreO4s/plgc890fv2
+         qxwwLwxJDbQcFRAlzXrny3PzP0WONoMwCdVsEZ9Bh5OYvrclA4PfNMx/TVSsbRptpv5X
+         /MEjf072/VM/WoBiZS8DOZMTMjj4VvxfR/kVzXlleM2pAdjo67NecKpe1q4vsnWpt2sI
+         ZFyg==
+X-Gm-Message-State: AOJu0YzWFFw0ZbR2oXNI8S9kkoHfnIQUa5Irxgzkrg1YO6UT9tiNNlAP
+	fhwHh8aTdeM6MKf4+hUNsGZMw4wF3JKiA4mct/WucioEXFsTIrkPWYHJQkyAvHDQ9eEO20Y5hyP
+	15SdZMZ821wv5iqt/o/1P81PfidYShlt5
+X-Received: by 2002:a05:6830:188:b0:6d8:7b83:b520 with SMTP id q8-20020a056830018800b006d87b83b520mr975571ota.22.1703231190621;
+        Thu, 21 Dec 2023 23:46:30 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHtPKXrNxbzqoFd8PBPnac2PBZhiVN9/33Wde7wZTDupuDnjdqviH8QQZhwIVNY+bNVq43CLg==
+X-Received: by 2002:a05:6830:188:b0:6d8:7b83:b520 with SMTP id q8-20020a056830018800b006d87b83b520mr975547ota.22.1703231190419;
+        Thu, 21 Dec 2023 23:46:30 -0800 (PST)
+Received: from localhost.localdomain ([2804:1b3:a802:7496:88a7:1b1a:a837:bebf])
+        by smtp.gmail.com with ESMTPSA id m2-20020a62f202000000b006d97eaba6cesm1527015pfh.21.2023.12.21.23.46.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Dec 2023 23:46:29 -0800 (PST)
+From: Leonardo Bras <leobras@redhat.com>
+To: Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Eric Biederman <ebiederm@xmission.com>,
+	Kees Cook <keescook@chromium.org>,
+	Oleg Nesterov <oleg@redhat.com>,
+	Leonardo Bras <leobras@redhat.com>,
+	Conor Dooley <conor.dooley@microchip.com>,
+	Andy Chiu <andy.chiu@sifive.com>,
+	Greg Ungerer <gerg@kernel.org>,
+	Vincent Chen <vincent.chen@sifive.com>,
+	Xiao Wang <xiao.w.wang@intel.com>,
+	Charlie Jenkins <charlie@rivosinc.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Alexandre Ghiti <alexghiti@rivosinc.com>,
+	Kemeng Shi <shikemeng@huaweicloud.com>,
+	David Hildenbrand <david@redhat.com>,
+	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
+	Qinglin Pan <panqinglin2020@iscas.ac.cn>,
+	Greentime Hu <greentime.hu@sifive.com>,
+	=?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@rivosinc.com>,
+	=?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>,
+	Guo Ren <guoren@kernel.org>
+Cc: linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org
+Subject: [RFC PATCH 0/4] Introduce & Optimize compat-mode helpers
+Date: Fri, 22 Dec 2023 04:46:00 -0300
+Message-ID: <20231222074605.452452-1-leobras@redhat.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 09/10] phy: qualcomm: phy-qcom-qmp-ufs: Rectify SM8550
- UFS HS-G4 PHY Settings
-To: Vinod Koul <vkoul@kernel.org>
-CC: <bvanassche@acm.org>, <mani@kernel.org>, <adrian.hunter@intel.com>,
-        <beanhuo@micron.com>, <avri.altman@wdc.com>,
-        <junwoo80.lee@samsung.com>, <martin.petersen@oracle.com>,
-        <linux-scsi@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn
- Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Dmitry Baryshkov
-	<dmitry.baryshkov@linaro.org>,
-        Abel Vesa <abel.vesa@linaro.org>,
-        Johan Hovold
-	<johan+linaro@kernel.org>,
-        "open list:GENERIC PHY FRAMEWORK"
-	<linux-phy@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <1701520577-31163-1-git-send-email-quic_cang@quicinc.com>
- <1701520577-31163-10-git-send-email-quic_cang@quicinc.com>
- <ZYRyJU9klhZzLdni@matsya>
-Content-Language: en-US
-From: Can Guo <quic_cang@quicinc.com>
-In-Reply-To: <ZYRyJU9klhZzLdni@matsya>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: S3JmbtEHJvUJ0VfiKaj9D1hSMCc_vLFK
-X-Proofpoint-ORIG-GUID: S3JmbtEHJvUJ0VfiKaj9D1hSMCc_vLFK
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
- lowpriorityscore=0 malwarescore=0 clxscore=1011 impostorscore=0
- phishscore=0 mlxlogscore=613 priorityscore=1501 mlxscore=0 spamscore=0
- adultscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2311290000 definitions=main-2312220053
+Content-Transfer-Encoding: 8bit
 
-Hi Vinod,
+I just saw the opportunity of optimizing the helper is_compat_task() by
+introducing a compile-time test, and it made possible to remove some
+#ifdef's without any loss of performance.
 
-On 12/22/2023 1:13 AM, Vinod Koul wrote:
-> On 02-12-23, 04:36, Can Guo wrote:
->> The registers, which are being touched in current SM8550 UFS PHY settings,
->> and the values being programmed are mainly the ones working for HS-G4 mode,
->> meanwhile, there are also a few ones somehow taken from HS-G5 PHY settings.
->> However, even consider HS-G4 mode only, some of them are incorrect and some
->> are missing. Rectify the HS-G4 PHY settings by strictly aligning with the
->> SM8550 UFS PHY Hardware Programming Guide suggested HS-G4 PHY settings.
-> 
-> This fails for me, as I have picked Abels offset series, can you please
-> rebase these two patches and send
-> 
-In v8, I rebased the two changes to linux-next. Is the ask there to 
-rebase the two changes to phy/next?
+I also saw the possibility of removing the direct check of task flags from
+general code, and concentrated it in asm/compat.h by creating a few more
+helpers, which in the end helped optimize code.
 
-Thanks,
-Can Guo.
+Leonardo Bras (4):
+  riscv: Replace direct thread flag check with is_compat_task()
+  riscv: add compile-time test into is_compat_task()
+  riscv: Introduce is_compat_thread() into compat.h
+  riscv: Introduce set_compat_task() in asm/compat.h
+
+ arch/riscv/include/asm/compat.h    | 19 +++++++++++++++++++
+ arch/riscv/include/asm/elf.h       | 11 ++---------
+ arch/riscv/include/asm/pgtable.h   |  8 +-------
+ arch/riscv/include/asm/processor.h |  4 ++--
+ arch/riscv/kernel/ptrace.c         |  6 +++---
+ 5 files changed, 27 insertions(+), 21 deletions(-)
+
+
+base-commit: 24e0d2e527a39f64caeb2e6be39ad5396fb2da5e
+-- 
+2.43.0
+
 
