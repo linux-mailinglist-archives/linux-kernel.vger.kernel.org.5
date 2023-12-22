@@ -1,111 +1,149 @@
-Return-Path: <linux-kernel+bounces-9251-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9253-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45ACB81C2E6
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 02:52:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BAB3981C2EB
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 02:56:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D5E921F25852
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 01:52:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5AA331F25210
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 01:56:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 034ED1361;
-	Fri, 22 Dec 2023 01:52:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CE14ECE;
+	Fri, 22 Dec 2023 01:56:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qJhjDv77"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RlJSVYfY"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A1A517C3;
-	Fri, 22 Dec 2023 01:52:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C2B0C433C7;
-	Fri, 22 Dec 2023 01:52:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703209925;
-	bh=kecEF49PU/2T4AgVwODE9w485i2hBXT2DPwqPKsasVI=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=qJhjDv77xisDgkhIdoE3eP1gEF7H3en2W/IapHMyN5tYVdtgyf1lO1r8jjowKsTJQ
-	 lPfcqS3LYzRDbS/JBCgbPQpsEnAkHrjhSHFzyhLZB8MyOrgRWPe/ezGj9CPCLUwqpJ
-	 QJmO7tUdR2OhWm3+PBvY1sUNr37p5kugLwu4hN9B4OG3OcJVpuakGAIXUn+WnTwdxi
-	 pOXqlrzNAKi4TqQwhlJoKpeITYikK4XJZBnHVE2kGbedlDGeDySm4v3TLRy9rMWfJs
-	 cE7O7pQpmrGRErvroKk/6PocYFGWdca8Im/orUpIJSQMnEcs4dWCiogSFgbbGyc24B
-	 7GlqczGI7YnBA==
-Date: Fri, 22 Dec 2023 10:52:00 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>, LKML
- <linux-kernel@vger.kernel.org>, Linux Trace Kernel
- <linux-trace-kernel@vger.kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Linus Torvalds
- <torvalds@linux-foundation.org>, Shuah Khan <shuah@kernel.org>, Linux
- selftests <linux-kselftest@vger.kernel.org>
-Subject: Re: [PATCH v2] tracing/selftests: Add ownership modification tests
- for eventfs
-Message-Id: <20231222105200.e73d58640d8be7da89331deb@kernel.org>
-In-Reply-To: <20231222104841.1d1b306c989070f82c672d89@kernel.org>
-References: <20231221194516.53e1ee43@gandalf.local.home>
-	<20231222102148.2aa3863d7c11f3928549335a@kernel.org>
-	<20231221202813.38ef5664@gandalf.local.home>
-	<20231222104841.1d1b306c989070f82c672d89@kernel.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C39994688;
+	Fri, 22 Dec 2023 01:56:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1703210205; x=1734746205;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=0rhcRfvWg5UrQEbPHucJhsFj1NsVbHwrRqxha30a1n4=;
+  b=RlJSVYfYdFl/nUTCG9XatkY/9+IgmC7ABkK/QVd/EyNxv31noPCsP5vj
+   /LFzQmyQ9SfOmwHdfDLUlUiArA5LDE3ecP+67uGtX12Nmm3KSzTXI0ogM
+   PHJ49rCVP9ebEplzBzgUAHWKDgu02xT/HsMTvtiXLdCWRg1Qn1j3OkUdN
+   j6Is50HlV5mQwranHr09/sN/ZzFUuCCcrQYTIgohF8WDjLemuzNRBJupG
+   0YjWwQ0b458PYRFZ4Vn9AUp0DYaoZJC1eP4Pb4DJsz5If9NdA9EA3YjGO
+   XJmoIMcBL7oLa0TpkBNpSMlwvMwrOn+wE972XWq/wZ9s6YwJOPaJkDcWK
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10931"; a="17623821"
+X-IronPort-AV: E=Sophos;i="6.04,294,1695711600"; 
+   d="scan'208";a="17623821"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Dec 2023 17:56:44 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,294,1695711600"; 
+   d="scan'208";a="18552064"
+Received: from zhaohaif-mobl.ccr.corp.intel.com (HELO [10.93.26.36]) ([10.93.26.36])
+  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Dec 2023 17:56:42 -0800
+Message-ID: <94b08bab-6488-4c4a-9742-30a69972ba50@linux.intel.com>
+Date: Fri, 22 Dec 2023 09:56:39 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 2/2] iommu/vt-d: don's issue devTLB flush request when
+ device is disconnected
+To: Lukas Wunner <lukas@wunner.de>
+Cc: bhelgaas@google.com, baolu.lu@linux.intel.com, dwmw2@infradead.org,
+ will@kernel.org, robin.murphy@arm.com, linux-pci@vger.kernel.org,
+ iommu@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20231220005153.3984502-1-haifeng.zhao@linux.intel.com>
+ <20231220005153.3984502-3-haifeng.zhao@linux.intel.com>
+ <20231221103940.GA12714@wunner.de>
+From: Ethan Zhao <haifeng.zhao@linux.intel.com>
+In-Reply-To: <20231221103940.GA12714@wunner.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Fri, 22 Dec 2023 10:48:41 +0900
-Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
 
-> On Thu, 21 Dec 2023 20:28:13 -0500
-> Steven Rostedt <rostedt@goodmis.org> wrote:
-> 
-> > On Fri, 22 Dec 2023 10:21:48 +0900
-> > Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
-> > 
-> > > The testcase itself is OK but is there any way to identify the system
-> > > supports eventfs or not? I ran this test on v6.5.13 for checking then
-> > > it failed. We may need to skip (unsupported) this test for such case.
-> > 
-> > Hmm, honestly, it should technically work on all past versions.
-> > 
-> > I'll try it out to see what fails for 6.5.13. Perhaps there was another bug
-> > that the stable releases need fixing for?
-> 
-> I found that the failure was my environmental issue.
-> BTW, for busybox environment, 
-> 
-> +instance="foo-$(mktemp -u XXXXX)"
-> 
-> This doesn't work. it needs XXXXXX (6 times X). And this is
-> somewhat wrong usage of mktemp because it can not check there is
-> foo-<random>.
-> What about change it as
-> 
-> instance="$(mktemp -u foo-XXXXXX)"
-> 
-> ?
+On 12/21/2023 6:39 PM, Lukas Wunner wrote:
+> On Tue, Dec 19, 2023 at 07:51:53PM -0500, Ethan Zhao wrote:
+>> For those endpoint devices connect to system via hotplug capable ports,
+>> users could request a warm reset to the device by flapping device's link
+>> through setting the slot's link control register, as pciehpt_ist() DLLSC
+>> interrupt sequence response, pciehp will unload the device driver and
+>> then power it off. thus cause an IOMMU devTLB flush request for device to
+>> be sent and a long time completion/timeout waiting in interrupt context.
+> I think the problem is in the "waiting in interrupt context".
+>
+> Can you change qi_submit_sync() to *sleep* until the queue is done?
+> Instead of busy-waiting in atomic context?
 
-And I confirmed that this test passed on v6.5.13 with that change.
+If you read that function carefully, you wouldn't say "sleep" there....
 
-Thank you,
+that is 'sync'ed.
 
-> 
+>
+> Is the hardware capable of sending an interrupt once the queue is done?
+> If it is not capable, would it be viable to poll with exponential backoff
+> and sleep in-between polling once the polling delay increases beyond, say,
+> 10 usec?
+
+I don't know if the polling along sleeping for completion of meanningless
+
+devTLB invalidation request blindly sent to (removed/powered down/link down)
+
+device makes sense or not.
+
+But according to PCIe spec  6.1  10.3.1
+
+"Software ensures no invalidations are issued to a Function when its
+
+  ATS capability is disabled. "
+
+>
+> Again, the proposed patch is not a proper solution.  It will paper over
+> the issue most of the time but every once in a while someone will still
+> get a hard lockup splat and it will then be more difficult to reproduce
+> and fix if the proposed patch is accepted.
+
+Could you point out why is not proper ? Is there any other window
+
+the hard lockup still could happen with the ATS capable devcie
+
+supprise_removal case if we checked the connection state first ?
+
+Please help to elaberate it.
+
+>
+>
+>> [ 4223.822622] CPU: 144 PID: 1422 Comm: irq/57-pciehp Kdump: loaded Tainted: G S
+>>           OE    kernel version xxxx
+> I don't see any reason to hide the kernel version.
+> This isn't Intel Confidential information.
+>
+Yes, this is the old kernel stack trace, but customer also tried lasted 
+6.7rc4
+
+(doesn't work) and the patched 6.7rc4 (fixed).
+
+
+Thanks,
+
+Ethan
+
+>> [ 4223.822628] Call Trace:
+>> [ 4223.822628]  qi_flush_dev_iotlb+0xb1/0xd0
+>> [ 4223.822628]  __dmar_remove_one_dev_info+0x224/0x250
+>> [ 4223.822629]  dmar_remove_one_dev_info+0x3e/0x50
+> __dmar_remove_one_dev_info() was removed by db75c9573b08 in v6.0
+> one and a half years ago, so the stack trace appears to be from
+> an older kernel version.
+>
 > Thanks,
-> 
-> > 
-> > -- Steve
-> 
-> 
-> -- 
-> Masami Hiramatsu (Google) <mhiramat@kernel.org>
-
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+>
+> Lukas
 
