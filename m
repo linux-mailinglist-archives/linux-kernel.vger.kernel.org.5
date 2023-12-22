@@ -1,100 +1,104 @@
-Return-Path: <linux-kernel+bounces-9509-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9510-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36D2881C6BA
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 09:39:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F07481C6BC
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 09:39:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9D161B222F1
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 08:39:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 425F91C24C68
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 08:39:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1285DDF59;
-	Fri, 22 Dec 2023 08:39:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24515101EE;
+	Fri, 22 Dec 2023 08:39:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="vg9eLVkB"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="vyZ4Wcy5"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDD5BD314
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 08:39:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20D5CFBFA
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 08:39:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-553e36acfbaso9688a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 00:39:09 -0800 (PST)
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-40d3b2c8517so28415e9.1
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 00:39:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1703234348; x=1703839148; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1703234365; x=1703839165; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=RWOVBoEjca1sAKmpcTc4DbyDYK3Lz0mCf1/H2AIm32E=;
-        b=vg9eLVkB68pKS3xLPNrRFQy8eO4LEg3rzXpZBw2LlTKbljZS/yU4B6lTwXInJ49Tvc
-         hBbSMj8QOrSOo+PGxPk45YPUSY4bsdP6Ul0jVbgULsE0JVRT+HSl7Mt+pm1jEi0j1uD9
-         8GtzAG1Kt0v6Beg7hI+h1eyxCSjENaSepr2f8IoA4rHUkcPxZEvK6ZtvnsMwKU7/HR43
-         IJFX5dq6ZE3nsHeeafOw07z0FmXRUNgMTy79nnktTHIhIyA/PyjrlR4GHK4ywgFgpIWf
-         41jbriSRbH6pQEHyd64W6PYZ4dr/RjFmHYlCIyXEiNVnKjXgOtGMpkOD7c4ED6901oIt
-         UEIA==
+        bh=1J0cv5PkPD3/tUTGQqZFwmVv7+XU6Hfy1EiXRtxA1AU=;
+        b=vyZ4Wcy5wZ+anqBZWKB7oR1SpariMai2l27EVxfoH+cUh53Nf2CC0lhNVzV1nfMU0v
+         CFQmuxoV7bLIXOqFrP1jv3cejQBfc6iERDWtqB/vGi+wxywpBHVftEyu1SBKTW4LmvSx
+         1hEl6ZY7BxJsUAcdN/AUTyFXzQLEkiuoZgk6qZmBHxCSsEECXqpEQHFlUn9f0PUoAcie
+         WtL43kv3oFQaiYSXSGTtGJTxP2St3Crj4Bc1vRaqisXoK89lMMuOyKxZFUjSY1jlxMRt
+         gA//jTalk85ffsQ2Iok2XaefRIkIYjMr+lis7TiZ5KIrzwG0pSy4a6bPeO4DOcM00gYl
+         dg1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703234348; x=1703839148;
+        d=1e100.net; s=20230601; t=1703234365; x=1703839165;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=RWOVBoEjca1sAKmpcTc4DbyDYK3Lz0mCf1/H2AIm32E=;
-        b=jmZRBHnVCRzImTmuJcq52lHLcRxHxHCNLBixvQsJpeQ6hQhE1yv8zFHxc/I+vXbaMC
-         idAJkSMkHlzD804vyvNHDDwiXptsq4Ar+/WZd+rkmQgA65lBAhZLIvvOgdPxU/9o/UPd
-         /Q1wtx9oIDGclB90cSJ+0M/5ALdKZRsDXycTI58460nuRNPbiifQRfXLHO2PvTymYatv
-         qvXnbiSOJ46mD5p543lQUsmHGp/th55dZ4xVSXXUSCj8uarkBNYoScq5Q6smWo81v/C2
-         N2PKxxCzkpMFVMlX6HO1TVrqVfcg9m24v2pbXEGY2Oq6LpC+ojXAv9zz418Nah3Ti8st
-         C1tw==
-X-Gm-Message-State: AOJu0YwGLv63FvuBoudCaOQl02qV51Iumhwcd7IvhOVy7PT1ncnHY079
-	qd5daCk9kangU2ap0Os0VRujZfygHDUKlo5woy7FDvMPYX53
-X-Google-Smtp-Source: AGHT+IGjugFXkoJKYrFDL0XMNrGdfVleVIjCFeG1PdLjYvObJUQyqZ/ndv1w7gdRbDw/vixQYYcE23+MEBo1e3ttWIg=
-X-Received: by 2002:a50:930a:0:b0:554:1b1c:72c4 with SMTP id
- m10-20020a50930a000000b005541b1c72c4mr63909eda.1.1703234348198; Fri, 22 Dec
- 2023 00:39:08 -0800 (PST)
+        bh=1J0cv5PkPD3/tUTGQqZFwmVv7+XU6Hfy1EiXRtxA1AU=;
+        b=YdH+GrNVX8xlspCf8U6tCw7VGaV0Ns6RP+BCodvacRP+cZGfTsZqyXDUslgh0pPZoF
+         VsAykSGPTYjCZFPJde+viPw6Zs8nIaDayVtC0fM90+H8BQlUXTMaD2KRjWzdoj4I3+OS
+         DwFYOYtN5wFzjmvUurprlrKUYjVyamoVGPDkkF3VvrmnVgmYh/RrDehtkTZ9zg02mITR
+         wzThy0GpQMJlXFjb3FsHW30bqPu3SqUt2yxZnRRR27Kav7KkdpbNAapTF7WUQUPir//r
+         istpfP32IyyTIAtr99iOU8+K3Xm/Oxd5tTyT3AumStV+LAuw/a2sImfC6HqneuFrMcJ+
+         ju/w==
+X-Gm-Message-State: AOJu0YzF/ZOd+6lUjItxK7LYRGZM6Nfab9OJ3IxQc3LHncsC2K3nCZ3j
+	qUcAvpYtOwEzuHdSHylIVy20LlrWwn76vJmDMhiczgg1PHPr
+X-Google-Smtp-Source: AGHT+IHWm7T1Dht8NgbrIn5WBAdPEdl7sYQB6jGlm8/o8XKVil4VZm+cBtWqvyNdjNFv0NkNpeYKMvt2TN8A4WI5Dj0=
+X-Received: by 2002:a05:600c:229a:b0:40d:400c:1b1f with SMTP id
+ 26-20020a05600c229a00b0040d400c1b1fmr57309wmf.5.1703234365524; Fri, 22 Dec
+ 2023 00:39:25 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231221103858.46010-1-rf@opensource.cirrus.com> <20231221103858.46010-2-rf@opensource.cirrus.com>
-In-Reply-To: <20231221103858.46010-2-rf@opensource.cirrus.com>
+References: <20231220155256.407974-1-rf@opensource.cirrus.com>
+In-Reply-To: <20231220155256.407974-1-rf@opensource.cirrus.com>
 From: David Gow <davidgow@google.com>
-Date: Fri, 22 Dec 2023 16:38:57 +0800
-Message-ID: <CABVgOSnT+d9p1syCDKLwU8jdtYCcbPVUEkdfm9aPPMCNaUJ68g@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] kunit: Add example of kunit_activate_static_stub()
- with pointer-to-function
+Date: Fri, 22 Dec 2023 16:39:14 +0800
+Message-ID: <CABVgOSnoJEZOCdPBVqBKS=sEXeeq_6_+G4PPodY0HWJ3A7yA+A@mail.gmail.com>
+Subject: Re: [PATCH] kunit: Protect string comparisons against NULL
 To: Richard Fitzgerald <rf@opensource.cirrus.com>
 Cc: brendan.higgins@linux.dev, rmoar@google.com, 
 	linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com, 
 	linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="0000000000005025d8060d152655"
+	boundary="0000000000005730ae060d1527b7"
 
---0000000000005025d8060d152655
+--0000000000005730ae060d1527b7
 Content-Type: text/plain; charset="UTF-8"
 
-On Thu, 21 Dec 2023 at 18:39, Richard Fitzgerald
+On Wed, 20 Dec 2023 at 23:52, Richard Fitzgerald
 <rf@opensource.cirrus.com> wrote:
 >
-> Adds a variant of example_static_stub_test() that shows use of a
-> pointer-to-function with kunit_activate_static_stub().
+> Add NULL checks to KUNIT_BINARY_STR_ASSERTION() so that it will fail
+> cleanly if either pointer is NULL, instead of causing a NULL pointer
+> dereference in the strcmp().
 >
-> A const pointer to the add_one() function is declared. This
-> pointer-to-function is passed to kunit_activate_static_stub() and
-> kunit_deactivate_static_stub() instead of passing add_one directly.
+> A test failure could be that a string is unexpectedly NULL. This could
+> be trapped by KUNIT_ASSERT_NOT_NULL() but that would terminate the test
+> at that point. It's preferable that the KUNIT_EXPECT_STR*() macros can
+> handle NULL pointers as a failure.
 >
 > Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 > ---
 
+I think this is the right thing to do. There's possibly an argument
+that this should succeed if both are NULL, but I prefer it this way.
+
 Reviewed-by: David Gow <davidgow@google.com>
 
-Thanks,
+Cheers,
 -- David
 
---0000000000005025d8060d152655
+--0000000000005730ae060d1527b7
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -161,15 +165,15 @@ impZAng7ccvvK09K3ZuhwTIxJMsPXCZYsrXWORTw5sczRAP6XvKbPBJnsJoSTe5dFBPBHOQJOGhU
 qWfEfWnWMJPF3LxSGLpLFQXO3RwQqmxv08avwXfVPouh1xuB3FX7rpDabT8YDhu9JgIZkLEKko7L
 yQt6zWwng7k8YF/jGbiAta6VMYICajCCAmYCAQEwaDBUMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQ
 R2xvYmFsU2lnbiBudi1zYTEqMCgGA1UEAxMhR2xvYmFsU2lnbiBBdGxhcyBSMyBTTUlNRSBDQSAy
-MDIwAhABzgV+4+mJnUzG7XDy6d2uMA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCBc
-+Y5SttV5+S5FV6lXM78ECQb+ise4UetV7jPwg7XqwjAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcB
-MBwGCSqGSIb3DQEJBTEPFw0yMzEyMjIwODM5MDhaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUD
+MDIwAhABzgV+4+mJnUzG7XDy6d2uMA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCDU
+we1Zs6SZlUvdwLK0TNohbFzv7HKrpJCuhS3bV1SjeTAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcB
+MBwGCSqGSIb3DQEJBTEPFw0yMzEyMjIwODM5MjVaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUD
 BAEqMAsGCWCGSAFlAwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsG
-CSqGSIb3DQEBBzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEATO9uc3B9yuW+KXmMt3p7
-PNZOKtwsywLsQbSfpFESz4g3RUIsNP5IbL5RGdg0o45fJsKhjNIyIKk7Lhn6HcMW5oMeaY3sPHmW
-eplhg9osIvFZsPwoIStw8Ipv4snaWC7FMcEC4jqAo/0ecxH5SyejgMf+txdJkHfXAHCvtO3ovhBa
-1uQ7CL5ftfSPyGi3FtZN1Ci0Any0QBLC3r+gZG9ibXerUu8CYEX4D6Drkl79d5VoinhdesCLHkzP
-28XwA6TBGjQm451AHSQ1afCzmBe1Cxjg221+Dk2e1UaP4p5DEPCZNDpfdo5LW4CSH8DYPj6zA4al
-aRRsm2DBROp7reHuVg==
---0000000000005025d8060d152655--
+CSqGSIb3DQEBBzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEAVNiO9w97HnfkBP6ryisR
+w93D9y0pikggpz26AEGxUox1t7r5noCBFC/2nYnge6Etbnayt1hoxIhxApzNsWpfkeYDdluUoWeX
+zHiY0d6MBGm+i/n9g94j5CJ3F0NukDvhF2pf1YFvvVoLkui3OGr6zyb07tfnIlXDUr9T143Ugz9I
+v8lwaKY2c8g5bEtC6EdnoTwhe7Z9VjnPDwpHRitySS0ebwy9EeBbeBGnAr4LuVoB5DJrJjWRfX72
+UJo30cgJd+jQadkcp6W5vNmz1O9JeXltuWGgfrBvfzJEExLL0Es53BXCnR/q6ry2iJ7Ly4MI6Ex0
+aDWmQaWCD8Z4DcVb5A==
+--0000000000005730ae060d1527b7--
 
