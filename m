@@ -1,138 +1,195 @@
-Return-Path: <linux-kernel+bounces-9547-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9548-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E84E181C758
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 10:35:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 27BE881C759
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 10:35:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7C6D21F23EB5
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 09:35:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DAB5F287275
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 09:35:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D1B6F9ED;
-	Fri, 22 Dec 2023 09:35:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34E25F9ED;
+	Fri, 22 Dec 2023 09:35:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="d+YyTnkp"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GP5rlVgp"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD1B1F9D2;
-	Fri, 22 Dec 2023 09:35:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1d40eec5e12so9531135ad.1;
-        Fri, 22 Dec 2023 01:35:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703237709; x=1703842509; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=wwPu6jjtuGsrJCEXn679QmZIcAlxcsMnJvedEVXZ1AU=;
-        b=d+YyTnkpOj83iHZROk1NNBFLdPMNvUBPpHYU7jdkMSCn8iVDU+eV4KZU1g5+uqfi0m
-         Kgjb1Ujy/y4ecPv88kK5qYUt/P4T/pXGsMEEWSNxyaOJ2BfcXDWF/3zGcwVkHLEjY2O5
-         QvlEHd62EOEiS7k9zW3MyYq9zHghl2SJQL+XImLG6dvYXkASeWPyK+MQPxrkLu3B9TIC
-         a/ZjaOQr2AvI90iqd/G6qhwIyQUDrxXM819al8HAgOiukblbJ/PKQO45Ui8gXj64DFX6
-         zMa78z+kaBSS/qQ6bMrYxzpIvyDTf3QDpzQ3JI+H6DeaGFY+R3tLQYA4EjP1g0yNkmd7
-         LIWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703237709; x=1703842509;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wwPu6jjtuGsrJCEXn679QmZIcAlxcsMnJvedEVXZ1AU=;
-        b=ogqsKn9BIYhkTz3zFpgYqtQNmjY5eu2924mjNTzwhdTHrLVuyCLHrViNsF8wP8/Uh0
-         MuGMPl/9z6TCJq7SEC+28orQL+jOwMahFOhWsFmzh+DA1lwbx0WxGPyr1GSMzcAaXnyP
-         UJ0XSmlSNRW5CrYRE2qKvlEQX8jOuj2HnHiI9rrL6cwz4IeJ9NuLe3JfVRgJ4gMc3mrt
-         59BdLh77QuC+pQ/YzU/kWB9bOKzwpl+2Cv078cyBj822feL2VD5IQfpLIH9t1rRAySzv
-         dfe7mSEJHXvAhFStfhwI209BuLq3+QeDWzY1zP88KMi3pLyNbt5YqXUa6X4DF/lSwhUZ
-         8QjQ==
-X-Gm-Message-State: AOJu0Yzl+GmW8Ur3PKiLSWd/zziPxsKgzb2EvLwy80MnYDSsBlom04J9
-	1OMASk1x0SpMThNWo0QaDfU=
-X-Google-Smtp-Source: AGHT+IGOqVOFAzemBdD47i50Yv4SnhOpn/HJacgaR7nR0TGc5qK7EjVKm+ZdkY4r9TiwFo0WCBbVEQ==
-X-Received: by 2002:a17:902:d584:b0:1d3:62b9:838a with SMTP id k4-20020a170902d58400b001d362b9838amr1081319plh.132.1703237708854;
-        Fri, 22 Dec 2023 01:35:08 -0800 (PST)
-Received: from archie.me ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id g5-20020a170902868500b001d096757ac1sm2997245plo.47.2023.12.22.01.35.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Dec 2023 01:35:08 -0800 (PST)
-Received: by archie.me (Postfix, from userid 1000)
-	id 201151192C10C; Fri, 22 Dec 2023 16:35:04 +0700 (WIB)
-Date: Fri, 22 Dec 2023 16:35:04 +0700
-From: Bagas Sanjaya <bagasdotme@gmail.com>
-To: Chris Rankin <rankincj@gmail.com>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Linux Regressions <regressions@lists.linux.dev>,
-	Linux Networking <netdev@vger.kernel.org>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	David Ahern <dsahern@kernel.org>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	Yue Haibing <yuehaibing@huawei.com>,
-	Leon Romanovsky <leon@kernel.org>,
-	Qingfang DENG <qingfang.deng@siflower.com.cn>
-Subject: Re: Does Linux still support UP?
-Message-ID: <ZYVYSBKhc-uvO8_o@archie.me>
-References: <CAK2bqVKCdaD6-PZi6gXhf=9CiKGhxQM_UHyKV_onzDPnhbAmvw@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A2C6DF42
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 09:35:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DC30C4339A
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 09:35:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703237734;
+	bh=jZzdwoHT2kuZ2oo2BcVo/dRZz8kMowfuO8XWw6Jy+aQ=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=GP5rlVgpsY3gf41iBrWBR4PLFsSSpt1cwhq0UZGWW6D9fMZSfNHAbDFsae+n9TPnm
+	 RXbcB/gLI0Cpe6u4lWuu/0/6JGamdELFyme9j9YYAZoEbEm8aCrqWZL/aVIPGR3cvN
+	 +VyPRYH08FzJokPuJd0sb5gJKt8UuIIuT14MPVQ6fPHtC2fFwn4NJrA0I4nBrvsYnf
+	 P/zJZubL/Wme1lBZ6W98okrOSqrjHFSeJFsFTfiR4zr5LWfIYIOwG3nAApXO0xCPbK
+	 NS3BNUGa19SLVjR+PbDK5XdshLte8R/6CovgVosy+zmgzlhNbuHt/fxGYKn/+Fd7UE
+	 JlFnT5B+CgRUA==
+Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2cc7b9281d1so22039401fa.1
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 01:35:33 -0800 (PST)
+X-Gm-Message-State: AOJu0YydO5KKvnAfVVAeIYes+pGVANz1KlC82OZ5GnPJUEvTHJLAbaDF
+	rTKFUvfe0iuMzH67DDw5qZ2Xgj0cvwO2Jo6NrAk=
+X-Google-Smtp-Source: AGHT+IFBolUEPY720dl+czfO4qrssPxC1JJ7OwVqlpuBUwcp3tL3lhllAYTVKtUab1jFGi/GhzBcG2KsIGCJdxQjS+s=
+X-Received: by 2002:a19:384e:0:b0:50e:384c:6982 with SMTP id
+ d14-20020a19384e000000b0050e384c6982mr452303lfj.42.1703237732207; Fri, 22 Dec
+ 2023 01:35:32 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="BGJpeMhm1VRD5QR7"
-Content-Disposition: inline
-In-Reply-To: <CAK2bqVKCdaD6-PZi6gXhf=9CiKGhxQM_UHyKV_onzDPnhbAmvw@mail.gmail.com>
-
-
---BGJpeMhm1VRD5QR7
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+References: <20231222074605.452452-1-leobras@redhat.com> <20231222074605.452452-3-leobras@redhat.com>
+In-Reply-To: <20231222074605.452452-3-leobras@redhat.com>
+From: Guo Ren <guoren@kernel.org>
+Date: Fri, 22 Dec 2023 17:35:20 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTQNE7OQiAbkvVNzo9PCV=Xr8KQD0_=s-G56QMZJiZnjvA@mail.gmail.com>
+Message-ID: <CAJF2gTQNE7OQiAbkvVNzo9PCV=Xr8KQD0_=s-G56QMZJiZnjvA@mail.gmail.com>
+Subject: Re: [RFC PATCH 2/4] riscv: add compile-time test into is_compat_task()
+To: Leonardo Bras <leobras@redhat.com>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Albert Ou <aou@eecs.berkeley.edu>, Eric Biederman <ebiederm@xmission.com>, 
+	Kees Cook <keescook@chromium.org>, Oleg Nesterov <oleg@redhat.com>, 
+	Conor Dooley <conor.dooley@microchip.com>, Andy Chiu <andy.chiu@sifive.com>, 
+	Greg Ungerer <gerg@kernel.org>, Vincent Chen <vincent.chen@sifive.com>, 
+	Xiao Wang <xiao.w.wang@intel.com>, Charlie Jenkins <charlie@rivosinc.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, Alexandre Ghiti <alexghiti@rivosinc.com>, 
+	Kemeng Shi <shikemeng@huaweicloud.com>, David Hildenbrand <david@redhat.com>, 
+	"Matthew Wilcox (Oracle)" <willy@infradead.org>, Qinglin Pan <panqinglin2020@iscas.ac.cn>, 
+	Greentime Hu <greentime.hu@sifive.com>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>, 
+	=?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>, 
+	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-[also Cc: netdev folks and get_maintainer output for include/net/neighbour.=
-h]
-
-On Thu, Dec 21, 2023 at 11:12:34PM +0000, Chris Rankin wrote:
-> Hi,
->=20
-> I have an ancient i586 UP machine that happily runs vanilla Linux
-> 6.4.16, but which locks up shortly after booting vanilla 6.5.0. The
-> kernel *seems* to run into trouble as soon as the networking layer
-> becomes busy. However, its SysRq-S/U/B sequence still seems to work as
-> expected and so obviously *something* is still responding somewhere.
->=20
-> This problem still exists in vanilla 6.6.8.
->=20
-> FWIW I have raised this bug in bugzilla:
-> https://bugzilla.kernel.org/show_bug.cgi?id=3D218296
->=20
-
-To be honest, you need to bisect. For reference, see
-Documentation/admin-guide/bug-bisect.rst in the kernel sources.
-Since you have problem with your old machine, you may want to compile
-the kernel (which is a prerequisite for bisection) on faster machine,
-then transfer the kernel image + modules into your old machine to
-be installed there. Without bisection, no one will look into this
-regression.
-
-Thanks.
+On Fri, Dec 22, 2023 at 5:02=E2=80=AFPM Leonardo Bras <leobras@redhat.com> =
+wrote:
+>
+> Currently several places will test for CONFIG_COMPAT before testing
+> is_compat_task(), probably in order to avoid a run-time test into the tas=
+k
+> structure.
+>
+> Since is_compat_task() is an inlined function, it would be helpful to add=
+ a
+> compile-time test of CONFIG_COMPAT, making sure it always returns zero wh=
+en
+> the option is not enabled during the kernel build.
+>
+> With this, the compiler is able to understand in build-time that
+> is_compat_task() will always return 0, and optimize-out some of the extra
+> code introduced by the option.
+>
+> This will also allow removing a lot #ifdefs that were introduced, and mak=
+e
+> the code more clean.
+>
+> Signed-off-by: Leonardo Bras <leobras@redhat.com>
+> ---
+>  arch/riscv/include/asm/compat.h    | 3 +++
+>  arch/riscv/include/asm/elf.h       | 4 ----
+>  arch/riscv/include/asm/pgtable.h   | 6 ------
+>  arch/riscv/include/asm/processor.h | 4 ++--
+>  4 files changed, 5 insertions(+), 12 deletions(-)
+>
+> diff --git a/arch/riscv/include/asm/compat.h b/arch/riscv/include/asm/com=
+pat.h
+> index 2ac955b51148f..91517b51b8e27 100644
+> --- a/arch/riscv/include/asm/compat.h
+> +++ b/arch/riscv/include/asm/compat.h
+> @@ -14,6 +14,9 @@
+>
+>  static inline int is_compat_task(void)
+>  {
+> +       if (!IS_ENABLED(CONFIG_COMPAT))
+> +               return 0;
+> +
+>         return test_thread_flag(TIF_32BIT);
+>  }
+>
+> diff --git a/arch/riscv/include/asm/elf.h b/arch/riscv/include/asm/elf.h
+> index 59a08367fddd7..2e88257cafaea 100644
+> --- a/arch/riscv/include/asm/elf.h
+> +++ b/arch/riscv/include/asm/elf.h
+> @@ -53,13 +53,9 @@ extern bool compat_elf_check_arch(Elf32_Ehdr *hdr);
+>  #define ELF_ET_DYN_BASE                ((DEFAULT_MAP_WINDOW / 3) * 2)
+>
+>  #ifdef CONFIG_64BIT
+> -#ifdef CONFIG_COMPAT
+>  #define STACK_RND_MASK         (is_compat_task() ? \
+>                                  0x7ff >> (PAGE_SHIFT - 12) : \
+>                                  0x3ffff >> (PAGE_SHIFT - 12))
+> -#else
+> -#define STACK_RND_MASK         (0x3ffff >> (PAGE_SHIFT - 12))
+> -#endif
+>  #endif
+>
+>  /*
+> diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pg=
+table.h
+> index 1d472b31e0cfe..ea5b269be223a 100644
+> --- a/arch/riscv/include/asm/pgtable.h
+> +++ b/arch/riscv/include/asm/pgtable.h
+> @@ -127,16 +127,10 @@
+>  #define VA_USER_SV48 (UL(1) << (VA_BITS_SV48 - 1))
+>  #define VA_USER_SV57 (UL(1) << (VA_BITS_SV57 - 1))
+>
+> -#ifdef CONFIG_COMPAT
+>  #define MMAP_VA_BITS_64 ((VA_BITS >=3D VA_BITS_SV48) ? VA_BITS_SV48 : VA=
+_BITS)
+>  #define MMAP_MIN_VA_BITS_64 (VA_BITS_SV39)
+>  #define MMAP_VA_BITS (is_compat_task() ? VA_BITS_SV32 : MMAP_VA_BITS_64)
+>  #define MMAP_MIN_VA_BITS (is_compat_task() ? VA_BITS_SV32 : MMAP_MIN_VA_=
+BITS_64)
+> -#else
+> -#define MMAP_VA_BITS ((VA_BITS >=3D VA_BITS_SV48) ? VA_BITS_SV48 : VA_BI=
+TS)
+> -#define MMAP_MIN_VA_BITS (VA_BITS_SV39)
+> -#endif /* CONFIG_COMPAT */
+> -
+>  #else
+>  #include <asm/pgtable-32.h>
+>  #endif /* CONFIG_64BIT */
+> diff --git a/arch/riscv/include/asm/processor.h b/arch/riscv/include/asm/=
+processor.h
+> index f19f861cda549..ed32e53e55999 100644
+> --- a/arch/riscv/include/asm/processor.h
+> +++ b/arch/riscv/include/asm/processor.h
+> @@ -22,7 +22,7 @@
+>  ({                                                             \
+>         unsigned long mmap_end;                                 \
+>         typeof(addr) _addr =3D (addr);                            \
+> -       if ((_addr) =3D=3D 0 || (IS_ENABLED(CONFIG_COMPAT) && is_compat_t=
+ask())) \
+> +       if ((_addr) =3D=3D 0 || is_compat_task())                   \
+>                 mmap_end =3D STACK_TOP_MAX;                       \
+>         else if ((_addr) >=3D VA_USER_SV57)                       \
+>                 mmap_end =3D STACK_TOP_MAX;                       \
+> @@ -39,7 +39,7 @@
+>         typeof(addr) _addr =3D (addr);                            \
+>         typeof(base) _base =3D (base);                            \
+>         unsigned long rnd_gap =3D DEFAULT_MAP_WINDOW - (_base);   \
+> -       if ((_addr) =3D=3D 0 || (IS_ENABLED(CONFIG_COMPAT) && is_compat_t=
+ask())) \
+> +       if ((_addr) =3D=3D 0 || is_compat_task())                   \
+>                 mmap_base =3D (_base);                            \
+>         else if (((_addr) >=3D VA_USER_SV57) && (VA_BITS >=3D VA_BITS_SV5=
+7)) \
+>                 mmap_base =3D VA_USER_SV57 - rnd_gap;             \
+> --
+> 2.43.0
+>
+Reviewed-by: Guo Ren <guoren@kernel.org>
 
 --=20
-An old man doll... just what I always wanted! - Clara
-
---BGJpeMhm1VRD5QR7
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZYVYQgAKCRD2uYlJVVFO
-ozJkAQCKyHu9R9zl9W8ZRbFK01mKcm88orrgBonnDmeisJzNAAD7BKlWE/dbnM/p
-BujSYdzYOoj3yK4CuQ/N4D/7kUqCAg8=
-=Pvek
------END PGP SIGNATURE-----
-
---BGJpeMhm1VRD5QR7--
+Best Regards
+ Guo Ren
 
