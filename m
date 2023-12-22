@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-9977-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9978-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 151D681CE0E
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 18:49:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D882D81CE0F
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 18:49:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 46A561C2268A
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 17:49:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 90D88288196
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 17:49:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 256D34CDEA;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB8C84CE18;
 	Fri, 22 Dec 2023 17:42:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IQvqrBuX"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DNrsA2GV"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01AA64C3BD;
-	Fri, 22 Dec 2023 17:42:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A615D4C618;
+	Fri, 22 Dec 2023 17:42:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-40d3c4bfe45so20995465e9.1;
-        Fri, 22 Dec 2023 09:42:43 -0800 (PST)
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-336897b6bd6so1795736f8f.2;
+        Fri, 22 Dec 2023 09:42:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703266962; x=1703871762; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1703266963; x=1703871763; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=gRLz1zrBuFNm0Af22mx0D2/7q2j0Q/CWyrbrvtrtVPY=;
-        b=IQvqrBuX1Gbwts2bdRJiK0/oYpTqptzaZVw6pLSntKSCfAApvbpPz2j/nqWv9CULkg
-         64u/P5KicooPaSKAgtxLJRitGT5tw1KuwVqrRq8UELJveJrMfR9jOHMGYtKBnv+nJ9Ms
-         C96oInaa/4krNSR4XsKtWArJv4Bd5Z55Tt8g3G4YGClTBp214c6D3K0RD17O611M81i+
-         NVKIajVhXrlE6IjM/hE2t8q9KJ5rN1G+ivn+bx7rDzSylncJ6zVqcSvXLr/RPk3Jc9jH
-         pPdla6gJNf/5QQ5cTKgGxc56C7g6hhTMgHaNZGM4/AK6U0JKwstqdi/6s012AE1r/lmb
-         RNtg==
+        bh=DSehpxE7VFQUy0YWI/0+kwR1zv6c+kt9jZ6SUI8YNPA=;
+        b=DNrsA2GV7j+BqN527P2MlgiifrPCHya3w1+jh2y07aAM/BmAX34bI4La17bjdnv3Ye
+         uOy/4XTkjudE8DRnGqQavrNYuQHMqmWYuQ74WsKIWS6tSYTy18BLMZARmj78a84PvJpT
+         H2eSMZjy6mPF4YVlpO5uEtWpwQcJiJFamrDDfGEH4yDW2sC6gQTzqIY9F2O2n8K9tiFa
+         suHr0s8VyRWaX6W7KYUjl3v+VvtpYAE96O7mkPI0P176AXL5O7ZiBXh45XKb2X46cF/o
+         mHjyvBdA+Qen16fNd2+/XHR4g2Tz78kQWpRK+I9sHzhoRftHyYc1/QeFCoNskKyPWKJi
+         Xjnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703266962; x=1703871762;
+        d=1e100.net; s=20230601; t=1703266963; x=1703871763;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=gRLz1zrBuFNm0Af22mx0D2/7q2j0Q/CWyrbrvtrtVPY=;
-        b=oRuMKD+5YyOuWZebNJSoOWd8hFzi0vx5j1Byg3A7mfQGkR8h+D+/R18TkQPvwG6E+k
-         dtGxHdrek3ftefReU9fGVPFWXWAUHLRNtMfu7YzIX3PdePzpfW8juBUnWzT+q1380lVI
-         G+0Pj7neL5kRzw9krNXFV4usxwYEkvGRVpBZ/OYcIFgp5Kap9lt0ZtI/D9RhQpTEc/rI
-         HuDAqUE67v1eskWywtJNMz02QsFHEz6zq2gjbw7X000EH9/OwtMfWqn+co2srC+w5V5l
-         e9uJPeqJ7pC16k3dbz7amaWTsSaYHpBvk+Ljz+t5O81Iysl96rUq97rOd87j9impjsBy
-         ZOLg==
-X-Gm-Message-State: AOJu0Ywz8R+2ga8tMCrZB6V6EIcuyo9cfWFfDDSLbkx+JtBOcozE3a8B
-	fysssyxQwduenP98K9X2fg==
-X-Google-Smtp-Source: AGHT+IEHpUVIRCbHP3AshFALoArBl6E2zYs7rd6xJQGGfnJ//3nhB9bjJ/XDbpPL3zjGmIJ8dwji1w==
-X-Received: by 2002:a05:600c:a02:b0:40d:3868:6b85 with SMTP id z2-20020a05600c0a0200b0040d38686b85mr544367wmp.198.1703266962256;
-        Fri, 22 Dec 2023 09:42:42 -0800 (PST)
+        bh=DSehpxE7VFQUy0YWI/0+kwR1zv6c+kt9jZ6SUI8YNPA=;
+        b=LyYmfZvcx1P4htsmcZrbzM7x6EKXeR8vRSO5nJ8sW3FNPyLYHoy9BUC7fHIwFsddJ0
+         i6v28pnWTFbkVCbViUONrVGfWneGILIemToFhFeeClWsLGQA7+XKRBIbAQArRNuW6gcf
+         F7GvvQi2EZvNES3BvvrwofliLr0zFHp7AraCwVJ+sMgzE/FW9El+jeh8VASSUGrETrZO
+         2RaQYqKDXN7NUsSlIpf7gNvvQThS5/jGglpaQ2mwUGgk8Wo7SjcXtPTBRP8i7PHn/yOh
+         Q7HD99ANxcLIXaYx0RIbhwD127Oh2fxrrG/biSEsx6uRVIttfAGClSRKAEghQkjyI9EA
+         vgJw==
+X-Gm-Message-State: AOJu0Yz1/Oh++PjHnEotwmA51rDSVl3aT0F7eXajfCCGWavj8QKw0Aaj
+	8R8ADgZxE3pe4v/f+MhqjA==
+X-Google-Smtp-Source: AGHT+IGLyV7PwzD0uMRgFbjueBNdwVNWCv/14yX+9ci/Je+qQb52KMqiGZ6KKsCnxRVJYWwB1HUPrw==
+X-Received: by 2002:adf:ed47:0:b0:332:e337:7c5f with SMTP id u7-20020adfed47000000b00332e3377c5fmr904774wro.61.1703266963000;
+        Fri, 22 Dec 2023 09:42:43 -0800 (PST)
 Received: from U4.lan ([2a02:810b:f40:4300:f3ae:2788:7e03:f44])
-        by smtp.gmail.com with ESMTPSA id w10-20020adfec4a000000b00336670abdcasm4777116wrn.40.2023.12.22.09.42.41
+        by smtp.gmail.com with ESMTPSA id w10-20020adfec4a000000b00336670abdcasm4777116wrn.40.2023.12.22.09.42.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Dec 2023 09:42:41 -0800 (PST)
+        Fri, 22 Dec 2023 09:42:42 -0800 (PST)
 From: Alex Bee <knaerzche@gmail.com>
 To: Sandy Huang <hjc@rock-chips.com>,
 	=?UTF-8?q?Heiko=20St=C3=BCbner?= <heiko@sntech.de>,
@@ -74,9 +74,9 @@ Cc: David Airlie <airlied@gmail.com>,
 	linux-rockchip@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
 	Alex Bee <knaerzche@gmail.com>
-Subject: [PATCH v4 28/29] ARM: dts: rockchip: Add HDMI node for RK3128
-Date: Fri, 22 Dec 2023 18:42:19 +0100
-Message-ID: <20231222174220.55249-29-knaerzche@gmail.com>
+Subject: [PATCH v4 29/29] ARM: dts: rockchip: Enable HDMI output for XPI-3128
+Date: Fri, 22 Dec 2023 18:42:20 +0100
+Message-ID: <20231222174220.55249-30-knaerzche@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231222174220.55249-1-knaerzche@gmail.com>
 References: <20231222174220.55249-1-knaerzche@gmail.com>
@@ -88,9 +88,8 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-RK3128 has Innosilicon based HDMI TX controller similar to the one found in
-RK3036.
-Add it and the respective port nodes to the SoC device tree.
+Add an hdmi-connector node and enable the hdmi, display-subsystem and vop
+nodes.
 
 Signed-off-by: Alex Bee <knaerzche@gmail.com>
 ---
@@ -103,60 +102,67 @@ changes in v3:
 changes in v4:
  - none
 
- arch/arm/boot/dts/rockchip/rk3128.dtsi | 33 ++++++++++++++++++++++++++
- 1 file changed, 33 insertions(+)
+ .../arm/boot/dts/rockchip/rk3128-xpi-3128.dts | 29 +++++++++++++++++++
+ 1 file changed, 29 insertions(+)
 
-diff --git a/arch/arm/boot/dts/rockchip/rk3128.dtsi b/arch/arm/boot/dts/rockchip/rk3128.dtsi
-index 1a3bc8b2bc6e..fb98873fd94e 100644
---- a/arch/arm/boot/dts/rockchip/rk3128.dtsi
-+++ b/arch/arm/boot/dts/rockchip/rk3128.dtsi
-@@ -270,6 +270,11 @@ vop: vop@1010e000 {
- 		vop_out: port {
- 			#address-cells = <1>;
- 			#size-cells = <0>;
-+
-+			vop_out_hdmi: endpoint@0 {
-+				reg = <0>;
-+				remote-endpoint = <&hdmi_in_vop>;
-+			};
- 		};
+diff --git a/arch/arm/boot/dts/rockchip/rk3128-xpi-3128.dts b/arch/arm/boot/dts/rockchip/rk3128-xpi-3128.dts
+index 03a97881519a..21c1678f4e91 100644
+--- a/arch/arm/boot/dts/rockchip/rk3128-xpi-3128.dts
++++ b/arch/arm/boot/dts/rockchip/rk3128-xpi-3128.dts
+@@ -47,6 +47,17 @@ dc_5v: dc-5v-regulator {
+ 		regulator-boot-on;
  	};
  
-@@ -463,6 +468,34 @@ usb2phy_otg: otg-port {
- 		};
- 	};
- 
-+	hdmi: hdmi@20034000 {
-+		compatible = "rockchip,rk3128-inno-hdmi";
-+		reg = <0x20034000 0x4000>;
-+		interrupts = <GIC_SPI 45 IRQ_TYPE_LEVEL_HIGH>;
-+		clocks = <&cru PCLK_HDMI>, <&cru DCLK_VOP>;
-+		clock-names = "pclk", "ref";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&hdmii2c_xfer &hdmi_hpd &hdmi_cec>;
-+		power-domains = <&power RK3128_PD_VIO>;
-+		status = "disabled";
++	hdmi-connnector {
++		compatible = "hdmi-connector";
++		type = "a";
 +
-+		ports {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			hdmi_in: port@0 {
-+				reg = <0>;
-+				hdmi_in_vop: endpoint {
-+					remote-endpoint = <&vop_out_hdmi>;
-+				};
-+			};
-+
-+			hdmi_out: port@1 {
-+				reg = <1>;
++		port {
++			hdmi_connector_in: endpoint {
++				remote-endpoint = <&hdmi_connector_out>;
 +			};
 +		};
 +	};
 +
- 	timer0: timer@20044000 {
- 		compatible = "rockchip,rk3128-timer", "rockchip,rk3288-timer";
- 		reg = <0x20044000 0x20>;
+ 	/*
+ 	 * This is a vbus-supply, which also supplies the GL852G usb hub,
+ 	 * thus has to be always-on
+@@ -239,6 +250,10 @@ &cpu0 {
+ 	cpu-supply = <&vdd_arm>;
+ };
+ 
++&display_subsystem {
++	status = "okay";
++};
++
+ &emmc {
+ 	bus-width = <8>;
+ 	vmmc-supply = <&vcc_io>;
+@@ -328,6 +343,16 @@ &gpu {
+ 	status = "okay";
+ };
+ 
++&hdmi {
++	status = "okay";
++};
++
++&hdmi_out {
++	hdmi_connector_out: endpoint {
++		remote-endpoint = <&hdmi_connector_in>;
++	};
++};
++
+ &mdio {
+ 	phy0: ethernet-phy@1 {
+ 		compatible = "ethernet-phy-ieee802.3-c22";
+@@ -423,3 +448,7 @@ &usb2phy_host {
+ &usb2phy_otg {
+ 	status = "okay";
+ };
++
++&vop {
++	status = "okay";
++};
 -- 
 2.43.0
 
