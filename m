@@ -1,125 +1,106 @@
-Return-Path: <linux-kernel+bounces-9617-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9618-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B85FA81C880
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 11:46:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 724D581C884
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 11:47:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6BF061F22360
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 10:46:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2CD4A286D3B
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 10:47:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D13717998;
-	Fri, 22 Dec 2023 10:45:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED46D15ACC;
+	Fri, 22 Dec 2023 10:47:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="plZeel0C"
+	dkim=pass (2048-bit key) header.d=mess.org header.i=@mess.org header.b="llKWctkZ";
+	dkim=pass (2048-bit key) header.d=mess.org header.i=@mess.org header.b="fo8v5dvS"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from gofer.mess.org (gofer.mess.org [88.97.38.141])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94FDB168AD;
-	Fri, 22 Dec 2023 10:45:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91B0FC433C9;
-	Fri, 22 Dec 2023 10:45:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703241940;
-	bh=QjenKszVnxW19P9qm+vCaf2vsR+u42Hmz70A3f7Ircw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=plZeel0CDn+GDpO7sYmPmXPFRcCxjWtyRlYZ3Pf/LXJxiv/ZpZRg4UnGIFMoByY8L
-	 m3N6NUI5rR3RxA/s6wygvE3Nb93NlCsuSLaX7g8JPWVhFvTWH0jDFWP5KfxXes3W7b
-	 nUBQP881GyHXJWCbN5xK9r5Ray/EqPIrsyJkyp9mlZS/5/5SecSCORlbuPw+ExIoWq
-	 Wy+pgZoXCEze7vvn04k5vhV2Wh32RXis9o+Jftyc+QNuXmgSFOX9wnuWwU43q8kBpd
-	 7h+MY88ZhTKPejo8SKVSbniJjky42mbfQTQynN4fuGseJioFxwtechsHx8AcIZhCmV
-	 Pce3IOsmyUv1g==
-Date: Fri, 22 Dec 2023 11:45:37 +0100
-From: Wolfram Sang <wsa@kernel.org>
-To: Alain Volmat <alain.volmat@foss.st.com>
-Cc: Andi Shyti <andi.shyti@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>,
-	Conor Dooley <conor@kernel.org>,
-	Valentin Caron <valentin.caron@foss.st.com>,
-	linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 6/9] i2c: stm32f7: add support for stm32mp25 soc
-Message-ID: <ZYVo0X1q9w19qTwg@shikoro>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-	Alain Volmat <alain.volmat@foss.st.com>,
-	Andi Shyti <andi.shyti@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>,
-	Conor Dooley <conor@kernel.org>,
-	Valentin Caron <valentin.caron@foss.st.com>,
-	linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20231215170617.95868-1-alain.volmat@foss.st.com>
- <20231215170617.95868-7-alain.volmat@foss.st.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1BA5156C4;
+	Fri, 22 Dec 2023 10:47:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mess.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mess.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mess.org; s=2020;
+	t=1703242021; bh=S3TdkYP2WghBFHy35jL/ROGvth6643mc86CxxDgb1U8=;
+	h=From:To:Cc:Subject:Date:From;
+	b=llKWctkZv4YXmaxVOF9OKSKxzPicte/5tLmA3UC+X1dm+y4jaf4hqqUOYgpeLb+Cf
+	 8F/6mX7rcEqJbiFxwn8hBKr6XfbOatNC9Nvgjn469N1E/hDI6e+O+/XsQ0jOVAfbo/
+	 HpJphrAmKk0xtTPRY6FhzZlzoy7MPzGNVVIWlyNCUt8dy854xoeAFHQnRS9B9Eun9h
+	 /Ckc2R9ELoCqZNB0bL8J4I4V1ItuREUYYhaRL0xwOJb6SR/PammSO+wVSYh+yNfFqL
+	 8BMMQvbRz7jzh5Qijo87HbFdKLG3x7nV9g3EDq1wp4wbHPFIl+5vWSKe3zPZibAgkb
+	 2tRMZrsr2l4tQ==
+Received: by gofer.mess.org (Postfix, from userid 501)
+	id C424B1009FC; Fri, 22 Dec 2023 10:47:01 +0000 (GMT)
+X-Spam-Level: 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mess.org; s=2020;
+	t=1703242019; bh=S3TdkYP2WghBFHy35jL/ROGvth6643mc86CxxDgb1U8=;
+	h=From:To:Cc:Subject:Date:From;
+	b=fo8v5dvSUCgr8MIUEOxgdZZeY146rwQuo9A8VEI4kkJCThHrjjsN/3OROrZnDrsEz
+	 jxqjs8Tmc1fcYma2x+rAAKUmvMQowixuUVuQoUEC4nL+95fVw5jyMvabXmji1mUtqn
+	 Z6ENDQUsCF7XGNZXaVKNzHKcjCoXflFdR5nzywpo4zB9T0PUka+6SB0hLi2KvtAE6h
+	 GhS8hmA9Iy28/tDj8nM3ivCyLgjW9Z2hLOqIxn3SMccgWnmQSz07VgUQSZo2hE6O3K
+	 i/entkExxaVWEP60GtBZK+pYRiTxU0QK9gcMCxAQOl/fjpnkiDJrOK/qj0jTBneegu
+	 mfzJxGUDy4/gg==
+Received: from localhost.localdomain (bigcore.local [IPv6:2a02:8011:d000:212:ca7f:54ff:fe51:14d6])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by gofer.mess.org (Postfix) with ESMTPSA id CDA5C1000CC;
+	Fri, 22 Dec 2023 10:46:59 +0000 (GMT)
+From: Sean Young <sean@mess.org>
+To: Thierry Reding <thierry.reding@gmail.com>,
+	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	Ray Jui <rjui@broadcom.com>,
+	Scott Branden <sbranden@broadcom.com>
+Cc: Sean Young <sean@mess.org>,
+	linux-pwm@vger.kernel.org,
+	linux-rpi-kernel@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] pwm: bcm2835: Duplicate call to clk_rate_exclusive_put in error path
+Date: Fri, 22 Dec 2023 10:46:51 +0000
+Message-ID: <20231222104651.167821-1-sean@mess.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="gW2s4LrwYHnx5p2E"
-Content-Disposition: inline
-In-Reply-To: <20231215170617.95868-7-alain.volmat@foss.st.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
+devm_add_action_or_reset() already calls the action in the error case.
 
---gW2s4LrwYHnx5p2E
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Reported-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Closes: https://lore.kernel.org/linux-pwm/fuku3b5ur6y4k4refd3vmeoenzjo6mwe3b3gtel34rhhhtvnsa@w4uktgbqsc3w/
+Signed-off-by: Sean Young <sean@mess.org>
+---
+ drivers/pwm/pwm-bcm2835.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-On Fri, Dec 15, 2023 at 06:06:10PM +0100, Alain Volmat wrote:
-> The stm32mp25 has only a single interrupt line used for both
-> events and errors. In order to cope with that, reorganise the
-> error handling code so that it can be called either from the
-> common handler (used in case of SoC having only a single IT line)
-> and the error handler for others.
-> The CR1 register also embeds a new FMP bit, necessary when running
-> at Fast Mode Plus frequency. This bit should be used instead of
-> the SYSCFG bit used on other platforms.
-> Add a new compatible to distinguish between the SoCs and two
-> boolean within the setup structure in order to know if the
-> platform has a single/multiple IT lines and if the FMP bit
-> within CR1 is available or not.
->=20
-> Signed-off-by: Valentin Caron <valentin.caron@foss.st.com>
-> Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+diff --git a/drivers/pwm/pwm-bcm2835.c b/drivers/pwm/pwm-bcm2835.c
+index 307c0bd5f885..283cf27f25ba 100644
+--- a/drivers/pwm/pwm-bcm2835.c
++++ b/drivers/pwm/pwm-bcm2835.c
+@@ -160,10 +160,8 @@ static int bcm2835_pwm_probe(struct platform_device *pdev)
+ 
+ 	ret = devm_add_action_or_reset(&pdev->dev, devm_clk_rate_exclusive_put,
+ 				       pc->clk);
+-	if (ret) {
+-		clk_rate_exclusive_put(pc->clk);
++	if (ret)
+ 		return ret;
+-	}
+ 
+ 	pc->rate = clk_get_rate(pc->clk);
+ 	if (!pc->rate)
+-- 
+2.43.0
 
-Applied to for-next, thanks!
-
-
---gW2s4LrwYHnx5p2E
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmWFaNEACgkQFA3kzBSg
-KbaoKg//cIf0sRmkSwiPwi3Vba09BJKXqrH9/uMfduP0Rr0B4WnUp6EnVNsKCrji
-2ZWMtbXr5PobpUeKSIg7J0J46gCwYujIGu8uhpw4EaO9JcNZoYWjtdrdeJTXM8fN
-c9zdIHe2FzMWVFqQKK8EymudivlSoKWJQq3zkrzjKkUKFU7f0fG1PQx6DS+isXVD
-Zmnf0sUrKq2xCT5c/B06EuXawzkulolf2iymqFaU/WSGHY0vK6lj+JDlZrrm4ta3
-r/chFdDGNdRQvoqdv+IBjGDhPnxrRlsBXdBOHUJbZCz8Gf9ROx8HZ5yOMc9AjVO4
-kvJrmXiUEnwnCzd94hU3geEutPsQLdGBwMsywHXwBXuzMOYEg9yLBHJJJSbsI3kK
-n1OF55sI26F4nReHHVCT03AiHrpyyLZvmCJu2Xa6V1gYWKUxNOncWFFFkee40Qcg
-il4HUkRpCTjl+wFHvATVjj6/M8qvNaQQfiDY68Mk2t694CR7eDEvbiRKskukPitM
-wHJgMP8o7jCSPxGgjdaR1ZUuGCcKf9tXtX/3WCV3FRg45aAKveZJ9BH6uOBuWJfN
-JrnJzft9qzvUs6rmIBwrXcmcRFlEZxp173oQHJjnnkDN5ULUpJKJw9+zZFEofqdm
-i1JySSKElQsjzSKPPR6dejvhn1nMayRlC8f0gOrvRprRLM4wAAo=
-=vmW5
------END PGP SIGNATURE-----
-
---gW2s4LrwYHnx5p2E--
 
