@@ -1,256 +1,113 @@
-Return-Path: <linux-kernel+bounces-9661-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9662-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DAA8F81C914
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 12:28:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36D1181C918
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 12:28:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5F2961F257C3
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 11:28:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 688FD1C223D0
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 11:28:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 396CA1802F;
-	Fri, 22 Dec 2023 11:28:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C3F617735;
+	Fri, 22 Dec 2023 11:28:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="sEtBWDud"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from SHSQR01.spreadtrum.com (unknown [222.66.158.135])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f46.google.com (mail-qv1-f46.google.com [209.85.219.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05A0C1773B;
-	Fri, 22 Dec 2023 11:28:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=unisoc.com
-Received: from dlp.unisoc.com ([10.29.3.86])
-	by SHSQR01.spreadtrum.com with ESMTP id 3BMBRo8b015216;
-	Fri, 22 Dec 2023 19:27:50 +0800 (+08)
-	(envelope-from Kaiwei.Liu@unisoc.com)
-Received: from SHDLP.spreadtrum.com (shmbx07.spreadtrum.com [10.0.1.12])
-	by dlp.unisoc.com (SkyGuard) with ESMTPS id 4SxPy30mynz2QTSsZ;
-	Fri, 22 Dec 2023 19:21:31 +0800 (CST)
-Received: from xm9614pcu.spreadtrum.com (10.13.2.29) by shmbx07.spreadtrum.com
- (10.0.1.12) with Microsoft SMTP Server (TLS) id 15.0.1497.23; Fri, 22 Dec
- 2023 19:27:48 +0800
-From: Kaiwei Liu <kaiwei.liu@unisoc.com>
-To: Vinod Koul <vkoul@kernel.org>, Orson Zhai <orsonzhai@gmail.com>,
-        Baolin
- Wang <baolin.wang@linux.alibaba.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>
-CC: <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        kaiwei liu
-	<liukaiwei086@gmail.com>,
-        Wenming Wu <wenming.wu@unisoc.com>
-Subject: [PATCH V2 2/2] dmaengine: sprd: optimize two stage transfer function
-Date: Fri, 22 Dec 2023 19:27:46 +0800
-Message-ID: <20231222112746.9720-1-kaiwei.liu@unisoc.com>
-X-Mailer: git-send-email 2.17.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6573517730
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 11:28:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qv1-f46.google.com with SMTP id 6a1803df08f44-67a338dfca7so10450896d6.2
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 03:28:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1703244510; x=1703849310; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1p7KqUeaWemOFaHH+JSolT+/fQ/fl1zP2/9KT4NrzQs=;
+        b=sEtBWDude6HWs19lafdbEKl2ITBZWLxnvBlNmD1wXKZRmQ5Fw700bLGgf1AgDjWYZI
+         p90Mot4L/KBL+CRZVWTkC7Q73Pnwq9Fn8mrQ+2z2D1IKCz+monFQE3vXKu8LSaWONASH
+         DUdNuMayUvwttB4B1a3DbD4x0tvatna2N2PIgbD6L7KfntPLk6REcVazi5nOKmgbiMLr
+         Kzca5tZZ+skU6Gs8xc2wuKmNZrghaZuxG8ATJNGohgNcRDovDQl+6Iw5N/hSByDjtGbr
+         s3RmOugWDoBjZtttca7+aCFdMHerhCO9QUQyYRSlb7gG6A+YmDM7uqoWayUyvAFq24wi
+         fODw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703244510; x=1703849310;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1p7KqUeaWemOFaHH+JSolT+/fQ/fl1zP2/9KT4NrzQs=;
+        b=EVogZHIC6i7flrOzW/FjxJPX6bzmYEr6GIDqcoxyO34XUWgq6QgK+6CwXxWf0HigO9
+         PAWAJ4y4y3tJztrTVofaftzlUv9mZCtZV+k9bRDHbVpGabpWPck1D8IqyBFfU3Roh1W7
+         jMWhDcr10VsFwPyu/yM3yWcBRTITDTpWfYGDtwtnt6xga2VASBh2Pn4k0+i786/1btWo
+         7f6aoaihODOlWm4y+mc5uZvrcit09W+pTEnVIs1giad1hiGKtQJvE+B9JyhTrOn7CsRR
+         +TIqR6z1IaJOpKWDuGp8K7lc4zfwhCR8k9rEsbWdKHN37+zgtYh/6UJPiQCSdTFitiZ1
+         3tgA==
+X-Gm-Message-State: AOJu0YzL3uYw1MDEYTLU96fWmcUHCkZI/HGhpjO8tVyNGZOCGG5grjAQ
+	mEMXJhZ2rRdx2keqxN2vYvhhlp8IlYjZiPv5H8+C3FaKV6rW
+X-Google-Smtp-Source: AGHT+IHPji95ha6HR/0zNsyc4lcIIhIIZ0QuPDK3fEve1mQsC16ko8lq10eB/oWPfvvIAqy7RvyLZOYcE5PauCz3ktA=
+X-Received: by 2002:a05:6214:62a:b0:67f:9eb:f1ec with SMTP id
+ a10-20020a056214062a00b0067f09ebf1ecmr1541233qvx.56.1703244510192; Fri, 22
+ Dec 2023 03:28:30 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
- shmbx07.spreadtrum.com (10.0.1.12)
-X-MAIL:SHSQR01.spreadtrum.com 3BMBRo8b015216
+References: <20231213233605.661251-1-iii@linux.ibm.com> <20231213233605.661251-28-iii@linux.ibm.com>
+In-Reply-To: <20231213233605.661251-28-iii@linux.ibm.com>
+From: Alexander Potapenko <glider@google.com>
+Date: Fri, 22 Dec 2023 12:27:50 +0100
+Message-ID: <CAG_fn=VfYNpMynQtXiKemoDy3LjH5Hn8N-VpzH6AGVZ3jDHPUQ@mail.gmail.com>
+Subject: Re: [PATCH v3 27/34] s390/irqflags: Do not instrument
+ arch_local_irq_*() with KMSAN
+To: Ilya Leoshkevich <iii@linux.ibm.com>
+Cc: Alexander Gordeev <agordeev@linux.ibm.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	Christoph Lameter <cl@linux.com>, David Rientjes <rientjes@google.com>, Heiko Carstens <hca@linux.ibm.com>, 
+	Joonsoo Kim <iamjoonsoo.kim@lge.com>, Marco Elver <elver@google.com>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, Pekka Enberg <penberg@kernel.org>, 
+	Steven Rostedt <rostedt@goodmis.org>, Vasily Gorbik <gor@linux.ibm.com>, 
+	Vlastimil Babka <vbabka@suse.cz>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
+	Dmitry Vyukov <dvyukov@google.com>, Hyeonggon Yoo <42.hyeyoo@gmail.com>, kasan-dev@googlegroups.com, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, linux-s390@vger.kernel.org, 
+	linux-trace-kernel@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Sven Schnelle <svens@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: "kaiwei.liu" <kaiwei.liu@unisoc.com>
-
-For SPRD DMA, it provides a function that one channel can start
-the second channel after completing the transmission, which we
-call two stage transfer mode. You can choose which channel can
-generate interrupt when finished. It can support up to two sets
-of such patterns.
-When configuring registers for two stage transfer mode, we need
-to set the mask bit to ensure that the setting are accurate. And
-we should clear the two stage transfer configuration when release
-DMA channel.
-The two stage transfer function is mainly used by SPRD audio, and
-now audio also requires that the data need to be accessed on the
-device side. So here use the src_port_window_size and dst_port_win-
-dow_size in the struct of dma_slave_config.
-
-Signed-off-by: kaiwei.liu <kaiwei.liu@unisoc.com>
----
-Change in V2
--change because [PATCH 1/2]
----
- drivers/dma/sprd-dma.c | 116 ++++++++++++++++++++++++-----------------
- 1 file changed, 69 insertions(+), 47 deletions(-)
-
-diff --git a/drivers/dma/sprd-dma.c b/drivers/dma/sprd-dma.c
-index cb48731d70b2..e9e113142fd2 100644
---- a/drivers/dma/sprd-dma.c
-+++ b/drivers/dma/sprd-dma.c
-@@ -68,6 +68,7 @@
- #define SPRD_DMA_GLB_TRANS_DONE_TRG	BIT(18)
- #define SPRD_DMA_GLB_BLOCK_DONE_TRG	BIT(17)
- #define SPRD_DMA_GLB_FRAG_DONE_TRG	BIT(16)
-+#define SPRD_DMA_GLB_TRG_MASK		GENMASK(19, 16)
- #define SPRD_DMA_GLB_TRG_OFFSET		16
- #define SPRD_DMA_GLB_DEST_CHN_MASK	GENMASK(13, 8)
- #define SPRD_DMA_GLB_DEST_CHN_OFFSET	8
-@@ -155,6 +156,13 @@
- 
- #define SPRD_DMA_SOFTWARE_UID		0
- 
-+#define SPRD_DMA_SRC_CHN0_INT		9
-+#define SPRD_DMA_SRC_CHN1_INT		10
-+#define SPRD_DMA_DST_CHN0_INT		11
-+#define SPRD_DMA_DST_CHN1_INT		12
-+#define SPRD_DMA_2STAGE_SET		1
-+#define SPRD_DMA_2STAGE_CLEAR		0
-+
- /* dma data width values */
- enum sprd_dma_datawidth {
- 	SPRD_DMA_DATAWIDTH_1_BYTE,
-@@ -431,53 +439,57 @@ static enum sprd_dma_req_mode sprd_dma_get_req_type(struct sprd_dma_chn *schan)
- 	return (frag_reg >> SPRD_DMA_REQ_MODE_OFFSET) & SPRD_DMA_REQ_MODE_MASK;
- }
- 
--static int sprd_dma_set_2stage_config(struct sprd_dma_chn *schan)
-+static void sprd_dma_2stage_write(struct sprd_dma_chn *schan,
-+				  u32 config_type, u32 grp_offset)
- {
- 	struct sprd_dma_dev *sdev = to_sprd_dma_dev(&schan->vc.chan);
--	u32 val, chn = schan->chn_num + 1;
--
--	switch (schan->chn_mode) {
--	case SPRD_DMA_SRC_CHN0:
--		val = chn & SPRD_DMA_GLB_SRC_CHN_MASK;
--		val |= BIT(schan->trg_mode - 1) << SPRD_DMA_GLB_TRG_OFFSET;
--		val |= SPRD_DMA_GLB_2STAGE_EN;
--		if (schan->int_type != SPRD_DMA_NO_INT)
--			val |= SPRD_DMA_GLB_SRC_INT;
--
--		sprd_dma_glb_update(sdev, SPRD_DMA_GLB_2STAGE_GRP1, val, val);
--		break;
--
--	case SPRD_DMA_SRC_CHN1:
--		val = chn & SPRD_DMA_GLB_SRC_CHN_MASK;
--		val |= BIT(schan->trg_mode - 1) << SPRD_DMA_GLB_TRG_OFFSET;
--		val |= SPRD_DMA_GLB_2STAGE_EN;
--		if (schan->int_type != SPRD_DMA_NO_INT)
--			val |= SPRD_DMA_GLB_SRC_INT;
--
--		sprd_dma_glb_update(sdev, SPRD_DMA_GLB_2STAGE_GRP2, val, val);
--		break;
--
--	case SPRD_DMA_DST_CHN0:
--		val = (chn << SPRD_DMA_GLB_DEST_CHN_OFFSET) &
--			SPRD_DMA_GLB_DEST_CHN_MASK;
--		val |= SPRD_DMA_GLB_2STAGE_EN;
--		if (schan->int_type != SPRD_DMA_NO_INT)
--			val |= SPRD_DMA_GLB_DEST_INT;
--
--		sprd_dma_glb_update(sdev, SPRD_DMA_GLB_2STAGE_GRP1, val, val);
--		break;
--
--	case SPRD_DMA_DST_CHN1:
--		val = (chn << SPRD_DMA_GLB_DEST_CHN_OFFSET) &
--			SPRD_DMA_GLB_DEST_CHN_MASK;
--		val |= SPRD_DMA_GLB_2STAGE_EN;
--		if (schan->int_type != SPRD_DMA_NO_INT)
--			val |= SPRD_DMA_GLB_DEST_INT;
--
--		sprd_dma_glb_update(sdev, SPRD_DMA_GLB_2STAGE_GRP2, val, val);
--		break;
-+	u32 mask_val;
-+	u32 chn = schan->chn_num + 1;
-+	u32 val = 0;
-+
-+	if (config_type == SPRD_DMA_2STAGE_SET) {
-+		if (schan->chn_mode == SPRD_DMA_SRC_CHN0 ||
-+		    schan->chn_mode == SPRD_DMA_SRC_CHN1) {
-+			val = chn & SPRD_DMA_GLB_SRC_CHN_MASK;
-+			val |= BIT(schan->trg_mode - 1) << SPRD_DMA_GLB_TRG_OFFSET;
-+			val |= SPRD_DMA_GLB_2STAGE_EN;
-+			if (schan->int_type & SPRD_DMA_SRC_CHN0_INT ||
-+			    schan->int_type & SPRD_DMA_SRC_CHN1_INT)
-+				val |= SPRD_DMA_GLB_SRC_INT;
-+			mask_val = SPRD_DMA_GLB_SRC_INT | SPRD_DMA_GLB_TRG_MASK |
-+				   SPRD_DMA_GLB_SRC_CHN_MASK;
-+		} else {
-+			val = (chn << SPRD_DMA_GLB_DEST_CHN_OFFSET) &
-+			       SPRD_DMA_GLB_DEST_CHN_MASK;
-+			val |= SPRD_DMA_GLB_2STAGE_EN;
-+			if (schan->int_type & SPRD_DMA_DST_CHN0_INT ||
-+			    schan->int_type & SPRD_DMA_DST_CHN1_INT)
-+				val |= SPRD_DMA_GLB_DEST_INT;
-+			mask_val = SPRD_DMA_GLB_DEST_INT | SPRD_DMA_GLB_DEST_CHN_MASK;
-+		}
-+	} else {
-+		if (schan->chn_mode == SPRD_DMA_SRC_CHN0 ||
-+		    schan->chn_mode == SPRD_DMA_SRC_CHN1)
-+			mask_val = SPRD_DMA_GLB_SRC_INT | SPRD_DMA_GLB_TRG_MASK |
-+				   SPRD_DMA_GLB_2STAGE_EN | SPRD_DMA_GLB_SRC_CHN_MASK;
-+		else
-+			mask_val = SPRD_DMA_GLB_DEST_INT | SPRD_DMA_GLB_2STAGE_EN |
-+				   SPRD_DMA_GLB_DEST_CHN_MASK;
-+	}
-+	sprd_dma_glb_update(sdev, grp_offset, mask_val, val);
-+}
- 
--	default:
-+static int sprd_dma_2stage_config(struct sprd_dma_chn *schan, u32 config_type)
-+{
-+	struct sprd_dma_dev *sdev = to_sprd_dma_dev(&schan->vc.chan);
-+
-+	if (schan->chn_mode == SPRD_DMA_SRC_CHN0 ||
-+	    schan->chn_mode == SPRD_DMA_DST_CHN0)
-+		sprd_dma_2stage_write(schan, config_type, SPRD_DMA_GLB_2STAGE_GRP1);
-+	else if (schan->chn_mode == SPRD_DMA_SRC_CHN1 ||
-+		 schan->chn_mode == SPRD_DMA_DST_CHN1)
-+		sprd_dma_2stage_write(schan, config_type, SPRD_DMA_GLB_2STAGE_GRP2);
-+	else {
- 		dev_err(sdev->dma_dev.dev, "invalid channel mode setting %d\n",
- 			schan->chn_mode);
- 		return -EINVAL;
-@@ -545,7 +557,7 @@ static void sprd_dma_start(struct sprd_dma_chn *schan)
- 	 * Set 2-stage configuration if the channel starts one 2-stage
- 	 * transfer.
- 	 */
--	if (schan->chn_mode && sprd_dma_set_2stage_config(schan))
-+	if (schan->chn_mode && sprd_dma_2stage_config(schan, SPRD_DMA_2STAGE_SET))
- 		return;
- 
- 	/*
-@@ -569,6 +581,12 @@ static void sprd_dma_stop(struct sprd_dma_chn *schan)
- 	sprd_dma_set_pending(schan, false);
- 	sprd_dma_unset_uid(schan);
- 	sprd_dma_clear_int(schan);
-+	/*
-+	 * If 2-stage transfer is used, the configuration must be clear
-+	 * when release DMA channel.
-+	 */
-+	if (schan->chn_mode)
-+		sprd_dma_2stage_config(schan, SPRD_DMA_2STAGE_CLEAR);
- 	schan->cur_desc = NULL;
- }
- 
-@@ -757,7 +775,9 @@ static int sprd_dma_fill_desc(struct dma_chan *chan,
- 	phys_addr_t llist_ptr;
- 
- 	if (dir == DMA_MEM_TO_DEV) {
--		src_step = sprd_dma_get_step(slave_cfg->src_addr_width);
-+		src_step = slave_cfg->src_port_window_size ?
-+			   slave_cfg->src_port_window_size :
-+			   sprd_dma_get_step(slave_cfg->src_addr_width);
- 		if (src_step < 0) {
- 			dev_err(sdev->dma_dev.dev, "invalid source step\n");
- 			return src_step;
-@@ -773,7 +793,9 @@ static int sprd_dma_fill_desc(struct dma_chan *chan,
- 		else
- 			dst_step = SPRD_DMA_NONE_STEP;
- 	} else {
--		dst_step = sprd_dma_get_step(slave_cfg->dst_addr_width);
-+		dst_step = slave_cfg->dst_port_window_size ?
-+			   slave_cfg->dst_port_window_size :
-+			   sprd_dma_get_step(slave_cfg->dst_addr_width);
- 		if (dst_step < 0) {
- 			dev_err(sdev->dma_dev.dev, "invalid destination step\n");
- 			return dst_step;
--- 
-2.17.1
-
+On Thu, Dec 14, 2023 at 12:36=E2=80=AFAM Ilya Leoshkevich <iii@linux.ibm.co=
+m> wrote:
+>
+> KMSAN generates the following false positives on s390x:
+>
+> [    6.063666] DEBUG_LOCKS_WARN_ON(lockdep_hardirqs_enabled())
+> [         ...]
+> [    6.577050] Call Trace:
+> [    6.619637]  [<000000000690d2de>] check_flags+0x1fe/0x210
+> [    6.665411] ([<000000000690d2da>] check_flags+0x1fa/0x210)
+> [    6.707478]  [<00000000006cec1a>] lock_acquire+0x2ca/0xce0
+> [    6.749959]  [<00000000069820ea>] _raw_spin_lock_irqsave+0xea/0x190
+> [    6.794912]  [<00000000041fc988>] __stack_depot_save+0x218/0x5b0
+> [    6.838420]  [<000000000197affe>] __msan_poison_alloca+0xfe/0x1a0
+> [    6.882985]  [<0000000007c5827c>] start_kernel+0x70c/0xd50
+> [    6.927454]  [<0000000000100036>] startup_continue+0x36/0x40
+>
+> Between trace_hardirqs_on() and `stosm __mask, 3` lockdep thinks that
+> interrupts are on, but on the CPU they are still off. KMSAN
+> instrumentation takes spinlocks, giving lockdep a chance to see and
+> complain about this discrepancy.
+>
+> KMSAN instrumentation is inserted in order to poison the __mask
+> variable. Disable instrumentation in the respective functions. They are
+> very small and it's easy to see that no important metadata updates are
+> lost because of this.
+>
+> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+Reviewed-by: Alexander Potapenko <glider@google.com>
 
