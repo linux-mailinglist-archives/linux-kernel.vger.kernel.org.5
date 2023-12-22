@@ -1,53 +1,44 @@
-Return-Path: <linux-kernel+bounces-9529-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9530-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF34F81C710
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 10:01:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4784881C718
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 10:02:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 63FBF1F26436
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 09:01:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6C0131C23E60
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 09:02:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93973D527;
-	Fri, 22 Dec 2023 09:01:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2710D527;
+	Fri, 22 Dec 2023 09:02:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FMhRS0O4"
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=deller@gmx.de header.b="FhfaRI6Y"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80988D2F4;
-	Fri, 22 Dec 2023 09:01:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703235706; x=1734771706;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=ws6wMA0is9Epmo9Hqj9O+JqKwLl8kwfSK40ywvuK+T4=;
-  b=FMhRS0O46uo7R1MTG4QjW7zcXprALUJT0w1LWFrL29nDYQu+T4v2+IT8
-   RtOunI69FP63RZ1AHcq/h8BiYJFxz87FZXf7uavqPp+eFM80I9yGg4jSw
-   x/ANEx1vkCoLQDle+cdHbx7Ka8DxhgtztdNBWs8uMxIq6btk8fxO8MQbD
-   tqnTCsJKVTCMnrBL90DWbuxlVEtUvOIwF4zbJUIACibPcU1bPjXDDwy+a
-   8OW6EaJiELU8r4me33aDVpGo3k3zZ7dap0OqEw/nMryVh9TiPkrIKA9JJ
-   bIP56Xc8XGklbUoP4xhiAcf3jhEtj7fEtcNHncDvUnqTLtwhzmQodhjef
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10931"; a="399916984"
-X-IronPort-AV: E=Sophos;i="6.04,294,1695711600"; 
-   d="scan'208";a="399916984"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Dec 2023 01:01:45 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10931"; a="867587604"
-X-IronPort-AV: E=Sophos;i="6.04,294,1695711600"; 
-   d="scan'208";a="867587604"
-Received: from zhaohaif-mobl.ccr.corp.intel.com (HELO [10.93.26.36]) ([10.93.26.36])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Dec 2023 01:01:42 -0800
-Message-ID: <6fed05ee-331e-4a5f-b614-50107f57146a@linux.intel.com>
-Date: Fri, 22 Dec 2023 17:01:39 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEDA7D2E0;
+	Fri, 22 Dec 2023 09:02:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+	t=1703235741; x=1703840541; i=deller@gmx.de;
+	bh=V6sDV6pyBLKf2NuZ6ATFB3thXBq+AktPzbQKhUhh9OY=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=FhfaRI6Y595PzRvvMav97qjsLp8WuDJATf2au16b9pQrJzD+NHMMiOE1j+6jUhsJ
+	 3DKvg8VIvRnBjHVxsuI4bw6o0vgo7dPqk1jFlBscYg0UyDg7GhlBfSZC16u2I1oS5
+	 e++uA5oWxu+nwI4kLe30lCCwffuHCLdt15BmjdVAv9600is7aJGNLSJHSiSH+Vr3W
+	 BownU8J2tUaWF/DW3BtGxwUVg4/9539ApJT3rsbu7V8qDxJP6GCT9PkJgp+woVbDm
+	 OkDNR/dFGqhFwBypGdPDVl+jB0Y2kBousJELx+4b8o5C/Fxbvw9+ukj2WF7+F3sbh
+	 m13Fu6t6mZKRqh6+7g==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.20.55] ([94.134.157.108]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MSt8W-1ridEZ1AYI-00UI2a; Fri, 22
+ Dec 2023 10:02:21 +0100
+Message-ID: <7a504ceb-da00-4c0b-acc0-3ab48fb60f5e@gmx.de>
+Date: Fri, 22 Dec 2023 10:02:20 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -55,126 +46,147 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 2/2] iommu/vt-d: don's issue devTLB flush request when
- device is disconnected
-To: Lukas Wunner <lukas@wunner.de>
-Cc: bhelgaas@google.com, baolu.lu@linux.intel.com, dwmw2@infradead.org,
- will@kernel.org, robin.murphy@arm.com, linux-pci@vger.kernel.org,
- iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
- Haorong Ye <yehaorong@bytedance.com>
-References: <20231222081427.GA4134@wunner.de>
-From: Ethan Zhao <haifeng.zhao@linux.intel.com>
-In-Reply-To: <20231222081427.GA4134@wunner.de>
+Subject: Re: [PATCH 3/4] vmlinux.lds.h: Fix alignment for __ksymtab*,
+ __kcrctab_* and .pci_fixup sections
+Content-Language: en-US
+To: Masahiro Yamada <masahiroy@kernel.org>, deller@kernel.org
+Cc: linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+ linux-modules@vger.kernel.org, linux-arch@vger.kernel.org,
+ Luis Chamberlain <mcgrof@kernel.org>
+References: <20231122221814.139916-1-deller@kernel.org>
+ <20231122221814.139916-4-deller@kernel.org>
+ <CAK7LNARgQ0t=4dfkJXDhSzdFGbxDuN2kPGxTgDR7siCYTtGU5w@mail.gmail.com>
+From: Helge Deller <deller@gmx.de>
+Autocrypt: addr=deller@gmx.de; keydata=
+ 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
+In-Reply-To: <CAK7LNARgQ0t=4dfkJXDhSzdFGbxDuN2kPGxTgDR7siCYTtGU5w@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:C3E3fy9OPbBQ3+Xd0xFPyWcs6FoPCmKpr4ERn01kYTSd1IeBBm3
+ ZgFn72lcVW/H+2DgR2xPNgr/CYqiNpitwZXF9Bs78h1+WebOTku2Xw+2uQ9NpLOQ+nX7jED
+ 0cem5oeRXJa0WTL3GZoGiBXWUnJIJFzOw/jcgLFOTU26y9OS5epQEUNucR9jTmC+EZDB1DK
+ L/3tyFSmz8iH9U3m4LOhA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:YCbcKvLbE8k=;xRb6+he4cYIuCvBQ6U6kllbFRqM
+ C8A4cqocP3A9ntmnd8vjgkiwEJYj+pBelLBUHpm2BaOqe6+sPEUaM2ywliEr7XEjNpiKbrXhA
+ 3Rcf7pSdPlPpE4zU6FBRz4RTtYCbhhAk7qwEF2oY7gMAwZ9S/vKfy5J3dHBVWxzKOnOSnS3IB
+ 8N80Xtg/39xaetE1uHMTsNnOxAfK119p7B066Mq4Hf4SM8vnruWWLyW72KYNWhD9IPSfw9pxj
+ zYsJ2mJRtdvRmBbJL9SwYqqb6sdbx052jpXYo4sFafeKf6AhEE4G+6DLiGpAoc4/IWFqw+IH2
+ 02IvN7PXY6fvE+RQ4kwYhMhBzJgIls1b+VtF16BII8ZzB28YeV0OPos4gIws4RfEx5E9EGH11
+ PMtZbzcxW5QJLO+VyxsJ6PEwAqjRKKLGT11R4CQwwpUL3MDs8r6sROSvOGT1g6TtTv5qKjBTH
+ Yin0PIgQkhyLXizQ77WA1X/mFMa4wEXH/y5YlocMFGD/SKz65XqE+3LmazvwO3ifZJrZpERwe
+ fN6fcDHWmhALebCKPd7ziMapioiQifoKxPTjmHeG+p23wzaLCVdvWQrYt6LdkL5y9rPHKxsHh
+ i/tonVL9Ye+24Xyi6t8KIqV6CN6FCb7UxKtTFdx6e/MjXNRJbTpE9F1CuBHC0TPGHXwXwvSlN
+ dIqs/SwKYRFbUtJcsjY18cDgoubARv1PqDqq5UFiJkF4fapXiuVe99jhXa95bPTX1DgTTDLwl
+ zljP4Bn3d+YmT+cOI3X8OGYyxFkZaySanna+PHb//2TEiTXzQr0DiGe/13GoMVSd8u0mo6tQ2
+ PREuD84czUnSW6e7Sh2BfeBFSGKVJMJPhyY1f45Fj4ayzxWGbDDTzyrcA8PNcX3Gvp9Pyb/Jp
+ gubqXAkvk/zhrbWJbiY0WbcCwzlE6l4vtyJcWvOYaEm2sgbw9NC+H8YXXF4UBNxxfoknapcOE
+ pPaPeK3P9g1ltpmd8adAEtHeG78=
 
-
-On 12/22/2023 4:14 PM, Lukas Wunner wrote:
-> On Fri, Dec 22, 2023 at 09:56:39AM +0800, Ethan Zhao wrote:
->> I don't know if the polling along sleeping for completion of meanningless
->> devTLB invalidation request blindly sent to (removed/powered down/link down)
->> device makes sense or not.
-> If you have a way to get to the struct pci_dev * which you're waiting for
-> in qi_submit_sync() then I guess you could check for its presence and bail
-> out if it's gone, instead of issuing a cpu_relax().
-One option to bail out the loop.
->
->>> Again, the proposed patch is not a proper solution.  It will paper over
->>> the issue most of the time but every once in a while someone will still
->>> get a hard lockup splat and it will then be more difficult to reproduce
->>> and fix if the proposed patch is accepted.
->> Could you point out why is not proper ? Is there any other window
->> the hard lockup still could happen with the ATS capable devcie
->> supprise_removal case if we checked the connection state first ?
->> Please help to elaberate it.
-> Even though user space may have initiated orderly removal via sysfs,
-> the device may be yanked from the slot (surprise removed) while the
-> orderly removal is happening.
-
-Yes, just after the wait descripor is submitted and before waiting in loop.
-
-the rare but worst case.
-
->
->
->> Yes, this is the old kernel stack trace, but customer also tried lasted
->> 6.7rc4
-> If you could provide a stacktrace for a contemporary kernel,
-> I think that would be preferred.
-Customer tried, but they didn't provide me the lastest trace.
->
->
->> (doesn't work) and the patched 6.7rc4 (fixed).
-> Why is it fixed in v6.7-rc4?  Is the present patch thus unnecessary?
-Not fixed in v6.7rc4, with this patch, they said the unplug works.
->
->>> Finally, it is common to adhere to terms
->>> used in the PCIe Base Spec in commit messages, so "ATC Invalidate Request"
->>> might be preferable to "devTLB flush request".
->> ATS Invalidate Request ? devTLB flush request has the same meaning,
+On 12/21/23 14:07, Masahiro Yamada wrote:
+> On Thu, Nov 23, 2023 at 7:18=E2=80=AFAM <deller@kernel.org> wrote:
 >>
->> I thought all iommu/PCIe guys could understand.
-> I'm just pointing out the preferred way to write commit messages
-> in the PCI subsystem (as I've perceived it over the years) so that
-> you can reduce the number of iterations you have to go through
-> due to maintainer feedback.  I'm just trying to be helpful.
+>> From: Helge Deller <deller@gmx.de>
+>>
+>> On 64-bit architectures without CONFIG_HAVE_ARCH_PREL32_RELOCATIONS
+>> (e.g. ppc64, ppc64le, parisc, s390x,...) the __KSYM_REF() macro stores
+>> 64-bit pointers into the __ksymtab* sections.
+>> Make sure that the start of those sections is 64-bit aligned in the vml=
+inux
+>> executable, otherwise unaligned memory accesses may happen at runtime.
 >
-Understand.
->> How to define the point "some" msec to timeout while software
->> break out the waiting loop ? or polling if the target is gone ?
-> I'd say adhere to the 1 min + 50% number provided in the spec.
 >
-> If you know the device is gone before that then you can break out
-> of the loop in qi_submit_sync() of course.
+> Are you solving a real problem?
 
-I am trying to find a way to break it out in this qi_submit_sync().
+Not any longer.
+I faced a problem on parisc when neither #1 and #3 were applied
+because of a buggy unalignment exception handler. But this is
+not something which I would count a "real generic problem".
 
-  checking the device state in this loop, but seems not good in this
+> 1/4 already ensures the proper alignment of __ksymtab*, doesn't it?
 
-iommu low level code and need some interfaces to be modified.
+Yes, it does.
 
-That would cost me much more hours to make the rare case work,
+>...
+> So, my understanding is this patch is unneeded.
 
-to be perfect:
+Yes, it's not required and I'm fine if we drop it.
 
-1.  check the pci device state in the loop
+But regarding __kcrctab:
 
-2.  modify the invalidation descriptor status in 
-pciehp_ist()->intel_iommu_release_device() call.
+>> @@ -498,6 +501,7 @@
+>>          }                                                             =
+  \
+>>                                                                        =
+  \
+>>          /* Kernel symbol table: Normal symbols */                     =
+  \
+>> +       . =3D ALIGN(4);                                                =
+   \
+>>          __kcrctab         : AT(ADDR(__kcrctab) - LOAD_OFFSET) {       =
+  \
+>>                  __start___kcrctab =3D .;                              =
+    \
+>>                  KEEP(*(SORT(___kcrctab+*)))                           =
+  \
 
->
-> The question is, does the Intel IOMMU have a timeout at all for
-> Invalidate Requests?  I guess we don't really know that because
-> in the stack trace you've provided, the watchdog stops the machine
-> before a timeout occurs.  So it's at least 12 sec.  Or there's
-> no timeout at all.
+I think this patch would be beneficial to get proper alignment:
 
-The calltrace wouldn't tell us there is really timeout of 1min+50%
+diff --git a/include/linux/export-internal.h b/include/linux/export-intern=
+al.h
+index cd253eb51d6c..d445705ac13c 100644
+=2D-- a/include/linux/export-internal.h
++++ b/include/linux/export-internal.h
+@@ -64,6 +64,7 @@
 
-or not, event there is, meanlingless.
-
-> If the Intel IOMMU doesn't enforce a timeout, you should probably amend
-> qi_submit_sync() to break out of the loop once the 1 min + 50% limit
-> is exceeded.  And you need to amend the function to sleep instead of
-> polling in interrupt context.
-
-Too many paths to call this function, and revise it to non-sync, to much
-
-things impacted.
-
->
-> Can you check with hardware engineers whether there's a timeout?
-
-Combinated with third party PCIe switch chips ?
+  #define SYMBOL_CRC(sym, crc, sec)   \
+         asm(".section \"___kcrctab" sec "+" #sym "\",\"a\""     "\n" \
++           ".balign 4"                                         "\n" \
+             "__crc_" #sym ":"                                   "\n" \
+             ".long " #crc                                       "\n" \
+             ".previous"                                         "\n")
 
 
-Thanks,
-
-Ethan
-
->
-> Thanks,
->
-> Lukas
->
+Helge
 
