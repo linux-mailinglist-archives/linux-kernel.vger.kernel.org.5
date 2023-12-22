@@ -1,232 +1,201 @@
-Return-Path: <linux-kernel+bounces-9336-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9337-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E67B281C44B
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 05:43:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5FCD381C44D
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 05:43:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1832A1C24E2E
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 04:43:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 848F11C24E36
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 04:43:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BADFF523C;
-	Fri, 22 Dec 2023 04:43:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40F8763B9;
+	Fri, 22 Dec 2023 04:43:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="RYXMhgtw"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gfYgaZlU"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DF76539A
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 04:43:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1703220211;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Tb3jo9fkDistC/Bb96L+r4e+sXlv7gcKU05hItOf14A=;
-	b=RYXMhgtwXwW2r6zbn16gz61BGTJaiGihSaM8FrWQ1lHL6/CQuYvnP834LxHj5dKMozWvQf
-	yG7iLvKtVXkqcovbBJKVD/5wN2yfHiaxh6RKqg5e6KdLhWWLK3tRjSqOMZj58IF/79VRB5
-	+EZHMpTPUlaI27Y43B4pGYDsD8445kY=
-Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com
- [209.85.214.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-68-4YgbalVaMieTsIQCV4ItHw-1; Thu, 21 Dec 2023 23:43:29 -0500
-X-MC-Unique: 4YgbalVaMieTsIQCV4ItHw-1
-Received: by mail-pl1-f199.google.com with SMTP id d9443c01a7336-1d3f1ca0850so6460265ad.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 20:43:29 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703220208; x=1703825008;
-        h=content-transfer-encoding:content-disposition:mime-version
-         :references:in-reply-to:message-id:date:subject:cc:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Tb3jo9fkDistC/Bb96L+r4e+sXlv7gcKU05hItOf14A=;
-        b=CXeN8bwxNUsEcEvoG6+PO9emJCg6aiqf8JYvRIbgpJomjYEtzui3l9ZgS/8yGCn5nY
-         SDBkdyPIodyRU6YWrQANyP/YHTSScxyGWgKzOH/yc+Wld7xzdsKdfOeMUk3yYd+RlXzy
-         FoTdYalvy/iv44OhpvlhwZPK/RbWZCuEyiDFbp0fB6Yef8PzXFTP5v3Jl2rO9XMm4UDm
-         kH06Nbtz8Uh9C9ueF6poiKpsEdguTWg96BRszWROWuhEuuNISVF9hsvlSp9EaInrXtpo
-         mMyZCjWbHF+LtlsgO+0usJUJRc3VxQ+NJXpIj9CnOMD4SqruK5Z6v+Na3pW/x8qvCMIe
-         JNPg==
-X-Gm-Message-State: AOJu0YzJ7CWKApZf7MCq0HgJ4cXp8zP0mIj8djRQUusGR2x/RrEnn9AG
-	funOYsSdlCPZSzuD6gbHHqg5DXTmZatp81L4RwFAJQoCyDc8QYpZlOfC12kGGScOP9Y22kzVrkv
-	zEr7br9oJKMUUOnjWdze6o4uA1x+uKJov
-X-Received: by 2002:a17:902:780e:b0:1d3:abba:39b2 with SMTP id p14-20020a170902780e00b001d3abba39b2mr487019pll.55.1703220208130;
-        Thu, 21 Dec 2023 20:43:28 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGkXxqoVlDlQ8bIhrOzYju2iBkts8tdgjz0JPgCy8zVYER40SQLv9aGh31ntsmczzWYsMWeeA==
-X-Received: by 2002:a17:902:780e:b0:1d3:abba:39b2 with SMTP id p14-20020a170902780e00b001d3abba39b2mr487010pll.55.1703220207808;
-        Thu, 21 Dec 2023 20:43:27 -0800 (PST)
-Received: from localhost.localdomain ([2804:1b3:a802:7496:88a7:1b1a:a837:bebf])
-        by smtp.gmail.com with ESMTPSA id h9-20020a170902704900b001d05456394csm2477010plt.28.2023.12.21.20.43.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Dec 2023 20:43:27 -0800 (PST)
-From: Leonardo Bras <leobras@redhat.com>
-To: Guo Ren <guoren@kernel.org>
-Cc: Leonardo Bras <leobras@redhat.com>,
-	linux-kernel@vger.kernel.org,
-	paul.walmsley@sifive.com,
-	palmer@dabbelt.com,
-	alexghiti@rivosinc.com,
-	charlie@rivosinc.com,
-	xiao.w.wang@intel.com,
-	david@redhat.com,
-	panqinglin2020@iscas.ac.cn,
-	rick.p.edgecombe@intel.com,
-	willy@infradead.org,
-	bjorn@rivosinc.com,
-	conor.dooley@microchip.com,
-	cleger@rivosinc.com,
-	linux-riscv@lists.infradead.org,
-	Guo Ren <guoren@linux.alibaba.com>,
-	stable@vger.kernel.org
-Subject: Re: [PATCH V2 2/4] riscv: mm: Fixup compat arch_get_mmap_end
-Date: Fri, 22 Dec 2023 01:43:07 -0300
-Message-ID: <ZYUT22KmGJ1tJSWx@LeoBras>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <CAJF2gTSiaNWkXS6rc+3OSZfnFqG2d7btzjrd-L1mBgAVu3ym3A@mail.gmail.com>
-References: <20231221154702.2267684-1-guoren@kernel.org> <20231221154702.2267684-3-guoren@kernel.org> <ZYUD4C1aXWt2oFJo@LeoBras> <CAJF2gTSiaNWkXS6rc+3OSZfnFqG2d7btzjrd-L1mBgAVu3ym3A@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CA67567E;
+	Fri, 22 Dec 2023 04:43:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F1D5C433D9;
+	Fri, 22 Dec 2023 04:43:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703220215;
+	bh=BYc4P52QVmcfkosbCiaZHm30PAhBdMV15eIFZyXrt/w=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=gfYgaZlUKTevwbQZJYf85rCQkvZ/2dCJYNFbjX4MpLQkTDUUEUs/gP6VgkDORJWb8
+	 39mKyH0Ale/2tztSN7oPpMMX8AVjmR7C80Ec+Qj7ylvDdMCuhODKMjmh5TDF4Lx3uC
+	 39ErfF6Mps6iJFaHEwyXAzkQ5Nu128Yd2sJxWJ6nY/94L7qUCSZHLV5/sCN8oYauqI
+	 N4dax9yGxlcrjoMrDAaNl8IZ8xR0Hgym3gVh5HxSmMIEXzMN9t6gLELtElUW7lppYm
+	 5IIc6FIgr1lxlCyWzmaSZamTNwe7g9rYswUzFs4QlJqViWD7UPJhQ8/YWKRjrzaesf
+	 HqqLBcybWwv9w==
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-54c5d041c23so1618396a12.2;
+        Thu, 21 Dec 2023 20:43:34 -0800 (PST)
+X-Gm-Message-State: AOJu0YytadRPiSCTOB0XqmO/s3m45VWprQlEDvyaGXODOQIe0CytCEIY
+	TCTvxTJibSkPq7cbEJu0nyBPftsm5URCyTdo52M=
+X-Google-Smtp-Source: AGHT+IEUijHJ57JnutUHpUy3p1Ku8NBY/+d6W1M5E/W4tJng1EyPnpTmpp3MlXrvJ8ydAe+kadGKjzYldx2WjsB5z0k=
+X-Received: by 2002:a50:935c:0:b0:553:aa33:7876 with SMTP id
+ n28-20020a50935c000000b00553aa337876mr152031eda.31.1703220213485; Thu, 21 Dec
+ 2023 20:43:33 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+References: <20231220-optimize_checksum-v13-0-a73547e1cad8@rivosinc.com>
+ <20231220-optimize_checksum-v13-2-a73547e1cad8@rivosinc.com>
+ <CAJF2gTR9ZxLZwEs=TMeih+vEEuuxNHRkgLsG2ShjXPEZ-G44_w@mail.gmail.com> <ZYTobxPZVNct4toQ@ghost>
+In-Reply-To: <ZYTobxPZVNct4toQ@ghost>
+From: Guo Ren <guoren@kernel.org>
+Date: Fri, 22 Dec 2023 12:43:22 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTTBweJTVw1m1WuJ6LNKrB_U83sdtkiZAk-NLND6sqdMZQ@mail.gmail.com>
+Message-ID: <CAJF2gTTBweJTVw1m1WuJ6LNKrB_U83sdtkiZAk-NLND6sqdMZQ@mail.gmail.com>
+Subject: Re: [PATCH v13 2/5] riscv: Add static key for misaligned accesses
+To: Charlie Jenkins <charlie@rivosinc.com>
+Cc: Palmer Dabbelt <palmer@dabbelt.com>, Conor Dooley <conor@kernel.org>, 
+	Samuel Holland <samuel.holland@sifive.com>, David Laight <David.Laight@aculab.com>, 
+	Xiao Wang <xiao.w.wang@intel.com>, Evan Green <evan@rivosinc.com>, 
+	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	linux-arch@vger.kernel.org, Paul Walmsley <paul.walmsley@sifive.com>, 
+	Albert Ou <aou@eecs.berkeley.edu>, Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 22, 2023 at 12:26:19PM +0800, Guo Ren wrote:
-> On Fri, Dec 22, 2023 at 11:35 AM Leonardo Bras <leobras@redhat.com> wrote:
-> >
-> > On Thu, Dec 21, 2023 at 10:46:59AM -0500, guoren@kernel.org wrote:
-> > > From: Guo Ren <guoren@linux.alibaba.com>
+On Fri, Dec 22, 2023 at 9:37=E2=80=AFAM Charlie Jenkins <charlie@rivosinc.c=
+om> wrote:
+>
+> On Fri, Dec 22, 2023 at 08:33:18AM +0800, Guo Ren wrote:
+> > On Thu, Dec 21, 2023 at 7:38=E2=80=AFAM Charlie Jenkins <charlie@rivosi=
+nc.com> wrote:
 > > >
-> > > When the task is in COMPAT mode, the arch_get_mmap_end should be 2GB,
-> > > not TASK_SIZE_64. The TASK_SIZE has contained is_compat_mode()
-> > > detection, so change the definition of STACK_TOP_MAX to TASK_SIZE
-> > > directly.
-> >
-> > ok
-> >
+> > > Support static branches depending on the value of misaligned accesses=
+.
+> > > This will be used by a later patch in the series. All cpus must be
+> > > considered "fast" for this static branch to be flipped.
 > > >
-> > > Cc: stable@vger.kernel.org
-> > > Fixes: add2cc6b6515 ("RISC-V: mm: Restrict address space for sv39,sv48,sv57")
-> > > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> > > Signed-off-by: Guo Ren <guoren@kernel.org>
+> > > Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
 > > > ---
-> > >  arch/riscv/include/asm/processor.h | 6 ++----
-> > >  1 file changed, 2 insertions(+), 4 deletions(-)
+> > >  arch/riscv/include/asm/cpufeature.h |  2 ++
+> > >  arch/riscv/kernel/cpufeature.c      | 30 +++++++++++++++++++++++++++=
++++
+> > >  2 files changed, 32 insertions(+)
 > > >
-> > > diff --git a/arch/riscv/include/asm/processor.h b/arch/riscv/include/asm/processor.h
-> > > index f19f861cda54..1f538fc4448d 100644
-> > > --- a/arch/riscv/include/asm/processor.h
-> > > +++ b/arch/riscv/include/asm/processor.h
-> > > @@ -16,15 +16,13 @@
+> > > diff --git a/arch/riscv/include/asm/cpufeature.h b/arch/riscv/include=
+/asm/cpufeature.h
+> > > index a418c3112cd6..7b129e5e2f07 100644
+> > > --- a/arch/riscv/include/asm/cpufeature.h
+> > > +++ b/arch/riscv/include/asm/cpufeature.h
+> > > @@ -133,4 +133,6 @@ static __always_inline bool riscv_cpu_has_extensi=
+on_unlikely(int cpu, const unsi
+> > >         return __riscv_isa_extension_available(hart_isa[cpu].isa, ext=
+);
+> > >  }
 > > >
-> > >  #ifdef CONFIG_64BIT
-> > >  #define DEFAULT_MAP_WINDOW   (UL(1) << (MMAP_VA_BITS - 1))
-> > > -#define STACK_TOP_MAX                TASK_SIZE_64
-> > > +#define STACK_TOP_MAX                TASK_SIZE
-> >
-> > It means STACK_TOP_MAX will be in 64BIT:
-> > - TASK_SIZE_32 if compat_mode=y
-> > - TASK_SIZE_64 if compat_mode=n
-> >
-> > Makes sense for me.
-> >
+> > > +DECLARE_STATIC_KEY_FALSE(fast_misaligned_access_speed_key);
+> > > +
+> > >  #endif
+> > > diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufe=
+ature.c
+> > > index b3785ffc1570..095eb6ebdcaa 100644
+> > > --- a/arch/riscv/kernel/cpufeature.c
+> > > +++ b/arch/riscv/kernel/cpufeature.c
+> > > @@ -10,6 +10,7 @@
+> > >  #include <linux/bitmap.h>
+> > >  #include <linux/cpuhotplug.h>
+> > >  #include <linux/ctype.h>
+> > > +#include <linux/jump_label.h>
+> > >  #include <linux/log2.h>
+> > >  #include <linux/memory.h>
+> > >  #include <linux/module.h>
+> > > @@ -728,6 +729,35 @@ void riscv_user_isa_enable(void)
+> > >                 csr_set(CSR_SENVCFG, ENVCFG_CBZE);
+> > >  }
 > > >
-> > >  #define arch_get_mmap_end(addr, len, flags)                  \
-> > >  ({                                                           \
-> > >       unsigned long mmap_end;                                 \
-> > >       typeof(addr) _addr = (addr);                            \
-> > > -     if ((_addr) == 0 || (IS_ENABLED(CONFIG_COMPAT) && is_compat_task())) \
-> > > -             mmap_end = STACK_TOP_MAX;                       \
-> > > -     else if ((_addr) >= VA_USER_SV57)                       \
-> > > +     if ((_addr) == 0 || (_addr) >= VA_USER_SV57)            \
-> > >               mmap_end = STACK_TOP_MAX;                       \
-> > >       else if ((((_addr) >= VA_USER_SV48)) && (VA_BITS >= VA_BITS_SV48)) \
-> > >               mmap_end = VA_USER_SV48;                        \
+> > > +DEFINE_STATIC_KEY_FALSE(fast_misaligned_access_speed_key);
+> > > +
+> > > +static int set_unaligned_access_static_branches(void)
+> > > +{
+> > > +       /*
+> > > +        * This will be called after check_unaligned_access_all_cpus =
+so the
+> > > +        * result of unaligned access speed for all cpus will be avai=
+lable.
+> > > +        */
+> > > +
+> > > +       int cpu;
+> > > +       bool fast_misaligned_access_speed =3D true;
+> > > +
+> > > +       for_each_online_cpu(cpu) {
+> > Each online_cpu? Is there any offline_cpu that is no
+> > fast_misaligned_access_speed?
+>
+> I think instead of checking offline cpus, it would make more sense to
+> adjust the static branch when offline cpus come online. Since
+> riscv_online_cpu is called when a new CPU comes online, I can update the
+> static branch inside of that function.
+>
 > >
+> > Move into your riscv_online_cpu for each CPU, and use stop_machine for
+> > synchronization.
 > >
-> > I don't think I got this change, or how it's connected to the commit msg.
-> The above is just code simplification; if STACK_TOP_MAX is TASK_SIZE, then
-> 
->      if ((_addr) == 0 || (IS_ENABLED(CONFIG_COMPAT) && is_compat_task())) \
->              mmap_end = STACK_TOP_MAX;                       \
->     else if ((_addr) >= VA_USER_SV57)                       \
-> 
-> is equal to:
-> 
->      if ((_addr) == 0 || (_addr) >= VA_USER_SV57)            \
+>
+> I do not understand what you mean by "Move into your riscv_online_cpu
+> for each CPU", but I am assuming you are referring to updating the
+> static branch inside of riscv_online_cpu.
+I mean in:
+arch/riscv/kernel/cpufeature.c: riscv_online_cpu()
 
-I am failing to understand exactly how are they equal.
-I mean, what in your STACK_TOP_MAX change made them equal?
+Yes,"adjust the static branch when offline cpus come online ..."
 
-See below, the behavior changed: 
-> 
-> >
-> > Before:
-> > - addr == 0, or addr > 2^57, or compat: mmap_end = STACK_TOP_MAX
-> > - 2^48 < addr < 2^57: mmap_end = 2^48
-> > - 0 < addr < 2^48 : mmap_end = 2^39
-> >
-> > Now:
-> > - addr == 0, or addr > 2^57: mmap_end = STACK_TOP_MAX
-> > - 2^48 < addr < 2^57: mmap_end = 2^48
-> > - 0 < addr < 2^48 : mmap_end = 2^39
-> >
-> > IIUC compat mode addr will be < 2^32, so will always have mmap_end = 2^39
-> > if addr != 0. Is that desireable?
-> > (if not, above change is unneeded)
-> >
+>
+> I believe any race condition that could be solved by stop_machine will
+> become irrelevent by ensuring that the static branch is updated when a
+> new cpu comes online.
+Em...  stop_machine may be not necessary.
 
-^
-
-With your change on STACK_TOP_MAX only (not changing arch_get_mmap_end), 
-you would have:
-
-- compat_mode & (0 < addr < 2^32) 	-> mmap_end = 2^32
-- non-compat, addr == 0, or addr > 2^57 -> mmap_end = TASK_SIZE_64
-- non-compat, (2^48 < addr < 2^57)	-> mmap_end = 2^48
-- non-compat, (0 < addr < 2^48) 	-> mmap_end = 2^39
-
-Which seems more likely, based on Charlie comments.
-
-Thanks,
-Leo
-
-> > Also, unrelated to the change:
-> > - 2^48 < addr < 2^57: mmap_end = 2^48
-> > Is the above correct?
-> > It looks like it should be 2^57 instead, and a new if clause for
-> > 2^32 < addr < 2^48 should have mmap_end = 2^48.
-> >
-> > Do I get it wrong?
-> Maybe I should move this into the optimization part.
-> 
-> >
-> > (I will send an RFC 'fixing' the code the way I am whinking it should look
-> > like)
-> >
-> > Thanks,
-> > Leo
-> >
-> >
-> >
-> >
-> >
+>
+> - Charlie
+>
+> > > +               int this_perf =3D per_cpu(misaligned_access_speed, cp=
+u);
+> > > +
+> > > +               if (this_perf !=3D RISCV_HWPROBE_MISALIGNED_FAST) {
+> > > +                       fast_misaligned_access_speed =3D false;
+> > > +                       break;
+> > > +               }
+> > > +       }
+> > > +
+> > > +       if (fast_misaligned_access_speed)
+> > > +               static_branch_enable(&fast_misaligned_access_speed_ke=
+y);
+> > > +
+> > > +       return 0;
+> > > +}
+> > > +
+> > > +arch_initcall_sync(set_unaligned_access_static_branches);
+> > > +
+> > >  #ifdef CONFIG_RISCV_ALTERNATIVE
+> > >  /*
+> > >   * Alternative patch sites consider 48 bits when determining when to=
+ patch
+> > >
 > > > --
-> > > 2.40.1
+> > > 2.43.0
+> > >
 > > >
 > >
-> 
-> 
-> -- 
-> Best Regards
->  Guo Ren
-> 
+> >
+> > --
+> > Best Regards
+> >  Guo Ren
 
+
+
+--=20
+Best Regards
+ Guo Ren
 
