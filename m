@@ -1,177 +1,132 @@
-Return-Path: <linux-kernel+bounces-9393-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9394-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A69FA81C4F6
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 07:16:58 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C32D681C4F9
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 07:19:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D93481C2345C
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 06:16:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4B17EB21398
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 06:19:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB6608C19;
-	Fri, 22 Dec 2023 06:16:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABB498C1F;
+	Fri, 22 Dec 2023 06:19:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="G0sodgLJ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail.holtmann.org (coyote.holtmann.net [212.227.132.17])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 218898C0C;
-	Fri, 22 Dec 2023 06:16:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=holtmann.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=holtmann.org
-Received: from smtpclient.apple (p5b3d29b7.dip0.t-ipconnect.de [91.61.41.183])
-	by mail.holtmann.org (Postfix) with ESMTPSA id 480CBCECCA;
-	Fri, 22 Dec 2023 07:16:46 +0100 (CET)
-Content-Type: text/plain;
-	charset=us-ascii
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2DCE6FC2;
+	Fri, 22 Dec 2023 06:19:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
+	Content-ID:Content-Description:In-Reply-To:References;
+	bh=H/1i8yuFGfbcX5ybZ7dpr8kd0kCwVEfZQgnUatjDRZI=; b=G0sodgLJjLbicjRPugj4eCiRke
+	R8ULCFUCOnRiBQ0XzWSu8Yi7tAHPo5iqBuUpmnYz5zTSvru9CDket87q7V5pIGfWtcGzdCq+2/9Z2
+	5/xYrjR/URe1mC6KY/UAiGBQJK2h0DsUqGx3wvJAiCBCOtAbVFD9HZV6j44n87rOCtUBGlb/KKsWy
+	xuNcYBXTf8nBWu54K9cUec/L0RofketFiNrnHkAhLTo4BtxHARW1SsGu/6k7rYhJNo3xTHSjRbZHN
+	8Jl58mYONiXMfP+vR22oggIYZSD8qHXoBZUeG3VetknuNU5f+vT7RZIyRYRGHc1ALdpieB98Dg7Cw
+	TXsJZFpg==;
+Received: from [50.53.46.231] (helo=bombadil.infradead.org)
+	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1rGYsI-0053dC-0D;
+	Fri, 22 Dec 2023 06:19:10 +0000
+From: Randy Dunlap <rdunlap@infradead.org>
+To: linux-kernel@vger.kernel.org
+Cc: Randy Dunlap <rdunlap@infradead.org>,
+	Philipp Reisner <philipp.reisner@linbit.com>,
+	Lars Ellenberg <lars.ellenberg@linbit.com>,
+	=?UTF-8?q?Christoph=20B=C3=B6hmwalder?= <christoph.boehmwalder@linbit.com>,
+	drbd-dev@lists.linbit.com,
+	Jens Axboe <axboe@kernel.dk>,
+	linux-block@vger.kernel.org
+Subject: [PATCH] drbd: actlog: fix kernel-doc warnings and spelling
+Date: Thu, 21 Dec 2023 22:19:08 -0800
+Message-ID: <20231222061909.8791-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.300.61.1.2\))
-Subject: Re: [PATCH] wifi: brcmfmac: cfg80211: Use WSEC to set SAE password
-From: Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <CAEg-Je98F8BqczZR+8dBT9-a8Tb3n3L5+TdWJsGfFDUFt=Lf7g@mail.gmail.com>
-Date: Fri, 22 Dec 2023 07:16:35 +0100
-Cc: Julian Calaby <julian.calaby@gmail.com>,
- Arend van Spriel <arend.vanspriel@broadcom.com>,
- Kalle Valo <kvalo@kernel.org>,
- Hector Martin <marcan@marcan.st>,
- Arend van Spriel <aspriel@gmail.com>,
- Franky Lin <franky.lin@broadcom.com>,
- Hante Meuleman <hante.meuleman@broadcom.com>,
- Daniel Berlin <dberlin@dberlin.org>,
- linux-wireless@vger.kernel.org,
- brcm80211-dev-list.pdl@broadcom.com,
- SHA-cyfmac-dev-list@infineon.com,
- linux-kernel@vger.kernel.org,
- asahi@lists.linux.dev
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <59D14D24-91DA-4DC8-B8EE-460BE02F4DDE@holtmann.org>
-References: <20231107-brcmfmac-wpa3-v1-1-4c7db8636680@marcan.st>
- <170281231651.2255653.7498073085103487666.kvalo@kernel.org>
- <18c80d15e30.279b.9b12b7fc0a3841636cfb5e919b41b954@broadcom.com>
- <1b51997f-2994-46e8-ac58-90106d1c486d@marcan.st>
- <c392f901-789a-42e2-8cf7-5e246365a1ca@broadcom.com>
- <CAGRGNgW0h_uqHn0rKwGx0L41R+YgzgWPEh83kSKVCeqfCDeOug@mail.gmail.com>
- <C3F2FB99-C022-4BEE-8F1C-8B6F0E14DAA1@holtmann.org>
- <CAEg-Je98F8BqczZR+8dBT9-a8Tb3n3L5+TdWJsGfFDUFt=Lf7g@mail.gmail.com>
-To: Neal Gompa <neal@gompa.dev>
-X-Mailer: Apple Mail (2.3774.300.61.1.2)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Hi Neal,
+Fix all kernel-doc warnings in drbd_actlog.c:
 
->>>>>>>> Using the WSEC command instead of sae_password seems to be the =
-supported
->>>>>>>> mechanism on newer firmware, and also how the brcmdhd driver =
-does it.
->>>>>>>>=20
->>>>>>>> According to user reports [1], the sae_password codepath =
-doesn't actually
->>>>>>>> work on machines with Cypress chips anyway, so no harm in =
-removing it.
->>>>>>>>=20
->>>>>>>> This makes WPA3 work with iwd, or with wpa_supplicant pending a =
-support
->>>>>>>> patchset [2].
->>>>>>>>=20
->>>>>>>> [1] https://rachelbythebay.com/w/2023/11/06/wpa3/
->>>>>>>> [2] =
-http://lists.infradead.org/pipermail/hostap/2023-July/041653.html
->>>>>>>>=20
->>>>>>>> Signed-off-by: Hector Martin <marcan@marcan.st>
->>>>>>>> Reviewed-by: Neal Gompa <neal@gompa.dev>
->>>>>>>=20
->>>>>>> Arend, what do you think?
->>>>>>>=20
->>>>>>> We recently talked about people testing brcmfmac patches, has =
-anyone else
->>>>>>> tested this?
->>>>>>=20
->>>>>> Not sure I already replied so maybe I am repeating myself. I =
-would prefer
->>>>>> to keep the Cypress sae_password path as well although it =
-reportedly does
->>>>>> not work. The vendor support in the driver can be used to =
-accommodate for
->>>>>> that. The other option would be to have people with Cypress =
-chipset test
->>>>>> this patch. If that works for both we can consider dropping the
->>>>>> sae_password path.
->>>>>>=20
->>>>>> Regards,
->>>>>> Arend
->>>>>=20
->>>>> So, if nobody from Cypress chimes in ever, and nobody cares nor =
-tests
->>>>> Cypress chipsets, are we keeping any and all existing Cypress =
-code-paths
->>>>> as bitrotting code forever and adding gratuitous conditionals =
-every time
->>>>> any functionality needs to change "just in case it breaks Cypress" =
-even
->>>>> though it has been tested compatible on Broadcom =
-chipsets/firmware?
->>>>>=20
->>>>> Because that's not sustainable long term.
->>>>=20
->>>> You should look into WEXT just for the fun of it. If it were up to =
-me
->>>> and a bunch of other people that would have been gone decades ago. =
-Maybe
->>>> a bad example if the sae_password is indeed not working, but the =
-Cypress
->>>> chipset is used in RPi3 and RPi4 so there must be a couple of =
-users.
->>>=20
->>> There are reports that WPA3 is broken on the Cypress chipsets the
->>> Raspberry Pis are using and this patch fixes it:
->>> https://rachelbythebay.com/w/2023/11/06/wpa3/
->>>=20
->>> Based on that, it appears that all known users of WPA3 capable
->>> hardware with this driver require this fix.
->>=20
->> the Pis are all using an outdated firmware. In their distro they put =
-the
->> firmware already under the alternates systems, but it just lacks the =
-SAE
->> offload support that is required to make WPA3 work. The =
-linux-firmware
->> version does the trick nicely.
->>=20
->> I documented what I did to make this work on Pi5 (note that I =
-normally
->> use Fedora on Pi4 and thus never encountered this issue)
->>=20
->> https://holtmann.dev/enabling-wpa3-on-raspberry-pi/
->>=20
->> However you need to use iwd and not hope that you get a =
-wpa_supplicant
->> released version that will work.
->>=20
->> So whole game of wpa_supplicant is vendor specific to the company =
-that
->> provides the driver is also insane, but that is another story. Use =
-iwd
->> and you can most likely have WPA3 support if you have the right =
-firmware.
->>=20
->=20
-> wpa_supplicant is perfectly fine if the necessary patches are
-> backported, as Fedora has done:
-> =
-https://src.fedoraproject.org/rpms/wpa_supplicant/c/99f4bf2096d3976cee01c4=
-99d7a30c1376f5f0f7
+drbd_actlog.c:963: warning: No description found for return value of 'drbd_rs_begin_io'
+drbd_actlog.c:1015: warning: Function parameter or member 'peer_device' not described in 'drbd_try_rs_begin_io'
+drbd_actlog.c:1015: warning: Excess function parameter 'device' description in 'drbd_try_rs_begin_io'
+drbd_actlog.c:1015: warning: No description found for return value of 'drbd_try_rs_begin_io'
+drbd_actlog.c:1197: warning: No description found for return value of 'drbd_rs_del_all'
 
-my point exactly. Tell me when the last hostap release was and how much
-delta that has to HEAD. So the wpa_supplicant you have in Fedora is
-essentially yet another fork of an upstream project. One of many.
+Fix one spelling error (s/ore/or/).
 
-Reality is there is limited interest to make WiFi great on Linux. And
-if you really look honestly, then you realize it is pretty bad.
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Philipp Reisner <philipp.reisner@linbit.com>
+Cc: Lars Ellenberg <lars.ellenberg@linbit.com>
+Cc: Christoph Böhmwalder <christoph.boehmwalder@linbit.com>
+Cc: drbd-dev@lists.linbit.com
+Cc: Jens Axboe <axboe@kernel.dk>
+Cc: linux-block@vger.kernel.org
+---
+ drivers/block/drbd/drbd_actlog.c |   16 ++++++++++------
+ 1 file changed, 10 insertions(+), 6 deletions(-)
 
-Regards
-
-Marcel
-
+diff -- a/drivers/block/drbd/drbd_actlog.c b/drivers/block/drbd/drbd_actlog.c
+--- a/drivers/block/drbd/drbd_actlog.c
++++ b/drivers/block/drbd/drbd_actlog.c
+@@ -838,8 +838,8 @@ static bool plausible_request_size(int s
+ }
+ 
+ /* clear the bit corresponding to the piece of storage in question:
+- * size byte of data starting from sector.  Only clear a bits of the affected
+- * one ore more _aligned_ BM_BLOCK_SIZE blocks.
++ * size byte of data starting from sector.  Only clear bits of the affected
++ * one or more _aligned_ BM_BLOCK_SIZE blocks.
+  *
+  * called by worker on C_SYNC_TARGET and receiver on SyncSource.
+  *
+@@ -957,7 +957,9 @@ static int _is_in_al(struct drbd_device
+  * @device:	DRBD device.
+  * @sector:	The sector number.
+  *
+- * This functions sleeps on al_wait. Returns 0 on success, -EINTR if interrupted.
++ * This functions sleeps on al_wait.
++ *
++ * Returns: %0 on success, -EINTR if interrupted.
+  */
+ int drbd_rs_begin_io(struct drbd_device *device, sector_t sector)
+ {
+@@ -1004,11 +1006,13 @@ retry:
+ 
+ /**
+  * drbd_try_rs_begin_io() - Gets an extent in the resync LRU cache, does not sleep
+- * @device:	DRBD device.
++ * @peer_device: DRBD device.
+  * @sector:	The sector number.
+  *
+  * Gets an extent in the resync LRU cache, sets it to BME_NO_WRITES, then
+- * tries to set it to BME_LOCKED. Returns 0 upon success, and -EAGAIN
++ * tries to set it to BME_LOCKED.
++ *
++ * Returns: %0 upon success, and -EAGAIN
+  * if there is still application IO going on in this area.
+  */
+ int drbd_try_rs_begin_io(struct drbd_peer_device *peer_device, sector_t sector)
+@@ -1190,7 +1194,7 @@ void drbd_rs_cancel_all(struct drbd_devi
+  * drbd_rs_del_all() - Gracefully remove all extents from the resync LRU
+  * @device:	DRBD device.
+  *
+- * Returns 0 upon success, -EAGAIN if at least one reference count was
++ * Returns: %0 upon success, -EAGAIN if at least one reference count was
+  * not zero.
+  */
+ int drbd_rs_del_all(struct drbd_device *device)
 
