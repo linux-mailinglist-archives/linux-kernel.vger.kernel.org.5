@@ -1,46 +1,50 @@
-Return-Path: <linux-kernel+bounces-10096-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10102-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8DDC81CFF0
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 23:52:39 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B431581CFF6
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 23:53:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 84780283C4C
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 22:52:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 22168B216BA
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 22:53:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE6AF3399E;
-	Fri, 22 Dec 2023 22:51:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A35D0381D9;
+	Fri, 22 Dec 2023 22:51:27 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1E482EAE2
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 22:51:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF51F2E853
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 22:51:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <ukl@pengutronix.de>)
-	id 1rGoML-0005b4-L1; Fri, 22 Dec 2023 23:51:13 +0100
+	id 1rGoML-0005bm-T8; Fri, 22 Dec 2023 23:51:13 +0100
 Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <ukl@pengutronix.de>)
-	id 1rGoMK-000qv8-4a; Fri, 22 Dec 2023 23:51:13 +0100
+	id 1rGoMK-000qvD-D7; Fri, 22 Dec 2023 23:51:13 +0100
 Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
 	(envelope-from <ukl@pengutronix.de>)
-	id 1rGoML-000FfK-0V;
+	id 1rGoML-000FfO-1L;
 	Fri, 22 Dec 2023 23:51:13 +0100
 From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
 To: Thomas Gleixner <tglx@linutronix.de>
-Cc: linux-kernel@vger.kernel.org,
+Cc: Charles Keepax <ckeepax@opensource.cirrus.com>,
+	Richard Fitzgerald <rf@opensource.cirrus.com>,
+	alsa-devel@alsa-project.org,
+	patches@opensource.cirrus.com,
+	linux-kernel@vger.kernel.org,
 	kernel@pengutronix.de
-Subject: [PATCH 05/13] irqchip/ls-scfg-msi: Convert to platform remove callback returning void
-Date: Fri, 22 Dec 2023 23:50:36 +0100
-Message-ID:  <1e7143ca68ff0715e0f954504e750fc92e8c6d80.1703284359.git.u.kleine-koenig@pengutronix.de>
+Subject: [PATCH 06/13] irqchip/madera: Convert to platform remove callback returning void
+Date: Fri, 22 Dec 2023 23:50:37 +0100
+Message-ID:  <64c2f79760c53f29651e7126418c407ff699317d.1703284359.git.u.kleine-koenig@pengutronix.de>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <cover.1703284359.git.u.kleine-koenig@pengutronix.de>
 References: <cover.1703284359.git.u.kleine-koenig@pengutronix.de>
@@ -51,7 +55,7 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1883; i=u.kleine-koenig@pengutronix.de; h=from:subject:message-id; bh=T1s6nZ+UFXNsHF/tEsghgxMk/3MV7Hfp5CW/lu69Rfk=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlhhK8rTA2Zo9mskRHVQ0jTz8KMEyB9ljzLNQoN +Gi3RlkZuCJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZYYSvAAKCRCPgPtYfRL+ Tvv0B/9h2A9o02TYkvoJ0+giW51E20iTqIUiYdsuoDmXjeHFnDtbR299IamdAInCPp+yIfyGuRA VsaWsYzr/A0+PLFJ+woG/PPCNyNhZCGSfjzsKZ6NqujBynxImio642zaas+u4O74nSTkdD8rxKN ASM+shm9aa+jn337GejBExGpd6Kl4wBO8aTCkbKZrwx6D2B4uHrL/YRy6O1m4ZB9JxzkFazRUAh J/UNcGrak8aKpWszKNPOl3M9WJ88sbxhFyd7WGl7r5Br8L1dCMowGOMnr6GcZIfBW9C/C1IfHiu DKM/VlQbxce3QjIqoW9ma9qGJ0k3lJ/hb9Djkz56O04eOzZt
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1755; i=u.kleine-koenig@pengutronix.de; h=from:subject:message-id; bh=oNyOtJmRK/PlWo4BKGbaCJgMzouADPvq3uSryPTzQhI=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlhhK9Y8lRVhNFkK9eJWWYKEZRt6Vy9FJ7h2sj6 VryWfbz2laJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZYYSvQAKCRCPgPtYfRL+ TngFCACHKhMzBPTBKVocA6VfvDGmuukvynuqR9RfEljwyjneu/L12qaidTDwjPFQtNSEm6HZUBa K7ywfUFIwGDqS1YVFVeBCOV8jGXoZQ1+LY1U/MmzIzFuLOaUIu8bU2Rtqzq4dKUaXpuQFQ4XgN/ zHN+B6RKZtpT46Rivq79vpIoz+ujbj3zvTwiti73wKa72M9tvxC8H0l0UV1oqbQtq8wqtMMTNru aZL67AYTcfqSmIXXkOi0XtADOuwcMMChC1mY4F/J7L2+ro3Wf8NrGMpdohxtssProziTgnyhXrJ LUKLwQ6vOC4EWnqbFzHzpsKePslWuOr8y1HurRhaWAvl7i9V
 X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
@@ -74,40 +78,37 @@ callback to the void returning variant.
 
 Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 ---
- drivers/irqchip/irq-ls-scfg-msi.c | 6 ++----
+ drivers/irqchip/irq-madera.c | 6 ++----
  1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/irqchip/irq-ls-scfg-msi.c b/drivers/irqchip/irq-ls-scfg-msi.c
-index 15cf80b46322..0b9b598b206f 100644
---- a/drivers/irqchip/irq-ls-scfg-msi.c
-+++ b/drivers/irqchip/irq-ls-scfg-msi.c
-@@ -398,7 +398,7 @@ static int ls_scfg_msi_probe(struct platform_device *pdev)
+diff --git a/drivers/irqchip/irq-madera.c b/drivers/irqchip/irq-madera.c
+index 3eb1f8cdf674..b424c0a327f7 100644
+--- a/drivers/irqchip/irq-madera.c
++++ b/drivers/irqchip/irq-madera.c
+@@ -222,7 +222,7 @@ static int madera_irq_probe(struct platform_device *pdev)
  	return 0;
  }
  
--static int ls_scfg_msi_remove(struct platform_device *pdev)
-+static void ls_scfg_msi_remove(struct platform_device *pdev)
+-static int madera_irq_remove(struct platform_device *pdev)
++static void madera_irq_remove(struct platform_device *pdev)
  {
- 	struct ls_scfg_msi *msi_data = platform_get_drvdata(pdev);
- 	int i;
-@@ -410,8 +410,6 @@ static int ls_scfg_msi_remove(struct platform_device *pdev)
- 	irq_domain_remove(msi_data->parent);
+ 	struct madera *madera = dev_get_drvdata(pdev->dev.parent);
  
- 	platform_set_drvdata(pdev, NULL);
+@@ -232,13 +232,11 @@ static int madera_irq_remove(struct platform_device *pdev)
+ 	 */
+ 	madera->irq_dev = NULL;
+ 	regmap_del_irq_chip(madera->irq, madera->irq_data);
 -
 -	return 0;
  }
  
- static struct platform_driver ls_scfg_msi_driver = {
-@@ -420,7 +418,7 @@ static struct platform_driver ls_scfg_msi_driver = {
- 		.of_match_table = ls_scfg_msi_id,
- 	},
- 	.probe = ls_scfg_msi_probe,
--	.remove = ls_scfg_msi_remove,
-+	.remove_new = ls_scfg_msi_remove,
- };
- 
- module_platform_driver(ls_scfg_msi_driver);
+ static struct platform_driver madera_irq_driver = {
+ 	.probe	= &madera_irq_probe,
+-	.remove = &madera_irq_remove,
++	.remove_new = madera_irq_remove,
+ 	.driver = {
+ 		.name	= "madera-irq",
+ 		.pm	= &madera_irq_pm_ops,
 -- 
 2.42.0
 
