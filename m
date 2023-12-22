@@ -1,168 +1,87 @@
-Return-Path: <linux-kernel+bounces-10076-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10077-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 469A081CFB8
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 23:20:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B9B381CFBD
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 23:20:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CFF9A286580
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 22:20:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3CB151F24344
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 22:20:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BD182F52A;
-	Fri, 22 Dec 2023 22:20:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 671682FC2E;
+	Fri, 22 Dec 2023 22:20:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="DbANNZZU"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lbLa5l9z"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-oi1-f172.google.com (mail-oi1-f172.google.com [209.85.167.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EA122EB0E
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 22:20:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-oi1-f172.google.com with SMTP id 5614622812f47-3bb732e7d78so1643067b6e.0
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 14:20:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1703283607; x=1703888407; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zh4GNA4Y05yXEeCWYCD5IWiPdQ5iIa0JnfPD6CHsXY4=;
-        b=DbANNZZUmbahoLkT6DE4uZ/9Li0YIA08Gvq0G3RaWURNIcOQhNdOXxv7pftmDt8H5I
-         QkPdOHmQBjG8Fro4i47JacAb/ztozoXt+nFMc1OvUXQDrMJJb23AXLbO1eXp8Kn0cCmh
-         4BpfmwQhcsbPSHR0CHVBs723QdTk1htJeffzw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703283607; x=1703888407;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zh4GNA4Y05yXEeCWYCD5IWiPdQ5iIa0JnfPD6CHsXY4=;
-        b=sjgUOAhBtupBvQ13UgWrez/8RHuZxJ/gSeeLLMxdVg4TS9Eak4kYHZdGMxBrotjeWI
-         CLyPb65tD96HawHks1NilaOaqkrYXNzbLaRHmDgClQ3xwgEVXXY1mIzFhhwM6vOed0LS
-         1AKKRm5NgbE+J1t3LExU9UDoSE2B403zcFOvec/7Z6C1SUlZcXnNJJv94xaPpu0l860W
-         0fNuIm8p1i5pJIc70cuds1xfJ2UFO+s160WleqIgoMn/RUTAxCsqHcay5XBctB6/SYa/
-         95eyIila/u8gyP8N+UQU7+iotsUNdCxdG1PEzKPtigVatK0U8hbVPP1eQ+KwWyAqGesl
-         +AZw==
-X-Gm-Message-State: AOJu0YxmOhVFUdy+aB90xcbCstV9Cy1JHsbihDNpiesOCaS6OafjoCoS
-	jpV73t7kbTfLIoidC4S2pvMwRor89tFTD/JMP638kit44whr
-X-Google-Smtp-Source: AGHT+IH1gfrcqYhXI4r48hl59zh7w2/OMXufec1y3JujW5Fx/vftezklyAWWZx0YfAU1/S92XP07ZkzsKE7TgE5mhqY=
-X-Received: by 2002:a05:6808:2014:b0:3b9:e20f:96e7 with SMTP id
- q20-20020a056808201400b003b9e20f96e7mr2217983oiw.28.1703283607328; Fri, 22
- Dec 2023 14:20:07 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D2482F845;
+	Fri, 22 Dec 2023 22:20:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 33C83C433C9;
+	Fri, 22 Dec 2023 22:20:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703283627;
+	bh=tzLxkfky1SGZ7FukP8qhT8K/nLkHtiY58wzpEImAB/c=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=lbLa5l9zrEDA60+cxbe2sUA2+T2RPSS9OVRXc5hgjhdB5TA37qZzr0QfiEKlVHROZ
+	 gJJbqTQGRoqDZyNXyIllbn8CLVVaC3DkBrl05E1DYgiElhNsY960nXBcI/oTkvy8vK
+	 wLJ98dhhWNrbgjJ1QQcLy5MdHFuwdqps7DDNhuRDsoLnc5NUeTevE1GLjguq8l3E0q
+	 zw4Q34w6lRPp39zrwVqXtYpNJet28CTyjnf1hSurc5ZUq0mPxeOIa+mXWB1S2cyI6H
+	 vQR/ZUs2Gdhv3dTglLxrD7yMpfDtEXEmRS1ooXfLbz9d0Lf3Hma5x+VQveQZdhwkPe
+	 Z6mK9qkZf6ZlQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 2026FC41620;
+	Fri, 22 Dec 2023 22:20:27 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231220235459.2965548-1-markhas@chromium.org>
- <20231220165423.v2.22.Ieee574a0e94fbaae01fd6883ffe2ceeb98d7df28@changeid> <ZYP-H27vsJvMTupH@google.com>
-In-Reply-To: <ZYP-H27vsJvMTupH@google.com>
-From: Mark Hasemeyer <markhas@chromium.org>
-Date: Fri, 22 Dec 2023 15:19:56 -0700
-Message-ID: <CANg-bXAUiw-v3D6u3dzve3i65b29wqPSAnw3uuZ2mFNsVgY9Hw@mail.gmail.com>
-Subject: Re: [PATCH v2 22/22] platform/chrome: cros_ec: Use PM subsystem to
- manage wakeirq
-To: Tzung-Bi Shih <tzungbi@kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Raul Rangel <rrangel@chromium.org>, 
-	Konrad Dybcio <konrad.dybcio@linaro.org>, Andy Shevchenko <andriy.shevchenko@intel.com>, 
-	Rob Herring <robh@kernel.org>, Sudeep Holla <sudeep.holla@arm.com>, 
-	Benson Leung <bleung@chromium.org>, Bhanu Prakash Maiya <bhanumaiya@chromium.org>, 
-	Chen-Yu Tsai <wenst@chromium.org>, Guenter Roeck <groeck@chromium.org>, Lee Jones <lee@kernel.org>, 
-	Prashant Malani <pmalani@chromium.org>, Rob Barnes <robbarnes@google.com>, 
-	Stephen Boyd <swboyd@chromium.org>, chrome-platform@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH][next] selftests/net: Fix various spelling mistakes in TCP-AO
+ tests
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <170328362712.7428.17804520208125792515.git-patchwork-notify@kernel.org>
+Date: Fri, 22 Dec 2023 22:20:27 +0000
+References: <20231218133022.321069-1-colin.i.king@gmail.com>
+In-Reply-To: <20231218133022.321069-1-colin.i.king@gmail.com>
+To: Colin King (gmail) <colin.i.king@gmail.com>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, shuah@kernel.org, 0x7f454c46@gmail.com,
+ netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 
-On Thu, Dec 21, 2023 at 1:58=E2=80=AFAM Tzung-Bi Shih <tzungbi@kernel.org> =
-wrote:
->
-> On Wed, Dec 20, 2023 at 04:54:36PM -0700, Mark Hasemeyer wrote:
-> > The IRQ wake logic was added on an interface basis (lpc, spi, uart) as
-> > opposed to adding it to cros_ec.c because the i2c subsystem already
-> > enables the wakirq (if applicable) on our behalf.
->
-> The setting flow are all the same.  I think helper functions in cros_ec.c=
- help
-> to deduplicate the code.
+Hello:
 
-I'll see what I can do.
+This patch was applied to netdev/net-next.git (main)
+by David S. Miller <davem@davemloft.net>:
 
-> > +MODULE_DEVICE_TABLE(dmi, untrusted_fw_irq_wake_capable);
->
-> Does it really need `MODULE_DEVICE_TABLE`?
+On Mon, 18 Dec 2023 13:30:22 +0000 you wrote:
+> There are a handful of spelling mistakes in test messages in the
+> TCP-AIO selftests. Fix these.
+> 
+> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+> ---
+>  tools/testing/selftests/net/tcp_ao/connect-deny.c      | 2 +-
+>  tools/testing/selftests/net/tcp_ao/lib/proc.c          | 4 ++--
+>  tools/testing/selftests/net/tcp_ao/setsockopt-closed.c | 2 +-
+>  tools/testing/selftests/net/tcp_ao/unsigned-md5.c      | 2 +-
+>  4 files changed, 5 insertions(+), 5 deletions(-)
 
-Nope. Will drop.
+Here is the summary with links:
+  - [next] selftests/net: Fix various spelling mistakes in TCP-AO tests
+    https://git.kernel.org/netdev/net-next/c/67f440c05dd2
 
-> >       ret =3D cros_ec_register(ec_dev);
-> >       if (ret) {
-> > -             dev_err(dev, "couldn't register ec_dev (%d)\n", ret);
-> > +             dev_err_probe(dev, ret, "couldn't register ec_dev (%d)\n"=
-, ret);
->
-> The change is irrelevant to the series.
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-I'll drop the use of dev_err_probe() to stay consistent with current
-conventions. Perhaps it can be added in a follow-up patch.
 
-> > @@ -470,6 +512,8 @@ static void cros_ec_lpc_remove(struct platform_devi=
-ce *pdev)
-> >               acpi_remove_notify_handler(adev->handle, ACPI_ALL_NOTIFY,
-> >                                          cros_ec_lpc_acpi_notify);
-> >
-> > +     dev_pm_clear_wake_irq(dev);
-> > +     device_init_wakeup(dev, false);
->
-> Is it safe to call them anyway regardless of `irq_wake` in cros_ec_lpc_pr=
-obe()?
-
-According to bench tests, it's not a problem. That said, I am
-refactoring the code to move the logic into cros_ec.c and will
-conditionally call the cleanup functions.
-
-> > +     if (!np)
-> > +             return;
-> > +
->
-> The change is an improvement (or rather say it could change behavior).  B=
-ut
-> strictly speaking, the change is irrelevant to the series.
-
-Will drop.
-
->
-> > @@ -702,6 +710,11 @@ static void cros_ec_spi_dt_probe(struct cros_ec_sp=
-i *ec_spi, struct device *dev)
-> >       ret =3D of_property_read_u32(np, "google,cros-ec-spi-msg-delay", =
-&val);
-> >       if (!ret)
-> >               ec_spi->end_of_msg_delay =3D val;
-> > +
-> > +     if (ec_dev->irq > 0 && of_property_read_bool(np, "wakeup-source")=
-) {
->
-> Or just use `spi->irq`[2].
->
-> [2]: https://elixir.bootlin.com/linux/v6.6/source/drivers/platform/chrome=
-/cros_ec_spi.c#L762
->
-> They are the same, but does of_property_present() make more sense?
-
-Yes it does. I'll use it.
-
-> > @@ -768,6 +778,9 @@ static int cros_ec_spi_probe(struct spi_device *spi=
-)
-> >                          sizeof(struct ec_response_get_protocol_info);
-> >       ec_dev->dout_size =3D sizeof(struct ec_host_request);
-> >
-> > +     /* Check for any DT properties */
-> > +     cros_ec_spi_dt_probe(ec_spi, spi);
->
-> `spi` is possibly not needed.  See comment above.
-
-Agreed.
 
