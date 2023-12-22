@@ -1,83 +1,170 @@
-Return-Path: <linux-kernel+bounces-9292-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9293-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECF5781C387
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 04:34:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88E7381C38B
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 04:35:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7F1BCB22818
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 03:34:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B47681C2106C
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 03:35:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D43223D0;
-	Fri, 22 Dec 2023 03:33:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED00646A8;
+	Fri, 22 Dec 2023 03:34:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="C5/5DCLf"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 463B717D3;
-	Fri, 22 Dec 2023 03:33:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gondor.apana.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-	by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-	id 1rGWIB-00Dgpy-KJ; Fri, 22 Dec 2023 11:33:44 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 22 Dec 2023 11:33:54 +0800
-Date: Fri, 22 Dec 2023 11:33:54 +0800
-From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Gonglei <arei.gonglei@huawei.com>
-Cc: linux-crypto@vger.kernel.org, mst@redhat.com,
-	virtualization@lists.linux-foundation.org,
-	linux-kernel@vger.kernel.org, lixiao91@huawei.com,
-	wangyangxin <wangyangxin1@huawei.com>
-Subject: Re: [PATCH 2/2] crypto: virtio-crypto: Fix gcc check warnings
-Message-ID: <ZYUDop1Cv1ddrqQf@gondor.apana.org.au>
-References: <1702294936-61080-1-git-send-email-arei.gonglei@huawei.com>
- <1702294936-61080-3-git-send-email-arei.gonglei@huawei.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0D34257B
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 03:34:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1703216090;
+	bh=kYml0Gc4mkk9AGwn9xZiP3xtZyxN1BrFoO4NDAvzy7M=;
+	h=From:To:Cc:Subject:Date:From;
+	b=C5/5DCLfh1RAXWeDcnqu/aZSxdB5pJ/kzz3a6epSwrhVHDEVQyK6YJiqY55KpAWAd
+	 fgnCixIt86jHLocC+6wPQi7nnWB3rimlS2L7S7yeQvDAj6rTsum+ZTn/J8frytzzuG
+	 qxwDC6IqNMQYsrIN3PSJe7xBn+f96WrwsKJeFFPSX1EMiSG9s2Kkd2L2ECM/aW4FQp
+	 RXjevOLKpCGyncC0IlYgnDUgPUlaAUi2gOtjhGperz1CLjTAx42v1V1Z7LJdNpjZq5
+	 i3bLfK+l+7V7OzRtvxqTlkKguizCmMKuwjmgAXG/EM7dkO5Yhyf6K8Q8TBMCD9G40Q
+	 OpnNv/1TdDXAg==
+Received: from localhost.localdomain (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: vignesh)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id AF4A137813DA;
+	Fri, 22 Dec 2023 03:34:45 +0000 (UTC)
+From: Vignesh Raman <vignesh.raman@collabora.com>
+To: dri-devel@lists.freedesktop.org
+Cc: helen.koike@collabora.com,
+	airlied@gmail.com,
+	daniel@ffwll.ch,
+	daniels@collabora.com,
+	david.heidelberg@collabora.com,
+	sergi.blanch.torne@collabora.com,
+	guilherme.gallo@collabora.com,
+	emma@anholt.net,
+	robdclark@gmail.com,
+	dmitry.baryshkov@linaro.org,
+	quic_abhinavk@quicinc.com,
+	freedreno@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2] drm/ci: uprev mesa version: fix kdl commit fetch
+Date: Fri, 22 Dec 2023 09:04:34 +0530
+Message-Id: <20231222033434.1537761-1-vignesh.raman@collabora.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1702294936-61080-3-git-send-email-arei.gonglei@huawei.com>
+Content-Transfer-Encoding: 8bit
 
-On Mon, Dec 11, 2023 at 07:42:16PM +0800, Gonglei wrote:
->
->  static inline int virtio_crypto_get_current_node(void)
->  {
-> -	int cpu, node;
-> +	int node;
->  
-> -	cpu = get_cpu();
-> -	node = topology_physical_package_id(cpu);
-> +	node = topology_physical_package_id(get_cpu());
+build-kdl.sh was doing a `clone --depth 1` of the default branch,
+then checking out a commit that might not be the latest of that
+branch, resulting in container build error.
 
-This looks like a bogus warning.  I think we should do something
-like this instead:
+https://gitlab.freedesktop.org/mesa/mesa/-/commit/5efa4d56 fixes
+kdl commit fetch issue. Uprev mesa in drm-ci to fix this.
 
-diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
-index ae81a7191c1c..0cb43986061b 100644
---- a/arch/x86/include/asm/processor.h
-+++ b/arch/x86/include/asm/processor.h
-@@ -191,7 +191,7 @@ DECLARE_PER_CPU_READ_MOSTLY(struct cpuinfo_x86, cpu_info);
- #define cpu_data(cpu)		per_cpu(cpu_info, cpu)
- #else
- #define cpu_info		boot_cpu_data
--#define cpu_data(cpu)		boot_cpu_data
-+#define cpu_data(cpu)		((void)cpu, boot_cpu_data)
- #endif
+This commit updates the kernel tag and adds .never-post-merge-rules
+due to the mesa uprev. It also fixes an issue where the virtio-gpu
+pipeline was not getting created with the mesa uprev.
+
+Reviewed-by: David Heidelberg <david.heidelberg@collabora.com>
+Acked-by: Helen Koike <helen.koike@collabora.com>
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Tested-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
+Signed-off-by: Vignesh Raman <vignesh.raman@collabora.com>
+---
+
+v2:
+  - Fix an issue where the virtio-gpu pipeline was not getting created with the mesa uprev
+    https://gitlab.freedesktop.org/vigneshraman/linux/-/pipelines/1062221
+
+---
+ drivers/gpu/drm/ci/gitlab-ci.yml | 14 ++++++++++++--
+ drivers/gpu/drm/ci/test.yml      |  1 +
+ 2 files changed, 13 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/gpu/drm/ci/gitlab-ci.yml b/drivers/gpu/drm/ci/gitlab-ci.yml
+index dac92cc2777c..084e3ff8e3f4 100644
+--- a/drivers/gpu/drm/ci/gitlab-ci.yml
++++ b/drivers/gpu/drm/ci/gitlab-ci.yml
+@@ -1,6 +1,6 @@
+ variables:
+   DRM_CI_PROJECT_PATH: &drm-ci-project-path mesa/mesa
+-  DRM_CI_COMMIT_SHA: &drm-ci-commit-sha edfbf74df1d4d6ce54ffe24566108be0e1a98c3d
++  DRM_CI_COMMIT_SHA: &drm-ci-commit-sha 9d162de9a05155e1c4041857a5848842749164cf
  
- extern const struct seq_operations cpuinfo_op;
-
-Please send this patch to the x86 people.
-
-Thanks,
+   UPSTREAM_REPO: git://anongit.freedesktop.org/drm/drm
+   TARGET_BRANCH: drm-next
+@@ -25,7 +25,9 @@ variables:
+   # per-job artifact storage on MinIO
+   JOB_ARTIFACTS_BASE: ${PIPELINE_ARTIFACTS_BASE}/${CI_JOB_ID}
+   # default kernel for rootfs before injecting the current kernel tree
+-  KERNEL_IMAGE_BASE: https://${S3_HOST}/mesa-lava/gfx-ci/linux/v6.4.12-for-mesa-ci-f6b4ad45f48d
++  KERNEL_REPO: "gfx-ci/linux"
++  KERNEL_TAG: "v6.6.4-for-mesa-ci-e4f4c500f7fb"
++  KERNEL_IMAGE_BASE: https://${S3_HOST}/mesa-lava/${KERNEL_REPO}/${KERNEL_TAG}
+   LAVA_TAGS: subset-1-gfx
+   LAVA_JOB_PRIORITY: 30
+ 
+@@ -133,6 +135,11 @@ stages:
+     - if: &is-pre-merge-for-marge '$GITLAB_USER_LOGIN == "marge-bot" && $CI_PIPELINE_SOURCE == "merge_request_event"'
+       when: on_success
+ 
++.never-post-merge-rules:
++  rules:
++    - if: *is-post-merge
++      when: never
++
+ # Rule to filter for only scheduled pipelines.
+ .scheduled_pipeline-rules:
+   rules:
+@@ -150,6 +157,7 @@ stages:
+ .build-rules:
+   rules:
+     - !reference [.no_scheduled_pipelines-rules, rules]
++    - !reference [.never-post-merge-rules, rules]
+     # Run automatically once all dependency jobs have passed
+     - when: on_success
+ 
+@@ -157,6 +165,7 @@ stages:
+ .container+build-rules:
+   rules:
+     - !reference [.no_scheduled_pipelines-rules, rules]
++    - !reference [.never-post-merge-rules, rules]
+     - when: manual
+ 
+ .ci-deqp-artifacts:
+@@ -175,6 +184,7 @@ stages:
+ .container-rules:
+   rules:
+     - !reference [.no_scheduled_pipelines-rules, rules]
++    - !reference [.never-post-merge-rules, rules]
+     # Run pipeline by default in the main project if any CI pipeline
+     # configuration files were changed, to ensure docker images are up to date
+     - if: *is-post-merge
+diff --git a/drivers/gpu/drm/ci/test.yml b/drivers/gpu/drm/ci/test.yml
+index 2c9a1838e728..1705f268547a 100644
+--- a/drivers/gpu/drm/ci/test.yml
++++ b/drivers/gpu/drm/ci/test.yml
+@@ -324,6 +324,7 @@ virtio_gpu:none:
+     GPU_VERSION: none
+   extends:
+     - .test-gl
++    - .test-rules
+   tags:
+     - kvm
+   script:
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+2.40.1
+
 
