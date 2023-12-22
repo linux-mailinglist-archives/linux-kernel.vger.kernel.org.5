@@ -1,154 +1,130 @@
-Return-Path: <linux-kernel+bounces-9771-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9772-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDF6A81CB29
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 15:14:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 57B5481CB2D
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 15:15:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 01A0B1C223CD
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 14:14:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8A5381C214BA
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 14:15:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8C3D1CF94;
-	Fri, 22 Dec 2023 14:14:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71F3D1CA9F;
+	Fri, 22 Dec 2023 14:15:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="kIVkH7yD";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="AiPCtw9s"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gYm1uYro"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC5481C693
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 14:14:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sakamocchi.jp
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-	by mailout.nyi.internal (Postfix) with ESMTP id CD7395C00E0;
-	Fri, 22 Dec 2023 09:14:22 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Fri, 22 Dec 2023 09:14:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
-	 h=cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1703254462; x=1703340862; bh=oVt+LAFbFg
-	KG82TEtbcSAhVvjHyj9SbZbARJs8bxpHc=; b=kIVkH7yDE4jU+JW9SAUuXyc9DA
-	JXWW8k0mOWh2kQZfANdFqGi2dPiyn/Eikt1XMsQZ5ZO9vWOQVQagzdllFfQave9Y
-	UNqdIO4vUFJ/kyrOhlbedNRZCb6k43J+Posx/VezgPMIaxCDsAPZtSe1APGaVPdg
-	foEksd7fVlrju5+gnbYVZivaTCI15pooFmyRKb44qNaNk7VbFhHL8ql3Duoj+Pbp
-	CxRgJ2ZbAQMCjK8DNa5/NENMlgyjW+fuIIhr/Y5J9EA8Hd/xliH4zRoU16PfZ7Sd
-	EMgrtLCN3ua+BvTk2Qag1hvTXOyj8Da+4XnFX4YdzUDY6vcPmjhzV4WfZGAQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1703254462; x=1703340862; bh=oVt+LAFbFgKG82TEtbcSAhVvjHyj
-	9SbZbARJs8bxpHc=; b=AiPCtw9sMXjAp9lCuZab5e4lTZDwZ+6WRLkagoavVBnV
-	xYUShCYxhv3VyhKRO0faPvlo4Y/9P9THiSs7L6blVNuWmT/u7Dg0KXP6ZCnoFrZP
-	PARaDPUCFKncfmLApupwc4nszr2JTclJZuDDcTE0jZAd6QESpTPD9PKmBmNwlLpY
-	Qqosf3ap9Q+IChia6CK21Z2+zF0FCyd2nuC+jNu9+nXSBe/hB6UPtiqmSAi3V7Zg
-	cF4m1rJie5MgR7FQz+QFjNDB84wv2x9Qk62asm0Q1Rsfenu/t2vBSZgPRqW2RHUa
-	GkEtFWz9Zdh9sUpu1WM8JdtNQz/xkzljmkf0Vef6eQ==
-X-ME-Sender: <xms:vpmFZZPgoqh_7SuCO1NToy1OrnLrwl7bGLGweBq2SfdiFK7qbvdCMg>
-    <xme:vpmFZb_Ml-zkBhxBXEflLCcK4QvByvYmiHHaITxHCFTDBfQYnU1JySNRBugRi__O4
-    nXmYck7ykSaH-eZl60>
-X-ME-Received: <xmr:vpmFZYQfCniqiymZasnstShqWzelVx3b3QXUCeerxTFdAx7rQIHYY1ep95QY07CUxBpCJiCIIgGRQ9upsInxPo64nHNFBTfxG60>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvddujedgiedtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucgoufhushhpvggtthffohhmrghinhculdegledmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefvrghkrghs
-    hhhiucfurghkrghmohhtohcuoehoqdhtrghkrghshhhisehsrghkrghmohgttghhihdrjh
-    hpqeenucggtffrrghtthgvrhhnpedtvefghfevieejhfejueeileekieeiteeuhffhgeej
-    feettdfhjeevhfevueejfeenucffohhmrghinhepkhgvrhhnvghlrdhorhhgpdgrrhgthh
-    hivhgvrdhorhhgpddufeelgehtrgdrohhrghdpshhouhhrtggvfhhorhhgvgdrnhgvthen
-    ucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehoqdhtrg
-    hkrghshhhisehsrghkrghmohgttghhihdrjhhp
-X-ME-Proxy: <xmx:vpmFZVtvM_9KHGoF1fcN2LTteMJz5Eoq_DLBKRP5eNBkkIYSs0ymPA>
-    <xmx:vpmFZRfwGa12bNRA_2HSzwcPFbDyfwF4LK6irfeIwVjghWcG3xfuRA>
-    <xmx:vpmFZR2A2slpqMALsSASM4wn0VtU9n_Pk5QdR7qnr-lcFROM1l4k5A>
-    <xmx:vpmFZRkpQnWMmKsn37NK8LMJpmnupGibR5OaTTTSTr53rn3NGRgpmw>
-Feedback-ID: ie8e14432:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 22 Dec 2023 09:14:21 -0500 (EST)
-Date: Fri, 22 Dec 2023 23:14:18 +0900
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-To: linux1394-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/8] firewire: core: support legacy layout of
- configuration ROM for AV/C device
-Message-ID: <20231222141418.GA625065@workstation.local>
-Mail-Followup-To: linux1394-devel@lists.sourceforge.net,
-	linux-kernel@vger.kernel.org
-References: <20231221134849.603857-1-o-takashi@sakamocchi.jp>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9ED1E2031B;
+	Fri, 22 Dec 2023 14:15:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-5cdf76cde78so254814a12.1;
+        Fri, 22 Dec 2023 06:15:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703254505; x=1703859305; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=zSMHDuQX1y5+DYhjAAy/0kV003znPZue6vWKu4XMzcM=;
+        b=gYm1uYroCKmxmSJzdloQ7lUn/STP99g9cZKDBszIggG/qVCmPVU679AJguP8NStMpi
+         OhiXwXLATrHmIDTDEKYoY/uC0HjvdhB/jYwuRmdAYjy4WgEzsCcuF23+k0jZv6Sj9IyA
+         JfTuQFwHtl5miFJt+VWDLZb6RGV2RrLKDeoJvUBSuUqQLJsbAAgpEo33UomrS155EDHW
+         NlB1qdemmSdXNhYDU3xAcQYaAB30DI66UEGtkC4T+FBrUpa8nLZU/Vk5/yXQUwSCbCQ6
+         3jZ7JfuvyihevaF6742I0zpPE/ggD3lI4xVBqdHomM16f27dxBf2xURsvcWOSxx1tXoB
+         RPiw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703254505; x=1703859305;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zSMHDuQX1y5+DYhjAAy/0kV003znPZue6vWKu4XMzcM=;
+        b=LcpewFvmnMHkKrX8KGsFikOGGovgPto67UYd+qUJRQnWf/4f3kj+MQgGUO5XtUEk1M
+         SJtfxm4gQLBj2UUjVngddG94VlstNs7Jr6fooDtdwrmvGrp8F0wfBPvuyUjPEoW1upOh
+         /dJMRQ3RKIE9oISCrDOPsW7M8B36H/rnLuyTM/k4I9oPxv7mpu9D5lf/jRJDeTjmbrYl
+         P3L77U1cYVS5YXLhfxHpxVC3f4JnhyoILj85a8a9szCNtoXBVacyDqhNoxXoLd2Ms7DV
+         Y14H3jsV6Tei0AD03XAtfoV0KLWSK7cWI8O2skyA8drsbUHCutE8HKrWx2bTAq8x0xY5
+         V5NA==
+X-Gm-Message-State: AOJu0YxJq8q/5i4kTl0UOTcZ79CZ7vCwdo54EoNhV2cjAohc3I/NEBc3
+	BGLQUqWmYV5sxaUDQNB15Yc=
+X-Google-Smtp-Source: AGHT+IF925AGB69UOlptiaAH4z/poi0QYDbpNb9g0blYiQZ+nfY2PqOSUMGxBI7zS38w3vvvpKXXqw==
+X-Received: by 2002:a05:6a20:4905:b0:195:37be:952f with SMTP id ft5-20020a056a20490500b0019537be952fmr479040pzb.107.1703254504814;
+        Fri, 22 Dec 2023 06:15:04 -0800 (PST)
+Received: from rigel (60-241-235-125.tpgi.com.au. [60.241.235.125])
+        by smtp.gmail.com with ESMTPSA id o18-20020a170902d4d200b001d3ef3eb988sm1667855plg.253.2023.12.22.06.15.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Dec 2023 06:15:04 -0800 (PST)
+Date: Fri, 22 Dec 2023 22:14:59 +0800
+From: Kent Gibson <warthog618@gmail.com>
+To: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Cc: Bartosz Golaszewski <brgl@bgdev.pl>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH v1 1/1] gpiolib: cdev: Split line_get_debounce_period()
+ and use
+Message-ID: <ZYWZ4yhqzTF8rShe@rigel>
+References: <20231221175527.2814506-1-andriy.shevchenko@linux.intel.com>
+ <ZYTihbWMcHMHSkC_@rigel>
+ <ZYWDij-J1YruTIM7@smile.fi.intel.com>
+ <ZYWHjq_7PnwO27ro@rigel>
+ <CAMRc=McPzQyR1J5Mhn7_cBrWEcqz2JKg7t8CpjHx6jgVEnYBvA@mail.gmail.com>
+ <ZYWYZ6Ys3hSb4IOe@rigel>
+ <CACMJSeu-bS+MpP8HCcD74w0j6vFt821bpgth5LHpqq-fHnEe1w@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231221134849.603857-1-o-takashi@sakamocchi.jp>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CACMJSeu-bS+MpP8HCcD74w0j6vFt821bpgth5LHpqq-fHnEe1w@mail.gmail.com>
 
-On Thu, Dec 21, 2023 at 10:48:41PM +0900, Takashi Sakamoto wrote:
-> Hi,
-> 
-> This series of change is take 2 of my previous post[1].
-> 
-> Current core function of Linux FireWire subsystem has support for legacy
-> layout of configuration ROM, described in annex of 1394TA document[2].
-> However, in a point of device attributes (e.g. nodes in sysfs), there
-> are differences between devices with the legacy and standard layout of
-> configuration ROM. The differences bring some inconveniences to users[3].
-> The series includes changes to solve them.
-> 
-> The series includes changes relevant to driver matching procedure and
-> notification to user space, thus could easily bring functional regression.
-> For safe, the series includes some KUnit applications to test the change.
-> 
-> However, backward incompatibility is inevitable due to change of modalias
-> for device corresponding to unit. As long as I investigated, any unit
-> drivers in kernel are not affected by the change. Additionally, less
-> applications in user space are not as well. I think we can be optimistic
-> to the regression.
-> 
-> Changes from v1 series:
-> * fix evaluation of uninitialized variable in 7th patch
-> 
-> [1] [PATCH 0/8] firewire: core: support legacy layout of configuration ROM
->     for AV/C device
-> https://lore.kernel.org/lkml/20231220041806.39816-1-o-takashi@sakamocchi.jp/
-> [2] Configuration ROM for AV/C Devices 1.0 (December 12, 2000, 1394
->     Trading Association, TA Document 1999027)
-> https://web.archive.org/web/20210216003030/http://1394ta.org/wp-content/uploads/2015/07/1999027.pdf
-> [3] [PATCH] Fix missing sysfs vendor/model entries for some devices
-> https://sourceforge.net/p/linux1394/mailman/message/55802731/
-> 
-> 
-> Takashi Sakamoto (8):
->   firewire: core: adds constant qualifier for local helper functions
->   firewire: core: replace magic number with macro
->   firewire: test: add KUnit test for device attributes
->   firewire: test: add test of device attributes for simple AV/C device
->   firewire: test: add test of device attributes for legacy AV/C device
->   firewire: core: detect numeric model identifier for legacy layout of
->     configuration ROM
->   firewire: core: detect model name for legacy layout of configuration
->     ROM
->   firewire: core: change modalias of unit device with backward
->     incompatibility
-> 
->  drivers/firewire/.kunitconfig            |   1 +
->  drivers/firewire/Kconfig                 |  16 ++
->  drivers/firewire/core-device.c           | 127 +++++++++---
->  drivers/firewire/device-attribute-test.c | 251 +++++++++++++++++++++++
->  4 files changed, 368 insertions(+), 27 deletions(-)
->  create mode 100644 drivers/firewire/device-attribute-test.c
+On Fri, Dec 22, 2023 at 03:09:54PM +0100, Bartosz Golaszewski wrote:
+> On Fri, 22 Dec 2023 at 15:08, Kent Gibson <warthog618@gmail.com> wrote:
+> >
+> > On Fri, Dec 22, 2023 at 02:37:43PM +0100, Bartosz Golaszewski wrote:
+> > > On Fri, Dec 22, 2023 at 1:56 PM Kent Gibson <warthog618@gmail.com> wrote:
+> > > >
+> >
+> > > > > > And you could've included me in the Cc so I didn't just find it by
+> > > > > > accident.
+> > > > >
+> > > > > Maybe it's time to add you to the MAINTAINERS for this file as a designated
+> > > > > reviewer?
+> > > > >
+> > > >
+> > > > You are patching my recent change that you yourself reviewed only days
+> > > > ago. I would think that you would Cc me whether I were a maintainer or
+> > > > not as I'm very likely to have relevant feedback.
+> > >
+> > > On that note: do you see yourself as a full GPIO reviewer or do you
+> > > prefer I split out the uAPI part into a separate section in
+> > > MAINTAINERS and nominate you as its maintainer?
+> > >
+> >
+> > Not sure I'm comfortable with either.
+> >
+> > Definitely not full GPIO.  I don't feel sufficiently familiar with GPIO
+> > and the related subsystems to qualify.
+> >
+> > Splitting out cdev and the uAPI makes more sense to me, but in my mind at
+> > least even that requires a level of commitment higher than the rather
+> > spotty attention I've been providing recently.
+> > I'm more inclined to leave it as is.
+> >
+>
+> I can still split the uAPI files into their own section, make Linus
+> and myself maintainers and make you a reviewer, how about that?
+>
 
-Applied the above patches to for-next branch[1]. Thanks for your reviewing.
+That is closer to the reality, so that would work for me.
 
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/ieee1394/linux1394.git/log/?h=for-next
-
-Takashi Sakamoto
+Cheers,
+Kent.
 
