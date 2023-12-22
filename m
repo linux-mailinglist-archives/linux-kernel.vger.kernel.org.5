@@ -1,84 +1,77 @@
-Return-Path: <linux-kernel+bounces-9307-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9308-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D44D81C3C4
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 05:14:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0FA5281C3C9
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 05:19:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C285F1C24C5E
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 04:14:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B909A286473
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 04:19:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D53B06138;
-	Fri, 22 Dec 2023 04:14:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DAA923D5;
+	Fri, 22 Dec 2023 04:19:08 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8F356120
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 04:14:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
-Received: by verein.lst.de (Postfix, from userid 2407)
-	id 6048B68AFE; Fri, 22 Dec 2023 05:14:28 +0100 (CET)
-Date: Fri, 22 Dec 2023 05:14:28 +0100
-From: Christoph Hellwig <hch@lst.de>
-To: Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc: Maxim Kochetkov <fido_max@inbox.ru>, linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org, robh@kernel.org, mpe@ellerman.id.au,
-	aou@eecs.berkeley.edu, palmer@dabbelt.com, paul.walmsley@sifive.com,
-	Conor Dooley <conor@kernel.org>, hch@lst.de
-Subject: Re: [PATCH 1/1] riscv: set ARCH_DMA_DEFAULT_COHERENT if
- RISCV_DMA_NONCOHERENT is not set
-Message-ID: <20231222041428.GA2803@lst.de>
-References: <20231221185152.327231-1-fido_max@inbox.ru> <20231221-discount-decade-e306e5878c46@spud> <f31d929c-fa0a-4046-be05-38e92afa5d92@flygoat.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73F3720FB
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 04:19:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7b739032bf6so160855039f.3
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 20:19:06 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703218745; x=1703823545;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5fDxZ3Ga9/F0hvHkyVo3DPwY7VZI6+zrABkAy4JN6Qo=;
+        b=HDdV0i9fdLmD5KA4CUUS+vYtb9PLaoEuzC306qaUTgdzYCS94YUeJc9HoSZjN6LWP2
+         oELAwJhsrZpuBYfveT/epVjPefbwNGQthxP5G/2YOdGMbZ7bduqtUcT8ODAWnCVwOMNO
+         6zY21mnFE20tiwqXsr18yAfPL63AL6JZ1O+hMMEdgD+4Hwlqa/yuTdZuFPXD3Z1z/O6y
+         xQ6PpmCPsj0G0f3XW03BlcDp7kORZHPrV+dcYQ4IeKyOyBEH/83Tg7ve2JOTDx30iHgj
+         CUzvC/vGJbF2Hl5XgG2y2422tBAFfUqwWHAEMq9Cmivp37HWDt1QZJ3KO7Jf/SGAJ9q9
+         jQsQ==
+X-Gm-Message-State: AOJu0YzHdNIg6M0l0T79NzLNrqduoRrL5I3MJ8A41VBsxQXieB7MnkwU
+	NYubEFhFq6EHLL5O3sNUW9PYBAY+k7eJrHVAYPEkhxRq6TMx/Zs=
+X-Google-Smtp-Source: AGHT+IHHAFisd4iKuXPGnRd5cvEw3S3NkNC0CiT8HJgouhiCZHXEHv/IJYl/vyICXsjYdzDdlvn2SxIhorrpdoiTMDayjucYiRx0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <f31d929c-fa0a-4046-be05-38e92afa5d92@flygoat.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+X-Received: by 2002:a05:6638:3395:b0:46b:3f0b:906 with SMTP id
+ h21-20020a056638339500b0046b3f0b0906mr31342jav.1.1703218745594; Thu, 21 Dec
+ 2023 20:19:05 -0800 (PST)
+Date: Thu, 21 Dec 2023 20:19:05 -0800
+In-Reply-To: <20231222030654.849208-1-lizhi.xu@windriver.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000004e5a29060d118494@google.com>
+Subject: Re: [syzbot] [reiserfs?] possible deadlock in chmod_common (2)
+From: syzbot <syzbot+83693dbba860b4f2e549@syzkaller.appspotmail.com>
+To: linux-kernel@vger.kernel.org, lizhi.xu@windriver.com, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu, Dec 21, 2023 at 10:27:33PM +0000, Jiaxun Yang wrote:
->
->
-> 在 2023/12/21 20:29, Conor Dooley 写道:
->> + Christoph
->>
->> I don't think this patch is correct. Regardless of whether we support
->> cache management operations, DMA is assumed to be coherent unless
->> peripherals etc are specified to otherwise in DT (or however ACPI deals
->> with that kind of thing).
->>
->> What problem are you trying to solve here?
->>
->> On Thu, Dec 21, 2023 at 09:51:52PM +0300, Maxim Kochetkov wrote:
->>> Not all the RISCV are DMA coherent by default.
->
-> Sorry for chime in here.
-> IMO if your platform is not coherent by default, just insert 
-> "dma-noncoherent"
-> at devicetree root node.
+Hello,
 
-Exactly.  ARCH_DMA_DEFAULT_COHERENTis a setting that just says for
-a given architecture assumes coherent unless otherwise specified,
-which has historically been the case for mips.  Not setting it means
-non-coherent unless specified, which has historially been the case
-for arm.
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-RISC-V starte out without support for non-coherent DMA, and high ups
-in RISCV still told me in 2019 that RISC-V doesn't need cache
-management instructions because no new hardware would ever not be
-dma coherent.  Yeah, right..
+Reported-and-tested-by: syzbot+83693dbba860b4f2e549@syzkaller.appspotmail.com
 
-Anyay, Linux for RISC-V has historically been coherent only and then
-coherent default, so this option is wrong, and you need to mark
-you platform as non-coherent by inserting dma-noncoherent somewhere.
+Tested on:
 
+commit:         aafe7ad7 Merge branch 'for-next/core' into for-kernelci
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=117a15a5e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=23ce86eb3d78ef4d
+dashboard link: https://syzkaller.appspot.com/bug?extid=83693dbba860b4f2e549
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: arm64
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=14f83009e80000
+
+Note: testing is done by a robot and is best-effort only.
 
