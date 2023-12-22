@@ -1,156 +1,216 @@
-Return-Path: <linux-kernel+bounces-9379-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9380-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B56581C4CB
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 06:51:05 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A43E81C4CC
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 06:53:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E90D62880AB
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 05:51:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9B4A9B24A7B
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 05:53:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3FD76FBC;
-	Fri, 22 Dec 2023 05:50:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6C6A9468;
+	Fri, 22 Dec 2023 05:53:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ulf31DKf"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="e4b/goL8"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DC1E6120;
-	Fri, 22 Dec 2023 05:50:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C8299447
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 05:53:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-5cd8e2988ddso775647a12.3;
-        Thu, 21 Dec 2023 21:50:52 -0800 (PST)
+Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-50e659880a9so981380e87.3
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 21:53:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703224252; x=1703829052; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=hRvRZykoJN1NoOnmO83DscFYZk386QocmmGOF7bdSo4=;
-        b=Ulf31DKf22AAHNMuGX3ZcNKvSsQN9jhOZiPNcaKBkVKFw/q04X2ir0gh6/5IAyCaiG
-         qn9P2vMzDWiEXEH3TFnFG41Omn6SuUV1zoPHjBNU4sJGXkKPCcOnUoVAWotZbL6Ec4B7
-         Ew1h/YHCDHes2KFGVOnDvPH/0SJ8zLvCkAwq0D7fpfVSQikAv8IREbSy/Me45yJ2Uw6w
-         QMaHilLrKdK8l1a8x+b+LoObFYKc3HPZUrOW6mJ1sVbZrQl8S+EIfay6gZ9+MLez4vXX
-         AT1khKVWYVDgmZ/uXwGMyo2BM5R54tu7ohXvzn3pQsWb9gkZdRJFiJddo1nzeDK69Mdm
-         IUyw==
+        d=gmail.com; s=20230601; t=1703224410; x=1703829210; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qCXnfWI0LxEg9yxOXziwsaTzEl1G0IzRUjonaTXiIjk=;
+        b=e4b/goL8krh6cBW9gYUGAksGR0uLhzjgb1TiMIGueM5uc9JtEDDMrevs8E5Z/TyScx
+         CuE1gnVrQgUR1jw3zvNnWqccGry+Rrw7JekmVPCXZyzi0jHitvEF+Pmyn5f1sE7m/mw7
+         5Dq4C91BeK+l1cpLPjWB7XbjfK98L41+oj6uhSoPhNgzUdoZdzJpY8ix5fWD1aLEHWZ1
+         8GHCCxBWyJkFRZhbgWeIRbjWf6gs70f4+RZNGeaX+PHB1262dc/aKAs9CdBbxijSIjMe
+         SDGjSI8ZVaSOz97Vru0N3a0IZ5Xwds0Y+w7lmWDXLEKEgPNuIDyDGuzg2IezP8qoUTU9
+         f04A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703224252; x=1703829052;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=hRvRZykoJN1NoOnmO83DscFYZk386QocmmGOF7bdSo4=;
-        b=b8x9FyXK8+jCU39wQ1G5dJElZyxg4DUY25Qqu6YFoCxneoBwaJD2OKvH0d5BdbZRgZ
-         KaSrCAOKysdfS7Id4/thRH4MKF0wNRn6e7C4SWhduVIEM0vrSyhB1Jn0uUZ6YoAoPENm
-         Iv1XtABmWEzhoHA2L616Exl5FKtUSVaDAHNBim3/kcX98oi+rj+i9ehMNLMR4vst7yD6
-         F5rzcRBJlHKZYLwnivsrv3qvXBZQ6xJLTMyF6ZtJ8uG92QiznyNFPv8Djvl80vAbuwzH
-         v+jo5spJLOGUgTH6VHOCjLnYmxPewTBo1dIzicfA4Rb8pOtrMO7MHQdpcaJT2gK2Edqp
-         OXXQ==
-X-Gm-Message-State: AOJu0YzhBJwq4TchJVyARvthgJHhduTxpk0aoVdZ15WxWF2yLGFoQIUH
-	i00qU7I6J5pjpEx6RCP9Yts=
-X-Google-Smtp-Source: AGHT+IFi32YovJZtv8sUPvSWvhc0jwApw94pEtvhvqvOcLHW6vipl+8TUyuOSkDSjSYyW5i6DeS8zA==
-X-Received: by 2002:a05:6a21:a5a1:b0:194:eabe:cc23 with SMTP id gd33-20020a056a21a5a100b00194eabecc23mr595681pzc.98.1703224251881;
-        Thu, 21 Dec 2023 21:50:51 -0800 (PST)
-Received: from g2039B650.. ([106.39.42.144])
-        by smtp.gmail.com with ESMTPSA id e12-20020a170902b78c00b001bb750189desm2567135pls.255.2023.12.21.21.50.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Dec 2023 21:50:51 -0800 (PST)
-From: Gui-Dong Han <2045gemini@gmail.com>
-To: mchehab@kernel.org,
-	hverkuil-cisco@xs4all.nl,
-	mcgrof@kernel.org,
-	gregkh@linuxfoundation.org
-Cc: linux-media@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	baijiaju1990@outlook.com,
-	Gui-Dong Han <2045gemini@gmail.com>,
-	stable@vger.kernel.org,
-	BassCheck <bass@buaa.edu.cn>
-Subject: [PATCH v2] [media] xc4000: Fix atomicity violation in xc4000_get_frequency
-Date: Fri, 22 Dec 2023 13:50:30 +0800
-Message-Id: <20231222055030.5237-1-2045gemini@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20230601; t=1703224410; x=1703829210;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qCXnfWI0LxEg9yxOXziwsaTzEl1G0IzRUjonaTXiIjk=;
+        b=PFa8JT7JXRn3f5oEXvHXq8YcoG3B293Onb69ChL14LbhJJoquJFXVxsw14wz4xbK3J
+         Gi9pFDxpsdKyGgGcL1N+ElcUDHIrVlVrGJGSxNeMQDzHxvT6A9k4vVJJP6qcJy5Jf3Kc
+         pamhmW4WOBnmSSup+ryt/6dJBHlXQ9DFP4Ju20jfBqNx9zT9e7Ebbc5pO+L1fHpenvdK
+         Hi2pVdlU8fD81cEr+cg7IfrQ2I3WGaYxy4YdLz8MjcS1B9u5UstM/2t1XI+H4+nLZibr
+         HcWLkFoF1T1yfhqwvOZH016emweBNsNjonoqAVq2tQmvXy8XU+gvZ20p1CZPy2Z9FAJl
+         iENw==
+X-Gm-Message-State: AOJu0YzqfAPFYav4Hv1eYJ363eHrqtgER5ttxDTmTXWDsXeftyFPe4RY
+	PYabSI0KNeU5/woLSKU9xO7IcL2aTVvVKITbkFqw3hFZKrs=
+X-Google-Smtp-Source: AGHT+IHKTJQV20SqN966boq3YGZXb9F2xuhOMuEW9nnI1UdL30Ja2FCgktsO8PUQmrOO9RXatIMRUO6e7i1G/X8p2rQ=
+X-Received: by 2002:a19:7611:0:b0:50e:4b94:61b0 with SMTP id
+ c17-20020a197611000000b0050e4b9461b0mr367462lff.56.1703224410197; Thu, 21 Dec
+ 2023 21:53:30 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20231220102948.1963798-1-zhaoyang.huang@unisoc.com>
+ <ZYL2rbD5UTz3s8gg@casper.infradead.org> <CAGWkznFcMkkqsKJSyHJfts9ZiYsxxg_dFTccieQ4+boRDJgG4g@mail.gmail.com>
+ <ZYO6bLcCRYlo290g@casper.infradead.org> <CAOUHufZ-hAAB+9iL3K-YokN4oVJoiC9dVQ+6zLu-M4Ag52TY5g@mail.gmail.com>
+ <CAGWkznGUvPeWkjcy42dudx_+n19dr7SU3B3GGO6JovXHB-Vyzg@mail.gmail.com> <CAOUHufajdi7LjyJWNoDx7RP_i9mmN8j9dBqO7GC4A6YNPNnygw@mail.gmail.com>
+In-Reply-To: <CAOUHufajdi7LjyJWNoDx7RP_i9mmN8j9dBqO7GC4A6YNPNnygw@mail.gmail.com>
+From: Zhaoyang Huang <huangzhaoyang@gmail.com>
+Date: Fri, 22 Dec 2023 13:53:18 +0800
+Message-ID: <CAGWkznFb2vn_+2ho7BQ1cqVDx0cyFzoffS3_nk4hYUNuRSsVGw@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/1] mm: mark folio accessed in minor fault
+To: Yu Zhao <yuzhao@google.com>
+Cc: Matthew Wilcox <willy@infradead.org>, "zhaoyang.huang" <zhaoyang.huang@unisoc.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, steve.kang@unisoc.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-In xc4000_get_frequency():
-	*freq = priv->freq_hz + priv->freq_offset;
-The code accesses priv->freq_hz and priv->freq_offset without holding any
-lock.
+On Thu, Dec 21, 2023 at 2:33=E2=80=AFPM Yu Zhao <yuzhao@google.com> wrote:
+>
+> On Wed, Dec 20, 2023 at 11:28=E2=80=AFPM Zhaoyang Huang <huangzhaoyang@gm=
+ail.com> wrote:
+> >
+> > On Thu, Dec 21, 2023 at 12:53=E2=80=AFPM Yu Zhao <yuzhao@google.com> wr=
+ote:
+> > >
+> > > On Wed, Dec 20, 2023 at 9:09=E2=80=AFPM Matthew Wilcox <willy@infrade=
+ad.org> wrote:
+> > > >
+> > > > On Thu, Dec 21, 2023 at 09:58:25AM +0800, Zhaoyang Huang wrote:
+> > > > > On Wed, Dec 20, 2023 at 10:14=E2=80=AFPM Matthew Wilcox <willy@in=
+fradead.org> wrote:
+> > > > > >
+> > > > > > On Wed, Dec 20, 2023 at 06:29:48PM +0800, zhaoyang.huang wrote:
+> > > > > > > From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+> > > > > > >
+> > > > > > > Inactive mapped folio will be promoted to active only when it=
+ is
+> > > > > > > scanned in shrink_inactive_list, while the vfs folio will do =
+this
+> > > > > > > immidiatly when it is accessed. These will introduce two affe=
+ctions:
+> > > > > > >
+> > > > > > > 1. NR_ACTIVE_FILE is not accurate as expected.
+> > > > > > > 2. Low reclaiming efficiency caused by dummy nactive folio wh=
+ich should
+> > > > > > >    be kept as earlier as shrink_active_list.
+> > > > > > >
+> > > > > > > I would like to suggest mark the folio be accessed in minor f=
+ault to
+> > > > > > > solve this situation.
+> > > > > >
+> > > > > > This isn't going to be as effective as you imagine.  Almost all=
+ file
+> > > > > > faults are handled through filemap_map_pages().  So I must ask,=
+ what
+> > > > > > testing have you done with this patch?
+> > > > > >
+> > > > > > And while you're gathering data, what effect would this patch h=
+ave on your
+> > > > > > workloads?
+> > > > > Thanks for heads-up, I am out of date for readahead mechanism. My=
+ goal
+> > > >
+> > > > It's not a terribly new mechanism ... filemap_map_pages() was added=
+ nine
+> > > > years ago in 2014 by commit f1820361f83d
+> > > >
+> > > > > is to have mapped file pages behave like other pages which could =
+be
+> > > > > promoted immediately when they are accessed. I will update the pa=
+tch
+> > > > > and provide benchmark data in new patch set.
+> > > >
+> > > > Understood.  I don't know the history of this, so I'm not sure if t=
+he
+> > > > decision to not mark folios as accessed here was intentional or not=
+.
+> > > > I suspect it's entirely unintentional.
+> > >
+> > > It's intentional. For the active/inactive LRU, all folios start
+> > > inactive. The first scan of a folio transfers the A-bit (if it's set
+> > > during the initial fault) to PG_referenced; the second scan of this
+> > > folio, if the A-bit is set again, moves it to the active list. This
+> > > way single-use folios, i.e., folios mapped for file streaming, can be
+> > > reclaimed quickly, since they are "demoted" rather than "promoted" on
+> > > the second scan. This RFC would regress memory streaming workloads.
+> > Thanks. Please correct me if I am wrong. IMO, there will be no
+> > minor-fault for single-use folios
+>
+> Why not? What prevents a specific *access pattern* from triggering minor =
+faults?
+Please find the following chart for mapped page state machine
+transfication. We can find that:
+1. RFC behaves the same as the mainline in (1)(2)
+2. VM_EXEC mapped pages are activated earlier than mainline which help
+improve scan efficiency in (3)(4)
+3. none VM_EXEC mapped pages are dropped as vfs pages do during 3rd scan.
 
-In xc4000_set_params():
-	// Code that updates priv->freq_hz and priv->freq_offset
-	...
+(1)
+                                  1st access
+shrink_active_list              1st scan(shink_folio_list)
+2nd scan(shrink_folio_list')
+mainline                     INA/UNR                        NA
+                          INA/REF
+DROP
+RFC                           INA/UNR                        NA
+                           INA/REF
+DROP
 
-xc4000_get_frequency() and xc4000_set_params() may execute concurrently,
-risking inconsistent reads of priv->freq_hz and priv->freq_offset. Since
-these related data may update during reading, it can result in incorrect
-frequency calculation, leading to atomicity violations.
+(2)
+                                  1st access                   2nd
+access                        shrink_active_list          1st
+scan(shink_folio_list)
+mainline                     INA/UNR                     INA/UNR
+                      NA                                 ACT/REF
+RFC                           INA/UNR                     INA/REF
+                        NA                                 ACT/REF
 
-This possible bug is found by an experimental static analysis tool
-developed by our team, BassCheck[1]. This tool analyzes the locking APIs
-to extract function pairs that can be concurrently executed, and then
-analyzes the instructions in the paired functions to identify possible
-concurrency bugs including data races and atomicity violations. The above
-possible bug is reported when our tool analyzes the source code of
-Linux 6.2.
+(3)
+                                  1st access
+shrink_active_list        1st scan(shink_folio_list)       2nd access
+      2nd scan(shrink_active_list)     3rd scan(shink_folio_list)
+mainline                     INA/UNR                        NA
+                          INA/REF                           INA/REF
+                NA                                     ACT/REF
+RFC                           INA/UNR                        NA
+                           INA/REF                           ACT/REF
+                ACT/REF                           NA
+(VM_EXEC)
+RFC                           INA/UNR                        NA
+                           INA/REF                           ACT/REF
+                INA/REF                            DROP
+(non VM_EXEC)
 
-To address this issue, it is proposed to add a mutex lock pair in
-xc4000_get_frequency() to ensure atomicity. With this patch applied, our
-tool no longer reports the possible bug, with the kernel configuration
-allyesconfig for x86_64. Due to the lack of associated hardware, we cannot
-test the patch in runtime testing, and just verify it according to the
-code logic.
-
-[1] https://sites.google.com/view/basscheck/
-
-Fixes: 4c07e32884ab6 ("[media] xc4000: Fix get_frequency()")
-Cc: stable@vger.kernel.org
-Reported-by: BassCheck <bass@buaa.edu.cn>
-Signed-off-by: Gui-Dong Han <2045gemini@gmail.com>
----
-v2:
-* In this patch v2, we've added some information of the static analysis
-tool used, as per the researcher guidelines. Also, we've added a cc in the
-signed-off-by area, according to the stable-kernel-rules.
-  Thank Greg KH for helpful advice.
----
- drivers/media/tuners/xc4000.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/media/tuners/xc4000.c b/drivers/media/tuners/xc4000.c
-index 57ded9ff3f04..29bc63021c5a 100644
---- a/drivers/media/tuners/xc4000.c
-+++ b/drivers/media/tuners/xc4000.c
-@@ -1515,10 +1515,10 @@ static int xc4000_get_frequency(struct dvb_frontend *fe, u32 *freq)
- {
- 	struct xc4000_priv *priv = fe->tuner_priv;
- 
-+	mutex_lock(&priv->lock);
- 	*freq = priv->freq_hz + priv->freq_offset;
- 
- 	if (debug) {
--		mutex_lock(&priv->lock);
- 		if ((priv->cur_fw.type
- 		     & (BASE | FM | DTV6 | DTV7 | DTV78 | DTV8)) == BASE) {
- 			u16	snr = 0;
-@@ -1529,8 +1529,8 @@ static int xc4000_get_frequency(struct dvb_frontend *fe, u32 *freq)
- 				return 0;
- 			}
- 		}
--		mutex_unlock(&priv->lock);
- 	}
-+	mutex_unlock(&priv->lock);
- 
- 	dprintk(1, "%s()\n", __func__);
- 
--- 
-2.34.1
-
+(4)
+                                  1st access                   2nd
+access                         3rd access
+shrink_active_list                   shink_folio_list
+mainline                     INA/UNR                       INA/UNR
+                       INA/UNR                          NA
+                           ACT/REF
+RFC                           INA/UNR                       INA/REF
+                         ACT/REF                         ACT/REF
+                       NA
+(VM_EXEC)
+RFC                           INA/UNR                       INA/REF
+                         ACT/REF                         ACT/REF
+                       NA
+(Non VM_EXEC)
+>
+> > which means RFC could behave the
+> > same as mainline does now? I think it doesn't make sense to have
+> > multiple-mapped pages filled in page_list to shrink_page_list since we
+> > can distinguish them in advance.
 
