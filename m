@@ -1,110 +1,309 @@
-Return-Path: <linux-kernel+bounces-9516-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9518-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 982B881C6D2
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 09:47:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A6DED81C6D5
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 09:48:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 01BD0B21A99
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 08:47:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C9F11B21820
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 08:48:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DFD5F9FA;
-	Fri, 22 Dec 2023 08:47:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F834CA59;
+	Fri, 22 Dec 2023 08:48:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="0gr5ACid";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="+33bxCiP"
+	dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b="LwORYRx8"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F33DF9C8
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 08:47:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Fri, 22 Dec 2023 09:47:35 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1703234856;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QZXloMgiRAVOPGoz8o3+D3AfE1mP2CVP2wrPR3Txq90=;
-	b=0gr5ACidvRLvpLg/q2J3xJbOGrbO2/gkpDdGk+ZaIgEF/ddU+qnZZvvkYC+JUcZMHPYJV7
-	Zkja0fO0kTxDqVCgmY3D08X9hkUtN0zfzvrrviW/M6Qk+I44y38FyzMgk+n0zILYTxMgM2
-	FNYdEuUTeUsgPXXyUBDmUWAV90EUWNSmX7Y+egQpSvh4/iz0NzBFrPck71+RFpv3T+5Log
-	hyrTJIthTPMgyZb22BvC19J9gPIj+AZiKN4pheXToc4p9PK4dSklivV55JCxRTdv1pK7Lc
-	4J4JDgivMySb9RmraUznyz8SOzXCBV3uKTQmkv3CBESSkvQiMPxTPOC15d0sxA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1703234856;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QZXloMgiRAVOPGoz8o3+D3AfE1mP2CVP2wrPR3Txq90=;
-	b=+33bxCiPWOX1ZNUhk68sHH7mSW0kn6EtiMx7vuWuzh7SzaOChfeVw9dryi3RAE/DZOujlA
-	tdsYDlw4HUWY0mDw==
-From: Nam Cao <namcao@linutronix.de>
-To: Ryan England <rcengland@gmail.com>
-Cc: Larry Finger <Larry.Finger@lwfinger.net>, Florian Schilhabel
- <florian.c.schilhabel@googlemail.com>, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, linux-staging@lists.linux.dev,
- linux-kernel@vger.kernel.org, outreachy@lists.linux.dev
-Subject: Re: [PATCH v2] staging: rtl8712: fix open parentheses alignment
-Message-ID: <20231222094735.5554b67a@namcao>
-In-Reply-To: <ZYSemFbzTlgLROMc@kernel.ryanengland.xyz>
-References: <ZYSemFbzTlgLROMc@kernel.ryanengland.xyz>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5663FC8C8
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 08:48:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ew.tq-group.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1703234915; x=1734770915;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:content-transfer-encoding:mime-version;
+  bh=oWIp5InUGyUzaylWZZL5A5hNc9Ub4HLtupMi0ioFdMs=;
+  b=LwORYRx8paCLkq9EwBpPWT6TeBITPzYDInyrsMlMcmeCB6SnXVOWdOM9
+   Qxx5ACSjI2AqzaA/hywQZ1DrRIw3lyz1dVv3ividTJjDr24Ou/3US5VcY
+   LKRuoa32Jw25PgOvSkZOi/EOTmqrUGo4E60k3AItSaTLFpEkcmyW4KM4o
+   1/EsWtYfqTA+MN0jOGT1ZR9ja27ndSd8OExHizt/QlbpxQkzrXXZpjlRZ
+   qmKcQ48X5VLzM8AsiJwDzcfS6WaxpnuXf3RCqVnQ3/8SRx0FFXdRcLYND
+   42cdbNvklb8K0ypb0SdXgEF+JosuBFXBE6gDc6yIn821tUSRFaau8s43f
+   A==;
+X-IronPort-AV: E=Sophos;i="6.04,294,1695679200"; 
+   d="scan'208";a="34649929"
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+  by mx1.tq-group.com with ESMTP; 22 Dec 2023 09:48:32 +0100
+Received: from [192.168.2.128] (SCHIFFERM-M2.tq-net.de [10.121.53.15])
+	by vtuxmail01.tq-net.de (Postfix) with ESMTPA id B4A8D280075;
+	Fri, 22 Dec 2023 09:48:31 +0100 (CET)
+Message-ID: <b4eae5a8f451a3d253521a61b9625e3d7634f430.camel@ew.tq-group.com>
+Subject: Re: [PATCH] powerpc/6xx: set High BAT Enable flag on G2 cores
+From: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+To: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: Nicholas Piggin <npiggin@gmail.com>, "Aneesh Kumar K.V"
+ <aneesh.kumar@kernel.org>, "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, 
+ "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux@ew.tq-group.com" <linux@ew.tq-group.com>,  Michael Ellerman
+ <mpe@ellerman.id.au>
+Date: Fri, 22 Dec 2023 09:48:31 +0100
+In-Reply-To: <2fad9563-09ee-4017-8a67-5958475d56c8@csgroup.eu>
+References: <20231221124538.159706-1-matthias.schiffer@ew.tq-group.com>
+	 <2fad9563-09ee-4017-8a67-5958475d56c8@csgroup.eu>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 
-On Thu, 21 Dec 2023 20:22:48 +0000 Ryan England <rcengland@gmail.com> wrote:
+On Thu, 2023-12-21 at 13:57 +0000, Christophe Leroy wrote:
+>=20
+>=20
+> Le 21/12/2023 =C3=A0 13:45, Matthias Schiffer a =C3=A9crit=C2=A0:
+> > MMU_FTR_USE_HIGH_BATS is set for G2-based cores (G2_LE, e300cX), but th=
+e
+> > high BATs need to be enabled in HID2 to work. Add register definitions
+> > and introduce a G2 variant of __setup_cpu_603.
+>=20
+> Well spotted.
+>=20
+> I have a mpc8321, hence e300c2. I never had the problem you had.
+>=20
+> But ... looks like U-boot configuration has CONFIG_HID2_HBE so that's=20
+> set by U-boot indeed, that's the reason why I never had that problem.
 
-> Adhere to Linux kernel coding style.
-> 
-> Reported by checkpatch:
-> 
-> CHECK: Alignment should match open parenthesis
-> 
-> Signed-off-by: Ryan England <rcengland@gmail.com>
-> ---
-> Made corrections give the 100 line limit. Resending v2 as no change was
-> made other than including this comment below ---. Thank you for the
-> correction. Here's to learning with every submission.
-> 
->  drivers/staging/rtl8712/os_intfs.c            |   3 +-
->  drivers/staging/rtl8712/rtl8712_efuse.c       |   9 +-
->  drivers/staging/rtl8712/rtl8712_recv.c        |   3 +-
->  drivers/staging/rtl8712/rtl8712_xmit.c        |  60 +++---
->  drivers/staging/rtl8712/rtl871x_cmd.c         | 159 +++++---------
->  drivers/staging/rtl8712/rtl871x_cmd.h         |  37 ++--
->  drivers/staging/rtl8712/rtl871x_ioctl_linux.c | 203 +++++++-----------
->  7 files changed, 173 insertions(+), 301 deletions(-)
-> 
-> diff --git a/drivers/staging/rtl8712/os_intfs.c b/drivers/staging/rtl8712/os_intfs.c
-> index b18e6d9c832b..7554613fe7e1 100644
-> --- a/drivers/staging/rtl8712/os_intfs.c
-> +++ b/drivers/staging/rtl8712/os_intfs.c
-> @@ -221,8 +221,7 @@ struct net_device *r8712_init_netdev(void)
->  
->  static u32 start_drv_threads(struct _adapter *padapter)
->  {
-> -	padapter->cmd_thread = kthread_run(r8712_cmd_thread, padapter, "%s",
-> -					  padapter->pnetdev->name);
-> +	padapter->cmd_thread = kthread_run(r8712_cmd_thread, padapter, "%s", padapter->pnetdev->name);
+I'll extend the commit message to mention that U-Boot setting in v2.
 
-Your description claims to fix "CHECK: Alignment should match open
-parenthesis", but this one is already aligned, isn't it?
 
-Note that, because you CAN you 100 characters, does not mean you MUST use 100
-characters.
+>=20
+> >=20
+> > This fixes boot on CPUs like the MPC5200B with STRICT_KERNEL_RWX enable=
+d.
+> >=20
+> > Fixes: e4d6654ebe6e ("powerpc/mm/32s: rework mmu_mapin_ram()")
+> > Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+> > ---
+> >   arch/powerpc/include/asm/cpu_setup.h      |  1 +
+> >   arch/powerpc/include/asm/reg.h            |  2 ++
+> >   arch/powerpc/kernel/cpu_setup_6xx.S       | 25 ++++++++++++++++++++++=
+-
+> >   arch/powerpc/kernel/cpu_specs_book3s_32.h | 10 ++++-----
+> >   4 files changed, 32 insertions(+), 6 deletions(-)
+> >=20
+> >=20
+> > I have only tested this on the MPC5200B (G2_LE), but according to the
+> > e300 manual, e300cX cores should behave the same.
+> >=20
+> > The Fixes tag is the best I could come up with - I believe that the
+> > underlying issue of setting USE_HIGH_BATS without actually enabling the=
+m
+> > is as old as Linux's PowerPC implementation, but the specific code
+> > causing the boot failure was added in the mentioned commit.
+>=20
+> Agreed, before that only BATs 0 to 3 were used anyway.
+> There was also BAT 4 used by platforms/embedded6xx/wii.c  , but that's=
+=20
+> probably not a G2 ?
+>=20
+> >=20
+> > Another issue I found in the code is that
+> > arch/powerpc/platforms/52xx/lite5200_sleep.S uses the SPRN_HID2 definit=
+ion
+> > which does not refer to HID2 on the 5200... but that will be for someon=
+e
+> > else to fix, if there is still anyone left using that platform.
+>=20
+> Maybe file an issue for it at https://github.com/linuxppc/issues/issues=
+=20
+> if you don't plan to fix it ?
+>=20
+> By the way, it looks like the SPRN_HID2 definition we have is very=20
+> specific to the IBM 750.
+>=20
 
-Best regards,
-Nam
+IBM 750GX even - googling for IBM 750 came up with several other cores that=
+ either don't have HID2,
+or have it at a different SPR.
+
+
+> MPC 750 has SPRN_HID2 as 1011 =3D=3D 0x3f3 like others.
+
+> >=20
+> >=20
+> > diff --git a/arch/powerpc/include/asm/cpu_setup.h b/arch/powerpc/includ=
+e/asm/cpu_setup.h
+> > index 30e2fe3895024..68d804e74d221 100644
+> > --- a/arch/powerpc/include/asm/cpu_setup.h
+> > +++ b/arch/powerpc/include/asm/cpu_setup.h
+> > @@ -35,6 +35,7 @@ void __setup_cpu_750fx(unsigned long offset, struct c=
+pu_spec *spec);
+> >   void __setup_cpu_7400(unsigned long offset, struct cpu_spec *spec);
+> >   void __setup_cpu_7410(unsigned long offset, struct cpu_spec *spec);
+> >   void __setup_cpu_745x(unsigned long offset, struct cpu_spec *spec);
+> > +void __setup_cpu_g2(unsigned long offset, struct cpu_spec *spec);
+> >=20
+> >   void __setup_cpu_ppc970(unsigned long offset, struct cpu_spec *spec);
+> >   void __setup_cpu_ppc970MP(unsigned long offset, struct cpu_spec *spec=
+);
+> > diff --git a/arch/powerpc/include/asm/reg.h b/arch/powerpc/include/asm/=
+reg.h
+> > index 4ae4ab9090a2d..f5641fcd1da85 100644
+> > --- a/arch/powerpc/include/asm/reg.h
+> > +++ b/arch/powerpc/include/asm/reg.h
+> > @@ -617,6 +617,8 @@
+> >   #endif
+> >   #define SPRN_HID2      0x3F8           /* Hardware Implementation Reg=
+ister 2 */
+>=20
+> Should that HID2 be renamed to SPRN_HID2_750 to avoid confusion ?
+
+Makes sense (should the suffix be "750GX"?). I can also add a FIXME comment=
+ to lite5200_sleep.S as
+part of the rename.
+
+
+>
+> >   #define SPRN_HID2_GEKKO        0x398           /* Gekko HID2 Register=
+ */
+> > +#define SPRN_HID2_G2   0x3F3           /* G2 HID2 Register */
+> > +#define  HID2_HBE_G2   (1<<18)         /* High BAT Enable (G2) */
+> >   #define SPRN_IABR      0x3F2   /* Instruction Address Breakpoint Regi=
+ster */
+> >   #define SPRN_IABR2     0x3FA           /* 83xx */
+> >   #define SPRN_IBCR      0x135           /* 83xx Insn Breakpoint Contro=
+l Reg */
+> > diff --git a/arch/powerpc/kernel/cpu_setup_6xx.S b/arch/powerpc/kernel/=
+cpu_setup_6xx.S
+> > index f29ce3dd6140f..c67d32e04df9c 100644
+> > --- a/arch/powerpc/kernel/cpu_setup_6xx.S
+> > +++ b/arch/powerpc/kernel/cpu_setup_6xx.S
+> > @@ -81,6 +81,20 @@ _GLOBAL(__setup_cpu_745x)
+> >          bl      setup_745x_specifics
+> >          mtlr    r5
+> >          blr
+> > +_GLOBAL(__setup_cpu_g2)
+> > +       mflr    r5
+> > +BEGIN_MMU_FTR_SECTION
+> > +       li      r10,0
+> > +       mtspr   SPRN_SPRG_603_LRU,r10           /* init SW LRU tracking=
+ */
+> > +END_MMU_FTR_SECTION_IFSET(MMU_FTR_NEED_DTLB_SW_LRU)
+>=20
+> MMU_FTR_NEED_DTLB_SW_LRU is dedicated to e300 core. You should also=20
+> remove it from __setup_cpu_603
+
+Will do, thanks.
+
+>=20
+> > +
+> > +BEGIN_FTR_SECTION
+> > +       bl      __init_fpu_registers
+> > +END_FTR_SECTION_IFCLR(CPU_FTR_FPU_UNAVAILABLE)
+> > +       bl      setup_common_caches
+> > +       bl      setup_g2_hid2
+> > +       mtlr    r5
+> > +       blr
+> >=20
+> >   /* Enable caches for 603's, 604, 750 & 7400 */
+> >   SYM_FUNC_START_LOCAL(setup_common_caches)
+> > @@ -115,6 +129,16 @@ SYM_FUNC_START_LOCAL(setup_604_hid0)
+> >          blr
+> >   SYM_FUNC_END(setup_604_hid0)
+> >=20
+> > +/* Enable high BATs for G2 (G2_LE, e300cX) */
+> > +SYM_FUNC_START_LOCAL(setup_g2_hid2)
+> > +       mfspr   r11,SPRN_HID2_G2
+> > +       oris    r11,r11,HID2_HBE_G2@h
+> > +       mtspr   SPRN_HID2_G2,r11
+> > +       sync
+> > +       isync
+> > +       blr
+> > +SYM_FUNC_END(setup_g2_hid2)
+> > +
+> >   /* 7400 <=3D rev 2.7 and 7410 rev =3D 1.0 suffer from some
+> >    * erratas we work around here.
+> >    * Moto MPC710CE.pdf describes them, those are errata
+> > @@ -495,4 +519,3 @@ _GLOBAL(__restore_cpu_setup)
+> >          mtcr    r7
+> >          blr
+> >   _ASM_NOKPROBE_SYMBOL(__restore_cpu_setup)
+> > -
+> > diff --git a/arch/powerpc/kernel/cpu_specs_book3s_32.h b/arch/powerpc/k=
+ernel/cpu_specs_book3s_32.h
+> > index 3714634d194a1..83f054fcf837c 100644
+> > --- a/arch/powerpc/kernel/cpu_specs_book3s_32.h
+> > +++ b/arch/powerpc/kernel/cpu_specs_book3s_32.h
+> > @@ -69,7 +69,7 @@ static struct cpu_spec cpu_specs[] __initdata =3D {
+> >                  .mmu_features           =3D MMU_FTR_USE_HIGH_BATS,
+> >                  .icache_bsize           =3D 32,
+> >                  .dcache_bsize           =3D 32,
+> > -               .cpu_setup              =3D __setup_cpu_603,
+> > +               .cpu_setup              =3D __setup_cpu_g2,
+> >                  .machine_check          =3D machine_check_generic,
+> >                  .platform               =3D "ppc603",
+> >          },
+> > @@ -83,7 +83,7 @@ static struct cpu_spec cpu_specs[] __initdata =3D {
+> >                  .mmu_features           =3D MMU_FTR_USE_HIGH_BATS,
+> >                  .icache_bsize           =3D 32,
+> >                  .dcache_bsize           =3D 32,
+> > -               .cpu_setup              =3D __setup_cpu_603,
+> > +               .cpu_setup              =3D __setup_cpu_g2,
+> >                  .machine_check          =3D machine_check_83xx,
+> >                  .platform               =3D "ppc603",
+> >          },
+> > @@ -96,7 +96,7 @@ static struct cpu_spec cpu_specs[] __initdata =3D {
+> >                  .mmu_features           =3D MMU_FTR_USE_HIGH_BATS | MM=
+U_FTR_NEED_DTLB_SW_LRU,
+> >                  .icache_bsize           =3D 32,
+> >                  .dcache_bsize           =3D 32,
+> > -               .cpu_setup              =3D __setup_cpu_603,
+> > +               .cpu_setup              =3D __setup_cpu_g2,
+> >                  .machine_check          =3D machine_check_83xx,
+> >                  .platform               =3D "ppc603",
+> >          },
+> > @@ -109,7 +109,7 @@ static struct cpu_spec cpu_specs[] __initdata =3D {
+> >                  .mmu_features           =3D MMU_FTR_USE_HIGH_BATS | MM=
+U_FTR_NEED_DTLB_SW_LRU,
+> >                  .icache_bsize           =3D 32,
+> >                  .dcache_bsize           =3D 32,
+> > -               .cpu_setup              =3D __setup_cpu_603,
+> > +               .cpu_setup              =3D __setup_cpu_g2,
+> >                  .machine_check          =3D machine_check_83xx,
+> >                  .num_pmcs               =3D 4,
+> >                  .platform               =3D "ppc603",
+> > @@ -123,7 +123,7 @@ static struct cpu_spec cpu_specs[] __initdata =3D {
+> >                  .mmu_features           =3D MMU_FTR_USE_HIGH_BATS | MM=
+U_FTR_NEED_DTLB_SW_LRU,
+> >                  .icache_bsize           =3D 32,
+> >                  .dcache_bsize           =3D 32,
+> > -               .cpu_setup              =3D __setup_cpu_603,
+> > +               .cpu_setup              =3D __setup_cpu_g2,
+> >                  .machine_check          =3D machine_check_83xx,
+> >                  .num_pmcs               =3D 4,
+> >                  .platform               =3D "ppc603",
+> > --
+> > TQ-Systems GmbH | M=C3=BChlstra=C3=9Fe 2, Gut Delling | 82229 Seefeld, =
+Germany
+> > Amtsgericht M=C3=BCnchen, HRB 105018
+> > Gesch=C3=A4ftsf=C3=BChrer: Detlef Schneider, R=C3=BCdiger Stahl, Stefan=
+ Schneider
+> > https://www.tq-group.com/
+
+--=20
+TQ-Systems GmbH | M=C3=BChlstra=C3=9Fe 2, Gut Delling | 82229 Seefeld, Germ=
+any
+Amtsgericht M=C3=BCnchen, HRB 105018
+Gesch=C3=A4ftsf=C3=BChrer: Detlef Schneider, R=C3=BCdiger Stahl, Stefan Sch=
+neider
+https://www.tq-group.com/
 
