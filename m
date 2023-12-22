@@ -1,91 +1,84 @@
-Return-Path: <linux-kernel+bounces-9306-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9307-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3933381C3C3
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 05:11:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D44D81C3C4
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 05:14:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EAA0A28689F
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 04:11:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C285F1C24C5E
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 04:14:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC74023AD;
-	Fri, 22 Dec 2023 04:11:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fyecIRAH"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D53B06138;
+	Fri, 22 Dec 2023 04:14:36 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C8998F40;
-	Fri, 22 Dec 2023 04:11:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DEE59C433C8;
-	Fri, 22 Dec 2023 04:11:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703218303;
-	bh=cOh3HqqN/2o8/n2h2oZTCxQJgNUcu+nvKLVUPxkxR9A=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=fyecIRAHClOG27LegLH1Ex/LySYEE4G/pZSZt0zXQ5TAJKrFh4K5rRCdGqQTHDHH2
-	 qOs3zAyZIbZnLRwS7Ib8BUURWdnbGay4eijigoL4dGFYxqQ9DFoWRIXGSUvUFWFbml
-	 KskgJftD3Bs5gbU69H8lsP2qHQqgbfqqRziGc2VcSlsDslo/2jA5U7fvjLwz9YpfRE
-	 lUxqJ8A6KSoRyBtupp8XDRhlttKeWAlppLhH+TXjuCsE84u+8hUUx2bVeuH4Q0vTks
-	 RUAiuXW+xVPvr3670Ie8WAlrKjRLdF0Ro0B6txKcYr9oDSQiQt1rdMXDCvVDxcrRnY
-	 wwXGnLw2Xr4jA==
-Date: Fri, 22 Dec 2023 13:11:39 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
- <linux-trace-kernel@vger.kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Linus Torvalds
- <torvalds@linux-foundation.org>, Shuah Khan <shuah@kernel.org>, Linux
- selftests <linux-kselftest@vger.kernel.org>
-Subject: Re: [PATCH v2] tracing/selftests: Add ownership modification tests
- for eventfs
-Message-Id: <20231222131139.26fe6dea8524016d4f3251a4@kernel.org>
-In-Reply-To: <20231221210757.112aa4e8@gandalf.local.home>
-References: <20231221194516.53e1ee43@gandalf.local.home>
-	<20231222102148.2aa3863d7c11f3928549335a@kernel.org>
-	<20231221202813.38ef5664@gandalf.local.home>
-	<20231222104841.1d1b306c989070f82c672d89@kernel.org>
-	<20231222105200.e73d58640d8be7da89331deb@kernel.org>
-	<20231221210757.112aa4e8@gandalf.local.home>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8F356120
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 04:14:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
+Received: by verein.lst.de (Postfix, from userid 2407)
+	id 6048B68AFE; Fri, 22 Dec 2023 05:14:28 +0100 (CET)
+Date: Fri, 22 Dec 2023 05:14:28 +0100
+From: Christoph Hellwig <hch@lst.de>
+To: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc: Maxim Kochetkov <fido_max@inbox.ru>, linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org, robh@kernel.org, mpe@ellerman.id.au,
+	aou@eecs.berkeley.edu, palmer@dabbelt.com, paul.walmsley@sifive.com,
+	Conor Dooley <conor@kernel.org>, hch@lst.de
+Subject: Re: [PATCH 1/1] riscv: set ARCH_DMA_DEFAULT_COHERENT if
+ RISCV_DMA_NONCOHERENT is not set
+Message-ID: <20231222041428.GA2803@lst.de>
+References: <20231221185152.327231-1-fido_max@inbox.ru> <20231221-discount-decade-e306e5878c46@spud> <f31d929c-fa0a-4046-be05-38e92afa5d92@flygoat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <f31d929c-fa0a-4046-be05-38e92afa5d92@flygoat.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 
-On Thu, 21 Dec 2023 21:07:57 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
+On Thu, Dec 21, 2023 at 10:27:33PM +0000, Jiaxun Yang wrote:
+>
+>
+> 在 2023/12/21 20:29, Conor Dooley 写道:
+>> + Christoph
+>>
+>> I don't think this patch is correct. Regardless of whether we support
+>> cache management operations, DMA is assumed to be coherent unless
+>> peripherals etc are specified to otherwise in DT (or however ACPI deals
+>> with that kind of thing).
+>>
+>> What problem are you trying to solve here?
+>>
+>> On Thu, Dec 21, 2023 at 09:51:52PM +0300, Maxim Kochetkov wrote:
+>>> Not all the RISCV are DMA coherent by default.
+>
+> Sorry for chime in here.
+> IMO if your platform is not coherent by default, just insert 
+> "dma-noncoherent"
+> at devicetree root node.
 
-> On Fri, 22 Dec 2023 10:52:00 +0900
-> Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
-> 
-> > On Fri, 22 Dec 2023 10:48:41 +0900
-> > Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
-> 
-> > And I confirmed that this test passed on v6.5.13 with that change.
-> > 
-> 
-> I just ran it on 6.5.13 and it took *forever*!
-> 
-> But I do have a bit of debug, and before 6.6 creating the instance and
-> deleting it required creating and deleting thousands of inodes and dentries.
+Exactly.  ARCH_DMA_DEFAULT_COHERENTis a setting that just says for
+a given architecture assumes coherent unless otherwise specified,
+which has historically been the case for mips.  Not setting it means
+non-coherent unless specified, which has historially been the case
+for arm.
 
-Hmm, it may depends on the machine. I could ran it (on 64 vcpu VM)
+RISC-V starte out without support for non-coherent DMA, and high ups
+in RISCV still told me in 2019 that RISC-V doesn't need cache
+management instructions because no new hardware would ever not be
+dma coherent.  Yeah, right..
 
-Thank you,
+Anyay, Linux for RISC-V has historically been coherent only and then
+coherent default, so this option is wrong, and you need to mark
+you platform as non-coherent by inserting dma-noncoherent somewhere.
 
-> 
-> -- Steve
-> 
-
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
