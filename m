@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-10124-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10125-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC2E381D092
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 00:44:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D01D81D094
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 00:44:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8C184B2371C
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 23:44:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A3CBA1C22449
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 23:44:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B69FA35EFB;
-	Fri, 22 Dec 2023 23:44:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9F9E364A6;
+	Fri, 22 Dec 2023 23:44:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FW+PEk9f"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TNhBkytS"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-oi1-f180.google.com (mail-oi1-f180.google.com [209.85.167.180])
+Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C55A35EE9;
-	Fri, 22 Dec 2023 23:44:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F18BF35EEA;
+	Fri, 22 Dec 2023 23:44:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f180.google.com with SMTP id 5614622812f47-3bb802341eeso1491727b6e.3;
-        Fri, 22 Dec 2023 15:44:02 -0800 (PST)
+Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-5bdbe2de25fso1786096a12.3;
+        Fri, 22 Dec 2023 15:44:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703288641; x=1703893441; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1703288643; x=1703893443; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=u9uJAXYaWWEwDD2fcwcXO74cohGnyjB8jlMg/uP61/M=;
-        b=FW+PEk9fHJnm9Vp1Vx2pwATmIWIriq3uR3HtR8Vm7OG9HJLybLb/qD2Ya0ZjNWZXR6
-         ww1KMrJS4m0ROsr2V3JWKwcp4+BckdsacSgMig9wmeSUXxAuIuzTCaqw/WmaSDjlq6cJ
-         wceaypqTMwIC0IzcZHcQKge/D1fm6blzrGjBCbdPRIVfifD5Rd7U57mBlaeNVSSfPuVD
-         2CjPjMxxQUp6bWoUb5lzXAiFqq8Y6ufaWAeihfilN2iObyi45CsSmIkkj+08XbYaeFbo
-         /yiploWYmBi94qVtoJtE/3dXmY5MN+j8qAr45E2/zIRnEIwAYfgsl/tvi4AxeDmu/ZdZ
-         Uv9g==
+        bh=t2FndYqF4JacU8fr/QFMFiLxqaWYLpyTNAQDkJcL8Ws=;
+        b=TNhBkytSVr2RAqmpyLoK41pAC+VTdQ+7K3KYb32Y4wcJZrRRzLvl1mqCdovbZLK4yZ
+         o7dX0YPkluypsYyVkZBDOZcJYCZaHG3jDAtSf/ajOdU9BFkrZkpuKvYnMbAz6efAkDke
+         r6yMZdd2WDh18zCBPgbnZriwfZ+q3wtTFlbWVLwN+eq0FmwH+p49x1K+DtUZtrYNcvlY
+         3rclld21S1+F6QPG2f2OHnZRan5yKKWi85npMbDlZ9RgnMCvgZREDhPSW7YweGcSUTYa
+         Y2pi5wIJ6QGgPcJBIw//ozHniZ9eVgVXYxrFhGeFg+QmAZQ5ld20EZfBEwKefEbVsfh4
+         LPvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703288641; x=1703893441;
+        d=1e100.net; s=20230601; t=1703288643; x=1703893443;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=u9uJAXYaWWEwDD2fcwcXO74cohGnyjB8jlMg/uP61/M=;
-        b=WRNosEVNgcFsrBW2IC3FgxkGdpQtYQ0l4W81lxfZlAUwNxLYSUi7Mr8QFdIaqY8/m3
-         A6Xzn4CP9gVRIp5UBf0gKlqjlu5UGulT5XgwvPtfZb2013yQ0PaUGXsnYTXg7o7OSaus
-         broUx43pp+RYTw4zbymw3YPV08IkumvYmmGdURyih545n+yGHKheDCNWde+8FoEnZcdm
-         +oUaBTWcgKyQsgYDFLK9hLs1lyB4thTdSyUx8H3RsPYmsNuUWTGEwyb+HGOtfcmP7JyI
-         UkCY67MeyIFq9iMMsK/OpB9QuMNfudpfm2YxYcYrmw2sIHmB7gO7+FsJAQ6Zw+PAd8WH
-         yWWg==
-X-Gm-Message-State: AOJu0YwhICgKhZmwTKQh7cV/+RMnhGZ4HckCnedHJvoeTA+LDNv+f5+M
-	U1eUg4g0CyNihpGB/fnf3txSUS/KI/ezRQ==
-X-Google-Smtp-Source: AGHT+IEBcMAdxLDV76HXmc3OCUvAfcCQtbzCX5BinmvoHbmUgdEY1mZjWmlPxQP4eyZbz6cYaXOUmw==
-X-Received: by 2002:a05:6808:1247:b0:3ba:e56:4778 with SMTP id o7-20020a056808124700b003ba0e564778mr2514960oiv.100.1703288641539;
-        Fri, 22 Dec 2023 15:44:01 -0800 (PST)
+        bh=t2FndYqF4JacU8fr/QFMFiLxqaWYLpyTNAQDkJcL8Ws=;
+        b=U/1If1hqJf1eqHaex0WsC3CRUC3gW8hz7S+yRQtlRlvq/u9/hGFKnmLU/ZpLVxX5Yf
+         C1nfZCHF7TbslUkf6yC84bu7qojkPlCcW9ViUAYq7X987qkpN1GNu1Fv3feFbdwjRbJB
+         hsTMnO/iePADBgBdbaHLRoziQdFroQFu9v/GjWv8M5Jqr8QdAUk91OLHZAtICqDfSOXv
+         Cz305ihSiHkZkh1Eylahu9KwEefDddmKtnqmTrXqbMW9zcVZkmQwkYTIG6svEJcTIxo9
+         VGy0c5el8lO9xz/eIy6lMkLpPbPcxPuMu/n6CfwRsUguWYH2zR8BlA/i/tzNoXddoyMa
+         RLuQ==
+X-Gm-Message-State: AOJu0YytMiK3z7VDv9a9T9JbELZ6IzaS6PnZUyeE9CJK/KR+wU3n9bk2
+	onIwW0bL4XwxvgjTi621BdI=
+X-Google-Smtp-Source: AGHT+IHeR2KoMp2csOplwLZQeHOaF3yN1rH3e6Rhb3xbBEnPD2hZ8nqLPPqguA64P4E77fLaMA9gFQ==
+X-Received: by 2002:a05:6a20:8407:b0:18f:97c:8a2d with SMTP id c7-20020a056a20840700b0018f097c8a2dmr2161275pzd.88.1703288642952;
+        Fri, 22 Dec 2023 15:44:02 -0800 (PST)
 Received: from xavier.lan ([2607:fa18:92fe:b835:c8f0:af87:712f:cf12])
-        by smtp.gmail.com with ESMTPSA id a21-20020a62e215000000b006d98222b74esm2326427pfi.46.2023.12.22.15.44.00
+        by smtp.gmail.com with ESMTPSA id a21-20020a62e215000000b006d98222b74esm2326427pfi.46.2023.12.22.15.44.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Dec 2023 15:44:01 -0800 (PST)
+        Fri, 22 Dec 2023 15:44:02 -0800 (PST)
 From: Alex Henrie <alexhenrie24@gmail.com>
 To: dan@danm.net,
 	davem@davemloft.net,
@@ -69,89 +69,100 @@ To: dan@danm.net,
 	linux-kernel@vger.kernel.org,
 	regressions@lists.linux.dev
 Cc: Alex Henrie <alexhenrie24@gmail.com>
-Subject: Re: [REGRESSION] net/ipv6/addrconf: Temporary addresses with short lifetimes generating when they shouldn't, causing applications to fail
-Date: Fri, 22 Dec 2023 16:42:27 -0700
-Message-ID: <20231222234237.44823-1-alexhenrie24@gmail.com>
+Subject: [PATCH net] net: ipv6/addrconf: clamp temporary address's preferred lifetime to public address's
+Date: Fri, 22 Dec 2023 16:42:28 -0700
+Message-ID: <20231222234237.44823-2-alexhenrie24@gmail.com>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231221231115.12402-1-dan@danm.net>
+In-Reply-To: <20231222234237.44823-1-alexhenrie24@gmail.com>
 References: <20231221231115.12402-1-dan@danm.net>
+ <20231222234237.44823-1-alexhenrie24@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-On Thu, Dec 21, 2023 at 4:12 PM Dan Moulding <dan@danm.net> wrote:
->
-> I started running v6.7-rc5 on a desktop and began having problems
-> where Chromium would frequently fail to load pages and give an
-> "ERR_NETWORK_CHANGED" message instead. I also noticed instability in
-> avahi-daemon (it would stop resolving local names and/or consume 100%
-> CPU). Eventually I discovered that what is happening is that new
-> temporary IPv6 addresses for a ULA address are being generated once
-> every second, with very short preferred lifetimes (and I had an
-> interface with thousands of such temporary addresses). I also found
-> that it seems to be triggered when one of the devices on the network
-> sends a router advertisement with a prefix that has a preferred
-> lifetime of 0 (presumably it's sending that because it wants to
-> deprecate that prefix).
->
-> I bisected it to commit 629df6701c8a ("net: ipv6/addrconf: clamp
-> preferred_lft to the minimum required"). Upon reviewing that change, I
-> see that it has changed when generation of temporary addresses will be
-> allowed. I believe that change might have inadvertently caused the
-> kernel to violate RFC 4941 and might need to be reverted.
->
-> In particular RFC 4941 specifies that the preferred lifetime of a
-> temporary address must not be greater than the preferred lifetime of
-> the public address it is derived from. However, this change allows a
-> temporary address to be generated with a preferred lifetime greater
-> than the public address' preferred lifetime.
->
-> From RFC 4941:
->
->     4.  When creating a temporary address, the lifetime values MUST be
->         derived from the corresponding prefix as follows:
->
->         *  Its Valid Lifetime is the lower of the Valid Lifetime of the
->            public address or TEMP_VALID_LIFETIME.
->
->         *  Its Preferred Lifetime is the lower of the Preferred Lifetime
->            of the public address or TEMP_PREFERRED_LIFETIME -
->            DESYNC_FACTOR.
->
-> Previously temporary addresses would not be generated for an interface
-> if the administratively configured preferred lifetime on that
-> interface was too short. This change tries to avoid that, and allow
-> generating temporary addresses even on interfaces with very short
-> configured lifetimes, by simply increasing the preferred lifetime of
-> the generated address. However, doing so runs afoul of the above
-> requirement. It allows the preferred lifetime of the temporary address
-> to be increased to a value that is larger than the public address'
-> preferred lifetime. For example, in my case where the router
-> advertisement causes the public address' preferred lifetime to be set
-> to 0, the current code allows a temporary address to be generated with
-> a preferred lifetime of (regen_advance + age + 1), which is obviously
-> greater than 0. It also, in my case, leads to new temporary addresses
-> with very short lifetimes being generated, about once every second,
-> leading to the application-level issues I described above.
+Fixes: 629df6701c8a ("net: ipv6/addrconf: clamp preferred_lft to the minimum required")
+Reported-by: Dan Moulding <dan@danm.net>
+Closes: https://lore.kernel.org/netdev/20231221231115.12402-1-dan@danm.net/
+Signed-off-by: Alex Henrie <alexhenrie24@gmail.com>
+---
+ net/ipv6/addrconf.c | 36 ++++++++++++++++++++++++++----------
+ 1 file changed, 26 insertions(+), 10 deletions(-)
 
-Sorry for the unintended consequences, and thank you for the detailed
-explanation. Does this patch fix the problem for you?
-
--Alex
-
-
-Alex Henrie (1):
-  net: ipv6/addrconf: clamp prefered_lft to the public address preferred
-    lifetime
-
- net/ipv6/addrconf.c | 19 ++++++++++++++++---
- 1 file changed, 16 insertions(+), 3 deletions(-)
-
+diff --git a/net/ipv6/addrconf.c b/net/ipv6/addrconf.c
+index 2692a7b24c40..37141d3417fe 100644
+--- a/net/ipv6/addrconf.c
++++ b/net/ipv6/addrconf.c
+@@ -1337,7 +1337,7 @@ static int ipv6_create_tempaddr(struct inet6_ifaddr *ifp, bool block)
+ 	unsigned long tmp_tstamp, age;
+ 	unsigned long regen_advance;
+ 	unsigned long now = jiffies;
+-	s32 cnf_temp_preferred_lft;
++	s32 cnf_temp_preferred_lft, if_public_preferred_lft;
+ 	struct inet6_ifaddr *ift;
+ 	struct ifa6_config cfg;
+ 	long max_desync_factor;
+@@ -1394,11 +1394,13 @@ static int ipv6_create_tempaddr(struct inet6_ifaddr *ifp, bool block)
+ 		}
+ 	}
+ 
++	if_public_preferred_lft = ifp->prefered_lft;
++
+ 	memset(&cfg, 0, sizeof(cfg));
+ 	cfg.valid_lft = min_t(__u32, ifp->valid_lft,
+ 			      idev->cnf.temp_valid_lft + age);
+ 	cfg.preferred_lft = cnf_temp_preferred_lft + age - idev->desync_factor;
+-	cfg.preferred_lft = min_t(__u32, ifp->prefered_lft, cfg.preferred_lft);
++	cfg.preferred_lft = min_t(__u32, if_public_preferred_lft, cfg.preferred_lft);
+ 	cfg.preferred_lft = min_t(__u32, cfg.valid_lft, cfg.preferred_lft);
+ 
+ 	cfg.plen = ifp->prefix_len;
+@@ -1414,20 +1416,34 @@ static int ipv6_create_tempaddr(struct inet6_ifaddr *ifp, bool block)
+ 	 *     particular, an implementation must not create a temporary address
+ 	 *     with a zero Preferred Lifetime.
+ 	 *
+-	 * Clamp the preferred lifetime to a minimum of regen_advance, unless
+-	 * that would exceed valid_lft.
++	 *     ...
++	 *
++	 *     When creating a temporary address, the lifetime values MUST be
++	 *     derived from the corresponding prefix as follows:
++	 *
++	 *     ...
++	 *
++	 *     *  Its Preferred Lifetime is the lower of the Preferred Lifetime
++	 *        of the public address or TEMP_PREFERRED_LIFETIME -
++	 *        DESYNC_FACTOR.
++	 *
++	 * To comply with the RFC's requirements, clamp the preferred lifetime
++	 * to a minimum of regen_advance, unless that would exceed valid_lft or
++	 * ifp->prefered_lft.
+ 	 *
+ 	 * Use age calculation as in addrconf_verify to avoid unnecessary
+ 	 * temporary addresses being generated.
+ 	 */
+ 	age = (now - tmp_tstamp + ADDRCONF_TIMER_FUZZ_MINUS) / HZ;
+-	if (cfg.preferred_lft <= regen_advance + age)
++	if (cfg.preferred_lft <= regen_advance + age) {
+ 		cfg.preferred_lft = regen_advance + age + 1;
+-	if (cfg.preferred_lft > cfg.valid_lft) {
+-		in6_ifa_put(ifp);
+-		in6_dev_put(idev);
+-		ret = -1;
+-		goto out;
++		if (cfg.preferred_lft > cfg.valid_lft ||
++		    cfg.preferred_lft > if_public_preferred_lft) {
++			in6_ifa_put(ifp);
++			in6_dev_put(idev);
++			ret = -1;
++			goto out;
++		}
+ 	}
+ 
+ 	cfg.ifa_flags = IFA_F_TEMPORARY;
 -- 
 2.43.0
 
