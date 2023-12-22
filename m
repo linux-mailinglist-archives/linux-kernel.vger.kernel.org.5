@@ -1,198 +1,122 @@
-Return-Path: <linux-kernel+bounces-9215-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9216-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76C8181C264
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 01:44:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B644D81C265
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 01:45:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A846A1C21D04
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 00:44:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 49AA72847E0
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 00:45:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00620A23;
-	Fri, 22 Dec 2023 00:44:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB7CA322B;
+	Fri, 22 Dec 2023 00:45:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=dionne-riel-com.20230601.gappssmtp.com header.i=@dionne-riel-com.20230601.gappssmtp.com header.b="OURh1luH"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f43.google.com (mail-qv1-f43.google.com [209.85.219.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9108D33CE;
-	Fri, 22 Dec 2023 00:44:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0581AC433C7;
-	Fri, 22 Dec 2023 00:44:12 +0000 (UTC)
-Date: Thu, 21 Dec 2023 19:45:16 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
- <linux-trace-kernel@vger.kernel.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mark Rutland
- <mark.rutland@arm.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Linus Torvalds <torvalds@linux-foundation.org>, Shuah Khan
- <shuah@kernel.org>, Linux selftests <linux-kselftest@vger.kernel.org>
-Subject: [PATCH v2] tracing/selftests: Add ownership modification tests for
- eventfs
-Message-ID: <20231221194516.53e1ee43@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FFAF28FD
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 00:45:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dionne-riel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dionne-riel.com
+Received: by mail-qv1-f43.google.com with SMTP id 6a1803df08f44-67f3f602bd5so7415816d6.3
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 16:45:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dionne-riel-com.20230601.gappssmtp.com; s=20230601; t=1703205925; x=1703810725; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :references:in-reply-to:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vO72U8OhvgCsTxx/aC8/ALqxbW9fKG0Z3MExzKQqln8=;
+        b=OURh1luHDdCDbQLbgAG9StWD+9sw5oiJdWHGls4ZyPiStr11DGqvVqN69SCmAQzkqh
+         GZTN8RY8wm6oyWnUYtEvVbKj0fmwHXyTGPmtBZSc265S5gWGaVrbNFGTeqO+tE5f1h/J
+         a4Yf0VqiDc6TXlbF5IWHUUrGKp3XzeiP2vhiQGX2V1w0yUCAOBsixX0EnJj3N0Ut2Tb7
+         eo+Zp5AwI1NgIA1spXicasdjFRSL9AM7bXXFN+p11pPsWxktS753bBSnOlNWo+OYA0vv
+         YbUlYx9jg8ijVgzI7TAx0KO0Uq5PS1eDB6ffAXy2jrWDmrVnO9MFux+SosJnK4KTIHij
+         GKtw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703205925; x=1703810725;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :references:in-reply-to:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vO72U8OhvgCsTxx/aC8/ALqxbW9fKG0Z3MExzKQqln8=;
+        b=CNkDguxLC37X+U0cyBQT2Mhdw/RzLcYSUIMmAabTM/JKIxi4QrW4UovFbIjobvsAsG
+         cr0+AwCF7sjdBR4HBRacv1d784Y+buz+txdw3eSp1y9ZiG/hzS8uP4kDkB/idA9+NEer
+         Cx30zYh9ZjcIvCvcIcLcJokJHGyQir4kfx2MBoCJBDX2FFICZF7lpVZX3G+kdim+ExP0
+         8XNIXpUd7T6tb/qQvxfUeZmxz7SEi96LCBYl6Mus/qE2eWhEt8QnC7nfdAWuqGEiUskV
+         lis0myMn/MBeXLOo3P0KlBA+/daxucXpprCfo5kl9TI9LTuJ0OLP+XheKW+gsHDMdE9I
+         8wYg==
+X-Gm-Message-State: AOJu0YxlVn//l6+U2mG6ZilMb6KnV8yvJd48sqPJa252DRT+zC2pFqU6
+	GMJfYF4NsGxz21hKwk19anSkCmzNWoYZTWpBPfi3agkVmynO
+X-Google-Smtp-Source: AGHT+IGlXvi3g0g2VEeP4AL+AxR5RLB0jBCBrh4ZfaNIWy6p/3fXWWJfTWzmA43P7UWukKd7BgYhkilgv+25o8qOUYs=
+X-Received: by 2002:a05:6214:27c1:b0:67f:7aa:2b75 with SMTP id
+ ge1-20020a05621427c100b0067f07aa2b75mr546603qvb.104.1703205925444; Thu, 21
+ Dec 2023 16:45:25 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: by 2002:a05:6200:3989:b0:52b:9b0d:f9a8 with HTTP; Thu, 21 Dec 2023
+ 16:45:25 -0800 (PST)
+In-Reply-To: <20231222003830.3733310-1-samuel@dionne-riel.com>
+References: <20231222003830.3733310-1-samuel@dionne-riel.com>
+From: Samuel Dionne-Riel <samuel@dionne-riel.com>
+Date: Thu, 21 Dec 2023 19:45:25 -0500
+Message-ID: <CAN1fySWi_QJt8ufUc99vRiE17-SfQOGfMsxFqH+TJC1PgjRsDw@mail.gmail.com>
+Subject: Re: [PATCH] drm: panel-orientation-quirks: Add quirk for GPD Win Mini
+To: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc: Samuel Dionne-Riel <samuel@dionne-riel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+Hi,
 
-As there were bugs found with the ownership of eventfs dynamic file
-creation. Add a test to test it.
+Sorry, I was preparing for sending to the mailing list, and sent
+before I should have.
 
-It will remount tracefs with a different gid and check the ownership of
-the eventfs directory, as well as the system and event directories. It
-will also check the event file directories.
+I believe I have the orientation on the wrong side, though, so please
+wait for a follow-up here or the v2.
 
-It then does a chgrp on each of these as well to see if they all get
-updated as expected.
+Sorry again,
 
-Then it remounts the tracefs file system back to the original group and
-makes sure that all the updated files and directories were reset back to
-the original ownership.
+On 12/21/23, Samuel Dionne-Riel <samuel@dionne-riel.com> wrote:
+> Signed-off-by: Samuel Dionne-Riel <samuel@dionne-riel.com>
+> ---
+>  drivers/gpu/drm/drm_panel_orientation_quirks.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/drm_panel_orientation_quirks.c
+> b/drivers/gpu/drm/drm_panel_orientation_quirks.c
+> index 3d92f66e550c3..f730886ae10df 100644
+> --- a/drivers/gpu/drm/drm_panel_orientation_quirks.c
+> +++ b/drivers/gpu/drm/drm_panel_orientation_quirks.c
+> @@ -279,6 +279,12 @@ static const struct dmi_system_id orientation_data[]=
+ =3D
+> {
+>  		  DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "G1618-03")
+>  		},
+>  		.driver_data =3D (void *)&lcd720x1280_rightside_up,
+> +	}, {	/* GPD Win Mini */
+> +		.matches =3D {
+> +		  DMI_EXACT_MATCH(DMI_SYS_VENDOR, "GPD"),
+> +		  DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "G1617-01")
+> +		},
+> +		.driver_data =3D (void *)&lcd1080x1920_leftside_up,
+>  	}, {	/* I.T.Works TW891 */
+>  		.matches =3D {
+>  		  DMI_EXACT_MATCH(DMI_SYS_VENDOR, "To be filled by O.E.M."),
+> --
+> 2.42.0
+>
+>
 
-It does the same for instances that change the ownership of he instance
-directory.
 
-Note, because the uid is not reset by a remount, it is tested for every
-file by switching it to a new owner and then back again.
-
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
-Changes since v1: https://lore.kernel.org/linux-trace-kernel/20231221193551.13a0b7bd@gandalf.local.home
-
-- Fixed a cut and paste error of using $original_group for finding another uid
-
- .../ftrace/test.d/00basic/test_ownership.tc   | 113 ++++++++++++++++++
- 1 file changed, 113 insertions(+)
- create mode 100755 tools/testing/selftests/ftrace/test.d/00basic/test_ownership.tc
-
-diff --git a/tools/testing/selftests/ftrace/test.d/00basic/test_ownership.tc b/tools/testing/selftests/ftrace/test.d/00basic/test_ownership.tc
-new file mode 100755
-index 000000000000..83cbd116d06b
---- /dev/null
-+++ b/tools/testing/selftests/ftrace/test.d/00basic/test_ownership.tc
-@@ -0,0 +1,113 @@
-+#!/bin/sh
-+# description: Test file and directory owership changes for eventfs
-+
-+original_group=`stat -c "%g" .`
-+original_owner=`stat -c "%u" .`
-+
-+mount_point=`stat -c '%m' .`
-+mount_options=`mount | grep "$mount_point" | sed -e 's/.*(\(.*\)).*/\1/'`
-+
-+# find another owner and group that is not the original
-+other_group=`tac /etc/group | grep -v ":$original_group:" | head -1 | cut -d: -f3`
-+other_owner=`tac /etc/passwd | grep -v ":$original_owner:" | head -1 | cut -d: -f3`
-+
-+# Remove any group ownership already
-+new_options=`echo "$mount_options" | sed -e "s/gid=[0-9]*/gid=$other_group/"`
-+
-+if [ "$new_options" = "$mount_options" ]; then
-+	new_options="$mount_options,gid=$other_group"
-+	mount_options="$mount_options,gid=$original_group"
-+fi
-+
-+canary="events/timer events/timer/timer_cancel events/timer/timer_cancel/format"
-+
-+test() {
-+	file=$1
-+	test_group=$2
-+
-+	owner=`stat -c "%u" $file`
-+	group=`stat -c "%g" $file`
-+
-+	echo "testing $file $owner=$original_owner and $group=$test_group"
-+	if [ $owner -ne $original_owner ]; then
-+		exit_fail
-+	fi
-+	if [ $group -ne $test_group ]; then
-+		exit_fail
-+	fi
-+
-+	# Note, the remount does not update ownership so test going to and from owner
-+	echo "test owner $file to $other_owner"
-+	chown $other_owner $file
-+	owner=`stat -c "%u" $file`
-+	if [ $owner -ne $other_owner ]; then
-+		exit_fail
-+	fi
-+
-+	chown $original_owner $file
-+	owner=`stat -c "%u" $file`
-+	if [ $owner -ne $original_owner ]; then
-+		exit_fail
-+	fi
-+
-+}
-+
-+run_tests() {
-+	for d in "." "events" "events/sched" "events/sched/sched_switch" "events/sched/sched_switch/enable" $canary; do
-+		test "$d" $other_group
-+	done
-+
-+	chgrp $original_group events
-+	test "events" $original_group
-+	for d in "." "events/sched" "events/sched/sched_switch" "events/sched/sched_switch/enable" $canary; do
-+		test "$d" $other_group
-+	done
-+
-+	chgrp $original_group events/sched
-+	test "events/sched" $original_group
-+	for d in "." "events/sched/sched_switch" "events/sched/sched_switch/enable" $canary; do
-+		test "$d" $other_group
-+	done
-+
-+	chgrp $original_group events/sched/sched_switch
-+	test "events/sched/sched_switch" $original_group
-+	for d in "." "events/sched/sched_switch/enable" $canary; do
-+		test "$d" $other_group
-+	done
-+
-+	chgrp $original_group events/sched/sched_switch/enable
-+	test "events/sched/sched_switch/enable" $original_group
-+	for d in "." $canary; do
-+		test "$d" $other_group
-+	done
-+}
-+
-+mount -o remount,"$new_options" .
-+
-+run_tests
-+
-+mount -o remount,"$mount_options" .
-+
-+for d in "." "events" "events/sched" "events/sched/sched_switch" "events/sched/sched_switch/enable" $canary; do
-+	test "$d" $original_group
-+done
-+
-+# check instances as well
-+
-+chgrp $other_group instances
-+
-+instance="foo-$(mktemp -u XXXXX)"
-+
-+mkdir instances/$instance
-+
-+cd instances/$instance
-+
-+run_tests
-+
-+cd ../..
-+
-+rmdir instances/$instance
-+
-+chgrp $original_group instances
-+
-+exit 0
--- 
-2.42.0
-
+--=20
+=E2=80=94 Samuel Dionne-Riel
 
