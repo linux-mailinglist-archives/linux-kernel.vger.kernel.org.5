@@ -1,285 +1,327 @@
-Return-Path: <linux-kernel+bounces-9298-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9299-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DBB8081C3AE
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 04:54:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5C4E81C3B0
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 04:56:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0D8C41C23DFC
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 03:54:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1F6C61C2491B
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 03:56:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D97BA4C93;
-	Fri, 22 Dec 2023 03:53:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D5EB23AD;
+	Fri, 22 Dec 2023 03:56:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="YBpyXSoK"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gL3/ckI/"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24CA5184C
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 03:53:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
-Received: from mail-oo1-f69.google.com (mail-oo1-f69.google.com [209.85.161.69])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 5B7443F739
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 03:53:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20210705; t=1703217221;
-	bh=3n5HcK2uQmpAjUZ64ZVHzprx+T7M7J4g9fiVj26FvqE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type;
-	b=YBpyXSoKoSfnA9hU4A+p1UeiHHvIU+LLnrrOd8sa9d3e6sqjwN6njYqAVSlEXGJkD
-	 9MsxDUfmAPDgnJG66F1yQISxO3wiCy+g4doQoK3ex8uuAN+9jb1fCbobGmyer+XnpC
-	 SRBWSRLKrr3Q8C3RRtltfl+th7KBSa5JX8Ti/kpZchp5AjYUNC/2QV7ZRd5LAfapO6
-	 eGefi5ZHqeC8cZJOj1Yc7wn7JRCi/JBWm9RF2u/97k6mPwMOCYPKMtWBMxoJUFFbxG
-	 WyuPjWCETaY9ACKuxT472vpWL92BMAnMGQfWVSuzApGxmdyBHqhCoKrib+pSoO1dzb
-	 tnCBInj46D2GQ==
-Received: by mail-oo1-f69.google.com with SMTP id 006d021491bc7-5909e52f0e6so1595106eaf.3
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 19:53:41 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703217220; x=1703822020;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3n5HcK2uQmpAjUZ64ZVHzprx+T7M7J4g9fiVj26FvqE=;
-        b=Y1Pj329oIvGxkxdY4MRY7rGIiivRd4xcfEGX4rMFdkC/x2tA1ATZNl1tPBs440dfy9
-         QTY5lKCVgTHuA9XBoBMku1oaFTFMVJ/0h3RTASKUEtHhBYw0Mmcbp/I31tvfqf3mK4ny
-         XEV2FSgua/hUoRbEE1tHD8fDuS+cVxJJkCMjnjbxOC+Mgy9ve/FF0Lod+Qtvb9/OKRzU
-         jOKF3FdvjM5+rIYEsfTzyHzhgFCRV4uIw51CxBDLX+9vCYmZAaBT7RuRAl6aaGlDnAgR
-         EiXiw4iQut8TDqXDpRSo98DAemrSWT4nxO1jvX9+dEfOWn1efiGPBjPyVzae5aqov04e
-         I+VQ==
-X-Gm-Message-State: AOJu0Yx4OlRVJlTg5NkRQLdyH8VYESFVzt20R500IodZxsE9BpnogFRG
-	PfZzBFJzBLP8j8YHPBOCQMrNdflW1cFA9XW4smASKerBpo75ytYUOHmk99PFUnP2gVTqDQquoJ9
-	FQ8Kfasg6wwcdw9hb94olUveHaZRsabg2xKZ1YU4Qt+YIfkWFHKfmM8PJF1iC/zk6
-X-Received: by 2002:a05:6358:c111:b0:170:6eb2:783 with SMTP id fh17-20020a056358c11100b001706eb20783mr734916rwb.28.1703217219956;
-        Thu, 21 Dec 2023 19:53:39 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEvqhDZRQUN/hg72OwgTMmGzTS46reHueZpGQDjyK0WgMSs1Y1WyTdHlq47S50amaqFLLeg1oCkBZXvrRIg0yg=
-X-Received: by 2002:a05:6358:c111:b0:170:6eb2:783 with SMTP id
- fh17-20020a056358c11100b001706eb20783mr734909rwb.28.1703217219558; Thu, 21
- Dec 2023 19:53:39 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04905539A;
+	Fri, 22 Dec 2023 03:56:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1703217389; x=1734753389;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=RNxZXXpODuSau/0QLoA24AhEeGkISWbXA4Gm5BZxtTo=;
+  b=gL3/ckI/2wDboQEhP1B0T0FIhA4/DHqg15clSM0vOYRNitUquZ1LnMdp
+   e95+cQi8NhNjddu8bKP3o9pstDu9LAnAeaigvIbBa/CZslO+FAGtJ77ai
+   kEMGCK05hVIOdnHmTHvmk2n64eIDOPpJSpTnG8r0EMFaoMPhew9FO3DxH
+   h8GoCIP8cbNM/avTmc0EwbL2mY1mX9J/8mnmYpj5xWI3LtYj96vxNuvRH
+   iY/EZqKduIH1pvPzpZVFfePgfGqhblrccCiSUKmWM3hy/HkNf/lUYjVR9
+   +/JVjhvsLoBzo+W8wU56g0QjFd5Qm2+cvFuAsx7zNeZCw9LM35rPQP0Ww
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10931"; a="14749137"
+X-IronPort-AV: E=Sophos;i="6.04,294,1695711600"; 
+   d="scan'208";a="14749137"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Dec 2023 19:56:29 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10931"; a="811204400"
+X-IronPort-AV: E=Sophos;i="6.04,294,1695711600"; 
+   d="scan'208";a="811204400"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by orsmga001.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 21 Dec 2023 19:56:28 -0800
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 21 Dec 2023 19:56:27 -0800
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Thu, 21 Dec 2023 19:56:27 -0800
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.100)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Thu, 21 Dec 2023 19:56:27 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=m3cZ32houhry/PBo7p6nhRxt86D4UdKX1nvQlOu0QaTrnzJKhlLBmtxhof7Stc/b8A7+OgJtS30Prk0xOdNRAWZH88IHk82LoLZvNovrD4yYTWXm6AqxmBFH5KeaCUfuINbbWYELQmNsUX6pZ3rG8UiZc53z5Xo3h4zxp9hig0JNq8U7LwDGT3fQ0WbdnXIi8n3QFjHhF9jmEBzc+2ggo9tSobMjtetE05iufJwiq1yQsTKvn7ixk7VEGzbKFZgugQKjAhockc6OU2ydAyLhUbzQI3HnERAWSmRX6M4J0lzuosnLWwSGTqeDoKVxbc83OY6he4Y2m3qIdx02MYmUmg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=bg94TVj59Rbv0VJ52jgnr9FOHO38rvHEoNDlHbReawU=;
+ b=HuqSo3Qg+iZxvJEcoekJSP+FDzWkQaY/stBkDe+V919tA9ZFLjWlh99cJNl5fCuw9WPrmg70D+1XZPGXRdsTWELVVzUxAGCqeKFa5VvRbFsJ4vqezyawdjdY1amz7SW4GNOKZIWivuT0EsPz1QdczIUoAC8wcPKP3KvAMuCUrq8FuAp7/xlFxr3Cso8wjeAWeW3w1C+zuHq6qMfa+IaugkwDlZi5JzWZBp+G7zd9ybvWrabarvdfRUaf6qgeyKBdE/WsBDD3k0Mo5BLdW9uiVAgMLXBSKDwiBUw7xBs0yQiDQgoWqfa0Av8SClzZ+2CKYi4PqLc/TdrB6WrnA8DvOw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH0PR11MB4965.namprd11.prod.outlook.com (2603:10b6:510:34::7)
+ by PH0PR11MB5048.namprd11.prod.outlook.com (2603:10b6:510:3d::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7113.21; Fri, 22 Dec
+ 2023 03:56:23 +0000
+Received: from PH0PR11MB4965.namprd11.prod.outlook.com
+ ([fe80::ea04:122f:f20c:94e8]) by PH0PR11MB4965.namprd11.prod.outlook.com
+ ([fe80::ea04:122f:f20c:94e8%2]) with mapi id 15.20.7113.019; Fri, 22 Dec 2023
+ 03:56:23 +0000
+Message-ID: <f6302d8e-fd5f-45e1-8148-e5812c61f5c0@intel.com>
+Date: Fri, 22 Dec 2023 11:56:07 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7 9/9] iommu/vt-d: Add iotlb flush for nested domain
+To: Yi Liu <yi.l.liu@intel.com>, "joro@8bytes.org" <joro@8bytes.org>,
+	"alex.williamson@redhat.com" <alex.williamson@redhat.com>, "jgg@nvidia.com"
+	<jgg@nvidia.com>, "Tian, Kevin" <kevin.tian@intel.com>,
+	"robin.murphy@arm.com" <robin.murphy@arm.com>, "baolu.lu@linux.intel.com"
+	<baolu.lu@linux.intel.com>
+CC: "cohuck@redhat.com" <cohuck@redhat.com>, "eric.auger@redhat.com"
+	<eric.auger@redhat.com>, "nicolinc@nvidia.com" <nicolinc@nvidia.com>,
+	"kvm@vger.kernel.org" <kvm@vger.kernel.org>, "mjrosato@linux.ibm.com"
+	<mjrosato@linux.ibm.com>, "chao.p.peng@linux.intel.com"
+	<chao.p.peng@linux.intel.com>, "yi.y.sun@linux.intel.com"
+	<yi.y.sun@linux.intel.com>, "peterx@redhat.com" <peterx@redhat.com>,
+	"jasowang@redhat.com" <jasowang@redhat.com>,
+	"shameerali.kolothum.thodi@huawei.com"
+	<shameerali.kolothum.thodi@huawei.com>, "lulu@redhat.com" <lulu@redhat.com>,
+	"suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
+	"iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>, "Duan,
+ Zhenzhong" <zhenzhong.duan@intel.com>, "joao.m.martins@oracle.com"
+	<joao.m.martins@oracle.com>, "Zeng, Xin" <xin.zeng@intel.com>, "Zhao, Yan Y"
+	<yan.y.zhao@intel.com>, "j.granados@samsung.com" <j.granados@samsung.com>
+References: <20231221153948.119007-1-yi.l.liu@intel.com>
+ <20231221153948.119007-10-yi.l.liu@intel.com>
+Content-Language: en-US
+From: "Yang, Weijiang" <weijiang.yang@intel.com>
+In-Reply-To: <20231221153948.119007-10-yi.l.liu@intel.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SI1PR02CA0031.apcprd02.prod.outlook.com
+ (2603:1096:4:1f6::11) To PH0PR11MB4965.namprd11.prod.outlook.com
+ (2603:10b6:510:34::7)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231212043808.212754-1-kai.heng.feng@canonical.com> <20231214171622.GA1023469@bhelgaas>
-In-Reply-To: <20231214171622.GA1023469@bhelgaas>
-From: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Date: Fri, 22 Dec 2023 11:53:27 +0800
-Message-ID: <CAAd53p7Y+YMBuAx5f=mFxtQw+TUryLD6iqQYXpfe70L2mu_mLg@mail.gmail.com>
-Subject: Re: [PATCH v2] PCI: Prevent device from doing RPM when it's unplugged
-To: Bjorn Helgaas <helgaas@kernel.org>
-Cc: bhelgaas@google.com, linux-pm@vger.kernel.org, linux-mmc@vger.kernel.org, 
-	Ricky Wu <ricky_wu@realtek.com>, Kees Cook <keescook@chromium.org>, 
-	Tony Luck <tony.luck@intel.com>, "Guilherme G. Piccoli" <gpiccoli@igalia.com>, linux-pci@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org, 
-	bpf@vger.kernel.org, "Rafael J. Wysocki" <rafael@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR11MB4965:EE_|PH0PR11MB5048:EE_
+X-MS-Office365-Filtering-Correlation-Id: 216ce2f9-e851-4194-12e0-08dc02a1f6d1
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: I8h8QhT9BdH+AbiUoh3gi7t1qFw9IW2HtS5vZllqFYWNvbM9WD7StJvurYfcVd9w8jjU2M7i73j82/QJRhY7kAiexUaNPvh3gSpJFnMXfIVe6nE7CcYonfB7NRgyG90toFEfG8fRaN9aWX5EDrv1q4SDlQkyL9iYJWeNVLP7xi/vvWhyHbMA6NJcseduhETpxI1QO3peSb6i7idslLnaAkcK8hRnD9brT9/VSnnW8KBZm7W3PB75Js/Pdnvjsdzv2WzYrX3wOpSOOWixOEkH79YB/sZWoa7ped55BDGf4GnePe3BT5vlNPNGqGaM3dve98AnPFYFzV8AfVWCnQ81VgWO/Wdaci1r3dLIxTQ5ODShuTRpzv4dImeTPLTaJduiitAP31zTgelj7Ig/RQ7T0l3HuFRsT6MD5J3RaU/lyKawUYBcagVqhDJPQ4ug2oDut7gN/+Jfo4Cp8V7XoOpcQKXKTVBmPA6gvsanx8wOEaLYG3lxEjyz+5wHihM3WyIiZJ7zTkXUEAfM60Rt2WA7ilfyL/Rdvn/5ocSGu6tIC5yEqFnu4WT0ygdCBIbqrXnfnMlO4RgMHO3craAuNkhZtIXOv+NTaSRchvdHMLvxk9i+AG2e+fPn1kB3eIJJ8EN0Sm3HCpgsbPo63V4g6SJCpw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB4965.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(39860400002)(136003)(366004)(396003)(376002)(230922051799003)(451199024)(186009)(1800799012)(64100799003)(83380400001)(26005)(41300700001)(2616005)(38100700002)(66476007)(54906003)(66556008)(316002)(7416002)(2906002)(5660300002)(8676002)(8936002)(4326008)(53546011)(6506007)(6512007)(6666004)(110136005)(66946007)(478600001)(6486002)(82960400001)(36756003)(31696002)(86362001)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?eitVdlB2RlYzRjAzUnVtSjRBZklqRElmTEhKdzRUNkQ4VEMzZVRRak1pUE1z?=
+ =?utf-8?B?cjBPNzlZNVhneW84UjVvdjB3VnRudmdOMCtwRmJadTdHMHdVeUljVllkVi9N?=
+ =?utf-8?B?THJrakg3bXJ0UmQ0WWlPK1pDL3IzVkR1bm5rc1NoM1RTSmw1aEpkei91b1FO?=
+ =?utf-8?B?TmhHODVZTG81K0N5YjN3K25hSkR6TEdDZGJKV1JWNnUzSzZmdHh3Z0Zjb0Ro?=
+ =?utf-8?B?amZWNHNxT1huaXNXWHkvLzhOVERaU1RucDhpYXdnTmhLWjEyUng1TThWMERa?=
+ =?utf-8?B?WkxrMzlNRGlIZWxXNmN0d0hVVjhra3pTeUVtRUpBdUlCeGxKKzJRekYxQytv?=
+ =?utf-8?B?aE1nWXBwQXFvL1lTSi81M3ZHa0xLTlRIYjgvU2ljZXZiV3RZVWwwR2FYRlQ0?=
+ =?utf-8?B?aWY1VnYyRWd3S0paMHpuT1VNQ3RWS21RMEpTc1Y0azZrL09XNkhacExVTHhZ?=
+ =?utf-8?B?M0ViajI3OVFIVmNhRE1WZ3RMOXh5NWdFRDUwOXd6YnZLRStkaDlrYS96MldH?=
+ =?utf-8?B?RkpDSHg1d2I4NHB0MHZmSC92N2hQUWpabnljZUJEeE1pL0dud0YzTkRpSnV0?=
+ =?utf-8?B?Y3NNMjMxVGJCT3ZpbS9HWTQvUUtCSHBUcEJYSUpqdTdnaFpnSm1KdDBKejhu?=
+ =?utf-8?B?TnNsc3ViQTluS0JVUkNvazFvRTBSb2FQVlF0OXFPNjc4dG4xUHVpYjd4MGJV?=
+ =?utf-8?B?czdncUJQRUREeFB1Y1o3ZUg2NU01UVlVSTNLOCt6Z3RGNnVZNEh0dzVyQ1Z5?=
+ =?utf-8?B?TUcxUHYvelM0Vlhsd09ZRVRtOVVZOURmVXFRRk9lSVJHTVRCY0p2UGtIc2Y0?=
+ =?utf-8?B?T0xabXdZOHBleC9Pb0Uvckh2cVdQME1IWVY0NkxkQmFaT2FqUkxPNzVhak9E?=
+ =?utf-8?B?T0J6dGRMeG9MYWQyNmdVejBmMnNkOG8wTGQ5N0ptempSamdPUFhMczJWM0Ny?=
+ =?utf-8?B?eEJueEVaVGcvaUZlOW1iMmx5dUM4WEp4ZnUvcW9HNXpnbVZpTnlPUVhOUmdW?=
+ =?utf-8?B?OXVFVjVHamd0UjVJMnFnUUtyMkVrcGQxeDhZa2UwdFpiRDdueFBYQlpZSG5T?=
+ =?utf-8?B?UFA5TUx4K1YvY1ROcWdQWU9laGsvUFBsSDR4MEp0bFIvQmpmMmJpUWVZL0dy?=
+ =?utf-8?B?RVdpQWMrdVNrMEJlMnN5UC91U2Q4RU94Q3lPU1FZSmNIbW1Md05lWlBTMnJT?=
+ =?utf-8?B?azI2bmtta3NlbVh3RUZZc1RqeDBwNnRTSEFXTWdRU1llUkdpWi9SYzgwWG4y?=
+ =?utf-8?B?MnlGdHRsM25uNGVobm9YanJ0SWhhdUJIZ2poL1QyUUFiSFQ2QllGTVBCeTJy?=
+ =?utf-8?B?OGQ2U2ZTaWVTS1V4NTUyeS9NRTlsR0tVYlpTczdTaS83WEcxQVg2cExxdmNZ?=
+ =?utf-8?B?UWd4eUZKQ25kL1VuVktyamw3ZkppNmNYNTBSemV4emE2aDAwemRMRXJ1SnZl?=
+ =?utf-8?B?NDMwNSswMWhMMDRyVThzNnRaSEUzcytOOEd2ODA4OVZiRkswa1AwTXAyZCs4?=
+ =?utf-8?B?MFhUVmRmL3hMZUxwSE1wbGc5KzQxcjU5anhlcXg3TEFUMUEvSE5RM1NjaTZ1?=
+ =?utf-8?B?aTBBMnFzZXdFa0srRFErT1FFUHFiZHhzcFgrcUxKbDVWLytuSVlPTERmbVYv?=
+ =?utf-8?B?QkdWcmVSbENlcGRpTzdEOGlMZVpNZzNMNUlUVFJFMmFnV3lmRjRKQm9taWV1?=
+ =?utf-8?B?R1p6b3dkOEJwNUR1WDI5OTNucVFMaVUzVXk3YTU0aXJsVm9nOUc0SGw0SFdC?=
+ =?utf-8?B?dkZKZ3l4SlgwM0RacXZheWFmOGZseldUcmZPanFZWlBZVzRmSUpxRXZRNVBV?=
+ =?utf-8?B?ZTdPZHFJU0xPSlRmYnpsanhMQURWL0FXMWJGZEIrVHM0NWxzR3RRdjJMOC9T?=
+ =?utf-8?B?L1FsNjcySC91bmVtSFYxc3pMWXhRdWp5U05GM21vTHNyR3BSQUE1cnhLUXB0?=
+ =?utf-8?B?eFdlQlZ6ajRBbFNDc0ZXZHhRd3I5VEZWbTh3bGdBdDhLRzEwZHduQ0NQd2sy?=
+ =?utf-8?B?NHQranpQOEFqWHJVK1dPTjNzNnY5RHYxeEc2RnNnOE1pcyt6d3N5dFRuQ1Jz?=
+ =?utf-8?B?aldNMEZEMUhiTTJxU0VTT2YwZUU2VFhKcnNQL3piUVZZeXdhTHNLQXROSW02?=
+ =?utf-8?B?STJjQ2RlRlFPSEJiaEtSZkZoUGtlbVk4MExUZ3R4STVwaGlpNWpWRUlUelVE?=
+ =?utf-8?B?bVE9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 216ce2f9-e851-4194-12e0-08dc02a1f6d1
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB4965.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Dec 2023 03:56:23.7382
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 3pwHSY8IsLVySvaOd18Udln3K+WrJzC7XUu/ozbPX0jQJJmKg2I3XGHP6W2dW5liUbd0Qrqm8dvhKOdtk4ocsw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB5048
+X-OriginatorOrg: intel.com
 
-Hi Bjorn,
+On 12/21/2023 11:39 PM, Yi Liu wrote:
+> From: Lu Baolu <baolu.lu@linux.intel.com>
+>
+> This implements the .cache_invalidate_user() callback to support iotlb
+> flush for nested domain.
+>
+> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+> Co-developed-by: Yi Liu <yi.l.liu@intel.com>
+> Signed-off-by: Yi Liu <yi.l.liu@intel.com>
+> ---
+>   drivers/iommu/intel/nested.c | 116 +++++++++++++++++++++++++++++++++++
+>   1 file changed, 116 insertions(+)
+>
+> diff --git a/drivers/iommu/intel/nested.c b/drivers/iommu/intel/nested.c
+> index b5a5563ab32c..c665e2647045 100644
+> --- a/drivers/iommu/intel/nested.c
+> +++ b/drivers/iommu/intel/nested.c
+> @@ -73,9 +73,125 @@ static void intel_nested_domain_free(struct iommu_domain *domain)
+>   	kfree(to_dmar_domain(domain));
+>   }
+>   
+> +static void nested_flush_pasid_iotlb(struct intel_iommu *iommu,
+> +				     struct dmar_domain *domain, u64 addr,
+> +				     unsigned long npages, bool ih)
+> +{
+> +	u16 did = domain_id_iommu(domain, iommu);
+> +	unsigned long flags;
+> +
+> +	spin_lock_irqsave(&domain->lock, flags);
+> +	if (!list_empty(&domain->devices))
+> +		qi_flush_piotlb(iommu, did, IOMMU_NO_PASID, addr,
+> +				npages, ih, NULL);
+> +	spin_unlock_irqrestore(&domain->lock, flags);
+> +}
+> +
+> +static void nested_flush_dev_iotlb(struct dmar_domain *domain, u64 addr,
+> +				   unsigned mask, u32 *fault)
+> +{
+> +	struct device_domain_info *info;
+> +	unsigned long flags;
+> +	u16 sid, qdep;
+> +
+> +	spin_lock_irqsave(&domain->lock, flags);
+> +	list_for_each_entry(info, &domain->devices, link) {
+> +		if (!info->ats_enabled)
+> +			continue;
+> +		sid = info->bus << 8 | info->devfn;
+> +		qdep = info->ats_qdep;
+> +		qi_flush_dev_iotlb(info->iommu, sid, info->pfsid,
+> +				   qdep, addr, mask, fault);
+> +		quirk_extra_dev_tlb_flush(info, addr, mask,
+> +					  IOMMU_NO_PASID, qdep);
+> +	}
+> +	spin_unlock_irqrestore(&domain->lock, flags);
+> +}
+> +
+> +static void intel_nested_flush_cache(struct dmar_domain *domain, u64 addr,
+> +				     unsigned long npages, u32 *error)
+> +{
+> +	struct iommu_domain_info *info;
+> +	unsigned long i;
+> +	unsigned mask;
+> +	u32 fault = 0;
+> +
+> +	if (npages == U64_MAX)
+> +		mask = 64 - VTD_PAGE_SHIFT;
+> +	else
+> +		mask = ilog2(__roundup_pow_of_two(npages));
+> +
+> +	xa_for_each(&domain->iommu_array, i, info) {
+> +		nested_flush_pasid_iotlb(info->iommu, domain, addr, npages, 0);
+> +
+> +		if (domain->has_iotlb_device)
+> +			continue;
 
-On Fri, Dec 15, 2023 at 1:16=E2=80=AFAM Bjorn Helgaas <helgaas@kernel.org> =
-wrote:
->
-> [+cc Rafael, runtime PM expert :)]
->
-> On Tue, Dec 12, 2023 at 12:38:07PM +0800, Kai-Heng Feng wrote:
-> > When inserting an SD7.0 card to Realtek card reader, the card reader
-> > unplugs itself and morph into a NVMe device. The slot Link down on hot
-> > unplugged can cause the following error:
->
-> A page fault in a driver following a link down event sounds like
-> either a driver defect or a PCI core defect that could affect any
-> driver.  The rtsx power and ASPM management is very unusual, so I
-> don't feel super confident in it.
->
-> I guess the theory here is that while we're running
-> rtsx_pci_runtime_idle(), the link down event happens and we run
-> rtsx_pci_remove(), which unmaps the pcr->remap_addr page, and then
-> rtsx_pci_readl(RTSX_HAIMR) in the rtsx_pci_runtime_idle() path
-> references that unmapped page?
->
-> I looked through other drivers that use runtime PM.  The typical
-> pattern is:
->
->   *_probe()
->     pm_runtime_put
->     pm_runtime_allow
->
->   *_remove()
->     pm_runtime_forbid
->     pm_runtime_get
->
-> rtsx does the put/allow and forbid/get in the reverse order:
->
->   rtsx_pci_probe()
->     pm_runtime_allow
->     pm_runtime_put
->
->   rtsx_pci_remove()
->     pm_runtime_get_sync
->     pm_runtime_forbid
->     iounmap(pcr->remap_addr)               # <-- unmap the page
->
->   rtsx_pci_runtime_idle()
->     ...
->       ioread32(pcr->remap_addr + reg)      # <-- read from unmapped page
->
-> I don't know whether this is an issue, and isp_probe() and nhi_probe()
-> also use this reverse order, so maybe it's all fine.  But I do wonder
-> whether there's a reason to do it differently.
->
-> > [   63.898861] pcieport 0000:00:1c.0: pciehp: Slot(8): Link Down
-> > [   63.912118] BUG: unable to handle page fault for address: ffffb24d40=
-3e5010
-> > [   63.912122] #PF: supervisor read access in kernel mode
-> > [   63.912125] #PF: error_code(0x0000) - not-present page
-> > [   63.912126] PGD 100000067 P4D 100000067 PUD 1001fe067 PMD 100d97067 =
-PTE 0
-> > [   63.912131] Oops: 0000 [#1] PREEMPT SMP PTI
-> > [   63.912134] CPU: 3 PID: 534 Comm: kworker/3:10 Not tainted 6.4.0 #6
-> > [   63.912137] Hardware name: To Be Filled By O.E.M. To Be Filled By O.=
-E.M./H370M Pro4, BIOS P3.40 10/25/2018
-> > [   63.912138] Workqueue: pm pm_runtime_work
-> > [   63.912144] RIP: 0010:ioread32+0x2e/0x70
-> > [   63.912148] Code: ff 03 00 77 25 48 81 ff 00 00 01 00 77 14 8b 15 08=
- d9 54 01 b8 ff ff ff ff 85 d2 75 14 c3 cc cc cc cc 89 fa ed c3 cc cc cc cc=
- <8b> 07 c3 cc cc cc cc 55 83 ea 01 48 89 fe 48 c7 c7 98 6f 15 99 48
-> > [   63.912150] RSP: 0018:ffffb24d40a5bd78 EFLAGS: 00010296
-> > [   63.912152] RAX: ffffb24d403e5000 RBX: 0000000000000152 RCX: 0000000=
-00000007f
-> > [   63.912153] RDX: 000000000000ff00 RSI: ffffb24d403e5010 RDI: ffffb24=
-d403e5010
-> > [   63.912155] RBP: ffffb24d40a5bd98 R08: ffffb24d403e5010 R09: 0000000=
-000000000
-> > [   63.912156] R10: ffff9074cd95e7f4 R11: 0000000000000003 R12: 0000000=
-00000007f
-> > [   63.912158] R13: ffff9074e1a68c00 R14: ffff9074e1a68d00 R15: 0000000=
-000009003
-> > [   63.912159] FS:  0000000000000000(0000) GS:ffff90752a180000(0000) kn=
-lGS:0000000000000000
-> > [   63.912161] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > [   63.912162] CR2: ffffb24d403e5010 CR3: 0000000152832006 CR4: 0000000=
-0003706e0
-> > [   63.912164] Call Trace:
-> > [   63.912165]  <TASK>
-> > [   63.912167]  ? show_regs+0x68/0x70
-> > [   63.912171]  ? __die_body+0x20/0x70
-> > [   63.912173]  ? __die+0x2b/0x40
-> > [   63.912175]  ? page_fault_oops+0x160/0x480
-> > [   63.912177]  ? search_bpf_extables+0x63/0x90
-> > [   63.912180]  ? ioread32+0x2e/0x70
-> > [   63.912183]  ? search_exception_tables+0x5f/0x70
-> > [   63.912186]  ? kernelmode_fixup_or_oops+0xa2/0x120
-> > [   63.912189]  ? __bad_area_nosemaphore+0x179/0x230
-> > [   63.912191]  ? bad_area_nosemaphore+0x16/0x20
-> > [   63.912193]  ? do_kern_addr_fault+0x8b/0xa0
-> > [   63.912195]  ? exc_page_fault+0xe5/0x180
-> > [   63.912198]  ? asm_exc_page_fault+0x27/0x30
-> > [   63.912203]  ? ioread32+0x2e/0x70
-> > [   63.912206]  ? rtsx_pci_write_register+0x5b/0x90 [rtsx_pci]
-> > [   63.912217]  rtsx_set_l1off_sub+0x1c/0x30 [rtsx_pci]
-> > [   63.912226]  rts5261_set_l1off_cfg_sub_d0+0x36/0x40 [rtsx_pci]
-> > [   63.912234]  rtsx_pci_runtime_idle+0xc7/0x160 [rtsx_pci]
-> > [   63.912243]  ? __pfx_pci_pm_runtime_idle+0x10/0x10
-> > [   63.912246]  pci_pm_runtime_idle+0x34/0x70
-> > [   63.912248]  rpm_idle+0xc4/0x2b0
-> > [   63.912251]  pm_runtime_work+0x93/0xc0
-> > [   63.912254]  process_one_work+0x21a/0x430
-> > [   63.912258]  worker_thread+0x4a/0x3c0
-> > [   63.912261]  ? __pfx_worker_thread+0x10/0x10
-> > [   63.912263]  kthread+0x106/0x140
-> > [   63.912266]  ? __pfx_kthread+0x10/0x10
-> > [   63.912268]  ret_from_fork+0x29/0x50
-> > [   63.912273]  </TASK>
->
-> Can you strip out the call trace stuff that's not relevant so the call
-> path is clear?  I'm guessing we're in ioread32(), and nothing above
-> do_kern_addr_fault() or below worker_thread() is relevant.
+Shouldn't this be if (!domain->has_iotlb_device)?
+> +
+> +		nested_flush_dev_iotlb(domain, addr, mask, &fault);
+> +		if (fault & (DMA_FSTS_ITE | DMA_FSTS_ICE))
+> +			break;
+> +	}
+> +
+> +	if (fault & DMA_FSTS_ICE)
+> +		*error |= IOMMU_HWPT_INVALIDATE_VTD_S1_ICE;
+> +	if (fault & DMA_FSTS_ITE)
+> +		*error |= IOMMU_HWPT_INVALIDATE_VTD_S1_ITE;
+> +}
+> +
+> +static int intel_nested_cache_invalidate_user(struct iommu_domain *domain,
+> +					      struct iommu_user_data_array *array)
+> +{
+> +	struct dmar_domain *dmar_domain = to_dmar_domain(domain);
+> +	struct iommu_hwpt_vtd_s1_invalidate inv_entry;
+> +	u32 processed = 0;
+> +	int ret = 0;
+> +	u32 index;
+> +
+> +	if (array->type != IOMMU_HWPT_INVALIDATE_DATA_VTD_S1) {
+> +		ret = -EINVAL;
+> +		goto out;
+> +	}
+> +
+> +	for (index = 0; index < array->entry_num; index++) {
+> +		ret = iommu_copy_struct_from_user_array(&inv_entry, array,
+> +							IOMMU_HWPT_INVALIDATE_DATA_VTD_S1,
+> +							index, inv_error);
+> +		if (ret)
+> +			break;
+> +
+> +		if (inv_entry.flags & ~IOMMU_VTD_INV_FLAGS_LEAF) {
+> +			ret = -EOPNOTSUPP;
+> +			break;
+> +		}
+> +
+> +		if (!IS_ALIGNED(inv_entry.addr, VTD_PAGE_SIZE) ||
+> +		    ((inv_entry.npages == U64_MAX) && inv_entry.addr)) {
+> +			ret = -EINVAL;
+> +			break;
+> +		}
+> +
+> +		inv_entry.inv_error = 0;
+> +		intel_nested_flush_cache(dmar_domain, inv_entry.addr,
+> +					 inv_entry.npages, &inv_entry.inv_error);
+> +
+> +		ret = iommu_respond_struct_to_user_array(array, index,
+> +							 (void *)&inv_entry,
+> +							 sizeof(inv_entry));
+> +		if (ret)
+> +			break;
+> +
+> +		processed++;
+> +	}
+> +
+> +out:
+> +	array->entry_num = processed;
+> +	return ret;
+> +}
+> +
+>   static const struct iommu_domain_ops intel_nested_domain_ops = {
+>   	.attach_dev		= intel_nested_attach_dev,
+>   	.free			= intel_nested_domain_free,
+> +	.cache_invalidate_user	= intel_nested_cache_invalidate_user,
+>   };
+>   
+>   struct iommu_domain *intel_nested_domain_alloc(struct iommu_domain *parent,
 
-Sure.
-
->
-> > [   63.912274] Modules linked in: nvme nvme_core snd_hda_codec_hdmi snd=
-_sof_pci_intel_cnl snd_sof_intel_hda_common snd_hda_codec_realtek snd_hda_c=
-odec_generic snd_soc_hdac_hda soundwire_intel ledtrig_audio nls_iso8859_1 s=
-oundwire_generic_allocation soundwire_cadence snd_sof_intel_hda_mlink snd_s=
-of_intel_hda snd_sof_pci snd_sof_xtensa_dsp snd_sof snd_sof_utils snd_hda_e=
-xt_core snd_soc_acpi_intel_match snd_soc_acpi soundwire_bus snd_soc_core sn=
-d_compress ac97_bus snd_pcm_dmaengine snd_hda_intel i915 snd_intel_dspcfg s=
-nd_intel_sdw_acpi intel_rapl_msr snd_hda_codec intel_rapl_common snd_hda_co=
-re x86_pkg_temp_thermal intel_powerclamp snd_hwdep coretemp snd_pcm kvm_int=
-el drm_buddy ttm mei_hdcp kvm drm_display_helper snd_seq_midi snd_seq_midi_=
-event cec crct10dif_pclmul ghash_clmulni_intel sha512_ssse3 aesni_intel cry=
-pto_simd rc_core cryptd rapl snd_rawmidi drm_kms_helper binfmt_misc intel_c=
-state i2c_algo_bit joydev snd_seq snd_seq_device syscopyarea wmi_bmof snd_t=
-imer sysfillrect input_leds snd ee1004 sysimgblt mei_me soundcore
-> > [   63.912324]  mei intel_pch_thermal mac_hid acpi_tad acpi_pad sch_fq_=
-codel msr parport_pc ppdev lp ramoops drm parport reed_solomon efi_pstore i=
-p_tables x_tables autofs4 hid_generic usbhid hid rtsx_pci_sdmmc crc32_pclmu=
-l ahci e1000e i2c_i801 i2c_smbus rtsx_pci xhci_pci libahci xhci_pci_renesas=
- video wmi
->
-> The module list doesn't look relevant here.  Nor the timestamps.
->
-> > [   63.912346] CR2: ffffb24d403e5010
-> > [   63.912348] ---[ end trace 0000000000000000 ]---
-> >
-> > This happens because scheduled pm_runtime_idle() is not cancelled.
-> >
-> > So before releasing the device, stop all runtime power managements by
-> > using pm_runtime_barrier() to fix the issue.
-> >
-> > Link: https://lore.kernel.org/all/2ce258f371234b1f8a1a470d5488d00e@real=
-tek.com/
-> > Tested-by: Ricky Wu <ricky_wu@realtek.com>
-> > ---
-> > v2:
-> >   Cover more cases than just pciehp.
-> >
-> >  drivers/pci/remove.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> >
-> > diff --git a/drivers/pci/remove.c b/drivers/pci/remove.c
-> > index d749ea8250d6..c69b4ce5dbfd 100644
-> > --- a/drivers/pci/remove.c
-> > +++ b/drivers/pci/remove.c
-> > @@ -1,6 +1,7 @@
-> >  // SPDX-License-Identifier: GPL-2.0
-> >  #include <linux/pci.h>
-> >  #include <linux/module.h>
-> > +#include <linux/pm_runtime.h>
-> >  #include "pci.h"
-> >
-> >  static void pci_free_resources(struct pci_dev *dev)
-> > @@ -18,6 +19,7 @@ static void pci_stop_dev(struct pci_dev *dev)
-> >       pci_pme_active(dev, false);
-> >
-> >       if (pci_dev_is_added(dev)) {
-> > +             pm_runtime_barrier(&dev->dev);
->
-> If pm_runtime_barrier() is really the solution, it seems like this
-> should go somewhere in pci-driver.c where we call the driver PM
-> callbacks.
-
-What makes pm_runtime_barrier() work is because it calls
-'cancel_work_sync(&dev->power.work);' to cancel the pm_runtime_idle()
-work, while pm_runtime_forbid() doesn't.
-So should pm_runtime_forbid() also use cancel_work_sync()?
-
-Kai-Heng
-
->
-> >               device_release_driver(&dev->dev);
-> >               pci_proc_detach_device(dev);
-> > --
-> > 2.34.1
-> >
 
