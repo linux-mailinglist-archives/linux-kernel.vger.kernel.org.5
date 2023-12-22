@@ -1,189 +1,158 @@
-Return-Path: <linux-kernel+bounces-10121-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10124-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EEC3D81D082
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 00:40:18 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC2E381D092
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 00:44:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 645431F232B7
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 23:40:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8C184B2371C
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 23:44:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAD0535EF0;
-	Fri, 22 Dec 2023 23:40:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B69FA35EFB;
+	Fri, 22 Dec 2023 23:44:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="BhX1fWLh"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FW+PEk9f"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com [209.85.219.182])
+Received: from mail-oi1-f180.google.com (mail-oi1-f180.google.com [209.85.167.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D81B341B1
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 23:40:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-da7ea62e76cso2278219276.3
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 15:40:05 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C55A35EE9;
+	Fri, 22 Dec 2023 23:44:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f180.google.com with SMTP id 5614622812f47-3bb802341eeso1491727b6e.3;
+        Fri, 22 Dec 2023 15:44:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1703288404; x=1703893204; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1703288641; x=1703893441; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=xtZ7DoTLW1exe07faZsWlns7AQkFSE4d8R8G8FL+W54=;
-        b=BhX1fWLha23oq5ZIgDUjH9vv1lGlwIVCi3GLw0JwRo0aG7XwYZv85+77LskHdlQo1D
-         bwsIkS7xpvTFw8oAdgSv29mGaUrAvP5Wx/261gIhM/6zMeo8k42oB/b9HryLnDsJE8Cx
-         GUytWtYtsKa24oI4PUJff9pGZFK90skjIWVkJFW+GNQC5Y5dcuxibGnU6oiPOsX5oH/h
-         Y0L+oVrW5PSmYh7FetSM7oaX5V8tDNInJlKAZiXQBMZ6OpYSMCX46FBWXE+jLXKCAYan
-         dodQ1jF0leo+SSkWoD+CU1evbVt2XuUFoQbJacILMO5Q4u2CKs4FahH5T3D6g3H192Ug
-         jr5g==
+        bh=u9uJAXYaWWEwDD2fcwcXO74cohGnyjB8jlMg/uP61/M=;
+        b=FW+PEk9fHJnm9Vp1Vx2pwATmIWIriq3uR3HtR8Vm7OG9HJLybLb/qD2Ya0ZjNWZXR6
+         ww1KMrJS4m0ROsr2V3JWKwcp4+BckdsacSgMig9wmeSUXxAuIuzTCaqw/WmaSDjlq6cJ
+         wceaypqTMwIC0IzcZHcQKge/D1fm6blzrGjBCbdPRIVfifD5Rd7U57mBlaeNVSSfPuVD
+         2CjPjMxxQUp6bWoUb5lzXAiFqq8Y6ufaWAeihfilN2iObyi45CsSmIkkj+08XbYaeFbo
+         /yiploWYmBi94qVtoJtE/3dXmY5MN+j8qAr45E2/zIRnEIwAYfgsl/tvi4AxeDmu/ZdZ
+         Uv9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703288404; x=1703893204;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1703288641; x=1703893441;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=xtZ7DoTLW1exe07faZsWlns7AQkFSE4d8R8G8FL+W54=;
-        b=Cj/+NdbRH0elq3eW7HTXPmt31aH9tFqqNEwbozOMsWTZAQ6n7GiHU4jXAiojR3EwYW
-         tsDyriTxA6xgi2yXcvYmBcrCucJsjVHWFd6/+RRkEvrdckhFJ9A/wy/Efpp2anBZze6H
-         XB9EQ4RXPJbBpozIA+i2L0tTBVeMyABAnpd3f1Ud9zHg8KaL3iIJxz7JT8ZuvKVxz47K
-         92N7juGVS3OhXQgUZdRaqommKQgCFWf+cGrpU0DmnzV6qokAhDYtQ8ajUPCUhWkCVVR1
-         UeDNNTf+E7cjoHLMS4IqLfykvfdik+/6IG+dPchFngv4oFG8lNUygwXm/TRa0BPn5UaA
-         FcfA==
-X-Gm-Message-State: AOJu0YxOaTXP+3XVqegycJ3LmPIibMXLpxcR1GNEOofI0fjZ7zXVfEY7
-	7MpJXtGAC5ntVSh4KRGUhfRK5Kkc5wzD7PJnGF7f2vZgAeO9
-X-Google-Smtp-Source: AGHT+IFJ56Y4CS1sroZ1McDCZ+aO7O7hN62WOIlrr6chYjjZ1T/kSBIrM5eXZxDJkKi8QxYqJszlIDxKoUo1/cuCEUA=
-X-Received: by 2002:a25:db4b:0:b0:db7:dacf:ed65 with SMTP id
- g72-20020a25db4b000000b00db7dacfed65mr1422088ybf.70.1703288404352; Fri, 22
- Dec 2023 15:40:04 -0800 (PST)
+        bh=u9uJAXYaWWEwDD2fcwcXO74cohGnyjB8jlMg/uP61/M=;
+        b=WRNosEVNgcFsrBW2IC3FgxkGdpQtYQ0l4W81lxfZlAUwNxLYSUi7Mr8QFdIaqY8/m3
+         A6Xzn4CP9gVRIp5UBf0gKlqjlu5UGulT5XgwvPtfZb2013yQ0PaUGXsnYTXg7o7OSaus
+         broUx43pp+RYTw4zbymw3YPV08IkumvYmmGdURyih545n+yGHKheDCNWde+8FoEnZcdm
+         +oUaBTWcgKyQsgYDFLK9hLs1lyB4thTdSyUx8H3RsPYmsNuUWTGEwyb+HGOtfcmP7JyI
+         UkCY67MeyIFq9iMMsK/OpB9QuMNfudpfm2YxYcYrmw2sIHmB7gO7+FsJAQ6Zw+PAd8WH
+         yWWg==
+X-Gm-Message-State: AOJu0YwhICgKhZmwTKQh7cV/+RMnhGZ4HckCnedHJvoeTA+LDNv+f5+M
+	U1eUg4g0CyNihpGB/fnf3txSUS/KI/ezRQ==
+X-Google-Smtp-Source: AGHT+IEBcMAdxLDV76HXmc3OCUvAfcCQtbzCX5BinmvoHbmUgdEY1mZjWmlPxQP4eyZbz6cYaXOUmw==
+X-Received: by 2002:a05:6808:1247:b0:3ba:e56:4778 with SMTP id o7-20020a056808124700b003ba0e564778mr2514960oiv.100.1703288641539;
+        Fri, 22 Dec 2023 15:44:01 -0800 (PST)
+Received: from xavier.lan ([2607:fa18:92fe:b835:c8f0:af87:712f:cf12])
+        by smtp.gmail.com with ESMTPSA id a21-20020a62e215000000b006d98222b74esm2326427pfi.46.2023.12.22.15.44.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Dec 2023 15:44:01 -0800 (PST)
+From: Alex Henrie <alexhenrie24@gmail.com>
+To: dan@danm.net,
+	davem@davemloft.net,
+	dsahern@kernel.org,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	bagasdotme@gmail.com,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	regressions@lists.linux.dev
+Cc: Alex Henrie <alexhenrie24@gmail.com>
+Subject: Re: [REGRESSION] net/ipv6/addrconf: Temporary addresses with short lifetimes generating when they shouldn't, causing applications to fail
+Date: Fri, 22 Dec 2023 16:42:27 -0700
+Message-ID: <20231222234237.44823-1-alexhenrie24@gmail.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20231221231115.12402-1-dan@danm.net>
+References: <20231221231115.12402-1-dan@danm.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231213143813.6818-1-michael.weiss@aisec.fraunhofer.de>
- <20231213143813.6818-4-michael.weiss@aisec.fraunhofer.de> <20231215-golfanlage-beirren-f304f9dafaca@brauner>
- <61b39199-022d-4fd8-a7bf-158ee37b3c08@aisec.fraunhofer.de>
- <20231215-kubikmeter-aufsagen-62bf8d4e3d75@brauner> <CAADnVQKeUmV88OfQOfiX04HjKbXq7Wfcv+N3O=5kdL4vic6qrw@mail.gmail.com>
- <20231216-vorrecht-anrief-b096fa50b3f7@brauner> <CAADnVQK7MDUZTUxcqCH=unrrGExCjaagfJFqFPhVSLUisJVk_Q@mail.gmail.com>
- <20231218-chipsatz-abfangen-d62626dfb9e2@brauner>
-In-Reply-To: <20231218-chipsatz-abfangen-d62626dfb9e2@brauner>
-From: Paul Moore <paul@paul-moore.com>
-Date: Fri, 22 Dec 2023 18:39:53 -0500
-Message-ID: <CAHC9VhSZDMWJ_kh+RaB6dsPLQjkrjDY4bVkqsFDG3JtjinT_bQ@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 3/3] devguard: added device guard for mknod in
- non-initial userns
-To: Christian Brauner <brauner@kernel.org>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, 
-	=?UTF-8?Q?Michael_Wei=C3=9F?= <michael.weiss@aisec.fraunhofer.de>, 
-	Alexander Mikhalitsyn <alexander@mihalicyn.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Quentin Monnet <quentin@isovalent.com>, Alexander Viro <viro@zeniv.linux.org.uk>, 
-	Miklos Szeredi <miklos@szeredi.hu>, Amir Goldstein <amir73il@gmail.com>, 
-	"Serge E. Hallyn" <serge@hallyn.com>, bpf <bpf@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, 
-	Linux-Fsdevel <linux-fsdevel@vger.kernel.org>, 
-	LSM List <linux-security-module@vger.kernel.org>, gyroidos@aisec.fraunhofer.de
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Mon, Dec 18, 2023 at 7:30=E2=80=AFAM Christian Brauner <brauner@kernel.o=
-rg> wrote:
-> I'm not generally opposed to kfuncs ofc but here it just seems a bit
-> pointless. What we want is to keep SB_I_{NODEV,MANAGED_DEVICES} confined
-> to alloc_super(). The only central place it's raised where we control
-> all locking and logic. So it doesn't even have to appear in any
-> security_*() hooks.
+On Thu, Dec 21, 2023 at 4:12 PM Dan Moulding <dan@danm.net> wrote:
 >
-> diff --git a/security/security.c b/security/security.c
-> index 088a79c35c26..bf440d15615d 100644
-> --- a/security/security.c
-> +++ b/security/security.c
-> @@ -1221,6 +1221,33 @@ int security_sb_alloc(struct super_block *sb)
->         return rc;
->  }
+> I started running v6.7-rc5 on a desktop and began having problems
+> where Chromium would frequently fail to load pages and give an
+> "ERR_NETWORK_CHANGED" message instead. I also noticed instability in
+> avahi-daemon (it would stop resolving local names and/or consume 100%
+> CPU). Eventually I discovered that what is happening is that new
+> temporary IPv6 addresses for a ULA address are being generated once
+> every second, with very short preferred lifetimes (and I had an
+> interface with thousands of such temporary addresses). I also found
+> that it seems to be triggered when one of the devices on the network
+> sends a router advertisement with a prefix that has a preferred
+> lifetime of 0 (presumably it's sending that because it wants to
+> deprecate that prefix).
 >
-> +/*
-> + * security_sb_device_access() - Let LSMs handle device access
-> + * @sb: filesystem superblock
-> + *
-> + * Let an LSM take over device access management for this superblock.
-> + *
-> + * Return: Returns 1 if LSMs handle device access, 0 if none does and -E=
-RRNO on
-> + *         failure.
-> + */
-> +int security_sb_device_access(struct super_block *sb)
-> +{
-> +       int thisrc;
-> +       int rc =3D LSM_RET_DEFAULT(sb_device_access);
-> +       struct security_hook_list *hp;
-> +
-> +       hlist_for_each_entry(hp, &security_hook_heads.sb_device_access, l=
-ist) {
-> +               thisrc =3D hp->hook.sb_device_access(sb);
-> +               if (thisrc < 0)
-> +                       return thisrc;
-> +               /* At least one LSM claimed device access management. */
-> +               if (thisrc =3D=3D 1)
-> +                       rc =3D 1;
-> +       }
-> +
-> +       return rc;
-> +}
-
-I worry that this hook, and the way it is plumbed into alloc_super()
-below, brings us back to the problem of authoritative LSM hooks which
-is something I can't support at this point in time.  The same can be
-said for a LSM directly flipping bits in the superblock struct.
-
-The LSM should not grant any additional privilege, either directly in
-the LSM code, or indirectly via the caller; the LSM should only
-restrict operations which would have otherwise been allowed.
-
-The LSM should also refrain from modifying any kernel data structures
-that do not belong directly to the LSM.  A LSM caller may modify
-kernel data structures that it owns based on the result of the LSM
-hook, so long as those modifications do not grant additional privilege
-as described above.
-
-> diff --git a/fs/super.c b/fs/super.c
-> index 076392396e72..2295c0f76e56 100644
-> --- a/fs/super.c
-> +++ b/fs/super.c
-> @@ -325,7 +325,7 @@ static struct super_block *alloc_super(struct file_sy=
-stem_type *type, int flags,
->  {
->         struct super_block *s =3D kzalloc(sizeof(struct super_block),  GF=
-P_USER);
->         static const struct super_operations default_op;
-> -       int i;
-> +       int err, i;
+> I bisected it to commit 629df6701c8a ("net: ipv6/addrconf: clamp
+> preferred_lft to the minimum required"). Upon reviewing that change, I
+> see that it has changed when generation of temporary addresses will be
+> allowed. I believe that change might have inadvertently caused the
+> kernel to violate RFC 4941 and might need to be reverted.
 >
->         if (!s)
->                 return NULL;
-> @@ -362,8 +362,16 @@ static struct super_block *alloc_super(struct file_s=
-ystem_type *type, int flags,
->         }
->         s->s_bdi =3D &noop_backing_dev_info;
->         s->s_flags =3D flags;
-> -       if (s->s_user_ns !=3D &init_user_ns)
-> +
-> +       err =3D security_sb_device_access(s);
-> +       if (err < 0)
-> +               goto fail;
-> +
-> +       if (err)
-> +               s->s_iflags |=3D SB_I_MANAGED_DEVICES;
-> +       else if (s->s_user_ns !=3D &init_user_ns)
->                 s->s_iflags |=3D SB_I_NODEV;
-> +
->         INIT_HLIST_NODE(&s->s_instances);
->         INIT_HLIST_BL_HEAD(&s->s_roots);
->         mutex_init(&s->s_sync_lock);
+> In particular RFC 4941 specifies that the preferred lifetime of a
+> temporary address must not be greater than the preferred lifetime of
+> the public address it is derived from. However, this change allows a
+> temporary address to be generated with a preferred lifetime greater
+> than the public address' preferred lifetime.
+>
+> From RFC 4941:
+>
+>     4.  When creating a temporary address, the lifetime values MUST be
+>         derived from the corresponding prefix as follows:
+>
+>         *  Its Valid Lifetime is the lower of the Valid Lifetime of the
+>            public address or TEMP_VALID_LIFETIME.
+>
+>         *  Its Preferred Lifetime is the lower of the Preferred Lifetime
+>            of the public address or TEMP_PREFERRED_LIFETIME -
+>            DESYNC_FACTOR.
+>
+> Previously temporary addresses would not be generated for an interface
+> if the administratively configured preferred lifetime on that
+> interface was too short. This change tries to avoid that, and allow
+> generating temporary addresses even on interfaces with very short
+> configured lifetimes, by simply increasing the preferred lifetime of
+> the generated address. However, doing so runs afoul of the above
+> requirement. It allows the preferred lifetime of the temporary address
+> to be increased to a value that is larger than the public address'
+> preferred lifetime. For example, in my case where the router
+> advertisement causes the public address' preferred lifetime to be set
+> to 0, the current code allows a temporary address to be generated with
+> a preferred lifetime of (regen_advance + age + 1), which is obviously
+> greater than 0. It also, in my case, leads to new temporary addresses
+> with very short lifetimes being generated, about once every second,
+> leading to the application-level issues I described above.
 
---=20
-paul-moore.com
+Sorry for the unintended consequences, and thank you for the detailed
+explanation. Does this patch fix the problem for you?
+
+-Alex
+
+
+Alex Henrie (1):
+  net: ipv6/addrconf: clamp prefered_lft to the public address preferred
+    lifetime
+
+ net/ipv6/addrconf.c | 19 ++++++++++++++++---
+ 1 file changed, 16 insertions(+), 3 deletions(-)
+
+-- 
+2.43.0
+
 
