@@ -1,202 +1,271 @@
-Return-Path: <linux-kernel+bounces-9533-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9534-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C17FA81C727
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 10:10:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7148781C72B
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 10:10:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E6A8C1C21CCE
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 09:10:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 94B2B1C2223E
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 09:10:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00970DDCB;
-	Fri, 22 Dec 2023 09:10:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61539FBE2;
+	Fri, 22 Dec 2023 09:10:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="hVOjVLwW"
+	dkim=pass (2048-bit key) header.d=oltmanns.dev header.i=@oltmanns.dev header.b="DlBuv078"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [80.241.56.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0904D512;
-	Fri, 22 Dec 2023 09:10:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BM0oWRi016607;
-	Fri, 22 Dec 2023 09:10:27 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=Lkv5cExqbgBfEYwPN2LzjTfOWK6VQMomkTuKOAgayGQ=; b=hV
-	OjVLwWU0KI77djXTtp2Unxzt++fe6xahYC0CEtfHHMTeVd2niC7uon1qemQtweWX
-	zS7kLHw5bH3QVVXFNrnD3YRdC7fog6QdKKtZQMNdcMS+pcgO+xX9FMeFNfvvYEFu
-	z8FyFZuR4LSyRlrOeslb/Y3NARbpGRjWA3siFpGRI80xBXmNAUEajCW4rluMb6p/
-	DnCORbgGg8z5B0FZEOAPPqivizc7hL03NasLErbkkGdmlxypIKa+5sn6CW+v14Ef
-	kdGt0KQupcZR24hMtNwiGKTJG6F4wUqs/Q8PE2gyGdmmVvzguHE5M3Ji7lzU/7vj
-	d3jDdmgP/V3lfGPFuPsA==
-Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v4tue9qe6-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 22 Dec 2023 09:10:27 +0000 (GMT)
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-	by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BM9AQW4007949
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 22 Dec 2023 09:10:26 GMT
-Received: from [10.239.132.150] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 22 Dec
- 2023 01:10:19 -0800
-Message-ID: <459ef8e4-bbbc-4a7d-969c-43f269ef6793@quicinc.com>
-Date: Fri, 22 Dec 2023 17:10:16 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70B72FBF3;
+	Fri, 22 Dec 2023 09:10:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oltmanns.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oltmanns.dev
+Received: from smtp102.mailbox.org (smtp102.mailbox.org [10.196.197.102])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4SxM2v34f7z9t0p;
+	Fri, 22 Dec 2023 10:10:31 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oltmanns.dev;
+	s=MBO0001; t=1703236231;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ALCq2oz1QBxbdllKqhnSviXLc3yIJ0Q6F604tnrSPGU=;
+	b=DlBuv078ks+xCfMpS4YGEbAyftvJU5MWD2zYGJdt1rHSSvsseWjGZqyfyxz0qMzIFp7XkN
+	7MUU2ro5XMNQ5MAuN0wsL9qKgfenY7+JteMwB1gARN4sL1QcF25u0jNkdTR2rusDYOrx7V
+	4DiqEBOgeMLLMjDD1HtfCL8oH630b7js43llHq/bjuPfBZ3bPDtQnX3IYJrTdho3VgMt00
+	jm3bD/cBQDxQ535aP2tAa6O+IFRr1yH/0XxcnXriJDRhO9rgok3pP+g4ADBfS+QLXeAaTQ
+	M5HPc3RKaCxOwl15RFYLsyJzyP/frT+oRbRYFGVpzW2MvJ+H9DliTCFFbSVf2w==
+References: <20231218-pinephone-pll-fixes-v1-0-e238b6ed6dc1@oltmanns.dev>
+ <10386431.nUPlyArG6x@jernej-laptop> <87edfh9ud8.fsf@oltmanns.dev>
+ <1845418.atdPhlSkOF@jernej-laptop> <875y0sacmz.fsf@oltmanns.dev>
+From: Frank Oltmanns <frank@oltmanns.dev>
+To: Frank Oltmanns <frank@oltmanns.dev>
+Cc: Jernej =?utf-8?Q?=C5=A0krabec?= <jernej.skrabec@gmail.com>, Michael
+ Turquette
+ <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, Chen-Yu Tsai
+ <wens@csie.org>, Samuel Holland <samuel@sholland.org>, Guido =?utf-8?Q?G?=
+ =?utf-8?Q?=C3=BCnther?=
+ <agx@sigxcpu.org>, Purism Kernel Team <kernel@puri.sm>, Ondrej Jirman
+ <megi@xff.cz>, Neil Armstrong <neil.armstrong@linaro.org>, Jessica Zhang
+ <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>, Maarten
+ Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard
+ <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, David
+ Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
+ dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH 5/5] drm/panel: st7703: Drive XBD599 panel at higher
+ clock rate
+In-reply-to: <875y0sacmz.fsf@oltmanns.dev>
+Date: Fri, 22 Dec 2023 10:10:25 +0100
+Message-ID: <87v88qk3ge.fsf@oltmanns.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/1] arm64: dts: qcom: sm8550: remove
- address/size-cells from mdss_dsi1
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Dmitry Baryshkov
-	<dmitry.baryshkov@linaro.org>
-CC: Tengfei Fan <quic_tengfan@quicinc.com>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <kernel@quicinc.com>
-References: <20231219003106.8663-1-quic_tengfan@quicinc.com>
- <20231219003106.8663-2-quic_tengfan@quicinc.com>
- <457e336e-004c-4721-b58d-e9ada16dc04b@linaro.org>
- <a8f168da-14f7-4377-8dea-f282a3eac0a4@quicinc.com>
- <13b61d41-6045-499e-864b-51c6cb6eacf9@linaro.org>
- <38604415-b410-4995-9c4f-525536435699@quicinc.com>
- <CAA8EJpo07gE7ZeNP6wSGTLtmF_3PKQAKFyMRZ8dk1K+f7PAxrg@mail.gmail.com>
- <ad1547cf-0520-422d-a105-ec426f526d71@quicinc.com>
- <CAA8EJppwsezPV21Uw8xTn=ra8L2jfnkHoRghDPN96O5tJsOD7A@mail.gmail.com>
- <72305a35-02e6-4ff6-8251-01f986530c5d@quicinc.com>
- <A45746C4-54C9-48D2-9DB7-52B4B56854E6@linaro.org>
- <4e328cd8-9ef7-42ce-b592-7f2216c00c0b@quicinc.com>
- <CAA8EJprE8v3bhHfyZJM9SJT=ShJ-LQvk5mR=gpdAWXF2yANWbQ@mail.gmail.com>
- <e88787dc-ed03-42d2-a6e7-fb88bbc89357@quicinc.com>
- <6a4356e2-e201-4b87-bac0-056b29a07fc8@linaro.org>
-From: "Aiqun Yu (Maria)" <quic_aiquny@quicinc.com>
-In-Reply-To: <6a4356e2-e201-4b87-bac0-056b29a07fc8@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: RH3ULBYQU0Wd-WIavAZYZ4eMUWlWP0BD
-X-Proofpoint-ORIG-GUID: RH3ULBYQU0Wd-WIavAZYZ4eMUWlWP0BD
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
- lowpriorityscore=0 malwarescore=0 clxscore=1015 impostorscore=0
- phishscore=0 mlxlogscore=999 priorityscore=1501 mlxscore=0 spamscore=0
- adultscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2311290000 definitions=main-2312220064
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
 
+On 2023-12-20 at 19:57:06 +0100, Frank Oltmanns <frank@oltmanns.dev> wrote:
+> Ok, I've done more detailed testing, and it seems this patch results in
+> lots of dropped frames. I'm sorry for not being more thorough earlier.
+> I'll do some more testing without this patch and might have to either
+> remove it from V2 of this series.
+>
+> I need to see if the same stability can be achieved when running
+> PLL-MIPI outside its specied range.
 
-On 12/21/2023 4:57 PM, Krzysztof Kozlowski wrote:
-> On 21/12/2023 09:49, Aiqun Yu (Maria) wrote:
->> For example:
->>
->> --- a/Documentation/devicetree/bindings/display/msm/qcom,sm8550-mdss.yaml
->> +++ b/Documentation/devicetree/bindings/display/msm/qcom,sm8550-mdss.yaml
->>
->> @@ -55,14 +50,7 @@ patternProperties:
->>              - const: qcom,sm8350-dp
->>
->>      "^dsi@[0-9a-f]+$":
->> -    type: object
->> -    additionalProperties: true
->> -
->> -    properties:
->> -      compatible:
->> -        items:
->> -          - const: qcom,sm8550-dsi-ctrl
->> -          - const: qcom,mdss-dsi-ctrl
->> +    $ref: ../dsi-controller-main.yaml#
->>
->> With above unified reference change, it will be easier for other
->> developers to reference bindings files next time.
->> Also dsi@[0-9a-f] node in mdss node will be correctly fully described.
-> 
-> No, this does not make sense and allows anything as dsi. It is opposite
-> of what we want in bindings, so NAK.
-> 
->>>
->>>> In my opinion if the example have "#address-cells" "#size-cells", then
->>>> it's better to also include "panel@0" with "reg = <0>" to not confuse.
->>>
->>> It is already there, see dsi-controller.yaml.
->>>
->>>>>> 3. Too many bindings files for driver "qcom,mdss-dsi-ctrl", shall we align them into 1 binding files.
->>>>>
->>>>> There is just one.
->>>> Currently I mentioned bindings files was searched the compatible
->>>> "qcom,mdss-dsi-ctrl", and find binding docs like "qcom,sm8550-mdss.yaml"
->>>> "qcom,sm8450-mdss.yaml" etc.
->>>> There is duplicate information on "qcom,sm8550-mdss.yaml" etc, while
->>>> "qcom,mdss-common.yaml" is not common enough for my understanding.
->>>
->>> If you had compared the qcom,SOC-mdss.yaml, you would have seen that
->>> they provide tight binding between compatible strings used for all the
->>> subblocks. The `mdss-common.yaml` describes MDSS common properties. It
->>> describes everything except the platform specifics. It can not be made
->>> more common. And there is no duplication.
->>>
->>> If you think you can improve the bindings, please send the patches.
->> I am thinking of a unified qcom,mdss.yaml instead of "qcom,*each
->> SOC*-mdss.yaml". I will try to have a patch.
-> 
-> I asked first of you to read previous discussions. If you still insist
-> on sending patch for this, it means you did not read them.
-Do you have the previous discussion title/link that you are refereed 
-here pls?
-> 
-> How you wrote this idea, sounds like exactly opposite of what we were
-> doing and what I was recommending few times on the list, so it is very
-> likely I will NAK it.
-> 
->>> They must pass the `make dt_binding_check` check.
->> Thx for the remind.
-> 
-> And follow bindings guidelines.
-> 
->>>
->>>>>> 4. enhance the dtc warning check if we still want to have "#address-cells" "#size-cells" even if there is no "panel@0" attached.
->>>>>
->>>>> In my opinion this is a way to go, if any. Did you include devicetree@ ML and the corresponding maintainers into the discussion?
->>>> Already included devicetree@ ML at the very beginning.
->>>
->>> Good, thanks for the confirmation.
->>>
->>>> If the required properties part in each yaml is marked good enough, I
->>>> think it can be an input for avoid unnecessary dtc warnings.
->>>
->>> Patches are welcome.
->> Improving developer efficiency with unnecessary warnings is one of my
->> interest as well.
->> First of all, I'd better to make sure "Required properties" attribute in
->> current bindings are good enough. Let me try to get back on this in a
-> 
-> I don't understand why do you keep mentioning the "required properties".
-> They have nothing to do with any of this here.
-> 
-> 
-> 
+I've done some more (load) testing and observing the panel for dropped
+frames.
+
+The conclusion I draw from those results is that this patch isn't
+necessary for the pinephone. It would be enough to use the correct clock
+rate based on the existing values [*]:
+-	.clock	     =3D 69000,
++	.clock	     =3D (720 + 40 + 40 + 40) * (1440 + 18 + 10 + 17) * 60 / 1000,
+
+I've asked in the postmarketOS community for a bit more testing. They
+already have a merge request that contains these changes [2].
+
+This means that we would continue to drive PLL-MIPI outside it's
+specified range. I have, so far, not experienced any downside of doing
+so. It seems enough to fix the ratios that are part of the first four
+patches in this series without introducing a min and max rate.
+
+In conclusion, I'll soon (after some more feedback from the fine folks
+at postmarketOS) submit a V2 that addresses the fixes requested in the
+first four patches of this series. I'll drop the existing PATCH 5 and
+replace it with the one I sent in February [1] instead.
+
+After that, just for fun, I'll probably look into min_rate and max_rate
+for nkm clocks and which consequences it has on the pinephone. I might
+or might not send a follow up series for that. However, if the pinephone
+runs stable without it, it's not a high priority for me.
+
+Best regards,
+  Frank
+
+[*] I've already submitted a patch in February '23 [1]. It was of little
+    use back then because the A64's PLL-MIPI clock was not able to run
+    close to that rate. But since kernel 6.6 PLL-MIPI is able to set
+    it's parent rate, so that it can come quite close to the required
+    rate:
+     + Panel requires 74.844 MHz with the current timings.
+     +-> tcon-data-clock rate should be 112.266 MHz (panel*24/4/4).
+      +-> PLL-MIPI rate should be 449.064 MHz (TCON0 * 4)
+
+    The 6.6 kernel the following rates are possible:
+     + PLL-MIPI: ~448.984615 MHz
+     +-> tcon-data-clock: ~112.246153
+      +-> panel: ~74.830768 MHz
+
+    Which leaves us with a vertical refresh rate of ~59.989 Hz,
+    deviating less then 0.2% from the ideal 60Hz. That's probably closer
+    than the accumulated accuracy of all involved components can
+    reliably achieve. I'd say, let's leave it at that.
+
+[1]: https://lore.kernel.org/lkml/20230219114553.288057-2-frank@oltmanns.de=
+v/
+[2]: https://gitlab.com/postmarketOS/pmaports/-/merge_requests/4645
+>
 > Best regards,
-> Krzysztof
-> 
-
--- 
-Thx and BRs,
-Aiqun(Maria) Yu
+>   Frank
+>
+> On 2023-12-20 at 16:18:49 +0100, Jernej =C5=A0krabec <jernej.skrabec@gmai=
+l.com> wrote:
+>> Dne sreda, 20. december 2023 ob 08:14:27 CET je Frank Oltmanns napisal(a=
+):
+>>>
+>>> On 2023-12-19 at 18:04:29 +0100, Jernej =C5=A0krabec <jernej.skrabec@gm=
+ail.com> wrote:
+>>> > Dne ponedeljek, 18. december 2023 ob 14:35:23 CET je Frank Oltmanns n=
+apisal(a):
+>>> >> This panel is used in the pinephone that runs on a Allwinner A64 SOC.
+>>> >> Acoording to it's datasheet, the SOC requires PLL-MIPI to run at more
+>>> >> than 500 MHz.
+>>> >>
+>>> >> Therefore, change [hv]sync_(start|end) so that we reach a clock rate
+>>> >> that is high enough to drive PLL-MIPI within its limits.
+>>> >>
+>>> >> Signed-off-by: Frank Oltmanns <frank@oltmanns.dev>
+>>> >
+>>> > I'm not too sure about this patch. I see that PLL_MIPI doesn't have s=
+et
+>>> > minimum frequency limit in clock driver. If you add it, clock framewo=
+rk
+>>> > should find rate that is high enough and divisible with target rate.
+>>>
+>>> This one is really a tough nut. Unfortunately, the PLL_MIPI clock for
+>>> this panel has to run exactly at 6 * panel clock. Let me start by
+>>> showing the relevant part of the clock tree (this is on the pinephone
+>>> after applying the patches):
+>>>     pll-video0                 393600000
+>>>        pll-mipi                500945454
+>>>           tcon0                500945454
+>>>              tcon-data-clock   125236363
+>>>
+>>> To elaborate, tcon-data-clock has to run at 1/4 the DSI per-lane bit
+>>> rate [1]. It's a fixed divisor
+>>>
+>>> The panel I'm proposing to change is defined as this:
+>>>
+>>>     static const struct st7703_panel_desc xbd599_desc =3D {
+>>>     	.mode =3D &xbd599_mode,
+>>>     	.lanes =3D 4,
+>>>     	.mode_flags =3D MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_VIDEO_SYNC_PUL=
+SE,
+>>>     	.format =3D MIPI_DSI_FMT_RGB888,
+>>>     	.init_sequence =3D xbd599_init_sequence,
+>>>     };
+>>>
+>>> So, we have 24 bpp and 4 lanes. Therefore, the resulting requested
+>>> tcon-data-clock rate is
+>>>     crtc_clock * 1000 * (24 / 4) / 4
+>>>
+>>> tcon-data-clock therefore requests a parent rate of
+>>>     4 * (crtc_clock * 1000 * (24 / 4) / 4)
+>>>
+>>> The initial 4 is the fixed divisor between tcon0 and tcon-data-clock.
+>>> Since tcon0 is a ccu_mux, the rate of tcon0 equals the rate of pll-mipi.
+>>>
+>>> Since PLL-MIPI has to run at at least at 500MHz this forces us to have a
+>>> crtc_clock >=3D 83.333 MHz. The mode I'm prorposing results in a rate of
+>>> 83.502 MHz.
+>>
+>> This is much better explanation why this change is needed. Still, I think
+>> adding min and max rate to PLL_MIPI would make sense, so proper rates
+>> are guaranteed.
+>>
+>> Anyway, do you know where are all those old values come from? And how did
+>> you come up with new ones? I guess you can't just simply change timings,
+>> there are probably some HW limitations? Do you know if BSP kernel support
+>> this panel and how this situation is solved there?
+>>
+>>>
+>>> If we only changed the constraints on the PLL_MIPI without changing the
+>>> panel mode, we end up with a mismatch. This, in turn, would result in
+>>> dropped frames, right?
+>>
+>> From what I read, I think frame rate would be higher than 60 fps. What
+>> exactly would happen depends on the panel.
+>>
+>> Best regards,
+>> Jernej
+>>
+>>>
+>>> Best regards,
+>>>   Frank
+>>>
+>>> [1] Source:
+>>> https://elixir.bootlin.com/linux/v6.6.7/source/drivers/gpu/drm/sun4i/su=
+n4i_tcon.c#L346
+>>>
+>>> >
+>>> > Best regards,
+>>> > Jernej
+>>> >
+>>> >> ---
+>>> >>  drivers/gpu/drm/panel/panel-sitronix-st7703.c | 14 +++++++-------
+>>> >>  1 file changed, 7 insertions(+), 7 deletions(-)
+>>> >>
+>>> >> diff --git a/drivers/gpu/drm/panel/panel-sitronix-st7703.c b/drivers=
+/gpu/drm/panel/panel-sitronix-st7703.c
+>>> >> index b55bafd1a8be..6886fd7f765e 100644
+>>> >> --- a/drivers/gpu/drm/panel/panel-sitronix-st7703.c
+>>> >> +++ b/drivers/gpu/drm/panel/panel-sitronix-st7703.c
+>>> >> @@ -320,14 +320,14 @@ static int xbd599_init_sequence(struct st7703 =
+*ctx)
+>>> >>
+>>> >>  static const struct drm_display_mode xbd599_mode =3D {
+>>> >>  	.hdisplay    =3D 720,
+>>> >> -	.hsync_start =3D 720 + 40,
+>>> >> -	.hsync_end   =3D 720 + 40 + 40,
+>>> >> -	.htotal	     =3D 720 + 40 + 40 + 40,
+>>> >> +	.hsync_start =3D 720 + 65,
+>>> >> +	.hsync_end   =3D 720 + 65 + 65,
+>>> >> +	.htotal      =3D 720 + 65 + 65 + 65,
+>>> >>  	.vdisplay    =3D 1440,
+>>> >> -	.vsync_start =3D 1440 + 18,
+>>> >> -	.vsync_end   =3D 1440 + 18 + 10,
+>>> >> -	.vtotal	     =3D 1440 + 18 + 10 + 17,
+>>> >> -	.clock	     =3D 69000,
+>>> >> +	.vsync_start =3D 1440 + 30,
+>>> >> +	.vsync_end   =3D 1440 + 30 + 22,
+>>> >> +	.vtotal	     =3D 1440 + 30 + 22 + 29,
+>>> >> +	.clock	     =3D (720 + 65 + 65 + 65) * (1440 + 30 + 22 + 29) * 60 =
+/ 1000,
+>>> >>  	.flags	     =3D DRM_MODE_FLAG_NHSYNC | DRM_MODE_FLAG_NVSYNC,
+>>> >>  	.width_mm    =3D 68,
+>>> >>  	.height_mm   =3D 136,
+>>> >>
+>>> >>
+>>>
 
