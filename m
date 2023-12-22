@@ -1,108 +1,222 @@
-Return-Path: <linux-kernel+bounces-9431-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9432-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFD8681C568
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 08:07:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CC2E81C56A
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 08:10:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 88A911F24095
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 07:07:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 710981C24DD1
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 07:10:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EF7B944D;
-	Fri, 22 Dec 2023 07:07:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kroah.com header.i=@kroah.com header.b="k2PgjN3G";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="GIW7i2q0"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFBCF9444;
+	Fri, 22 Dec 2023 07:10:51 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5670C8F6E;
-	Fri, 22 Dec 2023 07:06:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kroah.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kroah.com
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailout.nyi.internal (Postfix) with ESMTP id 4CCB35C0277;
-	Fri, 22 Dec 2023 02:06:57 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Fri, 22 Dec 2023 02:06:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1703228817; x=1703315217; bh=BoUi0Lx1gZ
-	P9nFMwdw0C6puWbb+B9pctDK1EXIQql98=; b=k2PgjN3G55LwNDgK9tBqE8is8f
-	CHlxQLXVbwCYod8cNkJMa370Y1aYl85MbVkhF6lhvzq7lkJSaQ70QaP+Rk024B25
-	14GbtUbpXXbz/27jKhcoxAK12Xm7LO12Yp/BZaFypa5PSmElPJRRVGqoMb9pavD1
-	sAdwBF+AH0O5zNT7rtNj+/aQxwlxYY89Gw+s1k9bpUgiJ0gORqQqUIuVmk2L9b2L
-	e6lyPZxRRU/yU3iWbjLglgHN0DpsHQE3XqHFd0Uq9sN6YRfanlmMW+0pOQS+piH3
-	B5BYtGi3KMx/DRz61IVo6y/xz4Rv9oF7NqSJR+6qy9NRtiVhEtQWtf+3oXUA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1703228817; x=1703315217; bh=BoUi0Lx1gZP9nFMwdw0C6puWbb+B
-	9pctDK1EXIQql98=; b=GIW7i2q0iNjL41970vV08yUaZJVbJj69iSQbURmYhzRX
-	WM6ARsYauICcmTURsWD7IndffkMKzvc8j/VV+VffpFDyBzIpI9TUQrjM4aDqQei8
-	7mb9o89NWHxuJO0gHXJN4ja7gp7oIwi6IoaKSh23XWOm55Hn0eAPeE35fXdna3eQ
-	pQdizvbI5k7aL2HsLZhiIzMrL2fmX42X8IJnyufXKu/P4KVE5ryvVMY+WP8W2hsE
-	88aMq1epAQhcK50ijwbSwdVKw+uHz0d8mGfFLsv52EHe9G7jyhFJW3SEzFwibHvi
-	362cL6xUiwOhOVwd/15Tw2AP0QNXH606iYLGgz022A==
-X-ME-Sender: <xms:kDWFZWiUpC_2dZubuJ0K4Zt2SVK_FNz9rc7I22ePdcDU_wQ5303Q7Q>
-    <xme:kDWFZXC8Pm7VPfYEHaitRraNXPYWSv2qIfiwMh3o6xWP_JcSaisLLwMbdwBLXharY
-    ehG1klrRTszLA>
-X-ME-Received: <xmr:kDWFZeEzoxzGul4z6i5gvJ6pnfW_Gcg-PoK91Gz6rwMM0JK2gzy_Uf3S1pQ-QwXYggciVNXTRZcJQt2Yz02vfQHbcd8bIDgz0w>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdduiedguddtvdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgv
-    ghcumffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeehge
-    dvvedvleejuefgtdduudfhkeeltdeihfevjeekjeeuhfdtueefhffgheekteenucevlhhu
-    shhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrhgvgheskhhroh
-    grhhdrtghomh
-X-ME-Proxy: <xmx:kDWFZfSoaAg-TLcnCyy4YMrXPWXx4X97u8eN97QST4eDSrgCpoRJNA>
-    <xmx:kDWFZTzsjjHVigfErfTZm_Jr6f2lEDB6nF3suejAinorLWSRAEE2aA>
-    <xmx:kDWFZd4ZT9LgMxMuJTxeFckvYJ_4IBP8kzyGdMLGlf1LrHTmhqs6xw>
-    <xmx:kTWFZanjf0zzZQDxKcOxnNaRHsWnTxFjzNAC9BK4tUYRX9bTKZWllQ>
-Feedback-ID: i787e41f1:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 22 Dec 2023 02:06:56 -0500 (EST)
-Date: Fri, 22 Dec 2023 08:06:55 +0100
-From: Greg KH <greg@kroah.com>
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Tejun Heo <tj@kernel.org>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: duplicate patchs in the cgroup tree
-Message-ID: <2023122248-dayroom-coveting-1b2d@gregkh>
-References: <20231222142049.397619e5@canb.auug.org.au>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 127E38F67
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 07:10:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rGZg7-00065I-6s; Fri, 22 Dec 2023 08:10:39 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rGZg4-000hWu-Q2; Fri, 22 Dec 2023 08:10:37 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rGZg5-001a8v-JY; Fri, 22 Dec 2023 08:10:37 +0100
+Date: Fri, 22 Dec 2023 08:10:32 +0100
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc: lgirdwood@gmail.com, broonie@kernel.org, linux-pwm@vger.kernel.org, 
+	linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	Thierry Reding <thierry.reding@gmail.com>, Heiner Kallweit <hkallweit1@gmail.com>, 
+	Dmitry Rokosov <ddrokosov@sberdevices.ru>
+Subject: Re: [RFC PATCH v1] regulator: pwm-regulator: Fix continuous
+ get_voltage for disabled PWM
+Message-ID: <2f2bc3xvemk2x3sno65so6vglmpavjtyeiqzy6yyzwvx5hqtmi@tsfx2hr7rmqp>
+References: <20231221211222.1380658-1-martin.blumenstingl@googlemail.com>
+ <tek6c6symqgm6x6ujh4m67q32en24pzrkjbchffir7qljo4gor@7qpu4zmgyzpq>
+ <CAFBinCAxh0xU2mDRX3t42j6oJ534p9RPUV+dYoRe0oacTw_7iA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="4gmofv63e2ybipgt"
 Content-Disposition: inline
-In-Reply-To: <20231222142049.397619e5@canb.auug.org.au>
+In-Reply-To: <CAFBinCAxh0xU2mDRX3t42j6oJ534p9RPUV+dYoRe0oacTw_7iA@mail.gmail.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-On Fri, Dec 22, 2023 at 02:20:49PM +1100, Stephen Rothwell wrote:
-> Hi all,
-> 
-> The following commit is also in the driver-core tree as a different commit
-> (but the same patchs):
-> 
->   2bf46683842b ("kernel/cgroup: use kernfs_create_dir_ns()")
-> 
-> This is commit
-> 
->   fe3de0102bc8 ("kernel/cgroup: use kernfs_create_dir_ns()")
-> 
-> in the driver-core tree.
 
-Should be fine, thanks!
+--4gmofv63e2ybipgt
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-greg k-h
+Good morning Martin,
+
+On Fri, Dec 22, 2023 at 01:17:44AM +0100, Martin Blumenstingl wrote:
+> On Thu, Dec 21, 2023 at 11:03=E2=80=AFPM Uwe Kleine-K=C3=B6nig
+> <u.kleine-koenig@pengutronix.de> wrote:
+> [...]
+> > Note this isn't save in general. You're implicitly assuming that a
+> > disabled PWM runs with the minimal supported duty_cycle. Most disabled
+> > PWMs yield the inactive level (which corresponds to a 0% relative duty
+> > cycle). But there are exceptions.
+> Good catch - thank you!
+>=20
+> [...]
+> > Without claiming to understand all implications, I'd say
+> > pwm_regulator_get_voltage should signal to the caller when the
+> > duty_cycle isn't contained in [min(max_uV_duty, min_uV_duty),
+> > max(max_uV_duty, min_uV_duty)].
+> It seems like there's -ENOTRECOVERABLE that we can signal to the caller.
+> This makes the following message appear in my kernel log:
+>   VDDEE: Setting 1100000-1140000uV
+> Which means that pwm_regulator_set_voltage() is called which will then
+> pick the minimum voltage.
+>=20
+> To make this work I will need to update meson8b-odroidc1.dts (which
+> isn't a problem, I just want to point it out as it's mandatory for
+> that solution. also I will send that in a separate patch).
+>=20
+> See my attached patch (which replaces the initial patch I sent, it's
+> not meant to be applied on top).
+> One question that I still have is whether we are allowed to just
+> enable the PWM output within pwm_regulator_set_voltage().
+> Doing so is actually mandatory, otherwise we end up in an infinite
+> loop of not being able to read the voltage, then sets the minimum
+> voltage (but leaves the PWM output disabled) which then means that it
+> can't read back the voltage which means it tries to set the minimum
+> voltage ....
+
+Without enabling the PWM pwm_regulator_set_voltage() doesn't work if the
+PWM isn't enabled already when the function is entered. So I'd say yes,
+you must enable it.
+
+> diff --git a/arch/arm/boot/dts/amlogic/meson8b-odroidc1.dts b/arch/arm/bo=
+ot/dts/amlogic/meson8b-odroidc1.dts
+> index b03273d90ad8..df348e119643 100644
+> --- a/arch/arm/boot/dts/amlogic/meson8b-odroidc1.dts
+> +++ b/arch/arm/boot/dts/amlogic/meson8b-odroidc1.dts
+> @@ -217,13 +217,13 @@ vddee: regulator-vddee {
+>  		compatible =3D "pwm-regulator";
+> =20
+>  		regulator-name =3D "VDDEE";
+> -		regulator-min-microvolt =3D <860000>;
+> +		regulator-min-microvolt =3D <1100000>;
+>  		regulator-max-microvolt =3D <1140000>;
+> =20
+>  		pwm-supply =3D <&p5v0>;
+> =20
+>  		pwms =3D <&pwm_cd 1 12218 0>;
+> -		pwm-dutycycle-range =3D <91 0>;
+> +		pwm-dutycycle-range =3D <14 0>;
+
+This is ugly. You have to take away the description that a relative
+duty-cycle of 91% yields 860 mV just because the linux driver behaves in
+a certain way.
+
+Also the calculation is wrong: If a relative duty-cyle in the interval
+[91%; 0%] maps lineary to [860 mV; 1140 mV] you get 1100 mV at
+
+	     1100 mV - 860 mV
+	91 + ---------------- * (0 - 91) =3D 13
+	     1140 mV - 860 mV
+
+(If the calculations in the driver used signed multiplication and
+division, all the checks for max_uV_duty < min_uV_duty could just go
+away.)
+
+So you want
+
++		pwm-dutycycle-range =3D <13 0>;
+
+(if this restriction is really necessary).
+
+>  		regulator-boot-on;
+>  		regulator-always-on;
+
+> diff --git a/drivers/regulator/pwm-regulator.c b/drivers/regulator/pwm-re=
+gulator.c
+> index 30402ee18392..cb4e5fad5702 100644
+> --- a/drivers/regulator/pwm-regulator.c
+> +++ b/drivers/regulator/pwm-regulator.c
+> @@ -156,13 +156,10 @@ static int pwm_regulator_get_voltage(struct regulat=
+or_dev *rdev)
+>  	unsigned int voltage;
+> =20
+>  	pwm_get_state(drvdata->pwm, &pstate);
+> +	if (!pstate.enabled)
+> +		return -ENOTRECOVERABLE;
+
+This is good.
+
+> =20
+> -	if (pstate.enabled)
+> -		voltage =3D pwm_get_relative_duty_cycle(&pstate, duty_unit);
+> -	else if (max_uV_duty < min_uV_duty)
+> -		voltage =3D max_uV_duty;
+> -	else
+> -		voltage =3D min_uV_duty;
+> +	voltage =3D pwm_get_relative_duty_cycle(&pstate, duty_unit);
+
+I'd add here:
+
+	if (voltage < min(max_uV_duty, min_uV_duty) ||
+	    voltage > max(max_uV_duty, min_uV_duty))
+		return -ENOTRECOVERABLE;
+
+>  	/*
+>  	 * The dutycycle for min_uV might be greater than the one for max_uV.
+> @@ -221,6 +218,7 @@ static int pwm_regulator_set_voltage(struct regulator=
+_dev *rdev,
+> =20
+>  	pwm_set_relative_duty_cycle(&pstate, dutycycle, duty_unit);
+> =20
+> +	pstate.enabled =3D true;
+>  	ret =3D pwm_apply_state(drvdata->pwm, &pstate);
+>  	if (ret) {
+>  		dev_err(&rdev->dev, "Failed to configure PWM: %d\n", ret);
+
+Otherwise the change to the driver looks fine to me.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=C3=B6nig         =
+   |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--4gmofv63e2ybipgt
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmWFNmQACgkQj4D7WH0S
+/k4TOQf/d8O8wmX+LkJC2a8BSERU4HtUlWlaHabQJIiBMC3U9ZMB2wlEboBiR0zz
+z6oXxw2jFOMCF4JWmQtBFJAamwLMQzs/6AqOPNWXfmv4WAM/W0jbQejTQkCjo3n4
+irm/kIzBSf1QY45/j1PJ+2QGb3q/tHmTHIo3oaSZ997tLi7tHvOHsiqkveyPdnyZ
+ZN/r6dI7VDAYb7hycjBTSb/jNrMG7ls7BejTDJYt5jDtv8VZyiT2eb6IhO8fz9n0
+6AwxpFpKLdbzweHgZ8gCYa+5/zOB6W7vjicRXs7O7SJvBGYfPwr3W+oRQsb+AAED
+8ZatcPYn9Uclzl8dfI+XDh3ZkQ/NJg==
+=2XZr
+-----END PGP SIGNATURE-----
+
+--4gmofv63e2ybipgt--
 
