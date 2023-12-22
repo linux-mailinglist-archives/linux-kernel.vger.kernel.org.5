@@ -1,148 +1,158 @@
-Return-Path: <linux-kernel+bounces-9988-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9989-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86F1581CE2B
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 18:55:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7CA4B81CE31
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 18:56:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 10FDDB21973
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 17:55:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 104E428AD1D
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 17:56:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39F6628E1C;
-	Fri, 22 Dec 2023 17:55:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCC592C198;
+	Fri, 22 Dec 2023 17:56:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IAjK9W1/"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="jXuMzfBa"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
+Received: from mail-qk1-f177.google.com (mail-qk1-f177.google.com [209.85.222.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93C9A28DDA
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 17:54:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-33686649b72so1959542f8f.3
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 09:54:57 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96D3B28DDF
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 17:56:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-qk1-f177.google.com with SMTP id af79cd13be357-7812bed1c86so56810085a.0
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 09:56:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703267696; x=1703872496; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oj0ljpZLwr9kojU6Bm2y0A367iD4r4CItsptTMa/Oic=;
-        b=IAjK9W1/R3E2nOC/NDIbNxTnu2fr8DnZ98+2uz9LmUhe8lpUxbE51146m/zI+FtW1U
-         akISO4Kw6hoc1aWFyHRMowlwZ0748akqosMRBl/qaUMtcRG6EZZ1l8LC21uh3ybpa1tJ
-         TWkZGEC2e3pymvvPXj9y82NPE36rRMb0oUDA0sRD8UlBsgWOoQcGhfXbeoe3Gs4kOrPo
-         2uXD498la0Z+wLx6SRNls3as+r+/VGuCqKT24NZG7HVsvFwa6gtOKEphz7D4HH/C4esn
-         kHKruQ+dEd9zNt+m7FP5oDtu9znM5ixktLWDTYE+VkSK6POiJYKDa1KtO+XfhE7Y3zk+
-         4nmg==
+        d=linaro.org; s=google; t=1703267797; x=1703872597; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=/HhLTRm08Y43dtSXWxfZ5KzfsdQRFgDHvFFek/ks+PY=;
+        b=jXuMzfBaTId7RAsCp4Ev56iOS2JNp5+JKj6ZQaE638gKfYpCCcaFxg5qFk4LlRWafe
+         bHvZTulOcsjjYWAJhIdYY+2VQTGx0lMDVka08BndKYZUxlSuVW/wR+MW2+SvFid6rnph
+         igMWh+bHsGJTOYUwTgVq2YcmYFB4PnkRzg5wN+OLn9IVRYKnF7RtX8RYffyo2o6my7O9
+         Nc9Lsil7JtrNdIMl6HAINnFw/F+ZKxDrJu4yvkUOSduVUikPkFrXo0XM1Wlh02Kbeuy7
+         KXNePdQriKjoAsXk4qSvENUvAvO4bumZnByfzl7J6GtPgPgw4G/4Jjorsfai79aZjIQ/
+         0+IQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703267696; x=1703872496;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=oj0ljpZLwr9kojU6Bm2y0A367iD4r4CItsptTMa/Oic=;
-        b=Mj1aBCHm/5PWJefKx3mFnqkuXr2rBeXlrrK45aUd9XDRLNCoqwbniI+smIiL4A8RaJ
-         mNt5YMEpnZ78/2WvNa0dg2oJSx3mKIxvlWCPr+ZwzqWWVzQ7Yi79giH+vLqphIZqHc3w
-         amnO9jt1ssko0CtKHx07YCdN4EaqejvtE/xs+qe4NWuT2gZTTE1IdX1RYzI4bJXWbn/Y
-         TQbn60gVLdg0CXM+ha+FpHtBEB7OIn6Pl+3LTZyBfkRrMKeJhVjeq4mvk1M81A5+Hdqn
-         iBwSnK4tl8khJFpTiSB/w0gRBjgscXFAdNUTDRPRopVlPiSoGfwshZWIMB+dAoRfB4+s
-         EevA==
-X-Gm-Message-State: AOJu0Ywzs35YyctRm0coNE5S5tS3wouh/6+IXqhPoV4l9L2iEyxsloEj
-	6lo7HNPb1N8awT6LOLUTmcg=
-X-Google-Smtp-Source: AGHT+IE6/WJXh8sGkbCJYkrbDuO3jlBRsiAC2Kk2c4CASZhaBVu6YzVdo/PYMaOpVujDGHZzrmeYcg==
-X-Received: by 2002:adf:f78f:0:b0:336:6e22:672c with SMTP id q15-20020adff78f000000b003366e22672cmr1029458wrp.88.1703267695558;
-        Fri, 22 Dec 2023 09:54:55 -0800 (PST)
-Received: from jernej-laptop.localnet (82-149-12-148.dynamic.telemach.net. [82.149.12.148])
-        by smtp.gmail.com with ESMTPSA id d17-20020adfe2d1000000b0033673ddd81csm4801113wrj.112.2023.12.22.09.54.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Dec 2023 09:54:55 -0800 (PST)
-From: Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-To: Andre Przywara <andre.przywara@arm.com>, Lee Jones <lee@kernel.org>
-Cc: fuyao <fuyao1697@cyg.com>, Chen-Yu Tsai <wens@csie.org>,
- Samuel Holland <samuel@sholland.org>, linux-arm-kernel@lists.infradead.org,
- linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
- Maxime Ripard <mripard@kernel.org>,
- maijianzhang <maijianzhang@allwinnertech.com>
-Subject:
- Re: [PATCH RESEND] iio: adc: sun4i-gpadc-iio: adaptation interrupt number
-Date: Fri, 22 Dec 2023 18:54:53 +0100
-Message-ID: <4953611.0VBMTVartN@jernej-laptop>
-In-Reply-To: <20231221152553.GM10102@google.com>
-References:
- <YxmR5SPPY18O7LaG@google.com>
- <20231220115412.65bbc8c7@donnerap.manchester.arm.com>
- <20231221152553.GM10102@google.com>
+        d=1e100.net; s=20230601; t=1703267797; x=1703872597;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/HhLTRm08Y43dtSXWxfZ5KzfsdQRFgDHvFFek/ks+PY=;
+        b=TDB9UAe7aYlDRlrKrmUTG+xqf/fagxAWjYBl1J2wj5UV5ZBFRP0+hoUAIrM+M4Gdau
+         I85tU3Ah5aMR/oOG2v30IYCcr+6v9TgsZDjsbxJmEIlD2Yk2dyQSXtuwWs9m4GppgO7I
+         juo+kMJ3kx/V/gM8nP5l2x+NvscEmPCG6oENBKc1mHDKxUvex3vohKMQyyzp/1L7BuLG
+         zvzdyLfgDyBsLrOfyClhBRyCERr+FzDnyveHQlAyVFzWzj2HeBVx1MzzkjDAYMTWGMyr
+         Q0R7GS5PLtl7CdNuOVnqlJJzJfLn08CRgcDlXi0CtWOjDviYxHWn9P73wiJIZHpOucR8
+         7HUA==
+X-Gm-Message-State: AOJu0YzSsyTwdZr9b4wtgynQncz1UoVn5HuWCPY7PK8htR15RwiZHo0b
+	Z2X4isnPNJulrzaJ63EJTTZMX5WP3Qu6Hajb3bjYspvX1u320Q==
+X-Google-Smtp-Source: AGHT+IG9Aiis1ajE6B2jjYD+C15ieRSm6oqpOi9lEtvJS7UBbdBf4Zjd9BXZZQoWAgS4DtHb8E2xzJl/+Kil1Evx0XA=
+X-Received: by 2002:a05:6214:1301:b0:67f:f64:8dce with SMTP id
+ pn1-20020a056214130100b0067f0f648dcemr1955342qvb.108.1703267797556; Fri, 22
+ Dec 2023 09:56:37 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+References: <20231214105243.3707730-1-tudor.ambarus@linaro.org>
+ <20231214105243.3707730-3-tudor.ambarus@linaro.org> <20231220150726.GA223267-robh@kernel.org>
+ <173b06ab-2518-49ee-a67f-85256bc5b6a7@linaro.org>
+In-Reply-To: <173b06ab-2518-49ee-a67f-85256bc5b6a7@linaro.org>
+From: Peter Griffin <peter.griffin@linaro.org>
+Date: Fri, 22 Dec 2023 17:56:26 +0000
+Message-ID: <CADrjBPpGWxidBYvEcQjv1k6QRcoJSdnJ7SK1koJpeb60V3FhKA@mail.gmail.com>
+Subject: Re: [PATCH 02/13] dt-bindings: clock: google,gs101-clock: add PERIC0
+ clock management unit
+To: Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc: Rob Herring <robh@kernel.org>, krzysztof.kozlowski+dt@linaro.org, 
+	mturquette@baylibre.com, sboyd@kernel.org, conor+dt@kernel.org, 
+	andi.shyti@kernel.org, alim.akhtar@samsung.com, gregkh@linuxfoundation.org, 
+	jirislaby@kernel.org, catalin.marinas@arm.com, will@kernel.org, 
+	s.nawrocki@samsung.com, tomasz.figa@gmail.com, cw00.choi@samsung.com, 
+	arnd@arndb.de, semen.protsenko@linaro.org, andre.draszik@linaro.org, 
+	saravanak@google.com, willmcvicker@google.com, 
+	linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, 
+	linux-clk@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org, 
+	linux-serial@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-Dne =C4=8Detrtek, 21. december 2023 ob 16:25:53 CET je Lee Jones napisal(a):
-> On Wed, 20 Dec 2023, Andre Przywara wrote:
->=20
-> > On Wed, 20 Dec 2023 15:23:17 +0800
-> > fuyao <fuyao1697@cyg.com> wrote:
-> >=20
-> > Hi,
-> >=20
-> > > __platform_get_irq_byname determinies whether the interrupt
-> > > number is 0 and returns EINVAL.
-> >=20
-> > can you please say what this fixes, exactly? Is something not working at
-> > the moment? Can you please provide parts of the error message?
-> >=20
-> > And maybe expand the explanation a bit more? For instance mention that =
-the
-> > identifiers are used as IRQ resource numbers, where 0 is treated specia=
-lly.
-> >=20
-> > Cheers,
-> > Andre
-> >=20
-> > >=20
-> > > Signed-off-by: fuyao <fuyao1697@cyg.com>
->=20
-> You have to use your full real name as well.
+Hi Tudor,
 
-Isn't that enough after
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?=
-id=3Dd4563201f33a022fc0353033d9dfeb1606a88330 ?
+On Thu, 21 Dec 2023 at 07:20, Tudor Ambarus <tudor.ambarus@linaro.org> wrote:
+>
+>
+>
+> On 12/20/23 15:07, Rob Herring wrote:
+> > On Thu, Dec 14, 2023 at 10:52:32AM +0000, Tudor Ambarus wrote:
+> >> Add dt-schema documentation for the Connectivity Peripheral 0 (PERIC0)
+> >> clock management unit.
+> >>
+> >> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+> >> ---
+> >>  .../bindings/clock/google,gs101-clock.yaml    | 25 +++++-
+> >>  include/dt-bindings/clock/google,gs101.h      | 86 +++++++++++++++++++
+> >>  2 files changed, 109 insertions(+), 2 deletions(-)
+> >>
+> >> diff --git a/Documentation/devicetree/bindings/clock/google,gs101-clock.yaml b/Documentation/devicetree/bindings/clock/google,gs101-clock.yaml
+> >> index 3eebc03a309b..ba54c13c55bc 100644
+> >> --- a/Documentation/devicetree/bindings/clock/google,gs101-clock.yaml
+> >> +++ b/Documentation/devicetree/bindings/clock/google,gs101-clock.yaml
+> >> @@ -30,14 +30,15 @@ properties:
+> >>        - google,gs101-cmu-top
+> >>        - google,gs101-cmu-apm
+> >>        - google,gs101-cmu-misc
+> >> +      - google,gs101-cmu-peric0
+> >>
+> >>    clocks:
+> >>      minItems: 1
+> >> -    maxItems: 2
+> >> +    maxItems: 3
+> >>
+> >>    clock-names:
+> >>      minItems: 1
+> >> -    maxItems: 2
+> >> +    maxItems: 3
+> >>
+> >>    "#clock-cells":
+> >>      const: 1
+> >> @@ -88,6 +89,26 @@ allOf:
+> >>              - const: dout_cmu_misc_bus
+> >>              - const: dout_cmu_misc_sss
+> >>
+> >> +  - if:
+> >> +      properties:
+> >> +        compatible:
+> >> +          contains:
+> >> +            const: google,gs101-cmu-peric0
+> >> +
+> >> +    then:
+> >> +      properties:
+> >> +        clocks:
+> >> +          items:
+> >> +            - description: External reference clock (24.576 MHz)
+> >> +            - description: Connectivity Peripheral 0 bus clock (from CMU_TOP)
+> >> +            - description: Connectivity Peripheral 0 IP clock (from CMU_TOP)
+> >> +
+> >> +        clock-names:
+> >> +          items:
+> >> +            - const: oscclk
+> >> +            - const: dout_cmu_peric0_bus
+> >> +            - const: dout_cmu_peric0_ip
+> >
+> > 'bus' and 'ip' are sufficient because naming is local to the module. The
+> > same is true on 'dout_cmu_misc_bus'. As that has not made a release,
+> > please fix all of them.
+> >
+>
+> Ok, will fix them shortly. Thanks, Rob!
 
-Best regards,
-Jernej
+With Robs review comments addressed feel free to add my:
 
->=20
-> > > Acked-by: Jernej Skrabec <jernej.skrabec@gmail.com>
-> > > ---
-> > >  include/linux/mfd/sun4i-gpadc.h | 4 ++--
-> > >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > >=20
-> > > diff --git a/include/linux/mfd/sun4i-gpadc.h b/include/linux/mfd/sun4=
-i-gpadc.h
-> > > index ea0ccf33a459..021f820f9d52 100644
-> > > --- a/include/linux/mfd/sun4i-gpadc.h
-> > > +++ b/include/linux/mfd/sun4i-gpadc.h
-> > > @@ -81,8 +81,8 @@
-> > >  #define SUN4I_GPADC_TEMP_DATA				0x20
-> > >  #define SUN4I_GPADC_DATA				0x24
-> > > =20
-> > > -#define SUN4I_GPADC_IRQ_FIFO_DATA			0
-> > > -#define SUN4I_GPADC_IRQ_TEMP_DATA			1
-> > > +#define SUN4I_GPADC_IRQ_FIFO_DATA			1
-> > > +#define SUN4I_GPADC_IRQ_TEMP_DATA			2
-> > > =20
-> > >  /* 10s delay before suspending the IP */
-> > >  #define SUN4I_GPADC_AUTOSUSPEND_DELAY			10000
-> >=20
->=20
->=20
-
-
-
-
+Reviewed-by: Peter Griffin <peter.griffin@linaro.org>
 
