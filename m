@@ -1,393 +1,306 @@
-Return-Path: <linux-kernel+bounces-9652-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9653-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1321D81C8FD
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 12:19:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E128181C900
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 12:19:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 36C591C241DB
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 11:19:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 124EA1C24658
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 11:19:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 007261F958;
-	Fri, 22 Dec 2023 11:17:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="neOxjvl7"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68B0217743;
+	Fri, 22 Dec 2023 11:19:11 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90072182A1
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 11:17:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2cc9b31a27bso20753861fa.3
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 03:17:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1703243847; x=1703848647; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WLdzLfSEEVamw81pFt4PJ3qeYp2a8WvdFrJ9tUWJ7PY=;
-        b=neOxjvl7SApVKcjiDSNvSRbxKF521OAdn4A/DPLOr513S/vRiYFQ6w/+F2MsWfRRDf
-         oiCxjAAVThEyS94OcLJ6xlca9QuT7LrEoGnm4fltIuQgjTa7OVWHimBLxvscf7skg4bG
-         nKSiHR2maMYlTi353vyAATJVNQDop0wsiBpP6qtY9i/Zfzm1D41euuQGgBsloR/iHqka
-         5ioqoVUDmfIAfziBXxq3V8Imuvvg8q3oP7a94Fp5Px1AO/U99Y87NZk+olIbU8ERN3O5
-         3ufHMp3culX8PX7NFLEDj2JSL/8aZ/hazBNJGvUwtUpuI+TZ3FI35yQ4Kjk8o7uim0rg
-         GEdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703243847; x=1703848647;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WLdzLfSEEVamw81pFt4PJ3qeYp2a8WvdFrJ9tUWJ7PY=;
-        b=kOpBlCRrtVTlGnbBMKUcmd4v4UQaPJMdSr/dr570gsafG8fYUzNfWLdn427Ly4BMuH
-         LX3163HWgVpQz3uU8TLClMS8V5PB/5FHaJNQj1YAZhr8EYDljIicY3F+qWlOoCnKGwZ3
-         TuKhdR7Ve0iUYsD+OJXwDPYUNylEVvmRc+P+RjLuyJ56se3afozZGVGhYgzxibwHHJBM
-         2RaMADZV0G/hq4mnpQED/KTyo2qwvle6bNeHONjTSUm5Xa+czk44/o0Y4xgLfINaGGuA
-         M/xGUpLDZjp3/Q1H4n7aEfqm1g1oTOysn/oIkxWU28X0m57nNBZ8m+gvxf0t8Acf2Hqk
-         igoA==
-X-Gm-Message-State: AOJu0Yz2iVOzAf5ft65iOTq32PY6DGP+D2oxPqhaJAWuLg08CuO63AbC
-	Rqt8GdIv4tX0jfGh3EuSoMWb9IPGtHxEjQ==
-X-Google-Smtp-Source: AGHT+IHF8QykG43zRtMmkctjbVuKLYsW7rfsMx5OwczXw8lbMFtHQDq4/lLUPm3DgBYBmQiLWpgdfQ==
-X-Received: by 2002:a2e:2407:0:b0:2cc:2678:6d35 with SMTP id k7-20020a2e2407000000b002cc26786d35mr573523ljk.6.1703243846824;
-        Fri, 22 Dec 2023 03:17:26 -0800 (PST)
-Received: from toaster.lan ([2a01:e0a:3c5:5fb1:c099:e596:3179:b0fa])
-        by smtp.googlemail.com with ESMTPSA id f8-20020adffcc8000000b003366b500047sm4054069wrs.50.2023.12.22.03.17.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Dec 2023 03:17:26 -0800 (PST)
-From: Jerome Brunet <jbrunet@baylibre.com>
-To: Thierry Reding <thierry.reding@gmail.com>,
-	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>
-Cc: Jerome Brunet <jbrunet@baylibre.com>,
-	Kevin Hilman <khilman@baylibre.com>,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-amlogic@lists.infradead.org,
-	linux-pwm@vger.kernel.org,
-	JunYi Zhao <junyi.zhao@amlogic.com>
-Subject: [PATCH v4 6/6] pwm: meson: add generic compatible for meson8 to sm1
-Date: Fri, 22 Dec 2023 12:16:54 +0100
-Message-ID: <20231222111658.832167-7-jbrunet@baylibre.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231222111658.832167-1-jbrunet@baylibre.com>
-References: <20231222111658.832167-1-jbrunet@baylibre.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D51217745;
+	Fri, 22 Dec 2023 11:19:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
+Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
+	by ex01.ufhost.com (Postfix) with ESMTP id 2B40024E2E2;
+	Fri, 22 Dec 2023 19:18:50 +0800 (CST)
+Received: from EXMBX171.cuchost.com (172.16.6.91) by EXMBX166.cuchost.com
+ (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Fri, 22 Dec
+ 2023 19:18:49 +0800
+Received: from [192.168.125.85] (113.72.145.47) by EXMBX171.cuchost.com
+ (172.16.6.91) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Fri, 22 Dec
+ 2023 19:18:48 +0800
+Message-ID: <025408dd-cc00-4744-8a41-cbd18209ed8b@starfivetech.com>
+Date: Fri, 22 Dec 2023 19:18:48 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v13 15/21] PCI: microchip: Add event irqchip field to host
+ port and add PLDA irqchip
+Content-Language: en-US
+To: Lorenzo Pieralisi <lpieralisi@kernel.org>
+CC: Conor Dooley <conor@kernel.org>, =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?=
+	<kw@linux.com>, Rob Herring <robh+dt@kernel.org>, Bjorn Helgaas
+	<bhelgaas@google.com>, Daire McNamara <daire.mcnamara@microchip.com>, "Emil
+ Renner Berthing" <emil.renner.berthing@canonical.com>, Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>, <devicetree@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-riscv@lists.infradead.org>,
+	<linux-pci@vger.kernel.org>, Paul Walmsley <paul.walmsley@sifive.com>,
+	"Palmer Dabbelt" <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+	"Philipp Zabel" <p.zabel@pengutronix.de>, Mason Huo
+	<mason.huo@starfivetech.com>, Leyfoon Tan <leyfoon.tan@starfivetech.com>,
+	Kevin Xie <kevin.xie@starfivetech.com>
+References: <20231214072839.2367-1-minda.chen@starfivetech.com>
+ <20231214072839.2367-16-minda.chen@starfivetech.com>
+ <8c417157-8884-4e91-8912-0344e71f82c2@starfivetech.com>
+ <ZYRaqYTcxWJGwWG8@lpieralisi>
+From: Minda Chen <minda.chen@starfivetech.com>
+In-Reply-To: <ZYRaqYTcxWJGwWG8@lpieralisi>
+Content-Type: text/plain; charset="UTF-8"
+X-ClientProxiedBy: EXCAS063.cuchost.com (172.16.6.23) To EXMBX171.cuchost.com
+ (172.16.6.91)
+X-YovoleRuleAgent: yovoleflag
+Content-Transfer-Encoding: quoted-printable
 
-Introduce a new compatible support in the Amlogic PWM driver.
 
-The PWM HW is actually the same for all SoCs supported so far. A specific
-compatible is needed only because the clock sources of the PWMs are
-hard-coded in the driver.
 
-It is better to have the clock source described in DT but this changes the
-bindings so a new compatible must be introduced.
+On 2023/12/21 23:32, Lorenzo Pieralisi wrote:
+> On Thu, Dec 21, 2023 at 06:56:22PM +0800, Minda Chen wrote:
+>>=20
+>>=20
+>> On 2023/12/14 15:28, Minda Chen wrote:
+>> > PolarFire PCIE event IRQs includes PLDA local interrupts and PolarFi=
+re
+>> > their own IRQs. PolarFire PCIe event irq_chip ops using an event_des=
+c to
+>> > unify different IRQ register addresses. On PLDA sides, PLDA irqchip =
+codes
+>> > only require to set PLDA local interrupt register. So the PLDA irqch=
+ip ops
+>> > codes can not be extracted from PolarFire codes.
+>> >=20
+>> > To support PLDA its own event IRQ process, implements PLDA irqchip o=
+ps and
+>> > add event irqchip field to struct pcie_plda_rp.
+>> >=20
+>> > Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
+>> > ---
+>> >  .../pci/controller/plda/pcie-microchip-host.c | 65 ++++++++++++++++=
+++-
+>> >  drivers/pci/controller/plda/pcie-plda.h       |  3 +
+>> >  2 files changed, 67 insertions(+), 1 deletion(-)
+>> >=20
+>> Hi Conor
+>>    Could you take time to review this patch?  For I using event irq ch=
+ip instead of event ops and the whole patch have been changed.  I think i=
+t's better=20
+>>    And I added the implementation of PLDA event irqchip  and make it e=
+asier to claim the necessity of the modification.
+>>    If you approve this, I will add back the review tag. Thanks
+>>=20
+>> Hi Lorenzo
+>>    Have you reviewed this patch=EF=BC=9F Does the commit message and t=
+he codes are can be approved =EF=BC=9FThanks
+>>=20
+>=20
+> Please wrap the lines at 75 columns in length.
+>=20
+OK
+> I have not reviewed but I am still struggling to understand the
+> commit log, I apologise, I can try to review the series and figure
+> out what the patch is doing but I would appreciate if commits logs
+> could be made easier to parse.
+>=20
+> Thanks,
+> Lorenzo
+>=20
 
-When all supported platform have migrated to the new compatible, support
-for the legacy ones may be removed from the driver.
+The commit message it is not good.
 
-The addition of this new compatible makes the old ones obsolete, as
-described in the DT documentation.
+I draw a graph about the PCIe global event interrupt domain
+(related to patch 10- 16).
+Actually all these interrupts patches are for extracting the common=20
+PLDA codes to pcie-plda-host.c and do not change microchip's codes logic.
+ =20
+            +----------------------------------------------------------+
+            |    microchip  Global event interrupt domain              |
+            +-----------------------------------+-----------+----------+
+            |                                   | microchip | PLDA     |
+            |                                   | event num |(StarFive)|
+            |                                   |           |event num |
+            +-----------------------------------+-----------+----------+
+            |                                   | 0         |          |
+            |                                   |           |          |
+(mc pcie    |microchip platform event interrupt |           |          |
+int line)   |                                   |           |          |
+------------|                                   |           |          |
+            |                                   |10         |          |
+            +-----------------------------------+-----------+----------+
+            | PLDA host DMA interrupt           |11         |          |
+            | (int number is not fixed, defined |           |          |
+            |  by vendor)                       |14         |          |
+         +--+-----------------------------------+---------- +----------+-=
++
+         |  |  PLDA event interrupt             |15         |0         | =
+|
+         |  |  (int number is fixed)            |           |          | =
+|
+---------|--|                                   |           |          | =
+|
+(Starfive|  |                                   |           |          | =
+|
+pcie int |  |   +------------------+            |           |          | =
+|
+line)    |  |   |INTx event domain |            |           |          | =
+|
+         |  |   +------------------+            |           |          | =
+|
+         |  |                                   |           |          | =
+|
+         |  |   +------------------+            |           |          | =
+|
+         |  |   |MSI event domain  |            |           |          | =
+|
+         |  |   +------------------+            |           |          | =
+|
+         |  |                                   |27         |12        | =
+|
+         |  +---------------------------------+-+-----------+----------+ =
+|
+         | extract PLDA event part to common PLDA file.                  =
+|
+         +---------------------------------------------------------------=
++
 
-Adding a callback to setup the clock will also make it easier to add
-support for the new PWM HW found in a1, s4, c3 and t7 SoC families.
 
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
----
- drivers/pwm/pwm-meson.c | 240 ++++++++++++++++++++++++----------------
- 1 file changed, 143 insertions(+), 97 deletions(-)
-
-diff --git a/drivers/pwm/pwm-meson.c b/drivers/pwm/pwm-meson.c
-index fb113bc8da29..9c0a8a6e4f48 100644
---- a/drivers/pwm/pwm-meson.c
-+++ b/drivers/pwm/pwm-meson.c
-@@ -95,6 +95,7 @@ struct meson_pwm_channel {
- 
- struct meson_pwm_data {
- 	const char * const *parent_names;
-+	int (*channels_init)(struct device *dev);
- };
- 
- struct meson_pwm {
-@@ -333,108 +334,14 @@ static const struct pwm_ops meson_pwm_ops = {
- 	.get_state = meson_pwm_get_state,
- };
- 
--static const char * const pwm_meson8b_parent_names[] = {
--	"xtal", NULL, "fclk_div4", "fclk_div3"
--};
--
--static const struct meson_pwm_data pwm_meson8b_data = {
--	.parent_names = pwm_meson8b_parent_names,
--};
--
--/*
-- * Only the 2 first inputs of the GXBB AO PWMs are valid
-- * The last 2 are grounded
-- */
--static const char * const pwm_gxbb_ao_parent_names[] = {
--	"xtal", "clk81", NULL, NULL,
--};
--
--static const struct meson_pwm_data pwm_gxbb_ao_data = {
--	.parent_names = pwm_gxbb_ao_parent_names,
--};
--
--static const char * const pwm_axg_ee_parent_names[] = {
--	"xtal", "fclk_div5", "fclk_div4", "fclk_div3"
--};
--
--static const struct meson_pwm_data pwm_axg_ee_data = {
--	.parent_names = pwm_axg_ee_parent_names,
--};
--
--static const char * const pwm_axg_ao_parent_names[] = {
--	"xtal", "axg_ao_clk81", "fclk_div4", "fclk_div5"
--};
--
--static const struct meson_pwm_data pwm_axg_ao_data = {
--	.parent_names = pwm_axg_ao_parent_names,
--};
--
--static const char * const pwm_g12a_ao_ab_parent_names[] = {
--	"xtal", "g12a_ao_clk81", "fclk_div4", "fclk_div5"
--};
--
--static const struct meson_pwm_data pwm_g12a_ao_ab_data = {
--	.parent_names = pwm_g12a_ao_ab_parent_names,
--};
--
--static const char * const pwm_g12a_ao_cd_parent_names[] = {
--	"xtal", "g12a_ao_clk81", NULL, NULL,
--};
--
--static const struct meson_pwm_data pwm_g12a_ao_cd_data = {
--	.parent_names = pwm_g12a_ao_cd_parent_names,
--};
--
--static const struct of_device_id meson_pwm_matches[] = {
--	{
--		.compatible = "amlogic,meson8b-pwm",
--		.data = &pwm_meson8b_data
--	},
--	{
--		.compatible = "amlogic,meson-gxbb-pwm",
--		.data = &pwm_meson8b_data
--	},
--	{
--		.compatible = "amlogic,meson-gxbb-ao-pwm",
--		.data = &pwm_gxbb_ao_data
--	},
--	{
--		.compatible = "amlogic,meson-axg-ee-pwm",
--		.data = &pwm_axg_ee_data
--	},
--	{
--		.compatible = "amlogic,meson-axg-ao-pwm",
--		.data = &pwm_axg_ao_data
--	},
--	{
--		.compatible = "amlogic,meson-g12a-ee-pwm",
--		.data = &pwm_meson8b_data
--	},
--	{
--		.compatible = "amlogic,meson-g12a-ao-pwm-ab",
--		.data = &pwm_g12a_ao_ab_data
--	},
--	{
--		.compatible = "amlogic,meson-g12a-ao-pwm-cd",
--		.data = &pwm_g12a_ao_cd_data
--	},
--	{},
--};
--MODULE_DEVICE_TABLE(of, meson_pwm_matches);
--
--static int meson_pwm_init_channels(struct device *dev)
-+static int meson_pwm_init_clocks_legacy(struct device *dev,
-+					struct clk_parent_data *mux_parent_data)
- {
--	struct clk_parent_data mux_parent_data[MESON_NUM_MUX_PARENTS] = {};
- 	struct meson_pwm *meson = dev_get_drvdata(dev);
- 	unsigned int i;
- 	char name[255];
- 	int err;
- 
--	for (i = 0; i < MESON_NUM_MUX_PARENTS; i++) {
--		mux_parent_data[i].index = -1;
--		mux_parent_data[i].name = meson->data->parent_names[i];
--	}
--
- 	for (i = 0; i < MESON_NUM_PWMS; i++) {
- 		struct meson_pwm_channel *channel = &meson->channels[i];
- 		struct clk_parent_data div_parent = {}, gate_parent = {};
-@@ -527,6 +434,145 @@ static int meson_pwm_init_channels(struct device *dev)
- 	return 0;
- }
- 
-+static int meson_pwm_init_channels_legacy(struct device *dev)
-+{
-+	struct clk_parent_data mux_parent_data[MESON_NUM_MUX_PARENTS] = {};
-+	struct meson_pwm *meson = dev_get_drvdata(dev);
-+	int i;
-+
-+	dev_warn_once(dev, "using obsolete compatible, please consider updating dt\n");
-+
-+	for (i = 0; i < MESON_NUM_MUX_PARENTS; i++) {
-+		mux_parent_data[i].index = -1;
-+		mux_parent_data[i].name = meson->data->parent_names[i];
-+	}
-+
-+	return meson_pwm_init_clocks_legacy(dev, mux_parent_data);
-+}
-+
-+static int meson_pwm_init_channels_meson8b_v2(struct device *dev)
-+{
-+	struct clk_parent_data mux_parent_data[MESON_NUM_MUX_PARENTS] = {};
-+	int i;
-+
-+	/*
-+	 * NOTE: Instead of relying on the hard coded names in the driver
-+	 * as the legacy version, this relies on DT to provide the list of
-+	 * clocks.
-+	 * For once, using input numbers actually makes more sense than names.
-+	 * Also DT requires clock-names to be explicitly ordered, so there is
-+	 * no point bothering with clock names in this case.
-+	 */
-+	for (i = 0; i < MESON_NUM_MUX_PARENTS; i++)
-+		mux_parent_data[i].index = i;
-+
-+	return meson_pwm_init_clocks_legacy(dev, mux_parent_data);
-+}
-+
-+static const char * const pwm_meson8b_parent_names[] = {
-+	"xtal", NULL, "fclk_div4", "fclk_div3"
-+};
-+
-+static const struct meson_pwm_data pwm_meson8b_data = {
-+	.parent_names = pwm_meson8b_parent_names,
-+	.channels_init = meson_pwm_init_channels_legacy,
-+};
-+
-+/*
-+ * Only the 2 first inputs of the GXBB AO PWMs are valid
-+ * The last 2 are grounded
-+ */
-+static const char * const pwm_gxbb_ao_parent_names[] = {
-+	"xtal", "clk81", NULL, NULL,
-+};
-+
-+static const struct meson_pwm_data pwm_gxbb_ao_data = {
-+	.parent_names = pwm_gxbb_ao_parent_names,
-+	.channels_init = meson_pwm_init_channels_legacy,
-+};
-+
-+static const char * const pwm_axg_ee_parent_names[] = {
-+	"xtal", "fclk_div5", "fclk_div4", "fclk_div3"
-+};
-+
-+static const struct meson_pwm_data pwm_axg_ee_data = {
-+	.parent_names = pwm_axg_ee_parent_names,
-+	.channels_init = meson_pwm_init_channels_legacy,
-+};
-+
-+static const char * const pwm_axg_ao_parent_names[] = {
-+	"xtal", "axg_ao_clk81", "fclk_div4", "fclk_div5"
-+};
-+
-+static const struct meson_pwm_data pwm_axg_ao_data = {
-+	.parent_names = pwm_axg_ao_parent_names,
-+	.channels_init = meson_pwm_init_channels_legacy,
-+};
-+
-+static const char * const pwm_g12a_ao_ab_parent_names[] = {
-+	"xtal", "g12a_ao_clk81", "fclk_div4", "fclk_div5"
-+};
-+
-+static const struct meson_pwm_data pwm_g12a_ao_ab_data = {
-+	.parent_names = pwm_g12a_ao_ab_parent_names,
-+	.channels_init = meson_pwm_init_channels_legacy,
-+};
-+
-+static const char * const pwm_g12a_ao_cd_parent_names[] = {
-+	"xtal", "g12a_ao_clk81", NULL, NULL,
-+};
-+
-+static const struct meson_pwm_data pwm_g12a_ao_cd_data = {
-+	.parent_names = pwm_g12a_ao_cd_parent_names,
-+	.channels_init = meson_pwm_init_channels_legacy,
-+};
-+
-+static const struct meson_pwm_data pwm_meson8_v2_data = {
-+	.channels_init = meson_pwm_init_channels_meson8b_v2,
-+};
-+
-+static const struct of_device_id meson_pwm_matches[] = {
-+	{
-+		.compatible = "amlogic,meson8-pwm-v2",
-+		.data = &pwm_meson8_v2_data
-+	},
-+	/* The following compatibles are obsolete */
-+	{
-+		.compatible = "amlogic,meson8b-pwm",
-+		.data = &pwm_meson8b_data
-+	},
-+	{
-+		.compatible = "amlogic,meson-gxbb-pwm",
-+		.data = &pwm_meson8b_data
-+	},
-+	{
-+		.compatible = "amlogic,meson-gxbb-ao-pwm",
-+		.data = &pwm_gxbb_ao_data
-+	},
-+	{
-+		.compatible = "amlogic,meson-axg-ee-pwm",
-+		.data = &pwm_axg_ee_data
-+	},
-+	{
-+		.compatible = "amlogic,meson-axg-ao-pwm",
-+		.data = &pwm_axg_ao_data
-+	},
-+	{
-+		.compatible = "amlogic,meson-g12a-ee-pwm",
-+		.data = &pwm_meson8b_data
-+	},
-+	{
-+		.compatible = "amlogic,meson-g12a-ao-pwm-ab",
-+		.data = &pwm_g12a_ao_ab_data
-+	},
-+	{
-+		.compatible = "amlogic,meson-g12a-ao-pwm-cd",
-+		.data = &pwm_g12a_ao_cd_data
-+	},
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, meson_pwm_matches);
-+
- static int meson_pwm_probe(struct platform_device *pdev)
- {
- 	struct meson_pwm *meson;
-@@ -554,7 +600,7 @@ static int meson_pwm_probe(struct platform_device *pdev)
- 
- 	meson->data = of_device_get_match_data(&pdev->dev);
- 
--	err = meson_pwm_init_channels(&pdev->dev);
-+	err = meson->data->channels_init(&pdev->dev);
- 	if (err < 0)
- 		return err;
- 
--- 
-2.42.0
-
+>> > diff --git a/drivers/pci/controller/plda/pcie-microchip-host.c b/dri=
+vers/pci/controller/plda/pcie-microchip-host.c
+>> > index fd0d92c3d03f..ff40c1622173 100644
+>> > --- a/drivers/pci/controller/plda/pcie-microchip-host.c
+>> > +++ b/drivers/pci/controller/plda/pcie-microchip-host.c
+>> > @@ -771,6 +771,63 @@ static struct irq_chip mc_event_irq_chip =3D {
+>> >  	.irq_unmask =3D mc_unmask_event_irq,
+>> >  };
+>> > > +static u32 plda_hwirq_to_mask(int hwirq)
+>> > +{
+>> > +	u32 mask;
+>> > +
+>> > +	if (hwirq < EVENT_PM_MSI_INT_INTX)
+>> > +		mask =3D BIT(hwirq + A_ATR_EVT_POST_ERR_SHIFT);
+>> > +	else if (hwirq =3D=3D EVENT_PM_MSI_INT_INTX)
+>> > +		mask =3D PM_MSI_INT_INTX_MASK;
+>> > +	else
+>> > +		mask =3D BIT(hwirq + PM_MSI_TO_MASK_OFFSET);
+>> > +
+>> > +	return mask;
+>> > +}
+>> > +
+>> > +static void plda_ack_event_irq(struct irq_data *data)
+>> > +{
+>> > +	struct plda_pcie_rp *port =3D irq_data_get_irq_chip_data(data);
+>> > +
+>> > +	writel_relaxed(plda_hwirq_to_mask(data->hwirq),
+>> > +		       port->bridge_addr + ISTATUS_LOCAL);
+>> > +}
+>> > +
+>> > +static void plda_mask_event_irq(struct irq_data *data)
+>> > +{
+>> > +	struct plda_pcie_rp *port =3D irq_data_get_irq_chip_data(data);
+>> > +	u32 mask, val;
+>> > +
+>> > +	mask =3D plda_hwirq_to_mask(data->hwirq);
+>> > +
+>> > +	raw_spin_lock(&port->lock);
+>> > +	val =3D readl_relaxed(port->bridge_addr + IMASK_LOCAL);
+>> > +	val &=3D ~mask;
+>> > +	writel_relaxed(val, port->bridge_addr + IMASK_LOCAL);
+>> > +	raw_spin_unlock(&port->lock);
+>> > +}
+>> > +
+>> > +static void plda_unmask_event_irq(struct irq_data *data)
+>> > +{
+>> > +	struct plda_pcie_rp *port =3D irq_data_get_irq_chip_data(data);
+>> > +	u32 mask, val;
+>> > +
+>> > +	mask =3D plda_hwirq_to_mask(data->hwirq);
+>> > +
+>> > +	raw_spin_lock(&port->lock);
+>> > +	val =3D readl_relaxed(port->bridge_addr + IMASK_LOCAL);
+>> > +	val |=3D mask;
+>> > +	writel_relaxed(val, port->bridge_addr + IMASK_LOCAL);
+>> > +	raw_spin_unlock(&port->lock);
+>> > +}
+>> > +
+>> > +static struct irq_chip plda_event_irq_chip =3D {
+>> > +	.name =3D "PLDA PCIe EVENT",
+>> > +	.irq_ack =3D plda_ack_event_irq,
+>> > +	.irq_mask =3D plda_mask_event_irq,
+>> > +	.irq_unmask =3D plda_unmask_event_irq,
+>> > +};
+>> > +
+>> >  static const struct plda_event_ops plda_event_ops =3D {
+>> >  	.get_events =3D plda_get_events,
+>> >  };
+>> > @@ -778,7 +835,9 @@ static const struct plda_event_ops plda_event_op=
+s =3D {
+>> >  static int plda_pcie_event_map(struct irq_domain *domain, unsigned =
+int irq,
+>> >  			       irq_hw_number_t hwirq)
+>> >  {
+>> > -	irq_set_chip_and_handler(irq, &mc_event_irq_chip, handle_level_irq=
+);
+>> > +	struct plda_pcie_rp *port =3D (void *)domain->host_data;
+>> > +
+>> > +	irq_set_chip_and_handler(irq, port->event_irq_chip, handle_level_i=
+rq);
+>> >  	irq_set_chip_data(irq, domain->host_data);
+>> > =20
+>> >  	return 0;
+>> > @@ -963,6 +1022,9 @@ static int plda_init_interrupts(struct platform=
+_device *pdev,
+>> >  	if (!port->event_ops)
+>> >  		port->event_ops =3D &plda_event_ops;
+>> > =20
+>> > +	if (!port->event_irq_chip)
+>> > +		port->event_irq_chip =3D &plda_event_irq_chip;
+>> > +
+>> >  	ret =3D plda_pcie_init_irq_domains(port);
+>> >  	if (ret) {
+>> >  		dev_err(dev, "failed creating IRQ domains\n");
+>> > @@ -1040,6 +1102,7 @@ static int mc_platform_init(struct pci_config_=
+window *cfg)
+>> >  		return ret;
+>> > =20
+>> >  	port->plda.event_ops =3D &mc_event_ops;
+>> > +	port->plda.event_irq_chip =3D &mc_event_irq_chip;
+>> > =20
+>> >  	/* Address translation is up; safe to enable interrupts */
+>> >  	ret =3D plda_init_interrupts(pdev, &port->plda, &mc_event);
+>> > diff --git a/drivers/pci/controller/plda/pcie-plda.h b/drivers/pci/c=
+ontroller/plda/pcie-plda.h
+>> > index dd8bc2750bfc..24ac50c458dc 100644
+>> > --- a/drivers/pci/controller/plda/pcie-plda.h
+>> > +++ b/drivers/pci/controller/plda/pcie-plda.h
+>> > @@ -128,6 +128,8 @@
+>> >   * DMA end : reserved for vendor implement
+>> >   */
+>> > =20
+>> > +#define PM_MSI_TO_MASK_OFFSET			19
+>> > +
+>> >  struct plda_pcie_rp;
+>> > =20
+>> >  struct plda_event_ops {
+>> > @@ -150,6 +152,7 @@ struct plda_pcie_rp {
+>> >  	raw_spinlock_t lock;
+>> >  	struct plda_msi msi;
+>> >  	const struct plda_event_ops *event_ops;
+>> > +	const struct irq_chip *event_irq_chip;
+>> >  	void __iomem *bridge_addr;
+>> >  	int num_events;
+>> >  };
 
