@@ -1,134 +1,154 @@
-Return-Path: <linux-kernel+bounces-9358-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9360-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D7C881C490
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 06:09:10 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E0C881C495
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 06:10:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2A4B31F24C3E
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 05:09:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 93201B234FA
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 05:09:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA1AF8C14;
-	Fri, 22 Dec 2023 05:09:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECADDD2E7;
+	Fri, 22 Dec 2023 05:09:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="F6DfyCUL"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="DXGhLUED"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C69406FC2
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 05:09:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=qv/4WGiqI5RbZ8+yGA8HWT/rnQNhck+h6ELpLX3MmQY=; b=F6DfyCULg5XHnTy+4wuTpM9wxk
-	Hs3AwZ8tRZmisefjBm9ibPINppADr01EN3dIf8uRAFUuP4DBjeA+7ynMnzxqeacrR2tX8v4s5jo9e
-	vb6dERMHAZ2x97TqbnpuX2IhTomk+qv5m4e7i3heCEwRgv+2pSxR9aHM3juS1LqyCSjzvWmsGD5u4
-	3SGUcjunrW73kUvkJ12ONNDmLxPSK2HjB+Olh5PDI4kEXwT5IaNRsu7lesJlrdCwQQcgWdyq1yIdl
-	WfSgdNhghRnmBAQ8Sn8CuEU0feM/A4x6qQPU1ZzIHI6t6rHr3OgN3Ac5//7p/Y5jWWjGqn2I/es/n
-	+YrrZrkg==;
-Received: from [50.53.46.231] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1rGXmO-004wFX-1m;
-	Fri, 22 Dec 2023 05:09:00 +0000
-Message-ID: <536a5850-34af-4a7d-b65d-82147895ef04@infradead.org>
-Date: Thu, 21 Dec 2023 21:08:59 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A99BACA6D
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 05:09:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1703221773;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=OqfvVjgk23Q9pEcYNDkISi7wtoFhc5tsFEz6pJegrco=;
+	b=DXGhLUEDgol/6nPGjLPGw9Ls6BE1FGFPUpaYDWVH3iEGv/KVonV4nDybWo5PQJH9T86ctQ
+	dLMKDzAgtomioTpC7SdB/BXqsgXvplQAzvWRyuojzjJ7YEq9Kr61cjrgME1Edq2f5kKMyv
+	b7dKwLkyqecUQNWkwNxLKi21RB9XMuM=
+Received: from mail-oo1-f69.google.com (mail-oo1-f69.google.com
+ [209.85.161.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-215-eLf-gSf4PsaT30iBgGzEkw-1; Fri, 22 Dec 2023 00:09:30 -0500
+X-MC-Unique: eLf-gSf4PsaT30iBgGzEkw-1
+Received: by mail-oo1-f69.google.com with SMTP id 006d021491bc7-5918dd417a3so1575498eaf.3
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 21:09:30 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703221770; x=1703826570;
+        h=content-transfer-encoding:content-disposition:mime-version
+         :references:in-reply-to:message-id:date:subject:cc:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=OqfvVjgk23Q9pEcYNDkISi7wtoFhc5tsFEz6pJegrco=;
+        b=sNLPtimj+iH4g5Ht5G5FgR6w9SvdA96+5ALZ/aHQbLJSsdmR9gOYvHZ6oP1f0J1Ua+
+         XokEIhnAcYPhTnyj7n1xou2kDHZkEgGemCkVYQTdFjeYhv1aXsG5IGzFD4LtaBrJd4oM
+         nQz+kOafcfyuwKS8KrZxBVX092WrwT0NW/TcLwNokkxEJj5MfBcMz2l/dsskL88hoqaD
+         OnJKr/S9ysATBpE83SLXCmDswFVinuW7mF1fUd5XDH0ffCS1qVONMw/so66YUc/qa7eX
+         ON74S+4UTgTrD/kwCoDJtuoEwhtz0qDd7Zpu9IpXcuYXc8eE9vzKEm4XBv69CLUWtL+r
+         FPGw==
+X-Gm-Message-State: AOJu0YyHRiB4HgBh1Haa9lUI5QQAfEXeUPL9nFtgixTFIYqdYWchcZ6f
+	V6u4BNZ/NxRWNSCWaZgQZxMbHnqcS1rVltz3rjwZ0cBDP1mGhk70bpE7qrC99YjAaRqn21MhBZF
+	x6zCvzA0eletUMV4hXwZSsIcSRrAGj4zh
+X-Received: by 2002:a05:6870:3308:b0:203:6d48:cf9f with SMTP id x8-20020a056870330800b002036d48cf9fmr837930oae.79.1703221769932;
+        Thu, 21 Dec 2023 21:09:29 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFnhzRnwfMxESlKn2GjZrdsC2Tihmw9pKRA1Stv6KvcjY2v+RtC1tb/GabrthD4hDP+hp2Clw==
+X-Received: by 2002:a05:6870:3308:b0:203:6d48:cf9f with SMTP id x8-20020a056870330800b002036d48cf9fmr837917oae.79.1703221769679;
+        Thu, 21 Dec 2023 21:09:29 -0800 (PST)
+Received: from localhost.localdomain ([2804:1b3:a802:7496:88a7:1b1a:a837:bebf])
+        by smtp.gmail.com with ESMTPSA id e15-20020aa7824f000000b006d9879ba6besm374346pfn.170.2023.12.21.21.09.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Dec 2023 21:09:29 -0800 (PST)
+From: Leonardo Bras <leobras@redhat.com>
+To: guoren@kernel.org
+Cc: Leonardo Bras <leobras@redhat.com>,
+	linux-kernel@vger.kernel.org,
+	paul.walmsley@sifive.com,
+	palmer@dabbelt.com,
+	alexghiti@rivosinc.com,
+	charlie@rivosinc.com,
+	xiao.w.wang@intel.com,
+	david@redhat.com,
+	panqinglin2020@iscas.ac.cn,
+	rick.p.edgecombe@intel.com,
+	willy@infradead.org,
+	bjorn@rivosinc.com,
+	conor.dooley@microchip.com,
+	cleger@rivosinc.com,
+	linux-riscv@lists.infradead.org,
+	Guo Ren <guoren@linux.alibaba.com>
+Subject: Re: [PATCH V2 4/4] riscv: mm: Optimize TASK_SIZE definition
+Date: Fri, 22 Dec 2023 02:09:05 -0300
+Message-ID: <ZYUZ8QUJxCL93Fgv@LeoBras>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20231221154702.2267684-5-guoren@kernel.org>
+References: <20231221154702.2267684-1-guoren@kernel.org> <20231221154702.2267684-5-guoren@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm/amd/display: avoid stringop-overflow warnings for
- dp_decide_lane_settings()
-Content-Language: en-US
-To: Arnd Bergmann <arnd@kernel.org>, Harry Wentland <harry.wentland@amd.com>,
- Leo Li <sunpeng.li@amd.com>, Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
-Cc: Arnd Bergmann <arnd@arndb.de>, Alex Deucher <alexander.deucher@amd.com>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- "Pan, Xinhui" <Xinhui.Pan@amd.com>, David Airlie <airlied@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>, Wenjing Liu <wenjing.liu@amd.com>,
- Qingqing Zhuo <qingqing.zhuo@amd.com>, George Shen <george.shen@amd.com>,
- Jun Lei <Jun.Lei@amd.com>, Michael Mityushkin <michael.mityushkin@amd.com>,
- Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>,
- Alan Liu <haoping.liu@amd.com>, Michael Strauss <michael.strauss@amd.com>,
- amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org
-References: <20231122221421.2944301-1-arnd@kernel.org>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20231122221421.2944301-1-arnd@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
-
-
-On 11/22/23 14:13, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+On Thu, Dec 21, 2023 at 10:47:01AM -0500, guoren@kernel.org wrote:
+> From: Guo Ren <guoren@linux.alibaba.com>
 > 
-> gcc prints a warning about a possible array overflow for a couple of
-> callers of dp_decide_lane_settings() after commit 1b56c90018f0 ("Makefile:
-> Enable -Wstringop-overflow globally"):
+> Unify the TASK_SIZE definition with VA_BITS for better readability.
+> Add COMPAT mode user address space info in the comment.
 > 
-> drivers/gpu/drm/amd/amdgpu/../display/dc/link/protocols/link_dp_training_fixed_vs_pe_retimer.c: In function 'dp_perform_fixed_vs_pe_training_sequence_legacy':
-> drivers/gpu/drm/amd/amdgpu/../display/dc/link/protocols/link_dp_training_fixed_vs_pe_retimer.c:426:25: error: 'dp_decide_lane_settings' accessing 4 bytes in a region of size 1 [-Werror=stringop-overflow=]
->   426 |                         dp_decide_lane_settings(lt_settings, dpcd_lane_adjust,
->       |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->   427 |                                         lt_settings->hw_lane_settings, lt_settings->dpcd_lane_settings);
->       |                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> drivers/gpu/drm/amd/amdgpu/../display/dc/link/protocols/link_dp_training_fixed_vs_pe_retimer.c:426:25: note: referencing argument 4 of type 'union dpcd_training_lane[4]'
-> 
-> I'm not entirely sure what caused this, but changing the prototype to expect
-> a pointer instead of an array avoids the warnings.
-> 
-> Fixes: 7727e7b60f82 ("drm/amd/display: Improve robustness of FIXED_VS link training at DP1 rates")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-
-
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
-Tested-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
-
-Thanks.
-
+> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+> Signed-off-by: Guo Ren <guoren@kernel.org>
 > ---
->  .../gpu/drm/amd/display/dc/link/protocols/link_dp_training.c    | 2 +-
->  .../gpu/drm/amd/display/dc/link/protocols/link_dp_training.h    | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
+>  arch/riscv/include/asm/pgtable.h | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
 > 
-> diff --git a/drivers/gpu/drm/amd/display/dc/link/protocols/link_dp_training.c b/drivers/gpu/drm/amd/display/dc/link/protocols/link_dp_training.c
-> index 90339c2dfd84..5a0b04518956 100644
-> --- a/drivers/gpu/drm/amd/display/dc/link/protocols/link_dp_training.c
-> +++ b/drivers/gpu/drm/amd/display/dc/link/protocols/link_dp_training.c
-> @@ -807,7 +807,7 @@ void dp_decide_lane_settings(
->  		const struct link_training_settings *lt_settings,
->  		const union lane_adjust ln_adjust[LANE_COUNT_DP_MAX],
->  		struct dc_lane_settings hw_lane_settings[LANE_COUNT_DP_MAX],
-> -		union dpcd_training_lane dpcd_lane_settings[LANE_COUNT_DP_MAX])
-> +		union dpcd_training_lane *dpcd_lane_settings)
->  {
->  	uint32_t lane;
->  
-> diff --git a/drivers/gpu/drm/amd/display/dc/link/protocols/link_dp_training.h b/drivers/gpu/drm/amd/display/dc/link/protocols/link_dp_training.h
-> index 7d027bac8255..851bd17317a0 100644
-> --- a/drivers/gpu/drm/amd/display/dc/link/protocols/link_dp_training.h
-> +++ b/drivers/gpu/drm/amd/display/dc/link/protocols/link_dp_training.h
-> @@ -111,7 +111,7 @@ void dp_decide_lane_settings(
->  	const struct link_training_settings *lt_settings,
->  	const union lane_adjust ln_adjust[LANE_COUNT_DP_MAX],
->  	struct dc_lane_settings hw_lane_settings[LANE_COUNT_DP_MAX],
-> -	union dpcd_training_lane dpcd_lane_settings[LANE_COUNT_DP_MAX]);
-> +	union dpcd_training_lane *dpcd_lane_settings);
->  
->  enum dc_dp_training_pattern decide_cr_training_pattern(
->  		const struct dc_link_settings *link_settings);
+> diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
+> index e415582276ec..d165ddae3b42 100644
+> --- a/arch/riscv/include/asm/pgtable.h
+> +++ b/arch/riscv/include/asm/pgtable.h
+> @@ -866,6 +866,7 @@ static inline pte_t pte_swp_clear_exclusive(pte_t pte)
+>   * Note that PGDIR_SIZE must evenly divide TASK_SIZE.
+>   * Task size is:
+>   * -        0x9fc00000	(~2.5GB) for RV32.
+> + * -        0x80000000	(   2GB) for RV64 compat mode
+>   * -      0x4000000000	( 256GB) for RV64 using SV39 mmu
+>   * -    0x800000000000	( 128TB) for RV64 using SV48 mmu
+>   * - 0x100000000000000	(  64PB) for RV64 using SV57 mmu
+> @@ -877,11 +878,11 @@ static inline pte_t pte_swp_clear_exclusive(pte_t pte)
+>   * Similarly for SV57, bits 63–57 must be equal to bit 56.
+>   */
+>  #ifdef CONFIG_64BIT
+> -#define TASK_SIZE_64	(PGDIR_SIZE * PTRS_PER_PGD / 2)
+> +#define TASK_SIZE_64	(UL(1) << (VA_BITS - 1))
 
--- 
-#Randy
-https://people.kernel.org/tglx/notes-about-netiquette
-https://subspace.kernel.org/etiquette.html
+Checked for l5, l4 and l3, and it seems a correct replacement.
+
+>  
+>  #ifdef CONFIG_COMPAT
+> -#define TASK_SIZE_32	(_AC(0x80000000, UL))
+> -#define TASK_SIZE	(test_thread_flag(TIF_32BIT) ? \
+> +#define TASK_SIZE_32	(UL(1) << (VA_BITS_SV32 - 1))
+
+Oh, much better. Thanks for removing the magic number :)
+
+> +#define TASK_SIZE	(is_compat_task() ? \
+>  			 TASK_SIZE_32 : TASK_SIZE_64)
+>  #else
+>  #define TASK_SIZE	TASK_SIZE_64
+> -- 
+> 2.40.1
+> 
+
+That's much more readable IMO now. Thanks!
+
+FWIW:
+Reviewed-by: Leonardo Bras <leobras@redhat.com>
+
 
