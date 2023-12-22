@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-9961-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9962-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC51881CDED
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 18:45:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7AF2A81CDEF
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 18:45:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 81B991F23920
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 17:45:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1BB1C1F2390D
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 17:45:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20C5A339BC;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A474E33CEA;
 	Fri, 22 Dec 2023 17:42:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kCWtWR6I"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bR1HT6OQ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF23131720;
-	Fri, 22 Dec 2023 17:42:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7658931750;
+	Fri, 22 Dec 2023 17:42:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-3368b9bbeb4so1508576f8f.2;
-        Fri, 22 Dec 2023 09:42:32 -0800 (PST)
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-33666fb9318so1833330f8f.2;
+        Fri, 22 Dec 2023 09:42:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20230601; t=1703266951; x=1703871751; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=W4073SJzbMTg0LalE15NpNk7khJfelMofNbr9L2QfJw=;
-        b=kCWtWR6IFnjNHrZP4QFAiXJ9l4zIfi90Z5RCrIOWIrbJthrlHDDIb+orwxVLug8t9c
-         CsDl/Hkzz2kuX95P0R+h/uaEzuRcLuHe8d9BZEGmZQVvHzM5Y+HySQrcycuvk/2ivNKA
-         4bZyeVAfqMQyqudAfuOl4QsMzqIgo0qo2WLU1Yvm53AIRUJUYeTBSLeJQK4lw4h7XMrn
-         C5sRNVuLEYr1xhb7eoQSgBFBskauoyYC/MxBP5xhQFaIjwGxF+zMaX4g3pVdls37DdfP
-         r7rdD1wGj0PSTFw2J/eiMl++f/a78SIr3fiFqI0hts2nGDEMVZ/FYVNU9SO1q0NOJDen
-         w9Fg==
+        bh=LfMKOfn5qhMsr90aHA0q/zpw4x0Di/ZdGH16UYVoiok=;
+        b=bR1HT6OQCga+s2dH5iI9/3UWB7DUa3iF4Wrx1kk8Vt0VSAyw00e9I/V8m99sdQ5rkO
+         YXpsKkAUh0yTsEHw7RNEDKPhhH8Ef2qHdvzsZII4GRM8SbR6te0K51rTuXduGb5ZhugQ
+         IsW1010ODyYyHKIDXVhZomSDxku4MpY6Q3F1Z9vPq1nFUbq+EwBakhEqvHuW4EHs0zgJ
+         9ZL0Jmh5m4mT7E2HVewSvXovQ15ER89sk63dD6FV6ddn4tL43f6mkG4JQFNq7HX8JJQ0
+         akCDC7AYPtfEsXz/16suYNGdX9gijn2FmPR11GtZox+NiBRXtwDYboDtaVfghUHX/fTh
+         CXhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1703266951; x=1703871751;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=W4073SJzbMTg0LalE15NpNk7khJfelMofNbr9L2QfJw=;
-        b=Sg8q72lfa6UjfYl9iZ3jTcbInIcp4J1sDTZul8cH6ko6vMonleyfuFGIp/9a5TqViB
-         JTUzbPJ9vpJf1lKL5sVGvo1xMOK6jgCUXHeVTgs/G4ogsursRRIekcb2MsvH+t4iMAq6
-         glwPyxqVBDXUa9amdDF2X0cy7J0D5nryklrUVv5sr3KlEHpOtj4+Y+wiOAYlOBSG/1Zb
-         Ez1oE0acGMRFKW0SJVFwsSctkSL8w5XMicji79m+3+G44+Xn5g9ExtsRSzAJNLeJYTQC
-         hgVAhFwfZWS19d3z75PLj8rs7PGMteW7RCSuzmSIYb1kkFAQd8nkQOszFyw6k0SSbdYd
-         4pCg==
-X-Gm-Message-State: AOJu0Ywlr/YPOCfX0STsli3JB86Wo3ChPcQQG4IuxFXHaaMzarcVsOPA
-	2CBAACc37EwZzTmE6eSxNvJ4ZzaOOg==
-X-Google-Smtp-Source: AGHT+IFKE1CB3AU8VJ2Br9gEAWpX4rtGxNpDqQ9zPsAgY7yUcLcKeEvfj88neb+uEsF/9Yhz0hxezQ==
-X-Received: by 2002:adf:e74d:0:b0:336:9067:c656 with SMTP id c13-20020adfe74d000000b003369067c656mr575213wrn.262.1703266950919;
-        Fri, 22 Dec 2023 09:42:30 -0800 (PST)
+        bh=LfMKOfn5qhMsr90aHA0q/zpw4x0Di/ZdGH16UYVoiok=;
+        b=UVDs77r0NoHDwyegvdsuOXP80oynOsZcIeRPLhUFYkO3VLcuEchbx0SIsMg5dNT4eS
+         tMxyjU40tJUR/aLrrBJtB82D9Tg4N5tfRzUzswsn6VhQeeXe8AJR7MFEAGfnHPB4oZS4
+         2f8Ildf3uUqog8m9etGjZ/miVym9Rvzmx/TSrZrTLKaAulvJH6uu71ITKb3ImgNIcvMa
+         4TLwSvGjh8EYdGXmFVH37ibG/SVv5BbJDA9NvtLNQlAyk27CJXlmmsdiJSh2zRNI+PRw
+         g7LuM6gIEleqclYK3s6Twz1UTbC2J1lN2YYmytJbIkcJHhmPhUqmC0+tcoDQ3rThYzSD
+         6olw==
+X-Gm-Message-State: AOJu0Yw76ED49QsL6qa2etOx3no1rZ5biat9dObiBeyGRJP1794vQioG
+	FfgcLD9B0ZpRp6HaPVBD1Q==
+X-Google-Smtp-Source: AGHT+IG3YWjTrYpe1ubpbeRtz8cVdvTTRZfBcpLPWcobSABejxp0JmC9wWRL1LNQLRIzXRY/WodRrQ==
+X-Received: by 2002:a05:6000:235:b0:333:12a3:644a with SMTP id l21-20020a056000023500b0033312a3644amr946812wrz.18.1703266951663;
+        Fri, 22 Dec 2023 09:42:31 -0800 (PST)
 Received: from U4.lan ([2a02:810b:f40:4300:f3ae:2788:7e03:f44])
-        by smtp.gmail.com with ESMTPSA id w10-20020adfec4a000000b00336670abdcasm4777116wrn.40.2023.12.22.09.42.30
+        by smtp.gmail.com with ESMTPSA id w10-20020adfec4a000000b00336670abdcasm4777116wrn.40.2023.12.22.09.42.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Dec 2023 09:42:30 -0800 (PST)
+        Fri, 22 Dec 2023 09:42:31 -0800 (PST)
 From: Alex Bee <knaerzche@gmail.com>
 To: Sandy Huang <hjc@rock-chips.com>,
 	=?UTF-8?q?Heiko=20St=C3=BCbner?= <heiko@sntech.de>,
@@ -73,10 +73,11 @@ Cc: David Airlie <airlied@gmail.com>,
 	linux-arm-kernel@lists.infradead.org,
 	linux-rockchip@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
+	Johan Jonker <jbx6244@gmail.com>,
 	Alex Bee <knaerzche@gmail.com>
-Subject: [PATCH v4 12/29] drm/rockchip: inno_hdmi: Remove tmds rate from structure
-Date: Fri, 22 Dec 2023 18:42:03 +0100
-Message-ID: <20231222174220.55249-13-knaerzche@gmail.com>
+Subject: [PATCH v4 13/29] drm/rockchip: inno_hdmi: Drop HDMI Vendor Infoframe support
+Date: Fri, 22 Dec 2023 18:42:04 +0100
+Message-ID: <20231222174220.55249-14-knaerzche@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231222174220.55249-1-knaerzche@gmail.com>
 References: <20231222174220.55249-1-knaerzche@gmail.com>
@@ -90,75 +91,101 @@ Content-Transfer-Encoding: 8bit
 
 From: Maxime Ripard <mripard@kernel.org>
 
-The tmds_rate field in the inno_hdmi structure is used mostly to
-configure the internal i2c controller divider through a call to the
-inno_hdmi_i2c_init() function.
+The HDMI vendor infoframe is only meant to be sent with 4k60 modes and
+higher, but the controller doesn't support them. Let's drop them from
+the kernel.
 
-We can simply make that rate an argument to that function, which also
-removes a workaround to initialize the divider at probe time when we
-don't have a mode yet.
-
+Suggested-by: Johan Jonker <jbx6244@gmail.com>
 Signed-off-by: Maxime Ripard <mripard@kernel.org>
 Tested-by: Alex Bee <knaerzche@gmail.com>
 Signed-off-by: Alex Bee <knaerzche@gmail.com>
 ---
-changes in v3:
+changes in v2:
  - imported patch
+
+changes in v3:
+ - added my SoB
 
 changes in v4:
  - none
 
- drivers/gpu/drm/rockchip/inno_hdmi.c | 14 +++++---------
- 1 file changed, 5 insertions(+), 9 deletions(-)
+ drivers/gpu/drm/rockchip/inno_hdmi.c | 35 ++++++++--------------------
+ 1 file changed, 10 insertions(+), 25 deletions(-)
 
 diff --git a/drivers/gpu/drm/rockchip/inno_hdmi.c b/drivers/gpu/drm/rockchip/inno_hdmi.c
-index 04344ee1265d..102195837206 100644
+index 102195837206..5c9f1325441f 100644
 --- a/drivers/gpu/drm/rockchip/inno_hdmi.c
 +++ b/drivers/gpu/drm/rockchip/inno_hdmi.c
-@@ -56,8 +56,6 @@ struct inno_hdmi {
- 	struct inno_hdmi_i2c *i2c;
- 	struct i2c_adapter *ddc;
- 
--	unsigned int tmds_rate;
--
- 	struct hdmi_data_info	hdmi_data;
- };
- 
-@@ -134,11 +132,11 @@ static inline void hdmi_modb(struct inno_hdmi *hdmi, u16 offset,
- 	hdmi_writeb(hdmi, offset, temp);
+@@ -206,11 +206,15 @@ static void inno_hdmi_reset(struct inno_hdmi *hdmi)
  }
  
--static void inno_hdmi_i2c_init(struct inno_hdmi *hdmi)
-+static void inno_hdmi_i2c_init(struct inno_hdmi *hdmi, unsigned long long rate)
+ static int inno_hdmi_upload_frame(struct inno_hdmi *hdmi, int setup_rc,
+-				  union hdmi_infoframe *frame, u32 frame_index,
+-				  u32 mask, u32 disable, u32 enable)
++				  union hdmi_infoframe *frame, u32 frame_index)
  {
--	int ddc_bus_freq;
-+	unsigned long long ddc_bus_freq = rate >> 2;
+-	if (mask)
+-		hdmi_modb(hdmi, HDMI_PACKET_SEND_AUTO, mask, disable);
++	struct drm_connector *connector = &hdmi->connector;
++
++	if (frame_index != INFOFRAME_AVI) {
++		drm_err(connector->dev,
++			"Unsupported infoframe type: %u\n", frame_index);
++		return 0;
++	}
  
--	ddc_bus_freq = (hdmi->tmds_rate >> 2) / HDMI_SCL_RATE;
-+	do_div(ddc_bus_freq, HDMI_SCL_RATE);
+ 	hdmi_writeb(hdmi, HDMI_CONTROL_PACKET_BUF_INDEX, frame_index);
  
- 	hdmi_writeb(hdmi, DDC_BUS_FREQ_L, ddc_bus_freq & 0xFF);
- 	hdmi_writeb(hdmi, DDC_BUS_FREQ_H, (ddc_bus_freq >> 8) & 0xFF);
-@@ -421,8 +419,7 @@ static int inno_hdmi_setup(struct inno_hdmi *hdmi,
- 	 * DCLK_LCDC, so we need to init the TMDS rate to mode pixel
- 	 * clock rate, and reconfigure the DDC clock.
- 	 */
--	hdmi->tmds_rate = mode->clock * 1000;
--	inno_hdmi_i2c_init(hdmi);
-+	inno_hdmi_i2c_init(hdmi, mode->clock * 1000);
+@@ -226,28 +230,11 @@ static int inno_hdmi_upload_frame(struct inno_hdmi *hdmi, int setup_rc,
+ 		for (i = 0; i < rc; i++)
+ 			hdmi_writeb(hdmi, HDMI_CONTROL_PACKET_ADDR + i,
+ 				    packed_frame[i]);
+-
+-		if (mask)
+-			hdmi_modb(hdmi, HDMI_PACKET_SEND_AUTO, mask, enable);
+ 	}
  
- 	/* Unmute video and audio output */
- 	hdmi_modb(hdmi, HDMI_AV_MUTE, m_AUDIO_MUTE | m_VIDEO_BLACK,
-@@ -800,8 +797,7 @@ static int inno_hdmi_bind(struct device *dev, struct device *master,
- 	 * PCLK_HDMI, so we need to init the TMDS rate to PCLK rate,
- 	 * and reconfigure the DDC clock.
- 	 */
--	hdmi->tmds_rate = clk_get_rate(hdmi->pclk);
--	inno_hdmi_i2c_init(hdmi);
-+	inno_hdmi_i2c_init(hdmi, clk_get_rate(hdmi->pclk));
+ 	return setup_rc;
+ }
  
- 	ret = inno_hdmi_register(drm, hdmi);
- 	if (ret)
+-static int inno_hdmi_config_video_vsi(struct inno_hdmi *hdmi,
+-				      struct drm_display_mode *mode)
+-{
+-	union hdmi_infoframe frame;
+-	int rc;
+-
+-	rc = drm_hdmi_vendor_infoframe_from_display_mode(&frame.vendor.hdmi,
+-							 &hdmi->connector,
+-							 mode);
+-
+-	return inno_hdmi_upload_frame(hdmi, rc, &frame, INFOFRAME_VSI,
+-		m_PACKET_VSI_EN, v_PACKET_VSI_EN(0), v_PACKET_VSI_EN(1));
+-}
+-
+ static int inno_hdmi_config_video_avi(struct inno_hdmi *hdmi,
+ 				      struct drm_display_mode *mode)
+ {
+@@ -265,7 +252,7 @@ static int inno_hdmi_config_video_avi(struct inno_hdmi *hdmi,
+ 	else
+ 		frame.avi.colorspace = HDMI_COLORSPACE_RGB;
+ 
+-	return inno_hdmi_upload_frame(hdmi, rc, &frame, INFOFRAME_AVI, 0, 0, 0);
++	return inno_hdmi_upload_frame(hdmi, rc, &frame, INFOFRAME_AVI);
+ }
+ 
+ static int inno_hdmi_config_video_csc(struct inno_hdmi *hdmi)
+@@ -408,10 +395,8 @@ static int inno_hdmi_setup(struct inno_hdmi *hdmi,
+ 
+ 	inno_hdmi_config_video_csc(hdmi);
+ 
+-	if (display->is_hdmi) {
++	if (display->is_hdmi)
+ 		inno_hdmi_config_video_avi(hdmi, mode);
+-		inno_hdmi_config_video_vsi(hdmi, mode);
+-	}
+ 
+ 	/*
+ 	 * When IP controller have configured to an accurate video
 -- 
 2.43.0
 
