@@ -1,114 +1,170 @@
-Return-Path: <linux-kernel+bounces-9795-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9796-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F5CD81CB8D
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 15:54:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 826BA81CB8F
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 15:55:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 442F41F23D68
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 14:54:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EE3E61F23E50
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 14:55:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1085F2374C;
-	Fri, 22 Dec 2023 14:54:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42DEC23749;
+	Fri, 22 Dec 2023 14:55:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BmE7+o7x"
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="XDe7Dx5P"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55F4423740;
-	Fri, 22 Dec 2023 14:54:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DDC2BC433C7;
-	Fri, 22 Dec 2023 14:54:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703256882;
-	bh=Tf6r9+dOJakriookGkExO9gdNVREb4CJwWTm93Lq6B8=;
-	h=From:Date:Subject:To:Cc:From;
-	b=BmE7+o7xibvyL1cPsn3sUQEc2K7uvqtKiHB8ZEUmzHqC1V0M3gJGUhBUv9/gUtDAa
-	 OhikQutGcBJikPIH1PWNSh3W0fe8nusKNfELhZPkRhR0SdCH9ctEuUp+BoaJaZ90/b
-	 cUcea556r653aV87getayQiU2dP26arQlVz3xukFLSdbyCnm6gY1oHKlSl7kr3zJv5
-	 EtPpqvTJAYYukwNFSortNLXTXOwbStMINfpR+GFzMpLPtei7rVqiimH0W9RxgHL61h
-	 yTSp/aOiBCEi1nBaU67U5VSg5cVEE3KjOzzwcvPq9xXWuOQaV2v0bV5U6QqOcZOGCt
-	 yWl9+6/K/FTeA==
-From: Mark Brown <broonie@kernel.org>
-Date: Fri, 22 Dec 2023 14:54:37 +0000
-Subject: [PATCH v2] lsm: Add a __counted_by() annotation to lsm_ctx.ctx
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DD2522F11
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 14:55:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-58962bf3f89so327332a12.0
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 06:55:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1703256934; x=1703861734; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=kHQCFGGLNiztDEJ2wrlf/vZG7Mebms+6KQMqUg+YQGU=;
+        b=XDe7Dx5P+/kpAg7lXmxjPsUuai5Mols1mva6/duPa1NssbgqdhRNS0z7IciWSraVgN
+         hpS1FYV+iGOBoGrSamzbfNeScVvfuQ+Ky/5JiuIdKug4wKSN3Z2FwwNDmKeANYlc+CQr
+         KmniHIlfXoMbvBKfCZKYSxy7gcH8gqhUvnI5Z0kb6jxRLJaR5G0xDaBYIXr+nL6xd2cD
+         3VVoexvyAhGQYqTpiUclN3KAKhj2C41oXxQogY8lWEYvLRZLYEhQZFhSZRgnz7LEofXS
+         A4nPq4EEUElUsnE7NOTimDo60zjqjTDDVNd73Q/WaPT2G7syOB7L0EaaZJa9yvyKJaEl
+         CeYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703256934; x=1703861734;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=kHQCFGGLNiztDEJ2wrlf/vZG7Mebms+6KQMqUg+YQGU=;
+        b=JM3fKo3v9FhuqKZaOhWX/1jVCKZ3unKUdbzvsKttIn1HOwK+AQfyPfnA2S34swh119
+         YzGJ76LjsQnV5BzX9XlmZS6qoes79Z95EINPgpMhsFCQWroq6sVZ3i7fQjrRU+G0PiCn
+         kRecuEuJdfsfVQuvEX7rwdZJLdGH5Pd5znPKvP/bGy3hUxtCxO/FtXcrT8LaLFbmx47y
+         nyqltgvdEk1QU+i/PGkdlRledIlqwuUEwJaO30zxZtInw+0ogPHdSSKkXqJiOU+KUjD5
+         gc9wLUjHDGeFl27W3MN7NRxobTX0k03yAu0bVnj1xusdUPTEeuvqGYrho/JfGout3erz
+         zreg==
+X-Gm-Message-State: AOJu0YwTd+qvIeEQcn/g/B0bb9vJH+Ti8oB1r49J7eqza2i1I1f3NQg6
+	2k3y4vx6oZtSyFkIrO9mTjn3EtPOU17z3A==
+X-Google-Smtp-Source: AGHT+IH7UNV2CQYUhtnVKei9ph0mvzFJGhzvL2yJnpBqFgaMPcBfqE1TRyfMYzvN0RP1tDNHcQnQ5g==
+X-Received: by 2002:a05:6a20:c5a0:b0:194:dbd6:9c1e with SMTP id gn32-20020a056a20c5a000b00194dbd69c1emr2139270pzb.2.1703256934236;
+        Fri, 22 Dec 2023 06:55:34 -0800 (PST)
+Received: from [192.168.1.150] ([198.8.77.194])
+        by smtp.gmail.com with ESMTPSA id p23-20020a635b17000000b005c66b54476bsm3326753pgb.63.2023.12.22.06.55.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 22 Dec 2023 06:55:33 -0800 (PST)
+Message-ID: <831312c5-d86f-4d53-8a18-1bd00db61c0d@kernel.dk>
+Date: Fri, 22 Dec 2023 07:55:31 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [syzbot] [mm?] [io-uring?] WARNING in get_pte_pfn
+Content-Language: en-US
+To: syzbot <syzbot+03fd9b3f71641f0ebf2d@syzkaller.appspotmail.com>,
+ akpm@linux-foundation.org, io-uring@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+ syzkaller-bugs@googlegroups.com
+References: <000000000000f9ff00060d14c256@google.com>
+From: Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <000000000000f9ff00060d14c256@google.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231222-lsm-fix-counted-by-v2-1-f1237a095bdc@kernel.org>
-X-B4-Tracking: v=1; b=H4sIACyjhWUC/32NTQ7CIBCFr9LM2jEyRrGuvIfpAmFoiRUaqMSm4
- e5iD2De6nt5Pyskjo4TXJsVImeXXPAVaNeAHpTvGZ2pDHSgoyASOKYXWvdBHd5+ZoOPBW1rzYU
- k01kpqMUpck1so/eu8uDSHOKyfWTxc//OZYFVpDXJUyu1sbcnR8/jPsQeulLKF+dZ4DO1AAAA
-To: Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>, 
- "Serge E. Hallyn" <serge@hallyn.com>, Kees Cook <keescook@chromium.org>, 
- "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc: linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-hardening@vger.kernel.org, Aishwarya TCV <aishwarya.tcv@arm.com>, 
- Mark Brown <broonie@kernel.org>
-X-Mailer: b4 0.13-dev-5c066
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1237; i=broonie@kernel.org;
- h=from:subject:message-id; bh=Tf6r9+dOJakriookGkExO9gdNVREb4CJwWTm93Lq6B8=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBlhaMv/ELUVrM0GuXyutYsNbqAiTiWGM2DJYFEcwQ8
- cfgmv++JATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZYWjLwAKCRAk1otyXVSH0LQZB/
- sEPxe44AsrwfISPQhOJQqpoDU08dBpuIpRT3OXE0oJFqhXeSccZBba0BM3U10GzFS2UK9FLlGjoIbh
- FKz6IXXIKUgZu+z8XyyDQk9Z73+Feex94HtfaQL4qpgAIwELqP6ff0jScbiK6E6swF9JDo28aqjLjh
- v2S/sBBc+OEu8iLFA9V5eT+Qi6I1XfJhYxH8+/ZrdJ6d3CDSjSJ4FvNc9E0L0UQB7neJf8TcjqvnOr
- Cmv/ebG5qqNhnkW46R5Mafbeb+pWTWJg4uRrXH9DlRag5nIAtGanyCy+cocIk9DMx0/MhhFOWJr/3h
- c/VbPTFugX9+OqPEOcoHnwf8rRbqn/
-X-Developer-Key: i=broonie@kernel.org; a=openpgp;
- fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
 
-The ctx in struct lsm_ctx is an array of size ctx_len, tell the compiler
-about this using __counted_by() where supported to improve the ability to
-detect overflow issues.
+On 12/22/23 1:11 AM, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    0e389834672c Merge tag 'for-6.7-rc5-tag' of git://git.kern..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=1454824ee80000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=f21aff374937e60e
+> dashboard link: https://syzkaller.appspot.com/bug?extid=03fd9b3f71641f0ebf2d
+> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13b4ef49e80000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=118314d6e80000
+> 
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/e58cd74e152a/disk-0e389834.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/45d17ccb34bc/vmlinux-0e389834.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/b9b7105d4e08/bzImage-0e389834.xz
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+03fd9b3f71641f0ebf2d@syzkaller.appspotmail.com
+> 
+> ------------[ cut here ]------------
+> WARNING: CPU: 1 PID: 5066 at mm/vmscan.c:3242 get_pte_pfn+0x1b5/0x3f0 mm/vmscan.c:3242
+> Modules linked in:
+> CPU: 1 PID: 5066 Comm: syz-executor668 Not tainted 6.7.0-rc5-syzkaller-00270-g0e389834672c #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
+> RIP: 0010:get_pte_pfn+0x1b5/0x3f0 mm/vmscan.c:3242
+> Code: f3 74 2a e8 6d 78 cb ff 31 ff 48 b8 00 00 00 00 00 00 00 02 48 21 c5 48 89 ee e8 e6 73 cb ff 48 85 ed 74 4e e8 4c 78 cb ff 90 <0f> 0b 90 48 c7 c3 ff ff ff ff e8 3c 78 cb ff 48 b8 00 00 00 00 00
+> RSP: 0018:ffffc900041e6878 EFLAGS: 00010293
+> RAX: 0000000000000000 RBX: 000000000007891d RCX: ffffffff81bbf6e3
+> RDX: ffff88807d813b80 RSI: ffffffff81bbf684 RDI: 0000000000000005
+> RBP: 0000000000000000 R08: 0000000000000005 R09: 0000000000000000
+> R10: 0000000000000200 R11: 0000000000000003 R12: 0000000000000200
+> R13: 1ffff9200083cd0f R14: 0000000000010b21 R15: 0000000020ffc000
+> FS:  0000555555f4d480(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 0000000000000000 CR3: 000000005fbfa000 CR4: 0000000000350ef0
+> Call Trace:
+>  <TASK>
+>  lru_gen_look_around+0x70d/0x11a0 mm/vmscan.c:4001
+>  folio_referenced_one+0x5a2/0xf70 mm/rmap.c:843
+>  rmap_walk_anon+0x225/0x570 mm/rmap.c:2485
+>  rmap_walk mm/rmap.c:2562 [inline]
+>  rmap_walk mm/rmap.c:2557 [inline]
+>  folio_referenced+0x28a/0x4b0 mm/rmap.c:960
+>  folio_check_references mm/vmscan.c:829 [inline]
+>  shrink_folio_list+0x1ace/0x3f00 mm/vmscan.c:1160
+>  evict_folios+0x6e7/0x1b90 mm/vmscan.c:4499
+>  try_to_shrink_lruvec+0x638/0xa10 mm/vmscan.c:4704
+>  lru_gen_shrink_lruvec mm/vmscan.c:4849 [inline]
+>  shrink_lruvec+0x314/0x2990 mm/vmscan.c:5622
+>  shrink_node_memcgs mm/vmscan.c:5842 [inline]
+>  shrink_node+0x811/0x3710 mm/vmscan.c:5877
+>  shrink_zones mm/vmscan.c:6116 [inline]
+>  do_try_to_free_pages+0x36c/0x1940 mm/vmscan.c:6178
+>  try_to_free_mem_cgroup_pages+0x31a/0x770 mm/vmscan.c:6493
+>  try_charge_memcg+0x3d3/0x11f0 mm/memcontrol.c:2742
+>  obj_cgroup_charge_pages mm/memcontrol.c:3255 [inline]
+>  __memcg_kmem_charge_page+0xdd/0x2a0 mm/memcontrol.c:3281
+>  __alloc_pages+0x263/0x2420 mm/page_alloc.c:4585
+>  alloc_pages_mpol+0x258/0x5f0 mm/mempolicy.c:2133
+>  __get_free_pages+0xc/0x40 mm/page_alloc.c:4615
+>  io_mem_alloc+0x33/0x60 io_uring/io_uring.c:2789
+>  io_allocate_scq_urings io_uring/io_uring.c:3842 [inline]
+>  io_uring_create io_uring/io_uring.c:4019 [inline]
+>  io_uring_setup+0x13ed/0x2430 io_uring/io_uring.c:4131
+>  __do_sys_io_uring_setup io_uring/io_uring.c:4158 [inline]
+>  __se_sys_io_uring_setup io_uring/io_uring.c:4152 [inline]
+>  __x64_sys_io_uring_setup+0x98/0x140 io_uring/io_uring.c:4152
+>  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+>  do_syscall_64+0x40/0x110 arch/x86/entry/common.c:83
+>  entry_SYSCALL_64_after_hwframe+0x63/0x6b
+> RIP: 0033:0x7f4b0e4778a9
+> Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 d1 1a 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+> RSP: 002b:00007fff814fe868 EFLAGS: 00000202 ORIG_RAX: 00000000000001a9
+> RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007f4b0e4778a9
+> RDX: 0000000020000700 RSI: 0000000020000640 RDI: 0000000000005a19
+> RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000020000700
+> R10: 00007fff814fe8d0 R11: 0000000000000202 R12: 0000000020000640
+> R13: 0000000000000000 R14: 0000000000005a19 R15: 0000000020000700
+>  </TASK>
 
-Reported-by: Aishwarya TCV <aishwarya.tcv@arm.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
-Changes in v2:
-- Add explicit stddef.h inclusion in case __counted_by() definition
-  isn't otherwise pulled in.
-- Link to v1: https://lore.kernel.org/r/20231221-lsm-fix-counted-by-v1-1-12cc27597cdf@kernel.org
----
- include/uapi/linux/lsm.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Don't think this is io_uring related, test case looks like it's just
+setting up and tearing down big rings.
 
-diff --git a/include/uapi/linux/lsm.h b/include/uapi/linux/lsm.h
-index f0386880a78e..f8aef9ade549 100644
---- a/include/uapi/linux/lsm.h
-+++ b/include/uapi/linux/lsm.h
-@@ -9,6 +9,7 @@
- #ifndef _UAPI_LINUX_LSM_H
- #define _UAPI_LINUX_LSM_H
- 
-+#include <linux/stddef.h>
- #include <linux/types.h>
- #include <linux/unistd.h>
- 
-@@ -36,7 +37,7 @@ struct lsm_ctx {
- 	__u64 flags;
- 	__u64 len;
- 	__u64 ctx_len;
--	__u8 ctx[];
-+	__u8 ctx[] __counted_by(ctx_len);
- };
- 
- /*
-
----
-base-commit: ec4e9d630a64df500641892f4e259e8149594a99
-change-id: 20231221-lsm-fix-counted-by-f9fd827e26aa
-
-Best regards,
 -- 
-Mark Brown <broonie@kernel.org>
+Jens Axboe
 
 
