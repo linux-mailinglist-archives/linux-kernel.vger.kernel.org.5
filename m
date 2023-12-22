@@ -1,56 +1,56 @@
-Return-Path: <linux-kernel+bounces-10039-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10040-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B03881CF06
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 20:54:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B59D181CF09
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 20:54:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AFA381C22E2D
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 19:54:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2BFE6B2252C
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 19:54:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5CF72EB1B;
-	Fri, 22 Dec 2023 19:53:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23B11315B0;
+	Fri, 22 Dec 2023 19:53:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="BEho3prE"
+	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="K8s2RErf"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp-fw-6001.amazon.com (smtp-fw-6001.amazon.com [52.95.48.154])
+Received: from smtp-fw-80008.amazon.com (smtp-fw-80008.amazon.com [99.78.197.219])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FEAC3172B;
-	Fri, 22 Dec 2023 19:53:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CED4B2F863;
+	Fri, 22 Dec 2023 19:53:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1703274788; x=1734810788;
+  t=1703274791; x=1734810791;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=L4TnKEXfb2ccBb1Wze720VBcN3l/JR7BbWfBBtzRgXo=;
-  b=BEho3prE3JTfW5yzDoTISnY4tY4iExcR5l4z7UCH4mGc10+tjmO0WRd9
-   Gxz640uSLl/m2lw4L7wD3c2W0mBYfrPkp7LZ9woxDeKJhcXW4sqDdWXk2
-   Ox8AMfXgJr/C6Tkbnca8D+Q3uKt8CvMYs9QwaI43oy9lfbmHgCvpwgc0D
+  bh=DmWS8dZ9jK84BAKLfSbbK2PJywlEcHQnIlXSuHEMw/A=;
+  b=K8s2RErfW2scf45fAYeOV+IxxmaNjG0uTe5BUp+U4uvZSHw+Nd1WvSip
+   D2aMli14/E6sEfo6cmZrHlR2zUIUEOwS0ealy52zruRro73q0FZtHTXWm
+   7zofPYwg67mPqo06UOYY4//+F79yxNrNmcXOwSPsiuq6uOAES/NYlZop8
    g=;
 X-IronPort-AV: E=Sophos;i="6.04,297,1695686400"; 
-   d="scan'208";a="378271995"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-iad-1e-m6i4x-0aba4706.us-east-1.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-6001.iad6.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Dec 2023 19:53:06 +0000
+   d="scan'208";a="53453679"
+Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-iad-1e-m6i4x-9694bb9e.us-east-1.amazon.com) ([10.25.36.214])
+  by smtp-border-fw-80008.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Dec 2023 19:53:09 +0000
 Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (iad7-ws-svc-p70-lb3-vlan2.iad.amazon.com [10.32.235.34])
-	by email-inbound-relay-iad-1e-m6i4x-0aba4706.us-east-1.amazon.com (Postfix) with ESMTPS id 60A32A3F3F;
-	Fri, 22 Dec 2023 19:52:58 +0000 (UTC)
-Received: from EX19MTAUWC001.ant.amazon.com [10.0.7.35:7922]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.60.146:2525] with esmtp (Farcaster)
- id e9c6b21e-270d-43aa-aac6-432f3a7148e1; Fri, 22 Dec 2023 19:52:57 +0000 (UTC)
-X-Farcaster-Flow-ID: e9c6b21e-270d-43aa-aac6-432f3a7148e1
+	by email-inbound-relay-iad-1e-m6i4x-9694bb9e.us-east-1.amazon.com (Postfix) with ESMTPS id 55927804E1;
+	Fri, 22 Dec 2023 19:53:02 +0000 (UTC)
+Received: from EX19MTAUWB002.ant.amazon.com [10.0.7.35:14717]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.6.30:2525] with esmtp (Farcaster)
+ id a9f26b86-9fc7-4cad-9223-cfbee1a06d30; Fri, 22 Dec 2023 19:53:01 +0000 (UTC)
+X-Farcaster-Flow-ID: a9f26b86-9fc7-4cad-9223-cfbee1a06d30
 Received: from EX19D020UWC004.ant.amazon.com (10.13.138.149) by
- EX19MTAUWC001.ant.amazon.com (10.250.64.174) with Microsoft SMTP Server
+ EX19MTAUWB002.ant.amazon.com (10.250.64.231) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Fri, 22 Dec 2023 19:52:56 +0000
+ 15.2.1118.40; Fri, 22 Dec 2023 19:53:00 +0000
 Received: from dev-dsk-graf-1a-5ce218e4.eu-west-1.amazon.com (10.253.83.51) by
  EX19D020UWC004.ant.amazon.com (10.13.138.149) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Fri, 22 Dec 2023 19:52:52 +0000
+ 15.2.1118.40; Fri, 22 Dec 2023 19:52:56 +0000
 From: Alexander Graf <graf@amazon.com>
 To: <linux-kernel@vger.kernel.org>
 CC: <linux-trace-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
@@ -67,9 +67,9 @@ CC: <linux-trace-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
 	<anthony.yznaga@oracle.com>, Usama Arif <usama.arif@bytedance.com>, David
  Woodhouse <dwmw@amazon.co.uk>, Benjamin Herrenschmidt
 	<benh@kernel.crashing.org>
-Subject: [PATCH v2 12/17] tracing: Add kho serialization of trace buffers
-Date: Fri, 22 Dec 2023 19:51:39 +0000
-Message-ID: <20231222195144.24532-7-graf@amazon.com>
+Subject: [PATCH v2 13/17] tracing: Recover trace buffers from kexec handover
+Date: Fri, 22 Dec 2023 19:51:40 +0000
+Message-ID: <20231222195144.24532-8-graf@amazon.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231222195144.24532-1-graf@amazon.com>
 References: <20231222193607.15474-1-graf@amazon.com>
@@ -85,16 +85,13 @@ X-ClientProxiedBy: EX19D036UWB004.ant.amazon.com (10.13.139.170) To
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 
-When we do a kexec handover, we want to preserve previous ftrace data
-into the new kernel. At the point when we write out the handover data,
-ftrace may still be running and recording new events and we want to
-capture all of those too.
+When kexec handover is in place, we now know the location of all
+previous buffers for ftrace rings. With this patch applied, ftrace
+reassembles any new trace buffer that carries the same name as a
+previous one with the same data pages that the previous buffer had.
 
-To allow the new kernel to revive all trace data up to reboot, we store
-all locations of trace buffers as well as their linked list metadata. We
-can then later reuse the linked list to reconstruct the head pointer.
-
-This patch implements the write-out logic for trace buffers.
+That way, a buffer that we had in place before kexec becomes readable
+after kexec again as soon as it gets initialized with the same name.
 
 Signed-off-by: Alexander Graf <graf@amazon.com>
 
@@ -102,153 +99,359 @@ Signed-off-by: Alexander Graf <graf@amazon.com>
 
 v1 -> v2:
 
-  - Leave the node generation code that needs to know the name in
-    trace.c so that ring buffers can stay anonymous
+  - Move from names to fdt offsets. That way, trace.c can find the trace
+    array offset and then the ring buffer code only needs to read out
+    its per-CPU data. That way it can stay oblivient to its name.
+  - Make kho_get_fdt() const
+  - Remove ifdefs
 ---
- include/linux/ring_buffer.h |  2 +
- kernel/trace/ring_buffer.c  | 76 +++++++++++++++++++++++++++++++++++++
- kernel/trace/trace.c        | 16 ++++++++
- 3 files changed, 94 insertions(+)
+ include/linux/ring_buffer.h |  15 ++--
+ kernel/trace/ring_buffer.c  | 171 ++++++++++++++++++++++++++++++++++--
+ kernel/trace/trace.c        |  32 ++++++-
+ 3 files changed, 206 insertions(+), 12 deletions(-)
 
 diff --git a/include/linux/ring_buffer.h b/include/linux/ring_buffer.h
-index 782e14f62201..1c5eb33f0cb5 100644
+index 1c5eb33f0cb5..f6d6ce441890 100644
 --- a/include/linux/ring_buffer.h
 +++ b/include/linux/ring_buffer.h
-@@ -211,4 +211,6 @@ int trace_rb_cpu_prepare(unsigned int cpu, struct hlist_node *node);
- #define trace_rb_cpu_prepare	NULL
- #endif
+@@ -84,20 +84,23 @@ void ring_buffer_discard_commit(struct trace_buffer *buffer,
+ /*
+  * size is in bytes for each per CPU buffer.
+  */
+-struct trace_buffer *
+-__ring_buffer_alloc(unsigned long size, unsigned flags, struct lock_class_key *key);
++struct trace_buffer *__ring_buffer_alloc(unsigned long size, unsigned flags,
++					 struct lock_class_key *key,
++					 int tr_off);
  
-+int ring_buffer_kho_write(void *fdt, struct trace_buffer *buffer);
+ /*
+  * Because the ring buffer is generic, if other users of the ring buffer get
+  * traced by ftrace, it can produce lockdep warnings. We need to keep each
+  * ring buffer's lock class separate.
+  */
+-#define ring_buffer_alloc(size, flags)			\
+-({							\
+-	static struct lock_class_key __key;		\
+-	__ring_buffer_alloc((size), (flags), &__key);	\
++#define ring_buffer_alloc_kho(size, flags, tr_off)		\
++({								\
++	static struct lock_class_key __key;			\
++	__ring_buffer_alloc((size), (flags), &__key, tr_off);	\
+ })
+ 
++#define ring_buffer_alloc(size, flags) ring_buffer_alloc_kho(size, flags, 0)
 +
- #endif /* _LINUX_RING_BUFFER_H */
+ int ring_buffer_wait(struct trace_buffer *buffer, int cpu, int full);
+ __poll_t ring_buffer_poll_wait(struct trace_buffer *buffer, int cpu,
+ 			  struct file *filp, poll_table *poll_table, int full);
 diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-index 83eab547f1d1..971af7ee35da 100644
+index 971af7ee35da..4c62a66068a7 100644
 --- a/kernel/trace/ring_buffer.c
 +++ b/kernel/trace/ring_buffer.c
-@@ -20,6 +20,7 @@
- #include <linux/percpu.h>
- #include <linux/mutex.h>
- #include <linux/delay.h>
-+#include <linux/kexec.h>
- #include <linux/slab.h>
- #include <linux/init.h>
- #include <linux/hash.h>
-@@ -5853,6 +5854,81 @@ int trace_rb_cpu_prepare(unsigned int cpu, struct hlist_node *node)
+@@ -558,6 +558,7 @@ struct trace_buffer {
+ 
+ 	struct rb_irq_work		irq_work;
+ 	bool				time_stamp_abs;
++	int				tr_off;
+ };
+ 
+ struct ring_buffer_iter {
+@@ -574,6 +575,15 @@ struct ring_buffer_iter {
+ 	int				missed_events;
+ };
+ 
++struct rb_kho_cpu {
++	const struct kho_mem *mem;
++	uint32_t nr_mems;
++};
++
++static int rb_kho_replace_buffers(struct ring_buffer_per_cpu *cpu_buffer,
++				     struct rb_kho_cpu *kho);
++static int rb_kho_read_cpu(int tr_off, int cpu, struct rb_kho_cpu *kho);
++
+ #ifdef RB_TIME_32
+ 
+ /*
+@@ -1762,12 +1772,15 @@ static void rb_free_cpu_buffer(struct ring_buffer_per_cpu *cpu_buffer)
+  * drop data when the tail hits the head.
+  */
+ struct trace_buffer *__ring_buffer_alloc(unsigned long size, unsigned flags,
+-					struct lock_class_key *key)
++					 struct lock_class_key *key,
++					 int tr_off)
+ {
++	int cpu = raw_smp_processor_id();
++	struct rb_kho_cpu kho = {};
+ 	struct trace_buffer *buffer;
++	bool use_kho = false;
+ 	long nr_pages;
+ 	int bsize;
+-	int cpu;
+ 	int ret;
+ 
+ 	/* keep it in its own cache line */
+@@ -1780,9 +1793,16 @@ struct trace_buffer *__ring_buffer_alloc(unsigned long size, unsigned flags,
+ 		goto fail_free_buffer;
+ 
+ 	nr_pages = DIV_ROUND_UP(size, BUF_PAGE_SIZE);
++	if (!rb_kho_read_cpu(tr_off, cpu, &kho) && kho.nr_mems > 4) {
++		nr_pages = kho.nr_mems / 2;
++		use_kho = true;
++		pr_debug("Using kho on CPU [%03d]", cpu);
++	}
++
+ 	buffer->flags = flags;
+ 	buffer->clock = trace_clock_local;
+ 	buffer->reader_lock_key = key;
++	buffer->tr_off = tr_off;
+ 
+ 	init_irq_work(&buffer->irq_work.work, rb_wake_up_waiters);
+ 	init_waitqueue_head(&buffer->irq_work.waiters);
+@@ -1799,12 +1819,14 @@ struct trace_buffer *__ring_buffer_alloc(unsigned long size, unsigned flags,
+ 	if (!buffer->buffers)
+ 		goto fail_free_cpumask;
+ 
+-	cpu = raw_smp_processor_id();
+ 	cpumask_set_cpu(cpu, buffer->cpumask);
+ 	buffer->buffers[cpu] = rb_allocate_cpu_buffer(buffer, nr_pages, cpu);
+ 	if (!buffer->buffers[cpu])
+ 		goto fail_free_buffers;
+ 
++	if (use_kho && rb_kho_replace_buffers(buffer->buffers[cpu], &kho))
++		pr_warn("Could not revive all previous trace data");
++
+ 	ret = cpuhp_state_add_instance(CPUHP_TRACE_RB_PREPARE, &buffer->node);
+ 	if (ret < 0)
+ 		goto fail_free_buffers;
+@@ -5818,7 +5840,9 @@ EXPORT_SYMBOL_GPL(ring_buffer_read_page);
+  */
+ int trace_rb_cpu_prepare(unsigned int cpu, struct hlist_node *node)
+ {
++	struct rb_kho_cpu kho = {};
+ 	struct trace_buffer *buffer;
++	bool use_kho = false;
+ 	long nr_pages_same;
+ 	int cpu_i;
+ 	unsigned long nr_pages;
+@@ -5842,6 +5866,12 @@ int trace_rb_cpu_prepare(unsigned int cpu, struct hlist_node *node)
+ 	/* allocate minimum pages, user can later expand it */
+ 	if (!nr_pages_same)
+ 		nr_pages = 2;
++
++	if (!rb_kho_read_cpu(buffer->tr_off, cpu, &kho) && kho.nr_mems > 4) {
++		nr_pages = kho.nr_mems / 2;
++		use_kho = true;
++	}
++
+ 	buffer->buffers[cpu] =
+ 		rb_allocate_cpu_buffer(buffer, nr_pages, cpu);
+ 	if (!buffer->buffers[cpu]) {
+@@ -5849,13 +5879,143 @@ int trace_rb_cpu_prepare(unsigned int cpu, struct hlist_node *node)
+ 		     cpu);
+ 		return -ENOMEM;
+ 	}
++
++	if (use_kho && rb_kho_replace_buffers(buffer->buffers[cpu], &kho))
++		pr_warn("Could not revive all previous trace data");
++
+ 	smp_wmb();
+ 	cpumask_set_cpu(cpu, buffer->cpumask);
  	return 0;
  }
  
-+#ifdef CONFIG_FTRACE_KHO
-+static int rb_kho_write_cpu(void *fdt, struct trace_buffer *buffer, int cpu)
+-#ifdef CONFIG_FTRACE_KHO
+-static int rb_kho_write_cpu(void *fdt, struct trace_buffer *buffer, int cpu)
++static int rb_kho_replace_buffers(struct ring_buffer_per_cpu *cpu_buffer,
++				     struct rb_kho_cpu *kho)
 +{
-+	int i = 0;
-+	int err = 0;
-+	struct list_head *tmp;
-+	const char compatible[] = "ftrace,cpu-v1";
-+	char name[] = "cpuffffffff";
-+	int nr_pages;
-+	struct ring_buffer_per_cpu *cpu_buffer;
 +	bool first_loop = true;
-+	struct kho_mem *mem;
-+	uint64_t mem_len;
++	struct list_head *tmp;
++	int err = 0;
++	int i = 0;
 +
-+	if (!cpumask_test_cpu(cpu, buffer->cpumask))
-+		return 0;
++	if (!IS_ENABLED(CONFIG_FTRACE_KHO))
++		return -EINVAL;
 +
-+	cpu_buffer = buffer->buffers[cpu];
-+
-+	nr_pages = cpu_buffer->nr_pages;
-+	mem_len = sizeof(*mem) * nr_pages * 2;
-+	mem = vmalloc(mem_len);
-+
-+	snprintf(name, sizeof(name), "cpu%x", cpu);
-+
-+	err |= fdt_begin_node(fdt, name);
-+	err |= fdt_property(fdt, "compatible", compatible, sizeof(compatible));
-+	err |= fdt_property(fdt, "cpu", &cpu, sizeof(cpu));
++	if (kho->nr_mems != cpu_buffer->nr_pages * 2)
++		return -EINVAL;
 +
 +	for (tmp = rb_list_head(cpu_buffer->pages);
 +	     tmp != rb_list_head(cpu_buffer->pages) || first_loop;
 +	     tmp = rb_list_head(tmp->next), first_loop = false) {
 +		struct buffer_page *bpage = (struct buffer_page *)tmp;
++		const struct kho_mem *mem_bpage = &kho->mem[i++];
++		const struct kho_mem *mem_page = &kho->mem[i++];
++		const uint64_t rb_page_head = 1;
++		struct buffer_page *old_bpage;
++		void *old_page;
 +
-+		/* Ring is larger than it should be? */
-+		if (i >= (nr_pages * 2)) {
-+			pr_err("ftrace ring has more pages than nr_pages (%d / %d)", i, nr_pages);
-+			err = -EINVAL;
-+			break;
++		old_bpage = __va(mem_bpage->addr);
++		if (!bpage)
++			goto out;
++
++		if ((ulong)old_bpage->list.next & rb_page_head) {
++			struct list_head *new_lhead;
++			struct buffer_page *new_head;
++
++			new_lhead = rb_list_head(bpage->list.next);
++			new_head = (struct buffer_page *)new_lhead;
++
++			/* Assume the buffer is completely full */
++			cpu_buffer->tail_page = bpage;
++			cpu_buffer->commit_page = bpage;
++			/* Set the head pointers to what they were before */
++			cpu_buffer->head_page->list.prev->next = (struct list_head *)
++				((ulong)cpu_buffer->head_page->list.prev->next & ~rb_page_head);
++			cpu_buffer->head_page = new_head;
++			bpage->list.next = (struct list_head *)((ulong)new_lhead | rb_page_head);
 +		}
 +
-+		/* First describe the bpage */
-+		mem[i++] = (struct kho_mem) {
-+			.addr = __pa(bpage),
-+			.len = sizeof(*bpage)
-+		};
++		if (rb_page_entries(old_bpage) || rb_page_write(old_bpage)) {
++			/*
++			 * We want to recycle the pre-kho page, it contains
++			 * trace data. To do so, we unreserve it and swap the
++			 * current data page with the pre-kho one
++			 */
++			old_page = kho_claim_mem(mem_page);
 +
-+		/* Then the data page */
-+		mem[i++] = (struct kho_mem) {
-+			.addr = __pa(bpage->page),
-+			.len = PAGE_SIZE
-+		};
++			/* Recycle the old page, it contains data */
++			free_page((ulong)bpage->page);
++			bpage->page = old_page;
++
++			bpage->write = old_bpage->write;
++			bpage->entries = old_bpage->entries;
++			bpage->real_end = old_bpage->real_end;
++
++			local_inc(&cpu_buffer->pages_touched);
++		} else {
++			kho_return_mem(mem_page);
++		}
++
++		kho_return_mem(mem_bpage);
 +	}
 +
-+	err |= fdt_property(fdt, "mem", mem, mem_len);
-+	err |= fdt_end_node(fdt);
-+
-+	vfree(mem);
++out:
 +	return err;
 +}
 +
-+int ring_buffer_kho_write(void *fdt, struct trace_buffer *buffer)
++static int rb_kho_read_cpu(int tr_off, int cpu, struct rb_kho_cpu *kho)
 +{
-+	int err, i;
++	const void *fdt = kho_get_fdt();
++	int mem_len;
++	int err = 0;
++	char *path;
++	int off;
 +
-+	for (i = 0; i < buffer->cpus; i++) {
-+		err = rb_kho_write_cpu(fdt, buffer, i);
-+		if (err)
-+			return err;
++	if (!IS_ENABLED(CONFIG_FTRACE_KHO))
++		return -EINVAL;
++
++	if (!tr_off || !fdt || !kho)
++		return -EINVAL;
++
++	path = kasprintf(GFP_KERNEL, "cpu%x", cpu);
++	if (!path)
++		return -ENOMEM;
++
++	pr_debug("Trying to revive trace cpu '%s'", path);
++
++	off = fdt_subnode_offset(fdt, tr_off, path);
++	if (off < 0) {
++		pr_debug("Could not find '%s' in DT", path);
++		err = -ENOENT;
++		goto out;
 +	}
 +
-+	return 0;
-+}
-+#endif
++	err = fdt_node_check_compatible(fdt, off, "ftrace,cpu-v1");
++	if (err) {
++		pr_warn("Node '%s' has invalid compatible", path);
++		err = -EINVAL;
++		goto out;
++	}
 +
- #ifdef CONFIG_RING_BUFFER_STARTUP_TEST
- /*
-  * This is a basic integrity check of the ring buffer.
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index 6ec31879b4eb..2ccea4c1965b 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -10563,6 +10563,21 @@ void __init early_trace_init(void)
- 	init_events();
++	kho->mem = fdt_getprop(fdt, off, "mem", &mem_len);
++	if (!kho->mem) {
++		pr_warn("Node '%s' has invalid mem property", path);
++		err = -EINVAL;
++		goto out;
++	}
++
++	kho->nr_mems = mem_len / sizeof(*kho->mem);
++
++	/* Should follow "bpage 0, page 0, bpage 1, page 1, ..." pattern */
++	if ((kho->nr_mems & 1)) {
++		err = -EINVAL;
++		goto out;
++	}
++
++out:
++	kfree(path);
++	return err;
++}
++
++static int __maybe_unused rb_kho_write_cpu(void *fdt, struct trace_buffer *buffer, int cpu)
+ {
+ 	int i = 0;
+ 	int err = 0;
+@@ -5915,6 +6075,7 @@ static int rb_kho_write_cpu(void *fdt, struct trace_buffer *buffer, int cpu)
+ 	return err;
  }
  
-+static int trace_kho_write_trace_array(void *fdt, struct trace_array *tr)
++#ifdef CONFIG_FTRACE_KHO
+ int ring_buffer_kho_write(void *fdt, struct trace_buffer *buffer)
+ {
+ 	int err, i;
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index 2ccea4c1965b..94e30dfacfd1 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -9348,16 +9348,46 @@ static struct dentry *trace_instance_dir;
+ static void
+ init_tracer_tracefs(struct trace_array *tr, struct dentry *d_tracer);
+ 
++static int trace_kho_off_tr(struct trace_array *tr)
 +{
 +	const char *name = tr->name ? tr->name : "global_trace";
-+	const char compatible[] = "ftrace,array-v1";
-+	int err = 0;
++	const void *fdt = kho_get_fdt();
++	char *path;
++	int off;
 +
-+	err |= fdt_begin_node(fdt, name);
-+	err |= fdt_property(fdt, "compatible", compatible, sizeof(compatible));
-+	err |= fdt_property(fdt, "trace_flags", &tr->trace_flags, sizeof(tr->trace_flags));
-+	err |= ring_buffer_kho_write(fdt, tr->array_buffer.buffer);
-+	err |= fdt_end_node(fdt);
++	if (!IS_ENABLED(CONFIG_FTRACE_KHO))
++		return 0;
 +
-+	return err;
++	if (!fdt)
++		return 0;
++
++	path = kasprintf(GFP_KERNEL, "/ftrace/%s", name);
++	if (!path)
++		return -ENOMEM;
++
++	pr_debug("Trying to revive trace buffer '%s'", path);
++
++	off = fdt_path_offset(fdt, path);
++	if (off < 0) {
++		pr_debug("Could not find '%s' in DT", path);
++		off = 0;
++	}
++
++	kfree(path);
++	return off;
 +}
 +
- static int trace_kho_notifier(struct notifier_block *self,
- 			      unsigned long cmd,
- 			      void *v)
-@@ -10589,6 +10604,7 @@ static int trace_kho_notifier(struct notifier_block *self,
+ static int
+ allocate_trace_buffer(struct trace_array *tr, struct array_buffer *buf, int size)
+ {
++	int tr_off = trace_kho_off_tr(tr);
+ 	enum ring_buffer_flags rb_flags;
  
- 	err |= fdt_begin_node(fdt, "ftrace");
- 	err |= fdt_property(fdt, "compatible", compatible, sizeof(compatible));
-+	err |= trace_kho_write_trace_array(fdt, &global_trace);
- 	err |= fdt_end_node(fdt);
+ 	rb_flags = tr->trace_flags & TRACE_ITER_OVERWRITE ? RB_FL_OVERWRITE : 0;
  
- 	if (!err) {
+ 	buf->tr = tr;
+ 
+-	buf->buffer = ring_buffer_alloc(size, rb_flags);
++	buf->buffer = ring_buffer_alloc_kho(size, rb_flags, tr_off);
+ 	if (!buf->buffer)
+ 		return -ENOMEM;
+ 
 -- 
 2.40.1
 
