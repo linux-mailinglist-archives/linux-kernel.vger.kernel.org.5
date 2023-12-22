@@ -1,309 +1,221 @@
-Return-Path: <linux-kernel+bounces-9859-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9860-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 160AF81CC77
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 16:59:34 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A1A2D81CC7E
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 17:01:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8553CB224CB
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 15:59:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 41FEEB22823
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 16:01:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1916C241F3;
-	Fri, 22 Dec 2023 15:59:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E452241F3;
+	Fri, 22 Dec 2023 16:01:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="CBkoEhMF"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="wcKp7okh"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB990241E4
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 15:59:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 210D723779
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 16:01:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-28bfdf3cd12so941582a91.3
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 07:59:22 -0800 (PST)
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a236456fee1so252649166b.1
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 08:01:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703260762; x=1703865562; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=OAR7QlHd39RQ33GYs0BoNsJCPx6aNi6FZcLgvPLmh3E=;
-        b=CBkoEhMFP3jw3I2fasjhvaHbdgGV1lSlARnX5gXuYJdri2+IG0BoRSxbzxO3Ey09/i
-         kyN4TDMwVJt9XZU+KIOeLC5gxGFKsQhuz6LWdXXGG1DWf24fpyIcCcAhP8IL1/XGSruO
-         6GVWKG5E1O36YgLdRd6bEU4zyVoInIV0cMLJl8tTI8YnJddrMiolsV4bcG7rVUQQyU+K
-         hBO+DG4L4JDouDay0X/vPPfeJZhiIWjDmf4hF7IUt4TjjbjR43cKaL/rAXL7oeEyTki8
-         EWFK4USr51VXGpS6IF+s2DI28UbnWz3QuMXo/wzcv7yOzPZJDZ4PuCJGyucfOjW1DuiR
-         lB2Q==
+        d=linaro.org; s=google; t=1703260900; x=1703865700; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=RbGsdzKTA1YOv8U+Moo23lWNJuGxRgXBP6UPTooKUgM=;
+        b=wcKp7okhswusm41r4k+NeXEScsvLgvObzEde1QsmvmWLCF/n6BQYnxkVsrQweXQ+ya
+         wp4QIXdtYrcXDMwQ+8L/8egyW0V5Fu7qHl8bi35brHP9Mc5a4YXkWmkUhBOqeWNskjMh
+         eW+Z71CuOjei+aQsjXn+1Zaji2dTtE7t4+VF4PPxuUXM/Vn0y7vM4ASVrQxh0/i3yRSV
+         MG9TcnMKOhBrpHDMVSXYhdJkfmmMNt6rrwzBhaWiqjMPYTio5KBaImnt1U0VrMMxdOBt
+         sIMf3g297rEWcTCDCl6FYfDvPsw08U6ZAxOa1CrrjpbK1WVoTF7RG+E2gvDAVIAjXnmb
+         wxjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703260762; x=1703865562;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=OAR7QlHd39RQ33GYs0BoNsJCPx6aNi6FZcLgvPLmh3E=;
-        b=kEM1L95ouMy8KoviscDbqCfr6TOJKmevRkVwIw/wf7y0v9hLbN5Ggip7KhEMSQwt0K
-         QHffNXVFSs2XPY7uRNwQvNZtGib6+PMmIKipnWpdUHnqtbe7tIo2+wae2DskZxiUBliU
-         zpK6bo/mA1q+ysZd5Fv2sn3iTlyLRG8sfJWZtRhs3gy6ke0yxcIPQxzGwNjSI63RuXcU
-         h2YWH9OXier4ZmkjW2tP2TyyDrZKilQhI1Dgt8lWGZARAXaafF/q5RpsRwbxS0e5HmgX
-         cZg4H1vwAlpEO0lxxYzUTEwW6ZjNKmrDbdGwAYis+sdKWsk+KSlmp0gByB49KknCcpL0
-         zwyA==
-X-Gm-Message-State: AOJu0Yx+AB90jeF4Cx2wVMJBi0lQ1RxV4Z6PXyP3nXhZUpdpqnCpcQgz
-	qa7Z+nHcnXJ7G0M0AIQ49N4ZglkTIlBK9nA+gWrDewitKCbXUA==
-X-Google-Smtp-Source: AGHT+IF1CDHood9WwJKUlVFKWIquva0sD6z01MQONOf4aUyXUyk11+pscJE2oIeVOK78wHsk+NVf/Jy7opyvLv8L/+A=
-X-Received: by 2002:a17:90a:784e:b0:28a:c616:ff1c with SMTP id
- y14-20020a17090a784e00b0028ac616ff1cmr814372pjl.97.1703260762031; Fri, 22 Dec
- 2023 07:59:22 -0800 (PST)
+        d=1e100.net; s=20230601; t=1703260900; x=1703865700;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RbGsdzKTA1YOv8U+Moo23lWNJuGxRgXBP6UPTooKUgM=;
+        b=iO4KeRoEZuYnqK2Kpx94MSfGVpBjU8aCbJeodc8DR2xLM/4XHpTsAVdr76cT0rddEJ
+         EJurUA9NWkRfWML4dC+gaWaM8yVQHA31fGJzzJg1wYBj9VXDo9Rlftwfp3WHsqE0vPAG
+         SSENtn0ynm5M/f0i2ukJatK2ZzQEWhrOiqqtVYADfDDNRLeSwBatwm18nVkqjKlmwo28
+         uoFmez4zzthE24FhiIi+JKuoe/O5cDF6Q2UH0nFxkT66xcFefHuXS7BjTegY7G1jZHJ/
+         5qhrn8ycu3NtEIHgn+StH4VeQ4g7RgyK34zsYQ4MP1zYmkc7NBWHKg33E1r3e9B4NXYc
+         8RqQ==
+X-Gm-Message-State: AOJu0YxoTEA39txzs/eqeCZA/L1nv8v30HepNUX23cd1+4cabzMVyHCq
+	DB43uYsOamL83jCQxEySIVIOZ9iwuxUhkA==
+X-Google-Smtp-Source: AGHT+IHp1X9wjZ8Dyx64BDczrPkxSRvF6ZrfA2b/hGVgbbq60pOvwCcEThyr010X98IeVaIRq8Ih4g==
+X-Received: by 2002:a17:906:3748:b0:a23:11a7:3d7e with SMTP id e8-20020a170906374800b00a2311a73d7emr751562ejc.139.1703260899703;
+        Fri, 22 Dec 2023 08:01:39 -0800 (PST)
+Received: from [192.168.0.22] ([78.10.206.178])
+        by smtp.gmail.com with ESMTPSA id dx15-20020a170906a84f00b00a2363247829sm2155753ejb.216.2023.12.22.08.01.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 22 Dec 2023 08:01:39 -0800 (PST)
+Message-ID: <282596bd-3987-4322-b8f1-fabfe2c91628@linaro.org>
+Date: Fri, 22 Dec 2023 17:01:37 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <alpine.DEB.2.22.394.2310032059060.3220@hadrien>
- <20231003215159.GJ1539@noisy.programming.kicks-ass.net> <alpine.DEB.2.22.394.2310041358420.3108@hadrien>
- <20231004120544.GA6307@noisy.programming.kicks-ass.net> <alpine.DEB.2.22.394.2310041822170.3108@hadrien>
- <20231004174801.GE19999@noisy.programming.kicks-ass.net> <alpine.DEB.2.22.394.2310041958380.3108@hadrien>
- <20231009102949.GC14330@noisy.programming.kicks-ass.net> <b8ab29de-1775-46e-dd75-cdf98be8b0@inria.fr>
- <CAKfTPtBhWwk9sf9F1=KwubiAWFDC2A9ZT-SSJ+tgFxme1cFmYA@mail.gmail.com>
- <alpine.DEB.2.22.394.2312182302310.3361@hadrien> <CAKfTPtALEFtrapi3Kk97KLGQN4259eEQEwwftVUK4RG42Vgoyw@mail.gmail.com>
- <98b3df1-79b7-836f-e334-afbdd594b55@inria.fr> <CAKfTPtCRN_eWgVdK2-h6E_ifJKwwJEtMjeNjB=5DXZFWyBS+tQ@mail.gmail.com>
- <93112fbe-30be-eab8-427c-5d4670a0f94e@inria.fr> <CAKfTPtAeFvrZxApK3RruWwCjMxbQvOkU+_YgZSo4QPT_AD6FxA@mail.gmail.com>
- <9dc451b5-9dd8-89f2-1c9c-7c358faeaad@inria.fr>
-In-Reply-To: <9dc451b5-9dd8-89f2-1c9c-7c358faeaad@inria.fr>
-From: Vincent Guittot <vincent.guittot@linaro.org>
-Date: Fri, 22 Dec 2023 16:59:10 +0100
-Message-ID: <CAKfTPtDCsLnDnVje9maP5s-L7TbtSu4CvF19xHOxbkvSNd7vZg@mail.gmail.com>
-Subject: Re: EEVDF and NUMA balancing
-To: Julia Lawall <julia.lawall@inria.fr>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Dietmar Eggemann <dietmar.eggemann@arm.com>, Mel Gorman <mgorman@suse.de>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/6] dt-bindings: display: panel: Add BOE
+ TH101MB31IG002-28A panel
+Content-Language: en-US
+To: Manuel Traut <manut@mecka.net>, Neil Armstrong
+ <neil.armstrong@linaro.org>, Jessica Zhang <quic_jesszhan@quicinc.com>,
+ Sam Ravnborg <sam@ravnborg.org>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
+ Sandy Huang <hjc@rock-chips.com>, Mark Yao <markyao0591@gmail.com>,
+ Diederik de Haas <didi.debian@cknow.org>, Segfault
+ <awarnecke002@hotmail.com>, Arnaud Ferraris <aferraris@debian.org>
+Cc: dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-rockchip@lists.infradead.org
+References: <20231222-pinetab2-v1-0-e148a7f61bd1@mecka.net>
+ <20231222-pinetab2-v1-1-e148a7f61bd1@mecka.net>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231222-pinetab2-v1-1-e148a7f61bd1@mecka.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Fri, 22 Dec 2023 at 16:00, Julia Lawall <julia.lawall@inria.fr> wrote:
->
->
->
-> On Fri, 22 Dec 2023, Vincent Guittot wrote:
->
-> > On Thu, 21 Dec 2023 at 19:20, Julia Lawall <julia.lawall@inria.fr> wrote:
-> > >
-> > >
-> > >
-> > > On Wed, 20 Dec 2023, Vincent Guittot wrote:
-> > >
-> > > > On Tue, 19 Dec 2023 at 18:51, Julia Lawall <julia.lawall@inria.fr> wrote:
-> > > > >
-> > > > > > > One CPU has 2 threads, and the others have one.  The one with two threads
-> > > > > > > is returned as the busiest one.  But nothing happens, because both of them
-> > > > > > > prefer the socket that they are on.
-> > > > > >
-> > > > > > This explains way load_balance uses migrate_util and not migrate_task.
-> > > > > > One CPU with 2 threads can be overloaded
-> > > > > >
-> > > > > > ok, so it seems that your 1st problem is that you have 2 threads on
-> > > > > > the same CPU whereas you should have an idle core in this numa node.
-> > > > > > All cores are sharing the same LLC, aren't they ?
-> > > > >
-> > > > > Sorry, not following this.
-> > > > >
-> > > > > Socket 1 has N-1 threads, and thus an idle CPU.
-> > > > > Socket 2 has N+1 threads, and thus one CPU with two threads.
-> > > > >
-> > > > > Socket 1 tries to steal from that one CPU with two threads, but that
-> > > > > fails, because both threads prefer being on Socket 2.
-> > > > >
-> > > > > Since most (or all?) of the threads on Socket 2 perfer being on Socket 2.
-> > > > > the only hope for Socket 1 to fill in its idle core is active balancing.
-> > > > > But active balancing is not triggered because of migrate_util and because
-> > > > > CPU_NEWLY_IDLE prevents the failure counter from ebing increased.
-> > > >
-> > > >  CPU_NEWLY_IDLE load_balance doesn't aims to do active load balance so
-> > > > you should focus on the CPU_NEWLY_IDLE load_balance
-> > >
-> > > I'm still perplexed why a core that has been idle for 1 second or more is
-> > > considered to be newly idle.
-> >
-> > CPU_NEWLY_IDLE load balance is called when the scheduler was
-> > scheduling something that just migrated or went back to sleep and
-> > doesn't have anything to schedule so it tries to  pull a task from
-> > somewhere else.
-> >
-> > But you should still have some CPU_IDLE load balance according to your
-> > description where one CPU of the socket remains idle and those will
-> > increase the nr_balance_failed
->
-> This happens.  But not often.
->
-> > I'm surprised that you have mainly CPU_NEWLY_IDLE. Do you know the reason ?
->
-> No.  They come from do_idle calling the scheduler.  I will look into why
-> this happens so often.
+On 22/12/2023 12:05, Manuel Traut wrote:
+> Add bindings for the BOE TH101MB31IG002-28A LCD panel. It is
+> used e.g. in the Pine64 Pinetab2 and PinetabV.
+> 
+> Signed-off-by: Manuel Traut <manut@mecka.net>
+> ---
 
-Hmm, the CPU was idle and received a need resched which triggered the
-scheduler but there was nothing to schedule so it goes back to idle
-after running a newly_idle _load_balance.
+> +
+> +maintainers:
+> +  - Manuel Traut <manut@mecka.net>
+> +
+> +allOf:
+> +  - $ref: panel-common.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +        # BOE TH101MB31IG002-28A 10.1" WXGA TFT LCD panel
+> +      - boe,th101mb31ig002-28a
+> +
+> +  reg:
 
->
-> >
-> > >
-> > > >
-> > > > >
-> > > > > The part that I am currently missing to understand is that when I convert
-> > > > > CPU_NEWLY_IDLE to CPU_IDLE, it typically picks a CPU with only one thread
-> > > > > as busiest.  I have the impression that the fbq_type intervenes to cause
-> > > >
-> > > > find_busiest_queue skips rqs which only have threads preferring being
-> > > > in there. So it selects another rq with a thread that doesn't prefer
-> > > > its current node.
-> > > >
-> > > > do you know what is the value of env->fbq_type ?
-> > >
-> > > I have seen one trace in which it is all.  There are 33 tasks on one
-> > > socket, and they are all considered to have a preference for that socket.
-> >
-> > With env->fbq_type == all, load_balance and find_busiest_queue should
-> > be able to select the actual busiest queue with 2 threads.
->
-> That's what it does.  But nothing can be stolen because there is no active
-> balancing.
+reg: true
 
-My patch below should enable to pull a task from the 1st idle load
-balance that fails
+> +    description: the virtual channel number of a DSI peripheral
+> +
+> +  backlight:
 
->
-> >
-> > But then I imagine that can_migrate/ migrate_degrades_locality
-> > prevents to detach the task
->
-> Exactly.
->
-> julia
->
-> > >
-> > > But I have another trace in which it is regular.  There are 33 tasks on
-> > > the socket, but only 32 have a preference.
-> > >
-> > > >
-> > > > need_active_balance() probably needs a new condition for the numa case
-> > > > where the busiest queue can't be selected and we have to trigger an
-> > > > active load_balance on a rq with only 1 thread but that is not running
-> > > > on its preferred node. Something like the untested below :
-> > > >
-> > > > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > > > index e5da5eaab6ce..de1474191488 100644
-> > > > --- a/kernel/sched/fair.c
-> > > > +++ b/kernel/sched/fair.c
-> > > > @@ -11150,6 +11150,24 @@ imbalanced_active_balance(struct lb_env *env)
-> > > >         return 0;
-> > > >  }
-> > > >
-> > > > +static inline bool
-> > > > +numa_active_balance(struct lb_env *env)
-> > > > +{
-> > > > +       struct sched_domain *sd = env->sd;
-> > > > +
-> > > > +       /*
-> > > > +        * We tried to migrate only a !numa task or a task on wrong node but
-> > > > +        * the busiest queue with such task has only 1 running task. Previous
-> > > > +        * attempt has failed so force the migration of such task.
-> > > > +        */
-> > > > +       if ((env->fbq_type < all) &&
-> > > > +           (env->src_rq->cfs.h_nr_running == 1) &&
-> > > > +           (sd->nr_balance_failed > 0))
-> > >
-> > > The last condition will still be a problem because of CPU_NEWLY_IDLE.  The
-> > > nr_balance_failed counter doesn't get incremented very often.
-> >
-> > It waits for at least 1 failed CPU_IDLE load_balance
-> >
-> > >
-> > > julia
-> > >
-> > > > +               return 1;
-> > > > +
-> > > > +       return 0;
-> > > > +}
-> > > > +
-> > > >  static int need_active_balance(struct lb_env *env)
-> > > >  {
-> > > >         struct sched_domain *sd = env->sd;
-> > > > @@ -11176,6 +11194,9 @@ static int need_active_balance(struct lb_env *env)
-> > > >         if (env->migration_type == migrate_misfit)
-> > > >                 return 1;
-> > > >
-> > > > +       if (numa_active_balance(env))
-> > > > +               return 1;
-> > > > +
-> > > >         return 0;
-> > > >  }
-> > > >
-> > > >
-> > > > > it to avoid the CPU with two threads that already prefer Socket 2.  But I
-> > > > > don't know at the moment why that is the case.  In any case, it's fine to
-> > > > > active balance from a CPU with only one thread, because Socket 2 will
-> > > > > even itself out afterwards.
-> > > > >
-> > > > > >
-> > > > > > You should not have more than 1 thread per CPU when there are N+1
-> > > > > > threads on a node with N cores / 2N CPUs.
-> > > > >
-> > > > > Hmm, I think there is a miscommunication about cores and CPUs.  The
-> > > > > machine has two sockets with 16 physical cores each, and thus 32
-> > > > > hyperthreads.  There are 64 threads running.
-> > > >
-> > > > Ok, I have been confused by what you wrote previously:
-> > > > " The context is that there are 2N threads running on 2N cores, one thread
-> > > > gets NUMA balanced to the other socket, leaving N+1 threads on one socket
-> > > > and N-1 threads on the other socket."
-> > > >
-> > > > I have assumed that there were N cores and 2N CPUs per socket as you
-> > > > mentioned Intel Xeon 6130 in the commit message . My previous emails
-> > > > don't apply at all with N CPUs per socket and the group_overloaded is
-> > > > correct.
-> > > >
-> > > >
-> > > >
-> > > > >
-> > > > > julia
-> > > > >
-> > > > > > This will enable the
-> > > > > > load_balance to try to migrate a task instead of some util(ization)
-> > > > > > and you should reach the active load balance.
-> > > > > >
-> > > > > > >
-> > > > > > > > In theory you should have the
-> > > > > > > > local "group_has_spare" and the busiest "group_fully_busy" (at most).
-> > > > > > > > This means that no group should be overloaded and load_balance should
-> > > > > > > > not try to migrate utli but only task
-> > > > > > >
-> > > > > > > I didn't collect information about the groups.  I will look into that.
-> > > > > > >
-> > > > > > > julia
-> > > > > > >
-> > > > > > > >
-> > > > > > > >
-> > > > > > > > >
-> > > > > > > > > and changing the above test to:
-> > > > > > > > >
-> > > > > > > > >         if ((env->migration_type == migrate_task || env->migration_type == migrate_util) &&
-> > > > > > > > >             (sd->nr_balance_failed > sd->cache_nice_tries+2))
-> > > > > > > > >
-> > > > > > > > > seems to solve the problem.
-> > > > > > > > >
-> > > > > > > > > I will test this on more applications.  But let me know if the above
-> > > > > > > > > solution seems completely inappropriate.  Maybe it violates some other
-> > > > > > > > > constraints.
-> > > > > > > > >
-> > > > > > > > > I have no idea why this problem became more visible with EEVDF.  It seems
-> > > > > > > > > to have to do with the time slices all turning out to be the same.  I got
-> > > > > > > > > the same behavior in 6.5 by overwriting the timeslice calculation to
-> > > > > > > > > always return 1.  But I don't see the connection between the timeslice and
-> > > > > > > > > the behavior of the idle task.
-> > > > > > > > >
-> > > > > > > > > thanks,
-> > > > > > > > > julia
-> > > > > > > >
-> > > > > >
-> > > >
-> >
+: true
+
+> +    description: phandle of the backlight device attached to the panel
+
+Because there is really no need to repeat obvious.
+
+> +
+> +  enable-gpios:
+> +    description: a GPIO spec for the enable pin
+
+Ditto
+
+> +
+> +  power-supply:
+> +    description: core voltage supply
+
+Ditto
+
+> +
+> +
+
+And drop redundant blank lines.
+
+> +  ports: true
+
+Hm, why ports? From where did you copy it?
+
+> +  rotation: true
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - enable-gpios
+> +  - power-supply
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    dsi {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +        panel@0 {
+> +            compatible = "boe,th101mb31ig002-28a";
+> +            reg = <0>;
+> +            backlight = <&backlight_lcd0>;
+> +            enable-gpios = <&pio 45 0>;
+
+Use define for GPIO flag.
+
+
+
+Best regards,
+Krzysztof
+
 
