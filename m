@@ -1,154 +1,162 @@
-Return-Path: <linux-kernel+bounces-9342-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9350-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D321281C458
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 05:52:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3FD2281C46E
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 05:55:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 11B281C23659
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 04:52:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E1C6B1F250EF
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 04:55:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B22463B9;
-	Fri, 22 Dec 2023 04:52:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0A2E168B6;
+	Fri, 22 Dec 2023 04:52:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mL88mk/A"
+	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="YGHObL/P"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 146EC568B;
-	Fri, 22 Dec 2023 04:52:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-5cd870422c8so845807a12.0;
-        Thu, 21 Dec 2023 20:52:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703220758; x=1703825558; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=wy4FnoE63HSTWvD7t5BrS3SLWIs+Za9UBHpe2htpsf0=;
-        b=mL88mk/Ay4AbPlmgljpJAFanfevk/JJW9EmHJynmdQ82+uysWq1CaGrMUQTNJUq2bG
-         +Z4kfD/740R275ni5kSxyYxk8qvanDppRIVSTXzsSYics9lkcNv5YVBTlgxZwp2mqnCi
-         UzcZDzTAGr86fvb6aAbqXHD8bnuJwTNocdYJjBsEIjv+kz7ufB11Fjv6b8AO28AibM3+
-         7r0iBtdZoDX10FfG8BnHdBIDgox4KSKz3W6HTlKsGv3DL5wESVVgOWVKN4XBTBRoaZ9k
-         fuxuzumFf4EizVWXSztm7UOF2PQwOyooAumQnWLBA7kA5Q/LBkYOIZrBnBJmsAEIAPUq
-         OQBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703220758; x=1703825558;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=wy4FnoE63HSTWvD7t5BrS3SLWIs+Za9UBHpe2htpsf0=;
-        b=Y4swRmsAeenJanF/92crwmtyT1G3m6VQzNoeBu8MGnvHeHjZwtpcXG15go0i8Nn3LB
-         Lq39t+MWcM+2PzGTGb+sNiAZDoeSV6cOFZZrVrPmwDyrdlRCd1P3+Gd4Xa8xj1XfobtN
-         59K3MiDlSF7lZnH3u81k/BIgwkEF1fB+MpsIJOnAZgBuyYxiKSUKzYrJCya9DA9fvOeE
-         BTrmQ+JTs0Ov97VjKc9ZA3VVVptXp65GZ7Q0ikeMeFzO3PJF5yLnlc2dX8WRtl4nWjpb
-         RxQmuY749r0J6U7Th/fvwUqvM/gO/6nKS7Bn3/sVxjMMoc9n4aDI1ddFQGWpoFhQaPUZ
-         Ht2w==
-X-Gm-Message-State: AOJu0Yzfk5/6NI92UMWVDGchqlHrVh56/H8p8J4oEEjDD40PaVQKxXNU
-	N+Zq2W6YJGDgCYyVqvwdLLo=
-X-Google-Smtp-Source: AGHT+IGaoBIq/qvdS23N9Qu7zQF2cx9KfQFiOSRvMlkefdp7esZHfzsigVMBtlFZzudBZ56vi9g3XQ==
-X-Received: by 2002:a05:6a20:258f:b0:194:f21e:209c with SMTP id k15-20020a056a20258f00b00194f21e209cmr576302pzd.102.1703220758240;
-        Thu, 21 Dec 2023 20:52:38 -0800 (PST)
-Received: from g2039B650.. ([106.39.42.144])
-        by smtp.gmail.com with ESMTPSA id sm18-20020a17090b2e5200b002868abc0e6dsm6554259pjb.11.2023.12.21.20.52.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Dec 2023 20:52:37 -0800 (PST)
-From: Gui-Dong Han <2045gemini@gmail.com>
-To: song@kernel.org,
-	yukuai3@huawei.com
-Cc: linux-raid@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	baijiaju1990@outlook.com,
-	Gui-Dong Han <2045gemini@gmail.com>,
-	BassCheck <bass@buaa.edu.cn>
-Subject: [PATCH v2] md/raid5: fix atomicity violation in raid5_cache_count
-Date: Fri, 22 Dec 2023 12:52:24 +0800
-Message-Id: <20231222045224.4439-1-2045gemini@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FC8363A7;
+	Fri, 22 Dec 2023 04:52:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
+X-UUID: eaf4f550a08511eeba30773df0976c77-20231222
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+	h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=psOz/D6w4cz5Ki4AhGxRPNaz/YjLmA8Yz1FbmApe4v4=;
+	b=YGHObL/PFf49d4JEZ/9H51A91DHpk3IHwGF3Uq+rKu4VCRO84WCK3NXUObM3dcA7SP8Jio9tekPUOwGyoD9oUd8RtOCVR7HZF+6D850aN67pPrVufGzj6dgdWMMa6w83sJXoozMmeDJcsRM0ZjxEDDy1ggfTczPztfnw7AUcMSE=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.35,REQID:976dfcfc-67b4-4003-9530-4f9f495b9986,IP:0,U
+	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+	release,TS:0
+X-CID-META: VersionHash:5d391d7,CLOUDID:a4d20c82-8d4f-477b-89d2-1e3bdbef96d1,B
+	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+	RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
+	DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-UUID: eaf4f550a08511eeba30773df0976c77-20231222
+Received: from mtkmbs11n2.mediatek.inc [(172.21.101.187)] by mailgw02.mediatek.com
+	(envelope-from <jason-jh.lin@mediatek.com>)
+	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+	with ESMTP id 1062368413; Fri, 22 Dec 2023 12:52:32 +0800
+Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
+ mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Fri, 22 Dec 2023 12:52:31 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
+ mtkmbs11n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Fri, 22 Dec 2023 12:52:31 +0800
+From: Jason-JH.Lin <jason-jh.lin@mediatek.com>
+To: Jassi Brar <jassisinghbrar@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Matthias Brugger
+	<matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
+	<angelogioacchino.delregno@collabora.com>, Chun-Kuang Hu
+	<chunkuang.hu@kernel.org>
+CC: Conor Dooley <conor+dt@kernel.org>, Mauro Carvalho Chehab
+	<mchehab@kernel.org>, <linux-kernel@vger.kernel.org>,
+	<devicetree@vger.kernel.org>, <linux-media@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>,
+	Jason-ch Chen <jason-ch.chen@mediatek.com>, Johnson Wang
+	<johnson.wang@mediatek.com>, "Jason-JH . Lin" <jason-jh.lin@mediatek.com>,
+	Singo Chang <singo.chang@mediatek.com>, Nancy Lin <nancy.lin@mediatek.com>,
+	Shawn Sung <shawn.sung@mediatek.com>,
+	<Project_Global_Chrome_Upstream_Group@mediatek.com>
+Subject: [PATCH v3 6/9] soc: mediatek: cmdq: Add cmdq_pkt_finalize_loop for looping cmd with irq
+Date: Fri, 22 Dec 2023 12:52:25 +0800
+Message-ID: <20231222045228.27826-7-jason-jh.lin@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20231222045228.27826-1-jason-jh.lin@mediatek.com>
+References: <20231222045228.27826-1-jason-jh.lin@mediatek.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-AS-Result: No-10--0.492500-8.000000
+X-TMASE-MatchedRID: wDTc/wNgEcO6S8yZYvyqCb2xWbKjBfWPuLwbhNl9B5VOCtCDJNptxhFx
+	R5JQAS6O09NQNrxIpFYQ5m8HWfjjn8xcivU0QoqPaK+MsTwM+1mlAfiiC1VA/eLsQIDmr3S5cBd
+	H+AtoPBrL7a7vhpw6CIAy6p60ZV62Mhe627A+8aHdB/CxWTRRu+rAZ8KTspSzWT4KJpMmg3S77I
+	sKEkexbNJvOnGME/lLUUuOsHK3otwxOgedmAunpWBME6/SK5iEAY/ZF9gZTzXp92WPce4cNxkUg
+	0Ll9q5JF0aD5ljt43pMcHZD6gqu7wxMjfifIXfowkvVoA11Twp+3BndfXUhXQ==
+X-TM-AS-User-Approved-Sender: No
+X-TM-AS-User-Blocked-Sender: No
+X-TMASE-Result: 10--0.492500-8.000000
+X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-SNTS-SMTP: 9F3AB5016B390CB062D039916EE8A520BB800B7261D22405B9ABB79809388DDB2000:8
+X-MTK: N
 
-In raid5_cache_count():
-	if (conf->max_nr_stripes < conf->min_nr_stripes)
-		return 0;
-	return conf->max_nr_stripes - conf->min_nr_stripes;
-The current check is ineffective, as the values could change immediately
-after being checked.
+Add cmdq_pkt_finalize_loop to CMDQ driver.
 
-In raid5_set_cache_size():
-	...
-	conf->min_nr_stripes = size;
-	...
-	while (size > conf->max_nr_stripes)
-		conf->min_nr_stripes = conf->max_nr_stripes;
-	...
+cmdq_pkt_finalize_loop appends end of command(EOC) instruction and
+jump to start of command buffer instruction to make the command
+buffer loopable.
 
-Due to intermediate value updates in raid5_set_cache_size(), concurrent
-execution of raid5_cache_count() and raid5_set_cache_size() may lead to
-inconsistent reads of conf->max_nr_stripes and conf->min_nr_stripes.
-The current checks are ineffective as values could change immediately
-after being checked, raising the risk of conf->min_nr_stripes exceeding
-conf->max_nr_stripes and potentially causing an integer overflow.
-
-This possible bug is found by an experimental static analysis tool
-developed by our team. This tool analyzes the locking APIs to extract
-function pairs that can be concurrently executed, and then analyzes the
-instructions in the paired functions to identify possible concurrency bugs
-including data races and atomicity violations. The above possible bug is
-reported when our tool analyzes the source code of Linux 6.2.
-
-To resolve this issue, it is suggested to introduce local variables
-'min_stripes' and 'max_stripes' in raid5_cache_count() to ensure the
-values remain stable throughout the check. Adding locks in
-raid5_cache_count() fails to resolve atomicity violations, as
-raid5_set_cache_size() may hold intermediate values of
-conf->min_nr_stripes while unlocked. With this patch applied, our tool no
-longer reports the bug, with the kernel configuration allyesconfig for
-x86_64. Due to the lack of associated hardware, we cannot test the patch
-in runtime testing, and just verify it according to the code logic.
-
-Fixes: edbe83ab4c27e ("md/raid5: allow the stripe_cache to grow and ...")
-Reported-by: BassCheck <bass@buaa.edu.cn>
-Signed-off-by: Gui-Dong Han <2045gemini@gmail.com>
-
+Signed-off-by: Jason-JH.Lin <jason-jh.lin@mediatek.com>
 ---
-v2:
-* In this patch v2, we've updated to use READ_ONCE() instead of direct
-reads for accessing max_nr_stripes and min_nr_stripes, since read and
-write can concurrent.
-  Thank Yu Kuai for helpful advice.
----
- drivers/md/raid5.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/soc/mediatek/mtk-cmdq-helper.c | 23 +++++++++++++++++++++++
+ include/linux/soc/mediatek/mtk-cmdq.h  |  8 ++++++++
+ 2 files changed, 31 insertions(+)
 
-diff --git a/drivers/md/raid5.c b/drivers/md/raid5.c
-index 8497880135ee..9037e46de0e2 100644
---- a/drivers/md/raid5.c
-+++ b/drivers/md/raid5.c
-@@ -7391,10 +7391,12 @@ static unsigned long raid5_cache_count(struct shrinker *shrink,
- {
- 	struct r5conf *conf = shrink->private_data;
- 
--	if (conf->max_nr_stripes < conf->min_nr_stripes)
-+	int max_stripes = READ_ONCE(conf->max_nr_stripes);
-+	int min_stripes = READ_ONCE(conf->min_nr_stripes);
-+	if (max_stripes < min_stripes)
- 		/* unlikely, but not impossible */
- 		return 0;
--	return conf->max_nr_stripes - conf->min_nr_stripes;
-+	return max_stripes - min_stripes;
+diff --git a/drivers/soc/mediatek/mtk-cmdq-helper.c b/drivers/soc/mediatek/mtk-cmdq-helper.c
+index dfef436d9b8a..b6ba8b5d0db7 100644
+--- a/drivers/soc/mediatek/mtk-cmdq-helper.c
++++ b/drivers/soc/mediatek/mtk-cmdq-helper.c
+@@ -475,6 +475,29 @@ int cmdq_pkt_finalize(struct cmdq_pkt *pkt)
  }
+ EXPORT_SYMBOL(cmdq_pkt_finalize);
  
- static struct r5conf *setup_conf(struct mddev *mddev)
++int cmdq_pkt_finalize_loop(struct cmdq_pkt *pkt)
++{
++	struct cmdq_instruction inst = { {0} };
++	int err;
++
++	/* insert EOC and generate IRQ for each command iteration */
++	inst.op = CMDQ_CODE_EOC;
++	inst.value = CMDQ_EOC_IRQ_EN;
++	err = cmdq_pkt_append_command(pkt, inst);
++	if (err < 0)
++		return err;
++
++	/* JUMP to start of pkt */
++	err = cmdq_pkt_jump(pkt, pkt->pa_base);
++	if (err < 0)
++		return err;
++
++	pkt->loop = true;
++
++	return err;
++}
++EXPORT_SYMBOL(cmdq_pkt_finalize_loop);
++
+ int cmdq_pkt_flush_async(struct cmdq_pkt *pkt)
+ {
+ 	int err;
+diff --git a/include/linux/soc/mediatek/mtk-cmdq.h b/include/linux/soc/mediatek/mtk-cmdq.h
+index d1cd8108cad0..39994fc8a4f5 100644
+--- a/include/linux/soc/mediatek/mtk-cmdq.h
++++ b/include/linux/soc/mediatek/mtk-cmdq.h
+@@ -329,6 +329,14 @@ int cmdq_pkt_jump(struct cmdq_pkt *pkt, dma_addr_t addr);
+  */
+ int cmdq_pkt_finalize(struct cmdq_pkt *pkt);
+ 
++/**
++ * cmdq_pkt_finalize_loop() - Append EOC and jump to start command.
++ * @pkt:	the CMDQ packet
++ *
++ * Return: 0 for success; else the error code is returned
++ */
++int cmdq_pkt_finalize_loop(struct cmdq_pkt *pkt);
++
+ /**
+  * cmdq_pkt_flush_async() - trigger CMDQ to asynchronously execute the CMDQ
+  *                          packet and call back at the end of done packet
 -- 
-2.34.1
+2.18.0
 
 
