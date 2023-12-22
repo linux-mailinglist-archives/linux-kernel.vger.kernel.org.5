@@ -1,458 +1,185 @@
-Return-Path: <linux-kernel+bounces-9402-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9406-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9D5B81C508
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 07:26:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1121681C514
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 07:28:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 812692866E5
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 06:26:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BB7141F261D9
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 06:28:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1C17B65B;
-	Fri, 22 Dec 2023 06:26:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A856F9C3;
+	Fri, 22 Dec 2023 06:27:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="Ha0xCEu3"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="cS2igrNA"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B2409468;
-	Fri, 22 Dec 2023 06:26:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63446C433C7;
-	Fri, 22 Dec 2023 06:26:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1703226366;
-	bh=RcsFW1L2WrpJyYwQYLw00Ia10eHMAhJtzWgVW/ZE2EY=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=Ha0xCEu3Fh1I2oApz9I+MyAz5Gk7OMFZjsCV2IZnqwQx3ubfkKhKFQiHfFp5Zfm6G
-	 QVQwM/ORAIbFM/94hwStez9jWsVKVj+Q2KgpktnaLMz38mXITmFoHfSikHPF2Ibv9g
-	 WSqBdaI7lmGaJfZQtFSdvo/axxVCSML3njwcQbuQ=
-Date: Thu, 21 Dec 2023 22:26:05 -0800
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Arnd Bergmann <arnd@arndb.de>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>, David Miller <davem@davemloft.net>
-Subject: Re: linux-next: build failure after merge of the mm tree
-Message-Id: <20231221222605.7295cd886dd551b9bf95d4e9@linux-foundation.org>
-In-Reply-To: <20231222111649.7802e7d7@canb.auug.org.au>
-References: <20231127144418.54daad5d@canb.auug.org.au>
-	<20231222111649.7802e7d7@canb.auug.org.au>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83C1179D4
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 06:27:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1703226470; x=1734762470;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references;
+  bh=hJZ0EKv2QD33t/EPcdMXeHcn3tCCkT2bruiT8sdwzJI=;
+  b=cS2igrNAMIXsuCXj+Xdm2m6flMC+m2W9r5k2pmjfmKYG0HFSNmBaOp39
+   ZF/v3fhmZzT/Wr4e+uHN3IReLuQrQ1BVJLOgqaoJnYZ0hrSOcrwjCjEE1
+   x9ZdaPYIo33zbJ1G/ZSUCOlREVu6lhOqkOTjUdx/MdQaN7vPA2Vz277aD
+   eATcGM+mDlC8/df7hj9LTTAJdHNojAWf4Y2jiOJYCF5imUrfLj6cJpHKF
+   MzaOdROMOvmJ3rL6P79iIKKUWMWIn7+TT7qUrFWo5uaaz1Uj7ud0nStZA
+   A321/4fpjaVNtqi1ENGkNxYYqdK4Yda4CbhEuFoUOyOrCmaa1xF5ZH5Cx
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10931"; a="462519999"
+X-IronPort-AV: E=Sophos;i="6.04,294,1695711600"; 
+   d="scan'208";a="462519999"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Dec 2023 22:27:49 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10931"; a="847362650"
+X-IronPort-AV: E=Sophos;i="6.04,294,1695711600"; 
+   d="scan'208";a="847362650"
+Received: from qiuxu-clx.sh.intel.com ([10.239.53.109])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Dec 2023 22:27:45 -0800
+From: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+To: naoya.horiguchi@nec.com
+Cc: linmiaohe@huawei.com,
+	akpm@linux-foundation.org,
+	tony.luck@intel.com,
+	ying.huang@intel.com,
+	fengwei.yin@intel.com,
+	qiuxu.zhuo@intel.com,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/2] mm: memory-failure: Make memory_failure_queue_delayed() helper
+Date: Fri, 22 Dec 2023 14:27:05 +0800
+Message-Id: <20231222062706.5221-1-qiuxu.zhuo@intel.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20231215081204.8802-1-qiuxu.zhuo@intel.com>
+References: <20231215081204.8802-1-qiuxu.zhuo@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 
-On Fri, 22 Dec 2023 11:16:49 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+Introduce the memory_failure_queue_delayed() helper for deferred handling
+of memory failure tasks. This prepares for later re-splitting of a
+hardware-poisoned huge page.
 
-> Hi all,
-> 
-> On Mon, 27 Nov 2023 14:44:18 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> >
-> > After merging the mm tree, today's linux-next build (sparc64 defconfig)
-> > failed like this:
-> > 
-> > arch/sparc/vdso/vclock_gettime.c:254:1: warning: no previous prototype for '__vdso_clock_gettime' [-Wmissing-prototypes]
-> >   254 | __vdso_clock_gettime(clockid_t clock, struct __kernel_old_timespec *ts)
-> > 
->
-> ...
->
-> > So I turned off -Werrror in the lib directory as well which added this:
-> > 
-> > arch/sparc/lib/ucmpdi2.c:5:11: warning: no previous prototype for '__ucmpdi2' [-Wmissing-prototypes]
-> >     5 | word_type __ucmpdi2(unsigned long long a, unsigned long long b)
-> >       |           ^~~~~~~~~
-> 
-> Is anything being done about the above warnings?
-
-OK, here's sparc64.  I'll do sparc32 in a bit.
-
-
-From: Andrew Morton <akpm@linux-foundation.org>
-Subject: sparc64: fix up fallout from enabling -Wmissing-prototypes
-Date: Thu Dec 21 04:33:25 PM PST 2023
-
-Fix sparc64 allmodconfig build errors caused by enabling
--Wmissing-prototypes.
-
-- Symbols only used from assembly were given local prototypes
-
-- A couple of missing inclusions were added
-
-- Define some functions to be static
-
-- vmemmap_free() is only needed if CONFIG_MEMORY_HOTPLUG
-
-- add new arch/sparc/include/asm/irq_work.h for arch_irq_work_raise()
-
-- move prom_cif_init() prototype to header, fix longstanding
-  prom_cif_init() borkage.
-
-- various function declarations were moved from .c into shared .h
-
-Fixes: c6345dfa6e3e ("Makefile.extrawarn: turn on missing-prototypes globally")
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: "David S. Miller" <davem@davemloft.net>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
 ---
+Prepares for the patch 2.
 
- arch/sparc/include/asm/floppy_64.h |    4 +++-
- arch/sparc/include/asm/irq_work.h  |   10 ++++++++++
- arch/sparc/include/asm/openprom.h  |    2 ++
- arch/sparc/kernel/adi_64.c         |    6 +++---
- arch/sparc/kernel/asm-offsets.c    |    4 +++-
- arch/sparc/kernel/pci_sun4v.c      |    2 +-
- arch/sparc/kernel/setup_64.c       |    2 +-
- arch/sparc/kernel/time_64.c        |    2 ++
- arch/sparc/kernel/traps_64.c       |    7 ++++---
- arch/sparc/kernel/uprobes.c        |    1 +
- arch/sparc/mm/init_64.c            |    2 ++
- arch/sparc/power/hibernate.c       |    1 +
- arch/sparc/prom/init_64.c          |    2 --
- arch/sparc/prom/misc_64.c          |    2 +-
- arch/sparc/prom/p1275.c            |    2 +-
- arch/sparc/vdso/vclock_gettime.c   |   10 ++++++++++
- arch/sparc/vdso/vma.c              |    2 +-
- drivers/mtd/maps/sun_uflash.c      |    2 +-
- drivers/sbus/char/bbc_i2c.c        |    3 ---
- drivers/sbus/char/bbc_i2c.h        |    3 +++
- 20 files changed, 50 insertions(+), 19 deletions(-)
+ mm/memory-failure.c | 51 +++++++++++++++++++++++++--------------------
+ 1 file changed, 28 insertions(+), 23 deletions(-)
 
---- a/arch/sparc/vdso/vclock_gettime.c~arch-sparc-fix-up-fallout-from-enabling-wmissing-prototypes
-+++ a/arch/sparc/vdso/vclock_gettime.c
-@@ -250,6 +250,8 @@ notrace static int do_monotonic_coarse(s
- 	return 0;
- }
- 
-+int __vdso_clock_gettime(clockid_t clock, struct __kernel_old_timespec *ts);
-+
- notrace int
- __vdso_clock_gettime(clockid_t clock, struct __kernel_old_timespec *ts)
- {
-@@ -278,6 +280,9 @@ int
- clock_gettime(clockid_t, struct __kernel_old_timespec *)
- 	__attribute__((weak, alias("__vdso_clock_gettime")));
- 
-+int
-+__vdso_clock_gettime_stick(clockid_t clock, struct __kernel_old_timespec *ts);
-+
- notrace int
- __vdso_clock_gettime_stick(clockid_t clock, struct __kernel_old_timespec *ts)
- {
-@@ -303,6 +308,8 @@ __vdso_clock_gettime_stick(clockid_t clo
- 	return vdso_fallback_gettime(clock, ts);
- }
- 
-+int __vdso_gettimeofday(struct __kernel_old_timeval *tv, struct timezone *tz);
-+
- notrace int
- __vdso_gettimeofday(struct __kernel_old_timeval *tv, struct timezone *tz)
- {
-@@ -339,6 +346,9 @@ int
- gettimeofday(struct __kernel_old_timeval *, struct timezone *)
- 	__attribute__((weak, alias("__vdso_gettimeofday")));
- 
-+int
-+__vdso_gettimeofday_stick(struct __kernel_old_timeval *tv, struct timezone *tz);
-+
- notrace int
- __vdso_gettimeofday_stick(struct __kernel_old_timeval *tv, struct timezone *tz)
- {
---- a/arch/sparc/kernel/asm-offsets.c~arch-sparc-fix-up-fallout-from-enabling-wmissing-prototypes
-+++ a/arch/sparc/kernel/asm-offsets.c
-@@ -19,6 +19,7 @@
- #include <asm/hibernate.h>
- 
- #ifdef CONFIG_SPARC32
-+int sparc32_foo(void);
- int sparc32_foo(void)
- {
- 	DEFINE(AOFF_thread_fork_kpsr,
-@@ -26,6 +27,7 @@ int sparc32_foo(void)
- 	return 0;
- }
- #else
-+int sparc64_foo(void);
- int sparc64_foo(void)
- {
- #ifdef CONFIG_HIBERNATION
-@@ -45,6 +47,7 @@ int sparc64_foo(void)
- }
- #endif
- 
-+int foo(void);
- int foo(void)
- {
- 	BLANK();
-@@ -57,4 +60,3 @@ int foo(void)
- 	/* DEFINE(NUM_USER_SEGMENTS, TASK_SIZE>>28); */
- 	return 0;
- }
--
---- a/arch/sparc/prom/misc_64.c~arch-sparc-fix-up-fallout-from-enabling-wmissing-prototypes
-+++ a/arch/sparc/prom/misc_64.c
-@@ -162,7 +162,7 @@ unsigned char prom_get_idprom(char *idbu
- 	return 0xff;
- }
- 
--int prom_get_mmu_ihandle(void)
-+static int prom_get_mmu_ihandle(void)
- {
- 	phandle node;
- 	int ret;
---- a/arch/sparc/kernel/traps_64.c~arch-sparc-fix-up-fallout-from-enabling-wmissing-prototypes
-+++ a/arch/sparc/kernel/traps_64.c
-@@ -22,6 +22,7 @@
- #include <linux/kdebug.h>
- #include <linux/ftrace.h>
- #include <linux/reboot.h>
-+#include <linux/cpu.h>
- #include <linux/gfp.h>
- #include <linux/context_tracking.h>
- 
-@@ -249,7 +250,7 @@ void sun4v_insn_access_exception_tl1(str
- 	sun4v_insn_access_exception(regs, addr, type_ctx);
- }
- 
--bool is_no_fault_exception(struct pt_regs *regs)
-+static bool is_no_fault_exception(struct pt_regs *regs)
- {
- 	unsigned char asi;
- 	u32 insn;
-@@ -2031,7 +2032,7 @@ static void sun4v_log_error(struct pt_re
- /* Handle memory corruption detected error which is vectored in
-  * through resumable error trap.
-  */
--void do_mcd_err(struct pt_regs *regs, struct sun4v_error_entry ent)
-+static void do_mcd_err(struct pt_regs *regs, struct sun4v_error_entry ent)
- {
- 	if (notify_die(DIE_TRAP, "MCD error", regs, 0, 0x34,
- 		       SIGSEGV) == NOTIFY_STOP)
-@@ -2149,7 +2150,7 @@ static unsigned long sun4v_get_vaddr(str
- /* Attempt to handle non-resumable errors generated from userspace.
-  * Returns true if the signal was handled, false otherwise.
-  */
--bool sun4v_nonresum_error_user_handled(struct pt_regs *regs,
-+static bool sun4v_nonresum_error_user_handled(struct pt_regs *regs,
- 				  struct sun4v_error_entry *ent) {
- 
- 	unsigned int attrs = ent->err_attrs;
---- a/arch/sparc/mm/init_64.c~arch-sparc-fix-up-fallout-from-enabling-wmissing-prototypes
-+++ a/arch/sparc/mm/init_64.c
-@@ -2641,10 +2641,12 @@ int __meminit vmemmap_populate(unsigned
- 	return 0;
- }
- 
-+#ifdef CONFIG_MEMORY_HOTPLUG
- void vmemmap_free(unsigned long start, unsigned long end,
- 		struct vmem_altmap *altmap)
- {
- }
-+#endif
- #endif /* CONFIG_SPARSEMEM_VMEMMAP */
- 
- /* These are actually filled in at boot time by sun4{u,v}_pgprot_init() */
---- a/arch/sparc/vdso/vma.c~arch-sparc-fix-up-fallout-from-enabling-wmissing-prototypes
-+++ a/arch/sparc/vdso/vma.c
-@@ -243,7 +243,7 @@ static int stick_patch(const struct vdso
-  * Allocate pages for the vdso and vvar, and copy in the vdso text from the
-  * kernel image.
-  */
--int __init init_vdso_image(const struct vdso_image *image,
-+static int __init init_vdso_image(const struct vdso_image *image,
- 			   struct vm_special_mapping *vdso_mapping, bool elf64)
- {
- 	int cnpages = (image->size) / PAGE_SIZE;
---- a/arch/sparc/kernel/setup_64.c~arch-sparc-fix-up-fallout-from-enabling-wmissing-prototypes
-+++ a/arch/sparc/kernel/setup_64.c
-@@ -599,7 +599,7 @@ static void __init init_sparc64_elf_hwca
- 		pause_patch();
- }
- 
--void __init alloc_irqstack_bootmem(void)
-+static void __init alloc_irqstack_bootmem(void)
- {
- 	unsigned int i, node;
- 
---- a/arch/sparc/kernel/time_64.c~arch-sparc-fix-up-fallout-from-enabling-wmissing-prototypes
-+++ a/arch/sparc/kernel/time_64.c
-@@ -35,6 +35,8 @@
- #include <linux/platform_device.h>
- #include <linux/ftrace.h>
- 
-+#include <linux/sched/clock.h>
-+
- #include <asm/oplib.h>
- #include <asm/timer.h>
- #include <asm/irq.h>
---- a/arch/sparc/power/hibernate.c~arch-sparc-fix-up-fallout-from-enabling-wmissing-prototypes
-+++ a/arch/sparc/power/hibernate.c
-@@ -6,6 +6,7 @@
-  */
- 
- #include <linux/mm.h>
-+#include <linux/suspend.h>
- 
- #include <asm/hibernate.h>
- #include <asm/visasm.h>
---- a/arch/sparc/kernel/adi_64.c~arch-sparc-fix-up-fallout-from-enabling-wmissing-prototypes
-+++ a/arch/sparc/kernel/adi_64.c
-@@ -121,7 +121,7 @@ adi_not_found:
- 		mdesc_release(hp);
- }
- 
--tag_storage_desc_t *find_tag_store(struct mm_struct *mm,
-+static tag_storage_desc_t *find_tag_store(struct mm_struct *mm,
- 				   struct vm_area_struct *vma,
- 				   unsigned long addr)
- {
-@@ -153,7 +153,7 @@ tag_storage_desc_t *find_tag_store(struc
- 	return tag_desc;
- }
- 
--tag_storage_desc_t *alloc_tag_store(struct mm_struct *mm,
-+static tag_storage_desc_t *alloc_tag_store(struct mm_struct *mm,
- 				    struct vm_area_struct *vma,
- 				    unsigned long addr)
- {
-@@ -296,7 +296,7 @@ out:
- 	return tag_desc;
- }
- 
--void del_tag_store(tag_storage_desc_t *tag_desc, struct mm_struct *mm)
-+static void del_tag_store(tag_storage_desc_t *tag_desc, struct mm_struct *mm)
- {
- 	unsigned long flags;
- 	unsigned char *tags = NULL;
---- /dev/null
-+++ a/arch/sparc/include/asm/irq_work.h
-@@ -0,0 +1,10 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+
-+#ifndef __ASM_SPARC_IRQ_WORK_H
-+#define __ASM_SPARC_IRQ_WORK_H
-+
-+#include <asm-generic/irq_work.h>
-+
-+extern void arch_irq_work_raise(void);
-+
-+#endif /* __ASM_SPARC_IRQ_WORK_H */
---- a/arch/sparc/include/asm/floppy_64.h~arch-sparc-fix-up-fallout-from-enabling-wmissing-prototypes
-+++ a/arch/sparc/include/asm/floppy_64.h
-@@ -197,6 +197,7 @@ static void sun_fd_enable_dma(void)
- 	pdma_areasize = pdma_size;
- }
- 
-+irqreturn_t sparc_floppy_irq(int irq, void *dev_cookie);
- irqreturn_t sparc_floppy_irq(int irq, void *dev_cookie)
- {
- 	if (likely(doing_pdma)) {
-@@ -434,7 +435,8 @@ static int sun_pci_fd_eject(int drive)
- 	return -EINVAL;
- }
- 
--void sun_pci_fd_dma_callback(struct ebus_dma_info *p, int event, void *cookie)
-+static void
-+sun_pci_fd_dma_callback(struct ebus_dma_info *p, int event, void *cookie)
- {
- 	floppy_interrupt(0, NULL);
- }
---- a/arch/sparc/prom/init_64.c~arch-sparc-fix-up-fallout-from-enabling-wmissing-prototypes
-+++ a/arch/sparc/prom/init_64.c
-@@ -27,8 +27,6 @@ phandle prom_chosen_node;
-  * It gets passed the pointer to the PROM vector.
-  */
- 
--extern void prom_cif_init(void *);
--
- void __init prom_init(void *cif_handler)
- {
- 	phandle node;
---- a/arch/sparc/prom/p1275.c~arch-sparc-fix-up-fallout-from-enabling-wmissing-prototypes
-+++ a/arch/sparc/prom/p1275.c
-@@ -49,7 +49,7 @@ void p1275_cmd_direct(unsigned long *arg
- 	local_irq_restore(flags);
- }
- 
--void prom_cif_init(void *cif_handler, void *cif_stack)
-+void prom_cif_init(void *cif_handler)
- {
- 	p1275buf.prom_cif_handler = (void (*)(long *))cif_handler;
- }
---- a/arch/sparc/include/asm/openprom.h~arch-sparc-fix-up-fallout-from-enabling-wmissing-prototypes
-+++ a/arch/sparc/include/asm/openprom.h
-@@ -275,6 +275,8 @@ struct linux_prom_pci_intmask {
- 	unsigned int interrupt;
+diff --git a/mm/memory-failure.c b/mm/memory-failure.c
+index 660c21859118..8f2c11863bae 100644
+--- a/mm/memory-failure.c
++++ b/mm/memory-failure.c
+@@ -2385,28 +2385,12 @@ struct memory_failure_cpu {
+ 	DECLARE_KFIFO(fifo, struct memory_failure_entry,
+ 		      MEMORY_FAILURE_FIFO_SIZE);
+ 	spinlock_t lock;
+-	struct work_struct work;
++	struct delayed_work work;
  };
  
-+extern void prom_cif_init(void *cif_handler);
-+
- #endif /* !(__ASSEMBLY__) */
+ static DEFINE_PER_CPU(struct memory_failure_cpu, memory_failure_cpu);
  
- #endif /* !(__SPARC_OPENPROM_H) */
---- a/arch/sparc/kernel/pci_sun4v.c~arch-sparc-fix-up-fallout-from-enabling-wmissing-prototypes
-+++ a/arch/sparc/kernel/pci_sun4v.c
-@@ -256,7 +256,7 @@ range_alloc_fail:
- 	return NULL;
+-/**
+- * memory_failure_queue - Schedule handling memory failure of a page.
+- * @pfn: Page Number of the corrupted page
+- * @flags: Flags for memory failure handling
+- *
+- * This function is called by the low level hardware error handler
+- * when it detects hardware memory corruption of a page. It schedules
+- * the recovering of error page, including dropping pages, killing
+- * processes etc.
+- *
+- * The function is primarily of use for corruptions that
+- * happen outside the current execution context (e.g. when
+- * detected by a background scrubber)
+- *
+- * Can run in IRQ context.
+- */
+-void memory_failure_queue(unsigned long pfn, int flags)
++static void memory_failure_queue_delayed(unsigned long pfn, int flags, unsigned long delay)
+ {
+ 	struct memory_failure_cpu *mf_cpu;
+ 	unsigned long proc_flags;
+@@ -2418,13 +2402,34 @@ void memory_failure_queue(unsigned long pfn, int flags)
+ 	mf_cpu = &get_cpu_var(memory_failure_cpu);
+ 	spin_lock_irqsave(&mf_cpu->lock, proc_flags);
+ 	if (kfifo_put(&mf_cpu->fifo, entry))
+-		schedule_work_on(smp_processor_id(), &mf_cpu->work);
++		schedule_delayed_work_on(smp_processor_id(), &mf_cpu->work, delay);
+ 	else
+ 		pr_err("buffer overflow when queuing memory failure at %#lx\n",
+ 		       pfn);
+ 	spin_unlock_irqrestore(&mf_cpu->lock, proc_flags);
+ 	put_cpu_var(memory_failure_cpu);
+ }
++
++/**
++ * memory_failure_queue - Schedule handling memory failure of a page.
++ * @pfn: Page Number of the corrupted page
++ * @flags: Flags for memory failure handling
++ *
++ * This function is called by the low level hardware error handler
++ * when it detects hardware memory corruption of a page. It schedules
++ * the recovering of error page, including dropping pages, killing
++ * processes etc.
++ *
++ * The function is primarily of use for corruptions that
++ * happen outside the current execution context (e.g. when
++ * detected by a background scrubber)
++ *
++ * Can run in IRQ context.
++ */
++void memory_failure_queue(unsigned long pfn, int flags)
++{
++	memory_failure_queue_delayed(pfn, flags, 0);
++}
+ EXPORT_SYMBOL_GPL(memory_failure_queue);
+ 
+ static void memory_failure_work_func(struct work_struct *work)
+@@ -2434,7 +2439,7 @@ static void memory_failure_work_func(struct work_struct *work)
+ 	unsigned long proc_flags;
+ 	int gotten;
+ 
+-	mf_cpu = container_of(work, struct memory_failure_cpu, work);
++	mf_cpu = container_of(work, struct memory_failure_cpu, work.work);
+ 	for (;;) {
+ 		spin_lock_irqsave(&mf_cpu->lock, proc_flags);
+ 		gotten = kfifo_get(&mf_cpu->fifo, &entry);
+@@ -2457,8 +2462,8 @@ void memory_failure_queue_kick(int cpu)
+ 	struct memory_failure_cpu *mf_cpu;
+ 
+ 	mf_cpu = &per_cpu(memory_failure_cpu, cpu);
+-	cancel_work_sync(&mf_cpu->work);
+-	memory_failure_work_func(&mf_cpu->work);
++	cancel_delayed_work_sync(&mf_cpu->work);
++	memory_failure_work_func(&mf_cpu->work.work);
  }
  
--unsigned long dma_4v_iotsb_bind(unsigned long devhandle,
-+static unsigned long dma_4v_iotsb_bind(unsigned long devhandle,
- 				unsigned long iotsb_num,
- 				struct pci_bus *bus_dev)
- {
---- a/arch/sparc/kernel/uprobes.c~arch-sparc-fix-up-fallout-from-enabling-wmissing-prototypes
-+++ a/arch/sparc/kernel/uprobes.c
-@@ -234,6 +234,7 @@ int arch_uprobe_post_xol(struct arch_upr
- /* Handler for uprobe traps.  This is called from the traps table and
-  * triggers the proper die notification.
-  */
-+void uprobe_trap(struct pt_regs *regs, unsigned long trap_level);
- asmlinkage void uprobe_trap(struct pt_regs *regs,
- 			    unsigned long trap_level)
- {
---- a/drivers/sbus/char/bbc_i2c.c~arch-sparc-fix-up-fallout-from-enabling-wmissing-prototypes
-+++ a/drivers/sbus/char/bbc_i2c.c
-@@ -358,9 +358,6 @@ fail:
- 	return NULL;
- }
+ static int __init memory_failure_init(void)
+@@ -2470,7 +2475,7 @@ static int __init memory_failure_init(void)
+ 		mf_cpu = &per_cpu(memory_failure_cpu, cpu);
+ 		spin_lock_init(&mf_cpu->lock);
+ 		INIT_KFIFO(mf_cpu->fifo);
+-		INIT_WORK(&mf_cpu->work, memory_failure_work_func);
++		INIT_DELAYED_WORK(&mf_cpu->work, memory_failure_work_func);
+ 	}
  
--extern int bbc_envctrl_init(struct bbc_i2c_bus *bp);
--extern void bbc_envctrl_cleanup(struct bbc_i2c_bus *bp);
--
- static int bbc_i2c_probe(struct platform_device *op)
- {
- 	struct bbc_i2c_bus *bp;
---- a/drivers/sbus/char/bbc_i2c.h~arch-sparc-fix-up-fallout-from-enabling-wmissing-prototypes
-+++ a/drivers/sbus/char/bbc_i2c.h
-@@ -82,4 +82,7 @@ extern int bbc_i2c_readb(struct bbc_i2c_
- extern int bbc_i2c_write_buf(struct bbc_i2c_client *, char *buf, int len, int off);
- extern int bbc_i2c_read_buf(struct bbc_i2c_client *, char *buf, int len, int off);
- 
-+extern int bbc_envctrl_init(struct bbc_i2c_bus *bp);
-+extern void bbc_envctrl_cleanup(struct bbc_i2c_bus *bp);
-+
- #endif /* _BBC_I2C_H */
---- a/drivers/mtd/maps/sun_uflash.c~arch-sparc-fix-up-fallout-from-enabling-wmissing-prototypes
-+++ a/drivers/mtd/maps/sun_uflash.c
-@@ -47,7 +47,7 @@ struct map_info uflash_map_templ = {
- 	.bankwidth =	UFLASH_BUSWIDTH,
- };
- 
--int uflash_devinit(struct platform_device *op, struct device_node *dp)
-+static int uflash_devinit(struct platform_device *op, struct device_node *dp)
- {
- 	struct uflash_dev *up;
- 
-_
+ 	register_sysctl_init("vm", memory_failure_table);
+-- 
+2.17.1
 
 
