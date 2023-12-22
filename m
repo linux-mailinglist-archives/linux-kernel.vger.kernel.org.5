@@ -1,226 +1,108 @@
-Return-Path: <linux-kernel+bounces-9430-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9431-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1FFC681C566
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 08:06:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EFD8681C568
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 08:07:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0E1DB1C24F53
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 07:06:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 88A911F24095
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 07:07:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A8E39476;
-	Fri, 22 Dec 2023 07:06:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EF7B944D;
+	Fri, 22 Dec 2023 07:07:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kroah.com header.i=@kroah.com header.b="k2PgjN3G";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="GIW7i2q0"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out30-133.freemail.mail.aliyun.com (out30-133.freemail.mail.aliyun.com [115.124.30.133])
+Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1E47C8C8;
-	Fri, 22 Dec 2023 07:06:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0Vz-25.h_1703228777;
-Received: from 30.221.148.239(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0Vz-25.h_1703228777)
-          by smtp.aliyun-inc.com;
-          Fri, 22 Dec 2023 15:06:19 +0800
-Message-ID: <1d3cb7fc-c1dc-a779-8952-cdbaaf696ce3@linux.alibaba.com>
-Date: Fri, 22 Dec 2023 15:06:17 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5670C8F6E;
+	Fri, 22 Dec 2023 07:06:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kroah.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kroah.com
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailout.nyi.internal (Postfix) with ESMTP id 4CCB35C0277;
+	Fri, 22 Dec 2023 02:06:57 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Fri, 22 Dec 2023 02:06:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm2; t=1703228817; x=1703315217; bh=BoUi0Lx1gZ
+	P9nFMwdw0C6puWbb+B9pctDK1EXIQql98=; b=k2PgjN3G55LwNDgK9tBqE8is8f
+	CHlxQLXVbwCYod8cNkJMa370Y1aYl85MbVkhF6lhvzq7lkJSaQ70QaP+Rk024B25
+	14GbtUbpXXbz/27jKhcoxAK12Xm7LO12Yp/BZaFypa5PSmElPJRRVGqoMb9pavD1
+	sAdwBF+AH0O5zNT7rtNj+/aQxwlxYY89Gw+s1k9bpUgiJ0gORqQqUIuVmk2L9b2L
+	e6lyPZxRRU/yU3iWbjLglgHN0DpsHQE3XqHFd0Uq9sN6YRfanlmMW+0pOQS+piH3
+	B5BYtGi3KMx/DRz61IVo6y/xz4Rv9oF7NqSJR+6qy9NRtiVhEtQWtf+3oXUA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1703228817; x=1703315217; bh=BoUi0Lx1gZP9nFMwdw0C6puWbb+B
+	9pctDK1EXIQql98=; b=GIW7i2q0iNjL41970vV08yUaZJVbJj69iSQbURmYhzRX
+	WM6ARsYauICcmTURsWD7IndffkMKzvc8j/VV+VffpFDyBzIpI9TUQrjM4aDqQei8
+	7mb9o89NWHxuJO0gHXJN4ja7gp7oIwi6IoaKSh23XWOm55Hn0eAPeE35fXdna3eQ
+	pQdizvbI5k7aL2HsLZhiIzMrL2fmX42X8IJnyufXKu/P4KVE5ryvVMY+WP8W2hsE
+	88aMq1epAQhcK50ijwbSwdVKw+uHz0d8mGfFLsv52EHe9G7jyhFJW3SEzFwibHvi
+	362cL6xUiwOhOVwd/15Tw2AP0QNXH606iYLGgz022A==
+X-ME-Sender: <xms:kDWFZWiUpC_2dZubuJ0K4Zt2SVK_FNz9rc7I22ePdcDU_wQ5303Q7Q>
+    <xme:kDWFZXC8Pm7VPfYEHaitRraNXPYWSv2qIfiwMh3o6xWP_JcSaisLLwMbdwBLXharY
+    ehG1klrRTszLA>
+X-ME-Received: <xmr:kDWFZeEzoxzGul4z6i5gvJ6pnfW_Gcg-PoK91Gz6rwMM0JK2gzy_Uf3S1pQ-QwXYggciVNXTRZcJQt2Yz02vfQHbcd8bIDgz0w>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdduiedguddtvdcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgv
+    ghcumffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeehge
+    dvvedvleejuefgtdduudfhkeeltdeihfevjeekjeeuhfdtueefhffgheekteenucevlhhu
+    shhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrhgvgheskhhroh
+    grhhdrtghomh
+X-ME-Proxy: <xmx:kDWFZfSoaAg-TLcnCyy4YMrXPWXx4X97u8eN97QST4eDSrgCpoRJNA>
+    <xmx:kDWFZTzsjjHVigfErfTZm_Jr6f2lEDB6nF3suejAinorLWSRAEE2aA>
+    <xmx:kDWFZd4ZT9LgMxMuJTxeFckvYJ_4IBP8kzyGdMLGlf1LrHTmhqs6xw>
+    <xmx:kTWFZanjf0zzZQDxKcOxnNaRHsWnTxFjzNAC9BK4tUYRX9bTKZWllQ>
+Feedback-ID: i787e41f1:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 22 Dec 2023 02:06:56 -0500 (EST)
+Date: Fri, 22 Dec 2023 08:06:55 +0100
+From: Greg KH <greg@kroah.com>
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Tejun Heo <tj@kernel.org>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: duplicate patchs in the cgroup tree
+Message-ID: <2023122248-dayroom-coveting-1b2d@gregkh>
+References: <20231222142049.397619e5@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: [RFC nf-next v3 1/2] netfilter: bpf: support prog update
-Content-Language: en-US
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Pablo Neira Ayuso <pablo@netfilter.org>,
- Jozsef Kadlecsik <kadlec@netfilter.org>, Florian Westphal <fw@strlen.de>,
- bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
- Network Development <netdev@vger.kernel.org>, coreteam@netfilter.org,
- netfilter-devel <netfilter-devel@vger.kernel.org>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Alexei Starovoitov <ast@kernel.org>
-References: <1703081351-85579-1-git-send-email-alibuda@linux.alibaba.com>
- <1703081351-85579-2-git-send-email-alibuda@linux.alibaba.com>
- <CAADnVQK3Wk+pKbvc5_7jgaQ=qFq3y0ozgnn+dbW56DaHL2ExWQ@mail.gmail.com>
-From: "D. Wythe" <alibuda@linux.alibaba.com>
-In-Reply-To: <CAADnVQK3Wk+pKbvc5_7jgaQ=qFq3y0ozgnn+dbW56DaHL2ExWQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231222142049.397619e5@canb.auug.org.au>
 
+On Fri, Dec 22, 2023 at 02:20:49PM +1100, Stephen Rothwell wrote:
+> Hi all,
+> 
+> The following commit is also in the driver-core tree as a different commit
+> (but the same patchs):
+> 
+>   2bf46683842b ("kernel/cgroup: use kernfs_create_dir_ns()")
+> 
+> This is commit
+> 
+>   fe3de0102bc8 ("kernel/cgroup: use kernfs_create_dir_ns()")
+> 
+> in the driver-core tree.
 
+Should be fine, thanks!
 
-On 12/21/23 5:11 AM, Alexei Starovoitov wrote:
-> On Wed, Dec 20, 2023 at 6:09 AM D. Wythe <alibuda@linux.alibaba.com> wrote:
->> From: "D. Wythe" <alibuda@linux.alibaba.com>
->>
->> To support the prog update, we need to ensure that the prog seen
->> within the hook is always valid. Considering that hooks are always
->> protected by rcu_read_lock(), which provide us the ability to
->> access the prog under rcu.
->>
->> Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
->> ---
->>   net/netfilter/nf_bpf_link.c | 63 ++++++++++++++++++++++++++++++++++-----------
->>   1 file changed, 48 insertions(+), 15 deletions(-)
->>
->> diff --git a/net/netfilter/nf_bpf_link.c b/net/netfilter/nf_bpf_link.c
->> index e502ec0..9bc91d1 100644
->> --- a/net/netfilter/nf_bpf_link.c
->> +++ b/net/netfilter/nf_bpf_link.c
->> @@ -8,17 +8,8 @@
->>   #include <net/netfilter/nf_bpf_link.h>
->>   #include <uapi/linux/netfilter_ipv4.h>
->>
->> -static unsigned int nf_hook_run_bpf(void *bpf_prog, struct sk_buff *skb,
->> -                                   const struct nf_hook_state *s)
->> -{
->> -       const struct bpf_prog *prog = bpf_prog;
->> -       struct bpf_nf_ctx ctx = {
->> -               .state = s,
->> -               .skb = skb,
->> -       };
->> -
->> -       return bpf_prog_run(prog, &ctx);
->> -}
->> +/* protect link update in parallel */
->> +static DEFINE_MUTEX(bpf_nf_mutex);
->>
->>   struct bpf_nf_link {
->>          struct bpf_link link;
->> @@ -26,8 +17,20 @@ struct bpf_nf_link {
->>          struct net *net;
->>          u32 dead;
->>          const struct nf_defrag_hook *defrag_hook;
->> +       struct rcu_head head;
-> I have to point out the same issues as before, but
-> will ask them differently...
->
-> Why do you think above rcu_head is necessary?
->
->>   };
->>
->> +static unsigned int nf_hook_run_bpf(void *bpf_link, struct sk_buff *skb,
->> +                                   const struct nf_hook_state *s)
->> +{
->> +       const struct bpf_nf_link *nf_link = bpf_link;
->> +       struct bpf_nf_ctx ctx = {
->> +               .state = s,
->> +               .skb = skb,
->> +       };
->> +       return bpf_prog_run(rcu_dereference_raw(nf_link->link.prog), &ctx);
->> +}
->> +
->>   #if IS_ENABLED(CONFIG_NF_DEFRAG_IPV4) || IS_ENABLED(CONFIG_NF_DEFRAG_IPV6)
->>   static const struct nf_defrag_hook *
->>   get_proto_defrag_hook(struct bpf_nf_link *link,
->> @@ -126,8 +129,7 @@ static void bpf_nf_link_release(struct bpf_link *link)
->>   static void bpf_nf_link_dealloc(struct bpf_link *link)
->>   {
->>          struct bpf_nf_link *nf_link = container_of(link, struct bpf_nf_link, link);
->> -
->> -       kfree(nf_link);
->> +       kfree_rcu(nf_link, head);
-> Why is this needed ?
-> Have you looked at tcx_link_lops ?
-
-Introducing rcu_head/kfree_rcu is to address the situation where the 
-netfilter hooks might
-still access the link after bpf_nf_link_dealloc.
-
-                                                      nf_hook_run_bpf
-                                                      const struct 
-bpf_nf_link *nf_link = bpf_link;
-
-bpf_nf_link_release
-     nf_unregister_net_hook(nf_link->net, &nf_link->hook_ops);
-
-bpf_nf_link_dealloc
-     free(link)
-bpf_prog_run(link->prog);
-
-
-I had checked the tcx_link_lops ,it's seems it use the synchronize_rcu() 
-to solve the
-same problem, which is also the way we used in the first version.
-
-https://lore.kernel.org/bpf/1702467945-38866-1-git-send-email-alibuda@linux.alibaba.com/
-
-However, we have received some opposing views, believing that this is a 
-bit overkill,
-so we decided to use kfree_rcu.
-
-https://lore.kernel.org/bpf/20231213222415.GA13818@breakpoint.cc/
-
->>   }
->>
->>   static int bpf_nf_link_detach(struct bpf_link *link)
->> @@ -162,7 +164,34 @@ static int bpf_nf_link_fill_link_info(const struct bpf_link *link,
->>   static int bpf_nf_link_update(struct bpf_link *link, struct bpf_prog *new_prog,
->>                                struct bpf_prog *old_prog)
->>   {
->> -       return -EOPNOTSUPP;
->> +       struct bpf_nf_link *nf_link = container_of(link, struct bpf_nf_link, link);
->> +       int err = 0;
->> +
->> +       mutex_lock(&bpf_nf_mutex);
-> Why do you need this mutex?
-> What race does it solve?
-
-To avoid user update a link with differ prog at the same time. I noticed 
-that sys_bpf()
-doesn't seem to prevent being invoked by user at the same time. Have I 
-missed something?
-
-Best wishes,
-D. Wythe
->> +
->> +       if (nf_link->dead) {
->> +               err = -EPERM;
->> +               goto out;
->> +       }
->> +
->> +       /* target old_prog mismatch */
->> +       if (old_prog && link->prog != old_prog) {
->> +               err = -EPERM;
->> +               goto out;
->> +       }
->> +
->> +       old_prog = link->prog;
->> +       if (old_prog == new_prog) {
->> +               /* don't need update */
->> +               bpf_prog_put(new_prog);
->> +               goto out;
->> +       }
->> +
->> +       old_prog = xchg(&link->prog, new_prog);
->> +       bpf_prog_put(old_prog);
->> +out:
->> +       mutex_unlock(&bpf_nf_mutex);
->> +       return err;
->>   }
->>
->>   static const struct bpf_link_ops bpf_nf_link_lops = {
->> @@ -226,7 +255,11 @@ int bpf_nf_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
->>
->>          link->hook_ops.hook = nf_hook_run_bpf;
->>          link->hook_ops.hook_ops_type = NF_HOOK_OP_BPF;
->> -       link->hook_ops.priv = prog;
->> +
->> +       /* bpf_nf_link_release & bpf_nf_link_dealloc() can ensures that link remains
->> +        * valid at all times within nf_hook_run_bpf().
->> +        */
->> +       link->hook_ops.priv = link;
->>
->>          link->hook_ops.pf = attr->link_create.netfilter.pf;
->>          link->hook_ops.priority = attr->link_create.netfilter.priority;
->> --
->> 1.8.3.1
->>
-
+greg k-h
 
