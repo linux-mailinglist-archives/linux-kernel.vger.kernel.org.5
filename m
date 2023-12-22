@@ -1,166 +1,196 @@
-Return-Path: <linux-kernel+bounces-9514-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9507-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B00281C6C8
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 09:43:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6545D81C6B6
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 09:38:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1051F285A19
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 08:43:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DB9961F2547E
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 08:38:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E1CF10A0D;
-	Fri, 22 Dec 2023 08:43:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3522EC8CF;
+	Fri, 22 Dec 2023 08:38:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="Lu4DGMyn"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="rMnLjVVj"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68100101EE
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 08:43:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from epcas5p2.samsung.com (unknown [182.195.41.40])
-	by mailout4.samsung.com (KnoxPortal) with ESMTP id 20231222084345epoutp04a5e0f65a2e070ff522b7c9ee91115ce5~jGt4aJX0n1517815178epoutp04n
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 08:43:45 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20231222084345epoutp04a5e0f65a2e070ff522b7c9ee91115ce5~jGt4aJX0n1517815178epoutp04n
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1703234625;
-	bh=QLHE1NWjOSqv7IcomIQ0/EwcPB2puIgo8yJ3Dddp2Zc=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Lu4DGMynHAQ9GSBxyvA+6cOspkaJAtQ9NvAdgXWrfTAUW1mJD1JN6phR051AQfA6Y
-	 eVPMk14AncvjHy5f9ibfk8ekrlLfAajOwjQapq/lTJYdeEwESpCcQIUwbgrWjxtUjA
-	 5vbUexHyOi0TQ/meTVfnkOdL7qqKD96oSLQWmMBg=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-	epcas5p3.samsung.com (KnoxPortal) with ESMTP id
-	20231222084344epcas5p322b603419f8014a2912fd0f2a1e499d6~jGt30oR3Z3175031750epcas5p3h;
-	Fri, 22 Dec 2023 08:43:44 +0000 (GMT)
-Received: from epsmges5p2new.samsung.com (unknown [182.195.38.179]) by
-	epsnrtp4.localdomain (Postfix) with ESMTP id 4SxLRz1srHz4x9QC; Fri, 22 Dec
-	2023 08:43:43 +0000 (GMT)
-Received: from epcas5p3.samsung.com ( [182.195.41.41]) by
-	epsmges5p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
-	7C.83.10009.F3C45856; Fri, 22 Dec 2023 17:43:43 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-	epcas5p1.samsung.com (KnoxPortal) with ESMTPA id
-	20231222084334epcas5p10badfe3c82a6b8355c03f8d0aa192892~jGtuMQb7R0112901129epcas5p1j;
-	Fri, 22 Dec 2023 08:43:34 +0000 (GMT)
-Received: from epsmgmcp1.samsung.com (unknown [182.195.42.82]) by
-	epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-	20231222084334epsmtrp2cd814b82c44ad3152f22017b180248b5~jGtuLjEd53200432004epsmtrp2-;
-	Fri, 22 Dec 2023 08:43:34 +0000 (GMT)
-X-AuditID: b6c32a4a-ff1ff70000002719-7d-65854c3fead8
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-	epsmgmcp1.samsung.com (Symantec Messaging Gateway) with SMTP id
-	FB.26.18939.63C45856; Fri, 22 Dec 2023 17:43:34 +0900 (KST)
-Received: from AHRE124.. (unknown [109.105.118.124]) by epsmtip1.samsung.com
-	(KnoxPortal) with ESMTPA id
-	20231222084332epsmtip11a985a5fde17393198ddc06dc8d1b5e1~jGtss24GQ2187121871epsmtip1N;
-	Fri, 22 Dec 2023 08:43:32 +0000 (GMT)
-From: Xiaobing Li <xiaobing.li@samsung.com>
-To: axboe@kernel.dk
-Cc: asml.silence@gmail.com, linux-kernel@vger.kernel.org,
-	io-uring@vger.kernel.org, kun.dou@samsung.com, peiwei.li@samsung.com,
-	joshi.k@samsung.com, kundan.kumar@samsung.com, wenwen.chen@samsung.com,
-	ruyi.zhang@samsung.com, xiaobing.li@samsung.com
-Subject: Re: Re: [PATCH v5] io_uring: Statistics of the true utilization of
- sq threads.
-Date: Fri, 22 Dec 2023 16:35:30 +0800
-Message-Id: <20231222083530.11051-1-xiaobing.li@samsung.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <c3995796-8aab-45e1-ad59-d970373a4fab@kernel.dk>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 085768484
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 08:38:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-54744e66d27so9834a12.0
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 00:38:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1703234303; x=1703839103; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=M9gEBP5WZhQN72UvWshrtsPpY6S5hYOD8xYFlYJ7oYc=;
+        b=rMnLjVVj5m0VPvWpbX0ED9b+06sSw+xcD0QRdfNmInWjqshnuqg6Lki2yTGDy7Nwo/
+         kmlrkpdrsur/N0GYHzPU0YewJHAr6A8Kug26cWoLvSq8OH6KsFmrRRR39qW3hJkaN1aH
+         hkSGdx4apvZa4gzVRwZSYXY0Ryf1H0kRJR4ehAmL9evyvqse3uz08A4TbBOBSdf3wd1r
+         NRdstdgzB3oKeoyJme580GrvfUMrkSYumYQ8659jZglsTxfBEufEoKkiiMXEYlpGiWau
+         oMOh8IATJjT8Vg+jiallD4KM4eBP3xnxcaQlUIjOv7HJiNgNczpHKm9aiFqN47jkBrTM
+         MO/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703234303; x=1703839103;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=M9gEBP5WZhQN72UvWshrtsPpY6S5hYOD8xYFlYJ7oYc=;
+        b=tznKkTgAiI6mCHDf2IIH1mR1kcH6tNuU0MbbG1aVrUqH3tiAXQusWbG0Na96fbbSId
+         OIMHvPD++vM9sTxuAN/ypLxcmBSxDvg294cT2ZVqRtjHQl7OhaBJk4dmy8rMuWzdVbfj
+         19iRITqJxfPuMD+y7l6H+c2/Qs5WoyCQ+P12LrLcOsz4B8zuqloF6+HBK6iKlHM6vd0o
+         gfaF5KX8AFJeSc3zHXzsjEuhgGFIYSY+ErBTnliKJ3aM86CHbIAwtFEyUCgHY217tike
+         cIYFH8xqOxJcQc1nVsFe3+ie56E6kh3D2Ps22s/aqmmqRQsSK5fdKfHorETufgQK88eX
+         Qkuw==
+X-Gm-Message-State: AOJu0YwtC7nitpSIcQf18Z8YIjsNMne/Oe75Eq8xOjxymppi5WFlVt22
+	SQaK5T6/7isvxZteys0iDqSSes6bhwQjk715cUPh710tRHf0
+X-Google-Smtp-Source: AGHT+IGHQYoU7azFLqMcU05kZwXGn9B9TAq/dPvFspOJ5hIrmyuT7UKJbn+bIZw1kFTUnlCszmQcje5CEJbw5VdfA5I=
+X-Received: by 2002:a50:a6c8:0:b0:553:5578:2fc9 with SMTP id
+ f8-20020a50a6c8000000b0055355782fc9mr58735edc.5.1703234303216; Fri, 22 Dec
+ 2023 00:38:23 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrEJsWRmVeSWpSXmKPExsWy7bCmpq69T2uqwexzHBZzVm1jtFh9t5/N
-	4l3rORaLo//fsln86r7LaLH1y1dWi8u75rBZPNvLafHl8Hd2i7MTPrBaTN2yg8mio+UyowOP
-	x85Zd9k9Lp8t9ejbsorR4/MmuQCWqGybjNTElNQihdS85PyUzLx0WyXv4HjneFMzA0NdQ0sL
-	cyWFvMTcVFslF58AXbfMHKDDlBTKEnNKgUIBicXFSvp2NkX5pSWpChn5xSW2SqkFKTkFJgV6
-	xYm5xaV56Xp5qSVWhgYGRqZAhQnZGa/+rGYveMJd8anjLXsD4yrOLkZODgkBE4m+wx+ZQWwh
-	gd2MEpN7i7sYuYDsT4wSP2fcZodz1i2axQrTsfbmXHaIjp2MErvXKUMUvWSUuLjsP9goNgFt
-	ievrusAaRASEJfZ3tLKAFDEL/GWUmPDyN1iRsECkxO6eQ2CTWARUJW73/wSL8wrYSDQe/wi1
-	TV5i/8GzYHFOAVuJd0ufskPUCEqcnPmEBcRmBqpp3jqbGWSBhMBPdomdl28xdTFyADkuEn+m
-	80LMEZZ4dXwLO4QtJfH53V42CLtY4kjPd1aI3gZGiem3r0IVWUv8u7KHBWQOs4CmxPpd+hBh
-	WYmpp9YxQezlk+j9/YQJIs4rsWMejK0qsfrSQxYIW1ridcNvqLiHxNevF6BBOoFRYtXqv8wT
-	GBVmIflnFpJ/ZiGsXsDIvIpRMrWgODc9tdi0wCgvtRwey8n5uZsYwYlVy2sH48MHH/QOMTJx
-	MB5ilOBgVhLhzddpSRXiTUmsrEotyo8vKs1JLT7EaAoM8InMUqLJ+cDUnlcSb2hiaWBiZmZm
-	YmlsZqgkzvu6dW6KkEB6YklqdmpqQWoRTB8TB6dUA5Mrc+uK2tjj87252KftDtCbKWmsdP7J
-	WT6n47rc7Q1ZYuKLUh4ZpLkcuZl7zbBrf+PJkEq5qzl/K18nisgLWEzeleFwefuXt86qz1ck
-	xU64dE2rUbtJqOvKBR8f64WL32fni3FUps9KfN4Zqp49n3e+gtyDyrJ/SxMcHXdkTnNmVdRY
-	IP+gMnjPnAMOn/xYGJO4+r+6NlopN294sDsgR/+ixd2Niy6EfkoJeHNtFvv3+MnMc38ssVpd
-	nbZ3okHcxWkGaw95PffdtulUReOW37fy3ux7UFnnu01GJEVMPWPHj/Amv7thPfYNryO3MJuE
-	C7wX9WG7P7Nv+50pi3lEWqMFFV5Ge3gy3PacrhLzUYmlOCPRUIu5qDgRAFyss8Y1BAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrCLMWRmVeSWpSXmKPExsWy7bCSnK6ZT2uqwfV9fBZzVm1jtFh9t5/N
-	4l3rORaLo//fsln86r7LaLH1y1dWi8u75rBZPNvLafHl8Hd2i7MTPrBaTN2yg8mio+UyowOP
-	x85Zd9k9Lp8t9ejbsorR4/MmuQCWKC6blNSczLLUIn27BK6MV39Wsxc84a741PGWvYFxFWcX
-	IyeHhICJxNqbc9m7GLk4hAS2M0rMaDnB1MXIAZSQlvjzpxyiRlhi5b/nUDXPGSUmzPzFDJJg
-	E9CWuL6uixXEFgEq2t/RygJiMwt0Mkm8/qwHYgsLhEusm3eVDcRmEVCVuN3/E6yXV8BGovH4
-	R1aIBfIS+w+eBYtzCthKvFv6lB3EFgKqmfRhPitEvaDEyZlPoObLSzRvnc08gVFgFpLULCSp
-	BYxMqxhFUwuKc9NzkwsM9YoTc4tL89L1kvNzNzGCA14raAfjsvV/9Q4xMnEwHmKU4GBWEuHN
-	12lJFeJNSaysSi3Kjy8qzUktPsQozcGiJM6rnNOZIiSQnliSmp2aWpBaBJNl4uCUamDidMy4
-	3Lm2YmP81F3Ou8LeXkphr0ms9WA3v/n95t2c5Y4yOY6Tru8SzJ/zq9Xv/U0mvu8KzteWTlY4
-	/IYv0vLk0tp5xSElQezTqn5ct2Bf/aVobrDAU2G19ReC/ad373fW+72nsL8mkEPmn7iWYzHf
-	3ngl+WMTOAX8rsxZvZW1qLL8eTQDp7i2X+5Mm41fuPOyUm9vi3ZlnBW1tE/3xsf6p1528S0R
-	Ypb/Tz1cd5Xd/rG1Qc7biB6NPmX+5YuajRpPuK0K7/+6wrG4758Zu/arvBf/fLsjrv08Y1Hp
-	rfKEUcngVUvF362Tq9ZZbedYdTf0x6QoxVnxPI5HeMLuyM+/7PJZ3q8hY0VAValpshJLcUai
-	oRZzUXEiAHE8fRfnAgAA
-X-CMS-MailID: 20231222084334epcas5p10badfe3c82a6b8355c03f8d0aa192892
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: REQ_APPROVE
-CMS-TYPE: 105P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20231222084334epcas5p10badfe3c82a6b8355c03f8d0aa192892
-References: <c3995796-8aab-45e1-ad59-d970373a4fab@kernel.dk>
-	<CGME20231222084334epcas5p10badfe3c82a6b8355c03f8d0aa192892@epcas5p1.samsung.com>
+References: <20231218151729.210027-1-rf@opensource.cirrus.com>
+In-Reply-To: <20231218151729.210027-1-rf@opensource.cirrus.com>
+From: David Gow <davidgow@google.com>
+Date: Fri, 22 Dec 2023 16:38:10 +0800
+Message-ID: <CABVgOS=YgpaYg=4Lks8naBqBZVEPhfXC7S1S1=KRe1WAuJLJrw@mail.gmail.com>
+Subject: Re: [PATCH] kunit: Fix NULL-dereference in kunit_init_suite() if
+ suite->log is NULL
+To: Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc: brendan.higgins@linux.dev, rmoar@google.com, 
+	linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com, 
+	linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+	boundary="000000000000a2e4e4060d1523cb"
 
-On 12/18/23 15:53, Jens Axboe wrote:
-> I think I'm convinced that the effectiveness of the chosen SQPOLL
-> settings being exposed is useful, I'm just not sure fdinfo is the right
-> place to do it. Is it going to be a problem that these are just
-> perpetual stats, with no way to reset them? This means there's no way to
-> monitor it for a period of time and get effectiveness for something
-> specific, it'll always just count from when the ring was created.
-> 
-> We could of course have the act of reading the stat also reset it, but
-> maybe that'd be a bit odd?
-> 
-> Alternatively, it could be exported differently, eg as a register opcode
-> perhaps.
-> 
-> Open to suggestions...
+--000000000000a2e4e4060d1523cb
+Content-Type: text/plain; charset="UTF-8"
 
-I thought carefully about your proposed reset stat, and I think it can be 
-achieved by outputting "work_time" and "total_time".
-eg:
-Output at time t1:
-SqMask: 0x3
-SqHead: 1168417
-SqTail: 1168418
-SqWorkTime: t1_work
-SqTotalTime: t1_total
+On Mon, 18 Dec 2023 at 23:17, Richard Fitzgerald
+<rf@opensource.cirrus.com> wrote:
+>
+> suite->log must be checked for NULL before passing it to
+> string_stream_clear(). This was done in kunit_init_test() but was missing
+> from kunit_init_suite().
+>
+> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+> Fixes: 6d696c4695c5 ("kunit: add ability to run tests after boot using debugfs")
+> ---
 
-Output at time t2:
-SqMask: 0x3
-SqHead: 1168417
-SqTail: 1168418
-SqWorkTime: t2_work
-SqTotalTime: t2_total
+Acked-by: David Gow <davidgow@google.com>
 
-Then we can manually calculate the utilization rate from t1 to t2:
-(t2_work - t1_work) / (t2_total - t1_total)
+Cheers,
+-- David
 
-Not sure what you think, but if you think it doesn't work, I'll look into 
-other good ways to add the ability to reset.
 
-In addition, on register opcode - generally it is used for resource like
-buffers, handles etc.. I am not sure how that can help here. If you have
-something in mind, could you please elaborate in more detail?
+>  lib/kunit/test.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>
+> diff --git a/lib/kunit/test.c b/lib/kunit/test.c
+> index e803d998e855..ea7f0913e55a 100644
+> --- a/lib/kunit/test.c
+> +++ b/lib/kunit/test.c
+> @@ -658,7 +658,9 @@ static void kunit_init_suite(struct kunit_suite *suite)
+>         kunit_debugfs_create_suite(suite);
+>         suite->status_comment[0] = '\0';
+>         suite->suite_init_err = 0;
+> -       string_stream_clear(suite->log);
+> +
+> +       if (suite->log)
+> +               string_stream_clear(suite->log);
+>  }
+>
+>  bool kunit_enabled(void)
+> --
+> 2.30.2
+>
+
+--000000000000a2e4e4060d1523cb
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+MIIPnwYJKoZIhvcNAQcCoIIPkDCCD4wCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
+ggz5MIIEtjCCA56gAwIBAgIQeAMYYHb81ngUVR0WyMTzqzANBgkqhkiG9w0BAQsFADBMMSAwHgYD
+VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
+AxMKR2xvYmFsU2lnbjAeFw0yMDA3MjgwMDAwMDBaFw0yOTAzMTgwMDAwMDBaMFQxCzAJBgNVBAYT
+AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
+IFIzIFNNSU1FIENBIDIwMjAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCvLe9xPU9W
+dpiHLAvX7kFnaFZPuJLey7LYaMO8P/xSngB9IN73mVc7YiLov12Fekdtn5kL8PjmDBEvTYmWsuQS
+6VBo3vdlqqXZ0M9eMkjcKqijrmDRleudEoPDzTumwQ18VB/3I+vbN039HIaRQ5x+NHGiPHVfk6Rx
+c6KAbYceyeqqfuJEcq23vhTdium/Bf5hHqYUhuJwnBQ+dAUcFndUKMJrth6lHeoifkbw2bv81zxJ
+I9cvIy516+oUekqiSFGfzAqByv41OrgLV4fLGCDH3yRh1tj7EtV3l2TngqtrDLUs5R+sWIItPa/4
+AJXB1Q3nGNl2tNjVpcSn0uJ7aFPbAgMBAAGjggGKMIIBhjAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0l
+BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFHzM
+CmjXouseLHIb0c1dlW+N+/JjMB8GA1UdIwQYMBaAFI/wS3+oLkUkrk1Q+mOai97i3Ru8MHsGCCsG
+AQUFBwEBBG8wbTAuBggrBgEFBQcwAYYiaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3Ry
+MzA7BggrBgEFBQcwAoYvaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvcm9vdC1y
+My5jcnQwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9yb290LXIz
+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
+ddIn9n5Jt6Z1o79zxraLMEwGA1UdIARFMEMwQQYJKwYBBAGgMgEoMDQwMgYIKwYBBQUHAgEWJmh0
+dHBzOi8vd3d3Lmdsb2JhbHNpZ24uY29tL3JlcG9zaXRvcnkvMAwGA1UdEwEB/wQCMAAwgZoGCCsG
+AQUFBwEBBIGNMIGKMD4GCCsGAQUFBzABhjJodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9jYS9n
+c2F0bGFzcjNzbWltZWNhMjAyMDBIBggrBgEFBQcwAoY8aHR0cDovL3NlY3VyZS5nbG9iYWxzaWdu
+LmNvbS9jYWNlcnQvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3J0MB8GA1UdIwQYMBaAFHzMCmjXouse
+LHIb0c1dlW+N+/JjMEYGA1UdHwQ/MD0wO6A5oDeGNWh0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20v
+Y2EvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3JsMA0GCSqGSIb3DQEBCwUAA4IBAQBtHFwIgQZjer5K
+H+4Q+wns10k7qN+4wN2Uf+JsyOYjukaMEgdLErfA1wwtQ9uHkoYQZcWBuVVkQFa5hI+sqI2m1Weq
+riMCFSiU38s1tADdMX12IMfJRN60Nznhrw+nPyDRZqRhUTW24TwnHorkDnFPW8PHo7fAw4FrpI0n
+impZAng7ccvvK09K3ZuhwTIxJMsPXCZYsrXWORTw5sczRAP6XvKbPBJnsJoSTe5dFBPBHOQJOGhU
+qWfEfWnWMJPF3LxSGLpLFQXO3RwQqmxv08avwXfVPouh1xuB3FX7rpDabT8YDhu9JgIZkLEKko7L
+yQt6zWwng7k8YF/jGbiAta6VMYICajCCAmYCAQEwaDBUMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQ
+R2xvYmFsU2lnbiBudi1zYTEqMCgGA1UEAxMhR2xvYmFsU2lnbiBBdGxhcyBSMyBTTUlNRSBDQSAy
+MDIwAhABzgV+4+mJnUzG7XDy6d2uMA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCAp
+Pw0mypln0u+Ml/zsCiP5oWsm8v+R0TJa+W/cNP9jfDAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcB
+MBwGCSqGSIb3DQEJBTEPFw0yMzEyMjIwODM4MjNaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUD
+BAEqMAsGCWCGSAFlAwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsG
+CSqGSIb3DQEBBzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEAFe3Ww4sSi2LSLGLM/btJ
+I+OGlS90hRDEnhsNKRBd+E0gOA4igcKgBo0KRwjsDpQaOdrpQz+wp+2FWwzpU5kLMe/95X7iO4z9
+ftDfHOKtt2XLDI+TUNDBfNXmA9KB6ebLk9xD+kz0di5UUTSBFrDNeL67m6EgsWGZqtJMdvjMuPWd
+CZyOiOsK6zEftwDT6FzkoFSRMf0ytrdizfGJcbelqpMSCRlTgPcC60QMOfSLjTWQdI2MMRdUMhzy
+qT6gW+puMtjON02qDYkEU2i1RUVNdx77gFIDRL40PZ+QLgLKezjMo+iPbFacO135OxlDZUYrvS6D
+Px9XToNiFn3iFXzO8A==
+--000000000000a2e4e4060d1523cb--
 
