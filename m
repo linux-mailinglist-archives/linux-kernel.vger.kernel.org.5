@@ -1,65 +1,116 @@
-Return-Path: <linux-kernel+bounces-9258-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9259-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7299081C2FF
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 03:07:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B5D181C302
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 03:08:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A45331C21DAA
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 02:07:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E34F01F24CA2
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 02:08:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5D32EDF;
-	Fri, 22 Dec 2023 02:06:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F222E138A;
+	Fri, 22 Dec 2023 02:08:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="X+XQnHno"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41AE3ECE;
-	Fri, 22 Dec 2023 02:06:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C72D5C433C8;
-	Fri, 22 Dec 2023 02:06:53 +0000 (UTC)
-Date: Thu, 21 Dec 2023 21:07:57 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
- <linux-trace-kernel@vger.kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Linus Torvalds
- <torvalds@linux-foundation.org>, Shuah Khan <shuah@kernel.org>, Linux
- selftests <linux-kselftest@vger.kernel.org>
-Subject: Re: [PATCH v2] tracing/selftests: Add ownership modification tests
- for eventfs
-Message-ID: <20231221210757.112aa4e8@gandalf.local.home>
-In-Reply-To: <20231222105200.e73d58640d8be7da89331deb@kernel.org>
-References: <20231221194516.53e1ee43@gandalf.local.home>
-	<20231222102148.2aa3863d7c11f3928549335a@kernel.org>
-	<20231221202813.38ef5664@gandalf.local.home>
-	<20231222104841.1d1b306c989070f82c672d89@kernel.org>
-	<20231222105200.e73d58640d8be7da89331deb@kernel.org>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17167A53;
+	Fri, 22 Dec 2023 02:08:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1703210911; x=1734746911;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=DSVSCWBNbZmmn4RDurqEzwZcdKkAE1nXmdh2D3wt+wc=;
+  b=X+XQnHnoS3GzII8s7/ab8R8YSjkhiWR//VIOtnacHk2nhOldpDEHnx5W
+   ZYCrxXsNn/FOX5QbGQ+06LJwPkxlQvhclpxoIcjQnLnZztrfuowOm539d
+   2qMqrpkIQfFwNoWWpYQxCDGAOcVw2JCrbkpiucfKMJW3obj/Q+5p0gk6L
+   h4ILJb1g42xwWJxygWYAZcvuqlQg0xVGVQqW8j0/lAA2zkQeepk/mGVJx
+   7FtF3OkmNpwEOzMjV51Rv+n7ORJQs9S4k3Vdk930khf225wyflKZeF/yh
+   BaOrBEBknOBfEipbL71U1NrEQeiPWImS7E/7A3QRcxu8kiXt76wiKRxw9
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10931"; a="460396356"
+X-IronPort-AV: E=Sophos;i="6.04,294,1695711600"; 
+   d="scan'208";a="460396356"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Dec 2023 18:08:30 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10931"; a="753131359"
+X-IronPort-AV: E=Sophos;i="6.04,294,1695711600"; 
+   d="scan'208";a="753131359"
+Received: from zhaohaif-mobl.ccr.corp.intel.com (HELO [10.93.26.36]) ([10.93.26.36])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Dec 2023 18:08:27 -0800
+Message-ID: <8fbd1a86-1ef5-4679-a4d9-b4faee2eda64@linux.intel.com>
+Date: Fri, 22 Dec 2023 10:08:24 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 2/2] iommu/vt-d: don's issue devTLB flush request when
+ device is disconnected
+To: Lukas Wunner <lukas@wunner.de>
+Cc: bhelgaas@google.com, baolu.lu@linux.intel.com, dwmw2@infradead.org,
+ will@kernel.org, robin.murphy@arm.com, linux-pci@vger.kernel.org,
+ iommu@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20231220005153.3984502-1-haifeng.zhao@linux.intel.com>
+ <20231220005153.3984502-3-haifeng.zhao@linux.intel.com>
+ <20231221103940.GA12714@wunner.de> <20231221110138.GA27755@wunner.de>
+From: Ethan Zhao <haifeng.zhao@linux.intel.com>
+In-Reply-To: <20231221110138.GA27755@wunner.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Fri, 22 Dec 2023 10:52:00 +0900
-Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
 
-> On Fri, 22 Dec 2023 10:48:41 +0900
-> Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
+On 12/21/2023 7:01 PM, Lukas Wunner wrote:
+> On Thu, Dec 21, 2023 at 11:39:40AM +0100, Lukas Wunner wrote:
+>> On Tue, Dec 19, 2023 at 07:51:53PM -0500, Ethan Zhao wrote:
+>>> For those endpoint devices connect to system via hotplug capable ports,
+>>> users could request a warm reset to the device by flapping device's link
+>>> through setting the slot's link control register, as pciehpt_ist() DLLSC
+>>> interrupt sequence response, pciehp will unload the device driver and
+>>> then power it off. thus cause an IOMMU devTLB flush request for device to
+>>> be sent and a long time completion/timeout waiting in interrupt context.
+>> I think the problem is in the "waiting in interrupt context".
+> I'm wondering whether Intel IOMMUs possibly have a (perhaps undocumented)
+> capability to reduce the Invalidate Completion Timeout to a sane value?
+> Could you check whether that's supported?
 
-> And I confirmed that this test passed on v6.5.13 with that change.
-> 
+It is not about Intel vt-d's capability per my understanding, it is the 
+third
 
-I just ran it on 6.5.13 and it took *forever*!
+party PCIe switch's capability, they are not aware of  ATS transation at 
+all,
 
-But I do have a bit of debug, and before 6.6 creating the instance and
-deleting it required creating and deleting thousands of inodes and dentries.
+if its downstream port endpoint device is removed/powered-off/link-down,
 
--- Steve
+it couldn't feedback the upstream iommu a fault/completion/timeout for
+
+ATS transaction breakage reason.  While the root port could (verified).
+
+>
+> Granted, the Implementation Note you've pointed to allows 1 sec + 50%,
+  1 min (60 sec)+50%
+> but that's not even a "must", it's a "should".  So devices are free to
+
+I could happen if blindly wait here, so we should avoid such case.
+
+
+Thanks,
+
+Ethan
+
+> take even longer.  We have to cut off at *some* point.
+>
+> Thanks,
+>
+> Lukas
 
