@@ -1,86 +1,105 @@
-Return-Path: <linux-kernel+bounces-9209-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9211-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3583681C257
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 01:34:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E39281C25B
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 01:36:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DD8511F24C96
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 00:34:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D182E1C24504
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 00:36:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA0923C17;
-	Fri, 22 Dec 2023 00:34:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QRK05lUW"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8ADC0A53;
+	Fri, 22 Dec 2023 00:36:27 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from irl.hu (irl.hu [95.85.9.111])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20D3033CF;
-	Fri, 22 Dec 2023 00:34:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16DEDC433C7;
-	Fri, 22 Dec 2023 00:34:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703205261;
-	bh=sZ4sSOnLTX9EH4nYNAnnZbaYq0kigO0AODfJzFxYRE0=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=QRK05lUWesMFRWi0QMT/ssDYfz3Ei+MCSzysS1zznKaeTTwDn9TZwOqBSqnujWZda
-	 wj8G/e7v4HcyB3UFBTMZVfWQNYRGS2SfUJO5jzX45utDzVa8itIcc2yQT/AzukXgjN
-	 wEyYPmEuJm7YQr6eCFMHCNrcBBZcI5mU+TLa+e7jhbBO2obcgkRxj9DQlS2vyORKr7
-	 D0zQx1CU6f0pTZJ47hZpC0MZgEwWnn2yvqgY5TyRP1DC2ooDtZnPGGtg76A1qko7MS
-	 CD/nPY0duv4y40aaglbkK1i1NwJV5eYemWjxxsYyNgmzpCdujpDo8nq34TIRdqB8J1
-	 CeZXaEqBPK9AA==
-From: SeongJae Park <sj@kernel.org>
-To: Tanzir Hasan <tanzirh@google.com>
-Cc: SeongJae Park <sj@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	damon@lists.linux.dev,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	Nick Desaulniers <nnn@google.com>,
-	Al Viro <viro@zeniv.linux.org.uk>
-Subject: Re: [PATCH] mm/damon/vaddr: changed asm-generic/mman-common.h to linux/mman.h
-Date: Fri, 22 Dec 2023 00:34:19 +0000
-Message-Id: <20231222003419.69272-1-sj@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <CAE-cH4o85OkMAZ5sH0SiakQi_FqauNYcQ+KhniEd2g5e8kSF1Q@mail.gmail.com>
-References: 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41523A23;
+	Fri, 22 Dec 2023 00:36:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=irl.hu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=irl.hu
+Received: from fedori.lan (51b681e3.dsl.pool.telekom.hu [::ffff:81.182.129.227])
+  (AUTH: CRAM-MD5 soyer@irl.hu, )
+  by irl.hu with ESMTPSA
+  id 0000000000071EE7.000000006584DA06.0013B20D; Fri, 22 Dec 2023 01:36:22 +0100
+From: Gergo Koteles <soyer@irl.hu>
+To: Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>,
+  Baojun Xu <baojun.xu@ti.com>, Jaroslav Kysela <perex@perex.cz>,
+  Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+  Mark Brown <broonie@kernel.org>
+Cc: linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
+  alsa-devel@alsa-project.org, Gergo Koteles <soyer@irl.hu>,
+  stable@vger.kernel.org
+Subject: [PATCH 1/2] ALSA: hda/tas2781: move set_drv_data outside tasdevice_init
+Date: Fri, 22 Dec 2023 01:34:47 +0100
+Message-ID: <1398bd8bf3e935b1595a99128320e4a1913e210a.1703204848.git.soyer@irl.hu>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Mime-Autoconverted: from 8bit to 7bit by courier 1.0
 
-On Thu, 21 Dec 2023 16:29:57 -0800 Tanzir Hasan <tanzirh@google.com> wrote:
+allow driver specific driver data in tas2781-hda-i2c and tas2781-i2c
 
-> Hi SeongJae,
-> 
-> On Thu, Dec 21, 2023 at 3:49\u202fPM SeongJae Park <sj@kernel.org> wrote:
-> >
-> > Maybe we could add below Fixes: line?  I guess stable@ is intentionally not
-> > added and that makes sense, but please let me know if you think differently.
-> >
-> > Fixes: 6dea8add4d28 ("mm/damon/vaddr: support DAMON-based Operation Schemes")
-> 
-> Yes, that makes sense. Just confirming that I understand, would you like it
-> to look like this:
-> 
-> Fixes: 6dea8add4d28 ("mm/damon/vaddr: support DAMON-based Operation Schemes")
-> Suggested-by: Al Viro <viro@zeniv.linux.org.uk>
-> Reviewed-by: SeongJae Park <sj@kernel.org>
-> Signed-off-by: Tanzir Hasan <tanzirh@google.com>
+Fixes: ef3bcde75d06 ("ASoC: tas2781: Add tas2781 driver")
+CC: stable@vger.kernel.org
+Signed-off-by: Gergo Koteles <soyer@irl.hu>
+---
+ sound/pci/hda/tas2781_hda_i2c.c   | 2 ++
+ sound/soc/codecs/tas2781-comlib.c | 2 --
+ sound/soc/codecs/tas2781-i2c.c    | 2 ++
+ 3 files changed, 4 insertions(+), 2 deletions(-)
 
-Yes, this looks good to me :)
+diff --git a/sound/pci/hda/tas2781_hda_i2c.c b/sound/pci/hda/tas2781_hda_i2c.c
+index e4c54b2a012c..769604375745 100644
+--- a/sound/pci/hda/tas2781_hda_i2c.c
++++ b/sound/pci/hda/tas2781_hda_i2c.c
+@@ -659,6 +659,8 @@ static int tas2781_hda_i2c_probe(struct i2c_client *clt)
+ 	if (!tas_priv)
+ 		return -ENOMEM;
+ 
++	dev_set_drvdata(&clt->dev, tas_priv);
++
+ 	tas_priv->irq_info.irq = clt->irq;
+ 	ret = tas2781_read_acpi(tas_priv, device_name);
+ 	if (ret)
+diff --git a/sound/soc/codecs/tas2781-comlib.c b/sound/soc/codecs/tas2781-comlib.c
+index 933cd008e9f5..00e35169ae49 100644
+--- a/sound/soc/codecs/tas2781-comlib.c
++++ b/sound/soc/codecs/tas2781-comlib.c
+@@ -316,8 +316,6 @@ int tasdevice_init(struct tasdevice_priv *tas_priv)
+ 		tas_priv->tasdevice[i].cur_conf = -1;
+ 	}
+ 
+-	dev_set_drvdata(tas_priv->dev, tas_priv);
+-
+ 	mutex_init(&tas_priv->codec_lock);
+ 
+ out:
+diff --git a/sound/soc/codecs/tas2781-i2c.c b/sound/soc/codecs/tas2781-i2c.c
+index 55cd5e3c23a5..917b1c15f71d 100644
+--- a/sound/soc/codecs/tas2781-i2c.c
++++ b/sound/soc/codecs/tas2781-i2c.c
+@@ -689,6 +689,8 @@ static int tasdevice_i2c_probe(struct i2c_client *i2c)
+ 	if (!tas_priv)
+ 		return -ENOMEM;
+ 
++	dev_set_drvdata(&i2c->dev, tas_priv);
++
+ 	if (ACPI_HANDLE(&i2c->dev)) {
+ 		acpi_id = acpi_match_device(i2c->dev.driver->acpi_match_table,
+ 				&i2c->dev);
 
+base-commit: 916d051730ae48aef8b588fd096fefca4bc0590a
+prerequisite-patch-id: da39452ca686d78e5accad1c2c4aa22a5f5a6a65
+-- 
+2.43.0
 
-Thanks,
-SJ
-
-> 
-> Best,
-> Tanzir
 
