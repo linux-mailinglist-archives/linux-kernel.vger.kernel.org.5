@@ -1,44 +1,64 @@
-Return-Path: <linux-kernel+bounces-9692-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9693-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15F6381C9B5
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 13:08:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 445D081C9B8
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 13:08:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A96601F2613A
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 12:08:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EFC062874B5
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 12:08:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83E20179A6;
-	Fri, 22 Dec 2023 12:08:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 569BE182D8;
+	Fri, 22 Dec 2023 12:08:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="i+svumC3"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AKjWkAsh"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CEB217992;
-	Fri, 22 Dec 2023 12:08:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-	t=1703246893; x=1703851693; i=w_armin@gmx.de;
-	bh=lIEDc4eP/tBcRvutzo/u5pew9rRgWJOCWE+lCcDBNOU=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=i+svumC3e4SfjQdWFbnN6tDNPORQOCSMSreAU4TlB43DzqvoBZCuFw5DkQQelvCv
-	 P0JIRPXG5AOAY5klEKty0PtkLum6kqDU+CadUxATeazWwJ3mH6UZDbxhImKk7qmyv
-	 Noi/EmAogSfR93PwrG6YS/yCujwTi/eUEYq5eXUZghk/5PuipOzo7k/f4HtwSCF3d
-	 sqpXFEmW1Vy4+1lnWDy5auPF7/cp4+PzFOEplAJANLD0WmyTfA0rs1gd51IvPDMTK
-	 xXOMBQeRM5UjTDho9ooqg+Cvnzbfg9nhqJS3SIruP8yeMamTDnSHEK5V5av1BAaws
-	 ppy7LsXMOTxcgDf5Bg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [141.30.226.129] ([141.30.226.129]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1M5wPb-1rNV9L3ZZj-007RYv; Fri, 22
- Dec 2023 13:08:12 +0100
-Message-ID: <3d777aee-9ec1-4236-98d2-f56b8026b96a@gmx.de>
-Date: Fri, 22 Dec 2023 13:08:11 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23021182A8;
+	Fri, 22 Dec 2023 12:08:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-40d4a7f0d17so989305e9.1;
+        Fri, 22 Dec 2023 04:08:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703246916; x=1703851716; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=wLmNJV1KCwtCk4AJyZ66y9UiWpbx0XO2tfF5Ht++t+4=;
+        b=AKjWkAshUtHbqIvFrQI0NqlA/25ztuRopsGnPS3hvlR2rjRjRekvK2ulhAWZHNfP/b
+         udeW6zzchVSjKGtxhf1a0bsNBFn1MMRMGwjp/Wr3sBHrRYRoopJ+RrsLHhJbRN8P7iX7
+         QNODP3Ye1U862UebOPkQCTYJARBdfMWRyjtP9gzYV1KhceaaJQUamF1D27axrV8+5X3p
+         G+PAcO5UFEM2w4pPCmtc13UtEMlGQerlhFFmie7/eACIgGcDEaUFIrx0NNg9Fyk64U48
+         iJXlqmwIR4pJp4P7/LvCTey69xYQbgnF5+FKL6BymRv0zwWPgqQdjMiuaHTIA0pKqAKT
+         8ROg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703246916; x=1703851716;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wLmNJV1KCwtCk4AJyZ66y9UiWpbx0XO2tfF5Ht++t+4=;
+        b=DecvjThc7HJnXEObVdG24YB8ZNX7M2JGMRyKTzrjhI4rpV3v0OkIsgINdfhlthMcPR
+         TX1FNEQ6kKR8/6zE4XPBDjqBe+y7+Isc0/cUcgYCP1zuc3so1BU98yPo40zrWCJ+vECU
+         ZBx6UhoOShh8w14n1CVymnwPMamNpwKuiyXgFW5fk/EMeOWHLaC4YpMAKOF15deAJAsp
+         PybaY1XS3xX9m1DTinrc0M7V4/RHuAzlbr6t7Nw0jvc4tdB0aIgsEV941orHEfJtk43u
+         r3/ov4GWcVqL1akN0Nj4HZtQl1L4MURVXZ+B/WCaEyawftDR5Ua1lG7f+41sBr0PtMWS
+         laXA==
+X-Gm-Message-State: AOJu0YzK+lsA7V4P1jfSgNQKeK/h9Qi3dCetC4Bajb7mfXMSRzGu2/eW
+	Ysu23DwCr1JPCor36dwRt0E=
+X-Google-Smtp-Source: AGHT+IHoGTr2p2JAjQmbfoEPN/+cqVGVjgmUq+aoT4KXXzWTti1FsgE83RW6pxbzizHKFOXmgyzILw==
+X-Received: by 2002:a05:600c:5409:b0:40c:357e:289 with SMTP id he9-20020a05600c540900b0040c357e0289mr649594wmb.65.1703246916101;
+        Fri, 22 Dec 2023 04:08:36 -0800 (PST)
+Received: from [192.168.0.101] (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.googlemail.com with ESMTPSA id w19-20020a05600c475300b0040c4620b9fasm6658024wmo.11.2023.12.22.04.08.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 22 Dec 2023 04:08:35 -0800 (PST)
+Message-ID: <75cd2090-857e-4082-bbc1-e3726235bda1@gmail.com>
+Date: Fri, 22 Dec 2023 12:08:33 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -46,118 +66,60 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] hwmon: (acpi_power_meter) Install IPMI handler for Dell
- systems
-To: Kai-Heng Feng <kai.heng.feng@canonical.com>,
- Guenter Roeck <linux@roeck-us.net>
-Cc: jdelvare@suse.com, linux-hwmon@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20231220051350.392350-1-kai.heng.feng@canonical.com>
- <5a81eda0-5044-4088-9aba-cf725e6fca9a@roeck-us.net>
- <CAAd53p4NNX9c5pUJgv12V=s_1YJxM3=G+OCYTgcRPqSJVbdi8w@mail.gmail.com>
+Subject: Re: [PATCH][next] wifi: rtw89: mac: Fix spelling mistakes "notfify"
+ -> "notify"
+To: Ping-Ke Shih <pkshih@realtek.com>, Kalle Valo <kvalo@kernel.org>,
+ "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
+Cc: "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20231220141831.10063-1-colin.i.king@gmail.com>
+ <2839b824a2a04aab9514ce89b3735e52@realtek.com>
 Content-Language: en-US
-From: Armin Wolf <W_Armin@gmx.de>
-In-Reply-To: <CAAd53p4NNX9c5pUJgv12V=s_1YJxM3=G+OCYTgcRPqSJVbdi8w@mail.gmail.com>
+From: "Colin King (gmail)" <colin.i.king@gmail.com>
+In-Reply-To: <2839b824a2a04aab9514ce89b3735e52@realtek.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:Qq3MJFMyL2mPhYT8DMla8fOeCYwbJv/9HGLu9SfkSWNowFqtgWe
- 07/fbz07PBe0c2pRW51QNWSx9vhc7VK4Xs7vJh1PtjQ1vJ694GX29vsBQEgUuecmolYHlS9
- iL3q9zP9Ry/wS/SP1L1m1EucJ41fGKdbwjWOIRbuu2noffq9WCKcoKcZlYa/ub/lISgVQ4i
- MAv8PxBG2q3fsSqSz+Urg==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:5RsHu0gclA4=;y2UR1gVUmKlLxfrJyBkfLFLGNMo
- 88cSs0CvJhubhsCZ+GwIsDDUtVu2wyLW7tmP0uqH9F9Yg1HBYYRK/b2fW3DQwy3RakIwkwwWu
- BEAcE7J+Jx5buRkhz3ec4bs9nLGJgW61cizo0U8CcWb/gOwYx3ZfJqNbjqRhsLO8PCy5CgwAp
- GBgYc8JXqpAcBqtocnjBrtu7TDPH/zwYrjltkOYyqDjJsm8Lfc3n3yd/Uk4n8G28asqRf0ALw
- 656um/xU0yHZY0x8Izu3LLIwQamSf7saga8N15gscZBf2BuLF5PP//LOHBA/2QXePfVS2rcDr
- JzipGk5Y6kSG/wxoLx1D1otk1ysYvmkhkrlphlZ9t/OSZwueSLex35Z+q3Hb7UbHm3QPLBco6
- cSXI7Rp7xQcJiB29k9aJJta090euFjB7XzqhJhaBNVZZrD7aX+sZcKcbYEXCFWekMWmILCGAI
- sd8CP+t02/Fy9EZW7pz5ExSxtrPO60EHiC3y4+UB8xaLYAg5vlG/I8YFHhLeVCoEu8yPwBd11
- xPILuEQ7XN4DyiLr40Vvs+w6LdBTMe4KLReghWDpd8Geee1AbmiOhqN7G+5IVVIjGbvAQ0YPl
- sUO+KWLTnXwJLFB0tiHPXWQ0KgeQl2jFFmle3MaDQ9XMHE06FScvlX9Ux4xkR4wJHVpeaPtzQ
- x0UCS7n9T+5ORDOpnrz9TekxdxvNkjSuMjmnh+F3v2jFpZ1KBKpFZqdhczsiK6oxQ0J8NYsga
- ti44ScB8A0qltFyIbcSeZlPtNb1bfI1Ma8lCeBz2V14UhIK6whTKYU4gKmZiTcryDeobCcSRG
- 9EIGdKVLZzLJgHJ9savcUDDCxeqMAtzHuRN/nJ6ULOPUt6XFVbGOevKXH9enHxYh9+VphV1O1
- aNqbu418IaRlKYR0HWe6OROZFtdxm+eWDuZMXqlTUjDpzMDmdvqRhHQd73rbZqC3IHUtV8WXY
- KMHz3XJ7w3J7weKHrWWUhdzQDJ8=
+Content-Transfer-Encoding: 7bit
 
-Am 22.12.23 um 04:57 schrieb Kai-Heng Feng:
-
-> Hi Guenter,
->
-> On Thu, Dec 21, 2023 at 7:49=E2=80=AFAM Guenter Roeck <linux@roeck-us.ne=
-t> wrote:
->> On Wed, Dec 20, 2023 at 01:13:50PM +0800, Kai-Heng Feng wrote:
->>> The following error can be observed at boot:
->>> [    3.717920] ACPI Error: No handler for Region [SYSI] (00000000ab9e6=
-2c5) [IPMI] (20230628/evregion-130)
->>> [    3.717928] ACPI Error: Region IPMI (ID=3D7) has no handler (202306=
-28/exfldio-261)
->>>
->>> [    3.717936] No Local Variables are initialized for Method [_GHL]
->>>
->>> [    3.717938] No Arguments are initialized for method [_GHL]
->>>
->>> [    3.717940] ACPI Error: Aborting method \_SB.PMI0._GHL due to previ=
-ous error (AE_NOT_EXIST) (20230628/psparse-529)
->>> [    3.717949] ACPI Error: Aborting method \_SB.PMI0._PMC due to previ=
-ous error (AE_NOT_EXIST) (20230628/psparse-529)
->>> [    3.717957] ACPI: \_SB_.PMI0: _PMC evaluation failed: AE_NOT_EXIST
->>>
->>> On Dell systems several methods of acpi_power_meter access variables i=
-n
->>> IPMI region [0], so request module 'ipmi_si' which will load 'acpi_ipm=
-i'
->>> and install the region handler accordingly.
->>>
->>> [0] https://www.dell.com/support/manuals/en-us/redhat-enterprise-linux=
--v8.0/rhel8_rn_pub/advanced-configuration-and-power-interface-acpi-error-m=
-essages-displayed-in-dmesg?guid=3Dguid-0d5ae482-1977-42cf-b417-3ed5c3f5ee6=
-2
->>>
->>> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
->>> ---
->>>   drivers/hwmon/acpi_power_meter.c | 2 ++
->>>   1 file changed, 2 insertions(+)
->>>
->>> diff --git a/drivers/hwmon/acpi_power_meter.c b/drivers/hwmon/acpi_pow=
-er_meter.c
->>> index 703666b95bf4..b9db53166bc9 100644
->>> --- a/drivers/hwmon/acpi_power_meter.c
->>> +++ b/drivers/hwmon/acpi_power_meter.c
->>> @@ -882,6 +882,8 @@ static int acpi_power_meter_add(struct acpi_device=
- *device)
->>>        strcpy(acpi_device_name(device), ACPI_POWER_METER_DEVICE_NAME);
->>>        strcpy(acpi_device_class(device), ACPI_POWER_METER_CLASS);
->>>        device->driver_data =3D resource;
->>> +     if (dmi_match(DMI_SYS_VENDOR, "Dell Inc."))
->>> +             request_module("ipmi_si");
->>>
->> This looks like a terrible hack to me. Is there precedent of similar ha=
-cks
->> elsewhere showing that this is the "way to go" ?
-> Yes it's ugly.
->
-> The error happens in the ACPI ASL code, so it's not possible to know
-> if any method of apci_power_meter requires IPMI region.
-> I really can't think of any better solution for it.
->
-> Kai-Heng
-
-Maybe we could use an ACPI scan handler for that?
-Basically we would call request_module() upon discovering an ACPI IPMI dev=
-ice,
-so that the necessary module is available for handling the IPMI opregion.
-This would also prevent any issues should other devices also require IPMI =
-access.
-
-Armin Wolf
-
->> Guenter
+On 22/12/2023 00:19, Ping-Ke Shih wrote:
+> 
+> 
+>> -----Original Message-----
+>> From: Colin Ian King <colin.i.king@gmail.com>
+>> Sent: Wednesday, December 20, 2023 10:19 PM
+>> To: Ping-Ke Shih <pkshih@realtek.com>; Kalle Valo <kvalo@kernel.org>; linux-wireless@vger.kernel.org
+>> Cc: kernel-janitors@vger.kernel.org; linux-kernel@vger.kernel.org
+>> Subject: [PATCH][next] wifi: rtw89: mac: Fix spelling mistakes "notfify" -> "notify"
 >>
->>>        res =3D read_capabilities(resource);
->>>        if (res)
->>> --
->>> 2.34.1
->>>
+>> There are two spelling mistakes in rtw89_err error messages. Fix these
+>> and also add space between [ERR] and message text.
+>>
+>> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+> 
+> Acked-by: Ping-Ke Shih <pkshih@realtek.com>
+> 
+> Thanks for the correctness. Could I know the tool you used to find out these
+> typo?
+
+Sure,
+
+https://github.com/ColinIanKing/kernelscan
+
+It needs the american dictionary, installed in /usr/share/dict e.g.
+apt-get install wamerican
+
+and then spellcheck with:
+
+./kernelscan -k path-to-code-you-want-to-scan
+
+I run kernelscan on the entire linux-next source daily and diff the 
+days's results with the previous day using the meld diff tool.
+
+Colin
+
+
+> 
+> Ping-Ke
+> 
+> 
+
 
