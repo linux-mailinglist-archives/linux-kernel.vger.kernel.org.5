@@ -1,122 +1,197 @@
-Return-Path: <linux-kernel+bounces-10070-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10071-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C598F81CF8F
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 22:51:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B50181CF94
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 22:55:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C07351C213F3
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 21:51:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DFCA41F24235
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 21:55:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADCD42EAF5;
-	Fri, 22 Dec 2023 21:51:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 013292EAED;
+	Fri, 22 Dec 2023 21:55:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="frWj5maN"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jF1eNvYd"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80C742EAE1
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 21:51:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-5d226f51f71so22086287b3.3
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 13:51:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1703281903; x=1703886703; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=NeI6c38cgpwlUN996udLFmgW+EctHzXbCAsfLYiPUqE=;
-        b=frWj5maNQP1O6m8ekUzZyXjpDdNF8/8M1/llFa+KTj/ZBOYucfRjZCeOjUOp8MAWuz
-         u69g2qcgaXtjiqNEPh8zLke8Qmw6LvcMFb2lQUHm8i1Bo+4535jnbXpMEPqLvQYDa5wH
-         JmytbicvFsJ2Epru2JZoFC/SD+axhrebkSNzg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703281903; x=1703886703;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=NeI6c38cgpwlUN996udLFmgW+EctHzXbCAsfLYiPUqE=;
-        b=bCg4FSwKMQGmUs7ANbMAUuU844JtGLM6fHOoGMnJD4eB2EeGTt8BOU79Fr7Tz4HeRA
-         vaebveSYTL7MoFqGx7aJrlnVnYTK804csBEPnryNswgsusXvANrt3bWWy7bvRSL+7mXB
-         tq7F5LlMzx6oldS3sn6/O23vr4gJ26YRXX8SWVNGaHvV/Pf4BU/n5jeUlets6lypmdGu
-         R8KmFdkTgb0woiVd6FV6BccUIgZegUV6jnj+E7kATFURpsHGcBMh74kjshpJlbiHk681
-         fzpuFpNKTLMkGUFJbO3YuUfEiarZRKGMqxO1CPdgA2jFO/9mIwlRNBKs9PjuiIr8C2Xf
-         cqog==
-X-Gm-Message-State: AOJu0YxXQGgUoLDxCxOHEVnCfGjGbCT6QlEvvV7x6pVCqe8fkWA2w4FV
-	K/A90uWwYn9DQhrqI9rdyQfRSL03isuErbJrfUkNZ29nG7HW
-X-Google-Smtp-Source: AGHT+IHj3dEztmYYX8u+1byE/xGSG248QDUY0GB/Re/55iYfEHh1UIBA8cb+ucJJrF5IN4dMRbTFU2aAhtGUSB0QEII=
-X-Received: by 2002:a81:a04e:0:b0:5d7:1940:dd7e with SMTP id
- x75-20020a81a04e000000b005d71940dd7emr1872300ywg.84.1703281903502; Fri, 22
- Dec 2023 13:51:43 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A1CD2E85F
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 21:55:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1703282124; x=1734818124;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=aM5EjOg2Dh/MqhAoSxZw1m8rKaMc5thhLNNVopNH6sw=;
+  b=jF1eNvYd5g+Wj/MRkxwH6BoamQDgDjpA2rhWWARE39LW4FhDZbW60kI/
+   2FCxKlkVZc/A9oipkg68dhbgTtHbULjDdxeBjam8EdlJJw3KYJvALfIHx
+   2SEs0XTQy1Z7ZrKZs4qr0z6D61IMsoEiF2PJ2InQJjUGxB0/WGtJkq4DQ
+   bfS2fklTZIHi9wvRyLI5PCNkpC6AAR2YiBXtMmibrtzEBBIBLt5fsAK2s
+   xChXGsSfTHwS1J7I6NPbOV5I2YhcgS4cqHO5b4OQLbDc7PM6IlxXZFgZr
+   F4OnCIxD0WY/V4lbw/N9pt1wS3Dn83Nqh0ZYgXUba8ee3EC53FiFX6+M9
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10932"; a="386589103"
+X-IronPort-AV: E=Sophos;i="6.04,297,1695711600"; 
+   d="scan'208";a="386589103"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Dec 2023 13:55:23 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10932"; a="900520782"
+X-IronPort-AV: E=Sophos;i="6.04,297,1695711600"; 
+   d="scan'208";a="900520782"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga004.jf.intel.com with ESMTP; 22 Dec 2023 13:55:21 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rGnT0-0009uD-1k;
+	Fri, 22 Dec 2023 21:54:28 +0000
+Date: Sat, 23 Dec 2023 05:54:02 +0800
+From: kernel test robot <lkp@intel.com>
+To: Max Filippov <jcmvbkbc@gmail.com>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: cfi_probe.c:(.xiptext+0x6f): dangerous relocation: windowed longcall
+ crosses 1GB boundary; return may fail: __kmalloc
+Message-ID: <202312230505.kAgJr7BM-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231220235459.2965548-1-markhas@chromium.org>
- <20231220165423.v2.21.Ife9ebad2bbfbab3a05e90040f344d750aa0aac7e@changeid> <ZYRawMwhtimA-rkD@smile.fi.intel.com>
-In-Reply-To: <ZYRawMwhtimA-rkD@smile.fi.intel.com>
-From: Mark Hasemeyer <markhas@chromium.org>
-Date: Fri, 22 Dec 2023 14:51:32 -0700
-Message-ID: <CANg-bXA+kboBGVwqQrW+7zPGgwCwd-cTbnjy4213Lf4pKWpdLA@mail.gmail.com>
-Subject: Re: [PATCH v2 21/22] platform: Modify platform_get_irq_optional() to
- use resource
-To: Andy Shevchenko <andriy.shevchenko@intel.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Tzung-Bi Shih <tzungbi@kernel.org>, 
-	Raul Rangel <rrangel@chromium.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Rob Herring <robh@kernel.org>, Sudeep Holla <sudeep.holla@arm.com>, David Gow <davidgow@google.com>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Mark Brown <broonie@kernel.org>, 
-	"Rafael J. Wysocki" <rafael@kernel.org>, Takashi Iwai <tiwai@suse.de>, 
-	=?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> >   * For example::
-> >   *
-> > - *           int irq = platform_get_irq_optional(pdev, 0);
-> > + *           int irq = platform_get_irq_resource_optional(pdev, 0, &res);
-> >   *           if (irq < 0)
-> >   *                   return irq;
-> >   *
-> >   * Return: non-zero IRQ number on success, negative error number on failure.
->
-> Why do we need the irq to be returned via error code?
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   5414aea7b7508d01235ea0c95064ad66395c3239
+commit: 03ce34cf8f50e4c62f9a4b62caffdba1165ca977 xtensa: add XIP-aware MTD support
+date:   4 months ago
+config: xtensa-randconfig-m031-20220228 (https://download.01.org/0day-ci/archive/20231223/202312230505.kAgJr7BM-lkp@intel.com/config)
+compiler: xtensa-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231223/202312230505.kAgJr7BM-lkp@intel.com/reproduce)
 
-We don't really. It just matches the convention of
-'platform_get_irq()' and 'of_irq_to_resource()'.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312230505.kAgJr7BM-lkp@intel.com/
 
-> >       int ret;
->
-> Missing blank line, have you run checkpatch.pl?
+All errors (new ones prefixed by >>):
 
-Yes, I normally run checkpatch.pl. I may have missed the warning or it
-didn't catch it. I'll add it.
+   drivers/mtd/chips/cfi_probe.o: in function `cfi_chip_setup':
+>> cfi_probe.c:(.xiptext+0x6f): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __kmalloc
+>> cfi_probe.c:(.xiptext+0x7e): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: memset
+>> cfi_probe.c:(.xiptext+0x8e): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: cfi_build_cmd
+>> cfi_probe.c:(.xiptext+0x20e): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: cfi_send_gen_cmd
+   cfi_probe.c:(.xiptext+0x223): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: cfi_send_gen_cmd
+   cfi_probe.c:(.xiptext+0x237): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: cfi_send_gen_cmd
+   cfi_probe.c:(.xiptext+0x24c): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: cfi_send_gen_cmd
+>> cfi_probe.c:(.xiptext+0x2b6): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: (.text.unlikely+0x4)
+>> cfi_probe.c:(.xiptext+0x2d7): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: _printk
+   cfi_probe.c:(.xiptext+0x303): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: _printk
+   cfi_probe.c:(.xiptext+0x31c): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: _printk
+   drivers/mtd/chips/cfi_probe.o: in function `cfi_probe_chip':
+   cfi_probe.c:(.xiptext+0x3e6): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: _printk
+   cfi_probe.c:(.xiptext+0x44b): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: _printk
+   drivers/mtd/chips/cfi_util.o: in function `cfi_qry_present':
+   cfi_util.c:(.xiptext+0x10): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: cfi_build_cmd
+   cfi_util.c:(.xiptext+0x20): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: cfi_build_cmd
+   cfi_util.c:(.xiptext+0x2e): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: cfi_build_cmd
+   cfi_util.c:(.xiptext+0x86): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: cfi_build_cmd
+   drivers/mtd/chips/cfi_util.o: in function `cfi_qry_mode_off':
+   cfi_util.c:(.xiptext+0xa0): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: cfi_build_cmd
+   cfi_util.c:(.xiptext+0xdb): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: cfi_build_cmd
+   cfi_util.c:(.xiptext+0xfc): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: cfi_build_cmd
+   cfi_util.c:(.xiptext+0x128): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: cfi_build_cmd
+   drivers/mtd/chips/cfi_util.o: in function `cfi_qry_mode_on':
+   cfi_util.c:(.xiptext+0x154): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: cfi_build_cmd
+   cfi_util.c:(.xiptext+0x170): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: cfi_build_cmd
+   cfi_util.c:(.xiptext+0x19c): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: cfi_build_cmd
+   cfi_util.c:(.xiptext+0x1c2): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: cfi_build_cmd
+   cfi_util.c:(.xiptext+0x1f0): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: cfi_build_cmd
+   cfi_util.c:(.xiptext+0x216): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: cfi_build_cmd
+   cfi_util.c:(.xiptext+0x246): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: cfi_build_cmd
+   cfi_util.c:(.xiptext+0x27c): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: cfi_build_cmd
+   cfi_util.c:(.xiptext+0x2ac): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: cfi_build_cmd
+   cfi_util.c:(.xiptext+0x2d2): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: cfi_build_cmd
+   cfi_util.c:(.xiptext+0x300): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: cfi_build_cmd
+   cfi_util.c:(.xiptext+0x334): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: cfi_build_cmd
+   cfi_util.c:(.xiptext+0x362): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: cfi_build_cmd
+   cfi_util.c:(.xiptext+0x3b2): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: _printk
+   cfi_util.c:(.xiptext+0x3be): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __kmalloc
+   drivers/mtd/chips/cfi_cmdset_0002.o: in function `fixup_convert_atmel_pri':
+   cfi_cmdset_0002.c:(.text+0x757): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: (.xiptext+0x80)
+   cfi_cmdset_0002.c:(.text+0x796): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: (.xiptext+0x80)
+   drivers/mtd/chips/cfi_cmdset_0002.o: in function `do_panic_write_oneword':
+   cfi_cmdset_0002.c:(.text+0x884): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: (.xiptext+0x80)
+   cfi_cmdset_0002.c:(.text+0x897): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: (.xiptext+0x80)
+   drivers/mtd/chips/cfi_cmdset_0002.o: in function `cfi_fixup_m29ew_erase_suspend':
+   cfi_cmdset_0002.c:(.text+0xb38): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: (.xiptext+0x80)
+   drivers/mtd/chips/cfi_cmdset_0002.o: in function `put_chip.isra.0':
+   cfi_cmdset_0002.c:(.text+0xbfb): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: (.xiptext+0x80)
+   drivers/mtd/chips/cfi_cmdset_0002.o: in function `get_chip':
+   cfi_cmdset_0002.c:(.text+0xd13): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: (.xiptext+0x7b4)
+   drivers/mtd/chips/cfi_cmdset_0002.o: in function `do_atmel_lock':
+   cfi_cmdset_0002.c:(.text+0x1030): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: (.xiptext+0x80)
+   cfi_cmdset_0002.c:(.text+0x105c): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: (.xiptext+0x148)
+   drivers/mtd/chips/cfi_cmdset_0002.o: in function `fwh_xxlock_oneblock':
+   cfi_cmdset_0002.c:(.text+0x1150): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: cfi_qry_mode_on
+   cfi_cmdset_0002.c:(.text+0x116f): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: cfi_qry_mode_off
+   drivers/mtd/chips/cfi_cmdset_0002.o: in function `cfi_amdstd_otp_walk':
+   cfi_cmdset_0002.c:(.text+0x1426): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: (.xiptext+0x814)
+   cfi_cmdset_0002.c:(.text+0x1597): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: (.xiptext+0x80)
+   drivers/mtd/chips/cfi_cmdset_0002.o: in function `cfi_amdstd_lock_user_prot_reg':
+   cfi_cmdset_0002.c:(.text+0x15c2): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: (.xiptext+0x148)
+   drivers/mtd/chips/cfi_cmdset_0002.o: in function `cfi_amdstd_reboot':
+   cfi_cmdset_0002.c:(.text+0x1d07): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: (.xiptext+0x7b4)
+   drivers/mtd/chips/cfi_cmdset_0002.o: in function `cfi_amdstd_secsi_read':
+   cfi_cmdset_0002.c:(.text+0x1da3): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: (.xiptext+0xa90)
+   cfi_cmdset_0002.c:(.text+0x1e1a): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: (.xiptext+0x7b4)
+   drivers/mtd/chips/cfi_cmdset_0002.o: in function `cfi_amdstd_write_buffers':
+   cfi_cmdset_0002.c:(.text+0x2100): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: cfi_read_pri
+   drivers/mtd/chips/cfi_cmdset_0002.o: in function `xip_enable':
+   cfi_cmdset_0002.c:(.xiptext+0x13): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: cfi_build_cmd
+   drivers/mtd/chips/cfi_cmdset_0002.o: in function `do_write_buffer_reset':
+   cfi_cmdset_0002.c:(.xiptext+0x4c): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: cfi_send_gen_cmd
+   cfi_cmdset_0002.c:(.xiptext+0x60): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: cfi_send_gen_cmd
+   cfi_cmdset_0002.c:(.xiptext+0x76): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: cfi_send_gen_cmd
+   drivers/mtd/chips/cfi_cmdset_0002.o: in function `chip_ready':
+   cfi_cmdset_0002.c:(.xiptext+0xa3): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: cfi_build_cmd
+   cfi_cmdset_0002.c:(.xiptext+0xbe): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: cfi_send_gen_cmd
+   drivers/mtd/chips/cfi_cmdset_0002.o: in function `chip_good':
+   cfi_cmdset_0002.c:(.xiptext+0x167): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: cfi_build_cmd
+   drivers/mtd/chips/cfi_cmdset_0002.o: in function `xip_udelay':
+   cfi_cmdset_0002.c:(.xiptext+0x1d2): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: cfi_build_cmd
+   cfi_cmdset_0002.c:(.xiptext+0x226): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: cfi_build_cmd
+   cfi_cmdset_0002.c:(.xiptext+0x25b): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: cfi_build_cmd
+   cfi_cmdset_0002.c:(.xiptext+0x282): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: mutex_unlock
+   cfi_cmdset_0002.c:(.xiptext+0x28e): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: mutex_lock_nested
+   cfi_cmdset_0002.c:(.xiptext+0x2e2): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: (.text+0x9f8)
+   cfi_cmdset_0002.c:(.xiptext+0x32a): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: add_wait_queue
+   cfi_cmdset_0002.c:(.xiptext+0x332): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: mutex_unlock
+   cfi_cmdset_0002.c:(.xiptext+0x338): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: schedule
+   cfi_cmdset_0002.c:(.xiptext+0x342): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: remove_wait_queue
+   cfi_cmdset_0002.c:(.xiptext+0x34c): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: mutex_lock_nested
+   cfi_cmdset_0002.c:(.xiptext+0x3b0): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __usecs_to_jiffies
+   cfi_cmdset_0002.c:(.xiptext+0x3ea): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: add_wait_queue
+   drivers/mtd/chips/cfi_cmdset_0002.o: in function `do_write_buffer_wait':
+   cfi_cmdset_0002.c:(.xiptext+0x3f7): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: mutex_unlock
+   cfi_cmdset_0002.c:(.xiptext+0x3fd): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: schedule
+   cfi_cmdset_0002.c:(.xiptext+0x407): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: remove_wait_queue
+   cfi_cmdset_0002.c:(.xiptext+0x41a): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: mutex_lock_nested
+   cfi_cmdset_0002.c:(.xiptext+0x446): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: _printk
+   cfi_cmdset_0002.c:(.xiptext+0x468): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: (.text+0x590)
+   cfi_cmdset_0002.c:(.xiptext+0x4a2): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: cfi_send_gen_cmd
+   cfi_cmdset_0002.c:(.xiptext+0x4b8): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: cfi_send_gen_cmd
+   cfi_cmdset_0002.c:(.xiptext+0x4cf): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: cfi_send_gen_cmd
+   drivers/mtd/chips/cfi_cmdset_0002.o: in function `do_write_oneword_once':
+   cfi_cmdset_0002.c:(.xiptext+0x527): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: add_wait_queue
+   cfi_cmdset_0002.c:(.xiptext+0x536): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: mutex_unlock
+   cfi_cmdset_0002.c:(.xiptext+0x53c): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: schedule
 
->
-> > +     if (IS_ERR_OR_NULL(r))
-> > +             return -EINVAL;
->
-> If we ever have an error pointer in r, I prefer to see
->
->         if (!r)
->                 return -EINVAL;
->         if (IS_ERR(r))
->                 return PTR_ERR(r);
->
-> But Q is the same as earlier: when would we have the error pointer in @r?
-
-I don't see when we would. I'll drop it.
-
-> Can we save this and be consistent with above fwnode API return code check?
->
-> > +                     ret = ret ?: r->start;
-> >                       goto out;
-> > +             }
-> >       }
-
-Yep!
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
