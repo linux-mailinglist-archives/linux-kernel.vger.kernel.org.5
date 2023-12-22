@@ -1,199 +1,232 @@
-Return-Path: <linux-kernel+bounces-9428-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9456-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3008E81C55C
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 08:01:55 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E24AF81C5DF
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 08:38:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 368821C231EC
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 07:01:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 29B15B213F8
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 07:38:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D67E09447;
-	Fri, 22 Dec 2023 07:01:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDB059476;
+	Fri, 22 Dec 2023 07:36:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KYp5FdS4"
+	dkim=pass (2048-bit key) header.d=gehealthcare.com header.i=@gehealthcare.com header.b="lOrveDNO"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+Received: from mx0a-00176a03.pphosted.com (mx0b-00176a03.pphosted.com [67.231.157.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2AE6C129;
-	Fri, 22 Dec 2023 07:01:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703228504; x=1734764504;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=TWnCjvPrHvXBAICVkFt+We3rTNwoJGr9S//qssfeMDQ=;
-  b=KYp5FdS4GSIhiR7KrQVFJ2ZXAGZ6ZTflOMmVwTTbIcadTjJY1hn98Ecv
-   j+zoVYLoM2K3Bol1ptUZiYXmGd+pwNpZYzwu3sdXtLeIAb5xWmjDa3vFK
-   yi9Lrsgz53PlsAAEqA+0jsheboxkf/tRInoE5Q4GvtE8S5WvWsB8Zd2ve
-   9pSasmLxv4Tc/KQyxiToCm3szGwysromg9xdhLZ2F4mLMqMNqczIhFLXY
-   4y2W8PvrZuRTKApl0BcPAuD0BNevrm69lfG1sMnS4cUbpKqBo/a6DTLDW
-   3zxEb0GSSWLLgJZ/K70hkKjvwib6L4GbdDl4ZFo9dA5hQBQKx7lsZOOuG
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10931"; a="2921950"
-X-IronPort-AV: E=Sophos;i="6.04,294,1695711600"; 
-   d="scan'208";a="2921950"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Dec 2023 23:01:43 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,294,1695711600"; 
-   d="scan'208";a="18612483"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by orviesa002.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 21 Dec 2023 23:01:45 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 21 Dec 2023 23:01:42 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 21 Dec 2023 23:01:42 -0800
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Thu, 21 Dec 2023 23:01:42 -0800
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.168)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Thu, 21 Dec 2023 23:01:42 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LM/C/3k1XXzaIVaTzg3on28mMaPJ4s2t74DizBbpL1Bs1QatuQ8CHFWh1SsEVljl0gOPJ2Y7JGigjO/gMGrFFUpbxkyzdXaOuwShmNCoy1pMRv8r0hVWnoiym5LnJBSw59L1zFIJs71mpKgX0ZOgIM7L2tjCjG5bcKMNOBQC8lI09sK3BQ1GAl5HKXvplaGPPQILWknsDdpcETpxuh8U8XttVMR5ZRuOY7wEXERLUWwc6F8JRFN4R+JXnAqD1E5lQ/STmpCbeqjYh/eIL/jk6p236jhIRJM6YdpeRY3FmdgwtlaV95mUUlZ0urx4dRUw448W597dCJHf6bisjeQzdg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=TWnCjvPrHvXBAICVkFt+We3rTNwoJGr9S//qssfeMDQ=;
- b=JNgxQAXDSa26/1tMyR9ovuxh6KsHkcMKU/r/y7lJy1yv72tietIuLHZgIq0xdOXs14myrcbCa5BugwfHKqBHe7Ni0PKz8vKlj5A3NUc2k3ug8tYlg0RsXCfcSrNxSabJaI2HZ1pMoEY4epgH4crr3bAJ3/JBlC8FUW1jxovf6JAbQWZvipzdtAUaafw7O/NFldBZ5PIbsXEq2mLsqrYYt/1tzt0e3agd1nQ48EBBKPXeBl1j8VxDjeJ96IcMK/xUfoDVj0npojOKudj1py4o/qCCwE94PFOwzO3H/mSmIGvZbX6ctOmvR73l7pYr+aUuISZ6JVlzg4rj3kFclihMlA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from DS0PR11MB7529.namprd11.prod.outlook.com (2603:10b6:8:141::20)
- by DM3PR11MB8736.namprd11.prod.outlook.com (2603:10b6:0:47::9) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7113.18; Fri, 22 Dec 2023 07:01:40 +0000
-Received: from DS0PR11MB7529.namprd11.prod.outlook.com
- ([fe80::e4ae:3948:1f55:547d]) by DS0PR11MB7529.namprd11.prod.outlook.com
- ([fe80::e4ae:3948:1f55:547d%5]) with mapi id 15.20.7113.019; Fri, 22 Dec 2023
- 07:01:40 +0000
-From: "Liu, Yi L" <yi.l.liu@intel.com>
-To: "Tian, Kevin" <kevin.tian@intel.com>
-CC: "Yang, Weijiang" <weijiang.yang@intel.com>, "joro@8bytes.org"
-	<joro@8bytes.org>, "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-	"jgg@nvidia.com" <jgg@nvidia.com>, "robin.murphy@arm.com"
-	<robin.murphy@arm.com>, "baolu.lu@linux.intel.com"
-	<baolu.lu@linux.intel.com>, "cohuck@redhat.com" <cohuck@redhat.com>,
-	"eric.auger@redhat.com" <eric.auger@redhat.com>, "nicolinc@nvidia.com"
-	<nicolinc@nvidia.com>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-	"mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
-	"chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
-	"yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>, "peterx@redhat.com"
-	<peterx@redhat.com>, "jasowang@redhat.com" <jasowang@redhat.com>,
-	"shameerali.kolothum.thodi@huawei.com"
-	<shameerali.kolothum.thodi@huawei.com>, "lulu@redhat.com" <lulu@redhat.com>,
-	"suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
-	"iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>, "Duan,
- Zhenzhong" <zhenzhong.duan@intel.com>, "joao.m.martins@oracle.com"
-	<joao.m.martins@oracle.com>, "Zeng, Xin" <xin.zeng@intel.com>, "Zhao, Yan Y"
-	<yan.y.zhao@intel.com>, "j.granados@samsung.com" <j.granados@samsung.com>
-Subject: Re: [PATCH v7 9/9] iommu/vt-d: Add iotlb flush for nested domain
-Thread-Topic: [PATCH v7 9/9] iommu/vt-d: Add iotlb flush for nested domain
-Thread-Index: AQHaNCP4qRuDL+bDzEuyhcu89eXATrC0rU2AgAAv1gCAAAQBdg==
-Date: Fri, 22 Dec 2023 07:01:40 +0000
-Message-ID: <D35102EE-F1E8-4888-8A5E-A1A723B3363D@intel.com>
-References: <20231221153948.119007-1-yi.l.liu@intel.com>
- <20231221153948.119007-10-yi.l.liu@intel.com>
- <f6302d8e-fd5f-45e1-8148-e5812c61f5c0@intel.com>
- <BN9PR11MB52766A289D2CA50F8BD802F18C94A@BN9PR11MB5276.namprd11.prod.outlook.com>
-In-Reply-To: <BN9PR11MB52766A289D2CA50F8BD802F18C94A@BN9PR11MB5276.namprd11.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DS0PR11MB7529:EE_|DM3PR11MB8736:EE_
-x-ms-office365-filtering-correlation-id: b12f4666-9aab-4e4f-de9e-08dc02bbd90c
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: F/c9jXDXCKiECdbKBZZIwxW0bFuaqDpyJKAGjk+gpxCH6UYqGGWTuzMB7LJbOIjM0JvA+lPv4j3cbVi8vJcHPGLopCB4jZoS1E/BuWRYARqfLySfdLQDmVKI+8fktXJD2m2gD9ZlnFFE8uOjD7+Lb78gvPJbJ4QttgL8NXZFZw4/TR7Qi+vRFzwce9h+JSO3EKiGtK3mdOes8jqPpNkp+F74YHmIp8381QBgbTCHDwjmLfmlNerqSjPWPUjNrWP8STj0W9Dck4NIU4AN9RVd8tPr/Sb3fdbIFXV4nJO6b3gvCFxqLUujXYd+I7O5ijAkGrxSmygZhdZ/UHxW7NJsGtOlY1nPVIKol7yrpPASHBLtMPabKt94ZD38pQsVzcYZ2ejzNlcaDuPCZtFF1XwDjwYouikCXx5Zc45HDtySsPYXtV67Rv2hGRvhweaDzl5J33DKsLzo8IeofmgVKH/4rdBfq1GmTsJirXkrFXqvLc0QkS52p3Jq/h2jUNPy9a2dm5rbdBFVLUVV2L1Fd7aNW2bZFGrpSY/O78kiKCL9q8OnA9WrxdBpoi+o9IokwLLPVESWtuT86MvJ4wCS00q9V+6JMjZdYi14SSikHcsUsnY+V9aLeJuYiIrl+jli12qsjOnsraEIdMZKQSaD1MG3UQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR11MB7529.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(396003)(136003)(376002)(366004)(39850400004)(230922051799003)(186009)(451199024)(1800799012)(64100799003)(53546011)(71200400001)(2616005)(122000001)(76116006)(38100700002)(6862004)(8676002)(4326008)(8936002)(5660300002)(41300700001)(4744005)(2906002)(478600001)(6486002)(54906003)(6506007)(64756008)(6512007)(7416002)(66446008)(37006003)(66476007)(66556008)(66946007)(36756003)(316002)(6636002)(33656002)(86362001)(82960400001)(38070700009)(45980500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?SzV5QXp5WnViaWtsaTRqYS9SZ2JiR2FTRUdCNHRSdG1memZJczNCYmJSVjRm?=
- =?utf-8?B?NjFpL292ZUU3RURpcW9WejR3eEViV3lHVjBDdkFTL0tCVEwyUjg3V3VjUi9D?=
- =?utf-8?B?a2pBTnkwZHRzcUJaM2NOVThFNUdGVHJRZDQxVjhrOU5zYmUwdUdEM281YllE?=
- =?utf-8?B?bkR1S3FxcW5qMkVKUXZoeGRsckQvMVpFRXJqdmIwaDNVY0ljOW9RdksreE1I?=
- =?utf-8?B?WlN4UHA4K1J3NG1PUmI5N29EK01FVFhhbC9NSys2ZUEraGorUDl2VlIrYlF3?=
- =?utf-8?B?T3VDbmhxY2lXL0NvKzU5TFhIbkdyZUdkZlhwMDNQeFBhbVk5em1HZzN1K3RR?=
- =?utf-8?B?RHBNRHBpeEFXT0FidU1mNUxYNk9CVHQzTmtrajVBUTVLK1YvRHJiaURyL3Vp?=
- =?utf-8?B?T3hQdGdDSk5RamRvalQrTXdkREphZUJ6dWg5ZWcyN1ZNRFBsUVVtU1RPd2V0?=
- =?utf-8?B?ektZbWVYMTlqemp0M1JKL2lic0hLRXlRQUpsL0liU1lHdjl4VHQ1RHBCb1Iw?=
- =?utf-8?B?elRrWUNPbUNTT1E4cTZpWExDSmRNSVF1aXNYMmIyY0R2ZDRzcURpL3RVN3lh?=
- =?utf-8?B?VjFRZVI2NHZMNW85eGRqL0tHUWNsRUREQlZSclJaYkdycDV6bnFGejZSRlQ2?=
- =?utf-8?B?V29QMi8zRnpNeGJzNGQ5SHpFaUdZS25wYzRUS1o5Ri9MMU1mV3NKVWpYTlFu?=
- =?utf-8?B?YmZWQjEvbDRwbXJoVFUrNGZ1Nzc3aWN3andSWURsbVVKcmpPcUtrSm1YSjJv?=
- =?utf-8?B?Z0o3NytwOWp3UHFqQmR4WFlXMHNzR0ZNaG92MDdVZFBpMnhtVzYvaEVuZkI1?=
- =?utf-8?B?L2xoUWplbkg5b3BJbG5PcDQ5OUhWRlJSaTUxL0tQamthTFJVWmxETE1KdXF2?=
- =?utf-8?B?QVFITkpkVW9hUVBMSTU0QzRwR2JxSk1YWjIrdUxaUWliUFNYT3R6Zi9jaUQx?=
- =?utf-8?B?c3Q1dnBGYWdrZks0TEJmVStzbEFGUXpzM2xIdWYyQStjQ1dBekNmSjhLaEtO?=
- =?utf-8?B?TENCb1MrRnpBRzU3c1VKVTRYUHdlZDYyQ253bzFEUWpZaHRkTGFtdjdUZmZ4?=
- =?utf-8?B?SFpkT3hkT09NUXNUd0FWSUtwODdkdGx5ZzFGT05XZjdLQnc4TjZvUjN1QVV2?=
- =?utf-8?B?WVE0UHhaWG0xWFZqSkRNbWowUjh0V3FoRFJLQjNKcU9idjlkKzA0LytOc1B2?=
- =?utf-8?B?eHA2Y0lkeGh2a0RJdE1EMW9TQ3IyMGQ2bmlHMDg5dTdyVEF0V3NWN2VOYjJs?=
- =?utf-8?B?dUNzSEFTcU8zWlM5U0lOTTVwQisyNFVXcGZabVVpNktndXRBbFlvS0ZZRzJp?=
- =?utf-8?B?SVJRUjZ3cFNiZXlmcVZkSVVLRndKZzl6K0Z5SHpnUllRRFJXUkVoc0hoNXZ2?=
- =?utf-8?B?Vi9lMjNtZzFFVzF5aWtrZHd0Z3IwYzM2YXZrWnVPdkc2ek1yVjRaUHdma3Fj?=
- =?utf-8?B?eHVoeTZjRmE2ZFEvMitzNWFmN1JOcDl2ZGhKSnh5dTU2eTVwTnY4cWtaN3ha?=
- =?utf-8?B?cGxkaU5aN1JUemtuanZtbjFOb1pGM2ZlTk5qcEpzWHgvYW9VcTZxbHQ1UE4v?=
- =?utf-8?B?RmRvQUhSMmV3cFNHQmpubW9aVHRnb3E0YWR6Tk9qYzllajltVml5L1dQOGZq?=
- =?utf-8?B?MWF1Z3hZRkRTQzU5a213Z29PNVF0VkV1VlpZK1RHeDFNenEvMWd0TEVadjFq?=
- =?utf-8?B?NlFkZTVRQnhHYkM4VzQxSTlmRnhBajRtVnIwSStkcW5tTHRaMkxXUUt5VWVT?=
- =?utf-8?B?bG5IZFY0NkRLNlk5ZmlOZ3haUmlKNVQrV0t5UkRuSnN3NUF5SU9RZWdwY0Fw?=
- =?utf-8?B?dWFaNWFuRDlXRi9PdExlVDVNcG1udkduZjkwS01QaTVuaWdSQmNnSGRVMnI0?=
- =?utf-8?B?SzVYZmtuaGE4bDVwcU9WQVRsbTRMMkp3Z3o0R2dDN1RXMnMvSWJyVVhlamg0?=
- =?utf-8?B?YjY3WnQ1RGVtaXd4N0lWenpJaU85NEhqUzRhYmZ2R05SeDZmT0JTeW5JU3Q5?=
- =?utf-8?B?RzA5NnV4dEN4YzNwcEhZZjBIeVJQb3JqSDNGNmZKM0xoUXM2SzU1aytiVVUw?=
- =?utf-8?B?dUhscmppUkNQSitncWNObFBaZzQ1b3lhZ3Z2UGRaZzFkam01VTJhWnhLdTAy?=
- =?utf-8?B?ci9QUGZ3eXRqaFZ0UFh1SWpKQ1pwSG5jVERPN05DSHFFckZUOThYTElxTkhm?=
- =?utf-8?Q?SXjlG+4LsmdhZuqb1N8eXqQIzCvMnrgtL875/l2NHnzr?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BB6D9449;
+	Fri, 22 Dec 2023 07:36:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gehealthcare.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gehealthcare.com
+Received: from pps.filterd (m0048204.ppops.net [127.0.0.1])
+	by m0048204.ppops.net-00176a03. (8.17.1.19/8.17.1.19) with ESMTP id 3BLM4PMe020515;
+	Fri, 22 Dec 2023 01:02:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gehealthcare.com; h=date : from :
+ to : cc : subject : message-id : references : mime-version : content-type
+ : in-reply-to; s=outbound;
+ bh=cae/FJnayHg64Oh6InK+iMFOgnFR3ykNfa62V/1pNqU=;
+ b=lOrveDNOO5+KXQ4CzJp9kGgUM2HtYeyJE9Deqrku7N8A+wJ2bYjwSve6lZQA2y4oRVDh
+ gOKfuw9LVXDCcH7xAuREx9BDlHzpugYw3GBFpxYVFHu2EpmeMDaQ1Wezcd60n/CgGVDQ
+ f/CUQfkpiAKPFlA/hL8R0SAi6y2YHYohe4/YUgCCCI6VC9Ji8auqcwTlNg3mhKERWLU0
+ Q0CZa8IkeQaADGDziybOXsOKPOdaLPuO/oIK3QyBOB10u7BXCL7AybTATORjtV0qIzvS
+ 1XmcS6VDc7W00XG2AapoNgXa8E0R40Qe5LEWm/+prMenY5UBqD3KupcymGI9oJRjDbxd Rw== 
+Date: Fri, 22 Dec 2023 08:02:09 +0200
+From: Ian Ray <ian.ray@gehealthcare.com>
+To: Uwe Kleine-K??nig <u.kleine-koenig@pengutronix.de>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        linux-serial@vger.kernel.org, Jiri Slaby <jirislaby@kernel.org>,
+        Fabio Estevam <festevam@gmail.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>, linux-kernel@vger.kernel.org,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>, kernel@collabora.com,
+        Shawn Guo <shawnguo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+        nandor.han@gehealthcare.com, ian.ray@gehealthcare.com
+Subject: Re: EXT: Re: [PATCHv4] serial: imx: Add DMA buffer configuration via
+ sysfs
+Message-ID: <ZYUmYdeBZCs6B2e7@4600ffe2ac4f>
+References: <20210305115058.92284-1-sebastian.reichel@collabora.com>
+ <YEIetFdcuYZU98s/@kroah.com>
+ <20210305124252.c3ffgca6wjqpkn45@earth.universe>
+ <20210405214446.zhidvtvahcfp4wxa@earth.universe>
+ <YGwKAOmlHRgEVh20@kroah.com>
+ <20231208090205.ioc76sych3snjiwb@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DS0PR11MB7529.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b12f4666-9aab-4e4f-de9e-08dc02bbd90c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Dec 2023 07:01:40.2504
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: vbbYXvEg8N36D2hnkHOGjfeN0/kHkeRTEyXoWao9uYXMLf66Poc7qHUCDiVXsda50gQwd1NO1baLMG8bGuFD8A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM3PR11MB8736
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231208090205.ioc76sych3snjiwb@pengutronix.de>
+X-Proofpoint-ORIG-GUID: 3xXqT6o-a7pCZ-sMkpaAQs4cXCbxLnzf
+X-Proofpoint-GUID: 3xXqT6o-a7pCZ-sMkpaAQs4cXCbxLnzf
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-22_02,2023-12-21_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 impostorscore=0
+ mlxlogscore=966 malwarescore=0 suspectscore=0 lowpriorityscore=0
+ bulkscore=0 spamscore=0 clxscore=1015 adultscore=0 mlxscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2312220040
 
-DQo+IE9uIERlYyAyMiwgMjAyMywgYXQgMTQ6NDcsIFRpYW4sIEtldmluIDxrZXZpbi50aWFuQGlu
-dGVsLmNvbT4gd3JvdGU6DQo+IA0KPiDvu78NCj4+IA0KPj4gRnJvbTogWWFuZywgV2Vpamlhbmcg
-PHdlaWppYW5nLnlhbmdAaW50ZWwuY29tPg0KPj4gU2VudDogRnJpZGF5LCBEZWNlbWJlciAyMiwg
-MjAyMyAxMTo1NiBBTQ0KPj4+ICsNCj4+PiArICAgIHhhX2Zvcl9lYWNoKCZkb21haW4tPmlvbW11
-X2FycmF5LCBpLCBpbmZvKSB7DQo+Pj4gKyAgICAgICAgbmVzdGVkX2ZsdXNoX3Bhc2lkX2lvdGxi
-KGluZm8tPmlvbW11LCBkb21haW4sIGFkZHIsDQo+PiBucGFnZXMsIDApOw0KPj4+ICsNCj4+PiAr
-ICAgICAgICBpZiAoZG9tYWluLT5oYXNfaW90bGJfZGV2aWNlKQ0KPj4+ICsgICAgICAgICAgICBj
-b250aW51ZTsNCj4+IA0KPj4gU2hvdWxkbid0IHRoaXMgYmUgaWYgKCFkb21haW4tPmhhc19pb3Rs
-Yl9kZXZpY2UpPw0KPiANCj4geWVzIHRoYXQgaXMgd3JvbmcuDQo+IA0KPiBhY3R1YWxseSBpdCdz
-IHdlaXJkIHRvIHB1dCBkb21haW4gY2hlY2sgaW4gYSBsb29wIG9mIGRvbWFpbi0+aW9tbXVfYXJy
-YXkuDQo+IA0KPiB0aGF0IGNoZWNrIGFsb25nIHdpdGggZGV2dGxiIGZsdXNoIHNob3VsZCBiZSBk
-b25lIG91dCBvZiB0aGF0IGxvb3AuDQoNCk1heWJlIGFkZGluZyBhIGJvb2wsIHNldCBpdCBvdXQg
-b2YgdGhlIGxvb3AsIGNoZWNrIHRoZSBib29sIGluIHRoZSBsb29wLg==
+On Fri, Dec 08, 2023 at 10:02:05AM +0100, Uwe Kleine-K??nig wrote:
+> be safe.
+> 
+> Hello Greg,
+> 
+> [Cc += dt maintainers]
+> 
+> On Tue, Apr 06, 2021 at 09:13:04AM +0200, Greg Kroah-Hartman wrote:
+> > On Mon, Apr 05, 2021 at 11:44:46PM +0200, Sebastian Reichel wrote:
+> > > On Fri, Mar 05, 2021 at 01:42:52PM +0100, Sebastian Reichel wrote:
+> > > > On Fri, Mar 05, 2021 at 01:06:12PM +0100, Greg Kroah-Hartman wrote:
+> > > > > On Fri, Mar 05, 2021 at 12:50:58PM +0100, Sebastian Reichel wrote:
+> > > > > > From: Fabien Lahoudere <fabien.lahoudere@collabora.com>
+> > > > > > 
+> > > > > > In order to optimize serial communication (performance/throughput VS
+> > > > > > latency), we may need to tweak DMA period number and size. This adds
+> > > > > > sysfs attributes to configure those values before initialising DMA.
+> > > > > > The defaults will stay the same as before (16 buffers with a size of
+> > > > > > 1024 bytes). Afterwards the values can be read/write with the
+> > > > > > following sysfs files:
+> > > > > > 
+> > > > > > /sys/class/tty/ttymxc*/dma_buffer_size
+> > > > > > /sys/class/tty/ttymxc*/dma_buffer_count
+> > > > > 
+> > > > > Ick no.  Custom sysfs attributes for things like serial ports are crazy.
+> > > > > 
+> > > > > > This is mainly needed for GEHC CS ONE (arch/arm/boot/dts/imx53-ppd.dts),
+> > > > > > which has multiple microcontrollers connected via UART controlling. One
+> > > > > > of the UARTs is connected to an on-board microcontroller at 19200 baud,
+> > > > > > which constantly pushes critical data (so aging character detect
+> > > > > > interrupt will never trigger). This data must be processed at 50-200 Hz,
+> > > > > > so UART should return data in less than 5-20ms. With 1024 byte DMA
+> > > > > > buffer (and a constant data stream) the read operation instead needs
+> > > > > > 1024 byte / 19200 baud = 53.333ms, which is way too long (note: Worst
+> > > > > > Case would be remote processor sending data with short pauses <= 7
+> > > > > > characters, which would further increase this number). The current
+> > > > > > downstream kernel instead configures 24 bytes resulting in 1.25ms,
+> > > > > > but that is obviously not sensible for normal UART use cases and cannot
+> > > > > > be used as new default.
+> > > > > 
+> > > > > Why can't this be a device tree attribute? Why does this have to be a
+> > > > > sysfs thing that no one will know how to tune and set over time.  This
+> > > > > hardware should not force a user to manually tune it to get it to work
+> > > > > properly, this isn't the 1990's anymore :(
+> > > > > 
+> > > > > Please never force a user to choose stuff like this, they never will
+> > > > > know what to do.
+> > > > 
+> > > > This used to be a DT attribute in PATCHv1. It has been moved over to
+> > > > sysfs since PATCHv2, since it does not describe the hardware, but
+> > > > configuration. Unfortunately lore.kernel.org does not have the full
+> > > > thread, but this is the discussion:
+> > > > 
+> > > > https://lore.kernel.org/linux-serial/20170629182618.jpahpmuq364ldcv2@pengutronix.de/
+> > > > 
+> > > > From downstream POV this can be done either by adding a DT property
+> > > > to the UART node, or by adding a udev rule.
+> > > > 
+> > > > From my POV there is not a huge difference. In both cases we will
+> > > > be bound by an ABI afterwards, in both cases people will usually
+> > > > stick to the default value and in both cases people that do deviate
+> > > > from the default probably ran into problems and started to look
+> > > > for a solution.
+> > > 
+> > > ping? It's not very nice to get a rejected in cycles :(
+> > 
+> > I recommend working with the DT people here, as custom sysfs attributes
+> > for things like this that are really just describing the hardware is
+> > crazy.
+
+Continuing here (see also [1]).
+
+[1] https://lore.kernel.org/lkml/ZXr55QV4tnCz8GtI@4600ffe2ac4f/
+
+> 
+> I was one who expressed concerns in the earlier rounds that dt isn't the
+> right place for this. dt is about hardware description, but choosing
+> a good value for the dma buffer size is driver tuning and depends on the
+> individual requirements. (latency, throughput, memory consumption,
+> robustness under system load). I can even imagine use cases where the
+> settings should be changed dynamically, which cannot (easily) be done
+> using dt.
+> 
+> While I see your point that a driver specific sysfs property is
+> unusual/strange/whatever every downside you mentioned also applies to a
+> dt property (or a custom ioctl).
+> 
+> Among the solutions I can imagine, my preference order is:
+> 
+>  - automatic tuning
+
+This might be too magical.  The algorithm would likely lose data before
+it "warms up" and that would be unacceptable to our application.
+
+>  - sysfs property
+>  - further discussion
+>  - dt property
+>  - custom ioctl
+
+- sysctl
+
+Given the description [2] "configure kernel parameters at runtime" this
+approach would appear to meet our needs.  I have not looked into this in
+any detail yet -- but would like to get upstream feedback.
+
+[2] https://man7.org/linux/man-pages/man8/sysctl.8.html
+
+> 
+> I wonder if there is a sensible way to implement a automatic tuning. In
+> the use case mentioned in the commit log, Sebastian's need is low
+> latency for a constantly sending microcontroller on the other side. Is
+> it sensible to make the used dma buffers smaller if we have a certain
+> throughput? Or is that too magic and doomed to fail covering most use
+> cases? If that doesn't work, I support Sebastian's approach to do that
+> in a sysfs property.
+> 
+> Sebastian, have you evaluated just not using dma for these UARTs?
+
+We spent a significant amount of time analysing and profiling our
+application.  DMA is absolutely required in order to avoid dropping
+data.
+
+This is especially true for the 4M baud UART.  This section quoted from
+the original patch V4 [3].
+
+[3] https://lore.kernel.org/lkml/20210305115058.92284-1-sebastian.reichel@collabora.com/
+
+> The same device also has another microcontroller with a 4M baud UART
+> connection exchanging lots of data. For this the same mechanism can
+> be used to increase the buffer size (downstream uses 4K instead of
+> the default 1K) with potentially slightly reduced buffer count. At
+> this baud rate latency is not an issue (4096 byte / 4M baud = 0.977 ms).
+> Before increasing the default buffer count from 4 to 16 in 76c38d30fee7,
+> this was required to avoid data loss. With the changed default it's
+> a performance optimization.
+
+Note: Quite a lot has change since we submitted this patch -- GE
+HealthCare has spun-off from GE, and Sebastian is no longer working on
+the project.
+
+Many thanks,
+Ian
+
+> 
+> Best regards
+> Uwe
+> 
+> -- 
+> Pengutronix e.K.                           | Uwe Kleine-K?nig            |
+> Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+
 
