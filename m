@@ -1,365 +1,224 @@
-Return-Path: <linux-kernel+bounces-9935-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9936-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65E1481CD7C
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 18:09:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B117C81CD7E
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 18:12:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1BA512846E7
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 17:09:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2B2D51F22B8B
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 17:12:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EA1B28E33;
-	Fri, 22 Dec 2023 17:09:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEC9128DB7;
+	Fri, 22 Dec 2023 17:12:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nBDhPyyn"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="PFcZlwXd"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EB1428E13;
-	Fri, 22 Dec 2023 17:09:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703264942; x=1734800942;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=jrbK3JxBO1NzBg6D2UAI0w9iU17c+JQnpCe0XS7kc6Y=;
-  b=nBDhPyynnvh/QOLBnUOsFkwXnbV0K/yfYMiyFLhsyprgYWmGmvBaXOCQ
-   DhuzgC0fvlq/10ZaFLb+F7lI6Lz+PieKLVAwOpvzWlzRv0svPV1qVQA/T
-   T/b5KPfkNcR18TsVScl8SjznaI5CvSryXe7Iy4PoGJAi3mzHxA2j48zTr
-   J30r8SaSKzvBpRkaeFUoS4xnjTq+0il6k8f6Y/7PaSKBGq0RPuJcjVzNk
-   ZH2ODrSpT2i9SGUlJ57Jkc0cikEHQ0yEjl+21maIaA83bxFGKMVLfJw74
-   H5pLUDHC0sJqGfqOm2aybltdrS10IklHy+odueATPg4N3Toz8QkWE+256
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10932"; a="9536686"
-X-IronPort-AV: E=Sophos;i="6.04,297,1695711600"; 
-   d="scan'208";a="9536686"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Dec 2023 09:09:01 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10932"; a="1108514958"
-X-IronPort-AV: E=Sophos;i="6.04,297,1695711600"; 
-   d="scan'208";a="1108514958"
-Received: from kambika-mobl1.amr.corp.intel.com (HELO vcostago-mobl3) ([10.209.152.51])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Dec 2023 09:08:54 -0800
-From: Vinicius Costa Gomes <vinicius.gomes@intel.com>
-To: lakshmi.sowjanya.d@intel.com, tglx@linutronix.de, jstultz@google.com,
- giometti@enneenne.com, corbet@lwn.net, linux-kernel@vger.kernel.org
-Cc: x86@kernel.org, netdev@vger.kernel.org, linux-doc@vger.kernel.org,
- intel-wired-lan@lists.osuosl.org, andriy.shevchenko@linux.intel.com,
- eddie.dong@intel.com, christopher.s.hall@intel.com,
- jesse.brandeburg@intel.com, davem@davemloft.net,
- alexandre.torgue@foss.st.com, joabreu@synopsys.com,
- mcoquelin.stm32@gmail.com, perex@perex.cz, linux-sound@vger.kernel.org,
- anthony.l.nguyen@intel.com, pandith.n@intel.com,
- mallikarjunappa.sangannavar@intel.com, thejesh.reddy.t.r@intel.com,
- lakshmi.sowjanya.d@intel.com
-Subject: Re: [RFC PATCH v2 01/10] x86/tsc: Add base clock properties in
- clocksource structure
-In-Reply-To: <20231221093254.9599-2-lakshmi.sowjanya.d@intel.com>
-References: <20231221093254.9599-1-lakshmi.sowjanya.d@intel.com>
- <20231221093254.9599-2-lakshmi.sowjanya.d@intel.com>
-Date: Fri, 22 Dec 2023 14:08:51 -0300
-Message-ID: <87v88qjhb0.fsf@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6804828DB1
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 17:12:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1703265163;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=EJPw/6f1GAMSCdMx7JeeVoOTC8jzwbxE2TLobbWNwIc=;
+	b=PFcZlwXd/cGC9tNVxB9nKPkVIgEuenPZAOR6IiE0T5Gva1ziBz6kJdyB9i4j0OR/qW65lz
+	KlktrM5HMWhBEoHJPfK26jC3vhu5NJ0a+AoV0Kox00k+eQL0G2ioam5dmQ4MSqDc7Myb2R
+	y9NF4RkL1piRZguInNvQIO3ib4RZBOQ=
+Received: from mail-pf1-f199.google.com (mail-pf1-f199.google.com
+ [209.85.210.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-78-S5grENxUOYmDLdPEHudkyQ-1; Fri, 22 Dec 2023 12:12:41 -0500
+X-MC-Unique: S5grENxUOYmDLdPEHudkyQ-1
+Received: by mail-pf1-f199.google.com with SMTP id d2e1a72fcca58-6d8668f2d43so1051924b3a.2
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 09:12:41 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703265160; x=1703869960;
+        h=content-transfer-encoding:content-disposition:mime-version
+         :references:in-reply-to:message-id:date:subject:cc:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=EJPw/6f1GAMSCdMx7JeeVoOTC8jzwbxE2TLobbWNwIc=;
+        b=mxhJg3CxThkYfstObJ6KAhagkGeRSMUThdgbmuN68bKxdJnWYyyOZxxLppw5PAT46D
+         xb24b0QMTxpdqEzlx3OyFOpTe4lw1NU+UZ/1w14hn269qJ/QTJaRWkpCb0u1sM73Pdja
+         yZbx29ZmJmm8EduakheV1j7/kGUSbOKUVjwr5qWJ883mtyXDgf2jaU6PUe5/TbST2x9x
+         O7t1LXTX1y2cTBp3//adDF47K1RDZC6obQPm+CBDxbPI1iyZZbJzcYXvfa/h+3pornEo
+         oY1POF2PuWNXLTq4t+Tuz0R87FDxN5DB6Pf7VV6KD9Y20jRnKTBJ55dEy2GwE1oTOCl9
+         ELLA==
+X-Gm-Message-State: AOJu0YweyHYiHqibnmCuFNHgr40OIwkzoKOXo5f6PhYT9FLCNKx39sO5
+	xHOizUKNqhKT8TblOW8niV+sEXL/ECP0+CGEHfNYNCgUYg/EG4WaMIrMLHfX8qugqhNtYLP/LwO
+	nA6Zu+h8h1jBuUtVjMU0rqH6/Bqhc6Kcp
+X-Received: by 2002:a05:6a00:d4a:b0:6d9:8d88:f22d with SMTP id n10-20020a056a000d4a00b006d98d88f22dmr746229pfv.58.1703265160659;
+        Fri, 22 Dec 2023 09:12:40 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IG7wNapKmlISZasLTcF4quOdp7zfHeY3L6ZGyiqpO82xhVsohRw7uAy6lOP4gSXhFEz2yNRwg==
+X-Received: by 2002:a05:6a00:d4a:b0:6d9:8d88:f22d with SMTP id n10-20020a056a000d4a00b006d98d88f22dmr746213pfv.58.1703265160316;
+        Fri, 22 Dec 2023 09:12:40 -0800 (PST)
+Received: from localhost.localdomain ([2804:1b3:a802:7496:88a7:1b1a:a837:bebf])
+        by smtp.gmail.com with ESMTPSA id jw1-20020a056a00928100b006d9771857c4sm3163611pfb.27.2023.12.22.09.12.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Dec 2023 09:12:39 -0800 (PST)
+From: Leonardo Bras <leobras@redhat.com>
+To: Guo Ren <guoren@kernel.org>
+Cc: Leonardo Bras <leobras@redhat.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Eric Biederman <ebiederm@xmission.com>,
+	Kees Cook <keescook@chromium.org>,
+	Oleg Nesterov <oleg@redhat.com>,
+	Conor Dooley <conor.dooley@microchip.com>,
+	Andy Chiu <andy.chiu@sifive.com>,
+	Greg Ungerer <gerg@kernel.org>,
+	Vincent Chen <vincent.chen@sifive.com>,
+	Xiao Wang <xiao.w.wang@intel.com>,
+	Charlie Jenkins <charlie@rivosinc.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Alexandre Ghiti <alexghiti@rivosinc.com>,
+	Kemeng Shi <shikemeng@huaweicloud.com>,
+	David Hildenbrand <david@redhat.com>,
+	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
+	Qinglin Pan <panqinglin2020@iscas.ac.cn>,
+	Greentime Hu <greentime.hu@sifive.com>,
+	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@rivosinc.com>,
+	=?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>,
+	linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org
+Subject: Re: [RFC PATCH 2/4] riscv: add compile-time test into is_compat_task()
+Date: Fri, 22 Dec 2023 14:12:22 -0300
+Message-ID: <ZYXDdlF1CFNpDdiV@LeoBras>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <CAJF2gTQNE7OQiAbkvVNzo9PCV=Xr8KQD0_=s-G56QMZJiZnjvA@mail.gmail.com>
+References: <20231222074605.452452-1-leobras@redhat.com> <20231222074605.452452-3-leobras@redhat.com> <CAJF2gTQNE7OQiAbkvVNzo9PCV=Xr8KQD0_=s-G56QMZJiZnjvA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
-lakshmi.sowjanya.d@intel.com writes:
+On Fri, Dec 22, 2023 at 05:35:20PM +0800, Guo Ren wrote:
+> On Fri, Dec 22, 2023 at 5:02 PM Leonardo Bras <leobras@redhat.com> wrote:
+> >
+> > Currently several places will test for CONFIG_COMPAT before testing
+> > is_compat_task(), probably in order to avoid a run-time test into the task
+> > structure.
+> >
+> > Since is_compat_task() is an inlined function, it would be helpful to add a
+> > compile-time test of CONFIG_COMPAT, making sure it always returns zero when
+> > the option is not enabled during the kernel build.
+> >
+> > With this, the compiler is able to understand in build-time that
+> > is_compat_task() will always return 0, and optimize-out some of the extra
+> > code introduced by the option.
+> >
+> > This will also allow removing a lot #ifdefs that were introduced, and make
+> > the code more clean.
+> >
+> > Signed-off-by: Leonardo Bras <leobras@redhat.com>
+> > ---
+> >  arch/riscv/include/asm/compat.h    | 3 +++
+> >  arch/riscv/include/asm/elf.h       | 4 ----
+> >  arch/riscv/include/asm/pgtable.h   | 6 ------
+> >  arch/riscv/include/asm/processor.h | 4 ++--
+> >  4 files changed, 5 insertions(+), 12 deletions(-)
+> >
+> > diff --git a/arch/riscv/include/asm/compat.h b/arch/riscv/include/asm/compat.h
+> > index 2ac955b51148f..91517b51b8e27 100644
+> > --- a/arch/riscv/include/asm/compat.h
+> > +++ b/arch/riscv/include/asm/compat.h
+> > @@ -14,6 +14,9 @@
+> >
+> >  static inline int is_compat_task(void)
+> >  {
+> > +       if (!IS_ENABLED(CONFIG_COMPAT))
+> > +               return 0;
+> > +
+> >         return test_thread_flag(TIF_32BIT);
+> >  }
+> >
+> > diff --git a/arch/riscv/include/asm/elf.h b/arch/riscv/include/asm/elf.h
+> > index 59a08367fddd7..2e88257cafaea 100644
+> > --- a/arch/riscv/include/asm/elf.h
+> > +++ b/arch/riscv/include/asm/elf.h
+> > @@ -53,13 +53,9 @@ extern bool compat_elf_check_arch(Elf32_Ehdr *hdr);
+> >  #define ELF_ET_DYN_BASE                ((DEFAULT_MAP_WINDOW / 3) * 2)
+> >
+> >  #ifdef CONFIG_64BIT
+> > -#ifdef CONFIG_COMPAT
+> >  #define STACK_RND_MASK         (is_compat_task() ? \
+> >                                  0x7ff >> (PAGE_SHIFT - 12) : \
+> >                                  0x3ffff >> (PAGE_SHIFT - 12))
+> > -#else
+> > -#define STACK_RND_MASK         (0x3ffff >> (PAGE_SHIFT - 12))
+> > -#endif
+> >  #endif
+> >
+> >  /*
+> > diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
+> > index 1d472b31e0cfe..ea5b269be223a 100644
+> > --- a/arch/riscv/include/asm/pgtable.h
+> > +++ b/arch/riscv/include/asm/pgtable.h
+> > @@ -127,16 +127,10 @@
+> >  #define VA_USER_SV48 (UL(1) << (VA_BITS_SV48 - 1))
+> >  #define VA_USER_SV57 (UL(1) << (VA_BITS_SV57 - 1))
+> >
+> > -#ifdef CONFIG_COMPAT
+> >  #define MMAP_VA_BITS_64 ((VA_BITS >= VA_BITS_SV48) ? VA_BITS_SV48 : VA_BITS)
+> >  #define MMAP_MIN_VA_BITS_64 (VA_BITS_SV39)
+> >  #define MMAP_VA_BITS (is_compat_task() ? VA_BITS_SV32 : MMAP_VA_BITS_64)
+> >  #define MMAP_MIN_VA_BITS (is_compat_task() ? VA_BITS_SV32 : MMAP_MIN_VA_BITS_64)
+> > -#else
+> > -#define MMAP_VA_BITS ((VA_BITS >= VA_BITS_SV48) ? VA_BITS_SV48 : VA_BITS)
+> > -#define MMAP_MIN_VA_BITS (VA_BITS_SV39)
+> > -#endif /* CONFIG_COMPAT */
+> > -
+> >  #else
+> >  #include <asm/pgtable-32.h>
+> >  #endif /* CONFIG_64BIT */
+> > diff --git a/arch/riscv/include/asm/processor.h b/arch/riscv/include/asm/processor.h
+> > index f19f861cda549..ed32e53e55999 100644
+> > --- a/arch/riscv/include/asm/processor.h
+> > +++ b/arch/riscv/include/asm/processor.h
+> > @@ -22,7 +22,7 @@
+> >  ({                                                             \
+> >         unsigned long mmap_end;                                 \
+> >         typeof(addr) _addr = (addr);                            \
+> > -       if ((_addr) == 0 || (IS_ENABLED(CONFIG_COMPAT) && is_compat_task())) \
+> > +       if ((_addr) == 0 || is_compat_task())                   \
+> >                 mmap_end = STACK_TOP_MAX;                       \
+> >         else if ((_addr) >= VA_USER_SV57)                       \
+> >                 mmap_end = STACK_TOP_MAX;                       \
+> > @@ -39,7 +39,7 @@
+> >         typeof(addr) _addr = (addr);                            \
+> >         typeof(base) _base = (base);                            \
+> >         unsigned long rnd_gap = DEFAULT_MAP_WINDOW - (_base);   \
+> > -       if ((_addr) == 0 || (IS_ENABLED(CONFIG_COMPAT) && is_compat_task())) \
+> > +       if ((_addr) == 0 || is_compat_task())                   \
+> >                 mmap_base = (_base);                            \
+> >         else if (((_addr) >= VA_USER_SV57) && (VA_BITS >= VA_BITS_SV57)) \
+> >                 mmap_base = VA_USER_SV57 - rnd_gap;             \
+> > --
+> > 2.43.0
+> >
+> Reviewed-by: Guo Ren <guoren@kernel.org>
 
-> From: Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>
->
-> Remove convert_art_to_tsc() and convert_art_ns_to_tsc(), as this patch
-> series introduces a generic function ktime_real_to_base_clock() to
-> convert realtime to base clock domain.
->
-> Add hardware abstraction, struct clocksource_base in clocksource.
->
-> Add clocksource ID for x86 ART(Always Running Timer).
->
-> Co-developed-by: Thomas Gleixner <tglx@linutronix.de>
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> Co-developed-by: Christopher S. Hall <christopher.s.hall@intel.com>
-> Signed-off-by: Christopher S. Hall <christopher.s.hall@intel.com>
-> Signed-off-by: Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>
-> ---
+Thanks!
+Leo
 
-This patch is breaking compilation. I guess it needs to be split into
-two.
-
-You are removing functions that drivers are using. You have to convert
-the drivers to the new abstractions, and only after all in-tree users
-are converted you remove the old functions.
-
->  arch/x86/include/asm/tsc.h      |  3 --
->  arch/x86/kernel/tsc.c           | 94 +++++++--------------------------
->  include/linux/clocksource.h     | 27 ++++++++++
->  include/linux/clocksource_ids.h |  1 +
->  4 files changed, 47 insertions(+), 78 deletions(-)
->
-> diff --git a/arch/x86/include/asm/tsc.h b/arch/x86/include/asm/tsc.h
-> index 594fce0ca744..5e36495cc821 100644
-> --- a/arch/x86/include/asm/tsc.h
-> +++ b/arch/x86/include/asm/tsc.h
-> @@ -27,9 +27,6 @@ static inline cycles_t get_cycles(void)
->  }
->  #define get_cycles get_cycles
->  
-> -extern struct system_counterval_t convert_art_to_tsc(u64 art);
-> -extern struct system_counterval_t convert_art_ns_to_tsc(u64 art_ns);
-> -
->  extern void tsc_early_init(void);
->  extern void tsc_init(void);
->  extern void mark_tsc_unstable(char *reason);
-> diff --git a/arch/x86/kernel/tsc.c b/arch/x86/kernel/tsc.c
-> index 868f09966b0f..b45ce594cfef 100644
-> --- a/arch/x86/kernel/tsc.c
-> +++ b/arch/x86/kernel/tsc.c
-> @@ -51,9 +51,9 @@ int tsc_clocksource_reliable;
->  
->  static int __read_mostly tsc_force_recalibrate;
->  
-> -static u32 art_to_tsc_numerator;
-> -static u32 art_to_tsc_denominator;
-> -static u64 art_to_tsc_offset;
-> +static struct clocksource_base art_base_clk = {
-> +	.id    = CSID_X86_ART,
-> +};
->  static bool have_art;
->  
->  struct cyc2ns {
-> @@ -1075,7 +1075,7 @@ core_initcall(cpufreq_register_tsc_scaling);
->   */
->  static void __init detect_art(void)
->  {
-> -	unsigned int unused[2];
-> +	unsigned int unused;
->  
->  	if (boot_cpu_data.cpuid_level < ART_CPUID_LEAF)
->  		return;
-> @@ -1090,13 +1090,14 @@ static void __init detect_art(void)
->  	    tsc_async_resets)
->  		return;
->  
-> -	cpuid(ART_CPUID_LEAF, &art_to_tsc_denominator,
-> -	      &art_to_tsc_numerator, unused, unused+1);
-> +	cpuid(ART_CPUID_LEAF, &art_base_clk.denominator,
-> +		&art_base_clk.numerator, &art_base_clk.freq_khz, &unused);
->  
-> -	if (art_to_tsc_denominator < ART_MIN_DENOMINATOR)
-> +	art_base_clk.freq_khz /= KHZ;
-> +	if (art_base_clk.denominator < ART_MIN_DENOMINATOR)
->  		return;
->  
-> -	rdmsrl(MSR_IA32_TSC_ADJUST, art_to_tsc_offset);
-> +	rdmsrl(MSR_IA32_TSC_ADJUST, art_base_clk.offset);
->  
->  	/* Make this sticky over multiple CPU init calls */
->  	setup_force_cpu_cap(X86_FEATURE_ART);
-> @@ -1297,69 +1298,6 @@ int unsynchronized_tsc(void)
->  	return 0;
->  }
->  
-> -/*
-> - * Convert ART to TSC given numerator/denominator found in detect_art()
-> - */
-> -struct system_counterval_t convert_art_to_tsc(u64 art)
-> -{
-> -	u64 tmp, res, rem;
-> -
-> -	rem = do_div(art, art_to_tsc_denominator);
-> -
-> -	res = art * art_to_tsc_numerator;
-> -	tmp = rem * art_to_tsc_numerator;
-> -
-> -	do_div(tmp, art_to_tsc_denominator);
-> -	res += tmp + art_to_tsc_offset;
-> -
-> -	return (struct system_counterval_t) {
-> -		.cs_id = have_art ? CSID_X86_TSC : CSID_GENERIC,
-> -		.cycles = res
-> -	};
-> -}
-> -EXPORT_SYMBOL(convert_art_to_tsc);
-> -
-> -/**
-> - * convert_art_ns_to_tsc() - Convert ART in nanoseconds to TSC.
-> - * @art_ns: ART (Always Running Timer) in unit of nanoseconds
-> - *
-> - * PTM requires all timestamps to be in units of nanoseconds. When user
-> - * software requests a cross-timestamp, this function converts system timestamp
-> - * to TSC.
-> - *
-> - * This is valid when CPU feature flag X86_FEATURE_TSC_KNOWN_FREQ is set
-> - * indicating the tsc_khz is derived from CPUID[15H]. Drivers should check
-> - * that this flag is set before conversion to TSC is attempted.
-> - *
-> - * Return:
-> - * struct system_counterval_t - system counter value with the ID of the
-> - *	corresponding clocksource
-> - *	@cycles:	System counter value
-> - *	@cs_id:		Clocksource ID corresponding to system counter value.
-> - *			Used by timekeeping code to verify comparability of two
-> - *			cycle values.
-> - */
-> -
-> -struct system_counterval_t convert_art_ns_to_tsc(u64 art_ns)
-> -{
-> -	u64 tmp, res, rem;
-> -
-> -	rem = do_div(art_ns, USEC_PER_SEC);
-> -
-> -	res = art_ns * tsc_khz;
-> -	tmp = rem * tsc_khz;
-> -
-> -	do_div(tmp, USEC_PER_SEC);
-> -	res += tmp;
-> -
-> -	return (struct system_counterval_t) {
-> -		.cs_id = have_art ? CSID_X86_TSC : CSID_GENERIC,
-> -		.cycles = res
-> -	};
-> -}
-> -EXPORT_SYMBOL(convert_art_ns_to_tsc);
-> -
-> -
->  static void tsc_refine_calibration_work(struct work_struct *work);
->  static DECLARE_DELAYED_WORK(tsc_irqwork, tsc_refine_calibration_work);
->  /**
-> @@ -1461,8 +1399,10 @@ static void tsc_refine_calibration_work(struct work_struct *work)
->  	if (tsc_unstable)
->  		goto unreg;
->  
-> -	if (boot_cpu_has(X86_FEATURE_ART))
-> +	if (boot_cpu_has(X86_FEATURE_ART)) {
->  		have_art = true;
-> +		clocksource_tsc.base = &art_base_clk;
-> +	}
->  	clocksource_register_khz(&clocksource_tsc, tsc_khz);
->  unreg:
->  	clocksource_unregister(&clocksource_tsc_early);
-> @@ -1487,8 +1427,10 @@ static int __init init_tsc_clocksource(void)
->  	 * the refined calibration and directly register it as a clocksource.
->  	 */
->  	if (boot_cpu_has(X86_FEATURE_TSC_KNOWN_FREQ)) {
-> -		if (boot_cpu_has(X86_FEATURE_ART))
-> +		if (boot_cpu_has(X86_FEATURE_ART)) {
->  			have_art = true;
-> +			clocksource_tsc.base = &art_base_clk;
-> +		}
->  		clocksource_register_khz(&clocksource_tsc, tsc_khz);
->  		clocksource_unregister(&clocksource_tsc_early);
->  
-> @@ -1512,10 +1454,12 @@ static bool __init determine_cpu_tsc_frequencies(bool early)
->  
->  	if (early) {
->  		cpu_khz = x86_platform.calibrate_cpu();
-> -		if (tsc_early_khz)
-> +		if (tsc_early_khz) {
->  			tsc_khz = tsc_early_khz;
-> -		else
-> +		} else {
->  			tsc_khz = x86_platform.calibrate_tsc();
-> +			clocksource_tsc.freq_khz = tsc_khz;
-> +		}
->  	} else {
->  		/* We should not be here with non-native cpu calibration */
->  		WARN_ON(x86_platform.calibrate_cpu != native_calibrate_cpu);
-> diff --git a/include/linux/clocksource.h b/include/linux/clocksource.h
-> index 1d42d4b17327..0a1110a0e660 100644
-> --- a/include/linux/clocksource.h
-> +++ b/include/linux/clocksource.h
-> @@ -21,6 +21,7 @@
->  #include <asm/div64.h>
->  #include <asm/io.h>
->  
-> +struct clocksource_base;
->  struct clocksource;
->  struct module;
->  
-> @@ -48,6 +49,7 @@ struct module;
->   * @archdata:		Optional arch-specific data
->   * @max_cycles:		Maximum safe cycle value which won't overflow on
->   *			multiplication
-> + * @freq_khz:		Clocksource frequency in khz.
->   * @name:		Pointer to clocksource name
->   * @list:		List head for registration (internal)
->   * @rating:		Rating value for selection (higher is better)
-> @@ -70,6 +72,8 @@ struct module;
->   *			validate the clocksource from which the snapshot was
->   *			taken.
->   * @flags:		Flags describing special properties
-> + * @base:		Hardware abstraction for clock on which a clocksource
-> + *			is based
->   * @enable:		Optional function to enable the clocksource
->   * @disable:		Optional function to disable the clocksource
->   * @suspend:		Optional suspend function for the clocksource
-> @@ -105,12 +109,14 @@ struct clocksource {
->  	struct arch_clocksource_data archdata;
->  #endif
->  	u64			max_cycles;
-> +	u32			freq_khz;
->  	const char		*name;
->  	struct list_head	list;
->  	int			rating;
->  	enum clocksource_ids	id;
->  	enum vdso_clock_mode	vdso_clock_mode;
->  	unsigned long		flags;
-> +	struct clocksource_base *base;
->  
->  	int			(*enable)(struct clocksource *cs);
->  	void			(*disable)(struct clocksource *cs);
-> @@ -294,4 +300,25 @@ static inline void timer_probe(void) {}
->  extern ulong max_cswd_read_retries;
->  void clocksource_verify_percpu(struct clocksource *cs);
->  
-> +/**
-> + * struct clocksource_base - hardware abstraction for clock on which a clocksource
-> + *			is based
-> + * @id:			Defaults to CSID_GENERIC. The id value is used for conversion
-> + *			functions which require that the current clocksource is based
-> + *			on a clocksource_base with a particular ID in certain snapshot
-> + *			functions to allow callers to validate the clocksource from
-> + *			which the snapshot was taken.
-> + * @freq_khz:		Nominal frequency of the base clock in kHz
-> + * @offset:		Offset between the base clock and the clocksource
-> + * @numerator:		Numerator of the clock ratio between base clock and the clocksource
-> + * @denominator:	Denominator of the clock ratio between base clock and the clocksource
-> + */
-> +struct clocksource_base {
-> +	enum clocksource_ids	id;
-> +	u32			freq_khz;
-> +	u64			offset;
-> +	u32			numerator;
-> +	u32			denominator;
-> +};
-> +
->  #endif /* _LINUX_CLOCKSOURCE_H */
-> diff --git a/include/linux/clocksource_ids.h b/include/linux/clocksource_ids.h
-> index a4fa3436940c..2bb4d8c2f1b0 100644
-> --- a/include/linux/clocksource_ids.h
-> +++ b/include/linux/clocksource_ids.h
-> @@ -9,6 +9,7 @@ enum clocksource_ids {
->  	CSID_X86_TSC_EARLY,
->  	CSID_X86_TSC,
->  	CSID_X86_KVM_CLK,
-> +	CSID_X86_ART,
->  	CSID_MAX,
->  };
->  
+> 
 > -- 
-> 2.35.3
->
->
+> Best Regards
+>  Guo Ren
+> 
 
--- 
-Vinicius
 
