@@ -1,109 +1,222 @@
-Return-Path: <linux-kernel+bounces-9400-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9401-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5846281C505
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 07:23:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A2DD81C506
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 07:25:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D5210B219F1
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 06:23:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6D48C1F25558
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 06:25:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4056C8F6F;
-	Fri, 22 Dec 2023 06:22:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 587B379D4;
+	Fri, 22 Dec 2023 06:25:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="uAlROctz"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EZ4L/qUY"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 922D88F40;
-	Fri, 22 Dec 2023 06:22:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
-X-UUID: 854caeb6a09211eeba30773df0976c77-20231222
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-	h=Content-Type:Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=3CfXjXK+ifyxmF7/x1t1E1bQ/x/4s3uHJnnqwy/VaAM=;
-	b=uAlROctzkydn8hC38n5GO5+RLgEqs+x6W5c7fPpc1+uLHIkTmv5zOlBaRIA4A1r+7jvfl7wMW2HOWls8EAZ+w5Ym/czxCPIyBygf7ZgwHjWZy/lYTt8Bt1DYdkugXAxewPI7tDoV/1Hjo5enttWauoLdzlheUKO/YwXOnBi58kA=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.35,REQID:f77f7735-583a-44d3-954c-e5a6ad2bd3c8,IP:0,U
-	RL:0,TC:0,Content:-5,EDM:-30,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTI
-	ON:release,TS:-35
-X-CID-META: VersionHash:5d391d7,CLOUDID:21f85e2e-1ab8-4133-9780-81938111c800,B
-	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:2,IP:nil,UR
-	L:1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,D
-	KR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_ULS,TF_CID_SPAM_SNR
-X-UUID: 854caeb6a09211eeba30773df0976c77-20231222
-Received: from mtkmbs13n2.mediatek.inc [(172.21.101.108)] by mailgw02.mediatek.com
-	(envelope-from <mengqi.zhang@mediatek.com>)
-	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 632133387; Fri, 22 Dec 2023 14:22:45 +0800
-Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
- mtkmbs13n2.mediatek.inc (172.21.101.108) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Fri, 22 Dec 2023 14:22:44 +0800
-Received: from mhfsdcap04.gcn.mediatek.inc (10.17.3.154) by
- mtkmbs11n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Fri, 22 Dec 2023 14:22:43 +0800
-From: Mengqi Zhang <mengqi.zhang@mediatek.com>
-To: <ulf.hansson@linaro.org>, <chaotian.jing@mediatek.com>,
-	<matthias.bgg@gmail.com>, <mengqi.zhang@mediatek.com>,
-	<wenbin.mei@mediatek.com>
-CC: <yangyingliang@huawei.com>, <adrian.hunter@intel.com>,
-	<avri.altman@wdc.com>, <vincent.whitchurch@axis.com>,
-	<linux-mmc@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-mediatek@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 1/1] mmc: core: Add HS400 tuning in HS400es initialization
-Date: Fri, 22 Dec 2023 14:22:36 +0800
-Message-ID: <20231222062236.26370-1-mengqi.zhang@mediatek.com>
-X-Mailer: git-send-email 2.25.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3F4E6FBC
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 06:25:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64F22C433C8;
+	Fri, 22 Dec 2023 06:25:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703226349;
+	bh=Jx2LL9VBtn7EevKYNjfg9tbjditIKurBb4A4cGkVspA=;
+	h=From:Date:Subject:To:Cc:From;
+	b=EZ4L/qUYdprfHbJoQZRCR24HRA73UxZyM04nbiV0MwPPACXOlRk+noH0bnkYTGFEu
+	 aJjKpjm7vAsibAks0LYcZAKROonVVgLcfGqJk/BgMT0P3tu/mKjz5dZDMSA9i+1HIv
+	 IivYWjzxgQdeXK/USykiZeGbm/4dK3CV4iEp4zWEZa3jdvniszsVEQZB9rxSa8vW0F
+	 lMDgm/0uRF36MWMZWoxwj9xC9TZ8+jnwRT+zRzKGTqgixXtEkwFdVeucx4+cUKIeWU
+	 ygQVGyy2RSrSvtADiI5dCYEx7KVEfboVTVd6Q7v9skpAec3ltil0W0GqUzT9eb8b+c
+	 ufTIrxVr+pE6w==
+From: Chris Li <chrisl@kernel.org>
+Date: Thu, 21 Dec 2023 22:25:39 -0800
+Subject: [PATCH] mm: swap: async free swap slot cache entries
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Message-Id: <20231221-async-free-v1-1-94b277992cb0@kernel.org>
+X-B4-Tracking: v=1; b=H4sIAOIrhWUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDI2NDI0Mz3cTiyrxk3bSi1FTdpNQ0Y0sjA0NTE2MjJaCGgqLUtMwKsGHRsbW
+ 1AKOxhW1cAAAA
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
+ =?utf-8?q?Wei_Xu=EF=BF=BC?= <weixugc@google.com>, 
+ =?utf-8?q?Yu_Zhao=EF=BF=BC?= <yuzhao@google.com>, 
+ Greg Thelen <gthelen@google.com>, Chun-Tse Shao <ctshao@google.com>, 
+ =?utf-8?q?Suren_Baghdasaryan=EF=BF=BC?= <surenb@google.com>, 
+ =?utf-8?q?Yosry_Ahmed=EF=BF=BC?= <yosryahmed@google.com>, 
+ Brain Geffon <bgeffon@google.com>, Minchan Kim <minchan@kernel.org>, 
+ Michal Hocko <mhocko@suse.com>, Mel Gorman <mgorman@techsingularity.net>, 
+ Huang Ying <ying.huang@intel.com>, Nhat Pham <nphamcs@gmail.com>, 
+ Johannes Weiner <hannes@cmpxchg.org>, Kairui Song <kasong@tencent.com>, 
+ Zhongkun He <hezhongkun.hzk@bytedance.com>, 
+ Kemeng Shi <shikemeng@huaweicloud.com>, Barry Song <v-songbaohua@oppo.com>, 
+ Chris Li <chrisl@kernel.org>
+X-Mailer: b4 0.12.3
 
-During the initialization to HS400es stage, add hs400 tuning flow as an
-optional process. For Mediatek IP, HS00es mode requires a specific tuning to
-ensure the correct HS400 timing setting.
+We discovered that 1% swap page fault is 100us+ while 50% of
+the swap fault is under 20us.
 
-Signed-off-by: Mengqi Zhang <mengqi.zhang@mediatek.com>
+Further investigation show that a large portion of the time
+spent in the free_swap_slots() function for the long tail case.
+
+The percpu cache of swap slots is freed in a batch of 64 entries
+inside free_swap_slots(). These cache entries are accumulated
+from previous page faults, which may not be related to the current
+process.
+
+Doing the batch free in the page fault handler causes longer
+tail latencies and penalizes the current process.
+
+Move free_swap_slots() outside of the swapin page fault handler into an
+async work queue to avoid such long tail latencies.
+
+Testing:
+
+Chun-Tse did some benchmark in chromebook, showing that
+zram_wait_metrics improve about 15% with 80% and 95% confidence.
+
+I recently ran some experiments on about 1000 Google production
+machines. It shows swapin latency drops in the long tail
+100us - 500us bucket dramatically.
+
+platform	(100-500us)	 	(0-100us)
+A		1.12% -> 0.36%		98.47% -> 99.22%
+B		0.65% -> 0.15%		98.96% -> 99.46%
+C		0.61% -> 0.23%		98.96% -> 99.38%
+
+Signed-off-by: Chris Li <chrisl@kernel.org>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-mm@kvack.org
+Cc: Wei Xu￼ <weixugc@google.com>
+Cc: Yu Zhao￼ <yuzhao@google.com>
+Cc: Greg Thelen <gthelen@google.com>
+Cc: Chun-Tse Shao <ctshao@google.com>
+Cc: Suren Baghdasaryan￼ <surenb@google.com>
+Cc: Yosry Ahmed￼ <yosryahmed@google.com>
+Cc: Brain Geffon <bgeffon@google.com>
+Cc: Minchan Kim <minchan@kernel.org>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Mel Gorman <mgorman@techsingularity.net>
+Cc: Huang Ying <ying.huang@intel.com>
+Cc: Nhat Pham <nphamcs@gmail.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Kairui Song <kasong@tencent.com>
+Cc: Zhongkun He <hezhongkun.hzk@bytedance.com>
+Cc: Kemeng Shi <shikemeng@huaweicloud.com>
+Cc: Barry Song <v-songbaohua@oppo.com>
 ---
-the previous patch link:
-https://patchwork.kernel.org/project/linux-mediatek/patch/20231201030547.11553-1-mengqi.zhang@mediatek.com/
----
- drivers/mmc/core/mmc.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ include/linux/swap_slots.h |  1 +
+ mm/swap_slots.c            | 37 +++++++++++++++++++++++++++++--------
+ 2 files changed, 30 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/mmc/core/mmc.c b/drivers/mmc/core/mmc.c
-index 705942edacc6..9760eea2c104 100644
---- a/drivers/mmc/core/mmc.c
-+++ b/drivers/mmc/core/mmc.c
-@@ -1823,7 +1823,15 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
- 		if (err)
- 			goto free_card;
+diff --git a/include/linux/swap_slots.h b/include/linux/swap_slots.h
+index 15adfb8c813a..67bc8fa30d63 100644
+--- a/include/linux/swap_slots.h
++++ b/include/linux/swap_slots.h
+@@ -19,6 +19,7 @@ struct swap_slots_cache {
+ 	spinlock_t	free_lock;  /* protects slots_ret, n_ret */
+ 	swp_entry_t	*slots_ret;
+ 	int		n_ret;
++	struct work_struct async_free;
+ };
  
--	} else if (!mmc_card_hs400es(card)) {
-+	} else if (mmc_card_hs400es(card)) {
-+		if (host->ops->execute_hs400_tuning) {
-+			mmc_retune_disable(host);
-+			err = host->ops->execute_hs400_tuning(host, card);
-+			mmc_retune_enable(host);
-+			if (err)
-+				goto free_card;
-+		}
-+	} else {
- 		/* Select the desired bus width optionally */
- 		err = mmc_select_bus_width(card);
- 		if (err > 0 && mmc_card_hs(card)) {
+ void disable_swap_slots_cache_lock(void);
+diff --git a/mm/swap_slots.c b/mm/swap_slots.c
+index 0bec1f705f8e..a3b306550732 100644
+--- a/mm/swap_slots.c
++++ b/mm/swap_slots.c
+@@ -42,8 +42,10 @@ static bool	swap_slot_cache_initialized;
+ static DEFINE_MUTEX(swap_slots_cache_mutex);
+ /* Serialize swap slots cache enable/disable operations */
+ static DEFINE_MUTEX(swap_slots_cache_enable_mutex);
++static struct workqueue_struct *swap_free_queue;
+ 
+ static void __drain_swap_slots_cache(unsigned int type);
++static void swapcache_async_free_entries(struct work_struct *data);
+ 
+ #define use_swap_slot_cache (swap_slot_cache_active && swap_slot_cache_enabled)
+ #define SLOTS_CACHE 0x1
+@@ -149,6 +151,7 @@ static int alloc_swap_slot_cache(unsigned int cpu)
+ 		spin_lock_init(&cache->free_lock);
+ 		cache->lock_initialized = true;
+ 	}
++	INIT_WORK(&cache->async_free, swapcache_async_free_entries);
+ 	cache->nr = 0;
+ 	cache->cur = 0;
+ 	cache->n_ret = 0;
+@@ -269,6 +272,20 @@ static int refill_swap_slots_cache(struct swap_slots_cache *cache)
+ 	return cache->nr;
+ }
+ 
++static void swapcache_async_free_entries(struct work_struct *data)
++{
++	struct swap_slots_cache *cache;
++
++	cache = container_of(data, struct swap_slots_cache, async_free);
++	spin_lock_irq(&cache->free_lock);
++	/* Swap slots cache may be deactivated before acquiring lock */
++	if (cache->slots_ret) {
++		swapcache_free_entries(cache->slots_ret, cache->n_ret);
++		cache->n_ret = 0;
++	}
++	spin_unlock_irq(&cache->free_lock);
++}
++
+ void free_swap_slot(swp_entry_t entry)
+ {
+ 	struct swap_slots_cache *cache;
+@@ -282,17 +299,14 @@ void free_swap_slot(swp_entry_t entry)
+ 			goto direct_free;
+ 		}
+ 		if (cache->n_ret >= SWAP_SLOTS_CACHE_SIZE) {
+-			/*
+-			 * Return slots to global pool.
+-			 * The current swap_map value is SWAP_HAS_CACHE.
+-			 * Set it to 0 to indicate it is available for
+-			 * allocation in global pool
+-			 */
+-			swapcache_free_entries(cache->slots_ret, cache->n_ret);
+-			cache->n_ret = 0;
++			spin_unlock_irq(&cache->free_lock);
++			queue_work(swap_free_queue, &cache->async_free);
++			goto direct_free;
+ 		}
+ 		cache->slots_ret[cache->n_ret++] = entry;
+ 		spin_unlock_irq(&cache->free_lock);
++		if (cache->n_ret >= SWAP_SLOTS_CACHE_SIZE)
++			queue_work(swap_free_queue, &cache->async_free);
+ 	} else {
+ direct_free:
+ 		swapcache_free_entries(&entry, 1);
+@@ -348,3 +362,10 @@ swp_entry_t folio_alloc_swap(struct folio *folio)
+ 	}
+ 	return entry;
+ }
++
++static int __init async_queue_init(void)
++{
++	swap_free_queue = create_workqueue("async swap cache");
++	return 0;
++}
++subsys_initcall(async_queue_init);
+
+---
+base-commit: eacce8189e28717da6f44ee492b7404c636ae0de
+change-id: 20231216-async-free-bef392015432
+
+Best regards,
 -- 
-2.25.1
+Chris Li <chrisl@kernel.org>
 
 
