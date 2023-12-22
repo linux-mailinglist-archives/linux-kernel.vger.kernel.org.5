@@ -1,157 +1,100 @@
-Return-Path: <linux-kernel+bounces-9290-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9291-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B44781C372
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 04:30:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8CB0681C374
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 04:30:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 30BE41C23A18
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 03:30:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BFC761C24812
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 03:30:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BDFD33D3;
-	Fri, 22 Dec 2023 03:29:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A7E079C4;
+	Fri, 22 Dec 2023 03:30:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=oppo.com header.i=@oppo.com header.b="XOMP6Bur"
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="s4vr2K7M"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2089.outbound.protection.outlook.com [40.107.215.89])
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2341185D
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 03:29:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oppo.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oppo.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NUJRCcRe9PvvIBiCiivQCT2y1v+wqLdb4qQEJSIXrSt6ykbOdJv3R9FGEYP5zC0VaNW9YQSTubkJdzCCzUT5H7KKV6w89OLymEEFV1Mx9jMmGzEo1vCo9F6bjZJzKfb8W1SHPEXT1FWlPunIiR7c52wgqVFyVDJFZUu5xtcysiRob/yFnRjInsWJG9IjlLSB8+GEx390Y5dhpneOI7K6LvnKUqyK0W8bXltOqoXNdG10Rd/chSsP5+fvfNKtRlxb3lsK+e1rXY19Hp/l8GGTj5ycZb5dAAOfi5SRDS5LlYJDQzAfiY6SZ54SibGV4iu9P0FuSvYt8kemyiDBHOOpEQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=d0mVLmUNurb82uxuruWyA2X8QDMT6g/E0iyAKS82mp0=;
- b=IDt2P8PU9iAL2M7frqc/5q7jpNl8H3LCxldNcj3a38xvdrDl+gp83pxgyIQQAObweVX4FY0oySpuIW2WkxwoCpY8ROhmp/9MQfsetLAiTMYQJMd8i3AyVYQ5IQN/q/fv1kKb5W2dudjsekdKFvQ8tbwdgi3TjluZIHQ6SO7xM8B+oA7cGxB6bpBkV/GR5JrwUivGhZfx5sYWLADayh4f9iIenlb2lszPIRzkiJef52Najrfoz2oWOqRINoYoKoGeSg75mTIMSrMzj1vYLPw0/r6Xoud7H4ixK7bdXuMcBaoSXRYtWuTGzQYQ6or8uVTrR8rov0SyGimlsLzvBbsYyg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oppo.com; dmarc=pass action=none header.from=oppo.com;
- dkim=pass header.d=oppo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oppo.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=d0mVLmUNurb82uxuruWyA2X8QDMT6g/E0iyAKS82mp0=;
- b=XOMP6BurVU8V+mBYf/YwrAlMmKLbCvieid64BznYPw2TLvk2W1ctllsppEtbChSSgT18Sb3LfC9F+rh3c5Gipw1vi/avRqe/6Gda6HEcblgm5HkpTR5tejKwQ1+KsigMJh57+xKVu83+x8ae8DXZ7be86Bt0Vt7TfX/3m/1NSrQ=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=oppo.com;
-Received: from PSAPR02MB4727.apcprd02.prod.outlook.com (2603:1096:301:90::7)
- by PSAPR02MB4678.apcprd02.prod.outlook.com (2603:1096:301:41::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7113.21; Fri, 22 Dec
- 2023 03:29:51 +0000
-Received: from PSAPR02MB4727.apcprd02.prod.outlook.com
- ([fe80::f4:dbf7:9c0c:5388]) by PSAPR02MB4727.apcprd02.prod.outlook.com
- ([fe80::f4:dbf7:9c0c:5388%4]) with mapi id 15.20.7113.019; Fri, 22 Dec 2023
- 03:29:51 +0000
-From: Yongpeng Yang <yangyongpeng1@oppo.com>
-To: Jaegeuk Kim <jaegeuk@kernel.org>,
-	Chao Yu <chao@kernel.org>
-Cc: linux-f2fs-devel@lists.sourceforge.net,
-	linux-kernel@vger.kernel.org,
-	Yongpeng Yang <yangyongpeng1@oppo.com>
-Subject: [PATCH 2/2] f2fs: Add error handling for negative returns from do_garbage_collect
-Date: Fri, 22 Dec 2023 11:29:01 +0800
-Message-Id: <20231222032901.3861649-2-yangyongpeng1@oppo.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20231222032901.3861649-1-yangyongpeng1@oppo.com>
-References: <20231222032901.3861649-1-yangyongpeng1@oppo.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SG2P153CA0043.APCP153.PROD.OUTLOOK.COM (2603:1096:4:c6::12)
- To PSAPR02MB4727.apcprd02.prod.outlook.com (2603:1096:301:90::7)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAD5163C2;
+	Fri, 22 Dec 2023 03:29:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1703215798;
+	bh=ZjTAReK+4AutrZqqwPCmUGG9nhSNgmsOovJ+6BfDm3k=;
+	h=Date:From:To:Cc:Subject:From;
+	b=s4vr2K7M48u4jHsfd3vuBvQqjYNJwAYYrozujypTC+dgDEafSnI8nEamHkCDwq3w6
+	 sug++SEZh/KfvhpucodqqwTzQQG2JPDJQgRlymQyxy54kSNA9zpSZIyCuGBys0kc+k
+	 XkuJ8cccvMKtrd+NG4KIaizbViXCHOkFtWN4ZHBoV9jN8XweMbP0PjZvpwGXujW71m
+	 deck7M3O+uhhdxDglbQc1wBuxIttWdiB8aOxZJF5M3iDUTJUE8NV5CSrZaYu2lWwW1
+	 LV57d62sufCvGqF2CYyh7DdmbF8u7W6Og83MreBscdsa84ViIOphs26I9jknin6eek
+	 23GxgsoQqeGQA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4SxCTx3LLkz4wbp;
+	Fri, 22 Dec 2023 14:29:57 +1100 (AEDT)
+Date: Fri, 22 Dec 2023 14:29:56 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Vinod Koul <vkoul@kernel.org>
+Cc: Jan Kuliga <jankul@alatek.krakow.pl>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the dmaengine tree
+Message-ID: <20231222142956.3ee9749f@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PSAPR02MB4727:EE_|PSAPR02MB4678:EE_
-X-MS-Office365-Filtering-Correlation-Id: d8a37732-b8c8-4bb5-d0cb-08dc029e41bd
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	ASB0/cI0ecYNJfUT0p7eVmGJ0qDaUvXyrZMBybwYgEwRZMizpqNM4Ae3JTEvbJIYUnrEtwAS1xhSYSdm/eO5A8i6UzzhtG6Ew/OnZZ+i2tAUI1NaTtasfcF5YCV1fha/KhYlaYeJckTymKGB1dbVaFevUM0lKE+BEqDADAyloCt3IJ/Yp76+Cd8+0Zks03+mpcuogALdd/ic11FQRHPDGsZBULhZpA2LdezaDjelCEAnUWwt07k5tIcVFQmLbs2vIApLC05EOH5KBdOpYQY+BjqxkTA4F758UrKHBNSvoriFVMAUZVzC46a1H1VdehBwxkufyOAkiN/m2D0NcpzTucGRluIO835/vcj8T1P/apsOQgm3X/8JK7wnYAWOXiAbP0wSPmmW2/VJSzVNPou2VLPViaGAK9NALDBb0eYHEufQNJpT3yppWtvcxQVV1PElm8/4VbCyhuR24mhOJ9eUnBb2qUlXI9FckLaPjNfeFIRV5zBakkPiyWZww21OE7lv5XCXjjPvKdACcUoAdZ+1vbyigXz4pqDtPpdbXvxHQ2EFYv5cXb6Rdvz1L9bvQV9R7EbvnEIXHshHaD7mKSKNxiJDqzw4Vu4KXW2ZEHdCVfICqb5/dNr5Sy5ONRp6InqN
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PSAPR02MB4727.apcprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(39860400002)(376002)(396003)(136003)(230922051799003)(64100799003)(186009)(451199024)(1800799012)(26005)(83380400001)(86362001)(41300700001)(38100700002)(6486002)(5660300002)(8936002)(4326008)(8676002)(110136005)(316002)(66476007)(66556008)(66946007)(6512007)(2616005)(107886003)(1076003)(478600001)(6506007)(52116002)(6666004)(2906002)(36756003)(38350700005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?kFCdkY/A4epg/4YJytQRMpOlIUhhXiHzSSA04r4MOS7U128ZRwAJrbQPxelG?=
- =?us-ascii?Q?CeGCQ4jDdlpVYrek4t2E4t/bHv+ForaHN8pE1Zecc/+qj/hpQZTLuJ7RMPU6?=
- =?us-ascii?Q?58yhLoe9Bvdcqb/+0IhMepaZhPU/raZ4qAoSr1HPCkG9o18zXwRszXzhW8QW?=
- =?us-ascii?Q?Q6Fm1k0jCXgEv28r7dbhBu7lqrMQNKdEtyLBZRKK30QJYErUSQYwgzV+Unfx?=
- =?us-ascii?Q?7V98oXIb7WGqGoAz7h/BLn6aSYpJ6CujBap81JeT8+3GBwsM+raALFrDv+8i?=
- =?us-ascii?Q?IfWqP93VCJezZe4a8xCY5ZQWJYrcmJcUW7ulgJVKvs/Uq9I+zhq2hkxoRZdQ?=
- =?us-ascii?Q?aSt53gc5mJ7hDR+8Wp0WzcRjpxjhqLKlApM9eL18DkIPXaJ4DPnBSUmhrvmM?=
- =?us-ascii?Q?g7cas/zdVbvuX+OsTmt4KAxmF2clmTN7+iseYg0WGVoFLnpUd24ahoaUgdep?=
- =?us-ascii?Q?7nEXa76iUXXJI27zP0RrNkFcOVXzCrgC1mmDE1xQhzKcTt3qseJr64YHd4x1?=
- =?us-ascii?Q?gZn/t9F5DscA3k3OZHSwLl8KnD4ZlJhKF+cRlkANHlqtQz6tRrOBkCAYqJf2?=
- =?us-ascii?Q?LX5rn4sqDMW68faYmlLzTicYTDdRMg3yI16KkbSj9J86n8vg5Vlep6vnEAVV?=
- =?us-ascii?Q?5EZXTWzK90wFTrxeKxC6clmm4t135CTSIW9K+5sJ46dnKR3bokNonDYx+AUQ?=
- =?us-ascii?Q?NwQ+lAHiQsuxR+E47f2rnTPQ+hD2IBcn95cxkT3aIaSnevgB6Fm7QkyUQoVI?=
- =?us-ascii?Q?BzUzYncRvUm+tbJpyVRcNVyDjduPDhwmTnJ5KPEzmkCb4AK3zPYWFBZ/q9iE?=
- =?us-ascii?Q?gUpgUhFPkDNFYrp+sC62uNvraBZ4lV5yFnUyY+FHyhveg12juj9G+zNxnYGI?=
- =?us-ascii?Q?anwQDN7Eh7PZW6YaNnzwZ6X7k6nexp9Ocae9tUXktPpOU44JNCgc9aQf08oj?=
- =?us-ascii?Q?yP3iXsn7i1BnQmtx18/yMk+hXke6Y4qwRV59wvoUvVCAAMcUyZRJx8XQVSrC?=
- =?us-ascii?Q?SQAkHvt+7JAubnIUit+0HKAUaqe4yqh6RBqqSpo9Nytf6KlJJ/pNiIWjIvI1?=
- =?us-ascii?Q?M8PaCZ+Otofq3wKuYyHSszx9MqlyceuFHcLYTKOc0dGrBFEkJmsNJBb1XYVU?=
- =?us-ascii?Q?WDlwbnZCh7HMm77ZSGh1GellMfnx99bIWUIiWmc9Xh+kEShuRqaV2xcrs++d?=
- =?us-ascii?Q?lLI7YCssuJ1VLx6z5DsEnwEMPyGBHELlJTfnhEvN8mzQ6XeSD45n7Zc/SY2x?=
- =?us-ascii?Q?iK271R0fL+tpPqXo8Z/5U5uuaTJsCDy4H/tjo6UjVgPVzZ4IZaMnYjwuoy52?=
- =?us-ascii?Q?/er3zrXT504wxqzjjIJGbAHg7I8+Epig99nuwOMz6ienU03xc+QQZ5A1oqCg?=
- =?us-ascii?Q?Rz5gPBsqXMTTyC4cpDb1b/wr6HksEAaU/jy3fN9WTXhYY1h4pOzYwOrpi9If?=
- =?us-ascii?Q?dgKjBbRFw+uDXQU8M7mZGYkjYHWs3ccaP60i51Nv8HaDVOKzdRivvGHLSo53?=
- =?us-ascii?Q?THxJ5PMLE7rF/cPe/pXq1LUji4RxjkDXelihbZuvqZwcdDx5CwyOzkGJxrma?=
- =?us-ascii?Q?jzAP1dsNevY6PrBrfQlLTc+kdOWokqADQP1X/Ch9IxyKemZkmT0zskSwT4ER?=
- =?us-ascii?Q?tA=3D=3D?=
-X-OriginatorOrg: oppo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d8a37732-b8c8-4bb5-d0cb-08dc029e41bd
-X-MS-Exchange-CrossTenant-AuthSource: PSAPR02MB4727.apcprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Dec 2023 03:29:51.3076
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f1905eb1-c353-41c5-9516-62b4a54b5ee6
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: gfo3BqM2WEp5v20SjRMDvZ07EJT4zh5BNK/HO+ZrNQWGX7NftWUi8jxOTEKu++drMYuEi5txaDAzsszI4fbeqA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PSAPR02MB4678
+Content-Type: multipart/signed; boundary="Sig_/WahcYMu61Tsmh/jG5vt/d4v";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-The function do_garbage_collect can return a value less than 0 due
-to f2fs_cp_error being true or page allocation failure, as a result
-of calling f2fs_get_sum_page. However, f2fs_gc does not account for
-such cases, which could potentially lead to an abnormal total_freed
-and thus cause subsequent code to behave unexpectedly. Given that
-an f2fs_cp_error is irrecoverable, and considering that
-do_garbage_collect already retries page allocation errors through
-its call to f2fs_get_sum_page->f2fs_get_meta_page_retry, any error
-reported by do_garbage_collect should immediately terminate the
-current GC.
+--Sig_/WahcYMu61Tsmh/jG5vt/d4v
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Yongpeng Yang <yangyongpeng1@oppo.com>
----
- fs/f2fs/gc.c | 3 +++
- 1 file changed, 3 insertions(+)
+Hi all,
 
-diff --git a/fs/f2fs/gc.c b/fs/f2fs/gc.c
-index 405a6077bd83..771d56b0bfb8 100644
---- a/fs/f2fs/gc.c
-+++ b/fs/f2fs/gc.c
-@@ -1865,6 +1865,9 @@ int f2fs_gc(struct f2fs_sb_info *sbi, struct f2fs_gc_control *gc_control)
- 
- 	seg_freed = do_garbage_collect(sbi, segno, &gc_list, gc_type,
- 				gc_control->should_migrate_blocks);
-+	if (seg_freed < 0)
-+		goto stop;
-+
- 	total_freed += seg_freed;
- 
- 	if (seg_freed == f2fs_usable_segs_in_sec(sbi, segno)) {
--- 
-2.40.1
+After merging the dmaengine tree, today's linux-next build (x86_64
+allmodconfig) produced this warning:
 
+drivers/dma/xilinx/xdma.c:729:1: warning: no previous prototype for 'xdma_p=
+rep_interleaved_dma' [-Wmissing-prototypes]
+  729 | xdma_prep_interleaved_dma(struct dma_chan *chan,
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~
+
+Introduced by commit
+
+  01e6d9076561 ("dmaengine: xilinx: xdma: Implement interleaved DMA transfe=
+rs")
+
+It should probably be static.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/WahcYMu61Tsmh/jG5vt/d4v
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmWFArQACgkQAVBC80lX
+0GxC/AgAkm3CDGpM/5spA5FKaC76wzkVPHBMx7QnDa4ynBq/yQUtultVXVehjiJS
+5Jncl6AkoG4CjVlUSQp8KKo3j2EhT1KRMWV5RuiN4vjVKEoDDsswseXigiIf9qX8
+pDuSk0SPaUgB5Tym9k7OL4GdhUJjZ+Ru+bnHlTT/XN/CzMccFTEGksMHrX+ezI4U
+fIZZhok2lcGRr1NmdwrqoEa77azVbnMCeuOINETZjpUR6dWcL4NiE6tBlurPhJAD
+SRtrP/6eG3V6a5UzT9+rFHyGLYSX1h+kR4uNG+92y6xViKv2BXvvDGhcfVNFS2Tf
+kPQqKVSGXlBgZM4A0q49uW06nVXgEg==
+=ClHa
+-----END PGP SIGNATURE-----
+
+--Sig_/WahcYMu61Tsmh/jG5vt/d4v--
 
