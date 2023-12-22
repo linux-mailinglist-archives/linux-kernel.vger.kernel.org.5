@@ -1,109 +1,155 @@
-Return-Path: <linux-kernel+bounces-9245-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9246-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A91B781C2D1
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 02:36:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 490D181C2D5
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 02:37:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 491201F2598D
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 01:36:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D606C1F25BCB
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 01:37:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AD13566D;
-	Fri, 22 Dec 2023 01:36:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="YIGN3i3U"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E173ECA;
+	Fri, 22 Dec 2023 01:37:15 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2116E5390
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 01:36:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1703208959;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=2akJnTxfKkE9MplltMUxeeJDEmgi/IaQGIuEfCeumQQ=;
-	b=YIGN3i3Ud3EPgN/1HeZsnfkSnyuKZ9BjyPcaTp7K544XYFN8h6sC27DUXhkz5RQlgagpGv
-	s3MQimlXFR5rRiBLOPevHRrRBxHy1As1yglULOqPV7BLAebrywmxa8VjVh0sKvrhlVZCY1
-	i1DidW3OynKFMp8Sigo5JLqn7flGdeA=
-Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com
- [209.85.216.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-282-QQCudm3DM_-tJcR74Y6RYg-1; Thu, 21 Dec 2023 20:35:58 -0500
-X-MC-Unique: QQCudm3DM_-tJcR74Y6RYg-1
-Received: by mail-pj1-f71.google.com with SMTP id 98e67ed59e1d1-28b49899812so415488a91.1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 17:35:57 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703208956; x=1703813756;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2akJnTxfKkE9MplltMUxeeJDEmgi/IaQGIuEfCeumQQ=;
-        b=vjxLuNREE+MOy+3+Lh/7jRAlfTwc26N6mpCrZt6BjfgIcUoOOHf+AnQS+NQDF82Bun
-         U7dtHNzc6w8TeXhtW12gWznyTVz0PiRx7hQhnc+/BQgk8p6Syw9cEhIsP7UrHzt1zW6E
-         Y7jMiwAb3IDhz+oPaGep1mNWBLzvmyGrwDW0dmNfRVpm6NNTjzjWKpxEfEPDhGbPwGkC
-         OLjWJj9imF10DDsTTIAYE1qT+cDQvH9ctI+IRzS+3jhtMadNyu01FvEqXH12rgdG5p1j
-         eb9NQnoRljH6fD40SlPh6LcBYTlSVARwhCuk6vrPph3x4ogo7HPLX7lwuwNv8uiGYsQO
-         PtVQ==
-X-Gm-Message-State: AOJu0YwLCB8Z+13zEsRUzFQGTIdRTLtbOoy9U4+8889dj8bt5Nt6uFhB
-	d/Cr18wnJk5r51eSu+z1Z3bgKCvP8H4DTzXZ4aKwN/F0B7yCNNdlaMIku4AMO0MUPzpGRF9hQ8I
-	j/hekhCiJa/18CGTmTQZtZXHKVISw3Ph8EREALWRvBnqaczBModH7e2/+TFB1GbvbkyOjaBVkZh
-	k31Kld6BhpIIu6PnO0
-X-Received: by 2002:a17:90a:4b8f:b0:28b:c1ad:9cef with SMTP id i15-20020a17090a4b8f00b0028bc1ad9cefmr1137555pjh.3.1703208956332;
-        Thu, 21 Dec 2023 17:35:56 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IF1CdzSSxO6gL0EU6CjYH72GBwDyRwTpiPtorA3Dx6OQ9XzFAqCTOZ2ez8iSmfN4CA4vPwFxQ==
-X-Received: by 2002:a17:90a:4b8f:b0:28b:c1ad:9cef with SMTP id i15-20020a17090a4b8f00b0028bc1ad9cefmr1137522pjh.3.1703208955962;
-        Thu, 21 Dec 2023 17:35:55 -0800 (PST)
-Received: from x1n ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id qc12-20020a17090b288c00b0028b6f522fedsm6308509pjb.43.2023.12.21.17.35.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Dec 2023 17:35:55 -0800 (PST)
-Date: Fri, 22 Dec 2023 09:35:43 +0800
-From: Peter Xu <peterx@redhat.com>
-To: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	Muchun Song <songmuchun@bytedance.com>
-Cc: Matthew Wilcox <willy@infradead.org>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Lorenzo Stoakes <lstoakes@gmail.com>,
-	David Hildenbrand <david@redhat.com>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	Mike Kravetz <mike.kravetz@oracle.com>,
-	Mike Rapoport <rppt@kernel.org>,
-	Christoph Hellwig <hch@infradead.org>,
-	John Hubbard <jhubbard@nvidia.com>,
-	Andrew Jones <andrew.jones@linux.dev>,
-	linux-arm-kernel@lists.infradead.org,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	"Kirill A . Shutemov" <kirill@shutemov.name>,
-	linuxppc-dev@lists.ozlabs.org, Rik van Riel <riel@surriel.com>,
-	linux-riscv@lists.infradead.org, Yang Shi <shy828301@gmail.com>,
-	James Houghton <jthoughton@google.com>,
-	"Aneesh Kumar K . V" <aneesh.kumar@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Jason Gunthorpe <jgg@nvidia.com>,
-	Andrea Arcangeli <aarcange@redhat.com>,
-	Axel Rasmussen <axelrasmussen@google.com>
-Subject: Re: [PATCH 00/13] mm/gup: Unify hugetlb, part 2
-Message-ID: <ZYTn70CDVeNMed0f@x1n>
-References: <20231219075538.414708-1-peterx@redhat.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 816AD8F40;
+	Fri, 22 Dec 2023 01:37:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Sx8zg3W14z4f3lgL;
+	Fri, 22 Dec 2023 09:37:03 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id BA12C1A07FF;
+	Fri, 22 Dec 2023 09:37:08 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+	by APP1 (Coremail) with SMTP id cCh0CgBHSQ8r6IRlJ+0uEQ--.47074S3;
+	Fri, 22 Dec 2023 09:37:08 +0800 (CST)
+Subject: Re: [PATCH] md/raid5: fix atomicity violation in raid5_cache_count
+To: Gui-Dong Han <2045gemini@gmail.com>, song@kernel.org
+Cc: linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
+ baijiaju1990@outlook.com, BassCheck <bass@buaa.edu.cn>,
+ "yukuai (C)" <yukuai3@huawei.com>
+References: <20231221104343.5557-1-2045gemini@gmail.com>
+From: Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <abc324aa-1ccc-c8fd-1437-a77465f6e4be@huaweicloud.com>
+Date: Fri, 22 Dec 2023 09:36:43 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231219075538.414708-1-peterx@redhat.com>
+In-Reply-To: <20231221104343.5557-1-2045gemini@gmail.com>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgBHSQ8r6IRlJ+0uEQ--.47074S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxGrWDXryrJFyxKFyrGFykXwb_yoW5uw1Dpr
+	Z5Ca4UXr4kXwn5tFyDZr4v9rWfC39xJFyxJw4UXw4kZasYgFWxtw47Ka4UJ348ZrW8Gayx
+	tFn0934kur4qyFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUyEb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
+	64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE
+	2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
+	xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
+	c7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU1zuWJUUUUU==
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
-Copy Muchun, which I forgot since the start, sorry.
+Hi,
 
--- 
-Peter Xu
+ÔÚ 2023/12/21 18:43, Gui-Dong Han Ð´µÀ:
+> In raid5_cache_count():
+> 	if (conf->max_nr_stripes < conf->min_nr_stripes)
+> 		return 0;
+> 	return conf->max_nr_stripes - conf->min_nr_stripes;
+> The current check is ineffective, as the values could change immediately
+> after being checked.
+> 
+> In raid5_set_cache_size():
+> 	...
+> 	conf->min_nr_stripes = size;
+> 	...
+> 	while (size > conf->max_nr_stripes)
+> 		conf->min_nr_stripes = conf->max_nr_stripes;
+> 	...
+> 
+
+raid5_cache_count() is called from setup_conf() where reconfig_mtuex is
+held.
+
+raid5_set_cache_size() is called from:
+1) raid5_store_stripe_cache_size(), reconfig_mutex is held
+2) r5l_start() from raid5_add_disk(), reconfig_mutex is held
+3) raid_ctr(), reconfig_mutex is held
+
+So, how can they concurrent in the first place?
+
+Thanks,
+Kuai
+
+> Due to intermediate value updates in raid5_set_cache_size(), concurrent
+> execution of raid5_cache_count() and raid5_set_cache_size() may lead to
+> inconsistent reads of conf->max_nr_stripes and conf->min_nr_stripes.
+> The current checks are ineffective as values could change immediately
+> after being checked, raising the risk of conf->min_nr_stripes exceeding
+> conf->max_nr_stripes and potentially causing an integer overflow.
+> 
+> This possible bug is found by an experimental static analysis tool
+> developed by our team. This tool analyzes the locking APIs to extract
+> function pairs that can be concurrently executed, and then analyzes the
+> instructions in the paired functions to identify possible concurrency bugs
+> including data races and atomicity violations. The above possible bug is
+> reported when our tool analyzes the source code of Linux 6.2.
+> 
+> To resolve this issue, it is suggested to introduce local variables
+> 'min_stripes' and 'max_stripes' in raid5_cache_count() to ensure the
+> values remain stable throughout the check. Adding locks in
+> raid5_cache_count() fails to resolve atomicity violations, as
+> raid5_set_cache_size() may hold intermediate values of
+> conf->min_nr_stripes while unlocked. With this patch applied, our tool no
+> longer reports the bug, with the kernel configuration allyesconfig for
+> x86_64. Due to the lack of associated hardware, we cannot test the patch
+> in runtime testing, and just verify it according to the code logic.
+> 
+> Fixes: edbe83ab4c27e ("md/raid5: allow the stripe_cache to grow and ...")
+> Reported-by: BassCheck <bass@buaa.edu.cn>
+> Signed-off-by: Gui-Dong Han <2045gemini@gmail.com>
+> ---
+>   drivers/md/raid5.c | 7 ++++---
+>   1 file changed, 4 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/md/raid5.c b/drivers/md/raid5.c
+> index 8497880135ee..62ebf33402cc 100644
+> --- a/drivers/md/raid5.c
+> +++ b/drivers/md/raid5.c
+> @@ -7390,11 +7390,12 @@ static unsigned long raid5_cache_count(struct shrinker *shrink,
+>   				       struct shrink_control *sc)
+>   {
+>   	struct r5conf *conf = shrink->private_data;
+> -
+> -	if (conf->max_nr_stripes < conf->min_nr_stripes)
+> +	int max_stripes = conf->max_nr_stripes;
+> +	int min_stripes = conf->min_nr_stripes;
+> +	if (max_stripes < min_stripes)
+>   		/* unlikely, but not impossible */
+>   		return 0;
+> -	return conf->max_nr_stripes - conf->min_nr_stripes;
+> +	return max_stripes - min_stripes;
+>   }
+>   
+>   static struct r5conf *setup_conf(struct mddev *mddev)
+> 
 
 
