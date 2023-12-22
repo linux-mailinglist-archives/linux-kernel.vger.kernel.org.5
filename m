@@ -1,118 +1,117 @@
-Return-Path: <linux-kernel+bounces-9720-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9721-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFDF381CA31
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 13:47:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A481281CA34
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 13:48:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DAE951C21645
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 12:47:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D7DDF1C20F7D
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 12:48:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 809CD18636;
-	Fri, 22 Dec 2023 12:47:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 818D51863A;
+	Fri, 22 Dec 2023 12:47:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=flygoat.com header.i=@flygoat.com header.b="El/Eu3P0";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="2PMZ1l7M"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="a5qhg8Hw"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B3F1182BB;
-	Fri, 22 Dec 2023 12:47:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=flygoat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flygoat.com
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-	by mailout.west.internal (Postfix) with ESMTP id F166A3200A22;
-	Fri, 22 Dec 2023 07:47:05 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Fri, 22 Dec 2023 07:47:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
-	cc:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm3; t=1703249225;
-	 x=1703335625; bh=tIVbnmL5/XEhiKUG9sZN0NOkNUx7Xn+vtggbKdx4D0Y=; b=
-	El/Eu3P0vz/aRPJ06xGvxbWtolatYWrNTpoOVBp/+9FFiJfLkWNRJ2OcVz0yL8yu
-	hW1eTzQfat9oDV/SzM5Ks4W0TVp+l2Kadb57smJ1by07LkoGnX9vRThpi5aOJFld
-	NXxn5jA5BRdBMeBKy1vgMak09GlE/3jIJ4h0P7C5xdJL8O4t5wpTSKqE7QCe6ZRp
-	JciWMlI+8Lk2dcjvuenJaNAofbT5J67IpBvY9C5EaZ4isuGUmXvcsk+g/B9tASyc
-	sfMjU0N4V0XwODSiJdlcx5JvrRh3A1clMBgkLv/lwfR7/nWCV6Nx+hlQXcMlljBr
-	OH8a8q066sRYLPnlxaYFGQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1703249225; x=
-	1703335625; bh=tIVbnmL5/XEhiKUG9sZN0NOkNUx7Xn+vtggbKdx4D0Y=; b=2
-	PMZ1l7MuonvF1m8nyyIWYDeRVlP7Wc7j6pYgq3pvxwr/JvsMBPupss3U13sFYmI4
-	kE0yc/jSwQuxu1qU6e3sE6igHZIVwmApKCUsKszT5A4Zv5hX1tRwHNJ6edsVE5KB
-	GdpV7rg0JNtXqOQ4IC8wtuza7swcqhg2BylJbFaCzQ7T6W5XhYLBdoPailti0/c7
-	crjjBAX3RL7Hn+fGSv07XTGMo3R8zCEVc/Xf1KzkD0wmsBmH722RXawswh6RCDml
-	9h3EIN5+as1NBzrpQuObN/Z9L/ScAs/kpBq/+I4ceYK3LrulVdyFCjEyqJ5aXXri
-	/r7WNE5NcnP6nLnxGK7cw==
-X-ME-Sender: <xms:SYWFZeLoMZLVOsY-YImjZWFtfhLRIsXsrFtO6hsw5vmDKh06UsSz2g>
-    <xme:SYWFZWJQyQpTWinbY8Snrq6WJtJrIYEnka2X8OfE0wDNxh-lrXF-PZGFl9UkSTsEe
-    jfZpSH6LPr4XFSXofg>
-X-ME-Received: <xmr:SYWFZeudp4OdrLEJXEENdm2FwQQJo8YhP-ELlXwpd_eOBro_UwM-kD-L1WVxISxSTdGGs-TT-HJW4VNNUPYa_OCokCfj13FK8kq6bkA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvddujedggeduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepkfffgggfuffvvehfhfgjtgfgsehtkeertddtvdejnecuhfhrohhmpeflihgr
-    gihunhcujggrnhhguceojhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomheqne
-    cuggftrfgrthhtvghrnhepleeuffehheegleeuvdelgffhueekjeetueevuefhffdtgfeu
-    hfeggfeukefffedtnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
-    hfrhhomhepjhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomh
-X-ME-Proxy: <xmx:SYWFZTbLxklLbpt9pv-UB12Cb0BmTETT-5RL-Podmc1ICn1khG8hlQ>
-    <xmx:SYWFZVbOQmpiHPyephu0bCTk2Ym7IKA3F_VcX7hBCspBvB-FSzuqtA>
-    <xmx:SYWFZfC6AZDutSYTd2VbuqW7A7_RgWDQInCIlIkzWNcr-4jmgf-_gQ>
-    <xmx:SYWFZZGOrJ1mn9VQ37tE-d5M0ZiD7yARnmwlxPqCJzoeEAP_GOD4kQ>
-Feedback-ID: ifd894703:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 22 Dec 2023 07:47:04 -0500 (EST)
-Message-ID: <936a4dd1-b595-49b4-ab19-f587a9adb000@flygoat.com>
-Date: Fri, 22 Dec 2023 12:47:03 +0000
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0C461CA86;
+	Fri, 22 Dec 2023 12:47:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D42E9C433C8;
+	Fri, 22 Dec 2023 12:47:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703249273;
+	bh=EyUZ3UqCZNaIyeU3Sh7ZrYlDoc8LVGqooafyQoOjCQw=;
+	h=From:Subject:Date:To:Cc:From;
+	b=a5qhg8HwFPkcGt7w+G8SxbajrkpwZ6XOdJpbBztoo6ciI3seNd9YFo/6D6Vy7xJI3
+	 QP668vwTI3PXqd29lQ1HK3cBpvwSjtri6ZYYdkzbV560JcqkGmu0HPvz0wuQ6+QwXo
+	 WzaHN5QEPAtkOKGXoeUijhiNdJy+h4t8j/JHvO7+CdtcAAJPwBKX5FT5Hj0Qtbpr49
+	 f54QDCc1ESs33VswrnCLSXrRzLgkHK2ELn5ndGQNG7ssRTYzKn49WGdVNCHefpDZJ4
+	 GIbSTzK25pkJGJpHP+dNLUPNkIQia7+SJO+2kd7puLkJ7UfhXCv6rFJVmsCYv4VjzV
+	 h/AWcTjqnHj5g==
+From: Matthieu Baerts <matttbe@kernel.org>
+Subject: [PATCH net-next 0/4] mptcp: add CurrEstab MIB counter
+Date: Fri, 22 Dec 2023 13:47:21 +0100
+Message-Id: <20231222-upstream-net-next-20231221-mptcp-currestab-v1-0-c1eb73d6b2b2@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 07/10] MIPS: traps: Handle CPU with non standard vint
- offset
-Content-Language: en-US
-To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
- gregory.clement@bootlin.com, vladimir.kondratiev@intel.com
-References: <20231027221106.405666-1-jiaxun.yang@flygoat.com>
- <20231027221106.405666-8-jiaxun.yang@flygoat.com>
- <ZYV+zdm4fjYgATVW@alpha.franken.de>
-From: Jiaxun Yang <jiaxun.yang@flygoat.com>
-In-Reply-To: <ZYV+zdm4fjYgATVW@alpha.franken.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAFmFhWUC/z2NzQoCMQyEX2XJ2UAbf/FVxENbo+awtSRZWVj23
+ S2CHubwMXwzCxirsMF5WED5LSav2iFuBijPVB+McusMFGgbiSJOzVw5jVjZe2bHfzU2Lw3LpMr
+ mKeM+0elwzLtAIUMfbMp3mb9nF/jpcF3XDyQ12fiGAAAA
+To: mptcp@lists.linux.dev, Mat Martineau <martineau@kernel.org>, 
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+ Shuah Khan <shuah@kernel.org>, Geliang Tang <geliang.tang@linux.dev>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-kselftest@vger.kernel.org, Matthieu Baerts <matttbe@kernel.org>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1751; i=matttbe@kernel.org;
+ h=from:subject:message-id; bh=EyUZ3UqCZNaIyeU3Sh7ZrYlDoc8LVGqooafyQoOjCQw=;
+ b=owEBbQKS/ZANAwAIAfa3gk9CaaBzAcsmYgBlhYV2BBEZq0s8r6/TZBHt3VwVxg7bAGwGbzGfC
+ OE/4AbXeIiJAjMEAAEIAB0WIQToy4X3aHcFem4n93r2t4JPQmmgcwUCZYWFdgAKCRD2t4JPQmmg
+ c5OWD/9/9eZaNEWZPQSoCfNq94+iDaSw8LXYh7jksCmsz/JUHWycua3FlxS02MjsjMjMIeb0C1A
+ i4ugFR/71nufXjCafRzHzfiJKmmfYs2GGhVc1VXfA34o0ZyeJ+t9VXY5ggbAOCdw47zdOrLF7gv
+ WiFP1+g5EmKNEiroZY6sTNa5D/Jd8hy0XHlsMOVG2sXPSgRKzr+wNjdo9PUe1TbSIKpIE/dimlE
+ vgeYu87EN53X7Gl93ukQMaOvD5HcYAPgaZRBrwfyp9oo0JaxkuvSxYxEjpdxwOGZ5oKA4s5VI1Z
+ ypQ1C3bKbhzx2WQNvaH/QFqm1QPnsGHfQFWTt96wZeMsZwxSNYckNvjZRsCy5cOsAI1ayV7dj/t
+ Q00hN0o3PaIW3G8n/H6X0XZjVIH8geQyIM+UeK1XwxXgtPIhWSz5KYAy6xO/U4BdcHUqLDkwyh9
+ NT0m4cQCLi+kMGQKhrkfALf+sIopWcIqGb9erKFAV9OJZjgJS0P2xNSnt6JfD94RZgiGLU93umK
+ aTkf8ldywm3YH/Dknoc+RSfVwaHivHEFbONbyGqPaQsdT22eX3TxD35GxjmX9KIftTcOykeadu7
+ x+mnzOzIAH8XJMQjxKtemC1CEER1mQXe+qHgXGkXWaVWKobC9vkLwOjEDvQayu9io5rkG/p3XMu
+ bFsN0RajN035enQ==
+X-Developer-Key: i=matttbe@kernel.org; a=openpgp;
+ fpr=E8CB85F76877057A6E27F77AF6B7824F4269A073
 
+This MIB counter is similar to the one of TCP -- CurrEstab -- available
+in /proc/net/snmp. This is useful to quickly list the number of MPTCP
+connections without having to iterate over all of them.
 
+Patch 1 prepares its support by adding new helper functions:
 
-在 2023/12/22 12:19, Thomas Bogendoerfer 写道:
-> On Fri, Oct 27, 2023 at 11:11:03PM +0100, Jiaxun Yang wrote:
->> Some BMIPS cpus has none standard start offset for vector interrupts.
->>
->> Handle those CPUs in vector size calculation and handler setup process.
-> hmm, I see no connection to what this series is fixing. How does it
-> work without this patch ?
+ - MPTCP_DEC_STATS(): similar to MPTCP_INC_STATS(), but this time to
+   decrement a counter.
 
-In this series reservation of exception vector is moved to here, so it's 
-critical
-to have correct size.
+ - mptcp_set_state(): similar to tcp_set_state(), to change the state of
+   an MPTCP socket, and to inc/decrement the new counter when needed.
 
-Thanks
-- Jiaxun
+Patch 2 uses mptcp_set_state() instead of directly calling
+inet_sk_state_store() to change the state of MPTCP sockets.
 
->
-> Thomas.
->
+Patch 3 and 4 validate the new feature in MPTCP "join" and "diag"
+selftests.
+
+Signed-off-by: Matthieu Baerts <matttbe@kernel.org>
+---
+Geliang Tang (4):
+      mptcp: add CurrEstab MIB counter support
+      mptcp: use mptcp_set_state
+      selftests: mptcp: join: check CURRESTAB counters
+      selftests: mptcp: diag: check CURRESTAB counters
+
+ net/mptcp/mib.c                                 |  1 +
+ net/mptcp/mib.h                                 |  8 ++++
+ net/mptcp/pm_netlink.c                          |  5 +++
+ net/mptcp/protocol.c                            | 56 ++++++++++++++++---------
+ net/mptcp/protocol.h                            |  1 +
+ net/mptcp/subflow.c                             |  2 +-
+ tools/testing/selftests/net/mptcp/diag.sh       | 17 +++++++-
+ tools/testing/selftests/net/mptcp/mptcp_join.sh | 46 +++++++++++++++++---
+ 8 files changed, 110 insertions(+), 26 deletions(-)
+---
+base-commit: 56794e5358542b7c652f202946e53bfd2373b5e0
+change-id: 20231221-upstream-net-next-20231221-mptcp-currestab-5a2867b4020b
+
+Best regards,
+-- 
+Matthieu Baerts <matttbe@kernel.org>
 
 
