@@ -1,155 +1,145 @@
-Return-Path: <linux-kernel+bounces-9593-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9594-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA7C981C820
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 11:27:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D373281C822
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 11:29:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 422231F2414F
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 10:27:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 740891F255D6
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 10:29:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D4F1125BE;
-	Fri, 22 Dec 2023 10:27:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43D9612B65;
+	Fri, 22 Dec 2023 10:29:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="T9kFsVta"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f171.google.com (mail-il1-f171.google.com [209.85.166.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8935011718
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 10:27:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rGckX-0008A3-Ce; Fri, 22 Dec 2023 11:27:25 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rGckV-000jXS-3D; Fri, 22 Dec 2023 11:27:24 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rGckV-001cdB-T5; Fri, 22 Dec 2023 11:27:23 +0100
-Date: Fri, 22 Dec 2023 11:27:23 +0100
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc: lgirdwood@gmail.com, broonie@kernel.org, linux-pwm@vger.kernel.org, 
-	linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	Thierry Reding <thierry.reding@gmail.com>, Heiner Kallweit <hkallweit1@gmail.com>, 
-	Dmitry Rokosov <ddrokosov@sberdevices.ru>
-Subject: Re: [RFC PATCH v1] regulator: pwm-regulator: Fix continuous
- get_voltage for disabled PWM
-Message-ID: <eyfec4jzcw3japf77jzj3p6w7gytbmogr2ff3g2677nn6qivpe@57huhelwllhd>
-References: <20231221211222.1380658-1-martin.blumenstingl@googlemail.com>
- <tek6c6symqgm6x6ujh4m67q32en24pzrkjbchffir7qljo4gor@7qpu4zmgyzpq>
- <CAFBinCAxh0xU2mDRX3t42j6oJ534p9RPUV+dYoRe0oacTw_7iA@mail.gmail.com>
- <2f2bc3xvemk2x3sno65so6vglmpavjtyeiqzy6yyzwvx5hqtmi@tsfx2hr7rmqp>
- <CAFBinCCLorBkGmpeUiep6gT7N__2641ec+f=hJyUgVEv1x6EdA@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 258A31171B
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 10:29:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-il1-f171.google.com with SMTP id e9e14a558f8ab-35fe06eaa98so1072875ab.0
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 02:29:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1703240973; x=1703845773; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=brq1T/lyerRADPyPeuRz+yr9zN9tHk+LiXSNCxx5F14=;
+        b=T9kFsVtaKth+COG+Rq2lKFvDzDEFyergW5AufQqcQhivKnwKtePiVgY95Zy5hyvXGp
+         3MXswS57AnqeCSzj3QqJKjixzbhp7hWEJVa+Hlu8qxZoiWALl9pYBjfNY83NFhwh5B4v
+         vAB/f7YpQ8dJN7IoIs8Yl3eBQTG6ioADE1nFs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703240973; x=1703845773;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=brq1T/lyerRADPyPeuRz+yr9zN9tHk+LiXSNCxx5F14=;
+        b=FOmEawClq3kSo0mZOBapaZuftKNbNjOqLjDTj2hNNTAYgoEATBnbINguVKNXv7fF10
+         QEfOiXt/JGatqTMB04BDMAo4DxR5XRZR8swaWmJTtsM8TxxOsFeBNoOBFC+CjJGapF4k
+         NBda1hrmzQeiB+G86TwoRrEgs/Xb8x1wSg9sypVpTv9xCFAkAAtBeNVvNzumG2D1OEPq
+         Lof/sGcnKVClhfStatg5KVFbWiSDNODGgaKgE3pqIAYg4S4i08NYS2BTP0UYqAUYApW4
+         UlSzAAhCWDBQb7Iuw5igkvCN4I6f32GxVJZGn7ySgKlqV45+p0sNif2hIJTlh+ZYH1bl
+         85wg==
+X-Gm-Message-State: AOJu0YwNThl3f7gj1/g/FI77PTdQxDdi/uqNkqsVaMbt2oa12475k5XY
+	0FqMPD874W9SB/q8+AL0bUQwGMUZIkMmqXefSOlHy71oNxiF
+X-Google-Smtp-Source: AGHT+IGvrKFDeGj25WNuCS4lB0+NQrxaQYKp7xXqCv5+JXzuRUdQd0UcrSJMJKObEXgx5sd0qBDQHdtXf67CF1+t2Bg=
+X-Received: by 2002:a05:6e02:1a09:b0:35f:b3d8:4568 with SMTP id
+ s9-20020a056e021a0900b0035fb3d84568mr1279180ild.20.1703240973184; Fri, 22 Dec
+ 2023 02:29:33 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ofg2g3grsnoftz76"
-Content-Disposition: inline
-In-Reply-To: <CAFBinCCLorBkGmpeUiep6gT7N__2641ec+f=hJyUgVEv1x6EdA@mail.gmail.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-
-
---ofg2g3grsnoftz76
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+References: <20231221135548.1.I10f326a9305d57ad32cee7f8d9c60518c8be20fb@changeid>
+In-Reply-To: <20231221135548.1.I10f326a9305d57ad32cee7f8d9c60518c8be20fb@changeid>
+From: Pin-yen Lin <treapking@chromium.org>
+Date: Fri, 22 Dec 2023 18:29:22 +0800
+Message-ID: <CAEXTbpdUjCvLE+m3d1vSvsE2njRSk1Ou3bZZGEvD_7oYt4+k4Q@mail.gmail.com>
+Subject: Re: [PATCH] drm/bridge: parade-ps8640: Wait for HPD when doing an AUX transfer
+To: Douglas Anderson <dianders@chromium.org>
+Cc: dri-devel@lists.freedesktop.org, hsinyi@chromium.org, 
+	Andrzej Hajda <andrzej.hajda@intel.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	David Airlie <airlied@gmail.com>, Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
+	Jernej Skrabec <jernej.skrabec@gmail.com>, Jonas Karlman <jonas@kwiboo.se>, 
+	Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+	Neil Armstrong <neil.armstrong@linaro.org>, Robert Foss <rfoss@kernel.org>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 22, 2023 at 11:12:30AM +0100, Martin Blumenstingl wrote:
-> Hello Uwe,
->=20
-> On Fri, Dec 22, 2023 at 8:10=E2=80=AFAM Uwe Kleine-K=C3=B6nig
-> <u.kleine-koenig@pengutronix.de> wrote:
-> [...]
-> > Also the calculation is wrong: If a relative duty-cyle in the interval
-> > [91%; 0%] maps lineary to [860 mV; 1140 mV] you get 1100 mV at
-> >
-> >              1100 mV - 860 mV
-> >         91 + ---------------- * (0 - 91) =3D 13
-> >              1140 mV - 860 mV
-> >
-> > (If the calculations in the driver used signed multiplication and
-> > division, all the checks for max_uV_duty < min_uV_duty could just go
-> > away.)
-> >
-> > So you want
-> >
-> > +               pwm-dutycycle-range =3D <13 0>;
-> Thank you!
->=20
-> > (if this restriction is really necessary).
-> I could not find a way around this.
-> Without this change pwm_regulator_set_voltage() is called with req_min
-> 860mV and req_max 1140mV.
-> pwm_regulator_set_voltage() will then pick the lowest possible
-> voltage, which then results in 860mV (exactly what I get without any
-> patches).
->=20
-> To be able to keep the original minimum voltage in .dts would be to
-> work on what Mark suggested where he said:
-> "I'd expect a change in the init_state() function, possibly one that
-> programs the PWM to reflect the actual hardware state"
->=20
-> [...]
-> > > -     if (pstate.enabled)
-> > > -             voltage =3D pwm_get_relative_duty_cycle(&pstate, duty_u=
-nit);
-> > > -     else if (max_uV_duty < min_uV_duty)
-> > > -             voltage =3D max_uV_duty;
-> > > -     else
-> > > -             voltage =3D min_uV_duty;
-> > > +     voltage =3D pwm_get_relative_duty_cycle(&pstate, duty_unit);
-> >
-> > I'd add here:
-> >
-> >         if (voltage < min(max_uV_duty, min_uV_duty) ||
-> >             voltage > max(max_uV_duty, min_uV_duty))
-> >                 return -ENOTRECOVERABLE;
-> I can do that - although I think it should be a separate change.
+Hi Douglas,
 
-That can go in together with the
+On Fri, Dec 22, 2023 at 5:56=E2=80=AFAM Douglas Anderson <dianders@chromium=
+.org> wrote:
+>
+> Unlike what is claimed in commit f5aa7d46b0ee ("drm/bridge:
+> parade-ps8640: Provide wait_hpd_asserted() in struct drm_dp_aux"), if
+> someone manually tries to do an AUX transfer (like via `i2cdump ${bus}
+> 0x50 i`) while the panel is off we don't just get a simple transfer
+> error. Instead, the whole ps8640 gets thrown for a loop and goes into
+> a bad state.
+>
+> Let's put the function to wait for the HPD (and the magical 50 ms
+> after first reset) back in when we're doing an AUX transfer. This
+> shouldn't actually make things much slower (assuming the panel is on)
+> because we should immediately poll and see the HPD high. Mostly this
+> is just an extra i2c transfer to the bridge.
+>
+> Fixes: f5aa7d46b0ee ("drm/bridge: parade-ps8640: Provide wait_hpd_asserte=
+d() in struct drm_dp_aux")
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> ---
+>
+>  drivers/gpu/drm/bridge/parade-ps8640.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/bridge/parade-ps8640.c b/drivers/gpu/drm/bri=
+dge/parade-ps8640.c
+> index 541e4f5afc4c..fb5e9ae9ad81 100644
+> --- a/drivers/gpu/drm/bridge/parade-ps8640.c
+> +++ b/drivers/gpu/drm/bridge/parade-ps8640.c
+> @@ -346,6 +346,11 @@ static ssize_t ps8640_aux_transfer(struct drm_dp_aux=
+ *aux,
+>         int ret;
+>
+>         pm_runtime_get_sync(dev);
+> +       ret =3D _ps8640_wait_hpd_asserted(ps_bridge, 200 * 1000);
+> +       if (ret) {
+> +               pm_runtime_put_sync_suspend(dev);
+> +               return ret;
+> +       }
+>         ret =3D ps8640_aux_transfer_msg(aux, msg);
+>         pm_runtime_mark_last_busy(dev);
+>         pm_runtime_put_autosuspend(dev);
+> --
+> 2.43.0.472.g3155946c3a-goog
+>
 
-	if (pstate.enabled)
-		return -ENOTRECOVERABLE;
+I think commit 9294914dd550 ("drm/bridge: parade-ps8640: Link device
+to ensure suspend/resume order")  is trying to address the same
+problem, but we see this issue here because the device link is missing
+DL_FLAG_PM_RUNTIME. I prefer to add DL_FLAG_PM_RUNTIME here so we
+don't need to add a _ps8640_wait_hpd_asserted() after every
+pm_runtime_get_*() call.
 
-Otherwise +1 to not mix that with the machine specfic stuff.
+As a side note, I've verified both this patch and DL_FLAG_PM_RUNTIME
+in our downstream v5.15 kernel and panel-edp driver. Both of them
+successfully wait for HPD asserted when the timeout used to happen,
+but the panel is black in that situation. That being said, this patch
+still brings us to a better state. Originally, panel_edp_resume()
+would return an error when the timeout occurs, so the panel-edp driver
+is stuck at an unexpected state. With this patch or
+DL_FLAG_PM_RUNTIME, the runtime PM callbacks won't fail and a system
+suspend/resume brings the panel back.
 
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=C3=B6nig         =
-   |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---ofg2g3grsnoftz76
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmWFZIoACgkQj4D7WH0S
-/k7wLQgAgB0mlw3wy3ju4Du6LWIxSgraCzeRpxj6i4nzctEXRDsG7vLq9hKVW9Uf
-GAFpXYSwxcG3rUS9CMj3YY7NPeo7ZZ1U6EvHNyQOk/DEbWKIw/Y1eZi2QGaWjUqa
-T0x1En4EaSUKC4ZdDGy+5DgGsC0rlfMyE7YQHkurbuAjb5fvCbfL9XTW/GqnRUuJ
-Ptd+EyNbQfpzwyKA99G9WEy3eWM5ou5n0mTXGRtSpYlEPa7evYWF8+U65dcd/o9Y
-d7mETR2MMvUfIJmbxp1Ob/zj+tjI0Jes6ahX2Jc9ev9BTjmFchcMB4MTE5xY3MRn
-+T9SqS89y1Ku9rTXDCpbDx0uZKAwvA==
-=bR5z
------END PGP SIGNATURE-----
-
---ofg2g3grsnoftz76--
+Regards,
+Pin-yen
 
