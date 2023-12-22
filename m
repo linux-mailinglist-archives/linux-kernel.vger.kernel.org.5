@@ -1,147 +1,146 @@
-Return-Path: <linux-kernel+bounces-9382-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9381-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F4B081C4D7
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 06:59:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5161F81C4D4
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 06:59:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E22A71F25B60
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 05:59:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 063181F25A40
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 05:59:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 876888F7A;
-	Fri, 22 Dec 2023 05:59:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFA4763B5;
+	Fri, 22 Dec 2023 05:59:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="b9KUqzWZ"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="3DUILVz5"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D2A28F5A;
-	Fri, 22 Dec 2023 05:59:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BM5odc6026871;
-	Fri, 22 Dec 2023 05:59:08 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=UocPOG5oicz+zONMdqSbtwpqDsjQA16Icn7wsNmaM4w=; b=b9
-	KUqzWZyaeFCrBiRDm956+i5Izz0BO+nvRw/IRFknMasCFLJGFRCJlozaa2C5fdUm
-	GIKt7LQ3nkHRJAXM5ygOvgwrvqaqSXrd+BQg0n6EoxLN22lIkkEdP0acdgIaSSaT
-	Bfm5J6jL0jOZg8nThxYEThGUwU21O/kVG+nZfJVVJ1/z+pKXnbHkSYvc5FUztp6N
-	ur/6ilWC6JJ01Wl3UP2C9OBm5i2/OsiDZySPvdfD3Gg3rKzF3r1i+xrCxBA11Hka
-	V/Hr7vqIYBbIEZEKq0H3mNwcu3+5o3wsU9SXP28nlWKXAPZh0x6GtoLI1zP789nn
-	jo1CFClCj83n2D/nXxZw==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v52sbr7m5-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 22 Dec 2023 05:59:07 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BM5x75g012067
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 22 Dec 2023 05:59:07 GMT
-Received: from [10.218.35.239] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 21 Dec
- 2023 21:59:05 -0800
-Message-ID: <849d0ea9-d4f7-c568-968c-88835f64fadf@quicinc.com>
-Date: Fri, 22 Dec 2023 11:29:01 +0530
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D52EB79C4;
+	Fri, 22 Dec 2023 05:59:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=mANM6RUEEd5RIcHHpg3Hi1iLZpC1YP27KzcxuzjOh/Y=; b=3DUILVz5D+yojTQiI8YhKFDEes
+	RkuBVNdqwSfU/ewrJeUGXNbrBWrdCRZ5akxQPW82mqBSsLTwSSr1P+ahAMZ6je0Odj6ntomwSu/+7
+	+O+pCgjbsd5ej0oJp3flIEhRQ17EKu8pqDnfEWzpIBUC0xXBJWwcUb6CWyTCVp8GVK4JMJIZUQjkr
+	jUFIBrAoCXnOf8txjXVcGMc3tQOh1e08qlG9YCAfgz1HvvCVuq0mPdvm+CtcX/Z5HXxVOvAWhz7Vl
+	+yMKBe6abozVqg81Rylf3xOpcu/OZ7qMC4v757bQuY49AoPbLZ0gonzDqKIHm6m1DxIVTIt17gms9
+	A549XPhw==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+	id 1rGYYp-0052LL-1D;
+	Fri, 22 Dec 2023 05:59:03 +0000
+Date: Thu, 21 Dec 2023 21:59:03 -0800
+From: Luis Chamberlain <mcgrof@kernel.org>
+To: deller@kernel.org
+Cc: linux-kernel@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>, linux-modules@vger.kernel.org,
+	linux-arch@vger.kernel.org
+Subject: Re: [PATCH 2/4] modules: Ensure 64-bit alignment on __ksymtab_*
+ sections
+Message-ID: <ZYUlpxlg/WooxGWZ@bombadil.infradead.org>
+References: <20231122221814.139916-1-deller@kernel.org>
+ <20231122221814.139916-3-deller@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [PATCH v2 1/2] usb: dwc3: host: Set XHCI_SG_TRB_CACHE_SIZE_QUIRK
-Content-Language: en-US
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC: Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Mathias Nyman
-	<mathias.nyman@intel.com>,
-        <linux-kernel@vger.kernel.org>, <linux-usb@vger.kernel.org>,
-        <stable@vger.kernel.org>
-References: <20231212112521.3774610-1-quic_prashk@quicinc.com>
- <20231212112521.3774610-2-quic_prashk@quicinc.com>
- <2023121518-uncharted-riddance-7c58@gregkh>
-From: Prashanth K <quic_prashk@quicinc.com>
-In-Reply-To: <2023121518-uncharted-riddance-7c58@gregkh>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: lWVMoZ0QbjR5H-HehkfsGZ4QsG3DIF0b
-X-Proofpoint-ORIG-GUID: lWVMoZ0QbjR5H-HehkfsGZ4QsG3DIF0b
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 adultscore=0
- malwarescore=0 bulkscore=0 clxscore=1015 phishscore=0 spamscore=0
- impostorscore=0 mlxlogscore=999 priorityscore=1501 lowpriorityscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2312220040
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231122221814.139916-3-deller@kernel.org>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 
-
-
-On 15-12-23 06:12 pm, Greg Kroah-Hartman wrote:
-> On Tue, Dec 12, 2023 at 04:55:20PM +0530, Prashanth K wrote:
->> Upstream commit bac1ec551434 ("usb: xhci: Set quirk for
->> XHCI_SG_TRB_CACHE_SIZE_QUIRK") introduced a new quirk in XHCI
->> which fixes XHC timeout, which was seen on synopsys XHCs while
->> using SG buffers. But the support for this quirk isn't present
->> in the DWC3 layer.
->>
->> We will encounter this XHCI timeout/hung issue if we run iperf
->> loopback tests using RTL8156 ethernet adaptor on DWC3 targets
->> with scatter-gather enabled. This gets resolved after enabling
->> the XHCI_SG_TRB_CACHE_SIZE_QUIRK. This patch enables it using
->> the xhci device property since its needed for DWC3 controller.
->>
->> In Synopsys DWC3 databook,
->> Table 9-3: xHCI Debug Capability Limitations
->> Chained TRBs greater than TRB cache size: The debug capability
->> driver must not create a multi-TRB TD that describes smaller
->> than a 1K packet that spreads across 8 or more TRBs on either
->> the IN TR or the OUT TR.
->>
->> Cc: <stable@vger.kernel.org>
->> Signed-off-by: Prashanth K <quic_prashk@quicinc.com>
+On Wed, Nov 22, 2023 at 11:18:12PM +0100, deller@kernel.org wrote:
+> From: Helge Deller <deller@gmx.de>
 > 
-> What commit id does this fix?
->
-This doesn't fix any commit as such, but adds the support for 
-XHCI_SG_TRB_CACHE_SIZE_QUIRK (which is present in XHCI layer) to DWC3 
-layer. I have CC'ed stable kernel for this to be back-ported to older 
-kernels (#5.11).
+> On 64-bit architectures without CONFIG_HAVE_ARCH_PREL32_RELOCATIONS
+> (e.g. ppc64, ppc64le, parisc, s390x,...) the __KSYM_REF() macro stores
+> 64-bit pointers into the __ksymtab* sections.
+> Make sure that those sections will be correctly aligned at module link time,
+> otherwise unaligned memory accesses may happen at runtime.
 
-> 
->> ---
->>   drivers/usb/dwc3/host.c | 2 ++
->>   1 file changed, 2 insertions(+)
->>
->> diff --git a/drivers/usb/dwc3/host.c b/drivers/usb/dwc3/host.c
->> index 61f57fe5bb78..31a496233d87 100644
->> --- a/drivers/usb/dwc3/host.c
->> +++ b/drivers/usb/dwc3/host.c
->> @@ -89,6 +89,8 @@ int dwc3_host_init(struct dwc3 *dwc)
->>   
->>   	memset(props, 0, sizeof(struct property_entry) * ARRAY_SIZE(props));
->>   
->> +	props[prop_idx++] = PROPERTY_ENTRY_BOOL("xhci-sg-trb-cache-size-quirk");
-> 
-> And this is ok if the entry is not present?
-> 
-We are intending to use this quirk for all the dwc3 based devices since 
-the DWC3 XHC needs it. If the entry is not present then we will hit 
-stall if certain conditions aren't met (have mentioned the condition in 
-commit text).
+The ramifications are not explained there. You keep sending me patches
+with this and we keep doing a nose dive on this. It means I have to do
+more work. So as I had suggested with your patch which I merged in
+commit 87c482bdfa79 ("modules: Ensure natural alignment for
+.altinstructions and __bug_table sections") please clarify the
+impact of not merging this patch. Also last time you noticed the
+misalignment due to a faulty exception handler, please mention how
+you found this out now.
 
-Thanks,
-Prashanth K
+And since this is not your first patch on the exact related subject
+I'd appreciate if you can show me perf stat results differences between
+having and not having this patch merged. Why? Because we talk about
+a performance penalthy, but we are not saying how much, and since this
+is an ongoing thing, we might as well have a tool belt with ways to
+measure such performance impact to bring clarity and value to this
+and future related patches.
+
+> The __kcrctab* sections store 32-bit entities, so use ALIGN(4) for those.
+
+I've given some thought about how to test this. Sadly perf kallsysms
+just opens the /proc/kallsysms file, but that's fine, we need our own
+test.
+
+I think a 3 new simple modules selftest would do it and running perf
+stat on it. One module, let us call it module A which constructs its own
+name space prefix for its exported symbols and has tons of silly symbols
+for arbitrary data, whatever. We then have module B which refers to a
+few arbitrary symbols from module A, hopefully spread out linearly, so
+if module A had 10,000 symbols, we'd have module A refer to a symbol
+ever 1,000 symbols. Finally we want a symbol C which has say, 50,000
+symbols all of which will not be used at all by the first two modules,
+but the selftest will load module C first, prior to calling modprobe B.
+
+We'll stress test this way two calls which use find_symbol():
+
+1) Upon load of B it will trigger simplify_symbols() to look for the
+symbol it uses from the module A with tons of symbols. That's an
+indirect way for us to call resolve_symbol_wait() from module A without
+having to use symbol_get() which want to remove as exported as it is
+just a hack which should go away. Our goal is for us to test
+resolve_symbol() which will call find_symbol() and that will eventually
+look for the symbol on module A with:
+
+  find_exported_symbol_in_section()
+
+That uses bsearch() so a binary search for the symbol and we'd end up
+hitting the misalignments here. Binary search will at worst be O(log(n))
+and so the only way to aggreviate the search will be to add tons of
+symbols to A, and have B use a few of them.
+
+2) When you load B, userspace will at first load A as depmod will inform
+userspace A goes before B. Upon B's load towards the end right before
+we call module B's init routine we get complete_formation() called on
+the module. That will first check for duplicate symbols with the call
+to verify_exported_symbols(). That is when we'll force iteration on
+module C's insane symbol list.
+
+The selftests just runs
+
+perf stat -e pick-your-poison-for-misalignments tools/testing/selftests/kmod/ksymtab.sh
+
+Where ksymtab.sh is your new script which calls:
+
+modprobe C
+modprobe B
+
+I say pick-your-poison-for-misalignments because I am not sure what is
+best here.
+
+Thoughts?
+
+> Signed-off-by: Helge Deller <deller@gmx.de>
+> Cc: <stable@vger.kernel.org> # v6.0+
+
+That's a stretch without any data, don't you think?
+
+ Luis
 
