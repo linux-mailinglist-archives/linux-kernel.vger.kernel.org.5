@@ -1,189 +1,145 @@
-Return-Path: <linux-kernel+bounces-9732-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9735-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7B3C81CA5D
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 13:59:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 28E9281CA68
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 14:01:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 565EA1F229D7
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 12:59:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D98C32836D4
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 13:01:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6D251A5B8;
-	Fri, 22 Dec 2023 12:58:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E95C519465;
+	Fri, 22 Dec 2023 13:01:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=flygoat.com header.i=@flygoat.com header.b="COm310mC";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="2Naat/YG"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="QHv53Ru7"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DD5519443;
-	Fri, 22 Dec 2023 12:58:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=flygoat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flygoat.com
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-	by mailout.west.internal (Postfix) with ESMTP id 4EE5C3200AD9;
-	Fri, 22 Dec 2023 07:58:45 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Fri, 22 Dec 2023 07:58:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
-	cc:content-transfer-encoding:content-type:content-type:date:date
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm3; t=1703249924;
-	 x=1703336324; bh=gBzr86HYVLagWtrGT5nOWo3pzHJeoT0tMLV9Ajf9peY=; b=
-	COm310mCw+Si6H3zLC5g3hwDzFToTLe/BFcls0JI1gEeFUok4HXbH0oHhwhHXOCj
-	nyG6wDnXfDYwFoAv5ddKGJ2tIB+FDN4vXdtatQuRvTbm+cL9BsyPIgsMc+nNAIMW
-	gZcnktwubrg604BJjX4PgGp3wPdLni6izP1F1E4jeotU94K0tMeVVI1jMwOrUeIb
-	yhnYsBKkXKwNJUX3RLYlD2b7ppKbpk8HoeCMvbSlYedjhFN3syiG2/2RDCoxAblo
-	Z2XfKCoEDrvyE14/56KZxvalzrg/fw7noJ+Hvk3Cju/ySlXLwOtr3tkyIdmOz6ht
-	nWMKOa4gQbyJK29Usw+euw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:content-transfer-encoding:content-type
-	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1703249924; x=
-	1703336324; bh=gBzr86HYVLagWtrGT5nOWo3pzHJeoT0tMLV9Ajf9peY=; b=2
-	Naat/YGX5XS7SDzQ+g1gV1vlXnjEH6v8UlwyLnrgxptQqvRaSFNH0Wxnt2ZVfkXc
-	xDaqMQ3T0XCifzbRPFHBXnQ8iL8ifxydl9MKR2tsxqyTOQX3WU4Xr8y/Q7+hxmDJ
-	yJbKTC5+fZm2+IxeNBVuayWXpiiWSToNf203kJZ0z5RGlvL8ClZv9o21jxzn+X6o
-	jKqSHk7NETl0jlILcNkT+/LDc04hFhO+RbM8C6SLQGHfNPgmrH3Pcp2F68beDMsT
-	+tlHNy5aDL85VxZfjrgN7ttTcUHTTHBMAKjVwSx6DBCeVHNzCPc3k28Wk+342S74
-	MseiLO8ZjWHd4O78CSIGA==
-X-ME-Sender: <xms:BIiFZZcYJpLrO1OK2zOh5uBE1F9sD6kHW2gLLHnKm11tTaxkc71okg>
-    <xme:BIiFZXM-elmM_lqMc2aFvkORTTBNeOfofM1DwNH2AJbhXb6cSy082vs9uKXNOfUzV
-    LQVJ19dHA-by5jmZHs>
-X-ME-Received: <xmr:BIiFZShBjDCie-DDH0CmBv-eWhgY8Hl90EvG0u6h7qkennSO3J_sJI8289Xs0_RTzaD_fDiXFlyNA_aFWzpMcgpKhLmFcRNHibqALxg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvddujedggeegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepkfffgggfuffvfhfhjggtgfesthekredttddvjeenucfhrhhomheplfhirgig
-    uhhnucgjrghnghcuoehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhmqeenuc
-    ggtffrrghtthgvrhhnpeeiudduffdufffgffelfedujeehteffffdukeekvdfgvdeileej
-    ffekueehuddugfenucffohhmrghinhepghgvnhgvgidrshgsnecuvehluhhsthgvrhfuih
-    iivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepjhhirgiguhhnrdihrghnghesfhhl
-    hihgohgrthdrtghomh
-X-ME-Proxy: <xmx:BIiFZS8aBbRgzFX2oWiOcyAUwU3UNw5kheZ1vt7PghZeEqpZc_TPXQ>
-    <xmx:BIiFZVskSl3RMCc-KfIVb9gq9Tt0R2DhEmUwM-VYp6r-b5AP4BmV1w>
-    <xmx:BIiFZRHZBURW-AdraA8coe0Qg-hZkT-9bFNS-h1Hd7w6nC0QLc-nhA>
-    <xmx:BIiFZWWcDXVGh3KRc4d0YKunlMnSKQCXEDhm2oumLk0xV8IwEhDVRg>
-Feedback-ID: ifd894703:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 22 Dec 2023 07:58:43 -0500 (EST)
-Message-ID: <7249cb98-0b63-4ef6-8f6e-e29ac6c0a73f@flygoat.com>
-Date: Fri, 22 Dec 2023 12:58:43 +0000
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A078D18B00
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 13:01:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-40d3dfcc1a4so16043605e9.2
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 05:01:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1703250107; x=1703854907; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=JWmdonR8NpARXjfe3qqartT0mhGrBDRLU87EB6urV1M=;
+        b=QHv53Ru7dD3dDJjPkOw+rVTu0U5yTeMUUqQXtxdTiwdxv5FLT3n3YowTLF7wCJkPzo
+         mEsnvZkVJsgWsmBNXqUE10nYyd5z9WkSmwzx8oim9CQymRptJ3/PfrgLJyD/4OW8eCqT
+         LWdHllIxMAHP4rlYmVvdC3w/ZIKrw+swYraaYJVzeTfxVANjvaVcsyDxNia1dtPt922d
+         OKSckHAP2oM0RJH9YC0t77/r/K48YwZBDqXylWFtfTm+8OvX96BG5SKAotk+P5eqLA5q
+         /Q9Nkz2xXb+T6V9UxJ9he5x2RXam3qOQkFYKO0CGVdSfWGE3cQrYMOFq33AbXmHmO1Od
+         cO7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703250107; x=1703854907;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=JWmdonR8NpARXjfe3qqartT0mhGrBDRLU87EB6urV1M=;
+        b=TKVxzkYGn9Fg0549lVnPFPuc+JQgiqdqVS/SisHVqG3nkdThoTtotZRvqImivsyTxq
+         HxOc/EewJ4TR3CxMuJCyP/6/nSLIzQfkyscbhQAGx8WT7kHbgTwnO91FBlW7BId0vwnV
+         NbBI+lQzIKkdh/GXb8lE4kg2wK1sSQTkSEcn4KsfsMSf/U+PU8qaUoDZMuQVLSRqiKu+
+         VkN070H3T5oh/eL2gBM0QsNJor2Lf8ngeYeDFEzfi6p+H9mWnEZiybWEv6QBOgvvFy5b
+         kcHrpRBVleuUHE9McWEd+VtXU8Ci8H10gH0phzgecLm4j7xxpODZmqT0Zl3LbabXQWXV
+         ClaQ==
+X-Gm-Message-State: AOJu0YwxbaoPscuBk3rugTOZ5VWjyP8bSIDTFd+z4Qm3HZfhU7HEzwGM
+	n5A5NKRWSr7EFRxJJWTZ8mUPpbGandoVBQ==
+X-Google-Smtp-Source: AGHT+IEoyA67rBN4hpcEFYo6S+igZ3ct0M4Huc2ATJHcWr0tSVPEJyqU9rE5tmgTRM8HN9IfSSXvXg==
+X-Received: by 2002:a05:600c:1c9d:b0:40d:38c6:7cfd with SMTP id k29-20020a05600c1c9d00b0040d38c67cfdmr774026wms.35.1703250106701;
+        Fri, 22 Dec 2023 05:01:46 -0800 (PST)
+Received: from [127.0.1.1] ([79.115.23.25])
+        by smtp.gmail.com with ESMTPSA id h1-20020a05600c350100b0040d3f4b1c8esm5375631wmq.36.2023.12.22.05.01.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Dec 2023 05:01:46 -0800 (PST)
+From: Abel Vesa <abel.vesa@linaro.org>
+Subject: [PATCH v2 0/2] phy: qcom: edp: Allow eDP/DP configuring via
+ set_mode op
+Date: Fri, 22 Dec 2023 15:01:30 +0200
+Message-Id: <20231222-x1e80100-phy-edp-compatible-refactor-v2-0-ab5786c2359f@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] MIPS: Allow vectored interrupt handler to reside
- everywhere for 64bit
-Content-Language: en-US
-To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231221125405.229100-1-tsbogend@alpha.franken.de>
-From: Jiaxun Yang <jiaxun.yang@flygoat.com>
-In-Reply-To: <20231221125405.229100-1-tsbogend@alpha.franken.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAKqIhWUC/5WNTQqDMBCFryKz7pT8INGueo/iIk1GHbAmJCKKe
+ Pem3qDL773H+w7IlJgyPKoDEq2cOcwF1K0CN9p5IGRfGJRQWirZ4iapEVIIjOOO5CO68Il24fd
+ EmKi3bgkJG6M1OWuc8xbKVSwNb5fm1RUeOZfZfllX+Uv/FKwSBfYtGWNq1dbaPyeebQr3kAboz
+ vP8AgKA0MrZAAAA
+To: Vinod Koul <vkoul@kernel.org>, 
+ Kishon Vijay Abraham I <kishon@kernel.org>, 
+ Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
+ Johan Hovold <johan@kernel.org>
+Cc: linux-phy@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
+ Abel Vesa <abel.vesa@linaro.org>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1717; i=abel.vesa@linaro.org;
+ h=from:subject:message-id; bh=cDX+OTRf4Doi1u/l+84vE/tm+BZU4P6g8JGruDSER80=;
+ b=owEBbQKS/ZANAwAKARtfRMkAlRVWAcsmYgBlhYixD+yv7XbZuCNQkxvgIpsKAib9ot+pgK9dZ
+ ftlCviPpdKJAjMEAAEKAB0WIQRO8+4RTnqPKsqn0bgbX0TJAJUVVgUCZYWIsQAKCRAbX0TJAJUV
+ VqK3EACPWP40VmX3w6tO2nMIW+Yhud4GatWzn2ZY79z2bMwGc3M3DCL36ntk9c3LUEqGAEH84e/
+ Bcb6Ftjeyqg0qOXTmrXIxpg2NAo8K5M4JQe72PH581cZNCTa4SJlaSnlzaHLr5EJaa9xp/SJrT+
+ ddP5UrbWhyaPHMAPxo8QewHyYRYBnBED0GZ/Uf62g34M0MRg3VXEtmPwKLLOnbR8fO19Ag7oxEf
+ Zi2cxEHQkEbdQLlMBaMcxIvUJWPqe/gppHbKVXnlKb/a0sYoaZdYhYBg0TRYYyzuqYCePcJQ77u
+ AnxxJEa/81oJClfHA2MndDvPLkg0qEciRm+ICpPIIfCrPj5DyglyqL/yeFEW4y8kEeX6+6gTz7d
+ CoPpiatJmQPrB1q7K7vAoamc/dxMk6gjbbdHqj0FI8CnBqBw04FGkCc1z39YkD5orNqfVJb1VK+
+ 88t1tkXvdS0hSW19xcUSCmD9CV8l0esR0JtKtXS0tkyj2YdevYzyoPnXyQ/W5MSithZmqKZqYpK
+ zrcpw2/42vRFFejm1+O14OMKzulceLQJG2xcI9CjdhAnoM1EJKFl4Gl58GY/jZrVhgzOmLr9lCe
+ +pl7qrFpfWVwM/w+i4PAq0vt8gEjC8n9b4ZtwYFWlxp5ywwOHQWUjFGEI0vFOe+lYg688PFmM32
+ +paxeYaKrLfKmTQ==
+X-Developer-Key: i=abel.vesa@linaro.org; a=openpgp;
+ fpr=6AFF162D57F4223A8770EF5AF7BF214136F41FAE
 
+Until now, all platform that supported both eDP and DP had different
+compatibles for each mode. Using different compatibles for basically
+the same IP block but for a different configuration is bad way all
+around. There is a new compute platform from Qualcomm that supports
+both eDP and DP with the same PHY. So instead of following the old
+method, we should allow the mode to be configured via set_mode from
+the controller driver.
 
+The controller part will follow after we conclude the PHY part first.
 
-在 2023/12/21 12:54, Thomas Bogendoerfer 写道:
-> Setting up vector interrupts worked only with handlers, which resided
-> in CKSEG0 space. This limits the kernel placement for 64bit platforms.
-> By patching in the offset into vi_handlers[] instead of the full
-> handler address, the vectored exception handler can load the
-> address by itself and jump to it.
->
-> Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+---
+Changes in v2:
+- Dropped the dedicated xlate function and added set_mode op instead
+- Dropped the eDP PHY type and mode addition
+- Added the DP PHY submodes (eDP and DP)
+- Removed the device match data storing from the container struct
+- Link to v1: https://lore.kernel.org/r/20231219-x1e80100-phy-edp-compatible-refactor-v1-0-f9e77752953d@linaro.org
 
-Reviewed-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Initial attepmpt was here:
+https://lore.kernel.org/all/20231122-phy-qualcomm-edp-x1e80100-v3-3-576fc4e9559d@linaro.org/
+Compared to that version, this one uses the phy-cells method and drops
+the X1E80100 support. The X1E80100 support will be a separate patchset.
 
-Could you please keep me in Cc if you are going to propose a better
-solution :-)
+---
+Abel Vesa (2):
+      phy: Add Embedded DisplayPort and DisplayPort submodes
+      phy: qcom: edp: Add set_mode op for configuring eDP/DP submode
 
-Thanks
-- Jiaxun
+ drivers/phy/qualcomm/phy-qcom-edp.c | 90 ++++++++++++++++++++++++++++---------
+ include/linux/phy/phy-dp.h          |  3 ++
+ 2 files changed, 72 insertions(+), 21 deletions(-)
+---
+base-commit: 8a9be2a3cb673dba9d22311beb74be261f0b3f15
+change-id: 20231219-x1e80100-phy-edp-compatible-refactor-8733eca7ccda
 
-> ---
->   arch/mips/kernel/genex.S | 8 ++++----
->   arch/mips/kernel/traps.c | 9 +++------
->   2 files changed, 7 insertions(+), 10 deletions(-)
->
-> diff --git a/arch/mips/kernel/genex.S b/arch/mips/kernel/genex.S
-> index b6de8e88c1bd..a572ce36a24f 100644
-> --- a/arch/mips/kernel/genex.S
-> +++ b/arch/mips/kernel/genex.S
-> @@ -272,18 +272,17 @@ NESTED(except_vec_vi, 0, sp)
->   	.set	push
->   	.set	noreorder
->   	PTR_LA	v1, except_vec_vi_handler
-> -FEXPORT(except_vec_vi_lui)
-> -	lui	v0, 0		/* Patched */
->   	jr	v1
->   FEXPORT(except_vec_vi_ori)
-> -	 ori	v0, 0		/* Patched */
-> +	 ori	v0, zero, 0		/* Offset in vi_handlers[] */
->   	.set	pop
->   	END(except_vec_vi)
->   EXPORT(except_vec_vi_end)
->   
->   /*
->    * Common Vectored Interrupt code
-> - * Complete the register saves and invoke the handler which is passed in $v0
-> + * Complete the register saves and invoke the handler, $v0 holds
-> + * offset into vi_handlers[]
->    */
->   NESTED(except_vec_vi_handler, 0, sp)
->   	SAVE_TEMP
-> @@ -331,6 +330,7 @@ NESTED(except_vec_vi_handler, 0, sp)
->   	/* Save task's sp on IRQ stack so that unwinding can follow it */
->   	LONG_S	s1, 0(sp)
->   2:
-> +	PTR_L	v0, vi_handlers(v0)
->   	jalr	v0
->   
->   	/* Restore sp */
-> diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
-> index 246c6a6b0261..d90b18908692 100644
-> --- a/arch/mips/kernel/traps.c
-> +++ b/arch/mips/kernel/traps.c
-> @@ -2091,16 +2091,14 @@ static void *set_vi_srs_handler(int n, vi_handler_t addr, int srs)
->   		 * If no shadow set is selected then use the default handler
->   		 * that does normal register saving and standard interrupt exit
->   		 */
-> -		extern const u8 except_vec_vi[], except_vec_vi_lui[];
-> +		extern const u8 except_vec_vi[];
->   		extern const u8 except_vec_vi_ori[], except_vec_vi_end[];
->   		extern const u8 rollback_except_vec_vi[];
->   		const u8 *vec_start = using_rollback_handler() ?
->   				      rollback_except_vec_vi : except_vec_vi;
->   #if defined(CONFIG_CPU_MICROMIPS) || defined(CONFIG_CPU_BIG_ENDIAN)
-> -		const int lui_offset = except_vec_vi_lui - vec_start + 2;
->   		const int ori_offset = except_vec_vi_ori - vec_start + 2;
->   #else
-> -		const int lui_offset = except_vec_vi_lui - vec_start;
->   		const int ori_offset = except_vec_vi_ori - vec_start;
->   #endif
->   		const int handler_len = except_vec_vi_end - vec_start;
-> @@ -2119,10 +2117,9 @@ static void *set_vi_srs_handler(int n, vi_handler_t addr, int srs)
->   #else
->   				handler_len);
->   #endif
-> -		h = (u16 *)(b + lui_offset);
-> -		*h = (handler >> 16) & 0xffff;
-> +		/* insert offset into vi_handlers[] */
->   		h = (u16 *)(b + ori_offset);
-> -		*h = (handler & 0xffff);
-> +		*h = n * sizeof(handler);
->   		local_flush_icache_range((unsigned long)b,
->   					 (unsigned long)(b+handler_len));
->   	}
+Best regards,
+-- 
+Abel Vesa <abel.vesa@linaro.org>
 
 
