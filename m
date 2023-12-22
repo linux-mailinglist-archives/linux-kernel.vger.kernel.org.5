@@ -1,57 +1,57 @@
-Return-Path: <linux-kernel+bounces-9224-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9223-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45CAF81C285
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 01:59:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9880881C282
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 01:59:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BDECCB24051
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 00:59:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4E70D1F250C8
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 00:59:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45DE9468B;
-	Fri, 22 Dec 2023 00:59:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F015433D4;
+	Fri, 22 Dec 2023 00:59:24 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6592623B1
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 00:59:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 203CD211C
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 00:59:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7b7018c9476so172273739f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 16:59:23 -0800 (PST)
+Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-35fc5376d27so13266895ab.2
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 16:59:22 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1703206762; x=1703811562;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=iedhThegUhBG7Hx+aDuT5wT4coaQ6Uh1CuWXvspDx3w=;
-        b=Uwb/McH93UcVIBvFmKm+3MK1NovFo+gwtoDIIB3iOQKnGLTyhm99Tly0Uo0TTW7VEi
-         QInp3WAx6rDW8dMIyXfS7AU3/kqzfDmgCch+JN+RFDFdP9TPUZEu9bF/U9Hu4/+gPLuy
-         lR/m8ucgxqjCTHUXDZx/bUg6C2fRCz4gIiyGmqs0On8OSpANgZvmd1H5eK4+nO1b/Mgv
-         GJkyjM3/tGfjXk9jy9az6f3Q9vUZ8PrjqRiCnHdzP5t+ZSzzKrtQk8bAtskIIKCmQhn2
-         nq4PoegaGrqHqw3aGp8RRyHqa0wk2+lJPUAL6l75xTzFtcziZ3nywHe/J2D2FJWKvjyV
-         OG2w==
-X-Gm-Message-State: AOJu0YyhSq27MJS9FOZu39bngDHPDh5kzlQH2YRX9vsGdt3G30p+1uMA
-	M1ddv4QHs4Z/aiRrqdwmLR37xC/AYAWx7rWFBtmNtN+KwEwd
-X-Google-Smtp-Source: AGHT+IFXaZWZi1mcoa1Cw0l9O+dWHkSzzT4h1TUYb5EigliJ62YTnqMYa8W16TubYdq7ucL6kQlrjr6Q32GzG6zTAbe8+RGATVZU
+        bh=8bVVahx3BMbe/+Cn6wS8S3q4MRh8dlbUkemq4XFsim4=;
+        b=gtV7Fqt9HIvFuq07UhkhtcVQX/Y400StJ1zt1+DtHoLoOiEYKC4sic++kvUH/C+Hbi
+         hyTMbMwKWMtFhZfV9y+QLaNxb5uosQuzjp4ZBtrfdoJwUcoDzfhl83bBRej6YE9SNHsE
+         B/1yLGoTiAQZtWXE1uHXVM6o3bxR+WEiDFqLzO3PmvVWLfSfWKsLxwHOyMhuHihLdC0L
+         ApHJn5s1LzhM4kAdivfsqPU8Fz4KG69sY+0xFy5y/wlXYdvCVpHemk73IIHAxrtTzDHO
+         fEvXqmC0yBff6y8LNeVECDN2cInkZWEvfbroLww59fV8sj1F/4g1wDkbk60Qt5QHw9cp
+         PBJA==
+X-Gm-Message-State: AOJu0YxenWbWw/A4/aEwbBUo4T9ebZ0ttJmUn+ekxuL8KjF7cSt7XoA8
+	yTAz9o7RSdVymtuBSe0gmzczP1OkzumBCbduRzJ30JPz0abg
+X-Google-Smtp-Source: AGHT+IFZ82OCEBJtKQA3ZLJfA/92RKp4nRaY8BQx9Tx5kq6EIuMQmyeuWA8Jo4zhoTWTcyvb4dir9h0CMjPoLHuYN7V8dzmBvzEl
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1a6e:b0:35f:b1d1:8f1f with SMTP id
- w14-20020a056e021a6e00b0035fb1d18f1fmr65172ilv.3.1703206762586; Thu, 21 Dec
+X-Received: by 2002:a05:6e02:1b89:b0:35f:d4dc:1b26 with SMTP id
+ h9-20020a056e021b8900b0035fd4dc1b26mr39021ili.4.1703206762382; Thu, 21 Dec
  2023 16:59:22 -0800 (PST)
 Date: Thu, 21 Dec 2023 16:59:22 -0800
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000102bef060d0eba81@google.com>
-Subject: [syzbot] [hfs?] WARNING in hfsplus_ext_write_extent (2)
-From: syzbot <syzbot+03628e5994f8f09f5455@syzkaller.appspotmail.com>
-To: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+Message-ID: <0000000000000d0c82060d0eba14@google.com>
+Subject: [syzbot] [udf?] WARNING in udf_free_blocks (2)
+From: syzbot <syzbot+f98c5f7049564fe07d91@syzkaller.appspotmail.com>
+To: jack@suse.com, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
 	syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 
@@ -61,9 +61,9 @@ syzbot found the following issue on:
 
 HEAD commit:    55cb5f43689d Merge tag 'trace-v6.7-rc6' of git://git.kerne..
 git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=17ee8d01e80000
+console output: https://syzkaller.appspot.com/x/log.txt?x=15291f69e80000
 kernel config:  https://syzkaller.appspot.com/x/.config?x=e5751b3a2226135d
-dashboard link: https://syzkaller.appspot.com/bug?extid=03628e5994f8f09f5455
+dashboard link: https://syzkaller.appspot.com/bug?extid=f98c5f7049564fe07d91
 compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
 
 Unfortunately, I don't have any reproducer for this issue yet.
@@ -74,46 +74,52 @@ vmlinux: https://storage.googleapis.com/syzbot-assets/69616b96179e/vmlinux-55cb5
 kernel image: https://storage.googleapis.com/syzbot-assets/7f052dde6379/bzImage-55cb5f43.xz
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+03628e5994f8f09f5455@syzkaller.appspotmail.com
+Reported-by: syzbot+f98c5f7049564fe07d91@syzkaller.appspotmail.com
 
 ------------[ cut here ]------------
-DEBUG_LOCKS_WARN_ON(lock->magic != lock)
-WARNING: CPU: 1 PID: 6540 at kernel/locking/mutex.c:582 __mutex_lock_common kernel/locking/mutex.c:582 [inline]
-WARNING: CPU: 1 PID: 6540 at kernel/locking/mutex.c:582 __mutex_lock+0xc36/0xd60 kernel/locking/mutex.c:747
+WARNING: CPU: 0 PID: 31925 at fs/udf/udfdecl.h:123 udf_updated_lvid fs/udf/udfdecl.h:121 [inline]
+WARNING: CPU: 0 PID: 31925 at fs/udf/udfdecl.h:123 udf_add_free_space fs/udf/balloc.c:121 [inline]
+WARNING: CPU: 0 PID: 31925 at fs/udf/udfdecl.h:123 udf_table_free_blocks fs/udf/balloc.c:403 [inline]
+WARNING: CPU: 0 PID: 31925 at fs/udf/udfdecl.h:123 udf_free_blocks+0x1d59/0x23c0 fs/udf/balloc.c:681
 Modules linked in:
-CPU: 1 PID: 6540 Comm: kworker/u4:0 Not tainted 6.7.0-rc6-syzkaller-00022-g55cb5f43689d #0
+CPU: 0 PID: 31925 Comm: syz-executor.3 Not tainted 6.7.0-rc6-syzkaller-00022-g55cb5f43689d #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
-Workqueue: writeback wb_workfn (flush-7:4)
-RIP: 0010:__mutex_lock_common kernel/locking/mutex.c:582 [inline]
-RIP: 0010:__mutex_lock+0xc36/0xd60 kernel/locking/mutex.c:747
-Code: 0f b6 04 20 84 c0 0f 85 18 01 00 00 83 3d 21 0c e0 03 00 75 19 90 48 c7 c7 60 90 6a 8b 48 c7 c6 00 91 6a 8b e8 1b 76 33 f6 90 <0f> 0b 90 90 90 e9 c8 f4 ff ff 90 0f 0b 90 e9 d6 f8 ff ff 90 0f 0b
-RSP: 0018:ffffc90016a7f200 EFLAGS: 00010246
-RAX: e1774778be1ec900 RBX: 0000000000000000 RCX: ffff888069518000
-RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000000
-RBP: ffffc90016a7f350 R08: ffffffff81545d22 R09: 1ffff11017325172
-R10: dffffc0000000000 R11: ffffed1017325173 R12: dffffc0000000000
-R13: ffff8880355356a0 R14: 0000000000000000 R15: dffffc0000000000
-FS:  0000000000000000(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+RIP: 0010:udf_updated_lvid fs/udf/udfdecl.h:121 [inline]
+RIP: 0010:udf_add_free_space fs/udf/balloc.c:121 [inline]
+RIP: 0010:udf_table_free_blocks fs/udf/balloc.c:403 [inline]
+RIP: 0010:udf_free_blocks+0x1d59/0x23c0 fs/udf/balloc.c:681
+Code: 00 e8 4b b6 e1 fe 48 8b 9c 24 70 01 00 00 48 85 db 74 07 e8 29 b1 85 fe eb b7 e8 22 b1 85 fe e9 48 e7 ff ff e8 18 b1 85 fe 90 <0f> 0b 90 e9 45 ef ff ff 89 d9 80 e1 07 fe c1 38 c1 0f 8c 70 e3 ff
+RSP: 0018:ffffc900032575e0 EFLAGS: 00010287
+RAX: ffffffff8308b648 RBX: 0000000000000d36 RCX: 0000000000040000
+RDX: ffffc90010d7a000 RSI: 0000000000001426 RDI: 0000000000001427
+RBP: ffffc900032577f0 R08: ffffffff8308a589 R09: 1ffffffff1e017ad
+R10: dffffc0000000000 R11: fffffbfff1e017ae R12: ffff888029e898c0
+R13: dffffc0000000000 R14: ffff88803f1f701c R15: ffff88807b818000
+FS:  00007fb4fbde66c0(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
 CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000055b3992d6000 CR3: 0000000032017000 CR4: 00000000003506f0
+CR2: 00007fb4fbde6d58 CR3: 0000000038a3b000 CR4: 00000000003506f0
 DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
 DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 Call Trace:
  <TASK>
- hfsplus_ext_write_extent+0x8e/0x1f0 fs/hfsplus/extents.c:149
- hfsplus_write_inode+0x22/0x5e0 fs/hfsplus/super.c:154
- write_inode fs/fs-writeback.c:1473 [inline]
- __writeback_single_inode+0x69b/0xfc0 fs/fs-writeback.c:1690
- writeback_sb_inodes+0x8e3/0x1220 fs/fs-writeback.c:1916
- wb_writeback+0x44d/0xc70 fs/fs-writeback.c:2092
- wb_do_writeback fs/fs-writeback.c:2239 [inline]
- wb_workfn+0x400/0xfb0 fs/fs-writeback.c:2279
- process_one_work kernel/workqueue.c:2627 [inline]
- process_scheduled_works+0x90f/0x1420 kernel/workqueue.c:2700
- worker_thread+0xa5f/0x1000 kernel/workqueue.c:2781
- kthread+0x2d3/0x370 kernel/kthread.c:388
- ret_from_fork+0x48/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
+ extent_trunc+0x390/0x4a0 fs/udf/truncate.c:52
+ udf_truncate_extents+0x627/0x12d0 fs/udf/truncate.c:251
+ udf_setsize+0x1015/0x1470 fs/udf/inode.c:1293
+ udf_setattr+0x370/0x540 fs/udf/file.c:235
+ notify_change+0xb99/0xe60 fs/attr.c:499
+ do_truncate+0x220/0x300 fs/open.c:66
+ do_sys_ftruncate+0x2f3/0x390 fs/open.c:194
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0x45/0x110 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+RIP: 0033:0x7fb4fb07cbe9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fb4fbde60c8 EFLAGS: 00000246 ORIG_RAX: 000000000000004d
+RAX: ffffffffffffffda RBX: 00007fb4fb19c050 RCX: 00007fb4fb07cbe9
+RDX: 0000000000000000 RSI: 0000000000000002 RDI: 0000000000000005
+RBP: 00007fb4fb0c847a R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 000000000000006e R14: 00007fb4fb19c050 R15: 00007ffc4effc388
  </TASK>
 
 
