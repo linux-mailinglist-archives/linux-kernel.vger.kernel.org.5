@@ -1,60 +1,60 @@
-Return-Path: <linux-kernel+bounces-9953-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9954-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73F5181CDD6
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 18:43:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91A0081CDD9
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 18:43:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 32EFC1F234D0
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 17:43:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B6A041C22494
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 17:43:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 351BC2E831;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E69552EAE0;
 	Fri, 22 Dec 2023 17:42:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BwPVE8U3"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KUaqBvH5"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 111642C18E;
-	Fri, 22 Dec 2023 17:42:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE7762C1AD;
+	Fri, 22 Dec 2023 17:42:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-3368b1e056eso1517282f8f.3;
-        Fri, 22 Dec 2023 09:42:26 -0800 (PST)
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-336979a566aso574527f8f.1;
+        Fri, 22 Dec 2023 09:42:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703266945; x=1703871745; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1703266946; x=1703871746; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=8AvJnFMeaIBZd6lDR2+1UVvuB0inJkI3zLE1woR+vGw=;
-        b=BwPVE8U3KMgTNbTn15J746FQfGQCUhcix4w7AomMwWE0KlJhEEcqOj+u215SjVlJZO
-         S55R44pBIIQqRDdaBSguL0C4tov3pR5to3zSspjl3NP4kt0ac7vEJjhQdz7SlBV/BT1+
-         YI6i11wqaX62plZdNVpbWwM/cvVglhOOTdtUFFF6viQDNd6fIPY8eyiA2ymN/eqK5hNR
-         lM3PzSbg3zTKHACQJ6MnS5RaYTOXhOq/+VnFeWt/6Yf23YpYnsd7k5ZiNP2FTVo/JUnF
-         hGtAtHu0mvNLzkDbW4gXNAaB1WDfZbH71ywLQvfr4owrRAV7lkE9iJ0CDhVEgQrkDcsZ
-         8Y+Q==
+        bh=JDZw6NA00pLIWCPFGMihyx1IVwowkY8XOiwDd7TasQE=;
+        b=KUaqBvH5GO1wdJGC+MVz/Mo4nrDj902m5Ln7T5abvoDa/r9pLVpXLCrAY0qrEN+w+F
+         giDGPRQ2MB9eagvsp6vBv+w3PbepESL83+7VQrk/V3SEON9nDGFugkfoMmgOq1qMoTes
+         NqOqol5rmU9TIFsH/CzSNCDOA1Air/oejKEWiqiMf8YDWYsLcTttSR8j2uOnMp0pe0s8
+         0DwFOUnWlZL6IUrYO0SpD+KWlYRf+Z7rDkYvSwSLtCixsZzhdhDQTeu37yjZ/MUp5RL/
+         Ledkw1rNmEdDk1q9LDreQ3qdvfmYdt6GWOP6U3qvwlT+qJdv8bvuTeU+qhXGNgDdz5dK
+         +t7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703266945; x=1703871745;
+        d=1e100.net; s=20230601; t=1703266946; x=1703871746;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=8AvJnFMeaIBZd6lDR2+1UVvuB0inJkI3zLE1woR+vGw=;
-        b=bRuKwtDXrC0HQs0H5NvCWfiFlH3rTo8WqnFDGXTssMqQxVgP4+90pMN6WzMggOZeEh
-         DDDehYWpRzJyCTOXaHDLy48kFdHllzwP+vqpzy5T9aS2Umc8TbxaEjhHXZwr+QPr7jEn
-         OKtV0XfMDIZgt2TFZS2OzNCQ8T24VKOOkwID8u3aUqdce1LzWhneabCjDm+uM+tvRqrJ
-         7UA4h0j0RtfvikStqA2Zvz/IVNfuMZxgWXZ7V/2icbVqS0NTRAh54XgluD6LG5qI9ok5
-         XJWYaiqRqx+FhocZC6Bb7j7cNfvutBKXMC2tr9J6ps6UoZKfxGytO4It3eqXP5Jut7H0
-         ZQOw==
-X-Gm-Message-State: AOJu0YyMjiuhAbF4M4s5CWPjj36PRcOLb/bNbrU2KRKN3HMNvxdmALdE
-	/w9NuSPfEuDv4DnIx0raSw==
-X-Google-Smtp-Source: AGHT+IHILFPGV8bXVLgso5JM9ZKyQoow6IG9KXyZ1hSIhSMLEgPOaAW0iXyaQSbizVOd8/5R10rStQ==
-X-Received: by 2002:adf:f749:0:b0:336:8af1:5127 with SMTP id z9-20020adff749000000b003368af15127mr1196473wrp.97.1703266945283;
+        bh=JDZw6NA00pLIWCPFGMihyx1IVwowkY8XOiwDd7TasQE=;
+        b=uDeeT0jJhk8iGnHd/7bVfZbr7CHRqC5XIDadhPAYb7b3ZmSVLmvkahtNCgN1yXqymD
+         DHIEPUWaB9OeIApDkdXM/stPVdV3ttgsS1mPCm05DkFt19kGG3kgxRSSvwc8zS4M4Ff6
+         AN9Wkrvc9zSWIWOWt3XaMqSAlcX6RnKTEf40hPUS3lLXRi1hwhPI4ojH/6/OvaJbHaO2
+         ALzaQM5tQzle5i3IPcyHzy6dOqaXkMq4Z89qcaqsG+zBluUm39BzCIfH8ryMRyhYP0Ov
+         tMomYxOd98ctO1WHIxtUzslcP4R/iRxzXuMyWH+PHVGd2Hh7IsCidRC38Yp8+yCPUemt
+         uwjg==
+X-Gm-Message-State: AOJu0YxCdvs6UgD+eTcpnJGGb7b8bzONSOVuB+wOrWCSh9gfY8QzFfVF
+	oYBmFeerRGfG9T0pd9lSaw==
+X-Google-Smtp-Source: AGHT+IGOfU9ODiH9NLfSXETtkHv9WTh+X98b43SlP0OW8MLrcFPW+Mc6NKBN1yINEst4gkgEd8TDVw==
+X-Received: by 2002:a5d:58c1:0:b0:336:48fd:3458 with SMTP id o1-20020a5d58c1000000b0033648fd3458mr1123123wrf.68.1703266945929;
         Fri, 22 Dec 2023 09:42:25 -0800 (PST)
 Received: from U4.lan ([2a02:810b:f40:4300:f3ae:2788:7e03:f44])
-        by smtp.gmail.com with ESMTPSA id w10-20020adfec4a000000b00336670abdcasm4777116wrn.40.2023.12.22.09.42.24
+        by smtp.gmail.com with ESMTPSA id w10-20020adfec4a000000b00336670abdcasm4777116wrn.40.2023.12.22.09.42.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Fri, 22 Dec 2023 09:42:25 -0800 (PST)
 From: Alex Bee <knaerzche@gmail.com>
@@ -74,9 +74,9 @@ Cc: David Airlie <airlied@gmail.com>,
 	linux-rockchip@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
 	Alex Bee <knaerzche@gmail.com>
-Subject: [PATCH v4 04/29] drm/rockchip: inno_hdmi: Remove useless mode_fixup
-Date: Fri, 22 Dec 2023 18:41:55 +0100
-Message-ID: <20231222174220.55249-5-knaerzche@gmail.com>
+Subject: [PATCH v4 05/29] drm/rockchip: inno_hdmi: Remove useless copy of drm_display_mode
+Date: Fri, 22 Dec 2023 18:41:56 +0100
+Message-ID: <20231222174220.55249-6-knaerzche@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231222174220.55249-1-knaerzche@gmail.com>
 References: <20231222174220.55249-1-knaerzche@gmail.com>
@@ -90,8 +90,8 @@ Content-Transfer-Encoding: 8bit
 
 From: Maxime Ripard <mripard@kernel.org>
 
-The mode_fixup implementation doesn't do anything, so we can simply
-remove it.
+The driver maintains a copy of the adjusted mode but doesn't use it
+anywhere. Remove it.
 
 Signed-off-by: Maxime Ripard <mripard@kernel.org>
 Tested-by: Alex Bee <knaerzche@gmail.com>
@@ -106,35 +106,31 @@ changes in v3:
 changes in v4:
  - none
 
- drivers/gpu/drm/rockchip/inno_hdmi.c | 8 --------
- 1 file changed, 8 deletions(-)
+ drivers/gpu/drm/rockchip/inno_hdmi.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
 diff --git a/drivers/gpu/drm/rockchip/inno_hdmi.c b/drivers/gpu/drm/rockchip/inno_hdmi.c
-index 345253e033c5..0b1740b38c7b 100644
+index 0b1740b38c7b..14d2ba92a606 100644
 --- a/drivers/gpu/drm/rockchip/inno_hdmi.c
 +++ b/drivers/gpu/drm/rockchip/inno_hdmi.c
-@@ -517,13 +517,6 @@ static void inno_hdmi_encoder_disable(struct drm_encoder *encoder)
- 	inno_hdmi_set_pwr_mode(hdmi, LOWER_PWR);
+@@ -62,7 +62,6 @@ struct inno_hdmi {
+ 	unsigned int tmds_rate;
+ 
+ 	struct hdmi_data_info	hdmi_data;
+-	struct drm_display_mode previous_mode;
+ };
+ 
+ static struct inno_hdmi *encoder_to_inno_hdmi(struct drm_encoder *encoder)
+@@ -498,9 +497,6 @@ static void inno_hdmi_encoder_mode_set(struct drm_encoder *encoder,
+ 	struct inno_hdmi *hdmi = encoder_to_inno_hdmi(encoder);
+ 
+ 	inno_hdmi_setup(hdmi, adj_mode);
+-
+-	/* Store the display mode for plugin/DPMS poweron events */
+-	drm_mode_copy(&hdmi->previous_mode, adj_mode);
  }
  
--static bool inno_hdmi_encoder_mode_fixup(struct drm_encoder *encoder,
--					 const struct drm_display_mode *mode,
--					 struct drm_display_mode *adj_mode)
--{
--	return true;
--}
--
- static int
- inno_hdmi_encoder_atomic_check(struct drm_encoder *encoder,
- 			       struct drm_crtc_state *crtc_state,
-@@ -540,7 +533,6 @@ inno_hdmi_encoder_atomic_check(struct drm_encoder *encoder,
- static struct drm_encoder_helper_funcs inno_hdmi_encoder_helper_funcs = {
- 	.enable     = inno_hdmi_encoder_enable,
- 	.disable    = inno_hdmi_encoder_disable,
--	.mode_fixup = inno_hdmi_encoder_mode_fixup,
- 	.mode_set   = inno_hdmi_encoder_mode_set,
- 	.atomic_check = inno_hdmi_encoder_atomic_check,
- };
+ static void inno_hdmi_encoder_enable(struct drm_encoder *encoder)
 -- 
 2.43.0
 
