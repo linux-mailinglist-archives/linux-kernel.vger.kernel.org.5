@@ -1,72 +1,79 @@
-Return-Path: <linux-kernel+bounces-10145-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10131-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26A3781D0B2
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 00:57:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9808781D0A2
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 00:53:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D12AD1F22229
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 23:57:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5131B285E63
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 23:53:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17CCF4E1AF;
-	Fri, 22 Dec 2023 23:55:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3853939FE8;
+	Fri, 22 Dec 2023 23:52:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="fvSnWIDX"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kgYKaR1j"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ot1-f53.google.com (mail-ot1-f53.google.com [209.85.210.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57F244E1A0
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 23:55:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-ot1-f53.google.com with SMTP id 46e09a7af769-6db9f489cddso1015033a34.1
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 15:55:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1703289300; x=1703894100; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=jovKxsj0YGOzwwNQclPyLUNNHjkrdGN438RuH3dRR2A=;
-        b=fvSnWIDXCSYcwJzywnIWs4x4Kw6nigrt3MnI2yuHkeIF3or9WBhZzUFAXaMMsGBwqg
-         usGirWhdj6X1Vl07gDi16bSi/Q9NN41YkBlZzS/UYAFw7vMDs+7n1F1HZmGGEuSB4AfI
-         Uu8pvExS7NdQgH+Pi9CeTPGPef/rthyyb4ejiRKUFmPxzm5n6cRV21NcQ36TKKBRS4Bm
-         lVsOPvVfo3MmYBeLBh6sbHoWwW0EcFGesR5l9HzpvOvOt8tiF7vp1RDSWAAuN4UR7GYq
-         iUt0pjlhBNZ6R0h/nB6zGCClllilxo3331W2WDShKCG4f2jb+pwP2JtygV8s42wY8f5n
-         hPog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703289300; x=1703894100;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=jovKxsj0YGOzwwNQclPyLUNNHjkrdGN438RuH3dRR2A=;
-        b=shN4hAJ5Fy6ltdovxrLykEtUHuLT28op/KLYeI+IWVNlwHjTdPXFT9cVfdZbSUFc5O
-         IVabXCHlLGvwcHmeIyw8GOOPUnMN9Y409IBeuh5aPKIEMfX8Xq5WzYjKOeyRz8f8s2gW
-         CUVWRb6Vngw0VxN9h0u5r41fGoNeA+luJ1hagP40bvXOXE63VZQ+HduwQmc5n/nt00gh
-         0ILpOD97UgQL2QUxDVbzNin3cXwZ52GK9ykPnDXStEZGNuZMbC44M6+NY1wpe3QsUCsc
-         os4J9qj60sg8aBmbCF1MVPxPBKLXHf+2FOFZkZC1jBvvcBTPzIHCD2MqIQYz5iBIzerX
-         mN+w==
-X-Gm-Message-State: AOJu0YzlyQ2qqWLZlHje3DHSbjzL9+oVLFgpO8hEj28HrU5GpNkBb/jW
-	fv/+9Tavh9F1+0VgR4JRSO47l+nd7wo97A==
-X-Google-Smtp-Source: AGHT+IE4rFqSsXLWy2zn3NPZ8X3v1i6lWs26Lx4B22AXqvN9zx3xCPAcYyy9LfQcQBKoJdPCZEMkeQ==
-X-Received: by 2002:a05:6830:450f:b0:6db:b9db:4393 with SMTP id i15-20020a056830450f00b006dbb9db4393mr1209126otv.0.1703289300272;
-        Fri, 22 Dec 2023 15:55:00 -0800 (PST)
-Received: from debug.ba.rivosinc.com ([64.71.180.162])
-        by smtp.gmail.com with ESMTPSA id q65-20020a4a4b44000000b005944c7f6bb6sm249999ooa.29.2023.12.22.15.54.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Dec 2023 15:54:59 -0800 (PST)
-From: Deepak Gupta <debug@rivosinc.com>
-To: rick.p.edgecombe@intel.com,
-	broonie@kernel.org
-Cc: Deepak Gupta <debug@rivosinc.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v1] mm: abstract shadow stack vma behind arch_is_shadow_stack_vma
-Date: Fri, 22 Dec 2023 15:51:04 -0800
-Message-ID: <20231222235248.576482-1-debug@rivosinc.com>
-X-Mailer: git-send-email 2.43.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1A67364AB
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 23:52:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1703289143; x=1734825143;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=lC8VqpK006M7KJvsmEQF8yIYvSloGRgCLRBPKk6F5TE=;
+  b=kgYKaR1jvJZAlmbnVFoOcTcac7gZ6bth0EWa03IFQeJByBkRBVjZ69aF
+   pl7dorpPhNrnC3CtQ6xTRR9TxqYcpQaLs5UzYV3NMLL4K43Z/jQEFEEVe
+   T0h+YW7wZum5OqL45qvizrb30iP+w+R5Df44dvvWQpfxdNAh0OlrhqN0t
+   ykqpKNL/QF5bl+3Yxm8mDEvxCAJUmOJSddWNRrASVp+D3VZsy+ANxhk2D
+   n0OMi/nS3wvAsmOEUdYDGBsHCljDMTGBO1kT+U4v1dXHB3khm+PE3GHYM
+   zjPaGwqGHOotAK3uurnOcE7ghchZg1Xxi7wdJogdDY1PclenKv5z4Wq2d
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10932"; a="395063295"
+X-IronPort-AV: E=Sophos;i="6.04,297,1695711600"; 
+   d="scan'208";a="395063295"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Dec 2023 15:52:20 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10932"; a="900622987"
+X-IronPort-AV: E=Sophos;i="6.04,297,1695711600"; 
+   d="scan'208";a="900622987"
+Received: from jeroenke-mobl.ger.corp.intel.com (HELO box.shutemov.name) ([10.249.35.180])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Dec 2023 15:52:14 -0800
+Received: by box.shutemov.name (Postfix, from userid 1000)
+	id D01FE10945B; Sat, 23 Dec 2023 02:52:11 +0300 (+03)
+From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To: Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	x86@kernel.org
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
+	Elena Reshetova <elena.reshetova@intel.com>,
+	Jun Nakajima <jun.nakajima@intel.com>,
+	Rick Edgecombe  <rick.p.edgecombe@intel.com>,
+	Tom Lendacky <thomas.lendacky@amd.com>,
+	"Kalra, Ashish" <ashish.kalra@amd.com>,
+	Sean Christopherson <seanjc@google.com>,
+	"Huang, Kai" <kai.huang@intel.com>,
+	Baoquan He <bhe@redhat.com>,
+	kexec@lists.infradead.org,
+	linux-coco@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: [PATCHv5 00/16] x86/tdx: Add kexec support
+Date: Sat, 23 Dec 2023 02:51:52 +0300
+Message-ID: <20231222235209.32143-1-kirill.shutemov@linux.intel.com>
+X-Mailer: git-send-email 2.41.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,84 +82,106 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-x86 has used VM_SHADOW_STACK (alias to VM_HIGH_ARCH_5) to encode shadow
-stack VMA. VM_SHADOW_STACK is thus not possible on 32bit. Some arches may
-need a way to encode shadow stack on 32bit and 64bit both and they may
-encode this information differently in VMAs.
+The patchset adds bits and pieces to get kexec (and crashkernel) work on
+TDX guest.
 
-This patch changes checks of VM_SHADOW_STACK flag in generic code to call
-to a function `arch_is_shadow_stack_vma` which will return true if arch
-supports shadow stack and vma is shadow stack else stub returns false.
+The last patch implements CPU offlining according to the approved ACPI
+spec change poposal[1]. It unlocks kexec with all CPUs visible in the target
+kernel. It requires BIOS-side enabling. If it missing we fallback to booting
+2nd kernel with single CPU.
 
-Signed-off-by: Deepak Gupta <debug@rivosinc.com>
----
- include/linux/mm.h | 15 ++++++++++++++-
- mm/gup.c           |  2 +-
- mm/internal.h      |  2 +-
- 3 files changed, 16 insertions(+), 3 deletions(-)
+Please review. I would be glad for any feedback.
 
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 418d26608ece..9586e7bbd2aa 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -352,8 +352,21 @@ extern unsigned int kobjsize(const void *objp);
-  * for more details on the guard size.
-  */
- # define VM_SHADOW_STACK	VM_HIGH_ARCH_5
-+
-+static inline bool arch_is_shadow_stack_vma(vm_flags_t vm_flags)
-+{
-+	return (vm_flags & VM_SHADOW_STACK) ? true : false;
-+}
-+
- #else
-+
- # define VM_SHADOW_STACK	VM_NONE
-+
-+static inline bool arch_is_shadow_stack_vma(vm_flags_t vm_flags)
-+{
-+	return false;
-+}
-+
- #endif
- 
- #if defined(CONFIG_X86)
-@@ -3452,7 +3465,7 @@ static inline unsigned long stack_guard_start_gap(struct vm_area_struct *vma)
- 		return stack_guard_gap;
- 
- 	/* See reasoning around the VM_SHADOW_STACK definition */
--	if (vma->vm_flags & VM_SHADOW_STACK)
-+	if (arch_is_shadow_stack_vma(vma->vm_flags))
- 		return PAGE_SIZE;
- 
- 	return 0;
-diff --git a/mm/gup.c b/mm/gup.c
-index 231711efa390..dcc2aa079163 100644
---- a/mm/gup.c
-+++ b/mm/gup.c
-@@ -1051,7 +1051,7 @@ static int check_vma_flags(struct vm_area_struct *vma, unsigned long gup_flags)
- 		    !writable_file_mapping_allowed(vma, gup_flags))
- 			return -EFAULT;
- 
--		if (!(vm_flags & VM_WRITE) || (vm_flags & VM_SHADOW_STACK)) {
-+		if (!(vm_flags & VM_WRITE) || arch_is_shadow_stack_vma(vm_flags)) {
- 			if (!(gup_flags & FOLL_FORCE))
- 				return -EFAULT;
- 			/* hugetlb does not support FOLL_FORCE|FOLL_WRITE. */
-diff --git a/mm/internal.h b/mm/internal.h
-index b61034bd50f5..05a6b47c3ca1 100644
---- a/mm/internal.h
-+++ b/mm/internal.h
-@@ -572,7 +572,7 @@ static inline bool is_exec_mapping(vm_flags_t flags)
-  */
- static inline bool is_stack_mapping(vm_flags_t flags)
- {
--	return ((flags & VM_STACK) == VM_STACK) || (flags & VM_SHADOW_STACK);
-+	return ((flags & VM_STACK) == VM_STACK) || arch_is_shadow_stack_vma(flags);
- }
- 
- /*
+[1] https://lore.kernel.org/all/13356251.uLZWGnKmhe@kreacher
+
+v5:
+  - Rename smp_ops.crash_play_dead to smp_ops.stop_this_cpu and use it in
+    stop_this_cpu();
+  - Split off enc_kexec_stop_conversion() from enc_kexec_unshare_mem();
+  - Introduce kernel_ident_mapping_free();
+  - Add explicit include for alternatives and stringify.
+  - Add barrier() after setting conversion_allowed to false;
+  - Mark cpu_hotplug_offline_disabled __ro_after_init;
+  - Print error if failed to hand over CPU to BIOS;
+  - Update comments and commit messages;
+v4:
+  - Fix build for !KEXEC_CORE;
+  - Cleaner ATLERNATIVE use;
+  - Update commit messages and comments;
+  - Add Reviewed-bys;
+v3:
+  - Rework acpi_mp_crash_stop_other_cpus() to avoid invoking hotplug state
+    machine;
+  - Free page tables if reset vector setup failed;
+  - Change asm_acpi_mp_play_dead() to pass reset vector and PGD as arguments;
+  - Mark acpi_mp_* variables as static and __ro_after_init;
+  - Use u32 for apicid;
+  - Disable CPU offlining if reset vector setup failed;
+  - Rename madt.S -> madt_playdead.S;
+  - Mark tdx_kexec_unshare_mem() as static;
+  - Rebase onto up-to-date tip/master;
+  - Whitespace fixes;
+  - Reorder patches;
+  - Add Reviewed-bys;
+  - Update comments and commit messages;
+v2:
+  - Rework how unsharing hook ups into kexec codepath;
+  - Rework kvmclock_disable() fix based on Sean's;
+  - s/cpu_hotplug_not_supported()/cpu_hotplug_disable_offlining()/;
+  - use play_dead_common() to implement acpi_mp_play_dead();
+  - cond_resched() in tdx_shared_memory_show();
+  - s/target kernel/second kernel/;
+  - Update commit messages and comments;
+Kirill A. Shutemov (16):
+  x86/acpi: Extract ACPI MADT wakeup code into a separate file
+  x86/apic: Mark acpi_mp_wake_* variables as __ro_after_init
+  cpu/hotplug: Add support for declaring CPU offlining not supported
+  cpu/hotplug, x86/acpi: Disable CPU offlining for ACPI MADT wakeup
+  x86/kvm: Do not try to disable kvmclock if it was not enabled
+  x86/kexec: Keep CR4.MCE set during kexec for TDX guest
+  x86/mm: Make x86_platform.guest.enc_status_change_*() return errno
+  x86/mm: Return correct level from lookup_address() if pte is none
+  x86/tdx: Account shared memory
+  x86/tdx: Convert shared memory back to private on kexec
+  x86/mm: Make e820_end_ram_pfn() cover E820_TYPE_ACPI ranges
+  x86/acpi: Rename fields in acpi_madt_multiproc_wakeup structure
+  x86/acpi: Do not attempt to bring up secondary CPUs in kexec case
+  x86/smp: Add smp_ops.stop_this_cpu() callback
+  x86/mm: Introduce kernel_ident_mapping_free()
+  x86/acpi: Add support for CPU offlining for ACPI MADT wakeup method
+
+ arch/x86/Kconfig                     |   7 +
+ arch/x86/coco/core.c                 |   1 -
+ arch/x86/coco/tdx/tdx.c              | 204 ++++++++++++++++++-
+ arch/x86/hyperv/ivm.c                |   9 +-
+ arch/x86/include/asm/acpi.h          |   7 +
+ arch/x86/include/asm/init.h          |   3 +
+ arch/x86/include/asm/pgtable_types.h |   1 +
+ arch/x86/include/asm/smp.h           |   1 +
+ arch/x86/include/asm/x86_init.h      |   6 +-
+ arch/x86/kernel/acpi/Makefile        |  11 +-
+ arch/x86/kernel/acpi/boot.c          |  86 +-------
+ arch/x86/kernel/acpi/madt_playdead.S |  29 +++
+ arch/x86/kernel/acpi/madt_wakeup.c   | 292 +++++++++++++++++++++++++++
+ arch/x86/kernel/crash.c              |   6 +
+ arch/x86/kernel/e820.c               |   9 +-
+ arch/x86/kernel/kvmclock.c           |  12 +-
+ arch/x86/kernel/process.c            |  20 +-
+ arch/x86/kernel/reboot.c             |  25 ++-
+ arch/x86/kernel/relocate_kernel_64.S |   5 +
+ arch/x86/kernel/x86_init.c           |   4 +-
+ arch/x86/mm/ident_map.c              |  73 +++++++
+ arch/x86/mm/mem_encrypt_amd.c        |   8 +-
+ arch/x86/mm/pat/set_memory.c         |  17 +-
+ include/acpi/actbl2.h                |  19 +-
+ include/linux/cc_platform.h          |  10 -
+ include/linux/cpu.h                  |   2 +
+ kernel/cpu.c                         |  12 +-
+ 27 files changed, 724 insertions(+), 155 deletions(-)
+ create mode 100644 arch/x86/kernel/acpi/madt_playdead.S
+ create mode 100644 arch/x86/kernel/acpi/madt_wakeup.c
+
 -- 
-2.43.0
+2.41.0
 
 
