@@ -1,122 +1,126 @@
-Return-Path: <linux-kernel+bounces-9950-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9970-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C9B881CDC3
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 18:42:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 571C381CDFF
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 18:47:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 22BBB1F235AC
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 17:42:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C291E1F21E11
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 17:47:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E00F2C19A;
-	Fri, 22 Dec 2023 17:42:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E86CC446B3;
+	Fri, 22 Dec 2023 17:42:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="VpSe0/Jd"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LevdbF8H"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74AAF2C185
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 17:42:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-dbdbe917d39so2073621276.2
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 09:42:24 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D85533A8CB;
+	Fri, 22 Dec 2023 17:42:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-32f8441dfb5so1845487f8f.0;
+        Fri, 22 Dec 2023 09:42:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703266943; x=1703871743; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1703266957; x=1703871757; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=sORYQjvjhn91mhHWmml7PbQMB+VcO/Ox7jN+qS08qmM=;
-        b=VpSe0/Jd5nXGG62u0Ae6fVsFugDUcoVPeh+s9yLQo6l4ZbeXQlFdwPQPvOQ8Hlr8Kt
-         5OetozNsCSQUUHHpnZ1uy4NQpPGqxDrRtV42ATp3H5JpDebOvjvZLe++6m0zqAdL4RJ5
-         YSXCpbblvH0Sj/P/Vt+YnoujtyKDRvd/1blj6by9nyatK2uhfIfJKqBuoNVOEKUGvwh1
-         zHjBS+l/sWwVIUCyPJhhZNbGG3c0s6c6H/FZJOowldLDuiBzeCqogOC2zHVfYHP4ynE7
-         rpLvnFfjOb6ZXXmun2q5YjkhO8GuQUwla3uWY7c58T8kqw1mAWeEsXhcCj+CE5uDVVAs
-         OSfg==
+        bh=3qEiW87NdWMqG1i3IC5TsTsEJY+4saJvfxd4Py7tBWk=;
+        b=LevdbF8H8aKPQSKZzVdn4GfVcUq1oo9ngdsz9kCh1qajfv1ufrBjDn92UH9enaTQ9c
+         hnH46PkparVDBMVLMMD3EEz77bYaCbkbjMytpo4KeArCE4E3ps7NTPQF1PEwqXdpVopY
+         tMI7bbCI/xXCQ5Ygp2zAMxMK/LDR12sw6P7KT2Unf7fU32otdPW5rGHZLa36XvcqrK56
+         GXCnkJwptGHNpLy4kn4yt6gAhUEbILwkk6z4jAuhOQ1DTD0TNXvjDe3meoO9TpTz5uz8
+         3ElQMpEtVWxV4ljGjv26lj5Ksat3LBtz6aC5S3hfCIYhFzdjt5IMARUc/VBExHlHmR95
+         Au0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703266943; x=1703871743;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1703266957; x=1703871757;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=sORYQjvjhn91mhHWmml7PbQMB+VcO/Ox7jN+qS08qmM=;
-        b=h3cQj9tSfEftKCP6rBXwnc0J/biwkGtOXcB9DRpANnKfGxTNGgZA+CqiZMVgophGob
-         hJjrVx9KP5rz7cReNi7fYsLvH5RwuFFAeC0neOBdpTjBKqYB8X5SpYo3CTl09V+CHuVG
-         Mmw4RRTjIp2VkqwwswvkbaP624U/SY4XYHYvWoo4uoyr+O1Wgy09GHCduna3GZBoac7C
-         skBeEiqsES+g9R+AL6Dok/t3MBv/lKk/pnNfoMebjvpiPH9ZVBjTZ7Gk8ACN6vXFjg2R
-         sR13nulMHF/atjywVDr1huyfjsoZEFZJr4Y17vM+E013usX3jD894nKLLbfvg1L8MFaX
-         ioGA==
-X-Gm-Message-State: AOJu0YwC06/DavTSyuOG2x4KHQJWt82UHTLzHfu+qsJ1eZwHasNQCsfC
-	v9a4EoPbM9bd3AT/tLF0EWPba/pHoldHdnyeyfS94V7kfMMoFPr9LdRihRp+Ffs=
-X-Google-Smtp-Source: AGHT+IEPyD9jGVm07hqjtuuMcVr/kIdFIZwi5RVJ0LxxpraRGb6Srxhqt/JNYhC0I9XOqK9ADOwhPpHrjOa2o3mQ16g=
-X-Received: by 2002:a25:830f:0:b0:dbd:5baa:366d with SMTP id
- s15-20020a25830f000000b00dbd5baa366dmr1412617ybk.54.1703266943410; Fri, 22
- Dec 2023 09:42:23 -0800 (PST)
+        bh=3qEiW87NdWMqG1i3IC5TsTsEJY+4saJvfxd4Py7tBWk=;
+        b=aewNuYm5pEcIFPrR4CqPs+SVPwcxrLnNmGXGdtpEMq//sqJQc9ppdVoz0xlfeM04Ic
+         vUzk5XWdalV9yEuML7bjAOOPgfPAzCwPoI33qDiNA0/pX1hw0OAoAm4xitzu08Mow4GU
+         zqdQnt7BTTrRYS3ZFmfxUrMhNAK022dBWgPQ5NZRtH7w5I8C8ZEI0yXZBFLOxo7+pt5F
+         DWJqMXaa83yCD7PDKCvHD5cWIxJ78Mdp1Sh1Omr97FNQ6QOi4FzZbR6cqLmL19/OOfxa
+         QXSqwBfOIODrFJyP09ERhjDkSigfD8lTyl4YnEByGiFfcNA4GoA6q/JTpHEA6nzHMU9R
+         AnVw==
+X-Gm-Message-State: AOJu0YwwOlf11n/kUb00Mm/P8bHpmtlGuQmTpUzc9E0B6X1unJ6lZV7H
+	i+CMqBdXC1Wx/j/C8d3iYQ==
+X-Google-Smtp-Source: AGHT+IF/ILntBURjV10Ff56yN/onR9KNU6i4awRUbCKr+V/5OKfVGrXyAKwoOVxh00kqNwRL7i24VQ==
+X-Received: by 2002:adf:dd8b:0:b0:336:8940:c4dd with SMTP id x11-20020adfdd8b000000b003368940c4ddmr968833wrl.8.1703266957184;
+        Fri, 22 Dec 2023 09:42:37 -0800 (PST)
+Received: from U4.lan ([2a02:810b:f40:4300:f3ae:2788:7e03:f44])
+        by smtp.gmail.com with ESMTPSA id w10-20020adfec4a000000b00336670abdcasm4777116wrn.40.2023.12.22.09.42.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Dec 2023 09:42:36 -0800 (PST)
+From: Alex Bee <knaerzche@gmail.com>
+To: Sandy Huang <hjc@rock-chips.com>,
+	=?UTF-8?q?Heiko=20St=C3=BCbner?= <heiko@sntech.de>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>
+Cc: David Airlie <airlied@gmail.com>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	dri-devel@lists.freedesktop.org,
+	devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-rockchip@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Alex Bee <knaerzche@gmail.com>
+Subject: [PATCH v4 21/29] drm/rockchip: inno_hdmi: Don't power up the phy after resetting
+Date: Fri, 22 Dec 2023 18:42:12 +0100
+Message-ID: <20231222174220.55249-22-knaerzche@gmail.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20231222174220.55249-1-knaerzche@gmail.com>
+References: <20231222174220.55249-1-knaerzche@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231222141952.16254-1-brgl@bgdev.pl>
-In-Reply-To: <20231222141952.16254-1-brgl@bgdev.pl>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Fri, 22 Dec 2023 18:42:12 +0100
-Message-ID: <CACRpkdb32EpsHMMR2vSQg51NzCVAnEFTXpsWWMvwY0mCVpnXLw@mail.gmail.com>
-Subject: Re: [PATCH] MAINTAINERS: split out the uAPI into a new section
-To: Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Kent Gibson <warthog618@gmail.com>, 
-	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Fri, Dec 22, 2023 at 3:19=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.pl>=
- wrote:
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+inno_hdmi_reset is only ever called when initializing the controller. At
+this point it’s completely uneccessary to power up the PHY, since all
+what has to work at this point is the DDC bus. The phy will be powered up
+correctly when a mode is set in inno_hdmi_encoder_enable and disabled in
+inno_hdmi_encoder_disable.
+Set it to LOWER_PWR after resetting the controller.
 
-> Kent Gibson is the author of the character device uAPI v2 and should be
-> Cc'ed on all patches aimed for it. Unfortunately this is not the case as
-> he's not listed in MAINTAINERS. Split the uAPI files into their own
-> section and make Kent the reviewer.
->
-> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> ---
->  MAINTAINERS | 13 +++++++++++--
->  1 file changed, 11 insertions(+), 2 deletions(-)
->
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 9104430e148e..2867da6e233d 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -9006,8 +9006,6 @@ R:        Andy Shevchenko <andy@kernel.org>
->  L:     linux-gpio@vger.kernel.org
->  S:     Maintained
->  T:     git git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git
-> -F:     Documentation/ABI/obsolete/sysfs-gpio
-> -F:     Documentation/ABI/testing/gpio-cdev
->  F:     Documentation/admin-guide/gpio/
->  F:     Documentation/devicetree/bindings/gpio/
->  F:     Documentation/driver-api/gpio/
-> @@ -9016,6 +9014,17 @@ F:       include/dt-bindings/gpio/
->  F:     include/linux/gpio.h
->  F:     include/linux/gpio/
->  F:     include/linux/of_gpio.h
-> +
-> +GPIO UAPI
-> +M:     Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Alex Bee <knaerzche@gmail.com>
+---
+changes in v3:
+ - new patch
 
-Uh, I don't know if I'm competent at this point, I think Kent and you
-are the proper maintainers of the UAPI.
+changes in v4:
+ - none
 
-With me dropped from the UAPI:
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+ drivers/gpu/drm/rockchip/inno_hdmi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-(OK I know I wrote v1 but think of that just makes me feel ashamed
-these days wrt where it has gone since in v2.)
+diff --git a/drivers/gpu/drm/rockchip/inno_hdmi.c b/drivers/gpu/drm/rockchip/inno_hdmi.c
+index f3b90b479ab9..52b49f44a4f4 100644
+--- a/drivers/gpu/drm/rockchip/inno_hdmi.c
++++ b/drivers/gpu/drm/rockchip/inno_hdmi.c
+@@ -202,7 +202,7 @@ static void inno_hdmi_reset(struct inno_hdmi *hdmi)
+ 	val = v_REG_CLK_INV | v_REG_CLK_SOURCE_SYS | v_PWR_ON | v_INT_POL_HIGH;
+ 	hdmi_modb(hdmi, HDMI_SYS_CTRL, msk, val);
+ 
+-	inno_hdmi_set_pwr_mode(hdmi, NORMAL);
++	inno_hdmi_set_pwr_mode(hdmi, LOWER_PWR);
+ }
+ 
+ static void inno_hdmi_disable_frame(struct inno_hdmi *hdmi,
+-- 
+2.43.0
 
-Yours,
-Linus Walleij
 
