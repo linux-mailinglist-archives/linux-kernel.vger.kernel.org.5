@@ -1,24 +1,24 @@
-Return-Path: <linux-kernel+bounces-9363-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9365-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4784881C49E
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 06:25:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9784C81C4A0
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 06:25:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 710D21C24C13
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 05:25:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CA92C1C24E5B
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 05:25:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59D5863C2;
-	Fri, 22 Dec 2023 05:25:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB0DB944B;
+	Fri, 22 Dec 2023 05:25:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="0eo9Cvsx"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Ib0tjcY5"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 721E46112
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 722216120
 	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 05:25:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
@@ -26,25 +26,25 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender
 	:Reply-To:Content-Type:Content-ID:Content-Description;
-	bh=dsMR+WACwlCN6vo2Aferq2y6mgFg8ofBbNv8oumItv4=; b=0eo9CvsxjzpdF4U8hBbO9yLtRL
-	uH7OLXC6gHLsYCYHri2luyui/yGzD1l0Yls0YhM0QWEyjG8Xb64le1VcBc2AFFavd+aJkAhBp8HY+
-	kSjMRJEA1S5g2L1TcL6X8Rkz/BM7KnY1e233RDtwoCcmgjNMUurH+a88nkIa4efdl6hmdUZgE5lap
-	fij3uPbGitQYLy5E01roa3wQ6mP/ZE0DZRpjs5rO3DVuPBnIsGYAgb/lMg6PKryF9koOFSt0u/glN
-	y6VeCt+jD9rAUdJKude4AbmFuthCKyhyMJnVg0Rw3GMJFbGlyHB9iYj6rQHgUfYRpxoB15IPNrU08
-	KFhMwalQ==;
+	bh=NcgjXN95RsDAjlsvl0lPtlflx+Yff9K/qAsTAqvV9q4=; b=Ib0tjcY5MpF4PWKRkRejF/bvZv
+	i08sfXeqCuXE22jRpC3ZJw+Izi3HZdADzRbVrtQj8vo3rgbTLCGtCPRzl8p16l6n9lf85xCJZhJEL
+	x8Ll8zdf6jY79f19MAtSyRst12Urun4k8BNu2u2rj5f8CeHP1GLLkdlkBoPPJKK3O2RAWL3gbdfl7
+	nrSe5aoAJBt7wTUxyIGMX5vWyabfK0iALpCUJa1RI43EEWR7kpMHvRezXD1gP5NZApK5HborMixFF
+	fvFHSYuGKCkM2UAoHzsJwk0j/rC5A6NcVHHIctMIPsWiHT3U6INVUHQBaun64aNdl7DBUxo6sph5h
+	RH5NAezg==;
 Received: from [50.53.46.231] (helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1rGY2D-004y0F-2j;
-	Fri, 22 Dec 2023 05:25:21 +0000
+	id 1rGY2E-004y0F-0B;
+	Fri, 22 Dec 2023 05:25:22 +0000
 From: Randy Dunlap <rdunlap@infradead.org>
 To: linux-kernel@vger.kernel.org
 Cc: Randy Dunlap <rdunlap@infradead.org>,
 	Hans de Goede <hdegoede@redhat.com>,
 	Arnd Bergmann <arnd@arndb.de>,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 2/3] virt: vbox: linux: fix all kernel-doc warnings
-Date: Thu, 21 Dec 2023 21:25:20 -0800
-Message-ID: <20231222052521.14333-2-rdunlap@infradead.org>
+Subject: [PATCH 3/3] virt: vbox: utils: fix all kernel-doc warnings
+Date: Thu, 21 Dec 2023 21:25:21 -0800
+Message-ID: <20231222052521.14333-3-rdunlap@infradead.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231222052521.14333-1-rdunlap@infradead.org>
 References: <20231222052521.14333-1-rdunlap@infradead.org>
@@ -56,103 +56,110 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Use kernel-doc format for functions that are almost complete in their
-kernel-doc comments.
-For other functions, just change the comment to a common C comment.
-This prevents 7 kernel-doc warnings.
+Use kernel-doc format for functions that have comments that begin
+with "/**".
+This prevents 6 kernel-doc warnings.
 
 Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
 Cc: Hans de Goede <hdegoede@redhat.com>
 Cc: Arnd Bergmann <arnd@arndb.de>
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/virt/vboxguest/vboxguest_linux.c |   22 +++++++++++----------
- 1 file changed, 12 insertions(+), 10 deletions(-)
+ drivers/virt/vboxguest/vboxguest_utils.c |   33 +++++++++++++--------
+ 1 file changed, 21 insertions(+), 12 deletions(-)
 
-diff -- a/drivers/virt/vboxguest/vboxguest_linux.c b/drivers/virt/vboxguest/vboxguest_linux.c
---- a/drivers/virt/vboxguest/vboxguest_linux.c
-+++ b/drivers/virt/vboxguest/vboxguest_linux.c
-@@ -81,10 +81,11 @@ static int vbg_misc_device_user_open(str
+diff -- a/drivers/virt/vboxguest/vboxguest_utils.c b/drivers/virt/vboxguest/vboxguest_utils.c
+--- a/drivers/virt/vboxguest/vboxguest_utils.c
++++ b/drivers/virt/vboxguest/vboxguest_utils.c
+@@ -237,14 +237,16 @@ static int hgcm_call_preprocess_linaddr(
  }
  
  /**
-- * Close device.
-- * Return: 0 on success, negated errno on failure.
-+ * vbg_misc_device_close - Close device.
-  * @inode:		Pointer to inode info structure.
-  * @filp:		Associated file pointer.
+- * Preprocesses the HGCM call, validate parameters, alloc bounce buffers and
+- * figure out how much extra storage we need for page lists.
+- * Return: 0 or negative errno value.
++ * hgcm_call_preprocess - Preprocesses the HGCM call, validate parameters,
++ *	alloc bounce buffers and figure out how much extra storage we need for
++ *	page lists.
+  * @src_parm:         Pointer to source function call parameters
+  * @parm_count:       Number of function call parameters.
+  * @bounce_bufs_ret:  Where to return the allocated bouncebuffer array
+  * @extra:            Where to return the extra request space needed for
+  *                    physical page lists.
 + *
-+ * Return: %0 on success, negated errno on failure.
++ * Return: %0 or negative errno value.
   */
- static int vbg_misc_device_close(struct inode *inode, struct file *filp)
- {
-@@ -94,11 +95,12 @@ static int vbg_misc_device_close(struct
+ static int hgcm_call_preprocess(
+ 	const struct vmmdev_hgcm_function_parameter *src_parm,
+@@ -301,10 +303,11 @@ static int hgcm_call_preprocess(
  }
  
  /**
-- * Device I/O Control entry point.
-- * Return: 0 on success, negated errno on failure.
-+ * vbg_misc_device_ioctl - Device I/O Control entry point.
-  * @filp:		Associated file pointer.
-  * @req:		The request specified to ioctl().
-  * @arg:		The argument specified to ioctl().
-+ *
-+ * Return: %0 on success, negated errno on failure.
+- * Translates linear address types to page list direction flags.
++ * hgcm_call_linear_addr_type_to_pagelist_flags - Translates linear address
++ *	types to page list direction flags.
++ * @type:  The type.
+  *
+  * Return: page list flags.
+- * @type:  The type.
   */
- static long vbg_misc_device_ioctl(struct file *filp, unsigned int req,
- 				  unsigned long arg)
-@@ -173,7 +175,7 @@ out:
- 	return ret;
+ static u32 hgcm_call_linear_addr_type_to_pagelist_flags(
+ 	enum vmmdev_hgcm_function_parameter_type type)
+@@ -369,7 +372,8 @@ static void hgcm_call_init_linaddr(struc
  }
  
--/** The file_operations structures. */
-+/* The file_operations structures. */
- static const struct file_operations vbg_misc_device_fops = {
- 	.owner			= THIS_MODULE,
- 	.open			= vbg_misc_device_open,
-@@ -193,7 +195,7 @@ static const struct file_operations vbg_
- #endif
- };
- 
--/**
-+/*
-  * Called when the input device is first opened.
-  *
-  * Sets up absolute mouse reporting.
-@@ -206,7 +208,7 @@ static int vbg_input_open(struct input_d
- 	return vbg_core_set_mouse_status(gdev, feat);
+ /**
+- * Initializes the call request that we're sending to the host.
++ * hgcm_call_init_call - Initializes the call request that we're sending
++ *	to the host.
+  * @call:            The call to initialize.
+  * @client_id:       The client ID of the caller.
+  * @function:        The function number of the function to call.
+@@ -425,7 +429,9 @@ static void hgcm_call_init_call(
  }
  
--/**
-+/*
-  * Called if all open handles to the input device are closed.
+ /**
+- * Tries to cancel a pending HGCM call.
++ * hgcm_cancel_call - Tries to cancel a pending HGCM call.
++ * @gdev:        The VBoxGuest device extension.
++ * @call:        The call to cancel.
   *
-  * Disables absolute reporting.
-@@ -218,7 +220,7 @@ static void vbg_input_close(struct input
- 	vbg_core_set_mouse_status(gdev, 0);
+  * Return: VBox status code
+  */
+@@ -459,13 +465,15 @@ static int hgcm_cancel_call(struct vbg_d
  }
  
--/**
-+/*
-  * Creates the kernel input device.
-  *
-  * Return: 0 on success, negated errno on failure.
-@@ -277,7 +279,7 @@ static struct attribute *vbg_pci_attrs[]
- };
- ATTRIBUTE_GROUPS(vbg_pci);
- 
--/**
-+/*
-  * Does the PCI detection and init of the device.
-  *
-  * Return: 0 on success, negated errno on failure.
-@@ -453,7 +455,7 @@ void vbg_put_gdev(struct vbg_dev *gdev)
+ /**
+- * Performs the call and completion wait.
+- * Return: 0 or negative errno value.
++ * vbg_hgcm_do_call - Performs the call and completion wait.
+  * @gdev:        The VBoxGuest device extension.
+  * @call:        The call to execute.
+  * @timeout_ms:  Timeout in ms.
++ * @interruptible: whether this call is interruptible
+  * @leak_it:     Where to return the leak it / free it, indicator.
+  *               Cancellation fun.
++ *
++ * Return: %0 or negative errno value.
+  */
+ static int vbg_hgcm_do_call(struct vbg_dev *gdev, struct vmmdev_hgcm_call *call,
+ 			    u32 timeout_ms, bool interruptible, bool *leak_it)
+@@ -545,13 +553,14 @@ static int vbg_hgcm_do_call(struct vbg_d
  }
- EXPORT_SYMBOL(vbg_put_gdev);
  
--/**
-+/*
-  * Callback for mouse events.
-  *
-  * This is called at the end of the ISR, after leaving the event spinlock, if
+ /**
+- * Copies the result of the call back to the caller info structure and user
+- * buffers.
+- * Return: 0 or negative errno value.
++ * hgcm_call_copy_back_result - Copies the result of the call back to
++ *	the caller info structure and user buffers.
+  * @call:            HGCM call request.
+  * @dst_parm:        Pointer to function call parameters destination.
+  * @parm_count:      Number of function call parameters.
+  * @bounce_bufs:     The bouncebuffer array.
++ *
++ * Return: %0 or negative errno value.
+  */
+ static int hgcm_call_copy_back_result(
+ 	const struct vmmdev_hgcm_call *call,
 
