@@ -1,114 +1,126 @@
-Return-Path: <linux-kernel+bounces-10066-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10067-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1EA8C81CF73
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 22:19:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA8BC81CF81
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 22:34:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 28B931C22700
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 21:19:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 667B9286487
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 21:34:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AE1F2EAE0;
-	Fri, 22 Dec 2023 21:19:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AD082EAED;
+	Fri, 22 Dec 2023 21:34:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XutJyryH"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nM96ILFf"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BED062E82A;
-	Fri, 22 Dec 2023 21:19:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8469C433C8;
-	Fri, 22 Dec 2023 21:19:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703279983;
-	bh=85pem+bV3h4CTSEJsl8gxNpUqeC+ByEZF8tHZajdLdo=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=XutJyryH1C0yuKZA/mta5BFslea1nPHuuMEMIqTexQjedrgggkrdf3eqN2kD6EkgU
-	 3jCx87FzTjHItInuySR3YJOOZmFV211W9WBPfOQXj+lHVaF9uXE6yR6kBTdYnjJhdQ
-	 s70fgyCI5FDyEx/7pzbczFpZNRK/qYjTXh+G6TNTSIAAXIHxfpWMzIAO4LYqjrX9U5
-	 wAjkBSNhgkiJ/W8etslilyY1mQKWxdEWarTXXTaBT+uPKmD129ajAHNB4wLfI2NAKS
-	 isigYPWU3YdtSbDmSciHfVtXZ1A1wrIOZH52LLSxoazUgCso3tswSPt13z5HfEGnjQ
-	 qfE7JAi8wYz6Q==
-Received: (nullmailer pid 2942328 invoked by uid 1000);
-	Fri, 22 Dec 2023 21:19:39 -0000
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8bit
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7884E2E84B;
+	Fri, 22 Dec 2023 21:34:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1703280877; x=1734816877;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=dpqNdfS4ahJoafXVsQek4DZnUBoFniH8a9Xe1zk0FlM=;
+  b=nM96ILFfgAIzjBoeLubwMxtFp1AGhsOdrTQZBiNl4WnGLsW81mMzzcaJ
+   nzgOX1Miha+GRMQcIo3ZF0Xr2Wkth1An84a12F6o0oME2a0I1/eRinm26
+   bEmOQ74bTwfW8mx6vhD4297gh0vEAeJ3sv35uM39sL23mHa9zjf5kx0Hs
+   F2fVVipo7YuRB35O89uqwtVw+0u5078KfIopSUZk9x0DNz4pjy9ZKwfti
+   S4DosO1D0tPXgXVGJsGD4VujMC0FO5bnL87M4dNVx+wj5n2C+iXcHFI1K
+   pKUQIwooypQq/V6oRBmSqIS+9CxS0Iu27SgidLUCt4NDivX1e5clCp4HH
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10932"; a="395052344"
+X-IronPort-AV: E=Sophos;i="6.04,297,1695711600"; 
+   d="scan'208";a="395052344"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Dec 2023 13:34:36 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10932"; a="895566717"
+X-IronPort-AV: E=Sophos;i="6.04,297,1695711600"; 
+   d="scan'208";a="895566717"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by fmsmga002.fm.intel.com with ESMTP; 22 Dec 2023 13:34:33 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rGn9p-0009tc-1J;
+	Fri, 22 Dec 2023 21:34:16 +0000
+Date: Sat, 23 Dec 2023 05:32:31 +0800
+From: kernel test robot <lkp@intel.com>
+To: Xingyu Wu <xingyu.wu@starfivetech.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Claudiu Beznea <Claudiu.Beznea@microchip.com>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzk@kernel.org>,
+	Conor Dooley <conor.dooley@microchip.com>
+Cc: oe-kbuild-all@lists.linux.dev,
+	Walker Chen <walker.chen@starfivetech.com>,
+	Xingyu Wu <xingyu.wu@starfivetech.com>, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+	linux-sound@vger.kernel.org
+Subject: Re: [PATCH v1 2/2] ASoC: starfive: Add drivers of Cadence
+ Multi-Channel I2S Controller
+Message-ID: <202312230525.gch9VlZT-lkp@intel.com>
+References: <20231221033223.73201-3-xingyu.wu@starfivetech.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Rob Herring <robh@kernel.org>
-To: Alexander Graf <graf@amazon.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Tom Lendacky <thomas.lendacky@amd.com>, Usama Arif <usama.arif@bytedance.com>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, David Woodhouse <dwmw@amazon.co.uk>, Andrew Morton <akpm@linux-foundation.org>, madvenka@linux.microsoft.com, Ashish Kalra <ashish.kalra@amd.com>, Eric Biederman <ebiederm@xmission.com>, linux-kernel@vger.kernel.org, "H. Peter Anvin" <hpa@zytor.com>, kexec@lists.infradead.org, Steven Rostedt <rostedt@goodmis.org>, pbonzini@redhat.com, Anthony Yznaga <anthony.yznaga@oracle.com>, arnd@arndb.de, linux-doc@vger.kernel.org, linux-mm@kvack.org, devicetree@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>, linux-trace-kernel@vger.kernel.org, Andy Lutomirski <luto@kernel.org>, Rob Herring <robh+dt@kernel.org>, Stanislav Kinsburskii <skinsburskii@linux.microsoft.com>, James Gowans <jgowans@amazon.com>, x86@kernel.org, linux-arm-kernel@lists.infradead.org
-In-Reply-To: <20231222195144.24532-12-graf@amazon.com>
-References: <20231222193607.15474-1-graf@amazon.com>
- <20231222195144.24532-1-graf@amazon.com>
- <20231222195144.24532-12-graf@amazon.com>
-Message-Id: <170327997978.2942294.14458926896132199704.robh@kernel.org>
-Subject: Re: [PATCH v2 17/17] devicetree: Add bindings for ftrace KHO
-Date: Fri, 22 Dec 2023 15:19:39 -0600
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231221033223.73201-3-xingyu.wu@starfivetech.com>
+
+Hi Xingyu,
+
+kernel test robot noticed the following build warnings:
+
+[auto build test WARNING on broonie-sound/for-next]
+[also build test WARNING on robh/for-next linus/master v6.7-rc6 next-20231222]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Xingyu-Wu/dt-bindings-ASoC-Add-Cadence-I2S-controller-for-StarFive-JH8100-SoC/20231222-172628
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+patch link:    https://lore.kernel.org/r/20231221033223.73201-3-xingyu.wu%40starfivetech.com
+patch subject: [PATCH v1 2/2] ASoC: starfive: Add drivers of Cadence Multi-Channel I2S Controller
+config: parisc-allyesconfig (https://download.01.org/0day-ci/archive/20231223/202312230525.gch9VlZT-lkp@intel.com/config)
+compiler: hppa-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231223/202312230525.gch9VlZT-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312230525.gch9VlZT-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> sound/soc/starfive/cdns-jh8100-i2s.c:519:12: warning: 'cdns_jh8100_i2s_runtime_resume' defined but not used [-Wunused-function]
+     519 | static int cdns_jh8100_i2s_runtime_resume(struct device *dev)
+         |            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-On Fri, 22 Dec 2023 19:51:44 +0000, Alexander Graf wrote:
-> With ftrace in KHO, we are creating an ABI between old kernel and new
-> kernel about the state that they transfer. To ensure that we document
-> that state and catch any breaking change, let's add its schema to the
-> common devicetree bindings. This way, we can quickly reason about the
-> state that gets passed.
-> 
-> Signed-off-by: Alexander Graf <graf@amazon.com>
-> ---
->  .../bindings/kho/ftrace/ftrace-array.yaml     | 46 +++++++++++++++
->  .../bindings/kho/ftrace/ftrace-cpu.yaml       | 56 +++++++++++++++++++
->  .../bindings/kho/ftrace/ftrace.yaml           | 48 ++++++++++++++++
->  3 files changed, 150 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/kho/ftrace/ftrace-array.yaml
->  create mode 100644 Documentation/devicetree/bindings/kho/ftrace/ftrace-cpu.yaml
->  create mode 100644 Documentation/devicetree/bindings/kho/ftrace/ftrace.yaml
-> 
+vim +/cdns_jh8100_i2s_runtime_resume +519 sound/soc/starfive/cdns-jh8100-i2s.c
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+   518	
+ > 519	static int cdns_jh8100_i2s_runtime_resume(struct device *dev)
+   520	{
+   521		struct cdns_jh8100_i2s_dev *i2s = dev_get_drvdata(dev);
+   522	
+   523		return clk_prepare_enable(i2s->clks[1].clk); /* ICG clock */
+   524	}
+   525	
 
-yamllint warnings/errors:
-./Documentation/devicetree/bindings/kho/ftrace/ftrace-array.yaml:43:111: [warning] line too long (117 > 110 characters) (line-length)
-./Documentation/devicetree/bindings/kho/ftrace/ftrace-cpu.yaml:53:111: [warning] line too long (117 > 110 characters) (line-length)
-./Documentation/devicetree/bindings/kho/ftrace/ftrace.yaml:45:111: [warning] line too long (117 > 110 characters) (line-length)
-
-dtschema/dtc warnings/errors:
-WARNING: Documentation/devicetree/bindings/kho/ftrace/ftrace-array.example.dts:29.25-39: Value 0x0000000101000000 truncated to 0x01000000
-WARNING: Documentation/devicetree/bindings/kho/ftrace/ftrace-array.example.dts:29.48-62: Value 0x0000000101000100 truncated to 0x01000100
-WARNING: Documentation/devicetree/bindings/kho/ftrace/ftrace-array.example.dts:29.73-87: Value 0x0000000101000038 truncated to 0x01000038
-WARNING: Documentation/devicetree/bindings/kho/ftrace/ftrace-array.example.dts:29.96-110: Value 0x0000000101002000 truncated to 0x01002000
-WARNING: Documentation/devicetree/bindings/kho/ftrace/ftrace-cpu.example.dts:29.25-39: Value 0x0000000101000000 truncated to 0x01000000
-WARNING: Documentation/devicetree/bindings/kho/ftrace/ftrace-cpu.example.dts:29.48-62: Value 0x0000000101000100 truncated to 0x01000100
-WARNING: Documentation/devicetree/bindings/kho/ftrace/ftrace-cpu.example.dts:29.73-87: Value 0x0000000101000038 truncated to 0x01000038
-WARNING: Documentation/devicetree/bindings/kho/ftrace/ftrace-cpu.example.dts:29.96-110: Value 0x0000000101002000 truncated to 0x01002000
-WARNING: Documentation/devicetree/bindings/kho/ftrace/ftrace.example.dts:29.25-39: Value 0x0000000101000000 truncated to 0x01000000
-WARNING: Documentation/devicetree/bindings/kho/ftrace/ftrace.example.dts:29.48-62: Value 0x0000000101000100 truncated to 0x01000100
-WARNING: Documentation/devicetree/bindings/kho/ftrace/ftrace.example.dts:29.73-87: Value 0x0000000101000038 truncated to 0x01000038
-WARNING: Documentation/devicetree/bindings/kho/ftrace/ftrace.example.dts:29.96-110: Value 0x0000000101002000 truncated to 0x01002000
-
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20231222195144.24532-12-graf@amazon.com
-
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
