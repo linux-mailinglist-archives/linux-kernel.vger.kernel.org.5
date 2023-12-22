@@ -1,211 +1,209 @@
-Return-Path: <linux-kernel+bounces-9684-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9685-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9114481C98E
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 13:00:07 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22E2881C999
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 13:01:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 49B0B2820E7
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 12:00:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 58DBCB228F7
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 12:01:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B192179A5;
-	Fri, 22 Dec 2023 11:59:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B805182C1;
+	Fri, 22 Dec 2023 12:01:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZukzZqvj"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="PVV3ulNs"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DEB317985;
-	Fri, 22 Dec 2023 11:59:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703246395; x=1734782395;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=xlzGsy2zLFFE4xWGnSgpBAySsmX5etaq6UAkksC7+7U=;
-  b=ZukzZqvjRcqaXOfi3gXQffg1Les0BPnSciLn9fUHUqaUCLghAHZ6e8Ow
-   8rFHQIYr4x8QrGCciufGjp3xyR9SVUZuuSlX/lhu8dfAX/nOR7Qwm/ofc
-   M4B7zAicziQsPB/n5DQuywYzRfhLvW2gwoQnJro5tZdgVI2UgOHS3uVCI
-   vUtLEi+h/Lstbnv8fcI5QhWWGnqujfJoE2vx7FnlztfXpOu3nSMZ69c3n
-   IKXCwdZEuKe7XUH9xdpV0XwhjtK0kvMBSk8BA4S5iGinXzvlX1E6TRynD
-   UusXW3dmCGsEsVJLBO2Vg1gnAr7Y0RW12+FgIsNQZ39hwOGAKMgWOLY/x
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10931"; a="3351795"
-X-IronPort-AV: E=Sophos;i="6.04,296,1695711600"; 
-   d="scan'208";a="3351795"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Dec 2023 03:59:55 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10931"; a="895450427"
-X-IronPort-AV: E=Sophos;i="6.04,296,1695711600"; 
-   d="scan'208";a="895450427"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 22 Dec 2023 03:59:53 -0800
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 22 Dec 2023 03:59:53 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 22 Dec 2023 03:59:53 -0800
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Fri, 22 Dec 2023 03:59:46 -0800
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.169)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Fri, 22 Dec 2023 03:59:40 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dg5EpnzUKha3vo9OquQ/T81p+nlkocw5nFZ3XNfLWcGtyuVBC5i5y3JRFPwyiv/6urJzvC7FlvkFAJHxpWc7AUK2+Eo056E90l5KB/EmEeRxqkUoWDGPTZhXLNk3Un0rbuOLuBThABw3QeMMoyUSYwm1eGQVcTr81z5ieMj6zkN26pNoFZ+YJwoqWKAkZBFioQm4cxb30bKtULYOGxQ93L2n9uIFiXnlZVP2Tpmua1AOVEDAXmK68HymN6vzLrRsH0fAs5m0Ek57JQVgUYOLLNZxXHusMcWqtT2IOL9teI7sjvBd02CKbnZ6gHqcWz3spbNXweXMLF97DNiFik8YIg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=xlzGsy2zLFFE4xWGnSgpBAySsmX5etaq6UAkksC7+7U=;
- b=HkknTx+KeIKCtxehlODmMKKjayRFkC6rn5loZy4JGG3mqWg00CQNNBHJ+55mVgJ23xNFemzsYQkM0z7nhG6DyGoEYWMeoSNsM/PV0QnRbTtx/2C2VwrUzUhKoJwp8FrMZhNyD35cH1yYksxMRNoPrmh1uOLFSuPPBkpg5+vpfEFEXEYZmNYLgJ9I6s4a/kI3xB0ZchaLLhuugGehK/lCYOVuH0Fs9fg3ryXj1+KxLcaQ86thdDaantEb7UrWtRgvrIJDrb8hYuGrjslg1de+yqWdlMpyjjNHil3+4+kw0d27IYGc5q1wyF1j0ZnLxXK1KQbRNy1jYY1QysMEha6EaQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from DS0PR11MB7529.namprd11.prod.outlook.com (2603:10b6:8:141::20)
- by DM4PR11MB5309.namprd11.prod.outlook.com (2603:10b6:5:390::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7113.20; Fri, 22 Dec
- 2023 11:59:38 +0000
-Received: from DS0PR11MB7529.namprd11.prod.outlook.com
- ([fe80::e4ae:3948:1f55:547d]) by DS0PR11MB7529.namprd11.prod.outlook.com
- ([fe80::e4ae:3948:1f55:547d%5]) with mapi id 15.20.7113.019; Fri, 22 Dec 2023
- 11:59:38 +0000
-From: "Liu, Yi L" <yi.l.liu@intel.com>
-To: "Tian, Kevin" <kevin.tian@intel.com>
-CC: "Yang, Weijiang" <weijiang.yang@intel.com>, "joro@8bytes.org"
-	<joro@8bytes.org>, "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-	"jgg@nvidia.com" <jgg@nvidia.com>, "robin.murphy@arm.com"
-	<robin.murphy@arm.com>, "baolu.lu@linux.intel.com"
-	<baolu.lu@linux.intel.com>, "cohuck@redhat.com" <cohuck@redhat.com>,
-	"eric.auger@redhat.com" <eric.auger@redhat.com>, "nicolinc@nvidia.com"
-	<nicolinc@nvidia.com>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-	"mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
-	"chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
-	"yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>, "peterx@redhat.com"
-	<peterx@redhat.com>, "jasowang@redhat.com" <jasowang@redhat.com>,
-	"shameerali.kolothum.thodi@huawei.com"
-	<shameerali.kolothum.thodi@huawei.com>, "lulu@redhat.com" <lulu@redhat.com>,
-	"suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
-	"iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>, "Duan,
- Zhenzhong" <zhenzhong.duan@intel.com>, "joao.m.martins@oracle.com"
-	<joao.m.martins@oracle.com>, "Zeng, Xin" <xin.zeng@intel.com>, "Zhao, Yan Y"
-	<yan.y.zhao@intel.com>, "j.granados@samsung.com" <j.granados@samsung.com>
-Subject: Re: [PATCH v7 9/9] iommu/vt-d: Add iotlb flush for nested domain
-Thread-Topic: [PATCH v7 9/9] iommu/vt-d: Add iotlb flush for nested domain
-Thread-Index: AQHaNCP4qRuDL+bDzEuyhcu89eXATrC0rU2AgAAv1gCAAAQBdoAAAw4AgABQMN0=
-Date: Fri, 22 Dec 2023 11:59:38 +0000
-Message-ID: <65B6D347-5C85-4CB0-9CD8-1C914045B62B@intel.com>
-References: <20231221153948.119007-1-yi.l.liu@intel.com>
- <20231221153948.119007-10-yi.l.liu@intel.com>
- <f6302d8e-fd5f-45e1-8148-e5812c61f5c0@intel.com>
- <BN9PR11MB52766A289D2CA50F8BD802F18C94A@BN9PR11MB5276.namprd11.prod.outlook.com>
- <D35102EE-F1E8-4888-8A5E-A1A723B3363D@intel.com>
- <BN9PR11MB527672402F30F701A5EA53028C94A@BN9PR11MB5276.namprd11.prod.outlook.com>
-In-Reply-To: <BN9PR11MB527672402F30F701A5EA53028C94A@BN9PR11MB5276.namprd11.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DS0PR11MB7529:EE_|DM4PR11MB5309:EE_
-x-ms-office365-filtering-correlation-id: f6c4fc0f-33e3-4059-e022-08dc02e57900
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 9UCnRalu1KZ30lx3Ssr0GBnBm1A4DCb8XP4RwDZ8QAk32Euf0jetMQSsWgzIodutMQFcEA3ia8szjFtc5cFnxWXKxURJiJIF/09AlqQbot91xXYQRPj9XhthwEem4ofnVnmJYDmAfv726XS0FxmK886GD6seYpEf4O0RVjOwUzO+O/phEy2BBC8bkRnLosJixK9yvXuf1mJTsi39IN95Nk8+SqptIgbsBqEjmnVznZk1nR2m02eGLc+3OScBO/GAvseaTURIyIc4XwLcnzZ7pbXLAvNDCFZ6XZ8WQ4om4qjXrZdMnuQGMqSybm6LDzEivYItxkMiXDz5ebT9Vn7iZMDHk4Z24qI5rJXrhI9c8ZLoaY0Ulu2+YHL2ptGIsIply/2Baf4jZc1+0vf3ydiQ0PPI1hcb5OsDHwDbHIkMnQ1H7FdCe1usfG5eZRcamlE7wEjO/nqj9eMMMa3gz/bMQORAq+bC1DxezkfiH9c4cQqu135zw0+M1MHIsTfg3XYrQbwTybL/+RyoY/262c/WpDKzYhGV1Hbw46z6Gt1pi0zfQZNA/xQPkjOrsbiQYnVE4IolnRe8mxfASZKY2RQsORF7Dp2/02bl4Ir9EB743erGBTNNGCHvDWMgc9rRhlZqEaEWOuutxaGferH7YPE9IQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR11MB7529.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(396003)(39860400002)(366004)(136003)(230922051799003)(186009)(451199024)(1800799012)(64100799003)(478600001)(6486002)(4326008)(38100700002)(6862004)(122000001)(5660300002)(6636002)(66476007)(76116006)(316002)(66556008)(37006003)(66946007)(66446008)(54906003)(8676002)(8936002)(64756008)(2616005)(71200400001)(53546011)(6506007)(6512007)(36756003)(41300700001)(86362001)(33656002)(2906002)(82960400001)(38070700009)(7416002)(4744005)(45980500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?LzdsRHVUMVpMb1ByZk43NEIxYkhZUEUxNjBUNVFxZld2VitNR3RseFhrZnlu?=
- =?utf-8?B?VUNrYWFuM1ZGNlZ4WXZoa0pCQ3RHM1RoTkRVWjlCMmRrVmdzQmZpNktIMFly?=
- =?utf-8?B?NkU2Zml1OWEya2lxWFQ2cW85Y0dvUmlJTDlFZCtYOXY0bG01YmJqNlJBTTg2?=
- =?utf-8?B?ZXI2SzhlVGpUSURFNUJPc2xmNkdNbi9lTkZKTlVMUVo4OXhpdlZ1Vk4vSldB?=
- =?utf-8?B?NTM3czNPR3FITVhJa1RPZXhPLzREUVVKSUtqM05vblluSlFmVkx4aVg3VjBH?=
- =?utf-8?B?L010NzB6Mm1mZEZQZS9EMk9Zc0psVWdHVlBYSHVGek5ES0ZUaTNxdDJGOVBV?=
- =?utf-8?B?TkdtR3Vtd3lxTHhyREJTc1lRR3B6LzdIQ3ZTRDNZQVNnQ0ErVVMzVUMwek5u?=
- =?utf-8?B?bG5HZXJLOFY5RnBMR2UrRVRJc1FZbDl4OU5laTA0ZmJ5TlUzcFFiRXhOYVBx?=
- =?utf-8?B?U0xWMXBoSmxUMFhyaWwyYzdPa2docFZpSWtNVWNvNWxTbkdUTER1RUV6M2pv?=
- =?utf-8?B?cE9CRDdDMTNOSThIb2luOUNMSHhPRkNwRnhQTFd4RTA1b0Y3NWZPL3c5TjBm?=
- =?utf-8?B?TjhhU242Y2hkNVBYNGZjZ0hhTDc4My9CM1BubHplczVsMGZBVUVwSDJHY2xk?=
- =?utf-8?B?eXMrakpvRENIYmdXbDk4WFJtMURLT2hGRFRFTUVQUVpmTHMzMHhQLzVVRjFT?=
- =?utf-8?B?NStBS3ZOajArZHJmWXZjRWxTbTJGY21ieTNrMXpBVkd5YWlJbWFncjJaMUVv?=
- =?utf-8?B?Yld5SEovQmR4VkVmcW1TNnR5dkN5L2E4VWJZb09pZGg4ZHZHV2c1dmM3VjYv?=
- =?utf-8?B?TWNyWDZNWGNGbThPTTFmUnltWnB0RkdPc09PeHBONmkwZzZpYkdkUjZIbmtZ?=
- =?utf-8?B?ZmRucHNUU1NJdisvUUxIdThUeW5yeGRFcVU4ck4zaXg4WG5TVnVYQ1BiWGxr?=
- =?utf-8?B?Vi92SWdYdGN6Q2JYMjQvMDU0SEZCUTBzd2ozWjVlQWhJL3dMNFJ2QVQwOXNs?=
- =?utf-8?B?QlVBVnZ6S05kSU9LS0UweHVMZnpXUHdOdDYrQ0ZVNnUxSTRTMGR2QmxnWFE2?=
- =?utf-8?B?bXQrM2JDeExwU2tsTXZESExmVTZITDNUWVVDbTRmZWlPVStQZTZiQ2tqOUpi?=
- =?utf-8?B?UVRtbXdjT0x3VFhacjFtV3IzcnlRaWxObkpnclpTVy9MUi8vdkdqYjRjSE14?=
- =?utf-8?B?TlFsVjJxSHNwbTAxK0IvWnF0TGxocitGcjU4NUFwa0o2M3VKUWxrRURxMGVB?=
- =?utf-8?B?SjFwZVFDN1ExdlNWNnhlMFNJVG5wODFOeGZuVENSNWhjVElEWWFUa2Zwekox?=
- =?utf-8?B?WSt4c0J0V2FjKzl6akdFV1Q3czlPWnhuT3RnQjM5bmRCMHZIZmFLZTRiUTZ0?=
- =?utf-8?B?UlI3WUhhc0xRdktHZDY1SjhxTFdnYnRSSldzb2Fua3VhRlNGUVJrMTJ0bEtS?=
- =?utf-8?B?SlBTSjBHRnBuNHYyMldxdi9xanpraXB2ZGlaRTFZVVBRUlJaK0F3Sk0wS3pr?=
- =?utf-8?B?dGNpdzE5eXdoR1UxU01mRTVXVG1RR2cvWEpIaEJudy9Pb0JBbjViUS9ldUVm?=
- =?utf-8?B?SzIvR0QxWUhZTFFOeERmL3FUbkVaMUVWOUNjcGo4YWdXVTVsaXBRN0F2WVVs?=
- =?utf-8?B?Q3N3MkhKdHZ4RHhGQnZodHhWdkVidUtWSU0yYndsdHFaL1l5eGNRS2FKRUYx?=
- =?utf-8?B?ajNaMHZyanJUWjIzQk9hL01hL3BZeGxmREtQV0UxODcxZ2IzS1BpS0IzUGZN?=
- =?utf-8?B?Z0lXd0NrZFFYb1ltcTUycUhMbEQzOElsRGFyWDh1Rms2Q24yb1U1NVN3QUVM?=
- =?utf-8?B?VlJSZHBMYjFDOC9Lc1krU0syZ3JySEdVS3hFR0NINDVIOWxlSjY3eTlFa0t2?=
- =?utf-8?B?WktpMFJDTy9TeStxYUZHR3RmTkY3ZE5jcHE1UmFZZk5MY0d4L3FJMXF0U2ZF?=
- =?utf-8?B?R3lHcWJKMTg3TmtUVWxRdjFFSzg5ZU0vZ0cvdkdKaEVFZVhoSGJxUjNsNmtZ?=
- =?utf-8?B?VXN5aEFBT2lDQ3BTMFFTeU5JREwvZnI0a3pSam1ISS94YXRnSzZjVzMvaWxP?=
- =?utf-8?B?RGlXZmUzckx3ZzVveWpzYlkxNm9nT0I4RGxxUnRaaHptUEtjbDdid1BsbnBC?=
- =?utf-8?B?REdwMWZOREFtSG4rcGZkZUVUM0V5MVJ6dU4rVk5zOW9qUG91a1YraTZ0NlNw?=
- =?utf-8?Q?I58VbNcTB/4iQLo98CSsAwH9yL+91ByxYRhtu/jA8LIm?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 533E717985
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 12:01:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1703246461;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=BJQmrSBfBKkF1FEAH3EILbfyiDOBLbXiZySEe1rSlv0=;
+	b=PVV3ulNs8WXTgAHZSENULp4kD00duOqe/rKzO0f6sHqUZATiS/FR2DKxIH9uxuISFywqvS
+	4HaoEXf8oPhYQQMWOyaXJ+CAXU6+0dY3G5LiUotg4TAAtx8PqajyP/6wIhqP/tZaKGFdYX
+	kbl5oCyUjDu7OT82niKcWLM6+DkOtas=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-433-6IC2kF7KOuGC0hQW2X7v9g-1; Fri,
+ 22 Dec 2023 07:00:56 -0500
+X-MC-Unique: 6IC2kF7KOuGC0hQW2X7v9g-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id CD5373C2A1D2;
+	Fri, 22 Dec 2023 12:00:55 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.39.195.169])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 776331C060AF;
+	Fri, 22 Dec 2023 12:00:52 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+	Kingdom.
+	Registered in England and Wales under Company Registration No. 3798903
+From: David Howells <dhowells@redhat.com>
+In-Reply-To: <2202548.1703245791@warthog.procyon.org.uk>
+References: <2202548.1703245791@warthog.procyon.org.uk> <20231221230153.GA1607352@dev-arch.thelio-3990X> <20231221132400.1601991-1-dhowells@redhat.com> <20231221132400.1601991-38-dhowells@redhat.com>
+Cc: dhowells@redhat.com, Nathan Chancellor <nathan@kernel.org>,
+    Anna Schumaker <Anna.Schumaker@Netapp.com>,
+    Trond Myklebust <trond.myklebust@hammerspace.com>,
+    Jeff Layton <jlayton@kernel.org>, Steve French <smfrench@gmail.com>,
+    Matthew Wilcox <willy@infradead.org>,
+    Marc Dionne <marc.dionne@auristor.com>,
+    Paulo Alcantara <pc@manguebit.com>,
+    Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
+    Dominique Martinet <asmadeus@codewreck.org>,
+    Eric Van Hensbergen <ericvh@kernel.org>,
+    Ilya Dryomov <idryomov@gmail.com>,
+    Christian Brauner <christian@brauner.io>, linux-cachefs@redhat.com,
+    linux-afs@lists.infradead.org, linux-cifs@vger.kernel.org,
+    linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+    v9fs@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+    linux-mm@kvack.org, netdev@vger.kernel.org,
+    linux-kernel@vger.kernel.org
+Subject: [PATCH] Fix oops in NFS
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DS0PR11MB7529.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f6c4fc0f-33e3-4059-e022-08dc02e57900
-X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Dec 2023 11:59:38.0585
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 7MAk/Ys/4okQGSYpAGjWsbK4cTw9eRCco00apvFkR7sKY+HcOmdt6cxi92dxBUrFtEX4Sarg8S5AUq7+W39n/Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB5309
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <2229135.1703246451.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date: Fri, 22 Dec 2023 12:00:51 +0000
+Message-ID: <2229136.1703246451@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
 
-DQo+IE9uIERlYyAyMiwgMjAyMywgYXQgMTU6MTIsIFRpYW4sIEtldmluIDxrZXZpbi50aWFuQGlu
-dGVsLmNvbT4gd3JvdGU6DQo+IA0KPiDvu78NCj4+IA0KPj4gRnJvbTogTGl1LCBZaSBMIDx5aS5s
-LmxpdUBpbnRlbC5jb20+DQo+PiBTZW50OiBGcmlkYXksIERlY2VtYmVyIDIyLCAyMDIzIDM6MDIg
-UE0NCj4+IA0KPj4gDQo+Pj4+IE9uIERlYyAyMiwgMjAyMywgYXQgMTQ6NDcsIFRpYW4sIEtldmlu
-IDxrZXZpbi50aWFuQGludGVsLmNvbT4gd3JvdGU6DQo+Pj4gDQo+Pj4gDQo+Pj4+IA0KPj4+PiBG
-cm9tOiBZYW5nLCBXZWlqaWFuZyA8d2VpamlhbmcueWFuZ0BpbnRlbC5jb20+DQo+Pj4+IFNlbnQ6
-IEZyaWRheSwgRGVjZW1iZXIgMjIsIDIwMjMgMTE6NTYgQU0NCj4+Pj4+ICsNCj4+Pj4+ICsgICAg
-eGFfZm9yX2VhY2goJmRvbWFpbi0+aW9tbXVfYXJyYXksIGksIGluZm8pIHsNCj4+Pj4+ICsgICAg
-ICAgIG5lc3RlZF9mbHVzaF9wYXNpZF9pb3RsYihpbmZvLT5pb21tdSwgZG9tYWluLCBhZGRyLA0K
-Pj4+PiBucGFnZXMsIDApOw0KPj4+Pj4gKw0KPj4+Pj4gKyAgICAgICAgaWYgKGRvbWFpbi0+aGFz
-X2lvdGxiX2RldmljZSkNCj4+Pj4+ICsgICAgICAgICAgICBjb250aW51ZTsNCj4+Pj4gDQo+Pj4+
-IFNob3VsZG4ndCB0aGlzIGJlIGlmICghZG9tYWluLT5oYXNfaW90bGJfZGV2aWNlKT8NCj4+PiAN
-Cj4+PiB5ZXMgdGhhdCBpcyB3cm9uZy4NCj4+PiANCj4+PiBhY3R1YWxseSBpdCdzIHdlaXJkIHRv
-IHB1dCBkb21haW4gY2hlY2sgaW4gYSBsb29wIG9mIGRvbWFpbi0+aW9tbXVfYXJyYXkuDQo+Pj4g
-DQo+Pj4gdGhhdCBjaGVjayBhbG9uZyB3aXRoIGRldnRsYiBmbHVzaCBzaG91bGQgYmUgZG9uZSBv
-dXQgb2YgdGhhdCBsb29wLg0KPj4gDQo+PiBNYXliZSBhZGRpbmcgYSBib29sLCBzZXQgaXQgb3V0
-IG9mIHRoZSBsb29wLCBjaGVjayB0aGUgYm9vbCBpbiB0aGUgbG9vcC4NCj4gDQo+IHRoZSBwb2lu
-dCBpcyB0aGF0IGRldiBpb3RsYiBkb2Vzbid0IHJlbHkgb24gaW5mby0+aW9tbXU6DQo+IA0KPiAg
-ICBuZXN0ZWRfZmx1c2hfZGV2X2lvdGxiKGRvbWFpbiwgYWRkciwgbWFzaywgJmZhdWx0KTsNCj4g
-DQo+IHRoZW4gd2h5IGRvIGl0IGluIHRoZSBsb29wIG9mIGluZm8tPmlvbW11Pw0KDQp5ZXMuIEl0
-IHNob3VsZCBoYXZlIGFub3RoZXIgZGV2aWNlIGxvb3AgaW5zdGVhZC4NCg==
+David Howells <dhowells@redhat.com> wrote:
+
+> A better way, though, is to move the call to nfs_netfs_inode_init()
+> and give it a flag to say whether or not we want the facility.
+
+Okay, I think I'll fold in the attached change.
+
+David
+---
+diff --git a/fs/9p/vfs_inode.c b/fs/9p/vfs_inode.c
+index 55345753ae8d..b66466e97459 100644
+--- a/fs/9p/vfs_inode.c
++++ b/fs/9p/vfs_inode.c
+@@ -249,7 +249,7 @@ void v9fs_free_inode(struct inode *inode)
+ static void v9fs_set_netfs_context(struct inode *inode)
+ {
+ 	struct v9fs_inode *v9inode =3D V9FS_I(inode);
+-	netfs_inode_init(&v9inode->netfs, &v9fs_req_ops);
++	netfs_inode_init(&v9inode->netfs, &v9fs_req_ops, true);
+ }
+ =
+
+ int v9fs_init_inode(struct v9fs_session_info *v9ses,
+diff --git a/fs/afs/dynroot.c b/fs/afs/dynroot.c
+index 1f656005018e..9c517269ff95 100644
+--- a/fs/afs/dynroot.c
++++ b/fs/afs/dynroot.c
+@@ -76,7 +76,7 @@ struct inode *afs_iget_pseudo_dir(struct super_block *sb=
+, bool root)
+ 	/* there shouldn't be an existing inode */
+ 	BUG_ON(!(inode->i_state & I_NEW));
+ =
+
+-	netfs_inode_init(&vnode->netfs, NULL);
++	netfs_inode_init(&vnode->netfs, NULL, false);
+ 	inode->i_size		=3D 0;
+ 	inode->i_mode		=3D S_IFDIR | S_IRUGO | S_IXUGO;
+ 	if (root) {
+diff --git a/fs/afs/inode.c b/fs/afs/inode.c
+index 2b44a342b4a1..381521e9e118 100644
+--- a/fs/afs/inode.c
++++ b/fs/afs/inode.c
+@@ -58,7 +58,7 @@ static noinline void dump_vnode(struct afs_vnode *vnode,=
+ struct afs_vnode *paren
+  */
+ static void afs_set_netfs_context(struct afs_vnode *vnode)
+ {
+-	netfs_inode_init(&vnode->netfs, &afs_req_ops);
++	netfs_inode_init(&vnode->netfs, &afs_req_ops, true);
+ }
+ =
+
+ /*
+diff --git a/fs/ceph/inode.c b/fs/ceph/inode.c
+index 3149d79a9dbe..0c25d326afc4 100644
+--- a/fs/ceph/inode.c
++++ b/fs/ceph/inode.c
+@@ -574,7 +574,7 @@ struct inode *ceph_alloc_inode(struct super_block *sb)
+ 	doutc(fsc->client, "%p\n", &ci->netfs.inode);
+ =
+
+ 	/* Set parameters for the netfs library */
+-	netfs_inode_init(&ci->netfs, &ceph_netfs_ops);
++	netfs_inode_init(&ci->netfs, &ceph_netfs_ops, false);
+ =
+
+ 	spin_lock_init(&ci->i_ceph_lock);
+ =
+
+diff --git a/fs/nfs/fscache.h b/fs/nfs/fscache.h
+index 5407ab8c8783..e3cb4923316b 100644
+--- a/fs/nfs/fscache.h
++++ b/fs/nfs/fscache.h
+@@ -80,7 +80,7 @@ static inline void nfs_netfs_put(struct nfs_netfs_io_dat=
+a *netfs)
+ }
+ static inline void nfs_netfs_inode_init(struct nfs_inode *nfsi)
+ {
+-	netfs_inode_init(&nfsi->netfs, &nfs_netfs_ops);
++	netfs_inode_init(&nfsi->netfs, &nfs_netfs_ops, false);
+ }
+ extern void nfs_netfs_initiate_read(struct nfs_pgio_header *hdr);
+ extern void nfs_netfs_read_completion(struct nfs_pgio_header *hdr);
+diff --git a/include/linux/netfs.h b/include/linux/netfs.h
+index a5374218efe4..06a03dd1aff1 100644
+--- a/include/linux/netfs.h
++++ b/include/linux/netfs.h
+@@ -456,22 +456,27 @@ static inline struct netfs_inode *netfs_inode(struct=
+ inode *inode)
+  * netfs_inode_init - Initialise a netfslib inode context
+  * @ctx: The netfs inode to initialise
+  * @ops: The netfs's operations list
++ * @use_zero_point: True to use the zero_point read optimisation
+  *
+  * Initialise the netfs library context struct.  This is expected to foll=
+ow on
+  * directly from the VFS inode struct.
+  */
+ static inline void netfs_inode_init(struct netfs_inode *ctx,
+-				    const struct netfs_request_ops *ops)
++				    const struct netfs_request_ops *ops,
++				    bool use_zero_point)
+ {
+ 	ctx->ops =3D ops;
+ 	ctx->remote_i_size =3D i_size_read(&ctx->inode);
+-	ctx->zero_point =3D ctx->remote_i_size;
++	ctx->zero_point =3D LLONG_MAX;
+ 	ctx->flags =3D 0;
+ #if IS_ENABLED(CONFIG_FSCACHE)
+ 	ctx->cache =3D NULL;
+ #endif
+ 	/* ->releasepage() drives zero_point */
+-	mapping_set_release_always(ctx->inode.i_mapping);
++	if (use_zero_point) {
++		ctx->zero_point =3D ctx->remote_i_size;
++		mapping_set_release_always(ctx->inode.i_mapping);
++	}
+ }
+ =
+
+ /**
+
 
