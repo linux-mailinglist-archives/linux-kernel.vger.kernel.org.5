@@ -1,306 +1,211 @@
-Return-Path: <linux-kernel+bounces-9683-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9684-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3835981C98B
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 12:59:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9114481C98E
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 13:00:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5CA111C240DE
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 11:59:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 49B0B2820E7
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 12:00:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2D4D17995;
-	Fri, 22 Dec 2023 11:57:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B192179A5;
+	Fri, 22 Dec 2023 11:59:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZukzZqvj"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB83821A1E
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 11:57:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6B98A2F4;
-	Fri, 22 Dec 2023 03:58:19 -0800 (PST)
-Received: from [10.57.87.46] (unknown [10.57.87.46])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E9D583F64C;
-	Fri, 22 Dec 2023 03:57:30 -0800 (PST)
-Message-ID: <4a137164-0a4a-4f7e-806e-ef532fa86ece@arm.com>
-Date: Fri, 22 Dec 2023 11:57:24 +0000
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DEB317985;
+	Fri, 22 Dec 2023 11:59:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1703246395; x=1734782395;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=xlzGsy2zLFFE4xWGnSgpBAySsmX5etaq6UAkksC7+7U=;
+  b=ZukzZqvjRcqaXOfi3gXQffg1Les0BPnSciLn9fUHUqaUCLghAHZ6e8Ow
+   8rFHQIYr4x8QrGCciufGjp3xyR9SVUZuuSlX/lhu8dfAX/nOR7Qwm/ofc
+   M4B7zAicziQsPB/n5DQuywYzRfhLvW2gwoQnJro5tZdgVI2UgOHS3uVCI
+   vUtLEi+h/Lstbnv8fcI5QhWWGnqujfJoE2vx7FnlztfXpOu3nSMZ69c3n
+   IKXCwdZEuKe7XUH9xdpV0XwhjtK0kvMBSk8BA4S5iGinXzvlX1E6TRynD
+   UusXW3dmCGsEsVJLBO2Vg1gnAr7Y0RW12+FgIsNQZ39hwOGAKMgWOLY/x
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10931"; a="3351795"
+X-IronPort-AV: E=Sophos;i="6.04,296,1695711600"; 
+   d="scan'208";a="3351795"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Dec 2023 03:59:55 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10931"; a="895450427"
+X-IronPort-AV: E=Sophos;i="6.04,296,1695711600"; 
+   d="scan'208";a="895450427"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 22 Dec 2023 03:59:53 -0800
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 22 Dec 2023 03:59:53 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 22 Dec 2023 03:59:53 -0800
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Fri, 22 Dec 2023 03:59:46 -0800
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.169)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Fri, 22 Dec 2023 03:59:40 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dg5EpnzUKha3vo9OquQ/T81p+nlkocw5nFZ3XNfLWcGtyuVBC5i5y3JRFPwyiv/6urJzvC7FlvkFAJHxpWc7AUK2+Eo056E90l5KB/EmEeRxqkUoWDGPTZhXLNk3Un0rbuOLuBThABw3QeMMoyUSYwm1eGQVcTr81z5ieMj6zkN26pNoFZ+YJwoqWKAkZBFioQm4cxb30bKtULYOGxQ93L2n9uIFiXnlZVP2Tpmua1AOVEDAXmK68HymN6vzLrRsH0fAs5m0Ek57JQVgUYOLLNZxXHusMcWqtT2IOL9teI7sjvBd02CKbnZ6gHqcWz3spbNXweXMLF97DNiFik8YIg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=xlzGsy2zLFFE4xWGnSgpBAySsmX5etaq6UAkksC7+7U=;
+ b=HkknTx+KeIKCtxehlODmMKKjayRFkC6rn5loZy4JGG3mqWg00CQNNBHJ+55mVgJ23xNFemzsYQkM0z7nhG6DyGoEYWMeoSNsM/PV0QnRbTtx/2C2VwrUzUhKoJwp8FrMZhNyD35cH1yYksxMRNoPrmh1uOLFSuPPBkpg5+vpfEFEXEYZmNYLgJ9I6s4a/kI3xB0ZchaLLhuugGehK/lCYOVuH0Fs9fg3ryXj1+KxLcaQ86thdDaantEb7UrWtRgvrIJDrb8hYuGrjslg1de+yqWdlMpyjjNHil3+4+kw0d27IYGc5q1wyF1j0ZnLxXK1KQbRNy1jYY1QysMEha6EaQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from DS0PR11MB7529.namprd11.prod.outlook.com (2603:10b6:8:141::20)
+ by DM4PR11MB5309.namprd11.prod.outlook.com (2603:10b6:5:390::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7113.20; Fri, 22 Dec
+ 2023 11:59:38 +0000
+Received: from DS0PR11MB7529.namprd11.prod.outlook.com
+ ([fe80::e4ae:3948:1f55:547d]) by DS0PR11MB7529.namprd11.prod.outlook.com
+ ([fe80::e4ae:3948:1f55:547d%5]) with mapi id 15.20.7113.019; Fri, 22 Dec 2023
+ 11:59:38 +0000
+From: "Liu, Yi L" <yi.l.liu@intel.com>
+To: "Tian, Kevin" <kevin.tian@intel.com>
+CC: "Yang, Weijiang" <weijiang.yang@intel.com>, "joro@8bytes.org"
+	<joro@8bytes.org>, "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+	"jgg@nvidia.com" <jgg@nvidia.com>, "robin.murphy@arm.com"
+	<robin.murphy@arm.com>, "baolu.lu@linux.intel.com"
+	<baolu.lu@linux.intel.com>, "cohuck@redhat.com" <cohuck@redhat.com>,
+	"eric.auger@redhat.com" <eric.auger@redhat.com>, "nicolinc@nvidia.com"
+	<nicolinc@nvidia.com>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+	"mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
+	"chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
+	"yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>, "peterx@redhat.com"
+	<peterx@redhat.com>, "jasowang@redhat.com" <jasowang@redhat.com>,
+	"shameerali.kolothum.thodi@huawei.com"
+	<shameerali.kolothum.thodi@huawei.com>, "lulu@redhat.com" <lulu@redhat.com>,
+	"suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
+	"iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>, "Duan,
+ Zhenzhong" <zhenzhong.duan@intel.com>, "joao.m.martins@oracle.com"
+	<joao.m.martins@oracle.com>, "Zeng, Xin" <xin.zeng@intel.com>, "Zhao, Yan Y"
+	<yan.y.zhao@intel.com>, "j.granados@samsung.com" <j.granados@samsung.com>
+Subject: Re: [PATCH v7 9/9] iommu/vt-d: Add iotlb flush for nested domain
+Thread-Topic: [PATCH v7 9/9] iommu/vt-d: Add iotlb flush for nested domain
+Thread-Index: AQHaNCP4qRuDL+bDzEuyhcu89eXATrC0rU2AgAAv1gCAAAQBdoAAAw4AgABQMN0=
+Date: Fri, 22 Dec 2023 11:59:38 +0000
+Message-ID: <65B6D347-5C85-4CB0-9CD8-1C914045B62B@intel.com>
+References: <20231221153948.119007-1-yi.l.liu@intel.com>
+ <20231221153948.119007-10-yi.l.liu@intel.com>
+ <f6302d8e-fd5f-45e1-8148-e5812c61f5c0@intel.com>
+ <BN9PR11MB52766A289D2CA50F8BD802F18C94A@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <D35102EE-F1E8-4888-8A5E-A1A723B3363D@intel.com>
+ <BN9PR11MB527672402F30F701A5EA53028C94A@BN9PR11MB5276.namprd11.prod.outlook.com>
+In-Reply-To: <BN9PR11MB527672402F30F701A5EA53028C94A@BN9PR11MB5276.namprd11.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DS0PR11MB7529:EE_|DM4PR11MB5309:EE_
+x-ms-office365-filtering-correlation-id: f6c4fc0f-33e3-4059-e022-08dc02e57900
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 9UCnRalu1KZ30lx3Ssr0GBnBm1A4DCb8XP4RwDZ8QAk32Euf0jetMQSsWgzIodutMQFcEA3ia8szjFtc5cFnxWXKxURJiJIF/09AlqQbot91xXYQRPj9XhthwEem4ofnVnmJYDmAfv726XS0FxmK886GD6seYpEf4O0RVjOwUzO+O/phEy2BBC8bkRnLosJixK9yvXuf1mJTsi39IN95Nk8+SqptIgbsBqEjmnVznZk1nR2m02eGLc+3OScBO/GAvseaTURIyIc4XwLcnzZ7pbXLAvNDCFZ6XZ8WQ4om4qjXrZdMnuQGMqSybm6LDzEivYItxkMiXDz5ebT9Vn7iZMDHk4Z24qI5rJXrhI9c8ZLoaY0Ulu2+YHL2ptGIsIply/2Baf4jZc1+0vf3ydiQ0PPI1hcb5OsDHwDbHIkMnQ1H7FdCe1usfG5eZRcamlE7wEjO/nqj9eMMMa3gz/bMQORAq+bC1DxezkfiH9c4cQqu135zw0+M1MHIsTfg3XYrQbwTybL/+RyoY/262c/WpDKzYhGV1Hbw46z6Gt1pi0zfQZNA/xQPkjOrsbiQYnVE4IolnRe8mxfASZKY2RQsORF7Dp2/02bl4Ir9EB743erGBTNNGCHvDWMgc9rRhlZqEaEWOuutxaGferH7YPE9IQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR11MB7529.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(396003)(39860400002)(366004)(136003)(230922051799003)(186009)(451199024)(1800799012)(64100799003)(478600001)(6486002)(4326008)(38100700002)(6862004)(122000001)(5660300002)(6636002)(66476007)(76116006)(316002)(66556008)(37006003)(66946007)(66446008)(54906003)(8676002)(8936002)(64756008)(2616005)(71200400001)(53546011)(6506007)(6512007)(36756003)(41300700001)(86362001)(33656002)(2906002)(82960400001)(38070700009)(7416002)(4744005)(45980500001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?LzdsRHVUMVpMb1ByZk43NEIxYkhZUEUxNjBUNVFxZld2VitNR3RseFhrZnlu?=
+ =?utf-8?B?VUNrYWFuM1ZGNlZ4WXZoa0pCQ3RHM1RoTkRVWjlCMmRrVmdzQmZpNktIMFly?=
+ =?utf-8?B?NkU2Zml1OWEya2lxWFQ2cW85Y0dvUmlJTDlFZCtYOXY0bG01YmJqNlJBTTg2?=
+ =?utf-8?B?ZXI2SzhlVGpUSURFNUJPc2xmNkdNbi9lTkZKTlVMUVo4OXhpdlZ1Vk4vSldB?=
+ =?utf-8?B?NTM3czNPR3FITVhJa1RPZXhPLzREUVVKSUtqM05vblluSlFmVkx4aVg3VjBH?=
+ =?utf-8?B?L010NzB6Mm1mZEZQZS9EMk9Zc0psVWdHVlBYSHVGek5ES0ZUaTNxdDJGOVBV?=
+ =?utf-8?B?TkdtR3Vtd3lxTHhyREJTc1lRR3B6LzdIQ3ZTRDNZQVNnQ0ErVVMzVUMwek5u?=
+ =?utf-8?B?bG5HZXJLOFY5RnBMR2UrRVRJc1FZbDl4OU5laTA0ZmJ5TlUzcFFiRXhOYVBx?=
+ =?utf-8?B?U0xWMXBoSmxUMFhyaWwyYzdPa2docFZpSWtNVWNvNWxTbkdUTER1RUV6M2pv?=
+ =?utf-8?B?cE9CRDdDMTNOSThIb2luOUNMSHhPRkNwRnhQTFd4RTA1b0Y3NWZPL3c5TjBm?=
+ =?utf-8?B?TjhhU242Y2hkNVBYNGZjZ0hhTDc4My9CM1BubHplczVsMGZBVUVwSDJHY2xk?=
+ =?utf-8?B?eXMrakpvRENIYmdXbDk4WFJtMURLT2hGRFRFTUVQUVpmTHMzMHhQLzVVRjFT?=
+ =?utf-8?B?NStBS3ZOajArZHJmWXZjRWxTbTJGY21ieTNrMXpBVkd5YWlJbWFncjJaMUVv?=
+ =?utf-8?B?Yld5SEovQmR4VkVmcW1TNnR5dkN5L2E4VWJZb09pZGg4ZHZHV2c1dmM3VjYv?=
+ =?utf-8?B?TWNyWDZNWGNGbThPTTFmUnltWnB0RkdPc09PeHBONmkwZzZpYkdkUjZIbmtZ?=
+ =?utf-8?B?ZmRucHNUU1NJdisvUUxIdThUeW5yeGRFcVU4ck4zaXg4WG5TVnVYQ1BiWGxr?=
+ =?utf-8?B?Vi92SWdYdGN6Q2JYMjQvMDU0SEZCUTBzd2ozWjVlQWhJL3dMNFJ2QVQwOXNs?=
+ =?utf-8?B?QlVBVnZ6S05kSU9LS0UweHVMZnpXUHdOdDYrQ0ZVNnUxSTRTMGR2QmxnWFE2?=
+ =?utf-8?B?bXQrM2JDeExwU2tsTXZESExmVTZITDNUWVVDbTRmZWlPVStQZTZiQ2tqOUpi?=
+ =?utf-8?B?UVRtbXdjT0x3VFhacjFtV3IzcnlRaWxObkpnclpTVy9MUi8vdkdqYjRjSE14?=
+ =?utf-8?B?TlFsVjJxSHNwbTAxK0IvWnF0TGxocitGcjU4NUFwa0o2M3VKUWxrRURxMGVB?=
+ =?utf-8?B?SjFwZVFDN1ExdlNWNnhlMFNJVG5wODFOeGZuVENSNWhjVElEWWFUa2Zwekox?=
+ =?utf-8?B?WSt4c0J0V2FjKzl6akdFV1Q3czlPWnhuT3RnQjM5bmRCMHZIZmFLZTRiUTZ0?=
+ =?utf-8?B?UlI3WUhhc0xRdktHZDY1SjhxTFdnYnRSSldzb2Fua3VhRlNGUVJrMTJ0bEtS?=
+ =?utf-8?B?SlBTSjBHRnBuNHYyMldxdi9xanpraXB2ZGlaRTFZVVBRUlJaK0F3Sk0wS3pr?=
+ =?utf-8?B?dGNpdzE5eXdoR1UxU01mRTVXVG1RR2cvWEpIaEJudy9Pb0JBbjViUS9ldUVm?=
+ =?utf-8?B?SzIvR0QxWUhZTFFOeERmL3FUbkVaMUVWOUNjcGo4YWdXVTVsaXBRN0F2WVVs?=
+ =?utf-8?B?Q3N3MkhKdHZ4RHhGQnZodHhWdkVidUtWSU0yYndsdHFaL1l5eGNRS2FKRUYx?=
+ =?utf-8?B?ajNaMHZyanJUWjIzQk9hL01hL3BZeGxmREtQV0UxODcxZ2IzS1BpS0IzUGZN?=
+ =?utf-8?B?Z0lXd0NrZFFYb1ltcTUycUhMbEQzOElsRGFyWDh1Rms2Q24yb1U1NVN3QUVM?=
+ =?utf-8?B?VlJSZHBMYjFDOC9Lc1krU0syZ3JySEdVS3hFR0NINDVIOWxlSjY3eTlFa0t2?=
+ =?utf-8?B?WktpMFJDTy9TeStxYUZHR3RmTkY3ZE5jcHE1UmFZZk5MY0d4L3FJMXF0U2ZF?=
+ =?utf-8?B?R3lHcWJKMTg3TmtUVWxRdjFFSzg5ZU0vZ0cvdkdKaEVFZVhoSGJxUjNsNmtZ?=
+ =?utf-8?B?VXN5aEFBT2lDQ3BTMFFTeU5JREwvZnI0a3pSam1ISS94YXRnSzZjVzMvaWxP?=
+ =?utf-8?B?RGlXZmUzckx3ZzVveWpzYlkxNm9nT0I4RGxxUnRaaHptUEtjbDdid1BsbnBC?=
+ =?utf-8?B?REdwMWZOREFtSG4rcGZkZUVUM0V5MVJ6dU4rVk5zOW9qUG91a1YraTZ0NlNw?=
+ =?utf-8?Q?I58VbNcTB/4iQLo98CSsAwH9yL+91ByxYRhtu/jA8LIm?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 21/23] sched: Add find_exec_ctx helper
-Content-Language: en-US
-To: John Stultz <jstultz@google.com>, LKML <linux-kernel@vger.kernel.org>
-Cc: Joel Fernandes <joelaf@google.com>, Qais Yousef <qyousef@google.com>,
- Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
- Juri Lelli <juri.lelli@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>,
- Dietmar Eggemann <dietmar.eggemann@arm.com>,
- Valentin Schneider <vschneid@redhat.com>,
- Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
- Zimuzo Ezeozue <zezeozue@google.com>, Youssef Esmat
- <youssefesmat@google.com>, Mel Gorman <mgorman@suse.de>,
- Daniel Bristot de Oliveira <bristot@redhat.com>,
- Will Deacon <will@kernel.org>, Waiman Long <longman@redhat.com>,
- Boqun Feng <boqun.feng@gmail.com>, "Paul E. McKenney" <paulmck@kernel.org>,
- Xuewen Yan <xuewen.yan94@gmail.com>, K Prateek Nayak
- <kprateek.nayak@amd.com>, Thomas Gleixner <tglx@linutronix.de>,
- kernel-team@android.com
-References: <20231220001856.3710363-1-jstultz@google.com>
- <20231220001856.3710363-22-jstultz@google.com>
-From: Metin Kaya <metin.kaya@arm.com>
-In-Reply-To: <20231220001856.3710363-22-jstultz@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DS0PR11MB7529.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f6c4fc0f-33e3-4059-e022-08dc02e57900
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Dec 2023 11:59:38.0585
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 7MAk/Ys/4okQGSYpAGjWsbK4cTw9eRCco00apvFkR7sKY+HcOmdt6cxi92dxBUrFtEX4Sarg8S5AUq7+W39n/Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB5309
+X-OriginatorOrg: intel.com
 
-On 20/12/2023 12:18 am, John Stultz wrote:
-> From: Connor O'Brien <connoro@google.com>
-> 
-> Add a helper to find the runnable owner down a chain of blocked waiters
-> 
-> This patch was broken out from a larger chain migration
-> patch originally by Connor O'Brien.
-> 
-> Cc: Joel Fernandes <joelaf@google.com>
-> Cc: Qais Yousef <qyousef@google.com>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Juri Lelli <juri.lelli@redhat.com>
-> Cc: Vincent Guittot <vincent.guittot@linaro.org>
-> Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
-> Cc: Valentin Schneider <vschneid@redhat.com>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Ben Segall <bsegall@google.com>
-> Cc: Zimuzo Ezeozue <zezeozue@google.com>
-> Cc: Youssef Esmat <youssefesmat@google.com>
-> Cc: Mel Gorman <mgorman@suse.de>
-> Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Waiman Long <longman@redhat.com>
-> Cc: Boqun Feng <boqun.feng@gmail.com>
-> Cc: "Paul E. McKenney" <paulmck@kernel.org>
-> Cc: Metin Kaya <Metin.Kaya@arm.com>
-> Cc: Xuewen Yan <xuewen.yan94@gmail.com>
-> Cc: K Prateek Nayak <kprateek.nayak@amd.com>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: kernel-team@android.com
-> Signed-off-by: Connor O'Brien <connoro@google.com>
-> [jstultz: split out from larger chain migration patch]
-> Signed-off-by: John Stultz <jstultz@google.com>
-> ---
->   kernel/sched/core.c     | 42 +++++++++++++++++++++++++++++++++++++++++
->   kernel/sched/cpupri.c   | 11 ++++++++---
->   kernel/sched/deadline.c | 15 +++++++++++++--
->   kernel/sched/rt.c       |  9 ++++++++-
->   kernel/sched/sched.h    | 10 ++++++++++
->   5 files changed, 81 insertions(+), 6 deletions(-)
-> 
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index 0c212dcd4b7a..77a79d5f829a 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -3896,6 +3896,48 @@ static void activate_blocked_entities(struct rq *target_rq,
->   	}
->   	raw_spin_unlock_irqrestore(&owner->blocked_lock, flags);
->   }
-> +
-> +static inline bool task_queued_on_rq(struct rq *rq, struct task_struct *task)
-> +{
-> +	if (!task_on_rq_queued(task))
-> +		return false;
-> +	smp_rmb();
-> +	if (task_rq(task) != rq)
-> +		return false;
-> +	smp_rmb();
-> +	if (!task_on_rq_queued(task))
-> +		return false;
-
-* Super-nit: we may want to have empty lines between `if` blocks and 
-before/after `smp_rmb()` calls.
-
-* I did not understand why we call `task_on_rq_queued(task)` twice. 
-Should we have an explanatory comment before the function definition?
-
-> +	return true;
-> +}
-> +
-> +/*
-> + * Returns the unblocked task at the end of the blocked chain starting with p
-> + * if that chain is composed entirely of tasks enqueued on rq, or NULL otherwise.
-> + */
-> +struct task_struct *find_exec_ctx(struct rq *rq, struct task_struct *p)
-> +{
-> +	struct task_struct *exec_ctx, *owner;
-> +	struct mutex *mutex;
-> +
-> +	if (!sched_proxy_exec())
-> +		return p;
-> +
-> +	lockdep_assert_rq_held(rq);
-> +
-> +	for (exec_ctx = p; task_is_blocked(exec_ctx) && !task_on_cpu(rq, exec_ctx);
-> +							exec_ctx = owner) {
-> +		mutex = exec_ctx->blocked_on;
-> +		owner = __mutex_owner(mutex);
-> +		if (owner == exec_ctx)
-> +			break;
-> +
-> +		if (!task_queued_on_rq(rq, owner) || task_current_selected(rq, owner)) {
-> +			exec_ctx = NULL;
-> +			break;
-> +		}
-> +	}
-> +	return exec_ctx;
-> +}
->   #else /* !CONFIG_SCHED_PROXY_EXEC */
->   static inline void do_activate_task(struct rq *rq, struct task_struct *p,
->   				    int en_flags)
-> diff --git a/kernel/sched/cpupri.c b/kernel/sched/cpupri.c
-> index 15e947a3ded7..53be78afdd07 100644
-> --- a/kernel/sched/cpupri.c
-> +++ b/kernel/sched/cpupri.c
-> @@ -96,12 +96,17 @@ static inline int __cpupri_find(struct cpupri *cp, struct task_struct *p,
->   	if (skip)
->   		return 0;
->   
-> -	if (cpumask_any_and(&p->cpus_mask, vec->mask) >= nr_cpu_ids)
-> +	if ((p && cpumask_any_and(&p->cpus_mask, vec->mask) >= nr_cpu_ids) ||
-> +	    (!p && cpumask_any(vec->mask) >= nr_cpu_ids))
->   		return 0;
->   
->   	if (lowest_mask) {
-> -		cpumask_and(lowest_mask, &p->cpus_mask, vec->mask);
-> -		cpumask_and(lowest_mask, lowest_mask, cpu_active_mask);
-> +		if (p) {
-> +			cpumask_and(lowest_mask, &p->cpus_mask, vec->mask);
-> +			cpumask_and(lowest_mask, lowest_mask, cpu_active_mask);
-> +		} else {
-> +			cpumask_copy(lowest_mask, vec->mask);
-> +		}
-
-I think changes in `cpupri.c` should be part of previous (`sched: Push 
-execution and scheduler context split into deadline and rt paths`) 
-patch. Because they don't seem to be related with find_exec_ctx()?
-
->   
->   		/*
->   		 * We have to ensure that we have at least one bit
-> diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
-> index 999bd17f11c4..21e56ac58e32 100644
-> --- a/kernel/sched/deadline.c
-> +++ b/kernel/sched/deadline.c
-> @@ -1866,6 +1866,8 @@ static void migrate_task_rq_dl(struct task_struct *p, int new_cpu __maybe_unused
->   
->   static void check_preempt_equal_dl(struct rq *rq, struct task_struct *p)
->   {
-> +	struct task_struct *exec_ctx;
-> +
->   	/*
->   	 * Current can't be migrated, useless to reschedule,
->   	 * let's hope p can move out.
-> @@ -1874,12 +1876,16 @@ static void check_preempt_equal_dl(struct rq *rq, struct task_struct *p)
->   	    !cpudl_find(&rq->rd->cpudl, rq_selected(rq), rq->curr, NULL))
->   		return;
->   
-> +	exec_ctx = find_exec_ctx(rq, p);
-> +	if (task_current(rq, exec_ctx))
-> +		return;
-> +
->   	/*
->   	 * p is migratable, so let's not schedule it and
->   	 * see if it is pushed or pulled somewhere else.
->   	 */
->   	if (p->nr_cpus_allowed != 1 &&
-> -	    cpudl_find(&rq->rd->cpudl, p, p, NULL))
-> +	    cpudl_find(&rq->rd->cpudl, p, exec_ctx, NULL))
->   		return;
->   
->   	resched_curr(rq);
-> @@ -2169,12 +2175,17 @@ static int find_later_rq(struct task_struct *sched_ctx, struct task_struct *exec
->   /* Locks the rq it finds */
->   static struct rq *find_lock_later_rq(struct task_struct *task, struct rq *rq)
->   {
-> +	struct task_struct *exec_ctx;
->   	struct rq *later_rq = NULL;
->   	int tries;
->   	int cpu;
->   
->   	for (tries = 0; tries < DL_MAX_TRIES; tries++) {
-> -		cpu = find_later_rq(task, task);
-> +		exec_ctx = find_exec_ctx(rq, task);
-> +		if (!exec_ctx)
-> +			break;
-> +
-> +		cpu = find_later_rq(task, exec_ctx);
->   
-
-Super-nit: this empty line should be removed to keep logically connected 
-lines closer.
-The same for find_lock_lowest_rq().
-
->   		if ((cpu == -1) || (cpu == rq->cpu))
->   			break;
-> diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
-> index 6371b0fca4ad..f8134d062fa3 100644
-> --- a/kernel/sched/rt.c
-> +++ b/kernel/sched/rt.c
-> @@ -1640,6 +1640,11 @@ static void check_preempt_equal_prio(struct rq *rq, struct task_struct *p)
->   	    !cpupri_find(&rq->rd->cpupri, rq_selected(rq), rq->curr, NULL))
->   		return;
->   
-> +	/* No reason to preempt since rq->curr wouldn't change anyway */
-> +	exec_ctx = find_exec_ctx(rq, p);
-> +	if (task_current(rq, exec_ctx))
-> +		return;
-> +
->   	/*
->   	 * p is migratable, so let's not schedule it and
->   	 * see if it is pushed or pulled somewhere else.
-> @@ -1933,12 +1938,14 @@ static int find_lowest_rq(struct task_struct *sched_ctx, struct task_struct *exe
->   /* Will lock the rq it finds */
->   static struct rq *find_lock_lowest_rq(struct task_struct *task, struct rq *rq)
->   {
-> +	struct task_struct *exec_ctx;
->   	struct rq *lowest_rq = NULL;
->   	int tries;
->   	int cpu;
->   
->   	for (tries = 0; tries < RT_MAX_TRIES; tries++) {
-> -		cpu = find_lowest_rq(task, task);
-> +		exec_ctx = find_exec_ctx(rq, task);
-> +		cpu = find_lowest_rq(task, exec_ctx);
->   
->   		if ((cpu == -1) || (cpu == rq->cpu))
->   			break;
-> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-> index ef3d327e267c..6cd473224cfe 100644
-> --- a/kernel/sched/sched.h
-> +++ b/kernel/sched/sched.h
-> @@ -3564,6 +3564,16 @@ int task_is_pushable(struct rq *rq, struct task_struct *p, int cpu)
->   
->   	return 0;
->   }
-> +
-> +#ifdef CONFIG_SCHED_PROXY_EXEC
-> +struct task_struct *find_exec_ctx(struct rq *rq, struct task_struct *p);
-> +#else /* !CONFIG_SCHED_PROXY_EXEC */
-> +static inline
-> +struct task_struct *find_exec_ctx(struct rq *rq, struct task_struct *p)
-> +{
-> +	return p;
-> +}
-> +#endif /* CONFIG_SCHED_PROXY_EXEC */
->   #endif
-
-Nit: `#ifdef CONFIG_SMP` block becomes bigger after this hunk. We should 
-append `/* CONFIG_SMP */` to this line, IMHO.
-
->   
->   #endif /* _KERNEL_SCHED_SCHED_H */
-
+DQo+IE9uIERlYyAyMiwgMjAyMywgYXQgMTU6MTIsIFRpYW4sIEtldmluIDxrZXZpbi50aWFuQGlu
+dGVsLmNvbT4gd3JvdGU6DQo+IA0KPiDvu78NCj4+IA0KPj4gRnJvbTogTGl1LCBZaSBMIDx5aS5s
+LmxpdUBpbnRlbC5jb20+DQo+PiBTZW50OiBGcmlkYXksIERlY2VtYmVyIDIyLCAyMDIzIDM6MDIg
+UE0NCj4+IA0KPj4gDQo+Pj4+IE9uIERlYyAyMiwgMjAyMywgYXQgMTQ6NDcsIFRpYW4sIEtldmlu
+IDxrZXZpbi50aWFuQGludGVsLmNvbT4gd3JvdGU6DQo+Pj4gDQo+Pj4gDQo+Pj4+IA0KPj4+PiBG
+cm9tOiBZYW5nLCBXZWlqaWFuZyA8d2VpamlhbmcueWFuZ0BpbnRlbC5jb20+DQo+Pj4+IFNlbnQ6
+IEZyaWRheSwgRGVjZW1iZXIgMjIsIDIwMjMgMTE6NTYgQU0NCj4+Pj4+ICsNCj4+Pj4+ICsgICAg
+eGFfZm9yX2VhY2goJmRvbWFpbi0+aW9tbXVfYXJyYXksIGksIGluZm8pIHsNCj4+Pj4+ICsgICAg
+ICAgIG5lc3RlZF9mbHVzaF9wYXNpZF9pb3RsYihpbmZvLT5pb21tdSwgZG9tYWluLCBhZGRyLA0K
+Pj4+PiBucGFnZXMsIDApOw0KPj4+Pj4gKw0KPj4+Pj4gKyAgICAgICAgaWYgKGRvbWFpbi0+aGFz
+X2lvdGxiX2RldmljZSkNCj4+Pj4+ICsgICAgICAgICAgICBjb250aW51ZTsNCj4+Pj4gDQo+Pj4+
+IFNob3VsZG4ndCB0aGlzIGJlIGlmICghZG9tYWluLT5oYXNfaW90bGJfZGV2aWNlKT8NCj4+PiAN
+Cj4+PiB5ZXMgdGhhdCBpcyB3cm9uZy4NCj4+PiANCj4+PiBhY3R1YWxseSBpdCdzIHdlaXJkIHRv
+IHB1dCBkb21haW4gY2hlY2sgaW4gYSBsb29wIG9mIGRvbWFpbi0+aW9tbXVfYXJyYXkuDQo+Pj4g
+DQo+Pj4gdGhhdCBjaGVjayBhbG9uZyB3aXRoIGRldnRsYiBmbHVzaCBzaG91bGQgYmUgZG9uZSBv
+dXQgb2YgdGhhdCBsb29wLg0KPj4gDQo+PiBNYXliZSBhZGRpbmcgYSBib29sLCBzZXQgaXQgb3V0
+IG9mIHRoZSBsb29wLCBjaGVjayB0aGUgYm9vbCBpbiB0aGUgbG9vcC4NCj4gDQo+IHRoZSBwb2lu
+dCBpcyB0aGF0IGRldiBpb3RsYiBkb2Vzbid0IHJlbHkgb24gaW5mby0+aW9tbXU6DQo+IA0KPiAg
+ICBuZXN0ZWRfZmx1c2hfZGV2X2lvdGxiKGRvbWFpbiwgYWRkciwgbWFzaywgJmZhdWx0KTsNCj4g
+DQo+IHRoZW4gd2h5IGRvIGl0IGluIHRoZSBsb29wIG9mIGluZm8tPmlvbW11Pw0KDQp5ZXMuIEl0
+IHNob3VsZCBoYXZlIGFub3RoZXIgZGV2aWNlIGxvb3AgaW5zdGVhZC4NCg==
 
