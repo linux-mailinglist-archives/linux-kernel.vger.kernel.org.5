@@ -1,57 +1,87 @@
-Return-Path: <linux-kernel+bounces-9654-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9642-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7BA3D81C901
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 12:19:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CA2D81C8DA
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 12:14:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 38064287C34
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 11:19:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EEE62B23595
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 11:14:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 957271803C;
-	Fri, 22 Dec 2023 11:19:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 398BF171A9;
+	Fri, 22 Dec 2023 11:14:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j4i4j7ZJ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.cecloud.com (unknown [1.203.97.240])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35BE6168BE
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 11:19:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cestc.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cestc.cn
-Received: from localhost (localhost [127.0.0.1])
-	by smtp.cecloud.com (Postfix) with ESMTP id C3ECD900113;
-	Fri, 22 Dec 2023 19:12:28 +0800 (CST)
-X-MAIL-GRAY:0
-X-MAIL-DELIVERY:1
-X-ANTISPAM-LEVEL:2
-X-ABS-CHECKED:0
-Received: from localhost.localdomain (unknown [111.48.69.247])
-	by smtp.cecloud.com (postfix) whith ESMTP id P9454T281468735582576S1703243547845870_;
-	Fri, 22 Dec 2023 19:12:28 +0800 (CST)
-X-IP-DOMAINF:1
-X-RL-SENDER:zhangyanjun@cestc.cn
-X-SENDER:zhangyanjun@cestc.cn
-X-LOGIN-NAME:zhangyanjun@cestc.cn
-X-FST-TO:kbusch@kernel.org
-X-RCPT-COUNT:7
-X-LOCAL-RCPT-COUNT:1
-X-MUTI-DOMAIN-COUNT:0
-X-SENDER-IP:111.48.69.247
-X-ATTACHMENT-NUM:0
-X-UNIQUE-TAG:<d9b099448f4e925c4519e296732a31b9>
-X-System-Flag:0
-From: zhangyanjun@cestc.cn
-To: kbusch@kernel.org,
-	axboe@kernel.dk,
-	hch@lst.de,
-	sagi@grimberg.me
-Cc: linux-nvme@lists.infradead.org,
+Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19CFE1426C;
+	Fri, 22 Dec 2023 11:14:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-50e23a4df33so2128486e87.2;
+        Fri, 22 Dec 2023 03:14:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703243676; x=1703848476; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ywwb2c8K+kZPbyhXDFCz7U5YWzVC2teLlAt2hSiJc0A=;
+        b=j4i4j7ZJEb420d9qFo3pMBUdaXgDy15Yot02E4+0+qfthRfZVJwSLxiGVgBl6y0Abn
+         9JPr8M1qFDzrp8+7MkxmNqttEQbUwiynDISlbH3lUkSpfJt8PQ47YNBfsci//2HV3Yde
+         OfssNAcJGAsgkFl0LTUDCuET17IQRB6PxkBZGXQCPeP8MtQE6WvXkZFYyHbhE1juDqm0
+         MgfezNTLXjrRpbb5rEjXIrUo4KGFglUMrK3dOvdwLb1JKKKrYxdgO3N063oTG4JTrTKu
+         Ii86XvJmKSgk8G3m0RSr4zK2bDg9VKN4JeDb6cSHrbbdbjX0sEXE5BvI08Vwv9SfEd2Y
+         SSiw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703243676; x=1703848476;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Ywwb2c8K+kZPbyhXDFCz7U5YWzVC2teLlAt2hSiJc0A=;
+        b=GvRS+yuvVTqRiFvURvzwkG+5ukXwIdKorYeMvIVLf3sWRnEFPE/xK/uaykh9gGH5T1
+         fcgMaC8JNeXeTKblzYrPOzDrFnprxCExslhfyDcUQGIBjMkR5Ml/vlTPa/SR5yw3Qj+O
+         2cgRILyA7j2/CVHKqWi9Ac5D23W1zFYDjGZGpWz9z/I4B8Qrg5A6jKKI8kYshEYwLZ5u
+         ibIz1zOjxw4RIdUuAkOTflZ0gV3oHLnqIPQMa3KqIYbBjU1UYIITCBzYbD/BgufC0HuA
+         F8A+sODZ6PaeTYEk7HfQ0vGGsdpX71FJvSHkviIytL/OSfnMD4n11iDHUqIPhdXOvSPT
+         Hqag==
+X-Gm-Message-State: AOJu0YzzUSRn5SrY7Ju7hoqNnpgu4yg5dBx8/vV31J3WEPhPGLozE5S5
+	mtcUHKZN6ZZwMwyw9P1o/Dc=
+X-Google-Smtp-Source: AGHT+IEHhoBZ6sLrw8lKHDckHa1uRnHimx5cP137ZR9Lgo9yiD12gvt8LEkOv80eCcFyVhpbiFrZ1g==
+X-Received: by 2002:ac2:5dd5:0:b0:50b:ebd1:6e8a with SMTP id x21-20020ac25dd5000000b0050bebd16e8amr572807lfq.133.1703243675755;
+        Fri, 22 Dec 2023 03:14:35 -0800 (PST)
+Received: from localhost.localdomain ([154.72.162.91])
+        by smtp.gmail.com with ESMTPSA id es15-20020a056402380f00b0055267663784sm2420469edb.11.2023.12.22.03.14.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Dec 2023 03:14:35 -0800 (PST)
+From: Brandon Cheo Fusi <fusibrandon13@gmail.com>
+To: Andre Przywara <andre.przywara@arm.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Chen-Yu Tsai <wens@csie.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>,
+	Yangtao Li <tiny.windzz@gmail.com>,
+	"Rafael J . Wysocki" <rafael@kernel.org>,
+	Viresh Kumar <viresh.kumar@linaro.org>,
+	Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: devicetree@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-sunxi@lists.linux.dev,
 	linux-kernel@vger.kernel.org,
-	zhangyanjun@cestc.cn
-Subject: [RFC] nvme-tcp: fix a possible double-free after failed to send request
-Date: Fri, 22 Dec 2023 19:12:25 +0800
-Message-Id: <20231222111225.72015-1-zhangyanjun@cestc.cn>
-X-Mailer: git-send-email 2.31.1
+	linux-pm@vger.kernel.org,
+	Brandon Cheo Fusi <fusibrandon13@gmail.com>
+Subject: [RFC PATCH v3 0/3] Add support for reading D1 efuse speed bin
+Date: Fri, 22 Dec 2023 12:14:04 +0100
+Message-Id: <20231222111407.104270-1-fusibrandon13@gmail.com>
+X-Mailer: git-send-email 2.30.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -60,87 +90,40 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Yanjun Zhang <zhangyanjun@cestc.cn>
+Hi everyone,
 
-In storage clusters constructed by nvme-tcp driver, we have encountered
-the following crash on the host kernel severval times.
+This series is an attempt to get feedback on decoding D1 efuse speed bins
+in the Sun50i H6 cpufreq driver, and turning the result into a meaningful
+value that selects voltage ranges in an OPP table.
 
-[248514.030873] nvme nvme1: failed to send request -13
-[248514.035916] ------------[ cut here ]------------
-[248514.035918] kernel BUG at mm/slub.c:379!
-[248514.037647] invalid opcode: 0000 [#1] SMP NOPTI
-[248514.039416] CPU: 0 PID: 9 Comm: kworker/0:1H Kdump: loaded Tainted: G S                5.15.67-6.cl9.x86_64 #1
-[248514.041376] Hardware name: CECLOUD CeaStor 16114/BC13MBSBC, BIOS 1.37 02/24/2023
-[248514.043433] Workqueue: nvme_tcp_wq nvme_tcp_io_work [nvme_tcp]
-[248514.045576] RIP: 0010:__slab_free+0x16a/0x320
-[248514.047751] Code: 24 20 e8 69 28 78 00 44 8b 44 24 0c 4c 8b 54 24 10 44 0f b6 5c 24 1b 0f b6 74 24 1c 48 89 04 24 4c 8b 4c 24 20 e9 28 ff ff ff <0f> 0b 41 f7 46 08 00 0d 21 00 75 a0 4d 85 ed 75 9b 80 4c 24 5b 80
-[248514.052500] RSP: 0018:ff51b1a6c0273bf0 EFLAGS: 00010246
-[248514.054798] RAX: ff2378e68268b800 RBX: 0000000080080004 RCX: ff2378e68268b000
-[248514.057038] RDX: ff2378e68268b000 RSI: ffca59110c09a200 RDI: ff2378a480034d00
-[248514.059245] RBP: ff51b1a6c0273c90 R08: 0000000000000001 R09: ffffffffc0901a0a
-[248514.061386] R10: ff2378e68268b000 R11: ffffffff86e06000 R12: ffca59110c09a200
-[248514.063423] R13: ff2378e68268b000 R14: ff2378a480034d00 R15: 0000000000000078
-[248514.065428] FS:  0000000000000000(0000) GS:ff2378d32fe00000(0000) knlGS:0000000000000000
-[248514.067456] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[248514.069531] CR2: 00007f4759e1c800 CR3: 0000001b5e5a6005 CR4: 0000000000771ef0
-[248514.071706] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[248514.073916] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[248514.076130] PKRU: 55555554
-[248514.078392] Call Trace:
-[248514.080640]  <TASK>
-[248514.082898]  ? sk_stream_alloc_skb+0x66/0x2e0
-[248514.085231]  ? tcp_skb_entail+0x11d/0x130
-[248514.087595]  ? tcp_build_frag+0xf0/0x390
-[248514.089980]  ? nvme_complete_rq+0x1a/0x1f0 [nvme_core]
-[248514.092433]  kfree+0x215/0x240
-[248514.094918]  nvme_complete_rq+0x1a/0x1f0 [nvme_core]
-[248514.097469]  nvme_tcp_recv_pdu+0x534/0x570 [nvme_tcp]
-[248514.100070]  nvme_tcp_recv_skb+0x4f/0x23e [nvme_tcp]
-[248514.102699]  ? nvme_tcp_recv_pdu+0x570/0x570 [nvme_tcp]
-[248514.105317]  tcp_read_sock+0xa0/0x270
-[248514.107958]  nvme_tcp_try_recv+0x65/0xa0 [nvme_tcp]
-[248514.110666]  ? nvme_tcp_try_send+0x16b/0x200 [nvme_tcp]
-[248514.113431]  nvme_tcp_io_work+0x4d/0xa0 [nvme_tcp]
-[248514.116247]  process_one_work+0x1e8/0x390
-[248514.119085]  worker_thread+0x53/0x3d0
-[248514.121980]  ? process_one_work+0x390/0x390
-[248514.124887]  kthread+0x124/0x150
-[248514.127835]  ? set_kthread_struct+0x50/0x50
-[248514.130836]  ret_from_fork+0x1f/0x30
-[248514.133841]  </TASK>
+I want to make sure I get this right before sending in a v3 of the D1
+cpufreq support series here
 
-By analyzing the vmcore, we know the direct cause is that the slab object
-request->special_vec was freed twicely. According to the error message
-"nvme nvme1: failed to send request -13" and nvme_tcp_request->state =
-NVME_TCP_SEND_DATA, the pdu has been send by nvme_tcp_try_send_cmd_pdu.
-And the nvme_tcp_fail_request would execute nvme_complete_rq after failed
-to send data. Then the nvme_tcp_recv_pdu may receive the responding pdu
-and the nvme_tcp_process_nvme_cqe would complete the request again. To
-avoid this slab object double-free issuse, we try to make the following
-code modifications, can you give some suggestions, thanks!
+https://lore.kernel.org/linux-sunxi/20231218110543.64044-1-fusibrandon13@gmail.com/T/#t
 
-Signed-off-by: Yanjun Zhang <zhangyanjun@cestc.cn>
----
- drivers/nvme/host/tcp.c | 3 +++
- 1 file changed, 3 insertions(+)
+which is currently stuck at
 
-diff --git a/drivers/nvme/host/tcp.c b/drivers/nvme/host/tcp.c
-index 08805f027..84f724558 100644
---- a/drivers/nvme/host/tcp.c
-+++ b/drivers/nvme/host/tcp.c
-@@ -581,6 +581,9 @@ static int nvme_tcp_process_nvme_cqe(struct nvme_tcp_queue *queue,
- 		return -EINVAL;
- 	}
- 
-+	if (!blk_mq_request_started(rq))
-+		return 0;
-+
- 	req = blk_mq_rq_to_pdu(rq);
- 	if (req->status == cpu_to_le16(NVME_SC_SUCCESS))
- 		req->status = cqe->status;
+https://lore.kernel.org/linux-sunxi/aad8302d-a015-44ee-ad11-1a4c6e00074c@sholland.org/
+
+Changes in v3:
+- Drop 'len' parameter and pointer in sunxi_cpufreq_data::efuse_xlate()
+  prototype
+
+Changes in v2:
+- Make speed bin decoding generic in one patch and add D1 support in a
+  separate patch
+- Fix OPP voltage ranges to avoid stability issues
+
+Brandon Cheo Fusi (3):
+  cpufreq: sun50i: Refactor speed bin decoding
+  cpufreq: sun50i: Add support for D1's speed bin decoding
+  riscv: dts: allwinner: Fill in OPPs
+
+ arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi | 19 +++-
+ drivers/cpufreq/sun50i-cpufreq-nvmem.c        | 89 +++++++++++++++----
+ 2 files changed, 87 insertions(+), 21 deletions(-)
+
 -- 
-2.31.1
-
-
+2.30.2
 
 
