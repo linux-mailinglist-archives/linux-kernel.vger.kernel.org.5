@@ -1,65 +1,31 @@
-Return-Path: <linux-kernel+bounces-9544-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9545-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCCAC81C74F
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 10:31:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 771A881C750
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 10:32:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4D4DB1F22AEF
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 09:31:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E5171B23EA1
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 09:32:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AC24F9F2;
-	Fri, 22 Dec 2023 09:31:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="GyuqrCAD"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E9DDF9ED;
+	Fri, 22 Dec 2023 09:32:25 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE97CF9EA
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 09:31:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-50e6984db43so428578e87.3
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 01:31:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703237462; x=1703842262; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=+UyVQwVNpvAIqqgs7TD1fFxaownq/g7+OlqRMc6qqLI=;
-        b=GyuqrCADcYjqv2KiOl3galE+qN1/t8YGuHDf72E29YhJ+ciQyGdIr9exrOB9R5I58C
-         TlygsND197aKcfR5qFOrM4SCJ96oBlPOTzIElj9MnFAGhivoa/wYsEDSrE5KmYBpm5Aw
-         Mo9XXTf5cx7gKbj7Kg1qa5cUEpbe0tEMgps63GiP0Pk2pLLAt/jkhmsfcw1hDqq5K3xR
-         CpKKiK4G39RmLbjzVDIMPzvCzDymdWol0EGliVLl7/ozeyPyo5NFt2pE6JIPGA7eQwx6
-         DXVxUgk6cW4VGUG0t+m5V5kpmk8MTsYImNM7WpyBoVJVx5cerpalHlNgHRJ/uvP0Ek7v
-         gL9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703237462; x=1703842262;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+UyVQwVNpvAIqqgs7TD1fFxaownq/g7+OlqRMc6qqLI=;
-        b=cpTNRmhkrwn/YOyw1/3olQ+CBjFyGtfFQnpfOunvxAlxvtBsIjXM3ShMxyDly7496V
-         5qzpAYjRiaC0wLGysrnphl14Gbh3CDTA/4EB+nKPC/M982Y8IatGh/ETbH6xH6YGKEOY
-         A2WdfxKIIlv0emb2HeNOWJhxM9XixL9j8XxL+iH3Ok3RmxL/o6B4URwQxHfxX0FGQzT6
-         n/Ar84a0x/5lR1L3W5aFN4KXo64Nnx0M40vrEXbiUa3WtvVeSUqWO4hyl7wAOLWtvalE
-         UWFoOiwU+1G/rdqoT5epFMWCSNu3bFqDqd/6ykG+2ovPJq0WdOnON8MWbSggCOMgOKMk
-         U4kQ==
-X-Gm-Message-State: AOJu0YxNgM31g1rkpJHGPG3r98HbfmmceqpimrMnW6+Q37ScJkJtZR/z
-	SKv07HxJxYCJuG9j8SyEqXxqKgzPgVZDWw==
-X-Google-Smtp-Source: AGHT+IH/sfkdR7FDF3DcfNua5q0NiEtBd7g4Eq7d1xEUG+U2WA8p/s0x4nv+MGYGxgsbecBF9Y4UOw==
-X-Received: by 2002:a05:6512:39c3:b0:50e:685e:7e4d with SMTP id k3-20020a05651239c300b0050e685e7e4dmr568534lfu.55.1703237461902;
-        Fri, 22 Dec 2023 01:31:01 -0800 (PST)
-Received: from [192.168.0.22] ([78.10.206.178])
-        by smtp.gmail.com with ESMTPSA id ge24-20020a170907909800b00a1d5c52d628sm1886825ejb.3.2023.12.22.01.31.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Dec 2023 01:31:01 -0800 (PST)
-Message-ID: <17fa2b28-2564-488e-86f6-979a69242999@linaro.org>
-Date: Fri, 22 Dec 2023 10:30:59 +0100
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DF92F9C8
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 09:32:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1F9582F4;
+	Fri, 22 Dec 2023 01:33:00 -0800 (PST)
+Received: from [10.57.87.46] (unknown [10.57.87.46])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 782FD3F738;
+	Fri, 22 Dec 2023 01:32:11 -0800 (PST)
+Message-ID: <4cdaca00-dc4e-4ac0-a362-56b90ca584f0@arm.com>
+Date: Fri, 22 Dec 2023 09:32:10 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -67,108 +33,391 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/1] arm64: dts: qcom: sm8550: remove
- address/size-cells from mdss_dsi1
-To: "Aiqun Yu (Maria)" <quic_aiquny@quicinc.com>,
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: Tengfei Fan <quic_tengfan@quicinc.com>, andersson@kernel.org,
- konrad.dybcio@linaro.org, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, kernel@quicinc.com
-References: <20231219003106.8663-1-quic_tengfan@quicinc.com>
- <20231219003106.8663-2-quic_tengfan@quicinc.com>
- <457e336e-004c-4721-b58d-e9ada16dc04b@linaro.org>
- <a8f168da-14f7-4377-8dea-f282a3eac0a4@quicinc.com>
- <13b61d41-6045-499e-864b-51c6cb6eacf9@linaro.org>
- <38604415-b410-4995-9c4f-525536435699@quicinc.com>
- <CAA8EJpo07gE7ZeNP6wSGTLtmF_3PKQAKFyMRZ8dk1K+f7PAxrg@mail.gmail.com>
- <ad1547cf-0520-422d-a105-ec426f526d71@quicinc.com>
- <CAA8EJppwsezPV21Uw8xTn=ra8L2jfnkHoRghDPN96O5tJsOD7A@mail.gmail.com>
- <72305a35-02e6-4ff6-8251-01f986530c5d@quicinc.com>
- <A45746C4-54C9-48D2-9DB7-52B4B56854E6@linaro.org>
- <4e328cd8-9ef7-42ce-b592-7f2216c00c0b@quicinc.com>
- <CAA8EJprE8v3bhHfyZJM9SJT=ShJ-LQvk5mR=gpdAWXF2yANWbQ@mail.gmail.com>
- <e88787dc-ed03-42d2-a6e7-fb88bbc89357@quicinc.com>
- <6a4356e2-e201-4b87-bac0-056b29a07fc8@linaro.org>
- <459ef8e4-bbbc-4a7d-969c-43f269ef6793@quicinc.com>
+Subject: Re: [PATCH v7 17/23] sched: Initial sched_football test
+ implementation
 Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <459ef8e4-bbbc-4a7d-969c-43f269ef6793@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+To: John Stultz <jstultz@google.com>, LKML <linux-kernel@vger.kernel.org>
+Cc: Joel Fernandes <joelaf@google.com>, Qais Yousef <qyousef@google.com>,
+ Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
+ Juri Lelli <juri.lelli@redhat.com>,
+ Vincent Guittot <vincent.guittot@linaro.org>,
+ Dietmar Eggemann <dietmar.eggemann@arm.com>,
+ Valentin Schneider <vschneid@redhat.com>,
+ Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
+ Zimuzo Ezeozue <zezeozue@google.com>, Youssef Esmat
+ <youssefesmat@google.com>, Mel Gorman <mgorman@suse.de>,
+ Daniel Bristot de Oliveira <bristot@redhat.com>,
+ Will Deacon <will@kernel.org>, Waiman Long <longman@redhat.com>,
+ Boqun Feng <boqun.feng@gmail.com>, "Paul E. McKenney" <paulmck@kernel.org>,
+ Xuewen Yan <xuewen.yan94@gmail.com>, K Prateek Nayak
+ <kprateek.nayak@amd.com>, Thomas Gleixner <tglx@linutronix.de>,
+ kernel-team@android.com
+References: <20231220001856.3710363-1-jstultz@google.com>
+ <20231220001856.3710363-18-jstultz@google.com>
+From: Metin Kaya <metin.kaya@arm.com>
+In-Reply-To: <20231220001856.3710363-18-jstultz@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On 22/12/2023 10:10, Aiqun Yu (Maria) wrote:
->>>>>> There is just one.
->>>>> Currently I mentioned bindings files was searched the compatible
->>>>> "qcom,mdss-dsi-ctrl", and find binding docs like "qcom,sm8550-mdss.yaml"
->>>>> "qcom,sm8450-mdss.yaml" etc.
->>>>> There is duplicate information on "qcom,sm8550-mdss.yaml" etc, while
->>>>> "qcom,mdss-common.yaml" is not common enough for my understanding.
->>>>
->>>> If you had compared the qcom,SOC-mdss.yaml, you would have seen that
->>>> they provide tight binding between compatible strings used for all the
->>>> subblocks. The `mdss-common.yaml` describes MDSS common properties. It
->>>> describes everything except the platform specifics. It can not be made
->>>> more common. And there is no duplication.
->>>>
->>>> If you think you can improve the bindings, please send the patches.
->>> I am thinking of a unified qcom,mdss.yaml instead of "qcom,*each
->>> SOC*-mdss.yaml". I will try to have a patch.
->>
->> I asked first of you to read previous discussions. If you still insist
->> on sending patch for this, it means you did not read them.
-> Do you have the previous discussion title/link that you are refereed 
-> here pls?
+On 20/12/2023 12:18 am, John Stultz wrote:
+> Reimplementation of the sched_football test from LTP:
+> https://github.com/linux-test-project/ltp/blob/master/testcases/realtime/func/sched_football/sched_football.c
+> 
+> But reworked to run in the kernel and utilize mutexes
+> to illustrate proper boosting of low priority mutex
+> holders.
+> 
+> TODO:
+> * Need a rt_mutex version so it can work w/o proxy-execution
+> * Need a better place to put it
 
-No, I don't have it. You can find it the same as me and it is not the
-job of reviewer to find them for you.
+I think also this patch can be upstreamed regardless of other Proxy 
+Execution patches, right?
 
-Best regards,
-Krzysztof
+> 
+> Cc: Joel Fernandes <joelaf@google.com>
+> Cc: Qais Yousef <qyousef@google.com>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Juri Lelli <juri.lelli@redhat.com>
+> Cc: Vincent Guittot <vincent.guittot@linaro.org>
+> Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
+> Cc: Valentin Schneider <vschneid@redhat.com>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: Ben Segall <bsegall@google.com>
+> Cc: Zimuzo Ezeozue <zezeozue@google.com>
+> Cc: Youssef Esmat <youssefesmat@google.com>
+> Cc: Mel Gorman <mgorman@suse.de>
+> Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Waiman Long <longman@redhat.com>
+> Cc: Boqun Feng <boqun.feng@gmail.com>
+> Cc: "Paul E. McKenney" <paulmck@kernel.org>
+> Cc: Metin Kaya <Metin.Kaya@arm.com>
+> Cc: Xuewen Yan <xuewen.yan94@gmail.com>
+> Cc: K Prateek Nayak <kprateek.nayak@amd.com>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: kernel-team@android.com
+> Signed-off-by: John Stultz <jstultz@google.com>
+> ---
+>   kernel/sched/Makefile              |   1 +
+>   kernel/sched/test_sched_football.c | 242 +++++++++++++++++++++++++++++
+>   lib/Kconfig.debug                  |  14 ++
+>   3 files changed, 257 insertions(+)
+>   create mode 100644 kernel/sched/test_sched_football.c
+> 
+> diff --git a/kernel/sched/Makefile b/kernel/sched/Makefile
+> index 976092b7bd45..2729d565dfd7 100644
+> --- a/kernel/sched/Makefile
+> +++ b/kernel/sched/Makefile
+> @@ -32,3 +32,4 @@ obj-y += core.o
+>   obj-y += fair.o
+>   obj-y += build_policy.o
+>   obj-y += build_utility.o
+> +obj-$(CONFIG_SCHED_RT_INVARIENT_TEST) += test_sched_football.o
+> diff --git a/kernel/sched/test_sched_football.c b/kernel/sched/test_sched_football.c
+> new file mode 100644
+> index 000000000000..9742c45c0fe0
+> --- /dev/null
+> +++ b/kernel/sched/test_sched_football.c
+> @@ -0,0 +1,242 @@
+> +// SPDX-License-Identifier: GPL-2.0+
+> +/*
+> + * Module-based test case for RT scheduling invariant
+> + *
+> + * A reimplementation of my old sched_football test
+> + * found in LTP:
+> + *   https://github.com/linux-test-project/ltp/blob/master/testcases/realtime/func/sched_football/sched_football.c
+> + *
+> + * Similar to that test, this tries to validate the RT
+> + * scheduling invariant, that the across N available cpus, the
+> + * top N priority tasks always running.
+> + *
+> + * This is done via having N offsensive players that are
+
+                                 offensive
+
+> + * medium priority, which constantly are trying to increment the
+> + * ball_pos counter.
+> + *
+> + * Blocking this, are N defensive players that are higher
+> + * priority which just spin on the cpu, preventing the medium
+> + * priroity tasks from running.
+
+       priority
+
+> + *
+> + * To complicate this, there are also N defensive low priority
+> + * tasks. These start first and each aquire one of N mutexes.
+> + * The high priority defense tasks will later try to grab the
+> + * mutexes and block, opening a window for the offsensive tasks
+> + * to run and increment the ball. If priority inheritance or
+> + * proxy execution is used, the low priority defense players
+> + * should be boosted to the high priority levels, and will
+> + * prevent the mid priority offensive tasks from running.
+> + *
+> + * Copyright © International Business Machines  Corp., 2007, 2008
+> + * Copyright (C) Google, 2023
+> + *
+> + * Authors: John Stultz <jstultz@google.com>
+> + */
+> +
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/kthread.h>
+> +#include <linux/delay.h>
+> +#include <linux/sched/rt.h>
+> +#include <linux/spinlock.h>
+> +#include <linux/mutex.h>
+> +#include <linux/rwsem.h>
+> +#include <linux/smp.h>
+> +#include <linux/slab.h>
+> +#include <linux/interrupt.h>
+> +#include <linux/sched.h>
+> +#include <uapi/linux/sched/types.h>
+> +#include <linux/rtmutex.h>
+> +
+> +atomic_t players_ready;
+> +atomic_t ball_pos;
+> +int players_per_team;
+
+Nit: Number of players cannot be lower than 0. Should it be unsigned then?
+
+> +bool game_over;
+> +
+> +struct mutex *mutex_low_list;
+> +struct mutex *mutex_mid_list;
+> +
+> +static inline
+> +struct task_struct *create_fifo_thread(int (*threadfn)(void *data), void *data,
+> +				       char *name, int prio)
+> +{
+> +	struct task_struct *kth;
+> +	struct sched_attr attr = {
+> +		.size		= sizeof(struct sched_attr),
+> +		.sched_policy	= SCHED_FIFO,
+> +		.sched_nice	= 0,
+> +		.sched_priority	= prio,
+> +	};
+> +	int ret;
+> +
+> +	kth = kthread_create(threadfn, data, name);
+> +	if (IS_ERR(kth)) {
+> +		pr_warn("%s eerr, kthread_create failed\n", __func__);
+
+Extra e at eerr?
+
+> +		return kth;
+> +	}
+> +	ret = sched_setattr_nocheck(kth, &attr);
+> +	if (ret) {
+> +		kthread_stop(kth);
+> +		pr_warn("%s: failed to set SCHED_FIFO\n", __func__);
+> +		return ERR_PTR(ret);
+> +	}
+> +
+> +	wake_up_process(kth);
+> +	return kth;
+
+I think the result of this function is actually unused. So, 
+create_fifo_thread()'s return type can be void?
+
+> +}
+> +
+> +int defense_low_thread(void *arg)
+> +{
+> +	long tnum = (long)arg;
+> +
+> +	atomic_inc(&players_ready);
+> +	mutex_lock(&mutex_low_list[tnum]);
+> +	while (!READ_ONCE(game_over)) {
+> +		if (kthread_should_stop())
+> +			break;
+> +		schedule();
+> +	}
+> +	mutex_unlock(&mutex_low_list[tnum]);
+> +	return 0;
+> +}
+> +
+> +int defense_mid_thread(void *arg)
+> +{
+> +	long tnum = (long)arg;
+> +
+> +	atomic_inc(&players_ready);
+> +	mutex_lock(&mutex_mid_list[tnum]);
+> +	mutex_lock(&mutex_low_list[tnum]);
+> +	while (!READ_ONCE(game_over)) {
+> +		if (kthread_should_stop())
+> +			break;
+> +		schedule();
+> +	}
+> +	mutex_unlock(&mutex_low_list[tnum]);
+> +	mutex_unlock(&mutex_mid_list[tnum]);
+> +	return 0;
+> +}
+> +
+> +int offense_thread(void *)
+
+Does this (no param name) build fine on Android env?
+
+> +{
+> +	atomic_inc(&players_ready);
+> +	while (!READ_ONCE(game_over)) {
+> +		if (kthread_should_stop())
+> +			break;
+> +		schedule();
+> +		atomic_inc(&ball_pos);
+> +	}
+> +	return 0;
+> +}
+> +
+> +int defense_hi_thread(void *arg)
+> +{
+> +	long tnum = (long)arg;
+> +
+> +	atomic_inc(&players_ready);
+> +	mutex_lock(&mutex_mid_list[tnum]);
+> +	while (!READ_ONCE(game_over)) {
+> +		if (kthread_should_stop())
+> +			break;
+> +		schedule();
+> +	}
+> +	mutex_unlock(&mutex_mid_list[tnum]);
+> +	return 0;
+> +}
+> +
+> +int crazy_fan_thread(void *)
+
+Same (no param name) question here.
+
+> +{
+> +	int count = 0;
+> +
+> +	atomic_inc(&players_ready);
+> +	while (!READ_ONCE(game_over)) {
+> +		if (kthread_should_stop())
+> +			break;
+> +		schedule();
+> +		udelay(1000);
+> +		msleep(2);
+> +		count++;
+> +	}
+> +	return 0;
+> +}
+> +
+> +int ref_thread(void *arg)
+> +{
+> +	struct task_struct *kth;
+> +	long game_time = (long)arg;
+> +	unsigned long final_pos;
+> +	long i;
+> +
+> +	pr_info("%s: started ref, game_time: %ld secs !\n", __func__,
+> +		game_time);
+> +
+> +	/* Create low  priority defensive team */
+
+Sorry: extra space after `low`.
+
+> +	for (i = 0; i < players_per_team; i++)
+> +		kth = create_fifo_thread(defense_low_thread, (void *)i,
+> +					 "defese-low-thread", 2);
+> +	/* Wait for the defense threads to start */
+> +	while (atomic_read(&players_ready) < players_per_team)
+> +		msleep(1);
+> +
+> +	for (i = 0; i < players_per_team; i++)
+> +		kth = create_fifo_thread(defense_mid_thread,
+> +					 (void *)(players_per_team - i - 1),
+> +					 "defese-mid-thread", 3);
+> +	/* Wait for the defense threads to start */
+> +	while (atomic_read(&players_ready) < players_per_team * 2)
+> +		msleep(1);
+> +
+> +	/* Create mid priority offensive team */
+> +	for (i = 0; i < players_per_team; i++)
+> +		kth = create_fifo_thread(offense_thread, NULL,
+> +					 "offense-thread", 5);
+> +	/* Wait for the offense threads to start */
+> +	while (atomic_read(&players_ready) < players_per_team * 3)
+> +		msleep(1);
+> +
+> +	/* Create high priority defensive team */
+> +	for (i = 0; i < players_per_team; i++)
+> +		kth = create_fifo_thread(defense_hi_thread, (void *)i,
+> +					 "defese-hi-thread", 10);
+> +	/* Wait for the defense threads to start */
+> +	while (atomic_read(&players_ready) < players_per_team * 4)
+> +		msleep(1);
+> +
+> +	/* Create high priority defensive team */
+> +	for (i = 0; i < players_per_team; i++)
+> +		kth = create_fifo_thread(crazy_fan_thread, NULL,
+> +					 "crazy-fan-thread", 15);
+> +	/* Wait for the defense threads to start */
+> +	while (atomic_read(&players_ready) < players_per_team * 5)
+> +		msleep(1);
+> +
+> +	pr_info("%s: all players checked in! Starting game.\n", __func__);
+> +	atomic_set(&ball_pos, 0);
+> +	msleep(game_time * 1000);
+> +	final_pos = atomic_read(&ball_pos);
+> +	pr_info("%s: final ball_pos: %ld\n", __func__, final_pos);
+> +	WARN_ON(final_pos != 0);
+> +	game_over = true;
+> +	return 0;
+> +}
+> +
+> +static int __init test_sched_football_init(void)
+> +{
+> +	struct task_struct *kth;
+> +	int i;
+> +
+> +	players_per_team = num_online_cpus();
+> +
+> +	mutex_low_list = kmalloc_array(players_per_team,  sizeof(struct mutex), GFP_ATOMIC);
+> +	mutex_mid_list = kmalloc_array(players_per_team,  sizeof(struct mutex), GFP_ATOMIC);
+
+* Extra space after `players_per_team,`.
+* Shouldn't we check result of `kmalloc_array()`?
+
+Same comments for `mutex_low_list` (previous) line.
+
+> +
+> +	for (i = 0; i < players_per_team; i++) {
+> +		mutex_init(&mutex_low_list[i]);
+> +		mutex_init(&mutex_mid_list[i]);
+> +	}
+> +
+> +	kth = create_fifo_thread(ref_thread, (void *)10, "ref-thread", 20);
+> +
+> +	return 0;
+> +}
+> +module_init(test_sched_football_init);
+> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> index 4405f81248fb..1d90059d190f 100644
+> --- a/lib/Kconfig.debug
+> +++ b/lib/Kconfig.debug
+> @@ -1238,6 +1238,20 @@ config SCHED_DEBUG
+>   	  that can help debug the scheduler. The runtime overhead of this
+>   	  option is minimal.
+>   
+> +config SCHED_RT_INVARIENT_TEST
+> +	tristate "RT invarient scheduling tester"
+> +	depends on DEBUG_KERNEL
+> +	help
+> +	  This option provides a kernel module that runs tests to make
+> +	  sure the RT invarient holds (top N priority tasks run on N
+> +	  available cpus).
+> +
+> +	  Say Y here if you want kernel rt scheduling tests
+> +	  to be built into the kernel.
+> +	  Say M if you want this test to build as a module.
+> +	  Say N if you are unsure.
+> +
+> +
+>   config SCHED_INFO
+>   	bool
+>   	default n
 
 
