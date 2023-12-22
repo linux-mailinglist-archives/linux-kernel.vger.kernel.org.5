@@ -1,309 +1,211 @@
-Return-Path: <linux-kernel+bounces-9518-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9519-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6DED81C6D5
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 09:48:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5DCBC81C6DC
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 09:50:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C9F11B21820
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 08:48:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1A22B285EEB
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 08:50:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F834CA59;
-	Fri, 22 Dec 2023 08:48:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D57BCA75;
+	Fri, 22 Dec 2023 08:50:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b="LwORYRx8"
+	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="gZTkRA7J"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5663FC8C8
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 08:48:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ew.tq-group.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1703234915; x=1734770915;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=oWIp5InUGyUzaylWZZL5A5hNc9Ub4HLtupMi0ioFdMs=;
-  b=LwORYRx8paCLkq9EwBpPWT6TeBITPzYDInyrsMlMcmeCB6SnXVOWdOM9
-   Qxx5ACSjI2AqzaA/hywQZ1DrRIw3lyz1dVv3ividTJjDr24Ou/3US5VcY
-   LKRuoa32Jw25PgOvSkZOi/EOTmqrUGo4E60k3AItSaTLFpEkcmyW4KM4o
-   1/EsWtYfqTA+MN0jOGT1ZR9ja27ndSd8OExHizt/QlbpxQkzrXXZpjlRZ
-   qmKcQ48X5VLzM8AsiJwDzcfS6WaxpnuXf3RCqVnQ3/8SRx0FFXdRcLYND
-   42cdbNvklb8K0ypb0SdXgEF+JosuBFXBE6gDc6yIn821tUSRFaau8s43f
-   A==;
-X-IronPort-AV: E=Sophos;i="6.04,294,1695679200"; 
-   d="scan'208";a="34649929"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 22 Dec 2023 09:48:32 +0100
-Received: from [192.168.2.128] (SCHIFFERM-M2.tq-net.de [10.121.53.15])
-	by vtuxmail01.tq-net.de (Postfix) with ESMTPA id B4A8D280075;
-	Fri, 22 Dec 2023 09:48:31 +0100 (CET)
-Message-ID: <b4eae5a8f451a3d253521a61b9625e3d7634f430.camel@ew.tq-group.com>
-Subject: Re: [PATCH] powerpc/6xx: set High BAT Enable flag on G2 cores
-From: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-To: Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc: Nicholas Piggin <npiggin@gmail.com>, "Aneesh Kumar K.V"
- <aneesh.kumar@kernel.org>, "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, 
- "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux@ew.tq-group.com" <linux@ew.tq-group.com>,  Michael Ellerman
- <mpe@ellerman.id.au>
-Date: Fri, 22 Dec 2023 09:48:31 +0100
-In-Reply-To: <2fad9563-09ee-4017-8a67-5958475d56c8@csgroup.eu>
-References: <20231221124538.159706-1-matthias.schiffer@ew.tq-group.com>
-	 <2fad9563-09ee-4017-8a67-5958475d56c8@csgroup.eu>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6000C8CF;
+	Fri, 22 Dec 2023 08:50:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3BM5kUo5029531;
+	Fri, 22 Dec 2023 09:48:59 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	selector1; bh=DXnKNS2zZsB/JGQbwoIOXKKoinM3JySMYdHFE4nrpZE=; b=gZ
+	TkRA7JkKE/ZLWoAT+HRyZ9u8wnxdq+/ialw26uKASyNf1c7NtnXE3K4kliKag55X
+	VakRbzK16GQE2JVTbMWGGenrIFfXn0I97np3raSdI+Qd+048BV6hZK0+bJMznTcn
+	8Y3iJTu4NCiviZ2O+3oL+VVFwxRafZa3skEAroeCNS22v52nqEtPMv8VyoyrEOJM
+	EH9u0QB6Cs6UTvJkNGV4uBvjU3lggSaytQKGkMxh+f+LWrKD+VDZEzhSFxMONcIe
+	RrEl6u1JKG4TolrXFBYxvF+4FoK2O4H5t34zcR9tdSYM72kaQ3vLMpY09+yblKRJ
+	Z95BufTojylX3aM78dCQ==
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3v54ksrm2v-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 22 Dec 2023 09:48:59 +0100 (CET)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 1D82E10004F;
+	Fri, 22 Dec 2023 09:48:40 +0100 (CET)
+Received: from Webmail-eu.st.com (shfdag1node2.st.com [10.75.129.70])
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 0FB4220B607;
+	Fri, 22 Dec 2023 09:48:40 +0100 (CET)
+Received: from [10.252.15.82] (10.252.15.82) by SHFDAG1NODE2.st.com
+ (10.75.129.70) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 22 Dec
+ 2023 09:48:39 +0100
+Message-ID: <24110918-5402-4877-a80f-db1228afeaa1@foss.st.com>
+Date: Fri, 22 Dec 2023 09:48:38 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 2/8] dt-bindings: display: add dt-bindings for STM32
+ LVDS device
+Content-Language: en-US
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Laurent Pinchart
+	<laurent.pinchart@ideasonboard.com>,
+        Neil Armstrong
+	<neil.armstrong@linaro.org>,
+        Jessica Zhang <quic_jesszhan@quicinc.com>,
+        Sam
+ Ravnborg <sam@ravnborg.org>,
+        Maarten Lankhorst
+	<maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof
+ Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre
+ Torgue <alexandre.torgue@foss.st.com>,
+        Yannick Fertre
+	<yannick.fertre@foss.st.com>,
+        Philippe Cornu <philippe.cornu@foss.st.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Lad Prabhakar
+	<prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Thierry Reding
+	<thierry.reding@gmail.com>
+CC: <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>
+References: <20231221122843.418650-1-raphael.gallais-pou@foss.st.com>
+ <20231221122843.418650-3-raphael.gallais-pou@foss.st.com>
+ <fcd68fbe-c543-4b6d-9b7f-bcea09918fb9@linaro.org>
+From: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
+In-Reply-To: <fcd68fbe-c543-4b6d-9b7f-bcea09918fb9@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: EQNCAS1NODE3.st.com (10.75.129.80) To SHFDAG1NODE2.st.com
+ (10.75.129.70)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-22_04,2023-12-21_02,2023-05-22_02
 
-On Thu, 2023-12-21 at 13:57 +0000, Christophe Leroy wrote:
->=20
->=20
-> Le 21/12/2023 =C3=A0 13:45, Matthias Schiffer a =C3=A9crit=C2=A0:
-> > MMU_FTR_USE_HIGH_BATS is set for G2-based cores (G2_LE, e300cX), but th=
-e
-> > high BATs need to be enabled in HID2 to work. Add register definitions
-> > and introduce a G2 variant of __setup_cpu_603.
->=20
-> Well spotted.
->=20
-> I have a mpc8321, hence e300c2. I never had the problem you had.
->=20
-> But ... looks like U-boot configuration has CONFIG_HID2_HBE so that's=20
-> set by U-boot indeed, that's the reason why I never had that problem.
-
-I'll extend the commit message to mention that U-Boot setting in v2.
-
-
->=20
-> >=20
-> > This fixes boot on CPUs like the MPC5200B with STRICT_KERNEL_RWX enable=
-d.
-> >=20
-> > Fixes: e4d6654ebe6e ("powerpc/mm/32s: rework mmu_mapin_ram()")
-> > Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-> > ---
-> >   arch/powerpc/include/asm/cpu_setup.h      |  1 +
-> >   arch/powerpc/include/asm/reg.h            |  2 ++
-> >   arch/powerpc/kernel/cpu_setup_6xx.S       | 25 ++++++++++++++++++++++=
--
-> >   arch/powerpc/kernel/cpu_specs_book3s_32.h | 10 ++++-----
-> >   4 files changed, 32 insertions(+), 6 deletions(-)
-> >=20
-> >=20
-> > I have only tested this on the MPC5200B (G2_LE), but according to the
-> > e300 manual, e300cX cores should behave the same.
-> >=20
-> > The Fixes tag is the best I could come up with - I believe that the
-> > underlying issue of setting USE_HIGH_BATS without actually enabling the=
-m
-> > is as old as Linux's PowerPC implementation, but the specific code
-> > causing the boot failure was added in the mentioned commit.
->=20
-> Agreed, before that only BATs 0 to 3 were used anyway.
-> There was also BAT 4 used by platforms/embedded6xx/wii.c  , but that's=
-=20
-> probably not a G2 ?
->=20
-> >=20
-> > Another issue I found in the code is that
-> > arch/powerpc/platforms/52xx/lite5200_sleep.S uses the SPRN_HID2 definit=
-ion
-> > which does not refer to HID2 on the 5200... but that will be for someon=
-e
-> > else to fix, if there is still anyone left using that platform.
->=20
-> Maybe file an issue for it at https://github.com/linuxppc/issues/issues=
-=20
-> if you don't plan to fix it ?
->=20
-> By the way, it looks like the SPRN_HID2 definition we have is very=20
-> specific to the IBM 750.
->=20
-
-IBM 750GX even - googling for IBM 750 came up with several other cores that=
- either don't have HID2,
-or have it at a different SPR.
+Hi Krzysztof,
 
 
-> MPC 750 has SPRN_HID2 as 1011 =3D=3D 0x3f3 like others.
-
-> >=20
-> >=20
-> > diff --git a/arch/powerpc/include/asm/cpu_setup.h b/arch/powerpc/includ=
-e/asm/cpu_setup.h
-> > index 30e2fe3895024..68d804e74d221 100644
-> > --- a/arch/powerpc/include/asm/cpu_setup.h
-> > +++ b/arch/powerpc/include/asm/cpu_setup.h
-> > @@ -35,6 +35,7 @@ void __setup_cpu_750fx(unsigned long offset, struct c=
-pu_spec *spec);
-> >   void __setup_cpu_7400(unsigned long offset, struct cpu_spec *spec);
-> >   void __setup_cpu_7410(unsigned long offset, struct cpu_spec *spec);
-> >   void __setup_cpu_745x(unsigned long offset, struct cpu_spec *spec);
-> > +void __setup_cpu_g2(unsigned long offset, struct cpu_spec *spec);
-> >=20
-> >   void __setup_cpu_ppc970(unsigned long offset, struct cpu_spec *spec);
-> >   void __setup_cpu_ppc970MP(unsigned long offset, struct cpu_spec *spec=
-);
-> > diff --git a/arch/powerpc/include/asm/reg.h b/arch/powerpc/include/asm/=
-reg.h
-> > index 4ae4ab9090a2d..f5641fcd1da85 100644
-> > --- a/arch/powerpc/include/asm/reg.h
-> > +++ b/arch/powerpc/include/asm/reg.h
-> > @@ -617,6 +617,8 @@
-> >   #endif
-> >   #define SPRN_HID2      0x3F8           /* Hardware Implementation Reg=
-ister 2 */
->=20
-> Should that HID2 be renamed to SPRN_HID2_750 to avoid confusion ?
-
-Makes sense (should the suffix be "750GX"?). I can also add a FIXME comment=
- to lite5200_sleep.S as
-part of the rename.
+Thanks for your review. I wall send another serie later with those modifications.
 
 
+Best regards,
+
+Raphaël
+
+
+On 12/21/23 18:27, Krzysztof Kozlowski wrote:
+> On 21/12/2023 13:28, Raphael Gallais-Pou wrote:
+>> Add dt-binding file for "st,stm32-lvds" compatible.
+>>
+> A nit, subject: drop second/last, redundant "dt-bindings for". The
+> "dt-bindings" prefix is already stating that these are bindings.
 >
-> >   #define SPRN_HID2_GEKKO        0x398           /* Gekko HID2 Register=
- */
-> > +#define SPRN_HID2_G2   0x3F3           /* G2 HID2 Register */
-> > +#define  HID2_HBE_G2   (1<<18)         /* High BAT Enable (G2) */
-> >   #define SPRN_IABR      0x3F2   /* Instruction Address Breakpoint Regi=
-ster */
-> >   #define SPRN_IABR2     0x3FA           /* 83xx */
-> >   #define SPRN_IBCR      0x135           /* 83xx Insn Breakpoint Contro=
-l Reg */
-> > diff --git a/arch/powerpc/kernel/cpu_setup_6xx.S b/arch/powerpc/kernel/=
-cpu_setup_6xx.S
-> > index f29ce3dd6140f..c67d32e04df9c 100644
-> > --- a/arch/powerpc/kernel/cpu_setup_6xx.S
-> > +++ b/arch/powerpc/kernel/cpu_setup_6xx.S
-> > @@ -81,6 +81,20 @@ _GLOBAL(__setup_cpu_745x)
-> >          bl      setup_745x_specifics
-> >          mtlr    r5
-> >          blr
-> > +_GLOBAL(__setup_cpu_g2)
-> > +       mflr    r5
-> > +BEGIN_MMU_FTR_SECTION
-> > +       li      r10,0
-> > +       mtspr   SPRN_SPRG_603_LRU,r10           /* init SW LRU tracking=
- */
-> > +END_MMU_FTR_SECTION_IFSET(MMU_FTR_NEED_DTLB_SW_LRU)
->=20
-> MMU_FTR_NEED_DTLB_SW_LRU is dedicated to e300 core. You should also=20
-> remove it from __setup_cpu_603
-
-Will do, thanks.
-
->=20
-> > +
-> > +BEGIN_FTR_SECTION
-> > +       bl      __init_fpu_registers
-> > +END_FTR_SECTION_IFCLR(CPU_FTR_FPU_UNAVAILABLE)
-> > +       bl      setup_common_caches
-> > +       bl      setup_g2_hid2
-> > +       mtlr    r5
-> > +       blr
-> >=20
-> >   /* Enable caches for 603's, 604, 750 & 7400 */
-> >   SYM_FUNC_START_LOCAL(setup_common_caches)
-> > @@ -115,6 +129,16 @@ SYM_FUNC_START_LOCAL(setup_604_hid0)
-> >          blr
-> >   SYM_FUNC_END(setup_604_hid0)
-> >=20
-> > +/* Enable high BATs for G2 (G2_LE, e300cX) */
-> > +SYM_FUNC_START_LOCAL(setup_g2_hid2)
-> > +       mfspr   r11,SPRN_HID2_G2
-> > +       oris    r11,r11,HID2_HBE_G2@h
-> > +       mtspr   SPRN_HID2_G2,r11
-> > +       sync
-> > +       isync
-> > +       blr
-> > +SYM_FUNC_END(setup_g2_hid2)
-> > +
-> >   /* 7400 <=3D rev 2.7 and 7410 rev =3D 1.0 suffer from some
-> >    * erratas we work around here.
-> >    * Moto MPC710CE.pdf describes them, those are errata
-> > @@ -495,4 +519,3 @@ _GLOBAL(__restore_cpu_setup)
-> >          mtcr    r7
-> >          blr
-> >   _ASM_NOKPROBE_SYMBOL(__restore_cpu_setup)
-> > -
-> > diff --git a/arch/powerpc/kernel/cpu_specs_book3s_32.h b/arch/powerpc/k=
-ernel/cpu_specs_book3s_32.h
-> > index 3714634d194a1..83f054fcf837c 100644
-> > --- a/arch/powerpc/kernel/cpu_specs_book3s_32.h
-> > +++ b/arch/powerpc/kernel/cpu_specs_book3s_32.h
-> > @@ -69,7 +69,7 @@ static struct cpu_spec cpu_specs[] __initdata =3D {
-> >                  .mmu_features           =3D MMU_FTR_USE_HIGH_BATS,
-> >                  .icache_bsize           =3D 32,
-> >                  .dcache_bsize           =3D 32,
-> > -               .cpu_setup              =3D __setup_cpu_603,
-> > +               .cpu_setup              =3D __setup_cpu_g2,
-> >                  .machine_check          =3D machine_check_generic,
-> >                  .platform               =3D "ppc603",
-> >          },
-> > @@ -83,7 +83,7 @@ static struct cpu_spec cpu_specs[] __initdata =3D {
-> >                  .mmu_features           =3D MMU_FTR_USE_HIGH_BATS,
-> >                  .icache_bsize           =3D 32,
-> >                  .dcache_bsize           =3D 32,
-> > -               .cpu_setup              =3D __setup_cpu_603,
-> > +               .cpu_setup              =3D __setup_cpu_g2,
-> >                  .machine_check          =3D machine_check_83xx,
-> >                  .platform               =3D "ppc603",
-> >          },
-> > @@ -96,7 +96,7 @@ static struct cpu_spec cpu_specs[] __initdata =3D {
-> >                  .mmu_features           =3D MMU_FTR_USE_HIGH_BATS | MM=
-U_FTR_NEED_DTLB_SW_LRU,
-> >                  .icache_bsize           =3D 32,
-> >                  .dcache_bsize           =3D 32,
-> > -               .cpu_setup              =3D __setup_cpu_603,
-> > +               .cpu_setup              =3D __setup_cpu_g2,
-> >                  .machine_check          =3D machine_check_83xx,
-> >                  .platform               =3D "ppc603",
-> >          },
-> > @@ -109,7 +109,7 @@ static struct cpu_spec cpu_specs[] __initdata =3D {
-> >                  .mmu_features           =3D MMU_FTR_USE_HIGH_BATS | MM=
-U_FTR_NEED_DTLB_SW_LRU,
-> >                  .icache_bsize           =3D 32,
-> >                  .dcache_bsize           =3D 32,
-> > -               .cpu_setup              =3D __setup_cpu_603,
-> > +               .cpu_setup              =3D __setup_cpu_g2,
-> >                  .machine_check          =3D machine_check_83xx,
-> >                  .num_pmcs               =3D 4,
-> >                  .platform               =3D "ppc603",
-> > @@ -123,7 +123,7 @@ static struct cpu_spec cpu_specs[] __initdata =3D {
-> >                  .mmu_features           =3D MMU_FTR_USE_HIGH_BATS | MM=
-U_FTR_NEED_DTLB_SW_LRU,
-> >                  .icache_bsize           =3D 32,
-> >                  .dcache_bsize           =3D 32,
-> > -               .cpu_setup              =3D __setup_cpu_603,
-> > +               .cpu_setup              =3D __setup_cpu_g2,
-> >                  .machine_check          =3D machine_check_83xx,
-> >                  .num_pmcs               =3D 4,
-> >                  .platform               =3D "ppc603",
-> > --
-> > TQ-Systems GmbH | M=C3=BChlstra=C3=9Fe 2, Gut Delling | 82229 Seefeld, =
-Germany
-> > Amtsgericht M=C3=BCnchen, HRB 105018
-> > Gesch=C3=A4ftsf=C3=BChrer: Detlef Schneider, R=C3=BCdiger Stahl, Stefan=
- Schneider
-> > https://www.tq-group.com/
-
---=20
-TQ-Systems GmbH | M=C3=BChlstra=C3=9Fe 2, Gut Delling | 82229 Seefeld, Germ=
-any
-Amtsgericht M=C3=BCnchen, HRB 105018
-Gesch=C3=A4ftsf=C3=BChrer: Detlef Schneider, R=C3=BCdiger Stahl, Stefan Sch=
-neider
-https://www.tq-group.com/
+>> Signed-off-by: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
+>> ---
+>>  .../bindings/display/st,stm32-lvds.yaml       | 114 ++++++++++++++++++
+>>  1 file changed, 114 insertions(+)
+>>  create mode 100644 Documentation/devicetree/bindings/display/st,stm32-lvds.yaml
+>>
+> ...
+>
+>> +properties:
+>> +  "#clock-cells":
+>> +    const: 0
+>> +
+>> +  compatible:
+>> +    const: st,stm32-lvds
+> Please put compatible as first.
+>
+>> +
+>> +  reg:
+>> +    maxItems: 1
+>> +
+>> +  clocks:
+>> +    items:
+>> +      - description: APB peripheral clock
+>> +      - description: Reference clock for the internal PLL
+>> +
+>> +  clock-names:
+>> +    items:
+>> +      - const: pclk
+>> +      - const: ref
+>> +
+>> +  resets:
+>> +    maxItems: 1
+>> +
+>> +  ports:
+>> +    $ref: /schemas/graph.yaml#/properties/ports
+>> +
+>> +    properties:
+>> +      port@0:
+>> +        $ref: /schemas/graph.yaml#/properties/port
+>> +        description: |
+>> +          LVDS input port node, connected to the LTDC RGB output port.
+>> +
+>> +      port@1:
+>> +        $ref: /schemas/graph.yaml#/properties/port
+>> +        description: |
+>> +          LVDS output port node, connected to a panel or bridge input port.
+> Ports are not required? I would assume it won't work without input and
+> output.
+>
+>> +
+>> +required:
+>> +  - "#clock-cells"
+>> +  - compatible
+>> +  - reg
+>> +  - clocks
+>> +  - clock-names
+>> +  - resets
+>> +  - ports
+>> +
+>> +unevaluatedProperties: false
+> additionalProperties instead... or did I miss some $ref anywhere?
+>
+>> +
+>> +examples:
+>> +  - |
+>> +    #include <dt-bindings/bus/stm32mp25_sys_bus.h>
+>> +    #include <dt-bindings/clock/stm32mp25-clks.h>
+>> +    #include <dt-bindings/reset/stm32mp25-resets.h>
+>> +
+>> +    lvds: lvds@48060000 {
+>> +        #clock-cells = <0>;
+>> +        compatible = "st,stm32-lvds";
+> compatible is always the first property.
+>
+>> +        reg = <0x48060000 0x2000>;
+> put clock-cells here
+>
+>> +        clocks = <&rcc CK_BUS_LVDS>, <&rcc CK_KER_LVDSPHY>;
+>> +        clock-names = "pclk", "ref";
+>> +        resets = <&rcc LVDS_R>;
+> Best regards,
+> Krzysztof
+>
 
