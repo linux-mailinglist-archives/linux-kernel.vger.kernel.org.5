@@ -1,53 +1,64 @@
-Return-Path: <linux-kernel+bounces-9875-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9857-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 247C481CCA4
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 17:18:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5AC381CC71
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 16:57:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9CD521F21144
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 16:18:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9C0B428497D
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 15:57:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A69CA24202;
-	Fri, 22 Dec 2023 16:18:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4E61241EA;
+	Fri, 22 Dec 2023 15:57:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=inbox.ru header.i=@inbox.ru header.b="wI5IBZ8q";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=inbox.ru header.i=@inbox.ru header.b="ogZnb0/x"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="PnBRINe/"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from fallback17.i.mail.ru (fallback17.i.mail.ru [79.137.243.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 237B824B3D
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 16:18:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=inbox.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=inbox.ru
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=inbox.ru; s=mail4;
-	h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:From:Subject:Content-Type:Content-Transfer-Encoding:To:Cc; bh=tFX7RIj6C4VOXEVclZN5OjxZXLaRdz1+7SGbge9WIxs=;
-	t=1703261894;x=1703351894; 
-	b=wI5IBZ8qI73eWxO8Rukjh2mI9mufiGcdEtwsWalAfyh2PpOVN9rCUSa80TnuLUggppioQQ6vVPznmhytf/eyfTKCB83wBTY8PBPI3pL2qXBQ1n4IanRLh2Ofu4+P5LFkQvAjVg8C40f4sguGgVbUqKp/zNGQAY50f3JFPWUR/kOeh2rqnRFQ0TxJuPtUHdSYe7UTtA3bEjWvlJVFcOhQ3Oz74RTuB62nHx8l5S6JyC7Cthp5SETLvHzL9Ytw3fE4YGzAB3R57ZYrT1zzUiWJ9rszkAJaZHiezn/HhACY36F8GU98gw9XiKH+PDzOfl6DtEDR+fuGq2TP//9OGDfAHA==;
-Received: from [10.12.4.21] (port=52596 helo=smtp42.i.mail.ru)
-	by fallback17.i.mail.ru with esmtp (envelope-from <fido_max@inbox.ru>)
-	id 1rGhpv-00FFLQ-63
-	for linux-kernel@vger.kernel.org; Fri, 22 Dec 2023 18:53:19 +0300
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=inbox.ru;
-	s=mail4; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:References
-	:Cc:To:Subject:MIME-Version:Date:Message-ID:From:Sender:Reply-To:To:Cc:
-	Content-Type:Content-Transfer-Encoding:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
-	List-Archive:X-Cloud-Ids:Disposition-Notification-To;
-	bh=tFX7RIj6C4VOXEVclZN5OjxZXLaRdz1+7SGbge9WIxs=; t=1703260399; x=1703350399; 
-	b=ogZnb0/xHvzaQE75GbxHmpzAx6t+XiY4+odaxklkb2laoD5i7gNxVkYhArRjuz+zimsJAqP/qdb
-	+t54uhxRXh4EKNAv34r8ufSjfDEOJC+QJenjmbpBYJl1t/GEUki5MbNn1spD4yGZnyndwJi/KIEvV
-	k51Gw/PuK6m5ZdqVhXuBm/bdw4SuhS7fKPSvEERFqA07hotUbqFWvPUaYODsp5RyaGhPA0ku7T2lE
-	C7JBBO5CmH2kclKrTdmLQm6DAahzy5Lktv7Af99c0qGhaOdMDubLzJukLMnHDEpZ5xlCVm58iaoh3
-	g4etdAzIqtRKYtA3uM3IHC2NoFGsS1AvX+Uw==;
-Received: by smtp42.i.mail.ru with esmtpa (envelope-from <fido_max@inbox.ru>)
-	id 1rGhpg-00796u-0F; Fri, 22 Dec 2023 18:53:04 +0300
-Message-ID: <6fe34090-656d-491f-8173-217d20144166@inbox.ru>
-Date: Fri, 22 Dec 2023 18:53:03 +0300
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F07FD241E2
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 15:57:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-552ff8d681aso5547931a12.1
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 07:57:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1703260633; x=1703865433; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=5Q1L2FzZl19SgOcMo3d90a51few8p57KgwJWkO/uZ4k=;
+        b=PnBRINe/TLCo2amU2M/wsZC7BZZXhnZJfCPfLEdTfU5EuEplaiX7lae4WTGVqPPMVf
+         tZIwHasz5ZVtFWVFXU+o+ybM87tuGae6dVcqFuggaBnI5Vw+GRMnB1pErS++BwBxERpH
+         H0//odRDBnCs5EOcZAjKF/JB1si2LQPOR3i7Fi8/x8k7LgZ29BWO9huYtqsm1gj+Jomw
+         seXbxBsGlAx579f5bpkwzVvwP0xZYsyoMUP9ly/DHnHEGwPKGEA3beFcoS5ECtBo0KDo
+         +YPAz70kkkKvbtsRvKhfrHG7ZOD/qk+CNGiF3J4GkhtTTv2JhBg8sdXlrDxtddeh1qKI
+         co0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703260633; x=1703865433;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5Q1L2FzZl19SgOcMo3d90a51few8p57KgwJWkO/uZ4k=;
+        b=LYZJ1umW8k2I+JpgbQewdG39c0xY+QBp171M1Al2J9vJvdVQAF5emQYRQjXfLG4qZK
+         e5t6iYZFlSmzBgYsBUdQqUjrxQ4cOUIi9rKNKeJsKVjihNkEw6bijW0/0BoM8WlqCDY0
+         Wzs5Xf4OK7rE2qWJNL9tBzu1ZDXHke6Ryn0OiXX9Gse7Zu57W8ZP8Z3SD2UtGlQEae0f
+         SoNmDjZApYU/8HhEGEZC70SKCyAeBBbKWG7k7XvOJnPyrvUx+UNMJBbUHTS2TkGrBIWj
+         gpPjNdrHY5Dw0/m/XQd6Z6dpUXtZtgEFhYDEU+eQRXy/EGQEzypbvxoyGq069WadyqQK
+         dBRg==
+X-Gm-Message-State: AOJu0YyoGfj2nbuGp8lLQ53eoNJyD6lJ5y/rUWPPExov6JgKjA2NHb8x
+	f7a2UYyAbHiJ49aejy267JHzSh83+amllA==
+X-Google-Smtp-Source: AGHT+IFBEkIPeYXUytR4Bh2/BYOZfGKH6cpe5WBxErHKO7qqCF6J3YdDinIEH80rAs9LX9xUn31FZA==
+X-Received: by 2002:a17:906:1d6:b0:a26:968c:b4a8 with SMTP id 22-20020a17090601d600b00a26968cb4a8mr1386234ejj.2.1703260633190;
+        Fri, 22 Dec 2023 07:57:13 -0800 (PST)
+Received: from [192.168.0.22] ([78.10.206.178])
+        by smtp.gmail.com with ESMTPSA id rh9-20020a17090720e900b00a269e87ad84sm2162877ejb.189.2023.12.22.07.57.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 22 Dec 2023 07:57:12 -0800 (PST)
+Message-ID: <e8b8819b-d79a-4325-a2b7-eeb86b9562a2@linaro.org>
+Date: Fri, 22 Dec 2023 16:57:11 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -55,81 +66,77 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/1] riscv: set ARCH_DMA_DEFAULT_COHERENT if
- RISCV_DMA_NONCOHERENT is not set
+Subject: Re: [PATCH 1/2] dt-bindings: phy: qcom,sc8280xp-qmp-pcie-phy:
+ Document the X1E80100 QMP PCIe PHYs
 Content-Language: en-US
-To: Jiaxun Yang <jiaxun.yang@flygoat.com>, Conor Dooley <conor@kernel.org>
-Cc: Christoph Hellwig <hch@lst.de>, linux-riscv@lists.infradead.org,
- linux-kernel@vger.kernel.org, robh@kernel.org, mpe@ellerman.id.au,
- aou@eecs.berkeley.edu, palmer@dabbelt.com, paul.walmsley@sifive.com
-References: <20231221185152.327231-1-fido_max@inbox.ru>
- <20231221-discount-decade-e306e5878c46@spud>
- <f31d929c-fa0a-4046-be05-38e92afa5d92@flygoat.com>
- <20231222041428.GA2803@lst.de>
- <c53c22dd-c482-4808-bdd7-e81c01c04f9e@inbox.ru>
- <20231222-outburst-spoiling-75082a7826dd@spud>
- <be10eb21-a0ef-416e-9c0c-d53326996fba@inbox.ru>
- <7bc138f7-d5e9-471a-ae82-d6c490645623@flygoat.com>
-From: Maxim Kochetkov <fido_max@inbox.ru>
-In-Reply-To: <7bc138f7-d5e9-471a-ae82-d6c490645623@flygoat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Mailru-Src: smtp
-X-4EC0790: 10
-X-7564579A: 78E4E2B564C1792B
-X-77F55803: 4F1203BC0FB41BD9F008C97756F746CA109546F350B61F5EDC408D7902253DD5182A05F5380850408BBE584FEAE74C4539FF6257257E6F732B69E9FC229A0382F9F108893D24C065
-X-7FA49CB5: FF5795518A3D127A4AD6D5ED66289B5278DA827A17800CE7D3DF794D859AA4BFEA1F7E6F0F101C67BD4B6F7A4D31EC0BCC500DACC3FED6E28638F802B75D45FF8AA50765F790063745476ED688D943148638F802B75D45FF36EB9D2243A4F8B5A6FCA7DBDB1FC311F39EFFDF887939037866D6147AF826D8C6DD7975580F9310C78194386F3CEFB36F9789CCF6C18C3F8528715B7D10C86878DA827A17800CE78C592797616C97AB9FA2833FD35BB23D9E625A9149C048EE26055571C92BF10FF04B652EEC242312D2E47CDBA5A96583BD4B6F7A4D31EC0BC014FD901B82EE079FA2833FD35BB23D27C277FBC8AE2E8BE2CCD8F0CAA010FB389733CBF5DBD5E9B5C8C57E37DE458B9E9CE733340B9D5F3BBE47FD9DD3FB595F5C1EE8F4F765FC8C7ADC89C2F0B2A5E2021AF6380DFAD18AA50765F790063735872C767BF85DA227C277FBC8AE2E8BDCE939D40DBB93CA75ECD9A6C639B01B4E70A05D1297E1BBCB5012B2E24CD356
-X-C1DE0DAB: 0D63561A33F958A5A9DDD64047EE0ECD726471AB7954A9BFC5C376C41ADB842DF87CCE6106E1FC07E67D4AC08A07B9B0735DFC8FA7AC1207CB5012B2E24CD356
-X-C8649E89: 1C3962B70DF3F0ADBF74143AD284FC7177DD89D51EBB7742424CF958EAFF5D571004E42C50DC4CA955A7F0CF078B5EC49A30900B95165D34D041FB2E16F174C4814B294BBADEE008254CAADB2070B4D94B27FDBDE07EC7DA9DFAD9A56969026F1D7E09C32AA3244C5A6F8828DC41BDF772EC9D558279C71A35DA7DC5AF9B58C0AFF760E3CF2A505DB6C6411D86935C892AB2189BCAD71E73D640157F23F2FFE137E69C174A41D00C
-X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2bioj2irTGYQEnL3NODs1OB0pRw==
-X-Mailru-Sender: 689FA8AB762F7393590D8C940224AE33BFF2CCA92290786441A33AD183A5E18A98CC072019C18A892CA7F8C7C9492E1F2F5E575105D0B01ADBE2EF17B331888EEAB4BC95F72C04283CDA0F3B3F5B9367
-X-Mras: Ok
-X-7564579A: 646B95376F6C166E
-X-77F55803: 6242723A09DB00B46003E5D5A82ECDADC2F5468305071511C06403940444F9E8049FFFDB7839CE9E0BADB79DF678AC5C7542F321C104C84D7141874FD8F9EA385E883CF4852BFECB
-X-7FA49CB5: 0D63561A33F958A546C116D757D560B50E904A40390BE319D5DDF046E9BEDDEBCACD7DF95DA8FC8BD5E8D9A59859A8B64071617579528AACCC7F00164DA146DAFE8445B8C89999728AA50765F7900637006720155ACF5028389733CBF5DBD5E9C8A9BA7A39EFB766F5D81C698A659EA7CC7F00164DA146DA9985D098DBDEAEC86FF1B927F95F3316F6B57BC7E6449061A352F6E88A58FB86F5D81C698A659EA775ECD9A6C639B01B78DA827A17800CE78DD9044B304389D4731C566533BA786AA5CC5B56E945C8DA
-X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2bioj2irTGYQEnL3RnJf2YMVcBQ==
-X-Mailru-MI: 8000000000000800
-X-Mras: Ok
+To: Abel Vesa <abel.vesa@linaro.org>, Andy Gross <agross@kernel.org>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Vinod Koul <vkoul@kernel.org>,
+ Kishon Vijay Abraham I <kishon@kernel.org>, Rob Herring
+ <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231222-x1e80100-phy-pcie-v1-0-b74ac13390bf@linaro.org>
+ <20231222-x1e80100-phy-pcie-v1-1-b74ac13390bf@linaro.org>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231222-x1e80100-phy-pcie-v1-1-b74ac13390bf@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-
-
-On 22.12.2023 18:45, Jiaxun Yang wrote:
+On 22/12/2023 11:40, Abel Vesa wrote:
+> Document the QMP PCIe PHYs on the X1E80100 platform.
 > 
-> 
-> 在 2023/12/22 15:38, Maxim Kochetkov 写道:
->>
->>
->> On 22.12.2023 17:54, Conor Dooley wrote:
->>
->>>> etc..) do not have this feature. These devices will use value from
->>>> device_initialize(). And we have no possibility to change
->>>> dma_default_coherent value by disabling ARCH_DMA_DEFAULT_COHERENT.
->>>> Moreover, changing dma_default_coherent from false to true may cause
->>>> regression for other devices.
->>>
->>> How can there be a regression when dma has been coherent by default for
->>> the RISC-V kernel from day 1?
->>
->> Before ARCH_DMA_DEFAULT_COHERENT patch dma_default_coherent was used 
->> unassigned as "false" in device_initialize():
->> ..........
->> #if defined(CONFIG_ARCH_HAS_SYNC_DMA_FOR_DEVICE) || \
->>     defined(CONFIG_ARCH_HAS_SYNC_DMA_FOR_CPU) || \
->>     defined(CONFIG_ARCH_HAS_SYNC_DMA_FOR_CPU_ALL)
->>     dev->dma_coherent = dma_default_coherent;
->> #endif
->> ..........
->> And now it becomes "true". It may change behavior of other non-DT 
->> drivers.
-> I don't see any problem here, default is default.
-> Actually leaving those device with  dev->dma_coherent = false is risky, 
-> because
-> we can't guarantee underlying cache flush functions are here.
-> 
-> If a non-dt device do need to override it, it should be done in 
-> arch_setup_dma_ops.
+> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+> ---
 
-But arch_setup_dma_ops() is called only from of_dma_configure_id() and 
-acpi_dma_configure_id(). So it works only for DT and ACPI devices. What 
-about platform_device?
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+
+Best regards,
+Krzysztof
+
 
