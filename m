@@ -1,330 +1,105 @@
-Return-Path: <linux-kernel+bounces-9789-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9790-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A6EC81CB7C
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 15:46:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95F2581CB83
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 15:49:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2E9A61C2217B
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 14:46:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C4C5B1C21B4E
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 14:49:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8FE223741;
-	Fri, 22 Dec 2023 14:46:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C64623741;
+	Fri, 22 Dec 2023 14:49:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="tfNCGd+o"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TlMgyIJu"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99C7622F0E
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 14:45:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-5e82f502a4cso15170627b3.0
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 06:45:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703256357; x=1703861157; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=X5aKN360JjsKDYNBN+XtA40DpitxGOEQzYpjBK6DPwo=;
-        b=tfNCGd+o8lk4MCVUCUoKGrOTWdvnssfwZfnig9magpoZzIHpB6+zXxHFwyTkgZpowG
-         j0s6Nf064i2tNon1H3g/Y8S3bfLQ5vrw8G5wnyOSCx15+YQdVEHj2JBeFUzrDHgZZem8
-         XgxmghpoSQqExxcDNs1+N36ZfcqNXvh5sgqv2pJzI4gn9nD1K3iBkDKwwhouq2tDAx95
-         yYlrEAA47yjE0EOi4lGznSf+vQ4CGiuV4cjbRdY4faV8SDPayZsOpYbVkni5jGCuHZM1
-         vmXT6sadUHbFniOm4v26f7i8bczc8ZFWEVFEMA5F0u9FTmRzjRrvNbwZEMyasGcClkKL
-         BUhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703256357; x=1703861157;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=X5aKN360JjsKDYNBN+XtA40DpitxGOEQzYpjBK6DPwo=;
-        b=M/O9mlq9z9awv4ILl/r8mxK/V0JGdmdLmXJR++Q6Z6MMUjN/CSwZg4TNmzRzsqCyCU
-         /mh38trVbXpqnWqZNPplwBCk4u7N5aOaPM9n48LiaND6lf9LPd+rUSwkkjCXp1ln5ccU
-         aW9X8nJ8ntKwHZBlzk8deqRkIg2zpP/6zEQOIu6bmtYZ+ah3aX/hOT3GbtA1jlhgcAbK
-         6ZOd0ayTmy5nettPrL8QDJns3+Li8kcmKMWx83KRFavAYQkdgv8ndq2tnaSir4hZ8LcZ
-         tsrbUrUpFzlhgTNx4Oy80pYsAnosHa5E+vE/kBIjm6DIlaWWY3UFNxsG6xIPF0gzjFZu
-         ryLw==
-X-Gm-Message-State: AOJu0YzssAArQgOOOMpCl7i+Q2V1tScazRR/yLXVKj60IZ5Tc7BBG8KE
-	aOxQUQr8LbS/b4VDCiVegBtDJzNAbGm0fyUNLAoueE7PjK7DxQ==
-X-Google-Smtp-Source: AGHT+IFgdAnI8wwdkjon9iGs5E7wL5s4K7uoY6vrW0njQ+C898eXih0nAoTxA9J/8JClt58StVDTyf51M5XSr7eofPg=
-X-Received: by 2002:a0d:d656:0:b0:5e8:851f:77d1 with SMTP id
- y83-20020a0dd656000000b005e8851f77d1mr1067697ywd.35.1703256357545; Fri, 22
- Dec 2023 06:45:57 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F5A523742;
+	Fri, 22 Dec 2023 14:49:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2FE7BC433C7;
+	Fri, 22 Dec 2023 14:49:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703256588;
+	bh=lQ8zwules50AdfT7MsVqZCb8SpNAPPm1C3PvbI7RSio=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=TlMgyIJu63rGlNhUoHWMZ3Kjn1p6rG3cPZCwVTycd+pjvW+7qGQuL66FmzEDC8Q+u
+	 mYTL76RZd71aj/7TxWQMaUg3ZvoSfVc5fi/j3LwD3bh6LU43f9pd6ZA3ZMI72PYTnH
+	 hHfLg3I4gWwMhJkJtXwD45GfrEMV1QjhMuri2lEkTn9qJ8zySSn4NDJ+4LpaGSkuLU
+	 RyRpmV+Lda++txXKPJi2IcL3s1NaqdC0IODa59MSRT+llJsrfkm9UZoF3hx+itaQcS
+	 W5oS1IV9x0WUPAk3TfVQjgdBoFFR0PLqm8VyxGLWbA78XsK/YBoeaw62PzljMCJGXC
+	 VKX2zGhuuF19Q==
+Date: Fri, 22 Dec 2023 14:49:42 +0000
+From: Mark Brown <broonie@kernel.org>
+To: =?iso-8859-1?Q?Andr=E9?= Apitzsch <git@apitzsch.eu>
+Cc: Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Liam Girdwood <lgirdwood@gmail.com>
+Subject: Re: [PATCH] dt-bindings: regulator: Convert ti,tps65133 to YAML
+Message-ID: <b67eba2a-b07a-4076-92bb-07bd0faf338e@sirena.org.uk>
+References: <20231217-tps65132-v1-1-73c69a960d28@apitzsch.eu>
+ <170282308261.876422.2237767392476986368.robh@kernel.org>
+ <951a01b5da3061e1ac1d396ba7f6629e3a0e9a1e.camel@apitzsch.eu>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231222-x1e80100-phy-edp-compatible-refactor-v2-0-ab5786c2359f@linaro.org>
- <20231222-x1e80100-phy-edp-compatible-refactor-v2-2-ab5786c2359f@linaro.org>
-In-Reply-To: <20231222-x1e80100-phy-edp-compatible-refactor-v2-2-ab5786c2359f@linaro.org>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Fri, 22 Dec 2023 16:45:47 +0200
-Message-ID: <CAA8EJpqPNzvA0yTqqSuXGHKxXoofJUQpAiHazoULru8A85YXHA@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] phy: qcom: edp: Add set_mode op for configuring
- eDP/DP submode
-To: Abel Vesa <abel.vesa@linaro.org>
-Cc: Vinod Koul <vkoul@kernel.org>, Kishon Vijay Abraham I <kishon@kernel.org>, 
-	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Johan Hovold <johan@kernel.org>, linux-phy@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
-	devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-
-On Fri, 22 Dec 2023 at 15:01, Abel Vesa <abel.vesa@linaro.org> wrote:
->
-> Future platforms should not use different compatibles to differentiate
-> between eDP and DP mode. Instead, they should use a single compatible as the
-> IP block is the same. It will be the job of the controller to set the submode
-> of the PHY accordingly. Rework the device match config data so that it only
-> keeps the different knobs rather than swing and pre-emphasis tables.
->
-> The existing platforms will remain with separate compatibles for each mode.
->
-> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
-> ---
->  drivers/phy/qualcomm/phy-qcom-edp.c | 90 ++++++++++++++++++++++++++++---------
->  1 file changed, 69 insertions(+), 21 deletions(-)
->
-> diff --git a/drivers/phy/qualcomm/phy-qcom-edp.c b/drivers/phy/qualcomm/phy-qcom-edp.c
-> index 8e5078304646..efd7015c73ec 100644
-> --- a/drivers/phy/qualcomm/phy-qcom-edp.c
-> +++ b/drivers/phy/qualcomm/phy-qcom-edp.c
-> @@ -14,6 +14,7 @@
->  #include <linux/module.h>
->  #include <linux/of.h>
->  #include <linux/phy/phy.h>
-> +#include <linux/phy/phy-dp.h>
->  #include <linux/platform_device.h>
->  #include <linux/regulator/consumer.h>
->  #include <linux/reset.h>
-> @@ -68,19 +69,21 @@
->
->  #define TXn_TRAN_DRVR_EMP_EN                    0x0078
->
-> -struct qcom_edp_cfg {
-> -       bool is_dp;
-> -
-> -       /* DP PHY swing and pre_emphasis tables */
-> +struct qcom_edp_swing_pre_emph_cfg {
->         const u8 (*swing_hbr_rbr)[4][4];
->         const u8 (*swing_hbr3_hbr2)[4][4];
->         const u8 (*pre_emphasis_hbr_rbr)[4][4];
->         const u8 (*pre_emphasis_hbr3_hbr2)[4][4];
->  };
->
-> +struct qcom_edp_phy_cfg {
-> +       bool is_edp;
-> +       bool needs_swing_pre_emph_cfg;
-
-I think something like needs_voltage_config sounds simpler and prettier.
-
-> +};
-> +
->  struct qcom_edp {
->         struct device *dev;
-> -       const struct qcom_edp_cfg *cfg;
-> +       const struct qcom_edp_swing_pre_emph_cfg *swing_pre_emph_cfg;
->
->         struct phy *phy;
->
-> @@ -96,6 +99,8 @@ struct qcom_edp {
->
->         struct clk_bulk_data clks[2];
->         struct regulator_bulk_data supplies[2];
-> +
-> +       bool is_edp;
->  };
->
->  static const u8 dp_swing_hbr_rbr[4][4] = {
-> @@ -126,8 +131,7 @@ static const u8 dp_pre_emp_hbr2_hbr3[4][4] = {
->         { 0x04, 0xff, 0xff, 0xff }
->  };
->
-> -static const struct qcom_edp_cfg dp_phy_cfg = {
-> -       .is_dp = true,
-> +static const struct qcom_edp_swing_pre_emph_cfg dp_phy_swing_pre_emph_cfg = {
->         .swing_hbr_rbr = &dp_swing_hbr_rbr,
->         .swing_hbr3_hbr2 = &dp_swing_hbr2_hbr3,
->         .pre_emphasis_hbr_rbr = &dp_pre_emp_hbr_rbr,
-> @@ -162,18 +166,29 @@ static const u8 edp_pre_emp_hbr2_hbr3[4][4] = {
->         { 0x00, 0xff, 0xff, 0xff }
->  };
->
-> -static const struct qcom_edp_cfg edp_phy_cfg = {
-> -       .is_dp = false,
-> +static const struct qcom_edp_swing_pre_emph_cfg edp_phy_swing_pre_emph_cfg = {
->         .swing_hbr_rbr = &edp_swing_hbr_rbr,
->         .swing_hbr3_hbr2 = &edp_swing_hbr2_hbr3,
->         .pre_emphasis_hbr_rbr = &edp_pre_emp_hbr_rbr,
->         .pre_emphasis_hbr3_hbr2 = &edp_pre_emp_hbr2_hbr3,
->  };
->
-> +static struct qcom_edp_phy_cfg sc7280_dp_phy_cfg = {
-> +};
-> +
-> +static struct qcom_edp_phy_cfg sc8280xp_dp_phy_cfg = {
-> +       .needs_swing_pre_emph_cfg = true,
-> +};
-> +
-> +static struct qcom_edp_phy_cfg sc8280xp_edp_phy_cfg = {
-> +       .is_edp = true,
-> +       .needs_swing_pre_emph_cfg = true,
-> +};
-> +
->  static int qcom_edp_phy_init(struct phy *phy)
->  {
->         struct qcom_edp *edp = phy_get_drvdata(phy);
-> -       const struct qcom_edp_cfg *cfg = edp->cfg;
-> +       const struct qcom_edp_swing_pre_emph_cfg *cfg = edp->swing_pre_emph_cfg;
->         int ret;
->         u8 cfg8;
->
-> @@ -200,7 +215,7 @@ static int qcom_edp_phy_init(struct phy *phy)
->                DP_PHY_PD_CTL_PLL_PWRDN | DP_PHY_PD_CTL_DP_CLAMP_EN,
->                edp->edp + DP_PHY_PD_CTL);
->
-> -       if (cfg && cfg->is_dp)
-> +       if (cfg && !edp->is_edp)
->                 cfg8 = 0xb7;
->         else
->                 cfg8 = 0x37;
-> @@ -234,7 +249,7 @@ static int qcom_edp_phy_init(struct phy *phy)
->
->  static int qcom_edp_set_voltages(struct qcom_edp *edp, const struct phy_configure_opts_dp *dp_opts)
->  {
-> -       const struct qcom_edp_cfg *cfg = edp->cfg;
-> +       const struct qcom_edp_swing_pre_emph_cfg *cfg = edp->swing_pre_emph_cfg;
->         unsigned int v_level = 0;
->         unsigned int p_level = 0;
->         u8 ldo_config;
-> @@ -261,7 +276,7 @@ static int qcom_edp_set_voltages(struct qcom_edp *edp, const struct phy_configur
->         if (swing == 0xff || emph == 0xff)
->                 return -EINVAL;
->
-> -       ldo_config = (cfg && cfg->is_dp) ? 0x1 : 0x0;
-> +       ldo_config = edp->is_edp ? 0x0 : 0x1;
->
->         writel(ldo_config, edp->tx0 + TXn_LDO_CONFIG);
->         writel(swing, edp->tx0 + TXn_TX_DRV_LVL);
-> @@ -447,10 +462,10 @@ static int qcom_edp_set_vco_div(const struct qcom_edp *edp, unsigned long *pixel
->  static int qcom_edp_phy_power_on(struct phy *phy)
->  {
->         const struct qcom_edp *edp = phy_get_drvdata(phy);
-> -       const struct qcom_edp_cfg *cfg = edp->cfg;
-> +       const struct qcom_edp_swing_pre_emph_cfg *cfg = edp->swing_pre_emph_cfg;
->         u32 bias0_en, drvr0_en, bias1_en, drvr1_en;
->         unsigned long pixel_freq;
-> -       u8 ldo_config;
-> +       u8 ldo_config = 0x0;
->         int timeout;
->         int ret;
->         u32 val;
-> @@ -468,7 +483,8 @@ static int qcom_edp_phy_power_on(struct phy *phy)
->                 return timeout;
->
->
-> -       ldo_config = (cfg && cfg->is_dp) ? 0x1 : 0x0;
-> +       if (cfg && !edp->is_edp)
-> +               ldo_config = 0x1;
->
->         writel(ldo_config, edp->tx0 + TXn_LDO_CONFIG);
->         writel(ldo_config, edp->tx1 + TXn_LDO_CONFIG);
-> @@ -589,6 +605,31 @@ static int qcom_edp_phy_power_off(struct phy *phy)
->         return 0;
->  }
->
-> +static int qcom_edp_phy_set_mode(struct phy *phy, enum phy_mode mode, int submode)
-> +{
-> +       struct qcom_edp *edp = phy_get_drvdata(phy);
-> +
-> +       if (mode != PHY_MODE_DP)
-> +               return -EINVAL;
-> +
-> +       switch (submode) {
-> +       case PHY_SUBMODE_DP:
-> +               edp->swing_pre_emph_cfg = &dp_phy_swing_pre_emph_cfg;
-> +               edp->is_edp = false;
-> +               break;
-> +
-> +       case PHY_SUBMODE_EDP:
-> +               edp->swing_pre_emph_cfg = &edp_phy_swing_pre_emph_cfg;
-
-Won't this override the sc7280 config which doesn't set the
-.needs_swing_pre_emph_cfg?
-So even
-
-> +               edp->is_edp = true;
-> +               break;
-> +
-> +       default:
-> +               return -EINVAL;
-> +       }
-> +
-> +       return 0;
-> +}
-> +
->  static int qcom_edp_phy_exit(struct phy *phy)
->  {
->         struct qcom_edp *edp = phy_get_drvdata(phy);
-> @@ -604,6 +645,7 @@ static const struct phy_ops qcom_edp_ops = {
->         .configure      = qcom_edp_phy_configure,
->         .power_on       = qcom_edp_phy_power_on,
->         .power_off      = qcom_edp_phy_power_off,
-> +       .set_mode       = qcom_edp_phy_set_mode,
->         .exit           = qcom_edp_phy_exit,
->         .owner          = THIS_MODULE,
->  };
-> @@ -770,6 +812,7 @@ static int qcom_edp_clks_register(struct qcom_edp *edp, struct device_node *np)
->
->  static int qcom_edp_phy_probe(struct platform_device *pdev)
->  {
-> +       const struct qcom_edp_phy_cfg *cfg = of_device_get_match_data(&pdev->dev);
->         struct phy_provider *phy_provider;
->         struct device *dev = &pdev->dev;
->         struct qcom_edp *edp;
-> @@ -780,7 +823,12 @@ static int qcom_edp_phy_probe(struct platform_device *pdev)
->                 return -ENOMEM;
->
->         edp->dev = dev;
-> -       edp->cfg = of_device_get_match_data(&pdev->dev);
-> +       edp->is_edp = cfg->is_edp;
-> +
-> +       if (cfg->needs_swing_pre_emph_cfg)
-> +               edp->swing_pre_emph_cfg = edp->is_edp ?
-> +                                               &edp_phy_swing_pre_emph_cfg :
-> +                                               &dp_phy_swing_pre_emph_cfg;
->
->         edp->edp = devm_platform_ioremap_resource(pdev, 0);
->         if (IS_ERR(edp->edp))
-> @@ -839,10 +887,10 @@ static int qcom_edp_phy_probe(struct platform_device *pdev)
->  }
->
->  static const struct of_device_id qcom_edp_phy_match_table[] = {
-> -       { .compatible = "qcom,sc7280-edp-phy" },
-> -       { .compatible = "qcom,sc8180x-edp-phy" },
-> -       { .compatible = "qcom,sc8280xp-dp-phy", .data = &dp_phy_cfg },
-> -       { .compatible = "qcom,sc8280xp-edp-phy", .data = &edp_phy_cfg },
-> +       { .compatible = "qcom,sc7280-edp-phy" , .data = &sc7280_dp_phy_cfg, },
-> +       { .compatible = "qcom,sc8180x-edp-phy", .data = &sc7280_dp_phy_cfg, },
-> +       { .compatible = "qcom,sc8280xp-dp-phy", .data = &sc8280xp_dp_phy_cfg, },
-> +       { .compatible = "qcom,sc8280xp-edp-phy", .data = &sc8280xp_edp_phy_cfg, },
->         { }
->  };
->  MODULE_DEVICE_TABLE(of, qcom_edp_phy_match_table);
->
-> --
-> 2.34.1
->
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="UQoCBZBzcizwRyOz"
+Content-Disposition: inline
+In-Reply-To: <951a01b5da3061e1ac1d396ba7f6629e3a0e9a1e.camel@apitzsch.eu>
+X-Cookie: Familiarity breeds attempt.
 
 
--- 
-With best wishes
-Dmitry
+--UQoCBZBzcizwRyOz
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, Dec 22, 2023 at 08:50:14AM +0100, Andr=E9 Apitzsch wrote:
+> Am Sonntag, dem 17.12.2023 um 08:24 -0600 schrieb Rob Herring:
+> > On Sun, 17 Dec 2023 14:21:39 +0100, Andr=E9 Apitzsch wrote:
+
+> > dtschema/dtc warnings/errors:
+> > /builds/robherring/dt-review-
+> > ci/linux/Documentation/devicetree/bindings/regulator/ti,tps65132.yaml
+> > : 'maintainers' is a required property
+> > 	hint: Metaschema for devicetree binding documentation
+> > 	from schema $id:
+> > http://devicetree.org/meta-schemas/base.yaml#
+
+> I haven't add a maintainer, yet, as the driver for tps65132 doesn't
+> list one.
+
+> Who is willing to be listed as maintainer for this device or who can be
+> asked to become a maintainer for tps65132?
+
+You could just put the list in as a fallback I guess?
+
+The requirement for DT maintainer does seem to in conflict with the push
+to convert things when people are doing incidental work on the driver...
+
+--UQoCBZBzcizwRyOz
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmWFogYACgkQJNaLcl1U
+h9DrOQf/eA9mDu+6BbsDbSGYBa06sQX8bYLVtXz5BKCJdAJLtI0NfeEHshJe07u9
+oVUTRHb3U8bVjrfGoyrHZK2AUTuCx0ZEh5TK1yucr/xsaOibyeKS7DrlA0V5Ig9R
+0Vrkd9yrfa0Qv9k/l0CB1GORlmo1bPxV7trL6GjHB/i0BkJeKo0wqEp6MOOwTc0l
+aLZvsaZFYGBtFB0wSTAFdTHKpce5xjGG7oNbhA6xST5oOS6nAaJAVs553p/uDspx
+Z5HZCDyeBaSAiIPMej1Fu9BxHM6j2E0C/uSnsg0zi99ZuRHMvrtDT2RjJonXTBUm
+/crS7sndsevxlwTHkZWo4RPkqC4uyg==
+=3Z9i
+-----END PGP SIGNATURE-----
+
+--UQoCBZBzcizwRyOz--
 
