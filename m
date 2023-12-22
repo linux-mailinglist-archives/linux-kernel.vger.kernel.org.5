@@ -1,115 +1,118 @@
-Return-Path: <linux-kernel+bounces-9719-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9720-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C12E881CA2E
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 13:47:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EFDF381CA31
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 13:47:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 770541F2287C
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 12:47:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DAE951C21645
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 12:47:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6091C18631;
-	Fri, 22 Dec 2023 12:46:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 809CD18636;
+	Fri, 22 Dec 2023 12:47:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TIfgSUDs"
+	dkim=pass (2048-bit key) header.d=flygoat.com header.i=@flygoat.com header.b="El/Eu3P0";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="2PMZ1l7M"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 197001803A;
-	Fri, 22 Dec 2023 12:46:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703249210; x=1734785210;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=CHn976YL5HBziRVUDO+1XcDkDlkynI0AtiosgSm9of8=;
-  b=TIfgSUDsNZmBGorfcsxahOdjUWyFnnY9gyDbk8Nh/9HfyB6q687KlsPV
-   hcySZFxN1nHm4/VsQpV8naWLsATrC0P4qB94am925ox+H7uFNjPyq3ui3
-   l1vW/UmDQe/MccXNSEaMbARjEZAUb1Viype3/HNuZyUK2ckLHA5Pz1BVZ
-   7MAntAZEahopxHfL529iWdyfp/xG4W4+DVtOb7lO3GGixT8OMD/uvNGcp
-   Y2t5dV7oexdmJ0LN4C9P5Ym3B5Xr/0PiC+nxjrDlgbbXKN2dmDg/4N8nw
-   bSnazQczgaZ70DvD1ZgT5mdYRm5jfK6StIpQv9TiKb/xzoldPjiRCBeeX
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10931"; a="460444172"
-X-IronPort-AV: E=Sophos;i="6.04,296,1695711600"; 
-   d="scan'208";a="460444172"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Dec 2023 04:46:49 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10931"; a="780541262"
-X-IronPort-AV: E=Sophos;i="6.04,296,1695711600"; 
-   d="scan'208";a="780541262"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga007.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Dec 2023 04:46:45 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@intel.com>)
-	id 1rGevK-00000008969-0kvJ;
-	Fri, 22 Dec 2023 14:46:42 +0200
-Date: Fri, 22 Dec 2023 14:46:41 +0200
-From: Andy Shevchenko <andriy.shevchenko@intel.com>
-To: Mark Hasemeyer <markhas@chromium.org>
-Cc: Raul Rangel <rrangel@chromium.org>, LKML <linux-kernel@vger.kernel.org>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Tzung-Bi Shih <tzungbi@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Rob Herring <robh@kernel.org>, Sudeep Holla <sudeep.holla@arm.com>,
-	Daniel Scally <djrscally@gmail.com>,
-	Frank Rowand <frowand.list@gmail.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-	Len Brown <lenb@kernel.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Sakari Ailus <sakari.ailus@linux.intel.com>,
-	devicetree@vger.kernel.org, linux-acpi@vger.kernel.org
-Subject: Re: [PATCH v2 20/22] device property: Modify fwnode irq_get() to use
- resource
-Message-ID: <ZYWFMU2UN09J0Ef4@smile.fi.intel.com>
-References: <20231220235459.2965548-1-markhas@chromium.org>
- <20231220165423.v2.20.I38ac58ab04985a404ed6551eb5813fa7841ef410@changeid>
- <ZYRD9Y3Y_jd1NBs8@smile.fi.intel.com>
- <CANg-bXDLC_+mxFU+dHyCx1K=HKTwwGw+r__6_++Co2-viTbsgQ@mail.gmail.com>
- <CAHQZ30BOA7zuRrN-kK5Qw+NYSVydfhJ0gDPr9q-U+7VKXHzG8g@mail.gmail.com>
- <CANg-bXAsaKJxQ8xON59BAH1_SdVqvCQfDTco-osehjLW2T0Vmg@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B3F1182BB;
+	Fri, 22 Dec 2023 12:47:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=flygoat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flygoat.com
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+	by mailout.west.internal (Postfix) with ESMTP id F166A3200A22;
+	Fri, 22 Dec 2023 07:47:05 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Fri, 22 Dec 2023 07:47:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
+	cc:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm3; t=1703249225;
+	 x=1703335625; bh=tIVbnmL5/XEhiKUG9sZN0NOkNUx7Xn+vtggbKdx4D0Y=; b=
+	El/Eu3P0vz/aRPJ06xGvxbWtolatYWrNTpoOVBp/+9FFiJfLkWNRJ2OcVz0yL8yu
+	hW1eTzQfat9oDV/SzM5Ks4W0TVp+l2Kadb57smJ1by07LkoGnX9vRThpi5aOJFld
+	NXxn5jA5BRdBMeBKy1vgMak09GlE/3jIJ4h0P7C5xdJL8O4t5wpTSKqE7QCe6ZRp
+	JciWMlI+8Lk2dcjvuenJaNAofbT5J67IpBvY9C5EaZ4isuGUmXvcsk+g/B9tASyc
+	sfMjU0N4V0XwODSiJdlcx5JvrRh3A1clMBgkLv/lwfR7/nWCV6Nx+hlQXcMlljBr
+	OH8a8q066sRYLPnlxaYFGQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1703249225; x=
+	1703335625; bh=tIVbnmL5/XEhiKUG9sZN0NOkNUx7Xn+vtggbKdx4D0Y=; b=2
+	PMZ1l7MuonvF1m8nyyIWYDeRVlP7Wc7j6pYgq3pvxwr/JvsMBPupss3U13sFYmI4
+	kE0yc/jSwQuxu1qU6e3sE6igHZIVwmApKCUsKszT5A4Zv5hX1tRwHNJ6edsVE5KB
+	GdpV7rg0JNtXqOQ4IC8wtuza7swcqhg2BylJbFaCzQ7T6W5XhYLBdoPailti0/c7
+	crjjBAX3RL7Hn+fGSv07XTGMo3R8zCEVc/Xf1KzkD0wmsBmH722RXawswh6RCDml
+	9h3EIN5+as1NBzrpQuObN/Z9L/ScAs/kpBq/+I4ceYK3LrulVdyFCjEyqJ5aXXri
+	/r7WNE5NcnP6nLnxGK7cw==
+X-ME-Sender: <xms:SYWFZeLoMZLVOsY-YImjZWFtfhLRIsXsrFtO6hsw5vmDKh06UsSz2g>
+    <xme:SYWFZWJQyQpTWinbY8Snrq6WJtJrIYEnka2X8OfE0wDNxh-lrXF-PZGFl9UkSTsEe
+    jfZpSH6LPr4XFSXofg>
+X-ME-Received: <xmr:SYWFZeudp4OdrLEJXEENdm2FwQQJo8YhP-ELlXwpd_eOBro_UwM-kD-L1WVxISxSTdGGs-TT-HJW4VNNUPYa_OCokCfj13FK8kq6bkA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvddujedggeduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepkfffgggfuffvvehfhfgjtgfgsehtkeertddtvdejnecuhfhrohhmpeflihgr
+    gihunhcujggrnhhguceojhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomheqne
+    cuggftrfgrthhtvghrnhepleeuffehheegleeuvdelgffhueekjeetueevuefhffdtgfeu
+    hfeggfeukefffedtnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
+    hfrhhomhepjhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomh
+X-ME-Proxy: <xmx:SYWFZTbLxklLbpt9pv-UB12Cb0BmTETT-5RL-Podmc1ICn1khG8hlQ>
+    <xmx:SYWFZVbOQmpiHPyephu0bCTk2Ym7IKA3F_VcX7hBCspBvB-FSzuqtA>
+    <xmx:SYWFZfC6AZDutSYTd2VbuqW7A7_RgWDQInCIlIkzWNcr-4jmgf-_gQ>
+    <xmx:SYWFZZGOrJ1mn9VQ37tE-d5M0ZiD7yARnmwlxPqCJzoeEAP_GOD4kQ>
+Feedback-ID: ifd894703:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 22 Dec 2023 07:47:04 -0500 (EST)
+Message-ID: <936a4dd1-b595-49b4-ab19-f587a9adb000@flygoat.com>
+Date: Fri, 22 Dec 2023 12:47:03 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANg-bXAsaKJxQ8xON59BAH1_SdVqvCQfDTco-osehjLW2T0Vmg@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 07/10] MIPS: traps: Handle CPU with non standard vint
+ offset
+Content-Language: en-US
+To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+ gregory.clement@bootlin.com, vladimir.kondratiev@intel.com
+References: <20231027221106.405666-1-jiaxun.yang@flygoat.com>
+ <20231027221106.405666-8-jiaxun.yang@flygoat.com>
+ <ZYV+zdm4fjYgATVW@alpha.franken.de>
+From: Jiaxun Yang <jiaxun.yang@flygoat.com>
+In-Reply-To: <ZYV+zdm4fjYgATVW@alpha.franken.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Thu, Dec 21, 2023 at 04:59:42PM -0700, Mark Hasemeyer wrote:
-> >> > > -int fwnode_irq_get(const struct fwnode_handle *fwnode, unsigned int index)
-> >> > > +int fwnode_irq_get_resource(const struct fwnode_handle *fwnode,
-> >> > > +                         unsigned int index, struct resource *r)
-> >> >
-> >> > It's perfectly fine to replace ) by , on the previous line, no need
-> >> > to make it shorter.
-> >>
-> >> That puts the line at 115 chars? checkpatch.pl allows a maximum line
-> >> length of 100. I can bump the 'index' argument up a line and keep it
-> >> to a length of 95?
-> >
-> > clang-format should do the right thing.
-> 
-> It formats the line as-is in the patch: with 'unsigned int index' on
-> the next line.
 
-Exactly, and I don't think we need that "smartness" in this case.
 
--- 
-With Best Regards,
-Andy Shevchenko
+在 2023/12/22 12:19, Thomas Bogendoerfer 写道:
+> On Fri, Oct 27, 2023 at 11:11:03PM +0100, Jiaxun Yang wrote:
+>> Some BMIPS cpus has none standard start offset for vector interrupts.
+>>
+>> Handle those CPUs in vector size calculation and handler setup process.
+> hmm, I see no connection to what this series is fixing. How does it
+> work without this patch ?
 
+In this series reservation of exception vector is moved to here, so it's 
+critical
+to have correct size.
+
+Thanks
+- Jiaxun
+
+>
+> Thomas.
+>
 
 
