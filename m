@@ -1,127 +1,122 @@
-Return-Path: <linux-kernel+bounces-9603-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9604-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F11F81C84C
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 11:40:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A832B81C84F
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 11:41:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 513601C22006
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 10:40:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 52CD11F21DC8
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 10:41:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7600F14F81;
-	Fri, 22 Dec 2023 10:40:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D56914F92;
+	Fri, 22 Dec 2023 10:41:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NbRxY4N3"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="lTSR9CDg"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFCC612E67;
-	Fri, 22 Dec 2023 10:40:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2AF0C433C8;
-	Fri, 22 Dec 2023 10:40:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703241639;
-	bh=qOS484/8I/VcSt29F9FoCd7owAgLyk0rsi11NBcxJxs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=NbRxY4N3bAoMCRd8PJf0Itebzl4JsO28tx8p5a+IdLcp5q//7n3/kzTSwTYCFLeLf
-	 uX/o8bbwWc4N6oadbsNKqpkkP0ky+7TAxUC2pm4nNAwWvGPoOOB0gynMGd8yYhN0eN
-	 B7Z+6sXx0H8v3ks6HkvBBhaLfUO+60+lGcLmjRDd2CbdSBUMrcX12b+fx175qRmRAF
-	 Q4mruIt0UeICQMcqccY2ApsFpSlJ4fiZxyXNrFwXow8YTMSIoUCMa938zrVn/m5zw4
-	 o99KrbO8HCBHLjrvfMqO/4r4k9jjaDH634NSPMvNDvkHm0u4F2RaRHOnudRpgvHWku
-	 3BW+pmClhlGjA==
-Date: Fri, 22 Dec 2023 11:40:36 +0100
-From: Wolfram Sang <wsa@kernel.org>
-To: Paul Menzel <pmenzel@molgen.mpg.de>
-Cc: Jean Delvare <jdelvare@suse.com>, Andi Shyti <andi.shyti@kernel.org>,
-	Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>,
-	linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] i2c: i801: Add =?utf-8?Q?0?=
- =?utf-8?Q?x29_as_I=C2=B2C?= address for lis3lv02d in Dell XPS 15 7590
-Message-ID: <ZYVnpB+Y1WowfkUO@shikoro>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-	Paul Menzel <pmenzel@molgen.mpg.de>,
-	Jean Delvare <jdelvare@suse.com>,
-	Andi Shyti <andi.shyti@kernel.org>,
-	Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>,
-	linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231220161003.68310-1-pmenzel@molgen.mpg.de>
- <20231220161003.68310-2-pmenzel@molgen.mpg.de>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 492E5171A9
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 10:41:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-40c6736d10fso20949605e9.1
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 02:41:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1703241667; x=1703846467; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=gxqyUslSqcrN4IMz7Jp+2fHS5AF+1/LHXk7BhQrPANE=;
+        b=lTSR9CDg2t2uM41tAtbKoIc2REP2FCQ4r3S1oKTFsyxr/ReVwNyLC7zc1/J7mhfrVw
+         0P06MiIBxTyBSYF/nzwNQP4ns2Nw2wpsnAAUophAgKS8cJ4ys8IYDfXlQb9jgUFLiyAU
+         qZuksc0yCsTVTPfhxTA16CPxWydI91HgVDf8zYR9nB5Q2iZ0BvSsC2V/3ef2SR99iMp+
+         JJ3L6ITjHlgZQonMnnkzk9pYoUYgCXk2NOXMBgYgTIRgNVZcdBp1EC0I7c9655Ar3gC+
+         pDGigM3GA+Wveyh+BB06ce2vyJSETp5G3ovkZm04rKubRiiZnR7Zbl9Tsk0lc9zdJrhW
+         tWSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703241667; x=1703846467;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=gxqyUslSqcrN4IMz7Jp+2fHS5AF+1/LHXk7BhQrPANE=;
+        b=AY0lpajGfFdzS57sEvhm51kEUJW8XEfBCscxRVgECX9hWOJMupvQ/C4gAqPKk1usHF
+         m3POWrKFt5IFLUHLgR03QSatInLmR+of5mTy08qfKM5U+aPUiQepVwC8QiOJrJBBlD5F
+         e71c37pBmUZzBjN9Pf53ixoqwUtgghmZQtO0m1t9YTzqMNBFCRh0riZfIgk0v91GBPyD
+         EUYsnzXMMf4GqalJIU8Aqu/Af3FhHZ3xnvMbciXlidHS9bj4GMZiiZmZMhgTvZvjerd/
+         Wl3DxH1P/6OrTcMRuvIGWWsUzoZvUyNJ0Xr8bIQarmYkC+1ZV9k7XTKatAZxBqlEmpQW
+         ylyA==
+X-Gm-Message-State: AOJu0YwqKLFgPWq13CdxVzEBr4EKN/eOG9len2vF3uY5Rqw+pWPr4hQC
+	C1f5NlCkMbuKMQQ8sjkNWxK7V62/9lmeyX0owKYLMs1GjGI=
+X-Google-Smtp-Source: AGHT+IGDzPdK5TDoFGMnm8+yqYXhXxmc+5xJkgHPnuOTFZuEuxW7Rc0UivHB89pXIQedl+5g7puc4Q==
+X-Received: by 2002:a05:600c:45d2:b0:40c:48c2:f531 with SMTP id s18-20020a05600c45d200b0040c48c2f531mr663809wmo.42.1703241667326;
+        Fri, 22 Dec 2023 02:41:07 -0800 (PST)
+Received: from [127.0.1.1] ([79.115.23.25])
+        by smtp.gmail.com with ESMTPSA id v11-20020a05600c470b00b0040c5cf930e6sm6348728wmo.19.2023.12.22.02.41.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Dec 2023 02:41:06 -0800 (PST)
+From: Abel Vesa <abel.vesa@linaro.org>
+Subject: [PATCH 0/2] phy: qcom: qmp-pcie: Add support for G3/G4 PCIe PHY
+ for X1E80100
+Date: Fri, 22 Dec 2023 12:40:52 +0200
+Message-Id: <20231222-x1e80100-phy-pcie-v1-0-b74ac13390bf@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="boHf5/EX7BeixKFs"
-Content-Disposition: inline
-In-Reply-To: <20231220161003.68310-2-pmenzel@molgen.mpg.de>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIALRnhWUC/x2NSQrDMAwAvxJ0rkByAl2+UnqwHbkWBNfYNKSE/
+ L0ixxkYZocuTaXDY9ihyapdP8WALwPE7MtbUGdjcORGdsS4sdyIibDmH9aogpKuk5/D3aeRwLr
+ gu2BovsRsZfkui8naJOl2jp6v4/gD6KQiz3gAAAA=
+To: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Vinod Koul <vkoul@kernel.org>, 
+ Kishon Vijay Abraham I <kishon@kernel.org>, 
+ Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org, 
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Abel Vesa <abel.vesa@linaro.org>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=662; i=abel.vesa@linaro.org;
+ h=from:subject:message-id; bh=irkRhzefKYsakpWhuD4GCaIxkmHudzvNsUgaVCxP7vA=;
+ b=owEBbQKS/ZANAwAKARtfRMkAlRVWAcsmYgBlhWe6BrpWct/AD+CaAw8TFtqtC3e5rR6OtHHWq
+ bms4hzUQ+WJAjMEAAEKAB0WIQRO8+4RTnqPKsqn0bgbX0TJAJUVVgUCZYVnugAKCRAbX0TJAJUV
+ VsduD/9xBIaySZX8hrDulUrChEN82nNpaiDE/CANv9LrucupoWRb0qP/8EUf6OoVvrk6J/QlIf3
+ +nCZ2wcBvuhavjmTN6gF2kv3IL6vivutNDIE8wTLWUcd2l3zN4BdjZVbTjnfqMeArEiHdkon3Qh
+ vP1cQc1R0hxy0xhp5Wfe2ISMBCUBLT7cvG6iOS+kgCy1RFolx1kO2gJPC/rD7oiBX8kW3BlDewF
+ /ZqRBnwOmUqYf5reyijBRNpKRzpicQEnBESTF7wH02mV+URGpyJO2l66ivb/hkRVgvARybYR02J
+ 3ru7bhJAK6TEikAGyLJ1JBDTFZrm2K6nend+5vla23223ygub0VS4WWH/zXF4ukmSwFTL/thFgS
+ v9VsMzXYp+BQKCoLvhASmVD5oWQaqvkhb5lF6NXoVcNLr9CEOB9CDJF01Y+mNni947Hr4hh+4yN
+ I7a562ZPPHUqrzzrFLvHl7Yt0gWcasXnCmRBBfZDBtsCkL9eIQmL8/HZ4j9K8vlQY0M1YErstFs
+ 4dou+08xV8l5hBaEBl7YHzxJdoN7N60WOPcTGLg9pExkyk14bBILz8ocDi+7KUOK/Qgm0ffNgJW
+ cq03i2D4HIN3AhhiHGgcuoLlIJBEhYxFFcHdRM0fbnKDsmkEmp+yKIPXIS6gsepGAb6CC3FYrOV
+ PbKjTVADI8umfPw==
+X-Developer-Key: i=abel.vesa@linaro.org; a=openpgp;
+ fpr=6AFF162D57F4223A8770EF5AF7BF214136F41FAE
 
+This patchset adds the G4 tables and G4/G3 compatibles for X1E80100
+platforms.
 
---boHf5/EX7BeixKFs
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+---
+Abel Vesa (2):
+      dt-bindings: phy: qcom,sc8280xp-qmp-pcie-phy: Document the X1E80100 QMP PCIe PHYs
+      phy: qcom-qmp-pcie: Add support for X1E80100 g3x2 and g4x2 PCIE
 
-On Wed, Dec 20, 2023 at 05:10:02PM +0100, Paul Menzel wrote:
-> On the Dell XPS 15 7590/0VYV0G, BIOS 1.24.0 09/11/2023, Linux prints the
-> warning below.
->=20
->     i801_smbus 0000:00:1f.4: Accelerometer lis3lv02d is present on SMBus =
-but its address is unknown, skipping registration
->=20
-> Following the same suggestions by Wolfram Sang as for the Dell Precision
-> 3540 [1], the accelerometer can be successfully found on I=C2=B2C bus 2 at
-> address 0x29.
->=20
->     $ echo lis3lv02d 0x29 | sudo tee /sys/bus/i2c/devices/i2c-2/new_device
->     lis3lv02d 0x29
->     $ dmesg | tail -5
->     [  549.522876] lis3lv02d_i2c 2-0029: supply Vdd not found, using dumm=
-y regulator
->     [  549.522904] lis3lv02d_i2c 2-0029: supply Vdd_IO not found, using d=
-ummy regulator
->     [  549.542486] lis3lv02d: 8 bits 3DC sensor found
->     [  549.630022] input: ST LIS3LV02DL Accelerometer as /devices/platfor=
-m/lis3lv02d/input/input35
->     [  549.630586] i2c i2c-2: new_device: Instantiated device lis3lv02d a=
-t 0x29
->=20
-> So, the device has that accelerometer. Add the I=C2=B2C address to the
-> mapping list, and test it successfully on the device.
->=20
-> [1]: https://lore.kernel.org/linux-i2c/97708c11-ac85-fb62-2c8e-d37739ca82=
-6f@molgen.mpg.de/
->=20
-> Signed-off-by: Paul Menzel <pmenzel@molgen.mpg.de>
+ .../bindings/phy/qcom,sc8280xp-qmp-pcie-phy.yaml   |   6 +
+ drivers/phy/qualcomm/phy-qcom-qmp-pcie.c           | 173 +++++++++++++++++++++
+ 2 files changed, 179 insertions(+)
+---
+base-commit: 8a9be2a3cb673dba9d22311beb74be261f0b3f15
+change-id: 20231201-x1e80100-phy-pcie-ef74adb9af30
 
-Applied to for-next, thanks!
+Best regards,
+-- 
+Abel Vesa <abel.vesa@linaro.org>
 
-(fixed I=C2=B2C to I2C in both patches)
-
-
---boHf5/EX7BeixKFs
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmWFZ6QACgkQFA3kzBSg
-KbY/9g//fss+P2RTFKOCxef/wXLI5EPTfPe6aG1wBehw4H/2xTITjBG+oB0uwsOe
-P/VsZQhna+S3hmox54o3nDIGys1nqefGdS/S3Df0djwbo9K1lBHuz5rviTGdkeoK
-B/+ToqFAgC8TodKubZVCheLSmmPTI+SzGlEWEe/dPQcp53t4SH31oKyK+3Ph0TPT
-3e0UIbQ/o913fzqutvMe7Da+kAeRjLgStfdjaYnzfcCg74hEbixYdZnTAD3cUiWU
-dd0VWEQkWvgzz9LX1TrD/DTCG6RgP6jylUgj89qYrTiVHtXXEO0+25il9cyfjOtc
-zwVJqsNEyWiiyHhZDFsO224tOvBcFtGFIUZ1FPlsi4tWSZ8/zKs4G3izH5wwLNBc
-4wfmBp+6zrI9gtumEb8c5UGOAMpq5N7SXQN5G4W7AMskvBdW+JXAhIeXfOSMe1w/
-ao3+AUO2tvdlpi0xfRCqsYPLRNDxnChM9raeyRB3dBQoLgDfGYhZJ+pkvgy+zu21
-dnuMZE01ZXJRYDjlkp9ObxbVt0pQAJEXW8O0DKJCOMQU0tFlr8/IrtaHm2Y19wt7
-kYHQpN0H4/Wwj9BIAD0dyFRi9WxAieaPgVnfcovaYce+7idgjNeBhDHSyvNR5/HB
-CLEA3C6GrekabYbwnQEQex3nOWiOy9sgE+G/3GjqHrZxNRpfnN8=
-=egwR
------END PGP SIGNATURE-----
-
---boHf5/EX7BeixKFs--
 
