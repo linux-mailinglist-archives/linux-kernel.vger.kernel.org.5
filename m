@@ -1,84 +1,72 @@
-Return-Path: <linux-kernel+bounces-9203-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9204-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7201E81C246
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 01:19:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A89181C249
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 01:25:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2CD18282C00
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 00:19:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CAFC4287938
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 00:25:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E79BAA53;
-	Fri, 22 Dec 2023 00:19:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22C60EB8;
+	Fri, 22 Dec 2023 00:25:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IVYpMSbh"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BA1638A;
-	Fri, 22 Dec 2023 00:19:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=realtek.com
-X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 3BM0JF9Z01723586, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
-	by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 3BM0JF9Z01723586
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 22 Dec 2023 08:19:15 +0800
-Received: from RTEXMBS05.realtek.com.tw (172.21.6.98) by
- RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.32; Fri, 22 Dec 2023 08:19:15 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXMBS05.realtek.com.tw (172.21.6.98) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.34; Fri, 22 Dec 2023 08:19:15 +0800
-Received: from RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7]) by
- RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7%5]) with mapi id
- 15.01.2375.007; Fri, 22 Dec 2023 08:19:15 +0800
-From: Ping-Ke Shih <pkshih@realtek.com>
-To: Colin Ian King <colin.i.king@gmail.com>, Kalle Valo <kvalo@kernel.org>,
-        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
-CC: "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH][next] wifi: rtw89: mac: Fix spelling mistakes "notfify" -> "notify"
-Thread-Topic: [PATCH][next] wifi: rtw89: mac: Fix spelling mistakes "notfify"
- -> "notify"
-Thread-Index: AQHaM09teBRraq9bkEuzuVAKvhnc67C0cglA
-Date: Fri, 22 Dec 2023 00:19:15 +0000
-Message-ID: <2839b824a2a04aab9514ce89b3735e52@realtek.com>
-References: <20231220141831.10063-1-colin.i.king@gmail.com>
-In-Reply-To: <20231220141831.10063-1-colin.i.king@gmail.com>
-Accept-Language: en-US, zh-TW
-Content-Language: zh-TW
-x-kse-serverinfo: RTEXMBS05.realtek.com.tw, 9
-x-kse-antispam-interceptor-info: fallback
-x-kse-antivirus-interceptor-info: fallback
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 735C9818;
+	Fri, 22 Dec 2023 00:25:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E2CAC433C8;
+	Fri, 22 Dec 2023 00:25:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703204749;
+	bh=YGIUwq5l/QgyebCqiGhCanW/36JLd2RytD7jeuRYRgk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=IVYpMSbhzhSpCp4AsHkduQEbhqHno3ZUWmfeHfSyr8d2F0tTsXGt7H6lkRaTsXKER
+	 l7PhltGJ4ZiG3fSW5RnA3ihOhkcblsVAAKS5S/K3XYSgYmHceTsDfjktETYLM+BMBU
+	 MGa9x4rOTmpsb6EY2VyMXVcuy2EJs9HNQrF5rOJnfJ2BHP11P5kiNlu2hTHuGDUbI2
+	 VgpVw/jdzZLVmXv5UwvZa/TUYzP9Uk1O2WJFevcRvA8x9GaKEHS8JZJJ3xosfOufUc
+	 7XI7ajUvIYk9C8VnJf/wbglHK6wnFuRkvel8fmldzGQsWEtsV9Nke0A6B5xM9dFv4e
+	 6mXvEs8ImIHFA==
+Date: Fri, 22 Dec 2023 01:25:46 +0100
+From: Andi Shyti <andi.shyti@kernel.org>
+To: Paul Menzel <pmenzel@molgen.mpg.de>
+Cc: Jean Delvare <jdelvare@suse.com>,
+	Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>,
+	linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] i2c: i801: Add 0x29 as =?utf-8?B?ScKy?=
+ =?utf-8?Q?C?= address for lis3lv02d in Dell Precision 3540
+Message-ID: <20231222002546.j32rqtjsw4riqibj@zenone.zhora.eu>
+References: <20231220161003.68310-1-pmenzel@molgen.mpg.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231220161003.68310-1-pmenzel@molgen.mpg.de>
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogQ29saW4gSWFuIEtpbmcg
-PGNvbGluLmkua2luZ0BnbWFpbC5jb20+DQo+IFNlbnQ6IFdlZG5lc2RheSwgRGVjZW1iZXIgMjAs
-IDIwMjMgMTA6MTkgUE0NCj4gVG86IFBpbmctS2UgU2hpaCA8cGtzaGloQHJlYWx0ZWsuY29tPjsg
-S2FsbGUgVmFsbyA8a3ZhbG9Aa2VybmVsLm9yZz47IGxpbnV4LXdpcmVsZXNzQHZnZXIua2VybmVs
-Lm9yZw0KPiBDYzoga2VybmVsLWphbml0b3JzQHZnZXIua2VybmVsLm9yZzsgbGludXgta2VybmVs
-QHZnZXIua2VybmVsLm9yZw0KPiBTdWJqZWN0OiBbUEFUQ0hdW25leHRdIHdpZmk6IHJ0dzg5OiBt
-YWM6IEZpeCBzcGVsbGluZyBtaXN0YWtlcyAibm90ZmlmeSIgLT4gIm5vdGlmeSINCj4gDQo+IFRo
-ZXJlIGFyZSB0d28gc3BlbGxpbmcgbWlzdGFrZXMgaW4gcnR3ODlfZXJyIGVycm9yIG1lc3NhZ2Vz
-LiBGaXggdGhlc2UNCj4gYW5kIGFsc28gYWRkIHNwYWNlIGJldHdlZW4gW0VSUl0gYW5kIG1lc3Nh
-Z2UgdGV4dC4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IENvbGluIElhbiBLaW5nIDxjb2xpbi5pLmtp
-bmdAZ21haWwuY29tPg0KDQpBY2tlZC1ieTogUGluZy1LZSBTaGloIDxwa3NoaWhAcmVhbHRlay5j
-b20+DQoNClRoYW5rcyBmb3IgdGhlIGNvcnJlY3RuZXNzLiBDb3VsZCBJIGtub3cgdGhlIHRvb2wg
-eW91IHVzZWQgdG8gZmluZCBvdXQgdGhlc2UNCnR5cG8/IA0KDQpQaW5nLUtlDQoNCg0K
+Hi Paul,
+
+On Wed, Dec 20, 2023 at 05:10:01PM +0100, Paul Menzel wrote:
+> On the Dell Precision 3540/0M14W7, BIOS 1.7.4 05/12/2020, Linux prints
+> the warning below.
+> 
+>     i801_smbus 0000:00:1f.4: Accelerometer lis3lv02d is present on SMBus but its address is unknown, skipping registration
+> 
+> With the help of Wolfram Sang, the test to probe it on I²C bus 6 at address
+
+please, next time /I²C/I2C/
+
+Reviewed-by: Andi Shyti <andi.shyti@kernel.org>
+
+Thanks,
+Andi
 
