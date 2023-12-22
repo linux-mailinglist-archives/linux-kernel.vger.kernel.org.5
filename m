@@ -1,60 +1,60 @@
-Return-Path: <linux-kernel+bounces-9959-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9960-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE10E81CDE8
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 18:45:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BC03781CDEA
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 18:45:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2844B1F23538
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 17:45:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5D1E01F234CF
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 17:45:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87AD131754;
-	Fri, 22 Dec 2023 17:42:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BA1233069;
+	Fri, 22 Dec 2023 17:42:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UqBH+jvu"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mIHED4K/"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5990E2FC32;
-	Fri, 22 Dec 2023 17:42:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05CEC2FC5B;
+	Fri, 22 Dec 2023 17:42:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-3366e78d872so1831080f8f.3;
-        Fri, 22 Dec 2023 09:42:30 -0800 (PST)
+Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-336755f1688so1824551f8f.0;
+        Fri, 22 Dec 2023 09:42:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703266949; x=1703871749; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1703266950; x=1703871750; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=18puqwXb3goOQbFDudDa/Se4Vi5XO1rypLRUSz/S/Ls=;
-        b=UqBH+jvueCrYvBL4exg1GGPny87AagLrwzZ032y/kJr44KBytmCpjYS33xda4ZUddt
-         6Y/v15XjEBZPOVhAx62U93n6ZxHPC3MYKhyiWLcwJnK0DK1MFcA8+gfvddUsWQR0RZIS
-         fg+s0T7RbgTzlbWmBTDFCE3RtTibup+30/RlLnucnkCvdllecdyo3CLa3H8xs5VNOdLt
-         DnyjJT5R67b0KtETXPenfnW6F9XiLhl+Hej1fGJmaV5kPWSOFB6eNF0+Q1GwPbxgi+2u
-         q4GSy98X3DM+d9AwDyEZVy+SaZ1G68AcwUnT/20tLADJJG50eypZ/OmFTURBR4nzPdAQ
-         c0fw==
+        bh=mvwlyAlnXeNL9AzDIrE6gEzR9A8598VoqwlyqljJPww=;
+        b=mIHED4K/XVxWagcSpVCqUAMd/NOEuH+mtHLhJljAtZ07jZI9P/IAlSqg8KbJCC0Mj/
+         lVb5IxBfnEWGdsKAM8tg4IY185AxWGeS4OTF4LKpUfRWAQ5rUGD9C0eBpfas0eVR2Rzb
+         nIQCM0G/rGUmQgP3BM7KXrnn8OB6EOxNbgp+7f37Q2708GKs0hPmv6G8PUA0KgP+R6w3
+         MD5iV5oMsdwp0Bcx5zOxVrxakeohclaWc3/0p38IWwZd8OFp7kZRGURRp6CvW06hQDg/
+         ldcJWBy8/m3cRluSFBaOX/qpHck82Ynx2dwzQcTDORe1nQbBuaSKa053WAn2uTvbx5Ve
+         atsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703266949; x=1703871749;
+        d=1e100.net; s=20230601; t=1703266950; x=1703871750;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=18puqwXb3goOQbFDudDa/Se4Vi5XO1rypLRUSz/S/Ls=;
-        b=GIqnyIFA21aL8G+q+fvXuy7Um0h8cy9HPqq20WPyjfRp4A3iNje/sztPghKeYGHkzD
-         SzY8PIAk4rz8uVQv0E1W5e5llwbUf1Aiti6p40RQO7c65nWifUxdbmRcZvX6KkP/PnLU
-         O7yidZ7B7UndOyXb86A4+ws4i61GBNhbTbUP85wMN83BMFA1yu8M4Tf/8c/keludNa2q
-         flJD1KiSRoYl+kCmsVcMoZD7fW+Hw2ryusT6pqZGeVPwI+oJ2V2Q5nCmdpvJNpv4GUfE
-         0jgXFTMNrbSFuBaNYwv82gW1Y8fy0KUy/u71fmPniS5gias5I3sIB0T+y1TttOmf+VDf
-         HCNA==
-X-Gm-Message-State: AOJu0YxvlRlarJTwqK5biRo87yekUC9L0bsMxd9oRe4zTlviOvHqt0Qd
-	MslYRsrW2zaBq2ygrUSsPQ==
-X-Google-Smtp-Source: AGHT+IE03Z0mQGd0T3nK7PKVrcK3l3OP/j7ot+vY4dUtl68sK0OpL60w9QcThMcJWjmzodRVbjaPtA==
-X-Received: by 2002:adf:f7cb:0:b0:333:3bc9:e246 with SMTP id a11-20020adff7cb000000b003333bc9e246mr513195wrq.33.1703266949433;
-        Fri, 22 Dec 2023 09:42:29 -0800 (PST)
+        bh=mvwlyAlnXeNL9AzDIrE6gEzR9A8598VoqwlyqljJPww=;
+        b=BTdqBA2dytuCcjm9VEBLz0lZpW0R1GF50uYXcTZGB9LaphMF5wP/O4RVVqSf88UanV
+         yUugCrPwhh2gyLREb3HAnLPtJeB1f9n9OuZU6MUx83QMx15vYZq7G0eQVS8tWQ587U6D
+         H8cW/8uew86y7sfbHEirsIvvAG2Hgqrgn53n4j24GzNRPrL5scPnF/Xs2Ibk0EUDriFA
+         D3NK/cMAVcRdLsdV9lrAgkOE5lx8CsmRzEh/O/KBfh0L6ZFOYyEbOcK8ewE72s5dHBuw
+         rV3hsXaH5meTZbJ3n3+Oc/YcLjNO56aa9ztzS9S3z8Lg1tLSDl2yu3ubOqqXfR1CxWU+
+         yHgQ==
+X-Gm-Message-State: AOJu0YxOEWQlPilidy3WK7AIi7R7W3mMfNtzky1BU2D3J01XAeIDL4u2
+	aPjHf77ERIlliLetEDOESQ==
+X-Google-Smtp-Source: AGHT+IFlH1FXt4AEcnW4RXoWxNep1h0V1fV019/19FThEs51/7Aby/yM7fFwgKONy2ZfswfDCXMW+w==
+X-Received: by 2002:adf:cd89:0:b0:334:b2bb:6d1e with SMTP id q9-20020adfcd89000000b00334b2bb6d1emr1133231wrj.17.1703266950277;
+        Fri, 22 Dec 2023 09:42:30 -0800 (PST)
 Received: from U4.lan ([2a02:810b:f40:4300:f3ae:2788:7e03:f44])
-        by smtp.gmail.com with ESMTPSA id w10-20020adfec4a000000b00336670abdcasm4777116wrn.40.2023.12.22.09.42.28
+        by smtp.gmail.com with ESMTPSA id w10-20020adfec4a000000b00336670abdcasm4777116wrn.40.2023.12.22.09.42.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Fri, 22 Dec 2023 09:42:29 -0800 (PST)
 From: Alex Bee <knaerzche@gmail.com>
@@ -74,9 +74,9 @@ Cc: David Airlie <airlied@gmail.com>,
 	linux-rockchip@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
 	Alex Bee <knaerzche@gmail.com>
-Subject: [PATCH v4 10/29] drm/rockchip: inno_hdmi: Remove useless input format
-Date: Fri, 22 Dec 2023 18:42:01 +0100
-Message-ID: <20231222174220.55249-11-knaerzche@gmail.com>
+Subject: [PATCH v4 11/29] drm/rockchip: inno_hdmi: Remove YUV-based csc coefficents
+Date: Fri, 22 Dec 2023 18:42:02 +0100
+Message-ID: <20231222174220.55249-12-knaerzche@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231222174220.55249-1-knaerzche@gmail.com>
 References: <20231222174220.55249-1-knaerzche@gmail.com>
@@ -88,108 +88,77 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Maxime Ripard <mripard@kernel.org>
+Now that the unneeded support for YUV based input formats is gone, the csc
+coefficients for those formats can be dropped as well.
 
-The driver has a lot of logic to deal with multiple input formats, but
-hardcodes it to RGB. This means that most of that code has been dead
-code, so let's get rid of it.
-
-Signed-off-by: Maxime Ripard <mripard@kernel.org>
-Tested-by: Alex Bee <knaerzche@gmail.com>
-[made checkpatch happy]
 Signed-off-by: Alex Bee <knaerzche@gmail.com>
 ---
 changes in v2:
- - imported patch
+ - new patch
 
 changes in v3:
  - none
 
 changes in v4:
  - none
-
- drivers/gpu/drm/rockchip/inno_hdmi.c | 41 ++++++++--------------------
- 1 file changed, 11 insertions(+), 30 deletions(-)
+	
+ drivers/gpu/drm/rockchip/inno_hdmi.c | 37 ----------------------------
+ 1 file changed, 37 deletions(-)
 
 diff --git a/drivers/gpu/drm/rockchip/inno_hdmi.c b/drivers/gpu/drm/rockchip/inno_hdmi.c
-index 58aff7a9c09a..7c75feedacad 100644
+index 7c75feedacad..04344ee1265d 100644
 --- a/drivers/gpu/drm/rockchip/inno_hdmi.c
 +++ b/drivers/gpu/drm/rockchip/inno_hdmi.c
-@@ -28,7 +28,6 @@
- #include "inno_hdmi.h"
+@@ -74,49 +74,12 @@ static struct inno_hdmi *connector_to_inno_hdmi(struct drm_connector *connector)
+ }
  
- struct hdmi_data_info {
--	unsigned int enc_in_format;
- 	unsigned int enc_out_format;
- 	unsigned int colorimetry;
+ enum {
+-	CSC_ITU601_16_235_TO_RGB_0_255_8BIT,
+-	CSC_ITU601_0_255_TO_RGB_0_255_8BIT,
+-	CSC_ITU709_16_235_TO_RGB_0_255_8BIT,
+ 	CSC_RGB_0_255_TO_ITU601_16_235_8BIT,
+ 	CSC_RGB_0_255_TO_ITU709_16_235_8BIT,
+ 	CSC_RGB_0_255_TO_RGB_16_235_8BIT,
  };
-@@ -328,47 +327,30 @@ static int inno_hdmi_config_video_csc(struct inno_hdmi *hdmi)
- 		v_VIDEO_INPUT_CSP(0);
- 	hdmi_writeb(hdmi, HDMI_VIDEO_CONTRL2, value);
  
--	if (data->enc_in_format == data->enc_out_format) {
--		if ((data->enc_in_format == HDMI_COLORSPACE_RGB) ||
--		    (data->enc_in_format >= HDMI_COLORSPACE_YUV444)) {
--			value = v_SOF_DISABLE | v_COLOR_DEPTH_NOT_INDICATED(1);
--			hdmi_writeb(hdmi, HDMI_VIDEO_CONTRL3, value);
+ static const char coeff_csc[][24] = {
+-	/*
+-	 * YUV2RGB:601 SD mode(Y[16:235], UV[16:240], RGB[0:255]):
+-	 *   R = 1.164*Y + 1.596*V - 204
+-	 *   G = 1.164*Y - 0.391*U - 0.813*V + 154
+-	 *   B = 1.164*Y + 2.018*U - 258
+-	 */
+-	{
+-		0x04, 0xa7, 0x00, 0x00, 0x06, 0x62, 0x02, 0xcc,
+-		0x04, 0xa7, 0x11, 0x90, 0x13, 0x40, 0x00, 0x9a,
+-		0x04, 0xa7, 0x08, 0x12, 0x00, 0x00, 0x03, 0x02
+-	},
+-	/*
+-	 * YUV2RGB:601 SD mode(YUV[0:255],RGB[0:255]):
+-	 *   R = Y + 1.402*V - 248
+-	 *   G = Y - 0.344*U - 0.714*V + 135
+-	 *   B = Y + 1.772*U - 227
+-	 */
+-	{
+-		0x04, 0x00, 0x00, 0x00, 0x05, 0x9b, 0x02, 0xf8,
+-		0x04, 0x00, 0x11, 0x60, 0x12, 0xdb, 0x00, 0x87,
+-		0x04, 0x00, 0x07, 0x16, 0x00, 0x00, 0x02, 0xe3
+-	},
+-	/*
+-	 * YUV2RGB:709 HD mode(Y[16:235],UV[16:240],RGB[0:255]):
+-	 *   R = 1.164*Y + 1.793*V - 248
+-	 *   G = 1.164*Y - 0.213*U - 0.534*V + 77
+-	 *   B = 1.164*Y + 2.115*U - 289
+-	 */
+-	{
+-		0x04, 0xa7, 0x00, 0x00, 0x07, 0x2c, 0x02, 0xf8,
+-		0x04, 0xa7, 0x10, 0xda, 0x12, 0x22, 0x00, 0x4d,
+-		0x04, 0xa7, 0x08, 0x74, 0x00, 0x00, 0x03, 0x21
+-	},
 -
--			hdmi_modb(hdmi, HDMI_VIDEO_CONTRL,
--				  m_VIDEO_AUTO_CSC | m_VIDEO_C0_C2_SWAP,
--				  v_VIDEO_AUTO_CSC(AUTO_CSC_DISABLE) |
--				  v_VIDEO_C0_C2_SWAP(C0_C2_CHANGE_DISABLE));
--			return 0;
--		}
-+	if (data->enc_out_format == HDMI_COLORSPACE_RGB) {
-+		value = v_SOF_DISABLE | v_COLOR_DEPTH_NOT_INDICATED(1);
-+		hdmi_writeb(hdmi, HDMI_VIDEO_CONTRL3, value);
-+
-+		hdmi_modb(hdmi, HDMI_VIDEO_CONTRL,
-+			  m_VIDEO_AUTO_CSC | m_VIDEO_C0_C2_SWAP,
-+			  v_VIDEO_AUTO_CSC(AUTO_CSC_DISABLE) |
-+			  v_VIDEO_C0_C2_SWAP(C0_C2_CHANGE_DISABLE));
-+		return 0;
- 	}
- 
- 	if (data->colorimetry == HDMI_COLORIMETRY_ITU_601) {
--		if ((data->enc_in_format == HDMI_COLORSPACE_RGB) &&
--		    (data->enc_out_format == HDMI_COLORSPACE_YUV444)) {
-+		if (data->enc_out_format == HDMI_COLORSPACE_YUV444) {
- 			csc_mode = CSC_RGB_0_255_TO_ITU601_16_235_8BIT;
- 			auto_csc = AUTO_CSC_DISABLE;
- 			c0_c2_change = C0_C2_CHANGE_DISABLE;
- 			csc_enable = v_CSC_ENABLE;
--		} else if ((data->enc_in_format == HDMI_COLORSPACE_YUV444) &&
--			   (data->enc_out_format == HDMI_COLORSPACE_RGB)) {
--			csc_mode = CSC_ITU601_16_235_TO_RGB_0_255_8BIT;
--			auto_csc = AUTO_CSC_ENABLE;
--			c0_c2_change = C0_C2_CHANGE_DISABLE;
--			csc_enable = v_CSC_DISABLE;
- 		}
- 	} else {
--		if ((data->enc_in_format == HDMI_COLORSPACE_RGB) &&
--		    (data->enc_out_format == HDMI_COLORSPACE_YUV444)) {
-+		if (data->enc_out_format == HDMI_COLORSPACE_YUV444) {
- 			csc_mode = CSC_RGB_0_255_TO_ITU709_16_235_8BIT;
- 			auto_csc = AUTO_CSC_DISABLE;
- 			c0_c2_change = C0_C2_CHANGE_DISABLE;
- 			csc_enable = v_CSC_ENABLE;
--		} else if ((data->enc_in_format == HDMI_COLORSPACE_YUV444) &&
--			   (data->enc_out_format == HDMI_COLORSPACE_RGB)) {
--			csc_mode = CSC_ITU709_16_235_TO_RGB_0_255_8BIT;
--			auto_csc = AUTO_CSC_ENABLE;
--			c0_c2_change = C0_C2_CHANGE_DISABLE;
--			csc_enable = v_CSC_DISABLE;
- 		}
- 	}
- 
-@@ -443,7 +425,6 @@ static int inno_hdmi_setup(struct inno_hdmi *hdmi,
- 	struct drm_display_info *display = &hdmi->connector.display_info;
- 	u8 vic = drm_match_cea_mode(mode);
- 
--	hdmi->hdmi_data.enc_in_format = HDMI_COLORSPACE_RGB;
- 	hdmi->hdmi_data.enc_out_format = HDMI_COLORSPACE_RGB;
- 
- 	if (vic == 6 || vic == 7 ||
+ 	/*
+ 	 * RGB2YUV:601 SD mode:
+ 	 *   Cb = -0.291G - 0.148R + 0.439B + 128
 -- 
 2.43.0
 
