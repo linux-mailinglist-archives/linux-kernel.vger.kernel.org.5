@@ -1,117 +1,189 @@
-Return-Path: <linux-kernel+bounces-9731-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9732-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D6FAB81CA5B
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 13:58:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7B3C81CA5D
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 13:59:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 56B3B1F22DFA
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 12:58:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 565EA1F229D7
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 12:59:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76C3618C07;
-	Fri, 22 Dec 2023 12:58:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6D251A5B8;
+	Fri, 22 Dec 2023 12:58:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DTnxdcqI"
+	dkim=pass (2048-bit key) header.d=flygoat.com header.i=@flygoat.com header.b="COm310mC";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="2Naat/YG"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A529B1863F;
-	Fri, 22 Dec 2023 12:58:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1d3eabe9321so12502845ad.2;
-        Fri, 22 Dec 2023 04:58:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703249923; x=1703854723; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=9HjnNbNH2TVinJM34IOYgMM2Kxh5j+hwMU83vJZ9rBI=;
-        b=DTnxdcqImOHwB7iWELzSs5yC/WL5o5/3POS1vHTygsGImBKEjI4e7JLoP2YqQrQrKK
-         Q8z1hjBK3yXDnFVMGFb7rFNKwWFy/MpcoIeayFPZmoD6M0WrMt3In45FwtsUVgeNEAGY
-         KONz/qV05KLrqR1kPt7MFpQFm+oaIMvPr/vEmVv5safw7EsMqnv7xdic2lzWE8iC+lnz
-         3uu+Saaa+dmFrqUFXk7/kZBNwpVg1/2P587hijOMQA1i3nL7NoGq5+hQUqv4av+5grMD
-         t+93iQCiPehc4hwuJp+P/E01wpLEl5u7w84J1R6sbkGdjzBg70Q5Rq+ZPOnGhZe0CWdK
-         gqfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703249923; x=1703854723;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9HjnNbNH2TVinJM34IOYgMM2Kxh5j+hwMU83vJZ9rBI=;
-        b=Xlm+3KrFVAu0GVXL+NGZC73Zno3eKOcIoYMIgtCddrO4695MeqOO25RbrcyTwEEY3p
-         90Rg+fenYST7O48+mTsTiVL2yL7q6XUcJS4afJ2E10QxrmuAIOpCVx2W8XMUpeZlBRcm
-         Nqh/GU6ac3IlX6ffqOu7BLRtR+8WtK5dOQa3cEN/Em12J0G2dHZVyIXsEia9X9DK2D0T
-         Asr/j28T7mTt2F36O/w6/Ey74HAZ44x5IlCpkdArZYzthxQ81nJCOyJFMhVhloNouEsM
-         b7NeTlGfGsi3NsRk0GENLnZdolplYaK/6TJqbO4w9SjyXflzCdx5C6PxXERUYTkLxvBw
-         qGAg==
-X-Gm-Message-State: AOJu0YwvPEoiWiZSePCwScnjJtZKSMWXuR2ift5FCYzrhYIfPbSo2v5P
-	YnmwezhHwdcmOl8M8qPC94U=
-X-Google-Smtp-Source: AGHT+IF8Jz7J4xTrM8h+jgL9PBo16u8k7NgSfDJiJxStwc5yhbCB0A0b2H3LUcMuNoYb5olFmjldiA==
-X-Received: by 2002:a17:902:7293:b0:1d3:fa3f:6688 with SMTP id d19-20020a170902729300b001d3fa3f6688mr1001796pll.61.1703249922833;
-        Fri, 22 Dec 2023 04:58:42 -0800 (PST)
-Received: from rigel (60-241-235-125.tpgi.com.au. [60.241.235.125])
-        by smtp.gmail.com with ESMTPSA id f3-20020a17090274c300b001cf6453b237sm3385299plt.236.2023.12.22.04.58.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Dec 2023 04:58:42 -0800 (PST)
-Date: Fri, 22 Dec 2023 20:58:37 +0800
-From: Kent Gibson <warthog618@gmail.com>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Bartosz Golaszewski <brgl@bgdev.pl>,
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH v1 1/1] gpiolib: cdev: Split line_get_debounce_period()
- and use
-Message-ID: <ZYWH_ZLOz7eKh0CE@rigel>
-References: <20231221175527.2814506-1-andriy.shevchenko@linux.intel.com>
- <ZYTihbWMcHMHSkC_@rigel>
- <CAMRc=McSXrivkzhJVEh7-+1fzO6EBLMawhxYd7YgcsXW9wBKbA@mail.gmail.com>
- <ZYWD26B-xQqiDOD2@smile.fi.intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DD5519443;
+	Fri, 22 Dec 2023 12:58:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=flygoat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flygoat.com
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+	by mailout.west.internal (Postfix) with ESMTP id 4EE5C3200AD9;
+	Fri, 22 Dec 2023 07:58:45 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Fri, 22 Dec 2023 07:58:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
+	cc:content-transfer-encoding:content-type:content-type:date:date
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm3; t=1703249924;
+	 x=1703336324; bh=gBzr86HYVLagWtrGT5nOWo3pzHJeoT0tMLV9Ajf9peY=; b=
+	COm310mCw+Si6H3zLC5g3hwDzFToTLe/BFcls0JI1gEeFUok4HXbH0oHhwhHXOCj
+	nyG6wDnXfDYwFoAv5ddKGJ2tIB+FDN4vXdtatQuRvTbm+cL9BsyPIgsMc+nNAIMW
+	gZcnktwubrg604BJjX4PgGp3wPdLni6izP1F1E4jeotU94K0tMeVVI1jMwOrUeIb
+	yhnYsBKkXKwNJUX3RLYlD2b7ppKbpk8HoeCMvbSlYedjhFN3syiG2/2RDCoxAblo
+	Z2XfKCoEDrvyE14/56KZxvalzrg/fw7noJ+Hvk3Cju/ySlXLwOtr3tkyIdmOz6ht
+	nWMKOa4gQbyJK29Usw+euw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:content-transfer-encoding:content-type
+	:content-type:date:date:feedback-id:feedback-id:from:from
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1703249924; x=
+	1703336324; bh=gBzr86HYVLagWtrGT5nOWo3pzHJeoT0tMLV9Ajf9peY=; b=2
+	Naat/YGX5XS7SDzQ+g1gV1vlXnjEH6v8UlwyLnrgxptQqvRaSFNH0Wxnt2ZVfkXc
+	xDaqMQ3T0XCifzbRPFHBXnQ8iL8ifxydl9MKR2tsxqyTOQX3WU4Xr8y/Q7+hxmDJ
+	yJbKTC5+fZm2+IxeNBVuayWXpiiWSToNf203kJZ0z5RGlvL8ClZv9o21jxzn+X6o
+	jKqSHk7NETl0jlILcNkT+/LDc04hFhO+RbM8C6SLQGHfNPgmrH3Pcp2F68beDMsT
+	+tlHNy5aDL85VxZfjrgN7ttTcUHTTHBMAKjVwSx6DBCeVHNzCPc3k28Wk+342S74
+	MseiLO8ZjWHd4O78CSIGA==
+X-ME-Sender: <xms:BIiFZZcYJpLrO1OK2zOh5uBE1F9sD6kHW2gLLHnKm11tTaxkc71okg>
+    <xme:BIiFZXM-elmM_lqMc2aFvkORTTBNeOfofM1DwNH2AJbhXb6cSy082vs9uKXNOfUzV
+    LQVJ19dHA-by5jmZHs>
+X-ME-Received: <xmr:BIiFZShBjDCie-DDH0CmBv-eWhgY8Hl90EvG0u6h7qkennSO3J_sJI8289Xs0_RTzaD_fDiXFlyNA_aFWzpMcgpKhLmFcRNHibqALxg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvddujedggeegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepkfffgggfuffvfhfhjggtgfesthekredttddvjeenucfhrhhomheplfhirgig
+    uhhnucgjrghnghcuoehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhmqeenuc
+    ggtffrrghtthgvrhhnpeeiudduffdufffgffelfedujeehteffffdukeekvdfgvdeileej
+    ffekueehuddugfenucffohhmrghinhepghgvnhgvgidrshgsnecuvehluhhsthgvrhfuih
+    iivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepjhhirgiguhhnrdihrghnghesfhhl
+    hihgohgrthdrtghomh
+X-ME-Proxy: <xmx:BIiFZS8aBbRgzFX2oWiOcyAUwU3UNw5kheZ1vt7PghZeEqpZc_TPXQ>
+    <xmx:BIiFZVskSl3RMCc-KfIVb9gq9Tt0R2DhEmUwM-VYp6r-b5AP4BmV1w>
+    <xmx:BIiFZRHZBURW-AdraA8coe0Qg-hZkT-9bFNS-h1Hd7w6nC0QLc-nhA>
+    <xmx:BIiFZWWcDXVGh3KRc4d0YKunlMnSKQCXEDhm2oumLk0xV8IwEhDVRg>
+Feedback-ID: ifd894703:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 22 Dec 2023 07:58:43 -0500 (EST)
+Message-ID: <7249cb98-0b63-4ef6-8f6e-e29ac6c0a73f@flygoat.com>
+Date: Fri, 22 Dec 2023 12:58:43 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] MIPS: Allow vectored interrupt handler to reside
+ everywhere for 64bit
+Content-Language: en-US
+To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231221125405.229100-1-tsbogend@alpha.franken.de>
+From: Jiaxun Yang <jiaxun.yang@flygoat.com>
+In-Reply-To: <20231221125405.229100-1-tsbogend@alpha.franken.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZYWD26B-xQqiDOD2@smile.fi.intel.com>
 
-On Fri, Dec 22, 2023 at 02:40:59PM +0200, Andy Shevchenko wrote:
-> On Fri, Dec 22, 2023 at 09:58:48AM +0100, Bartosz Golaszewski wrote:
-> > On Fri, Dec 22, 2023 at 2:12 AM Kent Gibson <warthog618@gmail.com> wrote:
-> > >
-> > > On Thu, Dec 21, 2023 at 07:55:27PM +0200, Andy Shevchenko wrote:
-> > > > Instead of repeating the same code and reduce possible miss
-> > > > of READ_ONCE(), split line_get_debounce_period() heler out
-> > > > and use in the existing cases.
-> > > >
-> > >
-> > > helper
-> > >
-> > >
-> > > Not a fan of this change.
-> > >
-> >
-> > Yeah, sorry but NAK. READ_ONCE() is well known and tells you what the
-> > code does. Arbitrary line_get_debounce_period() makes me have to look
-> > it up.
+
+
+在 2023/12/21 12:54, Thomas Bogendoerfer 写道:
+> Setting up vector interrupts worked only with handlers, which resided
+> in CKSEG0 space. This limits the kernel placement for 64bit platforms.
+> By patching in the offset into vi_handlers[] instead of the full
+> handler address, the vectored exception handler can load the
+> address by itself and jump to it.
 >
-> We have setter, but not getter. It looks confusing, more over, the setter makes
-> much more than just set. Hence another way to solve this is make clear (by
-> changing name) that the setter is not _just_ a setter.
+> Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+
+Reviewed-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+
+Could you please keep me in Cc if you are going to propose a better
+solution :-)
+
+Thanks
+- Jiaxun
+
+> ---
+>   arch/mips/kernel/genex.S | 8 ++++----
+>   arch/mips/kernel/traps.c | 9 +++------
+>   2 files changed, 7 insertions(+), 10 deletions(-)
 >
-
-As I mentioned elsewhere, the side effects of the setter are irrelevant
-to the caller, so from their point of view it is _just_ a setter.
-Calling it something else would actually be more confusing.
-
-Cheers,
-Kent.
+> diff --git a/arch/mips/kernel/genex.S b/arch/mips/kernel/genex.S
+> index b6de8e88c1bd..a572ce36a24f 100644
+> --- a/arch/mips/kernel/genex.S
+> +++ b/arch/mips/kernel/genex.S
+> @@ -272,18 +272,17 @@ NESTED(except_vec_vi, 0, sp)
+>   	.set	push
+>   	.set	noreorder
+>   	PTR_LA	v1, except_vec_vi_handler
+> -FEXPORT(except_vec_vi_lui)
+> -	lui	v0, 0		/* Patched */
+>   	jr	v1
+>   FEXPORT(except_vec_vi_ori)
+> -	 ori	v0, 0		/* Patched */
+> +	 ori	v0, zero, 0		/* Offset in vi_handlers[] */
+>   	.set	pop
+>   	END(except_vec_vi)
+>   EXPORT(except_vec_vi_end)
+>   
+>   /*
+>    * Common Vectored Interrupt code
+> - * Complete the register saves and invoke the handler which is passed in $v0
+> + * Complete the register saves and invoke the handler, $v0 holds
+> + * offset into vi_handlers[]
+>    */
+>   NESTED(except_vec_vi_handler, 0, sp)
+>   	SAVE_TEMP
+> @@ -331,6 +330,7 @@ NESTED(except_vec_vi_handler, 0, sp)
+>   	/* Save task's sp on IRQ stack so that unwinding can follow it */
+>   	LONG_S	s1, 0(sp)
+>   2:
+> +	PTR_L	v0, vi_handlers(v0)
+>   	jalr	v0
+>   
+>   	/* Restore sp */
+> diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
+> index 246c6a6b0261..d90b18908692 100644
+> --- a/arch/mips/kernel/traps.c
+> +++ b/arch/mips/kernel/traps.c
+> @@ -2091,16 +2091,14 @@ static void *set_vi_srs_handler(int n, vi_handler_t addr, int srs)
+>   		 * If no shadow set is selected then use the default handler
+>   		 * that does normal register saving and standard interrupt exit
+>   		 */
+> -		extern const u8 except_vec_vi[], except_vec_vi_lui[];
+> +		extern const u8 except_vec_vi[];
+>   		extern const u8 except_vec_vi_ori[], except_vec_vi_end[];
+>   		extern const u8 rollback_except_vec_vi[];
+>   		const u8 *vec_start = using_rollback_handler() ?
+>   				      rollback_except_vec_vi : except_vec_vi;
+>   #if defined(CONFIG_CPU_MICROMIPS) || defined(CONFIG_CPU_BIG_ENDIAN)
+> -		const int lui_offset = except_vec_vi_lui - vec_start + 2;
+>   		const int ori_offset = except_vec_vi_ori - vec_start + 2;
+>   #else
+> -		const int lui_offset = except_vec_vi_lui - vec_start;
+>   		const int ori_offset = except_vec_vi_ori - vec_start;
+>   #endif
+>   		const int handler_len = except_vec_vi_end - vec_start;
+> @@ -2119,10 +2117,9 @@ static void *set_vi_srs_handler(int n, vi_handler_t addr, int srs)
+>   #else
+>   				handler_len);
+>   #endif
+> -		h = (u16 *)(b + lui_offset);
+> -		*h = (handler >> 16) & 0xffff;
+> +		/* insert offset into vi_handlers[] */
+>   		h = (u16 *)(b + ori_offset);
+> -		*h = (handler & 0xffff);
+> +		*h = n * sizeof(handler);
+>   		local_flush_icache_range((unsigned long)b,
+>   					 (unsigned long)(b+handler_len));
+>   	}
 
 
