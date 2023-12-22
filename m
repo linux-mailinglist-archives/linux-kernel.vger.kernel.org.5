@@ -1,89 +1,81 @@
-Return-Path: <linux-kernel+bounces-9803-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9804-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46D2781CBA3
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 16:03:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C009081CBA8
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 16:03:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A03B9B2476B
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 15:02:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5F9691F26C2E
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 15:03:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 274972554F;
-	Fri, 22 Dec 2023 15:01:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17E852375A;
+	Fri, 22 Dec 2023 15:02:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="MU0DWe9w"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jWzzLhQm"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7E5B241FD
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 15:01:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a235e394758so216947466b.1
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 07:01:51 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35D0623745
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 15:02:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1d3e6c86868so15907165ad.1
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 07:02:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703257310; x=1703862110; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1703257358; x=1703862158; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=+d2F5ydtA1OobfJmI2hpIshuNT6ymaNJ4rjSuqNR8IA=;
-        b=MU0DWe9w6pHEuxKA32Jx7HPsnmZMaUdvYgQovU+9LEgQV68hwfB63pdAz7yxYwydMg
-         QzLWoh+nhFgCajpXrXFyd9K3tBM0LWzIDJSGU+dAVMCfb5uDOAEKVUOSzbJNm9xT5ehC
-         OxaKNUVwqj2mPJ/xoEMUw/rUtSb/6Jmr9E5D6SgdyDLjb1fBnicKAlL35hwlqLNpVdVx
-         aklooGxr0CefoTStBiRg+W+mT8oulBXzADBT/OmRNMMx5uoCRus3LetIAqR6moWTwQuc
-         HXygHPbp0sxVjNEaPq5b4jCOcHw5nhraElt9k9wMP585qrx+/rHAE6e5OVaMLXAVWjqK
-         9hDA==
+        bh=J6dm7WMM/NFGIZP+OY+8wDbWwQqcxE0Rs1FBVgsjsyc=;
+        b=jWzzLhQmn9tgwFKi360TpwbGKE5BBxFAZ3nacR2HBOpI+qNw8PeHxcWYF9+1KlCyPc
+         6CgkNqegYbrJXF6NwxG5nrOwGk77hDZendT1a6LTix2zuDP+LA8E5m3RxdxRkH0ajKob
+         j6ZQv6ftb9HlLFSO5j6lYgib1rbl18kSEjJNE9CRDL0aWltHd/0aT8jrj2MlWVcIsww/
+         /gVhprxYcLcK9OtMy+fmNadYhW+0BOnhptOaHI3Gy5PuFE3vOfuBoyMKPLczr+leWlcR
+         V5CQvS7I2VCxam9O9eAR+Wpjtu3meOxRyHlHowGSJ884Vr6EHOLDrEyIEGVoPtQOD7y7
+         YCTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703257310; x=1703862110;
+        d=1e100.net; s=20230601; t=1703257358; x=1703862158;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=+d2F5ydtA1OobfJmI2hpIshuNT6ymaNJ4rjSuqNR8IA=;
-        b=Wxi/VYDT5g9Mg71xHLSoFFTuKJNPxEP66c4eA8udv++VGmPwhl+zmsMeBmX8+UPsnH
-         pgZKXy4zL9oHV9bb65fE83RXXRcXNyyDoNvdewrdntno83QIQaoERrU0PL2ib/0uouCn
-         5O7NtMpgGpJPA1GWfVJ1tRvG1UGpgZ83Bs0kxGcHuJmHGgVTpyDHwdti+3a+AdngsBae
-         OVy2erzMYBhyodCUmTFIoZKzXMe0GGInM0h0jMN41gzT8l+DB3BmsRzC2/F8idRYKn+8
-         v9rLy2HFLMovqIOEOiViN7Vn/mze7ATE65Zmr0YB+ouRMel4B/KwFL02+0VWe6bw+fKN
-         zTZQ==
-X-Gm-Message-State: AOJu0YxH7Zh8hLnYyzT7LemN2xjIBU9WI9au+ixvRIwMo7ODMvg5nA5W
-	tNOe6qfOd7xxgKcJlgfzGqe9tWY8hae1uQ==
-X-Google-Smtp-Source: AGHT+IFzDificB3UdraTqz1VX5y4HhiRlv+QgDqloc5aGPlnfsgxfIGccPb4+aYc8yFdDUFdm5GSDw==
-X-Received: by 2002:a17:906:18:b0:a23:4589:75b0 with SMTP id 24-20020a170906001800b00a23458975b0mr808715eja.100.1703257310132;
-        Fri, 22 Dec 2023 07:01:50 -0800 (PST)
-Received: from krzk-bin.. ([78.10.206.178])
-        by smtp.gmail.com with ESMTPSA id h1-20020a17090791c100b00a26af35c171sm1275671ejz.0.2023.12.22.07.01.48
+        bh=J6dm7WMM/NFGIZP+OY+8wDbWwQqcxE0Rs1FBVgsjsyc=;
+        b=GcqTJJ3n/dKndBaoGXgzROsJYHjgj1MkSNKEEVJNQRrkSIQzqgXiA+h/QUa+qVY9ot
+         Nbn7GZXMbnQHIbdQFqgc2qoWKQXwSMW5r/BuqR7uMliIHVaRRFlFp03AOVlknJxYkN29
+         t2yHoYjPGxb1siuL77zWW/e5JWHpTT9SYXt/7MNzct/+GquEgriAi54FVFIMiZIx9Ra6
+         MpqjbbWfSUaNahY37uAK6pnNM5iXd2ZeKi11g6QBdOGd3nXXY6+XVi72XTUmNvnu26Lh
+         zWESypxXEsQ0BILZNFfy2vG/Ej8gua9B3Vccv6laCkreTIl4pHooI6NNlt06mPZkOp7y
+         NtZQ==
+X-Gm-Message-State: AOJu0YwT3Oy4AL3JmamUtzuLm2/rN6dMo+w7MVjZWqWUoFCIc6h/1RIx
+	9TLgiIV56R7tpBtlm7VFngM=
+X-Google-Smtp-Source: AGHT+IGqGk74vO9va6NONHyTYfJhbSWKFtLl13+mwBHu3+2bItAQM4AY5E2mDdfrHXIgvZiXk+wJOQ==
+X-Received: by 2002:a17:903:114:b0:1d4:1b8e:30d1 with SMTP id y20-20020a170903011400b001d41b8e30d1mr1183931plc.29.1703257358343;
+        Fri, 22 Dec 2023 07:02:38 -0800 (PST)
+Received: from code.. ([144.202.108.46])
+        by smtp.gmail.com with ESMTPSA id jk7-20020a170903330700b001d3e992000dsm3587176plb.220.2023.12.22.07.02.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Dec 2023 07:01:49 -0800 (PST)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-	Banajit Goswami <bgoswami@quicinc.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	linux-arm-msm@vger.kernel.org,
-	alsa-devel@alsa-project.org,
-	linux-sound@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Bartosz Golaszewski <brgl@bgdev.pl>,
-	Sean Anderson <sean.anderson@seco.com>
-Subject: [PATCH 4/4] ASoC: codecs: wsa884x: Allow sharing reset GPIO
-Date: Fri, 22 Dec 2023 16:01:33 +0100
-Message-Id: <20231222150133.732662-5-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231222150133.732662-1-krzysztof.kozlowski@linaro.org>
-References: <20231222150133.732662-1-krzysztof.kozlowski@linaro.org>
+        Fri, 22 Dec 2023 07:02:38 -0800 (PST)
+From: Yuntao Wang <ytcoode@gmail.com>
+To: akpm@linux-foundation.org
+Cc: bhe@redhat.com,
+	bhelgaas@google.com,
+	bp@alien8.de,
+	dave.hansen@linux.intel.com,
+	horms@kernel.org,
+	hpa@zytor.com,
+	linux-kernel@vger.kernel.org,
+	mingo@redhat.com,
+	tglx@linutronix.de,
+	x86@kernel.org,
+	ytcoode@gmail.com
+Subject: Re: [PATCH] x86/kexec: fix incorrect end address passed to kernel_ident_mapping_init()
+Date: Fri, 22 Dec 2023 23:02:27 +0800
+Message-ID: <20231222150227.95193-1-ytcoode@gmail.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20231221140300.4fcfd4945eeb3b6c145a969c@linux-foundation.org>
+References: <20231221140300.4fcfd4945eeb3b6c145a969c@linux-foundation.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -92,124 +84,40 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-On some boards with multiple WSA8840/WSA8845 speakers, the reset
-(shutdown) GPIO is shared between two speakers.  Use the reset
-controller framework and its "reset-gpio" driver to handle this case.
-This allows bring-up and proper handling of all WSA884x speakers on
-X1E80100-CRD board.
+On Thu, 21 Dec 2023 14:03:00 -0800, Andrew Morton <akpm@linux-foundation.org> wrote:
 
-Cc: Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: Sean Anderson <sean.anderson@seco.com>
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> On Thu, 21 Dec 2023 18:17:02 +0800 Yuntao Wang <ytcoode@gmail.com> wrote:
+> 
+> > kernel_ident_mapping_init() takes an exclusive memory range [pstart, pend)
+> > where pend is not included in the range, while res represents an inclusive
+> > memory range [start, end] where end is considered part of the range.
+> > 
+> > Therefore, passing res->end directly to kernel_ident_mapping_init() is
+> > incorrect, the correct end address should be `res->end + 1`.
+> > 
+> > ...
+> >
+> > --- a/arch/x86/kernel/machine_kexec_64.c
+> > +++ b/arch/x86/kernel/machine_kexec_64.c
+> > @@ -44,7 +44,7 @@ static int mem_region_callback(struct resource *res, void *arg)
+> >  	struct init_pgtable_data *data = arg;
+> >  
+> >  	return kernel_ident_mapping_init(data->info, data->level4p,
+> > -					 res->start, res->end);
+> > +					 res->start, res->end + 1);
+> >  }
+> 
+> Thanks.  When fixing a bug, please always full describe the
+> userspace-visible effects of that bug.
+> 
+> In this case I'm assuming "none", due to kernel_ident_mapping_init()'s
+> upward rounding of the address?
 
----
+Passing [start, end] rather than [start, end+1) to kernel_ident_mapping_init()
+may result in the identity mapping for the end address not being set up.
 
-If previous patches are fine, then this commit is independent and could
-be taken via ASoC.
----
- sound/soc/codecs/wsa884x.c | 52 ++++++++++++++++++++++++++++++--------
- 1 file changed, 42 insertions(+), 10 deletions(-)
-
-diff --git a/sound/soc/codecs/wsa884x.c b/sound/soc/codecs/wsa884x.c
-index f2653df84e4a..49ae7712e6ef 100644
---- a/sound/soc/codecs/wsa884x.c
-+++ b/sound/soc/codecs/wsa884x.c
-@@ -13,6 +13,7 @@
- #include <linux/pm_runtime.h>
- #include <linux/regmap.h>
- #include <linux/regulator/consumer.h>
-+#include <linux/reset.h>
- #include <linux/slab.h>
- #include <linux/soundwire/sdw.h>
- #include <linux/soundwire/sdw_registers.h>
-@@ -699,6 +700,7 @@ struct wsa884x_priv {
- 	struct sdw_stream_runtime *sruntime;
- 	struct sdw_port_config port_config[WSA884X_MAX_SWR_PORTS];
- 	struct gpio_desc *sd_n;
-+	struct reset_control *sd_reset;
- 	bool port_prepared[WSA884X_MAX_SWR_PORTS];
- 	bool port_enable[WSA884X_MAX_SWR_PORTS];
- 	unsigned int variant;
-@@ -1799,9 +1801,22 @@ static struct snd_soc_dai_driver wsa884x_dais[] = {
- 	},
- };
- 
--static void wsa884x_gpio_powerdown(void *data)
-+static void wsa884x_reset_powerdown(void *data)
- {
--	gpiod_direction_output(data, 1);
-+	struct wsa884x_priv *wsa884x = data;
-+
-+	if (wsa884x->sd_reset)
-+		reset_control_assert(wsa884x->sd_reset);
-+	else
-+		gpiod_direction_output(wsa884x->sd_n, 1);
-+}
-+
-+static void wsa884x_reset_deassert(struct wsa884x_priv *wsa884x)
-+{
-+	if (wsa884x->sd_reset)
-+		reset_control_deassert(wsa884x->sd_reset);
-+	else
-+		gpiod_direction_output(wsa884x->sd_n, 0);
- }
- 
- static void wsa884x_regulator_disable(void *data)
-@@ -1809,6 +1824,26 @@ static void wsa884x_regulator_disable(void *data)
- 	regulator_bulk_disable(WSA884X_SUPPLIES_NUM, data);
- }
- 
-+static int wsa884x_get_reset(struct device *dev, struct wsa884x_priv *wsa884x)
-+{
-+	wsa884x->sd_reset = devm_reset_control_get_optional_shared(dev, NULL);
-+	if (IS_ERR(wsa884x->sd_reset))
-+		return dev_err_probe(dev, PTR_ERR(wsa884x->sd_reset),
-+				     "Failed to get reset\n");
-+
-+	/*
-+	 * Backwards compatible way for powerdown-gpios, does not handle
-+	 * sharing GPIO properly.
-+	 */
-+	wsa884x->sd_n = devm_gpiod_get_optional(dev, "powerdown",
-+						GPIOD_OUT_HIGH);
-+	if (IS_ERR(wsa884x->sd_n))
-+		return dev_err_probe(dev, PTR_ERR(wsa884x->sd_n),
-+				     "Shutdown Control GPIO not found\n");
-+
-+	return 0;
-+}
-+
- static int wsa884x_probe(struct sdw_slave *pdev,
- 			 const struct sdw_device_id *id)
- {
-@@ -1838,11 +1873,9 @@ static int wsa884x_probe(struct sdw_slave *pdev,
- 	if (ret)
- 		return ret;
- 
--	wsa884x->sd_n = devm_gpiod_get_optional(dev, "powerdown",
--						GPIOD_OUT_HIGH);
--	if (IS_ERR(wsa884x->sd_n))
--		return dev_err_probe(dev, PTR_ERR(wsa884x->sd_n),
--				     "Shutdown Control GPIO not found\n");
-+	ret = wsa884x_get_reset(dev, wsa884x);
-+	if (ret)
-+		return ret;
- 
- 	dev_set_drvdata(dev, wsa884x);
- 	wsa884x->slave = pdev;
-@@ -1858,9 +1891,8 @@ static int wsa884x_probe(struct sdw_slave *pdev,
- 	pdev->prop.sink_dpn_prop = wsa884x_sink_dpn_prop;
- 	pdev->prop.scp_int1_mask = SDW_SCP_INT1_BUS_CLASH | SDW_SCP_INT1_PARITY;
- 
--	/* Bring out of reset */
--	gpiod_direction_output(wsa884x->sd_n, 0);
--	ret = devm_add_action_or_reset(dev, wsa884x_gpio_powerdown, wsa884x->sd_n);
-+	wsa884x_reset_deassert(wsa884x);
-+	ret = devm_add_action_or_reset(dev, wsa884x_reset_powerdown, wsa884x);
- 	if (ret)
- 		return ret;
- 
--- 
-2.34.1
-
+For example, when res->start is equal to res->end, kernel_ident_mapping_init()
+will not establish any identity mapping. Similarly, when the value of res->end
+is a multiple of 2M and the page table maps 2M pages, kernel_ident_mapping_init()
+will also not set up identity mapping for res->end.
 
