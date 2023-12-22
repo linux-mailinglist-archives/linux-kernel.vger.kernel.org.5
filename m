@@ -1,71 +1,125 @@
-Return-Path: <linux-kernel+bounces-9922-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9925-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26BC281CD47
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 17:52:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9867181CD50
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 17:54:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 874A1B218A2
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 16:52:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3778F1F2326B
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 16:54:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A79A328E35;
-	Fri, 22 Dec 2023 16:51:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D420286B6;
+	Fri, 22 Dec 2023 16:54:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FESQcErf"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="P/T7uZar"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3D07250EC;
-	Fri, 22 Dec 2023 16:51:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id C9EFFC433C7;
-	Fri, 22 Dec 2023 16:51:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703263917;
-	bh=O2i5GkKXF4HeE3cNgDiYO0B6MxaCdyUyxEZG54psc+8=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=FESQcErfuQjTomKmbiD8yoyDMa57owOiA8QwkfqLaU6sA83J4YKT9WxS7nhnt8gNK
-	 DqHxFIZ9Kpt6wADkwoExAMWOz2B9Thg6NwJUxlrythZ3RVvwy3q4rNapyKv9NrXsYb
-	 xVf76K4WjiYWCeIZ9oJvbXW34ioztqa0wMIv5ly8YZ+nho1+WSrgX8v78IDcRp1BOJ
-	 9BFnuex/iMcGu57ZyvoUVmwUe3etuucygbMgPCUfQ6ia/h3gltVYzCl3/tOKaxGXKS
-	 CPjd8clGTRicCuFmwh6iY/ntLTFrsXsVgkAGgIzduO+hM4xzz58pv/PSxaKpn2DUtc
-	 PxHFWffkS3Obg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id B0ED3DD4EE1;
-	Fri, 22 Dec 2023 16:51:57 +0000 (UTC)
-Subject: Re: [GIT PULL] gpio: fixes for v6.7-rc7
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <20231222100731.10294-1-brgl@bgdev.pl>
-References: <20231222100731.10294-1-brgl@bgdev.pl>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20231222100731.10294-1-brgl@bgdev.pl>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git tags/gpio-fixes-for-v6.7-rc7
-X-PR-Tracked-Commit-Id: 1cc3542c76acb5f59001e3e562eba672f1983355
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: a9ca0330d222ae6c32ba5519f5a2f04dc97b7d8b
-Message-Id: <170326391772.6925.5113777074821997814.pr-tracker-bot@kernel.org>
-Date: Fri, 22 Dec 2023 16:51:57 +0000
-To: Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Linus Walleij <linus.walleij@linaro.org>, linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1C442510C
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 16:54:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-40d4d9d9b77so746385e9.2
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 08:54:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1703264081; x=1703868881; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Tp4rJuQG3OHFx6oF8DI0RVZGd4i2skFPkCRfzzGlz8s=;
+        b=P/T7uZarPNDby4pD8nQXosKSWzSvXFewVpk0oIkFa1xN0Ns/Jg5nVErHGRXodvojjq
+         xfKpgQXkI0NSTJs7COJEswic9y0xuUe2UsoFHKNkzA3zEfzyS/v+U1JU1aHynUXehFLg
+         vISU28cav1MQppfqpAuX5owEwVmT0VUBdSbVC/AOM5dbD0mhxlNk+G1doV9qTGepuyAt
+         VaIH6cImr2ZkFoKT9gECUTF47rAsxQTWCnLEQgKLh35qdxhqOZuGzkfWWfCHdimp84iF
+         QA7TydNF360C5yKFhBvpMfsYJDlsbtWiYWJxe42mIabrtOFCY5AXU/2vEYI29SAwrX4M
+         89sQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703264081; x=1703868881;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Tp4rJuQG3OHFx6oF8DI0RVZGd4i2skFPkCRfzzGlz8s=;
+        b=ofNFFClejoQcboaKQ7sHzFbQxSnyngd9mtcCyjXWaXSTQplObE0kUl/XMqJauC2olA
+         T9H2QJ3IBjmzEyzwI3zFy6032jKOlrdqqNwOXqDIn+K15w7lmxUCElyALHsj7D8aFqZc
+         s8aG85IRKhyzXKjlKRliOXMAWlGEr9ORhclbNrysyqH0efxWKFrGbIMM1QLUmm6RoTFc
+         B5/5ZcWJS0t/BKNbbnNNzfmRFYiUGu8ZLqH9+gSg6Srl2Vuk4ZTny1zKnrqZpnkFdsS7
+         xFBl4WbDjWI9/7G0zzQMAJaHSIA+hHubjyYxiyJ4sDDwpzFubxb0Vv/wKxhHBPSQOCHJ
+         7YxA==
+X-Gm-Message-State: AOJu0YwWWrigC3B2S3kggwFifZfc4fivhMrXXRe1xwygJI2uRDKZuvS1
+	41Lo9OwC17iF+1GamzV/AJ+PG7kpo+8C5w==
+X-Google-Smtp-Source: AGHT+IHImM4HfK5e0bczSc3i+bOXtwSGNqlpqls7j9IZ1sajgCFkS/wlJMk9ERJ1tkqE8H+tfsc8fw==
+X-Received: by 2002:a05:600c:19c8:b0:40d:4da9:db82 with SMTP id u8-20020a05600c19c800b0040d4da9db82mr105248wmq.45.1703264081104;
+        Fri, 22 Dec 2023 08:54:41 -0800 (PST)
+Received: from gpeter-l.lan (host-78-151-55-40.as13285.net. [78.151.55.40])
+        by smtp.gmail.com with ESMTPSA id i15-20020a05600c354f00b0040d378510adsm10138520wmq.1.2023.12.22.08.54.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Dec 2023 08:54:40 -0800 (PST)
+From: Peter Griffin <peter.griffin@linaro.org>
+To: robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	daniel.lezcano@linaro.org,
+	tglx@linutronix.de,
+	conor+dt@kernel.org,
+	alim.akhtar@samsung.com,
+	s.nawrocki@samsung.com,
+	tomasz.figa@gmail.com,
+	cw00.choi@samsung.com,
+	mturquette@baylibre.com,
+	sboyd@kernel.org
+Cc: devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-samsung-soc@vger.kernel.org,
+	linux-clk@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	kernel-team@android.com,
+	peter.griffin@linaro.org,
+	tudor.ambarus@linaro.org,
+	andre.draszik@linaro.org,
+	semen.protsenko@linaro.org,
+	saravanak@google.com,
+	willmcvicker@google.com
+Subject: [PATCH 0/3]  Enable Multi Core Timer (MCT) for gs101
+Date: Fri, 22 Dec 2023 16:53:52 +0000
+Message-ID: <20231222165355.1462740-1-peter.griffin@linaro.org>
+X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-The pull request you sent on Fri, 22 Dec 2023 11:07:31 +0100:
+Hi folks,
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git tags/gpio-fixes-for-v6.7-rc7
+This series enables Multi Core Timer (MCT) for gs101. As part of enabling
+MCT we also need to register cmu_misc bank of clocks early so exynos_mct can
+obtain it's clock.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/a9ca0330d222ae6c32ba5519f5a2f04dc97b7d8b
+MCT timer is required longer term as the Arm arch timer can't wake the CPU from
+suspend. This series is based off todays linux-next.
 
-Thank you!
+Note the dtsi change without the corresponding clock driver changes will result
+in a system that doesn't boot. So ideally this would both be merged together
+through Krzysztofs Samsung exynos tree. If that is OK with everyone?
+
+regards,
+
+Peter
+
+Peter Griffin (3):
+  dt-bindings: timer: exynos4210-mct: Add google,gs101-mct compatible
+  clk: samsung: gs101: register cmu_misc clocks early
+  arm64: dts: exynos: gs101: define Multi Core Timer (MCT) node
+
+ .../timer/samsung,exynos4210-mct.yaml         |  2 ++
+ arch/arm64/boot/dts/exynos/google/gs101.dtsi  | 20 +++++++++++++++++++
+ drivers/clk/samsung/clk-gs101.c               | 12 ++++++++---
+ 3 files changed, 31 insertions(+), 3 deletions(-)
 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.43.0.472.g3155946c3a-goog
+
 
