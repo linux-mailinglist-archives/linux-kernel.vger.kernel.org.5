@@ -1,140 +1,157 @@
-Return-Path: <linux-kernel+bounces-9499-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9498-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91AB381C696
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 09:28:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id AA46181C692
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 09:27:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 22FE9287B9B
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 08:28:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 60019286708
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 08:27:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3EF41A598;
-	Fri, 22 Dec 2023 08:27:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Y10Xr7sc"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 336E718631;
+	Fri, 22 Dec 2023 08:27:31 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBC7519448;
-	Fri, 22 Dec 2023 08:27:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BM6mJT7021447;
-	Fri, 22 Dec 2023 08:27:20 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=IWQzRiq1FJLluo9evumHWLCWgz7uK87P5Y+UWB7CfDE=; b=Y1
-	0Xr7sc2sesUsi+IsNReuxibxzl4Gz0uoPKIl81Cc/Z8Mr9szXGxL8xd6m9PNOk+a
-	JXlIj6ub6WVpfFcL8K1gvTcnqkPL3y5y/kn2pxOsXS8e47fjDY1XlZb9KPiGNSNL
-	epKs4bZVB6mmuzzFFJz7LUf4cDJid3RlmafKXofz2jcsum7irAazZ8/97kz8T6xf
-	9P7H2bjr5nTChQHrtj/kiZoL762GT3n1vC9i9xsArlEh1EPjPIjnP9Wc0SP1kpET
-	0aKugFNxsjKSJGprS/QtyTEw3dX9WCVhdgX50XKNQNlAzgNXZdqaRe/vcXyp3/Ie
-	tB2FKhB6qUvNUc1yVZYg==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v51u08qkr-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 22 Dec 2023 08:27:19 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BM8RI5C023532
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 22 Dec 2023 08:27:19 GMT
-Received: from [10.253.15.135] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 22 Dec
- 2023 00:27:14 -0800
-Message-ID: <2b04cca6-ee41-47c3-86db-c52aa5f5405d@quicinc.com>
-Date: Fri, 22 Dec 2023 16:27:15 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27558182C1;
+	Fri, 22 Dec 2023 08:27:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4SxL514k0Sz4f3k68;
+	Fri, 22 Dec 2023 16:27:17 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 1542B1A0B11;
+	Fri, 22 Dec 2023 16:27:19 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+	by APP1 (Coremail) with SMTP id cCh0CgCn9QtkSIVlB1VIEQ--.51555S3;
+	Fri, 22 Dec 2023 16:27:18 +0800 (CST)
+Subject: Re: [PATCH] scsi: sd: unregister device if device_add_disk() failed
+ in sd_probe()
+To: Luis Chamberlain <mcgrof@kernel.org>, linan666@huaweicloud.com
+Cc: jejb@linux.ibm.com, martin.petersen@oracle.com,
+ linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linan122@huawei.com, yi.zhang@huawei.com, houtao1@huawei.com,
+ yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
+References: <20231208082335.1754205-1-linan666@huaweicloud.com>
+ <ZYUxZc/my2v6UfFJ@bombadil.infradead.org>
+From: Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <78fb6d82-c50a-8fea-ae6d-551fd35656bf@huaweicloud.com>
+Date: Fri, 22 Dec 2023 16:27:16 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC v3 10/11] scsi: ufs: core: Perform read back to commit
- doorbell
-Content-Language: en-US
-To: Andrew Halaney <ahalaney@redhat.com>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio
-	<konrad.dybcio@linaro.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        "James
- E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen"
-	<martin.petersen@oracle.com>,
-        Hannes Reinecke <hare@suse.de>, Janek Kotas
-	<jank@cadence.com>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman
-	<avri.altman@wdc.com>,
-        Bart Van Assche <bvanassche@acm.org>
-CC: Will Deacon <will@kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20231221-ufs-reset-ensure-effect-before-delay-v3-0-2195a1b66d2e@redhat.com>
- <20231221-ufs-reset-ensure-effect-before-delay-v3-10-2195a1b66d2e@redhat.com>
-From: Can Guo <quic_cang@quicinc.com>
-In-Reply-To: <20231221-ufs-reset-ensure-effect-before-delay-v3-10-2195a1b66d2e@redhat.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: qtanN9W5L-UCIrrhRrbLM6krCEmG8c36
-X-Proofpoint-ORIG-GUID: qtanN9W5L-UCIrrhRrbLM6krCEmG8c36
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0 mlxscore=0
- bulkscore=0 suspectscore=0 clxscore=1015 priorityscore=1501 spamscore=0
- adultscore=0 malwarescore=0 mlxlogscore=999 phishscore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2311290000
- definitions=main-2312220058
+In-Reply-To: <ZYUxZc/my2v6UfFJ@bombadil.infradead.org>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgCn9QtkSIVlB1VIEQ--.51555S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxCrWxArW8uw4rXFW5tw1DWrg_yoW5GF4xpF
+	s8Xas0yrWUWrn8Cw1kZF47Za4UG3WIy3s3Xr45G34Yg3s3X34rKay3KFW5Xa4xArZrCF4U
+	JrW5JFyvgF18Jr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUv2b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
+	07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
+	02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_
+	GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
+	CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAF
+	wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
+	7IU1zuWJUUUUU==
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
+Hi,
 
+ÔÚ 2023/12/22 14:49, Luis Chamberlain Ð´µÀ:
+> On Fri, Dec 08, 2023 at 04:23:35PM +0800, linan666@huaweicloud.com wrote:
+>> From: Li Nan <linan122@huawei.com>
+>>
+>> "if device_add() succeeds, you should call device_del() when you want to
+>> get rid of it."
+>>
+>> In sd_probe(), device_add_disk() fails when device_add() has already
+>> succeeded, so change put_device() to device_unregister() to ensure device
+>> resources are released.
+>>
+>> Fixes: 2a7a891f4c40 ("scsi: sd: Add error handling support for add_disk()")
+>> Signed-off-by: Li Nan <linan122@huawei.com>
+> 
+> Nacked-by: Luis Chamberlain <mcgrof@kernel.org>
+> 
+>> ---
+>>   drivers/scsi/sd.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/scsi/sd.c b/drivers/scsi/sd.c
+>> index 542a4bbb21bc..d81cbeee06eb 100644
+>> --- a/drivers/scsi/sd.c
+>> +++ b/drivers/scsi/sd.c
+>> @@ -3736,7 +3736,7 @@ static int sd_probe(struct device *dev)
+>>   
+>>   	error = device_add_disk(dev, gd, NULL);
+>>   	if (error) {
+>> -		put_device(&sdkp->disk_dev);
+>> +		device_unregister(&sdkp->disk_dev);
+>>   		put_disk(gd);
+>>   		goto out;
+>>   	}
+> 
+> This is incorrect, device_unregister() calls:
+> 
+> void device_unregister(struct device *dev)
+> {
+> 	pr_debug("device: '%s': %s\n", dev_name(dev), __func__);
+> 	device_del(dev);
+> 	put_device(dev);
+> }
+> 
+> So you're adding what you believe to be a correct missing device_del().
+> But what you missed is that if device_add_disk() fails then device_add()
+> did not succeed because the new code we have in the kernel *today* unwinds
+> this for us now.
 
-On 12/22/2023 3:09 AM, Andrew Halaney wrote:
-> Currently, the doorbell is written to and a wmb() is used to commit it
-> immediately.
+I'm confused here, there are two device here, one is 'sdkp->disk_dev',
+one is gendisk->part0->bd_device, and the order in which they
+initialize:
+
+sd_probe
+device_add(&sdkp->disk_dev) -> succeed
+device_add_disk -> failed, and device_add(bd_device) did not succeed
+put_device(&sdkp->disk_dev) -> device_del is missed
+
+I don't see that if device_add_disk() fail, device_del() for
+'sdkp->disk_dev'is called from anywhere. Do I missing anything?
+
+Thanks,
+Kuai
+
 > 
-> wmb() ensures that the write completes before following writes occur,
-> but completion doesn't mean that it isn't stored in a buffer somewhere.
-> The recommendation for ensuring this bit has taken effect on the device
-> is to perform a read back to force it to make it all the way to the
-> device. This is documented in device-io.rst and a talk by Will Deacon on
-> this can be seen over here:
+> What you missed is that in today's code inside device_add_disk(), if
+> device_add() succeeeds we now unwind and call device_del() for the
+> device for you. And so, quoting the next sentence you took from
+> device_add():
 > 
->      https://youtu.be/i6DayghhA8Q?si=MiyxB5cKJXSaoc01&t=1678
+> "If device_add() has *not* succeeded, use *only* put_device() to drop the
+>   reference count."
 > 
-> Let's do that to ensure the bit hits the device. Because the wmb()'s
-> purpose wasn't to add extra ordering (on top of the ordering guaranteed
-> by writel()/readl()), it can safely be removed.
+> Please do reference in the future a crash dump / or explain how you
+> reached your conclusions if you do not have a crash dump to prove an
+> issue. Specially if you are suggesting it Fixes a commit.
 > 
-> Fixes: ad1a1b9cd67a ("scsi: ufs: commit descriptors before setting the doorbell")
-> Signed-off-by: Andrew Halaney <ahalaney@redhat.com>
-> ---
->   drivers/ufs/core/ufshcd.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+>    Luis
 > 
-> diff --git a/drivers/ufs/core/ufshcd.c b/drivers/ufs/core/ufshcd.c
-> index 75a03ee9a1ba..caebd589e08c 100644
-> --- a/drivers/ufs/core/ufshcd.c
-> +++ b/drivers/ufs/core/ufshcd.c
-> @@ -7050,7 +7050,7 @@ static int __ufshcd_issue_tm_cmd(struct ufs_hba *hba,
->   
->   	ufshcd_writel(hba, 1 << task_tag, REG_UTP_TASK_REQ_DOOR_BELL);
->   	/* Make sure that doorbell is committed immediately */
-> -	wmb();
-> +	ufshcd_readl(hba, REG_UTP_TASK_REQ_DOOR_BELL);
->   
->   	spin_unlock_irqrestore(host->host_lock, flags);
->   
+> .
 > 
-Reviewed-by: Can Guo <quic_cang@quicinc.com>
+
 
