@@ -1,239 +1,102 @@
-Return-Path: <linux-kernel+bounces-9314-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9315-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94E8E81C3DD
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 05:33:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E4FF581C3F4
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 05:33:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 823FC1C2466C
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 04:33:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A3E352867A3
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 04:33:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D2F2523C;
-	Fri, 22 Dec 2023 04:33:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D7B0568B;
+	Fri, 22 Dec 2023 04:33:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="VNCGXFZF"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="1K120uFY"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2553923D8
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 04:33:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1703219595;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/dnfBu/fEgkmN9hsRGrX3Qh2OWxZhe8THfvYViPvNZA=;
-	b=VNCGXFZFyZe3dz2Yzh3CYpBFLT+PTfzlgaW8f+PJ+kCqE5f8QtEYMVk09wfjcukL34wtsM
-	LY72RkgqH6ln6Tdf9B2w2M5ePwna6t+Ht3E+KqAyfQ8cB9taKbxRU/5hmxNhCIxnPuj7IQ
-	BJE7pKHaAxBaTB3c5ildvNxB90EnkVE=
-Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com
- [209.85.214.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-315-1ccVgsWKMLK_68NB2VVa2g-1; Thu, 21 Dec 2023 23:33:13 -0500
-X-MC-Unique: 1ccVgsWKMLK_68NB2VVa2g-1
-Received: by mail-pl1-f199.google.com with SMTP id d9443c01a7336-1d41d6055f6so1095275ad.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 20:33:13 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D20153A4
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 04:33:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1d3e4637853so92905ad.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 20:33:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1703219621; x=1703824421; darn=vger.kernel.org;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=GA0LF+TH67vOM4P5TpVaVyEWXV6dMRzuEiBhEutJCz0=;
+        b=1K120uFYWBLETflhPjeRest3UoQQ5lsdzyJ0AyUGIbBiC+vLnuCTT83/+Qwx9hfppL
+         UXsxpfnmQxqTF5lKB846bt1qOcwVkTeUsLLAjK7g5naUHtFl0CubFjE9yDcbQ47SRY0a
+         Zjm8krED34MWvT53vjMd/R1HqGZ/f/0KXiF5cutFkt09TOZEGJe/NuFeEIs7uExlT5XS
+         jnWrnPJ+bRdhSVFx8o5nZ/2eSiXQrpjY98y4bh/v2mKQfAT2iHpEoFTUOYolZIaLmXKJ
+         VwQPCLeuzC6ZYCyJyE/87TwUYb/M+bN2j3G95kzn7hoNl1GcG6evy1zoGGpxeQ/NHfPi
+         DE2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703219592; x=1703824392;
-        h=content-transfer-encoding:content-disposition:mime-version
-         :references:in-reply-to:message-id:date:subject:cc:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/dnfBu/fEgkmN9hsRGrX3Qh2OWxZhe8THfvYViPvNZA=;
-        b=Gfty5waQaVbppp0IQ6gago9Rw6lOzUKqv18XYt9xtj4b8/nYGtfzwzt2Rt/VLarvKI
-         2AykRHgj4H+OcVXvvemhESv0PcWB/LPx0C3pRTIgtUJ/BDPjGEBVzKnZg1LWCQD1/zQm
-         tHdmsiix1v4B6GX7x3XYLuOKYNCdPKKdAZsCLMQXPPLVKF2ELE8lRhr2JFZyDfKYOWnX
-         yeUc9ha4P3DI6jBVejfxXfAn5aeWNswJ1THp/4DvDK+QBHTcZJavbwFwUJQxPV86nS9l
-         OiDmHezv/6qHnv/P/DVIm1BgarK+moVu0cYjFnjC1uSP+MN6T9R9KuKGSkDqGhfCLwgA
-         Njhg==
-X-Gm-Message-State: AOJu0YyfBkAR2AJunv4mB6aurj/6oGm1Pug/F3EEK/l27lQ1jmpMB3M+
-	xYnFDy2vRzKDrJynWf0AnbO5LRF22yCHI+osAtTaW2FlRQxuXzTKd1PnQY6I5yNdKY2vMVSBkl8
-	85oex9aMuM+pGYGVqjCQfUZCXorTiUz/y
-X-Received: by 2002:a17:903:2602:b0:1d3:e573:20ec with SMTP id jd2-20020a170903260200b001d3e57320ecmr390693plb.90.1703219592221;
-        Thu, 21 Dec 2023 20:33:12 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGDVSGCaLDAAox1pQj6Gf9KxzIRJQl9Z4MY1pWe1L18FSa4/g4aAgyj/u/pm0pPnmWI+7vOLQ==
-X-Received: by 2002:a17:903:2602:b0:1d3:e573:20ec with SMTP id jd2-20020a170903260200b001d3e57320ecmr390684plb.90.1703219591881;
-        Thu, 21 Dec 2023 20:33:11 -0800 (PST)
-Received: from localhost.localdomain ([2804:1b3:a802:7496:88a7:1b1a:a837:bebf])
-        by smtp.gmail.com with ESMTPSA id e21-20020a170902d39500b001d3f79f61fdsm2445115pld.211.2023.12.21.20.33.07
+        d=1e100.net; s=20230601; t=1703219621; x=1703824421;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GA0LF+TH67vOM4P5TpVaVyEWXV6dMRzuEiBhEutJCz0=;
+        b=EWVnScuc8Hw5+71VPTnBOPR1aygMr5ZmFyPTCFSQy0o1S1GCacj7BGBDmhXV028HU8
+         2dJDUVHERY6rxcfND9fDm7kBOgPMo3wc+TF+WAa8n0cvnpqx7GecDags/HHeE/0IArKX
+         OBd2uAuiqzsNj7TXd8BJoB+TzVLtEw5zlfmDAm9pX6jci/o4COhGmfkLghbM+1VuIJjj
+         rPNs5SxpmjjwFQEr5248QpQjbrtLliYx7GQn4aFfiPlnFM2w9DY5uJlEuUHCMj48eB+o
+         5Yv2O5ExDEH6QrMUgqhiy3gWD+SFdIiexujph275btDRi1/CTbHSdjJMZM17h+S4N0xr
+         617Q==
+X-Gm-Message-State: AOJu0Yw/2e1hmS2D8FfzbC5udQu7PEdfjzELiwkLtjP9y6iyNpRCKCUd
+	u/qZGHMRkYdPfg+3GEPwmCJnm7sZCXtF
+X-Google-Smtp-Source: AGHT+IF59iV03cmnoQfQU9deMi9peyv62zV3m/O+RgYi5B5ku1UmnZcmZNsuRl3TOFw43MhyceyCQw==
+X-Received: by 2002:a17:902:e5cb:b0:1d3:ce75:a696 with SMTP id u11-20020a170902e5cb00b001d3ce75a696mr57154plf.5.1703219621002;
+        Thu, 21 Dec 2023 20:33:41 -0800 (PST)
+Received: from [2620:0:1008:15:184:1476:510:6ea1] ([2620:0:1008:15:184:1476:510:6ea1])
+        by smtp.gmail.com with ESMTPSA id a3-20020a17090abe0300b0028bc09a5e1fsm2613387pjs.12.2023.12.21.20.33.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Dec 2023 20:33:11 -0800 (PST)
-From: Leonardo Bras <leobras@redhat.com>
-To: Charlie Jenkins <charlie@rivosinc.com>
-Cc: Leonardo Bras <leobras@redhat.com>,
-	Guo Ren <guoren@kernel.org>,
-	linux-kernel@vger.kernel.org,
-	paul.walmsley@sifive.com,
-	palmer@dabbelt.com,
-	alexghiti@rivosinc.com,
-	xiao.w.wang@intel.com,
-	david@redhat.com,
-	panqinglin2020@iscas.ac.cn,
-	rick.p.edgecombe@intel.com,
-	willy@infradead.org,
-	bjorn@rivosinc.com,
-	conor.dooley@microchip.com,
-	cleger@rivosinc.com,
-	linux-riscv@lists.infradead.org,
-	Guo Ren <guoren@linux.alibaba.com>,
-	stable@vger.kernel.org
-Subject: Re: [PATCH V2 1/4] riscv: mm: Fixup compat mode boot failure
-Date: Fri, 22 Dec 2023 01:32:56 -0300
-Message-ID: <ZYUReEZWcZVv1kxP@LeoBras>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <ZYUHg3kIMYdNSOSr@ghost>
-References: <20231221154702.2267684-1-guoren@kernel.org> <20231221154702.2267684-2-guoren@kernel.org> <ZYTriK9hjOFQou9Z@LeoBras> <CAJF2gTT=EQzsuYMHr3FLb82Gi325PqWMEOAzfc6fg=go+gKP_g@mail.gmail.com> <ZYUHg3kIMYdNSOSr@ghost>
+        Thu, 21 Dec 2023 20:33:40 -0800 (PST)
+Date: Thu, 21 Dec 2023 20:33:39 -0800 (PST)
+From: David Rientjes <rientjes@google.com>
+To: Gang Li <ligang.bdlg@bytedance.com>
+cc: Mike Kravetz <mike.kravetz@oracle.com>, Gang Li <gang.li@linux.dev>, 
+    David Hildenbrand <david@redhat.com>, Muchun Song <muchun.song@linux.dev>, 
+    Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org, 
+    linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v2 0/5] hugetlb: parallelize hugetlb page init on
+ boot
+In-Reply-To: <46bc7aa3-4b08-4e5f-9563-485ee17e2785@bytedance.com>
+Message-ID: <4c6de257-ebb4-e9ad-4092-b81a8039aff4@google.com>
+References: <20231208025240.4744-1-gang.li@linux.dev> <996ba32c-78f0-1807-5e64-af5841a820e7@google.com> <20231212230813.GB7043@monkey> <55c6c1f6-0792-61c3-86ed-4729d4a3fdf5@google.com> <46bc7aa3-4b08-4e5f-9563-485ee17e2785@bytedance.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 
-On Thu, Dec 21, 2023 at 07:50:27PM -0800, Charlie Jenkins wrote:
-> On Fri, Dec 22, 2023 at 10:57:16AM +0800, Guo Ren wrote:
-> > On Fri, Dec 22, 2023 at 9:51 AM Leonardo Bras <leobras@redhat.com> wrote:
-> > >
-> > > Hello Guo Ren,
-> > >
-> > > On Thu, Dec 21, 2023 at 10:46:58AM -0500, guoren@kernel.org wrote:
-> > > > From: Guo Ren <guoren@linux.alibaba.com>
-> > > >
-> > > > In COMPAT mode, the STACK_TOP is 0x80000000, but the TASK_SIZE is
-> > > > 0x7fff000. When the user stack is upon 0x7fff000, it will cause a user
-> > > > segment fault. Sometimes, it would cause boot failure when the whole
-> > > > rootfs is rv32.
-> > >
-> > > Checking if I get the scenario:
-> > >
-> > > In pgtable.h:
-> > > #ifdef CONFIG_64BIT
-> > > #define TASK_SIZE_64    (PGDIR_SIZE * PTRS_PER_PGD / 2)
-> > > #define TASK_SIZE_MIN   (PGDIR_SIZE_L3 * PTRS_PER_PGD / 2)
-> > >
-> > > #ifdef CONFIG_COMPAT
-> > > #define TASK_SIZE_32    (_AC(0x80000000, UL) - PAGE_SIZE)
-> > > #define TASK_SIZE       (test_thread_flag(TIF_32BIT) ? \
-> > >                          TASK_SIZE_32 : TASK_SIZE_64)
-> > > #else
-> > > [...]
-> > >
-> > > Meaning CONFIG_COMPAT is only available in CONFIG_64BIT, and TASK_SIZE in
-> > > compat mode is either TASK_SIZE_32 or TASK_SIZE_64 depending on the thread_flag.
-> > >
-> > > from processor.h:
-> > > #ifdef CONFIG_64BIT
-> > > #define DEFAULT_MAP_WINDOW      (UL(1) << (MMAP_VA_BITS - 1))
-> > > #define STACK_TOP_MAX           TASK_SIZE_64
-> > > [...]
-> > > #define STACK_TOP               DEFAULT_MAP_WINDOW
-> > >
-> > >
-> > > where:
-> > > #define MMAP_VA_BITS (is_compat_task() ? VA_BITS_SV32 : MMAP_VA_BITS_64)
-> > > with MMAP_VA_BITS_64 being either 48 or 37.
-> > >
-> > > In compat mode,
-> > > STACK_TOP = 1 << (32 - 1)       -> 0x80000000
-> > > TASK_SIZE = 0x8000000 - 4k      -> 0x7ffff000
-> > >
-> > > IIUC, your suggestion is to make TASK_SIZE = STACK_TOP in compat mode only.
-> > Yes, it causes the problem, which causes the boot to fail.
+On Mon, 18 Dec 2023, Gang Li wrote:
+
+> Hi,
 > 
-> I think what Leonardo is getting at is that it is odd that it would
-> cause boot issues if TASK_SIZE is not equal STACK_TOP. This seems
-> indicative of a different problem. While this may fix the issue, it
-> should be valid for TASK_SIZE to be less than STACK_TOP.
+> On 2023/12/13 08:10, David Rientjes wrote:
+> > On 6.6 I measured "hugepagesz=1G hugepages=11776" on as 12TB host to be
+> > 77s this time around.
 > 
-> - Charlie
+> Thanks for your test! Is this the total kernel boot time, or just the
+> hugetlb initialization time?
 > 
 
-That is also a good point, but I am not that acquainted to this to 
-actually propose this. 
+Ah, sorry for not being specific.  It's just the hugetlb preallocation of 
+11776 1GB hugetlb pages, total boot takes a few more minutes.
 
-I was thinking more on these questions:
-Is TASK_SIZE and STACK_TOP related somehow?
-If so, would not be better to describe one in terms of the other, like
-#define TASK_SIZE (STACK_TOP - PAGE_SIZE)
-
-Or the other way around.
-
-I mean, if they have any relation it would be much easier to represent them 
-that way, and it would avoid having two magical numbers.
-
-Thanks!
-Leo
-
-> > 
-> > >
-> > > Then why not:
-> > > #ifdef CONFIG_COMPAT
-> > > #define TASK_SIZE_32    STACK_TOP
-> > Yes, it's the solution that I think at first. But I didn't find any
-> > problem with 0x7ffff000 ~ 0x80000000, and then I removed this gap to
-> > unify it with Sv39 and Sv48.
-> > 
-> > >
-> > > With some comments explaining why there is no need to reserve a PAGE_SIZE
-> > > in the TASK_SIZE_32.
-> > At first, I wanted to put a invalid page between the user & kernel
-> > space, but it seems useless.
-> > 
-> > >
-> > > Does that make sense?
-> > >
-> > > Thanks!
-> > > Leo
-> > >
-> > > >
-> > > > Freeing unused kernel image (initmem) memory: 2236K
-> > > > Run /sbin/init as init process
-> > > > Starting init: /sbin/init exists but couldn't execute it (error -14)
-> > > > Run /etc/init as init process
-> > > > ...
-> > > >
-> > > > Cc: stable@vger.kernel.org
-> > > > Fixes: add2cc6b6515 ("RISC-V: mm: Restrict address space for sv39,sv48,sv57")
-> > > > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> > > > Signed-off-by: Guo Ren <guoren@kernel.org>
-> > > > ---
-> > > >  arch/riscv/include/asm/pgtable.h | 2 +-
-> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
-> > > > index ab00235b018f..74ffb2178f54 100644
-> > > > --- a/arch/riscv/include/asm/pgtable.h
-> > > > +++ b/arch/riscv/include/asm/pgtable.h
-> > > > @@ -881,7 +881,7 @@ static inline pte_t pte_swp_clear_exclusive(pte_t pte)
-> > > >  #define TASK_SIZE_MIN        (PGDIR_SIZE_L3 * PTRS_PER_PGD / 2)
-> > > >
-> > > >  #ifdef CONFIG_COMPAT
-> > > > -#define TASK_SIZE_32 (_AC(0x80000000, UL) - PAGE_SIZE)
-> > > > +#define TASK_SIZE_32 (_AC(0x80000000, UL))
-> > >
-> > >
-> > >
-> > >
-> > > >  #define TASK_SIZE    (test_thread_flag(TIF_32BIT) ? \
-> > > >                        TASK_SIZE_32 : TASK_SIZE_64)
-> > > >  #else
-> > > > --
-> > > > 2.40.1
-> > > >
-> > >
-> > 
-> > 
-> > -- 
-> > Best Regards
-> >  Guo Ren
+> > A latest Linus build with this patch set does not boot successfully, so
+> 
+> Which branch/tag is it compiled on?
+> I test this patch on v6.7-rc4 and next-20231130.
 > 
 
+It was the latest Linus tip of tree.  I'll continue to try again until I 
+get a successful boot and report back, serial console won't be possible 
+for unrelated reasons.
 
