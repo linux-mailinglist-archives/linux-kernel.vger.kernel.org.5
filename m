@@ -1,208 +1,147 @@
-Return-Path: <linux-kernel+bounces-9673-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9674-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23E3681C966
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 12:51:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A33181C969
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 12:52:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 489D51C223CF
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 11:51:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E985A283283
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 11:52:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 705271773B;
-	Fri, 22 Dec 2023 11:51:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 432E117984;
+	Fri, 22 Dec 2023 11:52:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="S+ckMuZ7"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="L1aPVIwz"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ot1-f53.google.com (mail-ot1-f53.google.com [209.85.210.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4617217985
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 11:51:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ot1-f53.google.com with SMTP id 46e09a7af769-6db963bd3acso1203076a34.0
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 03:51:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703245873; x=1703850673; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=BoM5xHXFmNnDYRPpvEPp480i76UtG2GRcAozKAy32GE=;
-        b=S+ckMuZ7m8RC5KKbJNDz7mhVemuksrd65ncJQ2J40KIAGK2Xfya+73VgGf88PFU+I0
-         /wa1QH/KWmaT+dsdMGrj9kzLKDAzgzvLIBmcHrH6HnvNqqPhQjUMafIDo9wf26F6JzJ6
-         Z/wxU57ES3ZJqEPcKhR72IdHfcQAdmxZy6tEMQMZiPBG5rN9vuROAnq7XqoA2p6fuBN7
-         ix3UvfuCIRayhZBbi4KxkIA4aO+pECRRfCHgiMSRF51hxWP73CerX8OorXTUKWANcLbO
-         JTavaFfLIEbEUy7sVmPgdK+g/8YDmV5d4aDASeN+L2I6xnWsmq9fZYYbQ6i/QsLxWVxI
-         25LA==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47EB217751
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 11:52:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1703245954;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=qeM/S/omrfSVhML5YUobmUmWfHTQ46GRH696mY5TNyo=;
+	b=L1aPVIwzO/ys5wDIMmHz9LQoFWLrFYgsjIhMzZk+zlYp3Tvdgm46um1vpofoJk+sDCEnT2
+	ZhdkHGCpGE2cW2+E28/PS98Jkx/RHm8/UMHn5X7jYxutraI5rsBQXRNiaohIAWQUQtqqEM
+	VyjEqJ0iYzw26u/n3/FnPmWhQG/EkVk=
+Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
+ [209.85.167.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-356-xX47TCWlMr-TndOBd4kxoA-1; Fri, 22 Dec 2023 06:52:32 -0500
+X-MC-Unique: xX47TCWlMr-TndOBd4kxoA-1
+Received: by mail-lf1-f71.google.com with SMTP id 2adb3069b0e04-50e3288601bso342676e87.1
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 03:52:32 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703245873; x=1703850673;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BoM5xHXFmNnDYRPpvEPp480i76UtG2GRcAozKAy32GE=;
-        b=rb16KvglprpdA3JcbK3Zr9TYZeezQR5uHeGv8+PuhFoLoRSkUf00b1PNzyz8eWH8QR
-         Srn70C3TC5Nun2gFlutMU8jyngcEDrqLo/dj+1hpj/Fzh/FpGIxVGulhIHAm65IvGW6l
-         +Ho3pBE+a9ton/wVpLTbpdWpZ30KScCVXKooG/SNYMP+6ABtGih7p8s/zTtcx04Bf6cZ
-         b3/VEIT3FHlEqSrbRDdZbHaZFGIMGkxV0Puq6gzkzHvQ1fYCVyvsEmJkRQUbE9N1CUai
-         pBlumrA7EPXsmMONGoO7uo9dWkjBwBK4k4M4ssy6oukD6T45Ld6aQ7ikc+UzG2D2pxcW
-         W+VQ==
-X-Gm-Message-State: AOJu0Yx5pVe7VEVyVVWcxtwOBVE2iKGkhFsRGR3OyOqSm/64c6Nig+4b
-	0zoARdt+lq17SVNt1GjsSBzPfdQW9uGGKA==
-X-Google-Smtp-Source: AGHT+IFw4K55CFuOVXFhnBfb+XlWVqL/EHzoInQ/RG677cRc/CcrXScIzdNRNNszNL9RZPILzb/MRQ==
-X-Received: by 2002:a05:6830:100e:b0:6db:bd00:d646 with SMTP id a14-20020a056830100e00b006dbbd00d646mr956782otp.26.1703245869210;
-        Fri, 22 Dec 2023 03:51:09 -0800 (PST)
-Received: from vps.terceiro.xyz (vps.terceiro.xyz. [191.101.235.31])
-        by smtp.gmail.com with ESMTPSA id b16-20020a63cf50000000b005aa800c149bsm3174759pgj.39.2023.12.22.03.51.07
+        d=1e100.net; s=20230601; t=1703245951; x=1703850751;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qeM/S/omrfSVhML5YUobmUmWfHTQ46GRH696mY5TNyo=;
+        b=k+McB1ygvn0wKPhY6V2v7yqiJ3QROkAbTSawQHbyghBRB38YKeGER2WlRPPsLVLp9+
+         tXusT7AjXOGwt9d+UXarry2ef1nNpYuO7syJTn32k+kEqn4FoT55bbHn0UGEpLki4BVd
+         N3ejzdlyJcXSlRCbKIEBx3DgMXBS5QE7A0+kVNv9o93sgP7RDI6BTlxU30p28QB5InpS
+         cSKReiA0p0e69TQxudyAr9nsZAGD0Dkd67aMJL1d711WQ9oW+WjMO6ILG7wqD+4whvkF
+         c4rofYW2UTH8PVUOqW+qkEhltZIZAhgOhT4rQSahjD/Ij+lZjub/VHTgkEuqv6VMJyuy
+         hgsQ==
+X-Gm-Message-State: AOJu0Yz50tgeR1TVLCzEORLlUBvTKagkQkkxju5lkOHqZYeRIH324xVT
+	It+wd9mvG4yU3K44hQtoSUc9zzf+LcGmVJ+KAvsA/gqYbMe7XSht20l973mWc6oK08kdPm1X3gM
+	d1l/js0HiWyGoA8XZj5kKzKV7Q8MIzMc6
+X-Received: by 2002:a05:6512:3127:b0:50e:2460:d703 with SMTP id p7-20020a056512312700b0050e2460d703mr1361168lfd.0.1703245951143;
+        Fri, 22 Dec 2023 03:52:31 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IG1vvC6LH7skIEuy9Objfe1rs8IpDRitZkcFcKkuSjJ+mvjDH0GtZ0gmLOqEGqEtPCyCz7BQA==
+X-Received: by 2002:a05:6512:3127:b0:50e:2460:d703 with SMTP id p7-20020a056512312700b0050e2460d703mr1361141lfd.0.1703245950241;
+        Fri, 22 Dec 2023 03:52:30 -0800 (PST)
+Received: from pstanner-thinkpadt14sgen1.remote.csb ([2001:9e8:32ea:8600:227b:d2ff:fe26:2a7a])
+        by smtp.gmail.com with ESMTPSA id h8-20020a05600c314800b003fee6e170f9sm6602732wmo.45.2023.12.22.03.52.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Dec 2023 03:51:08 -0800 (PST)
-Received: from localhost (unknown [IPv6:2804:14d:7224:8745:26f4:3599:ce80:10])
-	by vps.terceiro.xyz (Postfix) with ESMTPSA id 8B129441D4;
-	Fri, 22 Dec 2023 08:51:04 -0300 (-03)
-Date: Fri, 22 Dec 2023 08:50:56 -0300
-From: Antonio Terceiro <antonio.terceiro@linaro.org>
-To: Shuah Khan <skhan@linuxfoundation.org>
-Cc: Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] selftests: uevent: use shared makefile library
-Message-ID: <ZYV4ICTvandgWE4I@linaro.org>
-References: <20231221204908.341677-2-antonio.terceiro@linaro.org>
- <f38374bd-bb1f-451e-9d34-9c38029ffd15@linuxfoundation.org>
+        Fri, 22 Dec 2023 03:52:29 -0800 (PST)
+From: Philipp Stanner <pstanner@redhat.com>
+To: Jyri Sarha <jyri.sarha@iki.fi>,
+	Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>,
+	Daniel Vetter <daniel@ffwll.ch>
+Cc: dri-devel@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org,
+	Philipp Stanner <pstanner@redhat.com>
+Subject: [PATCH] drm/tilcdc: request and mapp iomem with devres
+Date: Fri, 22 Dec 2023 12:52:17 +0100
+Message-ID: <20231222115216.19218-2-pstanner@redhat.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="VtLPA9UNJt+q8agv"
-Content-Disposition: inline
-In-Reply-To: <f38374bd-bb1f-451e-9d34-9c38029ffd15@linuxfoundation.org>
+Content-Transfer-Encoding: 8bit
 
+tilcdc currently just ioremaps its iomem, without doing the (a bit more
+robust) request on the memory first. The devm_ functions provide a handy
+way to both request and ioremap the memory with automatic cleanup.
 
---VtLPA9UNJt+q8agv
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Replace the manual ioremap with the devm_ version.
 
-On Thu, Dec 21, 2023 at 02:44:52PM -0700, Shuah Khan wrote:
-> On 12/21/23 13:49, Antonio Terceiro wrote:
-> > This makes the uevent selftests build not write to the source tree
-> > unconditionally, as that breaks out of tree builds when the source tree
-> > is read-only. It also avoids leaving a git repository in a dirty state
-> > after a build.
-> >=20
->=20
-> Why can't you do that using make O=3D directive.
+Suggested-by: Thomas Zimmermann <tzimmermann@suse.de>
+Signed-off-by: Philipp Stanner <pstanner@redhat.com>
+---
+ drivers/gpu/drm/tilcdc/tilcdc_drv.c | 19 ++++---------------
+ 1 file changed, 4 insertions(+), 15 deletions(-)
 
-That's what I meant by out of tree builds. When using O=3D, the uevent
-selftests build still writes to the source directory. Maybe my wording
-in the commit message is not clear enough, I will try to improve it.
+diff --git a/drivers/gpu/drm/tilcdc/tilcdc_drv.c b/drivers/gpu/drm/tilcdc/tilcdc_drv.c
+index 8ebd7134ee21..2ad3f44a6e2d 100644
+--- a/drivers/gpu/drm/tilcdc/tilcdc_drv.c
++++ b/drivers/gpu/drm/tilcdc/tilcdc_drv.c
+@@ -182,9 +182,6 @@ static void tilcdc_fini(struct drm_device *dev)
+ 	if (priv->clk)
+ 		clk_put(priv->clk);
+ 
+-	if (priv->mmio)
+-		iounmap(priv->mmio);
+-
+ 	if (priv->wq)
+ 		destroy_workqueue(priv->wq);
+ 
+@@ -201,7 +198,6 @@ static int tilcdc_init(const struct drm_driver *ddrv, struct device *dev)
+ 	struct platform_device *pdev = to_platform_device(dev);
+ 	struct device_node *node = dev->of_node;
+ 	struct tilcdc_drm_private *priv;
+-	struct resource *res;
+ 	u32 bpp = 0;
+ 	int ret;
+ 
+@@ -226,17 +222,10 @@ static int tilcdc_init(const struct drm_driver *ddrv, struct device *dev)
+ 		goto init_failed;
+ 	}
+ 
+-	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	if (!res) {
+-		dev_err(dev, "failed to get memory resource\n");
+-		ret = -EINVAL;
+-		goto init_failed;
+-	}
+-
+-	priv->mmio = ioremap(res->start, resource_size(res));
+-	if (!priv->mmio) {
+-		dev_err(dev, "failed to ioremap\n");
+-		ret = -ENOMEM;
++	priv->mmio = devm_platform_ioremap_resource(pdev, 0);
++	if (IS_ERR(priv->mmio)) {
++		dev_err(dev, "failed to request / ioremap\n");
++		ret = PTR_ERR(priv->mmio);
+ 		goto init_failed;
+ 	}
+ 
+-- 
+2.43.0
 
-> > v2: drop spurious extra SPDX-License-Identifier
-> >=20
-> > Signed-off-by: Antonio Terceiro <antonio.terceiro@linaro.org>
-> > ---
-> >   tools/testing/selftests/uevent/Makefile | 15 +++------------
-> >   1 file changed, 3 insertions(+), 12 deletions(-)
-> >=20
-> > diff --git a/tools/testing/selftests/uevent/Makefile b/tools/testing/se=
-lftests/uevent/Makefile
-> > index f7baa9aa2932..872969f42694 100644
-> > --- a/tools/testing/selftests/uevent/Makefile
-> > +++ b/tools/testing/selftests/uevent/Makefile
-> > @@ -1,17 +1,8 @@
-> >   # SPDX-License-Identifier: GPL-2.0
-> >   all:
-> > -include ../lib.mk
-> > -
-> > -.PHONY: all clean
-> > -
-> > -BINARIES :=3D uevent_filtering
-> > -CFLAGS +=3D -Wl,-no-as-needed -Wall
-> > +CFLAGS +=3D -Wl,-no-as-needed -Wall $(KHDR_INCLUDES)
-> > -uevent_filtering: uevent_filtering.c ../kselftest.h ../kselftest_harne=
-ss.h
-> > -	$(CC) $(CFLAGS) $< -o $@
-> > +TEST_GEN_PROGS =3D uevent_filtering
-> > -TEST_PROGS +=3D $(BINARIES)
-> > -EXTRA_CLEAN :=3D $(BINARIES)
-> > -
-> > -all: $(BINARIES)
-> > +include ../lib.mk
->=20
-> This change doesn't get the intended result of not writing to
-> source tree. Binaries will still be written to the source
-> tree unless O=3D is specified.
-
-It does in my tests. Maybe I am missing something.
-
-mainline without the patch:
-
-----------------8<----------------8<----------------8<-----------------
-$ make -s defconfig O=3D/tmp/output && make -s kselftest-all TARGETS=3Dueve=
-nt O=3D/tmp/output
-make[4]: Entrando no diret=F3rio '/home/terceiro/src/linaro/linux/tools/tes=
-ting/selftests/uevent'
-
-make[4]: Nada a ser feito para 'all'.
-make[4]: Saindo do diret=F3rio '/home/terceiro/src/linaro/linux/tools/testi=
-ng/selftests/uevent'
-
-$ git status --ignored
-On branch master
-Your branch is up to date with 'origin/master'.
-
-Untracked files:
-  (use "git add <file>..." to include in what will be committed)
-	tools/testing/selftests/uevent/uevent_filtering
-
-nothing added to commit but untracked files present (use "git add" to track)
-$ git clean -dxf
-Removing tools/testing/selftests/uevent/uevent_filtering
-----------------8<----------------8<----------------8<-----------------
-
-mainline with the patch:
-
-----------------8<----------------8<----------------8<-----------------
-$ git branch -m kselftest-uvent kselftest-uvent-o
-$ rm -rf /tmp/output/
-$ make -s defconfig O=3D/tmp/output && make -s kselftest-all TARGETS=3Dueve=
-nt O=3D/tmp/output
-make[4]: Entrando no diret=F3rio '/home/terceiro/src/linaro/linux/tools/tes=
-ting/selftests/uevent'
-
-gcc -Wl,-no-as-needed -Wall -isystem /tmp/output/usr/include     uevent_fil=
-tering.c  -o /tmp/output/kselftest/uevent/uevent_filtering
-make[4]: Saindo do diret=F3rio '/home/terceiro/src/linaro/linux/tools/testi=
-ng/selftests/uevent'
-
-$ git status --ignored
-On branch kselftest-uvent-o
-nothing to commit, working tree clean
-$ git clean -dxf
-$
-----------------8<----------------8<----------------8<-----------------
-
---VtLPA9UNJt+q8agv
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEst7mYDbECCn80PEM/A2xu81GC94FAmWFeBoACgkQ/A2xu81G
-C94m0Q//WKZqcUvOON9R0vYG+fWY3pF617BKqujoKftM8Glhtq1bQob8x7z3P7u/
-FvFvuG7VhkkUtUmOsKFSWghJRnSGDQiKzFnmwWO3U48rsFsuWIohk58kGTDRacoU
-gfYXHLhe7yRNGtHfZXh+s7XSNxaX3QZG1YVstMmb4WJwAqXN6WaKIuXcPTwAl7rO
-G1SPD+kxUDc+jpAx9j81o6Syy5F3Cuj8hqQEjJrk/rD6QhgCxNtWwNM1OnxnJZRc
-pGzu23Ta7y6JGEe0UfwGn/HbhhXL3TJXVvIgzlMb3eY3zPVRhjVT3T6mUyWjSCV5
-wfpl2YrpSTp9Iay+booAZTrM+V5dUgFIj2kYGlxRlAYWwGxYr0LKPORMQ+FJQcla
-H5L0exfaZDGmfv3H6BHH0YdmkyzK8o6T2BDCD+1VR+n1BlxgY7QPUfD9BwiS7aQ2
-S2XttPwX7IvmnP7oRlT5aqudeooRadjhxcVLTQpvrXumq8EUgEmTa/GISyEx22Ct
-a08kZMNWP5TN02G65swLfDLDmLgVvZdeFPbnoqjwbrCLnqaClhhqOd0Hvti1E653
-y9AdomoOjtD28E6M+YFmcaZfMm9PjexWP8yQS2j0Qu5M31OtTjm4remReV2BfpYB
-+g0KgpoW7bh11mQ3m2jKY620aeD1U1+1f/2YCPa26xND5FkqU6U=
-=Khk4
------END PGP SIGNATURE-----
-
---VtLPA9UNJt+q8agv--
 
