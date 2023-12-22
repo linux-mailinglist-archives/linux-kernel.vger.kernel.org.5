@@ -1,74 +1,68 @@
-Return-Path: <linux-kernel+bounces-10122-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10123-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BEFCF81D08B
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 00:41:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 30CFE81D08D
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 00:42:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 78556B235F8
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 23:41:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 944DD285A28
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 23:42:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D54835F08;
-	Fri, 22 Dec 2023 23:41:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6063B364CC;
+	Fri, 22 Dec 2023 23:41:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hYfvJyQb"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fRC6qPnw"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A47D33CFE;
-	Fri, 22 Dec 2023 23:41:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECED036091
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 23:41:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703288484; x=1734824484;
+  t=1703288487; x=1734824487;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=VYldxlNfCDK2XZRBuiMTRKlwofmXO4n507rdIZtn5hQ=;
-  b=hYfvJyQbBfZAdFnVoXI85k+25XrK6hNRSyU5TW/bxWr3p4NKO0fO3h0x
-   F39Anp1q3KRAzX9z6Vchu/uXeg/rUE5cpSzFM4fgocvbbCvgWl5Q0AE7f
-   YQNA5A619cGaHK0u4kxgY1o5sRzNo/VtBKQmIFlhNv/jHN0m5LKGlV8ZD
-   1rhvVzj8vA1ydLptZvIb1wUjxicqVJiD8tO5+N1NLFOv5vIrMw+s/bXm4
-   MAvIztVP+zUesXl477FAx5UM4RdFxl4PNiaffLkkp9hhc3qnetQ3oAU3D
-   3m8v1y26HSWEloN3AbNS0UMt8e4fxAeND7jmzuJ1DwzJ46TqPJiS/os0Q
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10932"; a="3007880"
+  bh=BKjLPR1XFtYzZGRa6QjbRckx/IglWwU8GkTNRWNre7k=;
+  b=fRC6qPnwPxfL1f74qO4G5MgsncXFFkqFeQa19ZjGUHYffi48BAwm/HLx
+   wkmYopZgZkvSKw0r8rRMTh10qy/5iFYZ/rCBlbT04xtmdRWM76E8G5NhJ
+   YDQZR57CsoJdNm/aW1FigvoPdhFklOzAxH7Xl+3esn8vWKpT6WfJB5kv4
+   Eov3J+J8/J7UlBw4xhHuHvDnx4c8llF2CcwgaVYgmRD5aIJjQbo4OkmmK
+   86UoX737CojlfOOc+0BhXFAFGLbW7GhEkBJjMabeiIVdmOSqGBdZtFg0e
+   tCo9D5wZM5f9QYsB8sLhrGhl6Ytx9TgOKByNuiY3EObvFqVw9aXpCvmLP
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10932"; a="482347685"
 X-IronPort-AV: E=Sophos;i="6.04,297,1695711600"; 
-   d="scan'208";a="3007880"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Dec 2023 15:41:23 -0800
+   d="scan'208";a="482347685"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Dec 2023 15:41:26 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10932"; a="950449947"
+X-IronPort-AV: E=McAfee;i="6600,9927,10932"; a="806114428"
 X-IronPort-AV: E=Sophos;i="6.04,297,1695711600"; 
-   d="scan'208";a="950449947"
+   d="scan'208";a="806114428"
 Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 22 Dec 2023 15:41:19 -0800
+  by orsmga008.jf.intel.com with ESMTP; 22 Dec 2023 15:41:22 -0800
 Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
 	(envelope-from <lkp@intel.com>)
-	id 1rGp8j-000A0N-17;
-	Fri, 22 Dec 2023 23:41:14 +0000
-Date: Sat, 23 Dec 2023 07:39:30 +0800
+	id 1rGp8m-000A0Q-1m;
+	Fri, 22 Dec 2023 23:41:18 +0000
+Date: Sat, 23 Dec 2023 07:39:31 +0800
 From: kernel test robot <lkp@intel.com>
-To: Mina Almasry <almasrymina@google.com>, linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org, kvm@vger.kernel.org,
-	virtualization@lists.linux.dev
-Cc: oe-kbuild-all@lists.linux.dev, Mina Almasry <almasrymina@google.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Stefan Hajnoczi <stefanha@redhat.com>,
-	Stefano Garzarella <sgarzare@redhat.com>,
-	David Howells <dhowells@redhat.com>,
-	Jason Gunthorpe <jgg@nvidia.com>,
-	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-	Shakeel Butt <shakeelb@google.com>,
-	Yunsheng Lin <linyunsheng@huawei.com>,
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Subject: Re: [PATCH net-next v3 3/3] net: add netmem_ref to skb_frag_t
-Message-ID: <202312230739.g0Tfssdt-lkp@intel.com>
-References: <20231220214505.2303297-4-almasrymina@google.com>
+To: Vincent Guittot <vincent.guittot@linaro.org>, mingo@redhat.com,
+	peterz@infradead.org, juri.lelli@redhat.com,
+	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+	mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
+	imran.f.khan@oracle.com, aaron.lu@intel.com,
+	linux-kernel@vger.kernel.org
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	Vincent Guittot <vincent.guittot@linaro.org>
+Subject: Re: [PATCH] sched: Fix tg->load when offlining a CPU
+Message-ID: <202312230731.vxFaJB7G-lkp@intel.com>
+References: <20231221164014.447122-1-vincent.guittot@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -77,175 +71,133 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231220214505.2303297-4-almasrymina@google.com>
+In-Reply-To: <20231221164014.447122-1-vincent.guittot@linaro.org>
 
-Hi Mina,
+Hi Vincent,
 
 kernel test robot noticed the following build errors:
 
-[auto build test ERROR on net-next/main]
+[auto build test ERROR on tip/sched/core]
+[also build test ERROR on peterz-queue/sched/core linus/master v6.7-rc6 next-20231222]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Mina-Almasry/vsock-virtio-use-skb_frag_-helpers/20231222-164637
-base:   net-next/main
-patch link:    https://lore.kernel.org/r/20231220214505.2303297-4-almasrymina%40google.com
-patch subject: [PATCH net-next v3 3/3] net: add netmem_ref to skb_frag_t
-config: i386-randconfig-141-20231222 (https://download.01.org/0day-ci/archive/20231223/202312230739.g0Tfssdt-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231223/202312230739.g0Tfssdt-lkp@intel.com/reproduce)
+url:    https://github.com/intel-lab-lkp/linux/commits/Vincent-Guittot/sched-Fix-tg-load-when-offlining-a-CPU/20231222-172438
+base:   tip/sched/core
+patch link:    https://lore.kernel.org/r/20231221164014.447122-1-vincent.guittot%40linaro.org
+patch subject: [PATCH] sched: Fix tg->load when offlining a CPU
+config: hexagon-defconfig (https://download.01.org/0day-ci/archive/20231223/202312230731.vxFaJB7G-lkp@intel.com/config)
+compiler: clang version 18.0.0git (https://github.com/llvm/llvm-project d3ef86708241a3bee902615c190dead1638c4e09)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231223/202312230731.vxFaJB7G-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312230739.g0Tfssdt-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312230731.vxFaJB7G-lkp@intel.com/
 
 All errors (new ones prefixed by >>):
 
-   net/kcm/kcmsock.c: In function 'kcm_write_msgs':
->> net/kcm/kcmsock.c:637:59: error: 'skb_frag_t' {aka 'struct skb_frag'} has no member named 'bv_len'
-     637 |                         msize += skb_shinfo(skb)->frags[i].bv_len;
-         |                                                           ^
+   In file included from kernel/sched/fair.c:28:
+   In file included from include/linux/highmem.h:12:
+   In file included from include/linux/hardirq.h:11:
+   In file included from ./arch/hexagon/include/generated/asm/hardirq.h:1:
+   In file included from include/asm-generic/hardirq.h:17:
+   In file included from include/linux/irq.h:20:
+   In file included from include/linux/io.h:13:
+   In file included from arch/hexagon/include/asm/io.h:337:
+   include/asm-generic/io.h:547:31: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     547 |         val = __raw_readb(PCI_IOBASE + addr);
+         |                           ~~~~~~~~~~ ^
+   include/asm-generic/io.h:560:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     560 |         val = __le16_to_cpu((__le16 __force)__raw_readw(PCI_IOBASE + addr));
+         |                                                         ~~~~~~~~~~ ^
+   include/uapi/linux/byteorder/little_endian.h:37:51: note: expanded from macro '__le16_to_cpu'
+      37 | #define __le16_to_cpu(x) ((__force __u16)(__le16)(x))
+         |                                                   ^
+   In file included from kernel/sched/fair.c:28:
+   In file included from include/linux/highmem.h:12:
+   In file included from include/linux/hardirq.h:11:
+   In file included from ./arch/hexagon/include/generated/asm/hardirq.h:1:
+   In file included from include/asm-generic/hardirq.h:17:
+   In file included from include/linux/irq.h:20:
+   In file included from include/linux/io.h:13:
+   In file included from arch/hexagon/include/asm/io.h:337:
+   include/asm-generic/io.h:573:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     573 |         val = __le32_to_cpu((__le32 __force)__raw_readl(PCI_IOBASE + addr));
+         |                                                         ~~~~~~~~~~ ^
+   include/uapi/linux/byteorder/little_endian.h:35:51: note: expanded from macro '__le32_to_cpu'
+      35 | #define __le32_to_cpu(x) ((__force __u32)(__le32)(x))
+         |                                                   ^
+   In file included from kernel/sched/fair.c:28:
+   In file included from include/linux/highmem.h:12:
+   In file included from include/linux/hardirq.h:11:
+   In file included from ./arch/hexagon/include/generated/asm/hardirq.h:1:
+   In file included from include/asm-generic/hardirq.h:17:
+   In file included from include/linux/irq.h:20:
+   In file included from include/linux/io.h:13:
+   In file included from arch/hexagon/include/asm/io.h:337:
+   include/asm-generic/io.h:584:33: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     584 |         __raw_writeb(value, PCI_IOBASE + addr);
+         |                             ~~~~~~~~~~ ^
+   include/asm-generic/io.h:594:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     594 |         __raw_writew((u16 __force)cpu_to_le16(value), PCI_IOBASE + addr);
+         |                                                       ~~~~~~~~~~ ^
+   include/asm-generic/io.h:604:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     604 |         __raw_writel((u32 __force)cpu_to_le32(value), PCI_IOBASE + addr);
+         |                                                       ~~~~~~~~~~ ^
+>> kernel/sched/fair.c:12498:2: error: call to undeclared function 'clear_tg_offline_cfs_rqs'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+    12498 |         clear_tg_offline_cfs_rqs(rq);
+          |         ^
+   kernel/sched/fair.c:12498:2: note: did you mean 'unthrottle_offline_cfs_rqs'?
+   kernel/sched/fair.c:6620:20: note: 'unthrottle_offline_cfs_rqs' declared here
+    6620 | static inline void unthrottle_offline_cfs_rqs(struct rq *rq) {}
+         |                    ^
+   kernel/sched/fair.c:13124:6: warning: no previous prototype for function 'free_fair_sched_group' [-Wmissing-prototypes]
+    13124 | void free_fair_sched_group(struct task_group *tg) { }
+          |      ^
+   kernel/sched/fair.c:13124:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+    13124 | void free_fair_sched_group(struct task_group *tg) { }
+          | ^
+          | static 
+   kernel/sched/fair.c:13126:5: warning: no previous prototype for function 'alloc_fair_sched_group' [-Wmissing-prototypes]
+    13126 | int alloc_fair_sched_group(struct task_group *tg, struct task_group *parent)
+          |     ^
+   kernel/sched/fair.c:13126:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+    13126 | int alloc_fair_sched_group(struct task_group *tg, struct task_group *parent)
+          | ^
+          | static 
+   kernel/sched/fair.c:13131:6: warning: no previous prototype for function 'online_fair_sched_group' [-Wmissing-prototypes]
+    13131 | void online_fair_sched_group(struct task_group *tg) { }
+          |      ^
+   kernel/sched/fair.c:13131:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+    13131 | void online_fair_sched_group(struct task_group *tg) { }
+          | ^
+          | static 
+   kernel/sched/fair.c:13133:6: warning: no previous prototype for function 'unregister_fair_sched_group' [-Wmissing-prototypes]
+    13133 | void unregister_fair_sched_group(struct task_group *tg) { }
+          |      ^
+   kernel/sched/fair.c:13133:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+    13133 | void unregister_fair_sched_group(struct task_group *tg) { }
+          | ^
+          | static 
+   10 warnings and 1 error generated.
 
 
-vim +637 net/kcm/kcmsock.c
+vim +/clear_tg_offline_cfs_rqs +12498 kernel/sched/fair.c
 
-cd6e111bf5be5c Tom Herbert       2016-03-07  578  
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  579  /* Write any messages ready on the kcm socket.  Called with kcm sock lock
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  580   * held.  Return bytes actually sent or error.
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  581   */
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  582  static int kcm_write_msgs(struct kcm_sock *kcm)
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  583  {
-c31a25e1db486f David Howells     2023-06-09  584  	unsigned int total_sent = 0;
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  585  	struct sock *sk = &kcm->sk;
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  586  	struct kcm_psock *psock;
-c31a25e1db486f David Howells     2023-06-09  587  	struct sk_buff *head;
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  588  	int ret = 0;
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  589  
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  590  	kcm->tx_wait_more = false;
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  591  	psock = kcm->tx_psock;
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  592  	if (unlikely(psock && psock->tx_stopped)) {
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  593  		/* A reserved psock was aborted asynchronously. Unreserve
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  594  		 * it and we'll retry the message.
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  595  		 */
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  596  		unreserve_psock(kcm);
-cd6e111bf5be5c Tom Herbert       2016-03-07  597  		kcm_report_tx_retry(kcm);
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  598  		if (skb_queue_empty(&sk->sk_write_queue))
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  599  			return 0;
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  600  
-c31a25e1db486f David Howells     2023-06-09  601  		kcm_tx_msg(skb_peek(&sk->sk_write_queue))->started_tx = false;
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  602  	}
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  603  
-c31a25e1db486f David Howells     2023-06-09  604  retry:
-c31a25e1db486f David Howells     2023-06-09  605  	while ((head = skb_peek(&sk->sk_write_queue))) {
-c31a25e1db486f David Howells     2023-06-09  606  		struct msghdr msg = {
-c31a25e1db486f David Howells     2023-06-09  607  			.msg_flags = MSG_DONTWAIT | MSG_SPLICE_PAGES,
-c31a25e1db486f David Howells     2023-06-09  608  		};
-c31a25e1db486f David Howells     2023-06-09  609  		struct kcm_tx_msg *txm = kcm_tx_msg(head);
-c31a25e1db486f David Howells     2023-06-09  610  		struct sk_buff *skb;
-c31a25e1db486f David Howells     2023-06-09  611  		unsigned int msize;
-c31a25e1db486f David Howells     2023-06-09  612  		int i;
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  613  
-c31a25e1db486f David Howells     2023-06-09  614  		if (!txm->started_tx) {
-c31a25e1db486f David Howells     2023-06-09  615  			psock = reserve_psock(kcm);
-c31a25e1db486f David Howells     2023-06-09  616  			if (!psock)
-c31a25e1db486f David Howells     2023-06-09  617  				goto out;
-c31a25e1db486f David Howells     2023-06-09  618  			skb = head;
-c31a25e1db486f David Howells     2023-06-09  619  			txm->frag_offset = 0;
-c31a25e1db486f David Howells     2023-06-09  620  			txm->sent = 0;
-c31a25e1db486f David Howells     2023-06-09  621  			txm->started_tx = true;
-c31a25e1db486f David Howells     2023-06-09  622  		} else {
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  623  			if (WARN_ON(!psock)) {
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  624  				ret = -EINVAL;
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  625  				goto out;
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  626  			}
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  627  			skb = txm->frag_skb;
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  628  		}
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  629  
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  630  		if (WARN_ON(!skb_shinfo(skb)->nr_frags)) {
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  631  			ret = -EINVAL;
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  632  			goto out;
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  633  		}
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  634  
-c31a25e1db486f David Howells     2023-06-09  635  		msize = 0;
-c31a25e1db486f David Howells     2023-06-09  636  		for (i = 0; i < skb_shinfo(skb)->nr_frags; i++)
-c31a25e1db486f David Howells     2023-06-09 @637  			msize += skb_shinfo(skb)->frags[i].bv_len;
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  638  
-b2e5852793b6eb Mina Almasry      2023-12-20  639  		/* The cast to struct bio_vec* here assumes the frags are
-b2e5852793b6eb Mina Almasry      2023-12-20  640  		 * struct page based. WARN if there is no page in this skb.
-b2e5852793b6eb Mina Almasry      2023-12-20  641  		 */
-b2e5852793b6eb Mina Almasry      2023-12-20  642  		DEBUG_NET_WARN_ON_ONCE(
-b2e5852793b6eb Mina Almasry      2023-12-20  643  			!skb_frag_page(&skb_shinfo(skb)->frags[0]));
-b2e5852793b6eb Mina Almasry      2023-12-20  644  
-c31a25e1db486f David Howells     2023-06-09  645  		iov_iter_bvec(&msg.msg_iter, ITER_SOURCE,
-b2e5852793b6eb Mina Almasry      2023-12-20  646  			      (const struct bio_vec *)skb_shinfo(skb)->frags,
-b2e5852793b6eb Mina Almasry      2023-12-20  647  			      skb_shinfo(skb)->nr_frags, msize);
-c31a25e1db486f David Howells     2023-06-09  648  		iov_iter_advance(&msg.msg_iter, txm->frag_offset);
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  649  
-c31a25e1db486f David Howells     2023-06-09  650  		do {
-264ba53fac79b0 David Howells     2023-06-09  651  			ret = sock_sendmsg(psock->sk->sk_socket, &msg);
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  652  			if (ret <= 0) {
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  653  				if (ret == -EAGAIN) {
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  654  					/* Save state to try again when there's
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  655  					 * write space on the socket
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  656  					 */
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  657  					txm->frag_skb = skb;
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  658  					ret = 0;
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  659  					goto out;
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  660  				}
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  661  
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  662  				/* Hard failure in sending message, abort this
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  663  				 * psock since it has lost framing
-71a2fae50895b3 Bhaskar Chowdhury 2021-03-27  664  				 * synchronization and retry sending the
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  665  				 * message from the beginning.
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  666  				 */
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  667  				kcm_abort_tx_psock(psock, ret ? -ret : EPIPE,
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  668  						   true);
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  669  				unreserve_psock(kcm);
-9f8d0dc0ec4a4b David Howells     2023-06-15  670  				psock = NULL;
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  671  
-c31a25e1db486f David Howells     2023-06-09  672  				txm->started_tx = false;
-cd6e111bf5be5c Tom Herbert       2016-03-07  673  				kcm_report_tx_retry(kcm);
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  674  				ret = 0;
-c31a25e1db486f David Howells     2023-06-09  675  				goto retry;
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  676  			}
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  677  
-c31a25e1db486f David Howells     2023-06-09  678  			txm->sent += ret;
-c31a25e1db486f David Howells     2023-06-09  679  			txm->frag_offset += ret;
-cd6e111bf5be5c Tom Herbert       2016-03-07  680  			KCM_STATS_ADD(psock->stats.tx_bytes, ret);
-c31a25e1db486f David Howells     2023-06-09  681  		} while (msg.msg_iter.count > 0);
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  682  
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  683  		if (skb == head) {
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  684  			if (skb_has_frag_list(skb)) {
-c31a25e1db486f David Howells     2023-06-09  685  				txm->frag_skb = skb_shinfo(skb)->frag_list;
-c31a25e1db486f David Howells     2023-06-09  686  				txm->frag_offset = 0;
-c31a25e1db486f David Howells     2023-06-09  687  				continue;
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  688  			}
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  689  		} else if (skb->next) {
-c31a25e1db486f David Howells     2023-06-09  690  			txm->frag_skb = skb->next;
-c31a25e1db486f David Howells     2023-06-09  691  			txm->frag_offset = 0;
-c31a25e1db486f David Howells     2023-06-09  692  			continue;
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  693  		}
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  694  
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  695  		/* Successfully sent the whole packet, account for it. */
-c31a25e1db486f David Howells     2023-06-09  696  		sk->sk_wmem_queued -= txm->sent;
-c31a25e1db486f David Howells     2023-06-09  697  		total_sent += txm->sent;
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  698  		skb_dequeue(&sk->sk_write_queue);
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  699  		kfree_skb(head);
-cd6e111bf5be5c Tom Herbert       2016-03-07  700  		KCM_STATS_INCR(psock->stats.tx_msgs);
-c31a25e1db486f David Howells     2023-06-09  701  	}
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  702  out:
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  703  	if (!head) {
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  704  		/* Done with all queued messages. */
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  705  		WARN_ON(!skb_queue_empty(&sk->sk_write_queue));
-9f8d0dc0ec4a4b David Howells     2023-06-15  706  		if (psock)
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  707  			unreserve_psock(kcm);
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  708  	}
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  709  
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  710  	/* Check if write space is available */
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  711  	sk->sk_write_space(sk);
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  712  
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  713  	return total_sent ? : ret;
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  714  }
-ab7ac4eb9832e3 Tom Herbert       2016-03-07  715  
+ 12489	
+ 12490	static void rq_offline_fair(struct rq *rq)
+ 12491	{
+ 12492		update_sysctl();
+ 12493	
+ 12494		/* Ensure any throttled groups are reachable by pick_next_task */
+ 12495		unthrottle_offline_cfs_rqs(rq);
+ 12496	
+ 12497		/* Ensure that we remove rq contribution to group share */
+ 12498		clear_tg_offline_cfs_rqs(rq);
+ 12499	}
+ 12500	
 
 -- 
 0-DAY CI Kernel Test Service
