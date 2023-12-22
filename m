@@ -1,102 +1,84 @@
-Return-Path: <linux-kernel+bounces-9202-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9203-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15BEC81C243
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 01:19:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7201E81C246
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 01:19:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 923F4B2490A
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 00:18:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2CD18282C00
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 00:19:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7955CA5D;
-	Fri, 22 Dec 2023 00:18:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oN9vSZi6"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E79BAA53;
+	Fri, 22 Dec 2023 00:19:28 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0E17A20
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 00:18:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A546C433C7;
-	Fri, 22 Dec 2023 00:18:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703204329;
-	bh=wXnWlAEHEZOPJbC4UL27KU2l/K7KB/ypFaTwuZco7IE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=oN9vSZi6WR0+cEsbFQvdq7Z2Y7QGUF10OIB3uBS9W9EPCSoYATvOsY6UStGvWgJ/J
-	 sCgUM0EYjUntGMxVJYoQpz+meCT/6I4GyMNsk50dfTBxlCqLu4SbcRfGxxKzMyo+2n
-	 PKQZqfDG63bZ65D42UvA1kxBRGtdo4qqqXSPxoAbL+2RuwvvH86NoGGKjRMkI4JDYl
-	 6nzuUL5nBNvG09P+zRe83H/Ts6GQtthN9PtobSPlAY1l0oZihWYiIM1bSHmEIvU/eE
-	 LI/lx0fLcNAOxiiLnffd6Yvb7bB/Iezn9GJggZKd0vWkIX+YhaDNiAV9DMYs3fRtoD
-	 SceByWM7DlL9w==
-Date: Thu, 21 Dec 2023 19:18:42 -0500
-From: Guo Ren <guoren@kernel.org>
-To: linux-kernel@vger.kernel.org, paul.walmsley@sifive.com,
-	palmer@dabbelt.com, alexghiti@rivosinc.com, charlie@rivosinc.com,
-	xiao.w.wang@intel.com, david@redhat.com, panqinglin2020@iscas.ac.cn,
-	rick.p.edgecombe@intel.com, willy@infradead.org
-Cc: linux-riscv@lists.infradead.org, Guo Ren <guoren@linux.alibaba.com>
-Subject: Re: [PATCH] riscv: mm: Fixup compat mode boot failure
-Message-ID: <ZYTV4tGZr6ncIpAR@gmail.com>
-References: <20231219111701.1886903-1-guoren@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BA1638A;
+	Fri, 22 Dec 2023 00:19:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=realtek.com
+X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 3BM0JF9Z01723586, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
+	by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 3BM0JF9Z01723586
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 22 Dec 2023 08:19:15 +0800
+Received: from RTEXMBS05.realtek.com.tw (172.21.6.98) by
+ RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.32; Fri, 22 Dec 2023 08:19:15 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXMBS05.realtek.com.tw (172.21.6.98) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.34; Fri, 22 Dec 2023 08:19:15 +0800
+Received: from RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7]) by
+ RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7%5]) with mapi id
+ 15.01.2375.007; Fri, 22 Dec 2023 08:19:15 +0800
+From: Ping-Ke Shih <pkshih@realtek.com>
+To: Colin Ian King <colin.i.king@gmail.com>, Kalle Valo <kvalo@kernel.org>,
+        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
+CC: "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH][next] wifi: rtw89: mac: Fix spelling mistakes "notfify" -> "notify"
+Thread-Topic: [PATCH][next] wifi: rtw89: mac: Fix spelling mistakes "notfify"
+ -> "notify"
+Thread-Index: AQHaM09teBRraq9bkEuzuVAKvhnc67C0cglA
+Date: Fri, 22 Dec 2023 00:19:15 +0000
+Message-ID: <2839b824a2a04aab9514ce89b3735e52@realtek.com>
+References: <20231220141831.10063-1-colin.i.king@gmail.com>
+In-Reply-To: <20231220141831.10063-1-colin.i.king@gmail.com>
+Accept-Language: en-US, zh-TW
+Content-Language: zh-TW
+x-kse-serverinfo: RTEXMBS05.realtek.com.tw, 9
+x-kse-antispam-interceptor-info: fallback
+x-kse-antivirus-interceptor-info: fallback
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231219111701.1886903-1-guoren@kernel.org>
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-Antivirus-Interceptor-Info: fallback
+X-KSE-AntiSpam-Interceptor-Info: fallback
 
-On Tue, Dec 19, 2023 at 06:17:01AM -0500, guoren@kernel.org wrote:
-> From: Guo Ren <guoren@linux.alibaba.com>
-> 
-> In COMPAT mode, the STACK_TOP is 0x80000000, but the TASK_SIZE is
-> 0x7fff000. When the user stack is upon 0x7fff000, it will cause a user
-> segment fault. Sometimes, it would cause boot failure when the whole
-> rootfs is rv32.
-> 
-> Freeing unused kernel image (initmem) memory: 2236K
-> Run /sbin/init as init process
-> Starting init: /sbin/init exists but couldn't execute it (error -14)
-> Run /etc/init as init process
-> ...
-> 
-> Fixes: add2cc6b6515 ("RISC-V: mm: Restrict address space for sv39,sv48,sv57")
-> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> Signed-off-by: Guo Ren <guoren@kernel.org>
-Abandon this patch, and here is the v2:
-https://lore.kernel.org/linux-riscv/20231221154702.2267684-1-guoren@kernel.org/
-
-
-> ---
->  arch/riscv/include/asm/pgtable.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
-> index ab00235b018f..d2ec5e6fa331 100644
-> --- a/arch/riscv/include/asm/pgtable.h
-> +++ b/arch/riscv/include/asm/pgtable.h
-> @@ -881,7 +881,7 @@ static inline pte_t pte_swp_clear_exclusive(pte_t pte)
->  #define TASK_SIZE_MIN	(PGDIR_SIZE_L3 * PTRS_PER_PGD / 2)
->  
->  #ifdef CONFIG_COMPAT
-> -#define TASK_SIZE_32	(_AC(0x80000000, UL) - PAGE_SIZE)
-> +#define TASK_SIZE_32	(UL(1) << (MMAP_VA_BITS - 1))
->  #define TASK_SIZE	(test_thread_flag(TIF_32BIT) ? \
->  			 TASK_SIZE_32 : TASK_SIZE_64)
->  #else
-> -- 
-> 2.40.1
-> 
-> 
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
-> 
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogQ29saW4gSWFuIEtpbmcg
+PGNvbGluLmkua2luZ0BnbWFpbC5jb20+DQo+IFNlbnQ6IFdlZG5lc2RheSwgRGVjZW1iZXIgMjAs
+IDIwMjMgMTA6MTkgUE0NCj4gVG86IFBpbmctS2UgU2hpaCA8cGtzaGloQHJlYWx0ZWsuY29tPjsg
+S2FsbGUgVmFsbyA8a3ZhbG9Aa2VybmVsLm9yZz47IGxpbnV4LXdpcmVsZXNzQHZnZXIua2VybmVs
+Lm9yZw0KPiBDYzoga2VybmVsLWphbml0b3JzQHZnZXIua2VybmVsLm9yZzsgbGludXgta2VybmVs
+QHZnZXIua2VybmVsLm9yZw0KPiBTdWJqZWN0OiBbUEFUQ0hdW25leHRdIHdpZmk6IHJ0dzg5OiBt
+YWM6IEZpeCBzcGVsbGluZyBtaXN0YWtlcyAibm90ZmlmeSIgLT4gIm5vdGlmeSINCj4gDQo+IFRo
+ZXJlIGFyZSB0d28gc3BlbGxpbmcgbWlzdGFrZXMgaW4gcnR3ODlfZXJyIGVycm9yIG1lc3NhZ2Vz
+LiBGaXggdGhlc2UNCj4gYW5kIGFsc28gYWRkIHNwYWNlIGJldHdlZW4gW0VSUl0gYW5kIG1lc3Nh
+Z2UgdGV4dC4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IENvbGluIElhbiBLaW5nIDxjb2xpbi5pLmtp
+bmdAZ21haWwuY29tPg0KDQpBY2tlZC1ieTogUGluZy1LZSBTaGloIDxwa3NoaWhAcmVhbHRlay5j
+b20+DQoNClRoYW5rcyBmb3IgdGhlIGNvcnJlY3RuZXNzLiBDb3VsZCBJIGtub3cgdGhlIHRvb2wg
+eW91IHVzZWQgdG8gZmluZCBvdXQgdGhlc2UNCnR5cG8/IA0KDQpQaW5nLUtlDQoNCg0K
 
