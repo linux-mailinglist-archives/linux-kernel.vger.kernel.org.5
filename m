@@ -1,205 +1,285 @@
-Return-Path: <linux-kernel+bounces-9297-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9298-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86E9281C3A5
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 04:50:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DBB8081C3AE
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 04:54:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A5C861C23B85
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 03:50:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0D8C41C23DFC
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 03:54:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BD3D23B1;
-	Fri, 22 Dec 2023 03:50:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D97BA4C93;
+	Fri, 22 Dec 2023 03:53:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="15vgExlf"
+	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="YBpyXSoK"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-oa1-f47.google.com (mail-oa1-f47.google.com [209.85.160.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76D901C01
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 03:50:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-oa1-f47.google.com with SMTP id 586e51a60fabf-202ffc46e15so663643fac.1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 19:50:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1703217031; x=1703821831; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=uYYQ0eaJfGl5fZFAc7fvgOmI29R64LQaVNr4Dz/XHbI=;
-        b=15vgExlfTIbaOUamvsbOl1n7yJsYOrsvPAgpazryg18sWQPGsibvy4nhRqdc1/hbM+
-         PskQkzS1RncV9XLdahmnYfpyQp9kMsSRJX4vOreWAz1KPEcqs8VOyg8w3wps/zecBAbq
-         2r73Q6bq69SVpoDsQ99NpemZNf9PIkr+wlPrWt/EnLcb5d1dGKicZ9wF4/CVsWnMST48
-         kdgKbqNhDsAMcDodzyA6i9DAnjVgl/QafQnUeWBfPCK8Vd1+to/Pc9W/qRzd9FkBxdCl
-         ut35A9NGof9HjcC4vewVMhR6JMRa7bxQfgBI7UQAdKjn1gGjBSvYCyQhga914Bq22rlH
-         HhEA==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24CA5184C
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 03:53:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
+Received: from mail-oo1-f69.google.com (mail-oo1-f69.google.com [209.85.161.69])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 5B7443F739
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 03:53:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+	s=20210705; t=1703217221;
+	bh=3n5HcK2uQmpAjUZ64ZVHzprx+T7M7J4g9fiVj26FvqE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type;
+	b=YBpyXSoKoSfnA9hU4A+p1UeiHHvIU+LLnrrOd8sa9d3e6sqjwN6njYqAVSlEXGJkD
+	 9MsxDUfmAPDgnJG66F1yQISxO3wiCy+g4doQoK3ex8uuAN+9jb1fCbobGmyer+XnpC
+	 SRBWSRLKrr3Q8C3RRtltfl+th7KBSa5JX8Ti/kpZchp5AjYUNC/2QV7ZRd5LAfapO6
+	 eGefi5ZHqeC8cZJOj1Yc7wn7JRCi/JBWm9RF2u/97k6mPwMOCYPKMtWBMxoJUFFbxG
+	 WyuPjWCETaY9ACKuxT472vpWL92BMAnMGQfWVSuzApGxmdyBHqhCoKrib+pSoO1dzb
+	 tnCBInj46D2GQ==
+Received: by mail-oo1-f69.google.com with SMTP id 006d021491bc7-5909e52f0e6so1595106eaf.3
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 19:53:41 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703217031; x=1703821831;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uYYQ0eaJfGl5fZFAc7fvgOmI29R64LQaVNr4Dz/XHbI=;
-        b=gl1a0YzTolI6dUuBpEt5oBbg+JU7UEwAZ+2zl8xr/rroST89QBsukYepo9NwqR+KZD
-         cvQT/6FGv46okniLotpPEXKzaSFPBVcfhYnUCsQsWAKRXQZgyAdtpErz/2HoOcCMDN/p
-         2sMRqwKJiWSmLy6HrUkvw31PBGOt8/9AI9FCDSNBeXW9A3dKibiOs064ZacL0NQWLfab
-         F84EyIiFhWyMbkQfL+1vB768M8VwPYbf4Oxuzk+2HlrQ0lk4h+6hruTWPDpWqHHk/Yq3
-         C9IndZPSux2cfXunKuaRLiiL2mgMDBHCE9wsGbl/rkwM8Kkj0FJCbI3gSkF3ffN8uoWU
-         5z4A==
-X-Gm-Message-State: AOJu0Yy5JC47txSTvx/x33I1/wREcm6kC7k5glsE5aIASxjOt9FAiQHS
-	qdXKWs0iMJfIygpT0QW+oLXBznr/Y/DcsA==
-X-Google-Smtp-Source: AGHT+IFt6GCsozB3jubH8uMt2MuLURJ3WSZcuhVSkJZ1iUth4pRyozMtRy8W9XYff73N9paT7hdKcQ==
-X-Received: by 2002:a4a:98c4:0:b0:594:1bb4:93e9 with SMTP id b4-20020a4a98c4000000b005941bb493e9mr353161ooj.5.1703217031371;
-        Thu, 21 Dec 2023 19:50:31 -0800 (PST)
-Received: from ghost ([2601:647:5700:6860:9585:2e30:5aba:e80c])
-        by smtp.gmail.com with ESMTPSA id d9-20020a4aaa89000000b005912a3b64adsm602152oon.43.2023.12.21.19.50.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Dec 2023 19:50:30 -0800 (PST)
-Date: Thu, 21 Dec 2023 19:50:27 -0800
-From: Charlie Jenkins <charlie@rivosinc.com>
-To: Guo Ren <guoren@kernel.org>
-Cc: Leonardo Bras <leobras@redhat.com>, linux-kernel@vger.kernel.org,
-	paul.walmsley@sifive.com, palmer@dabbelt.com,
-	alexghiti@rivosinc.com, xiao.w.wang@intel.com, david@redhat.com,
-	panqinglin2020@iscas.ac.cn, rick.p.edgecombe@intel.com,
-	willy@infradead.org, bjorn@rivosinc.com, conor.dooley@microchip.com,
-	cleger@rivosinc.com, linux-riscv@lists.infradead.org,
-	Guo Ren <guoren@linux.alibaba.com>, stable@vger.kernel.org
-Subject: Re: [PATCH V2 1/4] riscv: mm: Fixup compat mode boot failure
-Message-ID: <ZYUHg3kIMYdNSOSr@ghost>
-References: <20231221154702.2267684-1-guoren@kernel.org>
- <20231221154702.2267684-2-guoren@kernel.org>
- <ZYTriK9hjOFQou9Z@LeoBras>
- <CAJF2gTT=EQzsuYMHr3FLb82Gi325PqWMEOAzfc6fg=go+gKP_g@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1703217220; x=1703822020;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3n5HcK2uQmpAjUZ64ZVHzprx+T7M7J4g9fiVj26FvqE=;
+        b=Y1Pj329oIvGxkxdY4MRY7rGIiivRd4xcfEGX4rMFdkC/x2tA1ATZNl1tPBs440dfy9
+         QTY5lKCVgTHuA9XBoBMku1oaFTFMVJ/0h3RTASKUEtHhBYw0Mmcbp/I31tvfqf3mK4ny
+         XEV2FSgua/hUoRbEE1tHD8fDuS+cVxJJkCMjnjbxOC+Mgy9ve/FF0Lod+Qtvb9/OKRzU
+         jOKF3FdvjM5+rIYEsfTzyHzhgFCRV4uIw51CxBDLX+9vCYmZAaBT7RuRAl6aaGlDnAgR
+         EiXiw4iQut8TDqXDpRSo98DAemrSWT4nxO1jvX9+dEfOWn1efiGPBjPyVzae5aqov04e
+         I+VQ==
+X-Gm-Message-State: AOJu0Yx4OlRVJlTg5NkRQLdyH8VYESFVzt20R500IodZxsE9BpnogFRG
+	PfZzBFJzBLP8j8YHPBOCQMrNdflW1cFA9XW4smASKerBpo75ytYUOHmk99PFUnP2gVTqDQquoJ9
+	FQ8Kfasg6wwcdw9hb94olUveHaZRsabg2xKZ1YU4Qt+YIfkWFHKfmM8PJF1iC/zk6
+X-Received: by 2002:a05:6358:c111:b0:170:6eb2:783 with SMTP id fh17-20020a056358c11100b001706eb20783mr734916rwb.28.1703217219956;
+        Thu, 21 Dec 2023 19:53:39 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEvqhDZRQUN/hg72OwgTMmGzTS46reHueZpGQDjyK0WgMSs1Y1WyTdHlq47S50amaqFLLeg1oCkBZXvrRIg0yg=
+X-Received: by 2002:a05:6358:c111:b0:170:6eb2:783 with SMTP id
+ fh17-20020a056358c11100b001706eb20783mr734909rwb.28.1703217219558; Thu, 21
+ Dec 2023 19:53:39 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJF2gTT=EQzsuYMHr3FLb82Gi325PqWMEOAzfc6fg=go+gKP_g@mail.gmail.com>
+References: <20231212043808.212754-1-kai.heng.feng@canonical.com> <20231214171622.GA1023469@bhelgaas>
+In-Reply-To: <20231214171622.GA1023469@bhelgaas>
+From: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date: Fri, 22 Dec 2023 11:53:27 +0800
+Message-ID: <CAAd53p7Y+YMBuAx5f=mFxtQw+TUryLD6iqQYXpfe70L2mu_mLg@mail.gmail.com>
+Subject: Re: [PATCH v2] PCI: Prevent device from doing RPM when it's unplugged
+To: Bjorn Helgaas <helgaas@kernel.org>
+Cc: bhelgaas@google.com, linux-pm@vger.kernel.org, linux-mmc@vger.kernel.org, 
+	Ricky Wu <ricky_wu@realtek.com>, Kees Cook <keescook@chromium.org>, 
+	Tony Luck <tony.luck@intel.com>, "Guilherme G. Piccoli" <gpiccoli@igalia.com>, linux-pci@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org, 
+	bpf@vger.kernel.org, "Rafael J. Wysocki" <rafael@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 22, 2023 at 10:57:16AM +0800, Guo Ren wrote:
-> On Fri, Dec 22, 2023 at 9:51 AM Leonardo Bras <leobras@redhat.com> wrote:
-> >
-> > Hello Guo Ren,
-> >
-> > On Thu, Dec 21, 2023 at 10:46:58AM -0500, guoren@kernel.org wrote:
-> > > From: Guo Ren <guoren@linux.alibaba.com>
-> > >
-> > > In COMPAT mode, the STACK_TOP is 0x80000000, but the TASK_SIZE is
-> > > 0x7fff000. When the user stack is upon 0x7fff000, it will cause a user
-> > > segment fault. Sometimes, it would cause boot failure when the whole
-> > > rootfs is rv32.
-> >
-> > Checking if I get the scenario:
-> >
-> > In pgtable.h:
-> > #ifdef CONFIG_64BIT
-> > #define TASK_SIZE_64    (PGDIR_SIZE * PTRS_PER_PGD / 2)
-> > #define TASK_SIZE_MIN   (PGDIR_SIZE_L3 * PTRS_PER_PGD / 2)
-> >
-> > #ifdef CONFIG_COMPAT
-> > #define TASK_SIZE_32    (_AC(0x80000000, UL) - PAGE_SIZE)
-> > #define TASK_SIZE       (test_thread_flag(TIF_32BIT) ? \
-> >                          TASK_SIZE_32 : TASK_SIZE_64)
-> > #else
-> > [...]
-> >
-> > Meaning CONFIG_COMPAT is only available in CONFIG_64BIT, and TASK_SIZE in
-> > compat mode is either TASK_SIZE_32 or TASK_SIZE_64 depending on the thread_flag.
-> >
-> > from processor.h:
-> > #ifdef CONFIG_64BIT
-> > #define DEFAULT_MAP_WINDOW      (UL(1) << (MMAP_VA_BITS - 1))
-> > #define STACK_TOP_MAX           TASK_SIZE_64
-> > [...]
-> > #define STACK_TOP               DEFAULT_MAP_WINDOW
-> >
-> >
-> > where:
-> > #define MMAP_VA_BITS (is_compat_task() ? VA_BITS_SV32 : MMAP_VA_BITS_64)
-> > with MMAP_VA_BITS_64 being either 48 or 37.
-> >
-> > In compat mode,
-> > STACK_TOP = 1 << (32 - 1)       -> 0x80000000
-> > TASK_SIZE = 0x8000000 - 4k      -> 0x7ffff000
-> >
-> > IIUC, your suggestion is to make TASK_SIZE = STACK_TOP in compat mode only.
-> Yes, it causes the problem, which causes the boot to fail.
+Hi Bjorn,
 
-I think what Leonardo is getting at is that it is odd that it would
-cause boot issues if TASK_SIZE is not equal STACK_TOP. This seems
-indicative of a different problem. While this may fix the issue, it
-should be valid for TASK_SIZE to be less than STACK_TOP.
+On Fri, Dec 15, 2023 at 1:16=E2=80=AFAM Bjorn Helgaas <helgaas@kernel.org> =
+wrote:
+>
+> [+cc Rafael, runtime PM expert :)]
+>
+> On Tue, Dec 12, 2023 at 12:38:07PM +0800, Kai-Heng Feng wrote:
+> > When inserting an SD7.0 card to Realtek card reader, the card reader
+> > unplugs itself and morph into a NVMe device. The slot Link down on hot
+> > unplugged can cause the following error:
+>
+> A page fault in a driver following a link down event sounds like
+> either a driver defect or a PCI core defect that could affect any
+> driver.  The rtsx power and ASPM management is very unusual, so I
+> don't feel super confident in it.
+>
+> I guess the theory here is that while we're running
+> rtsx_pci_runtime_idle(), the link down event happens and we run
+> rtsx_pci_remove(), which unmaps the pcr->remap_addr page, and then
+> rtsx_pci_readl(RTSX_HAIMR) in the rtsx_pci_runtime_idle() path
+> references that unmapped page?
+>
+> I looked through other drivers that use runtime PM.  The typical
+> pattern is:
+>
+>   *_probe()
+>     pm_runtime_put
+>     pm_runtime_allow
+>
+>   *_remove()
+>     pm_runtime_forbid
+>     pm_runtime_get
+>
+> rtsx does the put/allow and forbid/get in the reverse order:
+>
+>   rtsx_pci_probe()
+>     pm_runtime_allow
+>     pm_runtime_put
+>
+>   rtsx_pci_remove()
+>     pm_runtime_get_sync
+>     pm_runtime_forbid
+>     iounmap(pcr->remap_addr)               # <-- unmap the page
+>
+>   rtsx_pci_runtime_idle()
+>     ...
+>       ioread32(pcr->remap_addr + reg)      # <-- read from unmapped page
+>
+> I don't know whether this is an issue, and isp_probe() and nhi_probe()
+> also use this reverse order, so maybe it's all fine.  But I do wonder
+> whether there's a reason to do it differently.
+>
+> > [   63.898861] pcieport 0000:00:1c.0: pciehp: Slot(8): Link Down
+> > [   63.912118] BUG: unable to handle page fault for address: ffffb24d40=
+3e5010
+> > [   63.912122] #PF: supervisor read access in kernel mode
+> > [   63.912125] #PF: error_code(0x0000) - not-present page
+> > [   63.912126] PGD 100000067 P4D 100000067 PUD 1001fe067 PMD 100d97067 =
+PTE 0
+> > [   63.912131] Oops: 0000 [#1] PREEMPT SMP PTI
+> > [   63.912134] CPU: 3 PID: 534 Comm: kworker/3:10 Not tainted 6.4.0 #6
+> > [   63.912137] Hardware name: To Be Filled By O.E.M. To Be Filled By O.=
+E.M./H370M Pro4, BIOS P3.40 10/25/2018
+> > [   63.912138] Workqueue: pm pm_runtime_work
+> > [   63.912144] RIP: 0010:ioread32+0x2e/0x70
+> > [   63.912148] Code: ff 03 00 77 25 48 81 ff 00 00 01 00 77 14 8b 15 08=
+ d9 54 01 b8 ff ff ff ff 85 d2 75 14 c3 cc cc cc cc 89 fa ed c3 cc cc cc cc=
+ <8b> 07 c3 cc cc cc cc 55 83 ea 01 48 89 fe 48 c7 c7 98 6f 15 99 48
+> > [   63.912150] RSP: 0018:ffffb24d40a5bd78 EFLAGS: 00010296
+> > [   63.912152] RAX: ffffb24d403e5000 RBX: 0000000000000152 RCX: 0000000=
+00000007f
+> > [   63.912153] RDX: 000000000000ff00 RSI: ffffb24d403e5010 RDI: ffffb24=
+d403e5010
+> > [   63.912155] RBP: ffffb24d40a5bd98 R08: ffffb24d403e5010 R09: 0000000=
+000000000
+> > [   63.912156] R10: ffff9074cd95e7f4 R11: 0000000000000003 R12: 0000000=
+00000007f
+> > [   63.912158] R13: ffff9074e1a68c00 R14: ffff9074e1a68d00 R15: 0000000=
+000009003
+> > [   63.912159] FS:  0000000000000000(0000) GS:ffff90752a180000(0000) kn=
+lGS:0000000000000000
+> > [   63.912161] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > [   63.912162] CR2: ffffb24d403e5010 CR3: 0000000152832006 CR4: 0000000=
+0003706e0
+> > [   63.912164] Call Trace:
+> > [   63.912165]  <TASK>
+> > [   63.912167]  ? show_regs+0x68/0x70
+> > [   63.912171]  ? __die_body+0x20/0x70
+> > [   63.912173]  ? __die+0x2b/0x40
+> > [   63.912175]  ? page_fault_oops+0x160/0x480
+> > [   63.912177]  ? search_bpf_extables+0x63/0x90
+> > [   63.912180]  ? ioread32+0x2e/0x70
+> > [   63.912183]  ? search_exception_tables+0x5f/0x70
+> > [   63.912186]  ? kernelmode_fixup_or_oops+0xa2/0x120
+> > [   63.912189]  ? __bad_area_nosemaphore+0x179/0x230
+> > [   63.912191]  ? bad_area_nosemaphore+0x16/0x20
+> > [   63.912193]  ? do_kern_addr_fault+0x8b/0xa0
+> > [   63.912195]  ? exc_page_fault+0xe5/0x180
+> > [   63.912198]  ? asm_exc_page_fault+0x27/0x30
+> > [   63.912203]  ? ioread32+0x2e/0x70
+> > [   63.912206]  ? rtsx_pci_write_register+0x5b/0x90 [rtsx_pci]
+> > [   63.912217]  rtsx_set_l1off_sub+0x1c/0x30 [rtsx_pci]
+> > [   63.912226]  rts5261_set_l1off_cfg_sub_d0+0x36/0x40 [rtsx_pci]
+> > [   63.912234]  rtsx_pci_runtime_idle+0xc7/0x160 [rtsx_pci]
+> > [   63.912243]  ? __pfx_pci_pm_runtime_idle+0x10/0x10
+> > [   63.912246]  pci_pm_runtime_idle+0x34/0x70
+> > [   63.912248]  rpm_idle+0xc4/0x2b0
+> > [   63.912251]  pm_runtime_work+0x93/0xc0
+> > [   63.912254]  process_one_work+0x21a/0x430
+> > [   63.912258]  worker_thread+0x4a/0x3c0
+> > [   63.912261]  ? __pfx_worker_thread+0x10/0x10
+> > [   63.912263]  kthread+0x106/0x140
+> > [   63.912266]  ? __pfx_kthread+0x10/0x10
+> > [   63.912268]  ret_from_fork+0x29/0x50
+> > [   63.912273]  </TASK>
+>
+> Can you strip out the call trace stuff that's not relevant so the call
+> path is clear?  I'm guessing we're in ioread32(), and nothing above
+> do_kern_addr_fault() or below worker_thread() is relevant.
 
-- Charlie
+Sure.
 
-> 
+>
+> > [   63.912274] Modules linked in: nvme nvme_core snd_hda_codec_hdmi snd=
+_sof_pci_intel_cnl snd_sof_intel_hda_common snd_hda_codec_realtek snd_hda_c=
+odec_generic snd_soc_hdac_hda soundwire_intel ledtrig_audio nls_iso8859_1 s=
+oundwire_generic_allocation soundwire_cadence snd_sof_intel_hda_mlink snd_s=
+of_intel_hda snd_sof_pci snd_sof_xtensa_dsp snd_sof snd_sof_utils snd_hda_e=
+xt_core snd_soc_acpi_intel_match snd_soc_acpi soundwire_bus snd_soc_core sn=
+d_compress ac97_bus snd_pcm_dmaengine snd_hda_intel i915 snd_intel_dspcfg s=
+nd_intel_sdw_acpi intel_rapl_msr snd_hda_codec intel_rapl_common snd_hda_co=
+re x86_pkg_temp_thermal intel_powerclamp snd_hwdep coretemp snd_pcm kvm_int=
+el drm_buddy ttm mei_hdcp kvm drm_display_helper snd_seq_midi snd_seq_midi_=
+event cec crct10dif_pclmul ghash_clmulni_intel sha512_ssse3 aesni_intel cry=
+pto_simd rc_core cryptd rapl snd_rawmidi drm_kms_helper binfmt_misc intel_c=
+state i2c_algo_bit joydev snd_seq snd_seq_device syscopyarea wmi_bmof snd_t=
+imer sysfillrect input_leds snd ee1004 sysimgblt mei_me soundcore
+> > [   63.912324]  mei intel_pch_thermal mac_hid acpi_tad acpi_pad sch_fq_=
+codel msr parport_pc ppdev lp ramoops drm parport reed_solomon efi_pstore i=
+p_tables x_tables autofs4 hid_generic usbhid hid rtsx_pci_sdmmc crc32_pclmu=
+l ahci e1000e i2c_i801 i2c_smbus rtsx_pci xhci_pci libahci xhci_pci_renesas=
+ video wmi
+>
+> The module list doesn't look relevant here.  Nor the timestamps.
+>
+> > [   63.912346] CR2: ffffb24d403e5010
+> > [   63.912348] ---[ end trace 0000000000000000 ]---
 > >
-> > Then why not:
-> > #ifdef CONFIG_COMPAT
-> > #define TASK_SIZE_32    STACK_TOP
-> Yes, it's the solution that I think at first. But I didn't find any
-> problem with 0x7ffff000 ~ 0x80000000, and then I removed this gap to
-> unify it with Sv39 and Sv48.
-> 
+> > This happens because scheduled pm_runtime_idle() is not cancelled.
 > >
-> > With some comments explaining why there is no need to reserve a PAGE_SIZE
-> > in the TASK_SIZE_32.
-> At first, I wanted to put a invalid page between the user & kernel
-> space, but it seems useless.
-> 
+> > So before releasing the device, stop all runtime power managements by
+> > using pm_runtime_barrier() to fix the issue.
 > >
-> > Does that make sense?
+> > Link: https://lore.kernel.org/all/2ce258f371234b1f8a1a470d5488d00e@real=
+tek.com/
+> > Tested-by: Ricky Wu <ricky_wu@realtek.com>
+> > ---
+> > v2:
+> >   Cover more cases than just pciehp.
 > >
-> > Thanks!
-> > Leo
+> >  drivers/pci/remove.c | 2 ++
+> >  1 file changed, 2 insertions(+)
 > >
-> > >
-> > > Freeing unused kernel image (initmem) memory: 2236K
-> > > Run /sbin/init as init process
-> > > Starting init: /sbin/init exists but couldn't execute it (error -14)
-> > > Run /etc/init as init process
-> > > ...
-> > >
-> > > Cc: stable@vger.kernel.org
-> > > Fixes: add2cc6b6515 ("RISC-V: mm: Restrict address space for sv39,sv48,sv57")
-> > > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> > > Signed-off-by: Guo Ren <guoren@kernel.org>
-> > > ---
-> > >  arch/riscv/include/asm/pgtable.h | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > >
-> > > diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
-> > > index ab00235b018f..74ffb2178f54 100644
-> > > --- a/arch/riscv/include/asm/pgtable.h
-> > > +++ b/arch/riscv/include/asm/pgtable.h
-> > > @@ -881,7 +881,7 @@ static inline pte_t pte_swp_clear_exclusive(pte_t pte)
-> > >  #define TASK_SIZE_MIN        (PGDIR_SIZE_L3 * PTRS_PER_PGD / 2)
-> > >
-> > >  #ifdef CONFIG_COMPAT
-> > > -#define TASK_SIZE_32 (_AC(0x80000000, UL) - PAGE_SIZE)
-> > > +#define TASK_SIZE_32 (_AC(0x80000000, UL))
+> > diff --git a/drivers/pci/remove.c b/drivers/pci/remove.c
+> > index d749ea8250d6..c69b4ce5dbfd 100644
+> > --- a/drivers/pci/remove.c
+> > +++ b/drivers/pci/remove.c
+> > @@ -1,6 +1,7 @@
+> >  // SPDX-License-Identifier: GPL-2.0
+> >  #include <linux/pci.h>
+> >  #include <linux/module.h>
+> > +#include <linux/pm_runtime.h>
+> >  #include "pci.h"
 > >
+> >  static void pci_free_resources(struct pci_dev *dev)
+> > @@ -18,6 +19,7 @@ static void pci_stop_dev(struct pci_dev *dev)
+> >       pci_pme_active(dev, false);
 > >
+> >       if (pci_dev_is_added(dev)) {
+> > +             pm_runtime_barrier(&dev->dev);
+>
+> If pm_runtime_barrier() is really the solution, it seems like this
+> should go somewhere in pci-driver.c where we call the driver PM
+> callbacks.
+
+What makes pm_runtime_barrier() work is because it calls
+'cancel_work_sync(&dev->power.work);' to cancel the pm_runtime_idle()
+work, while pm_runtime_forbid() doesn't.
+So should pm_runtime_forbid() also use cancel_work_sync()?
+
+Kai-Heng
+
+>
+> >               device_release_driver(&dev->dev);
+> >               pci_proc_detach_device(dev);
+> > --
+> > 2.34.1
 > >
-> >
-> > >  #define TASK_SIZE    (test_thread_flag(TIF_32BIT) ? \
-> > >                        TASK_SIZE_32 : TASK_SIZE_64)
-> > >  #else
-> > > --
-> > > 2.40.1
-> > >
-> >
-> 
-> 
-> -- 
-> Best Regards
->  Guo Ren
 
