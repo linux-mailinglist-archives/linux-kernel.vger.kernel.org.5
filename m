@@ -1,202 +1,165 @@
-Return-Path: <linux-kernel+bounces-9416-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9417-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98DC681C538
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 07:38:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DA6481C53B
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 07:42:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B11CD1C24DBB
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 06:38:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9D45E1F2635C
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 06:42:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E4369455;
-	Fri, 22 Dec 2023 06:38:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="GDhthlv2"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75B288F61;
+	Fri, 22 Dec 2023 06:42:32 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DF4CC2DF;
-	Fri, 22 Dec 2023 06:38:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BM6Ml8d028055;
-	Fri, 22 Dec 2023 06:37:55 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	qcppdkim1; bh=BMcIK6+tF1WzlJAS4gMMrCiHhLdtiy0eQaT/jyXeihI=; b=GD
-	hthlv2Il9xKHvewzF0w5QSAbnkCZ7tjnH+OloospvvvqCUg2fhlXTenmctTrTKNq
-	8okC3xz56Nn4CzXNdOC4HmyDVaZlgQT6Thzm5sdj+mJX4yYG0ztzbaO5pkA1oaEx
-	fBnaEh0jtS4RMz0HXhdzCw+sTeSkd4vFXoM5eh5AuHPAN/GtxfiF1FwGqvclfLqe
-	BrRKyHRriqF7vBn1jY/YXnhpQwmwGCuDOCBiLDNcvfpNoW9/SJzBGimQEET9EsQy
-	K/dyFFRuYvs7W3SGhw00LgvQZPwmAN5NZSf1uUa+fP7zE/INin001eAaui1YkxxL
-	WGNmwDq7SkmSvyKPbILg==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v4xpq8r6a-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 22 Dec 2023 06:37:54 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BM6bJr4031642
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 22 Dec 2023 06:37:19 GMT
-Received: from hu-kriskura-hyd.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Thu, 21 Dec 2023 22:37:14 -0800
-From: Krishna Kurapati <quic_kriskura@quicinc.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, "Andy
- Gross" <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Konrad Dybcio
-	<konrad.dybcio@linaro.org>,
-        Wesley Cheng <quic_wcheng@quicinc.com>,
-        "Conor
- Dooley" <conor+dt@kernel.org>, Johan Hovold <johan@kernel.org>
-CC: <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <quic_ppratap@quicinc.com>, <quic_jackp@quicinc.com>,
-        Krishna Kurapati
-	<quic_kriskura@quicinc.com>
-Subject: [PATCH v5 2/2] usb: dwc3: qcom: Rename hs_phy_irq to qusb2_phy_irq
-Date: Fri, 22 Dec 2023 12:06:48 +0530
-Message-ID: <20231222063648.11193-3-quic_kriskura@quicinc.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231222063648.11193-1-quic_kriskura@quicinc.com>
-References: <20231222063648.11193-1-quic_kriskura@quicinc.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5DDA8F49;
+	Fri, 22 Dec 2023 06:42:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.234])
+	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4SxHkX5yS8z1R5Yr;
+	Fri, 22 Dec 2023 14:41:08 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (unknown [7.185.36.74])
+	by mail.maildlp.com (Postfix) with ESMTPS id 55F071400FD;
+	Fri, 22 Dec 2023 14:42:24 +0800 (CST)
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Fri, 22 Dec
+ 2023 14:42:23 +0800
+Subject: Re: [RFC PATCH net-next v1 4/4] net: page_pool: use netmem_t instead
+ of struct page in API
+To: Mina Almasry <almasrymina@google.com>
+CC: Shakeel Butt <shakeelb@google.com>, Jakub Kicinski <kuba@kernel.org>,
+	<linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+	<bpf@vger.kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar
+	<mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
+	<dave.hansen@linux.intel.com>, <x86@kernel.org>, "H. Peter Anvin"
+	<hpa@zytor.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J.
+ Wysocki" <rafael@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>,
+	=?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>, Michael Chan
+	<michael.chan@broadcom.com>, "David S. Miller" <davem@davemloft.net>, Eric
+ Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Alexei
+ Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper
+ Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>,
+	Wei Fang <wei.fang@nxp.com>, Shenwei Wang <shenwei.wang@nxp.com>, Clark Wang
+	<xiaoning.wang@nxp.com>, NXP Linux Team <linux-imx@nxp.com>, Jeroen de Borst
+	<jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>,
+	Shailend Chand <shailend@google.com>, Yisen Zhuang <yisen.zhuang@huawei.com>,
+	Salil Mehta <salil.mehta@huawei.com>, Jesse Brandeburg
+	<jesse.brandeburg@intel.com>, Tony Nguyen <anthony.l.nguyen@intel.com>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>, Marcin Wojtas
+	<mw@semihalf.com>, Russell King <linux@armlinux.org.uk>, Sunil Goutham
+	<sgoutham@marvell.com>, Geetha sowjanya <gakula@marvell.com>, Subbaraya
+ Sundeep <sbhatta@marvell.com>, hariprasad <hkelam@marvell.com>, Felix Fietkau
+	<nbd@nbd.name>, John Crispin <john@phrozen.org>, Sean Wang
+	<sean.wang@mediatek.com>, Mark Lee <Mark-MC.Lee@mediatek.com>, Lorenzo
+ Bianconi <lorenzo@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Saeed
+ Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Horatiu
+ Vultur <horatiu.vultur@microchip.com>, <UNGLinuxDriver@microchip.com>, "K. Y.
+ Srinivasan" <kys@microsoft.com>, Haiyang Zhang <haiyangz@microsoft.com>, Wei
+ Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>, Jassi Brar
+	<jaswinder.singh@linaro.org>, Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>, Jose Abreu
+	<joabreu@synopsys.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Siddharth Vadapalli <s-vadapalli@ti.com>, Ravi Gunasekaran
+	<r-gunasekaran@ti.com>, Roger Quadros <rogerq@kernel.org>, Jiawen Wu
+	<jiawenwu@trustnetic.com>, Mengyuan Lou <mengyuanlou@net-swift.com>, Ronak
+ Doshi <doshir@vmware.com>, VMware PV-Drivers Reviewers
+	<pv-drivers@vmware.com>, Ryder Lee <ryder.lee@mediatek.com>, Shayne Chen
+	<shayne.chen@mediatek.com>, Kalle Valo <kvalo@kernel.org>, Juergen Gross
+	<jgross@suse.com>, Stefano Stabellini <sstabellini@kernel.org>, Oleksandr
+ Tyshchenko <oleksandr_tyshchenko@epam.com>, Andrii Nakryiko
+	<andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu
+	<song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, KP Singh
+	<kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
+	<haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Stefan Hajnoczi
+	<stefanha@redhat.com>, Stefano Garzarella <sgarzare@redhat.com>, Shuah Khan
+	<shuah@kernel.org>, =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>,
+	Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers
+	<ndesaulniers@google.com>, Bill Wendling <morbo@google.com>, Justin Stitt
+	<justinstitt@google.com>, Jason Gunthorpe <jgg@nvidia.com>, Willem de Bruijn
+	<willemdebruijn.kernel@gmail.com>
+References: <20231214020530.2267499-1-almasrymina@google.com>
+ <20231214020530.2267499-5-almasrymina@google.com>
+ <ddffff98-f3de-6a5d-eb26-636dacefe9aa@huawei.com>
+ <CAHS8izO2nDHuxKau8iLcAmnho-1TYkzW09MBZ80+JzOo9YyVFA@mail.gmail.com>
+ <20231215021114.ipvdx2bwtxckrfdg@google.com>
+ <20231215190126.1040fa12@kernel.org>
+ <CALvZod5myy2SvuCMNmqjjYeNONqSArV+8y8mrkfnNeog8WLjng@mail.gmail.com>
+ <CAHS8izOLBtjHOqbTS_PiTNe+rTE=jboDWDM9zS108B57vVNcwA@mail.gmail.com>
+ <CAHS8izMkCwv3jak9KUHeDUrkwBNNpdYk4voEX7Cbp7mTpNAQdA@mail.gmail.com>
+ <54f226ef-df2d-9f32-fa3f-e846d6510758@huawei.com>
+ <CAHS8izP63wXGH+Q3y1H=ycT=AHYnhGveBnuyF_rYioAjZ=Hn=g@mail.gmail.com>
+From: Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <7c6d35e3-165f-5883-1c1b-fce82c976028@huawei.com>
+Date: Fri, 22 Dec 2023 14:42:23 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+In-Reply-To: <CAHS8izP63wXGH+Q3y1H=ycT=AHYnhGveBnuyF_rYioAjZ=Hn=g@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: LOKba6_9yG-uwdK5Mt8VZQBojXvglo3M
-X-Proofpoint-ORIG-GUID: LOKba6_9yG-uwdK5Mt8VZQBojXvglo3M
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- suspectscore=0 impostorscore=0 malwarescore=0 adultscore=0 mlxscore=0
- spamscore=0 clxscore=1015 bulkscore=0 lowpriorityscore=0 mlxlogscore=661
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2312220045
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
 
-For wakeup to work, driver needs to enable interrupts that depict what is
-happening on the DP/DM lines. On QUSB targets, this is identified by
-qusb2_phy whereas on SoCs using Femto PHY, separate {dp,dm}_hs_phy_irq's
-are used instead.
+On 2023/12/22 5:22, Mina Almasry wrote:
+> On Thu, Dec 21, 2023 at 3:32 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>>
+>> On 2023/12/20 11:01, Mina Almasry wrote:
+>>
+>> ...
+>>
+>>>>>> Perhaps we should aim to not export netmem_to_page(),
+>>>>>> prevent modules from accessing it directly.
+>>>>>
+>>>>> +1.
+>>>>
+>>>
+>>> I looked into this, but it turns out it's a slightly bigger change
+>>> that needs some refactoring to make it work. There are few places
+>>> where I believe I need to add netmem_to_page() that are exposed to the
+>>> drivers via inline helpers, these are:
+>>>
+>>> - skb_frag_page(), which returns NULL if the netmem is not a page, but
+>>> needs to do a netmem_to_page() to return the page otherwise.
+>>
+>> Is it possible to introduce something like skb_frag_netmem() for
+>> netmem? so that we can keep most existing users of skb_frag_page()
+>> unchanged and avoid adding additional checking overhead for existing
+>> users.
+>>
+> 
+> In my experience most current skb_frag_page() users need specifically
+> the struct page*. Example is illegal_highdma() which
+> PageHighMem(skb_frag_page())
 
-The implementation incorrectly names qusb2_phy interrupts as "hs_phy_irq".
-Clean this up so that driver would be using only qusb2/(dp & dm) for wakeup
-purposes.
+For illegal_highdma() case, is it possible to use something like
+skb_readabe_frag() checking to avoid calling skb_frag_page() for netmem?
 
-For devices running older kernels, this won't break any functionality
-because the interrupt configurations in QUSB2 PHY based SoCs is done
-by configuring QUSB2PHY_INTR_CTRL register in PHY address space and it was
-never armed properly right from the start.
-
-Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
----
- drivers/usb/dwc3/dwc3-qcom.c | 22 +++++++++++-----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
-
-diff --git a/drivers/usb/dwc3/dwc3-qcom.c b/drivers/usb/dwc3/dwc3-qcom.c
-index fdf6d5d3c2ad..dbd6a5b2b289 100644
---- a/drivers/usb/dwc3/dwc3-qcom.c
-+++ b/drivers/usb/dwc3/dwc3-qcom.c
-@@ -57,7 +57,7 @@ struct dwc3_acpi_pdata {
- 	u32			qscratch_base_offset;
- 	u32			qscratch_base_size;
- 	u32			dwc3_core_base_size;
--	int			hs_phy_irq_index;
-+	int			qusb2_phy_irq_index;
- 	int			dp_hs_phy_irq_index;
- 	int			dm_hs_phy_irq_index;
- 	int			ss_phy_irq_index;
-@@ -73,7 +73,7 @@ struct dwc3_qcom {
- 	int			num_clocks;
- 	struct reset_control	*resets;
- 
--	int			hs_phy_irq;
-+	int			qusb2_phy_irq;
- 	int			dp_hs_phy_irq;
- 	int			dm_hs_phy_irq;
- 	int			ss_phy_irq;
-@@ -372,7 +372,7 @@ static void dwc3_qcom_disable_wakeup_irq(int irq)
- 
- static void dwc3_qcom_disable_interrupts(struct dwc3_qcom *qcom)
- {
--	dwc3_qcom_disable_wakeup_irq(qcom->hs_phy_irq);
-+	dwc3_qcom_disable_wakeup_irq(qcom->qusb2_phy_irq);
- 
- 	if (qcom->usb2_speed == USB_SPEED_LOW) {
- 		dwc3_qcom_disable_wakeup_irq(qcom->dm_hs_phy_irq);
-@@ -389,7 +389,7 @@ static void dwc3_qcom_disable_interrupts(struct dwc3_qcom *qcom)
- 
- static void dwc3_qcom_enable_interrupts(struct dwc3_qcom *qcom)
- {
--	dwc3_qcom_enable_wakeup_irq(qcom->hs_phy_irq, 0);
-+	dwc3_qcom_enable_wakeup_irq(qcom->qusb2_phy_irq, 0);
- 
- 	/*
- 	 * Configure DP/DM line interrupts based on the USB2 device attached to
-@@ -542,19 +542,19 @@ static int dwc3_qcom_setup_irq(struct platform_device *pdev)
- 	int irq;
- 	int ret;
- 
--	irq = dwc3_qcom_get_irq(pdev, "hs_phy_irq",
--				pdata ? pdata->hs_phy_irq_index : -1);
-+	irq = dwc3_qcom_get_irq(pdev, "qusb2_phy",
-+				pdata ? pdata->qusb2_phy_irq_index : -1);
- 	if (irq > 0) {
- 		/* Keep wakeup interrupts disabled until suspend */
- 		ret = devm_request_threaded_irq(qcom->dev, irq, NULL,
- 					qcom_dwc3_resume_irq,
- 					IRQF_ONESHOT | IRQF_NO_AUTOEN,
--					"qcom_dwc3 HS", qcom);
-+					"qcom_dwc3 QUSB2", qcom);
- 		if (ret) {
--			dev_err(qcom->dev, "hs_phy_irq failed: %d\n", ret);
-+			dev_err(qcom->dev, "qusb2_phy_irq failed: %d\n", ret);
- 			return ret;
- 		}
--		qcom->hs_phy_irq = irq;
-+		qcom->qusb2_phy_irq = irq;
- 	}
- 
- 	irq = dwc3_qcom_get_irq(pdev, "dp_hs_phy_irq",
-@@ -1058,7 +1058,7 @@ static const struct dwc3_acpi_pdata sdm845_acpi_pdata = {
- 	.qscratch_base_offset = SDM845_QSCRATCH_BASE_OFFSET,
- 	.qscratch_base_size = SDM845_QSCRATCH_SIZE,
- 	.dwc3_core_base_size = SDM845_DWC3_CORE_SIZE,
--	.hs_phy_irq_index = 1,
-+	.qusb2_phy_irq_index = 1,
- 	.dp_hs_phy_irq_index = 4,
- 	.dm_hs_phy_irq_index = 3,
- 	.ss_phy_irq_index = 2
-@@ -1068,7 +1068,7 @@ static const struct dwc3_acpi_pdata sdm845_acpi_urs_pdata = {
- 	.qscratch_base_offset = SDM845_QSCRATCH_BASE_OFFSET,
- 	.qscratch_base_size = SDM845_QSCRATCH_SIZE,
- 	.dwc3_core_base_size = SDM845_DWC3_CORE_SIZE,
--	.hs_phy_irq_index = 1,
-+	.qusb2_phy_irq_index = 1,
- 	.dp_hs_phy_irq_index = 4,
- 	.dm_hs_phy_irq_index = 3,
- 	.ss_phy_irq_index = 2,
--- 
-2.42.0
-
+> 
+> But RFC v5 adds skb_frag_netmem() for callsites that want a netmem and
+> don't care about specifically a page:
+> 
+> https://patchwork.kernel.org/project/netdevbpf/patch/20231218024024.3516870-10-almasrymina@google.com/
+> 
+>>> - The helpers inside skb_add_rx_frag(), which needs to do a
+>>> netmem_to_page() to set skb->pfmemalloc.
+>>
+>> Similar as above, perhaps introduce something like skb_add_rx_netmem_frag()?
+>>
+> 
+> Yes, v3 of this series adds skb_add_rx_frag_netmem():
+> 
+> https://patchwork.kernel.org/project/netdevbpf/patch/20231220214505.2303297-4-almasrymina@google.com/
 
