@@ -1,66 +1,66 @@
-Return-Path: <linux-kernel+bounces-9735-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9736-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28E9281CA68
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 14:01:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BFF881CA6C
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 14:02:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D98C32836D4
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 13:01:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 956BC1F233C2
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 13:02:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E95C519465;
-	Fri, 22 Dec 2023 13:01:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AFAE1C2BE;
+	Fri, 22 Dec 2023 13:01:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="QHv53Ru7"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Jr4ChxvG"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A078D18B00
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 13:01:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6B6718C07
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 13:01:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-40d3dfcc1a4so16043605e9.2
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 05:01:48 -0800 (PST)
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-40c29f7b068so18471985e9.0
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 05:01:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703250107; x=1703854907; darn=vger.kernel.org;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=JWmdonR8NpARXjfe3qqartT0mhGrBDRLU87EB6urV1M=;
-        b=QHv53Ru7dD3dDJjPkOw+rVTu0U5yTeMUUqQXtxdTiwdxv5FLT3n3YowTLF7wCJkPzo
-         mEsnvZkVJsgWsmBNXqUE10nYyd5z9WkSmwzx8oim9CQymRptJ3/PfrgLJyD/4OW8eCqT
-         LWdHllIxMAHP4rlYmVvdC3w/ZIKrw+swYraaYJVzeTfxVANjvaVcsyDxNia1dtPt922d
-         OKSckHAP2oM0RJH9YC0t77/r/K48YwZBDqXylWFtfTm+8OvX96BG5SKAotk+P5eqLA5q
-         /Q9Nkz2xXb+T6V9UxJ9he5x2RXam3qOQkFYKO0CGVdSfWGE3cQrYMOFq33AbXmHmO1Od
-         cO7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703250107; x=1703854907;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=linaro.org; s=google; t=1703250108; x=1703854908; darn=vger.kernel.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=JWmdonR8NpARXjfe3qqartT0mhGrBDRLU87EB6urV1M=;
-        b=TKVxzkYGn9Fg0549lVnPFPuc+JQgiqdqVS/SisHVqG3nkdThoTtotZRvqImivsyTxq
-         HxOc/EewJ4TR3CxMuJCyP/6/nSLIzQfkyscbhQAGx8WT7kHbgTwnO91FBlW7BId0vwnV
-         NbBI+lQzIKkdh/GXb8lE4kg2wK1sSQTkSEcn4KsfsMSf/U+PU8qaUoDZMuQVLSRqiKu+
-         VkN070H3T5oh/eL2gBM0QsNJor2Lf8ngeYeDFEzfi6p+H9mWnEZiybWEv6QBOgvvFy5b
-         kcHrpRBVleuUHE9McWEd+VtXU8Ci8H10gH0phzgecLm4j7xxpODZmqT0Zl3LbabXQWXV
-         ClaQ==
-X-Gm-Message-State: AOJu0YwxbaoPscuBk3rugTOZ5VWjyP8bSIDTFd+z4Qm3HZfhU7HEzwGM
-	n5A5NKRWSr7EFRxJJWTZ8mUPpbGandoVBQ==
-X-Google-Smtp-Source: AGHT+IEoyA67rBN4hpcEFYo6S+igZ3ct0M4Huc2ATJHcWr0tSVPEJyqU9rE5tmgTRM8HN9IfSSXvXg==
-X-Received: by 2002:a05:600c:1c9d:b0:40d:38c6:7cfd with SMTP id k29-20020a05600c1c9d00b0040d38c67cfdmr774026wms.35.1703250106701;
-        Fri, 22 Dec 2023 05:01:46 -0800 (PST)
+        bh=YXniBx4zGce2I+zUvQZeh9F9TJPf5+YSFwkB/zgLcpo=;
+        b=Jr4ChxvGiBJqFOCxKAWeiqwe55mnRrVqPNgTMFVemXy5pOVuCnf2h8mGwGEJ+fx0Vl
+         yv3V3iBcD3V+pup0P6/6QHgWwoxUoRENjsFbHVphG+IsJP26FqhGNG0Kpv9iaR8szA2v
+         +1LE+4vFLdM+lClYtzz1F9mcsL2JE0sCL5ksMbceufvHyPJ3B0sC/ect+bp2ZMJaWUTt
+         NRQ7sD5NVxw4u9fQAp+pDrAE4h4yVk3JOeQcQ1QqAvgndC/WKjBsfYO2Thh+9a4r9Rd6
+         qV9vzFc7wwUEOl/bm6lLmCoQDXmYIQ9ZwqEHgysDCgD+5N8ByWiEqfDcLueIgnW98FOg
+         9c9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703250108; x=1703854908;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YXniBx4zGce2I+zUvQZeh9F9TJPf5+YSFwkB/zgLcpo=;
+        b=NqW5ETuy9YrOhDu63Q2hEL5rixqxCk6G1uX95TDlBovKzQno43Tcuumuw/s3oqDbX8
+         NBbiVB9sucNolTRxM+U77tSL9ECmOP/KBfIzvTXI7i+lIAhPTKc8baXn/XKADCkQRBcf
+         d9MKvQztquWvRpxEgGwuWiQdDAa7KK328MZiqi0KehZcFe7BHQvj5gx2NAqkkFC9dUJu
+         uOYEt/KfNY4ecdyCI4NWwnEF6Viyfixs4IT7KN+m30WzeThqLczi+VZjQxKL+Wc+DttC
+         KtnV1MqNmt2yEw/TDZRJUf823k4F20P2AcDQ1Bcs/xgyvMS8biOebalRevPxbWTfEeMp
+         xsNQ==
+X-Gm-Message-State: AOJu0Yx+s1xB1ovgTUAVji65ZHBjM52tQycFoXaX5qy00uZdqfC1LpPQ
+	OA2qyzRxIVz3SXj3qLjfahdRKJ1ZXAuVhg==
+X-Google-Smtp-Source: AGHT+IGsEXvrlwNcqAyZkLieozWSlT5FA+a/oVszUAchky4spis3eLBHjwu1NDeqr4UGtWFkRjdCXQ==
+X-Received: by 2002:a05:600c:245:b0:40d:2765:d8c0 with SMTP id 5-20020a05600c024500b0040d2765d8c0mr690457wmj.10.1703250107987;
+        Fri, 22 Dec 2023 05:01:47 -0800 (PST)
 Received: from [127.0.1.1] ([79.115.23.25])
-        by smtp.gmail.com with ESMTPSA id h1-20020a05600c350100b0040d3f4b1c8esm5375631wmq.36.2023.12.22.05.01.45
+        by smtp.gmail.com with ESMTPSA id h1-20020a05600c350100b0040d3f4b1c8esm5375631wmq.36.2023.12.22.05.01.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Dec 2023 05:01:46 -0800 (PST)
+        Fri, 22 Dec 2023 05:01:47 -0800 (PST)
 From: Abel Vesa <abel.vesa@linaro.org>
-Subject: [PATCH v2 0/2] phy: qcom: edp: Allow eDP/DP configuring via
- set_mode op
-Date: Fri, 22 Dec 2023 15:01:30 +0200
-Message-Id: <20231222-x1e80100-phy-edp-compatible-refactor-v2-0-ab5786c2359f@linaro.org>
+Date: Fri, 22 Dec 2023 15:01:31 +0200
+Subject: [PATCH v2 1/2] phy: Add Embedded DisplayPort and DisplayPort
+ submodes
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -69,10 +69,9 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAKqIhWUC/5WNTQqDMBCFryKz7pT8INGueo/iIk1GHbAmJCKKe
- Pem3qDL773H+w7IlJgyPKoDEq2cOcwF1K0CN9p5IGRfGJRQWirZ4iapEVIIjOOO5CO68Il24fd
- EmKi3bgkJG6M1OWuc8xbKVSwNb5fm1RUeOZfZfllX+Uv/FKwSBfYtGWNq1dbaPyeebQr3kAboz
- vP8AgKA0MrZAAAA
+Message-Id: <20231222-x1e80100-phy-edp-compatible-refactor-v2-1-ab5786c2359f@linaro.org>
+References: <20231222-x1e80100-phy-edp-compatible-refactor-v2-0-ab5786c2359f@linaro.org>
+In-Reply-To: <20231222-x1e80100-phy-edp-compatible-refactor-v2-0-ab5786c2359f@linaro.org>
 To: Vinod Koul <vkoul@kernel.org>, 
  Kishon Vijay Abraham I <kishon@kernel.org>, 
  Bjorn Andersson <andersson@kernel.org>, 
@@ -85,61 +84,48 @@ Cc: linux-phy@lists.infradead.org, linux-kernel@vger.kernel.org,
  linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
  Abel Vesa <abel.vesa@linaro.org>
 X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1717; i=abel.vesa@linaro.org;
- h=from:subject:message-id; bh=cDX+OTRf4Doi1u/l+84vE/tm+BZU4P6g8JGruDSER80=;
- b=owEBbQKS/ZANAwAKARtfRMkAlRVWAcsmYgBlhYixD+yv7XbZuCNQkxvgIpsKAib9ot+pgK9dZ
- ftlCviPpdKJAjMEAAEKAB0WIQRO8+4RTnqPKsqn0bgbX0TJAJUVVgUCZYWIsQAKCRAbX0TJAJUV
- VqK3EACPWP40VmX3w6tO2nMIW+Yhud4GatWzn2ZY79z2bMwGc3M3DCL36ntk9c3LUEqGAEH84e/
- Bcb6Ftjeyqg0qOXTmrXIxpg2NAo8K5M4JQe72PH581cZNCTa4SJlaSnlzaHLr5EJaa9xp/SJrT+
- ddP5UrbWhyaPHMAPxo8QewHyYRYBnBED0GZ/Uf62g34M0MRg3VXEtmPwKLLOnbR8fO19Ag7oxEf
- Zi2cxEHQkEbdQLlMBaMcxIvUJWPqe/gppHbKVXnlKb/a0sYoaZdYhYBg0TRYYyzuqYCePcJQ77u
- AnxxJEa/81oJClfHA2MndDvPLkg0qEciRm+ICpPIIfCrPj5DyglyqL/yeFEW4y8kEeX6+6gTz7d
- CoPpiatJmQPrB1q7K7vAoamc/dxMk6gjbbdHqj0FI8CnBqBw04FGkCc1z39YkD5orNqfVJb1VK+
- 88t1tkXvdS0hSW19xcUSCmD9CV8l0esR0JtKtXS0tkyj2YdevYzyoPnXyQ/W5MSithZmqKZqYpK
- zrcpw2/42vRFFejm1+O14OMKzulceLQJG2xcI9CjdhAnoM1EJKFl4Gl58GY/jZrVhgzOmLr9lCe
- +pl7qrFpfWVwM/w+i4PAq0vt8gEjC8n9b4ZtwYFWlxp5ywwOHQWUjFGEI0vFOe+lYg688PFmM32
- +paxeYaKrLfKmTQ==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=715; i=abel.vesa@linaro.org;
+ h=from:subject:message-id; bh=UEn883fEvn74EKDrMBY5HRtTZ852wPrXNTB+0TMl9N8=;
+ b=owEBbQKS/ZANAwAKARtfRMkAlRVWAcsmYgBlhYi2kGCVeVr3XIct1HNI8/yl9StFcLZLAqZa2
+ L8xEEaGIAGJAjMEAAEKAB0WIQRO8+4RTnqPKsqn0bgbX0TJAJUVVgUCZYWItgAKCRAbX0TJAJUV
+ VmxnD/4nG9MSB7dv3spF3zt/AlT/w1o53NEUjsHuXJTglSAQ1hH0b1+HkrHEwFtkhmBB7N/x1fd
+ AeuC+9VOtcFmHNo+INgFTNXhhjgVLoAvjt5Lsb83TiaxcxOpYUDY+C7B21gGrgfkSkKkW5tBtNO
+ YLpCMyapigNSLLsCPacsvXtsX0mrnx0mS2CgBF7zXRTiKVr2aiAdG5wwY/f6Xy3JG/dUu4G8skw
+ sJlFUdB0DVemy4S0Swr+kISNxnqbEYFMGswpfmZlzd66FdR4oH2ogdsU0PAG3jsjNNPU0P1dB9S
+ H1C2tFcIPAYO5Act71nK/TWlca3NsNRCbXTLq6Max+7F5rtexvEQ7sdMwM3XMeuHcni0GgDe96L
+ 6OI2GFDOaQfWCuN2t/9dIp4X56NulfWmLWVUL/uE75yOXYN3+0sCQptI2j+qQhOTccrz7SV9YA7
+ 6DilWe8D50kQk3ood0H7E0n4oN7ilgNnV02sJ/U9tMEfBB0hIHbAW67ggnIQDNos8qe/gN9jUQ9
+ uUb93v/GUaZbKuwa/LZ6n2aG9TdKDnojqPiika6s5NvNL8jY8nn4Jll71BRBIY9C6CxgQrGqqK4
+ 84E6aW0rgqgx6N4ZLNmjU/G0vbRi8Q5+kYtl7JZzr8sVKschncVvr7DNpTmMPun67SKMJmcpdHr
+ ZxWTUYmxWHGkovw==
 X-Developer-Key: i=abel.vesa@linaro.org; a=openpgp;
  fpr=6AFF162D57F4223A8770EF5AF7BF214136F41FAE
 
-Until now, all platform that supported both eDP and DP had different
-compatibles for each mode. Using different compatibles for basically
-the same IP block but for a different configuration is bad way all
-around. There is a new compute platform from Qualcomm that supports
-both eDP and DP with the same PHY. So instead of following the old
-method, we should allow the mode to be configured via set_mode from
-the controller driver.
-
-The controller part will follow after we conclude the PHY part first.
+In some cases, a DP PHY needs to be configured to work in eDP mode.
+So add submodes for both DP and eDP so they can be used by the
+controllers for specifying the mode the PHY should be configured in.
 
 Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
 ---
-Changes in v2:
-- Dropped the dedicated xlate function and added set_mode op instead
-- Dropped the eDP PHY type and mode addition
-- Added the DP PHY submodes (eDP and DP)
-- Removed the device match data storing from the container struct
-- Link to v1: https://lore.kernel.org/r/20231219-x1e80100-phy-edp-compatible-refactor-v1-0-f9e77752953d@linaro.org
+ include/linux/phy/phy-dp.h | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Initial attepmpt was here:
-https://lore.kernel.org/all/20231122-phy-qualcomm-edp-x1e80100-v3-3-576fc4e9559d@linaro.org/
-Compared to that version, this one uses the phy-cells method and drops
-the X1E80100 support. The X1E80100 support will be a separate patchset.
+diff --git a/include/linux/phy/phy-dp.h b/include/linux/phy/phy-dp.h
+index 18cad23642cd..9cce5766bc0b 100644
+--- a/include/linux/phy/phy-dp.h
++++ b/include/linux/phy/phy-dp.h
+@@ -8,6 +8,9 @@
+ 
+ #include <linux/types.h>
+ 
++#define PHY_SUBMODE_DP	0
++#define PHY_SUBMODE_EDP	1
++
+ /**
+  * struct phy_configure_opts_dp - DisplayPort PHY configuration set
+  *
 
----
-Abel Vesa (2):
-      phy: Add Embedded DisplayPort and DisplayPort submodes
-      phy: qcom: edp: Add set_mode op for configuring eDP/DP submode
-
- drivers/phy/qualcomm/phy-qcom-edp.c | 90 ++++++++++++++++++++++++++++---------
- include/linux/phy/phy-dp.h          |  3 ++
- 2 files changed, 72 insertions(+), 21 deletions(-)
----
-base-commit: 8a9be2a3cb673dba9d22311beb74be261f0b3f15
-change-id: 20231219-x1e80100-phy-edp-compatible-refactor-8733eca7ccda
-
-Best regards,
 -- 
-Abel Vesa <abel.vesa@linaro.org>
+2.34.1
 
 
