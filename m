@@ -1,173 +1,220 @@
-Return-Path: <linux-kernel+bounces-9902-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9903-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6C0581CD0E
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 17:30:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A96CD81CD12
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 17:30:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2548B1C21BDB
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 16:30:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 393F41F23E65
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 16:30:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49A1028E32;
-	Fri, 22 Dec 2023 16:23:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Zj2yIKSs"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 331EB250EC;
+	Fri, 22 Dec 2023 16:26:32 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C4CF41AA3;
-	Fri, 22 Dec 2023 16:23:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1d3eabe9321so13961115ad.2;
-        Fri, 22 Dec 2023 08:23:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703262209; x=1703867009; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=d6rOctl0yz+TrOI/he0cOkWKN+3TOYc+MuASu10g+3c=;
-        b=Zj2yIKSsgBxrrMjQJOph/BbSbZnZB9WUtvhYkl0/++Fs0Y/mgA4Bi5Wcl39hH8bVO+
-         T4PDrwGeZv6KzMflf7rbRj7ckBp/CJcS8EBno90nhBYel7PQGvvwm2YWtLq52r+KWC/X
-         gh1ydartl43IwlYf1RrspJ467DeF/oo/JVA+EociWJiavrJFJZ7KVXK9O64lAMAxu0f/
-         VlNL9Af3v/7fdtQGuOlsGEt08tGsWV72tBgeAETXKmvS+KRJ5SHteKBaUVq0a0jGJCV1
-         n60Bl8x/dUxuwyZRpmAvF+aAhTeNU0R5Yh+YBO7yPUPuf/R0ozZ46WpEfGyfIwTwTJ6p
-         WODw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703262209; x=1703867009;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=d6rOctl0yz+TrOI/he0cOkWKN+3TOYc+MuASu10g+3c=;
-        b=u1MjEOpq1I47W7Kx0p6gFJ8D9kvhvBATJl0rpDImwOLyMzv9IvG9qm+jC2ujfcESOj
-         gXgXja3HBL3+/tsfPwNy5Kw+/006Oyq6DArXhsMM8AYvHpandamczVXKWGlXAsF3ZWO1
-         +toH6Qo03qQSEb1xsjIjg842ItqZN04leHl5rgCDNUcaS6y/5TBFcfdoZ8muzCjCbN5j
-         gbe2Vb095n7yT3rJlHzM0Pf+I8XTxNHCvc8tAk5/f4O8U1bDJZ/9aGPG/BaEnaT3cfKq
-         zcpWXr9T0zTBljM8mswaRiw2NUTEYjKmK6WLIVYxg9n9GAUgHvyUYVqCf5Qr52w6lced
-         ROHA==
-X-Gm-Message-State: AOJu0YwxhL3oejdsyyz2ZnonPClq61ktGurAi/BkExqCa3x4s58PdXrD
-	rHhKwZbNKGdv5dd3LCv3oOI=
-X-Google-Smtp-Source: AGHT+IFJeShx7ay4cJiYK/PnE9DgKekhrDyZ0yeKWvlTdXkdQtnmmHPu291CJWQEqC0OgEf2ZXcnjw==
-X-Received: by 2002:a17:903:2601:b0:1cf:5760:43f9 with SMTP id jd1-20020a170903260100b001cf576043f9mr1316332plb.64.1703262209526;
-        Fri, 22 Dec 2023 08:23:29 -0800 (PST)
-Received: from g2039B650.. ([106.39.42.144])
-        by smtp.gmail.com with ESMTPSA id g5-20020a170902868500b001d096757ac1sm3609327plo.47.2023.12.22.08.23.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Dec 2023 08:23:29 -0800 (PST)
-From: Gui-Dong Han <2045gemini@gmail.com>
-To: marcel@holtmann.org,
-	johan.hedberg@gmail.com,
-	luiz.dentz@gmail.com
-Cc: linux-bluetooth@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	baijiaju1990@outlook.com,
-	Gui-Dong Han <2045gemini@gmail.com>,
-	stable@vger.kernel.org
-Subject: [PATCH v2] Bluetooth: Fix atomicity violation in conn_info_{min,max}_age_set
-Date: Sat, 23 Dec 2023 00:23:10 +0800
-Message-Id: <20231222162310.6461-1-2045gemini@gmail.com>
-X-Mailer: git-send-email 2.34.1
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7600125542;
+	Fri, 22 Dec 2023 16:26:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 38260C15;
+	Fri, 22 Dec 2023 08:27:14 -0800 (PST)
+Received: from pluto (unknown [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 143433F738;
+	Fri, 22 Dec 2023 08:26:24 -0800 (PST)
+Date: Fri, 22 Dec 2023 16:26:22 +0000
+From: Cristian Marussi <cristian.marussi@arm.com>
+To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+Cc: Sudeep Holla <sudeep.holla@arm.com>, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Oleksii Moisieiev <oleksii_moisieiev@epam.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	NXP Linux Team <linux-imx@nxp.com>,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-gpio@vger.kernel.org,
+	Peng Fan <peng.fan@nxp.com>
+Subject: Re: [PATCH 5/7] firmware: arm_scmi: Add SCMI v3.2 pincontrol
+ protocol basic support
+Message-ID: <ZYW4rgVoh5uOo6g_@pluto>
+References: <20231215-pinctrl-scmi-v1-0-0fe35e4611f7@nxp.com>
+ <20231215-pinctrl-scmi-v1-5-0fe35e4611f7@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231215-pinctrl-scmi-v1-5-0fe35e4611f7@nxp.com>
 
-In conn_info_min_age_set():
-    if (val == 0 || val > hdev->conn_info_max_age)
-        return -EINVAL;
-    hci_dev_lock(hdev);
-    hdev->conn_info_min_age = val;
-    hci_dev_unlock(hdev);
+On Fri, Dec 15, 2023 at 07:56:33PM +0800, Peng Fan (OSS) wrote:
+> From: Oleksii Moisieiev <Oleksii_Moisieiev@epam.com>
+> 
+> Add basic implementation of the SCMI v3.2 pincontrol protocol.
+> 
+> Signed-off-by: Oleksii Moisieiev <oleksii_moisieiev@epam.com>
+> Co-developed-by: Peng Fan <peng.fan@nxp.com>
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> ---
+>  MAINTAINERS                           |   6 +
+>  drivers/firmware/arm_scmi/Makefile    |   1 +
+>  drivers/firmware/arm_scmi/driver.c    |   2 +
+>  drivers/firmware/arm_scmi/pinctrl.c   | 927 ++++++++++++++++++++++++++++++++++
+>  drivers/firmware/arm_scmi/protocols.h |   1 +
+>  include/linux/scmi_protocol.h         |  46 ++
+>  6 files changed, 983 insertions(+)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index b589218605b4..8d971adeee22 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -21180,6 +21180,12 @@ F:	include/linux/sc[mp]i_protocol.h
+>  F:	include/trace/events/scmi.h
+>  F:	include/uapi/linux/virtio_scmi.h
+>  
+> +SYSTEM CONTROL MANAGEMENT INTERFACE (SCMI) PINCTRL DRIVER
+> +M:	Oleksii Moisieiev <oleksii_moisieiev@epam.com>
+> +L:	linux-arm-kernel@lists.infradead.org
+> +S:	Maintained
+> +F:	drivers/firmware/arm_scmi/pinctrl.c
+> +
+>  SYSTEM RESET/SHUTDOWN DRIVERS
+>  M:	Sebastian Reichel <sre@kernel.org>
+>  L:	linux-pm@vger.kernel.org
+> diff --git a/drivers/firmware/arm_scmi/Makefile b/drivers/firmware/arm_scmi/Makefile
+> index a7bc4796519c..8e3874ff1544 100644
+> --- a/drivers/firmware/arm_scmi/Makefile
+> +++ b/drivers/firmware/arm_scmi/Makefile
+> @@ -11,6 +11,7 @@ scmi-transport-$(CONFIG_ARM_SCMI_HAVE_MSG) += msg.o
+>  scmi-transport-$(CONFIG_ARM_SCMI_TRANSPORT_VIRTIO) += virtio.o
+>  scmi-transport-$(CONFIG_ARM_SCMI_TRANSPORT_OPTEE) += optee.o
+>  scmi-protocols-y = base.o clock.o perf.o power.o reset.o sensors.o system.o voltage.o powercap.o
+> +scmi-protocols-y += pinctrl.o
+>  scmi-module-objs := $(scmi-driver-y) $(scmi-protocols-y) $(scmi-transport-y)
+>  
+>  obj-$(CONFIG_ARM_SCMI_PROTOCOL) += scmi-core.o
+> diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
+> index 3174da57d832..1cf9f5d4f7bd 100644
+> --- a/drivers/firmware/arm_scmi/driver.c
+> +++ b/drivers/firmware/arm_scmi/driver.c
+> @@ -3057,6 +3057,7 @@ static int __init scmi_driver_init(void)
+>  	scmi_voltage_register();
+>  	scmi_system_register();
+>  	scmi_powercap_register();
+> +	scmi_pinctrl_register();
+>  
+>  	return platform_driver_register(&scmi_driver);
+>  }
+> @@ -3074,6 +3075,7 @@ static void __exit scmi_driver_exit(void)
+>  	scmi_voltage_unregister();
+>  	scmi_system_unregister();
+>  	scmi_powercap_unregister();
+> +	scmi_pinctrl_unregister();
+>  
+>  	scmi_transports_exit();
+>  
+> diff --git a/drivers/firmware/arm_scmi/pinctrl.c b/drivers/firmware/arm_scmi/pinctrl.c
+> new file mode 100644
+> index 000000000000..a25c8edcedd2
+> --- /dev/null
+> +++ b/drivers/firmware/arm_scmi/pinctrl.c
+> @@ -0,0 +1,927 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * System Control and Management Interface (SCMI) Pinctrl Protocol
+> + *
+> + * Copyright (C) 2023 EPAM
+> + */
+> +
+> +#include <linux/module.h>
+> +#include <linux/pinctrl/pinconf-generic.h>
 
-In conn_info_max_age_set():
-    if (val == 0 || val < hdev->conn_info_min_age)
-        return -EINVAL;
-    hci_dev_lock(hdev);
-    hdev->conn_info_max_age = val;
-    hci_dev_unlock(hdev);
+I spotted this only later while looking at the SCMI Pinctrl driver...
 
-The atomicity violation occurs due to concurrent execution of set_min and
-set_max funcs.Consider a scenario where setmin writes a new, valid 'min'
-value, and concurrently, setmax writes a value that is greater than the
-old 'min' but smaller than the new 'min'. In this case, setmax might check
-against the old 'min' value (before acquiring the lock) but write its
-value after the 'min' has been updated by setmin. This leads to a
-situation where the 'max' value ends up being smaller than the 'min'
-value, which is an inconsistency.
+...Get rid of this and please make these conversions in the SCMI pinctrl driver
+NOT here in the protocol layer....these ops should receive SCMI valid requests
+and should not have any need to invoke some other subsystem helpers to
+pack/unpack.
 
-This possible bug is found by an experimental static analysis tool
-developed by our team, BassCheck[1]. This tool analyzes the locking APIs
-to extract function pairs that can be concurrently executed, and then
-analyzes the instructions in the paired functions to identify possible
-concurrency bugs including data races and atomicity violations. The above
-possible bug is reported when our tool analyzes the source code of
-Linux 5.17.
+See below..
 
-To resolve this issue, it is suggested to encompass the validity checks
-within the locked sections in both set_min and set_max funcs. The
-modification ensures that the validation of 'val' against the
-current min/max values is atomic, thus maintaining the integrity of the
-settings. With this patch applied, our tool no longer reports the bug,
-with the kernel configuration allyesconfig for x86_64. Due to the lack of
-associated hardware, we cannot test the patch in runtime testing, and just
-verify it according to the code logic.
 
-[1] https://sites.google.com/view/basscheck/
+> +#include <linux/scmi_protocol.h>
+> +#include <linux/slab.h>
 
-Fixes: 40ce72b1951c ("Bluetooth: Move common debugfs file creation ...")
-Cc: stable@vger.kernel.org
-Signed-off-by: Gui-Dong Han <2045gemini@gmail.com>
----
-v2:
-* Adjust the format to pass the CI.
----
- net/bluetooth/hci_debugfs.c | 16 ++++++++++------
- 1 file changed, 10 insertions(+), 6 deletions(-)
+[snip]
 
-diff --git a/net/bluetooth/hci_debugfs.c b/net/bluetooth/hci_debugfs.c
-index 6b7741f6e95b..d4ce2769c939 100644
---- a/net/bluetooth/hci_debugfs.c
-+++ b/net/bluetooth/hci_debugfs.c
-@@ -217,11 +217,13 @@ DEFINE_SHOW_ATTRIBUTE(remote_oob);
- static int conn_info_min_age_set(void *data, u64 val)
- {
- 	struct hci_dev *hdev = data;
--
--	if (val == 0 || val > hdev->conn_info_max_age)
-+
-+	hci_dev_lock(hdev);
-+	if (val == 0 || val > hdev->conn_info_max_age) {
-+		hci_dev_unlock(hdev);
- 		return -EINVAL;
-+	}
- 
--	hci_dev_lock(hdev);
- 	hdev->conn_info_min_age = val;
- 	hci_dev_unlock(hdev);
- 
-@@ -245,11 +247,13 @@ DEFINE_DEBUGFS_ATTRIBUTE(conn_info_min_age_fops, conn_info_min_age_get,
- static int conn_info_max_age_set(void *data, u64 val)
- {
- 	struct hci_dev *hdev = data;
--
--	if (val == 0 || val < hdev->conn_info_min_age)
-+
-+	hci_dev_lock(hdev);
-+	if (val == 0 || val < hdev->conn_info_min_age) {
-+		hci_dev_unlock(hdev);
- 		return -EINVAL;
-+	}
- 
--	hci_dev_lock(hdev);
- 	hdev->conn_info_max_age = val;
- 	hci_dev_unlock(hdev);
- 
--- 
-2.34.1
+> +
+> +static int scmi_pinctrl_config_set(const struct scmi_protocol_handle *ph,
+> +				   u32 selector,
+> +				   enum scmi_pinctrl_selector_type type,
+> +				   unsigned long *configs, unsigned int nr_configs)
+> +{
+> +	struct scmi_xfer *t;
+> +	struct scmi_msg_conf_set *tx;
+> +	u32 attributes;
+> +	int ret, i;
+> +	unsigned int configs_in_chunk, conf_num = 0;
+> +	unsigned int chunk;
+> +	int max_msg_size = ph->hops->get_max_msg_size(ph);
+> +
+> +	if (!configs || type == FUNCTION_TYPE)
+> +		return -EINVAL;
+> +
+> +	ret = scmi_pinctrl_validate_id(ph, selector, type);
+> +	if (ret)
+> +		return ret;
+> +
+> +	configs_in_chunk = (max_msg_size - sizeof(*tx)) / (sizeof(unsigned long) * 2);
+									^^
+									sizeof(__le32))
+> +	while (conf_num < nr_configs) {
+> +		chunk = (nr_configs - conf_num > configs_in_chunk) ? configs_in_chunk :
+> +			nr_configs - conf_num;
+> +
+> +		ret = ph->xops->xfer_get_init(ph, PINCTRL_CONFIG_SET,
+> +					      sizeof(*tx) + chunk * 2 * sizeof(unsigned long),
 
+									^^
+									sizeof(__le32))
+> +					      0, &t);
+> +		if (ret)
+> +			return ret;
+> +
+> +		tx = t->tx.buf;
+> +		tx->identifier = cpu_to_le32(selector);
+> +		attributes = FIELD_PREP(GENMASK(1, 0), type) |
+> +			FIELD_PREP(GENMASK(9, 2), chunk);
+> +		tx->attributes = cpu_to_le32(attributes);
+> +
+> +		for (i = 0; i < chunk; i++) {
+> +			tx->configs[i * 2] = cpu_to_le32(pinconf_to_config_param(configs[i]));
+
+This should be the bare config_type as received already in SCMI format
+as a param.
+
+> +			tx->configs[i * 2 + 1] =
+> +				cpu_to_le32(pinconf_to_config_argument(configs[i]));
+
+and here the config_values...this also means you will have to change the
+parameters to this function to pass a
+
+	uint8_t *config_types
+	uint32_t *config_values
+	unsigne int num_configs
+
+or something like that....there is also a subtle need to remap the types
+from Pinctrl to SCMI in the pinctrl SCMI driver (I commented this on
+that patch)
+
+Thanks,
+Cristian
 
