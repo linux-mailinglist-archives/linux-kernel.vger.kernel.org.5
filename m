@@ -1,156 +1,312 @@
-Return-Path: <linux-kernel+bounces-9725-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9726-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1830C81CA40
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 13:49:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5C4D81CA43
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 13:49:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7243DB2228B
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 12:49:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5D9BF1F2251E
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 12:49:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B77A6224C1;
-	Fri, 22 Dec 2023 12:48:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CC8D2230B;
+	Fri, 22 Dec 2023 12:48:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NfxyJdrG"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ly4DFqcI"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02E2322314;
-	Fri, 22 Dec 2023 12:48:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6706AC433C8;
-	Fri, 22 Dec 2023 12:48:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 969C3224DA;
+	Fri, 22 Dec 2023 12:48:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F7EFC433C7;
+	Fri, 22 Dec 2023 12:48:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703249284;
-	bh=f8MxnKNl8aWOOpIhsgtOmNgNY2U+VCvmLARJV8km6Lw=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=NfxyJdrGlPtLvGrB4WosOs67jTR2/ZZocAKu9cNtbVnDaVoVQNGrgEOXTPkv6ncyh
-	 oJ+XhP0SmyWs5MwOtFxgBGrbYBTYdXBhyq5ABRQBnbQmhtVY4+akSCgAOaxGYcXLdO
-	 GonHpnDI6el3OfgYbbg183yb/CJNMjM/GPXlfDPFUG6AmddRCOXaAOkmj+F/meSlYU
-	 KGhcWMKdpO81HcdgIfi07oYfSftBnY4KB1u55KApEXQCsnGFsg+mTvFryhzIiDz2rW
-	 rpRsXQW0wruNYCT+oN3dNtw6Tmcm+yT+ryrkUGUYRrxjh+PICH5GwkuzoDO4vNefE8
-	 O5xXw0URnzcFQ==
-From: Matthieu Baerts <matttbe@kernel.org>
-Date: Fri, 22 Dec 2023 13:47:25 +0100
-Subject: [PATCH net-next 4/4] selftests: mptcp: diag: check CURRESTAB
- counters
+	s=k20201202; t=1703249290;
+	bh=V72pV+EXR1DLsor55xWUV6GPn2LtZ4+S8rLYXyUkQPM=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=Ly4DFqcIqG575M4GSPA1U0o94smm+XMk0G4zD/WWsU9CsHBfwE9cRLC/eJ+yIDpKa
+	 kRUn51b0erGl0TQVk4OADdDjdz1wiRGyy3W2IhDtCOMsmdij34xTGBGkwVxQi2w2B4
+	 qAFfo8IT/8+ENPD84LreX/2MV0BHMb9iaRTDT+L45LITW0LceaLp9tIWGpioXz6iCj
+	 XEaKPK2X9CaG7ltMs+ZYZ5Va9tVhFITOASK/kwV0aDpg04xk4HeroBR22dHesvuGiT
+	 AwhBlVD2SiQZCUrKJ9zIER8UFCQzliuEqTWWtnqQxwW4lLH3BFLHLa/f9w+ARPDHuL
+	 5Xwn5L/AxeXyw==
+Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-50e6a5b5e36so530356e87.3;
+        Fri, 22 Dec 2023 04:48:10 -0800 (PST)
+X-Gm-Message-State: AOJu0Yw+CsDuQulIcuD5+3Iu6C1hv+4vGgBqTjOqa+pJDbswYvzL/sjA
+	5n6BXNpEM5mlxaB4jVj81HQgQRDjfxqG9Q0xIBA=
+X-Google-Smtp-Source: AGHT+IFeUV+nepXa2pRRmsunsTOc5QtiHCIzjxaYBxClPNYPYWoKSQCLb8x0ZJ/yZ0cBRxzjL76fjrwtzEai63KHemk=
+X-Received: by 2002:ac2:454e:0:b0:50e:384c:289a with SMTP id
+ j14-20020ac2454e000000b0050e384c289amr643501lfm.78.1703249288530; Fri, 22 Dec
+ 2023 04:48:08 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231222-upstream-net-next-20231221-mptcp-currestab-v1-4-c1eb73d6b2b2@kernel.org>
-References: <20231222-upstream-net-next-20231221-mptcp-currestab-v1-0-c1eb73d6b2b2@kernel.org>
-In-Reply-To: <20231222-upstream-net-next-20231221-mptcp-currestab-v1-0-c1eb73d6b2b2@kernel.org>
-To: mptcp@lists.linux.dev, Mat Martineau <martineau@kernel.org>, 
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
- Shuah Khan <shuah@kernel.org>, Geliang Tang <geliang.tang@linux.dev>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-kselftest@vger.kernel.org, Matthieu Baerts <matttbe@kernel.org>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2223; i=matttbe@kernel.org;
- h=from:subject:message-id; bh=QjbEHosfHcKKjU3RogRURLP58YI1j0WbbK15xL3Nrjc=;
- b=owEBbQKS/ZANAwAIAfa3gk9CaaBzAcsmYgBlhYV27kvIeEPmFqwJYkWT0hr+wWSl24PB90bs3
- 8+++PkN1wCJAjMEAAEIAB0WIQToy4X3aHcFem4n93r2t4JPQmmgcwUCZYWFdgAKCRD2t4JPQmmg
- c1oID/9k9tbHs37JFpAk89njTgeXdt38bCqSe77DoL7Refyn9uXvhB0t3j43cDE3lXTkDHwXOCf
- vahWBybTiilXlCwgJzam49sZqdTEiW9MDxGxUzlGTCbr5bo8pF+YT2xRyJPKG7+Qk17CeBGsQLD
- iAMTl+v/965bw+QE+FcR8Vfbcnqvc0kdzy70iSZMfkFvx6nRDOHJn68p++r7WDzyrMrMYpqC61i
- b72TB97yRl6kzMzRlgOQyT4j46p3GwsuzL5QpUY6VxGdHAeWIQMDqAPG2tRRFsv8lF4pl97KfP4
- o9yXE3BEY/XMxMFx43sQU0RVzPdfM5+UmKmaeU9rrmsMHZ7p/hB2jmyLeCWPT/20raDCTNXuJ+Z
- usw3rUCiXm3/X10Lfn1zD9G89/tFgdkaraoCNvAatLTafEryh1c24T/a1uJyfskqKdHqIPwR07y
- oxfpHiGQ/qzptc6mRKwn3y5QUU/hMdK8UpPHKWSEY7KjouQnHcGTQ+9/U9S4S2fn7pq69x1jSA1
- oUlJ7jETdkdMQY2n2+zlSqcOGc8+GEwsa23b/B/xnBMuNZERizU/yCYi/wKnT7l8pqOmH2TAzaM
- q12dMzt88GQ8p8ZoOIkVPi2VqTp4ElYNjmG3r0B5d896lDCXTEv2wGAo89GPs6tFmk+RlCMnYkl
- DYPmcohz6PHPxXw==
-X-Developer-Key: i=matttbe@kernel.org; a=openpgp;
- fpr=E8CB85F76877057A6E27F77AF6B7824F4269A073
+References: <20230926194242.2732127-1-sjg@chromium.org> <20230926194242.2732127-2-sjg@chromium.org>
+ <BN9PR11MB5483FF3039913334C7EA83E1E6AEA@BN9PR11MB5483.namprd11.prod.outlook.com>
+ <CAMj1kXFG92NpL7T7YocOup0xLKyopt3MnSCp0RL8cLzozzJz7A@mail.gmail.com>
+ <BN9PR11MB548303B09536EB1577472029E6B3A@BN9PR11MB5483.namprd11.prod.outlook.com>
+ <CAPnjgZ36t8g7E=0MSJyaV8-QKv9RVYe47Jd5E=NU-mFM4LWBQA@mail.gmail.com>
+ <CAMj1kXHAEeK7x2f13k_JV3Xcw61nNLasyvXQf+mKwKekQ48EpQ@mail.gmail.com>
+ <BN9PR11MB548334E0DA6495C438FBFDE1E6BBA@BN9PR11MB5483.namprd11.prod.outlook.com>
+ <BN9PR11MB548314DDE8D4C9503103D51CE6BBA@BN9PR11MB5483.namprd11.prod.outlook.com>
+ <CAMj1kXHbM+ArLgNZgnmiok4gOfv6QLYxzyB9OCwfhEkJ2xGK_g@mail.gmail.com>
+ <BN9PR11MB5483C2FBCD07DE61DCCDB523E6BCA@BN9PR11MB5483.namprd11.prod.outlook.com>
+ <CAMj1kXHmu=ykgBMRiFqG4_ra3FJtHa=GASoMUJswdMFa9v4Xgw@mail.gmail.com> <BN9PR11MB54837EEB391CC2A8FA6C0BF5E695A@BN9PR11MB5483.namprd11.prod.outlook.com>
+In-Reply-To: <BN9PR11MB54837EEB391CC2A8FA6C0BF5E695A@BN9PR11MB5483.namprd11.prod.outlook.com>
+From: Ard Biesheuvel <ardb@kernel.org>
+Date: Fri, 22 Dec 2023 13:47:57 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXEQL9n1Adedow5KEyZ5gdFQY3Fn+Fz8vSK3mHib_vDFig@mail.gmail.com>
+Message-ID: <CAMj1kXEQL9n1Adedow5KEyZ5gdFQY3Fn+Fz8vSK3mHib_vDFig@mail.gmail.com>
+Subject: Re: [PATCH v7 2/2] schemas: Add some common reserved-memory usages
+To: "Chiu, Chasel" <chasel.chiu@intel.com>
+Cc: Simon Glass <sjg@chromium.org>, 
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Rob Herring <robh@kernel.org>, "Tan, Lean Sheng" <sheng.tan@9elements.com>, 
+	lkml <linux-kernel@vger.kernel.org>, Dhaval Sharma <dhaval@rivosinc.com>, 
+	"Brune, Maximilian" <maximilian.brune@9elements.com>, Yunhui Cui <cuiyunhui@bytedance.com>, 
+	"Dong, Guo" <guo.dong@intel.com>, Tom Rini <trini@konsulko.com>, 
+	ron minnich <rminnich@gmail.com>, "Guo, Gua" <gua.guo@intel.com>, 
+	"linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>, U-Boot Mailing List <u-boot@lists.denx.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Geliang Tang <geliang.tang@linux.dev>
+On Thu, 21 Dec 2023 at 17:50, Chiu, Chasel <chasel.chiu@intel.com> wrote:
+>
+>
+> Hi Ard,
+>
+> Please see my reply below inline and let me know your thoughts.
+>
+> Thanks,
+> Chasel
+>
+>
+> > -----Original Message-----
+> > From: Ard Biesheuvel <ardb@kernel.org>
+> > Sent: Thursday, December 21, 2023 6:31 AM
+> > To: Chiu, Chasel <chasel.chiu@intel.com>
+> > Cc: Simon Glass <sjg@chromium.org>; devicetree@vger.kernel.org; Mark Ru=
+tland
+> > <mark.rutland@arm.com>; Rob Herring <robh@kernel.org>; Tan, Lean Sheng
+> > <sheng.tan@9elements.com>; lkml <linux-kernel@vger.kernel.org>; Dhaval
+> > Sharma <dhaval@rivosinc.com>; Brune, Maximilian
+> > <maximilian.brune@9elements.com>; Yunhui Cui <cuiyunhui@bytedance.com>;
+> > Dong, Guo <guo.dong@intel.com>; Tom Rini <trini@konsulko.com>; ron minn=
+ich
+> > <rminnich@gmail.com>; Guo, Gua <gua.guo@intel.com>; linux-
+> > acpi@vger.kernel.org; U-Boot Mailing List <u-boot@lists.denx.de>
+> > Subject: Re: [PATCH v7 2/2] schemas: Add some common reserved-memory
+> > usages
+> >
+> > On Tue, 28 Nov 2023 at 21:31, Chiu, Chasel <chasel.chiu@intel.com> wrot=
+e:
+> > >
+> > >
+> > >
+> > >
+> > > > -----Original Message-----
+> > > > From: Ard Biesheuvel <ardb@kernel.org>
+> > > > Sent: Tuesday, November 28, 2023 10:08 AM
+> > > > To: Chiu, Chasel <chasel.chiu@intel.com>
+> > > > Cc: Simon Glass <sjg@chromium.org>; devicetree@vger.kernel.org; Mar=
+k
+> > > > Rutland <mark.rutland@arm.com>; Rob Herring <robh@kernel.org>; Tan,
+> > > > Lean Sheng <sheng.tan@9elements.com>; lkml
+> > > > <linux-kernel@vger.kernel.org>; Dhaval Sharma <dhaval@rivosinc.com>=
+;
+> > > > Brune, Maximilian <maximilian.brune@9elements.com>; Yunhui Cui
+> > > > <cuiyunhui@bytedance.com>; Dong, Guo <guo.dong@intel.com>; Tom Rini
+> > > > <trini@konsulko.com>; ron minnich <rminnich@gmail.com>; Guo, Gua
+> > > > <gua.guo@intel.com>; linux- acpi@vger.kernel.org; U-Boot Mailing
+> > > > List <u-boot@lists.denx.de>
+> > > > Subject: Re: [PATCH v7 2/2] schemas: Add some common reserved-memor=
+y
+> > > > usages
+> > > >
+> > > > You are referring to a 2000 line patch so it is not 100% clear wher=
+e to look tbh.
+> > > >
+> > > >
+> > > > On Tue, 21 Nov 2023 at 19:37, Chiu, Chasel <chasel.chiu@intel.com> =
+wrote:
+> > > > >
+> > > > >
+> > > > > In PR, UefiPayloadPkg/Library/FdtParserLib/FdtParserLib.c, line
+> > > > > 268 is for
+> > > > related example code.
+> > > > >
+> > > >
+> > > > That refers to a 'memory-allocation' node, right? How does that
+> > > > relate to the 'reserved-memory' node?
+> > > >
+> > > > And crucially, how does this clarify in which way "runtime-code" an=
+d
+> > > > "runtime- data" reservations are being used?
+> > > >
+> > > > Since the very beginning of this discussion, I have been asking
+> > > > repeatedly for examples that describe the wider context in which th=
+ese
+> > reservations are used.
+> > > > The "runtime" into runtime-code and runtime-data means that these
+> > > > regions have a special significance to the operating system, not
+> > > > just to the next bootloader stage. So I want to understand exactly
+> > > > why it is necessary to describe these regions in a way where the
+> > > > operating system might be expected to interpret this information an=
+d act
+> > upon it.
+> > > >
+> > >
+> > >
+> > > I think runtime code and data today are mainly for supporting UEFI ru=
+ntime
+> > services - some BIOS functions for OS to utilize, OS may follow below A=
+CPI spec to
+> > treat them as reserved range:
+> > > https://uefi.org/specs/ACPI/6.5/15_System_Address_Map_Interfaces.html=
+#
+> > > uefi-memory-types-and-mapping-to-acpi-address-range-types
+> > >
+> > > Like I mentioned earlier, that PR is still in early phase and has not=
+ reflected all
+> > the required changes yet, but the idea is to build
+> > gEfiMemoryTypeInformationGuid HOB from FDT reserved-memory nodes.
+> > > UEFI generic Payload has DxeMain integrated, however Memory Types are
+> > platform-specific, for example, some platforms may need bigger runtime =
+memory
+> > for their implementation, that's why we want such FDT reserved-memory n=
+ode to
+> > tell DxeMain.
+> > >
+> >
+> > > The Payload flow will be like this:
+> > >   Payload creates built-in default MemoryTypes table ->
+> > >     FDT reserved-memory node to override if required (this also ensur=
+es the
+> > same memory map cross boots so ACPI S4 works) ->
+> > >       Build gEfiMemoryTypeInformationGuid HOB by "platfom specific"
+> > MemoryTypes Table ->
+> > >         DxeMain/GCD to consume this MemoryTypes table and setup memor=
+y
+> > service ->
+> > >           Install memory types table to UEFI system table.Configurati=
+on table...
+> > >
+> > > Note: if Payload built-in default MemoryTypes table works fine for th=
+e
+> > > platform, then FDT reserved-memory node does not need to provide such
+> > 'usage' compatible strings. (optional) This FDT node could allow
+> > flexibility/compatibility without rebuilding Payload binary.
+> > >
+> > > Not sure if I answered all your questions, please highlight which are=
+a you need
+> > more information.
+> > >
+> >
+> > The gEfiMemoryTypeInformationGuid HOB typically carries platform defaul=
+ts, and
+> > the actual memory type information is kept in a non-volatile EFI variab=
+le, which
+> > gets updated when the memory usage changes. Is this different for
+> > UefiPayloadPkg?
+> >
+> > (For those among the cc'ees less versed in EFI/EDK2: when you get the '=
+config
+> > changed -rebooting' message from the boot firmware, it typically means =
+that this
+> > memory type table has changed, and a reboot is necessary.)
+> >
+> > So the platform init needs to read this variable, or get the informatio=
+n in a
+> > different way. I assume it is the payload, not the platform init that u=
+pdates the
+> > variable when necessary. This means the information flows from payload(=
+n) to
+> > platform init(n+1), where n is a monotonic index tracking consecutive b=
+oots of the
+> > system.
+> >
+> > Can you explain how the DT fits into this? How are the runtime-code and
+> > runtime-data memory reservation nodes under /reserved-memory used to
+> > implement this information exchange between platform init and payload? =
+And
+> > how do the HOB and the EFI variable fit into this picture?
+>
+>
+> 1. With some offline discussion, we would move gEfiMemoryTypeInformationG=
+uid usage to FDT->upl-custom node. This is because it is edk2 implementatio=
+n choice and non-edk2 PlatformInit or Payload may not have such memory opti=
+mization implementation. (not a generic usage/requirement for PlatformInit =
+and Payload)
+>
+> The edk2 example flow will be like below:
+>
+> PlatformInit to GetVariable of gEfiMemoryTypeInformationGuid and create H=
+ob->
+>   PlatformInit to initialize FDT->upl-custom node to report gEfiMemoryTyp=
+eInformationGuid HOB information ->
+>     UefiPayload entry to re-create gEfiMemoryTypeInformationGuid HOB basi=
+ng on FDT input (instead of the default MemoryType inside UefiPayload) ->
+>       UefiPayload DxeMain/Gcd will consume gEfiMemoryTypeInformationGuid =
+Hob for memory type information ->
+>         UefiPayload to initialize UEFI environment (mainly DXE dispatcher=
+) ->
+>           (additional FV binary appended to common UefiPayload binary) Pl=
+atformPayload to provide VariableService which is platform specific ->
+>             UefiPayload UefiBootManager will SetVariable if memory type c=
+hange needed and request a warm reset ->
+>               Back to PlatformInit ...
+>
 
-This patch adds a new helper chk_msk_cestab() to check the current
-established connections counter MIB_CURRESTAB in diag.sh. Invoke it
-to check the counter during the connection after every chk_msk_inuse().
+OK so the upl-custom node can do whatever it needs to. I imagine these
+will include the memory descriptor attribute field, and other parts
+that may be missing from the /reserved-memory DT node specification?
 
-Signed-off-by: Geliang Tang <geliang.tang@linux.dev>
-Reviewed-by: Matthieu Baerts <matttbe@kernel.org>
-Signed-off-by: Matthieu Baerts <matttbe@kernel.org>
----
- tools/testing/selftests/net/mptcp/diag.sh | 17 ++++++++++++++++-
- 1 file changed, 16 insertions(+), 1 deletion(-)
+>
+> 2. Now the proposed reserved-memory node usages will be for PlatformInit =
+to provide data which may be used by Payload or OS. This is not edk2 specif=
+ic and any PlatformInit/Payload could have same support.
+> Note: all of below are optional and PlatformInit may choose to implement =
+some of them or not.
+>
+>       - acpi
+> If PlatformInit created some ACPI tables, this will report a memory regio=
+n which contains all the tables to Payload and Payload may base on this to =
+add some more tables if required.
+>
+>       - acpi-nvs
+> If PlatformInit has created some ACPI tables which having ACPI NVS memory=
+ dependency, this will be that nvs region.
+>
 
-diff --git a/tools/testing/selftests/net/mptcp/diag.sh b/tools/testing/selftests/net/mptcp/diag.sh
-index 95b498efacd1..04fcb8a077c9 100755
---- a/tools/testing/selftests/net/mptcp/diag.sh
-+++ b/tools/testing/selftests/net/mptcp/diag.sh
-@@ -56,7 +56,7 @@ __chk_nr()
- 	local command="$1"
- 	local expected=$2
- 	local msg="$3"
--	local skip="${4:-SKIP}"
-+	local skip="${4-SKIP}"
- 	local nr
- 
- 	nr=$(eval $command)
-@@ -182,6 +182,15 @@ chk_msk_inuse()
- 	__chk_nr get_msk_inuse $expected "$msg" 0
- }
- 
-+# $1: cestab nr
-+chk_msk_cestab()
-+{
-+	local cestab=$1
-+
-+	__chk_nr "mptcp_lib_get_counter ${ns} MPTcpExtMPCurrEstab" \
-+		 "${cestab}" "....chk ${cestab} cestab" ""
-+}
-+
- wait_connected()
- {
- 	local listener_ns="${1}"
-@@ -219,9 +228,11 @@ chk_msk_nr 2 "after MPC handshake "
- chk_msk_remote_key_nr 2 "....chk remote_key"
- chk_msk_fallback_nr 0 "....chk no fallback"
- chk_msk_inuse 2 "....chk 2 msk in use"
-+chk_msk_cestab 2
- flush_pids
- 
- chk_msk_inuse 0 "....chk 0 msk in use after flush"
-+chk_msk_cestab 0
- 
- echo "a" | \
- 	timeout ${timeout_test} \
-@@ -237,9 +248,11 @@ echo "b" | \
- wait_connected $ns 10001
- chk_msk_fallback_nr 1 "check fallback"
- chk_msk_inuse 1 "....chk 1 msk in use"
-+chk_msk_cestab 1
- flush_pids
- 
- chk_msk_inuse 0 "....chk 0 msk in use after flush"
-+chk_msk_cestab 0
- 
- NR_CLIENTS=100
- for I in `seq 1 $NR_CLIENTS`; do
-@@ -261,9 +274,11 @@ done
- 
- wait_msk_nr $((NR_CLIENTS*2)) "many msk socket present"
- chk_msk_inuse $((NR_CLIENTS*2)) "....chk many msk in use"
-+chk_msk_cestab $((NR_CLIENTS*2))
- flush_pids
- 
- chk_msk_inuse 0 "....chk 0 msk in use after flush"
-+chk_msk_cestab 0
- 
- mptcp_lib_result_print_all_tap
- exit $ret
+These make sense.
 
--- 
-2.43.0
+>       - boot-code
+> When PlatformInit having some FW boot phase code that could be freed for =
+OS to use when payload transferring control to UEFI OS
+>
+>       - boot-data
+> When PlatformInit having some FW boot phase data that could be freed for =
+OS to use when payload transferring control to UEFI OS.
+>
+>       - runtime-code
+> PlatformInit may provide some services code that can be used for Payload =
+to initialize UEFI Runtime Services for supporting UEFI OS.
+>
+>       - runtime-data
+> PlatformInit may provide some services data that can be used for Payload =
+to Initialize UEFI Runtime Services for supporting UEFI OS.
+>
 
+A UEFI OS must consume this information from the UEFI memory map, not
+from the /reserved-memory nodes. So these nodes must either not be
+visible to the OS at all, or carry an annotation that the OS must
+ignore them.
+
+Would it be possible to include a restriction in the DT schema that
+these are only valid in the firmware boot phase?
 
