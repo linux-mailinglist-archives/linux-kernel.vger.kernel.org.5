@@ -1,140 +1,97 @@
-Return-Path: <linux-kernel+bounces-9398-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9397-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70FF481C500
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 07:20:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A5FA881C4FF
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 07:20:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A38C31C219AA
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 06:20:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D96331C23D04
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 06:20:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2DFCC127;
-	Fri, 22 Dec 2023 06:20:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E87F8C14;
+	Fri, 22 Dec 2023 06:19:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Xy7DJr4i"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="SgSmDTZc"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8CE7BE5F
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 06:20:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6d099d316a8so1512505b3a.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 22:20:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703226003; x=1703830803; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=S9TfaeQ/e55ca5rREKZmd6+dLcKbLLpUfdI5rG0zE/E=;
-        b=Xy7DJr4iZodZhy8tYY6C8tIvuqm4loz/nwNQkgA707N4xSfS0CNUvUdhrhsSf2LFLz
-         3KB3JYRZm6FgrM7LJ5xZDDPhOJs1XBZ/O9yx5EzyahkTpD9vA8yDV7xETfrm3r1X/zNS
-         BH5QTZh9LooWm1Ki0cK8zFnC4UIxYHiB6mV2Bo0l+92i18EjhKgXc30bwJBAUP1xpC0V
-         tPpotDM9BKh3KufhJ6iZhjL82IBGp+0WJAIvcWR50p22UBLEcWPsAkExxdW969/2VL9K
-         OWFfHNAHgrt7LM39IY4D/F7DoTBAFSyhqe2ITtYFfEUtMJPkaKnLwQBr4NGdXpvBifz1
-         Pe+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703226003; x=1703830803;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=S9TfaeQ/e55ca5rREKZmd6+dLcKbLLpUfdI5rG0zE/E=;
-        b=Z+Nzoj5E1uEaD8IrYKG82ZfGutQngLGgORZmqTmB/uf78Yg5bWfXzSkBvGZr6iYowP
-         P4sbIQbrKdgvQrScXiytc+PLVLGHLBxxSsSg9dhGcjYtLvyAO3IHKBLsjLtXsJfij1kG
-         FeuuLFQYe6rOULKWA00i7Y4X4pMT3Qr142SsTs7FRBLVVh1QL655AiKiW8hOfb8h47Uw
-         kXUC8B0l3E3L3O7g7shCmPrr4S82CBUVD0B+No6Uvl511pTS3madLL3PPsHGlq1TSQ45
-         3i7E14kC4lh5GSWeucsMxNCzPeb8HVrw3l+SLHUyT9n2qAbElK/QnDorhtIWZK+brTDB
-         cASg==
-X-Gm-Message-State: AOJu0Yzm/PGt3Np2bXbmHxXH311SeiccNJLE3CckGQ1+4BiL2Fih1B5d
-	F+zYIOdTaskt5Ilzd9wUz2QytMEDdK18D6hT6k4=
-X-Google-Smtp-Source: AGHT+IGYnf8qMcbRTBP8LBMIpA5ZyX4pFoKeRr9EZGX19R8VWbg9hhI87VLCqwbeti8d5IlZcvVXzHz4dWoCmVkg4Mw=
-X-Received: by 2002:a05:6a21:78a7:b0:195:3eb6:da1b with SMTP id
- bf39-20020a056a2178a700b001953eb6da1bmr120999pzc.72.1703226003030; Thu, 21
- Dec 2023 22:20:03 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2192DDAB;
+	Fri, 22 Dec 2023 06:19:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+	Content-ID:Content-Description:In-Reply-To:References;
+	bh=vcXjkACtt3w1L/iqeM+O5LdUiTqdAb5DknSdUDcSKoc=; b=SgSmDTZcnoh8EPslL2Q+3FamC+
+	YeOAMA8kz00VkR8vEe+udxLOtP6sTjlBj0aY38cKjVeeg06v18ldqz4ehKCXoqLWG0emXRs5/2KCE
+	tKb2QURK3ygLRQoNHs08YlNrHxl1rgIE8Iksc6eJyaUSz++xS7Mp0wejEW1wrddbFK+dmsIPraB0P
+	ba5wl6wOyPSz3bdRO6CAJxeGZX6trtDLxKSQ3LOy/mvLb+TTq9LqadG+Y2cvjRq+XEJt21QErwk1i
+	aEKIDHHv7IpNzCtwZzl8iY6FYhs3bkSdTV+ZIN1IhW+av48U/TzCLsDs+B3yAOn0LJ03r4m2xkNYx
+	a+sNasaw==;
+Received: from [50.53.46.231] (helo=bombadil.infradead.org)
+	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1rGYsd-0053gU-31;
+	Fri, 22 Dec 2023 06:19:31 +0000
+From: Randy Dunlap <rdunlap@infradead.org>
+To: linux-kernel@vger.kernel.org
+Cc: Randy Dunlap <rdunlap@infradead.org>,
+	"Rafael J . Wysocki" <rafael@kernel.org>,
+	Daniel Lezcano <daniel.lezcano@linaro.org>,
+	Zhang Rui <rui.zhang@intel.com>,
+	Lukasz Luba <lukasz.luba@arm.com>,
+	linux-pm@vger.kernel.org
+Subject: [PATCH] thermal: max7620: fix all kernel-doc warnings
+Date: Thu, 21 Dec 2023 22:19:31 -0800
+Message-ID: <20231222061931.10807-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231215115857.575697-1-ghanshyam1898@gmail.com> <87il4rlrw2.fsf@mail.lhotse>
-In-Reply-To: <87il4rlrw2.fsf@mail.lhotse>
-From: Ghanshyam Agrawal <ghanshyam1898@gmail.com>
-Date: Fri, 22 Dec 2023 11:49:26 +0530
-Message-ID: <CAG-Bmoejy6t-EHv96OTnGhvo-P82fhw5pSUM-LqLfh7Hgh5Qew@mail.gmail.com>
-Subject: Re: [PATCH] arch: powerpc: kernel: fixed some typos
-To: Michael Ellerman <mpe@ellerman.id.au>
-Cc: mahesh@linux.ibm.com, oohall@gmail.com, npiggin@gmail.com, 
-	christophe.leroy@csgroup.eu, linuxppc-dev@lists.ozlabs.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Thu, Dec 21, 2023 at 4:55=E2=80=AFPM Michael Ellerman <mpe@ellerman.id.a=
-u> wrote:
->
-> Ghanshyam Agrawal <ghanshyam1898@gmail.com> writes:
-> > Fixed some typos
-> >
-> > Signed-off-by: Ghanshyam Agrawal <ghanshyam1898@gmail.com>
-> > ---
-> >  arch/powerpc/kernel/eeh_pe.c | 6 +++---
-> >  1 file changed, 3 insertions(+), 3 deletions(-)
->
-> Please also fix the case in arch/powerpc/include/asm/eeh.h
->
-> The subject should use the correct prefix. You can see what it should be
-> using:
->
-> $ git log --oneline arch/powerpc/kernel/eeh_pe.c
->
-> Please give the patch a better subject, not "some typos", tell me what
-> misspelling you're fixing. Same comment for the commit description.
->
-> > diff --git a/arch/powerpc/kernel/eeh_pe.c b/arch/powerpc/kernel/eeh_pe.=
-c
-> > index e0ce81279624..8e0c1a8b8641 100644
-> > --- a/arch/powerpc/kernel/eeh_pe.c
-> > +++ b/arch/powerpc/kernel/eeh_pe.c
-> > @@ -24,10 +24,10 @@ static int eeh_pe_aux_size =3D 0;
-> >  static LIST_HEAD(eeh_phb_pe);
-> >
-> >  /**
-> > - * eeh_set_pe_aux_size - Set PE auxillary data size
-> > - * @size: PE auxillary data size
-> > + * eeh_set_pe_aux_size - Set PE auxiliary data size
-> > + * @size: PE auxiliary data size
->
-> While you're changing it you could also mention what the units of the
-> size are.
->
-> >   *
-> > - * Set PE auxillary data size
-> > + * Set PE auxiliary data size
->
-> This should gain a full stop at the end of the sentence.
->
-> >   */
-> >  void eeh_set_pe_aux_size(int size)
-> >  {
-> > --
-> > 2.25.1
->
->
-> cheers
+Correct all kernel-doc notation to prevent warnings from
+scripts/kernel-doc:
 
-Hi Michael,
+max77620_thermal.c:48: warning: Function parameter or member 'tz' not described in 'max77620_thermal_read_temp'
+max77620_thermal.c:48: warning: Excess function parameter 'data' description in 'max77620_thermal_read_temp'
+max77620_thermal.c:48: warning: No description found for return value of 'max77620_thermal_read_temp'
 
-Thank you very much for your suggestions. I will implement them
-and send a v2 patch.
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Rafael J. Wysocki <rafael@kernel.org>
+Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc: Zhang Rui <rui.zhang@intel.com>
+Cc: Lukasz Luba <lukasz.luba@arm.com>
+Cc: linux-pm@vger.kernel.org
+---
+ drivers/thermal/max77620_thermal.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-You mentioned I need to specify the units of "PE auxiliary data size".
-Is the unit BYTES? Sorry for the silly question, I am only beginning
-to contribute to the linux kernel.
-
-Thanks & Regards,
-Ghanshyam Agrawal
+diff -- a/drivers/thermal/max77620_thermal.c b/drivers/thermal/max77620_thermal.c
+--- a/drivers/thermal/max77620_thermal.c
++++ b/drivers/thermal/max77620_thermal.c
+@@ -32,7 +32,7 @@ struct max77620_therm_info {
+ 
+ /**
+  * max77620_thermal_read_temp: Read PMIC die temperatue.
+- * @data:	Device specific data.
++ * @tz:		pointer to &thermal_zone_device
+  * @temp:	Temperature in millidegrees Celsius
+  *
+  * The actual temperature of PMIC die is not available from PMIC.
+@@ -41,7 +41,7 @@ struct max77620_therm_info {
+  * If threshold has not been crossed then assume die temperature as 100degC
+  * else 120degC or 140deG based on the PMIC die temp threshold status.
+  *
+- * Return 0 on success otherwise error number to show reason of failure.
++ * Return: %0 on success otherwise error number to show reason of failure.
+  */
+ 
+ static int max77620_thermal_read_temp(struct thermal_zone_device *tz, int *temp)
 
