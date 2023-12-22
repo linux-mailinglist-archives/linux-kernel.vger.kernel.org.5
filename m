@@ -1,60 +1,60 @@
-Return-Path: <linux-kernel+bounces-9956-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9957-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E88F81CDE1
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 18:44:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7612581CDE4
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 18:44:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B19541C224EA
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 17:44:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A7D6E1C2248E
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 17:44:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AB002F871;
-	Fri, 22 Dec 2023 17:42:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FE3930D07;
+	Fri, 22 Dec 2023 17:42:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Iw/f5pss"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DgAoPUop"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1F2C2E826;
-	Fri, 22 Dec 2023 17:42:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0AFE2EAE1;
+	Fri, 22 Dec 2023 17:42:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-336788cb261so1662129f8f.3;
-        Fri, 22 Dec 2023 09:42:28 -0800 (PST)
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-3368d1c7b23so1336731f8f.0;
+        Fri, 22 Dec 2023 09:42:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703266947; x=1703871747; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1703266948; x=1703871748; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=s3GkVjgO7xCOhsoyA3/cHuRL2/Yb9XCTkkYsuRn5/o8=;
-        b=Iw/f5pssDhztQKeAAtTOCYb1VhSRdml6Y/HVm162l6g0ZJEn/FdEdhhTIrlPoIk+7r
-         pdQsYFQ9hV3iMVUuVzJNVxAtZdAu3J2AnQ6z4Os0s3JXBVwNJX/dPZr4S1VJXY49gNDT
-         suY7Hixj5rMvBUbqhxIqXNSj9SmpMIq/jFURJZmfkQWxfyoWsyqab9jdk4g61VtAdnj+
-         vfB3PkZKtRNehZmh7Jz/23ItSNwULA5KJnX0xcdR40N78J/Z82xkQSB7shthYV43Yrj0
-         AUnln+17/GYtLrimkpeQqALKBK7I0VqRHI7obOA+xB0FPNd9kQYoOniQexcYIJZr3OZ3
-         S79Q==
+        bh=/kgyib+/6QRevWIU1dtxLSbx62QPgtFJTlVAtzjG6Is=;
+        b=DgAoPUopw05zK9RNEJwNjb/El2mEa79NaoPmCy/rE0fsdXn0BGD9h1P/w/rT7G3PU2
+         FzctkPprZNuVOnnP9W7d5ud/twRWrQYUfB2hevv3CJ3gAjUtBo175r/HIMV/2qoff1MF
+         b6uTg200lAt9UeIhyUfR3fUhr3SVapqkIJavCYsUNnedYwvTH6LnW7Yf1uUNvuUCEWbP
+         Dm4z4NU5YwZs94bVARWWUj3Q0JcCtZs6dk3jZVlSu3XwP2Lap8kl6r84TYhpYBioSsMN
+         kUuHZpo4nBTuy3Zi/dsOAkhUG9qipUoi2oC6uom+i7qgTMsC5jDynE/wOREk8k2Nqi/c
+         Qfvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703266947; x=1703871747;
+        d=1e100.net; s=20230601; t=1703266948; x=1703871748;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=s3GkVjgO7xCOhsoyA3/cHuRL2/Yb9XCTkkYsuRn5/o8=;
-        b=KeWstFnfDZ+Ou48TpC9LjqgsgPvb+Lr4vhMZoQ/E2GWhKi9kfjXmnJrp3O40dIKB7n
-         N01lPXRekaINGyT47h5RtV/lLStkFvc9iIQreyKciEV9gX7MnbBsJ99hGJBxoAcZJJrk
-         Uk93oRNKxVlSEfkywp8AmXyXoeuTN6yP9/Dw5BoH1cPTorZFATiXK/RdTpM0Xrwf5pmW
-         AnB1wC/gGtavmyWqlhhx9/lI+nVvBi0QXx+T+cxxFOA0Pm5xsTTJqjWvQ6xXSajCu0RN
-         C0sCgJt3N50TQ0zmxL/BPYHu4zpUfbAVqb39CWS0romEYgKhslFWBFfkGCID8X/VSsH5
-         NJ4w==
-X-Gm-Message-State: AOJu0Yz6Sp3BtFW9z4XBK/6lQnGIQlc9/mEQKoTam5v3/nbNWZbPpavc
-	vY/r7qI55UOtj8q6HScTvA==
-X-Google-Smtp-Source: AGHT+IHX+9/MPXHlLJ3T80hITMDfMHWCaU/WAybii+j6ocgFvzMfV97yoJKax2k3/7nsxxV6QrfASA==
-X-Received: by 2002:a5d:4cc3:0:b0:336:788b:f064 with SMTP id c3-20020a5d4cc3000000b00336788bf064mr959130wrt.23.1703266947305;
-        Fri, 22 Dec 2023 09:42:27 -0800 (PST)
+        bh=/kgyib+/6QRevWIU1dtxLSbx62QPgtFJTlVAtzjG6Is=;
+        b=nO+a6Q2QqOkrVus0lf94nPF0/IN39Vlj5ELcpeJC9H4D3u7hqLxohHCOXI+2aNRwZX
+         ERsmGunHFm4oHeprkw3KBVfpi+nNEl3PDdn9EuVZ2QCmlMoldVia6p5ocdz/6tUpu+gi
+         JEpwIbdN7bJFFez5hqTxr9LlcvDcwciDJiCMFPEUCeDTFkG67QMoNB7xkLsN581lPUD3
+         MeKx+Oi9y7NKtQLavGY0LO/WZgr7CQBwgnDpuMZwThKtelScwMo0e2ef045oidL6mQSd
+         QRXniePziw1v7p+ssFRSrXKGx/t+gdxFOn5hBF1DGb9JZSCUwuyPkP6m4UjaOtInpbld
+         HgkA==
+X-Gm-Message-State: AOJu0YxJ2jArkeOyWv4aVURk+AlJM/7YJDfuHYZFuioETE5u+60mI4u/
+	l4evFTZOcWyAtvudO2w6Jw==
+X-Google-Smtp-Source: AGHT+IEt/69sUBqxWe1PRE1w6MCXmB6NT4MwzHjZjfhAIB1uVmcCKnZlBEfqCpNWf7fYGOh8JR0yEw==
+X-Received: by 2002:adf:e911:0:b0:336:4bfe:5ab2 with SMTP id f17-20020adfe911000000b003364bfe5ab2mr864375wrm.8.1703266948004;
+        Fri, 22 Dec 2023 09:42:28 -0800 (PST)
 Received: from U4.lan ([2a02:810b:f40:4300:f3ae:2788:7e03:f44])
-        by smtp.gmail.com with ESMTPSA id w10-20020adfec4a000000b00336670abdcasm4777116wrn.40.2023.12.22.09.42.26
+        by smtp.gmail.com with ESMTPSA id w10-20020adfec4a000000b00336670abdcasm4777116wrn.40.2023.12.22.09.42.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Fri, 22 Dec 2023 09:42:27 -0800 (PST)
 From: Alex Bee <knaerzche@gmail.com>
@@ -74,9 +74,9 @@ Cc: David Airlie <airlied@gmail.com>,
 	linux-rockchip@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
 	Alex Bee <knaerzche@gmail.com>
-Subject: [PATCH v4 07/29] drm/rockchip: inno_hdmi: Get rid of mode_set
-Date: Fri, 22 Dec 2023 18:41:58 +0100
-Message-ID: <20231222174220.55249-8-knaerzche@gmail.com>
+Subject: [PATCH v4 08/29] drm/rockchip: inno_hdmi: no need to store vic
+Date: Fri, 22 Dec 2023 18:41:59 +0100
+Message-ID: <20231222174220.55249-9-knaerzche@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231222174220.55249-1-knaerzche@gmail.com>
 References: <20231222174220.55249-1-knaerzche@gmail.com>
@@ -90,70 +90,60 @@ Content-Transfer-Encoding: 8bit
 
 From: Maxime Ripard <mripard@kernel.org>
 
-We're not doing anything special in atomic_mode_set so we can simply
-merge it into atomic_enable.
+The mode's VIC is only ever used in the inno_hdmi_setup() function so
+there's no need to store it in the main structure.
 
 Signed-off-by: Maxime Ripard <mripard@kernel.org>
 Tested-by: Alex Bee <knaerzche@gmail.com>
+[made checkpatch happy]
 Signed-off-by: Alex Bee <knaerzche@gmail.com>
 ---
 changes in v2:
  - imported patch
 
 changes in v3:
- - added my SoB
+ - none
 
 changes in v4:
  - none
 
- drivers/gpu/drm/rockchip/inno_hdmi.c | 22 +++++++++++-----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
+ drivers/gpu/drm/rockchip/inno_hdmi.c | 12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/gpu/drm/rockchip/inno_hdmi.c b/drivers/gpu/drm/rockchip/inno_hdmi.c
-index 48c4f010b260..299770e481b7 100644
+index 299770e481b7..d99896f1a73a 100644
 --- a/drivers/gpu/drm/rockchip/inno_hdmi.c
 +++ b/drivers/gpu/drm/rockchip/inno_hdmi.c
-@@ -490,21 +490,22 @@ static int inno_hdmi_setup(struct inno_hdmi *hdmi,
- 	return 0;
- }
+@@ -28,7 +28,6 @@
+ #include "inno_hdmi.h"
  
--static void inno_hdmi_encoder_mode_set(struct drm_encoder *encoder,
--				       struct drm_crtc_state *crtc_state,
--				       struct drm_connector_state *conn_state)
--{
--	struct drm_display_mode *adj_mode = &crtc_state->adjusted_mode;
--	struct inno_hdmi *hdmi = encoder_to_inno_hdmi(encoder);
--
--	inno_hdmi_setup(hdmi, adj_mode);
--}
--
- static void inno_hdmi_encoder_enable(struct drm_encoder *encoder,
- 				     struct drm_atomic_state *state)
+ struct hdmi_data_info {
+-	int vic;
+ 	bool sink_has_audio;
+ 	unsigned int enc_in_format;
+ 	unsigned int enc_out_format;
+@@ -443,16 +442,15 @@ static int inno_hdmi_setup(struct inno_hdmi *hdmi,
+ 			   struct drm_display_mode *mode)
  {
- 	struct inno_hdmi *hdmi = encoder_to_inno_hdmi(encoder);
-+	struct drm_connector_state *conn_state;
-+	struct drm_crtc_state *crtc_state;
-+
-+	conn_state = drm_atomic_get_new_connector_state(state, &hdmi->connector);
-+	if (WARN_ON(!conn_state))
-+		return;
-+
-+	crtc_state = drm_atomic_get_new_crtc_state(state, conn_state->crtc);
-+	if (WARN_ON(!crtc_state))
-+		return;
+ 	struct drm_display_info *display = &hdmi->connector.display_info;
+-
+-	hdmi->hdmi_data.vic = drm_match_cea_mode(mode);
++	u8 vic = drm_match_cea_mode(mode);
  
-+	inno_hdmi_setup(hdmi, &crtc_state->adjusted_mode);
- 	inno_hdmi_set_pwr_mode(hdmi, NORMAL);
- }
+ 	hdmi->hdmi_data.enc_in_format = HDMI_COLORSPACE_RGB;
+ 	hdmi->hdmi_data.enc_out_format = HDMI_COLORSPACE_RGB;
  
-@@ -533,7 +534,6 @@ static struct drm_encoder_helper_funcs inno_hdmi_encoder_helper_funcs = {
- 	.atomic_check	= inno_hdmi_encoder_atomic_check,
- 	.atomic_enable	= inno_hdmi_encoder_enable,
- 	.atomic_disable	= inno_hdmi_encoder_disable,
--	.atomic_mode_set	= inno_hdmi_encoder_mode_set,
- };
- 
- static enum drm_connector_status
+-	if ((hdmi->hdmi_data.vic == 6) || (hdmi->hdmi_data.vic == 7) ||
+-	    (hdmi->hdmi_data.vic == 21) || (hdmi->hdmi_data.vic == 22) ||
+-	    (hdmi->hdmi_data.vic == 2) || (hdmi->hdmi_data.vic == 3) ||
+-	    (hdmi->hdmi_data.vic == 17) || (hdmi->hdmi_data.vic == 18))
++	if (vic == 6 || vic == 7 ||
++	    vic == 21 || vic == 22 ||
++	    vic == 2 || vic == 3 ||
++	    vic == 17 || vic == 18)
+ 		hdmi->hdmi_data.colorimetry = HDMI_COLORIMETRY_ITU_601;
+ 	else
+ 		hdmi->hdmi_data.colorimetry = HDMI_COLORIMETRY_ITU_709;
 -- 
 2.43.0
 
