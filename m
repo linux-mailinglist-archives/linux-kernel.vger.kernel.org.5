@@ -1,161 +1,230 @@
-Return-Path: <linux-kernel+bounces-9233-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9234-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C35B681C2A7
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 02:19:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36A6281C2AB
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 02:22:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7ABBB284569
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 01:19:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 68ACA1C221CA
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 01:21:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 159671371;
-	Fri, 22 Dec 2023 01:19:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85F4DA53;
+	Fri, 22 Dec 2023 01:21:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="R7vUQImb"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UZrGngBa"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13062A31;
-	Fri, 22 Dec 2023 01:19:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1d3ef33e68dso10083135ad.1;
-        Thu, 21 Dec 2023 17:19:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703207940; x=1703812740; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5M5AxMMQu0Viq3UcUmDsSmKqUHU9MnY6HuEjJ5YQdCY=;
-        b=R7vUQImbLUycPg6GsBRj317EkEtroZV+zuh4uFyFuFuTWjvlyLrT4aT5zjT1YMKLk2
-         64cvH4w9PjLIFlsLiegiNf/zo83iJ7vljxl1ADLJ+Rwk4AcZGrvrPU4BINmZOSV2DZK2
-         /q3XYIwlmKfUi9ZW0Y/DNXhfTvaenSRlhBlrXB+Ri3+DemR73T8J1eldZ30oRa1wdN/J
-         yhMbpxfFQRYRG2/KpKg0qFrebzbHfVQIRgHFBH91HL26zAxeqPOSIyi5XQg4i0joqbAk
-         i+iVd5ShUIe2A8exhpf3QhHDr6tGzj3BdOu1MKXhoTogyO/GwmsbFbDjDRhNdNP5eSG5
-         gHGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703207940; x=1703812740;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5M5AxMMQu0Viq3UcUmDsSmKqUHU9MnY6HuEjJ5YQdCY=;
-        b=NWzwcNxfcnc2PiXedSaFiRgoQXSzzlgwbJDYiTW8VckjjQHH+eZDFZwL/FSHCjJQKl
-         tiEj5VvXG6cy/slgLQTq06jvlFSulr+rd9tnsRtd14Yr7UyVONz7jM9NFUgZ2rvElhbd
-         Mut2MfsRuaFFG5t1FrWiF+N/2mk9X9xSFPIEbFfOA1mt/uQibJM2G5lB/q4we1ObsrUa
-         nFVdHaMtRni8QS4lrlaYBKRn6RY81rB1p3c1ccCz5zX617ShdORk1DuTXYFDZP1O4XJX
-         uorSsV2UCJ31n7UO/dOhr17KxtzWUoz0jvcpAcCgFMh1GsyY6n/7/kjutOK3nCcvmonT
-         pBlA==
-X-Gm-Message-State: AOJu0YwSEqTN7x6L04nHPEDAQoa4je8V3oc9apz5WkwPEj/gr2zCTDtZ
-	kAdRW9oJg/Wn3N2TOcqFJno=
-X-Google-Smtp-Source: AGHT+IHjrtiHpm/EyWpKjD6vMdthMirHzVcQzhGW9iiBKX/7IextBEWw66I9yaxLD+tYjd3p9XK4VA==
-X-Received: by 2002:a17:903:228d:b0:1d3:ea4f:5e0f with SMTP id b13-20020a170903228d00b001d3ea4f5e0fmr758747plh.29.1703207940079;
-        Thu, 21 Dec 2023 17:19:00 -0800 (PST)
-Received: from localhost ([121.167.227.144])
-        by smtp.gmail.com with ESMTPSA id g24-20020a170902fe1800b001cf59ad964asm2266239plj.140.2023.12.21.17.18.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Dec 2023 17:18:59 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Fri, 22 Dec 2023 10:18:57 +0900
-From: Tejun Heo <tj@kernel.org>
-To: Kees Cook <keescook@chromium.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Zefan Li <lizefan.x@bytedance.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Waiman Long <longman@redhat.com>, cgroups@vger.kernel.org,
-	Azeem Shaikh <azeemshaikh38@gmail.com>,
-	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v3 3/3] kernfs: Convert kernfs_path_from_node_locked()
- from strlcpy() to strscpy()
-Message-ID: <ZYTkAV-CE3ZslR7U@mtj.duckdns.org>
-References: <20231212211606.make.155-kees@kernel.org>
- <20231212211741.164376-3-keescook@chromium.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC83017C2;
+	Fri, 22 Dec 2023 01:21:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66F37C433C8;
+	Fri, 22 Dec 2023 01:21:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703208113;
+	bh=NyoPIEVyRa8tWludrgC4X0lHlJeOs+4No+Ye6yr7bSk=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=UZrGngBaQYTzynCy+27xDvzHbS/z0OnScRJuJS7tDMfuwrLlOA51VO+kC5aQWqG6z
+	 Q8ZAMcGi20Y85mkXARFh5helUw16tLH5cv/3gI8ykyPbpvmereB2JOTBen9Ct2X2WC
+	 XCgyrpYjmewisdWcLoM7TrqU1CVsvMSI+Rf1SwulDElMKaLDV7SiKFEq88aXSDjdSB
+	 BmrU4RcXLv/CsvjDgc7Xb1EPMTu6jGN1I1xeF0LQ8ngob6YixRDBrdjxzysJVdwoR1
+	 eRQF8B0Ejyzvp0k7wUYnK3MXm2IKyviNZsI2ATsnxq8blbVKVUgRzpbc3OA/1qIJe3
+	 p+fTMuHV0V1GA==
+Date: Fri, 22 Dec 2023 10:21:48 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
+ <linux-trace-kernel@vger.kernel.org>, Masami Hiramatsu
+ <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Mathieu
+ Desnoyers <mathieu.desnoyers@efficios.com>, Linus Torvalds
+ <torvalds@linux-foundation.org>, Shuah Khan <shuah@kernel.org>, Linux
+ selftests <linux-kselftest@vger.kernel.org>
+Subject: Re: [PATCH v2] tracing/selftests: Add ownership modification tests
+ for eventfs
+Message-Id: <20231222102148.2aa3863d7c11f3928549335a@kernel.org>
+In-Reply-To: <20231221194516.53e1ee43@gandalf.local.home>
+References: <20231221194516.53e1ee43@gandalf.local.home>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231212211741.164376-3-keescook@chromium.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Hello,
+Hi Steve,
 
-On Tue, Dec 12, 2023 at 01:17:40PM -0800, Kees Cook wrote:
-...
-> @@ -127,7 +127,7 @@ static struct kernfs_node *kernfs_common_ancestor(struct kernfs_node *a,
->   *
->   * [3] when @kn_to is %NULL result will be "(null)"
->   *
-> - * Return: the length of the full path.  If the full length is equal to or
-> + * Return: the length of the constructed path.  If the path would have been
->   * greater than @buflen, @buf contains the truncated path with the trailing
->   * '\0'.  On error, -errno is returned.
->   */
-...
->  	/* Calculate how many bytes we need for the rest */
+On Thu, 21 Dec 2023 19:45:16 -0500
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-We probably should drop this comment.
+> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+> 
+> As there were bugs found with the ownership of eventfs dynamic file
+> creation. Add a test to test it.
+> 
+> It will remount tracefs with a different gid and check the ownership of
+> the eventfs directory, as well as the system and event directories. It
+> will also check the event file directories.
+> 
+> It then does a chgrp on each of these as well to see if they all get
+> updated as expected.
+> 
+> Then it remounts the tracefs file system back to the original group and
+> makes sure that all the updated files and directories were reset back to
+> the original ownership.
+> 
+> It does the same for instances that change the ownership of he instance
+> directory.
+> 
+> Note, because the uid is not reset by a remount, it is tested for every
+> file by switching it to a new owner and then back again.
+> 
 
->  	for (i = depth_to - 1; i >= 0; i--) {
->  		for (kn = kn_to, j = 0; j < i; j++)
->  			kn = kn->parent;
-> -		len += strlcpy(buf + len, "/",
-> -			       len < buflen ? buflen - len : 0);
-> -		len += strlcpy(buf + len, kn->name,
-> -			       len < buflen ? buflen - len : 0);
+The testcase itself is OK but is there any way to identify the system
+supports eventfs or not? I ran this test on v6.5.13 for checking then
+it failed. We may need to skip (unsupported) this test for such case.
+
+Thank you,
+
+> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+> ---
+> Changes since v1: https://lore.kernel.org/linux-trace-kernel/20231221193551.13a0b7bd@gandalf.local.home
+> 
+> - Fixed a cut and paste error of using $original_group for finding another uid
+> 
+>  .../ftrace/test.d/00basic/test_ownership.tc   | 113 ++++++++++++++++++
+>  1 file changed, 113 insertions(+)
+>  create mode 100755 tools/testing/selftests/ftrace/test.d/00basic/test_ownership.tc
+> 
+> diff --git a/tools/testing/selftests/ftrace/test.d/00basic/test_ownership.tc b/tools/testing/selftests/ftrace/test.d/00basic/test_ownership.tc
+> new file mode 100755
+> index 000000000000..83cbd116d06b
+> --- /dev/null
+> +++ b/tools/testing/selftests/ftrace/test.d/00basic/test_ownership.tc
+> @@ -0,0 +1,113 @@
+> +#!/bin/sh
+> +# description: Test file and directory owership changes for eventfs
 > +
-> +		len += scnprintf(buf + len, buflen - len, "/%s", kn->name);
+> +original_group=`stat -c "%g" .`
+> +original_owner=`stat -c "%u" .`
+> +
+> +mount_point=`stat -c '%m' .`
+> +mount_options=`mount | grep "$mount_point" | sed -e 's/.*(\(.*\)).*/\1/'`
+> +
+> +# find another owner and group that is not the original
+> +other_group=`tac /etc/group | grep -v ":$original_group:" | head -1 | cut -d: -f3`
+> +other_owner=`tac /etc/passwd | grep -v ":$original_owner:" | head -1 | cut -d: -f3`
+> +
+> +# Remove any group ownership already
+> +new_options=`echo "$mount_options" | sed -e "s/gid=[0-9]*/gid=$other_group/"`
+> +
+> +if [ "$new_options" = "$mount_options" ]; then
+> +	new_options="$mount_options,gid=$other_group"
+> +	mount_options="$mount_options,gid=$original_group"
+> +fi
+> +
+> +canary="events/timer events/timer/timer_cancel events/timer/timer_cancel/format"
+> +
+> +test() {
+> +	file=$1
+> +	test_group=$2
+> +
+> +	owner=`stat -c "%u" $file`
+> +	group=`stat -c "%g" $file`
+> +
+> +	echo "testing $file $owner=$original_owner and $group=$test_group"
+> +	if [ $owner -ne $original_owner ]; then
+> +		exit_fail
+> +	fi
+> +	if [ $group -ne $test_group ]; then
+> +		exit_fail
+> +	fi
+> +
+> +	# Note, the remount does not update ownership so test going to and from owner
+> +	echo "test owner $file to $other_owner"
+> +	chown $other_owner $file
+> +	owner=`stat -c "%u" $file`
+> +	if [ $owner -ne $other_owner ]; then
+> +		exit_fail
+> +	fi
+> +
+> +	chown $original_owner $file
+> +	owner=`stat -c "%u" $file`
+> +	if [ $owner -ne $original_owner ]; then
+> +		exit_fail
+> +	fi
+> +
+> +}
+> +
+> +run_tests() {
+> +	for d in "." "events" "events/sched" "events/sched/sched_switch" "events/sched/sched_switch/enable" $canary; do
+> +		test "$d" $other_group
+> +	done
+> +
+> +	chgrp $original_group events
+> +	test "events" $original_group
+> +	for d in "." "events/sched" "events/sched/sched_switch" "events/sched/sched_switch/enable" $canary; do
+> +		test "$d" $other_group
+> +	done
+> +
+> +	chgrp $original_group events/sched
+> +	test "events/sched" $original_group
+> +	for d in "." "events/sched/sched_switch" "events/sched/sched_switch/enable" $canary; do
+> +		test "$d" $other_group
+> +	done
+> +
+> +	chgrp $original_group events/sched/sched_switch
+> +	test "events/sched/sched_switch" $original_group
+> +	for d in "." "events/sched/sched_switch/enable" $canary; do
+> +		test "$d" $other_group
+> +	done
+> +
+> +	chgrp $original_group events/sched/sched_switch/enable
+> +	test "events/sched/sched_switch/enable" $original_group
+> +	for d in "." $canary; do
+> +		test "$d" $other_group
+> +	done
+> +}
+> +
+> +mount -o remount,"$new_options" .
+> +
+> +run_tests
+> +
+> +mount -o remount,"$mount_options" .
+> +
+> +for d in "." "events" "events/sched" "events/sched/sched_switch" "events/sched/sched_switch/enable" $canary; do
+> +	test "$d" $original_group
+> +done
+> +
+> +# check instances as well
+> +
+> +chgrp $other_group instances
+> +
+> +instance="foo-$(mktemp -u XXXXX)"
+> +
+> +mkdir instances/$instance
+> +
+> +cd instances/$instance
+> +
+> +run_tests
+> +
+> +cd ../..
+> +
+> +rmdir instances/$instance
+> +
+> +chgrp $original_group instances
+> +
+> +exit 0
+> -- 
+> 2.42.0
+> 
+> 
 
-scnprintf doesn't return -E2BIG on overflow, right? It just returns the
-truncated length, so the overflow behavior would be different depending on
-where this function overflows, right? Not a huge problem but it may be
-better to keep calling strscpy to keep things consistent?
-
-> --- a/kernel/cgroup/cgroup.c
-> +++ b/kernel/cgroup/cgroup.c
-> @@ -1893,7 +1893,7 @@ int cgroup_show_path(struct seq_file *sf, struct kernfs_node *kf_node,
->  	len = kernfs_path_from_node(kf_node, ns_cgroup->kn, buf, PATH_MAX);
->  	spin_unlock_irq(&css_set_lock);
->  
-> -	if (len >= PATH_MAX)
-> +	if (len == -E2BIG)
->  		len = -ERANGE;
-
-I'd just pass up -E2BIG.
-
->  	else if (len > 0) {
->  		seq_escape(sf, buf, " \t\n\\");
-> @@ -6301,7 +6301,7 @@ int proc_cgroup_show(struct seq_file *m, struct pid_namespace *ns,
->  		if (cgroup_on_dfl(cgrp) || !(tsk->flags & PF_EXITING)) {
->  			retval = cgroup_path_ns_locked(cgrp, buf, PATH_MAX,
->  						current->nsproxy->cgroup_ns);
-> -			if (retval >= PATH_MAX)
-> +			if (retval == -E2BIG)
->  				retval = -ENAMETOOLONG;
-
-Ditto.
-
-> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index 615daaf87f1f..fb29158ae825 100644
-> --- a/kernel/cgroup/cpuset.c
-> +++ b/kernel/cgroup/cpuset.c
-> @@ -4941,7 +4941,7 @@ int proc_cpuset_show(struct seq_file *m, struct pid_namespace *ns,
->  	retval = cgroup_path_ns(css->cgroup, buf, PATH_MAX,
->  				current->nsproxy->cgroup_ns);
->  	css_put(css);
-> -	if (retval >= PATH_MAX)
-> +	if (retval == -E2BIG)
-
-Ditto.
-
-Thanks.
 
 -- 
-tejun
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
