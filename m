@@ -1,55 +1,55 @@
-Return-Path: <linux-kernel+bounces-10078-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10079-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C3D081CFBF
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 23:21:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B8A681CFC1
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 23:23:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 305581C22B4C
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 22:21:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 60102B211F2
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 22:23:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 991EC2F844;
-	Fri, 22 Dec 2023 22:21:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 038902F845;
+	Fri, 22 Dec 2023 22:23:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="iMQn1FTr"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="B25jCCsg"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
+Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98BCE2EB0E
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 22:21:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C0382FC2E
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 22:23:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-5d2d0661a8dso24004727b3.2
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 14:21:46 -0800 (PST)
+Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-5e784ce9bb8so18850367b3.0
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 14:23:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1703283705; x=1703888505; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1703283787; x=1703888587; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=G4TYuyMVVFBv/5d5uEIDyQ93KWASjprBwJ7UzWDp5l4=;
-        b=iMQn1FTr2YSiJYso89napnpPHsKTiQnHB1W8eKQeAGyYH6SwBgz0xzI2kX99+oMRT0
-         NQTzom2u71UD78ujsHdADD+2nzRlfej0ywE1S7py/kq7dVBL/cfZvG2BMFKw3yzM8w8Q
-         f9cowlIedk6HgafHxt+3tLnqaRQfE79M8iPrA=
+        bh=gfhVqE6PywI59kitxuraVSFK4Xjyt3t9xe0U5Ctj/oU=;
+        b=B25jCCsg4fq5NjWci0QNQXsdTY1hzxtOTd0VBeDUHP4ngIQg7IiPXZ5nEi8G1V3U5U
+         zeB5vq4q0j0fM8J4zuPUrIzhYJhVD4e9z0j3uQh8h0aBgjLIDLJVSBn9Ei+Yais+8zey
+         HOyq09A4chBJzo+8147j6/uW1n7m4rjVRTcoc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703283705; x=1703888505;
+        d=1e100.net; s=20230601; t=1703283787; x=1703888587;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=G4TYuyMVVFBv/5d5uEIDyQ93KWASjprBwJ7UzWDp5l4=;
-        b=cBfh0WDXcq9ibG2XNXXdl6/wxVqYxY75McNDYt7ShH+NChrOHjZ7FMf5pyWqX/vEmn
-         0kJ4Cj+cqaUIQOdTk+/81yRszavnB4gxJf3tt8wPk75IrAZSEvNYY9EcCDOcxJI7X1Lu
-         NUl0oOTbbgbeJwqL8xkwopPGW5DRiZaYiII0s9aj3Ab9jPwD3umPjXufs332BdTZNRAs
-         qhnI7FQiVrp4aZ3+YL97RTpk75OOHFKIFG/zm8I/eevALvCz9jEGBkTJGwWGBcw787eQ
-         MQvQVl4hj9gQyNpDf4vYZ/adKhI8c+D8BoZqtAgGMojDLz5cjSO5WfGv5Ybso5CDNwrm
-         x1pA==
-X-Gm-Message-State: AOJu0Yz124ldHd8XX3+N8Tcq3aF6NnQr7qNihnKsn9E5naGjTGUYlto+
-	6q9OSpRS8VnwXbW7boEgRrcfmzY+5MjhdBl1IA6Q2bgC548r
-X-Google-Smtp-Source: AGHT+IGkjz6Odo4CLWpg8zVwNYsU50f9HSYjCqJ/gKsU7KxypayB+myzZoHbRluSbDRI6RfCfovlRKor0RUO0yKux0Y=
-X-Received: by 2002:a0d:c383:0:b0:5d8:e267:78e5 with SMTP id
- f125-20020a0dc383000000b005d8e26778e5mr2182094ywd.61.1703283705579; Fri, 22
- Dec 2023 14:21:45 -0800 (PST)
+        bh=gfhVqE6PywI59kitxuraVSFK4Xjyt3t9xe0U5Ctj/oU=;
+        b=L/20SyTsmGuEIu7rgTK8ahCRYgF9RDZ4xYbMaCKhahx0L7s+Y04EwmUB0MCuGlzD9Q
+         zp1BaDpfDSn8e4CivGgxMYcnD8A0enP1fUlRazSzZki9ayUcAYtXC8jABKf0gw6B6DNc
+         7T90uK4DuSmF8zyhfFY3wNg18/puwC3DGgkSZ8pQHta0CmYJHEl8Rp7aUicXKCu+clW5
+         dbSmMoD1MIVOX8Jts+0fyJXvVn2igks37rDUC/pfrU4N426o8h6aOG3IMpNwhgeUgReL
+         7svzuJyiv2WSXNHk3yFs997FnrRqMgD2F1Z0OJOS6K9Woxy2K4oGjf2Bjro17HBeB07Q
+         B7Fw==
+X-Gm-Message-State: AOJu0YzmsTALlEO2aqwFonpU7wnxzqBWzvpiP4FCAuxBH6wTXV8fwS4Y
+	S7pZzQKxu28+0Ej9h60eGsL89ml4qrgEIPHyIOaG3hGp5/yG
+X-Google-Smtp-Source: AGHT+IGnklybkwz8AzG5KTZoC2vAHrEy7lPgcjnDbmjp8QDtLU3J89D71Xz4NVj3OS+l++HEweT1D4kZ9FKcDRSvjj8=
+X-Received: by 2002:a05:690c:a15:b0:5ea:3c8d:40dd with SMTP id
+ cg21-20020a05690c0a1500b005ea3c8d40ddmr1028354ywb.0.1703283787197; Fri, 22
+ Dec 2023 14:23:07 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -57,140 +57,33 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20231220235459.2965548-1-markhas@chromium.org>
- <20231220165423.v2.22.Ieee574a0e94fbaae01fd6883ffe2ceeb98d7df28@changeid> <ZYRdjHVgES1odZAQ@smile.fi.intel.com>
-In-Reply-To: <ZYRdjHVgES1odZAQ@smile.fi.intel.com>
+ <20231220165423.v2.17.I29b26a7f3b80fac0a618707446a10b6cc974fdaf@changeid> <ZYRY8ypZ1cYNRMcP@smile.fi.intel.com>
+In-Reply-To: <ZYRY8ypZ1cYNRMcP@smile.fi.intel.com>
 From: Mark Hasemeyer <markhas@chromium.org>
-Date: Fri, 22 Dec 2023 15:21:34 -0700
-Message-ID: <CANg-bXAgiMB2Q_fHOc_BBm4pRXdVveu-Rs6uZrLCAjkzaBYm4w@mail.gmail.com>
-Subject: Re: [PATCH v2 22/22] platform/chrome: cros_ec: Use PM subsystem to
- manage wakeirq
+Date: Fri, 22 Dec 2023 15:22:56 -0700
+Message-ID: <CANg-bXBvjHpxd2-ondCw5+oZGdi-ehdErTqTmw_5SJgtDqc9aA@mail.gmail.com>
+Subject: Re: [PATCH v2 17/22] of: irq: add wake capable bit to of_irq_resource()
 To: Andy Shevchenko <andriy.shevchenko@intel.com>
 Cc: LKML <linux-kernel@vger.kernel.org>, 
 	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
 	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Tzung-Bi Shih <tzungbi@kernel.org>, 
 	Raul Rangel <rrangel@chromium.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
 	Rob Herring <robh@kernel.org>, Sudeep Holla <sudeep.holla@arm.com>, 
-	Benson Leung <bleung@chromium.org>, Bhanu Prakash Maiya <bhanumaiya@chromium.org>, 
-	Chen-Yu Tsai <wenst@chromium.org>, Guenter Roeck <groeck@chromium.org>, Lee Jones <lee@kernel.org>, 
-	Prashant Malani <pmalani@chromium.org>, Rob Barnes <robbarnes@google.com>, 
-	Stephen Boyd <swboyd@chromium.org>, chrome-platform@lists.linux.dev
+	Frank Rowand <frowand.list@gmail.com>, Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-> > +     irq = platform_get_irq_resource_optional(pdev, 0, &irqres);
-> > +     if (irq > 0) {
-> >               ec_dev->irq = irq;
-> > -     else if (irq != -ENXIO) {
-> > +             if (cros_ec_should_force_irq_wake_capable())
-> > +                     irq_wake = true;
-> > +             else
-> > +                     irq_wake = irqres.flags & IORESOURCE_IRQ_WAKECAPABLE;
-> > +             dev_dbg(dev, "IRQ: %i, wake_capable: %i\n", irq, irq_wake);
-> > +     } else if (irq != -ENXIO) {
-> >               dev_err(dev, "couldn't retrieve IRQ number (%d)\n", irq);
-> >               return irq;
-> >       }
+> Or even refactor ioport.h (in a separate patch) as we seems already have
+> two users (and might be more in the existing code):
 >
-> Yeah, this is confusing now. Which one should I trust more: irq or irqres.start?
-> What is the point to have irqres with this duplication?
-
-irqres is needed to pull the wake capability of the irq. I agree tha
-irq and irqres.start should have the same information. I chose irq
-because it's more obvious what it represents over irqres.start. It's
-also more concise.
-
+> #define DEFINE_RES_IRQ_NAMED_FLAGS(_irq, _name, _flags)                 \
+>         DEFINE_RES_NAMED((_irq), 1, (_name), (_flags) | IORESOURCE_IRQ)
+> #define DEFINE_RES_IRQ_NAMED(_irq, _name)                               \
+>         DEFINE_RES_IRQ_NAMED_FLAGS((_irq), (_name), 0)
+> #define DEFINE_RES_IRQ(_irq)                                            \
+>         DEFINE_RES_IRQ_NAMED((_irq), NULL)
 >
-> ...
->
-> > -             dev_err(dev, "couldn't register ec_dev (%d)\n", ret);
-> > +             dev_err_probe(dev, ret, "couldn't register ec_dev (%d)\n", ret);
-> >               return ret;
->
->                 return dev_err_probe(...);
->
-> ...
->
-> > +                     dev_err_probe(dev, ret, "Failed to init device for wakeup");
-> > +                     return ret;
->
+> (Note, I will Ack such a patch once it appears.)
 
-Tzung-Bi pointed out there are other areas of the driver that just use
-dev_err() in the probe path. My vote is to drop the use of
-dev_err_probe() to stay consistent with what exists. A separate patch
-can be sent to modify the statements to use the
-dev_err_probe() variant.
-
->
-> ...
->
-> > +     if (!np)
-> > +             return;
->
-> Why do you need this now?
-
-It felt intuitive to return early from cros_ec_spi_dt_probe() if no
-device node exists. This does not fix any known bugs though. Dropping
-as irrelevant.
-
-> >       ret = of_property_read_u32(np, "google,cros-ec-spi-msg-delay", &val);
-> >       if (!ret)
-> >               ec_spi->end_of_msg_delay = val;
->
-> > +     if (ec_dev->irq > 0 && of_property_read_bool(np, "wakeup-source")) {
-> > +             ec_spi->irq_wake = true;
-> > +             dev_dbg(&spi->dev, "IRQ: %i, wake_capable: %i\n", ec_dev->irq, ec_spi->irq_wake);
-> > +     }
->
->         if (ret)
->                 return;
->
->         ec_spi->irq_wake = of_property_read_bool(np, "wakeup-source"));
-
-The other interface drivers only analyze irq_wake if an irq exists. I
-think that makes sense and would like to stay consistent.
-Thinking:
-ec_spi->irq_wake = spi->irq > 0 && of_property_read_bool(np, "wakeup-source"));
-
->         dev_dbg(&spi->dev, "IRQ: %i, wake_capable: %s\n", ec_dev->irq, str_yes_no(ec_spi->irq_wake));
-
-> ...
->
-> > @@ -78,6 +80,7 @@ struct cros_ec_uart {
-> >       u32 baudrate;
-> >       u8 flowcontrol;
-> >       u32 irq;
-> > +     bool irq_wake;
-> >       struct response_info response;
-> >  };
->
-> Run `pahole` and amend respectively to avoid wasting memory.
-
-No savings to be had, but we can defrag the holes from sizes 3 and 3,
-to 2 and 4 by moving irq_wake above irq.
-
-pahole --reorganize -C cros_ec_uart cros_ec_uart.o
-
-struct cros_ec_uart {
-        struct serdev_device *     serdev;               /*     0     8 */
-        u32                        baudrate;             /*     8     4 */
-        u8                         flowcontrol;          /*    12     1 */
-        bool                       irq_wake;             /*    13     1 */
-
-        /* XXX 2 bytes hole, try to pack */
-
-        u32                        irq;                  /*    16     4 */
-
-        /* XXX 4 bytes hole, try to pack */
-
-        struct response_info       response;             /*    24    64 */
-
-        /* size: 88, cachelines: 2, members: 6 */
-        /* sum members: 82, holes: 2, sum holes: 6 */
-        /* last cacheline: 24 bytes */
-};
-
-> > +     dev_dbg(dev, "IRQ: %i, wake_capable: %i\n", ec_uart->irq, ec_uart->irq_wake);
->
-> str_yes_no() from string_choices.h?
-
-SGTM
+I'll add a new patch to the series. I'll probably include the MEM, IO,
+and RES variants as well.
 
