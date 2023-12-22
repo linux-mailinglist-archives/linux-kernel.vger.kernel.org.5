@@ -1,107 +1,232 @@
-Return-Path: <linux-kernel+bounces-9556-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9568-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D804C81C77A
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 10:43:20 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 05E2681C7A8
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 10:54:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 67EF02877EF
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 09:43:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 67E6DB224EF
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 09:54:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A3D618031;
-	Fri, 22 Dec 2023 09:42:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Qx1lMB+o";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Jt2xIxUh"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E82717989;
+	Fri, 22 Dec 2023 09:53:16 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 106B418035
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 09:42:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1703238171;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6Hqka5/XeRCziVLv9/ClXGIkKphpoNKzRFwTvx7g4hc=;
-	b=Qx1lMB+oCRUynMajzNhHP5UsjvZ3BtFH8XtzXQzMHpb2YSy06ROsCpB6BFbfxNifJiBK3y
-	748srbaVn+QWiLTwnp5jy1OGNIMr0YKyVYbVDxZb+y75VNwNfFpiZrsHnqwvEOeG6VvlZn
-	B5XUlQ/BmHBu8q5xn4cqvecyIST26zivMPA25bbbUz0PwT0/J5m6y8SxYQ0mVq04/qz1VY
-	HTBrgW7tecxvKcDDR1h89N9MH8f86y65rrGVV6K5qDR0wAO+bHCg9+7//Xjfx4evKCWcTd
-	z5DRarfC/g1i1fm1KrrDNd5Yi+oNzgb+1m9dxMuuEOyKXGBGSzY0G2AGRSFfSA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1703238171;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6Hqka5/XeRCziVLv9/ClXGIkKphpoNKzRFwTvx7g4hc=;
-	b=Jt2xIxUhmRcgCfnNHSqsRDXAK+0AMaFSJwHjbDc+jrnaCQc7Mwt3cy22kMRbGyafYno9px
-	wX+rmh5Xv6JtYfDg==
-To: Douglas Anderson <dianders@chromium.org>, Andrew Morton
- <akpm@linux-foundation.org>
-Cc: Petr Mladek <pmladek@suse.com>, Li Zhe <lizhe.67@bytedance.com>, Pingfan
- Liu <kernelfans@gmail.com>, Lecopzer Chen <lecopzer.chen@mediatek.com>,
- Douglas Anderson <dianders@chromium.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/4] watchdog/hardlockup: Use
- printk_cpu_sync_get_irqsave() to serialize reporting
-In-Reply-To: <20231220131534.3.I6ff691b3b40f0379bc860f80c6e729a0485b5247@changeid>
-References: <20231220211640.2023645-1-dianders@chromium.org>
- <20231220131534.3.I6ff691b3b40f0379bc860f80c6e729a0485b5247@changeid>
-Date: Fri, 22 Dec 2023 10:48:49 +0106
-Message-ID: <87h6kak1ye.fsf@jogness.linutronix.de>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A377D17735;
+	Fri, 22 Dec 2023 09:53:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
+Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
+	by fd01.gateway.ufhost.com (Postfix) with ESMTP id 1A6627FDC;
+	Fri, 22 Dec 2023 17:53:12 +0800 (CST)
+Received: from EXMBX061.cuchost.com (172.16.6.61) by EXMBX165.cuchost.com
+ (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Fri, 22 Dec
+ 2023 17:53:11 +0800
+Received: from [192.168.125.131] (113.72.145.47) by EXMBX061.cuchost.com
+ (172.16.6.61) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Fri, 22 Dec
+ 2023 17:53:11 +0800
+Message-ID: <ed66f0bb-69c7-4b00-9688-05a5102212e9@starfivetech.com>
+Date: Fri, 22 Dec 2023 17:44:48 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 1/2] dt-bindings: ASoC: Add Cadence I2S controller for
+ StarFive JH8100 SoC
+Content-Language: en-US
+To: Conor Dooley <conor@kernel.org>
+CC: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+	Claudiu Beznea <Claudiu.Beznea@microchip.com>, Jaroslav Kysela
+	<perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Rob Herring
+	<robh+dt@kernel.org>, Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
+	<conor.dooley@microchip.com>, Walker Chen <walker.chen@starfivetech.com>,
+	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>
+References: <20231221033223.73201-1-xingyu.wu@starfivetech.com>
+ <20231221033223.73201-2-xingyu.wu@starfivetech.com>
+ <20231221-saddlebag-tricolor-d02a17d66795@spud>
+From: Xingyu Wu <xingyu.wu@starfivetech.com>
+In-Reply-To: <20231221-saddlebag-tricolor-d02a17d66795@spud>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: EXCAS066.cuchost.com (172.16.6.26) To EXMBX061.cuchost.com
+ (172.16.6.61)
+X-YovoleRuleAgent: yovoleflag
 
-On 2023-12-20, Douglas Anderson <dianders@chromium.org> wrote:
-> The interleaving problem was less bad with the "buddy" hardlockup
-> detector. With "buddy" we always end up calling
-> `trigger_single_cpu_backtrace(cpu)` on some CPU other than the running
-> one. trigger_single_cpu_backtrace() always at least serializes the
-> individual stack crawls because it eventually uses
-> printk_cpu_sync_get_irqsave(). Unfortunately the fact that
-> trigger_single_cpu_backtrace() eventually calls
-> printk_cpu_sync_get_irqsave() (on a different CPU) means that we have
-> to drop the "lock" before calling it and we can't fully serialize all
-> printouts associated with a given hardlockup.
+On 2023/12/21 21:53, Conor Dooley wrote:
+> Xingyu, Mark,
+> 
+> On Thu, Dec 21, 2023 at 11:32:22AM +0800, Xingyu Wu wrote:
+>> Add bindings for the Multi-Channel I2S controller of Cadence
+>> on the StarFive JH8100 SoC.
+>> 
+>> Signed-off-by: Xingyu Wu <xingyu.wu@starfivetech.com>
+>> ---
+>>  .../bindings/sound/cdns,jh8100-i2s.yaml       | 100 ++++++++++++++++++
+>>  1 file changed, 100 insertions(+)
+>>  create mode 100644 Documentation/devicetree/bindings/sound/cdns,jh8100-i2s.yaml
+>> 
+>> diff --git a/Documentation/devicetree/bindings/sound/cdns,jh8100-i2s.yaml b/Documentation/devicetree/bindings/sound/cdns,jh8100-i2s.yaml
+>> new file mode 100644
+>> index 000000000000..5d95d9ab3e45
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/sound/cdns,jh8100-i2s.yaml
+>> @@ -0,0 +1,100 @@
+>> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/sound/cdns,jh8100-i2s.yaml#
+> 
+> Filename matching the compatible please.
 
-I think that is good enough. Otherwise there would need to be some kind
-of CPU handshaking to ensure things are synchronized correctly in case
-multiple CPUs have triggered the situation.
+Noted.
 
-> However, we still do get
-> the advantage of serializing the output of print_modules() and
-> print_irqtrace_events().
->
-> Aside from serializing hardlockups from each other, this change also
-> has the advantage of serializing hardlockups and softlockups from each
-> other if they happen to happen at the same time since they are both
-> using the same "lock".
->
-> Even though nobody is expected to hang while holding the lock
-> associated with printk_cpu_sync_get_irqsave(), out of an abundance of
-> caution, we don't call printk_cpu_sync_get_irqsave() until after we
-> print out about the hardlockup. This makes extra sure that, even if
-> printk_cpu_sync_get_irqsave() somehow never runs we at least print
-> that we saw the hardlockup.
+> 
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: Cadence multi-channel I2S controller for StarFive JH8100 SoC
+>> +
+>> +description: |
+> 
+> You only need the | if there is formatting to preserve.
 
-I agree with calling printk() before trying to acquire ownership of the
-cpu_sync.
+Will drop.
 
-> This is different than the choice made for
-> softlockup because hardlockup is really our last resort.
->
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> 
+>> +  The Cadence I2S Controller implements a function of the multi-channel
+>> +  (up to 8-channel) bus. It combines functions of a transmitter and a receiver.
+>> +  It is used in the StarFive JH8100 SoC.
+>> +
+>> +maintainers:
+>> +  - Xingyu Wu <xingyu.wu@starfivetech.com>
+>> +  - Walker Chen <walker.chen@starfivetech.com>
+>> +
+>> +properties:
+>> +  compatible:
+>> +    const: starfive,jh8100-i2s
+>> +
+>> +  reg:
+>> +    maxItems: 1
+>> +
+>> +  interrupts:
+>> +    description: |
+>> +      The interrupt line number for the I2S controller. Add this
+>> +      parameter if the I2S controller that you are using does not
+>> +      support DMA.
+> 
+> You've got one i2s controller here, you should know if it supports DMA
+> or not.
 
-Reviewed-by: John Ogness <john.ogness@linutronix.de>
+The I2S already supports interrupt handler, but if the SoC supports DMA controller to be use, it can optionally use DMA.
+
+> 
+>> +    maxItems: 1
+>> +
+>> +  clocks:
+>> +    items:
+>> +      - description: Bit clock
+>> +      - description: Main ICG clock
+>> +      - description: Inner master clock
+>> +
+>> +  clock-names:
+>> +    items:
+>> +      - const: bclk
+>> +      - const: icg
+>> +      - const: mclk_inner
+>> +
+>> +  resets:
+>> +    maxItems: 1
+>> +
+>> +  dmas:
+>> +    items:
+>> +      - description: TX DMA Channel
+>> +      - description: RX DMA Channel
+>> +    minItems: 1
+>> +
+>> +  dma-names:
+>> +    items:
+>> +      - const: tx
+>> +      - const: rx
+>> +    minItems: 1
+>> +
+>> +  cdns,i2s-max-channels:
+>> +    description: |
+>> +      Number of I2S max stereo channels supported by the hardware.
+>> +    $ref: /schemas/types.yaml#/definitions/uint32
+>> +    minimum: 1
+>> +    maximum: 8
+> 
+> Mark, is there no common property for this kind of thing? That said,
+> there's one device here so the number is known at present.
+> Another note, this property is not required, so it should have a
+> default.
+> 
+> It's kinda hard to know with this binding - it is touted as being for a
+> particular Cadence IP, and some aspects are pretty generic, but at the
+> same time there's only one device here so it's hard to tell what is
+> variable between implementations and what is not.
+> Are there no other implementations of this controller? Unless it is
+> brand new, I find that hard to believe.
+> 
+> Cheers,
+> Conor.
+> 
+ 
+Sorry, It does not seem to be common property. The Cadence I2S supports 8 channels. There are four I2S controllers on the JH8100 SoC, and two of them just provide 4 channels to use, one of them just provide 2 channels.
+It seems to depend on the SoC.
+
+Thanks,
+Xingyu Wu
+
+>> +
+>> +  "#sound-dai-cells":
+>> +    const: 0
+>> +
+>> +required:
+>> +  - compatible
+>> +  - reg
+>> +  - clocks
+>> +  - clock-names
+>> +  - resets
+>> +
+>> +oneOf:
+>> +  - required:
+>> +      - dmas
+>> +      - dma-names
+>> +  - required:
+>> +      - interrupts
+>> +
+>> +unevaluatedProperties: false
+>> +
+>> +examples:
+>> +  - |
+>> +    i2s@122b0000 {
+>> +      compatible = "starfive,jh8100-i2s";
+>> +      reg = <0x122b0000 0x1000>;
+>> +      clocks = <&syscrg_ne 133>,
+>> +               <&syscrg_ne 170>,
+>> +               <&syscrg 50>;
+>> +      clock-names = "bclk", "icg",
+>> +                    "mclk_inner";
+>> +      resets = <&syscrg_ne 43>;
+>> +      dmas = <&dma 7>, <&dma 6>;
+>> +      dma-names = "tx", "rx";
+>> +      cdns,i2s-max-channels = <2>;
+>> +      #sound-dai-cells = <0>;
+>> +    };
+>> -- 
+>> 2.25.1
+>> 
+>> 
+
 
