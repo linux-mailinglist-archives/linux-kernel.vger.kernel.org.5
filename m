@@ -1,24 +1,24 @@
-Return-Path: <linux-kernel+bounces-10134-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10133-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 30B9681D0A5
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 00:54:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5FCA681D0A4
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 00:53:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 626971C2216F
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 23:53:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9204D1C214B4
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 23:53:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0A7F41841;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4829B3B293;
 	Fri, 22 Dec 2023 23:52:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dDsZjT6T"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="WuGeY3jL"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A962D3B796
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30E233B19D
 	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 23:52:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
@@ -27,27 +27,27 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   t=1703289148; x=1734825148;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=7MgS2tz+eXb3t+LyzYLE/xkq/zAhJTq68EvRtEFLASY=;
-  b=dDsZjT6TgC0iQHee3fQ3xec2LujX+LzK/UyK4DNuorUAqxuO9V/Vs336
-   ETGSZr2y6qOB7uhzDPYgaNQ9mWBg8JtFvvhK4aNH1TOKg+4HhQDTKz1R5
-   zeibiGvQxuAQeX8wqPN6BI9UI6PZhnTX5zCP1xq3T0w9jnSz7/KFtKfbx
-   QC8AKBZQSDzcxLXVubqt8cyPI9/2AxaZyMLfjmg7CjtQ659qQee96ud5b
-   XxkpAK3h/81dt3UhTAJfTm4gNsj6QFMILWvpl+1AxSISCNwpq3ZQZnPZz
-   /9ZMoWYxTSG4UFI4+KaZ2Rbij0fR5+c7eQn0HPkK7qDk/reOwzRBJSgNp
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10932"; a="395063311"
+  bh=JV7Vomm3hL/vDYDiUsjcPKFfbqW2xkr31p+WaTWWLWA=;
+  b=WuGeY3jLHxg6Cn3fG2lMkuIx2wt8J48/9lc8yXrXM5yZQEvidEP5Kgjv
+   LKlxfCYbUleZmrXNipBKAmvEIk0s0gBVJgVxeL7Ukn5NEcuxEwt8HpwhV
+   wVqtCVXLUqaB4DG7QX4ldJUSjbKboSBhUcGaYcHsI8rIoPRGtX5q/ZgVI
+   wW0FX4kJoa/FwNOyjNJ2cgp0jCnezErHOr21G8fhahLlRXBTxsjy9nf9m
+   OLiK5ci3YlBDxTbsDkWyQ8LI7M9DK5ZtdKPgfQDA86LrFk+BFtO5NtjEo
+   5hR+Q4tMZhgOQQjx54yygV2RsIe+6QIxh1LE08wXAWhKdNYgN/p5MdnFm
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10932"; a="3414346"
 X-IronPort-AV: E=Sophos;i="6.04,297,1695711600"; 
-   d="scan'208";a="395063311"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Dec 2023 15:52:27 -0800
+   d="scan'208";a="3414346"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Dec 2023 15:52:27 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10932"; a="900623010"
+X-IronPort-AV: E=McAfee;i="6600,9927,10932"; a="726961491"
 X-IronPort-AV: E=Sophos;i="6.04,297,1695711600"; 
-   d="scan'208";a="900623010"
+   d="scan'208";a="726961491"
 Received: from jeroenke-mobl.ger.corp.intel.com (HELO box.shutemov.name) ([10.249.35.180])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Dec 2023 15:52:22 -0800
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Dec 2023 15:52:21 -0800
 Received: by box.shutemov.name (Postfix, from userid 1000)
-	id 2DC7510A491; Sat, 23 Dec 2023 02:52:12 +0300 (+03)
+	id 387D010A4D9; Sat, 23 Dec 2023 02:52:12 +0300 (+03)
 From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
 To: Thomas Gleixner <tglx@linutronix.de>,
 	Ingo Molnar <mingo@redhat.com>,
@@ -70,9 +70,9 @@ Cc: "Rafael J. Wysocki" <rafael@kernel.org>,
 	linux-coco@lists.linux.dev,
 	linux-kernel@vger.kernel.org,
 	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: [PATCHv5 08/16] x86/mm: Return correct level from lookup_address() if pte is none
-Date: Sat, 23 Dec 2023 02:52:00 +0300
-Message-ID: <20231222235209.32143-9-kirill.shutemov@linux.intel.com>
+Subject: [PATCHv5 09/16] x86/tdx: Account shared memory
+Date: Sat, 23 Dec 2023 02:52:01 +0300
+Message-ID: <20231222235209.32143-10-kirill.shutemov@linux.intel.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231222235209.32143-1-kirill.shutemov@linux.intel.com>
 References: <20231222235209.32143-1-kirill.shutemov@linux.intel.com>
@@ -84,75 +84,123 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-lookup_address() only returns correct page table level for the entry if
-the entry is not none.
+The kernel will convert all shared memory back to private during kexec.
+The direct mapping page tables will provide information on which memory
+is shared.
 
-Make the helper to always return correct 'level'. It allows to implement
-iterator over kernel page tables using lookup_address().
+It is extremely important to convert all shared memory. If a page is
+missed, it will cause the second kernel to crash when it accesses it.
 
-Add one more entry into enum pg_level to indicate size of VA covered by
-one PGD entry in 5-level paging mode.
+Keep track of the number of shared pages. This will allow for
+cross-checking against the shared information in the direct mapping and
+reporting if the shared bit is lost.
+
+Include a debugfs interface that allows for the check to be performed at
+any point.
 
 Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Reviewed-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
 ---
- arch/x86/include/asm/pgtable_types.h | 1 +
- arch/x86/mm/pat/set_memory.c         | 8 ++++----
- 2 files changed, 5 insertions(+), 4 deletions(-)
+ arch/x86/coco/tdx/tdx.c | 69 +++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 69 insertions(+)
 
-diff --git a/arch/x86/include/asm/pgtable_types.h b/arch/x86/include/asm/pgtable_types.h
-index 0b748ee16b3d..3f648ffdfbe5 100644
---- a/arch/x86/include/asm/pgtable_types.h
-+++ b/arch/x86/include/asm/pgtable_types.h
-@@ -548,6 +548,7 @@ enum pg_level {
- 	PG_LEVEL_2M,
- 	PG_LEVEL_1G,
- 	PG_LEVEL_512G,
-+	PG_LEVEL_256T,
- 	PG_LEVEL_NUM
- };
+diff --git a/arch/x86/coco/tdx/tdx.c b/arch/x86/coco/tdx/tdx.c
+index 4397a6b2b04c..8a49484a2917 100644
+--- a/arch/x86/coco/tdx/tdx.c
++++ b/arch/x86/coco/tdx/tdx.c
+@@ -5,6 +5,7 @@
+ #define pr_fmt(fmt)     "tdx: " fmt
  
-diff --git a/arch/x86/mm/pat/set_memory.c b/arch/x86/mm/pat/set_memory.c
-index 6fbf22d5fa56..01f827eb8e80 100644
---- a/arch/x86/mm/pat/set_memory.c
-+++ b/arch/x86/mm/pat/set_memory.c
-@@ -666,32 +666,32 @@ pte_t *lookup_address_in_pgd(pgd_t *pgd, unsigned long address,
- 	pud_t *pud;
- 	pmd_t *pmd;
+ #include <linux/cpufeature.h>
++#include <linux/debugfs.h>
+ #include <linux/export.h>
+ #include <linux/io.h>
+ #include <asm/coco.h>
+@@ -38,6 +39,13 @@
  
--	*level = PG_LEVEL_NONE;
-+	*level = PG_LEVEL_256T;
+ #define TDREPORT_SUBTYPE_0	0
  
- 	if (pgd_none(*pgd))
- 		return NULL;
++static atomic_long_t nr_shared;
++
++static inline bool pte_decrypted(pte_t pte)
++{
++	return cc_mkdec(pte_val(pte)) == pte_val(pte);
++}
++
+ /* Called from __tdx_hypercall() for unrecoverable failure */
+ noinstr void __noreturn __tdx_hypercall_failed(void)
+ {
+@@ -821,6 +829,11 @@ static int tdx_enc_status_change_finish(unsigned long vaddr, int numpages,
+ 	if (!enc && !tdx_enc_status_changed(vaddr, numpages, enc))
+ 		return -EIO;
  
-+	*level = PG_LEVEL_512G;
- 	p4d = p4d_offset(pgd, address);
- 	if (p4d_none(*p4d))
- 		return NULL;
++	if (enc)
++		atomic_long_sub(numpages, &nr_shared);
++	else
++		atomic_long_add(numpages, &nr_shared);
++
+ 	return 0;
+ }
  
--	*level = PG_LEVEL_512G;
- 	if (p4d_large(*p4d) || !p4d_present(*p4d))
- 		return (pte_t *)p4d;
+@@ -896,3 +909,59 @@ void __init tdx_early_init(void)
  
-+	*level = PG_LEVEL_1G;
- 	pud = pud_offset(p4d, address);
- 	if (pud_none(*pud))
- 		return NULL;
- 
--	*level = PG_LEVEL_1G;
- 	if (pud_large(*pud) || !pud_present(*pud))
- 		return (pte_t *)pud;
- 
-+	*level = PG_LEVEL_2M;
- 	pmd = pmd_offset(pud, address);
- 	if (pmd_none(*pmd))
- 		return NULL;
- 
--	*level = PG_LEVEL_2M;
- 	if (pmd_large(*pmd) || !pmd_present(*pmd))
- 		return (pte_t *)pmd;
- 
+ 	pr_info("Guest detected\n");
+ }
++
++#ifdef CONFIG_DEBUG_FS
++static int tdx_shared_memory_show(struct seq_file *m, void *p)
++{
++	unsigned long addr, end;
++	unsigned long found = 0;
++
++	addr = PAGE_OFFSET;
++	end  = PAGE_OFFSET + get_max_mapped();
++
++	while (addr < end) {
++		unsigned long size;
++		unsigned int level;
++		pte_t *pte;
++
++		pte = lookup_address(addr, &level);
++		size = page_level_size(level);
++
++		if (pte && pte_decrypted(*pte))
++			found += size / PAGE_SIZE;
++
++		addr += size;
++
++		cond_resched();
++	}
++
++	seq_printf(m, "Number of shared pages in kernel page tables:  %16lu\n",
++		   found);
++	seq_printf(m, "Number of pages accounted as shared:           %16ld\n",
++		   atomic_long_read(&nr_shared));
++	return 0;
++}
++
++static int tdx_shared_memory_open(struct inode *inode, struct file *file)
++{
++	return single_open(file, tdx_shared_memory_show, NULL);
++}
++
++static const struct file_operations tdx_shared_memory_fops = {
++	.open           = tdx_shared_memory_open,
++	.read           = seq_read,
++	.llseek         = seq_lseek,
++	.release        = single_release,
++};
++
++static __init int debug_tdx_shared_memory(void)
++{
++	if (!cpu_feature_enabled(X86_FEATURE_TDX_GUEST))
++		return 0;
++
++	debugfs_create_file("tdx_shared_memory", 0400, arch_debugfs_dir,
++			    NULL, &tdx_shared_memory_fops);
++	return 0;
++}
++fs_initcall(debug_tdx_shared_memory);
++#endif
 -- 
 2.41.0
 
