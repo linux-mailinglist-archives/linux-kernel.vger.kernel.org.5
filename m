@@ -1,144 +1,198 @@
-Return-Path: <linux-kernel+bounces-9776-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9777-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2DC7081CB41
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 15:22:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D54381CB48
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 15:24:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CC1471F22436
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 14:22:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 808551C2254C
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 14:24:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B69C1D52B;
-	Fri, 22 Dec 2023 14:22:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23D541D52F;
+	Fri, 22 Dec 2023 14:24:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="O/agRZZV";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="hRpiyzI5"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GDWZVVd4"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EACE1CF92
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 14:22:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailout.nyi.internal (Postfix) with ESMTP id 7AACE5C010C;
-	Fri, 22 Dec 2023 09:22:08 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Fri, 22 Dec 2023 09:22:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm1; t=1703254928; x=1703341328; bh=Y+t6ngTWXD
-	Ac1tuGwonBj1jr9elBH/3ETk2fEmC02OE=; b=O/agRZZVGVZSm/uGpaZyILxyYp
-	KGO0weNQm4OrvRxsLmjjpsVlT05qQXvR4B4dfzFnmxGw2LecBQcnEPFMfbAfnmx7
-	xbbmDRtIorGcYintaGTZine1t8OoaQoN8xU2F+4RXIRFnvdkXCjRye+uHvU8uPlz
-	Z5j0xxYqzCXtXzJLPkY7YPX2VhFHXmi2RgGH9ejDcqflccFWrG6eugvsJEtQKnHz
-	y/BzGJ4we07PA1N+ZeghuYrNvNx21GEoGAwIpz4nykDhq5mhJVO+7h0GAFieSNyC
-	Bxhko4fXvUYsoGgrZBgfpgG9gpxGhYy7kEQw2BoM649x8o+gHa9XqUx2fe+w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1703254928; x=1703341328; bh=Y+t6ngTWXDAc1tuGwonBj1jr9elB
-	H/3ETk2fEmC02OE=; b=hRpiyzI5S6dsAuQb9HPuKF2UmcIHWGyX8CWTe7W2gkOV
-	oaD/UB9jpaKShGzJmHZDBeTYQ3/Fdef4ybw7vMa9VYekZcRQeeBfKxIQGvsXkW+K
-	R4o1bcbKy9OWsk5NcforAfXTVqImt7/etih0S9TiWRrLGlUPozd+vx7sRyc9dwhV
-	KLaxWTuf4aIisYnOJdzDbnoQTx2JrOaVvLOM4phA0g/XAojciLGi0QE8MtAjGccG
-	7PbKmBJk/1JrJ0BxwJ8b8ShZisoxEHAO7KxzoMQ29JnYXR7xW1KlQDQqeeUErKSl
-	1oclHTWocaIqj+RGAL4hgy9upm9SA1CFZOfDMwC7MQ==
-X-ME-Sender: <xms:jpuFZbLAghcbyrJfSkiAHK43j3cI45k767miMqOjvwkh5flMLzBhEA>
-    <xme:jpuFZfIT2sP5zu8ZGApwBVz2jIODOGNHzQm0IuhOk6eLohlCN_-qi1dzi5lcfzPQR
-    UayusSyeVYWRPchUqw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvddujedgieduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
-    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:jpuFZTtCPogCaC_yOlI8Qmx3WPz7i4AxZaJ6dBFKJNl5893W6NxMkQ>
-    <xmx:jpuFZUahSm9WFimU0VKFe7RbkONeEYXocyaPuQnHJ0VRBLBSPx93BQ>
-    <xmx:jpuFZSZTdwydH6eCDBXCx-NcAC3ji4-8wBjFab4F1GyF166Mi6BIvA>
-    <xmx:kJuFZa5-mCruwCQT4g1ALkuWedDpC6A8jq8nNtXgv3TnHn9Cm9aPZQ>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id C7FCEB60093; Fri, 22 Dec 2023 09:22:06 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1364-ga51d5fd3b7-fm-20231219.001-ga51d5fd3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 523E71C693;
+	Fri, 22 Dec 2023 14:24:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1703255087; x=1734791087;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:content-transfer-encoding:mime-version;
+  bh=5IQoWpfQ/5wHHHuIPnsgD6NLgOG/1QPwwdB95s66PEg=;
+  b=GDWZVVd4ntpXsKcyCLnQjPMOCcQo1BuxnRkRADYDeRg2xOQ+THicfl/u
+   aN+kPbX8TKnAumTAZFf9I+d3fncl79vZO/pO7mwktZblvRmTYldmP+U0D
+   zMfB0q7jwgYKmXiVfyXyYj63RoMaGpLOHAKY0+iMWKntUyjAZ133xYE//
+   Lc3S5MNm1j73Vd/GWD1ct0+UBlA/8GreiMK6OrHxCdvGq7bTbAO9XRp+n
+   o+fLGk3e0kCE2aaMWRGKuMReOQeYRCMiouTUtd96aExkjmnOBtsFg87Lc
+   TZQlwDqo/og9Q+B3F5QHz8aTUp0y/VoLoPVz74mBRjOd29QhEeEQr+jHA
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10932"; a="462559382"
+X-IronPort-AV: E=Sophos;i="6.04,296,1695711600"; 
+   d="scan'208";a="462559382"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Dec 2023 06:24:46 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,296,1695711600"; 
+   d="scan'208";a="11471189"
+Received: from spandruv-desk.jf.intel.com (HELO spandruv-desk.amr.corp.intel.com) ([10.54.75.14])
+  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Dec 2023 06:24:46 -0800
+Message-ID: <bfa921830db255b901b0bb586b090846466a8ab0.camel@linux.intel.com>
+Subject: Re: [PATCH] HID: sensor-hub: Enable hid core report processing for
+ all devices
+From: srinivas pandruvada <srinivas.pandruvada@linux.intel.com>
+To: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc: Yauhen Kharuzhy <jekhor@gmail.com>, Jonathan Cameron <jic23@kernel.org>,
+  linux-input@vger.kernel.org, linux-iio@vger.kernel.org, Daniel Thompson
+ <daniel.thompson@linaro.org>, linux-kernel@vger.kernel.org, Jiri Kosina
+ <jikos@kernel.org>
+Date: Fri, 22 Dec 2023 06:24:45 -0800
+In-Reply-To: <CAO-hwJ+RDnukVhL1=PirK=hU7gm2t73xsg=aDss0M9hj_CSuHA@mail.gmail.com>
+References: <20231219231503.1506801-1-jekhor@gmail.com>
+	 <20231220145229.020abe62@jic23-huawei>
+	 <CAKWEGV50duj-TcKdQp1BtN_QgnBZyG0WgAqo8Y5UtCinqOAh_g@mail.gmail.com>
+	 <38313826939a468ff8c7eee24e2cf07e9eef6768.camel@linux.intel.com>
+	 <CAO-hwJ+RDnukVhL1=PirK=hU7gm2t73xsg=aDss0M9hj_CSuHA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4 (3.44.4-3.fc36) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <8853b024-4f1f-4acf-ac52-6b20bbd2ba12@app.fastmail.com>
-In-Reply-To: <20230515160234.289631-8-afd@ti.com>
-References: <20230515160234.289631-1-afd@ti.com>
- <20230515160234.289631-8-afd@ti.com>
-Date: Fri, 22 Dec 2023 14:21:49 +0000
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Andrew Davis" <afd@ti.com>, "Russell King" <linux@armlinux.org.uk>,
- "Baruch Siach" <baruch@tkos.co.il>, "Vladimir Zapolskiy" <vz@mleia.com>,
- "Kunihiko Hayashi" <hayashi.kunihiko@socionext.com>,
- "Masami Hiramatsu" <mhiramat@kernel.org>,
- "Geert Uytterhoeven" <geert+renesas@glider.be>,
- "Linus Walleij" <linus.walleij@linaro.org>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 08/10] ARM: mach-hpe: Rework support and directory structure
-Content-Type: text/plain
 
-On Mon, May 15, 2023, at 16:02, Andrew Davis wrote:
-> Having a platform need a mach-* directory should be seen as a negative,
-> it means the platform needs special non-standard handling. ARM64 support
-> does not allow mach-* directories at all. While we may not get to that
-> given all the non-standard architectures we support, we should still try
-> to get as close as we can and reduce the number of mach directories.
->
-> The mach-hpe/ directory and files, provides just one "feature":
-> having the kernel print the machine name if the DTB does not also contain
-> a "model" string (which they always do). To reduce the number of mach-*
-> directories let's do without that feature and remove this directory.
->
-> Signed-off-by: Andrew Davis <afd@ti.com>
-> ---
->  MAINTAINERS                |  1 -
->  arch/arm/Kconfig           |  2 --
->  arch/arm/Kconfig.platforms | 25 +++++++++++++++++++++++++
->  arch/arm/Makefile          |  1 -
->  arch/arm/mach-hpe/Kconfig  | 23 -----------------------
->  arch/arm/mach-hpe/Makefile |  1 -
->  arch/arm/mach-hpe/gxp.c    | 16 ----------------
+On Fri, 2023-12-22 at 14:28 +0100, Benjamin Tissoires wrote:
+> On Fri, Dec 22, 2023 at 1:44=E2=80=AFPM srinivas pandruvada
+> <srinivas.pandruvada@linux.intel.com> wrote:
+> >=20
+> > On Wed, 2023-12-20 at 17:04 +0200, Yauhen Kharuzhy wrote:
+> > > =D1=81=D1=80, 20 =D0=B4=D0=B5=D0=BA. 2023=E2=80=AF=D0=B3. =D0=B2 16:5=
+2, Jonathan Cameron <jic23@kernel.org>:
+> > > >=20
+> > > > On Wed, 20 Dec 2023 01:15:03 +0200
+> > > > Yauhen Kharuzhy <jekhor@gmail.com> wrote:
+> > > >=20
+> > > > > After the commit 666cf30a589a ("HID: sensor-hub: Allow multi-
+> > > > > function
+> > > > > sensor devices") hub devices are claimed by hidraw driver in
+> > > > > hid_connect().
+> > > > > This causes stoppping of processing HID reports by hid core
+> > > > > due
+> > > > > to
+> > > > > optimization.
+> > > > >=20
+> > > > > In such case, the hid-sensor-custom driver cannot match a
+> > > > > known
+> > > > > custom
+> > > > > sensor in hid_sensor_custom_get_known() because it try to
+> > > > > check
+> > > > > custom
+> > > > > properties which weren't filled from the report because hid
+> > > > > core
+> > > > > didn't
+> > > > > parsed it.
+> > > > >=20
+> > > > > As result, custom sensors like hinge angle sensor and LISS
+> > > > > sensors
+> > > > > don't work.
+> > > > >=20
+> > > > > Mark the sensor hub devices claimed by some driver to avoid
+> > > > > hidraw-related
+> > > > > optimizations.
+> > > > >=20
+> > > > > Signed-off-by: Yauhen Kharuzhy <jekhor@gmail.com>
+> > > > Fixes tag?
+> > >=20
+> > > Fixes: 666cf30a589a ("HID: sensor-hub: Allow multi-function
+> > > sensor
+> > > devices")
+> > >=20
+> > This flag causes
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 hdev->claimed |=3D HID_CLAIMED_DRIVER;
+> > I don't see the flag is used anywhere after this assignment in hid
+> > core. Only two other drivers are setting this flag. We need Jiri's
+> > help
+> > here why this is a special case.
+>=20
+> It's used in hid_report_raw_event()[0]:
+> ```
+> =C2=A0=C2=A0=C2=A0 if (hid->claimed !=3D HID_CLAIMED_HIDRAW && report->ma=
+xfield) {
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 hid_process_report(hid, report=
+, cdata, interrupt);
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 hdrv =3D hid->driver;
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (hdrv && hdrv->report)
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 hdrv->=
+report(hid, report);
+> =C2=A0=C2=A0=C2=A0 }
+> ```
+>=20
+> The whole point of setting HID_CLAIMED_DRIVER is to have hid->claimed
+> not equal to HID_CLAIMED_HIDRAW, in case we need the hid core
+> processing.
+Thanks Benjamin for explaining.
+Then this change looks fine as sensor hub driver will claim this device
+and it needs hid core to process report.
 
-I'm dropping this patch from the series:
+Acked-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
 
-> -/* Copyright (C) 2022 Hewlett-Packard Enterprise Development Company, L.P. */
-> -
-> -#include <linux/of_platform.h>
-> -#include <asm/mach/arch.h>
-> -
-> -static const char * const gxp_board_dt_compat[] = {
-> -	"hpe,gxp",
-> -	NULL,
-> -};
-> -
-> -DT_MACHINE_START(GXP_DT, "HPE GXP")
-> -	.dt_compat	= gxp_board_dt_compat,
-> -	.l2c_aux_val = 0,
-> -	.l2c_aux_mask = ~0,
-> -MACHINE_END
+Thanks,
+Srinivas
 
-As Russell had previously pointed out, removing the l2c settings
-from a machine file breaks these machines if there is an actual
-l2c node, which for gxp there is, same for most other Cortex-A9
-and A5 based platforms.
+>=20
+> Cheers,
+> Benjamin
+>=20
+>=20
+> [0]
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/d=
+rivers/hid/hid-core.c#n2015
+>=20
+> >=20
+> > Thanks,
+> > Srinivas
+> >=20
+> > > >=20
+> > > > > ---
+> > > > > =C2=A0drivers/hid/hid-sensor-hub.c | 2 +-
+> > > > > =C2=A01 file changed, 1 insertion(+), 1 deletion(-)
+> > > > >=20
+> > > > > diff --git a/drivers/hid/hid-sensor-hub.c b/drivers/hid/hid-
+> > > > > sensor-hub.c
+> > > > > index 2eba152e8b90..26e93a331a51 100644
+> > > > > --- a/drivers/hid/hid-sensor-hub.c
+> > > > > +++ b/drivers/hid/hid-sensor-hub.c
+> > > > > @@ -632,7 +632,7 @@ static int sensor_hub_probe(struct
+> > > > > hid_device
+> > > > > *hdev,
+> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 INIT_LIST_HEAD(&hdev->inputs);
+> > > > >=20
+> > > > > -=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D hid_hw_start(hdev, HID_CONNECT_=
+DEFAULT);
+> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D hid_hw_start(hdev, HID_CONNECT_=
+DEFAULT |
+> > > > > HID_CONNECT_DRIVER);
+> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ret) {
+> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 hid_err(hdev, "hw start failed\n");
+> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 return ret;
+> > > >=20
+> > >=20
+> > >=20
+> >=20
+>=20
 
-The Uniphier machine that you also modify here is an exception
-because they use a custom L2 cache implementation.
-
-      Arnd
 
