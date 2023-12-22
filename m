@@ -1,123 +1,138 @@
-Return-Path: <linux-kernel+bounces-9479-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9481-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31FE481C643
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 09:10:47 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D913E81C647
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 09:11:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 64FB51C24EAE
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 08:10:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5EB8DB23023
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 08:11:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30FCEC8C8;
-	Fri, 22 Dec 2023 08:10:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8C21D306;
+	Fri, 22 Dec 2023 08:11:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="d6Y5sDHu"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ThJHIAWS"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BC9FC127
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 08:10:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-33666fb9318so1402764f8f.2
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 00:10:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703232634; x=1703837434; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lM68vCaPXNUUDycrx+XvGL33ppz+BtAdK19lvJ8+7sw=;
-        b=d6Y5sDHuqyCvrWYWxiAnUR1oz+P7orSsVe2sgqjcKNkgEysy8DYzRoZ4loy1YIW00s
-         dp+TUTyEMVd4dQjNVE9xoL7RnBa63iCyv1tIImSlQRMwk8GK4M2h43DaCxuE903fFf67
-         Fm0Mzdvxcmg/GmaQqvRAxoINczmQu0SrOHeQtIfe/069/rd3OGVq7myUng/x1WkPgIHH
-         y0s8XRDxe4UUy5EGpwXiOKhdtB6FfxbHX4bAp4hLaLsOhzNBGX8Xs7ROP7M0W53Jynz2
-         OZZcZZck/qw5YVORY1SM0eemctgWuzR7R6RDXTUcBHE0TM1OeoxtP7pRQuJMC6tUlO2m
-         i7bQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703232634; x=1703837434;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lM68vCaPXNUUDycrx+XvGL33ppz+BtAdK19lvJ8+7sw=;
-        b=JO5UgCJPcy6i2Lovm6+qQ/3M1SqF76ygR0Y7VcXsyRhYg7BylBG9CE/duRr+eYlARC
-         6wFtd2JmN3Ai5eKVTBk+YHR+hkat+QTVoUHUvDNtKqEEE/6FTEcOk+I9A1jY7u5t5UjF
-         j6iaD6rCTLS9Lnh1aVmeipPcAppTinkIW+Nmv2oxq2DH9dtViR3q+ccvQVVcS4bRfWuH
-         DILUQjqtZ1RHQOVb06zIsteXPFQ3Bnyf48D+AjUN5mCWdXL7mG3Y8OybWr+322ZfO50+
-         b9xMXveNlN2hOf0tQJDlUqbb1HZEnJxoBxv5QGvQ4UUJb0SBFxOKoi+3JIbQIaYCBYbn
-         driA==
-X-Gm-Message-State: AOJu0Yzw7qF9K25yqR0tED0xojnQlTaDMQCiH+xxn9sUsBELdkqDZkhC
-	cGrsbpccT1mkAh4+nFpB7Ue2154Br4QhJA==
-X-Google-Smtp-Source: AGHT+IEXWH54whXuzJ+v2aRaRnfaeKABy4t4cZ8sKiFBmqzByppB9AgX/JMhJXGJHk1onMtQ80/7DA==
-X-Received: by 2002:a05:600c:6010:b0:40d:4a25:ee0e with SMTP id az16-20020a05600c601000b0040d4a25ee0emr16278wmb.11.1703232634442;
-        Fri, 22 Dec 2023 00:10:34 -0800 (PST)
-Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
-        by smtp.gmail.com with ESMTPSA id g17-20020a05600c001100b0040d44dcf233sm1527024wmc.12.2023.12.22.00.10.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Dec 2023 00:10:34 -0800 (PST)
-From: Neil Armstrong <neil.armstrong@linaro.org>
-To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>, 
- Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>, 
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
- Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, 
- Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
- Alexandre Torgue <alexandre.torgue@foss.st.com>, 
- Yannick Fertre <yannick.fertre@foss.st.com>, 
- Philippe Cornu <philippe.cornu@foss.st.com>, 
- Philipp Zabel <p.zabel@pengutronix.de>, 
- Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>, 
- Thierry Reding <thierry.reding@gmail.com>, 
- Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
-Cc: dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
- linux-arm-kernel@lists.infradead.org
-In-Reply-To: <20231221124339.420119-1-raphael.gallais-pou@foss.st.com>
-References: <20231221124339.420119-1-raphael.gallais-pou@foss.st.com>
-Subject: Re: (subset) [PATCH RESEND v1 0/8] Introduce STM32 LVDS driver
-Message-Id: <170323263335.3968091.3418124758627043970.b4-ty@linaro.org>
-Date: Fri, 22 Dec 2023 09:10:33 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37748C8D4
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 08:11:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6CF4C433CA
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 08:11:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703232683;
+	bh=xlvrw1s0T46Tz1knGooTW4HgxuEaVE6Yt4gVH7KsSNs=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=ThJHIAWScS67tO4MPkBAG639WxhdKDyUoCbBibMIwOUCJSm4eLx5TYNjMlPfj2Euu
+	 EZZnLtFeL/Vz0lhk12fZaMNiHJLD5uIN47v8qoOS9iemaIwTaQkpzKExUBNRIHy4nv
+	 s4Jgd6KWl6FeJMwvuW/P+N4QQxpZnfiojXLU9BrQRcrO27M7kXtfGAenghgNeH6NRi
+	 c0NuJM835BWWVGTGNChon2OX+8Ifb7UfIIzWBKh/tzF2905e2gt4q1MfBTAFZY1u3w
+	 OV6Arg0gB3HvO3ovldS4JPJxJQV0jOhxwtJzGJ/DgFROvm0vwEXlkfUpxV76Qt2/uW
+	 AROH4os7cmJAg==
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-552d39ac3ccso4901890a12.0
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 00:11:23 -0800 (PST)
+X-Gm-Message-State: AOJu0YydP80pbZl0P2A4EubRg5YjNCn37S2z2x0C5Lx7UDxCax6ZCVPb
+	1jg6FQegNC7NlZldHaJI/PBnVtXzcAmuKDE5Xc8=
+X-Google-Smtp-Source: AGHT+IG2QDqYm9J7T4aV4Gi9QMXZcNjKi+BwCgA9nxbLz37NE8zlLTmwMUaMZL0C8EpuHRmgEsm9wh+mRbWDQIvom3M=
+X-Received: by 2002:a17:907:9392:b0:a25:a0c6:ebf5 with SMTP id
+ cm18-20020a170907939200b00a25a0c6ebf5mr762193ejc.21.1703232682173; Fri, 22
+ Dec 2023 00:11:22 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.4
+References: <20231222074605.452452-1-leobras@redhat.com> <20231222074605.452452-5-leobras@redhat.com>
+In-Reply-To: <20231222074605.452452-5-leobras@redhat.com>
+From: Guo Ren <guoren@kernel.org>
+Date: Fri, 22 Dec 2023 16:11:10 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTTzOS+16d2sqLnRnw_bxVnE9Gudtf4nu69XbSsvcsQCfw@mail.gmail.com>
+Message-ID: <CAJF2gTTzOS+16d2sqLnRnw_bxVnE9Gudtf4nu69XbSsvcsQCfw@mail.gmail.com>
+Subject: Re: [RFC PATCH 4/4] riscv: Introduce set_compat_task() in asm/compat.h
+To: Leonardo Bras <leobras@redhat.com>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Albert Ou <aou@eecs.berkeley.edu>, Eric Biederman <ebiederm@xmission.com>, 
+	Kees Cook <keescook@chromium.org>, Oleg Nesterov <oleg@redhat.com>, 
+	Conor Dooley <conor.dooley@microchip.com>, Andy Chiu <andy.chiu@sifive.com>, 
+	Greg Ungerer <gerg@kernel.org>, Vincent Chen <vincent.chen@sifive.com>, 
+	Xiao Wang <xiao.w.wang@intel.com>, Charlie Jenkins <charlie@rivosinc.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, Alexandre Ghiti <alexghiti@rivosinc.com>, 
+	Kemeng Shi <shikemeng@huaweicloud.com>, David Hildenbrand <david@redhat.com>, 
+	"Matthew Wilcox (Oracle)" <willy@infradead.org>, Qinglin Pan <panqinglin2020@iscas.ac.cn>, 
+	Greentime Hu <greentime.hu@sifive.com>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>, 
+	=?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>, 
+	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On Fri, Dec 22, 2023 at 3:47=E2=80=AFPM Leonardo Bras <leobras@redhat.com> =
+wrote:
+>
+> In order to have all task compat bit access directly in compat.h, introdu=
+ce
+> set_compat_task() to set/reset those when needed.
+>
+> Also, since it's only used on an if/else scenario, simplify the macro usi=
+ng
+> it.
+>
+> Signed-off-by: Leonardo Bras <leobras@redhat.com>
+> ---
+>  arch/riscv/include/asm/compat.h | 8 ++++++++
+>  arch/riscv/include/asm/elf.h    | 5 +----
+>  2 files changed, 9 insertions(+), 4 deletions(-)
+>
+> diff --git a/arch/riscv/include/asm/compat.h b/arch/riscv/include/asm/com=
+pat.h
+> index da4b28cd01a95..aa103530a5c83 100644
+> --- a/arch/riscv/include/asm/compat.h
+> +++ b/arch/riscv/include/asm/compat.h
+> @@ -28,6 +28,14 @@ static inline int is_compat_thread(struct thread_info =
+*thread)
+>         return test_ti_thread_flag(thread, TIF_32BIT);
+>  }
+>
+> +static inline void set_compat_task(bool is_compat)
+> +{
+> +       if (is_compat)
+> +               set_thread_flag(TIF_32BIT);
+> +       else
+> +               clear_thread_flag(TIF_32BIT);
+> +}
+> +
+>  struct compat_user_regs_struct {
+>         compat_ulong_t pc;
+>         compat_ulong_t ra;
+> diff --git a/arch/riscv/include/asm/elf.h b/arch/riscv/include/asm/elf.h
+> index 2e88257cafaea..c7aea7886d22a 100644
+> --- a/arch/riscv/include/asm/elf.h
+> +++ b/arch/riscv/include/asm/elf.h
+> @@ -135,10 +135,7 @@ do {                                                =
+       \
+>  #ifdef CONFIG_COMPAT
+>
+>  #define SET_PERSONALITY(ex)                                    \
+> -do {    if ((ex).e_ident[EI_CLASS] =3D=3D ELFCLASS32)              \
+> -               set_thread_flag(TIF_32BIT);                     \
+> -       else                                                    \
+> -               clear_thread_flag(TIF_32BIT);                   \
+> +do {   set_compat_task((ex).e_ident[EI_CLASS] =3D=3D ELFCLASS32);  \
+>         if (personality(current->personality) !=3D PER_LINUX32)   \
+>                 set_personality(PER_LINUX |                     \
+>                         (current->personality & (~PER_MASK)));  \
+> --
+> 2.43.0
+>
+LGTM
 
-On Thu, 21 Dec 2023 13:43:31 +0100, Raphael Gallais-Pou wrote:
-> This serie introduces a new DRM bridge driver for STM32MP257 platforms
-> based on Arm Cortex-35. It also adds an instance in the device-tree and
-> handle the inclusion of the driver within the DRM framework. First patch
-> adds a new panel compatible in the panel-lvds driver, which is used by
-> default on the STM32MP257.
-> 
-> Raphael Gallais-Pou (7):
->   dt-bindings: panel: lvds: Append edt,etml0700z9ndha in panel-lvds
->   dt-bindings: display: add dt-bindings for STM32 LVDS device
->   drm/stm: lvds: add new STM32 LVDS Display Interface Transmitter driver
->   drm/stm: ltdc: add lvds pixel clock
->   arm64: dts: st: add ltdc support on stm32mp251
->   arm64: dts: st: add lvds support on stm32mp253
->   arm64: dts: st: add display support on stm32mp257f-ev
-> 
-> [...]
+Reviewed-by: Guo Ren <guoren@kernel.org>
 
-Thanks, Applied to https://anongit.freedesktop.org/git/drm/drm-misc.git (drm-misc-next)
-
-[1/8] dt-bindings: panel: lvds: Append edt,etml0700z9ndha in panel-lvds
-      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=021a81e7ac8f579b049e5bc76efabd9e67bd627c
-
--- 
-Neil
-
+--=20
+Best Regards
+ Guo Ren
 
