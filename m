@@ -1,301 +1,142 @@
-Return-Path: <linux-kernel+bounces-9784-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9786-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9579181CB65
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 15:35:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A152D81CB71
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 15:39:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B945E1C2196A
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 14:35:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D00BA1C21A57
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 14:39:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31383208CC;
-	Fri, 22 Dec 2023 14:35:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 235EA208C4;
+	Fri, 22 Dec 2023 14:39:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XId1mLs9"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=inbox.ru header.i=@inbox.ru header.b="ExlnJcmV"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp56.i.mail.ru (smtp56.i.mail.ru [95.163.41.94])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA50820B3E;
-	Fri, 22 Dec 2023 14:35:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2cc6eecd319so23373291fa.1;
-        Fri, 22 Dec 2023 06:35:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703255717; x=1703860517; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=19330V05jnim9tqHKI81rhlyn9YLwEeYkPtMUaA5/Ts=;
-        b=XId1mLs9waS/iCPC0kdr8be+cCgUTBuwqHek5XDM7nAJe85rUPPaeBD9mWbAfeDTml
-         VJ5GYechl4HLIvhPrxcjT1kt4f1ElLtW2RFY5MmzRMKU/Whx/j+HmbeThrfUrBtk5WP1
-         zxEvdPbjPbKnyr/1/i8RGeg02q+Et6DY4sgG4StOqls+8ExuBy4wHS4SnGbSosFmoL4i
-         hVX/WUDfzfWQvWoPmzqaC3mrepP5jnN1/1RswLrHlBp8RyITfSZkR97r5sCcIsnSJVgJ
-         n0ayGRkRc48PoxBCSOqMq+qtgLR4CVqQvu2Xk1ogv0BembC/SI7pvwHtARJrtl/PwMoP
-         el6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703255717; x=1703860517;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=19330V05jnim9tqHKI81rhlyn9YLwEeYkPtMUaA5/Ts=;
-        b=cpC21A3DGNlZyKvfbewbYwS4yiEjPEbgtbmy3cZRj1ORyXZ/sSpVFqZOhv0tI0PPNG
-         GDs6s9ok+nPCdQYtmQXFrPADFjcM0FBaUIbkVJURbZBwkTuDFy6gD1l/6+wSVX8s8JVb
-         8Zy0gx6PQtUdI2QTGPDrdWmEvzNKOVaY0PhTwA1GeElcKdY5K/LF3agzDOXG0o4x5kdF
-         xUZXMhQkn+RBxQ81YNfQ8yneWBshcQAcJgwbnd3WdlcPC38wQLll8F4JXtdMRxId49Rb
-         MOuEfxmMLesYLSU1e8y3lhblzWqYXMjAtAGqQ9RmzVIyuQpWjH1FCLqgLEazbzpTzJl9
-         TtTQ==
-X-Gm-Message-State: AOJu0Yz3yFg4Ako3k8m2E9KxNiPH13c1ozCU7ujjw0n68E2aEWITRZvt
-	aO8+bIMJxt4gOZK0BQG5DR0=
-X-Google-Smtp-Source: AGHT+IFlxZdfsMnhVXkg7K6QHgzJwzt8L6U+FZduAFeGCwFFfJVANfYA42Q8L/dP9lI4kDiqivutKQ==
-X-Received: by 2002:a2e:a418:0:b0:2cc:96fd:b79e with SMTP id p24-20020a2ea418000000b002cc96fdb79emr812350ljn.33.1703255716554;
-        Fri, 22 Dec 2023 06:35:16 -0800 (PST)
-Received: from mobilestation ([178.176.56.174])
-        by smtp.gmail.com with ESMTPSA id p25-20020a2e9ad9000000b002ccaddac048sm161994ljj.64.2023.12.22.06.35.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Dec 2023 06:35:15 -0800 (PST)
-Date: Fri, 22 Dec 2023 17:35:12 +0300
-From: Serge Semin <fancer.lancer@gmail.com>
-To: Suraj Jaiswal <quic_jsuraj@quicinc.com>
-Cc: "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
-	Paolo Abeni <pabeni@redhat.com>, Vinod Koul <vkoul@kernel.org>, 
-	Bhupesh Sharma <bhupesh.sharma@linaro.org>, Andy Gross <agross@kernel.org>, 
-	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	Conor Dooley <conor+dt@kernel.org>, Alexandre Torgue <alexandre.torgue@foss.st.com>, 
-	Jose Abreu <joabreu@synopsys.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
-	netdev@vger.kernel.org, linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
-	Prasad Sodagudi <psodagud@quicinc.com>, Andrew Halaney <ahalaney@redhat.com>, 
-	Rob Herring <robh@kernel.org>, kernel@quicinc.com
-Subject: Re: [PATCH net-next v8 3/3] net: stmmac: Add driver support for
- DWMAC5 common safety IRQ
-Message-ID: <xdcrwxh7e4t2zkgdcfwzjr2z4ouwgv3vr4drwvshadxmpwyqkd@j3kj3p2u7nd7>
-References: <20231221073620.232619-1-quic_jsuraj@quicinc.com>
- <20231221073620.232619-4-quic_jsuraj@quicinc.com>
- <yromhtr73rwsr6hizr4tq37vfvyzfue7wzpmufqyscwspzffza@uhfcrn573acd>
- <aec2dc6a-ffa4-4753-a764-77dfe1af995a@quicinc.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9BFE200CC
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 14:39:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=inbox.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=inbox.ru
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=inbox.ru;
+	s=mail4; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:References
+	:Cc:To:Subject:MIME-Version:Date:Message-ID:From:Sender:Reply-To:To:Cc:
+	Content-Type:Content-Transfer-Encoding:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
+	List-Archive:X-Cloud-Ids:Disposition-Notification-To;
+	bh=Nf9azq1dr1z2dpFM9eMLA/tB6ok0rLUWyMMPYho3Nds=; t=1703255985; x=1703345985; 
+	b=ExlnJcmVqWPK2YskFp10s/Fz78k+7eS7EUEBL5angc3bGoJDlzWAq9JAs9GwTgPtjK94Bd184Go
+	/6x+3W09KA3UnXE4oaYDOB6ht4rEUeQee29YA9AyeE4p4hv4PrA8H3qGn7t/E/zM8EusHnFrAHsdh
+	oixtFK0MjxGU7qYychBeWw4wm6oX4V9yqB/tHfoyqONBgkJ5RPsKvor8EjrQtTnCTyk4fDTu+0NaH
+	U6Y3iMOZm6D6ki6QkxPYe4MkGkOvgY2Vhsy83bhyrHrYKyw/7+b+eZEjDGj1YBYZtdqQ/80dlpViS
+	EjOZRKeOvQoly7x19+F479jQ8z0Coeq2BEug==;
+Received: by smtp56.i.mail.ru with esmtpa (envelope-from <fido_max@inbox.ru>)
+	id 1rGggZ-002Msc-0P; Fri, 22 Dec 2023 17:39:35 +0300
+Message-ID: <c53c22dd-c482-4808-bdd7-e81c01c04f9e@inbox.ru>
+Date: Fri, 22 Dec 2023 17:39:34 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aec2dc6a-ffa4-4753-a764-77dfe1af995a@quicinc.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/1] riscv: set ARCH_DMA_DEFAULT_COHERENT if
+ RISCV_DMA_NONCOHERENT is not set
+To: Christoph Hellwig <hch@lst.de>, Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+ robh@kernel.org, mpe@ellerman.id.au, aou@eecs.berkeley.edu,
+ palmer@dabbelt.com, paul.walmsley@sifive.com, Conor Dooley <conor@kernel.org>
+References: <20231221185152.327231-1-fido_max@inbox.ru>
+ <20231221-discount-decade-e306e5878c46@spud>
+ <f31d929c-fa0a-4046-be05-38e92afa5d92@flygoat.com>
+ <20231222041428.GA2803@lst.de>
+Content-Language: en-US
+From: Maxim Kochetkov <fido_max@inbox.ru>
+In-Reply-To: <20231222041428.GA2803@lst.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Authentication-Results: smtp56.i.mail.ru; auth=pass smtp.auth=fido_max@inbox.ru smtp.mailfrom=fido_max@inbox.ru
+X-Mailru-Src: smtp
+X-7564579A: 646B95376F6C166E
+X-77F55803: 4F1203BC0FB41BD9F008C97756F746CAA89CC280A9C73C8312970F1BEE6B7403182A05F5380850405CF697BA74B6A9674E373B0751E947592A9A657C7DC718F9C700AD7340762BFD
+X-7FA49CB5: FF5795518A3D127A4AD6D5ED66289B5278DA827A17800CE70386A6136E33FD82EA1F7E6F0F101C67BD4B6F7A4D31EC0BCC500DACC3FED6E28638F802B75D45FF8AA50765F79006377E85B0EC44E8FD73EA1F7E6F0F101C6723150C8DA25C47586E58E00D9D99D84E1BDDB23E98D2D38B73AB1701401CD8713C30587881FF020BBA20AE9EC107FDF020879F7C8C5043D14489FFFB0AA5F4BF1661749BA6B9773578FCF50C7EAF9C588941B15DA834481FA18204E546F3947CFA486DC37A503D0BF6B57BC7E64490618DEB871D839B7333395957E7521B51C2DFABB839C843B9C08941B15DA834481F8AA50765F790063741F7343E26298569389733CBF5DBD5E9B5C8C57E37DE458B9E9CE733340B9D5F3BBE47FD9DD3FB595F5C1EE8F4F765FC2EE5AD8F952D28FBE2021AF6380DFAD18AA50765F790063735872C767BF85DA227C277FBC8AE2E8B08F9A42B2210255C75ECD9A6C639B01B4E70A05D1297E1BBCB5012B2E24CD356
+X-C1DE0DAB: 0D63561A33F958A5422B6D5EE5F5B38D9D624E766B6FDA5FEE6E75F450048A99F87CCE6106E1FC07E67D4AC08A07B9B0DB8A315C1FF4794DBDAD6C7F3747799A
+X-C8649E89: 1C3962B70DF3F0ADBF74143AD284FC7177DD89D51EBB7742DC8270968E61249B1004E42C50DC4CA955A7F0CF078B5EC49A30900B95165D34CAFBC0A7A4BEEE01EF0AC99BFA6B3341E98FB265FC4AF88B1E2C477CFBF0BD0176E9627D99F0F6D91D7E09C32AA3244CEBDF470873A2F30615B62B3E339914E151E887DA02A9F7BFAFF760E3CF2A505DB6C6411D86935C892AB2189BCAD71E73D640157F23F2FFE137E69C174A41D00C
+X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2bioj2irTGYQEnL0n463ASQOuOg==
+X-Mailru-Sender: 689FA8AB762F7393590D8C940224AE3337E863210FDBA5BD78E186746C83CDCF98CC072019C18A892CA7F8C7C9492E1F2F5E575105D0B01ADBE2EF17B331888EEAB4BC95F72C04283CDA0F3B3F5B9367
+X-Mras: Ok
 
-On Fri, Dec 22, 2023 at 02:13:49PM +0530, Suraj Jaiswal wrote:
-> HI Serge,
-> please find commnet inline.
+
+
+On 22.12.2023 07:14, Christoph Hellwig wrote:
+> On Thu, Dec 21, 2023 at 10:27:33PM +0000, Jiaxun Yang wrote:
+>>
+>>
+>> 在 2023/12/21 20:29, Conor Dooley 写道:
+>>> + Christoph
+>>>
+>>> I don't think this patch is correct. Regardless of whether we support
+>>> cache management operations, DMA is assumed to be coherent unless
+>>> peripherals etc are specified to otherwise in DT (or however ACPI deals
+>>> with that kind of thing).
+>>>
+>>> What problem are you trying to solve here?
+>>>
+>>> On Thu, Dec 21, 2023 at 09:51:52PM +0300, Maxim Kochetkov wrote:
+>>>> Not all the RISCV are DMA coherent by default.
+>>
+>> Sorry for chime in here.
+>> IMO if your platform is not coherent by default, just insert
+>> "dma-noncoherent"
+>> at devicetree root node.
 > 
-> Thanks
-> Suraj
+> Exactly.  ARCH_DMA_DEFAULT_COHERENTis a setting that just says for
+> a given architecture assumes coherent unless otherwise specified,
+> which has historically been the case for mips.  Not setting it means
+> non-coherent unless specified, which has historially been the case
+> for arm.
 > 
-> On 12/21/2023 6:19 PM, Serge Semin wrote:
-> > Hi Suraj
-> > 
-> > On Thu, Dec 21, 2023 at 01:06:20PM +0530, Suraj Jaiswal wrote:
-> >> Add support to listen HW safety IRQ like ECC(error
-> >> correction code), DPP(data path parity), FSM(finite state
-> >> machine) fault in common IRQ line.
-> >>
-> >> Signed-off-by: Suraj Jaiswal <quic_jsuraj@quicinc.com>
-> > 
-> > Thanks for taking my notes into account. One more comment is further
-> > below.
-> > 
-> >> ---
-> >>  drivers/net/ethernet/stmicro/stmmac/common.h  |  1 +
-> >>  drivers/net/ethernet/stmicro/stmmac/stmmac.h  |  3 ++
-> >>  .../net/ethernet/stmicro/stmmac/stmmac_main.c | 37 +++++++++++++++++++
-> >>  .../ethernet/stmicro/stmmac/stmmac_platform.c |  8 ++++
-> >>  4 files changed, 49 insertions(+)
-> >>
-> >> diff --git a/drivers/net/ethernet/stmicro/stmmac/common.h b/drivers/net/ethernet/stmicro/stmmac/common.h
-> >> index 721c1f8e892f..b9233b09b80f 100644
-> >> --- a/drivers/net/ethernet/stmicro/stmmac/common.h
-> >> +++ b/drivers/net/ethernet/stmicro/stmmac/common.h
-> >> @@ -344,6 +344,7 @@ enum request_irq_err {
-> >>  	REQ_IRQ_ERR_ALL,
-> >>  	REQ_IRQ_ERR_TX,
-> >>  	REQ_IRQ_ERR_RX,
-> >> +	REQ_IRQ_ERR_SFTY,
-> >>  	REQ_IRQ_ERR_SFTY_UE,
-> >>  	REQ_IRQ_ERR_SFTY_CE,
-> >>  	REQ_IRQ_ERR_LPI,
-> >> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac.h b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
-> >> index 9f89acf31050..ca3d93851bed 100644
-> >> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac.h
-> >> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
-> >> @@ -31,6 +31,7 @@ struct stmmac_resources {
-> >>  	int wol_irq;
-> >>  	int lpi_irq;
-> >>  	int irq;
-> >> +	int sfty_irq;
-> >>  	int sfty_ce_irq;
-> >>  	int sfty_ue_irq;
-> >>  	int rx_irq[MTL_MAX_RX_QUEUES];
-> >> @@ -297,6 +298,7 @@ struct stmmac_priv {
-> >>  	void __iomem *ptpaddr;
-> >>  	void __iomem *estaddr;
-> >>  	unsigned long active_vlans[BITS_TO_LONGS(VLAN_N_VID)];
-> >> +	int sfty_irq;
-> >>  	int sfty_ce_irq;
-> >>  	int sfty_ue_irq;
-> >>  	int rx_irq[MTL_MAX_RX_QUEUES];
-> >> @@ -305,6 +307,7 @@ struct stmmac_priv {
-> >>  	char int_name_mac[IFNAMSIZ + 9];
-> >>  	char int_name_wol[IFNAMSIZ + 9];
-> >>  	char int_name_lpi[IFNAMSIZ + 9];
-> >> +	char int_name_sfty[IFNAMSIZ + 10];
-> >>  	char int_name_sfty_ce[IFNAMSIZ + 10];
-> >>  	char int_name_sfty_ue[IFNAMSIZ + 10];
-> >>  	char int_name_rx_irq[MTL_MAX_TX_QUEUES][IFNAMSIZ + 14];
-> >> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> >> index 47de466e432c..7d4e827dfeab 100644
-> >> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> >> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> >> @@ -3592,6 +3592,10 @@ static void stmmac_free_irq(struct net_device *dev,
-> >>  		if (priv->wol_irq > 0 && priv->wol_irq != dev->irq)
-> >>  			free_irq(priv->wol_irq, dev);
-> >>  		fallthrough;
-> >> +	case REQ_IRQ_ERR_SFTY:
-> >> +		if (priv->sfty_irq > 0 && priv->sfty_irq != dev->irq)
-> >> +			free_irq(priv->sfty_irq, dev);
-> >> +		fallthrough;
-> >>  	case REQ_IRQ_ERR_WOL:
-> >>  		free_irq(dev->irq, dev);
-> >>  		fallthrough;
-> >> @@ -3661,6 +3665,23 @@ static int stmmac_request_irq_multi_msi(struct net_device *dev)
-> >>  		}
-> >>  	}
-> >>  
-> >> +	/* Request the common Safety Feature Correctible/Uncorrectible
-> >> +	 * Error line in case of another line is used
-> >> +	 */
-> >> +	if (priv->sfty_irq > 0 && priv->sfty_irq != dev->irq) {
-> >> +		int_name = priv->int_name_sfty;
-> >> +		sprintf(int_name, "%s:%s", dev->name, "safety");
-> >> +		ret = request_irq(priv->sfty_irq, stmmac_safety_interrupt,
-> >> +				  0, int_name, dev);
-> >> +		if (unlikely(ret < 0)) {
-> >> +			netdev_err(priv->dev,
-> >> +				   "%s: alloc sfty MSI %d (error: %d)\n",
-> >> +				   __func__, priv->sfty_irq, ret);
-> >> +			irq_err = REQ_IRQ_ERR_SFTY;
-> >> +			goto irq_error;
-> >> +		}
-> >> +	}
-> >> +
-> >>  	/* Request the Safety Feature Correctible Error line in
-> >>  	 * case of another line is used
-> >>  	 */
-> >> @@ -3798,6 +3819,21 @@ static int stmmac_request_irq_single(struct net_device *dev)
-> >>  		}
-> >>  	}
-> >>  
-> >> +	/* Request the common Safety Feature Correctible/Uncorrectible
-> >> +	 * Error line in case of another line is used
-> >> +	 */
-> >> +	if (priv->sfty_irq > 0 && priv->sfty_irq != dev->irq) {
-> > 
-> >> +		ret = request_irq(priv->sfty_irq, stmmac_safety_interrupt,
-> >> +				  IRQF_SHARED, dev->name, dev);
-> > 
-> > Just noticed yesterday that stmmac_safety_interrupt() is also called
-> > from the stmmac_interrupt() handler which is supposed to be registered
-> > on the generic "mac" IRQ. Won't it cause races around the CSRs
-> > (doubtfully but still worth to note) and the errors handling
-> > (stmmac_global_err()) in case if both IRQs are raised simultaneously?
-> > At the very least it looks suspicious and worth double-checking.
-> > 
-> > I also found out that nobody seemed to care that the same handler is
-> > registered on MAC, WoL and LPI IRQ lines. Hmm, no race-related
-> > problems have been reported so far for the platforms with separate
-> > WoL/LPI IRQs. It's either a lucky coincident or the IRQs are always
-> > assigned to the same CPU or the IRQs handle is indeed free of races.
-> > In anyway it looks suspicious too. At the very least AFAICS the DMA
-> > IRQ-handler is indeed racy on the status CSR access. It isn't
-> > cleared-on-read, but write-one-to-clear. So the statistics might be
-> > calculated more than once for the same CSR state. There might be some
-> > other problems I failed to spot on the first glance.
-> > 
-> > David, Eric, Jacub, Paolo, your opinion about the note above?
-> > 
-> > -Serge(y)
-> > 
+> RISC-V starte out without support for non-coherent DMA, and high ups
+> in RISCV still told me in 2019 that RISC-V doesn't need cache
+> management instructions because no new hardware would ever not be
+> dma coherent.  Yeah, right..
+> 
+> Anyay, Linux for RISC-V has historically been coherent only and then
+> coherent default, so this option is wrong, and you need to mark
+> you platform as non-coherent by inserting dma-noncoherent somewhere.
+> 
+Conor, Christoph, Jiaxun, thanks for quick feedback!
 
-> <Suraj> We are adding common IRQ similar to already present code for correcteable/uncorrecable https://elixir.bootlin.com/linux/latest/source/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c#L3592.
-
-From that perspective your change in stmmac_request_irq_multi_msi() is
-correct, but stmmac_request_irq_single() is another story. The first
-one method implies assigning the individual IRQ handlers to all
-available lines. The later method assigns the _common_ handler to all
-the lines. The common handler already calls the Safety IRQ handler -
-stmmac_safety_feat_interrupt(). So should the safety IRQ line is
-separately available it's possible to have the Safety IRQ handlers
-executed concurrently - in framework of the common IRQ events handling
-(if safety IRQ is raised during the common IRQ being handled) and
-individual Safety IRQ. It's prune to the race condition I pointed out
-to in my message above. Did you consider that problem?
-
-> Also, we need the sfty IRQ handling as soon as the fault occured & that can only be handled if we have handler attached with sfty IRQ.
-> stmmac_interrupt() will only be triggerd when interrupt triggered for rx/tx packet .
-> while registerting with sfty IRQ will get triggered as soon as emac HW detect the fault. 
-
-Please read my comment more carefully. The safety IRQ can be raised
-during the common IRQ handling, thus the
-stmmac_safety_feat_interrupt() method might get to be concurrently
-executed.
-
--Serge(y)
-
->    
-> >> +		if (unlikely(ret < 0)) {
-> >> +			netdev_err(priv->dev,
-> >> +				   "%s: ERROR: allocating the sfty IRQ %d (%d)\n",
-> >> +				   __func__, priv->sfty_irq, ret);
-> >> +			irq_err = REQ_IRQ_ERR_SFTY;
-> >> +			goto irq_error;
-> >> +		}
-> >> +	}
-> >> +
-> >>  	return 0;
-> >>  
-> >>  irq_error:
-> >> @@ -7462,6 +7498,7 @@ int stmmac_dvr_probe(struct device *device,
-> >>  	priv->dev->irq = res->irq;
-> >>  	priv->wol_irq = res->wol_irq;
-> >>  	priv->lpi_irq = res->lpi_irq;
-> >> +	priv->sfty_irq = res->sfty_irq;
-> >>  	priv->sfty_ce_irq = res->sfty_ce_irq;
-> >>  	priv->sfty_ue_irq = res->sfty_ue_irq;
-> >>  	for (i = 0; i < MTL_MAX_RX_QUEUES; i++)
-> >> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-> >> index 70eadc83ca68..ab250161fd79 100644
-> >> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-> >> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-> >> @@ -743,6 +743,14 @@ int stmmac_get_platform_resources(struct platform_device *pdev,
-> >>  		dev_info(&pdev->dev, "IRQ eth_lpi not found\n");
-> >>  	}
-> >>  
-> >> +	stmmac_res->sfty_irq =
-> >> +		platform_get_irq_byname_optional(pdev, "sfty");
-> >> +	if (stmmac_res->sfty_irq < 0) {
-> >> +		if (stmmac_res->sfty_irq == -EPROBE_DEFER)
-> >> +			return -EPROBE_DEFER;
-> >> +		dev_info(&pdev->dev, "IRQ safety IRQ not found\n");
-> >> +	}
-> >> +
-> >>  	stmmac_res->addr = devm_platform_ioremap_resource(pdev, 0);
-> >>  
-> >>  	return PTR_ERR_OR_ZERO(stmmac_res->addr);
-> >> -- 
-> >> 2.25.1
-> >>
-> >>
+The problem is very simple:
+For non mips platforms dma_default_coherent is used at 
+of_dma_is_coherent() and device_initialize().
+of_dma_is_coherent() affects only DT devices. And we can override it 
+with "dma-coherent"/"dma-noncoherent". ACPI devices can specify by
+"attr == DEV_DMA_COHERENT". But all other devices (platform_device, usb, 
+etc..) do not have this feature. These devices will use value from 
+device_initialize(). And we have no possibility to change 
+dma_default_coherent value by disabling ARCH_DMA_DEFAULT_COHERENT.
+Moreover, changing dma_default_coherent from false to true may cause 
+regression for other devices. That is why I suggest possibility to 
+disable ARCH_DMA_DEFAULT_COHERENT by RISCV_DMA_NONCOHERENT option.
+It will works like for PPC:
+.....
+config PPC
+	bool
+	default y
+	#
+	# Please keep this list sorted alphabetically.
+	#
+	select ARCH_32BIT_OFF_T if PPC32
+	select ARCH_DISABLE_KASAN_INLINE	if PPC_RADIX_MMU
+	select ARCH_DMA_DEFAULT_COHERENT	if !NOT_COHERENT_CACHE
+.....
+Doesn't the option RISCV_DMA_NONCOHERENT say the DMA should be 
+non-coherent by default?
 
