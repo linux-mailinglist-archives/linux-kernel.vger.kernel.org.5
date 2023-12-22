@@ -1,170 +1,116 @@
-Return-Path: <linux-kernel+bounces-9629-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9639-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B47081C8B7
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 12:04:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3443381C8D1
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 12:11:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B934928A092
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 11:04:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E42EB281D6E
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 11:11:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C76F61642B;
-	Fri, 22 Dec 2023 11:04:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5717E17983;
+	Fri, 22 Dec 2023 11:11:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZLd86w9h"
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=mecka.net header.i=@mecka.net header.b="E7ei35fE"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4875DF42;
-	Fri, 22 Dec 2023 11:04:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1d427518d52so1262685ad.0;
-        Fri, 22 Dec 2023 03:04:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703243048; x=1703847848; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ccwKVzWPangyqXrlucZn9H9/x6STLFmmKbiFlyVdJGs=;
-        b=ZLd86w9hCqxRTlT8aKrVQSN7jssjxmDlyYysTWgu/65tHZURyJCFSKh2iLjDUVq5uW
-         68Jyco1wwvTxbVvz7k0SfMRs+aTjPxGUIaylZKsCBvSS/COwOWpQOHJc/NxwZrVYKI+H
-         JNsqdsxitawQrdrZQtge8UW5Tr3P2TFNadSHU+A0qeD4jEPY6K5mCKXbaNxvV6fU9dsH
-         ZZI/2uxMLYw8YbmYR7RiOVVvBlm6CJGwQVTUGGZX2n+rm1JIYBuv9XFscLJp/WZqI+g6
-         WGyHtFAFJIN7KVJkVCXdJq5pmqo1oYDu9Z64N2vzMMqEfKWRLZPCixVK2M+vUTZnDp3K
-         5MYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703243048; x=1703847848;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ccwKVzWPangyqXrlucZn9H9/x6STLFmmKbiFlyVdJGs=;
-        b=BokwkiMi817uTbZeMFJbUvn3GQPQ8jZrsLM6Qhdz+9I/izKFl76Wq4fPDh7j2LLdyO
-         JExhC8G+9Tv7PFK1yCSse6Gho1xvGREGFJAgDzchgkGVMM8UHSIn8HM4GRE1ZS41x7mC
-         H8A2OGhxgenh8AI2ReZq+wItgG7B+ZMJV1UllnCd/VACJzu7W9SkisPos1GCYQwe77uk
-         /HivkVFM2g0voh9MxYrl/N9doVoUV3cZZy+bY/IqyC5+NALeOmYOwB6onqyjoKAd3UeP
-         gkdb8VNzJOlf2KxTxvd/+ZUPQpEAWMmxc47ld8esRbU/npjh0BpSSIQSAZVX5j3WjKJr
-         CBFw==
-X-Gm-Message-State: AOJu0Ywj2kjpiXBlUF9VqalgD6CzivHxQeMB/+ff4pX310OHGm85v6SU
-	Z/y3Lwy+9Bp3h5zlzSwKrBs=
-X-Google-Smtp-Source: AGHT+IH0QZ9c+a8el4NSx+nwOrLhNLgEABgRjYUvxscb3xEa88e+Dung4gsE9CtAvyyU3mXQWWfm8g==
-X-Received: by 2002:a17:903:2344:b0:1d4:8a6:831f with SMTP id c4-20020a170903234400b001d408a6831fmr2961028plh.6.1703243048181;
-        Fri, 22 Dec 2023 03:04:08 -0800 (PST)
-Received: from g2039B650.. ([2001:da8:203:a502:3221:f470:cca0:93b2])
-        by smtp.gmail.com with ESMTPSA id ju15-20020a170903428f00b001d3ff083d58sm3187596plb.254.2023.12.22.03.04.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Dec 2023 03:04:07 -0800 (PST)
-From: Gui-Dong Han <2045gemini@gmail.com>
-To: marcel@holtmann.org,
-	johan.hedberg@gmail.com,
-	luiz.dentz@gmail.com
-Cc: linux-bluetooth@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	baijiaju1990@outlook.com,
-	Gui-Dong Han <2045gemini@gmail.com>,
-	stable@vger.kernel.org,
-	BassCheck <bass@buaa.edu.cn>
-Subject: [PATCH] Bluetooth: Fix atomicity violation in conn_info_{min,max}_age_set
-Date: Fri, 22 Dec 2023 19:04:01 +0800
-Message-Id: <20231222110401.9322-1-2045gemini@gmail.com>
-X-Mailer: git-send-email 2.34.1
+Received: from mecka.net (mecka.net [159.69.159.214])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D82B17743;
+	Fri, 22 Dec 2023 11:11:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mecka.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mecka.net
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mecka.net; s=2016.11;
+	t=1703243143; bh=0fR2LDFcxwDpap7qMyCNCyANGL/FAUTkYz5H7M+mUm8=;
+	h=From:Subject:Date:To:Cc:From;
+	b=E7ei35fEyNQLV6kQpHiNwkAdt2o4MDhvff5xMX2p+pxe6p+w8dI04tejBk5yVnzzh
+	 veVgo0e1+YojtbRNvZQx+YdqQ8PowrU1BUtbRUs7WakAfmdSFqS1qvJy/X2/vV43Fz
+	 NAzHgQ6mGnGi9cqPc0s5OgMXM+aVKCYO7tHyoxEsfZoJeFNupw9i/xbPCXx09BT8Vp
+	 SZ+7IfqRkROge97dRETC0k42t6vLUkWRf8XGS+2gzxIP/0P6OoB2Ga8uih050pDNcr
+	 j6FLVuQvOcrmsNY8DXCNMgva0zWv2R9gwd2G6PnoM/i2vMj1qGYkFNtlSKt1wKK1K3
+	 gvUh4643vzCew==
+Received: from arthur.fritz.box (unknown [185.147.11.134])
+	by mecka.net (Postfix) with ESMTPSA id 8BFC3370D3B;
+	Fri, 22 Dec 2023 12:05:42 +0100 (CET)
+From: Manuel Traut <manut@mecka.net>
+Subject: [PATCH 0/6] arm64: rockchip: Pine64 pinetab2 support
+Date: Fri, 22 Dec 2023 12:05:40 +0100
+Message-Id: <20231222-pinetab2-v1-0-e148a7f61bd1@mecka.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAIRthWUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDI2NDIyMj3YLMvNSSxCQj3bTERHPzVAPDlCSzNCWg8oKi1LTMCrBR0bG1tQA
+ RoX8xWgAAAA==
+To: Neil Armstrong <neil.armstrong@linaro.org>, 
+ Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>, 
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+ Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>, 
+ Sandy Huang <hjc@rock-chips.com>, Mark Yao <markyao0591@gmail.com>, 
+ Diederik de Haas <didi.debian@cknow.org>, 
+ Segfault <awarnecke002@hotmail.com>, Arnaud Ferraris <aferraris@debian.org>
+Cc: dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+ linux-rockchip@lists.infradead.org, Manuel Traut <manut@mecka.net>
+X-Mailer: b4 0.12.4
 
-In conn_info_min_age_set():
-	if (val == 0 || val > hdev->conn_info_max_age)
-		return -EINVAL;
-	hci_dev_lock(hdev);
-	hdev->conn_info_min_age = val;
-	hci_dev_unlock(hdev);
+This adds support for the BOE TH101MB31IG002 LCD Panel used in Pinetab2 [1] and
+Pinetab-V [2] as well as the devictrees for the Pinetab2 v0.1 and v2.0.
 
-In conn_info_max_age_set():
-	if (val == 0 || val < hdev->conn_info_min_age)
-		return -EINVAL;
-	hci_dev_lock(hdev);
-	hdev->conn_info_max_age = val;
-	hci_dev_unlock(hdev);
+The BOE LCD Panel patch was retrieved from [3]. The function-name prefix has
+been adapted and the LCD init section was simplified.
 
-The atomicity violation occurs due to concurrent execution of set_min and
-set_max funcs which may lead to inconsistent reads and writes of the min
-value and the max value. The checks for value validity are ineffective as
-the min/max values could change immediately after being checked, raising
-the risk of the min value being greater than the max value and causing
-invalid settings.
+The Pinetab2 devicetree patch was retrieved from [4]. Some renaming was needed
+to pass the dtb-checks, the brightness-levels are specified as range and steps
+instead of a list of values.
 
-This possible bug is found by an experimental static analysis tool
-developed by our team, BassCheck[1]. This tool analyzes the locking APIs
-to extract function pairs that can be concurrently executed, and then
-analyzes the instructions in the paired functions to identify possible
-concurrency bugs including data races and atomicity violations. The above
-possible bug is reported when our tool analyzes the source code of
-Linux 5.17.
+The last to patches fix some dtb-checker warnings that showed up with the new
+device-trees.
 
-To resolve this issue, it is suggested to encompass the validity checks
-within the locked sections in both set_min and set_max funcs. The
-modification ensures that the validation of 'val' against the
-current min/max values is atomic, thus maintaining the integrity of the
-settings. With this patch applied, our tool no longer reports the bug,
-with the kernel configuration allyesconfig for x86_64. Due to the lack of
-associated hardware, we cannot test the patch in runtime testing, and just
-verify it according to the code logic.
+[1] https://wiki.pine64.org/wiki/PineTab2
+[2] https://wiki.pine64.org/wiki/PineTab-V
+[3] https://salsa.debian.org/Mobian-team/devices/kernels/rockchip-linux/-/blob/mobian-6.6/debian/patches/display/0018-drm-panel-add-BOE-TH101MB31IG002-28A-driver.patch?ref_type=heads
+[4] https://salsa.debian.org/Mobian-team/devices/kernels/rockchip-linux/-/blob/mobian-6.6/debian/patches/device-tree/0134-arch-arm64-add-Pine64-PineTab2-device-trees.patch?ref_type=heads
 
-[1] https://sites.google.com/view/basscheck/
-
-Fixes: 40ce72b1951c5 ("Bluetooth: Move common debugfs file creation ...")
-Cc: stable@vger.kernel.org
-Reported-by: BassCheck <bass@buaa.edu.cn>
-Signed-off-by: Gui-Dong Han <2045gemini@gmail.com>
+Signed-off-by: Manuel Traut <manut@mecka.net>
 ---
- net/bluetooth/hci_debugfs.c | 16 ++++++++++------
- 1 file changed, 10 insertions(+), 6 deletions(-)
+Manuel Traut (4):
+      dt-bindings: display: panel: Add BOE TH101MB31IG002-28A panel
+      dt-bindings: arm64: rockchip: Add Pine64 Pinetab2
+      arm64: dts: rockchip: Fix some dtb-check warnings
+      dt-bindings: display: rockchip: dw-hdmi: Add missing sound-dai-cells property
 
-diff --git a/net/bluetooth/hci_debugfs.c b/net/bluetooth/hci_debugfs.c
-index 6b7741f6e95b..d4ce2769c939 100644
---- a/net/bluetooth/hci_debugfs.c
-+++ b/net/bluetooth/hci_debugfs.c
-@@ -217,11 +217,13 @@ DEFINE_SHOW_ATTRIBUTE(remote_oob);
- static int conn_info_min_age_set(void *data, u64 val)
- {
- 	struct hci_dev *hdev = data;
--
--	if (val == 0 || val > hdev->conn_info_max_age)
-+	
-+	hci_dev_lock(hdev);
-+	if (val == 0 || val > hdev->conn_info_max_age) {
-+		hci_dev_unlock(hdev);
- 		return -EINVAL;
-+	}
- 
--	hci_dev_lock(hdev);
- 	hdev->conn_info_min_age = val;
- 	hci_dev_unlock(hdev);
- 
-@@ -245,11 +247,13 @@ DEFINE_DEBUGFS_ATTRIBUTE(conn_info_min_age_fops, conn_info_min_age_get,
- static int conn_info_max_age_set(void *data, u64 val)
- {
- 	struct hci_dev *hdev = data;
--
--	if (val == 0 || val < hdev->conn_info_min_age)
-+	
-+	hci_dev_lock(hdev);
-+	if (val == 0 || val < hdev->conn_info_min_age) {
-+		hci_dev_unlock(hdev);
- 		return -EINVAL;
-+	}
- 
--	hci_dev_lock(hdev);
- 	hdev->conn_info_max_age = val;
- 	hci_dev_unlock(hdev);
- 
+Segfault (2):
+      drm/panel: Add driver for BOE TH101MB31IG002-28A panel
+      arm64: dts: rockchip: Add devicetree for Pine64 Pinetab2
+
+ .../devicetree/bindings/arm/rockchip.yaml          |    8 +
+ .../display/panel/boe,th101mb31ig002-28a.yaml      |   73 ++
+ .../display/rockchip/rockchip,dw-hdmi.yaml         |    4 +
+ arch/arm64/boot/dts/rockchip/Makefile              |    2 +
+ .../boot/dts/rockchip/rk3566-pinetab2-v0.1.dts     |   26 +
+ .../boot/dts/rockchip/rk3566-pinetab2-v2.0.dts     |   46 +
+ arch/arm64/boot/dts/rockchip/rk3566-pinetab2.dtsi  | 1032 ++++++++++++++++++++
+ arch/arm64/boot/dts/rockchip/rk356x.dtsi           |    5 +-
+ drivers/gpu/drm/panel/Kconfig                      |   11 +
+ drivers/gpu/drm/panel/Makefile                     |    1 +
+ .../gpu/drm/panel/panel-boe-th101mb31ig002-28a.c   |  307 ++++++
+ 11 files changed, 1513 insertions(+), 2 deletions(-)
+---
+base-commit: 24e0d2e527a39f64caeb2e6be39ad5396fb2da5e
+change-id: 20231222-pinetab2-faa77e01db6f
+
+Best regards,
 -- 
-2.34.1
+Manuel Traut <manut@mecka.net>
 
 
