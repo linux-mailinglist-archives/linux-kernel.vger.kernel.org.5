@@ -1,133 +1,107 @@
-Return-Path: <linux-kernel+bounces-10029-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10030-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD16F81CEEA
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 20:43:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E37081CEEC
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 20:48:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6C00D1F23D88
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 19:43:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C002E1C22A73
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 19:48:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8F7A2E658;
-	Fri, 22 Dec 2023 19:43:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D0392E657;
+	Fri, 22 Dec 2023 19:48:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="qvUfuaMH"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AG+ag3tE"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 529E12E821;
-	Fri, 22 Dec 2023 19:43:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=gKd+L66yod8uEFMOkkJsz50fKS7oNh0JqJUaQ5OiA70=; b=qvUfuaMHAQaYqMURVQygCfszfG
-	9QT7QwkPrtisjT+uboyWdYogLKeA6pEQo3JoPX45oIKIVjLOmnnENQS63rKdMoY4Gtzqpx8CjX4yp
-	RYYJQFgtvBzHai73RMxlDyVNDKuiFnYPDo3vp9ttaHrIL1t11F+0A+qZh9AxZSFeQ9GVsO8g3tjkd
-	JCpjmZ5m604zNxb3HgwF3ACgNIkopGDOqIAaiPIVm8jtkLOLt+AT/YNPRiZfUX2LocNmmCsznuxlg
-	dSZ8/86tisux0kY54VR7z4KRr+GhuYMRE/4lOIAFbM63RIzaHG7EHcz6n/Ejfdipx9T1Eb9XbJE75
-	gzf9eHgQ==;
-Received: from [50.53.46.231] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1rGlQf-006kB4-0P;
-	Fri, 22 Dec 2023 19:43:29 +0000
-Message-ID: <a3b15524-8e50-4e50-b3d3-95fd2092ec8d@infradead.org>
-Date: Fri, 22 Dec 2023 11:43:28 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2473D2E648
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 19:48:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-5e78d94855fso20630837b3.0
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 11:48:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703274516; x=1703879316; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=8hDUXP6yXJ35Qqh7bUvtO0oNx8YXg3fARmULn6a4HEg=;
+        b=AG+ag3tEbAMW0Y/Z2cq7wAf/AUdTT3KPGmb0Us8d6+9w9AT7ieuYjzb6LofC4j1kBF
+         ERpffFRBg3gOcdGdbaIjbrPOBeiJ+onirmRzFgN2W7aoh549f35wetvSrRzLbWmqZouS
+         QXFLrIyXfhLBFwdQ2DxQTrs+wo/6PpuX4VhkGn9jN3flt8eHMbBUGRxlQmZR+qBak1gT
+         wZ3oqaXiKRGfnUcVbKGb09q3WjHFm13K0zPdZbkxYF9YIA76vn9HCgObHUEFuopgikv2
+         nyIVkpF392roKzVwn+TpOvYzkr/6P290I/ey+eKMhNKRvfmGxFlmXydq0m8HWeOXuhcq
+         c0tw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703274516; x=1703879316;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8hDUXP6yXJ35Qqh7bUvtO0oNx8YXg3fARmULn6a4HEg=;
+        b=LnIVM+Zf98sveXqSLjnAf9f3M5Hu2qYeoGryTpmXi5Cquh7qjy+oR7lqAiQttLBHKh
+         N/BdJUkjRUIx5BABLwkeRCF9U1FnJGhU0LlCqb1vZfT3b4P9Asp1dMO37E8o0UAyMHl9
+         YgNCpSfhaMR+Mc/WY1Pr40EZXFoXvUyXwMbR6IlP8UW9tAGaLrSjonwHnAAt1J7oslmd
+         U7e4AY7k3CZkslFWr+nmflLnifD/PKLCT/oQPJyxL2IS1p/epvJz3gP9zKBjhB/2dZBe
+         brz7SvnuvnJB2ElvdJ1GbMJtx9QD4xMXsttRT9YtM77EimhGTXY7wcHesG2ifB+ja4ta
+         y27A==
+X-Gm-Message-State: AOJu0Ywyp1Og1Ydt6tjHimcexz1mM/b0rmEA9UP5vjyQZLlzWWsf4QrR
+	eUS8MoaY6X6YQSPT2KXIf8DH6dWhZ5E=
+X-Google-Smtp-Source: AGHT+IEHhysxook3n5bdJJuN8GicTWwVVCFBUK5CxPjd+vq08oFZx3+MWdAag1vqEb5ozbVSnaKnUw==
+X-Received: by 2002:a81:6d44:0:b0:5e8:a71:aeea with SMTP id i65-20020a816d44000000b005e80a71aeeamr1554095ywc.89.1703274515823;
+        Fri, 22 Dec 2023 11:48:35 -0800 (PST)
+Received: from localhost ([2601:344:8301:57f0:45f9:a891:8661:9fbc])
+        by smtp.gmail.com with ESMTPSA id a187-20020a818ac4000000b005e4a023fcf3sm2100426ywg.92.2023.12.22.11.48.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Dec 2023 11:48:35 -0800 (PST)
+Date: Fri, 22 Dec 2023 11:48:34 -0800
+From: Yury Norov <yury.norov@gmail.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: linux-kernel@vger.kernel.org,
+	Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Subject: Re: [PATCH v1 1/1] bitmap: Step down as a reviewer
+Message-ID: <ZYXoEtr9dQQnQXw/@yury-ThinkPad>
+References: <20231222140402.2887556-1-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] tty/sysrq: Dump kernel ring buffer messages via sysrq
-Content-Language: en-US
-To: Sreenath Vijayan <sreenath.vijayan@sony.com>
-Cc: anandakumar.balasubramaniam@sony.com, corbet@lwn.net,
- gregkh@linuxfoundation.org, jirislaby@kernel.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
- taichi.shimoyashiki@sony.com
-References: <cc5c5ceb-cb07-4fb3-95f0-c114dd12a755@infradead.org>
- <20231222115732.1683728-3-sreenath.vijayan@sony.com>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20231222115732.1683728-3-sreenath.vijayan@sony.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231222140402.2887556-1-andriy.shevchenko@linux.intel.com>
 
+On Fri, Dec 22, 2023 at 04:04:02PM +0200, Andy Shevchenko wrote:
+> Too many things are going on, and reviewing BITMAP related code
+> seems not the best I can do, hence step down as a reviewer of
+> the BITMAP library.
 
+Sad to hear that. You're always welcome back!
 
-On 12/22/23 03:44, Sreenath Vijayan wrote:
-> On Thu, Dec 21, 2023 at 03:12:46PM -0800, Randy Dunlap wrote:
->>
->>
->> On 12/21/23 08:52, Greg KH wrote:
->>> On Thu, Dec 21, 2023 at 07:09:53PM +0530, Sreenath Vijayan wrote:
->>>> When terminal is unresponsive, one cannot use dmesg to view kernel
->>>> ring buffer messages. Also, syslog services may be disabled,
->>>> to check them after a reboot, especially on embedded systems.
->>>> In this scenario, dump the kernel ring buffer messages via sysrq
->>>> by pressing sysrq+D.
->>>>
->>>> Signed-off-by: Sreenath Vijayan <sreenath.vijayan@sony.com>
->>>> Signed-off-by: Shimoyashiki Taichi <taichi.shimoyashiki@sony.com>
->>>> ---
->>>>  Documentation/admin-guide/sysrq.rst |  2 ++
->>>>  drivers/tty/sysrq.c                 | 43 ++++++++++++++++++++++++++++-
->>>>  2 files changed, 44 insertions(+), 1 deletion(-)
->>>>
->>>> diff --git a/Documentation/admin-guide/sysrq.rst b/Documentation/admin-guide/sysrq.rst
->>>> index 2f2e5bd440f9..464c4e138b9d 100644
->>>> --- a/Documentation/admin-guide/sysrq.rst
->>>> +++ b/Documentation/admin-guide/sysrq.rst
->>>> @@ -161,6 +161,8 @@ Command	    Function
->>>>              will be printed to your console. (``0``, for example would make
->>>>              it so that only emergency messages like PANICs or OOPSes would
->>>>              make it to your console.)
->>>> +
->>>> +``D``	    Dump the kernel ring buffer
->>>>  =========== ===================================================================
->>>
->>> Nit, this doesn't line up anymore :(
->>
->> Yes, that will cause a docs build warning.
+Thanks,
+Yury
+
 > 
-> Thank you for the review comments. When I apply the patch, I don't
-> notice any alignment issues in the document. I tried with multiple
-> editors(vim,emacs) and the combination of tabs and spaces looks to
-> be the same as in the existing lines above the newly added line.
-> Tried "make htmldocs" and no warnings were observed and the html
-> page looks ok. Please suggest the modifications to be done.
-
-You are correct. Sorry for the confusion. It can be messy trying to
-read/review a diff when there is alignment involved.
-
->>
->> Also, can you be more explicit about which ring buffer this patch
->> is referring to, please.
->>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  MAINTAINERS | 1 -
+>  1 file changed, 1 deletion(-)
 > 
-> We see the term "kernel ring buffer" used throughout the documents
-> and commit messages, and thought it is the right term. Even dmesg
-> manual page uses it. Would "kernel log buffer" be a more appropriate
-> term? Please share your suggestion.
-
-Documentation/admin-guide/kernel-parameters.txt refers to:
-	ftrace ring buffer
-	printk ring buffer
-	tracing ring buffer
-so saying "kernel ring buffer" is not very specific.
-
-I expect that you are referring to the printk ring buffer, although
-I would prefer to call it something like the console log buffer (FWIW).
-
-thanks.
--- 
-#Randy
-https://people.kernel.org/tglx/notes-about-netiquette
-https://subspace.kernel.org/etiquette.html
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 8b686a9fa068..2e0e74681511 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -3580,7 +3580,6 @@ F:	include/uapi/linux/bfs_fs.h
+>  
+>  BITMAP API
+>  M:	Yury Norov <yury.norov@gmail.com>
+> -R:	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+>  R:	Rasmus Villemoes <linux@rasmusvillemoes.dk>
+>  S:	Maintained
+>  F:	include/linux/bitfield.h
+> -- 
+> 2.43.0.rc1.1.gbec44491f096
 
