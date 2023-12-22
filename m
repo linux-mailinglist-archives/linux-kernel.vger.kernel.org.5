@@ -1,112 +1,154 @@
-Return-Path: <linux-kernel+bounces-9770-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9771-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DFB281CB26
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 15:12:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BDF6A81CB29
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 15:14:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B3A76B2144D
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 14:12:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 01A0B1C223CD
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 14:14:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65EB21C6B6;
-	Fri, 22 Dec 2023 14:12:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8C3D1CF94;
+	Fri, 22 Dec 2023 14:14:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="STpIxPPR"
+	dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="kIVkH7yD";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="AiPCtw9s"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94BE21C693;
-	Fri, 22 Dec 2023 14:12:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1d41bb4da91so3226665ad.0;
-        Fri, 22 Dec 2023 06:12:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703254347; x=1703859147; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=TskB6em0ocvTargEDFcD5G0O4xeSFVLyNkdQ5H3hjGo=;
-        b=STpIxPPRKRz772kmCfEG23b4jJKpXzdwUxuNz8SJqjAFdYaKTlc2uvTL5Ni9UOmsBf
-         H+HAuP65lXnG64Vd9OriESgsb1M0A7+yJzIoy0LWzsoTq2vrxt6xgE3n6ee+2XXaKC5S
-         xyiChlwtfBG3c2vD2bGxPIf5If5Skpf/ZJFLYxCut++XsSzNRxiBwoaa7vNXlM0AYVpp
-         rTXqpvLiYT6bo4Bu460584zyiSuvObs1OT8scLrTsJpxcuyUBAG7GBqoD1J2PfcCYr5i
-         FBin1cP9Ljl3LFrDstUSPsMKIVX5Uij7saKPji1I+zLMcyLU5k/Vy0mU/8CLKN5jT/eZ
-         RHdA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703254347; x=1703859147;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=TskB6em0ocvTargEDFcD5G0O4xeSFVLyNkdQ5H3hjGo=;
-        b=i37nBC+UEYhvBF6vljHhKwyPIVt3q4MP8Da+L8zf0/jFaO4dfYLJmA4WMiI15yPQUy
-         9pZZram2x3i2wx2wgXCMJPWNAG2ZEnXnq1P7pxmpkGHVkW4gLyMKUvDFecQEHyxI+goR
-         DJPde5yqyVxAZAuszO4+9tlEhjlhiJJnCLGn9fzifpnysC/yFrHDCkOhy2EJPtEk6nTR
-         iefXF8PZtpxcf1TLWDju3TqFmFUWPHqWwnv1YVvfyzfsRU6FZT2oR2tUdEhcmGe9L3Om
-         3BPMCrg5nNnaZpflv0gOTR5AZOZ+FNcD1toT7KUouQkjnPu6sqqjBsetGBiQvLJvDhgz
-         X/Ow==
-X-Gm-Message-State: AOJu0YyrTtRa8jFZDJFVkaAuAH5dil2tQO5MkwuMTnhDKRLQIi/+1XlQ
-	g5rRJpQS7dBRIrKEHeIRGRw=
-X-Google-Smtp-Source: AGHT+IFxLt9bLrpqg6GFD0HTlBdFwTP/cz4FXzA9un2OiN48hpbC1FvfopisJQJ2JP4kAFYSqsQF4w==
-X-Received: by 2002:a17:90b:517:b0:28b:e74b:6c05 with SMTP id r23-20020a17090b051700b0028be74b6c05mr799869pjz.24.1703254346739;
-        Fri, 22 Dec 2023 06:12:26 -0800 (PST)
-Received: from rigel (60-241-235-125.tpgi.com.au. [60.241.235.125])
-        by smtp.gmail.com with ESMTPSA id sh18-20020a17090b525200b0028ae9cb6ce0sm7673652pjb.6.2023.12.22.06.12.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Dec 2023 06:12:26 -0800 (PST)
-Date: Fri, 22 Dec 2023 22:12:21 +0800
-From: Kent Gibson <warthog618@gmail.com>
-To: Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: andy@kernel.org, linux-kernel@vger.kernel.org,
-	linux-gpio@vger.kernel.org, linus.walleij@linaro.org
-Subject: Re: [PATCH v2 5/5] gpiolib: cdev: replace locking wrappers for
- gpio_device with guards
-Message-ID: <ZYWZRWvwBTdKNHF-@rigel>
-References: <20231221012040.17763-1-warthog618@gmail.com>
- <20231221012040.17763-6-warthog618@gmail.com>
- <ZYReZI_TnX1MyvP7@smile.fi.intel.com>
- <ZYTcn-UX0TUM5P9O@rigel>
- <CAMRc=MfNme1VavLNnX9whjgohNCs4Q5qADByX8c_tdw05UVYUA@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC5481C693
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 14:14:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sakamocchi.jp
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+	by mailout.nyi.internal (Postfix) with ESMTP id CD7395C00E0;
+	Fri, 22 Dec 2023 09:14:22 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Fri, 22 Dec 2023 09:14:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
+	 h=cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm2; t=1703254462; x=1703340862; bh=oVt+LAFbFg
+	KG82TEtbcSAhVvjHyj9SbZbARJs8bxpHc=; b=kIVkH7yDE4jU+JW9SAUuXyc9DA
+	JXWW8k0mOWh2kQZfANdFqGi2dPiyn/Eikt1XMsQZ5ZO9vWOQVQagzdllFfQave9Y
+	UNqdIO4vUFJ/kyrOhlbedNRZCb6k43J+Posx/VezgPMIaxCDsAPZtSe1APGaVPdg
+	foEksd7fVlrju5+gnbYVZivaTCI15pooFmyRKb44qNaNk7VbFhHL8ql3Duoj+Pbp
+	CxRgJ2ZbAQMCjK8DNa5/NENMlgyjW+fuIIhr/Y5J9EA8Hd/xliH4zRoU16PfZ7Sd
+	EMgrtLCN3ua+BvTk2Qag1hvTXOyj8Da+4XnFX4YdzUDY6vcPmjhzV4WfZGAQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1703254462; x=1703340862; bh=oVt+LAFbFgKG82TEtbcSAhVvjHyj
+	9SbZbARJs8bxpHc=; b=AiPCtw9sMXjAp9lCuZab5e4lTZDwZ+6WRLkagoavVBnV
+	xYUShCYxhv3VyhKRO0faPvlo4Y/9P9THiSs7L6blVNuWmT/u7Dg0KXP6ZCnoFrZP
+	PARaDPUCFKncfmLApupwc4nszr2JTclJZuDDcTE0jZAd6QESpTPD9PKmBmNwlLpY
+	Qqosf3ap9Q+IChia6CK21Z2+zF0FCyd2nuC+jNu9+nXSBe/hB6UPtiqmSAi3V7Zg
+	cF4m1rJie5MgR7FQz+QFjNDB84wv2x9Qk62asm0Q1Rsfenu/t2vBSZgPRqW2RHUa
+	GkEtFWz9Zdh9sUpu1WM8JdtNQz/xkzljmkf0Vef6eQ==
+X-ME-Sender: <xms:vpmFZZPgoqh_7SuCO1NToy1OrnLrwl7bGLGweBq2SfdiFK7qbvdCMg>
+    <xme:vpmFZb_Ml-zkBhxBXEflLCcK4QvByvYmiHHaITxHCFTDBfQYnU1JySNRBugRi__O4
+    nXmYck7ykSaH-eZl60>
+X-ME-Received: <xmr:vpmFZYQfCniqiymZasnstShqWzelVx3b3QXUCeerxTFdAx7rQIHYY1ep95QY07CUxBpCJiCIIgGRQ9upsInxPo64nHNFBTfxG60>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvddujedgiedtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucgoufhushhpvggtthffohhmrghinhculdegledmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefvrghkrghs
+    hhhiucfurghkrghmohhtohcuoehoqdhtrghkrghshhhisehsrghkrghmohgttghhihdrjh
+    hpqeenucggtffrrghtthgvrhhnpedtvefghfevieejhfejueeileekieeiteeuhffhgeej
+    feettdfhjeevhfevueejfeenucffohhmrghinhepkhgvrhhnvghlrdhorhhgpdgrrhgthh
+    hivhgvrdhorhhgpddufeelgehtrgdrohhrghdpshhouhhrtggvfhhorhhgvgdrnhgvthen
+    ucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehoqdhtrg
+    hkrghshhhisehsrghkrghmohgttghhihdrjhhp
+X-ME-Proxy: <xmx:vpmFZVtvM_9KHGoF1fcN2LTteMJz5Eoq_DLBKRP5eNBkkIYSs0ymPA>
+    <xmx:vpmFZRfwGa12bNRA_2HSzwcPFbDyfwF4LK6irfeIwVjghWcG3xfuRA>
+    <xmx:vpmFZR2A2slpqMALsSASM4wn0VtU9n_Pk5QdR7qnr-lcFROM1l4k5A>
+    <xmx:vpmFZRkpQnWMmKsn37NK8LMJpmnupGibR5OaTTTSTr53rn3NGRgpmw>
+Feedback-ID: ie8e14432:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 22 Dec 2023 09:14:21 -0500 (EST)
+Date: Fri, 22 Dec 2023 23:14:18 +0900
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: linux1394-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/8] firewire: core: support legacy layout of
+ configuration ROM for AV/C device
+Message-ID: <20231222141418.GA625065@workstation.local>
+Mail-Followup-To: linux1394-devel@lists.sourceforge.net,
+	linux-kernel@vger.kernel.org
+References: <20231221134849.603857-1-o-takashi@sakamocchi.jp>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMRc=MfNme1VavLNnX9whjgohNCs4Q5qADByX8c_tdw05UVYUA@mail.gmail.com>
+In-Reply-To: <20231221134849.603857-1-o-takashi@sakamocchi.jp>
 
-On Fri, Dec 22, 2023 at 03:05:41PM +0100, Bartosz Golaszewski wrote:
-> On Fri, Dec 22, 2023 at 1:47 AM Kent Gibson <warthog618@gmail.com> wrote:
-> >
-> > On Thu, Dec 21, 2023 at 05:48:52PM +0200, Andy Shevchenko wrote:
-> > > On Thu, Dec 21, 2023 at 09:20:40AM +0800, Kent Gibson wrote:
-> > > > Replace the wrapping functions that inhibit removal of the gpio chip
-> > >
-> > > GPIO
-> > >
-> >
-> > Bart, I don't care either way and not enough to respin a v3.
-> > If it bothers you could you fix it on the way in?
-> >
->
-> Sure!
->
-> > That is if you aren't too busy reversing xmas trees ;-).
-> >
->
-> Joke's on you, I actually do find them easier to read and try to use
-> them everywhere in new code I write. :)
->
+On Thu, Dec 21, 2023 at 10:48:41PM +0900, Takashi Sakamoto wrote:
+> Hi,
+> 
+> This series of change is take 2 of my previous post[1].
+> 
+> Current core function of Linux FireWire subsystem has support for legacy
+> layout of configuration ROM, described in annex of 1394TA document[2].
+> However, in a point of device attributes (e.g. nodes in sysfs), there
+> are differences between devices with the legacy and standard layout of
+> configuration ROM. The differences bring some inconveniences to users[3].
+> The series includes changes to solve them.
+> 
+> The series includes changes relevant to driver matching procedure and
+> notification to user space, thus could easily bring functional regression.
+> For safe, the series includes some KUnit applications to test the change.
+> 
+> However, backward incompatibility is inevitable due to change of modalias
+> for device corresponding to unit. As long as I investigated, any unit
+> drivers in kernel are not affected by the change. Additionally, less
+> applications in user space are not as well. I think we can be optimistic
+> to the regression.
+> 
+> Changes from v1 series:
+> * fix evaluation of uninitialized variable in 7th patch
+> 
+> [1] [PATCH 0/8] firewire: core: support legacy layout of configuration ROM
+>     for AV/C device
+> https://lore.kernel.org/lkml/20231220041806.39816-1-o-takashi@sakamocchi.jp/
+> [2] Configuration ROM for AV/C Devices 1.0 (December 12, 2000, 1394
+>     Trading Association, TA Document 1999027)
+> https://web.archive.org/web/20210216003030/http://1394ta.org/wp-content/uploads/2015/07/1999027.pdf
+> [3] [PATCH] Fix missing sysfs vendor/model entries for some devices
+> https://sourceforge.net/p/linux1394/mailman/message/55802731/
+> 
+> 
+> Takashi Sakamoto (8):
+>   firewire: core: adds constant qualifier for local helper functions
+>   firewire: core: replace magic number with macro
+>   firewire: test: add KUnit test for device attributes
+>   firewire: test: add test of device attributes for simple AV/C device
+>   firewire: test: add test of device attributes for legacy AV/C device
+>   firewire: core: detect numeric model identifier for legacy layout of
+>     configuration ROM
+>   firewire: core: detect model name for legacy layout of configuration
+>     ROM
+>   firewire: core: change modalias of unit device with backward
+>     incompatibility
+> 
+>  drivers/firewire/.kunitconfig            |   1 +
+>  drivers/firewire/Kconfig                 |  16 ++
+>  drivers/firewire/core-device.c           | 127 +++++++++---
+>  drivers/firewire/device-attribute-test.c | 251 +++++++++++++++++++++++
+>  4 files changed, 368 insertions(+), 27 deletions(-)
+>  create mode 100644 drivers/firewire/device-attribute-test.c
 
-Oh, I agree - it is more readable.  It just seems very timely that Andy
-keeps griping about them not being inverted.
+Applied the above patches to for-next branch[1]. Thanks for your reviewing.
 
-Cheers,
-Kent.
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/ieee1394/linux1394.git/log/?h=for-next
+
+Takashi Sakamoto
 
