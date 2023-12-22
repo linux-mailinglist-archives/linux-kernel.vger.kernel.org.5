@@ -1,96 +1,127 @@
-Return-Path: <linux-kernel+bounces-9981-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9982-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFA6681CE18
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 18:50:41 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4760D81CE1E
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 18:51:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ABE32289812
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 17:50:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DB49CB210B7
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 17:51:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 060A22E652;
-	Fri, 22 Dec 2023 17:49:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F35582C194;
+	Fri, 22 Dec 2023 17:51:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="V3DMJsVq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Nr2eYg5X"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E70052E820
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 17:49:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-5e7f0bf46a2so21291637b3.1
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 09:49:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703267355; x=1703872155; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Utm+2yHkG3fZSiIHEUczkFxwCnfccH1LyLjodi1y870=;
-        b=V3DMJsVqD3poFGsdZPDxaA0VZAXZ0g7FY63+XBwb34p7a8SRB4sZjzbX4z7+mFMqxx
-         VqH4WAzfEIPccs8eZXBn4tz5sPFK9KEyssVBGyZZ3MdsJL9DAbv4XXTPa15asDOi9jql
-         CVjdS+HT42JkJ/mMh9IzS8h2zDeaeKrRhV9eYlff/HLrf6PGW+a/1kxznwUlEbKwEPii
-         NQPNqMe3p16mo7oAGR+Hla6b/IXwiQQmyx+8jlfHGULJNV8D2AXgOOa8lxffTen2s+3e
-         2DCYt7BiKmxvv+cFi5b1N+/jlzFQTi3LQn0SXmS190DrP+p6qv8Tx7lCSRHVXpQJsqkR
-         Q+ng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703267355; x=1703872155;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Utm+2yHkG3fZSiIHEUczkFxwCnfccH1LyLjodi1y870=;
-        b=D+AYDZCi+wS/J7kjOz9Q8daNXR8w/uqrma3zbsDcTpz06eMYdwzLwJMocHT9kUkshE
-         VQ9vCnS3OkNEHlFte0GqVH5r6g4yrsMH5AETsKE9EtsasrfzlU8M5ygnnQhGxqwDiQSt
-         lF86U3V4XC1Sb5nzSDWD+6t17U3akA/A7TX4+j494rKbK8kY6+w7zemPmfVzM5HxyuhO
-         6slY6wUFx+ohWNBa4XzRjaV849LYj1NOyOQlHwVNRb2aQqjmXyfXAGlJvXjoEB+xPsaF
-         ipLtkj4IK9MC/+b/U6o1U/gqbzxYVb5jEYPHHM+L7nGqi3dr8NJiqO3XWjg6d1kjj8vm
-         6JyQ==
-X-Gm-Message-State: AOJu0YxYaiFHtXLjWgm/s7YY+VLKqXuogSZ5fTKF/Bn9YwnU2JrfNssc
-	WczGtNn986GSyqVIdjwRTgoh1nWgyfudwfpnHy5gR+XS6gssuw==
-X-Google-Smtp-Source: AGHT+IFD8DHS9ixaA6LWB1+W401PUdDSE/BUGM5RkXc8LBSOg92SuxWffRwD9VeK6wNjEMwVp7gvdTv/Ep2A4HiW3LQ=
-X-Received: by 2002:a81:8603:0:b0:5d7:1941:3560 with SMTP id
- w3-20020a818603000000b005d719413560mr1778094ywf.71.1703267354970; Fri, 22 Dec
- 2023 09:49:14 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3730F28E0A;
+	Fri, 22 Dec 2023 17:51:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98A71C433B6;
+	Fri, 22 Dec 2023 17:51:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703267492;
+	bh=XYkTLXz5sCIMHIvk5gdWCMmheYIQY9KRL0JQbfxvslI=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=Nr2eYg5XhFfecvofEEo9kZFq7DfnsBe+/6hFphrLrcFbiu7c7WohO4GUR/jhpV7Ts
+	 Xs5eaKFHowaj6xgl+jE5q0jx0z/HNIQ1nct/VWhFEWzCDDp6Bm400mZA6T2psQRlOM
+	 Zf/WwftRTXv+6CRkT0KjsGSFsB89ORKE6xcGE9MEKiHj3ICkyds4QP3TVOt4PUQG3R
+	 nvZNHkj6BMBJKbx4RNR6UR5pVfiXQA/B+DL7UJgH3ngfbUW4p1AB5h4zzuPLDkbx6U
+	 T61IC0JFKzF6b2WWUY33j6Oj/lU04ASLBu/XPn32PgQ8gnxQpekD+3SEfx+z4+zdID
+	 0wDD5qg/jSHFw==
+Received: by mail-ot1-f49.google.com with SMTP id 46e09a7af769-6dbbef36fe0so827781a34.2;
+        Fri, 22 Dec 2023 09:51:32 -0800 (PST)
+X-Gm-Message-State: AOJu0YyaErOZanNI8PuuWe5WHBhJXv3vpjBukLu70xnVNGZ3H0Oj+PfP
+	TjcWC6tFYx1vD5WSfqUCBkLnVkqpDGUaASO/RJA=
+X-Google-Smtp-Source: AGHT+IEdTqRIJ7Gv05JO4Bo5uaKKyusxndbX6ra2AjsNcR1TKiHk5jtMvR8vQ+0RXHbnQwbv3GodgDg+2HqbVSvskA0=
+X-Received: by 2002:a05:6870:b4a0:b0:204:5a14:c4c6 with SMTP id
+ y32-20020a056870b4a000b002045a14c4c6mr340753oap.50.1703267491808; Fri, 22 Dec
+ 2023 09:51:31 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231221175527.2814506-1-andriy.shevchenko@linux.intel.com>
- <ZYTihbWMcHMHSkC_@rigel> <ZYWDij-J1YruTIM7@smile.fi.intel.com>
- <ZYWHjq_7PnwO27ro@rigel> <CAMRc=McPzQyR1J5Mhn7_cBrWEcqz2JKg7t8CpjHx6jgVEnYBvA@mail.gmail.com>
- <ZYWYZ6Ys3hSb4IOe@rigel> <CACMJSeu-bS+MpP8HCcD74w0j6vFt821bpgth5LHpqq-fHnEe1w@mail.gmail.com>
- <ZYWZ4yhqzTF8rShe@rigel>
-In-Reply-To: <ZYWZ4yhqzTF8rShe@rigel>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Fri, 22 Dec 2023 18:49:03 +0100
-Message-ID: <CACRpkdZrnOJ-Sjj4VpuVU0Gvzca_uGN9Um5Zj=bRMH2df4kRZw@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] gpiolib: cdev: Split line_get_debounce_period()
- and use
-To: Kent Gibson <warthog618@gmail.com>
-Cc: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, Bartosz Golaszewski <brgl@bgdev.pl>, 
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, linux-gpio@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
+References: <20231212020259.2451253-1-quic_johmoo@quicinc.com> <20231212020259.2451253-2-quic_johmoo@quicinc.com>
+In-Reply-To: <20231212020259.2451253-2-quic_johmoo@quicinc.com>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Sat, 23 Dec 2023 02:50:55 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASZzeJzZV0hiMrcKd6FUtQXqfuvUqux8Bf+WvBmjCwNCA@mail.gmail.com>
+Message-ID: <CAK7LNASZzeJzZV0hiMrcKd6FUtQXqfuvUqux8Bf+WvBmjCwNCA@mail.gmail.com>
+Subject: Re: [PATCH v7 1/3] check-uapi: Introduce check-uapi.sh
+To: John Moon <quic_johmoo@quicinc.com>
+Cc: Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, 
+	Nicolas Schier <nicolas@fjasle.eu>, Jonathan Corbet <corbet@lwn.net>, linux-kbuild@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-arm-msm@vger.kernel.org, kernel@quicinc.com, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Rob Herring <robh@kernel.org>, 
+	"Carlos O'Donell" <carlos@redhat.com>, Randy Dunlap <rdunlap@infradead.org>, Arnd Bergmann <arnd@arndb.de>, 
+	Bjorn Andersson <andersson@kernel.org>, Todd Kjos <tkjos@google.com>, 
+	Matthias Maennich <maennich@google.com>, Giuliano Procida <gprocida@google.com>, kernel-team@android.com, 
+	libabigail@sourceware.org, Dodji Seketeli <dodji@redhat.com>, 
+	Trilok Soni <quic_tsoni@quicinc.com>, 
+	Satya Durga Srinivasu Prabhala <quic_satyap@quicinc.com>, Jordan Crouse <jorcrous@amazon.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 22, 2023 at 3:15=E2=80=AFPM Kent Gibson <warthog618@gmail.com> =
-wrote:
-> On Fri, Dec 22, 2023 at 03:09:54PM +0100, Bartosz Golaszewski wrote:
-
-> > I can still split the uAPI files into their own section, make Linus
-> > and myself maintainers and make you a reviewer, how about that?
+On Tue, Dec 12, 2023 at 11:04=E2=80=AFAM John Moon <quic_johmoo@quicinc.com=
+> wrote:
 >
-> That is closer to the reality, so that would work for me.
+> While the kernel community has been good at maintaining backwards
+> compatibility with kernel UAPIs, it would be helpful to have a tool
+> to check if a commit introduces changes that break backwards
+> compatibility.
+>
+> To that end, introduce check-uapi.sh: a simple shell script that
+> checks for changes to UAPI headers using libabigail.
+>
+> libabigail is "a framework which aims at helping developers and
+> software distributors to spot some ABI-related issues like interface
+> incompatibility in ELF shared libraries by performing a static
+> analysis of the ELF binaries at hand."
+>
+> The script uses one of libabigail's tools, "abidiff", to compile the
+> changed header before and after the commit to detect any changes.
+>
+> abidiff "compares the ABI of two shared libraries in ELF format. It
+> emits a meaningful report describing the differences between the two
+> ABIs."
+>
+> The script also includes the ability to check the compatibility of
+> all UAPI headers across commits. This allows developers to inspect
+> the stability of the UAPIs over time.
+>
+> Signed-off-by: John Moon <quic_johmoo@quicinc.com>
+> ---
+>     - Applied minor code style suggestions from v6 review.
 
-Hmm I think of Kent as one of the main architects for UAPI v2
-so I would like you as maintainer, and me to be dropped, I already
-responded to that patch though.
 
-Yours,
-Linus Walleij
+
+
+The code looks OK. I think it should work as designed.
+
+Line 197 is inconsistently indented by spaces instead of a space,
+but I can fix it up locally.
+
+
+I just thought requiring target commits as positional parameters
+("check-uapi.sh treeA treeB" just like "git diff treeA treeB")
+might be intuitive, but I guess everything is specified
+by a short option is a design. I can live with that.
+
+
+
+I will wait a few days, and if there is nothing more,
+I will pick up 1/3 and 2/3.
+
+
+
+
+--=20
+Best Regards
+Masahiro Yamada
 
