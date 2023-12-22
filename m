@@ -1,100 +1,122 @@
-Return-Path: <linux-kernel+bounces-9986-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9987-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B03C81CE28
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 18:53:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F08281CE2A
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 18:54:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 907261F23678
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 17:53:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C18231C2093C
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 17:54:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D7342C195;
-	Fri, 22 Dec 2023 17:52:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B0312C186;
+	Fri, 22 Dec 2023 17:53:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="h7iDilPN"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HqDdkfuM"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
+Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AEC428E0A
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 17:52:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-5e7c1012a42so21177517b3.3
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 09:52:53 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCD3028E0A
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 17:53:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6d532e4f6d6so1347640b3a.2
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 09:53:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703267572; x=1703872372; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HMCbd/diw1/PZRPtQ076d98pKtkN7WoHEgmPA7lfsto=;
-        b=h7iDilPNXwKqlmQBzl9RCtwYM99oZppwAQNoigfy8F6gB0Mnci3OMvD8XOWSe3qtda
-         E4tpGF7fxulgFfdjuWt83EtZc7sDndV7GImknZkTiYZrnnAtxsSJdt0/12aRVvNV4xxe
-         MMLdgj5hVAylSPZZSAqctyyvxY4urqsJF7j9XmV+yZGM9Glu0nPU+D0t4HVQi0f4+3l8
-         k2xz3rc66t2Hclt6cJaO/ox3wfXsvRMF8qF3ZoFvOJ4V+oQQ7J/gGtoOy/6kELKUFmlj
-         db7c3AEKvhXsvr83KGCyh1GEJtZnBvbwzQfctN/XyP1vrJ9SsCxOVIsRbpMCSoafL679
-         3esw==
+        d=gmail.com; s=20230601; t=1703267636; x=1703872436; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wMwI3JiFhCatZ6GKdsA7T1QzqYPoMqXvmXSq18TGbUU=;
+        b=HqDdkfuMflQDGrLYWQPPSENeQ/7lXMiQTHGWRvkQCa71uGObQMOhbbyd3z9kMwDJ6S
+         xSqznl6mRvvI50ZdZIH0YIQEGyhqgRIBEObe+TloIzcUKw6StQiBmtM4kmgSG4Z5aHtn
+         nsJpgmn7x/CkJ18KuiDtxE089dWs8wxK5SM7+z7JK9CtA2SwiVdKZkgvHC/NTHPf5VMB
+         Dp4xLzSBLfbkLIfeek1uNCcD+IYCNaPCz7RZr6cZKKn9jfIFRnyce0XZdPPL5mHqEhqV
+         QT30kKWHCwL0f063udz8jtcG8nEgKmQc1GDujxzA8WMTtJ2Alld7ZQazXIhgJNotT+GD
+         63VA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703267572; x=1703872372;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1703267636; x=1703872436;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=HMCbd/diw1/PZRPtQ076d98pKtkN7WoHEgmPA7lfsto=;
-        b=Tbtsy3XaJKJuYrC3vcC/ZWVDsAPEWpzxSAQ4+nNiMnKjXCmHDvi4cmMbpelfUUJ3DU
-         5v4ij+DZ2yCnczRS3yZ+q4F2GabdMGXwgA5j4e4w9QnvdHToFVjL8i/m/MLSjxqRwlJH
-         zuq8jgFHiXIecRKR+E/tJ0hcWgFh+xLb7cc0lBk9FFDu/PmJWrzugKpStxkXFs7sGJhb
-         CgcoQxGz/91fBotbmXSCkfto9c4o6OdTKjOM3q3B0FOhatLAc41BZrl3M8R8WqgPQC3l
-         JzkmWPDbZq9eoF5y/+YS2eYJDAZe+0n3hH7WBP/JHN7RDC+Bh4UIQ1j3AIxFdg7Sxnvp
-         TvzQ==
-X-Gm-Message-State: AOJu0YzlpjA/yiQxybK7RHTw0pZSWKiFFxEWFY07rKv8rL8BMhSKWDiO
-	GNoBLKH7P4tgDDsru9bhPo29t2McR09QDr5OYINnDSGq6R74Pg==
-X-Google-Smtp-Source: AGHT+IFn3hVwv10mifvBnkB0e8lClyIXHpLdBggu6vKgEMkcL1Pe4gtnuC8RSU6VC0aIt5quwrzNgOtAZu7lo6WOISo=
-X-Received: by 2002:a0d:d812:0:b0:5e9:4c7a:5036 with SMTP id
- a18-20020a0dd812000000b005e94c7a5036mr1610808ywe.85.1703267572347; Fri, 22
- Dec 2023 09:52:52 -0800 (PST)
+        bh=wMwI3JiFhCatZ6GKdsA7T1QzqYPoMqXvmXSq18TGbUU=;
+        b=Qc4FXz9REMS61ClTgorSP9oJZErODRWBle/2r3i1PFxUnUG2h9ZLISpQv6YLCC7WwL
+         aIDcs69x4Uv9IwZoD4hvgurwzHvNbjVMgOx9HlpJAcurWX9g3sEoTG9QWtuugJ1nzXov
+         l+Kb9UT/2c4blxIZAhbzJ7rOpcwEEQqsz3cpRl+yqr/89a49Kta/yvPLEgz0ESvxQe11
+         LiCBozyQRxK+q3rtwXe9Rx36ckNbk65yHn0VAY8WxG8upfzbx+zX3APVyIA9Tap2lXKt
+         aRpKSqOzvLuirFhv1J/TOllcq0z65Et+74vtcrjdO1a/KCgCnVyI9JT+a+yJEmntZKXx
+         3LwA==
+X-Gm-Message-State: AOJu0YwClk0qxXk+sIlxze9CAPwm7+tSGWdaBMtMpIrkFYtCkt4ZUO2D
+	Zs1isMMmqvkoyLoDQkjBI4E=
+X-Google-Smtp-Source: AGHT+IFOaEGfQXr6296bEd4kRhFXYdIGTHFStsbbHF5ORt9QvsDecEXUMwpnshp0Mm0clmU1npWWyw==
+X-Received: by 2002:a05:6a00:23c5:b0:6d8:aa4a:8315 with SMTP id g5-20020a056a0023c500b006d8aa4a8315mr1590144pfc.47.1703267635859;
+        Fri, 22 Dec 2023 09:53:55 -0800 (PST)
+Received: from localhost ([121.167.227.144])
+        by smtp.gmail.com with ESMTPSA id x12-20020aa793ac000000b006d980fa11e9sm2184980pff.51.2023.12.22.09.53.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Dec 2023 09:53:55 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Sat, 23 Dec 2023 02:53:52 +0900
+From: Tejun Heo <tj@kernel.org>
+To: Audra Mitchell <aubaker@redhat.com>
+Cc: Audra Mitchell <audra@redhat.com>, linux-kernel@vger.kernel.org,
+	raquini@redhat.com, jiangshanlai@gmail.com,
+	hirokazu.yamauchi.hk@hitachi.com,
+	Laurence Oberman <loberman@redhat.com>,
+	Donald Douwsma <ddouwsma@redhat.com>
+Subject: Re: [PATCH] workqueue.c: Change workqueue to accept variable length
+ name
+Message-ID: <ZYXNMEXBnuumL3D6@mac.lan>
+References: <20231215193954.1785069-1-audra@redhat.com>
+ <ZYSwieA7FeYLh5Ey@mtj.duckdns.org>
+ <CA+bDH-v6T5vvyOwsphseHwgihdGQta7TZ9tOtt-Fnij92kvU6A@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231222095258.33369-1-eichest@gmail.com> <20231222095258.33369-2-eichest@gmail.com>
-In-Reply-To: <20231222095258.33369-2-eichest@gmail.com>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Fri, 22 Dec 2023 18:52:41 +0100
-Message-ID: <CACRpkdbPjA+atjWt101f_o8hFkeUsUXL_raGdd802g_+n4FYOw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] dt-bindings: input: atmel,maxtouch: add
- poweroff-sleep property
-To: Stefan Eichenberger <eichest@gmail.com>
-Cc: nick@shmanahar.org, dmitry.torokhov@gmail.com, robh+dt@kernel.org, 
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
-	nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com, 
-	claudiu.beznea@tuxon.dev, francesco.dolcini@toradex.com, 
-	linux-input@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	Stefan Eichenberger <stefan.eichenberger@toradex.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+bDH-v6T5vvyOwsphseHwgihdGQta7TZ9tOtt-Fnij92kvU6A@mail.gmail.com>
 
-On Fri, Dec 22, 2023 at 10:53=E2=80=AFAM Stefan Eichenberger <eichest@gmail=
-.com> wrote:
+Hello,
 
-> From: Stefan Eichenberger <stefan.eichenberger@toradex.com>
->
-> Add a new property to indicate that the device should power off rather
-> than use deep sleep. Deep sleep is a feature of the controller that
-> expects the controller to remain powered in suspend. However, if a
-> display shares its regulator with the touch controller, we may want to
-> do a power off so that the display and touch controller do not use any
-> power.
->
-> Signed-off-by: Stefan Eichenberger <stefan.eichenberger@toradex.com>
+On Fri, Dec 22, 2023 at 10:35:03AM -0500, Audra Mitchell wrote:
+> We have one concrete example from a Hitachi block device driver (notice the
+> 47a1/47a2 gets
+> cut off with the workqueue name):
+> 
+> Device                              Workqueue Name (24char zero terminated)
+> /dev/sd0279b080047a1   xfs-blockgc/sd0279b0800
+> /dev/sd0279b080047a2   xfs-blockgc/sd0279b0800
 
-This LGTM:
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+I see, so it's a combination of somewhat lengthy device names and then xfs
+adding a prefix to them. Neither is particularly long but the combination
+is.
 
-Yours,
-Linus Walleij
+> I can also imagine this issue being present with nvme devices, but the
+> request came from Hitachi.
+> I believe it would be up to the device driver to determine if the name can
+> be shortened and I've
+> included Hitachi requester on this email thread.
+> 
+> Alternatively, we could increase the size of the WQ_NAME_LEN, but it seems
+> highly likely we are
+> going to butt against the static size again in the future. We previously
+> had variable length names
+> and it seems (to me) to be the best long term path forward.
+
+Can we just bump the length to 32 and trigger a warning if the requested
+name overruns? I want to provide some pressure to limit the length of the
+name so that it doesn't get too long over time. If folks bump into it and
+can't find a different way to deal with it, we can get bring back the
+subject.
+
+Thanks.
+
+-- 
+tejun
 
