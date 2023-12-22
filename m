@@ -1,241 +1,111 @@
-Return-Path: <linux-kernel+bounces-9372-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9373-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4093C81C4B6
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 06:42:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 83EE681C4BA
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 06:45:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EC3AC287969
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 05:42:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7E14D1C24CDE
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 05:45:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 671426120;
-	Fri, 22 Dec 2023 05:42:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11BE063A7;
+	Fri, 22 Dec 2023 05:45:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="uSq/xtFj"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="MOif9ryk"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E5D853A4
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 05:42:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-5c6839373f8so1063320a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 21:42:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1703223729; x=1703828529; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=tshARWagRRHxlEAjYIN29OCOP9SHjMXaawfRGNvVCMk=;
-        b=uSq/xtFjp1MZW/GQolvTeipl2Zd/m1GFoUGqs2XglaT8rUx+ljR8e33CVwCGCHzEx4
-         z8kYMlfZwUl+VhC85gz+Ku4jPEtsdrody8Qlhe9TJSBgjBzjytl1VSDbWSLoPFnuNLk8
-         EjjxLHXsdYeNvhPcWZsD/73scShRP/ykW/svFoGreaYjFFUmljHekpTJrUIV3rkel19N
-         osTruUbqCQGRL6mApXJ5s/Q/oBrtyWQ+Jo4pcWZhbIspy9TKnYzzfYBT+1tMVP03vtrL
-         /7HmVFDxTvyQTSLEg3NJwrEauhc6lDiWRsK4rBVFi8Oz25v8UZ4WRb/ssyyZDCyfg8vp
-         NEaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703223729; x=1703828529;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tshARWagRRHxlEAjYIN29OCOP9SHjMXaawfRGNvVCMk=;
-        b=Liz9NjpFZ9s9KqGgMAjYKe3B02TD3KzAIChT1zZcmbAGYL0FVfWv0CKu3cyNvkC2iU
-         IfX7CAmxMSboHu0XjBQiYM6vBJFVSpjO2epr3+Me+F1RvycS7nVNcg9Ddwibl2tamQzG
-         4HGmrHYDBrwIdcIK91VLHUwODuCObjcsgeU8rk/RSOTdHgDLyN6GTd02LLU7fp8Wov2K
-         F1FhqIcmuOwyS9O4wmM88rj6fLawMCPPSOmeENODCJbiBpc0nQz+6dXKEQyP+kn7tSO6
-         W/06ahcFfV7gCsGMDGvoRTpLLdSpUTm1VDo/2R/HUrv4ttseJhvI8M9HOEemMAcgfcPj
-         CtzQ==
-X-Gm-Message-State: AOJu0YyDJ9Cei7nV4PfT8il7lABSJjMhuc2t+gsKX53nkXm7sq3Ab2QH
-	5edz7709f31zi8OGOfIIKF0tjIdFMhY+BVsS6IZOtYDfc0o=
-X-Google-Smtp-Source: AGHT+IFPYN93FpZrSP6JEuX0E8+Rz/2HUmp3SPiiY3k73uCyVJqHwo4hbyYd5MYmWGrJPBD7tMIC/A==
-X-Received: by 2002:a05:6a20:8404:b0:194:7c07:5f55 with SMTP id c4-20020a056a20840400b001947c075f55mr958883pzd.54.1703223729146;
-        Thu, 21 Dec 2023 21:42:09 -0800 (PST)
-Received: from ghost ([2601:647:5700:6860:f06:7450:7dd4:fc1d])
-        by smtp.gmail.com with ESMTPSA id j26-20020aa78d1a000000b006d974fe1b0esm2127879pfe.7.2023.12.21.21.42.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Dec 2023 21:42:08 -0800 (PST)
-Date: Thu, 21 Dec 2023 21:42:05 -0800
-From: Charlie Jenkins <charlie@rivosinc.com>
-To: Leonardo Bras <leobras@redhat.com>
-Cc: guoren@kernel.org, linux-kernel@vger.kernel.org,
-	paul.walmsley@sifive.com, palmer@dabbelt.com,
-	alexghiti@rivosinc.com, xiao.w.wang@intel.com, david@redhat.com,
-	panqinglin2020@iscas.ac.cn, rick.p.edgecombe@intel.com,
-	willy@infradead.org, bjorn@rivosinc.com, conor.dooley@microchip.com,
-	cleger@rivosinc.com, linux-riscv@lists.infradead.org,
-	Guo Ren <guoren@linux.alibaba.com>, stable@vger.kernel.org
-Subject: Re: [PATCH V2 2/4] riscv: mm: Fixup compat arch_get_mmap_end
-Message-ID: <ZYUhrTaXMqyRchyP@ghost>
-References: <20231221154702.2267684-1-guoren@kernel.org>
- <20231221154702.2267684-3-guoren@kernel.org>
- <ZYUD4C1aXWt2oFJo@LeoBras>
- <ZYUK2zUHjYBL0zO7@ghost>
- <ZYUPQIJ070BYDzJJ@LeoBras>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C54B46A8;
+	Fri, 22 Dec 2023 05:45:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1703223945; x=1734759945;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=CjRK6L+3YHfQxLdgqWH6wzL66WcY3RprmAfaaHBD6ss=;
+  b=MOif9rykfTPTPmFSirrH7KqOH4T+y952TsfZVmguJt6TAzAvQinYM8UM
+   c9OOK99gj/vPWDTaJJdDMXU9CXv3p7lJZdDhx90vhVmbIUZPrMzrSwE8X
+   GGyEz8NGlXTkemqpytzP/P4P5LFoQoOumZJaudlgY6f5N4E77nAb7EcAT
+   Mc0oe3gUmqupncAp9HMQqoWdmZAGBNYZ7Ma86P3r0Nc+UjrpTawsYXvZk
+   Z8pqeZkZqtYlLw1zYkgGrQyj8KY3RD5zn7k4UZ3Zbi4P4wc/N2lIHqTKc
+   QMhXtxZoWmFvm5d6NLxPzjEF8qydjyAZBWnsGM3NpybeHBMAKwipWspl+
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10931"; a="9470499"
+X-IronPort-AV: E=Sophos;i="6.04,294,1695711600"; 
+   d="scan'208";a="9470499"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Dec 2023 21:45:44 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10931"; a="900324167"
+X-IronPort-AV: E=Sophos;i="6.04,294,1695711600"; 
+   d="scan'208";a="900324167"
+Received: from pg-esw-build.png.intel.com ([10.226.214.57])
+  by orsmga004.jf.intel.com with ESMTP; 21 Dec 2023 21:45:39 -0800
+From: Leong Ching Swee <leong.ching.swee@intel.com>
+To: Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Jose Abreu <joabreu@synopsys.com>,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Giuseppe Cavallaro <peppe.cavallaro@st.com>
+Cc: linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	Swee Leong Ching <leong.ching.swee@intel.com>
+Subject: [PATCH net-next v1 0/4] net: stmmac: Enable Per DMA Channel interrupt
+Date: Fri, 22 Dec 2023 13:44:47 +0800
+Message-Id: <20231222054451.2683242-1-leong.ching.swee@intel.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZYUPQIJ070BYDzJJ@LeoBras>
+Content-Transfer-Encoding: 8bit
 
-On Fri, Dec 22, 2023 at 01:23:29AM -0300, Leonardo Bras wrote:
-> On Thu, Dec 21, 2023 at 08:04:43PM -0800, Charlie Jenkins wrote:
-> > On Fri, Dec 22, 2023 at 12:34:56AM -0300, Leonardo Bras wrote:
-> > > On Thu, Dec 21, 2023 at 10:46:59AM -0500, guoren@kernel.org wrote:
-> > > > From: Guo Ren <guoren@linux.alibaba.com>
-> > > > 
-> > > > When the task is in COMPAT mode, the arch_get_mmap_end should be 2GB,
-> > > > not TASK_SIZE_64. The TASK_SIZE has contained is_compat_mode()
-> > > > detection, so change the definition of STACK_TOP_MAX to TASK_SIZE
-> > > > directly.
-> > > 
-> > > ok
-> > > 
-> > > > 
-> > > > Cc: stable@vger.kernel.org
-> > > > Fixes: add2cc6b6515 ("RISC-V: mm: Restrict address space for sv39,sv48,sv57")
-> > > > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> > > > Signed-off-by: Guo Ren <guoren@kernel.org>
-> > > > ---
-> > > >  arch/riscv/include/asm/processor.h | 6 ++----
-> > > >  1 file changed, 2 insertions(+), 4 deletions(-)
-> > > > 
-> > > > diff --git a/arch/riscv/include/asm/processor.h b/arch/riscv/include/asm/processor.h
-> > > > index f19f861cda54..1f538fc4448d 100644
-> > > > --- a/arch/riscv/include/asm/processor.h
-> > > > +++ b/arch/riscv/include/asm/processor.h
-> > > > @@ -16,15 +16,13 @@
-> > > >  
-> > > >  #ifdef CONFIG_64BIT
-> > > >  #define DEFAULT_MAP_WINDOW	(UL(1) << (MMAP_VA_BITS - 1))
-> > > > -#define STACK_TOP_MAX		TASK_SIZE_64
-> > > > +#define STACK_TOP_MAX		TASK_SIZE
-> > > 
-> > > It means STACK_TOP_MAX will be in 64BIT:
-> > > - TASK_SIZE_32 if compat_mode=y
-> > > - TASK_SIZE_64 if compat_mode=n
-> > > 
-> > > Makes sense for me.
-> > > 
-> > > >  
-> > > >  #define arch_get_mmap_end(addr, len, flags)			\
-> > > >  ({								\
-> > > >  	unsigned long mmap_end;					\
-> > > >  	typeof(addr) _addr = (addr);				\
-> > > > -	if ((_addr) == 0 || (IS_ENABLED(CONFIG_COMPAT) && is_compat_task())) \
-> > > > -		mmap_end = STACK_TOP_MAX;			\
-> > > > -	else if ((_addr) >= VA_USER_SV57)			\
-> > > > +	if ((_addr) == 0 || (_addr) >= VA_USER_SV57)		\
-> > > >  		mmap_end = STACK_TOP_MAX;			\
-> > > >  	else if ((((_addr) >= VA_USER_SV48)) && (VA_BITS >= VA_BITS_SV48)) \
-> > > >  		mmap_end = VA_USER_SV48;			\
-> > > 
-> > > 
-> > > I don't think I got this change, or how it's connected to the commit msg.
-> > > 
-> > > Before:
-> > > - addr == 0, or addr > 2^57, or compat: mmap_end = STACK_TOP_MAX
-> > > - 2^48 < addr < 2^57: mmap_end = 2^48
-> > > - 0 < addr < 2^48 : mmap_end = 2^39
-> > > 
-> > > Now:
-> > > - addr == 0, or addr > 2^57: mmap_end = STACK_TOP_MAX
-> > > - 2^48 < addr < 2^57: mmap_end = 2^48
-> > > - 0 < addr < 2^48 : mmap_end = 2^39
-> > > 
-> > > IIUC compat mode addr will be < 2^32, so will always have mmap_end = 2^39 
-> > > if addr != 0. Is that desireable? 
-> > > (if not, above change is unneeded)
-> > 
-> > I agree, this change does not make sense for compat mode. Compat mode
-> > should never return an address that is greater than 2^32, but this
-> > change allows that.
-> > 
-> > > 
-> > > Also, unrelated to the change:
-> > > - 2^48 < addr < 2^57: mmap_end = 2^48
-> > > Is the above correct?
-> > > It looks like it should be 2^57 instead, and a new if clause for 
-> > > 2^32 < addr < 2^48 should have mmap_end = 2^48.
-> > 
-> > That is not the case. I documented this behavior and reasoning in
-> > Documentation/arch/riscv/vm-layout.rst in the "Userspace VAs" section.
-> > 
-> > I can reiterate here though. The hint address to mmap (defined here as
-> > "addr") is the maximum userspace address that mmap should provide. What
-> > you are describing is a minimum. The purpose of this change was to allow
-> > applications that are not compatible with a larger virtual address (such
-> > as applications like Java that use the upper bits of the VA to store
-> > data) to have a consistent way of specifying how many bits they would
-> > like to be left free in the VA. This requires to take the next lowest
-> > address space to guaruntee that all of the most-significant bits left
-> > clear in hint address do not end up populated in the virtual address
-> > returned by mmap.
-> > 
-> > - Charlie
-> 
-> Hello Charlie, thank you for helping me understand!
-> 
-> Ok, that does make sense now! The addr value hints "don't allocate > addr"
-> and thus:
-> 
-> - 0 < addr < 2^48 : mmap_end = 2^39
-> - 2^48 < addr < 2^57: mmap_end = 2^48
-> 
-> Ok, but then
-> - addr > 2^57: mmap_end = 2^57
-> right?
-> 
-> I mean, probably STACK_TOP_MAX in non-compat mode means 2^57 already, but 
-> having it explicitly like:
-> 
->  else if ((_addr) >= VA_USER_SV57)                       \
->          mmap_end = VA_USER_SV57;                        \
-> 
-> would not be better for a future full 64-bit addressing?
-> (since it's already on a different if clause)
+From: Swee Leong Ching <leong.ching.swee@intel.com>
 
-I agree, that does make more sense.
+Hi,
+Add Per DMA Channel interrupt feature for DWXGMAC IP.
+ 
+Patchset (link below) contains per DMA channel interrupt, But it was 
+achieved.
+https://lore.kernel.org/lkml/20230821203328.GA2197059-
+robh@kernel.org/t/#m849b529a642e1bff89c05a07efc25d6a94c8bfb4
+ 
+Some of the changes in this patchset are based on reviewer comment on 
+patchset mentioned beforehand.
 
-> 
-> I could add comment on top of the macro with a short version on your addr 
-> hint description above. Would that be ok?
+Swee Leong Ching (4):
+  dt-bindings: net: snps,dwmac: per channel irq
+  net: stmmac: Make MSI interrupt routine generic
+  net: stmmac: Add support for TX/RX channel interrupt
+  net: stmmac: Use interrupt mode INTM=1 for per channel irq
 
-Sure :)
+ .../devicetree/bindings/net/snps,dwmac.yaml   | 24 ++++++++++----
+ .../net/ethernet/stmicro/stmmac/dwmac-intel.c |  4 +--
+ .../net/ethernet/stmicro/stmmac/dwmac4_dma.c  |  2 +-
+ .../net/ethernet/stmicro/stmmac/dwxgmac2.h    |  3 ++
+ .../ethernet/stmicro/stmmac/dwxgmac2_dma.c    | 32 +++++++++++--------
+ .../net/ethernet/stmicro/stmmac/stmmac_main.c | 29 +++++++++--------
+ .../ethernet/stmicro/stmmac/stmmac_platform.c | 24 ++++++++++++++
+ include/linux/stmmac.h                        |  4 +--
+ 8 files changed, 84 insertions(+), 38 deletions(-)
 
-- Charlie
+-- 
+2.34.1
 
-> 
-> Thanks!
-> Leo
-> 
-> 
-> 
-> 
-> 
-> > 
-> > > 
-> > > Do I get it wrong?
-> > > 
-> > > (I will send an RFC 'fixing' the code the way I am whinking it should look 
-> > > like)
-> > > 
-> > > Thanks, 
-> > > Leo
-> > > 
-> > > 
-> > > 
-> > > 
-> > > 
-> > > > -- 
-> > > > 2.40.1
-> > > > 
-> > > 
-> > 
-> 
 
