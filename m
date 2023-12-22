@@ -1,115 +1,208 @@
-Return-Path: <linux-kernel+bounces-9672-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9673-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46DB581C964
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 12:50:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23E3681C966
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 12:51:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DAF351F233C7
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 11:50:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 489D51C223CF
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 11:51:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 402D01804E;
-	Fri, 22 Dec 2023 11:50:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 705271773B;
+	Fri, 22 Dec 2023 11:51:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="DbYmwC4u"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="S+ckMuZ7"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ot1-f53.google.com (mail-ot1-f53.google.com [209.85.210.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4898E1803D
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 11:50:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1703245803;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=b2Kc5SDyR2sa98m7GGfG0OJjTCYVmXAF9D404GjbeCw=;
-	b=DbYmwC4uHc3vW5qUFHRCiiDVQoBAW3Oa8DyiRJstLbH5Q9xwHt8XmOTp/FhrI2Mto9YhVf
-	KPjqn4pHfh8wgf/WUz6cOna/o4+GD6DxdUBVX2ruu+5I14t2GGWZ+HnQlmcLr/TGIybeL2
-	3d9VwNhcFF5rlpDtx256VW4redvqrRc=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-399-gMeN3nQqMpKa8ASINIbPcw-1; Fri, 22 Dec 2023 06:49:57 -0500
-X-MC-Unique: gMeN3nQqMpKa8ASINIbPcw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id F2C45868A20;
-	Fri, 22 Dec 2023 11:49:55 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.39.195.169])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 71FCC2026D66;
-	Fri, 22 Dec 2023 11:49:52 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-	Kingdom.
-	Registered in England and Wales under Company Registration No. 3798903
-From: David Howells <dhowells@redhat.com>
-In-Reply-To: <20231221230153.GA1607352@dev-arch.thelio-3990X>
-References: <20231221230153.GA1607352@dev-arch.thelio-3990X> <20231221132400.1601991-1-dhowells@redhat.com> <20231221132400.1601991-38-dhowells@redhat.com>
-To: Nathan Chancellor <nathan@kernel.org>,
-    Anna Schumaker <Anna.Schumaker@Netapp.com>,
-    Trond Myklebust <trond.myklebust@hammerspace.com>
-Cc: dhowells@redhat.com, Jeff Layton <jlayton@kernel.org>,
-    Steve French <smfrench@gmail.com>,
-    Matthew Wilcox <willy@infradead.org>,
-    Marc Dionne <marc.dionne@auristor.com>,
-    Paulo Alcantara <pc@manguebit.com>,
-    Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
-    Dominique Martinet <asmadeus@codewreck.org>,
-    Eric Van Hensbergen <ericvh@kernel.org>,
-    Ilya Dryomov <idryomov@gmail.com>,
-    Christian Brauner <christian@brauner.io>, linux-cachefs@redhat.com,
-    linux-afs@lists.infradead.org, linux-cifs@vger.kernel.org,
-    linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-    v9fs@lists.linux.dev, linux-fsdevel@vger.kernel.org,
-    linux-mm@kvack.org, netdev@vger.kernel.org,
-    linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 37/40] netfs: Optimise away reads above the point at which there can be no data
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4617217985
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 11:51:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ot1-f53.google.com with SMTP id 46e09a7af769-6db963bd3acso1203076a34.0
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 03:51:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1703245873; x=1703850673; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=BoM5xHXFmNnDYRPpvEPp480i76UtG2GRcAozKAy32GE=;
+        b=S+ckMuZ7m8RC5KKbJNDz7mhVemuksrd65ncJQ2J40KIAGK2Xfya+73VgGf88PFU+I0
+         /wa1QH/KWmaT+dsdMGrj9kzLKDAzgzvLIBmcHrH6HnvNqqPhQjUMafIDo9wf26F6JzJ6
+         Z/wxU57ES3ZJqEPcKhR72IdHfcQAdmxZy6tEMQMZiPBG5rN9vuROAnq7XqoA2p6fuBN7
+         ix3UvfuCIRayhZBbi4KxkIA4aO+pECRRfCHgiMSRF51hxWP73CerX8OorXTUKWANcLbO
+         JTavaFfLIEbEUy7sVmPgdK+g/8YDmV5d4aDASeN+L2I6xnWsmq9fZYYbQ6i/QsLxWVxI
+         25LA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703245873; x=1703850673;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BoM5xHXFmNnDYRPpvEPp480i76UtG2GRcAozKAy32GE=;
+        b=rb16KvglprpdA3JcbK3Zr9TYZeezQR5uHeGv8+PuhFoLoRSkUf00b1PNzyz8eWH8QR
+         Srn70C3TC5Nun2gFlutMU8jyngcEDrqLo/dj+1hpj/Fzh/FpGIxVGulhIHAm65IvGW6l
+         +Ho3pBE+a9ton/wVpLTbpdWpZ30KScCVXKooG/SNYMP+6ABtGih7p8s/zTtcx04Bf6cZ
+         b3/VEIT3FHlEqSrbRDdZbHaZFGIMGkxV0Puq6gzkzHvQ1fYCVyvsEmJkRQUbE9N1CUai
+         pBlumrA7EPXsmMONGoO7uo9dWkjBwBK4k4M4ssy6oukD6T45Ld6aQ7ikc+UzG2D2pxcW
+         W+VQ==
+X-Gm-Message-State: AOJu0Yx5pVe7VEVyVVWcxtwOBVE2iKGkhFsRGR3OyOqSm/64c6Nig+4b
+	0zoARdt+lq17SVNt1GjsSBzPfdQW9uGGKA==
+X-Google-Smtp-Source: AGHT+IFw4K55CFuOVXFhnBfb+XlWVqL/EHzoInQ/RG677cRc/CcrXScIzdNRNNszNL9RZPILzb/MRQ==
+X-Received: by 2002:a05:6830:100e:b0:6db:bd00:d646 with SMTP id a14-20020a056830100e00b006dbbd00d646mr956782otp.26.1703245869210;
+        Fri, 22 Dec 2023 03:51:09 -0800 (PST)
+Received: from vps.terceiro.xyz (vps.terceiro.xyz. [191.101.235.31])
+        by smtp.gmail.com with ESMTPSA id b16-20020a63cf50000000b005aa800c149bsm3174759pgj.39.2023.12.22.03.51.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Dec 2023 03:51:08 -0800 (PST)
+Received: from localhost (unknown [IPv6:2804:14d:7224:8745:26f4:3599:ce80:10])
+	by vps.terceiro.xyz (Postfix) with ESMTPSA id 8B129441D4;
+	Fri, 22 Dec 2023 08:51:04 -0300 (-03)
+Date: Fri, 22 Dec 2023 08:50:56 -0300
+From: Antonio Terceiro <antonio.terceiro@linaro.org>
+To: Shuah Khan <skhan@linuxfoundation.org>
+Cc: Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] selftests: uevent: use shared makefile library
+Message-ID: <ZYV4ICTvandgWE4I@linaro.org>
+References: <20231221204908.341677-2-antonio.terceiro@linaro.org>
+ <f38374bd-bb1f-451e-9d34-9c38029ffd15@linuxfoundation.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <2202547.1703245791.1@warthog.procyon.org.uk>
-Date: Fri, 22 Dec 2023 11:49:51 +0000
-Message-ID: <2202548.1703245791@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="VtLPA9UNJt+q8agv"
+Content-Disposition: inline
+In-Reply-To: <f38374bd-bb1f-451e-9d34-9c38029ffd15@linuxfoundation.org>
 
-Nathan Chancellor <nathan@kernel.org> wrote:
 
-> It appears that ctx->inode.i_mapping is NULL in netfs_inode_init(). This
-> patch appears to cure the problem for me but I am not sure if it is
-> proper or not.
+--VtLPA9UNJt+q8agv
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I'm not sure that's the best way.  It kind of indicates that
-nfs_netfs_inode_init() is not being called in the right place - it should
-really be called after alloc_inode() has called inode_init_always().
+On Thu, Dec 21, 2023 at 02:44:52PM -0700, Shuah Khan wrote:
+> On 12/21/23 13:49, Antonio Terceiro wrote:
+> > This makes the uevent selftests build not write to the source tree
+> > unconditionally, as that breaks out of tree builds when the source tree
+> > is read-only. It also avoids leaving a git repository in a dirty state
+> > after a build.
+> >=20
+>=20
+> Why can't you do that using make O=3D directive.
 
-However, mapping_set_release_always() makes ->release_folio() and
-->invalidate_folio() always called for an inode's folios, even if PG_private
-is not set - the idea being that this allows netfslib to update the
-"zero_point" when a page we've written to the server gets invalidated here,
-thereby requiring us to go fetch it again.
+That's what I meant by out of tree builds. When using O=3D, the uevent
+selftests build still writes to the source directory. Maybe my wording
+in the commit message is not clear enough, I will try to improve it.
 
-Now, NFS doesn't make use of this feature and fscache and cachefiles don't use
-it directly, so we might not want to call mapping_set_release_always() for
-NFS.
+> > v2: drop spurious extra SPDX-License-Identifier
+> >=20
+> > Signed-off-by: Antonio Terceiro <antonio.terceiro@linaro.org>
+> > ---
+> >   tools/testing/selftests/uevent/Makefile | 15 +++------------
+> >   1 file changed, 3 insertions(+), 12 deletions(-)
+> >=20
+> > diff --git a/tools/testing/selftests/uevent/Makefile b/tools/testing/se=
+lftests/uevent/Makefile
+> > index f7baa9aa2932..872969f42694 100644
+> > --- a/tools/testing/selftests/uevent/Makefile
+> > +++ b/tools/testing/selftests/uevent/Makefile
+> > @@ -1,17 +1,8 @@
+> >   # SPDX-License-Identifier: GPL-2.0
+> >   all:
+> > -include ../lib.mk
+> > -
+> > -.PHONY: all clean
+> > -
+> > -BINARIES :=3D uevent_filtering
+> > -CFLAGS +=3D -Wl,-no-as-needed -Wall
+> > +CFLAGS +=3D -Wl,-no-as-needed -Wall $(KHDR_INCLUDES)
+> > -uevent_filtering: uevent_filtering.c ../kselftest.h ../kselftest_harne=
+ss.h
+> > -	$(CC) $(CFLAGS) $< -o $@
+> > +TEST_GEN_PROGS =3D uevent_filtering
+> > -TEST_PROGS +=3D $(BINARIES)
+> > -EXTRA_CLEAN :=3D $(BINARIES)
+> > -
+> > -all: $(BINARIES)
+> > +include ../lib.mk
+>=20
+> This change doesn't get the intended result of not writing to
+> source tree. Binaries will still be written to the source
+> tree unless O=3D is specified.
 
-I'm not sure NFS can even reliably make use of it unless it's using a lease
-unless it gets change notifications from the server.
+It does in my tests. Maybe I am missing something.
 
-So I'm thinking of applying your patch but add a comment to say why we're
-doing it.  A better way, though, is to move the call to nfs_netfs_inode_init()
-and give it a flag to say whether or not we want the facility.
+mainline without the patch:
 
-David
+----------------8<----------------8<----------------8<-----------------
+$ make -s defconfig O=3D/tmp/output && make -s kselftest-all TARGETS=3Dueve=
+nt O=3D/tmp/output
+make[4]: Entrando no diret=F3rio '/home/terceiro/src/linaro/linux/tools/tes=
+ting/selftests/uevent'
 
+make[4]: Nada a ser feito para 'all'.
+make[4]: Saindo do diret=F3rio '/home/terceiro/src/linaro/linux/tools/testi=
+ng/selftests/uevent'
+
+$ git status --ignored
+On branch master
+Your branch is up to date with 'origin/master'.
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	tools/testing/selftests/uevent/uevent_filtering
+
+nothing added to commit but untracked files present (use "git add" to track)
+$ git clean -dxf
+Removing tools/testing/selftests/uevent/uevent_filtering
+----------------8<----------------8<----------------8<-----------------
+
+mainline with the patch:
+
+----------------8<----------------8<----------------8<-----------------
+$ git branch -m kselftest-uvent kselftest-uvent-o
+$ rm -rf /tmp/output/
+$ make -s defconfig O=3D/tmp/output && make -s kselftest-all TARGETS=3Dueve=
+nt O=3D/tmp/output
+make[4]: Entrando no diret=F3rio '/home/terceiro/src/linaro/linux/tools/tes=
+ting/selftests/uevent'
+
+gcc -Wl,-no-as-needed -Wall -isystem /tmp/output/usr/include     uevent_fil=
+tering.c  -o /tmp/output/kselftest/uevent/uevent_filtering
+make[4]: Saindo do diret=F3rio '/home/terceiro/src/linaro/linux/tools/testi=
+ng/selftests/uevent'
+
+$ git status --ignored
+On branch kselftest-uvent-o
+nothing to commit, working tree clean
+$ git clean -dxf
+$
+----------------8<----------------8<----------------8<-----------------
+
+--VtLPA9UNJt+q8agv
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEst7mYDbECCn80PEM/A2xu81GC94FAmWFeBoACgkQ/A2xu81G
+C94m0Q//WKZqcUvOON9R0vYG+fWY3pF617BKqujoKftM8Glhtq1bQob8x7z3P7u/
+FvFvuG7VhkkUtUmOsKFSWghJRnSGDQiKzFnmwWO3U48rsFsuWIohk58kGTDRacoU
+gfYXHLhe7yRNGtHfZXh+s7XSNxaX3QZG1YVstMmb4WJwAqXN6WaKIuXcPTwAl7rO
+G1SPD+kxUDc+jpAx9j81o6Syy5F3Cuj8hqQEjJrk/rD6QhgCxNtWwNM1OnxnJZRc
+pGzu23Ta7y6JGEe0UfwGn/HbhhXL3TJXVvIgzlMb3eY3zPVRhjVT3T6mUyWjSCV5
+wfpl2YrpSTp9Iay+booAZTrM+V5dUgFIj2kYGlxRlAYWwGxYr0LKPORMQ+FJQcla
+H5L0exfaZDGmfv3H6BHH0YdmkyzK8o6T2BDCD+1VR+n1BlxgY7QPUfD9BwiS7aQ2
+S2XttPwX7IvmnP7oRlT5aqudeooRadjhxcVLTQpvrXumq8EUgEmTa/GISyEx22Ct
+a08kZMNWP5TN02G65swLfDLDmLgVvZdeFPbnoqjwbrCLnqaClhhqOd0Hvti1E653
+y9AdomoOjtD28E6M+YFmcaZfMm9PjexWP8yQS2j0Qu5M31OtTjm4remReV2BfpYB
++g0KgpoW7bh11mQ3m2jKY620aeD1U1+1f/2YCPa26xND5FkqU6U=
+=Khk4
+-----END PGP SIGNATURE-----
+
+--VtLPA9UNJt+q8agv--
 
