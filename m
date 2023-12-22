@@ -1,272 +1,193 @@
-Return-Path: <linux-kernel+bounces-9367-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9368-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3502281C4A5
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 06:28:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9FC7381C4A8
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 06:32:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DFE852871C2
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 05:28:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 46ABD287608
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 05:32:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 750C56120;
-	Fri, 22 Dec 2023 05:28:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32B176124;
+	Fri, 22 Dec 2023 05:32:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="BUYSVuGO"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="3csyLWMQ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E7DB5390
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 05:28:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1703222891;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=plbNf5A3ZlhXI2Ez9cBVzJuxB5rEcG2G+xtFHu5+tss=;
-	b=BUYSVuGOuqZrycgGqvLhZkzA9YBKSLTc+GFbGI4ZI5MnVKwmeSBrpvZoBqOLIGq9IGYvk6
-	sI93EcLJ5eCybcxCBit/OpGzY2JTI8RJhxzEuy5XBQWyYLHoszI9D1+DaqvUIqrM7oGRy6
-	ck/j95X455rhTu5PYmr9sA+Btd33yhU=
-Received: from mail-pf1-f197.google.com (mail-pf1-f197.google.com
- [209.85.210.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-325-p9Av6_HTN9iJKeQeaEpn0w-1; Fri, 22 Dec 2023 00:28:09 -0500
-X-MC-Unique: p9Av6_HTN9iJKeQeaEpn0w-1
-Received: by mail-pf1-f197.google.com with SMTP id d2e1a72fcca58-6d82e9a60f6so1159450b3a.3
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 21:28:09 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E49E4539A
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 05:32:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-40d3102d5d6so34885e9.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 21:32:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1703223157; x=1703827957; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aei49JaNshkuJJzrb21/FHbkROcvggHQaKMtSVNdNfI=;
+        b=3csyLWMQHZj8+S7+DD/W2J95An+k5Mco4O/Vwiz3LRe647IDsjMFk5sU5sqWVqc8jT
+         n2obgHvv/AH/YuK/dRKrmQ8Lvv0H1zHcHJl0MyaLjYqQZ2laNvpD5BhMm/5IaS6CtZ2c
+         RZp2PAWEs0Vje5nGKoxfweFUERgTsqwFVFj7lxzDFka21fILAuFHj36t6FzIlMLcUgP5
+         Q+FrdjCs80pPjrZJxTto4PeNWx8UZYfAV9HtL+DUfORYQTdgJyY5zpxrkHh1sGF7jPdH
+         kicJQ/8GCoLfOm6goEmdWsefJgRuhvmjDz/e0f+ctXOiSJV1v9+LzFv/H1TflhncdWfZ
+         XQTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703222888; x=1703827688;
-        h=content-transfer-encoding:content-disposition:mime-version
-         :references:in-reply-to:message-id:date:subject:cc:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=plbNf5A3ZlhXI2Ez9cBVzJuxB5rEcG2G+xtFHu5+tss=;
-        b=JHYZFDnOpLEjPtCFF9yHWBu1p6M8RGudq7psk7RMiOsJF+S84l+L+egnL27jiouZlg
-         rSkdz46fbhAQa0WZGLh8RZVY40HyH0FRq/JxdoXRtc/+GokwbEZ/dg+4Vx1lrbH94W7C
-         UukWIVmyS/M/JCuR1A4guycnZqDqOyAqQzWAX1nQDCVYb8w5t2kiyfWeyhncfyoy7gVa
-         lsCMQypHjs+B8If0EoDilNe6dkNV1yXUOXAQX8KB4YBfMSuMn13RMI5tTKHnU+ZZuBRv
-         n3tlfFoATPP6y/osF77BCbWHpLH/Smpfk+UsURwOr4Ycl/QpRV0ffXDPhOpOGz8UqCGl
-         6miQ==
-X-Gm-Message-State: AOJu0Yy5DB3LvXGka9ZROLjS1EMZG9am1/ddqk7qteBukwKvCS2fKKWR
-	qQ/s897VfgSfFG5m5hO/vaB9OI510qjxGnsX0DSg4SrK/rmh3NtMdXEWs3R0nJEeTpWGQMU3D8n
-	jmNPz9dMKCMId5cqss6W+a2kdKNIF65Us
-X-Received: by 2002:a05:6a20:978c:b0:195:1e04:11dc with SMTP id hx12-20020a056a20978c00b001951e0411dcmr547874pzc.46.1703222887957;
-        Thu, 21 Dec 2023 21:28:07 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IF0cwpsBTtkI4cK5DOCiGcyzFp7iDmxf1j7x1Nho4sQzNtuZJWgQbbH2SgdZd8zDpJwHBxAIQ==
-X-Received: by 2002:a05:6a20:978c:b0:195:1e04:11dc with SMTP id hx12-20020a056a20978c00b001951e0411dcmr547858pzc.46.1703222887605;
-        Thu, 21 Dec 2023 21:28:07 -0800 (PST)
-Received: from localhost.localdomain ([2804:1b3:a802:7496:88a7:1b1a:a837:bebf])
-        by smtp.gmail.com with ESMTPSA id bb5-20020a17090b008500b0028b0424a4bcsm129567pjb.54.2023.12.21.21.28.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Dec 2023 21:28:07 -0800 (PST)
-From: Leonardo Bras <leobras@redhat.com>
-To: Guo Ren <guoren@kernel.org>
-Cc: Leonardo Bras <leobras@redhat.com>,
-	linux-kernel@vger.kernel.org,
-	paul.walmsley@sifive.com,
-	palmer@dabbelt.com,
-	alexghiti@rivosinc.com,
-	charlie@rivosinc.com,
-	xiao.w.wang@intel.com,
-	david@redhat.com,
-	panqinglin2020@iscas.ac.cn,
-	rick.p.edgecombe@intel.com,
-	willy@infradead.org,
-	bjorn@rivosinc.com,
-	conor.dooley@microchip.com,
-	cleger@rivosinc.com,
-	linux-riscv@lists.infradead.org,
-	Guo Ren <guoren@linux.alibaba.com>,
-	stable@vger.kernel.org
-Subject: Re: [PATCH V2 2/4] riscv: mm: Fixup compat arch_get_mmap_end
-Date: Fri, 22 Dec 2023 02:27:47 -0300
-Message-ID: <ZYUeU0URQvgw42jt@LeoBras>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <CAJF2gTRptBZyYbnY-mjn-AuQwVnekQtGY8nAOV7KVWLCY1WBcw@mail.gmail.com>
-References: <20231221154702.2267684-1-guoren@kernel.org> <20231221154702.2267684-3-guoren@kernel.org> <ZYUD4C1aXWt2oFJo@LeoBras> <CAJF2gTSiaNWkXS6rc+3OSZfnFqG2d7btzjrd-L1mBgAVu3ym3A@mail.gmail.com> <ZYUT22KmGJ1tJSWx@LeoBras> <CAJF2gTRptBZyYbnY-mjn-AuQwVnekQtGY8nAOV7KVWLCY1WBcw@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1703223157; x=1703827957;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=aei49JaNshkuJJzrb21/FHbkROcvggHQaKMtSVNdNfI=;
+        b=rmanBbBNF/BhfwidV3CziZGcEk/6X1KkEU/F9xjNNgB6xU7olrOOXBj5+Pg/209VZ/
+         aKEUIYO5k/Nn+gcDSctMJtMVXKg7blcqm2Bx/kz5O/8hwADWoa1Q12AQQhJotFQStllL
+         hgD++kS7X9z/0uNrw/A4AXaIU1CAq962Wce0vMEzB+pwSZbIFah61hEf8ZD5voFWQBok
+         1wNw7kIrurSJisx6X34zTQNlSWXFGBiYZEeXznJ2TS+KMeLSwNbbrDpfEd8zxPf14v+a
+         BkgU+VT0yBU30wPa8n0k6u6nadGtKnxCLgvBaG14UHgYnSTYJvan08T2pjLxdeuLbHMN
+         Xhow==
+X-Gm-Message-State: AOJu0YxcmMfPrAgko8cTqY0QNRAAVvyW9+tRvUwwq2/DE0QXixMs94ys
+	MFMUXCy60qiwxYsB6uSTbvXRkkVX34FGYkaff7kad7jbZeW+
+X-Google-Smtp-Source: AGHT+IFtz4p23N7qFQyJ8bmGETMjPxi+UsXnIB0l2LyxDlv5gRmgh40FQ/h5BJF9BFQu01W4sbr5+rn5xst7zCPNa6g=
+X-Received: by 2002:a05:600c:1c85:b0:40b:4355:a04b with SMTP id
+ k5-20020a05600c1c8500b0040b4355a04bmr70112wms.6.1703223156969; Thu, 21 Dec
+ 2023 21:32:36 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+References: <20231220152653.3273778-1-schatzberg.dan@gmail.com> <20231220152653.3273778-3-schatzberg.dan@gmail.com>
+In-Reply-To: <20231220152653.3273778-3-schatzberg.dan@gmail.com>
+From: Yu Zhao <yuzhao@google.com>
+Date: Thu, 21 Dec 2023 22:31:59 -0700
+Message-ID: <CAOUHufYwPzZ7k=ecFkxaw+26hUkiTODEnmKM8b3=Lk=n+bm29w@mail.gmail.com>
+Subject: Re: [PATCH v5 2/2] mm: add swapiness= arg to memory.reclaim
+To: Dan Schatzberg <schatzberg.dan@gmail.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Yosry Ahmed <yosryahmed@google.com>, Huan Yang <link@vivo.com>, linux-kernel@vger.kernel.org, 
+	cgroups@vger.kernel.org, linux-mm@kvack.org, Tejun Heo <tj@kernel.org>, 
+	Zefan Li <lizefan.x@bytedance.com>, Jonathan Corbet <corbet@lwn.net>, 
+	Michal Hocko <mhocko@kernel.org>, Shakeel Butt <shakeelb@google.com>, 
+	Muchun Song <muchun.song@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, 
+	Kefeng Wang <wangkefeng.wang@huawei.com>, SeongJae Park <sj@kernel.org>, 
+	"Vishal Moola (Oracle)" <vishal.moola@gmail.com>, Nhat Pham <nphamcs@gmail.com>, 
+	Yue Zhao <findns94@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 22, 2023 at 12:50:44PM +0800, Guo Ren wrote:
-> On Fri, Dec 22, 2023 at 12:43 PM Leonardo Bras <leobras@redhat.com> wrote:
-> >
-> > On Fri, Dec 22, 2023 at 12:26:19PM +0800, Guo Ren wrote:
-> > > On Fri, Dec 22, 2023 at 11:35 AM Leonardo Bras <leobras@redhat.com> wrote:
-> > > >
-> > > > On Thu, Dec 21, 2023 at 10:46:59AM -0500, guoren@kernel.org wrote:
-> > > > > From: Guo Ren <guoren@linux.alibaba.com>
-> > > > >
-> > > > > When the task is in COMPAT mode, the arch_get_mmap_end should be 2GB,
-> > > > > not TASK_SIZE_64. The TASK_SIZE has contained is_compat_mode()
-> > > > > detection, so change the definition of STACK_TOP_MAX to TASK_SIZE
-> > > > > directly.
-> > > >
-> > > > ok
-> > > >
-> > > > >
-> > > > > Cc: stable@vger.kernel.org
-> > > > > Fixes: add2cc6b6515 ("RISC-V: mm: Restrict address space for sv39,sv48,sv57")
-> > > > > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> > > > > Signed-off-by: Guo Ren <guoren@kernel.org>
-> > > > > ---
-> > > > >  arch/riscv/include/asm/processor.h | 6 ++----
-> > > > >  1 file changed, 2 insertions(+), 4 deletions(-)
-> > > > >
-> > > > > diff --git a/arch/riscv/include/asm/processor.h b/arch/riscv/include/asm/processor.h
-> > > > > index f19f861cda54..1f538fc4448d 100644
-> > > > > --- a/arch/riscv/include/asm/processor.h
-> > > > > +++ b/arch/riscv/include/asm/processor.h
-> > > > > @@ -16,15 +16,13 @@
-> > > > >
-> > > > >  #ifdef CONFIG_64BIT
-> > > > >  #define DEFAULT_MAP_WINDOW   (UL(1) << (MMAP_VA_BITS - 1))
-> > > > > -#define STACK_TOP_MAX                TASK_SIZE_64
-> > > > > +#define STACK_TOP_MAX                TASK_SIZE
-> > > >
-> > > > It means STACK_TOP_MAX will be in 64BIT:
-> > > > - TASK_SIZE_32 if compat_mode=y
-> > > > - TASK_SIZE_64 if compat_mode=n
-> > > >
-> > > > Makes sense for me.
-> > > >
-> > > > >
-> > > > >  #define arch_get_mmap_end(addr, len, flags)                  \
-> > > > >  ({                                                           \
-> > > > >       unsigned long mmap_end;                                 \
-> > > > >       typeof(addr) _addr = (addr);                            \
-> > > > > -     if ((_addr) == 0 || (IS_ENABLED(CONFIG_COMPAT) && is_compat_task())) \
-> > > > > -             mmap_end = STACK_TOP_MAX;                       \
-> > > > > -     else if ((_addr) >= VA_USER_SV57)                       \
-> > > > > +     if ((_addr) == 0 || (_addr) >= VA_USER_SV57)            \
-> > > > >               mmap_end = STACK_TOP_MAX;                       \
-> > > > >       else if ((((_addr) >= VA_USER_SV48)) && (VA_BITS >= VA_BITS_SV48)) \
-> > > > >               mmap_end = VA_USER_SV48;                        \
-> > > >
-> > > >
-> > > > I don't think I got this change, or how it's connected to the commit msg.
-> > > The above is just code simplification; if STACK_TOP_MAX is TASK_SIZE, then
-> > >
-> > >      if ((_addr) == 0 || (IS_ENABLED(CONFIG_COMPAT) && is_compat_task())) \
-> > >              mmap_end = STACK_TOP_MAX;                       \
-> > >     else if ((_addr) >= VA_USER_SV57)                       \
-> > >
-> > > is equal to:
-> > >
-> > >      if ((_addr) == 0 || (_addr) >= VA_USER_SV57)            \
-> >
-> > I am failing to understand exactly how are they equal.
-> > I mean, what in your STACK_TOP_MAX change made them equal?
-> #define STACK_TOP_MAX TASK_SIZE
-> #define TASK_SIZE       (is_compat_task() ? TASK_SIZE_32 : TASK_SIZE_64)
-> 
+On Wed, Dec 20, 2023 at 8:27=E2=80=AFAM Dan Schatzberg <schatzberg.dan@gmai=
+l.com> wrote:
+>
+> Allow proactive reclaimers to submit an additional swappiness=3D<val>
+> argument to memory.reclaim. This overrides the global or per-memcg
+> swappiness setting for that reclaim attempt.
+>
+> For example:
+>
+> echo "2M swappiness=3D0" > /sys/fs/cgroup/memory.reclaim
+>
+> will perform reclaim on the rootcg with a swappiness setting of 0 (no
+> swap) regardless of the vm.swappiness sysctl setting.
+>
+> Userspace proactive reclaimers use the memory.reclaim interface to
+> trigger reclaim. The memory.reclaim interface does not allow for any way
+> to effect the balance of file vs anon during proactive reclaim. The only
+> approach is to adjust the vm.swappiness setting. However, there are a
+> few reasons we look to control the balance of file vs anon during
+> proactive reclaim, separately from reactive reclaim:
+>
+> * Swapout should be limited to manage SSD write endurance. In near-OOM
+> situations we are fine with lots of swap-out to avoid OOMs. As these are
+> typically rare events, they have relatively little impact on write
+> endurance. However, proactive reclaim runs continuously and so its
+> impact on SSD write endurance is more significant. Therefore it is
+> desireable to control swap-out for proactive reclaim separately from
+> reactive reclaim
+>
+> * Some userspace OOM killers like systemd-oomd[1] support OOM killing on
+> swap exhaustion. This makes sense if the swap exhaustion is triggered
+> due to reactive reclaim but less so if it is triggered due to proactive
+> reclaim (e.g. one could see OOMs when free memory is ample but anon is
+> just particularly cold). Therefore, it's desireable to have proactive
+> reclaim reduce or stop swap-out before the threshold at which OOM
+> killing occurs.
+>
+> In the case of Meta's Senpai proactive reclaimer, we adjust
+> vm.swappiness before writes to memory.reclaim[2]. This has been in
+> production for nearly two years and has addressed our needs to control
+> proactive vs reactive reclaim behavior but is still not ideal for a
+> number of reasons:
+>
+> * vm.swappiness is a global setting, adjusting it can race/interfere
+> with other system administration that wishes to control vm.swappiness.
+> In our case, we need to disable Senpai before adjusting vm.swappiness.
+>
+> * vm.swappiness is stateful - so a crash or restart of Senpai can leave
+> a misconfigured setting. This requires some additional management to
+> record the "desired" setting and ensure Senpai always adjusts to it.
+>
+> With this patch, we avoid these downsides of adjusting vm.swappiness
+> globally.
+>
+> [1]https://www.freedesktop.org/software/systemd/man/latest/systemd-oomd.s=
+ervice.html
+> [2]https://github.com/facebookincubator/oomd/blob/main/src/oomd/plugins/S=
+enpai.cpp#L585-L598
+>
+> Signed-off-by: Dan Schatzberg <schatzberg.dan@gmail.com>
 
-yes, I am aware. Let's do a simple test with the new code and
-addr = 2^27 (random 32-bit addr) and compat mode.
+The cover letter says:
+"Previously, this exact interface addition was proposed by Yosry[3]."
 
-if ((_addr) == 0 || (_addr) >= VA_USER_SV57)
-	// Evaluates to false: 2^27 != 0, and is < 2^57
-else if ((((_addr) >= VA_USER_SV48)) && (VA_BITS >= VA_BITS_SV48)) 
-	// Evaluates to false: 2^27 < 2^48
-else				
-	mmap_end = VA_USER_SV39;	
+So I think it should be acknowledged with a Suggested-by, based on:
+"A Suggested-by: tag indicates that the patch idea is suggested by the
+person named and ensures credit to the person for the idea."
+from
+https://docs.kernel.org/process/submitting-patches.html#using-reported-by-t=
+ested-by-reviewed-by-suggested-by-and-fixes
 
-mmap_end = VA_USER_SV39, even in compat_mode.
+>  Documentation/admin-guide/cgroup-v2.rst | 18 ++++----
+>  include/linux/swap.h                    |  3 +-
+>  mm/memcontrol.c                         | 56 ++++++++++++++++++++-----
+>  mm/vmscan.c                             | 13 +++++-
+>  4 files changed, 69 insertions(+), 21 deletions(-)
 
-We need the extra is_compat_task() if we want to return 2^32.
+...
 
-Thanks!
-Leo
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index d91963e2d47f..aa5666842c49 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -92,6 +92,9 @@ struct scan_control {
+>         unsigned long   anon_cost;
+>         unsigned long   file_cost;
+>
+> +       /* Swappiness value for reclaim. NULL will fall back to per-memcg=
+/global value */
+> +       int *swappiness;
 
+Using a pointer to indicate whether the type it points to is
+overridden isn't really a good practice.
 
-> >
-> > See below, the behavior changed:
-> > >
-> > > >
-> > > > Before:
-> > > > - addr == 0, or addr > 2^57, or compat: mmap_end = STACK_TOP_MAX
-> > > > - 2^48 < addr < 2^57: mmap_end = 2^48
-> > > > - 0 < addr < 2^48 : mmap_end = 2^39
-> > > >
-> > > > Now:
-> > > > - addr == 0, or addr > 2^57: mmap_end = STACK_TOP_MAX
-> > > > - 2^48 < addr < 2^57: mmap_end = 2^48
-> > > > - 0 < addr < 2^48 : mmap_end = 2^39
-> > > >
-> > > > IIUC compat mode addr will be < 2^32, so will always have mmap_end = 2^39
-> > > > if addr != 0. Is that desireable?
-> > > > (if not, above change is unneeded)
-> > > >
-> >
-> > ^
-> >
-> > With your change on STACK_TOP_MAX only (not changing arch_get_mmap_end),
-> > you would have:
-> >
-> > - compat_mode & (0 < addr < 2^32)       -> mmap_end = 2^32
-> compat_mode      -> mmap_end = 2^32
-> 
+A better alternative was suggested during the v2:
+"Perhaps the negative to avoid unnecessary dereferences."
+https://lore.kernel.org/linux-mm/dhhjw4h22q4ngwtxmhuyifv32zjd6z2relrcjgnxsw=
+6zys3mod@o6dh5dy53ae3/
 
-This is correct! 
-Yeah, since you changed STACK_TOP_MAX to be 2^32 in compat mode,
-any addr value < 2^32 with compat value will return 2^32.
-(without the change in arch_get_mmap_end(), that is.) 
+Since only proactive reclaim can override swappiness, meaning it only
+happens if sc->proactive is true, I think the best way to make it work
+without spending much effort is create a helper as Michal suggest but
+it should look like:
 
-> > - non-compat, addr == 0, or addr > 2^57 -> mmap_end = TASK_SIZE_64
-> > - non-compat, (2^48 < addr < 2^57)      -> mmap_end = 2^48
-> > - non-compat, (0 < addr < 2^48)         -> mmap_end = 2^39
-> >
-> > Which seems more likely, based on Charlie comments.
-> >
-> > Thanks,
-> > Leo
-> >
-> > > > Also, unrelated to the change:
-> > > > - 2^48 < addr < 2^57: mmap_end = 2^48
-> > > > Is the above correct?
-> > > > It looks like it should be 2^57 instead, and a new if clause for
-> > > > 2^32 < addr < 2^48 should have mmap_end = 2^48.
-> > > >
-> > > > Do I get it wrong?
-> > > Maybe I should move this into the optimization part.
-> > >
-> > > >
-> > > > (I will send an RFC 'fixing' the code the way I am whinking it should look
-> > > > like)
-> > > >
-> > > > Thanks,
-> > > > Leo
-> > > >
-> > > >
-> > > >
-> > > >
-> > > >
-> > > > > --
-> > > > > 2.40.1
-> > > > >
-> > > >
-> > >
-> > >
-> > > --
-> > > Best Regards
-> > >  Guo Ren
-> > >
-> >
-> 
-> 
-> -- 
-> Best Regards
->  Guo Ren
-> 
+sc_swappiness()
+{
+  return sc->proactive ? sc->swappiness : mem_cgroup_swappiness(memcg);
+}
 
+In this patchset, sc->swappiness really means
+sc->proactive_swappiness. So it should be renamed accordingly.
 
