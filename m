@@ -1,157 +1,108 @@
-Return-Path: <linux-kernel+bounces-10053-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10057-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB7FB81CF31
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 21:15:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C939E81CF3E
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 21:28:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 26A64B240B8
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 20:15:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0972D1C231D6
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 20:28:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FD0C2F85D;
-	Fri, 22 Dec 2023 20:15:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C13C52E85A;
+	Fri, 22 Dec 2023 20:28:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C0neWqBr"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="E5YBsOL3"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E05222F845;
-	Fri, 22 Dec 2023 20:14:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-50e49a0b5caso2682757e87.0;
-        Fri, 22 Dec 2023 12:14:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703276096; x=1703880896; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=FyqcGT2sN92VNs6tvDhaYPiQfK5r7CcXxTuhzZh5y8Q=;
-        b=C0neWqBrtkq/gtGB6PkkEQN8sOUKlIhCMo035+kzmjH0Q3pXtLYIAxis15u1HfbMhY
-         zl6z8RaVTbrwBGsqIGV5kAcr6AJfWwe8d0iYSk8nAy44oYLxOpn64K67nV/Nqlz4Cogf
-         cCcVnxUT4UADSI626XMZjbr3RBBwujXwVuEvbnigFiuj76Tgx1+TLLBw8BByCmL5JMUR
-         a28b7xHDJtBUF9L4YMgpn2hmnF2GfoRrFuvh5voZWkQoJ6N03P8ObF8Gep2o4vaNHIxt
-         3DxnMbojq/0eVmENWuvG83RynCCJZ3nXknV7czHBx2SwAxJrhctWGZ1v095hrzAgPd0K
-         zNoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703276096; x=1703880896;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FyqcGT2sN92VNs6tvDhaYPiQfK5r7CcXxTuhzZh5y8Q=;
-        b=ufduEkTT+I6rHF8+B0amVaTPRSXMrz2DvGR2Y2xfZU1fAsXz35YhBnuoPKCqeBgm0Y
-         VUEwahHxV2i0qt/dsCTNlCfAPvzAXByzyl37Fx57QxbY/1AlgCJVlgGlAg+/5RYuO6io
-         IYHtzKT4Mj9CQHm/l6oA+BzNKMY0LFMn01lvi0RY82wbH4X6QBYosf9cfi/it/XVdV82
-         DpZF3ovhn2e1H4lBk0KNiwBRR+yv413XI9TiNPOVT6xIPAJt5mD9WLI5AWhxw37uCin5
-         rOemKf/iP6jw/qikQjuN09mjVTf8x8f1dl4uczSNf32tYeRJmz51FEqXfxmerkHaQQk2
-         AL/w==
-X-Gm-Message-State: AOJu0Yz1lAlvyfVFVvFvB1NlR2wIwfGFqAnJpvkXMFxNnwu7fddFYfx4
-	dX6BN768OUHb1dCrnUhC6ec=
-X-Google-Smtp-Source: AGHT+IHWpBsM8wbop48hkzWW0SiXiXe3BoSZQM0QW/88GBDtenoNLaCXath99TrZaJbMHdcqiMIUMA==
-X-Received: by 2002:ac2:4c8c:0:b0:50e:386a:eedb with SMTP id d12-20020ac24c8c000000b0050e386aeedbmr769089lfl.70.1703276095452;
-        Fri, 22 Dec 2023 12:14:55 -0800 (PST)
-Received: from [10.0.0.42] (host-213-145-197-219.kaisa-laajakaista.fi. [213.145.197.219])
-        by smtp.gmail.com with ESMTPSA id h22-20020ac24db6000000b0050e7152daffsm48798lfe.182.2023.12.22.12.14.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Dec 2023 12:14:54 -0800 (PST)
-Message-ID: <4b5bd2c2-37c9-4cdf-934d-8bc6d6f73152@gmail.com>
-Date: Fri, 22 Dec 2023 22:16:11 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95EB02E83B
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 20:28:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1703276902;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type;
+	bh=vSbo0vaSplxTWaLTmPRRlscLr9y1GrvvCN5a85juhr4=;
+	b=E5YBsOL3xYdwE5CjJhD5f23uk+oi5W6sacMW5wZc4bys1rIAcZctNw/TfMPGk/PeIa/YY3
+	J8jqaJYSOb3tSU+baWDo0eEBg+D5KIHJLZIoWjf+V943yAfHxpLwTSgAErjXK3crC9Nv3K
+	dXfNZStt6gOAw7ZWPX70XnM0A+juHpw=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-346-xuWfgVnmMZqjHiOQPYGl5A-1; Fri, 22 Dec 2023 15:28:18 -0500
+X-MC-Unique: xuWfgVnmMZqjHiOQPYGl5A-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1F7CE836F85;
+	Fri, 22 Dec 2023 20:28:18 +0000 (UTC)
+Received: from localhost (unknown [10.22.8.75])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id AABDE3C2F;
+	Fri, 22 Dec 2023 20:28:17 +0000 (UTC)
+Date: Fri, 22 Dec 2023 17:28:16 -0300
+From: "Luis Claudio R. Goncalves" <lgoncalv@redhat.com>
+To: LKML <linux-kernel@vger.kernel.org>,
+	linux-rt-users <linux-rt-users@vger.kernel.org>,
+	stable-rt <stable-rt@vger.kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Carsten Emde <C.Emde@osadl.org>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Daniel Wagner <daniel.wagner@suse.com>,
+	Tom Zanussi <tom.zanussi@linux.intel.com>,
+	Clark Williams <williams@redhat.com>,
+	Mark Gross <markgross@kernel.org>, Pavel Machek <pavel@denx.de>,
+	Jeff Brady <jeffreyjbrady@gmail.com>,
+	Luis Goncalves <lgoncalv@redhat.com>
+Subject: [ANNOUNCE] 5.10.204-rt99
+Message-ID: <ZYXxYDf2_-uWfkJ8@uudg.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 0/4] Add APIs to request TX/RX DMA channels for thread
- ID
-To: Siddharth Vadapalli <s-vadapalli@ti.com>, vkoul@kernel.org
-Cc: dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, srk@ti.com, vigneshr@ti.com
-References: <20231218062640.2338453-1-s-vadapalli@ti.com>
-Content-Language: en-US
-From: =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>
-In-Reply-To: <20231218062640.2338453-1-s-vadapalli@ti.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
 
-Hi Siddharth,
+Hello RT-list!
 
-On 12/18/23 08:26, Siddharth Vadapalli wrote:
-> The existing APIs for requesting TX and RX DMA channels rely on parsing
-> a device-tree node to obtain the Channel/Thread IDs from their names.
-> However, it is possible to know the thread IDs by alternative means such
-> as being informed by Firmware on a remote core via RPMsg regarding the
-> allocated TX/RX DMA channel thread IDs. In such cases, the driver can be
-> probed by non device-tree methods such as RPMsg-bus, due to which it is not
-> necessary that the device using the DMA has a device-tree node
-> corresponding to it. Thus, add APIs to enable the driver to make use of
-> the existing DMA APIs even when there's no device-tree node.
-> 
-> Additionally, since the name of the device for the remote RX channel is
-> being set purely on the basis of the RX channel ID itself, it can result
-> in duplicate names when multiple flows are used on the same channel.
-> Avoid name duplication by including the flow in the name.
+I'm pleased to announce the 5.10.204-rt99 stable release.
 
-Thank you for the updates,
-Acked-by: Peter Ujfalusi <peter.ujfalusi@gmail.com>
+This release is just an update to the new stable 5.10.204 version
+and no RT-specific changes have been made.
 
-> Series is based on linux-next tagged next-20231215.
-> 
-> v2:
-> https://lore.kernel.org/r/20231212111011.1401641-1-s-vadapalli@ti.com/
-> Changes since v2:
-> - Rebased series on linux-next tagged next-20231215.
-> - Renamed the function "k3_udma_glue_request_tx_chn_by_id()" to
->   "k3_udma_glue_request_tx_chn_for_thread_id()" as suggested by:
->   Péter Ujfalusi <peter.ujfalusi@gmail.com>
-> - Similar to the above change, I have also renamed the function
->   "k3_udma_glue_request_remote_rx_chn_by_id()" to
->   "k3_udma_glue_request_remote_rx_chn_for_thread_id()".
-> - Updated the function prototypes in include/linux/dma/k3-udma-glue.h
->   accordingly.
-> - Updated the commit messages for patches 3/4 and 4/4 to match the
->   changes made to the function names.
-> 
-> v1:
-> https://lore.kernel.org/r/20231114083906.3143548-1-s-vadapalli@ti.com/
-> Changes since v1:
-> - Rebased series on linux-next tagged next-20231212.
-> - Updated commit messages with details regarding the use-case for which
->   the newly added APIs will be required.
-> - Removed unnecessary return value check within
->   "of_k3_udma_glue_parse_chn()" function in patch 1, since it will fall
->   through to "out_put_spec" anyway.
-> - Removed unnecessary return value check within
->   "of_k3_udma_glue_parse_chn_by_id()" function in patch 1, since it will
->   fall through to "out_put_spec" anyway.
-> - Moved patch 4 of v1 series to patch 2 of current series.
-> 
-> RFC Series:
-> https://lore.kernel.org/r/20231111121555.2656760-1-s-vadapalli@ti.com/
-> Changes since RFC Series:
-> - Rebased patches 1, 2 and 3 on linux-next tagged next-20231114.
-> - Added patch 4 to the series.
-> 
-> Regards,
-> Siddharth.
-> 
-> Siddharth Vadapalli (4):
->   dmaengine: ti: k3-udma-glue: Add function to parse channel by ID
->   dmaengine: ti: k3-udma-glue: Update name for remote RX channel device
->   dmaengine: ti: k3-udma-glue: Add function to request TX chan for
->     thread ID
->   dmaengine: ti: k3-udma-glue: Add function to request RX chan for
->     thread ID
-> 
->  drivers/dma/ti/k3-udma-glue.c    | 306 ++++++++++++++++++++++---------
->  include/linux/dma/k3-udma-glue.h |  10 +
->  2 files changed, 229 insertions(+), 87 deletions(-)
-> 
+You can get this release via the git tree at:
 
--- 
-Péter
+  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
+
+  branch: v5.10-rt
+  Head SHA1: f795cc5faaf7e9c18f67c418d1ca5d8d18658320
+
+Or to build 5.10.204-rt99 directly, the following patches should be applied:
+
+  https://www.kernel.org/pub/linux/kernel/v5.x/linux-5.10.tar.xz
+
+  https://www.kernel.org/pub/linux/kernel/v5.x/patch-5.10.204.xz
+
+  https://www.kernel.org/pub/linux/kernel/projects/rt/5.10/older/patch-5.10.204-rt99.patch.xz
+
+Signing key fingerprint:
+
+  9354 0649 9972 8D31 D464  D140 F394 A423 F8E6 7C26
+
+All keys used for the above files and repositories can be found on the
+following git repository:
+
+   git://git.kernel.org/pub/scm/docs/kernel/pgpkeys.git
+
+Enjoy!
+Luis
+
 
