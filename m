@@ -1,194 +1,198 @@
-Return-Path: <linux-kernel+bounces-9525-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9526-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A849981C700
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 09:58:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 406C381C704
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 09:59:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 192391F26406
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 08:58:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EB5EB281AF3
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 08:59:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A48DDDAE;
-	Fri, 22 Dec 2023 08:58:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54D34D512;
+	Fri, 22 Dec 2023 08:59:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XFMgGrcA"
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="AKyUKZfq"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+Received: from mail-vs1-f50.google.com (mail-vs1-f50.google.com [209.85.217.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36931CA65;
-	Fri, 22 Dec 2023 08:58:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-40c2db2ee28so19932025e9.2;
-        Fri, 22 Dec 2023 00:58:30 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FF0BFBE8
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 08:59:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-vs1-f50.google.com with SMTP id ada2fe7eead31-466e5faf29eso11579137.2
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 00:59:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703235509; x=1703840309; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=cI35bX0Nhe6pNuZytaRMQzlreBpUdOzZVZdkSiKR318=;
-        b=XFMgGrcAWhzJDMD0P2kapwOyfxCAHG5hbloyRcTb+gB9xpPdt7yYsESLWuIHCoYvhP
-         uAlIbA8NV1T/UkyJM41M3pcpsB7QSPBwDK7A1kuVXN23ZbpvcHOqureVPhBsOu6+8LwU
-         cGkAC/wHTxoEt4dYhsoNhDIynjKgvz7Fd7/krTLEJHfWEBqaFBC2QE4OQw4DOR3pcluV
-         PWGzDIbRkMviuVh96GCLW5dWBND2fMFmDL+cH+DRa0Ihtnjau1PkvnObDgkFBlK2EKz3
-         qBHVgZE+StZ97BnukzK0vaj4pCZH4mN0sD2+dQkqeJeMk7/U3xWJMoq7nsbtz0crXaYX
-         kZlA==
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1703235539; x=1703840339; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ecNqm3KCZK5TPbasxuftGkkhiYfCxbseeo7kCc76bg8=;
+        b=AKyUKZfq/enD4Xfvlcu7aku4l+XOxNyMnkhEhy+EC72uFlxszex87BUmYqFP6VCSdP
+         cuhKJ6CwqDjJSj9Kl2Wnusw8JOpWn6gi+/Yt4AfOBC5qrvFB0JEVgdzlxOF8QBUxxrvH
+         WI3HQapDEc9wjvRLucFBm+VzX64JHYB1TXVWPm5xcVBmN2dKTZldgIuJcZiHgipw1fVF
+         KnoLv6o0pJv30qKpA9GMS8e7TRWSkypGsJ/wjJ+qLFYEN5+njUJ8XPgd+zzj2NxO82QN
+         uL6aNEzEvRhhfhGmFHdeiL+Zyv0P5IdzmYpQAvLSeBUt2nfYuKmpC28PzKVF50qx2Fjp
+         Pa9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703235509; x=1703840309;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=cI35bX0Nhe6pNuZytaRMQzlreBpUdOzZVZdkSiKR318=;
-        b=RvtEsGW52bknRPLqK3pefibZVWPxKcGpJiGp/2vB/qspBz4XxA4wNSw3d14FFjwWZL
-         EtI0vFipAMw8WTT8oSkAlZbDUulS7BM3TptlR2N3OcO40zgqY45l6GniWckBa1I3UuJw
-         236gbVtnsE7InBF0RY7RHC7qSTnWQjf5R9gBv/rrEquh1TeeYBL1kcWHWD7RJus+0qkL
-         zW4xPR6+KRyJqFU4JBxweqC0kZn5fPn0l1wDyMVAngUTvDX342eODxlmjx4uvzkKp7C7
-         JivQ7p95zzalg31cvzXKlh5smzj2WXPkZZvkIhrKrLT397jLzUnssjg/VEMI9KuG0vTC
-         rRjw==
-X-Gm-Message-State: AOJu0Yx6iIFQdxGdiHsVokjNCkXsdu93rZBLPJ5w8IfmFGUtVeGQTaPA
-	4YimbV6aN6ZKrvQWm0dmD9IbhKl7fvTSm7YUNMY=
-X-Google-Smtp-Source: AGHT+IHxUXolvNOrzYP2sehmaGu4dpOV/paRm80lFYTwBFEv14pGkL6zMlGQe6zd/u5nBBYzi0u5pA==
-X-Received: by 2002:a05:600c:3d0f:b0:40d:43cf:275d with SMTP id bh15-20020a05600c3d0f00b0040d43cf275dmr535638wmb.95.1703235508788;
-        Fri, 22 Dec 2023 00:58:28 -0800 (PST)
-Received: from ?IPv6:2001:818:ea8e:7f00:5877:261e:1d6d:8696? ([2001:818:ea8e:7f00:5877:261e:1d6d:8696])
-        by smtp.gmail.com with ESMTPSA id h7-20020a05600c350700b0040d2e37c06dsm6120316wmq.20.2023.12.22.00.58.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Dec 2023 00:58:28 -0800 (PST)
-Message-ID: <277071605eb355912972a30b07ecead7d70efe25.camel@gmail.com>
-Subject: Re: [PATCH v5 7/8] iio: buffer-dmaengine: Support new DMABUF based
- userspace API
-From: Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
-To: Paul Cercueil <paul@crapouillou.net>, Jonathan Cameron <jic23@kernel.org>
-Cc: Michael Hennerich <Michael.Hennerich@analog.com>, Jonathan Corbet
-	 <corbet@lwn.net>, linux-iio@vger.kernel.org, linux-doc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, Christian
-	=?ISO-8859-1?Q?K=F6nig?=
-	 <christian.koenig@amd.com>, linaro-mm-sig@lists.linaro.org, Vinod Koul
-	 <vkoul@kernel.org>, dmaengine@vger.kernel.org, Sumit Semwal
-	 <sumit.semwal@linaro.org>, linux-media@vger.kernel.org
-Date: Fri, 22 Dec 2023 09:58:29 +0100
-In-Reply-To: <2da3fb55384a222868f90562be9e1e2ca55ec1c3.camel@crapouillou.net>
-References: <20231219175009.65482-1-paul@crapouillou.net>
-	 <20231219175009.65482-8-paul@crapouillou.net>
-	 <20231221161258.056f5ce4@jic23-huawei>
-	 <2da3fb55384a222868f90562be9e1e2ca55ec1c3.camel@crapouillou.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        d=1e100.net; s=20230601; t=1703235539; x=1703840339;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ecNqm3KCZK5TPbasxuftGkkhiYfCxbseeo7kCc76bg8=;
+        b=i3jtVJePvahzuwvRRC9m0H9Jtp7NC7Ob1QBNw/rBY0b9yGX9wY9EfHF3gVRLqjckAg
+         dFA255uIxwdK1vh6NwBt39ZSgWRQjA9vQrl3YAX9aGlE3i7G6Ny5XoKtWcGoGrySmV3k
+         zKhWIcSPqglqZ7WQXrdGLEGK1CpSW0E84vQ8+vYKjzby9MWJd5qVT8O8qEzl9wYwYZn+
+         DtAuzE4Z4hDx5vI2xsL3O0dKn4+zRCvwgW7AuHROvLXNAPGVJy3ySQVcaFmgHMwiKwsI
+         BfSqlsDQewqI2rBNggHP1hdNwGk8hLmH1vyxsfLVfLDB3uEWkYwgyFG6JM2xWsMEVkw+
+         saIw==
+X-Gm-Message-State: AOJu0Yw4ze7Cli1ZxVRw3xfNC7fPTbh4VsHfTNp50o6R4kadZQTfccYT
+	a5egEaOnWTNZGpfiQyUXCD60xvwBE+70wG0/OcklyhVLlp3TSA==
+X-Google-Smtp-Source: AGHT+IFM9nmiSGlO/V2NqByyGiFjDUDdyQoQCB1/8S5i9MlsDlqpG+qP62g9RZoiAW8nUN0UBv12+et55xeNtjdB/gA=
+X-Received: by 2002:a05:6102:32cb:b0:466:c6b0:d10e with SMTP id
+ o11-20020a05610232cb00b00466c6b0d10emr586157vss.1.1703235539292; Fri, 22 Dec
+ 2023 00:58:59 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20231221175527.2814506-1-andriy.shevchenko@linux.intel.com> <ZYTihbWMcHMHSkC_@rigel>
+In-Reply-To: <ZYTihbWMcHMHSkC_@rigel>
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+Date: Fri, 22 Dec 2023 09:58:48 +0100
+Message-ID: <CAMRc=McSXrivkzhJVEh7-+1fzO6EBLMawhxYd7YgcsXW9wBKbA@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] gpiolib: cdev: Split line_get_debounce_period()
+ and use
+To: Kent Gibson <warthog618@gmail.com>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, linux-gpio@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>, 
+	Andy Shevchenko <andy@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2023-12-21 at 18:30 +0100, Paul Cercueil wrote:
-> Hi Jonathan,
->=20
-> Le jeudi 21 d=C3=A9cembre 2023 =C3=A0 16:12 +0000, Jonathan Cameron a =C3=
-=A9crit=C2=A0:
-> > On Tue, 19 Dec 2023 18:50:08 +0100
-> > Paul Cercueil <paul@crapouillou.net> wrote:
-> >=20
-> > > Use the functions provided by the buffer-dma core to implement the
-> > > DMABUF userspace API in the buffer-dmaengine IIO buffer
-> > > implementation.
-> > >=20
-> > > Since we want to be able to transfer an arbitrary number of bytes
-> > > and
-> > > not necesarily the full DMABUF, the associated scatterlist is
-> > > converted
-> > > to an array of DMA addresses + lengths, which is then passed to
-> > > dmaengine_prep_slave_dma_array().
-> > >=20
-> > > Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> > One question inline. Otherwise looks fine to me.
-> >=20
-> > J
-> > >=20
-> > > ---
-> > > v3: Use the new dmaengine_prep_slave_dma_array(), and adapt the
-> > > code to
-> > > =C2=A0=C2=A0=C2=A0 work with the new functions introduced in industri=
-alio-buffer-
-> > > dma.c.
-> > >=20
-> > > v5: - Use the new dmaengine_prep_slave_dma_vec().
-> > > =C2=A0=C2=A0=C2=A0 - Restrict to input buffers, since output buffers =
-are not yet
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 supported by IIO buffers.
-> > > ---
-> > > =C2=A0.../buffer/industrialio-buffer-dmaengine.c=C2=A0=C2=A0=C2=A0 | =
-52
-> > > ++++++++++++++++---
-> > > =C2=A01 file changed, 46 insertions(+), 6 deletions(-)
-> > >=20
-> > > diff --git a/drivers/iio/buffer/industrialio-buffer-dmaengine.c
-> > > b/drivers/iio/buffer/industrialio-buffer-dmaengine.c
-> > > index 5f85ba38e6f6..825d76a24a67 100644
-> > > --- a/drivers/iio/buffer/industrialio-buffer-dmaengine.c
-> > > +++ b/drivers/iio/buffer/industrialio-buffer-dmaengine.c
-> > > @@ -64,15 +64,51 @@ static int
-> > > iio_dmaengine_buffer_submit_block(struct iio_dma_buffer_queue
-> > > *queue,
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct dmaengine_buff=
-er *dmaengine_buffer =3D
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0iio_buffer_to_dmaengine_buffer(&queue->buffer);
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct dma_async_tx_d=
-escriptor *desc;
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0unsigned int i, nents;
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct scatterlist *sgl;
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct dma_vec *vecs;
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0size_t max_size;
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0dma_cookie_t cookie;
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0size_t len_total;
-> > > =C2=A0
-> > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0block->bytes_used =3D min(=
-block->size, dmaengine_buffer-
-> > > > max_size);
-> > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0block->bytes_used =3D roun=
-d_down(block->bytes_used,
-> > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0dma=
-engine_buffer->align);
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (queue->buffer.directio=
-n !=3D IIO_BUFFER_DIRECTION_IN) {
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0/* We do not yet support output buffers. */
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0return -EINVAL;
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0}
-> > > =C2=A0
-> > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0desc =3D dmaengine_prep_sl=
-ave_single(dmaengine_buffer->chan,
-> > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0block->phys_addr, block->bytes_used,
-> > > DMA_DEV_TO_MEM,
-> > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0DMA_PREP_INTERRUPT);
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (block->sg_table) {
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0sgl =3D block->sg_table->sgl;
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0nents =3D sg_nents_for_len(sgl, block->bytes_used);
-> >=20
-> > Are we guaranteed the length in the sglist is enough?=C2=A0 If not this
-> > can return an error code.
->=20
-> The length of the sglist will always be enough, the
-> iio_buffer_enqueue_dmabuf() function already checks that block-
-> > bytes_used is equal or smaller than the size of the DMABUF.
->=20
-> It is quite a few functions above in the call stack though, so I can
-> handle the errors of sg_nents_for_len() here if you think makes sense.
+On Fri, Dec 22, 2023 at 2:12=E2=80=AFAM Kent Gibson <warthog618@gmail.com> =
+wrote:
+>
+> On Thu, Dec 21, 2023 at 07:55:27PM +0200, Andy Shevchenko wrote:
+> > Instead of repeating the same code and reduce possible miss
+> > of READ_ONCE(), split line_get_debounce_period() heler out
+> > and use in the existing cases.
+> >
+>
+> helper
+>
+>
+> Not a fan of this change.
+>
 
-Maybe putting something like the above in a comment?
+Yeah, sorry but NAK. READ_ONCE() is well known and tells you what the
+code does. Arbitrary line_get_debounce_period() makes me have to look
+it up.
 
-- Nuno S=C3=A1
+Bart
 
-
+> So using READ_ONCE() is repeating code??
+> Doesn't providing a wrapper around READ_ONCE() just rename that repititio=
+n?
+> What of all the other uses of READ_ONCE() in cdev (and there are a lot) -
+> why pick on debounce_period?
+>
+> The line_set_debounce_period() is necessary as the set is now a
+> multi-step process as it can impact whether the line is contained
+> in the supinfo_tree.  The get is just a get.
+>
+> And you could've included me in the Cc so I didn't just find it by
+> accident.
+>
+> Cheers,
+> Kent.
+>
+> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > ---
+> >  drivers/gpio/gpiolib-cdev.c | 23 ++++++++++++++---------
+> >  1 file changed, 14 insertions(+), 9 deletions(-)
+> >
+> > diff --git a/drivers/gpio/gpiolib-cdev.c b/drivers/gpio/gpiolib-cdev.c
+> > index 744734405912..c573820d5722 100644
+> > --- a/drivers/gpio/gpiolib-cdev.c
+> > +++ b/drivers/gpio/gpiolib-cdev.c
+> > @@ -651,6 +651,16 @@ static struct line *supinfo_find(struct gpio_desc =
+*desc)
+> >       return NULL;
+> >  }
+> >
+> > +static unsigned int line_get_debounce_period(struct line *line)
+> > +{
+> > +     return READ_ONCE(line->debounce_period_us);
+> > +}
+> > +
+> > +static inline bool line_has_supinfo(struct line *line)
+> > +{
+> > +     return line_get_debounce_period(line);
+> > +}
+> > +
+> >  static void supinfo_to_lineinfo(struct gpio_desc *desc,
+> >                               struct gpio_v2_line_info *info)
+> >  {
+> > @@ -665,15 +675,10 @@ static void supinfo_to_lineinfo(struct gpio_desc =
+*desc,
+> >
+> >       attr =3D &info->attrs[info->num_attrs];
+> >       attr->id =3D GPIO_V2_LINE_ATTR_ID_DEBOUNCE;
+> > -     attr->debounce_period_us =3D READ_ONCE(line->debounce_period_us);
+> > +     attr->debounce_period_us =3D line_get_debounce_period(line);
+> >       info->num_attrs++;
+> >  }
+> >
+> > -static inline bool line_has_supinfo(struct line *line)
+> > -{
+> > -     return READ_ONCE(line->debounce_period_us);
+> > -}
+> > -
+> >  /*
+> >   * Checks line_has_supinfo() before and after the change to avoid unne=
+cessary
+> >   * supinfo_tree access.
+> > @@ -846,7 +851,7 @@ static enum hte_return process_hw_ts(struct hte_ts_=
+data *ts, void *p)
+> >               line->total_discard_seq++;
+> >               line->last_seqno =3D ts->seq;
+> >               mod_delayed_work(system_wq, &line->work,
+> > -               usecs_to_jiffies(READ_ONCE(line->debounce_period_us)));
+> > +                              usecs_to_jiffies(line_get_debounce_perio=
+d(line)));
+> >       } else {
+> >               if (unlikely(ts->seq < line->line_seqno))
+> >                       return HTE_CB_HANDLED;
+> > @@ -987,7 +992,7 @@ static irqreturn_t debounce_irq_handler(int irq, vo=
+id *p)
+> >       struct line *line =3D p;
+> >
+> >       mod_delayed_work(system_wq, &line->work,
+> > -             usecs_to_jiffies(READ_ONCE(line->debounce_period_us)));
+> > +                      usecs_to_jiffies(line_get_debounce_period(line))=
+);
+> >
+> >       return IRQ_HANDLED;
+> >  }
+> > @@ -1215,7 +1220,7 @@ static int edge_detector_update(struct line *line=
+,
+> >                       gpio_v2_line_config_debounce_period(lc, line_idx)=
+;
+> >
+> >       if ((active_edflags =3D=3D edflags) &&
+> > -         (READ_ONCE(line->debounce_period_us) =3D=3D debounce_period_u=
+s))
+> > +         (line_get_debounce_period(line) =3D=3D debounce_period_us))
+> >               return 0;
+> >
+> >       /* sw debounced and still will be...*/
+> > --
+> > 2.43.0.rc1.1.gbec44491f096
+> >
 
