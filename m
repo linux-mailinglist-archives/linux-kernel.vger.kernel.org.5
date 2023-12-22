@@ -1,71 +1,122 @@
-Return-Path: <linux-kernel+bounces-9221-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9222-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E114D81C27E
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 01:58:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9413181C280
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 01:59:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D730286435
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 00:58:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3D42E1F2532B
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 00:59:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A730138A;
-	Fri, 22 Dec 2023 00:58:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D169010EA;
+	Fri, 22 Dec 2023 00:59:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tvt96xkE"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fNcjM1pE"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f179.google.com (mail-il1-f179.google.com [209.85.166.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6D5BEB8;
-	Fri, 22 Dec 2023 00:58:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 99DE6C433C8;
-	Fri, 22 Dec 2023 00:58:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703206731;
-	bh=q29WWQAJiVDYxm/YLzD5LdCR4yaDPUqzYThRAFt3JLk=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=tvt96xkEltTpLfY1YFKDNsfPv2RDE+puhIEZu9KY/jEUyhWsIBIA999v85N5XwIWm
-	 ZRgW28+HRwit4fg7CGl1KZyYZ+uLDE4zqmCs3ZKW3OufC1g4JVU1u/nre2IxHmE2dV
-	 26t0/EPr3nlel0kZPAXKvU3oDdwNPfDvxkTFLOCxlD3iRtdH/IDyzUTeCf1XmQIaSE
-	 TK7vIMWj+4t8FfFwjtHKmT+hsNm4BzEWgoimkC7Dzk8KzC4J6f3TApj12St5Io6HPB
-	 VPwo18G9H93f2++aoCwLs2SeC7xnJKrcjspqlSzAJIqlFbviLA4GLNu/JI4QtJzA8d
-	 OuJihMEezaiSw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 851EDD8C98B;
-	Fri, 22 Dec 2023 00:58:51 +0000 (UTC)
-Subject: Re: [GIT PULL] pin control fixes for v6.7
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <CACRpkdY=R+tyyFxQVuXJARqVDRXCi_A=JvYACWJ6L5JQa_8pHg@mail.gmail.com>
-References: <CACRpkdY=R+tyyFxQVuXJARqVDRXCi_A=JvYACWJ6L5JQa_8pHg@mail.gmail.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <CACRpkdY=R+tyyFxQVuXJARqVDRXCi_A=JvYACWJ6L5JQa_8pHg@mail.gmail.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git tags/pinctrl-v6.7-4
-X-PR-Tracked-Commit-Id: 14694179e561b5f2f7e56a0f590e2cb49a9cc7ab
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 24e0d2e527a39f64caeb2e6be39ad5396fb2da5e
-Message-Id: <170320673153.4959.14621736536219251148.pr-tracker-bot@kernel.org>
-Date: Fri, 22 Dec 2023 00:58:51 +0000
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-kernel <linux-kernel@vger.kernel.org>, "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>, Mario Limonciello <mario.limonciello@amd.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D268BA23;
+	Fri, 22 Dec 2023 00:59:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-il1-f179.google.com with SMTP id e9e14a558f8ab-35fc5f0f9c0so5639375ab.0;
+        Thu, 21 Dec 2023 16:59:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703206757; x=1703811557; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=lVcecegkpcKWOfoP3TqRfCqH3BZgHO5QSokYLXJOZiw=;
+        b=fNcjM1pEFh9L9r1ZTYuobn9TUlV0utIhiB8DBlueOMKgG0pw3XwVvjkKuU8Mu74XEQ
+         ekRI7NPqjfU/GSQ5J1fMnEvNz8DpVVkaVt0ZZ1qIEqVVkBhlDd+JLakL3oegzixa4Fyn
+         11HHeVW2tE539qVo4F4eEjh/C0QD2m4/4BWN0GYy5R94dTud94KFQ3y3m9M6D9/Q7MRm
+         oC/uNwx92jBfXwDd14A/J+gNAeC2uEusfS0aucjlPDZcAt+eJj87DmBIKLTLTvntsDkE
+         Y+yOXEECsjR3ezf6cd9TptIVqAPyOiSP4ji4dF7P89imhDEZynriU+Q3Ki4itYbQoigb
+         iNvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703206757; x=1703811557;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=lVcecegkpcKWOfoP3TqRfCqH3BZgHO5QSokYLXJOZiw=;
+        b=CBC00gvT5FD4QAUt6C13+igE5Rh/WN0jFlAaCvZDqfcFUX4H7CPOeET4vlCWRh9SJM
+         fruAHknQUXsApmtyKyah5EjAIxhOoQwVE/aT2i3OenzDGt7xLCrciKCx2T+hgVu3cBrz
+         eFJIYxgzxvHFDzC3wVQfr2s0X6AMVo/MsSZwjfu18+bqEnR3L5f5I3c/Wn32N6XAovDp
+         jlEVwDRiJR3HvR3t6d9ShGIJKxWG+Vq+HE84Px3JR12Nm7IidIoQ8tJWGYc5xy8AbnjL
+         AjjTHnlkZ9D36nHW0G6ns5bUfsna66bDQJ9xYhQNKu3ddTe33rqaL3GDWgDSVd5OuF9G
+         L/WA==
+X-Gm-Message-State: AOJu0Yx6EwrXE2xlqphK1SAdwcVkNeKfKzIAYV2qtLi4ohHLRAD96vjx
+	ZYVXPQNsGSc2K7EIzRjU1uM=
+X-Google-Smtp-Source: AGHT+IHbLLqmX5WkgqGut71nma2X6yTuFUNCa9AIFD6v7jRqD9xSq9whQAQ1efU8W6qTvCSQDgQ56w==
+X-Received: by 2002:a05:6e02:3489:b0:35f:c4c5:91e8 with SMTP id bp9-20020a056e02348900b0035fc4c591e8mr716996ilb.60.1703206756743;
+        Thu, 21 Dec 2023 16:59:16 -0800 (PST)
+Received: from localhost ([121.167.227.144])
+        by smtp.gmail.com with ESMTPSA id x8-20020a170902a38800b001d3e9937d92sm2306646pla.51.2023.12.21.16.59.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Dec 2023 16:59:14 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Fri, 22 Dec 2023 09:59:12 +0900
+From: Tejun Heo <tj@kernel.org>
+To: Kees Cook <keescook@chromium.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Azeem Shaikh <azeemshaikh38@gmail.com>,
+	Zefan Li <lizefan.x@bytedance.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Waiman Long <longman@redhat.com>,
+	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+	bpf@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v3 2/3] kernfs: Convert kernfs_name_locked() from
+ strlcpy() to strscpy()
+Message-ID: <ZYTfYAHZHpD9ZSnE@mtj.duckdns.org>
+References: <20231212211606.make.155-kees@kernel.org>
+ <20231212211741.164376-2-keescook@chromium.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231212211741.164376-2-keescook@chromium.org>
 
-The pull request you sent on Thu, 21 Dec 2023 23:50:44 +0100:
+On Tue, Dec 12, 2023 at 01:17:39PM -0800, Kees Cook wrote:
+> strlcpy() reads the entire source buffer first. This read may exceed
+> the destination size limit. This is both inefficient and can lead
+> to linear read overflows if a source string is not NUL-terminated[1].
+> Additionally, it returns the size of the source string, not the
+> resulting size of the destination string. In an effort to remove strlcpy()
+> completely[2], replace strlcpy() here with strscpy().
+> 
+> Nothing actually checks the return value coming from kernfs_name_locked(),
+> so this has no impact on error paths. The caller hierarchy is:
+> 
+> kernfs_name_locked()
+>         kernfs_name()
+>                 pr_cont_kernfs_name()
+>                         return value ignored
+>                 cgroup_name()
+>                         current_css_set_cg_links_read()
+>                                 return value ignored
+>                         print_page_owner_memcg()
+>                                 return value ignored
+> 
+> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strlcpy [1]
+> Link: https://github.com/KSPP/linux/issues/89 [2]
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Tejun Heo <tj@kernel.org>
+> Cc: Azeem Shaikh <azeemshaikh38@gmail.com>
+> Link: https://lore.kernel.org/r/20231116192127.1558276-2-keescook@chromium.org
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git tags/pinctrl-v6.7-4
+Acked-by: Tejun Heo <tj@kernel.org>
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/24e0d2e527a39f64caeb2e6be39ad5396fb2da5e
-
-Thank you!
+Thanks.
 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+tejun
 
