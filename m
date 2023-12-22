@@ -1,105 +1,92 @@
-Return-Path: <linux-kernel+bounces-9790-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9791-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95F2581CB83
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 15:49:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE7C881CB86
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 15:51:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C4C5B1C21B4E
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 14:49:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 52A671F22881
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 14:51:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C64623741;
-	Fri, 22 Dec 2023 14:49:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D10292374B;
+	Fri, 22 Dec 2023 14:51:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TlMgyIJu"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RNxAc1t/"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F5A523742;
-	Fri, 22 Dec 2023 14:49:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2FE7BC433C7;
-	Fri, 22 Dec 2023 14:49:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703256588;
-	bh=lQ8zwules50AdfT7MsVqZCb8SpNAPPm1C3PvbI7RSio=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=TlMgyIJu63rGlNhUoHWMZ3Kjn1p6rG3cPZCwVTycd+pjvW+7qGQuL66FmzEDC8Q+u
-	 mYTL76RZd71aj/7TxWQMaUg3ZvoSfVc5fi/j3LwD3bh6LU43f9pd6ZA3ZMI72PYTnH
-	 hHfLg3I4gWwMhJkJtXwD45GfrEMV1QjhMuri2lEkTn9qJ8zySSn4NDJ+4LpaGSkuLU
-	 RyRpmV+Lda++txXKPJi2IcL3s1NaqdC0IODa59MSRT+llJsrfkm9UZoF3hx+itaQcS
-	 W5oS1IV9x0WUPAk3TfVQjgdBoFFR0PLqm8VyxGLWbA78XsK/YBoeaw62PzljMCJGXC
-	 VKX2zGhuuF19Q==
-Date: Fri, 22 Dec 2023 14:49:42 +0000
-From: Mark Brown <broonie@kernel.org>
-To: =?iso-8859-1?Q?Andr=E9?= Apitzsch <git@apitzsch.eu>
-Cc: Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Liam Girdwood <lgirdwood@gmail.com>
-Subject: Re: [PATCH] dt-bindings: regulator: Convert ti,tps65133 to YAML
-Message-ID: <b67eba2a-b07a-4076-92bb-07bd0faf338e@sirena.org.uk>
-References: <20231217-tps65132-v1-1-73c69a960d28@apitzsch.eu>
- <170282308261.876422.2237767392476986368.robh@kernel.org>
- <951a01b5da3061e1ac1d396ba7f6629e3a0e9a1e.camel@apitzsch.eu>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7C6B23740;
+	Fri, 22 Dec 2023 14:51:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-40d4103aed7so17502965e9.3;
+        Fri, 22 Dec 2023 06:51:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703256663; x=1703861463; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=tNp4E7G3he8UV4jpGDCQDUTxTixBCD4JOV37xRazdPw=;
+        b=RNxAc1t/mCofFWyOII/xtudTHXXHfs2B4I3jGWhEh0cFZDX7cGjeB23BDGbHCeKQxE
+         fpcYlOTPHySsRGEnNkccRjcph4xkkuSePqvpGfQOjVAnoKRAsiuPQG90VGgdPRg+hGsP
+         I+yiRs8N9onKss4sLe1MDr9/S77kwwJ04061B+Jo3BzRfBp8P9mhI9Scjhomlkge/zu+
+         SAWASghX6QNQIEw0OeCt77oIco60gh+79+nxObSjOEuDwDRREIOIGjwPjsbccYbWZwzh
+         7NqT7bWEXgrFDNDaJemWrEk3Rq2WE9PLbeDzr5U0Y/uelAG885Wpzy9mbq/OMTGtuRRp
+         Rg2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703256663; x=1703861463;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tNp4E7G3he8UV4jpGDCQDUTxTixBCD4JOV37xRazdPw=;
+        b=LOvKhXhpaAmDwc0MK+qMfdQ+HjsB6w9efoyVq35BSMaJbzjn0a1J5stxzmKXkZVUQp
+         SQF2UfFEQNTSI65MaU1jtmO9DZMJBqZ3aHnQhlvySDhytc7eb7C6Z8OLr++f/WLKoJMm
+         d0P9MBTvVBSJSb9LKf9pjW2A56n7U732kMVRg96Uzv0qOMRFLqpCxKixtNYcwfGR1XOp
+         jmAWaVnPEM9+CLmq/gSKY3Iz60sMOd2E0qAypSenQrvRlj98e9wS2BbCuZbqn8PsDStS
+         2V/PRoHBhmdZJx7uFWD2yMh4PLIPtnotPjZ8QIc3qIKYIFgW5GEQWpdgCEym4/RK43UW
+         nZKQ==
+X-Gm-Message-State: AOJu0YzIgF71hBhOC+DDO7JdEmSnVsGtIfr79mFLXcnVloCLqOVHxZdg
+	TNho2pq6uCimYjMeim7uZM0=
+X-Google-Smtp-Source: AGHT+IGwck3aN97hbUoaagXBuZKIstvcQ6Uu7YqkJpAZlMvwwphtTuaRf7/0nxAeG5R7YOHAdcawAg==
+X-Received: by 2002:a05:600c:1390:b0:40c:2c52:ae3f with SMTP id u16-20020a05600c139000b0040c2c52ae3fmr848063wmf.19.1703256662842;
+        Fri, 22 Dec 2023 06:51:02 -0800 (PST)
+Received: from skbuf ([188.27.185.68])
+        by smtp.gmail.com with ESMTPSA id jx23-20020a170906ca5700b00a269840ab2csm2112537ejb.208.2023.12.22.06.51.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Dec 2023 06:51:02 -0800 (PST)
+Date: Fri, 22 Dec 2023 16:51:00 +0200
+From: Vladimir Oltean <olteanv@gmail.com>
+To: Jagan Teki <jagan@amarulasolutions.com>
+Cc: Andrew Lunn <andrew@lunn.ch>, Heiner Kallweit <hkallweit1@gmail.com>,
+	"Andrew F. Davis" <afd@ti.com>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	linux-kernel <linux-kernel@vger.kernel.org>, netdev@vger.kernel.org,
+	Michael Nazzareno Trimarchi <michael@amarulasolutions.com>,
+	Ioana Ciornei <ioana.ciornei@nxp.com>,
+	Shawn Guo <shawnguo@kernel.org>,
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+	Fabio Estevam <festevam@gmail.com>
+Subject: Re: PHY issue with SJA1105Q/DP84849I Design
+Message-ID: <20231222145100.sfcuux7ayxtxgogo@skbuf>
+References: <CAMty3ZCn+yGr2MG3WYg+i4DsZWk5b-xEw0SDvNbeGzs6pMwjfQ@mail.gmail.com>
+ <CAMty3ZCn+yGr2MG3WYg+i4DsZWk5b-xEw0SDvNbeGzs6pMwjfQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="UQoCBZBzcizwRyOz"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <951a01b5da3061e1ac1d396ba7f6629e3a0e9a1e.camel@apitzsch.eu>
-X-Cookie: Familiarity breeds attempt.
+In-Reply-To: <CAMty3ZCn+yGr2MG3WYg+i4DsZWk5b-xEw0SDvNbeGzs6pMwjfQ@mail.gmail.com>
+ <CAMty3ZCn+yGr2MG3WYg+i4DsZWk5b-xEw0SDvNbeGzs6pMwjfQ@mail.gmail.com>
 
+On Wed, Dec 20, 2023 at 12:49:30PM +0530, Jagan Teki wrote:
+> [ 1255.021656] Modules linked in: mdio_netlink(O) bnep tag_sja1105 sja1105 pcs_xpcs brcmfmac brcmutil imx_sdma coda_vpu v4l2_jpeg imx_vdoa evbug
+> [ 1255.034578] CPU: 0 PID: 374 Comm: ip Tainted: G           O       6.1.58 #1
 
---UQoCBZBzcizwRyOz
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, Dec 22, 2023 at 08:50:14AM +0100, Andr=E9 Apitzsch wrote:
-> Am Sonntag, dem 17.12.2023 um 08:24 -0600 schrieb Rob Herring:
-> > On Sun, 17 Dec 2023 14:21:39 +0100, Andr=E9 Apitzsch wrote:
-
-> > dtschema/dtc warnings/errors:
-> > /builds/robherring/dt-review-
-> > ci/linux/Documentation/devicetree/bindings/regulator/ti,tps65132.yaml
-> > : 'maintainers' is a required property
-> > 	hint: Metaschema for devicetree binding documentation
-> > 	from schema $id:
-> > http://devicetree.org/meta-schemas/base.yaml#
-
-> I haven't add a maintainer, yet, as the driver for tps65132 doesn't
-> list one.
-
-> Who is willing to be listed as maintainer for this device or who can be
-> asked to become a maintainer for tps65132?
-
-You could just put the list in as a fallback I guess?
-
-The requirement for DT maintainer does seem to in conflict with the push
-to convert things when people are doing incidental work on the driver...
-
---UQoCBZBzcizwRyOz
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmWFogYACgkQJNaLcl1U
-h9DrOQf/eA9mDu+6BbsDbSGYBa06sQX8bYLVtXz5BKCJdAJLtI0NfeEHshJe07u9
-oVUTRHb3U8bVjrfGoyrHZK2AUTuCx0ZEh5TK1yucr/xsaOibyeKS7DrlA0V5Ig9R
-0Vrkd9yrfa0Qv9k/l0CB1GORlmo1bPxV7trL6GjHB/i0BkJeKo0wqEp6MOOwTc0l
-aLZvsaZFYGBtFB0wSTAFdTHKpce5xjGG7oNbhA6xST5oOS6nAaJAVs553p/uDspx
-Z5HZCDyeBaSAiIPMej1Fu9BxHM6j2E0C/uSnsg0zi99ZuRHMvrtDT2RjJonXTBUm
-/crS7sndsevxlwTHkZWo4RPkqC4uyg==
-=3Z9i
------END PGP SIGNATURE-----
-
---UQoCBZBzcizwRyOz--
+Can you please reproduce the issue with no out-of-tree modules used
+(here mdio_netlink)?
 
