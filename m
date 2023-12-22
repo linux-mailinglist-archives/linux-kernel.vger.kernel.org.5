@@ -1,173 +1,313 @@
-Return-Path: <linux-kernel+bounces-9905-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9906-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE66481CD18
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 17:31:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 296EB81CD19
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 17:31:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 73A7E1F21FDB
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 16:31:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4E85E1C22814
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 16:31:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E8C728DDF;
-	Fri, 22 Dec 2023 16:29:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD3D62C1AE;
+	Fri, 22 Dec 2023 16:29:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gfyo3f+T"
+	dkim=pass (1024-bit key) header.d=inria.fr header.i=@inria.fr header.b="ULKU6pRa"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail2-relais-roc.national.inria.fr (mail2-relais-roc.national.inria.fr [192.134.164.83])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24BAA28DC3;
-	Fri, 22 Dec 2023 16:29:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1d2f1cecf89so12070505ad.1;
-        Fri, 22 Dec 2023 08:29:47 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 851062C1AA
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 16:29:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=inria.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=inria.fr
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703262587; x=1703867387; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=RbqJTx4YutVd115r4RHwitlguWbX65XpAS/E08N+Xtc=;
-        b=gfyo3f+TNSLHlenMq712cOlXJKJpESQt9gCAit67X7I7FgCPGWwTPv3+vb0wv+frY+
-         WLTZJ/4S9T/rt8+760INWX8gFVlin4xOZgKmL9BVROrzlzQU7dv31pRISEIUFoBJhkjb
-         /wRKe7wEU6YEBUUiKpaBOnPxLGUfNhV9eC/XrcBKUqpn2+EHWlwAD3PvgV+jmICMGlrG
-         XG/ItAMIW3VPtGNhu9xHd+tZcp1lrkrSCpfB/wR830QuUDiXqJCRjAg5sjsMI6ZxgQLl
-         bbCNQVhkN89j60Jsa6OpFs+I+kMH4YBg+s05USgVibtZaDVANYM4Cm+J419afmmMoIYI
-         SSBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703262587; x=1703867387;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=RbqJTx4YutVd115r4RHwitlguWbX65XpAS/E08N+Xtc=;
-        b=cRwgoKcWHkj+Xlixtg/JkHJn55LDFUVPqdDF6KzHUx98vaJWyX28rqbc2Heps8cgLW
-         C76TD4bZGLcVShR6A5bEMN1Iq580//8kc/N3mbnZu1LlcFjWc1iyvIMxYJDLtIpJvHLk
-         gfDO8Ot445C9SVp86AEH7yFlmJ+hARIN9KVx9sGL7QvhGU6fIL5LeNqW6rfcfxTvegtP
-         g7DXtL7oDusVQgiagwE9KcYT5WTd93cKFI2B0SNqotKLe2aAZImnTQ60VAJcc00/IRap
-         VVDuQEMYq52wfgubBcIbCl2W7mekvG/y9/WTWgf/9UpxgZWT4CQt8KwJzMKdAQnhAmSr
-         /QXw==
-X-Gm-Message-State: AOJu0YxjBigq6YVYuZ1CxLWiQ2ZViF2H5qBoQapUp6M2iNZmXZp+stxy
-	Rw5Jt88eLWtn2ixd+t7bkVA6qWR8BI+7X3hQ
-X-Google-Smtp-Source: AGHT+IEu/UhjtH1FjQjtz59VUgRFFDMHCN1iOv7t9JbmakJH3DMDzc0tE+RqMvbwRUgIMCgwDdS81g==
-X-Received: by 2002:a17:902:eb8b:b0:1d3:2a94:cb33 with SMTP id q11-20020a170902eb8b00b001d32a94cb33mr1122049plg.8.1703262587285;
-        Fri, 22 Dec 2023 08:29:47 -0800 (PST)
-Received: from g2039B650.. ([106.39.42.144])
-        by smtp.gmail.com with ESMTPSA id iz11-20020a170902ef8b00b001d076c2e336sm3649546plb.100.2023.12.22.08.29.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Dec 2023 08:29:46 -0800 (PST)
-From: Gui-Dong Han <2045gemini@gmail.com>
-To: marcel@holtmann.org,
-	johan.hedberg@gmail.com,
-	luiz.dentz@gmail.com
-Cc: linux-bluetooth@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	baijiaju1990@outlook.com,
-	Gui-Dong Han <2045gemini@gmail.com>,
-	stable@vger.kernel.org
-Subject: [PATCH v2] Bluetooth: Fix atomicity violation in sniff_{min,max}_interval_set
-Date: Sat, 23 Dec 2023 00:29:31 +0800
-Message-Id: <20231222162931.6553-1-2045gemini@gmail.com>
-X-Mailer: git-send-email 2.34.1
+  d=inria.fr; s=dc;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=Nj3jXjIrHXsT0LeDvQhtWTy55gyVlIrHcnWEoEc4P2w=;
+  b=ULKU6pRazO4AvB9qLNg+oOgpKVVAqWD8pxDksorac0oA+UHbHgGD9+dK
+   AvwmdlaAf9sJrStYsfjVBJagsZgbaB6eNT47pXrDoVV4E1AFkatnkyXn4
+   6P0XPkU238yv5M1QpMUFq1V9MHzRC8vQ1sT7pEcq1ApnI7W/GpDJ+ZkM1
+   s=;
+Authentication-Results: mail2-relais-roc.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=julia.lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
+X-IronPort-AV: E=Sophos;i="6.04,297,1695679200"; 
+   d="scan'208";a="143796820"
+Received: from dt-lawall.paris.inria.fr ([128.93.67.65])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Dec 2023 17:29:45 +0100
+Date: Fri, 22 Dec 2023 17:29:45 +0100 (CET)
+From: Julia Lawall <julia.lawall@inria.fr>
+To: Vincent Guittot <vincent.guittot@linaro.org>
+cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+    Dietmar Eggemann <dietmar.eggemann@arm.com>, Mel Gorman <mgorman@suse.de>, 
+    linux-kernel@vger.kernel.org
+Subject: Re: EEVDF and NUMA balancing
+In-Reply-To: <2359ab5-4556-1a73-9255-3fcf2fc57ec@inria.fr>
+Message-ID: <6618dcfa-a42f-567c-2a9d-a76786683b29@inria.fr>
+References: <alpine.DEB.2.22.394.2310032059060.3220@hadrien> <20231004120544.GA6307@noisy.programming.kicks-ass.net> <alpine.DEB.2.22.394.2310041822170.3108@hadrien> <20231004174801.GE19999@noisy.programming.kicks-ass.net> <alpine.DEB.2.22.394.2310041958380.3108@hadrien>
+ <20231009102949.GC14330@noisy.programming.kicks-ass.net> <b8ab29de-1775-46e-dd75-cdf98be8b0@inria.fr> <CAKfTPtBhWwk9sf9F1=KwubiAWFDC2A9ZT-SSJ+tgFxme1cFmYA@mail.gmail.com> <alpine.DEB.2.22.394.2312182302310.3361@hadrien> <CAKfTPtALEFtrapi3Kk97KLGQN4259eEQEwwftVUK4RG42Vgoyw@mail.gmail.com>
+ <98b3df1-79b7-836f-e334-afbdd594b55@inria.fr> <CAKfTPtCRN_eWgVdK2-h6E_ifJKwwJEtMjeNjB=5DXZFWyBS+tQ@mail.gmail.com> <93112fbe-30be-eab8-427c-5d4670a0f94e@inria.fr> <CAKfTPtAeFvrZxApK3RruWwCjMxbQvOkU+_YgZSo4QPT_AD6FxA@mail.gmail.com> <9dc451b5-9dd8-89f2-1c9c-7c358faeaad@inria.fr>
+ <CAKfTPtDCsLnDnVje9maP5s-L7TbtSu4CvF19xHOxbkvSNd7vZg@mail.gmail.com> <2359ab5-4556-1a73-9255-3fcf2fc57ec@inria.fr>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 
-In sniff_min_interval_set():
-    if (val == 0 || val % 2 || val > hdev->sniff_max_interval)
-        return -EINVAL;
-    hci_dev_lock(hdev);
-    hdev->sniff_min_interval = val;
-    hci_dev_unlock(hdev);
 
-In sniff_max_interval_set():
-    if (val == 0 || val % 2 || val < hdev->sniff_min_interval)
-        return -EINVAL;
-    hci_dev_lock(hdev);
-    hdev->sniff_max_interval = val;
-    hci_dev_unlock(hdev);
 
-The atomicity violation occurs due to concurrent execution of set_min and
-set_max funcs. Consider a scenario where setmin writes a new, valid 'min'
-value, and concurrently, setmax writes a value that is greater than the
-old 'min' but smaller than the new 'min'. In this case, setmax might check
-against the old 'min' value (before acquiring the lock) but write its
-value after the 'min' has been updated by setmin. This leads to a
-situation where the 'max' value ends up being smaller than the 'min'
-value, which is an inconsistency.
+On Fri, 22 Dec 2023, Julia Lawall wrote:
 
-This possible bug is found by an experimental static analysis tool
-developed by our team, BassCheck[1]. This tool analyzes the locking APIs
-to extract function pairs that can be concurrently executed, and then
-analyzes the instructions in the paired functions to identify possible
-concurrency bugs including data races and atomicity violations. The above
-possible bug is reported when our tool analyzes the source code of
-Linux 5.17.
+>
+>
+> On Fri, 22 Dec 2023, Vincent Guittot wrote:
+>
+> > On Fri, 22 Dec 2023 at 16:00, Julia Lawall <julia.lawall@inria.fr> wrote:
+> > >
+> > >
+> > >
+> > > On Fri, 22 Dec 2023, Vincent Guittot wrote:
+> > >
+> > > > On Thu, 21 Dec 2023 at 19:20, Julia Lawall <julia.lawall@inria.fr> wrote:
+> > > > >
+> > > > >
+> > > > >
+> > > > > On Wed, 20 Dec 2023, Vincent Guittot wrote:
+> > > > >
+> > > > > > On Tue, 19 Dec 2023 at 18:51, Julia Lawall <julia.lawall@inria.fr> wrote:
+> > > > > > >
+> > > > > > > > > One CPU has 2 threads, and the others have one.  The one with two threads
+> > > > > > > > > is returned as the busiest one.  But nothing happens, because both of them
+> > > > > > > > > prefer the socket that they are on.
+> > > > > > > >
+> > > > > > > > This explains way load_balance uses migrate_util and not migrate_task.
+> > > > > > > > One CPU with 2 threads can be overloaded
+> > > > > > > >
+> > > > > > > > ok, so it seems that your 1st problem is that you have 2 threads on
+> > > > > > > > the same CPU whereas you should have an idle core in this numa node.
+> > > > > > > > All cores are sharing the same LLC, aren't they ?
+> > > > > > >
+> > > > > > > Sorry, not following this.
+> > > > > > >
+> > > > > > > Socket 1 has N-1 threads, and thus an idle CPU.
+> > > > > > > Socket 2 has N+1 threads, and thus one CPU with two threads.
+> > > > > > >
+> > > > > > > Socket 1 tries to steal from that one CPU with two threads, but that
+> > > > > > > fails, because both threads prefer being on Socket 2.
+> > > > > > >
+> > > > > > > Since most (or all?) of the threads on Socket 2 perfer being on Socket 2.
+> > > > > > > the only hope for Socket 1 to fill in its idle core is active balancing.
+> > > > > > > But active balancing is not triggered because of migrate_util and because
+> > > > > > > CPU_NEWLY_IDLE prevents the failure counter from ebing increased.
+> > > > > >
+> > > > > >  CPU_NEWLY_IDLE load_balance doesn't aims to do active load balance so
+> > > > > > you should focus on the CPU_NEWLY_IDLE load_balance
+> > > > >
+> > > > > I'm still perplexed why a core that has been idle for 1 second or more is
+> > > > > considered to be newly idle.
+> > > >
+> > > > CPU_NEWLY_IDLE load balance is called when the scheduler was
+> > > > scheduling something that just migrated or went back to sleep and
+> > > > doesn't have anything to schedule so it tries to  pull a task from
+> > > > somewhere else.
+> > > >
+> > > > But you should still have some CPU_IDLE load balance according to your
+> > > > description where one CPU of the socket remains idle and those will
+> > > > increase the nr_balance_failed
+> > >
+> > > This happens.  But not often.
+> > >
+> > > > I'm surprised that you have mainly CPU_NEWLY_IDLE. Do you know the reason ?
+> > >
+> > > No.  They come from do_idle calling the scheduler.  I will look into why
+> > > this happens so often.
+> >
+> > Hmm, the CPU was idle and received a need resched which triggered the
+> > scheduler but there was nothing to schedule so it goes back to idle
+> > after running a newly_idle _load_balance.
+>
+> I spent quite some time thinking the same until I saw the following code
+> in do_idle:
+>
+> preempt_set_need_resched();
+>
+> So I have the impression that do_idle sets need resched itself.
 
-To resolve this issue, it is suggested to encompass the validity checks
-within the locked sections in both set_min and set_max funcs. The
-modification ensures that the validation of 'val' against the
-current min/max values is atomic, thus maintaining the integrity of the
-settings. With this patch applied, our tool no longer reports the bug,
-with the kernel configuration allyesconfig for x86_64. Due to the lack of
-associated hardware, we cannot test the patch in runtime testing, and just
-verify it according to the code logic.
+But of course that code is only executed if need_resched is true.  But I
+don't know who would be setting need resched on each clock tick.
 
-[1] https://sites.google.com/view/basscheck/
+julia
 
-Fixes: 71c3b60ec6d2 ("Bluetooth: Move BR/EDR debugfs file creation ...")
-Cc: stable@vger.kernel.org
-Signed-off-by: Gui-Dong Han <2045gemini@gmail.com>
----
-v2:
-* Adjust the format to pass the CI.
----
- net/bluetooth/hci_debugfs.c | 16 ++++++++++------
- 1 file changed, 10 insertions(+), 6 deletions(-)
-
-diff --git a/net/bluetooth/hci_debugfs.c b/net/bluetooth/hci_debugfs.c
-index 6b7741f6e95b..f032fdf8f481 100644
---- a/net/bluetooth/hci_debugfs.c
-+++ b/net/bluetooth/hci_debugfs.c
-@@ -566,11 +566,13 @@ DEFINE_DEBUGFS_ATTRIBUTE(idle_timeout_fops, idle_timeout_get,
- static int sniff_min_interval_set(void *data, u64 val)
- {
- 	struct hci_dev *hdev = data;
--
--	if (val == 0 || val % 2 || val > hdev->sniff_max_interval)
-+
-+	hci_dev_lock(hdev);
-+	if (val == 0 || val % 2 || val > hdev->sniff_max_interval) {
-+		hci_dev_unlock(hdev);
- 		return -EINVAL;
-+	}
- 
--	hci_dev_lock(hdev);
- 	hdev->sniff_min_interval = val;
- 	hci_dev_unlock(hdev);
- 
-@@ -594,11 +596,13 @@ DEFINE_DEBUGFS_ATTRIBUTE(sniff_min_interval_fops, sniff_min_interval_get,
- static int sniff_max_interval_set(void *data, u64 val)
- {
- 	struct hci_dev *hdev = data;
--
--	if (val == 0 || val % 2 || val < hdev->sniff_min_interval)
-+
-+	hci_dev_lock(hdev);
-+	if (val == 0 || val % 2 || val < hdev->sniff_min_interval) {
-+		hci_dev_unlock(hdev);
- 		return -EINVAL;
-+	}
- 
--	hci_dev_lock(hdev);
- 	hdev->sniff_max_interval = val;
- 	hci_dev_unlock(hdev);
- 
--- 
-2.34.1
-
+>
+> julia
+>
+> >
+> > >
+> > > >
+> > > > >
+> > > > > >
+> > > > > > >
+> > > > > > > The part that I am currently missing to understand is that when I convert
+> > > > > > > CPU_NEWLY_IDLE to CPU_IDLE, it typically picks a CPU with only one thread
+> > > > > > > as busiest.  I have the impression that the fbq_type intervenes to cause
+> > > > > >
+> > > > > > find_busiest_queue skips rqs which only have threads preferring being
+> > > > > > in there. So it selects another rq with a thread that doesn't prefer
+> > > > > > its current node.
+> > > > > >
+> > > > > > do you know what is the value of env->fbq_type ?
+> > > > >
+> > > > > I have seen one trace in which it is all.  There are 33 tasks on one
+> > > > > socket, and they are all considered to have a preference for that socket.
+> > > >
+> > > > With env->fbq_type == all, load_balance and find_busiest_queue should
+> > > > be able to select the actual busiest queue with 2 threads.
+> > >
+> > > That's what it does.  But nothing can be stolen because there is no active
+> > > balancing.
+> >
+> > My patch below should enable to pull a task from the 1st idle load
+> > balance that fails
+> >
+> > >
+> > > >
+> > > > But then I imagine that can_migrate/ migrate_degrades_locality
+> > > > prevents to detach the task
+> > >
+> > > Exactly.
+> > >
+> > > julia
+> > >
+> > > > >
+> > > > > But I have another trace in which it is regular.  There are 33 tasks on
+> > > > > the socket, but only 32 have a preference.
+> > > > >
+> > > > > >
+> > > > > > need_active_balance() probably needs a new condition for the numa case
+> > > > > > where the busiest queue can't be selected and we have to trigger an
+> > > > > > active load_balance on a rq with only 1 thread but that is not running
+> > > > > > on its preferred node. Something like the untested below :
+> > > > > >
+> > > > > > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > > > > > index e5da5eaab6ce..de1474191488 100644
+> > > > > > --- a/kernel/sched/fair.c
+> > > > > > +++ b/kernel/sched/fair.c
+> > > > > > @@ -11150,6 +11150,24 @@ imbalanced_active_balance(struct lb_env *env)
+> > > > > >         return 0;
+> > > > > >  }
+> > > > > >
+> > > > > > +static inline bool
+> > > > > > +numa_active_balance(struct lb_env *env)
+> > > > > > +{
+> > > > > > +       struct sched_domain *sd = env->sd;
+> > > > > > +
+> > > > > > +       /*
+> > > > > > +        * We tried to migrate only a !numa task or a task on wrong node but
+> > > > > > +        * the busiest queue with such task has only 1 running task. Previous
+> > > > > > +        * attempt has failed so force the migration of such task.
+> > > > > > +        */
+> > > > > > +       if ((env->fbq_type < all) &&
+> > > > > > +           (env->src_rq->cfs.h_nr_running == 1) &&
+> > > > > > +           (sd->nr_balance_failed > 0))
+> > > > >
+> > > > > The last condition will still be a problem because of CPU_NEWLY_IDLE.  The
+> > > > > nr_balance_failed counter doesn't get incremented very often.
+> > > >
+> > > > It waits for at least 1 failed CPU_IDLE load_balance
+> > > >
+> > > > >
+> > > > > julia
+> > > > >
+> > > > > > +               return 1;
+> > > > > > +
+> > > > > > +       return 0;
+> > > > > > +}
+> > > > > > +
+> > > > > >  static int need_active_balance(struct lb_env *env)
+> > > > > >  {
+> > > > > >         struct sched_domain *sd = env->sd;
+> > > > > > @@ -11176,6 +11194,9 @@ static int need_active_balance(struct lb_env *env)
+> > > > > >         if (env->migration_type == migrate_misfit)
+> > > > > >                 return 1;
+> > > > > >
+> > > > > > +       if (numa_active_balance(env))
+> > > > > > +               return 1;
+> > > > > > +
+> > > > > >         return 0;
+> > > > > >  }
+> > > > > >
+> > > > > >
+> > > > > > > it to avoid the CPU with two threads that already prefer Socket 2.  But I
+> > > > > > > don't know at the moment why that is the case.  In any case, it's fine to
+> > > > > > > active balance from a CPU with only one thread, because Socket 2 will
+> > > > > > > even itself out afterwards.
+> > > > > > >
+> > > > > > > >
+> > > > > > > > You should not have more than 1 thread per CPU when there are N+1
+> > > > > > > > threads on a node with N cores / 2N CPUs.
+> > > > > > >
+> > > > > > > Hmm, I think there is a miscommunication about cores and CPUs.  The
+> > > > > > > machine has two sockets with 16 physical cores each, and thus 32
+> > > > > > > hyperthreads.  There are 64 threads running.
+> > > > > >
+> > > > > > Ok, I have been confused by what you wrote previously:
+> > > > > > " The context is that there are 2N threads running on 2N cores, one thread
+> > > > > > gets NUMA balanced to the other socket, leaving N+1 threads on one socket
+> > > > > > and N-1 threads on the other socket."
+> > > > > >
+> > > > > > I have assumed that there were N cores and 2N CPUs per socket as you
+> > > > > > mentioned Intel Xeon 6130 in the commit message . My previous emails
+> > > > > > don't apply at all with N CPUs per socket and the group_overloaded is
+> > > > > > correct.
+> > > > > >
+> > > > > >
+> > > > > >
+> > > > > > >
+> > > > > > > julia
+> > > > > > >
+> > > > > > > > This will enable the
+> > > > > > > > load_balance to try to migrate a task instead of some util(ization)
+> > > > > > > > and you should reach the active load balance.
+> > > > > > > >
+> > > > > > > > >
+> > > > > > > > > > In theory you should have the
+> > > > > > > > > > local "group_has_spare" and the busiest "group_fully_busy" (at most).
+> > > > > > > > > > This means that no group should be overloaded and load_balance should
+> > > > > > > > > > not try to migrate utli but only task
+> > > > > > > > >
+> > > > > > > > > I didn't collect information about the groups.  I will look into that.
+> > > > > > > > >
+> > > > > > > > > julia
+> > > > > > > > >
+> > > > > > > > > >
+> > > > > > > > > >
+> > > > > > > > > > >
+> > > > > > > > > > > and changing the above test to:
+> > > > > > > > > > >
+> > > > > > > > > > >         if ((env->migration_type == migrate_task || env->migration_type == migrate_util) &&
+> > > > > > > > > > >             (sd->nr_balance_failed > sd->cache_nice_tries+2))
+> > > > > > > > > > >
+> > > > > > > > > > > seems to solve the problem.
+> > > > > > > > > > >
+> > > > > > > > > > > I will test this on more applications.  But let me know if the above
+> > > > > > > > > > > solution seems completely inappropriate.  Maybe it violates some other
+> > > > > > > > > > > constraints.
+> > > > > > > > > > >
+> > > > > > > > > > > I have no idea why this problem became more visible with EEVDF.  It seems
+> > > > > > > > > > > to have to do with the time slices all turning out to be the same.  I got
+> > > > > > > > > > > the same behavior in 6.5 by overwriting the timeslice calculation to
+> > > > > > > > > > > always return 1.  But I don't see the connection between the timeslice and
+> > > > > > > > > > > the behavior of the idle task.
+> > > > > > > > > > >
+> > > > > > > > > > > thanks,
+> > > > > > > > > > > julia
+> > > > > > > > > >
+> > > > > > > >
+> > > > > >
+> > > >
+> >
+>
 
