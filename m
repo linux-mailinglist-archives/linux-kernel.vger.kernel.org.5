@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-9644-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9645-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5FF281C8E0
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 12:15:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93CAF81C8E3
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 12:15:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 83F20285EB0
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 11:15:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 49A6A1F22FC4
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 11:15:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 906D318031;
-	Fri, 22 Dec 2023 11:14:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DD3F17751;
+	Fri, 22 Dec 2023 11:15:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dqxWRRBE"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kySwk9Nz"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 670FC1803A;
-	Fri, 22 Dec 2023 11:14:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CC961642B;
+	Fri, 22 Dec 2023 11:15:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-50e51a7545dso2020120e87.2;
-        Fri, 22 Dec 2023 03:14:55 -0800 (PST)
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-54cb4fa667bso2197742a12.3;
+        Fri, 22 Dec 2023 03:15:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703243693; x=1703848493; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1703243705; x=1703848505; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=422E8D0hJIO/x9qlN5M/YDPeDy51iO5eXq4u7UbXCT8=;
-        b=dqxWRRBEq6jl/tvIunnAkfL8ZIBA8NnElYupoZUfov5C3wPY3ajOcd5J+Ygj2phLhz
-         WhBY2UR3UMjthTo5gcGonlG3rImolbJZV32+lOTx5U/4BatVFX97U4469kpliJzArNCH
-         uYnoi5TfUI85A4+i8U6Mh7E+QsaBnu/0YetRgXds/BGXsM7rpofyWiduhg/1Ga+VtEIv
-         yKEuFvuKRXIiKC+3MGUj4/6vcJ7NC8e9FgVANUBQ7wsYayunt5LT5HvMdXQkzCg+Yv55
-         Z4HNGRzLG+WX9nIjbPAiYTkaRSm+wJj9IkWVtb1JuMfIFa4s5rcPuF/DPL4HPQxQ84c9
-         XmcQ==
+        bh=7BvelMzmtyu1Sqb0MGaQ3BVDecc44IV/AoEGKsA1SR0=;
+        b=kySwk9NzAbdkfRJU0+f48Ue96QJ9P1R0KlziIm64MqncRQEjeEU4+GxKQZ7at7ArVf
+         Zh7E+npUe4KuQ/OAaA2VsdR0IBWztA86VTvhiiAOr/2K7aWvpDxugwXqCM7IgXydtahW
+         ewsZ5uBGP+Xxv8lO1JZAtob9zRGnYUvugn1j0hjATG40FRAlw4Y8jZz4LRkuJ0/TGv2v
+         Uzk2ly3XuUnLKKXhJ9pZogq9KOiwDw1388yn3eIXwVsls3li05sYs8aYXNCaXtbl6+9I
+         5nr7ug7bKSdH7Z+9D1exGVLpzzzBhiYTjPMRTX2JI+bJO8Wu7EQXQZ82KEsZzmfbVuyS
+         RFyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703243693; x=1703848493;
+        d=1e100.net; s=20230601; t=1703243705; x=1703848505;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=422E8D0hJIO/x9qlN5M/YDPeDy51iO5eXq4u7UbXCT8=;
-        b=NVT/4A4YubxhjRoygQrR/bP5pXFl7vFQbqvBe5t91FmEQlrcCg1SZ6PzDxvXMSJllj
-         oUgKoc/G9ujVCPCNToRVvfi6dxlyHZ0zhVRv8gd1RLWs9ChVV+eRgn2AZ6KR3SrtXlkm
-         xfaDdjh8/poAAXSOjsGFqOH6vD4JXdg8qrXEVzbkCyauMBttxJt9Mwc5m0x8gPPdR9y6
-         RQp80iZ9JFDQ61aM9g02gcPLlnZDTcZNF8tMB5s7X/t0c3u0Fm0b9PKgtknxmEB23jrv
-         Po39kax3WneBg0a0YvpzvrR5KZTkK9F5gpMWTxHpw3UAWLgGxUPxnXRFZdSqqy3Nwdn8
-         jQ3g==
-X-Gm-Message-State: AOJu0YxAVdoOvRlsCzzsME3gn9Vhtzl42wB9gjNMgfPm4p3IddAbTXLs
-	kqZ0GSVtAOKDupmqkvQC8RI=
-X-Google-Smtp-Source: AGHT+IHvAdtVCOCM0VreRerqB83H12IHnADRmj9a8fDFQRtDWT3/nlvul6XbQlcen4QGsNI+A1vNAA==
-X-Received: by 2002:ac2:4db0:0:b0:50e:375e:735f with SMTP id h16-20020ac24db0000000b0050e375e735fmr494437lfe.74.1703243693363;
-        Fri, 22 Dec 2023 03:14:53 -0800 (PST)
+        bh=7BvelMzmtyu1Sqb0MGaQ3BVDecc44IV/AoEGKsA1SR0=;
+        b=tcxcdq6MmVaSpdVTXMOFlyIK//bDNmQfUuPEfi1mITaSuz/snke/hlRuTYksnJ6LSM
+         G46TI0CYISmexC/m8GILIYPkF4W3OxPIujSr/RaSjRyEUcJXjoHzXLXMkrreEkdUPgVN
+         ciJ3VYRvawjNVUlbIbV0vJd7SyHSe8ufKjoCbaCwn2lA8gwqYOxfBtYLuBjodxMd6Gow
+         CfQ9zHh9lvSyo1jRMLUPD3drP2PGGSkTDYIlkP5t0dGFZxbml2thCazO/HsZgR4CHiMm
+         utSpTsFc2vLfQR6beC0s9fKs0pKz+60TLsFJJzenCXf5trzFRtkkbtwwd0pSWhheFAqs
+         1qNQ==
+X-Gm-Message-State: AOJu0YzsrDmxwIvPxFPlPAZS+NP9wiwBhLnuWdUvmSwvWx45J13jYglO
+	bzhGMydFXLt71HZYvqj/1tg=
+X-Google-Smtp-Source: AGHT+IGWir11b4gGwRl3NO7lj7pMTMBbWgNmeSbRuM9TWOJnnwaniRMrtaZLnxpLWHffPO330BSmbA==
+X-Received: by 2002:a05:6402:124b:b0:551:ab9e:53c6 with SMTP id l11-20020a056402124b00b00551ab9e53c6mr575373edw.52.1703243704565;
+        Fri, 22 Dec 2023 03:15:04 -0800 (PST)
 Received: from localhost.localdomain ([154.72.162.91])
-        by smtp.gmail.com with ESMTPSA id es15-20020a056402380f00b0055267663784sm2420469edb.11.2023.12.22.03.14.46
+        by smtp.gmail.com with ESMTPSA id es15-20020a056402380f00b0055267663784sm2420469edb.11.2023.12.22.03.14.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Dec 2023 03:14:52 -0800 (PST)
+        Fri, 22 Dec 2023 03:15:03 -0800 (PST)
 From: Brandon Cheo Fusi <fusibrandon13@gmail.com>
 To: Andre Przywara <andre.przywara@arm.com>,
 	Rob Herring <robh+dt@kernel.org>,
@@ -79,9 +79,9 @@ Cc: devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	linux-pm@vger.kernel.org,
 	Brandon Cheo Fusi <fusibrandon13@gmail.com>
-Subject: [RFC PATCH v3 2/3] cpufreq: sun50i: Add support for D1's speed bin decoding
-Date: Fri, 22 Dec 2023 12:14:06 +0100
-Message-Id: <20231222111407.104270-3-fusibrandon13@gmail.com>
+Subject: [RFC PATCH v3 3/3] riscv: dts: allwinner: Fill in OPPs
+Date: Fri, 22 Dec 2023 12:14:07 +0100
+Message-Id: <20231222111407.104270-4-fusibrandon13@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20231222111407.104270-1-fusibrandon13@gmail.com>
 References: <20231222111407.104270-1-fusibrandon13@gmail.com>
@@ -93,84 +93,60 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Adds support for decoding the efuse value read from D1 efuse speed
-bins, and factors out equivalent code for sun50i.
+Specify two voltage ranges, in order of increasing stability,
+for each OPP.
 
-The algorithm is gotten from
+Also define an nvmem cpu speed grade cell of length 2.
 
-https://github.com/Tina-Linux/linux-5.4/blob/master/drivers/cpufreq/sun50i-cpufreq-nvmem.c#L293-L338
-
-and maps an efuse value to either 0 or 1, with 1 meaning stable at
-a lower supply voltage for the same clock frequency.
+Link: https://github.com/Tina-Linux/linux-5.4/blob/master/arch/riscv/boot/dts/sunxi/sun20iw1p1.dtsi#L118-L133
+Link: https://github.com/mangopi-sbc/tina-linux-5.4/blob/0d4903ebd9d2194ad914686d5b0fc1ddacf11a9d/arch/riscv/boot/dts/sunxi/sun20iw1p1.dtsi#L118-L182
 
 Signed-off-by: Brandon Cheo Fusi <fusibrandon13@gmail.com>
 ---
- drivers/cpufreq/sun50i-cpufreq-nvmem.c | 31 ++++++++++++++++++++++++++
- 1 file changed, 31 insertions(+)
+ arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi | 19 ++++++++++++++++---
+ 1 file changed, 16 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/cpufreq/sun50i-cpufreq-nvmem.c b/drivers/cpufreq/sun50i-cpufreq-nvmem.c
-index e8c2a1dc3..26bb5217b 100644
---- a/drivers/cpufreq/sun50i-cpufreq-nvmem.c
-+++ b/drivers/cpufreq/sun50i-cpufreq-nvmem.c
-@@ -29,6 +29,29 @@ struct sunxi_cpufreq_data {
- 	u32 (*efuse_xlate)(u32 speedbin);
+diff --git a/arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi b/arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi
+index 64c3c2e6c..7e2e015e0 100644
+--- a/arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi
++++ b/arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi
+@@ -39,16 +39,23 @@ cpu0_intc: interrupt-controller {
+ 	};
+ 
+ 	opp_table_cpu: opp-table-cpu {
+-		compatible = "operating-points-v2";
++		compatible = "allwinner,sun20i-d1-operating-points";
++		nvmem-cells = <&cpu_speed_grade>;
++		nvmem-cell-names = "speed";
++		opp-shared;
+ 
+ 		opp-408000000 {
+ 			opp-hz = /bits/ 64 <408000000>;
+-			opp-microvolt = <900000 900000 1100000>;
++
++			opp-microvolt-speed0 = <950000 950000 1100000>;
++			opp-microvolt-speed1 = <900000 900000 1100000>;
+ 		};
+ 
+ 		opp-1080000000 {
+ 			opp-hz = /bits/ 64 <1008000000>;
+-			opp-microvolt = <900000 900000 1100000>;
++
++			opp-microvolt-speed0 = <1100000>;
++			opp-microvolt-speed1 = <950000 950000 1100000>;
+ 		};
+ 	};
+ 
+@@ -115,3 +122,9 @@ pmu {
+ 			<0x00000000 0x0000000f 0xffffffff 0xffffffff 0x00020000>;
+ 	};
  };
- 
-+static u32 sun20i_efuse_xlate(u32 speedbin)
-+{
-+	u32 ret;
 +
-+	switch (speedbin & 0xffff) {
-+	case 0x5e00:
-+		/* QFN package */
-+		ret = 0;
-+		break;
-+	case 0x5c00:
-+	case 0x7400:
-+		/* QFN package */
-+		ret = 1;
-+		break;
-+	case 0x5000:
-+	default:
-+		/* BGA package */
-+		ret = 0;
-+	}
-+
-+	return ret;
-+}
-+
- static u32 sun50i_efuse_xlate(u32 speedbin)
- {
- 	u32 efuse_value;
-@@ -46,6 +69,10 @@ static u32 sun50i_efuse_xlate(u32 speedbin)
- 		return 0;
- }
- 
-+struct sunxi_cpufreq_data sun20i_cpufreq_data = {
-+	.efuse_xlate = sun20i_efuse_xlate,
++&sid {
++	cpu_speed_grade: cpu-speed-grade@0 {
++		reg = <0x00 0x2>;
++	};
 +};
-+
- static struct sunxi_cpufreq_data sun50i_cpufreq_data = {
- 	.efuse_xlate = sun50i_efuse_xlate,
- };
-@@ -54,6 +81,9 @@ static const struct of_device_id cpu_opp_match_list[] = {
- 	{ .compatible = "allwinner,sun50i-h6-operating-points",
- 	  .data = &sun50i_cpufreq_data,
- 	},
-+	{ .compatible = "allwinner,sun20i-d1-operating-points",
-+	  .data = &sun20i_cpufreq_data,
-+	},
- 	{}
- };
- 
-@@ -182,6 +212,7 @@ static struct platform_driver sun50i_cpufreq_driver = {
- 
- static const struct of_device_id sun50i_cpufreq_match_list[] = {
- 	{ .compatible = "allwinner,sun50i-h6" },
-+	{ .compatible = "allwinner,sun20i-d1" },
- 	{}
- };
- MODULE_DEVICE_TABLE(of, sun50i_cpufreq_match_list);
 -- 
 2.30.2
 
