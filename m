@@ -1,53 +1,53 @@
-Return-Path: <linux-kernel+bounces-10141-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10142-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4304481D0AC
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 00:55:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5AE1A81D0AE
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 00:56:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9CE57B24AF4
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 23:55:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 16F5028341F
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 23:56:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23A254C3DE;
-	Fri, 22 Dec 2023 23:52:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF89E35F1E;
+	Fri, 22 Dec 2023 23:52:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ToNfnQmv"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mCSP2jn9"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2979548CE5
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 23:52:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E55C54C63A
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 23:52:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703289152; x=1734825152;
+  t=1703289155; x=1734825155;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=RhnEAsovR1/on/ST7snqUo3geUenPPWRU+fc0vbg0rk=;
-  b=ToNfnQmv693/wPJpgF6e6+MtJYG0hrOxPDPvzp7iyjtr4z3CzITutxeG
-   cdSDiNklo9I91NAoc5Heux1RS0jYGxtdI45/dqf4zQl5XLPs39iRFoQNw
-   B4+7ZEH/8Om2dGTv4UvVTMEqqjhUtx6Zalzirz7Z0u/P/THXlRLerBXfB
-   q5qG8X3oe69sf3cECNiD9wM3nWcT4/JEN4RlI2MNJeZKP68rI4C33+mRu
-   l7FA2xM1gbaYjDnBfpZKbLxN/J9Vh2s/VGNvbCuJF/rLJ7OZc1ggzFike
-   O2Xwa/RDQiNXlqsFq4XTNNJou0O0/Owl8osl2+lND1W/OwSbz8WdYqc9v
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10932"; a="395063351"
+  bh=H0KNXcx7kYiuLNhk2lubKN7E5oHJBEIlL2/mP4OOsUg=;
+  b=mCSP2jn9kr4WoHyXb5ln9Tj0+CopPr6EAkE6svaPxvzArippZoBd1/90
+   5vyzyZq7q7dgYx2HgisuXWg/uN5ajLiH11TFNSmaYWfmUGc0K/0WolU85
+   lFqcuHAtzF6xnOcMTAgkFGX5kcHEptayo3SM+k+UUSuMja50qfv3XLgJi
+   g2HHX4XxzQmSo9yQ/kz1KycJhJJoyzq4xs6X3eJmVN8IdKzboU/lZzLYW
+   8GNBf1vOFbTuvPSbLt3oHHCI9iFQhwbBCgF5HffTRrsAsU/HsZM1aGrwX
+   DKToOnq5IRMoMUsMMbxFdBUE3xLkurp9ZKoTkx521gBLwgqdVb6RaA1xS
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10932"; a="3414396"
 X-IronPort-AV: E=Sophos;i="6.04,297,1695711600"; 
-   d="scan'208";a="395063351"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Dec 2023 15:52:28 -0800
+   d="scan'208";a="3414396"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Dec 2023 15:52:35 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10932"; a="900623014"
+X-IronPort-AV: E=McAfee;i="6600,9927,10932"; a="726961507"
 X-IronPort-AV: E=Sophos;i="6.04,297,1695711600"; 
-   d="scan'208";a="900623014"
+   d="scan'208";a="726961507"
 Received: from jeroenke-mobl.ger.corp.intel.com (HELO box.shutemov.name) ([10.249.35.180])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Dec 2023 15:52:22 -0800
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Dec 2023 15:52:29 -0800
 Received: by box.shutemov.name (Postfix, from userid 1000)
-	id 69FCD10A4E0; Sat, 23 Dec 2023 02:52:12 +0300 (+03)
+	id 7502410A4E1; Sat, 23 Dec 2023 02:52:12 +0300 (+03)
 From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
 To: Thomas Gleixner <tglx@linutronix.de>,
 	Ingo Molnar <mingo@redhat.com>,
@@ -70,9 +70,9 @@ Cc: "Rafael J. Wysocki" <rafael@kernel.org>,
 	linux-coco@lists.linux.dev,
 	linux-kernel@vger.kernel.org,
 	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: [PATCHv5 14/16] x86/smp: Add smp_ops.stop_this_cpu() callback
-Date: Sat, 23 Dec 2023 02:52:06 +0300
-Message-ID: <20231222235209.32143-15-kirill.shutemov@linux.intel.com>
+Subject: [PATCHv5 15/16] x86/mm: Introduce kernel_ident_mapping_free()
+Date: Sat, 23 Dec 2023 02:52:07 +0300
+Message-ID: <20231222235209.32143-16-kirill.shutemov@linux.intel.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231222235209.32143-1-kirill.shutemov@linux.intel.com>
 References: <20231222235209.32143-1-kirill.shutemov@linux.intel.com>
@@ -84,85 +84,123 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-If the helper is defined, it is called instead of halt() to stop the CPU
-at the end of stop_this_cpu() and on crash CPU shutdown.
+The helper complements kernel_ident_mapping_init(): it frees the
+identity mapping that was previously allocated. It will be used in the
+error path to free a partially allocated mapping or if the mapping is no
+longer needed.
 
-ACPI MADT will use it to hand over the CPU to BIOS in order to be able
-to wake it up again after kexec.
+The caller provides a struct x86_mapping_info with the free_pgd_page()
+callback hooked up and the pgd_t to free.
 
 Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
 ---
- arch/x86/include/asm/smp.h |  1 +
- arch/x86/kernel/process.c  | 20 +++++++++++++-------
- arch/x86/kernel/reboot.c   | 12 ++++++++----
- 3 files changed, 22 insertions(+), 11 deletions(-)
+ arch/x86/include/asm/init.h |  3 ++
+ arch/x86/mm/ident_map.c     | 73 +++++++++++++++++++++++++++++++++++++
+ 2 files changed, 76 insertions(+)
 
-diff --git a/arch/x86/include/asm/smp.h b/arch/x86/include/asm/smp.h
-index 4fab2ed454f3..390d53fd34f9 100644
---- a/arch/x86/include/asm/smp.h
-+++ b/arch/x86/include/asm/smp.h
-@@ -38,6 +38,7 @@ struct smp_ops {
- 	int (*cpu_disable)(void);
- 	void (*cpu_die)(unsigned int cpu);
- 	void (*play_dead)(void);
-+	void (*stop_this_cpu)(void);
+diff --git a/arch/x86/include/asm/init.h b/arch/x86/include/asm/init.h
+index cc9ccf61b6bd..14d72727d7ee 100644
+--- a/arch/x86/include/asm/init.h
++++ b/arch/x86/include/asm/init.h
+@@ -6,6 +6,7 @@
  
- 	void (*send_call_func_ipi)(const struct cpumask *mask);
- 	void (*send_call_func_single_ipi)(int cpu);
-diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
-index b6f4e8399fca..65c7971defd2 100644
---- a/arch/x86/kernel/process.c
-+++ b/arch/x86/kernel/process.c
-@@ -835,13 +835,19 @@ void __noreturn stop_this_cpu(void *dummy)
- 	 */
- 	cpumask_clear_cpu(cpu, &cpus_stop_mask);
+ struct x86_mapping_info {
+ 	void *(*alloc_pgt_page)(void *); /* allocate buf for page table */
++	void (*free_pgt_page)(void *, void *); /* free buf for page table */
+ 	void *context;			 /* context for alloc_pgt_page */
+ 	unsigned long page_flag;	 /* page flag for PMD or PUD entry */
+ 	unsigned long offset;		 /* ident mapping offset */
+@@ -16,4 +17,6 @@ struct x86_mapping_info {
+ int kernel_ident_mapping_init(struct x86_mapping_info *info, pgd_t *pgd_page,
+ 				unsigned long pstart, unsigned long pend);
  
--	for (;;) {
--		/*
--		 * Use native_halt() so that memory contents don't change
--		 * (stack usage and variables) after possibly issuing the
--		 * native_wbinvd() above.
--		 */
--		native_halt();
-+	if (smp_ops.stop_this_cpu) {
-+		smp_ops.stop_this_cpu();
-+		unreachable();
-+	} else {
++void kernel_ident_mapping_free(struct x86_mapping_info *info, pgd_t *pgd);
 +
-+		for (;;) {
-+			/*
-+			 * Use native_halt() so that memory contents don't
-+			 * change (stack usage and variables) after possibly
-+			 * issuing the native_wbinvd() above.
-+			 */
-+			native_halt();
-+		}
- 	}
- }
+ #endif /* _ASM_X86_INIT_H */
+diff --git a/arch/x86/mm/ident_map.c b/arch/x86/mm/ident_map.c
+index 968d7005f4a7..3996af7b4abf 100644
+--- a/arch/x86/mm/ident_map.c
++++ b/arch/x86/mm/ident_map.c
+@@ -4,6 +4,79 @@
+  * included by both the compressed kernel and the regular kernel.
+  */
  
-diff --git a/arch/x86/kernel/reboot.c b/arch/x86/kernel/reboot.c
-index 16dde83df49a..738b3e810196 100644
---- a/arch/x86/kernel/reboot.c
-+++ b/arch/x86/kernel/reboot.c
-@@ -881,10 +881,14 @@ static int crash_nmi_callback(unsigned int val, struct pt_regs *regs)
- 	cpu_emergency_disable_virtualization();
- 
- 	atomic_dec(&waiting_for_crash_ipi);
--	/* Assume hlt works */
--	halt();
--	for (;;)
--		cpu_relax();
++static void free_pte(struct x86_mapping_info *info, pmd_t *pmd)
++{
++	pte_t *pte = pte_offset_kernel(pmd, 0);
 +
-+	if (smp_ops.stop_this_cpu) {
-+		smp_ops.stop_this_cpu();
-+	} else {
-+		halt();
-+		for (;;)
-+			cpu_relax();
++	info->free_pgt_page(pte, info->context);
++}
++
++static void free_pmd(struct x86_mapping_info *info, pud_t *pud)
++{
++	pmd_t *pmd = pmd_offset(pud, 0);
++	int i;
++
++	for (i = 0; i < PTRS_PER_PMD; i++) {
++		if (!pmd_present(pmd[i]))
++			continue;
++
++		if (pmd_leaf(pmd[i]))
++			continue;
++
++		free_pte(info, &pmd[i]);
 +	}
- 
- 	return NMI_HANDLED;
- }
++
++	info->free_pgt_page(pmd, info->context);
++}
++
++static void free_pud(struct x86_mapping_info *info, p4d_t *p4d)
++{
++	pud_t *pud = pud_offset(p4d, 0);
++	int i;
++
++	for (i = 0; i < PTRS_PER_PUD; i++) {
++		if (!pud_present(pud[i]))
++			continue;
++
++		if (pud_leaf(pud[i]))
++			continue;
++
++		free_pmd(info, &pud[i]);
++	}
++
++	info->free_pgt_page(pud, info->context);
++}
++
++static void free_p4d(struct x86_mapping_info *info, pgd_t *pgd)
++{
++	p4d_t *p4d = p4d_offset(pgd, 0);
++	int i;
++
++	for (i = 0; i < PTRS_PER_P4D; i++) {
++		if (!p4d_present(p4d[i]))
++			continue;
++
++		free_pud(info, &p4d[i]);
++	}
++
++	if (pgtable_l5_enabled())
++		info->free_pgt_page(pgd, info->context);
++}
++
++void kernel_ident_mapping_free(struct x86_mapping_info *info, pgd_t *pgd)
++{
++	int i;
++
++	for (i = 0; i < PTRS_PER_PGD; i++) {
++		if (!pgd_present(pgd[i]))
++			continue;
++
++		free_p4d(info, &pgd[i]);
++	}
++
++	info->free_pgt_page(pgd, info->context);
++}
++
+ static void ident_pmd_init(struct x86_mapping_info *info, pmd_t *pmd_page,
+ 			   unsigned long addr, unsigned long end)
+ {
 -- 
 2.41.0
 
