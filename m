@@ -1,165 +1,229 @@
-Return-Path: <linux-kernel+bounces-9918-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9919-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A38D081CD3B
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 17:46:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0A7481CD3F
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 17:49:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9A595B21F5B
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 16:46:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1E81C1C21B68
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 16:49:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC5522511D;
-	Fri, 22 Dec 2023 16:46:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D69425114;
+	Fri, 22 Dec 2023 16:49:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Kdf6RSzj"
+	dkim=pass (2048-bit key) header.d=cknow.org header.i=@cknow.org header.b="Ua+1kP0o"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D15C24B3D;
-	Fri, 22 Dec 2023 16:46:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703263581; x=1734799581;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=1gHtIi5ZDJywJxcUmkGdvgFhi10SfEDFuYpaixHJUtY=;
-  b=Kdf6RSzj29f8KByghRrO0bvVNUM5KQTHGBrvi/dlk/FUT3DgmmT9RzwV
-   0Nh0Bfe4sEdXR1xkf+2NSfC95B5Wy5yXzAlxLw4S2wRESXWpvH8sCR2Cv
-   vFFJICxFtP4oo1wpNG/Hied4b7QsBD4em8dG0aXt4/AFSAUbTBd/YHROq
-   y0rSUUsHJKdngtUzznuLQUBLwBFTg5Iaf7Dy0HGX2Ez/u4ODSTqMhfxDa
-   SDsbWlE4cZTPFEWFnXnoy21F0eaONUY56K9clkH+i8xRhBC5K71yT2UEy
-   K4vzkYu7ZAHBK6HuEiwa6kQQ7aBV1SQa+27Ngj3XBlfpRi9TRTfogSG3S
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10932"; a="460466358"
-X-IronPort-AV: E=Sophos;i="6.04,297,1695711600"; 
-   d="scan'208";a="460466358"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Dec 2023 08:46:20 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10932"; a="726828321"
-X-IronPort-AV: E=Sophos;i="6.04,297,1695711600"; 
-   d="scan'208";a="726828321"
-Received: from powerlab.fi.intel.com ([10.237.71.25])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Dec 2023 08:46:16 -0800
-From: Michal Wilczynski <michal.wilczynski@intel.com>
-To: seanjc@google.com,
-	pbonzini@redhat.com
-Cc: tglx@linutronix.de,
-	mingo@redhat.com,
-	bp@alien8.de,
-	dave.hansen@linux.intel.com,
-	x86@kernel.org,
-	hpa@zytor.com,
-	kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	zhi.a.wang@intel.com,
-	artem.bityutskiy@linux.intel.com,
-	yuan.yao@intel.com,
-	Michal Wilczynski <michal.wilczynski@intel.com>,
-	Zheyu Ma <zheyuma97@gmail.com>
-Subject: [PATCH v1] KVM: nVMX: Fix handling triple fault on RSM instruction
-Date: Fri, 22 Dec 2023 18:45:43 +0200
-Message-ID: <20231222164543.918037-1-michal.wilczynski@intel.com>
-X-Mailer: git-send-email 2.41.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62CEF2511D
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 16:49:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=cknow.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cknow.org
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cknow.org; s=key1;
+	t=1703263785;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ErvDQcJbtNazTvA7ofzMhh10seib29pmsETLyke7Hfw=;
+	b=Ua+1kP0ovBMWSseoDN2nCgNB6Xg5KSPml2pLS0rxSOZ+TzRhKdlhDS0DT6ABauzZsa8wyL
+	klV9HRZbQlts2+LWIVIMmy/HfXY1IO+qfINb/FzpjFlEP1BIDPJVvNprzyBRy30CGXVzlM
+	n9piVAn0te1I5QfLciGL84utA9Qc3uwfHyGysCASnI7BAe5kBllMdJiowqHImjDHZ4Ozzr
+	t6nnazNjF8TvexAI8PRTvsrrcJEpjOLLJ9l5th8Rsv6neNM4gEm7eX77cKr/3kMyrHtgr+
+	bC+d/yNutAxY9TzkF6xvVqDBKe0EW5W2hm0GaT8vFM8+waAPObIEDLTFQzwNLA==
+From: Diederik de Haas <didi.debian@cknow.org>
+To: Neil Armstrong <neil.armstrong@linaro.org>,
+ Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
+ Sandy Huang <hjc@rock-chips.com>, Mark Yao <markyao0591@gmail.com>,
+ Segfault <awarnecke002@hotmail.com>, Arnaud Ferraris <aferraris@debian.org>,
+ Manuel Traut <manut@mecka.net>, Danct12 <danct12@disroot.org>
+Cc: dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-rockchip@lists.infradead.org, Manuel Traut <manut@mecka.net>
+Subject:
+ Re: [PATCH 4/6] arm64: dts: rockchip: Add devicetree for Pine64 Pinetab2
+Date: Fri, 22 Dec 2023 17:49:35 +0100
+Message-ID: <2250271.fI8GBZLEnK@bagend>
+Organization: Connecting Knowledge
+In-Reply-To: <20231222-pinetab2-v1-4-e148a7f61bd1@mecka.net>
+References:
+ <20231222-pinetab2-v1-0-e148a7f61bd1@mecka.net>
+ <20231222-pinetab2-v1-4-e148a7f61bd1@mecka.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="nextPart1735942.3G8mRxy5iN";
+ micalg="pgp-sha256"; protocol="application/pgp-signature"
+X-Migadu-Flow: FLOW_OUT
 
-Syzkaller found a warning triggered in nested_vmx_vmexit().
-vmx->nested.nested_run_pending is non-zero, even though we're in
-nested_vmx_vmexit(). Generally, trying  to cancel a pending entry is
-considered a bug. However in this particular scenario, the kernel
-behavior seems correct.
+--nextPart1735942.3G8mRxy5iN
+Content-Type: multipart/mixed; boundary="nextPart2189696.cEvZYOimPK";
+ protected-headers="v1"
+Content-Transfer-Encoding: 7Bit
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Diederik de Haas <didi.debian@cknow.org>
+Date: Fri, 22 Dec 2023 17:49:35 +0100
+Message-ID: <2250271.fI8GBZLEnK@bagend>
+Organization: Connecting Knowledge
+In-Reply-To: <20231222-pinetab2-v1-4-e148a7f61bd1@mecka.net>
+MIME-Version: 1.0
 
-Syzkaller scenario:
-1) Set up VCPU's
-2) Run some code with KVM_RUN in L2 as a nested guest
-3) Return from KVM_RUN
-4) Inject KVM_SMI into the VCPU
-5) Change the EFER register with KVM_SET_SREGS to value 0x2501
-6) Run some code on the VCPU using KVM_RUN
-7) Observe following behavior:
+This is a multi-part message in MIME format.
 
-kvm_smm_transition: vcpu 0: entering SMM, smbase 0x30000
-kvm_entry: vcpu 0, rip 0x8000
-kvm_entry: vcpu 0, rip 0x8000
-kvm_entry: vcpu 0, rip 0x8002
-kvm_smm_transition: vcpu 0: leaving SMM, smbase 0x30000
-kvm_nested_vmenter: rip: 0x0000000000008002 vmcs: 0x0000000000007000
-                    nested_rip: 0x0000000000000000 int_ctl: 0x00000000
-		    event_inj: 0x00000000 nested_ept=n guest
-		    cr3: 0x0000000000002000
-kvm_nested_vmexit_inject: reason: TRIPLE_FAULT ext_inf1: 0x0000000000000000
-                          ext_inf2: 0x0000000000000000 ext_int: 0x00000000
-			  ext_int_err: 0x00000000
+--nextPart2189696.cEvZYOimPK
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-What happened here is an SMI was injected immediately and the handler was
-called at address 0x8000; all is good. Later, an RSM instruction is
-executed in an emulator to return to the nested VM. em_rsm() is called,
-which leads to emulator_leave_smm(). A part of this function calls VMX/SVM
-callback, in this case vmx_leave_smm(). It attempts to set up a pending
-reentry to guest VM by calling nested_vmx_enter_non_root_mode() and sets
-vmx->nested.nested_run_pending to one. Unfortunately, later in
-emulator_leave_smm(), rsm_load_state_64() fails to write invalid EFER to
-the MSR. This results in em_rsm() calling triple_fault callback. At this
-point it's clear that the KVM should call the vmexit, but
-vmx->nested.nested_run_pending is left set to 1. To fix this reset the
-vmx->nested.nested_run_pending flag in triple_fault handler.
+On Friday, 22 December 2023 12:05:44 CET Manuel Traut wrote:
+> +       rk817-sound {
+> +               compatible = "simple-audio-card";
+> +               pinctrl-names = "default";
+> +               pinctrl-0 = <&hp_det_l>;
+> +               simple-audio-card,format = "i2s";
+> +               simple-audio-card,name = "PineTab2";
+> +               simple-audio-card,mclk-fs = <256>;
+> +
+> +               simple-audio-card,widgets =
+> +                       "Microphone", "Mic Jack",
+> +                       "Headphone", "Headphones",
+> +                       "Microphone", "Microphone",
+> +                       "Speaker", "Speakers";
+> +
+> +               simple-audio-card,routing =
+> +                       "MICL", "Microphone",
+> +                       "MICR", "Mic Jack",
+> +                       "Headphones", "HPOL",
+> +                       "Headphones", "HPOR",
+> +                       "Speaker Amplifier INL", "HPOL",
+> +                       "Speaker Amplifier INR", "HPOR",
+> +                       "Speakers", "Speaker Amplifier OUTL",
+> +                       "Speakers", "Speaker Amplifier OUTR";
+> +
+> +               simple-audio-card,hp-det-gpio = <&gpio4 RK_PC6
+> GPIO_ACTIVE_HIGH>; +               simple-audio-card,aux-devs =
+> <&speaker_amp>;
+> +               simple-audio-card,pin-switches = "Speakers", "Microphone";
+> +
+> +               simple-audio-card,cpu {
+> +                       sound-dai = <&i2s1_8ch>;
+> +               };
+> +
+> +               simple-audio-card,codec {
+> +                       sound-dai = <&rk817>;
+> +               };
+> +       };
 
-TL;DR (courtesy of Yuan Yao)
-Clear nested_run_pending in case of RSM failure on return from L2 SMM.
-The pending VMENTRY to L2 should be cancelled due to such failure leads
-to triple fault which should be injected to L1.
+Not sure if it's right (or allowed) to post a different patch as attachment, 
+but I have been using a different audio configuration (see attachment).
+I haven't yet tried if/how it works via HDMI yet, but the speakers and 
+headphones work fine.
+This patch is based on the following commit:
+https://github.com/TuxThePenguin0/linux/commit/
+872b829a3511cfa853bd3af3bd4f30be1cb3d1ab
 
-Possible alternative approach:
-While the proposed approach works, the concern is that it would be
-simpler, and more readable to cancel the nested_run_pending in em_rsm().
-This would, however, require introducing new callback e.g,
-post_leave_smm(), that would cancel nested_run_pending in case of a
-failure to resume from SMM.
+I've added 'Danct12' to the To list as they are the maintainer of the primary 
+PT2 image and we worked together to get to this audio config.
+I don't if they still use it.
+(I've been using my own kernel/image for a while now).
 
-Additionally, while the proposed code fixes VMX specific issue, SVM also
-might suffer from similar problem as it also uses it's own
-nested_run_pending variable.
+Cheers,
+  Diederik
+--nextPart2189696.cEvZYOimPK
+Content-Disposition: attachment;
+ filename="0003-arm64-dts-rk3566-pinetab2-Fix-audio-configuration.patch"
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/x-patch; charset="x-UTF_8J";
+ name="0003-arm64-dts-rk3566-pinetab2-Fix-audio-configuration.patch"
 
-Reported-by: Zheyu Ma <zheyuma97@gmail.com>
-Closes: https://lore.kernel.org/all/CAMhUBjmXMYsEoVYw_M8hSZjBMHh24i88QYm-RY6HDta5YZ7Wgw@mail.gmail.com
-Signed-off-by: Michal Wilczynski <michal.wilczynski@intel.com>
+From 17efeb0ae766886345ff0574c534079742539b56 Mon Sep 17 00:00:00 2001
+From: Scott Santucci <ScottFreeCode@users.noreply.github.com>
+Date: Mon, 17 Jul 2023 13:06:20 +0200
+Subject: [PATCH 3/8] arm64: dts: rk3566-pinetab2: Fix audio configuration
+
+The audio configuration of the PineTab2 matches the `rk817_ext` alsa
+ucm2 profile, so switch the configuration to that. Use `rk817_ext` and
+not `rk817_int` as the PineTab2 uses an external amplifier.
+
+Also the headphones plugged/unplugged detection is backwards, so apply
+the fix provided by Danct12 <danct12@disroot.org>.
+
+Signed-off-by: Diederik de Haas <didi.debian@cknow.org>
+Link: https://github.com/dreemurrs-embedded/Pine64-Arch/pull/555
 ---
- arch/x86/kvm/vmx/nested.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ arch/arm64/boot/dts/rockchip/rk3566-pinetab2.dtsi | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-index c5ec0ef51ff7..44432e19eea6 100644
---- a/arch/x86/kvm/vmx/nested.c
-+++ b/arch/x86/kvm/vmx/nested.c
-@@ -4904,7 +4904,16 @@ void nested_vmx_vmexit(struct kvm_vcpu *vcpu, u32 vm_exit_reason,
+diff --git a/arch/arm64/boot/dts/rockchip/rk3566-pinetab2.dtsi b/arch/arm64/boot/dts/rockchip/rk3566-pinetab2.dtsi
+index a766f21bd6f8..59e4bf2f77c7 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3566-pinetab2.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3566-pinetab2.dtsi
+@@ -116,14 +116,14 @@ rk817-sound {
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&hp_det_l>;
+ 		simple-audio-card,format = "i2s";
+-		simple-audio-card,name = "PineTab2";
++		simple-audio-card,name = "rk817_ext";
+ 		simple-audio-card,mclk-fs = <256>;
  
- static void nested_vmx_triple_fault(struct kvm_vcpu *vcpu)
- {
-+	struct vcpu_vmx *vmx = to_vmx(vcpu);
-+
- 	kvm_clear_request(KVM_REQ_TRIPLE_FAULT, vcpu);
-+
-+	/* In case of a triple fault, cancel the nested reentry. This may occur
-+	 * when the RSM instruction fails while attempting to restore the state
-+	 * from SMRAM.
-+	 */
-+	vmx->nested.nested_run_pending = 0;
-+
- 	nested_vmx_vmexit(vcpu, EXIT_REASON_TRIPLE_FAULT, 0, 0);
- }
+ 		simple-audio-card,widgets =
+ 			"Microphone", "Mic Jack",
+ 			"Headphone", "Headphones",
+ 			"Microphone", "Microphone",
+-			"Speaker", "Speakers";
++			"Speaker", "Internal Speakers";
  
+ 		simple-audio-card,routing =
+ 			"MICL", "Microphone",
+@@ -132,12 +132,12 @@ rk817-sound {
+ 			"Headphones", "HPOR",
+ 			"Speaker Amplifier INL", "HPOL",
+ 			"Speaker Amplifier INR", "HPOR",
+-			"Speakers", "Speaker Amplifier OUTL",
+-			"Speakers", "Speaker Amplifier OUTR";
++			"Internal Speakers", "Speaker Amplifier OUTL",
++			"Internal Speakers", "Speaker Amplifier OUTR";
+ 
+-		simple-audio-card,hp-det-gpio = <&gpio4 RK_PC6 GPIO_ACTIVE_HIGH>;
++		simple-audio-card,hp-det-gpio = <&gpio4 RK_PC6 GPIO_ACTIVE_LOW>;
+ 		simple-audio-card,aux-devs = <&speaker_amp>;
+-		simple-audio-card,pin-switches = "Speakers", "Microphone";
++		simple-audio-card,pin-switches = "Internal Speakers", "Microphone";
+ 
+ 		simple-audio-card,cpu {
+ 			sound-dai = <&i2s1_8ch>;
 -- 
-2.41.0
+2.42.0
+
+
+--nextPart2189696.cEvZYOimPK--
+
+--nextPart1735942.3G8mRxy5iN
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQT1sUPBYsyGmi4usy/XblvOeH7bbgUCZYW+HwAKCRDXblvOeH7b
+bk8YAP9l/Ynyc1NgUzHaJH+8pqpPvbqfRat1qp4Tm/CX1vZjiQEAi+d8vAIDfJs2
+ytBGxf56fdtLqnUcH11NRRCnHeSFMA0=
+=znXm
+-----END PGP SIGNATURE-----
+
+--nextPart1735942.3G8mRxy5iN--
+
+
 
 
