@@ -1,127 +1,202 @@
-Return-Path: <linux-kernel+bounces-9620-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9621-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B53581C893
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 11:55:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7E2581C895
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 11:55:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9C2F81C21FDC
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 10:55:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D5E0287612
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 10:55:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF92A156EB;
-	Fri, 22 Dec 2023 10:55:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 376BB15AE4;
+	Fri, 22 Dec 2023 10:55:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="Fpn//Tr6";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="J5OY5nGz"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Z2vcC4p0"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1818514F75
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 10:55:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailout.nyi.internal (Postfix) with ESMTP id 36DAF5C0124;
-	Fri, 22 Dec 2023 05:55:19 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Fri, 22 Dec 2023 05:55:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm1; t=1703242519; x=1703328919; bh=Z4Uiq5XLti
-	jsD3C4BRWflNc8XSipqHSnhGRmrgjUqHA=; b=Fpn//Tr6h49yBm5LnZ+DoJN6iG
-	PBW1lAtIXwf79cblBo+60n+WDF4JFDQDWz9oJ99acAGGFuUDTs8iz0KgwDbDcx7B
-	ICLLhh/cAndSAO6aAfTjBKJSG7sfLHTmXezMWiGiVzmDo3JzpfCxTjppxIRHFcrW
-	BOehYHYuqP6rtMKqNWlF+Ku6yAUgTljf6P5JA+IZ1/zjqomgXsg+5LYDVxPr+05b
-	gynr1L21jVwhw3ynLUu6zkJa12ApAuZ/ZAeClseztuZI2mBPbdR93zLLKwgaCT/8
-	xkhbA38I7K3M3gr5wdtp59x+xbTk+j2NxfyAFxmQOUs5qqU+ckApCJ/AWhDQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1703242519; x=1703328919; bh=Z4Uiq5XLtijsD3C4BRWflNc8XSip
-	qHSnhGRmrgjUqHA=; b=J5OY5nGzL5ATuDYissUd1t7YyqXIHH5q01DzDbUrPP6O
-	uBUvbgn/4haOPMNhMZ/SFNxmoykZ1kbAHJw+QySCUR+L2tECmxXINriqwh4g/x3X
-	lAHdsxjkx23axPJrAHXL4wlspT6N6/2taQ6iS0NMIhyKZgnhJIzXLrFh4Ew/KanH
-	mbUcj+Ekk7FaM0/lBmXB12eJOn0dGeh/cvgFzEJoGKNasW2SEtecpV91LrEL9mWA
-	5HMFClz9+5ugO9/NIRP+iesAlDt7FCr0IT3Hg4P1kAMAFzTrrsDFmEsXvR1ks/50
-	BHkTrh3VmlL5Rzk9IRXWj1mKGOxU2E/iqyIkzKiwcg==
-X-ME-Sender: <xms:FmuFZXJ6A5ShJdDx2oBU2L61Mkov6BfzXxaZk8ITetD7bSZDD9kR8w>
-    <xme:FmuFZbKqiyoFQ8E2z4J_EB1GRMkVeTWqpGXb-Fh4Tc_rXb3KRODQ9EUISdrXCZNGz
-    BrppZRLUQ5jY6pWZ4A>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvddujedgvddtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepjedvvddvudeludehjeeitdehheeivdejgfelleffiefgvefhhfeuudfhgeef
-    feehnecuffhomhgrihhnpehgihhthhhusgdrtghomhenucevlhhushhtvghrufhiiigvpe
-    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:FmuFZfvxS0hbJfjhURREBvjVgi75pzL6JqkNnMBnyZZzKTLVXFA_Ew>
-    <xmx:FmuFZQb2BAaOx4QKXwjbEw2dfIx0fGxMMcQAbLGnzeqQF53zDsTiIQ>
-    <xmx:FmuFZebo8ULNOMXS2QjZ4mtwXcz_KmQjlb9eSWgGMgs8RGiozuVW3w>
-    <xmx:F2uFZTNg7IKAy0TSZYK6H82cS2OK8Bp8WPlNGTi6Ky5NYjAIXNVcHQ>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 82DCBB6008D; Fri, 22 Dec 2023 05:55:18 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1364-ga51d5fd3b7-fm-20231219.001-ga51d5fd3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D38A14A86;
+	Fri, 22 Dec 2023 10:55:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1d3eabe9321so11837855ad.2;
+        Fri, 22 Dec 2023 02:55:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703242537; x=1703847337; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=PCFzo++LI2ZwW1picHi8lLKPMVx69Hfp8vT3r27uSLU=;
+        b=Z2vcC4p0iN9YhUXwmEOEAXciYXu5OxPmfonMorliOWZ3iuOQHmeNEU74leuVez+rXD
+         qcNSw4R91D9ym1stU3WviPRnKP5Cs77uwA1PegNEClFYCcYArBr97iwDxX8dPK66OVoz
+         JYjiwnSbFZjUWwksoWT5m1MWXUsoGL8V/idH6945Ei7CgdvgcVZ6Tt+uTviy2SFu4Dog
+         JtquLv3hI1oyx1CAIhx+q0wr72K2WLJV9SolJDWaF8qd9m72qZnCYUl05dphTDz/agax
+         uwr214CyT62+sai7mcSnG9VymAtNmGzZoD9WEN7iwrB/fQT6WEnAUygWhAqDWs1kcbZ9
+         QsjQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703242537; x=1703847337;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=PCFzo++LI2ZwW1picHi8lLKPMVx69Hfp8vT3r27uSLU=;
+        b=wowr/ieKlQfPL8950avRtW6q8qxnERS3QnVDxPQ6KNpQ2hpqT3fmCQSxbjrUYb/Yjr
+         PKRTF4HVz+kZ/T19PGxOlZ0v/7op71zisv2gR6l8BCfKH7EKMjyJdEBAj70iUFz/wNp7
+         79djITocSyFBqMNBxItZgiBOvSLB2aU8IIuWY3vcDQnjv968RsgzeqUpdde77qJ/EuXn
+         /Ls2pVHRcmS8m5OMmQoiYTet8WRFKddf2I12xKK2A5FMLZK3lVrFNIBsvWMZmBAGkf1y
+         GaNDaSQEa2ASAQTk/2Ztfuzv7UHNmtsvC7RnHdXIzwUtf6lAQeJ2aPn5ZPGOArsRQO05
+         e7XQ==
+X-Gm-Message-State: AOJu0YzOGdDtLkgT+YEH14J5o2ZkpDfNKDzwoFA3yOBYAcSn8kwL0uwo
+	qC/LCkDtVmp6nBYzOJpXF74=
+X-Google-Smtp-Source: AGHT+IHe/yw5h2GBRC0KOMQhoptWluh7P/8lB+AswpdPVFaFzGQTpTtUHnCgGULxsphbiJG7LbPimg==
+X-Received: by 2002:a17:902:680a:b0:1d4:19c8:582b with SMTP id h10-20020a170902680a00b001d419c8582bmr722741plk.121.1703242537386;
+        Fri, 22 Dec 2023 02:55:37 -0800 (PST)
+Received: from g2039B650.. ([106.39.42.144])
+        by smtp.gmail.com with ESMTPSA id jg11-20020a17090326cb00b001d3ef9edfa7sm3188497plb.58.2023.12.22.02.55.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Dec 2023 02:55:36 -0800 (PST)
+From: Gui-Dong Han <2045gemini@gmail.com>
+To: marcel@holtmann.org,
+	johan.hedberg@gmail.com,
+	luiz.dentz@gmail.com
+Cc: linux-bluetooth@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	baijiaju1990@outlook.com,
+	Gui-Dong Han <2045gemini@gmail.com>,
+	stable@vger.kernel.org,
+	BassCheck <bass@buaa.edu.cn>
+Subject: [PATCH] Bluetooth: Fix atomicity violation in {conn,adv}_{min,max}_interval_set
+Date: Fri, 22 Dec 2023 18:55:26 +0800
+Message-Id: <20231222105526.9208-1-2045gemini@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <a274ba17-6ab7-4169-a10c-22fcc9e74248@app.fastmail.com>
-In-Reply-To: <20231212105514.273e8ab0@bootlin.com>
-References: <20231212105514.273e8ab0@bootlin.com>
-Date: Fri, 22 Dec 2023 10:55:00 +0000
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Herve Codina" <herve.codina@bootlin.com>, soc <soc@kernel.org>
-Cc: "Qiang Zhao" <qiang.zhao@nxp.com>, "Leo Li" <leoyang.li@nxp.com>,
- "Christophe Leroy" <christophe.leroy@csgroup.eu>,
- "Thomas Petazzoni" <thomas.petazzoni@bootlin.com>,
- linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [GIT PULL] PowerQUICC QMC and TSA drivers updates for v6.8
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 
-On Tue, Dec 12, 2023, at 09:55, Herve Codina wrote:
-> The following changes since commit 2cc14f52aeb78ce3f29677c2de1f06c0e91471ab:
->
->   Linux 6.7-rc3 (2023-11-26 19:59:33 -0800)
->
-> are available in the Git repository at:
->
->   git@github.com:hcodina/linux.git tags/fsl_qmc_tsa_v6.8
->
-> for you to fetch changes up to 7a2ee1576dcc6bbe017a8283fba237b05b13fd15:
->
+In {conn,adv}_min_interval_set():
+	if (val < ... || val > ... || val > hdev->le_{conn,adv}_max_interval)
+		return -EINVAL;
+	hci_dev_lock(hdev);
+	hdev->le_{conn,adv}_min_interval = val;
+	hci_dev_unlock(hdev);
 
-This is not a valid git URL I can pull from. I have instead pulled from
+In {conn,adv}_max_interval_set():
+	if (val < ... || val > ... || val < hdev->le_{conn,adv}_min_interval)
+		return -EINVAL;
+	hci_dev_lock(hdev);
+	hdev->le_{conn,adv}_max_interval
+	hci_dev_unlock(hdev);
 
-  https://github.com/hcodina/linux.git tags/fsl_qmc_tsa_v6.8
+The atomicity violation occurs due to concurrent execution of set_min and
+set_max funcs which may lead to inconsistent reads and writes of the min
+value and the max value. The checks for value validity are ineffective as
+the min/max values could change immediately after being checked, raising
+the risk of the min value being greater than the max value and causing
+invalid settings.
 
-which is what I think you meant. 
+This possible bug is found by an experimental static analysis tool
+developed by our team, BassCheck[1]. This tool analyzes the locking APIs
+to extract function pairs that can be concurrently executed, and then
+analyzes the instructions in the paired functions to identify possible
+concurrency bugs including data races and atomicity violations. The above
+possible bug is reported when our tool analyzes the source code of
+Linux 5.17.
 
-You should probably edit your .gitconfig file to add a section
-like (not sure about the exact syntax, you'll figure it out).
+To resolve this issue, it is suggested to encompass the validity checks
+within the locked sections in both set_min and set_max funcs. The
+modification ensures that the validation of 'val' against the
+current min/max values is atomic, thus maintaining the integrity of the
+settings. With this patch applied, our tool no longer reports the bug,
+with the kernel configuration allyesconfig for x86_64. Due to the lack of
+associated hardware, we cannot test the patch in runtime testing, and just
+verify it according to the code logic.
 
-[url "https://github.com"]
-    insteadOf = git@github.com
+[1] https://sites.google.com/view/basscheck/
 
+Fixes: 3a5c82b78fd28 ("Bluetooth: Move LE debugfs file creation into ...")
+Cc: stable@vger.kernel.org
+Reported-by: BassCheck <bass@buaa.edu.cn>
+Signed-off-by: Gui-Dong Han <2045gemini@gmail.com>
+---
+ net/bluetooth/hci_debugfs.c | 30 +++++++++++++++++++-----------
+ 1 file changed, 19 insertions(+), 11 deletions(-)
 
->  drivers/soc/fsl/qe/qmc.c      | 658 
-> +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-----------------------------
+diff --git a/net/bluetooth/hci_debugfs.c b/net/bluetooth/hci_debugfs.c
+index 6b7741f6e95b..6fdda807f2cf 100644
+--- a/net/bluetooth/hci_debugfs.c
++++ b/net/bluetooth/hci_debugfs.c
+@@ -849,11 +849,13 @@ DEFINE_SHOW_ATTRIBUTE(long_term_keys);
+ static int conn_min_interval_set(void *data, u64 val)
+ {
+ 	struct hci_dev *hdev = data;
+-
+-	if (val < 0x0006 || val > 0x0c80 || val > hdev->le_conn_max_interval)
++	
++	hci_dev_lock(hdev);
++	if (val < 0x0006 || val > 0x0c80 || val > hdev->le_conn_max_interval) {
++		hci_dev_unlock(hdev);	
+ 		return -EINVAL;
++	}
+ 
+-	hci_dev_lock(hdev);
+ 	hdev->le_conn_min_interval = val;
+ 	hci_dev_unlock(hdev);
+ 
+@@ -877,11 +879,13 @@ DEFINE_DEBUGFS_ATTRIBUTE(conn_min_interval_fops, conn_min_interval_get,
+ static int conn_max_interval_set(void *data, u64 val)
+ {
+ 	struct hci_dev *hdev = data;
+-
+-	if (val < 0x0006 || val > 0x0c80 || val < hdev->le_conn_min_interval)
++	
++	hci_dev_lock(hdev);
++	if (val < 0x0006 || val > 0x0c80 || val < hdev->le_conn_min_interval) {
++		hci_dev_unlock(hdev);
+ 		return -EINVAL;
++	}
+ 
+-	hci_dev_lock(hdev);
+ 	hdev->le_conn_max_interval = val;
+ 	hci_dev_unlock(hdev);
+ 
+@@ -989,11 +993,13 @@ DEFINE_DEBUGFS_ATTRIBUTE(adv_channel_map_fops, adv_channel_map_get,
+ static int adv_min_interval_set(void *data, u64 val)
+ {
+ 	struct hci_dev *hdev = data;
+-
+-	if (val < 0x0020 || val > 0x4000 || val > hdev->le_adv_max_interval)
++	
++	hci_dev_lock(hdev);
++	if (val < 0x0020 || val > 0x4000 || val > hdev->le_adv_max_interval) {
++		hci_dev_unlock(hdev);	
+ 		return -EINVAL;
++	}
+ 
+-	hci_dev_lock(hdev);
+ 	hdev->le_adv_min_interval = val;
+ 	hci_dev_unlock(hdev);
+ 
+@@ -1018,10 +1024,12 @@ static int adv_max_interval_set(void *data, u64 val)
+ {
+ 	struct hci_dev *hdev = data;
+ 
+-	if (val < 0x0020 || val > 0x4000 || val < hdev->le_adv_min_interval)
++	hci_dev_lock(hdev);
++	if (val < 0x0020 || val > 0x4000 || val < hdev->le_adv_min_interval) {
++		hci_dev_unlock(hdev);
+ 		return -EINVAL;
++	}
+ 
+-	hci_dev_lock(hdev);
+ 	hdev->le_adv_max_interval = val;
+ 	hci_dev_unlock(hdev);
+ 
+-- 
+2.34.1
 
-This is an overly long line that you probably copied from a large
-terminal window. Just for readability, I recommend redirecting the
-'git request-pull' output, e.g. into 'xclip' or 'cat', which will
-give it the appropriate line length for emails.
-
-      Arnd
 
