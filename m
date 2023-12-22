@@ -1,114 +1,93 @@
-Return-Path: <linux-kernel+bounces-10046-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10047-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E34981CF1C
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 21:04:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0552481CF20
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 21:08:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 407611C22E81
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 20:04:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B074A286D87
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 20:08:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A6B52E83E;
-	Fri, 22 Dec 2023 20:04:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D7662E844;
+	Fri, 22 Dec 2023 20:08:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ln4cAeBU"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QQ4VREqa"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ot1-f44.google.com (mail-ot1-f44.google.com [209.85.210.44])
+Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 686C72E821;
-	Fri, 22 Dec 2023 20:04:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CEE92E82A;
+	Fri, 22 Dec 2023 20:08:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f44.google.com with SMTP id 46e09a7af769-6dbb2403fa2so1593036a34.2;
-        Fri, 22 Dec 2023 12:04:07 -0800 (PST)
+Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-5a0dc313058so266968a12.0;
+        Fri, 22 Dec 2023 12:08:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703275446; x=1703880246; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Z5DKwbg4XD2gV+sjQTXut6IiDwsF80T3W1JqgBXYfc8=;
-        b=Ln4cAeBU6D0cde+UgWC3S40O4SJExSGaVLPJiZZ/N33ZR/R8U5yXEr/e5a/j66Faak
-         siXl8e6vq/9Tg/+42sDZd/l0LEcdJJppZO0rdE8DzVEo9TOWArCB96zs2/cyJspTKzKj
-         WDLU8Re0t93xV8xJjmis9VAXnj3WnT+peM6eiP6oTHp8abgu25KTKYCv3jVZXrxXJbzz
-         ZTTCQCj6htM2laJQ6e/uakuljpEfEPGMPqkOP78lRKfZiL2jxNYcpr9/Auvic+G0AIQD
-         WLCd3WuuziXo9WjRWXleOZHeYEGPc2tRhfVkg8ARrs+yx3kS+E9SBt9OwS+DntOfSTuR
-         7jfg==
+        d=gmail.com; s=20230601; t=1703275700; x=1703880500; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=45lHNROzwnE2bBQ0q+jaGpWMOieIeItqZnhNnMC510Q=;
+        b=QQ4VREqayr7yIW70hEZvfh9ncTW1o+T0mrUH/k+gjqQRASSxexU5t9cdznhprXLel7
+         Kux7iOdQXrEpuDp3EFDslPkBUq23taoBSXyFo88Qh5PZllSFz6wdH9O4RpTgSqfPCmKo
+         jw3lS7K7yC5wKIDztRbghFtsS2RwJYOpmMd2U96OWpkckFonr32UbKQWyuywDniAoNXM
+         tDJ8NaiZa7FtWAJWoD6nc9phoJjLwVfYz55TdN6EZuOcL5ofqDfo4Eq/HlFRSJwP7yOQ
+         n0oASiaqEBQWPYfYmwV1C8d3Sdjy/KIlrdZnCIsT0iJ3v+KMM3Qr9YVJUIb/abHeE7QC
+         znVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703275446; x=1703880246;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Z5DKwbg4XD2gV+sjQTXut6IiDwsF80T3W1JqgBXYfc8=;
-        b=jG4rYyPHfnQC0o4LQlF8t4FpL6TxV4VT7O4kKlO5k274CfVmLtfN8Tg2t2QXf6pIP7
-         KJCWKfcc2rXJM7pgNXYDC1Tjbth/1ly0HlvZ/95l4F5QPi1t1MJx1Y2N0jcENFLal/YX
-         nIN0fyJbE6Nt/dqp3GVkWrjjtEsMsXdQPr9MHLyU7/aaRPtYT0ykEVT+dk7uF11FVwfO
-         s+L2Q9VQ3IVTVFlsuTKo1Ya7LPiUEPYeOuFYLo67W9OazItpWA/yleeJO6oKqx/ORrtz
-         3sordDJSB7ev89RDiyj7vqeYffvP/jxu8fz3h3BYHLj4TSKthJ7obVDXmn22xUQhOCyp
-         yhzg==
-X-Gm-Message-State: AOJu0YwgK6nM82iSRaQyWS/v1uE2hsbsNp+bxfXdFQRW27pKP+E6VfzI
-	upiDWU4GgWewniYHa8lXbSY=
-X-Google-Smtp-Source: AGHT+IGI+TxAGisu6bOpbKbHegQHk0kyWT7zWdfFSEsiGmXu5WjJvdAC+X2rqKb9XwCMmp7IWwGZSQ==
-X-Received: by 2002:a05:6358:2799:b0:174:d909:c8da with SMTP id l25-20020a056358279900b00174d909c8damr794152rwb.39.1703275446271;
-        Fri, 22 Dec 2023 12:04:06 -0800 (PST)
-Received: from ubuntu.. ([202.166.220.102])
-        by smtp.gmail.com with ESMTPSA id fw2-20020a17090b128200b0028c2844d285sm160945pjb.49.2023.12.22.12.04.03
+        d=1e100.net; s=20230601; t=1703275700; x=1703880500;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=45lHNROzwnE2bBQ0q+jaGpWMOieIeItqZnhNnMC510Q=;
+        b=o9DwuJnPzmp3JCWTcR9XKFBmMT/0DAKwPzDRyHzZ1+RKSUynHZ0M6yFUoWelBs71fl
+         yL+nrMW148G1CuhohuD5NNRAo9UdOpWF1BczCjfFBc9oMZtJjqGVjrWRRygpUWIEiRtD
+         JYgCZiSYEWOD96Huxtvlo0N2EXncVuzJJjgTfdfaB7jNoYgmw6YexUjPD/cF0u4xtiTr
+         l+ivbhRt5m7iVp+Y2TEeUSrrqCXkoR9P9Kas7xEPFB/HduvLHhjXiKM7rbd0DEhH7srY
+         xbqcyfZ3+AiyHHBeeZxAn17/YllqIzgjfq+ycsXquTSgn6q6cSqlO9YUJg8GjjxMeBAt
+         3Upg==
+X-Gm-Message-State: AOJu0YxZ5fybMdUKXH9OepbiH7SaG7Pm+GDfp672VO+kjZXowDJe6eRl
+	wPtZMV2DlY7aR14M2yX1v5z7WcXEwVQ=
+X-Google-Smtp-Source: AGHT+IHA33JdwKl+NzOdAAu4IR+YiidtLctDPaolcGRPMksEf6ESOlCwq2Ogkpu8KLVaWejfHDfiIg==
+X-Received: by 2002:a05:6a20:4a23:b0:187:df59:5c43 with SMTP id fr35-20020a056a204a2300b00187df595c43mr3607810pzb.2.1703275699525;
+        Fri, 22 Dec 2023 12:08:19 -0800 (PST)
+Received: from hoboy.vegasvil.org ([2601:640:8000:54:e2d5:5eff:fea5:802f])
+        by smtp.gmail.com with ESMTPSA id g10-20020aa79dca000000b006d90467ca78sm3921975pfq.15.2023.12.22.12.08.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Dec 2023 12:04:05 -0800 (PST)
-From: Dipendra Khadka <kdipendra88@gmail.com>
-To: hdegoede@redhat.com,
-	mchehab@kernel.org,
-	sakari.ailus@linux.intel.com,
-	gregkh@linuxfoundation.org,
-	hpa@redhat.com
-Cc: Dipendra Khadka <kdipendra88@gmail.com>,
-	linux-media@vger.kernel.org,
-	linux-staging@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] staging: media: atomisp: pci: Fix spelling mistake in ia_css_acc_types.h
-Date: Fri, 22 Dec 2023 20:03:50 +0000
-Message-Id: <20231222200350.2024-1-kdipendra88@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Fri, 22 Dec 2023 12:08:18 -0800 (PST)
+Date: Fri, 22 Dec 2023 12:08:16 -0800
+From: Richard Cochran <richardcochran@gmail.com>
+To: Min Li <lnimi@hotmail.com>
+Cc: lee@kernel.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+	Min Li <min.li.xe@renesas.com>
+Subject: Re: [PATCH net-next v5 1/2] ptp: introduce PTP_CLOCK_EXTOFF event
+ for the measured external offset
+Message-ID: <ZYXssHEb1EbUFNkP@hoboy.vegasvil.org>
+References: <PH7PR03MB7064C20AF7AC49FFB76F8277A096A@PH7PR03MB7064.namprd03.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <PH7PR03MB7064C20AF7AC49FFB76F8277A096A@PH7PR03MB7064.namprd03.prod.outlook.com>
 
-The script checkpatch.pl reported a spelling error
-in ia_css_acc_types.h as below:
+On Wed, Dec 20, 2023 at 09:59:16AM -0500, Min Li wrote:
 
-'''
-WARNING: 'cummulative' may be misspelled - perhaps 'cumulative'?
-        u32 padding_size;       /** total cummulative of bytes added due to section alignment */
-                                          ^^^^^^^^^^^
-'''
+> @@ -228,7 +235,7 @@ struct ptp_pin_desc {
+>  #define PTP_MASK_EN_SINGLE  _IOW(PTP_CLK_MAGIC, 20, unsigned int)
+>  
+>  struct ptp_extts_event {
+> -	struct ptp_clock_time t; /* Time event occured. */
+> +	struct ptp_clock_time t; /* Time event occurred. */
+>  	unsigned int index;      /* Which channel produced the event. */
+>  	unsigned int flags;      /* Reserved for future use. */
+                                    ^^^^^^^^^^^^^^^^^^^^^^^
+Please update this comment ........
 
-This patch corrects a spelling error,
-changing "cummulative" to "cumulative".
-
-Signed-off-by: Dipendra Khadka <kdipendra88@gmail.com>
----
- drivers/staging/media/atomisp/pci/ia_css_acc_types.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/staging/media/atomisp/pci/ia_css_acc_types.h b/drivers/staging/media/atomisp/pci/ia_css_acc_types.h
-index d6e52b4971d6..ac6fb0eb990a 100644
---- a/drivers/staging/media/atomisp/pci/ia_css_acc_types.h
-+++ b/drivers/staging/media/atomisp/pci/ia_css_acc_types.h
-@@ -84,7 +84,7 @@ struct ia_css_blob_info {
- 		memory_offsets;  /** offset wrt hdr in bytes */
- 	u32 prog_name_offset;  /** offset wrt hdr in bytes */
- 	u32 size;			/** Size of blob */
--	u32 padding_size;	/** total cummulative of bytes added due to section alignment */
-+	u32 padding_size;	/** total cumulative of bytes added due to section alignment */
- 	u32 icache_source;	/** Position of icache in blob */
- 	u32 icache_size;	/** Size of icache section */
- 	u32 icache_padding;/** bytes added due to icache section alignment */
--- 
-2.34.1
-
+Thanks,
+Richard
 
