@@ -1,102 +1,201 @@
-Return-Path: <linux-kernel+bounces-9912-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9911-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 51CAF81CD28
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 17:34:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 334CB81CD27
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 17:34:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0DE7A284869
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 16:34:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E28A728767A
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 16:34:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 320DF2556C;
-	Fri, 22 Dec 2023 16:34:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fO+SlFyu"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2707B250F1;
+	Fri, 22 Dec 2023 16:33:56 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 191D024A1F
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 16:34:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703262869; x=1734798869;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Nwu0jTUTyUVExiakxdbtIQfJuL2c3K4kO9Pr5Ymd8sQ=;
-  b=fO+SlFyuw72KMKXLr1jBPOOFt1KrQ92h2oI63KQbvLW1X+jun1ZjkNHi
-   szX8UNjeO8IT8Tpy42j6fNJuX0Wa4YXkvkyasIVj81PPFYptSaOhislU0
-   i0QKyZB2qKYaXp8uyOYNpCAkIGSnfRt6+TQpo6xSk7suLe8B+r+foTZt0
-   dMUJvwxf036t6St0dOxwi2P6gQ/QUGYddtkCJbKykVK6pslRmyJB0eFfv
-   ncvC0TGlqofvcl+xKRCCzAvD/bRH3mbkMnHu8aI1i+ntHvNaJiSnoRDQh
-   ZL6ec6B0MdpmazGNb9u4GAtnw5YD09vwbVbD8Rz1O3F0YVHp2XyJgm4DR
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10932"; a="395024981"
-X-IronPort-AV: E=Sophos;i="6.04,297,1695711600"; 
-   d="scan'208";a="395024981"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Dec 2023 08:34:28 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10932"; a="777082152"
-X-IronPort-AV: E=Sophos;i="6.04,297,1695711600"; 
-   d="scan'208";a="777082152"
-Received: from hassanfa-mobl.ger.corp.intel.com (HELO box.shutemov.name) ([10.252.33.171])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Dec 2023 08:34:23 -0800
-Received: by box.shutemov.name (Postfix, from userid 1000)
-	id EC2FB10945B; Fri, 22 Dec 2023 19:34:20 +0300 (+03)
-Date: Fri, 22 Dec 2023 19:34:20 +0300
-From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
-	Elena Reshetova <elena.reshetova@intel.com>,
-	Jun Nakajima <jun.nakajima@intel.com>,
-	Rick Edgecombe <rick.p.edgecombe@intel.com>,
-	Tom Lendacky <thomas.lendacky@amd.com>,
-	"Kalra, Ashish" <ashish.kalra@amd.com>,
-	Sean Christopherson <seanjc@google.com>,
-	"Huang, Kai" <kai.huang@intel.com>, Baoquan He <bhe@redhat.com>,
-	kexec@lists.infradead.org, linux-coco@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCHv4 14/14] x86/acpi: Add support for CPU offlining for ACPI
- MADT wakeup method
-Message-ID: <20231222163420.4mu5kmznfmsave6k@box.shutemov.name>
-References: <20231205004510.27164-1-kirill.shutemov@linux.intel.com>
- <20231205004510.27164-15-kirill.shutemov@linux.intel.com>
- <877clfmcpy.ffs@tglx>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7BD024B4D;
+	Fri, 22 Dec 2023 16:33:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32E88C433C9;
+	Fri, 22 Dec 2023 16:33:54 +0000 (UTC)
+Date: Fri, 22 Dec 2023 11:34:59 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
+ <linux-trace-kernel@vger.kernel.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, Linus Torvalds
+ <torvalds@linux-foundation.org>, Shuah Khan <shuah@kernel.org>, Linux
+ selftests <linux-kselftest@vger.kernel.org>
+Subject: [PATCH v4] tracing/selftests: Add ownership modification tests for
+ eventfs
+Message-ID: <20231222113459.4d645bfc@gandalf.local.home>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <877clfmcpy.ffs@tglx>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Fri, Dec 15, 2023 at 09:29:13PM +0100, Thomas Gleixner wrote:
-> So this waits and then does nothing if the wait fails. What's the point?
-> 
-> ...
-> <SNIP 170 lines of pagetable muck>
-> 
-> Do we really need this specific hackery or is there some similar
-> identity mapping muck which can be generalized?
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-I've addressed all your feedback, but this gave me pause. Looks like none
-of kernel_ident_mapping_init() users frees memory on failure.
+As there were bugs found with the ownership of eventfs dynamic file
+creation. Add a test to test it.
 
-Is it okay to get this part as is and I will follow up with patchset that
-fixes memory handling for all kernel_ident_mapping_init() users?
+It will remount tracefs with a different gid and check the ownership of
+the eventfs directory, as well as the system and event directories. It
+will also check the event file directories.
 
+It then does a chgrp on each of these as well to see if they all get
+updated as expected.
+
+Then it remounts the tracefs file system back to the original group and
+makes sure that all the updated files and directories were reset back to
+the original ownership.
+
+It does the same for instances that change the ownership of he instance
+directory.
+
+Note, because the uid is not reset by a remount, it is tested for every
+file by switching it to a new owner and then back again.
+
+Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Tested-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+Changes since v3: https://lore.kernel.org/linux-trace-kernel/20231221211229.13398ef3@gandalf.local.home
+
+- Added missing SPDX and removed exec permission from file (Shuah Khan)
+
+ .../ftrace/test.d/00basic/test_ownership.tc   | 114 ++++++++++++++++++
+ 1 file changed, 114 insertions(+)
+ create mode 100644 tools/testing/selftests/ftrace/test.d/00basic/test_ownership.tc
+
+diff --git a/tools/testing/selftests/ftrace/test.d/00basic/test_ownership.tc b/tools/testing/selftests/ftrace/test.d/00basic/test_ownership.tc
+new file mode 100644
+index 000000000000..add7d5bf585d
+--- /dev/null
++++ b/tools/testing/selftests/ftrace/test.d/00basic/test_ownership.tc
+@@ -0,0 +1,114 @@
++#!/bin/sh
++# SPDX-License-Identifier: GPL-2.0
++# description: Test file and directory owership changes for eventfs
++
++original_group=`stat -c "%g" .`
++original_owner=`stat -c "%u" .`
++
++mount_point=`stat -c '%m' .`
++mount_options=`mount | grep "$mount_point" | sed -e 's/.*(\(.*\)).*/\1/'`
++
++# find another owner and group that is not the original
++other_group=`tac /etc/group | grep -v ":$original_group:" | head -1 | cut -d: -f3`
++other_owner=`tac /etc/passwd | grep -v ":$original_owner:" | head -1 | cut -d: -f3`
++
++# Remove any group ownership already
++new_options=`echo "$mount_options" | sed -e "s/gid=[0-9]*/gid=$other_group/"`
++
++if [ "$new_options" = "$mount_options" ]; then
++	new_options="$mount_options,gid=$other_group"
++	mount_options="$mount_options,gid=$original_group"
++fi
++
++canary="events/timer events/timer/timer_cancel events/timer/timer_cancel/format"
++
++test() {
++	file=$1
++	test_group=$2
++
++	owner=`stat -c "%u" $file`
++	group=`stat -c "%g" $file`
++
++	echo "testing $file $owner=$original_owner and $group=$test_group"
++	if [ $owner -ne $original_owner ]; then
++		exit_fail
++	fi
++	if [ $group -ne $test_group ]; then
++		exit_fail
++	fi
++
++	# Note, the remount does not update ownership so test going to and from owner
++	echo "test owner $file to $other_owner"
++	chown $other_owner $file
++	owner=`stat -c "%u" $file`
++	if [ $owner -ne $other_owner ]; then
++		exit_fail
++	fi
++
++	chown $original_owner $file
++	owner=`stat -c "%u" $file`
++	if [ $owner -ne $original_owner ]; then
++		exit_fail
++	fi
++
++}
++
++run_tests() {
++	for d in "." "events" "events/sched" "events/sched/sched_switch" "events/sched/sched_switch/enable" $canary; do
++		test "$d" $other_group
++	done
++
++	chgrp $original_group events
++	test "events" $original_group
++	for d in "." "events/sched" "events/sched/sched_switch" "events/sched/sched_switch/enable" $canary; do
++		test "$d" $other_group
++	done
++
++	chgrp $original_group events/sched
++	test "events/sched" $original_group
++	for d in "." "events/sched/sched_switch" "events/sched/sched_switch/enable" $canary; do
++		test "$d" $other_group
++	done
++
++	chgrp $original_group events/sched/sched_switch
++	test "events/sched/sched_switch" $original_group
++	for d in "." "events/sched/sched_switch/enable" $canary; do
++		test "$d" $other_group
++	done
++
++	chgrp $original_group events/sched/sched_switch/enable
++	test "events/sched/sched_switch/enable" $original_group
++	for d in "." $canary; do
++		test "$d" $other_group
++	done
++}
++
++mount -o remount,"$new_options" .
++
++run_tests
++
++mount -o remount,"$mount_options" .
++
++for d in "." "events" "events/sched" "events/sched/sched_switch" "events/sched/sched_switch/enable" $canary; do
++	test "$d" $original_group
++done
++
++# check instances as well
++
++chgrp $other_group instances
++
++instance="$(mktemp -u test-XXXXXX)"
++
++mkdir instances/$instance
++
++cd instances/$instance
++
++run_tests
++
++cd ../..
++
++rmdir instances/$instance
++
++chgrp $original_group instances
++
++exit 0
 -- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+2.42.0
+
 
