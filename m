@@ -1,115 +1,195 @@
-Return-Path: <linux-kernel+bounces-9740-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9741-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E10081CA82
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 14:08:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EEA2481CA87
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 14:10:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6FC921C21562
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 13:08:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7C67D1F23DE5
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 13:10:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBE15199A1;
-	Fri, 22 Dec 2023 13:08:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E1B2199A1;
+	Fri, 22 Dec 2023 13:10:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="EyZkjfOt"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n3uscbi9"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2DBD18C20
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 13:08:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-40d2e56f3a6so10711305e9.1
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 05:08:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703250527; x=1703855327; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=xvw6tTnY8BhMF5IOV3JmRTPTPlqTLaF6hJkfSsjnKRM=;
-        b=EyZkjfOtpIp53rr+ephw5qMvQOcpyeei62Zr4QEoLhH39W/DTzF4b8rTrzJAzWSaFO
-         iNVCaJApARhkg+uFozzEdfH5A4akXGC8mBlvDeFLynvuucvUdpoBIKiqhr4XJiZlkPXr
-         hDkE4DhJJNhEAPVT8U+19eX38oup2pmIB+iEnu1HD8XcL/WBeEga8mo/TBAYN+p6lt1L
-         wWAKUONoPwPu+6cfrbEl5E+rGBKLvod4wsFpWb3s8NRdomcu1Of2lRrhiuh8FOCZlLQQ
-         wSuKV5xrJ0N2mNgOQ9IUObd4uoz/cAaglXrdqjIjtgzjeQ932JCRxanOvJGoXF30yeRG
-         Ya1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703250527; x=1703855327;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xvw6tTnY8BhMF5IOV3JmRTPTPlqTLaF6hJkfSsjnKRM=;
-        b=Q3yEWUYMdJHhYK249aj/c530ZA0eiGh2YQnmswaonfjH8NSGpNmSQ2fgywOSlm7dfd
-         HoQbPF2Oo9n9wqxQ/wRZMRUId81utondM8z2Uybw861zA8xdHNt8tx+PO0mE2Fn1GQbO
-         HEcSaUPS4xsgQuovFc+zMpuGruoyaj1J6+2yGca/tZGNXqgHvL3zPcS1I1d9oNn5eekJ
-         rGqLwtaoYebv5fLaNspH3gWX1JGgAETgVBOECKygOFdHiN5It0ceaQmL7rqpBxLkkxmD
-         EoKoZ6pF3t03vFMDwLcAij/cM3cVT/5WdOoxCGTRINqiOhJNk0zQHbrqGTC4zhpUtbVV
-         3b3g==
-X-Gm-Message-State: AOJu0YwP7zJ9+IOAD2pNg+frj34IML50htuHdVGLcJ7hshvR+qVOAdmR
-	fC7W3/asgW1a7vDD1Bnn8wL1QEFoQLKy2w==
-X-Google-Smtp-Source: AGHT+IEtGUJ5s+Rjh44OTBSnJUh5SIZt9blfpsqR72lDhlBFtL8plaCCgc/sEjQRyjVlwp5BcRB0gA==
-X-Received: by 2002:a05:600c:a44:b0:40d:2dd9:dac5 with SMTP id c4-20020a05600c0a4400b0040d2dd9dac5mr699601wmq.97.1703250526958;
-        Fri, 22 Dec 2023 05:08:46 -0800 (PST)
-Received: from [192.168.100.86] ([37.228.218.3])
-        by smtp.gmail.com with ESMTPSA id o11-20020a05600c510b00b0040d3b0780d5sm7085780wms.30.2023.12.22.05.08.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Dec 2023 05:08:46 -0800 (PST)
-Message-ID: <61998a14-2f9a-4b37-a6d0-77451332ae6f@linaro.org>
-Date: Fri, 22 Dec 2023 13:08:45 +0000
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF1DE182A1;
+	Fri, 22 Dec 2023 13:10:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02C95C433C8;
+	Fri, 22 Dec 2023 13:10:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703250621;
+	bh=FvnyuJhk+7r4BtcMqRVLyVhaGuE1vRlM7xCE2lBtl7A=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=n3uscbi9mTpk09tfQXWBQ9C4fr4b7ys8h9nWXJ+dSxDHEvAhtzC0LA8Mpmq7UU9bh
+	 /O+Hbhgj4cTQjhxCD6LWD9Wrbw3+MDFQC/4GoOYK7VkfhqC26sWFVxOjz4XsUoJ3uO
+	 zy2noqDBRjs9Rt+8kevLk1rOqHEm0xIk5VsggD7a4HwgE8saYXz1Icj5lwBWDvLqDC
+	 3S5d9o7MIkkqBj+cKblTWKrpwGdL5VjPyKVzhhp+uUYMkJv1UrAsp4NjPp0UufB6nQ
+	 GkmluEfetP6hcN9BONpkijLX6AGQkXLjqwZBkKVE1EmQj2jtuejkasB8hQRTzgUzfN
+	 OHX/sIUETpHbQ==
+Date: Fri, 22 Dec 2023 14:10:12 +0100
+From: Simon Horman <horms@kernel.org>
+To: Shinas Rasheed <srasheed@marvell.com>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, hgani@marvell.com,
+	vimleshk@marvell.com, sedara@marvell.com, egallen@redhat.com,
+	mschmidt@redhat.com, pabeni@redhat.com, kuba@kernel.org,
+	wizhao@redhat.com, kheib@redhat.com, konguyen@redhat.com,
+	Veerasenareddy Burru <vburru@marvell.com>,
+	Satananda Burla <sburla@marvell.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>
+Subject: Re: [PATCH net-next v1 4/8] octeon_ep_vf: add Tx/Rx ring resource
+ setup and cleanup
+Message-ID: <20231222131012.GG1202958@kernel.org>
+References: <20231221092844.2885872-1-srasheed@marvell.com>
+ <20231221092844.2885872-5-srasheed@marvell.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: defconfig: Enable Qualcomm SC8280XP camera clock
- controller
-Content-Language: en-US
-To: Bjorn Andersson <quic_bjorande@quicinc.com>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>
-References: <20231221-enable-sc8280xp-camcc-v1-1-2249581dd538@quicinc.com>
-From: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-In-Reply-To: <20231221-enable-sc8280xp-camcc-v1-1-2249581dd538@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231221092844.2885872-5-srasheed@marvell.com>
 
-On 22/12/2023 04:47, Bjorn Andersson wrote:
-> With the camera clock controller added to the DeviceTree of SC8280XP the
-> interconnect providers no longer reaches sync_state, resulting in a
-> noticeable reduction in battery life.
+On Thu, Dec 21, 2023 at 01:28:40AM -0800, Shinas Rasheed wrote:
+> Implement Tx/Rx ring resource allocation and cleanup.
 > 
-> Enable the camera clock controller (as a module) to avoid this, and
-> hopefully soon provide some level of camera support.
-> 
-> Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
-> ---
->   arch/arm64/configs/defconfig | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-> index ef1061089548..e5ce6d08006e 100644
-> --- a/arch/arm64/configs/defconfig
-> +++ b/arch/arm64/configs/defconfig
-> @@ -1256,6 +1256,7 @@ CONFIG_QCM_GCC_2290=y
->   CONFIG_QCM_DISPCC_2290=m
->   CONFIG_QCS_GCC_404=y
->   CONFIG_SA_GCC_8775P=y
-> +CONFIG_SC_CAMCC_8280XP=m
->   CONFIG_SC_DISPCC_8280XP=m
->   CONFIG_SA_GPUCC_8775P=m
->   CONFIG_SC_GCC_7180=y
-> 
-> ---
-> base-commit: 20d857259d7d10cd0d5e8b60608455986167cfad
-> change-id: 20231221-enable-sc8280xp-camcc-969b2cf2e4d7
-> 
-> Best regards,
+> Signed-off-by: Shinas Rasheed <srasheed@marvell.com>
 
-Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Hi Shinas,
+
+some minor feedback from my side which you might consider addressing
+if you have to respin the series for some other reason.
+
+...
+
+> +/**
+> + * octep_vf_setup_oq() - Setup a Rx queue.
+> + *
+> + * @oct: Octeon device private data structure.
+> + * @q_no: Rx queue number to be setup.
+> + *
+> + * Allocate resources for a Rx queue.
+> + */
+> +static int octep_vf_setup_oq(struct octep_vf_device *oct, int q_no)
+> +{
+> +	struct octep_vf_oq *oq;
+> +	u32 desc_ring_size;
+> +
+> +	oq = vzalloc(sizeof(*oq));
+> +	if (!oq)
+> +		goto create_oq_fail;
+> +	oct->oq[q_no] = oq;
+> +
+> +	oq->octep_vf_dev = oct;
+> +	oq->netdev = oct->netdev;
+> +	oq->dev = &oct->pdev->dev;
+> +	oq->q_no = q_no;
+> +	oq->max_count = CFG_GET_OQ_NUM_DESC(oct->conf);
+> +	oq->ring_size_mask = oq->max_count - 1;
+> +	oq->buffer_size = CFG_GET_OQ_BUF_SIZE(oct->conf);
+> +	oq->max_single_buffer_size = oq->buffer_size - OCTEP_VF_OQ_RESP_HW_SIZE;
+> +
+> +	/* When the hardware/firmware supports additional capabilities,
+> +	 * additional header is filled-in by Octeon after length field in
+> +	 * Rx packets. this header contains additional packet information.
+> +	 */
+> +	if (oct->fw_info.rx_ol_flags)
+> +		oq->max_single_buffer_size -= OCTEP_VF_OQ_RESP_HW_EXT_SIZE;
+> +
+> +	oq->refill_threshold = CFG_GET_OQ_REFILL_THRESHOLD(oct->conf);
+> +
+> +	desc_ring_size = oq->max_count * OCTEP_VF_OQ_DESC_SIZE;
+> +	oq->desc_ring = dma_alloc_coherent(oq->dev, desc_ring_size,
+> +					   &oq->desc_ring_dma, GFP_KERNEL);
+> +
+> +	if (unlikely(!oq->desc_ring)) {
+> +		dev_err(oq->dev,
+> +			"Failed to allocate DMA memory for OQ-%d !!\n", q_no);
+> +		goto desc_dma_alloc_err;
+> +	}
+> +
+> +	oq->buff_info = (struct octep_vf_rx_buffer *)
+> +			vzalloc(oq->max_count * OCTEP_VF_OQ_RECVBUF_SIZE);
+
+nit: There is no need to cast the return value of vzalloc()
+
+	oq->buff_info = vzalloc(oq->max_count * OCTEP_VF_OQ_RECVBUF_SIZE);
+
+> +	if (unlikely(!oq->buff_info)) {
+> +		dev_err(&oct->pdev->dev,
+> +			"Failed to allocate buffer info for OQ-%d\n", q_no);
+> +		goto buf_list_err;
+> +	}
+> +
+> +	if (octep_vf_oq_fill_ring_buffers(oq))
+> +		goto oq_fill_buff_err;
+> +
+> +	octep_vf_oq_reset_indices(oq);
+> +	oct->hw_ops.setup_oq_regs(oct, q_no);
+> +	oct->num_oqs++;
+> +
+> +	return 0;
+> +
+> +oq_fill_buff_err:
+> +	vfree(oq->buff_info);
+> +	oq->buff_info = NULL;
+> +buf_list_err:
+> +	dma_free_coherent(oq->dev, desc_ring_size,
+> +			  oq->desc_ring, oq->desc_ring_dma);
+> +	oq->desc_ring = NULL;
+> +desc_dma_alloc_err:
+> +	vfree(oq);
+> +	oct->oq[q_no] = NULL;
+> +create_oq_fail:
+> +	return -1;
+> +}
+
+...
+
+> +/**
+> + * octep_vf_free_iq() - Free Tx queue resources.
+> + *
+> + * @iq: Octeon Tx queue data structure.
+> + *
+> + * Free all the resources allocated for a Tx queue.
+> + */
+> +static void octep_vf_free_iq(struct octep_vf_iq *iq)
+> +{
+> +	struct octep_vf_device *oct = iq->octep_vf_dev;
+> +	u64 desc_ring_size, sglist_size;
+> +	int q_no = iq->q_no;
+> +
+> +	desc_ring_size = OCTEP_VF_IQ_DESC_SIZE * CFG_GET_IQ_NUM_DESC(oct->conf);
+> +
+> +	if (iq->buff_info)
+> +		vfree(iq->buff_info);
+
+nit: vfree can handle a NULL argument, so  there is no need to protect it
+     with a if condition
+
+> +
+> +	if (iq->desc_ring)
+> +		dma_free_coherent(iq->dev, desc_ring_size,
+> +				  iq->desc_ring, iq->desc_ring_dma);
+> +
+> +	sglist_size = OCTEP_VF_SGLIST_SIZE_PER_PKT *
+> +		      CFG_GET_IQ_NUM_DESC(oct->conf);
+> +	if (iq->sglist)
+> +		dma_free_coherent(iq->dev, sglist_size,
+> +				  iq->sglist, iq->sglist_dma);
+> +
+> +	vfree(iq);
+> +	oct->iq[q_no] = NULL;
+> +	oct->num_iqs--;
+>  }
+
+...
 
