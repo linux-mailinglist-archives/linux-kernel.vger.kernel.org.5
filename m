@@ -1,222 +1,458 @@
-Return-Path: <linux-kernel+bounces-9401-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9402-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A2DD81C506
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 07:25:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C9D5B81C508
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 07:26:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6D48C1F25558
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 06:25:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 812692866E5
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 06:26:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 587B379D4;
-	Fri, 22 Dec 2023 06:25:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1C17B65B;
+	Fri, 22 Dec 2023 06:26:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EZ4L/qUY"
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="Ha0xCEu3"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3F4E6FBC
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 06:25:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64F22C433C8;
-	Fri, 22 Dec 2023 06:25:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703226349;
-	bh=Jx2LL9VBtn7EevKYNjfg9tbjditIKurBb4A4cGkVspA=;
-	h=From:Date:Subject:To:Cc:From;
-	b=EZ4L/qUYdprfHbJoQZRCR24HRA73UxZyM04nbiV0MwPPACXOlRk+noH0bnkYTGFEu
-	 aJjKpjm7vAsibAks0LYcZAKROonVVgLcfGqJk/BgMT0P3tu/mKjz5dZDMSA9i+1HIv
-	 IivYWjzxgQdeXK/USykiZeGbm/4dK3CV4iEp4zWEZa3jdvniszsVEQZB9rxSa8vW0F
-	 lMDgm/0uRF36MWMZWoxwj9xC9TZ8+jnwRT+zRzKGTqgixXtEkwFdVeucx4+cUKIeWU
-	 ygQVGyy2RSrSvtADiI5dCYEx7KVEfboVTVd6Q7v9skpAec3ltil0W0GqUzT9eb8b+c
-	 ufTIrxVr+pE6w==
-From: Chris Li <chrisl@kernel.org>
-Date: Thu, 21 Dec 2023 22:25:39 -0800
-Subject: [PATCH] mm: swap: async free swap slot cache entries
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B2409468;
+	Fri, 22 Dec 2023 06:26:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63446C433C7;
+	Fri, 22 Dec 2023 06:26:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+	s=korg; t=1703226366;
+	bh=RcsFW1L2WrpJyYwQYLw00Ia10eHMAhJtzWgVW/ZE2EY=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=Ha0xCEu3Fh1I2oApz9I+MyAz5Gk7OMFZjsCV2IZnqwQx3ubfkKhKFQiHfFp5Zfm6G
+	 QVQwM/ORAIbFM/94hwStez9jWsVKVj+Q2KgpktnaLMz38mXITmFoHfSikHPF2Ibv9g
+	 WSqBdaI7lmGaJfZQtFSdvo/axxVCSML3njwcQbuQ=
+Date: Thu, 21 Dec 2023 22:26:05 -0800
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Arnd Bergmann <arnd@arndb.de>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>, David Miller <davem@davemloft.net>
+Subject: Re: linux-next: build failure after merge of the mm tree
+Message-Id: <20231221222605.7295cd886dd551b9bf95d4e9@linux-foundation.org>
+In-Reply-To: <20231222111649.7802e7d7@canb.auug.org.au>
+References: <20231127144418.54daad5d@canb.auug.org.au>
+	<20231222111649.7802e7d7@canb.auug.org.au>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20231221-async-free-v1-1-94b277992cb0@kernel.org>
-X-B4-Tracking: v=1; b=H4sIAOIrhWUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDI2NDI0Mz3cTiyrxk3bSi1FTdpNQ0Y0sjA0NTE2MjJaCGgqLUtMwKsGHRsbW
- 1AKOxhW1cAAAA
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
- =?utf-8?q?Wei_Xu=EF=BF=BC?= <weixugc@google.com>, 
- =?utf-8?q?Yu_Zhao=EF=BF=BC?= <yuzhao@google.com>, 
- Greg Thelen <gthelen@google.com>, Chun-Tse Shao <ctshao@google.com>, 
- =?utf-8?q?Suren_Baghdasaryan=EF=BF=BC?= <surenb@google.com>, 
- =?utf-8?q?Yosry_Ahmed=EF=BF=BC?= <yosryahmed@google.com>, 
- Brain Geffon <bgeffon@google.com>, Minchan Kim <minchan@kernel.org>, 
- Michal Hocko <mhocko@suse.com>, Mel Gorman <mgorman@techsingularity.net>, 
- Huang Ying <ying.huang@intel.com>, Nhat Pham <nphamcs@gmail.com>, 
- Johannes Weiner <hannes@cmpxchg.org>, Kairui Song <kasong@tencent.com>, 
- Zhongkun He <hezhongkun.hzk@bytedance.com>, 
- Kemeng Shi <shikemeng@huaweicloud.com>, Barry Song <v-songbaohua@oppo.com>, 
- Chris Li <chrisl@kernel.org>
-X-Mailer: b4 0.12.3
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-We discovered that 1% swap page fault is 100us+ while 50% of
-the swap fault is under 20us.
+On Fri, 22 Dec 2023 11:16:49 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
 
-Further investigation show that a large portion of the time
-spent in the free_swap_slots() function for the long tail case.
+> Hi all,
+> 
+> On Mon, 27 Nov 2023 14:44:18 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> >
+> > After merging the mm tree, today's linux-next build (sparc64 defconfig)
+> > failed like this:
+> > 
+> > arch/sparc/vdso/vclock_gettime.c:254:1: warning: no previous prototype for '__vdso_clock_gettime' [-Wmissing-prototypes]
+> >   254 | __vdso_clock_gettime(clockid_t clock, struct __kernel_old_timespec *ts)
+> > 
+>
+> ...
+>
+> > So I turned off -Werrror in the lib directory as well which added this:
+> > 
+> > arch/sparc/lib/ucmpdi2.c:5:11: warning: no previous prototype for '__ucmpdi2' [-Wmissing-prototypes]
+> >     5 | word_type __ucmpdi2(unsigned long long a, unsigned long long b)
+> >       |           ^~~~~~~~~
+> 
+> Is anything being done about the above warnings?
 
-The percpu cache of swap slots is freed in a batch of 64 entries
-inside free_swap_slots(). These cache entries are accumulated
-from previous page faults, which may not be related to the current
-process.
+OK, here's sparc64.  I'll do sparc32 in a bit.
 
-Doing the batch free in the page fault handler causes longer
-tail latencies and penalizes the current process.
 
-Move free_swap_slots() outside of the swapin page fault handler into an
-async work queue to avoid such long tail latencies.
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: sparc64: fix up fallout from enabling -Wmissing-prototypes
+Date: Thu Dec 21 04:33:25 PM PST 2023
 
-Testing:
+Fix sparc64 allmodconfig build errors caused by enabling
+-Wmissing-prototypes.
 
-Chun-Tse did some benchmark in chromebook, showing that
-zram_wait_metrics improve about 15% with 80% and 95% confidence.
+- Symbols only used from assembly were given local prototypes
 
-I recently ran some experiments on about 1000 Google production
-machines. It shows swapin latency drops in the long tail
-100us - 500us bucket dramatically.
+- A couple of missing inclusions were added
 
-platform	(100-500us)	 	(0-100us)
-A		1.12% -> 0.36%		98.47% -> 99.22%
-B		0.65% -> 0.15%		98.96% -> 99.46%
-C		0.61% -> 0.23%		98.96% -> 99.38%
+- Define some functions to be static
 
-Signed-off-by: Chris Li <chrisl@kernel.org>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org
-Cc: linux-mm@kvack.org
-Cc: Wei Xu￼ <weixugc@google.com>
-Cc: Yu Zhao￼ <yuzhao@google.com>
-Cc: Greg Thelen <gthelen@google.com>
-Cc: Chun-Tse Shao <ctshao@google.com>
-Cc: Suren Baghdasaryan￼ <surenb@google.com>
-Cc: Yosry Ahmed￼ <yosryahmed@google.com>
-Cc: Brain Geffon <bgeffon@google.com>
-Cc: Minchan Kim <minchan@kernel.org>
-Cc: Michal Hocko <mhocko@suse.com>
-Cc: Mel Gorman <mgorman@techsingularity.net>
-Cc: Huang Ying <ying.huang@intel.com>
-Cc: Nhat Pham <nphamcs@gmail.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Kairui Song <kasong@tencent.com>
-Cc: Zhongkun He <hezhongkun.hzk@bytedance.com>
-Cc: Kemeng Shi <shikemeng@huaweicloud.com>
-Cc: Barry Song <v-songbaohua@oppo.com>
+- vmemmap_free() is only needed if CONFIG_MEMORY_HOTPLUG
+
+- add new arch/sparc/include/asm/irq_work.h for arch_irq_work_raise()
+
+- move prom_cif_init() prototype to header, fix longstanding
+  prom_cif_init() borkage.
+
+- various function declarations were moved from .c into shared .h
+
+Fixes: c6345dfa6e3e ("Makefile.extrawarn: turn on missing-prototypes globally")
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: "David S. Miller" <davem@davemloft.net>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
- include/linux/swap_slots.h |  1 +
- mm/swap_slots.c            | 37 +++++++++++++++++++++++++++++--------
- 2 files changed, 30 insertions(+), 8 deletions(-)
 
-diff --git a/include/linux/swap_slots.h b/include/linux/swap_slots.h
-index 15adfb8c813a..67bc8fa30d63 100644
---- a/include/linux/swap_slots.h
-+++ b/include/linux/swap_slots.h
-@@ -19,6 +19,7 @@ struct swap_slots_cache {
- 	spinlock_t	free_lock;  /* protects slots_ret, n_ret */
- 	swp_entry_t	*slots_ret;
- 	int		n_ret;
-+	struct work_struct async_free;
+ arch/sparc/include/asm/floppy_64.h |    4 +++-
+ arch/sparc/include/asm/irq_work.h  |   10 ++++++++++
+ arch/sparc/include/asm/openprom.h  |    2 ++
+ arch/sparc/kernel/adi_64.c         |    6 +++---
+ arch/sparc/kernel/asm-offsets.c    |    4 +++-
+ arch/sparc/kernel/pci_sun4v.c      |    2 +-
+ arch/sparc/kernel/setup_64.c       |    2 +-
+ arch/sparc/kernel/time_64.c        |    2 ++
+ arch/sparc/kernel/traps_64.c       |    7 ++++---
+ arch/sparc/kernel/uprobes.c        |    1 +
+ arch/sparc/mm/init_64.c            |    2 ++
+ arch/sparc/power/hibernate.c       |    1 +
+ arch/sparc/prom/init_64.c          |    2 --
+ arch/sparc/prom/misc_64.c          |    2 +-
+ arch/sparc/prom/p1275.c            |    2 +-
+ arch/sparc/vdso/vclock_gettime.c   |   10 ++++++++++
+ arch/sparc/vdso/vma.c              |    2 +-
+ drivers/mtd/maps/sun_uflash.c      |    2 +-
+ drivers/sbus/char/bbc_i2c.c        |    3 ---
+ drivers/sbus/char/bbc_i2c.h        |    3 +++
+ 20 files changed, 50 insertions(+), 19 deletions(-)
+
+--- a/arch/sparc/vdso/vclock_gettime.c~arch-sparc-fix-up-fallout-from-enabling-wmissing-prototypes
++++ a/arch/sparc/vdso/vclock_gettime.c
+@@ -250,6 +250,8 @@ notrace static int do_monotonic_coarse(s
+ 	return 0;
+ }
+ 
++int __vdso_clock_gettime(clockid_t clock, struct __kernel_old_timespec *ts);
++
+ notrace int
+ __vdso_clock_gettime(clockid_t clock, struct __kernel_old_timespec *ts)
+ {
+@@ -278,6 +280,9 @@ int
+ clock_gettime(clockid_t, struct __kernel_old_timespec *)
+ 	__attribute__((weak, alias("__vdso_clock_gettime")));
+ 
++int
++__vdso_clock_gettime_stick(clockid_t clock, struct __kernel_old_timespec *ts);
++
+ notrace int
+ __vdso_clock_gettime_stick(clockid_t clock, struct __kernel_old_timespec *ts)
+ {
+@@ -303,6 +308,8 @@ __vdso_clock_gettime_stick(clockid_t clo
+ 	return vdso_fallback_gettime(clock, ts);
+ }
+ 
++int __vdso_gettimeofday(struct __kernel_old_timeval *tv, struct timezone *tz);
++
+ notrace int
+ __vdso_gettimeofday(struct __kernel_old_timeval *tv, struct timezone *tz)
+ {
+@@ -339,6 +346,9 @@ int
+ gettimeofday(struct __kernel_old_timeval *, struct timezone *)
+ 	__attribute__((weak, alias("__vdso_gettimeofday")));
+ 
++int
++__vdso_gettimeofday_stick(struct __kernel_old_timeval *tv, struct timezone *tz);
++
+ notrace int
+ __vdso_gettimeofday_stick(struct __kernel_old_timeval *tv, struct timezone *tz)
+ {
+--- a/arch/sparc/kernel/asm-offsets.c~arch-sparc-fix-up-fallout-from-enabling-wmissing-prototypes
++++ a/arch/sparc/kernel/asm-offsets.c
+@@ -19,6 +19,7 @@
+ #include <asm/hibernate.h>
+ 
+ #ifdef CONFIG_SPARC32
++int sparc32_foo(void);
+ int sparc32_foo(void)
+ {
+ 	DEFINE(AOFF_thread_fork_kpsr,
+@@ -26,6 +27,7 @@ int sparc32_foo(void)
+ 	return 0;
+ }
+ #else
++int sparc64_foo(void);
+ int sparc64_foo(void)
+ {
+ #ifdef CONFIG_HIBERNATION
+@@ -45,6 +47,7 @@ int sparc64_foo(void)
+ }
+ #endif
+ 
++int foo(void);
+ int foo(void)
+ {
+ 	BLANK();
+@@ -57,4 +60,3 @@ int foo(void)
+ 	/* DEFINE(NUM_USER_SEGMENTS, TASK_SIZE>>28); */
+ 	return 0;
+ }
+-
+--- a/arch/sparc/prom/misc_64.c~arch-sparc-fix-up-fallout-from-enabling-wmissing-prototypes
++++ a/arch/sparc/prom/misc_64.c
+@@ -162,7 +162,7 @@ unsigned char prom_get_idprom(char *idbu
+ 	return 0xff;
+ }
+ 
+-int prom_get_mmu_ihandle(void)
++static int prom_get_mmu_ihandle(void)
+ {
+ 	phandle node;
+ 	int ret;
+--- a/arch/sparc/kernel/traps_64.c~arch-sparc-fix-up-fallout-from-enabling-wmissing-prototypes
++++ a/arch/sparc/kernel/traps_64.c
+@@ -22,6 +22,7 @@
+ #include <linux/kdebug.h>
+ #include <linux/ftrace.h>
+ #include <linux/reboot.h>
++#include <linux/cpu.h>
+ #include <linux/gfp.h>
+ #include <linux/context_tracking.h>
+ 
+@@ -249,7 +250,7 @@ void sun4v_insn_access_exception_tl1(str
+ 	sun4v_insn_access_exception(regs, addr, type_ctx);
+ }
+ 
+-bool is_no_fault_exception(struct pt_regs *regs)
++static bool is_no_fault_exception(struct pt_regs *regs)
+ {
+ 	unsigned char asi;
+ 	u32 insn;
+@@ -2031,7 +2032,7 @@ static void sun4v_log_error(struct pt_re
+ /* Handle memory corruption detected error which is vectored in
+  * through resumable error trap.
+  */
+-void do_mcd_err(struct pt_regs *regs, struct sun4v_error_entry ent)
++static void do_mcd_err(struct pt_regs *regs, struct sun4v_error_entry ent)
+ {
+ 	if (notify_die(DIE_TRAP, "MCD error", regs, 0, 0x34,
+ 		       SIGSEGV) == NOTIFY_STOP)
+@@ -2149,7 +2150,7 @@ static unsigned long sun4v_get_vaddr(str
+ /* Attempt to handle non-resumable errors generated from userspace.
+  * Returns true if the signal was handled, false otherwise.
+  */
+-bool sun4v_nonresum_error_user_handled(struct pt_regs *regs,
++static bool sun4v_nonresum_error_user_handled(struct pt_regs *regs,
+ 				  struct sun4v_error_entry *ent) {
+ 
+ 	unsigned int attrs = ent->err_attrs;
+--- a/arch/sparc/mm/init_64.c~arch-sparc-fix-up-fallout-from-enabling-wmissing-prototypes
++++ a/arch/sparc/mm/init_64.c
+@@ -2641,10 +2641,12 @@ int __meminit vmemmap_populate(unsigned
+ 	return 0;
+ }
+ 
++#ifdef CONFIG_MEMORY_HOTPLUG
+ void vmemmap_free(unsigned long start, unsigned long end,
+ 		struct vmem_altmap *altmap)
+ {
+ }
++#endif
+ #endif /* CONFIG_SPARSEMEM_VMEMMAP */
+ 
+ /* These are actually filled in at boot time by sun4{u,v}_pgprot_init() */
+--- a/arch/sparc/vdso/vma.c~arch-sparc-fix-up-fallout-from-enabling-wmissing-prototypes
++++ a/arch/sparc/vdso/vma.c
+@@ -243,7 +243,7 @@ static int stick_patch(const struct vdso
+  * Allocate pages for the vdso and vvar, and copy in the vdso text from the
+  * kernel image.
+  */
+-int __init init_vdso_image(const struct vdso_image *image,
++static int __init init_vdso_image(const struct vdso_image *image,
+ 			   struct vm_special_mapping *vdso_mapping, bool elf64)
+ {
+ 	int cnpages = (image->size) / PAGE_SIZE;
+--- a/arch/sparc/kernel/setup_64.c~arch-sparc-fix-up-fallout-from-enabling-wmissing-prototypes
++++ a/arch/sparc/kernel/setup_64.c
+@@ -599,7 +599,7 @@ static void __init init_sparc64_elf_hwca
+ 		pause_patch();
+ }
+ 
+-void __init alloc_irqstack_bootmem(void)
++static void __init alloc_irqstack_bootmem(void)
+ {
+ 	unsigned int i, node;
+ 
+--- a/arch/sparc/kernel/time_64.c~arch-sparc-fix-up-fallout-from-enabling-wmissing-prototypes
++++ a/arch/sparc/kernel/time_64.c
+@@ -35,6 +35,8 @@
+ #include <linux/platform_device.h>
+ #include <linux/ftrace.h>
+ 
++#include <linux/sched/clock.h>
++
+ #include <asm/oplib.h>
+ #include <asm/timer.h>
+ #include <asm/irq.h>
+--- a/arch/sparc/power/hibernate.c~arch-sparc-fix-up-fallout-from-enabling-wmissing-prototypes
++++ a/arch/sparc/power/hibernate.c
+@@ -6,6 +6,7 @@
+  */
+ 
+ #include <linux/mm.h>
++#include <linux/suspend.h>
+ 
+ #include <asm/hibernate.h>
+ #include <asm/visasm.h>
+--- a/arch/sparc/kernel/adi_64.c~arch-sparc-fix-up-fallout-from-enabling-wmissing-prototypes
++++ a/arch/sparc/kernel/adi_64.c
+@@ -121,7 +121,7 @@ adi_not_found:
+ 		mdesc_release(hp);
+ }
+ 
+-tag_storage_desc_t *find_tag_store(struct mm_struct *mm,
++static tag_storage_desc_t *find_tag_store(struct mm_struct *mm,
+ 				   struct vm_area_struct *vma,
+ 				   unsigned long addr)
+ {
+@@ -153,7 +153,7 @@ tag_storage_desc_t *find_tag_store(struc
+ 	return tag_desc;
+ }
+ 
+-tag_storage_desc_t *alloc_tag_store(struct mm_struct *mm,
++static tag_storage_desc_t *alloc_tag_store(struct mm_struct *mm,
+ 				    struct vm_area_struct *vma,
+ 				    unsigned long addr)
+ {
+@@ -296,7 +296,7 @@ out:
+ 	return tag_desc;
+ }
+ 
+-void del_tag_store(tag_storage_desc_t *tag_desc, struct mm_struct *mm)
++static void del_tag_store(tag_storage_desc_t *tag_desc, struct mm_struct *mm)
+ {
+ 	unsigned long flags;
+ 	unsigned char *tags = NULL;
+--- /dev/null
++++ a/arch/sparc/include/asm/irq_work.h
+@@ -0,0 +1,10 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++
++#ifndef __ASM_SPARC_IRQ_WORK_H
++#define __ASM_SPARC_IRQ_WORK_H
++
++#include <asm-generic/irq_work.h>
++
++extern void arch_irq_work_raise(void);
++
++#endif /* __ASM_SPARC_IRQ_WORK_H */
+--- a/arch/sparc/include/asm/floppy_64.h~arch-sparc-fix-up-fallout-from-enabling-wmissing-prototypes
++++ a/arch/sparc/include/asm/floppy_64.h
+@@ -197,6 +197,7 @@ static void sun_fd_enable_dma(void)
+ 	pdma_areasize = pdma_size;
+ }
+ 
++irqreturn_t sparc_floppy_irq(int irq, void *dev_cookie);
+ irqreturn_t sparc_floppy_irq(int irq, void *dev_cookie)
+ {
+ 	if (likely(doing_pdma)) {
+@@ -434,7 +435,8 @@ static int sun_pci_fd_eject(int drive)
+ 	return -EINVAL;
+ }
+ 
+-void sun_pci_fd_dma_callback(struct ebus_dma_info *p, int event, void *cookie)
++static void
++sun_pci_fd_dma_callback(struct ebus_dma_info *p, int event, void *cookie)
+ {
+ 	floppy_interrupt(0, NULL);
+ }
+--- a/arch/sparc/prom/init_64.c~arch-sparc-fix-up-fallout-from-enabling-wmissing-prototypes
++++ a/arch/sparc/prom/init_64.c
+@@ -27,8 +27,6 @@ phandle prom_chosen_node;
+  * It gets passed the pointer to the PROM vector.
+  */
+ 
+-extern void prom_cif_init(void *);
+-
+ void __init prom_init(void *cif_handler)
+ {
+ 	phandle node;
+--- a/arch/sparc/prom/p1275.c~arch-sparc-fix-up-fallout-from-enabling-wmissing-prototypes
++++ a/arch/sparc/prom/p1275.c
+@@ -49,7 +49,7 @@ void p1275_cmd_direct(unsigned long *arg
+ 	local_irq_restore(flags);
+ }
+ 
+-void prom_cif_init(void *cif_handler, void *cif_stack)
++void prom_cif_init(void *cif_handler)
+ {
+ 	p1275buf.prom_cif_handler = (void (*)(long *))cif_handler;
+ }
+--- a/arch/sparc/include/asm/openprom.h~arch-sparc-fix-up-fallout-from-enabling-wmissing-prototypes
++++ a/arch/sparc/include/asm/openprom.h
+@@ -275,6 +275,8 @@ struct linux_prom_pci_intmask {
+ 	unsigned int interrupt;
  };
  
- void disable_swap_slots_cache_lock(void);
-diff --git a/mm/swap_slots.c b/mm/swap_slots.c
-index 0bec1f705f8e..a3b306550732 100644
---- a/mm/swap_slots.c
-+++ b/mm/swap_slots.c
-@@ -42,8 +42,10 @@ static bool	swap_slot_cache_initialized;
- static DEFINE_MUTEX(swap_slots_cache_mutex);
- /* Serialize swap slots cache enable/disable operations */
- static DEFINE_MUTEX(swap_slots_cache_enable_mutex);
-+static struct workqueue_struct *swap_free_queue;
++extern void prom_cif_init(void *cif_handler);
++
+ #endif /* !(__ASSEMBLY__) */
  
- static void __drain_swap_slots_cache(unsigned int type);
-+static void swapcache_async_free_entries(struct work_struct *data);
- 
- #define use_swap_slot_cache (swap_slot_cache_active && swap_slot_cache_enabled)
- #define SLOTS_CACHE 0x1
-@@ -149,6 +151,7 @@ static int alloc_swap_slot_cache(unsigned int cpu)
- 		spin_lock_init(&cache->free_lock);
- 		cache->lock_initialized = true;
- 	}
-+	INIT_WORK(&cache->async_free, swapcache_async_free_entries);
- 	cache->nr = 0;
- 	cache->cur = 0;
- 	cache->n_ret = 0;
-@@ -269,6 +272,20 @@ static int refill_swap_slots_cache(struct swap_slots_cache *cache)
- 	return cache->nr;
+ #endif /* !(__SPARC_OPENPROM_H) */
+--- a/arch/sparc/kernel/pci_sun4v.c~arch-sparc-fix-up-fallout-from-enabling-wmissing-prototypes
++++ a/arch/sparc/kernel/pci_sun4v.c
+@@ -256,7 +256,7 @@ range_alloc_fail:
+ 	return NULL;
  }
  
-+static void swapcache_async_free_entries(struct work_struct *data)
-+{
-+	struct swap_slots_cache *cache;
-+
-+	cache = container_of(data, struct swap_slots_cache, async_free);
-+	spin_lock_irq(&cache->free_lock);
-+	/* Swap slots cache may be deactivated before acquiring lock */
-+	if (cache->slots_ret) {
-+		swapcache_free_entries(cache->slots_ret, cache->n_ret);
-+		cache->n_ret = 0;
-+	}
-+	spin_unlock_irq(&cache->free_lock);
-+}
-+
- void free_swap_slot(swp_entry_t entry)
+-unsigned long dma_4v_iotsb_bind(unsigned long devhandle,
++static unsigned long dma_4v_iotsb_bind(unsigned long devhandle,
+ 				unsigned long iotsb_num,
+ 				struct pci_bus *bus_dev)
  {
- 	struct swap_slots_cache *cache;
-@@ -282,17 +299,14 @@ void free_swap_slot(swp_entry_t entry)
- 			goto direct_free;
- 		}
- 		if (cache->n_ret >= SWAP_SLOTS_CACHE_SIZE) {
--			/*
--			 * Return slots to global pool.
--			 * The current swap_map value is SWAP_HAS_CACHE.
--			 * Set it to 0 to indicate it is available for
--			 * allocation in global pool
--			 */
--			swapcache_free_entries(cache->slots_ret, cache->n_ret);
--			cache->n_ret = 0;
-+			spin_unlock_irq(&cache->free_lock);
-+			queue_work(swap_free_queue, &cache->async_free);
-+			goto direct_free;
- 		}
- 		cache->slots_ret[cache->n_ret++] = entry;
- 		spin_unlock_irq(&cache->free_lock);
-+		if (cache->n_ret >= SWAP_SLOTS_CACHE_SIZE)
-+			queue_work(swap_free_queue, &cache->async_free);
- 	} else {
- direct_free:
- 		swapcache_free_entries(&entry, 1);
-@@ -348,3 +362,10 @@ swp_entry_t folio_alloc_swap(struct folio *folio)
- 	}
- 	return entry;
+--- a/arch/sparc/kernel/uprobes.c~arch-sparc-fix-up-fallout-from-enabling-wmissing-prototypes
++++ a/arch/sparc/kernel/uprobes.c
+@@ -234,6 +234,7 @@ int arch_uprobe_post_xol(struct arch_upr
+ /* Handler for uprobe traps.  This is called from the traps table and
+  * triggers the proper die notification.
+  */
++void uprobe_trap(struct pt_regs *regs, unsigned long trap_level);
+ asmlinkage void uprobe_trap(struct pt_regs *regs,
+ 			    unsigned long trap_level)
+ {
+--- a/drivers/sbus/char/bbc_i2c.c~arch-sparc-fix-up-fallout-from-enabling-wmissing-prototypes
++++ a/drivers/sbus/char/bbc_i2c.c
+@@ -358,9 +358,6 @@ fail:
+ 	return NULL;
  }
+ 
+-extern int bbc_envctrl_init(struct bbc_i2c_bus *bp);
+-extern void bbc_envctrl_cleanup(struct bbc_i2c_bus *bp);
+-
+ static int bbc_i2c_probe(struct platform_device *op)
+ {
+ 	struct bbc_i2c_bus *bp;
+--- a/drivers/sbus/char/bbc_i2c.h~arch-sparc-fix-up-fallout-from-enabling-wmissing-prototypes
++++ a/drivers/sbus/char/bbc_i2c.h
+@@ -82,4 +82,7 @@ extern int bbc_i2c_readb(struct bbc_i2c_
+ extern int bbc_i2c_write_buf(struct bbc_i2c_client *, char *buf, int len, int off);
+ extern int bbc_i2c_read_buf(struct bbc_i2c_client *, char *buf, int len, int off);
+ 
++extern int bbc_envctrl_init(struct bbc_i2c_bus *bp);
++extern void bbc_envctrl_cleanup(struct bbc_i2c_bus *bp);
 +
-+static int __init async_queue_init(void)
-+{
-+	swap_free_queue = create_workqueue("async swap cache");
-+	return 0;
-+}
-+subsys_initcall(async_queue_init);
-
----
-base-commit: eacce8189e28717da6f44ee492b7404c636ae0de
-change-id: 20231216-async-free-bef392015432
-
-Best regards,
--- 
-Chris Li <chrisl@kernel.org>
+ #endif /* _BBC_I2C_H */
+--- a/drivers/mtd/maps/sun_uflash.c~arch-sparc-fix-up-fallout-from-enabling-wmissing-prototypes
++++ a/drivers/mtd/maps/sun_uflash.c
+@@ -47,7 +47,7 @@ struct map_info uflash_map_templ = {
+ 	.bankwidth =	UFLASH_BUSWIDTH,
+ };
+ 
+-int uflash_devinit(struct platform_device *op, struct device_node *dp)
++static int uflash_devinit(struct platform_device *op, struct device_node *dp)
+ {
+ 	struct uflash_dev *up;
+ 
+_
 
 
