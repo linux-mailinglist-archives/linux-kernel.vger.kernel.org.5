@@ -1,141 +1,194 @@
-Return-Path: <linux-kernel+bounces-9727-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9728-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A96781CA46
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 13:50:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64E7081CA4C
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 13:52:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4DE501C21289
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 12:50:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1A5121F22DBA
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 12:52:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF9CC199A1;
-	Fri, 22 Dec 2023 12:49:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58F2418644;
+	Fri, 22 Dec 2023 12:52:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LZ+z9xnr"
+	dkim=pass (1024-bit key) header.d=avm.de header.i=@avm.de header.b="wFebiXkN"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.avm.de (mail.avm.de [212.42.244.119])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D644818624;
-	Fri, 22 Dec 2023 12:49:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1d4006b251aso15984595ad.0;
-        Fri, 22 Dec 2023 04:49:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703249353; x=1703854153; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=X8zZt4WN4jUldW1IhbtAqlFHddSRBTBboS3+40U4jk4=;
-        b=LZ+z9xnrqytr7i8Kby9aZm5nCNIcwl4BeNGuguIfACiug5HdMXOcWqBaoPfE7JkHBj
-         34MAa/8CH0Qj8uf0r/R0/zsZ/AarToVJyG3n/o2PqVv/ShGMZWhCo9W2b7Rd7VG0GEbi
-         TUBD0P5kERqWn3R+rPVAtlI0FWnPb6uEnUQwYc2GlqP/Pe80wp81jK+jRgXBU1dOCFFg
-         FmAx1aFYCrYkB+k0zFdpZymRCcYBcuesNIGs9PbTiNw4ST4/4nCqsaRDmhNJCA/2gSJH
-         srfyjXmtCrgGA/RIYDaMub3lPAxu7TMK6U6LPnqcWqvcKV8IUr20FhQxW7uok3kILjLl
-         1Mrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703249353; x=1703854153;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=X8zZt4WN4jUldW1IhbtAqlFHddSRBTBboS3+40U4jk4=;
-        b=kt+d4y3fjQOzwi5SxpX786DBb1D48/E0yOlTgDsr90c3O7uvzHwB9HyBEjrP/ia0XM
-         3hbkZMgLTV1Xr47daP11rH16x1ebUpAw5VJLbRVPsP0GStaePyczEPvliVK00FAbAdfI
-         hxsE13vUv/g82zZx/RRR0/4mnxD4PUlgar2LOUwWXLAWFC2hdonCJGDMxqFYCiEqLViq
-         cf9Wk5jjfTpZ6TUEANBbko7wfedxnAsw26NXLcmCX5upti26fIGXaofhv2IqNanehpUz
-         pcarNAR+pc8vzZ+x7KdS28fV8Xi7fiUMMqG8aMIGQVbFY7MMaN0Mk7Em6DHq4RWQ73FK
-         PkWA==
-X-Gm-Message-State: AOJu0YwlB+uOc2dm7Nm7RcU+L51SjMVvybddW0X53CUfpI0rHuWcbgXl
-	4+DHOqIfJHsUkPTLun2cKok=
-X-Google-Smtp-Source: AGHT+IFShtK0BHRAkNgoyW6+jDiOQcTsJ4kBSQ80gkb0zqFcsvjyhatz11/c7kJJsY3p9mi5iVZrAw==
-X-Received: by 2002:a17:902:784c:b0:1d0:69dc:954e with SMTP id e12-20020a170902784c00b001d069dc954emr1122024pln.24.1703249353031;
-        Fri, 22 Dec 2023 04:49:13 -0800 (PST)
-Received: from localhost ([2804:30c:160d:b800:be05:2c5b:24c0:12aa])
-        by smtp.gmail.com with ESMTPSA id jk15-20020a170903330f00b001d1c96a0c63sm3388448plb.274.2023.12.22.04.49.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Dec 2023 04:49:12 -0800 (PST)
-Date: Fri, 22 Dec 2023 09:49:05 -0300
-From: Marcelo Schmitt <marcelo.schmitt1@gmail.com>
-To: Jonathan Cameron <jic23@kernel.org>
-Cc: Marcelo Schmitt <marcelo.schmitt@analog.com>, apw@canonical.com,
-	joe@perches.com, dwaipayanray1@gmail.com, lukas.bulwahn@gmail.com,
-	paul.cercueil@analog.com, Michael.Hennerich@analog.com,
-	lars@metafoo.de, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	dan.carpenter@linaro.org, dlechner@baylibre.com,
-	linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22A301A58A;
+	Fri, 22 Dec 2023 12:52:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=avm.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=avm.de
+Received: from mail-auth.avm.de (unknown [IPv6:2001:bf0:244:244::71])
+	by mail.avm.de (Postfix) with ESMTPS;
+	Fri, 22 Dec 2023 13:52:16 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=avm.de; s=mail;
+	t=1703249536; bh=YIMXG/DxHkwVA+7xM1G0QeOvCKff0MazCGRcIMJGpXo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=wFebiXkNwgDr3z9Pc/XI7+lvYRKHb6G/jPqqhFTX/zDQrKqE1fXtKYkbLF6MbU1D/
+	 wdXYnvcossQriALIZEgA8nKogjXhUILQV9UgLSVOC0GFBFObUrQMFFd0/FniLen6ag
+	 dKXBGDovQa1oeKe6F5UfHdIWWfgnFDA6xEEtdUaw=
+Received: from buildd.core.avm.de (buildd-sv-01.avm.de [172.16.0.225])
+	by mail-auth.avm.de (Postfix) with ESMTPA id 51BE080530;
+	Fri, 22 Dec 2023 13:52:16 +0100 (CET)
+Received: by buildd.core.avm.de (Postfix, from userid 1000)
+	id 44827180D04; Fri, 22 Dec 2023 13:52:16 +0100 (CET)
+Date: Fri, 22 Dec 2023 13:52:13 +0100
+From: Nicolas Schier <n.schier@avm.de>
+To: Masahiro Yamada <masahiroy@kernel.org>
+Cc: linux-kbuild@vger.kernel.org, Ben Hutchings <ben@decadent.org.uk>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 11/11] MAINTAINERS: Add MAINTAINERS entry for AD7091R
-Message-ID: <ZYWFwVzQN4vU7FdG@debian-BULLSEYE-live-builder-AMD64>
-References: <cover.1703013352.git.marcelo.schmitt1@gmail.com>
- <4247e653354f8eb362264189db24c612d5e4e131.1703013352.git.marcelo.schmitt1@gmail.com>
- <20231221165947.6c64b2c5@jic23-huawei>
+Subject: Re: [PATCH] kbuild: deb-pkg: split debian/copyright
+Message-ID: <ZYWGgOgGpMwqqes9@buildd.core.avm.de>
+Mail-Followup-To: Masahiro Yamada <masahiroy@kernel.org>,
+	linux-kbuild@vger.kernel.org, Ben Hutchings <ben@decadent.org.uk>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	linux-kernel@vger.kernel.org
+References: <20231219154049.1095323-1-masahiroy@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="AV4v1089STg1Gpva"
 Content-Disposition: inline
-In-Reply-To: <20231221165947.6c64b2c5@jic23-huawei>
+In-Reply-To: <20231219154049.1095323-1-masahiroy@kernel.org>
+Organization: AVM GmbH
+X-purgate-ID: 149429::1703249536-E955C5FF-6427EEE6/0/0
+X-purgate-type: clean
+X-purgate-size: 4656
+X-purgate-Ad: Categorized by eleven eXpurgate (R) http://www.eleven.de
+X-purgate: This mail is considered clean (visit http://www.eleven.de for further information)
+X-purgate: clean
 
-On 12/21, Jonathan Cameron wrote:
-> On Tue, 19 Dec 2023 17:32:59 -0300
-> Marcelo Schmitt <marcelo.schmitt@analog.com> wrote:
-> 
-> > The driver for AD7091R was added in
-> > ca693001: iio: adc: Add support for AD7091R5 ADC
-> > but no MAINTAINERS file entry was added for it since then.
-> > Add a proper MAINTAINERS file entry for the AD7091R driver.
-> > 
-> > Signed-off-by: Marcelo Schmitt <marcelo.schmitt@analog.com>
-> Hi Marcelo
-> 
-> The series looks good to me now. However timing is a bit against
-> us because I won't squeeze in another pull request (unless the
-> kernel release is delayed for some and Linus strong hints at that
-> this weekend).
-> 
-> What I'll probably do with this series is pull out the first 2 patches
-> as fixes to go in either at the back end of the merge window or just
-> after, then pick the rest of the patches up for 6.9.
-> 
-> If I seem to have lost track of them in about the 2nd week of January,
-> feel free to poke me. 
-> 
-okay, sounds good.
-Also, will do the change to ABI doc in a separate patch so this set doesn't get
-blocked by the mistakes I will make on the ABI patch. :)
 
-Thanks,
-Marcelo
+--AV4v1089STg1Gpva
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Date: Fri, 22 Dec 2023 13:52:13 +0100
+From: Nicolas Schier <n.schier@avm.de>
+To: Masahiro Yamada <masahiroy@kernel.org>
+Cc: linux-kbuild@vger.kernel.org, Ben Hutchings <ben@decadent.org.uk>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] kbuild: deb-pkg: split debian/copyright
 
-> Jonathan
-> > ---
-> >  MAINTAINERS | 8 ++++++++
-> >  1 file changed, 8 insertions(+)
-> > 
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index 4eddc4212f2b..3473cfbac826 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -1126,6 +1126,14 @@ F:	Documentation/ABI/testing/sysfs-bus-iio-adc-ad4130
-> >  F:	Documentation/devicetree/bindings/iio/adc/adi,ad4130.yaml
-> >  F:	drivers/iio/adc/ad4130.c
-> >  
-> > +ANALOG DEVICES INC AD7091R DRIVER
-> > +M:	Marcelo Schmitt <marcelo.schmitt@analog.com>
-> > +L:	linux-iio@vger.kernel.org
-> > +S:	Supported
-> > +W:	http://ez.analog.com/community/linux-device-drivers
-> > +F:	Documentation/devicetree/bindings/iio/adc/adi,ad7091r*
-> > +F:	drivers/iio/adc/drivers/iio/adc/ad7091r*
-> > +
-> >  ANALOG DEVICES INC AD7192 DRIVER
-> >  M:	Alexandru Tachici <alexandru.tachici@analog.com>
-> >  L:	linux-iio@vger.kernel.org
-> 
+On Wed, Dec 20, 2023 at 12:40:49AM +0900, Masahiro Yamada wrote:
+> Copy debian/copyright instead of generating it by the 'cat' command.
+>=20
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> ---
+
+> Subject: Re: [PATCH] kbuild: deb-pkg: split debian/copyright
+
+With 'split' in the patch summary I had expected something different;
+but cp instead of cat seems quite reasonable.
+
+Reviewed-by: Nicolas Schier <n.schier@avm.de>
+
+
+>=20
+>  scripts/package/debian/copyright | 16 ++++++++++++++++
+>  scripts/package/mkdebian         | 21 +--------------------
+>  2 files changed, 17 insertions(+), 20 deletions(-)
+>  create mode 100644 scripts/package/debian/copyright
+>=20
+> diff --git a/scripts/package/debian/copyright b/scripts/package/debian/co=
+pyright
+> new file mode 100644
+> index 000000000000..388a204b0b2b
+> --- /dev/null
+> +++ b/scripts/package/debian/copyright
+> @@ -0,0 +1,16 @@
+> +This is a packaged upstream version of the Linux kernel.
+> +
+> +The sources may be found at most Linux archive sites, including:
+> +https://www.kernel.org/pub/linux/kernel
+> +
+> +Copyright: 1991 - 2018 Linus Torvalds and others.
+> +
+> +The git repository for mainline kernel development is at:
+> +git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+> +
+> +    This program is free software; you can redistribute it and/or modify
+> +    it under the terms of the GNU General Public License as published by
+> +    the Free Software Foundation; version 2 dated June, 1991.
+> +
+> +On Debian GNU/Linux systems, the complete text of the GNU General Public
+> +License version 2 can be found in `/usr/share/common-licenses/GPL-2'.
+> diff --git a/scripts/package/mkdebian b/scripts/package/mkdebian
+> index c1a36da85e84..91f0e09600b1 100755
+> --- a/scripts/package/mkdebian
+> +++ b/scripts/package/mkdebian
+> @@ -188,26 +188,6 @@ $sourcename ($packageversion) $distribution; urgency=
+=3Dlow
+>   -- $maintainer  $(date -R)
+>  EOF
+> =20
+> -# Generate copyright file
+> -cat <<EOF > debian/copyright
+> -This is a packaged upstream version of the Linux kernel.
+> -
+> -The sources may be found at most Linux archive sites, including:
+> -https://www.kernel.org/pub/linux/kernel
+> -
+> -Copyright: 1991 - 2018 Linus Torvalds and others.
+> -
+> -The git repository for mainline kernel development is at:
+> -git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+> -
+> -    This program is free software; you can redistribute it and/or modify
+> -    it under the terms of the GNU General Public License as published by
+> -    the Free Software Foundation; version 2 dated June, 1991.
+> -
+> -On Debian GNU/Linux systems, the complete text of the GNU General Public
+> -License version 2 can be found in \`/usr/share/common-licenses/GPL-2'.
+> -EOF
+> -
+>  # Generate a control file
+>  cat <<EOF > debian/control
+>  Source: $sourcename
+> @@ -268,6 +248,7 @@ ARCH :=3D ${ARCH}
+>  KERNELRELEASE :=3D ${KERNELRELEASE}
+>  EOF
+> =20
+> +cp "${srctree}/scripts/package/debian/copyright" debian/
+>  cp "${srctree}/scripts/package/debian/rules" debian/
+> =20
+>  exit 0
+> --=20
+> 2.40.1
+>=20
+
+--AV4v1089STg1Gpva
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEDv+Fiet06YHnC6RpiMa8nIiabbgFAmWFhn0ACgkQiMa8nIia
+bbgvrxAAlvytjl9RiaAEPfgwtdCr6X+6cs7sZeyUySjG4gdoiUHedh/gcoQftGqH
+Rwkr/V1CXCetpgwgzYLWdfE+IHTLjiI9MBIOf7KqZX+M8RTYj2D13bhb5ncV75yd
+ruvwlMg9emWAk8n7BDosdVrppBETw77QQ264GuEDYex1txaJq02t7ZuHHH5Hg+L8
+y9OiukBmiOBmY5ZvOITq9AXtq/aRuQ3KZhdyYoivuj1TqngeRtvkVhMzZl/ww+5t
+QW5imJkEQb4XXQn05JRUNLcSS682V/rtLkx2Pvas2mNgNyiFq01LCSHInQuT+Zk4
+ptkRL9JE1FgtX9Ew8ZaE/65FySa7dDlW/zZJNl6WFKbrMXOJCa1SJ0ciGkGghWjv
+fBRGbarWn7pVVEDIU1jNttTOdSbKInwp0uX0tm+N1BSkPHEGRbcfb/MgZeTGVs80
+gSZiPv6E1Nd2ZfaNHs/syMbe9lhBLL6PSWwgCPFVYqTLuNRsT14rcYtfVk4N2BqU
+iXoDd2sYOmqsZn3h8ssQyHNYykCf+l5kkz/cdmxt3+WyQWhbZ3dYEbQLBdLcVfT+
+d7dZDKCg6thGu7N/1iC9J9EipDEHIute6VC2wFFLO91zjqgJYdryY6L54ufg7WvD
+Q4Dfk2iDpvYYnfgQPsnZ5pbaSa12MIfw4o8eUynBh8G2ndf7UcE=
+=77rk
+-----END PGP SIGNATURE-----
+
+--AV4v1089STg1Gpva--
 
