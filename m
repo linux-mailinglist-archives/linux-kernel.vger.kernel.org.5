@@ -1,126 +1,106 @@
-Return-Path: <linux-kernel+bounces-9715-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9716-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A2A4281CA1F
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 13:40:58 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE38381CA21
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 13:41:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 58E2B1F223B1
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 12:40:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1556AB223D6
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 12:41:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 490FD1CF8C;
-	Fri, 22 Dec 2023 12:40:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E32FD1805E;
+	Fri, 22 Dec 2023 12:41:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=flygoat.com header.i=@flygoat.com header.b="hAm6/qYB";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="WISsgU0G"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="cy1EqYpX"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EFC31C6A5;
-	Fri, 22 Dec 2023 12:40:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=flygoat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flygoat.com
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-	by mailout.west.internal (Postfix) with ESMTP id D46313200A7F;
-	Fri, 22 Dec 2023 07:40:42 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Fri, 22 Dec 2023 07:40:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
-	cc:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm3; t=1703248842;
-	 x=1703335242; bh=GO9NK/oMxldoqSl6p4S7Ql47dZzBoFszKsa2cO9zpxk=; b=
-	hAm6/qYBG+9uhPArBnEjQ3Zby39vQEi2rZpEs2MvxcBdsoQ8Hp/CPw2mgHoGULL8
-	gvhtLRiC7qQv8FmDS7OXLxPFpnbQpZOL79sVcP404fH5J/HNCRdA89zj4T+GhGcb
-	IPYnD1iWi/r5xpRZ761Wcssb4BEpXd7y5YKXojW32KojVUTbv9vwIwZXUlWbnCD1
-	unxZSoDQGCjS4dFJ2jDm0nqkifYYmdqV1yXE9jRg0Gwj5Qb6I/50XQeDv9g+JcIG
-	yPVgQEtU62ZGn09rI8lXua1AH7ztx0XqGp1aSoJFAKYEjK85x0EU0mipgXLRvSZJ
-	Z+kIYFW/DklJr1fm08mzJg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1703248842; x=
-	1703335242; bh=GO9NK/oMxldoqSl6p4S7Ql47dZzBoFszKsa2cO9zpxk=; b=W
-	ISsgU0Gsk9tA1y1Jl7dOOgHl/8Mba0+Qml036Mf3DqQSpr0s5n972bhPWBtC77vz
-	CGmU6Z7n2F/q2LbZft4j8vu7c8gAjxS6wtCyM5i8slUjsdFoSVXEwv9+4urPlF79
-	If4FvOR/D2zl2zj3vJ/tFk/kjIdwiEzvZxKLNkiBmMLW/nsm7X9iNcHdscye/oYT
-	SFn3KQNCVrFutBAfWVPGUAe3UOXfQHvlSAV9LF0O5b5uxXStdN6UuriaTPNLwoB4
-	jnZWD7Yg9q8C2CDfaAWp1F+yC/K4GT83irSUNyQ+9XdA5es1kId1fvUuVCo/BQad
-	WiJ6ae5n3dKhIT/2cuUCw==
-X-ME-Sender: <xms:yoOFZSfdR0F_IP3LBTV_kuwFOmFVfRXWPCz-z_nEIqSftywPZItaMQ>
-    <xme:yoOFZcNPNFabivgRxh1jAsCXd7XlH0j9AovPzxZdXkBhz_1sXS-9sqIjd6uRb8I-V
-    8RtgSvQuKmQQJ7x4IE>
-X-ME-Received: <xmr:yoOFZTiAE03A-kV5Arx9phjxMR2osc8xwY9Y2szHTqPIbwEkZpymISyAFR3A2qKEGbjDWzJXXWaHEo74jFYAp6jc2yzWTg0qAHZ1X8I>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvddujedggeduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepkfffgggfuffvvehfhfgjtgfgsehtkeertddtvdejnecuhfhrohhmpeflihgr
-    gihunhcujggrnhhguceojhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomheqne
-    cuggftrfgrthhtvghrnhepleeuffehheegleeuvdelgffhueekjeetueevuefhffdtgfeu
-    hfeggfeukefffedtnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
-    hfrhhomhepjhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomh
-X-ME-Proxy: <xmx:yoOFZf9TA1_w48TCfMk5uSJaW4qfkrmMOEMZiJ2P89V8P3sBCvcUaA>
-    <xmx:yoOFZeuhOT-oqm7u0ETBmrWxK1_QbFfZtm3ketCSFwFz7Hy2NwRIfg>
-    <xmx:yoOFZWGvjUIwpHTG9lYld6lfBcxuUadj2xFbLkFQcxSzN20I7z0COQ>
-    <xmx:yoOFZSJA3hGEO4NDTEau02X31dIOcxAoVzUI3aeGEl4WflBgkXh76g>
-Feedback-ID: ifd894703:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 22 Dec 2023 07:40:41 -0500 (EST)
-Message-ID: <d3a80bd0-6316-42af-a09a-172a026f19a6@flygoat.com>
-Date: Fri, 22 Dec 2023 12:40:39 +0000
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25B8718624;
+	Fri, 22 Dec 2023 12:41:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1703248865; x=1734784865;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=7ZJveX1s7cgliTk+K43ko5ol4fPOQ4lq4WTKaVnm9yM=;
+  b=cy1EqYpXh0BNY2Z+mDv0C5Psx864p6UHoA9Y/3kHPKowy2M47zn020SI
+   O/AbkzDvEH9Eg62h71gCWFD1jGYojjMct+rm2R/dV1dow0N4VyhjSQFD7
+   I+Z4EsLKSHT+5PVYMK2aWLXs+q5i2PpzokRMAdbo1T/tTr4116TRArknO
+   Ty9XoCXXBI7Ux9+v6Ui2qWtJxXK76nuKdQD8XJXTTq2WNz1Lj9fIa57+T
+   qmolHMiHQIHSFiNjW+oz0MWXGPigdsuaJdkHClN2DqfzGuCEy87HlnwNV
+   0aPMr0t0WRtbDlS4ky7cUM78bmBdIoYyKedrPntAFYm0OPpF4EYpDIvWC
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10931"; a="3196494"
+X-IronPort-AV: E=Sophos;i="6.04,296,1695711600"; 
+   d="scan'208";a="3196494"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Dec 2023 04:41:04 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10931"; a="950265804"
+X-IronPort-AV: E=Sophos;i="6.04,296,1695711600"; 
+   d="scan'208";a="950265804"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga005.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Dec 2023 04:41:02 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rGepo-0000000891T-0eik;
+	Fri, 22 Dec 2023 14:41:00 +0200
+Date: Fri, 22 Dec 2023 14:40:59 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Kent Gibson <warthog618@gmail.com>,
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH v1 1/1] gpiolib: cdev: Split line_get_debounce_period()
+ and use
+Message-ID: <ZYWD26B-xQqiDOD2@smile.fi.intel.com>
+References: <20231221175527.2814506-1-andriy.shevchenko@linux.intel.com>
+ <ZYTihbWMcHMHSkC_@rigel>
+ <CAMRc=McSXrivkzhJVEh7-+1fzO6EBLMawhxYd7YgcsXW9wBKbA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 05/10] MIPS: Refactor mips_cps_core_entry
- implementation
-Content-Language: en-US
-To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
- gregory.clement@bootlin.com, vladimir.kondratiev@intel.com
-References: <20231027221106.405666-1-jiaxun.yang@flygoat.com>
- <20231027221106.405666-6-jiaxun.yang@flygoat.com>
- <ZYV+jQ5M/Hu2aTgq@alpha.franken.de>
-From: Jiaxun Yang <jiaxun.yang@flygoat.com>
-In-Reply-To: <ZYV+jQ5M/Hu2aTgq@alpha.franken.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMRc=McSXrivkzhJVEh7-+1fzO6EBLMawhxYd7YgcsXW9wBKbA@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
+On Fri, Dec 22, 2023 at 09:58:48AM +0100, Bartosz Golaszewski wrote:
+> On Fri, Dec 22, 2023 at 2:12 AM Kent Gibson <warthog618@gmail.com> wrote:
+> >
+> > On Thu, Dec 21, 2023 at 07:55:27PM +0200, Andy Shevchenko wrote:
+> > > Instead of repeating the same code and reduce possible miss
+> > > of READ_ONCE(), split line_get_debounce_period() heler out
+> > > and use in the existing cases.
+> > >
+> >
+> > helper
+> >
+> >
+> > Not a fan of this change.
+> >
+> 
+> Yeah, sorry but NAK. READ_ONCE() is well known and tells you what the
+> code does. Arbitrary line_get_debounce_period() makes me have to look
+> it up.
 
+We have setter, but not getter. It looks confusing, more over, the setter makes
+much more than just set. Hence another way to solve this is make clear (by
+changing name) that the setter is not _just_ a setter.
 
-在 2023/12/22 12:18, Thomas Bogendoerfer 写道:
-> On Fri, Oct 27, 2023 at 11:11:01PM +0100, Jiaxun Yang wrote:
->> Now the exception vector for CPS systems are allocated on-fly
->> with memblock as well.
->>
->> It will try to allocate from KSEG1 first, and then try to allocate
->> in low 4G if possible.
->>
->> The main reset vector is now generated by uasm, to avoid tons
->> of patches to the code. Other vectors are copied to the location
->> later.
-> this patch does way to many things in one go. What is needed to
-> make a kernel working with an ebase anyware in XPHYS ?
+-- 
+With Best Regards,
+Andy Shevchenko
 
-As we have some silly restrictions on the placement of CPS reset_base, it's
-impossible to put CPS's cluster reset base "anywhere".
-
-You'll have to make entry code in cps-vec.S relocatable to allow it to 
-be moved
-by kernel at run time. Either patching the code or generate by uasm.
-
-Thanks
-- Jiaxun
->
-> Thomas.
->
 
 
