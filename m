@@ -1,57 +1,78 @@
-Return-Path: <linux-kernel+bounces-10007-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10008-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3A9F81CE9A
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 19:58:33 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE1A281CEA3
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 20:03:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E76181C2289F
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 18:58:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 63FE4B242F9
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 19:03:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BEB82C84E;
-	Fri, 22 Dec 2023 18:58:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB2DA2D780;
+	Fri, 22 Dec 2023 19:02:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PKi1pkfJ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MUTOe3So"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90CD32C1BE;
-	Fri, 22 Dec 2023 18:58:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07628C433C8;
-	Fri, 22 Dec 2023 18:58:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703271506;
-	bh=ojFj4kwAD+fP00741+yhDJ358d0D+aSaeo3PKngWKXw=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=PKi1pkfJZS4txHs9uBCXle1G/fMJDgViskQBLiYQ6EouLmp3YjQYjJ4Kh+sgwqJLt
-	 4Kll/J5moHTySTB06G1h5UNDhugy+U9wAeXwzJn4alXjEMe3a0zHtpAC4zj2W5wEF8
-	 v55JZO/o8XjlN9gZimTqjmv2AmxIxZwBKw3wulD/tZczoiSnW6tT9b9WVW98NGBkE/
-	 atN0GVAOo2ryQXgq+py72p177d4otTLhtbazXmZFw97ckXY60XRuQynrE7v+CGm9N7
-	 YPya5dPz3ZY2wygLEBdykQdCb74T6EuRfIwXCvV8AcfGgqUf0uZDdVoK19M6+0cVjd
-	 uL/mu2dsQPLUQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 94DD5CE0F74; Fri, 22 Dec 2023 10:58:25 -0800 (PST)
-Date: Fri, 22 Dec 2023 10:58:25 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Uladzislau Rezki <urezki@gmail.com>
-Cc: RCU <rcu@vger.kernel.org>, Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
-	Boqun Feng <boqun.feng@gmail.com>, Hillf Danton <hdanton@sina.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
-	Frederic Weisbecker <frederic@kernel.org>
-Subject: Re: [PATCH v3 4/7] rcu: Improve handling of synchronize_rcu() users
-Message-ID: <e20058f9-a525-4d65-b22b-7dd9cfec9737@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20231128080033.288050-1-urezki@gmail.com>
- <20231128080033.288050-5-urezki@gmail.com>
- <579f86e0-e03e-4ab3-9a85-a62064bcf2a1@paulmck-laptop>
- <ZYQY8bB3zpywfBxO@pc636>
- <650554ca-17f6-4119-ab4e-42239c958c73@paulmck-laptop>
- <ZYVWjc65LzD8qkdw@pc636>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C5FA2C1AE;
+	Fri, 22 Dec 2023 19:02:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-50e558e16e7so2064076e87.1;
+        Fri, 22 Dec 2023 11:02:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703271772; x=1703876572; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=/WNkEye7dFIS+EDfctJcq2mxRq3d7CRsgYJhjbfmoKo=;
+        b=MUTOe3SouwXWEGAtnMDavX8jq7hGtd1/fVdid09sv8UZHaN8nu80Vrmu0xupSoW04j
+         6KT7biNLvK1EUGnVzmB3BNcLI8SabzNAOBlDcH/K7tGVMjSizHUMEN6q3cOt/5vsxcZH
+         b2Dnu7FrmnDY1VANk3qXfUdqgZyCgtdq90RvSeHnQL/Mo0dp7I1Q6qXd9yV/85kt6a5L
+         aPgmcy6M2UrQ3WpCgZmStQnDnjyRQK/dqrp0EcOLxy6GBZBO+6+cfMGxnputGV4fm4Gq
+         dSH1LrPCZabsqw6mDu5cKLtdExbqW8S6znFekkAE0S6YhlYx4H2EdiSDJGyhjUuTdmyF
+         xJQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703271772; x=1703876572;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/WNkEye7dFIS+EDfctJcq2mxRq3d7CRsgYJhjbfmoKo=;
+        b=GRmZ4o2TIV7M1NjUudAAMzh7h87ZsRklgUoKXwydoSRWWA/y+MougtmKB+lxbdZ/Lz
+         +tzqpy52bWAfwFFFf/as5MN8z7rYirXcdPHJcNVsB8VkH2n64toZU25+tBT+kavpFyGR
+         7WTBOsgVavcFCZ4Q6Crm9BwttH9EbqAxrMn7WGp3rPmJbYAVPL6bH8hAh+18otqrW3yG
+         J8pJAxSIp6J4O9ANEHwvJ8fr8KdgLBfriMfqNmrVLJN1LH+s15xl3F9mfVk4ReqY2ya7
+         KkwEK4pW99fsEUQtui/T7fMa/1deRpNuwiXt4GdT6zRkQBoypSNhtnVAzPQAwykCFLN5
+         Lr4Q==
+X-Gm-Message-State: AOJu0YwfrXR0Cxu4+TqfnVqVhFQXgQJVbMmvIJGOyoylBp3zfYhBrIag
+	V49fFe21o7F11ntlGNiBfB4=
+X-Google-Smtp-Source: AGHT+IGz/FqM2N1Z4rL+rLpRsvL9Un5LXgILvgOSlHba9sLT12TSLmn3JXu/fLGcWUryA565wKYB2g==
+X-Received: by 2002:a19:2d42:0:b0:50e:4b79:b825 with SMTP id t2-20020a192d42000000b0050e4b79b825mr982189lft.20.1703271771959;
+        Fri, 22 Dec 2023 11:02:51 -0800 (PST)
+Received: from mobilestation ([178.176.56.174])
+        by smtp.gmail.com with ESMTPSA id q17-20020ac25fd1000000b0050e3719148fsm608211lfg.235.2023.12.22.11.02.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Dec 2023 11:02:51 -0800 (PST)
+Date: Fri, 22 Dec 2023 22:02:47 +0300
+From: Serge Semin <fancer.lancer@gmail.com>
+To: Leong Ching Swee <leong.ching.swee@intel.com>
+Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
+	Alexandre Torgue <alexandre.torgue@foss.st.com>, Jose Abreu <joabreu@synopsys.com>, 
+	"David S . Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Conor Dooley <conor+dt@kernel.org>, Giuseppe Cavallaro <peppe.cavallaro@st.com>, 
+	linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, devicetree@vger.kernel.org, 
+	Teoh Ji Sheng <ji.sheng.teoh@intel.com>
+Subject: Re: [PATCH net-next v1 2/4] net: stmmac: Make MSI interrupt routine
+ generic
+Message-ID: <zwlnzllanmd6wtmn6ts7pd6y2sxgbauy4ffgqlf3yaq4uo65tw@ybigwcjpk7uf>
+References: <20231222054451.2683242-1-leong.ching.swee@intel.com>
+ <20231222054451.2683242-3-leong.ching.swee@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -60,182 +81,220 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZYVWjc65LzD8qkdw@pc636>
+In-Reply-To: <20231222054451.2683242-3-leong.ching.swee@intel.com>
 
-On Fri, Dec 22, 2023 at 10:27:41AM +0100, Uladzislau Rezki wrote:
-> On Thu, Dec 21, 2023 at 10:40:21AM -0800, Paul E. McKenney wrote:
-> > On Thu, Dec 21, 2023 at 11:52:33AM +0100, Uladzislau Rezki wrote:
-> > > On Tue, Dec 19, 2023 at 05:37:56PM -0800, Paul E. McKenney wrote:
-> > > > On Tue, Nov 28, 2023 at 09:00:30AM +0100, Uladzislau Rezki (Sony) wrote:
-> > > > > From: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
-> > > > > 
-> > > > > Currently, processing of the next batch of rcu_synchronize nodes
-> > > > > for the new grace period, requires doing a llist reversal operation
-> > > > > to find the tail element of the list. This can be a very costly
-> > > > > operation (high number of cache misses) for a long list.
-> > > > > 
-> > > > > To address this, this patch introduces a "dummy-wait-node" entity.
-> > > > > At every grace period init, a new wait node is added to the llist.
-> > > > > This wait node is used as wait tail for this new grace period.
-> > > > > 
-> > > > > This allows lockless additions of new rcu_synchronize nodes in the
-> > > > > rcu_sr_normal_add_req(), while the cleanup work executes and does
-> > > > > the progress. The dummy nodes are removed on next round of cleanup
-> > > > > work execution.
-> > > > > 
-> > > > > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> > > > > Signed-off-by: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
-> > > > 
-> > > > This says that Uladzislau created the patch and that Neeraj
-> > > > acted as maintainer.  I am guessing that you both worked on it,
-> > > > in which case is should have the Co-developed-by tags as shown in
-> > > > Documentation/process/submitting-patches.rst.  Could you please update
-> > > > these to reflect the actual origin?
-> > > > 
-> > > Right. We both worked on it. Neeraj is an author whereas i should mark
-> > > myself as a Co-developed-by. This is a correct way. Thank you for
-> > > pointing on it!
-> > 
-> > Sounds good, thank you!
-> > 
-> > > > One question below toward the end.  There are probably others that I
-> > > > should be asking, but I have to start somewhere.  ;-)
-> > > > 
-> > > Good :)
-> > > 
-> > > > >  
-> > > > >  /*
-> > > > >   * Helper function for rcu_gp_init().
-> > > > >   */
-> > > > > -static void rcu_sr_normal_gp_init(void)
-> > > > > +static bool rcu_sr_normal_gp_init(void)
-> > > > >  {
-> > > > > -	struct llist_node *head, *tail;
-> > > > > +	struct llist_node *first;
-> > > > > +	struct llist_node *wait_head;
-> > > > > +	bool start_new_poll = false;
-> > > > >  
-> > > > > -	if (llist_empty(&sr.srs_next))
-> > > > > -		return;
-> > > > > +	first = READ_ONCE(sr.srs_next.first);
-> > > > > +	if (!first || rcu_sr_is_wait_head(first))
-> > > > > +		return start_new_poll;
-> > > > > +
-> > > > > +	wait_head = rcu_sr_get_wait_head();
-> > > > > +	if (!wait_head) {
-> > > > > +		// Kick another GP to retry.
-> > > > > +		start_new_poll = true;
-> > > > > +		return start_new_poll;
-> > > > > +	}
-> > > > >  
-> > > > > -	tail = llist_del_all(&sr.srs_next);
-> > > > > -	head = llist_reverse_order(tail);
-> > > > > +	/* Inject a wait-dummy-node. */
-> > > > > +	llist_add(wait_head, &sr.srs_next);
-> > > > >  
-> > > > >  	/*
-> > > > > -	 * A waiting list of GP should be empty on this step,
-> > > > > -	 * since a GP-kthread, rcu_gp_init() -> gp_cleanup(),
-> > > > > +	 * A waiting list of rcu_synchronize nodes should be empty on
-> > > > > +	 * this step, since a GP-kthread, rcu_gp_init() -> gp_cleanup(),
-> > > > >  	 * rolls it over. If not, it is a BUG, warn a user.
-> > > > >  	 */
-> > > > > -	WARN_ON_ONCE(!llist_empty(&sr.srs_wait));
-> > > > > +	WARN_ON_ONCE(sr.srs_wait_tail != NULL);
-> > > > > +	sr.srs_wait_tail = wait_head;
-> > > > > +	ASSERT_EXCLUSIVE_WRITER(sr.srs_wait_tail);
-> > > > >  
-> > > > > -	WRITE_ONCE(sr.srs_wait_tail, tail);
-> > > > > -	__llist_add_batch(head, tail, &sr.srs_wait);
-> > > > > +	return start_new_poll;
-> > > > >  }
-> > > > >  
-> > > > >  static void rcu_sr_normal_add_req(struct rcu_synchronize *rs)
-> > > > > @@ -1493,6 +1684,7 @@ static noinline_for_stack bool rcu_gp_init(void)
-> > > > >  	unsigned long mask;
-> > > > >  	struct rcu_data *rdp;
-> > > > >  	struct rcu_node *rnp = rcu_get_root();
-> > > > > +	bool start_new_poll;
-> > > > >  
-> > > > >  	WRITE_ONCE(rcu_state.gp_activity, jiffies);
-> > > > >  	raw_spin_lock_irq_rcu_node(rnp);
-> > > > > @@ -1517,11 +1709,15 @@ static noinline_for_stack bool rcu_gp_init(void)
-> > > > >  	/* Record GP times before starting GP, hence rcu_seq_start(). */
-> > > > >  	rcu_seq_start(&rcu_state.gp_seq);
-> > > > >  	ASSERT_EXCLUSIVE_WRITER(rcu_state.gp_seq);
-> > > > > -	rcu_sr_normal_gp_init();
-> > > > > +	start_new_poll = rcu_sr_normal_gp_init();
-> > > > >  	trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq, TPS("start"));
-> > > > >  	rcu_poll_gp_seq_start(&rcu_state.gp_seq_polled_snap);
-> > > > >  	raw_spin_unlock_irq_rcu_node(rnp);
-> > > > >  
-> > > > > +	// New poll request after rnp unlock
-> > > > > +	if (start_new_poll)
-> > > > > +		(void) start_poll_synchronize_rcu();
-> > > > 
-> > > > You lost me on this one.  Anything that got moved to the wait list
-> > > > should be handled by the current grace period, right?  Or is the
-> > > > problem that rcu_sr_normal_gp_init() is being invoked after the call
-> > > > to rcu_seq_start()?  If that is the case, could it be moved ahead so
-> > > > that we don't need the extra grace period?
-> > > > 
-> > > > Or am I missing something subtle here?
-> > > > 
-> > > The problem is that, we are limited in number of "wait-heads" which we
-> > > add as a marker node for this/current grace period. If there are more clients
-> > > and there is no a wait-head available it means that a system, the deferred
-> > > kworker, is slow in processing callbacks, thus all wait-nodes are in use.
-> > > 
-> > > That is why we need an extra grace period. Basically to repeat our try one
-> > > more time, i.e. it might be that a current grace period is not able to handle
-> > > users due to the fact that a system is doing really slow, but this is rather
-> > > a corner case and is not a problem.
-> > 
-> > But in that case, the real issue is not the need for an extra grace
-> > period, but rather the need for the wakeup processing to happen, correct?
-> > Or am I missing something subtle here?
-> > 
-> Basically, yes. If we had a spare dummy-node we could process the users
-> by the current GP(no need in extra). Why we may not have it - it is because
-> like you pointed:
+On Fri, Dec 22, 2023 at 01:44:49PM +0800, Leong Ching Swee wrote:
+> From: Swee Leong Ching <leong.ching.swee@intel.com>
 > 
-> - wake-up issue, i.e. wake-up time + when we are on_cpu;
-> - slow list process. For example priority. The kworker is not
->   given enough CPU time to do the progress, thus "dummy-nodes"
->   are not released in time for reuse.
+> There is no support for per DMA channel interrupt for non-MSI platform,
+> where the MAC's per channel interrupt hooks up to interrupt controller(GIC)
+> through shared peripheral interrupt(SPI) to handle interrupt from TX/RX
+> transmit channel.
 > 
-> Therefore, en extra GP is requested if there is a high flow of
-> synchronize_rcu() users and kworker is not able to do a progress
-> in time.
+> This patch generalize the existing MSI ISR to also support non-MSI
+> platform.
 > 
-> For example 60K+ parallel synchronize_rcu() users will trigger it.
+> Signed-off-by: Teoh Ji Sheng <ji.sheng.teoh@intel.com>
+> Signed-off-by: Swee Leong Ching <leong.ching.swee@intel.com>
+> ---
+>  .../net/ethernet/stmicro/stmmac/dwmac-intel.c |  4 +--
+>  .../net/ethernet/stmicro/stmmac/dwmac4_dma.c  |  2 +-
+>  .../net/ethernet/stmicro/stmmac/stmmac_main.c | 29 ++++++++++---------
+>  include/linux/stmmac.h                        |  4 +--
+>  4 files changed, 21 insertions(+), 18 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
+> index 60283543ffc8..f0ec69af96c9 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
+> +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
+> @@ -952,7 +952,7 @@ static int stmmac_config_single_msi(struct pci_dev *pdev,
+>  
+>  	res->irq = pci_irq_vector(pdev, 0);
+>  	res->wol_irq = res->irq;
+> -	plat->flags &= ~STMMAC_FLAG_MULTI_MSI_EN;
+> +	plat->flags &= ~STMMAC_FLAG_MULTI_IRQ_EN;
+>  	dev_info(&pdev->dev, "%s: Single IRQ enablement successful\n",
+>  		 __func__);
+>  
+> @@ -1004,7 +1004,7 @@ static int stmmac_config_multi_msi(struct pci_dev *pdev,
+>  	if (plat->msi_sfty_ue_vec < STMMAC_MSI_VEC_MAX)
+>  		res->sfty_ue_irq = pci_irq_vector(pdev, plat->msi_sfty_ue_vec);
+>  
+> -	plat->flags |= STMMAC_FLAG_MULTI_MSI_EN;
+> +	plat->flags |= STMMAC_FLAG_MULTI_IRQ_EN;
+>  	dev_info(&pdev->dev, "%s: multi MSI enablement successful\n", __func__);
+>  
+>  	return 0;
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac4_dma.c b/drivers/net/ethernet/stmicro/stmmac/dwmac4_dma.c
+> index 84d3a8551b03..5f649106ffcd 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/dwmac4_dma.c
+> +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac4_dma.c
+> @@ -175,7 +175,7 @@ static void dwmac4_dma_init(void __iomem *ioaddr,
+>  
+>  	value = readl(ioaddr + DMA_BUS_MODE);
+>  
+> -	if (dma_cfg->multi_msi_en) {
+> +	if (dma_cfg->multi_irq_en) {
+>  		value &= ~DMA_BUS_MODE_INTM_MASK;
+>  		value |= (DMA_BUS_MODE_INTM_MODE1 << DMA_BUS_MODE_INTM_SHIFT);
+>  	}
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> index 47de466e432c..30cc9edb4198 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> @@ -129,8 +129,8 @@ static irqreturn_t stmmac_interrupt(int irq, void *dev_id);
+>  /* For MSI interrupts handling */
+>  static irqreturn_t stmmac_mac_interrupt(int irq, void *dev_id);
+>  static irqreturn_t stmmac_safety_interrupt(int irq, void *dev_id);
 
-OK, but what bad thing would happen if that was moved to precede the
-rcu_seq_start(&rcu_state.gp_seq)?  That way, the requested grace period
-would be the same as the one that is just now starting.
+> -static irqreturn_t stmmac_msi_intr_tx(int irq, void *data);
+> -static irqreturn_t stmmac_msi_intr_rx(int irq, void *data);
+> +static irqreturn_t stmmac_tx_queue_interrupt(int irq, void *data);
+> +static irqreturn_t stmmac_rx_queue_interrupt(int irq, void *data);
 
-Something like this?
+Let's use the next names instead:
 
-	start_new_poll = rcu_sr_normal_gp_init();
++static irqreturn_t stmmac_dma_tx_interrupt(int irq, void *data);
++static irqreturn_t stmmac_dma_rx_interrupt(int irq, void *data);
 
-	/* Record GP times before starting GP, hence rcu_seq_start(). */
-	rcu_seq_start(&rcu_state.gp_seq);
-	ASSERT_EXCLUSIVE_WRITER(rcu_state.gp_seq);
+It would be semantically more correct and would refer to the
+stmmac_dma_interrupt() handler.
 
-	trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq, TPS("start"));
-	rcu_poll_gp_seq_start(&rcu_state.gp_seq_polled_snap);
-	raw_spin_unlock_irq_rcu_node(rnp);
+>  static void stmmac_reset_rx_queue(struct stmmac_priv *priv, u32 queue);
+>  static void stmmac_reset_tx_queue(struct stmmac_priv *priv, u32 queue);
+>  static void stmmac_reset_queues_param(struct stmmac_priv *priv);
+> @@ -3602,7 +3602,7 @@ static void stmmac_free_irq(struct net_device *dev,
+>  	}
+>  }
+>  
+> -static int stmmac_request_irq_multi_msi(struct net_device *dev)
+> +static int stmmac_request_irq_multi(struct net_device *dev)
+>  {
+>  	struct stmmac_priv *priv = netdev_priv(dev);
+>  	enum request_irq_err irq_err;
+> @@ -3701,13 +3701,13 @@ static int stmmac_request_irq_multi_msi(struct net_device *dev)
+>  	for (i = 0; i < priv->plat->rx_queues_to_use; i++) {
+>  		if (i >= MTL_MAX_RX_QUEUES)
+>  			break;
 
-	// New poll request after rnp unlock
-	if (start_new_poll)
-		(void) start_poll_synchronize_rcu();
+> -		if (priv->rx_irq[i] == 0)
+> +		if (priv->rx_irq[i] <= 0)
 
-Yes, rcu_sr_normal_gp_init() might need some adjustment given that it
-is seeing the pre-GP value of rcu_state.gp_seq.
+Why? What about just using a temporary variable in
+stmmac_get_platform_resources() to get the Per-channel DMA IRQs and
+not saving error number in priv->rx_irq[]?
 
-But unless I am missing something, what you have now can result in
-extra grace periods, which incur overhead on what would otherwise be an
-idle system.
+>  			continue;
+>  
+>  		int_name = priv->int_name_rx_irq[i];
+>  		sprintf(int_name, "%s:%s-%d", dev->name, "rx", i);
+>  		ret = request_irq(priv->rx_irq[i],
+> -				  stmmac_msi_intr_rx,
+> +				  stmmac_rx_queue_interrupt,
+>  				  0, int_name, &priv->dma_conf.rx_queue[i]);
+>  		if (unlikely(ret < 0)) {
+>  			netdev_err(priv->dev,
+> @@ -3726,13 +3726,13 @@ static int stmmac_request_irq_multi_msi(struct net_device *dev)
+>  	for (i = 0; i < priv->plat->tx_queues_to_use; i++) {
+>  		if (i >= MTL_MAX_TX_QUEUES)
+>  			break;
 
-							Thanx, Paul
+> -		if (priv->tx_irq[i] == 0)
+> +		if (priv->tx_irq[i] <= 0)
+
+ditto.
+
+>  			continue;
+>  
+>  		int_name = priv->int_name_tx_irq[i];
+>  		sprintf(int_name, "%s:%s-%d", dev->name, "tx", i);
+>  		ret = request_irq(priv->tx_irq[i],
+> -				  stmmac_msi_intr_tx,
+> +				  stmmac_tx_queue_interrupt,
+>  				  0, int_name, &priv->dma_conf.tx_queue[i]);
+>  		if (unlikely(ret < 0)) {
+>  			netdev_err(priv->dev,
+
+Please fix the error message strings in stmmac_request_irq_multi_msi()
+too.
+
+> @@ -3811,8 +3811,8 @@ static int stmmac_request_irq(struct net_device *dev)
+>  	int ret;
+>  
+>  	/* Request the IRQ lines */
+> -	if (priv->plat->flags & STMMAC_FLAG_MULTI_MSI_EN)
+> -		ret = stmmac_request_irq_multi_msi(dev);
+> +	if (priv->plat->flags & STMMAC_FLAG_MULTI_IRQ_EN)
+> +		ret = stmmac_request_irq_multi(dev);
+>  	else
+>  		ret = stmmac_request_irq_single(dev);
+>  
+> @@ -6075,7 +6075,7 @@ static irqreturn_t stmmac_safety_interrupt(int irq, void *dev_id)
+>  	return IRQ_HANDLED;
+>  }
+>  
+> -static irqreturn_t stmmac_msi_intr_tx(int irq, void *data)
+> +static irqreturn_t stmmac_tx_queue_interrupt(int irq, void *data)
+>  {
+>  	struct stmmac_tx_queue *tx_q = (struct stmmac_tx_queue *)data;
+>  	struct stmmac_dma_conf *dma_conf;
+> @@ -6107,7 +6107,7 @@ static irqreturn_t stmmac_msi_intr_tx(int irq, void *data)
+>  	return IRQ_HANDLED;
+>  }
+>  
+> -static irqreturn_t stmmac_msi_intr_rx(int irq, void *data)
+> +static irqreturn_t stmmac_rx_queue_interrupt(int irq, void *data)
+>  {
+>  	struct stmmac_rx_queue *rx_q = (struct stmmac_rx_queue *)data;
+>  	struct stmmac_dma_conf *dma_conf;
+> @@ -7456,8 +7456,11 @@ int stmmac_dvr_probe(struct device *device,
+>  	priv->plat = plat_dat;
+>  	priv->ioaddr = res->addr;
+>  	priv->dev->base_addr = (unsigned long)res->addr;
+> -	priv->plat->dma_cfg->multi_msi_en =
+> -		(priv->plat->flags & STMMAC_FLAG_MULTI_MSI_EN);
+> +
+
+> +	if (res->rx_irq[0] > 0 && res->tx_irq[0] > 0) {
+> +		priv->plat->flags |= STMMAC_FLAG_MULTI_IRQ_EN;
+> +		priv->plat->dma_cfg->multi_irq_en = true;
+> +	}
+
+This is wrong. It activates the stmmac_request_irq_multi_msi() method
+to assign all the IRQ handlers to the individual IRQs. Even if DMA
+IRQs line are available it doesn't mean that for instance Safety
+Feature IRQs too. So it's better to rely on the glue drivers to set
+that flag as before and leave the code as is.
+
+-Serge(y) 
+
+>  
+>  	priv->dev->irq = res->irq;
+>  	priv->wol_irq = res->wol_irq;
+> diff --git a/include/linux/stmmac.h b/include/linux/stmmac.h
+> index dee5ad6e48c5..b950e6f9761d 100644
+> --- a/include/linux/stmmac.h
+> +++ b/include/linux/stmmac.h
+> @@ -98,7 +98,7 @@ struct stmmac_dma_cfg {
+>  	int mixed_burst;
+>  	bool aal;
+>  	bool eame;
+> -	bool multi_msi_en;
+> +	bool multi_irq_en;
+>  	bool dche;
+>  };
+>  
+> @@ -215,7 +215,7 @@ struct dwmac4_addrs {
+>  #define STMMAC_FLAG_TSO_EN			BIT(4)
+>  #define STMMAC_FLAG_SERDES_UP_AFTER_PHY_LINKUP	BIT(5)
+>  #define STMMAC_FLAG_VLAN_FAIL_Q_EN		BIT(6)
+> -#define STMMAC_FLAG_MULTI_MSI_EN		BIT(7)
+> +#define STMMAC_FLAG_MULTI_IRQ_EN		BIT(7)
+>  #define STMMAC_FLAG_EXT_SNAPSHOT_EN		BIT(8)
+>  #define STMMAC_FLAG_INT_SNAPSHOT_EN		BIT(9)
+>  #define STMMAC_FLAG_RX_CLK_RUNS_IN_LPI		BIT(10)
+> -- 
+> 2.34.1
+> 
+> 
 
