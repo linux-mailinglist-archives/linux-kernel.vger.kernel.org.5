@@ -1,188 +1,139 @@
-Return-Path: <linux-kernel+bounces-9344-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9353-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E91181C45D
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 05:53:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0F7281C477
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 05:56:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 50A581C24545
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 04:53:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 67B692847A9
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 04:56:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEA6F9455;
-	Fri, 22 Dec 2023 04:52:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CDAA539F;
+	Fri, 22 Dec 2023 04:56:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="Q5lzbOdF"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jJtwuhWS"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3010567E;
-	Fri, 22 Dec 2023 04:52:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
-X-UUID: eb78f0eea08511eea5db2bebc7c28f94-20231222
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-	h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=CatTnUcyQaxUQXvEYlhz6Q+RAY41Ln/Nz5HDx2i0d5c=;
-	b=Q5lzbOdFIlOz2ezRpMWO91CRcWiNl+C4rLfsJOqq1G6yP37W+OtlxZOcx3H1D+3ScXq8VefqeodenyMgGl5W91txaJuthwAOujpbQyb/cctoGKFEMjEE8CtVzO8/DiORX6bzZeeBikQ6sp+tPI/ClCZBxl2rPDprrsjUs8jrHWE=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.35,REQID:2d948a9f-ee9e-4141-bf67-71a3d600433f,IP:0,U
-	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-	release,TS:0
-X-CID-META: VersionHash:5d391d7,CLOUDID:b0b8738d-e2c0-40b0-a8fe-7c7e47299109,B
-	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-	RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
-	DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR
-X-UUID: eb78f0eea08511eea5db2bebc7c28f94-20231222
-Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw01.mediatek.com
-	(envelope-from <jason-jh.lin@mediatek.com>)
-	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 1204300333; Fri, 22 Dec 2023 12:52:33 +0800
-Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
- mtkmbs13n2.mediatek.inc (172.21.101.108) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Fri, 22 Dec 2023 12:52:32 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
- mtkmbs11n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Fri, 22 Dec 2023 12:52:32 +0800
-From: Jason-JH.Lin <jason-jh.lin@mediatek.com>
-To: Jassi Brar <jassisinghbrar@gmail.com>, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Matthias Brugger
-	<matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
-	<angelogioacchino.delregno@collabora.com>, Chun-Kuang Hu
-	<chunkuang.hu@kernel.org>
-CC: Conor Dooley <conor+dt@kernel.org>, Mauro Carvalho Chehab
-	<mchehab@kernel.org>, <linux-kernel@vger.kernel.org>,
-	<devicetree@vger.kernel.org>, <linux-media@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>,
-	Jason-ch Chen <jason-ch.chen@mediatek.com>, Johnson Wang
-	<johnson.wang@mediatek.com>, "Jason-JH . Lin" <jason-jh.lin@mediatek.com>,
-	Singo Chang <singo.chang@mediatek.com>, Nancy Lin <nancy.lin@mediatek.com>,
-	Shawn Sung <shawn.sung@mediatek.com>,
-	<Project_Global_Chrome_Upstream_Group@mediatek.com>
-Subject: [PATCH v3 9/9] mailbox: mediatek: Add secure CMDQ driver support for CMDQ driver
-Date: Fri, 22 Dec 2023 12:52:28 +0800
-Message-ID: <20231222045228.27826-10-jason-jh.lin@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20231222045228.27826-1-jason-jh.lin@mediatek.com>
-References: <20231222045228.27826-1-jason-jh.lin@mediatek.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6419AB64C;
+	Fri, 22 Dec 2023 04:56:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-5c66b093b86so1908737a12.0;
+        Thu, 21 Dec 2023 20:56:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703221002; x=1703825802; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dWqsP0YUMP6a7cu2oaHJUgxIQ36xA/a/DzZjUjmtwic=;
+        b=jJtwuhWS2xg0MEYz3cR/aqAo3s3e0dWU1gHyI30l2FbspXwQYH1cMftsZUewH4RsLn
+         c7qd5Uk6SU9zynEcb2I5Eb4dclM9AP1IikOP27+oE+/CAY82x0U+M2Cxz8tGxCsKX41c
+         Rflrs7YZvRT98aWupOvUx1COMrujMhSHrENbBm+IFbZvfIJDaD1BYntHEmwURTh/g8oV
+         l3xkbB69A9J4JHOj15rjHdiXt0o50rGaMXqTk7S5/OAG/Kw6WqZCT8ufqdmmsPMgBwkP
+         8Px5dRSheUEOWXjz3YoqdmjUHTXWtrbCH96ochvX+wujo+rd7hXr/dQmrop2v3hwFxKv
+         rAuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703221002; x=1703825802;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dWqsP0YUMP6a7cu2oaHJUgxIQ36xA/a/DzZjUjmtwic=;
+        b=cCUL1aSBlIAU2X0OIVFxHUJ6Jm+h9hV9casF5m6waMPQOuX4oGyuBUdsIBeOhKKc2H
+         QlO4gVXP+ns3srQbHdgIwRSjfvAu/lBi4DFgi51Il3d+4ERNmYOahmzX3F6Q/JFMgC8+
+         31QLxnZHSaJ5MfZjEFyNBdu2iq5uJ5QjW0NfuppfQa9Mkpj7zgUDx/HdC+USsY33fsT4
+         69KnOEWZxDLN0JltjW+2BSh8C5vcVtORWS+8eTzoXH3g1HyrVhzGeKUhNGumyxbpS6Qt
+         lNT3JrZvOxUMU0abkHIXCSamytZd4wkh8U8CXVxdxrhKQT6nneIUxgLxTPnBQwLibvFY
+         XZVg==
+X-Gm-Message-State: AOJu0YwGgZEDDBcryjr3H18Dx5SYLgMbkVvfxGE3gSM0YIvR6Qr1h2US
+	1fOCQhV4KWCkdkpUfTJEfTwPTjCp6NHuuk9NGcA=
+X-Google-Smtp-Source: AGHT+IGVJQsE6p52eLFhSLFIKzi97L31nRMNk+0XS/0jAbSL9nFWpk19E7VqjdYceCuuABPSwaacuEqItbhpCkg3+dk=
+X-Received: by 2002:a17:90a:d158:b0:28b:8fe8:3e95 with SMTP id
+ t24-20020a17090ad15800b0028b8fe83e95mr2051176pjw.29.1703221001685; Thu, 21
+ Dec 2023 20:56:41 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK: N
+References: <20231221104343.5557-1-2045gemini@gmail.com> <abc324aa-1ccc-c8fd-1437-a77465f6e4be@huaweicloud.com>
+ <CAOPYjvbfGZObUa+P5Bo_syLMpyMNEPU6SNm6xJPSqSZYREmNfw@mail.gmail.com>
+ <CAOPYjvYhEzeF3vdd9GXCX+k_-OmsE1yP7VNozcMt4vOyFLDAfw@mail.gmail.com> <ae9fc764-4765-8c13-8d59-56bc8582c094@huaweicloud.com>
+In-Reply-To: <ae9fc764-4765-8c13-8d59-56bc8582c094@huaweicloud.com>
+From: 20 39 <2045gemini@gmail.com>
+Date: Fri, 22 Dec 2023 12:56:06 +0800
+Message-ID: <CAOPYjvaDCFhFCSc+LhpDRq2ZB0jOP8xx0t3OVL95C3WfG-NimA@mail.gmail.com>
+Subject: Re: [PATCH] md/raid5: fix atomicity violation in raid5_cache_count
+To: Yu Kuai <yukuai1@huaweicloud.com>
+Cc: song@kernel.org, linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	baijiaju1990@outlook.com, BassCheck <bass@buaa.edu.cn>, 
+	"yukuai (C)" <yukuai3@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-CMDQ driver will probe a secure CMDQ driver when has_sec flag
-in platform data is true and its device node in dts has defined a
-event id of CMDQ_SYNC_TOKEN_SEC_EOF.
+Hi,
+We've updated to use READ_ONCE() in PATCH v2, Thank you for helpful advice.
+Best regards,
+Han
 
-Secure CMDQ driver support on mt8188 and mt8195 currently.
-So add a has_secure flag to their driver data to probe it.
-
-Signed-off-by: Jason-JH.Lin <jason-jh.lin@mediatek.com>
----
- drivers/mailbox/mtk-cmdq-mailbox.c | 38 ++++++++++++++++++++++++++++++
- 1 file changed, 38 insertions(+)
-
-diff --git a/drivers/mailbox/mtk-cmdq-mailbox.c b/drivers/mailbox/mtk-cmdq-mailbox.c
-index 04321f7e10c3..79167696c1eb 100644
---- a/drivers/mailbox/mtk-cmdq-mailbox.c
-+++ b/drivers/mailbox/mtk-cmdq-mailbox.c
-@@ -15,6 +15,7 @@
- #include <linux/pm_runtime.h>
- #include <linux/mailbox_controller.h>
- #include <linux/mailbox/mtk-cmdq-mailbox.h>
-+#include <linux/mailbox/mtk-cmdq-sec-mailbox.h>
- #include <linux/of.h>
- 
- #define CMDQ_MBOX_AUTOSUSPEND_DELAY_MS	100
-@@ -60,6 +61,9 @@ struct gce_plat {
- 	u8 shift;
- 	bool control_by_sw;
- 	bool sw_ddr_en;
-+	bool has_secure;
-+	u32 secure_thread_nr;
-+	u32 secure_thread_min;
- 	u32 gce_num;
- };
- 
-@@ -570,6 +574,7 @@ static int cmdq_probe(struct platform_device *pdev)
- 	int alias_id = 0;
- 	static const char * const clk_name = "gce";
- 	static const char * const clk_names[] = { "gce0", "gce1" };
-+	u32 hwid = 0;
- 
- 	cmdq = devm_kzalloc(dev, sizeof(*cmdq), GFP_KERNEL);
- 	if (!cmdq)
-@@ -595,6 +600,8 @@ static int cmdq_probe(struct platform_device *pdev)
- 		dev, cmdq->base, cmdq->irq);
- 
- 	if (cmdq->pdata->gce_num > 1) {
-+		hwid = of_alias_get_id(dev->of_node, clk_name);
-+
- 		for_each_child_of_node(phandle->parent, node) {
- 			alias_id = of_alias_get_id(node, clk_name);
- 			if (alias_id >= 0 && alias_id < cmdq->pdata->gce_num) {
-@@ -677,6 +684,31 @@ static int cmdq_probe(struct platform_device *pdev)
- 	pm_runtime_set_autosuspend_delay(dev, CMDQ_MBOX_AUTOSUSPEND_DELAY_MS);
- 	pm_runtime_use_autosuspend(dev);
- 
-+	if (cmdq->pdata->has_secure) {
-+		struct platform_device *mtk_cmdq_sec;
-+		static struct gce_sec_plat sec_plat = {0};
-+
-+		if (of_property_read_u32_index(dev->of_node, "mediatek,gce-events", 0,
-+					       &sec_plat.cmdq_event) == 0) {
-+			sec_plat.gce_dev = dev;
-+			sec_plat.hwid = hwid;
-+			sec_plat.gce_num = cmdq->pdata->gce_num;
-+			sec_plat.clocks = cmdq->clocks;
-+			sec_plat.thread_nr = cmdq->pdata->thread_nr;
-+			sec_plat.secure_thread_nr = cmdq->pdata->secure_thread_nr;
-+			sec_plat.secure_thread_min = cmdq->pdata->secure_thread_min;
-+
-+			mtk_cmdq_sec = platform_device_register_data(dev, "mtk-cmdq-sec",
-+								     PLATFORM_DEVID_AUTO,
-+								     &sec_plat,
-+								     sizeof(sec_plat));
-+			if (IS_ERR(mtk_cmdq_sec)) {
-+				dev_err(dev, "failed to register platform_device mtk-cmdq-sec\n");
-+				return PTR_ERR(mtk_cmdq_sec);
-+			}
-+		}
-+	}
-+
- 	return 0;
- }
- 
-@@ -720,6 +752,9 @@ static const struct gce_plat gce_plat_mt8188 = {
- 	.thread_nr = 32,
- 	.shift = 3,
- 	.control_by_sw = true,
-+	.has_secure = true,
-+	.secure_thread_nr = 2,
-+	.secure_thread_min = 8,
- 	.gce_num = 2
- };
- 
-@@ -734,6 +769,9 @@ static const struct gce_plat gce_plat_mt8195 = {
- 	.thread_nr = 24,
- 	.shift = 3,
- 	.control_by_sw = true,
-+	.has_secure = true,
-+	.secure_thread_nr = 2,
-+	.secure_thread_min = 8,
- 	.gce_num = 2
- };
- 
--- 
-2.18.0
-
+Yu Kuai <yukuai1@huaweicloud.com> =E4=BA=8E2023=E5=B9=B412=E6=9C=8822=E6=97=
+=A5=E5=91=A8=E4=BA=94 10:53=E5=86=99=E9=81=93=EF=BC=9A
+>
+> Hi,
+>
+> =E5=9C=A8 2023/12/22 10:34, 20 39 =E5=86=99=E9=81=93:
+> > Hi Kuai,
+> >
+> > Thank you for your patience. This email is essentially the same as my
+> > previous one, only now adjusted to plain text format. I apologize for
+> > any inconvenience caused earlier.
+> >
+> > Thanks for your email and the insightful points you've raised. Let me
+> > clarify a few aspects regarding the raid5_cache_count() and
+> > raid5_set_cache_size() functions.
+> >
+> > 1. Callback Function in setup_conf(): You mentioned that
+> > raid5_cache_count() is called from setup_conf() where reconfig_mutex
+> > is held. While this is true, it's important to note that
+> > raid5_cache_count() is actually initialized as a callback function in
+> > setup_conf(), as described in /include/linux/shrinker.h. This means it
+> > could be invoked later in a context where the reconfig_mutex isn't
+> > necessarily held. The documentation in shrinker.h indicates potential
+> > invocation scenarios beyond the initial setup context.
+>
+> Yes, you're right. I misread the code. Then this patch looks good to me,
+> just one nit below.
+>
+> >>>> @@ -7390,11 +7390,12 @@ static unsigned long raid5_cache_count(struc=
+t shrinker *shrink,
+> >>>>                                       struct shrink_control *sc)
+> >>>>    {
+> >>>>        struct r5conf *conf =3D shrink->private_data;
+> >>>> -
+> >>>> -     if (conf->max_nr_stripes < conf->min_nr_stripes)
+> >>>> +     int max_stripes =3D conf->max_nr_stripes;
+> >>>> +     int min_stripes =3D conf->min_nr_stripes;
+>
+> Since read and write can concurrent, I'll suggest to use READ_ONCE() and
+> WRITE_ONCE() for max/min_nr_stripes.
+>
+> Thanks,
+> Kuai
+> >>>> +     if (max_stripes < min_stripes)
+> >>>>                /* unlikely, but not impossible */
+> >>>>                return 0;
+> >>>> -     return conf->max_nr_stripes - conf->min_nr_stripes;
+> >>>> +     return max_stripes - min_stripes;
+> >>>>    }
+> >>>>
+> >>>>    static struct r5conf *setup_conf(struct mddev *mddev)
+> >>>>
+> >>>
+> > .
+> >
+>
 
