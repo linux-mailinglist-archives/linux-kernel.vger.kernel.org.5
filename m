@@ -1,212 +1,96 @@
-Return-Path: <linux-kernel+bounces-10013-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10014-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 930B381CEBE
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 20:31:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 80DB981CEBF
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 20:34:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 396E41F22CDC
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 19:31:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EA99CB2244E
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 19:34:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B8A32E620;
-	Fri, 22 Dec 2023 19:31:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B35DF2E403;
+	Fri, 22 Dec 2023 19:34:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="4X/EywzY"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="UxFSPYlW"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B18FB2C849;
-	Fri, 22 Dec 2023 19:31:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=sWYsiApgV+m5lCNkzjB01cpSiixDUk4lDKnbY8CE1+w=; b=4X/EywzYiclMcgdyUrIDhDGPic
-	/aSKzz30MMz6XJ09tuvZNc1ebu/FERjt46xoWsDR51OIvNWy9aII9MVhfdBtqGzeWSrfgsDfRJDBh
-	uTETxGNgZnw/XSbLhV9POiDzppFYqtRIIR5hUqPLi383AZOXEzX/zxuECk0pnvUwiyNbbL+quWqR7
-	DdZFuFh6hR4LcClV6VSnkgS3MSf41mk/GmIlEf3WFTccH8OkIBq35sEWhsJV+j6OJZczijmJeAusc
-	HqHgO9urxd/LyKE/FxfM5wJcgqAb4VMYN57Iyn+DVu6d33Cnw5xuPnoYojd9p958sHcKi+pxneOEk
-	MZ87kDNQ==;
-Received: from [50.53.46.231] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1rGlDx-006haX-2f;
-	Fri, 22 Dec 2023 19:30:21 +0000
-Message-ID: <74c79362-495f-4177-85fc-b348f7ac1c7b@infradead.org>
-Date: Fri, 22 Dec 2023 11:30:21 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5DD22C846
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 19:34:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-553ba2f0c8fso2417402a12.1
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 11:34:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1703273661; x=1703878461; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=eH7nfuydwx18BZVdknEjF/d+vyT018L8qna/6wtmdA8=;
+        b=UxFSPYlWgkfXCa5WFIHexXoaugqCUs2oqPdje5UbxfpUMEg+P/uDQL8Sl5z2eddtzZ
+         z1a66HDWcnYej6V2MzY85s1Y6nbc+M6jXfLD/MtH78o/i/NGP4bgWktNwb4O0R/7AIdQ
+         CJc8vKzHnNr+zAl7AzzgKJUWRJl8+9T7Wgdfk+FsDIZfEq1SCkRnkFQ/SYG/iLRCVD1G
+         KmRG4hzxV6t71vnP4Ggvl/3aHQlbrgXAH9NXUqUPzPve7M99b1XR+dYphcH/I5RJNRvQ
+         BhOj4yMoDf6KNeMbdzsYdgadYqjwCQc5BXuFJiI6+rwaNQA2loLy3uwwHjUdyhGpJtlU
+         y6kQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703273661; x=1703878461;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=eH7nfuydwx18BZVdknEjF/d+vyT018L8qna/6wtmdA8=;
+        b=mIiqtt99acnvEUfJflLsR5pU4lWRqovXKdyge16Oeg4dgVIYr76iTeZjoiJ/Z85bqp
+         A2uUmJQieCeTWPcywVT87c1qmyuqZgK/MhhAeI9Aq9gxQm+9zdX5iJN8DeEpnQ1bfJjn
+         u34eEtORMSRS/QVD0/lndW8uaiddUPpyUxjGzexVeTDK0Nx/1fMTSkgPJ1o+DswCXnw/
+         E3QOXQYOYQwRWQD+7Of+ezsqiPhHvQRUa7FR1A18H9+hu5XwPxWN+QydVywXHt81uJ4/
+         FwAx0Th9DybV+in7HoMiAz1lODOhvISy1cWJi7AyGya/uMW00860xveFIeC/1Wr3eJw9
+         7ZXg==
+X-Gm-Message-State: AOJu0Yyv7Tj9tsYsnMmOasrA6bXN5qYcLM5TuoNlOVgJoqjj9eljGmx9
+	soS+k4J0ZdWvU8JakOD5VxQp8mmtc2uJvA==
+X-Google-Smtp-Source: AGHT+IHhF42mbtyj0pDN3BlmyVl9fPZZYr7ImiOtMRb58RUopOqEW6EcyeES6iB+J0Taz4Juw5YK0Q==
+X-Received: by 2002:a17:906:74d0:b0:a23:619b:d320 with SMTP id z16-20020a17090674d000b00a23619bd320mr497055ejl.150.1703273660997;
+        Fri, 22 Dec 2023 11:34:20 -0800 (PST)
+Received: from alley ([176.114.240.50])
+        by smtp.gmail.com with ESMTPSA id w10-20020a170906d20a00b00a1d9c81418esm2380572ejz.170.2023.12.22.11.34.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Dec 2023 11:34:20 -0800 (PST)
+Date: Fri, 22 Dec 2023 20:34:19 +0100
+From: Petr Mladek <pmladek@suse.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	John Ogness <john.ogness@linutronix.de>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Thomas Gleixner <tglx@linutronix.de>, Jan Kara <jack@suse.cz>,
+	Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] printk for 6.8
+Message-ID: <ZYXku6xHecwqwIse@alley>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 3/7] doc: Add osdump guide
-Content-Language: en-US
-To: Ruipeng Qi <ruipengqi7@gmail.com>, corbet@lwn.net,
- rafael.j.wysocki@intel.com, gregkh@linuxfoundation.org,
- bagasdotme@gmail.com, carlos.bilbao@amd.com, vegard.nossum@oracle.com
-Cc: skhan@linuxfoundation.org, srinivas.pandruvada@linux.intel.com,
- qiruipeng@lixiang.com, linux@leemhuis.info, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20231221132943.653-1-ruipengqi7@gmail.com>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20231221132943.653-1-ruipengqi7@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
+Hi Linus,
 
+please pull the latest printk changes from
 
-On 12/21/23 05:29, Ruipeng Qi wrote:
-> From: qiruipeng <qiruipeng@lixiang.com>
-> 
-> Add osdump guide for the users who try to compile with osdump enabled,
-> use, and analysis real system problem.
-> 
-> Signed-off-by: qiruipeng <qiruipeng@lixiang.com>
-> ---
->  Documentation/admin-guide/index.rst  |  1 +
->  Documentation/admin-guide/osdump.rst | 94 ++++++++++++++++++++++++++++
->  2 files changed, 95 insertions(+)
->  create mode 100644 Documentation/admin-guide/osdump.rst
-> 
+  git://git.kernel.org/pub/scm/linux/kernel/git/printk/linux.git tags/printk-for-6.8
 
-> diff --git a/Documentation/admin-guide/osdump.rst b/Documentation/admin-guide/osdump.rst
-> new file mode 100644
-> index 000000000000..5738b03ff684
-> --- /dev/null
-> +++ b/Documentation/admin-guide/osdump.rst
-> @@ -0,0 +1,94 @@
-> +.. SPDX-License-Identifier: GPL-2.0
-> +
-> +===================================================
-> +Documentation for osdump - The Os Minidump Solution
+====================================
 
-                                  OS ?
+- Prevent refcount warning from a code releasing a fwnode.
 
-> +===================================================
-> +
-> +Overview
-> +========
-> +
-> +Osdump is a new crash dumping solution aiming at specific embedded
+----------------------------------------------------------------
+Herve Codina (1):
+      lib/vsprintf: Fix %pfwf when current node refcount == 0
 
-                   crash-dumping
-
-> +devices within Automotive or Industrial having the following features:
-> + - limited memory.
-> + - require quick reboots after system faults.
-> +
-> +To minimize the dump file size and maximize the dump process speed,
-> +Osdump provides the following features:
-> + - excludes userspace memory, focusing solely on resolving OS-related issues.
-> + - eliminates constant data such as text segments.
-> + - core OS data for dumping, this includes:
-> +    - static allocated bss and data segments
-> +    - dynamic data such as:
-> +       - slub data for small-sized data
-> +       - some large-sized data alloced in pages.
-
-I prefer                          allocated
-
-> + - compresses dump data to help reduce dump file size
-> +
-> +Considering the large volume of non-contiguous data, a binary data format is
-> +used directly.
-> +
-> +By utilizing the dump file and vmlinux, a standard elf format file can be
-
-                                                      ELF
-
-> +reassembled and parsed using crash tool.
-> +
-> +Declare
-> +========
-> +Mainly test on arm64 with 2G DDR, selecting slub as SLAB allocator, 39-bit for
-> +address space size.
-> +
-> +Configure and Build
-> +===================
-> +
-> +Kernel config
-> +-------------
-> +Disable CRASH_CORE, SLUB_DEBUG, and SLUB_TINY, and then select CONFIG_OS_MINIDUMP.
-> +
-> +Dts config
-> +----------
-> +Add one reserved region for osdump. Its size depends DDR size you are using. Here
-> +add one 16M reserved region with 2G's DDR.
-> +
-> +osdump {
-> +	compatible = "osdump";
-> +	reg = <0 0x64000000 0 0x1000000>;
-> +};
-> +
-> +Build the image after you have done with configuration.
-
-                             are
-or
-                   after you have done configuration.
-
-> +
-> +Trigger one panic and analysis it
-> +=================================
-> +
-> +0) Precondition
-> +---------------
-> +DDR won't poweroff during panic. Its content should not be lose.
-> +
-> +1) Generate dump file
-> +---------------------
-> +When a panic occurs, it will dump core data into specific reserved region.
-> +
-> +echo c > /proc/sysrq-trigger
-> +
-> +2) Get dump file
-> +----------------
-> +When system reboot from panic, run the following command to get dump file.
-> +
-> +cat /proc/osdump > ./osdump
-> +
-> +Got 13M dump file on my side.
-> +
-> +3) Run crash tool to generate standard elf file
-
-                                          ELF
-> +-----------------------------------------------
-> +
-> +crash --enable_raw_dumpfile ./vmlinux ./osdump  -m vabits_actual=39 --machdep\
-> +	kimage_voffset=0xffffffbf8f000000 --machdep phys_offset=0x80000000
-> +
-> +Add new feature for crash tool that reassemble a standard elf format file with
-
-                                       reassembles           ELF
-
-> +the dump file and vmlinux. Will submit this patch later.
-
-but this paragraph shouldn't be here...
-
-> +
-> +4) Analysis with crash tool
-> +---------------------------
-> +
-> +crash ./vmlinux ./osdump_elf
-> +
-> +
-> +Note
-> +====
-> +disable when select CRASH_CORE, SLUB_DEBUG, or SLUB_TINY.
-
-Don't repeat that, please.
-
-Vegard made a lot of good points. I tried not to repeat them.
-
--- 
-#Randy
-https://people.kernel.org/tglx/notes-about-netiquette
-https://subspace.kernel.org/etiquette.html
+ lib/vsprintf.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
