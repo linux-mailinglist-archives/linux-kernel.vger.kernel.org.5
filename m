@@ -1,118 +1,153 @@
-Return-Path: <linux-kernel+bounces-9300-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9301-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0132F81C3B3
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 04:57:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86D4381C3B4
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 04:57:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 94B691F24DF2
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 03:57:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 440072835E0
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 03:57:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2693A63A7;
-	Fri, 22 Dec 2023 03:56:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5081F8F6A;
+	Fri, 22 Dec 2023 03:57:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="aRdWCV88"
+	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="tJ5bP7eY"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D806A6132;
-	Fri, 22 Dec 2023 03:56:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703217397; x=1734753397;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=o7QSLUEbtgt1NDLSckikpa9KW0RO6SIhmgcDLdrx9To=;
-  b=aRdWCV88/gnSN0wNudTrT4wjogy+FjjHhayo+tcWJf6Z2Eqb2SBlHk2D
-   AOimk6SKHY3ncUd2iAwcI7X9tsDMuQN+0bzw7IDqHiYVXd8vzHuBJ2x1w
-   ADvcqv8ly/8kWUHPa9TP+FuxVWdcUJEKrLkHgWKMBhqEygd6WLE/jhXAc
-   oBTevF0Vc91gkFTJf6AgS2NOf4+zkH+cVfqyPscznMxszweWInhr1DBB0
-   9G0SCE8CUz2oOob1rki3cMjAAWtDmCNbdKTMSciJIBeZy+lG6s3ZrHSYG
-   aRHbLty//0dzt4qDZSEwOVZ7rL+Y4tjYrOP1Z6AaXsBKhdMblw2TTBSnk
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10931"; a="462510410"
-X-IronPort-AV: E=Sophos;i="6.04,294,1695711600"; 
-   d="scan'208";a="462510410"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Dec 2023 19:56:37 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10931"; a="1108339667"
-X-IronPort-AV: E=Sophos;i="6.04,294,1695711600"; 
-   d="scan'208";a="1108339667"
-Received: from zhaohaif-mobl.ccr.corp.intel.com (HELO [10.93.26.36]) ([10.93.26.36])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Dec 2023 19:56:34 -0800
-Message-ID: <02619a5c-842c-4441-85cb-0f7151705a5d@linux.intel.com>
-Date: Fri, 22 Dec 2023 11:56:31 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24E448F40
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 03:57:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
+Received: from mail-oi1-f198.google.com (mail-oi1-f198.google.com [209.85.167.198])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 87CB43F116
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 03:57:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+	s=20210705; t=1703217458;
+	bh=JGpihFWsF9iixc5XqhLyXNHyhGttLbiIhZTaqynK7Zw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type;
+	b=tJ5bP7eYoQ117VtVyndEbn8GukW3B0j/y2LaJRvkUlfYZT8NKvDgqd8KrS6usd44e
+	 dzNLfrcxnzgCNKkKupXxMgsAoMHedS3BMQpZo1nN1fRXYeHnMHLK/KERe+mp8nzg8N
+	 vpgHxmmHWq76PvFVj1rhftGn438AWRNWRmrJrSee/hbJrFd88MIjmP7vZqrA3nlhyM
+	 t88AOpvrm1F95gRapReGoH3G1nVeHWalIUYtKkaa5TztIwgiF1S5n1QfRj1k0XX4mQ
+	 ckXCuGg3zOfl/ah8qwUX5ByQjzkoOwbf9kpYnAv/E3XQULV/0rkKn85dbJ1VvYj8A1
+	 DsnF1fzJLvbfA==
+Received: by mail-oi1-f198.google.com with SMTP id 5614622812f47-3b9dff5942fso1554856b6e.2
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 19:57:38 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703217457; x=1703822257;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=JGpihFWsF9iixc5XqhLyXNHyhGttLbiIhZTaqynK7Zw=;
+        b=wsHHI4OWV+uAGAJiCJk3PGYv9Fi0tmQJlx7B9ZnTyF8kAvkCH/3/0C7LTG2bElHfjr
+         bfS6l39BXudvp/vrLnIA+78Tjs4704/SkgmkZgP8xxCPHfZ1LKtiNH3RhO3DzdebDStW
+         xL3Yeb1TcaL9lsVVBdDQK+XJdcmkEBRqv/7DkcwqE7kfDKdX5L1hi3joe+F3ymzQ8XyO
+         biSegin/8DikK63/0ZqCgoaE+JGtdQc/0FS3kHmZyOt9BnLbMBKh4Gv7qheKeRUp3Kwf
+         5M3uLT/DNo2rpORzD+GJINFYLCLHmEh8Ayw6CZl4r64PpfTKn6POchRmwifdh9ZlLgHE
+         GH8g==
+X-Gm-Message-State: AOJu0YxGHHfPkuaOpxQD6GhV7w2Vt6uGMdYrRRTO+jpQae4w6MAWg4kJ
+	H5ov59KhNgCHt0eP4ts9kBDKYEqbQ/hWy8bD1xaCtuoU6l1QGFTBqt79PFYcrCFmBPWlEaApVWq
+	qSn1eOKo9/ZIzxoxfCC4f5NRqx4h0ETIAVSOdUVd2JVPMr1UUdP/9uo5gkIXVpDEMLqWqsC5G
+X-Received: by 2002:a05:6808:1247:b0:3ba:e56:4778 with SMTP id o7-20020a056808124700b003ba0e564778mr909479oiv.100.1703217457530;
+        Thu, 21 Dec 2023 19:57:37 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGWuCwzJrUmfBFQeYMoS63SIHRgDlDtFwy9F+dhAUieflfH7adkv2VUijsgb6W9cxjNlcjKYZmq0wdezwp6XHg=
+X-Received: by 2002:a05:6808:1247:b0:3ba:e56:4778 with SMTP id
+ o7-20020a056808124700b003ba0e564778mr909473oiv.100.1703217457234; Thu, 21 Dec
+ 2023 19:57:37 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 2/2] iommu/vt-d: don's issue devTLB flush request when
- device is disconnected
-To: Lukas Wunner <lukas@wunner.de>
-Cc: bhelgaas@google.com, baolu.lu@linux.intel.com, dwmw2@infradead.org,
- will@kernel.org, robin.murphy@arm.com, linux-pci@vger.kernel.org,
- iommu@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <20231220005153.3984502-1-haifeng.zhao@linux.intel.com>
- <20231220005153.3984502-3-haifeng.zhao@linux.intel.com>
- <20231221103940.GA12714@wunner.de> <20231221110138.GA27755@wunner.de>
-From: Ethan Zhao <haifeng.zhao@linux.intel.com>
-In-Reply-To: <20231221110138.GA27755@wunner.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20231220051350.392350-1-kai.heng.feng@canonical.com> <5a81eda0-5044-4088-9aba-cf725e6fca9a@roeck-us.net>
+In-Reply-To: <5a81eda0-5044-4088-9aba-cf725e6fca9a@roeck-us.net>
+From: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date: Fri, 22 Dec 2023 11:57:25 +0800
+Message-ID: <CAAd53p4NNX9c5pUJgv12V=s_1YJxM3=G+OCYTgcRPqSJVbdi8w@mail.gmail.com>
+Subject: Re: [PATCH] hwmon: (acpi_power_meter) Install IPMI handler for Dell systems
+To: Guenter Roeck <linux@roeck-us.net>
+Cc: jdelvare@suse.com, linux-hwmon@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+Hi Guenter,
 
-On 12/21/2023 7:01 PM, Lukas Wunner wrote:
-> On Thu, Dec 21, 2023 at 11:39:40AM +0100, Lukas Wunner wrote:
->> On Tue, Dec 19, 2023 at 07:51:53PM -0500, Ethan Zhao wrote:
->>> For those endpoint devices connect to system via hotplug capable ports,
->>> users could request a warm reset to the device by flapping device's link
->>> through setting the slot's link control register, as pciehpt_ist() DLLSC
->>> interrupt sequence response, pciehp will unload the device driver and
->>> then power it off. thus cause an IOMMU devTLB flush request for device to
->>> be sent and a long time completion/timeout waiting in interrupt context.
->> I think the problem is in the "waiting in interrupt context".
-> I'm wondering whether Intel IOMMUs possibly have a (perhaps undocumented)
-> capability to reduce the Invalidate Completion Timeout to a sane value?
-> Could you check whether that's supported?
+On Thu, Dec 21, 2023 at 7:49=E2=80=AFAM Guenter Roeck <linux@roeck-us.net> =
+wrote:
 >
-> Granted, the Implementation Note you've pointed to allows 1 sec + 50%,
-> but that's not even a "must", it's a "should".  So devices are free to
-> take even longer.  We have to cut off at *some* point.
+> On Wed, Dec 20, 2023 at 01:13:50PM +0800, Kai-Heng Feng wrote:
+> > The following error can be observed at boot:
+> > [    3.717920] ACPI Error: No handler for Region [SYSI] (00000000ab9e62=
+c5) [IPMI] (20230628/evregion-130)
+> > [    3.717928] ACPI Error: Region IPMI (ID=3D7) has no handler (2023062=
+8/exfldio-261)
+> >
+> > [    3.717936] No Local Variables are initialized for Method [_GHL]
+> >
+> > [    3.717938] No Arguments are initialized for method [_GHL]
+> >
+> > [    3.717940] ACPI Error: Aborting method \_SB.PMI0._GHL due to previo=
+us error (AE_NOT_EXIST) (20230628/psparse-529)
+> > [    3.717949] ACPI Error: Aborting method \_SB.PMI0._PMC due to previo=
+us error (AE_NOT_EXIST) (20230628/psparse-529)
+> > [    3.717957] ACPI: \_SB_.PMI0: _PMC evaluation failed: AE_NOT_EXIST
+> >
+> > On Dell systems several methods of acpi_power_meter access variables in
+> > IPMI region [0], so request module 'ipmi_si' which will load 'acpi_ipmi=
+'
+> > and install the region handler accordingly.
+> >
+> > [0] https://www.dell.com/support/manuals/en-us/redhat-enterprise-linux-=
+v8.0/rhel8_rn_pub/advanced-configuration-and-power-interface-acpi-error-mes=
+sages-displayed-in-dmesg?guid=3Dguid-0d5ae482-1977-42cf-b417-3ed5c3f5ee62
+> >
+> > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> > ---
+> >  drivers/hwmon/acpi_power_meter.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> >
+> > diff --git a/drivers/hwmon/acpi_power_meter.c b/drivers/hwmon/acpi_powe=
+r_meter.c
+> > index 703666b95bf4..b9db53166bc9 100644
+> > --- a/drivers/hwmon/acpi_power_meter.c
+> > +++ b/drivers/hwmon/acpi_power_meter.c
+> > @@ -882,6 +882,8 @@ static int acpi_power_meter_add(struct acpi_device =
+*device)
+> >       strcpy(acpi_device_name(device), ACPI_POWER_METER_DEVICE_NAME);
+> >       strcpy(acpi_device_class(device), ACPI_POWER_METER_CLASS);
+> >       device->driver_data =3D resource;
+> > +     if (dmi_match(DMI_SYS_VENDOR, "Dell Inc."))
+> > +             request_module("ipmi_si");
+> >
+>
+> This looks like a terrible hack to me. Is there precedent of similar hack=
+s
+> elsewhere showing that this is the "way to go" ?
 
-I really "expected" there is interrrupt signal to iommu hardware when
+Yes it's ugly.
 
-the PCIe swtich downstream device 'gone', or some internal polling
+The error happens in the ACPI ASL code, so it's not possible to know
+if any method of apci_power_meter requires IPMI region.
+I really can't think of any better solution for it.
 
-/heartbeating the endpoint device for ATS breaking,
-
-but so far seems there are only hotplug interrupts to downstream
-
-control.
-
-...
-
-How to define the point "some" msec to timeout while software
-
-break out the waiting loop ?  or polling if the target is gone ?
-
-
-Thanks,
-
-Ethan
-
-
+Kai-Heng
 
 >
-> Thanks,
+> Guenter
 >
-> Lukas
+> >       res =3D read_capabilities(resource);
+> >       if (res)
+> > --
+> > 2.34.1
+> >
 
