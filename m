@@ -1,126 +1,330 @@
-Return-Path: <linux-kernel+bounces-9788-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9789-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0AA2981CB78
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 15:45:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A6EC81CB7C
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 15:46:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9D7741F22F31
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 14:45:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2E9A61C2217B
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 14:46:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3F2823750;
-	Fri, 22 Dec 2023 14:45:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8FE223741;
+	Fri, 22 Dec 2023 14:46:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CbXjkuss"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="tfNCGd+o"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
+Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B997B22F04;
-	Fri, 22 Dec 2023 14:45:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2ccae380df2so4886101fa.1;
-        Fri, 22 Dec 2023 06:45:03 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99C7622F0E
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 14:45:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-5e82f502a4cso15170627b3.0
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 06:45:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703256302; x=1703861102; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=yGdflJjpqTzGgrTpB9z3udClEdTa0y2wd5bxJETyASg=;
-        b=CbXjkuss0JXiAm6ZeQOZ4QYG1YKHykCR9PluzsYQBvwoD72tnrKY2//UpjuuwPywfo
-         K0xYO32frS6d1B1AfV+FOSBjjlvS+Z0JCn3XDmnv5uUdTN38x4Sz7NIZAhJ+pZjPejdZ
-         7KDZzlqcsf736KQgCNMxolOtoVtD2N8wlNKd81UJsAjgyOftnVRMArhwJScn/8dp5Owz
-         XeVVXY7OX4BG04rT+HafufhEbltl5c/jGI+hhiVVXAISZN8jlKJH8ISqrLX65kqSkFgi
-         6Fxlt4rhtSgvFp075yrlghJwgO2v011/bt+Egn+HwsPvLgGMdFlmPbvi4YsPiuq5V/AY
-         fjng==
+        d=linaro.org; s=google; t=1703256357; x=1703861157; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=X5aKN360JjsKDYNBN+XtA40DpitxGOEQzYpjBK6DPwo=;
+        b=tfNCGd+o8lk4MCVUCUoKGrOTWdvnssfwZfnig9magpoZzIHpB6+zXxHFwyTkgZpowG
+         j0s6Nf064i2tNon1H3g/Y8S3bfLQ5vrw8G5wnyOSCx15+YQdVEHj2JBeFUzrDHgZZem8
+         XgxmghpoSQqExxcDNs1+N36ZfcqNXvh5sgqv2pJzI4gn9nD1K3iBkDKwwhouq2tDAx95
+         yYlrEAA47yjE0EOi4lGznSf+vQ4CGiuV4cjbRdY4faV8SDPayZsOpYbVkni5jGCuHZM1
+         vmXT6sadUHbFniOm4v26f7i8bczc8ZFWEVFEMA5F0u9FTmRzjRrvNbwZEMyasGcClkKL
+         BUhA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703256302; x=1703861102;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yGdflJjpqTzGgrTpB9z3udClEdTa0y2wd5bxJETyASg=;
-        b=LQl9LNmqOPbHoMa3YsBf9L04LN/02ZsYZrfCgVqW7ImCXKcqUQG5csj1aXArdAt6Wl
-         KcyZWzTX8zsW074uvmAOp/EU6FRh9mAHsUJF9FjRPo6I4j9erq7YqcRK0TRpxmFbvl43
-         igupZPCe6AbMTnpP8J4dVXpN9DoBILkEstYomdj4jn5KHtBgHo5QGF01idAmbAzihNi/
-         sSagz+gGJxatvtzOpE6lf8/MQIqHJiKLggfFZ4W0XFNLvXhgSLKmZj9QRAWjnA5Q+xiQ
-         T4q//tlIiy5RrJwMLyaonOX9tETOnvQyF76CVb3Rjmkk8eBlkbsLBxRRcgCdyLnDFZqk
-         BEpg==
-X-Gm-Message-State: AOJu0Yyg4wYksSeeNkitL9eGOvpX7378KJ8GvqjFTf6e4g0gKXw0lCRB
-	mnSjM1nYVr6kKte5Uuhucck=
-X-Google-Smtp-Source: AGHT+IFQ7bVzkfn7UHoPdtCntTVZBHNA/6WaE0c0joJuTXolxhHj6vDvJOSq0tamCojdPZB333Wu0g==
-X-Received: by 2002:a2e:8742:0:b0:2cc:620e:873 with SMTP id q2-20020a2e8742000000b002cc620e0873mr665971ljj.15.1703256301472;
-        Fri, 22 Dec 2023 06:45:01 -0800 (PST)
-Received: from mobilestation ([178.176.56.174])
-        by smtp.gmail.com with ESMTPSA id d18-20020a2eb052000000b002cc6c35aa5bsm616191ljl.128.2023.12.22.06.45.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Dec 2023 06:45:01 -0800 (PST)
-Date: Fri, 22 Dec 2023 17:44:58 +0300
-From: Serge Semin <fancer.lancer@gmail.com>
-To: Leong Ching Swee <leong.ching.swee@intel.com>
-Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
-	Alexandre Torgue <alexandre.torgue@foss.st.com>, Jose Abreu <joabreu@synopsys.com>, 
-	"David S . Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	Conor Dooley <conor+dt@kernel.org>, Giuseppe Cavallaro <peppe.cavallaro@st.com>, 
-	linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH net-next v1 0/4] net: stmmac: Enable Per DMA Channel
- interrupt
-Message-ID: <kmmjm4sf5geudch54nmehl3ibkpwvlgbhpf7y6quhqy3gnqg32@gcvwlvzec6pn>
-References: <20231222054451.2683242-1-leong.ching.swee@intel.com>
+        d=1e100.net; s=20230601; t=1703256357; x=1703861157;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=X5aKN360JjsKDYNBN+XtA40DpitxGOEQzYpjBK6DPwo=;
+        b=M/O9mlq9z9awv4ILl/r8mxK/V0JGdmdLmXJR++Q6Z6MMUjN/CSwZg4TNmzRzsqCyCU
+         /mh38trVbXpqnWqZNPplwBCk4u7N5aOaPM9n48LiaND6lf9LPd+rUSwkkjCXp1ln5ccU
+         aW9X8nJ8ntKwHZBlzk8deqRkIg2zpP/6zEQOIu6bmtYZ+ah3aX/hOT3GbtA1jlhgcAbK
+         6ZOd0ayTmy5nettPrL8QDJns3+Li8kcmKMWx83KRFavAYQkdgv8ndq2tnaSir4hZ8LcZ
+         tsrbUrUpFzlhgTNx4Oy80pYsAnosHa5E+vE/kBIjm6DIlaWWY3UFNxsG6xIPF0gzjFZu
+         ryLw==
+X-Gm-Message-State: AOJu0YzssAArQgOOOMpCl7i+Q2V1tScazRR/yLXVKj60IZ5Tc7BBG8KE
+	aOxQUQr8LbS/b4VDCiVegBtDJzNAbGm0fyUNLAoueE7PjK7DxQ==
+X-Google-Smtp-Source: AGHT+IFgdAnI8wwdkjon9iGs5E7wL5s4K7uoY6vrW0njQ+C898eXih0nAoTxA9J/8JClt58StVDTyf51M5XSr7eofPg=
+X-Received: by 2002:a0d:d656:0:b0:5e8:851f:77d1 with SMTP id
+ y83-20020a0dd656000000b005e8851f77d1mr1067697ywd.35.1703256357545; Fri, 22
+ Dec 2023 06:45:57 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231222054451.2683242-1-leong.ching.swee@intel.com>
+References: <20231222-x1e80100-phy-edp-compatible-refactor-v2-0-ab5786c2359f@linaro.org>
+ <20231222-x1e80100-phy-edp-compatible-refactor-v2-2-ab5786c2359f@linaro.org>
+In-Reply-To: <20231222-x1e80100-phy-edp-compatible-refactor-v2-2-ab5786c2359f@linaro.org>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Fri, 22 Dec 2023 16:45:47 +0200
+Message-ID: <CAA8EJpqPNzvA0yTqqSuXGHKxXoofJUQpAiHazoULru8A85YXHA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] phy: qcom: edp: Add set_mode op for configuring
+ eDP/DP submode
+To: Abel Vesa <abel.vesa@linaro.org>
+Cc: Vinod Koul <vkoul@kernel.org>, Kishon Vijay Abraham I <kishon@kernel.org>, 
+	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Johan Hovold <johan@kernel.org>, linux-phy@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
+	devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Leong
+On Fri, 22 Dec 2023 at 15:01, Abel Vesa <abel.vesa@linaro.org> wrote:
+>
+> Future platforms should not use different compatibles to differentiate
+> between eDP and DP mode. Instead, they should use a single compatible as the
+> IP block is the same. It will be the job of the controller to set the submode
+> of the PHY accordingly. Rework the device match config data so that it only
+> keeps the different knobs rather than swing and pre-emphasis tables.
+>
+> The existing platforms will remain with separate compatibles for each mode.
+>
+> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+> ---
+>  drivers/phy/qualcomm/phy-qcom-edp.c | 90 ++++++++++++++++++++++++++++---------
+>  1 file changed, 69 insertions(+), 21 deletions(-)
+>
+> diff --git a/drivers/phy/qualcomm/phy-qcom-edp.c b/drivers/phy/qualcomm/phy-qcom-edp.c
+> index 8e5078304646..efd7015c73ec 100644
+> --- a/drivers/phy/qualcomm/phy-qcom-edp.c
+> +++ b/drivers/phy/qualcomm/phy-qcom-edp.c
+> @@ -14,6 +14,7 @@
+>  #include <linux/module.h>
+>  #include <linux/of.h>
+>  #include <linux/phy/phy.h>
+> +#include <linux/phy/phy-dp.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/regulator/consumer.h>
+>  #include <linux/reset.h>
+> @@ -68,19 +69,21 @@
+>
+>  #define TXn_TRAN_DRVR_EMP_EN                    0x0078
+>
+> -struct qcom_edp_cfg {
+> -       bool is_dp;
+> -
+> -       /* DP PHY swing and pre_emphasis tables */
+> +struct qcom_edp_swing_pre_emph_cfg {
+>         const u8 (*swing_hbr_rbr)[4][4];
+>         const u8 (*swing_hbr3_hbr2)[4][4];
+>         const u8 (*pre_emphasis_hbr_rbr)[4][4];
+>         const u8 (*pre_emphasis_hbr3_hbr2)[4][4];
+>  };
+>
+> +struct qcom_edp_phy_cfg {
+> +       bool is_edp;
+> +       bool needs_swing_pre_emph_cfg;
 
-On Fri, Dec 22, 2023 at 01:44:47PM +0800, Leong Ching Swee wrote:
-> From: Swee Leong Ching <leong.ching.swee@intel.com>
-> 
-> Hi,
-> Add Per DMA Channel interrupt feature for DWXGMAC IP.
->  
-> Patchset (link below) contains per DMA channel interrupt, But it was 
-> achieved.
-> https://lore.kernel.org/lkml/20230821203328.GA2197059-
-> robh@kernel.org/t/#m849b529a642e1bff89c05a07efc25d6a94c8bfb4
->  
-> Some of the changes in this patchset are based on reviewer comment on 
-> patchset mentioned beforehand.
+I think something like needs_voltage_config sounds simpler and prettier.
 
-Thanks for resubmitting the patches. At some point in the past they
-saved me some time in fixing the DW XGMAC on my platform.
+> +};
+> +
+>  struct qcom_edp {
+>         struct device *dev;
+> -       const struct qcom_edp_cfg *cfg;
+> +       const struct qcom_edp_swing_pre_emph_cfg *swing_pre_emph_cfg;
+>
+>         struct phy *phy;
+>
+> @@ -96,6 +99,8 @@ struct qcom_edp {
+>
+>         struct clk_bulk_data clks[2];
+>         struct regulator_bulk_data supplies[2];
+> +
+> +       bool is_edp;
+>  };
+>
+>  static const u8 dp_swing_hbr_rbr[4][4] = {
+> @@ -126,8 +131,7 @@ static const u8 dp_pre_emp_hbr2_hbr3[4][4] = {
+>         { 0x04, 0xff, 0xff, 0xff }
+>  };
+>
+> -static const struct qcom_edp_cfg dp_phy_cfg = {
+> -       .is_dp = true,
+> +static const struct qcom_edp_swing_pre_emph_cfg dp_phy_swing_pre_emph_cfg = {
+>         .swing_hbr_rbr = &dp_swing_hbr_rbr,
+>         .swing_hbr3_hbr2 = &dp_swing_hbr2_hbr3,
+>         .pre_emphasis_hbr_rbr = &dp_pre_emp_hbr_rbr,
+> @@ -162,18 +166,29 @@ static const u8 edp_pre_emp_hbr2_hbr3[4][4] = {
+>         { 0x00, 0xff, 0xff, 0xff }
+>  };
+>
+> -static const struct qcom_edp_cfg edp_phy_cfg = {
+> -       .is_dp = false,
+> +static const struct qcom_edp_swing_pre_emph_cfg edp_phy_swing_pre_emph_cfg = {
+>         .swing_hbr_rbr = &edp_swing_hbr_rbr,
+>         .swing_hbr3_hbr2 = &edp_swing_hbr2_hbr3,
+>         .pre_emphasis_hbr_rbr = &edp_pre_emp_hbr_rbr,
+>         .pre_emphasis_hbr3_hbr2 = &edp_pre_emp_hbr2_hbr3,
+>  };
+>
+> +static struct qcom_edp_phy_cfg sc7280_dp_phy_cfg = {
+> +};
+> +
+> +static struct qcom_edp_phy_cfg sc8280xp_dp_phy_cfg = {
+> +       .needs_swing_pre_emph_cfg = true,
+> +};
+> +
+> +static struct qcom_edp_phy_cfg sc8280xp_edp_phy_cfg = {
+> +       .is_edp = true,
+> +       .needs_swing_pre_emph_cfg = true,
+> +};
+> +
+>  static int qcom_edp_phy_init(struct phy *phy)
+>  {
+>         struct qcom_edp *edp = phy_get_drvdata(phy);
+> -       const struct qcom_edp_cfg *cfg = edp->cfg;
+> +       const struct qcom_edp_swing_pre_emph_cfg *cfg = edp->swing_pre_emph_cfg;
+>         int ret;
+>         u8 cfg8;
+>
+> @@ -200,7 +215,7 @@ static int qcom_edp_phy_init(struct phy *phy)
+>                DP_PHY_PD_CTL_PLL_PWRDN | DP_PHY_PD_CTL_DP_CLAMP_EN,
+>                edp->edp + DP_PHY_PD_CTL);
+>
+> -       if (cfg && cfg->is_dp)
+> +       if (cfg && !edp->is_edp)
+>                 cfg8 = 0xb7;
+>         else
+>                 cfg8 = 0x37;
+> @@ -234,7 +249,7 @@ static int qcom_edp_phy_init(struct phy *phy)
+>
+>  static int qcom_edp_set_voltages(struct qcom_edp *edp, const struct phy_configure_opts_dp *dp_opts)
+>  {
+> -       const struct qcom_edp_cfg *cfg = edp->cfg;
+> +       const struct qcom_edp_swing_pre_emph_cfg *cfg = edp->swing_pre_emph_cfg;
+>         unsigned int v_level = 0;
+>         unsigned int p_level = 0;
+>         u8 ldo_config;
+> @@ -261,7 +276,7 @@ static int qcom_edp_set_voltages(struct qcom_edp *edp, const struct phy_configur
+>         if (swing == 0xff || emph == 0xff)
+>                 return -EINVAL;
+>
+> -       ldo_config = (cfg && cfg->is_dp) ? 0x1 : 0x0;
+> +       ldo_config = edp->is_edp ? 0x0 : 0x1;
+>
+>         writel(ldo_config, edp->tx0 + TXn_LDO_CONFIG);
+>         writel(swing, edp->tx0 + TXn_TX_DRV_LVL);
+> @@ -447,10 +462,10 @@ static int qcom_edp_set_vco_div(const struct qcom_edp *edp, unsigned long *pixel
+>  static int qcom_edp_phy_power_on(struct phy *phy)
+>  {
+>         const struct qcom_edp *edp = phy_get_drvdata(phy);
+> -       const struct qcom_edp_cfg *cfg = edp->cfg;
+> +       const struct qcom_edp_swing_pre_emph_cfg *cfg = edp->swing_pre_emph_cfg;
+>         u32 bias0_en, drvr0_en, bias1_en, drvr1_en;
+>         unsigned long pixel_freq;
+> -       u8 ldo_config;
+> +       u8 ldo_config = 0x0;
+>         int timeout;
+>         int ret;
+>         u32 val;
+> @@ -468,7 +483,8 @@ static int qcom_edp_phy_power_on(struct phy *phy)
+>                 return timeout;
+>
+>
+> -       ldo_config = (cfg && cfg->is_dp) ? 0x1 : 0x0;
+> +       if (cfg && !edp->is_edp)
+> +               ldo_config = 0x1;
+>
+>         writel(ldo_config, edp->tx0 + TXn_LDO_CONFIG);
+>         writel(ldo_config, edp->tx1 + TXn_LDO_CONFIG);
+> @@ -589,6 +605,31 @@ static int qcom_edp_phy_power_off(struct phy *phy)
+>         return 0;
+>  }
+>
+> +static int qcom_edp_phy_set_mode(struct phy *phy, enum phy_mode mode, int submode)
+> +{
+> +       struct qcom_edp *edp = phy_get_drvdata(phy);
+> +
+> +       if (mode != PHY_MODE_DP)
+> +               return -EINVAL;
+> +
+> +       switch (submode) {
+> +       case PHY_SUBMODE_DP:
+> +               edp->swing_pre_emph_cfg = &dp_phy_swing_pre_emph_cfg;
+> +               edp->is_edp = false;
+> +               break;
+> +
+> +       case PHY_SUBMODE_EDP:
+> +               edp->swing_pre_emph_cfg = &edp_phy_swing_pre_emph_cfg;
 
--Serge(y)
+Won't this override the sc7280 config which doesn't set the
+.needs_swing_pre_emph_cfg?
+So even
 
-> 
-> Swee Leong Ching (4):
->   dt-bindings: net: snps,dwmac: per channel irq
->   net: stmmac: Make MSI interrupt routine generic
->   net: stmmac: Add support for TX/RX channel interrupt
->   net: stmmac: Use interrupt mode INTM=1 for per channel irq
-> 
->  .../devicetree/bindings/net/snps,dwmac.yaml   | 24 ++++++++++----
->  .../net/ethernet/stmicro/stmmac/dwmac-intel.c |  4 +--
->  .../net/ethernet/stmicro/stmmac/dwmac4_dma.c  |  2 +-
->  .../net/ethernet/stmicro/stmmac/dwxgmac2.h    |  3 ++
->  .../ethernet/stmicro/stmmac/dwxgmac2_dma.c    | 32 +++++++++++--------
->  .../net/ethernet/stmicro/stmmac/stmmac_main.c | 29 +++++++++--------
->  .../ethernet/stmicro/stmmac/stmmac_platform.c | 24 ++++++++++++++
->  include/linux/stmmac.h                        |  4 +--
->  8 files changed, 84 insertions(+), 38 deletions(-)
-> 
-> -- 
+> +               edp->is_edp = true;
+> +               break;
+> +
+> +       default:
+> +               return -EINVAL;
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+>  static int qcom_edp_phy_exit(struct phy *phy)
+>  {
+>         struct qcom_edp *edp = phy_get_drvdata(phy);
+> @@ -604,6 +645,7 @@ static const struct phy_ops qcom_edp_ops = {
+>         .configure      = qcom_edp_phy_configure,
+>         .power_on       = qcom_edp_phy_power_on,
+>         .power_off      = qcom_edp_phy_power_off,
+> +       .set_mode       = qcom_edp_phy_set_mode,
+>         .exit           = qcom_edp_phy_exit,
+>         .owner          = THIS_MODULE,
+>  };
+> @@ -770,6 +812,7 @@ static int qcom_edp_clks_register(struct qcom_edp *edp, struct device_node *np)
+>
+>  static int qcom_edp_phy_probe(struct platform_device *pdev)
+>  {
+> +       const struct qcom_edp_phy_cfg *cfg = of_device_get_match_data(&pdev->dev);
+>         struct phy_provider *phy_provider;
+>         struct device *dev = &pdev->dev;
+>         struct qcom_edp *edp;
+> @@ -780,7 +823,12 @@ static int qcom_edp_phy_probe(struct platform_device *pdev)
+>                 return -ENOMEM;
+>
+>         edp->dev = dev;
+> -       edp->cfg = of_device_get_match_data(&pdev->dev);
+> +       edp->is_edp = cfg->is_edp;
+> +
+> +       if (cfg->needs_swing_pre_emph_cfg)
+> +               edp->swing_pre_emph_cfg = edp->is_edp ?
+> +                                               &edp_phy_swing_pre_emph_cfg :
+> +                                               &dp_phy_swing_pre_emph_cfg;
+>
+>         edp->edp = devm_platform_ioremap_resource(pdev, 0);
+>         if (IS_ERR(edp->edp))
+> @@ -839,10 +887,10 @@ static int qcom_edp_phy_probe(struct platform_device *pdev)
+>  }
+>
+>  static const struct of_device_id qcom_edp_phy_match_table[] = {
+> -       { .compatible = "qcom,sc7280-edp-phy" },
+> -       { .compatible = "qcom,sc8180x-edp-phy" },
+> -       { .compatible = "qcom,sc8280xp-dp-phy", .data = &dp_phy_cfg },
+> -       { .compatible = "qcom,sc8280xp-edp-phy", .data = &edp_phy_cfg },
+> +       { .compatible = "qcom,sc7280-edp-phy" , .data = &sc7280_dp_phy_cfg, },
+> +       { .compatible = "qcom,sc8180x-edp-phy", .data = &sc7280_dp_phy_cfg, },
+> +       { .compatible = "qcom,sc8280xp-dp-phy", .data = &sc8280xp_dp_phy_cfg, },
+> +       { .compatible = "qcom,sc8280xp-edp-phy", .data = &sc8280xp_edp_phy_cfg, },
+>         { }
+>  };
+>  MODULE_DEVICE_TABLE(of, qcom_edp_phy_match_table);
+>
+> --
 > 2.34.1
-> 
-> 
+>
+
+
+-- 
+With best wishes
+Dmitry
 
