@@ -1,202 +1,226 @@
-Return-Path: <linux-kernel+bounces-9407-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9409-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3F5B81C518
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 07:29:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D52781C51C
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 07:29:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1FB87B2248D
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 06:29:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D6678281E7B
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 06:29:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9E84FBF6;
-	Fri, 22 Dec 2023 06:27:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="JS/5uxT7"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A9D18C14;
+	Fri, 22 Dec 2023 06:29:52 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+Received: from SHSQR01.spreadtrum.com (unknown [222.66.158.135])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DE21D306;
-	Fri, 22 Dec 2023 06:27:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BM5jhkJ031026;
-	Fri, 22 Dec 2023 06:27:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	qcppdkim1; bh=BMcIK6+tF1WzlJAS4gMMrCiHhLdtiy0eQaT/jyXeihI=; b=JS
-	/5uxT7uDrSRYJPWV0Z7XzPGoZNq+eNaSl1O1vKQcpvQAPb606QF+lkBMmBDt2PTz
-	PmOBI32hu49IKDLpY5hkLua98muW6TB6YTP37SKGtaU1k9r9lFmcl9ebdv/oEO2A
-	4bga5DNimovymP/FTwirSAzywTONRIDmYsG1+0bCNgAdhMR2YGvFHnWfNrAySyMJ
-	aC+m7nbV9wAyi02PwAS4M4QcZr7P3N6uUKff8BMTwSlAGYP5ftrHBdhONpLRsZS7
-	J6UR/07sUow7DM8muwkD40nJaq8LxrAe/fV9RyxpNewUZreCcxsxGyAMMo3c/gO0
-	rzxagpminbRnzp2X9bCQ==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v4pte23nq-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 22 Dec 2023 06:27:47 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BM6RkcN005155
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 22 Dec 2023 06:27:46 GMT
-Received: from hu-kriskura-hyd.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Thu, 21 Dec 2023 22:27:41 -0800
-From: Krishna Kurapati <quic_kriskura@quicinc.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, "Andy
- Gross" <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Konrad Dybcio
-	<konrad.dybcio@linaro.org>,
-        Wesley Cheng <quic_wcheng@quicinc.com>,
-        "Conor
- Dooley" <conor+dt@kernel.org>, Johan Hovold <johan@kernel.org>
-CC: <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <quic_ppratap@quicinc.com>, <quic_jackp@quicinc.com>,
-        Krishna Kurapati
-	<quic_kriskura@quicinc.com>
-Subject: [PATCH v4 2/2] usb: dwc3: qcom: Rename hs_phy_irq to qusb2_phy_irq
-Date: Fri, 22 Dec 2023 11:57:20 +0530
-Message-ID: <20231222062720.10128-3-quic_kriskura@quicinc.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231222062720.10128-1-quic_kriskura@quicinc.com>
-References: <20231222062720.10128-1-quic_kriskura@quicinc.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C85DC129
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 06:29:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=unisoc.com
+Received: from dlp.unisoc.com ([10.29.3.86])
+	by SHSQR01.spreadtrum.com with ESMTP id 3BM6Si16080913;
+	Fri, 22 Dec 2023 14:28:44 +0800 (+08)
+	(envelope-from zhaoyang.huang@unisoc.com)
+Received: from SHDLP.spreadtrum.com (bjmbx02.spreadtrum.com [10.0.64.8])
+	by dlp.unisoc.com (SkyGuard) with ESMTPS id 4SxHJx4PqFz2Q05DN;
+	Fri, 22 Dec 2023 14:22:25 +0800 (CST)
+Received: from BJMBX01.spreadtrum.com (10.0.64.7) by BJMBX02.spreadtrum.com
+ (10.0.64.8) with Microsoft SMTP Server (TLS) id 15.0.1497.23; Fri, 22 Dec
+ 2023 14:28:43 +0800
+Received: from BJMBX01.spreadtrum.com ([fe80::54e:9a:129d:fac7]) by
+ BJMBX01.spreadtrum.com ([fe80::54e:9a:129d:fac7%16]) with mapi id
+ 15.00.1497.023; Fri, 22 Dec 2023 14:28:43 +0800
+From: =?utf-8?B?6buE5pyd6ZizIChaaGFveWFuZyBIdWFuZyk=?=
+	<zhaoyang.huang@unisoc.com>
+To: Yu Zhao <yuzhao@google.com>, Zhaoyang Huang <huangzhaoyang@gmail.com>
+CC: Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton
+	<akpm@linux-foundation.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        =?utf-8?B?5bq357qq5ruoIChTdGV2ZSBLYW5nKQ==?= <Steve.Kang@unisoc.com>
+Subject: reply: [RFC PATCH 1/1] mm: mark folio accessed in minor fault
+Thread-Topic: reply: [RFC PATCH 1/1] mm: mark folio accessed in minor fault
+Thread-Index: AQHaNKAbFnoLVF5PBkO1Xlt6kLCF+Q==
+Date: Fri, 22 Dec 2023 06:28:42 +0000
+Message-ID: <1703226522421.22653@unisoc.com>
+References: <20231220102948.1963798-1-zhaoyang.huang@unisoc.com>
+ <ZYL2rbD5UTz3s8gg@casper.infradead.org>
+ <CAGWkznFcMkkqsKJSyHJfts9ZiYsxxg_dFTccieQ4+boRDJgG4g@mail.gmail.com>
+ <ZYO6bLcCRYlo290g@casper.infradead.org>
+ <CAOUHufZ-hAAB+9iL3K-YokN4oVJoiC9dVQ+6zLu-M4Ag52TY5g@mail.gmail.com>
+ <CAGWkznGUvPeWkjcy42dudx_+n19dr7SU3B3GGO6JovXHB-Vyzg@mail.gmail.com>
+ <CAOUHufajdi7LjyJWNoDx7RP_i9mmN8j9dBqO7GC4A6YNPNnygw@mail.gmail.com>
+ <CAGWkznFb2vn_+2ho7BQ1cqVDx0cyFzoffS3_nk4hYUNuRSsVGw@mail.gmail.com>,<CAOUHufZYqeTyZ7e_QyHnEuo8V0Z-9BD5XyNsMMx8Xp1eK5aNkQ@mail.gmail.com>
+In-Reply-To: <CAOUHufZYqeTyZ7e_QyHnEuo8V0Z-9BD5XyNsMMx8Xp1eK5aNkQ@mail.gmail.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-ms-exchange-transport-fromentityheader: Hosted
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: D5PEjfAHsncdCM5NtbY4wkRKQZI1tjz-
-X-Proofpoint-ORIG-GUID: D5PEjfAHsncdCM5NtbY4wkRKQZI1tjz-
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=661 adultscore=0
- clxscore=1015 priorityscore=1501 malwarescore=0 impostorscore=0
- phishscore=0 suspectscore=0 mlxscore=0 lowpriorityscore=0 bulkscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2312220043
+X-MAIL:SHSQR01.spreadtrum.com 3BM6Si16080913
 
-For wakeup to work, driver needs to enable interrupts that depict what is
-happening on the DP/DM lines. On QUSB targets, this is identified by
-qusb2_phy whereas on SoCs using Femto PHY, separate {dp,dm}_hs_phy_irq's
-are used instead.
-
-The implementation incorrectly names qusb2_phy interrupts as "hs_phy_irq".
-Clean this up so that driver would be using only qusb2/(dp & dm) for wakeup
-purposes.
-
-For devices running older kernels, this won't break any functionality
-because the interrupt configurations in QUSB2 PHY based SoCs is done
-by configuring QUSB2PHY_INTR_CTRL register in PHY address space and it was
-never armed properly right from the start.
-
-Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
----
- drivers/usb/dwc3/dwc3-qcom.c | 22 +++++++++++-----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
-
-diff --git a/drivers/usb/dwc3/dwc3-qcom.c b/drivers/usb/dwc3/dwc3-qcom.c
-index fdf6d5d3c2ad..dbd6a5b2b289 100644
---- a/drivers/usb/dwc3/dwc3-qcom.c
-+++ b/drivers/usb/dwc3/dwc3-qcom.c
-@@ -57,7 +57,7 @@ struct dwc3_acpi_pdata {
- 	u32			qscratch_base_offset;
- 	u32			qscratch_base_size;
- 	u32			dwc3_core_base_size;
--	int			hs_phy_irq_index;
-+	int			qusb2_phy_irq_index;
- 	int			dp_hs_phy_irq_index;
- 	int			dm_hs_phy_irq_index;
- 	int			ss_phy_irq_index;
-@@ -73,7 +73,7 @@ struct dwc3_qcom {
- 	int			num_clocks;
- 	struct reset_control	*resets;
- 
--	int			hs_phy_irq;
-+	int			qusb2_phy_irq;
- 	int			dp_hs_phy_irq;
- 	int			dm_hs_phy_irq;
- 	int			ss_phy_irq;
-@@ -372,7 +372,7 @@ static void dwc3_qcom_disable_wakeup_irq(int irq)
- 
- static void dwc3_qcom_disable_interrupts(struct dwc3_qcom *qcom)
- {
--	dwc3_qcom_disable_wakeup_irq(qcom->hs_phy_irq);
-+	dwc3_qcom_disable_wakeup_irq(qcom->qusb2_phy_irq);
- 
- 	if (qcom->usb2_speed == USB_SPEED_LOW) {
- 		dwc3_qcom_disable_wakeup_irq(qcom->dm_hs_phy_irq);
-@@ -389,7 +389,7 @@ static void dwc3_qcom_disable_interrupts(struct dwc3_qcom *qcom)
- 
- static void dwc3_qcom_enable_interrupts(struct dwc3_qcom *qcom)
- {
--	dwc3_qcom_enable_wakeup_irq(qcom->hs_phy_irq, 0);
-+	dwc3_qcom_enable_wakeup_irq(qcom->qusb2_phy_irq, 0);
- 
- 	/*
- 	 * Configure DP/DM line interrupts based on the USB2 device attached to
-@@ -542,19 +542,19 @@ static int dwc3_qcom_setup_irq(struct platform_device *pdev)
- 	int irq;
- 	int ret;
- 
--	irq = dwc3_qcom_get_irq(pdev, "hs_phy_irq",
--				pdata ? pdata->hs_phy_irq_index : -1);
-+	irq = dwc3_qcom_get_irq(pdev, "qusb2_phy",
-+				pdata ? pdata->qusb2_phy_irq_index : -1);
- 	if (irq > 0) {
- 		/* Keep wakeup interrupts disabled until suspend */
- 		ret = devm_request_threaded_irq(qcom->dev, irq, NULL,
- 					qcom_dwc3_resume_irq,
- 					IRQF_ONESHOT | IRQF_NO_AUTOEN,
--					"qcom_dwc3 HS", qcom);
-+					"qcom_dwc3 QUSB2", qcom);
- 		if (ret) {
--			dev_err(qcom->dev, "hs_phy_irq failed: %d\n", ret);
-+			dev_err(qcom->dev, "qusb2_phy_irq failed: %d\n", ret);
- 			return ret;
- 		}
--		qcom->hs_phy_irq = irq;
-+		qcom->qusb2_phy_irq = irq;
- 	}
- 
- 	irq = dwc3_qcom_get_irq(pdev, "dp_hs_phy_irq",
-@@ -1058,7 +1058,7 @@ static const struct dwc3_acpi_pdata sdm845_acpi_pdata = {
- 	.qscratch_base_offset = SDM845_QSCRATCH_BASE_OFFSET,
- 	.qscratch_base_size = SDM845_QSCRATCH_SIZE,
- 	.dwc3_core_base_size = SDM845_DWC3_CORE_SIZE,
--	.hs_phy_irq_index = 1,
-+	.qusb2_phy_irq_index = 1,
- 	.dp_hs_phy_irq_index = 4,
- 	.dm_hs_phy_irq_index = 3,
- 	.ss_phy_irq_index = 2
-@@ -1068,7 +1068,7 @@ static const struct dwc3_acpi_pdata sdm845_acpi_urs_pdata = {
- 	.qscratch_base_offset = SDM845_QSCRATCH_BASE_OFFSET,
- 	.qscratch_base_size = SDM845_QSCRATCH_SIZE,
- 	.dwc3_core_base_size = SDM845_DWC3_CORE_SIZE,
--	.hs_phy_irq_index = 1,
-+	.qusb2_phy_irq_index = 1,
- 	.dp_hs_phy_irq_index = 4,
- 	.dm_hs_phy_irq_index = 3,
- 	.ss_phy_irq_index = 2,
--- 
-2.42.0
-
+Ck9uIFRodSwgRGVjIDIxLCAyMDIzIGF0IDEwOjUz4oCvUE0gWmhhb3lhbmcgSHVhbmcgPGh1YW5n
+emhhb3lhbmdAZ21haWwuY29tPiB3cm90ZToKPgo+IE9uIFRodSwgRGVjIDIxLCAyMDIzIGF0IDI6
+MzPigK9QTSBZdSBaaGFvIDx5dXpoYW9AZ29vZ2xlLmNvbT4gd3JvdGU6Cj4gPgo+ID4gT24gV2Vk
+LCBEZWMgMjAsIDIwMjMgYXQgMTE6MjjigK9QTSBaaGFveWFuZyBIdWFuZyA8aHVhbmd6aGFveWFu
+Z0BnbWFpbC5jb20+IHdyb3RlOgo+ID4gPgo+ID4gPiBPbiBUaHUsIERlYyAyMSwgMjAyMyBhdCAx
+Mjo1M+KAr1BNIFl1IFpoYW8gPHl1emhhb0Bnb29nbGUuY29tPiB3cm90ZToKPiA+ID4gPgo+ID4g
+PiA+IE9uIFdlZCwgRGVjIDIwLCAyMDIzIGF0IDk6MDnigK9QTSBNYXR0aGV3IFdpbGNveCA8d2ls
+bHlAaW5mcmFkZWFkLm9yZz4gd3JvdGU6Cj4gPiA+ID4gPgo+ID4gPiA+ID4gT24gVGh1LCBEZWMg
+MjEsIDIwMjMgYXQgMDk6NTg6MjVBTSArMDgwMCwgWmhhb3lhbmcgSHVhbmcgd3JvdGU6Cj4gPiA+
+ID4gPiA+IE9uIFdlZCwgRGVjIDIwLCAyMDIzIGF0IDEwOjE04oCvUE0gTWF0dGhldyBXaWxjb3gg
+PHdpbGx5QGluZnJhZGVhZC5vcmc+IHdyb3RlOgo+ID4gPiA+ID4gPiA+Cj4gPiA+ID4gPiA+ID4g
+T24gV2VkLCBEZWMgMjAsIDIwMjMgYXQgMDY6Mjk6NDhQTSArMDgwMCwgemhhb3lhbmcuaHVhbmcg
+d3JvdGU6Cj4gPiA+ID4gPiA+ID4gPiBGcm9tOiBaaGFveWFuZyBIdWFuZyA8emhhb3lhbmcuaHVh
+bmdAdW5pc29jLmNvbT4KPiA+ID4gPiA+ID4gPiA+Cj4gPiA+ID4gPiA+ID4gPiBJbmFjdGl2ZSBt
+YXBwZWQgZm9saW8gd2lsbCBiZSBwcm9tb3RlZCB0byBhY3RpdmUgb25seSB3aGVuIGl0IGlzCj4g
+PiA+ID4gPiA+ID4gPiBzY2FubmVkIGluIHNocmlua19pbmFjdGl2ZV9saXN0LCB3aGlsZSB0aGUg
+dmZzIGZvbGlvIHdpbGwgZG8gdGhpcwo+ID4gPiA+ID4gPiA+ID4gaW1taWRpYXRseSB3aGVuIGl0
+IGlzIGFjY2Vzc2VkLiBUaGVzZSB3aWxsIGludHJvZHVjZSB0d28gYWZmZWN0aW9uczoKPiA+ID4g
+PiA+ID4gPiA+Cj4gPiA+ID4gPiA+ID4gPiAxLiBOUl9BQ1RJVkVfRklMRSBpcyBub3QgYWNjdXJh
+dGUgYXMgZXhwZWN0ZWQuCj4gPiA+ID4gPiA+ID4gPiAyLiBMb3cgcmVjbGFpbWluZyBlZmZpY2ll
+bmN5IGNhdXNlZCBieSBkdW1teSBuYWN0aXZlIGZvbGlvIHdoaWNoIHNob3VsZAo+ID4gPiA+ID4g
+PiA+ID4gICAgYmUga2VwdCBhcyBlYXJsaWVyIGFzIHNocmlua19hY3RpdmVfbGlzdC4KPiA+ID4g
+PiA+ID4gPiA+Cj4gPiA+ID4gPiA+ID4gPiBJIHdvdWxkIGxpa2UgdG8gc3VnZ2VzdCBtYXJrIHRo
+ZSBmb2xpbyBiZSBhY2Nlc3NlZCBpbiBtaW5vciBmYXVsdCB0bwo+ID4gPiA+ID4gPiA+ID4gc29s
+dmUgdGhpcyBzaXR1YXRpb24uCj4gPiA+ID4gPiA+ID4KPiA+ID4gPiA+ID4gPiBUaGlzIGlzbid0
+IGdvaW5nIHRvIGJlIGFzIGVmZmVjdGl2ZSBhcyB5b3UgaW1hZ2luZS4gIEFsbW9zdCBhbGwgZmls
+ZQo+ID4gPiA+ID4gPiA+IGZhdWx0cyBhcmUgaGFuZGxlZCB0aHJvdWdoIGZpbGVtYXBfbWFwX3Bh
+Z2VzKCkuICBTbyBJIG11c3QgYXNrLCB3aGF0Cj4gPiA+ID4gPiA+ID4gdGVzdGluZyBoYXZlIHlv
+dSBkb25lIHdpdGggdGhpcyBwYXRjaD8KPiA+ID4gPiA+ID4gPgo+ID4gPiA+ID4gPiA+IEFuZCB3
+aGlsZSB5b3UncmUgZ2F0aGVyaW5nIGRhdGEsIHdoYXQgZWZmZWN0IHdvdWxkIHRoaXMgcGF0Y2gg
+aGF2ZSBvbiB5b3VyCj4gPiA+ID4gPiA+ID4gd29ya2xvYWRzPwo+ID4gPiA+ID4gPiBUaGFua3Mg
+Zm9yIGhlYWRzLXVwLCBJIGFtIG91dCBvZiBkYXRlIGZvciByZWFkYWhlYWQgbWVjaGFuaXNtLiBN
+eSBnb2FsCj4gPiA+ID4gPgo+ID4gPiA+ID4gSXQncyBub3QgYSB0ZXJyaWJseSBuZXcgbWVjaGFu
+aXNtIC4uLiBmaWxlbWFwX21hcF9wYWdlcygpIHdhcyBhZGRlZCBuaW5lCj4gPiA+ID4gPiB5ZWFy
+cyBhZ28gaW4gMjAxNCBieSBjb21taXQgZjE4MjAzNjFmODNkCj4gPiA+ID4gPgo+ID4gPiA+ID4g
+PiBpcyB0byBoYXZlIG1hcHBlZCBmaWxlIHBhZ2VzIGJlaGF2ZSBsaWtlIG90aGVyIHBhZ2VzIHdo
+aWNoIGNvdWxkIGJlCj4gPiA+ID4gPiA+IHByb21vdGVkIGltbWVkaWF0ZWx5IHdoZW4gdGhleSBh
+cmUgYWNjZXNzZWQuIEkgd2lsbCB1cGRhdGUgdGhlIHBhdGNoCj4gPiA+ID4gPiA+IGFuZCBwcm92
+aWRlIGJlbmNobWFyayBkYXRhIGluIG5ldyBwYXRjaCBzZXQuCj4gPiA+ID4gPgo+ID4gPiA+ID4g
+VW5kZXJzdG9vZC4gIEkgZG9uJ3Qga25vdyB0aGUgaGlzdG9yeSBvZiB0aGlzLCBzbyBJJ20gbm90
+IHN1cmUgaWYgdGhlCj4gPiA+ID4gPiBkZWNpc2lvbiB0byBub3QgbWFyayBmb2xpb3MgYXMgYWNj
+ZXNzZWQgaGVyZSB3YXMgaW50ZW50aW9uYWwgb3Igbm90Lgo+ID4gPiA+ID4gSSBzdXNwZWN0IGl0
+J3MgZW50aXJlbHkgdW5pbnRlbnRpb25hbC4KPiA+ID4gPgo+ID4gPiA+IEl0J3MgaW50ZW50aW9u
+YWwuIEZvciB0aGUgYWN0aXZlL2luYWN0aXZlIExSVSwgYWxsIGZvbGlvcyBzdGFydAo+ID4gPiA+
+IGluYWN0aXZlLiBUaGUgZmlyc3Qgc2NhbiBvZiBhIGZvbGlvIHRyYW5zZmVycyB0aGUgQS1iaXQg
+KGlmIGl0J3Mgc2V0Cj4gPiA+ID4gZHVyaW5nIHRoZSBpbml0aWFsIGZhdWx0KSB0byBQR19yZWZl
+cmVuY2VkOyB0aGUgc2Vjb25kIHNjYW4gb2YgdGhpcwo+ID4gPiA+IGZvbGlvLCBpZiB0aGUgQS1i
+aXQgaXMgc2V0IGFnYWluLCBtb3ZlcyBpdCB0byB0aGUgYWN0aXZlIGxpc3QuIFRoaXMKPiA+ID4g
+PiB3YXkgc2luZ2xlLXVzZSBmb2xpb3MsIGkuZS4sIGZvbGlvcyBtYXBwZWQgZm9yIGZpbGUgc3Ry
+ZWFtaW5nLCBjYW4gYmUKPiA+ID4gPiByZWNsYWltZWQgcXVpY2tseSwgc2luY2UgdGhleSBhcmUg
+ImRlbW90ZWQiIHJhdGhlciB0aGFuICJwcm9tb3RlZCIgb24KPiA+ID4gPiB0aGUgc2Vjb25kIHNj
+YW4uIFRoaXMgUkZDIHdvdWxkIHJlZ3Jlc3MgbWVtb3J5IHN0cmVhbWluZyB3b3JrbG9hZHMuCj4g
+PiA+IFRoYW5rcy4gUGxlYXNlIGNvcnJlY3QgbWUgaWYgSSBhbSB3cm9uZy4gSU1PLCB0aGVyZSB3
+aWxsIGJlIG5vCj4gPiA+IG1pbm9yLWZhdWx0IGZvciBzaW5nbGUtdXNlIGZvbGlvcwo+ID4KPiA+
+IFdoeSBub3Q/IFdoYXQgcHJldmVudHMgYSBzcGVjaWZpYyAqYWNjZXNzIHBhdHRlcm4qIGZyb20g
+dHJpZ2dlcmluZyBtaW5vciBmYXVsdHM/Cj4gUGxlYXNlIGZpbmQgdGhlIGZvbGxvd2luZyBjaGFy
+dCBmb3IgbWFwcGVkIHBhZ2Ugc3RhdGUgbWFjaGluZQo+IHRyYW5zZmljYXRpb24uCgo+IEknbSBu
+b3Qgc3VyZSB3aGF0IHlvdSBhcmUgYXNraW5nIG1lIHRvIGxvb2sgYXQgLS0gaXMgdGhlIGZvbGxv
+d2luZwo+IHRyeWluZyB0byBpbGx1c3RyYXRlIHNvbWV0aGluZyByZWxhdGVkIHRvIG15IHF1ZXN0
+aW9uIGFib3ZlPwoKc29ycnkgZm9yIG15IGZhdWx0IG9uIHRhYmxlIGdlbmVyYXRpb24sIHJlc2Vu
+ZCBpdCwgSSBhbSB0cnlpbmcgdG8gcHJlc2VudCBob3cgUkZDIHBlcmZvcm1zIGluIGEgcGFnZSdz
+IHN0YXQgdHJhbnNmZXIgCgoxLiBSRkMgYmVoYXZlcyB0aGUgc2FtZSBhcyB0aGUgbWFpbmxpbmUg
+aW4gKDEpKDIpCjIuIFZNX0VYRUMgbWFwcGVkIHBhZ2VzIGFyZSBhY3RpdmF0ZWQgZWFybGllciB0
+aGFuIG1haW5saW5lIHdoaWNoIGhlbHAgaW1wcm92ZSBzY2FuIGVmZmljaWVuY3kgaW4gKDMpKDQp
+CjMuIG5vbmUgVk1fRVhFQyBtYXBwZWQgcGFnZXMgYXJlIGRyb3BwZWQgYXMgdmZzIHBhZ2VzIGRv
+IGR1cmluZyAzcmQgc2Nhbi4KCigxKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+MXN0IGFjY2VzcyAgICAgICAgIHNocmlua19hY3RpdmVfbGlzdCAgICAgICAgICAgICAgMXN0IHNj
+YW4oc2hpbmtfZm9saW9fbGlzdCkgICAgICAgMm5kIHNjYW4oc2hyaW5rX2ZvbGlvX2xpc3QnKQpt
+YWlubGluZSAgICAgICAgICAgICAgICAgICAgIElOQS9VTlIgICAgICAgICAgICAgICAgICAgICAg
+ICBOQSAgICAgICAgICAgICAgICAgICAgICAgICAgSU5BL1JFRiAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICBEUk9QClJGQyAgICAgICAgICAgICAgICAgICAgICAgICAgIElOQS9VTlIgICAg
+ICAgICAgICAgICAgICAgICAgICBOQSAgICAgICAgICAgICAgICAgICAgICAgICAgIElOQS9SRUYg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICBEUk9QCgooMikKICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgIDFzdCBhY2Nlc3MgICAgICAgICAgICAgICAgIDJuZCBhY2Nlc3MgICAg
+ICAgICAgICAgICBzaHJpbmtfYWN0aXZlX2xpc3QgICAgICAgICAgMXN0IHNjYW4oc2hpbmtfZm9s
+aW9fbGlzdCkgCm1haW5saW5lICAgICAgICAgICAgICAgICAgICAgSU5BL1VOUiAgICAgICAgICAg
+ICAgICAgICAgIElOQS9VTlIgICAgICAgICAgICAgICAgICAgICAgIE5BICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgQUNUL1JFRgpSRkMgICAgICAgICAgICAgICAgICAgICAgICAgICBJ
+TkEvVU5SICAgICAgICAgICAgICAgICAgICAgSU5BL1JFRiAgICAgICAgICAgICAgICAgICAgICAg
+TkEgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBBQ1QvUkVGCgooMykKICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgIDFzdCBhY2Nlc3MgICAgICAgIDFzdCBzY2FuKHNoaW5r
+X2ZvbGlvX2xpc3QpICAgICAgIDJuZCBhY2Nlc3MgICAgICAybmQgc2NhbihzaHJpbmtfYWN0aXZl
+X2xpc3QpICAgICAzcmQgY2FuKHNocmlua19mb2xpb19saXN0KQptYWlubGluZSAgICAgICAgICAg
+ICAgICAgICAgIElOQS9VTlIgICAgICAgICAgICAgICAgICAgIElOQS9SRUYgICAgICAgICAgICAg
+ICAgICAgICAgICAgICBJTkEvUkVGICAgICAgICAgICAgICAgIE5BICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgIEFDVC9SRUYKUkZDICAgICAgICAgICAgICAgICAgICAgICAgICAg
+SU5BL1VOUiAgICAgICAgICAgICAgICAgICAgSU5BL1JFRiAgICAgICAgICAgICAgICAgICAgICAg
+ICAgIEFDVC9SRUYgICAgICAgICAgICAgICAgQUNUL1JFRiAgICAgICAgICAgICAgICAgICAgICAg
+ICAgIE5BCihWTV9FWEVDKQpSRkMgICAgICAgICAgICAgICAgICAgICAgICAgICBJTkEvVU5SICAg
+ICAgICAgICAgICAgICAgICBJTkEvUkVGICAgICAgICAgICAgICAgICAgICAgICAgICAgQUNUL1JF
+RiAgICAgICAgICAgICAgICBJTkEvUkVGICAgICAgICAgICAgICAgICAgICAgICAgICAgIERST1AK
+KG5vbiBWTV9FWEVDKQoKKDQpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAxc3Qg
+YWNjZXNzICAgICAgICAgICAgICAgICAgIDJuZCBhY2Nlc3MgICAgICAgICAgICAgICAgICAgM3Jk
+IGFjY2VzcyAgICAgICAgICAxc3Qgc2NhbihzaHJpbmtfYWN0aXZlX2xpc3QpICAgMm5kIHNjYW4o
+c2hpbmtfZm9saW9fbGlzdCkKbWFpbmxpbmUgICAgICAgICAgICAgICAgICAgICBJTkEvVU5SICAg
+ICAgICAgICAgICAgICAgICAgICBJTkEvVU5SICAgICAgICAgICAgICAgICAgICAgICBJTkEvVU5S
+ICAgICAgICAgICAgICAgICAgICBOQSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIEFD
+VC9SRUYKUkZDICAgICAgICAgICAgICAgICAgICAgICAgICAgSU5BL1VOUiAgICAgICAgICAgICAg
+ICAgICAgICAgSU5BL1JFRiAgICAgICAgICAgICAgICAgICAgICAgICBBQ1QvUkVGICAgICAgICAg
+ICAgICAgICAgQUNUL1JFRiAgICAgICAgICAgICAgICAgICAgICAgTkEKKFZNX0VYRUMpClJGQyAg
+ICAgICAgICAgICAgICAgICAgICAgICAgIElOQS9VTlIgICAgICAgICAgICAgICAgICAgICAgIElO
+QS9SRUYgICAgICAgICAgICAgICAgICAgICAgICBBQ1QvUkVGICAgICAgICAgICAgICAgICAgIEFD
+VC9SRUYgICAgICAgICAgICAgICAgICAgICAgIE5BCihOb24gVk1fRVhFQykKCj4gV2UgY2FuIGZp
+bmQgdGhhdDoKPiAxLiBSRkMgYmVoYXZlcyB0aGUgc2FtZSBhcyB0aGUgbWFpbmxpbmUgaW4gKDEp
+KDIpCj4gMi4gVk1fRVhFQyBtYXBwZWQgcGFnZXMgYXJlIGFjdGl2YXRlZCBlYXJsaWVyIHRoYW4g
+bWFpbmxpbmUgd2hpY2ggaGVscAo+IGltcHJvdmUgc2NhbiBlZmZpY2llbmN5IGluICgzKSg0KQo+
+IDMuIG5vbmUgVk1fRVhFQyBtYXBwZWQgcGFnZXMgYXJlIGRyb3BwZWQgYXMgdmZzIHBhZ2VzIGRv
+IGR1cmluZyAzcmQgc2Nhbi4KPgo+ICgxKQo+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAxc3QgYWNjZXNzCj4gc2hyaW5rX2FjdGl2ZV9saXN0ICAgICAgICAgICAgICAxc3Qgc2Nh
+bihzaGlua19mb2xpb19saXN0KQo+IDJuZCBzY2FuKHNocmlua19mb2xpb19saXN0JykKPiBtYWlu
+bGluZSAgICAgICAgICAgICAgICAgICAgIElOQS9VTlIgICAgICAgICAgICAgICAgICAgICAgICBO
+QQo+ICAgICAgICAgICAgICAgICAgICAgICAgICAgSU5BL1JFRgo+IERST1AKPiBSRkMgICAgICAg
+ICAgICAgICAgICAgICAgICAgICBJTkEvVU5SICAgICAgICAgICAgICAgICAgICAgICAgTkEKPiAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICBJTkEvUkVGCj4gRFJPUAo+Cj4gKDIpCj4gICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgIDFzdCBhY2Nlc3MgICAgICAgICAgICAgICAgICAg
+Mm5kCj4gYWNjZXNzICAgICAgICAgICAgICAgICAgICAgICAgc2hyaW5rX2FjdGl2ZV9saXN0ICAg
+ICAgICAgIDFzdAo+IHNjYW4oc2hpbmtfZm9saW9fbGlzdCkKPiBtYWlubGluZSAgICAgICAgICAg
+ICAgICAgICAgIElOQS9VTlIgICAgICAgICAgICAgICAgICAgICBJTkEvVU5SCj4gICAgICAgICAg
+ICAgICAgICAgICAgIE5BICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgQUNUL1JFRgo+
+IFJGQyAgICAgICAgICAgICAgICAgICAgICAgICAgIElOQS9VTlIgICAgICAgICAgICAgICAgICAg
+ICBJTkEvUkVGCj4gICAgICAgICAgICAgICAgICAgICAgICAgTkEgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICBBQ1QvUkVGCj4KPiAoMykKPiAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgMXN0IGFjY2Vzcwo+IHNocmlua19hY3RpdmVfbGlzdCAgICAgICAgMXN0IHNjYW4o
+c2hpbmtfZm9saW9fbGlzdCkgICAgICAgMm5kIGFjY2Vzcwo+ICAgICAgIDJuZCBzY2FuKHNocmlu
+a19hY3RpdmVfbGlzdCkgICAgIDNyZCBzY2FuKHNoaW5rX2ZvbGlvX2xpc3QpCj4gbWFpbmxpbmUg
+ICAgICAgICAgICAgICAgICAgICBJTkEvVU5SICAgICAgICAgICAgICAgICAgICAgICAgTkEKPiAg
+ICAgICAgICAgICAgICAgICAgICAgICAgIElOQS9SRUYgICAgICAgICAgICAgICAgICAgICAgICAg
+ICBJTkEvUkVGCj4gICAgICAgICAgICAgICAgIE5BICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgIEFDVC9SRUYKPiBSRkMgICAgICAgICAgICAgICAgICAgICAgICAgICBJTkEvVU5S
+ICAgICAgICAgICAgICAgICAgICAgICAgTkEKPiAgICAgICAgICAgICAgICAgICAgICAgICAgICBJ
+TkEvUkVGICAgICAgICAgICAgICAgICAgICAgICAgICAgQUNUL1JFRgo+ICAgICAgICAgICAgICAg
+ICBBQ1QvUkVGICAgICAgICAgICAgICAgICAgICAgICAgICAgTkEKPiAoVk1fRVhFQykKPiBSRkMg
+ICAgICAgICAgICAgICAgICAgICAgICAgICBJTkEvVU5SICAgICAgICAgICAgICAgICAgICAgICAg
+TkEKPiAgICAgICAgICAgICAgICAgICAgICAgICAgICBJTkEvUkVGICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgQUNUL1JFRgo+ICAgICAgICAgICAgICAgICBJTkEvUkVGICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgIERST1AKPiAobm9uIFZNX0VYRUMpCj4KPiAoNCkKPiAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgMXN0IGFjY2VzcyAgICAgICAgICAgICAgICAgICAybmQKPiBh
+Y2Nlc3MgICAgICAgICAgICAgICAgICAgICAgICAgM3JkIGFjY2Vzcwo+IHNocmlua19hY3RpdmVf
+bGlzdCAgICAgICAgICAgICAgICAgICBzaGlua19mb2xpb19saXN0Cj4gbWFpbmxpbmUgICAgICAg
+ICAgICAgICAgICAgICBJTkEvVU5SICAgICAgICAgICAgICAgICAgICAgICBJTkEvVU5SCj4gICAg
+ICAgICAgICAgICAgICAgICAgICBJTkEvVU5SICAgICAgICAgICAgICAgICAgICAgICAgICBOQQo+
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgIEFDVC9SRUYKPiBSRkMgICAgICAgICAgICAgICAg
+ICAgICAgICAgICBJTkEvVU5SICAgICAgICAgICAgICAgICAgICAgICBJTkEvUkVGCj4gICAgICAg
+ICAgICAgICAgICAgICAgICAgIEFDVC9SRUYgICAgICAgICAgICAgICAgICAgICAgICAgQUNUL1JF
+Rgo+ICAgICAgICAgICAgICAgICAgICAgICAgTkEKPiAoVk1fRVhFQykKPiBSRkMgICAgICAgICAg
+ICAgICAgICAgICAgICAgICBJTkEvVU5SICAgICAgICAgICAgICAgICAgICAgICBJTkEvUkVGCj4g
+ICAgICAgICAgICAgICAgICAgICAgICAgIEFDVC9SRUYgICAgICAgICAgICAgICAgICAgICAgICAg
+QUNUL1JFRgo+ICAgICAgICAgICAgICAgICAgICAgICAgTkEKPiAoTm9uIFZNX0VYRUMpCj4gPgo+
+ID4gPiB3aGljaCBtZWFucyBSRkMgY291bGQgYmVoYXZlIHRoZQo+ID4gPiBzYW1lIGFzIG1haW5s
+aW5lIGRvZXMgbm93PyBJIHRoaW5rIGl0IGRvZXNuJ3QgbWFrZSBzZW5zZSB0byBoYXZlCj4gPiA+
+IG11bHRpcGxlLW1hcHBlZCBwYWdlcyBmaWxsZWQgaW4gcGFnZV9saXN0IHRvIHNocmlua19wYWdl
+X2xpc3Qgc2luY2Ugd2UKPiA+ID4gY2FuIGRpc3Rpbmd1aXNoIHRoZW0gaW4gYWR2YW5jZS4K
 
