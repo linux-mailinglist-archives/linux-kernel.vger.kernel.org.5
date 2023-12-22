@@ -1,64 +1,64 @@
-Return-Path: <linux-kernel+bounces-9845-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9846-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E895C81CC4C
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 16:34:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 28AA681CC4F
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 16:35:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DB9E0B227B5
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 15:34:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BD1061F21E87
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 15:35:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA9E82377A;
-	Fri, 22 Dec 2023 15:34:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7961723779;
+	Fri, 22 Dec 2023 15:34:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="PNE19uHh"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="lP4Uis0L"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFA7B23763
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 15:34:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C54623763
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 15:34:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2cc6d9b4c6aso23355321fa.3
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 07:34:20 -0800 (PST)
+Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2cca5e7b390so16023961fa.3
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 07:34:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703259259; x=1703864059; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1703259294; x=1703864094; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=Tiv43+rTrw52gDic8qSBj7YIXfHsI2sRrrEjE4Sw/z8=;
-        b=PNE19uHhaWtyDTLSgMkf8umo5fd8iV8sf5daouUSRGWMqQySAM602+QZXsXhCbADrO
-         BYku0fxLOq21TkZiHg5LLCHJ3gvv6GN3APdiPgj7TUC1G/ON7zBAI1ObMPXClDf8sqTl
-         tNIHA70FOsTdoTr6sPG+0ntYn8Fv1QKhJ2QL4dwWTuP6BI52zC2xAqHgL8D6SXjNr04v
-         Q4tX9gRMznZ+uiLAS0+ncSBYa2n8GheTF3PZOP9LfJVwsLrqF7onp3uPZYGlF1WF3L56
-         4OybRov5VAK/4MLKWhJJh0poNwde5TZMAc4Vk7yc8VhblxkRn3rOEU8LZsDygWxJ4jVC
-         LBQA==
+        bh=mvy0l+mnUMzQT0sw/oz2Zb688LyIcrZR0yebYIVgabY=;
+        b=lP4Uis0LYBDaZqiz4vKXxqX19vk9S2lYt1cXEDzz5V6wXMA85mXQaTPxQsTMtHI3cl
+         b4He5vr0Wd2Fs5NhSJvhtgDfe0f7S+YdW092rkLP35Ps8YuQcVXCktJeTMm9WjxljI2n
+         L/4XO6gTgm3yx5DeebNgwfnq31DiJLsiwJZqY6OW6l/1ql4pmBcDX3NA+rMPbR5hXbpz
+         leVmsxo2PSstq1A28Jsn5Gl5259m++i8AI/4we+5ZwgEv/XUorRHgxYiv9GIZnxhXmR+
+         0AkdOCzwvHu1yBnRz/8VbJjFcvn3A8QYVCARLq72Md3ayLaoTefSaE2am1V3hJjtgCLk
+         PoDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703259259; x=1703864059;
+        d=1e100.net; s=20230601; t=1703259294; x=1703864094;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Tiv43+rTrw52gDic8qSBj7YIXfHsI2sRrrEjE4Sw/z8=;
-        b=oLs/bDNkVrh6OTcVqmU3lcNxNZk9+XjnoENBtN7Unp9WjTqeBwYGAJf5Atoo9cjegV
-         KslFg0Qh3i3XMekidKEI/F3ouG8IYBRjvLIUoaGxAj9TirY2GV2QO01RIiN56upXQksx
-         a7ltEsodawQfTlNC9QbYcPr0ZOsodwhM6BX6LwRmracHrqXxQTyNBmLr3jNzzYGIcK4W
-         TTux83UmQCCfzZmotp+1WzxPk4eH/Gx7tU2i963Z8vZ0IKvHDJQC3yyJz2ABuUKUp8iJ
-         wbNIhyNcrrOBrwqf/UV2343FPgskEUc+EhsG0h7GaaCA3m66Ylt/gRSPi01f3PTmg1Vy
-         54Ug==
-X-Gm-Message-State: AOJu0Yz+W4KInZUUpafKVcRrtSxkVWJQcO+HQTjC10LeCBKNj1U4OMiZ
-	O+98Q8Mz/Wj1mq/zhMXHaPfxhHhIABaduw==
-X-Google-Smtp-Source: AGHT+IECwkU4gyZWjMBJ0Y+bOFPZR8XvmP72K5017dbEotyOU02HvdyWVF+Zr2dP2q+6wv5CNaNWcw==
-X-Received: by 2002:ac2:5e2b:0:b0:50e:6d96:4b29 with SMTP id o11-20020ac25e2b000000b0050e6d964b29mr224019lfg.91.1703259258778;
-        Fri, 22 Dec 2023 07:34:18 -0800 (PST)
+        bh=mvy0l+mnUMzQT0sw/oz2Zb688LyIcrZR0yebYIVgabY=;
+        b=ES5w/82N4BE+Wi1rVuqe42PjUhkUZ4x/pRIzgVs5OLkMbaAi6QOT39boPuvgCJeDzd
+         CSZvh7sMIrFxeZPvdyYZN1NUhsPaWZloUsiVBDlespszXSCKVyxcDomeZd+zLaAt1VpB
+         HUcj4rVDbgbgoNbznoYhz1KrfNIAzzjyR2Sb80wLkHTJrtdmDv1mKZ4OMWafOjeP8P2u
+         fcXTFZBnjruv0fy1UHFXxEPnd9fWroOz0ONjwWTy5Jab1NitWE5eYyuE7ByNKhCfVOSy
+         pXI9fW0hXEMzTjloVy3u+cHcZs4v2ZQ5MlQB7cUKO+5vDGj1Z2+ne7Qsr0pbwrvGZjat
+         rezQ==
+X-Gm-Message-State: AOJu0Yys3NA4SOP8BQ1U7ebCi5ANoqBoksaFKWnhjQEAyZBV1kGHejaS
+	6822sC6fziHGt5xufp91/jxQGLgfvGVr0g==
+X-Google-Smtp-Source: AGHT+IGHcStp5sBNVQbyPoJVoUA4wlUiKdXUUxRTWgh9Uhj4w+ErorhdQxx7S5EIciTm+1TwUNlyjA==
+X-Received: by 2002:a05:6512:4c3:b0:50e:57dd:7394 with SMTP id w3-20020a05651204c300b0050e57dd7394mr743417lfq.79.1703259294269;
+        Fri, 22 Dec 2023 07:34:54 -0800 (PST)
 Received: from [192.168.0.22] ([78.10.206.178])
-        by smtp.gmail.com with ESMTPSA id z17-20020a170906715100b00a26966683e3sm2188014ejj.144.2023.12.22.07.34.17
+        by smtp.gmail.com with ESMTPSA id z17-20020a170906715100b00a26966683e3sm2188014ejj.144.2023.12.22.07.34.52
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Dec 2023 07:34:18 -0800 (PST)
-Message-ID: <46526faf-5789-442d-9fb1-ca80a8cadde9@linaro.org>
-Date: Fri, 22 Dec 2023 16:34:16 +0100
+        Fri, 22 Dec 2023 07:34:53 -0800 (PST)
+Message-ID: <b2472f53-2e60-46ba-9ae7-aeca1b323f37@linaro.org>
+Date: Fri, 22 Dec 2023 16:34:52 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,7 +66,7 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [v1 2/2] drm/panel: Add support for Truly NT36672E panel driver
+Subject: Re: [v1 0/2] Add support for Truly NT36672E LCD DSI panel
 Content-Language: en-US
 To: Ritesh Kumar <quic_riteshk@quicinc.com>, dri-devel@lists.freedesktop.org,
  devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
@@ -77,7 +77,6 @@ Cc: neil.armstrong@linaro.org, quic_jesszhan@quicinc.com, sam@ravnborg.org,
  quic_abhinavk@quicinc.com, quic_rajeevny@quicinc.com,
  quic_vproddut@quicinc.com
 References: <20231222110710.19397-1-quic_riteshk@quicinc.com>
- <20231222110710.19397-3-quic_riteshk@quicinc.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -123,22 +122,15 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231222110710.19397-3-quic_riteshk@quicinc.com>
+In-Reply-To: <20231222110710.19397-1-quic_riteshk@quicinc.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 On 22/12/2023 12:07, Ritesh Kumar wrote:
-> Add support for the 1080x2408 Truly NT36672E video mode
-> DSI panel driver.
-> 
-> Signed-off-by: Ritesh Kumar <quic_riteshk@quicinc.com>
-> ---
->  drivers/gpu/drm/panel/Kconfig                |   9 +
->  drivers/gpu/drm/panel/Makefile               |   1 +
+> Add support for the 1080x2408 Truly NT36672E LCD DSI mode panel
 
-
-Integrate it with existing Novatek driver or at least consult its
-maintainers what to do.
+Google does not find anything for "Truly NT36672E", so I have some
+doubts whether you used correct vendor name or product ID.
 
 Best regards,
 Krzysztof
