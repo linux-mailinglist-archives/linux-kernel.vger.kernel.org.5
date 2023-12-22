@@ -1,130 +1,115 @@
-Return-Path: <linux-kernel+bounces-9671-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9672-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A7B081C95C
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 12:48:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46DB581C964
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 12:50:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 277AD1F23547
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 11:48:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DAF351F233C7
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 11:50:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4B3617753;
-	Fri, 22 Dec 2023 11:48:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 402D01804E;
+	Fri, 22 Dec 2023 11:50:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jjoCFLnh"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="DbYmwC4u"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D4CA17735
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 11:48:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9DEF1C433D9
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 11:48:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703245729;
-	bh=FlymK5LbClRXOG+RMjxFM72ReopkCVFd1+LDQ+0t1YY=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=jjoCFLnhQ/qGJLo1/8ryvMufpSmX2GhHRSB+/0FZc2sk+oC5OJmOZpUGFZ97LuZ9U
-	 obInLRJbXMkEIFMKG4NMMKYRgBtAwiBbVcWRigaocvdv+an9uipppRxF02R+Z9FiFo
-	 3hATmjgg05oZryViEo8/pO+6dlFcVw1cy1JaAhaCwvuaKaqkDFsPvme+Z3f+1fTt/G
-	 bg3ri4Nisj7jo+ErsnzkgRP25kZdrXHLmfGSqhOMldQUwbrBSKL7EEeizcsRY7JaoQ
-	 h2354IbPKTil8mmsvKtLki+xetoJkoCvUSUIJoytYzFgF6U0inm8b2xgtvqov6DcvO
-	 ZK7VgBAvR9ZPg==
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a2698eae0a9so219231466b.3
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 03:48:49 -0800 (PST)
-X-Gm-Message-State: AOJu0YxF7CKBA160jHXjjWqs3cSoQZCJyorrp9dsu/jgQWRQFmReeyJb
-	t0H/7NgR+xg7HOCKdupKzlch4jpRpJjB9IEESbY=
-X-Google-Smtp-Source: AGHT+IFVPZzCzb0xj985HwrmUbmW0Jq/RmEvvv5I4UCX5tEPPTVnITvPcvviXuNJYC8itOiyOacSZhaOtRLR4+P+3u0=
-X-Received: by 2002:a17:906:4698:b0:a23:f50:6cff with SMTP id
- a24-20020a170906469800b00a230f506cffmr782485ejr.111.1703245728046; Fri, 22
- Dec 2023 03:48:48 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4898E1803D
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 11:50:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1703245803;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=b2Kc5SDyR2sa98m7GGfG0OJjTCYVmXAF9D404GjbeCw=;
+	b=DbYmwC4uHc3vW5qUFHRCiiDVQoBAW3Oa8DyiRJstLbH5Q9xwHt8XmOTp/FhrI2Mto9YhVf
+	KPjqn4pHfh8wgf/WUz6cOna/o4+GD6DxdUBVX2ruu+5I14t2GGWZ+HnQlmcLr/TGIybeL2
+	3d9VwNhcFF5rlpDtx256VW4redvqrRc=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-399-gMeN3nQqMpKa8ASINIbPcw-1; Fri, 22 Dec 2023 06:49:57 -0500
+X-MC-Unique: gMeN3nQqMpKa8ASINIbPcw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id F2C45868A20;
+	Fri, 22 Dec 2023 11:49:55 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.39.195.169])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 71FCC2026D66;
+	Fri, 22 Dec 2023 11:49:52 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+	Kingdom.
+	Registered in England and Wales under Company Registration No. 3798903
+From: David Howells <dhowells@redhat.com>
+In-Reply-To: <20231221230153.GA1607352@dev-arch.thelio-3990X>
+References: <20231221230153.GA1607352@dev-arch.thelio-3990X> <20231221132400.1601991-1-dhowells@redhat.com> <20231221132400.1601991-38-dhowells@redhat.com>
+To: Nathan Chancellor <nathan@kernel.org>,
+    Anna Schumaker <Anna.Schumaker@Netapp.com>,
+    Trond Myklebust <trond.myklebust@hammerspace.com>
+Cc: dhowells@redhat.com, Jeff Layton <jlayton@kernel.org>,
+    Steve French <smfrench@gmail.com>,
+    Matthew Wilcox <willy@infradead.org>,
+    Marc Dionne <marc.dionne@auristor.com>,
+    Paulo Alcantara <pc@manguebit.com>,
+    Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
+    Dominique Martinet <asmadeus@codewreck.org>,
+    Eric Van Hensbergen <ericvh@kernel.org>,
+    Ilya Dryomov <idryomov@gmail.com>,
+    Christian Brauner <christian@brauner.io>, linux-cachefs@redhat.com,
+    linux-afs@lists.infradead.org, linux-cifs@vger.kernel.org,
+    linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+    v9fs@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+    linux-mm@kvack.org, netdev@vger.kernel.org,
+    linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 37/40] netfs: Optimise away reads above the point at which there can be no data
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231222082711.454374-1-leobras@redhat.com>
-In-Reply-To: <20231222082711.454374-1-leobras@redhat.com>
-From: Guo Ren <guoren@kernel.org>
-Date: Fri, 22 Dec 2023 19:48:36 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTShV+xBjHwQKGEQG-JgEUVa6S8egZNcN7xt_2rPucph9Q@mail.gmail.com>
-Message-ID: <CAJF2gTShV+xBjHwQKGEQG-JgEUVa6S8egZNcN7xt_2rPucph9Q@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/1] riscv: Improve arch_get_mmap_end() macro
-To: Leonardo Bras <leobras@redhat.com>
-Cc: Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>, 
-	Conor Dooley <conor.dooley@microchip.com>, Vincent Chen <vincent.chen@sifive.com>, 
-	Andy Chiu <andy.chiu@sifive.com>, Charlie Jenkins <charlie@rivosinc.com>, 
-	=?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>, 
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <2202547.1703245791.1@warthog.procyon.org.uk>
+Date: Fri, 22 Dec 2023 11:49:51 +0000
+Message-ID: <2202548.1703245791@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
 
-On Fri, Dec 22, 2023 at 4:27=E2=80=AFPM Leonardo Bras <leobras@redhat.com> =
-wrote:
->
-> This macro caused me some confusion, which took some reviewer's time to
-> make it clear, so I propose adding a short comment in code to avoid
-> confusion in the future.
->
-> Also, added some improvements to the macro, such as removing the
-> assumption of VA_USER_SV57 being the largest address space.
->
-> Signed-off-by: Leonardo Bras <leobras@redhat.com>
-> ---
->  arch/riscv/include/asm/processor.h | 12 +++++++++---
->  1 file changed, 9 insertions(+), 3 deletions(-)
->
-> diff --git a/arch/riscv/include/asm/processor.h b/arch/riscv/include/asm/=
-processor.h
-> index f19f861cda549..2278e2a8362af 100644
-> --- a/arch/riscv/include/asm/processor.h
-> +++ b/arch/riscv/include/asm/processor.h
-> @@ -18,15 +18,21 @@
->  #define DEFAULT_MAP_WINDOW     (UL(1) << (MMAP_VA_BITS - 1))
->  #define STACK_TOP_MAX          TASK_SIZE_64
->
-> +/*
-> + * addr is a hint to the maximum userspace address that mmap should prov=
-ide, so
-> + * this macro needs to return the largest address space available so tha=
-t
-> + * mmap_end < addr, being mmap_end the top of that address space.
-> + * See Documentation/arch/riscv/vm-layout.rst for more details.
-> + */
->  #define arch_get_mmap_end(addr, len, flags)                    \
->  ({                                                             \
->         unsigned long mmap_end;                                 \
->         typeof(addr) _addr =3D (addr);                            \
->         if ((_addr) =3D=3D 0 || (IS_ENABLED(CONFIG_COMPAT) && is_compat_t=
-ask())) \
->                 mmap_end =3D STACK_TOP_MAX;                       \
-> -       else if ((_addr) >=3D VA_USER_SV57)                       \
-> -               mmap_end =3D STACK_TOP_MAX;                       \
-> -       else if ((((_addr) >=3D VA_USER_SV48)) && (VA_BITS >=3D VA_BITS_S=
-V48)) \
-> +       else if (((_addr) >=3D VA_USER_SV57) && (VA_BITS >=3D VA_BITS_SV5=
-7)) \
-> +               mmap_end =3D VA_USER_SV57;                        \
-It's clearer.
+Nathan Chancellor <nathan@kernel.org> wrote:
 
-LGTM.
-Reviewed-by: Guo Ren <guoren@kernel.org>
+> It appears that ctx->inode.i_mapping is NULL in netfs_inode_init(). This
+> patch appears to cure the problem for me but I am not sure if it is
+> proper or not.
 
-> +       else if (((_addr) >=3D VA_USER_SV48) && (VA_BITS >=3D VA_BITS_SV4=
-8)) \
->                 mmap_end =3D VA_USER_SV48;                        \
->         else                                                    \
->                 mmap_end =3D VA_USER_SV39;                        \
-> --
-> 2.43.0
->
+I'm not sure that's the best way.  It kind of indicates that
+nfs_netfs_inode_init() is not being called in the right place - it should
+really be called after alloc_inode() has called inode_init_always().
 
+However, mapping_set_release_always() makes ->release_folio() and
+->invalidate_folio() always called for an inode's folios, even if PG_private
+is not set - the idea being that this allows netfslib to update the
+"zero_point" when a page we've written to the server gets invalidated here,
+thereby requiring us to go fetch it again.
 
---=20
-Best Regards
- Guo Ren
+Now, NFS doesn't make use of this feature and fscache and cachefiles don't use
+it directly, so we might not want to call mapping_set_release_always() for
+NFS.
+
+I'm not sure NFS can even reliably make use of it unless it's using a lease
+unless it gets change notifications from the server.
+
+So I'm thinking of applying your patch but add a comment to say why we're
+doing it.  A better way, though, is to move the call to nfs_netfs_inode_init()
+and give it a flag to say whether or not we want the facility.
+
+David
+
 
