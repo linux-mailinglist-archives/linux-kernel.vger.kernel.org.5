@@ -1,195 +1,215 @@
-Return-Path: <linux-kernel+bounces-9304-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9305-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45E7581C3BB
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 05:04:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9210C81C3C0
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 05:10:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BD3D91F25A14
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 04:04:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 07D271F25A67
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 04:10:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01F8D6FC2;
-	Fri, 22 Dec 2023 04:04:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AB934C93;
+	Fri, 22 Dec 2023 04:09:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="g5QKOqVi"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kkn6wGts"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-oi1-f172.google.com (mail-oi1-f172.google.com [209.85.167.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE39163B5
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 04:04:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-oi1-f172.google.com with SMTP id 5614622812f47-3bb6e8708b7so977078b6e.1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 20:04:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1703217886; x=1703822686; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=oMbuyICQl6nMe9y2KZW9tM4PAnxgLD1bGygk69Ul4qI=;
-        b=g5QKOqViMBUMoSnUGY6JKMgdzR3U/sqCDPGURtAoExF++rWUxnFTf+USoFYxklzUwK
-         0fbnXqg7WL9KQQXoeQ/iYR+Q8sveyGT917KTkEX7qpeTisjlcuBhj5FPYLA15SXvoieR
-         1PMbam61yIMw1NFGc/71tVbAlgO2maGZw5npimCNOv/LolX+S0FXQw8t9mLqluGwgdR8
-         xEml8jpAHN4197KV7ge38wyO6DuvBKBltWOsh/ASohiOCfbigkXzrG51e5ueMK+B/3h4
-         oGHzF+7SUN/PeRMtnnvMqC4k+VQu/03ADsoiY5k3atbOnYXqY5a58i2DsIMJc2dP9aJP
-         Ldqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703217886; x=1703822686;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oMbuyICQl6nMe9y2KZW9tM4PAnxgLD1bGygk69Ul4qI=;
-        b=ao7MP8dQVSBvOGyt59PRFFPSk8YyFzuJJAOZBC2v/l2bfLyHAIs2js+9vhno55NYpS
-         goLOPB4TybGIcuKA2hHwYIJ+J2EDhpHI3yuiWGnhVqsmbuoqNDazmyE+qVwCR0/Z6ZMM
-         Zr8UKpbzrFGK+89HG1dKFrv7ZH8XPNAYiwciJzDNg6TlKVRsLY3rT6r/AfM0TcoheDr9
-         9qYxN7v2AWmMJK5C8zgtKFAAhGIFmIkVS8RZZCdq7z8WI32kykrGvwCJbJ3i4DUlXRVP
-         /3qYO7owtsx7/rAT/YLIa/dfe+4eFPaBeMvow6XVVi9hlNP5zndHtlTmUp7uAls0rxCJ
-         6o2A==
-X-Gm-Message-State: AOJu0YxIWXEVX4OErjHP9n1WnQAMy0JIowMEPV3YCVaMhncKIWka6zzo
-	0QB/HUAdKi79ZYviniwXitRVBsWXI/2JqA==
-X-Google-Smtp-Source: AGHT+IHXq5Glvort/8zooZ1cONqbJxMUnI4QjEEM2kI4kr0xLRxYvX/XwiS3CJjJ1rCS66QRkiGFCQ==
-X-Received: by 2002:a05:6359:4c27:b0:170:c2d0:7236 with SMTP id kj39-20020a0563594c2700b00170c2d07236mr872470rwc.27.1703217885712;
-        Thu, 21 Dec 2023 20:04:45 -0800 (PST)
-Received: from ghost ([2601:647:5700:6860:9585:2e30:5aba:e80c])
-        by smtp.gmail.com with ESMTPSA id f7-20020a056a001ac700b006d7310a683dsm2356295pfv.80.2023.12.21.20.04.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Dec 2023 20:04:45 -0800 (PST)
-Date: Thu, 21 Dec 2023 20:04:43 -0800
-From: Charlie Jenkins <charlie@rivosinc.com>
-To: Leonardo Bras <leobras@redhat.com>
-Cc: guoren@kernel.org, linux-kernel@vger.kernel.org,
-	paul.walmsley@sifive.com, palmer@dabbelt.com,
-	alexghiti@rivosinc.com, xiao.w.wang@intel.com, david@redhat.com,
-	panqinglin2020@iscas.ac.cn, rick.p.edgecombe@intel.com,
-	willy@infradead.org, bjorn@rivosinc.com, conor.dooley@microchip.com,
-	cleger@rivosinc.com, linux-riscv@lists.infradead.org,
-	Guo Ren <guoren@linux.alibaba.com>, stable@vger.kernel.org
-Subject: Re: [PATCH V2 2/4] riscv: mm: Fixup compat arch_get_mmap_end
-Message-ID: <ZYUK2zUHjYBL0zO7@ghost>
-References: <20231221154702.2267684-1-guoren@kernel.org>
- <20231221154702.2267684-3-guoren@kernel.org>
- <ZYUD4C1aXWt2oFJo@LeoBras>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD3E120FB;
+	Fri, 22 Dec 2023 04:09:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1703218198; x=1734754198;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=BiLc+dD6mKdL4S2KGj3g6nY9O1xZO4GeKzW82UHMVGE=;
+  b=kkn6wGts4K4OlTXZunPNL06RacBdNnJnjZTZqS1akMXUFp1TXzJg8TT6
+   kQyBo8Aak88jbHs4HSGekf9rP1rysA52wKOUJ7QD9OPKhhyN5PNpbNDrf
+   tTCS1dp2RPvjXphbU1C1QpvNc1tR46B/uje+eBQWdckMjHsAPEUW2xl+D
+   FkYrVMFA9amkfbo0egIq6FYr370z+0QcmDGtGRRxqEnyyBFhH4igR/PYn
+   pQJSluirswO5sHSzlHMIDKUSCGG7vIY2+afoOGL1G6aSWtaHCbr1G2cB0
+   rctz2oU+iy4WJ3k3HUT7p2zN06hX4CfUNSuCbTco6c+cmM4AG4r72DSDB
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10931"; a="3160799"
+X-IronPort-AV: E=Sophos;i="6.04,294,1695711600"; 
+   d="scan'208";a="3160799"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Dec 2023 20:09:57 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10931"; a="1108342525"
+X-IronPort-AV: E=Sophos;i="6.04,294,1695711600"; 
+   d="scan'208";a="1108342525"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by fmsmga005.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 21 Dec 2023 20:09:56 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 21 Dec 2023 20:09:55 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 21 Dec 2023 20:09:55 -0800
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Thu, 21 Dec 2023 20:09:55 -0800
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.100)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Thu, 21 Dec 2023 20:09:54 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JuCSjydGE1uTpdPV+qPnF3pyxPVDzLlxVFLy7dMep7uxScS18He5AaBB/GT2sMEptQ379pUSvz5ukqHC60FG2qL+37/SMEoR5SUAft9cXz55EBjA4AEqvhkkGx5QuPBYX8nt256OZNfpgll0wKjkPQMgR45/4QCuhatOEjYhIw7r45IHLaUyPJe0Zq2auUksECCTC1iiho59JLijbt55xXMmbuYY6dOR5KSXxcVpmXCUlaqaLdgpcnKIAa0oksfLt4bFW7HxCTAMKoZDWS++ZSa3jayOXAnkDCcatjsSkgEXe/Zvkgdrk0Qx+ubnY9kEjQotmB408KWEAkEgRzTGOQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=EDx/VIiGkBt3wxpqCbCYfOO3DPJpqhCtEhkVeMU1YJA=;
+ b=UkSqaFZbyWSyT+MERV10oRkitH07ZLsxjY26jLZXANGUpq7b6id6nAKQ8sK/xQ/bXSK6a7Cz7zUsVP0P1K+my2Ap0vT4zyptDJXEqv8ifb3tMC8RhD4x/s8IEHMv3kRS6/ZNWzxHOVuBPBVjrt9qb4UpR/RCeTIGCH37lnXz68UuuRoMU8Ie0fSXsFuZYDLSnoWrOc+G5T9Qd49onftVVqwhBKe9xgqj+mLoIaGbnV9bbJzve/F66eZdjgg0CZrrrmntb3MTE+dRME6c4ZfjdzfWEB53QDuNajxNW6d8TcLk/bWrI076+9pjc2oqHigXlyhN3sv/7h/MDa4MI531nw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from BN9PR11MB5276.namprd11.prod.outlook.com (2603:10b6:408:135::18)
+ by CY8PR11MB7033.namprd11.prod.outlook.com (2603:10b6:930:53::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7113.21; Fri, 22 Dec
+ 2023 04:09:52 +0000
+Received: from BN9PR11MB5276.namprd11.prod.outlook.com
+ ([fe80::e7a4:a757:2f2e:f96a]) by BN9PR11MB5276.namprd11.prod.outlook.com
+ ([fe80::e7a4:a757:2f2e:f96a%3]) with mapi id 15.20.7113.019; Fri, 22 Dec 2023
+ 04:09:52 +0000
+From: "Tian, Kevin" <kevin.tian@intel.com>
+To: "Liu, Yi L" <yi.l.liu@intel.com>, "joro@8bytes.org" <joro@8bytes.org>,
+	"alex.williamson@redhat.com" <alex.williamson@redhat.com>, "jgg@nvidia.com"
+	<jgg@nvidia.com>, "robin.murphy@arm.com" <robin.murphy@arm.com>,
+	"baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>
+CC: "cohuck@redhat.com" <cohuck@redhat.com>, "eric.auger@redhat.com"
+	<eric.auger@redhat.com>, "nicolinc@nvidia.com" <nicolinc@nvidia.com>,
+	"kvm@vger.kernel.org" <kvm@vger.kernel.org>, "mjrosato@linux.ibm.com"
+	<mjrosato@linux.ibm.com>, "chao.p.peng@linux.intel.com"
+	<chao.p.peng@linux.intel.com>, "yi.y.sun@linux.intel.com"
+	<yi.y.sun@linux.intel.com>, "peterx@redhat.com" <peterx@redhat.com>,
+	"jasowang@redhat.com" <jasowang@redhat.com>,
+	"shameerali.kolothum.thodi@huawei.com"
+	<shameerali.kolothum.thodi@huawei.com>, "lulu@redhat.com" <lulu@redhat.com>,
+	"suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
+	"iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>, "Duan,
+ Zhenzhong" <zhenzhong.duan@intel.com>, "joao.m.martins@oracle.com"
+	<joao.m.martins@oracle.com>, "Zeng, Xin" <xin.zeng@intel.com>, "Zhao, Yan Y"
+	<yan.y.zhao@intel.com>, "j.granados@samsung.com" <j.granados@samsung.com>
+Subject: RE: [PATCH v7 6/9] iommufd/selftest: Add coverage for
+ IOMMU_HWPT_INVALIDATE ioctl
+Thread-Topic: [PATCH v7 6/9] iommufd/selftest: Add coverage for
+ IOMMU_HWPT_INVALIDATE ioctl
+Thread-Index: AQHaNCP3ZbsWeJyCDUuVr4rVXc6HCbC0sC/w
+Date: Fri, 22 Dec 2023 04:09:52 +0000
+Message-ID: <BN9PR11MB52766EC5BBA4888218914CCB8C94A@BN9PR11MB5276.namprd11.prod.outlook.com>
+References: <20231221153948.119007-1-yi.l.liu@intel.com>
+ <20231221153948.119007-7-yi.l.liu@intel.com>
+In-Reply-To: <20231221153948.119007-7-yi.l.liu@intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BN9PR11MB5276:EE_|CY8PR11MB7033:EE_
+x-ms-office365-filtering-correlation-id: 287a55e3-fac7-444b-9993-08dc02a3d8da
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: BGL1sgfUCp6PtFG6EvzPZ3gt9DNKhz9WFK+fIt0v4o/bysC4QzxkEOiT/J1c1fUX1I1n6DLbpWcxEZ2JBggMlB/w/ebVzta/Iki1jIPye67ueW6nT+CZMHgexfwvHXJoeVFsJxRP6aUqApid164L7CQGvqX18gCeSB5WkpeeOYsUSy2TAmoM3PH+IJqqF0qA26OZAv/32BXznRyRbtjUipsYu3yKu0Lr3V71H/0cAOEhgHO93Fp+cwQMYy+x6QY8fNU+eOX70gAQCm8GkcsvP656lXbhqBHtvP3DllNjln7NIs9Yd9iJ0wadwwE6+tyWNE6SJGPVhqBlNIAnZLLpXxeduOlsFWRMjApPAaS/JdajZifmArLSD0b7sqIMuz9LfdfrrA2ZVU2Nrpd1A9lAkhn0qglNKUWdUGqREvwklnUUTz+P3bnoK/2p++vi2bV2Ne3ZXCQrWjukCeAdMt518+G3kV8wkjP6456CURsVVnOubG6eIv9gd0pGAVRHFUMQAhg8yv2Nd8H+fsBc4OJ5UZPMxNwMJnd2wWMI7N4UWt8mxy+5TiOWHUT0XKN/j5izK2JkRGq8f3qtCzYZUcjnCigwwvQk7zZGLLejoSZSng4O9yZ4I/+GpKUgnrV4y9hH
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5276.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(366004)(346002)(396003)(39860400002)(376002)(230922051799003)(186009)(451199024)(64100799003)(1800799012)(83380400001)(82960400001)(33656002)(86362001)(41300700001)(122000001)(38100700002)(5660300002)(8936002)(4326008)(8676002)(110136005)(52536014)(316002)(54906003)(64756008)(66446008)(66476007)(66556008)(66946007)(76116006)(9686003)(26005)(478600001)(7416002)(6506007)(7696005)(4744005)(71200400001)(2906002)(38070700009)(55016003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?1OmqQZTm33VFtqwywLW/rRrSSx2Xa0SklKdkOsbKnMXbum4IHY4/POslN9uk?=
+ =?us-ascii?Q?D0ZpkdrzYgddiTby2GNCMxJ8cK1PFGLey3TPRR9yQ4CjAHEy/H60XlRFSah0?=
+ =?us-ascii?Q?BPEn4X5zMv457WrPGhBoB0zfX/hNJmXw1aAUBqkhrzHLta5fW3rCQK6Juwl0?=
+ =?us-ascii?Q?98mU5QxqMNFM7qstAfu2v3ThlgKczcfG8tBj6PXTeiAf+g68US5S9t/4fAdg?=
+ =?us-ascii?Q?udqckFMMowcP/PEohkc7+XVIUmbR/b0c/U6DuWRIz2DayHcXoD4M9lac5MUP?=
+ =?us-ascii?Q?k/NMNRSnDRyqsETN/YmFzZkW0QEawj3Uh2xOrc9EGkIHkiEbAX1PNv/7+oKa?=
+ =?us-ascii?Q?wMz0I5fu13pwLOW29SgoUoc3Se+DRaREorW/r+X7T16u+Fu9OXnKbPL7uqNQ?=
+ =?us-ascii?Q?4H2sWjmyFkFyvj/WTC4tG6BQ51lz0NK2MaS91M10XNPbuNXzymkVkz0k/jP8?=
+ =?us-ascii?Q?tie3mJCMrlDdqv6Em+J3EGMankYY5lBc76BSZTfCb/h2CZOvUdq4clUzLH3k?=
+ =?us-ascii?Q?7GPKhA5yCQ1uuNz6kkybEHPYLmeHT0P6sPhlw4Z/Bvizd9cd8iu7xgOHsW+8?=
+ =?us-ascii?Q?f2sTN/1GySzJH+5g4fg8pT4XdEWMsAOIceuuO24yqOHndq+//V41Uw07/9Mt?=
+ =?us-ascii?Q?gLCT+16iXRyRL838Dc71ZfFGDWl0eUck2L+y3LtT+L75DlAjHFsVqOs8mdVJ?=
+ =?us-ascii?Q?ARj5/+CqeqNQAGUoyCPme8WD8yCdyQCzy42FLvp8X0lp/Edr1gRMQDG4RlVc?=
+ =?us-ascii?Q?YC5NtvqUO2vG8DVkAe8BAuGXl/4uqo1JSEdJfJzlnUogceTO2rqb+5s2HumG?=
+ =?us-ascii?Q?x2zLGLebtGSIFt91s9PvURGhp/Opd2bRt1/0cO9s43aiezexl9yk9VCKZYox?=
+ =?us-ascii?Q?ZGtwcutowRO9odHIxJPhw/IiSd3EKQD8DqhfLgTXyasOFzBDxDja2S1AdJTH?=
+ =?us-ascii?Q?Yeks+bH4fcR6xo4bM1FVgAHMQRvCpr+FGQqSpc+n9R+0ytKlwbieBVrnTfMT?=
+ =?us-ascii?Q?1kIZcToMhU9aUgAGlam8OmEqeYGymrCLJG2gBUqiQnLOnW+l5sPlL+XEs8eI?=
+ =?us-ascii?Q?1N29s4Ec1s8ea74EmODiAC4p3F+45Qskn0UB9owsr97snlJi/83iod3zJvV3?=
+ =?us-ascii?Q?ROUrTNbqNaWG7RPeCEC8hF+DqI7HqXL6w5FW0GnQo9eoF41mmVyRX/JrlQrj?=
+ =?us-ascii?Q?l7tHI9g2x/BAY1axIXZRYR1m1R3wvTaK9kIzLG8vwDgei0joS3LkkAp8a565?=
+ =?us-ascii?Q?XwHxn523j229bRTBlNPkXom5VP69Ms76ROZUv0UKIvoALi02HEWtN3ncjTcN?=
+ =?us-ascii?Q?u93OgKzH0pxvrVZGISklQSCHOqhRo5SWoGXWVB126qBLJgpxeYnP1xdJwqL9?=
+ =?us-ascii?Q?8whyxrrPZgchGsf9Kc+3eOQ3t3+fl32WYoaUzqGLfTNXTOKWlJJ9DYi9XE5J?=
+ =?us-ascii?Q?NmNyg8J123joxXb3pu0S0XA5Vd7mzKbwDOFINF4XfuIB2FueL7ddhEE/GcMe?=
+ =?us-ascii?Q?rOEXAQgpoNMw8dkndBITFIjVbfoTmY9qwecU0P9oKV+s447Rayel0fsSCLqT?=
+ =?us-ascii?Q?vmnx5QofDxP4B1WaEOUnAGiqJoy9+dGRiiBJoJhg?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZYUD4C1aXWt2oFJo@LeoBras>
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5276.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 287a55e3-fac7-444b-9993-08dc02a3d8da
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Dec 2023 04:09:52.0609
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: NZpkbsoXA2M1yKKCBZLTrFa262HvNP/unwG1q4lL+bCjztOrwOwUY2iCwAlpQ48qoaLk+my8kQNsKdXUmTn7rA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR11MB7033
+X-OriginatorOrg: intel.com
 
-On Fri, Dec 22, 2023 at 12:34:56AM -0300, Leonardo Bras wrote:
-> On Thu, Dec 21, 2023 at 10:46:59AM -0500, guoren@kernel.org wrote:
-> > From: Guo Ren <guoren@linux.alibaba.com>
-> > 
-> > When the task is in COMPAT mode, the arch_get_mmap_end should be 2GB,
-> > not TASK_SIZE_64. The TASK_SIZE has contained is_compat_mode()
-> > detection, so change the definition of STACK_TOP_MAX to TASK_SIZE
-> > directly.
-> 
-> ok
-> 
-> > 
-> > Cc: stable@vger.kernel.org
-> > Fixes: add2cc6b6515 ("RISC-V: mm: Restrict address space for sv39,sv48,sv57")
-> > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> > Signed-off-by: Guo Ren <guoren@kernel.org>
-> > ---
-> >  arch/riscv/include/asm/processor.h | 6 ++----
-> >  1 file changed, 2 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/arch/riscv/include/asm/processor.h b/arch/riscv/include/asm/processor.h
-> > index f19f861cda54..1f538fc4448d 100644
-> > --- a/arch/riscv/include/asm/processor.h
-> > +++ b/arch/riscv/include/asm/processor.h
-> > @@ -16,15 +16,13 @@
-> >  
-> >  #ifdef CONFIG_64BIT
-> >  #define DEFAULT_MAP_WINDOW	(UL(1) << (MMAP_VA_BITS - 1))
-> > -#define STACK_TOP_MAX		TASK_SIZE_64
-> > +#define STACK_TOP_MAX		TASK_SIZE
-> 
-> It means STACK_TOP_MAX will be in 64BIT:
-> - TASK_SIZE_32 if compat_mode=y
-> - TASK_SIZE_64 if compat_mode=n
-> 
-> Makes sense for me.
-> 
-> >  
-> >  #define arch_get_mmap_end(addr, len, flags)			\
-> >  ({								\
-> >  	unsigned long mmap_end;					\
-> >  	typeof(addr) _addr = (addr);				\
-> > -	if ((_addr) == 0 || (IS_ENABLED(CONFIG_COMPAT) && is_compat_task())) \
-> > -		mmap_end = STACK_TOP_MAX;			\
-> > -	else if ((_addr) >= VA_USER_SV57)			\
-> > +	if ((_addr) == 0 || (_addr) >= VA_USER_SV57)		\
-> >  		mmap_end = STACK_TOP_MAX;			\
-> >  	else if ((((_addr) >= VA_USER_SV48)) && (VA_BITS >= VA_BITS_SV48)) \
-> >  		mmap_end = VA_USER_SV48;			\
-> 
-> 
-> I don't think I got this change, or how it's connected to the commit msg.
-> 
-> Before:
-> - addr == 0, or addr > 2^57, or compat: mmap_end = STACK_TOP_MAX
-> - 2^48 < addr < 2^57: mmap_end = 2^48
-> - 0 < addr < 2^48 : mmap_end = 2^39
-> 
-> Now:
-> - addr == 0, or addr > 2^57: mmap_end = STACK_TOP_MAX
-> - 2^48 < addr < 2^57: mmap_end = 2^48
-> - 0 < addr < 2^48 : mmap_end = 2^39
-> 
-> IIUC compat mode addr will be < 2^32, so will always have mmap_end = 2^39 
-> if addr != 0. Is that desireable? 
-> (if not, above change is unneeded)
+> From: Liu, Yi L <yi.l.liu@intel.com>
+> Sent: Thursday, December 21, 2023 11:40 PM
+>=20
+> From: Nicolin Chen <nicolinc@nvidia.com>
+>=20
+> Add test cases for the IOMMU_HWPT_INVALIDATE ioctl and verify it by using
+> the new IOMMU_TEST_OP_MD_CHECK_IOTLB.
+>=20
+> Signed-off-by: Nicolin Chen <nicolinc@nvidia.com>
+> Co-developed-by: Yi Liu <yi.l.liu@intel.com>
+> Signed-off-by: Yi Liu <yi.l.liu@intel.com>
 
-I agree, this change does not make sense for compat mode. Compat mode
-should never return an address that is greater than 2^32, but this
-change allows that.
+overall this look good:
 
-> 
-> Also, unrelated to the change:
-> - 2^48 < addr < 2^57: mmap_end = 2^48
-> Is the above correct?
-> It looks like it should be 2^57 instead, and a new if clause for 
-> 2^32 < addr < 2^48 should have mmap_end = 2^48.
+Reviewed-by: Kevin Tian <kevin.tian@intel.com>
 
-That is not the case. I documented this behavior and reasoning in
-Documentation/arch/riscv/vm-layout.rst in the "Userspace VAs" section.
+with two  nits:
 
-I can reiterate here though. The hint address to mmap (defined here as
-"addr") is the maximum userspace address that mmap should provide. What
-you are describing is a minimum. The purpose of this change was to allow
-applications that are not compatible with a larger virtual address (such
-as applications like Java that use the upper bits of the VA to store
-data) to have a consistent way of specifying how many bits they would
-like to be left free in the VA. This requires to take the next lowest
-address space to guaruntee that all of the most-significant bits left
-clear in hint address do not end up populated in the virtual address
-returned by mmap.
+> +
+> +		num_inv =3D 1;
+> +		inv_reqs[0].flags =3D IOMMU_TEST_INVALIDATE_FLAG_ALL |
+> +
+> IOMMU_TEST_INVALIDATE_FLAG_TRIGGER_ERROR;
+> +		test_err_hwpt_invalidate(EINVAL, nested_hwpt_id[0],
+> inv_reqs,
+> +
+> IOMMU_HWPT_INVALIDATE_DATA_SELFTEST,
+> +					 sizeof(*inv_reqs), &num_inv);
+> +		assert(!num_inv);
 
-- Charlie
+this may need adjustment upon whether we want to allow two flags together.
 
-> 
-> Do I get it wrong?
-> 
-> (I will send an RFC 'fixing' the code the way I am whinking it should look 
-> like)
-> 
-> Thanks, 
-> Leo
-> 
-> 
-> 
-> 
-> 
-> > -- 
-> > 2.40.1
-> > 
-> 
+and let's add a test for below code for completeness:
+
++	if (cmd->req_num && (!cmd->reqs_uptr || !cmd->req_len)) {
++		rc =3D -EINVAL;
++		goto out;
++	}
 
