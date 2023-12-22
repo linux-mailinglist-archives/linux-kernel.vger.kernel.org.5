@@ -1,197 +1,241 @@
-Return-Path: <linux-kernel+bounces-10006-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10007-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9BC4C81CE99
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 19:58:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3A9F81CE9A
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 19:58:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C0E511C2285C
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 18:58:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E76181C2289F
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 18:58:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E24F12E403;
-	Fri, 22 Dec 2023 18:58:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BEB82C84E;
+	Fri, 22 Dec 2023 18:58:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Ml39nlY6"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PKi1pkfJ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1F932C1B0;
-	Fri, 22 Dec 2023 18:58:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703271481; x=1734807481;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=4vY2d7xdb6V8d+bNi1pVFs3ro87ywl+FtKrcz8XajgU=;
-  b=Ml39nlY6TBaehFNd0iZ/FXXTesPz3QTnEWK45MKK2+qrA3zl4kTlqkST
-   2off7uZafX4DE0KBvjSiBomn+R/waus/fW+mpymWrMEr4rQVDQ89bu8R2
-   VwZKDF8uDh5nSAdNJuPX6EEHIvXfgLrwm19bm13HjHx+vsHWw4tSKF+hs
-   MbfocMCtD602gfqa5VVgYNwHtCk+DjVIAcq9t7eXaqJZ+QRX1jPyjzyeo
-   K0b1sqgN4IQOoO16MGcqfgt/+mp5+zXkmC3jLZYEFfNxLfU1cgG+50rxu
-   sX72jMAVc/8uKe/QxZy+agFH67N8nXP1L9VIr/C4jSYmoAfV/oSM0rkaz
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10932"; a="376289795"
-X-IronPort-AV: E=Sophos;i="6.04,297,1695711600"; 
-   d="scan'208";a="376289795"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Dec 2023 10:58:01 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10932"; a="811385992"
-X-IronPort-AV: E=Sophos;i="6.04,297,1695711600"; 
-   d="scan'208";a="811385992"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by orsmga001.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 22 Dec 2023 10:58:00 -0800
-Received: from fmsmsx602.amr.corp.intel.com (10.18.126.82) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 22 Dec 2023 10:57:59 -0800
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Fri, 22 Dec 2023 10:57:59 -0800
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.169)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Fri, 22 Dec 2023 10:57:59 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=B5B+XlE8/7FnZnWLjay6ht8l53bLMnwk21AnSmoQKLsZejQzx/puMuA4SuA6MHVhkGj92FiZhlHaE6sHoJMFEv6kvr4GyZT6K5ZGM1u04JE5CnLLI/Xa062qLh4EPHObfiuJBybpVyH3MnWqHyWLEO4SiUPlWbpjwgupeNQTkeQP/Bnn0GMcUWfO+678EizcIdet/8cucBMawB1EYrSOBMhjgi/3RYd7bVfrkQOU4xfngO1yonQ21JDlwAiYW7u5ZOsY7j4pLRV1P/N/0akjnLI73VjduNyB31hRIweHe8TfyE6f/u6YoXvuaSi3OASIqVS3B7xBogUEXuhhnTOEnw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=sMFYLgr9FA9hmCXahwUfjRTM+OYedj/jFrRxayLkW0U=;
- b=iZZBzwFW/XJhJXbZqgU7A54MK9gREIkSgSFFBTRp5m1UyTvZUBAgQeZtO8ydhAcf63HN/yItFyCIplAvpWVzcmOBgf0YbkR6whcskBmB3BR4ktpiMDKOqlgOkV/arfWjBzCi9GCWFVzeaXtkWO7uqKVcxWIZbsfDQD6+hifmImApB3CFslKBGdM3wV2YVN1tRj5hqC04GpVReHfrsiz0AX8oCmUhpMVJoF+wfTql/wO8zDU8NKxW+WCf4r7w5Ue67hXxBZjx8Pkwvp/K/hLItz6eugyiIlUFb7LXAsAzSWJtJHNeeUumEEEIW9+LHlVdYSR5XBLpKfQMDAV94Sv1zQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SA1PR11MB6733.namprd11.prod.outlook.com (2603:10b6:806:25c::17)
- by SA1PR11MB7085.namprd11.prod.outlook.com (2603:10b6:806:2ba::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7113.21; Fri, 22 Dec
- 2023 18:57:57 +0000
-Received: from SA1PR11MB6733.namprd11.prod.outlook.com
- ([fe80::da91:dbe5:857c:fa9c]) by SA1PR11MB6733.namprd11.prod.outlook.com
- ([fe80::da91:dbe5:857c:fa9c%4]) with mapi id 15.20.7113.016; Fri, 22 Dec 2023
- 18:57:57 +0000
-Date: Fri, 22 Dec 2023 10:57:54 -0800
-From: Ira Weiny <ira.weiny@intel.com>
-To: Ira Weiny <ira.weiny@intel.com>, Coly Li <colyli@suse.de>
-CC: Dan Williams <dan.j.williams@intel.com>, Jens Axboe <axboe@kernel.dk>,
-	Xiao Ni <xni@redhat.com>, Geliang Tang <geliang.tang@suse.com>, "Hannes
- Reinecke" <hare@suse.de>, NeilBrown <neilb@suse.de>, Vishal L Verma
-	<vishal.l.verma@intel.com>, <linux-block@vger.kernel.org>,
-	<nvdimm@lists.linux.dev>, <linux-kernel@vger.kernel.org>
-Subject: Re: Bug in commit aa511ff8218b ("badblocks: switch to the improved
- badblock handling
-Message-ID: <6585dc32bebce_ab80829462@iweiny-mobl.notmuch>
-References: <6585d5fda5183_9f731294b9@iweiny-mobl.notmuch>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <6585d5fda5183_9f731294b9@iweiny-mobl.notmuch>
-X-ClientProxiedBy: BYAPR01CA0016.prod.exchangelabs.com (2603:10b6:a02:80::29)
- To SA1PR11MB6733.namprd11.prod.outlook.com (2603:10b6:806:25c::17)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90CD32C1BE;
+	Fri, 22 Dec 2023 18:58:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07628C433C8;
+	Fri, 22 Dec 2023 18:58:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703271506;
+	bh=ojFj4kwAD+fP00741+yhDJ358d0D+aSaeo3PKngWKXw=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=PKi1pkfJZS4txHs9uBCXle1G/fMJDgViskQBLiYQ6EouLmp3YjQYjJ4Kh+sgwqJLt
+	 4Kll/J5moHTySTB06G1h5UNDhugy+U9wAeXwzJn4alXjEMe3a0zHtpAC4zj2W5wEF8
+	 v55JZO/o8XjlN9gZimTqjmv2AmxIxZwBKw3wulD/tZczoiSnW6tT9b9WVW98NGBkE/
+	 atN0GVAOo2ryQXgq+py72p177d4otTLhtbazXmZFw97ckXY60XRuQynrE7v+CGm9N7
+	 YPya5dPz3ZY2wygLEBdykQdCb74T6EuRfIwXCvV8AcfGgqUf0uZDdVoK19M6+0cVjd
+	 uL/mu2dsQPLUQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 94DD5CE0F74; Fri, 22 Dec 2023 10:58:25 -0800 (PST)
+Date: Fri, 22 Dec 2023 10:58:25 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Uladzislau Rezki <urezki@gmail.com>
+Cc: RCU <rcu@vger.kernel.org>, Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
+	Boqun Feng <boqun.feng@gmail.com>, Hillf Danton <hdanton@sina.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
+	Frederic Weisbecker <frederic@kernel.org>
+Subject: Re: [PATCH v3 4/7] rcu: Improve handling of synchronize_rcu() users
+Message-ID: <e20058f9-a525-4d65-b22b-7dd9cfec9737@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20231128080033.288050-1-urezki@gmail.com>
+ <20231128080033.288050-5-urezki@gmail.com>
+ <579f86e0-e03e-4ab3-9a85-a62064bcf2a1@paulmck-laptop>
+ <ZYQY8bB3zpywfBxO@pc636>
+ <650554ca-17f6-4119-ab4e-42239c958c73@paulmck-laptop>
+ <ZYVWjc65LzD8qkdw@pc636>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SA1PR11MB6733:EE_|SA1PR11MB7085:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0e020394-f713-4333-dfba-08dc031fe966
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: RM0gRmdqAMEZV/DkbXOwBX0ynP/y4qpx9oDgQyjaPn3eXYS95nkThzsohtzlyp4Qw1ztThyA+08vY17qgbkA7Fhgy11k713vFAzeeyGCKTjLIvTI5+qoOZiZtftIE6ZZ/H5NYT6lDSVazTiKGfS8/e7vReplhH7zBsCqjFHCgJtRnu4Xtbapo1TdofQaC5bEnp896iqNC2egR4eeTWOfY9vyghqJHXpOn4NmOAkzQebdSfrIcLiL68jW89x2xQDrKJxKxhgOfGbymAxNgb91ec56pyPTCSB/yg0uWFhFTIg9UCX3h8c/cMQ7cOiIGmh2lJWlpTrCvunQaYPkvoigW9opBWbhnfCTfKS8M1B8k4DeEcZo20KFqMMVHyG+SlLe6RZtWTfjtlGgzPshTovUb4rkt8kg/ATZsHfV/S4zfxhZG0fBXce5oGFeWZ1YbOYs2xiMtyt9HW4QswC3d57hWVPfhsilX47aU9vqgaOo2XT5nG4kAUe1aJGk/G53gAXkXPRkvbeks4fgkFSe+WaygxoSNYiaLlelYQKOPU1EJj3CjdwFFI8toxjzHeJ68KwoDjRnLHllWzjmf7Fu+mo4hg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR11MB6733.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(366004)(396003)(136003)(376002)(230922051799003)(1800799012)(186009)(451199024)(64100799003)(6512007)(26005)(8676002)(6506007)(478600001)(8936002)(966005)(66556008)(9686003)(54906003)(316002)(66476007)(66946007)(4326008)(110136005)(6666004)(2906002)(38100700002)(41300700001)(6486002)(44832011)(82960400001)(86362001)(83380400001)(5660300002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?cAH18dXARZ+fGkdQITwBNInJPOUMJ4hoqWpn8JB6eT9ihquQLkWhkC55eWrB?=
- =?us-ascii?Q?uSMjGMy9fs1SlxhsEXxp90EcqTNP1FLl/RRePnrvxJKf4zMAG4Ue5jkn1zFR?=
- =?us-ascii?Q?GbxPuDfLW+tPdSZRRdR/ZS8B4TXrFKaOCc4AKYQNmS0PHabPKw3qjFVRmrAf?=
- =?us-ascii?Q?rYuWCPy6XNNc1XjoHxZcT+9V2tAx2K6uVaLTmm4FYEEfIZ7ffPlrUUvun71J?=
- =?us-ascii?Q?1OegnpKCXe9Blj4Qibn1C3p8WE43Wtj7bwBL3eKEz36wpGLra90n/3Pjm4FR?=
- =?us-ascii?Q?OM7rWJzj/b0oAoH878bHsOcDSBcWMU9RIHomxYQq4ohZn4lvbPZzlQoJItKW?=
- =?us-ascii?Q?PB/UgYdT7R/RQw6IYT6lbgrJL0eD63cjf1NKnHYgMpx3cyA171FUUeRvlf14?=
- =?us-ascii?Q?c7D/jWgtnA+I8h51SCsLLLq4AFEp7vBHMOsaV9Vhtu3fnUchpwGMtRM/Q2HR?=
- =?us-ascii?Q?GTXKgEVkcj5MH8ESu4QBDPreuRMx2fQqdOkY9EGvySQdtlpXzCKqloLwhL4S?=
- =?us-ascii?Q?BAbzBE7+5eaZxLpdYP10oCKUc7Vgh/mkOx+NRnb2LftNGVhkHmBN7TQ0IVjn?=
- =?us-ascii?Q?GfGfBVdM+6hEQhixKBA5tTdik6JmzDgRFxJs22O4rn6VA5bTCjbssUruvFJl?=
- =?us-ascii?Q?X/DgKkmMBZOzVm5x7GGhXhbpow80qHo8ipynxk+w9mO2pdHaIY481zUh8pQm?=
- =?us-ascii?Q?W2BBo+JWS4Y1WinKkVB0AbUUwDSyBLEDGPp1mZQIaAM6ZNzyV0CxzAEqIhCv?=
- =?us-ascii?Q?7yb8w4dv0/NFoY/tfw3RtX+K3xG7xh8nITcrWOH2ipicFIrbZUFL1lfQXP02?=
- =?us-ascii?Q?vMbz2EEWgmDgwi3l1GTBmUwMPAyNP8LDIxE24+5IAiFgOQpjGfwQB6p50g0y?=
- =?us-ascii?Q?sr3sVEotboweWvhrqYhu76aPXNlp8qtIZJ0Tc0Eszeq7yzQYj+Pny4wjYQlx?=
- =?us-ascii?Q?pAZUi8Hv+NHviHyEVW2bwux31ITDmQDhn3IAVo8KFKEXFHvEtYbMSuh6l+gw?=
- =?us-ascii?Q?2Od5AZWEiYItDG9NFbrkzOKjhEvm+3aVz1rvjQ31Pzl27jxmJ9PCIaj2wr/m?=
- =?us-ascii?Q?Np+RGASgOgCCj6nPlhZAOpAAKVOyJTJaWd4dpNuwaJU7BvVVmtB1drZ0ISO/?=
- =?us-ascii?Q?6aDLMyQacYKb0Wo39+FOLgNqZB4ellaDjTAL6IOYdIEO6kT5HR8iFE49JkOm?=
- =?us-ascii?Q?Y4luArzY6ROIvNm/hWmkOfET4/ujRoHboUATLyNBJqKu5RMOVstvvWuPB58l?=
- =?us-ascii?Q?yjjXS+jwFOh5qUqDn8XhW3a9vLXwBOOWYkLxBqvAGoMr1R+I6LIDVtSLJNfJ?=
- =?us-ascii?Q?lB8O1ak+krRigBw7h/R4M0TnDlQEhfjxzjF+LZt0X+JBhsxBVkyHqQ0qeW9w?=
- =?us-ascii?Q?+AyPXCRhqVnX9hWk4hMO8AVTktADKXnRaLqAGJ7zKGrVuFP70TQIpvbcYAFZ?=
- =?us-ascii?Q?2cQzFlC/4oVdS81LcQPuZyjM2dodeJhpLvjmm+dyp8aPwh2hdnGh6RQvxUak?=
- =?us-ascii?Q?eEKhFPelvuZPq6ENpS8MoMp99tfPZvxupK5ctkEO0KdnzeCvifBDXa4+wstp?=
- =?us-ascii?Q?appi1C3Ij0Jh0P1K+EwgwrWG2QldYotBLlgDzJqw?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0e020394-f713-4333-dfba-08dc031fe966
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR11MB6733.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Dec 2023 18:57:57.7300
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: vrwrQq6YxHQfkJAWjjbBppdyQRjCMh8ycqGuzfEt9KKsPAhBJ6wv/VtCY2a4XnR/l+rIoWr8IyEV70uax5FSlg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR11MB7085
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZYVWjc65LzD8qkdw@pc636>
 
-Ira Weiny wrote:
-> Coly,
+On Fri, Dec 22, 2023 at 10:27:41AM +0100, Uladzislau Rezki wrote:
+> On Thu, Dec 21, 2023 at 10:40:21AM -0800, Paul E. McKenney wrote:
+> > On Thu, Dec 21, 2023 at 11:52:33AM +0100, Uladzislau Rezki wrote:
+> > > On Tue, Dec 19, 2023 at 05:37:56PM -0800, Paul E. McKenney wrote:
+> > > > On Tue, Nov 28, 2023 at 09:00:30AM +0100, Uladzislau Rezki (Sony) wrote:
+> > > > > From: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
+> > > > > 
+> > > > > Currently, processing of the next batch of rcu_synchronize nodes
+> > > > > for the new grace period, requires doing a llist reversal operation
+> > > > > to find the tail element of the list. This can be a very costly
+> > > > > operation (high number of cache misses) for a long list.
+> > > > > 
+> > > > > To address this, this patch introduces a "dummy-wait-node" entity.
+> > > > > At every grace period init, a new wait node is added to the llist.
+> > > > > This wait node is used as wait tail for this new grace period.
+> > > > > 
+> > > > > This allows lockless additions of new rcu_synchronize nodes in the
+> > > > > rcu_sr_normal_add_req(), while the cleanup work executes and does
+> > > > > the progress. The dummy nodes are removed on next round of cleanup
+> > > > > work execution.
+> > > > > 
+> > > > > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> > > > > Signed-off-by: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
+> > > > 
+> > > > This says that Uladzislau created the patch and that Neeraj
+> > > > acted as maintainer.  I am guessing that you both worked on it,
+> > > > in which case is should have the Co-developed-by tags as shown in
+> > > > Documentation/process/submitting-patches.rst.  Could you please update
+> > > > these to reflect the actual origin?
+> > > > 
+> > > Right. We both worked on it. Neeraj is an author whereas i should mark
+> > > myself as a Co-developed-by. This is a correct way. Thank you for
+> > > pointing on it!
+> > 
+> > Sounds good, thank you!
+> > 
+> > > > One question below toward the end.  There are probably others that I
+> > > > should be asking, but I have to start somewhere.  ;-)
+> > > > 
+> > > Good :)
+> > > 
+> > > > >  
+> > > > >  /*
+> > > > >   * Helper function for rcu_gp_init().
+> > > > >   */
+> > > > > -static void rcu_sr_normal_gp_init(void)
+> > > > > +static bool rcu_sr_normal_gp_init(void)
+> > > > >  {
+> > > > > -	struct llist_node *head, *tail;
+> > > > > +	struct llist_node *first;
+> > > > > +	struct llist_node *wait_head;
+> > > > > +	bool start_new_poll = false;
+> > > > >  
+> > > > > -	if (llist_empty(&sr.srs_next))
+> > > > > -		return;
+> > > > > +	first = READ_ONCE(sr.srs_next.first);
+> > > > > +	if (!first || rcu_sr_is_wait_head(first))
+> > > > > +		return start_new_poll;
+> > > > > +
+> > > > > +	wait_head = rcu_sr_get_wait_head();
+> > > > > +	if (!wait_head) {
+> > > > > +		// Kick another GP to retry.
+> > > > > +		start_new_poll = true;
+> > > > > +		return start_new_poll;
+> > > > > +	}
+> > > > >  
+> > > > > -	tail = llist_del_all(&sr.srs_next);
+> > > > > -	head = llist_reverse_order(tail);
+> > > > > +	/* Inject a wait-dummy-node. */
+> > > > > +	llist_add(wait_head, &sr.srs_next);
+> > > > >  
+> > > > >  	/*
+> > > > > -	 * A waiting list of GP should be empty on this step,
+> > > > > -	 * since a GP-kthread, rcu_gp_init() -> gp_cleanup(),
+> > > > > +	 * A waiting list of rcu_synchronize nodes should be empty on
+> > > > > +	 * this step, since a GP-kthread, rcu_gp_init() -> gp_cleanup(),
+> > > > >  	 * rolls it over. If not, it is a BUG, warn a user.
+> > > > >  	 */
+> > > > > -	WARN_ON_ONCE(!llist_empty(&sr.srs_wait));
+> > > > > +	WARN_ON_ONCE(sr.srs_wait_tail != NULL);
+> > > > > +	sr.srs_wait_tail = wait_head;
+> > > > > +	ASSERT_EXCLUSIVE_WRITER(sr.srs_wait_tail);
+> > > > >  
+> > > > > -	WRITE_ONCE(sr.srs_wait_tail, tail);
+> > > > > -	__llist_add_batch(head, tail, &sr.srs_wait);
+> > > > > +	return start_new_poll;
+> > > > >  }
+> > > > >  
+> > > > >  static void rcu_sr_normal_add_req(struct rcu_synchronize *rs)
+> > > > > @@ -1493,6 +1684,7 @@ static noinline_for_stack bool rcu_gp_init(void)
+> > > > >  	unsigned long mask;
+> > > > >  	struct rcu_data *rdp;
+> > > > >  	struct rcu_node *rnp = rcu_get_root();
+> > > > > +	bool start_new_poll;
+> > > > >  
+> > > > >  	WRITE_ONCE(rcu_state.gp_activity, jiffies);
+> > > > >  	raw_spin_lock_irq_rcu_node(rnp);
+> > > > > @@ -1517,11 +1709,15 @@ static noinline_for_stack bool rcu_gp_init(void)
+> > > > >  	/* Record GP times before starting GP, hence rcu_seq_start(). */
+> > > > >  	rcu_seq_start(&rcu_state.gp_seq);
+> > > > >  	ASSERT_EXCLUSIVE_WRITER(rcu_state.gp_seq);
+> > > > > -	rcu_sr_normal_gp_init();
+> > > > > +	start_new_poll = rcu_sr_normal_gp_init();
+> > > > >  	trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq, TPS("start"));
+> > > > >  	rcu_poll_gp_seq_start(&rcu_state.gp_seq_polled_snap);
+> > > > >  	raw_spin_unlock_irq_rcu_node(rnp);
+> > > > >  
+> > > > > +	// New poll request after rnp unlock
+> > > > > +	if (start_new_poll)
+> > > > > +		(void) start_poll_synchronize_rcu();
+> > > > 
+> > > > You lost me on this one.  Anything that got moved to the wait list
+> > > > should be handled by the current grace period, right?  Or is the
+> > > > problem that rcu_sr_normal_gp_init() is being invoked after the call
+> > > > to rcu_seq_start()?  If that is the case, could it be moved ahead so
+> > > > that we don't need the extra grace period?
+> > > > 
+> > > > Or am I missing something subtle here?
+> > > > 
+> > > The problem is that, we are limited in number of "wait-heads" which we
+> > > add as a marker node for this/current grace period. If there are more clients
+> > > and there is no a wait-head available it means that a system, the deferred
+> > > kworker, is slow in processing callbacks, thus all wait-nodes are in use.
+> > > 
+> > > That is why we need an extra grace period. Basically to repeat our try one
+> > > more time, i.e. it might be that a current grace period is not able to handle
+> > > users due to the fact that a system is doing really slow, but this is rather
+> > > a corner case and is not a problem.
+> > 
+> > But in that case, the real issue is not the need for an extra grace
+> > period, but rather the need for the wakeup processing to happen, correct?
+> > Or am I missing something subtle here?
+> > 
+> Basically, yes. If we had a spare dummy-node we could process the users
+> by the current GP(no need in extra). Why we may not have it - it is because
+> like you pointed:
 > 
-> Yesterday I noticed that a few of our nvdimm tests were failing.  I bisected
-> the problem to the following commit.
+> - wake-up issue, i.e. wake-up time + when we are on_cpu;
+> - slow list process. For example priority. The kworker is not
+>   given enough CPU time to do the progress, thus "dummy-nodes"
+>   are not released in time for reuse.
 > 
-> aa511ff8218b ("badblocks: switch to the improved badblock handling code") 
+> Therefore, en extra GP is requested if there is a high flow of
+> synchronize_rcu() users and kworker is not able to do a progress
+> in time.
 > 
-> Reverting this patch fixed our tests.
-> 
-> I've also dug into the code a bit and I believe the algorithm for
-> badblocks_check() is broken (not yet sure about the other calls).  At the
-> very least I see the bb->p pointer being indexed with '-1'.  :-(
-> 
-> I did notice that this work was due to a bug report in badblock_set().
-> Therefore, I'm not sure of that severity of that fix is vs a revert.  But
-> at this point I'm not seeing an easy fix so I'm in favor of a revert.
-> 
+> For example 60K+ parallel synchronize_rcu() users will trigger it.
 
-Dan and I were discussing this and it occurs to us that it may be easy for
-you to stand up the test environment I'm using.
+OK, but what bad thing would happen if that was moved to precede the
+rcu_seq_start(&rcu_state.gp_seq)?  That way, the requested grace period
+would be the same as the one that is just now starting.
 
-For CXL we have a run_qemu.sh project[1] which stands up a qemu
-environment with the ndctl[2] tests in them.  Clone ndctl to ~/git/ndctl
-so run_qemu.sh can find it.  Then start run_qemu.sh in a kernel tree like
-this:
+Something like this?
 
-$ <path_to_run_qemu>/run_qemu.sh --cxl --nfit-test --nfit-debug [-r img]
+	start_new_poll = rcu_sr_normal_gp_init();
 
-[-r img] is optional but useful if you have changed the ndctl tests.
+	/* Record GP times before starting GP, hence rcu_seq_start(). */
+	rcu_seq_start(&rcu_state.gp_seq);
+	ASSERT_EXCLUSIVE_WRITER(rcu_state.gp_seq);
 
-Once booted you can run the test suite with meson:
+	trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq, TPS("start"));
+	rcu_poll_gp_seq_start(&rcu_state.gp_seq_polled_snap);
+	raw_spin_unlock_irq_rcu_node(rnp);
 
-$ cd ndctl && meson test -C build
+	// New poll request after rnp unlock
+	if (start_new_poll)
+		(void) start_poll_synchronize_rcu();
 
-I've been running just our clear.sh test which shows the error.
+Yes, rcu_sr_normal_gp_init() might need some adjustment given that it
+is seeing the pre-GP value of rcu_state.gp_seq.
 
-$ cd ndctl/build && meson test clear.sh
+But unless I am missing something, what you have now can result in
+extra grace periods, which incur overhead on what would otherwise be an
+idle system.
 
-Hope this helps,
-Ira
-
-[1] https://github.com/pmem/run_qemu
-[2] https://github.com/pmem/ndctl
+							Thanx, Paul
 
