@@ -1,197 +1,155 @@
-Return-Path: <linux-kernel+bounces-9588-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9593-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC09281C815
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 11:24:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA7C981C820
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 11:27:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 955C728686D
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 10:24:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 422231F2414F
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 10:27:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14AF41773B;
-	Fri, 22 Dec 2023 10:23:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D4F1125BE;
+	Fri, 22 Dec 2023 10:27:45 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11045171C7
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 10:23:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 94C2D2F4;
-	Fri, 22 Dec 2023 02:24:34 -0800 (PST)
-Received: from [10.57.87.46] (unknown [10.57.87.46])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 91F953F738;
-	Fri, 22 Dec 2023 02:23:45 -0800 (PST)
-Message-ID: <11171acd-dae7-475f-ab93-a890f0f0d273@arm.com>
-Date: Fri, 22 Dec 2023 10:23:43 +0000
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8935011718
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 10:27:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rGckX-0008A3-Ce; Fri, 22 Dec 2023 11:27:25 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rGckV-000jXS-3D; Fri, 22 Dec 2023 11:27:24 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rGckV-001cdB-T5; Fri, 22 Dec 2023 11:27:23 +0100
+Date: Fri, 22 Dec 2023 11:27:23 +0100
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc: lgirdwood@gmail.com, broonie@kernel.org, linux-pwm@vger.kernel.org, 
+	linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	Thierry Reding <thierry.reding@gmail.com>, Heiner Kallweit <hkallweit1@gmail.com>, 
+	Dmitry Rokosov <ddrokosov@sberdevices.ru>
+Subject: Re: [RFC PATCH v1] regulator: pwm-regulator: Fix continuous
+ get_voltage for disabled PWM
+Message-ID: <eyfec4jzcw3japf77jzj3p6w7gytbmogr2ff3g2677nn6qivpe@57huhelwllhd>
+References: <20231221211222.1380658-1-martin.blumenstingl@googlemail.com>
+ <tek6c6symqgm6x6ujh4m67q32en24pzrkjbchffir7qljo4gor@7qpu4zmgyzpq>
+ <CAFBinCAxh0xU2mDRX3t42j6oJ534p9RPUV+dYoRe0oacTw_7iA@mail.gmail.com>
+ <2f2bc3xvemk2x3sno65so6vglmpavjtyeiqzy6yyzwvx5hqtmi@tsfx2hr7rmqp>
+ <CAFBinCCLorBkGmpeUiep6gT7N__2641ec+f=hJyUgVEv1x6EdA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 19/23] sched: Consolidate pick_*_task to
- task_is_pushable helper
-Content-Language: en-US
-To: John Stultz <jstultz@google.com>, LKML <linux-kernel@vger.kernel.org>
-Cc: Joel Fernandes <joelaf@google.com>, Qais Yousef <qyousef@google.com>,
- Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
- Juri Lelli <juri.lelli@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>,
- Dietmar Eggemann <dietmar.eggemann@arm.com>,
- Valentin Schneider <vschneid@redhat.com>,
- Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
- Zimuzo Ezeozue <zezeozue@google.com>, Youssef Esmat
- <youssefesmat@google.com>, Mel Gorman <mgorman@suse.de>,
- Daniel Bristot de Oliveira <bristot@redhat.com>,
- Will Deacon <will@kernel.org>, Waiman Long <longman@redhat.com>,
- Boqun Feng <boqun.feng@gmail.com>, "Paul E. McKenney" <paulmck@kernel.org>,
- Xuewen Yan <xuewen.yan94@gmail.com>, K Prateek Nayak
- <kprateek.nayak@amd.com>, Thomas Gleixner <tglx@linutronix.de>,
- kernel-team@android.com
-References: <20231220001856.3710363-1-jstultz@google.com>
- <20231220001856.3710363-20-jstultz@google.com>
-From: Metin Kaya <metin.kaya@arm.com>
-In-Reply-To: <20231220001856.3710363-20-jstultz@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="ofg2g3grsnoftz76"
+Content-Disposition: inline
+In-Reply-To: <CAFBinCCLorBkGmpeUiep6gT7N__2641ec+f=hJyUgVEv1x6EdA@mail.gmail.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-On 20/12/2023 12:18 am, John Stultz wrote:
-> From: Connor O'Brien <connoro@google.com>
-> 
-> This patch consolidates rt and deadline pick_*_task functions to
-> a task_is_pushable() helper
-> 
-> This patch was broken out from a larger chain migration
-> patch originally by Connor O'Brien.
-> 
-> Cc: Joel Fernandes <joelaf@google.com>
-> Cc: Qais Yousef <qyousef@google.com>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Juri Lelli <juri.lelli@redhat.com>
-> Cc: Vincent Guittot <vincent.guittot@linaro.org>
-> Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
-> Cc: Valentin Schneider <vschneid@redhat.com>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Ben Segall <bsegall@google.com>
-> Cc: Zimuzo Ezeozue <zezeozue@google.com>
-> Cc: Youssef Esmat <youssefesmat@google.com>
-> Cc: Mel Gorman <mgorman@suse.de>
-> Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Waiman Long <longman@redhat.com>
-> Cc: Boqun Feng <boqun.feng@gmail.com>
-> Cc: "Paul E. McKenney" <paulmck@kernel.org>
-> Cc: Metin Kaya <Metin.Kaya@arm.com>
-> Cc: Xuewen Yan <xuewen.yan94@gmail.com>
-> Cc: K Prateek Nayak <kprateek.nayak@amd.com>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: kernel-team@android.com
-> Signed-off-by: Connor O'Brien <connoro@google.com>
-> [jstultz: split out from larger chain migration patch,
->   renamed helper function]
-> Signed-off-by: John Stultz <jstultz@google.com>
-> ---
-> v7:
-> * Split from chain migration patch
-> * Renamed function
-> ---
->   kernel/sched/deadline.c | 10 +---------
->   kernel/sched/rt.c       | 11 +----------
->   kernel/sched/sched.h    | 10 ++++++++++
->   3 files changed, 12 insertions(+), 19 deletions(-)
-> 
-> diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
-> index def1eb23318b..1f3bc50de678 100644
-> --- a/kernel/sched/deadline.c
-> +++ b/kernel/sched/deadline.c
-> @@ -2049,14 +2049,6 @@ static void task_fork_dl(struct task_struct *p)
->   /* Only try algorithms three times */
->   #define DL_MAX_TRIES 3
->   
-> -static int pick_dl_task(struct rq *rq, struct task_struct *p, int cpu)
-> -{
-> -	if (!task_on_cpu(rq, p) &&
-> -	    cpumask_test_cpu(cpu, &p->cpus_mask))
-> -		return 1;
-> -	return 0;
-> -}
-> -
->   /*
->    * Return the earliest pushable rq's task, which is suitable to be executed
->    * on the CPU, NULL otherwise:
-> @@ -2075,7 +2067,7 @@ static struct task_struct *pick_earliest_pushable_dl_task(struct rq *rq, int cpu
->   	if (next_node) {
->   		p = __node_2_pdl(next_node);
->   
-> -		if (pick_dl_task(rq, p, cpu))
-> +		if (task_is_pushable(rq, p, cpu) == 1)
 
-Nit: ` == 1` part is redundant, IMHO.
+--ofg2g3grsnoftz76
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->   			return p;
->   
->   		next_node = rb_next(next_node);
-> diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
-> index cf0eb4aac613..15161de88753 100644
-> --- a/kernel/sched/rt.c
-> +++ b/kernel/sched/rt.c
-> @@ -1812,15 +1812,6 @@ static void put_prev_task_rt(struct rq *rq, struct task_struct *p)
->   /* Only try algorithms three times */
->   #define RT_MAX_TRIES 3
->   
-> -static int pick_rt_task(struct rq *rq, struct task_struct *p, int cpu)
-> -{
-> -	if (!task_on_cpu(rq, p) &&
-> -	    cpumask_test_cpu(cpu, &p->cpus_mask))
-> -		return 1;
-> -
-> -	return 0;
-> -}
-> -
->   /*
->    * Return the highest pushable rq's task, which is suitable to be executed
->    * on the CPU, NULL otherwise
-> @@ -1834,7 +1825,7 @@ static struct task_struct *pick_highest_pushable_task(struct rq *rq, int cpu)
->   		return NULL;
->   
->   	plist_for_each_entry(p, head, pushable_tasks) {
-> -		if (pick_rt_task(rq, p, cpu))
-> +		if (task_is_pushable(rq, p, cpu) == 1)
+On Fri, Dec 22, 2023 at 11:12:30AM +0100, Martin Blumenstingl wrote:
+> Hello Uwe,
+>=20
+> On Fri, Dec 22, 2023 at 8:10=E2=80=AFAM Uwe Kleine-K=C3=B6nig
+> <u.kleine-koenig@pengutronix.de> wrote:
+> [...]
+> > Also the calculation is wrong: If a relative duty-cyle in the interval
+> > [91%; 0%] maps lineary to [860 mV; 1140 mV] you get 1100 mV at
+> >
+> >              1100 mV - 860 mV
+> >         91 + ---------------- * (0 - 91) =3D 13
+> >              1140 mV - 860 mV
+> >
+> > (If the calculations in the driver used signed multiplication and
+> > division, all the checks for max_uV_duty < min_uV_duty could just go
+> > away.)
+> >
+> > So you want
+> >
+> > +               pwm-dutycycle-range =3D <13 0>;
+> Thank you!
+>=20
+> > (if this restriction is really necessary).
+> I could not find a way around this.
+> Without this change pwm_regulator_set_voltage() is called with req_min
+> 860mV and req_max 1140mV.
+> pwm_regulator_set_voltage() will then pick the lowest possible
+> voltage, which then results in 860mV (exactly what I get without any
+> patches).
+>=20
+> To be able to keep the original minimum voltage in .dts would be to
+> work on what Mark suggested where he said:
+> "I'd expect a change in the init_state() function, possibly one that
+> programs the PWM to reflect the actual hardware state"
+>=20
+> [...]
+> > > -     if (pstate.enabled)
+> > > -             voltage =3D pwm_get_relative_duty_cycle(&pstate, duty_u=
+nit);
+> > > -     else if (max_uV_duty < min_uV_duty)
+> > > -             voltage =3D max_uV_duty;
+> > > -     else
+> > > -             voltage =3D min_uV_duty;
+> > > +     voltage =3D pwm_get_relative_duty_cycle(&pstate, duty_unit);
+> >
+> > I'd add here:
+> >
+> >         if (voltage < min(max_uV_duty, min_uV_duty) ||
+> >             voltage > max(max_uV_duty, min_uV_duty))
+> >                 return -ENOTRECOVERABLE;
+> I can do that - although I think it should be a separate change.
 
-Ditto.
+That can go in together with the
 
->   			return p;
->   	}
->   
-> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-> index 19afe532771f..ef3d327e267c 100644
-> --- a/kernel/sched/sched.h
-> +++ b/kernel/sched/sched.h
-> @@ -3554,6 +3554,16 @@ void push_task_chain(struct rq *rq, struct rq *dst_rq, struct task_struct *task)
->   	set_task_cpu(task, dst_rq->cpu);
->   	activate_task(dst_rq, task, 0);
->   }
-> +
-> +static inline
-> +int task_is_pushable(struct rq *rq, struct task_struct *p, int cpu)
+	if (pstate.enabled)
+		return -ENOTRECOVERABLE;
 
-Nit: I know the function is just renamed in this patch, but should we 
-change the return type to bool while we are at it?
+Otherwise +1 to not mix that with the machine specfic stuff.
 
-> +{
-> +	if (!task_on_cpu(rq, p) &&
-> +	    cpumask_test_cpu(cpu, &p->cpus_mask))
-> +		return 1;
-> +
-> +	return 0;
-> +}
->   #endif
->   
->   #endif /* _KERNEL_SCHED_SCHED_H */
+Best regards
+Uwe
 
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=C3=B6nig         =
+   |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--ofg2g3grsnoftz76
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmWFZIoACgkQj4D7WH0S
+/k7wLQgAgB0mlw3wy3ju4Du6LWIxSgraCzeRpxj6i4nzctEXRDsG7vLq9hKVW9Uf
+GAFpXYSwxcG3rUS9CMj3YY7NPeo7ZZ1U6EvHNyQOk/DEbWKIw/Y1eZi2QGaWjUqa
+T0x1En4EaSUKC4ZdDGy+5DgGsC0rlfMyE7YQHkurbuAjb5fvCbfL9XTW/GqnRUuJ
+Ptd+EyNbQfpzwyKA99G9WEy3eWM5ou5n0mTXGRtSpYlEPa7evYWF8+U65dcd/o9Y
+d7mETR2MMvUfIJmbxp1Ob/zj+tjI0Jes6ahX2Jc9ev9BTjmFchcMB4MTE5xY3MRn
++T9SqS89y1Ku9rTXDCpbDx0uZKAwvA==
+=bR5z
+-----END PGP SIGNATURE-----
+
+--ofg2g3grsnoftz76--
 
