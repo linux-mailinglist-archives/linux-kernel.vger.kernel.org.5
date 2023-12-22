@@ -1,52 +1,74 @@
-Return-Path: <linux-kernel+bounces-9729-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9730-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA57781CA50
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 13:52:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E1DE81CA57
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 13:57:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 192C11C20E9F
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 12:52:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 506121C21F45
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 12:57:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E910318C27;
-	Fri, 22 Dec 2023 12:52:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D6D418B09;
+	Fri, 22 Dec 2023 12:56:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ctcXJKZ2"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PlU11bx0"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 360A719BD3;
-	Fri, 22 Dec 2023 12:52:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0EDEC433CA;
-	Fri, 22 Dec 2023 12:52:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703249564;
-	bh=7XWGcOrq/RDTo8zQVqjxLsAsAQ6YQ8CXxz6OTo3M7HY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ctcXJKZ2iRVYnCCHSwbYGMB5ikB+PqhrA0xKcspRtJDDZbd/qi1dzFzTjWOttRgcD
-	 wG1szO5tDBRemQjNyvv0MwwLnKQ3ORAaYgWSxgwwsO/Kpt+aYL8Xk/8ga5vOctKptw
-	 HgE8LiK8KKfzNaLCXO18k/CuO5QOYbTBJwj7VqGIu2c7hc7WUKOFkBAbZQQlIibMvM
-	 RqDCLLDUVfSAx3icsOsDBca5eC7OkvTSgq+qvPZhHVVFzxuk4fURkTUVShiV9FKGEN
-	 Q9Sch8Eh7sjrcOSQeXyAbJfamJ8bbE3a6HWXppJtoi7fdJL83qgwNV2hGe8+iCsIcW
-	 fSsycsr3KYTBw==
-Date: Fri, 22 Dec 2023 13:52:34 +0100
-From: Simon Horman <horms@kernel.org>
-To: Jernej Skrabec <jernej.skrabec@gmail.com>
-Cc: robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org, wens@csie.org, samuel@sholland.org,
-	andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
-	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-	pabeni@redhat.com, devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-	Corentin Labbe <clabbe.montjoie@gmail.com>
-Subject: Re: [PATCH v5 1/3] phy: handle optional regulator for PHY
-Message-ID: <20231222125234.GF1202958@kernel.org>
-References: <20231220203537.83479-1-jernej.skrabec@gmail.com>
- <20231220203537.83479-2-jernej.skrabec@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 772B118C20;
+	Fri, 22 Dec 2023 12:56:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1d422c9f894so3198365ad.3;
+        Fri, 22 Dec 2023 04:56:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703249812; x=1703854612; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZesGLqsg0Mup8BizWmbcf46waNTPQG/aVlm/0mdvhUE=;
+        b=PlU11bx03gbIyW+XNdmjpoChm+oO3LJgwe0dIols3AUZ2baEjwhXZ5fD3XTR8Fityi
+         rzh4222THCLvIbn43dzgD0EHvJFKVnahaEILgwjTmI2dQgfzAhSuE5znsLOjqOwEGHlV
+         pGfgkUVIHAg0X2ioROQLP/ts/nJo0fzE2gWFsWKUo8FDQp1TtzkmrQDNXwCDX6H6ypL1
+         Z6KuVkIWPlpqeo8dfgRU7ZXUsRcHYTmSE3Yzqz+0Ze1ID+WC6jVogJiOgBrXPhcvmWHL
+         OmMrlsv8/876HEkosvPwURydHsW2a/buGtGAIy/nu+3kWzmsLrO0+5OfAkb5dTJicAxW
+         cXGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703249812; x=1703854612;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZesGLqsg0Mup8BizWmbcf46waNTPQG/aVlm/0mdvhUE=;
+        b=SyCcuvUP1MuVCTzz0T9BEHDQ8i5YnSRNv9Co/bmG7Bz4EVn0yKAV0XUwotvJE72+XA
+         mCgs4K4afOCggLeeG7TfxdfN1jG7zBAwhUAJSCXqxoRs6pjBoAD9BOp0c0+RJa7DysTG
+         BShFQWbszGYQaAE92tzJTsHLdOOwu7CyrpsnzSCH0OhjEwpZg4pkJ7CtdJDQWHT5lgoF
+         omfSNL8phteWb69aqKGh6vrgMifHC1jWtOhVX6TWdf2TbXo1ZR2r7QQHEO7QuneGECFs
+         c1oQmDZbJMzt0QgcujZZJMR6hIl3c3iqUZCerB7KKpNk5iwXGI+oVld+Rcp+4XO+ZWDc
+         yJrQ==
+X-Gm-Message-State: AOJu0YyV0x2JGui93dvZJrfWfIzvGyByVVpIJYW6uCmh/bNKRHM0uU8Q
+	EdQxleevv6Q4WmW5+ymkhXk=
+X-Google-Smtp-Source: AGHT+IHWIyot6GnsOhwZVS68Y2Z/KfzA4Mi75nlSQVmIWAMUJTZVi4tReINh1yTVSGM+Cz/U5ke2Vg==
+X-Received: by 2002:a17:902:d4cb:b0:1d3:8032:ccc1 with SMTP id o11-20020a170902d4cb00b001d38032ccc1mr1345752plg.113.1703249811462;
+        Fri, 22 Dec 2023 04:56:51 -0800 (PST)
+Received: from rigel (60-241-235-125.tpgi.com.au. [60.241.235.125])
+        by smtp.gmail.com with ESMTPSA id f10-20020a170902ce8a00b001d347a98e7asm3351248plg.260.2023.12.22.04.56.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Dec 2023 04:56:51 -0800 (PST)
+Date: Fri, 22 Dec 2023 20:56:46 +0800
+From: Kent Gibson <warthog618@gmail.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Bartosz Golaszewski <brgl@bgdev.pl>
+Subject: Re: [PATCH v1 1/1] gpiolib: cdev: Split line_get_debounce_period()
+ and use
+Message-ID: <ZYWHjq_7PnwO27ro@rigel>
+References: <20231221175527.2814506-1-andriy.shevchenko@linux.intel.com>
+ <ZYTihbWMcHMHSkC_@rigel>
+ <ZYWDij-J1YruTIM7@smile.fi.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -55,40 +77,61 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231220203537.83479-2-jernej.skrabec@gmail.com>
+In-Reply-To: <ZYWDij-J1YruTIM7@smile.fi.intel.com>
 
-On Wed, Dec 20, 2023 at 09:35:35PM +0100, Jernej Skrabec wrote:
-> From: Corentin Labbe <clabbe.montjoie@gmail.com>
-> 
-> Add handling of optional regulators for PHY.
-> 
-> Regulators need to be enabled before PHY scanning, so MDIO bus
-> initiate this task.
-> 
-> Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
-> Signed-off-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+On Fri, Dec 22, 2023 at 02:39:38PM +0200, Andy Shevchenko wrote:
+> On Fri, Dec 22, 2023 at 09:12:37AM +0800, Kent Gibson wrote:
+> > On Thu, Dec 21, 2023 at 07:55:27PM +0200, Andy Shevchenko wrote:
+> > > Instead of repeating the same code and reduce possible miss
+> > > of READ_ONCE(), split line_get_debounce_period() heler out
+> > > and use in the existing cases.
+> > >
+> >
+> > helper
+> >
+> > Not a fan of this change.
+> >
+> > So using READ_ONCE() is repeating code??
+>
+> Yes. Because one may forget about it.
 
-Hi Jernej,
+Just as one may forget to use your wrapper.
+This argument is a NULL - so I'll just forget about it.
 
-> diff --git a/include/linux/phy.h b/include/linux/phy.h
-> index 3cc52826f18e..832cb2d4f76a 100644
-> --- a/include/linux/phy.h
-> +++ b/include/linux/phy.h
-> @@ -757,6 +757,9 @@ struct phy_device {
->  	void (*phy_link_change)(struct phy_device *phydev, bool up);
->  	void (*adjust_link)(struct net_device *dev);
->  
-> +	int regulator_cnt;
-> +	struct regulator_bulk_data *consumers;
+>
+> > Doesn't providing a wrapper around READ_ONCE() just rename that repitition?
+> > What of all the other uses of READ_ONCE() in cdev (and there are a lot) -
+> > why pick on debounce_period?
+>
+> Because you have a setter, but getter. Inconsistency.
+>
 
-Please add these two new fields to the kernel doc
-for struct phy_device which appears a above this hunk in phy.h.
+But then "for consistency" ALL the struct line fields require accessors
+and mutators.  That path is insanity.
 
-> +
->  #if IS_ENABLED(CONFIG_MACSEC)
->  	/* MACsec management functions */
->  	const struct macsec_ops *macsec_ops;
+The setter is there as setting the value now has side effects - none of
+which are visible to the caller, hence the usage of the standard
+setter name.
+You are siggesting every function name describe everything the function
+does?
 
--- 
-pw-bot: changes-requested
+And, in case you've forgotten, YOU REVIEWED THIS.
+
+> > The line_set_debounce_period() is necessary as the set is now a
+> > multi-step process as it can impact whether the line is contained
+> > in the supinfo_tree.  The get is just a get.
+> >
+> > And you could've included me in the Cc so I didn't just find it by
+> > accident.
+>
+> Maybe it's time to add you to the MAINTAINERS for this file as a designated
+> reviewer?
+>
+
+You are patching my recent change that you yourself reviewed only days
+ago. I would think that you would Cc me whether I were a maintainer or
+not as I'm very likely to have relevant feedback.
+
+Cheers,
+Kent.
 
