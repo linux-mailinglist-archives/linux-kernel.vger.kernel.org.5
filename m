@@ -1,181 +1,161 @@
-Return-Path: <linux-kernel+bounces-9751-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9753-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA8BF81CAB2
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 14:28:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0ED6981CAB5
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 14:29:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7B2B91F23469
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 13:28:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 41DB11C21D49
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 13:29:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA8011D53B;
-	Fri, 22 Dec 2023 13:28:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B336224CF;
+	Fri, 22 Dec 2023 13:29:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="DZ/Rs4bm"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ARrdx0k3"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EE4F1A5AC
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 13:28:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CC1D224D1
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 13:29:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1703251707;
+	s=mimecast20190719; t=1703251750;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=zjtBwcyrS/xfG3xz11U3E0BKYyC+0OSUW6t3X3+SrTk=;
-	b=DZ/Rs4bm1c0aoj3SCgCao197oiOwfkOAvaxNqt2pgJEZKXntm1BVpSdrPuro3wHWspd2Sp
-	/M2sfIqvJYwL5dcg9Xsp55sMYPh5EPx2eQ3C+FCfbWFpkoZtx/S3Fo0BxFyuw0cpefEQeD
-	xWpjOi1uRSQxrMjuw8E8D6J0OxAQq7w=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=1AKVs7FXg/jWbWMuTLae6aE+SqB8wGNXZoXLlyCDH7c=;
+	b=ARrdx0k3d09Ba86oflONlmxgAr9nnasS/uCYvF6RFECeCbABTjowpF3sOzc+d1rM9SAplu
+	a0erlErS3TJMg0TOKXud+JWlFSYnEYY54J//nF942dWZhKnDuUGT0uUnR/5PXpMXJe1XNr
+	pRQofaX8uQhF2oneisrmvRZVWFq+qgU=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-128-IpCp5o_YPnCevl7_35PjGw-1; Fri, 22 Dec 2023 08:28:25 -0500
-X-MC-Unique: IpCp5o_YPnCevl7_35PjGw-1
-Received: by mail-ed1-f69.google.com with SMTP id 4fb4d7f45d1cf-5543f50b702so487473a12.3
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 05:28:25 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703251704; x=1703856504;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zjtBwcyrS/xfG3xz11U3E0BKYyC+0OSUW6t3X3+SrTk=;
-        b=UhcFOTBdx0QhImfVF+zj8jkHztCrka3o9dttDhHiuKlqbUYeLuCnFzo3lO8JC1+WRe
-         C1sqJxsTTjsid28DrjGmmRPnsoY2mnTchXbjOg8grSbDFjadgEeCBjJsm1Rxe8PAxjf3
-         DPctd4Pf2cdDAYHfNpdb38OFdk5Vw8iOD69CFSu6GmPQyBGRuE9Wui/0QplHYSNle5ZH
-         dktvPqO1xJOl8fuCDn3dOsbJU1JNTy751dAC7vec/9P8Xs0kDo30uCvXln6iZTCGNoPB
-         h3sW8Fpd2Fh+tri44EgYhsFJ72sLgsQ7k+ZybgrNtI/jSK4nPV1Tt2Wl9lwnPF9jTaNb
-         BOpA==
-X-Gm-Message-State: AOJu0Ywr8LKPpUW+BULqI0yjOX4o4rL130oA2N5wr3CB2CTGN9UpLFVL
-	7SYw5EPBpJiRPWyQ0+lZpcAUtGCh+HYV/bdB+RJJRz51tKHt7zmHbT73DJoyqTxyx0txW2YlSgk
-	w3IdXtB6OhqUmUDfOPEQS5b5EGIRDNNzsT+YhNC27DvdqYIWU
-X-Received: by 2002:aa7:c7d4:0:b0:553:451d:981 with SMTP id o20-20020aa7c7d4000000b00553451d0981mr611584eds.27.1703251704712;
-        Fri, 22 Dec 2023 05:28:24 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IG8dKAHszdWVmVU3P+KG67bHgG7OlsmCbL7vkqRTd451rgN60S1dg0/d1u9nbfcB9U9ZPw0e7teJrPTePkYpk8=
-X-Received: by 2002:aa7:c7d4:0:b0:553:451d:981 with SMTP id
- o20-20020aa7c7d4000000b00553451d0981mr611573eds.27.1703251704410; Fri, 22 Dec
- 2023 05:28:24 -0800 (PST)
+ us-mta-85-3J-sf6PDOOaljrRLbWYWug-1; Fri, 22 Dec 2023 08:29:06 -0500
+X-MC-Unique: 3J-sf6PDOOaljrRLbWYWug-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 807558489A8;
+	Fri, 22 Dec 2023 13:29:06 +0000 (UTC)
+Received: from localhost (unknown [10.72.116.38])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id AA44FC15968;
+	Fri, 22 Dec 2023 13:29:04 +0000 (UTC)
+Date: Fri, 22 Dec 2023 21:29:01 +0800
+From: Baoquan He <bhe@redhat.com>
+To: fuqiang wang <fuqiang.wang@easystack.cn>
+Cc: Vivek Goyal <vgoyal@redhat.com>, Dave Young <dyoung@redhat.com>,
+	kexec@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] x86/kexec: fix potential cmem->ranges out of bounds
+Message-ID: <ZYWPHSmwK8iG6xUr@MiWiFi-R3L-srv>
+References: <20231222121855.148215-1-fuqiang.wang@easystack.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231219231503.1506801-1-jekhor@gmail.com> <20231220145229.020abe62@jic23-huawei>
- <CAKWEGV50duj-TcKdQp1BtN_QgnBZyG0WgAqo8Y5UtCinqOAh_g@mail.gmail.com> <38313826939a468ff8c7eee24e2cf07e9eef6768.camel@linux.intel.com>
-In-Reply-To: <38313826939a468ff8c7eee24e2cf07e9eef6768.camel@linux.intel.com>
-From: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Date: Fri, 22 Dec 2023 14:28:12 +0100
-Message-ID: <CAO-hwJ+RDnukVhL1=PirK=hU7gm2t73xsg=aDss0M9hj_CSuHA@mail.gmail.com>
-Subject: Re: [PATCH] HID: sensor-hub: Enable hid core report processing for
- all devices
-To: srinivas pandruvada <srinivas.pandruvada@linux.intel.com>
-Cc: Yauhen Kharuzhy <jekhor@gmail.com>, Jonathan Cameron <jic23@kernel.org>, linux-input@vger.kernel.org, 
-	linux-iio@vger.kernel.org, Daniel Thompson <daniel.thompson@linaro.org>, 
-	linux-kernel@vger.kernel.org, Jiri Kosina <jikos@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231222121855.148215-1-fuqiang.wang@easystack.cn>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
 
-On Fri, Dec 22, 2023 at 1:44=E2=80=AFPM srinivas pandruvada
-<srinivas.pandruvada@linux.intel.com> wrote:
->
-> On Wed, 2023-12-20 at 17:04 +0200, Yauhen Kharuzhy wrote:
-> > =D1=81=D1=80, 20 =D0=B4=D0=B5=D0=BA. 2023=E2=80=AF=D0=B3. =D0=B2 16:52,=
- Jonathan Cameron <jic23@kernel.org>:
-> > >
-> > > On Wed, 20 Dec 2023 01:15:03 +0200
-> > > Yauhen Kharuzhy <jekhor@gmail.com> wrote:
-> > >
-> > > > After the commit 666cf30a589a ("HID: sensor-hub: Allow multi-
-> > > > function
-> > > > sensor devices") hub devices are claimed by hidraw driver in
-> > > > hid_connect().
-> > > > This causes stoppping of processing HID reports by hid core due
-> > > > to
-> > > > optimization.
-> > > >
-> > > > In such case, the hid-sensor-custom driver cannot match a known
-> > > > custom
-> > > > sensor in hid_sensor_custom_get_known() because it try to check
-> > > > custom
-> > > > properties which weren't filled from the report because hid core
-> > > > didn't
-> > > > parsed it.
-> > > >
-> > > > As result, custom sensors like hinge angle sensor and LISS
-> > > > sensors
-> > > > don't work.
-> > > >
-> > > > Mark the sensor hub devices claimed by some driver to avoid
-> > > > hidraw-related
-> > > > optimizations.
-> > > >
-> > > > Signed-off-by: Yauhen Kharuzhy <jekhor@gmail.com>
-> > > Fixes tag?
-> >
-> > Fixes: 666cf30a589a ("HID: sensor-hub: Allow multi-function sensor
-> > devices")
-> >
-> This flag causes
->                 hdev->claimed |=3D HID_CLAIMED_DRIVER;
-> I don't see the flag is used anywhere after this assignment in hid
-> core. Only two other drivers are setting this flag. We need Jiri's help
-> here why this is a special case.
+On 12/22/23 at 08:18pm, fuqiang wang wrote:
+> In memmap_exclude_ranges(), there will exclude elfheader from
+                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      elfheader will be excluded from crashk_res. OR
+      it will exclude elfheader from crashk_res.
 
-It's used in hid_report_raw_event()[0]:
-```
-    if (hid->claimed !=3D HID_CLAIMED_HIDRAW && report->maxfield) {
-        hid_process_report(hid, report, cdata, interrupt);
-        hdrv =3D hid->driver;
-        if (hdrv && hdrv->report)
-            hdrv->report(hid, report);
-    }
-```
+> crashk_res. In the current x86 architecture code, the elfheader is
+> always allocated at crashk_res.start. It seems that there won't be a
+> split a new range. But it depends on the allocation position of
+ ~~~~~~~~~~~~~~~~~~
+  It seems that there won't be a new split range.
+> elfheader in crashk_res. To avoid potential out of bounds in future, add
+> a extra slot.
+> 
+> The similar issue also exists in fill_up_crash_elf_data(). The range to
+> be excluded is [0, 1M], start (0) is special and will not appear in the
+> middle of existing cmem->ranges[]. But in order to lest the low 1M could
+                                         ~~~~~~~~~~~~~~~~
+                                          in case
+> be changed in the future, add a extra slot too.
+> 
+> Previously discussed link:
+> [1] https://lore.kernel.org/kexec/ZXk2oBf%2FT1Ul6o0c@MiWiFi-R3L-srv/
+> [2] https://lore.kernel.org/kexec/273284e8-7680-4f5f-8065-c5d780987e59@easystack.cn/
+> [3] https://lore.kernel.org/kexec/ZYQ6O%2F57sHAPxTHm@MiWiFi-R3L-srv/
+> 
+> Signed-off-by: fuqiang wang <fuqiang.wang@easystack.cn>
+> ---
+>  arch/x86/kernel/crash.c | 21 +++++++++++++++++++--
+>  1 file changed, 19 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/x86/kernel/crash.c b/arch/x86/kernel/crash.c
+> index c92d88680dbf..97d33a6fc4fb 100644
+> --- a/arch/x86/kernel/crash.c
+> +++ b/arch/x86/kernel/crash.c
+> @@ -149,8 +149,18 @@ static struct crash_mem *fill_up_crash_elf_data(void)
+>  	/*
+>  	 * Exclusion of crash region and/or crashk_low_res may cause
+>  	 * another range split. So add extra two slots here.
+> +	 *
+> +	 * Exclusion of low 1M may not cause another range split, because the
+> +	 * range of exclude is [0, 1M] and the condition for splitting a new
+> +	 * region is that the start, end parameters are both in a certain
+> +	 * existing region in cmem and cannot be equal to existing region's
+> +	 * start or end. Obviously, the start of [0, 1M] cannot meet this
+> +	 * condition.
+> +	 *
+> +	 * But in order to lest the low 1M could be changed in the future,
+> +	 * (e.g. [stare, 1M]), add a extra slot.
 
-The whole point of setting HID_CLAIMED_DRIVER is to have hid->claimed
-not equal to HID_CLAIMED_HIDRAW, in case we need the hid core
-processing.
+Sometime, too much is as bad as too little. I feel below words are
+enough to state three regions are gonna be excluded, and may cause
+another split (may not cause). The code comment plus commit log can help
+people know why they are needed.
 
-Cheers,
-Benjamin
+  	 * Exclusion of low1M, crashk_res and/or crashk_low_res may cause
+  	 * another range split. So add extra three slots here.
 
+>  	 */
+> -	nr_ranges += 2;
+> +	nr_ranges += 3;
+>  	cmem = vzalloc(struct_size(cmem, ranges, nr_ranges));
+>  	if (!cmem)
+>  		return NULL;
+> @@ -282,9 +292,16 @@ int crash_setup_memmap_entries(struct kimage *image, struct boot_params *params)
+>  	struct crash_memmap_data cmd;
+>  	struct crash_mem *cmem;
+>  
+> -	cmem = vzalloc(struct_size(cmem, ranges, 1));
+> +	/*
+> +	 * In the current x86 architecture code, the elfheader is always
+> +	 * allocated at crashk_res.start. But it depends on the allocation
+> +	 * position of elfheader in crashk_res. To avoid potential out of
+> +	 * bounds in future, add a extra slot.
+> +	 */
 
-[0] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree=
-/drivers/hid/hid-core.c#n2015
+Ditto.
 
->
-> Thanks,
-> Srinivas
->
-> > >
-> > > > ---
-> > > >  drivers/hid/hid-sensor-hub.c | 2 +-
-> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/drivers/hid/hid-sensor-hub.c b/drivers/hid/hid-
-> > > > sensor-hub.c
-> > > > index 2eba152e8b90..26e93a331a51 100644
-> > > > --- a/drivers/hid/hid-sensor-hub.c
-> > > > +++ b/drivers/hid/hid-sensor-hub.c
-> > > > @@ -632,7 +632,7 @@ static int sensor_hub_probe(struct hid_device
-> > > > *hdev,
-> > > >       }
-> > > >       INIT_LIST_HEAD(&hdev->inputs);
-> > > >
-> > > > -     ret =3D hid_hw_start(hdev, HID_CONNECT_DEFAULT);
-> > > > +     ret =3D hid_hw_start(hdev, HID_CONNECT_DEFAULT |
-> > > > HID_CONNECT_DRIVER);
-> > > >       if (ret) {
-> > > >               hid_err(hdev, "hw start failed\n");
-> > > >               return ret;
-> > >
-> >
-> >
->
+ +	/*
+ +	 * Elfheader gonna be excluded from crashk_res, to avoid potential
+ +	 * out of bounds, add one extra slot.
+ +	 */
+
+> +	cmem = vzalloc(struct_size(cmem, ranges, 2));
+>  	if (!cmem)
+>  		return -ENOMEM;
+> +	cmem->max_nr_ranges = 2;
+>  
+>  	memset(&cmd, 0, sizeof(struct crash_memmap_data));
+>  	cmd.params = params;
+> -- 
+> 2.42.0
+> 
 
 
