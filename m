@@ -1,311 +1,251 @@
-Return-Path: <linux-kernel+bounces-9606-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9607-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 56CF881C854
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 11:41:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A870D81C857
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 11:41:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7BC191C21FDC
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 10:41:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5FC73282E0C
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 10:41:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6975F17992;
-	Fri, 22 Dec 2023 10:41:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12B871805F;
+	Fri, 22 Dec 2023 10:41:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="pYMfP/tr"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="MjP/ImNZ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 030AB12E7E
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 10:41:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-40d3c4bfe45so17390865e9.1
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 02:41:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703241670; x=1703846470; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=z2QNzLb4tFZINBNaRNS+ONkTCrhWqcZSlnm+d3pORH0=;
-        b=pYMfP/tr56o3S4ZFGUHRjZFjgXJ8QPzxXSCq9eiQsyaHljBKdYuo7LpjXJEHQbYwdT
-         tYkOovNyCo3TxPBq7apmezt5FN0MEFrNUzMw92aTseG/125zuRUwnbq6fL8IT/3Svkqb
-         MsAzVXo60pufkePjbJB/xekV7UeuWJD96XmxkdYm4tac5KhxoM3wXmN2brtBEd5anh40
-         jb3iNaK8avmWVGGwLM7qyuObuNP6xClwjjRlqWduF43iX1C3EFyoNoNY9LQ9xubakP9f
-         U/t8LR6ihpmgVP1eBbL/+88d/EyM0Xi8XGRtwfnMpqREDS2p7fWSsp7PtHAJeOUBL0Ng
-         yfuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703241670; x=1703846470;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=z2QNzLb4tFZINBNaRNS+ONkTCrhWqcZSlnm+d3pORH0=;
-        b=e+N/KaReN8MS3TLqbiGskOIpK7vjwkApjdhKxScIL/JYmx30Ofx+/bYRtECXrpW3IZ
-         5IPS6fvmNtAHVjInnXFEYZMlRg1VsI0nmJerwobj+r+flHLqpLj0AHO+UE0iGjmL+aeL
-         DeOCacxPrtr7jiHCmza3P97Kf2fKS1xkeS6atVgyojVPvLhcop0Pwavl51w4vEM1uxvj
-         oBZgUr+br8jc/JxAQVuk9W817cxspHLIrigct5dqgHpnitQ+NOhlbxSLnVBdt2NVns6l
-         8cxM+dMlhZT9p2HU3kGzJVX3bDfhx46KKaUiUXyi9GF4Uz8tuQPYviDnLov+SZzfR73d
-         6CsA==
-X-Gm-Message-State: AOJu0YzUNUo5VBNs/nJAzhK4Wc5MfRKcjkIQ2gvt1cykBIck2RwmFGwY
-	E/sf2zzv4zv8knRedbYEaK6QC9Kc2jewtg==
-X-Google-Smtp-Source: AGHT+IGB+KjJjMDXZDloPiPvdETaASBpQ0iIvTivs+jrVlPSKzyA/bVdm62zej+mLfKsXm3RHhLvRA==
-X-Received: by 2002:a05:600c:3b11:b0:40d:1748:cfa0 with SMTP id m17-20020a05600c3b1100b0040d1748cfa0mr328127wms.77.1703241670076;
-        Fri, 22 Dec 2023 02:41:10 -0800 (PST)
-Received: from [127.0.1.1] ([79.115.23.25])
-        by smtp.gmail.com with ESMTPSA id v11-20020a05600c470b00b0040c5cf930e6sm6348728wmo.19.2023.12.22.02.41.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Dec 2023 02:41:09 -0800 (PST)
-From: Abel Vesa <abel.vesa@linaro.org>
-Date: Fri, 22 Dec 2023 12:40:54 +0200
-Subject: [PATCH 2/2] phy: qcom-qmp-pcie: Add support for X1E80100 g3x2 and
- g4x2 PCIE
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF797171CE;
+	Fri, 22 Dec 2023 10:41:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1703241673; x=1734777673;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=S5T0oT/gaRndGQQ7KP9AMIWGi9tyypKvWBqatFfGZu8=;
+  b=MjP/ImNZMdiDASM7otjgko4pa5CwgRBqoXvEjRBOhTEkDH+w/I15ukdq
+   5JmPGmiKZE8OZFwthXLwPSvidak910FYD7JVF3uNdfXgtTknalThC2SF3
+   w6rCDIAenSKMoAQ/pUCLbcVb5iQKQnjeiWMMBzZb70RjUghcV3ANObf1D
+   xFyf3SFe1QDwrCDR+th1eKXx7NvznkpTFxt4woiBNbmuFI7ziPhSsulpj
+   5jTAEa/MotflVSHpPB6KeGLDVcjUozW4uyrb3deCLNaK45OcnMRBgbyp9
+   PMN3h1CHEgC5shxLEJxuYzZXE2ZW5gMp1Ei4KEwsRj/oFQx80yYWVQe0V
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10931"; a="399924243"
+X-IronPort-AV: E=Sophos;i="6.04,296,1695711600"; 
+   d="scan'208";a="399924243"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Dec 2023 02:41:13 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,296,1695711600"; 
+   d="scan'208";a="11430739"
+Received: from ply01-vm-store.bj.intel.com ([10.238.153.201])
+  by fmviesa002.fm.intel.com with ESMTP; 22 Dec 2023 02:41:10 -0800
+From: Ethan Zhao <haifeng.zhao@linux.intel.com>
+To: bhelgaas@google.com,
+	baolu.lu@linux.intel.com,
+	dwmw2@infradead.org,
+	will@kernel.org,
+	robin.murphy@arm.com,
+	lukas@wunner.de
+Cc: linux-pci@vger.kernel.org,
+	iommu@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: [RFC PATCH v5 0/3] fix vt-d hard lockup when hotplug ATS capable device
+Date: Fri, 22 Dec 2023 05:41:05 -0500
+Message-Id: <20231222104108.18499-1-haifeng.zhao@linux.intel.com>
+X-Mailer: git-send-email 2.31.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231222-x1e80100-phy-pcie-v1-2-b74ac13390bf@linaro.org>
-References: <20231222-x1e80100-phy-pcie-v1-0-b74ac13390bf@linaro.org>
-In-Reply-To: <20231222-x1e80100-phy-pcie-v1-0-b74ac13390bf@linaro.org>
-To: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, Vinod Koul <vkoul@kernel.org>, 
- Kishon Vijay Abraham I <kishon@kernel.org>, 
- Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org, 
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Abel Vesa <abel.vesa@linaro.org>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=10603; i=abel.vesa@linaro.org;
- h=from:subject:message-id; bh=0nanYkQtwK0tonnwKK2mq8Uvn2LakXPyjIZ3+PjpkZ0=;
- b=owEBbQKS/ZANAwAKARtfRMkAlRVWAcsmYgBlhWfBxRyZYgkuQN92DiVkcZM8+b4q6j97y64ua
- xgH5961LxaJAjMEAAEKAB0WIQRO8+4RTnqPKsqn0bgbX0TJAJUVVgUCZYVnwQAKCRAbX0TJAJUV
- VlBSEACxQK0K0QC4+dcXwfbehX2UAOMB0TGeiTCPR9IHZsMHh1Zy3N6PkkBffDk4J/YJ+UwMCIs
- vu1iSpgmX9aV0XQL2TLhZQdn67sDckWa4VqvnsjSqLEtZakCtIMHfLvCSWINHwg4tlfPUcCY9Kp
- Z2+jYiTiBszpMDpfukIcyxovcAXk7W+Bd7fVlCkVN5iZYmN9yX34l5ML3sn1KrWEvNRa2sNx1TM
- WGySJqmaUHzI3PZnVknYgGGgCMOmlVuJFmSvPRv2r6AbjlLaerMWZdIM7vCb5hDLfE5cvyx9aa/
- tAgXCbUFyvB/2LYaI7ATLvzuL2qGvvcZGmjHPUjNtumLdPGsyj2i84nIXgUFt3NRLy7NWvzO+Uj
- 1u1nkKCSJF3BhO5CJCSRDg95/2EnFVkXLnR8a5cPSLiq4IAG6BCVLJOKqxjHaPK4ehCuafP9XEH
- UgmMGDubKE9xJ0lQ6xn8WjYDrR3qv9jvolw50oi1Bvnt41w4fgU1iR+3HZ3Qr08Dn2ciQOaPN5r
- hQ3f7UgIrY+uoeVAjz5tGlFmY8mjLrE7QYGc7wRPbyoe+yY78MwZc6sv5hRhNVCohQwkM7j/cm2
- BF4BzL+qFbw1D2Ged8PjcFRdYmWzRaTaS/hMjgqn9k/rpx1HTvboOkD4lb6wQ9jYfOTP0yaTPIR
- ovC9qHnvocXpncA==
-X-Developer-Key: i=abel.vesa@linaro.org; a=openpgp;
- fpr=6AFF162D57F4223A8770EF5AF7BF214136F41FAE
+Content-Transfer-Encoding: 8bit
 
-Add the X1E80100 G3 and G4 configurations.
+Hi,folks                                                                            
+                                                                                    
+ This patchset is used to fix vt-d hard lockup reported when surpprise              
+ unplug ATS capable endpoint device connects to system via PCIe switch              
+ as following topology.                                                             
+                                                                                    
+     +-[0000:15]-+-00.0  Intel Corporation Ice Lake Memory Map/VT-d                 
+     |           +-00.1  Intel Corporation Ice Lake Mesh 2 PCIe                     
+     |           +-00.2  Intel Corporation Ice Lake RAS                             
+     |           +-00.4  Intel Corporation Device 0b23                              
+     |           \-01.0-[16-1b]----00.0-[17-1b]--+-00.0-[18]----00.0                
+                                           NVIDIA Corporation Device 2324           
+     |                                           +-01.0-[19]----00.0                
+                          Mellanox Technologies MT2910 Family [ConnectX-7]          
+                                                                                    
+ User brought endpoint device 19:00.0's link down by flapping it's hotplug          
+ capable slot 17:01.0 link control register, as sequence DLLSC response,            
+ pciehp_ist() will unload device driver and power it off, durning device            
+ driver is unloading an iommu devTlb flush request issued to that link              
+ down device, thus a long time completion/timeout waiting in interrupt              
+ context causes continuous hard lockup warnning and system hang.                    
+                                                                                    
+[ 4211.433662] pcieport 0000:17:01.0: pciehp: Slot(108): Link Down                  
+[ 4211.433664] pcieport 0000:17:01.0: pciehp: Slot(108): Card not present           
+[ 4223.822591] NMI watchdog: Watchdog detected hard LOCKUP on cpu 144               
+[ 4223.822622] CPU: 144 PID: 1422 Comm: irq/57-pciehp Kdump: loaded Tainted: G S 
+         OE    kernel version xxxx                                                  
+[ 4223.822623] Hardware name: vendorname xxxx 666-106,                              
+BIOS 01.01.02.03.01 05/15/2023                                                      
+[ 4223.822623] RIP: 0010:qi_submit_sync+0x2c0/0x490                                 
+[ 4223.822624] Code: 48 be 00 00 00 00 00 08 00 00 49 85 74 24 20 0f 95 c1 48 8b  
+ 57 10 83 c1 04 83 3c 1a 03 0f 84 a2 01 00 00 49 8b 04 24 8b 70 34 <40> f6 c6 1   
+0 74 17 49 8b 04 24 8b 80 80 00 00 00 89 c2 d3 fa 41 39                             
+[ 4223.822624] RSP: 0018:ffffc4f074f0bbb8 EFLAGS: 00000093                          
+[ 4223.822625] RAX: ffffc4f040059000 RBX: 0000000000000014 RCX: 0000000000000005 
+[ 4223.822625] RDX: ffff9f3841315800 RSI: 0000000000000000 RDI: ffff9f38401a8340 
+[ 4223.822625] RBP: ffff9f38401a8340 R08: ffffc4f074f0bc00 R09: 0000000000000000 
+[ 4223.822626] R10: 0000000000000010 R11: 0000000000000018 R12: ffff9f384005e200 
+[ 4223.822626] R13: 0000000000000004 R14: 0000000000000046 R15: 0000000000000004 
+[ 4223.822626] FS:  0000000000000000(0000) GS:ffffa237ae400000(0000)                
+knlGS:0000000000000000                                                              
+[ 4223.822627] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033                    
+[ 4223.822627] CR2: 00007ffe86515d80 CR3: 000002fd3000a001 CR4: 0000000000770ee0 
+[ 4223.822627] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000 
+[ 4223.822628] DR3: 0000000000000000 DR6: 00000000fffe07f0 DR7: 0000000000000400 
+[ 4223.822628] PKRU: 55555554                                                       
+[ 4223.822628] Call Trace:                                                          
+[ 4223.822628]  qi_flush_dev_iotlb+0xb1/0xd0                                        
+[ 4223.822628]  __dmar_remove_one_dev_info+0x224/0x250                              
+[ 4223.822629]  dmar_remove_one_dev_info+0x3e/0x50                                  
+[ 4223.822629]  intel_iommu_release_device+0x1f/0x30                                
+[ 4223.822629]  iommu_release_device+0x33/0x60                                      
+[ 4223.822629]  iommu_bus_notifier+0x7f/0x90                                        
+[ 4223.822630]  blocking_notifier_call_chain+0x60/0x90                              
+[ 4223.822630]  device_del+0x2e5/0x420                                              
+[ 4223.822630]  pci_remove_bus_device+0x70/0x110                                    
+[ 4223.822630]  pciehp_unconfigure_device+0x7c/0x130                                
+[ 4223.822631]  pciehp_disable_slot+0x6b/0x100                                      
+[ 4223.822631]  pciehp_handle_presence_or_link_change+0xd8/0x320                    
+[ 4223.822631]  pciehp_ist+0x176/0x180                                              
+[ 4223.822631]  ? irq_finalize_oneshot.part.50+0x110/0x110
+[ 4223.822632]  irq_thread_fn+0x19/0x50                                          
+[ 4223.822632]  irq_thread+0x104/0x190                                           
+[ 4223.822632]  ? irq_forced_thread_fn+0x90/0x90                                 
+[ 4223.822632]  ? irq_thread_check_affinity+0xe0/0xe0                            
+[ 4223.822633]  kthread+0x114/0x130                                              
+[ 4223.822633]  ? __kthread_cancel_work+0x40/0x40                                
+[ 4223.822633]  ret_from_fork+0x1f/0x30                                          
+[ 4223.822633] Kernel panic - not syncing: Hard LOCKUP                           
+[ 4223.822634] CPU: 144 PID: 1422 Comm: irq/57-pciehp Kdump: loaded Tainted: G S 
+         OE     kernel version xxxx                                              
+[ 4223.822634] Hardware name: vendorname xxxx 666-106,                           
+BIOS 01.01.02.03.01 05/15/2023                                                   
+[ 4223.822634] Call Trace:                                                       
+[ 4223.822634]  <NMI>                                                            
+[ 4223.822635]  dump_stack+0x6d/0x88                                             
+[ 4223.822635]  panic+0x101/0x2d0                                                
+[ 4223.822635]  ? ret_from_fork+0x11/0x30                                        
+[ 4223.822635]  nmi_panic.cold.14+0xc/0xc                                        
+[ 4223.822636]  watchdog_overflow_callback.cold.8+0x6d/0x81                      
+[ 4223.822636]  __perf_event_overflow+0x4f/0xf0                                  
+[ 4223.822636]  handle_pmi_common+0x1ef/0x290                                    
+[ 4223.822636]  ? __set_pte_vaddr+0x28/0x40                                      
+[ 4223.822637]  ? flush_tlb_one_kernel+0xa/0x20                                  
+[ 4223.822637]  ? __native_set_fixmap+0x24/0x30                                  
+[ 4223.822637]  ? ghes_copy_tofrom_phys+0x70/0x100                               
+[ 4223.822637]  ? __ghes_peek_estatus.isra.16+0x49/0xa0                          
+[ 4223.822637]  intel_pmu_handle_irq+0xba/0x2b0                                  
+[ 4223.822638]  perf_event_nmi_handler+0x24/0x40                                 
+[ 4223.822638]  nmi_handle+0x4d/0xf0                                             
+[ 4223.822638]  default_do_nmi+0x49/0x100                                        
+[ 4223.822638]  exc_nmi+0x134/0x180                                              
+[ 4223.822639]  end_repeat_nmi+0x16/0x67                                         
+[ 4223.822639] RIP: 0010:qi_submit_sync+0x2c0/0x490                              
+[ 4223.822639] Code: 48 be 00 00 00 00 00 08 00 00 49 85 74 24 20 0f 95 c1 48 8b 
+ 57 10 83 c1 04 83 3c 1a 03 0f 84 a2 01 00 00 49 8b 04 24 8b 70 34 <40> f6 c6 10 
+ 74 17 49 8b 04 24 8b 80 80 00 00 00 89 c2 d3 fa 41 39                           
+[ 4223.822640] RSP: 0018:ffffc4f074f0bbb8 EFLAGS: 00000093                       
+[ 4223.822640] RAX: ffffc4f040059000 RBX: 0000000000000014 RCX: 0000000000000005 
+[ 4223.822640] RDX: ffff9f3841315800 RSI: 0000000000000000 RDI: ffff9f38401a8340 
+[ 4223.822641] RBP: ffff9f38401a8340 R08: ffffc4f074f0bc00 R09: 0000000000000000 
+[ 4223.822641] R10: 0000000000000010 R11: 0000000000000018 R12: ffff9f384005e200 
+[ 4223.822641] R13: 0000000000000004 R14: 0000000000000046 R15: 0000000000000004 
+[ 4223.822641]  ? qi_submit_sync+0x2c0/0x490                                     
+[ 4223.822642]  ? qi_submit_sync+0x2c0/0x490                                     
+[ 4223.822642]  </NMI>                                                           
+[ 4223.822642]  qi_flush_dev_iotlb+0xb1/0xd0                                     
+[ 4223.822642]  __dmar_remove_one_dev_info+0x224/0x250                           
+[ 4223.822643]  dmar_remove_one_dev_info+0x3e/0x50                               
+[ 4223.822643]  intel_iommu_release_device+0x1f/0x30                             
+[ 4223.822643]  iommu_release_device+0x33/0x60                                   
+[ 4223.822643]  iommu_bus_notifier+0x7f/0x90                                     
+[ 4223.822644]  blocking_notifier_call_chain+0x60/0x90                           
+[ 4223.822644]  device_del+0x2e5/0x420                                           
+[ 4223.822644]  pci_remove_bus_device+0x70/0x110                                 
+[ 4223.822644]  pciehp_unconfigure_device+0x7c/0x130                             
+[ 4223.822644]  pciehp_disable_slot+0x6b/0x100                                   
+[ 4223.822645]  pciehp_handle_presence_or_link_change+0xd8/0x320                 
+[ 4223.822645]  pciehp_ist+0x176/0x180                                           
+[ 4223.822645]  ? irq_finalize_oneshot.part.50+0x110/0x110                       
+[ 4223.822645]  irq_thread_fn+0x19/0x50                                          
+[ 4223.822646]  irq_thread+0x104/0x190                                           
+[ 4223.822646]  ? irq_forced_thread_fn+0x90/0x90                                 
+[ 4223.822646]  ? irq_thread_check_affinity+0xe0/0xe0                            
+[ 4223.822646]  kthread+0x114/0x130           
+[ 4223.822647] Kernel Offset: 0x6400000 from 0xffffffff81000000 (relocation      
+range: 0xffffffff80000000-0xffffffffbfffffff)                                    
+                                                                                 
+Make a quick fix by checking the device's error_state in                         
+devtlb_invalidation_with_pasid() to avoid sending meaningless devTLB flush       
+request to link down device that is set to pci_channel_io_perm_failure and       
+then powered off in                                                              
+                                                                                 
+pciehp_ist()                                                                     
+   pciehp_handle_presence_or_link_change()                                       
+     pciehp_disable_slot()                                                       
+       remove_board()                                                            
+         pciehp_unconfigure_device()                                             
+                                                                                 
+safe_removal unplug doesn't trigger such issue.                                  
+and this fix works for all supprise_removal unplug operation.                    
+                                                                                 
+patchset [patch 1&2] was tested by yehaorong@bytedance.com on stable-6.7rc4.
+patch[3] only passed compiling on stable-6.7rc4, not test yet.
+                                                                                 
+                                                                                 
+change log:                                                                      
+v5:                                                           
+- add a patch try to fix the rare case (supprise-remove a device in
+ safe_removal process).        
+v4:                                                                              
+- move the PCI device state checking after ATS per Baolu's suggestion.           
+v3:                                                                              
+- fix commit description typo.                                                   
+v2:                                                                              
+- revise commit[1] description part according to Lukas' suggestion.              
+- revise commit[2] description to clarify the issue's impact.                    
+v1:                                                                              
+- https://lore.kernel.org/lkml/20231213034637.2603013-1-haifeng.zhao@linux.intel.com/T/
+                                                                                 
+                                                                                 
+                                                                                 
+Thanks,                                                                          
+Ethan                      
 
-Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
----
- drivers/phy/qualcomm/phy-qcom-qmp-pcie.c | 173 +++++++++++++++++++++++++++++++
- 1 file changed, 173 insertions(+)
+Ethan Zhao (3):
+  PCI: make pci_dev_is_disconnected() helper public for other drivers
+  iommu/vt-d: don's issue devTLB flush request when device is
+    disconnected
+  iommu/vt-d: abort the devTLB invalidation waiting if device is removed
 
-diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c b/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c
-index 2af7115ef968..7a5cc4e80eda 100644
---- a/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c
-+++ b/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c
-@@ -982,6 +982,143 @@ static const struct qmp_phy_init_tbl sc8280xp_qmp_gen3x2_pcie_pcs_misc_tbl[] = {
- 	QMP_PHY_INIT_CFG(QPHY_V5_PCS_PCIE_OSC_DTCT_ACTIONS, 0x00),
- };
- 
-+static const struct qmp_phy_init_tbl x1e80100_qmp_gen4x2_pcie_serdes_tbl[] = {
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_SSC_STEP_SIZE1_MODE1, 0x26),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_SSC_STEP_SIZE2_MODE1, 0x03),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_CP_CTRL_MODE1, 0x06),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_PLL_RCTRL_MODE1, 0x16),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_PLL_CCTRL_MODE1, 0x36),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_CORECLK_DIV_MODE1, 0x04),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_LOCK_CMP1_MODE1, 0x0a),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_LOCK_CMP2_MODE1, 0x1a),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_DEC_START_MODE1, 0x68),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_DIV_FRAC_START1_MODE1, 0xab),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_DIV_FRAC_START2_MODE1, 0xaa),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_DIV_FRAC_START3_MODE1, 0x02),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_HSCLK_SEL_1, 0x12),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_SSC_STEP_SIZE1_MODE0, 0xf8),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_SSC_STEP_SIZE2_MODE0, 0x01),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_CP_CTRL_MODE0, 0x06),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_PLL_RCTRL_MODE0, 0x16),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_PLL_CCTRL_MODE0, 0x36),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_PLL_CORE_CLK_DIV_MODE0, 0x0a),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_LOCK_CMP1_MODE0, 0x04),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_LOCK_CMP2_MODE0, 0x0d),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_DEC_START_MODE0, 0x41),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_DIV_FRAC_START1_MODE0, 0xab),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_DIV_FRAC_START2_MODE0, 0xaa),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_DIV_FRAC_START3_MODE0, 0x01),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_HSCLK_HS_SWITCH_SEL_1, 0x00),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_BG_TIMER, 0x0a),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_SSC_EN_CENTER, 0x01),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_SSC_PER1, 0x62),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_SSC_PER2, 0x02),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_PLL_POST_DIV_MUX, 0x40),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_PLL_BIAS_EN_CLK_BUFLR_EN, 0x14),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_CLK_ENABLE1, 0x90),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_SYS_CLK_CTRL, 0x82),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_PLL_IVCO, 0x0f),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_SYSCLK_EN_SEL, 0x08),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_LOCK_CMP_EN, 0x46),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_LOCK_CMP_CFG, 0x04),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_VCO_TUNE_MAP, 0x14),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_CLK_SELECT, 0x34),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_CORE_CLK_EN, 0xa0),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_CMN_CONFIG_1, 0x06),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_CMN_MISC_1, 0x88),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_CMN_MODE, 0x14),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_PLL_VCO_DC_LEVEL_CTRL, 0x0f),
-+};
-+
-+static const struct qmp_phy_init_tbl x1e80100_qmp_gen4x2_pcie_ln_shrd_tbl[] = {
-+	QMP_PHY_INIT_CFG(QSERDES_V6_LN_SHRD_RXCLK_DIV2_CTRL, 0x01),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_LN_SHRD_DFE_DAC_ENABLE1, 0x88),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_LN_SHRD_TX_ADAPT_POST_THRESH1, 0x00),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_LN_SHRD_TX_ADAPT_POST_THRESH2, 0x1f),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_LN_SHRD_RX_MODE_RATE_0_1_B0, 0xd4),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_LN_SHRD_RX_MODE_RATE_0_1_B1, 0x12),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_LN_SHRD_RX_MODE_RATE_0_1_B2, 0xdb),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_LN_SHRD_RX_MODE_RATE_0_1_B3, 0x9a),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_LN_SHRD_RX_MODE_RATE_0_1_B4, 0x32),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_LN_SHRD_RX_MODE_RATE_0_1_B5, 0xb6),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_LN_SHRD_RX_MODE_RATE_0_1_B6, 0x64),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_LN_SHRD_RX_MARG_COARSE_THRESH1_RATE210, 0x1f),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_LN_SHRD_RX_MARG_COARSE_THRESH1_RATE3, 0x1f),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_LN_SHRD_RX_MARG_COARSE_THRESH2_RATE210, 0x1f),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_LN_SHRD_RX_MARG_COARSE_THRESH2_RATE3, 0x1f),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_LN_SHRD_RX_MARG_COARSE_THRESH3_RATE210, 0x1f),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_LN_SHRD_RX_MARG_COARSE_THRESH3_RATE3, 0x1f),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_LN_SHRD_RX_MARG_COARSE_THRESH4_RATE3, 0x1f),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_LN_SHRD_RX_MARG_COARSE_THRESH5_RATE3, 0x1f),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_LN_SHRD_RX_MARG_COARSE_THRESH6_RATE3, 0x1f),
-+};
-+
-+static const struct qmp_phy_init_tbl x1e80100_qmp_gen4x2_pcie_tx_tbl[] = {
-+	QMP_PHY_INIT_CFG(QSERDES_V6_20_TX_RES_CODE_LANE_OFFSET_TX, 0x1d),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_20_TX_RES_CODE_LANE_OFFSET_RX, 0x03),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_20_TX_LANE_MODE_1, 0x01),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_20_TX_LANE_MODE_2, 0x10),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_20_TX_LANE_MODE_3, 0x51),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_20_TX_TRAN_DRVR_EMP_EN, 0x34),
-+};
-+
-+static const struct qmp_phy_init_tbl x1e80100_qmp_gen4x2_pcie_rx_tbl[] = {
-+	QMP_PHY_INIT_CFG(QSERDES_V6_20_RX_UCDR_FO_GAIN_RATE_2, 0x0c),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_20_RX_UCDR_SO_GAIN_RATE_2, 0x04),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_20_RX_UCDR_FO_GAIN_RATE_3, 0x0a),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_20_RX_UCDR_PI_CONTROLS, 0x16),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_20_RX_UCDR_SO_ACC_DEFAULT_VAL_RATE3, 0x00),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_20_RX_IVCM_CAL_CTRL2, 0x80),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_20_RX_IVCM_POSTCAL_OFFSET, 0x00),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_20_RX_BKUP_CTRL1, 0x15),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_20_RX_DFE_1, 0x01),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_20_RX_DFE_2, 0x01),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_20_RX_DFE_3, 0x45),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_20_RX_VGA_CAL_MAN_VAL, 0x0b),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_20_RX_GM_CAL, 0x0d),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_20_RX_EQU_ADAPTOR_CNTRL4, 0x0b),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_20_RX_SIGDET_ENABLES, 0x1c),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_20_RX_PHPRE_CTRL, 0x20),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_20_RX_DFE_CTLE_POST_CAL_OFFSET, 0x38),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_20_RX_Q_PI_INTRINSIC_BIAS_RATE32, 0x39),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_20_RX_MODE_RATE2_B0, 0x14),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_20_RX_MODE_RATE2_B1, 0xb3),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_20_RX_MODE_RATE2_B2, 0x58),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_20_RX_MODE_RATE2_B3, 0x9a),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_20_RX_MODE_RATE2_B4, 0x26),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_20_RX_MODE_RATE2_B5, 0xb6),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_20_RX_MODE_RATE2_B6, 0xee),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_20_RX_MODE_RATE3_B0, 0xe4),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_20_RX_MODE_RATE3_B1, 0xa4),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_20_RX_MODE_RATE3_B2, 0x60),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_20_RX_MODE_RATE3_B3, 0xdf),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_20_RX_MODE_RATE3_B4, 0x4b),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_20_RX_MODE_RATE3_B5, 0x76),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_20_RX_MODE_RATE3_B6, 0xff),
-+};
-+
-+static const struct qmp_phy_init_tbl x1e80100_qmp_gen4x2_pcie_pcs_tbl[] = {
-+	QMP_PHY_INIT_CFG(QPHY_V6_20_PCS_G3S2_PRE_GAIN, 0x2e),
-+	QMP_PHY_INIT_CFG(QPHY_V6_20_PCS_RX_SIGDET_LVL, 0xcc),
-+	QMP_PHY_INIT_CFG(QPHY_V6_20_PCS_EQ_CONFIG4, 0x00),
-+	QMP_PHY_INIT_CFG(QPHY_V6_20_PCS_EQ_CONFIG5, 0x22),
-+};
-+
-+static const struct qmp_phy_init_tbl x1e80100_qmp_gen4x2_pcie_pcs_misc_tbl[] = {
-+	QMP_PHY_INIT_CFG(QPHY_PCIE_V6_20_PCS_ENDPOINT_REFCLK_DRIVE, 0xc1),
-+	QMP_PHY_INIT_CFG(QPHY_PCIE_V6_20_PCS_OSC_DTCT_ATCIONS, 0x00),
-+	QMP_PHY_INIT_CFG(QPHY_PCIE_V6_20_PCS_EQ_CONFIG1, 0x16),
-+	QMP_PHY_INIT_CFG(QPHY_PCIE_V6_20_PCS_EQ_CONFIG5, 0x02),
-+	QMP_PHY_INIT_CFG(QPHY_PCIE_V6_20_PCS_G4_PRE_GAIN, 0x2e),
-+	QMP_PHY_INIT_CFG(QPHY_PCIE_V6_20_PCS_RX_MARGINING_CONFIG1, 0x03),
-+	QMP_PHY_INIT_CFG(QPHY_PCIE_V6_20_PCS_RX_MARGINING_CONFIG3, 0x28),
-+	QMP_PHY_INIT_CFG(QPHY_PCIE_V6_20_PCS_TX_RX_CONFIG, 0xc0),
-+	QMP_PHY_INIT_CFG(QPHY_PCIE_V6_20_PCS_POWER_STATE_CONFIG2, 0x1d),
-+	QMP_PHY_INIT_CFG(QPHY_PCIE_V6_20_PCS_RX_MARGINING_CONFIG5, 0x0f),
-+	QMP_PHY_INIT_CFG(QPHY_PCIE_V6_20_PCS_G3_FOM_EQ_CONFIG5, 0xf2),
-+	QMP_PHY_INIT_CFG(QPHY_PCIE_V6_20_PCS_G4_FOM_EQ_CONFIG5, 0xf2),
-+};
-+
- static const struct qmp_phy_init_tbl sm8250_qmp_pcie_serdes_tbl[] = {
- 	QMP_PHY_INIT_CFG(QSERDES_V4_COM_SYSCLK_EN_SEL, 0x08),
- 	QMP_PHY_INIT_CFG(QSERDES_V4_COM_CLK_SELECT, 0x34),
-@@ -3183,6 +3320,36 @@ static const struct qmp_phy_cfg sa8775p_qmp_gen4x4_pciephy_cfg = {
- 	.phy_status		= PHYSTATUS_4_20,
- };
- 
-+static const struct qmp_phy_cfg x1e80100_qmp_gen4x2_pciephy_cfg = {
-+	.lanes = 2,
-+
-+	.offsets		= &qmp_pcie_offsets_v6_20,
-+
-+	.tbls = {
-+		.serdes			= x1e80100_qmp_gen4x2_pcie_serdes_tbl,
-+		.serdes_num		= ARRAY_SIZE(x1e80100_qmp_gen4x2_pcie_serdes_tbl),
-+		.tx			= x1e80100_qmp_gen4x2_pcie_tx_tbl,
-+		.tx_num			= ARRAY_SIZE(x1e80100_qmp_gen4x2_pcie_tx_tbl),
-+		.rx			= x1e80100_qmp_gen4x2_pcie_rx_tbl,
-+		.rx_num			= ARRAY_SIZE(x1e80100_qmp_gen4x2_pcie_rx_tbl),
-+		.pcs			= x1e80100_qmp_gen4x2_pcie_pcs_tbl,
-+		.pcs_num		= ARRAY_SIZE(x1e80100_qmp_gen4x2_pcie_pcs_tbl),
-+		.pcs_misc		= x1e80100_qmp_gen4x2_pcie_pcs_misc_tbl,
-+		.pcs_misc_num		= ARRAY_SIZE(x1e80100_qmp_gen4x2_pcie_pcs_misc_tbl),
-+		.ln_shrd		= x1e80100_qmp_gen4x2_pcie_ln_shrd_tbl,
-+		.ln_shrd_num		= ARRAY_SIZE(x1e80100_qmp_gen4x2_pcie_ln_shrd_tbl),
-+	},
-+	.reset_list		= sdm845_pciephy_reset_l,
-+	.num_resets		= ARRAY_SIZE(sdm845_pciephy_reset_l),
-+	.vreg_list		= sm8550_qmp_phy_vreg_l,
-+	.num_vregs		= ARRAY_SIZE(sm8550_qmp_phy_vreg_l),
-+	.regs			= pciephy_v5_regs_layout,
-+
-+	.pwrdn_ctrl		= SW_PWRDN | REFCLK_DRV_DSBL,
-+	.phy_status		= PHYSTATUS_4_20,
-+	.has_nocsr_reset	= true,
-+};
-+
- static void qmp_pcie_configure_lane(void __iomem *base,
- 					const struct qmp_phy_init_tbl tbl[],
- 					int num,
-@@ -3885,6 +4052,12 @@ static const struct of_device_id qmp_pcie_of_match_table[] = {
- 	}, {
- 		.compatible = "qcom,sm8650-qmp-gen4x2-pcie-phy",
- 		.data = &sm8650_qmp_gen4x2_pciephy_cfg,
-+	}, {
-+		.compatible = "qcom,x1e80100-qmp-gen3x2-pcie-phy",
-+		.data = &sm8550_qmp_gen3x2_pciephy_cfg,
-+	}, {
-+		.compatible = "qcom,x1e80100-qmp-gen4x2-pcie-phy",
-+		.data = &x1e80100_qmp_gen4x2_pciephy_cfg,
- 	},
- 	{ },
- };
+ drivers/iommu/intel/dmar.c  |  3 ++-
+ drivers/iommu/intel/iommu.c | 37 +++++++++++++++++++++++++++++++++++++
+ drivers/iommu/intel/pasid.c |  3 +++
+ drivers/pci/pci.h           |  5 -----
+ include/linux/pci.h         |  5 +++++
+ 5 files changed, 47 insertions(+), 6 deletions(-)
 
 -- 
-2.34.1
+2.31.1
 
 
