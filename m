@@ -1,180 +1,123 @@
-Return-Path: <linux-kernel+bounces-9228-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9229-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9028C81C299
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 02:12:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 78CCF81C29D
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 02:14:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 30750B23674
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 01:12:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 77EB31C23629
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 01:14:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A07B5EB8;
-	Fri, 22 Dec 2023 01:12:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83763138A;
+	Fri, 22 Dec 2023 01:14:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kYYkGRtE"
+	dkim=pass (2048-bit key) header.d=arista.com header.i=@arista.com header.b="DGOi1nn7"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3DDBA23;
-	Fri, 22 Dec 2023 01:12:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6d411636a95so1831119b3a.0;
-        Thu, 21 Dec 2023 17:12:43 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83AFDA41
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 01:14:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=arista.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arista.com
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-40c6e2a47f6so14329275e9.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Dec 2023 17:14:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703207563; x=1703812363; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=8XuQK3WEeqQ95hCzJILUp+ds678rIHjNbCC/oCpzKbY=;
-        b=kYYkGRtEZjCRSqQf+I9fNnQYSkN7o62A9I0mE61xukErmv7iAT8CbnUYPZWo6EEZ6m
-         CpbK6V2+uEZSnHRaDMdoURth/OkXnq9wjvb3sGlZ2hMI2JsfMTBFRO64pL36gCPrP9FW
-         2Omtpubj8f/KMLQ1fwNJrJep3waJFCBhPb07UKXVTndfRW+Vep+vZvSUEChdWZ8+uSnF
-         uxn+ST9jPnN6sMPOCtHpV8M54iMaldvas0PppDhlK3L9XU8KvpV+K7vsx1o/LDJrxFH3
-         5QMBBmXFtOoo3WYdvtYKZH/FQFeNw1AvPYUklk5t3l6K25TpKYCkTzcYv2Y258jfa5aj
-         699Q==
+        d=arista.com; s=google; t=1703207647; x=1703812447; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=4AYqORwDz1jRnysZB/QYLSUyIuQ8pE/C0Rq3AFW3pZQ=;
+        b=DGOi1nn73FKmTiKQd1CfexRMt7DeaMr/0Ee7gwKRCnaaptE0WaufQa1bG362/1mhVT
+         ROEeOfmyKiOUEBS4cg7nIHhjr0RBI3IMq3i5fcXKkDfksgEHE8FkoXKOt/SJfN1IsBRK
+         0Myr3/BiHhcJ9U+e9Z5sTFMQ0t4Pl75F+wj4QKT91bdkjjAkxCT6/2VDHrfCO7wbP30f
+         Ta048lqwT4spZllunZmRWt3Vez+mphp9oeYPZZSSDsDrHj1EyfahPFRqmXlDVLsMOgvY
+         E63TFmoePnk538E7cM3DhvhRvjtp3LkjWdbd/Eahjr7t32kQ1loHlStZ+oZ0K9wbXyKR
+         Hykg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703207563; x=1703812363;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8XuQK3WEeqQ95hCzJILUp+ds678rIHjNbCC/oCpzKbY=;
-        b=w66G/Mn5uA41MhrkuzsXZEVMyqRWiAIj9kbhpGEoVkfppoEzUc2xraF7izWDOdztA8
-         0r1c11VaDcJrLb81QPk40Nk3tDutUEygzaM965ZeoVOq/r8PXivNtJ1RnFN7zHuTWMcI
-         oh2M9veYD3oiXd+z0rKL8fJOJbtAPbWA0vPxQ0X/OWZIWgiCGhcR0lZykWpypvltFOYn
-         I3GMnN5OZv/Qg1hcBzW7XeXR6HY/GAuIqyvQ0R1UYd9a9uRjIFj2ICsMmyIsPAdg2jGm
-         z1oWqh6BlI2AW1Qtm+RSBkyrWtlpCK0SOydw2/6d8Q4HoDvgfkTegCFDGokBVDmW6I0H
-         Eo7A==
-X-Gm-Message-State: AOJu0Yx4FJjLyvuFvho02nib+2zvdP1No5EUSWLERqV0WXNCZY92TfKl
-	24k9ZEA439rfeRtEd2GTrEE=
-X-Google-Smtp-Source: AGHT+IEIlzwmnSH/AdSLn8H/xRhFOT9tz98PD3p9EDbhfBSETlZlNuQ6l8LHqcrytQoIhh/i1bVYDA==
-X-Received: by 2002:a05:6a20:a105:b0:195:12d8:a95c with SMTP id q5-20020a056a20a10500b0019512d8a95cmr819564pzk.41.1703207562888;
-        Thu, 21 Dec 2023 17:12:42 -0800 (PST)
-Received: from rigel (60-241-235-125.tpgi.com.au. [60.241.235.125])
-        by smtp.gmail.com with ESMTPSA id f22-20020aa78b16000000b006d0d90edd2csm2222149pfd.42.2023.12.21.17.12.39
+        d=1e100.net; s=20230601; t=1703207647; x=1703812447;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4AYqORwDz1jRnysZB/QYLSUyIuQ8pE/C0Rq3AFW3pZQ=;
+        b=IHe8wZpBbuUBNYsKe6inerKmCycgS/r+b01U37gI52luo/zqoKHbmaiFSq+/CXlpyV
+         unAWCXPkhvv7oNPe0wd6SKpmmvPAngo9ghx44N9fvo+XwxMkRI8+uQR9v7dvgDuycayA
+         3HBp99VP+E2UKzbYa6WLjZRB0EEFd34gDel53mwx4NKHzvIgZVjhePnWM/jgdj7f1axl
+         LQUeycipeoTmdQ958iMYiJqKQuE4leK12LffD2z2uSXXz17DjWglfUw+Rirjze1jC3HH
+         Xapv6IwcHMKVXG0Uz+YYABeRjV1zvUjP/YGFqVXbksGxV6U6oY7eUg93gxVNW0oxKf7J
+         Umyw==
+X-Gm-Message-State: AOJu0YxJp0BYNlujhlweoscF1ksw5Lmy0HFi2LF67JYfA+AxKbCY6L5h
+	Ye1hg4nfx1nS9wGxX2vKAj7CbUjnnc3O
+X-Google-Smtp-Source: AGHT+IFPw/KAJEzLFeKSdjiM6DqfzEUf2lLQrvkGjEV4RVjI8hJHmBeNh0BLw7UldWaB4NAqc0CgCw==
+X-Received: by 2002:a05:600c:a:b0:40c:4716:5116 with SMTP id g10-20020a05600c000a00b0040c47165116mr148388wmc.260.1703207646782;
+        Thu, 21 Dec 2023 17:14:06 -0800 (PST)
+Received: from Mindolluin.ire.aristanetworks.com ([217.173.96.166])
+        by smtp.gmail.com with ESMTPSA id bh20-20020a05600c3d1400b0040d15dcb77asm12893958wmb.23.2023.12.21.17.14.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Dec 2023 17:12:42 -0800 (PST)
-Date: Fri, 22 Dec 2023 09:12:37 +0800
-From: Kent Gibson <warthog618@gmail.com>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Bartosz Golaszewski <brgl@bgdev.pl>,
-	Andy Shevchenko <andy@kernel.org>
-Subject: Re: [PATCH v1 1/1] gpiolib: cdev: Split line_get_debounce_period()
- and use
-Message-ID: <ZYTihbWMcHMHSkC_@rigel>
-References: <20231221175527.2814506-1-andriy.shevchenko@linux.intel.com>
+        Thu, 21 Dec 2023 17:14:06 -0800 (PST)
+From: Dmitry Safonov <dima@arista.com>
+To: Eric Dumazet <edumazet@google.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	David Ahern <dsahern@kernel.org>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>
+Cc: Dmitry Safonov <dima@arista.com>,
+	Dmitry Safonov <0x7f454c46@gmail.com>,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] net/tcp_sigpool: Use kref_get_unless_zero()
+Date: Fri, 22 Dec 2023 01:13:59 +0000
+Message-ID: <20231222-tcp-ao-kref_get_unless_zero-v1-1-551c2edd0136@arista.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231221175527.2814506-1-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset="utf-8"
+X-Mailer: b4 0.13-dev-b6b4b
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1703207639; l=1189; i=dima@arista.com; s=20231212; h=from:subject:message-id; bh=HyHdpdpf+8IPxstZOUIyu9E1qEH2nY16X0RtlouQwOg=; b=1K3hRfXyCvhRQ6tlDUVpu06PCZt8oDM0ZZhz0g7Nxd18BnbJmRTO5Ih0UErsTrnhYl4Dz5sdM v509Cm+vOnoA4npCoa1gjoitDE2qU4McLkx2ymxr8+hREeqwNpNCezb
+X-Developer-Key: i=dima@arista.com; a=ed25519; pk=hXINUhX25b0D/zWBKvd6zkvH7W2rcwh/CH6cjEa3OTk=
+Content-Transfer-Encoding: 8bit
 
-On Thu, Dec 21, 2023 at 07:55:27PM +0200, Andy Shevchenko wrote:
-> Instead of repeating the same code and reduce possible miss
-> of READ_ONCE(), split line_get_debounce_period() heler out
-> and use in the existing cases.
->
+The freeing and re-allocation of algorithm are protected by cpool_mutex,
+so it doesn't fix an actual use-after-free, but avoids a deserved
+refcount_warn_saturate() warning.
 
-helper
+A trivial fix for the racy behavior.
 
+Fixes: 8c73b26315aa ("net/tcp: Prepare tcp_md5sig_pool for TCP-AO")
+Suggested-by: Eric Dumazet <edumazet@google.com>
+Signed-off-by: Dmitry Safonov <dima@arista.com>
+---
+ net/ipv4/tcp_sigpool.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-Not a fan of this change.
+diff --git a/net/ipv4/tcp_sigpool.c b/net/ipv4/tcp_sigpool.c
+index 55b310a722c7..8512cb09ebc0 100644
+--- a/net/ipv4/tcp_sigpool.c
++++ b/net/ipv4/tcp_sigpool.c
+@@ -162,9 +162,8 @@ int tcp_sigpool_alloc_ahash(const char *alg, size_t scratch_size)
+ 		if (strcmp(cpool[i].alg, alg))
+ 			continue;
+ 
+-		if (kref_read(&cpool[i].kref) > 0)
+-			kref_get(&cpool[i].kref);
+-		else
++		/* pairs with tcp_sigpool_release() */
++		if (!kref_get_unless_zero(&cpool[i].kref))
+ 			kref_init(&cpool[i].kref);
+ 		ret = i;
+ 		goto out;
 
-So using READ_ONCE() is repeating code??
-Doesn't providing a wrapper around READ_ONCE() just rename that repitition?
-What of all the other uses of READ_ONCE() in cdev (and there are a lot) -
-why pick on debounce_period?
+---
+base-commit: 1a44b0073b9235521280e19d963b6dfef7888f18
+change-id: 20231222-tcp-ao-kref_get_unless_zero-fe7105781ba4
 
-The line_set_debounce_period() is necessary as the set is now a
-multi-step process as it can impact whether the line is contained
-in the supinfo_tree.  The get is just a get.
+Best regards,
+-- 
+Dmitry Safonov <dima@arista.com>
 
-And you could've included me in the Cc so I didn't just find it by
-accident.
-
-Cheers,
-Kent.
-
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
->  drivers/gpio/gpiolib-cdev.c | 23 ++++++++++++++---------
->  1 file changed, 14 insertions(+), 9 deletions(-)
->
-> diff --git a/drivers/gpio/gpiolib-cdev.c b/drivers/gpio/gpiolib-cdev.c
-> index 744734405912..c573820d5722 100644
-> --- a/drivers/gpio/gpiolib-cdev.c
-> +++ b/drivers/gpio/gpiolib-cdev.c
-> @@ -651,6 +651,16 @@ static struct line *supinfo_find(struct gpio_desc *desc)
->  	return NULL;
->  }
->
-> +static unsigned int line_get_debounce_period(struct line *line)
-> +{
-> +	return READ_ONCE(line->debounce_period_us);
-> +}
-> +
-> +static inline bool line_has_supinfo(struct line *line)
-> +{
-> +	return line_get_debounce_period(line);
-> +}
-> +
->  static void supinfo_to_lineinfo(struct gpio_desc *desc,
->  				struct gpio_v2_line_info *info)
->  {
-> @@ -665,15 +675,10 @@ static void supinfo_to_lineinfo(struct gpio_desc *desc,
->
->  	attr = &info->attrs[info->num_attrs];
->  	attr->id = GPIO_V2_LINE_ATTR_ID_DEBOUNCE;
-> -	attr->debounce_period_us = READ_ONCE(line->debounce_period_us);
-> +	attr->debounce_period_us = line_get_debounce_period(line);
->  	info->num_attrs++;
->  }
->
-> -static inline bool line_has_supinfo(struct line *line)
-> -{
-> -	return READ_ONCE(line->debounce_period_us);
-> -}
-> -
->  /*
->   * Checks line_has_supinfo() before and after the change to avoid unnecessary
->   * supinfo_tree access.
-> @@ -846,7 +851,7 @@ static enum hte_return process_hw_ts(struct hte_ts_data *ts, void *p)
->  		line->total_discard_seq++;
->  		line->last_seqno = ts->seq;
->  		mod_delayed_work(system_wq, &line->work,
-> -		  usecs_to_jiffies(READ_ONCE(line->debounce_period_us)));
-> +				 usecs_to_jiffies(line_get_debounce_period(line)));
->  	} else {
->  		if (unlikely(ts->seq < line->line_seqno))
->  			return HTE_CB_HANDLED;
-> @@ -987,7 +992,7 @@ static irqreturn_t debounce_irq_handler(int irq, void *p)
->  	struct line *line = p;
->
->  	mod_delayed_work(system_wq, &line->work,
-> -		usecs_to_jiffies(READ_ONCE(line->debounce_period_us)));
-> +			 usecs_to_jiffies(line_get_debounce_period(line)));
->
->  	return IRQ_HANDLED;
->  }
-> @@ -1215,7 +1220,7 @@ static int edge_detector_update(struct line *line,
->  			gpio_v2_line_config_debounce_period(lc, line_idx);
->
->  	if ((active_edflags == edflags) &&
-> -	    (READ_ONCE(line->debounce_period_us) == debounce_period_us))
-> +	    (line_get_debounce_period(line) == debounce_period_us))
->  		return 0;
->
->  	/* sw debounced and still will be...*/
-> --
-> 2.43.0.rc1.1.gbec44491f096
->
 
