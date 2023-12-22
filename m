@@ -1,195 +1,144 @@
-Return-Path: <linux-kernel+bounces-9548-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9549-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27BE881C759
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 10:35:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EAC3981C760
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 10:37:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DAB5F287275
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 09:35:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2933A1C22EC5
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 09:37:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34E25F9ED;
-	Fri, 22 Dec 2023 09:35:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8035BF9D6;
+	Fri, 22 Dec 2023 09:37:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GP5rlVgp"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="NRktAxtP"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A2C6DF42
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 09:35:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DC30C4339A
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 09:35:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703237734;
-	bh=jZzdwoHT2kuZ2oo2BcVo/dRZz8kMowfuO8XWw6Jy+aQ=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=GP5rlVgpsY3gf41iBrWBR4PLFsSSpt1cwhq0UZGWW6D9fMZSfNHAbDFsae+n9TPnm
-	 RXbcB/gLI0Cpe6u4lWuu/0/6JGamdELFyme9j9YYAZoEbEm8aCrqWZL/aVIPGR3cvN
-	 +VyPRYH08FzJokPuJd0sb5gJKt8UuIIuT14MPVQ6fPHtC2fFwn4NJrA0I4nBrvsYnf
-	 P/zJZubL/Wme1lBZ6W98okrOSqrjHFSeJFsFTfiR4zr5LWfIYIOwG3nAApXO0xCPbK
-	 NS3BNUGa19SLVjR+PbDK5XdshLte8R/6CovgVosy+zmgzlhNbuHt/fxGYKn/+Fd7UE
-	 JlFnT5B+CgRUA==
-Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2cc7b9281d1so22039401fa.1
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 01:35:33 -0800 (PST)
-X-Gm-Message-State: AOJu0YydO5KKvnAfVVAeIYes+pGVANz1KlC82OZ5GnPJUEvTHJLAbaDF
-	rTKFUvfe0iuMzH67DDw5qZ2Xgj0cvwO2Jo6NrAk=
-X-Google-Smtp-Source: AGHT+IFBolUEPY720dl+czfO4qrssPxC1JJ7OwVqlpuBUwcp3tL3lhllAYTVKtUab1jFGi/GhzBcG2KsIGCJdxQjS+s=
-X-Received: by 2002:a19:384e:0:b0:50e:384c:6982 with SMTP id
- d14-20020a19384e000000b0050e384c6982mr452303lfj.42.1703237732207; Fri, 22 Dec
- 2023 01:35:32 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6915BDF55
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 09:37:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1703237821;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0rE+6SqYmdQ/CRPQV0bbXUUkHoWDG8BiCqsyya24uec=;
+	b=NRktAxtPB8N//xeecBQM7XbQ3Gsms/S4ixweqUQgW6OC/PFBkL89DSM90cbbHybbYmV+vS
+	a1HWpmvA0n9EhbpJJ55F3+TWtxfRIOYMYl0ByF3YJxVIqMRdxftrsxuSvor8TbcRIP+rKD
+	fO09gqBvyWwbdLxhUcpb0788d40fRlc=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-323-wmgBWaQ0MT-cmbe7pZnFKQ-1; Fri, 22 Dec 2023 04:36:59 -0500
+X-MC-Unique: wmgBWaQ0MT-cmbe7pZnFKQ-1
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-40d44d9dae3so4460655e9.1
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 01:36:59 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703237818; x=1703842618;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=0rE+6SqYmdQ/CRPQV0bbXUUkHoWDG8BiCqsyya24uec=;
+        b=MKYZt4Ixz34Rl15QgnKMJ5WA9vaUx04hYNRH/N/jld0l8iKQWwDECrrMS+tcZK9EUf
+         flg3TBPyfcGmOwD5nggTIw0YZm/VEUsovQ+YWVn5QVyE0MiscTH9oyIY0NI+wwDNg4Ve
+         JdxUZcbal8/XW4pjs2u16ZL2BfK5xgnUFxoMvXpru5IofBW8G94nHflLQUQxtLT2H/0d
+         fW/HWPlmZRH7Od0uX7ti0ZBcCwjGZOnxun2ltZ8aTYfhzfRJo97YbGsD3S/ya4g1qkjy
+         cDt4jdmqA5FilQMcSCycf0w9SoMAyFnh0YTZbsPClP65Qx0H9vo6BvoyfayWnDaHJTLT
+         ix/g==
+X-Gm-Message-State: AOJu0YwWyijLFrUmdHDcW+Ub6WNagxMcKBaBMkHc6HSa4S3uGEVKTMW+
+	cuKnWAk6lks32A8CFAPo9UPEyrpWHo/OIQ1NDJZ24KF0xiFAiGJqzKySDdsfaIP38lC1MBwnFMg
+	NtbEtPucK21Kn3m5X21q25ZZy4LzjVJLY
+X-Received: by 2002:a05:600c:3583:b0:40d:2dd8:9308 with SMTP id p3-20020a05600c358300b0040d2dd89308mr552526wmq.142.1703237818267;
+        Fri, 22 Dec 2023 01:36:58 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IECzHuOIWaFBlkppPB6Nj0W46ZDmLz/rglzaycn8jOElInECwnxTZnHavxqH0t2LiMt4tvbyw==
+X-Received: by 2002:a05:600c:3583:b0:40d:2dd8:9308 with SMTP id p3-20020a05600c358300b0040d2dd89308mr552512wmq.142.1703237817912;
+        Fri, 22 Dec 2023 01:36:57 -0800 (PST)
+Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
+        by smtp.gmail.com with ESMTPSA id j23-20020a05600c1c1700b0040b48690c49sm6267412wms.6.2023.12.22.01.36.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Dec 2023 01:36:57 -0800 (PST)
+From: Javier Martinez Canillas <javierm@redhat.com>
+To: Jocelyn Falempe <jfalempe@redhat.com>, linux-kernel@vger.kernel.org
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Maxime Ripard
+ <mripard@kernel.org>, Peter Robinson <pbrobinson@gmail.com>, Rob Herring
+ <robh@kernel.org>, Conor Dooley <conor@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski@linaro.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>, Maarten
+ Lankhorst <maarten.lankhorst@linux.intel.com>,
+ dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH v3 4/4] drm/ssd130x: Add support for the SSD133x OLED
+ controller family
+In-Reply-To: <01cc7bd1-25d8-43ad-a305-05fcc81bfd22@redhat.com>
+References: <20231219203416.2299702-1-javierm@redhat.com>
+ <20231219203416.2299702-5-javierm@redhat.com>
+ <01cc7bd1-25d8-43ad-a305-05fcc81bfd22@redhat.com>
+Date: Fri, 22 Dec 2023 10:36:56 +0100
+Message-ID: <87y1dm4lzb.fsf@minerva.mail-host-address-is-not-set>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231222074605.452452-1-leobras@redhat.com> <20231222074605.452452-3-leobras@redhat.com>
-In-Reply-To: <20231222074605.452452-3-leobras@redhat.com>
-From: Guo Ren <guoren@kernel.org>
-Date: Fri, 22 Dec 2023 17:35:20 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTQNE7OQiAbkvVNzo9PCV=Xr8KQD0_=s-G56QMZJiZnjvA@mail.gmail.com>
-Message-ID: <CAJF2gTQNE7OQiAbkvVNzo9PCV=Xr8KQD0_=s-G56QMZJiZnjvA@mail.gmail.com>
-Subject: Re: [RFC PATCH 2/4] riscv: add compile-time test into is_compat_task()
-To: Leonardo Bras <leobras@redhat.com>
-Cc: Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, Eric Biederman <ebiederm@xmission.com>, 
-	Kees Cook <keescook@chromium.org>, Oleg Nesterov <oleg@redhat.com>, 
-	Conor Dooley <conor.dooley@microchip.com>, Andy Chiu <andy.chiu@sifive.com>, 
-	Greg Ungerer <gerg@kernel.org>, Vincent Chen <vincent.chen@sifive.com>, 
-	Xiao Wang <xiao.w.wang@intel.com>, Charlie Jenkins <charlie@rivosinc.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, Alexandre Ghiti <alexghiti@rivosinc.com>, 
-	Kemeng Shi <shikemeng@huaweicloud.com>, David Hildenbrand <david@redhat.com>, 
-	"Matthew Wilcox (Oracle)" <willy@infradead.org>, Qinglin Pan <panqinglin2020@iscas.ac.cn>, 
-	Greentime Hu <greentime.hu@sifive.com>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>, 
-	=?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>, 
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 
-On Fri, Dec 22, 2023 at 5:02=E2=80=AFPM Leonardo Bras <leobras@redhat.com> =
-wrote:
->
-> Currently several places will test for CONFIG_COMPAT before testing
-> is_compat_task(), probably in order to avoid a run-time test into the tas=
-k
-> structure.
->
-> Since is_compat_task() is an inlined function, it would be helpful to add=
- a
-> compile-time test of CONFIG_COMPAT, making sure it always returns zero wh=
-en
-> the option is not enabled during the kernel build.
->
-> With this, the compiler is able to understand in build-time that
-> is_compat_task() will always return 0, and optimize-out some of the extra
-> code introduced by the option.
->
-> This will also allow removing a lot #ifdefs that were introduced, and mak=
-e
-> the code more clean.
->
-> Signed-off-by: Leonardo Bras <leobras@redhat.com>
-> ---
->  arch/riscv/include/asm/compat.h    | 3 +++
->  arch/riscv/include/asm/elf.h       | 4 ----
->  arch/riscv/include/asm/pgtable.h   | 6 ------
->  arch/riscv/include/asm/processor.h | 4 ++--
->  4 files changed, 5 insertions(+), 12 deletions(-)
->
-> diff --git a/arch/riscv/include/asm/compat.h b/arch/riscv/include/asm/com=
-pat.h
-> index 2ac955b51148f..91517b51b8e27 100644
-> --- a/arch/riscv/include/asm/compat.h
-> +++ b/arch/riscv/include/asm/compat.h
-> @@ -14,6 +14,9 @@
->
->  static inline int is_compat_task(void)
->  {
-> +       if (!IS_ENABLED(CONFIG_COMPAT))
-> +               return 0;
-> +
->         return test_thread_flag(TIF_32BIT);
->  }
->
-> diff --git a/arch/riscv/include/asm/elf.h b/arch/riscv/include/asm/elf.h
-> index 59a08367fddd7..2e88257cafaea 100644
-> --- a/arch/riscv/include/asm/elf.h
-> +++ b/arch/riscv/include/asm/elf.h
-> @@ -53,13 +53,9 @@ extern bool compat_elf_check_arch(Elf32_Ehdr *hdr);
->  #define ELF_ET_DYN_BASE                ((DEFAULT_MAP_WINDOW / 3) * 2)
->
->  #ifdef CONFIG_64BIT
-> -#ifdef CONFIG_COMPAT
->  #define STACK_RND_MASK         (is_compat_task() ? \
->                                  0x7ff >> (PAGE_SHIFT - 12) : \
->                                  0x3ffff >> (PAGE_SHIFT - 12))
-> -#else
-> -#define STACK_RND_MASK         (0x3ffff >> (PAGE_SHIFT - 12))
-> -#endif
->  #endif
->
->  /*
-> diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pg=
-table.h
-> index 1d472b31e0cfe..ea5b269be223a 100644
-> --- a/arch/riscv/include/asm/pgtable.h
-> +++ b/arch/riscv/include/asm/pgtable.h
-> @@ -127,16 +127,10 @@
->  #define VA_USER_SV48 (UL(1) << (VA_BITS_SV48 - 1))
->  #define VA_USER_SV57 (UL(1) << (VA_BITS_SV57 - 1))
->
-> -#ifdef CONFIG_COMPAT
->  #define MMAP_VA_BITS_64 ((VA_BITS >=3D VA_BITS_SV48) ? VA_BITS_SV48 : VA=
-_BITS)
->  #define MMAP_MIN_VA_BITS_64 (VA_BITS_SV39)
->  #define MMAP_VA_BITS (is_compat_task() ? VA_BITS_SV32 : MMAP_VA_BITS_64)
->  #define MMAP_MIN_VA_BITS (is_compat_task() ? VA_BITS_SV32 : MMAP_MIN_VA_=
-BITS_64)
-> -#else
-> -#define MMAP_VA_BITS ((VA_BITS >=3D VA_BITS_SV48) ? VA_BITS_SV48 : VA_BI=
-TS)
-> -#define MMAP_MIN_VA_BITS (VA_BITS_SV39)
-> -#endif /* CONFIG_COMPAT */
-> -
->  #else
->  #include <asm/pgtable-32.h>
->  #endif /* CONFIG_64BIT */
-> diff --git a/arch/riscv/include/asm/processor.h b/arch/riscv/include/asm/=
-processor.h
-> index f19f861cda549..ed32e53e55999 100644
-> --- a/arch/riscv/include/asm/processor.h
-> +++ b/arch/riscv/include/asm/processor.h
-> @@ -22,7 +22,7 @@
->  ({                                                             \
->         unsigned long mmap_end;                                 \
->         typeof(addr) _addr =3D (addr);                            \
-> -       if ((_addr) =3D=3D 0 || (IS_ENABLED(CONFIG_COMPAT) && is_compat_t=
-ask())) \
-> +       if ((_addr) =3D=3D 0 || is_compat_task())                   \
->                 mmap_end =3D STACK_TOP_MAX;                       \
->         else if ((_addr) >=3D VA_USER_SV57)                       \
->                 mmap_end =3D STACK_TOP_MAX;                       \
-> @@ -39,7 +39,7 @@
->         typeof(addr) _addr =3D (addr);                            \
->         typeof(base) _base =3D (base);                            \
->         unsigned long rnd_gap =3D DEFAULT_MAP_WINDOW - (_base);   \
-> -       if ((_addr) =3D=3D 0 || (IS_ENABLED(CONFIG_COMPAT) && is_compat_t=
-ask())) \
-> +       if ((_addr) =3D=3D 0 || is_compat_task())                   \
->                 mmap_base =3D (_base);                            \
->         else if (((_addr) >=3D VA_USER_SV57) && (VA_BITS >=3D VA_BITS_SV5=
-7)) \
->                 mmap_base =3D VA_USER_SV57 - rnd_gap;             \
-> --
-> 2.43.0
->
-Reviewed-by: Guo Ren <guoren@kernel.org>
+Jocelyn Falempe <jfalempe@redhat.com> writes:
 
---=20
-Best Regards
- Guo Ren
+Hello Jocelyn,
+
+Thanks a lot for your review!
+
+> On 19/12/2023 21:34, Javier Martinez Canillas wrote:
+>> The Solomon SSD133x controllers (such as the SSD1331) are used by RGB dot
+>> matrix OLED panels, add a modesetting pipeline to support the chip family.
+>> 
+>> The SSD133x controllers support 256 (8-bit) and 65k (16-bit) color depths
+>> but only the former is implemented for now. This is because the 256 color
+>> depth format matches a fourcc code already present in DRM (RGB8), but the
+>> 65k pixel format does not match the existing RG16 fourcc code format.
+>> 
+>> Instead of a R:G:B 5:6:5, the controller expects the 16-bit pixels to be
+>> R:G:B 6:5:6, and so a new fourcc needs to be added to support this format.
+>
+> small typo here, R:G:B 6:5:6 => that's 17 bits
+>
+
+Oh, tanks for pointing that out.
+
+It seems to be a typo in the SSD1331 controller datasheet itself:
+
+https://cdn-shop.adafruit.com/datasheets/SSD1331_1.2.pdf
+
+"Each pixel has 16-bit data. Three sub-pixels for color A, B and C have 6
+bits, 5 bits and 6 bits respectively."
+
+I blindly copied what the datasheet said without relizing that it was 17
+bits indeed!
+
+So looking again at "Table 9 - Data bus usage under different bus width
+and color depth mode" in the datasheet shared above, it seems the format
+has the same sub-pixel layout than DRM_FORMAT_RGB565. But I tested with
+that format and the colors were off, and the same for DRM_FORMAT_BGR565.
+
+Now, even when only using 256 colors the images are pretty decent as you
+can see in https://fosstodon.org/@javierm/111591985174504541
+
+I'll reword the commit message and drop the comment about that RGB format
+and explain that only DRM_FORMAT_RGB332 is supported for now.
+
+> other than that, it looks good to me, feel free to add:
+> Reviewed-by: Jocelyn Falempe <jfalempe@redhat.com>
+>
+
+-- 
+Best regards,
+
+Javier Martinez Canillas
+Core Platforms
+Red Hat
+
 
