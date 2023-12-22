@@ -1,149 +1,157 @@
-Return-Path: <linux-kernel+bounces-9913-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9914-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7BA7081CD2B
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 17:35:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86C9B81CD30
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 17:36:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1BFA91F23F31
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 16:35:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 395241F23DE0
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 16:36:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27BFC24B4F;
-	Fri, 22 Dec 2023 16:35:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37602250F1;
+	Fri, 22 Dec 2023 16:36:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="lDIg7aRD"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52F5D249FD;
-	Fri, 22 Dec 2023 16:35:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 12901139F;
-	Fri, 22 Dec 2023 08:36:03 -0800 (PST)
-Received: from pluto (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 17FAB3F7F5;
-	Fri, 22 Dec 2023 08:35:13 -0800 (PST)
-Date: Fri, 22 Dec 2023 16:35:11 +0000
-From: Cristian Marussi <cristian.marussi@arm.com>
-To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Cc: Sudeep Holla <sudeep.holla@arm.com>, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Oleksii Moisieiev <oleksii_moisieiev@epam.com>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-gpio@vger.kernel.org,
-	Peng Fan <peng.fan@nxp.com>,
-	AKASHI Takahiro <takahiro.akashi@linaro.org>
-Subject: Re: [PATCH 6/7] pinctrl: Implementation of the generic scmi-pinctrl
- driver
-Message-ID: <ZYW6v724Ags5JtY9@pluto>
-References: <20231215-pinctrl-scmi-v1-0-0fe35e4611f7@nxp.com>
- <20231215-pinctrl-scmi-v1-6-0fe35e4611f7@nxp.com>
+Received: from mout.web.de (mout.web.de [212.227.17.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F39324B38;
+	Fri, 22 Dec 2023 16:36:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
+	t=1703262954; x=1703867754; i=markus.elfring@web.de;
+	bh=hGP8tPk4MgeQkC4qAQyOA8Ei+y7T+/UNmzFqrcccYrE=;
+	h=X-UI-Sender-Class:Date:Subject:From:To:Cc:References:
+	 In-Reply-To;
+	b=lDIg7aRDDh34j6zbkdf6CqgXZBbESv7YKB2zqIgdiqT+uNNk8lY+hHNWweK2m1bO
+	 qz3APVm7iQlKX1IuG++i09NKEGz1o4/pNGa9317fvWM5jSt6hOEXFuR/B5C0G6Lh8
+	 PKfNHa0kfs4S7GJVhqVKZiZ3q4xRb6+xGm9jBn35DXMSGf5dY0xwsN8pJRjeWYzdN
+	 MIfWmq/Ep5dWOLm5TK+y2gVWWoUZsPZYnqBsfIUazWw4SkGzMABoQsusNkl8dEZQb
+	 D0zEAeDH43DGeZPZAv4UDIsHfg9PWM+WE4dgW04SMkV+UpgFioVrF3tXxWvfjjLax
+	 DKY4+Hx54IdGSoEnNw==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb106
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1MCol0-1rPTvW2oIC-009Ilg; Fri, 22
+ Dec 2023 17:35:54 +0100
+Message-ID: <147ca1e6-69f3-4586-b5b3-b69f9574a862@web.de>
+Date: Fri, 22 Dec 2023 17:35:53 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231215-pinctrl-scmi-v1-6-0fe35e4611f7@nxp.com>
+User-Agent: Mozilla Thunderbird
+Subject: [PATCH 1/2] clk: imx: composite-8m: Less function calls in
+ __imx8m_clk_hw_composite() after error detection
+Content-Language: en-GB
+From: Markus Elfring <Markus.Elfring@web.de>
+To: Abel Vesa <abelvesa@kernel.org>, Fabio Estevam <festevam@gmail.com>,
+ Michael Turquette <mturquette@baylibre.com>, Peng Fan <peng.fan@nxp.com>,
+ Sascha Hauer <s.hauer@pengutronix.de>, Shawn Guo <shawnguo@kernel.org>,
+ Stephen Boyd <sboyd@kernel.org>, kernel@pengutronix.de, linux-imx@nxp.com,
+ linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ kernel-janitors@vger.kernel.org
+Cc: LKML <linux-kernel@vger.kernel.org>, cocci@inria.fr
+References: <1d494176-2238-4430-bc26-4e4c78fe4ede@web.de>
+In-Reply-To: <1d494176-2238-4430-bc26-4e4c78fe4ede@web.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:0VWpmmx7o1yt73QWfIGaaqlY5F4i6zRgEqXuglALwGa18bIXKW8
+ AOqDAUNW2Cjsz06QxmYHDoTBLM99qSfkA8gpV2Eep67T8N2XvumNoBvMSDZL+MVcICEknKr
+ 8vh3ggCJemhW9bVcaXt9ybA+0LXlevWtdmdzBDNCUp3uslBto9tV0ddzLPIX7kIkd/LqhoU
+ t1UQ7qde2xsX9YWyhSWCw==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:uXnSM6Y3y2Y=;ZqW32hB+ptk2kYuDiM61wjVdQAm
+ aL3BOWuDVDmj/GqfYIOBsNosFuxpsJAIF76ShhehyftRzyOf6yL5ej9V0Osq5eHdjvPbL0pYW
+ 69y+VjNrOqLWmgi8elxKtmmlmx2dxH/kBvOYeSQQyqTyApK+rRRDlDgHwMO3kqzTgV0c19G3i
+ HG2/5wIgQ1cUJmr8cQgqiMMR0nuYspFk6UVN3jJxiwBMMu+8AoPykeq7CGp+pfgJhms/Lm8oX
+ PvssBnTr/X2ml35RXgK+pjW4l7Zl0GBgnl+sRv3M7pqhxkVPWWBY2+C9h6TtiOMjTJqhHDBYG
+ hIs7zhMy4fLuwOKu0oX+KvqhLhvE2SlDuelguWgy8fCKlHIId/35lrgiu7WG0vGKv+Hil8cR+
+ l6vXjvpd6HKf8Klc6mUWg5SZjOB5QAe9Tsj5ip9+QWO46DNN6cPySxaXWL2f3I5euzw0QJjhV
+ wCFqGq4oqy81Byb9nRUx6EVd1eQooS1AVRGrNf+elEl7N2nvPQxaeb1OGAzvRLl6t3bAFDb/0
+ JRtMWEgE59ziYYefEjIvex4DDgnx03Js86TG52IqI334FvTtp6RIK28Mkyo+dSfVsWIYp1Ow0
+ B4j1Z2RuLe4LwY0V4+hylU5M2QwFOCejlk7YSWydaSxEVKHBW/1CtLzYpRPjcOPESYxNCF5S1
+ +tyyF45iz0PlFvaz8QFSDuoqVGr9Zf8hfhMHXYw8qUglcG5B8Lfq5HPjk2npQoH+8+tIdptms
+ HQIebkSco+YYHh3fCZOlKQWNcgNcvN6cV90LjKZWrmxmcxvknesnwFKQxbk/sROz9zoTcWOsV
+ tbXYC+SuKi7RtOwpVWGF8bafesB3iRctdCLylup3wAFM2U4vMKNB0lDKbhn+eNjTdKjlE1kUV
+ 7urRWbSX7kOfqglzfS3fNXVmV1pAmiU1nUpqYQ7ROr7xEBJ5eEPH2Ju8SQ9SdFA6hqC+EI6D4
+ I4p6rw==
 
-On Fri, Dec 15, 2023 at 07:56:34PM +0800, Peng Fan (OSS) wrote:
-> From: Peng Fan <peng.fan@nxp.com>
-> 
-> scmi-pinctrl driver implements pinctrl driver interface and using
-> SCMI protocol to redirect messages from pinctrl subsystem SDK to
-> SCMI platform firmware, which does the changes in HW.
-> 
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Fri, 22 Dec 2023 16:48:24 +0100
 
-[CC: Akashi which was interested in this series]
+The function =E2=80=9Ckfree=E2=80=9D was called in up to three cases
+by the function =E2=80=9C__imx8m_clk_hw_composite=E2=80=9D during error ha=
+ndling
+even if the passed variables contained a null pointer.
 
-This generic driver still works fine for me as of now in my emulated
-setup using the generic SCMI bindings as in the initial Oleksii example
-and a dummy driver consumer for this pins, BUT there is still an open
-issue as reported by Akashi previously ..see below.
+Adjust jump targets according to the Linux coding style convention.
 
-> Co-developed-by: Oleksii Moisieiev <oleksii_moisieiev@epam.com>
-> Signed-off-by: Oleksii Moisieiev <oleksii_moisieiev@epam.com>
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> ---
->  MAINTAINERS                    |   1 +
->  drivers/pinctrl/Kconfig        |  11 ++
->  drivers/pinctrl/Makefile       |   1 +
->  drivers/pinctrl/pinctrl-scmi.c | 403 +++++++++++++++++++++++++++++++++++++++++
->  4 files changed, 416 insertions(+)
- 
- [snip]
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+=2D--
+ drivers/clk/imx/clk-composite-8m.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
-> +static const struct pinmux_ops pinctrl_scmi_pinmux_ops = {
-> +	.request = pinctrl_scmi_request,
-> +	.free = pinctrl_scmi_free,
-> +	.get_functions_count = pinctrl_scmi_get_functions_count,
-> +	.get_function_name = pinctrl_scmi_get_function_name,
-> +	.get_function_groups = pinctrl_scmi_get_function_groups,
-> +	.set_mux = pinctrl_scmi_func_set_mux,
-> +};
-> +
-> +static int pinctrl_scmi_pinconf_get(struct pinctrl_dev *pctldev, unsigned int _pin,
-> +				    unsigned long *config)
-> +{
-> +	int ret;
-> +	struct scmi_pinctrl *pmx = pinctrl_dev_get_drvdata(pctldev);
-> +	enum pin_config_param config_type;
-> +	unsigned long config_value;
-> +
-> +	if (!config)
-> +		return -EINVAL;
-> +
-> +	config_type = pinconf_to_config_param(*config);
+diff --git a/drivers/clk/imx/clk-composite-8m.c b/drivers/clk/imx/clk-comp=
+osite-8m.c
+index 27a08c50ac1d..eb5392f7a257 100644
+=2D-- a/drivers/clk/imx/clk-composite-8m.c
++++ b/drivers/clk/imx/clk-composite-8m.c
+@@ -220,7 +220,7 @@ struct clk_hw *__imx8m_clk_hw_composite(const char *na=
+me,
 
-This config types that are packed/unpacked from the generic Pinctrl
-subsystem have also to be mapped/umapped, here and below, to the SCMI
-ones since they are slightly different/.
+ 	mux =3D kzalloc(sizeof(*mux), GFP_KERNEL);
+ 	if (!mux)
+-		goto fail;
++		return ERR_CAST(hw);
 
-IOW SCMI V3.2 Table_24 in the spec, which defines Pins Config Types as
-understood by an SCMI platform FW is NOT exactly mapping to the enum
-pin_config_param used by Pinctrl in its pinconf_to_config so you risk
-passing a config_type to the SCMI fw that does NOT mean at all what
-intended...if the FW is compliant with SCMI.
+ 	mux_hw =3D &mux->hw;
+ 	mux->reg =3D reg;
+@@ -230,7 +230,7 @@ struct clk_hw *__imx8m_clk_hw_composite(const char *na=
+me,
 
-> +
-> +	ret = pinctrl_ops->config_get(pmx->ph, _pin, PIN_TYPE, config_type, &config_value);
-> +	if (ret)
-> +		return ret;
-> +
-> +	*config = pinconf_to_config_packed(config_type, config_value);
-> +
-> +	return 0;
-> +}
-> +
-> +static int pinctrl_scmi_pinconf_set(struct pinctrl_dev *pctldev,
-> +				    unsigned int _pin,
-> +				    unsigned long *configs,
-> +				    unsigned int num_configs)
-> +{
-> +	int ret;
-> +	struct scmi_pinctrl *pmx = pinctrl_dev_get_drvdata(pctldev);
-> +
-> +	if (!configs || !num_configs)
-> +		return -EINVAL;
-> +
+ 	div =3D kzalloc(sizeof(*div), GFP_KERNEL);
+ 	if (!div)
+-		goto fail;
++		goto free_mux;
 
-Same here, as said in the previous patch about pinctrl protocol, you
-should pack/unpack and map/unmap from Pinctrl packed configs and types
-to SCMI types and unpacked config/values, to fix the mismatch between
-Pinctrl and SCMI types and also to avoid the usage of Pinctrl helpers to
-extract the types from the SCMI protocol layer so that we can keep it
-agnostic in these regards.
+ 	div_hw =3D &div->hw;
+ 	div->reg =3D reg;
+@@ -260,7 +260,7 @@ struct clk_hw *__imx8m_clk_hw_composite(const char *na=
+me,
+ 	if (!mcore_booted) {
+ 		gate =3D kzalloc(sizeof(*gate), GFP_KERNEL);
+ 		if (!gate)
+-			goto fail;
++			goto free_div;
 
-Thanks,
-Cristian
+ 		gate_hw =3D &gate->hw;
+ 		gate->reg =3D reg;
+@@ -272,13 +272,15 @@ struct clk_hw *__imx8m_clk_hw_composite(const char *=
+name,
+ 			mux_hw, mux_ops, div_hw,
+ 			divider_ops, gate_hw, &clk_gate_ops, flags);
+ 	if (IS_ERR(hw))
+-		goto fail;
++		goto free_gate;
+
+ 	return hw;
+
+-fail:
++free_gate:
+ 	kfree(gate);
++free_div:
+ 	kfree(div);
++free_mux:
+ 	kfree(mux);
+ 	return ERR_CAST(hw);
+ }
+=2D-
+2.43.0
+
 
