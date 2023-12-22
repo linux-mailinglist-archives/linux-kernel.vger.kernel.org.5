@@ -1,112 +1,114 @@
-Return-Path: <linux-kernel+bounces-9700-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-9701-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A424081C9F0
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 13:27:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE14781C9F7
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 13:29:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4383A1F25221
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 12:27:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 729A11F22B6C
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Dec 2023 12:29:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E95B318026;
-	Fri, 22 Dec 2023 12:27:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 865E71803A;
+	Fri, 22 Dec 2023 12:29:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="p+Cyvlqo"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="P+wgWllB"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from m12.mail.163.com (m12.mail.163.com [220.181.12.216])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A64ED527;
-	Fri, 22 Dec 2023 12:27:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=Message-ID:Date:MIME-Version:Subject:From:
-	Content-Type; bh=6lNfPcJ9vgueCowbSfbMeQeA1QK5J3XCK2/SVo88cZw=;
-	b=p+CyvlqoaM1DlLmGvPWaPaqex3Qn9UPhvDQBcZEsSlvxc2aHj9dS3nOa7Jd6aO
-	G/XDCbFbe5gqTevFru8Vez0EPOe1wmiTzgPXqC1tDRuCC8fz6p+99yctdG2MCt+i
-	ge0SHmU1EJ/XNSNdO+Rtw+cEMl6U3ly3GJTRbYox241ik=
-Received: from [192.168.71.6] (unknown [114.92.108.205])
-	by zwqz-smtp-mta-g5-0 (Coremail) with SMTP id _____wDXH3RlgIVlc7QaCg--.29733S2;
-	Fri, 22 Dec 2023 20:26:29 +0800 (CST)
-Message-ID: <3c51ffb5-8198-459f-b4db-b9136a407c08@163.com>
-Date: Fri, 22 Dec 2023 20:26:13 +0800
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8206F18043;
+	Fri, 22 Dec 2023 12:29:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1703248155; x=1734784155;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=W9BM0HBysXXzPmYSLOHxDQBjtsNT8ib3ZOWo2DiabTc=;
+  b=P+wgWllBIMF5mvV18Dl68n8K+Pz/uQ/yJtS3oS9IOJMgTkPE9ivW4aOe
+   n/6MHiaJ8gemPbnbekG6aWGYmaHU7ogs4GxVgnObFh/YyQHgd+iRd5Qd5
+   LKNk5kFvSpzWZd4HsWs716FG7V3+AObFp29+jFkvQu+Glcg6BxrhFllnW
+   Lds6BA3KMndONxcVbvfSjovmQs1RPOHNBToDZ5xjV5U44xJkqlSGDcmZj
+   z6rEIz9YvlzqF4bi9pfzCuP1zhnmUD6cmQVFB60RvI3dWjP8MWYlqk27I
+   XMrdF1UuuANZ7FrfqeqpIxnA2bFBBuhA6T2WATOGkXu8cHxHF+0w/pbvv
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10931"; a="3195357"
+X-IronPort-AV: E=Sophos;i="6.04,296,1695711600"; 
+   d="scan'208";a="3195357"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Dec 2023 04:29:15 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10931"; a="805932771"
+X-IronPort-AV: E=Sophos;i="6.04,296,1695711600"; 
+   d="scan'208";a="805932771"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.94.248.105])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Dec 2023 04:29:09 -0800
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To: linux-pci@vger.kernel.org,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+	Rob Herring <robh@kernel.org>,
+	=?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+	Igor Mammedov <imammedo@redhat.com>,
+	Lukas Wunner <lukas@wunner.de>,
+	Mika Westerberg <mika.westerberg@linux.intel.com>,
+	Andy Shevchenko <andriy.shevchenko@intel.com>,
+	"Rafael J . Wysocki" <rafael@kernel.org>,
+	linux-kernel@vger.kernel.org
+Cc: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Subject: [PATCH 0/7] PCI: Solve two bridge window sizing issues
+Date: Fri, 22 Dec 2023 14:28:54 +0200
+Message-Id: <20231222122901.49538-1-ilpo.jarvinen@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/4] Revert "usb: gadget: f_uvc: change endpoint
- allocation in uvc_function_bind()"
-To: Frank Li <Frank.Li@nxp.com>, peter.chen@kernel.org
-Cc: a-govindraju@ti.com, gregkh@linuxfoundation.org, imx@lists.linux.dev,
- linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org, pawell@cadence.com,
- rogerq@kernel.org
-References: <20231221165426.1590866-1-Frank.Li@nxp.com>
- <20231221165426.1590866-5-Frank.Li@nxp.com>
-Content-Language: en-US
-From: yuan linyu <cugyly@163.com>
-In-Reply-To: <20231221165426.1590866-5-Frank.Li@nxp.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:_____wDXH3RlgIVlc7QaCg--.29733S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7Ar4UKw4kXw1xJr45Xr4Dtwb_yoW8ZF18pa
-	1rJ3yrCr47tFZxtwn7Jwn5ZF47Xan2qrWqgF9rK343Zr43Xr93CFyUK348KFy5Cr97AF40
-	qFZak3yS9r9YkrUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07j1mhrUUUUU=
-X-CM-SenderInfo: pfxj5zr16rljoofrz/1tbiERdO417++Nl7bwAAs+
+Content-Transfer-Encoding: 8bit
 
+Hi all,
 
-On 2023/12/22 00:54, Frank Li wrote:
-> This reverts commit 3c5b006f3ee800b4bd9ed37b3a8f271b8560126e.
->
-> gadget_is_{super|dual}speed() API check UDC controller capitblity. It
-> should pass down highest speed endpoint descriptor to UDC controller. So
-> UDC controller driver can reserve enough resource at check_config(),
-> especially mult and maxburst. So UDC driver (such as cdns3) can know need
-> at least (mult + 1) * (maxburst + 1) * wMaxPacketSize internal memory for
-> this uvc functions.
->
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> ---
->  drivers/usb/gadget/function/f_uvc.c | 10 +++++++++-
->  1 file changed, 9 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/usb/gadget/function/f_uvc.c b/drivers/usb/gadget/function/f_uvc.c
-> index faa398109431f..cc4e08c8169b4 100644
-> --- a/drivers/usb/gadget/function/f_uvc.c
-> +++ b/drivers/usb/gadget/function/f_uvc.c
-> @@ -719,13 +719,21 @@ uvc_function_bind(struct usb_configuration *c, struct usb_function *f)
->  	}
->  	uvc->enable_interrupt_ep = opts->enable_interrupt_ep;
->  
-> -	ep = usb_ep_autoconfig(cdev->gadget, &uvc_fs_streaming_ep);
+Here's a series that contains two fixes to PCI bridge window sizing
+algorithm. Together, they should enable remove & rescan cycle to work
+for a PCI bus that has PCI devices with optional resources and/or
+disparity in BAR sizes.
 
-how about all none-0 endpoint used for all uvc ?
+For the second fix, I chose to expose find_empty_resource_slot() from
+kernel/resource.c because it should increase accuracy of the cannot-fit
+decision (currently that function is called find_resource()). In order
+to do that sensibly, a few improvements seemed in order to make its
+interface and name of the function sane before exposing it. Thus, the
+few extra patches on resource side.
 
-please add some comment if currently this is only way to fix your issue.
+Unfortunately I don't have a reason to suspect these would help with
+the issues related to the currently ongoing resource regression
+thread [1].
 
-need it for stable ?
+[1] https://lore.kernel.org/linux-pci/ZXpaNCLiDM+Kv38H@marvin.atrad.com.au/
 
-> +	if (gadget_is_superspeed(c->cdev->gadget))
-> +		ep = usb_ep_autoconfig_ss(cdev->gadget, &uvc_ss_streaming_ep,
-> +					  &uvc_ss_streaming_comp);
-> +	else if (gadget_is_dualspeed(cdev->gadget))
-> +		ep = usb_ep_autoconfig(cdev->gadget, &uvc_hs_streaming_ep);
-> +	else
-> +		ep = usb_ep_autoconfig(cdev->gadget, &uvc_fs_streaming_ep);
-> +
->  	if (!ep) {
->  		uvcg_info(f, "Unable to allocate streaming EP\n");
->  		goto error;
->  	}
->  	uvc->video.ep = ep;
->  
-> +	uvc_fs_streaming_ep.bEndpointAddress = uvc->video.ep->address;
->  	uvc_hs_streaming_ep.bEndpointAddress = uvc->video.ep->address;
->  	uvc_ss_streaming_ep.bEndpointAddress = uvc->video.ep->address;
->  
+Ilpo Järvinen (7):
+  PCI: Fix resource double counting on remove & rescan
+  resource: Rename find_resource() to find_empty_resource_slot()
+  resource: Document find_empty_resource_slot() and resource_constraint
+  resource: Use typedef for alignf callback
+  resource: Handle simple alignment inside __find_empty_resource_slot()
+  resource: Export find_empty_resource_slot()
+  PCI: Relax bridge window tail sizing rules
+
+ drivers/pci/bus.c       | 10 +----
+ drivers/pci/setup-bus.c | 81 ++++++++++++++++++++++++++++++++++++++---
+ include/linux/ioport.h  | 44 ++++++++++++++++++++--
+ include/linux/pci.h     |  5 +--
+ kernel/resource.c       | 69 ++++++++++++++++-------------------
+ 5 files changed, 150 insertions(+), 59 deletions(-)
+
+-- 
+2.30.2
 
 
