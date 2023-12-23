@@ -1,122 +1,111 @@
-Return-Path: <linux-kernel+bounces-10314-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10315-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C41281D29B
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 07:11:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A8D9881D29E
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 07:17:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D09D71F23240
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 06:11:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8C2681C22A70
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 06:17:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 907C76AB6;
-	Sat, 23 Dec 2023 06:11:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A177563A0;
+	Sat, 23 Dec 2023 06:16:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="yr6Yw+F/"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="e0vN1LtS"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+Received: from mail-io1-f46.google.com (mail-io1-f46.google.com [209.85.166.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A65CB63A0
-	for <linux-kernel@vger.kernel.org>; Sat, 23 Dec 2023 06:11:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1d3ea8d0f9dso195615ad.1
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 22:11:45 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB2D75664;
+	Sat, 23 Dec 2023 06:16:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-io1-f46.google.com with SMTP id ca18e2360f4ac-7ba834684abso103659339f.2;
+        Fri, 22 Dec 2023 22:16:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1703311905; x=1703916705; darn=vger.kernel.org;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=1Abo/6b6Ud8/ygj6vePFRQy4/FPhVI580YuqrRjDjYA=;
-        b=yr6Yw+F/Bm1dDBUFwdCeaPusypN0rKg7YL38TqtATbmw+23h7IN7HrPODbZC5GPDOl
-         NAydxZNYg3nlxCUCUE96JD7gtUqsC+hvgBS6mKKev6bJkos+wCA21y66ZQo9WibNN9Jl
-         Ips/XUBBz1B3KD3Vd8mkKS8FlpNdCkZEc4diI87c3/EE+ugACb6YgzjzR4XlfWwfVTH/
-         UephqtK2fUW0fKJZXig1o+nBu7mQZ3lwv6on44fB61UT5D88RybYzGnt29XoIBnrqZat
-         VPMAAjXdi4lTEPFLihT04n673J5JVBBzynciIxTWtfTKwXBJFS4QdzmSGbtqpvH87T1/
-         s8Uw==
+        d=gmail.com; s=20230601; t=1703312217; x=1703917017; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=v7njaXclry8FJLwii07+vYUOoiK5EVEJQBJVFl/kxqE=;
+        b=e0vN1LtS2itSAh7LXF60xnsKzuXL2jXcQROdmxTOR8nlR3a0IP6R7BbJMSAFXCxxQo
+         khJL+RCDQThN+HqTYi9pRv5ZUtPVf9EbhI24a3Y4yCeJ+LjCZm6zPzkVU+CtwaVFhr7v
+         7tqTBqu5LJ0IbU5YCzHYznXHDmpgQZ4PgA1ztTZWXwGMiGz4v99dqrU8GIE/QAnKycPI
+         tQ7JwpjTwvX+Gkr2A/oMXbD2zLlTJfSIgRORuw+Xn75Q2NPJmiU0KK3w0EtoJlqi98lT
+         k1GrK+rpAPLpF6Fa8+mUx5Z7E4xcXiQkIv6/yqTpW3pYKrcig4ygQLsqI5Djp7TXRWaE
+         0nTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703311905; x=1703916705;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1Abo/6b6Ud8/ygj6vePFRQy4/FPhVI580YuqrRjDjYA=;
-        b=AuLfYNEyMtyMIWNqU7vHvJ4KDQyCPaUT+oYu38tqY4/4m1s/+zveLuAYQ/6Ii0oIjJ
-         jaqj+Q3quliqTuYKZIJSAif83MknAl1Dg2CQKRgQIEeNujVLszD//yp74OKgnbZZhzyw
-         64GDLQHzSgTovMjXzPSb7x7bUT+3815wR488gL/1OmXvdjqmi2ljRWlAjc/vCDyxrGSq
-         SYZEdByQ9KRbUEFt3k+SERyJ1p1rMFraWNRyuxA2zYmoWRNhiJGVosyLoTX8y2waQEkl
-         eXuejOowNQtQ9HWwWJioAu03/O46s+Un2/WhVesgk0O876AbInD4wFdrHGiFmxF8OMvg
-         oTiw==
-X-Gm-Message-State: AOJu0YzSoJ/vRZNnAMH0qB3h9L7aXhMin5R1lYtE1krRe1JPfgznr35j
-	gedU1pK/y0XO9GhiN9IswhRDiNgWvRPl
-X-Google-Smtp-Source: AGHT+IE/W4mVw3DWpGmrlczeA0IjpfFgzLnX0g85PAh4xhNoYsEJy7KSW9tLOeVYqkIg5GlB52iHtw==
-X-Received: by 2002:a17:902:f983:b0:1d3:d270:de8a with SMTP id ky3-20020a170902f98300b001d3d270de8amr181071plb.25.1703311904688;
-        Fri, 22 Dec 2023 22:11:44 -0800 (PST)
-Received: from [2620:0:1008:15:ed14:1d0f:e856:8a58] ([2620:0:1008:15:ed14:1d0f:e856:8a58])
-        by smtp.gmail.com with ESMTPSA id h12-20020a170902eecc00b001cf511aa772sm4373015plb.145.2023.12.22.22.11.43
+        d=1e100.net; s=20230601; t=1703312217; x=1703917017;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=v7njaXclry8FJLwii07+vYUOoiK5EVEJQBJVFl/kxqE=;
+        b=glnJiF7G8DJnWA9sDVB5LksaU9jTI/mxm6+RPhvLZTE6xEnDO6BwV6xy7khGQwEVe4
+         hwrgL26FSuPys4Zu3eCAYoydWWwxWRlqM0Ne/kFppki76nj1UCFkzNvGKI9ZBEpX5vHX
+         HkG9BuxNA0A0XPxuVFnpPqS8q6MVUo91vTUx8jyssrxX0RTRVsTxm+307dPf1xaG1wxo
+         RcLXMt6oVnn5h6ssDhbFG13Tps1aXnThGd0cZUXuKGyrl3iCUNDzqhTVDAsfBVfPgp2v
+         PNupiOHlc7aKu8ytaUtlHeDcg+MbgLfGv5xqjPA/BHUmqqW7CO3z7gPUV1nmkC8RFxn0
+         q94w==
+X-Gm-Message-State: AOJu0YyAToffjB34ALdFMN1Ru8fhJgA0fT25umJ44rDgVoTxqG5WkEjV
+	vN2OOtZrRXW+NPCaOU0HvcvHbPgMa0nPqw==
+X-Google-Smtp-Source: AGHT+IF8YJ43SrzDQe7J5DlABGxtPTsbfEZgJo+fSABzEFKyifcAkhaVcjxBU16GO8jG8S++691oBg==
+X-Received: by 2002:a5e:c80e:0:b0:7ba:813c:39bd with SMTP id y14-20020a5ec80e000000b007ba813c39bdmr3096868iol.42.1703312216698;
+        Fri, 22 Dec 2023 22:16:56 -0800 (PST)
+Received: from localhost.localdomain ([2400:1a00:b060:2b26:f462:e3d9:c28:4c99])
+        by smtp.gmail.com with ESMTPSA id f26-20020aa78b1a000000b006d97f80c4absm3024061pfd.41.2023.12.22.22.16.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Dec 2023 22:11:44 -0800 (PST)
-Date: Fri, 22 Dec 2023 22:11:43 -0800 (PST)
-From: David Rientjes <rientjes@google.com>
-To: Chris Li <chrisl@kernel.org>
-cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, 
-    linux-mm@kvack.org, Wei Xu <weixugc@google.com>, 
-    Yu Zhao <yuzhao@google.com>, Greg Thelen <gthelen@google.com>, 
-    Chun-Tse Shao <ctshao@google.com>, Suren Baghdasaryan <surenb@google.com>, 
-    Yosry Ahmed <yosryahmed@google.com>, Brain Geffon <bgeffon@google.com>, 
-    Minchan Kim <minchan@kernel.org>, Michal Hocko <mhocko@suse.com>, 
-    Mel Gorman <mgorman@techsingularity.net>, 
-    Huang Ying <ying.huang@intel.com>, Nhat Pham <nphamcs@gmail.com>, 
-    Johannes Weiner <hannes@cmpxchg.org>, Kairui Song <kasong@tencent.com>, 
-    Zhongkun He <hezhongkun.hzk@bytedance.com>, 
-    Kemeng Shi <shikemeng@huaweicloud.com>, Barry Song <v-songbaohua@oppo.com>, 
-    Hugh Dickins <hughd@google.com>
-Subject: Re: [PATCH] mm: swap: async free swap slot cache entries
-In-Reply-To: <ZYYY1VBKdLHH-Kl3@google.com>
-Message-ID: <f6bf2c8d-c37a-dab7-8ef8-38a35240edb6@google.com>
-References: <20231221-async-free-v1-1-94b277992cb0@kernel.org> <20231222115208.ab4d2aeacdafa4158b14e532@linux-foundation.org> <ZYYY1VBKdLHH-Kl3@google.com>
+        Fri, 22 Dec 2023 22:16:56 -0800 (PST)
+From: Dipendra Khadka <kdipendra88@gmail.com>
+To: hdegoede@redhat.com,
+	mchehab@kernel.org,
+	sakari.ailus@linux.intel.com,
+	gregkh@linuxfoundation.org,
+	hpa@redhat.com
+Cc: Dipendra Khadka <kdipendra88@gmail.com>,
+	linux-media@vger.kernel.org,
+	linux-staging@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	linux-kernel-mentees@lists.linuxfoundation.org
+Subject: [PATCH] staging: media/atomisp/pci/base/circbuf/interface: Fix spelling mistake in ia_css_circbuf.h
+Date: Sat, 23 Dec 2023 12:01:47 +0545
+Message-Id: <20231223061647.78669-1-kdipendra88@gmail.com>
+X-Mailer: git-send-email 2.39.2 (Apple Git-143)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 
-On Fri, 22 Dec 2023, Chris Li wrote:
+codespell reported following spelling mistake
+in ia_css_circbuf.h as below:
 
-> On Fri, Dec 22, 2023 at 11:52:08AM -0800, Andrew Morton wrote:
-> > On Thu, 21 Dec 2023 22:25:39 -0800 Chris Li <chrisl@kernel.org> wrote:
-> > 
-> > > We discovered that 1% swap page fault is 100us+ while 50% of
-> > > the swap fault is under 20us.
-> > > 
-> > > Further investigation show that a large portion of the time
-> > > spent in the free_swap_slots() function for the long tail case.
-> > > 
-> > > The percpu cache of swap slots is freed in a batch of 64 entries
-> > > inside free_swap_slots(). These cache entries are accumulated
-> > > from previous page faults, which may not be related to the current
-> > > process.
-> > > 
-> > > Doing the batch free in the page fault handler causes longer
-> > > tail latencies and penalizes the current process.
-> > > 
-> > > Move free_swap_slots() outside of the swapin page fault handler into an
-> > > async work queue to avoid such long tail latencies.
-> > 
-> > This will require a larger amount of total work than the current
-> 
-> Yes, there will be a tiny little bit of extra overhead to schedule the job
-> on to the other work queue.
-> 
+'''
+./base/circbuf/interface/ia_css_circbuf.h:76: poistion ==> position
+'''
+This patch fixes this spelling mistake.
 
-How do you quantify the impact of the delayed swap_entry_free()?
+Signed-off-by: Dipendra Khadka <kdipendra88@gmail.com>
+---
+ .../media/atomisp/pci/base/circbuf/interface/ia_css_circbuf.h   | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Since the free and memcg uncharge are now delayed, is there not the 
-possibility that we stay under memory pressure for longer?  (Assuming at 
-least some users are swapping because of memory pressure.)
+diff --git a/drivers/staging/media/atomisp/pci/base/circbuf/interface/ia_css_circbuf.h b/drivers/staging/media/atomisp/pci/base/circbuf/interface/ia_css_circbuf.h
+index 0579deac5535..e9846951f4ed 100644
+--- a/drivers/staging/media/atomisp/pci/base/circbuf/interface/ia_css_circbuf.h
++++ b/drivers/staging/media/atomisp/pci/base/circbuf/interface/ia_css_circbuf.h
+@@ -73,7 +73,7 @@ uint32_t ia_css_circbuf_pop(
+ 
+ /**
+  * @brief Extract a value out of the circular buffer.
+- * Get a value at an arbitrary poistion in the circular
++ * Get a value at an arbitrary position in the circular
+  * buffer. The user should call "ia_css_circbuf_is_empty()"
+  * to avoid accessing to an empty buffer.
+  *
+-- 
+2.39.2 (Apple Git-143)
 
-I would assume that since the free and uncharge itself is delayed that in 
-the pathological case we'd actually be swapping *more* until the async 
-worker can run.
 
