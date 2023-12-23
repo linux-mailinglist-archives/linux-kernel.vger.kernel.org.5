@@ -1,146 +1,150 @@
-Return-Path: <linux-kernel+bounces-10470-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10471-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 05FE081D4C2
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 16:07:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9533681D4C3
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 16:09:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6588EB223BB
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 15:06:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 43BE51F223B3
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 15:09:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 448FCDF6B;
-	Sat, 23 Dec 2023 15:06:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 345CBDF63;
+	Sat, 23 Dec 2023 15:09:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pFzz9Z9Q"
+	dkim=pass (2048-bit key) header.d=brun.one header.i=@brun.one header.b="VOcFAZgu"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx.dolansoft.org (s2.dolansoft.org [212.51.146.245])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91FBEE569;
-	Sat, 23 Dec 2023 15:06:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C69DC433C7;
-	Sat, 23 Dec 2023 15:06:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703344007;
-	bh=ef2yb2BryqG0/ajOzfHPoXfS6PX968o7B3v+ONmu7jw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=pFzz9Z9QxYZQQYNdKoZzRGTRsoNv9iUNVoOMjgJ3IT5sbGFOvYXe2x0fjom39lQR2
-	 /EZcNV00Wm8GJztcTxdGMEMkue9ri3FGIUNnhXhNp13G1kEPYl0v0zxxnZ8CnJKMTJ
-	 fXqCV7W+gNXRqhoVicIlKt1pn4k2Z69aFs3/u/4mo0tIwMib5xQ2iN4k7HVxqhgtjN
-	 JARH4D/HyHVO+Lu2cTfmCJHg1ncxeqYEcvzFZMeSrN81Ify11+Oer/ka266bZKxlge
-	 Q/h+Dzx4bXzCxA7mHoNt0loajcV+3kGfqQvucWp14StSHYemiGoWOyegTNX4GH0GGY
-	 rLcLGvWpLtqtw==
-Date: Sat, 23 Dec 2023 15:06:42 +0000
-From: Simon Horman <horms@kernel.org>
-To: deepakx.nagaraju@intel.com
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	jdavem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
-	mun.yew.tham@intel.com,
-	Andy Schevchenko <andriy.schevchenko@linux.intel.com>
-Subject: Re: [PATCH v2 4/4] net: ethernet: altera: rename functions and their
- prototypes
-Message-ID: <20231223150642.GE201037@kernel.org>
-References: <20231213071112.18242-6-deepakx.nagaraju@intel.com>
- <20231221134041.27104-1-deepakx.nagaraju@intel.com>
- <20231221134041.27104-5-deepakx.nagaraju@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73AE4DF4D;
+	Sat, 23 Dec 2023 15:09:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=brun.one
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=brun.one
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=brun.one;
+	s=s1; h=MIME-Version:Message-ID:Date:Subject:Cc:To:From:In-Reply-To:
+	References:From:To:Subject:Date:Message-ID:Reply-To;
+	bh=06NBae489p7VTnS5uQHaWu0R4s/Up1uW1AfzBZmeZH0=; b=VOcFAZgukQREzSY/Zq8WZZJmre
+	nXHGkKXNvxM1CNlK+iZag5B8qaMGeUtQW3fVsgWB9JGVOyoCavpZ1vB8mkjfQlUWqw6KP9y184M98
+	tBKFqBChzvrxLuFyk5AElL/8Vz/ZOftB85WzR0806utv0LUGqgiGOgmn6FqcNEBa+zsHVm50WZ+tT
+	V5Y68DAkJbHIXE0WZ/2CEH8ybGECxki90OdoSlgH8PNxHyLoXE18Fd8gzFGJ1wlPlPnH2fK4Jjaop
+	VnrAAPJqZ+g7/Si7jL80Y7yHp3twYJ5y8+holqOQPjbkG4+pGi593G5/P68Toaew1Q+MqLHe/SjvF
+	2Fv8L5xQ==;
+Received: from [212.51.153.89] (helo=blacklava.cluster.local)
+	by mx.dolansoft.org with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96.2)
+	(envelope-from <lorenz@dolansoft.org>)
+	id 1rH3cr-000xdn-1C;
+	Sat, 23 Dec 2023 15:09:17 +0000
+From: Lorenz Brun <lorenz@brun.one>
+To: Stefan Binding <sbinding@opensource.cirrus.com>,
+	James Schulman <james.schulman@cirrus.com>,
+	David Rhodes <david.rhodes@cirrus.com>,
+	Richard Fitzgerald <rf@opensource.cirrus.com>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org,
+	patches@opensource.cirrus.com,
+	linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2] ALSA: hda: cs35l41: Add HP override
+Date: Sat, 23 Dec 2023 16:09:11 +0100
+Message-ID: <20231223150912.3040328-1-lorenz@brun.one>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231221134041.27104-5-deepakx.nagaraju@intel.com>
+Content-Transfer-Encoding: 8bit
+Sender: lorenz@dolansoft.org
 
-On Thu, Dec 21, 2023 at 09:40:41PM +0800, deepakx.nagaraju@intel.com wrote:
-> From: Nagaraju DeepakX <deepakx.nagaraju@intel.com>
-> 
-> Move standard DMA interface for sgdma and msgdma and rename them
-> from tse_private to dma_private.
-> 
-> Signed-off-by: Nagaraju DeepakX <deepakx.nagaraju@intel.com>
-> Reviewed-by: Andy Schevchenko <andriy.schevchenko@linux.intel.com>
+This adds an override for a series of notebooks using a common config
+taken from HP's proprietary Windows driver.
 
-...
+This has been tested on a HP 15-ey0xxxx device (subsystem 103C8A31)
+together with another Realtek quirk and the calibration files from the
+proprietary driver.
 
-> diff --git a/drivers/net/ethernet/altera/altera_tse_main.c b/drivers/net/ethernet/altera/altera_tse_main.c
+Signed-off-by: Lorenz Brun <lorenz@brun.one>
+---
+Changes in v2:
+- Use newly-introduced config table instead of function
+- Change boost cap value from 10uF to 24uF after cross-referencing my
+  sources with the preexisting 103C89C6 entry.
 
-...
+Just noticed that yesterday I sent out another copy of v1 instead of v2,
+sorry about that.
 
-> @@ -252,42 +256,42 @@ static void tse_free_tx_buffer(struct altera_tse_private *priv,
-> 
->  static int alloc_init_skbufs(struct altera_tse_private *priv)
->  {
-> -	unsigned int rx_descs = priv->rx_ring_size;
-> -	unsigned int tx_descs = priv->tx_ring_size;
-> +	struct altera_dma_private *dma = &priv->dma_priv;
-> +	unsigned int rx_descs = dma->rx_ring_size;
-> +	unsigned int tx_descs = dma->tx_ring_size;
->  	int ret = -ENOMEM;
->  	int i;
-> 
->  	/* Create Rx ring buffer */
-> -	priv->rx_ring = kcalloc(rx_descs, sizeof(struct tse_buffer), GFP_KERNEL);
-> -	if (!priv->rx_ring)
-> +	dma->rx_ring = kcalloc(rx_descs, sizeof(struct altera_dma_private), GFP_KERNEL);
+ sound/pci/hda/cs35l41_hda_property.c | 46 ++++++++++++++++++++++++++++
+ 1 file changed, 46 insertions(+)
 
-Hi Nagaraju,
+diff --git a/sound/pci/hda/cs35l41_hda_property.c b/sound/pci/hda/cs35l41_hda_property.c
+index c9eb70290973..c65b106ff1ab 100644
+--- a/sound/pci/hda/cs35l41_hda_property.c
++++ b/sound/pci/hda/cs35l41_hda_property.c
+@@ -42,6 +42,30 @@ static const struct cs35l41_config cs35l41_config_table[] = {
+  * in the ACPI. The Reset GPIO is also valid, so we can use the Reset defined in _DSD.
+  */
+ 	{ "103C89C6", SPI, 2, INTERNAL, { CS35L41_RIGHT, CS35L41_LEFT, 0, 0 }, -1, -1, -1, 1000, 4500, 24 },
++
++	{ "103C8A28", I2C, 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
++	{ "103C8A29", I2C, 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
++	{ "103C8A2A", I2C, 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
++	{ "103C8A2B", I2C, 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
++	{ "103C8A2C", I2C, 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
++	{ "103C8A2D", I2C, 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
++	{ "103C8A2E", I2C, 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
++	{ "103C8A30", I2C, 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
++	{ "103C8A31", I2C, 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
++	{ "103C8BB3", I2C, 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
++	{ "103C8BB4", I2C, 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
++	{ "103C8BDF", I2C, 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
++	{ "103C8BE0", I2C, 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
++	{ "103C8BE1", I2C, 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
++	{ "103C8BE2", I2C, 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
++	{ "103C8BE9", I2C, 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
++	{ "103C8BDD", I2C, 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
++	{ "103C8BDE", I2C, 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
++	{ "103C8BE3", I2C, 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
++	{ "103C8BE5", I2C, 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
++	{ "103C8BE6", I2C, 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
++	{ "103C8B3A", I2C, 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
++
+ 	{ "104312AF", SPI, 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 1000, 4500, 24 },
+ 	{ "10431433", I2C, 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4500, 24 },
+ 	{ "10431463", I2C, 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4500, 24 },
+@@ -374,6 +398,28 @@ static const struct cs35l41_prop_model cs35l41_prop_model_table[] = {
+ 	{ "CSC3551", "10431F12", generic_dsd_config },
+ 	{ "CSC3551", "10431F1F", generic_dsd_config },
+ 	{ "CSC3551", "10431F62", generic_dsd_config },
++	{ "CSC3551", "103C8A28", generic_dsd_config },
++	{ "CSC3551", "103C8A29", generic_dsd_config },
++	{ "CSC3551", "103C8A2A", generic_dsd_config },
++	{ "CSC3551", "103C8A2B", generic_dsd_config },
++	{ "CSC3551", "103C8A2C", generic_dsd_config },
++	{ "CSC3551", "103C8A2D", generic_dsd_config },
++	{ "CSC3551", "103C8A2E", generic_dsd_config },
++	{ "CSC3551", "103C8A30", generic_dsd_config },
++	{ "CSC3551", "103C8A31", generic_dsd_config },
++	{ "CSC3551", "103C8BB3", generic_dsd_config },
++	{ "CSC3551", "103C8BB4", generic_dsd_config },
++	{ "CSC3551", "103C8BDF", generic_dsd_config },
++	{ "CSC3551", "103C8BE0", generic_dsd_config },
++	{ "CSC3551", "103C8BE1", generic_dsd_config },
++	{ "CSC3551", "103C8BE2", generic_dsd_config },
++	{ "CSC3551", "103C8BE9", generic_dsd_config },
++	{ "CSC3551", "103C8BDD", generic_dsd_config },
++	{ "CSC3551", "103C8BDE", generic_dsd_config },
++	{ "CSC3551", "103C8BE3", generic_dsd_config },
++	{ "CSC3551", "103C8BE5", generic_dsd_config },
++	{ "CSC3551", "103C8BE6", generic_dsd_config },
++	{ "CSC3551", "103C8B3A", generic_dsd_config },
+ 	{}
+ };
+ 
+-- 
+2.42.0
 
-Sorry, I didn't notice this until after I sent my previous review
-to this patch.
-
-Is struct altera_dma_private correct on the line above?
-It seems to me that it should, rather, be struct altera_dma_buffer.
-Likewise a few lines below.
-
-Flagged by Smatch.
-
-> +	if (!dma->rx_ring)
->  		goto err_rx_ring;
-> 
->  	/* Create Tx ring buffer */
-> -	priv->tx_ring = kcalloc(tx_descs, sizeof(struct tse_buffer), GFP_KERNEL);
-> -	if (!priv->tx_ring)
-> +	dma->tx_ring = kcalloc(tx_descs, sizeof(struct altera_dma_private), GFP_KERNEL);
-> +	if (!dma->tx_ring)
->  		goto err_tx_ring;
-
-> 
-> -	priv->tx_cons = 0;
-> -	priv->tx_prod = 0;
-> +	dma->tx_cons = 0;
-> +	dma->tx_prod = 0;
-> 
->  	/* Init Rx ring */
->  	for (i = 0; i < rx_descs; i++) {
-> -		ret = tse_init_rx_buffer(priv, &priv->rx_ring[i],
-> -					 priv->rx_dma_buf_sz);
-> +		ret = tse_init_rx_buffer(priv, &priv->dma_priv.rx_ring[i], dma->rx_dma_buf_sz);
->  		if (ret)
->  			goto err_init_rx_buffers;
->  	}
-> 
-> -	priv->rx_cons = 0;
-> -	priv->rx_prod = 0;
-> +	dma->rx_cons = 0;
-> +	dma->rx_prod = 0;
-> 
->  	return 0;
->  err_init_rx_buffers:
->  	while (--i >= 0)
-> -		tse_free_rx_buffer(priv, &priv->rx_ring[i]);
-> -	kfree(priv->tx_ring);
-> +		tse_free_rx_buffer(priv, &priv->dma_priv.rx_ring[i]);
-> +	kfree(dma->tx_ring);
->  err_tx_ring:
-> -	kfree(priv->rx_ring);
-> +	kfree(dma->rx_ring);
->  err_rx_ring:
->  	return ret;
->  }
-
-...
 
