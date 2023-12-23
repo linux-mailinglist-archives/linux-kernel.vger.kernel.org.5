@@ -1,144 +1,191 @@
-Return-Path: <linux-kernel+bounces-10569-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10570-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78E8481D654
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 20:37:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E72ED81D658
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 20:40:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8B6311C20EDA
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 19:37:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9057C1F2205E
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 19:40:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A84815482;
-	Sat, 23 Dec 2023 19:37:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fastmail.org header.i=@fastmail.org header.b="V2mng07B";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="6mCcRbxX"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 521C015EAE;
+	Sat, 23 Dec 2023 19:40:12 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E74CC14A9C
-	for <linux-kernel@vger.kernel.org>; Sat, 23 Dec 2023 19:37:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fastmail.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastmail.org
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-	by mailout.west.internal (Postfix) with ESMTP id C271E3200A27;
-	Sat, 23 Dec 2023 14:37:34 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Sat, 23 Dec 2023 14:37:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.org; h=
-	cc:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1703360254; x=1703446654; bh=uHlIw7kyLa
-	DAsRv1pMPPRSxaAnHaWfVJFKJmyski9UU=; b=V2mng07BQH/wNcyWuYiux2ME+J
-	JhSUJABVWTpSJ7ISYpaFLCra7LN9MpGn2PGWMplaCIM1qXtLJkMGJTrWKK9iNm/k
-	dV00+SWnZOe+6u5qt8JvQfjiYXnI/qYIReFv5W+Qi/6SNMunCyxzGo93zbaBBE37
-	cEuyiNK27ryL5xDi4HorrU6G6iGZUxHFGOdCvbkiG6pysjkJKY5gkrYzov1OPZB7
-	6kyzuL5DRqD5jCZiMRQOz6RKhBPOo8nPMftG/RV2lbj+wtGEJOW6V+/NOC+rJiBM
-	T88I9Ewlh+bx8r0ukia0R/KGNTEbpgQD/eg3UU/2h0D6yLNTw6hMXfZDgfyA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1703360254; x=1703446654; bh=uHlIw7kyLaDAsRv1pMPPRSxaAnHa
-	WfVJFKJmyski9UU=; b=6mCcRbxXjsJ8N8PZUaDtXvA5rebBz4GnTM4/OUd3pFMB
-	bxGqIkKtsEgY+UBJDvukfs+v499HbpLb7LupKxy44FudK3KXFoG7tmz/K5P9E5IQ
-	XTAdPw0XDc+s+TQpfB7imHD8jOOHheJW+RThXImwvGpLrvd1PbuWPC9m+/4IFPhu
-	3kYOXTMJ06PksPbkhlcq1HDWuJsasw9uesAMWwaaE5yE8ybmz+e8XLZSTBj6+SFf
-	08IOzEYQ+QdU3DqNJ+9FZCkqybdfThmQ3zm+55VMksnjKhHpSZdQfHIrGQfb5t/J
-	eunPed33yZUs6eVRv+YpZQaMqbd7cnWs+zzbumXKSg==
-X-ME-Sender: <xms:_TaHZaHTzW29JRhiB4IoXC3QvAxhQmo_5mXUcBYUlDFaMIw-ft6KGQ>
-    <xme:_TaHZbXdJ6uFYN-r_ms_bMdvXov-zQvIQKzggXNIgnksw_GHuGvZsqmlpPm_e1UqS
-    aXpMG39Jdyok2HEEXo>
-X-ME-Received: <xmr:_TaHZUJcZgEq4yNEgWeHpAbyjTOUBdXlarwSID5OPxhb2CY-YMzV8PMOnP-ixENUcSyEEm3U7Hy4pTA3TvnMhZAwyZk>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdduledguddvlecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpehffgfhvfevufffjgfkgggtsehgtderredtredtnecuhfhrohhmpefirghr
-    hicutfhoohhkrghrugcuoehgrghrhihrohhokhgrrhgusehfrghsthhmrghilhdrohhrgh
-    eqnecuggftrfgrthhtvghrnhepieelheehhedtieevudffudfgtdfgveejffdugfetgfet
-    ffduhffhffetvdeigeegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
-    hilhhfrhhomhepghgrrhihrhhoohhkrghrugesfhgrshhtmhgrihhlrdhorhhg
-X-ME-Proxy: <xmx:_TaHZUEANB1WdIiET7IHMXl7yEDGEmQYXyyAUdJWs9czt06SygCoPQ>
-    <xmx:_TaHZQVGjv2XK8pWqpw9h89GzLu8zCJkN-MQ64koe9UNIPDl1sV0Ug>
-    <xmx:_TaHZXPq_iuICaBA0aRzroQ8ZPzFJH0ex5TZk9AgZSKOand46rLtLg>
-    <xmx:_jaHZdguWANxWKjDg5GNLPWpmKuJizO9lnZoBtRN8TCWFH3EsH9TLw>
-Feedback-ID: ifd194980:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 23 Dec 2023 14:37:33 -0500 (EST)
-References: <20231216125303.3404-1-garyrookard@fastmail.org>
- <2023122348-angular-shopper-0b92@gregkh>
- <2023122316-alike-trimmer-b5db@gregkh>
-User-agent: mu4e 1.10.8; emacs 29.1
-From: Gary Rookard <garyrookard@fastmail.org>
-To: Greg KH <gregkh@linuxfoundation.org>
-Cc: philipp.g.hortmann@gmail.com, linux-staging@lists.linux.dev,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/4] staging: rtl8192e: rename variable pHT
-Date: Sat, 23 Dec 2023 14:36:57 -0500
-In-reply-to: <2023122316-alike-trimmer-b5db@gregkh>
-Message-ID: <87a5q07lre.fsf@fastmail.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 828CE14A80;
+	Sat, 23 Dec 2023 19:40:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
+Received: from [192.168.1.104] (31.173.85.112) by msexch01.omp.ru
+ (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Sat, 23 Dec
+ 2023 22:39:51 +0300
+Subject: Re: [PATCH net v2 1/1] net: ravb: Wait for operation mode to be
+ applied
+To: Claudiu <claudiu.beznea@tuxon.dev>, <davem@davemloft.net>,
+	<edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+	<yoshihiro.shimoda.uh@renesas.com>, <wsa+renesas@sang-engineering.com>,
+	<mitsuhiro.kimura.kc@renesas.com>
+CC: <netdev@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, Claudiu Beznea
+	<claudiu.beznea.uj@bp.renesas.com>
+References: <20231222113552.2049088-1-claudiu.beznea.uj@bp.renesas.com>
+ <20231222113552.2049088-2-claudiu.beznea.uj@bp.renesas.com>
+From: Sergey Shtylyov <s.shtylyov@omp.ru>
+Organization: Open Mobile Platform
+Message-ID: <98efc508-c431-2509-5799-96decc124136@omp.ru>
+Date: Sat, 23 Dec 2023 22:39:50 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-	micalg=pgp-sha256; protocol="application/pgp-signature"
+In-Reply-To: <20231222113552.2049088-2-claudiu.beznea.uj@bp.renesas.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
+ (10.188.4.12)
+X-KSE-ServerInfo: msexch01.omp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 12/23/2023 19:22:26
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 59
+X-KSE-AntiSpam-Info: Lua profiles 182322 [Dec 23 2023]
+X-KSE-AntiSpam-Info: Version: 6.1.0.3
+X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
+X-KSE-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a
+X-KSE-AntiSpam-Info: {rep_avail}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: {relay has no DNS name}
+X-KSE-AntiSpam-Info: {SMTP from is not routable}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 31.173.85.112 in (user)
+ b.barracudacentral.org}
+X-KSE-AntiSpam-Info:
+	d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;omp.ru:7.1.1
+X-KSE-AntiSpam-Info: ApMailHostAddress: 31.173.85.112
+X-KSE-AntiSpam-Info: {DNS response errors}
+X-KSE-AntiSpam-Info: Rate: 59
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
+ smtp.mailfrom=omp.ru;dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 12/23/2023 19:28:00
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 12/23/2023 4:14:00 PM
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+On 12/22/23 2:35 PM, Claudiu wrote:
 
+> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> 
+> CSR.OPS bits specify the current operating mode and (according to
+> documentation) they are updated by HW when the operating mode change
+> request is processed. To comply with this check CSR.OPS before proceeding.
+> 
+> Commit introduces ravb_set_opmode() that does all the necessities for
+> setting the operating mode (set DMA.CCC and wait for CSR.OPS) and call it
+> where needed. This should comply with all the HW manuals requirements as
+> different manual variants specify that different modes need to be checked
+> in CSR.OPS when setting DMA.CCC.
+> 
+> Fixes: c156633f1353 ("Renesas Ethernet AVB driver proper")
+> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> ---
+>  drivers/net/ethernet/renesas/ravb_main.c | 52 ++++++++++++++----------
+>  1 file changed, 31 insertions(+), 21 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
+> index 664eda4b5a11..ae99d035a3b6 100644
+> --- a/drivers/net/ethernet/renesas/ravb_main.c
+> +++ b/drivers/net/ethernet/renesas/ravb_main.c
+> @@ -66,14 +66,15 @@ int ravb_wait(struct net_device *ndev, enum ravb_reg reg, u32 mask, u32 value)
+>  	return -ETIMEDOUT;
+>  }
+>  
+> -static int ravb_config(struct net_device *ndev)
+> +static int ravb_set_opmode(struct net_device *ndev, u32 opmode)
 
-Greg KH <gregkh@linuxfoundation.org> writes:
+   Since you pass the complete CCC register value below, you should
+rather call the function ravb_set_ccc() and call the parameter opmode
+ccc.
 
-> On Sat, Dec 23, 2023 at 02:07:10PM +0100, Greg KH wrote:
->> On Sat, Dec 16, 2023 at 07:52:59AM -0500, Gary Rookard wrote:
->> > Hi,
->> >=20
->> > This patch series renames (4) different variables with
->> > checkpatch coding style issue Avoid CamelCase.
->> >=20
->> > (resubmittals)
->>=20
->> Does not apply to my tree :(
->>=20
->> Please rebase against the correct branch?
->
-> Oh wait, this is an old one...
+>  {
+> +	u32 csr_opmode = 1UL << opmode;
 
-=2D-
-Okay
+   Please use the correct expression, 1U << (ccc & CCC_OPC) instead.
+And I'd suggest calling the variable csr_ops or just ops.
 
-Regards,
-Gary
-=2D-=20
-Sent with my mu4e on Void Linux.
+>  	int error;
+>  
+> -	/* Set config mode */
+> -	ravb_modify(ndev, CCC, CCC_OPC, CCC_OPC_CONFIG);
+> -	/* Check if the operating mode is changed to the config mode */
+> -	error = ravb_wait(ndev, CSR, CSR_OPS, CSR_OPS_CONFIG);
+> +	/* Set operating mode */
+> +	ravb_modify(ndev, CCC, CCC_OPC, opmode);
+> +	/* Check if the operating mode is changed to the requested one */
+> +	error = ravb_wait(ndev, CSR, CSR_OPS, csr_opmode);
+>  	if (error)
+>  		netdev_err(ndev, "failed to switch device to config mode\n");
 
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
+   s/config/requested/? Or just print out that mode...
 
------BEGIN PGP SIGNATURE-----
+[...]
+> @@ -2560,21 +2559,23 @@ static int ravb_set_gti(struct net_device *ndev)
+>  	return 0;
+>  }
+>  
+> -static void ravb_set_config_mode(struct net_device *ndev)
+> +static int ravb_set_config_mode(struct net_device *ndev)
+>  {
+>  	struct ravb_private *priv = netdev_priv(ndev);
+>  	const struct ravb_hw_info *info = priv->info;
+> +	int error;
+>  
+>  	if (info->gptp) {
+> -		ravb_modify(ndev, CCC, CCC_OPC, CCC_OPC_CONFIG);
+> +		error = ravb_set_opmode(ndev, CCC_OPC_CONFIG);
 
-iQJNBAEBCAA3FiEE92Mpdr0+Cqw+uCNR5J46Hep3K4QFAmWHNxUZHGdhcnlyb29r
-YXJkQGZhc3RtYWlsLm9yZwAKCRDknjod6ncrhMbmD/9Bkz4+rnG/+l/tUVstk8KR
-Mi3fouCFXe/yllVH+VNd4D29Jl1nJaQGqvZ3cf1Bvbk9MvU4hu+OEJgydjpTBwf/
-0Itm7yN2+GMWpfxbVCOyPsiKxNJ4xuloK7iMJgzDzvd1uxfBCmkJBrL7gWmEH54N
-RZn0g/OSRelUiJLNFxNI9IOLqLWcnngIQAaY+L9FxIg8bpAe40dh4sOjQ59bkdBe
-/xNGyUSc2wOaF4P348Cetz8c3kzHrkqPkylma7nulAVELJiP2e72huoBFO8u5ivP
-nlBBWRazsGgtmRGS9AKzsxYOpCU8mhsBYu5VQmET0dw+I56BA+qDnHb0FfWcvGeE
-VTS9Be9cAQBxZTTG/8DlEQLqn2WdYTXn5jVxdtFiaNj6dttugseFD/0PYt7KGqG0
-qHxGU0q3q3eztcyqxGcTIpyWLofaFiKVHmsZwb3Ua7c0iItKUXbpx1Ypc0coGfou
-tEdQPFIctg1vd+nkqam75oiFGYlhZgwOPUvoyjJIka2NAQ8UnuyDPDlOoT+xKb1F
-BTQgAnJb3ghj4Ffd/npIk47aaucD7+sUSGwsobo4a9hxQ9cxrjon+sxkGJZr9/pR
-/ol0ZC8Hr9Td9nCmQlaONO7PbwyKWm5RnN1Ank03G2tkf0qi7f2Med/wHF+moGsM
-VqwO7s/dA8aqLyVxSEwzvQ==
-=pcMn
------END PGP SIGNATURE-----
---=-=-=--
+   Don't we need to return on error here?
+
+>  		/* Set CSEL value */
+>  		ravb_modify(ndev, CCC, CCC_CSEL, CCC_CSEL_HPB);
+>  	} else if (info->ccc_gac) {
+> -		ravb_modify(ndev, CCC, CCC_OPC, CCC_OPC_CONFIG |
+> -			    CCC_GAC | CCC_CSEL_HPB);
+> +		error = ravb_set_opmode(ndev, CCC_OPC_CONFIG | CCC_GAC | CCC_CSEL_HPB);
+
+   See, you pass more than just CCC.OPC value here -- need to mask it out
+above...
+
+[...]
+> @@ -2917,8 +2921,9 @@ static void ravb_remove(struct platform_device *pdev)
+>  	dma_free_coherent(ndev->dev.parent, priv->desc_bat_size, priv->desc_bat,
+>  			  priv->desc_bat_dma);
+>  
+> -	/* Set reset mode */
+> -	ravb_write(ndev, CCC_OPC_RESET, CCC);
+> +	error = ravb_set_opmode(ndev, CCC_OPC_RESET);
+> +	if (error)
+> +		netdev_err(ndev, "Failed to reset ndev\n");
+
+   ravb_set_opmode() will have complained already at this point...
+
+[...]
+
+MBR, Sergey
 
