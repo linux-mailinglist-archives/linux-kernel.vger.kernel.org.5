@@ -1,76 +1,134 @@
-Return-Path: <linux-kernel+bounces-10279-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10280-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB63281D212
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 05:05:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D365F81D214
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 05:10:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 74185B22680
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 04:05:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 856F91F22AE1
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 04:10:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C87015BD;
-	Sat, 23 Dec 2023 04:05:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B37BD17D4;
+	Sat, 23 Dec 2023 04:10:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="j3WbecYv"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out203-205-251-53.mail.qq.com (out203-205-251-53.mail.qq.com [203.205.251.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EF541370
-	for <linux-kernel@vger.kernel.org>; Sat, 23 Dec 2023 04:05:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-35fc8389a58so24023525ab.3
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 20:05:05 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703304304; x=1703909104;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qgkqyIPTwUfZQIgbFrL2XfsxK1c5xluneazDPVhgfd0=;
-        b=P+G/NBv/sDBf81zr3DvciQcKxHbcbolvH+khpdD23Z1iMajyZ+bfxEUwbj8yOg5Qk0
-         sI7KCELlwj7hnms1JyNx/oiGYopMR+wwtKejCRYLK2yANTj8pfanZrwZ03MHxSolyy9N
-         A7rKYlqpBA3VowCe7Ysx6dXIAROo3YBA5H/30oNFcte/qhtOGc5S2xn68p8buwwXOR4N
-         2kXWrLRoxdUMByscH3FqRwQWQPwO8uUvIFBXAthcb7ATzHpsBmOSMH2CZ0m5pcgV+iej
-         bQAKftMTUwNfdR4bI0MukhYyX5qpk7n+0FW4gNLNZwNyXp+XYIztKpQXv9ZcbTpYwLsv
-         jDJA==
-X-Gm-Message-State: AOJu0YwG72ejnJ4M7GI3ZvY2P8Ir6LcS0EanVS/oVA1tJqyF8P+yl+oq
-	27FqG556ZObqlwKVcWOaqEBlFCt6KCbZZwzu02fasvdB9CdU
-X-Google-Smtp-Source: AGHT+IHpkHpecAXIV34IOPmHnLSWUtgW6ymcugZU1BaIOoOLxK0ooYS8Os39qo6psNf9Sw7tqDEGQuh/kBr4r/En9NtQDnK/zgYA
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 557841368;
+	Sat, 23 Dec 2023 04:10:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1703304329; bh=9xIgd02ObOuj54s7xcHHTnWTHw+ZVQIeUoYaZEUZRtw=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=j3WbecYv+HgFEFXRYnnKihyWjtqOgkwwf45d43gtPTsiQ2M6n+jnKaEFieRGztFH0
+	 SPmxaWpwj5VOx4XxB85XGYtNmJC3XzWYWooRh2YZiLu5po/D/aze8CiB9OC4zg1/1C
+	 SpIIAFQ7AzEyeyzdq7VkBI6aDqd4Ym78Sm/KCT4g=
+Received: from pek-lxu-l1.wrs.com ([111.198.225.215])
+	by newxmesmtplogicsvrszc5-0.qq.com (NewEsmtp) with SMTP
+	id 15B0E030; Sat, 23 Dec 2023 12:05:27 +0800
+X-QQ-mid: xmsmtpt1703304327t3rpz07u0
+Message-ID: <tencent_C789B86EF5AED70CAF27CF06EF52C1C66106@qq.com>
+X-QQ-XMAILINFO: MQ+wLuVvI2LQ56/bDmN3iU/naJcSLOFboafrVjtuRh941spThL5B2uJoSzK3G9
+	 E/rQ0Ia7ACu8X2B71OeOkGnwblrpuiOVWee9takTREre8XbtSWRozwp0KWC2fbl7qFK6kgW5rzgj
+	 FyDWFiorRCtSaJ1kZwHxJfqkD4ETkNirZMX8J3GtMZyQb8iK34lj+S6gJcDtQO2Yx20gqIXs8pZs
+	 WLgvQ08w4m3Ey0T7G30q3K8+R/P0A3r9pDpxhgjq/fbCz9KLYFXh84jEjztGvq34OavZ7pPEn28W
+	 QLGZpjsyYVPXJcT1Qd48DLNhlR/s1IsV3hksZnG7tB2sAJYE8mVZ/IzbTKttOFQpNVD9I2+HKnyq
+	 h2XFdmqZrCL30snllUajwlToNB0r9LmiCVINnviQwdgacPFz7ibxKu7ihFKhv5X4k8E6z3isVCGR
+	 nMzyJv/ShTF8V1JExLzJmNZVO2elVa/su5W2TjMFxUakmjrfMOA/p+VJU3XMyhVgjy49mDx8ThVK
+	 qPmxNbBxfEHXwkTDFmnzYIb/42NierzHg6A5gjMgojwzv9ftHFHBhXjx1UTDsZNreU1S7X1J5oF0
+	 MjeI6c2iGnCueVDUMKhuizQJ4GlDqrwjxwYk1Kddx+DLoK4vLsULR2UqirasYM+M1vhB+l7D3MOs
+	 ZUzQMtAwa6gIZRfmoRyf9r/JfQ4R2XNOvY75mg/mOuFUWSeKQknZz41ufY2MG+Z6crlQ56i50nGg
+	 +SRy2mQWAROpQqttocnfYdJfoKxfXgkpXuF3TAoKfTEZ0gZKlzBtkMhH38BSt0PK2FvH1L6yf3q+
+	 8jRbLRtXEwYyYUPgY3babOIvdsvGSFPkUPGAJdM2ea89ksl97+I/tHNCI8xdQEgvGZVROFxXf2sP
+	 Oo80f/3qBRDNLMkVAuqB6ufF0KSxXPH6lb3mUd2aImqOn8QcQaBxl/wAYjDv/vEQ==
+X-QQ-XMRINFO: Nq+8W0+stu50PRdwbJxPCL0=
+From: Edward Adam Davis <eadavis@qq.com>
+To: syzbot+f987ceaddc6bcc334cde@syzkaller.appspotmail.com
+Cc: almaz.alexandrovich@paragon-software.com,
+	linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	ntfs3@lists.linux.dev,
+	syzkaller-bugs@googlegroups.com
+Subject: [PATCH] fs/ntfs3: fix warning in ntfs_load_attr_list
+Date: Sat, 23 Dec 2023 12:05:27 +0800
+X-OQ-MSGID: <20231223040527.1940850-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <0000000000006ee8fe060d16e2a5@google.com>
+References: <0000000000006ee8fe060d16e2a5@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1d0c:b0:35f:d4dc:1b1e with SMTP id
- i12-20020a056e021d0c00b0035fd4dc1b1emr355736ila.5.1703304304560; Fri, 22 Dec
- 2023 20:05:04 -0800 (PST)
-Date: Fri, 22 Dec 2023 20:05:04 -0800
-In-Reply-To: <tencent_8FCF968DD725F80DE712085DC4DDAD993B07@qq.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000049187060d2570de@google.com>
-Subject: Re: [syzbot] [ntfs3?] WARNING: kmalloc bug in ntfs_load_attr_list
-From: syzbot <syzbot+f987ceaddc6bcc334cde@syzkaller.appspotmail.com>
-To: eadavis@qq.com, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-Hello,
+kvmalloc needs to check __GFP_NOWARN, so this flag should be passed before
+applying for memory.
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
-
+Fixes: fc471e39e38f ("fs/ntfs3: Use kvmalloc instead of kmalloc(... __GFP_NOWARN)")
 Reported-and-tested-by: syzbot+f987ceaddc6bcc334cde@syzkaller.appspotmail.com
+Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+---
+ fs/ntfs3/attrlist.c | 4 ++--
+ fs/ntfs3/bitmap.c   | 2 +-
+ fs/ntfs3/super.c    | 2 +-
+ 3 files changed, 4 insertions(+), 4 deletions(-)
 
-Tested on:
+diff --git a/fs/ntfs3/attrlist.c b/fs/ntfs3/attrlist.c
+index 7c01735d1219..e631ecc1b9df 100644
+--- a/fs/ntfs3/attrlist.c
++++ b/fs/ntfs3/attrlist.c
+@@ -53,7 +53,7 @@ int ntfs_load_attr_list(struct ntfs_inode *ni, struct ATTRIB *attr)
+ 	if (!attr->non_res) {
+ 		lsize = le32_to_cpu(attr->res.data_size);
+ 		/* attr is resident: lsize < record_size (1K or 4K) */
+-		le = kvmalloc(al_aligned(lsize), GFP_KERNEL);
++		le = kvmalloc(al_aligned(lsize), GFP_KERNEL | __GFP_NOWARN);
+ 		if (!le) {
+ 			err = -ENOMEM;
+ 			goto out;
+@@ -91,7 +91,7 @@ int ntfs_load_attr_list(struct ntfs_inode *ni, struct ATTRIB *attr)
+ 		 * the result is 16M bytes per attribute list.
+ 		 * Use kvmalloc to allocate in range [several Kbytes - dozen Mbytes]
+ 		 */
+-		le = kvmalloc(al_aligned(lsize), GFP_KERNEL);
++		le = kvmalloc(al_aligned(lsize), GFP_KERNEL | __GFP_NOWARN);
+ 		if (!le) {
+ 			err = -ENOMEM;
+ 			goto out;
+diff --git a/fs/ntfs3/bitmap.c b/fs/ntfs3/bitmap.c
+index 63f14a0232f6..49e660be9a0f 100644
+--- a/fs/ntfs3/bitmap.c
++++ b/fs/ntfs3/bitmap.c
+@@ -660,7 +660,7 @@ int wnd_init(struct wnd_bitmap *wnd, struct super_block *sb, size_t nbits)
+ 		wnd->bits_last = wbits;
+ 
+ 	wnd->free_bits =
+-		kvmalloc_array(wnd->nwnd, sizeof(u16), GFP_KERNEL | __GFP_ZERO);
++		kvmalloc_array(wnd->nwnd, sizeof(u16), GFP_KERNEL | __GFP_ZERO | __GFP_NOWARN);
+ 
+ 	if (!wnd->free_bits)
+ 		return -ENOMEM;
+diff --git a/fs/ntfs3/super.c b/fs/ntfs3/super.c
+index 9153dffde950..87778834aa9c 100644
+--- a/fs/ntfs3/super.c
++++ b/fs/ntfs3/super.c
+@@ -1413,7 +1413,7 @@ static int ntfs_fill_super(struct super_block *sb, struct fs_context *fc)
+ 	}
+ 
+ 	bytes = inode->i_size;
+-	sbi->def_table = t = kvmalloc(bytes, GFP_KERNEL);
++	sbi->def_table = t = kvmalloc(bytes, GFP_KERNEL | __GFP_NOWARN);
+ 	if (!t) {
+ 		err = -ENOMEM;
+ 		goto put_inode_out;
+-- 
+2.43.0
 
-commit:         9a6b294a afs: Fix use-after-free due to get/remove rac..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=12708809e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e5751b3a2226135d
-dashboard link: https://syzkaller.appspot.com/bug?extid=f987ceaddc6bcc334cde
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=14d6b376e80000
-
-Note: testing is done by a robot and is best-effort only.
 
