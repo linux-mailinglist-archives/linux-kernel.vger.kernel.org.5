@@ -1,149 +1,159 @@
-Return-Path: <linux-kernel+bounces-10377-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10378-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB09881D381
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 11:06:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 378B981D383
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 11:26:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6A577B21BF1
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 10:06:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DB2D01F22698
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 10:26:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EEC7CA5C;
-	Sat, 23 Dec 2023 10:06:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 378FDCA5F;
+	Sat, 23 Dec 2023 10:25:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=maquefel.me header.i=@maquefel.me header.b="KsFZZxp+"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="WyLXQcmu"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from forward501a.mail.yandex.net (forward501a.mail.yandex.net [178.154.239.81])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D30BECA48
-	for <linux-kernel@vger.kernel.org>; Sat, 23 Dec 2023 10:06:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=maquefel.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=maquefel.me
-Received: from mail-nwsmtp-smtp-production-main-54.iva.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-54.iva.yp-c.yandex.net [IPv6:2a02:6b8:c0c:429:0:640:5a1a:0])
-	by forward501a.mail.yandex.net (Yandex) with ESMTP id DA6516143E;
-	Sat, 23 Dec 2023 13:06:06 +0300 (MSK)
-Received: by mail-nwsmtp-smtp-production-main-54.iva.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id 36N4Fpsm5Cg0-WtRmrpap;
-	Sat, 23 Dec 2023 13:06:05 +0300
-X-Yandex-Fwd: 1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maquefel.me; s=mail;
-	t=1703325965; bh=A3ycyWTBajQnJsjcF9WYkiyN59WPkKLViyNv/IMfH38=;
-	h=References:Date:In-Reply-To:Cc:To:From:Subject:Message-ID;
-	b=KsFZZxp+DAMTBwZiy71wXED/drennhqFuea/IulxHyHM07TdynMaM07WDf9/wN8Lt
-	 I4YzEcZk7kQfGL4GKktlFrIPzhX2lTIjLsK6SathnhuhrPorwGqMKGkEglqvr0w89H
-	 OH7zHZ62oleV38BQJRHUbcxSERVVR8bRYTolqm/g=
-Authentication-Results: mail-nwsmtp-smtp-production-main-54.iva.yp-c.yandex.net; dkim=pass header.i=@maquefel.me
-Message-ID: <e0be87889c7d2a79e0d559ffcf9b08888f994b08.camel@maquefel.me>
-Subject: Re: [PATCH v6 08/40] soc: Add SoC driver for Cirrus ep93xx
-From: Nikita Shubin <nikita.shubin@maquefel.me>
-To: Andy Shevchenko <andriy.shevchenko@intel.com>
-Cc: Conor Dooley <conor.dooley@microchip.com>, Ulf Hansson
- <ulf.hansson@linaro.org>, Joel Stanley <joel@jms.id.au>, Walker Chen
- <walker.chen@starfivetech.com>, Jonathan =?ISO-8859-1?Q?Neusch=E4fer?=
- <j.neuschaefer@gmx.net>, Huisong Li <lihuisong@huawei.com>, Arnd Bergmann
- <arnd@arndb.de>, Wei Xu <xuwei5@hisilicon.com>, Emil Renner Berthing
- <kernel@esmil.dk>, Linus Walleij <linus.walleij@linaro.org>, Alexander
- Sverdlin <alexander.sverdlin@gmail.com>, Hal Feng
- <hal.feng@starfivetech.com>,  linux-kernel@vger.kernel.org
-Date: Sat, 23 Dec 2023 13:06:04 +0300
-In-Reply-To: <ZXn51mcYslZzQ3y-@smile.fi.intel.com>
-References: <20231212-ep93xx-v6-0-c307b8ac9aa8@maquefel.me>
-	 <20231212-ep93xx-v6-8-c307b8ac9aa8@maquefel.me>
-	 <ZXn51mcYslZzQ3y-@smile.fi.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD7A8CA48
+	for <linux-kernel@vger.kernel.org>; Sat, 23 Dec 2023 10:25:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1703327150;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=GoKXir54x/dEEkfvtrxnT2ENR9sxqwMkgds0ZkJeGss=;
+	b=WyLXQcmuTzI1dFF62jzoUhJ+Jebx5dW9UB6wWkGhRwWZcWKAYhuRafT5DWiXi1WVcL/DRm
+	VgYcRawodkKb4I49zmQyr+SRZEXbO6jLYVyjt5v57kjNZ5fKkW9dOst+yOiGK9crY1kb9F
+	vgIaFv89NSYJhdXvn2FmSPkmzGJE+TY=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-256-Q2UZvw7FNkO4pTUz2Audew-1; Sat, 23 Dec 2023 05:25:49 -0500
+X-MC-Unique: Q2UZvw7FNkO4pTUz2Audew-1
+Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-a23365478e5so124335866b.3
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Dec 2023 02:25:48 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703327147; x=1703931947;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GoKXir54x/dEEkfvtrxnT2ENR9sxqwMkgds0ZkJeGss=;
+        b=ZidfPu/Aa+p1EjWxmC1iKbMaPO0HWOXijF22aJl8m5tZl07e4lVE0ad17EAcmV77p2
+         Hd3FFcuabVlCE46DC765p7P5cmAenBh0KmC9PhOyiGkSEPXeUyV+RT/AWvhwO4DwXuO/
+         FpNlRvA1iDpS4fp+QNmgzO1PQcVZi3B8FeDrMAZMQPBuc+ezyJz1Lk5FULNJAVp2wAOE
+         5yUsFoBu7MoqwPEjW41SdWZFb+omhgZ4cpNe7jJmqdWXOIL60Ue9RRG7yJk7MqtfHrIg
+         +vi7sxuMRQ5x/sKgesCC2mq0UN1YSLgkPHed9LxZYSaQlzuHAnsi6SjrFRQysNhvbCPd
+         i0kQ==
+X-Gm-Message-State: AOJu0YyN56jcIuRl1Bv2/a6AxGkQ23f7CcroRZZp4BASJPD5ZnzOXMjV
+	7XAsUiTihHguiqcLRcq97FkErsKN4KjhBpHUc8D8HgCMkYm9mWCK7jpuhUy/yUFT5IfrLUIj1MP
+	IcasGvCqy5iaWZEc6LB2srzG3jo4an1h8pgAnT02g
+X-Received: by 2002:a17:906:48:b0:a26:9734:d074 with SMTP id 8-20020a170906004800b00a269734d074mr1256583ejg.21.1703327147465;
+        Sat, 23 Dec 2023 02:25:47 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFfYBntxU/LEH18ZD4tGgJi1jr2AFoUSUHqm44HH3HbItCx3zDGERqgnKjQD0P1rx5/Ye1TzA==
+X-Received: by 2002:a17:906:48:b0:a26:9734:d074 with SMTP id 8-20020a170906004800b00a269734d074mr1256569ejg.21.1703327146994;
+        Sat, 23 Dec 2023 02:25:46 -0800 (PST)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id ex17-20020a170907955100b00a269fa0d305sm2923466ejc.8.2023.12.23.02.25.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 23 Dec 2023 02:25:46 -0800 (PST)
+Message-ID: <e7a46035-9c5e-495d-8f20-73dca4fec068@redhat.com>
+Date: Sat, 23 Dec 2023 11:25:45 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] staging: media: atomisp: pci: Fix spelling mistake in
+ ia_css_acc_types.h
+To: Randy Dunlap <rdunlap@infradead.org>,
+ Dipendra Khadka <kdipendra88@gmail.com>, mchehab@kernel.org,
+ sakari.ailus@linux.intel.com, gregkh@linuxfoundation.org, hpa@redhat.com
+Cc: linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+ linux-kernel@vger.kernel.org, linux-kernel-mentees@lists.linuxfoundation.org
+References: <20231223051108.74711-1-kdipendra88@gmail.com>
+ <d1c18155-9c8e-4164-a2bf-5eab3d42995d@infradead.org>
+Content-Language: en-US, nl
+From: Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <d1c18155-9c8e-4164-a2bf-5eab3d42995d@infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, 2023-12-13 at 20:37 +0200, Andy Shevchenko wrote:
-> On Tue, Dec 12, 2023 at 11:20:25AM +0300, Nikita Shubin wrote:
-> > Add an SoC driver for the ep93xx. Currently there is only one thing
-> > not fitting into any other framework, and that is the swlock
-> > setting.
->=20
-> ...
->=20
-> > +/*
-> > + * SoC driver for Cirrus EP93xx chips.
-> > + * Copyright (C) 2022 Nikita Shubin <nikita.shubin@maquefel.me>
-> > + *
-> > + * Based on a rewrite of arch/arm/mach-ep93xx/core.c
-> > + * Copyright (C) 2006 Lennert Buytenhek <buytenh@wantstofly.org>
-> > + * Copyright (C) 2007 Herbert Valerio Riedel <hvr@gnu.org>
-> > + *
-> > + * Thanks go to Michael Burian and Ray Lehtiniemi for their key
-> > + * role in the ep93xx Linux community
->=20
-> Missing period.
->=20
-> > + */
->=20
-> ...
->=20
-> > +#include <linux/bits.h>
-> > +#include <linux/init.h>
-> > +#include <linux/mfd/syscon.h>
-> > +#include <linux/of.h>
-> > +#include <linux/of_fdt.h>
-> > +#include <linux/platform_device.h>
->=20
-> Isn't this an incorrect header and should be auxiliary one?
+Hi,
 
-This is still a platform driver, pinctrl, clk and reset are auxiliary
-ones.
+On 12/23/23 06:18, Randy Dunlap wrote:
+> Hi Dipendra,
+> 
+> On 12/22/23 21:11, Dipendra Khadka wrote:
+>> codespell reported spelling mistakes in
+>> ia_css_acc_types.h as below:
+>>
+>> '''
+>> ia_css_acc_types.h:87: cummulative ==> cumulative
+>> ia_css_acc_types.h:411: descibes ==> describes
+>> '''
+>>
+>> This patch fixes these spelling mistakes.
+>>
+>> Signed-off-by: Dipendra Khadka <kdipendra88@gmail.com>
+> 
+> This patch is an improvement so it could be merged as is IMO.
+> But...
+> 
+>> ---
+>> v2:
+>>  - Previously only corrected spelling  mistake reported by checkpatch.pl.
+>>  - All spelling mistakes reported by codespell are fixed.
+>> v1: https://lore.kernel.org/lkml/20231222200350.2024-1-kdipendra88@gmail.com/
+>>
+>>  drivers/staging/media/atomisp/pci/ia_css_acc_types.h | 4 ++--
+>>  1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/staging/media/atomisp/pci/ia_css_acc_types.h b/drivers/staging/media/atomisp/pci/ia_css_acc_types.h
+>> index d6e52b4971d6..1dc2085ecd61 100644
+>> --- a/drivers/staging/media/atomisp/pci/ia_css_acc_types.h
+>> +++ b/drivers/staging/media/atomisp/pci/ia_css_acc_types.h
+>> @@ -84,7 +84,7 @@ struct ia_css_blob_info {
+>>  		memory_offsets;  /** offset wrt hdr in bytes */
+>>  	u32 prog_name_offset;  /** offset wrt hdr in bytes */
+>>  	u32 size;			/** Size of blob */
+>> -	u32 padding_size;	/** total cummulative of bytes added due to section alignment */
+>> +	u32 padding_size;	/** total cumulative of bytes added due to section alignment */
+> 
+> I apologize for not looking at your v1 patch carefully.
+> The comment above would be much better as
+> 
+> 				/** total accumulation of bytes added due to section alignment */
 
->=20
-> > +#include <linux/regmap.h>
-> > +#include <linux/slab.h>
->=20
-> + spinlock.h ?
->=20
-> But since it's a new code, why not cleanup.h?
->=20
-> > +#include <linux/sys_soc.h>
->=20
-> ...
->=20
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0enum ep93xx_soc_model model =
-=3D
-> > (int)(uintptr_t)of_device_get_match_data(&pdev->dev);
->=20
-> int?
->=20
-> Maybe
->=20
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0strict device *dev =3D &p=
-dev->dev;
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0enum ep93xx_soc_model mod=
-el;
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0...
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0model =3D (enum
-> ep93xx_soc_model)(uintptr_t)device_get_match_data(dev);
->=20
-> ?
->=20
-> ...
->=20
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct device *dev =3D &pdev=
-->dev;
->=20
-> Ah you even have this already!
->=20
-> ...
->=20
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0dev_info(dev, "EP93xx SoC re=
-vision %s\n", attrs->revision);
->=20
-> Hmm... Is this message anyhow useful?
->=20
+I agree that that is better. Dipendra can you please send a v3
+using the new text suggested by Randy ?
 
-Can we keep it please ? It makes us happy when we see it in logs for
-historical reasons - it's been there since 2.4.
+Regards,
+
+Hans
+
+
+
+>>  	u32 icache_source;	/** Position of icache in blob */
+>>  	u32 icache_size;	/** Size of icache section */
+>>  	u32 icache_padding;/** bytes added due to icache section alignment */
+>> @@ -408,7 +408,7 @@ struct ia_css_acc_sp {
+>>  };
+>>  
+>>  /* Acceleration firmware descriptor.
+>> -  * This descriptor descibes either SP code (stand-alone), or
+>> +  * This descriptor describes either SP code (stand-alone), or
+>>    * ISP code (a separate pipeline stage).
+>>    */
+>>  struct ia_css_acc_fw_hdr {
+> 
+
 
