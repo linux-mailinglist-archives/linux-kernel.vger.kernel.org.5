@@ -1,305 +1,280 @@
-Return-Path: <linux-kernel+bounces-10157-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10158-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2318B81D0F3
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 02:23:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4EACC81D0F7
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 02:33:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 46D5B1C22712
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 01:23:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 722471C22623
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 01:33:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97CA2ECF;
-	Sat, 23 Dec 2023 01:23:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25E391368;
+	Sat, 23 Dec 2023 01:33:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="AWF1qJFX"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="H2JJTtJh"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-qk1-f181.google.com (mail-qk1-f181.google.com [209.85.222.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E041FEC2
-	for <linux-kernel@vger.kernel.org>; Sat, 23 Dec 2023 01:23:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-qk1-f181.google.com with SMTP id af79cd13be357-78117c8b6ccso155382585a.0
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 17:23:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1703294618; x=1703899418; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Ol6F17s5HBzN1N/Ub4j2HKKOTRquCJcTyGe14n9oFhY=;
-        b=AWF1qJFXGGzkHdvxWZs3UNCxyQ760H2q64EQ5LXy8lm/4uvCeDI8eXBqQ2A6si96rq
-         K4BwQ3dbTCV3kAc1TGtZBCqgSwJWwBE38uA4vqoCeYYXZAt+k0eia92JI0T20LFPxl4p
-         ugJJp0oLi1t2IjCLqmiZuQeIrAOqHuYhq/6ScnM4ifpnh93SDJHreABg4tqqCJPFbQyk
-         FHwZGfYRaYioIDCA4Pr2vVbVCmHh2xYXpuDyP8H6Qbix+8nSTKNCXsCPWX5CYhPuFKYS
-         omqLfVgvdq4glfDCHflJFvIcEDLeMuZpmTNQ2Rr0IiM9wD6u0JAAzF5fuAYpXdEuhuUW
-         mqpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703294618; x=1703899418;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Ol6F17s5HBzN1N/Ub4j2HKKOTRquCJcTyGe14n9oFhY=;
-        b=oYrQou7Hyb6QsUTxOOa39avNYM95YZ2ibubfr3viFQEpyPji9nRPwJ+kLqyi8Dy9Wm
-         FPumgTmWRUTKyOHASwAxkHkhLHB53NIert2kwF5li5pl9bDsLjhbJaRFdzpXGPGhANZi
-         zdGBSReXC80PgZR7iF+JRCZC6U7bMgVt1KecU4GYNva441KIsmqDTb9qyfe/MAsYWG/x
-         zu7l33h6DtoRzRFbCGOOe1LTX0IVWurQmcK3B9VJcKXc/5FU/3aYOpAjp+RYa914Bi72
-         4Rq+5vBUxk6OcdyR2GxLwdtksi1+rVe2tLcE4SgNgQxy4cu4kQB/cCsI/0tyWgx4dfOu
-         Io2g==
-X-Gm-Message-State: AOJu0YyDj3t5rXe1WcRPOFwmVI9WW/g/so/K/+GpwP1mXeS7+M9sCpOq
-	SK60AbaCsDaat1gan3MxPbw1wzlQ31CM7OA6FTBy2R9rUn3d
-X-Google-Smtp-Source: AGHT+IHdoEKOJBo1f1Wlnf+MZivYuOxAH1/fQuZG8OdFTEkDHqeJLkyY9PJXkiAt4IkOyFmswuc5cBn3ygqrr+R6kLI=
-X-Received: by 2002:a05:620a:c19:b0:781:27bc:d0b9 with SMTP id
- l25-20020a05620a0c1900b0078127bcd0b9mr2435572qki.41.1703294617781; Fri, 22
- Dec 2023 17:23:37 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66ABBEC2;
+	Sat, 23 Dec 2023 01:33:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3538C433C7;
+	Sat, 23 Dec 2023 01:33:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703295215;
+	bh=s0BlMXbM0YXaay/9qOTSwSxk63kUVEMXfbyWTdHeVp0=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=H2JJTtJhEcVnJgOfNVmLn4kJskF8GEJvD5F5tBPh2HnKRTMZm5+/uAcprVBhqGZiJ
+	 paOXRdMftsNWM2MRT3jaNnO2YaG0iupgnUAY0xQigEcTH4B+vU1is4YNfA8jPNrsiu
+	 8BGnb9SaYJV5ZNHS1Kd/37gXuJChmW2wjpbIeHVkrkOphwCvNy0EBQpulIZ1F9fCL/
+	 biQDAFbKXTxkNZLrkG5M4OcItRm3YZ75Jl9oCX5ol3wxjXS5GjOm8Dmm2y7t9S96vz
+	 mKisl2BUl5qwjxkkcxsVBU/aMsYOXS+CwxtBJN+X3FkdP6Nl8/IjxPLfrixr3pc7VP
+	 T+8nsdGtbwpEA==
+Received: by mail-io1-f46.google.com with SMTP id ca18e2360f4ac-7b35d476d61so100638239f.0;
+        Fri, 22 Dec 2023 17:33:35 -0800 (PST)
+X-Gm-Message-State: AOJu0YzfZCUyP8gns3OuIfp61FV3bg6kv56F6UkPDXbuFSG099k3jTYF
+	Ers9ucHCilEb7ZohcLoIk6rUqjK8VdvZU4LxpcU=
+X-Google-Smtp-Source: AGHT+IHpXq6YJJn719UeCoJ6XHaLYHMPxzuxUHuRdMuhzl7hdYfkh18oT1nuDpqYDf4gl2VsErMAIi+7VE3syZQdAjo=
+X-Received: by 2002:a05:6e02:3041:b0:35f:de1d:11ac with SMTP id
+ be1-20020a056e02304100b0035fde1d11acmr2383052ilb.23.1703295215227; Fri, 22
+ Dec 2023 17:33:35 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230906102557.3432236-1-alpic@google.com> <20231219090909.2827497-1-alpic@google.com>
-In-Reply-To: <20231219090909.2827497-1-alpic@google.com>
-From: Paul Moore <paul@paul-moore.com>
-Date: Fri, 22 Dec 2023 20:23:26 -0500
-Message-ID: <CAHC9VhTpc7SD0t-5AJ49+b-FMTx1svDBQcR7j6c1rmREUNW7gg@mail.gmail.com>
-Subject: Re: [PATCH] security: new security_file_ioctl_compat() hook
-To: Alfred Piccioni <alpic@google.com>
-Cc: Stephen Smalley <stephen.smalley.work@gmail.com>, Eric Paris <eparis@parisplace.org>, 
-	linux-security-module@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	stable@vger.kernel.org, selinux@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Casey Schaufler <casey@schaufler-ca.com>, Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+References: <20231122221814.139916-1-deller@kernel.org> <CAK7LNAQZO0g-B7UUEvdJWh3FhdhmWaaSaJyyEUoVoSYG0j8v-Q@mail.gmail.com>
+ <CAK7LNASk=A4aeMuhUt4NGi5RHedcQ_WQrdN3r7S_x0euvsPUXA@mail.gmail.com> <bb34147d-4e67-456a-b0d6-965699cda596@gmx.de>
+In-Reply-To: <bb34147d-4e67-456a-b0d6-965699cda596@gmx.de>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Sat, 23 Dec 2023 10:32:58 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATaGSPK8dpE=Vq2EgjQJXKn+Ui_3GAYKVz4-bc8pir-ag@mail.gmail.com>
+Message-ID: <CAK7LNATaGSPK8dpE=Vq2EgjQJXKn+Ui_3GAYKVz4-bc8pir-ag@mail.gmail.com>
+Subject: Re: [PATCH 0/4] Section alignment issues?
+To: Helge Deller <deller@gmx.de>
+Cc: deller@kernel.org, linux-kernel@vger.kernel.org, 
+	Arnd Bergmann <arnd@arndb.de>, linux-modules@vger.kernel.org, linux-arch@vger.kernel.org, 
+	Luis Chamberlain <mcgrof@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 19, 2023 at 4:09=E2=80=AFAM Alfred Piccioni <alpic@google.com> =
-wrote:
+On Fri, Dec 22, 2023 at 5:23=E2=80=AFPM Helge Deller <deller@gmx.de> wrote:
 >
-> Some ioctl commands do not require ioctl permission, but are routed to
-> other permissions such as FILE_GETATTR or FILE_SETATTR. This routing is
-> done by comparing the ioctl cmd to a set of 64-bit flags (FS_IOC_*).
+> On 12/21/23 16:42, Masahiro Yamada wrote:
+> > On Thu, Dec 21, 2023 at 10:40=E2=80=AFPM Masahiro Yamada <masahiroy@ker=
+nel.org> wrote:
+> >>
+> >> On Thu, Nov 23, 2023 at 7:18=E2=80=AFAM <deller@kernel.org> wrote:
+> >>>
+> >>> From: Helge Deller <deller@gmx.de>
+> >>>
+> >>> While working on the 64-bit parisc kernel, I noticed that the __ksymt=
+ab[]
+> >>> table was not correctly 64-bit aligned in many modules.
+> >>> The following patches do fix some of those issues in the generic code=
+.
+> >>>
+> >>> But further investigation shows that multiple sections in the kernel =
+and in
+> >>> modules are possibly not correctly aligned, and thus may lead to perf=
+ormance
+> >>> degregations at runtime (small on x86, huge on parisc, sparc and othe=
+rs which
+> >>> need exception handlers). Sometimes wrong alignments may also be simp=
+ly hidden
+> >>> by the linker or kernel module loader which pulls in the sections by =
+luck with
+> >>> a correct alignment (e.g. because the previous section was aligned al=
+ready).
+> >>>
+> >>> An objdump on a x86 module shows e.g.:
+> >>>
+> >>> ./kernel/net/netfilter/nf_log_syslog.ko:     file format elf64-x86-64
+> >>> Sections:
+> >>> Idx Name          Size      VMA               LMA               File =
+off  Algn
+> >>>    0 .text         00001fdf  0000000000000000  0000000000000000  0000=
+0040  2**4
+> >>>                    CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
+> >>>    1 .init.text    000000f6  0000000000000000  0000000000000000  0000=
+2020  2**4
+> >>>                    CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
+> >>>    2 .exit.text    0000005c  0000000000000000  0000000000000000  0000=
+2120  2**4
+> >>>                    CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
+> >>>    3 .rodata.str1.8 000000dc  0000000000000000  0000000000000000  000=
+02180  2**3
+> >>>                    CONTENTS, ALLOC, LOAD, READONLY, DATA
+> >>>    4 .rodata.str1.1 0000030a  0000000000000000  0000000000000000  000=
+0225c  2**0
+> >>>                    CONTENTS, ALLOC, LOAD, READONLY, DATA
+> >>>    5 .rodata       000000b0  0000000000000000  0000000000000000  0000=
+2580  2**5
+> >>>                    CONTENTS, ALLOC, LOAD, READONLY, DATA
+> >>>    6 .modinfo      0000019e  0000000000000000  0000000000000000  0000=
+2630  2**0
+> >>>                    CONTENTS, ALLOC, LOAD, READONLY, DATA
+> >>>    7 .return_sites 00000034  0000000000000000  0000000000000000  0000=
+27ce  2**0
+> >>>                    CONTENTS, ALLOC, LOAD, RELOC, READONLY, DATA
+> >>>    8 .call_sites   0000029c  0000000000000000  0000000000000000  0000=
+2802  2**0
+> >>>                    CONTENTS, ALLOC, LOAD, RELOC, READONLY, DATA
+> >>>
+> >>> In this example I believe the ".return_sites" and ".call_sites" shoul=
+d have
+> >>> an alignment of at least 32-bit (4 bytes).
+> >>>
+> >>> On other architectures or modules other sections like ".altinstructio=
+ns" or
+> >>> "__ex_table" may show up wrongly instead.
+> >>>
+> >>> In general I think it would be beneficial to search for wrong alignme=
+nts at
+> >>> link time, and maybe at runtime.
+> >>>
+> >>> The patch at the end of this cover letter
+> >>> - adds compile time checks to the "modpost" tool, and
+> >>> - adds a runtime check to the kernel module loader at runtime.
+> >>> And it will possibly show false positives too (!!!)
+> >>> I do understand that some of those sections are not performce critica=
+l
+> >>> and thus any alignment is OK.
+> >>>
+> >>> The modpost patch will emit at compile time such warnings (on x86-64 =
+kernel build):
+> >>>
+> >>> WARNING: modpost: vmlinux: section .initcall7.init (type 1, flags 2) =
+has alignment of 1, expected at least 4.
+> >>> Maybe you need to add ALIGN() to the modules.lds file (or fix modpost=
+) ?
+> >>> WARNING: modpost: vmlinux: section .altinstructions (type 1, flags 2)=
+ has alignment of 1, expected at least 2.
+> >>> WARNING: modpost: vmlinux: section .initcall6.init (type 1, flags 2) =
+has alignment of 1, expected at least 4.
+> >>> WARNING: modpost: vmlinux: section .initcallearly.init (type 1, flags=
+ 2) has alignment of 1, expected at least 4.
+> >>> WARNING: modpost: vmlinux: section .rodata.cst2 (type 1, flags 18) ha=
+s alignment of 2, expected at least 64.
+> >>> WARNING: modpost: vmlinux: section .static_call_tramp_key (type 1, fl=
+ags 2) has alignment of 1, expected at least 8.
+> >>> WARNING: modpost: vmlinux: section .con_initcall.init (type 1, flags =
+2) has alignment of 1, expected at least 8.
+> >>> WARNING: modpost: vmlinux: section __bug_table (type 1, flags 3) has =
+alignment of 1, expected at least 4.
+> >>> ...
+> >>
+> >>
+> >>
+> >>
+> >> modpost acts on vmlinux.o instead of vmlinux.
+> >>
+> >>
+> >> vmlinux.o is a relocatable ELF, which is not a real layout
+> >> because no linker script has been considered yet at this
+> >> point.
+> >>
+> >>
+> >> vmlinux is an executable ELF, produced by a linker,
+> >> with the linker script taken into consideration
+> >> to determine the final section/symbol layout.
+> >>
+> >>
+> >> So, checking this in modpost is meaningless.
+> >>
+> >>
+> >>
+> >> I did not check the module checking code, but
+> >> modules are also relocatable ELF.
+> >
+> >
+> >
+> > Sorry, I replied too early.
+> > (Actually I replied without reading your modpost code).
+> >
+> > Now, I understand what your checker is doing.
+> >
+> >
+> > I did not test how many false positives are produced,
+> > but it catches several suspicious mis-alignments.
 >
-> However, if a 32-bit process is running on a 64-bit kernel, it emits
-> 32-bit flags (FS_IOC32_*) for certain ioctl operations. These flags are
-> being checked erroneously, which leads to these ioctl operations being
-> routed to the ioctl permission, rather than the correct file
-> permissions.
+> Yes.
 >
-> This was also noted in a RED-PEN finding from a while back -
-> "/* RED-PEN how should LSM module know it's handling 32bit? */".
+> > However, I am not convinced with this warning.
+> >
+> >
+> > +               warn("%s: section %s (type %d, flags %lu) has
+> > alignment of %d, expected at least %d.\n"
+> > +                    "Maybe you need to add ALIGN() to the modules.lds
+> > file (or fix modpost) ?\n",
+> > +                    modname, sec, sechdr->sh_type, sechdr->sh_flags,
+> > is_shalign, should_shalign);
+> > +       }
+> >
+> >
+> > Adding ALGIN() hides the real problem.
 >
-> This patch introduces a new hook, security_file_ioctl_compat, that is
-> called from the compat ioctl syscall. All current LSMs have been changed
-> to support this hook.
+> Right.
+> It took me some time to understand the effects here too.
+> See below...
 >
-> Reviewing the three places where we are currently using
-> security_file_ioctl, it appears that only SELinux needs a dedicated
-> compat change; TOMOYO and SMACK appear to be functional without any
-> change.
+> > I think the real problem is that not enough alignment was requested
+> > in the code.
+> >
+> > For example, the right fix for ".initcall7.init" should be this:
+> >
+> > diff --git a/include/linux/init.h b/include/linux/init.h
+> > index 3fa3f6241350..650311e4b215 100644
+> > --- a/include/linux/init.h
+> > +++ b/include/linux/init.h
+> > @@ -264,6 +264,7 @@ extern struct module __this_module;
+> >   #define ____define_initcall(fn, __stub, __name, __sec)         \
+> >          __define_initcall_stub(__stub, fn)                      \
+> >          asm(".section   \"" __sec "\", \"a\"            \n"     \
+> > +           ".balign 4                                  \n"     \
+> >              __stringify(__name) ":                      \n"     \
+> >              ".long      " __stringify(__stub) " - .     \n"     \
+> >              ".previous                                  \n");   \
+> >
+> > Then, "this section requires at least 4 byte alignment"
+> > is recorded in the sh_addralign field.
 >
-> Fixes: 0b24dcb7f2f7 ("Revert "selinux: simplify ioctl checking"")
-> Signed-off-by: Alfred Piccioni <alpic@google.com>
-> Cc: stable@vger.kernel.org
-> ---
->  fs/ioctl.c                    |  3 +--
->  include/linux/lsm_hook_defs.h |  2 ++
->  include/linux/security.h      |  7 +++++++
->  security/security.c           | 17 +++++++++++++++++
->  security/selinux/hooks.c      | 28 ++++++++++++++++++++++++++++
->  security/smack/smack_lsm.c    |  1 +
->  security/tomoyo/tomoyo.c      |  1 +
->  7 files changed, 57 insertions(+), 2 deletions(-)
+> Yes, this is the important part.
 >
-> diff --git a/fs/ioctl.c b/fs/ioctl.c
-> index f5fd99d6b0d4..76cf22ac97d7 100644
-> --- a/fs/ioctl.c
-> +++ b/fs/ioctl.c
-> @@ -920,8 +920,7 @@ COMPAT_SYSCALL_DEFINE3(ioctl, unsigned int, fd, unsig=
-ned int, cmd,
->         if (!f.file)
->                 return -EBADF;
+> > Then, the rest is the linker's job.
+> >
+> > We should not tweak the linker script.
 >
-> -       /* RED-PEN how should LSM module know it's handling 32bit? */
-> -       error =3D security_file_ioctl(f.file, cmd, arg);
-> +       error =3D security_file_ioctl_compat(f.file, cmd, arg);
->         if (error)
->                 goto out;
+> That's right, but let's phrase it slightly different...
+> There is *no need* to tweak the linker script, *if* the alignment
+> gets correctly assigned by the inline assembly (like your
+> initcall patch above).
+> But on some platforms (e.g. on parisc) I noticed that this .balign
+> was missing for some other sections, in which case the other (not preferr=
+ed)
+> possible option is to tweak the linker script.
+>
+> So I think we agree that fixing the inline assembly is the right
+> way to go?
 
-This is interesting ... if you look at the normal ioctl() syscall
-definition in the kernel you see 'ioctl(unsigned int fd, unsigned int
-cmd, unsigned long arg)' and if you look at the compat definition you
-see 'ioctl(unsigned int fd, unsigned int cmd, compat_ulong_t arg)'.  I
-was expecting the second parameter, @cmd, to be a long type in the
-normal definition, but it is an int type in both cases.  It looks like
-it has been that way long enough that it is correct, but I'm a little
-lost ...
 
-> diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.=
-h
-> index ac962c4cb44b..626aa8cf930d 100644
-> --- a/include/linux/lsm_hook_defs.h
-> +++ b/include/linux/lsm_hook_defs.h
-> @@ -171,6 +171,8 @@ LSM_HOOK(int, 0, file_alloc_security, struct file *fi=
-le)
->  LSM_HOOK(void, LSM_RET_VOID, file_free_security, struct file *file)
->  LSM_HOOK(int, 0, file_ioctl, struct file *file, unsigned int cmd,
->          unsigned long arg)
-> +LSM_HOOK(int, 0, file_ioctl_compat, struct file *file, unsigned int cmd,
-> +        unsigned long arg)
->  LSM_HOOK(int, 0, mmap_addr, unsigned long addr)
->  LSM_HOOK(int, 0, mmap_file, struct file *file, unsigned long reqprot,
->          unsigned long prot, unsigned long flags)
-> diff --git a/include/linux/security.h b/include/linux/security.h
-> index 5f16eecde00b..22a82b7c59f1 100644
-> --- a/include/linux/security.h
-> +++ b/include/linux/security.h
-> @@ -389,6 +389,7 @@ int security_file_permission(struct file *file, int m=
-ask);
->  int security_file_alloc(struct file *file);
->  void security_file_free(struct file *file);
->  int security_file_ioctl(struct file *file, unsigned int cmd, unsigned lo=
-ng arg);
-> +int security_file_ioctl_compat(struct file *file, unsigned int cmd, unsi=
-gned long arg);
->  int security_mmap_file(struct file *file, unsigned long prot,
->                         unsigned long flags);
->  int security_mmap_addr(unsigned long addr);
-> @@ -987,6 +988,12 @@ static inline int security_file_ioctl(struct file *f=
-ile, unsigned int cmd,
->         return 0;
->  }
->
-> +static inline int security_file_ioctl_compat(struct file *file, unsigned=
- int cmd,
-> +                                     unsigned long arg)
-> +{
-> +       return 0;
-> +}
-> +
->  static inline int security_mmap_file(struct file *file, unsigned long pr=
-ot,
->                                      unsigned long flags)
->  {
-> diff --git a/security/security.c b/security/security.c
-> index 23b129d482a7..5c16ffc99b1e 100644
-> --- a/security/security.c
-> +++ b/security/security.c
-> @@ -2648,6 +2648,23 @@ int security_file_ioctl(struct file *file, unsigne=
-d int cmd, unsigned long arg)
->  }
->  EXPORT_SYMBOL_GPL(security_file_ioctl);
->
-> +/**
-> + * security_file_ioctl_compat() - Check if an ioctl is allowed in 32-bit=
- compat mode
-> + * @file: associated file
-> + * @cmd: ioctl cmd
-> + * @arg: ioctl arguments
-> + *
-> + * Compat version of security_file_ioctl() that correctly handles 32-bit=
- processes
-> + * running on 64-bit kernels.
-> + *
-> + * Return: Returns 0 if permission is granted.
-> + */
-> +int security_file_ioctl_compat(struct file *file, unsigned int cmd, unsi=
-gned long arg)
-> +{
-> +       return call_int_hook(file_ioctl_compat, 0, file, cmd, arg);
-> +}
-> +EXPORT_SYMBOL_GPL(security_file_ioctl_compat);
-> +
->  static inline unsigned long mmap_prot(struct file *file, unsigned long p=
-rot)
->  {
->         /*
-> diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
-> index 2aa0e219d721..c617ae21dba8 100644
-> --- a/security/selinux/hooks.c
-> +++ b/security/selinux/hooks.c
-> @@ -3731,6 +3731,33 @@ static int selinux_file_ioctl(struct file *file, u=
-nsigned int cmd,
->         return error;
->  }
->
-> +static int selinux_file_ioctl_compat(struct file *file, unsigned int cmd=
-,
-> +                             unsigned long arg)
-> +{
-> +       /*
-> +        * If we are in a 64-bit kernel running 32-bit userspace, we need=
- to make
-> +        * sure we don't compare 32-bit flags to 64-bit flags.
-> +        */
-> +       switch (cmd) {
-> +       case FS_IOC32_GETFLAGS:
-> +               cmd =3D FS_IOC_GETFLAGS;
-> +               break;
-> +       case FS_IOC32_SETFLAGS:
-> +               cmd =3D FS_IOC_SETFLAGS;
-> +               break;
-> +       case FS_IOC32_GETVERSION:
-> +               cmd =3D FS_IOC_GETVERSION;
-> +               break;
-> +       case FS_IOC32_SETVERSION:
-> +               cmd =3D FS_IOC_SETVERSION;
-> +               break;
-> +       default:
-> +               break;
-> +       }
-> +
-> +       return selinux_file_ioctl(file, cmd, arg);
-> +}
+Yes, I think so.
 
-Is it considered valid for a native 64-bit task to use 32-bit
-FS_IO32_XXX flags?  If not, do we want to remove the FS_IO32_XXX flag
-checks in selinux_file_ioctl()?
 
->  static int default_noexec __ro_after_init;
->
->  static int file_map_prot_check(struct file *file, unsigned long prot, in=
-t shared)
-> @@ -7036,6 +7063,7 @@ static struct security_hook_list selinux_hooks[] __=
-ro_after_init =3D {
->         LSM_HOOK_INIT(file_permission, selinux_file_permission),
->         LSM_HOOK_INIT(file_alloc_security, selinux_file_alloc_security),
->         LSM_HOOK_INIT(file_ioctl, selinux_file_ioctl),
-> +       LSM_HOOK_INIT(file_ioctl_compat, selinux_file_ioctl_compat),
->         LSM_HOOK_INIT(mmap_file, selinux_mmap_file),
->         LSM_HOOK_INIT(mmap_addr, selinux_mmap_addr),
->         LSM_HOOK_INIT(file_mprotect, selinux_file_mprotect),
-> diff --git a/security/smack/smack_lsm.c b/security/smack/smack_lsm.c
-> index 65130a791f57..1f1ea8529421 100644
-> --- a/security/smack/smack_lsm.c
-> +++ b/security/smack/smack_lsm.c
-> @@ -4973,6 +4973,7 @@ static struct security_hook_list smack_hooks[] __ro=
-_after_init =3D {
->
->         LSM_HOOK_INIT(file_alloc_security, smack_file_alloc_security),
->         LSM_HOOK_INIT(file_ioctl, smack_file_ioctl),
-> +       LSM_HOOK_INIT(file_ioctl_compat, smack_file_ioctl),
->         LSM_HOOK_INIT(file_lock, smack_file_lock),
->         LSM_HOOK_INIT(file_fcntl, smack_file_fcntl),
->         LSM_HOOK_INIT(mmap_file, smack_mmap_file),
-> diff --git a/security/tomoyo/tomoyo.c b/security/tomoyo/tomoyo.c
-> index 25006fddc964..298d182759c2 100644
-> --- a/security/tomoyo/tomoyo.c
-> +++ b/security/tomoyo/tomoyo.c
-> @@ -568,6 +568,7 @@ static struct security_hook_list tomoyo_hooks[] __ro_=
-after_init =3D {
->         LSM_HOOK_INIT(path_rename, tomoyo_path_rename),
->         LSM_HOOK_INIT(inode_getattr, tomoyo_inode_getattr),
->         LSM_HOOK_INIT(file_ioctl, tomoyo_file_ioctl),
-> +       LSM_HOOK_INIT(file_ioctl_compat, tomoyo_file_ioctl),
->         LSM_HOOK_INIT(path_chmod, tomoyo_path_chmod),
->         LSM_HOOK_INIT(path_chown, tomoyo_path_chown),
->         LSM_HOOK_INIT(path_chroot, tomoyo_path_chroot),
 
-I agree that it looks like Smack and TOMOYO should be fine, but I
-would like to hear from Casey and Tetsuo to confirm.
+> Either way, a link-time check like the proposed modpost patch
+> may catch section issue for upcoming/newly added sections too.
+
+
+Yes. This check seems to be useful.
+
+
+
 
 --=20
-paul-moore.com
+Best Regards
+Masahiro Yamada
 
