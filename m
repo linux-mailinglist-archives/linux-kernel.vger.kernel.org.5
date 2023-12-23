@@ -1,231 +1,170 @@
-Return-Path: <linux-kernel+bounces-10207-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10208-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9895481D13C
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 03:14:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1945E81D13D
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 03:14:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BCD2E1C213D2
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 02:14:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3CB3F1C227D3
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 02:14:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28BF1ECB;
-	Sat, 23 Dec 2023 02:14:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7D4C10F4;
+	Sat, 23 Dec 2023 02:14:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="maBecNVL"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j/HOGkQR"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2075.outbound.protection.outlook.com [40.107.7.75])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ot1-f44.google.com (mail-ot1-f44.google.com [209.85.210.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2ABDE7FD;
-	Sat, 23 Dec 2023 02:14:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HSMPgM7GMyxCVQE9wxB2ygd8D1PaSSkyQ9DxBCShtRmZfss1IEuFEp9BqqayCeRoWxWw7Nsuz8VBAjVNxYikMTidm3K2JTKrNteRfWpRlCR2hmQ4Ad2uj7pA2buEBhvP0HnidwRNjlK4GpdijRJQwFmIl6kHnJnXdUsqSbNLgkx68zTcGlZHnVbRAKwjw9v/J76MPp9UU/gOtqmaQZLpOah9AUyk2kXwRhNt6+p3hT0UN1LZDQ0XEmqC0TOBvMFfq5NyLzwQj6QaLWOzAq9qyN70OmxE7vcpuAn1pvjaOxZ09IY6hgymYmFA9OA49VX4NH1pjyfWISifrdh8bfxTUg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=16yP7fIoNfnkX3rtksY3QsGXdRHX9nmPbCQqIRF7zNI=;
- b=H9Zo76+vbNi2/FS4whDaGTB93rD0xt/xWrm9H8IX9Ne4Pt8WZ3yp742yT6FlPdo+EzV5ENBeAJ7uWaMfRlKxQl+ixo+yUHhfqPaD05gI9fuKkYgnT1xNJY/6vT0hQki9Jm4IoUcFKTVO6BSrVPJwNql8PY38VC2fS22bA9f9ZILdV5JiIqJlRQ6vraa1l6WEvHM0cfw/tDtdX4Mta2zkgWWPA/51vV+zVRSte+658Q6jeR0P/NZsKa9y+FQmMUkAjUrZhZl3X3byVQ0CAo83iYoJ7f5PxsTPZl9uRpI1EAxUVlyV1sE1LbWR1qYLHHfQfdros3g+dpnO2zKHp8OUNA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=16yP7fIoNfnkX3rtksY3QsGXdRHX9nmPbCQqIRF7zNI=;
- b=maBecNVLMY20PjJ3UNLS0v9CUJGcSsE+M+NsPugRMgByoSoAb8ih7UtzyJ20N9KMa5idXzL7Vpu+9NOIu4GyTrD0UDR6P7TBBJBU7r63Uid9upBcFAU2rr64Z9UDDyQ7oO5CV7P6yNBatYscuq3/zkyxsN0+FMT1XD9/MHCtAGk=
-Received: from DU0PR04MB9417.eurprd04.prod.outlook.com (2603:10a6:10:358::11)
- by PA4PR04MB7901.eurprd04.prod.outlook.com (2603:10a6:102:ca::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7113.21; Sat, 23 Dec
- 2023 02:14:08 +0000
-Received: from DU0PR04MB9417.eurprd04.prod.outlook.com
- ([fe80::ff06:bbb2:c068:5fb3]) by DU0PR04MB9417.eurprd04.prod.outlook.com
- ([fe80::ff06:bbb2:c068:5fb3%7]) with mapi id 15.20.7113.019; Sat, 23 Dec 2023
- 02:14:08 +0000
-From: Peng Fan <peng.fan@nxp.com>
-To: Cristian Marussi <cristian.marussi@arm.com>, "Peng Fan (OSS)"
-	<peng.fan@oss.nxp.com>
-CC: Sudeep Holla <sudeep.holla@arm.com>, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
-	<conor+dt@kernel.org>, Oleksii Moisieiev <oleksii_moisieiev@epam.com>, Linus
- Walleij <linus.walleij@linaro.org>, Shawn Guo <shawnguo@kernel.org>, Sascha
- Hauer <s.hauer@pengutronix.de>, Pengutronix Kernel Team
-	<kernel@pengutronix.de>, Fabio Estevam <festevam@gmail.com>, dl-linux-imx
-	<linux-imx@nxp.com>, "linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "devicetree@vger.kernel.org"
-	<devicetree@vger.kernel.org>, "linux-gpio@vger.kernel.org"
-	<linux-gpio@vger.kernel.org>
-Subject: RE: [PATCH 7/7] pinctrl: scmi: implement
- pinctrl_scmi_imx_dt_node_to_map
-Thread-Topic: [PATCH 7/7] pinctrl: scmi: implement
- pinctrl_scmi_imx_dt_node_to_map
-Thread-Index: AQHaL005G5A4WDbzdEGBX+SfV+Qe/bC1nkGAgACMwSA=
-Date: Sat, 23 Dec 2023 02:14:08 +0000
-Message-ID:
- <DU0PR04MB9417FAE597ACB2B72DC446F6889BA@DU0PR04MB9417.eurprd04.prod.outlook.com>
-References: <20231215-pinctrl-scmi-v1-0-0fe35e4611f7@nxp.com>
- <20231215-pinctrl-scmi-v1-7-0fe35e4611f7@nxp.com> <ZYXK2YVJ1nnETSuI@pluto>
-In-Reply-To: <ZYXK2YVJ1nnETSuI@pluto>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DU0PR04MB9417:EE_|PA4PR04MB7901:EE_
-x-ms-office365-filtering-correlation-id: 43717e48-10d0-4114-0db7-08dc035cd885
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- X0RFeQFJepz/XgMhN48QjmZKXU7ZZXlE6JDMPHKQ3bUR8MOFmeNGY9PppL0w0KssbYzuNGpQCajwWXY5swrK6qAjPBH3/cXQB+Wz7QCyzn6y7GwJVpJsDwdgWCZppWJUlXMYX9xeJOXr24H4cL/z95kHqZa9Py81hYhk64U5Dvq6Xfg8hE3YrAVBTKRt7x1qeAjpbhqxLR/X9Mpr2fJeuVJT9/0k5sjHAHlZadJWU/yowQmzioX/7YXSwi7dUy4RkGH5BAKmFcywuUlYh9bAYGGXyWjgUjEBaJm3VmbJVqew/w4nERzA+d1Z8QVd6qSEaLvZElrEQ3PznBxoANQVI4xuiqncWZiRHaP+h3wuitz1kgynV7TR76ULd1on0ApWW+OZabHiKRQARplWVp7kEXkS8f1K6jYHAwiD/r0UCwxeaslaQDiZr9Dd9UK3jP23VZPfyrPs2+y5nbRDl1zt30OKK6hA5u9BJgj6ZHSihc9tl7TZpPN4MvtGAjA5IBbmSccFjgIaB0kT3lrMFn4uuN0KFWazAistcdleE7GwetDK9fI5LFW86YXTs6895Szlgz0S3f7zVa5ppVa12mWExF7tx+e33VwoLAx5g+L/zML+7MkA4maYcpcxQ9hpLJnHsMVBcIhQbb3+KD9A9Ve7LQ==
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(376002)(39860400002)(346002)(396003)(230922051799003)(186009)(1800799012)(64100799003)(451199024)(71200400001)(5660300002)(966005)(44832011)(6506007)(7696005)(478600001)(9686003)(26005)(55016003)(66899024)(8676002)(4326008)(76116006)(122000001)(8936002)(52536014)(316002)(41300700001)(38070700009)(2906002)(86362001)(33656002)(38100700002)(66556008)(64756008)(66946007)(66446008)(66476007)(110136005)(54906003)(7416002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?oDTimgUUnngydXhqKDfJS31vF6eljfQLsbNENp+WWgzOv2/cyVAnSZoJ9Tkt?=
- =?us-ascii?Q?s05MHZDTavkiKVhvYxmk2pHzf7j74UCQ92QMA4OKdPfFKCh2mVagwyf53eGK?=
- =?us-ascii?Q?tUa1H4nmFmoR91S0ho8qcEs2Kkj05BFgoHN1Yd5xT4fHOkm2HmML0KGaoQ8m?=
- =?us-ascii?Q?0feOa89SlthQ3DGreP8IDS2Y+NGDmAxfULjbFMAXFLq5C9ophPMeF+6Puvz7?=
- =?us-ascii?Q?qbiJRLegQvpgLh3EDYSQo1eLd8ukxZ4xn8ntCHIBmZ3xrkGRbryboCGi0ZkO?=
- =?us-ascii?Q?AoQYrpyHgqY4U63Kv83ygMX48BIW44iRI3rOQAVOWyWZ+g2rtyrSADwBUm55?=
- =?us-ascii?Q?YfIVrEDLhAfsZRHw64TFyz6rVQxLulb+k0ZLGd1FFfqfsMW9zEHuVWGx0tA5?=
- =?us-ascii?Q?xixPe1FCvenbRWiYW4i71zf9tRPjmxxqtgy1LyTEpN20m0WHSutqNcX4Qtot?=
- =?us-ascii?Q?eSKvW4bldxhkfJ645FebJlIaSwp4qO2shgNenMdJ5c3RufCpuILKtrS/5aoe?=
- =?us-ascii?Q?BU2vjigiv0heIrK7494S7JMkMZm/LRoXf+OCbKqzSQu63APwzF5A4sj71o7t?=
- =?us-ascii?Q?X6yKA0IZ/GXpHf7uX8OiRp0zSy5a+Y0Wz5GD0B2N6IoJxx8QKx4XsPzHM20s?=
- =?us-ascii?Q?pkYMTyBufTjv7Qa4AEQZBL7WL+5djhUG8REL0jHzyfbsbJaOKdxsVZu3Rqak?=
- =?us-ascii?Q?fyevzsmIFN/cRZm9ag8GqgNzxbNrhDHiwtRR4DDI69EeBbYgm0WrNOh/2ZiJ?=
- =?us-ascii?Q?1YOa9KpB4F78oy5GzwogBMY29dT1VrjnhlziXIEiNKhywmFjVYiiIeGhFVs3?=
- =?us-ascii?Q?whnoGpL4/lfFDSdsnUEB6eUt7ptoqNMH+2c2oxX4HawqpbqzbE+IqPhtB/z8?=
- =?us-ascii?Q?uAKIUE7k8tpZ45pp/Fjm180ziIUfdYZAjv46FWHXVxxfJbmW0yFPpLMQStqM?=
- =?us-ascii?Q?dAPAajeL2dB8DEUxb4cwmEVkMwwbEG2cNFD7CuZX2HUClUrc1PLiekNllJBL?=
- =?us-ascii?Q?UWWS9hR5uC74krgjhqoU4VqMKEh7I/2q7DYM9Wb9DHJvYDR1Y9oF8ABElKzV?=
- =?us-ascii?Q?WJFAaE+Tsya/XKgK6Lw7nwOX2zVy8st5MqXa+E7E1UlTdUwvFhiWqcSuAzy1?=
- =?us-ascii?Q?dL/IjuCNUtAQVtgAUjFvr5zKF6/4C862TZCPnzGdzw4OY41GK3P97Zcp8WfQ?=
- =?us-ascii?Q?HNyru8hyROyLvRlHI6Jbx7G0P+eJ7pdd5T4LOk7QZ0+FJ1cVxm1yn74wiA8q?=
- =?us-ascii?Q?F6sa36Qq/OL8Rw4SLUSVWVXYd2axNl7zcQKmI4pLzLmNJIDUBwoaKA7uG8p+?=
- =?us-ascii?Q?XguytKKTiqLp4I5mws7yNeACwoy7/469VAxEt2mfOFzBDHqSRqfXjYyr7zcd?=
- =?us-ascii?Q?Z5Ft2P9wkzgdph4CTEKRdbrftz8H0q+Al2WqaBmuFxH3sA9G93cuLro4UXHF?=
- =?us-ascii?Q?ycDvsVR2BUDR/OksbtYbgJW2ABwsaTyhhGbbqaOD3zpyoyoXp2TqaqZQgTA/?=
- =?us-ascii?Q?vt74DvgaoTqrK52oaYXZxA/0f3dyPayXsYyX9RSXayoHJF0bIjZpU5WTkXbb?=
- =?us-ascii?Q?FNZnePAxN6g5Wu1yiU8=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0D40A5D;
+	Sat, 23 Dec 2023 02:14:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f44.google.com with SMTP id 46e09a7af769-6da4893142aso1624312a34.0;
+        Fri, 22 Dec 2023 18:14:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703297680; x=1703902480; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-disposition:mime-version
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tDoasEUWLnkjnWJK/jt2Zzxrewc0//8PjRqnoVoBd04=;
+        b=j/HOGkQRAfnbIYA/4HVhwHpGeFf1B3/dDsjcENe0bz0WFSgM0SoL0SXq10Rsr1Nels
+         /f9OrNWC+VwQKDQFALOPyOrUWmbIRTnk8Pgj0hMe+kUPnodZaU+8bkjL8bzYE+yprddh
+         l2Gi6+sm8nL7ayg/7nkpKaovo0D9QHi+7Fzhoyl21jdufqG0/Slmg19doMQgGELAfzVg
+         F8rgLHjxXwJOJI2GKnr9qK0sQQdLZWSXHgo75pxahk6Zuqz6SF2BXU8UIRgJ1oiZc7Ht
+         75vc6w9h0Vd9FOn5GLRbMDj/EskGDVfSY8L8jH4rUPtIMkVpHVvfVRmWpBTWx0eawYif
+         XUPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703297680; x=1703902480;
+        h=content-transfer-encoding:content-disposition:mime-version
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=tDoasEUWLnkjnWJK/jt2Zzxrewc0//8PjRqnoVoBd04=;
+        b=hqoMNMWMdI+YpKSzyyOxcDkclhQwzX1bpze8DGfl57L28q4z2Gk0CQNbrAqqSUycF9
+         iBYNGbbX+iS6cUxJNi9219wF32ccNsyRQh2J1t7ZtyDdwexYxVzyE3Jtds/8XjIlE6gs
+         e8WExjkAQmoBKMf1VdyCR959ttm+nVkMgjP794zgbz0AvGf1xbZUvdW+WB7JPxwt5JgN
+         6SLjwPT0zkMi3YrjTKN0z5ksWc/wCaeRfWDUJ9T7+RZZhSW2srNKoVJBaRY1jyrKHfdA
+         NymcNVf5QfGPZNNHxYuaC1+fyECaQ0f8rzpyO5Yqj6FfvcM+7m3LOImd/pcAhC1PcjQZ
+         Hjjw==
+X-Gm-Message-State: AOJu0YxNuR0XLOTkZ0locT6Z5/TFBgUOVA0lbc3eeYGS1GT2+SWbxj6O
+	eqJjko+FR2wOA+WwngvWl7crRAymuvTbUuAe
+X-Google-Smtp-Source: AGHT+IGsP+Dx5US+YyGZ8FehEhE5qH8Z+70E3egeddHxCl8zPtRDEUfakBpe+vJB0nuVXeatFA12lw==
+X-Received: by 2002:a05:6830:1055:b0:6da:5c20:f8ad with SMTP id b21-20020a056830105500b006da5c20f8admr2135202otp.60.1703297679756;
+        Fri, 22 Dec 2023 18:14:39 -0800 (PST)
+Received: from neeraj.linux ([101.0.62.128])
+        by smtp.gmail.com with ESMTPSA id h19-20020a62b413000000b006d7d454e58asm765266pfn.117.2023.12.22.18.14.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Dec 2023 18:14:39 -0800 (PST)
+Date: Sat, 23 Dec 2023 07:44:34 +0530
+From: "Neeraj Upadhyay (AMD)" <neeraj.iitr10@gmail.com>
+To: torvalds@linux-foundation.org
+Cc: linux-kernel@vger.kernel.org, kernel-team@meta.com, paulmck@kernel.org,
+	frederic@kernel.org, mingo@kernel.org, tglx@linutronix.de,
+	rcu@vger.kernel.org, boqun.feng@gmail.com, joel@joelfernandes.org,
+	neeraj.upadhyay@amd.com, urezki@gmail.com,
+	qiang.zhang1211@gmail.com
+Subject: [GIT PULL] RCU changes for v6.8
+Message-ID: <20231223021434.GA2714@neeraj.linux>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DU0PR04MB9417.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 43717e48-10d0-4114-0db7-08dc035cd885
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Dec 2023 02:14:08.4106
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 4FOpqglr0whxKIClDDaiyjeF2pVODrzCq6oM4DZCTOsryLuQSNDL0PhskF1Jhgw16N0m+AhzDAcLZYf0hiRsZg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA4PR04MB7901
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
-> Subject: Re: [PATCH 7/7] pinctrl: scmi: implement
-> pinctrl_scmi_imx_dt_node_to_map
->=20
-> On Fri, Dec 15, 2023 at 07:56:35PM +0800, Peng Fan (OSS) wrote:
-> > From: Peng Fan <peng.fan@nxp.com>
-> >
-> > i.MX95 System Manager FW supports SCMI PINCTRL protocol, but uses
-> OEM
-> > Pin Configuration type, so need i.MX specific dt_node_to_map.
-> >
->=20
-> This does not even compile for me, as of now, when configuring the Pinctr=
-l
-> SCMI driver as a module with your IMX custom additions. (I think the
-> Makefile with the additional pinctrl-imx is wrong in how describes the ob=
-jects
-> composing the pinctrl-scmi module with IMX addons...)
->=20
-> ERROR: modpost: "pinctrl_scmi_imx_dt_node_to_map"
-> [drivers/pinctrl/pinctrl-scmi.ko] undefined!
-> make[3]: *** [dev/src/linux/scripts/Makefile.modpost:145: Module.symvers]
-> Error 1
-> make[2]: *** [dev/src/linux/Makefile:1863: modpost] Error 2
-> make[1]: *** [dev/src/linux/Makefile:234: __sub-make] Error 2
-> make[1]: Leaving directory dev/out_linux
-> make: *** [Makefile:234: __sub-make] Error 2
+Hi Linus,
 
-Oh, sorry for this. I could post a new version if you require. But before
-that we may better align on the approach on how to support i.MX.
+Once the merge window opens, please pull the latest RCU git tree from:
 
->=20
-> More in general, I think that this NXP OEM specific additions, which are =
-in
-> general welcome (and indeed as you know part of the spec was modified to
-> allow for OEM specific needs), do NOT belong to this generic SCMI Pinctrl
-> driver, because the driver from Oleksii/EPAM was born as a generic SCMI
-> driver and it fits perfectly with the Generic Pinctrl Linux subsystem and
-> related generic bindings parsing: now with this you are trying to stick a
-> custom OEM slight varied behaviour (and related binding) on top of a gene=
-ric
-> thing.
->=20
-> And this choice leads to a number of additional changes in the SCMI core =
-to
-> support an even more complex handling of SCMI devices, which is already t=
-oo
-> complex IMO..
->=20
-> IOW...I dont think that the whole idea of the per-protocol optional
-> compatible to be able to select slightly different behaviours/parsing wou=
-ld
-> have a great chance to fly sincerely...
->=20
-> I know there is an issue with having a completely distinct SCMI IMX pinct=
-rl
-> driver that uses the same protocol node @19 (without the need for the
-> compatible trick) due to the way in which the Pinctrl subsystem searches =
-for
-> devices (by of_node)...I'll think about an alternative way to allow this =
-but I am
-> not sure (as you saw) that would be so easily doable...
+  https://github.com/neeraju/linux.git tags/rcu.release.v6.8
 
-For all protocols supports VENDOR extension attributes, we need a way
-to handle I think.=20
+# HEAD: 7dfb03dd24d43b9e7a725e70d2e8a83bb29df294:
 
-As Linus wrote in
-https://lore.kernel.org/all/CACRpkdaRY+rU+md-r5gVyFH5ATt3Pqp9=3DM4=3D+WArYk=
-fVLAFdpw@mail.gmail.com/:
+  Merge branches 'doc.2023.12.13a', 'torture.2023.11.23a', 'fixes.2023.12.13a', 'rcu-tasks.2023.12.12b' and 'srcu.2023.12.13a' into rcu-merge.2023.12.13a (2023-12-14 01:21:31 +0530)
 
-We may need:
-protocol@19 {
-    compatible =3D "vendor,soc-scmi-pinctrl";
-(...)
+----------------------------------------------------------------
+RCU pull request for v6.8
 
->=20
-> Also, I am wondering if this is really a problem in reality since I would=
- NOT
-> expect you to load/ship both the OEM/NXP custom specific SCMI pinctrl
-> driver AND the generic one on the same platform (after having made them
-> distinct I mean...) am I wrong ?
+This pull request contains the following branches:
 
-You are right, but that means the upstream ARM64 defconfig will not=20
-able to support both i.MX9 and others.
+doc.2023.12.13a: Documentation and comment updates.
 
-Thanks,
-Peng.
+torture.2023.11.23a: RCU torture, locktorture updates that include
+        cleanups; nolibc init build support for mips, ppc and rv64;
+        testing of mid stall duration scenario and fixing fqs task
+        creation conditions.
 
-> (so you could even made them exclude each other at compile time...far fro=
-m
-> being the best option I agree...)
->=20
-> Thanks,
-> Cristian
+fixes.2023.12.13a: Misc fixes, most notably restricting usage of
+        RCU CPU stall notifiers, to confine their usage primarily
+        to debug kernels.
+
+rcu-tasks.2023.12.12b: RCU tasks minor fixes.
+
+srcu.2023.12.13a: lockdep annotation fix for NMI-safe accesses,
+        callback advancing/acceleration cleanup and documentation
+        improvements.
+
+----------------------------------------------------------------
+Charles Han (1):
+      Documentation: RCU: Remove repeated word in comments
+
+Frederic Weisbecker (3):
+      srcu: Remove superfluous callbacks advancing from srcu_gp_start()
+      srcu: No need to advance/accelerate if no callback enqueued
+      srcu: Explain why callbacks invocations can't run concurrently
+
+Neeraj Upadhyay (AMD) (1):
+      Merge branches 'doc.2023.12.13a', 'torture.2023.11.23a', 'fixes.2023.12.13a', 'rcu-tasks.2023.12.12b' and 'srcu.2023.12.13a' into rcu-merge.2023.12.13a
+
+Paul E. McKenney (7):
+      locktorture: Increase Hamming distance between call_rcu_chain and rcu_call_chains
+      rcutorture: Add mid-sized stall to TREE07
+      rcu-tasks: Mark RCU Tasks accesses to current->rcu_tasks_idle_cpu
+      rcu: Restrict access to RCU CPU stall notifiers
+      doc: Clarify RCU Tasks reader/updater checklist
+      doc: Mention address and data dependencies in rcu_dereference.rst
+      doc: Clarify historical disclaimers in memory-barriers.txt
+
+Pedro Falcato (1):
+      rcu: Remove unused macros from rcupdate.h
+
+Philipp Stanner (1):
+      rculist.h: docs: Fix wrong function summary
+
+Sebastian Andrzej Siewior (1):
+      srcu: Use try-lock lockdep annotation for NMI-safe access.
+
+Thomas Weiﬂschuh (1):
+      rcutorture: add nolibc init support for mips, ppc and rv64
+
+Zqiang (2):
+      rcutorture: Add fqs_holdoff check before fqs_task is created
+      rcu: Force quiescent states only for ongoing grace period
+
+ Documentation/RCU/checklist.rst                            | 25 ++++++++++++++++---------
+ Documentation/RCU/rcu_dereference.rst                      | 27 ++++++++++++++++++++-------
+ Documentation/RCU/torture.rst                              |  2 +-
+ Documentation/admin-guide/kernel-parameters.txt            |  6 ++++++
+ Documentation/memory-barriers.txt                          | 17 ++++++++++-------
+ include/linux/rcu_notifier.h                               |  6 +++---
+ include/linux/rculist.h                                    |  2 +-
+ include/linux/rcupdate.h                                   |  9 ++++++---
+ include/linux/srcu.h                                       |  2 +-
+ kernel/locking/locktorture.c                               | 18 +++++++++---------
+ kernel/rcu/Kconfig.debug                                   | 25 +++++++++++++++++++++++++
+ kernel/rcu/rcu.h                                           |  8 +++++---
+ kernel/rcu/rcutorture.c                                    | 16 ++++++++++------
+ kernel/rcu/srcutree.c                                      | 24 +++++++++++-------------
+ kernel/rcu/tasks.h                                         |  4 ++--
+ kernel/rcu/tree.c                                          |  2 ++
+ kernel/rcu/tree_stall.h                                    | 11 ++++++++++-
+ kernel/rcu/update.c                                        |  6 ++++++
+ tools/testing/selftests/rcutorture/bin/mkinitrd.sh         |  5 ++++-
+ tools/testing/selftests/rcutorture/configs/rcu/TREE07.boot |  3 +++
+ 20 files changed, 151 insertions(+), 67 deletions(-)
 
