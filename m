@@ -1,64 +1,64 @@
-Return-Path: <linux-kernel+bounces-10449-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10450-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDB1481D485
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 15:19:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8646881D489
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 15:20:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 94494282D46
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 14:19:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 264B01F22340
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 14:20:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27C1CDF4E;
-	Sat, 23 Dec 2023 14:19:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C14BBDF60;
+	Sat, 23 Dec 2023 14:19:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="sZ/J7zce"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="VnOvurs6"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2D0BDDC4
-	for <linux-kernel@vger.kernel.org>; Sat, 23 Dec 2023 14:19:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 989FADDD5
+	for <linux-kernel@vger.kernel.org>; Sat, 23 Dec 2023 14:19:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a2699ee30d1so224711966b.2
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Dec 2023 06:19:24 -0800 (PST)
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a22deb95d21so329021466b.3
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Dec 2023 06:19:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703341163; x=1703945963; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1703341189; x=1703945989; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=83VtYImUtbPprS2K355dwHQVBUydhmcdDS9Z8jHn5I8=;
-        b=sZ/J7zcexRtLtOte5OLOCKZAZGmst2GbgqUKxLg3hjz8+4PkI75HyxuQDVxm0WYgkp
-         y/n/crYcPo8oqBOW6HDyqjpR/EUpBSsmzbQWn53JjhEv9ZyX2TdGzBCTJGCt6aeR6Cfd
-         5zp2UdOGMnfz871XX8Bwk1HunSh07Xu2fHC0UErGc1Fpo65UQyanQ4YF2YwLZWFctT2/
-         WAK1iXITd+PMhn/G/yQK8cyzI36xLbF7NfpayInHvrF0ZgZEWApoOTvTmLJ/ld0PJVPu
-         bBu6rYwY6LUADYtMECRDRWMpz56b4apDJnv5mnyHni1H259yFR9NKomeOqd0i5ScanhV
-         L/Hw==
+        bh=0+dLS4lBiLMnpq+hOx3yugZhbEmDV4yXeEFQ+DY8CUU=;
+        b=VnOvurs6Z52J19akfeMFwYFZaaiu0p8GO8rYfl3nGE7a6rCsxlb/luVcYeOocBLQA/
+         Xg58leZRgfYyfMGoe1H4FBSAd5a3Pbj6Azf52CRVpbZbk36X5VVCgDTewxOf2m8RLtky
+         VLOujqTX1rQtRs0IHDHbcTh38ix77DXc+1Bg2WbqdZSlbYQczZG7DM+T+pIZjbJARK6+
+         1QieelLoe7A2gC2iEDlpqNBjIn2I7/ESzHJKh3EKnEY89TDjYsI3hMpT31e5THC4GInJ
+         4kY43JbveVCKc3Ja4lLtraqZIt6NTUGVZZB9SunJksROYY5LLsWNpln2WxRwRxp0lYkU
+         6FfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703341163; x=1703945963;
+        d=1e100.net; s=20230601; t=1703341189; x=1703945989;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=83VtYImUtbPprS2K355dwHQVBUydhmcdDS9Z8jHn5I8=;
-        b=fTUPjRdzu+ioq75+UBCtzxU4E5g/NW+avL2EvmIwxkZFqAAqiw3/j9QTQorbjFA8O/
-         8GzvEIIwzGYtwBNZ8Yx5B9oB0O1FRmGHaDh4pkit05QKi2wlpzZYJLETMIv5/bBrktNa
-         9vTXP2RUQNP8k3qF9i9+3CkJWl9zbwT/uHMdT7Siun/CZT+2WtQhBZq4norZUgL04rMP
-         WsJMiog7YBRhQHMPp2lYX+ak05HSg0zxgj9J4wskgsNUzhZmgEXBWDScYaKRQua1aXKC
-         ZXcPR8pw+0g2jd083JCLrv62EHIzzh5QyBi783k73UAmgvdzZD6si6cfgLWsJpHgPIVs
-         6jVA==
-X-Gm-Message-State: AOJu0YwTZ/NMmzNP/JaytIKkCf63hT62GoCghfZeoE6+bmDbObd3I1sR
-	I9miFBggmi5x0QbK7+FLjmKd6BPe4KLvyA==
-X-Google-Smtp-Source: AGHT+IGfbQxqYxDleKPo1JkM1gC0P65e6rtPrpGvV3iE3dGUd5YqFYf2CYNI7WVOGVkDqPdAU79OeA==
-X-Received: by 2002:a17:907:50a0:b0:a18:4b1b:9522 with SMTP id fv32-20020a17090750a000b00a184b1b9522mr1338999ejc.41.1703341163208;
-        Sat, 23 Dec 2023 06:19:23 -0800 (PST)
+        bh=0+dLS4lBiLMnpq+hOx3yugZhbEmDV4yXeEFQ+DY8CUU=;
+        b=B7UCUk4dtIfZkEuKKiJn1jyFzbi4R5AbLQipHOj6r4vUYSBhAN1ih3HSTLEC19iPjA
+         SAAudOJHClD8VII2rCVZEEIdqOXTqIBXqbOl8NqxZ02tMtICIIo/iaCLbE1lIcmOYk9j
+         7RK5SPvjen4nobdwRqjGaXmuGD/pFlcPWE+ccJDlsoL9VRx7biZKezLO44AcG/8neuJL
+         kNSP/zy4nqGjtrcQk4dWl/x7yKQuLmIGGR/RPMWb4uSQMQLluCdSOH3rul3Wcrnp7Ytc
+         tKhteQ1psx/pdsUhzT7PXIvBxeQY031ssxOk91J1p4j8whzFxdZ6V1DuPkGCUuG+UlU/
+         choA==
+X-Gm-Message-State: AOJu0Yyca2qjs3QbF4p0mZrHdssDy4j2c6762Mu85mc+ZGzmrH5XI/hW
+	Rtqaw3vZa5TmLOtY7YMlMPawQyI2/IDFUA==
+X-Google-Smtp-Source: AGHT+IFlNJvm3ciEK/UqPriH1mqBK1EbmXHrhiK6fh96uN5ddqyZ+9pZvUVHwjG1nm4QPlO3e+fzBQ==
+X-Received: by 2002:a17:906:22d3:b0:a26:85bb:6355 with SMTP id q19-20020a17090622d300b00a2685bb6355mr1657560eja.77.1703341188917;
+        Sat, 23 Dec 2023 06:19:48 -0800 (PST)
 Received: from [192.168.0.22] ([78.10.206.178])
-        by smtp.gmail.com with ESMTPSA id ge21-20020a170907909500b00a18c2737203sm3100498ejb.109.2023.12.23.06.19.21
+        by smtp.gmail.com with ESMTPSA id ge21-20020a170907909500b00a18c2737203sm3100498ejb.109.2023.12.23.06.19.47
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 23 Dec 2023 06:19:22 -0800 (PST)
-Message-ID: <2a44fe91-b4a5-4842-8abc-f30c532f14e0@linaro.org>
-Date: Sat, 23 Dec 2023 15:19:21 +0100
+        Sat, 23 Dec 2023 06:19:48 -0800 (PST)
+Message-ID: <b75099af-4ca5-460b-8dd4-d92892982ec2@linaro.org>
+Date: Sat, 23 Dec 2023 15:19:47 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,8 +66,7 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 2/2] Add GPIO support for Realtek DHC(Digital Home
- Center) RTD SoCs.
+Subject: Re: [PATCH v4 1/2] dt-bindings: gpio: realtek: Add realtek,rtd-gpio
 Content-Language: en-US
 To: Tzuyi Chang <tychang@realtek.com>,
  Linus Walleij <linus.walleij@linaro.org>, Bartosz Golaszewski
@@ -78,7 +77,7 @@ To: Tzuyi Chang <tychang@realtek.com>,
 Cc: linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org
 References: <20231222075812.6540-1-tychang@realtek.com>
- <20231222075812.6540-3-tychang@realtek.com>
+ <20231222075812.6540-2-tychang@realtek.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -124,81 +123,18 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231222075812.6540-3-tychang@realtek.com>
+In-Reply-To: <20231222075812.6540-2-tychang@realtek.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 On 22/12/2023 08:58, Tzuyi Chang wrote:
-> This driver enables configuration of GPIO direction, GPIO values, GPIO
-> debounce settings and handles GPIO interrupts.
+> Add the device tree bindings for the Realtek DHC(Digital Home Center)
+> RTD SoCs GPIO controllers.
 > 
 > Signed-off-by: Tzuyi Chang <tychang@realtek.com>
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 > ---
 
-
-...
-
-> +static int rtd_gpio_irq_set_type(struct irq_data *d, unsigned int type)
-> +{
-> +	struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
-> +	struct rtd_gpio *data = gpiochip_get_data(gc);
-> +	irq_hw_number_t hwirq = irqd_to_hwirq(d);
-> +	u32 mask = BIT(hwirq % 32);
-> +	unsigned long flags;
-> +	int dp_reg_offset;
-> +	bool polarity;
-> +	u32 val;
-> +
-> +	dp_reg_offset = rtd_gpio_dp_offset(data, hwirq);
-> +
-> +	switch (type & IRQ_TYPE_SENSE_MASK) {
-> +	case IRQ_TYPE_EDGE_RISING:
-> +		polarity = 1;
-> +		break;
-> +
-> +	case IRQ_TYPE_EDGE_FALLING:
-> +		polarity = 0;
-> +		break;
-> +
-> +	case IRQ_TYPE_EDGE_BOTH:
-> +		polarity = 1;
-> +		break;
-> +
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +
-> +	raw_spin_lock_irqsave(&data->lock, flags);
-
-Why are you using raw spinlock? This question applies to entire driver.
-
-> +
-> +	val = readl_relaxed(data->base + dp_reg_offset);
-> +	if (polarity)
-> +		val |= mask;
-> +	else
-> +		val &= ~mask;
-> +	writel_relaxed(val, data->base + dp_reg_offset);
-> +
-> +	raw_spin_unlock_irqrestore(&data->lock, flags);
-> +
-> +	return 0;
-> +}
-
-...
-
-}
-> +
-> +module_init(rtd_gpio_init);
-> +
-> +static void __exit rtd_gpio_exit(void)
-> +{
-> +	platform_driver_unregister(&rtd_gpio_platform_driver);
-> +}
-> +module_exit(rtd_gpio_exit);
-
-Why not using module_platform_driver?
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
 Best regards,
 Krzysztof
