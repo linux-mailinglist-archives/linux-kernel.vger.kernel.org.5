@@ -1,151 +1,310 @@
-Return-Path: <linux-kernel+bounces-10466-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10467-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D38281D4B4
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 15:43:29 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E914A81D4B6
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 15:54:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 71233B2102C
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 14:43:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4DF09B21B26
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 14:54:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB45312E62;
-	Sat, 23 Dec 2023 14:43:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3F47DF63;
+	Sat, 23 Dec 2023 14:54:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=garyguo.net header.i=@garyguo.net header.b="fCbmebVm"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OP4Fn/c7"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from GBR01-CWX-obe.outbound.protection.outlook.com (mail-cwxgbr01on2109.outbound.protection.outlook.com [40.107.121.109])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEF4C12E52;
-	Sat, 23 Dec 2023 14:43:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=garyguo.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=garyguo.net
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lMQ6cX8+dtDOxLY4KjLnVSp6BENd0770j1CR6a0I6BlS/INiEcky03v2R8a24EM6nbSqdQbNcA1XEIg2RL4E/H9W385CzUUQ40fiNqAwDfp+yM4AEniZvXT8+r79yRR3Fevxfpj5rYVs4L1UfLtUFJ4olgbCEOCwHcJ+ukpYBWM2AvkENlg/UWFkDx5zFUfg+cseUeHZtUC5V79Fnmkd8eGYc7MvQVNJPJL9QoLX2voIgSzVl5z8VBtwb1nauRx82E15kptkmgrG6iCIvh5QALixHm+8eFkayY5G2MyEEvl2+AwOavJ/hF0nQYs0JCfXw17Kd3J4qKRBVI+qTBKuaA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Q9kAkLeaTY7PUtIotc0GGoIMfUT0m1i/I6nMD/hn4IM=;
- b=RAuFgNmqbqZe60EnvHOONloFBtfTD63EeuPNzPLKMxeATBlCDr1P8UuAQrIBmX8FhuyXGWB/9juQAC4Of3paNaOiYH42n/z4Leg9PrWNoxoJvdROmxLbqTp/3uTf8FHhauB0pLgNFRoOFN7CPDt1yUHMq3VNvUNLY8V2GULsvRv+2uxF7yCV0iIcgUxtr9mU+WeYtqdGsv5tmjEgT1PFCm8PGDZpvC7e7krW/Si2Z83oQx0KJMIy3or7qgso31U8fALWQuro7wUzER2wa8lxOpORRT3R6HKx6GltjS+bXwAVWkNyMn+7BYTU3j6OatGSS8sp9CMAXvtzvqFqVFYBoA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=garyguo.net; dmarc=pass action=none header.from=garyguo.net;
- dkim=pass header.d=garyguo.net; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=garyguo.net;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Q9kAkLeaTY7PUtIotc0GGoIMfUT0m1i/I6nMD/hn4IM=;
- b=fCbmebVmTYZ1sw+QVTiKrsc5lUQa8/5Nvn+P50UKitHkQUi+wK6ezVniDQT/AFOiGkzH6MXOuRNJ0gn/5Ad7RDgcC28L0wsX/EauRHQcDvjq9Z94VZZRILCKHGYjKUAhD97dRnz+4c2BcVxAjt27Lxy+8XgYrg8olJu4sRE0J7k=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=garyguo.net;
-Received: from LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:253::10)
- by LO0P265MB5747.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:264::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7113.24; Sat, 23 Dec
- 2023 14:43:11 +0000
-Received: from LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM
- ([fe80::ec07:aa7e:ffbc:ba47]) by LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM
- ([fe80::ec07:aa7e:ffbc:ba47%4]) with mapi id 15.20.7113.023; Sat, 23 Dec 2023
- 14:43:11 +0000
-Date: Sat, 23 Dec 2023 14:43:09 +0000
-From: Gary Guo <gary@garyguo.net>
-To: Benno Lossin <benno.lossin@proton.me>
-Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>,
- Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng
- <boqun.feng@gmail.com>, =?UTF-8?B?QmrDtnJu?= Roy Baron
- <bjorn3_gh@protonmail.com>, Andreas Hindborg <a.hindborg@samsung.com>,
- Alice Ryhl <aliceryhl@google.com>, Martin Rodriguez Reboredo
- <yakoyoku@gmail.com>, Tejun Heo <tj@kernel.org>, Wedson Almeida Filho
- <walmeida@microsoft.com>, rust-for-linux@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/3] rust: workqueue: add `#[pin_data]` to `Work`
-Message-ID: <20231223144309.3bc42ecf.gary@garyguo.net>
-In-Reply-To: <20231213220447.3613500-3-benno.lossin@proton.me>
-References: <20231213220447.3613500-1-benno.lossin@proton.me>
-	<20231213220447.3613500-3-benno.lossin@proton.me>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-pc-linux-gnu)
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: LO4P265CA0006.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:2ad::20) To LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:253::10)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AC79DDA0;
+	Sat, 23 Dec 2023 14:54:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9E26C433C7;
+	Sat, 23 Dec 2023 14:54:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703343259;
+	bh=vzQQtZqISgnGwapiVVctyIZ0TfoXA6A7HlfNDJ0ph2o=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=OP4Fn/c7Rb/7Qi/ExiCsATmxakO1VuDsLC/uR/YK0UNYEiKbP/Lt7pAEuW+8xybih
+	 t2k5eiOq0F6dr39AAnHVJab/QqdBI8bMcVIa8z7Bfj01sL3Huzta0XiQf9uYcbq+CH
+	 C1XQNldEa2MLg6jSsfOJVIfI3BNalGSzGf0DrLis0AryxQrCFVn4sqq6a4xmnhLfaP
+	 AlKH4+XjhS8wrgrR1ioUtqi1JyOKsZLwn2T0NPhcYepTSx6vsQxmNyvnVKdYfuVLIH
+	 4XL6hPU2PuMrlbqOYQV1C1LlQCQOUJrRkJsGHMp6F8VCALBk0QkxBFuFx9VmMa+4vl
+	 ZrpBCpVVPU0HQ==
+Date: Sat, 23 Dec 2023 14:54:15 +0000
+From: Simon Horman <horms@kernel.org>
+To: deepakx.nagaraju@intel.com
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	jdavem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
+	mun.yew.tham@intel.com,
+	Andy Schevchenko <andriy.schevchenko@linux.intel.com>
+Subject: Re: [PATCH v2 4/4] net: ethernet: altera: rename functions and their
+ prototypes
+Message-ID: <20231223145415.GC201037@kernel.org>
+References: <20231213071112.18242-6-deepakx.nagaraju@intel.com>
+ <20231221134041.27104-1-deepakx.nagaraju@intel.com>
+ <20231221134041.27104-5-deepakx.nagaraju@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LO2P265MB5183:EE_|LO0P265MB5747:EE_
-X-MS-Office365-Filtering-Correlation-Id: bde98005-a658-4677-7c27-08dc03c57c99
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	MvAhM+YgNkE0L00JYcvQgaaI42KSnTaGeo/R12JRDALe8IqfLpMQAHoOeXXWPem8YMJDVgIUgTe9QGJya1YlNmv/7NpQKK5kF/58s9K9nyNfBRLvS2ELtCfhIBUzYuvWpDNAlSGFmoSkWpkApDqx87MxWn13FtlL8YFi+glA3CX7JmLIwv3w3/d0ggD3vph8Pf1NiN3PjkqV5NnqNDwpy8UoMSPlgnITefnJb42amDyAXpVuGBqIffBPwGjkdFudr460U7R79hmdFNBDdIfA0cq3gRJYabhf2CarKdgjtPhndXIyXBatkGndiubYeiLXGtzeTxMNOKvL9L05HEnSQBm2DeN6TMhTlqliwDACJGdnt1Lz0ryNlCjwnwooB1zzU21u+pzL1x7BKcCVX5um0YvkBYh4Qx4Y8i369gaJTqwW3/LGP2xx43C7kIpK+dTJ0Xc7VC/X0kPWxfPW8dorPKtpgIsucz/vexI45VLjq3XkljZ6zE8ps7EJ8SjtKnVugLX59NMJb+jRSLGQ4mtym1XMljj23ROEBrH7lRasqpOhQrTk7mVacdo6QqCjWIbpn+nXZqz3VvN1c6szmAH0KEGxBFSPbqxB7EJbbTiwLAU=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(346002)(136003)(39830400003)(396003)(376002)(366004)(230922051799003)(186009)(451199024)(64100799003)(1800799012)(1076003)(2616005)(6506007)(6512007)(36756003)(86362001)(38100700002)(5660300002)(7416002)(8936002)(8676002)(4326008)(83380400001)(66476007)(54906003)(66946007)(6916009)(66556008)(6486002)(41300700001)(4744005)(2906002)(316002)(478600001)(81973001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?IyyXCvhxFUEWRFUJjn3xdRlaWNJUD/zGeQtXOb0eCtTgGpM1pbGPsnHmwhmy?=
- =?us-ascii?Q?has++O2KGlDCVB31q7LnRSCK0ZzfMHsfl/PTf5p1QMU5vW2A85A0vs5RTjVC?=
- =?us-ascii?Q?9p5s7nFO58zvU8e4P7BsODkQaqoswVHYCRMlPVpqkxfdlY/HDvfor5Wnv2Qh?=
- =?us-ascii?Q?HrMeMYK2f49vlc/3uz3HWcrBfmPFsPg44UTCzYHp4Lo5Dk3aV/m2RxoQwnvW?=
- =?us-ascii?Q?I6nO38zhlZv4MotXxTVo/izSIzlLhc/JKUtBBaLTnix78YD1mKQ1FLVgcKpS?=
- =?us-ascii?Q?1fzqgFONkGsqSMMApRi32M8wTZaGBrwydxbx9FitlmTVmGHRcZK42yy5X9+t?=
- =?us-ascii?Q?40Fm7mXx5OUd1GVGi/4M7Hu0OJZh6wWK6isSJuf6h+7sfXX141STz9yDpKmq?=
- =?us-ascii?Q?Ik0FFJIPsW+iURpPbAeuewxHoEGUV/ktFA4Ec+fhL1ETJjsmDyNfC8RUPLE8?=
- =?us-ascii?Q?pcPq8O2cyeO7ElTEVMDsi4U7WWRR9xd7un5rtIJz2ZWYp50PpE48Je60h0Wr?=
- =?us-ascii?Q?r+RYPSydkoCzcVaETc4/Ul/cAMg27Cmg2sgpIsgqbaStOhQmvXhUGWpX2/Uw?=
- =?us-ascii?Q?UKOGUWCo2NMuC7KdkufDKr19dvCqIJ8ok6xj6ftbNRNt6Pk93wpPC1GaKTrS?=
- =?us-ascii?Q?PEdFf6uwspnig0HjRN+QHEioIt/mOX/SuYFsW49WvM14cnbEKgAPcniefmEx?=
- =?us-ascii?Q?CXeeiHfIp9u5ntj11MfBhft29hmYer1rRcTKtErEKtlkTfH12Up3OT341kFy?=
- =?us-ascii?Q?YGVOsWcpkgLr8poz8HFA3Onbux/lJohXYewEedme4V2FSzmgYYC2WliIVgXw?=
- =?us-ascii?Q?jKJ+nuGwNPtzYagIkeSLcjYTUfFKNIBUrdOmAqd0coYrbZr6l0IAVo9lZsSW?=
- =?us-ascii?Q?dA9SkVY9oIEbVKVn5Iewyx3Vkt+lQ6DPDWPIgJLfybjuhusNwyoG2HfqJQbP?=
- =?us-ascii?Q?SNn1bHFKYDfcE9y6f5/AtYOp3R/ZitAfmXoT8WY1b+Xc7iTSAnZ0mUvCHNpt?=
- =?us-ascii?Q?eij93OWe48gT5De3FYPZlVcm3i3e9GyeCesz+UFe/hQF2y9SIdggC+qFZDa8?=
- =?us-ascii?Q?voSmmImIHsPQghJMumv9dD0IcYDY3mga/iHub0fg/OgrDVtU4mSdon2DZu3p?=
- =?us-ascii?Q?CmCsxDJ+Vy4DVFVX+buHTu/RD2CJTY9IMBq1Uj7nZxWP20Nl0LR60qahhLJn?=
- =?us-ascii?Q?4UFl0RaBMlt8jUGGf1PHFjIRXsetbQXT3pXsj6ofdaeM69E0aHdon4jsXhBw?=
- =?us-ascii?Q?PPWPfymXa6eKN4feuiZbqJPu2BKfbP1IVFZtYONW5t8/BZzw33+/BqM46U16?=
- =?us-ascii?Q?4d88xbp+B0iNl35T5hplyP60KVOEVcdjWF63rItCN/apVtMSB2Swbr2i8qMs?=
- =?us-ascii?Q?jQUkLCyLNWG/yTRCiSk2kLJELZ7TO9z+rqDOAMa720ADpybncgfM8IeZmqQd?=
- =?us-ascii?Q?QK+qarBtflLjbS4PtZIDubZXllpvG5v2EfjsLVV+wH+fD/QAQzxD0VRxoURv?=
- =?us-ascii?Q?A7qFrbKt6zXfnpy2tVpux+hHuCyfARxW/Gzx0FRS3/jXTqZ2DG+5kC+X+Ib3?=
- =?us-ascii?Q?c13bhRH9bgeE7ErGVYo9gLP2MTnG0goi4L3+SrUES3SYDKUjYgBUNk1Pw70C?=
- =?us-ascii?Q?pARBXTDlJ8r0haPPW2mfbkw5LtWAaMMZgX/U8ieFEj87?=
-X-OriginatorOrg: garyguo.net
-X-MS-Exchange-CrossTenant-Network-Message-Id: bde98005-a658-4677-7c27-08dc03c57c99
-X-MS-Exchange-CrossTenant-AuthSource: LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Dec 2023 14:43:11.4673
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: bbc898ad-b10f-4e10-8552-d9377b823d45
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: kto3/JJPiGSINXLZ/Y1cZcfoSl56+v7ucjD9+zuY+lJ5F3w5u0s/AC1Iy5Daj57oJ/5DA92KOTZDVNsp0s//ZA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LO0P265MB5747
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231221134041.27104-5-deepakx.nagaraju@intel.com>
 
-On Wed, 13 Dec 2023 22:09:04 +0000
-Benno Lossin <benno.lossin@proton.me> wrote:
-
-> The previous two patches made it possible to add `#[pin_data]` on
-> structs with default generic parameter values.
-> This patch makes `Work` use `#[pin_data]` and removes an invocation of
-> `pin_init_from_closure`. This function is intended as a low level manual
-> escape hatch, so it is better to rely on the safe `pin_init!` macro.
+On Thu, Dec 21, 2023 at 09:40:41PM +0800, deepakx.nagaraju@intel.com wrote:
+> From: Nagaraju DeepakX <deepakx.nagaraju@intel.com>
 > 
-> Signed-off-by: Benno Lossin <benno.lossin@proton.me>
-
-Reviewed-by: Gary Guo <gary@garyguo.net>
-
+> Move standard DMA interface for sgdma and msgdma and rename them
+> from tse_private to dma_private.
+> 
+> Signed-off-by: Nagaraju DeepakX <deepakx.nagaraju@intel.com>
+> Reviewed-by: Andy Schevchenko <andriy.schevchenko@linux.intel.com>
 > ---
-> v1 -> v2:
-> - improve commit message wording
-> - change `:` to `<-` in `pin_init!` invocation
+>  drivers/net/ethernet/altera/Makefile          |   5 +-
+>  drivers/net/ethernet/altera/altera_eth_dma.c  |  58 ++++
+>  drivers/net/ethernet/altera/altera_eth_dma.h  | 121 +++++++++
+>  drivers/net/ethernet/altera/altera_msgdma.c   |  38 +--
+>  drivers/net/ethernet/altera/altera_msgdma.h   |  28 +-
+>  drivers/net/ethernet/altera/altera_sgdma.c    | 110 ++++----
+>  drivers/net/ethernet/altera/altera_sgdma.h    |  30 +--
+>  drivers/net/ethernet/altera/altera_tse.h      |  26 +-
+>  .../net/ethernet/altera/altera_tse_ethtool.c  |   1 +
+>  drivers/net/ethernet/altera/altera_tse_main.c | 248 +++++++-----------
+>  drivers/net/ethernet/altera/altera_utils.c    |   1 +
+>  11 files changed, 390 insertions(+), 276 deletions(-)
+>  create mode 100644 drivers/net/ethernet/altera/altera_eth_dma.c
+>  create mode 100644 drivers/net/ethernet/altera/altera_eth_dma.h
+
+Hi Nagaraju,
+
+this patch is doing a lot of things. I think that the patch description
+warrants a description of why this is desirable.
+
+And I think it would also be worth consider breaking it up: doing one
+thing at a time makes things a lot easier to review (for me at least).
+
 > 
->  rust/kernel/workqueue.rs | 33 ++++++++++++++++++---------------
->  1 file changed, 18 insertions(+), 15 deletions(-)
+> diff --git a/drivers/net/ethernet/altera/Makefile b/drivers/net/ethernet/altera/Makefile
+> index a52db80aee9f..ce723832edc4 100644
+> --- a/drivers/net/ethernet/altera/Makefile
+> +++ b/drivers/net/ethernet/altera/Makefile
+> @@ -3,6 +3,9 @@
+>  # Makefile for the Altera device drivers.
+>  #
+> 
+> +ccflags-y += -DDEFAULT_SYMBOL_NAMESPACE=NET_ALTERA
+> +
+>  obj-$(CONFIG_ALTERA_TSE) += altera_tse.o
+>  altera_tse-objs := altera_tse_main.o altera_tse_ethtool.o \
+> -altera_msgdma.o altera_sgdma.o altera_utils.o
+> +		   altera_msgdma.o altera_sgdma.o altera_utils.o \
+> +		   altera_eth_dma.o
+> diff --git a/drivers/net/ethernet/altera/altera_eth_dma.c b/drivers/net/ethernet/altera/altera_eth_dma.c
+> new file mode 100644
+> index 000000000000..6a47a3cb3406
+> --- /dev/null
+> +++ b/drivers/net/ethernet/altera/altera_eth_dma.c
+> @@ -0,0 +1,58 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/* DMA support for Intel FPGA Quad-Speed Ethernet MAC driver
+> + * Copyright (C) 2023 Intel Corporation. All rights reserved
+> + */
+> +
+> +#include <linux/errno.h>
+> +#include <linux/export.h>
+> +#include <linux/io.h>
+> +#include <linux/platform_device.h>
+> +
+> +#include "altera_eth_dma.h"
+> +#include "altera_utils.h"
+> +
+> +/* Probe DMA */
+> +int altera_eth_dma_probe(struct platform_device *pdev, struct altera_dma_private *priv,
+> +			 enum altera_dma_type type)
+> +{
+> +	void __iomem *descmap;
+> +
+> +	/* xSGDMA Rx Dispatcher address space */
+> +	priv->rx_dma_csr = devm_platform_ioremap_resource_byname(pdev, "rx_csr");
+> +	if (IS_ERR(priv->rx_dma_csr))
+> +		return PTR_ERR(priv->rx_dma_csr);
+> +
+> +	/* mSGDMA Tx Dispatcher address space */
+> +	priv->tx_dma_csr = devm_platform_ioremap_resource_byname(pdev, "tx_csr");
+> +	if (IS_ERR(priv->rx_dma_csr))
+> +		return PTR_ERR(priv->rx_dma_csr);
+> +
+> +	switch (type) {
+> +	case ALTERA_DTYPE_SGDMA:
+> +		/* Get the mapped address to the SGDMA descriptor memory */
+> +		descmap = devm_platform_ioremap_resource_byname(pdev, "s1");
+> +		if (IS_ERR(descmap))
+> +			return PTR_ERR(descmap);
+> +		break;
+> +	case ALTERA_DTYPE_MSGDMA:
+> +		priv->rx_dma_resp = devm_platform_ioremap_resource_byname(pdev, "rx_resp");
+> +		if (IS_ERR(priv->rx_dma_resp))
+> +			return PTR_ERR(priv->rx_dma_resp);
+> +
+> +		priv->tx_dma_desc = devm_platform_ioremap_resource_byname(pdev, "tx_desc");
+> +		if (IS_ERR(priv->tx_dma_desc))
+> +			return PTR_ERR(priv->tx_dma_desc);
+> +
+> +		priv->rx_dma_desc = devm_platform_ioremap_resource_byname(pdev, "rx_desc");
+> +		if (IS_ERR(priv->rx_dma_desc))
+> +			return PTR_ERR(priv->rx_dma_desc);
+> +		break;
+> +	default:
+> +		return -ENODEV;
+> +	}
+> +
+> +	return 0;
+> +
+> +};
+> +EXPORT_SYMBOL_NS(altera_eth_dma_probe, NET_ALTERA);
+
+Perhaps I am missing something obvious here, but, I'm a little confused by
+this export; And the corresponding import in altera_tse_main; And the
+MODULE_LICENSE below, as there is also a MODULE_LICENSE in corresponding
+import in altera_tse_main.c.
+
+The basis of my confusion is that I assume that this file and
+altera_tse_main.c are both parts of the same module.
+
+> +MODULE_LICENSE("GPL");
+
+...
+
+> diff --git a/drivers/net/ethernet/altera/altera_tse.h b/drivers/net/ethernet/altera/altera_tse.h
+> index 4874139e7cdf..020ac5946acc 100644
+> --- a/drivers/net/ethernet/altera/altera_tse.h
+> +++ b/drivers/net/ethernet/altera/altera_tse.h
+> @@ -368,29 +368,6 @@ struct tse_buffer {
+> 
+>  struct altera_tse_private;
+
+I think the forward declaration of  struct altera_tse_private can
+also be removed.
+
+> 
+> -#define ALTERA_DTYPE_SGDMA 1
+> -#define ALTERA_DTYPE_MSGDMA 2
+> -
+> -/* standard DMA interface for SGDMA and MSGDMA */
+> -struct altera_dmaops {
+> -	int altera_dtype;
+> -	int dmamask;
+> -	void (*reset_dma)(struct altera_tse_private *);
+> -	void (*enable_txirq)(struct altera_tse_private *);
+> -	void (*enable_rxirq)(struct altera_tse_private *);
+> -	void (*disable_txirq)(struct altera_tse_private *);
+> -	void (*disable_rxirq)(struct altera_tse_private *);
+> -	void (*clear_txirq)(struct altera_tse_private *);
+> -	void (*clear_rxirq)(struct altera_tse_private *);
+> -	int (*tx_buffer)(struct altera_tse_private *, struct tse_buffer *);
+> -	u32 (*tx_completions)(struct altera_tse_private *);
+> -	void (*add_rx_desc)(struct altera_tse_private *, struct tse_buffer *);
+> -	u32 (*get_rx_status)(struct altera_tse_private *);
+> -	int (*init_dma)(struct altera_tse_private *);
+> -	void (*uninit_dma)(struct altera_tse_private *);
+> -	void (*start_rxdma)(struct altera_tse_private *);
+> -};
+> -
+>  /* This structure is private to each device.
+>   */
+>  struct altera_tse_private {
+> @@ -401,6 +378,9 @@ struct altera_tse_private {
+>  	/* MAC address space */
+>  	struct altera_tse_mac __iomem *mac_dev;
+> 
+> +	/* Shared DMA structure */
+> +	struct altera_dma_private dma_priv;
+
+I had expected many of the fields corresponding to those
+present in struct altera_dma_private to be removed from
+struct altera_tse_private.
+
+> +
+>  	/* TSE Revision */
+>  	u32	revision;
+> 
+> diff --git a/drivers/net/ethernet/altera/altera_tse_ethtool.c b/drivers/net/ethernet/altera/altera_tse_ethtool.c
+> index d34373bac94a..6253bfe86e47 100644
+> --- a/drivers/net/ethernet/altera/altera_tse_ethtool.c
+> +++ b/drivers/net/ethernet/altera/altera_tse_ethtool.c
+> @@ -21,6 +21,7 @@
+>  #include <linux/netdevice.h>
+>  #include <linux/phy.h>
+> 
+> +#include "altera_eth_dma.h"
+>  #include "altera_tse.h"
+>  #include "altera_utils.h"
+
+This seems wrong.
+Headers should, in general, include everything they need to
+be included by .c files.
+
+I think that here altera_eth_dma.h should be included in altera_tse.h. 
+
+> diff --git a/drivers/net/ethernet/altera/altera_tse_main.c b/drivers/net/ethernet/altera/altera_tse_main.c
+> index 6a1a004ea693..1b66970a40e6 100644
+> --- a/drivers/net/ethernet/altera/altera_tse_main.c
+> +++ b/drivers/net/ethernet/altera/altera_tse_main.c
+> @@ -29,21 +29,23 @@
+>  #include <linux/mii.h>
+>  #include <linux/mdio/mdio-regmap.h>
+>  #include <linux/netdevice.h>
+> -#include <linux/of.h>
+> +#include <linux/of_device.h>
+>  #include <linux/of_mdio.h>
+>  #include <linux/of_net.h>
+> +#include <linux/of_platform.h>
+>  #include <linux/pcs-lynx.h>
+>  #include <linux/phy.h>
+>  #include <linux/platform_device.h>
+> -#include <linux/property.h>
+>  #include <linux/regmap.h>
+>  #include <linux/skbuff.h>
+> +
+>  #include <asm/cacheflush.h>
+> 
+> -#include "altera_utils.h"
+> -#include "altera_tse.h"
+> -#include "altera_sgdma.h"
+> +#include "altera_eth_dma.h"
+>  #include "altera_msgdma.h"
+> +#include "altera_sgdma.h"
+> +#include "altera_tse.h"
+> +#include "altera_utils.h"
+
+I'm all for cleaning up includes, but are the changes
+above strictly related to the rest of this patch?
+If not, perhaps they could be moved into a separate patch.
+
+...
+
+> @@ -1529,4 +1474,5 @@ module_platform_driver(altera_tse_driver);
+> 
+>  MODULE_AUTHOR("Altera Corporation");
+>  MODULE_DESCRIPTION("Altera Triple Speed Ethernet MAC driver");
+> +MODULE_IMPORT_NS(NET_ALTERA);
+>  MODULE_LICENSE("GPL v2");
+> diff --git a/drivers/net/ethernet/altera/altera_utils.c b/drivers/net/ethernet/altera/altera_utils.c
+> index e6a7fc9d8fb1..09a53f879b51 100644
+> --- a/drivers/net/ethernet/altera/altera_utils.c
+> +++ b/drivers/net/ethernet/altera/altera_utils.c
+> @@ -3,6 +3,7 @@
+>   * Copyright (C) 2014 Altera Corporation. All rights reserved
+>   */
+> 
+> +#include "altera_eth_dma.h"
+>  #include "altera_tse.h"
+>  #include "altera_utils.h"
+
+Please see my comment on altera_tse_ethtool.c,
+I believe it applies here too.
 
