@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-10178-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10179-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91B6581D10F
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 02:56:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A4C181D110
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 02:56:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C48BD1C22C59
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 01:56:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ED5241F2458B
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 01:56:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A13D82557F;
-	Sat, 23 Dec 2023 01:52:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E8FF26AF6;
+	Sat, 23 Dec 2023 01:52:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=semihalf.com header.i=@semihalf.com header.b="te9hvzEx"
+	dkim=pass (2048-bit key) header.d=semihalf.com header.i=@semihalf.com header.b="k6xWt0PL"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A65DA22079
-	for <linux-kernel@vger.kernel.org>; Sat, 23 Dec 2023 01:52:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B0232421E
+	for <linux-kernel@vger.kernel.org>; Sat, 23 Dec 2023 01:52:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=semihalf.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=semihalf.com
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-55361b7f38eso2842452a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 17:52:21 -0800 (PST)
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-5548a911cf9so90851a12.2
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 17:52:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=semihalf.com; s=google; t=1703296340; x=1703901140; darn=vger.kernel.org;
+        d=semihalf.com; s=google; t=1703296341; x=1703901141; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=lGHiwp064I3yQf9nvM+/2/akIgp5q6La0/IkEVizm/E=;
-        b=te9hvzExw8Pjh2eM9IxzOQwlmgxmVGV1lo6H4+y8tJvT3R5hQca1D+ns/0gPs4KXV4
-         NZMihjtHbHMJposjyfitnZI0EBdo6G3kUuRLjeGHKeP9Ea9kk6BHv/vJ54u8iS1++dFa
-         VSMOcysNpBhC0zhoW4d9PMKL6IWP5glpu66lMj87L6/Z7krmlHiEzOo/VJ8Ml89VqqAo
-         yOgjj3zoFtJNLjiEZZ7FiYgDvkGVIaereyj6SPThGY0ToJz9rLXOWqo0q/CbrIGlZG1a
-         jljggG7HVKLf/Ads0S1rz1DuAJZ7zkBxFuj/wuvlG7b/gL0D25qDQwwNeU32ugr1JUIE
-         mruA==
+        bh=xrCo62998dd2zdm2uwyLE8Dvl1Erd3p03bl4+A1t0OY=;
+        b=k6xWt0PLaHXRU4zLbVtpgzgCxsmABbV8OQzY3Ab7jVrbrscAyTjT1tfRa9b2a5oXfv
+         jnNnNDo6pqaRyJho1abpDzdCbwbH9YXMNbs1CdLDQNoR1LRWqYrQeWUWCWvvAOMo+ONl
+         cjKNhLDjWKDixD8kAFupL9YrRmvv+3ZCi/LBHvMbItPS3ln+K6IziwCQV7Cqt3VsJqQn
+         MrqFiI+4Qw0CnD1QDdd6EIsYIR+FHveFD5HHGjtia6bHJtHRPML9EyX1w5v3+xuE71iX
+         QDFXuKKEACwwWwOn25hTflkzPV+jUURKltjhuzC3e9CyeW8Y7FdGqsiUdB7WV6gx3u83
+         OXQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703296340; x=1703901140;
+        d=1e100.net; s=20230601; t=1703296341; x=1703901141;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=lGHiwp064I3yQf9nvM+/2/akIgp5q6La0/IkEVizm/E=;
-        b=X6q4q883XAZDmDCacAqQMoeqLGqlcqrIInjYQ6vLxWrJJBvhHGyrRac4hNkxErPQOk
-         fwOig8OmUPRzvfYsODATC6yMIFfjW2H+PFnbWbuijxt+J7/HKbsOOW0vjr43deIg7wPX
-         3hqvIt9/p/b8vDeA1ablVaE52ttb6y1/UaqYSXwYfCEGi1PpKNDENhfJcVobtnkgBm7s
-         loiXWQ2KfoZJrLc4oxDZ+ipxDOB1xe3D9/whf5gDC/A9sDYJKClxIzi847SDgJAVXtck
-         DvJkKaAsYqLJ7FFiKw9zudBXUSRq6Ki1AdbLvK7A7bXynxNklvqH43r5bmDSthF9TY6v
-         zaRg==
-X-Gm-Message-State: AOJu0YxDbzGd0mYNBdIh+F3H+y62GZ0uuj/EHAenjZTvURAs6UsFHHT1
-	CuujBqObVHK9fSpStuwUqTdfApYh68Rx
-X-Google-Smtp-Source: AGHT+IGih3SfHLHWBG7q9WsxpnckXIa3GcoYPPXCshE+oN7o7knfi2bIg0na8wJ/LcKZalAQ30Smtw==
-X-Received: by 2002:a50:ed11:0:b0:553:b473:6d70 with SMTP id j17-20020a50ed11000000b00553b4736d70mr709487eds.120.1703296340151;
-        Fri, 22 Dec 2023 17:52:20 -0800 (PST)
+        bh=xrCo62998dd2zdm2uwyLE8Dvl1Erd3p03bl4+A1t0OY=;
+        b=FE7ihXL+k8fMfcSYHFD2PvKRt2KkSJgMF1LskxFaUobdiKpZXgtruoqJwkn83ap9OV
+         01rBW/83gCS52nkBayK3EJUtnbB/DHEz5hSttNBg54e3cZehBqNsxzCX8a3WLhr5KO3J
+         A9yUr2pOA1RfZe/vVtIsePdvywJmBWPv3vT6GbyAscIQ1daxn80kmwDMqG7DFrc3OrI2
+         V0b/NK0lBwqQRsyl+b5ID97Q2IYIjWCM3MJiOQghNy7nLJ3K9hlMKGx9m1MU7KlrMmat
+         CwzqLQtmjAwY5KU2CgcMIRiT8zJcZIIfvJNlnCnaDcwwsP08MXZN/steymrfd4Ymnaqm
+         DHbA==
+X-Gm-Message-State: AOJu0Yx/JYXIP3u9mzWQbyIFuDCpJhvFGcvHdYHPLgguE4hf5MLztjim
+	Nzd8SL5wkqxmnPXfWb2lCW80VwMPTK4a
+X-Google-Smtp-Source: AGHT+IFGtMBjB6KNG9UAqYAeNaPd5BrmsGBJMrkvaFpkHVfL5KANCS6bPWpkOQVObTchBM6ti/4wxA==
+X-Received: by 2002:aa7:d751:0:b0:553:178:9d5a with SMTP id a17-20020aa7d751000000b0055301789d5amr567885eds.130.1703296341606;
+        Fri, 22 Dec 2023 17:52:21 -0800 (PST)
 Received: from ukaszb-l.semihalf.net (alfa56.extreme-net.one.pl. [213.77.89.56])
-        by smtp.gmail.com with ESMTPSA id h2-20020a0564020e8200b005532a337d51sm3288494eda.44.2023.12.22.17.52.18
+        by smtp.gmail.com with ESMTPSA id h2-20020a0564020e8200b005532a337d51sm3288494eda.44.2023.12.22.17.52.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Dec 2023 17:52:19 -0800 (PST)
+        Fri, 22 Dec 2023 17:52:21 -0800 (PST)
 From: =?UTF-8?q?=C5=81ukasz=20Bartosik?= <lb@semihalf.com>
 To: Jason Baron <jbaron@akamai.com>,
 	Jim Cromie <jim.cromie@gmail.com>,
@@ -77,9 +77,9 @@ Cc: Guenter Roeck <groeck@google.com>,
 	Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
 	linux-kernel@vger.kernel.org,
 	upstream@semihalf.com
-Subject: [PATCH v3 18/22] dyndbg: treat comma as a token separator
-Date: Sat, 23 Dec 2023 02:51:27 +0100
-Message-ID: <20231223015131.2836090-19-lb@semihalf.com>
+Subject: [PATCH v3 19/22] dyndbg: add skip_spaces_and_coma()
+Date: Sat, 23 Dec 2023 02:51:28 +0100
+Message-ID: <20231223015131.2836090-20-lb@semihalf.com>
 X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
 In-Reply-To: <20231223015131.2836090-1-lb@semihalf.com>
 References: <20231223015131.2836090-1-lb@semihalf.com>
@@ -89,53 +89,67 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
 From: Jim Cromie <jim.cromie@gmail.com>
 
-Treat comma as a token terminator, just like a space.  This allows a
-user to avoid quoting hassles when spaces are otherwise needed:
+The function skip_spaces_and_coma removes leading
+spaces and coma. With this approach a user can
+provide dynamic debug control commands in new format.
+For example the following command (existing format)
 
- :#> modprobe drm dyndbg=class,DRM_UT_CORE,+p\;class,DRM_UT_KMS,+p
+modprobe test_dynamic_debug dyndbg="class D2_CORE +p"
 
-or as a boot arg:
+can also be provided as (new format):
 
-  drm.dyndbg=class,DRM_UT_CORE,+p  # todo: support multi-query here
-
-Given the myriad ways a boot-line can be assembled and then passed
-in/down/around shell based tools, if the >control parser treats commas
-like spacees, this would allow side-stepping all sorts of quoting
-hassles thru those layers.
+modprobe test_dynamic_debug dyndbg=class,D2_CORE,+p
 
 Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
+Signed-off-by: Łukasz Bartosik <lb@semihalf.com>
 ---
- lib/dynamic_debug.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ lib/dynamic_debug.c | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
 
 diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
-index d4e50e4f6635..70d9440193a8 100644
+index 70d9440193a8..48ce24c39457 100644
 --- a/lib/dynamic_debug.c
 +++ b/lib/dynamic_debug.c
-@@ -637,6 +637,10 @@ static int ddebug_tokenize(char *buf, char *words[], int maxwords)
+@@ -618,6 +618,14 @@ static int ddebug_change(const struct ddebug_query *query,
+ 	return nfound;
+ }
+ 
++char *skip_spaces_and_coma(const char *str)
++{
++	str = skip_spaces(str);
++	if (*str == ',')
++		str = skip_spaces(++str);
++	return (char *)str;
++}
++
+ /*
+  * Split the buffer `buf' into space-separated words.
+  * Handles simple " and ' quoting, i.e. without nested,
+@@ -631,8 +639,8 @@ static int ddebug_tokenize(char *buf, char *words[], int maxwords)
+ 	while (*buf) {
+ 		char *end;
+ 
+-		/* Skip leading whitespace */
+-		buf = skip_spaces(buf);
++		/* Skip leading whitespace and coma */
++		buf = skip_spaces_and_coma(buf);
+ 		if (!*buf)
  			break;	/* oh, it was trailing whitespace */
  		if (*buf == '#')
- 			break;	/* token starts comment, skip rest of line */
-+		if (*buf == ',') {
-+			buf++;
-+			continue;
-+		}
+@@ -959,7 +967,7 @@ static int ddebug_exec_queries(char *query, const char *modname)
+ 		if (split)
+ 			*split++ = '\0';
  
- 		/* find `end' of word, whitespace separated or quoted */
- 		if (*buf == '"' || *buf == '\'') {
-@@ -648,7 +652,7 @@ static int ddebug_tokenize(char *buf, char *words[], int maxwords)
- 				return -EINVAL;	/* unclosed quote */
- 			}
- 		} else {
--			for (end = buf; *end && !isspace(*end); end++)
-+			for (end = buf; *end && !isspace(*end) && *end != ','; end++)
- 				;
- 			if (end == buf) {
- 				pr_err("parse err after word:%d=%s\n", nwords,
+-		query = skip_spaces(query);
++		query = skip_spaces_and_coma(query);
+ 		if (!query || !*query || *query == '#')
+ 			continue;
+ 
 -- 
 2.43.0.472.g3155946c3a-goog
 
