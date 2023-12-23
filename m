@@ -1,66 +1,65 @@
-Return-Path: <linux-kernel+bounces-10397-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10398-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2882881D3DE
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 12:56:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 485B281D3E2
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 12:56:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AF967B22D6F
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 11:56:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0552B28348B
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 11:56:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E1FED300;
-	Sat, 23 Dec 2023 11:55:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54EC1DDD2;
+	Sat, 23 Dec 2023 11:55:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="IrholNb9"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="okBt+G+9"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6590CA6A
-	for <linux-kernel@vger.kernel.org>; Sat, 23 Dec 2023 11:55:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DDC4D278
+	for <linux-kernel@vger.kernel.org>; Sat, 23 Dec 2023 11:55:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-40d4e529f24so6663675e9.2
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Dec 2023 03:55:43 -0800 (PST)
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-3333b46f26aso2341968f8f.1
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Dec 2023 03:55:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703332542; x=1703937342; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1703332543; x=1703937343; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=s6BgZXk2Z2EdsOWLkN8A9CQXodyxdbtKQobwp6o/jO0=;
-        b=IrholNb9ZoAcBNcmv2gAfyK5ESqT9fQ/wOMZ9WJ2vuquVVQf51MRWqQ5FwihobvSBv
-         7enzSr+WrurTp9V0qYBBEMwt2WoAUAsks7LGK9bFGBDVhqrqsa5v3ddP0GF3b1diCCNg
-         A/VfF2wYy7gQlJ2q+ykKX+F7UjaFAXvZ3FcXLzmhHaEMzW3LFnqs7r6ma7LoeI+CL5m8
-         RO6feIxQ9q/yHqXYIdxrOHfOlP/bQTMLq62dARnWXKLRSoxn0Z3uhiX38cEH+qLozwXh
-         joTYwiNkNQ9evwMRcerxsqOnsyMfuKvOfyQ8DsYrYdclZaWmxXgFf7cDcoHJF5Px3+3v
-         EBNg==
+        bh=xjW+JyAXSaCJAvexLw3wdIiNQdXbZqOYyV5y427gtuA=;
+        b=okBt+G+9KyCCqvSfp2IKkDimHvJnuqNG6j3DUEoeyN0Jtegamm1dnaopo39NC7CCRg
+         6duwRXeNP224ht72ATnYmRGhHYe9CDszuUnD/jsR4UhahG1rxtBBjDIPQziM8wudvBJm
+         9/vSRShKgoTWBUmufx2f+1iaVIRl6QhKrpLqvb6XIleXlfCV7htiGhFyiJ2gxR0dlovc
+         i/E+LVfSzfbtG7f9Ze4WxISrjoNQDdbFLH2OR/oWJE8Me5mj2CG2mQGTHAzFv+XetO7j
+         ZONdG26zqePzkSC3elqBulfRr0OYYftVxN8zj9zt/9JCg3x9pdQE7uudtYaT6vbfhGBO
+         j5nw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703332542; x=1703937342;
+        d=1e100.net; s=20230601; t=1703332543; x=1703937343;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=s6BgZXk2Z2EdsOWLkN8A9CQXodyxdbtKQobwp6o/jO0=;
-        b=LvhrRejf7nUt+aE8XuoMeCnwV5HgjEeGdJQyO485lWEuEWv6hFuroU1iSrujWydiHM
-         3aXzoMvY6bFeTVBK1gGSXxrP+J0nUWA3ACHW3TFYi5GO/AFt4eJ8/zFb+wCXfAMVNnpJ
-         wdrCCSYrmCCyWnW1HnYVOOIuDY9KlQIepcIrlTrmXXRfy8jQO1NjH2EhU7n8Fa9PqQEa
-         9SCQ1nNsQ+ExJrUXRcjvD4x8Di3hxWRL+0gTNtRIX5SpOzsSLObwkfh7Hiqau3UGH+03
-         cItYPDJLntKmLApxuAJ+PGGTRLFo/X4Dfp7XUjqGp+pCey794YGp25ZCZxs+Yhwi51EK
-         ohwg==
-X-Gm-Message-State: AOJu0YzYl5pFWSy4aKSvZ7hDU8weMhmdifF2zXeOS7h1Br67sRflwJ8b
-	xBaK5EiknIIGbCF4n28Yu12nNG0Y6SzEOnavkF5k3duN8nM=
-X-Google-Smtp-Source: AGHT+IFbKKaDUzDOTV7tg27SW7s49hsl8UxjmsVqHgSUFLade7q7Lz04XuCiV+7QgzJCtZ2iEIONjQ==
-X-Received: by 2002:a05:600c:3f94:b0:40d:34ec:8809 with SMTP id fs20-20020a05600c3f9400b0040d34ec8809mr1048362wmb.270.1703332542096;
-        Sat, 23 Dec 2023 03:55:42 -0800 (PST)
+        bh=xjW+JyAXSaCJAvexLw3wdIiNQdXbZqOYyV5y427gtuA=;
+        b=ukeD6QdbHj8z2Eae2BqnQHTbXrsB9F/mMHTilVI14wBly1efegZgffLCWZmhD1IrFW
+         HaTUrIWA/lB0q0ogM6/UWUuNS31C3ihXU/iN5qMZ2BLRkEX99kUgkbAG3ciQROjA3muY
+         jHL3OCxk7P7z5Br6JQ+gf9UHUZUVEcboou/VK9TQZ8sUhVOt/Bsws3PFEztE2x9fDZ4x
+         cdJzALqgnYykx4q0xeuGd5Ur9A6dg1g0v7XUZqbPUJOciJNTRMXwtKTKiAFAn3QtTgHk
+         hdeJTFRlydKWeXcFHdmlm7/+do45wxlqasvRlUuP0vzHinMTCnHFNsPPYjMybLuZaFxb
+         mAIQ==
+X-Gm-Message-State: AOJu0YyZfOUfCqObYfjM1+sDVNDdywJFa+3S1sSNJZOi2lRV5i7UAUdr
+	8bl4+Sovu1rnoYgtkfxREipElr9wtIib0w==
+X-Google-Smtp-Source: AGHT+IFswqcZX+bOO4IyaG5MEP+lhRL5syuRpxs5F9RE5GnUcyxKxHeOJLs01X9nDTMCxpRKVCgzKw==
+X-Received: by 2002:adf:ee47:0:b0:336:8690:7488 with SMTP id w7-20020adfee47000000b0033686907488mr1292111wro.107.1703332543445;
+        Sat, 23 Dec 2023 03:55:43 -0800 (PST)
 Received: from [127.0.1.1] ([79.115.23.25])
-        by smtp.gmail.com with ESMTPSA id r10-20020adfce8a000000b00336781490dcsm6351525wrn.69.2023.12.23.03.55.40
+        by smtp.gmail.com with ESMTPSA id r10-20020adfce8a000000b00336781490dcsm6351525wrn.69.2023.12.23.03.55.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 23 Dec 2023 03:55:41 -0800 (PST)
+        Sat, 23 Dec 2023 03:55:43 -0800 (PST)
 From: Abel Vesa <abel.vesa@linaro.org>
-Date: Sat, 23 Dec 2023 13:55:21 +0200
-Subject: [PATCH v2 1/3] dt-bindings: phy: qcom,sc8280xp-qmp-pcie-phy:
- Document the X1E80100 QMP PCIe PHYs
+Date: Sat, 23 Dec 2023 13:55:22 +0200
+Subject: [PATCH v2 2/3] phy: qcom: qmp-pcie: Add QMP v6 registers layout
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -69,7 +68,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231223-x1e80100-phy-pcie-v2-1-223c0556908a@linaro.org>
+Message-Id: <20231223-x1e80100-phy-pcie-v2-2-223c0556908a@linaro.org>
 References: <20231223-x1e80100-phy-pcie-v2-0-223c0556908a@linaro.org>
 In-Reply-To: <20231223-x1e80100-phy-pcie-v2-0-223c0556908a@linaro.org>
 To: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
@@ -81,65 +80,79 @@ To: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
  Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 Cc: linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org, 
  devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Abel Vesa <abel.vesa@linaro.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+ Abel Vesa <abel.vesa@linaro.org>
 X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1569; i=abel.vesa@linaro.org;
- h=from:subject:message-id; bh=Cjd737+0WvbPLfzwP1kvLLPld4NW6uZ8Tvfpkvgqv2U=;
- b=owEBbQKS/ZANAwAKARtfRMkAlRVWAcsmYgBlhsq2k0cPV01Jw/I8SkjK5Ygnbi5XDM2jUyHL9
- bS05EY/5RWJAjMEAAEKAB0WIQRO8+4RTnqPKsqn0bgbX0TJAJUVVgUCZYbKtgAKCRAbX0TJAJUV
- Vmi5D/9f1U4t+GjBZxjU8iax36NUu3PaOld9Whjbrtds0OLfkX4Nof2QRKGeTud00FYbpSXcv6X
- HEGPebTsn3LZIkDvB3CadQlFZEWVH2mNVGMsmNvuSi+Rp+JgRLbLdF2a08My/MCu8g/Qy8nyw0v
- BOte3qBVbceO4CcXbpysQgjVlQE4OEFMCNCmnInFSbvrmXrnoQs7awAeqRwfpQG0XvrRfIE7SdJ
- Ume6hn+wGy0mZb1dPEjV7EZGesWXMeC3xk5DYjSwLGxGP9x8izsqcI1UGuM0R8EZ+CTASipIp99
- 4JpRXt0DqaavGLhRC1EhV6x3hmNPlO/UNPCQmqGo8KzYi/tE2aK/Tx49BRXoWbjn1cizI0I2Ezs
- 0K09HAsfYsivgqRHSrFKf+bPmg1rlj4e+Bmq9m/GMWhVprdMDpl3fdvX1p/vW/3e9srRzZPtkej
- U4PyNI1bt68c66+7JDohm/xL6AaNhn9JtVXT1/oWt99UFIZ/QPS/2ZmHtd15OqmX3pp8S4zibgG
- OpjQDDiY82tfotlBJDojtCMvDqQ/LXQDhcEfVVKydoaiZFwhoRrtAhYoHYIGdxeG2zBC+d1OJBS
- R8rzwZXNZacCHgTp5UyBD8kA7haNNYkSLtFX6Bs1HXWx+Kqy62Vub97kDGI8VzfsS919E2jXNId
- FgidTucH4UwCLGA==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2434; i=abel.vesa@linaro.org;
+ h=from:subject:message-id; bh=aQTJdCbIPDB/z7LFSFKZkLMGwHpEIeQuU+oxAP8tlJE=;
+ b=owEBbQKS/ZANAwAKARtfRMkAlRVWAcsmYgBlhsq4LM1fJC70vKYIm9i0vEjT4NhgnQDYs6vLr
+ REEP8JuS3OJAjMEAAEKAB0WIQRO8+4RTnqPKsqn0bgbX0TJAJUVVgUCZYbKuAAKCRAbX0TJAJUV
+ Vmx4D/9Mx4NgoddlhLOFINCkZvKJb8WYWsdHlrx/J8FwU9RZX6p1qGJXdz6OFTKqENY+zr5zixN
+ LACRcushLS7dlIzUgbCFN7Y+78S2zYkhDZMQU8CTbQm78jPTw8q1ovvOFWP3fKL2vc0sUh+tKcO
+ i+PWKK1aeuY30k7h4VH+UbEEI8viSWs0w2anWl5SHRWFmcK6UVk8xcvOx83dwHm1SH6TdfyvoFR
+ 5O2J1OmAzkK8Tees9HSPGNPs8kucTiwiFoeeyvWPQJSnEttrqLtMVw6OsHbUUEeVRBRlm+OAcvF
+ qbTcAaxMoM2KOX8x0AmfirEKyCcNxCuPROZXXIX71PkeX8PJuSC1N7RsfhuE+HTHnesRWmSM1VV
+ j+sWhBIgbAVqesDFVb2zDEB/FyI0XC6kmaeGiD9nRLySViRR0qbZTpv0MjrLLJLhP+/W9VN2CeF
+ XuoEeiDWa0JuY2JM38yAQwGiR5rX4UuGaKhhGSj3H0mdAxkENER5TTU/xQBgWHuyK0oW4UJW6Ee
+ zilLsAyBUQF2Y04qoHtw/pLAUGLZHbfwBPQOgUpNGqF+8s6MxBsMs0bYqr3K/VzUWH4HxfcJjtv
+ SjTyVHymAG99fkY5G/d9Bj+jODSPre+qXUGbkfYnWLR7KnvZwaHknwRL/CjZzNGgBeThn9/vbHr
+ THDqvxmL2v4sO/A==
 X-Developer-Key: i=abel.vesa@linaro.org; a=openpgp;
  fpr=6AFF162D57F4223A8770EF5AF7BF214136F41FAE
 
-Document the QMP PCIe PHYs on the X1E80100 platform.
+For consistency, add the QMP v6 registers layout even though
+they are the same as v5. Also switch all QMP v6 PHYs to use this
+new layout.
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
 ---
- .../devicetree/bindings/phy/qcom,sc8280xp-qmp-pcie-phy.yaml         | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/phy/qualcomm/phy-qcom-qmp-pcie.c | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/phy/qcom,sc8280xp-qmp-pcie-phy.yaml b/Documentation/devicetree/bindings/phy/qcom,sc8280xp-qmp-pcie-phy.yaml
-index 6c03f2d5fca3..ba966a78a128 100644
---- a/Documentation/devicetree/bindings/phy/qcom,sc8280xp-qmp-pcie-phy.yaml
-+++ b/Documentation/devicetree/bindings/phy/qcom,sc8280xp-qmp-pcie-phy.yaml
-@@ -38,6 +38,8 @@ properties:
-       - qcom,sm8550-qmp-gen4x2-pcie-phy
-       - qcom,sm8650-qmp-gen3x2-pcie-phy
-       - qcom,sm8650-qmp-gen4x2-pcie-phy
-+      - qcom,x1e80100-qmp-gen3x2-pcie-phy
-+      - qcom,x1e80100-qmp-gen4x2-pcie-phy
+diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c b/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c
+index 2af7115ef968..03a4898a7e6f 100644
+--- a/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c
++++ b/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c
+@@ -116,6 +116,13 @@ static const unsigned int pciephy_v5_regs_layout[QPHY_LAYOUT_SIZE] = {
+ 	[QPHY_PCS_POWER_DOWN_CONTROL]	= QPHY_V5_PCS_POWER_DOWN_CONTROL,
+ };
  
-   reg:
-     minItems: 1
-@@ -151,6 +153,8 @@ allOf:
-               - qcom,sm8550-qmp-gen4x2-pcie-phy
-               - qcom,sm8650-qmp-gen3x2-pcie-phy
-               - qcom,sm8650-qmp-gen4x2-pcie-phy
-+              - qcom,x1e80100-qmp-gen3x2-pcie-phy
-+              - qcom,x1e80100-qmp-gen4x2-pcie-phy
-     then:
-       properties:
-         clocks:
-@@ -194,6 +198,8 @@ allOf:
-             enum:
-               - qcom,sm8550-qmp-gen4x2-pcie-phy
-               - qcom,sm8650-qmp-gen4x2-pcie-phy
-+              - qcom,x1e80100-qmp-gen3x2-pcie-phy
-+              - qcom,x1e80100-qmp-gen4x2-pcie-phy
-     then:
-       properties:
-         resets:
++static const unsigned int pciephy_v6_regs_layout[QPHY_LAYOUT_SIZE] = {
++	[QPHY_SW_RESET]			= QPHY_V6_PCS_SW_RESET,
++	[QPHY_START_CTRL]		= QPHY_V6_PCS_START_CONTROL,
++	[QPHY_PCS_STATUS]		= QPHY_V6_PCS_PCS_STATUS1,
++	[QPHY_PCS_POWER_DOWN_CONTROL]	= QPHY_V6_PCS_POWER_DOWN_CONTROL,
++};
++
+ static const struct qmp_phy_init_tbl msm8998_pcie_serdes_tbl[] = {
+ 	QMP_PHY_INIT_CFG(QSERDES_V3_COM_BIAS_EN_CLKBUFLR_EN, 0x14),
+ 	QMP_PHY_INIT_CFG(QSERDES_V3_COM_CLK_SELECT, 0x30),
+@@ -2936,7 +2943,7 @@ static const struct qmp_phy_cfg sdx65_qmp_pciephy_cfg = {
+ 	.num_resets             = ARRAY_SIZE(sdm845_pciephy_reset_l),
+ 	.vreg_list              = qmp_phy_vreg_l,
+ 	.num_vregs              = ARRAY_SIZE(qmp_phy_vreg_l),
+-	.regs                   = pciephy_v5_regs_layout,
++	.regs                   = pciephy_v6_regs_layout,
+ 
+ 	.pwrdn_ctrl             = SW_PWRDN,
+ 	.phy_status             = PHYSTATUS_4_20,
+@@ -3069,7 +3076,7 @@ static const struct qmp_phy_cfg sm8550_qmp_gen4x2_pciephy_cfg = {
+ 	.num_resets		= ARRAY_SIZE(sdm845_pciephy_reset_l),
+ 	.vreg_list		= sm8550_qmp_phy_vreg_l,
+ 	.num_vregs		= ARRAY_SIZE(sm8550_qmp_phy_vreg_l),
+-	.regs			= pciephy_v5_regs_layout,
++	.regs			= pciephy_v6_regs_layout,
+ 
+ 	.pwrdn_ctrl		= SW_PWRDN | REFCLK_DRV_DSBL,
+ 	.phy_status		= PHYSTATUS_4_20,
+@@ -3099,7 +3106,7 @@ static const struct qmp_phy_cfg sm8650_qmp_gen4x2_pciephy_cfg = {
+ 	.num_resets		= ARRAY_SIZE(sdm845_pciephy_reset_l),
+ 	.vreg_list		= sm8550_qmp_phy_vreg_l,
+ 	.num_vregs		= ARRAY_SIZE(sm8550_qmp_phy_vreg_l),
+-	.regs			= pciephy_v5_regs_layout,
++	.regs			= pciephy_v6_regs_layout,
+ 
+ 	.pwrdn_ctrl		= SW_PWRDN | REFCLK_DRV_DSBL,
+ 	.phy_status		= PHYSTATUS_4_20,
 
 -- 
 2.34.1
