@@ -1,111 +1,112 @@
-Return-Path: <linux-kernel+bounces-10315-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10316-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A8D9881D29E
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 07:17:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5AFF381D2A1
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 07:19:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8C2681C22A70
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 06:17:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 170D2283DDA
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 06:19:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A177563A0;
-	Sat, 23 Dec 2023 06:16:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A46F763C7;
+	Sat, 23 Dec 2023 06:19:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="e0vN1LtS"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="SDeIrQ/x"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-io1-f46.google.com (mail-io1-f46.google.com [209.85.166.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB2D75664;
-	Sat, 23 Dec 2023 06:16:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f46.google.com with SMTP id ca18e2360f4ac-7ba834684abso103659339f.2;
-        Fri, 22 Dec 2023 22:16:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703312217; x=1703917017; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=v7njaXclry8FJLwii07+vYUOoiK5EVEJQBJVFl/kxqE=;
-        b=e0vN1LtS2itSAh7LXF60xnsKzuXL2jXcQROdmxTOR8nlR3a0IP6R7BbJMSAFXCxxQo
-         khJL+RCDQThN+HqTYi9pRv5ZUtPVf9EbhI24a3Y4yCeJ+LjCZm6zPzkVU+CtwaVFhr7v
-         7tqTBqu5LJ0IbU5YCzHYznXHDmpgQZ4PgA1ztTZWXwGMiGz4v99dqrU8GIE/QAnKycPI
-         tQ7JwpjTwvX+Gkr2A/oMXbD2zLlTJfSIgRORuw+Xn75Q2NPJmiU0KK3w0EtoJlqi98lT
-         k1GrK+rpAPLpF6Fa8+mUx5Z7E4xcXiQkIv6/yqTpW3pYKrcig4ygQLsqI5Djp7TXRWaE
-         0nTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703312217; x=1703917017;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=v7njaXclry8FJLwii07+vYUOoiK5EVEJQBJVFl/kxqE=;
-        b=glnJiF7G8DJnWA9sDVB5LksaU9jTI/mxm6+RPhvLZTE6xEnDO6BwV6xy7khGQwEVe4
-         hwrgL26FSuPys4Zu3eCAYoydWWwxWRlqM0Ne/kFppki76nj1UCFkzNvGKI9ZBEpX5vHX
-         HkG9BuxNA0A0XPxuVFnpPqS8q6MVUo91vTUx8jyssrxX0RTRVsTxm+307dPf1xaG1wxo
-         RcLXMt6oVnn5h6ssDhbFG13Tps1aXnThGd0cZUXuKGyrl3iCUNDzqhTVDAsfBVfPgp2v
-         PNupiOHlc7aKu8ytaUtlHeDcg+MbgLfGv5xqjPA/BHUmqqW7CO3z7gPUV1nmkC8RFxn0
-         q94w==
-X-Gm-Message-State: AOJu0YyAToffjB34ALdFMN1Ru8fhJgA0fT25umJ44rDgVoTxqG5WkEjV
-	vN2OOtZrRXW+NPCaOU0HvcvHbPgMa0nPqw==
-X-Google-Smtp-Source: AGHT+IF8YJ43SrzDQe7J5DlABGxtPTsbfEZgJo+fSABzEFKyifcAkhaVcjxBU16GO8jG8S++691oBg==
-X-Received: by 2002:a5e:c80e:0:b0:7ba:813c:39bd with SMTP id y14-20020a5ec80e000000b007ba813c39bdmr3096868iol.42.1703312216698;
-        Fri, 22 Dec 2023 22:16:56 -0800 (PST)
-Received: from localhost.localdomain ([2400:1a00:b060:2b26:f462:e3d9:c28:4c99])
-        by smtp.gmail.com with ESMTPSA id f26-20020aa78b1a000000b006d97f80c4absm3024061pfd.41.2023.12.22.22.16.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Dec 2023 22:16:56 -0800 (PST)
-From: Dipendra Khadka <kdipendra88@gmail.com>
-To: hdegoede@redhat.com,
-	mchehab@kernel.org,
-	sakari.ailus@linux.intel.com,
-	gregkh@linuxfoundation.org,
-	hpa@redhat.com
-Cc: Dipendra Khadka <kdipendra88@gmail.com>,
-	linux-media@vger.kernel.org,
-	linux-staging@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	linux-kernel-mentees@lists.linuxfoundation.org
-Subject: [PATCH] staging: media/atomisp/pci/base/circbuf/interface: Fix spelling mistake in ia_css_circbuf.h
-Date: Sat, 23 Dec 2023 12:01:47 +0545
-Message-Id: <20231223061647.78669-1-kdipendra88@gmail.com>
-X-Mailer: git-send-email 2.39.2 (Apple Git-143)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62BBF5381;
+	Sat, 23 Dec 2023 06:18:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=4JL4jEzhUoNsA3Zf36XE7Q8KtfPB+mWRBIWTPeF9M50=; b=SDeIrQ/xS7bSkDOGH8GjvxUAN4
+	wQXyJbTGprQzWPOXUsRcAtzXrpLy9NerJoQvYIB3ztzkNMv0442PNEyPaLdL+yKxWCB25YcAwTTd4
+	2naqgTn2HcJ5KNgH30l4A4I8/8q8tvb5CyE/hWAWgWI+62VJdkgI8mrg6esMlqapyl3o1W9aW6pwu
+	vYqqI9b4t2AoWsD5n4oWxm4gu3BopW/H0DK3FNWWLmMqLRzcluUCHyhG/yMdl57f5WLuK96RHGgWy
+	cv3+5IFjJLUJL3GdZHBdWenS7veMDsmlMbRPBEsTGlDXaFUng3n95ElcA7Jfeua5SUbcNQ6FIANP8
+	1qi8+6oQ==;
+Received: from [50.53.46.231] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1rGvLY-007S9v-1Y;
+	Sat, 23 Dec 2023 06:18:52 +0000
+Message-ID: <0717ebb1-851b-4fca-a761-c0aa2b17f751@infradead.org>
+Date: Fri, 22 Dec 2023 22:18:51 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] staging: media/atomisp/pci/base/circbuf/src: Fix spelling
+ mistakes in circbuf.c
+Content-Language: en-US
+To: Dipendra Khadka <kdipendra88@gmail.com>, hdegoede@redhat.com,
+ mchehab@kernel.org, sakari.ailus@linux.intel.com,
+ gregkh@linuxfoundation.org, hpa@redhat.com
+Cc: linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+ linux-kernel@vger.kernel.org, linux-kernel-mentees@lists.linuxfoundation.org
+References: <20231223060422.77789-1-kdipendra88@gmail.com>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20231223060422.77789-1-kdipendra88@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-codespell reported following spelling mistake
-in ia_css_circbuf.h as below:
 
-'''
-./base/circbuf/interface/ia_css_circbuf.h:76: poistion ==> position
-'''
-This patch fixes this spelling mistake.
 
-Signed-off-by: Dipendra Khadka <kdipendra88@gmail.com>
----
- .../media/atomisp/pci/base/circbuf/interface/ia_css_circbuf.h   | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 12/22/23 22:04, Dipendra Khadka wrote:
+> codespell reported following spelling mistakes
+> in circbuf.c as below:
+> 
+> '''
+> ./circbuf.c:27: whehter ==> whether
+> ./circbuf.c:132: offest ==> offset
+> '''
+> This patch fixes these spelling mistakes.
+> 
+> Signed-off-by: Dipendra Khadka <kdipendra88@gmail.com>
 
-diff --git a/drivers/staging/media/atomisp/pci/base/circbuf/interface/ia_css_circbuf.h b/drivers/staging/media/atomisp/pci/base/circbuf/interface/ia_css_circbuf.h
-index 0579deac5535..e9846951f4ed 100644
---- a/drivers/staging/media/atomisp/pci/base/circbuf/interface/ia_css_circbuf.h
-+++ b/drivers/staging/media/atomisp/pci/base/circbuf/interface/ia_css_circbuf.h
-@@ -73,7 +73,7 @@ uint32_t ia_css_circbuf_pop(
- 
- /**
-  * @brief Extract a value out of the circular buffer.
-- * Get a value at an arbitrary poistion in the circular
-+ * Get a value at an arbitrary position in the circular
-  * buffer. The user should call "ia_css_circbuf_is_empty()"
-  * to avoid accessing to an empty buffer.
-  *
+
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+
+Thanks.
+
+> ---
+>  drivers/staging/media/atomisp/pci/base/circbuf/src/circbuf.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/staging/media/atomisp/pci/base/circbuf/src/circbuf.c b/drivers/staging/media/atomisp/pci/base/circbuf/src/circbuf.c
+> index d9f7c143794d..2f484ef9d4b5 100644
+> --- a/drivers/staging/media/atomisp/pci/base/circbuf/src/circbuf.c
+> +++ b/drivers/staging/media/atomisp/pci/base/circbuf/src/circbuf.c
+> @@ -24,7 +24,7 @@
+>   **********************************************************************/
+>  /*
+>   * @brief Read the oldest element from the circular buffer.
+> - * Read the oldest element WITHOUT checking whehter the
+> + * Read the oldest element WITHOUT checking whether the
+>   * circular buffer is empty or not. The oldest element is
+>   * also removed out from the circular buffer.
+>   *
+> @@ -129,7 +129,7 @@ uint32_t ia_css_circbuf_extract(ia_css_circbuf_t *cb, int offset)
+>  	u32 src_pos;
+>  	u32 dest_pos;
+>  
+> -	/* get the maximum offest */
+> +	/* get the maximum offset */
+>  	max_offset = ia_css_circbuf_get_offset(cb, cb->desc->start, cb->desc->end);
+>  	max_offset--;
+>  
+
 -- 
-2.39.2 (Apple Git-143)
-
+#Randy
+https://people.kernel.org/tglx/notes-about-netiquette
+https://subspace.kernel.org/etiquette.html
 
