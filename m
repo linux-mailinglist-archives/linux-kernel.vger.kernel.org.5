@@ -1,111 +1,135 @@
-Return-Path: <linux-kernel+bounces-10394-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10395-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95FE581D3D0
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 12:44:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EFB8381D3D6
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 12:49:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4788B283887
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 11:44:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9AFBF283935
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 11:49:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98030CA78;
-	Sat, 23 Dec 2023 11:44:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F3B9D2F9;
+	Sat, 23 Dec 2023 11:49:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="eUxlpxCZ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4A3FCA53;
-	Sat, 23 Dec 2023 11:44:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sntech.de
-Received: from i53875b78.versanet.de ([83.135.91.120] helo=diego.localnet)
-	by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <heiko@sntech.de>)
-	id 1rH0Q9-0001Y7-IL; Sat, 23 Dec 2023 12:43:57 +0100
-From: Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To: Neil Armstrong <neil.armstrong@linaro.org>,
- Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Sandy Huang <hjc@rock-chips.com>,
- Mark Yao <markyao0591@gmail.com>, Diederik de Haas <didi.debian@cknow.org>,
- Segfault <awarnecke002@hotmail.com>, Arnaud Ferraris <aferraris@debian.org>,
- Manuel Traut <manut@mecka.net>
-Cc: dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-rockchip@lists.infradead.org, Manuel Traut <manut@mecka.net>
-Subject: Re: [PATCH 5/6] arm64: dts: rockchip: Fix some dtb-check warnings
-Date: Sat, 23 Dec 2023 12:43:56 +0100
-Message-ID: <2337863.6tgchFWduM@diego>
-In-Reply-To: <20231222-pinetab2-v1-5-e148a7f61bd1@mecka.net>
-References:
- <20231222-pinetab2-v1-0-e148a7f61bd1@mecka.net>
- <20231222-pinetab2-v1-5-e148a7f61bd1@mecka.net>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6C11D260;
+	Sat, 23 Dec 2023 11:49:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3BNBmWw8070915;
+	Sat, 23 Dec 2023 05:48:32 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1703332112;
+	bh=ixx5eKC7D350eGsWjnFnGkx+0CQd+9Mx6yAwL3APhkM=;
+	h=From:To:CC:Subject:Date:References:In-Reply-To;
+	b=eUxlpxCZasYOO9/dHe5eZHzfdRBoXPkmjVk3GXo+b7lqx7QYDsDgjiBw5ATfGo1xJ
+	 0L9PK841lxYveLyQxDYP6/NGagAyjpw/9lodPELpfyTEJ2vkTb3VkNY+XoVm9a9WK9
+	 gI/6OOiYEc7Zkhi8zo4Mqy+RPoDMOtsUD4eJQhrg=
+Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
+	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3BNBmWgK109334
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Sat, 23 Dec 2023 05:48:32 -0600
+Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Sat, 23
+ Dec 2023 05:48:31 -0600
+Received: from DLEE101.ent.ti.com ([fe80::91ee:60bc:bfb7:851c]) by
+ DLEE101.ent.ti.com ([fe80::91ee:60bc:bfb7:851c%18]) with mapi id
+ 15.01.2507.023; Sat, 23 Dec 2023 05:48:31 -0600
+From: "Ding, Shenghao" <shenghao-ding@ti.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+CC: "broonie@kernel.org" <broonie@kernel.org>,
+        "conor+dt@kernel.org"
+	<conor+dt@kernel.org>,
+        "krzysztof.kozlowski@linaro.org"
+	<krzysztof.kozlowski@linaro.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "Lu, Kevin" <kevin-lu@ti.com>, "Xu, Baojun" <baojun.xu@ti.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "perex@perex.cz"
+	<perex@perex.cz>,
+        "pierre-louis.bossart@linux.intel.com"
+	<pierre-louis.bossart@linux.intel.com>,
+        "13916275206@139.com"
+	<13916275206@139.com>,
+        "linux-sound@vger.kernel.org"
+	<linux-sound@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>,
+        "liam.r.girdwood@intel.com"
+	<liam.r.girdwood@intel.com>,
+        "soyer@irl.hu" <soyer@irl.hu>, "tiwai@suse.de"
+	<tiwai@suse.de>,
+        "Gupta, Peeyush" <peeyush@ti.com>,
+        "Navada Kanyana, Mukund"
+	<navada@ti.com>
+Subject: RE: [EXTERNAL] Re: [PATCH v2 1/5] ASoC: dt-bindings: remove tas2563
+ from yaml
+Thread-Topic: [EXTERNAL] Re: [PATCH v2 1/5] ASoC: dt-bindings: remove tas2563
+ from yaml
+Thread-Index: AQHaM/ZoVp/s6ZS3j0yS0WAx9ZwYwbC0R4MAgAJ4v4A=
+Date: Sat, 23 Dec 2023 11:48:31 +0000
+Message-ID: <b81d5b15036c4a1b8f338ab1b2b1f981@ti.com>
+References: <20231221101346.429-1-shenghao-ding@ti.com>
+ <ZYReyHQxMAe-DKq4@smile.fi.intel.com>
+In-Reply-To: <ZYReyHQxMAe-DKq4@smile.fi.intel.com>
+Accept-Language: en-US, zh-CN
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-exclaimer-md-config: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-
-Am Freitag, 22. Dezember 2023, 12:05:45 CET schrieb Manuel Traut:
-> devicetree checks show some warnings:
-> 
-> video-codec@fdea0400: 'interrupt-names' is a required property
-> from schema $id: http://devicetree.org/schemas/media/rockchip-vpu.yaml#
-> 
-> hdmi@fe0a0000: Unevaluated properties are not allowed ('power-domains' were unexpected)
-> from schema $id: http://devicetree.org/schemas/display/rockchip/rockchip,dw-hdmi.yaml#
-> 
-> i2s@fe420000: reset-names:0: 'm' is not one of ['tx-m', 'rx-m']
-> from schema $id: http://devicetree.org/schemas/sound/rockchip,i2s-tdm.yaml#
-> 
-> phy@fe870000: 'power-domains' is a required property
-> from schema $id: http://devicetree.org/schemas/phy/rockchip-inno-csi-dphy.yaml#
-> 
-> Fix them by
->   - setting a interrupt-name for the video-codec
->   - remove the unevaluated power-domain property from hdmi
->   - set reset-names according to the spec for i2s
->   - add a power-domain property for the CSI phy
-> 
-> Signed-off-by: Manuel Traut <manut@mecka.net>
-> ---
->  arch/arm64/boot/dts/rockchip/rk356x.dtsi | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/rockchip/rk356x.dtsi b/arch/arm64/boot/dts/rockchip/rk356x.dtsi
-> index c19c0f1b3778..651156759582 100644
-> --- a/arch/arm64/boot/dts/rockchip/rk356x.dtsi
-> +++ b/arch/arm64/boot/dts/rockchip/rk356x.dtsi
-> @@ -597,6 +597,7 @@ vpu: video-codec@fdea0400 {
->  		compatible = "rockchip,rk3568-vpu";
->  		reg = <0x0 0xfdea0000 0x0 0x800>;
->  		interrupts = <GIC_SPI 139 IRQ_TYPE_LEVEL_HIGH>;
-> +		interrupt-names = "vdpu";
->  		clocks = <&cru ACLK_VPU>, <&cru HCLK_VPU>;
->  		clock-names = "aclk", "hclk";
->  		iommus = <&vdpu_mmu>;
-> @@ -819,7 +820,6 @@ hdmi: hdmi@fe0a0000 {
->  		clock-names = "iahb", "isfr", "cec", "ref";
->  		pinctrl-names = "default";
->  		pinctrl-0 = <&hdmitx_scl &hdmitx_sda &hdmitxm0_cec>;
-> -		power-domains = <&power RK3568_PD_VO>;
-
-are you really sure that the hdmi controller is _not_ part of
-the VO powerdomain? I.e. Depending on that knowledge it could
-also simply be necessary to add the property to the binding.
 
 
-Heiko
 
+> -----Original Message-----
+> From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Sent: Thursday, December 21, 2023 11:51 PM
+> To: Ding, Shenghao <shenghao-ding@ti.com>
+> Cc: broonie@kernel.org; conor+dt@kernel.org;
+> krzysztof.kozlowski@linaro.org; robh+dt@kernel.org; Lu, Kevin <kevin-
+> lu@ti.com>; Xu, Baojun <baojun.xu@ti.com>; devicetree@vger.kernel.org;
+> lgirdwood@gmail.com; perex@perex.cz; pierre-louis.bossart@linux.intel.com=
+;
+> 13916275206@139.com; linux-sound@vger.kernel.org; linux-
+> kernel@vger.kernel.org; liam.r.girdwood@intel.com; soyer@irl.hu;
+> tiwai@suse.de; Gupta, Peeyush <peeyush@ti.com>; Navada Kanyana,
+> Mukund <navada@ti.com>
+> Subject: [EXTERNAL] Re: [PATCH v2 1/5] ASoC: dt-bindings: remove tas2563
+> from yaml
+>=20
+> On Thu, Dec 21, 2023 at 06:13:41PM +0800, Shenghao Ding wrote:
+> > Remove tas2563 from tas2562, it will be supported in tas2781 to better
+> > support dsp mode.
+>=20
+> DSP
+>=20
+> Shouldn't this patch go after the actual change happen?
+> I don't know the answer myself, I would like to hear DT people on this.
+>=20
+tas2781 driver can be reused as tas2563 driver, except for the DSP firmware=
+ file,=20
+and both DSP firmware files complied with TI SmartAMP DSP spec 3.0.
+>=20
+> --
+> With Best Regards,
+> Andy Shevchenko
+>=20
+>=20
 
 
