@@ -1,43 +1,43 @@
-Return-Path: <linux-kernel+bounces-10309-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10310-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D99A881D284
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 06:32:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CD6581D288
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 06:36:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8E8A91F230DC
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 05:32:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D097D1F230DC
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 05:36:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D5955664;
-	Sat, 23 Dec 2023 05:32:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAF265664;
+	Sat, 23 Dec 2023 05:36:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="os/Ze/Ns"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Jks/bfwF"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38E5F46AF;
-	Sat, 23 Dec 2023 05:32:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96F004A34;
+	Sat, 23 Dec 2023 05:36:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
 	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
 	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=W9Kx4nF3KFPQK2kkiqXk55C73jfsyS/GcCxcI4u85jQ=; b=os/Ze/Ns53J+3516r7Yo/l7+H6
-	becg9B4gFaIMBtZ9K9I5E9Atd2NWE6xU0lr5XSCrUcKq61IIw9Gd7b+0TPQa2ug+8+ud+/IpTocVL
-	xMudz8BG7wR+gXWbgClOXDIXW0Ke5NipP3HS+3ZF4F5rnRPcAK0C8XezC2GXKaORSHwYz8+dDnffQ
-	9ROjv/IE+b44qEtVoIZnFxNNHsDMRP9ayAFfSJ7wYzq6I/hzF8UPKZp8sB5yczlODm8BJnNjL7U9G
-	MFevzweyCcI+6WsDR+gWnxGujHNfJV80W8gdmkI8CZ6fqZ5D1sMvEVnsDV1KRJ95HwppoXeEa/dml
-	Bp96WCkg==;
+	bh=UNrI5d+OwOlR9bsEA+kLfKKLgi1B2PVQGG+8MWXSfz8=; b=Jks/bfwFvpRCPEETX4cvjl3DBG
+	WM7g0tH+gittme5QDF7URqwshe9rjnSTGGpkQBFM+8xFCQHTwzWBLVo+XO/Pf5a1oodFVEE0BHqE5
+	bjdjfscqs1SL0+Cq9yW2jN2wnkv08bdBleGPxQrwI2dxDfNdK8hsk6uJCdW/hnJ52ymU3tN0pQ92z
+	DhbZlgoic+nhre1dbDqkErhVuvlV0YB6AHY/EiwM+erncW2cSxVrpSoGbgURvMHOeIWgW7HnT/hhG
+	XQETPqt1wZg1GCeEWa3LOuuPH/Xg9eXr3egNsheJrZDwIlGTqsB9Womnt1eC7ck+0Sv9inHDR+7gM
+	b0v0YxmA==;
 Received: from [50.53.46.231] (helo=[192.168.254.15])
 	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1rGuco-007Q9m-1F;
-	Sat, 23 Dec 2023 05:32:38 +0000
-Message-ID: <f9991fef-e50e-4085-ad9c-4da494d2a296@infradead.org>
-Date: Fri, 22 Dec 2023 21:32:37 -0800
+	id 1rGugP-007QLP-1E;
+	Sat, 23 Dec 2023 05:36:21 +0000
+Message-ID: <9be5f009-9fcb-4299-9d2f-13b1263d83e1@infradead.org>
+Date: Fri, 22 Dec 2023 21:36:20 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -45,103 +45,44 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] staging: media: atomisp: pci: Fix spelling mistake in
- ia_css_acc_types.h
+Subject: Re: fs/bcachefs/io_write.c:1570: warning: Function parameter or
+ struct member 'bch2_write' not described in 'CLOSURE_CALLBACK'
 Content-Language: en-US
-To: Dipendra Khadka <kdipendra88@gmail.com>
-Cc: hdegoede@redhat.com, mchehab@kernel.org, sakari.ailus@linux.intel.com,
- gregkh@linuxfoundation.org, hpa@redhat.com, linux-media@vger.kernel.org,
- linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
- linux-kernel-mentees@lists.linuxfoundation.org
-References: <20231223051108.74711-1-kdipendra88@gmail.com>
- <d1c18155-9c8e-4164-a2bf-5eab3d42995d@infradead.org>
- <CAEKBCKP+-6=JuRYtHU7YVstfZzzbTdvm9L4PBvOWAgKj2xaOrA@mail.gmail.com>
+To: kernel test robot <lkp@intel.com>, Kent Overstreet <kmo@daterainc.com>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+ Linux Doc Mailing List <linux-doc@vger.kernel.org>
+References: <202312182040.naGasU5s-lkp@intel.com>
 From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <CAEKBCKP+-6=JuRYtHU7YVstfZzzbTdvm9L4PBvOWAgKj2xaOrA@mail.gmail.com>
+In-Reply-To: <202312182040.naGasU5s-lkp@intel.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 
 
-On 12/22/23 21:29, Dipendra Khadka wrote:
-> Hi Randy,
+On 12/18/23 04:58, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   ceb6a6f023fd3e8b07761ed900352ef574010bcb
+> commit: d4e3b928ab487a8aecd1f6a140b40ac365116cfb closures: CLOSURE_CALLBACK() to fix type punning
+> date:   3 weeks ago
+> config: x86_64-buildonly-randconfig-001-20231218 (https://download.01.org/0day-ci/archive/20231218/202312182040.naGasU5s-lkp@intel.com/config)
+> compiler: gcc-11 (Debian 11.3.0-12) 11.3.0
+> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231218/202312182040.naGasU5s-lkp@intel.com/reproduce)
 > 
-> On Sat, 23 Dec 2023 at 11:03, Randy Dunlap <rdunlap@infradead.org> wrote:
->>
->> Hi Dipendra,
->>
->> On 12/22/23 21:11, Dipendra Khadka wrote:
->>> codespell reported spelling mistakes in
->>> ia_css_acc_types.h as below:
->>>
->>> '''
->>> ia_css_acc_types.h:87: cummulative ==> cumulative
->>> ia_css_acc_types.h:411: descibes ==> describes
->>> '''
->>>
->>> This patch fixes these spelling mistakes.
->>>
->>> Signed-off-by: Dipendra Khadka <kdipendra88@gmail.com>
->>
->> This patch is an improvement so it could be merged as is IMO.
->> But...
->>
->>> ---
->>> v2:
->>>  - Previously only corrected spelling  mistake reported by checkpatch.pl.
->>>  - All spelling mistakes reported by codespell are fixed.
->>> v1: https://lore.kernel.org/lkml/20231222200350.2024-1-kdipendra88@gmail.com/
->>>
->>>  drivers/staging/media/atomisp/pci/ia_css_acc_types.h | 4 ++--
->>>  1 file changed, 2 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/drivers/staging/media/atomisp/pci/ia_css_acc_types.h b/drivers/staging/media/atomisp/pci/ia_css_acc_types.h
->>> index d6e52b4971d6..1dc2085ecd61 100644
->>> --- a/drivers/staging/media/atomisp/pci/ia_css_acc_types.h
->>> +++ b/drivers/staging/media/atomisp/pci/ia_css_acc_types.h
->>> @@ -84,7 +84,7 @@ struct ia_css_blob_info {
->>>               memory_offsets;  /** offset wrt hdr in bytes */
->>>       u32 prog_name_offset;  /** offset wrt hdr in bytes */
->>>       u32 size;                       /** Size of blob */
->>> -     u32 padding_size;       /** total cummulative of bytes added due to section alignment */
->>> +     u32 padding_size;       /** total cumulative of bytes added due to section alignment */
->>
->> I apologize for not looking at your v1 patch carefully.
->> The comment above would be much better as
->>
->>                                 /** total accumulation of bytes added due to section alignment */
->>
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202312182040.naGasU5s-lkp@intel.com/
 > 
-> So, would you like me to change "cummulative" to accumulation or
-> should I wait what other maintainer(s) would say?
+> All warnings (new ones prefixed by >>):
+> 
+>>> fs/bcachefs/io_write.c:1570: warning: Function parameter or struct member 'bch2_write' not described in 'CLOSURE_CALLBACK'
+>    fs/bcachefs/io_write.c:1570: warning: expecting prototype for bch2_write(). Prototype was for CLOSURE_CALLBACK() instead
+> 
 > 
 
-I think just wait for a few days to see what other review comments there are.
+This needs to be fixed in scripts/kernel-doc AFAIK.
 
-> 
->> And if the maintainer(s) want to take it as is:
->> Acked-by: Randy Dunlap <rdunlap@infradead.org>
->>
->> Thanks.
->>
->>
->>>       u32 icache_source;      /** Position of icache in blob */
->>>       u32 icache_size;        /** Size of icache section */
->>>       u32 icache_padding;/** bytes added due to icache section alignment */
->>> @@ -408,7 +408,7 @@ struct ia_css_acc_sp {
->>>  };
->>>
->>>  /* Acceleration firmware descriptor.
->>> -  * This descriptor descibes either SP code (stand-alone), or
->>> +  * This descriptor describes either SP code (stand-alone), or
->>>    * ISP code (a separate pipeline stage).
->>>    */
->>>  struct ia_css_acc_fw_hdr {
->>
->> --
->> #Randy
->> https://people.kernel.org/tglx/notes-about-netiquette
->> https://subspace.kernel.org/etiquette.html
+Cc:ing linux-doc mailing list.
 
 -- 
 #Randy
