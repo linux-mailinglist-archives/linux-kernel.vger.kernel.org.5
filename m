@@ -1,134 +1,145 @@
-Return-Path: <linux-kernel+bounces-10280-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10281-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D365F81D214
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 05:10:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4BD5A81D217
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 05:11:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 856F91F22AE1
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 04:10:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AD8BF1F22CA5
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 04:11:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B37BD17D4;
-	Sat, 23 Dec 2023 04:10:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E79AA63C1;
+	Sat, 23 Dec 2023 04:10:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="j3WbecYv"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JmZOmP5G"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out203-205-251-53.mail.qq.com (out203-205-251-53.mail.qq.com [203.205.251.53])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 557841368;
-	Sat, 23 Dec 2023 04:10:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1703304329; bh=9xIgd02ObOuj54s7xcHHTnWTHw+ZVQIeUoYaZEUZRtw=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=j3WbecYv+HgFEFXRYnnKihyWjtqOgkwwf45d43gtPTsiQ2M6n+jnKaEFieRGztFH0
-	 SPmxaWpwj5VOx4XxB85XGYtNmJC3XzWYWooRh2YZiLu5po/D/aze8CiB9OC4zg1/1C
-	 SpIIAFQ7AzEyeyzdq7VkBI6aDqd4Ym78Sm/KCT4g=
-Received: from pek-lxu-l1.wrs.com ([111.198.225.215])
-	by newxmesmtplogicsvrszc5-0.qq.com (NewEsmtp) with SMTP
-	id 15B0E030; Sat, 23 Dec 2023 12:05:27 +0800
-X-QQ-mid: xmsmtpt1703304327t3rpz07u0
-Message-ID: <tencent_C789B86EF5AED70CAF27CF06EF52C1C66106@qq.com>
-X-QQ-XMAILINFO: MQ+wLuVvI2LQ56/bDmN3iU/naJcSLOFboafrVjtuRh941spThL5B2uJoSzK3G9
-	 E/rQ0Ia7ACu8X2B71OeOkGnwblrpuiOVWee9takTREre8XbtSWRozwp0KWC2fbl7qFK6kgW5rzgj
-	 FyDWFiorRCtSaJ1kZwHxJfqkD4ETkNirZMX8J3GtMZyQb8iK34lj+S6gJcDtQO2Yx20gqIXs8pZs
-	 WLgvQ08w4m3Ey0T7G30q3K8+R/P0A3r9pDpxhgjq/fbCz9KLYFXh84jEjztGvq34OavZ7pPEn28W
-	 QLGZpjsyYVPXJcT1Qd48DLNhlR/s1IsV3hksZnG7tB2sAJYE8mVZ/IzbTKttOFQpNVD9I2+HKnyq
-	 h2XFdmqZrCL30snllUajwlToNB0r9LmiCVINnviQwdgacPFz7ibxKu7ihFKhv5X4k8E6z3isVCGR
-	 nMzyJv/ShTF8V1JExLzJmNZVO2elVa/su5W2TjMFxUakmjrfMOA/p+VJU3XMyhVgjy49mDx8ThVK
-	 qPmxNbBxfEHXwkTDFmnzYIb/42NierzHg6A5gjMgojwzv9ftHFHBhXjx1UTDsZNreU1S7X1J5oF0
-	 MjeI6c2iGnCueVDUMKhuizQJ4GlDqrwjxwYk1Kddx+DLoK4vLsULR2UqirasYM+M1vhB+l7D3MOs
-	 ZUzQMtAwa6gIZRfmoRyf9r/JfQ4R2XNOvY75mg/mOuFUWSeKQknZz41ufY2MG+Z6crlQ56i50nGg
-	 +SRy2mQWAROpQqttocnfYdJfoKxfXgkpXuF3TAoKfTEZ0gZKlzBtkMhH38BSt0PK2FvH1L6yf3q+
-	 8jRbLRtXEwYyYUPgY3babOIvdsvGSFPkUPGAJdM2ea89ksl97+I/tHNCI8xdQEgvGZVROFxXf2sP
-	 Oo80f/3qBRDNLMkVAuqB6ufF0KSxXPH6lb3mUd2aImqOn8QcQaBxl/wAYjDv/vEQ==
-X-QQ-XMRINFO: Nq+8W0+stu50PRdwbJxPCL0=
-From: Edward Adam Davis <eadavis@qq.com>
-To: syzbot+f987ceaddc6bcc334cde@syzkaller.appspotmail.com
-Cc: almaz.alexandrovich@paragon-software.com,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	ntfs3@lists.linux.dev,
-	syzkaller-bugs@googlegroups.com
-Subject: [PATCH] fs/ntfs3: fix warning in ntfs_load_attr_list
-Date: Sat, 23 Dec 2023 12:05:27 +0800
-X-OQ-MSGID: <20231223040527.1940850-2-eadavis@qq.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <0000000000006ee8fe060d16e2a5@google.com>
-References: <0000000000006ee8fe060d16e2a5@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30D146108;
+	Sat, 23 Dec 2023 04:10:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AACCBC433C8;
+	Sat, 23 Dec 2023 04:10:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703304655;
+	bh=REV9/Zx5FgKggOJ8WxjNU6ABdvkJMIvl6xbQ7ra4ahs=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=JmZOmP5GZ4X1zSpVjaJcxWvbZ0gV/+qqDcOvY0z9iwMuJQgxr1hOazBnVSBwCl/tj
+	 CAg9g3pUOcPFc+V41306d2/vbQggAuVV3VVy+6LGZW5/YlV64iwh6vqd7HakhZeq9L
+	 LS5XrUMOKvMJGHu4GvABy43ePZgwUi3NYFjFaIx0sCiOUZvz/LvLAy/9QuESx5Vku5
+	 IpIaEsnUDQBYRzA1kuWpqsqDRHjSlaLp6hB4DXMTDa4xMDdZw1HG/nwwfxIiF3aHkY
+	 itxeWdY3J/Cr4P6IiWFF0B/J9WTgq1EYVx3NVa5cniv/RfZMK/fyXghVi1brPWz/gG
+	 yQpi0RQDc9A9Q==
+Received: by mail-oo1-f43.google.com with SMTP id 006d021491bc7-5945c41e32cso71190eaf.0;
+        Fri, 22 Dec 2023 20:10:55 -0800 (PST)
+X-Gm-Message-State: AOJu0YyvLwJBeuT9u12LuJg1WxMhsZTKEVpr9urlQtqxk7VhxjpFdPuk
+	GpBwHX9K+CQUGFu/n1FN4ycRSySm+VuUGAWjwLo=
+X-Google-Smtp-Source: AGHT+IHf0WKxpXoa1Zs4E2Uu5+s9HyvBN6AATppCUNZ9xo4bMSjfttgvbiykHjLqhGscQ0rIAPE35s735pXmZaakrKs=
+X-Received: by 2002:a05:6870:a706:b0:203:f963:d969 with SMTP id
+ g6-20020a056870a70600b00203f963d969mr2737463oam.34.1703304655002; Fri, 22 Dec
+ 2023 20:10:55 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20231122221814.139916-1-deller@kernel.org> <20231122221814.139916-4-deller@kernel.org>
+ <CAK7LNARgQ0t=4dfkJXDhSzdFGbxDuN2kPGxTgDR7siCYTtGU5w@mail.gmail.com> <7a504ceb-da00-4c0b-acc0-3ab48fb60f5e@gmx.de>
+In-Reply-To: <7a504ceb-da00-4c0b-acc0-3ab48fb60f5e@gmx.de>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Sat, 23 Dec 2023 13:10:18 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAT5gyn0C9EJhh1EeFT7gF0rOudWcdqAVN=+C4jR42W90w@mail.gmail.com>
+Message-ID: <CAK7LNAT5gyn0C9EJhh1EeFT7gF0rOudWcdqAVN=+C4jR42W90w@mail.gmail.com>
+Subject: Re: [PATCH 3/4] vmlinux.lds.h: Fix alignment for __ksymtab*,
+ __kcrctab_* and .pci_fixup sections
+To: Helge Deller <deller@gmx.de>
+Cc: deller@kernel.org, linux-kernel@vger.kernel.org, 
+	Arnd Bergmann <arnd@arndb.de>, linux-modules@vger.kernel.org, linux-arch@vger.kernel.org, 
+	Luis Chamberlain <mcgrof@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-kvmalloc needs to check __GFP_NOWARN, so this flag should be passed before
-applying for memory.
+On Fri, Dec 22, 2023 at 6:02=E2=80=AFPM Helge Deller <deller@gmx.de> wrote:
+>
+> On 12/21/23 14:07, Masahiro Yamada wrote:
+> > On Thu, Nov 23, 2023 at 7:18=E2=80=AFAM <deller@kernel.org> wrote:
+> >>
+> >> From: Helge Deller <deller@gmx.de>
+> >>
+> >> On 64-bit architectures without CONFIG_HAVE_ARCH_PREL32_RELOCATIONS
+> >> (e.g. ppc64, ppc64le, parisc, s390x,...) the __KSYM_REF() macro stores
+> >> 64-bit pointers into the __ksymtab* sections.
+> >> Make sure that the start of those sections is 64-bit aligned in the vm=
+linux
+> >> executable, otherwise unaligned memory accesses may happen at runtime.
+> >
+> >
+> > Are you solving a real problem?
+>
+> Not any longer.
+> I faced a problem on parisc when neither #1 and #3 were applied
+> because of a buggy unalignment exception handler. But this is
+> not something which I would count a "real generic problem".
+>
+> > 1/4 already ensures the proper alignment of __ksymtab*, doesn't it?
+>
+> Yes, it does.
+>
+> >...
+> > So, my understanding is this patch is unneeded.
+>
+> Yes, it's not required and I'm fine if we drop it.
+>
+> But regarding __kcrctab:
+>
+> >> @@ -498,6 +501,7 @@
+> >>          }                                                            =
+   \
+> >>                                                                       =
+   \
+> >>          /* Kernel symbol table: Normal symbols */                    =
+   \
+> >> +       . =3D ALIGN(4);                                               =
+    \
+> >>          __kcrctab         : AT(ADDR(__kcrctab) - LOAD_OFFSET) {      =
+   \
+> >>                  __start___kcrctab =3D .;                             =
+     \
+> >>                  KEEP(*(SORT(___kcrctab+*)))                          =
+   \
+>
+> I think this patch would be beneficial to get proper alignment:
+>
+> diff --git a/include/linux/export-internal.h b/include/linux/export-inter=
+nal.h
+> index cd253eb51d6c..d445705ac13c 100644
+> --- a/include/linux/export-internal.h
+> +++ b/include/linux/export-internal.h
+> @@ -64,6 +64,7 @@
+>
+>   #define SYMBOL_CRC(sym, crc, sec)   \
+>          asm(".section \"___kcrctab" sec "+" #sym "\",\"a\""     "\n" \
+> +           ".balign 4"                                         "\n" \
+>              "__crc_" #sym ":"                                   "\n" \
+>              ".long " #crc                                       "\n" \
+>              ".previous"                                         "\n")
 
-Fixes: fc471e39e38f ("fs/ntfs3: Use kvmalloc instead of kmalloc(... __GFP_NOWARN)")
-Reported-and-tested-by: syzbot+f987ceaddc6bcc334cde@syzkaller.appspotmail.com
-Signed-off-by: Edward Adam Davis <eadavis@qq.com>
----
- fs/ntfs3/attrlist.c | 4 ++--
- fs/ntfs3/bitmap.c   | 2 +-
- fs/ntfs3/super.c    | 2 +-
- 3 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/fs/ntfs3/attrlist.c b/fs/ntfs3/attrlist.c
-index 7c01735d1219..e631ecc1b9df 100644
---- a/fs/ntfs3/attrlist.c
-+++ b/fs/ntfs3/attrlist.c
-@@ -53,7 +53,7 @@ int ntfs_load_attr_list(struct ntfs_inode *ni, struct ATTRIB *attr)
- 	if (!attr->non_res) {
- 		lsize = le32_to_cpu(attr->res.data_size);
- 		/* attr is resident: lsize < record_size (1K or 4K) */
--		le = kvmalloc(al_aligned(lsize), GFP_KERNEL);
-+		le = kvmalloc(al_aligned(lsize), GFP_KERNEL | __GFP_NOWARN);
- 		if (!le) {
- 			err = -ENOMEM;
- 			goto out;
-@@ -91,7 +91,7 @@ int ntfs_load_attr_list(struct ntfs_inode *ni, struct ATTRIB *attr)
- 		 * the result is 16M bytes per attribute list.
- 		 * Use kvmalloc to allocate in range [several Kbytes - dozen Mbytes]
- 		 */
--		le = kvmalloc(al_aligned(lsize), GFP_KERNEL);
-+		le = kvmalloc(al_aligned(lsize), GFP_KERNEL | __GFP_NOWARN);
- 		if (!le) {
- 			err = -ENOMEM;
- 			goto out;
-diff --git a/fs/ntfs3/bitmap.c b/fs/ntfs3/bitmap.c
-index 63f14a0232f6..49e660be9a0f 100644
---- a/fs/ntfs3/bitmap.c
-+++ b/fs/ntfs3/bitmap.c
-@@ -660,7 +660,7 @@ int wnd_init(struct wnd_bitmap *wnd, struct super_block *sb, size_t nbits)
- 		wnd->bits_last = wbits;
- 
- 	wnd->free_bits =
--		kvmalloc_array(wnd->nwnd, sizeof(u16), GFP_KERNEL | __GFP_ZERO);
-+		kvmalloc_array(wnd->nwnd, sizeof(u16), GFP_KERNEL | __GFP_ZERO | __GFP_NOWARN);
- 
- 	if (!wnd->free_bits)
- 		return -ENOMEM;
-diff --git a/fs/ntfs3/super.c b/fs/ntfs3/super.c
-index 9153dffde950..87778834aa9c 100644
---- a/fs/ntfs3/super.c
-+++ b/fs/ntfs3/super.c
-@@ -1413,7 +1413,7 @@ static int ntfs_fill_super(struct super_block *sb, struct fs_context *fc)
- 	}
- 
- 	bytes = inode->i_size;
--	sbi->def_table = t = kvmalloc(bytes, GFP_KERNEL);
-+	sbi->def_table = t = kvmalloc(bytes, GFP_KERNEL | __GFP_NOWARN);
- 	if (!t) {
- 		err = -ENOMEM;
- 		goto put_inode_out;
--- 
-2.43.0
+Yes!
 
+
+Please send a patch with this:
+
+
+Fixes: f3304ecd7f06 ("linux/export: use inline assembler to populate
+symbol CRCs")
+
+
+
+--=20
+Best Regards
+Masahiro Yamada
 
