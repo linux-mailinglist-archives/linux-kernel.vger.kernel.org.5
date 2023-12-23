@@ -1,115 +1,104 @@
-Return-Path: <linux-kernel+bounces-10573-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10574-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39F8281D65F
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 20:43:55 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9740681D662
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 20:46:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EA383283434
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 19:43:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3726FB22033
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 19:46:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F14315E99;
-	Sat, 23 Dec 2023 19:43:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 262A415EB2;
+	Sat, 23 Dec 2023 19:45:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fh2PnoYN"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA91718053;
-	Sat, 23 Dec 2023 19:43:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
-Received: from [192.168.1.104] (31.173.85.112) by msexch01.omp.ru
- (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Sat, 23 Dec
- 2023 22:43:34 +0300
-Subject: Re: [PATCH net v2 1/1] net: ravb: Wait for operation mode to be
- applied
-To: Claudiu <claudiu.beznea@tuxon.dev>, <davem@davemloft.net>,
-	<edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-	<yoshihiro.shimoda.uh@renesas.com>, <wsa+renesas@sang-engineering.com>,
-	<mitsuhiro.kimura.kc@renesas.com>
-CC: <netdev@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, Claudiu Beznea
-	<claudiu.beznea.uj@bp.renesas.com>
-References: <20231222113552.2049088-1-claudiu.beznea.uj@bp.renesas.com>
- <20231222113552.2049088-2-claudiu.beznea.uj@bp.renesas.com>
-From: Sergey Shtylyov <s.shtylyov@omp.ru>
-Organization: Open Mobile Platform
-Message-ID: <110a8720-e7a6-ebf1-b286-4834dc32651c@omp.ru>
-Date: Sat, 23 Dec 2023 22:43:33 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07B891D681;
+	Sat, 23 Dec 2023 19:45:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-550dd0e3304so3429942a12.1;
+        Sat, 23 Dec 2023 11:45:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703360755; x=1703965555; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ewT0As/HA/i0HnEBzeVFxgMh9tztpLDF7fJw+JJpgu0=;
+        b=fh2PnoYNXfkptMSntRokuuDOlaw+DOkC4dI29CZMb0QQQmpWGMb+ZVY3ZQp54cZX2j
+         Ub1rBFn0vab3EHWLsEm9AklpxsO4G6ePu+cIs2PSvUVF0uuFOUxe3n/ESIUINK4nDJr2
+         LvQEbjjoBEIW64Sf9BtYlmxGWfxWP1xjJ57FGHvuZ0D6GbGz3hCDdAuzwlnuIkXNAoN8
+         UZu5tFWRkbEwXCp1ZpWCJ6+30KFlybIu5vjaOcaVJRuJeMpEub6iVP+2KJq/Nf4lJ7ii
+         gOXHhG+oRzKzJMW0TgwaEky9ciIu336R0LiLyTRmpYqDQ/sGZneGAA3Bix9wH/PgutgW
+         utKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703360755; x=1703965555;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ewT0As/HA/i0HnEBzeVFxgMh9tztpLDF7fJw+JJpgu0=;
+        b=qm+HDLqO8gybA9s7qf+MpYsSUpf/4nuI6XVgh72hGWc2hNaVfqW0bWfD7mWeN+SAxm
+         6VrrwdklHH8KozJimjaqPS37sG7RdaiMbNWodZ2A+vOFtLpacsfpudjzGRGH6Om3qmnW
+         2S/mYpbdrxVWHVWG58TAzE0s6YUY6CeUAYoelSlp8DKBH6reX2TQV9763eAQ/1HywMLW
+         rFkpSEsNvC1CheL/5lFQ9/EENFzCOv3qliVTf4fAOQLjagFkSOfP0lqtmTi26EZsYIkq
+         q7ev8m/Rh7Kp9QPHuEvnh986v3rWA7LBoYFAgkHaUTC/+Nsgs/deGdCacfX0cg1Q/LKK
+         uxLg==
+X-Gm-Message-State: AOJu0YzIs9cpfaJ4TRpOYobST4AOm09Xxie4xvudb5cK21mzNfqVAgLf
+	GVIwWU/P+G2dTJxuNfPhfpP2/WB+Xri4Pq+q
+X-Google-Smtp-Source: AGHT+IF9gINu0zxxgZrKaZXha0Tu6DEmSlckmmBloQ3zgkxWR+hGaL91LoCX+tkwIDcltSI6Mh5gNQ==
+X-Received: by 2002:a05:6402:1603:b0:554:1431:a977 with SMTP id f3-20020a056402160300b005541431a977mr1810798edv.54.1703360755084;
+        Sat, 23 Dec 2023 11:45:55 -0800 (PST)
+Received: from ?IPV6:2a02:8389:41cf:e200:6545:dd3c:de03:74c? (2a02-8389-41cf-e200-6545-dd3c-de03-074c.cable.dynamic.v6.surfer.at. [2a02:8389:41cf:e200:6545:dd3c:de03:74c])
+        by smtp.gmail.com with ESMTPSA id o21-20020aa7dd55000000b005548bed07b0sm1094688edw.47.2023.12.23.11.45.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 23 Dec 2023 11:45:54 -0800 (PST)
+Message-ID: <acb74002-31ee-4130-96e1-9ac497a15c2e@gmail.com>
+Date: Sat, 23 Dec 2023 20:45:52 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20231222113552.2049088-2-claudiu.beznea.uj@bp.renesas.com>
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/2] iio: light: add support for AMS AS7331
+To: Christian Eggers <ceggers@gmx.de>, Christian Eggers <ceggers@arri.de>,
+ Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20231220-as7331-v1-0-745b73c27703@gmail.com>
+ <5750063.DvuYhMxLoT@zbook-studio-g3>
 Content-Language: en-US
+From: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+In-Reply-To: <5750063.DvuYhMxLoT@zbook-studio-g3>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
- (10.188.4.12)
-X-KSE-ServerInfo: msexch01.omp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 12/23/2023 19:28:38
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 59
-X-KSE-AntiSpam-Info: Lua profiles 182322 [Dec 23 2023]
-X-KSE-AntiSpam-Info: Version: 6.1.0.3
-X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
-X-KSE-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a
-X-KSE-AntiSpam-Info: {rep_avail}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: {relay has no DNS name}
-X-KSE-AntiSpam-Info: {SMTP from is not routable}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 31.173.85.112 in (user)
- b.barracudacentral.org}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 31.173.85.112 in (user)
- dbl.spamhaus.org}
-X-KSE-AntiSpam-Info:
-	omp.ru:7.1.1;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1
-X-KSE-AntiSpam-Info: ApMailHostAddress: 31.173.85.112
-X-KSE-AntiSpam-Info: {DNS response errors}
-X-KSE-AntiSpam-Info: Rate: 59
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
- smtp.mailfrom=omp.ru;dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 12/23/2023 19:32:00
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 12/23/2023 4:14:00 PM
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
 
-On 12/22/23 2:35 PM, Claudiu wrote:
+Hi Christian,
 
-> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+On 23.12.23 13:18, Christian Eggers wrote:> I still use the original
+AS73211, so I can offer testing with it. I am
+> currently away, I'll do the tests on 2023-12-30 and report the result
+> then.
 > 
-> CSR.OPS bits specify the current operating mode and (according to
-> documentation) they are updated by HW when the operating mode change
-> request is processed. To comply with this check CSR.OPS before proceeding.
-> 
-> Commit introduces ravb_set_opmode() that does all the necessities for
-> setting the operating mode (set DMA.CCC and wait for CSR.OPS) and call it
+That would be great, thanks for your offer.
 
-   What's DMA.CCC? Maybe CCC.OPC?
+In principle my modifications should be transparent to the AS73211 and
+only the code to retrieve the scales has suffered significant
+modifications, which I could test with i2c tools.
 
-> where needed. This should comply with all the HW manuals requirements as
-> different manual variants specify that different modes need to be checked
-> in CSR.OPS when setting DMA.CCC.
-> 
-> Fixes: c156633f1353 ("Renesas Ethernet AVB driver proper")
-> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-[...]
+But none of my tests can compare to yours with real hardware, so I am
+looking forward to hearing from you again. Hopefully to hear that I did
+not cause any regression :)
 
-MBR, Sergey
+Best regards,
+Javier Carrasco
 
