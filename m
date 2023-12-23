@@ -1,164 +1,144 @@
-Return-Path: <linux-kernel+bounces-10337-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10338-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7759C81D2EB
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 08:37:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2966F81D30A
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 08:48:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F0F8EB2238D
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 07:37:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BC8341F242D0
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 07:48:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A68938F79;
-	Sat, 23 Dec 2023 07:37:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAADC8BE5;
+	Sat, 23 Dec 2023 07:48:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dvwqb5J2"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KWbKmFSR"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8793C7484
-	for <linux-kernel@vger.kernel.org>; Sat, 23 Dec 2023 07:37:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703317037; x=1734853037;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=a2m4tM/yHyh0WQQ5DyOfXe4Sy7woCWkTH+cVcUpAHIY=;
-  b=dvwqb5J2L5zEuqwx6CwtfgjAy1QL+PRcxzM30c3/WVfzd0hdIsgokN/y
-   4U6eCR9tvjSSc8TYe/3dOGU+5MnPJbIlQAV8zs/RZMU+XYt2qoO4dGGNg
-   STByo+9fxvInO4bATPi+/sl9VdlsZgYmo+ggvtFvlc5N5Q4jtjyCv/n7R
-   F0yJyR3FzSlyL47MdSxQxVU/Pdsf3RId3ZMIJwW4mYdFaCFldcpChQecy
-   6jGps1OwscdXsB0slDqlpc8etsy2YCvWlm3sw7qVH16wW0oCpJYg37g/k
-   R6n2XJdJVlf6AApMcWggt+D3/m5KY2TAWPx6Aibp8VrqWmKotfg1tJaQx
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10932"; a="3027966"
-X-IronPort-AV: E=Sophos;i="6.04,298,1695711600"; 
-   d="scan'208";a="3027966"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Dec 2023 23:37:17 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10932"; a="1108711237"
-X-IronPort-AV: E=Sophos;i="6.04,298,1695711600"; 
-   d="scan'208";a="1108711237"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga005.fm.intel.com with ESMTP; 22 Dec 2023 23:37:11 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rGwZJ-000AQV-2N;
-	Sat, 23 Dec 2023 07:37:09 +0000
-Date: Sat, 23 Dec 2023 15:36:37 +0800
-From: kernel test robot <lkp@intel.com>
-To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	chunkuang.hu@kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, p.zabel@pengutronix.de,
-	airlied@gmail.com, daniel@ffwll.ch, matthias.bgg@gmail.com,
-	angelogioacchino.delregno@collabora.com,
-	dri-devel@lists.freedesktop.org, linux-mediatek@lists.infradead.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	kernel@collabora.com
-Subject: Re: [PATCH v2 3/4] drm/mediatek: dsi: Use bitfield macros where
- useful
-Message-ID: <202312231512.ioiD48LA-lkp@intel.com>
-References: <20231220135722.192080-4-angelogioacchino.delregno@collabora.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDDD76FB0;
+	Sat, 23 Dec 2023 07:48:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6d2350636d6so2318000b3a.2;
+        Fri, 22 Dec 2023 23:48:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703317698; x=1703922498; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-disposition:mime-version
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=U06iT0QzKoxdvh42FREax0PEoODypkUM7QQs1+dJhvI=;
+        b=KWbKmFSRHuyXWiHwsQycHmEWSvfN9ufWvN8XLxuO+6LdlPRFJBdZqTg4rVQ013VaUE
+         9Hppg1ewfSWJwk8OYZR0Cxv9w0Q56aVXfMJOhhfaXmCScMFL5vjo48oZ18XgGaHlZ3zu
+         DW11wyRwadMw9Bu33Tm8KtjL3i73F64w8ShmUy7xhSBDZFJM+LjQzpsOhS/M6L7ZWkjf
+         x8dGlbF89yw9kKObUR5WiaqjzUAGTgBdRkeRrqA90Fp45R8YbqwynoR5jPtBSaLXYs7X
+         6ghZYjtDmNp31jVO2MGvXsvOw+n050AFxf5OA+yH6GPJE5JyeIzWZrQbl9RR5taMc+5Q
+         WFnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703317698; x=1703922498;
+        h=content-transfer-encoding:content-disposition:mime-version
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=U06iT0QzKoxdvh42FREax0PEoODypkUM7QQs1+dJhvI=;
+        b=lmj+trJIAC6iFqQtGfW3CS2+b8giLLFTz6pWQiG3vR1RCAoY3Cw/5up+UXWdmRmMlE
+         0e7aVf8wT+FSWxnWWQ15dhlIG4NHX+xTT0rglfnGsrTS8Tsqfn4x7JTGg0MFcsp+GwIF
+         Pf7jonjcY/jACqB2F1MZkBz37fqBSrEoKWqEn1c4HpiCQ2akU+vYVLBmeI7d8QaiAPJ+
+         vA6cc1GYySzyM1/plooT6wpythRSlaPYWtzfxR4gAPPOtCnx36xOJwlGRngn23NolHk0
+         sw6BJ3XaLcjKlQ/fC3PPlyTIIUstNBNVyJuoxnPkp88oPN3SS4JF3Z+rrfE7veJUEnCg
+         Wp7g==
+X-Gm-Message-State: AOJu0Yyy0Xxm8unKU8BwaKeB64/wpcLhslN8dP3Tcy0o90GdpU92IJvS
+	AfqKrc4N1dC5ou2hDidqEmpxYx7B2vo=
+X-Google-Smtp-Source: AGHT+IF6rJ4rk3yzD5l1y1nCrF6oZWxMrA92daejnn4J6NtSo8pTGBH0kJVKCf/eFKOHEAikP6G1fg==
+X-Received: by 2002:aa7:838d:0:b0:6d6:aa3d:b44 with SMTP id u13-20020aa7838d000000b006d6aa3d0b44mr2660493pfm.53.1703317697994;
+        Fri, 22 Dec 2023 23:48:17 -0800 (PST)
+Received: from google.com ([2620:15c:9d:2:6810:f806:ab04:8efd])
+        by smtp.gmail.com with ESMTPSA id n16-20020aa78a50000000b006cb98a269f1sm1274848pfa.125.2023.12.22.23.48.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Dec 2023 23:48:17 -0800 (PST)
+Date: Fri, 22 Dec 2023 23:48:14 -0800
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
+Subject: [git pull] Input updates for v6.7-rc6
+Message-ID: <ZYaQvgIr99ixMKBS@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20231220135722.192080-4-angelogioacchino.delregno@collabora.com>
+Content-Transfer-Encoding: 8bit
 
-Hi AngeloGioacchino,
+Hi Linus,
 
-kernel test robot noticed the following build errors:
+Please pull from:
 
-[auto build test ERROR on drm-misc/drm-misc-next]
-[also build test ERROR on drm/drm-next drm-exynos/exynos-drm-next drm-intel/for-linux-next-fixes drm-tip/drm-tip linus/master v6.7-rc6 next-20231222]
-[cannot apply to drm-intel/for-linux-next]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+	git://git.kernel.org/pub/scm/linux/kernel/git/dtor/input.git tags/input-for-v6.7-rc6
 
-url:    https://github.com/intel-lab-lkp/linux/commits/AngeloGioacchino-Del-Regno/drm-mediatek-dsi-Use-GENMASK-for-register-mask-definitions/20231222-164513
-base:   git://anongit.freedesktop.org/drm/drm-misc drm-misc-next
-patch link:    https://lore.kernel.org/r/20231220135722.192080-4-angelogioacchino.delregno%40collabora.com
-patch subject: [PATCH v2 3/4] drm/mediatek: dsi: Use bitfield macros where useful
-config: arm-allmodconfig (https://download.01.org/0day-ci/archive/20231223/202312231512.ioiD48LA-lkp@intel.com/config)
-compiler: arm-linux-gnueabi-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231223/202312231512.ioiD48LA-lkp@intel.com/reproduce)
+to receive updates for the input subsystem. You will get:
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312231512.ioiD48LA-lkp@intel.com/
+- a quirk to AT keyboard driver to skip issuing "GET ID" command when 8042
+  is in translated mode and the device is a laptop/portable, because the
+  "GET ID" command makes a bunch of recent laptops unhappy
 
-All errors (new ones prefixed by >>):
+- a quirk to i8042 to disable multiplexed mode on Acer P459-G2-M which
+  causes issues on resume
 
-   drivers/gpu/drm/mediatek/mtk_dsi.c: In function 'mtk_dsi_phy_timconfig':
->> drivers/gpu/drm/mediatek/mtk_dsi.c:260:19: error: implicit declaration of function 'FIELD_PREP' [-Werror=implicit-function-declaration]
-     260 |         timcon0 = FIELD_PREP(LPX, timing->lpx) |
-         |                   ^~~~~~~~~~
-   cc1: some warnings being treated as errors
+- psmouse will activate native RMI4 protocol support for touchpad on
+  ThinkPad L14 G1
 
+- addition of Razer Wolverine V2 ID to xpad gamepad driver
 
-vim +/FIELD_PREP +260 drivers/gpu/drm/mediatek/mtk_dsi.c
+- mapping for airplane mode button in soc_button_array driver for TUXEDO
+  laptops
 
-   236	
-   237	static void mtk_dsi_phy_timconfig(struct mtk_dsi *dsi)
-   238	{
-   239		u32 timcon0, timcon1, timcon2, timcon3;
-   240		u32 data_rate_mhz = DIV_ROUND_UP(dsi->data_rate, 1000000);
-   241		struct mtk_phy_timing *timing = &dsi->phy_timing;
-   242	
-   243		timing->lpx = (60 * data_rate_mhz / (8 * 1000)) + 1;
-   244		timing->da_hs_prepare = (80 * data_rate_mhz + 4 * 1000) / 8000;
-   245		timing->da_hs_zero = (170 * data_rate_mhz + 10 * 1000) / 8000 + 1 -
-   246				     timing->da_hs_prepare;
-   247		timing->da_hs_trail = timing->da_hs_prepare + 1;
-   248	
-   249		timing->ta_go = 4 * timing->lpx - 2;
-   250		timing->ta_sure = timing->lpx + 2;
-   251		timing->ta_get = 4 * timing->lpx;
-   252		timing->da_hs_exit = 2 * timing->lpx + 1;
-   253	
-   254		timing->clk_hs_prepare = 70 * data_rate_mhz / (8 * 1000);
-   255		timing->clk_hs_post = timing->clk_hs_prepare + 8;
-   256		timing->clk_hs_trail = timing->clk_hs_prepare;
-   257		timing->clk_hs_zero = timing->clk_hs_trail * 4;
-   258		timing->clk_hs_exit = 2 * timing->clk_hs_trail;
-   259	
- > 260		timcon0 = FIELD_PREP(LPX, timing->lpx) |
-   261			  FIELD_PREP(HS_PREP, timing->da_hs_prepare) |
-   262			  FIELD_PREP(HS_ZERO, timing->da_hs_zero) |
-   263			  FIELD_PREP(HS_TRAIL, timing->da_hs_trail);
-   264	
-   265		timcon1 = FIELD_PREP(TA_GO, timing->ta_go) |
-   266			  FIELD_PREP(TA_SURE, timing->ta_sure) |
-   267			  FIELD_PREP(TA_GET, timing->ta_get) |
-   268			  FIELD_PREP(DA_HS_EXIT, timing->da_hs_exit);
-   269	
-   270		timcon2 = FIELD_PREP(DA_HS_SYNC, 1) |
-   271			  FIELD_PREP(CLK_ZERO, timing->clk_hs_zero) |
-   272			  FIELD_PREP(CLK_TRAIL, timing->clk_hs_trail);
-   273	
-   274		timcon3 = FIELD_PREP(CLK_HS_PREP, timing->clk_hs_prepare) |
-   275			  FIELD_PREP(CLK_HS_POST, timing->clk_hs_post) |
-   276			  FIELD_PREP(CLK_HS_EXIT, timing->clk_hs_exit);
-   277	
-   278		writel(timcon0, dsi->regs + DSI_PHY_TIMECON0);
-   279		writel(timcon1, dsi->regs + DSI_PHY_TIMECON1);
-   280		writel(timcon2, dsi->regs + DSI_PHY_TIMECON2);
-   281		writel(timcon3, dsi->regs + DSI_PHY_TIMECON3);
-   282	}
-   283	
+- improved error handling in ipaq-micro-keys driver
+
+- amimouse being prepared for platform remove callback returning void
+
+Changelog:
+---------
+
+Christoffer Sandberg (1):
+      Input: soc_button_array - add mapping for airplane mode button
+
+Esther Shimanovich (1):
+      Input: i8042 - add nomux quirk for Acer P459-G2-M
+
+Hans de Goede (1):
+      Input: atkbd - skip ATKBD_CMD_GETID in translated mode
+
+Haoran Liu (1):
+      Input: ipaq-micro-keys - add error handling for devm_kmemdup
+
+José Pekkarinen (1):
+      Input: psmouse - enable Synaptics InterTouch for ThinkPad L14 G1
+
+Luca Weiss (1):
+      Input: xpad - add Razer Wolverine V2 support
+
+Uwe Kleine-König (1):
+      Input: amimouse - convert to platform remove callback returning void
+
+Diffstat:
+--------
+
+ drivers/input/joystick/xpad.c            |  1 +
+ drivers/input/keyboard/atkbd.c           | 46 +++++++++++++++++++++++++++++---
+ drivers/input/keyboard/ipaq-micro-keys.c |  3 +++
+ drivers/input/misc/soc_button_array.c    |  5 ++++
+ drivers/input/mouse/amimouse.c           |  5 ++--
+ drivers/input/mouse/synaptics.c          |  1 +
+ drivers/input/serio/i8042-acpipnpio.h    |  8 ++++++
+ 7 files changed, 62 insertions(+), 7 deletions(-)
+
+Thanks.
+
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Dmitry
 
