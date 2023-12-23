@@ -1,64 +1,64 @@
-Return-Path: <linux-kernel+bounces-10551-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10552-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F58F81D619
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 19:42:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C29EF81D61C
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 19:43:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6E10CB210E5
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 18:42:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E66F21C215B0
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 18:43:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 981021400D;
-	Sat, 23 Dec 2023 18:42:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 662BA14A80;
+	Sat, 23 Dec 2023 18:43:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="TIx3R5DP"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ZwJcPA0P"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B0F5171BE
-	for <linux-kernel@vger.kernel.org>; Sat, 23 Dec 2023 18:42:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5097912E5D
+	for <linux-kernel@vger.kernel.org>; Sat, 23 Dec 2023 18:43:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-554a2ef9764so273176a12.2
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Dec 2023 10:42:16 -0800 (PST)
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-5534abbc637so3105027a12.0
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Dec 2023 10:43:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703356935; x=1703961735; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1703356983; x=1703961783; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=uERKn3Lpyzm9FmLHPOqXYw6WKmuDdCP5Ehk9hb+GASY=;
-        b=TIx3R5DPEOSsXz/snfoQHRK3ds74o9yhr9y3SfXzSPGop6/SpiC2UmMPl6BGeeJqeI
-         GQFmI5MDcG///RxqFtY7Ahfq37TPs/i61+1Qt6GadRn0oYB+Nz88jklRGoB8VZY40YHm
-         khJ3Smw1fV/WRNccwEWoSHo64l0kz/62Quni4CN8Ffu5QrVV91fWAd4iB/2aZbapZxzJ
-         uXkpszpxdcuN3r9T1mhM9QC54SPV61mK8dA3xeecOVzzRYSotjKGnqAxginTNu2oqpA6
-         dAaSKZZdtHw+ClXBfAFdc4OWvUCf1RAJgf/95SvdbALopEe2RfPdEmFgrMis/uz/5znb
-         Ij8Q==
+        bh=g+gco8BLqAjcPdkrZdCffxU9a4mlAf+P/uZCUnr+h8c=;
+        b=ZwJcPA0PAXjWeQkreV0XnGWRludNXBC0WxAtIC82ZxbC51xH+1DQYfvTv7BymyiBLE
+         SY3mkcrMIU/zkfjZKZVIcLDNYuxqnO+IKV4jht1q1GT9IJPtFjOBofNicPI4IuVZU/aM
+         7VQu2sbpujvi/J9PNbHZuLetrSSExSl6gFCFJpBBnm3lj+vTiNBx1nx74bOjTOSIDyZA
+         AxkXHKCpjLBI6U/n+RF8OXCZtSC9On7GIBwuM9d+q6GskTARrU6FjybClnUyO5w8dD57
+         OFx1zoXsijORFl9WMSfeLkO7zoWto+VNXN8ZdHIi57eGqh9dsgDSsRiCKODVowGtOuLY
+         Azdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703356935; x=1703961735;
+        d=1e100.net; s=20230601; t=1703356983; x=1703961783;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uERKn3Lpyzm9FmLHPOqXYw6WKmuDdCP5Ehk9hb+GASY=;
-        b=ZXw92VLzuNlSWbOUs+s/5wneWPWUIwxPUSOaqTcc0qhUfqIF7wtrBkKNrq9kFKc52E
-         B7b+PGa75NP6HjBDPtB0Ml19fYn3sYHPAl+6Wq5h5aHOz4SaZReUSwJAsXHTPq2DnMmI
-         lKsKI7+/labvTY2gXBCf/Bzv0BweNyxLoPLcri1pFd5vrbKdJovej7Aew1bmyA9zWyPK
-         hjFZnAwzsqhXPJn5X3ZNloxJpGpS08dq6cGmvK6VSD5nxZKpQtdpJgJA4bXoxbOL37RH
-         cspg8wNaui4MftEK3UNhUExDeuYrMKJR/sbYzeFqieyd28mQAl4c8nWtnxDADGHG/Ju7
-         At2g==
-X-Gm-Message-State: AOJu0YwQ5vyWLqpPOzjI9j3RUBsUUOqak+K9mnzRfiacf2YNxgWo4Lx4
-	W5EeDgLvaeE1G8t3dkpgy1CoLZAQYpL00g==
-X-Google-Smtp-Source: AGHT+IEZ8ImIeqLB4yWlnDTLsi0DFH0tgZl8RedKIcpWQLgf9O0MTIuEJjHMABSRcyT0aeDJrdjXLA==
-X-Received: by 2002:a50:935a:0:b0:54c:b889:9c11 with SMTP id n26-20020a50935a000000b0054cb8899c11mr1159011eda.98.1703356934834;
-        Sat, 23 Dec 2023 10:42:14 -0800 (PST)
+        bh=g+gco8BLqAjcPdkrZdCffxU9a4mlAf+P/uZCUnr+h8c=;
+        b=RUaB7c+vtBslDq44WmPSxS5ZbX4CN12ed+/BFKZavDb6IS5nMQQx3QRcAgtbFiSleC
+         gn9bbCBuFejWemNp8izNVNHg0fWffC7tpvB6Sm3MqdAud9mEkmZeLmvaOs/uQpRs9yJh
+         PwFU5LsYjiByTivbzownDJDvQzIv1tZrlSh7TTjXdLou4J+Kqyy7yCXPqMhzRk8aIdI8
+         iaRLwypg1hYwSfsvenMK70+vT5LPX1+KudZqh4m8Iyb+u1hcRJuhtLkItLNCvJA2h+uB
+         kjOZ4zBab406wRKtKLfKwmPDtCsQZeHkbVjClCt9IgTi/NTGO6695r61faTUTBQKGWQA
+         PlxQ==
+X-Gm-Message-State: AOJu0YwnimSTkClmY9z8pablH3mPVOCeJMuVXePHhYnvjiY8XPpugaNh
+	yvXUN3X9C5yyghxDjwWT0eTaGc7tnXYtWQ==
+X-Google-Smtp-Source: AGHT+IH1RiLXz8KYuAkcsiOD+30BiDaipZUpG48Ja6HREcXMHcgv4XmU6K31QzIKR74j9wAUxJoFkQ==
+X-Received: by 2002:a50:a416:0:b0:553:34d3:2ba6 with SMTP id u22-20020a50a416000000b0055334d32ba6mr1964111edb.78.1703356983635;
+        Sat, 23 Dec 2023 10:43:03 -0800 (PST)
 Received: from [192.168.0.22] ([78.10.206.178])
-        by smtp.gmail.com with ESMTPSA id p13-20020a05640210cd00b0055298b38768sm4197774edu.80.2023.12.23.10.42.13
+        by smtp.gmail.com with ESMTPSA id p13-20020a05640210cd00b0055298b38768sm4197774edu.80.2023.12.23.10.43.01
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 23 Dec 2023 10:42:14 -0800 (PST)
-Message-ID: <9efe017d-e887-4239-a4ca-ff8ffeb08aec@linaro.org>
-Date: Sat, 23 Dec 2023 19:42:12 +0100
+        Sat, 23 Dec 2023 10:43:02 -0800 (PST)
+Message-ID: <524646e6-17d4-4a72-be96-74347be36482@linaro.org>
+Date: Sat, 23 Dec 2023 19:43:01 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,20 +66,20 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 09/16] dt-bindings: imx6q-pcie: Clean up irrationality
- clocks check
+Subject: Re: [PATCH v5 10/16] dt-bindings: imx6q-pcie: remove reg and reg-name
 Content-Language: en-US
-To: Frank Li <Frank.Li@nxp.com>, manivannan.sadhasivam@linaro.org
-Cc: bhelgaas@google.com, conor+dt@kernel.org, devicetree@vger.kernel.org,
- festevam@gmail.com, helgaas@kernel.org, hongxing.zhu@nxp.com,
- imx@lists.linux.dev, kernel@pengutronix.de,
- krzysztof.kozlowski+dt@linaro.org, kw@linux.com, l.stach@pengutronix.de,
- linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
- linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
- lpieralisi@kernel.org, robh@kernel.org, s.hauer@pengutronix.de,
- shawnguo@kernel.org
+To: Frank Li <Frank.li@nxp.com>, Rob Herring <robh@kernel.org>
+Cc: manivannan.sadhasivam@linaro.org, bhelgaas@google.com,
+ conor+dt@kernel.org, devicetree@vger.kernel.org, festevam@gmail.com,
+ helgaas@kernel.org, hongxing.zhu@nxp.com, imx@lists.linux.dev,
+ kernel@pengutronix.de, krzysztof.kozlowski+dt@linaro.org, kw@linux.com,
+ l.stach@pengutronix.de, linux-arm-kernel@lists.infradead.org,
+ linux-imx@nxp.com, linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+ lpieralisi@kernel.org, s.hauer@pengutronix.de, shawnguo@kernel.org
 References: <20231220213615.1561528-1-Frank.Li@nxp.com>
- <20231220213615.1561528-10-Frank.Li@nxp.com>
+ <20231220213615.1561528-11-Frank.Li@nxp.com>
+ <20231221225033.GA228866-robh@kernel.org>
+ <ZYZYFYBr23OtTtrd@lizhi-Precision-Tower-5810>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -125,18 +125,45 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231220213615.1561528-10-Frank.Li@nxp.com>
+In-Reply-To: <ZYZYFYBr23OtTtrd@lizhi-Precision-Tower-5810>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 20/12/2023 22:36, Frank Li wrote:
-> There are clocks and clock-names restriction for difference compatible
-> string. So needn't irrationality check again for clock's miniItems and
-> maxItems.
+On 23/12/2023 04:46, Frank Li wrote:
+> On Thu, Dec 21, 2023 at 04:50:33PM -0600, Rob Herring wrote:
+>> On Wed, Dec 20, 2023 at 04:36:09PM -0500, Frank Li wrote:
+>>> snps,dw-pcie.yaml already have reg and reg-name information. Needn't
+>>> duplciate here.
+>>>
+>>> Acked-by: Rob Herring <robh@kernel.org>
+>>> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+>>> ---
+>>>
+>>> Notes:
+>>>     Change from v4 to v5
+>>>     - add Rob's Acked
+>>
+>> Err, that was intended for patch 9, not this one. This patch should be 
+>> dropped.
+> 
+> Sorry, will correct it.
+> 
+> Actually I want to move it under Allof
+> 
+> if compatiable string (A, B, C...)
+> then
+> 	reg-names:
+> 		-const: dbi
+> 		-const: config
+> 
+> Differece SOC have difference reg-names required list. If split it, it
+> will be easy when add new SOC. Needn't change two place.
+> 
+> Let me update at next version.
+> 
 
-That's not really true. Other entry does not restrict clocks and leave
-items quite flexible. These entries should be combined so all
-constraints are fixed for all variants.
+This patch should be dropped. Why do you remove entries from top-level?
+Are they defined in other schema?
 
 Best regards,
 Krzysztof
