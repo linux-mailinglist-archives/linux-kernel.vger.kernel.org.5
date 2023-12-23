@@ -1,91 +1,140 @@
-Return-Path: <linux-kernel+bounces-10310-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10311-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CD6581D288
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 06:36:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4EA9B81D289
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 06:38:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D097D1F230DC
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 05:36:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EBA392860AB
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 05:38:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAF265664;
-	Sat, 23 Dec 2023 05:36:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BA1F523A;
+	Sat, 23 Dec 2023 05:38:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Jks/bfwF"
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="NeQoklkv"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96F004A34;
-	Sat, 23 Dec 2023 05:36:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=UNrI5d+OwOlR9bsEA+kLfKKLgi1B2PVQGG+8MWXSfz8=; b=Jks/bfwFvpRCPEETX4cvjl3DBG
-	WM7g0tH+gittme5QDF7URqwshe9rjnSTGGpkQBFM+8xFCQHTwzWBLVo+XO/Pf5a1oodFVEE0BHqE5
-	bjdjfscqs1SL0+Cq9yW2jN2wnkv08bdBleGPxQrwI2dxDfNdK8hsk6uJCdW/hnJ52ymU3tN0pQ92z
-	DhbZlgoic+nhre1dbDqkErhVuvlV0YB6AHY/EiwM+erncW2cSxVrpSoGbgURvMHOeIWgW7HnT/hhG
-	XQETPqt1wZg1GCeEWa3LOuuPH/Xg9eXr3egNsheJrZDwIlGTqsB9Womnt1eC7ck+0Sv9inHDR+7gM
-	b0v0YxmA==;
-Received: from [50.53.46.231] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1rGugP-007QLP-1E;
-	Sat, 23 Dec 2023 05:36:21 +0000
-Message-ID: <9be5f009-9fcb-4299-9d2f-13b1263d83e1@infradead.org>
-Date: Fri, 22 Dec 2023 21:36:20 -0800
+Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.219])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0744C46AD
+	for <linux-kernel@vger.kernel.org>; Sat, 23 Dec 2023 05:38:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=o7hwV
+	3qd1r+M+fgyqUOI5ooAyBPaGQyd0qEIr2EUceA=; b=NeQoklkvkKCBc3zVgO5Cu
+	xW3u8bVBieOmytycj1/fw6sUd8rOnJih3x91cq5ndHBfDSdZuriPX3jhh/L+zWqn
+	ZIEjsF5AdeWizM8gcfWSL9exdXp7H0DuWV7NQQBT70AFubq5cpiI9Hntu9WG/Vp6
+	+PM0RD+INaD98cLkibeK4o=
+Received: from ubuntu.lan (unknown [223.74.158.232])
+	by zwqz-smtp-mta-g0-3 (Coremail) with SMTP id _____wCXv7nncYZlGKjPGQ--.35408S2;
+	Sat, 23 Dec 2023 13:36:42 +0800 (CST)
+From: Junwen Wu <wudaemon@163.com>
+To: laoar.shao@gmail.com
+Cc: bristot@redhat.com,
+	bsegall@google.com,
+	dietmar.eggemann@arm.com,
+	juri.lelli@redhat.com,
+	linux-kernel@vger.kernel.org,
+	mgorman@suse.de,
+	mingo@redhat.com,
+	peterz@infradead.org,
+	rostedt@goodmis.org,
+	vincent.guittot@linaro.org,
+	vschneid@redhat.com,
+	wudaemon@163.com
+Subject: Re: [PATCH v2] sched/rt: Fix rt task's sched latency statistics error in sched_stat_wait trace_point
+Date: Sat, 23 Dec 2023 05:36:34 +0000
+Message-Id: <20231223053634.942784-1-wudaemon@163.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <CALOAHbDXWNbxeQEOhGW5m6bd3cLW_jnE2q6XgSpRBHzxt1GOeg@mail.gmail.com>
+References: <CALOAHbDXWNbxeQEOhGW5m6bd3cLW_jnE2q6XgSpRBHzxt1GOeg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: fs/bcachefs/io_write.c:1570: warning: Function parameter or
- struct member 'bch2_write' not described in 'CLOSURE_CALLBACK'
-Content-Language: en-US
-To: kernel test robot <lkp@intel.com>, Kent Overstreet <kmo@daterainc.com>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
- Linux Doc Mailing List <linux-doc@vger.kernel.org>
-References: <202312182040.naGasU5s-lkp@intel.com>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <202312182040.naGasU5s-lkp@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:_____wCXv7nncYZlGKjPGQ--.35408S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7uFy3WFWfurW8Kw4DZF4rAFb_yoW8Kw4fpw
+	4qgaykJw4qq3y0q3yxZrsrGr45uwn3J342qFnrGFWxtF4Yyr1FqFn0g343WrWqgr9Y9F17
+	ta18K39xKa1v9F7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0JU3b18UUUUU=
+X-CM-SenderInfo: 5zxgtvxprqqiywtou0bp/1tbisQtPbWVOAoVlVwAAsG
 
+>It seems DL has the same issue. Pls. also fix it in update_stats_dequeue_dl().
+>And add the Fixes tag in the commit log:
+>Fixes: 57a5c2dafca8 ("sched/rt: Support schedstats for RT sched class")
+>Fixes: b5eb4a5f6521 ("sched/dl: Support schedstats for deadline sched class")
 
+ok, the PATCH v3 below is ok?
 
-On 12/18/23 04:58, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   ceb6a6f023fd3e8b07761ed900352ef574010bcb
-> commit: d4e3b928ab487a8aecd1f6a140b40ac365116cfb closures: CLOSURE_CALLBACK() to fix type punning
-> date:   3 weeks ago
-> config: x86_64-buildonly-randconfig-001-20231218 (https://download.01.org/0day-ci/archive/20231218/202312182040.naGasU5s-lkp@intel.com/config)
-> compiler: gcc-11 (Debian 11.3.0-12) 11.3.0
-> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231218/202312182040.naGasU5s-lkp@intel.com/reproduce)
-> 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202312182040.naGasU5s-lkp@intel.com/
-> 
-> All warnings (new ones prefixed by >>):
-> 
->>> fs/bcachefs/io_write.c:1570: warning: Function parameter or struct member 'bch2_write' not described in 'CLOSURE_CALLBACK'
->    fs/bcachefs/io_write.c:1570: warning: expecting prototype for bch2_write(). Prototype was for CLOSURE_CALLBACK() instead
-> 
-> 
+Subject: [PATCH v3] sched/stats: Fix rt/dl task's sched latency statistics
+ error in sched_stat_wait trace_point
 
-This needs to be fixed in scripts/kernel-doc AFAIK.
+When enable sched_stat_wait trace_point, some rt tasks sched latency so long, like this,
+sched_stat_wait: comm=rcu_preempt pid=14 delay=4936139545261 [ns]
+Rt task has low latency, it must have a bug. When rt task balance off source cpu,
+dequeue operation not update the sched_statistics, so follow update_stats_wait_end_fair
+update method, so do dl tasks.
 
-Cc:ing linux-doc mailing list.
+Fixes: 57a5c2dafca8 ("sched/rt: Support schedstats for RT sched class")
+Fixes: b5eb4a5f6521 ("sched/dl: Support schedstats for deadline sched class")
+Signed-off-by: Junwen Wu <wudaemon@163.com>
+---
+ kernel/sched/deadline.c | 8 +++++++-
+ kernel/sched/rt.c       | 7 +++++++
+ 2 files changed, 14 insertions(+), 1 deletion(-)
 
--- 
-#Randy
-https://people.kernel.org/tglx/notes-about-netiquette
-https://subspace.kernel.org/etiquette.html
+diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
+index b28114478b82..29223163ee22 100644
+--- a/kernel/sched/deadline.c
++++ b/kernel/sched/deadline.c
+@@ -1558,10 +1558,16 @@ update_stats_dequeue_dl(struct dl_rq *dl_rq, struct sched_dl_entity *dl_se,
+                        int flags)
+ {
+        struct task_struct *p = dl_task_of(dl_se);
++       struct rq *rq = rq_of_dl_rq(dl_rq);
+
+        if (!schedstat_enabled())
+                return;
+-
++       /*
++        * Mark the end of the wait period
++        * if dequeueing a waiting task.
++        */
++       if (p && (p != rq->curr))
++                update_stats_wait_end_dl(dl_rq, dl_se);
+        if ((flags & DEQUEUE_SLEEP)) {
+                unsigned int state;
+
+diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
+index 6aaf0a3d6081..6a2600213991 100644
+--- a/kernel/sched/rt.c
++++ b/kernel/sched/rt.c
+@@ -1360,12 +1360,19 @@ update_stats_dequeue_rt(struct rt_rq *rt_rq, struct sched_rt_entity *rt_se,
+                        int flags)
+ {
+        struct task_struct *p = NULL;
++       struct rq *rq = rq_of_rt_se(rt_se);
+
+        if (!schedstat_enabled())
+                return;
+
+        if (rt_entity_is_task(rt_se))
+                p = rt_task_of(rt_se);
++        /*
++         * Mark the end of the wait period
++         * if dequeueing a waiting task.
++         */
++       if (p && (p != rq->curr))
++               update_stats_wait_end_rt(rt_rq, rt_se);
+
+        if ((flags & DEQUEUE_SLEEP) && p) {
+                unsigned int state;
+
+--
+Best regards
+
 
