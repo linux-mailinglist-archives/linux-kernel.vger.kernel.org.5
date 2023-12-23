@@ -1,125 +1,121 @@
-Return-Path: <linux-kernel+bounces-10148-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10149-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14DDF81D0BC
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 01:15:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 433A781D0C6
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 01:18:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BF9951F22E01
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 00:15:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F0039282864
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 00:18:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1852D4A0C;
-	Sat, 23 Dec 2023 00:15:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C9157EE;
+	Sat, 23 Dec 2023 00:18:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="b7oahVnx"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ka8ZELYE"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88B92440C;
-	Sat, 23 Dec 2023 00:15:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703290522; x=1734826522;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Ws0TygMMtf/phnOvtmj/fglneDu5qG5xFkyTN/kvubk=;
-  b=b7oahVnxhlzLmDhUTQ5gD5lWJBSuHKmi77IHwB2rUkY8dbPAvZtTkeL+
-   kC2vInC3N7w25Gwp7Jh0UULdiQAvLsRLwbOT0XCDqYWV/L9oLORfdjYE9
-   +osnpsAzEVuQKfPQZgZ+bB8qmklNqhlGYPJhppTj20+RADyuc0IpX4eQ+
-   l6Wv1tHgAav2lufhgM6BiAbAx+OhiyNU5G5adO/sry64Sq+Bms/3BMqbM
-   9ks11apEwPyZaaB0432ITG87pr/lsIF2k3tXdarGvEI/1z4dog20t0zSO
-   C2So4UyTNyZkqyIVOwssLSEaNZ0kb6aJA2MeQ1AGD5ApEHomJ6opKxWR0
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10932"; a="17740308"
-X-IronPort-AV: E=Sophos;i="6.04,297,1695711600"; 
-   d="scan'208";a="17740308"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Dec 2023 16:15:21 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10932"; a="920821874"
-X-IronPort-AV: E=Sophos;i="6.04,297,1695711600"; 
-   d="scan'208";a="920821874"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga001.fm.intel.com with ESMTP; 22 Dec 2023 16:15:17 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rGpeO-000A1n-1R;
-	Sat, 23 Dec 2023 00:14:39 +0000
-Date: Sat, 23 Dec 2023 08:11:35 +0800
-From: kernel test robot <lkp@intel.com>
-To: LeoLiu-oc <LeoLiu-oc@zhaoxin.com>, olivia@selenic.com,
-	herbert@gondor.apana.org.au, jiajie.ho@starfivetech.com,
-	conor.dooley@microchip.com, martin@kaiser.cx, mmyangfl@gmail.com,
-	jenny.zhang@starfivetech.com, robh@kernel.org,
-	l.stelmach@samsung.com, ardb@kernel.org,
-	linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	CobeChen@zhaoxin.com, TonyWWang@zhaoxin.com, YunShen@zhaoxin.com,
-	LeoLiu@zhaoxin.com, LeoLiuoc <LeoLiu-oc@zhaoxin.com>
-Subject: Re: [PATCH v3] hwrng: add Zhaoxin rng driver base on rep_xstore
- instruction
-Message-ID: <202312230731.XIJLqDeg-lkp@intel.com>
-References: <20231221062602.799432-1-LeoLiu-oc@zhaoxin.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6508C391
+	for <linux-kernel@vger.kernel.org>; Sat, 23 Dec 2023 00:18:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-5eb06eacb2bso251917b3.2
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 16:18:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1703290711; x=1703895511; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Lp9vWQxdAPDDdlHKGcJ8qgp0FvOo9mvy4HBh0flEGoE=;
+        b=ka8ZELYEQtP85db6yj291tuWZYHMfmwkKM1t8l1UiKtd5+UCxAj7bw6E9n3DYVkXs0
+         kwLnj/DZiOtKtk6dbC1Qe6j/rpZ32Eg0oCQ8pQ35s+DSBbaeh5xe3y2VU3v6SNnATG24
+         /CZkmvHhLwt0pYqD0FSQaKweE1jIl0Fy06Qa3bk1gxdhYOo2dCdNXgLFGGgVOyE9brLQ
+         AKEfSVzK1nGo9Y58sB2iCPgf+WVAgjXaBcj6zFnZWYwwuaF/3tMWdA3wA/QKpWb/sXLb
+         4tsRy2dHe6ALd0AzhjvX+7KjUpxlcobidiendwFeWog2OUSnyOpr62pAFLrIZrU1gBrf
+         eD6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703290711; x=1703895511;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Lp9vWQxdAPDDdlHKGcJ8qgp0FvOo9mvy4HBh0flEGoE=;
+        b=S2XUFNJD2v6v+RlyVGpSUhqWxEpWMcRGaVnnYSa8p9Cr3RuigwZDKfaoaa85WoLSHA
+         3VuD6mrvdLxbMbi2GqfXs6m2ZDhrAwGzcTwRxerKHxIdo9mqSWBAR67DJWNtuDxj7YF4
+         FwGkcx8JGBZICaXcldIQpKXndBfqCmxZb4QNmPye5eB3tL0OW7RTo3KF82efJ0UcsRcI
+         odI1ejc9nv5VmBbD6+gEP2VGOu06knbyfqmS2jhOyYQ1Y6CB8pPhD4I3t6A/EPEuUnWe
+         bosCnkQfqSCbQmV52ZowA3JGfazoi7JyXGS6nsIznVY+7T7JE8kHDrDa2hwQFnRlhs6p
+         DT6Q==
+X-Gm-Message-State: AOJu0YwFOYudtiQb/Fk6bGNFwr5R2OokFolDjnQ6j52gZzV5U50Ce0gP
+	L/HjiOP7Mw1PRdNCrJwTfcOrYGlbFAP8wZArVFmXh0ovFHRs6A==
+X-Google-Smtp-Source: AGHT+IH0J9appb9YaOYYWr0pL/JzayP1h7qzAi5FZV+YX3znd3OxV1cD/KlvJy/FEWLrONbRLEArBL7fAvmtung+mUc=
+X-Received: by 2002:a05:690c:c0d:b0:5e7:e838:633a with SMTP id
+ cl13-20020a05690c0c0d00b005e7e838633amr995068ywb.34.1703290711253; Fri, 22
+ Dec 2023 16:18:31 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231221062602.799432-1-LeoLiu-oc@zhaoxin.com>
+References: <20231215143906.3651122-1-emil.renner.berthing@canonical.com>
+ <20231215143906.3651122-2-emil.renner.berthing@canonical.com>
+ <20231215202137.GA317624-robh@kernel.org> <CAJM55Z9pBpYfwpxPH7bUumuosVDn9DHLSBngW6CtG7aK_z+_bQ@mail.gmail.com>
+ <CACRpkdYT+jf4=dk3Y9cwa_=aYCihVq93N-iT0RUbtT2-+PX69w@mail.gmail.com>
+ <CAJM55Z8osSFxKi_7=aRkEr+U3vAq0TS93OggnRzyPpssNuuJ3Q@mail.gmail.com>
+ <CACRpkdbx7BOoHzbGd6n5p=Ho3GhMcujwUzQam0jLe6Ysg+xsNg@mail.gmail.com> <CAJM55Z8SwyNEqw4HWRd7G8Y9rdtOGtKy-KbzDorqohdK3nZg0A@mail.gmail.com>
+In-Reply-To: <CAJM55Z8SwyNEqw4HWRd7G8Y9rdtOGtKy-KbzDorqohdK3nZg0A@mail.gmail.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Sat, 23 Dec 2023 01:18:19 +0100
+Message-ID: <CACRpkdazVUJnfEJTXmAErfxptgnNGByQPU=aLz2RReZD_3GyyA@mail.gmail.com>
+Subject: Re: [PATCH v1 1/8] dt-bindings: pinctrl: Add thead,th1520-pinctrl bindings
+To: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+Cc: Rob Herring <robh@kernel.org>, linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org, 
+	Hoan Tran <hoan@os.amperecomputing.com>, Serge Semin <fancer.lancer@gmail.com>, 
+	Bartosz Golaszewski <brgl@bgdev.pl>, Andy Shevchenko <andy@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Jisheng Zhang <jszhang@kernel.org>, Guo Ren <guoren@kernel.org>, Fu Wei <wefu@redhat.com>, 
+	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi LeoLiu-oc,
+On Thu, Dec 21, 2023 at 3:07=E2=80=AFPM Emil Renner Berthing
+<emil.renner.berthing@canonical.com> wrote:
+> Linus Walleij wrote:
 
-kernel test robot noticed the following build warnings:
+> > Do the people designing boards using this have better documentation tha=
+n what
+> > you have? Then either get that documentation or just don't give them
+> > too much rope.
+>
+> We can certainly prevent Linux from ever combining the strong pull-up wit=
+h the
+> regular bias, but that doesn't mean that the vendor u-boot can't find a u=
+se for
+> it and might hand over pins in such states Linux then wouldn't know how t=
+o
+> handle.
 
-[auto build test WARNING on char-misc/char-misc-testing]
-[also build test WARNING on char-misc/char-misc-next char-misc/char-misc-linus herbert-cryptodev-2.6/master linus/master v6.7-rc6 next-20231222]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+What you are saying is "there might be people who have access to
+documentation that I don't have so they do this crazy thing".
 
-url:    https://github.com/intel-lab-lkp/linux/commits/LeoLiu-oc/hwrng-add-Zhaoxin-rng-driver-base-on-rep_xstore-instruction/20231222-174625
-base:   char-misc/char-misc-testing
-patch link:    https://lore.kernel.org/r/20231221062602.799432-1-LeoLiu-oc%40zhaoxin.com
-patch subject: [PATCH v3] hwrng: add Zhaoxin rng driver base on rep_xstore instruction
-config: i386-buildonly-randconfig-003-20231223 (https://download.01.org/0day-ci/archive/20231223/202312230731.XIJLqDeg-lkp@intel.com/config)
-compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231223/202312230731.XIJLqDeg-lkp@intel.com/reproduce)
+Clearly you cannot design for that.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312230731.XIJLqDeg-lkp@intel.com/
+Print a big fat warning and fail probe if it happens.
 
-All warnings (new ones prefixed by >>):
+If U-Boot is using some feature you definitely cannot deal with if this
+happens, and then the people doing this can very well write a patch for
+the kernel.
 
-   drivers/char/hw_random/via-rng.c:38:32: warning: tentative array definition assumed to have one element
-   static const struct x86_cpu_id via_rng_cpu_ids[];
-                                  ^
->> drivers/char/hw_random/via-rng.c:220:26: warning: unused variable 'via_rng_cpu_id' [-Wunused-variable]
-   static struct x86_cpu_id via_rng_cpu_id[] = {
-                            ^
-   2 warnings generated.
+> If you think its better we could just postpone that problem to when/if it=
+ ever
+> happens.
 
+Yes please.
 
-vim +/via_rng_cpu_id +220 drivers/char/hw_random/via-rng.c
-
-   219	
- > 220	static struct x86_cpu_id via_rng_cpu_id[] = {
-   221		X86_MATCH_VENDOR_FAM_FEATURE(CENTAUR, 6, X86_FEATURE_XSTORE, NULL),
-   222		{}
-   223	};
-   224	MODULE_DEVICE_TABLE(x86cpu, via_rng_cpu_id);
-   225	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Yours,
+Linus Walleij
 
