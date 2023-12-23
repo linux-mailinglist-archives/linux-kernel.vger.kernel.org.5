@@ -1,280 +1,259 @@
-Return-Path: <linux-kernel+bounces-10158-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10159-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4EACC81D0F7
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 02:33:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43EF981D0F9
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 02:44:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 722471C22623
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 01:33:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E92EF284BAE
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 01:44:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25E391368;
-	Sat, 23 Dec 2023 01:33:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D98317F5;
+	Sat, 23 Dec 2023 01:44:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="H2JJTtJh"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OOju58vl"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f52.google.com (mail-io1-f52.google.com [209.85.166.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66ABBEC2;
-	Sat, 23 Dec 2023 01:33:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3538C433C7;
-	Sat, 23 Dec 2023 01:33:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703295215;
-	bh=s0BlMXbM0YXaay/9qOTSwSxk63kUVEMXfbyWTdHeVp0=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=H2JJTtJhEcVnJgOfNVmLn4kJskF8GEJvD5F5tBPh2HnKRTMZm5+/uAcprVBhqGZiJ
-	 paOXRdMftsNWM2MRT3jaNnO2YaG0iupgnUAY0xQigEcTH4B+vU1is4YNfA8jPNrsiu
-	 8BGnb9SaYJV5ZNHS1Kd/37gXuJChmW2wjpbIeHVkrkOphwCvNy0EBQpulIZ1F9fCL/
-	 biQDAFbKXTxkNZLrkG5M4OcItRm3YZ75Jl9oCX5ol3wxjXS5GjOm8Dmm2y7t9S96vz
-	 mKisl2BUl5qwjxkkcxsVBU/aMsYOXS+CwxtBJN+X3FkdP6Nl8/IjxPLfrixr3pc7VP
-	 T+8nsdGtbwpEA==
-Received: by mail-io1-f46.google.com with SMTP id ca18e2360f4ac-7b35d476d61so100638239f.0;
-        Fri, 22 Dec 2023 17:33:35 -0800 (PST)
-X-Gm-Message-State: AOJu0YzfZCUyP8gns3OuIfp61FV3bg6kv56F6UkPDXbuFSG099k3jTYF
-	Ers9ucHCilEb7ZohcLoIk6rUqjK8VdvZU4LxpcU=
-X-Google-Smtp-Source: AGHT+IHpXq6YJJn719UeCoJ6XHaLYHMPxzuxUHuRdMuhzl7hdYfkh18oT1nuDpqYDf4gl2VsErMAIi+7VE3syZQdAjo=
-X-Received: by 2002:a05:6e02:3041:b0:35f:de1d:11ac with SMTP id
- be1-20020a056e02304100b0035fde1d11acmr2383052ilb.23.1703295215227; Fri, 22
- Dec 2023 17:33:35 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EED6D17C6
+	for <linux-kernel@vger.kernel.org>; Sat, 23 Dec 2023 01:44:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-io1-f52.google.com with SMTP id ca18e2360f4ac-7ba9c26e14aso27900639f.0
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 17:44:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703295871; x=1703900671; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+DUEi9B9o/uy3by0V8nXmef5g50ozncfvFeYsehJ5rI=;
+        b=OOju58vlZAHTv17C/a5xhybNe4+lv3NGXK572TH6qKtWKQnt5isZjsHZttmJ3N2HvN
+         ZwJ1iBbN8dM+bNflzT7DEy4C5I/Mba38Zbc/rgPKPFKpJp0remD5vJv2td/tYXIXgiVf
+         7HyauytXZlRydowSGNlH60t6d1ygk6NDYsPlym9xNiHUKqXh8mPTvYwbflpXuuEw7VsF
+         cqqkIXN9z7FqYWeBlNaAgzkX7XNID2Lk35HHRbXEHeaH7cfXD5FtCs4r8E5mqaWcCRKs
+         d+ZgNTNXK5Mxj/uanK7EMgY4Jlv1Yc5pqf5OhY9dYiaWolNa0CADfONPOnKp0wvMwBQS
+         0Etg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703295871; x=1703900671;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+DUEi9B9o/uy3by0V8nXmef5g50ozncfvFeYsehJ5rI=;
+        b=BOgUoL9LYDzxvdIOQfVYl7ka33xF4l4MVGWVYyzuJ8WeLFU25NnvTqF9NNUkrMi72C
+         R337rZh2E5D2UbkLsFgQZPvy06olHsGi+gr+eCWHzy2zsLnAzS0KsTcv39YMdD2dihDF
+         22pyZVMvqbCTD3L4hRR5fVVY49fZuNKcRXFxJH/fAkONRto2cq+qSu6yfDp6ZeqkImRr
+         uR8xeSrAXqWDLYGEsz4S6z5o/cydq3egUSpRkMnKKBvGgvVsBTg8lKtkYXZDZ+YKAosP
+         xaFW6dQWMZeI9Ik0o0xpukwNRIIjBafFMp3yp9pvQlEv1vUqvQ9j2FVnLZTu6iU9gPeK
+         tQbQ==
+X-Gm-Message-State: AOJu0YwpsVf9X9sH/PXnBUB8IlFp9idQk0g4B33H5QqTgBA96cW4DgaR
+	4rQ1prGi6eNaXIZFk+WwPu5NvzvCqSktP0lxswM=
+X-Google-Smtp-Source: AGHT+IEvHBviqDrNSnGCMxpQAq/VzrupXO+b3Cp4Kv7ICbQq70x1QXYzqxuZTkYpSkZPYHf2SuwZPC8tvvtoZhhlhNk=
+X-Received: by 2002:a6b:5008:0:b0:7b6:fa7f:9cd6 with SMTP id
+ e8-20020a6b5008000000b007b6fa7f9cd6mr2167316iob.5.1703295870901; Fri, 22 Dec
+ 2023 17:44:30 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231122221814.139916-1-deller@kernel.org> <CAK7LNAQZO0g-B7UUEvdJWh3FhdhmWaaSaJyyEUoVoSYG0j8v-Q@mail.gmail.com>
- <CAK7LNASk=A4aeMuhUt4NGi5RHedcQ_WQrdN3r7S_x0euvsPUXA@mail.gmail.com> <bb34147d-4e67-456a-b0d6-965699cda596@gmx.de>
-In-Reply-To: <bb34147d-4e67-456a-b0d6-965699cda596@gmx.de>
-From: Masahiro Yamada <masahiroy@kernel.org>
-Date: Sat, 23 Dec 2023 10:32:58 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATaGSPK8dpE=Vq2EgjQJXKn+Ui_3GAYKVz4-bc8pir-ag@mail.gmail.com>
-Message-ID: <CAK7LNATaGSPK8dpE=Vq2EgjQJXKn+Ui_3GAYKVz4-bc8pir-ag@mail.gmail.com>
-Subject: Re: [PATCH 0/4] Section alignment issues?
-To: Helge Deller <deller@gmx.de>
-Cc: deller@kernel.org, linux-kernel@vger.kernel.org, 
-	Arnd Bergmann <arnd@arndb.de>, linux-modules@vger.kernel.org, linux-arch@vger.kernel.org, 
-	Luis Chamberlain <mcgrof@kernel.org>
+References: <20231221-async-free-v1-1-94b277992cb0@kernel.org>
+In-Reply-To: <20231221-async-free-v1-1-94b277992cb0@kernel.org>
+From: Nhat Pham <nphamcs@gmail.com>
+Date: Fri, 22 Dec 2023 17:44:19 -0800
+Message-ID: <CAKEwX=MNWcADDDWMo_V8V=1snAPKWmcxbnKX8jzt4XdNoXiV3Q@mail.gmail.com>
+Subject: Re: [PATCH] mm: swap: async free swap slot cache entries
+To: Chris Li <chrisl@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, =?UTF-8?B?V2VpIFh177+8?= <weixugc@google.com>, 
+	=?UTF-8?B?WXUgWmhhb++/vA==?= <yuzhao@google.com>, 
+	Greg Thelen <gthelen@google.com>, Chun-Tse Shao <ctshao@google.com>, 
+	=?UTF-8?Q?Suren_Baghdasaryan=EF=BF=BC?= <surenb@google.com>, 
+	=?UTF-8?B?WW9zcnkgQWhtZWTvv7w=?= <yosryahmed@google.com>, 
+	Brain Geffon <bgeffon@google.com>, Minchan Kim <minchan@kernel.org>, Michal Hocko <mhocko@suse.com>, 
+	Mel Gorman <mgorman@techsingularity.net>, Huang Ying <ying.huang@intel.com>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Kairui Song <kasong@tencent.com>, 
+	Zhongkun He <hezhongkun.hzk@bytedance.com>, Kemeng Shi <shikemeng@huaweicloud.com>, 
+	Barry Song <v-songbaohua@oppo.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 22, 2023 at 5:23=E2=80=AFPM Helge Deller <deller@gmx.de> wrote:
+On Thu, Dec 21, 2023 at 10:25=E2=80=AFPM Chris Li <chrisl@kernel.org> wrote=
+:
 >
-> On 12/21/23 16:42, Masahiro Yamada wrote:
-> > On Thu, Dec 21, 2023 at 10:40=E2=80=AFPM Masahiro Yamada <masahiroy@ker=
-nel.org> wrote:
-> >>
-> >> On Thu, Nov 23, 2023 at 7:18=E2=80=AFAM <deller@kernel.org> wrote:
-> >>>
-> >>> From: Helge Deller <deller@gmx.de>
-> >>>
-> >>> While working on the 64-bit parisc kernel, I noticed that the __ksymt=
-ab[]
-> >>> table was not correctly 64-bit aligned in many modules.
-> >>> The following patches do fix some of those issues in the generic code=
-.
-> >>>
-> >>> But further investigation shows that multiple sections in the kernel =
-and in
-> >>> modules are possibly not correctly aligned, and thus may lead to perf=
-ormance
-> >>> degregations at runtime (small on x86, huge on parisc, sparc and othe=
-rs which
-> >>> need exception handlers). Sometimes wrong alignments may also be simp=
-ly hidden
-> >>> by the linker or kernel module loader which pulls in the sections by =
-luck with
-> >>> a correct alignment (e.g. because the previous section was aligned al=
-ready).
-> >>>
-> >>> An objdump on a x86 module shows e.g.:
-> >>>
-> >>> ./kernel/net/netfilter/nf_log_syslog.ko:     file format elf64-x86-64
-> >>> Sections:
-> >>> Idx Name          Size      VMA               LMA               File =
-off  Algn
-> >>>    0 .text         00001fdf  0000000000000000  0000000000000000  0000=
-0040  2**4
-> >>>                    CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
-> >>>    1 .init.text    000000f6  0000000000000000  0000000000000000  0000=
-2020  2**4
-> >>>                    CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
-> >>>    2 .exit.text    0000005c  0000000000000000  0000000000000000  0000=
-2120  2**4
-> >>>                    CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
-> >>>    3 .rodata.str1.8 000000dc  0000000000000000  0000000000000000  000=
-02180  2**3
-> >>>                    CONTENTS, ALLOC, LOAD, READONLY, DATA
-> >>>    4 .rodata.str1.1 0000030a  0000000000000000  0000000000000000  000=
-0225c  2**0
-> >>>                    CONTENTS, ALLOC, LOAD, READONLY, DATA
-> >>>    5 .rodata       000000b0  0000000000000000  0000000000000000  0000=
-2580  2**5
-> >>>                    CONTENTS, ALLOC, LOAD, READONLY, DATA
-> >>>    6 .modinfo      0000019e  0000000000000000  0000000000000000  0000=
-2630  2**0
-> >>>                    CONTENTS, ALLOC, LOAD, READONLY, DATA
-> >>>    7 .return_sites 00000034  0000000000000000  0000000000000000  0000=
-27ce  2**0
-> >>>                    CONTENTS, ALLOC, LOAD, RELOC, READONLY, DATA
-> >>>    8 .call_sites   0000029c  0000000000000000  0000000000000000  0000=
-2802  2**0
-> >>>                    CONTENTS, ALLOC, LOAD, RELOC, READONLY, DATA
-> >>>
-> >>> In this example I believe the ".return_sites" and ".call_sites" shoul=
-d have
-> >>> an alignment of at least 32-bit (4 bytes).
-> >>>
-> >>> On other architectures or modules other sections like ".altinstructio=
-ns" or
-> >>> "__ex_table" may show up wrongly instead.
-> >>>
-> >>> In general I think it would be beneficial to search for wrong alignme=
-nts at
-> >>> link time, and maybe at runtime.
-> >>>
-> >>> The patch at the end of this cover letter
-> >>> - adds compile time checks to the "modpost" tool, and
-> >>> - adds a runtime check to the kernel module loader at runtime.
-> >>> And it will possibly show false positives too (!!!)
-> >>> I do understand that some of those sections are not performce critica=
-l
-> >>> and thus any alignment is OK.
-> >>>
-> >>> The modpost patch will emit at compile time such warnings (on x86-64 =
-kernel build):
-> >>>
-> >>> WARNING: modpost: vmlinux: section .initcall7.init (type 1, flags 2) =
-has alignment of 1, expected at least 4.
-> >>> Maybe you need to add ALIGN() to the modules.lds file (or fix modpost=
-) ?
-> >>> WARNING: modpost: vmlinux: section .altinstructions (type 1, flags 2)=
- has alignment of 1, expected at least 2.
-> >>> WARNING: modpost: vmlinux: section .initcall6.init (type 1, flags 2) =
-has alignment of 1, expected at least 4.
-> >>> WARNING: modpost: vmlinux: section .initcallearly.init (type 1, flags=
- 2) has alignment of 1, expected at least 4.
-> >>> WARNING: modpost: vmlinux: section .rodata.cst2 (type 1, flags 18) ha=
-s alignment of 2, expected at least 64.
-> >>> WARNING: modpost: vmlinux: section .static_call_tramp_key (type 1, fl=
-ags 2) has alignment of 1, expected at least 8.
-> >>> WARNING: modpost: vmlinux: section .con_initcall.init (type 1, flags =
-2) has alignment of 1, expected at least 8.
-> >>> WARNING: modpost: vmlinux: section __bug_table (type 1, flags 3) has =
-alignment of 1, expected at least 4.
-> >>> ...
-> >>
-> >>
-> >>
-> >>
-> >> modpost acts on vmlinux.o instead of vmlinux.
-> >>
-> >>
-> >> vmlinux.o is a relocatable ELF, which is not a real layout
-> >> because no linker script has been considered yet at this
-> >> point.
-> >>
-> >>
-> >> vmlinux is an executable ELF, produced by a linker,
-> >> with the linker script taken into consideration
-> >> to determine the final section/symbol layout.
-> >>
-> >>
-> >> So, checking this in modpost is meaningless.
-> >>
-> >>
-> >>
-> >> I did not check the module checking code, but
-> >> modules are also relocatable ELF.
-> >
-> >
-> >
-> > Sorry, I replied too early.
-> > (Actually I replied without reading your modpost code).
-> >
-> > Now, I understand what your checker is doing.
-> >
-> >
-> > I did not test how many false positives are produced,
-> > but it catches several suspicious mis-alignments.
+> We discovered that 1% swap page fault is 100us+ while 50% of
+> the swap fault is under 20us.
 >
-> Yes.
+> Further investigation show that a large portion of the time
+> spent in the free_swap_slots() function for the long tail case.
 >
-> > However, I am not convinced with this warning.
-> >
-> >
-> > +               warn("%s: section %s (type %d, flags %lu) has
-> > alignment of %d, expected at least %d.\n"
-> > +                    "Maybe you need to add ALIGN() to the modules.lds
-> > file (or fix modpost) ?\n",
-> > +                    modname, sec, sechdr->sh_type, sechdr->sh_flags,
-> > is_shalign, should_shalign);
-> > +       }
-> >
-> >
-> > Adding ALGIN() hides the real problem.
+> The percpu cache of swap slots is freed in a batch of 64 entries
+> inside free_swap_slots(). These cache entries are accumulated
+> from previous page faults, which may not be related to the current
+> process.
 >
-> Right.
-> It took me some time to understand the effects here too.
-> See below...
+> Doing the batch free in the page fault handler causes longer
+> tail latencies and penalizes the current process.
 >
-> > I think the real problem is that not enough alignment was requested
-> > in the code.
-> >
-> > For example, the right fix for ".initcall7.init" should be this:
-> >
-> > diff --git a/include/linux/init.h b/include/linux/init.h
-> > index 3fa3f6241350..650311e4b215 100644
-> > --- a/include/linux/init.h
-> > +++ b/include/linux/init.h
-> > @@ -264,6 +264,7 @@ extern struct module __this_module;
-> >   #define ____define_initcall(fn, __stub, __name, __sec)         \
-> >          __define_initcall_stub(__stub, fn)                      \
-> >          asm(".section   \"" __sec "\", \"a\"            \n"     \
-> > +           ".balign 4                                  \n"     \
-> >              __stringify(__name) ":                      \n"     \
-> >              ".long      " __stringify(__stub) " - .     \n"     \
-> >              ".previous                                  \n");   \
-> >
-> > Then, "this section requires at least 4 byte alignment"
-> > is recorded in the sh_addralign field.
+> Move free_swap_slots() outside of the swapin page fault handler into an
+> async work queue to avoid such long tail latencies.
 >
-> Yes, this is the important part.
+> Testing:
 >
-> > Then, the rest is the linker's job.
-> >
-> > We should not tweak the linker script.
+> Chun-Tse did some benchmark in chromebook, showing that
+> zram_wait_metrics improve about 15% with 80% and 95% confidence.
 >
-> That's right, but let's phrase it slightly different...
-> There is *no need* to tweak the linker script, *if* the alignment
-> gets correctly assigned by the inline assembly (like your
-> initcall patch above).
-> But on some platforms (e.g. on parisc) I noticed that this .balign
-> was missing for some other sections, in which case the other (not preferr=
-ed)
-> possible option is to tweak the linker script.
+> I recently ran some experiments on about 1000 Google production
+> machines. It shows swapin latency drops in the long tail
+> 100us - 500us bucket dramatically.
 >
-> So I think we agree that fixing the inline assembly is the right
-> way to go?
+> platform        (100-500us)             (0-100us)
+> A               1.12% -> 0.36%          98.47% -> 99.22%
+> B               0.65% -> 0.15%          98.96% -> 99.46%
+> C               0.61% -> 0.23%          98.96% -> 99.38%
 
+Nice! Are these values for zram as well, or ordinary (SSD?) swap? I
+imagine it will matter less for swap, right?
 
-Yes, I think so.
+>
+> Signed-off-by: Chris Li <chrisl@kernel.org>
+> To: Andrew Morton <akpm@linux-foundation.org>
+> Cc: linux-kernel@vger.kernel.org
+> Cc: linux-mm@kvack.org
+> Cc: Wei Xu=EF=BF=BC <weixugc@google.com>
+> Cc: Yu Zhao=EF=BF=BC <yuzhao@google.com>
+> Cc: Greg Thelen <gthelen@google.com>
+> Cc: Chun-Tse Shao <ctshao@google.com>
+> Cc: Suren Baghdasaryan=EF=BF=BC <surenb@google.com>
+> Cc: Yosry Ahmed=EF=BF=BC <yosryahmed@google.com>
+> Cc: Brain Geffon <bgeffon@google.com>
+> Cc: Minchan Kim <minchan@kernel.org>
+> Cc: Michal Hocko <mhocko@suse.com>
+> Cc: Mel Gorman <mgorman@techsingularity.net>
+> Cc: Huang Ying <ying.huang@intel.com>
+> Cc: Nhat Pham <nphamcs@gmail.com>
+> Cc: Johannes Weiner <hannes@cmpxchg.org>
+> Cc: Kairui Song <kasong@tencent.com>
+> Cc: Zhongkun He <hezhongkun.hzk@bytedance.com>
+> Cc: Kemeng Shi <shikemeng@huaweicloud.com>
+> Cc: Barry Song <v-songbaohua@oppo.com>
+> ---
+>  include/linux/swap_slots.h |  1 +
+>  mm/swap_slots.c            | 37 +++++++++++++++++++++++++++++--------
+>  2 files changed, 30 insertions(+), 8 deletions(-)
+>
+> diff --git a/include/linux/swap_slots.h b/include/linux/swap_slots.h
+> index 15adfb8c813a..67bc8fa30d63 100644
+> --- a/include/linux/swap_slots.h
+> +++ b/include/linux/swap_slots.h
+> @@ -19,6 +19,7 @@ struct swap_slots_cache {
+>         spinlock_t      free_lock;  /* protects slots_ret, n_ret */
+>         swp_entry_t     *slots_ret;
+>         int             n_ret;
+> +       struct work_struct async_free;
+>  };
+>
+>  void disable_swap_slots_cache_lock(void);
+> diff --git a/mm/swap_slots.c b/mm/swap_slots.c
+> index 0bec1f705f8e..a3b306550732 100644
+> --- a/mm/swap_slots.c
+> +++ b/mm/swap_slots.c
+> @@ -42,8 +42,10 @@ static bool  swap_slot_cache_initialized;
+>  static DEFINE_MUTEX(swap_slots_cache_mutex);
+>  /* Serialize swap slots cache enable/disable operations */
+>  static DEFINE_MUTEX(swap_slots_cache_enable_mutex);
+> +static struct workqueue_struct *swap_free_queue;
+>
+>  static void __drain_swap_slots_cache(unsigned int type);
+> +static void swapcache_async_free_entries(struct work_struct *data);
+>
+>  #define use_swap_slot_cache (swap_slot_cache_active && swap_slot_cache_e=
+nabled)
+>  #define SLOTS_CACHE 0x1
+> @@ -149,6 +151,7 @@ static int alloc_swap_slot_cache(unsigned int cpu)
+>                 spin_lock_init(&cache->free_lock);
+>                 cache->lock_initialized =3D true;
+>         }
+> +       INIT_WORK(&cache->async_free, swapcache_async_free_entries);
+>         cache->nr =3D 0;
+>         cache->cur =3D 0;
+>         cache->n_ret =3D 0;
+> @@ -269,6 +272,20 @@ static int refill_swap_slots_cache(struct swap_slots=
+_cache *cache)
+>         return cache->nr;
+>  }
+>
+> +static void swapcache_async_free_entries(struct work_struct *data)
+> +{
+> +       struct swap_slots_cache *cache;
+> +
+> +       cache =3D container_of(data, struct swap_slots_cache, async_free)=
+;
+> +       spin_lock_irq(&cache->free_lock);
+> +       /* Swap slots cache may be deactivated before acquiring lock */
+> +       if (cache->slots_ret) {
+> +               swapcache_free_entries(cache->slots_ret, cache->n_ret);
+> +               cache->n_ret =3D 0;
+> +       }
+> +       spin_unlock_irq(&cache->free_lock);
+> +}
+> +
+>  void free_swap_slot(swp_entry_t entry)
+>  {
+>         struct swap_slots_cache *cache;
+> @@ -282,17 +299,14 @@ void free_swap_slot(swp_entry_t entry)
+>                         goto direct_free;
+>                 }
+>                 if (cache->n_ret >=3D SWAP_SLOTS_CACHE_SIZE) {
+> -                       /*
+> -                        * Return slots to global pool.
+> -                        * The current swap_map value is SWAP_HAS_CACHE.
+> -                        * Set it to 0 to indicate it is available for
+> -                        * allocation in global pool
+> -                        */
+> -                       swapcache_free_entries(cache->slots_ret, cache->n=
+_ret);
+> -                       cache->n_ret =3D 0;
+> +                       spin_unlock_irq(&cache->free_lock);
+> +                       queue_work(swap_free_queue, &cache->async_free);
+> +                       goto direct_free;
+>                 }
+>                 cache->slots_ret[cache->n_ret++] =3D entry;
+>                 spin_unlock_irq(&cache->free_lock);
+> +               if (cache->n_ret >=3D SWAP_SLOTS_CACHE_SIZE)
+> +                       queue_work(swap_free_queue, &cache->async_free);
+>         } else {
+>  direct_free:
+>                 swapcache_free_entries(&entry, 1);
+> @@ -348,3 +362,10 @@ swp_entry_t folio_alloc_swap(struct folio *folio)
+>         }
+>         return entry;
+>  }
+> +
+> +static int __init async_queue_init(void)
+> +{
+> +       swap_free_queue =3D create_workqueue("async swap cache");
 
+nit(?): isn't create_workqueue() deprecated? from:
 
+https://www.kernel.org/doc/html/latest/core-api/workqueue.html#application-=
+programming-interface-api
 
-> Either way, a link-time check like the proposed modpost patch
-> may catch section issue for upcoming/newly added sections too.
+I think there's a zswap patch proposing fixing that on the zswap side.
 
-
-Yes. This check seems to be useful.
-
-
-
-
---=20
-Best Regards
-Masahiro Yamada
+> +       return 0;
+> +}
+> +subsys_initcall(async_queue_init);
+>
+> ---
+> base-commit: eacce8189e28717da6f44ee492b7404c636ae0de
+> change-id: 20231216-async-free-bef392015432
+>
+> Best regards,
+> --
+> Chris Li <chrisl@kernel.org>
+>
 
