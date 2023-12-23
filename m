@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-10188-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10189-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA8A981D119
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 03:00:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C979B81D11B
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 03:01:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8A1FC1F26491
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 02:00:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 075901C247EA
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 02:01:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B854A79F2;
-	Sat, 23 Dec 2023 01:59:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEF22BA3C;
+	Sat, 23 Dec 2023 01:59:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=darkphysics.net header.i=@darkphysics.net header.b="QACwdue0"
+	dkim=pass (2048-bit key) header.d=darkphysics.net header.i=@darkphysics.net header.b="UaT9Dwp+"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+Received: from mail-ot1-f50.google.com (mail-ot1-f50.google.com [209.85.210.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5B533D9E
-	for <linux-kernel@vger.kernel.org>; Sat, 23 Dec 2023 01:59:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 111F36123
+	for <linux-kernel@vger.kernel.org>; Sat, 23 Dec 2023 01:59:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=darkphysics.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=darkphysics.net
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1d3aa0321b5so20434585ad.2
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 17:59:50 -0800 (PST)
+Received: by mail-ot1-f50.google.com with SMTP id 46e09a7af769-6dbaf12c866so1776925a34.3
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 17:59:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=darkphysics.net; s=google; t=1703296790; x=1703901590; darn=vger.kernel.org;
+        d=darkphysics.net; s=google; t=1703296791; x=1703901591; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=usonjnBG2njPou2HdeBz8fvEAliGcyLStCZ9ITDEc8c=;
-        b=QACwdue0ywA/sftrDqjTLIfQsO9RJr0RsiEZ1whqUwSEx7do90L1YdMqxmbyB3LVqr
-         CfISyhMwgLLM3iM/qHmayTkyhD5snBGRMsh4B3HRDj/IrnA6sUfHRfmYpAGmnbR7cSGf
-         oD2c7qETYgqazgam4oBMgitu6sCdfUwnXuCjQy5gGFZK9Cbv9qPnQjlt6+aIS+WLc606
-         rm3La6kKBsVMFeOfh2WA2UoeoiTR8xuKK35ycNTCVtFZJ24QyTtLnvu/RAZQ05QMHOnn
-         ubZTVsN5I+byP0FSsg3xZg3+ur1iPHR+zrqXb23F73WCU8ecLvWxKuMUqOL6QU85yZjv
-         5Izw==
+        bh=CAUr78/tHy+bnLYpp389Iep9Z0hW/GgVuQDVmoXVOqk=;
+        b=UaT9Dwp+xBEcmrui7d7XXbsugvAtbY0RAaM30XBhy44UWbu2Loof8bUwvCurYAZYC9
+         iVDYGO+bMV2WNE1hkCq7//H7gWyhyuyxwnQjL6xOwOaoXEe/deAUbF1H9cs6ljyXELhm
+         Pd3sbjPxMT8zcgsKKI0+VEdCAY5HGCZTSulhPw4UEJKaM138vhQ18ElrYMj24Y+b7C9l
+         /dNPOrEGn8ne1cZZHHqYi7pfU6dEOvyBp41Nr3M9cKagJjExCi0aSgnDadkAlDHZlmdV
+         fdGZZ7p7ew+6A966NqGAa3Ay2FmHoZ8xu6EYltKxH73BMQjOfy9JNAb16+3XUDA8EEsa
+         rlQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703296790; x=1703901590;
+        d=1e100.net; s=20230601; t=1703296791; x=1703901591;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=usonjnBG2njPou2HdeBz8fvEAliGcyLStCZ9ITDEc8c=;
-        b=eJ085uo/QMd8vb4zIy2p58OVA/JVGb3wF/WKneBh93rtmJmj3BCEnvarlpR+63np7O
-         ynReLcrfqD43FIjWaUA4w2I+pwOEW6LeNV0GMgMFGqCejnjfbnEsCCz6uv4iimoek/T+
-         5cB+BSMVQTTg7byslz8vH21z3bsP49zjrQrSGLqEEauFd+WoVajbAl80hwwrVkFveHfh
-         sWncLpjDZxeTSVKX3icY4TOZ67cIG0TcKZ4JrQ7eAn0f8XVsejvvE3elSeO9NdGiHoz9
-         lK4dzUTN4/Tp+3ITgCAehFdOdQDXP5Q6wv/d44yZK/N96kyEyhMdiifqCjwHumLHDEIG
-         T0uQ==
-X-Gm-Message-State: AOJu0YzNBKYmh4hNfJbjcHx5SE71irRjw64z/vG1VO0XEXUkgqZrLBAu
-	oaVXaY3Ts4sSVKLVHoAPY5o6LhXevNnVvQ==
-X-Google-Smtp-Source: AGHT+IG1XTO9xfo2wICSr6CN0C0CEnKwzISg3BBtWfVJz2soILdavBNKFvS3NFnDP0y2p6KmBkDo3Q==
-X-Received: by 2002:a17:902:db03:b0:1d4:59f:c21e with SMTP id m3-20020a170902db0300b001d4059fc21emr2945365plx.32.1703296790299;
-        Fri, 22 Dec 2023 17:59:50 -0800 (PST)
+        bh=CAUr78/tHy+bnLYpp389Iep9Z0hW/GgVuQDVmoXVOqk=;
+        b=PNTzNpU19xjLAjVnzMXKokjtjboisdM1ujXaIuieGzpwllGf5ccupJs2uuOkOfpSO0
+         S2kD9pvxXyPci/VwR7EOIBEn1a69/FaNoraKu3FUrtk/oxr+gcD85H+/ZT439eMGtsRc
+         MUh7qUK9gHJ35AzIiYGmeEF1m4MNYAuMZsSoAiiFLxKBzv7GCNCyznDx0movPX8Qu6Dw
+         sBs9kEVnfBmoNOKlTl+fgZRZppP6fZQ8RQQ6oB3CwTX2Ukv1QOIwZ7//ixA2AQ+kV9a2
+         aWwzbsUYFM9EMe8AR0ljk674hKLkM76lLPmVCSWyRiX+PYSGdKF7mdrpGw6XiGpiExeq
+         CD3A==
+X-Gm-Message-State: AOJu0YwwkVqwyMQgFVInv1QwY2amakCf9WazlUhrANTVVz38U2x+3ubk
+	H7CjlRosEebYd/fYesxSHor4ERqkx5Lvew==
+X-Google-Smtp-Source: AGHT+IGLgYEc/sdGm9KEfofUlSMPvLguXgtBDpjCgJkYSRvHPeMrALWjrzWpaNHsXhOIbfZapN2zUw==
+X-Received: by 2002:a05:6808:3309:b0:3bb:72f9:86d6 with SMTP id ca9-20020a056808330900b003bb72f986d6mr3311716oib.106.1703296791021;
+        Fri, 22 Dec 2023 17:59:51 -0800 (PST)
 Received: from oatmeal.darkphysics (c-76-146-178-2.hsd1.wa.comcast.net. [76.146.178.2])
-        by smtp.gmail.com with ESMTPSA id kg15-20020a170903060f00b001d3edef115dsm4106546plb.20.2023.12.22.17.59.49
+        by smtp.gmail.com with ESMTPSA id kg15-20020a170903060f00b001d3edef115dsm4106546plb.20.2023.12.22.17.59.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Dec 2023 17:59:49 -0800 (PST)
+        Fri, 22 Dec 2023 17:59:50 -0800 (PST)
 From: Tree Davies <tdavies@darkphysics.net>
 To: gregkh@linuxfoundation.org,
 	philipp.g.hortmann@gmail.com,
@@ -64,9 +64,9 @@ To: gregkh@linuxfoundation.org,
 Cc: linux-staging@lists.linux.dev,
 	linux-kernel@vger.kernel.org,
 	Tree Davies <tdavies@darkphysics.net>
-Subject: [PATCH 05/20] Staging: rtl8192e: Remove unnecessary parenthesis in rtllib_ap_sec_type()
-Date: Fri, 22 Dec 2023 17:59:27 -0800
-Message-Id: <20231223015942.418263-6-tdavies@darkphysics.net>
+Subject: [PATCH 06/20] Staging: rtl8192e: Remove unnecessary parenthesis in rtllib_association_req()
+Date: Fri, 22 Dec 2023 17:59:28 -0800
+Message-Id: <20231223015942.418263-7-tdavies@darkphysics.net>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231223015942.418263-1-tdavies@darkphysics.net>
 References: <20231223015942.418263-1-tdavies@darkphysics.net>
@@ -79,7 +79,7 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
 Remove parnthesis to fix checkpatch Warning:
-Unnecessary parentheses around ieee->wpa_ie[14]
+Unnecessary parentheses around ieee->ht_info->SelfHTCap
 
 Signed-off-by: Tree Davies <tdavies@darkphysics.net>
 ---
@@ -87,18 +87,18 @@ Signed-off-by: Tree Davies <tdavies@darkphysics.net>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/staging/rtl8192e/rtllib_softmac.c b/drivers/staging/rtl8192e/rtllib_softmac.c
-index 208079c542ea..32760dc65961 100644
+index 32760dc65961..ba6da717dc7e 100644
 --- a/drivers/staging/rtl8192e/rtllib_softmac.c
 +++ b/drivers/staging/rtl8192e/rtllib_softmac.c
-@@ -2231,7 +2231,7 @@ u8 rtllib_ap_sec_type(struct rtllib_device *ieee)
- 		return SEC_ALG_WEP;
- 	} else if ((wpa_ie_len != 0)) {
- 		if (((ieee->wpa_ie[0] == 0xdd) &&
--		    (!memcmp(&(ieee->wpa_ie[14]), ccmp_ie, 4))) ||
-+		    (!memcmp(&ieee->wpa_ie[14], ccmp_ie, 4))) ||
- 		    ((ieee->wpa_ie[0] == 0x30) &&
- 		    (!memcmp(&ieee->wpa_ie[10], ccmp_rsn_ie, 4))))
- 			return SEC_ALG_CCMP;
+@@ -727,7 +727,7 @@ rtllib_association_req(struct rtllib_network *beacon,
+ 	}
+ 
+ 	if (ieee->ht_info->current_ht_support && ieee->ht_info->enable_ht) {
+-		ht_cap_buf = (u8 *)&(ieee->ht_info->SelfHTCap);
++		ht_cap_buf = (u8 *)&ieee->ht_info->SelfHTCap;
+ 		ht_cap_len = sizeof(ieee->ht_info->SelfHTCap);
+ 		ht_construct_capability_element(ieee, ht_cap_buf, &ht_cap_len,
+ 					     encrypt, true);
 -- 
 2.39.2
 
