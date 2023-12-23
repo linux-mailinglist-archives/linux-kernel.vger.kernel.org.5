@@ -1,98 +1,185 @@
-Return-Path: <linux-kernel+bounces-10264-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10267-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6866A81D1E3
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 04:26:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A97D281D1E9
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 04:31:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 99DC51C22EAD
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 03:26:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 389691F23631
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 03:31:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31C60C14B;
-	Sat, 23 Dec 2023 03:25:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 673401392;
+	Sat, 23 Dec 2023 03:31:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fxdFA/Vt"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Eflw0YT3"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f174.google.com (mail-il1-f174.google.com [209.85.166.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 292CC4437;
-	Sat, 23 Dec 2023 03:25:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703301955; x=1734837955;
-  h=from:to:subject:date:message-id:in-reply-to:references:
-   mime-version:content-transfer-encoding;
-  bh=f+dh5rZALXl/p24n8Vz32jakt6X6ur63JdX+9WjZny0=;
-  b=fxdFA/VtFi3pjv5hWWtRlVFdPPZWpIzJ+eD+ugyaax44SIE0pkUyJ4RS
-   4a5owJLBWuHxkaA8PvBjjEiDHfFNnX3q+S9VUnUAashhOkMAMzu1/+pBM
-   NQpwFRA5UErRjT1IyUI+LDLvEiC333erHXX85pHDOOvtNv5IkfwRSnTaE
-   4SqavUxZyEd2/w8Zu0Zw91q+LHVvkdyIBF5cOgKYOnq4I/pDcye/oM5yg
-   iIMWHvcsepLJBBXx9ppe1E8uqGM0RPb2rv4mnLmVS1sm4zf3d97JgfdJi
-   5JnomIi/PpYIAi1Q4W4Z4o5X6NK35N7xH6uRy/HhrrbZ5h0UmyF3alPGC
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10932"; a="462619296"
-X-IronPort-AV: E=Sophos;i="6.04,298,1695711600"; 
-   d="scan'208";a="462619296"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Dec 2023 19:25:53 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10932"; a="811534587"
-X-IronPort-AV: E=Sophos;i="6.04,298,1695711600"; 
-   d="scan'208";a="811534587"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga001.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Dec 2023 19:25:53 -0800
-Received: from debox1-desk4.intel.com (unknown [10.209.86.110])
-	by linux.intel.com (Postfix) with ESMTP id C84C3580CC6;
-	Fri, 22 Dec 2023 19:25:52 -0800 (PST)
-From: "David E. Box" <david.e.box@linux.intel.com>
-To: david.e.box@linux.intel.com,
-	hdegoede@redhat.com,
-	ilpo.jarvinen@linux.intel.com,
-	rajvi.jingar@linux.intel.com,
-	platform-driver-x86@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 8/8] platform/x86/intel/pmc: Add missing extern
-Date: Fri, 22 Dec 2023 19:25:48 -0800
-Message-Id: <20231223032548.1680738-9-david.e.box@linux.intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231223032548.1680738-1-david.e.box@linux.intel.com>
-References: <20231223032548.1680738-1-david.e.box@linux.intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55CB510F4
+	for <linux-kernel@vger.kernel.org>; Sat, 23 Dec 2023 03:30:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-il1-f174.google.com with SMTP id e9e14a558f8ab-35fe051c295so145075ab.0
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 19:30:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1703302256; x=1703907056; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=mKUKzM+6ifcXsunzZjiqCC3leVlDqBJ+JFGnvTMz+AA=;
+        b=Eflw0YT3ZUjkY6ZvadWeynhcdxaJD29Q/tFPMHKKxv6LtljiLp44xAA98nmnIW2YjN
+         qz2oRQbU43ucqWkZUOuS1TJYL88/Jc2WZRctuelpD5Lo74plx9RaR6yWHUmVjoC/9FZL
+         eQFgtFK+w/mR1jhSsuHuBQNqkvgnri/Fqz2S7j3Cz76S1SeCQ0UhaNiIDxa5iFSS1LPq
+         iL6+CickT+vSzO4NGbdwEsYdnST+YF2YvssepGZFfGLXdfNdTI0veIERekedlWtFGKdE
+         Y+R6kr9sfMb4ohap+NBqmHssKty+6876Uzx0vx+G//lXY/M9r5bHciJHL+SlDGvm4aVx
+         g13w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703302256; x=1703907056;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mKUKzM+6ifcXsunzZjiqCC3leVlDqBJ+JFGnvTMz+AA=;
+        b=kPs89j1Fmdv603yLZNhy4TCIrXmkYpmg0clkYpxvxhJAr31r/frVJ2V7dfQDzByqDr
+         +86fDhNE3E9ZNFzWuKTPYeV0azHJzyo7YyEniA6Xek7VGIqF85kCnHNnGN2l3f7sE/IC
+         ltbrWY83sJcEbR0HEKoF6ZvHjDzO1naz1cvYxq8/NXDvPO6OgY5gb7sh+2Tp7Qa1/MN2
+         nd0B49YpuX5jIx7JWXVqv4S461N42WcfewijA/eG3oVSlc7rwr0g3emcFdayF4MUxgpb
+         36OOoFquoI5W7l+VFO5lrSgq041moYiB4/o4pyFlB3DOsDHHK/lM+ZM6+pL9QSSh+Wnk
+         fJbw==
+X-Gm-Message-State: AOJu0YwXRRVUTXq5mal899y+MiYGN1zyxk3Dt79Vb+bSaD7LAne8F7Mt
+	WjlZyLTYx8Y+9e2IZ3Gxg1UvwX4I1vTF
+X-Google-Smtp-Source: AGHT+IGqf8TH2N7OR0ICuaHZpx7wnuWDnl0ZbZwaxvo0ZYgzK8CgNYCVQOn1vsdkFaJssQZO57bSwA==
+X-Received: by 2002:a92:d28c:0:b0:359:c80d:f75 with SMTP id p12-20020a92d28c000000b00359c80d0f75mr218341ilp.10.1703302256295;
+        Fri, 22 Dec 2023 19:30:56 -0800 (PST)
+Received: from google.com ([100.64.188.49])
+        by smtp.gmail.com with ESMTPSA id y21-20020a5e8715000000b007baa4dbcfb4sm482689ioj.0.2023.12.22.19.30.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Dec 2023 19:30:55 -0800 (PST)
+Date: Fri, 22 Dec 2023 20:30:50 -0700
+From: Yu Zhao <yuzhao@google.com>
+To: syzbot <syzbot+03fd9b3f71641f0ebf2d@syzkaller.appspotmail.com>
+Cc: akpm@linux-foundation.org, axboe@kernel.dk, io-uring@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [mm] WARNING in get_pte_pfn
+Message-ID: <ZYZUarJep8b746Et@google.com>
+References: <000000000000f9ff00060d14c256@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <000000000000f9ff00060d14c256@google.com>
 
-Add missing extern for tgl_h_reg_map. Fixes sparse warning:
+On Fri, Dec 22, 2023 at 12:11:21AM -0800, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    0e389834672c Merge tag 'for-6.7-rc5-tag' of git://git.kern..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=1454824ee80000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=f21aff374937e60e
+> dashboard link: https://syzkaller.appspot.com/bug?extid=03fd9b3f71641f0ebf2d
+> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13b4ef49e80000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=118314d6e80000
+> 
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/e58cd74e152a/disk-0e389834.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/45d17ccb34bc/vmlinux-0e389834.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/b9b7105d4e08/bzImage-0e389834.xz
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+03fd9b3f71641f0ebf2d@syzkaller.appspotmail.com
+> 
+> ------------[ cut here ]------------
+> WARNING: CPU: 1 PID: 5066 at mm/vmscan.c:3242 get_pte_pfn+0x1b5/0x3f0 mm/vmscan.c:3242
+> Modules linked in:
+> CPU: 1 PID: 5066 Comm: syz-executor668 Not tainted 6.7.0-rc5-syzkaller-00270-g0e389834672c #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
+> RIP: 0010:get_pte_pfn+0x1b5/0x3f0 mm/vmscan.c:3242
+> Code: f3 74 2a e8 6d 78 cb ff 31 ff 48 b8 00 00 00 00 00 00 00 02 48 21 c5 48 89 ee e8 e6 73 cb ff 48 85 ed 74 4e e8 4c 78 cb ff 90 <0f> 0b 90 48 c7 c3 ff ff ff ff e8 3c 78 cb ff 48 b8 00 00 00 00 00
+> RSP: 0018:ffffc900041e6878 EFLAGS: 00010293
+> RAX: 0000000000000000 RBX: 000000000007891d RCX: ffffffff81bbf6e3
+> RDX: ffff88807d813b80 RSI: ffffffff81bbf684 RDI: 0000000000000005
+> RBP: 0000000000000000 R08: 0000000000000005 R09: 0000000000000000
+> R10: 0000000000000200 R11: 0000000000000003 R12: 0000000000000200
+> R13: 1ffff9200083cd0f R14: 0000000000010b21 R15: 0000000020ffc000
+> FS:  0000555555f4d480(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 0000000000000000 CR3: 000000005fbfa000 CR4: 0000000000350ef0
+> Call Trace:
+>  <TASK>
+>  lru_gen_look_around+0x70d/0x11a0 mm/vmscan.c:4001
+>  folio_referenced_one+0x5a2/0xf70 mm/rmap.c:843
+>  rmap_walk_anon+0x225/0x570 mm/rmap.c:2485
+>  rmap_walk mm/rmap.c:2562 [inline]
+>  rmap_walk mm/rmap.c:2557 [inline]
+>  folio_referenced+0x28a/0x4b0 mm/rmap.c:960
+>  folio_check_references mm/vmscan.c:829 [inline]
+>  shrink_folio_list+0x1ace/0x3f00 mm/vmscan.c:1160
+>  evict_folios+0x6e7/0x1b90 mm/vmscan.c:4499
+>  try_to_shrink_lruvec+0x638/0xa10 mm/vmscan.c:4704
+>  lru_gen_shrink_lruvec mm/vmscan.c:4849 [inline]
+>  shrink_lruvec+0x314/0x2990 mm/vmscan.c:5622
+>  shrink_node_memcgs mm/vmscan.c:5842 [inline]
+>  shrink_node+0x811/0x3710 mm/vmscan.c:5877
+>  shrink_zones mm/vmscan.c:6116 [inline]
+>  do_try_to_free_pages+0x36c/0x1940 mm/vmscan.c:6178
 
-  drivers/platform/x86/intel/pmc/tgl.c:213:26: warning: symbol 'tgl_h_reg_map' was not declared. Should it be static?
+#syz test
 
-Fixes: 544f7b7f651c ("platform/x86/intel/pmc: Add regmap for Tiger Lake H PCH")
-Signed-off-by: David E. Box <david.e.box@linux.intel.com>
----
- drivers/platform/x86/intel/pmc/core.h | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/platform/x86/intel/pmc/core.h b/drivers/platform/x86/intel/pmc/core.h
-index ce7b1cd2b194..2a797fccf5e6 100644
---- a/drivers/platform/x86/intel/pmc/core.h
-+++ b/drivers/platform/x86/intel/pmc/core.h
-@@ -452,6 +452,7 @@ extern const struct pmc_bit_map tgl_vnn_misc_status_map[];
- extern const struct pmc_bit_map tgl_signal_status_map[];
- extern const struct pmc_bit_map *tgl_lpm_maps[];
- extern const struct pmc_reg_map tgl_reg_map;
-+extern const struct pmc_reg_map tgl_h_reg_map;
- extern const struct pmc_bit_map adl_pfear_map[];
- extern const struct pmc_bit_map *ext_adl_pfear_map[];
- extern const struct pmc_bit_map adl_ltr_show_map[];
--- 
-2.34.1
-
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index 9dd8977de5a2..041f9ad8f95b 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -3230,7 +3230,8 @@ static bool get_next_vma(unsigned long mask, unsigned long size, struct mm_walk
+ 	return false;
+ }
+ 
+-static unsigned long get_pte_pfn(pte_t pte, struct vm_area_struct *vma, unsigned long addr)
++static unsigned long get_pte_pfn(pte_t pte, struct vm_area_struct *vma, unsigned long addr,
++				 struct page *page)
+ {
+ 	unsigned long pfn = pte_pfn(pte);
+ 
+@@ -3239,8 +3240,14 @@ static unsigned long get_pte_pfn(pte_t pte, struct vm_area_struct *vma, unsigned
+ 	if (!pte_present(pte) || is_zero_pfn(pfn))
+ 		return -1;
+ 
+-	if (WARN_ON_ONCE(pte_devmap(pte) || pte_special(pte)))
++	if (pte_devmap(pte) || pte_special(pte)) {
++		if (page)
++			dump_page(page, "get_pte_pfn()");
++		dump_vma(vma);
++		dump_mm(vma->vm_mm);
++		BUG();
+ 		return -1;
++	}
+ 
+ 	if (WARN_ON_ONCE(!pfn_valid(pfn)))
+ 		return -1;
+@@ -3331,7 +3338,7 @@ static bool walk_pte_range(pmd_t *pmd, unsigned long start, unsigned long end,
+ 		total++;
+ 		walk->mm_stats[MM_LEAF_TOTAL]++;
+ 
+-		pfn = get_pte_pfn(ptent, args->vma, addr);
++		pfn = get_pte_pfn(ptent, args->vma, addr, NULL);
+ 		if (pfn == -1)
+ 			continue;
+ 
+@@ -3998,7 +4005,7 @@ void lru_gen_look_around(struct page_vma_mapped_walk *pvmw)
+ 		unsigned long pfn;
+ 		pte_t ptent = ptep_get(pte + i);
+ 
+-		pfn = get_pte_pfn(ptent, pvmw->vma, addr);
++		pfn = get_pte_pfn(ptent, pvmw->vma, addr, pfn_to_page(pvmw->pfn));
+ 		if (pfn == -1)
+ 			continue;
+ 
 
