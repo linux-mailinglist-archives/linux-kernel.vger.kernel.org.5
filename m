@@ -1,104 +1,107 @@
-Return-Path: <linux-kernel+bounces-10155-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10156-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34C9181D0D9
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 01:45:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B417F81D0EA
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 02:10:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1CD5DB22FD9
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 00:45:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4409D285D14
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 01:10:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77CCF814;
-	Sat, 23 Dec 2023 00:45:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D06BEA4F;
+	Sat, 23 Dec 2023 01:10:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="GANTk477"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jxnIR1Oj"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25214644
-	for <linux-kernel@vger.kernel.org>; Sat, 23 Dec 2023 00:45:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from cwcc.thunk.org (pool-173-48-113-111.bstnma.fios.verizon.net [173.48.113.111])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 3BN0gZOb010465
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 22 Dec 2023 19:42:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1703292158; bh=JgjeiVIv4kKmgwVoMAv3ITugW5Gtk3YYC6cswFFGaeQ=;
-	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-	b=GANTk477egdU+ilGBt820HsBPsy9Eo4yqwJLHt53NUWLe5WATRczjKKTNgpG64Yre
-	 w6agAHx95xYGZUR1vWLV+ofWtcGzikbTFHAOKsfNtoYptdsXh7953xT1xDoquDkv6R
-	 GN1RHE8o8FfrnPvAJXVl4ZPgMM9Epjlh+mQIcW0PABXq0tKep5xoe8/xEGd0iuS6MV
-	 no8CPuNQ9QfJ5GlyosySYPGI6UUxnxV1OZPzociY+9MfaoaCAezsAA/wWebw6kH6lG
-	 zG1wbC2vW0vDo6Bu67+av0acEkf8HCj/9Ze+RXbEPebjFwrKZtkzbYlgyjddTQeAQY
-	 gu/BirAfbHEvw==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-	id 15FD715C02E0; Fri, 22 Dec 2023 19:42:35 -0500 (EST)
-Date: Fri, 22 Dec 2023 19:42:35 -0500
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: Bagas Sanjaya <bagasdotme@gmail.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Staging Drivers <linux-staging@lists.linux.dev>
-Subject: Re: "Link in bio" instead of Link:/Closes: trailer
-Message-ID: <20231223004235.GC325499@mit.edu>
-References: <ZYQeZjN_3bPOdKKf@archie.me>
- <2023122112-rigging-january-7618@gregkh>
- <cc276c0e-99bb-4422-9771-d864db4287cb@gmail.com>
- <2023122129-twisty-mumble-c667@gregkh>
- <ZYRIDDD_XR5HdVJu@archie.me>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 243431368;
+	Sat, 23 Dec 2023 01:10:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 91B11C433C9;
+	Sat, 23 Dec 2023 01:10:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703293827;
+	bh=u75DN3s2OPwUPSX6ZbFKV/tG2RZIBlNRA4FZBD+I1Ss=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=jxnIR1OjSuNcMTMGFa7J8mOHMZygrB+UlmEmoyhNTuHvsJpDWOvSByleDRIpLShdu
+	 mIetg5OIUzjZON1o9+7fpdulGJ5VTf/jqc9hBk5WW7uDVwh9E8aWcNxWp8NRKSVPqb
+	 SCOT8mQFVIeb2uuHi0B3QBYeYzgjczTf94yHEqeIEdrpDZFIXh0rfRpdWB5b0ok0/g
+	 I/91kbDCgE8zDaAzuwv5vINa9o3+g09CwaoZrm+YvclbkrR4RuGnxO4fMSXGXVoWyd
+	 z/4aME7Ue0G/Kgt8VhpZA4rr5cz6DcyE0A59tcpo5kw6EmMkaOHGA6ECtV4Rcxfu/3
+	 SUcVPc7Nse6pQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 78D8BC41620;
+	Sat, 23 Dec 2023 01:10:27 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZYRIDDD_XR5HdVJu@archie.me>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next v11 00/10] net: ethernet: am65-cpsw: Add mqprio,
+ frame preemption & coalescing
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <170329382749.26300.2655743385787592194.git-patchwork-notify@kernel.org>
+Date: Sat, 23 Dec 2023 01:10:27 +0000
+References: <20231219105805.80617-1-rogerq@kernel.org>
+In-Reply-To: <20231219105805.80617-1-rogerq@kernel.org>
+To: Roger Quadros <rogerq@kernel.org>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, shuah@kernel.org, vladimir.oltean@nxp.com,
+ s-vadapalli@ti.com, r-gunasekaran@ti.com, vigneshr@ti.com, srk@ti.com,
+ horms@kernel.org, p-varis@ti.com, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
 
-On Thu, Dec 21, 2023 at 09:13:32PM +0700, Bagas Sanjaya wrote:
-> I was scratching my itch whether common social media practices (such as that's
-> being discussed here) can be applied to kernel development.
+Hello:
 
-The real problem is that someone's soecial media profile (whether it's
-Linkedin, or Facebook, or Threads, or Twitter) is not a stable, fixed
-resource.  So at any time in the future, the bug report in the Social
-media profile could get modified, or disappear when Elon Musk decides
-to take a user's Twitter username[1] away so he can resell the highly
-desireable account name to someone he likes better.  The git log is
-forever.  So pointing to a transient resource from a permanent log is
-a really, Really, REALLY bad idea.
+This series was applied to netdev/net-next.git (main)
+by David S. Miller <davem@davemloft.net>:
 
-[1] https://slate.com/technology/2023/08/x-twitter-usernames-music-take-away-interview.html
+On Tue, 19 Dec 2023 12:57:55 +0200 you wrote:
+> Hi,
+> 
+> This series adds mqprio qdisc offload in channel mode,
+> Frame Preemption MAC merge support and RX/TX coalesing
+> for AM65 CPSW driver.
+> 
+> In v11 following changes were made
+> - Fix patch "net: ethernet: ti: am65-cpsw: add mqprio qdisc offload in channel mode"
+> by including units.h
+> 
+> [...]
 
-Common social media practices are often quite terrible, and this is a
-great example about why they shouldn't be used for this purpose.  The
-bug report should be sent to a linux kernel mailing list, so everyone
-can see it, and then they can use a lore.kernel.org URL as the stable
-resource.
+Here is the summary with links:
+  - [net-next,v11,01/10] selftests: forwarding: ethtool_mm: support devices with higher rx-min-frag-size
+    https://git.kernel.org/netdev/net-next/c/2491d66ae66c
+  - [net-next,v11,02/10] selftests: forwarding: ethtool_mm: fall back to aggregate if device does not report pMAC stats
+    https://git.kernel.org/netdev/net-next/c/c8659bd9d1c0
+  - [net-next,v11,03/10] net: ethernet: am65-cpsw: Build am65-cpsw-qos only if required
+    https://git.kernel.org/netdev/net-next/c/c92b1321bbf3
+  - [net-next,v11,04/10] net: ethernet: am65-cpsw: Rename TI_AM65_CPSW_TAS to TI_AM65_CPSW_QOS
+    https://git.kernel.org/netdev/net-next/c/d0f9535b3182
+  - [net-next,v11,05/10] net: ethernet: am65-cpsw: cleanup TAPRIO handling
+    https://git.kernel.org/netdev/net-next/c/5db81bdc486d
+  - [net-next,v11,06/10] net: ethernet: ti: am65-cpsw: Move code to avoid forward declaration
+    https://git.kernel.org/netdev/net-next/c/1374841ad477
+  - [net-next,v11,07/10] net: ethernet: am65-cpsw: Move register definitions to header file
+    https://git.kernel.org/netdev/net-next/c/8f5a75610698
+  - [net-next,v11,08/10] net: ethernet: ti: am65-cpsw: add mqprio qdisc offload in channel mode
+    https://git.kernel.org/netdev/net-next/c/bc8d62e16ec2
+  - [net-next,v11,09/10] net: ethernet: ti: am65-cpsw-qos: Add Frame Preemption MAC Merge support
+    https://git.kernel.org/netdev/net-next/c/49a2eb906824
+  - [net-next,v11,10/10] net: ethernet: ti: am65-cpsw: add sw tx/rx irq coalescing based on hrtimers
+    https://git.kernel.org/netdev/net-next/c/e4918f9d4882
 
-If the bug report is in some other source where the people who run it
-understand the importance of stable information at stable URL's ---
-for example, bugzilla.kernel.org, bugzilla.redhat.com,
-bugs.debian.org, etc. that's also fine.  But a social media profile,
-which can be modified at the owner's whim (either of the social media
-account, or the social media comapny, or someone who has $44 billion
-dollars to carelessly throw around)?  That way lies madness.
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-Just because something might "common social media pracitce", doesn't
-mean that it's a good idea.  In fact, some might argue that much of
-what happens on social media has a negative value to society, but
-that's a different debate....
 
-Cheers,
-
-					- Ted
 
