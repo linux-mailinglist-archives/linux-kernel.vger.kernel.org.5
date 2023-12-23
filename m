@@ -1,108 +1,169 @@
-Return-Path: <linux-kernel+bounces-10598-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10599-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6308381D6C4
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 23:13:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EBE0981D6C8
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 23:19:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1C0C21F21E9F
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 22:13:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 201591C217EC
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 22:19:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F7AB20B20;
-	Sat, 23 Dec 2023 22:12:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B09F718054;
+	Sat, 23 Dec 2023 22:19:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kemnade.info header.i=@kemnade.info header.b="9VLlq4HG"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JqbT509H"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail.andi.de1.cc (mail.andi.de1.cc [178.238.236.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oo1-f54.google.com (mail-oo1-f54.google.com [209.85.161.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 891B118053;
-	Sat, 23 Dec 2023 22:12:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kemnade.info
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kemnade.info
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=kemnade.info; s=20220719; h=Content-Transfer-Encoding:MIME-Version:
-	References:In-Reply-To:Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:
-	Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=b1HMz+ohMNl8A5LPDegcPK2gw7uCgp/vFwsqaqz/imM=; b=9VLlq4HGCfbmZy4/v3pcoPm62r
-	3S/m3nXnPC7Rnd9mF2GaAKPmFZS9SXBa4FDrLzxwoWKibvw+BEkYdvjqrwZAk3IyhsXbRpcqgULWg
-	xnnvZzGQlUDEZ9ByXJa3Hk9/LHabwdJGzEhFJYGFXXctzQ3Y0rQrAtnHYMAZQcDaviz814EGIb49C
-	NYOYCuGxOG6QfmYcxzqIXfQPf4a3Lnm7s4yfJ/KGeBd14L558JkdX4O/vz6161ML4zuNdp7Mzg8dr
-	2DOxgVk01ZSb66MHawHK3SJlsHttSbEqucaxnmvbz/JTo071Swd001FIt7uzFUufYuEkNhARVdG3l
-	hS2JwNBw==;
-Received: from p200301077700c3001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:107:7700:c300:1a3d:a2ff:febf:d33a] helo=aktux)
-	by mail.andi.de1.cc with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <andreas@kemnade.info>)
-	id 1rHAEL-007f7e-CM; Sat, 23 Dec 2023 23:12:25 +0100
-Received: from andi by aktux with local (Exim 4.96)
-	(envelope-from <andreas@kemnade.info>)
-	id 1rHAEK-003FaM-2N;
-	Sat, 23 Dec 2023 23:12:24 +0100
-From: Andreas Kemnade <andreas@kemnade.info>
-To: dmitry.torokhov@gmail.com,
-	robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org,
-	shawnguo@kernel.org,
-	s.hauer@pengutronix.de,
-	kernel@pengutronix.de,
-	festevam@gmail.com,
-	linux-imx@nxp.com,
-	rydberg@bitmath.org,
-	andreas@kemnade.info,
-	linus.walleij@linaro.org,
-	Jonathan.Cameron@huawei.com,
-	u.kleine-koenig@pengutronix.de,
-	heiko@sntech.de,
-	linux-input@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v3 4/4] ARM: dts: imx6sl-tolino-shine2hd: fix touchscreen rotation
-Date: Sat, 23 Dec 2023 23:12:13 +0100
-Message-Id: <20231223221213.774868-5-andreas@kemnade.info>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231223221213.774868-1-andreas@kemnade.info>
-References: <20231223221213.774868-1-andreas@kemnade.info>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9056171A8
+	for <linux-kernel@vger.kernel.org>; Sat, 23 Dec 2023 22:19:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f54.google.com with SMTP id 006d021491bc7-59052ab970eso1647599eaf.1
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Dec 2023 14:19:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703369942; x=1703974742; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MuX0pyeta/efwKHKSu3U/wEG3JMK1+kJ2PCoBewIuNE=;
+        b=JqbT509HZJWprFhOncOYIVs3tkcwWbyPXT8o+B/nZdVXw+pM34/WOSLLnn8BoE1Ud9
+         qWzmf4UOLj2meUpG2N9dbR+TfCmndXHiJETaiOuvGvigW/COu/+9Sfw1ESaJj5/+H+aj
+         GdIulm3chyJMgUvAo/gMFvA7LoZPWNuAFMzIAOxfXy0eQT0jUrZj1Q9RHy8WYNmm+3/N
+         LJ3q/tCvcC1xae0Ku1yVH12xuMmxnS/sd6WJvO4OFK4zkVfEV2lpy5dpHNoMuqkmMJkw
+         ZIiob1/WO1FPwKbdgT0N/8KsmMEOeq7lxe6BjeS4lqYgkdJE5sTjrprQWS1qIQqMykse
+         nOoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703369942; x=1703974742;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MuX0pyeta/efwKHKSu3U/wEG3JMK1+kJ2PCoBewIuNE=;
+        b=AOGwpX6BlQCOWjadHsUFT4rkKHV8ee8bl40puM2ez1/RZ18CkIdYDSTLKasmCK7S4X
+         oGVxItS2hxjohAMXtHilcvsWdalrWDWGO1f8M85jejJ4hLBktnihPgk9MKfU6uqTs6gw
+         YvRArf01xfUfG1qe9/f16pKFq9lAHeMhbXVaQYL2H77rDuZzz8dSECbZ6MPP02lS0xLL
+         9sMvKWAe5E2W6PwVtbTP67rYQ3WXfZwM+wb1/M7Yf/hAg787E4SFH7ufQTUTqAVdfIoV
+         OQf+6PKo5/6cqbfxRKkzILhD2tCHXRhY2TwXxiMVX1LHm5o60wrJnlSHjT/AHO7hBx+F
+         7SgQ==
+X-Gm-Message-State: AOJu0YxHlMBfIGp44Fec2J98bx2vEn46BfP2m8bBMWJppLwGZc1lxtTt
+	EIRBhxzPcCt5Kbw1QMXxYZSMNNu2AyROZ2SnUk8=
+X-Google-Smtp-Source: AGHT+IHNKMmPzMXot38poTF8Vvr8C4pDJtSJBgCwzLFKX3f4l+vgGfZXC3wpAzQhKpK8WbxiISxTfAuvoLALy4cK6s8=
+X-Received: by 2002:a05:6871:8a97:b0:203:824f:a343 with SMTP id
+ tm23-20020a0568718a9700b00203824fa343mr1453320oab.0.1703369942512; Sat, 23
+ Dec 2023 14:19:02 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20230920192300.3772199-1-goldstein.w.n@gmail.com>
+ <202309231130.ZI5MdlDc-lkp@intel.com> <CAFUsyfKDRiX9kKOhHcA4PLqqT6Q5faHF0eRGiKN+9NSbvrUfDw@mail.gmail.com>
+ <d02bd4f823534a00ae4915ead3d92773@AcuMS.aculab.com> <CAFUsyfL0M5P4+4s_b1kvJ_fE-ax8YBK0ammbKfoy7yKs1obzrA@mail.gmail.com>
+In-Reply-To: <CAFUsyfL0M5P4+4s_b1kvJ_fE-ax8YBK0ammbKfoy7yKs1obzrA@mail.gmail.com>
+From: Noah Goldstein <goldstein.w.n@gmail.com>
+Date: Sat, 23 Dec 2023 14:18:50 -0800
+Message-ID: <CAFUsyfJduB29c6=BNmTtgoWcHAWA1AZ-sdbhyp02JVhvA6Gp0w@mail.gmail.com>
+Subject: Re: x86/csum: Remove unnecessary odd handling
+To: David Laight <David.Laight@aculab.com>
+Cc: kernel test robot <lkp@intel.com>, "x86@kernel.org" <x86@kernel.org>, 
+	"oe-kbuild-all@lists.linux.dev" <oe-kbuild-all@lists.linux.dev>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "edumazet@google.com" <edumazet@google.com>, 
+	"tglx@linutronix.de" <tglx@linutronix.de>, "mingo@redhat.com" <mingo@redhat.com>, 
+	"torvalds@linux-foundation.org" <torvalds@linux-foundation.org>, "bp@alien8.de" <bp@alien8.de>, 
+	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>, "hpa@zytor.com" <hpa@zytor.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The display is in landscape orientation, but the touchscreen is in portrait
-orientation. Specify that properly in the devicetree.
+On Sun, Sep 24, 2023 at 7:35=E2=80=AFAM Noah Goldstein <goldstein.w.n@gmail=
+.com> wrote:
+>
+> On Sat, Sep 23, 2023 at 4:13=E2=80=AFPM David Laight <David.Laight@aculab=
+.com> wrote:
+> >
+> > From: Noah Goldstein
+> > > Sent: 23 September 2023 15:05
+> > >
+> > > On Fri, Sep 22, 2023 at 10:25=E2=80=AFPM kernel test robot <lkp@intel=
+.com> wrote:
+> > > >
+> > > > Hi Noah,
+> > > >
+> > > > kernel test robot noticed the following build warnings:
+> > > >
+> > > > [auto build test WARNING on tip/x86/core]
+> > > > [also build test WARNING on tip/master tip/auto-latest linus/master=
+ v6.6-rc2 next-20230921]
+> > > > [If your patch is applied to the wrong git tree, kindly drop us a n=
+ote.
+> > > > And when submitting patch, we suggest to use '--base' as documented=
+ in
+> > > > https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> > > >
+> > > > url:    https://github.com/intel-lab-lkp/linux/commits/Noah-Goldste=
+in/x86-csum-Remove-unnecessary-
+> > > odd-handling/20230921-032450
+> > > > base:   tip/x86/core
+> > > > patch link:    https://lore.kernel.org/r/20230920192300.3772199-1-g=
+oldstein.w.n%40gmail.com
+> > > > patch subject: x86/csum: Remove unnecessary odd handling
+> > > > config: x86_64-randconfig-121-20230921 (https://download.01.org/0da=
+y-
+> > > ci/archive/20230923/202309231130.ZI5MdlDc-lkp@intel.com/config)
+> > > > compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+> > > > reproduce (this is a W=3D1 build): (https://download.01.org/0day-
+> > > ci/archive/20230923/202309231130.ZI5MdlDc-lkp@intel.com/reproduce)
+> > > >
+> > > > If you fix the issue in a separate patch/commit (i.e. not just a ne=
+w version of
+> > > > the same patch/commit), kindly add following tags
+> > > > | Reported-by: kernel test robot <lkp@intel.com>
+> > > > | Closes: https://lore.kernel.org/oe-kbuild-all/202309231130.ZI5Mdl=
+Dc-lkp@intel.com/
+> > > >
+> > > > sparse warnings: (new ones prefixed by >>)
+> > > > >> arch/x86/lib/csum-partial_64.c:16:45: sparse: sparse: incorrect =
+type in return expression
+> > > (different base types) @@     expected restricted __wsum @@     got u=
+nsigned long long @@
+> > > >    arch/x86/lib/csum-partial_64.c:16:45: sparse:     expected restr=
+icted __wsum
+> > > >    arch/x86/lib/csum-partial_64.c:16:45: sparse:     got unsigned l=
+ong long
+> > > > >> arch/x86/lib/csum-partial_64.c:16:45: sparse: sparse: incorrect =
+type in return expression
+> > > (different base types) @@     expected restricted __wsum @@     got u=
+nsigned long long @@
+> > > >    arch/x86/lib/csum-partial_64.c:16:45: sparse:     expected restr=
+icted __wsum
+> > > >    arch/x86/lib/csum-partial_64.c:16:45: sparse:     got unsigned l=
+ong long
+> > > >
+> > > > vim +16 arch/x86/lib/csum-partial_64.c
+> > > >
+> > > >     13
+> > > >     14  static inline __wsum csum_finalize_sum(u64 temp64)
+> > > >     15  {
+> > > >   > 16          return (temp64 + ror64(temp64, 32)) >> 32;
+> > > >     17  }
+> > > >     18
+> > >
+> > > Just needs a `(__wsum)` cast. Should I post a new patch?
+> >
+> > It'll need to be a (__force __wsum) cast.
+> >
+> > I think new patches are expected...
+> >
+> Thank you, posted V4 that should fix the warning.
+> >         David
+> >
+> > -
+> > Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, M=
+K1 1PT, UK
+> > Registration No: 1397386 (Wales)
 
-Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
----
- arch/arm/boot/dts/nxp/imx/imx6sl-tolino-shine2hd.dts | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/arch/arm/boot/dts/nxp/imx/imx6sl-tolino-shine2hd.dts b/arch/arm/boot/dts/nxp/imx/imx6sl-tolino-shine2hd.dts
-index 815119c12bd48..5636fb3661e8a 100644
---- a/arch/arm/boot/dts/nxp/imx/imx6sl-tolino-shine2hd.dts
-+++ b/arch/arm/boot/dts/nxp/imx/imx6sl-tolino-shine2hd.dts
-@@ -141,8 +141,10 @@ zforce: touchscreen@50 {
- 		interrupts = <6 IRQ_TYPE_EDGE_FALLING>;
- 		vdd-supply = <&ldo1_reg>;
- 		reset-gpios = <&gpio5 9 GPIO_ACTIVE_LOW>;
--		x-size = <1072>;
--		y-size = <1448>;
-+		touchscreen-size-x = <1072>;
-+		touchscreen-size-y = <1448>;
-+		touchscreen-swapped-x-y;
-+		touchscreen-inverted-x;
- 	};
- 
- 	/* TODO: TPS65185 PMIC for E Ink at 0x68 */
--- 
-2.39.2
-
+ping.
 
