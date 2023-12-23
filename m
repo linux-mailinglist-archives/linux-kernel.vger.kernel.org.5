@@ -1,76 +1,72 @@
-Return-Path: <linux-kernel+bounces-10372-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10373-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 892B481D376
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 10:59:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D1CB81D37A
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 11:04:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B802F1C22156
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 09:59:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BF2F01C21F1A
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 10:04:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25B96DF69;
-	Sat, 23 Dec 2023 09:58:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF94F9472;
+	Sat, 23 Dec 2023 10:04:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="a3b4Lo+A";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="a3b4Lo+A"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ij9WQag0"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0C6BDDC2;
-	Sat, 23 Dec 2023 09:58:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 26FA81FD3C;
-	Sat, 23 Dec 2023 09:58:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1703325527; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Mu2YVbnchgZ4Y9RHvJToIjCQwioq6Ym5s/G+NLbihEc=;
-	b=a3b4Lo+AzQzJk2ptQoP4ZuFzGlrViiy1CGi27Hni8jQa+AOC2r/Cc+uogcKK+HDlSvAlQO
-	dGdrGwl1dMq8bmNwfmRqAsWF9eTp+3MpA5KBiighYWuIaURyZ31QBQacTpL9L/VMBirLuC
-	dm0cyUIasWHcQGPvuhi5ElDD1/zjD+s=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1703325527; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Mu2YVbnchgZ4Y9RHvJToIjCQwioq6Ym5s/G+NLbihEc=;
-	b=a3b4Lo+AzQzJk2ptQoP4ZuFzGlrViiy1CGi27Hni8jQa+AOC2r/Cc+uogcKK+HDlSvAlQO
-	dGdrGwl1dMq8bmNwfmRqAsWF9eTp+3MpA5KBiighYWuIaURyZ31QBQacTpL9L/VMBirLuC
-	dm0cyUIasWHcQGPvuhi5ElDD1/zjD+s=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8805C1392C;
-	Sat, 23 Dec 2023 09:58:43 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id eACRClOvhmXmcgAAD6G6ig
-	(envelope-from <wqu@suse.com>); Sat, 23 Dec 2023 09:58:43 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	akpm@linux-foundation.org,
-	christophe.jaillet@wanadoo.fr,
-	andriy.shevchenko@linux.intel.com,
-	David.Laight@ACULAB.COM,
-	ddiss@suse.de
-Subject: [PATCH 3/3] btrfs: migrate to the newer memparse_safe() helper
-Date: Sat, 23 Dec 2023 20:28:07 +1030
-Message-ID: <6dfa53ded887caa2269c1beeaedcff086342339a.1703324146.git.wqu@suse.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2F6A944F;
+	Sat, 23 Dec 2023 10:04:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a265d4f78bfso216817966b.0;
+        Sat, 23 Dec 2023 02:04:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703325854; x=1703930654; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=qJ7wRIQI7ItvTYodhbhZ15ihDO7L8jgJa2GzRPNWw64=;
+        b=Ij9WQag06cR/0XLnhJ4fXlYNDMI++0lNBOVXoepYkYZiZFtq4vdvOluXWMZcm9r46O
+         HC1oxCPE4HRct1EMf1KL5DxB3d6LE/h79o2W9arUxMn0AF4k1RAKOYr6wi5UdlPi6ROD
+         3ipV/EVP2CTGPQ/oZVmq2wF3UKGI4/x/xGDxspTxaJ4OJ4DF1XWjNcmRGYI8Zhd9pmaH
+         t8+AkD9+ibEpOufkrbQf9k1iDQu/13FaoHXbwkwjKgUKtUeusfdjHVr42K/UZhPVOOPn
+         8itPE8ug+eZvnMwPZlWkmuW5zQjOn48crtaR4qm2Kmg+/1dqq/8YQwRpROZekoDjQHG0
+         H4TA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703325854; x=1703930654;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qJ7wRIQI7ItvTYodhbhZ15ihDO7L8jgJa2GzRPNWw64=;
+        b=m9SMiMYAPWIshZE+FmdzIlcmitjMQC929LMH2NTvat5vG5nAPtLUKuGi8uGtmSTJz9
+         7mWcgIeCof+D5yLWAD6isFVQHUceO9l3vRVvVTKnZGaDnGklyGGB+jg8AUoEAM182u6i
+         ztMOl/+2/AV09kwjIp8Zy+Cd6/yGZwMa9JuU8/Wwp4Bzn9JJaSBQp2PQktnN9AMuo1wW
+         02/6dzXHKm0d17gHW8eVNb3Z43eDtuDi58dZSXnDgY04ekw6Zf/etazQL/iroiseA4CQ
+         jNkRFEYtNVK1sg5XFPPZ/RjhOjOxPpcKvBAn1YM60vEC6ZXttgAGdKjtfL3MpUdDMTPK
+         qZXw==
+X-Gm-Message-State: AOJu0YyHvczIS8WEPfUmfiWqqvQC+JjTzDukZ4MZlBGXC79RoVNVgbvl
+	IrJ2MVKDtGuKZ1ofNnBva7w=
+X-Google-Smtp-Source: AGHT+IE9IQkMWxDRrhlj2nZ2p4RiYx5Dh2m19bkv2ulmfxJbFiUgd/vrUbkqZhu56+SkQxU1Na8i6w==
+X-Received: by 2002:a17:906:195b:b0:a26:8f34:871d with SMTP id b27-20020a170906195b00b00a268f34871dmr1510194eje.66.1703325853740;
+        Sat, 23 Dec 2023 02:04:13 -0800 (PST)
+Received: from cjw-notebook.. (188-23-116-43.adsl.highway.telekom.at. [188.23.116.43])
+        by smtp.gmail.com with ESMTPSA id su24-20020a17090703d800b00a26ab41d0f7sm2357765ejb.26.2023.12.23.02.04.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 23 Dec 2023 02:04:13 -0800 (PST)
+From: Christoph Winklhofer <cj.winklhofer@gmail.com>
+To: krzysztof.kozlowski@linaro.org,
+	robh+dt@kernel.org,
+	conor+dt@kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Christoph Winklhofer <cj.winklhofer@gmail.com>
+Subject: [PATCH v2 0/3] w1: add UART w1 bus driver
+Date: Sat, 23 Dec 2023 11:04:05 +0100
+Message-ID: <20231223100408.44056-1-cj.winklhofer@gmail.com>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <cover.1703324146.git.wqu@suse.com>
-References: <cover.1703324146.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -78,123 +74,93 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Score: 1.90
-X-Spamd-Result: default: False [1.90 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_MISSING_CHARSET(2.50)[];
-	 TO_DN_NONE(0.00)[];
-	 BROKEN_CONTENT_TYPE(1.50)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 RCPT_COUNT_SEVEN(0.00)[7];
-	 FREEMAIL_TO(0.00)[vger.kernel.org,linux-foundation.org,wanadoo.fr,linux.intel.com,ACULAB.COM,suse.de];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 BAYES_HAM(-3.00)[100.00%];
-	 ARC_NA(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[wanadoo.fr];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 RCVD_TLS_ALL(0.00)[]
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Level: *
-X-Spam-Flag: NO
 
-The new helper has better error report and correct overflow detection,
-furthermore the old @retptr behavior is also kept, thus there should be
-no behavior change.
+Hello!
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/ioctl.c |  8 ++++++--
- fs/btrfs/super.c |  8 ++++++++
- fs/btrfs/sysfs.c | 14 +++++++++++---
- 3 files changed, 25 insertions(+), 5 deletions(-)
+This patch contains a driver for a 1-Wire bus over UART. The driver
+utilizes the UART interface via the Serial Device Bus to create the
+1-Wire timing patterns.
 
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index 4e50b62db2a8..8bfd4b4ccf02 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -1175,8 +1175,12 @@ static noinline int btrfs_ioctl_resize(struct file *file,
- 			mod = 1;
- 			sizestr++;
- 		}
--		new_size = memparse(sizestr, &retptr);
--		if (*retptr != '\0' || new_size == 0) {
-+
-+		ret = memparse_safe(sizestr, MEMPARSE_SUFFIXES_DEFAULT,
-+				    &new_size, &retptr);
-+		if (ret < 0)
-+			goto out_finish;
-+		if (*retptr != '\0') {
- 			ret = -EINVAL;
- 			goto out_finish;
- 		}
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index 3a677b808f0f..2bb6ea525e89 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -400,6 +400,14 @@ static int btrfs_parse_param(struct fs_context *fc, struct fs_parameter *param)
- 		ctx->thread_pool_size = result.uint_32;
- 		break;
- 	case Opt_max_inline:
-+		int ret;
-+
-+		ret = memparse_safe(param->string, MEMPARSE_SUFFIXES_DEFAULT,
-+				    &ctx->max_inline, NULL);
-+		if (ret < 0) {
-+			btrfs_err(NULL, "invalid string \"%s\"", param->string);
-+			return ret;
-+		}
- 		ctx->max_inline = memparse(param->string, NULL);
- 		break;
- 	case Opt_acl:
-diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
-index 84c05246ffd8..6846572496a6 100644
---- a/fs/btrfs/sysfs.c
-+++ b/fs/btrfs/sysfs.c
-@@ -762,6 +762,7 @@ static ssize_t btrfs_chunk_size_store(struct kobject *kobj,
- 	struct btrfs_fs_info *fs_info = to_fs_info(get_btrfs_kobj(kobj));
- 	char *retptr;
- 	u64 val;
-+	int ret;
- 
- 	if (!capable(CAP_SYS_ADMIN))
- 		return -EPERM;
-@@ -776,7 +777,10 @@ static ssize_t btrfs_chunk_size_store(struct kobject *kobj,
- 	if (space_info->flags & BTRFS_BLOCK_GROUP_SYSTEM)
- 		return -EPERM;
- 
--	val = memparse(buf, &retptr);
-+	ret = memparse_safe(buf, MEMPARSE_SUFFIXES_DEFAULT, &val, &retptr);
-+	if (ret < 0)
-+		return ret;
-+
- 	/* There could be trailing '\n', also catch any typos after the value */
- 	retptr = skip_spaces(retptr);
- 	if (*retptr != 0 || val == 0)
-@@ -1779,10 +1783,14 @@ static ssize_t btrfs_devinfo_scrub_speed_max_store(struct kobject *kobj,
- {
- 	struct btrfs_device *device = container_of(kobj, struct btrfs_device,
- 						   devid_kobj);
--	char *endptr;
- 	unsigned long long limit;
-+	char *endptr;
-+	int ret;
-+
-+	ret = memparse_safe(buf, MEMPARSE_SUFFIXES_DEFAULT, &limit, &endptr);
-+	if (ret < 0)
-+		return ret;
- 
--	limit = memparse(buf, &endptr);
- 	/* There could be trailing '\n', also catch any typos after the value. */
- 	endptr = skip_spaces(endptr);
- 	if (*endptr != 0)
+Changes in v2:
+
+- add documentation for dt-binding
+- allow onewire as serial child node
+- support different baud-rates: The driver requests a baud-rate (9600
+  for reset and 115200 for write/read) and tries to adapt the
+  transmitted byte according to the actual baud-rate returned from
+  serdev.
+- fix locking problem for serdev-receive and w1-master reset/touch: The
+  received byte is now protected with a mutex - instead of the atomic,
+  which was used before due to the concurrent store and load.
+- explicit error in serdev-receive: Receiving more than one byte results
+  in an error, since the w1-uart driver is the only writer, it writes a
+  single-byte and should receive a single byte.
+- fix variable names, errno-returns, wrong define CONFIG_OF
+- fix log flooding
+- fix driver remove (error-path for rxtx-function)
+
+Krzysztof, thank your very much for your feedback!
+
+
+It was tested on a "Raspberry Pi 3 Model B+" with a DS18B20 and on a
+"Variscite DART-6UL" with a DS18S20 temperature sensor.
+
+Content:
+- Patch 1: device tree binding 1-Wire
+- Patch 2: allow onewire as serial child node
+- Patch 3: driver and documentation
+
+The patch was created against the w1 subsytem tree (branch w1-next):
+  Link: https://git.kernel.org/pub/scm/linux/kernel/git/krzk/linux-w1.git/
+
+The checkpatch.pl script reported the following error - which I am not
+sure how to fix:
+  WARNING: added, moved or deleted file(s), does MAINTAINERS need
+  updating?
+
+The technical details for 1-Wire over UART are in the document:
+  Link: https://www.analog.com/en/technical-articles/using-a-uart-to-implement-a-1wire-bus-master.html
+
+  In short, the UART peripheral must support full-duplex and operate in
+open-drain mode. The timing patterns are generated by a specific
+combination of baud-rate and transmitted byte, which corresponds to a
+1-Wire read bit, write bit or reset pulse.
+
+For instance the timing pattern for a 1-Wire reset and presence detect
+uses the baud-rate 9600, i.e. 104.2 us per bit. The transmitted byte
+0xf0 over UART (least significant bit first, start-bit low) sets the
+reset low time for 1-Wire to 521 us. A present 1-Wire device changes the
+received byte by pulling the line low, which is used by the driver to
+evaluate the result of the 1-Wire operation.
+
+Similar for a 1-Wire read bit or write bit, which uses the baud-rate
+115200, i.e. 8.7 us per bit. The transmitted byte 0x00 is used for a
+Write-0 operation and the byte 0xff for Read-0, Read-1 and Write-1.
+
+Hope the driver is helpful.
+
+Thanks,
+Christoph
+
+Christoph Winklhofer (3):
+  dt-bindings: w1: UART 1-Wire bus
+  dt-bindings: serial: allow onewire as child node
+  w1: add UART w1 bus driver
+
+ .../devicetree/bindings/serial/serial.yaml    |   2 +-
+ .../devicetree/bindings/w1/w1-uart.yaml       |  44 +++
+ Documentation/w1/masters/index.rst            |   1 +
+ Documentation/w1/masters/w1-uart.rst          |  53 +++
+ drivers/w1/masters/Kconfig                    |  10 +
+ drivers/w1/masters/Makefile                   |   1 +
+ drivers/w1/masters/w1-uart.c                  | 307 ++++++++++++++++++
+ 7 files changed, 417 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/w1/w1-uart.yaml
+ create mode 100644 Documentation/w1/masters/w1-uart.rst
+ create mode 100644 drivers/w1/masters/w1-uart.c
+
+
+base-commit: efc19c44aa442197ddcbb157c6ca54a56eba8c4e
 -- 
 2.43.0
 
