@@ -1,102 +1,103 @@
-Return-Path: <linux-kernel+bounces-10479-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10480-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B05B81D4D8
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 16:22:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BEB1B81D4DD
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 16:30:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9C92D1C2114A
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 15:22:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F16041C21360
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 15:30:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C816CE569;
-	Sat, 23 Dec 2023 15:22:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28AC4F9F7;
+	Sat, 23 Dec 2023 15:30:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=danm.net header.i=@danm.net header.b="c3DtDiPW"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Euz9bDg4"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mr85p00im-hyfv06011401.me.com (mr85p00im-hyfv06011401.me.com [17.58.23.191])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBB2B12E53
-	for <linux-kernel@vger.kernel.org>; Sat, 23 Dec 2023 15:22:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=danm.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=danm.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=danm.net; s=sig1;
-	t=1703344958; bh=ovGTlMDPRAGKzno3u31CFlIC7HFqSBjL48kKASqoQW4=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version;
-	b=c3DtDiPWp1lf3yECMzAwbWceyad9k0h3W7JXDa6qf5inhdNeKd8Gu31a43mkIz27g
-	 65HUH+FnCfIEftGhQGxo/GF7eYJxnaVG2T1IFUtA6UIAFo2jILd8gjVKUzjMedNZM0
-	 VHtUr1yrj+TmCQ2SYXufc80cjiAck099GAGMB1QGRgH2BuZGTEqnqEp04rmYiDWN4C
-	 1R6vN2tMAdjH0o1ncCbr7B0CBZ11ZmCF4VYDpcSd7VWZaSGfadD6+Ebf/1El8PgqF6
-	 5U7BTSMaeL/D3AD37UqkBPi5PymsFa863200G+Lka/itTR85fK9tChS0524ncTGfSU
-	 lFtHaU8NuYl8w==
-Received: from hitch.danm.net (mr38p00im-dlb-asmtp-mailmevip.me.com [17.57.152.18])
-	by mr85p00im-hyfv06011401.me.com (Postfix) with ESMTPSA id 1EB61357AE1A;
-	Sat, 23 Dec 2023 15:22:36 +0000 (UTC)
-From: Dan Moulding <dan@danm.net>
-To: alexhenrie24@gmail.com
-Cc: bagasdotme@gmail.com,
-	dan@danm.net,
-	davem@davemloft.net,
-	dsahern@kernel.org,
-	edumazet@google.com,
-	kuba@kernel.org,
-	linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org,
-	pabeni@redhat.com,
-	regressions@lists.linux.dev
-Subject: Re: [REGRESSION] net/ipv6/addrconf: Temporary addresses with short lifetimes generating when they shouldn't, causing applications to fail
-Date: Sat, 23 Dec 2023 08:22:35 -0700
-Message-ID: <20231223152235.15713-1-dan@danm.net>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231222234237.44823-1-alexhenrie24@gmail.com>
-References: <20231222234237.44823-1-alexhenrie24@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C7C9E56B
+	for <linux-kernel@vger.kernel.org>; Sat, 23 Dec 2023 15:30:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-33687627ad0so2372146f8f.2
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Dec 2023 07:30:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703345425; x=1703950225; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WRh4LSoHPvR5hdO5Fh4hn7/CMtmNDbR5Zs1aa9AeKus=;
+        b=Euz9bDg4F9rYwIr9q/Ezbb7fGXO/rFAaa3rlHx6QCUdASv/iWQ9tpSAcQki2T2dHM5
+         XhG4bqVNUJmamkkW3mD9yyY6f8B8bvIQSutEgyzVtWunXdZkET+t2SwSigHZlp/fcpky
+         bnmpCBjDo0s5IBF9V3ZaDQCgQFzsuC4viO4KR38zQEy91Mqj8CZBC/4TWPy7zvEqDre0
+         xddu6RW6grMjIoxb6fgluftcos5K5o5qqUlFAhhJr06738eQ472YserTJn2sRNa9ruHM
+         tSTiw8qcX+WduGngi2cVsEd8ot/2dIYuAgmcFDJru+YJ06IDGadwBEfI2nrpe8NPq3+k
+         yNdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703345425; x=1703950225;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WRh4LSoHPvR5hdO5Fh4hn7/CMtmNDbR5Zs1aa9AeKus=;
+        b=jJmolZPWgCRJnscg284W0H4HOIcL94w18uZiBBv8au5jdKZ88ncGohw4sWXaWvqRrH
+         h0hUK6g48T/3TilQWcgbx7Qiom5OqUfl0tL6n6Gr2lzC3UqNif5gTUpqbLCyzB15tYBd
+         w9VZNvk7y6rwJGGnNGAv4ElYQMaZwCJtPNUunS/VKz9x5CoRSE1P1NZWHIfQ3bHJskWw
+         RYcDZDSadsCf24eYjmddrd1rDJYMD3wPPeOO9N3oSxAnm8WXc5JJkhLVwM23rl0vFBwk
+         uASq1StmuA948He21NE7aDMdotY4BkkqYW8jcm52NZfuQM0WHJh7Vv96Dy5Ii+Lr5G5w
+         DwCA==
+X-Gm-Message-State: AOJu0YxFH9LXNvjks/Fg2DZ2aTGHiQmZ9M+xRguH8Ttpm/sOiHjBmaYO
+	hDuA8vdSY2sp7ys0mv526uAzCL62nNxEwLjeVC4=
+X-Google-Smtp-Source: AGHT+IEdfVGa/VwDeS9ks0Tsxsmh8hu0lbBLVkXTWtxNMMhXDGu1jTLRO9WwzGyAMnf101w7LiNfXUf6rf/woEX5aug=
+X-Received: by 2002:adf:e790:0:b0:333:41a0:ef39 with SMTP id
+ n16-20020adfe790000000b0033341a0ef39mr1807515wrm.105.1703345424949; Sat, 23
+ Dec 2023 07:30:24 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-ORIG-GUID: IVspz_wVv4nBP_guhifhXr4Xdh0VPXjO
-X-Proofpoint-GUID: IVspz_wVv4nBP_guhifhXr4Xdh0VPXjO
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-23_06,2023-12-22_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0 spamscore=0
- phishscore=0 clxscore=1030 malwarescore=0 mlxlogscore=938 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2308100000 definitions=main-2312230121
+References: <20231221130930.32634-1-ruipengqi7@gmail.com> <e9aa311f-6f13-410e-bb35-20320275668c@linaro.org>
+ <CADHLONGLZaZT4Ot56AnxOf=ROrTWvge5=NUx5uqKqJhpJibfOQ@mail.gmail.com>
+ <6fe05804-da74-45cd-a6f1-df4644671d99@linaro.org> <CADHLONE2YnBJGJUp2-vn_XEpc7+quTMWF7y1zpV0ygeL2VpQxA@mail.gmail.com>
+In-Reply-To: <CADHLONE2YnBJGJUp2-vn_XEpc7+quTMWF7y1zpV0ygeL2VpQxA@mail.gmail.com>
+From: ruipeng qi <ruipengqi7@gmail.com>
+Date: Sat, 23 Dec 2023 23:30:13 +0800
+Message-ID: <CADHLONHHZAeubePPfZbG1N0Nv3ZJM5OWaJWqchBUpiN5Q27UdQ@mail.gmail.com>
+Subject: Re: [PATCH 1/7] [RFC PATCH 1/7] osdump: Add one new os minidump module
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: catalin.marinas@arm.com, will@kernel.org, bhe@redhat.com, 
+	vgoyal@redhat.com, dyoung@redhat.com, linux-kernel@vger.kernel.org, 
+	kexec@lists.infradead.org, zalbassam@google.com, dianders@chromium.org, 
+	mark.rutland@arm.com, lecopzer.chen@mediatek.com, maz@kernel.org, 
+	arnd@arndb.de, yury.norov@gmail.com, brauner@kernel.org, mcgrof@kernel.org, 
+	maninder1.s@samsung.com, michael.christie@oracle.com, samitolvanen@google.com, 
+	linux-arm-kernel@lists.infradead.org, qiruipeng@lixiang.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> Sorry for the unintended consequences, and thank you for the detailed
-> explanation. Does this patch fix the problem for you?
+On Sat, Dec 23, 2023 at 11:13=E2=80=AFPM ruipeng qi <ruipengqi7@gmail.com> =
+wrote:
 
-Thanks. I think this patch may resolve the application-level issues
-I'm seeing.
+> > I don't see a problem why minidump cannot do it.
+> Qcom minidump allows one kernel client to register its region to dump, an=
+d then
+> driver will create and maintain one elf head for it.
+> But osdump will dump thousands of non-continuous regions. If you register=
+ one
+> by one, and add an elf head for each, it will cause heavy overhead. So it=
+ store
+> data in binary, and reassemble a standard elf format file offline for deb=
+ug.
+>
+Osdump will only dump useful data, which may have been allocated before but
+freed now. In a word, useful data are changing all the time. I think this i=
+s not
+suitable for Qcom minidump's framework=E3=80=82
 
-However, it looks to me like this would still violate the RFC. The
-temoporary address' preferred liftime must be lower than /both/ the
-preferred lifetime of the public address and TEMP_PREFERRED_LIFETIME -
-DESYNC_FACTOR.
-
-These two existing lines ensure that it will meet the requirement:
-
-	cfg.preferred_lft = cnf_temp_preferred_lft + age - idev->desync_factor;
-	cfg.preferred_lft = min_t(__u32, ifp->prefered_lft, cfg.preferred_lft);
-
-Once that has been computed, cfg.preferred_lft is already at its
-maximum allowed value. There is no case where the RFC allows
-increasing that value after doing that computation.
-
-I think the safest thing to do is revert this change, and try to find
-some other way to achieve the goal of preventing the user from
-administratively setting a preferred lifetime that prevents temporary
-addresses from being generated, when the user wants to use the privacy
-extensions. For example, this could be done where administratively
-configured values are accepted (wherever that is), and either generate
-a warning or reject the change, if the value provided by the user is
-lower than REGEN_ADVANCE.
-
--- Dan
+Best Regards
+Ruipeng
 
