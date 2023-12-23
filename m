@@ -1,64 +1,64 @@
-Return-Path: <linux-kernel+bounces-10550-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10551-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A634481D616
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 19:40:48 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F58F81D619
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 19:42:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3FCC7B21ADC
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 18:40:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6E10CB210E5
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 18:42:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9073C1401B;
-	Sat, 23 Dec 2023 18:40:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 981021400D;
+	Sat, 23 Dec 2023 18:42:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="qlHC8vZb"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="TIx3R5DP"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AA5A12E47
-	for <linux-kernel@vger.kernel.org>; Sat, 23 Dec 2023 18:40:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B0F5171BE
+	for <linux-kernel@vger.kernel.org>; Sat, 23 Dec 2023 18:42:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-54cb4fa667bso3383247a12.3
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Dec 2023 10:40:32 -0800 (PST)
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-554a2ef9764so273176a12.2
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Dec 2023 10:42:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703356831; x=1703961631; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1703356935; x=1703961735; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=Idz2jd1Om63xQOJEPNkdbhDNinl0b1UiNqf1YQDhVsQ=;
-        b=qlHC8vZb72CNnfw52nXMsErMsPZuL/r+HnQTvszdnmz0jSJFRo6cu11wdUWusX0QlE
-         HGxaAgqG03/8NYaUtKOLxfd4GA1Nl9rzLQtKC0yurjb9STrdXdZEQZAn09v3Sx+g9165
-         NWXr8SWlKArHWN68YkOkY6EM/cpiVnyTp/qbNvrMf1YyYqYjyu6mLbhkgKZXUvJijLmB
-         z2GHICkPBA1TVKRxxYWM5dASrNTdH9xl/WpNSK4FbjrKuZZ+vohTKgLniJFPrFTFXx4A
-         CaDXtvf1HJ/3+mcTx5BQo7S6oUOMaca+SufU3sGt6FIBajJ6t6fGHPEG5kYBgd56rWdF
-         PWBA==
+        bh=uERKn3Lpyzm9FmLHPOqXYw6WKmuDdCP5Ehk9hb+GASY=;
+        b=TIx3R5DPEOSsXz/snfoQHRK3ds74o9yhr9y3SfXzSPGop6/SpiC2UmMPl6BGeeJqeI
+         GQFmI5MDcG///RxqFtY7Ahfq37TPs/i61+1Qt6GadRn0oYB+Nz88jklRGoB8VZY40YHm
+         khJ3Smw1fV/WRNccwEWoSHo64l0kz/62Quni4CN8Ffu5QrVV91fWAd4iB/2aZbapZxzJ
+         uXkpszpxdcuN3r9T1mhM9QC54SPV61mK8dA3xeecOVzzRYSotjKGnqAxginTNu2oqpA6
+         dAaSKZZdtHw+ClXBfAFdc4OWvUCf1RAJgf/95SvdbALopEe2RfPdEmFgrMis/uz/5znb
+         Ij8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703356831; x=1703961631;
+        d=1e100.net; s=20230601; t=1703356935; x=1703961735;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Idz2jd1Om63xQOJEPNkdbhDNinl0b1UiNqf1YQDhVsQ=;
-        b=guMEhHNS4SmBGdWrcZiQCwYz7SbBukijxU14q2AFi/95pjiVF843A/2Ctc3L/vttSf
-         +7p7/XUXMhIwZSiXlffmfOaXlO/iwlMtLg+CXmgDEliGTOMI3LRbXRD72Qs591gjLptD
-         q+GNNFwiEgMQB084qpEGUQNZLzTGQgF6EzrGO54mQ1wmkPwo3SSJpgARwSxfaoILPKxM
-         iFjkORiWa3FLrlY0j7bd/rTTmed5HwSXic9sKGJuA1AhqmSa9k8xTpxse/bz1z6yhewE
-         jOS599ROPDyYXYyJU+XPk684UdVUOAXtG6GsmAadWi8Yf4Tm30mExuPTLijBBuqRC1Lx
-         tDrw==
-X-Gm-Message-State: AOJu0Yxv5I4+mWF+94uonZirXdbAQgB4VrC++u1/KFlYDYz79QaEZARk
-	HzQEgE9AHkRwdraQFfrvSle2mMizHGlFMQ==
-X-Google-Smtp-Source: AGHT+IFHJBOBzpZlx9t1cn+R7F8AYx27fMrJQsLFBIAN4dfs3RsMGS/Z/YKQm6q9k9UmBxqQnpfJGw==
-X-Received: by 2002:a17:906:fe4c:b0:a26:e12f:e0c0 with SMTP id wz12-20020a170906fe4c00b00a26e12fe0c0mr252318ejb.32.1703356830635;
-        Sat, 23 Dec 2023 10:40:30 -0800 (PST)
+        bh=uERKn3Lpyzm9FmLHPOqXYw6WKmuDdCP5Ehk9hb+GASY=;
+        b=ZXw92VLzuNlSWbOUs+s/5wneWPWUIwxPUSOaqTcc0qhUfqIF7wtrBkKNrq9kFKc52E
+         B7b+PGa75NP6HjBDPtB0Ml19fYn3sYHPAl+6Wq5h5aHOz4SaZReUSwJAsXHTPq2DnMmI
+         lKsKI7+/labvTY2gXBCf/Bzv0BweNyxLoPLcri1pFd5vrbKdJovej7Aew1bmyA9zWyPK
+         hjFZnAwzsqhXPJn5X3ZNloxJpGpS08dq6cGmvK6VSD5nxZKpQtdpJgJA4bXoxbOL37RH
+         cspg8wNaui4MftEK3UNhUExDeuYrMKJR/sbYzeFqieyd28mQAl4c8nWtnxDADGHG/Ju7
+         At2g==
+X-Gm-Message-State: AOJu0YwQ5vyWLqpPOzjI9j3RUBsUUOqak+K9mnzRfiacf2YNxgWo4Lx4
+	W5EeDgLvaeE1G8t3dkpgy1CoLZAQYpL00g==
+X-Google-Smtp-Source: AGHT+IEZ8ImIeqLB4yWlnDTLsi0DFH0tgZl8RedKIcpWQLgf9O0MTIuEJjHMABSRcyT0aeDJrdjXLA==
+X-Received: by 2002:a50:935a:0:b0:54c:b889:9c11 with SMTP id n26-20020a50935a000000b0054cb8899c11mr1159011eda.98.1703356934834;
+        Sat, 23 Dec 2023 10:42:14 -0800 (PST)
 Received: from [192.168.0.22] ([78.10.206.178])
-        by smtp.gmail.com with ESMTPSA id e2-20020a170906374200b00a1d2b0d4500sm3309259ejc.168.2023.12.23.10.40.29
+        by smtp.gmail.com with ESMTPSA id p13-20020a05640210cd00b0055298b38768sm4197774edu.80.2023.12.23.10.42.13
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 23 Dec 2023 10:40:30 -0800 (PST)
-Message-ID: <f6d9a333-3259-4dc6-bdc7-23ffa26e590b@linaro.org>
-Date: Sat, 23 Dec 2023 19:40:28 +0100
+        Sat, 23 Dec 2023 10:42:14 -0800 (PST)
+Message-ID: <9efe017d-e887-4239-a4ca-ff8ffeb08aec@linaro.org>
+Date: Sat, 23 Dec 2023 19:42:12 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,8 +66,8 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 04/16] dt-bindings: imx6q-pcie: Add linux,pci-domain as
- required for iMX8MQ
+Subject: Re: [PATCH v5 09/16] dt-bindings: imx6q-pcie: Clean up irrationality
+ clocks check
 Content-Language: en-US
 To: Frank Li <Frank.Li@nxp.com>, manivannan.sadhasivam@linaro.org
 Cc: bhelgaas@google.com, conor+dt@kernel.org, devicetree@vger.kernel.org,
@@ -79,7 +79,7 @@ Cc: bhelgaas@google.com, conor+dt@kernel.org, devicetree@vger.kernel.org,
  lpieralisi@kernel.org, robh@kernel.org, s.hauer@pengutronix.de,
  shawnguo@kernel.org
 References: <20231220213615.1561528-1-Frank.Li@nxp.com>
- <20231220213615.1561528-5-Frank.Li@nxp.com>
+ <20231220213615.1561528-10-Frank.Li@nxp.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -125,17 +125,18 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231220213615.1561528-5-Frank.Li@nxp.com>
+In-Reply-To: <20231220213615.1561528-10-Frank.Li@nxp.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 On 20/12/2023 22:36, Frank Li wrote:
-> iMX8MQ have two pci controllers. Adds "linux,pci-domain" as required
-> proptery for iMX8MQ to indicate pci controller index.
+> There are clocks and clock-names restriction for difference compatible
+> string. So needn't irrationality check again for clock's miniItems and
+> maxItems.
 
-
-Why it has to be required? Everything will work fine if skipped.
-Otherwise please provide reason why it must be *required*.
+That's not really true. Other entry does not restrict clocks and leave
+items quite flexible. These entries should be combined so all
+constraints are fixed for all variants.
 
 Best regards,
 Krzysztof
