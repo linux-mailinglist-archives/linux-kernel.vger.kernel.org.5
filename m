@@ -1,330 +1,137 @@
-Return-Path: <linux-kernel+bounces-10408-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10413-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95CC981D408
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 13:45:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3458281D41D
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 14:00:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 239851F22369
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 12:45:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DE7A11F227CE
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 13:00:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 254E1D2EC;
-	Sat, 23 Dec 2023 12:45:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7475FD302;
+	Sat, 23 Dec 2023 13:00:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hL8OhLs8"
+	dkim=pass (2048-bit key) header.d=dh-electronics.com header.i=@dh-electronics.com header.b="ber4JF9p"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mx2.securetransport.de (mx2.securetransport.de [188.68.39.254])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EDB8D264
-	for <linux-kernel@vger.kernel.org>; Sat, 23 Dec 2023 12:45:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1703335547;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=sLJFSQIp7fhvFcRrwCoza2064ZaOYLPHw4qUqiS9L7g=;
-	b=hL8OhLs8g5BMoyntu3aL9YUVlG/G1HK0kldGcLR00hpzh10ul05CeXXRZ93vouHh29S9y9
-	cIZRCRbadUfy3fSPK18oOEzhr5GtJdqrouh5EH5Vdf4u1MMGW1NbB7hq/sAgsQ797AH9QR
-	lIVyzGlebfWsLWN1NMAhX+x1iNvYscU=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-591-6F-FJhf0N32RKNG88fMekA-1; Sat, 23 Dec 2023 07:45:36 -0500
-X-MC-Unique: 6F-FJhf0N32RKNG88fMekA-1
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-40d2fa6b23eso23376975e9.2
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Dec 2023 04:45:35 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703335535; x=1703940335;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sLJFSQIp7fhvFcRrwCoza2064ZaOYLPHw4qUqiS9L7g=;
-        b=Mor17DFR3fBrm18Xtc+Hwq+0vJB6Bl6Ru8a4uh+Vn23H/4t5+WKtJJhU5X8ypnTEQl
-         oo/XnsWjsX/03sX/saSoh7qQtzT/rFElfov6/5bO2o4MgWPMHJNP2eKFStTDLvBoAVbJ
-         l+2BxDDS8e2c2/19hwsQydfv9egNlZHzD06m6l5oIi2/sJC3nQbWIsF5LFj7hRZ8iVdo
-         G39CTPIBnx74PCWoRFhi5rJkfMbHjDWLnJmvRfojqiic7aFtUCzFrof6fI3MgparHWVq
-         9LERoW+ITWcTLIduYXKEUgWhite3YF5EUbknkpP5h/EUZYl3X4XVp9p6jCerwN7107/5
-         8TVQ==
-X-Gm-Message-State: AOJu0Yx03O6rY1P5zq1fiIMN/bL0iZXncS6itXWEK49Un/TDSMYxvcLE
-	LagGmsGF0d51eDPc7X1ek50zdANEDpHSXjnhhBU+IBNXnSLuvP2D1zynFbUfCmePsk9XVDQH4eH
-	RT93NMot4EmH8Q3XW0WSC/7ZeICOkvQIC
-X-Received: by 2002:a05:600c:5405:b0:40d:4502:741c with SMTP id he5-20020a05600c540500b0040d4502741cmr993930wmb.125.1703335534958;
-        Sat, 23 Dec 2023 04:45:34 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IG/uwyO8H99ZELdCyDLDo/sXgLdn7RQB2aBdzj4SaKIZW+k1CAkDFaKjT3blQp8tsVXKBEzgg==
-X-Received: by 2002:a05:600c:5405:b0:40d:4502:741c with SMTP id he5-20020a05600c540500b0040d4502741cmr993917wmb.125.1703335534465;
-        Sat, 23 Dec 2023 04:45:34 -0800 (PST)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id j1-20020a170906094100b00a26ae006522sm2302712ejd.122.2023.12.23.04.45.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 23 Dec 2023 04:45:33 -0800 (PST)
-Message-ID: <a1128471-bbff-4124-a7e5-44de4b1730b7@redhat.com>
-Date: Sat, 23 Dec 2023 13:45:32 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31B09D29E;
+	Sat, 23 Dec 2023 13:00:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=dh-electronics.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dh-electronics.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dh-electronics.com;
+	s=dhelectronicscom; t=1703335752;
+	bh=2AL9EkMODIBVJGJbx3Gh0BfWjwQ/b5wCzhm/T5+d5/8=;
+	h=From:To:CC:Subject:Date:References:In-Reply-To:From;
+	b=ber4JF9pWUjwwgv27824vvfyqJ/0PG/uu6DXJdEMji/c//YHrZiUzOgVQxxaUNJtj
+	 dZj3myBmHm4JmPbujggslzrP/oIgXELnBM/ccKqBtmlKreuq0abI06MECT0mA7YXPi
+	 kbIqey0IvR38Zgv8zXl9zBu8BU62Pks2wtKmmcm+0lfiCBLUBK0FJ/0a6EYzBiADJ9
+	 dMZeT9VuZLMD5XlfMH4nFKTSwapXPIpAdZFKQGDCFpu7lvwIePheLgRoHjD/AzB53I
+	 hWDm1p+d7AT8kcd8piWA4yHE9ltsEGTxGaO9jCngCOwY4JGq9LYVHBCc+f4oxgB6TT
+	 LSCwDE/3663Pw==
+X-secureTransport-forwarded: yes
+From: Christoph Niedermaier <cniedermaier@dh-electronics.com>
+Complaints-To: abuse@cubewerk.de
+To: Lukas Wunner <lukas@wunner.de>
+CC: Crescent CY Hsieh <crescentcy.hsieh@moxa.com>, Andy Shevchenko
+	<andriy.shevchenko@linux.intel.com>, Lino Sanfilippo <LinoSanfilippo@gmx.de>,
+	Rasmus Villemoes <linux@rasmusvillemoes.dk>, Greg Kroah-Hartman
+	<gregkh@linuxfoundation.org>, Jiri Slaby <jirislaby@kernel.org>, Rob Herring
+	<robh+dt@kernel.org>, Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
+	=?utf-8?B?SWxwbyBKw6RydmluZW4=?= <ilpo.jarvinen@linux.intel.com>,
+	"brenda.streiff@ni.com" <brenda.streiff@ni.com>, Tomas Paukrt
+	<tomaspaukrt@email.cz>
+Subject: RE: [PATCH 1/2] dt-bindings: serial: rs485: add rs485-mux-gpios
+ binding
+Thread-Topic: [PATCH 1/2] dt-bindings: serial: rs485: add rs485-mux-gpios
+ binding
+Thread-Index: AQHaH/jBESSZN4JU2UOxi81YCMKNnLCN1MYggA6QRICABHVPgIADOxKAgASJVgCAABWukIALRm2AgAAjTdA=
+Date: Sat, 23 Dec 2023 12:49:01 +0000
+Message-ID: <f41f5ddcb52140b6a579043a5abce751@dh-electronics.com>
+References: <20231120151056.148450-1-linux@rasmusvillemoes.dk>
+ <20231120151056.148450-2-linux@rasmusvillemoes.dk>
+ <20231122145344.GA18949@wunner.de>
+ <3b8548b1-b8a9-0c9e-4040-5cfda06a85c6@gmx.de>
+ <ec66d25162de4cbc92720df1e7008fe8@dh-electronics.com>
+ <5c140498-69e3-4187-8703-db0c41e7ca89@gmx.de>
+ <fe28eb93-daa1-41af-a005-f21aa87e1984@gmx.de>
+ <ZXcJr4VS_uGr_6TV@smile.fi.intel.com>
+ <ZXrX4mQXPLum0jL3@moxa-ThinkCentre-M90t>
+ <b35730df8288469fbaf67b5ceae4eece@dh-electronics.com>
+ <20231221155305.GA13673@wunner.de>
+In-Reply-To: <20231221155305.GA13673@wunner.de>
+Accept-Language: de-DE, en-US
+Content-Language: de-DE
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Ideas for a generic solution to support accelerometer lis3lv02d
- in Dell laptops/notebooks?
-Content-Language: en-US, nl
-To: Paul Menzel <pmenzel@molgen.mpg.de>, Jean Delvare <jdelvare@suse.com>,
- Andi Shyti <andi.shyti@kernel.org>
-Cc: =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>,
- Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org,
- LKML <linux-kernel@vger.kernel.org>,
- Kai-Heng Feng <kai.heng.feng@canonical.com>, Marius Hoch
- <mail@mariushoch.de>, Mario Limonciello <mario.limonciello@amd.com>,
- Dell.Client.Kernel@dell.com, Greg KH <gregkh@linuxfoundation.org>
-References: <4820e280-9ca4-4d97-9d21-059626161bfc@molgen.mpg.de>
-From: Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <4820e280-9ca4-4d97-9d21-059626161bfc@molgen.mpg.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
 
-Hi Paul,
-
-On 12/23/23 10:39, Paul Menzel wrote:
-> Dear Linux folks,
-> 
-> 
-> Currently, on Dell systems with the accelerometer lis3lv02d, its I²C address needs to be added to `dell_lis3lv02d_devices[]` in `drivers/i2c/busses/i2c-i801.c`.
-> 
-> In Linux 6.7-rc6 that array has nine elements, so only a small fraction of all Dell notebooks is listed. Searching the Linux logs uploaded to the Linux hardware database from May 2023 [1], there are around 129 devices without support in the Linux kernel version the upload was done with.
-> 
-> Do you know, how the Microsoft Windows driver is doing this? Is it hard-coded there too, or can it be deduced somehow, for example from the ACPI tables?
-> 
-> I added some Kai-Heng and Hans to Cc as they might have contact. Dell offers or offered quite a few of the models with official Ubuntu support, so I would have hoped to have a generic solution for this. Maybe Mario can also forward it to the Dell team.
-
-Interesting question.
-
-So there are really 2 issues here:
-
-a. The probe problem you are describing
-
-b. The support for the lis3lv02d is using an old misc-char + input(evdev)
-   userspace API defined in:
-   drivers/platform/x86/dell/dell-smo8800.c
-   drivers/misc/lis3lv02d/lis3lv02d[_i2c].c
-
-   where as it really should be using the IIO interface like
-   almost all other accelerometer chips are doing. There even
-   already is a driver for this:
-   drivers/iio/accel/st_accel[_i2c].c
-
-Here is what I believe should be done to fix this:
-
-1. The handling of instantiating the i2c-client really does NOT
-   belong in drivers/i2c/busses/i2c-i801.c instead some code
-   should be added to drivers/platform/x86/dell/dell-smo8800.c
-   for finding the right i2c-bus and then the code to instantiate
-   the i2c_client for the lis3lv02d device should be moved to
-   drivers/platform/x86/dell/dell-smo8800.c .
-
-2. Add a "probe_i2c_address" bool module option and when this
-   is set try to read the WHO_AM_I register, see
-   drivers/misc/lis3lv02d/lis3lv02d.c
-   and if this succeeds and gives a known model id then
-   continue with the found i2c_address. This should first
-   try address 0x29 which seems to be the most common and
-   then try 0x18 and then give up.
-
-   This should also modify the dmesg "Accelerometer lis3lv02d is
-   present on SMBus but its address is unknown, skipping registration\n"
-
-   message to hint at trying to use the probe_i2c_address option
-   with a remark that this could theoretically be dangerous for
-   the laptop.
-
-   And likewise when probe_i2c_address option is set and the
-   laptop model is not in the DMI list then on successful
-   probe print a message to please report the i2c-address upstream.
-
-   This should resolve (a) from above.
-
-3. Once we have the i2c-client instantiation in dell-smo8800.c
-   we can add a "use_misc_lis3lv02d" boolean module option there
-   which defaults to false.
-
-   And then if we know the i2c-address and use_misc_lis3lv02d is false:
-   2.1 register the i2c_client with "lis3lv02dl_accel"
-       as type instead of "lis3lv02dl", note I think we may need
-       to use different type-s depending on the WHO_AM_I register
-       value, the st_accel.c code needs to be checked for this.
-   2.2 pass the interrupt to the i2c_client driver by setting
-       it in board_info
-   2.3 do not register the dell-smo8800.c IRQ handler
-       (the i2c_client will own the IRQ)
-   2.4 do not register the dell-smo8800.c misc char device
-
-   This solves (b) from above giving us a more standard accel
-   userspace interface. We do need to evaluate how this
-   impacts iio-sensor-proxy though, since this now may start
-   doing screen-rotation based on this!
-
-If you plan to work on this please let me know. I think
-the trickiest issue is going to be to find the right i2c-bus
-in dell-smo8800.c.
-
-Regards,
-
-Hans
-
-
-
-
-
-
-> [1]: https://github.com/linuxhw/Dmesg
-> 
-> 
-> PS: Dell devices in Linux hardware database with accelerometer:
-> 
-> linux-hardware-dmesg/Notebook/Dell (main)$ git grep -l ccelerome | cut -d '/' -f 1,2 | sort -u
-> Inspiron/Inspiron 11 - 3147
-> Inspiron/Inspiron 5520
-> Inspiron/Inspiron 7547
-> Inspiron/Inspiron 7548
-> Latitude/Latitude 12 Rugged Extreme
-> Latitude/Latitude 2110
-> Latitude/Latitude 2120
-> Latitude/Latitude 3330
-> Latitude/Latitude 3380
-> Latitude/Latitude 3400
-> Latitude/Latitude 3470
-> Latitude/Latitude 3480
-> Latitude/Latitude 3490
-> Latitude/Latitude 3500
-> Latitude/Latitude 3570
-> Latitude/Latitude 3580
-> Latitude/Latitude 3590
-> Latitude/Latitude 5280
-> Latitude/Latitude 5290
-> Latitude/Latitude 5400
-> Latitude/Latitude 5401
-> Latitude/Latitude 5410
-> Latitude/Latitude 5411
-> Latitude/Latitude 5414
-> Latitude/Latitude 5420 Rugged
-> Latitude/Latitude 5424 Rugged
-> Latitude/Latitude 5480
-> Latitude/Latitude 5490
-> Latitude/Latitude 5491
-> Latitude/Latitude 5500
-> Latitude/Latitude 5501
-> Latitude/Latitude 5510
-> Latitude/Latitude 5511
-> Latitude/Latitude 5531
-> Latitude/Latitude 5580
-> Latitude/Latitude 5590
-> Latitude/Latitude 5591
-> Latitude/Latitude 7214
-> Latitude/Latitude 7414
-> Latitude/Latitude 7424 Rugged Extreme
-> Latitude/Latitude E4310
-> Latitude/Latitude E5270
-> Latitude/Latitude E5410
-> Latitude/Latitude E5420
-> Latitude/Latitude E5420m
-> Latitude/Latitude E5430 non-vPro
-> Latitude/Latitude E5430 vPro
-> Latitude/Latitude E5440
-> Latitude/Latitude E5470
-> Latitude/Latitude E5510
-> Latitude/Latitude E5520
-> Latitude/Latitude E5520m
-> Latitude/Latitude E5530 non-vPro
-> Latitude/Latitude E5530 vPro
-> Latitude/Latitude E5540
-> Latitude/Latitude E5570
-> Latitude/Latitude E6220
-> Latitude/Latitude E6230
-> Latitude/Latitude E6320
-> Latitude/Latitude E6330
-> Latitude/Latitude E6410
-> Latitude/Latitude E6420
-> Latitude/Latitude E6430
-> Latitude/Latitude E6430s
-> Latitude/Latitude E6440
-> Latitude/Latitude E64406342Q0286-
-> Latitude/Latitude E6510
-> Latitude/Latitude E6520
-> Latitude/Latitude E6530
-> Latitude/Latitude E6540
-> Latitude/Latitude E7440
-> Latitude/Latitude XT3
-> Precision/Precision 3510
-> Precision/Precision 3520
-> Precision/Precision 3530
-> Precision/Precision 3540
-> Precision/Precision 3541
-> Precision/Precision 3550
-> Precision/Precision 3551
-> Precision/Precision 3571
-> Precision/Precision 5510
-> Precision/Precision 5520
-> Precision/Precision 5530
-> Precision/Precision 5540
-> Precision/Precision 7510
-> Precision/Precision 7520
-> Precision/Precision 7530
-> Precision/Precision 7540
-> Precision/Precision 7710
-> Precision/Precision 7720
-> Precision/Precision 7730
-> Precision/Precision 7740
-> Precision/Precision M2800
-> Precision/Precision M3800
-> Precision/Precision M4500
-> Precision/Precision M4600
-> Precision/Precision M4700
-> Precision/Precision M4800
-> Precision/Precision M6600
-> Precision/Precision M6700
-> Precision/Precision M6800
-> Studio/Studio 1458
-> Studio/Studio 1557
-> Studio/Studio 1558
-> Studio/Studio 1569
-> Studio/Studio 1747
-> Studio/Studio 1749
-> Unidentified/Unidentified System
-> Vostro/Vostro 3300
-> Vostro/Vostro 3350
-> Vostro/Vostro 3400
-> Vostro/Vostro 3500
-> Vostro/Vostro 3550
-> Vostro/Vostro 3560
-> Vostro/Vostro 3700
-> Vostro/Vostro 5468
-> Vostro/Vostro 5471
-> Vostro/Vostro 5568
-> Vostro/Vostro 7580
-> Vostro/Vostro V130
-> Vostro/Vostro V131
-> XPS/XPS 15 7590
-> XPS/XPS 15 9530
-> XPS/XPS 15 9550
-> XPS/XPS 15 9560
-> XPS/XPS 15 9570
-> XPS/XPS L401X
-> XPS/XPS L412Z
-> XPS/XPS L421X
-> XPS/XPS L501X
-> XPS/XPS L521X
-> XPS/XPS L701X
-> 
-> Unsupported:
-> 
-> $ git grep ccelerome | grep "is present on SMBus" | cut -d '/' -f 1,2 | sort -u | wc -l
-> 129
-> 
-
+RnJvbTogTHVrYXMgV3VubmVyIFttYWlsdG86bHVrYXNAd3VubmVyLmRlXQ0KU2VudDogVGh1cnNk
+YXksIERlY2VtYmVyIDIxLCAyMDIzIDQ6NTMgUE0NCj4gDQo+IE9uIFRodSwgRGVjIDE0LCAyMDIz
+IGF0IDAxOjQxOjQ3UE0gKzAwMDAsIENocmlzdG9waCBOaWVkZXJtYWllciB3cm90ZToNCj4+IEkg
+d2lsbCBzdW1tYXJpemUgdGhlIGN1cnJlbnQgc2l0dWF0aW9uIGZyb20gbXkgcG9pbnQgb2Ygdmll
+dywgbWF5YmUgaXQgaGVscHM6DQo+Pg0KPj4gUlMtMjMyOg0KPj4gICAtIEZ1bGwgRHVwbGV4IFBv
+aW50LXRvLVBvaW50IGNvbm5lY3Rpb24NCj4+ICAgLSBObyB0cmFuc2NlaXZlciBjb250cm9sIHdp
+dGggUlRTDQo+PiAgIC0gTm8gdGVybWluYXRpb24NCj4+ICAgLSBObyBleHRyYSBzdHJ1Y3QgaW4g
+dXNlDQo+Pg0KPj4gUlMtNDIyOg0KPj4gICAtIEZ1bGwgRHVwbGV4IFBvaW50LXRvLVBvaW50IGNv
+bm5lY3Rpb24NCj4+ICAgLSBObyB0cmFuc2NlaXZlciBjb250cm9sIHdpdGggUlRTIG5lZWRlZA0K
+Pj4gICAtIFRlcm1pbmF0aW9uIHBvc3NpYmxlDQo+PiAgIC0gRXh0cmEgc3RydWN0IHNlcmlhbF9y
+czQ4NSBuZWVkZWQgaWYgdGVybWluYXRpb24gaXMgdXNlZA0KPj4gID0+IFJTLTQyMiBjYW4gYmUg
+dXNlZCBpbiBSUy0yMzIgb3BlcmF0aW9uLCBidXQgaWYgYSB0ZXJtaW5hdGlvbiBzaG91bGQgYmUN
+Cj4+ICAgICBzd2l0Y2hhYmxlIHRoZSBSUzQ4NSBmbGFnIGhhcyB0byBiZSBlbmFibGVkLiBCdXQg
+dGhlbiBhbHNvIHRyYW5zY2VpdmVyDQo+PiAgICAgY29udHJvbCB3aWxsIGJlIGVuYWJsZWQuIE5v
+dCBhIHZlcnkgc2F0aXNmeWluZyBzaXR1YXRpb24uDQo+IA0KPiBXZWxsIHdoeSBkb24ndCB3ZSBq
+dXN0IGFsbG93IGVuYWJsaW5nIG9yIGRpc2FibGluZyBSUy00ODUgdGVybWluYXRpb24NCj4gaW5k
+ZXBlbmRlbnRseSBmcm9tIHRoZSBTRVJfUlM0ODVfRU5BQkxFRCBiaXQgaW4gc3RydWN0IHNlcmlh
+bF9yczQ4NT8NCj4gDQo+IEp1c3QgbGV0IHRoZSB1c2VyIGlzc3VlIGEgVElPQ1NSUzQ4NSBpb2N0
+bCB0byB0b2dnbGUgdGVybWluYXRpb24gZXZlbg0KPiBpZiBpbiBSUy0yMzIgbW9kZSBhbmQgdXNl
+IHRoYXQgbW9kZSBmb3IgUlMtNDIyLg0KPiANCj4gTG9va3MgbGlrZSB0aGUgc2ltcGxlc3Qgc29s
+dXRpb24gdG8gbWUuDQoNClNvdW5kcyBub3QgYmFkLiBUaGUgdGVybWluYXRpb24gc2hvdWxkIG9u
+bHkgZGVwZW5kIG9uIHdoZXRoZXIgdGhlIEdQSU8gaXMNCmdpdmVuIG9yIG5vdC4gDQoNCklycmVz
+cGVjdGl2ZSBvZiB0aGlzLCBJIHRoaW5rIHRoZSBMaW5vcyBpZGVhIG9mIGFuIFJTLTQyMiBtb2Rl
+IGlzIG5vdCBiYWQuDQpUaGlzIGFsbG93cyB5b3UgdG8gdGFrZSBjYXJlIG9mIHNwZWNpYWwgZmVh
+dHVyZXMgdGhhdCB3ZXJlIHByZXZpb3VzbHkNCm92ZXJsb29rZWQuIEZvciBleGFtcGxlLCBoYXJk
+d2FyZSBmbG93IGNvbnRyb2wgY2FuIGJlIHN3aXRjaGVkIG9mZiBzbyB0aGF0DQp0aGlzIGRvZXMg
+bm90IGNhdXNlIGFueSBwcm9ibGVtcy4NCg0KPj4gUlMtNDg1ICgyLXdpcmUpIHZlcnkgY29tbW9u
+Og0KPj4gICAtIEhhbGYgRHVwbGV4IFJTLTQ4NSBidXMNCj4+ICAgLSBUcmFuc2NlaXZlciBjb250
+cm9sIHdpdGggUlRTIGlzIG5lZWRlZA0KPj4gICAtIFRlcm1pbmF0aW9uIHBvc3NpYmxlDQo+PiAg
+IC0gRXh0cmEgc3RydWN0IHNlcmlhbF9yczQ4NSBpcyBuZWVkZWQNCj4+ICA9PiBSUy00ODUgaGFz
+IHRvIGJlIGVuYWJsZWQgYW5kIGNvbmZpZ3VyZWQ6DQo+PiAgICAgLSBTZXQgU0VSX1JTNDg1X0VO
+QUJMRUQNCj4+ICAgICAtIFNldCBTRVJfUlM0ODVfUlRTX09OX1NFTkQgb3IgU0VSX1JTNDg1X1JU
+U19BRlRFUl9TRU5EDQo+PiAgICAgLSBTZXQvY2xlYXIgU0VSX1JTNDg1X1JYX0RVUklOR19UWCBk
+ZXBlbmRpbmcgb24gd2hldGhlcg0KPj4gICAgICAgdGhlIHJlY2VpdmVyIHBhdGggc2hvdWxkIGJl
+IG9uIG9yIG9mZiBkdXJpbmcgc2VuZGluZy4NCj4+ICAgICAgIElmIGl0J3Mgc2V0IGl0IGFsbG93
+cyB0byBtb25pdG9yIHRoZSBzZW5kaW5nIG9uIHRoZSBidXMNCj4+ICAgICAgIGFuZCBkZXRlY3Qg
+d2hldGhlciBhbm90aGVyIGJ1cyBkZXZpY2UgaXMgdHJhbnNtaXR0aW5nDQo+PiAgICAgICBhdCB0
+aGUgc2FtZSB0aW1lLg0KPj4gICAgIC0gU2V0L2NsZWFyIFNFUl9SUzQ4NV9URVJNSU5BVEVfQlVT
+IGZvciBidXMgdGVybWluYXRpb24uDQo+Pg0KPj4gUlMtNDg1ICg0LXdpcmUpIGxpdHRsZSB1c2Vk
+Og0KPj4gICAtIEZ1bGwgRHVwbGV4IFJTLTQ4NSBidXMNCj4+ICAgLSBUcmFuc2NlaXZlciBjb250
+cm9sIHdpdGggUlRTIGlzIG5lZWRlZA0KPj4gICAtIFRlcm1pbmF0aW9uIHBvc3NpYmxlDQo+PiAg
+IC0gRXh0cmEgc3RydWN0IHNlcmlhbF9yczQ4NSBpcyBuZWVkZWQNCj4+ICA9PiBSUy00ODUgaGFz
+IHRvIGJlIGVuYWJsZWQgYW5kIGNvbmZpZ3VyZWQ6DQo+PiAgICAgLSBTZXQgU0VSX1JTNDg1X0VO
+QUJMRUQNCj4+ICAgICAtIFNldCBTRVJfUlM0ODVfUlRTX09OX1NFTkQgb3IgU0VSX1JTNDg1X1JU
+U19BRlRFUl9TRU5EDQo+PiAgICAgLSBTZXQgU0VSX1JTNDg1X1JYX0RVUklOR19UWCwgYXMgdGhl
+IHJlY2VpdmVyIHNob3VsZCBhbHdheXMNCj4+ICAgICAgIGJlIGVuYWJsZWQgaW5kZXBlbmRlbnRs
+eSBvZiBUWCwgYmVjYXVzZSBUWCBhbmQgUlggYXJlDQo+PiAgICAgICBzZXBhcmF0ZWQgZnJvbSBl
+YWNoIG90aGVyIGJ5IHRoZWlyIG93biB3aXJlcy4NCj4+ICAgICAtIFNldC9jbGVhciBTRVJfUlM0
+ODVfVEVSTUlOQVRFX0JVUyBmb3IgYnVzIHRlcm1pbmF0aW9uLg0KPiANCj4gVGhhbmtzIGZvciB0
+aGF0IG92ZXJ2aWV3LCBJIGZvdW5kIGl0IHZlcnkgaGVscGZ1bC4NCj4gDQo+IE9uZSBzbWFsbCBh
+ZGRlbmR1bTogIEhhcmR3YXJlIGZsb3cgY29udHJvbC4gIE9ubHkgcG9zc2libGUgd2l0aA0KPiBS
+Uy0yMzIuICBEb2Vzbid0IHdvcmsgaW4gYW55IG9mIHRoZSBvdGhlciBtb2RlcywgcmlnaHQ/DQoN
+CllvdSBhcmUgcmlnaHQgSSBmb3Jnb3QgdG8gbWVudGlvbiBpdC4NCg0KUmVnYXJkcyBhbmQgTWVy
+cnkgQ2hyaXN0bWFzDQpDaHJpc3RvcGgNCg==
 
