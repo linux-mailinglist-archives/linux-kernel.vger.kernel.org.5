@@ -1,182 +1,173 @@
-Return-Path: <linux-kernel+bounces-10510-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10511-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79C0781D543
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 18:29:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 684B781D54C
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 18:29:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2F3822829F0
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 17:29:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 23539281609
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 17:29:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E2EF125C7;
-	Sat, 23 Dec 2023 17:29:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FA07154A1;
+	Sat, 23 Dec 2023 17:29:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IbHQG73d"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SGjc16AT"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5972810961;
-	Sat, 23 Dec 2023 17:28:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703352540; x=1734888540;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=b9wXS8JUslhYIXGX2PgNncdH4z5//WhbZkMMi34ZMrI=;
-  b=IbHQG73di9SUjmjivTQoVTMxH9aFORiavlfaQ2OTnHxGiqPic1OFcqnK
-   4R4gExLKzw+Hpm3u3JMh7KwE8856PUo7IoCHS/co+Ugg61IWXiD6xdBif
-   YZ/12S25/SskSnN/aMMVGckjoPkBnEtLOBJ6a+aefnfLPpT0OP4Zv0GE+
-   iYAcS7gmLHLVYxHGIqYTpkDYoib+4SeoSQEkbpkXYEloMo/hFM8j9Tjaw
-   Py33bLn5zrxjF57psmrydt00DivP4afIymOCwnwjekZdJzlGKv/jIoP4S
-   4gMwrIkijvWiX7Rquh7q+9g4IMDlOBPHTvO9LHsxZ75Rg3MvJqvo97BdS
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10933"; a="9704251"
-X-IronPort-AV: E=Sophos;i="6.04,299,1695711600"; 
-   d="scan'208";a="9704251"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Dec 2023 09:28:57 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,299,1695711600"; 
-   d="scan'208";a="25669466"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by orviesa001.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 23 Dec 2023 09:28:57 -0800
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Sat, 23 Dec 2023 09:28:56 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Sat, 23 Dec 2023 09:28:55 -0800
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Sat, 23 Dec 2023 09:28:55 -0800
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.101)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Sat, 23 Dec 2023 09:28:55 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kt+epn/bGCmWjmk/KwVNNqObfrOyolWovPYIj/mkoPqwbwwUSEpmHEmltDX2DxH6F6wVbIDX6LJhg4d0aqVJWFFD0wEVFlLsZPTCX8cVOn6IzdOCx4m69gA3ImeIzsbag5GHWnXYCsFZJBjMTpxpic7NnQdcJuUfns6dBfflxmsRcpFsg5Y//BEEwbtw4OifxozcGY7XOw/a6+r1mJOC7natw9tlro4t9OY45h4+3NyzOVOrut4oxeVOf4KawMHe0BtZFOgDNxpeC+1hqr/Q51xqdr5GGlOuX+MkV2ceRF6vOogk4XOYYCcx1llMHu+bS3XIl6+WGrPi70olyE56ow==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=THnyXxa8ewesAJ2sVkyNHpYzHijqyeEymP7vsF1LSSQ=;
- b=A3OqB7w511hlzVqOyzZ/ytNB0PN3b038ewC103lcCs7rsrfcBPkIyVKKfKGPCTzg53kuZfCsO6FREd5jQEW7MwBDWwXVKNX36MQfUBj3XJzMEsyTrzVCk9VoPC4qJAZWg1a+QnrVPS/EGNEHoDlFS2adc16CaABK5mCdYe38qaObBCpWBICJpUFAhjUUFrAlyQkbvnf3MGWhVjqrPQSU3Q7Mx/X73TCNqJorEmxwkh0qrH/dCYwpN0JUjwaE2DSYK03uwpkM8amk0QXQlgWe/LHsDbnEsOnLVGv8EIT1Y1/3HZIsennJke3gXAuPZ5kCtsLy9auRyL4ekdxyPUE4GA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SA1PR11MB6733.namprd11.prod.outlook.com (2603:10b6:806:25c::17)
- by LV2PR11MB6023.namprd11.prod.outlook.com (2603:10b6:408:17b::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7113.24; Sat, 23 Dec
- 2023 17:28:52 +0000
-Received: from SA1PR11MB6733.namprd11.prod.outlook.com
- ([fe80::da91:dbe5:857c:fa9c]) by SA1PR11MB6733.namprd11.prod.outlook.com
- ([fe80::da91:dbe5:857c:fa9c%4]) with mapi id 15.20.7113.023; Sat, 23 Dec 2023
- 17:28:52 +0000
-Date: Sat, 23 Dec 2023 09:28:48 -0800
-From: Ira Weiny <ira.weiny@intel.com>
-To: <linan666@huaweicloud.com>, <axboe@kernel.dk>, <geliang.tang@suse.com>,
-	<xni@redhat.com>, <colyli@suse.de>
-CC: <ira.weiny@intel.com>, <linux-block@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linan666@huaweicloud.com>,
-	<yukuai3@huawei.com>, <yi.zhang@huawei.com>, <houtao1@huawei.com>,
-	<yangerkun@huawei.com>
-Subject: Re: [PATCH 0/4] badblocks: bugfix and cleanup of _badblocks_check()
-Message-ID: <658718d0b8b8d_c613d2948f@iweiny-mobl.notmuch>
-References: <20231223063728.3229446-1-linan666@huaweicloud.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20231223063728.3229446-1-linan666@huaweicloud.com>
-X-ClientProxiedBy: SJ2PR07CA0008.namprd07.prod.outlook.com
- (2603:10b6:a03:505::8) To SA1PR11MB6733.namprd11.prod.outlook.com
- (2603:10b6:806:25c::17)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE2BE12E71;
+	Sat, 23 Dec 2023 17:29:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5621DC433C8;
+	Sat, 23 Dec 2023 17:29:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703352545;
+	bh=7xG6o54wRSyxhLE5knTREAIYMUB47waY0f2uTnrJ8Y0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=SGjc16ATLDegO3xcDc4uo3f6yfiQzSUA2ip8Lfmg7uIgVBm84VUfpA7fdKtjtQQX2
+	 mCEStsb6okKJO0jI6XNhhImL2WgbTaQ6cOT5uvz9kfPlpCC3Cy3fmy7PksUfrKJjmu
+	 SQj2gEx3c3zy6WoFu1sJV5+bmA0dl0AyvtOJpCaigrxgv4DBqj4j4xo9ugO6hV2z6d
+	 sKOmklTMiLes054XPs2Uka7IMCJXmS6e3dYQBa/EYbGoNSdffgLRDFKjqDwzqpY3Br
+	 HEskgr05zQdv+o11jRs1yqfLNLSJzefrqZCLOc3q4zboFQbZ+DfuRa1UJSBK5omam4
+	 d4OOg7/WaXLNw==
+Date: Sat, 23 Dec 2023 17:28:58 +0000
+From: Simon Horman <horms@kernel.org>
+To: David Howells <dhowells@redhat.com>
+Cc: torvalds@linux-foundation.org,
+	Markus Suvanto <markus.suvanto@gmail.com>,
+	Marc Dionne <marc.dionne@auristor.com>,
+	Wang Lei <wang840925@gmail.com>, Jeff Layton <jlayton@redhat.com>,
+	Steve French <smfrench@gmail.com>,
+	Jarkko Sakkinen <jarkko@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	linux-afs@lists.infradead.org, keyrings@vger.kernel.org,
+	linux-cifs@vger.kernel.org, linux-nfs@vger.kernel.org,
+	ceph-devel@vger.kernel.org, netdev@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Edward Adam Davis <eadavis@qq.com>
+Subject: Re: [GIT PULL] afs, dns: Fix dynamic root interaction with negative
+ DNS
+Message-ID: <20231223172858.GI201037@kernel.org>
+References: <1843374.1703172614@warthog.procyon.org.uk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SA1PR11MB6733:EE_|LV2PR11MB6023:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2aa2c29e-be4d-4019-fc09-08dc03dca18a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: MI5G+0EzMIt9wiExE5ZCJ+IKnbCoIvUZk7G7ZH5QkCw8Yb2i6/pb+f5x4d7W1JrJSxnablM1ONAVOYeFau4RaydMAC9GwkVFG32Io1BEjwZ4DF/urHf76GjlNTRK1ApUBH6YQVNVEv3ccvXO9iUGYlJ00nGGBj5xXe1KvdMpAC0Jf5LVu5XO/t/03pQNNVvf6nbw/Mnrw1my/nxzvMjkVS9T7+pOQky3Q3pDQd2lDgWyRYx7B1ich9x+tMnhzDyrvJ95+ZiUlR8LUYJZa/wwHmWtVCZdrWHHGhxlpOlHL4b795ugJiU8JOyUEl2gIsJvEweRjfyJJ0iy8QrwlPBOh0JVVuXFcAf4yleHAMuCkItWLgHgNIdYeFL49QCZ7Rp7dE8aTpYnGHKEqRdyAH1yU8Qy0cgYwbR4oKiC94uZbXssDYHNhUPBnh/c/KbpPhIngLSKCCrOWeVlSivh6ks5Y6c5+wKrIQcnGQFSDTJbclvVYIJ92yhBvGp3aJaksUzw3J7NKUIREpHbeo58JeeH47fdDNW2+CIuZTry2+12HtU=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR11MB6733.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(366004)(376002)(39860400002)(346002)(396003)(230922051799003)(451199024)(64100799003)(186009)(1800799012)(82960400001)(38100700002)(41300700001)(83380400001)(66946007)(66556008)(66476007)(316002)(4326008)(8676002)(8936002)(44832011)(5660300002)(4744005)(6486002)(7416002)(86362001)(6506007)(6512007)(9686003)(6666004)(26005)(966005)(2906002)(478600001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Bck9woET8FqnfN7sgfi8fBhPFjBf2cUMzK5chjJeWxGlDB5RY6VTZu1x/A/E?=
- =?us-ascii?Q?BloFtxR5qrzS9MQZXW5Umzx2Pfk2LGX+W8O8H0flfWvve/pynuPZC/x7evtU?=
- =?us-ascii?Q?VIDpxssXEUYK5UVnoppRTP1DVdSRMwwPDHGDwPFFUX5BXVTEo5ojsi8s0yVu?=
- =?us-ascii?Q?xC7U0yT5zejkYkKyaLBhWcxkusnScxfXUADBMGfQHsLGEw01kDOYQinsxBkM?=
- =?us-ascii?Q?AOptHJGc44AYyxC8RfsEPmwpc1k0t/7bHFxxjtHYVmz944kOd768BeeYDX+e?=
- =?us-ascii?Q?WNACbnsc28w3MZb8A/H4JSyTwv9Bq0qCqz0RwSkRb+qXlw5t1IyzT5xM/0Ua?=
- =?us-ascii?Q?l52HYzbxW9baMCnWnPmLNvY+AwA96yZJAzodSy3J3kkpat7i6xmBB7FkTQvN?=
- =?us-ascii?Q?yrY9T1AekUEwialJAf3VIK+7PoG5e/+aAc+ilzqak1k1nrXUDUITxFkJRnsM?=
- =?us-ascii?Q?7AMQKoYoAzbSCUBt2zOpMzQULpEo7NwiuxPwwnmWDwGp6Ic0KrxGn0+og80v?=
- =?us-ascii?Q?coljNG14RVCJFRmzQtQIbMMkqF2RzfiLT1sAJy6hzql29xzJOKtFBshvUWu0?=
- =?us-ascii?Q?0cuOck+sInhMf35y/toNJO/i7WZi+w6zggZk45ZGJm9eJR8WX9J4DHLIn0zs?=
- =?us-ascii?Q?JDZ4zecMkV99+33b7QhfbXaMk7AvSGyZzY4LW81l7Nfoj2YCXHukzCmUPdX1?=
- =?us-ascii?Q?XTmN6iLMq9lYOlHtUNie57yfXkPT80/0U7rx1aPYqkwNH9BcVCtGU2xaC9/u?=
- =?us-ascii?Q?rVDY2359vDko35DCqhnyUV9Zqn7gN5U3rFvJS0zhSbwE77C365Xb3NPSzLQb?=
- =?us-ascii?Q?gA4qY8zRn0V+v+kvpUoWi+cRmWPmgyhV/80z0sUfaVXMav+jRuEQgZ8x2wAv?=
- =?us-ascii?Q?ZaFEJaK+GdGzjIuIM//FSFARvteYakPyIApRuVyL9vjg4LVZjPr+9kVq55G7?=
- =?us-ascii?Q?gt+39xWayEFp1IXFUV8HoN+D9kil1io4tESxyTcTiSMuzPoPcFvY4T1Fgq2o?=
- =?us-ascii?Q?yBryTX7+wKolwReo1XihE3m6ZUmcPXQcCXgkB7UolGzfFK1tPyL73xuc+rT4?=
- =?us-ascii?Q?9srQiz7UPHbHoefhPoEI5Oc3Ze/Kx2a+PuQGHfXqiFPOGuCItwvIqCZPHbmI?=
- =?us-ascii?Q?tpX6grLaXBYrGm/J1houyWOZX6T395A/T+Y3Vvf9sdBzYd7qDwG6YTKmCkSx?=
- =?us-ascii?Q?F0FcQyvu3voga6dBIT62c61n3qwVdk+nNOmEE+V5nTzH97TT4s/gAJdLom7H?=
- =?us-ascii?Q?45U7t+U6M44aUHIZK7wtP7PVHRqo1I1nQi+Ice6k3T3uAKHblL/u96K+ZXay?=
- =?us-ascii?Q?M8OHLW7FcfzvX/Bi8h8N0i/piP/LCTqITw6UXe/aJQqRgAk8J4QBJmhJHgqv?=
- =?us-ascii?Q?kWQidQ8tpMXdRmStSmuqWRsuDgt9tZYMzXWwPurrVBrWRXViR1vZt5dZOwK4?=
- =?us-ascii?Q?m6wcfLP6cLvnvwzOonTL+HXSKxb1ID1djRoTeHT43qix2W6GvSj/bFmthmiJ?=
- =?us-ascii?Q?NPsIvUw4NXRbp8Cnueb5JgfEM67RIXYUAN2LNt7ECDJM2zoL+1bZeG7YjhDd?=
- =?us-ascii?Q?WxhNik+RvFHj6KZS6MZY+lNSTpFO0yDiokG/C8Vl?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2aa2c29e-be4d-4019-fc09-08dc03dca18a
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR11MB6733.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Dec 2023 17:28:52.0144
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: A/IQ9L0dPj/Lj/Gv663cTNZ50FXdPiEoNRCg6j1yTLtqaLhHzuGU40uKZj3VVUvePeYdX5qbTnKY4cuYFS0BrQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV2PR11MB6023
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1843374.1703172614@warthog.procyon.org.uk>
 
-linan666@ wrote:
-> From: Li Nan <linan122@huawei.com>
++ Edward Adam Davis <eadavis@qq.com>
+
+On Thu, Dec 21, 2023 at 03:30:14PM +0000, David Howells wrote:
+> Hi Linus,
 > 
-> Li Nan (4):
->   badblocks: goto out if find any unacked badblocks in
->     _badblocks_check()
->   badblocks: optimize _badblocks_check()
->   badblocks: fix slab-out-of-bounds in _badblocks_check()
->   badblocks: clean up prev_badblocks()
+> Could you apply this, please?  It's intended to improve the interaction of
+> arbitrary lookups in the AFS dynamic root that hit DNS lookup failures[1]
+> where kafs behaves differently from openafs and causes some applications to
+> fail that aren't expecting that.  Further, negative DNS results aren't
+> getting removed and are causing failures to persist.
 > 
->  block/badblocks.c | 48 +++++++++++++++++++++++------------------------
->  1 file changed, 24 insertions(+), 24 deletions(-)
+>  (1) Always delete unused (particularly negative) dentries as soon as
+>      possible so that they don't prevent future lookups from retrying.
 > 
-> -- 
-> 2.39.2
+>  (2) Fix the handling of new-style negative DNS lookups in ->lookup() to
+>      make them return ENOENT so that userspace doesn't get confused when
+>      stat succeeds but the following open on the looked up file then fails.
 > 
+>  (3) Fix key handling so that DNS lookup results are reclaimed almost as
+>      soon as they expire rather than sitting round either forever or for an
+>      additional 5 mins beyond a set expiry time returning EKEYEXPIRED.
+>      They persist for 1s as /bin/ls will do a second stat call if the first
+>      fails.
+> 
+> Reviewed-by: Jeffrey Altman <jaltman@auristor.com>
+> 
+> Thanks,
+> David
+> 
+> Link: https://bugzilla.kernel.org/show_bug.cgi?id=216637 [1]
+> Link: https://lore.kernel.org/r/20231211163412.2766147-1-dhowells@redhat.com/ # v1
+> Link: https://lore.kernel.org/r/20231211213233.2793525-1-dhowells@redhat.com/ # v2
+> Link: https://lore.kernel.org/r/20231212144611.3100234-1-dhowells@redhat.com/ # v3
+> Link: https://lore.kernel.org/r/20231221134558.1659214-1-dhowells@redhat.com/ # v4
+> ---
+> The following changes since commit ceb6a6f023fd3e8b07761ed900352ef574010bcb:
+> 
+>   Linux 6.7-rc6 (2023-12-17 15:19:28 -0800)
+> 
+> are available in the Git repository at:
+> 
+>   git://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git tags/afs-fixes-20231221
+> 
+> for you to fetch changes up to 39299bdd2546688d92ed9db4948f6219ca1b9542:
+> 
+>   keys, dns: Allow key types (eg. DNS) to be reclaimed immediately on expiry (2023-12-21 13:47:38 +0000)
+> 
+> ----------------------------------------------------------------
+> AFS fixes
+> 
+> ----------------------------------------------------------------
+> David Howells (3):
+>       afs: Fix the dynamic root's d_delete to always delete unused dentries
+>       afs: Fix dynamic root lookup DNS check
+>       keys, dns: Allow key types (eg. DNS) to be reclaimed immediately on expiry
 
-Thanks for the series!  Unfortunately I'm still seeing some failures with
-this series.
+Hi Linus, David, Edward, Networking maintainers, all,
 
-Coly's test patch[1] fixed all my test failures.  Right off the top I'm
-not seeing what you missed that he seemed to catch.
+This is a heads up that my understanding is that the last patch introduces
+a buffer overrun for which a patch has been posted. Ordinarily I would
+think that the fix should go through net. But the above patches aren't in
+net yet.
 
-Ira
+Given a) we're now in a holiday season and b) the severity of this
+problem is unclear (to me), perhaps it is best to wait a bit then
+post the fix to net?
 
-[1] https://lore.kernel.org/all/nhza4xsnbmcmka7463jxgmdvb27pqvbvcuzs7xp4vzpqlo262d@dp7laevqtaka/
+Link: https://lore.kernel.org/netdev/tencent_7D663C8936BA96F837124A4474AF76ED6709@qq.com/
+
+N.B. The hash in the fixes tag for the fix patch is now incorrect.
+
+For reference the fix, from the link above, is below.
+I've fixed the hash for the fixes tag and added the posted review tag.
+And added my own SoB, because the patch is in this email.
+
+From: Edward Adam Davis <eadavis@qq.com>
+
+bin will be forcibly converted to "struct dns_server_list_v1_header *", so it 
+is necessary to compare datalen with sizeof(*v1).
+
+Fixes: 39299bdd2546 ("keys, dns: Allow key types (eg. DNS) to be reclaimed immediately on expiry")
+Reported-and-tested-by: syzbot+94bbb75204a05da3d89f@syzkaller.appspotmail.com
+Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+Signed-off-by: Simon Horman <horms@kernel.org>
+
+---
+ net/dns_resolver/dns_key.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/net/dns_resolver/dns_key.c b/net/dns_resolver/dns_key.c
+index 3233f4f25fed..15f19521021c 100644
+--- a/net/dns_resolver/dns_key.c
++++ b/net/dns_resolver/dns_key.c
+@@ -104,7 +104,7 @@ dns_resolver_preparse(struct key_preparsed_payload *prep)
+ 
+ 	if (data[0] == 0) {
+ 		/* It may be a server list. */
+-		if (datalen <= sizeof(*bin))
++		if (datalen <= sizeof(*v1))
+ 			return -EINVAL;
+ 
+ 		bin = (const struct dns_payload_header *)data;
+-- 
+2.43.0
+
+
 
