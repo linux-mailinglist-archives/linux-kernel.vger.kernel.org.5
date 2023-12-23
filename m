@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-10173-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10174-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9D5D81D10A
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 02:55:22 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC9E381D10B
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 02:55:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4C8D91F237E6
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 01:55:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BB932B24624
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 01:55:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 748F211C93;
-	Sat, 23 Dec 2023 01:52:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F21B512E71;
+	Sat, 23 Dec 2023 01:52:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=semihalf.com header.i=@semihalf.com header.b="EdB/o8uT"
+	dkim=pass (2048-bit key) header.d=semihalf.com header.i=@semihalf.com header.b="dJ75vPjM"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
+Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22E54E56C
-	for <linux-kernel@vger.kernel.org>; Sat, 23 Dec 2023 01:52:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D58DF10958
+	for <linux-kernel@vger.kernel.org>; Sat, 23 Dec 2023 01:52:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=semihalf.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=semihalf.com
-Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-33674f60184so2293346f8f.1
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 17:52:13 -0800 (PST)
+Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2cc794df8aaso27688301fa.0
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 17:52:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=semihalf.com; s=google; t=1703296332; x=1703901132; darn=vger.kernel.org;
+        d=semihalf.com; s=google; t=1703296334; x=1703901134; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=JWilt8xXopZLz3aWBvrS8u+uuqRM1/IhwYaiNrDNBL8=;
-        b=EdB/o8uTMFdMXswuew9mjIXOXLUBt+iQPjCLyYX1yIm4injx5Lsnh5ULdmb7v7CGOw
-         wWfbXH6EeAnB6NtvbqwnsGNTVnJpZkPAsASe19PPMWoXpYAp+MlIofT6952zVmlpZA6p
-         azN7/2BQoV4wz7W5IdA5LGS2liLNRhGriHcSq7jkoBdJl6UbkiYgCqYUSxffpTUoJrH+
-         Rk+E78o45LCS2tvBRr34Ls0vA52tLafkhRkk6IUyem/LPwWAtjunn/sjsJ1gffgDnBSn
-         I75dbEsnFGmxeSB1xRyAZ+6TIB9TgAIwKTgUWrUohbsWSp6hZIAOELIAqPg31/hh+BZW
-         ewHg==
+        bh=6no3BwB4DIf/yo3cr68iWvpmo5tlfbyqPOfodflbjdk=;
+        b=dJ75vPjM1nm7UIMCtD6ufaBsaSXWYQTbU/2FujH2j2OyiRiR4UAmSj7VtVVtHQ/PDR
+         m65M1gYy7gqKDUYrFlYiiNj/4rXDCl+RJ7nJ+l8J73LHtWzxO4Y5coXGumk/QbkEZ8wZ
+         FAEzBwku18SdX1hL93FPs187drniuR5zYtjn1uVAF7CEY8c5OMM+obTztoIQfTbw0s+E
+         hkGVylf5p6sqouO8VzlUMcrEHuat75UVbFpITRzqXyyp5EKdGZ0ze8waKvzou8P+6L8r
+         7gsqhfqJ4O21TyDLcjcoVH3c4AAVg979Nix7uRRJUoz2D7D5ytu2XdArtokVf0BO4HiW
+         Cn8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703296332; x=1703901132;
+        d=1e100.net; s=20230601; t=1703296334; x=1703901134;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=JWilt8xXopZLz3aWBvrS8u+uuqRM1/IhwYaiNrDNBL8=;
-        b=PJvxh/K/jZY79NjNirf7jY9JiFk0g2jN1Bi7qBWs2gi1NFqB/edTzFe/KiSb1Z8qBp
-         rmCnn/T0fnffuh7FFLO7vrh1Ezt1SMc0EAzeXhJVDpcat8pxbXxk/3aJw9+Ev2cpZCPa
-         dleOouyJ1CkHZpkuultnTIA+u+O5RbL/1k1TZ1LArsORLkPfVOkuqyM5a5oHDILvJAXr
-         kzP20IzQ+1T3VcjIgSvwKhxIcBy8fRbCqZiZMFhGpVaYrnscQnhScY3RtO1UhZp0noD2
-         9HhTcG6/ewZ6p2sOoyFQOs8XlrRx3ORpnw3NBZcOCiFgReQ4IY9WndAAIW3EtTvOrNwR
-         aWkg==
-X-Gm-Message-State: AOJu0YwAffA8QEqnH7F7/c36pxS1dHzim4DfYw7MOcU6Qbc4IH0g9I1v
-	EDtKJvUAEIy/Ibiy5JTiDetpZGe7VCjZ
-X-Google-Smtp-Source: AGHT+IE17AFKylC4vEQBQhSQfzkY3zey+tE/oZSiU8ugOZex1kpF3bBIdIhwS9dYXMoPcHe6M+QBjw==
-X-Received: by 2002:a05:600c:3d0f:b0:40d:43ea:ed19 with SMTP id bh15-20020a05600c3d0f00b0040d43eaed19mr1064900wmb.124.1703296332488;
-        Fri, 22 Dec 2023 17:52:12 -0800 (PST)
+        bh=6no3BwB4DIf/yo3cr68iWvpmo5tlfbyqPOfodflbjdk=;
+        b=ZKlnDmeR7g1rEpw/Ir2OTHGTyHJBSiroAS9uyQ1OUxgBC5YXeOOhkHdXdUd6N4NvJn
+         5Wggozn6k4bTWBNgpiRMoM0zx+blJhOYvICKPvp9Y3osiwMSZ5IEFThaR9ZNn2pT5Y+Y
+         oUtcZB9/LKzU8SzcbfxiyHhjjH/Wl5HMxQq3bKoLavPukwEOdGzHV5Wrr4PnnibPkg9Z
+         nFMDCRm9cZO2AZg7S3e8y6iDZpwsYk43Ss45qQeyAdYXcKI0DjVGqmIShe/D7+M3es1d
+         fgzEM8i1UYck78oRWFUV/kU2vxowlIENMMiSD59pE1gkea/etHAU2kWG22YTLh/FcuP4
+         eM5Q==
+X-Gm-Message-State: AOJu0Yy6728v5wCPntkjxIzCMnVH8GaFDmlcfBE4E9Wz6xA+YZqd9tZv
+	LTONgwHvVKha2Yvw99LhnhhMxjkeA9Z/
+X-Google-Smtp-Source: AGHT+IEwszgKngWrGT2LYlc8oGsyNZz5xzGHAimZZGzB+faoW6ONRI5Z2M/PkJRrzWcLuXegybUe7Q==
+X-Received: by 2002:a2e:8018:0:b0:2cc:b4c2:af64 with SMTP id j24-20020a2e8018000000b002ccb4c2af64mr368616ljg.80.1703296334133;
+        Fri, 22 Dec 2023 17:52:14 -0800 (PST)
 Received: from ukaszb-l.semihalf.net (alfa56.extreme-net.one.pl. [213.77.89.56])
-        by smtp.gmail.com with ESMTPSA id h2-20020a0564020e8200b005532a337d51sm3288494eda.44.2023.12.22.17.52.11
+        by smtp.gmail.com with ESMTPSA id h2-20020a0564020e8200b005532a337d51sm3288494eda.44.2023.12.22.17.52.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Dec 2023 17:52:12 -0800 (PST)
+        Fri, 22 Dec 2023 17:52:13 -0800 (PST)
 From: =?UTF-8?q?=C5=81ukasz=20Bartosik?= <lb@semihalf.com>
 To: Jason Baron <jbaron@akamai.com>,
 	Jim Cromie <jim.cromie@gmail.com>,
@@ -77,9 +77,9 @@ Cc: Guenter Roeck <groeck@google.com>,
 	Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
 	linux-kernel@vger.kernel.org,
 	upstream@semihalf.com
-Subject: [PATCH v3 13/22] dyndbg: add support for default trace destination
-Date: Sat, 23 Dec 2023 02:51:22 +0100
-Message-ID: <20231223015131.2836090-14-lb@semihalf.com>
+Subject: [PATCH v3 14/22] dyndbg: write debug logs to trace instance
+Date: Sat, 23 Dec 2023 02:51:23 +0100
+Message-ID: <20231223015131.2836090-15-lb@semihalf.com>
 X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
 In-Reply-To: <20231223015131.2836090-1-lb@semihalf.com>
 References: <20231223015131.2836090-1-lb@semihalf.com>
@@ -92,202 +92,82 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Instead of repeating trace destination name explicitly for each
-command (e.g. +T:thunderbolt), this change saves previously used
-trace destination provided to [=+-]T as default and consecutive
-commands which don't provide trace destination explicitly will
-usa the saved trace destination.
+When trace is enabled (T flag is set) and trace destination
+field value is in range [1..63] (value 0 is reserved for
+writing debug logs to trace prdbg and devdbg events) then
+debug logs will be written to trace instance whose name is
+stored in buf[trace destination].name, e.g. when trace
+destination value is 2 and buf[2].name is set to tbt then
+debug logs will be written to <debugfs>/tracing/instances/tbt.
+
+Before using trace instance as a destination for writing debug
+logs it has to be explicitly opened with open command.
 
 Signed-off-by: Łukasz Bartosik <lb@semihalf.com>
 ---
- lib/dynamic_debug.c | 94 +++++++++++++++++++++++++++++++++++++--------
- 1 file changed, 77 insertions(+), 17 deletions(-)
+ lib/dynamic_debug.c | 28 ++++++++++++++++++++++++----
+ 1 file changed, 24 insertions(+), 4 deletions(-)
 
 diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
-index 6c3b83bce18d..99ab5756f0ed 100644
+index 99ab5756f0ed..c382ea5dea19 100644
 --- a/lib/dynamic_debug.c
 +++ b/lib/dynamic_debug.c
-@@ -72,7 +72,7 @@ struct ddebug_iter {
- struct flag_settings {
- 	unsigned int flags;
- 	unsigned int mask;
--	unsigned int trace_dst;
-+	int trace_dst;
- };
+@@ -1256,8 +1256,8 @@ static DEFINE_PER_CPU(struct ddebug_trace_bufs, ddebug_trace_bufs);
+ static DEFINE_PER_CPU(int, ddebug_trace_reserve);
  
- #define DD_OPEN_CMD	"open"
-@@ -99,6 +99,10 @@ struct dd_tracebuf_tbl_info {
- 	struct dd_private_tracebuf buf[TRACE_DST_LAST];
- 	DECLARE_BITMAP(bmap, TRACE_DST_LAST);
- 	int bmap_size;
-+#define DST_NOT_SET	(-1)
-+#define DST_TR_EVENT	0
-+#define DST_NOT_SET_STR "not set"
-+	int default_dst;
- };
- 
- static DEFINE_MUTEX(ddebug_lock);
-@@ -109,7 +113,8 @@ MODULE_PARM_DESC(verbose, " dynamic_debug/control processing "
- 		 "( 0 = off (default), 1 = module add/rm, 2 = >control summary, 3 = parsing, 4 = per-site changes)");
- 
- static struct
--dd_tracebuf_tbl_info trc_tbl = { .bmap_size = TRACE_DST_LAST };
-+dd_tracebuf_tbl_info trc_tbl = { .bmap_size = TRACE_DST_LAST,
-+				 .default_dst = DST_NOT_SET, };
- 
- static inline struct dd_ctrl *get_ctrl(struct _ddebug *desc)
+ __printf(3, 0)
+-static void ddebug_trace(struct _ddebug *desc, const struct device *dev,
+-			 const char *fmt, va_list args)
++static void ddebug_trace_event(struct _ddebug *desc, const struct device *dev,
++			       const char *fmt, va_list args)
  {
-@@ -131,6 +136,11 @@ static inline unsigned int get_trace_dst(const struct _ddebug *desc)
- 	return desc->ctrl.trace_dst;
+ 	struct ddebug_trace_buf *buf;
+ 	int bufidx;
+@@ -1288,6 +1288,18 @@ static void ddebug_trace(struct _ddebug *desc, const struct device *dev,
+ 	preempt_enable_notrace();
  }
  
-+static inline bool has_tr_default_dst(void)
++__printf(2, 0)
++static void ddebug_trace_instance(struct _ddebug *desc, const char *fmt,
++				  va_list *args)
 +{
-+	return trc_tbl.default_dst != DST_NOT_SET;
++	struct va_format vaf = { .fmt = fmt, .va = args};
++	struct trace_array *arr = trc_tbl.buf[get_trace_dst(desc)].arr;
++
++	WARN_ON_ONCE(!arr);
++
++	trace_array_printk(arr, 0, "%pV", &vaf);
 +}
 +
- static int find_tr_instance(const char *name)
+ __printf(2, 3)
+ static void ddebug_printk(struct _ddebug *desc, const char *fmt, ...)
  {
- 	int idx = 1;
-@@ -145,11 +155,16 @@ static int find_tr_instance(const char *name)
- static const
- char *read_T_args(const char *str, struct flag_settings *modifiers)
- {
--	int len, idx = 0;
--	char *end;
-+	bool has_colon = *(str+1) == ':' ? true : false;
-+	int len = 0, idx = DST_TR_EVENT;
-+	char *end = NULL;
- 
--	if (*(str+1) != ':')
--		return str;
-+	if (!has_colon) {
-+		if (!has_tr_default_dst())
-+			return NULL;
-+		idx = trc_tbl.default_dst;
-+		goto end;
-+	}
- 
- 	str += 2;
- 	end = strchr(str, '.');
-@@ -168,8 +183,12 @@ char *read_T_args(const char *str, struct flag_settings *modifiers)
- 		goto end;
- 
- 	idx = find_tr_instance(str);
--	if (idx < 0)
--		return NULL;
-+	if (idx < 0) {
-+		if (!has_tr_default_dst() ||
-+		    has_colon)
-+			return NULL;
-+		idx = trc_tbl.default_dst;
-+	}
- end:
- 	modifiers->trace_dst = idx;
- 	return end ? end : str + len;
-@@ -389,6 +408,13 @@ static int handle_trace_close_cmd(const char *arg)
- 		goto end;
+@@ -1300,7 +1312,12 @@ static void ddebug_printk(struct _ddebug *desc, const char *fmt, ...)
+ 		 * All callers include the KERN_DEBUG prefix to keep the
+ 		 * vprintk case simple; strip it out for tracing.
+ 		 */
+-		ddebug_trace(desc, NULL, fmt + strlen(KERN_DEBUG), args);
++		if (!get_trace_dst(desc))
++			ddebug_trace_event(desc, NULL,
++					   fmt + strlen(KERN_DEBUG), args);
++		else
++			ddebug_trace_instance(desc, fmt + strlen(KERN_DEBUG),
++					      &args);
+ 		va_end(args);
  	}
  
-+	/*
-+	 * check if default trace instance is being closed,
-+	 * if yes then clear default destination
-+	 */
-+	if (trc_tbl.default_dst == idx)
-+		trc_tbl.default_dst = DST_NOT_SET;
-+
- 	trace_array_put(buf->arr);
- 	/*
- 	 * don't destroy trace instance but let user do it manually
-@@ -427,6 +453,30 @@ void update_tr_dst(const struct _ddebug *desc, const struct dd_ctrl *nctrl)
- 		trc_tbl.buf[ndst].use_cnt++;
- }
+@@ -1322,7 +1339,10 @@ static void ddebug_dev_printk(struct _ddebug *desc, const struct device *dev,
+ 		va_list args;
  
-+static const char *get_tr_default_dst_str(void)
-+{
-+	switch (trc_tbl.default_dst) {
-+	case DST_NOT_SET:
-+		return DST_NOT_SET_STR;
-+	case DST_TR_EVENT:
-+		return DD_TR_EVENT;
-+	default:
-+		return trc_tbl.buf[trc_tbl.default_dst].name;
-+	}
-+}
-+
-+static void update_tr_default_dst(const struct flag_settings *modifiers)
-+{
-+	int dst = modifiers->trace_dst;
-+
-+	if (dst == DST_NOT_SET || dst == trc_tbl.default_dst)
-+		return;
-+
-+	trc_tbl.default_dst = dst;
-+	v3pr_info("set default trace dst to idx=%d, name=%s\n", dst,
-+		  get_tr_default_dst_str());
-+}
-+
- static int ddebug_parse_cmd(char *words[], int nwords)
- {
- 	if (nwords != 1)
-@@ -537,7 +587,8 @@ static int ddebug_change(const struct ddebug_query *query,
- 			nfound++;
- 
- 			nctrl.flags = (get_flags(dp) & modifiers->mask) | modifiers->flags;
--			nctrl.trace_dst = modifiers->trace_dst;
-+			nctrl.trace_dst = modifiers->trace_dst == DST_NOT_SET ?
-+				get_trace_dst(dp) : modifiers->trace_dst;
- 			if (!memcmp(&nctrl, get_ctrl(dp), sizeof(nctrl)))
- 				continue;
- #ifdef CONFIG_JUMP_LABEL
-@@ -561,6 +612,9 @@ static int ddebug_change(const struct ddebug_query *query,
- 	if (!nfound && verbose)
- 		pr_info("no matches for query\n");
- 
-+	if (nfound)
-+		update_tr_default_dst(modifiers);
-+
- 	return nfound;
- }
- 
-@@ -833,7 +887,7 @@ static int ddebug_parse_flags(const char *str, struct flag_settings *modifiers)
- 
- static int ddebug_exec_query(char *query_string, const char *modname)
- {
--	struct flag_settings modifiers = {};
-+	struct flag_settings modifiers = { .trace_dst = DST_NOT_SET };
- 	struct ddebug_query query = {};
- #define MAXWORDS 9
- 	int nwords, nfound;
-@@ -1595,15 +1649,21 @@ static int ddebug_proc_show(struct seq_file *m, void *p)
- 	}
- 	seq_puts(m, "\n");
- 
--	if (ddebug_iter_is_last(iter) &&
--	    !bitmap_empty(trc_tbl.bmap, trc_tbl.bmap_size)) {
--		int idx = 1;
-+	if (ddebug_iter_is_last(iter)) {
- 
- 		seq_puts(m, "\n");
--		seq_puts(m, "#: Opened trace instances:");
--		for_each_set_bit_from(idx, trc_tbl.bmap, trc_tbl.bmap_size)
--			seq_printf(m, " %s", trc_tbl.buf[idx].name);
--		seq_puts(m, "\n");
-+		seq_printf(m, "#: Default trace destination: %s\n",
-+			   get_tr_default_dst_str());
-+
-+		if (!bitmap_empty(trc_tbl.bmap, trc_tbl.bmap_size)) {
-+			int idx = 1;
-+
-+			seq_puts(m, "\n");
-+			seq_puts(m, "#: Opened trace instances:");
-+			for_each_set_bit_from(idx, trc_tbl.bmap, trc_tbl.bmap_size)
-+				seq_printf(m, " %s", trc_tbl.buf[idx].name);
-+			seq_puts(m, "\n");
-+		}
+ 		va_start(args, fmt);
+-		ddebug_trace(desc, dev, fmt, args);
++		if (!get_trace_dst(desc))
++			ddebug_trace_event(desc, dev, fmt, args);
++		else
++			ddebug_trace_instance(desc, fmt, &args);
+ 		va_end(args);
  	}
  
- 	return 0;
 -- 
 2.43.0.472.g3155946c3a-goog
 
