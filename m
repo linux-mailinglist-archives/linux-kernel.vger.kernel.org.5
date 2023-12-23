@@ -1,140 +1,102 @@
-Return-Path: <linux-kernel+bounces-10311-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10312-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4EA9B81D289
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 06:38:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3C5E81D293
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 06:53:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EBA392860AB
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 05:38:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 025F41C22924
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 05:53:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BA1F523A;
-	Sat, 23 Dec 2023 05:38:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C901C6117;
+	Sat, 23 Dec 2023 05:52:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="NeQoklkv"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Ie+2b/gp"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.219])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0744C46AD
-	for <linux-kernel@vger.kernel.org>; Sat, 23 Dec 2023 05:38:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=o7hwV
-	3qd1r+M+fgyqUOI5ooAyBPaGQyd0qEIr2EUceA=; b=NeQoklkvkKCBc3zVgO5Cu
-	xW3u8bVBieOmytycj1/fw6sUd8rOnJih3x91cq5ndHBfDSdZuriPX3jhh/L+zWqn
-	ZIEjsF5AdeWizM8gcfWSL9exdXp7H0DuWV7NQQBT70AFubq5cpiI9Hntu9WG/Vp6
-	+PM0RD+INaD98cLkibeK4o=
-Received: from ubuntu.lan (unknown [223.74.158.232])
-	by zwqz-smtp-mta-g0-3 (Coremail) with SMTP id _____wCXv7nncYZlGKjPGQ--.35408S2;
-	Sat, 23 Dec 2023 13:36:42 +0800 (CST)
-From: Junwen Wu <wudaemon@163.com>
-To: laoar.shao@gmail.com
-Cc: bristot@redhat.com,
-	bsegall@google.com,
-	dietmar.eggemann@arm.com,
-	juri.lelli@redhat.com,
-	linux-kernel@vger.kernel.org,
-	mgorman@suse.de,
-	mingo@redhat.com,
-	peterz@infradead.org,
-	rostedt@goodmis.org,
-	vincent.guittot@linaro.org,
-	vschneid@redhat.com,
-	wudaemon@163.com
-Subject: Re: [PATCH v2] sched/rt: Fix rt task's sched latency statistics error in sched_stat_wait trace_point
-Date: Sat, 23 Dec 2023 05:36:34 +0000
-Message-Id: <20231223053634.942784-1-wudaemon@163.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <CALOAHbDXWNbxeQEOhGW5m6bd3cLW_jnE2q6XgSpRBHzxt1GOeg@mail.gmail.com>
-References: <CALOAHbDXWNbxeQEOhGW5m6bd3cLW_jnE2q6XgSpRBHzxt1GOeg@mail.gmail.com>
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F26064A15;
+	Sat, 23 Dec 2023 05:52:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1703310772; x=1734846772;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=mR6DxwvAt72xJ96TjpuhNN30KdwobyHTaKeVNeYuZAQ=;
+  b=Ie+2b/gpXrUKMr3CYLr9hteMtjyzKL1U0je0yDU+E0JJrc4ASRHJ7UEr
+   1i7J4AqwErVe/WMFkdhwDzlzwvR1GL+XXDjKZDFYrJJLEe4hbZowpUF5N
+   WmuqR2DkaFEgv/yRZc/IM1JzZNEdkFyBDuvUNF5DxCglK6kGTNsjrnBSc
+   ms+QmbliwlxQERt0IiwpCtAHP8cFE+JkyGgyAUwT4GSLYbUcoWCSlmgN8
+   vjd/2r5vd6YFGgdjGQYV6TXPkBsSnR7aV/NsdySVENPEPQhQU4FzaPpVy
+   bUmxLIWddp5Z5bu79LYqsMunfqfeX4L+5GfwHUgPC6k8y6SijYhX0/8Lr
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10932"; a="9676430"
+X-IronPort-AV: E=Sophos;i="6.04,298,1695711600"; 
+   d="scan'208";a="9676430"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Dec 2023 21:52:51 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10932"; a="780802163"
+X-IronPort-AV: E=Sophos;i="6.04,298,1695711600"; 
+   d="scan'208";a="780802163"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by fmsmga007.fm.intel.com with ESMTP; 22 Dec 2023 21:52:48 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rGuwC-000ALd-20;
+	Sat, 23 Dec 2023 05:52:43 +0000
+Date: Sat, 23 Dec 2023 13:52:35 +0800
+From: kernel test robot <lkp@intel.com>
+To: Richard Gobert <richardbgobert@gmail.com>, davem@davemloft.net,
+	dsahern@kernel.org, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, shuah@kernel.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Cc: oe-kbuild-all@lists.linux.dev
+Subject: Re: [PATCH net-next 3/3] selftests/net: fix GRO coalesce test and
+ add ext
+Message-ID: <202312231344.sWSs5PIk-lkp@intel.com>
+References: <641157c0-f224-4910-874d-7906a48d914b@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wCXv7nncYZlGKjPGQ--.35408S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7uFy3WFWfurW8Kw4DZF4rAFb_yoW8Kw4fpw
-	4qgaykJw4qq3y0q3yxZrsrGr45uwn3J342qFnrGFWxtF4Yyr1FqFn0g343WrWqgr9Y9F17
-	ta18K39xKa1v9F7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0JU3b18UUUUU=
-X-CM-SenderInfo: 5zxgtvxprqqiywtou0bp/1tbisQtPbWVOAoVlVwAAsG
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <641157c0-f224-4910-874d-7906a48d914b@gmail.com>
 
->It seems DL has the same issue. Pls. also fix it in update_stats_dequeue_dl().
->And add the Fixes tag in the commit log:
->Fixes: 57a5c2dafca8 ("sched/rt: Support schedstats for RT sched class")
->Fixes: b5eb4a5f6521 ("sched/dl: Support schedstats for deadline sched class")
+Hi Richard,
 
-ok, the PATCH v3 below is ok?
+kernel test robot noticed the following build warnings:
 
-Subject: [PATCH v3] sched/stats: Fix rt/dl task's sched latency statistics
- error in sched_stat_wait trace_point
+[auto build test WARNING on net-next/main]
 
-When enable sched_stat_wait trace_point, some rt tasks sched latency so long, like this,
-sched_stat_wait: comm=rcu_preempt pid=14 delay=4936139545261 [ns]
-Rt task has low latency, it must have a bug. When rt task balance off source cpu,
-dequeue operation not update the sched_statistics, so follow update_stats_wait_end_fair
-update method, so do dl tasks.
+url:    https://github.com/intel-lab-lkp/linux/commits/Richard-Gobert/net-gso-add-HBH-extension-header-offload-support/20231222-172059
+base:   net-next/main
+patch link:    https://lore.kernel.org/r/641157c0-f224-4910-874d-7906a48d914b%40gmail.com
+patch subject: [PATCH net-next 3/3] selftests/net: fix GRO coalesce test and add ext
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231223/202312231344.sWSs5PIk-lkp@intel.com/reproduce)
 
-Fixes: 57a5c2dafca8 ("sched/rt: Support schedstats for RT sched class")
-Fixes: b5eb4a5f6521 ("sched/dl: Support schedstats for deadline sched class")
-Signed-off-by: Junwen Wu <wudaemon@163.com>
----
- kernel/sched/deadline.c | 8 +++++++-
- kernel/sched/rt.c       | 7 +++++++
- 2 files changed, 14 insertions(+), 1 deletion(-)
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312231344.sWSs5PIk-lkp@intel.com/
 
-diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
-index b28114478b82..29223163ee22 100644
---- a/kernel/sched/deadline.c
-+++ b/kernel/sched/deadline.c
-@@ -1558,10 +1558,16 @@ update_stats_dequeue_dl(struct dl_rq *dl_rq, struct sched_dl_entity *dl_se,
-                        int flags)
- {
-        struct task_struct *p = dl_task_of(dl_se);
-+       struct rq *rq = rq_of_dl_rq(dl_rq);
+All warnings (new ones prefixed by >>):
 
-        if (!schedstat_enabled())
-                return;
--
-+       /*
-+        * Mark the end of the wait period
-+        * if dequeueing a waiting task.
-+        */
-+       if (p && (p != rq->curr))
-+                update_stats_wait_end_dl(dl_rq, dl_se);
-        if ((flags & DEQUEUE_SLEEP)) {
-                unsigned int state;
+   gro.c: In function 'add_ipv6_exthdr':
+>> gro.c:600:13: warning: variable 'opt_len' set but not used [-Wunused-but-set-variable]
+     600 |         int opt_len;
+         |             ^~~~~~~
 
-diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
-index 6aaf0a3d6081..6a2600213991 100644
---- a/kernel/sched/rt.c
-+++ b/kernel/sched/rt.c
-@@ -1360,12 +1360,19 @@ update_stats_dequeue_rt(struct rt_rq *rt_rq, struct sched_rt_entity *rt_se,
-                        int flags)
- {
-        struct task_struct *p = NULL;
-+       struct rq *rq = rq_of_rt_se(rt_se);
-
-        if (!schedstat_enabled())
-                return;
-
-        if (rt_entity_is_task(rt_se))
-                p = rt_task_of(rt_se);
-+        /*
-+         * Mark the end of the wait period
-+         * if dequeueing a waiting task.
-+         */
-+       if (p && (p != rq->curr))
-+               update_stats_wait_end_rt(rt_rq, rt_se);
-
-        if ((flags & DEQUEUE_SLEEP) && p) {
-                unsigned int state;
-
---
-Best regards
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
