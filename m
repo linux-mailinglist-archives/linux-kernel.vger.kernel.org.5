@@ -1,95 +1,112 @@
-Return-Path: <linux-kernel+bounces-10575-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10576-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79E6081D666
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 21:00:02 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id EDA7681D668
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 21:01:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 021781F21FED
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 20:00:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7D93EB22129
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 20:01:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 579E015EB0;
-	Sat, 23 Dec 2023 19:59:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 484C8208C0;
+	Sat, 23 Dec 2023 20:01:31 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E53415E99
-	for <linux-kernel@vger.kernel.org>; Sat, 23 Dec 2023 19:59:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7bac08a97c1so27704339f.0
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Dec 2023 11:59:52 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703361591; x=1703966391;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1kfJmhJKcf/fccgwHKZPrreJdcdZjh/nguV+pdm7xVY=;
-        b=t36/n60dPvNrg1XPVmeyVXdlT0xGsEEv2DPrU4GGAt24qA/Kb+HDPxNH8w7ERRAFBl
-         4urpmoPxjlvxMNMNPkzfscG4iw35M76k7fYcL6H0XURtdre0RAu5V1QRydD03WXk3C/i
-         pV8LAyqyUXpfvH7yhHLutf43WKlK0nsAxztEGy8uW3zDGVN90OXaM4gh8Gm9DTLzF5Z4
-         gvemnlD+mwaUXmudq7KIqkvylh5ZHyr70I/kYsIfIzDwp+56ry1LQXhEiZpdQDjKgdGJ
-         pgWx9cQs/kgAUu2G6OXmuNbe3xpQSaA0LQI49MypwCMD82TxqtFxBn0dhShGRPbHhCRx
-         VJwg==
-X-Gm-Message-State: AOJu0YzXn1631ER85ZL18e3j9dMEvsOm+VMnIZ8X+1wsXtrE7HuWuo1d
-	Ev8XvPL73DPVwcJ10t9+L1zaAplwfCJl/JMLfavMlouVCFZKUW8=
-X-Google-Smtp-Source: AGHT+IER33aozZwavUjDuzHg+Oxxjgqo+zaBpPluwgqXN/Z4Mia788TZ3kL/s+b11aRkuRMmDn3yj6ouBm6fZW8Uu7a7YfXA8la7
+Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
+	by smtp.subspace.kernel.org (Postfix) with SMTP id E658920316
+	for <linux-kernel@vger.kernel.org>; Sat, 23 Dec 2023 20:01:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=rowland.harvard.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netrider.rowland.org
+Received: (qmail 63711 invoked by uid 1000); 23 Dec 2023 15:01:22 -0500
+Date: Sat, 23 Dec 2023 15:01:22 -0500
+From: Alan Stern <stern@rowland.harvard.edu>
+To: Ricardo Ribalda <ribalda@chromium.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+  Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+  linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+  stable@vger.kernel.org
+Subject: Re: [PATCH v2] usb: core: Add quirk for Logitech Rallybar
+Message-ID: <82bf432c-2a78-4b9c-88ab-ef4f0888e9aa@rowland.harvard.edu>
+References: <20231222-rallybar-v2-1-5849d62a9514@chromium.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:20e1:b0:35f:989c:a85b with SMTP id
- q1-20020a056e0220e100b0035f989ca85bmr310343ilv.6.1703361591827; Sat, 23 Dec
- 2023 11:59:51 -0800 (PST)
-Date: Sat, 23 Dec 2023 11:59:51 -0800
-In-Reply-To: <000000000000d330500607d85a5f@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000009ae37b060d32c643@google.com>
-Subject: Re: [syzbot] [PATCH] usbhid: fix array-index-out-of-bounds in
- usbhid_parse UBSAN warning
-From: syzbot <syzbot+c52569baf0c843f35495@syzkaller.appspotmail.com>
-To: linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231222-rallybar-v2-1-5849d62a9514@chromium.org>
 
-For archival purposes, forwarding an incoming command email to
-linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com.
+On Fri, Dec 22, 2023 at 10:55:49PM +0000, Ricardo Ribalda wrote:
+> Logitech Rallybar devices, despite behaving as UVC camera, they have a
+> different power management system than the rest of the other Logitech
+> cameras.
+> 
+> USB_QUIRK_RESET_RESUME causes undesired USB disconnects, that make the
+> device unusable.
+> 
+> These are the only two devices that have this behavior, and we do not
+> have the list of devices that require USB_QUIRK_RESET_RESUME, so lets
+> create a new lit for them that un-apply the USB_QUIRK_RESET_RESUME
+> quirk.
+> 
+> Fixes: e387ef5c47dd ("usb: Add USB_QUIRK_RESET_RESUME for all Logitech UVC webcams")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+> ---
 
-***
+Would it make more sense to do this inside the uvc driver instead of 
+creating a new single-purpose list in the core?
 
-Subject: [PATCH] usbhid: fix array-index-out-of-bounds in usbhid_parse UBSAN warning
-Author: tintinm2017@gmail.com
+Alan Stern
 
-#syz test: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-
-Look at the bug https://syzkaller.appspot.com/bug?extid=c52569baf0c843f35495 reported by syzbot. Tested a patch through syzbot, which gives an error. 
-Requesting help from the maintainers to understand what is really going wrong in the code. 
-
-Based on my understanding, I believe the value of the number of descriptors is calculated incorrectly before the for loop.
-
-Signed-off-by: Attreyee Mukherjee <tintinm2017@gmail.com>
----
- drivers/hid/usbhid/hid-core.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/hid/usbhid/hid-core.c b/drivers/hid/usbhid/hid-core.c
-index a90ed2ceae84..582ddbef448f 100644
---- a/drivers/hid/usbhid/hid-core.c
-+++ b/drivers/hid/usbhid/hid-core.c
-@@ -1021,6 +1021,8 @@ static int usbhid_parse(struct hid_device *hid)
- 	       (hdesc->bLength - offset) / sizeof(struct hid_class_descriptor));
- 
- 	for (n = 0; n < num_descriptors; n++)
-+		if (n >= ARRAY_SIZE(hdesc->desc))
-+			break;
- 		if (hdesc->desc[n].bDescriptorType == HID_DT_REPORT)
- 			rsize = le16_to_cpu(hdesc->desc[n].wDescriptorLength);
- 
--- 
-2.34.1
-
+> Tested with a Rallybar Mini with an Acer Chromebook Spin 513
+> ---
+> Changes in v2:
+> - Add Fixes tag
+> - Add UVC maintainer as Cc
+> - Link to v1: https://lore.kernel.org/r/20231222-rallybar-v1-1-82b2a4d3106f@chromium.org
+> ---
+>  drivers/usb/core/quirks.c | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+> 
+> diff --git a/drivers/usb/core/quirks.c b/drivers/usb/core/quirks.c
+> index 15e9bd180a1d..8fa8de50e7f0 100644
+> --- a/drivers/usb/core/quirks.c
+> +++ b/drivers/usb/core/quirks.c
+> @@ -553,6 +553,14 @@ static const struct usb_device_id usb_interface_quirk_list[] = {
+>  	{ }  /* terminating entry must be last */
+>  };
+>  
+> +static const struct usb_device_id usb_interface_unsupported_quirk_list[] = {
+> +	/* Logitech Rallybar VC systems*/
+> +	{ USB_DEVICE(0x046d, 0x089b), .driver_info = USB_QUIRK_RESET_RESUME },
+> +	{ USB_DEVICE(0x046d, 0x08d3), .driver_info = USB_QUIRK_RESET_RESUME },
+> +
+> +	{ }  /* terminating entry must be last */
+> +};
+> +
+>  static const struct usb_device_id usb_amd_resume_quirk_list[] = {
+>  	/* Lenovo Mouse with Pixart controller */
+>  	{ USB_DEVICE(0x17ef, 0x602e), .driver_info = USB_QUIRK_RESET_RESUME },
+> @@ -718,6 +726,8 @@ void usb_detect_interface_quirks(struct usb_device *udev)
+>  	u32 quirks;
+>  
+>  	quirks = usb_detect_static_quirks(udev, usb_interface_quirk_list);
+> +	quirks &= ~usb_detect_static_quirks(udev,
+> +					usb_interface_unsupported_quirk_list);
+>  	if (quirks == 0)
+>  		return;
+>  
+> 
+> ---
+> base-commit: c0f65a7c112b3cfa691cead54bcf24d6cc2182b5
+> change-id: 20231222-rallybar-19ce0c64d5e6
+> 
+> Best regards,
+> -- 
+> Ricardo Ribalda <ribalda@chromium.org>
+> 
 
