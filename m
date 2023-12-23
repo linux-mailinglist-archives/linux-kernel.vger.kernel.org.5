@@ -1,116 +1,125 @@
-Return-Path: <linux-kernel+bounces-10288-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10289-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4AEA681D240
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 05:46:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB2AA81D243
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 05:55:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CE568284812
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 04:46:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5BEA91F23570
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 04:55:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5B874C6C;
-	Sat, 23 Dec 2023 04:46:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91BA94A3C;
+	Sat, 23 Dec 2023 04:55:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="XA7GeR34"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="FCU8b6v4"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDE5E46A2;
-	Sat, 23 Dec 2023 04:46:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=BoDmPVS6ryId1Ndy9LNLIvaAlql/jHh5ljsjLKW2LUQ=; b=XA7GeR34AQ1sEHRKpLPEfIWkvw
-	95V4/LUiY0glq+hos8RQbJbObvWwotsc42i0s8HtQAKMV1CnrAj51LhLYmrwv3loMGQ82pjaVtDzy
-	sUecbuul7gISNrsiCGG2Ru/11OXVdkMSk7YhKNxgmKvhS19fINbutN89VqcgzAjplLh5MMgrwjpFl
-	QBe3W8QoOytAbHjh7VeH9Y1BwnDooJ5AqHWDJjDu75kYln121NpYu9r9HgGwe7b63ABsWXEzosY9T
-	4m0knNig6lmNyOreYULUJ3hPZYQ/hHLdwYKvsbF4sd4m792N4OFes+2LeqTP7wMoBqwqm73vx+edn
-	ejt+ebBw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1rGtts-009rnh-F2; Sat, 23 Dec 2023 04:46:12 +0000
-Date: Sat, 23 Dec 2023 04:46:12 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Cc: ntfs3@lists.linux.dev,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 5/8] fs/ntfs3: Use kvmalloc instead of kmalloc(...
- __GFP_NOWARN)
-Message-ID: <ZYZmFPnJAM3aJLlF@casper.infradead.org>
-References: <e41f6717-7c70-edf2-2d3a-8034840d14c5@paragon-software.com>
- <890222ac-1bd2-6817-7873-390801c5a172@paragon-software.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22EBB469E
+	for <linux-kernel@vger.kernel.org>; Sat, 23 Dec 2023 04:55:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1703307316;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=5SoVEASJs5tNI3P8IvtKEX7RdqCt8eLRKS+s8poE6oE=;
+	b=FCU8b6v4Ha2d3/TYRLfnOR/9mh2PmtabY+sexLTcMpO6WsmAVmUskXpPIwctvEgxzP2aE9
+	P1SBUevReXtRF3yPOOsDUZun2vtt2q6i5bnY/9mBC66QafcXuD4XbS5SChXPWN6u9+50Wl
+	TNRQPUG/5HwRdyACD6T2qouXIkK7BMs=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-675-AL-UgaBqM1-_9aRctpnXJA-1; Fri, 22 Dec 2023 23:55:14 -0500
+X-MC-Unique: AL-UgaBqM1-_9aRctpnXJA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 31EF5101A52A;
+	Sat, 23 Dec 2023 04:55:14 +0000 (UTC)
+Received: from localhost (unknown [10.72.116.38])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 824B240C6EB9;
+	Sat, 23 Dec 2023 04:55:13 +0000 (UTC)
+Date: Sat, 23 Dec 2023 12:55:10 +0800
+From: Baoquan He <bhe@redhat.com>
+To: airlied@redhat.com
+Cc: dri-devel@lists.freedesktop.org, dakr@redhat.com,
+	kexec@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: OOM in kdump kernel caused by commit b5bad8c16b9b
+Message-ID: <ZYZoLp9NVCZTchLF@MiWiFi-R3L-srv>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <890222ac-1bd2-6817-7873-390801c5a172@paragon-software.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
 
-On Mon, Jul 03, 2023 at 11:26:36AM +0400, Konstantin Komarov wrote:
-> 
-> Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Hi David,
 
-So, um, why?  I mean, I know what kvmalloc does, but why do you want to
-do it?  Also, this is missing changes from kfree() to kvfree() so if
-you do end up falling back to vmalloc, you'll hit a bug in kfree().
+Recently, Redhat CKI reported a kdump kernel bootup failure caused by
+OOM. After bisect, it only happened after commit b5bad8c16b9b
+("nouveau/gsp: move to 535.113.01"). Reverting the commit can avoid the
+OOM, kdump kernel can boot up successfully. 
 
-> +++ b/fs/ntfs3/attrlist.c
-> @@ -52,7 +52,8 @@ int ntfs_load_attr_list(struct ntfs_inode *ni, struct
-> ATTRIB *attr)
-> 
->      if (!attr->non_res) {
->          lsize = le32_to_cpu(attr->res.data_size);
-> -        le = kmalloc(al_aligned(lsize), GFP_NOFS | __GFP_NOWARN);
-> +        /* attr is resident: lsize < record_size (1K or 4K) */
-> +        le = kvmalloc(al_aligned(lsize), GFP_KERNEL);
->          if (!le) {
->              err = -ENOMEM;
->              goto out;
+From debugging, we can see that about extra 100M memory will be costed
+when commit b5bad8c16b9b applied on the hpe machine with 2G memory.
+Do you know if there's room to improve that to reduce the extra memory
+cost?
 
-This one should be paired with a kvfree in al_destroy(), I think.
+I have opened a fedora bug to track this OOM, and copy the bug
+description here for reference in case someone may not access the bug
+easily.
 
-> diff --git a/fs/ntfs3/bitmap.c b/fs/ntfs3/bitmap.c
-> index 107e808e06ea..d66055e30aff 100644
-> --- a/fs/ntfs3/bitmap.c
-> +++ b/fs/ntfs3/bitmap.c
-> @@ -659,7 +659,8 @@ int wnd_init(struct wnd_bitmap *wnd, struct super_block
-> *sb, size_t nbits)
->          wnd->bits_last = wbits;
-> 
->      wnd->free_bits =
-> -        kcalloc(wnd->nwnd, sizeof(u16), GFP_NOFS | __GFP_NOWARN);
-> +        kvmalloc_array(wnd->nwnd, sizeof(u16), GFP_KERNEL | __GFP_ZERO);
-> +
->      if (!wnd->free_bits)
->          return -ENOMEM;
-> 
+Bug 2253165 - kdump kernel failed to boot up because a big memory chunk is reserved
+https://bugzilla.redhat.com/show_bug.cgi?id=2253165
+------------------------------------------------------------
+CKI reported a failure on beaker machine hp-z210-01.ml3.eng.bos.redhat.com, please see below CKI reports:
+https://datawarehouse.cki-project.org/kcidb/tests/10508330
 
-This one with wnd_close() and of course later in wnd_init().
+In that failure, crashkernel=256M and succeeded to reserve in 1st kernel. However, in
+kdump kernel it failed to boot up when it started to run init process. I set crashkernel=320M to make kdump kernel boot up successfully and vmcore dumping succeeded too.
 
-> diff --git a/fs/ntfs3/super.c b/fs/ntfs3/super.c
-> index da739e509269..0034952b9ccd 100644
-> --- a/fs/ntfs3/super.c
-> +++ b/fs/ntfs3/super.c
-> @@ -1373,7 +1373,7 @@ static int ntfs_fill_super(struct super_block *sb,
-> struct fs_context *fc)
->      }
-> 
->      bytes = inode->i_size;
-> -    sbi->def_table = t = kmalloc(bytes, GFP_NOFS | __GFP_NOWARN);
-> +    sbi->def_table = t = kvmalloc(bytes, GFP_KERNEL);
->      if (!t) {
->          err = -ENOMEM;
->          goto put_inode_out;
+After adding "rd.memdebug=4 memblock=debug" to kdump kernel cmdline, it appears to have a big chunk of reserved memory in memblock of about 122M. I don't know where it comes from. I doubt firmware stole that chunk from system memory to cause the kdump kernel having oom.
 
-And this one with ntfs3_free_sbi()
+
+[Tue Dec  5 22:32:38 2023] DMI: Hewlett-Packard HP Z210 Workstation/1587h, BIOS J51 v01.20 09/16/2011
+[Tue Dec  5 22:32:38 2023] tsc: Fast TSC calibration using PIT
+[Tue Dec  5 22:32:38 2023] tsc: Detected 3092.940 MHz processor
+[Tue Dec  5 22:32:38 2023] e820: update [mem 0x00000000-0x00000fff] usable ==> reserved
+[Tue Dec  5 22:32:38 2023] e820: remove [mem 0x000a0000-0x000fffff] usable
+[Tue Dec  5 22:32:38 2023] last_pfn = 0x61000 max_arch_pfn = 0x400000000
+[Tue Dec  5 22:32:38 2023] MTRR map: 4 entries (3 fixed + 1 variable; max 23), built from 10 variable MTRRs
+[Tue Dec  5 22:32:38 2023] x86/PAT: Configuration [0-7]: WB  WC  UC- UC  WB  WP  UC- WT
+[Tue Dec  5 22:32:38 2023] x2apic: enabled by BIOS, switching to x2apic ops
+[Tue Dec  5 22:32:38 2023] found SMP MP-table at [mem 0x000f4b80-0x000f4b8f]
+[Tue Dec  5 22:32:38 2023] memblock_reserve: [0x00000000000f4b80-0x00000000000f4b8f] smp_scan_config+0xca/0x150
+[Tue Dec  5 22:32:38 2023] memblock_reserve: [0x00000000000f4b90-0x00000000000f4e4b] smp_scan_config+0x13a/0x150
+[Tue Dec  5 22:32:38 2023] memblock_reserve: [0x000000005f600000-0x000000005f610fff] setup_arch+0xd84/0xf10
+[Tue Dec  5 22:32:38 2023] memblock_add: [0x0000000000001000-0x000000000008f7ff] e820__memblock_setup+0x73/0xb0
+[Tue Dec  5 22:32:38 2023] memblock_add: [0x000000004d0e00b0-0x0000000060ff81cf] e820__memblock_setup+0x73/0xb0
+[Tue Dec  5 22:32:38 2023] memblock_add: [0x0000000060ff81d0-0x0000000060ff81ff] e820__memblock_setup+0x73/0xb0
+[Tue Dec  5 22:32:38 2023] memblock_add: [0x0000000060ff8200-0x0000000060ffffff] e820__memblock_setup+0x73/0xb0
+[Tue Dec  5 22:32:38 2023] MEMBLOCK configuration:
+[Tue Dec  5 22:32:38 2023]  memory size = 0x0000000013fae750 reserved size = 0x0000000007b7cc50
+[Tue Dec  5 22:32:38 2023]  memory.cnt  = 0x2
+[Tue Dec  5 22:32:38 2023]  memory[0x0] [0x0000000000001000-0x000000000008efff], 0x000000000008e000 bytes flags: 0x0
+[Tue Dec  5 22:32:38 2023]  memory[0x1] [0x000000004d0e1000-0x0000000060ffffff], 0x0000000013f1f000 bytes flags: 0x0
+[Tue Dec  5 22:32:38 2023]  reserved.cnt  = 0x5
+[Tue Dec  5 22:32:38 2023]  reserved[0x0]       [0x0000000000000000-0x000000000000ffff], 0x0000000000010000 bytes flags: 0x0
+[Tue Dec  5 22:32:38 2023]  reserved[0x1]       [0x000000000008f400-0x00000000000fffff], 0x0000000000070c00 bytes flags: 0x0
+[Tue Dec  5 22:32:38 2023]  reserved[0x2]       [0x0000000057b16000-0x000000005f610fff], 0x0000000007afb000 bytes flags: 0x0
+[Tue Dec  5 22:32:38 2023]  reserved[0x3]       [0x0000000060ff81d0-0x0000000060ff821f], 0x0000000000000050 bytes flags: 0x0
+[Tue Dec  5 22:32:38 2023]  reserved[0x4]       [0x0000000060ffe000-0x0000000060ffefff], 0x0000000000001000 bytes flags: 0x0
+----------------------------------------------------
+
+Thanks
+Baoquan
+
 
