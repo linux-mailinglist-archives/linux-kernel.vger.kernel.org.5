@@ -1,127 +1,284 @@
-Return-Path: <linux-kernel+bounces-10405-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10406-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D97581D3FA
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 13:19:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BCEA081D3FC
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 13:19:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 048A61F22450
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 12:19:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 34A451F22429
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 12:19:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14516D28B;
-	Sat, 23 Dec 2023 12:19:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E64A6D28E;
+	Sat, 23 Dec 2023 12:19:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=ceggers@gmx.de header.b="mDR2ZasV"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lu1i+UCu"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E7B7D262;
-	Sat, 23 Dec 2023 12:19:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-	t=1703333931; x=1703938731; i=ceggers@gmx.de;
-	bh=VEzCJnVH1074VdVJy7kEb47npS8xcIImbieIfqQLWMU=;
-	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:
-	 References;
-	b=mDR2ZasVlIU7gzWyWlIe1F7zTpV318wcf1yOcz6oXh0GkPLsquBpDySGcxanpfRN
-	 apPOIRbiUrKfRR6pq2fuOH213fjC1J+XvMHUUlDEzZiCFBF3vn/JEqm+H0k8EE8PP
-	 X4rOjjjcbVmcL+IyPVGpdvYu+1XnDRgu/tV0Coy3QOn2qT62lvkZt3ACVQbaHAlUV
-	 ww114CFv9ohmHfdbfmgR6in0lMML1OveYNi0JD0xUAeZ/iI9vG6ovP7T5iZyaKcdb
-	 jAF+u5DgJIcprDvjaO2WWvjSRKJ5poql5/OQ6F5iGkqq7dyI4XkAGiZBcjhXrQ30u
-	 l6mvAg7Ypc+YNB6fWw==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from zbook-studio-g3.localnet ([46.183.103.8]) by mail.gmx.net
- (mrgmx104 [212.227.17.168]) with ESMTPSA (Nemesis) id
- 1Mwwdf-1r5WtO34n5-00yS8X; Sat, 23 Dec 2023 13:18:51 +0100
-From: Christian Eggers <ceggers@gmx.de>
-To: Christian Eggers <ceggers@arri.de>, Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, Javier Carrasco <javier.carrasco.cruz@gmail.com>
-Cc: linux-iio@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Javier Carrasco <javier.carrasco.cruz@gmail.com>
-Subject: Re: [PATCH 0/2] iio: light: add support for AMS AS7331
-Date: Sat, 23 Dec 2023 13:18:42 +0100
-Message-ID: <5750063.DvuYhMxLoT@zbook-studio-g3>
-In-Reply-To: <20231220-as7331-v1-0-745b73c27703@gmail.com>
-References: <20231220-as7331-v1-0-745b73c27703@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21A4AD270;
+	Sat, 23 Dec 2023 12:19:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F0F3C433C8;
+	Sat, 23 Dec 2023 12:19:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703333984;
+	bh=rHTtxHf9a3r4vHR095B9f16IsZX5OlwLQpQs/jrKrM8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=lu1i+UCub3bVYPAFVUbt96J9iYE38QtWbUazww2LxmfsUF4I47xIjcu50GhjHHYgZ
+	 Vp2G++oq36HrQIz4Kjl8qX8srMImw+M/R9HGOdYcILe8KdiW8mrmXAhigzKtPmK3OK
+	 MF+f8wPWe4U8XgIvdkN5ILgRawQS2gK9vNGnMp5eVmkVi3eC1rYk2e4/7obNTNvHKR
+	 Y97dHXbhbnRWpKw4BP3PbBEY7di4EjTKk3nI0H/aaxgdZt9fJacZFSll0kj3XJj0yr
+	 j1jacGgeL4DvU/0GBaAAvyITDfk8hAeFCTMXZijQ6r5MD9daUO1fJDkFXpTek0Y8ps
+	 yVnxh8Yt/cFFw==
+Received: by pali.im (Postfix)
+	id 8CA35A3B; Sat, 23 Dec 2023 13:19:41 +0100 (CET)
+Date: Sat, 23 Dec 2023 13:19:41 +0100
+From: Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To: Paul Menzel <pmenzel@molgen.mpg.de>
+Cc: Jean Delvare <jdelvare@suse.com>, Andi Shyti <andi.shyti@kernel.org>,
+	Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org,
+	LKML <linux-kernel@vger.kernel.org>,
+	Kai-Heng Feng <kai.heng.feng@canonical.com>,
+	Hans de Goede <hdegoede@redhat.com>,
+	Marius Hoch <mail@mariushoch.de>,
+	Mario Limonciello <mario.limonciello@amd.com>,
+	Dell.Client.Kernel@dell.com, Greg KH <gregkh@linuxfoundation.org>
+Subject: Re: Ideas for a generic solution to support accelerometer lis3lv02d
+ in Dell laptops/notebooks?
+Message-ID: <20231223121941.65di3dimdht4kyw5@pali>
+References: <4820e280-9ca4-4d97-9d21-059626161bfc@molgen.mpg.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="us-ascii"
-X-Provags-ID: V03:K1:auqFnmGoYgT6FHaZta38ZgyDweJqwORJaO/xbdXdtQ8vcN3suPd
- JomYrsxCaQHMPuRcwyprvh2fLAWv4K4tKViFtwwajO1Iojp6PkX5yRXJxF44XJNQZCRgm3K
- 1tx9NfKA46YbmmQZfugxaf+OsCxu7C74S2xVTZQD4bLZUv31XoPjjMjWWLqg6YXd+SoXgJy
- 6BmffpE+LK1GIQvMtJxmw==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:u5q51As/go0=;d1nnuU8UUHrrFfstO5AiCkcpDqP
- u5h9cRAVJ8Sk0V2aO7C6Puz8r3NYP72ah/oIRXCSBQwic0dNktkcpMGJwo4fzfYKXHWwfwxRV
- e/Y24/C2PfgJEEEjmgqkgZ0O3XgMjgwzKkVhhW1H6tpVg57VjtMfNCHd/bEKE/utYylPWzYvK
- bjXqNJZtOLqS0EPjt75d4nvTnJCN+vBpJxcV6H4JOwGuef4SQj6uJSxFwEWBB/Lo2TWo+82GG
- 8K+fBz4guTC/olc8SJMGdw2FNsgFaNWbWBWhsLlAWtRUN7dRX3U9qiRJ3dY0ro+7x+PVVTFD4
- xivxcEXSbdYZednBIg44aOwddPYPmzcKUL7bVVsRm4QJWQgVgHIzWGszZlBb5pNh6WUA4Ud76
- 2OhvaamgBtJ0WaMPLoMiKf1DMkHdrbKyRxcv6VeoUPqn95H+gkq4moVnJM9wDqR6GKVMp8tT6
- hlIv1WbYrjgftYoPABma49zI2zGl/fArOGzAc44hUYPzool1J+PPv95R52FauPWVjpfReifiB
- tX0O4yTZul8XsVIKo1n2G4lC6UgfeBL5g6olIY7BLEIgVtJmxKrSCY2nZmR8hT6WSNpwtjy49
- vF6NtY73GtOMD2dtwISJ4pP9NN7KSob0MF3crAs44q3eTWyTu2z9iFVgrutqaPFG9iNi1uZlf
- TqoeRSQQmJ2W3DXn4wOckMumhELxmt9LhvNObofP7tdINU2/llAXgEsoaUVR7k0gS4wVK7EVy
- 8L8fb/4OR6YxG//TvYlWS4KtfRA5esZStDlEgRUWwMej+9i2pHm3ejF+Yt8txL7CaLY3dGzNk
- i/s5cEC1iCM5E+gTYYfdpxNKNOcc592I4z/MTLARG25Mkl9k2A5zf3XdCVsNUWFSFEFFvL4/D
- A0OBERLPW46AQ6x9RjjHz8cnD2rWvCIMC/t43rfnVGRKms6cl/i6TCTlwoojsEuzRzLZ5oABB
- EGhWdtemdxCak8/Pc77vZtPJ6m8RN5WxETC+cSqAXqoGc18b
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <4820e280-9ca4-4d97-9d21-059626161bfc@molgen.mpg.de>
+User-Agent: NeoMutt/20180716
 
-Am Samstag, 23. Dezember 2023, 11:46:12 CET schrieb Javier Carrasco:
-> The AMS AS7331 UV light sensor measures three ultraviolet bands (UVA,
-> UVB and UVC, also known as deep UV or DUV) as well as temperature.
->
-> This device is practically identical to the AMS AS73211 XYZ True Color
-> sensor that is already supported by the iio subsystem, except for the
-> photodiodes used to aquire the desired light wavelengths.
->
-> In order to reuse code and reduce maintenance load, this series extends
-> the AS73211 driver to support the AS7331 as well.
->
-> Note that the UVA and UVB light modifiers have not been merged into the
-> mainline kernel yet, but they are already available in Greg's char-misc
-> git tree which can be found at
-> git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc.git
-> in the char-misc-next branch.
->
-> The original device AS73211 supported by the driver could only be tested
-> briefly due to the lack of hardware. Instead, the i2c-stub module has
-> been used to make sure that the driver registers the iio device properly
-> and the attributes exported to sysfs are correct. Some basic register
-> assignments reported the expected intensity scales and in principle
-> nothing else should have been affected by the modifications in the code.
+On Saturday 23 December 2023 10:39:18 Paul Menzel wrote:
+> Dear Linux folks,
+> 
+> 
+> Currently, on Dell systems with the accelerometer lis3lv02d, its I²C address
+> needs to be added to `dell_lis3lv02d_devices[]` in
+> `drivers/i2c/busses/i2c-i801.c`.
 
-I still use the original AS73211, so I can offer testing with it. I am
-currently away, I'll do the tests on 2023-12-30 and report the result
-then.
+Hello. This is because smbus bus do not have smart discovery
+capabilities like PCIe or USB buses. The device address has to be
+somewhere stored. And at the moment it is in the parent bus driver.
 
->
-> Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-> ---
-> Javier Carrasco (2):
->       dt-bindings: iio: light: as73211: add support for as7331
->       io: light: as73211: add support for as7331
->
->  .../devicetree/bindings/iio/light/ams,as73211.yaml |   7 +-
->  drivers/iio/light/Kconfig                          |   5 +-
->  drivers/iio/light/as73211.c                        | 146
-> +++++++++++++++++---- 3 files changed, 127 insertions(+), 31 deletions(-=
-)
-> ---
-> base-commit: e9215fcca2561b208c78359110ee4009b454f761
-> change-id: 20231220-as7331-88a25ceeb66d
->
-> Best regards,
+> In Linux 6.7-rc6 that array has nine elements, so only a small fraction of
+> all Dell notebooks is listed. Searching the Linux logs uploaded to the Linux
+> hardware database from May 2023 [1], there are around 129 devices without
+> support in the Linux kernel version the upload was done with.
 
+In Dell ACPI device table is already stored information if the smbus
+device is present in the laptop or not. And there is (or at least was
+for older models) also interrupt number in ACPI device resource list.
+Kernel driver already registers for interrupt events.
 
+What is missing the ACPI device resource list is that smbus device
+address on which is device listening. Or better, it was missing for
+older models. I have not checked new models.
 
+Why it is missing, I have no idea. As ACPI tables are passed to kernel
+by laptop firmware (BIOS/UEFI) I bet that this is just a programming
+error that somebody forgot to put this information there.
 
+I think that it was Mario who is the past confirmed smbus address of few
+models and confirmed also information that address is not really stored
+in the ACPI tables.
 
+Before taking any future steps it would be needed to confirm if the
+smbus device address is still missing in the ACPI device resource list
+in the new laptop models.
+
+> Do you know, how the Microsoft Windows driver is doing this? Is it
+> hard-coded there too, or can it be deduced somehow, for example from the
+> ACPI tables?
+
+In past on Windows laptops it was always needed to install correct and
+specific version of drivers for every laptop, I would not be surprised
+that smbus device address can be there hardcoded too. I really do not
+remember details, it is years ago when I was looking at this particular
+problem. But these practises do not (or at least should not) apply to
+modern Windows machines, so it can be possible that new Windows drivers
+can discover it somehow (read from BIOS, UEFI, EEPROM, ACPI methods,
+etc.). Or there is another option: There is no Windows driver for it at
+all (and so no problem).
+
+If you have such new laptops then the best for you is to do inspection.
+Look how is device driver registered, how the application communicate
+with drivers, look at device resources, etc... Basically Linux kernel
+driver should use same resources as the Windows kernel driver.
+
+> I added some Kai-Heng and Hans to Cc as they might have contact. Dell offers
+> or offered quite a few of the models with official Ubuntu support, so I
+> would have hoped to have a generic solution for this. Maybe Mario can also
+> forward it to the Dell team.
+
+This is really question for Dell people.
+
+We have done the best what we were able, but internal wiring of the
+Dell laptop boards and how it is reported to the operating system is
+really what only Dell firmware people or other Dell team can do it.
+
+> 
+> 
+> Kind regards,
+> 
+> Paul
+> 
+> 
+> [1]: https://github.com/linuxhw/Dmesg
+> 
+> 
+> PS: Dell devices in Linux hardware database with accelerometer:
+> 
+> linux-hardware-dmesg/Notebook/Dell (main)$ git grep -l ccelerome | cut -d
+> '/' -f 1,2 | sort -u
+> Inspiron/Inspiron 11 - 3147
+> Inspiron/Inspiron 5520
+> Inspiron/Inspiron 7547
+> Inspiron/Inspiron 7548
+> Latitude/Latitude 12 Rugged Extreme
+> Latitude/Latitude 2110
+> Latitude/Latitude 2120
+> Latitude/Latitude 3330
+> Latitude/Latitude 3380
+> Latitude/Latitude 3400
+> Latitude/Latitude 3470
+> Latitude/Latitude 3480
+> Latitude/Latitude 3490
+> Latitude/Latitude 3500
+> Latitude/Latitude 3570
+> Latitude/Latitude 3580
+> Latitude/Latitude 3590
+> Latitude/Latitude 5280
+> Latitude/Latitude 5290
+> Latitude/Latitude 5400
+> Latitude/Latitude 5401
+> Latitude/Latitude 5410
+> Latitude/Latitude 5411
+> Latitude/Latitude 5414
+> Latitude/Latitude 5420 Rugged
+> Latitude/Latitude 5424 Rugged
+> Latitude/Latitude 5480
+> Latitude/Latitude 5490
+> Latitude/Latitude 5491
+> Latitude/Latitude 5500
+> Latitude/Latitude 5501
+> Latitude/Latitude 5510
+> Latitude/Latitude 5511
+> Latitude/Latitude 5531
+> Latitude/Latitude 5580
+> Latitude/Latitude 5590
+> Latitude/Latitude 5591
+> Latitude/Latitude 7214
+> Latitude/Latitude 7414
+> Latitude/Latitude 7424 Rugged Extreme
+> Latitude/Latitude E4310
+> Latitude/Latitude E5270
+> Latitude/Latitude E5410
+> Latitude/Latitude E5420
+> Latitude/Latitude E5420m
+> Latitude/Latitude E5430 non-vPro
+> Latitude/Latitude E5430 vPro
+> Latitude/Latitude E5440
+> Latitude/Latitude E5470
+> Latitude/Latitude E5510
+> Latitude/Latitude E5520
+> Latitude/Latitude E5520m
+> Latitude/Latitude E5530 non-vPro
+> Latitude/Latitude E5530 vPro
+> Latitude/Latitude E5540
+> Latitude/Latitude E5570
+> Latitude/Latitude E6220
+> Latitude/Latitude E6230
+> Latitude/Latitude E6320
+> Latitude/Latitude E6330
+> Latitude/Latitude E6410
+> Latitude/Latitude E6420
+> Latitude/Latitude E6430
+> Latitude/Latitude E6430s
+> Latitude/Latitude E6440
+> Latitude/Latitude E64406342Q0286-
+> Latitude/Latitude E6510
+> Latitude/Latitude E6520
+> Latitude/Latitude E6530
+> Latitude/Latitude E6540
+> Latitude/Latitude E7440
+> Latitude/Latitude XT3
+> Precision/Precision 3510
+> Precision/Precision 3520
+> Precision/Precision 3530
+> Precision/Precision 3540
+> Precision/Precision 3541
+> Precision/Precision 3550
+> Precision/Precision 3551
+> Precision/Precision 3571
+> Precision/Precision 5510
+> Precision/Precision 5520
+> Precision/Precision 5530
+> Precision/Precision 5540
+> Precision/Precision 7510
+> Precision/Precision 7520
+> Precision/Precision 7530
+> Precision/Precision 7540
+> Precision/Precision 7710
+> Precision/Precision 7720
+> Precision/Precision 7730
+> Precision/Precision 7740
+> Precision/Precision M2800
+> Precision/Precision M3800
+> Precision/Precision M4500
+> Precision/Precision M4600
+> Precision/Precision M4700
+> Precision/Precision M4800
+> Precision/Precision M6600
+> Precision/Precision M6700
+> Precision/Precision M6800
+> Studio/Studio 1458
+> Studio/Studio 1557
+> Studio/Studio 1558
+> Studio/Studio 1569
+> Studio/Studio 1747
+> Studio/Studio 1749
+> Unidentified/Unidentified System
+> Vostro/Vostro 3300
+> Vostro/Vostro 3350
+> Vostro/Vostro 3400
+> Vostro/Vostro 3500
+> Vostro/Vostro 3550
+> Vostro/Vostro 3560
+> Vostro/Vostro 3700
+> Vostro/Vostro 5468
+> Vostro/Vostro 5471
+> Vostro/Vostro 5568
+> Vostro/Vostro 7580
+> Vostro/Vostro V130
+> Vostro/Vostro V131
+> XPS/XPS 15 7590
+> XPS/XPS 15 9530
+> XPS/XPS 15 9550
+> XPS/XPS 15 9560
+> XPS/XPS 15 9570
+> XPS/XPS L401X
+> XPS/XPS L412Z
+> XPS/XPS L421X
+> XPS/XPS L501X
+> XPS/XPS L521X
+> XPS/XPS L701X
+> 
+> Unsupported:
+> 
+> $ git grep ccelerome | grep "is present on SMBus" | cut -d '/' -f 1,2 | sort
+> -u | wc -l
+> 129
 
