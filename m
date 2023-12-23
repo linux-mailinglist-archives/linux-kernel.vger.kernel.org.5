@@ -1,41 +1,54 @@
-Return-Path: <linux-kernel+bounces-10411-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10412-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C76E681D412
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 13:50:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0334481D416
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 13:54:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0623E1C21059
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 12:50:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9F0FD1F2278A
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 12:54:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CD97D2F2;
-	Sat, 23 Dec 2023 12:50:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAC2CD2F2;
+	Sat, 23 Dec 2023 12:53:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="oIulUe6I"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RzP7j82f"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9F31D28A;
-	Sat, 23 Dec 2023 12:50:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA083C433C8;
-	Sat, 23 Dec 2023 12:50:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1703335804;
-	bh=2CbZuZ2v3eiSej/7rXXmoK+0Ik4VfWBc0bkN4BKn7dk=;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 408ECD28B;
+	Sat, 23 Dec 2023 12:53:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA991C433C7;
+	Sat, 23 Dec 2023 12:53:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703336033;
+	bh=AVUxd05ykx/O/0lzq0rz6ESQ9un8BWEmfNzbEAr9GOE=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=oIulUe6IXF4hlKZrp+4N5IZOYhXw4ADXeuh9DtdvqygsFj/AsLlUvUgmJmcH0q+QZ
-	 Vx7ENUjNTga2fME96batpjFlmALUAedjoWW+mIZMMkIW2EWN1ChyH1DEaZ6m65FcTy
-	 PKV+DxmmtV7ohKgJ30qLs+aqjB+ruyutWqvOzohU=
-Date: Sat, 23 Dec 2023 13:49:30 +0100
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Georgi Djakov <djakov@kernel.org>
-Cc: linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [GIT PULL] interconnect changes for 6.8
-Message-ID: <2023122348-clubhouse-roundness-c38d@gregkh>
-References: <20231222105649.1607990-1-djakov@kernel.org>
+	b=RzP7j82f4ljDVLL1/WOoYX6CjZ6zcRBpzifJvh8KQ5k5RXHXzsh8ZEaXYtIAVpJoG
+	 pXfofOvbIQeqxgmvX+laQdiP1v1SFt4XcP0GD5BuT84zz+1GCHJ6FOg6Ms19tw/LZb
+	 xAKPjbK+x2BGYk7vSVt1aSLcWhqRVM09FzaCA1txSf1M2jfvkBC5hIJE7+5NTeld1d
+	 /joFfSksjQ/Vj/astFyBQNPGsUIob+DytKPlgmokdeTuqRmger6gCosRf9hXufMwSD
+	 CfFicBgMulcbZ4wfpogbSYs6OKs2yHV2OFSSEXn10kVNjPotI5WGmxuPm/XHIqbAZY
+	 vnQ7gP5+kBV2w==
+Received: by pali.im (Postfix)
+	id 327B5A3B; Sat, 23 Dec 2023 13:53:50 +0100 (CET)
+Date: Sat, 23 Dec 2023 13:53:50 +0100
+From: Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To: Hans de Goede <hdegoede@redhat.com>
+Cc: Paul Menzel <pmenzel@molgen.mpg.de>, Jean Delvare <jdelvare@suse.com>,
+	Andi Shyti <andi.shyti@kernel.org>, Wolfram Sang <wsa@kernel.org>,
+	linux-i2c@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+	Kai-Heng Feng <kai.heng.feng@canonical.com>,
+	Marius Hoch <mail@mariushoch.de>,
+	Mario Limonciello <mario.limonciello@amd.com>,
+	Dell.Client.Kernel@dell.com, Greg KH <gregkh@linuxfoundation.org>
+Subject: Re: Ideas for a generic solution to support accelerometer lis3lv02d
+ in Dell laptops/notebooks?
+Message-ID: <20231223125350.xqggx3nyzyjjmnut@pali>
+References: <4820e280-9ca4-4d97-9d21-059626161bfc@molgen.mpg.de>
+ <a1128471-bbff-4124-a7e5-44de4b1730b7@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -44,30 +57,28 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231222105649.1607990-1-djakov@kernel.org>
+In-Reply-To: <a1128471-bbff-4124-a7e5-44de4b1730b7@redhat.com>
+User-Agent: NeoMutt/20180716
 
-On Fri, Dec 22, 2023 at 12:56:49PM +0200, Georgi Djakov wrote:
-> Hello Greg,
-> 
-> This is the pull request with interconnect changes for the v6.8-rc1 merge
-> window. It contains some new drivers. As always, the summary is in the
-> signed tag.
-> 
-> All patches have been in linux-next for more than a week. Please pull into
-> char-misc-next when possible.
-> 
-> Thanks,
-> Georgi
-> 
-> The following changes since commit b85ea95d086471afb4ad062012a4d73cd328fa86:
-> 
->   Linux 6.7-rc1 (2023-11-12 16:19:07 -0800)
-> 
-> are available in the Git repository at:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/djakov/icc.git tags/icc-6.8-rc1
+On Saturday 23 December 2023 13:45:32 Hans de Goede wrote:
+> 2. Add a "probe_i2c_address" bool module option and when this
+>    is set try to read the WHO_AM_I register, see
+>    drivers/misc/lis3lv02d/lis3lv02d.c
+>    and if this succeeds and gives a known model id then
+>    continue with the found i2c_address. This should first
+>    try address 0x29 which seems to be the most common and
+>    then try 0x18 and then give up.
 
-Pulled and pushed out, thanks.
+This is the main problem of the whole email thread. How to figure out
+the correct smbus device address.
 
-greg k-h
+And we really must not poke random address during kernel boot time.
+I think in the past was there enough problems linux kernel broke some HW
+or made system unbootable just because it tried to read something from
+some random undocumented address.
+
+Please do not try random unverified address on all machines.
+
+smbus is not really bus which provides discovering and identifying
+devices on the bus.
 
