@@ -1,108 +1,136 @@
-Return-Path: <linux-kernel+bounces-10605-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10606-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2484981D73A
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 00:30:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A7D9681D73F
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 00:34:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CC2221F21D40
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 23:30:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6C03E282F63
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 23:34:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B61B11D681;
-	Sat, 23 Dec 2023 23:30:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B54D01D6B8;
+	Sat, 23 Dec 2023 23:34:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="MwF6EdS0"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AEB21D52D
-	for <linux-kernel@vger.kernel.org>; Sat, 23 Dec 2023 23:30:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rHBRL-0007nz-LQ; Sun, 24 Dec 2023 00:29:55 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rHBRJ-0015Dk-SM; Sun, 24 Dec 2023 00:29:54 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rHBRK-000W3f-2q;
-	Sun, 24 Dec 2023 00:29:54 +0100
-Date: Sun, 24 Dec 2023 00:29:54 +0100
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Randy Dunlap <rdunlap@infradead.org>
-Cc: linux-kernel@vger.kernel.org, 
-	Thierry Reding <thierry.reding@gmail.com>, linux-pwm@vger.kernel.org
-Subject: Re: [PATCH] pwm: linux/pwm.h: fix Excess kernel-doc description
- warning
-Message-ID: <6t33645cqum3ocuojfzr3n7vcj7c63hz6plo7677r6527hwime@3r6tqotja5bk>
-References: <20231223050621.13994-1-rdunlap@infradead.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1BAD1D52D
+	for <linux-kernel@vger.kernel.org>; Sat, 23 Dec 2023 23:34:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1703374480;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=R6MwvTNgc3edtUi1oD2vuk843ZSwVQ67y6EiHuffl3Q=;
+	b=MwF6EdS0hS4wunnFxNqxu0gyUxu8YlRDon1INDTj5Wkf2UOc6SJEidd+nv75tuDmSZFzrg
+	fyy2Cj924d0igY/THvYoG9I0JaCcTtvvSEh8shpy1e91zW3JJR7exTVhN2w3kEWJ24XM4e
+	4FcIcrBICNfdzlAHrZSjjTpOfwQOFhQ=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-646-9lITgyanOQahtKf1ir0iaA-1; Sat, 23 Dec 2023 18:34:34 -0500
+X-MC-Unique: 9lITgyanOQahtKf1ir0iaA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id F06B9807F54;
+	Sat, 23 Dec 2023 23:34:33 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.39.195.169])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 0546951D5;
+	Sat, 23 Dec 2023 23:34:31 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+	Kingdom.
+	Registered in England and Wales under Company Registration No. 3798903
+From: David Howells <dhowells@redhat.com>
+In-Reply-To: <0000000000009b39bc060c73e209@google.com>
+References: <0000000000009b39bc060c73e209@google.com>
+To: syzbot <syzbot+94bbb75204a05da3d89f@syzkaller.appspotmail.com>
+Cc: dhowells@redhat.com, davem@davemloft.net, edumazet@google.com,
+    jarkko@kernel.org, jmorris@namei.org, keyrings@vger.kernel.org,
+    kuba@kernel.org, linux-kernel@vger.kernel.org,
+    linux-security-module@vger.kernel.org, netdev@vger.kernel.org,
+    pabeni@redhat.com, paul@paul-moore.com, serge@hallyn.com,
+    syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [net?] KASAN: slab-out-of-bounds Read in dns_resolver_preparse
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="klonewd2iqhya2tb"
-Content-Disposition: inline
-In-Reply-To: <20231223050621.13994-1-rdunlap@infradead.org>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-
-
---klonewd2iqhya2tb
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <2592300.1703374471.1@warthog.procyon.org.uk>
 Content-Transfer-Encoding: quoted-printable
+Date: Sat, 23 Dec 2023 23:34:31 +0000
+Message-ID: <2592301.1703374471@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
 
-Hello Randy,
+#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.gi=
+t master
 
-On Fri, Dec 22, 2023 at 09:06:20PM -0800, Randy Dunlap wrote:
-> Remove the @pwm: line to prevent the kernel-doc warning:
->=20
-> include/linux/pwm.h:87: warning: Excess struct member 'pwm' description i=
-n 'pwm_device'
->=20
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Thierry Reding <thierry.reding@gmail.com>
-> Cc: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
-> Cc: linux-pwm@vger.kernel.org
+diff --git a/net/dns_resolver/dns_key.c b/net/dns_resolver/dns_key.c
+index 2a6d363763a2..f18ca02aa95a 100644
+--- a/net/dns_resolver/dns_key.c
++++ b/net/dns_resolver/dns_key.c
+@@ -91,8 +91,6 @@ const struct cred *dns_resolver_cache;
+ static int
+ dns_resolver_preparse(struct key_preparsed_payload *prep)
+ {
+-	const struct dns_server_list_v1_header *v1;
+-	const struct dns_payload_header *bin;
+ 	struct user_key_payload *upayload;
+ 	unsigned long derrno;
+ 	int ret;
+@@ -103,27 +101,28 @@ dns_resolver_preparse(struct key_preparsed_payload *=
+prep)
+ 		return -EINVAL;
+ =
 
-Oh indeed.
+ 	if (data[0] =3D=3D 0) {
++		const struct dns_server_list_v1_header *v1;
++
+ 		/* It may be a server list. */
+-		if (datalen <=3D sizeof(*bin))
++		if (datalen <=3D sizeof(*v1))
+ 			return -EINVAL;
+ =
 
-Fixes: f3e25e68ceb2 ("pwm: Drop unused member "pwm" from struct pwm_device")
-Reviewed-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+-		bin =3D (const struct dns_payload_header *)data;
+-		kenter("[%u,%u],%u", bin->content, bin->version, datalen);
+-		if (bin->content !=3D DNS_PAYLOAD_IS_SERVER_LIST) {
++		v1 =3D (const struct dns_server_list_v1_header *)data;
++		kenter("[%u,%u],%u", v1->hdr.content, v1->hdr.version, datalen);
++		if (v1->hdr.content !=3D DNS_PAYLOAD_IS_SERVER_LIST) {
+ 			pr_warn_ratelimited(
+ 				"dns_resolver: Unsupported content type (%u)\n",
+-				bin->content);
++				v1->hdr.content);
+ 			return -EINVAL;
+ 		}
+ =
 
-Thanks
-Uwe
+-		if (bin->version !=3D 1) {
++		if (v1->hdr.version !=3D 1) {
+ 			pr_warn_ratelimited(
+ 				"dns_resolver: Unsupported server list version (%u)\n",
+-				bin->version);
++				v1->hdr.version);
+ 			return -EINVAL;
+ 		}
+ =
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+-		v1 =3D (const struct dns_server_list_v1_header *)bin;
+ 		if ((v1->status !=3D DNS_LOOKUP_GOOD &&
+ 		     v1->status !=3D DNS_LOOKUP_GOOD_WITH_BAD)) {
+ 			if (prep->expiry =3D=3D TIME64_MAX)
 
---klonewd2iqhya2tb
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmWHbXEACgkQj4D7WH0S
-/k6d3gf/YnniEa/fLJqV2cAgyKgSQ85twNO6kXiMVKCVEAA+Z6rjwMm55Pm1EXDw
-+1NSQloew0KvpV8oIp0DjCcGCZXVWRuobiMVEd4yY9M4Wo279+TIG66975OUz1nv
-hOtSy+6rzy5SBwzeyayGbHHLTqngWAkgEJ3+o2WvSEqtIX6K2okGFWI1ane6wQub
-0o//hgV1rE9jUmOIQtB0bvY1l2PBZd+GX179Mtc57Y5F42k0ES+D45jeawSi26nX
-HlQtdR199oBC0DAqJ4ohMSprWtCP38icycrR15Vk1TebNda/IN9UqaGstqVl043i
-1dIrQfBbK22CaV0jS9FQw4eol5YzpQ==
-=Sngb
------END PGP SIGNATURE-----
-
---klonewd2iqhya2tb--
 
