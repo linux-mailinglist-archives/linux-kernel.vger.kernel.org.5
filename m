@@ -1,203 +1,199 @@
-Return-Path: <linux-kernel+bounces-10404-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10388-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A04381D3F5
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 13:10:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A6C781D3B6
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 12:15:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B98901F2234E
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 12:10:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8E0531F228AD
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 11:15:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 115A210961;
-	Sat, 23 Dec 2023 12:09:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38990CA56;
+	Sat, 23 Dec 2023 11:14:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="jYW5N5cz"
+	dkim=pass (1024-bit key) header.d=rock-chips.com header.i=@rock-chips.com header.b="BspHYKFM"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
+Received: from mail-m6017.netease.com (mail-m6017.netease.com [210.79.60.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76328DF6E;
-	Sat, 23 Dec 2023 12:09:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-	by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20231223120913euoutp01e45e30867db386b6d66da064199d8f73~jdKj79Zjk1577115771euoutp01B;
-	Sat, 23 Dec 2023 12:09:13 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20231223120913euoutp01e45e30867db386b6d66da064199d8f73~jdKj79Zjk1577115771euoutp01B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1703333353;
-	bh=xpy0HiagjRFRHGaHNhA86jcAbAONjlu60zMifziYNVQ=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-	b=jYW5N5czuo1qsVyn7ywk+i4nBKlVNz8xQKf4nsby+llHeE35Fn55X2ruvtnUFO0zD
-	 pkzdOaDjws4XffJ/MQCyhgtsd/4DDSAUkNduBgJDduRQ7OTKsdcGBmrkyC0kh5HB7s
-	 DRXSXysXQFaovjJQ0WYfu8Z3O7k67d6tWcv1fbiU=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-	eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-	20231223120912eucas1p2d42d5d0317e3cc82b29b33ae42a2da90~jdKjqiHGh0092900929eucas1p2t;
-	Sat, 23 Dec 2023 12:09:12 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-	eusmges3new.samsung.com (EUCPMTA) with SMTP id A5.53.09552.8EDC6856; Sat, 23
-	Dec 2023 12:09:12 +0000 (GMT)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-	eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-	20231223120911eucas1p20908d9c95be9c8f0f352e7e93a5523fc~jdKij7a9S0092900929eucas1p2s;
-	Sat, 23 Dec 2023 12:09:11 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-	eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-	20231223120911eusmtrp236ab81812bad979b4088006597842e0a~jdKijZ2rH1783217832eusmtrp2l;
-	Sat, 23 Dec 2023 12:09:11 +0000 (GMT)
-X-AuditID: cbfec7f5-853ff70000002550-f6-6586cde8786a
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-	eusmgms1.samsung.com (EUCPMTA) with SMTP id 58.DC.09146.7EDC6856; Sat, 23
-	Dec 2023 12:09:11 +0000 (GMT)
-Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
-	eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-	20231223120911eusmtip10f7abb041dfce2d08c77559d1e0960b9~jdKiYbb7d0460404604eusmtip1C;
-	Sat, 23 Dec 2023 12:09:11 +0000 (GMT)
-Received: from localhost (106.210.248.246) by CAMSVWEXC02.scsc.local
-	(2002:6a01:e348::6a01:e348) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
-	Sat, 23 Dec 2023 12:09:10 +0000
-Date: Thu, 21 Dec 2023 13:44:21 +0100
-From: Joel Granados <j.granados@samsung.com>
-To: Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-CC: Luis Chamberlain <mcgrof@kernel.org>, Julia Lawall
-	<julia.lawall@inria.fr>, Dan Carpenter <dan.carpenter@linaro.org>, Kees Cook
-	<keescook@chromium.org>, "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	Iurii Zaikin <yzaikin@google.com>, Greg Kroah-Hartman
-	<gregkh@linuxfoundation.org>, <linux-hardening@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH v2 00/18] sysctl: constify sysctl ctl_tables
-Message-ID: <20231221124421.6zil5v3nhiidw2a7@localhost>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51A0DCA4C;
+	Sat, 23 Dec 2023 11:14:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rock-chips.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rock-chips.com
+DKIM-Signature: a=rsa-sha256;
+	b=BspHYKFMaXBputBUpX1ObDvnTFBiitYLacZplp4Pq8etyZvfErVOx47lSjQ+6K/a9lOyD1Hg3amtfuFC6Me6urBC07tlKyuvWaFPe5tCUAnHh+mpBISoGkfEDzo6OOKXvwFEE5gtuD6D0yy8GKCMl+PpqQc1g674AswbI8wGI0I=;
+	s=default; c=relaxed/relaxed; d=rock-chips.com; v=1;
+	bh=UrXH3jWuHs/HH6U7OUE10uuuoLRhgpHq9XyW9Yz3h24=;
+	h=date:mime-version:subject:message-id:from;
+Received: from [172.16.12.141] (unknown [58.22.7.114])
+	by mail-m12779.qiye.163.com (Hmail) with ESMTPA id 4D6737801BC;
+	Sat, 23 Dec 2023 19:14:04 +0800 (CST)
+Message-ID: <b81d91e4-a06d-40c6-8c08-23c3ea5bd945@rock-chips.com>
+Date: Sat, 23 Dec 2023 19:14:03 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg="pgp-sha512";
-	protocol="application/pgp-signature"; boundary="3r5c7qeptsstdq2m"
-Content-Disposition: inline
-In-Reply-To: <a0d96e7b-544f-42d5-b8da-85bc4ca087a9@t-8ch.de>
-X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
-	CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrLKsWRmVeSWpSXmKPExsWy7djPc7ovzralGrz+ZGjxYV4ru0Xz4vVs
-	Fr8uTmO1aFrVz2xxpjvXYs/ekywW89b/ZLS4vGsOm8XvH8+YLG5MeMposWynnwO3x+yGiywe
-	CzaVekx6cYjFY9OqTjaPO9f2sHnsn7uG3ePzJjmP/u5j7AEcUVw2Kak5mWWpRfp2CVwZE46s
-	Zym4J1xx6sh75gbG7wJdjJwcEgImEvOn3GbqYuTiEBJYwSix5/F9VpCEkMAXRollf6ESnxkl
-	Nj6czA7TMfncXxaIxHJGiU37LrLCVX37tQAqs5VRYtKaZ0wgLSwCqhITNp4Ds9kEdCTOv7nD
-	DGKLCNhIrPz2mR2kgVmgh1li98KfjF2MHBzCAg4S25okQUxeAXOJzuOqIOW8AoISJ2c+YQGx
-	mQUqJE4dughWzSwgLbH8HwdImBNo4trnU1kgDlWWuPnrHTOEXStxasstsG8kBE5xSqzb8IYV
-	IuEicWvTRqgGYYlXx7dAfSkj8X/nfKiGyYwS+/99YIdwVgPDpfErE0SVtUTLlSdQHY4Sc7Y+
-	ZgK5SEKAT+LGW0GIQ/kkJm2bzgwR5pXoaBOCqFaTWH3vDcsERuVZSF6bheS1WQivQYT1JG5M
-	ncKGIawtsWzha2YI21Zi3br3LAsY2VcxiqeWFuempxYb56WW6xUn5haX5qXrJefnbmIEpsLT
-	/45/3cG44tVHvUOMTByMhxhVgJofbVh9gVGKJS8/L1VJhDdfpyVViDclsbIqtSg/vqg0J7X4
-	EKM0B4uSOK9qinyqkEB6YklqdmpqQWoRTJaJg1OqgWnW1eUHhWtZNnhM8Vg2M9GypSxOeZLC
-	jtqI2e/CnkSpfHw1f3GpR7SyCMdx28zgm+XeSuXXblp8ljq2/vPrhpiCFOXPhmLitSl/p9zd
-	sDNU/455krTsOSlnjk9389Ytj/7DKCj44d1H8wzOdoOtM+K0g9TiwpaL3n/ZcD+wr/zZh6pP
-	utlyaW7Xj6lviU1//9n9Y/TLz4p6agtOzJU6GH4iuFDDwLn6b2ZGdvzi43OW53zcdvP051vL
-	Jp5fa9tsm3lv7ZXfqbe6c9sMZiS3TfrprHVrH/MJo5M3tmS6RfEtvvv0gMB93wfvSg4rTz2U
-	zD97x4rGzQpt+/i/GS2vevJmR8arY30zLoe91Tn9z+CpEktxRqKhFnNRcSIAYtFzkgAEAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupileLIzCtJLcpLzFFi42I5/e/4Xd3nZ9tSDW50qlt8mNfKbtG8eD2b
-	xa+L01gtmlb1M1uc6c612LP3JIvFvPU/GS0u75rDZvH7xzMmixsTnjJaLNvp58DtMbvhIovH
-	gk2lHpNeHGLx2LSqk83jzrU9bB77565h9/i8Sc6jv/sYewBHlJ5NUX5pSapCRn5xia1StKGF
-	kZ6hpYWekYmlnqGxeayVkamSvp1NSmpOZllqkb5dgl7GhfdH2QruCFe0dj1gamD8KtDFyMkh
-	IWAiMfncX5YuRi4OIYGljBK9q+4zQyRkJDZ+ucoKYQtL/LnWxQZR9JFRonP2U1YIZyujxOkv
-	u9hBqlgEVCUmbDzHBGKzCehInH9zB2ySiICNxMpvn9lBGpgFepglXq+/BJTg4BAWcJDY1iQJ
-	YvIKmEt0HleFmNnOIvHt8kuwXl4BQYmTM5+wgNjMAmUS008uZwOpZxaQllj+jwMkzAk0fu3z
-	qSwQhypL3Pz1DuqBWonPf58xTmAUnoVk0iwkk2YhTIII60js3HoHU1hbYtnC18wQtq3EunXv
-	WRYwsq9iFEktLc5Nzy021CtOzC0uzUvXS87P3cQITAjbjv3cvINx3quPeocYmTgYDzGqAHU+
-	2rD6AqMUS15+XqqSCG++TkuqEG9KYmVValF+fFFpTmrxIUZTYCBOZJYSTc4Hpqq8knhDMwNT
-	QxMzSwNTSzNjJXFez4KORCGB9MSS1OzU1ILUIpg+Jg5OqQYm3aRJ6leYWDtesO42XRjFpJnx
-	w/ae/yqWWm+h88lbVXea7FNomTP3X6m7kvmmrjLucm/miiNMDyxCAi2mRtXcYOjQjT5xLKLq
-	wwHR8E+GT5L5Smo+v4+b8KA1tWHSe+8VE72ijq9b4bloq87RkuCeqKirq+eXrBVL8dv9zPap
-	9ZPoQr8TO+7XbC2zYolVO1VYLeFYpP165dKZEaKmh3Yfnadrau+bNrdx+uzmVTN/nfdJlciY
-	ZJHLvaihS/nnpIZ9n45E5W2/PUvlyN+++2GFWpv/9lp7Z17dp9a794Xly/AjU6IFZVuuuB+U
-	erx5kaeeCWtsQM+b65OfRvIIHItq9hFQ2vGD23ln6oVXT5YqsRRnJBpqMRcVJwIAx5lmPJ0D
-	AAA=
-X-CMS-MailID: 20231223120911eucas1p20908d9c95be9c8f0f352e7e93a5523fc
-X-Msg-Generator: CA
-X-RootMTR: 20231219192958eucas1p2df4e393960bce2bb5e8e93395f1eee8e
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20231219192958eucas1p2df4e393960bce2bb5e8e93395f1eee8e
-References: <fa911908-a14d-4746-a58e-caa7e1d4b8d4@t-8ch.de>
-	<20231208095926.aavsjrtqbb5rygmb@localhost>
-	<8509a36b-ac23-4fcd-b797-f8915662d5e1@t-8ch.de>
-	<20231212090930.y4omk62wenxgo5by@localhost>
-	<ZXligolK0ekZ+Zuf@bombadil.infradead.org>
-	<20231217120201.z4gr3ksjd4ai2nlk@localhost>
-	<908dc370-7cf6-4b2b-b7c9-066779bc48eb@t-8ch.de>
-	<ZYC37Vco1p4vD8ji@bombadil.infradead.org>
-	<CGME20231219192958eucas1p2df4e393960bce2bb5e8e93395f1eee8e@eucas1p2.samsung.com>
-	<a0d96e7b-544f-42d5-b8da-85bc4ca087a9@t-8ch.de>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/3] ARM: dts: rockchip: Add psci for rk3036
+Content-Language: en-US
+To: Alex Bee <knaerzche@gmail.com>, Andy Yan <andyshrk@163.com>,
+ heiko@sntech.de, Kever Yang <Kever.yang@rock-chips.com>
+Cc: krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
+ zhengxing@rock-chips.com
+References: <20231218105523.2478315-1-andyshrk@163.com>
+ <20231218105523.2478315-2-andyshrk@163.com>
+ <da10e2fc-3179-4bd5-88ed-b4d5f64a7191@gmail.com>
+ <28216be5-810f-40d6-850b-a0fc590ffa3c@rock-chips.com>
+ <a82481ca-b578-49a4-b0d0-974b6ee65c98@gmail.com>
+ <74e497f5-0361-47f7-a410-4b20d3526d52@rock-chips.com>
+ <18c16355-9140-45be-bd16-96fad8b184a4@gmail.com>
+From: Andy Yan <andy.yan@rock-chips.com>
+In-Reply-To: <18c16355-9140-45be-bd16-96fad8b184a4@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+	tZV1koWUFDSUNOT01LS0k3V1ktWUFJV1kPCRoVCBIfWUFZQ0NLSVYdTkwZSUlNHhlPT0hVEwETFh
+	oSFyQUDg9ZV1kYEgtZQVlOQ1VJSVVMVUpKT1lXWRYaDxIVHRRZQVlPS0hVSk1PSU5JVUpLS1VKQl
+	kG
+X-HM-Tid: 0a8c9661daabb24fkuuu4d6737801bc
+X-HM-MType: 1
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NVE6PTo*ETw*Nxw2MCkaGjYC
+	MRRPChBVSlVKTEtISEhLS09OSkxJVTMWGhIXVRoVHwJVAhoVOwkUGBBWGBMSCwhVGBQWRVlXWRIL
+	WUFZTkNVSUlVTFVKSk9ZV1kIAVlBTEhKTzcG
 
---3r5c7qeptsstdq2m
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hi Alex,
 
-On Tue, Dec 19, 2023 at 08:29:50PM +0100, Thomas Wei=DFschuh wrote:
-> Hi Luis and Julia,
->=20
-> (Julia, there is a question and context for you inline, marked with your =
-name)
->=20
-> On 2023-12-18 13:21:49-0800, Luis Chamberlain wrote:
-> > So we can split this up concentually in two:
-> >=20
-> >  * constificaiton of the table handlers
-> >  * constification of the table struct itself
-<--- snip --->
-> > case but to any place in the kernel where this previously has been done
-> > before, and hence my suggestion that this seems like a sensible thing
-> > to think over to see if we could generalize.
->=20
-> I'd like to split the series and submit the part up until and including
-> the constification of arguments first and on its own.
-> It keeps the subsystem maintainers out of the discussion of the core
-> sysctl changes.
-quick comment : Note that if this contains the tree-wide patches, it
-will inevitably bring in the rest of the maintainers.
+On 12/22/23 23:37, Alex Bee wrote:
+> Hi Andy,
+> 
+> Am 22.12.23 um 11:37 schrieb Andy Yan:
+>> Hi Alex,
+>>
+>> On 12/21/23 23:58, Alex Bee wrote:
+>>> Hi Andy,
+>>>
+>>> Am 21.12.23 um 02:07 schrieb Andy Yan:
+>>>> Hi Alex:
+>>>>
+>>>> On 12/20/23 19:16, Alex Bee wrote:
+>>>>> Hi Andy,
+>>>>> Am 18.12.23 um 11:55 schrieb Andy Yan:
+>>>>>> From: Andy Yan <andy.yan@rock-chips.com>
+>>>>>>
+>>>>>> The system will hang at bringup secondary CPUs
+>>>>>> without psci node.
+>>>>>>
+>>>>>> Signed-off-by: Andy Yan <andy.yan@rock-chips.com>
+>>>>>>
+>>>>>> ---
+>>>>>>
+>>>>>> (no changes since v1)
+>>>>>>
+>>>>>>   arch/arm/boot/dts/rockchip/rk3036.dtsi | 5 +++++
+>>>>>>   1 file changed, 5 insertions(+)
+>>>>>>
+>>>>>> diff --git a/arch/arm/boot/dts/rockchip/rk3036.dtsi b/arch/arm/boot/dts/rockchip/rk3036.dtsi
+>>>>>> index 78686fc72ce6..5344803442a1 100644
+>>>>>> --- a/arch/arm/boot/dts/rockchip/rk3036.dtsi
+>>>>>> +++ b/arch/arm/boot/dts/rockchip/rk3036.dtsi
+>>>>>> @@ -67,6 +67,11 @@ display-subsystem {
+>>>>>>           ports = <&vop_out>;
+>>>>>>       };
+>>>>>> +    psci {
+>>>>>> +        compatible = "arm,psci-1.0";
+>>>>>> +        method = "smc";
+>>>>>> +    };
+>>>>>> +
+>>>>> I don't think that's an good idea. 
+>>>>
+>>>> Why?
+>>> It's only what I've been told before: We shoudn't add properties which
+>>> depend on non-upstream software (if an upstream alternative exists). Also
+>>
+>>> I'm not sure what happens if somebody doesn't use downstream bootloader
+>>> and PSCI can't be found: Would the board still be able to boot?
+>>
+>> The psci is released herel[0].
+>> And also, there are only two rk3036 based boards in mainline:
+>> rk3036-evb,rk3036-keylin, both of them from rockchip.
+>> And the mainline support of these boards broken from linux 5.7(2020, see PATCH 3),
+>> no one report this broken until I try to run this board now.
+>> So maybe there is no such somebody will run into this situation.
+>>
+>>
+>> [0]https://github.com/rockchip-linux/rkbin/tree/master/bin/rk30
+>>
+> Yeah sure, there are binary release for downstream optee implementations,
+> but the won't work with upstream u-boot, since they are using a calling
+> convention different from upstream optee os. I tried to add support for
+> those, but it was rejected [0].
+> 
+> Upstream bootflow doesn't implement/need PSCI as it uses a SMP bringup
+> method which is done in kernel only (see enable-method in cpu section). I
+> guess that it doesn't work for you is most likely because the downstream
+> tee os makes the cpu registers the upstream enable-method uses only
+> accessible in a higher exception level.
+> 
+> I can undust my RK3036 evb board during christmas holidays and check whats
+> broken for RK3036 in u-boot. Everything was working fine (including SMP
 
->=20
-> I'll submit the core sysctl changes after I figure out proper responses
-> to all review comments and we can do this in parallel to the tree-wide
-> preparation.
->=20
-> What do you think Luis and Joel?
-Separating all this into patch series that have a defined motivation and
-that are self contained is the way to go IMO.
+With one day bisect, I finally fond the mainline u-boot support for rk3036
+was broken by this commit f113d7d30346 (" Convert CONFIG_SPL_STACK to Kconfig")
 
-Best
->=20
-> [0] https://protect2.fireeye.com/v1/url?k=3D0ddcce36-6d3e536b-0ddd4579-00=
-0babd9f1ba-c68841e97c452963&q=3D1&e=3Dd70f9b65-8465-4489-b777-b13eb1ffc99b&=
-u=3Dhttps%3A%2F%2Frepo.or.cz%2Fsmatch.git%2Fblob%2FHEAD%3A%2Fsmatch_scripts=
-%2Ftest_kernel.sh
+It makes rk3036 can't set SPL_STACK as rk3036 can't enable SPL_FRAMEWORK(very small sram)
 
---=20
+I still don't have a proper patch to fix this issue.
 
-Joel Granados
+Thank you very much for you explanation.
+I think i should not add psci to mainline before the tee binary can be used by mainline u-boot.
 
---3r5c7qeptsstdq2m
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQGzBAABCgAdFiEErkcJVyXmMSXOyyeQupfNUreWQU8FAmWEMyUACgkQupfNUreW
-QU+rzgv+J8nF9QAA9UReTxQLhqfaoNE/+chhxBzuTnzY3yAd4cc1353RvYBveDZ9
-PL7BAvZxB+cvojI2JzJ3ATKrvh3RryMjqckzjRgbKPk6aDNmXoE2SFJQqw1Is1jG
-c1mMMSWBunC6xjlUygMmBdGUMLoxGEPIpXbnPl0ecsk6xqENOjipjQCBhOm/4Coo
-2VjGpAApEMujTg+cejAUjkaiEmznH58t2Y1aVz59UjS3b+W3E4bgwt1QTQkRkGuv
-f1JSUiZjX0SopSgu/eD6dVBNQC4YzBNPYkqBMT2agV0HqqGzDrmVwqy4vuAuob6+
-z+68u39vqojRrfbLpNrZTTc5u6f6iMFwhiB16RjkaAzCr6Nesks2zP9UOwBwDRBz
-TIXsw8wYuv1uT0HbjuLopIhqdXM6zVpnmUPeJpOf0TyhqdSFZMU2t/8I82mMbrJ/
-wG6Pa3l+s1qjNwDgO99kyRzQgDzYmqHCMQ42u2JsztsNt3Cv7Qmn/QEM+08O135J
-n3vu5w4U
-=uPzz
------END PGP SIGNATURE-----
-
---3r5c7qeptsstdq2m--
+Nice holidays!
+> bringup w/o PSCI and upstream u-boot) when I was adding VPU support in 5.14
+> [1]. I likely booted from TF-card rather than eMMC.
+> 
+> [0] https://patchwork.ozlabs.org/project/uboot/patch/20230718145715.1280201-6-knaerzche@gmail.com/
+> [1] https://patchwork.kernel.org/project/linux-rockchip/patch/20210527154455.358869-11-knaerzche@gmail.com/
+> 
+> Nice holidays!
+> 
+> Alex
+> 
+>>>>
+>>>>> You most likely need that because you have downstream bootloader installed on this board. PSCI implementation takes place in TEE-OS for Rockchips ARM SoCs. There is no support for RK3036 in upstream op-tee OS. It's pretty much the same for RK3128 and RK3288.
+>>>>> If you use upstream u-boot it should be good as-is.
+>>>>
+>>>> Unfortunately, upstream u-boot also cannot boot up on this board.
+>>>> At present, I haven't had time to debug what is going on.
+>>>>
+>>>> Another reason I want to use downstream u-boot it is: I try run
+>>>> this board with mainline just because i want to test some community
+>>>> patches about inno-hdmi driver, as you said "the inno-hdmi driver currently gets a lot of attention"[0]
+>>>>
+>>> Thanks for helping testing this.
+>>>
+>>> Alex
+>>>
+>>>> With a downstream u-boot I can easy switch between upstream kernel and downstream kernel(no need to replace other components)
+>>>> if I found some function is not work as expected.
+>>>>
+>>>>
+>>>> [0]https://patchwork.kernel.org/project/linux-rockchip/cover/20231219170100.188800-1-knaerzche@gmail.com/
+>>>>>
+>>>>> Alex
+>>>>>>       timer {
+>>>>>>           compatible = "arm,armv7-timer";
+>>>>>>           arm,cpu-registers-not-fw-configured;
+>>>>>
+>>>>>
+>>>>> _______________________________________________
+>>>>> Linux-rockchip mailing list
+>>>>> Linux-rockchip@lists.infradead.org
+>>>>> http://lists.infradead.org/mailman/listinfo/linux-rockchip
 
