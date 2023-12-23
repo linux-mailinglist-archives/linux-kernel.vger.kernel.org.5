@@ -1,427 +1,347 @@
-Return-Path: <linux-kernel+bounces-10461-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10462-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B82BE81D4A8
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 15:39:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A22EF81D4AB
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 15:41:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0F729B20EC6
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 14:39:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 190F41F224DC
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 14:41:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DDA2DDB7;
-	Sat, 23 Dec 2023 14:39:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDBB4DF63;
+	Sat, 23 Dec 2023 14:41:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="K7NYeIhb"
+	dkim=pass (1024-bit key) header.d=garyguo.net header.i=@garyguo.net header.b="WjFeoT/V"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from GBR01-CWX-obe.outbound.protection.outlook.com (mail-cwxgbr01on2118.outbound.protection.outlook.com [40.107.121.118])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8779DDF4D
-	for <linux-kernel@vger.kernel.org>; Sat, 23 Dec 2023 14:39:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-552d39ac3ccso6724971a12.0
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Dec 2023 06:39:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703342348; x=1703947148; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=zCFoTy8y9ZvynGpG2Rm82yYymV07j6rSfFwhnk7b108=;
-        b=K7NYeIhbS/kMAj0XH9nk3TlJsoX3iDWf4Hqd2RRsT8MO8zPLzPUms1pQXBuizga7I0
-         PW+o90QVdbbD+8kFwOe99OWjOfGQklBxMKmQ1iQHH4cDOtbjQ53YpKA80d727vf/6Ve+
-         znvJSEfcTIbNAIagxLilpLsZPyOXWrlKNCIDS0pwBw5kxDqOKUb1lLQzKzZ34kVIrA5Z
-         ejRhSgwXBpgikEwHoM3zIR6Te1Lq0Dblo2dtE2HuneoDSqdv37Jt4MJP4mE6M1lzrWAR
-         /jKqy/cTJdvbHFi5CwCAL9E2LmMXcNKtntwKUX5ME32Bmu5Wl5e52SvNl8PfTscFDt7Z
-         l8DQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703342348; x=1703947148;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zCFoTy8y9ZvynGpG2Rm82yYymV07j6rSfFwhnk7b108=;
-        b=PVgCisw23U7N0gP1moipcSR0wu5okrOrlpi/LI/iG9MUgQS2HuhSxkofUAC0PpTKwu
-         OLwEjRPEfDM8S9IMnG+zcJyn0OSd7gbfUCRp9tGJXKwBVQiguWNwtfTthInRP2kgsF51
-         1FzDLWWV71iT/Moi7axIiFlq6ewUHTxj9FPwFM5klqNjhV13e3F4sX+dc02fZdc6nWlL
-         kmucfDfzM97kSpBfcznKhccZlhoMvWCiEpHv5/f2h04v2xNqxCfVCaA9o7APoOjSTVK1
-         hjWUbO9+xGPDAMUAY/Fa3uGxsNG2ewLo0+CiJTFThJl4dHz17+Zru7Ho3n8yFX1MheTi
-         ekmg==
-X-Gm-Message-State: AOJu0YwVnchnngePOJsyxbm46WXoPRuEE3Iu6YcFGV2DQ2h0/kN92t4D
-	yuZUqp9F7Ml2R2uZkm4KRpBak9GaWQ3Tkw==
-X-Google-Smtp-Source: AGHT+IHCOJVGXwGzw8ftpJlaNeBCBVPMx+yETQcRsrpdo1Nh8jmbEo1joQpcHbN3VM3nUMG0AuuKUQ==
-X-Received: by 2002:a17:906:d5:b0:a26:bdae:c594 with SMTP id 21-20020a17090600d500b00a26bdaec594mr2221091eji.37.1703342347704;
-        Sat, 23 Dec 2023 06:39:07 -0800 (PST)
-Received: from [192.168.0.22] ([78.10.206.178])
-        by smtp.gmail.com with ESMTPSA id ex19-20020a170907955300b00a268002274csm3127217ejc.52.2023.12.23.06.39.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 23 Dec 2023 06:39:07 -0800 (PST)
-Message-ID: <3ad14d62-df64-45b1-9be4-008d30d2b52f@linaro.org>
-Date: Sat, 23 Dec 2023 15:39:05 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15BBDDDA1;
+	Sat, 23 Dec 2023 14:41:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=garyguo.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=garyguo.net
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=F9PA6l0D3Q6MfhwOUKbts9xE60M0KZFJ753qFpgNAwan14blC7c5BbPcHrSgNGetNcpAxxcMsLA6jDefDJZohA0s94HaJoigubRGeWl3XX5C+QK2urGDJIg/DnwI77nDSv/EwxL/ud7fsKEM25duWdaxw1pkEtI1ldTmFB9NSHxgbcHFKLV2eoIxbzeFv29CVcT2GQTzt3W2+X6UqWJgR6Ef7t8EFHehDvGCcz9odT+K91E2GWC4nNAcl80npRo32EqZ7Id00pYDC8tKzely8EuJQ56GmR2ihN7WdJ+ZXuQDOxcJBEO7XwlM7l2CQ15xEhWL7aTcVobaGhYsnjPeoQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=JrbG7KztoKKkS/GczNeJDOV6ofuyR6zoMFibWXyoltQ=;
+ b=nqIH7OIQFbd47Lmax04uTB+ki4ptP+EQbW2alj2mBLbYmD2sv+2IYvA8lR/UaFvSNxXH9Mtj607lNGQBUJkaoVWKLxXAr9e14h603mXHMeUdVy6x3UBpcQTml+BwX7U3WFdzxOR08pxMsVagLI8f2ii6y+6PpQ8mjuGl10w0T8GrzWkFlY7LiUy3fn+5NLAGiNZAvjAnQjX2v/Zon2D9T+26v9iQMLnAncVQCBV9jncnvdsWoAHT/ivUyfiD0Crqqio3zk2UhWOX2OZMF4AXXRBnge3g4vZJUPUryCdTIWOz2cQ0RIx3ubFsuy/8Cj5i4n/sCjS7evR7OFjlPXg4Iw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=garyguo.net; dmarc=pass action=none header.from=garyguo.net;
+ dkim=pass header.d=garyguo.net; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=garyguo.net;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JrbG7KztoKKkS/GczNeJDOV6ofuyR6zoMFibWXyoltQ=;
+ b=WjFeoT/VXKzeJYNbK8uFx0UcqNicNRW/WUYy+zW9d9oXUdVpoXtNCyHP2z0SvFj+UlzuocH+BZDZSKFgCd4FHxwhN1HdmXNf+ATKr/8BR/Siwg5sFeTst1u04baWdXk5H5kLKqpzOWOMH7goA7Wt9V3hq6O1xiKJbXItY6NPGrA=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=garyguo.net;
+Received: from LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:253::10)
+ by CWLP265MB1908.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:49::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7113.22; Sat, 23 Dec
+ 2023 14:41:16 +0000
+Received: from LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::ec07:aa7e:ffbc:ba47]) by LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::ec07:aa7e:ffbc:ba47%4]) with mapi id 15.20.7113.023; Sat, 23 Dec 2023
+ 14:41:16 +0000
+Date: Sat, 23 Dec 2023 14:41:10 +0000
+From: Gary Guo <gary@garyguo.net>
+To: Benno Lossin <benno.lossin@proton.me>
+Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>,
+ Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng
+ <boqun.feng@gmail.com>, =?UTF-8?B?QmrDtnJu?= Roy Baron
+ <bjorn3_gh@protonmail.com>, Andreas Hindborg <a.hindborg@samsung.com>,
+ Alice Ryhl <aliceryhl@google.com>, Sumera Priyadarsini
+ <sylphrenadin@gmail.com>, Vincenzo Palazzo <vincenzopalazzodev@gmail.com>,
+ Asahi Lina <lina@asahilina.net>, Martin Rodriguez Reboredo
+ <yakoyoku@gmail.com>, rust-for-linux@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] rust: macros: add `decl_generics` to
+ `parse_generics()`
+Message-ID: <20231223144110.346766ed.gary@garyguo.net>
+In-Reply-To: <20231213220447.3613500-1-benno.lossin@proton.me>
+References: <20231213220447.3613500-1-benno.lossin@proton.me>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-pc-linux-gnu)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: LO4P123CA0364.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:18e::9) To LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:253::10)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: dts: imx93-var-som: Add Variscite VAR-SOM-MX93
-Content-Language: en-US
-To: Mathieu Othacehe <othacehe@gnu.org>, Shawn Guo <shawnguo@kernel.org>,
- Sascha Hauer <s.hauer@pengutronix.de>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20231223142939.23735-1-othacehe@gnu.org>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231223142939.23735-1-othacehe@gnu.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LO2P265MB5183:EE_|CWLP265MB1908:EE_
+X-MS-Office365-Filtering-Correlation-Id: b3541770-a872-49f7-9072-08dc03c537bc
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	czwph+PG1b5E55I4MgCHX4t9CIm9Ncet/NEuONYXYj1cpFt4B7X19T3emjTk+BgZF7pnskUrirMKAbVgXqzNCKsRYdjH4gyozDKo6WWsKcRbEMH7BTku0s+cPOVXIg3Iaw436yfRyJ9lBAU6JapSKy3BxvFpojhvYTSXKUHiBeb8lsw/L5VnSxdMctTk13wvjSEfPeWFh1U3w/l97U3lX586qXwmSOchvXztJZpCeiWNgULlP+A4iOgyiEs2Z3VpnNxtzIwcsSLHQEtOBktLFg9jT7fd7uh4jFo/Lhwfgzyxzkvn4ksCemdCRza1xZWdlvEICRPeDoKm3FtlGO3E11iNX4PszddUygRHMQs8n36N/90D67riGDgj/dGt0vl9m2ku5w262kJP3jUsmE6OUtwvHb7v8Z9tKzd64OBxvLOFBkCCNPhkDt73kTCVhjp6GCuPrUiuU/0BqXy6+e0CBORpBaCePD7+fhJL+wQxZnwZ0taFXUU++nJufaULuDepUI8U/Xtp70cewPUvmtssCj7PHwKb9kACYhPuVCA3SEaDj2NgxwaBFW4nzUYk6AG3zdFtGDE9S0toVAbeZqiSeKCZFcZdMeZnwoNE7p+AMeo=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(396003)(39830400003)(376002)(136003)(346002)(366004)(230922051799003)(451199024)(186009)(1800799012)(64100799003)(41300700001)(86362001)(66476007)(6486002)(6666004)(66556008)(478600001)(6916009)(66946007)(54906003)(316002)(6506007)(6512007)(2616005)(1076003)(8936002)(8676002)(4326008)(38100700002)(2906002)(7416002)(5660300002)(36756003)(83380400001)(81973001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?Db0Q7T8SN4do8yThcfCvb6+IdcRCufwVqmY1siMXfWEoGBzUpb2xf+teuoZ1?=
+ =?us-ascii?Q?MDextqciPYY2bILZYsytknI9/ySGaiZRPucaRD7ZGVJIr+Xza4vYHjTL7Ank?=
+ =?us-ascii?Q?1qpT9SWk8lojX3IUYA7QoIZauUK7ulL++6XOqqWmrt7jHL03XRkW+rkxsxZe?=
+ =?us-ascii?Q?5Aws1dWZ9WCNaMBg4L6ZaUMUsiJv82IIcWMyXpX+kEguhRyFAWPqx0Wp+QVx?=
+ =?us-ascii?Q?RUCLVlqHWvl/30JNpIY7bJtn3NBMdXoA/nw/t/4bWRaPcP87ea70kuDGFyBo?=
+ =?us-ascii?Q?QMxAphgdjEJr99DP7oi8W3kHM3Kp1395oQSnL39BWuGnbzz0VlfFa9hxZNuA?=
+ =?us-ascii?Q?jnL28QlEKB5LP/wlKk2yvT1e8ZxGvzM1taHYctMadWUIj1UhU7vrx1hRGHjN?=
+ =?us-ascii?Q?ngcphwUQzuKOd8Xx6AQjA91LJCHY7J5UjUC0N9JAO9yOdXf3CSIoVD8ENqvJ?=
+ =?us-ascii?Q?ekuDTg1SRq650JubmiD0VyrIWXMmAgSgTdMe0yzu7ClNNdqKu6eVsTgoq+Fi?=
+ =?us-ascii?Q?lcLU+gRqAdsiE3AA/t76leB8d9N/7cHQhqpwJZyu8J9K+OuVb7tFuNKimb9L?=
+ =?us-ascii?Q?N5WURUC45bW3/N2cQMYJ+HG074RdGryvqTkuwcLk8+m+33hDaD8dAIlluWl0?=
+ =?us-ascii?Q?5hTHmIBobMn6Z9ncWDc00pEOMIoPFKvu009MYFqQQWajSmo5wM8fvN/a/MrL?=
+ =?us-ascii?Q?2xls4+IM6NtaLv9sl9c7ADEZR9ruwQxTSvqYtGRNbWYmRbNY7z78dg+fwIjG?=
+ =?us-ascii?Q?11lWSFIxpk1Ma35ApqBlI0K7JXLolUszdibniCzJYeT+5VJhUdBePMUp20oI?=
+ =?us-ascii?Q?eNu8s33ldII2bijQet0ctgfsBjCzhrR6/xZpTk0GxNjPAvQSpmzA/Wn0WZrK?=
+ =?us-ascii?Q?gt9FdolkZrZ/lmi2NsGQr9foxrR0hfRZvgD3WYz6hqrQSbmj3IG+Agf58ZV8?=
+ =?us-ascii?Q?wd7o5Yf3Gj7bkhTan2MUnuK6WOrz8pETxnJLJxV5v/xRbIJ87ToKoNM0mceZ?=
+ =?us-ascii?Q?krO79aTQdJ4VUhaZoIIbbp22CTwGNsJy1xMaIlGjlCkDteP72D44c94O8SaQ?=
+ =?us-ascii?Q?i9art8Ac8gAOSh8Osjpu0TEGoa0W9evbP/CFNB3dYK/NGvhIMuJFRCLgowAt?=
+ =?us-ascii?Q?wO494/ONv0mnnpcTsnum2FkF2W3csJ70mv21BPMckGaWFDUMHHqjkEeQV220?=
+ =?us-ascii?Q?9zp9DL5Yoc1rGXZ9S5rWZDq3/peFFUkjoOhEE4cepQB2mqFMchSaR7f38xJf?=
+ =?us-ascii?Q?x5eKzOXcfkE2qzeO9zWTBfN92dX8c9jhK0cG+otENewHl8zqqjFfk9m1JUbq?=
+ =?us-ascii?Q?c/Q8P+vDMQ8otmcedy2do4s1gA8eDt6D1aSyEINRjSDq//rOmCKHtJgd7itm?=
+ =?us-ascii?Q?/nPPw91DsCwEOK9LFqsgOqms4XKqHg4nMylO5/LAFGUl1HELSR0Hmv+ApY5+?=
+ =?us-ascii?Q?kOHrUWlSLzLjJXS88T9vXZEK0OAW1fP/W0+Yo6VbbRv05gl+refqr3hOBn1j?=
+ =?us-ascii?Q?mAHr2OeuhJU4lMODNBt/f1WjzxJmSdtDpUH+cnmIVPuDUsvFyjUsTUDfnL0Z?=
+ =?us-ascii?Q?anJQu2HVA9US/WOJkuz9eY9J85f+7FE38I9JvFeaBG0VkToy9CqRuDmbk4TS?=
+ =?us-ascii?Q?dEZ55o1UuQlQq44yBsvxxzFX7RzErBuepjoGJb5cCv8n?=
+X-OriginatorOrg: garyguo.net
+X-MS-Exchange-CrossTenant-Network-Message-Id: b3541770-a872-49f7-9072-08dc03c537bc
+X-MS-Exchange-CrossTenant-AuthSource: LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Dec 2023 14:41:15.9839
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: bbc898ad-b10f-4e10-8552-d9377b823d45
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: bH7DRsU/Al1b7Gzu6+/vWIMDT8iflkb6qYIBtPuGBjFK05kWOEYaWc2y6qwH3PHpFiU3fmqTxuCT08eVafPYcw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CWLP265MB1908
 
-On 23/12/2023 15:29, Mathieu Othacehe wrote:
-> Add DTSI for Variscite VAR-SOM-MX93 System on Module and DTS for Variscite
-> VAR-SOM-MX93 on Symphony evaluation board.
-> 
-> This version comes with:
-> - NXP i.MX 93 Dual, 1.7GHz, Cortex-A55 + Cortex-M33
-> - 2 GB of RAM
-> - 16GB eMMC
-> - 802.11ax/ac/a/b/g/n WiFi with 5.3 Bluetooth
-> - CAN bus
-> - Audio codec
-> 
-> Signed-off-by: Mathieu Othacehe <othacehe@gnu.org>
-> ---
->  arch/arm64/boot/dts/freescale/Makefile        |   1 +
->  .../dts/freescale/imx93-var-som-symphony.dts  | 307 +++++++++++++++++
->  .../boot/dts/freescale/imx93-var-som.dtsi     | 312 ++++++++++++++++++
->  3 files changed, 620 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/freescale/imx93-var-som-symphony.dts
->  create mode 100644 arch/arm64/boot/dts/freescale/imx93-var-som.dtsi
-> 
-> diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
-> index 2e027675d7bb..a6f1700961e3 100644
-> --- a/arch/arm64/boot/dts/freescale/Makefile
-> +++ b/arch/arm64/boot/dts/freescale/Makefile
-> @@ -203,6 +203,7 @@ dtb-$(CONFIG_ARCH_MXC) += imx8ulp-evk.dtb
->  dtb-$(CONFIG_ARCH_MXC) += imx93-11x11-evk.dtb
->  dtb-$(CONFIG_ARCH_MXC) += imx93-tqma9352-mba93xxca.dtb
->  dtb-$(CONFIG_ARCH_MXC) += imx93-tqma9352-mba93xxla.dtb
-> +dtb-$(CONFIG_ARCH_MXC) += imx93-var-som-symphony.dtb
+The logic looks good to me, some nits:
+
+> +/// Parsed generics.
+> +///
+> +/// See the field documentation for an explanation what each of the fields represents.
+> +///
+> +/// # Examples
+> +///
+> +/// ```rust,ignore
+> +/// # let input = todo!();
+> +/// let (Generics { decl_generics, impl_generics, ty_generics }, rest) = parse_generics(input);
+> +/// quote! {
+> +///     struct Foo<$($decl_generics)*> {
+> +///         // ...
+> +///     }
+> +///
+> +///     impl<$impl_generics> Foo<$ty_generics> {
+> +///         fn foo() {
+> +///             // ...
+> +///         }
+> +///     }
+> +/// }
+> +/// ```
+>  pub(crate) struct Generics {
+> +    /// The generics with bounds and default values (e.g. `T: Clone, const N: usize = 0`).
+> +    ///
+> +    /// Use this on type definitions e.g. `struct Foo<$decl_generics> ...` (or `union`/`enum`).
+> +    pub(crate) decl_generics: Vec<TokenTree>,
+> +    /// The generics with bounds (e.g. `T: Clone, const N: usize`).
+> +    ///
+> +    /// Use this on `impl` blocks e.g. `impl<$impl_generics> Trait for ...`.
+>      pub(crate) impl_generics: Vec<TokenTree>,
+> +    /// The generics without bounds and without default values (e.g. `T, N`).
+> +    ///
+> +    /// Use this when you use the type that is declared with these generics e.g.
+> +    /// `Foo<$ty_generics>`.
+>      pub(crate) ty_generics: Vec<TokenTree>,
+>  }
 >  
->  imx8mm-venice-gw72xx-0x-imx219-dtbs	:= imx8mm-venice-gw72xx-0x.dtb imx8mm-venice-gw72xx-0x-imx219.dtbo
->  imx8mm-venice-gw72xx-0x-rpidsi-dtbs	:= imx8mm-venice-gw72xx-0x.dtb imx8mm-venice-gw72xx-0x-rpidsi.dtbo
-> diff --git a/arch/arm64/boot/dts/freescale/imx93-var-som-symphony.dts b/arch/arm64/boot/dts/freescale/imx93-var-som-symphony.dts
-> new file mode 100644
-> index 000000000000..85b1355cf805
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/freescale/imx93-var-som-symphony.dts
-> @@ -0,0 +1,307 @@
-> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-> +/*
-> + * Copyright 2021 NXP
-> + * Copyright 2023 Variscite Ltd.
-> + */
-> +
-> +/dts-v1/;
-> +
-> +#include "imx93-var-som.dtsi"
-> +
-> +/{
-> +	model = "Variscite VAR-SOM-MX93 on Symphony evaluation board";
-> +	compatible = "variscite,var-som-imx93-symphony", "variscite,var-som-mx93", "fsl,imx93";
+> @@ -81,6 +113,8 @@ pub(crate) struct Generics {
+>  pub(crate) fn parse_generics(input: TokenStream) -> (Generics, Vec<TokenTree>) {
+>      // `impl_generics`, the declared generics with their bounds.
+>      let mut impl_generics = vec![];
+> +    // The generics with bounds and default values.
+> +    let mut decl_generics = vec![];
 
-Please run scripts/checkpatch.pl and fix reported warnings. Some
-warnings can be ignored, but the code here looks like it needs a fix.
-Feel free to get in touch if the warning is not clear.
+It'll be great if the order if the same as the declaration in struct
+above.
 
-Also, wrap it at 80.
+>      // Only the names of the generics, without any bounds.
+>      let mut ty_generics = vec![];
+>      // Tokens not related to the generics e.g. the `where` token and definition.
+> @@ -90,10 +124,17 @@ pub(crate) fn parse_generics(input: TokenStream) -> (Generics, Vec<TokenTree>) {
+>      let mut toks = input.into_iter();
+>      // If we are at the beginning of a generic parameter.
+>      let mut at_start = true;
+> -    for tt in &mut toks {
+> +    let mut skip_until_comma = false;
+> +    while let Some(tt) = toks.next() {
+> +        if nesting == 1 && matches!(&tt, TokenTree::Punct(p) if p.as_char() == '>') {
+> +            // Found the end of the generics.
+> +            break;
+> +        } else if nesting >= 1 {
+> +            decl_generics.push(tt.clone());
+> +        }
+>          match tt.clone() {
+>              TokenTree::Punct(p) if p.as_char() == '<' => {
+> -                if nesting >= 1 {
+> +                if nesting >= 1 && !skip_until_comma {
+>                      // This is inside of the generics and part of some bound.
+>                      impl_generics.push(tt);
+>                  }
+> @@ -105,49 +146,70 @@ pub(crate) fn parse_generics(input: TokenStream) -> (Generics, Vec<TokenTree>) {
+>                      break;
+>                  } else {
+>                      nesting -= 1;
+> -                    if nesting >= 1 {
+> +                    if nesting >= 1 && !skip_until_comma {
+>                          // We are still inside of the generics and part of some bound.
+>                          impl_generics.push(tt);
+>                      }
+> -                    if nesting == 0 {
+> -                        break;
+> -                    }
+>                  }
+>              }
+> -            tt => {
+> +            TokenTree::Punct(p) if skip_until_comma && p.as_char() == ',' => {
+>                  if nesting == 1 {
+> -                    // Here depending on the token, it might be a generic variable name.
+> -                    match &tt {
+> -                        // Ignore const.
+> -                        TokenTree::Ident(i) if i.to_string() == "const" => {}
+> -                        TokenTree::Ident(_) if at_start => {
+> -                            ty_generics.push(tt.clone());
+> -                            // We also already push the `,` token, this makes it easier to append
+> -                            // generics.
+> -                            ty_generics.push(TokenTree::Punct(Punct::new(',', Spacing::Alone)));
+> -                            at_start = false;
+> -                        }
+> -                        TokenTree::Punct(p) if p.as_char() == ',' => at_start = true,
+> -                        // Lifetimes begin with `'`.
+> -                        TokenTree::Punct(p) if p.as_char() == '\'' && at_start => {
+> -                            ty_generics.push(tt.clone());
+> -                        }
+> -                        _ => {}
+> -                    }
+> +                    impl_generics.push(TokenTree::Punct(p.clone()));
+> +                    ty_generics.push(TokenTree::Punct(p));
 
-> +
-> +	aliases {
-> +		ethernet1 = &fec;
-> +	};
-> +
-> +	chosen {
-> +		stdout-path = &lpuart1;
-> +	};
-> +
-> +	/*
-> +	 * Needed only for Symphony <= v1.5
-> +	 */
-> +	reg_fec_phy: regulator-fec-phy {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "fec-phy";
-> +		regulator-min-microvolt = <1800000>;
-> +		regulator-max-microvolt = <1800000>;
-> +		regulator-enable-ramp-delay = <20000>;
-> +		gpio = <&pca9534 7 GPIO_ACTIVE_HIGH>;
-> +		enable-active-high;
-> +		regulator-always-on;
-> +	};
-> +
-> +	reg_usdhc2_vmmc: regulator-usdhc2 {
-> +		compatible = "regulator-fixed";
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&pinctrl_reg_usdhc2_vmmc>;
-> +		regulator-name = "VSD_3V3";
-> +		regulator-min-microvolt = <3300000>;
-> +		regulator-max-microvolt = <3300000>;
-> +		gpio = <&gpio2 18 GPIO_ACTIVE_HIGH>;
-> +		off-on-delay-us = <20000>;
-> +		enable-active-high;
-> +	};
-> +
-> +	reg_vref_1v8: regulator-adc-vref {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "vref_1v8";
-> +		regulator-min-microvolt = <1800000>;
-> +		regulator-max-microvolt = <1800000>;
-> +	};
-> +
-> +	reserved-memory {
-> +		#address-cells = <2>;
-> +		#size-cells = <2>;
-> +		ranges;
-> +
-> +		ethosu_mem: ethosu_region@88000000 {
+This could just be
 
-No underscores in node names.
+	impl_generics.push(tt.clone());
+	ty_generics.push(tt);
 
-Please do not upstream downstream DTS, but fix it to match proper Linux
-coding style.
+?
 
-...
+> +                    skip_until_comma = false;
+>                  }
+> -                if nesting >= 1 {
+> -                    impl_generics.push(tt);
+> -                } else if nesting == 0 {
+> +            }
+> +            tt if !skip_until_comma => {
+> +                match nesting {
+>                      // If we haven't entered the generics yet, we still want to keep these tokens.
+> -                    rest.push(tt);
+> +                    0 => rest.push(tt),
+> +                    1 => {
+> +                        // Here depending on the token, it might be a generic variable name.
+> +                        match tt {
+> +                            TokenTree::Ident(i) if at_start && i.to_string() == "const" => {
+> +                                let Some(name) = toks.next() else {
+> +                                    // Parsing error.
+> +                                    break;
+> +                                };
+> +                                impl_generics.push(TokenTree::Ident(i));
 
+Similar, this could just be push tt.
 
-> +	pinctrl_lpi2c1: lpi2c1grp {
-> +		fsl,pins = <
-> +			MX93_PAD_I2C1_SCL__LPI2C1_SCL			0x40000b9e
-> +			MX93_PAD_I2C1_SDA__LPI2C1_SDA			0x40000b9e
-> +		>;
-> +	};
-> +
-> +	pinctrl_lpi2c1_gpio: lpi2c1grp-gpio {
+> +                                impl_generics.push(name.clone());
+> +                                ty_generics.push(name.clone());
+> +                                decl_generics.push(name);
+> +                                at_start = false;
+> +                            }
+> +                            tt @ TokenTree::Ident(_) if at_start => {
+> +                                impl_generics.push(tt.clone());
+> +                                ty_generics.push(tt);
+> +                                at_start = false;
+> +                            }
+> +                            TokenTree::Punct(p) if p.as_char() == ',' => {
+> +                                impl_generics.push(TokenTree::Punct(p.clone()));
+> +                                ty_generics.push(TokenTree::Punct(p));
+> +                                at_start = true;
+> +                            }
 
-It does not look like you tested the DTS against bindings. Please run
-`make dtbs_check W=1` (see
-Documentation/devicetree/bindings/writing-schema.rst or
-https://www.linaro.org/blog/tips-and-tricks-for-validating-devicetree-sources-with-the-devicetree-schema/
-for instructions).
+I am not sure why the ident above uses tt, but this spells thing all
+out.
 
+> +                            // Lifetimes begin with `'`.
+> +                            TokenTree::Punct(p) if p.as_char() == '\'' && at_start => {
+> +                                ty_generics.push(TokenTree::Punct(p.clone()));
+> +                                impl_generics.push(TokenTree::Punct(p));
+> +                            }
 
-...
+ditto
 
-> +
-> +&lpi2c1 {
-> +	#address-cells = <1>;
-> +	#size-cells = <0>;
-> +	clock-frequency = <400000>;
-> +	pinctrl-names = "default", "sleep", "gpio";
-> +	pinctrl-0 = <&pinctrl_lpi2c1>;
-> +	pinctrl-1 = <&pinctrl_lpi2c1_gpio>;
-> +	pinctrl-2 = <&pinctrl_lpi2c1_gpio>;
-> +	scl-gpios = <&gpio1 0 GPIO_ACTIVE_HIGH>;
-> +	sda-gpios = <&gpio1 1 GPIO_ACTIVE_HIGH>;
-> +	status = "okay";
-> +
-> +	/* DS1337 RTC module */
-> +	rtc@68 {
-> +		status = "okay";
-
-Drop. It is never the first property, BTW.
-
-> +		compatible = "dallas,ds1337";
-> +		reg = <0x68>;
-> +	};
-> +};
-> +
-> +&lpi2c5 {
-> +	#address-cells = <1>;
-> +	#size-cells = <0>;
-> +	clock-frequency = <400000>;
-> +	pinctrl-names = "default", "sleep", "gpio";
-> +	pinctrl-0 = <&pinctrl_lpi2c5>;
-> +	pinctrl-1 = <&pinctrl_lpi2c5_gpio>;
-> +	pinctrl-2 = <&pinctrl_lpi2c5_gpio>;
-> +	scl-gpios = <&gpio2 23 GPIO_ACTIVE_HIGH>;
-> +	sda-gpios = <&gpio2 22 GPIO_ACTIVE_HIGH>;
-> +	status = "okay";
-> +
-> +	pca9534: gpio@20 {
-> +		status = "okay";
-
-Drop.
-
-> +		compatible = "nxp,pca9534";
-> +		reg = <0x20>;
-> +		gpio-controller;
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&pinctrl_pca9534>;
-> +		interrupt-parent = <&gpio3>;
-> +		interrupts = <26 IRQ_TYPE_EDGE_FALLING>;
-> +		#gpio-cells = <2>;
-> +		wakeup-source;
-> +	};
-> +};
-
-...
-
-> diff --git a/arch/arm64/boot/dts/freescale/imx93-var-som.dtsi b/arch/arm64/boot/dts/freescale/imx93-var-som.dtsi
-> new file mode 100644
-> index 000000000000..30b969d0134d
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/freescale/imx93-var-som.dtsi
-> @@ -0,0 +1,312 @@
-> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-> +/*
-> + * Copyright 2022 NXP
-> + * Copyright 2023 Variscite Ltd.
-> + */
-> +
-> +/dts-v1/;
-> +
-> +#include <dt-bindings/usb/pd.h>
-> +#include "imx93.dtsi"
-> +
-> +/{
-> +	model = "Variscite VAR-SOM-MX93 module";
-> +	compatible = "variscite,var-som-imx93", "fsl,imx93";
-
-Please run scripts/checkpatch.pl and fix reported warnings. Some
-warnings can be ignored, but the code here looks like it needs a fix.
-Feel free to get in touch if the warning is not clear.
-
-> +
-> +	iw612_pwrseq: iw612_pwrseq {
-
-Node names should be generic. See also an explanation and list of
-examples (not exhaustive) in DT specification:
-https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#generic-names-recommendation
-
-
-> +		compatible = "mmc-pwrseq-simple";
-> +		post-power-on-delay-ms = <100>;
-> +		power-off-delay-us = <10000>;
-> +		reset-gpios = <&gpio4 14 GPIO_ACTIVE_LOW>,	/* WIFI_RESET */
-> +			      <&gpio3 7 GPIO_ACTIVE_LOW>;	/* WIFI_PWR_EN */
-> +		status = "okay";
-
-Drop
-
-....
-
-> +	pinctrl_lpi2c3: lpi2c3grp {
-> +		fsl,pins = <
-> +			MX93_PAD_GPIO_IO28__LPI2C3_SDA			0x40000b9e
-> +			MX93_PAD_GPIO_IO29__LPI2C3_SCL			0x40000b9e
-> +		>;
-> +	};
-> +
-> +	pinctrl_lpi2c3_gpio: lpi2c3grp-gpio {
-
-It does not look like you tested the DTS against bindings. Please run
-`make dtbs_check W=1` (see
-Documentation/devicetree/bindings/writing-schema.rst or
-https://www.linaro.org/blog/tips-and-tricks-for-validating-devicetree-sources-with-the-devicetree-schema/
-for instructions).
-
-...
-
-> +
-> +&lpi2c3 {
-> +	#address-cells = <1>;
-> +	#size-cells = <0>;
-> +	clock-frequency = <400000>;
-> +	pinctrl-names = "default", "sleep", "gpio";
-> +	pinctrl-0 = <&pinctrl_lpi2c3>;
-> +	pinctrl-1 = <&pinctrl_lpi2c3_gpio>;
-> +	pinctrl-2 = <&pinctrl_lpi2c3_gpio>;
-> +	scl-gpios = <&gpio2 29 GPIO_ACTIVE_HIGH>;
-> +	sda-gpios = <&gpio2 28 GPIO_ACTIVE_HIGH>;
-> +	status = "okay";
-> +
-> +	pmic@25 {
-> +		compatible = "nxp,pca9451a";
-
-Please run scripts/checkpatch.pl and fix reported warnings. Some
-warnings can be ignored, but the code here looks like it needs a fix.
-Feel free to get in touch if the warning is not clear.
-
-I don't see this compatible documented and cover letter or changelog
-does not mention neither dependencies nor other series bringing it.
-
-> +		reg = <0x25>;
-> +
-> +		regulators {
-> +			buck1: BUCK1 {
-
-Lowercase
-
-> +				regulator-name = "BUCK1";
-> +				regulator-min-microvolt = <650000>;
-> +				regulator-max-microvolt = <2237500>;
-> +				regulator-boot-on;
-> +				regulator-always-on;
-> +				regulator-ramp-delay = <3125>;
-> +			};
-> +
-> +			buck2: BUCK2 {
-
-Lowercase, further as well
-
-...
-
-Best regards,
-Krzysztof
+> +                            // Generics can have default values, we skip these.
+> +                            TokenTree::Punct(p) if p.as_char() == '=' => {
+> +                                skip_until_comma = true;
+> +                            }
+> +                            tt => impl_generics.push(tt),
+> +                        }
+> +                    }
+> +                    _ => impl_generics.push(tt),
+>                  }
+>              }
+> +            _ => {}
+>          }
+>      }
+>      rest.extend(toks);
+>      (
+>          Generics {
+>              impl_generics,
+> +            decl_generics,
+>              ty_generics,
+>          },
+>          rest,
+> diff --git a/rust/macros/pin_data.rs b/rust/macros/pin_data.rs
+> index 6d58cfda9872..022e68e9720d 100644
+> --- a/rust/macros/pin_data.rs
+> +++ b/rust/macros/pin_data.rs
+> @@ -10,6 +10,7 @@ pub(crate) fn pin_data(args: TokenStream, input: TokenStream) -> TokenStream {
+>      let (
+>          Generics {
+>              impl_generics,
+> +            decl_generics: _,
+>              ty_generics,
+>          },
+>          rest,
+> diff --git a/rust/macros/zeroable.rs b/rust/macros/zeroable.rs
+> index 0d605c46ab3b..cfee2cec18d5 100644
+> --- a/rust/macros/zeroable.rs
+> +++ b/rust/macros/zeroable.rs
+> @@ -7,6 +7,7 @@ pub(crate) fn derive(input: TokenStream) -> TokenStream {
+>      let (
+>          Generics {
+>              impl_generics,
+> +            decl_generics: _,
+>              ty_generics,
+>          },
+>          mut rest,
+> 
+> base-commit: d9857c16cfc6bce7764e1b79956c6a028f97f4d0
 
 
