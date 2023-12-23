@@ -1,58 +1,48 @@
-Return-Path: <linux-kernel+bounces-10499-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10500-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29C2581D51D
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 17:36:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B228281D520
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 17:40:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BA99C1F220A6
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 16:36:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 536BE1F22082
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 16:40:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0429E12B76;
-	Sat, 23 Dec 2023 16:36:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF98610940;
+	Sat, 23 Dec 2023 16:40:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Qj3Y/LrZ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gPporjS7"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32F20CA7E;
-	Sat, 23 Dec 2023 16:36:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB976C433C8;
-	Sat, 23 Dec 2023 16:36:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19BECDDB7;
+	Sat, 23 Dec 2023 16:40:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F5E3C433C7;
+	Sat, 23 Dec 2023 16:40:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703349378;
-	bh=N9AzMOu4koi0frJdk8bVKllnwJ5h9l24nJ4K62YY+pI=;
+	s=k20201202; t=1703349620;
+	bh=KS7YCRC4NCwBZglO7G2FfSSppkyOZ7I1bvshGs9NiHQ=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Qj3Y/LrZ2lOQTBRnK85le0wCLszMYvalS1tEsiA2oDhp7qpSDDdWUvTaMpGXz9dhH
-	 4ykHNYOdo8VERL63YuAP4CjO7id17Ib8H6NWh/sBrdWlq+wS7ll95qpMlhdjgHcdnu
-	 8JtgzESsnTo6Lf8rD4QWsFDvri8BBMcUcAmlGZNGux6X5DTVPZyfo04LtfBCt+2WJy
-	 GyAIEspIRqQcufLhNhVK901yYC4p12YjlNF9t1bG4qBLD3rqEKTEJCs4lNVZJdc5Ng
-	 zjjAeI5g3LafLZMaXy6Kg5nFDlh43NDOP71OPd4Z3S89V59zbDhPZNPHi4R8ctqG06
-	 8j2jAc6SxjjNw==
-Date: Sat, 23 Dec 2023 16:36:12 +0000
+	b=gPporjS70QdVLlK5aMkwdcl64sVbOZvy/LJuNu0U9C2L0rmebH4y2Hqc43lxWrW/Z
+	 2l2ZTiX/XoGF/uoVsKujQvl9P/begrmyFiO2sUShM8IjjfGjqXNkr/6xxNKg6s2DZG
+	 4bHYPhhM1ZQTBNA5QpCJWY2ZBy74mwu7PUhxyoLE8kQMggVsKQOiym/lClE61O9f28
+	 dhUmSIhuHefYwa2cY5fh5QDZFCBvZ73hkl+M7HlK5T7myjSAkI2oWxYq5f3/DTprp2
+	 r7rMMNlcMxQ/+nRURIJo5BrNcLaHp0ZahUMc17IziZufbG75t3QRy4lIpXq+puJvNO
+	 E9EAEHf7VyQOw==
+Date: Sat, 23 Dec 2023 16:40:16 +0000
 From: Simon Horman <horms@kernel.org>
-To: David Howells <dhowells@redhat.com>
-Cc: Markus Suvanto <markus.suvanto@gmail.com>,
-	Marc Dionne <marc.dionne@auristor.com>,
-	linux-afs@lists.infradead.org, keyrings@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Wang Lei <wang840925@gmail.com>, Jeff Layton <jlayton@redhat.com>,
-	Steve French <sfrench@us.ibm.com>,
-	Jarkko Sakkinen <jarkko@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	linux-cifs@vger.kernel.org, linux-nfs@vger.kernel.org,
-	ceph-devel@vger.kernel.org, netdev@vger.kernel.org,
-	Edward Adam Davis <eadavis@qq.com>
-Subject: Re: [PATCH v4 3/3] keys, dns: Allow key types (eg. DNS) to be
- reclaimed immediately on expiry
-Message-ID: <20231223163612.GG201037@kernel.org>
-References: <20231221134558.1659214-1-dhowells@redhat.com>
- <20231221134558.1659214-4-dhowells@redhat.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Vadim Fedorenko <vadim.fedorenko@linux.dev>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Jonathan Lemon <jonathan.lemon@gmail.com>,
+	Vadim Fedorenko <vadfed@fb.com>,
+	Richard Cochran <richardcochran@gmail.com>
+Subject: Re: [PATCH net-next v1 1/1] ptp: ocp: Use DEFINE_RES_*() in place
+Message-ID: <20231223164016.GH201037@kernel.org>
+References: <20231221140607.2760115-1-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -61,72 +51,17 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231221134558.1659214-4-dhowells@redhat.com>
+In-Reply-To: <20231221140607.2760115-1-andriy.shevchenko@linux.intel.com>
 
-+ Edward Adam Davis
-
-On Thu, Dec 21, 2023 at 01:45:30PM +0000, David Howells wrote:
-> If a key has an expiration time, then when that time passes, the key is
-> left around for a certain amount of time before being collected (5 mins by
-> default) so that EKEYEXPIRED can be returned instead of ENOKEY.  This is a
-> problem for DNS keys because we want to redo the DNS lookup immediately at
-> that point.
+On Thu, Dec 21, 2023 at 04:06:07PM +0200, Andy Shevchenko wrote:
+> There is no need to have an intermediate functions as DEFINE_RES_*()
+> macros are represented by compound literals. Just use them in place.
 > 
-> Fix this by allowing key types to be marked such that keys of that type
-> don't have this extra period, but are reclaimed as soon as they expire and
-> turn this on for dns_resolver-type keys.  To make this easier to handle,
-> key->expiry is changed to be permanent if TIME64_MAX rather than 0.
-> 
-> Furthermore, give such new-style negative DNS results a 1s default expiry
-> if no other expiry time is set rather than allowing it to stick around
-> indefinitely.  This shouldn't be zero as ls will follow a failing stat call
-> immediately with a second with AT_SYMLINK_NOFOLLOW added.
-> 
-> Fixes: 1a4240f4764a ("DNS: Separate out CIFS DNS Resolver code")
-> Signed-off-by: David Howells <dhowells@redhat.com>
-> Tested-by: Markus Suvanto <markus.suvanto@gmail.com>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-...
+Thanks Andy,
 
-> diff --git a/net/dns_resolver/dns_key.c b/net/dns_resolver/dns_key.c
-> index 01e54b46ae0b..2a6d363763a2 100644
-> --- a/net/dns_resolver/dns_key.c
-> +++ b/net/dns_resolver/dns_key.c
-> @@ -91,6 +91,7 @@ const struct cred *dns_resolver_cache;
->  static int
->  dns_resolver_preparse(struct key_preparsed_payload *prep)
->  {
-> +	const struct dns_server_list_v1_header *v1;
->  	const struct dns_payload_header *bin;
->  	struct user_key_payload *upayload;
->  	unsigned long derrno;
-> @@ -122,6 +123,13 @@ dns_resolver_preparse(struct key_preparsed_payload *prep)
->  			return -EINVAL;
->  		}
->  
-> +		v1 = (const struct dns_server_list_v1_header *)bin;
-> +		if ((v1->status != DNS_LOOKUP_GOOD &&
-> +		     v1->status != DNS_LOOKUP_GOOD_WITH_BAD)) {
-> +			if (prep->expiry == TIME64_MAX)
-> +				prep->expiry = ktime_get_real_seconds() + 1;
-> +		}
-> +
->  		result_len = datalen;
->  		goto store_result;
->  	}
+this is a nice cleanup.
 
-Hi David,
-
-As has been pointed out by Edward Adam Davis, this may result
-in a buffer overrun. Just above this hunk the following length
-check occurs:
-
-		if (datalen <= sizeof(*bin))
-			return -EINVAL;
-
-But the new code above reads beyond the end of sizeof(*bin).
-
-Link: https://lore.kernel.org/netdev/tencent_7D663C8936BA96F837124A4474AF76ED6709@qq.com/
-
-...
+Reviewed-by: Simon Horman <horms@kernel.org>
 
