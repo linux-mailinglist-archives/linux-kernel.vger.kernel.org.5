@@ -1,91 +1,115 @@
-Return-Path: <linux-kernel+bounces-10572-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10573-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 012F881D65C
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 20:43:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39F8281D65F
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 20:43:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 956891F2201C
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 19:43:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EA383283434
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 19:43:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29B4E15482;
-	Sat, 23 Dec 2023 19:43:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="WA9pIvhm"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F14315E99;
+	Sat, 23 Dec 2023 19:43:46 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3842615E97;
-	Sat, 23 Dec 2023 19:43:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
-	Content-ID:Content-Description:In-Reply-To:References;
-	bh=MZdAHr+wuYcdl9kCMiKRYkr3A+dIJpsdHYAKS3W+678=; b=WA9pIvhmqSXZI2JumNvIHfsnFb
-	moGWQEnZfNTZnV5mu0LqvmgSw6/9ZREovdLk348k9+iU/cRe1/0rEmVfU9m36/cU1w9xhPoheAosC
-	j2xNWuODzXCXykdmbLEA18aVqDIWW1DnFJ7oZZTmyF79qILcyZlfmVbpri13Th+Mxbir/iU3qY2m2
-	hpIOeyO7u+zd4vNG+m5eDnIo1nkQ2CcvT6Na3ngLLr8zGHNZ6erpuXSKANabjpZ832lCI4PTTahS+
-	RZ8AU2JdBPFyvSJV2TgSBMPkkKc9gTYLq1IY+rEGN9Y4ukkCBxJrHUR8oPnCeK6KWNXNgTuWOiiLU
-	syBm7fyg==;
-Received: from [50.53.46.231] (helo=bombadil.infradead.org)
-	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1rH7u5-008OuS-2a;
-	Sat, 23 Dec 2023 19:43:21 +0000
-From: Randy Dunlap <rdunlap@infradead.org>
-To: linux-kernel@vger.kernel.org
-Cc: Randy Dunlap <rdunlap@infradead.org>,
-	Armin Wolf <W_Armin@gmx.de>,
-	Hans de Goede <hdegoede@redhat.com>,
-	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	platform-driver-x86@vger.kernel.org
-Subject: [PATCH v2] platform/x86: wmi: linux/wmi.h: fix Excess kernel-doc description warning
-Date: Sat, 23 Dec 2023 11:43:19 -0800
-Message-ID: <20231223194321.23084-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.43.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA91718053;
+	Sat, 23 Dec 2023 19:43:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
+Received: from [192.168.1.104] (31.173.85.112) by msexch01.omp.ru
+ (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Sat, 23 Dec
+ 2023 22:43:34 +0300
+Subject: Re: [PATCH net v2 1/1] net: ravb: Wait for operation mode to be
+ applied
+To: Claudiu <claudiu.beznea@tuxon.dev>, <davem@davemloft.net>,
+	<edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+	<yoshihiro.shimoda.uh@renesas.com>, <wsa+renesas@sang-engineering.com>,
+	<mitsuhiro.kimura.kc@renesas.com>
+CC: <netdev@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, Claudiu Beznea
+	<claudiu.beznea.uj@bp.renesas.com>
+References: <20231222113552.2049088-1-claudiu.beznea.uj@bp.renesas.com>
+ <20231222113552.2049088-2-claudiu.beznea.uj@bp.renesas.com>
+From: Sergey Shtylyov <s.shtylyov@omp.ru>
+Organization: Open Mobile Platform
+Message-ID: <110a8720-e7a6-ebf1-b286-4834dc32651c@omp.ru>
+Date: Sat, 23 Dec 2023 22:43:33 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231222113552.2049088-2-claudiu.beznea.uj@bp.renesas.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
+ (10.188.4.12)
+X-KSE-ServerInfo: msexch01.omp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 12/23/2023 19:28:38
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 59
+X-KSE-AntiSpam-Info: Lua profiles 182322 [Dec 23 2023]
+X-KSE-AntiSpam-Info: Version: 6.1.0.3
+X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
+X-KSE-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a
+X-KSE-AntiSpam-Info: {rep_avail}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: {relay has no DNS name}
+X-KSE-AntiSpam-Info: {SMTP from is not routable}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 31.173.85.112 in (user)
+ b.barracudacentral.org}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 31.173.85.112 in (user)
+ dbl.spamhaus.org}
+X-KSE-AntiSpam-Info:
+	omp.ru:7.1.1;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1
+X-KSE-AntiSpam-Info: ApMailHostAddress: 31.173.85.112
+X-KSE-AntiSpam-Info: {DNS response errors}
+X-KSE-AntiSpam-Info: Rate: 59
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
+ smtp.mailfrom=omp.ru;dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 12/23/2023 19:32:00
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 12/23/2023 4:14:00 PM
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
 
-Remove the "private:" comment to prevent the kernel-doc warning:
+On 12/22/23 2:35 PM, Claudiu wrote:
 
-include/linux/wmi.h:27: warning: Excess struct member 'setable' description in 'wmi_device'
+> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> 
+> CSR.OPS bits specify the current operating mode and (according to
+> documentation) they are updated by HW when the operating mode change
+> request is processed. To comply with this check CSR.OPS before proceeding.
+> 
+> Commit introduces ravb_set_opmode() that does all the necessities for
+> setting the operating mode (set DMA.CCC and wait for CSR.OPS) and call it
 
-Either a struct member is documented (via kernel-doc) or it's private,
-but not both.
+   What's DMA.CCC? Maybe CCC.OPC?
 
-Fixes: b4cc979588ee ("platform/x86: wmi: Add kernel doc comments")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Armin Wolf <W_Armin@gmx.de>
-Cc: Hans de Goede <hdegoede@redhat.com>
-Cc: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-Cc: platform-driver-x86@vger.kernel.org
-Reviewed-by: Armin Wolf <W_Armin@gmx.de>
----
-v2: add Fixes: tag and Rev-by: Armin
+> where needed. This should comply with all the HW manuals requirements as
+> different manual variants specify that different modes need to be checked
+> in CSR.OPS when setting DMA.CCC.
+> 
+> Fixes: c156633f1353 ("Renesas Ethernet AVB driver proper")
+> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+[...]
 
- include/linux/wmi.h |    2 --
- 1 file changed, 2 deletions(-)
-
-diff -- a/include/linux/wmi.h b/include/linux/wmi.h
---- a/include/linux/wmi.h
-+++ b/include/linux/wmi.h
-@@ -21,8 +21,6 @@
-  */
- struct wmi_device {
- 	struct device dev;
--
--	/* private: used by the WMI driver core */
- 	bool setable;
- };
- 
+MBR, Sergey
 
