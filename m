@@ -1,87 +1,126 @@
-Return-Path: <linux-kernel+bounces-10364-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10365-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2267681D365
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 10:50:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 090D181D367
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 10:55:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B5F591F228F3
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 09:50:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 94D1E1F2288F
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 09:55:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61617BA58;
-	Sat, 23 Dec 2023 09:50:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B11DD9469;
+	Sat, 23 Dec 2023 09:54:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=maquefel.me header.i=@maquefel.me header.b="QI4e097o"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZsulTFzY"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from forward502b.mail.yandex.net (forward502b.mail.yandex.net [178.154.239.146])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0939944F;
-	Sat, 23 Dec 2023 09:50:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=maquefel.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=maquefel.me
-Received: from mail-nwsmtp-smtp-production-main-38.myt.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-38.myt.yp-c.yandex.net [IPv6:2a02:6b8:c12:5700:0:640:9f25:0])
-	by forward502b.mail.yandex.net (Yandex) with ESMTP id 2DBED5E7F8;
-	Sat, 23 Dec 2023 12:50:00 +0300 (MSK)
-Received: by mail-nwsmtp-smtp-production-main-38.myt.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id wnMTcg7sH0U0-lC5po5G3;
-	Sat, 23 Dec 2023 12:49:59 +0300
-X-Yandex-Fwd: 1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maquefel.me; s=mail;
-	t=1703324999; bh=rnbUS06+JV2kXQzoFZqstlw6VQtLSVdgCy936EMVjgo=;
-	h=References:Date:In-Reply-To:Cc:To:From:Subject:Message-ID;
-	b=QI4e097osx6nUf8GCAXmt6FXdpo1Rk5NkdDGDcJGaedXM5+Jof2uM7pNFvOdTvIMa
-	 Oc302eD82abfsw0xhOUQi09sTQZOydzjJmrFS0mUn26TAgzA/Zc4ydPdKuecrPD/9k
-	 jCFC5uw+fLs8kXrDiFFp490pjD0ECksL2jT6pkZA=
-Authentication-Results: mail-nwsmtp-smtp-production-main-38.myt.yp-c.yandex.net; dkim=pass header.i=@maquefel.me
-Message-ID: <4b6e64cea850c7db974aac97d71560be4e261b1c.camel@maquefel.me>
-Subject: Re: [PATCH v6 40/40] dma: cirrus: remove platform code
-From: Nikita Shubin <nikita.shubin@maquefel.me>
-To: Andy Shevchenko <andriy.shevchenko@intel.com>
-Cc: Vinod Koul <vkoul@kernel.org>, Alexander Sverdlin
-	 <alexander.sverdlin@gmail.com>, linux-kernel@vger.kernel.org, 
-	dmaengine@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
-Date: Sat, 23 Dec 2023 12:49:59 +0300
-In-Reply-To: <ZXn4UIkoJeHnAAGW@smile.fi.intel.com>
-References: <20231212-ep93xx-v6-0-c307b8ac9aa8@maquefel.me>
-	 <20231212-ep93xx-v6-40-c307b8ac9aa8@maquefel.me>
-	 <ZXn4UIkoJeHnAAGW@smile.fi.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AD609453;
+	Sat, 23 Dec 2023 09:54:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a2335d81693so452972066b.0;
+        Sat, 23 Dec 2023 01:54:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703325290; x=1703930090; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=bHzDFdj6AAq1EkhQ9b2oKbYVeVHhqzNqLXJeReuch38=;
+        b=ZsulTFzYRFPNei18xnwpjCg3Xv0qL5miYtOzb7UEmnzaRZZSmbB3RzGWFweuzc7ZBK
+         scEKlHvQlaS9ZfHTlcIB4k7PgF+WMLW6v1gdzsWcpab/OibP2G4UwES5bMkS0XmQJFMA
+         EYCfxHZlNPuvdKdknOECUMa3iMh9YFct+t/tb8QCKCUuEGW9jnL9Dmk37LR/dh1fBiO1
+         Z+OtpcExFXb2Z97cgZ6T6o7QJhVQ4FMTEoSSSfdgNI2TYi6loB98LQfuM7L0l/Tv5W5R
+         oSO/dPYcLeDoRzUtUNibPRVk8jAnS5JCQjnks/HTRb0kMpXfRaZkK/hmNAYZpWBCOoLS
+         tIkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703325290; x=1703930090;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bHzDFdj6AAq1EkhQ9b2oKbYVeVHhqzNqLXJeReuch38=;
+        b=MpO8fTxBrItgzPF2IBJUYGZvZMvkvvkEYhk+aTSOm0c9PZaZ0xp+mJNVeoQ9GQ++QW
+         2VB8VXz0JxEQwtRNtbp0WcuDZyPtWYJ6KJYi4JbsYESFHR6h3HNJL3ldVJYQ5nIVQGBm
+         5tbKNH7lFFNupJ6arQ3uhd2+ijyHC0zdYK5vtHCR4wk6iEcHEXmCwq6HoKN1FNxaR/dM
+         oSqY1CRNIKvcPdGavjuS+tWmwYiZI5Vxoy/whB8h0yOK3lP85j+jAbsMBF+kLY6LoCaN
+         47H/16ijWWe54+T1DPG/7X3GgRueBi1c+DTWYZ74QalgxmjiDT1oc9ruHs9NVHOV6det
+         P0pQ==
+X-Gm-Message-State: AOJu0YzeagYOZipGZ9fuRtBFuZhSWDPAMB11djxEIfZk6r/IsbJ9Kq3G
+	DM2kGH4b+EEWyjro6bfTdps=
+X-Google-Smtp-Source: AGHT+IFAKkyHuXC+2ZQsDqt+ykZ/JFqGLUj7vfm5+T11hYdDRntXEYXSmzcejJulP8mOKlYfvtm54A==
+X-Received: by 2002:a17:906:c143:b0:a1c:4c3e:99e2 with SMTP id dp3-20020a170906c14300b00a1c4c3e99e2mr4320683ejc.22.1703325289779;
+        Sat, 23 Dec 2023 01:54:49 -0800 (PST)
+Received: from cjw-notebook (188-23-116-43.adsl.highway.telekom.at. [188.23.116.43])
+        by smtp.gmail.com with ESMTPSA id cl2-20020a170906c4c200b00a19afc16d23sm2898160ejb.104.2023.12.23.01.54.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 23 Dec 2023 01:54:49 -0800 (PST)
+Date: Sat, 23 Dec 2023 10:54:47 +0100
+From: Christoph Winklhofer <cj.winklhofer@gmail.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: robh+dt@kernel.org, conor+dt@kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 0/2] w1: add UART w1 bus driver
+Message-ID: <ZYauZ1ZlyQYco7Yq@cjw-notebook>
+References: <20231221065049.30703-1-cj.winklhofer@gmail.com>
+ <b2b9d95e-dcc7-4a3e-b4b4-14d5af964b96@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b2b9d95e-dcc7-4a3e-b4b4-14d5af964b96@linaro.org>
 
-On Wed, 2023-12-13 at 20:30 +0200, Andy Shevchenko wrote:
-> On Tue, Dec 12, 2023 at 11:20:57AM +0300, Nikita Shubin wrote:
-> > Remove DMA platform header, from now on we use device tree for dma
->=20
-> DMA
->=20
-> > clients.
->=20
-> ...
->=20
-> > +static inline bool ep93xx_dma_chan_is_m2p(struct dma_chan *chan)
-> > +{
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (device_is_compatible(cha=
-n->device->dev, "cirrus,ep9301-
-> > dma-m2p"))
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0return true;
-> > +
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return !strcmp(dev_name(chan=
-->device->dev), "ep93xx-dma-
-> > m2p");
-> > +}
->=20
-> Hmm... Isn't the same as new helper in a header in another patch?
->=20
+On Thu, Dec 21, 2023 at 10:13:01PM +0100, Krzysztof Kozlowski wrote:
+> On 21/12/2023 07:50, Christoph Winklhofer wrote:
+> > Hello!
+> > 
+> > Krzysztof, thank your very much for your feedback!
+> > 
+> > This patch contains a driver for a 1-Wire bus over UART. The driver
+> > utilizes the UART interface via the Serial Device Bus to create the
+> > 1-Wire timing patterns.
+> > 
+> > Version 1
+> > 
+> 
+> You already sent v1, so this is v2:
+> 
+> b4 diff '<20231221065049.30703-1-cj.winklhofer@gmail.com>'
+> Grabbing thread from
+> lore.kernel.org/all/20231221065049.30703-1-cj.winklhofer@gmail.com/t.mbox.gz
+> ---
+> Analyzing 4 messages in the thread
+> ERROR: Could not auto-find previous revision
+>        Run "b4 am -T" manually, then "b4 diff -m mbx1 mbx2"
+> 
+> I still cannot find the changelog. Does it mean nothing improved?
+> 
+> 
 
-Indeed it's internal now. Move here from platform header.
+Sorry, I will fix the patch and resend it.
+
+> > - In v1, the driver requests a baud-rate (9600 for reset and 115200 for
+> > write/read) and tries to adapt the transmitted byte according to the
+> > actual baud-rate returned from serdev. Is this the correct direction or
+> > should the baud-rate be specified in the device-tree? Alternatively,
+> > it could make sense to specify the minimum and maximum times for the
+> > 1-Wire operations in the device-tree, instead of using hard-coded ones
+> > similar as in "Figure 11. Configuration tab" of the linked document
+> > "Using UART to Implement a 1-Wire Bus Master".
+> 
+> Depends, are these hardware properties? Are these runtime? What do they
+> depend on?
+> 
+
+Ok, the timing constraints came from the 1-Wire protocol, so DT makes no
+sense. Probably it would be nice to tweak them for different 1-Wire slaves
+via parameter to the driver - however, I will left them hardcoded for now.
+
+Thanks!
+Christoph
 
