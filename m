@@ -1,50 +1,50 @@
-Return-Path: <linux-kernel+bounces-10236-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10237-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91A9581D1A5
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 04:05:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23F5E81D1A7
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 04:05:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B6C721C22373
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 03:05:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 85E001F2416F
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 03:05:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 430423172D;
-	Sat, 23 Dec 2023 02:59:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FEA533CF9;
+	Sat, 23 Dec 2023 02:59:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="G0BxMYx9"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FdC0eYAI"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E018D2F508;
-	Sat, 23 Dec 2023 02:59:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 009C733CF4;
+	Sat, 23 Dec 2023 02:59:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703300361; x=1734836361;
+  t=1703300365; x=1734836365;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=9bOZfZie5hng33Moek6x3lg0RS/bldLmOI4f+Of4coI=;
-  b=G0BxMYx9gO1Ay9gxfHySlYiBUH1wNqtgzTWs47uCzw9p+4L4kNhzz+o3
-   ayWJ7xjtSL7YOoVRyuvjnoUOOmnhco9yxqrdsYpBTUAITb2LAxaz43DWF
-   OYymyifYfJ29wpgW9iGJ1uWJcDWj86JIxghRYtCKEkLcb/WauZCfLoHJk
-   c9zCXfZ3hn+Ho5Wx5IHpomsxk0EZ+fhYs2iusPlcLi42BZCinOUM9GxQ5
-   pHayul3PuuO4s6PM/+NnCu6cNcl0wRqYTuczbOx8iJF07XTkX5+JjkAKe
-   I0/PsOsxCL//3bqPcn4Ht/dSgeQMB1ATdy6C7eFaEwL2ipve2LAYBf3kU
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10932"; a="386610986"
+  bh=lqmmrXO5N7W2qFb+zJKFXhMZxR89GgPDo7wFTIL1NWs=;
+  b=FdC0eYAInVPrIrREm8Tktv911B60rNANIp6gjYIrxKE2XJvBdVbho4af
+   zqCl2fXTxFGDILbh/+bRQt96s1PaGOb22Egj0GlDOISAwIH/WZDHZUO7o
+   XOO2yNLReLr5NF5dqOAfMieAalKBvZxEx6BACHONjGyySbW0hJfVTCM8d
+   f81RGimZw82I25BPmb18g1tM59LF4+Y5vlgGw//Z64D3rkgKuln4HbE7j
+   rBDpwwMoPwQVJv03sDkPZTpkdlpfmrIgWLcncPNrUL2BqG0PEt5uk8o0i
+   nRLycR7HCaJFN/XPjgtpLlET7e/z2bwhGEUepBrwwyEC6Ls7o7obGa5Ap
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10932"; a="386610997"
 X-IronPort-AV: E=Sophos;i="6.04,298,1695711600"; 
-   d="scan'208";a="386610986"
+   d="scan'208";a="386610997"
 Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Dec 2023 18:59:21 -0800
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Dec 2023 18:59:25 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.04,298,1695711600"; 
-   d="scan'208";a="25537570"
+   d="scan'208";a="25537588"
 Received: from newjersey.igk.intel.com ([10.102.20.203])
-  by orviesa001.jf.intel.com with ESMTP; 22 Dec 2023 18:59:18 -0800
+  by orviesa001.jf.intel.com with ESMTP; 22 Dec 2023 18:59:21 -0800
 From: Alexander Lobakin <aleksander.lobakin@intel.com>
 To: "David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
@@ -60,9 +60,9 @@ Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
 	intel-wired-lan@lists.osuosl.org,
 	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH RFC net-next 20/34] idpf: make complq cleaning dependent on scheduling mode
-Date: Sat, 23 Dec 2023 03:55:40 +0100
-Message-ID: <20231223025554.2316836-21-aleksander.lobakin@intel.com>
+Subject: [PATCH RFC net-next 21/34] idpf: prepare structures to support xdp
+Date: Sat, 23 Dec 2023 03:55:41 +0100
+Message-ID: <20231223025554.2316836-22-aleksander.lobakin@intel.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231223025554.2316836-1-aleksander.lobakin@intel.com>
 References: <20231223025554.2316836-1-aleksander.lobakin@intel.com>
@@ -76,387 +76,748 @@ Content-Transfer-Encoding: 8bit
 
 From: Michal Kubiak <michal.kubiak@intel.com>
 
-Extend completion queue cleaning function to support queue-based
-scheduling mode needed for XDP queues.
-Add 4-byte descriptor for queue-based scheduling mode and
-perform some refactoring to extract the common code for
-both scheduling modes.
-Make the completion desc parsing function a static inline, as
-we'll need it in a different file soon.
+Extend basic structures of the driver (e.g. 'idpf_vport', 'idpf_queue',
+'idpf_vport_user_config_data') by adding members necessary to support XDP.
+Add extra XDP Tx queues needed to support XDP_TX and XDP_REDIRECT actions
+without interfering a regular Tx traffic.
+Also add functions dedicated to support XDP initialization for Rx and
+Tx queues and call those functions from the existing algorithms of
+queues configuration.
 
 Signed-off-by: Michal Kubiak <michal.kubiak@intel.com>
+Co-developed-by: Alexander Lobakin <aleksander.lobakin@intel.com>
 Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
 ---
- .../net/ethernet/intel/idpf/idpf_lan_txrx.h   |   6 +-
- drivers/net/ethernet/intel/idpf/idpf_txrx.c   | 203 ++++++++++--------
- drivers/net/ethernet/intel/idpf/idpf_txrx.h   |  44 ++++
- 3 files changed, 166 insertions(+), 87 deletions(-)
+ drivers/net/ethernet/intel/idpf/Makefile      |   2 +
+ drivers/net/ethernet/intel/idpf/idpf.h        |  23 +++
+ .../net/ethernet/intel/idpf/idpf_ethtool.c    |   6 +-
+ drivers/net/ethernet/intel/idpf/idpf_lib.c    |  25 ++-
+ drivers/net/ethernet/intel/idpf/idpf_txrx.c   | 122 ++++++++++++++-
+ drivers/net/ethernet/intel/idpf/idpf_txrx.h   |  24 ++-
+ .../net/ethernet/intel/idpf/idpf_virtchnl.c   |  36 +++--
+ drivers/net/ethernet/intel/idpf/idpf_xdp.c    | 147 ++++++++++++++++++
+ drivers/net/ethernet/intel/idpf/idpf_xdp.h    |  15 ++
+ 9 files changed, 375 insertions(+), 25 deletions(-)
+ create mode 100644 drivers/net/ethernet/intel/idpf/idpf_xdp.c
+ create mode 100644 drivers/net/ethernet/intel/idpf/idpf_xdp.h
 
-diff --git a/drivers/net/ethernet/intel/idpf/idpf_lan_txrx.h b/drivers/net/ethernet/intel/idpf/idpf_lan_txrx.h
-index a5752dcab888..7f8fc9b61e90 100644
---- a/drivers/net/ethernet/intel/idpf/idpf_lan_txrx.h
-+++ b/drivers/net/ethernet/intel/idpf/idpf_lan_txrx.h
-@@ -184,13 +184,17 @@ struct idpf_base_tx_desc {
- 	__le64 qw1; /* type_cmd_offset_bsz_l2tag1 */
- }; /* read used with buffer queues */
- 
--struct idpf_splitq_tx_compl_desc {
-+struct idpf_splitq_4b_tx_compl_desc {
- 	/* qid=[10:0] comptype=[13:11] rsvd=[14] gen=[15] */
- 	__le16 qid_comptype_gen;
- 	union {
- 		__le16 q_head; /* Queue head */
- 		__le16 compl_tag; /* Completion tag */
- 	} q_head_compl_tag;
-+}; /* writeback used with completion queues */
+diff --git a/drivers/net/ethernet/intel/idpf/Makefile b/drivers/net/ethernet/intel/idpf/Makefile
+index 6844ead2f3ac..4024781ff02b 100644
+--- a/drivers/net/ethernet/intel/idpf/Makefile
++++ b/drivers/net/ethernet/intel/idpf/Makefile
+@@ -16,3 +16,5 @@ idpf-y := \
+ 	idpf_txrx.o		\
+ 	idpf_virtchnl.o 	\
+ 	idpf_vf_dev.o
 +
-+struct idpf_splitq_tx_compl_desc {
-+	struct idpf_splitq_4b_tx_compl_desc common;
- 	u8 ts[3];
- 	u8 rsvd; /* Reserved */
- }; /* writeback used with completion queues */
-diff --git a/drivers/net/ethernet/intel/idpf/idpf_txrx.c b/drivers/net/ethernet/intel/idpf/idpf_txrx.c
-index 40b8d8b17827..1a79ec1fb838 100644
---- a/drivers/net/ethernet/intel/idpf/idpf_txrx.c
-+++ b/drivers/net/ethernet/intel/idpf/idpf_txrx.c
-@@ -1722,8 +1722,8 @@ static bool idpf_tx_clean_buf_ring(struct idpf_queue *txq, u16 compl_tag,
++idpf-objs	+= idpf_xdp.o
+diff --git a/drivers/net/ethernet/intel/idpf/idpf.h b/drivers/net/ethernet/intel/idpf/idpf.h
+index 596ece7df26a..76df52b797d9 100644
+--- a/drivers/net/ethernet/intel/idpf/idpf.h
++++ b/drivers/net/ethernet/intel/idpf/idpf.h
+@@ -376,6 +376,14 @@ struct idpf_vport {
+ 	struct idpf_queue **txqs;
+ 	bool crc_enable;
+ 
++	bool xdpq_share;
++	u16 num_xdp_txq;
++	u16 num_xdp_rxq;
++	u16 num_xdp_complq;
++	u16 xdp_txq_offset;
++	u16 xdp_rxq_offset;
++	u16 xdp_complq_offset;
++
+ 	u16 num_rxq;
+ 	u16 num_bufq;
+ 	u32 rxq_desc_count;
+@@ -465,8 +473,11 @@ struct idpf_vport_user_config_data {
+ 	struct idpf_rss_data rss_data;
+ 	u16 num_req_tx_qs;
+ 	u16 num_req_rx_qs;
++	u16 num_req_xdp_qs;
+ 	u32 num_req_txq_desc;
+ 	u32 num_req_rxq_desc;
++	/* Duplicated in queue structure for performance reasons */
++	struct bpf_prog *xdp_prog;
+ 	DECLARE_BITMAP(user_flags, __IDPF_USER_FLAGS_NBITS);
+ 	struct list_head mac_filter_list;
+ };
+@@ -685,6 +696,18 @@ static inline int idpf_is_queue_model_split(u16 q_model)
+ 	return q_model == VIRTCHNL2_QUEUE_MODEL_SPLIT;
+ }
+ 
++/**
++ * idpf_xdp_is_prog_ena - check if there is an XDP program on adapter
++ * @vport: vport to check
++ */
++static inline bool idpf_xdp_is_prog_ena(const struct idpf_vport *vport)
++{
++	if (!vport->adapter)
++		return false;
++
++	return !!vport->adapter->vport_config[vport->idx]->user_config.xdp_prog;
++}
++
+ #define idpf_is_cap_ena(adapter, field, flag) \
+ 	idpf_is_capability_ena(adapter, false, field, flag)
+ #define idpf_is_cap_ena_all(adapter, field, flag) \
+diff --git a/drivers/net/ethernet/intel/idpf/idpf_ethtool.c b/drivers/net/ethernet/intel/idpf/idpf_ethtool.c
+index da7963f27bd8..0d192417205d 100644
+--- a/drivers/net/ethernet/intel/idpf/idpf_ethtool.c
++++ b/drivers/net/ethernet/intel/idpf/idpf_ethtool.c
+@@ -186,9 +186,11 @@ static void idpf_get_channels(struct net_device *netdev,
+ {
+ 	struct idpf_netdev_priv *np = netdev_priv(netdev);
+ 	struct idpf_vport_config *vport_config;
++	const struct idpf_vport *vport;
+ 	u16 num_txq, num_rxq;
+ 	u16 combined;
+ 
++	vport = idpf_netdev_to_vport(netdev);
+ 	vport_config = np->adapter->vport_config[np->vport_idx];
+ 
+ 	num_txq = vport_config->user_config.num_req_tx_qs;
+@@ -202,8 +204,8 @@ static void idpf_get_channels(struct net_device *netdev,
+ 	ch->max_rx = vport_config->max_q.max_rxq;
+ 	ch->max_tx = vport_config->max_q.max_txq;
+ 
+-	ch->max_other = IDPF_MAX_MBXQ;
+-	ch->other_count = IDPF_MAX_MBXQ;
++	ch->max_other = IDPF_MAX_MBXQ + vport->num_xdp_txq;
++	ch->other_count = IDPF_MAX_MBXQ + vport->num_xdp_txq;
+ 
+ 	ch->combined_count = combined;
+ 	ch->rx_count = num_rxq - combined;
+diff --git a/drivers/net/ethernet/intel/idpf/idpf_lib.c b/drivers/net/ethernet/intel/idpf/idpf_lib.c
+index 5fea2fd957eb..c3fb20197725 100644
+--- a/drivers/net/ethernet/intel/idpf/idpf_lib.c
++++ b/drivers/net/ethernet/intel/idpf/idpf_lib.c
+@@ -2,6 +2,7 @@
+ /* Copyright (C) 2023 Intel Corporation */
+ 
+ #include "idpf.h"
++#include "idpf_xdp.h"
+ 
+ static const struct net_device_ops idpf_netdev_ops_splitq;
+ static const struct net_device_ops idpf_netdev_ops_singleq;
+@@ -912,6 +913,7 @@ static void idpf_vport_stop(struct idpf_vport *vport)
+ 	idpf_remove_features(vport);
+ 
+ 	vport->link_up = false;
++	idpf_xdp_rxq_info_deinit_all(vport);
+ 	idpf_vport_intr_deinit(vport);
+ 	idpf_vport_intr_rel(vport);
+ 	idpf_vport_queues_rel(vport);
+@@ -1299,13 +1301,18 @@ static void idpf_restore_features(struct idpf_vport *vport)
+  */
+ static int idpf_set_real_num_queues(struct idpf_vport *vport)
+ {
+-	int err;
++	int num_txq, err;
+ 
+ 	err = netif_set_real_num_rx_queues(vport->netdev, vport->num_rxq);
+ 	if (err)
+ 		return err;
+ 
+-	return netif_set_real_num_tx_queues(vport->netdev, vport->num_txq);
++	if (idpf_xdp_is_prog_ena(vport))
++		num_txq = vport->num_txq - vport->num_xdp_txq;
++	else
++		num_txq = vport->num_txq;
++
++	return netif_set_real_num_tx_queues(vport->netdev, num_txq);
  }
  
  /**
-- * idpf_tx_handle_rs_completion - clean a single packet and all of its buffers
-- * whether on the buffer ring or in the hash table
-+ * idpf_tx_handle_rs_cmpl_qb - clean a single packet and all of its buffers
-+ * whether the Tx queue is working in queue-based scheduling
-  * @txq: Tx ring to clean
-  * @desc: pointer to completion queue descriptor to extract completion
-  * information from
-@@ -1732,20 +1732,33 @@ static bool idpf_tx_clean_buf_ring(struct idpf_queue *txq, u16 compl_tag,
-  *
-  * Returns bytes/packets cleaned
-  */
--static void idpf_tx_handle_rs_completion(struct idpf_queue *txq,
--					 struct idpf_splitq_tx_compl_desc *desc,
--					 struct idpf_cleaned_stats *cleaned,
--					 int budget)
-+static void
-+idpf_tx_handle_rs_cmpl_qb(struct idpf_queue *txq,
-+			  const struct idpf_splitq_4b_tx_compl_desc *desc,
-+			  struct idpf_cleaned_stats *cleaned, int budget)
- {
--	u16 compl_tag;
-+	u16 head = le16_to_cpu(desc->q_head_compl_tag.q_head);
+@@ -1418,18 +1425,26 @@ static int idpf_vport_open(struct idpf_vport *vport, bool alloc_res)
  
--	if (!test_bit(__IDPF_Q_FLOW_SCH_EN, txq->flags)) {
--		u16 head = le16_to_cpu(desc->q_head_compl_tag.q_head);
--
--		return idpf_tx_splitq_clean(txq, head, budget, cleaned, false);
--	}
-+	return idpf_tx_splitq_clean(txq, head, budget, cleaned, false);
-+}
+ 	idpf_rx_init_buf_tail(vport);
  
--	compl_tag = le16_to_cpu(desc->q_head_compl_tag.compl_tag);
-+/**
-+ * idpf_tx_handle_rs_cmpl_fb - clean a single packet and all of its buffers
-+ * whether on the buffer ring or in the hash table (flow-based scheduling only)
-+ * @txq: Tx ring to clean
-+ * @desc: pointer to completion queue descriptor to extract completion
-+ * information from
-+ * @cleaned: pointer to stats struct to track cleaned packets/bytes
-+ * @budget: Used to determine if we are in netpoll
-+ *
-+ * Returns bytes/packets cleaned
-+ */
-+static void
-+idpf_tx_handle_rs_cmpl_fb(struct idpf_queue *txq,
-+			  const struct idpf_splitq_4b_tx_compl_desc *desc,
-+			  struct idpf_cleaned_stats *cleaned,int budget)
-+{
-+	u16 compl_tag = le16_to_cpu(desc->q_head_compl_tag.compl_tag);
- 
- 	/* If we didn't clean anything on the ring, this packet must be
- 	 * in the hash table. Go clean it there.
-@@ -1754,6 +1767,65 @@ static void idpf_tx_handle_rs_completion(struct idpf_queue *txq,
- 		idpf_tx_clean_stashed_bufs(txq, compl_tag, cleaned, budget);
- }
- 
-+/**
-+ * idpf_tx_finalize_complq - Finalize completion queue cleaning
-+ * @complq: completion queue to finalize
-+ * @ntc: next to complete index
-+ * @gen_flag: current state of generation flag
-+ * @cleaned: returns number of packets cleaned
-+ */
-+static void idpf_tx_finalize_complq(struct idpf_queue *complq, int ntc,
-+				    bool gen_flag, int *cleaned)
-+{
-+	struct idpf_netdev_priv *np;
-+	bool complq_ok = true;
-+	int i;
-+
-+	/* Store the state of the complq to be used later in deciding if a
-+	 * TXQ can be started again
-+	 */
-+	if (unlikely(IDPF_TX_COMPLQ_PENDING(complq->txq_grp) >
-+		     IDPF_TX_COMPLQ_OVERFLOW_THRESH(complq)))
-+		complq_ok = false;
-+
-+	np = netdev_priv(complq->vport->netdev);
-+	for (i = 0; i < complq->txq_grp->num_txq; ++i) {
-+		struct idpf_queue *tx_q = complq->txq_grp->txqs[i];
-+		struct netdev_queue *nq;
-+		bool dont_wake;
-+
-+		/* We didn't clean anything on this queue, move along */
-+		if (!tx_q->cleaned_bytes)
-+			continue;
-+
-+		*cleaned += tx_q->cleaned_pkts;
-+
-+		/* Update BQL */
-+		nq = netdev_get_tx_queue(tx_q->vport->netdev, tx_q->idx);
-+
-+		dont_wake = !complq_ok || IDPF_TX_BUF_RSV_LOW(tx_q) ||
-+			    np->state != __IDPF_VPORT_UP ||
-+			    !netif_carrier_ok(tx_q->vport->netdev);
-+		/* Check if the TXQ needs to and can be restarted */
-+		__netif_txq_completed_wake(nq, tx_q->cleaned_pkts, tx_q->cleaned_bytes,
-+					   IDPF_DESC_UNUSED(tx_q), IDPF_TX_WAKE_THRESH,
-+					   dont_wake);
-+
-+		/* Reset cleaned stats for the next time this queue is
-+		 * cleaned
-+		 */
-+		tx_q->cleaned_bytes = 0;
-+		tx_q->cleaned_pkts = 0;
++	err = idpf_xdp_rxq_info_init_all(vport);
++	if (err) {
++		netdev_err(vport->netdev,
++			   "Failed to initialize XDP RxQ info for vport %u: %pe\n",
++			   vport->vport_id, ERR_PTR(err));
++		goto intr_deinit;
 +	}
 +
-+	ntc += complq->desc_count;
-+	complq->next_to_clean = ntc;
-+	if (gen_flag)
-+		set_bit(__IDPF_Q_GEN_CHK, complq->flags);
-+	else
-+		clear_bit(__IDPF_Q_GEN_CHK, complq->flags);
-+}
-+
+ 	err = idpf_send_config_queues_msg(vport);
+ 	if (err) {
+ 		dev_err(&adapter->pdev->dev, "Failed to configure queues for vport %u, %d\n",
+ 			vport->vport_id, err);
+-		goto intr_deinit;
++		goto rxq_deinit;
+ 	}
+ 
+ 	err = idpf_send_map_unmap_queue_vector_msg(vport, true);
+ 	if (err) {
+ 		dev_err(&adapter->pdev->dev, "Failed to map queue vectors for vport %u: %d\n",
+ 			vport->vport_id, err);
+-		goto intr_deinit;
++		goto rxq_deinit;
+ 	}
+ 
+ 	err = idpf_send_enable_queues_msg(vport);
+@@ -1477,6 +1492,8 @@ static int idpf_vport_open(struct idpf_vport *vport, bool alloc_res)
+ 	idpf_send_disable_queues_msg(vport);
+ unmap_queue_vectors:
+ 	idpf_send_map_unmap_queue_vector_msg(vport, false);
++rxq_deinit:
++	idpf_xdp_rxq_info_deinit_all(vport);
+ intr_deinit:
+ 	idpf_vport_intr_deinit(vport);
+ intr_rel:
+diff --git a/drivers/net/ethernet/intel/idpf/idpf_txrx.c b/drivers/net/ethernet/intel/idpf/idpf_txrx.c
+index 1a79ec1fb838..d4a9f4c36b63 100644
+--- a/drivers/net/ethernet/intel/idpf/idpf_txrx.c
++++ b/drivers/net/ethernet/intel/idpf/idpf_txrx.c
+@@ -2,6 +2,7 @@
+ /* Copyright (C) 2023 Intel Corporation */
+ 
+ #include "idpf.h"
++#include "idpf_xdp.h"
+ 
  /**
-  * idpf_tx_clean_complq - Reclaim resources on completion queue
-  * @complq: Tx ring to clean
-@@ -1765,61 +1837,55 @@ static void idpf_tx_handle_rs_completion(struct idpf_queue *txq,
- static bool idpf_tx_clean_complq(struct idpf_queue *complq, int budget,
- 				 int *cleaned)
+  * idpf_buf_lifo_push - push a buffer pointer onto stack
+@@ -61,15 +62,23 @@ void idpf_tx_timeout(struct net_device *netdev, unsigned int txqueue)
+ static void idpf_tx_buf_rel_all(struct idpf_queue *txq)
  {
--	struct idpf_splitq_tx_compl_desc *tx_desc;
-+	struct idpf_splitq_4b_tx_compl_desc *tx_desc;
- 	struct idpf_vport *vport = complq->vport;
- 	s16 ntc = complq->next_to_clean;
--	struct idpf_netdev_priv *np;
- 	unsigned int complq_budget;
--	bool complq_ok = true;
--	int i;
-+	bool flow, gen_flag;
-+	u32 pos = ntc;
+ 	struct libie_sq_onstack_stats ss = { };
++	struct xdp_frame_bulk bq;
+ 	u16 i;
+ 
+ 	/* Buffers already cleared, nothing to do */
+ 	if (!txq->tx_buf)
+ 		return;
+ 
++	xdp_frame_bulk_init(&bq);
++	rcu_read_lock();
 +
-+	flow = test_bit(__IDPF_Q_FLOW_SCH_EN, complq->flags);
-+	gen_flag = test_bit(__IDPF_Q_GEN_CHK, complq->flags);
- 
- 	complq_budget = vport->compln_clean_budget;
--	tx_desc = &complq->comp[ntc];
-+	tx_desc = flow ? &complq->comp[pos].common : &complq->comp_4b[pos];
- 	ntc -= complq->desc_count;
- 
- 	do {
- 		struct idpf_cleaned_stats cleaned_stats = { };
- 		struct idpf_queue *tx_q;
--		int rel_tx_qid;
- 		u16 hw_head;
--		u8 ctype;	/* completion type */
--		u16 gen;
--
--		/* if the descriptor isn't done, no work yet to do */
--		gen = (le16_to_cpu(tx_desc->qid_comptype_gen) &
--		      IDPF_TXD_COMPLQ_GEN_M) >> IDPF_TXD_COMPLQ_GEN_S;
--		if (test_bit(__IDPF_Q_GEN_CHK, complq->flags) != gen)
--			break;
--
--		/* Find necessary info of TX queue to clean buffers */
--		rel_tx_qid = (le16_to_cpu(tx_desc->qid_comptype_gen) &
--			 IDPF_TXD_COMPLQ_QID_M) >> IDPF_TXD_COMPLQ_QID_S;
--		if (rel_tx_qid >= complq->txq_grp->num_txq ||
--		    !complq->txq_grp->txqs[rel_tx_qid]) {
--			dev_err(&complq->vport->adapter->pdev->dev,
--				"TxQ not found\n");
--			goto fetch_next_desc;
--		}
--		tx_q = complq->txq_grp->txqs[rel_tx_qid];
-+		int ctype;
- 
--		/* Determine completion type */
--		ctype = (le16_to_cpu(tx_desc->qid_comptype_gen) &
--			IDPF_TXD_COMPLQ_COMPL_TYPE_M) >>
--			IDPF_TXD_COMPLQ_COMPL_TYPE_S;
-+		ctype = idpf_parse_compl_desc(tx_desc, complq, &tx_q,
-+					      gen_flag);
- 		switch (ctype) {
- 		case IDPF_TXD_COMPLT_RE:
-+			if (unlikely(!flow))
-+				goto fetch_next_desc;
+ 	/* Free all the Tx buffer sk_buffs */
+ 	for (i = 0; i < txq->desc_count; i++)
+-		libie_tx_complete_buf(&txq->tx_buf[i], txq->dev, false, &ss);
++		libie_tx_complete_any(&txq->tx_buf[i], txq->dev, &bq,
++				      &txq->xdp_tx_active, &ss);
 +
- 			hw_head = le16_to_cpu(tx_desc->q_head_compl_tag.q_head);
++	xdp_flush_frame_bulk(&bq);
++	rcu_read_unlock();
  
- 			idpf_tx_splitq_clean(tx_q, hw_head, budget,
- 					     &cleaned_stats, true);
- 			break;
- 		case IDPF_TXD_COMPLT_RS:
--			idpf_tx_handle_rs_completion(tx_q, tx_desc,
--						     &cleaned_stats, budget);
-+			if (flow)
-+				idpf_tx_handle_rs_cmpl_fb(tx_q, tx_desc,
-+							  &cleaned_stats,
-+							  budget);
-+			else
-+				idpf_tx_handle_rs_cmpl_qb(tx_q, tx_desc,
-+							  &cleaned_stats,
-+							  budget);
- 			break;
- 		case IDPF_TXD_COMPLT_SW_MARKER:
- 			idpf_tx_handle_sw_marker(tx_q);
- 			break;
-+		case -ENODATA:
-+			goto exit_clean_complq;
-+		case -EINVAL:
-+			goto fetch_next_desc;
- 		default:
- 			dev_err(&tx_q->vport->adapter->pdev->dev,
- 				"Unknown TX completion type: %d\n",
-@@ -1836,59 +1902,24 @@ static bool idpf_tx_clean_complq(struct idpf_queue *complq, int budget,
- 		u64_stats_update_end(&tx_q->stats_sync);
+ 	kfree(txq->tx_buf);
+ 	txq->tx_buf = NULL;
+@@ -469,6 +478,7 @@ static int idpf_rx_hdr_buf_alloc_all(struct idpf_queue *rxq)
+ 	struct libie_buf_queue bq = {
+ 		.count		= rxq->desc_count,
+ 		.type		= LIBIE_RX_BUF_HDR,
++		.xdp		= idpf_xdp_is_prog_ena(rxq->vport),
+ 	};
+ 	struct libie_rx_buffer *hdr_buf;
+ 	int ret;
+@@ -647,6 +657,7 @@ static int idpf_rx_bufs_init(struct idpf_queue *rxbufq,
+ 		.count		= rxbufq->desc_count,
+ 		.type		= type,
+ 		.hsplit		= rxbufq->rx_hsplit_en,
++		.xdp		= idpf_xdp_is_prog_ena(rxbufq->vport),
+ 	};
+ 	int ret;
  
- fetch_next_desc:
--		tx_desc++;
-+		pos++;
- 		ntc++;
- 		if (unlikely(!ntc)) {
- 			ntc -= complq->desc_count;
--			tx_desc = &complq->comp[0];
--			change_bit(__IDPF_Q_GEN_CHK, complq->flags);
-+			pos = 0;
-+			gen_flag = !gen_flag;
+@@ -917,6 +928,7 @@ static void idpf_vport_queue_grp_rel_all(struct idpf_vport *vport)
+  */
+ void idpf_vport_queues_rel(struct idpf_vport *vport)
+ {
++	idpf_vport_xdpq_put(vport);
+ 	idpf_tx_desc_rel_all(vport);
+ 	idpf_rx_desc_rel_all(vport);
+ 	idpf_vport_queue_grp_rel_all(vport);
+@@ -984,6 +996,27 @@ void idpf_vport_init_num_qs(struct idpf_vport *vport,
+ 	if (idpf_is_queue_model_split(vport->rxq_model))
+ 		vport->num_bufq = le16_to_cpu(vport_msg->num_rx_bufq);
+ 
++	vport->num_xdp_rxq = 0;
++	vport->xdp_rxq_offset = 0;
++
++	if (idpf_xdp_is_prog_ena(vport)) {
++		vport->xdp_txq_offset = config_data->num_req_tx_qs;
++		vport->num_xdp_txq = le16_to_cpu(vport_msg->num_tx_q) -
++				     vport->xdp_txq_offset;
++		vport->xdpq_share = libie_xdp_sq_shared(vport->num_xdp_txq);
++	} else {
++		vport->xdp_txq_offset = 0;
++		vport->num_xdp_txq = 0;
++		vport->xdpq_share = 0;
++	}
++
++	if (idpf_is_queue_model_split(vport->txq_model)) {
++		vport->num_xdp_complq = vport->num_xdp_txq;
++		vport->xdp_complq_offset = vport->xdp_txq_offset;
++	}
++
++	config_data->num_req_xdp_qs = vport->num_xdp_txq;
++
+ 	/* Adjust number of buffer queues per Rx queue group. */
+ 	if (!idpf_is_queue_model_split(vport->rxq_model)) {
+ 		vport->num_bufqs_per_qgrp = 0;
+@@ -1055,9 +1088,10 @@ int idpf_vport_calc_total_qs(struct idpf_adapter *adapter, u16 vport_idx,
+ 	int dflt_splitq_txq_grps = 0, dflt_singleq_txqs = 0;
+ 	int dflt_splitq_rxq_grps = 0, dflt_singleq_rxqs = 0;
+ 	u16 num_req_tx_qs = 0, num_req_rx_qs = 0;
++	struct idpf_vport_user_config_data *user;
+ 	struct idpf_vport_config *vport_config;
+ 	u16 num_txq_grps, num_rxq_grps;
+-	u32 num_qs;
++	u32 num_qs, num_xdpq;
+ 
+ 	vport_config = adapter->vport_config[vport_idx];
+ 	if (vport_config) {
+@@ -1105,6 +1139,29 @@ int idpf_vport_calc_total_qs(struct idpf_adapter *adapter, u16 vport_idx,
+ 		vport_msg->num_rx_bufq = 0;
+ 	}
+ 
++	if (!vport_config)
++		return 0;
++
++	user = &vport_config->user_config;
++	user->num_req_rx_qs = le16_to_cpu(vport_msg->num_rx_q);
++	user->num_req_tx_qs = le16_to_cpu(vport_msg->num_tx_q);
++
++	if (vport_config->user_config.xdp_prog)
++		/* As we now know new number of Rx and Tx queues, we can
++		 * request additional Tx queues for XDP.
++		 */
++		num_xdpq = libie_xdp_get_sq_num(user->num_req_rx_qs,
++						user->num_req_tx_qs,
++						IDPF_LARGE_MAX_Q);
++	else
++		num_xdpq = 0;
++
++	user->num_req_xdp_qs = num_xdpq;
++
++	vport_msg->num_tx_q = cpu_to_le16(user->num_req_tx_qs + num_xdpq);
++	if (idpf_is_queue_model_split(le16_to_cpu(vport_msg->txq_model)))
++		vport_msg->num_tx_complq = vport_msg->num_tx_q;
++
+ 	return 0;
+ }
+ 
+@@ -1446,6 +1503,8 @@ int idpf_vport_queues_alloc(struct idpf_vport *vport)
+ 	if (err)
+ 		goto err_out;
+ 
++	idpf_vport_xdpq_get(vport);
++
+ 	return 0;
+ 
+ err_out:
+@@ -3791,9 +3850,15 @@ static bool idpf_tx_splitq_clean_all(struct idpf_q_vector *q_vec,
+ 		return true;
+ 
+ 	budget_per_q = DIV_ROUND_UP(budget, num_txq);
+-	for (i = 0; i < num_txq; i++)
+-		clean_complete &= idpf_tx_clean_complq(q_vec->tx[i],
+-						       budget_per_q, cleaned);
++
++	for (i = 0; i < num_txq; i++) {
++		struct idpf_queue *cq = q_vec->tx[i];
++
++		if (!test_bit(__IDPF_Q_XDP, cq->flags))
++			clean_complete &= idpf_tx_clean_complq(cq,
++							       budget_per_q,
++							       cleaned);
++	}
+ 
+ 	return clean_complete;
+ }
+@@ -3893,13 +3958,22 @@ static int idpf_vport_splitq_napi_poll(struct napi_struct *napi, int budget)
+  */
+ static void idpf_vport_intr_map_vector_to_qs(struct idpf_vport *vport)
+ {
++	bool is_xdp_prog_ena = idpf_xdp_is_prog_ena(vport);
+ 	u16 num_txq_grp = vport->num_txq_grp;
+ 	int i, j, qv_idx, bufq_vidx = 0;
+ 	struct idpf_rxq_group *rx_qgrp;
+ 	struct idpf_txq_group *tx_qgrp;
+ 	struct idpf_queue *q, *bufq;
++	int num_active_rxq;
+ 	u16 q_index;
+ 
++	/* XDP Tx queues are handled within Rx loop, correct num_txq_grp so
++	 * that it stores number of regular Tx queue groups. This way when we
++	 * later assign Tx to qvector, we go only through regular Tx queues.
++	 */
++	if (is_xdp_prog_ena && idpf_is_queue_model_split(vport->txq_model))
++		num_txq_grp = vport->xdp_txq_offset;
++
+ 	for (i = 0, qv_idx = 0; i < vport->num_rxq_grp; i++) {
+ 		u16 num_rxq;
+ 
+@@ -3909,6 +3983,8 @@ static void idpf_vport_intr_map_vector_to_qs(struct idpf_vport *vport)
+ 		else
+ 			num_rxq = rx_qgrp->singleq.num_rxq;
+ 
++		num_active_rxq = num_rxq - vport->num_xdp_rxq;
++
+ 		for (j = 0; j < num_rxq; j++) {
+ 			if (qv_idx >= vport->num_q_vectors)
+ 				qv_idx = 0;
+@@ -3921,6 +3997,30 @@ static void idpf_vport_intr_map_vector_to_qs(struct idpf_vport *vport)
+ 			q_index = q->q_vector->num_rxq;
+ 			q->q_vector->rx[q_index] = q;
+ 			q->q_vector->num_rxq++;
++
++			/* Do not setup XDP Tx queues for dummy Rx queues. */
++			if (j >= num_active_rxq)
++				goto skip_xdp_txq_config;
++
++			if (is_xdp_prog_ena) {
++				if (idpf_is_queue_model_split(vport->txq_model)) {
++					tx_qgrp = &vport->txq_grps[i + vport->xdp_txq_offset];
++					q = tx_qgrp->complq;
++					q->q_vector = &vport->q_vectors[qv_idx];
++					q_index = q->q_vector->num_txq;
++					q->q_vector->tx[q_index] = q;
++					q->q_vector->num_txq++;
++				} else {
++					tx_qgrp = &vport->txq_grps[i];
++					q = tx_qgrp->txqs[j + vport->xdp_txq_offset];
++					q->q_vector = &vport->q_vectors[qv_idx];
++					q_index = q->q_vector->num_txq;
++					q->q_vector->tx[q_index] = q;
++					q->q_vector->num_txq++;
++				}
++			}
++
++skip_xdp_txq_config:
+ 			qv_idx++;
  		}
  
-+		tx_desc = flow ? &complq->comp[pos].common :
-+			  &complq->comp_4b[pos];
- 		prefetch(tx_desc);
+@@ -3954,6 +4054,9 @@ static void idpf_vport_intr_map_vector_to_qs(struct idpf_vport *vport)
+ 			q->q_vector->num_txq++;
+ 			qv_idx++;
+ 		} else {
++			num_txq = is_xdp_prog_ena ? tx_qgrp->num_txq - vport->xdp_txq_offset
++						  : tx_qgrp->num_txq;
++
+ 			for (j = 0; j < num_txq; j++) {
+ 				if (qv_idx >= vport->num_q_vectors)
+ 					qv_idx = 0;
+@@ -4175,6 +4278,15 @@ static void idpf_fill_dflt_rss_lut(struct idpf_vport *vport)
  
- 		/* update budget accounting */
- 		complq_budget--;
- 	} while (likely(complq_budget));
+ 	rss_data = &adapter->vport_config[vport->idx]->user_config.rss_data;
  
--	/* Store the state of the complq to be used later in deciding if a
--	 * TXQ can be started again
--	 */
--	if (unlikely(IDPF_TX_COMPLQ_PENDING(complq->txq_grp) >
--		     IDPF_TX_COMPLQ_OVERFLOW_THRESH(complq)))
--		complq_ok = false;
--
--	np = netdev_priv(complq->vport->netdev);
--	for (i = 0; i < complq->txq_grp->num_txq; ++i) {
--		struct idpf_queue *tx_q = complq->txq_grp->txqs[i];
--		struct netdev_queue *nq;
--		bool dont_wake;
--
--		/* We didn't clean anything on this queue, move along */
--		if (!tx_q->cleaned_bytes)
--			continue;
--
--		*cleaned += tx_q->cleaned_pkts;
--
--		/* Update BQL */
--		nq = netdev_get_tx_queue(tx_q->vport->netdev, tx_q->idx);
--
--		dont_wake = !complq_ok || IDPF_TX_BUF_RSV_LOW(tx_q) ||
--			    np->state != __IDPF_VPORT_UP ||
--			    !netif_carrier_ok(tx_q->vport->netdev);
--		/* Check if the TXQ needs to and can be restarted */
--		__netif_txq_completed_wake(nq, tx_q->cleaned_pkts, tx_q->cleaned_bytes,
--					   IDPF_DESC_UNUSED(tx_q), IDPF_TX_WAKE_THRESH,
--					   dont_wake);
--
--		/* Reset cleaned stats for the next time this queue is
--		 * cleaned
--		 */
--		tx_q->cleaned_bytes = 0;
--		tx_q->cleaned_pkts = 0;
--	}
--
--	ntc += complq->desc_count;
--	complq->next_to_clean = ntc;
-+exit_clean_complq:
-+	idpf_tx_finalize_complq(complq, ntc, gen_flag, cleaned);
- 
- 	return !!complq_budget;
- }
++	/* When we use this code for legacy devices (e.g. in AVF driver), some
++	 * Rx queues may not be used because we would not be able to create XDP
++	 * Tx queues for them. In such a case do not add their queue IDs to the
++	 * RSS LUT by setting the number of active Rx queues to XDP Tx queues
++	 * count.
++	 */
++	if (idpf_xdp_is_prog_ena(vport))
++		num_active_rxq -= vport->num_xdp_rxq;
++
+ 	for (i = 0; i < rss_data->rss_lut_size; i++) {
+ 		rss_data->rss_lut[i] = i % num_active_rxq;
+ 		rss_data->cached_lut[i] = rss_data->rss_lut[i];
 diff --git a/drivers/net/ethernet/intel/idpf/idpf_txrx.h b/drivers/net/ethernet/intel/idpf/idpf_txrx.h
-index 2584bd94363f..3e15ed779860 100644
+index 3e15ed779860..b1c30795f376 100644
 --- a/drivers/net/ethernet/intel/idpf/idpf_txrx.h
 +++ b/drivers/net/ethernet/intel/idpf/idpf_txrx.h
-@@ -577,6 +577,7 @@ struct idpf_queue {
- 		struct idpf_flex_tx_ctx_desc *flex_ctx;
+@@ -4,8 +4,7 @@
+ #ifndef _IDPF_TXRX_H_
+ #define _IDPF_TXRX_H_
  
- 		struct idpf_splitq_tx_compl_desc *comp;
-+		struct idpf_splitq_4b_tx_compl_desc *comp_4b;
+-#include <linux/net/intel/libie/rx.h>
+-#include <linux/net/intel/libie/tx.h>
++#include <linux/net/intel/libie/xdp.h>
  
+ #include <net/page_pool/helpers.h>
+ #include <net/tcp.h>
+@@ -319,6 +318,7 @@ enum idpf_queue_flags_t {
+ 	__IDPF_Q_FLOW_SCH_EN,
+ 	__IDPF_Q_SW_MARKER,
+ 	__IDPF_Q_POLL_MODE,
++	__IDPF_Q_XDP,
+ 
+ 	__IDPF_Q_FLAGS_NBITS,
+ };
+@@ -554,13 +554,20 @@ struct idpf_queue {
+ 	};
+ 	void __iomem *tail;
+ 	union {
+-		struct idpf_tx_buf *tx_buf;
++		struct {
++			struct idpf_tx_buf *tx_buf;
++			struct libie_xdp_sq_lock xdp_lock;
++		};
++		u32 num_xdp_txq;
+ 		struct {
+ 			struct libie_rx_buffer *hdr_buf;
+ 			struct idpf_rx_buf *buf;
+ 		} rx_buf;
+ 	};
+-	struct page_pool *hdr_pp;
++	union {
++		struct page_pool *hdr_pp;
++		struct idpf_queue **xdpqs;
++	};
+ 	union {
+ 		struct page_pool *pp;
+ 		struct device *dev;
+@@ -582,7 +589,10 @@ struct idpf_queue {
  		void *desc_ring;
  	};
-@@ -821,6 +822,49 @@ static inline void idpf_tx_splitq_build_desc(union idpf_tx_flex_desc *desc,
- 		idpf_tx_splitq_build_flow_desc(desc, params, td_cmd, size);
- }
  
-+/**
-+ * idpf_parse_compl_desc - Parse the completion descriptor
-+ * @desc: completion descriptor to be parsed
-+ * @complq: completion queue containing the descriptor
-+ * @txq: returns corresponding Tx queue for a given descriptor
-+ * @gen_flag: current generation flag in the completion queue
-+ *
-+ * Returns completion type from descriptor or negative value in case of error:
-+ * 	-ENODATA if there is no completion descriptor to be cleaned
-+ * 	-EINVAL  if no Tx queue has been found for the completion queue
-+ */
-+static inline int
-+idpf_parse_compl_desc(struct idpf_splitq_4b_tx_compl_desc *desc,
-+		      struct idpf_queue *complq, struct idpf_queue **txq,
-+		      bool gen_flag)
+-	u32 hdr_truesize;
++	union {
++		u32 hdr_truesize;
++		u32 xdp_tx_active;
++	};
+ 	u32 truesize;
+ 	u16 idx;
+ 	u16 q_type;
+@@ -627,8 +637,12 @@ struct idpf_queue {
+ 	union {
+ 		/* Rx */
+ 		struct {
++			struct xdp_rxq_info xdp_rxq;
++
++			struct bpf_prog __rcu *xdp_prog;
+ 			struct sk_buff *skb;
+ 		};
++
+ 		/* Tx */
+ 		struct {
+ 			u16 compl_tag_bufid_m;
+diff --git a/drivers/net/ethernet/intel/idpf/idpf_virtchnl.c b/drivers/net/ethernet/intel/idpf/idpf_virtchnl.c
+index 5c3d7c3534af..59b8bbebead7 100644
+--- a/drivers/net/ethernet/intel/idpf/idpf_virtchnl.c
++++ b/drivers/net/ethernet/intel/idpf/idpf_virtchnl.c
+@@ -1947,20 +1947,27 @@ int idpf_send_map_unmap_queue_vector_msg(struct idpf_vport *vport, bool map)
+ 		struct idpf_txq_group *tx_qgrp = &vport->txq_grps[i];
+ 
+ 		for (j = 0; j < tx_qgrp->num_txq; j++, k++) {
++			const struct idpf_q_vector *vec;
++			u32 v_idx, tx_itr_idx;
++
+ 			vqv[k].queue_type = cpu_to_le32(tx_qgrp->txqs[j]->q_type);
+ 			vqv[k].queue_id = cpu_to_le32(tx_qgrp->txqs[j]->q_id);
+ 
+-			if (idpf_is_queue_model_split(vport->txq_model)) {
+-				vqv[k].vector_id =
+-				cpu_to_le16(tx_qgrp->complq->q_vector->v_idx);
+-				vqv[k].itr_idx =
+-				cpu_to_le32(tx_qgrp->complq->q_vector->tx_itr_idx);
++			if (idpf_is_queue_model_split(vport->txq_model))
++				vec = tx_qgrp->complq->q_vector;
++			else
++				vec = tx_qgrp->txqs[j]->q_vector;
++
++			if (vec) {
++				v_idx = vec->v_idx;
++				tx_itr_idx = vec->tx_itr_idx;
+ 			} else {
+-				vqv[k].vector_id =
+-				cpu_to_le16(tx_qgrp->txqs[j]->q_vector->v_idx);
+-				vqv[k].itr_idx =
+-				cpu_to_le32(tx_qgrp->txqs[j]->q_vector->tx_itr_idx);
++				v_idx = 0;
++				tx_itr_idx = VIRTCHNL2_ITR_IDX_1;
+ 			}
++
++			vqv[k].vector_id = cpu_to_le16(v_idx);
++			vqv[k].itr_idx = cpu_to_le32(tx_itr_idx);
+ 		}
+ 	}
+ 
+@@ -3253,6 +3260,17 @@ int idpf_vport_alloc_vec_indexes(struct idpf_vport *vport)
+ 	vec_info.default_vport = vport->default_vport;
+ 	vec_info.index = vport->idx;
+ 
++	/* Additional XDP Tx queues share the q_vector with regular Tx and Rx
++	 * queues to which they are assigned. Also, XDP shall request additional
++	 * Tx queues via VIRTCHNL. Therefore, to avoid exceeding over
++	 * "vport->q_vector_idxs array", do not request empty q_vectors
++	 * for XDP Tx queues.
++	 */
++	if (idpf_xdp_is_prog_ena(vport))
++		vec_info.num_req_vecs = max_t(u16,
++					      vport->num_txq - vport->num_xdp_txq,
++					      vport->num_rxq);
++
+ 	num_alloc_vecs = idpf_req_rel_vector_indexes(vport->adapter,
+ 						     vport->q_vector_idxs,
+ 						     &vec_info);
+diff --git a/drivers/net/ethernet/intel/idpf/idpf_xdp.c b/drivers/net/ethernet/intel/idpf/idpf_xdp.c
+new file mode 100644
+index 000000000000..29b2fe68c7eb
+--- /dev/null
++++ b/drivers/net/ethernet/intel/idpf/idpf_xdp.c
+@@ -0,0 +1,147 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/* Copyright (C) 2023 Intel Corporation */
++
++#include "idpf.h"
++#include "idpf_xdp.h"
++
++static int idpf_rxq_for_each(const struct idpf_vport *vport,
++			     int (*fn)(struct idpf_queue *rxq, void *arg),
++			     void *arg)
 +{
-+	int rel_tx_qid;
-+	u8 ctype;	/* completion type */
-+	u16 gen;
++	bool splitq = idpf_is_queue_model_split(vport->rxq_model);
 +
-+	/* if the descriptor isn't done, no work yet to do */
-+	gen = (le16_to_cpu(desc->qid_comptype_gen) &
-+	      IDPF_TXD_COMPLQ_GEN_M) >> IDPF_TXD_COMPLQ_GEN_S;
-+	if (gen_flag != gen)
-+		return -ENODATA;
++	for (u32 i = 0; i < vport->num_rxq_grp; i++) {
++		const struct idpf_rxq_group *rx_qgrp = &vport->rxq_grps[i];
++		u32 num_rxq;
 +
-+	/* Find necessary info of TX queue to clean buffers */
-+	rel_tx_qid = (le16_to_cpu(desc->qid_comptype_gen) &
-+		 IDPF_TXD_COMPLQ_QID_M) >> IDPF_TXD_COMPLQ_QID_S;
-+	if (rel_tx_qid >= complq->txq_grp->num_txq ||
-+	    !complq->txq_grp->txqs[rel_tx_qid])
-+		return -EINVAL;
++		if (splitq)
++			num_rxq = rx_qgrp->splitq.num_rxq_sets;
++		else
++			num_rxq = rx_qgrp->singleq.num_rxq;
 +
-+	*txq = complq->txq_grp->txqs[rel_tx_qid];
++		for (u32 j = 0; j < num_rxq; j++) {
++			struct idpf_queue *q;
++			int err;
 +
-+	/* Determine completion type */
-+	ctype = (le16_to_cpu(desc->qid_comptype_gen) &
-+		IDPF_TXD_COMPLQ_COMPL_TYPE_M) >>
-+		IDPF_TXD_COMPLQ_COMPL_TYPE_S;
++			if (splitq)
++				q = &rx_qgrp->splitq.rxq_sets[j]->rxq;
++			else
++				q = rx_qgrp->singleq.rxqs[j];
 +
-+	return ctype;
++			err = fn(q, arg);
++			if (err)
++				return err;
++		}
++	}
++
++	return 0;
 +}
 +
- /**
-  * idpf_vport_intr_set_wb_on_itr - enable descriptor writeback on disabled interrupts
-  * @q_vector: pointer to queue vector struct
++/**
++ * idpf_xdp_rxq_info_init - Setup XDP RxQ info for a given Rx queue
++ * @rxq: Rx queue for which the resources are setup
++ * @splitq: flag indicating if the HW works in split queue mode
++ *
++ * Return: 0 on success, negative on failure.
++ */
++static int idpf_xdp_rxq_info_init(struct idpf_queue *rxq, void *arg)
++{
++	const struct idpf_vport *vport = rxq->vport;
++	const struct page_pool *pp;
++	int err;
++
++	err = __xdp_rxq_info_reg(&rxq->xdp_rxq, vport->netdev, rxq->idx,
++				 rxq->q_vector->napi.napi_id,
++				 rxq->rx_buf_size);
++	if (err)
++		return err;
++
++	pp = arg ? rxq->rxq_grp->splitq.bufq_sets[0].bufq.pp : rxq->pp;
++	xdp_rxq_info_attach_page_pool(&rxq->xdp_rxq, pp);
++
++	rxq->xdpqs = &vport->txqs[vport->xdp_txq_offset];
++	rxq->num_xdp_txq = vport->num_xdp_txq;
++
++	return 0;
++}
++
++/**
++ * idpf_xdp_rxq_info_init_all - initialize RxQ info for all Rx queues in vport
++ * @vport: vport to setup the info
++ *
++ * Return: 0 on success, negative on failure.
++ */
++int idpf_xdp_rxq_info_init_all(const struct idpf_vport *vport)
++{
++	void *arg;
++
++	arg = (void *)(size_t)idpf_is_queue_model_split(vport->rxq_model);
++
++	return idpf_rxq_for_each(vport, idpf_xdp_rxq_info_init, arg);
++}
++
++/**
++ * idpf_xdp_rxq_info_deinit - Deinit XDP RxQ info for a given Rx queue
++ * @rxq: Rx queue for which the resources are destroyed
++ */
++static int idpf_xdp_rxq_info_deinit(struct idpf_queue *rxq, void *arg)
++{
++	rxq->xdpqs = NULL;
++	rxq->num_xdp_txq = 0;
++
++	xdp_rxq_info_detach_mem_model(&rxq->xdp_rxq);
++	xdp_rxq_info_unreg(&rxq->xdp_rxq);
++
++	return 0;
++}
++
++/**
++ * idpf_xdp_rxq_info_deinit_all - deinit RxQ info for all Rx queues in vport
++ * @vport: vport to setup the info
++ */
++void idpf_xdp_rxq_info_deinit_all(const struct idpf_vport *vport)
++{
++	idpf_rxq_for_each(vport, idpf_xdp_rxq_info_deinit, NULL);
++}
++
++void idpf_vport_xdpq_get(const struct idpf_vport *vport)
++{
++	if (!idpf_xdp_is_prog_ena(vport))
++		return;
++
++	cpus_read_lock();
++
++	for (u32 j = vport->xdp_txq_offset; j < vport->num_txq; j++) {
++		struct idpf_queue *xdpq = vport->txqs[j];
++
++		__clear_bit(__IDPF_Q_FLOW_SCH_EN, xdpq->flags);
++		__clear_bit(__IDPF_Q_FLOW_SCH_EN,
++			    xdpq->txq_grp->complq->flags);
++		__set_bit(__IDPF_Q_XDP, xdpq->flags);
++		__set_bit(__IDPF_Q_XDP, xdpq->txq_grp->complq->flags);
++
++		libie_xdp_sq_get(&xdpq->xdp_lock, vport->netdev,
++				 vport->xdpq_share);
++	}
++
++	cpus_read_unlock();
++}
++
++void idpf_vport_xdpq_put(const struct idpf_vport *vport)
++{
++	if (!idpf_xdp_is_prog_ena(vport))
++		return;
++
++	cpus_read_lock();
++
++	for (u32 j = vport->xdp_txq_offset; j < vport->num_txq; j++) {
++		struct idpf_queue *xdpq = vport->txqs[j];
++
++		if (!__test_and_clear_bit(__IDPF_Q_XDP, xdpq->flags))
++			continue;
++
++		libie_xdp_sq_put(&xdpq->xdp_lock, vport->netdev);
++	}
++
++	cpus_read_unlock();
++}
+diff --git a/drivers/net/ethernet/intel/idpf/idpf_xdp.h b/drivers/net/ethernet/intel/idpf/idpf_xdp.h
+new file mode 100644
+index 000000000000..16b30caaac3f
+--- /dev/null
++++ b/drivers/net/ethernet/intel/idpf/idpf_xdp.h
+@@ -0,0 +1,15 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++/* Copyright (C) 2023 Intel Corporation */
++
++#ifndef _IDPF_XDP_H_
++#define _IDPF_XDP_H_
++
++struct idpf_vport;
++
++int idpf_xdp_rxq_info_init_all(const struct idpf_vport *vport);
++void idpf_xdp_rxq_info_deinit_all(const struct idpf_vport *vport);
++
++void idpf_vport_xdpq_get(const struct idpf_vport *vport);
++void idpf_vport_xdpq_put(const struct idpf_vport *vport);
++
++#endif /* _IDPF_XDP_H_ */
 -- 
 2.43.0
 
