@@ -1,255 +1,118 @@
-Return-Path: <linux-kernel+bounces-10485-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10486-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B21781D4F0
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 17:05:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D29981D4F4
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 17:10:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D910F1F2238D
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 16:05:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2B8271C21420
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 16:10:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C281E12E6B;
-	Sat, 23 Dec 2023 16:05:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF722EAED;
+	Sat, 23 Dec 2023 16:09:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UO+6uySz"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="xApULiD3";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="amwVd3rV"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EBD412E5E
-	for <linux-kernel@vger.kernel.org>; Sat, 23 Dec 2023 16:05:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F00A5C433CD;
-	Sat, 23 Dec 2023 16:05:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703347512;
-	bh=v6WGCTMiMOCTlpt4SkvLg03xjdq5zQMjhktOr8ueBgk=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=UO+6uySzueLe3eDdS9Quk61zCkY7sorf45mCzxqWKL9Eh2d49xqiE6ftJ11ZKKPWO
-	 lblt+nBlAQ6rmJ/gbTba+Un/KKX5iJ+lpvxRjpupaiFI3VsG8pB0Ig/gCqVdPKA4zJ
-	 BAPGT+5Xwlxy0nXtW882nZ6p3P+aJ4qpA69T1gyPXInakkVgrXhy+lpxi8ErdfIJPZ
-	 6y7GGgQqH8FOKqZ6ZNi3D+CiULUULMdOxFIRChDD+IeLfLd0X8ldKHXpOF7mQI02EL
-	 5JMO6SElA7uGNbfiDY4MbOICSI4VSs1Vhc2lnXoHw/Vb1+aRDXRKNBj+i+mATFHpq/
-	 xNcDB3PzXVJmw==
-From: Jisheng Zhang <jszhang@kernel.org>
-To: Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>
-Cc: Conor Dooley <conor.dooley@microchip.com>,
-	linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Qingfang DENG <dqfext@gmail.com>,
-	Eric Biggers <ebiggers@kernel.org>
-Subject: [PATCH v3 2/2] riscv: select DCACHE_WORD_ACCESS for efficient unaligned access HW
-Date: Sat, 23 Dec 2023 23:52:26 +0800
-Message-Id: <20231223155226.4050-3-jszhang@kernel.org>
-X-Mailer: git-send-email 2.40.0
-In-Reply-To: <20231223155226.4050-1-jszhang@kernel.org>
-References: <20231223155226.4050-1-jszhang@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A019BFBFD;
+	Sat, 23 Dec 2023 16:09:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Sat, 23 Dec 2023 16:09:47 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1703347788;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=jdGCwaiRBNJcXRxfRezy5MYbCGCwO8pD1yTpHSGmw0s=;
+	b=xApULiD3EJPXXwKhTqafVGQeQhLRjZZdZqJSo4TVo0ZY3kGu/xZnoGRnKSUQkfdMFTuNyn
+	iLxww0bF8Hzk3Pj/sgNQRq2u5dMEGDk7iyxAd1mQNmWdokne8PGwZMlPIvqCs6pjijEALl
+	AuCXxRHAR9FxZxneauWnY1I5JpvOl0Dcf/njLe30MTsi08G2rqrdf5RypXzjcJ8luRQkqc
+	OsyYq5dFuL2MS27N9YM/txKxmuaFaYoy00GPq7xUWOquNVCQGaZDmFmAqQGyW6p3NQ8Ax5
+	nHWdXuCzPSXylYaE3hXI2eYtd9XmdH7MQisrP6V03aa/7fbAvfVXMH9mEnjcjw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1703347788;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=jdGCwaiRBNJcXRxfRezy5MYbCGCwO8pD1yTpHSGmw0s=;
+	b=amwVd3rVTwQn50X2otN5T+uu6f2Bf3yewg02rWHYZc6YBzQhDMDQT1H1LUpnfwEtQ8bM0I
+	yJj49RVadrc5j6Bg==
+From: "tip-bot2 for Wang Jinchao" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject: [tip: sched/core] sched/fair: Remove unused 'next_buddy_marked' local
+ variable in check_preempt_wakeup_fair()
+Cc: Wang Jinchao <wangjinchao@xfusion.com>, Ingo Molnar <mingo@kernel.org>,
+ Vincent Guittot <vincent.guittot@linaro.org>, x86@kernel.org,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <202312141319+0800-wangjinchao@xfusion.com>
+References: <202312141319+0800-wangjinchao@xfusion.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-ID: <170334778771.398.14685074303951213836.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-DCACHE_WORD_ACCESS uses the word-at-a-time API for optimised string
-comparisons in the vfs layer.
+The following commit has been merged into the sched/core branch of tip:
 
-This patch implements support for load_unaligned_zeropad in much the
-same way as has been done for arm64.
+Commit-ID:     fbb66ce0b1d670c72def736a13ac9176b860df4e
+Gitweb:        https://git.kernel.org/tip/fbb66ce0b1d670c72def736a13ac9176b860df4e
+Author:        Wang Jinchao <wangjinchao@xfusion.com>
+AuthorDate:    Thu, 14 Dec 2023 13:20:29 +08:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Sat, 23 Dec 2023 16:12:21 +01:00
 
-Here is the test program and step:
+sched/fair: Remove unused 'next_buddy_marked' local variable in check_preempt_wakeup_fair()
 
- $ cat tt.c
- #include <sys/types.h>
- #include <sys/stat.h>
- #include <unistd.h>
+This variable became unused in:
 
- #define ITERATIONS 1000000
+    5e963f2bd465 ("sched/fair: Commit to EEVDF")
 
- #define PATH "123456781234567812345678123456781"
-
- int main(void)
- {
-         unsigned long i;
-         struct stat buf;
-
-         for (i = 0; i < ITERATIONS; i++)
-                 stat(PATH, &buf);
-
-         return 0;
- }
-
- $ gcc -O2 tt.c
- $ touch 123456781234567812345678123456781
- $ time ./a.out
-
-Per my test on T-HEAD C910 platforms, the above test performance is
-improved by about 7.5%.
-
-Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+Signed-off-by: Wang Jinchao <wangjinchao@xfusion.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
+Link: https://lore.kernel.org/r/202312141319+0800-wangjinchao@xfusion.com
 ---
- arch/riscv/Kconfig                      |  1 +
- arch/riscv/include/asm/asm-extable.h    | 15 ++++++++++++
- arch/riscv/include/asm/word-at-a-time.h | 27 +++++++++++++++++++++
- arch/riscv/mm/extable.c                 | 31 +++++++++++++++++++++++++
- 4 files changed, 74 insertions(+)
+ kernel/sched/fair.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index b91094ea53b7..52e45760863c 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -654,6 +654,7 @@ config RISCV_MISALIGNED
- config RISCV_EFFICIENT_UNALIGNED_ACCESS
- 	bool "Use unaligned access for some functions"
- 	depends on NONPORTABLE
-+	select DCACHE_WORD_ACCESS if MMU
- 	select HAVE_EFFICIENT_UNALIGNED_ACCESS
- 	default n
- 	help
-diff --git a/arch/riscv/include/asm/asm-extable.h b/arch/riscv/include/asm/asm-extable.h
-index 00a96e7a9664..0c8bfd54fc4e 100644
---- a/arch/riscv/include/asm/asm-extable.h
-+++ b/arch/riscv/include/asm/asm-extable.h
-@@ -6,6 +6,7 @@
- #define EX_TYPE_FIXUP			1
- #define EX_TYPE_BPF			2
- #define EX_TYPE_UACCESS_ERR_ZERO	3
-+#define EX_TYPE_LOAD_UNALIGNED_ZEROPAD	4
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 1d561b5..9cc2085 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -8221,7 +8221,6 @@ static void check_preempt_wakeup_fair(struct rq *rq, struct task_struct *p, int 
+ 	struct task_struct *curr = rq->curr;
+ 	struct sched_entity *se = &curr->se, *pse = &p->se;
+ 	struct cfs_rq *cfs_rq = task_cfs_rq(curr);
+-	int next_buddy_marked = 0;
+ 	int cse_is_idle, pse_is_idle;
  
- #ifdef CONFIG_MMU
+ 	if (unlikely(se == pse))
+@@ -8238,7 +8237,6 @@ static void check_preempt_wakeup_fair(struct rq *rq, struct task_struct *p, int 
  
-@@ -47,6 +48,11 @@
- #define EX_DATA_REG_ZERO_SHIFT	5
- #define EX_DATA_REG_ZERO	GENMASK(9, 5)
- 
-+#define EX_DATA_REG_DATA_SHIFT	0
-+#define EX_DATA_REG_DATA	GENMASK(4, 0)
-+#define EX_DATA_REG_ADDR_SHIFT	5
-+#define EX_DATA_REG_ADDR	GENMASK(9, 5)
-+
- #define EX_DATA_REG(reg, gpr)						\
- 	"((.L__gpr_num_" #gpr ") << " __stringify(EX_DATA_REG_##reg##_SHIFT) ")"
- 
-@@ -62,6 +68,15 @@
- #define _ASM_EXTABLE_UACCESS_ERR(insn, fixup, err)			\
- 	_ASM_EXTABLE_UACCESS_ERR_ZERO(insn, fixup, err, zero)
- 
-+#define _ASM_EXTABLE_LOAD_UNALIGNED_ZEROPAD(insn, fixup, data, addr)		\
-+	__DEFINE_ASM_GPR_NUMS							\
-+	__ASM_EXTABLE_RAW(#insn, #fixup,					\
-+			  __stringify(EX_TYPE_LOAD_UNALIGNED_ZEROPAD),		\
-+			  "("							\
-+			    EX_DATA_REG(DATA, data) " | "			\
-+			    EX_DATA_REG(ADDR, addr)				\
-+			  ")")
-+
- #endif /* __ASSEMBLY__ */
- 
- #else /* CONFIG_MMU */
-diff --git a/arch/riscv/include/asm/word-at-a-time.h b/arch/riscv/include/asm/word-at-a-time.h
-index 7c086ac6ecd4..f3f031e34191 100644
---- a/arch/riscv/include/asm/word-at-a-time.h
-+++ b/arch/riscv/include/asm/word-at-a-time.h
-@@ -9,6 +9,7 @@
- #define _ASM_RISCV_WORD_AT_A_TIME_H
- 
- 
-+#include <asm/asm-extable.h>
- #include <linux/kernel.h>
- 
- struct word_at_a_time {
-@@ -45,4 +46,30 @@ static inline unsigned long find_zero(unsigned long mask)
- /* The mask we created is directly usable as a bytemask */
- #define zero_bytemask(mask) (mask)
- 
-+#ifdef CONFIG_DCACHE_WORD_ACCESS
-+
-+/*
-+ * Load an unaligned word from kernel space.
-+ *
-+ * In the (very unlikely) case of the word being a page-crosser
-+ * and the next page not being mapped, take the exception and
-+ * return zeroes in the non-existing part.
-+ */
-+static inline unsigned long load_unaligned_zeropad(const void *addr)
-+{
-+	unsigned long ret;
-+
-+	/* Load word from unaligned pointer addr */
-+	asm(
-+	"1:	" REG_L " %0, %2\n"
-+	"2:\n"
-+	_ASM_EXTABLE_LOAD_UNALIGNED_ZEROPAD(1b, 2b, %0, %1)
-+	: "=&r" (ret)
-+	: "r" (addr), "m" (*(unsigned long *)addr));
-+
-+	return ret;
-+}
-+
-+#endif	/* CONFIG_DCACHE_WORD_ACCESS */
-+
- #endif /* _ASM_RISCV_WORD_AT_A_TIME_H */
-diff --git a/arch/riscv/mm/extable.c b/arch/riscv/mm/extable.c
-index 35484d830fd6..dd1530af3ef1 100644
---- a/arch/riscv/mm/extable.c
-+++ b/arch/riscv/mm/extable.c
-@@ -27,6 +27,14 @@ static bool ex_handler_fixup(const struct exception_table_entry *ex,
- 	return true;
- }
- 
-+static inline unsigned long regs_get_gpr(struct pt_regs *regs, unsigned int offset)
-+{
-+	if (unlikely(!offset || offset > MAX_REG_OFFSET))
-+		return 0;
-+
-+	return *(unsigned long *)((unsigned long)regs + offset);
-+}
-+
- static inline void regs_set_gpr(struct pt_regs *regs, unsigned int offset,
- 				unsigned long val)
- {
-@@ -50,6 +58,27 @@ static bool ex_handler_uaccess_err_zero(const struct exception_table_entry *ex,
- 	return true;
- }
- 
-+static bool
-+ex_handler_load_unaligned_zeropad(const struct exception_table_entry *ex,
-+				  struct pt_regs *regs)
-+{
-+	int reg_data = FIELD_GET(EX_DATA_REG_DATA, ex->data);
-+	int reg_addr = FIELD_GET(EX_DATA_REG_ADDR, ex->data);
-+	unsigned long data, addr, offset;
-+
-+	addr = regs_get_gpr(regs, reg_addr * sizeof(unsigned long));
-+
-+	offset = addr & 0x7UL;
-+	addr &= ~0x7UL;
-+
-+	data = *(unsigned long *)addr >> (offset * 8);
-+
-+	regs_set_gpr(regs, reg_data * sizeof(unsigned long), data);
-+
-+	regs->epc = get_ex_fixup(ex);
-+	return true;
-+}
-+
- bool fixup_exception(struct pt_regs *regs)
- {
- 	const struct exception_table_entry *ex;
-@@ -65,6 +94,8 @@ bool fixup_exception(struct pt_regs *regs)
- 		return ex_handler_bpf(ex, regs);
- 	case EX_TYPE_UACCESS_ERR_ZERO:
- 		return ex_handler_uaccess_err_zero(ex, regs);
-+	case EX_TYPE_LOAD_UNALIGNED_ZEROPAD:
-+		return ex_handler_load_unaligned_zeropad(ex, regs);
+ 	if (sched_feat(NEXT_BUDDY) && !(wake_flags & WF_FORK)) {
+ 		set_next_buddy(pse);
+-		next_buddy_marked = 1;
  	}
  
- 	BUG();
--- 
-2.40.0
-
+ 	/*
 
