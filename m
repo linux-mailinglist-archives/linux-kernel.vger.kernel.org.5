@@ -1,189 +1,152 @@
-Return-Path: <linux-kernel+bounces-10233-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10217-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B98DC81D19F
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 04:04:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49C9281D163
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 03:58:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 70FC6285294
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 03:04:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F21941F23D6E
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 02:58:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CFA828E34;
-	Sat, 23 Dec 2023 02:59:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0F786123;
+	Sat, 23 Dec 2023 02:58:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OS8gWTJo"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="EisaBF7Z"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 310D728DDF;
-	Sat, 23 Dec 2023 02:59:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703300349; x=1734836349;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=VNPt1nK0AOP2pNwVFe078A89NwhgBYFYVPqNFR4BfTE=;
-  b=OS8gWTJoJJ0wBk47XVF5PlPL0QGjq/8FzWdu2YwytECsswF3/zbQ2rlU
-   mciXwrChmCprP/re8dk51H6a6di8GEBbBC4uf+Wai4K0Fm2Y3t0/0I//a
-   sJ4pgO1QRiio0z/b3uAuynWU4zzjk3WbB5w3bkE8hPiB5bZuyBloMvWdV
-   cDH1bqFBIbt2gmPlPAbgbx8RoC4HulcR6XaUXnrnawyexHNSCjX2049eF
-   Ua02gX7ROOL5ZpAabD0sKsf2I7eMwXYv+DVDwNW15XVAOcBLulfmf9NH1
-   zsCCFXX25ryp2h+XNaBxVM2SvDe/qH2lE0Q9aJiQBSIpTqQS5XmfeoaP2
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10932"; a="386610936"
-X-IronPort-AV: E=Sophos;i="6.04,298,1695711600"; 
-   d="scan'208";a="386610936"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Dec 2023 18:59:08 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,298,1695711600"; 
-   d="scan'208";a="25537535"
-Received: from newjersey.igk.intel.com ([10.102.20.203])
-  by orviesa001.jf.intel.com with ESMTP; 22 Dec 2023 18:59:05 -0800
-From: Alexander Lobakin <aleksander.lobakin@intel.com>
-To: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>
-Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-	Michal Kubiak <michal.kubiak@intel.com>,
-	Larysa Zaremba <larysa.zaremba@intel.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-	intel-wired-lan@lists.osuosl.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH RFC net-next 17/34] libie: support native XDP and register memory model
-Date: Sat, 23 Dec 2023 03:55:37 +0100
-Message-ID: <20231223025554.2316836-18-aleksander.lobakin@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 568334C6C
+	for <linux-kernel@vger.kernel.org>; Sat, 23 Dec 2023 02:58:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1703300288;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=p7/gIS0dmThAjHMew85bTo42lIhhQ7TiHTigvXZh07g=;
+	b=EisaBF7ZlwS71aaiR2UxjWLbgBnUxaYzFoQ0ISy8M0CRN6GL7IRuA3wKMBjsvgkncJg+eO
+	gGuL19msv4ZHVUn/J+X60eBU/GAiVaH+6nMCX+ARevRCeLDnTABMBYXIbzuDGpawEccjgQ
+	SQ7e1m0az0F3rKk6aGh1zYiDQEP6Wms=
+Received: from mail-oo1-f70.google.com (mail-oo1-f70.google.com
+ [209.85.161.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-424-5sWRtSEPONaO_W5hybXACA-1; Fri, 22 Dec 2023 21:58:06 -0500
+X-MC-Unique: 5sWRtSEPONaO_W5hybXACA-1
+Received: by mail-oo1-f70.google.com with SMTP id 006d021491bc7-59436f69e8cso1694326eaf.0
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Dec 2023 18:58:06 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703300285; x=1703905085;
+        h=content-transfer-encoding:content-disposition:mime-version
+         :references:in-reply-to:message-id:date:subject:cc:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=p7/gIS0dmThAjHMew85bTo42lIhhQ7TiHTigvXZh07g=;
+        b=cOxWUoDy5dEstzVboartRbtDGlKCreTHwSnJJgt4sDmvNo8Yk/HAPyFIlxjYpAOhEq
+         qXf8GBTbjvPjT1uM7P+COjZQSwXYfMwV/HRA548LkLPQTHq5cuIaNtLIavr+YI/4+Pu9
+         oQQxxv3/f8iA25G72QXBGIipLYbRp/iBa8wAiAja+8HWtV8aC2mc0zQdCkMuvSUtsWVo
+         8eWA26nSlgiszJX2IhzJJC6qXx5NMQkPq2rXQJWtfaY2zhNF8bZINaAGR3nOdoCe1c5W
+         Ufx/pXOYoQNCIAPZ6HTvVVXTgfk+UadpTsqZ2R1Q8gbEbRpl7EQGoTF3hLZ9qSGwCpom
+         +Hug==
+X-Gm-Message-State: AOJu0YwicALTwIQrSmIVv8Fhmxri7dVHSPQ6BW4E3J7zN5ywPB08RIRp
+	MwByXZ471dni31W9RFv4Bx+MDL+3XlAz4QOhBmcksQzPuVfMZ5kgoOJXrKRVQlz+Z6gwVicg3Ee
+	44LkdpxXxrBaX0lLRFLEOZzGyyNG/+mXO
+X-Received: by 2002:a05:6358:281e:b0:172:b539:3fcd with SMTP id k30-20020a056358281e00b00172b5393fcdmr2520782rwb.53.1703300285398;
+        Fri, 22 Dec 2023 18:58:05 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFp/Z1JKa0hiVBtqCwmkFA7+oaDvqiyyXhUWFWFs5CbKJ6sOloXd7Rb4vykiapW96ln36Ga+w==
+X-Received: by 2002:a05:6358:281e:b0:172:b539:3fcd with SMTP id k30-20020a056358281e00b00172b5393fcdmr2520762rwb.53.1703300285090;
+        Fri, 22 Dec 2023 18:58:05 -0800 (PST)
+Received: from localhost.localdomain ([2804:431:c7ed:60ec:45a7:dfa:5e5:9eed])
+        by smtp.gmail.com with ESMTPSA id t8-20020a17090aae0800b0028c2b4f5f32sm335968pjq.3.2023.12.22.18.57.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Dec 2023 18:58:04 -0800 (PST)
+From: Leonardo Bras <leobras@redhat.com>
+To: guoren@kernel.org
+Cc: Leonardo Bras <leobras@redhat.com>,
+	linux-kernel@vger.kernel.org,
+	paul.walmsley@sifive.com,
+	palmer@dabbelt.com,
+	alexghiti@rivosinc.com,
+	charlie@rivosinc.com,
+	xiao.w.wang@intel.com,
+	david@redhat.com,
+	panqinglin2020@iscas.ac.cn,
+	rick.p.edgecombe@intel.com,
+	willy@infradead.org,
+	bjorn@rivosinc.com,
+	conor.dooley@microchip.com,
+	cleger@rivosinc.com,
+	linux-riscv@lists.infradead.org,
+	Guo Ren <guoren@linux.alibaba.com>,
+	stable@vger.kernel.org
+Subject: Re: [PATCH V3 1/4] riscv: mm: Fixup compat mode boot failure
+Date: Fri, 22 Dec 2023 23:57:54 -0300
+Message-ID: <ZYZMsgL9Bcz1J_Bd@LeoBras>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231223025554.2316836-1-aleksander.lobakin@intel.com>
-References: <20231223025554.2316836-1-aleksander.lobakin@intel.com>
+In-Reply-To: <20231222115703.2404036-2-guoren@kernel.org>
+References: <20231222115703.2404036-1-guoren@kernel.org> <20231222115703.2404036-2-guoren@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 
-Expand libie's Page Pool functionality by adding native XDP support.
-This means picking the appropriate headroom and DMA direction.
-Also, register all the created &page_pools as XDP memory models.
-A driver then can call xdp_rxq_info_attach_page_pool() when registering
-its RxQ info.
+On Fri, Dec 22, 2023 at 06:57:00AM -0500, guoren@kernel.org wrote:
+> From: Guo Ren <guoren@linux.alibaba.com>
+> 
+> In COMPAT mode, the STACK_TOP is DEFAULT_MAP_WINDOW (0x80000000), but
+> the TASK_SIZE is 0x7fff000. When the user stack is upon 0x7fff000, it
+> will cause a user segment fault. Sometimes, it would cause boot
+> failure when the whole rootfs is rv32.
+> 
+> Freeing unused kernel image (initmem) memory: 2236K
+> Run /sbin/init as init process
+> Starting init: /sbin/init exists but couldn't execute it (error -14)
+> Run /etc/init as init process
+> ...
+> 
+> Increase the TASK_SIZE to cover STACK_TOP.
+> 
+> Cc: stable@vger.kernel.org
+> Fixes: add2cc6b6515 ("RISC-V: mm: Restrict address space for sv39,sv48,sv57")
+> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+> Signed-off-by: Guo Ren <guoren@kernel.org>
+> ---
+>  arch/riscv/include/asm/pgtable.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
+> index ab00235b018f..74ffb2178f54 100644
+> --- a/arch/riscv/include/asm/pgtable.h
+> +++ b/arch/riscv/include/asm/pgtable.h
+> @@ -881,7 +881,7 @@ static inline pte_t pte_swp_clear_exclusive(pte_t pte)
+>  #define TASK_SIZE_MIN	(PGDIR_SIZE_L3 * PTRS_PER_PGD / 2)
+>  
+>  #ifdef CONFIG_COMPAT
+> -#define TASK_SIZE_32	(_AC(0x80000000, UL) - PAGE_SIZE)
+> +#define TASK_SIZE_32	(_AC(0x80000000, UL))
+>  #define TASK_SIZE	(test_thread_flag(TIF_32BIT) ? \
+>  			 TASK_SIZE_32 : TASK_SIZE_64)
+>  #else
+> -- 
+> 2.40.1
+> 
 
-Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
----
- drivers/net/ethernet/intel/libie/rx.c | 32 ++++++++++++++++++++++-----
- include/linux/net/intel/libie/rx.h    |  6 ++++-
- 2 files changed, 32 insertions(+), 6 deletions(-)
+I am not really involved in the issue this is solving, so I have no 
+technical opinion on the solution. 
 
-diff --git a/drivers/net/ethernet/intel/libie/rx.c b/drivers/net/ethernet/intel/libie/rx.c
-index 3d3b19d2b40d..b4c404958f25 100644
---- a/drivers/net/ethernet/intel/libie/rx.c
-+++ b/drivers/net/ethernet/intel/libie/rx.c
-@@ -52,7 +52,7 @@ static u32 libie_rx_hw_len_truesize(const struct page_pool_params *pp,
- static void libie_rx_page_pool_params(struct libie_buf_queue *bq,
- 				      struct page_pool_params *pp)
- {
--	pp->offset = LIBIE_SKB_HEADROOM;
-+	pp->offset = bq->xdp ? LIBIE_XDP_HEADROOM : LIBIE_SKB_HEADROOM;
- 	/* HW-writeable / syncable length per one page */
- 	pp->max_len = LIBIE_RX_BUF_LEN(pp->offset);
- 
-@@ -132,17 +132,34 @@ int libie_rx_page_pool_create(struct libie_buf_queue *bq,
- 		.dev		= napi->dev->dev.parent,
- 		.netdev		= napi->dev,
- 		.napi		= napi,
--		.dma_dir	= DMA_FROM_DEVICE,
- 	};
-+	struct xdp_mem_info mem;
-+	struct page_pool *pool;
-+	int ret;
-+
-+	pp.dma_dir = bq->xdp ? DMA_BIDIRECTIONAL : DMA_FROM_DEVICE;
- 
- 	if (!bq->hsplit)
- 		libie_rx_page_pool_params(bq, &pp);
- 	else if (!libie_rx_page_pool_params_zc(bq, &pp))
- 		return -EINVAL;
- 
--	bq->pp = page_pool_create(&pp);
-+	pool = page_pool_create(&pp);
-+	if (IS_ERR(pool))
-+		return PTR_ERR(pool);
-+
-+	ret = xdp_reg_mem_model(&mem, MEM_TYPE_PAGE_POOL, pool);
-+	if (ret)
-+		goto err_mem;
-+
-+	bq->pp = pool;
-+
-+	return 0;
- 
--	return PTR_ERR_OR_ZERO(bq->pp);
-+err_mem:
-+	page_pool_destroy(pool);
-+
-+	return ret;
- }
- EXPORT_SYMBOL_NS_GPL(libie_rx_page_pool_create, LIBIE);
- 
-@@ -152,7 +169,12 @@ EXPORT_SYMBOL_NS_GPL(libie_rx_page_pool_create, LIBIE);
-  */
- void libie_rx_page_pool_destroy(struct libie_buf_queue *bq)
- {
--	page_pool_destroy(bq->pp);
-+	struct xdp_mem_info mem = {
-+		.type	= MEM_TYPE_PAGE_POOL,
-+		.id	= bq->pp->xdp_mem_id,
-+	};
-+
-+	xdp_unreg_mem_model(&mem);
- 	bq->pp = NULL;
- }
- EXPORT_SYMBOL_NS_GPL(libie_rx_page_pool_destroy, LIBIE);
-diff --git a/include/linux/net/intel/libie/rx.h b/include/linux/net/intel/libie/rx.h
-index 87ad8f9e89c7..8eda4ac8028c 100644
---- a/include/linux/net/intel/libie/rx.h
-+++ b/include/linux/net/intel/libie/rx.h
-@@ -15,8 +15,10 @@
- 
- /* Space reserved in front of each frame */
- #define LIBIE_SKB_HEADROOM	(NET_SKB_PAD + NET_IP_ALIGN)
-+#define LIBIE_XDP_HEADROOM	(ALIGN(XDP_PACKET_HEADROOM, NET_SKB_PAD) + \
-+				 NET_IP_ALIGN)
- /* Maximum headroom to calculate max MTU below */
--#define LIBIE_MAX_HEADROOM	LIBIE_SKB_HEADROOM
-+#define LIBIE_MAX_HEADROOM	LIBIE_XDP_HEADROOM
- /* Link layer / L2 overhead: Ethernet, 2 VLAN tags (C + S), FCS */
- #define LIBIE_RX_LL_LEN		(ETH_HLEN + 2 * VLAN_HLEN + ETH_FCS_LEN)
- /* Maximum supported L2-L4 header length */
-@@ -87,6 +89,7 @@ enum libie_rx_buf_type {
-  * @rx_buf_len: HW-writeable length per each buffer
-  * @type: type of the buffers this queue has
-  * @hsplit: flag whether header split is enabled
-+ * @xdp: flag indicating whether XDP is enabled
-  */
- struct libie_buf_queue {
- 	struct page_pool	*pp;
-@@ -100,6 +103,7 @@ struct libie_buf_queue {
- 	enum libie_rx_buf_type	type:2;
- 
- 	bool			hsplit:1;
-+	bool			xdp:1;
- };
- 
- int libie_rx_page_pool_create(struct libie_buf_queue *bq,
--- 
-2.43.0
+IIUC there should always be (TASK_SIZE >= STACK_TOP), so by itself this 
+is fixing an issue.
+
+I have reviewed the code and it does exactly as stated into the commit 
+message, so FWIW:
+Reviewed-by: Leonardo Bras <leobras@redhat.com>
 
 
