@@ -1,246 +1,121 @@
-Return-Path: <linux-kernel+bounces-10340-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10341-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED83681D313
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 09:06:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF7CC81D316
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 09:14:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 50AA81F21A3A
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 08:06:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8B0F6285AD8
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 08:14:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4FF88BF8;
-	Sat, 23 Dec 2023 08:06:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52C398BF8;
+	Sat, 23 Dec 2023 08:14:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=trvn.ru header.i=@trvn.ru header.b="iNm7uSiv"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HdlWDP9K"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from box.trvn.ru (box.trvn.ru [194.87.146.52])
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 750B58BE0;
-	Sat, 23 Dec 2023 08:06:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=trvn.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=trvn.ru
-Received: from authenticated-user (box.trvn.ru [194.87.146.52])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-	(No client certificate requested)
-	by box.trvn.ru (Postfix) with ESMTPSA id B252441BD2;
-	Sat, 23 Dec 2023 13:05:33 +0500 (+05)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=trvn.ru; s=mail;
-	t=1703318736; bh=e08FoWdtPSBF5xVKc91iPWDm+2CtVdPEztlQEzzLCXQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=iNm7uSivuY3lLD2FvO/siVeJpH5oY+zOTe++KykAHZBgFklLQbxJ0VeWGVKonQMk7
-	 2Q4EgDbFs5VxzLt5Gm6KpfnWJsaHLIuuMvEauc6xfHA/e3WZdnnyG1iIQ2GrqwTOHm
-	 5cpFnfqpunmLiQB0VDGSEeR8xbO/i/k10nfuctLmmOVwGDCbNVw9BJwEyDfMIHMdcW
-	 nHRZ34p64tLw0udA1b7jAiEsoqyflT/18ivYQNRz0DxA8zZm5V3fbOW2JVVnZ2M4Ia
-	 rVw4DYiPZ1VC+nqjKUiacDYyclQTyJYgajJ6eblr1E4D7pY1NwUNy6EiI1pbv1MDG9
-	 xKzhDWvl5pxkw==
-Date: Sat, 23 Dec 2023 13:05:29 +0500
-From: Nikita Travkin <nikita@trvn.ru>
-To: Chia-I Wu <olvaffe@gmail.com>
-Cc: cros-qcom-dts-watchers@chromium.org, Andy Gross <agross@kernel.org>, 
-	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	Conor Dooley <conor+dt@kernel.org>, Maulik Shah <quic_mkshah@quicinc.com>, 
-	Ulf Hansson <ulf.hansson@linaro.org>, linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] arm64: dts: qcom: sc7280: revert back to PSCI PC mode
- for herobrine
-Message-ID: <bwfqomkub25wr5nsqvbp3dkpeda5halx4rsd2jgfct3rk5qxux@gqrdks7oyavk>
-References: <20231222190311.3344572-1-olvaffe@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 773728BE0;
+	Sat, 23 Dec 2023 08:14:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1d2e6e14865so16165115ad.0;
+        Sat, 23 Dec 2023 00:14:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703319244; x=1703924044; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=kWY/DrbKpHrD7fzJ1z2jZBqElDolNrxGwdlBP2/yWF8=;
+        b=HdlWDP9KVGF8jRu79QWL1Cq5jMTdgRh7k90eykKMbEOGLc0rHgdEcWfDLbx39ansaH
+         x+z4UZC2s0rZ1C+kHVXN6ztaCCY/XM7jT3hmk+dXVhKCEZi6+Q58zH0nKB+CxvU7eVTg
+         wYIqRyvkCAF+YoOxL4F9CtGkviwDSvYnWpaHB/X4VSBaG4PJn9rQHykIj3/Vp1GfqjfJ
+         ebaMkAnqnjw5wRMChuRw3zravGLcsyf9Y4Zfqa/9r438FbASSpG+PiF5EzOZrxhJ/orc
+         yJVZ0mtLi+Dt5mOtD5agcPLyidGC0yj9OF6KsQ4cNVE2P0I2IPt5xnAP8QaU7NOkBKfK
+         aZ2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703319244; x=1703924044;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kWY/DrbKpHrD7fzJ1z2jZBqElDolNrxGwdlBP2/yWF8=;
+        b=UTxXUVCU/G0Zb5twdcQJ/FMWup8fUF4CkImNari4XQOWFEcFzWcjjOfLzrfS2HbI5p
+         39pbTuMA+idR5hmPOs7W+u732OLmdJQrcYESnFM/l3X+6MBr0tK9uJVKIKWJ8bARGT3c
+         pTc8CGFhAreNIArYwEg6KGCMzMqWIgSZThaYf816Re0I1RYUWqSEc3/VfEuIQd9Tl5DP
+         sBGJNHSMr3WEQntKtD7kYM75ZsGfr8bwFDBnZLcmXjmVU0kNLDD+JB+QK1YpG5x49xCF
+         3+njriP1Nj/iIji/F1QlZxsCcvxa2DAjHSXvi1OZCtWj89etuW1gEjT4NJINqoISJomM
+         dv4w==
+X-Gm-Message-State: AOJu0YyDvu+VAgGGBLe9nOYQR8+jm3hcTd1p+zyS89fyXSd4003K+VOO
+	KEhXlruDOUBmvdv36OhM3Vot0f7z6lmqOQ==
+X-Google-Smtp-Source: AGHT+IEbzbGvxC0VlmUd4kvcsYMPpJni2HxqelHej4BgKav2uvZ4yLinClyCCZgffXUfCLVIYLFwuQ==
+X-Received: by 2002:a17:90b:f0c:b0:28c:2b2c:1bf4 with SMTP id br12-20020a17090b0f0c00b0028c2b2c1bf4mr115808pjb.15.1703319243544;
+        Sat, 23 Dec 2023 00:14:03 -0800 (PST)
+Received: from localhost.localdomain ([2400:1a00:b060:2b26:f462:e3d9:c28:4c99])
+        by smtp.gmail.com with ESMTPSA id pb11-20020a17090b3c0b00b0028c2e36c449sm750776pjb.51.2023.12.23.00.13.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 23 Dec 2023 00:14:03 -0800 (PST)
+From: Dipendra Khadka <kdipendra88@gmail.com>
+To: hdegoede@redhat.com,
+	mchehab@kernel.org,
+	sakari.ailus@linux.intel.com,
+	gregkh@linuxfoundation.org,
+	hpa@redhat.com
+Cc: Dipendra Khadka <kdipendra88@gmail.com>,
+	linux-media@vger.kernel.org,
+	linux-staging@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	linux-kernel-mentees@lists.linuxfoundation.org
+Subject: [PATCH] staging: media/atomisp/pci/isp/kernels/macc/macc_1.0: Fix spelling mistakes in ia_css_macc_table.host.c
+Date: Sat, 23 Dec 2023 13:58:54 +0545
+Message-Id: <20231223081354.83318-1-kdipendra88@gmail.com>
+X-Mailer: git-send-email 2.39.2 (Apple Git-143)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231222190311.3344572-1-olvaffe@gmail.com>
+Content-Transfer-Encoding: 8bit
 
-On Fri, Dec 22, 2023 at 11:03:03AM -0800, Chia-I Wu wrote:
-> Commit 7925ca85e9561 ("arm64: dts: qcom: sc7280: Add power-domains for
-> cpuidle states") transitioned all SC7280 devices to PSCI OS initiated
-> mode, which doesn't work on TFA-based SC7280 devices.  This effectively
-> revert the commit for sc7280-herobrine.
->
+codespell reported following spelling mistake
+in ia_css_macc_table.host.c below:
 
-Hi!
+'''
+./isp/kernels/macc/macc_1.0/ia_css_macc_table.host.c:22: matix ==> matrix
+./isp/kernels/macc/macc_1.0/ia_css_macc_table.host.c:39: matix ==> matrix
+'''
+This patch fixes these spelling mistakes.
 
-I believe modern TF-A includes OSI mode, and it was added pretty much
-specifically for sc7280, as described in [1]. More to that, I think
-the original commit that introduced OSI mode for sc7280 did it using
-the TF-A specific suspend params (I believe they are different from
-qcom firmware) so the leftover state of the base soc dtsi would be
-weird...
+Signed-off-by: Dipendra Khadka <kdipendra88@gmail.com>
+---
+ .../pci/isp/kernels/macc/macc_1.0/ia_css_macc_table.host.c    | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-I can't understand why this change is needed...
+diff --git a/drivers/staging/media/atomisp/pci/isp/kernels/macc/macc_1.0/ia_css_macc_table.host.c b/drivers/staging/media/atomisp/pci/isp/kernels/macc/macc_1.0/ia_css_macc_table.host.c
+index 946b074e8288..d25bf59273ba 100644
+--- a/drivers/staging/media/atomisp/pci/isp/kernels/macc/macc_1.0/ia_css_macc_table.host.c
++++ b/drivers/staging/media/atomisp/pci/isp/kernels/macc/macc_1.0/ia_css_macc_table.host.c
+@@ -19,7 +19,7 @@
+ 
+ /* Multi-Axes Color Correction table for ISP1.
+  *	64values = 2x2matrix for 16area, [s2.13]
+- *	ineffective: 16 of "identity 2x2 matix" {8192,0,0,8192}
++ *	ineffective: 16 of "identity 2x2 matrix" {8192,0,0,8192}
+  */
+ const struct ia_css_macc_table default_macc_table = {
+ 	{
+@@ -36,7 +36,7 @@ const struct ia_css_macc_table default_macc_table = {
+ 
+ /* Multi-Axes Color Correction table for ISP2.
+  *	64values = 2x2matrix for 16area, [s1.12]
+- *	ineffective: 16 of "identity 2x2 matix" {4096,0,0,4096}
++ *	ineffective: 16 of "identity 2x2 matrix" {4096,0,0,4096}
+  */
+ const struct ia_css_macc_table default_macc2_table = {
+ 	{
+-- 
+2.39.2 (Apple Git-143)
 
-Nikita
-
-[1] https://trustedfirmware-a.readthedocs.io/en/latest/design_documents/psci_osi_mode.html
-
-> Fixes: 7925ca85e9561 ("arm64: dts: qcom: sc7280: Add power-domains for cpuidle states")
-> Signed-off-by: Chia-I Wu <olvaffe@gmail.com>
-> ---
-> 
-> v2: improved commit message
-> v3: improved commit message.  I hope it's better now!
-> 
->  .../boot/dts/qcom/sc7280-firmware-tfa.dtsi    | 107 ++++++++++++++++++
->  .../arm64/boot/dts/qcom/sc7280-herobrine.dtsi |   1 +
->  arch/arm64/boot/dts/qcom/sc7280.dtsi          |   4 +-
->  3 files changed, 110 insertions(+), 2 deletions(-)
->  create mode 100644 arch/arm64/boot/dts/qcom/sc7280-firmware-tfa.dtsi
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/sc7280-firmware-tfa.dtsi b/arch/arm64/boot/dts/qcom/sc7280-firmware-tfa.dtsi
-> new file mode 100644
-> index 0000000000000..b3fc03da244d6
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/qcom/sc7280-firmware-tfa.dtsi
-> @@ -0,0 +1,107 @@
-> +// SPDX-License-Identifier: BSD-3-Clause
-> +
-> +/*
-> + * Devices that use SC7280 with TrustedFirmware-A
-> + * need PSCI PC mode instead of the OSI mode provided
-> + * by Qualcomm firmware.
-> + */
-> +
-> +&CPU0 {
-> +	/delete-property/ power-domains;
-> +	/delete-property/ power-domain-names;
-> +
-> +	cpu-idle-states = <&LITTLE_CPU_SLEEP_0
-> +			   &LITTLE_CPU_SLEEP_1
-> +			   &CLUSTER_SLEEP_0>;
-> +};
-> +
-> +&CPU1 {
-> +	/delete-property/ power-domains;
-> +	/delete-property/ power-domain-names;
-> +
-> +	cpu-idle-states = <&LITTLE_CPU_SLEEP_0
-> +			   &LITTLE_CPU_SLEEP_1
-> +			   &CLUSTER_SLEEP_0>;
-> +};
-> +
-> +&CPU2 {
-> +	/delete-property/ power-domains;
-> +	/delete-property/ power-domain-names;
-> +
-> +	cpu-idle-states = <&LITTLE_CPU_SLEEP_0
-> +			   &LITTLE_CPU_SLEEP_1
-> +			   &CLUSTER_SLEEP_0>;
-> +};
-> +
-> +&CPU3 {
-> +	/delete-property/ power-domains;
-> +	/delete-property/ power-domain-names;
-> +
-> +	cpu-idle-states = <&LITTLE_CPU_SLEEP_0
-> +			   &LITTLE_CPU_SLEEP_1
-> +			   &CLUSTER_SLEEP_0>;
-> +};
-> +
-> +&CPU4 {
-> +	/delete-property/ power-domains;
-> +	/delete-property/ power-domain-names;
-> +
-> +	cpu-idle-states = <&BIG_CPU_SLEEP_0
-> +			   &BIG_CPU_SLEEP_1
-> +			   &CLUSTER_SLEEP_0>;
-> +};
-> +
-> +&CPU5 {
-> +	/delete-property/ power-domains;
-> +	/delete-property/ power-domain-names;
-> +
-> +	cpu-idle-states = <&BIG_CPU_SLEEP_0
-> +			   &BIG_CPU_SLEEP_1
-> +			   &CLUSTER_SLEEP_0>;
-> +};
-> +
-> +&CPU6 {
-> +	/delete-property/ power-domains;
-> +	/delete-property/ power-domain-names;
-> +
-> +	cpu-idle-states = <&BIG_CPU_SLEEP_0
-> +			   &BIG_CPU_SLEEP_1
-> +			   &CLUSTER_SLEEP_0>;
-> +};
-> +
-> +&CPU7 {
-> +	/delete-property/ power-domains;
-> +	/delete-property/ power-domain-names;
-> +
-> +	cpu-idle-states = <&BIG_CPU_SLEEP_0
-> +			   &BIG_CPU_SLEEP_1
-> +			   &CLUSTER_SLEEP_0>;
-> +};
-> +
-> +/delete-node/ &domain_idle_states;
-> +
-> +&idle_states {
-> +	CLUSTER_SLEEP_0: cluster-sleep-0 {
-> +		compatible = "arm,idle-state";
-> +		idle-state-name = "cluster-power-down";
-> +		arm,psci-suspend-param = <0x40003444>;
-> +		entry-latency-us = <3263>;
-> +		exit-latency-us = <6562>;
-> +		min-residency-us = <9926>;
-> +		local-timer-stop;
-> +	};
-> +};
-> +
-> +/delete-node/ &CPU_PD0;
-> +/delete-node/ &CPU_PD1;
-> +/delete-node/ &CPU_PD2;
-> +/delete-node/ &CPU_PD3;
-> +/delete-node/ &CPU_PD4;
-> +/delete-node/ &CPU_PD5;
-> +/delete-node/ &CPU_PD6;
-> +/delete-node/ &CPU_PD7;
-> +/delete-node/ &CLUSTER_PD;
-> +
-> +&apps_rsc {
-> +	/delete-property/ power-domains;
-> +};
-> diff --git a/arch/arm64/boot/dts/qcom/sc7280-herobrine.dtsi b/arch/arm64/boot/dts/qcom/sc7280-herobrine.dtsi
-> index 9ea6636125ad9..09b2d370bf7e0 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7280-herobrine.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7280-herobrine.dtsi
-> @@ -19,6 +19,7 @@
->  
->  #include "sc7280-qcard.dtsi"
->  #include "sc7280-chrome-common.dtsi"
-> +#include "sc7280-firmware-tfa.dtsi"
->  
->  / {
->  	chosen {
-> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> index 66f1eb83cca7e..354bf2868eba6 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> @@ -383,7 +383,7 @@ core7 {
->  			};
->  		};
->  
-> -		idle-states {
-> +		idle_states: idle-states {
->  			entry-method = "psci";
->  
->  			LITTLE_CPU_SLEEP_0: cpu-sleep-0-0 {
-> @@ -427,7 +427,7 @@ BIG_CPU_SLEEP_1: cpu-sleep-1-1 {
->  			};
->  		};
->  
-> -		domain-idle-states {
-> +		domain_idle_states: domain-idle-states {
->  			CLUSTER_SLEEP_0: cluster-sleep-0 {
->  				compatible = "domain-idle-state";
->  				idle-state-name = "cluster-power-down";
-> -- 
-> 2.43.0.195.gebba966016-goog
 
