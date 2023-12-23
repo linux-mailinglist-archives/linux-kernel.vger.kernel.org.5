@@ -1,72 +1,66 @@
-Return-Path: <linux-kernel+bounces-10335-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10336-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFAC281D2E3
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 08:24:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4917A81D2EA
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 08:37:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8E0AC1F22FE5
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 07:24:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DC7B11F23104
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Dec 2023 07:37:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9719179C5;
-	Sat, 23 Dec 2023 07:24:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B28B879E3;
+	Sat, 23 Dec 2023 07:37:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fOtDNDJy"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jVFetQvg"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC9C59441;
-	Sat, 23 Dec 2023 07:24:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1d3ed1ca402so20323785ad.2;
-        Fri, 22 Dec 2023 23:24:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703316282; x=1703921082; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=jORh9fw7nr/hSfxeUA6D1R76ciFhMQw7mZ7t5scr0gE=;
-        b=fOtDNDJyIFNKf2xxoraZpruZfSW4uRonpaDTpIM+uv5PNPf63r51gKX5ummrua0g5m
-         fmqDk036TC37USb/RawOdGl3CgZeu+yyy5IectZYbvDw+n6wF+50gCTG1W8rnD2EtR1c
-         w5NCYp7635xnNQFOboaufIPGcSNtby/nCwytUPAwF+Xr2VAcevicEQf/+3aJcg2GtQAM
-         rQhi+PVh7lAmQcC78wd2W3XOQUYakBg1pO1i8swXh2d5gxcF47ojedp4RVXGKdPhZe5Q
-         0pcI+vI5J3WjJGGhDq+vvTEGwh77GDQO6OQR/N4Hzzj4F5qvbH6CzXQcJJmuNzr73mDH
-         UMDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703316282; x=1703921082;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jORh9fw7nr/hSfxeUA6D1R76ciFhMQw7mZ7t5scr0gE=;
-        b=f+wNrH3xHORW9700supCYvS3wmyo6PbyKW3TKguxL2cayYgOZEEHRvrCF30NeukkfE
-         WDaIJ/fVs5yPZ2YcXBs/m6RoD3IgsV1OlMz1wuuAZn/mb/3vBc5bTaLqlJQMK4GdACc/
-         8/pHvnXoEZftxWGdZaaxbDvgXAPmqD4vngwBrPx1p2XoYuuo9AseA6iZ3zAHZ0HH+OWh
-         CrQ/rcJ9cqSAyADXazsXIPPD+oo7GLzpkkLBr00kHQDFr691jLBGe4YNg6eQ1RAAvYCZ
-         Z8Y8d6de8Fb4pl0i0cuTnMlCbbJVTaTE0Ecqk/Yj0TxO7gf8fgSPBVZLO0NTW3AZSTjL
-         6KFA==
-X-Gm-Message-State: AOJu0YxrJmJXV1duNa1aNJL2v+whakeOpKswvTx7UZA61oqoduYseuHk
-	OVJUKo/nRpUKLrK9idTIo6o=
-X-Google-Smtp-Source: AGHT+IHDROTw+qUqQ5s2W41ci3hSL+ozkJgbTmX4v4D4Q+t8ankXeHjijUG90Hp1ejTPeq/3YR7fqg==
-X-Received: by 2002:a17:902:e88f:b0:1c9:c6f4:e0c3 with SMTP id w15-20020a170902e88f00b001c9c6f4e0c3mr3346030plg.62.1703316281854;
-        Fri, 22 Dec 2023 23:24:41 -0800 (PST)
-Received: from google.com ([2620:15c:9d:2:6810:f806:ab04:8efd])
-        by smtp.gmail.com with ESMTPSA id q17-20020a170902dad100b001d3f42edb4dsm4483746plx.294.2023.12.22.23.24.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Dec 2023 23:24:41 -0800 (PST)
-Date: Fri, 22 Dec 2023 23:24:38 -0800
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To: Anshul Dalal <anshulusr@gmail.com>
-Cc: linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-	devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [PATCH v1] dt-bindings: input: convert drv266x to json-schema
-Message-ID: <ZYaLNkYRt_WHzvCD@google.com>
-References: <20231221183109.684325-1-anshulusr@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3174E8BEA
+	for <linux-kernel@vger.kernel.org>; Sat, 23 Dec 2023 07:37:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1703317034; x=1734853034;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=LzTB/JdJl6BfK3uAzYp8bhqIfFjqeISAZ0Sfr+/TWH4=;
+  b=jVFetQvg/T4QK3jPC3ap50TgbgPZKyjLlsa4/irfWjqzYsrmR3E0n/YH
+   dckaOfrCNpfGabSuSj+X2VmBfpfnCirRqT+xWHRrpbF2atQcZlzBbcDvB
+   lkAYuJcHWT1AHRAbh/LRm5ShHSaDZc1Mcb+seYx95pTu/OIIBSif1jTAy
+   IGhpyWUvGY3TR9Mk+VjW4NuYjYNkCV3BNyfTWSKXDu/F0/LemLEji4MCj
+   MhvcRrv8pwCgkAl7oFDTE/+/dD67cYUbE/NHxVVZaHDLWOkkIqbkjwjwj
+   SQcHxTffieklxHUpoGWiWfv6m4v8OPQOhoMeCvJy3UjPlnPccQEP4ImY2
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10932"; a="3027958"
+X-IronPort-AV: E=Sophos;i="6.04,298,1695711600"; 
+   d="scan'208";a="3027958"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Dec 2023 23:37:13 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10932"; a="1108711235"
+X-IronPort-AV: E=Sophos;i="6.04,298,1695711600"; 
+   d="scan'208";a="1108711235"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by fmsmga005.fm.intel.com with ESMTP; 22 Dec 2023 23:37:11 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rGwZJ-000AQT-2F;
+	Sat, 23 Dec 2023 07:37:09 +0000
+Date: Sat, 23 Dec 2023 15:36:37 +0800
+From: kernel test robot <lkp@intel.com>
+To: Kairui Song <ryncsn@gmail.com>, linux-mm@kvack.org
+Cc: oe-kbuild-all@lists.linux.dev,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Linux Memory Management List <linux-mm@kvack.org>,
+	Yu Zhao <yuzhao@google.com>, linux-kernel@vger.kernel.org,
+	Kairui Song <kasong@tencent.com>
+Subject: Re: [PATCH 2/3] mm, lru_gen: move pages in bulk when aging
+Message-ID: <202312231555.KTX84YjF-lkp@intel.com>
+References: <20231222102255.56993-3-ryncsn@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,17 +69,56 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231221183109.684325-1-anshulusr@gmail.com>
+In-Reply-To: <20231222102255.56993-3-ryncsn@gmail.com>
 
-On Fri, Dec 22, 2023 at 12:01:08AM +0530, Anshul Dalal wrote:
-> Convert devicetree binding documentation for ti drv2665 and drv2667
-> haptics driver to json-schema. The previously two separate bindings have
-> been merged into a single drv266x.yaml.
-> 
-> Signed-off-by: Anshul Dalal <anshulusr@gmail.com>
+Hi Kairui,
 
-Applied, thank you.
+kernel test robot noticed the following build warnings:
+
+[auto build test WARNING on akpm-mm/mm-everything]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Kairui-Song/mm-lru_gen-batch-update-counters-on-againg/20231222-184601
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
+patch link:    https://lore.kernel.org/r/20231222102255.56993-3-ryncsn%40gmail.com
+patch subject: [PATCH 2/3] mm, lru_gen: move pages in bulk when aging
+config: arc-randconfig-002-20231223 (https://download.01.org/0day-ci/archive/20231223/202312231555.KTX84YjF-lkp@intel.com/config)
+compiler: arc-elf-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231223/202312231555.KTX84YjF-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312231555.KTX84YjF-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> mm/vmscan.c:3108:1: warning: 'inline' is not at beginning of declaration [-Wold-style-declaration]
+    3108 | static void inline lru_gen_inc_bulk_finish(struct lru_gen_folio *lrugen,
+         | ^~~~~~
+   mm/vmscan.c:3127:1: warning: 'inline' is not at beginning of declaration [-Wold-style-declaration]
+    3127 | static void inline lru_gen_try_inc_bulk(struct lru_gen_folio *lrugen, struct folio *folio,
+         | ^~~~~~
+
+
+vim +/inline +3108 mm/vmscan.c
+
+  3107	
+> 3108	static void inline lru_gen_inc_bulk_finish(struct lru_gen_folio *lrugen,
+  3109						   int bulk_gen, bool type, int zone,
+  3110						   struct gen_update_batch *batch)
+  3111	{
+  3112		if (!batch->head)
+  3113			return;
+  3114	
+  3115		list_bulk_move_tail(&lrugen->folios[bulk_gen][type][zone],
+  3116				    &batch->head->lru,
+  3117				    &batch->tail->lru);
+  3118	
+  3119		batch->head = NULL;
+  3120	}
+  3121	
 
 -- 
-Dmitry
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
