@@ -1,24 +1,24 @@
-Return-Path: <linux-kernel+bounces-10722-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10721-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8033D81DAE6
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 15:35:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5CBE81DAE5
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 15:35:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2BEDA1F21826
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 14:35:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C45421C20B91
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 14:35:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 123586AA4;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08A446AA1;
 	Sun, 24 Dec 2023 14:35:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=subdimension.ro header.i=@subdimension.ro header.b="CY3FYb8H"
+	dkim=pass (1024-bit key) header.d=subdimension.ro header.i=@subdimension.ro header.b="kSM00V4u"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from mail.subdimension.ro (skycaves.subdimension.ro [172.104.132.142])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EADE017D4;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EADB715D0;
 	Sun, 24 Dec 2023 14:35:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=subdimension.ro
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=subdimension.ro
@@ -26,15 +26,15 @@ Received: from localhost.localdomain (unknown [188.24.94.216])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
-	by mail.subdimension.ro (Postfix) with ESMTPSA id 8884328B50B;
+	by mail.subdimension.ro (Postfix) with ESMTPSA id E016228B538;
 	Sun, 24 Dec 2023 14:35:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=subdimension.ro;
-	s=skycaves; t=1703428509;
-	bh=rU5rJIlWYqtR3hpWn2InZL28bds4hYMdaN1vzUK5cI4=;
-	h=From:To:Cc:Subject:Date;
-	b=CY3FYb8HD1l8++KedRhHcguTPCPYqNWnFxuIAwXoriaBsaiPPOyaf6KmB2hq62EUz
-	 wUaAJTfYb0gPB0/96czMT92dqGeU5vyFkX0Fxp34nqsqc68rbTRzK+4cbl/8cWzMOW
-	 9OJrjzCjrcg1dSgXphAI+cxEZN3DzevKKkMGp3HU=
+	s=skycaves; t=1703428510;
+	bh=gnzCEEr9FE5S/35WvgRN9WGB3sJnxOb4JQsoYP6j3nM=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=kSM00V4uakA2eSqATirN/KIGEm+h4F2zSk1Vf30fp+yZBeggqZ9oSy+VveDKh6LH5
+	 PCrfCB5sGH9P/38gel27e6nbBolpDqbLiEZ62H9X0OKrY3mJng17GJvObeYIGHPHyp
+	 veEb+EltaNU4Tm9UqbbxUq6eI7Vwav1Cj6eu553Q=
 From: Petre Rodan <petre.rodan@subdimension.ro>
 To: linux-iio@vger.kernel.org,
 	devicetree@vger.kernel.org,
@@ -45,12 +45,13 @@ Cc: Petre Rodan <petre.rodan@subdimension.ro>,
 	Lars-Peter Clausen <lars@metafoo.de>,
 	Rob Herring <robh+dt@kernel.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v2 00/10] changes to mprls0025pa
-Date: Sun, 24 Dec 2023 16:34:45 +0200
-Message-ID: <20231224143500.10940-1-petre.rodan@subdimension.ro>
+	Conor Dooley <conor+dt@kernel.org>
+Subject: [PATCH v2 01/10] dt-bindings: iio: pressure: honeywell,mprls0025pa.yaml fix
+Date: Sun, 24 Dec 2023 16:34:46 +0200
+Message-ID: <20231224143500.10940-2-petre.rodan@subdimension.ro>
 X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20231224143500.10940-1-petre.rodan@subdimension.ro>
+References: <20231224143500.10940-1-petre.rodan@subdimension.ro>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -59,57 +60,54 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-A number of fixes to the mprls0025pa driver:
- - an off-by-one initially caused by a typo in the bindings file
- - two error fields are never checked during sensor interaction
- - unsafe initialization if the driver is instantiated via sysfs
-   and the bindings are missing
+Define enum inside the honeywell,transfer-function property block.
 
-Quality of life changes:
- - a refactor that adds a pressure-triplet property which initializes
-pmin-pascal and pmax-pascal just like in the hsc030pa driver.
-The user only needs to extract a short string from the chip name
-instead of looking up the chip in the datasheet, understand the
-nomenclature, extract the measurement range and then convert all units
-to pascals.
+Set the correct irq edge in the example block.
+Based on the datasheet, in table 13 on page 11:
+"End-of-conversion indicator: This pin is set high when a measurement
+and calculation have been completed and the data is ready to be
+clocked out"
 
-New feature:
- - SPI compatibility for Honeywell MPR sensors that require it.
+Add description on End-of-conversion interrupt.
 
-Both binding and driver are backwards compatible.
-Tested in I2C and SPI modes with two different sensors.
-The refactor requires property function present in the togreg branch.
-
-Datasheet: https://prod-edam.honeywell.com/content/dam/honeywell-edam/sps/siot/en-us/products/sensors/pressure-sensors/board-mount-pressure-sensors/micropressure-mpr-series/documents/sps-siot-mpr-series-datasheet-32332628-ciid-172626.pdf
 Signed-off-by: Petre Rodan <petre.rodan@subdimension.ro>
 Signed-off-by: Andreas Klinger <ak@it-klinger.de>
 ---
-Petre Rodan (10):
-  dt-bindings: iio: pressure: honeywell,mprls0025pa.yaml fix
-  dt-bindings: iio: pressure: honeywell,mprls0025pa.yaml add
-    pressure-triplet
-  dt-bindings: iio: pressure: honeywell,mprls0025pa.yaml add spi bus
-  iio: pressure: mprls0025pa.c fix off-by-one enum
-  iio: pressure: mprls0025pa.c fix error flag check
-  iio: pressure: mprls0025pa.c remove dangerous defaults
-  iio: pressure: mprls0025pa.c whitespace cleanup
-  iio: pressure: mprls0025pa.c refactor
-  iio: pressure: mprls0025pa.c add triplet property
-  iio: pressure: mprls0025pa.c add SPI driver
+ .../bindings/iio/pressure/honeywell,mprls0025pa.yaml       | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
- .../iio/pressure/honeywell,mprls0025pa.yaml   |  97 ++++--
- MAINTAINERS                                   |   3 +-
- drivers/iio/pressure/Kconfig                  |  14 +-
- drivers/iio/pressure/Makefile                 |   2 +
- drivers/iio/pressure/mprls0025pa.c            | 308 +++++++++---------
- drivers/iio/pressure/mprls0025pa.h            | 100 ++++++
- drivers/iio/pressure/mprls0025pa_i2c.c        |  98 ++++++
- drivers/iio/pressure/mprls0025pa_spi.c        |  91 ++++++
- 8 files changed, 539 insertions(+), 174 deletions(-)
- create mode 100644 drivers/iio/pressure/mprls0025pa.h
- create mode 100644 drivers/iio/pressure/mprls0025pa_i2c.c
- create mode 100644 drivers/iio/pressure/mprls0025pa_spi.c
+diff --git a/Documentation/devicetree/bindings/iio/pressure/honeywell,mprls0025pa.yaml b/Documentation/devicetree/bindings/iio/pressure/honeywell,mprls0025pa.yaml
+index d9e903fbfd99..84ced4e5a7da 100644
+--- a/Documentation/devicetree/bindings/iio/pressure/honeywell,mprls0025pa.yaml
++++ b/Documentation/devicetree/bindings/iio/pressure/honeywell,mprls0025pa.yaml
+@@ -42,6 +42,10 @@ properties:
+     maxItems: 1
 
+   interrupts:
++    description:
++      Optional interrupt for indicating End-of-conversion.
++      If not present, the driver loops for a while until the received status
++      byte indicates correct measurement.
+     maxItems: 1
+
+   reset-gpios:
+@@ -65,6 +69,7 @@ properties:
+       1 - A, 10% to 90% of 2^24 (1677722 .. 15099494)
+       2 - B, 2.5% to 22.5% of 2^24 (419430 .. 3774874)
+       3 - C, 20% to 80% of 2^24 (3355443 .. 13421773)
++    enum: [1, 2, 3]
+     $ref: /schemas/types.yaml#/definitions/uint32
+
+   vdd-supply:
+@@ -93,7 +98,7 @@ examples:
+             reg = <0x18>;
+             reset-gpios = <&gpio3 19 GPIO_ACTIVE_HIGH>;
+             interrupt-parent = <&gpio3>;
+-            interrupts = <21 IRQ_TYPE_EDGE_FALLING>;
++            interrupts = <21 IRQ_TYPE_EDGE_RISING>;
+             honeywell,pmin-pascal = <0>;
+             honeywell,pmax-pascal = <172369>;
+             honeywell,transfer-function = <1>;
 --
 2.41.0
 
