@@ -1,88 +1,99 @@
-Return-Path: <linux-kernel+bounces-10687-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10688-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id ACF8581D8C0
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 11:42:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B5B2581D8C2
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 11:47:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 49CFAB218DD
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 10:42:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9D2911C216AD
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 10:47:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94A673FE6;
-	Sun, 24 Dec 2023 10:42:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="r5nbBjjQ"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA9EB211A;
+	Sun, 24 Dec 2023 10:47:19 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
+Received: from bmailout2.hostsharing.net (bmailout2.hostsharing.net [83.223.78.240])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E1002565;
-	Sun, 24 Dec 2023 10:42:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-	s=mail; t=1703414559;
-	bh=CvQyVonapKKk7Y2udUySpLUKu8fg/y974JE5CTZbnLw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=r5nbBjjQBCmoBku/WyLKJHrLXLY047GLxht3tv8tE5DnKboMF0v2MBN/yGPLbdQB5
-	 2tXQQ/z9c0qr/zoJlI2IdXT22wQKF7NdrG+isjbH8jekau20F+y4puZdJLdGIvFlmL
-	 +6tD93OTt/y4Xzw9ZK7joTNAepbkMY3xdIEG9K2I=
-Date: Sun, 24 Dec 2023 11:42:38 +0100
-From: Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-To: Luis Chamberlain <mcgrof@kernel.org>
-Cc: Kees Cook <keescook@chromium.org>, 
-	Joel Granados <j.granados@samsung.com>, linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH] sysctl: delete unused define SYSCTL_PERM_EMPTY_DIR
-Message-ID: <966d0fd3-9a01-48d3-a146-4ce18c7a21ad@t-8ch.de>
-References: <20231223-sysctl-perm-empty-dir-v1-1-194edd9b09dd@weissschuh.net>
- <ZYcmJTsgDdptxBHS@bombadil.infradead.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7328220F9;
+	Sun, 24 Dec 2023 10:47:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=h08.hostsharing.net
+Received: from h08.hostsharing.net (h08.hostsharing.net [IPv6:2a01:37:1000::53df:5f1c:0])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
+	 client-signature RSA-PSS (4096 bits) client-digest SHA256)
+	(Client CN "*.hostsharing.net", Issuer "RapidSSL TLS RSA CA G1" (verified OK))
+	by bmailout2.hostsharing.net (Postfix) with ESMTPS id 42C042800B1D7;
+	Sun, 24 Dec 2023 11:47:09 +0100 (CET)
+Received: by h08.hostsharing.net (Postfix, from userid 100393)
+	id 30CFF10A64; Sun, 24 Dec 2023 11:47:09 +0100 (CET)
+Date: Sun, 24 Dec 2023 11:47:09 +0100
+From: Lukas Wunner <lukas@wunner.de>
+To: Ethan Zhao <haifeng.zhao@linux.intel.com>
+Cc: bhelgaas@google.com, baolu.lu@linux.intel.com, dwmw2@infradead.org,
+	will@kernel.org, robin.murphy@arm.com, linux-pci@vger.kernel.org,
+	iommu@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v6 4/4] iommu/vt-d: break out devTLB invalidation if
+ target device is gone
+Message-ID: <20231224104709.GB31197@wunner.de>
+References: <20231224050657.182022-1-haifeng.zhao@linux.intel.com>
+ <20231224050657.182022-5-haifeng.zhao@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZYcmJTsgDdptxBHS@bombadil.infradead.org>
+In-Reply-To: <20231224050657.182022-5-haifeng.zhao@linux.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-On 2023-12-23 10:25:41-0800, Luis Chamberlain wrote:
-> On Sat, Dec 23, 2023 at 02:53:47PM +0100, Thomas Weißschuh wrote:
-> > It seems it was never used.
-> > 
-> > Fixes: 2f2665c13af4 ("sysctl: replace child with an enumeration")
-> > Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
-> > ---
-> > This was originally part of the sysctl-const series [0], but it doesn't
-> > really belong in there.
-> > To slim down that series as much as possible, submit this patch on its
-> > own.
-> > 
-> > [0] https://lore.kernel.org/lkml/20231204-const-sysctl-v2-2-7a5060b11447@weissschuh.net/
-> 
-> Applied, and pushed! BTW:
+On Sun, Dec 24, 2023 at 12:06:57AM -0500, Ethan Zhao wrote:
+> --- a/drivers/iommu/intel/dmar.c
+> +++ b/drivers/iommu/intel/dmar.c
+> @@ -1423,6 +1423,13 @@ int qi_submit_sync(struct intel_iommu *iommu, struct qi_desc *desc,
+>  	writel(qi->free_head << shift, iommu->reg + DMAR_IQT_REG);
+>  
+>  	while (qi->desc_status[wait_index] != QI_DONE) {
+> +		/*
+> +		 * if the devTLB invalidation target device is gone, don't wait
+> +		 * anymore, it might take up to 1min+50%, causes system hang.
+> +		 */
+> +		if (type == QI_DIOTLB_TYPE && iommu->flush_target_dev)
+> +			if (!pci_device_is_present(to_pci_dev(iommu->flush_target_dev)))
+> +				break;
 
-Thanks!
+As a general approach, this is much better now.
 
-> $ b4 am -s 20231223-sysctl-perm-empty-dir-v1-1-194edd9b09dd@weissschuh.net
-> Grabbing thread from
-> lore.kernel.org/all/20231223-sysctl-perm-empty-dir-v1-1-194edd9b09dd@weissschuh.net/t.mbox.gz
-> Analyzing 1 messages in the thread
-> Checking attestation on all messages, may take a moment...
-> ---
-> ✓ [PATCH] sysctl: delete unused define SYSCTL_PERM_EMPTY_DIR
-> + Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
-> ---
-> ✗ No key: ed25519/linux@weissschuh.net
-> ✓ Signed: DKIM/weissschuh.net
+Please combine the nested if-clauses into one.
 
-b4 needs a manual import of contributor keys for it to validate them:
+Please amend the code comment with a spec reference, i.e.
+"(see Implementation Note in PCIe r6.1 sec 10.3.1)"
+so that readers of the code know where the magic number "1min+50%"
+is coming from.
 
-https://b4.docs.kernel.org/en/latest/maintainer/kr.html
+Is flush_target_dev guaranteed to always be a pci_dev?
 
+I'll let iommu maintainers comment on whether storing a flush_target_dev
+pointer is the right approach.  (May store a back pointer from
+struct intel_iommu to struct device_domain_info?)
 
-Thomas
+Maybe move the "to_pci_dev(iommu->flush_target_dev)" lookup outside the
+loop to avoid doing this over and over again?
+
+I think we still have a problem here if the device is not removed
+but simply takes a long time to respond to Invalidate Requests
+(as it is permitted to do per the Implementation Note).  We'll
+busy-wait for the completion and potentially run into the watchdog's
+time limit again.  So I think you or someone else in your org should
+add OKRs to refactor the code so that it sleeps in-between polling
+for Invalidate Completions (instead of busy-waiting with interrupts
+disabled).
+
+Thanks,
+
+Lukas
 
