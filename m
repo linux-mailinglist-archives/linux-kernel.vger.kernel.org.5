@@ -1,123 +1,96 @@
-Return-Path: <linux-kernel+bounces-10658-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10659-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C01E81D852
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 09:26:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D743B81D857
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 09:31:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 899342827C8
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 08:26:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9C218282817
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 08:31:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEE3615CF;
-	Sun, 24 Dec 2023 08:26:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A7BC1858;
+	Sun, 24 Dec 2023 08:31:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Whq0B/BM"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from zg8tmtyylji0my4xnjqumte4.icoremail.net (zg8tmtyylji0my4xnjqumte4.icoremail.net [162.243.164.118])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C100317D4;
-	Sun, 24 Dec 2023 08:26:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
-Received: from luzhipeng.223.5.5.5 (unknown [122.235.137.177])
-	by mail-app3 (Coremail) with SMTP id cC_KCgCHjBkT64dlc81jAQ--.7486S2;
-	Sun, 24 Dec 2023 16:25:55 +0800 (CST)
-From: Zhipeng Lu <alexious@zju.edu.cn>
-To: alexious@zju.edu.cn
-Cc: Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] ALSA: hdsp: fix some memleaks in snd_hdsp_hwdep_ioctl
-Date: Sun, 24 Dec 2023 16:25:31 +0800
-Message-Id: <20231224082533.3540468-1-alexious@zju.edu.cn>
-X-Mailer: git-send-email 2.34.1
+Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98451ED2;
+	Sun, 24 Dec 2023 08:31:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f54.google.com with SMTP id 46e09a7af769-6dbaf12c866so2451390a34.3;
+        Sun, 24 Dec 2023 00:31:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703406674; x=1704011474; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=P7vRR4si7E//0jIMoSyRPsJ7pOTnjAoMpD8DGfwijuw=;
+        b=Whq0B/BMZw5xcM8oE31+WvLfF9UwA7Ap3dKY9JbLsJanzrvHzGGqmmxCDMC1kJz3vE
+         A1XdPpvKRrxzCMkoo/q8XTampCaCVZO87UGpWrBz7FYXth/IEgymePxFZ7V3cvGceYsl
+         2xbGSRmp2KcWMeJRbrfvHL1Ucm1sJYKl7OSbh5STP4+Ty08pwE8grJBhZcwEeQAX6o1l
+         bk7cgEyddW9MaFp7tJi2PmVsLgGmpOLUv3UlNwTvomwEUdUc+5zU37awCH22ONUC8Vxv
+         7yMRtV2GxgZyDvEbvDz0yXN64Nx+y8fiwicELRWFBCZPZuavKa7urVnK7W53e+FlGLnR
+         eBXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703406674; x=1704011474;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=P7vRR4si7E//0jIMoSyRPsJ7pOTnjAoMpD8DGfwijuw=;
+        b=fywswENLhDEMxeTdWnYpVzOmcibHUbMdaZ2X+0QAOlGsYt33FP9eRR4Ii7oSAMsJmd
+         Xi+LZfJJUbtyhpNzvPi+XgFn0AtDSj6HcocSl/jn8aPbh54025yZfspfq/IG76gyzcyF
+         NfOcPJqzRCITfjJvYc9E6DdWKqWngBJIFBORqIB1Cl+F3uGPn6PBm/gbPO2r83d58gki
+         QXtwMK1ONteTgphDgbXJvJVu4UBNMqQwT7HXR8NVyaNYQldZw9XwRrbe6Nqez+5tQiyc
+         bgbQWKs7j1W888Vm/O/id9/RfXqKxXyzASIXIQ+VT4XUP/qQ9OU4GfjBIU3pqKXHcfvg
+         7ELg==
+X-Gm-Message-State: AOJu0Yz9Mrzc2v8tGj+yWngy7kZ0ASHNHwBSFC+FUbTYOLUiKxdjKqOG
+	9gwla6iwbIx2B0QjO+mSSv8=
+X-Google-Smtp-Source: AGHT+IEiSfA6ELIfKEa0uToqVD5htaRTLuaCHPE1CPxbweKeTZHHAHxT6z18t+NqYE/7fjZpcAxt7A==
+X-Received: by 2002:a05:6808:2383:b0:3b9:defc:a171 with SMTP id bp3-20020a056808238300b003b9defca171mr5724565oib.5.1703406674458;
+        Sun, 24 Dec 2023 00:31:14 -0800 (PST)
+Received: from google.com ([2620:15c:9d:2:765c:936e:ea43:6046])
+        by smtp.gmail.com with ESMTPSA id b16-20020aa78710000000b006d9b2694b0csm708865pfo.200.2023.12.24.00.31.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 24 Dec 2023 00:31:13 -0800 (PST)
+Date: Sun, 24 Dec 2023 00:31:10 -0800
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To: Andreas Kemnade <andreas@kemnade.info>
+Cc: robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+	kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+	rydberg@bitmath.org, linus.walleij@linaro.org,
+	Jonathan.Cameron@huawei.com, u.kleine-koenig@pengutronix.de,
+	heiko@sntech.de, linux-input@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH v3 1/4] dt-bindings: touchscreen: convert neonode,zforce
+ to json-schema
+Message-ID: <ZYfsTsS8G8SdhFTn@google.com>
+References: <20231223221213.774868-1-andreas@kemnade.info>
+ <20231223221213.774868-2-andreas@kemnade.info>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cC_KCgCHjBkT64dlc81jAQ--.7486S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7ArW8ZFyDZr1kWrWxJF4UXFb_yoW8Cr48pF
-	WfG3yjkrW8JrWFkanrJw1DWrn0kFn7tay5WrWrC34Iyr1YywnYvF9Y9rWv9Fyagr1rWw4x
-	Kw4Fva45Cr1UtF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUkv14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r43
-	MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr
-	0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0E
-	wIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWxJV
-	W8Jr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF
-	0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JU38n5UUUUU=
-X-CM-SenderInfo: qrsrjiarszq6lmxovvfxof0/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231223221213.774868-2-andreas@kemnade.info>
 
-When snd_hdsp_load_firmware_from_cache and snd_hdsp_enable_io fails,
-the hdsp->fw_uploaded needs to be free.Or there could be memleaks in
-snd_hdsp_hwdep_ioctl.
+On Sat, Dec 23, 2023 at 11:12:10PM +0100, Andreas Kemnade wrote:
+> Convert Neonode infrared touchscreen controller binding to DT schema.
+> 
+> Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
+> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-Fixes: 90caaef6a1ce ("ALSA: hdsp: improve firmware caching")
-Signed-off-by: Zhipeng Lu <alexious@zju.edu.cn>
----
- sound/pci/rme9652/hdsp.c | 16 ++++++++++------
- 1 file changed, 10 insertions(+), 6 deletions(-)
+Applied, thank you.
 
-diff --git a/sound/pci/rme9652/hdsp.c b/sound/pci/rme9652/hdsp.c
-index e7d1b43471a2..6f6add2f7c42 100644
---- a/sound/pci/rme9652/hdsp.c
-+++ b/sound/pci/rme9652/hdsp.c
-@@ -4874,21 +4874,20 @@ static int snd_hdsp_hwdep_ioctl(struct snd_hwdep *hw, struct file *file, unsigne
- 
- 		if (copy_from_user(hdsp->fw_uploaded, firmware_data,
- 				   HDSP_FIRMWARE_SIZE)) {
--			vfree(hdsp->fw_uploaded);
--			hdsp->fw_uploaded = NULL;
--			return -EFAULT;
-+			err = -EFAULT;
-+			goto free_fw_uploaded;
- 		}
- 
- 		hdsp->state |= HDSP_FirmwareCached;
- 
- 		err = snd_hdsp_load_firmware_from_cache(hdsp);
- 		if (err < 0)
--			return err;
-+			goto free_fw_uploaded;
- 
- 		if (!(hdsp->state & HDSP_InitializationComplete)) {
- 			err = snd_hdsp_enable_io(hdsp);
- 			if (err < 0)
--				return err;
-+				goto free_fw_uploaded;
- 
- 			snd_hdsp_initialize_channels(hdsp);
- 			snd_hdsp_initialize_midi_flush(hdsp);
-@@ -4897,7 +4896,7 @@ static int snd_hdsp_hwdep_ioctl(struct snd_hwdep *hw, struct file *file, unsigne
- 			if (err < 0) {
- 				dev_err(hdsp->card->dev,
- 					"error creating alsa devices\n");
--				return err;
-+				goto free_fw_uploaded;
- 			}
- 		}
- 		break;
-@@ -4912,6 +4911,11 @@ static int snd_hdsp_hwdep_ioctl(struct snd_hwdep *hw, struct file *file, unsigne
- 		return -EINVAL;
- 	}
- 	return 0;
-+free_fw_uploaded:
-+	vfree(hdsp->fw_uploaded);
-+	hdsp->fw_uploaded = NULL;
-+err:
-+	return err;
- }
- 
- static const struct snd_pcm_ops snd_hdsp_playback_ops = {
 -- 
-2.34.1
-
+Dmitry
 
