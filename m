@@ -1,111 +1,106 @@
-Return-Path: <linux-kernel+bounces-10805-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10806-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9569F81DC03
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 19:55:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 30E4E81DC05
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 19:59:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4C1F31F2178E
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 18:55:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 62DD31C203DC
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 18:59:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1EA3D2EE;
-	Sun, 24 Dec 2023 18:55:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XDlNubcP"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E98BD2FA;
+	Sun, 24 Dec 2023 18:59:50 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D674FBE8;
-	Sun, 24 Dec 2023 18:54:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703444099; x=1734980099;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=QkRfWSWR/XMDhOsYtyqhQDrgzSxc71smIy67/8QzOS4=;
-  b=XDlNubcPBAKkvsgn68yIY33Hf9fEEggOYSqaRZb8uvq7s+iKUlSfMR7T
-   tNpQ/bUqwns131836znNJW5y++RzO+mDALQQHbSlm66KpTtEcbhur6AR7
-   E8gdu7SFesAtN8Q3ISZ0OaTsrf9PLXaG8b0oEAezx2Aw6QE33nxBeLujB
-   4rbLpFRYEl0eUEn7YjDyY6f5PmkUoDw4ad0YjEVjaSG7cqMpYH98Jpem4
-   X7F0A/O1/ue/xHXabJVEVukJ6AcJk8pUc1Eod8Gm0UFMfFxV7s60YzodN
-   3XtTfwmfLHnDseiJ9evw4vTcllTNeCuNhmi9TyjkRL+ERsegBIRdYk2J/
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10934"; a="427414104"
-X-IronPort-AV: E=Sophos;i="6.04,301,1695711600"; 
-   d="scan'208";a="427414104"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Dec 2023 10:54:58 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10934"; a="848056972"
-X-IronPort-AV: E=Sophos;i="6.04,301,1695711600"; 
-   d="scan'208";a="848056972"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga004.fm.intel.com with ESMTP; 24 Dec 2023 10:54:56 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rHTcg-000CXN-1n;
-	Sun, 24 Dec 2023 18:54:51 +0000
-Date: Mon, 25 Dec 2023 02:54:48 +0800
-From: kernel test robot <lkp@intel.com>
-To: Edward Adam Davis <eadavis@qq.com>,
-	syzbot+8ffb0839a24e9c6bfa76@syzkaller.appspotmail.com
-Cc: oe-kbuild-all@lists.linux.dev, davem@davemloft.net,
-	herbert@gondor.apana.org.au, linux-crypto@vger.kernel.org,
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Subject: Re: [PATCH next] crypto: fix oob Read in arc4_crypt
-Message-ID: <202312250259.yyBgM27K-lkp@intel.com>
-References: <tencent_656D589558EA3EED8ACF3C79166F202E010A@qq.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 908C1D285;
+	Sun, 24 Dec 2023 18:59:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sntech.de
+Received: from i5e86193c.versanet.de ([94.134.25.60] helo=diego.localnet)
+	by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <heiko@sntech.de>)
+	id 1rHThJ-0005pM-Gb; Sun, 24 Dec 2023 19:59:37 +0100
+From: Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To: linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Trevor Woerner <twoerner@gmail.com>
+Cc: devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-rockchip@lists.infradead.org
+Subject: Re: [PATCH] arm64: rockchip: dts: rk3328-rock-pi-e: enable GbE eth
+Date: Sun, 24 Dec 2023 19:59:36 +0100
+Message-ID: <2404910.8hb0ThOEGa@diego>
+In-Reply-To: <20231221062244.11871-1-twoerner@gmail.com>
+References: <20231221062244.11871-1-twoerner@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <tencent_656D589558EA3EED8ACF3C79166F202E010A@qq.com>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-Hi Edward,
+Hi Trevor,
 
-kernel test robot noticed the following build warnings:
+Am Donnerstag, 21. Dezember 2023, 07:22:43 CET schrieb Trevor Woerner:
+> Adjust the device-tree to get the GbE interface working using a patch found
+> on the Radxa forum.
+> 
+> Link: https://forum.radxa.com/t/rock-pi-e-board-version-1-21-ethhernet-not-working-in-armbian/15061/3
+> Signed-off-by: Trevor Woerner <twoerner@gmail.com>
+> ---
 
-[auto build test WARNING on next-20231222]
+> @@ -165,15 +165,17 @@ mdio {
+>  		#address-cells = <1>;
+>  		#size-cells = <0>;
+>  
+> -		rtl8211e: ethernet-phy@1 {
+> +		rtl8211f: ethernet-phy@1 {
+> +			compatible = "ethernet-phy-id001c.c916", "ethernet-phy-ieee802.3-c22";
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Edward-Adam-Davis/crypto-fix-oob-Read-in-arc4_crypt/20231222-172845
-base:   next-20231222
-patch link:    https://lore.kernel.org/r/tencent_656D589558EA3EED8ACF3C79166F202E010A%40qq.com
-patch subject: [PATCH next] crypto: fix oob Read in arc4_crypt
-config: i386-buildonly-randconfig-003-20231224 (https://download.01.org/0day-ci/archive/20231225/202312250259.yyBgM27K-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231225/202312250259.yyBgM27K-lkp@intel.com/reproduce)
+skipping through that thread, it looks like there are variants of the
+board with one of the rtl8211e _or_ rtl8211f phys.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312250259.yyBgM27K-lkp@intel.com/
+So while the "ethernet-phy-ieee802.3-c22" compatible would work for both,
+the "ethernet-phy-id001c.c916" compat effectively disables phy- probing.
+So applying this patch would effectively disable ethernet support on those
+older rock-pi-e boards?
 
-All warnings (new ones prefixed by >>):
-
-   In file included from drivers/crypto/padlock-aes.c:13:
->> include/crypto/internal/skcipher.h:27:33: warning: 'crypto_skcipher_type' defined but not used [-Wunused-const-variable=]
-      27 | static const struct crypto_type crypto_skcipher_type;
-         |                                 ^~~~~~~~~~~~~~~~~~~~
+In a similar context concerning boards using different phys, it was
+suggested [0] that the bootloader should modify the dt it passes to the
+kernel to provide the correct phy id.
 
 
-vim +/crypto_skcipher_type +27 include/crypto/internal/skcipher.h
+>  			reg = <1>;
+>  			pinctrl-0 = <&eth_phy_int_pin>, <&eth_phy_reset_pin>;
+>  			pinctrl-names = "default";
+>  			interrupt-parent = <&gpio1>;
+>  			interrupts = <24 IRQ_TYPE_LEVEL_LOW>;
+> -			reset-assert-us = <10000>;
+> -			reset-deassert-us = <50000>;
+> +			reset-assert-us = <20000>;
+> +			reset-deassert-us = <100000>;
 
-    24	
-    25	struct aead_request;
-    26	struct rtattr;
-  > 27	static const struct crypto_type crypto_skcipher_type;
-    28	
+I guess for those we can consolidate onto the "slower" ones in the kernel though.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+
+>  			reset-gpios = <&gpio1 RK_PC2 GPIO_ACTIVE_LOW>;
+> +			max-speed = <1000>;
+>  		};
+>  	};
+>  };
+> 
+
+
+Heiko
+
+[0] https://lore.kernel.org/all/ecbdcfb7-32ab-45cc-991a-982c52bf4b14@gmail.com/
+
+
+
 
