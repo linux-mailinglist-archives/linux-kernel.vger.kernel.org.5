@@ -1,139 +1,172 @@
-Return-Path: <linux-kernel+bounces-10692-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10691-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50B1581D8DB
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 12:45:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D79F181D8D7
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 12:39:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 823CB1C20C7A
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 11:45:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 68D3A1F2184A
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 11:39:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27C5223D1;
-	Sun, 24 Dec 2023 11:45:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DCAA23A8;
+	Sun, 24 Dec 2023 11:39:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XtlV18KW"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DQCa7gAl"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f50.google.com (mail-qv1-f50.google.com [209.85.219.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2D5E23A8;
-	Sun, 24 Dec 2023 11:45:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703418303; x=1734954303;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=SMd6CE+ZnQSEB4njXtyEKZAOcZ4cjDK8fUe+BpN1ozY=;
-  b=XtlV18KWRXXmQLZkWNxctKyXTsSd9elvvouO15nCzJt+Bz96BdoudfdG
-   IpB2BQGIz30choUC2QSe6OMK+GMlsLnvy/V2EFYC24puCixgZEPfoTLgm
-   cx/ThlxZWTzr4sWsKGQC2/HM2M2vfbQ2lYI8P6ZCVwvgOetpYuxEwub0P
-   5g+HrN7lqCeVK0nflJ5LMLNKaD9Sk8omSu3Ahe1yGwXATqslLdaCMFpam
-   nH6GcxgyGYW2q+Ti+kSp/Zu0TiEzgUIdcKcRO2fvEmayRIfQyJOoHJZ5p
-   J3lcCqRkuAU96g26er0ItzRmlfLhChonb85dPaNnL7U6k7DulCVhzAgHc
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10933"; a="3068592"
-X-IronPort-AV: E=Sophos;i="6.04,301,1695711600"; 
-   d="scan'208";a="3068592"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Dec 2023 03:45:02 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10933"; a="900967322"
-X-IronPort-AV: E=Sophos;i="6.04,301,1695711600"; 
-   d="scan'208";a="900967322"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga004.jf.intel.com with ESMTP; 24 Dec 2023 03:44:59 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rHMuU-000CCY-04;
-	Sun, 24 Dec 2023 11:44:46 +0000
-Date: Sun, 24 Dec 2023 19:36:30 +0800
-From: kernel test robot <lkp@intel.com>
-To: Sreenath Vijayan <sreenath.vijayan@sony.com>, linux-doc@vger.kernel.org,
-	linux-serial@vger.kernel.org, corbet@lwn.net,
-	gregkh@linuxfoundation.org, jirislaby@kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	anandakumar.balasubramaniam@sony.com,
-	Sreenath Vijayan <sreenath.vijayan@sony.com>,
-	Shimoyashiki Taichi <taichi.shimoyashiki@sony.com>
-Subject: Re: [PATCH] tty/sysrq: Dump kernel ring buffer messages via sysrq
-Message-ID: <202312241947.B2xJpFET-lkp@intel.com>
-References: <20231221133953.1507021-1-sreenath.vijayan@sony.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 606FF20FA
+	for <linux-kernel@vger.kernel.org>; Sun, 24 Dec 2023 11:39:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f50.google.com with SMTP id 6a1803df08f44-67f33cf014cso26167926d6.0
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Dec 2023 03:39:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703417942; x=1704022742; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LrP1BOh8R9a54b7OYq/9y4AFoHBEUH9+IlCKTqH8hjA=;
+        b=DQCa7gAl09ZPdBdfRoWzJVNF+BJRq1N0/Eta87hjnrxrbPgeOsWoW48Df3zJwuGqtE
+         MxaZWZD0lxlK9hHWBsIL8LYGcidYIJo5WkKim1Z37ySpcaOMpNnCRBafCTUPiafBMg8X
+         FsrpIS8oztiTyE5LzgSKIOG/p8KKeCl9MlzWy6N0zi7U2a6X6dYvWvhFqNhOTtUN/WS7
+         kCVoZ6osZ3K4VPD0Q9W3L2qAoiZrgLEpZjKeqDQUxQsZjkOJyC43Wp52yl9zbla1LfY7
+         UGCtMV0h8h+kCMM5Reqix2ZGbtsjjNK8oSDrmGhjOOsT7lol0K4iTMdU/OHbhge+l1er
+         FKuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703417942; x=1704022742;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LrP1BOh8R9a54b7OYq/9y4AFoHBEUH9+IlCKTqH8hjA=;
+        b=u8ACw1yBYzBe0wJxK86kdWeXVz8CKNiEsPmyOq9ncwwU+K4AWRmcwxPKNh64xxczGb
+         4AYdJ2MVoTO3nvUcL+6sX8ar2Iq4LvMUy1CNY+6JyuCvcuGjXkKq2A2c5Ly5YcnLUiiM
+         Q3kL79oXgQpPy5BApk2Q4T+FIbMZp4UiHnevBcQg5ncGfZ+2lU0SpNrFWSCR/BXQ7Tsf
+         qoAEhWt1aO3TOPRLbhdk/1rKroNnJSZv5/+aIIED/rAPkSQJCgm5EDwjmlJjWxHCdpcj
+         qRxd+vcdy0aNTiYqeXuEls3moYtEaHwSybPGOTrRkhQHpHOZWjbEyKeHtlXfy5WMJnAM
+         cS0Q==
+X-Gm-Message-State: AOJu0YxN5g/0ueTrSbEwbV6DBeK1oMymzGbiW+uSEju+WZeDOXeS/M6w
+	Kl1uBmyTum0ueqtDwcKlgueTQ57ERS2fA0NWGVs=
+X-Google-Smtp-Source: AGHT+IGNm3S5cTeFhbTKiXdmSFgxFcUSRLyB6W+G6WqqVmizeayIFFhYuG7CKTdEPKPpsJrGv4RJMKlbbLV2Ah0Lc+U=
+X-Received: by 2002:a05:6214:62a:b0:67a:a714:d963 with SMTP id
+ a10-20020a056214062a00b0067aa714d963mr6533435qvx.55.1703417942085; Sun, 24
+ Dec 2023 03:39:02 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231221133953.1507021-1-sreenath.vijayan@sony.com>
+References: <CALOAHbDXWNbxeQEOhGW5m6bd3cLW_jnE2q6XgSpRBHzxt1GOeg@mail.gmail.com>
+ <20231223053634.942784-1-wudaemon@163.com>
+In-Reply-To: <20231223053634.942784-1-wudaemon@163.com>
+From: Yafang Shao <laoar.shao@gmail.com>
+Date: Sun, 24 Dec 2023 19:38:25 +0800
+Message-ID: <CALOAHbBdisp6opG5b0kt8skh9g5OKwXANTV2_0SLS54AMK-b1Q@mail.gmail.com>
+Subject: Re: [PATCH v2] sched/rt: Fix rt task's sched latency statistics error
+ in sched_stat_wait trace_point
+To: Junwen Wu <wudaemon@163.com>
+Cc: bristot@redhat.com, bsegall@google.com, dietmar.eggemann@arm.com, 
+	juri.lelli@redhat.com, linux-kernel@vger.kernel.org, mgorman@suse.de, 
+	mingo@redhat.com, peterz@infradead.org, rostedt@goodmis.org, 
+	vincent.guittot@linaro.org, vschneid@redhat.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Sreenath,
+On Sat, Dec 23, 2023 at 1:38=E2=80=AFPM Junwen Wu <wudaemon@163.com> wrote:
+>
+> >It seems DL has the same issue. Pls. also fix it in update_stats_dequeue=
+_dl().
+> >And add the Fixes tag in the commit log:
+> >Fixes: 57a5c2dafca8 ("sched/rt: Support schedstats for RT sched class")
+> >Fixes: b5eb4a5f6521 ("sched/dl: Support schedstats for deadline sched cl=
+ass")
+>
+> ok, the PATCH v3 below is ok?
+>
+> Subject: [PATCH v3] sched/stats: Fix rt/dl task's sched latency statistic=
+s
+>  error in sched_stat_wait trace_point
+>
+> When enable sched_stat_wait trace_point, some rt tasks sched latency so l=
+ong, like this,
+> sched_stat_wait: comm=3Drcu_preempt pid=3D14 delay=3D4936139545261 [ns]
+> Rt task has low latency, it must have a bug. When rt task balance off sou=
+rce cpu,
+> dequeue operation not update the sched_statistics, so follow update_stats=
+_wait_end_fair
+> update method, so do dl tasks.
+>
+> Fixes: 57a5c2dafca8 ("sched/rt: Support schedstats for RT sched class")
+> Fixes: b5eb4a5f6521 ("sched/dl: Support schedstats for deadline sched cla=
+ss")
+> Signed-off-by: Junwen Wu <wudaemon@163.com>
 
-kernel test robot noticed the following build warnings:
+Acked-by: Yafang Shao <laoar.shao@gmail.com>
 
-[auto build test WARNING on tty/tty-testing]
-[also build test WARNING on tty/tty-next tty/tty-linus linus/master v6.7-rc7 next-20231222]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> ---
+>  kernel/sched/deadline.c | 8 +++++++-
+>  kernel/sched/rt.c       | 7 +++++++
+>  2 files changed, 14 insertions(+), 1 deletion(-)
+>
+> diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
+> index b28114478b82..29223163ee22 100644
+> --- a/kernel/sched/deadline.c
+> +++ b/kernel/sched/deadline.c
+> @@ -1558,10 +1558,16 @@ update_stats_dequeue_dl(struct dl_rq *dl_rq, stru=
+ct sched_dl_entity *dl_se,
+>                         int flags)
+>  {
+>         struct task_struct *p =3D dl_task_of(dl_se);
+> +       struct rq *rq =3D rq_of_dl_rq(dl_rq);
+>
+>         if (!schedstat_enabled())
+>                 return;
+> -
+> +       /*
+> +        * Mark the end of the wait period
+> +        * if dequeueing a waiting task.
+> +        */
+> +       if (p && (p !=3D rq->curr))
+> +                update_stats_wait_end_dl(dl_rq, dl_se);
+>         if ((flags & DEQUEUE_SLEEP)) {
+>                 unsigned int state;
+>
+> diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
+> index 6aaf0a3d6081..6a2600213991 100644
+> --- a/kernel/sched/rt.c
+> +++ b/kernel/sched/rt.c
+> @@ -1360,12 +1360,19 @@ update_stats_dequeue_rt(struct rt_rq *rt_rq, stru=
+ct sched_rt_entity *rt_se,
+>                         int flags)
+>  {
+>         struct task_struct *p =3D NULL;
+> +       struct rq *rq =3D rq_of_rt_se(rt_se);
+>
+>         if (!schedstat_enabled())
+>                 return;
+>
+>         if (rt_entity_is_task(rt_se))
+>                 p =3D rt_task_of(rt_se);
+> +        /*
+> +         * Mark the end of the wait period
+> +         * if dequeueing a waiting task.
+> +         */
+> +       if (p && (p !=3D rq->curr))
+> +               update_stats_wait_end_rt(rt_rq, rt_se);
+>
+>         if ((flags & DEQUEUE_SLEEP) && p) {
+>                 unsigned int state;
+>
+> --
+> Best regards
+>
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Sreenath-Vijayan/tty-sysrq-Dump-kernel-ring-buffer-messages-via-sysrq/20231222-172636
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty.git tty-testing
-patch link:    https://lore.kernel.org/r/20231221133953.1507021-1-sreenath.vijayan%40sony.com
-patch subject: [PATCH] tty/sysrq: Dump kernel ring buffer messages via sysrq
-config: csky-defconfig (https://download.01.org/0day-ci/archive/20231224/202312241947.B2xJpFET-lkp@intel.com/config)
-compiler: csky-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231224/202312241947.B2xJpFET-lkp@intel.com/reproduce)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312241947.B2xJpFET-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   drivers/tty/sysrq.c: In function 'dmesg_dump_callback':
->> drivers/tty/sysrq.c:479:1: warning: the frame size of 1048 bytes is larger than 1024 bytes [-Wframe-larger-than=]
-     479 | }
-         | ^
-
-
-vim +479 drivers/tty/sysrq.c
-
-   454	
-   455	static void dmesg_dump_callback(struct work_struct *work)
-   456	{
-   457		struct kmsg_dump_iter iter;
-   458		size_t len;
-   459		char buf[1024];
-   460		struct console *con;
-   461		int cookie;
-   462	
-   463		kmsg_dump_rewind(&iter);
-   464		while (kmsg_dump_get_line(&iter, 1, buf, sizeof(buf), &len)) {
-   465			/*
-   466			 * Since using printk() or pr_*() will append the message to the
-   467			 * kernel ring buffer, they cannot be used to display the retrieved
-   468			 * message. Hence console_write() of serial drivers is used.
-   469			 */
-   470			console_lock();
-   471			cookie = console_srcu_read_lock();
-   472			for_each_console_srcu(con) {
-   473				if ((console_srcu_read_flags(con) & CON_ENABLED) && con->write)
-   474					con->write(con, buf, len);
-   475			}
-   476			console_srcu_read_unlock(cookie);
-   477			console_unlock();
-   478		}
- > 479	}
-   480	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+--=20
+Regards
+Yafang
 
