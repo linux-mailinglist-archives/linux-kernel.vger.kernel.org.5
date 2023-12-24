@@ -1,58 +1,56 @@
-Return-Path: <linux-kernel+bounces-10720-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10722-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1548381DADC
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 15:30:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8033D81DAE6
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 15:35:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B9B601F21826
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 14:30:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2BEDA1F21826
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 14:35:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF5EF53AF;
-	Sun, 24 Dec 2023 14:30:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 123586AA4;
+	Sun, 24 Dec 2023 14:35:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="LK5l2y4U"
+	dkim=pass (1024-bit key) header.d=subdimension.ro header.i=@subdimension.ro header.b="CY3FYb8H"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.smtpout.orange.fr (smtp-17.smtpout.orange.fr [80.12.242.17])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.subdimension.ro (skycaves.subdimension.ro [172.104.132.142])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3A645677
-	for <linux-kernel@vger.kernel.org>; Sun, 24 Dec 2023 14:30:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wanadoo.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
-Received: from pop-os.home ([92.140.202.140])
-	by smtp.orange.fr with ESMTPA
-	id HPUSr2aSJZnJmHPUSr5tZE; Sun, 24 Dec 2023 15:30:07 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-	s=t20230301; t=1703428207;
-	bh=LCtL5kqOGRBMWH+JxDJBF0/eK646oThHjfyYVTS2Vzk=;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EADE017D4;
+	Sun, 24 Dec 2023 14:35:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=subdimension.ro
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=subdimension.ro
+Received: from localhost.localdomain (unknown [188.24.94.216])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by mail.subdimension.ro (Postfix) with ESMTPSA id 8884328B50B;
+	Sun, 24 Dec 2023 14:35:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=subdimension.ro;
+	s=skycaves; t=1703428509;
+	bh=rU5rJIlWYqtR3hpWn2InZL28bds4hYMdaN1vzUK5cI4=;
 	h=From:To:Cc:Subject:Date;
-	b=LK5l2y4U3Axg2/JMRLu9icqmznswmGIFSB4S0/gut7pJZcqDUZEi25IrWlcb2iMM8
-	 hBR4amRZlOOHmQ1Pabna28V77wxnIr5UOKrWZ4X6mDblPKwMfkoHuzL1xdcy09n1Ge
-	 yztFcOf8E/OebHBcKMDw1I+jKtftm1GBoRkgAxNNYAsKuIwpQzMCWywXTeXP6W31kN
-	 1cD7I89jcZSt0kYulzu8+s6ocg5CQ2y1we9yEz7hNcdgbmO7xd9IY9iwSfjfXbcqpP
-	 pR74S/khUj036xF4CXytondIlGjHxCQOozvV9YIB8K1cSEQORp+aJGUWOG7nMdUVEx
-	 6TJU2gWI/WLVg==
-X-ME-Helo: pop-os.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 24 Dec 2023 15:30:07 +0100
-X-ME-IP: 92.140.202.140
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To: Kurt Schwemmer <kurt.schwemmer@microsemi.com>,
-	Logan Gunthorpe <logang@deltatee.com>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Dmitry Safonov <0x7f454c46@gmail.com>,
-	Daniel Stodden <dns@arista.com>
-Cc: linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org,
-	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	linux-pci@vger.kernel.org
-Subject: [PATCH] PCI: switchtec: Fix an error handling path in switchtec_pci_probe()
-Date: Sun, 24 Dec 2023 15:30:01 +0100
-Message-Id: <01446d2ccb91a578239915812f2b7dfbeb2882af.1703428183.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.34.1
+	b=CY3FYb8HD1l8++KedRhHcguTPCPYqNWnFxuIAwXoriaBsaiPPOyaf6KmB2hq62EUz
+	 wUaAJTfYb0gPB0/96czMT92dqGeU5vyFkX0Fxp34nqsqc68rbTRzK+4cbl/8cWzMOW
+	 9OJrjzCjrcg1dSgXphAI+cxEZN3DzevKKkMGp3HU=
+From: Petre Rodan <petre.rodan@subdimension.ro>
+To: linux-iio@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Petre Rodan <petre.rodan@subdimension.ro>,
+	Andreas Klinger <ak@it-klinger.de>,
+	Jonathan Cameron <jic23@kernel.org>,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v2 00/10] changes to mprls0025pa
+Date: Sun, 24 Dec 2023 16:34:45 +0200
+Message-ID: <20231224143500.10940-1-petre.rodan@subdimension.ro>
+X-Mailer: git-send-email 2.41.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -61,43 +59,58 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The commit in Fixes changed the logic on how resources are released and
-introduced a new switchtec_exit_pci() that need to be called explicitly in
-order to undo a corresponding switchtec_init_pci().
+A number of fixes to the mprls0025pa driver:
+ - an off-by-one initially caused by a typo in the bindings file
+ - two error fields are never checked during sensor interaction
+ - unsafe initialization if the driver is instantiated via sysfs
+   and the bindings are missing
 
-This was done in the remove function, but not in the probe.
+Quality of life changes:
+ - a refactor that adds a pressure-triplet property which initializes
+pmin-pascal and pmax-pascal just like in the hsc030pa driver.
+The user only needs to extract a short string from the chip name
+instead of looking up the chip in the datasheet, understand the
+nomenclature, extract the measurement range and then convert all units
+to pascals.
 
-Fix the probe now.
+New feature:
+ - SPI compatibility for Honeywell MPR sensors that require it.
 
-Fixes: df25461119d9 ("PCI: switchtec: Fix stdev_release() crash after surprise hot remove")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Both binding and driver are backwards compatible.
+Tested in I2C and SPI modes with two different sensors.
+The refactor requires property function present in the togreg branch.
+
+Datasheet: https://prod-edam.honeywell.com/content/dam/honeywell-edam/sps/siot/en-us/products/sensors/pressure-sensors/board-mount-pressure-sensors/micropressure-mpr-series/documents/sps-siot-mpr-series-datasheet-32332628-ciid-172626.pdf
+Signed-off-by: Petre Rodan <petre.rodan@subdimension.ro>
+Signed-off-by: Andreas Klinger <ak@it-klinger.de>
 ---
- drivers/pci/switch/switchtec.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Petre Rodan (10):
+  dt-bindings: iio: pressure: honeywell,mprls0025pa.yaml fix
+  dt-bindings: iio: pressure: honeywell,mprls0025pa.yaml add
+    pressure-triplet
+  dt-bindings: iio: pressure: honeywell,mprls0025pa.yaml add spi bus
+  iio: pressure: mprls0025pa.c fix off-by-one enum
+  iio: pressure: mprls0025pa.c fix error flag check
+  iio: pressure: mprls0025pa.c remove dangerous defaults
+  iio: pressure: mprls0025pa.c whitespace cleanup
+  iio: pressure: mprls0025pa.c refactor
+  iio: pressure: mprls0025pa.c add triplet property
+  iio: pressure: mprls0025pa.c add SPI driver
 
-diff --git a/drivers/pci/switch/switchtec.c b/drivers/pci/switch/switchtec.c
-index 1804794d0e68..5a4adf6c04cf 100644
---- a/drivers/pci/switch/switchtec.c
-+++ b/drivers/pci/switch/switchtec.c
-@@ -1672,7 +1672,7 @@ static int switchtec_pci_probe(struct pci_dev *pdev,
- 	rc = switchtec_init_isr(stdev);
- 	if (rc) {
- 		dev_err(&stdev->dev, "failed to init isr.\n");
--		goto err_put;
-+		goto err_exit_pci;
- 	}
- 
- 	iowrite32(SWITCHTEC_EVENT_CLEAR |
-@@ -1693,6 +1693,8 @@ static int switchtec_pci_probe(struct pci_dev *pdev,
- 
- err_devadd:
- 	stdev_kill(stdev);
-+err_exit_pci:
-+	switchtec_exit_pci(stdev);
- err_put:
- 	ida_free(&switchtec_minor_ida, MINOR(stdev->dev.devt));
- 	put_device(&stdev->dev);
--- 
-2.34.1
+ .../iio/pressure/honeywell,mprls0025pa.yaml   |  97 ++++--
+ MAINTAINERS                                   |   3 +-
+ drivers/iio/pressure/Kconfig                  |  14 +-
+ drivers/iio/pressure/Makefile                 |   2 +
+ drivers/iio/pressure/mprls0025pa.c            | 308 +++++++++---------
+ drivers/iio/pressure/mprls0025pa.h            | 100 ++++++
+ drivers/iio/pressure/mprls0025pa_i2c.c        |  98 ++++++
+ drivers/iio/pressure/mprls0025pa_spi.c        |  91 ++++++
+ 8 files changed, 539 insertions(+), 174 deletions(-)
+ create mode 100644 drivers/iio/pressure/mprls0025pa.h
+ create mode 100644 drivers/iio/pressure/mprls0025pa_i2c.c
+ create mode 100644 drivers/iio/pressure/mprls0025pa_spi.c
+
+--
+2.41.0
 
 
