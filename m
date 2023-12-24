@@ -1,113 +1,90 @@
-Return-Path: <linux-kernel+bounces-10826-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10827-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64B1081DC75
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 22:26:27 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 686FB81DC78
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 22:28:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 188101F2161B
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 21:26:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 12ED6B2115C
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 21:28:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5EEBEAE2;
-	Sun, 24 Dec 2023 21:26:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDC06EEDC;
+	Sun, 24 Dec 2023 21:28:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="OeA54G8H"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="U5MqMVfN"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10252E56B
-	for <linux-kernel@vger.kernel.org>; Sun, 24 Dec 2023 21:26:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1d3ea8d0f9dso259485ad.1
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Dec 2023 13:26:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1703453177; x=1704057977; darn=vger.kernel.org;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=JvNQTdY06fNS62lWjwFwulScBL1udDIwugjQ5w044qk=;
-        b=OeA54G8HTjtNVOVsXAoxC3dz8uFZrNYeYggAKwhP/sMAPCSOSoJInMCI+zh+lq6qGh
-         dIZeVUV4XwhkrBlwkuRRlCaY8kjodDxaEo4AsUYat37VxSiRiycW/J6mGOgo5Q0KwUZw
-         8ad7+RlRbJPwcoLv5RC3zpNMJtFYMNLIB7FIqGF00lpSDmJZ24DjgU1aBiRErNbiBS0q
-         rAR4KX2GTjncjUp5yKHUUTZmibsFkk3ZVWEM7vQafy8ax7RFmqHpQ4SGxjhjPhLTZPlX
-         an2T1N/rVZ41Mh/SNUn8Fi63o2TtWIIXwhANdoYDZZbCvNsiDjIzi+8VPu/jGlsTz0nk
-         NWww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703453177; x=1704057977;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=JvNQTdY06fNS62lWjwFwulScBL1udDIwugjQ5w044qk=;
-        b=bE60amvVEu2UQlTG0ty6FUrtJlONWXf58wN0I5P5zCVXLJtZHRj+YrmHeLTvK5urGz
-         wLcmFjiC5fSRwV4D0RvfnIvC0ruDpRhHG6vfGLw+djpTxqptotjmotuWVpsYnlwo6DHQ
-         xBnfTGIQeCS9ZhM4tOezcPf7BUvNNADiw+0aT/8qlAGWsZSP0lVe30/mkim60Y8IkrXY
-         1Bbv2v/K8Vo+tK37H8zBny6MLxdYd09FTx/w/rgjswNlMZShvj3Cem2KXFD++bXK73Ch
-         F1InTHgoUGD4yXHGd42LE5NOWgljJj5lD5Zqdo6M+0OWsLAvDfmjpSfkF6v00bghXfjQ
-         H1OQ==
-X-Gm-Message-State: AOJu0Yye4OsPe8QnUgBma1B5keBMFvYzQWNUvccs/yzMP9e5H7mDO6EG
-	bBzaZgd8+x95oduMx9iwdFgmSsI4LqAU
-X-Google-Smtp-Source: AGHT+IH8WwMaMCxmON/qmcdyxLAKH89h2buOq+WiBap3zwyl/QmhAjUL1KwuUQAUU0YvOH9VC4mdoA==
-X-Received: by 2002:a17:903:189:b0:1d4:a9c:dc70 with SMTP id z9-20020a170903018900b001d40a9cdc70mr255214plg.9.1703453176969;
-        Sun, 24 Dec 2023 13:26:16 -0800 (PST)
-Received: from [2620:0:1008:15:c723:e11e:854b:ac88] ([2620:0:1008:15:c723:e11e:854b:ac88])
-        by smtp.gmail.com with ESMTPSA id u19-20020a62ed13000000b006d9ac04b8cesm2147947pfh.114.2023.12.24.13.26.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 Dec 2023 13:26:16 -0800 (PST)
-Date: Sun, 24 Dec 2023 13:26:15 -0800 (PST)
-From: David Rientjes <rientjes@google.com>
-To: Pasha Tatashin <pasha.tatashin@soleen.com>
-cc: gregkh@linuxfoundation.org, rafael@kernel.org, akpm@linux-foundation.org, 
-    surenb@google.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
-    souravpanda@google.com
-Subject: Re: [PATCH] vmstat: don't auto expand the sysfs files
-In-Reply-To: <CA+CK2bA2vZp3e+HHfB-sdLsPUYghMxvKcWURktDtNjwPL79Csw@mail.gmail.com>
-Message-ID: <b1049bfa-68c4-e237-30a9-1514a378c7f1@google.com>
-References: <20231211154644.4103495-1-pasha.tatashin@soleen.com> <3d415ab4-e8c7-7e72-0379-952370612bdd@google.com> <CA+CK2bA2vZp3e+HHfB-sdLsPUYghMxvKcWURktDtNjwPL79Csw@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 201BDFBEB;
+	Sun, 24 Dec 2023 21:28:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90282C433C8;
+	Sun, 24 Dec 2023 21:27:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703453281;
+	bh=A1472HXqpTmVJtHL1Ggrjktit1tKIeeow4lO8KjXqHA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=U5MqMVfNtz84arwxVWirkYCc7KBXamSU/s0E2cBCLpeIxFM3y9xWlAmEYFnBRA9wz
+	 HaLdLPbYI6EOLZHCKoAZ5p/nyfucmBNAb62dO+SBMKCj440G4Nw3cU21sh5VnZH+Fv
+	 lRTj4etgC/V55Kyw7Kqiux+P0Iysw2PvzR/I+nMlrfZRI9MSLoHaURVi09midFeocD
+	 RxrcOQpHckOkXhZAEItZ5ws63E4fH+Dvc9aHKT8GyX1/ebWeycAYfjIS0xuhxcZUH7
+	 S4R8ngAk+dgVvLFYDQuyv5RD2wCe8vMCpGOBXi321vmJe4FKtnkY7ehnNFYc5XT8Fb
+	 2hzi/XGZhGgaw==
+Date: Sun, 24 Dec 2023 21:27:54 +0000
+From: Simon Horman <horms@kernel.org>
+To: Zhipeng Lu <alexious@zju.edu.cn>
+Cc: Chuck Lever <chuck.lever@oracle.com>, Jeff Layton <jlayton@kernel.org>,
+	Neil Brown <neilb@suse.de>, Olga Kornievskaia <kolga@netapp.com>,
+	Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
+	Trond Myklebust <trond.myklebust@hammerspace.com>,
+	Anna Schumaker <anna@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	"J. Bruce Fields" <bfields@fieldses.org>,
+	Simo Sorce <simo@redhat.com>, linux-nfs@vger.kernel.org,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] SUNRPC: fix some memleaks in gssx_dec_option_array
+Message-ID: <20231224212754.GB5962@kernel.org>
+References: <20231224082424.3539726-1-alexious@zju.edu.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231224082424.3539726-1-alexious@zju.edu.cn>
 
-On Thu, 14 Dec 2023, Pasha Tatashin wrote:
-
-> > > Whenever a new fields are added one of the following: node_stat_item
-> > > numa_stat_item zone_stat_item, the /sys/devices/system/node/nodeX/vmstat
-> > > files are auto expanded.
-> > >
-> > > This is a problem, as sysfs files should be only one value per file.
-> >
-> > Does this patch address the one-value-per-file issue?  (I think that ship
-> > has sailed for vmstat.)
+On Sun, Dec 24, 2023 at 04:24:22PM +0800, Zhipeng Lu wrote:
+> The creds and oa->data need to be freed in the error-handling paths after
+> there allocation. So this patch add these deallocations in the
+> corresponding paths.
 > 
-> That ship has sailed for vmstat, this patch addresses what was asked
-> by GregKH: not to add new values to vmstat, as not to make the
-> existing problem even worse. The sysfs file system has a one page
-> limit per file. The developers will decide how to export the new items
-> added to node_stat, numa_stat, zone_stat individually. Each new item
-> can be exported in its own files, and must have its own documentation
-> about interface stability, value meaning, and expectations when the
-> stat file is absent.
-> 
+> Fixes: 1d658336b05f ("SUNRPC: Add RPC based upcall mechanism for RPCGSS auth")
+> Signed-off-by: Zhipeng Lu <alexious@zju.edu.cn>
 
-As of at least 6.5, /proc/vmstat is a strict superset of the per-node 
-vmstat.  Why is that a problem?
+...
 
-There's great benefit to being able to use the sample implementations to 
-parse either /proc/vmstat *or* the per-node vmstat and without needing to 
-read the per-node vmstat plus some new set of sysfs files that are 
-one-value-per-file.  The per-node vmstat will always be multiple values, 
-in fact it's a key value pair.
+> diff --git a/net/sunrpc/auth_gss/gss_rpc_xdr.c b/net/sunrpc/auth_gss/gss_rpc_xdr.c
 
-I have to think that doing anything else for vmstat is just adding 
-complexity (like this patch) and actually making it *harder* on userspace 
-to read the data it needs.
+...
 
-Yes, the per-node vmstat likely shouldn't be in sysfs at all but it 
-appears to have been added there 13+ years ago because it was a convenient 
-place to add a per-node variant.  That's not ideal, but owell.
+> @@ -265,29 +265,41 @@ static int gssx_dec_option_array(struct xdr_stream *xdr,
+>  
+>  		/* option buffer */
+>  		p = xdr_inline_decode(xdr, 4);
+> -		if (unlikely(p == NULL))
+> -			return -ENOSPC;
+> +		if (unlikely(p == NULL)) {
+> +			err = -ENOSPC
+
+Hi Zhipeng Lu,
+
+unfortunately the line above causes a build failure.
+
+...
 
