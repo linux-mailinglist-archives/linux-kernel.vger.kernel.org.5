@@ -1,154 +1,109 @@
-Return-Path: <linux-kernel+bounces-10758-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10759-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A254581DB59
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 17:27:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BCB081DB60
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 17:34:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2FC741F217F1
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 16:27:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1FC211F21635
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 16:34:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26EC0CA6B;
-	Sun, 24 Dec 2023 16:27:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71E7ACA69;
+	Sun, 24 Dec 2023 16:34:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GRdqEg9I"
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="bcUiXv2U"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mout.web.de (mout.web.de [212.227.15.4])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 687ABCA64;
-	Sun, 24 Dec 2023 16:27:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 53F83C433C8;
-	Sun, 24 Dec 2023 16:27:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703435236;
-	bh=4ed1q4p7tlBLnSJbNqgVjswznxS7kod3elBEnjU5yxo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=GRdqEg9IiABX3469J7q+sQkjwWvIb4y1DPXKHBaYjkuvJZ01mkU2W22sitpqH9mRN
-	 /3NgiHW4ArdsDR5jRuB21ar4nlsMPJp9Mhw3p0tfZSKObn7wULvn2ImIRHg5y4Ievu
-	 fMwQb/mqzlY6gGPz5NyCIfZwyyBOUjC8exN40HEttOerPRyF5CKkteeCUUItnKQf/L
-	 EPqAHC0YxjuwhCnMCqhsxGPwlNTn/HMznD4anYpQ5C8lDGlF1LTwcE+tkiQQfkBF3w
-	 KAn+F/zZgtNKk4LDDcqevr9uzsyXNWkIIoWQeUHD9I7kwXsGJqiiprHEXqR9XOL+Jl
-	 PVAV+FVdVEuNQ==
-Date: Sun, 24 Dec 2023 16:27:09 +0000
-From: Simon Horman <horms@kernel.org>
-To: Peter Hilber <peter.hilber@opensynergy.com>
-Cc: linux-kernel@vger.kernel.org,
-	"D, Lakshmi Sowjanya" <lakshmi.sowjanya.d@intel.com>,
-	Thomas Gleixner <tglx@linutronix.de>, jstultz@google.com,
-	giometti@enneenne.com, corbet@lwn.net,
-	andriy.shevchenko@linux.intel.com,
-	"Dong, Eddie" <eddie.dong@intel.com>,
-	"Hall, Christopher S" <christopher.s.hall@intel.com>,
-	Sean Christopherson <seanjc@google.com>,
-	Paolo Bonzini <pbonzini@redhat.com>, Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Wanpeng Li <wanpengli@tencent.com>,
-	Vitaly Kuznetsov <vkuznets@redhat.com>,
-	Mark Rutland <mark.rutland@arm.com>, Marc Zyngier <maz@kernel.org>,
-	Daniel Lezcano <daniel.lezcano@linaro.org>,
-	Richard Cochran <richardcochran@gmail.com>, kvm@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: Re: [RFC PATCH v2 2/7] x86/tsc: Add clocksource ID, set
- system_counterval_t.cs_id
-Message-ID: <20231224162709.GA230301@kernel.org>
-References: <20231215220612.173603-1-peter.hilber@opensynergy.com>
- <20231215220612.173603-3-peter.hilber@opensynergy.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AAA5746B;
+	Sun, 24 Dec 2023 16:34:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
+	t=1703435634; x=1704040434; i=markus.elfring@web.de;
+	bh=9BiVbz0igTm7nDWglduX4wzhh6jbXHBNsHlsQ9SchSQ=;
+	h=X-UI-Sender-Class:Date:To:From:Subject:Cc;
+	b=bcUiXv2U4BW3uHtoz7UtDb6wyaqIKmeSH/2Vpxvpi0wHdbLtL9hpLXPD3e5XgmrJ
+	 3r/YGP6GAbSigggtezR2bIi3u9QU/E5Q4DUVllR6UVxNWMQHpHonMc5svlO1ulT+s
+	 1sIRTueixLnrK2WaB8zFJ+yznhBwlM9+ofYlEUn+sxPZ/HQSM4G+V/KomfQ5GQTga
+	 NjqCeFIqSs07LExzNYIl9OEC28+HWlX7mF6l5rklWd785DZ5L+D6ErIp5dwJ+Pd0u
+	 vcr79swPG6UqAydDMb3z6B71DTy0PD+y3iHPJx3DQ1tFegwviu8PAqWuStaUoKr2B
+	 wOQAR+qslyfwunedng==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb005
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1MpTxo-1quU862wzU-00q6gg; Sun, 24
+ Dec 2023 17:33:54 +0100
+Message-ID: <20849a8e-e0f5-46df-ad8a-9eae6cbe337b@web.de>
+Date: Sun, 24 Dec 2023 17:33:53 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231215220612.173603-3-peter.hilber@opensynergy.com>
+User-Agent: Mozilla Thunderbird
+To: linux-omap@vger.kernel.org, linux-clk@vger.kernel.org,
+ kernel-janitors@vger.kernel.org,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+ Michael Turquette <mturquette@baylibre.com>, Rob Herring <robh@kernel.org>,
+ Stephen Boyd <sboyd@kernel.org>, Tero Kristo <kristo@kernel.org>,
+ Tony Lindgren <tony@atomide.com>
+Content-Language: en-GB
+From: Markus Elfring <Markus.Elfring@web.de>
+Subject: [PATCH 00/10] clk: ti: Adjustments for eight function implementations
+Cc: LKML <linux-kernel@vger.kernel.org>, cocci@inria.fr
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:5XEePEDeY0FjWsC2QA7qlbhxGaU3mauLYiNr3cIZ3Rev3r7moCG
+ EpqJ5+3sRGzZEKYzU6HcAzj7DCmep7Xg8Tm/h8uVyIgo4bsJV230JuACQT+Lh7iPDMaoa5w
+ YuOKgsWqAVAOcPYBEsyoRGfW2IpfQG0Oweudch3paIq20Grmi4eJ6yK8O2vOHz09oDkMIhQ
+ TjIiSk7LLBH4CH5fbYnRQ==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:sYxr3ZCv3ls=;Fc31zMwDem2J2sC/1TXNDDqWzLq
+ KizXtddyaG01hvUgdhUdsnWXDpOhPMZ/iOhBrTtWK5psW9hdxHDQ8qMMal5cLjiNk1KEqfT+0
+ 3r6ltPdwgA4uvhY9g9IAV3/jmzG6A/gCWhrQRyOzCeqAKjBYyEpGQEqPIhGypu+jVvZgV6vRZ
+ 56ljNC/Zd3ZxsTfEkPZAP3K2zgibymLHjr73JZPBoZjHLTAQrh+n0DjlZC7ziXQaa0DRPlMV8
+ /DS3cXxlwGmsuAJM+eQcYiYBOxWgQmkSxAZtDgM4a/F4/nTFii8MJYq1dWq+6rZhzwbUe59uZ
+ KeN8+phus6suqOrNsWufP9qhID71c1Abt9rpsxCnCsYV+Pr1iWVR/D9dPz+09u1syJpFyyJeH
+ aiIDZ/BZ6zasMD5bkEJLmnaPfbHFsztIjLCmm2hT2QRp442T4UH4QV+YZox7aizwPRsuopY2G
+ wzZJ71VKEqReNrj14v07z8VOqPxATOTylivN27I6OfdImm88s/nk7ZUtN4x6OcLooew0CUxcM
+ otwNOL/miNiMJF9DzLwqwaAQs4AQN/onGGmximvXKORAZPVW14RswOqGnXvtD4+IIY2emcCb4
+ lWQGtXjdFxbpDby9V/vLgEJ87crXqvq+LTaBfxCyCrU+ZVEW5ty0nQuOBHD4xnFPVlL4xdMUS
+ HjbKMgWrkXVOqbClJf580CuFOPI9DX+3GyCrtBggtuS4jRwHW63BlcnhRvrHjH0ei0vPFOBPQ
+ KbkwRqGXxylsUB1XfSKLsRO4/nplWyD+cRYB/He33vP78noQK0rQM8H+Vqe63ucJnCXsAJTsZ
+ brE5ck63LeABS/gweDDsEiXMATYIQ4Lpj0n1yk+CWB3BAKhGP7euaESCzLJ4kTNEXyaCIx81r
+ VrCmV6WIWMtA+6OvdBPaH7vw/z+VKXMHYoYaosZ0qHeU0MmMj8OseArsdmbjuTvdHJRJ2N2ue
+ H/J3fEwt4bRW88KgzRMmsshSsh0=
 
-On Fri, Dec 15, 2023 at 11:06:07PM +0100, Peter Hilber wrote:
-> Add a clocksource ID for TSC and a distinct one for the early TSC.
-> 
-> Use distinct IDs for TSC and early TSC, since those also have distinct
-> clocksource structs. This should help to keep existing semantics when
-> comparing clocksources.
-> 
-> Also, set the recently added struct system_counterval_t member cs_id to the
-> TSC ID in the cases where the clocksource member is being set to the TSC
-> clocksource. In the future, this will keep get_device_system_crosststamp()
-> working, when it will compare the clocksource id in struct
-> system_counterval_t, rather than the clocksource.
-> 
-> For the x86 ART related code, system_counterval_t.cs == NULL corresponds to
-> system_counterval_t.cs_id == CSID_GENERIC (0).
-> 
-> Signed-off-by: Peter Hilber <peter.hilber@opensynergy.com>
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Sun, 24 Dec 2023 17:03:21 +0100
 
-Hi Peter,
+Several update suggestions were taken into account
+from static source code analysis.
 
-some minor feedback from my side that you may consider for
-a future revision.
+Markus Elfring (10):
+  Less function calls in of_omap2_apll_setup() after error detection
+  Less function calls in of_dra7_apll_setup() after error detection
+  Use common code in omap_clk_register_apll()
+  Less function calls in ti_fapll_setup() after error detection
+  One function call less in ti_fapll_synth_setup() after error detection
+  Return directly after a failed kzalloc() in of_mux_clk_setup()
+  Less function calls in _ti_omap4_clkctrl_setup() after error detection
+  Use common error handling code in _ti_omap4_clkctrl_setup()
+  Less function calls in _ti_clkctrl_clk_register() after error detection
+  Delete an unnecessary initialisation in _ti_clkctrl_clk_register()
 
-> diff --git a/arch/x86/kernel/tsc.c b/arch/x86/kernel/tsc.c
+ drivers/clk/ti/apll.c    | 58 ++++++++++++++++++++++++----------------
+ drivers/clk/ti/clkctrl.c | 44 ++++++++++++++++--------------
+ drivers/clk/ti/fapll.c   | 29 +++++++++++---------
+ drivers/clk/ti/mux.c     |  2 +-
+ 4 files changed, 76 insertions(+), 57 deletions(-)
 
-...
+=2D-
+2.43.0
 
-> @@ -1327,12 +1334,15 @@ EXPORT_SYMBOL(convert_art_to_tsc);
->   * that this flag is set before conversion to TSC is attempted.
->   *
->   * Return:
-> - * struct system_counterval_t - system counter value with the pointer to the
-> + * struct system_counterval_t - system counter value with the ID of the
->   *	corresponding clocksource
->   *	@cycles:	System counter value
->   *	@cs:		Clocksource corresponding to system counter value. Used
->   *			by timekeeping code to verify comparability of two cycle
->   *			values.
-> + *	@cs_id:		Clocksource ID corresponding to system counter value.
-> + *			Used by timekeeping code to verify comparability of two
-> + *			cycle values.
-
-None of the documented parameters to convert_art_ns_to_tsc() above
-correspond to the parameters of convert_art_ns_to_tsc() below.
-
-I would suggest a separate patch to address this.
-And dropping this hunk from this patch.
-
-The same patch that corrects the kernel doc for convert_art_ns_to_tsc()
-could also correct the kernel doc for tsc_refine_calibration_work()
-by documenting it's work parameter.
-
->   */
->  
->  struct system_counterval_t convert_art_ns_to_tsc(u64 art_ns)
-> @@ -1347,8 +1357,11 @@ struct system_counterval_t convert_art_ns_to_tsc(u64 art_ns)
->  	do_div(tmp, USEC_PER_SEC);
->  	res += tmp;
->  
-> -	return (struct system_counterval_t) { .cs = art_related_clocksource,
-> -					      .cycles = res};
-> +	return (struct system_counterval_t) {
-> +		.cs = art_related_clocksource,
-> +		.cs_id = have_art ? CSID_X86_TSC : CSID_GENERIC,
-> +		.cycles = res
-> +	};
->  }
->  EXPORT_SYMBOL(convert_art_ns_to_tsc);
->  
-> @@ -1454,8 +1467,10 @@ static void tsc_refine_calibration_work(struct work_struct *work)
->  	if (tsc_unstable)
->  		goto unreg;
->  
-> -	if (boot_cpu_has(X86_FEATURE_ART))
-> +	if (boot_cpu_has(X86_FEATURE_ART)) {
->  		art_related_clocksource = &clocksource_tsc;
-> +		have_art = true;
-> +	}
->  	clocksource_register_khz(&clocksource_tsc, tsc_khz);
->  unreg:
->  	clocksource_unregister(&clocksource_tsc_early);
-
-...
 
