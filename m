@@ -1,124 +1,247 @@
-Return-Path: <linux-kernel+bounces-10610-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10611-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD2FA81D75A
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 01:08:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4253681D761
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 01:18:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 234FE1F21D77
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 00:08:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F3B72282DE6
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 00:18:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70C6262F;
-	Sun, 24 Dec 2023 00:08:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AB9D7EA;
+	Sun, 24 Dec 2023 00:18:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dT1xG/wM"
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="GZSdotJQ";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="qjIbud0t";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="GZSdotJQ";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="qjIbud0t"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-oo1-f41.google.com (mail-oo1-f41.google.com [209.85.161.41])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 743B9190;
-	Sun, 24 Dec 2023 00:08:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f41.google.com with SMTP id 006d021491bc7-5942c83c97fso1772014eaf.1;
-        Sat, 23 Dec 2023 16:08:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703376480; x=1703981280; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mH/XJuSscVimadN+6htDE4Pbf9Ag1leUGBOfxxjvsqE=;
-        b=dT1xG/wMS/x5KClYOjaLzn6VYb9yeRO9+a6FmBpw0w58iRjE4DVaj6ADeAiy9nMPIM
-         XBAHnwPkaTCCPfcr89iLQDxyG5TBg4W4iNogj0Q9Kzc23qqnrstZPh+LxWsL9vC4eH82
-         5MFGnuGcUl/5QwyIgjgai3NOOnqMFHguICp+aPFysfLUd5qOVPn0g0HRRYywEQH56rkZ
-         i3Li/MXaxxNnNjxKqPoWTdw1tkWKd4872F0j3vPCPwRj/O2twV1ZmJCNFE+Qg4lsH1oF
-         gw/UK1LU9nHF+MD9xEetzbm3eo7KLOCOVHsvDB0dRbGw50dHx8SUHqUdIh/BARo6LUkg
-         lkbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703376480; x=1703981280;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mH/XJuSscVimadN+6htDE4Pbf9Ag1leUGBOfxxjvsqE=;
-        b=Hasx4vYilHpbBR6HeuSoH5UIB85LaYAIStOcZR+yyRRY/ywGer2ZNF1K7meuhDJr/l
-         llLs7egH6t/YV2MQAXUCV+T7ToMV2qM5N+Xn0f0HmvMSHDXIhZakpoQNZicJ3eoYIFkz
-         +kqFHAwTy9Hron6xtgAbYX7Blt4E+YCnC3djrZf8rq+hgSf2K0Bxh7FR60unSmknW1hr
-         OxCGVo7q6o7/LTtPoXKtoJfgQ+ulxI8ZZPria85mir+l3R6ggyTQVAC1oQrhynPNN6zl
-         /p9DZelp8yLStGjZFJVQXOCiDsccD55i7aeoiC77E4U3dkoQ6/86W3PRofr/PgraFW16
-         fDiQ==
-X-Gm-Message-State: AOJu0YwRiigWH7wkDH/YBGyfMReBHH0Chg+WUfn48p83wQ9UQVMi45OB
-	ohxZ/PAox2vhcuYzk28MdJ6fm9iJjrZjRtO+y1k=
-X-Google-Smtp-Source: AGHT+IGmruJyaWFI9jMngVnqF9R+SWkg/WC0/VLm5IuhmrIjbtlLlauBGchbUe19YPqx/v124ZPs1r4WRaMTrP2SSfQ=
-X-Received: by 2002:a4a:8c61:0:b0:594:5bbd:9acb with SMTP id
- v30-20020a4a8c61000000b005945bbd9acbmr521758ooj.2.1703376480317; Sat, 23 Dec
- 2023 16:08:00 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3C6D190;
+	Sun, 24 Dec 2023 00:18:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 17AC02214A;
+	Sun, 24 Dec 2023 00:18:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1703377116; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qZRdtQc1hCmbIZ4cIMntznAv+M4OO52Vo8xtzR9fNzE=;
+	b=GZSdotJQTKwWbvzjLP3v0RwuFZVIsRMgmAjGu2PMdOqINjbLLZhuVEcjm+Dri56V9Uqe42
+	IIyhiGb/eU79THPLtvgUfDJtrobvZTX9hmf7EA2DDq5z3+Qtl4u7mAMoYFU+d50/x0ml/S
+	xryOKpRE5c5PfDxH5ey5qTvPgJoFCg4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1703377116;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qZRdtQc1hCmbIZ4cIMntznAv+M4OO52Vo8xtzR9fNzE=;
+	b=qjIbud0tP1/C9Y6pzQ8R3EPU/wSezLCZapjJfOl2iXURi3DTmhQj9kk81MMai3LgIG+OWl
+	zha55cauo8y/3pCw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1703377116; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qZRdtQc1hCmbIZ4cIMntznAv+M4OO52Vo8xtzR9fNzE=;
+	b=GZSdotJQTKwWbvzjLP3v0RwuFZVIsRMgmAjGu2PMdOqINjbLLZhuVEcjm+Dri56V9Uqe42
+	IIyhiGb/eU79THPLtvgUfDJtrobvZTX9hmf7EA2DDq5z3+Qtl4u7mAMoYFU+d50/x0ml/S
+	xryOKpRE5c5PfDxH5ey5qTvPgJoFCg4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1703377116;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qZRdtQc1hCmbIZ4cIMntznAv+M4OO52Vo8xtzR9fNzE=;
+	b=qjIbud0tP1/C9Y6pzQ8R3EPU/wSezLCZapjJfOl2iXURi3DTmhQj9kk81MMai3LgIG+OWl
+	zha55cauo8y/3pCw==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id E82AA13902;
+	Sun, 24 Dec 2023 00:18:31 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id L5OWJdd4h2VxfgAAn2gu4w
+	(envelope-from <colyli@suse.de>); Sun, 24 Dec 2023 00:18:31 +0000
+Content-Type: text/plain;
+	charset=utf-8
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20231222234237.44823-1-alexhenrie24@gmail.com> <20231223152235.15713-1-dan@danm.net>
-In-Reply-To: <20231223152235.15713-1-dan@danm.net>
-From: Alex Henrie <alexhenrie24@gmail.com>
-Date: Sat, 23 Dec 2023 17:07:24 -0700
-Message-ID: <CAMMLpeTCZDakqdkxm+jvQHxbRXhCYd4_PK+VVqMAmZHjSPuPRw@mail.gmail.com>
-Subject: Re: [REGRESSION] net/ipv6/addrconf: Temporary addresses with short
- lifetimes generating when they shouldn't, causing applications to fail
-To: Dan Moulding <dan@danm.net>
-Cc: bagasdotme@gmail.com, davem@davemloft.net, dsahern@kernel.org, 
-	edumazet@google.com, kuba@kernel.org, linux-kernel@vger.kernel.org, 
-	netdev@vger.kernel.org, pabeni@redhat.com, regressions@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.300.61.1.2\))
+Subject: Re: Bug in commit aa511ff8218b ("badblocks: switch to the improved
+ badblock handling
+From: Coly Li <colyli@suse.de>
+In-Reply-To: <6587152b64d9f_c579e29437@iweiny-mobl.notmuch>
+Date: Sun, 24 Dec 2023 08:18:18 +0800
+Cc: Li Nan <linan666@huaweicloud.com>,
+ Dan Williams <dan.j.williams@intel.com>,
+ Jens Axboe <axboe@kernel.dk>,
+ Xiao Ni <xni@redhat.com>,
+ Geliang Tang <geliang.tang@suse.com>,
+ Hannes Reinecke <hare@suse.de>,
+ NeilBrown <neilb@suse.de>,
+ Vishal L Verma <vishal.l.verma@intel.com>,
+ Linux Block Devices <linux-block@vger.kernel.org>,
+ nvdimm@lists.linux.dev,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Transfer-Encoding: quoted-printable
+Message-Id: <5422004A-84A8-4E9E-B1E2-98503BCC80BC@suse.de>
+References: <6585d5fda5183_9f731294b9@iweiny-mobl.notmuch>
+ <6585dc32bebce_ab80829462@iweiny-mobl.notmuch>
+ <658628b098aeb_b31b42945b@iweiny-mobl.notmuch>
+ <nhza4xsnbmcmka7463jxgmdvb27pqvbvcuzs7xp4vzpqlo262d@dp7laevqtaka>
+ <6587152b64d9f_c579e29437@iweiny-mobl.notmuch>
+To: Ira Weiny <ira.weiny@intel.com>
+X-Mailer: Apple Mail (2.3774.300.61.1.2)
+X-Spam-Level: 
+X-Spam-Level: 
+X-Spamd-Result: default: False [0.40 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 BAYES_HAM(-0.00)[21.99%];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 MV_CASE(0.50)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 RCPT_COUNT_TWELVE(0.00)[12];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 MID_RHS_MATCH_FROM(0.00)[]
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Score: 0.40
+X-Spam-Flag: NO
 
-On Sat, Dec 23, 2023 at 8:22=E2=80=AFAM Dan Moulding <dan@danm.net> wrote:
->
-> > Sorry for the unintended consequences, and thank you for the detailed
-> > explanation. Does this patch fix the problem for you?
->
-> Thanks. I think this patch may resolve the application-level issues
-> I'm seeing.
->
-> However, it looks to me like this would still violate the RFC. The
-> temoporary address' preferred liftime must be lower than /both/ the
-> preferred lifetime of the public address and TEMP_PREFERRED_LIFETIME -
-> DESYNC_FACTOR.
->
-> These two existing lines ensure that it will meet the requirement:
->
->         cfg.preferred_lft =3D cnf_temp_preferred_lft + age - idev->desync=
-_factor;
->         cfg.preferred_lft =3D min_t(__u32, ifp->prefered_lft, cfg.preferr=
-ed_lft);
->
-> Once that has been computed, cfg.preferred_lft is already at its
-> maximum allowed value. There is no case where the RFC allows
-> increasing that value after doing that computation.
 
-TEMP_PREFERRED_LIFETIME is an administratively set variable: The user
-can change it to whatever they want whenever they want, and the
-operating system can adjust it automatically too. It might be more
-clear to increase cnf_temp_preferred_lft before those two lines, but
-the effect is the same as increasing cfg.preferred_lft afterwards.
-Unless there's something else I'm missing, I don't see how this
-approach could violate the RFC.
 
-> I think the safest thing to do is revert this change, and try to find
-> some other way to achieve the goal of preventing the user from
-> administratively setting a preferred lifetime that prevents temporary
-> addresses from being generated, when the user wants to use the privacy
-> extensions. For example, this could be done where administratively
-> configured values are accepted (wherever that is), and either generate
-> a warning or reject the change, if the value provided by the user is
-> lower than REGEN_ADVANCE.
+> 2023=E5=B9=B412=E6=9C=8824=E6=97=A5 01:13=EF=BC=8CIra Weiny =
+<ira.weiny@intel.com> =E5=86=99=E9=81=93=EF=BC=9A
+>=20
+> Coly Li wrote:
+>=20
+> [snip]
+>=20
+>>=20
+>> Hi Ira,
+>>=20
+>> The above information is accurate and very helpful, thank you!
+>>=20
+>> =46rom __badblocks_check(), the problematic code block is,
+>> 1303 re_check:
+>> 1304         bad.start =3D s;
+>> 1305         bad.len =3D sectors;
+>> 1306
+>> 1307         if (badblocks_empty(bb)) {
+>> 1308                 len =3D sectors;
+>> 1309                 goto update_sectors;
+>> 1310         }
+>> 1311
+>> 1312         prev =3D prev_badblocks(bb, &bad, hint);
+>> 1313
+>> 1314         /* start after all badblocks */
+>> 1315         if ((prev + 1) >=3D bb->count && !overlap_front(bb, =
+prev, &bad)) {
+>> 1316                 len =3D sectors;
+>> 1317                 goto update_sectors;
+>> 1318         }
+>> 1319
+>> 1320         if (overlap_front(bb, prev, &bad)) {
+>> 1321                 if (BB_ACK(p[prev]))
+>> 1322                         acked_badblocks++;
+>> 1323                 else
+>> 1324                         unacked_badblocks++;
+>> 1325
+>> 1326                 if (BB_END(p[prev]) >=3D (s + sectors))
+>> 1327                         len =3D sectors;
+>> 1328                 else
+>> 1329                         len =3D BB_END(p[prev]) - s;
+>> 1330
+>> 1331                 if (set =3D=3D 0) {
+>> 1332                         *first_bad =3D BB_OFFSET(p[prev]);
+>> 1333                         *bad_sectors =3D BB_LEN(p[prev]);
+>> 1334                         set =3D 1;
+>> 1335                 }
+>> 1336                 goto update_sectors;
+>> 1337         }
+>> 1338
+>> 1339         /* Not front overlap, but behind overlap */
+>> 1340         if ((prev + 1) < bb->count && overlap_behind(bb, &bad, =
+prev + 1)) {
+>> 1341                 len =3D BB_OFFSET(p[prev + 1]) - bad.start;
+>> 1342                 hint =3D prev + 1;
+>> 1343                 goto update_sectors;
+>> 1344         }
+>> 1345
+>> 1346         /* not cover any badblocks range in the table */
+>> 1347         len =3D sectors;
+>> 1348
+>> 1349 update_sectors:
+>>=20
+>> If the checking range is before all badblocks records in the =
+badblocks table,
+>> value -1 is returned from prev_badblock(). Code blocks between line =
+1314 and
+>> line 1337 doesn't hanle the implicit '-1' value properly. Then =
+counter
+>> unacked_badblocks is increased at line 1324 mistakenly.
+>>=20
+>> So the value prev should be checked and make sure '>=3D 0' before =
+comparing
+>> the checking range with a badblock record returned by =
+prev_badblocks(). Other
+>> wise it dones't make sense.
+>>=20
+>> For badblocks_set() and badblocks_clear(), 'prev < 0' is explicitly =
+checked,
+>> value '-1' doesn't go though into following code.
+>>=20
+>> Could you please apply and try the attached patch? Hope it may help a =
+bit.
+>>=20
+>> And now it is weekend time, you may be out of office and not able to =
+access
+>> the testing hardware. I will do more testing from myside and update =
+more info
+>> if necessary.
+>>=20
+>> Thanks for the report and debug!
+>>=20
+>> Coly Li
+>>=20
+>> [debug patch snipped]
+>=20
+> This debug patch does fix our tests.  Thanks!
+>=20
+> But Nan has submitted a series to fix this as well.[1]
+>=20
+> I'm going to test his series as well.
 
-It's fine to revert the commit for version 6.7 (after all, I think
-everyone wants a break for the holidays). Hopefully by version 6.8 we
-can agree on a way to support users who want to randomize their IPv6
-address as frequently as the network allows.
+Hi Ira,
 
--Alex
+Thanks for the very quick response, and the positive result. Now I =
+compose a official patch and submit to Jens.
+
+Coly Li=
 
