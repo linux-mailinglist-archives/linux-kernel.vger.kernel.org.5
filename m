@@ -1,203 +1,163 @@
-Return-Path: <linux-kernel+bounces-10839-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10840-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0BB481DCD0
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 22:50:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68E8081DCD9
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 23:07:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5C63BB20EE4
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 21:49:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EDCC01F215F4
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 22:07:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69ED9107A4;
-	Sun, 24 Dec 2023 21:49:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A4A3101CA;
+	Sun, 24 Dec 2023 22:07:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="z9mPQgBL"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Jsf/SXha"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-il1-f170.google.com (mail-il1-f170.google.com [209.85.166.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AAE7FC0C
-	for <linux-kernel@vger.kernel.org>; Sun, 24 Dec 2023 21:49:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-il1-f170.google.com with SMTP id e9e14a558f8ab-36000a26f8aso27235ab.0
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Dec 2023 13:49:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1703454581; x=1704059381; darn=vger.kernel.org;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=O0HiuPkhATpCWAkLMW05BPxTgagJyPS45hssBqZfyJY=;
-        b=z9mPQgBLpTmNdiIE+lLUIbokt+5Zsl88zuLfix0gYut1VGsyrvZEi4/UsUvsGMj6LT
-         rZAGxqUwMmsrJxrrp7BFPKcNOMyw7lY1ZvGwC0cphM6X5N0AoORQyG9Fd+Dg84e9Iwga
-         f+f74NsFtJm3OS5/pJgslIam6k6PcbhmpMKL1xx8DpiJTRMDcuQbQ7JyUlGzx7z2mGRF
-         57p2VqwBB6VhZ+I2Dsy2FyHN/+sWl3HdzaffuIB6mIEahBtEZhqFgKq5WnlQ4wFeaPGu
-         dmFoHsDQ8k2CQOoo4BwZqvabcJkg5AOM4Fe88Fy3oBpAouzAbkmnv27IbVirpdC9e20Y
-         5ijw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703454581; x=1704059381;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=O0HiuPkhATpCWAkLMW05BPxTgagJyPS45hssBqZfyJY=;
-        b=N8hcToLj6k0AxYZ+1//04UnNDPt+yZRsD70KdF8sLcs49KTJD3jhearzsAWxbRN+kd
-         YWiK4G/8wdjrwT825tpspnozih/U9CzqXwS79YdE9XlNxlMrjZacmScaaOqm5QTgkE5u
-         qXENiHU9IFehB7ovsqp5nlWtM8RH4tE9Q7wsVh6BZLu4oK7qisQVjHg6ScAquEhXZRjS
-         uTl9jPDHGmAD0mCeVTGAAIYRV//ht9pgAF6uRumU/6LSH5SVwtVzDT+wTs29Ad58SSev
-         2MC2XZQBgSSmVDgL7QpGQYpba7TeA3wnFrOwdqot/0HAZcFhNA3f1C9M8v73gkKGqhd5
-         VuIA==
-X-Gm-Message-State: AOJu0YzQ/IxVAZIYcKAeBaxQVmc0Dbkfqt5SVz9jbbeehxCFp70csvBL
-	OM/kRF2OeyvNa6mpPi+dgeLltgjFNgWuodQp7R2S4Ct/zMX2EWQ=
-X-Google-Smtp-Source: AGHT+IHO1o4MpTmRsY4pG5iPw80zAps+6fJHAueY55ciRhpJtDvuIlpvxAKJ08/tY4qG55yyTyBfTQ==
-X-Received: by 2002:a05:6e02:3001:b0:35f:b200:2fb5 with SMTP id bd1-20020a056e02300100b0035fb2002fb5mr495955ilb.11.1703454581205;
-        Sun, 24 Dec 2023 13:49:41 -0800 (PST)
-Received: from [2620:0:1008:15:c723:e11e:854b:ac88] ([2620:0:1008:15:c723:e11e:854b:ac88])
-        by smtp.gmail.com with ESMTPSA id l18-20020a62be12000000b006ce95e37a40sm6824858pff.111.2023.12.24.13.49.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 Dec 2023 13:49:40 -0800 (PST)
-Date: Sun, 24 Dec 2023 13:49:39 -0800 (PST)
-From: David Rientjes <rientjes@google.com>
-To: Pasha Tatashin <pasha.tatashin@soleen.com>
-cc: akpm@linux-foundation.org, alim.akhtar@samsung.com, alyssa@rosenzweig.io, 
-    asahi@lists.linux.dev, baolu.lu@linux.intel.com, bhelgaas@google.com, 
-    cgroups@vger.kernel.org, corbet@lwn.net, david@redhat.com, 
-    dwmw2@infradead.org, hannes@cmpxchg.org, heiko@sntech.de, 
-    iommu@lists.linux.dev, jernej.skrabec@gmail.com, jonathanh@nvidia.com, 
-    joro@8bytes.org, krzysztof.kozlowski@linaro.org, linux-doc@vger.kernel.org, 
-    linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-    linux-mm@kvack.org, linux-rockchip@lists.infradead.org, 
-    linux-samsung-soc@vger.kernel.org, linux-sunxi@lists.linux.dev, 
-    linux-tegra@vger.kernel.org, lizefan.x@bytedance.com, marcan@marcan.st, 
-    mhiramat@kernel.org, m.szyprowski@samsung.com, paulmck@kernel.org, 
-    rdunlap@infradead.org, robin.murphy@arm.com, samuel@sholland.org, 
-    suravee.suthikulpanit@amd.com, sven@svenpeter.dev, 
-    thierry.reding@gmail.com, tj@kernel.org, tomas.mudrunka@gmail.com, 
-    vdumpa@nvidia.com, wens@csie.org, will@kernel.org, yu-cheng.yu@intel.com
-Subject: Re: [PATCH v2 00/10] IOMMU memory observability
-In-Reply-To: <20231130201504.2322355-1-pasha.tatashin@soleen.com>
-Message-ID: <2913539c-68f1-5597-df64-99a884a60e0a@google.com>
-References: <20231130201504.2322355-1-pasha.tatashin@soleen.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAC07FBEF
+	for <linux-kernel@vger.kernel.org>; Sun, 24 Dec 2023 22:07:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 227C7C433A9
+	for <linux-kernel@vger.kernel.org>; Sun, 24 Dec 2023 22:07:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703455623;
+	bh=Nk2FrYMqgaYmbhuSwjleZKW0X7pw9egeGLSDxiFxB0E=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=Jsf/SXha3n86BTW3jvu6ruXABlJQEQhPdbsv8I5uNAWmJ76hED/bWLasw3z0mRUDH
+	 Q8RuHtPbrfAkCQoqHN4cjdU91A2wdc/48vjPs2XSDEPYx9KQikRVti4Xihe7jyZbSY
+	 mTGwUGhMpm8cqdm0GnvGlzuW3yesibQgQQgsl3mOW506GzrxYEBxqlGlLDth1yFCZh
+	 RnYgtDtJxNcRWAscyJc6Tmt/6a62RMYJ44g6k25+i0ZXjpvIrOXsjXoeVnxPVk8GJs
+	 3x22OjXx/xNw3qiLMY3BBYVS14THXzC/a7yQw2LLwEmr9/TIXpVCUU/U9O/US8XHN1
+	 +5PqGs15oOH+Q==
+Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6d9a7233133so211640b3a.0
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Dec 2023 14:07:03 -0800 (PST)
+X-Gm-Message-State: AOJu0YzJHLVPDxGcN50q0EaPhdzPzQ6VC7P3VGy3TgmilKCEF8k4646u
+	VsbmT3xD/+a8deOoWtjeL243AwdjZ62gW9pd1+pmvXNuMRui
+X-Google-Smtp-Source: AGHT+IGw5KTuIs+jEjEsKIXIQ428uRz6x09URbQZ4va5bdbBI9yGc9Cn7ASlSAcocbh1ql7JUcj/ofJtQLXcyLAyEU0=
+X-Received: by 2002:a05:6a00:1acf:b0:6d9:a865:7fb7 with SMTP id
+ f15-20020a056a001acf00b006d9a8657fb7mr710403pfv.13.1703455622282; Sun, 24 Dec
+ 2023 14:07:02 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <20231221-async-free-v1-1-94b277992cb0@kernel.org>
+ <20231222115208.ab4d2aeacdafa4158b14e532@linux-foundation.org>
+ <ZYYY1VBKdLHH-Kl3@google.com> <f6bf2c8d-c37a-dab7-8ef8-38a35240edb6@google.com>
+ <CAF8kJuOafpWhKSR96Lsdig_HqtLA79eeHUx9MxBzFGi95XyzuA@mail.gmail.com>
+ <0a052cb1-a5c5-4bee-5bd5-fd5569765012@google.com> <CAF8kJuM59_12VNZ9d4oXZiLbAQC4LGLXODHqZw+7jiCJYva6YQ@mail.gmail.com>
+ <d171f8a4-47ed-0e29-877d-6824d593d7ed@google.com>
+In-Reply-To: <d171f8a4-47ed-0e29-877d-6824d593d7ed@google.com>
+From: Chris Li <chrisl@kernel.org>
+Date: Sun, 24 Dec 2023 14:06:50 -0800
+X-Gmail-Original-Message-ID: <CAF8kJuMhbXmqvDDa8B8daDKwdfkL9-Be12DPns5Grx68U1Rpyg@mail.gmail.com>
+Message-ID: <CAF8kJuMhbXmqvDDa8B8daDKwdfkL9-Be12DPns5Grx68U1Rpyg@mail.gmail.com>
+Subject: Re: [PATCH] mm: swap: async free swap slot cache entries
+To: David Rientjes <rientjes@google.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, Wei Xu <weixugc@google.com>, Yu Zhao <yuzhao@google.com>, 
+	Greg Thelen <gthelen@google.com>, Chun-Tse Shao <ctshao@google.com>, 
+	Suren Baghdasaryan <surenb@google.com>, Yosry Ahmed <yosryahmed@google.com>, 
+	Brain Geffon <bgeffon@google.com>, Minchan Kim <minchan@kernel.org>, Michal Hocko <mhocko@suse.com>, 
+	Mel Gorman <mgorman@techsingularity.net>, Huang Ying <ying.huang@intel.com>, 
+	Nhat Pham <nphamcs@gmail.com>, Johannes Weiner <hannes@cmpxchg.org>, Kairui Song <kasong@tencent.com>, 
+	Zhongkun He <hezhongkun.hzk@bytedance.com>, Kemeng Shi <shikemeng@huaweicloud.com>, 
+	Barry Song <v-songbaohua@oppo.com>, Hugh Dickins <hughd@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 30 Nov 2023, Pasha Tatashin wrote:
+On Sun, Dec 24, 2023 at 1:13=E2=80=AFPM David Rientjes <rientjes@google.com=
+> wrote:
+>
+> On Sun, 24 Dec 2023, Chris Li wrote:
+>
+> > On Sat, Dec 23, 2023 at 7:01=E2=80=AFPM David Rientjes <rientjes@google=
+.com> wrote:
+> > >
+> > > On Sat, 23 Dec 2023, Chris Li wrote:
+> > >
+> > > > > How do you quantify the impact of the delayed swap_entry_free()?
+> > > > >
+> > > > > Since the free and memcg uncharge are now delayed, is there not t=
+he
+> > > > > possibility that we stay under memory pressure for longer?  (Assu=
+ming at
+> > > > > least some users are swapping because of memory pressure.)
+> > > > >
+> > > > > I would assume that since the free and uncharge itself is delayed=
+ that in
+> > > > > the pathological case we'd actually be swapping *more* until the =
+async
+> > > > > worker can run.
+> > > >
+> > > > Thanks for raising this interesting question.
+> > > >
+> > > > First of all, the swap_entry_free() does not impact "memory.current=
+".
+> > > > It reduces "memory.swap.current". Technically it is the swap pressu=
+re
+> > > > not memory pressure that suffers the extra delay.
+> > > >
+> > > > Secondly, we are talking about delaying up to 64 swap entries for a
+> > > > few microseconds.
+> > >
+> > > What guarantees that the async freeing happens within a few microseco=
+nds?
+> >
+> > Linux kernel typically doesn't provide RT scheduling guarantees. You
+> > can change microseconds to milliseconds, my following reasoning still
+> > holds.
+> >
+>
+> What guarantees that the async freeing happens even within 10s?  Your
+> responses are implying that there is some deadline by which this freeing
+> absolutely must happen (us or ms), but I don't know of any strong
+> guarantees.
 
-> IOMMU subsystem may contain state that is in gigabytes. Majority of that
-> state is iommu page tables. Yet, there is currently, no way to observe
-> how much memory is actually used by the iommu subsystem.
-> 
-> This patch series solves this problem by adding both observability to
-> all pages that are allocated by IOMMU, and also accountability, so
-> admins can limit the amount if via cgroups.
-> 
-> The system-wide observability is using /proc/meminfo:
-> SecPageTables:    438176 kB
-> 
-> Contains IOMMU and KVM memory.
-> 
-> Per-node observability:
-> /sys/devices/system/node/nodeN/meminfo
-> Node N SecPageTables:    422204 kB
-> 
-> Contains IOMMU and KVM memory memory in the given NUMA node.
-> 
-> Per-node IOMMU only observability:
-> /sys/devices/system/node/nodeN/vmstat
-> nr_iommu_pages 105555
-> 
-> Contains number of pages IOMMU allocated in the given node.
-> 
-> Accountability: using sec_pagetables cgroup-v2 memory.stat entry.
-> 
-> With the change, iova_stress[1] stops as limit is reached:
-> 
-> # ./iova_stress
-> iova space:     0T      free memory:   497G
-> iova space:     1T      free memory:   495G
-> iova space:     2T      free memory:   493G
-> iova space:     3T      free memory:   491G
-> 
-> stops as limit is reached.
-> 
+I think we are in agreement there, there are no such strong guarantees
+in linux scheduling. However, when there are free CPU resources, the
+job will get scheduled to execute in a reasonable table time frame. If
+it does not, I consider that a bug if the CPU has idle resources and
+the pending jobs are not able to run for a long time.
+The existing code doesn't have such a guarantee either, see my point
+follows. I don't know why you want to ask for such a guarantee.
 
-I think this is *very* useful to provide visibility into a significant 
-amount of memory that we currently cannot observe on a host.  It can help 
-to uncover bugs and shed light onto a particularly large amount of memory 
-that would otherwise be mysterious.
+> If there are no absolute guarantees about when the freeing may now occur,
+> I'm asking how the impact of the delayed swap_entry_free() can be
+> quantified.
 
-Joerg, Will, Robin, I think this series would go through the 
-git://git.kernel.org/pub/scm/linux/kernel/git/joro/iommu.git tree since it 
-depends on a common framework for all other IOMMU implementations to then 
-use?
+Presumably each application has their own SLO metrics for monitoring
+their application behavior. I am happy to take a look if any app has
+new SLO violations caused by this change.
+If you have one metric in mind, please  name it so we can look at it
+together. During my current experiment and the chromebook benchmark, I
+haven't noticed such ill effects show up in the other metrics drops in
+a statistically significant manner. That is not the same as saying
+such drops don't exist at all. Just I haven't noticed or the SLO
+watching system hasn't caught it.
 
-Any concerns about this patch series?  It would be very useful for us to 
-create visibility into this memory.
+> The benefit to the current implementation is that there *are* strong
+> guarantees about when the freeing will occur and cannot grow exponentiall=
+y
+> before the async worker can do the freeing.
 
+I don't understand your point. Please help me. In the current code,
+for the previous swapin fault that releases the swap slots into the
+swap slot caches. Let's say the swap slot remains in the cache for X
+seconds until Nth (N < 64) swapin page fault later, the cache is full
+and finally all 64 swap slot caches are free. Are you suggesting there
+is some kind of guarantee X is less than some fixed bound seconds?
+What is that bound then? 10 second? 1 minutes?
 
-Pasha: any chance of adding a selftest that can be run that will test the 
-value of nr_iommu_pages?  I could imagine in the future that a bug could 
-be introduced where either an allocation or free is done through 
-alloc_pages() directly and its paired alloc/free function now results in a 
-leak or underflow.
+BTW, there will be no exponential growth, that is guaranteed. Until
+the 64 entries cache were freed. The swapin code will take the direct
+free path for the current swap slot in hand. The direct free path
+existed before my change.
 
-> This series encorporates suggestions that came from the discussion
-> at LPC [2].
-> ----------------------------------------------------------------------
-> [1] https://github.com/soleen/iova_stress
-> [2] https://lpc.events/event/17/contributions/1466
-> ----------------------------------------------------------------------
-> Previous versions
-> v1: https://lore.kernel.org/all/20231128204938.1453583-1-pasha.tatashin@soleen.com
-> ----------------------------------------------------------------------
-> 
-> Pasha Tatashin (10):
->   iommu/vt-d: add wrapper functions for page allocations
->   iommu/amd: use page allocation function provided by iommu-pages.h
->   iommu/io-pgtable-arm: use page allocation function provided by
->     iommu-pages.h
->   iommu/io-pgtable-dart: use page allocation function provided by
->     iommu-pages.h
->   iommu/exynos: use page allocation function provided by iommu-pages.h
->   iommu/rockchip: use page allocation function provided by iommu-pages.h
->   iommu/sun50i: use page allocation function provided by iommu-pages.h
->   iommu/tegra-smmu: use page allocation function provided by
->     iommu-pages.h
->   iommu: observability of the IOMMU allocations
->   iommu: account IOMMU allocated memory
-> 
->  Documentation/admin-guide/cgroup-v2.rst |   2 +-
->  Documentation/filesystems/proc.rst      |   4 +-
->  drivers/iommu/amd/amd_iommu.h           |   8 -
->  drivers/iommu/amd/init.c                |  91 +++++-----
->  drivers/iommu/amd/io_pgtable.c          |  13 +-
->  drivers/iommu/amd/io_pgtable_v2.c       |  20 +-
->  drivers/iommu/amd/iommu.c               |  13 +-
->  drivers/iommu/exynos-iommu.c            |  14 +-
->  drivers/iommu/intel/dmar.c              |  10 +-
->  drivers/iommu/intel/iommu.c             |  47 ++---
->  drivers/iommu/intel/iommu.h             |   2 -
->  drivers/iommu/intel/irq_remapping.c     |  10 +-
->  drivers/iommu/intel/pasid.c             |  12 +-
->  drivers/iommu/intel/svm.c               |   7 +-
->  drivers/iommu/io-pgtable-arm.c          |   7 +-
->  drivers/iommu/io-pgtable-dart.c         |  37 ++--
->  drivers/iommu/iommu-pages.h             | 231 ++++++++++++++++++++++++
->  drivers/iommu/rockchip-iommu.c          |  14 +-
->  drivers/iommu/sun50i-iommu.c            |   7 +-
->  drivers/iommu/tegra-smmu.c              |  18 +-
->  include/linux/mmzone.h                  |   5 +-
->  mm/vmstat.c                             |   3 +
->  22 files changed, 390 insertions(+), 185 deletions(-)
->  create mode 100644 drivers/iommu/iommu-pages.h
-> 
-> -- 
-> 2.43.0.rc2.451.g8631bc7472-goog
-> 
-> 
-> 
+Chris
 
