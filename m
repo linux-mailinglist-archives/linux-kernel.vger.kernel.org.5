@@ -1,44 +1,44 @@
-Return-Path: <linux-kernel+bounces-10770-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10771-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69F6181DB94
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 17:48:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BDCCB81DB98
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 17:51:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EB8681F21A2A
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 16:48:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7120B1F21B08
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 16:51:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1381CCA6F;
-	Sun, 24 Dec 2023 16:48:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15E60D267;
+	Sun, 24 Dec 2023 16:50:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="BQC3R0l4"
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="jGND4Y9I"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from mout.web.de (mout.web.de [212.227.15.4])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F02A748A;
-	Sun, 24 Dec 2023 16:48:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6112B79E5;
+	Sun, 24 Dec 2023 16:50:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-	t=1703436502; x=1704041302; i=markus.elfring@web.de;
-	bh=fer0npM9x++5IlF6KQWWoivekp1DBR9tflb/ZiR/dXA=;
+	t=1703436643; x=1704041443; i=markus.elfring@web.de;
+	bh=QWfrLn5Mvq6EClrCdDR9YcOT+EUQjWH56hvUXCNkDTo=;
 	h=X-UI-Sender-Class:Date:Subject:From:To:Cc:References:
 	 In-Reply-To;
-	b=BQC3R0l4dJB7droV1PcxJ+qkpaEfjBV2qiJVn8WPDTj++zBskW+qj84vAhhe8VpO
-	 1bWOnjqdNPGZ6e0RwBtOtVRtGKyYv6ISDt24/6C6Ro+y64de+yzKATIZh2SbMDcs7
-	 aQ1PWPDMRPDkwf838+4StruLz866jebSr5ErD2wXHPlu8NX2nWyo4tpvBL49WVB3y
-	 RnSwdMabDCR+6DIxqx+Jp5XvZrfml8q9C+Bq+bNUoWa4Rh7evq1mEwMtn4nYpthwL
-	 dBq5WWY4crTOUmvR2UDDcuDARFptvAJ4DOpwiqVFUmZrUooSclmhtaVgYy4Mw8Dv/
-	 XeP+oFk0em+uOxwlTg==
+	b=jGND4Y9IkHAqEg8K4v4mIC6aIbTEe1Uas731nInK8zy0ZcCzTY49LdfFIN1go8ZW
+	 Abnf5nEK1Ddy0PlNpMcwgr3IbNJcFzHTK1Roj1m+Qn5OHuGVs7uhC0ZW2cV8Xxi7q
+	 kRsQmYlV2l07IMjeOaqRx9yXYiIyLG0MfGU4Wz7MMeHxUpz+vu5xyGsnb3cFAqMa3
+	 euIAFisPQWRcEKHtGa1irfcEgL31RXDhG4zc8/ZADELBqD2tL0gaE31btDACBWcp4
+	 D2iVi9rUlTxuEYZi808tP+FacL1d/N4qQ3F5/FW4pIbR1YqTxJ2cMfVA3xUrVz4+o
+	 5kF7eaXVXOqQ4MsKuQ==
 X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb005
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1M3V26-1rHzsd3QJO-0011xE; Sun, 24
- Dec 2023 17:48:21 +0100
-Message-ID: <0a9cd717-0909-4bc2-b78c-73fe9f661156@web.de>
-Date: Sun, 24 Dec 2023 17:48:20 +0100
+Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb006
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1MtyA4-1qypRP30ai-00uSde; Sun, 24
+ Dec 2023 17:50:43 +0100
+Message-ID: <b11039e4-69c6-4247-b4ba-c442b9427231@web.de>
+Date: Sun, 24 Dec 2023 17:50:42 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -46,8 +46,8 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: [PATCH 08/10] clk: ti: Use common error handling code in
- _ti_omap4_clkctrl_setup()
+Subject: [PATCH 09/10] clk: ti: Less function calls in
+ _ti_clkctrl_clk_register() after error detection
 Content-Language: en-GB
 From: Markus Elfring <Markus.Elfring@web.de>
 To: linux-omap@vger.kernel.org, linux-clk@vger.kernel.org,
@@ -62,96 +62,76 @@ References: <20849a8e-e0f5-46df-ad8a-9eae6cbe337b@web.de>
 In-Reply-To: <20849a8e-e0f5-46df-ad8a-9eae6cbe337b@web.de>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:eokwazI7oC0F6W7Kup8Jd63Lo0nLI7yBgMcHCMI9YWI79wiE0SJ
- LENS88H4VP2YwYihRAUtWIUnURHjK+pf2+EVgeC7zVnUOARgsOpjl62NfuZJScXfcVTMiHc
- 0aGZ1S8LmPh7rQaTcgQhPVGqTQob2YhOMBDkI/ijlBCvY0BJ/ILKvZj6x2OwwR2EAp9TqEE
- 8PDAGQQFBnyEUQiI+k7kQ==
+X-Provags-ID: V03:K1:/MWeLp3bl5k34XvHfUI/W2lEnDBpqKjkeUU/BEXyT8r+Vr6kXuW
+ JYz6AV7/4XrRs/G+WutGLHoSbx3hEdcxD2epWe7JxWXQy84XynjtfQsvXuXobN8Di7EBNIL
+ hLQVGXzSJhu3uXEemeWbbf54hrJsAaZb4ualaE/1rrEJJ+pxVgoiRCxqOmeCJevBn5RHYFe
+ 6WWYY+6KdYDsUZKQ9TvkQ==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:0yddZSuIJUw=;rcgSNkMomWPs6nh+rAyPw7L1Z44
- UAnRXoW+vxvufYZjwR/FJpdnYBKVzzdk9buA6iM3KJU7D8w3tkPpRDOHBEfiS5ZWYvaHhT+CO
- SZfP/vKfb7yIO1l1cF3SLxRgc7fFuprB/egnqbYp1GwzrRwVo4Q84vjhDfkBlcTCdIuizu7oc
- v5QX1+nsltp2qgNJc+YWfBxz6pZZhooBZbUJM57lfRi53FNqV4WzKMfb0K8lyJrCMibKHPdUA
- JsvIPX6LVa5sKI7ja3A6fsAWybmA4xLCBMH/tIc5rpeufnN9JcnCSNNUPHeANr05kwztSX6C3
- 9QU5SbAni+G5nnW/O9bJaa903G1e1bzWlaoNNAYt5RuYY5Dh266cM8XTrGd26nV5gyTDe5B7l
- 14WiIXuovalBBYnc2sw7qT8YePtvlqHAhS0Z9hPS7T0HsXD3x9bkw/A20Dd/WV//FPtFcDXwe
- NG7/0+gfiEbjK0Ou/HFZrbNnPon6+g+x7OsmeDh8AOtdw7xlBmFrWkDTqXsGBXJHGfjE5kYEO
- 56Sj78TrZdLarSYvzOYA1yZ4S4YtUMWS//mLHE4UkB3zOSAUFtFZ933m4+OLsLvm3jlRlTPWC
- bflCmWZPchcmKruzvoaRTyI6eUn90b5mE0IWHszIapFIhp5mP+sfhaama9e9x+5aHdqnHfxec
- 2PfJB6J8ZZuUjUIQ0rk3xBqeHkFPFbLqKAWN6N2j+ebIAC3OBClaP/5ek5s3BsS3QcISAjSZt
- pHxraHXyP5m7BmPU8JCKwsml6dHIh1gEnTfS0y7t9OWcDJLljnL2PsXU6EQxvieayVVm++yI3
- UHPYBTgikwByklR6dG7d29BR8nv83tzvQDfPQaq148MWgs3Rvhmplm1fIyZeeUFBiy5agFECc
- kcH0Fhq8HyObSaPTLXxjwOQfl+uV5keFPpu7HnvCB1DpivtJgZFY0VXCqw071vNvd/9QdLUjT
- 7ep7ng==
+UI-OutboundReport: notjunk:1;M01:P0:Hj4f7rq9WDs=;5Np9XTbAJN9ju3o5KWqwGcQaRfV
+ FwzOFVEUh3j4f+NVlPqWktWkN2BjHcej/W9EavpqEfF+LehycYYBa3Lamy1GsNyaiKPVTFWKI
+ 1xDr2+WignlNX1ZZz18UcW5Nsrvx31+vW7I37liaKDaf3GgPtXC32li8fuJhSquJLZ0kRT9hs
+ QylzSF/HsxauthrLGkM6fJK0Ob2reR5YPGTPvIZkBr7959ZG9uwgsc3i20fj23jLFQIHuPzYP
+ 0O0N/kyAtIE3sJyXlrNxG7+JkR70vl9nsnq21VpEMrS9G0zDecO0TDBXSxupJOQkc91YhpCIO
+ snE9VEaP2nFlJP6izdvGXotTOqi8vl69htKAuCcoGe8O7d2KqMgfN8HcN3oBTOePTTec/lvPV
+ jnkh4n8AxTxD5hHTKnCABwiBkwT8Y4TsKs2pC6407r52AS3YYLyeYdgsXC/vyoYZMxjpNUv79
+ sOvoOWYRrO3wTBKBoll04BhVV9TzXruwsq8k3WwUbD6aXArCuVjcpGpw3awTMZAjUgi9CLzsu
+ 0GP4hIAwy50GUPHSPIKluo9v4w6w9vdwnO4h4U84rgwqFVr8fgmGT+7uqJyXm5EJqm8vZvD7I
+ qg4RViMGHVuZt46+pGHa6FvfzRk8uOH86WqqIhXRQ5FHAAtQLdlGftRxoA6sotCT5YVWOw0R9
+ Q7lVahjVV4LeyFl+WInH5R/bBBxNQlKo0sXdAqv2wp+KbgbCGAXg55m3B15pwqghhwzY985Bn
+ oU9Bkbf8JLjB7QhVmZANidHRQF3k/yW8Zd/Uyx6Pnz8Catp3lNuKkRQxRk95GK/bDVMhgwg9e
+ zbaPDIorLQ25DUl13YrPB17nK5bWCv/tRV6Uab726rVrQ4zvjAU85arVBT0aqp2A2lCYy2RC3
+ XU3JgEN5bKJEEGYjIzfE7hpgbKFyiZaFH3wDV4HffeaUl0jtLXj2Zsv610tErma89RdfTx58p
+ 8pH+vQ==
 
 From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Sun, 24 Dec 2023 15:56:08 +0100
+Date: Sun, 24 Dec 2023 16:06:34 +0100
 
-Add a jump target so that a bit of exception handling can be better reused
-at the end of this function.
+The kfree() function was called in a few cases by
+the of_omap2_apll_setup() function during error handling
+even if the passed variable contained a null pointer.
+
+* Split a condition check.
+
+* Adjust jump targets.
 
 Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
 =2D--
- drivers/clk/ti/clkctrl.c | 23 +++++++++++------------
- 1 file changed, 11 insertions(+), 12 deletions(-)
+ drivers/clk/ti/clkctrl.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/clk/ti/clkctrl.c b/drivers/clk/ti/clkctrl.c
-index 82b48548818b..5a1bd176160c 100644
+index 5a1bd176160c..cdc3cf1ddddf 100644
 =2D-- a/drivers/clk/ti/clkctrl.c
 +++ b/drivers/clk/ti/clkctrl.c
-@@ -590,10 +590,9 @@ static void __init _ti_omap4_clkctrl_setup(struct dev=
-ice_node *node)
- 	if (clkctrl_name) {
- 		provider->clkdm_name =3D kasprintf(GFP_KERNEL,
- 						 "%s_clkdm", clkctrl_name);
--		if (!provider->clkdm_name) {
--			kfree(provider);
--			return;
--		}
-+		if (!provider->clkdm_name)
-+			goto free_provider;
-+
- 		goto clkdm_found;
+@@ -296,11 +296,13 @@ _ti_clkctrl_clk_register(struct omap_clkctrl_provide=
+r *provider,
+ 	init.name =3D clkctrl_get_clock_name(node, clkctrl_name, offset, bit,
+ 					   ti_clk_get_features()->flags &
+ 					   TI_CLK_CLKCTRL_COMPAT);
++	if (!init.name)
++		return -ENOMEM;
+
+ 	clkctrl_clk =3D kzalloc(sizeof(*clkctrl_clk), GFP_KERNEL);
+-	if (!init.name || !clkctrl_clk) {
++	if (!clkctrl_clk) {
+ 		ret =3D -ENOMEM;
+-		goto cleanup;
++		goto free_init_name;
  	}
 
-@@ -603,10 +602,8 @@ static void __init _ti_omap4_clkctrl_setup(struct dev=
-ice_node *node)
- 	 */
- 	if (legacy_naming) {
- 		provider->clkdm_name =3D kasprintf(GFP_KERNEL, "%pOFnxxx", node->parent=
-);
--		if (!provider->clkdm_name) {
--			kfree(provider);
--			return;
--		}
-+		if (!provider->clkdm_name)
-+			goto free_provider;
+ 	clk_hw->init =3D &init;
+@@ -324,8 +326,9 @@ _ti_clkctrl_clk_register(struct omap_clkctrl_provider =
+*provider,
+ 	return 0;
 
- 		/*
- 		 * Create default clkdm name, replace _cm from end of parent
-@@ -615,10 +612,8 @@ static void __init _ti_omap4_clkctrl_setup(struct dev=
-ice_node *node)
- 		provider->clkdm_name[strlen(provider->clkdm_name) - 2] =3D 0;
- 	} else {
- 		provider->clkdm_name =3D kasprintf(GFP_KERNEL, "%pOFn", node);
--		if (!provider->clkdm_name) {
--			kfree(provider);
--			return;
--		}
-+		if (!provider->clkdm_name)
-+			goto free_provider;
-
- 		/*
- 		 * Create default clkdm name, replace _clkctrl from end of
-@@ -710,4 +705,8 @@ static void __init _ti_omap4_clkctrl_setup(struct devi=
-ce_node *node)
-
- 	return;
-
-+free_provider:
-+	kfree(provider);
-+	return;
-+
  cleanup:
+-	kfree(init.name);
+ 	kfree(clkctrl_clk);
++free_init_name;
++	kfree(init.name);
+ 	return ret;
+ }
+
 =2D-
 2.43.0
 
