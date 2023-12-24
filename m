@@ -1,41 +1,49 @@
-Return-Path: <linux-kernel+bounces-10654-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10655-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EEFF681D835
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 09:14:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7CED81D84B
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 09:22:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A474B1F21AAA
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 08:14:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 055901C20FB3
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 08:22:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8033C1858;
-	Sun, 24 Dec 2023 08:14:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 244031856;
+	Sun, 24 Dec 2023 08:22:33 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from zg8tmtu5ljg5lje1ms4xmtka.icoremail.net (zg8tmtu5ljg5lje1ms4xmtka.icoremail.net [159.89.151.119])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF4A91383;
-	Sun, 24 Dec 2023 08:14:39 +0000 (UTC)
+Received: from azure-sdnproxy.icoremail.net (azure-sdnproxy.icoremail.net [52.237.72.81])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EC655663;
+	Sun, 24 Dec 2023 08:22:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
-Received: from luzhipeng.223.5.5.5 (unknown [39.174.92.167])
-	by mail-app3 (Coremail) with SMTP id cC_KCgA3ro1U6IdlArdjAQ--.38379S2;
-	Sun, 24 Dec 2023 16:14:13 +0800 (CST)
+Received: from luzhipeng.223.5.5.5 (unknown [122.235.137.177])
+	by mail-app3 (Coremail) with SMTP id cC_KCgCnERga6odlIsVjAQ--.39108S2;
+	Sun, 24 Dec 2023 16:21:47 +0800 (CST)
 From: Zhipeng Lu <alexious@zju.edu.cn>
 To: alexious@zju.edu.cn
-Cc: Saeed Mahameed <saeedm@nvidia.com>,
-	Leon Romanovsky <leon@kernel.org>,
+Cc: Trond Myklebust <trond.myklebust@hammerspace.com>,
+	Anna Schumaker <anna@kernel.org>,
+	Chuck Lever <chuck.lever@oracle.com>,
+	Jeff Layton <jlayton@kernel.org>,
+	Neil Brown <neilb@suse.de>,
+	Olga Kornievskaia <kolga@netapp.com>,
+	Dai Ngo <Dai.Ngo@oracle.com>,
+	Tom Talpey <tom@talpey.com>,
 	"David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
 	Jakub Kicinski <kuba@kernel.org>,
 	Paolo Abeni <pabeni@redhat.com>,
-	Maor Gottlieb <maorg@mellanox.com>,
+	Simo Sorce <simo@redhat.com>,
+	Steve Dickson <steved@redhat.com>,
+	Kevin Coffman <kwc@citi.umich.edu>,
+	linux-nfs@vger.kernel.org,
 	netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH] net/mlx5e: fix a double-free in arfs_create_groups
-Date: Sun, 24 Dec 2023 16:13:48 +0800
-Message-Id: <20231224081348.3535146-1-alexious@zju.edu.cn>
+Subject: [PATCH] SUNRPC: fix a memleak in gss_import_v2_context
+Date: Sun, 24 Dec 2023 16:20:33 +0800
+Message-Id: <20231224082035.3538560-1-alexious@zju.edu.cn>
 X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -44,48 +52,65 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cC_KCgA3ro1U6IdlArdjAQ--.38379S2
-X-Coremail-Antispam: 1UD129KBjvdXoW7Gry3CFWUAF4fGr4UAF4ruFg_yoWDWrg_CF
-	1UXwn5Cwn0vr4Ykw43WrZ8XrWIkr4qgrnayFZIgFy5Jw4UWryxZ3yxWa4fXF4xWFy8X3ZI
-	y343tF13u34UAjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbx8FF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-	A2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
-	6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-	I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-	4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
-	n2kIc2xKxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F4
-	0E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFyl
-	IxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxV
-	AFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j
-	6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUdHU
-	DUUUUU=
+X-CM-TRANSID:cC_KCgCnERga6odlIsVjAQ--.39108S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7CFWkGFWxKF4DGryxGr1fXrb_yoW8GFW7pF
+	Z8Z347trZ8WFWIyFySka4jv3WxCw4kJryUWanFqw43ArnaqFykK3WUuryq9FWrZr4rXFyU
+	CF1DGF98Z3WDuwUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvC14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+	Y2ka0xkIwI1lc2xSY4AK67AK6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r
+	1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CE
+	b7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0x
+	vE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAI
+	cVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2Kf
+	nxnUUI43ZEXa7VUjXTm3UUUUU==
 X-CM-SenderInfo: qrsrjiarszq6lmxovvfxof0/
 
-When `in` allocated by kvzalloc fails, arfs_create_groups will free
-ft->g and return an error. However, arfs_create_table, the only caller of
-arfs_create_groups, will hold this error and call to
-mlx5e_destroy_flow_table, in which the ft->g will be freed again.
+The ctx->mech_used.data allocated by kmemdup is not freed in neither
+gss_import_v2_context nor it only caller radeon_driver_open_kms.
+Thus, this patch reform the last call of gss_import_v2_context to the
+gss_krb5_import_ctx_v2, preventing the memleak while keepping the return
+formation.
 
-Fixes: 1cabe6b0965e ("net/mlx5e: Create aRFS flow tables")
+Fixes: 47d848077629 ("gss_krb5: handle new context format from gssd")
 Signed-off-by: Zhipeng Lu <alexious@zju.edu.cn>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/en_arfs.c | 1 +
- 1 file changed, 1 insertion(+)
+ net/sunrpc/auth_gss/gss_krb5_mech.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_arfs.c b/drivers/net/ethernet/mellanox/mlx5/core/en_arfs.c
-index bb7f86c993e5..d9a60bd04167 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_arfs.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_arfs.c
-@@ -257,6 +257,7 @@ static int arfs_create_groups(struct mlx5e_flow_table *ft,
- 	in = kvzalloc(inlen, GFP_KERNEL);
- 	if  (!in || !ft->g) {
- 		kfree(ft->g);
-+		ft->g = NULL;
- 		kvfree(in);
- 		return -ENOMEM;
+diff --git a/net/sunrpc/auth_gss/gss_krb5_mech.c b/net/sunrpc/auth_gss/gss_krb5_mech.c
+index e31cfdf7eadc..1e54bd63e3f0 100644
+--- a/net/sunrpc/auth_gss/gss_krb5_mech.c
++++ b/net/sunrpc/auth_gss/gss_krb5_mech.c
+@@ -398,6 +398,7 @@ gss_import_v2_context(const void *p, const void *end, struct krb5_ctx *ctx,
+ 	u64 seq_send64;
+ 	int keylen;
+ 	u32 time32;
++	int ret;
+ 
+ 	p = simple_get_bytes(p, end, &ctx->flags, sizeof(ctx->flags));
+ 	if (IS_ERR(p))
+@@ -450,8 +451,14 @@ gss_import_v2_context(const void *p, const void *end, struct krb5_ctx *ctx,
  	}
+ 	ctx->mech_used.len = gss_kerberos_mech.gm_oid.len;
+ 
+-	return gss_krb5_import_ctx_v2(ctx, gfp_mask);
++	ret = gss_krb5_import_ctx_v2(ctx, gfp_mask);
++	if (ret) {
++		p = ERR_PTR(ret);
++		goto out_free;
++	};
+ 
++out_free:
++	kfree(ctx->mech_used.data);
+ out_err:
+ 	return PTR_ERR(p);
+ }
 -- 
 2.34.1
 
