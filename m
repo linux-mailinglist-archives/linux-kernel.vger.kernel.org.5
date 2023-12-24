@@ -1,195 +1,193 @@
-Return-Path: <linux-kernel+bounces-10803-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10775-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 327C881DBFF
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 19:45:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C93081DBAA
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 18:15:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2C063B21131
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 18:45:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 70B9E1C21247
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 17:15:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8117DDB3;
-	Sun, 24 Dec 2023 18:44:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08693CA7C;
+	Sun, 24 Dec 2023 17:15:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="iPbb4Hd6"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VlGmpu6D"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41A91D281;
-	Sun, 24 Dec 2023 18:44:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-	by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20231224184446euoutp015ac5c80edaab85d6ed1b8d9e4ffc622a~j2NNx6Ghd2830328303euoutp01Q;
-	Sun, 24 Dec 2023 18:44:46 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20231224184446euoutp015ac5c80edaab85d6ed1b8d9e4ffc622a~j2NNx6Ghd2830328303euoutp01Q
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1703443486;
-	bh=WmcNjH8U2O7BNNusUw4ykQSItiB592m8UIqj92lf+W0=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-	b=iPbb4Hd6pw1RSGqsW6WtdrVT4VM9L7kfZvNor26xAvM2Y3UjK5f3215Uf/pe+NENE
-	 SDqcp2+9ab/DFwirsJbOJneN4oCRJgAFEczmqXeMpII7R9pLZ9xk2MrZaJM8c4sOcq
-	 RKrNTZyGC0xqxfe538C8xdZGZANX0y/sfzk6nFK8=
-Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
-	eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-	20231224184445eucas1p1a2549dbccace8ee24aa67b0df4d00305~j2NMuzocw0250402504eucas1p10;
-	Sun, 24 Dec 2023 18:44:45 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-	eusmges2new.samsung.com (EUCPMTA) with SMTP id 82.1D.09814.D1C78856; Sun, 24
-	Dec 2023 18:44:45 +0000 (GMT)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-	eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-	20231224184444eucas1p14bd6fff17d018ffc3a8f69c38ead0663~j2NMBygGh1881118811eucas1p1R;
-	Sun, 24 Dec 2023 18:44:44 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-	eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-	20231224184444eusmtrp1d600ecb75d207ef448e4b518e13a3f4c~j2NMBUQW81680216802eusmtrp1O;
-	Sun, 24 Dec 2023 18:44:44 +0000 (GMT)
-X-AuditID: cbfec7f4-727ff70000002656-23-65887c1d6f87
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-	eusmgms2.samsung.com (EUCPMTA) with SMTP id 68.53.09274.C1C78856; Sun, 24
-	Dec 2023 18:44:44 +0000 (GMT)
-Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
-	eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-	20231224184444eusmtip1036607261462726616b94b2ddd7a608b~j2NL14pWb0070000700eusmtip1w;
-	Sun, 24 Dec 2023 18:44:44 +0000 (GMT)
-Received: from localhost (106.210.248.246) by CAMSVWEXC02.scsc.local
-	(2002:6a01:e348::6a01:e348) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
-	Sun, 24 Dec 2023 18:44:43 +0000
-Date: Sat, 23 Dec 2023 14:12:24 +0100
-From: Joel Granados <j.granados@samsung.com>
-To: Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-CC: Luis Chamberlain <mcgrof@kernel.org>, Kees Cook <keescook@chromium.org>,
-	Iurii Zaikin <yzaikin@google.com>, <linux-kernel@vger.kernel.org>,
-	<linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH] sysctl: remove struct ctl_path
-Message-ID: <20231223131224.phe54a3smekirek3@localhost>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46241C8C4
+	for <linux-kernel@vger.kernel.org>; Sun, 24 Dec 2023 17:14:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9D18C433CA
+	for <linux-kernel@vger.kernel.org>; Sun, 24 Dec 2023 17:14:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703438099;
+	bh=sUtCX9BT+hLGHE76Vf5GNGPKRofN6whsC0oBi+gGX5A=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=VlGmpu6DZnJkISsA1AJaq6693WmCVAlu3dANfFSz3B86OlMtQcsPaz3HN6ijeQoXd
+	 zBMvQfLvGYM0eR7Enl5APLYft1AbNDvhcDwZTMkOiP1XPmkQo2+kukrXQ7ZS6Pvs9n
+	 +tk/5tCFxJJI9Lc8L0YaXL37wkwvgMBH8QDVsMEnoEAyG/PIbGnfeLRvAn7jd8eTGX
+	 qi7nZ4wPYz+cF80OZGT34jZu/+Fq3K1PGlY1s0f2y1d2e7gRpJ/bX7mWjZMfgNg2/I
+	 scTAnd1u9JLhUjFDGu6Pd4Q9E0u2KabwHYIFALi9I9sh+DC4Fz6us5qfdtR1CejzwZ
+	 BxwUZKibSDsQA==
+Received: by mail-io1-f46.google.com with SMTP id ca18e2360f4ac-7ba87489f97so132943639f.1
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Dec 2023 09:14:59 -0800 (PST)
+X-Gm-Message-State: AOJu0Yy/adsNBYzt2TKUPokyoWIheA+vqVvQojHaj0chm6pXksDVo/aZ
+	F5jtB76LIEffnxc6byHf7EUQEmDnVRFXNyDGuGTwMgixHkt9
+X-Google-Smtp-Source: AGHT+IEO6q1FQ8VwDr8zmcOqSXXv7BmjQaVSMyiriY6QrNu/ufURkhTeW1w35vDQpv6nCx35oLFc7ejrJCa2fsnqf2s=
+X-Received: by 2002:a6b:7014:0:b0:7ba:965b:fde6 with SMTP id
+ l20-20020a6b7014000000b007ba965bfde6mr4539184ioc.33.1703438098913; Sun, 24
+ Dec 2023 09:14:58 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg="pgp-sha512";
-	protocol="application/pgp-signature"; boundary="6e4yjwcz57irya7w"
-Content-Disposition: inline
-In-Reply-To: <20231220-sysctl-paths-v1-1-e123e3e704db@weissschuh.net>
-X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
-	CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrOKsWRmVeSWpSXmKPExsWy7djP87qyNR2pBidOylqc6c612LP3JIvF
-	5V1z2Cx+/3jGZHFjwlNGi2U7/RzYPGY3XGTxWLCp1GPTqk42j8+b5Dz6u4+xB7BGcdmkpOZk
-	lqUW6dslcGVsf32VuWC5UMXBC3uZGhh/83cxcnJICJhIvO9YxN7FyMUhJLCCUeLqmt/MEM4X
-	Roljhz+yQDifGSXubNjBDNOyZHMLK0RiOaPEpVl7mOCqXsw6BdWylVHi6JTZrCAtLAKqEkdf
-	XGYHsdkEdCTOv7kDNkpEwEZi5bfPYNuZBTYzSnyb8BtoFAeHsICxxPZ36SA1vALmEo/372aD
-	sAUlTs58wgJiMwtUSPy8uIcNpJxZQFpi+T8OkDCngKtEQ+MVNohLlSVu/noHdXWtxKktt8AO
-	lRCYzClxYs0cqCIXifbja5kgbGGJV8e3sEPYMhKnJ/ewQDUwSuz/94EdwlnNKLGs8StUh7VE
-	y5UnUB2OEt0zbjKCXCQhwCdx460gxKF8EpO2TWeGCPNKdLQJQVSrSay+94ZlAqPyLCSvzULy
-	2iyE1yDCehI3pk7BFNaWWLbwNTOEbSuxbt17lgWM7KsYxVNLi3PTU4uN8lLL9YoTc4tL89L1
-	kvNzNzEC09fpf8e/7GBc/uqj3iFGJg7GQ4wqQM2PNqy+wCjFkpefl6okwiur2JEqxJuSWFmV
-	WpQfX1Sak1p8iFGag0VJnFc1RT5VSCA9sSQ1OzW1ILUIJsvEwSnVwGTr87bPdWriX9c9G7nf
-	dxi8n6z/Kkzo6xbRhdN3qXtZnyuT0V3tf+3dtehyWYEJDAlfQ4yt+ZJc//MUGmnnncv1tlt2
-	YuZ9w67/3relui7GCdl9yWWZMEnk65fz0yrWV29zLGjdfPV7lseX06XX7cVl2n5W3Dn+jGdp
-	2cPP1ikK25ddWrDJd1H7TbltP/YybfB5Uqayy2TJI616gz8v0uqnV7/wnhK2Ze2qIq16d5bl
-	/9Q+uE1tqOlVurXtya/IBo/c5XMWiF4RtE9WECqOOj7ncYzjXl4+8ft5swVf8vpHyuU0tpx4
-	vcfONHDRHDMHthNX6ti9d52b7qz8rGuOR4CIwb1UK1N7vV792V0lUUosxRmJhlrMRcWJAE1N
-	KvHaAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrEIsWRmVeSWpSXmKPExsVy+t/xu7oyNR2pBr/u6lmc6c612LP3JIvF
-	5V1z2Cx+/3jGZHFjwlNGi2U7/RzYPGY3XGTxWLCp1GPTqk42j8+b5Dz6u4+xB7BG6dkU5ZeW
-	pCpk5BeX2CpFG1oY6RlaWugZmVjqGRqbx1oZmSrp29mkpOZklqUW6dsl6GXs/XyPpWCpUMXf
-	p49YGhh/8ncxcnJICJhILNncwgpiCwksZZTY/TERIi4jsfHLVVYIW1jiz7Uuti5GLqCaj4wS
-	P++tZIdwtjJK/DlxlhGkikVAVeLoi8vsIDabgI7E+Td3mEFsEQEbiZXfPoM1MAtsZpT4NuE3
-	UxcjB4ewgLHE9nfpIDW8AuYSj/fvhtowg1HizZuXjBAJQYmTM5+wgNjMAmUS8y6tZwTpZRaQ
-	llj+jwMkzCngKtHQeIUN4lJliZu/3jFD2LUSn/8+Y5zAKDwLyaRZSCbNQpgEEdaR2Ln1DhuG
-	sLbEsoWvmSFsW4l1696zLGBkX8UoklpanJueW2ykV5yYW1yal66XnJ+7iREYwduO/dyyg3Hl
-	q496hxiZOBgPMaoAdT7asPoCoxRLXn5eqpIIr6xiR6oQb0piZVVqUX58UWlOavEhRlNgKE5k
-	lhJNzgemlrySeEMzA1NDEzNLA1NLM2MlcV7Pgo5EIYH0xJLU7NTUgtQimD4mDk6pBqZtlTHy
-	vh8/h/XMEQjbfP+p72sj98yajdv4DLojzm57p+NpGf5R5SZPVoawM0OR9gkXljmbl1o3/T5n
-	nMsbZfpt34uZDyI+KjFq9s47v/I9Fzf3nCM6L3NKmLVnVMaHOnQcsWuR5p1d8Hf6kni+Mp1J
-	e3JE1kxXaGn+L9A4UWp7UuGV9SuKdjCufTv3W5XQCedFa5fLdbWJlpwS3hdxiOnNg/lHDu66
-	o/jvucm+PMkpR/6KdEx50/Cg8lDjlV+l3+YzfTspHtHltfmE+2upsiuRmzP3tS3TO/HM8cvT
-	JrMz7qaVvHrCTxa8fGHR3qZnk5Nkwl4Y31iX3mNx9L7Fds9zJqnVvlfWuxi88t8jUqnEUpyR
-	aKjFXFScCAC4eQKZdQMAAA==
-X-CMS-MailID: 20231224184444eucas1p14bd6fff17d018ffc3a8f69c38ead0663
-X-Msg-Generator: CA
-X-RootMTR: 20231220212343eucas1p2f905cf62bec100412a4ecdabe8916619
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20231220212343eucas1p2f905cf62bec100412a4ecdabe8916619
-References: <CGME20231220212343eucas1p2f905cf62bec100412a4ecdabe8916619@eucas1p2.samsung.com>
-	<20231220-sysctl-paths-v1-1-e123e3e704db@weissschuh.net>
-
---6e4yjwcz57irya7w
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
+References: <20231220152653.3273778-1-schatzberg.dan@gmail.com> <20231220152653.3273778-2-schatzberg.dan@gmail.com>
+In-Reply-To: <20231220152653.3273778-2-schatzberg.dan@gmail.com>
+From: Chris Li <chrisl@kernel.org>
+Date: Sun, 24 Dec 2023 09:14:47 -0800
+X-Gmail-Original-Message-ID: <CAF8kJuOybADVVnHZYxf+aMBF2EzURn1PRGhPu8Lx=5aDeas6VQ@mail.gmail.com>
+Message-ID: <CAF8kJuOybADVVnHZYxf+aMBF2EzURn1PRGhPu8Lx=5aDeas6VQ@mail.gmail.com>
+Subject: Re: [PATCH v5 1/2] mm: add defines for min/max swappiness
+To: Dan Schatzberg <schatzberg.dan@gmail.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Yosry Ahmed <yosryahmed@google.com>, Huan Yang <link@vivo.com>, linux-kernel@vger.kernel.org, 
+	cgroups@vger.kernel.org, linux-mm@kvack.org, Tejun Heo <tj@kernel.org>, 
+	Zefan Li <lizefan.x@bytedance.com>, Jonathan Corbet <corbet@lwn.net>, 
+	Michal Hocko <mhocko@kernel.org>, Shakeel Butt <shakeelb@google.com>, 
+	Muchun Song <muchun.song@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, 
+	Kefeng Wang <wangkefeng.wang@huawei.com>, SeongJae Park <sj@kernel.org>, 
+	"Vishal Moola (Oracle)" <vishal.moola@gmail.com>, Nhat Pham <nphamcs@gmail.com>, 
+	Yue Zhao <findns94@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Dec 20, 2023 at 10:23:35PM +0100, Thomas Wei=DFschuh wrote:
-> All usages of this struct have been removed from the kernel tree.
->=20
-> The struct is still referenced by scripts/check-sysctl-docs but that
-> script is broken anyways as it only supports the register_sysctl_paths()
-> API and not the currently used register_sysctl() one.
->=20
-> Fixes: 0199849acd07 ("sysctl: remove register_sysctl_paths()")
-> Signed-off-by: Thomas Wei=DFschuh <linux@weissschuh.net>
+Hi Dan,
+
+Acked-by: Chris Li <chrisl@kernel.org>
+
+Chris
+
+On Wed, Dec 20, 2023 at 7:27=E2=80=AFAM Dan Schatzberg <schatzberg.dan@gmai=
+l.com> wrote:
+>
+> We use the constants 0 and 200 in a few places in the mm code when
+> referring to the min and max swappiness. This patch adds MIN_SWAPPINESS
+> and MAX_SWAPPINESS #defines to improve clarity. There are no functional
+> changes.
+>
+> Signed-off-by: Dan Schatzberg <schatzberg.dan@gmail.com>
 > ---
->  include/linux/sysctl.h | 5 -----
->  1 file changed, 5 deletions(-)
->=20
-> diff --git a/include/linux/sysctl.h b/include/linux/sysctl.h
-> index 61b40ea81f4d..8084e9132833 100644
-> --- a/include/linux/sysctl.h
-> +++ b/include/linux/sysctl.h
-> @@ -210,11 +210,6 @@ struct ctl_table_root {
->  	int (*permissions)(struct ctl_table_header *head, struct ctl_table *tab=
-le);
->  };
-> =20
-> -/* struct ctl_path describes where in the hierarchy a table is added */
-> -struct ctl_path {
-> -	const char *procname;
-> -};
-> -
->  #define register_sysctl(path, table)	\
->  	register_sysctl_sz(path, table, ARRAY_SIZE(table))
-> =20
->=20
-> ---
-> base-commit: 1a44b0073b9235521280e19d963b6dfef7888f18
-> change-id: 20231220-sysctl-paths-474697856a3f
->=20
-> Best regards,
-> --=20
-> Thomas Wei=DFschuh <linux@weissschuh.net>
->=20
-
-LGTM
-Reviewed-by: Joel Granados <j.granados@samsung.com>
-
---=20
-
-Joel Granados
-
---6e4yjwcz57irya7w
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQGzBAABCgAdFiEErkcJVyXmMSXOyyeQupfNUreWQU8FAmWG3K4ACgkQupfNUreW
-QU/WVwv/TO2btpnDtp9v97DpO8pENbO9EQa2espWDa3fGysdCTiumu7W45gzF6s+
-r/gf+iukRudvW0qf2AmS7RoHYy22cm2L3DkAyCrSA/wiJj3CQ5VDF6LoWDP+xMsW
-pLWatMhJWeB3lO3h4ox4h1EN+XR55nzvmxo/RNupMp6MnUjbVa2Nk0PgqY+VGrZm
-rPRHeFBBPgnZ8hTB8NhuCP4dQrMp9N1V/CxZY3+Qd5Pr3fCpvbnfYMj4KKLLyxSa
-qvXYIN1GSY9VXkHt088ExRQWEKvxa9E0ifkw1gfEgQeFGcaU3S8wl9SfhabZcr72
-ShRpbw1sdn3YiIvbY67nXbs+W1KLC+ORcXgPhMM8+Pb8lIHDoVNMNcRSWiIw0aRC
-omJCv/sGe7edb9NMITU3IAFfJvtDQ1iL5xILHzhKueRqFT78Js3jfZa8ibH2gTPc
-X582f/AC8ccQcoJwHaa1KZzPUe3sBgV+tjuJ+pfBO9jd17j2IXAhQoVaPB0Oribp
-uuqU9bka
-=w0Uf
------END PGP SIGNATURE-----
-
---6e4yjwcz57irya7w--
+>  include/linux/swap.h |  2 ++
+>  mm/memcontrol.c      |  2 +-
+>  mm/vmscan.c          | 14 +++++++-------
+>  3 files changed, 10 insertions(+), 8 deletions(-)
+>
+> diff --git a/include/linux/swap.h b/include/linux/swap.h
+> index f6dd6575b905..e2ab76c25b4a 100644
+> --- a/include/linux/swap.h
+> +++ b/include/linux/swap.h
+> @@ -407,6 +407,8 @@ extern unsigned long try_to_free_pages(struct zonelis=
+t *zonelist, int order,
+>
+>  #define MEMCG_RECLAIM_MAY_SWAP (1 << 1)
+>  #define MEMCG_RECLAIM_PROACTIVE (1 << 2)
+> +#define MIN_SWAPPINESS 0
+> +#define MAX_SWAPPINESS 200
+>  extern unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *mem=
+cg,
+>                                                   unsigned long nr_pages,
+>                                                   gfp_t gfp_mask,
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index b226090fd906..fbe9f02dd206 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -4337,7 +4337,7 @@ static int mem_cgroup_swappiness_write(struct cgrou=
+p_subsys_state *css,
+>  {
+>         struct mem_cgroup *memcg =3D mem_cgroup_from_css(css);
+>
+> -       if (val > 200)
+> +       if (val > MAX_SWAPPINESS)
+>                 return -EINVAL;
+>
+>         if (!mem_cgroup_is_root(memcg))
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index 9dd8977de5a2..d91963e2d47f 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -183,7 +183,7 @@ struct scan_control {
+>  #endif
+>
+>  /*
+> - * From 0 .. 200.  Higher means more swappy.
+> + * From 0 .. MAX_SWAPPINESS.  Higher means more swappy.
+>   */
+>  int vm_swappiness =3D 60;
+>
+> @@ -2403,7 +2403,7 @@ static void get_scan_count(struct lruvec *lruvec, s=
+truct scan_control *sc,
+>         ap =3D swappiness * (total_cost + 1);
+>         ap /=3D anon_cost + 1;
+>
+> -       fp =3D (200 - swappiness) * (total_cost + 1);
+> +       fp =3D (MAX_SWAPPINESS - swappiness) * (total_cost + 1);
+>         fp /=3D file_cost + 1;
+>
+>         fraction[0] =3D ap;
+> @@ -4400,7 +4400,7 @@ static int get_type_to_scan(struct lruvec *lruvec, =
+int swappiness, int *tier_idx
+>  {
+>         int type, tier;
+>         struct ctrl_pos sp, pv;
+> -       int gain[ANON_AND_FILE] =3D { swappiness, 200 - swappiness };
+> +       int gain[ANON_AND_FILE] =3D { swappiness, MAX_SWAPPINESS - swappi=
+ness };
+>
+>         /*
+>          * Compare the first tier of anon with that of file to determine =
+which
+> @@ -4436,7 +4436,7 @@ static int isolate_folios(struct lruvec *lruvec, st=
+ruct scan_control *sc, int sw
+>         /*
+>          * Try to make the obvious choice first. When anon and file are b=
+oth
+>          * available from the same generation, interpret swappiness 1 as =
+file
+> -        * first and 200 as anon first.
+> +        * first and MAX_SWAPPINESS as anon first.
+>          */
+>         if (!swappiness)
+>                 type =3D LRU_GEN_FILE;
+> @@ -4444,7 +4444,7 @@ static int isolate_folios(struct lruvec *lruvec, st=
+ruct scan_control *sc, int sw
+>                 type =3D LRU_GEN_ANON;
+>         else if (swappiness =3D=3D 1)
+>                 type =3D LRU_GEN_FILE;
+> -       else if (swappiness =3D=3D 200)
+> +       else if (swappiness =3D=3D MAX_SWAPPINESS)
+>                 type =3D LRU_GEN_ANON;
+>         else
+>                 type =3D get_type_to_scan(lruvec, swappiness, &tier);
+> @@ -5398,9 +5398,9 @@ static int run_cmd(char cmd, int memcg_id, int nid,=
+ unsigned long seq,
+>
+>         lruvec =3D get_lruvec(memcg, nid);
+>
+> -       if (swappiness < 0)
+> +       if (swappiness < MIN_SWAPPINESS)
+>                 swappiness =3D get_swappiness(lruvec, sc);
+> -       else if (swappiness > 200)
+> +       else if (swappiness > MAX_SWAPPINESS)
+>                 goto done;
+>
+>         switch (cmd) {
+> --
+> 2.39.3
+>
+>
 
