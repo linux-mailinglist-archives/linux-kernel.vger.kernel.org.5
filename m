@@ -1,208 +1,172 @@
-Return-Path: <linux-kernel+bounces-10809-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10810-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16DED81DC2A
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 20:42:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9629281DC2D
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 20:49:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E0603B213DA
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 19:42:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E2329B20FF6
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 19:49:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11C31DDD6;
-	Sun, 24 Dec 2023 19:41:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1D1BDDD3;
+	Sun, 24 Dec 2023 19:49:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b="acoAvou0"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OMqfNbqQ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from sonic310-21.consmr.mail.gq1.yahoo.com (sonic310-21.consmr.mail.gq1.yahoo.com [98.137.69.147])
+Received: from mail-il1-f172.google.com (mail-il1-f172.google.com [209.85.166.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 259E3DDB3
-	for <linux-kernel@vger.kernel.org>; Sun, 24 Dec 2023 19:41:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=yahoo.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yahoo.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1703446910; bh=uA6nD/97r9MoxZlnk5Ueccj6mlEO6MxnzK5MIj2jiZs=; h=Date:From:To:Cc:Subject:References:From:Subject:Reply-To; b=acoAvou03BAp8l2bQEdpeuE5G0NPMoO9jOqoSWkBP7Kv+FHD9C7FCz4QTj1jE+Z8AyIhVoF0GWhNCHUG60FY+JYtqOYg+q0YNsI/HWL70JDwVNXzxPyWZiJ/um3ELRXqjAo/qh+h05rdqg09ljy4Ardkgl4JnGzaHs+Mk0CdTkwZqbarUfB8B3A7Mb/ps0D055ESpp9dfFkU773XnYqONeRHL93qRbLcqtLeEsdo1emUiN6RhaBmQHkzZyBZcJVXVZRMYP8j0lgtSsFPSQZhUVYEohfkTC7WnPuyONJP+U3r3NR2a9iC26288WnQYZT4c8B5BM+ilHvVw3e28Ftg1g==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1703446910; bh=Cwa0LvWoVGMsnQLQysY7mjBX6CUVkuVE7WPFLZBg/Eu=; h=X-Sonic-MF:Date:From:To:Subject:From:Subject; b=M7wTyPKaEzvAOeEehqvrX0vwlAAqH4k+WWFl1O2ydY7C1kNajnPOsdFfUNty0k7vPLwsr0pfmPscHjKyhpQHdx/poiakOPBIGJ1yfyGImtZ4ERvaivnfyY8tLqinYcvDjzr4PNXzTcnhEWCM0P0WFoRHRFGhDSlDzYm/j74V4Eq4ss/4H+DbK3vnXaL8QJz9slS67/Czdrs33LCnJTo4hTLTjrMUNZ+zhJqbS+bwdocj6ElEAwgSabZTPGEFd6wlBG2mrAszEyaV/+izY7HJwff/Tw0P1lOndnMi5hn3+RFZJ+dDRkUm/JbRKijm7esa61wX+Pb88+vjgPDNpY6l3Q==
-X-YMail-OSG: Sc2dY.QVM1mCJ6LiFAwUKsyRSZZTr3FNa2AWMRQPeXj7YyC.Pn4AceZuqftuM4C
- f0SPakCY.CI7io4Qmz86rdqUPxGEpvpwqv7v6tPNHT6d1upKNO0dUdWxLn8vu0lkL7FsBCFbwW8c
- vFh3X9lV8LnrWQsH.fDIw55dJPJvikAzq6HokwePjdzg6lLdboMs5Ix15o98H8HOJbqIrzsqPG42
- S5DE9pbo4N5o9SWdAiehlljKzjtRzlp9hBJVjNBY9N0ZsMM5nDm5YBLtdFnz4YRL6hukBmUPdkxU
- wrPendWAux._qYOM8hxHJ7fUM8J92xCRLQ03tdQMVHQT.5i6J.p8EeJaxaTEMQALgifwdOvJATrt
- UA.m4F91qP5.K_OjZXKQXSEB4oAY2Cd4t9jKVzxeV3g5OL2Q9PsepILzbDBBSYcXQ3VykZA3Cl2i
- VLx.MKZbXe4irGEurx8gyJkF.poTvBtuRqTj5AXKotoW2BJTeiDBYNAEP9joi5r7QpugVcYxrACv
- xZUQ_Gjla2HolSpBSvUORHlP_oY80Sp8aXIeVkdJeezPS.UPrboAWwVtyS1XjG3nulvtOLuhfU39
- sVGPDjpFL6ku.NXKnvqfmezxLFh2WVD5u24rQjSth_HWtWTbPLLm0ENqymsaqmMMObAWrUNfaFgA
- yCb_LqqVlS39F3C2kzKh2XRxGngwVmnTVvtUqYpQMIB6_h2vrTJGgXnT.L5LcDelTk3P73hzG2ug
- w6MNRZTy0i4xbhWlKzNhQBiG_cgVqwhzcCVHBwdZ9LKHbPLo2Jog1DqCA47mnm_rZz1upVwTMCM1
- v5sU1wROH0DmwKlwCG2oaye7QNZDpfhWvcIh47CGsR3xW9yY9gKk4MYx68RTl2WZAjOZAejI1TJE
- klFb7MgVNpwFos7JQcj66pBCEw0xVitghcrevaKtPz_zuk1vjNq_ybsIEedGLVOVrOvQ6W7t93k4
- SAa1vYtCso1NKZ6mkx14FTJdd2H5bX69GwSr7nwsEwEDPLsjts5QgkOJXIV8tnXODpoCTmEnZB2H
- lMgbDuSuw7K6Ut3du0BL3kxBFbhmXh9T1QwgR1MxwDCYcD4rUCD18i.BATHcrIIHOOyxNzPVzPOk
- DGwt77bAjPCBvIS8RIGTwYQV.LKNrE_VDIdtxja_i41l8SV6Z819o9IeGU2qMsxtVQWOMKNXNo5v
- 6aLHYYSEu.NvM.srtoLEZEC.UBbB0YkrMR6P8_PXOJQGSdKTDxZ8N1nM6n3cz7I7ncepR3fL145Y
- sz9i3RWOOBBAR_hIR_xhDYPC5QB_jQ_Aw0dzOcWlV_iEL37MhBuCNRF9OiH0F6L1nsen2fwbXZY3
- gHcuNhZFBAsNj.zc8SZ_oIQYuM85gofmgpMr6heIlqkPNq0lJ169DYbDPFBkOOexEKF4qCdA2sfe
- gNrm._PzYhGwFt_EUSaiKsc7cwp4P7Grieve3jvt0OCTvhEb0KQ_5K4hFP0M._rdEPdKuuTjQQR.
- Lj3OcVUcxxM3Dvhe74PrrgYEjQYHwcNlpRf3CtHp4mcHZMzJaB74GYGAwt6inAfE8PVNV8Rc3ubw
- Oa4z4HjHlphabjvENLNr5vE3RvahsY57GfKvOb93gskANBz5uGCQJvhvE5v0td.CiTdutTsV4mJ4
- TYNIIQ.61fMx5xqfoIbZrGmUKEeLkRnvItbgSBumSDscit4K6atGFMIEV.6Wc728CDL_O9P8RxxY
- jbW8btPiXy5Aem5JoaJSLoO1HZXyZcR1d1Pj5HC8ithdDUmAkT39o9.Yqa8XYjSlTKz5kYBCSCGe
- afM9ZwCw7LPVweYeNAsJntmRJy9FraaiuWVxyyRLnGjFHE.BoRT2NwR3FSA9W5Bqq5kOjjbPGwqE
- m6CJwnWmlZCTr9D1mw929AAOmPE1DshYU56hZiSlueOEWR1e0j7jfs9ra8DliVZeEhO.ZjiKPjBB
- pMoDL0kC7mk1A36BMerieWhBoTS1yqa1ZsKOkrEbgSdjOFKFSb9tBc_oCTY_iVYgR_DlawN.X3pr
- UhBjth7ue6ZS5OK2tm8MFIJ04GonK_cFgRUzXT7qnxx06n8xtr9MiYlVDDJBL25NcK8AL0tG.vkh
- 5V33.rKDJEiCDCGnd6LatmZaFNhBAZ0gcivEhYugCLeJ2nz9RMdU2DruyvlrRbqgskLtbknWN4cF
- Iptt1ZuyeXoqZk3era7_GLXoYT6OQea4d.lloB6zmLl6lL94yCrC_xB6uPb4Rvu0alrave_Nikj6
- RnLLlmqURiT3uI99vRPKmb8ZsnHo-
-X-Sonic-MF: <chaosesqueteam@yahoo.com>
-X-Sonic-ID: 23d90a21-5293-425a-b296-4bfbe4ef9831
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic310.consmr.mail.gq1.yahoo.com with HTTP; Sun, 24 Dec 2023 19:41:50 +0000
-Date: Sun, 24 Dec 2023 19:41:48 +0000 (UTC)
-From: "chaosesqueteam@yahoo.com" <chaosesqueteam@yahoo.com>
-To: "polarian@polarian.dev" <polarian@polarian.dev>, 
-	"misc@openbsd.org" <misc@openbsd.org>, 
-	"tech@openbsd.org" <tech@openbsd.org>, Jan Stary <hans@stare.cz>
-Cc: Richard Stallman <rms@gnu.org>, Bruce Perens <bruce@perens.com>, 
-	Aditya Pakki <pakki001@umn.edu>, 
-	Anna Schumaker <anna.schumaker@netapp.com>, 
-	"ansgar@debian.org" <ansgar@debian.org>, 
-	"blukashev@sempervictus.com" <blukashev@sempervictus.com>, 
-	Chuck Lever <chuck.lever@oracle.com>, 
-	Dave Wysochanski <dwysocha@redhat.com>, 
-	"David S. Miller" <davem@davemloft.net>, 
-	"editor@lwn.net" <editor@lwn.net>, 
-	"esr@thyrsus.com" <esr@thyrsus.com>, 
-	"gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>, 
-	"J. Bruce Fields" <bfields@fieldses.org>, 
-	Jakub Kicinski <kuba@kernel.org>, Leon Romanovsky <leon@kernel.org>, 
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
-	Linux Networking <netdev@vger.kernel.org>, 
-	"linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>, 
-	"moglen@columbia.edu" <moglen@columbia.edu>, 
-	"skraw.ml@ithnet.com" <skraw.ml@ithnet.com>, 
-	"tcallawa@redhat.com" <tcallawa@redhat.com>, 
-	"torvalds@linuxfoundation.org" <torvalds@linuxfoundation.org>, 
-	"torvalds@osdl.org" <torvalds@osdl.org>, 
-	Trond Myklebust <trond.myklebust@hammerspace.com>, 
-	Bagas Sanjaya <bagasdotme@gmail.com>, 
-	Eric Dumazet <edumazet@google.com>, 
-	Julia Lawall <julia.lawall@inria.fr>, 
-	Paolo Abeni <pabeni@redhat.com>, 
-	"jon@elytron.openbsd.amsterdam" <jon@elytron.openbsd.amsterdam>, 
-	"netbsd-current-users@netbsd.org" <netbsd-current-users@netbsd.org>, 
-	"netbsd-users@netbsd.org" <netbsd-users@netbsd.org>
-Message-ID: <549578214.4148875.1703446908152@mail.yahoo.com>
-Subject: Re: I can't get contributors for my C project. Can you help?
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE32FD52C;
+	Sun, 24 Dec 2023 19:49:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-il1-f172.google.com with SMTP id e9e14a558f8ab-35fea35c432so16440785ab.0;
+        Sun, 24 Dec 2023 11:49:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703447380; x=1704052180; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1a9E1LViCf6D+7FBiOySiyQNCFNcTHBrGbKDaNup/O8=;
+        b=OMqfNbqQVGYM70IxJBz3JQjUOXapqmXnKBUHu/Fu3hYyWtmine84VozZMO+biJQwSU
+         I6GRLA5lnk2vh/KTSBt7Q8uJVS9Xvm9rMhovH4yA0WdCB6waAPZ6K78J3CiorvQkpTiq
+         eKSin3UYT/5DnsJD7Mf6nlwwZBiH9yzvlcSfhDTX/PEXyqlu41qjaW4kSGGS3dq0bAhl
+         RHHYnyEz14IKnDdBcZFCjFjMSLQJiO8jIYUelQOtQaVGgvQlWekhe9JZYCadIWB5w4Pd
+         kFWDFc+KiZwpYbJ8bBDXCfez+2xia80+57x84jQ1be47CYQQBt/znBN/QsQ9j0+GylmF
+         dJ9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703447380; x=1704052180;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1a9E1LViCf6D+7FBiOySiyQNCFNcTHBrGbKDaNup/O8=;
+        b=GxlpjEbHW9ahmtg/SzEnAzcZosHCcu8goGEaG/wQEOQPPNa21KchnZrLg8heGLg5NU
+         UH36uuaUQoU1gMdGL3nhi/8LsJAzI3W7cDN6o0RWAbT1LeMdGlz8nJUw+d/Wqag89MeD
+         E2PX+5eD+hZhA2+s8qUcAV2agRuqc72fzBrqtBruBi5sZZvyMUOu/i/VsTNpYiuTCMwR
+         NXxZ15wWfG9o3H4pdc7bvyNbvbkVCbPuKAz4jAmh+ZRRnsz5GNFP+HYZRpmAWghw+C1O
+         0SPf5EXzuieBindkD9BMgHvrQiUk+wtH+wKIb9TfkOGZ5m7YeZLuUpQLMNEYe9WVPyMO
+         CAwA==
+X-Gm-Message-State: AOJu0Yw6npmMgRdZu8O+uuYUEPDM76+v4XsrEH7MVYfxH1sLgCyJlHxY
+	gY9qm91UwARH0R3UHYevCm7Nvw0wijY=
+X-Google-Smtp-Source: AGHT+IGAv75SOEMOaoQf6DNB5iKcUoA67G9VSjxhXvVSr6nViVbqMGDPacmo4DLtXXfQQYdGpQyzSw==
+X-Received: by 2002:a05:6e02:1b8e:b0:35f:f1a9:8149 with SMTP id h14-20020a056e021b8e00b0035ff1a98149mr4253511ili.30.1703447379776;
+        Sun, 24 Dec 2023 11:49:39 -0800 (PST)
+Received: from [192.168.54.90] (static.220.238.itcsa.net. [190.15.220.238])
+        by smtp.gmail.com with ESMTPSA id m25-20020aa78a19000000b006d9b38f2e75sm1310557pfa.32.2023.12.24.11.49.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 24 Dec 2023 11:49:39 -0800 (PST)
+Message-ID: <4e5ea975-c423-4878-b368-ad033875fe1a@gmail.com>
+Date: Sun, 24 Dec 2023 16:49:34 -0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] rust: upgrade to Rust 1.75.0
+To: Miguel Ojeda <ojeda@kernel.org>, Wedson Almeida Filho
+ <wedsonaf@gmail.com>, Alex Gaynor <alex.gaynor@gmail.com>
+Cc: Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+ =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+ Benno Lossin <benno.lossin@proton.me>,
+ Andreas Hindborg <a.hindborg@samsung.com>, Alice Ryhl
+ <aliceryhl@google.com>, rust-for-linux@vger.kernel.org,
+ linux-kernel@vger.kernel.org, patches@lists.linux.dev
+References: <20231224172128.271447-1-ojeda@kernel.org>
+Content-Language: en-US
+From: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+In-Reply-To: <20231224172128.271447-1-ojeda@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-References: <549578214.4148875.1703446908152.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.21952 YMailNorrin
 
-Note: This is about Unreal map support in this project: sf.net/p/chaosesqueanthology/tickets/2/
-Which is an opensource project. White people will not help
-me because, as Polaris here says, they are feminist scum.
+On 12/24/23 14:21, Miguel Ojeda wrote:
+> This is the next upgrade to the Rust toolchain, from 1.74.1 to 1.75.0
+> (i.e. the latest) [1].
+> 
+> See the upgrade policy [2] and the comments on the first upgrade in
+> commit 3ed03f4da06e ("rust: upgrade to Rust 1.68.2").
+> 
+> # Unstable features
+> 
+> The `const_maybe_uninit_zeroed` unstable feature [3] was stabilized in
+> Rust 1.75.0, which we were using in the PHYLIB abstractions.
+> 
+> The only unstable features allowed to be used outside the `kernel` crate
+> are still `new_uninit,offset_of`, though other code to be upstreamed
+> may increase the list.
+> 
+> Please see [4] for details.
+> 
+> # Other improvements
+> 
+> Rust 1.75.0 stabilized `pointer_byte_offsets` [5] which we could
+> potentially use as an alternative for `ptr_metadata` in the future.
+> 
+> # Required changes
+> 
+> For this upgrade, no changes were required (i.e. on our side).
+> 
+> # `alloc` upgrade and reviewing
+> 
+> The vast majority of changes are due to our `alloc` fork being upgraded
+> at once.
+> 
+> There are two kinds of changes to be aware of: the ones coming from
+> upstream, which we should follow as closely as possible, and the updates
+> needed in our added fallible APIs to keep them matching the newer
+> infallible APIs coming from upstream.
+> 
+> Instead of taking a look at the diff of this patch, an alternative
+> approach is reviewing a diff of the changes between upstream `alloc` and
+> the kernel's. This allows to easily inspect the kernel additions only,
+> especially to check if the fallible methods we already have still match
+> the infallible ones in the new version coming from upstream.
+> 
+> Another approach is reviewing the changes introduced in the additions in
+> the kernel fork between the two versions. This is useful to spot
+> potentially unintended changes to our additions.
+> 
+> To apply these approaches, one may follow steps similar to the following
+> to generate a pair of patches that show the differences between upstream
+> Rust and the kernel (for the subset of `alloc` we use) before and after
+> applying this patch:
+> 
+>      # Get the difference with respect to the old version.
+>      git -C rust checkout $(linux/scripts/min-tool-version.sh rustc)
+>      git -C linux ls-tree -r --name-only HEAD -- rust/alloc |
+>          cut -d/ -f3- |
+>          grep -Fv README.md |
+>          xargs -IPATH cp rust/library/alloc/src/PATH linux/rust/alloc/PATH
+>      git -C linux diff --patch-with-stat --summary -R > old.patch
+>      git -C linux restore rust/alloc
+> 
+>      # Apply this patch.
+>      git -C linux am rust-upgrade.patch
+> 
+>      # Get the difference with respect to the new version.
+>      git -C rust checkout $(linux/scripts/min-tool-version.sh rustc)
+>      git -C linux ls-tree -r --name-only HEAD -- rust/alloc |
+>          cut -d/ -f3- |
+>          grep -Fv README.md |
+>          xargs -IPATH cp rust/library/alloc/src/PATH linux/rust/alloc/PATH
+>      git -C linux diff --patch-with-stat --summary -R > new.patch
+>      git -C linux restore rust/alloc
+> 
+> Now one may check the `new.patch` to take a look at the additions (first
+> approach) or at the difference between those two patches (second
+> approach). For the latter, a side-by-side tool is recommended.
+> 
+> Link: https://github.com/rust-lang/rust/blob/stable/RELEASES.md#version-1750-2023-12-28 [1]
+> Link: https://rust-for-linux.com/rust-version-policy [2]
+> Link: https://github.com/rust-lang/rust/issues/91850 [3]
+> Link: https://github.com/Rust-for-Linux/linux/issues/2 [4]
+> Link: https://github.com/rust-lang/rust/issues/96283 [5]
+> Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
+> ---
+> [...]
 
->Hello,
-
->In case this is not a troll,
-It is not
->and is a stupid narcissistic teenager who
-Also incorrect. 37 years old.
-
->thinks the way open source functions is via extremism and horrific
->sexism, and promotion of terrorism, I will respond.
-I've likely been an opensource/freesoftware programmer longer than you.
-Maybe not; maybe so; but I'm not the neophyte you take me to be.
-
->Congratulations, you will not find a single contributor, if you think
->that storming into a public mailing list spewing sexist comments, and
-"All opensource C programmers are pro-women's right's dick-chopping faggots
-as their new-testament demi-god tells them to be (matthew 19 greek)"
-
-I thought there was more religious plularity amongst them.
-There used to be.
-
-Want a religious war? We can do that if that's what you're up for.
-If you are all our enemies than we'll treat you as such.
-Do you understand what I am saying: ? Do you?
-
->then supporting terrorism is the way open source functions, then you
-Why shouldn't one (morally) "support" those who slaughter feminists, and
-in the alternative,
-ensure men may marry female children, as YHWH's Law commands in
-Devarim chapter 22 verse 28 (greek, hebrew, latin, not english (white fuck))
-?
-
-Tell me?
-Should I "not support" the hellenistic greeks who put the Amazons to the sword?
-And introduced an epoc of rape for young virgin child brides? (Zeus was a rapist)
-(white faggot males seethe while clutching their New Testament "BETTER A MILLSTONE")
-(english) ("CHOP OFF DICK FOR HEAVEN!!!" "NO MALE NORE FEEMALLE!!")
-
-In hebrew it's called "tahphas" btw. Also supported by the actual God you white scum
-try to bury.
-
->have the complete wrong idea.
-When I started opensource/freesoftware programming it wasn't all woman
-worshiping faggot white christian scum. Guess it is now. Regardless of
-whether your pro-woman teachings are acknowleged from the New Testament
-or not by you.
-(hint: that's where they're from, uneducated trash)
-
->Best choice of action would be to not speak any further, and at the
-How would that get me contributors to assist in additional map format support?
-It wouldn't.
->minimum apologise to Jan,
-Jan is some cunt who opposes child brides and is mad that the taliban are
-raping their little girl wives as we speak.
-No I will not apologize to Jan.
-Especially since you allready gave up the "secret" that no opensource programmers
-will help anyone who isn't a woman worshiping faggot piece of shit.
-
-I'm so fucking glad your feminists have been killed in
-1) Central Asia
-2) Iran.
-
-Anyone opposed to men having young virgin girls as brides, deserves that fate.
->but I doubt anyone will take you seriously
-I'm simply asking for some more map format compatability.
-I did several myself.
-
->moving forward now anyways.
-
->Best way to deal with people like this is simply to ignore. Note to the
-Best way to deal with feminists is to kill them dead: like the Taliban did.
-The only way men can get their rights back is to do what the Hellenistic Greeks
-did in their history: that is to slaughter people like you who uphold women's
-rights.
-
->mailing list is I did offlist the user in response to their previous
->email, which was aimed to provide feedback on how to properly ask for
->help, and how openbsd is not a freelancing community for random C
->projects. I did not receive a response so they obviously aren't here
->for any decent reason, and are likely a troll.
-
->Please now get out my mailbox and go somewhere else, I rather read
->constructive emails instead of spiteful sh*t.
-Want me to physically fuck you up dipshit?
-How about you go talk to a wall.
-
-My emails are about Unreal Map support in an opensource engine.
-Not you showing how much of a white faggot that you are.
-Do you understand that?
-
-sf.net/p/chaosesqueanthology/tickets/2/
->Take care,
->--
->Polarian
->GPG signature: 0770E5312238C760
->Website: https://polarian.dev
->JID/XMPP: polarian@icebound.dev
+Reviewed-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
 
