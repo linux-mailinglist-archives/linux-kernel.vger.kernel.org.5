@@ -1,140 +1,148 @@
-Return-Path: <linux-kernel+bounces-10662-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10663-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0DCC881D860
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 09:33:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C48F181D863
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 09:43:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BE9B4282689
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 08:33:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 25D661F21A47
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 08:43:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F13A2116;
-	Sun, 24 Dec 2023 08:33:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EF6E17E3;
+	Sun, 24 Dec 2023 08:43:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="olUzveYL"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cilsRacD"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-io1-f46.google.com (mail-io1-f46.google.com [209.85.166.46])
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E786F20F5
-	for <linux-kernel@vger.kernel.org>; Sun, 24 Dec 2023 08:33:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-io1-f46.google.com with SMTP id ca18e2360f4ac-7ba737ee9b5so221227739f.0
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Dec 2023 00:33:39 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 720DA15C5
+	for <linux-kernel@vger.kernel.org>; Sun, 24 Dec 2023 08:43:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-6d9af1f12d5so402730b3a.3
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Dec 2023 00:43:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703406819; x=1704011619; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1703407384; x=1704012184; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=rO7WgIPdNcnqWQpaudC4tS6W5dWb0hVk4elNmQeiAV8=;
-        b=olUzveYL3r35YTE26G3Zj4/GB0nt+zCYqwDBpxnT+5Joi+YfHAG7ssEvTo9cG9DA1H
-         GqpDefuyAVrM9t9ZUHImei/9ETq3olMIQLDWXnLCJ/INmWSmMgFR2eBm3ArNY2oPAyOL
-         /hPCL5mhYvgjFMant+OsWR1vf9tzZ4DM8uxPhcxk1o0ohxhOpomjjfSVS0AwHRYHzxE3
-         Uicbx7wSngIIjOn7ybjkcaxH/NCtbtelsSPz9cYblospIka3ZtUX5N/hq27p7AywuTmR
-         LeU678AXrPbqzR1nlzL5O7itSmMQI9DjTgLnWOOM+u4SZf3tdvtDsQnVLsMbkD9zX81T
-         Z55Q==
+        bh=yPhLRPpbOyWFDlrNcxVxiAcHR3uYgN0cD7WJgGLlSus=;
+        b=cilsRacDwwjDomXGlx3oOn6G3RUyFgyqbn1iF4ut7wP6kemnnsqIVtV2nZYRRz6Ycz
+         C/RumO1US9b3QDEnw5V5RzBwoeGlPzgRMLGrKQQvlENrMYwx1bOckV4OO6d7XOXYGmNI
+         yibLfcttX3SghbLxtxFiuhc43LOEiCuc541XjREjkEM+QGIf33a8UxYqlH9xhN/sw1vY
+         LJadcuiecavjBLlDYgzg8lE2B1KfPlhOGuJDqjGy0satyuCd3SVu70vD2bBbW4SqjKk0
+         TIizSktnNBBGpfBWw/Hnyfhp/jhY7l6CfyA0PrIX4hMoCW6K3KhIL1AoVPmrVWvpLd+j
+         o01w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703406819; x=1704011619;
+        d=1e100.net; s=20230601; t=1703407384; x=1704012184;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=rO7WgIPdNcnqWQpaudC4tS6W5dWb0hVk4elNmQeiAV8=;
-        b=IQpYZynKAgY0MVLT0zKCdA82Fm1gAD7Xg21AKRCm2Kf+s4gw8kCCE50FuGjGHSshrc
-         MGq995IXHgvy6JYzD3b/jv1UydffSLq092LeDoLSL4lJQb6rJcOtVC3vlJk4CZ1BVbU4
-         PSgtdS1KUfpA3J5+b84S2p8TJCwUYG/RhoPQeTZTPZmSCYUrlyu0tfI1GbYLFBnuQ1Cg
-         wJxfuWFHI6CSyrLqhTXGPsczhVU/pKS7b8+/cg2cRA4gsJI7eZV1un5Foiz/4EhgXemt
-         dk76PB2LDy+dyHTSXpQqD7jul7bNyUE+T7/F4uU6KB7Wlby0Wb1ducdP2g5Z2TF0jBms
-         Ewog==
-X-Gm-Message-State: AOJu0YxmW+B+SSbyA2VAwx0MWGOpzVbcpTVgcvaVtOWMiSHJp8Q1IWUv
-	xI2j/TAxEKn3o17a+ymnm6Z7aI1DmKFArQ==
-X-Google-Smtp-Source: AGHT+IF8QP7yXui7EAHR1MbphUykeltelj4BQc2aY1WH7AjvwFE/uixP6mcbTfC2JZo3iDMfZxNieg==
-X-Received: by 2002:a05:6e02:19cd:b0:35f:ee15:688d with SMTP id r13-20020a056e0219cd00b0035fee15688dmr3742373ill.104.1703406818815;
-        Sun, 24 Dec 2023 00:33:38 -0800 (PST)
-Received: from leoy-huanghe.lan (211-75-219-200.hinet-ip.hinet.net. [211.75.219.200])
-        by smtp.gmail.com with ESMTPSA id b17-20020a170902ed1100b001d3d8c04331sm6154915pld.64.2023.12.24.00.33.34
+        bh=yPhLRPpbOyWFDlrNcxVxiAcHR3uYgN0cD7WJgGLlSus=;
+        b=J8SroXrLF83dpREkVyAIA8JcRRlpg/YzpD6c97Em521wxXj2idRnEhRc+4Whf+2EmS
+         UvnGw4a7y/xxTPmW3C4A9VSX2mmnst+6N53kqM8pmdO/jduh6FMlJJFxknmE5xw7jHel
+         1DyCB5T+uyr9629PaiHGeLgicGxgOz2809lb0YEySWG3Mq/rPXKf/QGCy6ltBYEY3EtT
+         Aaxl9M84TJIwTY1qj9SD/UBDYUt1Te5gDFHIUnvynm0US1yLikCRuqY9wgSpK40oXJof
+         UmPO4MCg5M1paOS/kUlU+pJjLzwIt+q+df3zom8JZ94mKLJPT3umLT8Q4uS0y9qxn3Lg
+         CYrw==
+X-Gm-Message-State: AOJu0YyyHPGonnWbv/cchBrXNPVaGjZwaOVNhCZ0GlTMPxqZQ5AEa4se
+	BWyg90aqCMIAfFgWTirXYrU=
+X-Google-Smtp-Source: AGHT+IHVR49ySaT0zH46wy0p06MxK4qHJB+3hfhi6Upfwc+Z093j69p9XgQMuRaYX9IZuxBsm2Emxw==
+X-Received: by 2002:a05:6a00:1d9e:b0:6d9:6cc7:ed7c with SMTP id z30-20020a056a001d9e00b006d96cc7ed7cmr4713897pfw.60.1703407383704;
+        Sun, 24 Dec 2023 00:43:03 -0800 (PST)
+Received: from archie.me ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id n22-20020a056a000d5600b006d999f4a3c0sm2518537pfv.152.2023.12.24.00.43.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 Dec 2023 00:33:38 -0800 (PST)
-Date: Sun, 24 Dec 2023 16:33:32 +0800
-From: Leo Yan <leo.yan@linaro.org>
-To: Ruidong Tian <tianruidong@linux.alibaba.com>
-Cc: James Clark <james.clark@arm.com>, linux-kernel@vger.kernel.org,
-	coresight@lists.linaro.org, suzuki.poulose@arm.com,
-	mike.leach@linaro.org, alexander.shishkin@linux.intel.com,
-	linux-arm-kernel@lists.infradead.org, adrian.hunter@intel.com,
-	linux-perf-users@vger.kernel.org, al.grant@arm.com,
-	mathieu.poirier@linaro.org, tor@ti.com, acme@redhat.com
-Subject: Re: [PATCH 1/3] perf scripts python: arm-cs-trace-disasm.py: print
- dso base address
-Message-ID: <20231224083332.GB13521@leoy-huanghe.lan>
-References: <20231214123304.34087-1-tianruidong@linux.alibaba.com>
- <20231214123304.34087-2-tianruidong@linux.alibaba.com>
- <912a39f4-025e-26a1-7786-091fa211f293@arm.com>
- <6177beec-f140-44aa-b534-182cd4b0a988@linux.alibaba.com>
+        Sun, 24 Dec 2023 00:43:03 -0800 (PST)
+Received: by archie.me (Postfix, from userid 1000)
+	id 96CE711D910F5; Sun, 24 Dec 2023 15:43:00 +0700 (WIB)
+Date: Sun, 24 Dec 2023 15:43:00 +0700
+From: Bagas Sanjaya <bagasdotme@gmail.com>
+To: Theodore Ts'o <tytso@mit.edu>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Linux Staging Drivers <linux-staging@lists.linux.dev>
+Subject: Re: "Link in bio" instead of Link:/Closes: trailer
+Message-ID: <ZYfvFAwXOiKBOgw2@archie.me>
+References: <ZYQeZjN_3bPOdKKf@archie.me>
+ <2023122112-rigging-january-7618@gregkh>
+ <cc276c0e-99bb-4422-9771-d864db4287cb@gmail.com>
+ <2023122129-twisty-mumble-c667@gregkh>
+ <ZYRIDDD_XR5HdVJu@archie.me>
+ <20231223004235.GC325499@mit.edu>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="RZ+4EG3MQ7SlQlbY"
 Content-Disposition: inline
-In-Reply-To: <6177beec-f140-44aa-b534-182cd4b0a988@linux.alibaba.com>
+In-Reply-To: <20231223004235.GC325499@mit.edu>
 
-Hi Ruidong,
 
-On Fri, Dec 22, 2023 at 03:29:18PM +0800, Ruidong Tian wrote:
+--RZ+4EG3MQ7SlQlbY
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-[...]
+On Fri, Dec 22, 2023 at 07:42:35PM -0500, Theodore Ts'o wrote:
+> On Thu, Dec 21, 2023 at 09:13:32PM +0700, Bagas Sanjaya wrote:
+> > I was scratching my itch whether common social media practices (such as=
+ that's
+> > being discussed here) can be applied to kernel development.
+>=20
+> The real problem is that someone's soecial media profile (whether it's
+> Linkedin, or Facebook, or Threads, or Twitter) is not a stable, fixed
+> resource.  So at any time in the future, the bug report in the Social
+> media profile could get modified, or disappear when Elon Musk decides
+> to take a user's Twitter username[1] away so he can resell the highly
+> desireable account name to someone he likes better.  The git log is
+> forever.  So pointing to a transient resource from a permanent log is
+> a really, Really, REALLY bad idea.
+>=20
+> [1] https://slate.com/technology/2023/08/x-twitter-usernames-music-take-a=
+way-interview.html
+>=20
+> Common social media practices are often quite terrible, and this is a
+> great example about why they shouldn't be used for this purpose.  The
+> bug report should be sent to a linux kernel mailing list, so everyone
+> can see it, and then they can use a lore.kernel.org URL as the stable
+> resource.
+>=20
+> If the bug report is in some other source where the people who run it
+> understand the importance of stable information at stable URL's ---
+> for example, bugzilla.kernel.org, bugzilla.redhat.com,
+> bugs.debian.org, etc. that's also fine.  But a social media profile,
+> which can be modified at the owner's whim (either of the social media
+> account, or the social media comapny, or someone who has $44 billion
+> dollars to carelessly throw around)?  That way lies madness.
+>=20
+> Just because something might "common social media pracitce", doesn't
+> mean that it's a good idea.  In fact, some might argue that much of
+> what happens on social media has a negative value to society, but
+> that's a different debate....
 
-> > Although it's also not that clear what this is useful for, given that
-> > all the other output is relative too? Maybe you could add an example to
-> > the commit message, even if it's just for debugging. Would an option
-> > that turned _all_ the output into virtual addresses not be more useful?
->
-> I want to use arm-cs-trace-disasm.py output associate with PMU and SPE data
-> to explore more CPU performance info, all the PMU/SPE/Coresight informations
-> generated by `perf report` and `perf script` include virtual address, so i
-> want this script do the same thing.
+Ted, thanks for the explanation!
 
-I think James' suggestion is valid for replacing all offsets with
-virtual addresses, in addition to introducing a new option.
+--=20
+An old man doll... just what I always wanted! - Clara
 
-Below change works well at my side. Hope this is helpful.
+--RZ+4EG3MQ7SlQlbY
+Content-Type: application/pgp-signature; name="signature.asc"
 
-  diff --git a/tools/perf/scripts/python/arm-cs-trace-disasm.py b/tools/perf/scripts/python/arm-cs-trace-disasm.py
-  index de58991c78bb..6c94ff2287cd 100755
-  --- a/tools/perf/scripts/python/arm-cs-trace-disasm.py
-  +++ b/tools/perf/scripts/python/arm-cs-trace-disasm.py
-  @@ -36,7 +36,10 @@ option_list = [
-                      help="Set path to objdump executable file"),
-          make_option("-v", "--verbose", dest="verbose",
-                      action="store_true", default=False,
-  -                   help="Enable debugging log")
-  +                   help="Enable debugging log"),
-  +       make_option("-a", "--vaddr", dest="vaddr",
-  +                   action="store_true", default=False,
-  +                   help="Enable virtual address")
-   ]
-  
-   parser = OptionParser(option_list=option_list)
-  @@ -108,6 +111,14 @@ def print_disam(dso_fname, dso_start, start_addr, stop_addr):
-                          m = disasm_re.search(line)
-                          if m is None:
-                                  continue
-  +
-  +               # Replace offset with virtual address
-  +               if (options.vaddr == True):
-  +                       offset = re.search(r"^\s*([0-9a-fA-F]+)", line).group()
-  +                       if offset:
-  +                               virt_addr = dso_start + int(offset, 16)
-  +                               line = line.replace(offset.lstrip(), "0x%016x" % virt_addr)
-  +
-                  print("\t" + line)
-  
-   def print_sample(sample):
+-----BEGIN PGP SIGNATURE-----
 
-Thanks,
-Leo
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZYfvEAAKCRD2uYlJVVFO
+o9j+AQCkIk2elNtkHfVdCpgwB2p128IMcO2VCewPfMsPrCfpngEA+l258liTNVUz
+b1WUWAMbZk3AxrqfuEtoA4G1lZZGbQY=
+=vnbm
+-----END PGP SIGNATURE-----
+
+--RZ+4EG3MQ7SlQlbY--
 
