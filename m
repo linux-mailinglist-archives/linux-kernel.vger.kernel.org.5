@@ -1,145 +1,166 @@
-Return-Path: <linux-kernel+bounces-10841-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10842-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4EF8F81DCDD
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 23:21:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DAE8981DCDF
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 23:27:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 399FF1C21477
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 22:21:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 17486281D6C
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 22:27:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3FEC101E4;
-	Sun, 24 Dec 2023 22:20:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78B0A10783;
+	Sun, 24 Dec 2023 22:27:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="BD6Tj7Qp"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FxeyGDb/"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0343BFC1A
-	for <linux-kernel@vger.kernel.org>; Sun, 24 Dec 2023 22:20:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1d3e4637853so289455ad.0
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Dec 2023 14:20:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1703456456; x=1704061256; darn=vger.kernel.org;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=7LD140+Xgkenp9ciiR1m/6SC0DrA959WMgfk0mFXyRk=;
-        b=BD6Tj7QpwYRUdefUv8zKl0C7e9CFmftPhUMZo5Aj1FUCJKANDEV6k8sN3hRPi8ZMRX
-         2ygeJXRQ5P9l4pVIv/32bn6qJugvq6Qz5FWcHlwfRZaq9j0shlxAwjvwpwHgVCqTbOOo
-         nAaRBJO61naORxYP56peQbDY1eG5oMMbWzUachn//iN+65vtBPGExOVpDxirF/gPg8lZ
-         qvn4E6fWVGZh7cdjo1tM+lsaEfZpzk/4nAqQ0EOImqwlpd8EDsP9XJmok5HlU87hi7dL
-         B6eSVfAsacIXJTKFnNct3WdgUkpcWrso+OsLY3vo+WesDMzQRHtdz7AMLwEJomhUeVI2
-         EHxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703456456; x=1704061256;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7LD140+Xgkenp9ciiR1m/6SC0DrA959WMgfk0mFXyRk=;
-        b=lc29Rqsbq9cftNMPu3VVk8IGeWenj0CgpXteeNDnn161FmsIjOadogm8mpYWowSKYo
-         CukfK422ixLfP5u4OgAI8UcQk4oKDmmf57K/gjcM3jGYu4KXLbdBCvhKqNCj/zfIs1Qo
-         bBntPmuTN2NYMWfe1hroJjt73rJ94Nc2Wpk6WAjUNvV9tyHDxDDy0ThjrDNkopH7Vl1u
-         QrAhAr+KngSqQgSjQYImstQ3QtI8l7UMiNWubWQcGqIWGP72OqHnN56msMyfADAdLYqX
-         /gQ1idDcLMORYoQDpU/vdRkgH659jvTtLfyckY6JCcDiLnMIyMbwcK/WBjrp1/UaPBDj
-         CGAg==
-X-Gm-Message-State: AOJu0YzC+onbh0PvhEtyYtgN+QSkcpgZtlTEWL7dBY8C/C2fwBTb3dI2
-	cNEjdcq4Hx7p6q28LMvqnb3dmT3n6Qm9
-X-Google-Smtp-Source: AGHT+IHDCDsQKo8TkgmKnfoJ90RsBFmNqQ8nt9FOQZmtwXMiUyrVc0Z600567/ZOEgcDu3sinHqLdg==
-X-Received: by 2002:a17:903:41cd:b0:1d4:f4:bd18 with SMTP id u13-20020a17090341cd00b001d400f4bd18mr302116ple.20.1703456456102;
-        Sun, 24 Dec 2023 14:20:56 -0800 (PST)
-Received: from [2620:0:1008:15:c723:e11e:854b:ac88] ([2620:0:1008:15:c723:e11e:854b:ac88])
-        by smtp.gmail.com with ESMTPSA id m10-20020a170902db0a00b001d0b4693539sm6947242plx.189.2023.12.24.14.20.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 Dec 2023 14:20:55 -0800 (PST)
-Date: Sun, 24 Dec 2023 14:20:54 -0800 (PST)
-From: David Rientjes <rientjes@google.com>
-To: Chris Li <chrisl@kernel.org>
-cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, 
-    linux-mm@kvack.org, Wei Xu <weixugc@google.com>, 
-    Yu Zhao <yuzhao@google.com>, Greg Thelen <gthelen@google.com>, 
-    Chun-Tse Shao <ctshao@google.com>, Suren Baghdasaryan <surenb@google.com>, 
-    Yosry Ahmed <yosryahmed@google.com>, Brain Geffon <bgeffon@google.com>, 
-    Minchan Kim <minchan@kernel.org>, Michal Hocko <mhocko@suse.com>, 
-    Mel Gorman <mgorman@techsingularity.net>, 
-    Huang Ying <ying.huang@intel.com>, Nhat Pham <nphamcs@gmail.com>, 
-    Johannes Weiner <hannes@cmpxchg.org>, Kairui Song <kasong@tencent.com>, 
-    Zhongkun He <hezhongkun.hzk@bytedance.com>, 
-    Kemeng Shi <shikemeng@huaweicloud.com>, Barry Song <v-songbaohua@oppo.com>, 
-    Hugh Dickins <hughd@google.com>
-Subject: Re: [PATCH] mm: swap: async free swap slot cache entries
-In-Reply-To: <CAF8kJuMhbXmqvDDa8B8daDKwdfkL9-Be12DPns5Grx68U1Rpyg@mail.gmail.com>
-Message-ID: <7454d4e3-a2dd-0571-5ac1-99e99dabcaf0@google.com>
-References: <20231221-async-free-v1-1-94b277992cb0@kernel.org> <20231222115208.ab4d2aeacdafa4158b14e532@linux-foundation.org> <ZYYY1VBKdLHH-Kl3@google.com> <f6bf2c8d-c37a-dab7-8ef8-38a35240edb6@google.com> <CAF8kJuOafpWhKSR96Lsdig_HqtLA79eeHUx9MxBzFGi95XyzuA@mail.gmail.com>
- <0a052cb1-a5c5-4bee-5bd5-fd5569765012@google.com> <CAF8kJuM59_12VNZ9d4oXZiLbAQC4LGLXODHqZw+7jiCJYva6YQ@mail.gmail.com> <d171f8a4-47ed-0e29-877d-6824d593d7ed@google.com> <CAF8kJuMhbXmqvDDa8B8daDKwdfkL9-Be12DPns5Grx68U1Rpyg@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B95910782
+	for <linux-kernel@vger.kernel.org>; Sun, 24 Dec 2023 22:27:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1703456860; x=1734992860;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=i5LtL5D/0qbaup3ppR3Dy09mfn99Uys+Jv8wqXg6Riw=;
+  b=FxeyGDb/jSj5J3kFp6YpmMEt91XrXu6faqUMsx2WrdZEp499fh/buLMX
+   8vNX1ZyStZ+EhdkoT7UMTRHahnYkdxvjk7NlyZJIpKlhBFjmaZvnC7RKo
+   jRxamGzuM1ZSUv4xGr13sWcJQU6DulAFFGBu5GCTOG39qzNa0xOV7V15H
+   w+kn2+C2OTF7tthde9TsU4lP2MY8RmjFA9rbXmB+RU1t3h9fbsKcMN9QT
+   rZ6eEL7O5PuxBD+HM5aRnlf2N77UBA11oLxmpBmxFvwAcW6GnUZdXt5gG
+   cDC1ZVrK8QUHMoN5sOmOPwUhgltqbfj9/xUGYEk6ZeTayIXAdaRO7L9Sw
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10934"; a="9765459"
+X-IronPort-AV: E=Sophos;i="6.04,302,1695711600"; 
+   d="scan'208";a="9765459"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Dec 2023 14:27:39 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10934"; a="811905921"
+X-IronPort-AV: E=Sophos;i="6.04,302,1695711600"; 
+   d="scan'208";a="811905921"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga001.jf.intel.com with ESMTP; 24 Dec 2023 14:27:37 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rHWwX-000Cgr-1v;
+	Sun, 24 Dec 2023 22:27:34 +0000
+Date: Mon, 25 Dec 2023 06:26:52 +0800
+From: kernel test robot <lkp@intel.com>
+To: Keerthy <j-keerthy@ti.com>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	Tony Lindgren <tony@atomide.com>
+Subject: drivers/rtc/rtc-omap.c:424: warning: Function parameter or member
+ 'dev' not described in 'omap_rtc_power_off_program'
+Message-ID: <202312250610.si1QZoLJ-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Sun, 24 Dec 2023, Chris Li wrote:
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   861deac3b092f37b2c5e6871732f3e11486f7082
+commit: 6256f7f7f217b2216fcb73929508325f4ee98237 rtc: OMAP: Add support for rtc-only mode
+date:   4 years, 9 months ago
+config: arm64-allmodconfig (https://download.01.org/0day-ci/archive/20231225/202312250610.si1QZoLJ-lkp@intel.com/config)
+compiler: aarch64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231225/202312250610.si1QZoLJ-lkp@intel.com/reproduce)
 
-> > > > > > How do you quantify the impact of the delayed swap_entry_free()?
-> > > > > >
-> > > > > > Since the free and memcg uncharge are now delayed, is there not the
-> > > > > > possibility that we stay under memory pressure for longer?  (Assuming at
-> > > > > > least some users are swapping because of memory pressure.)
-> > > > > >
-> > > > > > I would assume that since the free and uncharge itself is delayed that in
-> > > > > > the pathological case we'd actually be swapping *more* until the async
-> > > > > > worker can run.
-> > > > >
-> > > > > Thanks for raising this interesting question.
-> > > > >
-> > > > > First of all, the swap_entry_free() does not impact "memory.current".
-> > > > > It reduces "memory.swap.current". Technically it is the swap pressure
-> > > > > not memory pressure that suffers the extra delay.
-> > > > >
-> > > > > Secondly, we are talking about delaying up to 64 swap entries for a
-> > > > > few microseconds.
-> > > >
-> > > > What guarantees that the async freeing happens within a few microseconds?
-> > >
-> > > Linux kernel typically doesn't provide RT scheduling guarantees. You
-> > > can change microseconds to milliseconds, my following reasoning still
-> > > holds.
-> > >
-> >
-> > What guarantees that the async freeing happens even within 10s?  Your
-> > responses are implying that there is some deadline by which this freeing
-> > absolutely must happen (us or ms), but I don't know of any strong
-> > guarantees.
-> 
-> I think we are in agreement there, there are no such strong guarantees
-> in linux scheduling. However, when there are free CPU resources, the
-> job will get scheduled to execute in a reasonable table time frame. If
-> it does not, I consider that a bug if the CPU has idle resources and
-> the pending jobs are not able to run for a long time.
-> The existing code doesn't have such a guarantee either, see my point
-> follows. I don't know why you want to ask for such a guarantee.
-> 
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312250610.si1QZoLJ-lkp@intel.com/
 
-I'm simply trying to compare the pros and cons of the approach.  As 
-pointed out previously by Andrew, this approach actually results in *more* 
-work to do freeing.  Then, we could have a significant time delay before 
-the freeing is actually done, in addition to the code complexity.  And 
-nothing safeguards us from an exponentially increasing amount of freeing 
-that will be done sometime in the future.
+All warnings (new ones prefixed by >>):
 
-The current implementation provides strong guarantees that you will do 
-batched freeing that will not accumulate beyond a pre-defined threshold 
-which is proven to work well in practice.
+>> drivers/rtc/rtc-omap.c:424: warning: Function parameter or member 'dev' not described in 'omap_rtc_power_off_program'
 
-My only question was about how we can quantify the impact of the delayed 
-free.  We've come to the conclusion that it hasn't been quantified and 
-there is no guarantees on when it will be freed.
 
-I'll leave it to those more invested in this path in the page fault 
-handler to provide feedback.  Thanks!
+vim +424 drivers/rtc/rtc-omap.c
+
+222a12fca60482 Johan Hovold 2014-12-10  417  
+6256f7f7f217b2 Keerthy      2019-04-03  418  /**
+6256f7f7f217b2 Keerthy      2019-04-03  419   * omap_rtc_power_off_program: Set the pmic power off sequence. The RTC
+6256f7f7f217b2 Keerthy      2019-04-03  420   * generates pmic_pwr_enable control, which can be used to control an external
+6256f7f7f217b2 Keerthy      2019-04-03  421   * PMIC.
+222a12fca60482 Johan Hovold 2014-12-10  422   */
+6256f7f7f217b2 Keerthy      2019-04-03  423  int omap_rtc_power_off_program(struct device *dev)
+222a12fca60482 Johan Hovold 2014-12-10 @424  {
+222a12fca60482 Johan Hovold 2014-12-10  425  	struct omap_rtc *rtc = omap_rtc_power_off_rtc;
+222a12fca60482 Johan Hovold 2014-12-10  426  	struct rtc_time tm;
+222a12fca60482 Johan Hovold 2014-12-10  427  	unsigned long now;
+09058eab4b4f77 Keerthy      2018-08-16  428  	int seconds;
+222a12fca60482 Johan Hovold 2014-12-10  429  	u32 val;
+222a12fca60482 Johan Hovold 2014-12-10  430  
+9c28bd07c20776 Lokesh Vutla 2015-04-16  431  	rtc->type->unlock(rtc);
+222a12fca60482 Johan Hovold 2014-12-10  432  	/* enable pmic_power_en control */
+222a12fca60482 Johan Hovold 2014-12-10  433  	val = rtc_readl(rtc, OMAP_RTC_PMIC_REG);
+222a12fca60482 Johan Hovold 2014-12-10  434  	rtc_writel(rtc, OMAP_RTC_PMIC_REG, val | OMAP_RTC_PMIC_POWER_EN_EN);
+222a12fca60482 Johan Hovold 2014-12-10  435  
+09058eab4b4f77 Keerthy      2018-08-16  436  again:
+6256f7f7f217b2 Keerthy      2019-04-03  437  	/* Clear any existing ALARM2 event */
+6256f7f7f217b2 Keerthy      2019-04-03  438  	rtc_writel(rtc, OMAP_RTC_STATUS_REG, OMAP_RTC_STATUS_ALARM2);
+6256f7f7f217b2 Keerthy      2019-04-03  439  
+09058eab4b4f77 Keerthy      2018-08-16  440  	/* set alarm one second from now */
+222a12fca60482 Johan Hovold 2014-12-10  441  	omap_rtc_read_time_raw(rtc, &tm);
+09058eab4b4f77 Keerthy      2018-08-16  442  	seconds = tm.tm_sec;
+222a12fca60482 Johan Hovold 2014-12-10  443  	bcd2tm(&tm);
+222a12fca60482 Johan Hovold 2014-12-10  444  	rtc_tm_to_time(&tm, &now);
+09058eab4b4f77 Keerthy      2018-08-16  445  	rtc_time_to_tm(now + 1, &tm);
+222a12fca60482 Johan Hovold 2014-12-10  446  
+222a12fca60482 Johan Hovold 2014-12-10  447  	if (tm2bcd(&tm) < 0) {
+222a12fca60482 Johan Hovold 2014-12-10  448  		dev_err(&rtc->rtc->dev, "power off failed\n");
+4425070a5cfe63 Johan Hovold 2018-07-04  449  		rtc->type->lock(rtc);
+6256f7f7f217b2 Keerthy      2019-04-03  450  		return -EINVAL;
+222a12fca60482 Johan Hovold 2014-12-10  451  	}
+222a12fca60482 Johan Hovold 2014-12-10  452  
+222a12fca60482 Johan Hovold 2014-12-10  453  	rtc_wait_not_busy(rtc);
+222a12fca60482 Johan Hovold 2014-12-10  454  
+222a12fca60482 Johan Hovold 2014-12-10  455  	rtc_write(rtc, OMAP_RTC_ALARM2_SECONDS_REG, tm.tm_sec);
+222a12fca60482 Johan Hovold 2014-12-10  456  	rtc_write(rtc, OMAP_RTC_ALARM2_MINUTES_REG, tm.tm_min);
+222a12fca60482 Johan Hovold 2014-12-10  457  	rtc_write(rtc, OMAP_RTC_ALARM2_HOURS_REG, tm.tm_hour);
+222a12fca60482 Johan Hovold 2014-12-10  458  	rtc_write(rtc, OMAP_RTC_ALARM2_DAYS_REG, tm.tm_mday);
+222a12fca60482 Johan Hovold 2014-12-10  459  	rtc_write(rtc, OMAP_RTC_ALARM2_MONTHS_REG, tm.tm_mon);
+222a12fca60482 Johan Hovold 2014-12-10  460  	rtc_write(rtc, OMAP_RTC_ALARM2_YEARS_REG, tm.tm_year);
+222a12fca60482 Johan Hovold 2014-12-10  461  
+222a12fca60482 Johan Hovold 2014-12-10  462  	/*
+222a12fca60482 Johan Hovold 2014-12-10  463  	 * enable ALARM2 interrupt
+222a12fca60482 Johan Hovold 2014-12-10  464  	 *
+222a12fca60482 Johan Hovold 2014-12-10  465  	 * NOTE: this fails on AM3352 if rtc_write (writeb) is used
+222a12fca60482 Johan Hovold 2014-12-10  466  	 */
+222a12fca60482 Johan Hovold 2014-12-10  467  	val = rtc_read(rtc, OMAP_RTC_INTERRUPTS_REG);
+222a12fca60482 Johan Hovold 2014-12-10  468  	rtc_writel(rtc, OMAP_RTC_INTERRUPTS_REG,
+222a12fca60482 Johan Hovold 2014-12-10  469  			val | OMAP_RTC_INTERRUPTS_IT_ALARM2);
+09058eab4b4f77 Keerthy      2018-08-16  470  
+09058eab4b4f77 Keerthy      2018-08-16  471  	/* Retry in case roll over happened before alarm was armed. */
+09058eab4b4f77 Keerthy      2018-08-16  472  	if (rtc_read(rtc, OMAP_RTC_SECONDS_REG) != seconds) {
+09058eab4b4f77 Keerthy      2018-08-16  473  		val = rtc_read(rtc, OMAP_RTC_STATUS_REG);
+09058eab4b4f77 Keerthy      2018-08-16  474  		if (!(val & OMAP_RTC_STATUS_ALARM2))
+09058eab4b4f77 Keerthy      2018-08-16  475  			goto again;
+09058eab4b4f77 Keerthy      2018-08-16  476  	}
+09058eab4b4f77 Keerthy      2018-08-16  477  
+9c28bd07c20776 Lokesh Vutla 2015-04-16  478  	rtc->type->lock(rtc);
+222a12fca60482 Johan Hovold 2014-12-10  479  
+6256f7f7f217b2 Keerthy      2019-04-03  480  	return 0;
+6256f7f7f217b2 Keerthy      2019-04-03  481  }
+6256f7f7f217b2 Keerthy      2019-04-03  482  EXPORT_SYMBOL(omap_rtc_power_off_program);
+6256f7f7f217b2 Keerthy      2019-04-03  483  
+
+:::::: The code at line 424 was first introduced by commit
+:::::: 222a12fca6048249d9007f2a4c5fbcea532e8522 rtc: omap: add support for pmic_power_en
+
+:::::: TO: Johan Hovold <johan@kernel.org>
+:::::: CC: Linus Torvalds <torvalds@linux-foundation.org>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
