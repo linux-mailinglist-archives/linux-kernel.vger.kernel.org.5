@@ -1,74 +1,88 @@
-Return-Path: <linux-kernel+bounces-10685-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10687-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6C9F81D8B7
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 11:32:46 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id ACF8581D8C0
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 11:42:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9ADA41F217A1
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 10:32:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 49CFAB218DD
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 10:42:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7B5320FA;
-	Sun, 24 Dec 2023 10:32:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94A673FE6;
+	Sun, 24 Dec 2023 10:42:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="r5nbBjjQ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from bmailout3.hostsharing.net (bmailout3.hostsharing.net [176.9.242.62])
+Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7ABBD1C31;
-	Sun, 24 Dec 2023 10:32:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=h08.hostsharing.net
-Received: from h08.hostsharing.net (h08.hostsharing.net [IPv6:2a01:37:1000::53df:5f1c:0])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
-	 client-signature RSA-PSS (4096 bits) client-digest SHA256)
-	(Client CN "*.hostsharing.net", Issuer "RapidSSL TLS RSA CA G1" (verified OK))
-	by bmailout3.hostsharing.net (Postfix) with ESMTPS id E8C4D100D943F;
-	Sun, 24 Dec 2023 11:32:25 +0100 (CET)
-Received: by h08.hostsharing.net (Postfix, from userid 100393)
-	id A6B1130E54; Sun, 24 Dec 2023 11:32:25 +0100 (CET)
-Date: Sun, 24 Dec 2023 11:32:25 +0100
-From: Lukas Wunner <lukas@wunner.de>
-To: Ethan Zhao <haifeng.zhao@linux.intel.com>
-Cc: bhelgaas@google.com, baolu.lu@linux.intel.com, dwmw2@infradead.org,
-	will@kernel.org, robin.murphy@arm.com, linux-pci@vger.kernel.org,
-	iommu@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v6 2/4] iommu/vt-d: don's issue devTLB flush request
- when device is disconnected
-Message-ID: <20231224103225.GA31197@wunner.de>
-References: <20231224050657.182022-1-haifeng.zhao@linux.intel.com>
- <20231224050657.182022-3-haifeng.zhao@linux.intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E1002565;
+	Sun, 24 Dec 2023 10:42:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+	s=mail; t=1703414559;
+	bh=CvQyVonapKKk7Y2udUySpLUKu8fg/y974JE5CTZbnLw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=r5nbBjjQBCmoBku/WyLKJHrLXLY047GLxht3tv8tE5DnKboMF0v2MBN/yGPLbdQB5
+	 2tXQQ/z9c0qr/zoJlI2IdXT22wQKF7NdrG+isjbH8jekau20F+y4puZdJLdGIvFlmL
+	 +6tD93OTt/y4Xzw9ZK7joTNAepbkMY3xdIEG9K2I=
+Date: Sun, 24 Dec 2023 11:42:38 +0100
+From: Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
+To: Luis Chamberlain <mcgrof@kernel.org>
+Cc: Kees Cook <keescook@chromium.org>, 
+	Joel Granados <j.granados@samsung.com>, linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH] sysctl: delete unused define SYSCTL_PERM_EMPTY_DIR
+Message-ID: <966d0fd3-9a01-48d3-a146-4ce18c7a21ad@t-8ch.de>
+References: <20231223-sysctl-perm-empty-dir-v1-1-194edd9b09dd@weissschuh.net>
+ <ZYcmJTsgDdptxBHS@bombadil.infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231224050657.182022-3-haifeng.zhao@linux.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZYcmJTsgDdptxBHS@bombadil.infradead.org>
 
-On Sun, Dec 24, 2023 at 12:06:55AM -0500, Ethan Zhao wrote:
-> --- a/drivers/iommu/intel/pasid.c
-> +++ b/drivers/iommu/intel/pasid.c
-> @@ -481,6 +481,9 @@ devtlb_invalidation_with_pasid(struct intel_iommu *iommu,
->  	if (!info || !info->ats_enabled)
->  		return;
->  
-> +	if (pci_dev_is_disconnected(to_pci_dev(dev)))
-> +		return;
-> +
->  	sid = info->bus << 8 | info->devfn;
->  	qdep = info->ats_qdep;
->  	pfsid = info->pfsid;
+On 2023-12-23 10:25:41-0800, Luis Chamberlain wrote:
+> On Sat, Dec 23, 2023 at 02:53:47PM +0100, Thomas Weißschuh wrote:
+> > It seems it was never used.
+> > 
+> > Fixes: 2f2665c13af4 ("sysctl: replace child with an enumeration")
+> > Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+> > ---
+> > This was originally part of the sysctl-const series [0], but it doesn't
+> > really belong in there.
+> > To slim down that series as much as possible, submit this patch on its
+> > own.
+> > 
+> > [0] https://lore.kernel.org/lkml/20231204-const-sysctl-v2-2-7a5060b11447@weissschuh.net/
+> 
+> Applied, and pushed! BTW:
 
-Do you even need this or is patch [4/4] sufficient?
-Is there a benefit to the hunk above on top of patch [4/4]?
+Thanks!
 
-Thanks,
+> $ b4 am -s 20231223-sysctl-perm-empty-dir-v1-1-194edd9b09dd@weissschuh.net
+> Grabbing thread from
+> lore.kernel.org/all/20231223-sysctl-perm-empty-dir-v1-1-194edd9b09dd@weissschuh.net/t.mbox.gz
+> Analyzing 1 messages in the thread
+> Checking attestation on all messages, may take a moment...
+> ---
+> ✓ [PATCH] sysctl: delete unused define SYSCTL_PERM_EMPTY_DIR
+> + Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+> ---
+> ✗ No key: ed25519/linux@weissschuh.net
+> ✓ Signed: DKIM/weissschuh.net
 
-Lukas
+b4 needs a manual import of contributor keys for it to validate them:
+
+https://b4.docs.kernel.org/en/latest/maintainer/kr.html
+
+
+Thomas
 
