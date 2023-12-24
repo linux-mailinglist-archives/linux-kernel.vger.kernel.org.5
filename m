@@ -1,64 +1,64 @@
-Return-Path: <linux-kernel+bounces-10675-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10676-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7978D81D88F
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 10:11:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B60FB81D892
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 10:13:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F17782822FE
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 09:11:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DACC71C21461
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 09:13:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BD421C16;
-	Sun, 24 Dec 2023 09:11:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C2881C16;
+	Sun, 24 Dec 2023 09:13:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="jzABkLSU"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="EffrnMTq"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D48E15D5
-	for <linux-kernel@vger.kernel.org>; Sun, 24 Dec 2023 09:11:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB15C15CA
+	for <linux-kernel@vger.kernel.org>; Sun, 24 Dec 2023 09:12:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a235500d0e1so325518066b.2
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Dec 2023 01:11:38 -0800 (PST)
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a234dc0984fso327190266b.0
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Dec 2023 01:12:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703409097; x=1704013897; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1703409175; x=1704013975; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=c7GW5VkgDBjYyDQOfg+saE/+UIJ9QTWvOil8b71GvQc=;
-        b=jzABkLSUqzmwRpJC+g6L+kvsrhC3whvJr29KDV4mlo69Ex3ITSyk09Pel2zg1Vt0ID
-         LIvK+ZzN/L6Vup7UE5uGSYJm3swpwhGBzcKlpFphxfCZdOyJ5FtplLk52ZpZ9NEgVndC
-         bszn9W4otSRY9CWmQg3Z/wqz/aVm9WFmaDzUB/0fMLBKgwHHo23H7mXY3rojYugr6dSH
-         ofu6whyuvK1UgqRfd7VXTPKofb9NbIR2KL70VGNpq+KMWvylXccJfSHd4TYbYJ1f7fgg
-         J7cQ0Jnu92dUCHAkBLzlgHwOqTlKT1OrtET7B4sa20cMAoF0aR47eBadJXYfW+HRsXKH
-         w9Bw==
+        bh=pz2xgyhEL9namqEUSstaDQDEI6UAn2yjZf970JLSBGE=;
+        b=EffrnMTqlFn6o0cJAgEi084IC1wUTuIt39jI9wZScGT5uE1iqBGofsGU2PyOvBHFVl
+         KPSg0QfMaH9adFE60Us0f5WNkdVTFFDCIEEl1vrVa165/mv89ppZSXIxUAHNCDj1xzed
+         CtT9PRT6NUYw6HgtLznIfgHeLpgtYuNCJyrUTnBksSd/bpS7LyPTPc0FIYUXZExMCDPj
+         gqgDtvfEH6kT5E6CIXvVZgzwWU/aToAS6unl2cplGDtVNOXIBPwwWtRb6drdFIrQqsRp
+         vlugZvhe875rnj2/VMA4vn2EzDmUXLNyKim+Bs12UyhuMyZ7LMtIZE2F93gBfTOTfr9Q
+         ZANA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703409097; x=1704013897;
+        d=1e100.net; s=20230601; t=1703409175; x=1704013975;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=c7GW5VkgDBjYyDQOfg+saE/+UIJ9QTWvOil8b71GvQc=;
-        b=NW3hh8gc1lO7MEcGqkqt/RVJ6elDXDjM4VrWp3h0J2G4q+KxmNPIFRMqppQF8VeiDm
-         NsNqLGDkgmwiQ+EfroZeeKfqLWSlx/1pJ6v2QPSDVSA0iDdVcxFobxYv4vBqifLTQcMG
-         8k3JJ6MPUDElTqb4bjIh/jAddnDcVXd1pvjeQr3anx5lYoTUoTTSzL0hzzINb451S/hR
-         TbsMC9P9z+RaMDLFEtwM+S49au7puxz+f754LyWR8JzrPcwlWYreC53TA9K5r9xVpA15
-         DQNcbxUA6NDoQzCuF+5RyO2i+fdHiFkf+xM/WcE6dwPpMNeBpxMZ2MoIWBlrQnWf/Tfw
-         r65A==
-X-Gm-Message-State: AOJu0YwXHqrut1fqgwcS7dET+1zsKxnnsPKZcRluv3QiOhWRC++ZF/XG
-	J1v3/ScQSbr3OdfTvTycQiZZnwEqqYpXiQ==
-X-Google-Smtp-Source: AGHT+IGLXdNV+OjhPqvsbqK4xKQdYTsWmMl6BcYEdHgWdeMowipmTAfRbpVYVW/+LotoadlRWI4G/Q==
-X-Received: by 2002:a17:906:4ad3:b0:a19:a19b:78bd with SMTP id u19-20020a1709064ad300b00a19a19b78bdmr1766459ejt.128.1703409097515;
-        Sun, 24 Dec 2023 01:11:37 -0800 (PST)
+        bh=pz2xgyhEL9namqEUSstaDQDEI6UAn2yjZf970JLSBGE=;
+        b=kyzW9NBoV/Un7IeVwiVak8NvIYRWeNQkChUKlK+eAqGROddKDTazL1bDKWU69i/om+
+         tN4vGlREcZmwKd2rW2cvBkOkUiXUBGYvTRRYu5PYSUU77TM/BhyTs4odzjopA5iqeOiN
+         YTl+NI/AskFCjf+GCIfIujGAm7jr983TXRQTv8jklr7Z++S66biAUAQvBxX3Lbz8lGMs
+         FDGrubbmBCGUm41gI9BN6rSXmX/9zbk9z5wO+ZSmP9CZKJvAuVopGRrYJk5ZOtrBeR3E
+         5Ab/hQibgumThUK9m/NMFtSMNFu8yseylwK2Jte0tDm37FwF8M79Cb3runBLMkl7q7XW
+         DLrg==
+X-Gm-Message-State: AOJu0YwANogrIPQ2DAT42BCaDUogx9b15lw0EBnHco8yYs4m6TwDsSqy
+	pzMmlAF5Y/qU78coX7P6T2pVBxj7/w6h9Q==
+X-Google-Smtp-Source: AGHT+IHAvRpBG0IYsinRP9flj/SrVhOfdDemxXJkkZI5ubyDS+F6oNS9JF0anBNo7/pHNvd012dFSQ==
+X-Received: by 2002:a17:906:c0d2:b0:a23:f50:60f7 with SMTP id bn18-20020a170906c0d200b00a230f5060f7mr2027457ejb.102.1703409175208;
+        Sun, 24 Dec 2023 01:12:55 -0800 (PST)
 Received: from [192.168.0.22] ([78.10.206.178])
-        by smtp.gmail.com with ESMTPSA id kx26-20020a170907775a00b00a1f65433d08sm3858248ejc.172.2023.12.24.01.11.36
+        by smtp.gmail.com with ESMTPSA id kx26-20020a170907775a00b00a1f65433d08sm3858248ejc.172.2023.12.24.01.12.53
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 24 Dec 2023 01:11:37 -0800 (PST)
-Message-ID: <90188f47-96cb-4673-b6ad-aad98d205843@linaro.org>
-Date: Sun, 24 Dec 2023 10:11:36 +0100
+        Sun, 24 Dec 2023 01:12:54 -0800 (PST)
+Message-ID: <834a786c-c14e-4db5-a2a1-5223c7bb922b@linaro.org>
+Date: Sun, 24 Dec 2023 10:12:53 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,8 +66,8 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/2] dt-bindings: arm: fsl: Add VAR-SOM-MX93 with
- Symphony
+Subject: Re: [PATCH v2 2/2] arm64: dts: imx93-var-som: Add Variscite
+ VAR-SOM-MX93
 Content-Language: en-US
 To: Mathieu Othacehe <othacehe@gnu.org>, Rob Herring <robh+dt@kernel.org>,
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
@@ -79,7 +79,7 @@ To: Mathieu Othacehe <othacehe@gnu.org>, Rob Herring <robh+dt@kernel.org>,
 Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-arm-kernel@lists.infradead.org
 References: <20231223205230.10534-1-othacehe@gnu.org>
- <20231223205230.10534-2-othacehe@gnu.org>
+ <20231223205230.10534-3-othacehe@gnu.org>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -125,17 +125,39 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231223205230.10534-2-othacehe@gnu.org>
+In-Reply-To: <20231223205230.10534-3-othacehe@gnu.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 On 23/12/2023 21:52, Mathieu Othacehe wrote:
-> Add support for Variscite i.MX93 VAR-SOM-MX93 SoM with Symphony board.
+> Add DTSI for Variscite VAR-SOM-MX93 System on Module and DTS for Variscite
+> VAR-SOM-MX93 on Symphony evaluation board.
 > 
-> Signed-off-by: Mathieu Othacehe <othacehe@gnu.org>
-> ---
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Thank you for your patch. There is something to discuss/improve.
+
+
+> index 000000000000..ab675739e3ba
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/freescale/imx93-var-som-symphony.dts
+> @@ -0,0 +1,306 @@
+> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+> +/*
+> + * Copyright 2021 NXP
+> + * Copyright 2023 Variscite Ltd.
+> + */
+> +
+> +/dts-v1/;
+> +
+> +#include "imx93-var-som.dtsi"
+> +
+> +/{
+> +	model = "Variscite VAR-SOM-MX93 on Symphony evaluation board";
+> +	compatible = "variscite,var-som-mx93-symphony",
+> +	"variscite,var-som-mx93", "fsl,imx93";
+
+Missing indentation. Continued entries must be aligned with previous ".
+
 
 Best regards,
 Krzysztof
