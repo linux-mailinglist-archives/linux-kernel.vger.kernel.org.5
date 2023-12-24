@@ -1,166 +1,203 @@
-Return-Path: <linux-kernel+bounces-10842-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10843-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DAE8981DCDF
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 23:27:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CCCF181DCE3
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 23:38:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 17486281D6C
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 22:27:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CAB671C21483
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 22:38:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78B0A10783;
-	Sun, 24 Dec 2023 22:27:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 026E3101E9;
+	Sun, 24 Dec 2023 22:38:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FxeyGDb/"
+	dkim=pass (1024-bit key) header.d=t-8ch.de header.i=@t-8ch.de header.b="ehMeyW/9"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B95910782
-	for <linux-kernel@vger.kernel.org>; Sun, 24 Dec 2023 22:27:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703456860; x=1734992860;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=i5LtL5D/0qbaup3ppR3Dy09mfn99Uys+Jv8wqXg6Riw=;
-  b=FxeyGDb/jSj5J3kFp6YpmMEt91XrXu6faqUMsx2WrdZEp499fh/buLMX
-   8vNX1ZyStZ+EhdkoT7UMTRHahnYkdxvjk7NlyZJIpKlhBFjmaZvnC7RKo
-   jRxamGzuM1ZSUv4xGr13sWcJQU6DulAFFGBu5GCTOG39qzNa0xOV7V15H
-   w+kn2+C2OTF7tthde9TsU4lP2MY8RmjFA9rbXmB+RU1t3h9fbsKcMN9QT
-   rZ6eEL7O5PuxBD+HM5aRnlf2N77UBA11oLxmpBmxFvwAcW6GnUZdXt5gG
-   cDC1ZVrK8QUHMoN5sOmOPwUhgltqbfj9/xUGYEk6ZeTayIXAdaRO7L9Sw
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10934"; a="9765459"
-X-IronPort-AV: E=Sophos;i="6.04,302,1695711600"; 
-   d="scan'208";a="9765459"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Dec 2023 14:27:39 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10934"; a="811905921"
-X-IronPort-AV: E=Sophos;i="6.04,302,1695711600"; 
-   d="scan'208";a="811905921"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga001.jf.intel.com with ESMTP; 24 Dec 2023 14:27:37 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rHWwX-000Cgr-1v;
-	Sun, 24 Dec 2023 22:27:34 +0000
-Date: Mon, 25 Dec 2023 06:26:52 +0800
-From: kernel test robot <lkp@intel.com>
-To: Keerthy <j-keerthy@ti.com>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	Tony Lindgren <tony@atomide.com>
-Subject: drivers/rtc/rtc-omap.c:424: warning: Function parameter or member
- 'dev' not described in 'omap_rtc_power_off_program'
-Message-ID: <202312250610.si1QZoLJ-lkp@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 154BADF46
+	for <linux-kernel@vger.kernel.org>; Sun, 24 Dec 2023 22:38:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=t-8ch.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=t-8ch.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=t-8ch.de; s=mail;
+	t=1703457514; bh=LexBlyaT5TrlPpMhjrICCBx3k7EAdk/K799lHTtekGU=;
+	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+	b=ehMeyW/9CBCL45jS6Ko4g1jUSfpxrH93yKB7CaUfucpTxeXHvwo6IjA2vZV4d8jlF
+	 9j0XFDn02Tzp22P/T1HzUnATfqzh3OrPhshMwJgWpVFtGfYV5EyWmgB5t/vdH9u3JB
+	 yjMEpfF1y0z40TR8rwuMNWoGQJbLCveZ+yKRgbso=
+Date: Sun, 24 Dec 2023 23:38:32 +0100 (GMT+01:00)
+From: =?UTF-8?Q?Thomas_Wei=C3=9Fschuh_?= <thomas@t-8ch.de>
+To: Joel Granados <j.granados@samsung.com>
+Cc: =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>,
+	Luis Chamberlain <mcgrof@kernel.org>, linux-kernel@vger.kernel.org
+Message-ID: <8e54a5e4-731f-4b37-97f8-2c65a026fd6f@t-8ch.de>
+In-Reply-To: <20231224184402.of6cc2tczajmnbri@localhost>
+References: <CGME20231220213032eucas1p2889cb35ee41ed155ce68e75b02892582@eucas1p2.samsung.com> <20231220-sysctl-check-v1-1-420ced4a69d7@weissschuh.net> <20231224184402.of6cc2tczajmnbri@localhost>
+Subject: Re: [PATCH] scripts: check-sysctl-docs: adapt to new API
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Correlation-ID: <8e54a5e4-731f-4b37-97f8-2c65a026fd6f@t-8ch.de>
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   861deac3b092f37b2c5e6871732f3e11486f7082
-commit: 6256f7f7f217b2216fcb73929508325f4ee98237 rtc: OMAP: Add support for rtc-only mode
-date:   4 years, 9 months ago
-config: arm64-allmodconfig (https://download.01.org/0day-ci/archive/20231225/202312250610.si1QZoLJ-lkp@intel.com/config)
-compiler: aarch64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231225/202312250610.si1QZoLJ-lkp@intel.com/reproduce)
+Dec 24, 2023 19:44:42 Joel Granados <j.granados@samsung.com>:
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312250610.si1QZoLJ-lkp@intel.com/
+> On Wed, Dec 20, 2023 at 10:30:26PM +0100, Thomas Wei=C3=9Fschuh wrote:
+>> The script expects the old sysctl_register_paths() API which was removed
+>> some time ago. Adapt it to work with the new
+>> sysctl_register()/sysctl_register_sz()/sysctl_register_init() APIs.
+>>
+>> In its reference invocation the script won't be able to parse the tables
+>> from ipc/ipc_sysctl.c as they are using dynamically built tables which
+>> are to complex to parse.
+>>
+>> Note that the script is already prepared for a potential constification
+>> of the ctl_table structs.
+>>
+>> Signed-off-by: Thomas Wei=C3=9Fschuh <linux@weissschuh.net>
+>> ---
+>> scripts/check-sysctl-docs | 42 ++++++++++++-----------------------------=
+-
+>> 1 file changed, 12 insertions(+), 30 deletions(-)
+>>
+>> diff --git a/scripts/check-sysctl-docs b/scripts/check-sysctl-docs
+>> index 4f163e0bf6a4..bd18ab4b950b 100755
+>> --- a/scripts/check-sysctl-docs
+>> +++ b/scripts/check-sysctl-docs
+>> @@ -8,7 +8,7 @@
+>> # Example invocation:
+>> #=C2=A0 scripts/check-sysctl-docs -vtable=3D"kernel" \
+>> #=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Documentation/admin-guide/sysctl/kernel.=
+rst \
+>> -#=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 $(git grep -l register_sysctl_)
+>> +#=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 $(git grep -l register_sysctl)
+>> #
+>> # Specify -vdebug=3D1 to see debugging information
+>>
+>> @@ -20,14 +20,12 @@ BEGIN {
+>> }
+>>
+>> # The following globals are used:
+>> -# children: maps ctl_table names and procnames to child ctl_table names
+>> # documented: maps documented entries (each key is an entry)
+>> # entries: maps ctl_table names and procnames to counts (so
+>> #=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 enumerating the =
+subkeys for a given ctl_table lists its
+>> #=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 procnames)
+>> # files: maps procnames to source file names
+>> # paths: maps ctl_path names to paths
+>> -# curpath: the name of the current ctl_path struct
+>> # curtable: the name of the current ctl_table struct
+>> # curentry: the name of the current proc entry (procname when parsing
+>> #=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 a ctl_tabl=
+e, constructed path when parsing a ctl_path)
+>> @@ -94,44 +92,24 @@ FNR =3D=3D NR {
+>>
+>> # Stage 2: process each file and find all sysctl tables
+>> BEGINFILE {
+>> -=C2=A0=C2=A0=C2=A0 delete children
+>> =C2=A0=C2=A0=C2=A0=C2=A0 delete entries
+>> =C2=A0=C2=A0=C2=A0=C2=A0 delete paths
+> Why did you leave paths? As I read it you remove the use of paths and
+> now this is not needed any longer.
 
-All warnings (new ones prefixed by >>):
+Good catch, I'll drop it for V2.
 
->> drivers/rtc/rtc-omap.c:424: warning: Function parameter or member 'dev' not described in 'omap_rtc_power_off_program'
+>
+>> -=C2=A0=C2=A0=C2=A0 curpath =3D ""
+>> =C2=A0=C2=A0=C2=A0=C2=A0 curtable =3D ""
+>> =C2=A0=C2=A0=C2=A0=C2=A0 curentry =3D ""
+>> =C2=A0=C2=A0=C2=A0=C2=A0 if (debug) print "Processing file " FILENAME
+>> }
+>>
+>> -/^static struct ctl_path/ {
+>> -=C2=A0=C2=A0=C2=A0 match($0, /static struct ctl_path ([^][]+)/, tables)
+>> -=C2=A0=C2=A0=C2=A0 curpath =3D tables[1]
+>> -=C2=A0=C2=A0=C2=A0 if (debug) print "Processing path " curpath
+>> -}
+>> -
+>> -/^static struct ctl_table/ {
+>> -=C2=A0=C2=A0=C2=A0 match($0, /static struct ctl_table ([^][]+)/, tables=
+)
+>> -=C2=A0=C2=A0=C2=A0 curtable =3D tables[1]
+>> +/^static( const)? struct ctl_table/ {
+>> +=C2=A0=C2=A0=C2=A0 match($0, /static( const)? struct ctl_table ([^][]+)=
+/, tables)
+> Would these regular expressions match lines that have more than one
+> spaces before const?
 
+No. But it is consistent with the other regexes.
 
-vim +424 drivers/rtc/rtc-omap.c
+>> +=C2=A0=C2=A0=C2=A0 curtable =3D tables[2]
+>> =C2=A0=C2=A0=C2=A0=C2=A0 if (debug) print "Processing table " curtable
+>> }
+>>
+>> /^};$/ {
+>> -=C2=A0=C2=A0=C2=A0 curpath =3D ""
+>> =C2=A0=C2=A0=C2=A0=C2=A0 curtable =3D ""
+>> =C2=A0=C2=A0=C2=A0=C2=A0 curentry =3D ""
+>> }
+>>
+>> -curpath && /\.procname[\t ]*=3D[\t ]*".+"/ {
+>> -=C2=A0=C2=A0=C2=A0 match($0, /.procname[\t ]*=3D[\t ]*"([^"]+)"/, names=
+)
+>> -=C2=A0=C2=A0=C2=A0 if (curentry) {
+>> -=C2=A0=C2=A0 curentry =3D curentry "/" names[1]
+>> -=C2=A0=C2=A0=C2=A0 } else {
+>> -=C2=A0=C2=A0 curentry =3D names[1]
+>> -=C2=A0=C2=A0=C2=A0 }
+>> -=C2=A0=C2=A0=C2=A0 if (debug) print "Setting path " curpath " to " cure=
+ntry
+>> -=C2=A0=C2=A0=C2=A0 paths[curpath] =3D curentry
+>> -}
+>> -
+>> curtable && /\.procname[\t ]*=3D[\t ]*".+"/ {
+>> =C2=A0=C2=A0=C2=A0=C2=A0 match($0, /.procname[\t ]*=3D[\t ]*"([^"]+)"/, =
+names)
+>> =C2=A0=C2=A0=C2=A0=C2=A0 curentry =3D names[1]
+>> @@ -140,10 +118,14 @@ curtable && /\.procname[\t ]*=3D[\t ]*".+"/ {
+>> =C2=A0=C2=A0=C2=A0=C2=A0 file[curentry] =3D FILENAME
+>> }
+>>
+>> -/\.child[\t ]*=3D/ {
+>> -=C2=A0=C2=A0=C2=A0 child =3D trimpunct($NF)
+>> -=C2=A0=C2=A0=C2=A0 if (debug) print "Linking child " child " to table "=
+ curtable " entry " curentry
+>> -=C2=A0=C2=A0=C2=A0 children[curtable][curentry] =3D child
+>> +/register_sysctl.*/ {
+>> +=C2=A0=C2=A0=C2=A0 match($0, /register_sysctl(|_init|_sz)\("([^"]+)" *,=
+ *([^,)]+)/, tables)
+>> +=C2=A0=C2=A0=C2=A0 if (debug) print "Registering table " tables[3] " at=
+ " tables[2]
+>> +=C2=A0=C2=A0=C2=A0 if (tables[2] =3D=3D table) {
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 for (entry in entries[tables=
+[3]]) {
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 prin=
+tentry(entry)
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>> +=C2=A0=C2=A0=C2=A0 }
+>> }
+>>
+>> END {
+>>
+>> ---
+>> base-commit: 1a44b0073b9235521280e19d963b6dfef7888f18
+>> change-id: 20231220-sysctl-check-8802651d945d
+>>
+>> Best regards,
+>> --
+>> Thomas Wei=C3=9Fschuh <linux@weissschuh.net>
+>>
+>
+> --
+>
+> Joel Granados
 
-222a12fca60482 Johan Hovold 2014-12-10  417  
-6256f7f7f217b2 Keerthy      2019-04-03  418  /**
-6256f7f7f217b2 Keerthy      2019-04-03  419   * omap_rtc_power_off_program: Set the pmic power off sequence. The RTC
-6256f7f7f217b2 Keerthy      2019-04-03  420   * generates pmic_pwr_enable control, which can be used to control an external
-6256f7f7f217b2 Keerthy      2019-04-03  421   * PMIC.
-222a12fca60482 Johan Hovold 2014-12-10  422   */
-6256f7f7f217b2 Keerthy      2019-04-03  423  int omap_rtc_power_off_program(struct device *dev)
-222a12fca60482 Johan Hovold 2014-12-10 @424  {
-222a12fca60482 Johan Hovold 2014-12-10  425  	struct omap_rtc *rtc = omap_rtc_power_off_rtc;
-222a12fca60482 Johan Hovold 2014-12-10  426  	struct rtc_time tm;
-222a12fca60482 Johan Hovold 2014-12-10  427  	unsigned long now;
-09058eab4b4f77 Keerthy      2018-08-16  428  	int seconds;
-222a12fca60482 Johan Hovold 2014-12-10  429  	u32 val;
-222a12fca60482 Johan Hovold 2014-12-10  430  
-9c28bd07c20776 Lokesh Vutla 2015-04-16  431  	rtc->type->unlock(rtc);
-222a12fca60482 Johan Hovold 2014-12-10  432  	/* enable pmic_power_en control */
-222a12fca60482 Johan Hovold 2014-12-10  433  	val = rtc_readl(rtc, OMAP_RTC_PMIC_REG);
-222a12fca60482 Johan Hovold 2014-12-10  434  	rtc_writel(rtc, OMAP_RTC_PMIC_REG, val | OMAP_RTC_PMIC_POWER_EN_EN);
-222a12fca60482 Johan Hovold 2014-12-10  435  
-09058eab4b4f77 Keerthy      2018-08-16  436  again:
-6256f7f7f217b2 Keerthy      2019-04-03  437  	/* Clear any existing ALARM2 event */
-6256f7f7f217b2 Keerthy      2019-04-03  438  	rtc_writel(rtc, OMAP_RTC_STATUS_REG, OMAP_RTC_STATUS_ALARM2);
-6256f7f7f217b2 Keerthy      2019-04-03  439  
-09058eab4b4f77 Keerthy      2018-08-16  440  	/* set alarm one second from now */
-222a12fca60482 Johan Hovold 2014-12-10  441  	omap_rtc_read_time_raw(rtc, &tm);
-09058eab4b4f77 Keerthy      2018-08-16  442  	seconds = tm.tm_sec;
-222a12fca60482 Johan Hovold 2014-12-10  443  	bcd2tm(&tm);
-222a12fca60482 Johan Hovold 2014-12-10  444  	rtc_tm_to_time(&tm, &now);
-09058eab4b4f77 Keerthy      2018-08-16  445  	rtc_time_to_tm(now + 1, &tm);
-222a12fca60482 Johan Hovold 2014-12-10  446  
-222a12fca60482 Johan Hovold 2014-12-10  447  	if (tm2bcd(&tm) < 0) {
-222a12fca60482 Johan Hovold 2014-12-10  448  		dev_err(&rtc->rtc->dev, "power off failed\n");
-4425070a5cfe63 Johan Hovold 2018-07-04  449  		rtc->type->lock(rtc);
-6256f7f7f217b2 Keerthy      2019-04-03  450  		return -EINVAL;
-222a12fca60482 Johan Hovold 2014-12-10  451  	}
-222a12fca60482 Johan Hovold 2014-12-10  452  
-222a12fca60482 Johan Hovold 2014-12-10  453  	rtc_wait_not_busy(rtc);
-222a12fca60482 Johan Hovold 2014-12-10  454  
-222a12fca60482 Johan Hovold 2014-12-10  455  	rtc_write(rtc, OMAP_RTC_ALARM2_SECONDS_REG, tm.tm_sec);
-222a12fca60482 Johan Hovold 2014-12-10  456  	rtc_write(rtc, OMAP_RTC_ALARM2_MINUTES_REG, tm.tm_min);
-222a12fca60482 Johan Hovold 2014-12-10  457  	rtc_write(rtc, OMAP_RTC_ALARM2_HOURS_REG, tm.tm_hour);
-222a12fca60482 Johan Hovold 2014-12-10  458  	rtc_write(rtc, OMAP_RTC_ALARM2_DAYS_REG, tm.tm_mday);
-222a12fca60482 Johan Hovold 2014-12-10  459  	rtc_write(rtc, OMAP_RTC_ALARM2_MONTHS_REG, tm.tm_mon);
-222a12fca60482 Johan Hovold 2014-12-10  460  	rtc_write(rtc, OMAP_RTC_ALARM2_YEARS_REG, tm.tm_year);
-222a12fca60482 Johan Hovold 2014-12-10  461  
-222a12fca60482 Johan Hovold 2014-12-10  462  	/*
-222a12fca60482 Johan Hovold 2014-12-10  463  	 * enable ALARM2 interrupt
-222a12fca60482 Johan Hovold 2014-12-10  464  	 *
-222a12fca60482 Johan Hovold 2014-12-10  465  	 * NOTE: this fails on AM3352 if rtc_write (writeb) is used
-222a12fca60482 Johan Hovold 2014-12-10  466  	 */
-222a12fca60482 Johan Hovold 2014-12-10  467  	val = rtc_read(rtc, OMAP_RTC_INTERRUPTS_REG);
-222a12fca60482 Johan Hovold 2014-12-10  468  	rtc_writel(rtc, OMAP_RTC_INTERRUPTS_REG,
-222a12fca60482 Johan Hovold 2014-12-10  469  			val | OMAP_RTC_INTERRUPTS_IT_ALARM2);
-09058eab4b4f77 Keerthy      2018-08-16  470  
-09058eab4b4f77 Keerthy      2018-08-16  471  	/* Retry in case roll over happened before alarm was armed. */
-09058eab4b4f77 Keerthy      2018-08-16  472  	if (rtc_read(rtc, OMAP_RTC_SECONDS_REG) != seconds) {
-09058eab4b4f77 Keerthy      2018-08-16  473  		val = rtc_read(rtc, OMAP_RTC_STATUS_REG);
-09058eab4b4f77 Keerthy      2018-08-16  474  		if (!(val & OMAP_RTC_STATUS_ALARM2))
-09058eab4b4f77 Keerthy      2018-08-16  475  			goto again;
-09058eab4b4f77 Keerthy      2018-08-16  476  	}
-09058eab4b4f77 Keerthy      2018-08-16  477  
-9c28bd07c20776 Lokesh Vutla 2015-04-16  478  	rtc->type->lock(rtc);
-222a12fca60482 Johan Hovold 2014-12-10  479  
-6256f7f7f217b2 Keerthy      2019-04-03  480  	return 0;
-6256f7f7f217b2 Keerthy      2019-04-03  481  }
-6256f7f7f217b2 Keerthy      2019-04-03  482  EXPORT_SYMBOL(omap_rtc_power_off_program);
-6256f7f7f217b2 Keerthy      2019-04-03  483  
-
-:::::: The code at line 424 was first introduced by commit
-:::::: 222a12fca6048249d9007f2a4c5fbcea532e8522 rtc: omap: add support for pmic_power_en
-
-:::::: TO: Johan Hovold <johan@kernel.org>
-:::::: CC: Linus Torvalds <torvalds@linux-foundation.org>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
