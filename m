@@ -1,139 +1,103 @@
-Return-Path: <linux-kernel+bounces-10719-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10720-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A92E81DAD9
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 15:24:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1548381DADC
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 15:30:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9DD6F1C20E75
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 14:24:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B9B601F21826
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 14:30:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 858ED5677;
-	Sun, 24 Dec 2023 14:23:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF5EF53AF;
+	Sun, 24 Dec 2023 14:30:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UT5IX2m2"
+	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="LK5l2y4U"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp.smtpout.orange.fr (smtp-17.smtpout.orange.fr [80.12.242.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C68853A0;
-	Sun, 24 Dec 2023 14:23:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703427829; x=1734963829;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=ryI2ILCT9BZHm98daCtmT5DUgurYrkulnFER/y9ghkE=;
-  b=UT5IX2m28/fLO0of6EeTOOn4P6kacHspor3SQM7wfEuAebC26JUzTv0q
-   XWT6hXN59qE44Tz06uleCXlEuRt1jUpAt/PyQ3uawR2XG3FqHyp1XRH7M
-   OKTTcN1v/0/2+KycoW0mCkS99gqYPotv+md6lOaQIsoAXQxgexTNPHOLe
-   dUvb4HLV/20NlGG59pst3UD+bqdww/xJXvTrQ3OH0O37wIz7oEf4HKSIl
-   53NuGPinPCqWERGdTi0zIJcZy9kQYmZi5FVDb9BaJPqgSmR01S4pzNC5L
-   urajryGsc4NLoY6TMteqyW+OC8AirT0AbgNFFpUIOmBjKv8goQ2ZvuX+s
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10934"; a="482416260"
-X-IronPort-AV: E=Sophos;i="6.04,301,1695711600"; 
-   d="scan'208";a="482416260"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Dec 2023 06:23:48 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10934"; a="777537126"
-X-IronPort-AV: E=Sophos;i="6.04,301,1695711600"; 
-   d="scan'208";a="777537126"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga002.jf.intel.com with ESMTP; 24 Dec 2023 06:23:37 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rHPNu-000CKD-1W;
-	Sun, 24 Dec 2023 14:23:30 +0000
-Date: Sun, 24 Dec 2023 22:22:19 +0800
-From: kernel test robot <lkp@intel.com>
-To: Sreenath Vijayan <sreenath.vijayan@sony.com>, linux-doc@vger.kernel.org,
-	linux-serial@vger.kernel.org, corbet@lwn.net,
-	gregkh@linuxfoundation.org, jirislaby@kernel.org
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	linux-kernel@vger.kernel.org, anandakumar.balasubramaniam@sony.com,
-	Sreenath Vijayan <sreenath.vijayan@sony.com>,
-	Shimoyashiki Taichi <taichi.shimoyashiki@sony.com>
-Subject: Re: [PATCH] tty/sysrq: Dump kernel ring buffer messages via sysrq
-Message-ID: <202312242257.5c0xsTqe-lkp@intel.com>
-References: <20231221133953.1507021-1-sreenath.vijayan@sony.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3A645677
+	for <linux-kernel@vger.kernel.org>; Sun, 24 Dec 2023 14:30:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wanadoo.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
+Received: from pop-os.home ([92.140.202.140])
+	by smtp.orange.fr with ESMTPA
+	id HPUSr2aSJZnJmHPUSr5tZE; Sun, 24 Dec 2023 15:30:07 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+	s=t20230301; t=1703428207;
+	bh=LCtL5kqOGRBMWH+JxDJBF0/eK646oThHjfyYVTS2Vzk=;
+	h=From:To:Cc:Subject:Date;
+	b=LK5l2y4U3Axg2/JMRLu9icqmznswmGIFSB4S0/gut7pJZcqDUZEi25IrWlcb2iMM8
+	 hBR4amRZlOOHmQ1Pabna28V77wxnIr5UOKrWZ4X6mDblPKwMfkoHuzL1xdcy09n1Ge
+	 yztFcOf8E/OebHBcKMDw1I+jKtftm1GBoRkgAxNNYAsKuIwpQzMCWywXTeXP6W31kN
+	 1cD7I89jcZSt0kYulzu8+s6ocg5CQ2y1we9yEz7hNcdgbmO7xd9IY9iwSfjfXbcqpP
+	 pR74S/khUj036xF4CXytondIlGjHxCQOozvV9YIB8K1cSEQORp+aJGUWOG7nMdUVEx
+	 6TJU2gWI/WLVg==
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sun, 24 Dec 2023 15:30:07 +0100
+X-ME-IP: 92.140.202.140
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To: Kurt Schwemmer <kurt.schwemmer@microsemi.com>,
+	Logan Gunthorpe <logang@deltatee.com>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Dmitry Safonov <0x7f454c46@gmail.com>,
+	Daniel Stodden <dns@arista.com>
+Cc: linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org,
+	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+	linux-pci@vger.kernel.org
+Subject: [PATCH] PCI: switchtec: Fix an error handling path in switchtec_pci_probe()
+Date: Sun, 24 Dec 2023 15:30:01 +0100
+Message-Id: <01446d2ccb91a578239915812f2b7dfbeb2882af.1703428183.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231221133953.1507021-1-sreenath.vijayan@sony.com>
+Content-Transfer-Encoding: 8bit
 
-Hi Sreenath,
+The commit in Fixes changed the logic on how resources are released and
+introduced a new switchtec_exit_pci() that need to be called explicitly in
+order to undo a corresponding switchtec_init_pci().
 
-kernel test robot noticed the following build warnings:
+This was done in the remove function, but not in the probe.
 
-[auto build test WARNING on tty/tty-testing]
-[also build test WARNING on tty/tty-next tty/tty-linus linus/master v6.7-rc7 next-20231222]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Fix the probe now.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Sreenath-Vijayan/tty-sysrq-Dump-kernel-ring-buffer-messages-via-sysrq/20231222-172636
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty.git tty-testing
-patch link:    https://lore.kernel.org/r/20231221133953.1507021-1-sreenath.vijayan%40sony.com
-patch subject: [PATCH] tty/sysrq: Dump kernel ring buffer messages via sysrq
-config: arm-defconfig (https://download.01.org/0day-ci/archive/20231224/202312242257.5c0xsTqe-lkp@intel.com/config)
-compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project.git f28c006a5895fc0e329fe15fead81e37457cb1d1)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231224/202312242257.5c0xsTqe-lkp@intel.com/reproduce)
+Fixes: df25461119d9 ("PCI: switchtec: Fix stdev_release() crash after surprise hot remove")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ drivers/pci/switch/switchtec.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312242257.5c0xsTqe-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> drivers/tty/sysrq.c:455:13: warning: stack frame size (1088) exceeds limit (1024) in 'dmesg_dump_callback' [-Wframe-larger-than]
-   static void dmesg_dump_callback(struct work_struct *work)
-               ^
-   1 warning generated.
-
-
-vim +/dmesg_dump_callback +455 drivers/tty/sysrq.c
-
-   454	
- > 455	static void dmesg_dump_callback(struct work_struct *work)
-   456	{
-   457		struct kmsg_dump_iter iter;
-   458		size_t len;
-   459		char buf[1024];
-   460		struct console *con;
-   461		int cookie;
-   462	
-   463		kmsg_dump_rewind(&iter);
-   464		while (kmsg_dump_get_line(&iter, 1, buf, sizeof(buf), &len)) {
-   465			/*
-   466			 * Since using printk() or pr_*() will append the message to the
-   467			 * kernel ring buffer, they cannot be used to display the retrieved
-   468			 * message. Hence console_write() of serial drivers is used.
-   469			 */
-   470			console_lock();
-   471			cookie = console_srcu_read_lock();
-   472			for_each_console_srcu(con) {
-   473				if ((console_srcu_read_flags(con) & CON_ENABLED) && con->write)
-   474					con->write(con, buf, len);
-   475			}
-   476			console_srcu_read_unlock(cookie);
-   477			console_unlock();
-   478		}
-   479	}
-   480	
-
+diff --git a/drivers/pci/switch/switchtec.c b/drivers/pci/switch/switchtec.c
+index 1804794d0e68..5a4adf6c04cf 100644
+--- a/drivers/pci/switch/switchtec.c
++++ b/drivers/pci/switch/switchtec.c
+@@ -1672,7 +1672,7 @@ static int switchtec_pci_probe(struct pci_dev *pdev,
+ 	rc = switchtec_init_isr(stdev);
+ 	if (rc) {
+ 		dev_err(&stdev->dev, "failed to init isr.\n");
+-		goto err_put;
++		goto err_exit_pci;
+ 	}
+ 
+ 	iowrite32(SWITCHTEC_EVENT_CLEAR |
+@@ -1693,6 +1693,8 @@ static int switchtec_pci_probe(struct pci_dev *pdev,
+ 
+ err_devadd:
+ 	stdev_kill(stdev);
++err_exit_pci:
++	switchtec_exit_pci(stdev);
+ err_put:
+ 	ida_free(&switchtec_minor_ida, MINOR(stdev->dev.devt));
+ 	put_device(&stdev->dev);
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.34.1
+
 
