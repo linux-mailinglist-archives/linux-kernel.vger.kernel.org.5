@@ -1,80 +1,80 @@
-Return-Path: <linux-kernel+bounces-10689-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10690-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1F1281D8C4
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 11:49:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 29F1A81D8C9
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 11:50:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3A097282478
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 10:49:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DA759282493
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 10:50:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEE131FD2;
-	Sun, 24 Dec 2023 10:49:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A3A323C3;
+	Sun, 24 Dec 2023 10:50:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="s/fRoIh8"
+	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="Nv0o5wXe"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
+Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 988222105
-	for <linux-kernel@vger.kernel.org>; Sun, 24 Dec 2023 10:49:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EFCB2105
+	for <linux-kernel@vger.kernel.org>; Sun, 24 Dec 2023 10:50:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com [209.85.160.199])
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com [209.85.160.197])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id B110F3F73B
-	for <linux-kernel@vger.kernel.org>; Sun, 24 Dec 2023 10:49:36 +0000 (UTC)
+	by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id E597C3F593
+	for <linux-kernel@vger.kernel.org>; Sun, 24 Dec 2023 10:50:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20210705; t=1703414976;
-	bh=T6CV/w/Oj4/yKhfarK+UEYWwoSl7TNmHch082+K72XA=;
+	s=20210705; t=1703415022;
+	bh=dRjx8VHHb0t27RVkqdYIaU34XdXmnq6meYjdKYyMtPA=;
 	h=From:In-Reply-To:References:Mime-Version:Date:Message-ID:Subject:
 	 To:Cc:Content-Type;
-	b=s/fRoIh8SY0TKT7w5PsksY/lcSI8UApq2MHVl8DyiQFRguc04FhM2gmwAcF2L2Wqr
-	 maVTFHaZ8WlhYPCnsTHJSzSkKAk6M/mF/6qbwS8udCB69dW+ysX20SaQaBi7KlF/V+
-	 7/2rK3KJSsZ0UH7Vh03wqWQh4PV3LGpf6Yatn9er5sHGnZ+tgaqDd8giffpzbdpnWu
-	 dJyQ910RIv9vzqM4GWKoz9bGIRFi8EQTxzzGOf8dH2UuQv76aCnC4GcKviDr+B5X74
-	 UeJexQqFxIX14gYoVZYSYd7A0NNakCaxgveR9p0uUkiiiQHA4qdqyP2SEBBpJH10t7
-	 fcOxCrUkZ7Gsw==
-Received: by mail-qt1-f199.google.com with SMTP id d75a77b69052e-427c4693423so11157721cf.1
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Dec 2023 02:49:36 -0800 (PST)
+	b=Nv0o5wXe+/6CHPZ0yR7/04fuoAY63q8UP3xFEEvaR8giEz/Z6EamC0wAb8CLZcjpU
+	 6wyjuIvSAoBUAScW5WnxaK3LtBof2//srbDBF4TsdRTuG2LS1v2lkCKc9k/tmtAz2m
+	 cRkOA6K09B1yMcpTHl04tHQ7q/F6hX5bIy1FAMawq1N4uHFRJ2vP4cQ77fQ9suStd7
+	 ftp7L1SlzO9xsbg5XZm0Cr6jbXdg5a3sEwPOSXg6x5f6yZaOH3wRSur4ODPz3XHyhY
+	 ANtuCglCjtO1cf3DYpyT9PraJU5dQn9jn4diTbrhXweDlhTin3aTQOPCxx9VNvE82p
+	 V/4tKE4hZ57iA==
+Received: by mail-qt1-f197.google.com with SMTP id d75a77b69052e-4278740faedso39889451cf.0
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Dec 2023 02:50:22 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703414975; x=1704019775;
+        d=1e100.net; s=20230601; t=1703415022; x=1704019822;
         h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
          :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=T6CV/w/Oj4/yKhfarK+UEYWwoSl7TNmHch082+K72XA=;
-        b=EpHm45tMeszhpibo4FZ77FdihmqCpoVTPq523UMBuMhA2UPeXSzm3N0J54EC4m/95U
-         gjzHRxxu9/QuqeMYxj8LGciIBjN0UJhJjxoCLThvyipAjz0zP5BhA70B5uloqOfMmc9+
-         h37E/8v6NFsDmIgb0F31+e69hYLHEG7fBRWw3p6d+DtxT2RavKTXuqMuWtiyYI6SG8CQ
-         zO+MmGeSpK3EzMDXTy/PbS+zGJEnzZoHIzJfKyGjASiF6nzt/5lVARkEPqzyGGRojOab
-         W6qKgCxUK2br9+22lCIhgCB34Zza3bh52poNUG/4LdYxvn+50MmVOHLExk9BNZwh8sik
-         Hy0A==
-X-Gm-Message-State: AOJu0YxrcwCwJhHCXSZbKbL+PhUFW/AuEVvsO6N6qeq2hIYVjRXpRFg/
-	GJ2PS+pvgtnKcfuzrzRTej09JPg/k6xxcI5YRXzFXwaWi/5Pyjdy//qrycmHU4i6cC+rv/Lh0GA
-	F22mU2TSS57PS+76QHyh6bVtWaJYBcEnHr6R/XCZFE86F6TmyvlLsiyDLYL2c7TDz
-X-Received: by 2002:a05:622a:590:b0:425:4043:8d55 with SMTP id c16-20020a05622a059000b0042540438d55mr4267074qtb.112.1703414975523;
-        Sun, 24 Dec 2023 02:49:35 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHqn8DRlJOSAfcEfKAUiBJCl7hAhOpHxzVr7CqiVH5tkrER/1XMKIqe4ro6dC36GAEU2oObR93Kusddr00jIj4=
-X-Received: by 2002:a05:622a:590:b0:425:4043:8d55 with SMTP id
- c16-20020a05622a059000b0042540438d55mr4267060qtb.112.1703414975298; Sun, 24
- Dec 2023 02:49:35 -0800 (PST)
+        bh=dRjx8VHHb0t27RVkqdYIaU34XdXmnq6meYjdKYyMtPA=;
+        b=m8EXe323eTseho+F1lyIg8QAV6Ao69FZHzlhtsy4DEO9uK1poZpJPUkCxITcmetUvf
+         R3Ov2es7o+tJEwl1W4a2M9o/4DBgnDRpiGtXoXjSBT0lYM/2e0U/OH/GRc/GIM7iAlgV
+         1D6W6YVWhAGxUyT1e1u2UKxuYtyglF84Zb4n7ChCubbQlTbsXd6+sTN4sf3Aq9qCNkW9
+         ojvV2KGczX5TEzDrAtVAJauGRoiVW8z5IXne8NdNAv+FdwSBe6sIbKF887gve6B3h0XO
+         yPiSIVrcmMrWFFgusATgOU2mhJ7fSMVdd6Yr9YHNoNH8EtfW1vsWiK2nem3aY3qhFS5W
+         E8gA==
+X-Gm-Message-State: AOJu0Yxi2VknHgi85Kt+nfKyQ3AxCn0cpe625i+cdacDsWsSYGPKPRzG
+	7yGQ9+kz1odODzwf4XrVTq2s+i4C7vwBlAHCavMgMIWryEoOxSThGR8VbFgkhbV018s+wpatmLG
+	wXgIPc2N25Fj5DfaOvsAIObREdMMuf3NdfbOZBt3vegw5/yxyG2tj81Egkl4ynblm
+X-Received: by 2002:a05:622a:182:b0:425:76df:7e6f with SMTP id s2-20020a05622a018200b0042576df7e6fmr5609347qtw.119.1703415021914;
+        Sun, 24 Dec 2023 02:50:21 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGJ96r2eapvbnKdZyEB77jqFXRuTWzy2bUJJjzd8WXSuigvwDiMsomMEGU5kDYipZ+1aQleLT61MirQghPeNG0=
+X-Received: by 2002:a05:622a:182:b0:425:76df:7e6f with SMTP id
+ s2-20020a05622a018200b0042576df7e6fmr5609335qtw.119.1703415021493; Sun, 24
+ Dec 2023 02:50:21 -0800 (PST)
 Received: from 348282803490 named unknown by gmailapi.google.com with
- HTTPREST; Sun, 24 Dec 2023 02:49:34 -0800
+ HTTPREST; Sun, 24 Dec 2023 02:50:21 -0800
 From: Emil Renner Berthing <emil.renner.berthing@canonical.com>
-In-Reply-To: <20231222094548.54103-4-william.qiu@starfivetech.com>
-References: <20231222094548.54103-1-william.qiu@starfivetech.com> <20231222094548.54103-4-william.qiu@starfivetech.com>
+In-Reply-To: <20231222094548.54103-5-william.qiu@starfivetech.com>
+References: <20231222094548.54103-1-william.qiu@starfivetech.com> <20231222094548.54103-5-william.qiu@starfivetech.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
-Date: Sun, 24 Dec 2023 02:49:34 -0800
-Message-ID: <CAJM55Z9tyrR7emEBrY0+Fnc_LUFQHkqYHLQ4ptL=XQMy52qtVw@mail.gmail.com>
-Subject: Re: [PATCH v10 3/4] riscv: dts: starfive: jh7100: Add PWM node and
+Date: Sun, 24 Dec 2023 02:50:21 -0800
+Message-ID: <CAJM55Z8aGviAN0FzEPYtOuV_8q=OvVpNbid195BJTfVMnrA7aA@mail.gmail.com>
+Subject: Re: [PATCH v10 4/4] riscv: dts: starfive: jh7110: Add PWM node and
  pins configuration
 To: William Qiu <william.qiu@starfivetech.com>, devicetree@vger.kernel.org, 
 	linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org, 
@@ -89,50 +89,23 @@ Content-Type: text/plain; charset="UTF-8"
 
 William Qiu wrote:
 > Add OpenCores PWM controller node and add PWM pins configuration
-> on VisionFive 1 board.
+> on VisionFive 2 board.
 >
 > Signed-off-by: William Qiu <william.qiu@starfivetech.com>
-
-Sorry, I thought I already sent my review. This looks good.
 
 Reviewed-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
 
 > ---
->  .../boot/dts/starfive/jh7100-common.dtsi      | 24 +++++++++++++++++++
->  arch/riscv/boot/dts/starfive/jh7100.dtsi      |  9 +++++++
->  2 files changed, 33 insertions(+)
+>  .../jh7110-starfive-visionfive-2.dtsi         | 22 +++++++++++++++++++
+>  arch/riscv/boot/dts/starfive/jh7110.dtsi      |  9 ++++++++
+>  2 files changed, 31 insertions(+)
 >
-> diff --git a/arch/riscv/boot/dts/starfive/jh7100-common.dtsi b/arch/riscv/boot/dts/starfive/jh7100-common.dtsi
-> index b93ce351a90f..11876906cc05 100644
-> --- a/arch/riscv/boot/dts/starfive/jh7100-common.dtsi
-> +++ b/arch/riscv/boot/dts/starfive/jh7100-common.dtsi
-> @@ -84,6 +84,24 @@ GPO_I2C2_PAD_SDA_OEN,
->  		};
+> diff --git a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
+> index b89e9791efa7..e08af8a830ab 100644
+> --- a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
+> +++ b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
+> @@ -323,6 +323,12 @@ reserved-data@600000 {
 >  	};
->
-> +	pwm_pins: pwm-0 {
-> +		pwm-pins {
-> +			pinmux = <GPIOMUX(7,
-> +				  GPO_PWM_PAD_OUT_BIT0,
-> +				  GPO_PWM_PAD_OE_N_BIT0,
-> +				  GPI_NONE)>,
-> +				 <GPIOMUX(5,
-> +				  GPO_PWM_PAD_OUT_BIT1,
-> +				  GPO_PWM_PAD_OE_N_BIT1,
-> +				  GPI_NONE)>;
-> +			bias-disable;
-> +			drive-strength = <35>;
-> +			input-disable;
-> +			input-schmitt-disable;
-> +			slew-rate = <0>;
-> +		};
-> +	};
-> +
->  	uart3_pins: uart3-0 {
->  		rx-pins {
->  			pinmux = <GPIOMUX(13, GPO_LOW, GPO_DISABLE,
-> @@ -154,6 +172,12 @@ &osc_aud {
->  	clock-frequency = <27000000>;
 >  };
 >
 > +&pwm {
@@ -141,29 +114,52 @@ Reviewed-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
 > +	status = "okay";
 > +};
 > +
->  &uart3 {
+>  &spi0 {
 >  	pinctrl-names = "default";
->  	pinctrl-0 = <&uart3_pins>;
-> diff --git a/arch/riscv/boot/dts/starfive/jh7100.dtsi b/arch/riscv/boot/dts/starfive/jh7100.dtsi
-> index e68cafe7545f..4f5eb2f60856 100644
-> --- a/arch/riscv/boot/dts/starfive/jh7100.dtsi
-> +++ b/arch/riscv/boot/dts/starfive/jh7100.dtsi
-> @@ -280,6 +280,15 @@ watchdog@12480000 {
->  				 <&rstgen JH7100_RSTN_WDT>;
+>  	pinctrl-0 = <&spi0_pins>;
+> @@ -513,6 +519,22 @@ GPOEN_ENABLE,
+>  		};
+>  	};
+>
+> +	pwm_pins: pwm-0 {
+> +		pwm-pins {
+> +			pinmux = <GPIOMUX(46, GPOUT_SYS_PWM_CHANNEL0,
+> +					      GPOEN_SYS_PWM0_CHANNEL0,
+> +					      GPI_NONE)>,
+> +				 <GPIOMUX(59, GPOUT_SYS_PWM_CHANNEL1,
+> +					      GPOEN_SYS_PWM0_CHANNEL1,
+> +					      GPI_NONE)>;
+> +			bias-disable;
+> +			drive-strength = <12>;
+> +			input-disable;
+> +			input-schmitt-disable;
+> +			slew-rate = <0>;
+> +		};
+> +	};
+> +
+>  	spi0_pins: spi0-0 {
+>  		mosi-pins {
+>  			pinmux = <GPIOMUX(52, GPOUT_SYS_SPI0_TXD,
+> diff --git a/arch/riscv/boot/dts/starfive/jh7110.dtsi b/arch/riscv/boot/dts/starfive/jh7110.dtsi
+> index 45213cdf50dc..1b782f2c1395 100644
+> --- a/arch/riscv/boot/dts/starfive/jh7110.dtsi
+> +++ b/arch/riscv/boot/dts/starfive/jh7110.dtsi
+> @@ -829,6 +829,15 @@ i2stx1: i2s@120c0000 {
+>  			status = "disabled";
 >  		};
 >
-> +		pwm: pwm@12490000 {
-> +			compatible = "starfive,jh7100-pwm", "opencores,pwm-v1";
-> +			reg = <0x0 0x12490000 0x0 0x10000>;
-> +			clocks = <&clkgen JH7100_CLK_PWM_APB>;
-> +			resets = <&rstgen JH7100_RSTN_PWM_APB>;
+> +		pwm: pwm@120d0000 {
+> +			compatible = "starfive,jh7110-pwm", "opencores,pwm-v1";
+> +			reg = <0x0 0x120d0000 0x0 0x10000>;
+> +			clocks = <&syscrg JH7110_SYSCLK_PWM_APB>;
+> +			resets = <&syscrg JH7110_SYSRST_PWM_APB>;
 > +			#pwm-cells = <3>;
 > +			status = "disabled";
 > +		};
 > +
->  		sfctemp: temperature-sensor@124a0000 {
->  			compatible = "starfive,jh7100-temp";
->  			reg = <0x0 0x124a0000 0x0 0x10000>;
+>  		sfctemp: temperature-sensor@120e0000 {
+>  			compatible = "starfive,jh7110-temp";
+>  			reg = <0x0 0x120e0000 0x0 0x10000>;
 > --
 > 2.34.1
 >
