@@ -1,200 +1,193 @@
-Return-Path: <linux-kernel+bounces-10807-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10808-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 420EC81DC0B
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 20:18:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0785281DC10
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 20:21:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6255C1C20C08
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 19:18:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B17FD281CDE
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 19:21:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D41D7D523;
-	Sun, 24 Dec 2023 19:18:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F413CDDC3;
+	Sun, 24 Dec 2023 19:21:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lRC4QwIu"
+	dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b="suafZmXX"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sonic313-20.consmr.mail.gq1.yahoo.com (sonic313-20.consmr.mail.gq1.yahoo.com [98.137.65.83])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AD4BD2EE
-	for <linux-kernel@vger.kernel.org>; Sun, 24 Dec 2023 19:18:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703445513; x=1734981513;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=INvis6ethGb0ekbzhTfxSdcXVsR0zFycGoks0/1uzjQ=;
-  b=lRC4QwIujHqqzX/uNxDc4OrAZ9M8NMAyP67rfYrDwy6xieh1QcywaSQz
-   E4PYIjPjwJ6TWNR8t5AMqV4NVO37ErvPq7/2JLpZXBBPSemRxNMeBf1Ib
-   4NGID4zZj8fPZCeLYd7RWcHXwsPCXHC2MoxxZlx40PABBfcGyAH0OH1dq
-   q99tFUqzJpDZgimO0c9Y/u8zQjj9bTp4OoMPyY4b8Yn6zwjxrSmldtWwy
-   98kSvwnWleZycpuHcKzEF16rHX1fqDdhTAhrgDCtGgowSX75wOjxGXGyr
-   v1yyMRKG1IDS/oOkr9MWx6v0rMOnzKboGOr8sOsqvHiB1PPUZKYxB0diy
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10934"; a="400072289"
-X-IronPort-AV: E=Sophos;i="6.04,301,1695711600"; 
-   d="scan'208";a="400072289"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Dec 2023 11:18:32 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,301,1695711600"; 
-   d="scan'208";a="19281266"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orviesa002.jf.intel.com with ESMTP; 24 Dec 2023 11:18:31 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rHTzR-000CYX-1w;
-	Sun, 24 Dec 2023 19:18:27 +0000
-Date: Mon, 25 Dec 2023 03:17:23 +0800
-From: kernel test robot <lkp@intel.com>
-To: Dmitry Bezrukov <dmitry.bezrukov@aquantia.com>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	Igor Russkikh <igor.russkikh@aquantia.com>
-Subject: drivers/net/usb/aqc111.c:606:34: sparse: sparse: incorrect type in
- argument 1 (different base types)
-Message-ID: <202312250354.xeVTLITE-lkp@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22C53D2F0
+	for <linux-kernel@vger.kernel.org>; Sun, 24 Dec 2023 19:21:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=yahoo.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yahoo.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1703445683; bh=gphsGtb1GQxBgoQcQIhSB/zVtHpfiI9G1Q8afpjntRY=; h=Date:From:To:Cc:In-Reply-To:References:Subject:From:Subject:Reply-To; b=suafZmXXvDyHRzwvKAL+QGPakUSnpVQrfWZWWeDOqhpNyr7BGUoa1DPJk/pMYbY6M2RIBexG4XLo4oBfZvOlny005Gk99WYqEYq5V0LNOYlAjdu3WnG8cJju4u8U7bEhgGKK9j4KGJeByUfckqPFqILeQglPx+eoyjtmZn8j874/aIRMwKUdvJs1bWWk7kEV5edMa+78JHwqlxBop1FbWAaOgXFS9jzgdERwhGQjTJ97CuP0BVCrrWjLZgVtCLOwJ02eOxLRcOkbG2hNL2lU5jVg2yRasVnx95fUMs3drbtuLR0A8oEMCNsBZTDknoiPOxyseVICJYMOieCt80gGbw==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1703445683; bh=alABMA50yfuscidHtmiWpm8hRzVTBMAX74MWEJRP3Hf=; h=X-Sonic-MF:Date:From:To:Subject:From:Subject; b=q2wSinW4mXnfxGSy1CNP90WRagMKLMNs6TOiWuaTuQ3+kAUJWdrKxGauJA0uLUPazAiSutSae7M02tz8pxLEznjGEnhXnZnAU8uvk/eFMg8t8t6oSB8PNJPSev9tfqRBT2M7gTSdUvkPWAlhRFLkL2xRIrH3df/k890M7CTqGqgTMnz1K4S9CPNysVlGDhPT7HgDlHXx8yPBJSoo4Bwx57wCrtcWTXHWPbOcc8+hjPUkBpXu0KeLsfMImzMh3vkYAS4eCP6HxTfBcZ0TkjntCbw3z9eIY1+tbZAKbfMtaZCWRnwtQWwPKr2DL/BA0BMdoIbe0xzd50TRzwMLWVZihg==
+X-YMail-OSG: 7DVX91gVM1ku_h9gn1qQYuVyi8DHeyhJU0ok2K_Y8qWAgOiWmJ83n5UVT.uTlPu
+ P1pJf_C9UMthNjXfMccuE8PY5wJaMAaGMDYjN8GHLIpDm_n5F9A5NvQMt2EiisZFYWfJFY5WivIk
+ 4t.vYarO2DXtN2nnzOM0o6aznMduLqyqSdsyf7hPui5TQvtNbQoImUeoBaV0UiTaNfVIL9e69E0_
+ HBF5mj35SxyytnU9SkB7AjhDNOfIHbkT.wCHVYhUKsymEfriUp4BrNv0VW9E0oijQyGziumyVLjb
+ Qjw2QVThLd_C2zf68.L5Y97NRjP6pyefXDoTWgNTX9Y8WSrpQiwSi7La9LGMENcb4o9kKu7RJXQ1
+ ErS_Vj.97wW0NRNp7hB54OWb3vcmHvqLX9Kz3rxVY5O3Wu1jGwQcCSBALp7T6e.eH.vG9l3wi.qW
+ F9i.TE7TR6I1kuHY9DnhTrndt1OvQqEdr4zAFKBHmV9WGFU19ROfu2wI55V3zoQrv894QATRmsJx
+ _kiQpnXWoPv9ClIm544nMHMB7tofwQPw7xulgRr1Omg7UM3Nx.4hSeSiOjKL8R5fvoUPU6iBHrt1
+ XWyJjeh0VPJ0MBwiTvkO4gAT.9YzqcZyHLZG0rNyAWyfgVvpHIEsiFJSGVA48XNtKaHh6xzqWJRg
+ 2dpAgrhGu4Plz2O9GzlKcr.taCDQqYunnFk2PR.E5p41Xtox8W9oLu8XvziWh6U6NGh7jaBN8j68
+ qM9_J_iE1j2ch3a5zZ2MTZyN3ADeKwgevO1r7XujQiTE4Koxs24GXBxxOA62TblkbYujAcy7n3G.
+ DCEQ.z.5HMakpv247jJfhoAll2apccAvGFGO6u4vGQJ.fjj9wIB3VoWU.IFMBHU5OZaN5ri5hrVF
+ E4I0J7CAiotcIJhgNCyoGB4ErMdHPJbch66u5FUNftBgDCH6cyEMrs79HxHoJGORKPIQlkufOsBK
+ wmK43_mrz2yXIq1l_jC0p0OdDBr4BWknSEiXWfV9FrQ8VRFP42KoTZIf6JaUsEBHRU.mHxYjAxf.
+ gdzwB1iXiReoKsDaoaW09CE6p28iX6TMJlddpUDAD5A.Yq353y.iz.9kHydRrz950p_DYJ5.uJeY
+ o85.gIrtry7Kj2zEg4SjuCZaBJvUhEi2Ahr9X01JwYXSgmZDL02lqle7Qx2UFg.iPWkQ3w3hv8ex
+ zp0DLh37WFWQ7GipvgGkGhxLrDMRifsq0vDgpqoqgBs8H_IHqS.fpZFsel3KIkDxDnNppQbqP1Kt
+ EQfIcqcC7Ay.yN90BXIn6d3pJSMP5_n9YRSn598XUqcpPFoX.b4nEN8cQa03oH8hJLDPdlcEqntG
+ .Fb_24AUl630xHEynWFxSPXPt4JVF7ipztsFOrXBUD8Uya03D0RMUTHsQYuQQhRffZcTRJ193s..
+ 3L62M7ElgC3SUBkpEqKUxqDzcxoDKbQopVulL.y99ymBLC6TvKzV1mTnd2fAl3SB_Eip9kW0tHxD
+ BU1_BCjOGkWuc7HY_J4cQ9HT6mKhDXiyDkM4_FPBbvbpOHCtj4Bv7KZjj9cE6biFKpMVZBznnS6o
+ NLaZaLneKu4xINNNhLgPMT82xzWTUqD6qbCHOpOWdMbhy2EnlsRzmy4E3M3Il9z3sxmHl4xCHTyS
+ FllTd7E.zWhdvzmK_Ydcuieh.Q.wRmQ7y6j5aNtuG5_Iu087AqFrjKzULQY33FbAg0MliOXUzphM
+ bBVTwKsVLja34823ioTpPWf7MLSbA3RKCpQep8zcb.4EIsOrcxtHTV4TS4vC96WqQ5ueMUltWHLW
+ t96RIIMF8X36HhgQMO1E3Ha4JyMq8KSqeKIZFNvZBDidNkO.KV0Fj9_omjKw5gYby4ptLh_ya_43
+ 3Ap0PVJQUoOxxR67iUFehXAnd1.VL4BXVVabsG9o6b4NRuP15ZlFR74QmRtijCSE2rDPG4d7yjsC
+ 5Q2hmOoHfLReQDhUZM0cDuKjTTwiZmT3ZOX9q9Yje7GRa0TL7pekYk8M5aQILAdluaEnINgx9MST
+ 6xR2obP_z.GYAi0HU2XczBKr4Lh7heD77rx.Ikv0sjdE.Q.GlLt7MlvAUPPMnLasnCIyEwwzowOl
+ t3WlnTfV8m5wE2kFqUuLUDuIDuGpKNIEq2iK3bshYScrXxGJ5.9YR5vwlk7zXRTyg5K2PNDsn3Ll
+ yrxh0dfUji_.A6wRi_Hdp2U9PJNkF0sffKWeNCd7INLDeMd1mZQV3hw1QY4lOy1zt5uG9itWZZig
+ HhSS1yXiBjwDw0o9w93gThv48lo0-
+X-Sonic-MF: <chaosesqueteam@yahoo.com>
+X-Sonic-ID: 0f70b375-17b5-4735-aea8-a19cd5fa6c59
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic313.consmr.mail.gq1.yahoo.com with HTTP; Sun, 24 Dec 2023 19:21:23 +0000
+Date: Sun, 24 Dec 2023 19:21:18 +0000 (UTC)
+From: "chaosesqueteam@yahoo.com" <chaosesqueteam@yahoo.com>
+To: Polarian <polarian@polarian.dev>, "misc@openbsd.org" <misc@openbsd.org>, 
+	"tech@openbsd.org" <tech@openbsd.org>
+Cc: Richard Stallman <rms@gnu.org>, Bruce Perens <bruce@perens.com>, 
+	Aditya Pakki <pakki001@umn.edu>, 
+	Anna Schumaker <anna.schumaker@netapp.com>, 
+	"ansgar@debian.org" <ansgar@debian.org>, 
+	"blukashev@sempervictus.com" <blukashev@sempervictus.com>, 
+	Chuck Lever <chuck.lever@oracle.com>, 
+	Dave Wysochanski <dwysocha@redhat.com>, 
+	"David S. Miller" <davem@davemloft.net>, 
+	"editor@lwn.net" <editor@lwn.net>, 
+	"esr@thyrsus.com" <esr@thyrsus.com>, 
+	"gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>, 
+	"J. Bruce Fields" <bfields@fieldses.org>, 
+	Jakub Kicinski <kuba@kernel.org>, Leon Romanovsky <leon@kernel.org>, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
+	Linux Networking <netdev@vger.kernel.org>, 
+	"linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>, 
+	"moglen@columbia.edu" <moglen@columbia.edu>, 
+	"skraw.ml@ithnet.com" <skraw.ml@ithnet.com>, 
+	"tcallawa@redhat.com" <tcallawa@redhat.com>, 
+	"torvalds@linuxfoundation.org" <torvalds@linuxfoundation.org>, 
+	"torvalds@osdl.org" <torvalds@osdl.org>, 
+	Trond Myklebust <trond.myklebust@hammerspace.com>, 
+	Bagas Sanjaya <bagasdotme@gmail.com>, 
+	Eric Dumazet <edumazet@google.com>, 
+	Julia Lawall <julia.lawall@inria.fr>, 
+	Paolo Abeni <pabeni@redhat.com>, Jan Stary <hans@stare.cz>, 
+	"jon@elytron.openbsd.amsterdam" <jon@elytron.openbsd.amsterdam>, 
+	"netbsd-current-users@netbsd.org" <netbsd-current-users@netbsd.org>, 
+	"netbsd-users@netbsd.org" <netbsd-users@netbsd.org>
+Message-ID: <980936498.4151725.1703445678796@mail.yahoo.com>
+In-Reply-To: <20231216183721.22838388@Polaris>
+References: <bf818dab301fb4e4@pg4> <1299484129.1816565.1702749635639@mail.yahoo.com> <20231216183721.22838388@Polaris>
+Subject: Re: I can't get contributors for my C project. Can you help?
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Mailer: WebService/1.1.21952 YMailNorrin
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   861deac3b092f37b2c5e6871732f3e11486f7082
-commit: 361459cd9642631f048719169da9ef14cbf4a932 net: usb: aqc111: Implement RX data path
-date:   5 years ago
-config: x86_64-randconfig-x001-20230717 (https://download.01.org/0day-ci/archive/20231225/202312250354.xeVTLITE-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231225/202312250354.xeVTLITE-lkp@intel.com/reproduce)
+Ask somewhere appropriate,>You sound like a 13 year old 
+I'm 37.
+>begging
+Correct. Do it for free.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312250354.xeVTLITE-lkp@intel.com/
+>and considering you have "no money" me,
+Why should I seek "money" when it won't buy me a cute virgin child bride: the first purpose of money when it was invented in Sumer?
+Tell me. I should slave myself for something that is not actually money. Get real.
 
-sparse warnings: (new ones prefixed by >>)
->> drivers/net/usb/aqc111.c:606:34: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected restricted __le64 const [usertype] *p @@     got unsigned long long [usertype] * @@
-   drivers/net/usb/aqc111.c:606:34: sparse:     expected restricted __le64 const [usertype] *p
-   drivers/net/usb/aqc111.c:606:34: sparse:     got unsigned long long [usertype] *
->> drivers/net/usb/aqc111.c:629:45: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected restricted __le64 const [usertype] *p @@     got unsigned long long [usertype] *[assigned] pkt_desc_ptr @@
-   drivers/net/usb/aqc111.c:629:45: sparse:     expected restricted __le64 const [usertype] *p
-   drivers/net/usb/aqc111.c:629:45: sparse:     got unsigned long long [usertype] *[assigned] pkt_desc_ptr
-   drivers/net/usb/aqc111.c:724:22: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] @@     got restricted __le64 [usertype] @@
-   drivers/net/usb/aqc111.c:724:22: sparse:     expected unsigned long long [usertype]
-   drivers/net/usb/aqc111.c:724:22: sparse:     got restricted __le64 [usertype]
-   drivers/net/usb/aqc111.c: note: in included file (through include/linux/textsearch.h, include/linux/skbuff.h, include/linux/if_ether.h, ...):
-   include/linux/slab.h:332:43: sparse: sparse: dubious: x & !y
-   drivers/net/usb/aqc111.c:20:12: warning: 'aqc111_read_cmd_nopm' defined but not used [-Wunused-function]
-      20 | static int aqc111_read_cmd_nopm(struct usbnet *dev, u8 cmd, u16 value,
-         |            ^~~~~~~~~~~~~~~~~~~~
+>proper emails.
+Gno.
 
-vim +606 drivers/net/usb/aqc111.c
+>Ask somewhere appropriate, 
+Anywhere there are FELLOW C programmers, Is appropriate. No I do not care if you agree.
 
-   585	
-   586	static int aqc111_rx_fixup(struct usbnet *dev, struct sk_buff *skb)
-   587	{
-   588		struct sk_buff *new_skb = NULL;
-   589		u32 pkt_total_offset = 0;
-   590		u64 *pkt_desc_ptr = NULL;
-   591		u32 start_of_descs = 0;
-   592		u32 desc_offset = 0; /*RX Header Offset*/
-   593		u16 pkt_count = 0;
-   594		u64 desc_hdr = 0;
-   595		u32 skb_len = 0;
-   596	
-   597		if (!skb)
-   598			goto err;
-   599	
-   600		if (skb->len == 0)
-   601			goto err;
-   602	
-   603		skb_len = skb->len;
-   604		/* RX Descriptor Header */
-   605		skb_trim(skb, skb->len - sizeof(desc_hdr));
- > 606		desc_hdr = le64_to_cpup((u64 *)skb_tail_pointer(skb));
-   607	
-   608		/* Check these packets */
-   609		desc_offset = (desc_hdr & AQ_RX_DH_DESC_OFFSET_MASK) >>
-   610			      AQ_RX_DH_DESC_OFFSET_SHIFT;
-   611		pkt_count = desc_hdr & AQ_RX_DH_PKT_CNT_MASK;
-   612		start_of_descs = skb_len - ((pkt_count + 1) *  sizeof(desc_hdr));
-   613	
-   614		/* self check descs position */
-   615		if (start_of_descs != desc_offset)
-   616			goto err;
-   617	
-   618		/* self check desc_offset from header*/
-   619		if (desc_offset >= skb_len)
-   620			goto err;
-   621	
-   622		if (pkt_count == 0)
-   623			goto err;
-   624	
-   625		/* Get the first RX packet descriptor */
-   626		pkt_desc_ptr = (u64 *)(skb->data + desc_offset);
-   627	
-   628		while (pkt_count--) {
- > 629			u64 pkt_desc = le64_to_cpup(pkt_desc_ptr);
-   630			u32 pkt_len_with_padd = 0;
-   631			u32 pkt_len = 0;
-   632	
-   633			pkt_len = (u32)((pkt_desc & AQ_RX_PD_LEN_MASK) >>
-   634				  AQ_RX_PD_LEN_SHIFT);
-   635			pkt_len_with_padd = ((pkt_len + 7) & 0x7FFF8);
-   636	
-   637			pkt_total_offset += pkt_len_with_padd;
-   638			if (pkt_total_offset > desc_offset ||
-   639			    (pkt_count == 0 && pkt_total_offset != desc_offset)) {
-   640				goto err;
-   641			}
-   642	
-   643			if (pkt_desc & AQ_RX_PD_DROP ||
-   644			    !(pkt_desc & AQ_RX_PD_RX_OK) ||
-   645			    pkt_len > (dev->hard_mtu + AQ_RX_HW_PAD)) {
-   646				skb_pull(skb, pkt_len_with_padd);
-   647				/* Next RX Packet Descriptor */
-   648				pkt_desc_ptr++;
-   649				continue;
-   650			}
-   651	
-   652			/* Clone SKB */
-   653			new_skb = skb_clone(skb, GFP_ATOMIC);
-   654	
-   655			if (!new_skb)
-   656				goto err;
-   657	
-   658			new_skb->len = pkt_len;
-   659			skb_pull(new_skb, AQ_RX_HW_PAD);
-   660			skb_set_tail_pointer(new_skb, new_skb->len);
-   661	
-   662			new_skb->truesize = SKB_TRUESIZE(new_skb->len);
-   663	
-   664			usbnet_skb_return(dev, new_skb);
-   665			if (pkt_count == 0)
-   666				break;
-   667	
-   668			skb_pull(skb, pkt_len_with_padd);
-   669	
-   670			/* Next RX Packet Header */
-   671			pkt_desc_ptr++;
-   672	
-   673			new_skb = NULL;
-   674		}
-   675	
-   676		return 1;
-   677	
-   678	err:
-   679		return 0;
-   680	}
-   681	
+>OpenBSD is not here to fund your game
+Never asked for funding. This is an opensource game. 
 
+ >and everyone else, is instantly going to assume you are 13.
+
+Don't care. 12 yr olds are better. 11 even more so. 8yr olds are even nicer: the prophet of Islam can concur on that (sahih bukari, ashia hadiths).
+And he was right.
+
+You white christians are wrong. Even if you are "not christian" and just happen to follow all the anti-male new-testament BS.
+
+
+>Open source developers only contribute to projects they are interested
+in,
+I know, I've been one for decades.
+> developers don't do things for free, they benefit somehow. 
+Correct.
+>You haven't even explained what your game engine is
+I posted the link. That's good enough. It's allready a finished Work: I simply want more map format support.
+I've done 100s of models and megabytes of code. Worked in the game code and the engine code.
+
+
+
+> or what it aims to achieve,
+Everything. It allready has over 200 weapons, rpg style town etc building (with interiors), vehicles, and procedural city generation.
+
+> is there alternatives? 
+No, also incorrect english grammar. White (feminist "chop off dick for heaven matthew 19 greek" chirstian) boy.
+>How does this differ from alternatives?
+There is no alternative. Cracker.
+
+Anyway: help with Unreal map loading: https://sf.net/p/chaosesqueanthology/tickets/2/
+
+On Saturday, December 16, 2023 at 01:37:31 PM EST, Polarian <polarian@polarian.dev> wrote: 
+
+
+
+
+
+Hello,
+
+You sound like a 13 year old begging for a video game, that is how the
+email comes off as, and considering you have "no money" me, and
+everyone else, is instantly going to assume you are 13.
+
+1. Learn to write emails properly, trying to read your emails is
+horrific due to the formatting.
+
+2. Ask somewhere appropriate, OpenBSD is not here to fund your game
+
+engine.
+
+
+3. Don't take on an ambitious project which you do not have the ability
+to complete.
+
+Open source developers only contribute to projects they are interested
+in, developers don't do things for free, they benefit somehow. You
+haven't even explained what your game engine is or what it aims to
+achieve, is there alternatives? How does this differ from alternatives?
+
+When planning a project, you spend the majority of your time designing
+it, not coding. If its 100% coding there is something wrong.
+
+Hope this helps,
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Polarian
+GPG signature: 0770E5312238C760
+Website: https://polarian.dev
+JID/XMPP: polarian@icebound.dev
+
 
