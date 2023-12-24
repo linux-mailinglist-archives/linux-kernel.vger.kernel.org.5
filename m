@@ -1,47 +1,48 @@
-Return-Path: <linux-kernel+bounces-10656-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10657-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 84AB381D84D
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 09:23:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5EFED81D851
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 09:25:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B68E01C20D4F
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 08:23:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1ADE1282693
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 08:25:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4EE415CF;
-	Sun, 24 Dec 2023 08:23:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9C671858;
+	Sun, 24 Dec 2023 08:25:25 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from zg8tmty3ljk5ljewns4xndka.icoremail.net (zg8tmty3ljk5ljewns4xndka.icoremail.net [167.99.105.149])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0666139A
-	for <linux-kernel@vger.kernel.org>; Sun, 24 Dec 2023 08:23:42 +0000 (UTC)
+Received: from zg8tndyumtaxlji0oc4xnzya.icoremail.net (zg8tndyumtaxlji0oc4xnzya.icoremail.net [46.101.248.176])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D730E20E0;
+	Sun, 24 Dec 2023 08:25:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
 Received: from luzhipeng.223.5.5.5 (unknown [122.235.137.177])
-	by mail-app3 (Coremail) with SMTP id cC_KCgAHAhl46odlgshjAQ--.38024S2;
-	Sun, 24 Dec 2023 16:23:21 +0800 (CST)
+	by mail-app3 (Coremail) with SMTP id cC_KCgCHjBnQ6odlNstjAQ--.7480S2;
+	Sun, 24 Dec 2023 16:24:48 +0800 (CST)
 From: Zhipeng Lu <alexious@zju.edu.cn>
 To: alexious@zju.edu.cn
-Cc: Evan Quan <evan.quan@amd.com>,
-	Alex Deucher <alexander.deucher@amd.com>,
-	=?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-	"Pan, Xinhui" <Xinhui.Pan@amd.com>,
-	David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Mario Limonciello <mario.limonciello@amd.com>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Ruan Jinjie <ruanjinjie@huawei.com>,
-	Ran Sun <sunran001@208suo.com>,
-	Deepak R Varma <drv@mailo.com>,
-	Ken Wang <Qingqing.Wang@amd.com>,
-	Rex Zhu <Rex.Zhu@amd.com>,
-	amd-gfx@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org,
+Cc: Chuck Lever <chuck.lever@oracle.com>,
+	Jeff Layton <jlayton@kernel.org>,
+	Neil Brown <neilb@suse.de>,
+	Olga Kornievskaia <kolga@netapp.com>,
+	Dai Ngo <Dai.Ngo@oracle.com>,
+	Tom Talpey <tom@talpey.com>,
+	Trond Myklebust <trond.myklebust@hammerspace.com>,
+	Anna Schumaker <anna@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	"J. Bruce Fields" <bfields@fieldses.org>,
+	Simo Sorce <simo@redhat.com>,
+	linux-nfs@vger.kernel.org,
+	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/amd/pm/smu7: fix a memleak in smu7_hwmgr_backend_init
-Date: Sun, 24 Dec 2023 16:22:47 +0800
-Message-Id: <20231224082249.3539167-1-alexious@zju.edu.cn>
+Subject: [PATCH] SUNRPC: fix some memleaks in gssx_dec_option_array
+Date: Sun, 24 Dec 2023 16:24:22 +0800
+Message-Id: <20231224082424.3539726-1-alexious@zju.edu.cn>
 X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -50,64 +51,98 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cC_KCgAHAhl46odlgshjAQ--.38024S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7uw18Gr4DWw1xuw4UAF1DZFb_yoW8WFy7pa
-	s3JrWvv34UAanrt3ZrAF1IgF1rC397JFyv9w1UK39Iv345Kr18uryDGa9IyF4qkFyxWw4S
-	qr12q3yUWr1j9wUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvC14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+X-CM-TRANSID:cC_KCgCHjBnQ6odlNstjAQ--.7480S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Ar48AFWkWw48KrykAr1xAFb_yoW8Cw18pF
+	Z3Kr98AF1Iqr1xJF1aywsYv3WYyFs5tFW7Wry2kanxZw1fJr1F9w4vkryjgF1ayrZ3uw1U
+	W3WUury8uwn0yFUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvK14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
 	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
 	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
 	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
 	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
 	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
 	Y2ka0xkIwI1lc2xSY4AK67AK6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r
 	1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CE
 	b7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0x
-	vE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAI
-	cVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2Kf
-	nxnUUI43ZEXa7VUbasjUUUUUU==
+	vE2Ix0cI8IcVCY1x0267AKxVWxJVW8Jr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF
+	0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxh
+	VjvjDU0xZFpf9x0JU6T5dUUUUU=
 X-CM-SenderInfo: qrsrjiarszq6lmxovvfxof0/
 
-The hwmgr->backend, (i.e. data) allocated by kzalloc is not freed in
-the error-handling paths of smu7_get_evv_voltages and
-smu7_update_edc_leakage_table. However, it did be freed in the
-error-handling of phm_initializa_dynamic_state_adjustment_rule_settings,
-by smu7_hwmgr_backend_fini. So the lack of free in smu7_get_evv_voltages
-and smu7_update_edc_leakage_table is considered a memleak in this patch.
+The creds and oa->data need to be freed in the error-handling paths after
+there allocation. So this patch add these deallocations in the
+corresponding paths.
 
-Fixes: 599a7e9fe1b6 ("drm/amd/powerplay: implement smu7 hwmgr to manager asics with smu ip version 7.")
-Fixes: 8f0804c6b7d0 ("drm/amd/pm: add edc leakage controller setting")
+Fixes: 1d658336b05f ("SUNRPC: Add RPC based upcall mechanism for RPCGSS auth")
 Signed-off-by: Zhipeng Lu <alexious@zju.edu.cn>
 ---
- drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu7_hwmgr.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ net/sunrpc/auth_gss/gss_rpc_xdr.c | 28 ++++++++++++++++++++--------
+ 1 file changed, 20 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu7_hwmgr.c b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu7_hwmgr.c
-index 11372fcc59c8..b1a8799e2dee 100644
---- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu7_hwmgr.c
-+++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu7_hwmgr.c
-@@ -2974,6 +2974,8 @@ static int smu7_hwmgr_backend_init(struct pp_hwmgr *hwmgr)
- 		result = smu7_get_evv_voltages(hwmgr);
- 		if (result) {
- 			pr_info("Get EVV Voltage Failed.  Abort Driver loading!\n");
-+			kfree(hwmgr->backend);
-+			hwmgr->backend = NULL;
- 			return -EINVAL;
- 		}
- 	} else {
-@@ -3019,8 +3021,10 @@ static int smu7_hwmgr_backend_init(struct pp_hwmgr *hwmgr)
+diff --git a/net/sunrpc/auth_gss/gss_rpc_xdr.c b/net/sunrpc/auth_gss/gss_rpc_xdr.c
+index d79f12c2550a..de533b20231b 100644
+--- a/net/sunrpc/auth_gss/gss_rpc_xdr.c
++++ b/net/sunrpc/auth_gss/gss_rpc_xdr.c
+@@ -250,8 +250,8 @@ static int gssx_dec_option_array(struct xdr_stream *xdr,
+ 
+ 	creds = kzalloc(sizeof(struct svc_cred), GFP_KERNEL);
+ 	if (!creds) {
+-		kfree(oa->data);
+-		return -ENOMEM;
++		err = -ENOMEM;
++		goto free_oa;
  	}
  
- 	result = smu7_update_edc_leakage_table(hwmgr);
--	if (result)
-+	if (result) {
-+		smu7_hwmgr_backend_fini(hwmgr);
- 		return result;
-+	}
+ 	oa->data[0].option.data = CREDS_VALUE;
+@@ -265,29 +265,41 @@ static int gssx_dec_option_array(struct xdr_stream *xdr,
  
+ 		/* option buffer */
+ 		p = xdr_inline_decode(xdr, 4);
+-		if (unlikely(p == NULL))
+-			return -ENOSPC;
++		if (unlikely(p == NULL)) {
++			err = -ENOSPC
++			goto free_creds;
++		}
+ 
+ 		length = be32_to_cpup(p);
+ 		p = xdr_inline_decode(xdr, length);
+-		if (unlikely(p == NULL))
+-			return -ENOSPC;
++		if (unlikely(p == NULL)) {
++			err = -ENOSPC
++			goto free_creds;
++		}
+ 
+ 		if (length == sizeof(CREDS_VALUE) &&
+ 		    memcmp(p, CREDS_VALUE, sizeof(CREDS_VALUE)) == 0) {
+ 			/* We have creds here. parse them */
+ 			err = gssx_dec_linux_creds(xdr, creds);
+ 			if (err)
+-				return err;
++				goto free_creds;
+ 			oa->data[0].value.len = 1; /* presence */
+ 		} else {
+ 			/* consume uninteresting buffer */
+ 			err = gssx_dec_buffer(xdr, &dummy);
+ 			if (err)
+-				return err;
++				goto free_creds;
+ 		}
+ 	}
  	return 0;
++
++free_creds:
++	kfree(creds);
++free_oa:
++	kfree(oa->data);
++	oa->data = NULL;
++err:
++	return err;
  }
+ 
+ static int gssx_dec_status(struct xdr_stream *xdr,
 -- 
 2.34.1
 
