@@ -1,44 +1,44 @@
-Return-Path: <linux-kernel+bounces-10766-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10767-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89AD081DB82
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 17:44:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF05181DB86
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 17:45:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 44BC9281EB1
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 16:44:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5C534281EA6
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 16:45:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 495E2CA69;
-	Sun, 24 Dec 2023 16:44:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF69BCA6B;
+	Sun, 24 Dec 2023 16:45:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="Hqu4UcUa"
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="ocnEnBLv"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mout.web.de (mout.web.de [212.227.15.4])
+Received: from mout.web.de (mout.web.de [212.227.15.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2CDA746B;
-	Sun, 24 Dec 2023 16:44:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37C10CA64;
+	Sun, 24 Dec 2023 16:45:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-	t=1703436243; x=1704041043; i=markus.elfring@web.de;
-	bh=Zjk3kgsKNF6CsWK02KUE6jMlFvAiyO4Gho2qFghKcKs=;
+	t=1703436334; x=1704041134; i=markus.elfring@web.de;
+	bh=rIlcz4hsgLr5IuoUvlYO4snd4l8Oh6JPILbZ0XdVhaI=;
 	h=X-UI-Sender-Class:Date:Subject:From:To:Cc:References:
 	 In-Reply-To;
-	b=Hqu4UcUaOrw87RsWVlIy8U1+gjQ7zfGE6CnY5d8NnAryM6ZNqcB0O2etaNiI7gil
-	 nLe9JSwIGKKbFziTZIaisfpKxxwihHyRVhS06ePczm9P8esri1EioaLev/Rvf7P60
-	 wNz0XFn1teJ04zusd7JLkBvlPc6eUtDPtMqP6GyO59OVXrQUDWvive9XRXWbylJCX
-	 zGY9Efij+L5VM0hJbUmOUmIZv26olhFxDYXsjYdpiFuZXnXLw420dx/9wrBVMDuV3
-	 Dvy7c/jff6btR+c46RnyFZvfc/Y2QTtcRC6Qr2DE2VnqthWiTRjMyZLS+PwHV0bhq
-	 rXmfBr00q1/mmWlJow==
+	b=ocnEnBLv1ZdoxCh/A5KpMu1pjzoNNj7GkXqDoj73ViELx8GpIH00JTPPdOxHRa27
+	 +95eSoF2bYAnIPbk1evHf9ZD+W8ZTBZdhQN8n6xp0ro4G9HAuTFz/7V6ie3d2mxyo
+	 ZJFg43yYkDsBqwnb0YYmQT8bQ45JGW3OATujhKfIC2u0kzrEKsl9qoTH5K7KlDIZa
+	 tmxjl6wOivtCyO2Btm0n3HX+TcfluDAj8+9bn5Km77MGVV23wBCKsiMA3oNLfx9+p
+	 zSul9G2JGsKOFCqBPDtUAVRiYd5g2YRQQ0LITeu6/sKFrw+6JIeDMyWpAsOYk81AI
+	 ToMaBdUk8CGlag0EUQ==
 X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
 Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb005
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1MUU68-1rho8Z23xQ-00QqXu; Sun, 24
- Dec 2023 17:44:03 +0100
-Message-ID: <f0f00368-9985-4517-8019-010f744a0e39@web.de>
-Date: Sun, 24 Dec 2023 17:44:02 +0100
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1MsrdM-1qxivW1sCG-00tHXK; Sun, 24
+ Dec 2023 17:45:34 +0100
+Message-ID: <769d269c-126f-477e-a046-d00dcf918829@web.de>
+Date: Sun, 24 Dec 2023 17:45:33 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -46,8 +46,8 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: [PATCH 05/10] clk: ti: One function call less in
- ti_fapll_synth_setup() after error detection
+Subject: [PATCH 06/10] clk: ti: Return directly after a failed kzalloc() in
+ of_mux_clk_setup()
 Content-Language: en-GB
 From: Markus Elfring <Markus.Elfring@web.de>
 To: linux-omap@vger.kernel.org, linux-clk@vger.kernel.org,
@@ -62,65 +62,57 @@ References: <20849a8e-e0f5-46df-ad8a-9eae6cbe337b@web.de>
 In-Reply-To: <20849a8e-e0f5-46df-ad8a-9eae6cbe337b@web.de>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:UBp6FJtixv/LocTBx22eQdkrXLyPsrH437F+wg757/SvLLcqXYi
- cEP/Ok44Yhwdi7ekjQIre6glYcW+sC41Em43GGSfaWxYTvmnJdlOL+k7MmWacyMyW+PglzD
- 83qp/H0axL0uPwWYH7ryzKDfB8AqeOxEZFdxhkMo6bJHjQnW7iWlaEvR7Lb4wY39UOuQBk9
- YCxNVMKqnnagrbtWG5+/g==
+X-Provags-ID: V03:K1:/6OmN1PZ8R/kwCXXkcrmaU8tPWjwWsHBwdPLlxjovbJAPktU2Lg
+ YK8ClV7XYr/8oPrjOf8juijZcJWlPKrpZLrLgVGIUG8JmdMIv8OcWa1i0lUDrbHrgYHN2ye
+ fmdARTQORywVsXaBLECgLCwL7rVaydK4b77WPoAxmQCvO90Rh6HBvaOmwtudqpsmgIr4ZnP
+ tyG94hmLjq8B6otEpK0jg==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:gfIzGhCG8vs=;Af2OqGuJpj6NMu8KvFm8tK6zD3A
- tMSjSwQhZ0kFr/oqIs5v9QgMNkwIexNV6AZKa8L3YDejI+ReonrbE/QCB7IXb/9wOtRWxqBbm
- 8ONdmdCoi9njmoOo2LP0gUluXOvG9k3u/L/KLVvDkxFzkdIpT08tai7HmTIt9WMBQmYesr4/z
- i900TvsAJisZoUvi/x86IG0UIyZ7Zvnw90oGQXqz7Ye7vt5mkao0pI3/zIGXp8FpfWsAN6HNx
- WRpY7WnPYnzyMajzjLBo5+kNXlIQOJ0Pzfkv/RUZYx/XEr0/V5uhERrXLNOIEQgIz5IJhgcoD
- MfSi7yw+PQ26Q/6l0c7+cYzZ7h+DtjE32bEDjaQsRHsMLH2bQVdm7J9oTh4pAZCzdyqMq0S7n
- 0MleTUWEPUs2ziJOhJJV9DIvbP+ruLphXexA6XRKwv4iFzsKTb6FTg4Kd57NJvLJr2/gzsPJ/
- PezFow+Z6BVGD0fgys+8ZGWl2DRuUwXf+Xx5h5k1tDF1Yrgp4NRw8XM6kSATJ3DAAtF6RMYdU
- qKhrg//DcjJRUylaXD/n8k7mX8/2/8u5FQ45N2ZefEC+ZrTpohAPJflEAq4efGB1d4zIWggea
- 9q7z9nsSKTNhDlidP3eOwo1GdYt2ep+FlOnukcfHQ8mjUuATER/op45ofPG3KAm77nbHCNsil
- +dGZ5Zi4N4Vru5DYIrfKezZwWxQCmXlBfrFpoPh58blbnKpZaj3pRU7FFev51TVJysgKwtWFO
- 16HmLNEM2CB67xeJIepYEYO1XZj/7ItI7C22XeTlsysmz9ssEMelp6BDxRnnrntMLE9eZRodJ
- aguKXMI5AMYZ7860tq1j3ejQUpn5UD5zlwdcrEcXVuLNG06rdwyjDaeRAYY8XXvV66AvEPsLw
- 4Gf4LE8vQh1IJhK9WFhGhYE9vQ6zVkP0NphVJXQYmfmvPZ5hcm/peO6p2gkCrMAVGM+J6T+3k
- 9xSjz0kXLH1EoJEMGaF8dMGWMhY=
+UI-OutboundReport: notjunk:1;M01:P0:7AZ2as5BfFY=;q63bFAXQH93kRNCwv0AIiisgcPQ
+ WeMEgia6QumAjtMsd0rQoCRh/NNdFC7hgcjQHzO2VO/yH3kHCLhcflgvIbK90OjTD77H30uvj
+ v8J8JIdDk2qT3lmGdTBh3rdMBurtS2TiC3VCoFjzbqjE5KQRWIS94/SeLMzkQUFFulrjMWmuc
+ 3zeZ/b7OyQTmaoQtpTF9zEAG1O24zJtLTxqA7zWw3vOYR9Gr6E68V7kAR/sefQywaqH34IwUP
+ c9h9+TXgxKVepF3rSNX6OfYN71T/25YfMZPs4ApZ+8rqbRedzataiDRhDkI1rM3JKH4WfQTB/
+ yPYQ9b+DgggVVZ51mhC7cUmuq7sXFiOJa9ASoKu6HhhP5GyA3tz4nqUkqKOk95GsZZOm2bcG4
+ R76F9wxXeI/6VdUc687fhFhPH+MkSVJhZOmUcetSNfmKJSX1ByNCKMeoyux1lsC4AD1JcsjrY
+ hA6gyYUQoUX63+vPqqgHIYbzZiEku0PDWdhH7wtOuzgohuHzOSUdqHtIlVdmiZ0uY2DxxmuuJ
+ v2CXnvEDXwb++vrwchB1AJ+GIPbW3oV6UN0dleVviQq/kPm95LEtLB/6jkSDctrNJWwDVrmEZ
+ d3c0Varl0cuSEzXG+sJESY/7rptoL+kFRavnHteBKqugc6qKHrVFCqQ8KtPeFPUmhgv5ehkzd
+ jn+qvC89l0dVr61wXSR8POyIPzFt0v+PILMyLlOWtuItOn4a9CvKEmbO5e632y06CApGrY+gg
+ pDKQTc2pfGoiLq1FqYAHXyeuO7jpOZs/uh+aZqV5U3pNxkGU1iYvZERV3WLf1PPwZCovmpO8c
+ GhKT3qtTv20qEcLVBbhuXi19IVoHfHbDkhD0oSdhL1Eii6Sn6ofexmrASJ5kWemqQFj8NFusy
+ r5cpMLaKOONESWby/VGzkVrw7G/DFVPXRYGgL3sSH+YBdH3g+6rCEb3m7v6elra7Tzcf5DoAa
+ 8//mPA==
 
 From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Sun, 24 Dec 2023 14:05:41 +0100
+Date: Sun, 24 Dec 2023 14:20:18 +0100
 
 The kfree() function was called in one case by
-the ti_fapll_synth_setup() function during error handling
+the of_mux_clk_setup() function during error handling
 even if the passed variable contained a null pointer.
 This issue was detected by using the Coccinelle software.
 
-Thus use another label.
+Thus return directly after a call of the function =E2=80=9Ckzalloc=E2=80=
+=9D failed
+at the beginning.
 
 Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
 =2D--
- drivers/clk/ti/fapll.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/clk/ti/mux.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/clk/ti/fapll.c b/drivers/clk/ti/fapll.c
-index e9956e3ccd65..d4674ec3d7e9 100644
-=2D-- a/drivers/clk/ti/fapll.c
-+++ b/drivers/clk/ti/fapll.c
-@@ -504,7 +504,7 @@ static struct clk * __init ti_fapll_synth_setup(struct=
- fapll_data *fd,
+diff --git a/drivers/clk/ti/mux.c b/drivers/clk/ti/mux.c
+index 1ebafa386be6..ab1205fa40d6 100644
+=2D-- a/drivers/clk/ti/mux.c
++++ b/drivers/clk/ti/mux.c
+@@ -182,7 +182,7 @@ static void of_mux_clk_setup(struct device_node *node)
+ 	}
+ 	parent_names =3D kzalloc((sizeof(char *) * num_parents), GFP_KERNEL);
+ 	if (!parent_names)
+-		goto cleanup;
++		return;
 
- 	synth =3D kzalloc(sizeof(*synth), GFP_KERNEL);
- 	if (!synth)
--		goto free;
-+		goto free_init;
+ 	of_clk_parent_fill(node, parent_names, num_parents);
 
- 	synth->fd =3D fd;
- 	synth->index =3D index;
-@@ -524,6 +524,7 @@ static struct clk * __init ti_fapll_synth_setup(struct=
- fapll_data *fd,
-
- free:
- 	kfree(synth);
-+free_init:
- 	kfree(init);
-
- 	return clk;
 =2D-
 2.43.0
 
