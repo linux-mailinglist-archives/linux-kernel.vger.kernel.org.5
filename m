@@ -1,138 +1,91 @@
-Return-Path: <linux-kernel+bounces-10643-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10644-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D21F81D7FA
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 06:21:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 02C6481D805
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 06:38:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0C5481F21B52
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 05:21:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 995641F21B97
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 05:38:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 785A72106;
-	Sun, 24 Dec 2023 05:21:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 684F010EC;
+	Sun, 24 Dec 2023 05:38:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="KfFMxA5z"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="N59Mg2rc"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-qv1-f43.google.com (mail-qv1-f43.google.com [209.85.219.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEAFE20E0
-	for <linux-kernel@vger.kernel.org>; Sun, 24 Dec 2023 05:21:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-qv1-f43.google.com with SMTP id 6a1803df08f44-67f911e9ac4so19775356d6.3
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Dec 2023 21:21:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1703395285; x=1704000085; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=1Va9uKfUKNctGYZAEDrYv1WrpTtXNDm86DRklEW6gSA=;
-        b=KfFMxA5zsGahB9jfkCzk54abW6dfboQ8pKrdEVnB/HHVSX5D2dSGNbZh0QhGn3/C2t
-         CfKeznp5xMayZmODUyXNkTjBk3hjP9wFGrUdUqSk5MNhnhkK/1PTKfRQXa6ZDB14T2ik
-         WynlGIcgb6+H/Z+bVU6wKP9s6yl5bKZKf76mg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703395285; x=1704000085;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=1Va9uKfUKNctGYZAEDrYv1WrpTtXNDm86DRklEW6gSA=;
-        b=w57eXcjZ5Atz+I4vo/l4OPmVdUEpr6DYNxdLv9KpspVWwADUx+GtT8SfvoFXt2pRMV
-         dhuobTdlxOOzL/BzH9oIxNA4SPuTT7PDIUMoS6mqptwzD41yNriLhdb7hs30/Vby7YhV
-         D1lCtBqAKD5pR6Y62bfr+E/iCUc2pHgN7CPNItCIBLQjPDnM/UaYKWTrVk4tKqY0E1s0
-         /GVyK0UGf7p7vyBcPFFVe+hptfVyn3hXW2Gyqq8lrpJqMXo2Fh4TcU1ty15aRLu3CT8C
-         VKiMxK5gGzrqTRbIkCeXVJdG3cAs4taXsIzLQzxMWReH2VYY+SIUsY63+OvlkmwD9yNk
-         M8HQ==
-X-Gm-Message-State: AOJu0YyuBi6FuEgOOPtE76pdzB8Eo5HrMzZMlOxAfEhdUfv54BezU+bf
-	HxCIU7tSK0LRw02QTtQjRITO8QceTHkXo/qjrCdxLbckrPvLf9nsBIDr8FwZukpC1cG+9B6YCo8
-	8cqXXExlhD4La8vxlJrlbBUPGCLdX3CZEqJe7syTSaBpvZFxBciXeEJikgTGL94YkQbTw6I52CA
-	JijPCAg3c+CImzM0vc
-X-Google-Smtp-Source: AGHT+IGbBPRb2fvJ+S7ksHoxbaOd3JVYbHW4dTFHsf/WS3E7V8T+Gqradt+yTgPKu23FX+j3hbriJg==
-X-Received: by 2002:a05:6214:332:b0:67f:bd03:42fa with SMTP id j18-20020a056214033200b0067fbd0342famr2580930qvu.64.1703395285437;
-        Sat, 23 Dec 2023 21:21:25 -0800 (PST)
-Received: from vertex.localdomain (pool-173-49-113-140.phlapa.fios.verizon.net. [173.49.113.140])
-        by smtp.gmail.com with ESMTPSA id de11-20020ad4584b000000b0067fa0a9163bsm1315352qvb.143.2023.12.23.21.21.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 23 Dec 2023 21:21:25 -0800 (PST)
-From: Zack Rusin <zack.rusin@broadcom.com>
-To: linux-kernel@vger.kernel.org
-Cc: Zack Rusin <zack.rusin@broadcom.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Ian Forbes <ian.forbes@broadcom.com>,
-	Martin Krastev <martin.krastev@broadcom.com>,
-	Maaz Mombasawala <maaz.mombasawala@broadcom.com>,
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
-	dri-devel@lists.freedesktop.org
-Subject: [PATCH] MAINTAINERS: Change vmware.com addresses to broadcom.com
-Date: Sun, 24 Dec 2023 00:20:36 -0500
-Message-Id: <20231224052036.603621-1-zack.rusin@broadcom.com>
-X-Mailer: git-send-email 2.40.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C30EEC6
+	for <linux-kernel@vger.kernel.org>; Sun, 24 Dec 2023 05:38:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1703396303; x=1734932303;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=uYYJ06mw5SMC891s0ZSQRKKOEOIVdWwQcOO8xMl2JC0=;
+  b=N59Mg2rcliIKBUuRlrj1RoBM/3/SE2THRQAQhqhhhy5sqGm/t+sgMI8k
+   XqlrAN68TodpM+kuDi9NNo4EGGC7cGB2zMfMPr0yzVamghS47AH6DzGiR
+   X1k7O8M7As8VAptQ+5zD3TptI8D+qDpF2Uy8konJEn8U3NaXEj1ge/OFF
+   5O6fpZXIk1g4z9DW37vdodVwuwwIHBtEE4y+vmMnt8TNOrLMuDfH4BTP0
+   fwzBdJD8J2qAsBgAR+IZ3hkmJkDD7lTqbpp/tN9FMaOkw1H7vIF+0/N+A
+   MixhtYkU4ysq87vH+XLgzDAWH/a9z9qzatnq9jfwjh9Uq1IRgtl6Vqq9b
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10933"; a="427389046"
+X-IronPort-AV: E=Sophos;i="6.04,300,1695711600"; 
+   d="scan'208";a="427389046"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Dec 2023 21:38:22 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10933"; a="770714190"
+X-IronPort-AV: E=Sophos;i="6.04,300,1695711600"; 
+   d="scan'208";a="770714190"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga007.jf.intel.com with ESMTP; 23 Dec 2023 21:38:20 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rHHAS-000Bsb-1U;
+	Sun, 24 Dec 2023 05:37:30 +0000
+Date: Sun, 24 Dec 2023 13:36:48 +0800
+From: kernel test robot <lkp@intel.com>
+To: Eyal Birger <eyal.birger@gmail.com>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	Martin KaFai Lau <martin.lau@kernel.org>
+Subject: WARN: resolve_btfids: unresolved symbol bpf_skb_set_xfrm_info
+Message-ID: <202312241309.l4zdLgN8-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Update the email addresses for vmwgfx and vmmouse to reflect the fact
-that VMware is now part of Broadcom.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   861deac3b092f37b2c5e6871732f3e11486f7082
+commit: 94151f5aa9667c562281abeaaa5e89b9d5c17729 xfrm: interface: Add unstable helpers for setting/getting XFRM metadata from TC-BPF
+date:   1 year, 1 month ago
+config: mips-randconfig-m031-20220120 (https://download.01.org/0day-ci/archive/20231224/202312241309.l4zdLgN8-lkp@intel.com/config)
+compiler: mips64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231224/202312241309.l4zdLgN8-lkp@intel.com/reproduce)
 
-Add a .mailmap entry because the vmware.com address will start bouncing
-soon.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312241309.l4zdLgN8-lkp@intel.com/
 
-Signed-off-by: Zack Rusin <zack.rusin@broadcom.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Ian Forbes <ian.forbes@broadcom.com>
-Cc: Martin Krastev <martin.krastev@broadcom.com>
-Cc: Maaz Mombasawala <maaz.mombasawala@broadcom.com>
-Cc: Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>
-Cc: dri-devel@lists.freedesktop.org
-Cc: linux-kernel@vger.kernel.org
----
- .mailmap    | 1 +
- MAINTAINERS | 9 ++++-----
- 2 files changed, 5 insertions(+), 5 deletions(-)
+All warnings (new ones prefixed by >>):
 
-diff --git a/.mailmap b/.mailmap
-index 68e72a6017a0..ac31f47f4636 100644
---- a/.mailmap
-+++ b/.mailmap
-@@ -637,4 +637,5 @@ Wolfram Sang <wsa@kernel.org> <w.sang@pengutronix.de>
- Wolfram Sang <wsa@kernel.org> <wsa@the-dreams.de>
- Yakir Yang <kuankuan.y@gmail.com> <ykk@rock-chips.com>
- Yusuke Goda <goda.yusuke@renesas.com>
-+Zack Rusin <zack.rusin@broadcom.com> <zackr@vmware.com>
- Zhu Yanjun <zyjzyj2000@gmail.com> <yanjunz@nvidia.com>
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 7cef2d2ef8d7..221871bd4e92 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -6902,8 +6902,8 @@ T:	git git://anongit.freedesktop.org/drm/drm-misc
- F:	drivers/gpu/drm/vboxvideo/
- 
- DRM DRIVER FOR VMWARE VIRTUAL GPU
--M:	Zack Rusin <zackr@vmware.com>
--R:	VMware Graphics Reviewers <linux-graphics-maintainer@vmware.com>
-+M:	Zack Rusin <zack.rusin@broadcom.com>
-+R:	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>
- L:	dri-devel@lists.freedesktop.org
- S:	Supported
- T:	git git://anongit.freedesktop.org/drm/drm-misc
-@@ -23207,9 +23207,8 @@ F:	drivers/misc/vmw_vmci/
- F:	include/linux/vmw_vmci*
- 
- VMWARE VMMOUSE SUBDRIVER
--M:	Zack Rusin <zackr@vmware.com>
--R:	VMware Graphics Reviewers <linux-graphics-maintainer@vmware.com>
--R:	VMware PV-Drivers Reviewers <pv-drivers@vmware.com>
-+M:	Zack Rusin <zack.rusin@broadcom.com>
-+R:	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>
- L:	linux-input@vger.kernel.org
- S:	Supported
- F:	drivers/input/mouse/vmmouse.c
+   die__process: DW_TAG_compile_unit, DW_TAG_type_unit, DW_TAG_partial_unit or DW_TAG_skeleton_unit expected got member (0xd)!
+   die__process: DW_TAG_compile_unit, DW_TAG_type_unit, DW_TAG_partial_unit or DW_TAG_skeleton_unit expected got INVALID (0x0)!
+>> WARN: resolve_btfids: unresolved symbol bpf_skb_set_xfrm_info
+>> WARN: resolve_btfids: unresolved symbol bpf_skb_get_xfrm_info
+
 -- 
-2.40.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
