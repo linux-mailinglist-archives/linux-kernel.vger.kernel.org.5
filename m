@@ -1,443 +1,426 @@
-Return-Path: <linux-kernel+bounces-10778-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10777-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1F1E81DBB1
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 18:22:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 890D081DBB0
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 18:21:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A855C281FDA
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 17:22:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 118521F217EB
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 17:21:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CADAD30F;
-	Sun, 24 Dec 2023 17:21:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F017CA69;
+	Sun, 24 Dec 2023 17:21:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CzeYvxnM"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Dg5gIxNT"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D394DD2E5;
-	Sun, 24 Dec 2023 17:21:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88727C43391;
-	Sun, 24 Dec 2023 17:21:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7546CA64
+	for <linux-kernel@vger.kernel.org>; Sun, 24 Dec 2023 17:21:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34C32C43395
+	for <linux-kernel@vger.kernel.org>; Sun, 24 Dec 2023 17:21:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703438509;
-	bh=Z6JQdqzQAYOKOqNraVD0SjhYq0w1FpX4Am3bB5s3xYc=;
-	h=From:To:Cc:Subject:Date:From;
-	b=CzeYvxnMC6/6KaUgc4EOdVuOFE1/jLFORmb5qjAVqTgd9hx4TP173Slz/ZY4Zkhw/
-	 ZQAOC4hSV3LGkb9DHDpJ+BGslweJ+VAHVQr421g5Tp/9nelGyzygkp9VpFyJimTqJQ
-	 xpU6tvrAHLWp6oufZy7DfhxvVEUUkdRt6EX1HHycUpoyWBZqjeq8d1OdjXfoCMGlHF
-	 pQwDeWjCxm0oPoCHckjvDiqvMj5fTD8Umzl1HkkRtrIG4eQYEkw0Tp8MqtSln0ZZ3o
-	 BVkSj+gLNJa0QbGrPvA/++TBiTRONt3jFfYOox0FsyaHRzTWibUry4i+78LloQKU7S
-	 mIHrYxrYhBn4g==
-From: Miguel Ojeda <ojeda@kernel.org>
-To: Miguel Ojeda <ojeda@kernel.org>,
-	Wedson Almeida Filho <wedsonaf@gmail.com>,
-	Alex Gaynor <alex.gaynor@gmail.com>
-Cc: Boqun Feng <boqun.feng@gmail.com>,
-	Gary Guo <gary@garyguo.net>,
-	=?UTF-8?q?Bj=C3=B6rn=20Roy=20Baron?= <bjorn3_gh@protonmail.com>,
-	Benno Lossin <benno.lossin@proton.me>,
-	Andreas Hindborg <a.hindborg@samsung.com>,
-	Alice Ryhl <aliceryhl@google.com>,
-	rust-for-linux@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	patches@lists.linux.dev
-Subject: [PATCH] rust: upgrade to Rust 1.75.0
-Date: Sun, 24 Dec 2023 18:21:28 +0100
-Message-ID: <20231224172128.271447-1-ojeda@kernel.org>
+	s=k20201202; t=1703438504;
+	bh=6WgdcpKwy6mdrgckrPfIftbBONnLJienzp1Ht42/LRI=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=Dg5gIxNTOKYHX2S3xgcTqr1Sj9w7VxOXPGlFGVI4jMmdma6P6ye3d0GmxmTkZAB55
+	 wUdm7oKGJ+XmrZpaEY+erQp6844EJhT51CEsbHS2w8laYQnFtjcrQ7c/su2s12cC2v
+	 mM4b50LW11yRZeeZCJvyAXsTqUq+08Xy3Z1gBB/IOqinAICl7Baulrm7JCFnVDC9ZP
+	 6T2CoYXGvZYwl/7vFO1XDPGwWEIdynIizv8m9yLm0WeZSh86Q1DIwM8MUvftNcfkiT
+	 +gTWYwywfgzWeN63XfwSAg7ji0WD/hgOA/FWpirOAbRP6EroPrn4bMjlIcFBPSuTei
+	 XJdh3OosAzA+A==
+Received: by mail-il1-f181.google.com with SMTP id e9e14a558f8ab-35ff6de2068so4347445ab.0
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Dec 2023 09:21:44 -0800 (PST)
+X-Gm-Message-State: AOJu0YzGDn2s5P/vfgu03wXvoOmLnUgM/evbQ4fmMZmr2850Ac3+1+Pu
+	oEm4cTz+M1tg3GwmK0cNgDpwXQXavETRAZ0UDAkodDgoxEuj
+X-Google-Smtp-Source: AGHT+IHvCD5Qsq8aq0F14G0DVNdbjasQXiIU0/8Ngq3op9K0Wvz4LKqBcg7ZgT+On9vJO1EQY93/fSUy5UA2kZ5qHuE=
+X-Received: by 2002:a05:6e02:1585:b0:35d:5995:1d75 with SMTP id
+ m5-20020a056e02158500b0035d59951d75mr9904657ilu.58.1703438503435; Sun, 24 Dec
+ 2023 09:21:43 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20231220152653.3273778-1-schatzberg.dan@gmail.com> <20231220152653.3273778-3-schatzberg.dan@gmail.com>
+In-Reply-To: <20231220152653.3273778-3-schatzberg.dan@gmail.com>
+From: Chris Li <chrisl@kernel.org>
+Date: Sun, 24 Dec 2023 09:21:32 -0800
+X-Gmail-Original-Message-ID: <CAF8kJuNCDDCk+Xn9wu+xuohRCTi8ah3z6TcdW6ZUoOYwmJQ1Lw@mail.gmail.com>
+Message-ID: <CAF8kJuNCDDCk+Xn9wu+xuohRCTi8ah3z6TcdW6ZUoOYwmJQ1Lw@mail.gmail.com>
+Subject: Re: [PATCH v5 2/2] mm: add swapiness= arg to memory.reclaim
+To: Dan Schatzberg <schatzberg.dan@gmail.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Yosry Ahmed <yosryahmed@google.com>, Huan Yang <link@vivo.com>, linux-kernel@vger.kernel.org, 
+	cgroups@vger.kernel.org, linux-mm@kvack.org, Tejun Heo <tj@kernel.org>, 
+	Zefan Li <lizefan.x@bytedance.com>, Jonathan Corbet <corbet@lwn.net>, 
+	Michal Hocko <mhocko@kernel.org>, Shakeel Butt <shakeelb@google.com>, 
+	Muchun Song <muchun.song@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, 
+	Kefeng Wang <wangkefeng.wang@huawei.com>, SeongJae Park <sj@kernel.org>, 
+	"Vishal Moola (Oracle)" <vishal.moola@gmail.com>, Nhat Pham <nphamcs@gmail.com>, 
+	Yue Zhao <findns94@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-This is the next upgrade to the Rust toolchain, from 1.74.1 to 1.75.0
-(i.e. the latest) [1].
+Hi Dan,
 
-See the upgrade policy [2] and the comments on the first upgrade in
-commit 3ed03f4da06e ("rust: upgrade to Rust 1.68.2").
+Thanks for removing the -1 special cases.
 
-# Unstable features
+Acked-by: Chris Li <chrisl@kernel.org>
 
-The `const_maybe_uninit_zeroed` unstable feature [3] was stabilized in
-Rust 1.75.0, which we were using in the PHYLIB abstractions.
+Chris
 
-The only unstable features allowed to be used outside the `kernel` crate
-are still `new_uninit,offset_of`, though other code to be upstreamed
-may increase the list.
-
-Please see [4] for details.
-
-# Other improvements
-
-Rust 1.75.0 stabilized `pointer_byte_offsets` [5] which we could
-potentially use as an alternative for `ptr_metadata` in the future.
-
-# Required changes
-
-For this upgrade, no changes were required (i.e. on our side).
-
-# `alloc` upgrade and reviewing
-
-The vast majority of changes are due to our `alloc` fork being upgraded
-at once.
-
-There are two kinds of changes to be aware of: the ones coming from
-upstream, which we should follow as closely as possible, and the updates
-needed in our added fallible APIs to keep them matching the newer
-infallible APIs coming from upstream.
-
-Instead of taking a look at the diff of this patch, an alternative
-approach is reviewing a diff of the changes between upstream `alloc` and
-the kernel's. This allows to easily inspect the kernel additions only,
-especially to check if the fallible methods we already have still match
-the infallible ones in the new version coming from upstream.
-
-Another approach is reviewing the changes introduced in the additions in
-the kernel fork between the two versions. This is useful to spot
-potentially unintended changes to our additions.
-
-To apply these approaches, one may follow steps similar to the following
-to generate a pair of patches that show the differences between upstream
-Rust and the kernel (for the subset of `alloc` we use) before and after
-applying this patch:
-
-    # Get the difference with respect to the old version.
-    git -C rust checkout $(linux/scripts/min-tool-version.sh rustc)
-    git -C linux ls-tree -r --name-only HEAD -- rust/alloc |
-        cut -d/ -f3- |
-        grep -Fv README.md |
-        xargs -IPATH cp rust/library/alloc/src/PATH linux/rust/alloc/PATH
-    git -C linux diff --patch-with-stat --summary -R > old.patch
-    git -C linux restore rust/alloc
-
-    # Apply this patch.
-    git -C linux am rust-upgrade.patch
-
-    # Get the difference with respect to the new version.
-    git -C rust checkout $(linux/scripts/min-tool-version.sh rustc)
-    git -C linux ls-tree -r --name-only HEAD -- rust/alloc |
-        cut -d/ -f3- |
-        grep -Fv README.md |
-        xargs -IPATH cp rust/library/alloc/src/PATH linux/rust/alloc/PATH
-    git -C linux diff --patch-with-stat --summary -R > new.patch
-    git -C linux restore rust/alloc
-
-Now one may check the `new.patch` to take a look at the additions (first
-approach) or at the difference between those two patches (second
-approach). For the latter, a side-by-side tool is recommended.
-
-Link: https://github.com/rust-lang/rust/blob/stable/RELEASES.md#version-1750-2023-12-28 [1]
-Link: https://rust-for-linux.com/rust-version-policy [2]
-Link: https://github.com/rust-lang/rust/issues/91850 [3]
-Link: https://github.com/Rust-for-Linux/linux/issues/2 [4]
-Link: https://github.com/rust-lang/rust/issues/96283 [5]
-Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
----
-Please note that Rust 1.75.0 will actually be released next week -- this
-is based on linux-next since we will need to remove the `feature` line
-for the unstable feature used by the to-be-merged PHYLIB abstractions.
-
- Documentation/process/changes.rst |  2 +-
- rust/alloc/alloc.rs               |  9 ++++++++-
- rust/alloc/boxed.rs               | 20 ++++++++++++--------
- rust/alloc/lib.rs                 |  7 ++++---
- rust/alloc/raw_vec.rs             | 19 +++++++++++++++----
- rust/alloc/vec/mod.rs             | 16 ++++++++++------
- rust/kernel/lib.rs                |  1 -
- scripts/min-tool-version.sh       |  2 +-
- 8 files changed, 51 insertions(+), 25 deletions(-)
-
-diff --git a/Documentation/process/changes.rst b/Documentation/process/changes.rst
-index 2f7fe3e98a1b..4d1b19edc9c5 100644
---- a/Documentation/process/changes.rst
-+++ b/Documentation/process/changes.rst
-@@ -31,7 +31,7 @@ you probably needn't concern yourself with pcmciautils.
- ====================== ===============  ========================================
- GNU C                  5.1              gcc --version
- Clang/LLVM (optional)  11.0.0           clang --version
--Rust (optional)        1.74.1           rustc --version
-+Rust (optional)        1.75.0           rustc --version
- bindgen (optional)     0.65.1           bindgen --version
- GNU make               3.82             make --version
- bash                   4.2              bash --version
-diff --git a/rust/alloc/alloc.rs b/rust/alloc/alloc.rs
-index 150e13750ff7..8a6be8c98173 100644
---- a/rust/alloc/alloc.rs
-+++ b/rust/alloc/alloc.rs
-@@ -379,13 +379,20 @@ const fn ct_error(_: Layout) -> ! {
-         panic!("allocation failed");
-     }
-
-+    #[inline]
-     fn rt_error(layout: Layout) -> ! {
-         unsafe {
-             __rust_alloc_error_handler(layout.size(), layout.align());
-         }
-     }
-
--    unsafe { core::intrinsics::const_eval_select((layout,), ct_error, rt_error) }
-+    #[cfg(not(feature = "panic_immediate_abort"))]
-+    unsafe {
-+        core::intrinsics::const_eval_select((layout,), ct_error, rt_error)
-+    }
-+
-+    #[cfg(feature = "panic_immediate_abort")]
-+    ct_error(layout)
- }
-
- // For alloc test `std::alloc::handle_alloc_error` can be used directly.
-diff --git a/rust/alloc/boxed.rs b/rust/alloc/boxed.rs
-index 9620eba17268..f5f40778a193 100644
---- a/rust/alloc/boxed.rs
-+++ b/rust/alloc/boxed.rs
-@@ -161,7 +161,7 @@
- use core::marker::Unsize;
- use core::mem::{self, SizedTypeProperties};
- use core::ops::{
--    CoerceUnsized, Deref, DerefMut, DispatchFromDyn, Generator, GeneratorState, Receiver,
-+    CoerceUnsized, Coroutine, CoroutineState, Deref, DerefMut, DispatchFromDyn, Receiver,
- };
- use core::pin::Pin;
- use core::ptr::{self, NonNull, Unique};
-@@ -211,7 +211,7 @@ impl<T> Box<T> {
-     /// ```
-     /// let five = Box::new(5);
-     /// ```
--    #[cfg(all(not(no_global_oom_handling)))]
-+    #[cfg(not(no_global_oom_handling))]
-     #[inline(always)]
-     #[stable(feature = "rust1", since = "1.0.0")]
-     #[must_use]
-@@ -2110,28 +2110,28 @@ fn as_mut(&mut self) -> &mut T {
- #[stable(feature = "pin", since = "1.33.0")]
- impl<T: ?Sized, A: Allocator> Unpin for Box<T, A> where A: 'static {}
-
--#[unstable(feature = "generator_trait", issue = "43122")]
--impl<G: ?Sized + Generator<R> + Unpin, R, A: Allocator> Generator<R> for Box<G, A>
-+#[unstable(feature = "coroutine_trait", issue = "43122")]
-+impl<G: ?Sized + Coroutine<R> + Unpin, R, A: Allocator> Coroutine<R> for Box<G, A>
- where
-     A: 'static,
- {
-     type Yield = G::Yield;
-     type Return = G::Return;
-
--    fn resume(mut self: Pin<&mut Self>, arg: R) -> GeneratorState<Self::Yield, Self::Return> {
-+    fn resume(mut self: Pin<&mut Self>, arg: R) -> CoroutineState<Self::Yield, Self::Return> {
-         G::resume(Pin::new(&mut *self), arg)
-     }
- }
-
--#[unstable(feature = "generator_trait", issue = "43122")]
--impl<G: ?Sized + Generator<R>, R, A: Allocator> Generator<R> for Pin<Box<G, A>>
-+#[unstable(feature = "coroutine_trait", issue = "43122")]
-+impl<G: ?Sized + Coroutine<R>, R, A: Allocator> Coroutine<R> for Pin<Box<G, A>>
- where
-     A: 'static,
- {
-     type Yield = G::Yield;
-     type Return = G::Return;
-
--    fn resume(mut self: Pin<&mut Self>, arg: R) -> GeneratorState<Self::Yield, Self::Return> {
-+    fn resume(mut self: Pin<&mut Self>, arg: R) -> CoroutineState<Self::Yield, Self::Return> {
-         G::resume((*self).as_mut(), arg)
-     }
- }
-@@ -2448,4 +2448,8 @@ fn cause(&self) -> Option<&dyn core::error::Error> {
-     fn source(&self) -> Option<&(dyn core::error::Error + 'static)> {
-         core::error::Error::source(&**self)
-     }
-+
-+    fn provide<'b>(&'b self, request: &mut core::error::Request<'b>) {
-+        core::error::Error::provide(&**self, request);
-+    }
- }
-diff --git a/rust/alloc/lib.rs b/rust/alloc/lib.rs
-index 9c7ea73da108..345cf5c9cf92 100644
---- a/rust/alloc/lib.rs
-+++ b/rust/alloc/lib.rs
-@@ -80,6 +80,8 @@
-     not(no_sync),
-     target_has_atomic = "ptr"
- ))]
-+#![cfg_attr(not(bootstrap), doc(rust_logo))]
-+#![cfg_attr(not(bootstrap), feature(rustdoc_internals))]
- #![no_std]
- #![needs_allocator]
- // Lints:
-@@ -115,7 +117,6 @@
- #![feature(const_eval_select)]
- #![feature(const_maybe_uninit_as_mut_ptr)]
- #![feature(const_maybe_uninit_write)]
--#![feature(const_maybe_uninit_zeroed)]
- #![feature(const_pin)]
- #![feature(const_refs_to_cell)]
- #![feature(const_size_of_val)]
-@@ -141,7 +142,7 @@
- #![feature(maybe_uninit_uninit_array)]
- #![feature(maybe_uninit_uninit_array_transpose)]
- #![feature(pattern)]
--#![feature(pointer_byte_offsets)]
-+#![feature(ptr_addr_eq)]
- #![feature(ptr_internals)]
- #![feature(ptr_metadata)]
- #![feature(ptr_sub_ptr)]
-@@ -168,7 +169,7 @@
- //
- // Language features:
- // tidy-alphabetical-start
--#![cfg_attr(not(test), feature(generator_trait))]
-+#![cfg_attr(not(test), feature(coroutine_trait))]
- #![cfg_attr(test, feature(panic_update_hook))]
- #![cfg_attr(test, feature(test))]
- #![feature(allocator_internals)]
-diff --git a/rust/alloc/raw_vec.rs b/rust/alloc/raw_vec.rs
-index a7425582a323..f1b8cec8cc62 100644
---- a/rust/alloc/raw_vec.rs
-+++ b/rust/alloc/raw_vec.rs
-@@ -338,10 +338,13 @@ pub fn reserve_for_push(&mut self, len: usize) {
-     /// The same as `reserve`, but returns on errors instead of panicking or aborting.
-     pub fn try_reserve(&mut self, len: usize, additional: usize) -> Result<(), TryReserveError> {
-         if self.needs_to_grow(len, additional) {
--            self.grow_amortized(len, additional)
--        } else {
--            Ok(())
-+            self.grow_amortized(len, additional)?;
-         }
-+        unsafe {
-+            // Inform the optimizer that the reservation has succeeded or wasn't needed
-+            core::intrinsics::assume(!self.needs_to_grow(len, additional));
-+        }
-+        Ok(())
-     }
-
-     /// The same as `reserve_for_push`, but returns on errors instead of panicking or aborting.
-@@ -378,7 +381,14 @@ pub fn try_reserve_exact(
-         len: usize,
-         additional: usize,
-     ) -> Result<(), TryReserveError> {
--        if self.needs_to_grow(len, additional) { self.grow_exact(len, additional) } else { Ok(()) }
-+        if self.needs_to_grow(len, additional) {
-+            self.grow_exact(len, additional)?;
-+        }
-+        unsafe {
-+            // Inform the optimizer that the reservation has succeeded or wasn't needed
-+            core::intrinsics::assume(!self.needs_to_grow(len, additional));
-+        }
-+        Ok(())
-     }
-
-     /// Shrinks the buffer down to the specified capacity. If the given amount
-@@ -569,6 +579,7 @@ fn alloc_guard(alloc_size: usize) -> Result<(), TryReserveError> {
- // ensure that the code generation related to these panics is minimal as there's
- // only one location which panics rather than a bunch throughout the module.
- #[cfg(not(no_global_oom_handling))]
-+#[cfg_attr(not(feature = "panic_immediate_abort"), inline(never))]
- fn capacity_overflow() -> ! {
-     panic!("capacity overflow");
- }
-diff --git a/rust/alloc/vec/mod.rs b/rust/alloc/vec/mod.rs
-index 41ca71805ef0..0d95fd7ef337 100644
---- a/rust/alloc/vec/mod.rs
-+++ b/rust/alloc/vec/mod.rs
-@@ -1376,7 +1376,7 @@ pub fn as_mut_slice(&mut self) -> &mut [T] {
-     /// [`as_mut_ptr`]: Vec::as_mut_ptr
-     /// [`as_ptr`]: Vec::as_ptr
-     #[stable(feature = "vec_as_ptr", since = "1.37.0")]
--    #[cfg_attr(not(bootstrap), rustc_never_returns_null_ptr)]
-+    #[rustc_never_returns_null_ptr]
-     #[inline]
-     pub fn as_ptr(&self) -> *const T {
-         // We shadow the slice method of the same name to avoid going through
-@@ -1436,7 +1436,7 @@ pub fn as_ptr(&self) -> *const T {
-     /// [`as_mut_ptr`]: Vec::as_mut_ptr
-     /// [`as_ptr`]: Vec::as_ptr
-     #[stable(feature = "vec_as_ptr", since = "1.37.0")]
--    #[cfg_attr(not(bootstrap), rustc_never_returns_null_ptr)]
-+    #[rustc_never_returns_null_ptr]
-     #[inline]
-     pub fn as_mut_ptr(&mut self) -> *mut T {
-         // We shadow the slice method of the same name to avoid going through
-@@ -1565,7 +1565,8 @@ pub unsafe fn set_len(&mut self, new_len: usize) {
-     #[stable(feature = "rust1", since = "1.0.0")]
-     pub fn swap_remove(&mut self, index: usize) -> T {
-         #[cold]
--        #[inline(never)]
-+        #[cfg_attr(not(feature = "panic_immediate_abort"), inline(never))]
-+        #[track_caller]
-         fn assert_failed(index: usize, len: usize) -> ! {
-             panic!("swap_remove index (is {index}) should be < len (is {len})");
-         }
-@@ -1606,7 +1607,8 @@ fn assert_failed(index: usize, len: usize) -> ! {
-     #[stable(feature = "rust1", since = "1.0.0")]
-     pub fn insert(&mut self, index: usize, element: T) {
-         #[cold]
--        #[inline(never)]
-+        #[cfg_attr(not(feature = "panic_immediate_abort"), inline(never))]
-+        #[track_caller]
-         fn assert_failed(index: usize, len: usize) -> ! {
-             panic!("insertion index (is {index}) should be <= len (is {len})");
-         }
-@@ -1667,7 +1669,7 @@ fn assert_failed(index: usize, len: usize) -> ! {
-     #[track_caller]
-     pub fn remove(&mut self, index: usize) -> T {
-         #[cold]
--        #[inline(never)]
-+        #[cfg_attr(not(feature = "panic_immediate_abort"), inline(never))]
-         #[track_caller]
-         fn assert_failed(index: usize, len: usize) -> ! {
-             panic!("removal index (is {index}) should be < len (is {len})");
-@@ -2097,6 +2099,7 @@ pub fn pop(&mut self) -> Option<T> {
-         } else {
-             unsafe {
-                 self.len -= 1;
-+                core::intrinsics::assume(self.len < self.capacity());
-                 Some(ptr::read(self.as_ptr().add(self.len())))
-             }
-         }
-@@ -2299,7 +2302,8 @@ pub fn split_off(&mut self, at: usize) -> Self
-         A: Clone,
-     {
-         #[cold]
--        #[inline(never)]
-+        #[cfg_attr(not(feature = "panic_immediate_abort"), inline(never))]
-+        #[track_caller]
-         fn assert_failed(at: usize, len: usize) -> ! {
-             panic!("`at` split index (is {at}) should be <= len (is {len})");
-         }
-diff --git a/rust/kernel/lib.rs b/rust/kernel/lib.rs
-index 7ac39874aeac..cb2d024db51f 100644
---- a/rust/kernel/lib.rs
-+++ b/rust/kernel/lib.rs
-@@ -14,7 +14,6 @@
- #![no_std]
- #![feature(allocator_api)]
- #![feature(coerce_unsized)]
--#![feature(const_maybe_uninit_zeroed)]
- #![feature(dispatch_from_dyn)]
- #![feature(new_uninit)]
- #![feature(offset_of)]
-diff --git a/scripts/min-tool-version.sh b/scripts/min-tool-version.sh
-index c62066825f53..bcc7d4247290 100755
---- a/scripts/min-tool-version.sh
-+++ b/scripts/min-tool-version.sh
-@@ -31,7 +31,7 @@ llvm)
- 	fi
- 	;;
- rustc)
--	echo 1.74.1
-+	echo 1.75.0
- 	;;
- bindgen)
- 	echo 0.65.1
-
-base-commit: 39676dfe52331dba909c617f213fdb21015c8d10
---
-2.43.0
+On Wed, Dec 20, 2023 at 7:27=E2=80=AFAM Dan Schatzberg <schatzberg.dan@gmai=
+l.com> wrote:
+>
+> Allow proactive reclaimers to submit an additional swappiness=3D<val>
+> argument to memory.reclaim. This overrides the global or per-memcg
+> swappiness setting for that reclaim attempt.
+>
+> For example:
+>
+> echo "2M swappiness=3D0" > /sys/fs/cgroup/memory.reclaim
+>
+> will perform reclaim on the rootcg with a swappiness setting of 0 (no
+> swap) regardless of the vm.swappiness sysctl setting.
+>
+> Userspace proactive reclaimers use the memory.reclaim interface to
+> trigger reclaim. The memory.reclaim interface does not allow for any way
+> to effect the balance of file vs anon during proactive reclaim. The only
+> approach is to adjust the vm.swappiness setting. However, there are a
+> few reasons we look to control the balance of file vs anon during
+> proactive reclaim, separately from reactive reclaim:
+>
+> * Swapout should be limited to manage SSD write endurance. In near-OOM
+> situations we are fine with lots of swap-out to avoid OOMs. As these are
+> typically rare events, they have relatively little impact on write
+> endurance. However, proactive reclaim runs continuously and so its
+> impact on SSD write endurance is more significant. Therefore it is
+> desireable to control swap-out for proactive reclaim separately from
+> reactive reclaim
+>
+> * Some userspace OOM killers like systemd-oomd[1] support OOM killing on
+> swap exhaustion. This makes sense if the swap exhaustion is triggered
+> due to reactive reclaim but less so if it is triggered due to proactive
+> reclaim (e.g. one could see OOMs when free memory is ample but anon is
+> just particularly cold). Therefore, it's desireable to have proactive
+> reclaim reduce or stop swap-out before the threshold at which OOM
+> killing occurs.
+>
+> In the case of Meta's Senpai proactive reclaimer, we adjust
+> vm.swappiness before writes to memory.reclaim[2]. This has been in
+> production for nearly two years and has addressed our needs to control
+> proactive vs reactive reclaim behavior but is still not ideal for a
+> number of reasons:
+>
+> * vm.swappiness is a global setting, adjusting it can race/interfere
+> with other system administration that wishes to control vm.swappiness.
+> In our case, we need to disable Senpai before adjusting vm.swappiness.
+>
+> * vm.swappiness is stateful - so a crash or restart of Senpai can leave
+> a misconfigured setting. This requires some additional management to
+> record the "desired" setting and ensure Senpai always adjusts to it.
+>
+> With this patch, we avoid these downsides of adjusting vm.swappiness
+> globally.
+>
+> [1]https://www.freedesktop.org/software/systemd/man/latest/systemd-oomd.s=
+ervice.html
+> [2]https://github.com/facebookincubator/oomd/blob/main/src/oomd/plugins/S=
+enpai.cpp#L585-L598
+>
+> Signed-off-by: Dan Schatzberg <schatzberg.dan@gmail.com>
+> ---
+>  Documentation/admin-guide/cgroup-v2.rst | 18 ++++----
+>  include/linux/swap.h                    |  3 +-
+>  mm/memcontrol.c                         | 56 ++++++++++++++++++++-----
+>  mm/vmscan.c                             | 13 +++++-
+>  4 files changed, 69 insertions(+), 21 deletions(-)
+>
+> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admi=
+n-guide/cgroup-v2.rst
+> index 3f85254f3cef..ee42f74e0765 100644
+> --- a/Documentation/admin-guide/cgroup-v2.rst
+> +++ b/Documentation/admin-guide/cgroup-v2.rst
+> @@ -1282,17 +1282,10 @@ PAGE_SIZE multiple when read back.
+>         This is a simple interface to trigger memory reclaim in the
+>         target cgroup.
+>
+> -       This file accepts a single key, the number of bytes to reclaim.
+> -       No nested keys are currently supported.
+> -
+>         Example::
+>
+>           echo "1G" > memory.reclaim
+>
+> -       The interface can be later extended with nested keys to
+> -       configure the reclaim behavior. For example, specify the
+> -       type of memory to reclaim from (anon, file, ..).
+> -
+>         Please note that the kernel can over or under reclaim from
+>         the target cgroup. If less bytes are reclaimed than the
+>         specified amount, -EAGAIN is returned.
+> @@ -1304,6 +1297,17 @@ PAGE_SIZE multiple when read back.
+>         This means that the networking layer will not adapt based on
+>         reclaim induced by memory.reclaim.
+>
+> +The following nested keys are defined.
+> +
+> +         =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D            =3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> +         swappiness            Swappiness value to reclaim with
+> +         =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D            =3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> +
+> +       Specifying a swappiness value instructs the kernel to perform
+> +       the reclaim with that swappiness value. Note that this has the
+> +       same semantics as vm.swappiness applied to memcg reclaim with
+> +       all the existing limitations and potential future extensions.
+> +
+>    memory.peak
+>         A read-only single value file which exists on non-root
+>         cgroups.
+> diff --git a/include/linux/swap.h b/include/linux/swap.h
+> index e2ab76c25b4a..8afdec40efe3 100644
+> --- a/include/linux/swap.h
+> +++ b/include/linux/swap.h
+> @@ -412,7 +412,8 @@ extern unsigned long try_to_free_pages(struct zonelis=
+t *zonelist, int order,
+>  extern unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *mem=
+cg,
+>                                                   unsigned long nr_pages,
+>                                                   gfp_t gfp_mask,
+> -                                                 unsigned int reclaim_op=
+tions);
+> +                                                 unsigned int reclaim_op=
+tions,
+> +                                                 int *swappiness);
+>  extern unsigned long mem_cgroup_shrink_node(struct mem_cgroup *mem,
+>                                                 gfp_t gfp_mask, bool nosw=
+ap,
+>                                                 pg_data_t *pgdat,
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index fbe9f02dd206..6d627a754851 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -52,6 +52,7 @@
+>  #include <linux/sort.h>
+>  #include <linux/fs.h>
+>  #include <linux/seq_file.h>
+> +#include <linux/parser.h>
+>  #include <linux/vmpressure.h>
+>  #include <linux/memremap.h>
+>  #include <linux/mm_inline.h>
+> @@ -2449,7 +2450,8 @@ static unsigned long reclaim_high(struct mem_cgroup=
+ *memcg,
+>                 psi_memstall_enter(&pflags);
+>                 nr_reclaimed +=3D try_to_free_mem_cgroup_pages(memcg, nr_=
+pages,
+>                                                         gfp_mask,
+> -                                                       MEMCG_RECLAIM_MAY=
+_SWAP);
+> +                                                       MEMCG_RECLAIM_MAY=
+_SWAP,
+> +                                                       NULL);
+>                 psi_memstall_leave(&pflags);
+>         } while ((memcg =3D parent_mem_cgroup(memcg)) &&
+>                  !mem_cgroup_is_root(memcg));
+> @@ -2740,7 +2742,7 @@ static int try_charge_memcg(struct mem_cgroup *memc=
+g, gfp_t gfp_mask,
+>
+>         psi_memstall_enter(&pflags);
+>         nr_reclaimed =3D try_to_free_mem_cgroup_pages(mem_over_limit, nr_=
+pages,
+> -                                                   gfp_mask, reclaim_opt=
+ions);
+> +                                                   gfp_mask, reclaim_opt=
+ions, NULL);
+>         psi_memstall_leave(&pflags);
+>
+>         if (mem_cgroup_margin(mem_over_limit) >=3D nr_pages)
+> @@ -3660,7 +3662,7 @@ static int mem_cgroup_resize_max(struct mem_cgroup =
+*memcg,
+>                 }
+>
+>                 if (!try_to_free_mem_cgroup_pages(memcg, 1, GFP_KERNEL,
+> -                                       memsw ? 0 : MEMCG_RECLAIM_MAY_SWA=
+P)) {
+> +                                       memsw ? 0 : MEMCG_RECLAIM_MAY_SWA=
+P, NULL)) {
+>                         ret =3D -EBUSY;
+>                         break;
+>                 }
+> @@ -3774,7 +3776,7 @@ static int mem_cgroup_force_empty(struct mem_cgroup=
+ *memcg)
+>                         return -EINTR;
+>
+>                 if (!try_to_free_mem_cgroup_pages(memcg, 1, GFP_KERNEL,
+> -                                                 MEMCG_RECLAIM_MAY_SWAP)=
+)
+> +                                                 MEMCG_RECLAIM_MAY_SWAP,=
+ NULL))
+>                         nr_retries--;
+>         }
+>
+> @@ -6720,7 +6722,7 @@ static ssize_t memory_high_write(struct kernfs_open=
+_file *of,
+>                 }
+>
+>                 reclaimed =3D try_to_free_mem_cgroup_pages(memcg, nr_page=
+s - high,
+> -                                       GFP_KERNEL, MEMCG_RECLAIM_MAY_SWA=
+P);
+> +                                       GFP_KERNEL, MEMCG_RECLAIM_MAY_SWA=
+P, NULL);
+>
+>                 if (!reclaimed && !nr_retries--)
+>                         break;
+> @@ -6769,7 +6771,7 @@ static ssize_t memory_max_write(struct kernfs_open_=
+file *of,
+>
+>                 if (nr_reclaims) {
+>                         if (!try_to_free_mem_cgroup_pages(memcg, nr_pages=
+ - max,
+> -                                       GFP_KERNEL, MEMCG_RECLAIM_MAY_SWA=
+P))
+> +                                       GFP_KERNEL, MEMCG_RECLAIM_MAY_SWA=
+P, NULL))
+>                                 nr_reclaims--;
+>                         continue;
+>                 }
+> @@ -6895,19 +6897,50 @@ static ssize_t memory_oom_group_write(struct kern=
+fs_open_file *of,
+>         return nbytes;
+>  }
+>
+> +enum {
+> +       MEMORY_RECLAIM_SWAPPINESS =3D 0,
+> +       MEMORY_RECLAIM_NULL,
+> +};
+> +
+> +static const match_table_t tokens =3D {
+> +       { MEMORY_RECLAIM_SWAPPINESS, "swappiness=3D%d"},
+> +       { MEMORY_RECLAIM_NULL, NULL },
+> +};
+> +
+>  static ssize_t memory_reclaim(struct kernfs_open_file *of, char *buf,
+>                               size_t nbytes, loff_t off)
+>  {
+>         struct mem_cgroup *memcg =3D mem_cgroup_from_css(of_css(of));
+>         unsigned int nr_retries =3D MAX_RECLAIM_RETRIES;
+>         unsigned long nr_to_reclaim, nr_reclaimed =3D 0;
+> +       int swappiness =3D -1;
+>         unsigned int reclaim_options;
+> -       int err;
+> +       char *old_buf, *start;
+> +       substring_t args[MAX_OPT_ARGS];
+>
+>         buf =3D strstrip(buf);
+> -       err =3D page_counter_memparse(buf, "", &nr_to_reclaim);
+> -       if (err)
+> -               return err;
+> +
+> +       old_buf =3D buf;
+> +       nr_to_reclaim =3D memparse(buf, &buf) / PAGE_SIZE;
+> +       if (buf =3D=3D old_buf)
+> +               return -EINVAL;
+> +
+> +       buf =3D strstrip(buf);
+> +
+> +       while ((start =3D strsep(&buf, " ")) !=3D NULL) {
+> +               if (!strlen(start))
+> +                       continue;
+> +               switch (match_token(start, tokens, args)) {
+> +               case MEMORY_RECLAIM_SWAPPINESS:
+> +                       if (match_int(&args[0], &swappiness))
+> +                               return -EINVAL;
+> +                       if (swappiness < MIN_SWAPPINESS || swappiness > M=
+AX_SWAPPINESS)
+> +                               return -EINVAL;
+> +                       break;
+> +               default:
+> +                       return -EINVAL;
+> +               }
+> +       }
+>
+>         reclaim_options =3D MEMCG_RECLAIM_MAY_SWAP | MEMCG_RECLAIM_PROACT=
+IVE;
+>         while (nr_reclaimed < nr_to_reclaim) {
+> @@ -6926,7 +6959,8 @@ static ssize_t memory_reclaim(struct kernfs_open_fi=
+le *of, char *buf,
+>
+>                 reclaimed =3D try_to_free_mem_cgroup_pages(memcg,
+>                                         min(nr_to_reclaim - nr_reclaimed,=
+ SWAP_CLUSTER_MAX),
+> -                                       GFP_KERNEL, reclaim_options);
+> +                                       GFP_KERNEL, reclaim_options,
+> +                                       swappiness =3D=3D -1 ? NULL : &sw=
+appiness);
+>
+>                 if (!reclaimed && !nr_retries--)
+>                         return -EAGAIN;
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index d91963e2d47f..aa5666842c49 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -92,6 +92,9 @@ struct scan_control {
+>         unsigned long   anon_cost;
+>         unsigned long   file_cost;
+>
+> +       /* Swappiness value for reclaim. NULL will fall back to per-memcg=
+/global value */
+> +       int *swappiness;
+> +
+>         /* Can active folios be deactivated as part of reclaim? */
+>  #define DEACTIVATE_ANON 1
+>  #define DEACTIVATE_FILE 2
+> @@ -2327,7 +2330,8 @@ static void get_scan_count(struct lruvec *lruvec, s=
+truct scan_control *sc,
+>         struct pglist_data *pgdat =3D lruvec_pgdat(lruvec);
+>         struct mem_cgroup *memcg =3D lruvec_memcg(lruvec);
+>         unsigned long anon_cost, file_cost, total_cost;
+> -       int swappiness =3D mem_cgroup_swappiness(memcg);
+> +       int swappiness =3D sc->swappiness ?
+> +               *sc->swappiness : mem_cgroup_swappiness(memcg);
+>         u64 fraction[ANON_AND_FILE];
+>         u64 denominator =3D 0;    /* gcc */
+>         enum scan_balance scan_balance;
+> @@ -2608,6 +2612,9 @@ static int get_swappiness(struct lruvec *lruvec, st=
+ruct scan_control *sc)
+>             mem_cgroup_get_nr_swap_pages(memcg) < MIN_LRU_BATCH)
+>                 return 0;
+>
+> +       if (sc->swappiness)
+> +               return *sc->swappiness;
+> +
+>         return mem_cgroup_swappiness(memcg);
+>  }
+>
+> @@ -6463,12 +6470,14 @@ unsigned long mem_cgroup_shrink_node(struct mem_c=
+group *memcg,
+>  unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
+>                                            unsigned long nr_pages,
+>                                            gfp_t gfp_mask,
+> -                                          unsigned int reclaim_options)
+> +                                          unsigned int reclaim_options,
+> +                                          int *swappiness)
+>  {
+>         unsigned long nr_reclaimed;
+>         unsigned int noreclaim_flag;
+>         struct scan_control sc =3D {
+>                 .nr_to_reclaim =3D max(nr_pages, SWAP_CLUSTER_MAX),
+> +               .swappiness =3D swappiness,
+>                 .gfp_mask =3D (current_gfp_context(gfp_mask) & GFP_RECLAI=
+M_MASK) |
+>                                 (GFP_HIGHUSER_MOVABLE & ~GFP_RECLAIM_MASK=
+),
+>                 .reclaim_idx =3D MAX_NR_ZONES - 1,
+> --
+> 2.39.3
+>
+>
 
