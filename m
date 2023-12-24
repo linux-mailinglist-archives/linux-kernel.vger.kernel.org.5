@@ -1,150 +1,147 @@
-Return-Path: <linux-kernel+bounces-10623-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10624-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2EEC181D787
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 03:01:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0393081D78D
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 03:09:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DF72F28272F
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 02:01:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 332831C2102F
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 02:09:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00992A38;
-	Sun, 24 Dec 2023 02:01:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B18D815;
+	Sun, 24 Dec 2023 02:09:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="qHFqtvDR"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IIMB3k54"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-il1-f179.google.com (mail-il1-f179.google.com [209.85.166.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E72D7EA
-	for <linux-kernel@vger.kernel.org>; Sun, 24 Dec 2023 02:00:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-il1-f179.google.com with SMTP id e9e14a558f8ab-35fb39c9dcaso13316565ab.2
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Dec 2023 18:00:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703383257; x=1703988057; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lPu9Fli201JAuiG39K2q49j/kuGYFdL9b7eb+AA0dxY=;
-        b=qHFqtvDRIuVFvXvDq35vawcLK4ajdiTrpgMHi9i7cL/znfIOowrhcPASqqFHhzsX8q
-         sid2fe3SkzoXP3ko8St7uWspjJ7xRBBy8uFaxfHYZq+ADBgpuX9n46aKe6OyJgSOFDte
-         GkM1LU9WH8RKLUU8cj5GeQ9DgK7ckTo8iGFTYdItueaJi8nUCtEx9+lc9xKrpVOwJCL6
-         Y7aDVkr86P2+FEviXz9hqdhvk+GrFZoC7VpGcsMiCjEpcmZUNZ7yrhMY9mDRQxzXuzzc
-         rVjDbP9YYrXxuBXwXO2PqDATpse/EmG0Q7SI6u32d7hNth6KZqXaTwY9N76rGyU94NtS
-         BGfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703383257; x=1703988057;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lPu9Fli201JAuiG39K2q49j/kuGYFdL9b7eb+AA0dxY=;
-        b=l0kqVriaTQPt5I5KzDUO9MVRUyLu2mXuUiFpAMwEOyDI/8EQ0h3w69yXaGlTuh3SUS
-         7j3q/wDXWY30u0w22sv71xAFGVO6fBvdcIPrIynpKTZvNWp25NR1ksmLjRXKZbDF7gce
-         MlXa2jRTbsnSVW/A0TAGjI8L3FBa/MzWHs8cdViaPoha1pA/qa4l9xa2LMUM/O/8AkCV
-         SqABUHRJycdD3kvaf3x+rpBQ1jgYHUHRmarKTj5dmQW+EcMOFP6StOe4dzRvqyPy+4xP
-         NSBlaCvTvGcf8Psg2bccpFbx7FQ7GF8azDsYzlub2AFkw6Lyo8rrlWhlpwU4dW1270d9
-         pngQ==
-X-Gm-Message-State: AOJu0Yyy5bwY1nXQe/oUkTEePwwdrf45U/b4eIFqMrbieev/ebe449bc
-	yk+iWSSNoISuMNZzTn3xet0uqTaRe4Q2EOVsSN9hWqj8DtqSXA==
-X-Google-Smtp-Source: AGHT+IHJOQx47Y7T63pXq2ZxfJTeB8LIB3R8j6eZocwS6UBxAlJOxEP1XchULIRVai+GuPvBbDJqj66h2AxQZ3KKw30=
-X-Received: by 2002:a05:6e02:1b02:b0:35f:ac66:e863 with SMTP id
- i2-20020a056e021b0200b0035fac66e863mr6301362ilv.50.1703383257581; Sat, 23 Dec
- 2023 18:00:57 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B43E67EA
+	for <linux-kernel@vger.kernel.org>; Sun, 24 Dec 2023 02:09:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1703383760; x=1734919760;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=Nc/1sLPZO1FsEg271bzSb8EQFPRI/cwYfBJp7lvfyMA=;
+  b=IIMB3k54pYrM65wl67VmVnujmzNftu4Lz+5kJSg6NcfvB2WCmgDP5DXo
+   zBGGC9nx/jAxhqnfp1qnmjieWK/218GPL285mFs9YOcR3N0TEg0T49qQR
+   tsgnvaJoCaxFgKi01OUYneoJm/cb9+ceaEVXFn9lEuiu8x770+rJGNuYc
+   whlidG+DSGR7NKZ9F/1WL62goQxf4w34ZaXDfxoOMQIsz3zn+GTVySJc5
+   6unRQuWGwrwD18W3bSCF+ypKA+IOlLld9JMesU7/GpaIUQbasgBChHTkT
+   NoyYRFYAUkLbc1rMaOIy3xxPN0ajdCSaTUFzBQ/EHcW3sdCZoA3g5G+8a
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10933"; a="3035542"
+X-IronPort-AV: E=Sophos;i="6.04,300,1695711600"; 
+   d="scan'208";a="3035542"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Dec 2023 18:09:20 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,300,1695711600"; 
+   d="scan'208";a="19121988"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orviesa002.jf.intel.com with ESMTP; 23 Dec 2023 18:09:17 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rHDvX-000Bl1-0Q;
+	Sun, 24 Dec 2023 02:09:15 +0000
+Date: Sun, 24 Dec 2023 10:09:01 +0800
+From: kernel test robot <lkp@intel.com>
+To: Dmitry Bezrukov <dmitry.bezrukov@aquantia.com>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	Igor Russkikh <igor.russkikh@aquantia.com>
+Subject: drivers/net/usb/aqc111.c:623:22: sparse: sparse: incorrect type in
+ assignment (different base types)
+Message-ID: <202312241027.pRt8ik6L-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231223191902.22857-1-krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20231223191902.22857-1-krzysztof.kozlowski@linaro.org>
-From: Sam Protsenko <semen.protsenko@linaro.org>
-Date: Sat, 23 Dec 2023 20:00:46 -0600
-Message-ID: <CAPLW+4na0s6D_BOYBCuT70FtMGSmhi2bApHxOd1H0CoJRqz9Kw@mail.gmail.com>
-Subject: Re: [PATCH] pinctrl: samsung: constify iomem pointers
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Tomasz Figa <tomasz.figa@gmail.com>, Sylwester Nawrocki <s.nawrocki@samsung.com>, 
-	Alim Akhtar <alim.akhtar@samsung.com>, Linus Walleij <linus.walleij@linaro.org>, 
-	linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, 
-	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Sat, Dec 23, 2023 at 1:19=E2=80=AFPM Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
->
-> Constify few pointers to iomem, where the destination memory is not
-> modified, for code safety and readability.
->
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> ---
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   3f82f1c3a03694800a4104ca6b6d3282bd4e213d
+commit: 4a3576d2bcc755475890e2db717cab0effb1f140 net: usb: aqc111: Implement TX data path
+date:   5 years ago
+config: x86_64-randconfig-x001-20230717 (https://download.01.org/0day-ci/archive/20231224/202312241027.pRt8ik6L-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231224/202312241027.pRt8ik6L-lkp@intel.com/reproduce)
 
-Reviewed-by: Sam Protsenko <semen.protsenko@linaro.org>
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312241027.pRt8ik6L-lkp@intel.com/
 
->  drivers/pinctrl/samsung/pinctrl-exynos.c  | 4 ++--
->  drivers/pinctrl/samsung/pinctrl-samsung.c | 4 ++--
->  2 files changed, 4 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/pinctrl/samsung/pinctrl-exynos.c b/drivers/pinctrl/s=
-amsung/pinctrl-exynos.c
-> index d3d4b5d036c8..871c1eb46ddf 100644
-> --- a/drivers/pinctrl/samsung/pinctrl-exynos.c
-> +++ b/drivers/pinctrl/samsung/pinctrl-exynos.c
-> @@ -693,7 +693,7 @@ static void exynos_pinctrl_suspend_bank(
->                                 struct samsung_pin_bank *bank)
->  {
->         struct exynos_eint_gpio_save *save =3D bank->soc_priv;
-> -       void __iomem *regs =3D bank->eint_base;
-> +       const void __iomem *regs =3D bank->eint_base;
->
->         save->eint_con =3D readl(regs + EXYNOS_GPIO_ECON_OFFSET
->                                                 + bank->eint_offset);
-> @@ -714,7 +714,7 @@ static void exynosauto_pinctrl_suspend_bank(struct sa=
-msung_pinctrl_drv_data *drv
->                                             struct samsung_pin_bank *bank=
-)
->  {
->         struct exynos_eint_gpio_save *save =3D bank->soc_priv;
-> -       void __iomem *regs =3D bank->eint_base;
-> +       const void __iomem *regs =3D bank->eint_base;
->
->         save->eint_con =3D readl(regs + bank->pctl_offset + bank->eint_co=
-n_offset);
->         save->eint_mask =3D readl(regs + bank->pctl_offset + bank->eint_m=
-ask_offset);
-> diff --git a/drivers/pinctrl/samsung/pinctrl-samsung.c b/drivers/pinctrl/=
-samsung/pinctrl-samsung.c
-> index dbf38767f15f..ed07e23e0912 100644
-> --- a/drivers/pinctrl/samsung/pinctrl-samsung.c
-> +++ b/drivers/pinctrl/samsung/pinctrl-samsung.c
-> @@ -565,7 +565,7 @@ static void samsung_gpio_set(struct gpio_chip *gc, un=
-signed offset, int value)
->  /* gpiolib gpio_get callback function */
->  static int samsung_gpio_get(struct gpio_chip *gc, unsigned offset)
->  {
-> -       void __iomem *reg;
-> +       const void __iomem *reg;
->         u32 data;
->         struct samsung_pin_bank *bank =3D gpiochip_get_data(gc);
->         const struct samsung_pin_bank_type *type =3D bank->type;
-> @@ -1204,7 +1204,7 @@ static int __maybe_unused samsung_pinctrl_suspend(s=
-truct device *dev)
->
->         for (i =3D 0; i < drvdata->nr_banks; i++) {
->                 struct samsung_pin_bank *bank =3D &drvdata->pin_banks[i];
-> -               void __iomem *reg =3D bank->pctl_base + bank->pctl_offset=
-;
-> +               const void __iomem *reg =3D bank->pctl_base + bank->pctl_=
-offset;
->                 const u8 *offs =3D bank->type->reg_offset;
->                 const u8 *widths =3D bank->type->fld_width;
->                 enum pincfg_type type;
-> --
-> 2.34.1
->
->
+sparse warnings: (new ones prefixed by >>)
+>> drivers/net/usb/aqc111.c:623:22: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] @@     got restricted __le64 [usertype] @@
+   drivers/net/usb/aqc111.c:623:22: sparse:     expected unsigned long long [usertype]
+   drivers/net/usb/aqc111.c:623:22: sparse:     got restricted __le64 [usertype]
+   drivers/net/usb/aqc111.c: note: in included file (through include/linux/textsearch.h, include/linux/skbuff.h, include/linux/if_ether.h, ...):
+   include/linux/slab.h:332:43: sparse: sparse: dubious: x & !y
+   drivers/net/usb/aqc111.c:20:12: warning: 'aqc111_read_cmd_nopm' defined but not used [-Wunused-function]
+      20 | static int aqc111_read_cmd_nopm(struct usbnet *dev, u8 cmd, u16 value,
+         |            ^~~~~~~~~~~~~~~~~~~~
+
+vim +623 drivers/net/usb/aqc111.c
+
+   580	
+   581	static struct sk_buff *aqc111_tx_fixup(struct usbnet *dev, struct sk_buff *skb,
+   582					       gfp_t flags)
+   583	{
+   584		int frame_size = dev->maxpacket;
+   585		struct sk_buff *new_skb = NULL;
+   586		u64 *tx_desc_ptr = NULL;
+   587		int padding_size = 0;
+   588		int headroom = 0;
+   589		int tailroom = 0;
+   590		u64 tx_desc = 0;
+   591	
+   592		/*Length of actual data*/
+   593		tx_desc |= skb->len & AQ_TX_DESC_LEN_MASK;
+   594	
+   595		headroom = (skb->len + sizeof(tx_desc)) % 8;
+   596		if (headroom != 0)
+   597			padding_size = 8 - headroom;
+   598	
+   599		if (((skb->len + sizeof(tx_desc) + padding_size) % frame_size) == 0) {
+   600			padding_size += 8;
+   601			tx_desc |= AQ_TX_DESC_DROP_PADD;
+   602		}
+   603	
+   604		if (!dev->can_dma_sg && (dev->net->features & NETIF_F_SG) &&
+   605		    skb_linearize(skb))
+   606			return NULL;
+   607	
+   608		headroom = skb_headroom(skb);
+   609		tailroom = skb_tailroom(skb);
+   610	
+   611		if (!(headroom >= sizeof(tx_desc) && tailroom >= padding_size)) {
+   612			new_skb = skb_copy_expand(skb, sizeof(tx_desc),
+   613						  padding_size, flags);
+   614			dev_kfree_skb_any(skb);
+   615			skb = new_skb;
+   616			if (!skb)
+   617				return NULL;
+   618		}
+   619		if (padding_size != 0)
+   620			skb_put_zero(skb, padding_size);
+   621		/* Copy TX header */
+   622		tx_desc_ptr = skb_push(skb, sizeof(tx_desc));
+ > 623		*tx_desc_ptr = cpu_to_le64(tx_desc);
+   624	
+   625		usbnet_set_skb_tx_stats(skb, 1, 0);
+   626	
+   627		return skb;
+   628	}
+   629	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
