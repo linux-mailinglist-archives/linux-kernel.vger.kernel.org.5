@@ -1,530 +1,158 @@
-Return-Path: <linux-kernel+bounces-10712-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10713-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D5A4881DABC
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 13:42:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BE24481DABE
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 13:44:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 38601B2154A
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 12:42:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 18656B215F8
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 12:44:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F74A79E5;
-	Sun, 24 Dec 2023 12:41:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20E4046BA;
+	Sun, 24 Dec 2023 12:44:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gnu.org header.i=@gnu.org header.b="lSq5+2x8"
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="bpPb+9Ez"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from eggs.gnu.org (eggs.gnu.org [209.51.188.92])
+Received: from outbound.mail.protection.outlook.com (mail-os0jpn01olkn2036.outbound.protection.outlook.com [40.92.98.36])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9CB553BA;
-	Sun, 24 Dec 2023 12:41:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gnu.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gnu.org
-Received: from fencepost.gnu.org ([2001:470:142:3::e])
-	by eggs.gnu.org with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.90_1)
-	(envelope-from <othacehe@gnu.org>)
-	id 1rHNnV-0006J7-FC; Sun, 24 Dec 2023 07:41:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=gnu.org;
-	s=fencepost-gnu-org; h=MIME-Version:References:In-Reply-To:Date:Subject:To:
-	From; bh=Qq/wj/jvkdXM+bolP2bfTi/1C4+hatQamwDmeJVCYbs=; b=lSq5+2x8gxQJKPWra7zP
-	+s44qi5fHc0xnChFDmKyaoXjsVDlsUbQ9bbjEOE7amBm83FLEK7rT0ZUCVrmP1jYzBWAcf2OdwZ9X
-	+rpJHkD//fL51psMaox3BqEGMHkDuH9ut7k4iL8TE4iN7pjIumwTUsTowp3tkrdfdzlAH1gnuVvtt
-	t7ecdO+DuClWkGT4tsxL9zp4IRTOnwTpBwPhSjP6C9VLTdsjAXdbvwBKQ6ww8f/KSin/RGgiFR5PK
-	JWl0nlfbd+QfWA9oWXy/wOMRa3inTRcJpqZq9MN8dwBHw4OHNtAiiyWfmrl79mXKCWjYPNCTigesg
-	lVJrBBzSoS9hvQ==;
-From: Mathieu Othacehe <othacehe@gnu.org>
-To: Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	Li Yang <leoyang.li@nxp.com>
-Cc: devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	Mathieu Othacehe <othacehe@gnu.org>
-Subject: [PATCH v3 2/2] arm64: dts: imx93-var-som: Add Variscite VAR-SOM-MX93
-Date: Sun, 24 Dec 2023 13:41:14 +0100
-Message-ID: <20231224124114.31119-3-othacehe@gnu.org>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231224124114.31119-1-othacehe@gnu.org>
-References: <20231224124114.31119-1-othacehe@gnu.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BAF520F5;
+	Sun, 24 Dec 2023 12:44:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gbg9AeND6SUvaQ+yHk5eAEIQwyiVvrXiCRJcVGAwvPH727nlMv2SVLcgHL7uKVt0mBwTiJEJHt0SMF/fiK7LdvxQAjQ3UhdnOJ+sGeGGQFDvk+9g4Empx18wDbw4CFwJsmd9HEd6lXiQrYsboW3ySJIIaXTfJOy6H10OPHe17ZElAQAb6wjewKeKHrfzoQ+TMCrKCkKsPOKYthE5A3Q5gV4PMce+t8+PdxAWv5XX2YzaCnvKI8V6HfgQSBUuVG1cvYIkGWTRU1PP5kVN20g2m4FS3hZPSm5/XV5g91lzn9+m2YW8dVnC0gzjPPFbfhgUQxw+V0xo12SGLE+p9syhlA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=BWQibc5NKvPuYzlW5jeDxMBIMaVNDEsDR9+KQZFe+CM=;
+ b=h1NuIA6P7yceb6lv5fr30xRDtkFqxWLz/2UQfIBq281UJi5H2ez5pgH5bPQa435dq9yLgFRpAIj9lNuzqXG4mUOo1zUSZNf6HKCVFE7l/wsFHBAtwxwK5wlC8hSOjV7n+xY0lMhVCcBUL0Ak7Q/lTIkx3U6fr2w/NfB/Dlj37StvtuIJFIlLfPqj0bzlIN9AnXMr1volGAiREeaZRaFhZl04eHwrGez0bZEz5IrqufqK+seaB9B3vBzg+BnNhChrOdaJEA3W1BJm6tzoP3oFlJvc9zfm2P/MxykBBj3B1aIh61fPR7h9EHYDSwHVVIeyux3zwkd1EzgSN/+0BUOQPA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BWQibc5NKvPuYzlW5jeDxMBIMaVNDEsDR9+KQZFe+CM=;
+ b=bpPb+9EzbXSLjPqjbLCdBPV+hJb7VcUUXq76M/GdFAmCyB9EoNegIU6nQSvgcHaw1gaIY9mVzSkpwRY3oikuFW/BfVqwKyeCTgVsysC7y2AdDKDMslezUX9UaknH/Dqfnsxj2ni397A8zvcu8xqg9hwZWy7FhtXx16APYy5nTWmSa1UmEGWuWbx7Z1a97/sj7MRRwgCc7qRmG7awWf7872E43k7hvZRW647TA40okoAZoe31wqB1rzgCWVNLnww+76I2yFLu5S9jbyv2hButvXj4TIYUTiw3V1B+rvgpHUvQBUiCGQm9RkHuLmU2f0W/VLodrXW3hhG6i7r377kt5g==
+Received: from OS0P286MB0641.JPNP286.PROD.OUTLOOK.COM (2603:1096:604:cb::10)
+ by TYWP286MB3079.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:2a2::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7113.24; Sun, 24 Dec
+ 2023 12:44:40 +0000
+Received: from OS0P286MB0641.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::3bc:35ff:e1d9:212f]) by OS0P286MB0641.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::3bc:35ff:e1d9:212f%7]) with mapi id 15.20.7113.023; Sun, 24 Dec 2023
+ 12:44:40 +0000
+Date: Sun, 24 Dec 2023 20:44:35 +0800
+From: Zhang Ning <zhangn1985@outlook.com>
+To: Andy Yan <andyshrk@163.com>
+Cc: heiko@sntech.de, krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
+	lasstp5011@gmail.com, devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-rockchip@lists.infradead.org
+Subject: Re: [PATCH] arm64: boot: dts: rockchip: Fix led pinctrl of lubancat 1
+Message-ID:
+ <OS0P286MB064153B62ECBBEED9C16755DCD9AA@OS0P286MB0641.JPNP286.PROD.OUTLOOK.COM>
+References: <20231224075001.3032214-1-andyshrk@163.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231224075001.3032214-1-andyshrk@163.com>
+X-TMN: [L413JATTD6zhewnoYwwVyh17306I0bns3aJQS57qkmZfiVEJf+ydifQlrnsWwuE0]
+X-ClientProxiedBy: SI2P153CA0003.APCP153.PROD.OUTLOOK.COM
+ (2603:1096:4:140::20) To OS0P286MB0641.JPNP286.PROD.OUTLOOK.COM
+ (2603:1096:604:cb::10)
+X-Microsoft-Original-Message-ID: <ZYgnsx6rmpy7KgBQ@orangepipc>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: OS0P286MB0641:EE_|TYWP286MB3079:EE_
+X-MS-Office365-Filtering-Correlation-Id: 06182430-0148-4ab4-afb5-08dc047e18a9
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	8imfxOhnBYV6G/O6Q6redJvuTuNfe2aVV9p4zuuSOcCshrZ33iHyeeeepKx93bOCGRBJAZUclqUfvFNfsUgMHuJ7OkAZWFudZJzWOdWJiQTF2WPdm3+LguGbDvg6uHsROZ68x9sTkQdNZPxluzup2uWxPNsaGsGdLwYFIEl4RVssBJI47fAxmyiMKHwOIGkAPqvnrLy3X57CE1+vb+BbP4Kil7X0hdc6uJIgpf2x4Dkc85i5rTxTAXyz8g0ihUCYEWcTuo6o738M1vFZlY8GdKFXpyPWAH5MO6/ALdN1R76ukXC/8Nl3C17vv6E1pNPPE1bJPf2eLorkgDKj+pV+3Sjpg50S/pNTpsl4FFRXnNR3Dpcqux/JEGm6ZZVEi9c1TtXJfjmtvLViNAdDgu8JRHpf0mhNBv5G2hHqtBkgd32fUxZqkLKGemcWXuV6zJlQInFULlKYCnWUazfPew3PFNPF9FW5ZzOAp6hXhEhluDjkxgL/25Vp1XYXWezf3bYv9TibnO6p8HXUSXX8kT6oPduXC3yJkjpfsq6d0JhTI9wfVNCw2MtM7saG+gXnYO7QVxq4EFkrTAHtgUthn29eCu1yeY97kh+9Xlsgw4x9RjI=
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?SHl3NkZDZURsaytkMWFWVlJZa2dJelVlTHl1YzlyQ3RxV0JETWpOZ1NIQ1pP?=
+ =?utf-8?B?NFJqd0NvcDlzd3N4eHZaaklVSElCM2hySC8xbUpiL3k5RkppakpPa3JhRWVE?=
+ =?utf-8?B?MUR0QTlXbEpDeEUrR2s4RUw4SUU1RWpONHlvcWxLMGdKY3h2MGhtQ2lDaEdk?=
+ =?utf-8?B?YnNPV1Z1clB6c1dienBDcVlNU2RkMzNrazRvaHBqajE3OE5tQlZoQm5lNlFY?=
+ =?utf-8?B?ZlFobU9yWUxKb1JaaU5ESzRZRE5lSGNRdCthVTF1eXRQUHNTVWpTdzVnRW9h?=
+ =?utf-8?B?L21xa0x3T3NKN2tacWtxZFRldm1IMVN0cXdlRDc0WDBBWnpFU1Jqd2VsY3Ur?=
+ =?utf-8?B?NEppbm9wbENqTkJtaW55L3ZQV09VMXRwcU1vNmJTUE82cXRTU0JudmJFUlZ1?=
+ =?utf-8?B?RGZDaG5CcmJjSW0zajQyalA0YzdycjdLd0g5Nk5ldGJvbk4rbm9GUzlpYlpv?=
+ =?utf-8?B?VUtxSk1DMXQyNm9TdmtjSG9mSzNmcEdRTC9xRVlqY0g5Nkw1RHRZTUhyY0Zk?=
+ =?utf-8?B?MkZCRGpUdzJIRFR0dzJqRWxDTmcza1Y5S0QrNVlyQi9xSkd1aUU3NXUwejhN?=
+ =?utf-8?B?Y001d2RYaTErYmVEeElQQWJ1WnpDNlpuNWtBdWdNbFVwcTQrYkNKdVJab3l2?=
+ =?utf-8?B?VndVTEVOc09pa1FTYXpkMDNqM0lrTmtKTVNyVmdwSFNoSmFjdFovT0NBWW03?=
+ =?utf-8?B?S01aZjBoVE42OXFFQk94clFLeUt5RWlVQ2g1akM0eW4vQjVUQzNRVmUxRlQy?=
+ =?utf-8?B?K2JGUHZMS2NBU1l3UTJsSXRLaHlGa0FSQ2NFYUZESjdlMlNZTWQ3NmFjZExQ?=
+ =?utf-8?B?RjlsMjI0RWNGYS9LRUZyM3d1OC9EVHdQdHFEQkd1UU1HZEJGdDR4OTZLUXVT?=
+ =?utf-8?B?ZXpOd2toQ0dvRFJQN1o3LzRQRWFoVkw2T3JSdnRHNG1Bc1RhR1pPQU5BU0pJ?=
+ =?utf-8?B?UklFMGloUCtXWUYrbzJTcE9ib1RhMnVNd0hMSm5DSlhVdy84OWRWZEtTdnFS?=
+ =?utf-8?B?b1NyK3RRUGlJL0xaTVBIK1NkRGZHWjkwbGpCRlJ1ZXY4ajhyQXhiQ2gyeVVz?=
+ =?utf-8?B?U292NFZZQkpwdi84VC92N0hlclNFN0x6VUhwNUZtRzBFNVRWRkNScU5FcUEv?=
+ =?utf-8?B?NnFBUk1MZFhLblBwZk96Y3JqM1FnNmNRR2plVTR1WDVxM3p4UnBaMlEwQis1?=
+ =?utf-8?B?WG9Nbm9jZlN1V2RoY1NNL0dId2VaUEo2ZUNidVJ1aExyQUVYcE5CK2RPUkhY?=
+ =?utf-8?B?NitTcHNUMnFMR0RUUGtDVXUzK2ZLek00WTZNNm85cUtyNnlJS1ZsWDZmMFBn?=
+ =?utf-8?B?VEduNWtVREo4eEJ5c3ZYektnUXpPOFZybWgwUUppVktySWFsalZ3a1ZPTXBl?=
+ =?utf-8?B?TCszR2ZzS0sxSmhxN0lIQ0RzczRIMWJkV29rak5xZDVBOFl4ZFoxYTJzaUNs?=
+ =?utf-8?B?MDJCN2dpcDRJSldrdnhpTlZiOURDL2VJeFdPUWpaSk5LZGZyWEN6RzBkR1M3?=
+ =?utf-8?B?UDkrUnpjcThRZ3pXbi9ZVm5pcE0rTFRBcVBBNnh6UGVSajFLTmszaFBzd0Qz?=
+ =?utf-8?B?QXN1YTlrbEEzSlpmc21JNG9WUHFacjRQd1ZZdy9NL3kweDRGemIyWS8vcXMz?=
+ =?utf-8?B?Z2d3MUM3bm5HdE41bFp5L00rK1AvNHA5SW9FYnUxT1VKNjN6eFQ2WE9sQU1U?=
+ =?utf-8?B?MnlyRTNqeUNnekJQSlZ4Mmw1V1hWVWYyazRzUnBOZk9KY2RzU3p6TDhHWlJ0?=
+ =?utf-8?Q?Jq2oG3f7m8b99e4fKg=3D?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 06182430-0148-4ab4-afb5-08dc047e18a9
+X-MS-Exchange-CrossTenant-AuthSource: OS0P286MB0641.JPNP286.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Dec 2023 12:44:40.8351
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYWP286MB3079
 
-Add DTSI for Variscite VAR-SOM-MX93 System on Module and DTS for Variscite
-VAR-SOM-MX93 on Symphony evaluation board.
+O Sun, Dec 24, 2023 at 03:50:01PM +0800, Andy Yan wrote:
+> According to the sch, the gpio control sys_led
+> is GPIO0_C5.
+> 
+> Fixes: 8d94da58de53 ("arm64: dts: rockchip: Add EmbedFire LubanCat 1")
+>Reported-by: zhangn1985@outlook.com
 
-This version comes with:
-- NXP i.MX 93 Dual, 1.7GHz, Cortex-A55 + Cortex-M33
-- 2 GB of RAM
-- 16GB eMMC
-- 802.11ax/ac/a/b/g/n WiFi with 5.3 Bluetooth
-- CAN bus
-- Audio codec
+Reported-by: Zhang Ning <zhangn1985@outlook.com>
 
-Signed-off-by: Mathieu Othacehe <othacehe@gnu.org>
----
- arch/arm64/boot/dts/freescale/Makefile        |   1 +
- .../dts/freescale/imx93-var-som-symphony.dts  | 306 ++++++++++++++++++
- .../boot/dts/freescale/imx93-var-som.dtsi     | 111 +++++++
- 3 files changed, 418 insertions(+)
- create mode 100644 arch/arm64/boot/dts/freescale/imx93-var-som-symphony.dts
- create mode 100644 arch/arm64/boot/dts/freescale/imx93-var-som.dtsi
+in case if have rev2.
 
-diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
-index 2e027675d7bb..a6f1700961e3 100644
---- a/arch/arm64/boot/dts/freescale/Makefile
-+++ b/arch/arm64/boot/dts/freescale/Makefile
-@@ -203,6 +203,7 @@ dtb-$(CONFIG_ARCH_MXC) += imx8ulp-evk.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx93-11x11-evk.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx93-tqma9352-mba93xxca.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx93-tqma9352-mba93xxla.dtb
-+dtb-$(CONFIG_ARCH_MXC) += imx93-var-som-symphony.dtb
- 
- imx8mm-venice-gw72xx-0x-imx219-dtbs	:= imx8mm-venice-gw72xx-0x.dtb imx8mm-venice-gw72xx-0x-imx219.dtbo
- imx8mm-venice-gw72xx-0x-rpidsi-dtbs	:= imx8mm-venice-gw72xx-0x.dtb imx8mm-venice-gw72xx-0x-rpidsi.dtbo
-diff --git a/arch/arm64/boot/dts/freescale/imx93-var-som-symphony.dts b/arch/arm64/boot/dts/freescale/imx93-var-som-symphony.dts
-new file mode 100644
-index 000000000000..08efdf45693b
---- /dev/null
-+++ b/arch/arm64/boot/dts/freescale/imx93-var-som-symphony.dts
-@@ -0,0 +1,306 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Copyright 2021 NXP
-+ * Copyright 2023 Variscite Ltd.
-+ */
-+
-+/dts-v1/;
-+
-+#include "imx93-var-som.dtsi"
-+
-+/{
-+	model = "Variscite VAR-SOM-MX93 on Symphony evaluation board";
-+	compatible = "variscite,var-som-mx93-symphony",
-+		     "variscite,var-som-mx93", "fsl,imx93";
-+
-+	aliases {
-+		ethernet1 = &fec;
-+	};
-+
-+	chosen {
-+		stdout-path = &lpuart1;
-+	};
-+
-+	/*
-+	 * Needed only for Symphony <= v1.5
-+	 */
-+	reg_fec_phy: regulator-fec-phy {
-+		compatible = "regulator-fixed";
-+		regulator-name = "fec-phy";
-+		regulator-min-microvolt = <1800000>;
-+		regulator-max-microvolt = <1800000>;
-+		regulator-enable-ramp-delay = <20000>;
-+		gpio = <&pca9534 7 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+		regulator-always-on;
-+	};
-+
-+	reg_usdhc2_vmmc: regulator-usdhc2 {
-+		compatible = "regulator-fixed";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_reg_usdhc2_vmmc>;
-+		regulator-name = "VSD_3V3";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		gpio = <&gpio2 18 GPIO_ACTIVE_HIGH>;
-+		off-on-delay-us = <20000>;
-+		enable-active-high;
-+	};
-+
-+	reg_vref_1v8: regulator-adc-vref {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vref_1v8";
-+		regulator-min-microvolt = <1800000>;
-+		regulator-max-microvolt = <1800000>;
-+	};
-+
-+	reserved-memory {
-+		#address-cells = <2>;
-+		#size-cells = <2>;
-+		ranges;
-+
-+		ethosu_mem: ethosu-region@88000000 {
-+			compatible = "shared-dma-pool";
-+			reusable;
-+			reg = <0x0 0x88000000 0x0 0x8000000>;
-+		};
-+
-+		vdev0vring0: vdev0vring0@87ee0000 {
-+			reg = <0 0x87ee0000 0 0x8000>;
-+			no-map;
-+		};
-+
-+		vdev0vring1: vdev0vring1@87ee8000 {
-+			reg = <0 0x87ee8000 0 0x8000>;
-+			no-map;
-+		};
-+
-+		vdev1vring0: vdev1vring0@87ef0000 {
-+			reg = <0 0x87ef0000 0 0x8000>;
-+			no-map;
-+		};
-+
-+		vdev1vring1: vdev1vring1@87ef8000 {
-+			reg = <0 0x87ef8000 0 0x8000>;
-+			no-map;
-+		};
-+
-+		rsc_table: rsc-table@2021f000 {
-+			reg = <0 0x2021f000 0 0x1000>;
-+			no-map;
-+		};
-+
-+		vdevbuffer: vdevbuffer@87f00000 {
-+			compatible = "shared-dma-pool";
-+			reg = <0 0x87f00000 0 0x100000>;
-+			no-map;
-+		};
-+
-+		ele_reserved: ele-reserved@87de0000 {
-+			compatible = "shared-dma-pool";
-+			reg = <0 0x87de0000 0 0x100000>;
-+			no-map;
-+		};
-+	};
-+};
-+
-+/* Use external instead of internal RTC*/
-+&bbnsm_rtc {
-+	status = "disabled";
-+};
-+
-+&eqos {
-+	mdio {
-+		ethphy1: ethernet-phy@5 {
-+			compatible = "ethernet-phy-ieee802.3-c22";
-+			reg = <5>;
-+			qca,disable-smarteee;
-+			eee-broken-1000t;
-+			reset-gpios = <&pca9534 5 GPIO_ACTIVE_LOW>;
-+			reset-assert-us = <10000>;
-+			reset-deassert-us = <20000>;
-+			vddio-supply = <&vddio1>;
-+
-+			vddio1: vddio-regulator {
-+				regulator-min-microvolt = <1800000>;
-+				regulator-max-microvolt = <1800000>;
-+			};
-+		};
-+	};
-+};
-+
-+&fec {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_fec>;
-+	phy-mode = "rgmii";
-+	phy-handle = <&ethphy1>;
-+	phy-supply = <&reg_fec_phy>;
-+	status = "okay";
-+};
-+
-+&flexcan1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_flexcan1>;
-+	status = "okay";
-+};
-+
-+&iomuxc {
-+	pinctrl_fec: fecgrp {
-+		fsl,pins = <
-+			MX93_PAD_ENET2_RD0__ENET1_RGMII_RD0		0x57e
-+			MX93_PAD_ENET2_RD1__ENET1_RGMII_RD1		0x57e
-+			MX93_PAD_ENET2_RD2__ENET1_RGMII_RD2		0x57e
-+			MX93_PAD_ENET2_RD3__ENET1_RGMII_RD3		0x57e
-+			MX93_PAD_ENET2_RXC__ENET1_RGMII_RXC		0x5fe
-+			MX93_PAD_ENET2_RX_CTL__ENET1_RGMII_RX_CTL	0x57e
-+			MX93_PAD_ENET2_TD0__ENET1_RGMII_TD0		0x57e
-+			MX93_PAD_ENET2_TD1__ENET1_RGMII_TD1		0x57e
-+			MX93_PAD_ENET2_TD2__ENET1_RGMII_TD2		0x57e
-+			MX93_PAD_ENET2_TD3__ENET1_RGMII_TD3		0x57e
-+			MX93_PAD_ENET2_TXC__ENET1_RGMII_TXC		0x5fe
-+			MX93_PAD_ENET2_TX_CTL__ENET1_RGMII_TX_CTL	0x57e
-+		>;
-+	};
-+
-+	pinctrl_flexcan1: flexcan1grp {
-+		fsl,pins = <
-+			MX93_PAD_PDM_CLK__CAN1_TX                       0x139e
-+			MX93_PAD_PDM_BIT_STREAM0__CAN1_RX               0x139e
-+		>;
-+	};
-+
-+	pinctrl_lpi2c1: lpi2c1grp {
-+		fsl,pins = <
-+			MX93_PAD_I2C1_SCL__LPI2C1_SCL			0x40000b9e
-+			MX93_PAD_I2C1_SDA__LPI2C1_SDA			0x40000b9e
-+		>;
-+	};
-+
-+	pinctrl_lpi2c1_gpio: lpi2c1gpiogrp {
-+		fsl,pins = <
-+			MX93_PAD_I2C1_SCL__GPIO1_IO00			0x31e
-+			MX93_PAD_I2C1_SDA__GPIO1_IO01			0x31e
-+		>;
-+	};
-+
-+	pinctrl_lpi2c5: lpi2c5grp {
-+		fsl,pins = <
-+			MX93_PAD_GPIO_IO23__LPI2C5_SCL			0x40000b9e
-+			MX93_PAD_GPIO_IO22__LPI2C5_SDA			0x40000b9e
-+		>;
-+	};
-+
-+	pinctrl_lpi2c5_gpio: lpi2c5gpiogrp {
-+		fsl,pins = <
-+			MX93_PAD_GPIO_IO23__GPIO2_IO23			0x31e
-+			MX93_PAD_GPIO_IO22__GPIO2_IO22			0x31e
-+		>;
-+	};
-+
-+	pinctrl_pca9534: pca9534grp {
-+		fsl,pins = <
-+			MX93_PAD_CCM_CLKO1__GPIO3_IO26		0x31e
-+		>;
-+	};
-+
-+	pinctrl_uart1: uart1grp {
-+		fsl,pins = <
-+			MX93_PAD_UART1_RXD__LPUART1_RX			0x31e
-+			MX93_PAD_UART1_TXD__LPUART1_TX			0x31e
-+		>;
-+	};
-+
-+	pinctrl_reg_usdhc2_vmmc: regusdhc2vmmcgrp {
-+		fsl,pins = <
-+			MX93_PAD_GPIO_IO18__GPIO2_IO18		0x31e
-+		>;
-+	};
-+
-+	pinctrl_usdhc2: usdhc2grp {
-+		fsl,pins = <
-+			MX93_PAD_SD2_CLK__USDHC2_CLK		0x15fe
-+			MX93_PAD_SD2_CMD__USDHC2_CMD		0x13fe
-+			MX93_PAD_SD2_DATA0__USDHC2_DATA0	0x13fe
-+			MX93_PAD_SD2_DATA1__USDHC2_DATA1	0x13fe
-+			MX93_PAD_SD2_DATA2__USDHC2_DATA2	0x13fe
-+			MX93_PAD_SD2_DATA3__USDHC2_DATA3	0x13fe
-+			MX93_PAD_SD2_VSELECT__USDHC2_VSELECT	0x51e
-+		>;
-+	};
-+
-+	pinctrl_usdhc2_gpio: usdhc2gpiogrp {
-+		fsl,pins = <
-+			MX93_PAD_SD2_CD_B__GPIO3_IO00		0x31e
-+		>;
-+	};
-+};
-+
-+&lpi2c1 {
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+	clock-frequency = <400000>;
-+	pinctrl-names = "default", "sleep", "gpio";
-+	pinctrl-0 = <&pinctrl_lpi2c1>;
-+	pinctrl-1 = <&pinctrl_lpi2c1_gpio>;
-+	pinctrl-2 = <&pinctrl_lpi2c1_gpio>;
-+	scl-gpios = <&gpio1 0 GPIO_ACTIVE_HIGH>;
-+	sda-gpios = <&gpio1 1 GPIO_ACTIVE_HIGH>;
-+	status = "okay";
-+
-+	/* DS1337 RTC module */
-+	rtc@68 {
-+		compatible = "dallas,ds1337";
-+		reg = <0x68>;
-+	};
-+};
-+
-+&lpi2c5 {
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+	clock-frequency = <400000>;
-+	pinctrl-names = "default", "sleep", "gpio";
-+	pinctrl-0 = <&pinctrl_lpi2c5>;
-+	pinctrl-1 = <&pinctrl_lpi2c5_gpio>;
-+	pinctrl-2 = <&pinctrl_lpi2c5_gpio>;
-+	scl-gpios = <&gpio2 23 GPIO_ACTIVE_HIGH>;
-+	sda-gpios = <&gpio2 22 GPIO_ACTIVE_HIGH>;
-+	status = "okay";
-+
-+	pca9534: gpio@20 {
-+		compatible = "nxp,pca9534";
-+		reg = <0x20>;
-+		gpio-controller;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_pca9534>;
-+		interrupt-parent = <&gpio3>;
-+		interrupts = <26 IRQ_TYPE_EDGE_FALLING>;
-+		#gpio-cells = <2>;
-+		wakeup-source;
-+	};
-+};
-+
-+/* Console */
-+&lpuart1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_uart1>;
-+	status = "okay";
-+};
-+
-+/* SD */
-+&usdhc2 {
-+	pinctrl-names = "default", "state_100mhz", "state_200mhz";
-+	pinctrl-0 = <&pinctrl_usdhc2>, <&pinctrl_usdhc2_gpio>;
-+	pinctrl-1 = <&pinctrl_usdhc2>, <&pinctrl_usdhc2_gpio>;
-+	pinctrl-2 = <&pinctrl_usdhc2>, <&pinctrl_usdhc2_gpio>;
-+	cd-gpios = <&gpio3 00 GPIO_ACTIVE_LOW>;
-+	vmmc-supply = <&reg_usdhc2_vmmc>;
-+	bus-width = <4>;
-+	status = "okay";
-+	no-sdio;
-+	no-mmc;
-+};
-+
-+/* Watchdog */
-+&wdog3 {
-+	status = "okay";
-+};
-diff --git a/arch/arm64/boot/dts/freescale/imx93-var-som.dtsi b/arch/arm64/boot/dts/freescale/imx93-var-som.dtsi
-new file mode 100644
-index 000000000000..6c77b886666b
---- /dev/null
-+++ b/arch/arm64/boot/dts/freescale/imx93-var-som.dtsi
-@@ -0,0 +1,111 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Copyright 2022 NXP
-+ * Copyright 2023 Variscite Ltd.
-+ */
-+
-+/dts-v1/;
-+
-+#include "imx93.dtsi"
-+
-+/{
-+	model = "Variscite VAR-SOM-MX93 module";
-+	compatible = "variscite,var-som-mx93", "fsl,imx93";
-+
-+	mmc_pwrseq: mmc-pwrseq {
-+		compatible = "mmc-pwrseq-simple";
-+		post-power-on-delay-ms = <100>;
-+		power-off-delay-us = <10000>;
-+		reset-gpios = <&gpio4 14 GPIO_ACTIVE_LOW>,	/* WIFI_RESET */
-+			      <&gpio3 7 GPIO_ACTIVE_LOW>;	/* WIFI_PWR_EN */
-+	};
-+
-+	reg_eqos_phy: regulator-eqos-phy {
-+		compatible = "regulator-fixed";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_reg_eqos_phy>;
-+		regulator-name = "eth_phy_pwr";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		gpio = <&gpio1 7 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+		startup-delay-us = <100000>;
-+		regulator-always-on;
-+	};
-+};
-+
-+&eqos {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_eqos>;
-+	phy-mode = "rgmii";
-+	phy-handle = <&ethphy0>;
-+	phy-supply = <&reg_eqos_phy>;
-+	status = "okay";
-+
-+	mdio {
-+		compatible = "snps,dwmac-mdio";
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		clock-frequency = <1000000>;
-+
-+		ethphy0: ethernet-phy@0 {
-+			compatible = "ethernet-phy-ieee802.3-c22";
-+			reg = <0>;
-+			eee-broken-1000t;
-+		};
-+	};
-+};
-+
-+&iomuxc {
-+	pinctrl_eqos: eqosgrp {
-+		fsl,pins = <
-+			MX93_PAD_ENET1_MDC__ENET_QOS_MDC			0x57e
-+			MX93_PAD_ENET1_MDIO__ENET_QOS_MDIO			0x57e
-+			MX93_PAD_ENET1_RD0__ENET_QOS_RGMII_RD0			0x57e
-+			MX93_PAD_ENET1_RD1__ENET_QOS_RGMII_RD1			0x57e
-+			MX93_PAD_ENET1_RD2__ENET_QOS_RGMII_RD2			0x57e
-+			MX93_PAD_ENET1_RD3__ENET_QOS_RGMII_RD3			0x57e
-+			MX93_PAD_ENET1_RXC__CCM_ENET_QOS_CLOCK_GENERATE_RX_CLK	0x5fe
-+			MX93_PAD_ENET1_RX_CTL__ENET_QOS_RGMII_RX_CTL		0x57e
-+			MX93_PAD_ENET1_TD0__ENET_QOS_RGMII_TD0			0x57e
-+			MX93_PAD_ENET1_TD1__ENET_QOS_RGMII_TD1			0x57e
-+			MX93_PAD_ENET1_TD2__ENET_QOS_RGMII_TD2			0x57e
-+			MX93_PAD_ENET1_TD3__ENET_QOS_RGMII_TD3			0x57e
-+			MX93_PAD_ENET1_TXC__CCM_ENET_QOS_CLOCK_GENERATE_TX_CLK	0x5fe
-+			MX93_PAD_ENET1_TX_CTL__ENET_QOS_RGMII_TX_CTL		0x57e
-+		>;
-+	};
-+
-+	pinctrl_reg_eqos_phy: regeqosgrp {
-+		fsl,pins = <
-+			MX93_PAD_UART2_TXD__GPIO1_IO07			0x51e
-+		>;
-+	};
-+
-+	pinctrl_usdhc1: usdhc1grp {
-+		fsl,pins = <
-+			MX93_PAD_SD1_CLK__USDHC1_CLK		0x15fe
-+			MX93_PAD_SD1_CMD__USDHC1_CMD		0x13fe
-+			MX93_PAD_SD1_DATA0__USDHC1_DATA0	0x13fe
-+			MX93_PAD_SD1_DATA1__USDHC1_DATA1	0x13fe
-+			MX93_PAD_SD1_DATA2__USDHC1_DATA2	0x13fe
-+			MX93_PAD_SD1_DATA3__USDHC1_DATA3	0x13fe
-+			MX93_PAD_SD1_DATA4__USDHC1_DATA4	0x13fe
-+			MX93_PAD_SD1_DATA5__USDHC1_DATA5	0x13fe
-+			MX93_PAD_SD1_DATA6__USDHC1_DATA6	0x13fe
-+			MX93_PAD_SD1_DATA7__USDHC1_DATA7	0x13fe
-+			MX93_PAD_SD1_STROBE__USDHC1_STROBE	0x15fe
-+		>;
-+	};
-+};
-+
-+/* eMMC */
-+&usdhc1 {
-+	pinctrl-names = "default", "state_100mhz", "state_200mhz";
-+	pinctrl-0 = <&pinctrl_usdhc1>;
-+	pinctrl-1 = <&pinctrl_usdhc1>;
-+	pinctrl-2 = <&pinctrl_usdhc1>;
-+	bus-width = <8>;
-+	non-removable;
-+	status = "okay";
-+};
--- 
-2.41.0
-
+> Closes: https://lore.kernel.org/linux-rockchip/OS0P286MB06412D049D8BF7B063D41350CD95A@OS0P286MB0641.JPNP286.PROD.OUTLOOK.COM/T/#u
+> Signed-off-by: Andy Yan <andyshrk@163.com>
+> ---
+> 
+>  arch/arm64/boot/dts/rockchip/rk3566-lubancat-1.dts | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm64/boot/dts/rockchip/rk3566-lubancat-1.dts b/arch/arm64/boot/dts/rockchip/rk3566-lubancat-1.dts
+> index 1c6d83b47cd2..6ecdf5d28339 100644
+> --- a/arch/arm64/boot/dts/rockchip/rk3566-lubancat-1.dts
+> +++ b/arch/arm64/boot/dts/rockchip/rk3566-lubancat-1.dts
+> @@ -455,7 +455,7 @@ &pcie2x1 {
+>  &pinctrl {
+>  	leds {
+>  		sys_led_pin: sys-status-led-pin {
+> -			rockchip,pins = <0 RK_PC7 RK_FUNC_GPIO &pcfg_pull_none>;
+> +			rockchip,pins = <0 RK_PC5 RK_FUNC_GPIO &pcfg_pull_none>;
+>  		};
+>  	};
+>  
+> -- 
+> 2.34.1
+> 
 
