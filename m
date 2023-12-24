@@ -1,61 +1,61 @@
-Return-Path: <linux-kernel+bounces-10830-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10831-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DFB481DC86
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 22:34:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DED2081DC8A
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 22:34:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0A69F1F21554
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 21:34:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1A6F71C20613
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 21:34:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9DDDEED2;
-	Sun, 24 Dec 2023 21:34:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D290FF4F7;
+	Sun, 24 Dec 2023 21:34:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ZPGJXL0R"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ogjD8IM8"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+Received: from mail-il1-f179.google.com (mail-il1-f179.google.com [209.85.166.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9A69EED4
-	for <linux-kernel@vger.kernel.org>; Sun, 24 Dec 2023 21:34:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE40C107A4
+	for <linux-kernel@vger.kernel.org>; Sun, 24 Dec 2023 21:34:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1d3fde109f2so262855ad.1
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Dec 2023 13:34:05 -0800 (PST)
+Received: by mail-il1-f179.google.com with SMTP id e9e14a558f8ab-35ffc781b3bso58215ab.1
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Dec 2023 13:34:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1703453645; x=1704058445; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1703453674; x=1704058474; darn=vger.kernel.org;
         h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=19k96QXnbMagvx60gm9Q3bYlRQY8OEapphIAobKuCbg=;
-        b=ZPGJXL0R71PwVR3MCcIyXT04X3X4fpdBs57SiGJEEbP9avwknKt4TU6lcVI6V/1x4o
-         d3ela5bGeMXPrH+jhCkNCw/BfXXx2PTBR6bywVFoFOmQUv3DRjyrHX53UBXVGlFM6LMn
-         ul2QNkzO0VGXadfV4VrLpYab4+QqH8UEEBPZ/ljLdymjxTXV3mhAvhvkkAuq5HH8AKDS
-         Td+qbfo7DAh9f2L7t5e+QCo4i6l+ClpLRNJT+0w1qFMMRogO8C07v3ZfYMXDMolRJyhr
-         EyThTuvBBGo7inY1tTcHmRagHOaUeDNEOhzfwNjYrR9kodRNG9TrrSFNvT7oasCdPS16
-         B3pQ==
+        bh=TfM2Ozc84jVU4EjDuheFZr1xJI8bldYDvajnMAoQpG8=;
+        b=ogjD8IM8k6nG6i47WrDOpIVa5tb0zEcbectB6OzBQjfO6QQf+gJbNgemrWecQ4KZ+a
+         Bd+NB0HK6TKsTJx25uPuM4c/VQ3W45XIQPfpjcRCqsgQikg2qFPtR4HSj3W8ndYmEbwt
+         U3AXQmq3EgFXeqc2JxLdn7OVbRN2vYlSbnDNDiVPkRP+88dXmM5NLIN9sfdFfXpDarxe
+         cZ7KIz37Pmd3cx6uMT6jU0nL1RxkMEJUebyc7URqXzA0TlfinE/1pcTDP4uy2uMJFom0
+         e9ClyTGGDsU6Z1qlbquIGe/0CqkMZ/wbYDWO/yanq0sFeH7QN8cxG1gyYU4eDF51jHEY
+         b0cg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703453645; x=1704058445;
+        d=1e100.net; s=20230601; t=1703453674; x=1704058474;
         h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=19k96QXnbMagvx60gm9Q3bYlRQY8OEapphIAobKuCbg=;
-        b=euRjU63+87ZT59DAxYHo589cTN9zZS6jLpbLPSwKe+z7cSQPJ21LTybY1Q4TPeuc8D
-         L/jv7EcOYDW23gdmENySyFZND2v5iuZHGKII7zAmeDR2GClsHRcm5+9LYrfnKS0lms8M
-         pD9U/35Ar7X94XCydcHeUek13775IvjfdAO3qtrBUrMqgv5+QDzwI2f3bSc492XQRhIE
-         AtoppO0vEk7SWPomCURIM1zZIhDIXAG9tIF3xWnJcS+Lt7L+YQulT+PMF7ZHfFZclIb5
-         X5nPawmeuj268innDjCNqvcTu3es0zfbvjNMFEXFxT2ou6sVCKDd7W544dBSqykerLIk
-         TMtw==
-X-Gm-Message-State: AOJu0YyfH8nJ2mC/5xuV9a+775w+5LQliwZyHC9jb3iolXHLMMGw+xxL
-	GiiO2Pa9AcfsTgjeU1mHvbW59HiScNNC
-X-Google-Smtp-Source: AGHT+IGegIDK1SiERqRo6gqK2h3wZ3T0rNk/SXpnhPjqekqQBeNJ+EefZk9MMaDh4fgCcjIJBnmJeg==
-X-Received: by 2002:a17:903:1248:b0:1d4:cae:9a03 with SMTP id u8-20020a170903124800b001d40cae9a03mr251305plh.23.1703453645061;
-        Sun, 24 Dec 2023 13:34:05 -0800 (PST)
+        bh=TfM2Ozc84jVU4EjDuheFZr1xJI8bldYDvajnMAoQpG8=;
+        b=wZLymuAf7w9Q5XJ2th5SMfs/AYZqzRXgS71OaKKm4hC0amNaFg6YxaY1NqdIjKhMbu
+         Yu2YTfk9qlFhEDAtIUOuwuTV+YjYB8yFPxHetoWiFid3isLCFmzoqTlC6S6OcUkn/t1o
+         Jrr9bssyT85nLGvA/q/uIUxkdlKZaEsjKmfOVFDwBlUJ4jtLJ/fS56vm+5GDn1xc/h5R
+         InlgDVWNqx6nNuKEfxPdFoGB1KhLhU6uzmPMoT337alSS168eENn8fyKaAR4pBVtcUKZ
+         /ThqH94QT6cM1oW69cFP5SBhkzXfg5u4uCVZYgYIDMNKUB3njsqyFLy8WloXCz7a5cZr
+         O6FA==
+X-Gm-Message-State: AOJu0YwpqylQhVTiePh2BSdz3ZH2jT/TE0xTrO0+TfCi8yFMQwZUvSl0
+	2HXAv+6oBz16r1EUMUvIKwDtjhYIJqMB
+X-Google-Smtp-Source: AGHT+IG3cVdgoPXJNOP0FoX9QP3AtXmf/dh4TZ34AQ57wFrWDSmH4MJwWcFfrokVe6jo4lwlGVdhWA==
+X-Received: by 2002:a92:6802:0:b0:35f:ff76:2d40 with SMTP id d2-20020a926802000000b0035fff762d40mr25383ilc.28.1703453673759;
+        Sun, 24 Dec 2023 13:34:33 -0800 (PST)
 Received: from [2620:0:1008:15:c723:e11e:854b:ac88] ([2620:0:1008:15:c723:e11e:854b:ac88])
-        by smtp.gmail.com with ESMTPSA id n7-20020a056a000d4700b006d9bbc8d785sm400894pfv.141.2023.12.24.13.34.04
+        by smtp.gmail.com with ESMTPSA id h16-20020aa79f50000000b006d9ab1e15c3sm2281753pfr.129.2023.12.24.13.34.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 Dec 2023 13:34:04 -0800 (PST)
-Date: Sun, 24 Dec 2023 13:34:03 -0800 (PST)
+        Sun, 24 Dec 2023 13:34:33 -0800 (PST)
+Date: Sun, 24 Dec 2023 13:34:32 -0800 (PST)
 From: David Rientjes <rientjes@google.com>
 To: Pasha Tatashin <pasha.tatashin@soleen.com>
 cc: akpm@linux-foundation.org, alim.akhtar@samsung.com, alyssa@rosenzweig.io, 
@@ -73,11 +73,11 @@ cc: akpm@linux-foundation.org, alim.akhtar@samsung.com, alyssa@rosenzweig.io,
     suravee.suthikulpanit@amd.com, sven@svenpeter.dev, 
     thierry.reding@gmail.com, tj@kernel.org, tomas.mudrunka@gmail.com, 
     vdumpa@nvidia.com, wens@csie.org, will@kernel.org, yu-cheng.yu@intel.com
-Subject: Re: [PATCH v2 02/10] iommu/amd: use page allocation function provided
- by iommu-pages.h
-In-Reply-To: <20231130201504.2322355-3-pasha.tatashin@soleen.com>
-Message-ID: <56409bdf-3f9d-e521-814f-3c8e854db3bf@google.com>
-References: <20231130201504.2322355-1-pasha.tatashin@soleen.com> <20231130201504.2322355-3-pasha.tatashin@soleen.com>
+Subject: Re: [PATCH v2 03/10] iommu/io-pgtable-arm: use page allocation
+ function provided by iommu-pages.h
+In-Reply-To: <20231130201504.2322355-4-pasha.tatashin@soleen.com>
+Message-ID: <f36a5a1e-f28f-c25b-337b-8c67ccd46943@google.com>
+References: <20231130201504.2322355-1-pasha.tatashin@soleen.com> <20231130201504.2322355-4-pasha.tatashin@soleen.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -88,13 +88,10 @@ Content-Type: text/plain; charset=US-ASCII
 
 On Thu, 30 Nov 2023, Pasha Tatashin wrote:
 
-> Convert iommu/amd/* files to use the new page allocation functions
+> Convert iommu/io-pgtable-arm.c to use the new page allocation functions
 > provided in iommu-pages.h.
 > 
 > Signed-off-by: Pasha Tatashin <pasha.tatashin@soleen.com>
 
 Acked-by: David Rientjes <rientjes@google.com>
-
-Although any feedback from Suravee and Joerg would be very useful on the 
-overall approach and whether this looks good to them.
 
