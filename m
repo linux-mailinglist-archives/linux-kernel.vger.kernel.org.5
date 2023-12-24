@@ -1,125 +1,96 @@
-Return-Path: <linux-kernel+bounces-10782-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10781-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0133481DBC0
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 19:14:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 644B681DBBE
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 19:13:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9C6DE1F2167A
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 18:14:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BD722281D4D
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 18:13:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B91CD507;
-	Sun, 24 Dec 2023 18:13:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EC68CA7D;
+	Sun, 24 Dec 2023 18:13:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=mrman314.tech header.i=@mrman314.tech header.b="isElspyB"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VqWJHY89"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx.mrman314.tech (unknown [135.0.77.242])
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AEF7D2F1;
-	Sun, 24 Dec 2023 18:13:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mrman314.tech
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mrman314.tech
-Received: from mail.mrman314.tech (localhost [127.0.0.1])
-	by mx.mrman314.tech (Postfix) with ESMTPSA id 177872F406D0;
-	Sun, 24 Dec 2023 13:04:34 -0500 (EST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mrman314.tech;
-	s=default; t=1703441075;
-	bh=R0Ct9LAMRoC93PP14kNc4aB4j0kJN4qE7SAVSIp+0no=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References;
-	b=isElspyBcHBK12K9W1c/zyGQSPfY4sZMH2Rrjb+1JEE7SIEeGSy3V9Ku5R/75T6vy
-	 hElhmYBoRmVgGc8AV3gAIXEALU4MeXURiUNROuBWRCuaawPB6qyooycpvJI5cjgCDo
-	 +usDtlj2PWPPlme8qtGmMXadjFBqRXMmZhztYxdw=
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B067CA6F
+	for <linux-kernel@vger.kernel.org>; Sun, 24 Dec 2023 18:13:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1703441617; x=1734977617;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=ocrrjhfwm2JP3wKLiTvIlbxxnn2b01d17w0X+yU6Pfc=;
+  b=VqWJHY89sjt9DGv5cKBazPLH2zrDdr1XYA7XWrye9lOF3HW67/1Kv2Yh
+   eCCJK0RC2fGk7J+ClU8pxLEBrUg0IRPRrKbleppV3V8n0keKkL3+82L2+
+   8B/uUWlsfi9BOyA/c7RFDqzI+hhzAdLpwzyjwsHPSPUIRhRcek7tplkl1
+   FtLt+CSzSRDmWnusbGf875g7XqHzak0C1PnTSRfwHxvbkcNgU8OkFHugu
+   yMtdrs3U67PRU0BBbi3xant2elv8lcayRcNaERSUD7k2BYaq1Pimgo1tJ
+   PXOSQ0WwxJBUWteHP2mAlUq5dvHU5rlKZbQEMCadEFIuaIrTjZdEU6BOf
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10934"; a="376384277"
+X-IronPort-AV: E=Sophos;i="6.04,301,1695711600"; 
+   d="scan'208";a="376384277"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Dec 2023 10:13:36 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10934"; a="868212613"
+X-IronPort-AV: E=Sophos;i="6.04,301,1695711600"; 
+   d="scan'208";a="868212613"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by FMSMGA003.fm.intel.com with ESMTP; 24 Dec 2023 10:13:35 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rHSyK-000CUu-0R;
+	Sun, 24 Dec 2023 18:13:17 +0000
+Date: Mon, 25 Dec 2023 02:12:16 +0800
+From: kernel test robot <lkp@intel.com>
+To: Andy Lutomirski <luto@kernel.org>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	Borislav Petkov <bp@suse.de>, Thomas Gleixner <tglx@linutronix.de>
+Subject: arch/x86/kernel/irq_64.c:26:1: sparse: sparse: symbol
+ '__pcpu_scope_irq_stack_backing_store' was not declared. Should it be
+ static?
+Message-ID: <202312250248.UgnvTAFE-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Date: Sun, 24 Dec 2023 13:04:33 -0500
-From: Felix Zhang <mrman@mrman314.tech>
-To: Aditya Garg <gargaditya08@live.com>
-Cc: Hector Martin <marcan@marcan.st>, Sven Peter <sven@svenpeter.dev>,
- Alyssa Rosenzweig <alyssa@rosenzweig.io>, marcel@holtmann.org,
- johan.hedberg@gmail.com, luiz.dentz@gmail.com, Orlando Chamberlain
- <orlandoch.dev@gmail.com>, Kerem Karabay <kekrby@gmail.com>, Aun-Ali Zaidi
- <admin@kodeit.net>, Asahi Linux <asahi@lists.linux.dev>, LKML
- <linux-kernel@vger.kernel.org>, linux-bluetooth@vger.kernel.org
-Subject: Re: [REGRESSION] Bluetooth is not working on Macs with BCM4377 chip
- starting from kernel 6.5
-In-Reply-To: <22582194-DE99-45E5-ABEE-C1C7900DA523@live.com>
-References: <22582194-DE99-45E5-ABEE-C1C7900DA523@live.com>
-Message-ID: <956280a5c2e931b13d784ec5fca38156@mrman314.tech>
-X-Sender: mrman@mrman314.tech
-Organization: MrMan
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 2023-11-13 15:57, Aditya Garg wrote:
-> Starting from kernel 6.5, a regression in the kernel is causing 
-> Bluetooth to not work on T2 Macs with BCM4377 chip.
-> 
-> Journalctl of kernel 6.4.8 which has Bluetooth working is given here: 
-> https://pastebin.com/u9U3kbFJ
-> 
-> Journalctl of kernel 6.5.2, which has Bluetooth broken is given here: 
-> https://pastebin.com/aVHNFMRs
-> 
-> Also, the bug hasn’t been fixed even in 6.6.1, as reported by users.
-> 
-> Some relevant bits imo:
-> 
->     • Sep 19 21:24:36 RudyUbuMbp kernel: hci_bcm4377 0000:73:00.1: 
-> can't disable ASPM; OS doesn't have ASPM control
-> 
->     • Nov 14 01:29:28 RudyUbuMbp kernel: Call Trace:
->     • Nov 14 01:29:28 RudyUbuMbp kernel: <TASK>
->     • Nov 14 01:29:28 RudyUbuMbp kernel: dump_stack_lvl+0x48/0x70
->     • Nov 14 01:29:28 RudyUbuMbp kernel: dump_stack+0x10/0x20
->     • Nov 14 01:29:28 RudyUbuMbp kernel: 
-> __ubsan_handle_shift_out_of_bounds+0x156/0x310
->     • Nov 14 01:29:28 RudyUbuMbp kernel: ? ttwu_do_activate+0x80/0x290
->     • Nov 14 01:29:28 RudyUbuMbp kernel: ? raw_spin_rq_unlock+0x10/0x40
->     • Nov 14 01:29:28 RudyUbuMbp kernel: ? try_to_wake_up+0x292/0x6c0
->     • Nov 14 01:29:28 RudyUbuMbp kernel: ? sched_slice+0x76/0x140
->     • Nov 14 01:29:28 RudyUbuMbp kernel: ? reweight_entity+0x15c/0x170
->     • Nov 14 01:29:28 RudyUbuMbp kernel: __reg_op.cold+0x14/0x38
->     • Nov 14 01:29:28 RudyUbuMbp kernel: bitmap_release_region+0xe/0x20
->     • Nov 14 01:29:28 RudyUbuMbp kernel: bcm4377_handle_ack+0x8c/0x130 
-> [hci_bcm4377]
->     • Nov 14 01:29:28 RudyUbuMbp kernel: 
-> bcm4377_poll_completion_ring+0x196/0x330 [hci_bcm4377]
->     • Nov 14 01:29:28 RudyUbuMbp kernel: ? 
-> rcu_gp_kthread_wake+0x57/0x90
->     • Nov 14 01:29:28 RudyUbuMbp kernel: bcm4377_irq+0x77/0x140 
-> [hci_bcm4377]
->     • Nov 14 01:29:28 RudyUbuMbp kernel: 
-> __handle_irq_event_percpu+0x4c/0x1b0
->     • Nov 14 01:29:28 RudyUbuMbp kernel: handle_irq_event+0x39/0x80
->     • Nov 14 01:29:28 RudyUbuMbp kernel: handle_edge_irq+0x8c/0x250
->     • Nov 14 01:29:28 RudyUbuMbp kernel: __common_interrupt+0x4f/0x110
->     • Nov 14 01:29:28 RudyUbuMbp kernel: common_interrupt+0x45/0xb0
->     • Nov 14 01:29:28 RudyUbuMbp kernel: asm_common_interrupt+0x27/0x40
->     • Nov 14 01:29:28 RudyUbuMbp kernel: RIP: 0033:0x7f17b5fd8bca
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   861deac3b092f37b2c5e6871732f3e11486f7082
+commit: e6401c13093173aad709a5c6de00cf8d692ee786 x86/irq/64: Split the IRQ stack into its own pages
+date:   4 years, 8 months ago
+config: x86_64-randconfig-122-20231101 (https://download.01.org/0day-ci/archive/20231225/202312250248.UgnvTAFE-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231225/202312250248.UgnvTAFE-lkp@intel.com/reproduce)
 
-It seems that the BCM4377 chip stopped working on my MacBookAir9,1 (and 
-possibly other T2 devices with the BCM4377) after the logic in the 
-Bluetooth core was changed in this commit: 
-https://github.com/torvalds/linux/commit/6945795bc81ab7be22750ecfb365056688f2fada
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312250248.UgnvTAFE-lkp@intel.com/
 
-Due to the HCI_QUIRK_USE_BDADDR_PROPERTY being always set in 
-drivers/bluetooth/hci_bcm4377.c, the chip would be left unconfigured, as 
-per the commit mentioned prior.  On the M1 Macs, it seems that the 
-device would be configured in the devicetree.  However, that is not the 
-case on T2 Macs.  In order to circumvent this issue, a flag can be added 
-to prevent the bit from being set on the BCM4377, while setting it on 
-the other devices.  I have not submitted a patch yet, but you can view 
-and use the patch with the latest kernel source here: 
-https://github.com/MrMan314/linux-t2-patches/blob/main/9004-bcm4377-fix-bdaddr-property.patch
+sparse warnings: (new ones prefixed by >>)
+>> arch/x86/kernel/irq_64.c:26:1: sparse: sparse: symbol '__pcpu_scope_irq_stack_backing_store' was not declared. Should it be static?
 
-I would also like to thank kekrby (https://github.com/kekrby) for 
-helping me with the patch.
+vim +/__pcpu_scope_irq_stack_backing_store +26 arch/x86/kernel/irq_64.c
+
+    25	
+  > 26	DEFINE_PER_CPU_PAGE_ALIGNED(struct irq_stack, irq_stack_backing_store) __visible;
+    27	DECLARE_INIT_PER_CPU(irq_stack_backing_store);
+    28	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
