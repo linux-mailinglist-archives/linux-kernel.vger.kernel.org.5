@@ -1,166 +1,139 @@
-Return-Path: <linux-kernel+bounces-10690-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10692-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29F1A81D8C9
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 11:50:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 50B1581D8DB
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 12:45:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DA759282493
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 10:50:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 823CB1C20C7A
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 11:45:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A3A323C3;
-	Sun, 24 Dec 2023 10:50:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27C5223D1;
+	Sun, 24 Dec 2023 11:45:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="Nv0o5wXe"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XtlV18KW"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EFCB2105
-	for <linux-kernel@vger.kernel.org>; Sun, 24 Dec 2023 10:50:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com [209.85.160.197])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id E597C3F593
-	for <linux-kernel@vger.kernel.org>; Sun, 24 Dec 2023 10:50:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20210705; t=1703415022;
-	bh=dRjx8VHHb0t27RVkqdYIaU34XdXmnq6meYjdKYyMtPA=;
-	h=From:In-Reply-To:References:Mime-Version:Date:Message-ID:Subject:
-	 To:Cc:Content-Type;
-	b=Nv0o5wXe+/6CHPZ0yR7/04fuoAY63q8UP3xFEEvaR8giEz/Z6EamC0wAb8CLZcjpU
-	 6wyjuIvSAoBUAScW5WnxaK3LtBof2//srbDBF4TsdRTuG2LS1v2lkCKc9k/tmtAz2m
-	 cRkOA6K09B1yMcpTHl04tHQ7q/F6hX5bIy1FAMawq1N4uHFRJ2vP4cQ77fQ9suStd7
-	 ftp7L1SlzO9xsbg5XZm0Cr6jbXdg5a3sEwPOSXg6x5f6yZaOH3wRSur4ODPz3XHyhY
-	 ANtuCglCjtO1cf3DYpyT9PraJU5dQn9jn4diTbrhXweDlhTin3aTQOPCxx9VNvE82p
-	 V/4tKE4hZ57iA==
-Received: by mail-qt1-f197.google.com with SMTP id d75a77b69052e-4278740faedso39889451cf.0
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Dec 2023 02:50:22 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703415022; x=1704019822;
-        h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=dRjx8VHHb0t27RVkqdYIaU34XdXmnq6meYjdKYyMtPA=;
-        b=m8EXe323eTseho+F1lyIg8QAV6Ao69FZHzlhtsy4DEO9uK1poZpJPUkCxITcmetUvf
-         R3Ov2es7o+tJEwl1W4a2M9o/4DBgnDRpiGtXoXjSBT0lYM/2e0U/OH/GRc/GIM7iAlgV
-         1D6W6YVWhAGxUyT1e1u2UKxuYtyglF84Zb4n7ChCubbQlTbsXd6+sTN4sf3Aq9qCNkW9
-         ojvV2KGczX5TEzDrAtVAJauGRoiVW8z5IXne8NdNAv+FdwSBe6sIbKF887gve6B3h0XO
-         yPiSIVrcmMrWFFgusATgOU2mhJ7fSMVdd6Yr9YHNoNH8EtfW1vsWiK2nem3aY3qhFS5W
-         E8gA==
-X-Gm-Message-State: AOJu0Yxi2VknHgi85Kt+nfKyQ3AxCn0cpe625i+cdacDsWsSYGPKPRzG
-	7yGQ9+kz1odODzwf4XrVTq2s+i4C7vwBlAHCavMgMIWryEoOxSThGR8VbFgkhbV018s+wpatmLG
-	wXgIPc2N25Fj5DfaOvsAIObREdMMuf3NdfbOZBt3vegw5/yxyG2tj81Egkl4ynblm
-X-Received: by 2002:a05:622a:182:b0:425:76df:7e6f with SMTP id s2-20020a05622a018200b0042576df7e6fmr5609347qtw.119.1703415021914;
-        Sun, 24 Dec 2023 02:50:21 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGJ96r2eapvbnKdZyEB77jqFXRuTWzy2bUJJjzd8WXSuigvwDiMsomMEGU5kDYipZ+1aQleLT61MirQghPeNG0=
-X-Received: by 2002:a05:622a:182:b0:425:76df:7e6f with SMTP id
- s2-20020a05622a018200b0042576df7e6fmr5609335qtw.119.1703415021493; Sun, 24
- Dec 2023 02:50:21 -0800 (PST)
-Received: from 348282803490 named unknown by gmailapi.google.com with
- HTTPREST; Sun, 24 Dec 2023 02:50:21 -0800
-From: Emil Renner Berthing <emil.renner.berthing@canonical.com>
-In-Reply-To: <20231222094548.54103-5-william.qiu@starfivetech.com>
-References: <20231222094548.54103-1-william.qiu@starfivetech.com> <20231222094548.54103-5-william.qiu@starfivetech.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2D5E23A8;
+	Sun, 24 Dec 2023 11:45:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1703418303; x=1734954303;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=SMd6CE+ZnQSEB4njXtyEKZAOcZ4cjDK8fUe+BpN1ozY=;
+  b=XtlV18KWRXXmQLZkWNxctKyXTsSd9elvvouO15nCzJt+Bz96BdoudfdG
+   IpB2BQGIz30choUC2QSe6OMK+GMlsLnvy/V2EFYC24puCixgZEPfoTLgm
+   cx/ThlxZWTzr4sWsKGQC2/HM2M2vfbQ2lYI8P6ZCVwvgOetpYuxEwub0P
+   5g+HrN7lqCeVK0nflJ5LMLNKaD9Sk8omSu3Ahe1yGwXATqslLdaCMFpam
+   nH6GcxgyGYW2q+Ti+kSp/Zu0TiEzgUIdcKcRO2fvEmayRIfQyJOoHJZ5p
+   J3lcCqRkuAU96g26er0ItzRmlfLhChonb85dPaNnL7U6k7DulCVhzAgHc
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10933"; a="3068592"
+X-IronPort-AV: E=Sophos;i="6.04,301,1695711600"; 
+   d="scan'208";a="3068592"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Dec 2023 03:45:02 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10933"; a="900967322"
+X-IronPort-AV: E=Sophos;i="6.04,301,1695711600"; 
+   d="scan'208";a="900967322"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga004.jf.intel.com with ESMTP; 24 Dec 2023 03:44:59 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rHMuU-000CCY-04;
+	Sun, 24 Dec 2023 11:44:46 +0000
+Date: Sun, 24 Dec 2023 19:36:30 +0800
+From: kernel test robot <lkp@intel.com>
+To: Sreenath Vijayan <sreenath.vijayan@sony.com>, linux-doc@vger.kernel.org,
+	linux-serial@vger.kernel.org, corbet@lwn.net,
+	gregkh@linuxfoundation.org, jirislaby@kernel.org
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	anandakumar.balasubramaniam@sony.com,
+	Sreenath Vijayan <sreenath.vijayan@sony.com>,
+	Shimoyashiki Taichi <taichi.shimoyashiki@sony.com>
+Subject: Re: [PATCH] tty/sysrq: Dump kernel ring buffer messages via sysrq
+Message-ID: <202312241947.B2xJpFET-lkp@intel.com>
+References: <20231221133953.1507021-1-sreenath.vijayan@sony.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Date: Sun, 24 Dec 2023 02:50:21 -0800
-Message-ID: <CAJM55Z8aGviAN0FzEPYtOuV_8q=OvVpNbid195BJTfVMnrA7aA@mail.gmail.com>
-Subject: Re: [PATCH v10 4/4] riscv: dts: starfive: jh7110: Add PWM node and
- pins configuration
-To: William Qiu <william.qiu@starfivetech.com>, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org, 
-	linux-pwm@vger.kernel.org
-Cc: Emil Renner Berthing <kernel@esmil.dk>, Rob Herring <robh+dt@kernel.org>, 
-	Thierry Reding <thierry.reding@gmail.com>, Philipp Zabel <p.zabel@pengutronix.de>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	=?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, 
-	Hal Feng <hal.feng@starfivetech.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231221133953.1507021-1-sreenath.vijayan@sony.com>
 
-William Qiu wrote:
-> Add OpenCores PWM controller node and add PWM pins configuration
-> on VisionFive 2 board.
->
-> Signed-off-by: William Qiu <william.qiu@starfivetech.com>
+Hi Sreenath,
 
-Reviewed-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+kernel test robot noticed the following build warnings:
 
-> ---
->  .../jh7110-starfive-visionfive-2.dtsi         | 22 +++++++++++++++++++
->  arch/riscv/boot/dts/starfive/jh7110.dtsi      |  9 ++++++++
->  2 files changed, 31 insertions(+)
->
-> diff --git a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
-> index b89e9791efa7..e08af8a830ab 100644
-> --- a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
-> +++ b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
-> @@ -323,6 +323,12 @@ reserved-data@600000 {
->  	};
->  };
->
-> +&pwm {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pwm_pins>;
-> +	status = "okay";
-> +};
-> +
->  &spi0 {
->  	pinctrl-names = "default";
->  	pinctrl-0 = <&spi0_pins>;
-> @@ -513,6 +519,22 @@ GPOEN_ENABLE,
->  		};
->  	};
->
-> +	pwm_pins: pwm-0 {
-> +		pwm-pins {
-> +			pinmux = <GPIOMUX(46, GPOUT_SYS_PWM_CHANNEL0,
-> +					      GPOEN_SYS_PWM0_CHANNEL0,
-> +					      GPI_NONE)>,
-> +				 <GPIOMUX(59, GPOUT_SYS_PWM_CHANNEL1,
-> +					      GPOEN_SYS_PWM0_CHANNEL1,
-> +					      GPI_NONE)>;
-> +			bias-disable;
-> +			drive-strength = <12>;
-> +			input-disable;
-> +			input-schmitt-disable;
-> +			slew-rate = <0>;
-> +		};
-> +	};
-> +
->  	spi0_pins: spi0-0 {
->  		mosi-pins {
->  			pinmux = <GPIOMUX(52, GPOUT_SYS_SPI0_TXD,
-> diff --git a/arch/riscv/boot/dts/starfive/jh7110.dtsi b/arch/riscv/boot/dts/starfive/jh7110.dtsi
-> index 45213cdf50dc..1b782f2c1395 100644
-> --- a/arch/riscv/boot/dts/starfive/jh7110.dtsi
-> +++ b/arch/riscv/boot/dts/starfive/jh7110.dtsi
-> @@ -829,6 +829,15 @@ i2stx1: i2s@120c0000 {
->  			status = "disabled";
->  		};
->
-> +		pwm: pwm@120d0000 {
-> +			compatible = "starfive,jh7110-pwm", "opencores,pwm-v1";
-> +			reg = <0x0 0x120d0000 0x0 0x10000>;
-> +			clocks = <&syscrg JH7110_SYSCLK_PWM_APB>;
-> +			resets = <&syscrg JH7110_SYSRST_PWM_APB>;
-> +			#pwm-cells = <3>;
-> +			status = "disabled";
-> +		};
-> +
->  		sfctemp: temperature-sensor@120e0000 {
->  			compatible = "starfive,jh7110-temp";
->  			reg = <0x0 0x120e0000 0x0 0x10000>;
-> --
-> 2.34.1
->
+[auto build test WARNING on tty/tty-testing]
+[also build test WARNING on tty/tty-next tty/tty-linus linus/master v6.7-rc7 next-20231222]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Sreenath-Vijayan/tty-sysrq-Dump-kernel-ring-buffer-messages-via-sysrq/20231222-172636
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty.git tty-testing
+patch link:    https://lore.kernel.org/r/20231221133953.1507021-1-sreenath.vijayan%40sony.com
+patch subject: [PATCH] tty/sysrq: Dump kernel ring buffer messages via sysrq
+config: csky-defconfig (https://download.01.org/0day-ci/archive/20231224/202312241947.B2xJpFET-lkp@intel.com/config)
+compiler: csky-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231224/202312241947.B2xJpFET-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312241947.B2xJpFET-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   drivers/tty/sysrq.c: In function 'dmesg_dump_callback':
+>> drivers/tty/sysrq.c:479:1: warning: the frame size of 1048 bytes is larger than 1024 bytes [-Wframe-larger-than=]
+     479 | }
+         | ^
+
+
+vim +479 drivers/tty/sysrq.c
+
+   454	
+   455	static void dmesg_dump_callback(struct work_struct *work)
+   456	{
+   457		struct kmsg_dump_iter iter;
+   458		size_t len;
+   459		char buf[1024];
+   460		struct console *con;
+   461		int cookie;
+   462	
+   463		kmsg_dump_rewind(&iter);
+   464		while (kmsg_dump_get_line(&iter, 1, buf, sizeof(buf), &len)) {
+   465			/*
+   466			 * Since using printk() or pr_*() will append the message to the
+   467			 * kernel ring buffer, they cannot be used to display the retrieved
+   468			 * message. Hence console_write() of serial drivers is used.
+   469			 */
+   470			console_lock();
+   471			cookie = console_srcu_read_lock();
+   472			for_each_console_srcu(con) {
+   473				if ((console_srcu_read_flags(con) & CON_ENABLED) && con->write)
+   474					con->write(con, buf, len);
+   475			}
+   476			console_srcu_read_unlock(cookie);
+   477			console_unlock();
+   478		}
+ > 479	}
+   480	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
