@@ -1,24 +1,24 @@
-Return-Path: <linux-kernel+bounces-10730-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10729-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB23181DAF9
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 15:37:08 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0643581DAF8
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 15:37:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 368E01F21819
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 14:37:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9B970B215D0
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 14:37:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10FD410A0E;
-	Sun, 24 Dec 2023 14:35:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D38071095A;
+	Sun, 24 Dec 2023 14:35:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=subdimension.ro header.i=@subdimension.ro header.b="IJtgSSkj"
+	dkim=pass (1024-bit key) header.d=subdimension.ro header.i=@subdimension.ro header.b="MDn/w3Yu"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from mail.subdimension.ro (skycaves.subdimension.ro [172.104.132.142])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB8C0D2E4;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB8F0D2E5;
 	Sun, 24 Dec 2023 14:35:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=subdimension.ro
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=subdimension.ro
@@ -26,15 +26,15 @@ Received: from localhost.localdomain (unknown [188.24.94.216])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
-	by mail.subdimension.ro (Postfix) with ESMTPSA id 258D328B596;
+	by mail.subdimension.ro (Postfix) with ESMTPSA id 761CE28B597;
 	Sun, 24 Dec 2023 14:35:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=subdimension.ro;
 	s=skycaves; t=1703428513;
-	bh=igQQMcRnZ9Jt9l924W/q+qEMsBoB7ucqMQshinmhQGc=;
+	bh=KDRAxKlPjg5H/Rw/NBwFCVs5lMGFbcXAUuvCmLYArFk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=IJtgSSkjcotM5kNdFcwapPQ28SbdijSLLU27krN5hA+4vTlImmr2zplxD6jOMfvEv
-	 ZNHph03LHU7rOSUhFq/vGERt1Q9afEfa5Ay0KKMBVGaX8SsiIRG09ff+CdRYSq9E6c
-	 FNxC+LSEcB/kmVB076XqBU46Vvmfh1colzFm0cVA=
+	b=MDn/w3Yue04BzNM1VWayAQyGNCcFVz3ouPJXBLd77fiyiOtQ7Ykhy2+r2W56LmBz6
+	 HJmD3+xx+WfxKOGJdbeOu7nN9Lgtm/C2+QXBcQrIy2QJ7WOlhuRBSy7QhhjELetkOk
+	 f5qT3YtSGkpO76jhmVbn6WQDhcxWBI/idtqDwHjQ=
 From: Petre Rodan <petre.rodan@subdimension.ro>
 To: linux-iio@vger.kernel.org,
 	linux-kernel@vger.kernel.org
@@ -45,9 +45,9 @@ Cc: Petre Rodan <petre.rodan@subdimension.ro>,
 	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
 	Angel Iglesias <ang.iglesiasg@gmail.com>,
 	Matti Vaittinen <mazziesaccount@gmail.com>
-Subject: [PATCH v2 09/10] iio: pressure: mprls0025pa.c add triplet property
-Date: Sun, 24 Dec 2023 16:34:54 +0200
-Message-ID: <20231224143500.10940-10-petre.rodan@subdimension.ro>
+Subject: [PATCH v2 10/10] iio: pressure: mprls0025pa.c add SPI driver
+Date: Sun, 24 Dec 2023 16:34:55 +0200
+Message-ID: <20231224143500.10940-11-petre.rodan@subdimension.ro>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231224143500.10940-1-petre.rodan@subdimension.ro>
 References: <20231224143500.10940-1-petre.rodan@subdimension.ro>
@@ -59,147 +59,161 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add honeywell,pressure-triplet property that automatically initializes
-pmin-pascal, pmax-pascal so that the user is not required to look-up
-the chip in the datasheet and convert various units to pascals himself.
+Add SPI component of the driver.
+
+Tested with mprls0015pa0000sa in spi mode on BeagleBone Black on
+slightly patched 6.7.0-rc6 mainline.
+
+Tested with mprls0025pa in i2c mode on BeagleBone Black with togreg
+branch on
+git://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio.git
+(tag: iio-for-6.8a)
 
 Signed-off-by: Petre Rodan <petre.rodan@subdimension.ro>
-Signed-off-by: Andreas Klinger <ak@it-klinger.de>
+Tested-by: Andreas Klinger <ak@it-klinger.de>
 ---
- drivers/iio/pressure/mprls0025pa.c | 102 +++++++++++++++++++++++++++--
- 1 file changed, 95 insertions(+), 7 deletions(-)
+ drivers/iio/pressure/Kconfig           |  8 ++-
+ drivers/iio/pressure/Makefile          |  1 +
+ drivers/iio/pressure/mprls0025pa_spi.c | 91 ++++++++++++++++++++++++++
+ 3 files changed, 99 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/iio/pressure/mprls0025pa_spi.c
 
-diff --git a/drivers/iio/pressure/mprls0025pa.c b/drivers/iio/pressure/mprls0025pa.c
-index cb5d6c0cca7e..90aed290b6c2 100644
---- a/drivers/iio/pressure/mprls0025pa.c
-+++ b/drivers/iio/pressure/mprls0025pa.c
-@@ -81,6 +81,78 @@ static const struct mpr_func_spec mpr_func_spec[] = {
- 	[MPR_FUNCTION_C] = { .output_min = 3355443, .output_max = 13421773 },
- };
+diff --git a/drivers/iio/pressure/Kconfig b/drivers/iio/pressure/Kconfig
+index f03007cfec85..5da7931dc537 100644
+--- a/drivers/iio/pressure/Kconfig
++++ b/drivers/iio/pressure/Kconfig
+@@ -181,8 +181,9 @@ config MPL3115
 
-+enum mpr_variants {
-+	MPR0001BA = 0x00, MPR01_6BA = 0x01, MPR02_5BA = 0x02, MPR0060MG = 0x03,
-+	MPR0100MG = 0x04, MPR0160MG = 0x05, MPR0250MG = 0x06, MPR0400MG = 0x07,
-+	MPR0600MG = 0x08, MPR0001BG = 0x09, MPR01_6BG = 0x0a, MPR02_5BG = 0x0b,
-+	MPR0100KA = 0x0c, MPR0160KA = 0x0d, MPR0250KA = 0x0e, MPR0006KG = 0x0f,
-+	MPR0010KG = 0x10, MPR0016KG = 0x11, MPR0025KG = 0x12, MPR0040KG = 0x13,
-+	MPR0060KG = 0x14, MPR0100KG = 0x15, MPR0160KG = 0x16, MPR0250KG = 0x17,
-+	MPR0015PA = 0x18, MPR0025PA = 0x19, MPR0030PA = 0x1a, MPR0001PG = 0x1b,
-+	MPR0005PG = 0x1c, MPR0015PG = 0x1d, MPR0030PG = 0x1e, MPR0300YG = 0x1f,
-+	MPR_VARIANTS_MAX
-+};
+ config MPRLS0025PA
+ 	tristate "Honeywell MPRLS0025PA (MicroPressure sensors series)"
+-	depends on I2C
++	depends on (I2C || SPI_MASTER)
+ 	select MPRLS0025PA_I2C if I2C
++	select MPRLS0025PA_SPI if SPI_MASTER
+ 	select IIO_BUFFER
+ 	select IIO_TRIGGERED_BUFFER
+ 	help
+@@ -198,6 +199,11 @@ config MPRLS0025PA_I2C
+ 	depends on MPRLS0025PA
+ 	depends on I2C
+
++config MPRLS0025PA_SPI
++	tristate
++	depends on MPRLS0025PA
++	depends on SPI_MASTER
 +
-+static const char * const mpr_triplet_variants[MPR_VARIANTS_MAX] = {
-+	[MPR0001BA] = "0001BA", [MPR01_6BA] = "01.6BA", [MPR02_5BA] = "02.5BA",
-+	[MPR0060MG] = "0060MG", [MPR0100MG] = "0100MG", [MPR0160MG] = "0160MG",
-+	[MPR0250MG] = "0250MG", [MPR0400MG] = "0400MG", [MPR0600MG] = "0600MG",
-+	[MPR0001BG] = "0001BG", [MPR01_6BG] = "01.6BG", [MPR02_5BG] = "02.5BG",
-+	[MPR0100KA] = "0100KA", [MPR0160KA] = "0160KA", [MPR0250KA] = "0250KA",
-+	[MPR0006KG] = "0006KG", [MPR0010KG] = "0010KG", [MPR0016KG] = "0016KG",
-+	[MPR0025KG] = "0025KG", [MPR0040KG] = "0040KG", [MPR0060KG] = "0060KG",
-+	[MPR0100KG] = "0100KG", [MPR0160KG] = "0160KG", [MPR0250KG] = "0250KG",
-+	[MPR0015PA] = "0015PA", [MPR0025PA] = "0025PA", [MPR0030PA] = "0030PA",
-+	[MPR0001PG] = "0001PG", [MPR0005PG] = "0005PG", [MPR0015PG] = "0015PG",
-+	[MPR0030PG] = "0030PG", [MPR0300YG] = "0300YG"
-+};
-+
-+/**
-+ * struct mpr_range_config - list of pressure ranges based on nomenclature
-+ * @pmin: lowest pressure that can be measured
-+ * @pmax: highest pressure that can be measured
+ config MS5611
+ 	tristate "Measurement Specialties MS5611 pressure sensor driver"
+ 	select IIO_BUFFER
+diff --git a/drivers/iio/pressure/Makefile b/drivers/iio/pressure/Makefile
+index 7754135e190c..a93709e35760 100644
+--- a/drivers/iio/pressure/Makefile
++++ b/drivers/iio/pressure/Makefile
+@@ -25,6 +25,7 @@ obj-$(CONFIG_MPL115_SPI) += mpl115_spi.o
+ obj-$(CONFIG_MPL3115) += mpl3115.o
+ obj-$(CONFIG_MPRLS0025PA) += mprls0025pa.o
+ obj-$(CONFIG_MPRLS0025PA_I2C) += mprls0025pa_i2c.o
++obj-$(CONFIG_MPRLS0025PA_SPI) += mprls0025pa_spi.o
+ obj-$(CONFIG_MS5611) += ms5611_core.o
+ obj-$(CONFIG_MS5611_I2C) += ms5611_i2c.o
+ obj-$(CONFIG_MS5611_SPI) += ms5611_spi.o
+diff --git a/drivers/iio/pressure/mprls0025pa_spi.c b/drivers/iio/pressure/mprls0025pa_spi.c
+new file mode 100644
+index 000000000000..7ef43a7abc83
+--- /dev/null
++++ b/drivers/iio/pressure/mprls0025pa_spi.c
+@@ -0,0 +1,91 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * MPRLS0025PA - Honeywell MicroPressure MPR series SPI sensor driver
++ *
++ * Copyright (c) 2024 Petre Rodan <petre.rodan@subdimension.ro>
++ *
++ * Data sheet:
++ *  https://prod-edam.honeywell.com/content/dam/honeywell-edam/sps/siot/en-us/products/sensors/pressure-sensors/board-mount-pressure-sensors/micropressure-mpr-series/documents/sps-siot-mpr-series-datasheet-32332628-ciid-172626.pdf
 + */
-+struct mpr_range_config {
-+	const s32 pmin;
-+	const s32 pmax;
++
++#include <linux/mod_devicetable.h>
++#include <linux/module.h>
++#include <linux/spi/spi.h>
++#include <linux/stddef.h>
++
++#include <linux/iio/iio.h>
++
++#include "mprls0025pa.h"
++
++struct mpr_spi_buf {
++	u8 tx[MPR_MEASUREMENT_RD_SIZE] __aligned(IIO_DMA_MINALIGN);
 +};
 +
-+/* All min max limits have been converted to pascals */
-+static const struct mpr_range_config mpr_range_config[MPR_VARIANTS_MAX] = {
-+	[MPR0001BA] = { .pmin = 0, .pmax = 100000 },
-+	[MPR01_6BA] = { .pmin = 0, .pmax = 160000 },
-+	[MPR02_5BA] = { .pmin = 0, .pmax = 250000 },
-+	[MPR0060MG] = { .pmin = 0, .pmax =   6000 },
-+	[MPR0100MG] = { .pmin = 0, .pmax =  10000 },
-+	[MPR0160MG] = { .pmin = 0, .pmax =  16000 },
-+	[MPR0250MG] = { .pmin = 0, .pmax =  25000 },
-+	[MPR0400MG] = { .pmin = 0, .pmax =  40000 },
-+	[MPR0600MG] = { .pmin = 0, .pmax =  60000 },
-+	[MPR0001BG] = { .pmin = 0, .pmax = 100000 },
-+	[MPR01_6BG] = { .pmin = 0, .pmax = 160000 },
-+	[MPR02_5BG] = { .pmin = 0, .pmax = 250000 },
-+	[MPR0100KA] = { .pmin = 0, .pmax = 100000 },
-+	[MPR0160KA] = { .pmin = 0, .pmax = 160000 },
-+	[MPR0250KA] = { .pmin = 0, .pmax = 250000 },
-+	[MPR0006KG] = { .pmin = 0, .pmax =   6000 },
-+	[MPR0010KG] = { .pmin = 0, .pmax =  10000 },
-+	[MPR0016KG] = { .pmin = 0, .pmax =  16000 },
-+	[MPR0025KG] = { .pmin = 0, .pmax =  25000 },
-+	[MPR0040KG] = { .pmin = 0, .pmax =  40000 },
-+	[MPR0060KG] = { .pmin = 0, .pmax =  60000 },
-+	[MPR0100KG] = { .pmin = 0, .pmax = 100000 },
-+	[MPR0160KG] = { .pmin = 0, .pmax = 160000 },
-+	[MPR0250KG] = { .pmin = 0, .pmax = 250000 },
-+	[MPR0015PA] = { .pmin = 0, .pmax = 103421 },
-+	[MPR0025PA] = { .pmin = 0, .pmax = 172369 },
-+	[MPR0030PA] = { .pmin = 0, .pmax = 206843 },
-+	[MPR0001PG] = { .pmin = 0, .pmax =   6895 },
-+	[MPR0005PG] = { .pmin = 0, .pmax =  34474 },
-+	[MPR0015PG] = { .pmin = 0, .pmax = 103421 },
-+	[MPR0030PG] = { .pmin = 0, .pmax = 206843 },
-+	[MPR0300YG] = { .pmin = 0, .pmax =  39997 }
++static int mpr_spi_init(struct device *dev)
++{
++	struct spi_device *spi = to_spi_device(dev);
++	struct mpr_spi_buf *buf;
++
++	buf = devm_kzalloc(dev, sizeof(*buf), GFP_KERNEL);
++	if (!buf)
++		return -ENOMEM;
++
++	spi_set_drvdata(spi, buf);
++
++	return 0;
++}
++
++static int mpr_spi_xfer(struct mpr_data *data, const u8 cmd, const u8 pkt_len)
++{
++	struct spi_device *spi = to_spi_device(data->dev);
++	struct mpr_spi_buf *buf = spi_get_drvdata(spi);
++	struct spi_transfer xfer;
++
++	if (pkt_len > MPR_MEASUREMENT_RD_SIZE)
++		return -EOVERFLOW;
++
++	buf->tx[0] = cmd;
++	xfer.tx_buf = buf->tx;
++	xfer.rx_buf = data->buffer;
++	xfer.len = pkt_len;
++
++	return spi_sync_transfer(spi, &xfer, 1);
++}
++
++static const struct mpr_ops mpr_spi_ops = {
++	.init = mpr_spi_init,
++	.read = mpr_spi_xfer,
++	.write = mpr_spi_xfer,
 +};
 +
- static const struct iio_chan_spec mpr_channels[] = {
- 	{
- 		.type = IIO_PRESSURE,
-@@ -258,6 +330,7 @@ int mpr_common_probe(struct device *dev, const struct mpr_ops *ops, int irq)
- 	int ret;
- 	struct mpr_data *data;
- 	struct iio_dev *indio_dev;
-+	const char *triplet;
- 	s64 scale, offset;
- 	u32 func;
-
-@@ -299,17 +372,32 @@ int mpr_common_probe(struct device *dev, const struct mpr_ops *ops, int irq)
- 				     "honeywell,transfer-function %d invalid\n",
- 				     data->function);
-
--	ret = device_property_read_u32(dev, "honeywell,pmin-pascal",
-+	ret = device_property_read_string(dev, "honeywell,pressure-triplet",
-+					  &triplet);
-+	if (ret) {
-+		ret = device_property_read_u32(dev, "honeywell,pmin-pascal",
- 					       &data->pmin);
--	if (ret)
--		return dev_err_probe(dev, ret,
-+		if (ret)
-+			return dev_err_probe(dev, ret,
- 				   "honeywell,pmin-pascal could not be read\n");
-
--	ret = device_property_read_u32(dev, "honeywell,pmax-pascal",
--				       &data->pmax);
--	if (ret)
--		return dev_err_probe(dev, ret,
-+		ret = device_property_read_u32(dev, "honeywell,pmax-pascal",
-+					       &data->pmax);
-+		if (ret)
-+			return dev_err_probe(dev, ret,
- 				   "honeywell,pmax-pascal could not be read\n");
-+	} else {
-+		ret = device_property_match_property_string(dev,
-+						   "honeywell,pressure-triplet",
-+						   mpr_triplet_variants,
-+						   MPR_VARIANTS_MAX);
-+		if (ret < 0)
-+			return dev_err_probe(dev, -EINVAL,
-+				     "honeywell,pressure-triplet is invalid\n");
++static int mpr_spi_probe(struct spi_device *spi)
++{
++	return mpr_common_probe(&spi->dev, &mpr_spi_ops, spi->irq);
++}
 +
-+		data->pmin = mpr_range_config[ret].pmin;
-+		data->pmax = mpr_range_config[ret].pmax;
-+	}
-
- 	if (data->pmin >= data->pmax)
- 		return dev_err_probe(dev, -EINVAL,
++static const struct of_device_id mpr_spi_match[] = {
++	{ .compatible = "honeywell,mprls0025pa" },
++	{}
++};
++MODULE_DEVICE_TABLE(of, mpr_spi_match);
++
++static const struct spi_device_id mpr_spi_id[] = {
++	{ "mprls0025pa" },
++	{}
++};
++MODULE_DEVICE_TABLE(spi, mpr_spi_id);
++
++static struct spi_driver mpr_spi_driver = {
++	.driver = {
++		.name = "mprls0025pa",
++		.of_match_table = mpr_spi_match,
++	},
++	.probe = mpr_spi_probe,
++	.id_table = mpr_spi_id,
++};
++module_spi_driver(mpr_spi_driver);
++
++MODULE_AUTHOR("Petre Rodan <petre.rodan@subdimension.ro>");
++MODULE_DESCRIPTION("Honeywell MPR pressure sensor spi driver");
++MODULE_LICENSE("GPL");
++MODULE_IMPORT_NS(IIO_HONEYWELL_MPRLS0025PA);
 --
 2.41.0
 
