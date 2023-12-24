@@ -1,66 +1,65 @@
-Return-Path: <linux-kernel+bounces-10751-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10752-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0CDE881DB43
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 16:47:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41D6581DB47
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 16:48:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7559D1F2195D
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 15:47:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EF88A282178
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 15:48:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE41B18C28;
-	Sun, 24 Dec 2023 15:44:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DDCB18ED1;
+	Sun, 24 Dec 2023 15:44:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="PhEUKsgK"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="pMgj1Mat"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C34F318034
-	for <linux-kernel@vger.kernel.org>; Sun, 24 Dec 2023 15:44:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6472B18B19
+	for <linux-kernel@vger.kernel.org>; Sun, 24 Dec 2023 15:44:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-40d4ee4cbbcso15638415e9.2
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Dec 2023 07:44:46 -0800 (PST)
+Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-3367f8f8cb0so3299451f8f.2
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Dec 2023 07:44:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703432685; x=1704037485; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1703432686; x=1704037486; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=J+PqwhjS/mLmgDZ1FNMLs9KmhmVK/DvYHDWz6xCaG9k=;
-        b=PhEUKsgKLYxfIsgx6EBP5jlB18se7KxfTNb2RgjMFeZ34J7MO7Ule5Ru7NvQ4wQzP0
-         r+73uVppNKSeIL2kX5NMhU2U/GeO8NZQqNCBcQaBYIJlmo9c2ACs55aPgJkx/22DG6yk
-         I6Bl6qJkencMlu//RaLnBvd5R/tJonydF+6GQ9CleVYtBiBdD+t3ISPqsEj/qUUWDJmr
-         4L4d+qVF2vjuAgd89Xg2nELn26lUr2oTtzQ8K3xWnFp5BCxfaAJOzDS08z7tAJWx7eE9
-         sZoPaLpfsb0OMYQT70FAPw24YLBk4z/K0bSJh5GWFnzL7ivsdzGGyvGcslHjvc34je7b
-         OEOg==
+        bh=XVcN5riSMTARMq06POG7vm/444G+7336L8LSfQaXxBs=;
+        b=pMgj1MatdDBS7FaCUwbPlaJSZXY3Yf7XmkbItFF4YdEtyXt1Fale+WRFdTx8foweuk
+         1J7RfavkhOIEOnaMHyeP0alXPiygGe3LXPUz4QhiguVq/5q48p95sNlH6JoiFIxh4GAu
+         29E5tdL07fcSfajKZCAIvmu+PkqVQ39lnI49pvMvc93KrXDQriHqVcMfMEWoZdsLki0P
+         jfam0QmRemHgHzkT3iwBd4e7ZmgosF9Q0VrJVwcqjcFTPM/Wwhi7kx0h6ZDr9POQqBA5
+         zeyiF0Js+ubqwhiMc2zbleE5J6LWHMuWcBh06HkyhlYusCC/9NNl4fEUs9yfSbpnsnAh
+         G/CQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703432685; x=1704037485;
+        d=1e100.net; s=20230601; t=1703432686; x=1704037486;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=J+PqwhjS/mLmgDZ1FNMLs9KmhmVK/DvYHDWz6xCaG9k=;
-        b=OZOENfmOgCCGvhIxWEIfKWuRTUNtUZqOtC1/wj4lFwtj/6OZqDzw+JNZ1mYF2W/ZU2
-         0syPOJyrfopoPuxMvCMDoRxxrHno/HLbsl9TufqarwZjOVI+leysPG46gLKw8zRXLkO+
-         J+q59k6DOXt/vd8gX+OsqMCNaiMnBK+eZOITR2/9a7ObG1uc7Xqk5f2fs4cp0rbxJjLV
-         8xzzNjtH0O5dA7kSxVdCpSjKyFPH9mU+PnHz4lK7gtPGMAPi0WqApcVL2UhVTITlk2Dc
-         7+PCl+b2h0tmImRejnbUIRrXZ/qyTGgo3Q8+aOVElwzTqcFxeeFJDK2h7P/nAalUdEbh
-         Zx2w==
-X-Gm-Message-State: AOJu0Yx/GOGATeuDjQnoPKvylvr50RuEjvZlmibTxvtR8cY53pcaw+4N
-	GgldUlYD+qywsV4Cad93BMziwyb6+t69ig==
-X-Google-Smtp-Source: AGHT+IHsdpLGhrTWdR2PM12LvCAZT+GmCIeOjlssIDAiXxh0F5PQ8Q1KllNosT7odAwn1NahfRJATg==
-X-Received: by 2002:a05:600c:4ed2:b0:40d:5319:4f89 with SMTP id g18-20020a05600c4ed200b0040d53194f89mr1014756wmq.177.1703432685231;
-        Sun, 24 Dec 2023 07:44:45 -0800 (PST)
+        bh=XVcN5riSMTARMq06POG7vm/444G+7336L8LSfQaXxBs=;
+        b=MHn/qYAJGwKftlWUUNv5so4F5QAfwckRcEUipLK/TX/g8HK9DOUJ9N98hJXCNpXCXb
+         wnLMJhQIN7kOOCDAbTqVOgd2QeYTbJbE7z4CLLeMT1pAv1ZpVteLbSnSXoaACsLjo/Nt
+         XRoxztaCOfAFlpA4Fd5pAhDctLbKlL5JLK3h4gvHibsV8ctAmUUn/nBgttRGTkLb71Yf
+         leCY7UUDNZFf/QI6N2yXsjQcjRD3Xy5URr86cRu6eRhav33m3whUcncqVi8Dlmo9kxUg
+         mJCnjtWwSP6AC1kB1f6YcB1EX/FepXDjsrFU0KxBfEPrsecBQ3jCvXtJ6IXhDxbk6vH+
+         ngZQ==
+X-Gm-Message-State: AOJu0Yzq+XMONjb9TbkdCxzIMk10xJKaVZbgcLhamsriXl2QCVcohlGb
+	RfB4O4Z37jOn1KloOf4srfOTB9/FDr5JwLZW4+bLciBqhgw=
+X-Google-Smtp-Source: AGHT+IHLlyUYEzbxNQ4mTd/zBBnZyOhyw30NJX23+cnFC3EQip/rLJXvkKrHPjnjCs9rbEopQX0zQA==
+X-Received: by 2002:a05:600c:4496:b0:40d:41d4:d29e with SMTP id e22-20020a05600c449600b0040d41d4d29emr2618415wmo.187.1703432686812;
+        Sun, 24 Dec 2023 07:44:46 -0800 (PST)
 Received: from [127.0.1.1] ([78.10.206.178])
-        by smtp.gmail.com with ESMTPSA id ge12-20020a170907908c00b00a26ac403032sm3325901ejb.65.2023.12.24.07.44.43
+        by smtp.gmail.com with ESMTPSA id ge12-20020a170907908c00b00a26ac403032sm3325901ejb.65.2023.12.24.07.44.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 Dec 2023 07:44:44 -0800 (PST)
+        Sun, 24 Dec 2023 07:44:46 -0800 (PST)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Date: Sun, 24 Dec 2023 16:44:11 +0100
-Subject: [PATCH 12/15] media: s5p-mfc: constify local pointers to
- s5p_mfc_enc_params
+Date: Sun, 24 Dec 2023 16:44:12 +0100
+Subject: [PATCH 13/15] media: s5p-mfc: drop useless clock refcnt debugging
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -69,7 +68,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231224-n-s5p-mfc-const-v1-12-a3b246470fe4@linaro.org>
+Message-Id: <20231224-n-s5p-mfc-const-v1-13-a3b246470fe4@linaro.org>
 References: <20231224-n-s5p-mfc-const-v1-0-a3b246470fe4@linaro.org>
 In-Reply-To: <20231224-n-s5p-mfc-const-v1-0-a3b246470fe4@linaro.org>
 To: Marek Szyprowski <m.szyprowski@samsung.com>, 
@@ -82,137 +81,70 @@ Cc: Aakarsh Jain <aakarsh.jain@samsung.com>, linux-fsd@tesla.coma,
  linux-kernel@vger.kernel.org, 
  Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=5075;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1302;
  i=krzysztof.kozlowski@linaro.org; h=from:subject:message-id;
- bh=MyjbnMtRY4pnTAtRZmc7TqzfbEZN91NOwcZsaBA9CSc=;
- b=owEBfgKB/ZANAwAKAcE3ZuaGi4PXAcsmYgBliFHY3Qe+OEd6XMbY4Xs+O0ln3OAH8/hcDWsSY
- UvK8SNc3T6JAkQEAAEKAC4WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZYhR2BAca3J6a0BrZXJu
- ZWwub3JnAAoJEME3ZuaGi4PXfC4P/0lweb+ijrsP6Ae78B2EkRIlDKNMFd6RmLLDTrhU/qJdFXS
- Zu9CAto7F1C/d1ZOOyeJQnRpOdnu4jkdglkcBKJNVsX6XRdq7N7X4nvfaQmyJfHwcZJkKaUVXrb
- pMGxl0n4QTRsoeRqzQmn1lQAu1WU9qrAa6w7FGrmqeNa40wNRrGVwcNU6/b+lcHR9SgwZlyi/Hw
- GEuK8Ka30XhGN4YssiDuWUy4w9/X/Y/Cs4tXALh74oDFHMNy/ZcTIJbuGzqdZ7ylTvPr/rN43hT
- lIRxj7QlinGuWmpPCYbHbXDuyGme5uNAlUD6Irm6qFNCWdG6e3I1MZG//E48O5c5QF+E3yFQ2Il
- 6yf3K2H06qadoIqMOws3HCHGs4wJFxZ+ywtd8+KN1JgDgbUDXBmbe9pgiLGZo+A4UZNtJCBZotQ
- Rwe4YYpBCCfY0tjqV5eMlt1dOc434tYzobZnJdYPRPBJDLxXhx7PinDyup384ru+t7xUN8OjUHS
- ZnydqBJ9W1IsPa8fVnAw9NYBFzMAq/893T/WvD/AsfknacRW2wHQ8B97/FO690X4kdhn09fLTuE
- I98q6i2pkTK1mmt3YMtfknWBMtOJ+fAsjQfIJ2oonEKrU7OKtE+j+JdGdwsyBPE805UHOqyVVgW
- Cu06PMM4bkarU5jOLI9Znk0WK7Fz2FkYKuh7Q
+ bh=WE1Snd5GEyT+9XFiQa4xPreMZitJzLHNQF3ijMXJQDw=;
+ b=owEBfgKB/ZANAwAKAcE3ZuaGi4PXAcsmYgBliFHZZIG+8mKy9SmVpztKQCav0xncqNdDwVKka
+ nqH6E+6DI+JAkQEAAEKAC4WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZYhR2RAca3J6a0BrZXJu
+ ZWwub3JnAAoJEME3ZuaGi4PXNAUP/Rvi+CzJ5xJAn/VinOjXGWkpHX6R9kHn/YesDFHeL9Sp832
+ ZzFNQrW2n5n/n8XQ2TqyP+OulqlzA2pBs1Mj+jBJ3VnXIk3QxKh5TF4QcjBmfnVI8RPH/jz6czf
+ M6TrGe/nxEZk/IwFRJkJZ7PEkom483qGVgokD6+WJ+TbP0D70NctCxvCcwQeZ3quTPbKJKUm68m
+ xHtsrXIpMV6U7KrZCKIwifvHJDxCMh4RaBf9bDcuCE69zVARU7I509pLdPOzCi/mJ7z2ome72a6
+ nTgL1nWo9bOVSuzKrqaa3cSOnOYs3mmi55y+YSekj8XrswA3HtEfZGN2qRm8lT0fCpGnx5IHWKg
+ vaXEs5huJER3uR9RAmyqchL6G6KGIbCVpSD8QiNt6Zmv3hYuDhnkeiMWiEU+XKE5DZkrXdkfpfn
+ ULQtvTd/HOnZ6cHgN1Krw3SYT69G65YHsnHlZ1uvSDO8qhEJBRMTtpIA6TNiggdUI72kyD1OxbA
+ D6UQm4D2Mq0e+fSmU3LqSSA8X3SjhYfC03HjofEeMcZbWVj0tmsuQh8WgQUDspvr94N/yNsX1Zt
+ f8wSyU6xB6FIxuHPVwIZaN/oTaxYutPFt9UmQq8ShIDLgyemFAXvgZbAUFbcJo6jm/xUypZ0Lio
+ +hyuqisZk805huiYqOMV0HtVS04GjKnA2f1kM
 X-Developer-Key: i=krzysztof.kozlowski@linaro.org; a=openpgp;
  fpr=9BD07E0E0C51F8D59677B7541B93437D3B41629B
 
-Constify the local variables pointing to "struct s5p_mfc_enc_params" and
-other encoding params to annotate the function is not modifying pointed
-data.
+Drop useless debugging of clock enabl/disable counts, because core
+handles this much better.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- .../media/platform/samsung/s5p-mfc/s5p_mfc_opr_v5.c    | 14 +++++++-------
- .../media/platform/samsung/s5p-mfc/s5p_mfc_opr_v6.c    | 18 +++++++++---------
- 2 files changed, 16 insertions(+), 16 deletions(-)
+ drivers/media/platform/samsung/s5p-mfc/s5p_mfc_pm.c | 8 --------
+ 1 file changed, 8 deletions(-)
 
-diff --git a/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_opr_v5.c b/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_opr_v5.c
-index 2a0fb78e8e82..ba22c6a3219a 100644
---- a/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_opr_v5.c
-+++ b/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_opr_v5.c
-@@ -674,7 +674,7 @@ static int s5p_mfc_set_enc_ref_buffer_v5(struct s5p_mfc_ctx *ctx)
- static int s5p_mfc_set_enc_params(struct s5p_mfc_ctx *ctx)
- {
- 	struct s5p_mfc_dev *dev = ctx->dev;
--	struct s5p_mfc_enc_params *p = &ctx->enc_params;
-+	const struct s5p_mfc_enc_params *p = &ctx->enc_params;
- 	unsigned int reg;
- 	unsigned int shm;
+diff --git a/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_pm.c b/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_pm.c
+index 187849841a28..29b141d4a7a7 100644
+--- a/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_pm.c
++++ b/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_pm.c
+@@ -16,7 +16,6 @@
  
-@@ -757,8 +757,8 @@ static int s5p_mfc_set_enc_params(struct s5p_mfc_ctx *ctx)
- static int s5p_mfc_set_enc_params_h264(struct s5p_mfc_ctx *ctx)
- {
- 	struct s5p_mfc_dev *dev = ctx->dev;
--	struct s5p_mfc_enc_params *p = &ctx->enc_params;
--	struct s5p_mfc_h264_enc_params *p_264 = &p->codec.h264;
-+	const struct s5p_mfc_enc_params *p = &ctx->enc_params;
-+	const struct s5p_mfc_h264_enc_params *p_264 = &p->codec.h264;
- 	unsigned int reg;
- 	unsigned int shm;
+ static struct s5p_mfc_pm *pm;
+ static struct s5p_mfc_dev *p_dev;
+-static atomic_t clk_ref;
  
-@@ -914,8 +914,8 @@ static int s5p_mfc_set_enc_params_h264(struct s5p_mfc_ctx *ctx)
- static int s5p_mfc_set_enc_params_mpeg4(struct s5p_mfc_ctx *ctx)
+ int s5p_mfc_init_pm(struct s5p_mfc_dev *dev)
  {
- 	struct s5p_mfc_dev *dev = ctx->dev;
--	struct s5p_mfc_enc_params *p = &ctx->enc_params;
--	struct s5p_mfc_mpeg4_enc_params *p_mpeg4 = &p->codec.mpeg4;
-+	const struct s5p_mfc_enc_params *p = &ctx->enc_params;
-+	const struct s5p_mfc_mpeg4_enc_params *p_mpeg4 = &p->codec.mpeg4;
- 	unsigned int reg;
- 	unsigned int shm;
- 	unsigned int framerate;
-@@ -993,8 +993,8 @@ static int s5p_mfc_set_enc_params_mpeg4(struct s5p_mfc_ctx *ctx)
- static int s5p_mfc_set_enc_params_h263(struct s5p_mfc_ctx *ctx)
- {
- 	struct s5p_mfc_dev *dev = ctx->dev;
--	struct s5p_mfc_enc_params *p = &ctx->enc_params;
--	struct s5p_mfc_mpeg4_enc_params *p_h263 = &p->codec.mpeg4;
-+	const struct s5p_mfc_enc_params *p = &ctx->enc_params;
-+	const struct s5p_mfc_mpeg4_enc_params *p_h263 = &p->codec.mpeg4;
- 	unsigned int reg;
- 	unsigned int shm;
+@@ -49,7 +48,6 @@ int s5p_mfc_init_pm(struct s5p_mfc_dev *dev)
+ 		pm->clock_gate = pm->clocks[0];
  
-diff --git a/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_opr_v6.c b/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_opr_v6.c
-index 6157c5f97707..08545213caa9 100644
---- a/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_opr_v6.c
-+++ b/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_opr_v6.c
-@@ -750,7 +750,7 @@ static int s5p_mfc_set_enc_params(struct s5p_mfc_ctx *ctx)
- {
- 	struct s5p_mfc_dev *dev = ctx->dev;
- 	const struct s5p_mfc_regs *mfc_regs = dev->mfc_regs;
--	struct s5p_mfc_enc_params *p = &ctx->enc_params;
-+	const struct s5p_mfc_enc_params *p = &ctx->enc_params;
- 	unsigned int reg = 0;
+ 	pm_runtime_enable(pm->device);
+-	atomic_set(&clk_ref, 0);
+ 	return 0;
+ }
  
- 	mfc_debug_enter();
-@@ -1196,8 +1196,8 @@ static int s5p_mfc_set_enc_params_mpeg4(struct s5p_mfc_ctx *ctx)
- {
- 	struct s5p_mfc_dev *dev = ctx->dev;
- 	const struct s5p_mfc_regs *mfc_regs = dev->mfc_regs;
--	struct s5p_mfc_enc_params *p = &ctx->enc_params;
--	struct s5p_mfc_mpeg4_enc_params *p_mpeg4 = &p->codec.mpeg4;
-+	const struct s5p_mfc_enc_params *p = &ctx->enc_params;
-+	const struct s5p_mfc_mpeg4_enc_params *p_mpeg4 = &p->codec.mpeg4;
- 	unsigned int reg = 0;
+@@ -60,17 +58,11 @@ void s5p_mfc_final_pm(struct s5p_mfc_dev *dev)
  
- 	mfc_debug_enter();
-@@ -1278,8 +1278,8 @@ static int s5p_mfc_set_enc_params_h263(struct s5p_mfc_ctx *ctx)
+ int s5p_mfc_clock_on(void)
  {
- 	struct s5p_mfc_dev *dev = ctx->dev;
- 	const struct s5p_mfc_regs *mfc_regs = dev->mfc_regs;
--	struct s5p_mfc_enc_params *p = &ctx->enc_params;
--	struct s5p_mfc_mpeg4_enc_params *p_h263 = &p->codec.mpeg4;
-+	const struct s5p_mfc_enc_params *p = &ctx->enc_params;
-+	const struct s5p_mfc_mpeg4_enc_params *p_h263 = &p->codec.mpeg4;
- 	unsigned int reg = 0;
+-	atomic_inc(&clk_ref);
+-	mfc_debug(3, "+ %d\n", atomic_read(&clk_ref));
+-
+ 	return clk_enable(pm->clock_gate);
+ }
  
- 	mfc_debug_enter();
-@@ -1348,8 +1348,8 @@ static int s5p_mfc_set_enc_params_vp8(struct s5p_mfc_ctx *ctx)
+ void s5p_mfc_clock_off(void)
  {
- 	struct s5p_mfc_dev *dev = ctx->dev;
- 	const struct s5p_mfc_regs *mfc_regs = dev->mfc_regs;
--	struct s5p_mfc_enc_params *p = &ctx->enc_params;
--	struct s5p_mfc_vp8_enc_params *p_vp8 = &p->codec.vp8;
-+	const struct s5p_mfc_enc_params *p = &ctx->enc_params;
-+	const struct s5p_mfc_vp8_enc_params *p_vp8 = &p->codec.vp8;
- 	unsigned int reg = 0;
- 	unsigned int val = 0;
+-	atomic_dec(&clk_ref);
+-	mfc_debug(3, "- %d\n", atomic_read(&clk_ref));
+-
+ 	clk_disable(pm->clock_gate);
+ }
  
-@@ -1737,8 +1737,8 @@ static int s5p_mfc_h264_set_aso_slice_order_v6(struct s5p_mfc_ctx *ctx)
- {
- 	struct s5p_mfc_dev *dev = ctx->dev;
- 	const struct s5p_mfc_regs *mfc_regs = dev->mfc_regs;
--	struct s5p_mfc_enc_params *p = &ctx->enc_params;
--	struct s5p_mfc_h264_enc_params *p_h264 = &p->codec.h264;
-+	const struct s5p_mfc_enc_params *p = &ctx->enc_params;
-+	const struct s5p_mfc_h264_enc_params *p_h264 = &p->codec.h264;
- 	int i;
- 
- 	if (p_h264->aso) {
 
 -- 
 2.34.1
