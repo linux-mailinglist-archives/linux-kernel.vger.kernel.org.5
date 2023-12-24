@@ -1,117 +1,144 @@
-Return-Path: <linux-kernel+bounces-10618-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10619-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11CB381D773
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 01:58:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F32EF81D77C
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 02:24:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A43E91F21D10
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 00:58:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DB0C41C20E86
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Dec 2023 01:24:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F5C0807;
-	Sun, 24 Dec 2023 00:58:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49BC3814;
+	Sun, 24 Dec 2023 01:24:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="icaeB3+2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T15Ae/+A"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 204F5EBB;
-	Sun, 24 Dec 2023 00:58:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703379483; x=1734915483;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=4d0I8vRHbzVyHrLROf04Yy7sbIuPKbG+MABm9FG8Q0c=;
-  b=icaeB3+2CtPxGND6w54UVvQgT5a4gp03mu8YQf6O5BpvicddrspjTh07
-   xdN9FZ8uy/Mec7JsjHK3S054xZfvjcNp+HENkk1IK+OEqCiDmE+mjYIxF
-   yKaE2soHtjus7KvuHQPinbCyKUTcBkcdvVulK6LVBWTxiySZ9IQ5Rh/zN
-   13YsEqpa3rl/WkHn0UGL4F9YHR+wQLeIFMXMNkpsnq/gHw3UbHjiFQaGN
-   rlfk5/fcJ0ZAM+6ZyCNRopsHNVyr+2Ci9+y8pGAPixMyVeZeU8iZsbrmu
-   u3CxfeGGMoYwh28iSCGcCrQIb/9ZB19vx1z+P3Bwran0ZwUoor2qgQDzk
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10933"; a="14894219"
-X-IronPort-AV: E=Sophos;i="6.04,300,1695711600"; 
-   d="scan'208";a="14894219"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Dec 2023 16:58:03 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10933"; a="780943460"
-X-IronPort-AV: E=Sophos;i="6.04,300,1695711600"; 
-   d="scan'208";a="780943460"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga007.fm.intel.com with ESMTP; 23 Dec 2023 16:58:00 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rHCoW-000Bi9-2T;
-	Sun, 24 Dec 2023 00:57:57 +0000
-Date: Sun, 24 Dec 2023 08:57:09 +0800
-From: kernel test robot <lkp@intel.com>
-To: Sagi Maimon <maimon.sagi@gmail.com>, richardcochran@gmail.com,
-	jonathan.lemon@gmail.com, vadfed@fb.com
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	maimon.sagi@gmail.com
-Subject: Re: [PATCH v1] ptp: ocp: add Adva timecard support
-Message-ID: <202312240816.FklJZk9r-lkp@intel.com>
-References: <20231221153755.2690-1-maimon.sagi@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92C377EA
+	for <linux-kernel@vger.kernel.org>; Sun, 24 Dec 2023 01:24:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F120BC433CA
+	for <linux-kernel@vger.kernel.org>; Sun, 24 Dec 2023 01:24:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703381055;
+	bh=/H0+iF+fDn9DTrAW4o9tox8uhqnr94eocMPWRFJRU0s=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=T15Ae/+AuOnYFc6GQj3tfN5c8UaAV7WLR512HkGl/SPDPgxKE73XQJoiFRNmkquuW
+	 YpUcorvbZh4FeJFfxveoQFJFj1WUaJaAA/Fxk0fNm6lVvaoJDq7pcHcCG2IK7nswf+
+	 2RS6/02jRB1AkQq9UBlwjd1iIMIrs3vb/6MaJzMVVCaC/aUmDohu0+8y99KtQdZzaU
+	 G6sTCb6MWYl6kPN3brqRrdObKMSxRZGW7CwKQxCH1zzP8C1AHSMj7ZUIQGhS0p9gxB
+	 AFJoiC6k79mkDLhR+M2YZPq0MziKmGoLk8uKhIQPTvZLJBkX2qH80/rmEjnx+iw5r2
+	 f9i/yk960zRFg==
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-40d4d70eca6so14558835e9.3
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Dec 2023 17:24:14 -0800 (PST)
+X-Gm-Message-State: AOJu0YwIuenJUbENB8NXK8lYvsaJkYXIEwHTMo66xeiL/vcTOllb51u7
+	gLsfCb2reFbRwYstzKNpDFyKsCbPwkAce2rwCqU=
+X-Google-Smtp-Source: AGHT+IFV03RN5WCJzhq8Igd5aRzeZ4KAuFjP6kgdpuUrRLl5b1fqLLswglB+c7zzEB8AJXSmZi03yHMQG3vLjaAlLrs=
+X-Received: by 2002:a05:600c:748:b0:40c:35fd:be08 with SMTP id
+ j8-20020a05600c074800b0040c35fdbe08mr1371260wmn.122.1703381053321; Sat, 23
+ Dec 2023 17:24:13 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231221153755.2690-1-maimon.sagi@gmail.com>
+References: <20231221154702.2267684-1-guoren@kernel.org> <20231221154702.2267684-5-guoren@kernel.org>
+ <ZYUZ8QUJxCL93Fgv@LeoBras> <CAJF2gTTX7AjexoRUw=ZS34HEWno7H3zvnXA+Q7TYsztNU=k2cg@mail.gmail.com>
+ <e3f1521a9f04463587d07d0c99534d5a@AcuMS.aculab.com> <CAJF2gTRD827Fbs_2FxBP=Z8yudfAAqG6dA+a9eq74RMOz2WDnw@mail.gmail.com>
+ <9d4d15e8e3e944b8bd18e8bc1d54f59c@AcuMS.aculab.com>
+In-Reply-To: <9d4d15e8e3e944b8bd18e8bc1d54f59c@AcuMS.aculab.com>
+From: Guo Ren <guoren@kernel.org>
+Date: Sun, 24 Dec 2023 09:24:00 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTQjixePmc8qNJZB+kfyzjVb+NqFHR6GOow-aNhN883CQA@mail.gmail.com>
+Message-ID: <CAJF2gTQjixePmc8qNJZB+kfyzjVb+NqFHR6GOow-aNhN883CQA@mail.gmail.com>
+Subject: Re: [PATCH V2 4/4] riscv: mm: Optimize TASK_SIZE definition
+To: David Laight <David.Laight@aculab.com>
+Cc: Leonardo Bras <leobras@redhat.com>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	"paul.walmsley@sifive.com" <paul.walmsley@sifive.com>, "palmer@dabbelt.com" <palmer@dabbelt.com>, 
+	"alexghiti@rivosinc.com" <alexghiti@rivosinc.com>, "charlie@rivosinc.com" <charlie@rivosinc.com>, 
+	"xiao.w.wang@intel.com" <xiao.w.wang@intel.com>, "david@redhat.com" <david@redhat.com>, 
+	"panqinglin2020@iscas.ac.cn" <panqinglin2020@iscas.ac.cn>, 
+	"rick.p.edgecombe@intel.com" <rick.p.edgecombe@intel.com>, "willy@infradead.org" <willy@infradead.org>, 
+	"bjorn@rivosinc.com" <bjorn@rivosinc.com>, 
+	"conor.dooley@microchip.com" <conor.dooley@microchip.com>, "cleger@rivosinc.com" <cleger@rivosinc.com>, 
+	"linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>, Guo Ren <guoren@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Sagi,
+On Sat, Dec 23, 2023 at 6:31=E2=80=AFPM David Laight <David.Laight@aculab.c=
+om> wrote:
+>
+> From: Guo Ren
+> > Sent: 23 December 2023 02:53
+> >
+> > On Fri, Dec 22, 2023 at 7:52=E2=80=AFPM David Laight <David.Laight@acul=
+ab.com> wrote:
+> > >
+> > > From: Guo Ren
+> > > > Sent: 22 December 2023 11:25
+> > > ...
+> > > > > > +#define TASK_SIZE    (is_compat_task() ? \
+> > > > > >                        TASK_SIZE_32 : TASK_SIZE_64)
+> > > > I would remove is_compat_task() in the next version because your pa=
+tch
+> > > > contains that.
+> > >
+> > > Does TASK_SIZE get used in access_ok() ?
+> > > If so the repeated expansion of that 'mess' will slow things down.
+> > >
+> > > OTOH access_ok(ptr, len) can just check (ptr | (ptr + len)) < 0)
+> > > and rely on the page faults for everything else.
+> > Or do you want to discuss the bad side effect of is_compat_task()?
+> >
+> > Yes, test_thread_flag(TIF_32BIT) would slow down access_ok(). But if
+> > we use TASK_SIZE_MAX, VA_BITS still needs pgtable_l5_enabled,
+> > pgtable_l4_enabled detectation for riscv.
+> >
+> > It's not only for compat mode, but also Sv39, Sv48, Sv57. All treat
+> > TASK_SIZE_MAX as 0x8000000000000000, right? Then:
+> > access_ok(ptr, len) can just check (ptr | (ptr + len)) < 0)
+> >
+> > It's another feature and does not relate to compat mode.
+>
+> Compat mode just makes it worse...
+It's hard to observe.
 
-kernel test robot noticed the following build warnings:
+>
+> One possibility would be to save the task's max user address
+> in the task structure itself - that would save all the conditionals
+> at a cost of an extra value in the task structure.
+It would still cause memory load operation, although it is $tp->xxx.
+If we want to gain observability benefits, "just check (ptr | (ptr +
+len)) < 0)" is better.
 
-[auto build test WARNING on net/main]
-[also build test WARNING on net-next/main linus/master v6.7-rc6 next-20231222]
-[cannot apply to horms-ipvs/master]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+>
+> There is also the question of whether a normally 64-bit task
+> can actually make the compat mmap() system call?
+No.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Sagi-Maimon/ptp-ocp-add-Adva-timecard-support/20231222-182253
-base:   net/main
-patch link:    https://lore.kernel.org/r/20231221153755.2690-1-maimon.sagi%40gmail.com
-patch subject: [PATCH v1] ptp: ocp: add Adva timecard support
-config: x86_64-allyesconfig (https://download.01.org/0day-ci/archive/20231224/202312240816.FklJZk9r-lkp@intel.com/config)
-compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231224/202312240816.FklJZk9r-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312240816.FklJZk9r-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> drivers/ptp/ptp_ocp.c:418:32: warning: tentative definition of variable with internal linkage has incomplete non-array type 'const struct ocp_sma_op' [-Wtentative-definition-incomplete-type]
-   static const struct ocp_sma_op ocp_adva_sma_op;
-                                  ^
-   drivers/ptp/ptp_ocp.c:377:15: note: forward declaration of 'struct ocp_sma_op'
-           const struct ocp_sma_op *sma_op;
-                        ^
-   1 warning generated.
+> On x86 that is certainly possible (IIRC wine does it), x86
+> userspace can flip between 32bit and 63bit mode without a
+> system call.
+RISC-V can't do that because it needs sstatux.uxl=3D32/64, which can
+only be modified in S-mode.
 
 
-vim +418 drivers/ptp/ptp_ocp.c
+>
+>         David
+>
+> -
+> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1=
+ 1PT, UK
+> Registration No: 1397386 (Wales)
 
-   417	
- > 418	static const struct ocp_sma_op ocp_adva_sma_op;
-   419	
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+
+--=20
+Best Regards
+ Guo Ren
 
