@@ -1,61 +1,53 @@
-Return-Path: <linux-kernel+bounces-10978-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10980-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D9FC81DF95
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 10:52:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE06D81DF98
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 10:57:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BF2A11C2183E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 09:52:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 66F42281A4C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 09:57:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EB4B1EB34;
-	Mon, 25 Dec 2023 09:52:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="AJF0+Of+"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C40AA1A71C;
+	Mon, 25 Dec 2023 09:57:35 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+Received: from out28-79.mail.aliyun.com (out28-79.mail.aliyun.com [115.124.28.79])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2ABFF179BA
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 09:52:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703497931; x=1735033931;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=8qe17QdRMGOxCWU+QJIagv0oAbWOr2qmE954N73ToO4=;
-  b=AJF0+Of+FKDOzPGAS2/8ij7uSdJ9w9JuV1YMs+rdOrrjyOQiWKqQ2u0+
-   iCuVwXYvoea66vpeoIolKlCah08l4sjtkLyIIA8drzeZmxSUx6PTeeSw2
-   n803/Sq/q69r1ciE9+OqlYAgh8nbdFqNL3PLkbawbTFMbt8E8c+IvXDvf
-   JvyaKVC4tRPEUPn/xCqq9YJb3tNKHZYNSq0/OYsYhzpJ8wZR94iS+24zy
-   4L4UqsdEfleM7iXZwLcYbyfEfw/y77tUS5yqfjGJIXPdCELiWAY70G434
-   QhHhSz+6WD9um0dIpYuWsqi3wG0yfh567sGYsrnQwdZaDw3QxNhizh1ik
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10934"; a="3112746"
-X-IronPort-AV: E=Sophos;i="6.04,302,1695711600"; 
-   d="scan'208";a="3112746"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Dec 2023 01:52:09 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10934"; a="1024873310"
-X-IronPort-AV: E=Sophos;i="6.04,302,1695711600"; 
-   d="scan'208";a="1024873310"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga006.fm.intel.com with ESMTP; 25 Dec 2023 01:52:07 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rHhcz-000DC8-0p;
-	Mon, 25 Dec 2023 09:52:05 +0000
-Date: Mon, 25 Dec 2023 17:51:48 +0800
-From: kernel test robot <lkp@intel.com>
-To: Aditi Ghag <aditi.ghag@isovalent.com>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	Martin KaFai Lau <martin.lau@kernel.org>
-Subject: WARN: resolve_btfids: unresolved symbol bpf_sock_destroy
-Message-ID: <202312251746.AJnSCuzj-lkp@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C04D179A2
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 09:57:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sjterm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sjterm.com
+X-Alimail-AntiSpam:AC=CONTINUE;BC=0.07447141|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.157524-0.0058014-0.836675;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047187;MF=fuyao@sjterm.com;NM=1;PH=DS;RN=11;RT=11;SR=0;TI=SMTPD_---.VsS8aFT_1703497925;
+Received: from localhost(mailfrom:fuyao@sjterm.com fp:SMTPD_---.VsS8aFT_1703497925)
+          by smtp.aliyun-inc.com;
+          Mon, 25 Dec 2023 17:52:06 +0800
+Date: Mon, 25 Dec 2023 17:52:05 +0800
+From: fuyao <fuyao@sjterm.com>
+To: Andre Przywara <andre.przywara@arm.com>
+Cc: fuyao <fuyao1697@cyg.com>, Lee Jones <lee@kernel.org>,
+	Chen-Yu Tsai <wens@csie.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>,
+	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+	linux-kernel@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
+	maijianzhang <maijianzhang@allwinnertech.com>
+Subject: Re: [PATCH RESEND] iio: adc: sun4i-gpadc-iio: adaptation interrupt
+ number
+Message-ID: <ZYlQxccd-_1kyHt5@debian.cyg>
+Mail-Followup-To: Andre Przywara <andre.przywara@arm.com>,
+	fuyao <fuyao1697@cyg.com>, Lee Jones <lee@kernel.org>,
+	Chen-Yu Tsai <wens@csie.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>,
+	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+	linux-kernel@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
+	maijianzhang <maijianzhang@allwinnertech.com>
+References: <YxmR5SPPY18O7LaG@google.com>
+ <YwdhTlk+9h+9Mrwm@scg>
+ <20231220115412.65bbc8c7@donnerap.manchester.arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,78 +56,95 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20231220115412.65bbc8c7@donnerap.manchester.arm.com>
+Organization: work_work_work
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   861deac3b092f37b2c5e6871732f3e11486f7082
-commit: 4ddbcb886268af8d12a23e6640b39d1d9c652b1b bpf: Add bpf_sock_destroy kfunc
-date:   7 months ago
-config: mips-randconfig-r001-20230703 (https://download.01.org/0day-ci/archive/20231225/202312251746.AJnSCuzj-lkp@intel.com/config)
-compiler: mips64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231225/202312251746.AJnSCuzj-lkp@intel.com/reproduce)
+On Wed, Dec 20, 2023 at 11:54:12AM +0000, Andre Przywara wrote:
+> On Wed, 20 Dec 2023 15:23:17 +0800
+> fuyao <fuyao1697@cyg.com> wrote:
+> 
+> Hi,
+> 
+> > __platform_get_irq_byname determinies whether the interrupt
+> > number is 0 and returns EINVAL.
+> 
+> can you please say what this fixes, exactly? Is something not working at
+> the moment? Can you please provide parts of the error message?
+> 
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312251746.AJnSCuzj-lkp@intel.com/
+With open MFD_SUN4I_GPADC and SUN4I_GPADC, It happens:
 
-All warnings (new ones prefixed by >>):
+[    0.185068] ------------[ cut here ]------------
+[    0.185093] WARNING: CPU: 3 PID: 1 at drivers/base/platform.c:451 __platform_get_irq_byname+0xb8/0xc4
+[    0.185131] 0 is an invalid IRQ number
+[    0.185140] Modules linked in:
+[    0.185160] CPU: 3 PID: 1 Comm: swapper/0 Not tainted 6.7.0-rc6 #9
+[    0.185179] Hardware name: Allwinner sun8i Family
+[    0.185203]  unwind_backtrace from show_stack+0x10/0x14
+[    0.185234]  show_stack from dump_stack_lvl+0x48/0x54
+[    0.185262]  dump_stack_lvl from __warn+0xcc/0x1ac
+[    0.185285]  __warn from warn_slowpath_fmt+0xb4/0x168
+[    0.185304]  warn_slowpath_fmt from __platform_get_irq_byname+0xb8/0xc4
+[    0.185328]  __platform_get_irq_byname from platform_get_irq_byname+0x10/0x38
+[    0.185354]  platform_get_irq_byname from sun4i_irq_init+0x40/0xdc
+[    0.185382]  sun4i_irq_init from sun4i_gpadc_probe+0x1cc/0x310
+[    0.185403]  sun4i_gpadc_probe from platform_probe+0x98/0xc0
+[    0.185426]  platform_probe from really_probe+0x10c/0x374
+[    0.185450]  really_probe from __driver_probe_device+0x90/0x188
+[    0.185473]  __driver_probe_device from driver_probe_device+0x3c/0x198
+[    0.185496]  driver_probe_device from __driver_attach+0x118/0x1b4
+[    0.185518]  __driver_attach from bus_for_each_dev+0x104/0x148
+[    0.185540]  bus_for_each_dev from bus_add_driver+0x164/0x25c
+[    0.185560]  bus_add_driver from driver_register+0x70/0x118
+[    0.185582]  driver_register from do_one_initcall+0xcc/0x29c
+[    0.185605]  do_one_initcall from do_initcall_level+0x80/0x8c
+[    0.185630]  do_initcall_level from do_initcalls+0x50/0x80
+[    0.185653]  do_initcalls from kernel_init_freeable+0xb0/0xfc
+[    0.185675]  kernel_init_freeable from kernel_init+0x14/0x1b4
+[    0.185698]  kernel_init from ret_from_fork+0x14/0x28
+[    0.185720] Exception stack(0xf0825fb0 to 0xf0825ff8)
+[    0.185737] 5fa0:                                     00000000 00000000 00000000 00000000
+[    0.185756] 5fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+[    0.185775] 5fe0: 00000000 00000000 00000000 00000000 00000013 00000000
+[    0.185788] ---[ end trace 0000000000000000 ]---
+[    0.185804] sun4i-gpadc-iio sun6i-a31-gpadc-iio.0: error -EINVAL: IRQ FIFO_DATA_PENDING not found
+[    0.185828] sun4i-gpadc-iio: probe of sun6i-a31-gpadc-iio.0 failed with error -22
 
-   WARN: resolve_btfids: unresolved symbol unix_sock
-   WARN: resolve_btfids: unresolved symbol bpf_cpumask
-   WARN: resolve_btfids: unresolved symbol bpf_xdp_metadata_rx_timestamp
-   WARN: resolve_btfids: unresolved symbol bpf_xdp_metadata_rx_hash
-   WARN: resolve_btfids: unresolved symbol bpf_xdp_ct_lookup
-   WARN: resolve_btfids: unresolved symbol bpf_xdp_ct_alloc
-   WARN: resolve_btfids: unresolved symbol bpf_task_under_cgroup
-   WARN: resolve_btfids: unresolved symbol bpf_task_release
-   WARN: resolve_btfids: unresolved symbol bpf_task_from_pid
-   WARN: resolve_btfids: unresolved symbol bpf_task_acquire
->> WARN: resolve_btfids: unresolved symbol bpf_sock_destroy
-   WARN: resolve_btfids: unresolved symbol bpf_skb_set_fou_encap
-   WARN: resolve_btfids: unresolved symbol bpf_skb_get_fou_encap
-   WARN: resolve_btfids: unresolved symbol bpf_skb_ct_lookup
-   WARN: resolve_btfids: unresolved symbol bpf_skb_ct_alloc
-   WARN: resolve_btfids: unresolved symbol bpf_refcount_acquire_impl
-   WARN: resolve_btfids: unresolved symbol bpf_rdonly_cast
-   WARN: resolve_btfids: unresolved symbol bpf_rcu_read_unlock
-   WARN: resolve_btfids: unresolved symbol bpf_rcu_read_lock
-   WARN: resolve_btfids: unresolved symbol bpf_rbtree_remove
-   WARN: resolve_btfids: unresolved symbol bpf_rbtree_first
-   WARN: resolve_btfids: unresolved symbol bpf_rbtree_add_impl
-   WARN: resolve_btfids: unresolved symbol bpf_obj_new_impl
-   WARN: resolve_btfids: unresolved symbol bpf_obj_drop_impl
-   WARN: resolve_btfids: unresolved symbol bpf_modify_return_test
-   WARN: resolve_btfids: unresolved symbol bpf_list_push_front_impl
-   WARN: resolve_btfids: unresolved symbol bpf_list_push_back_impl
-   WARN: resolve_btfids: unresolved symbol bpf_list_pop_front
-   WARN: resolve_btfids: unresolved symbol bpf_list_pop_back
-   WARN: resolve_btfids: unresolved symbol bpf_kfunc_call_test_release
-   WARN: resolve_btfids: unresolved symbol bpf_kfunc_call_memb_release
-   WARN: resolve_btfids: unresolved symbol bpf_iter_num_next
-   WARN: resolve_btfids: unresolved symbol bpf_iter_num_new
-   WARN: resolve_btfids: unresolved symbol bpf_iter_num_destroy
-   WARN: resolve_btfids: unresolved symbol bpf_dynptr_slice_rdwr
-   WARN: resolve_btfids: unresolved symbol bpf_dynptr_slice
-   WARN: resolve_btfids: unresolved symbol bpf_dynptr_size
-   WARN: resolve_btfids: unresolved symbol bpf_dynptr_is_rdonly
-   WARN: resolve_btfids: unresolved symbol bpf_dynptr_is_null
-   WARN: resolve_btfids: unresolved symbol bpf_dynptr_from_xdp
-   WARN: resolve_btfids: unresolved symbol bpf_dynptr_clone
-   WARN: resolve_btfids: unresolved symbol bpf_dynptr_adjust
-   WARN: resolve_btfids: unresolved symbol bpf_ct_set_timeout
-   WARN: resolve_btfids: unresolved symbol bpf_ct_set_status
-   WARN: resolve_btfids: unresolved symbol bpf_ct_set_nat_info
-   WARN: resolve_btfids: unresolved symbol bpf_ct_release
-   WARN: resolve_btfids: unresolved symbol bpf_ct_insert_entry
-   WARN: resolve_btfids: unresolved symbol bpf_ct_change_timeout
-   WARN: resolve_btfids: unresolved symbol bpf_ct_change_status
-   WARN: resolve_btfids: unresolved symbol bpf_cgroup_release
-   WARN: resolve_btfids: unresolved symbol bpf_cgroup_from_id
-   WARN: resolve_btfids: unresolved symbol bpf_cgroup_ancestor
-   WARN: resolve_btfids: unresolved symbol bpf_cgroup_acquire
-   WARN: resolve_btfids: unresolved symbol bpf_cast_to_kern_ctx
+The gpadc-iio can not request irq.
+
+> And maybe expand the explanation a bit more? For instance mention that the
+> identifiers are used as IRQ resource numbers, where 0 is treated specially.
+> 
+
+thanks
+
+> Cheers,
+> Andre
+> 
+> > 
+> > Signed-off-by: fuyao <fuyao1697@cyg.com>
+> > Acked-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+> > ---
+> >  include/linux/mfd/sun4i-gpadc.h | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/include/linux/mfd/sun4i-gpadc.h b/include/linux/mfd/sun4i-gpadc.h
+> > index ea0ccf33a459..021f820f9d52 100644
+> > --- a/include/linux/mfd/sun4i-gpadc.h
+> > +++ b/include/linux/mfd/sun4i-gpadc.h
+> > @@ -81,8 +81,8 @@
+> >  #define SUN4I_GPADC_TEMP_DATA				0x20
+> >  #define SUN4I_GPADC_DATA				0x24
+> >  
+> > -#define SUN4I_GPADC_IRQ_FIFO_DATA			0
+> > -#define SUN4I_GPADC_IRQ_TEMP_DATA			1
+> > +#define SUN4I_GPADC_IRQ_FIFO_DATA			1
+> > +#define SUN4I_GPADC_IRQ_TEMP_DATA			2
+> >  
+> >  /* 10s delay before suspending the IP */
+> >  #define SUN4I_GPADC_AUTOSUSPEND_DELAY			10000
+> 
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+CYG Technology.
 
