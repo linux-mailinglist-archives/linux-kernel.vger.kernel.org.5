@@ -1,313 +1,145 @@
-Return-Path: <linux-kernel+bounces-10948-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10949-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96A5E81DF1E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 09:23:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B50781DF20
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 09:25:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BAB5D1C216EF
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 08:23:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3F5782818A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 08:25:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20D271C2E;
-	Mon, 25 Dec 2023 08:23:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 612FB1C32;
+	Mon, 25 Dec 2023 08:25:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="BZX8En16"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="B9EX5/r5"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F28A523B0;
-	Mon, 25 Dec 2023 08:23:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BP7JeJV021626;
-	Mon, 25 Dec 2023 08:23:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:mime-version:content-type; s=
-	qcppdkim1; bh=PQyHzORnG83yHLUkK9mRKYUuUoNyLGS/PDd58jgbxD4=; b=BZ
-	X8En16mJpxrg0+WjhFtwytpagLaWZJv51115DH7xnN8ccHLa0Ckcgq3oj9zx6n2p
-	3Ze68BQxEJfc5rwp0C3Cjz0WpHCA/rd/cLdlSx6I/exYip3gjeqda9Waigi2/S6c
-	rHF6aGgPY7DjlIcWn9KMvoLgip/0lo5WKBkASKt4sHQMZuFb7kYcu5z2+OAGJo+J
-	VHZhybtDOkjFbGtu/u3KYo0vdz1iPcyjhEXxjywJHEf3l8rymxjyg1IrsPp8pc1p
-	fs8ogg4hsJJVAKdMeYQX9TTHub1uxKGRWKO/9z02ouUeQcTAlf0G8wC0LFE4wC3C
-	pyR9xdiNwfraof458Jbw==
-Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v5qs5k8fn-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 25 Dec 2023 08:23:31 +0000 (GMT)
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-	by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BP8NUrI002894
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 25 Dec 2023 08:23:30 GMT
-Received: from aiquny2-gv.qualcomm.com (10.80.80.8) by
- nasanex01a.na.qualcomm.com (10.52.223.231) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Mon, 25 Dec 2023 00:23:25 -0800
-From: Maria Yu <quic_aiquny@quicinc.com>
-To: <andersson@kernel.org>, <linus.walleij@linaro.org>
-CC: Maria Yu <quic_aiquny@quicinc.com>, <kernel@quicinc.com>,
-        <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>
-Subject: [PATCH v3] pinctrl: Add lock to ensure the state atomization
-Date: Mon, 25 Dec 2023 16:23:05 +0800
-Message-ID: <20231225082305.12343-1-quic_aiquny@quicinc.com>
-X-Mailer: git-send-email 2.17.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 198D015AF;
+	Mon, 25 Dec 2023 08:25:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1703492737; x=1735028737;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=Vprv0hFwwaz00IFfEg9mec2/0QKJFt2d7jrEt35TXXI=;
+  b=B9EX5/r5jl0g3jdk/bQpRHyDM83EsksSMZqkOtnFZZdkQzMrKhvQMe4H
+   fDLAivUDOyT9kosq4f20pd7srhX1ezl2MyZNHzb2T3tDAh/kIzru0JYRo
+   Ele7GspYGJvz4J453MYqf9cbMudjN5DPe9QnTwb9gMbsqUFlUZDZLK1Lu
+   p1JakVrkr+b0C7Mbc32hI4lnShk6s45qHklTfdEAfJNo3QP/eToCWcpMX
+   BXGkTu4BkfpokEDdL5yxMEtqMeJlabu3Xr8BP4xY1Jh+8DxAGSjthslJI
+   k/Gklt9K30Ua+bHXn5uYGTZl4GhKyHlrTPiOO3utzYmbK7r1TY82AVV2s
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10934"; a="3108154"
+X-IronPort-AV: E=Sophos;i="6.04,302,1695711600"; 
+   d="scan'208";a="3108154"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Dec 2023 00:25:36 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10934"; a="1024856386"
+X-IronPort-AV: E=Sophos;i="6.04,302,1695711600"; 
+   d="scan'208";a="1024856386"
+Received: from ply01-vm-store.bj.intel.com ([10.238.153.201])
+  by fmsmga006.fm.intel.com with ESMTP; 25 Dec 2023 00:25:33 -0800
+From: Ethan Zhao <haifeng.zhao@linux.intel.com>
+To: bhelgaas@google.com,
+	baolu.lu@linux.intel.com,
+	dwmw2@infradead.org,
+	will@kernel.org,
+	robin.murphy@arm.com,
+	lukas@wunner.de
+Cc: linux-pci@vger.kernel.org,
+	iommu@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: [RFC PATCH v7 0/4] fix vt-d hard lockup when hotplug ATS capable device 
+Date: Mon, 25 Dec 2023 03:25:28 -0500
+Message-Id: <20231225082532.427362-1-haifeng.zhao@linux.intel.com>
+X-Mailer: git-send-email 2.31.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: hH_aHujIMxFYogMR7psukANS5hx7O3qw
-X-Proofpoint-GUID: hH_aHujIMxFYogMR7psukANS5hx7O3qw
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- clxscore=1015 adultscore=0 mlxlogscore=891 mlxscore=0 priorityscore=1501
- bulkscore=0 impostorscore=0 suspectscore=0 malwarescore=0 phishscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2312250063
+Content-Transfer-Encoding: 8bit
 
-Currently pinctrl_select_state is an export symbol and don't have
-effective re-entrance protect design. During async probing of devices
-it's possible to end up in pinctrl_select_state() from multiple
-contexts simultaneously, so make it thread safe.
-More over, when the real racy happened, the system frequently have
-printk message like:
-  "not freeing pin xx (xxx) as part of deactivating group xxx - it is
-already used for some other setting".
-Finally the system crashed after the flood log.
-Add per pinctrl lock to ensure the old state and new state transition
-atomization.
-Also move dev error print message outside the region with interrupts
-disabled.
-Use scoped guard to simplify the lock protection needed code.
+This patchset is used to fix vt-d hard lockup reported when surprise
+unplug ATS capable endpoint device connects to system via PCIe switch
+as following topology.
 
-Fixes: 4198a9b57106 ("pinctrl: avoid reload of p state in list iteration")
-Signed-off-by: Maria Yu <quic_aiquny@quicinc.com>
----
- drivers/pinctrl/core.c | 144 +++++++++++++++++++++--------------------
- drivers/pinctrl/core.h |   2 +
- 2 files changed, 76 insertions(+), 70 deletions(-)
+     +-[0000:15]-+-00.0  Intel Corporation Ice Lake Memory Map/VT-d
+     |           +-00.1  Intel Corporation Ice Lake Mesh 2 PCIe
+     |           +-00.2  Intel Corporation Ice Lake RAS
+     |           +-00.4  Intel Corporation Device 0b23
+     |           \-01.0-[16-1b]----00.0-[17-1b]--+-00.0-[18]----00.0
+                                           NVIDIA Corporation Device 2324
+     |                                           +-01.0-[19]----00.0
+                          Mellanox Technologies MT2910 Family [ConnectX-7]
 
-diff --git a/drivers/pinctrl/core.c b/drivers/pinctrl/core.c
-index f2977eb65522..ab158b745486 100644
---- a/drivers/pinctrl/core.c
-+++ b/drivers/pinctrl/core.c
-@@ -13,6 +13,7 @@
- #define pr_fmt(fmt) "pinctrl core: " fmt
- 
- #include <linux/array_size.h>
-+#include <linux/cleanup.h>
- #include <linux/debugfs.h>
- #include <linux/device.h>
- #include <linux/err.h>
-@@ -1066,6 +1067,7 @@ static struct pinctrl *create_pinctrl(struct device *dev,
- 	p->dev = dev;
- 	INIT_LIST_HEAD(&p->states);
- 	INIT_LIST_HEAD(&p->dt_maps);
-+	spin_lock_init(&p->lock);
- 
- 	ret = pinctrl_dt_to_map(p, pctldev);
- 	if (ret < 0) {
-@@ -1262,93 +1264,95 @@ static void pinctrl_link_add(struct pinctrl_dev *pctldev,
- static int pinctrl_commit_state(struct pinctrl *p, struct pinctrl_state *state)
- {
- 	struct pinctrl_setting *setting, *setting2;
--	struct pinctrl_state *old_state = READ_ONCE(p->state);
-+	struct pinctrl_state *old_state;
- 	int ret;
- 
--	if (old_state) {
--		/*
--		 * For each pinmux setting in the old state, forget SW's record
--		 * of mux owner for that pingroup. Any pingroups which are
--		 * still owned by the new state will be re-acquired by the call
--		 * to pinmux_enable_setting() in the loop below.
--		 */
--		list_for_each_entry(setting, &old_state->settings, node) {
--			if (setting->type != PIN_MAP_TYPE_MUX_GROUP)
--				continue;
--			pinmux_disable_setting(setting);
-+	scoped_guard(spinlock_irqsave, &p->lock) {
-+		old_state = p->state;
-+		if (old_state) {
-+			/*
-+			 * For each pinmux setting in the old state, forget SW's record
-+			 * of mux owner for that pingroup. Any pingroups which are
-+			 * still owned by the new state will be re-acquired by the call
-+			 * to pinmux_enable_setting() in the loop below.
-+			 */
-+			list_for_each_entry(setting, &old_state->settings, node) {
-+				if (setting->type != PIN_MAP_TYPE_MUX_GROUP)
-+					continue;
-+				pinmux_disable_setting(setting);
-+			}
- 		}
--	}
--
--	p->state = NULL;
- 
--	/* Apply all the settings for the new state - pinmux first */
--	list_for_each_entry(setting, &state->settings, node) {
--		switch (setting->type) {
--		case PIN_MAP_TYPE_MUX_GROUP:
--			ret = pinmux_enable_setting(setting);
--			break;
--		case PIN_MAP_TYPE_CONFIGS_PIN:
--		case PIN_MAP_TYPE_CONFIGS_GROUP:
--			ret = 0;
--			break;
--		default:
--			ret = -EINVAL;
--			break;
--		}
-+		p->state = NULL;
- 
--		if (ret < 0)
--			goto unapply_new_state;
-+		/* Apply all the settings for the new state - pinmux first */
-+		list_for_each_entry(setting, &state->settings, node) {
-+			switch (setting->type) {
-+			case PIN_MAP_TYPE_MUX_GROUP:
-+				ret = pinmux_enable_setting(setting);
-+				break;
-+			case PIN_MAP_TYPE_CONFIGS_PIN:
-+			case PIN_MAP_TYPE_CONFIGS_GROUP:
-+				ret = 0;
-+				break;
-+			default:
-+				ret = -EINVAL;
-+				break;
-+			}
- 
--		/* Do not link hogs (circular dependency) */
--		if (p != setting->pctldev->p)
--			pinctrl_link_add(setting->pctldev, p->dev);
--	}
-+			if (ret < 0)
-+				goto unapply_new_state;
- 
--	/* Apply all the settings for the new state - pinconf after */
--	list_for_each_entry(setting, &state->settings, node) {
--		switch (setting->type) {
--		case PIN_MAP_TYPE_MUX_GROUP:
--			ret = 0;
--			break;
--		case PIN_MAP_TYPE_CONFIGS_PIN:
--		case PIN_MAP_TYPE_CONFIGS_GROUP:
--			ret = pinconf_apply_setting(setting);
--			break;
--		default:
--			ret = -EINVAL;
--			break;
-+			/* Do not link hogs (circular dependency) */
-+			if (p != setting->pctldev->p)
-+				pinctrl_link_add(setting->pctldev, p->dev);
- 		}
- 
--		if (ret < 0) {
--			goto unapply_new_state;
--		}
-+		/* Apply all the settings for the new state - pinconf after */
-+		list_for_each_entry(setting, &state->settings, node) {
-+			switch (setting->type) {
-+			case PIN_MAP_TYPE_MUX_GROUP:
-+				ret = 0;
-+				break;
-+			case PIN_MAP_TYPE_CONFIGS_PIN:
-+			case PIN_MAP_TYPE_CONFIGS_GROUP:
-+				ret = pinconf_apply_setting(setting);
-+				break;
-+			default:
-+				ret = -EINVAL;
-+				break;
-+			}
- 
--		/* Do not link hogs (circular dependency) */
--		if (p != setting->pctldev->p)
--			pinctrl_link_add(setting->pctldev, p->dev);
--	}
-+			if (ret < 0)
-+				goto unapply_new_state;
- 
--	p->state = state;
-+			/* Do not link hogs (circular dependency) */
-+			if (p != setting->pctldev->p)
-+				pinctrl_link_add(setting->pctldev, p->dev);
-+		}
- 
--	return 0;
-+		p->state = state;
-+
-+		return 0;
- 
- unapply_new_state:
--	dev_err(p->dev, "Error applying setting, reverse things back\n");
- 
--	list_for_each_entry(setting2, &state->settings, node) {
--		if (&setting2->node == &setting->node)
--			break;
--		/*
--		 * All we can do here is pinmux_disable_setting.
--		 * That means that some pins are muxed differently now
--		 * than they were before applying the setting (We can't
--		 * "unmux a pin"!), but it's not a big deal since the pins
--		 * are free to be muxed by another apply_setting.
--		 */
--		if (setting2->type == PIN_MAP_TYPE_MUX_GROUP)
--			pinmux_disable_setting(setting2);
-+		list_for_each_entry(setting2, &state->settings, node) {
-+			if (&setting2->node == &setting->node)
-+				break;
-+			/*
-+			 * All we can do here is pinmux_disable_setting.
-+			 * That means that some pins are muxed differently now
-+			 * than they were before applying the setting (We can't
-+			 * "unmux a pin"!), but it's not a big deal since the pins
-+			 * are free to be muxed by another apply_setting.
-+			 */
-+			if (setting2->type == PIN_MAP_TYPE_MUX_GROUP)
-+				pinmux_disable_setting(setting2);
-+		}
- 	}
- 
-+	dev_err(p->dev, "Error applying setting, reverse things back\n");
- 	/* There's no infinite recursive loop here because p->state is NULL */
- 	if (old_state)
- 		pinctrl_select_state(p, old_state);
-diff --git a/drivers/pinctrl/core.h b/drivers/pinctrl/core.h
-index 530370443c19..86fc41393f7b 100644
---- a/drivers/pinctrl/core.h
-+++ b/drivers/pinctrl/core.h
-@@ -12,6 +12,7 @@
- #include <linux/list.h>
- #include <linux/mutex.h>
- #include <linux/radix-tree.h>
-+#include <linux/spinlock.h>
- #include <linux/types.h>
- 
- #include <linux/pinctrl/machine.h>
-@@ -91,6 +92,7 @@ struct pinctrl {
- 	struct pinctrl_state *state;
- 	struct list_head dt_maps;
- 	struct kref users;
-+	spinlock_t lock;
- };
- 
- /**
+User brought endpoint device 19:00.0's link down by flapping it's hotplug
+capable slot 17:01.0 link control register, as sequence DLLSC response,
+pciehp_ist() will unload device driver and power it off, durning device 
+driver is unloading an iommu device-TLB invalidation (Intel vt-d spec, or
+'ATS invalidation' in PCIe spec) request issued to that link down device,
+thus a long time completion/timeout waiting in interrupt context causes
+continuous hard lockup warnning and system hang.
 
-base-commit: 861deac3b092f37b2c5e6871732f3e11486f7082
+Other detail, see every patch commit log.
+
+patch [3&4] were tested by yehaorong@bytedance.com on stable v6.7-rc4.
+patch [1&2] only passed compiling on stable v6.7-rc6.
+
+
+change log:
+v7:
+- reorder patches and revise commit log per Bjorn's guide.
+- other code and commit log revise per Lukas' suggestion.
+- rebased to stable v6.7-rc6.
+v6:
+- add two patches to break out device-TLB invalidation if device is gone.
+v5:
+- add a patch try to fix the rare case (surprise remove a device in
+  safe removal process). not work because surprise removal handling can't
+  re-enter when another safe removal is in process.
+v4:
+- move the PCI device state checking after ATS per Baolu's suggestion.
+v3:
+- fix commit description typo.
+v2:
+- revise commit[1] description part according to Lukas' suggestion.
+- revise commit[2] description to clarify the issue's impact.
+v1:
+- https://lore.kernel.org/lkml/20231213034637.2603013-1-haifeng.zhao@
+linux.intel.com/T/
+
+
+Thanks,
+Ethan
+
+
+Ethan Zhao (4):
+  iommu/vt-d: add flush_target_dev member to struct intel_iommu and pass
+    device info to all ATS invalidation functions
+  iommu/vt-d: break out device-TLB invalidation if target device is gone
+  PCI: make pci_dev_is_disconnected() helper public for other drivers
+  iommu/vt-d: don't issue device-TLB invalidate request when device is
+    disconnected
+
+ drivers/iommu/intel/dmar.c  | 12 ++++++++++++
+ drivers/iommu/intel/iommu.c |  1 +
+ drivers/iommu/intel/iommu.h |  2 ++
+ drivers/iommu/intel/pasid.c |  4 ++++
+ drivers/iommu/intel/svm.c   |  1 +
+ drivers/pci/pci.h           |  5 -----
+ include/linux/pci.h         |  5 +++++
+ 7 files changed, 25 insertions(+), 5 deletions(-)
+
 -- 
-2.17.1
+2.31.1
 
 
