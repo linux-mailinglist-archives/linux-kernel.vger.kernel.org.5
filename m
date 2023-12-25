@@ -1,169 +1,208 @@
-Return-Path: <linux-kernel+bounces-11088-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11089-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C50381E128
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 15:41:18 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DD7B81E12C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 15:44:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C9E3128109D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 14:41:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A7ED3B216CF
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 14:44:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8317651C27;
-	Mon, 25 Dec 2023 14:41:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 590BD1EA90;
+	Mon, 25 Dec 2023 14:44:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="eYz1nR65"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qf2Rfm+e"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 748161DDD6
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 14:41:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1703515266;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=jCpX86PoGZe+01z8F2Jmte5yGSzORMYuWo+w6Pq78Nw=;
-	b=eYz1nR65iP7gufZz8GEI/g47jXKi7KPpvjXYHwO7teNOe5Rt59XbKMMw8HZm/IcDNyFKLU
-	3/xQ7UEGYOAJ10gqvfcUXnlU8xO8W+jO6Cw7fkhrQKZtXsjwp8pq84FWSzAPDqTmc/G6OU
-	7mK8oZW35exZV2T9i5zfYHh5uUynNmc=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-617-9iGOFSY3PKuhYEgpo1D9HA-1; Mon, 25 Dec 2023 09:41:05 -0500
-X-MC-Unique: 9iGOFSY3PKuhYEgpo1D9HA-1
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-336953e0fe7so1758390f8f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 06:41:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703515264; x=1704120064;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jCpX86PoGZe+01z8F2Jmte5yGSzORMYuWo+w6Pq78Nw=;
-        b=aQR2H+pVBqM2yPONc3pXuZ8h5xh7JqEFjgdzQnj6Ey73kMoN81qDWah67pdgTdOKkn
-         DctyDN/9MTe3DweH2Abv2O7heMk1QW17WA7Ng9237vRmdFCA3t6aC2CDisPKR9NoYUkU
-         inMouSO5tDNS11ElKOUS0P1ZmIYhqEv75y8RMuuQRYeH1SWmSlnOsxOCcegDqhePxg4U
-         eWw6V+gzYxonQeBtwk2mDvddHHjWtGcuCD9Ms2f50owWwon1Vk2UAPEtCGhp+Ph4bc+w
-         fdzVOq0sDivLQrurRZPLla42pWc9Gg2MJTG7Csay9vn7ehxdyXBvEf3EfaPUYpvwVQDH
-         Am+Q==
-X-Gm-Message-State: AOJu0YzW64WwWAfvy3tQIkMIol9cr7ePWf8C9QcqnI8MwMkRWIfiUWph
-	zO/mK80xATS+0eXTaenoZV0w5vhQV1CkWl2GJ6hmzdmwgZm87I8UeTT9IDbjyklNMV7Rn8TwOrA
-	y1EZSVCWbHb8y8+YZWyoneLPTvwHOf3ol
-X-Received: by 2002:a5d:4a07:0:b0:336:645e:3d9f with SMTP id m7-20020a5d4a07000000b00336645e3d9fmr3220792wrq.124.1703515263951;
-        Mon, 25 Dec 2023 06:41:03 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFj2DpqtPqEpTmnkMcmDdAWO/NAH2KYQxWHYBlyJnk5k2kalANc7ZkucSVc2LG3TSg8UKmMaA==
-X-Received: by 2002:a5d:4a07:0:b0:336:645e:3d9f with SMTP id m7-20020a5d4a07000000b00336645e3d9fmr3220783wrq.124.1703515263641;
-        Mon, 25 Dec 2023 06:41:03 -0800 (PST)
-Received: from redhat.com ([2a06:c701:73ef:4100:2cf6:9475:f85:181e])
-        by smtp.gmail.com with ESMTPSA id e14-20020a5d6d0e000000b00336cbbf2e0fsm1042391wrq.27.2023.12.25.06.41.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Dec 2023 06:41:02 -0800 (PST)
-Date: Mon, 25 Dec 2023 09:41:00 -0500
-From: "Michael S. Tsirkin" <mst@redhat.com>
-To: Dragos Tatulea <dtatulea@nvidia.com>
-Cc: Jason Wang <jasowang@redhat.com>,
-	Eugenio Perez Martin <eperezma@redhat.com>,
-	Si-Wei Liu <si-wei.liu@oracle.com>,
-	Saeed Mahameed <saeedm@nvidia.com>,
-	Leon Romanovsky <leon@kernel.org>,
-	virtualization@lists.linux-foundation.org,
-	Gal Pressman <gal@nvidia.com>, kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Parav Pandit <parav@nvidia.com>,
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: Re: [PATCH vhost v4 00/15] vdpa/mlx5: Add support for resumable vqs
-Message-ID: <20231225094040-mutt-send-email-mst@kernel.org>
-References: <20231219180858.120898-1-dtatulea@nvidia.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8BF41DDD6
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 14:44:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AFF10C433C8;
+	Mon, 25 Dec 2023 14:44:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703515443;
+	bh=FbY9QBJBiyqXrDGgjmB+P034Jl9J++LoZZprGV5Z3vw=;
+	h=From:To:Cc:Subject:Date:From;
+	b=qf2Rfm+eYzv6YconpiHTHxKUR8SQ1YIuspZxMVGLA6FheWm9SirxgDesFSI5EaK1a
+	 XHXzB3YsgqxbmJvDqj+wrXE9q4/ZjHjxtMPXFaR/t75DFCAwuJmvZN7+/gV5nGVxAs
+	 oaFqehpK6TEDhD7DXSHxe1sL/oPDHYLsdtuTddzi5lvxN+885EMWXhRaFXwNYKiQqk
+	 f2yPpGJVq0qWwNscYjm3jcG0tPk4G7U1Hqp/IrIP/tsg4STSN2ERTfVaHOsaQnCyCs
+	 ZMzDskQxu95lwGEuv52xPEm26vdz5w+Z+ASzfjcx+UNLmS5pPxx3iQmx/fsx8TG8ts
+	 1GZyv45y/qOHQ==
+From: Chao Yu <chao@kernel.org>
+To: jaegeuk@kernel.org
+Cc: linux-f2fs-devel@lists.sourceforge.net,
+	linux-kernel@vger.kernel.org,
+	Chao Yu <chao@kernel.org>
+Subject: [PATCH v2 6/6] f2fs: introduce FAULT_INCONSISTENCE
+Date: Mon, 25 Dec 2023 22:43:35 +0800
+Message-Id: <20231225144335.2548-1-chao@kernel.org>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231219180858.120898-1-dtatulea@nvidia.com>
+Content-Transfer-Encoding: 8bit
 
-On Tue, Dec 19, 2023 at 08:08:43PM +0200, Dragos Tatulea wrote:
-> Add support for resumable vqs in the mlx5_vdpa driver. This is a
-> firmware feature that can be used for the following benefits:
-> - Full device .suspend/.resume.
-> - .set_map doesn't need to destroy and create new vqs anymore just to
->   update the map. When resumable vqs are supported it is enough to
->   suspend the vqs, set the new maps, and then resume the vqs.
-> 
-> The first patch exposes relevant bits for the feature in mlx5_ifc.h.
-> That means it needs to be applied to the mlx5-vhost tree [0] first. Once
-> applied there, the change has to be pulled from mlx5-vhost into the
-> vhost tree and only then the remaining patches can be applied. Same flow
-> as the vq descriptor mappings patchset [1].
-> 
-> The second part implements the vdpa backend feature support to allow
-> vq state and address changes when the device is in DRIVER_OK state and
-> suspended.
-> 
-> The third part adds support for seletively modifying vq parameters. This
-> is needed to be able to use resumable vqs.
-> 
-> Then the actual support for resumable vqs is added.
-> 
-> The last part of the series introduces reference counting for mrs which
-> is necessary to avoid freeing mkeys too early or leaking them.
+We will encounter below inconsistent status when FAULT_BLKADDR type
+fault injection is on.
 
+Info: checkpoint state = d6 :  nat_bits crc fsck compacted_summary orphan_inodes sudden-power-off
+[ASSERT] (fsck_chk_inode_blk:1254)  --> ino: 0x1c100 has i_blocks: 000000c0, but has 191 blocks
+[FIX] (fsck_chk_inode_blk:1260)  --> [0x1c100] i_blocks=0x000000c0 -> 0xbf
+[FIX] (fsck_chk_inode_blk:1269)  --> [0x1c100] i_compr_blocks=0x00000026 -> 0x27
+[ASSERT] (fsck_chk_inode_blk:1254)  --> ino: 0x1cadb has i_blocks: 0000002f, but has 46 blocks
+[FIX] (fsck_chk_inode_blk:1260)  --> [0x1cadb] i_blocks=0x0000002f -> 0x2e
+[FIX] (fsck_chk_inode_blk:1269)  --> [0x1cadb] i_compr_blocks=0x00000011 -> 0x12
+[ASSERT] (fsck_chk_inode_blk:1254)  --> ino: 0x1c62c has i_blocks: 00000002, but has 1 blocks
+[FIX] (fsck_chk_inode_blk:1260)  --> [0x1c62c] i_blocks=0x00000002 -> 0x1
 
-I lost track. Are you going to send v5 or not?
+After we inject fault into f2fs_is_valid_blkaddr() during truncation,
+a) it missed to increase @nr_free or @valid_blocks
+b) it can cause in blkaddr leak in truncated dnode
+Which may cause inconsistent status.
 
-> * Changes in v4:
-> - Added vdpa backend feature support for changing vq properties in
->   DRIVER_OK when device is suspended. Added support in the driver as
->   well.
-> - Dropped Acked-by for the patches that had the tag mistakenly
->   added.
-> 
-> * Changes in v3:
-> - Faulty version. Please ignore.
-> 
-> * Changes in v2:
-> - Added mr refcounting patches.
-> - Deleted unnecessary patch: "vdpa/mlx5: Split function into locked and
->   unlocked variants"
-> - Small print improvement in "Introduce per vq and device resume"
->   patch.
-> - Patch 1/7 has been applied to mlx5-vhost branch.
-> 
-> 
-> Dragos Tatulea (15):
->   vdpa: Add VHOST_BACKEND_F_CHANGEABLE_VQ_ADDR_IN_SUSPEND flag
->   vdpa: Add VHOST_BACKEND_F_CHANGEABLE_VQ_STATE_IN_SUSPEND flag
->   vdpa: Accept VHOST_BACKEND_F_CHANGEABLE_VQ_ADDR_IN_SUSPEND backend
->     feature
->   vdpa: Accept VHOST_BACKEND_F_CHANGEABLE_VQ_STATE_IN_SUSPEND backend
->     feature
->   vdpa: Track device suspended state
->   vdpa: Block vq address change in DRIVER_OK unless device supports it
->   vdpa: Block vq state change in DRIVER_OK unless device supports it
->   vdpa/mlx5: Expose resumable vq capability
->   vdpa/mlx5: Allow modifying multiple vq fields in one modify command
->   vdpa/mlx5: Introduce per vq and device resume
->   vdpa/mlx5: Mark vq addrs for modification in hw vq
->   vdpa/mlx5: Mark vq state for modification in hw vq
->   vdpa/mlx5: Use vq suspend/resume during .set_map
->   vdpa/mlx5: Introduce reference counting to mrs
->   vdpa/mlx5: Add mkey leak detection
-> 
->  drivers/vdpa/mlx5/core/mlx5_vdpa.h |  10 +-
->  drivers/vdpa/mlx5/core/mr.c        |  69 +++++++--
->  drivers/vdpa/mlx5/net/mlx5_vnet.c  | 218 ++++++++++++++++++++++++++---
->  drivers/vhost/vdpa.c               |  51 ++++++-
->  include/linux/mlx5/mlx5_ifc.h      |   3 +-
->  include/linux/mlx5/mlx5_ifc_vdpa.h |   4 +
->  include/uapi/linux/vhost_types.h   |   8 ++
->  7 files changed, 322 insertions(+), 41 deletions(-)
-> 
-> -- 
-> 2.43.0
+This patch separates FAULT_INCONSISTENCE from FAULT_BLKADDR, so that
+we can:
+a) use FAULT_INCONSISTENCE in f2fs_truncate_data_blocks_range() to
+simulate inconsistent issue independently,
+b) FAULT_BLKADDR fault will not cause any inconsistent status, we can
+just use it to check error path handling in kernel side.
+
+Signed-off-by: Chao Yu <chao@kernel.org>
+---
+v2:
+- make __f2fs_is_valid_blkaddr() void.
+ Documentation/ABI/testing/sysfs-fs-f2fs |  1 +
+ Documentation/filesystems/f2fs.rst      |  1 +
+ fs/f2fs/checkpoint.c                    | 19 +++++++++++++++----
+ fs/f2fs/f2fs.h                          |  3 +++
+ fs/f2fs/file.c                          |  8 ++++++--
+ fs/f2fs/super.c                         |  1 +
+ 6 files changed, 27 insertions(+), 6 deletions(-)
+
+diff --git a/Documentation/ABI/testing/sysfs-fs-f2fs b/Documentation/ABI/testing/sysfs-fs-f2fs
+index 4f1d4e636d67..649aabac16c2 100644
+--- a/Documentation/ABI/testing/sysfs-fs-f2fs
++++ b/Documentation/ABI/testing/sysfs-fs-f2fs
+@@ -708,6 +708,7 @@ Description:	Support configuring fault injection type, should be
+ 		FAULT_DQUOT_INIT         0x000010000
+ 		FAULT_LOCK_OP            0x000020000
+ 		FAULT_BLKADDR            0x000040000
++		FAULT_INCONSISTENCE      0x000080000
+ 		===================      ===========
+ 
+ What:		/sys/fs/f2fs/<disk>/discard_io_aware_gran
+diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
+index d32c6209685d..5616fb8ae207 100644
+--- a/Documentation/filesystems/f2fs.rst
++++ b/Documentation/filesystems/f2fs.rst
+@@ -206,6 +206,7 @@ fault_type=%d		 Support configuring fault injection type, should be
+ 			 FAULT_DQUOT_INIT	  0x000010000
+ 			 FAULT_LOCK_OP		  0x000020000
+ 			 FAULT_BLKADDR		  0x000040000
++			 FAULT_INCONSISTENCE	  0x000080000
+ 			 ===================	  ===========
+ mode=%s			 Control block allocation mode which supports "adaptive"
+ 			 and "lfs". In "lfs" mode, there should be no random
+diff --git a/fs/f2fs/checkpoint.c b/fs/f2fs/checkpoint.c
+index b0597a539fc5..84546f529cf0 100644
+--- a/fs/f2fs/checkpoint.c
++++ b/fs/f2fs/checkpoint.c
+@@ -170,12 +170,9 @@ static bool __is_bitmap_valid(struct f2fs_sb_info *sbi, block_t blkaddr,
+ 	return exist;
+ }
+ 
+-bool f2fs_is_valid_blkaddr(struct f2fs_sb_info *sbi,
++static bool __f2fs_is_valid_blkaddr(struct f2fs_sb_info *sbi,
+ 					block_t blkaddr, int type)
+ {
+-	if (time_to_inject(sbi, FAULT_BLKADDR))
+-		return false;
+-
+ 	switch (type) {
+ 	case META_NAT:
+ 		break;
+@@ -230,6 +227,20 @@ bool f2fs_is_valid_blkaddr(struct f2fs_sb_info *sbi,
+ 	return true;
+ }
+ 
++bool f2fs_is_valid_blkaddr(struct f2fs_sb_info *sbi,
++					block_t blkaddr, int type)
++{
++	if (time_to_inject(sbi, FAULT_BLKADDR))
++		return false;
++	return __f2fs_is_valid_blkaddr(sbi, blkaddr, type);
++}
++
++bool f2fs_is_valid_blkaddr_raw(struct f2fs_sb_info *sbi,
++					block_t blkaddr, int type)
++{
++	return __f2fs_is_valid_blkaddr(sbi, blkaddr, type);
++}
++
+ /*
+  * Readahead CP/NAT/SIT/SSA/POR pages
+  */
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index 34b20700b5ec..3985296e64cb 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -61,6 +61,7 @@ enum {
+ 	FAULT_DQUOT_INIT,
+ 	FAULT_LOCK_OP,
+ 	FAULT_BLKADDR,
++	FAULT_INCONSISTENCE,
+ 	FAULT_MAX,
+ };
+ 
+@@ -3767,6 +3768,8 @@ struct page *f2fs_get_meta_page_retry(struct f2fs_sb_info *sbi, pgoff_t index);
+ struct page *f2fs_get_tmp_page(struct f2fs_sb_info *sbi, pgoff_t index);
+ bool f2fs_is_valid_blkaddr(struct f2fs_sb_info *sbi,
+ 					block_t blkaddr, int type);
++bool f2fs_is_valid_blkaddr_raw(struct f2fs_sb_info *sbi,
++					block_t blkaddr, int type);
+ int f2fs_ra_meta_pages(struct f2fs_sb_info *sbi, block_t start, int nrpages,
+ 			int type, bool sync);
+ void f2fs_ra_meta_pages_cond(struct f2fs_sb_info *sbi, pgoff_t index,
+diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+index 9f4e21b5916c..b5149f1f2a20 100644
+--- a/fs/f2fs/file.c
++++ b/fs/f2fs/file.c
+@@ -590,9 +590,13 @@ void f2fs_truncate_data_blocks_range(struct dnode_of_data *dn, int count)
+ 		f2fs_set_data_blkaddr(dn, NULL_ADDR);
+ 
+ 		if (__is_valid_data_blkaddr(blkaddr)) {
+-			if (!f2fs_is_valid_blkaddr(sbi, blkaddr,
+-					DATA_GENERIC_ENHANCE))
++			if (time_to_inject(sbi, FAULT_INCONSISTENCE))
++				continue;
++			if (!f2fs_is_valid_blkaddr_raw(sbi, blkaddr,
++						DATA_GENERIC_ENHANCE)) {
++				f2fs_handle_error(sbi, ERROR_INVALID_BLKADDR);
+ 				continue;
++			}
+ 			if (compressed_cluster)
+ 				valid_blocks++;
+ 		}
+diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+index 206d03c82d96..9a5c5e06f766 100644
+--- a/fs/f2fs/super.c
++++ b/fs/f2fs/super.c
+@@ -62,6 +62,7 @@ const char *f2fs_fault_name[FAULT_MAX] = {
+ 	[FAULT_DQUOT_INIT]	= "dquot initialize",
+ 	[FAULT_LOCK_OP]		= "lock_op",
+ 	[FAULT_BLKADDR]		= "invalid blkaddr",
++	[FAULT_INCONSISTENCE]	= "inconsistence",
+ };
+ 
+ void f2fs_build_fault_attr(struct f2fs_sb_info *sbi, unsigned int rate,
+-- 
+2.40.1
 
 
