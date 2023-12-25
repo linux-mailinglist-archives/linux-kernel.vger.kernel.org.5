@@ -1,46 +1,39 @@
-Return-Path: <linux-kernel+bounces-11089-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11090-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DD7B81E12C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 15:44:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 629B081E12E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 15:50:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A7ED3B216CF
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 14:44:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 93B271C21414
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 14:50:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 590BD1EA90;
-	Mon, 25 Dec 2023 14:44:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qf2Rfm+e"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 712045027A;
+	Mon, 25 Dec 2023 14:50:48 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8BF41DDD6
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 14:44:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AFF10C433C8;
-	Mon, 25 Dec 2023 14:44:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703515443;
-	bh=FbY9QBJBiyqXrDGgjmB+P034Jl9J++LoZZprGV5Z3vw=;
-	h=From:To:Cc:Subject:Date:From;
-	b=qf2Rfm+eYzv6YconpiHTHxKUR8SQ1YIuspZxMVGLA6FheWm9SirxgDesFSI5EaK1a
-	 XHXzB3YsgqxbmJvDqj+wrXE9q4/ZjHjxtMPXFaR/t75DFCAwuJmvZN7+/gV5nGVxAs
-	 oaFqehpK6TEDhD7DXSHxe1sL/oPDHYLsdtuTddzi5lvxN+885EMWXhRaFXwNYKiQqk
-	 f2yPpGJVq0qWwNscYjm3jcG0tPk4G7U1Hqp/IrIP/tsg4STSN2ERTfVaHOsaQnCyCs
-	 ZMzDskQxu95lwGEuv52xPEm26vdz5w+Z+ASzfjcx+UNLmS5pPxx3iQmx/fsx8TG8ts
-	 1GZyv45y/qOHQ==
-From: Chao Yu <chao@kernel.org>
-To: jaegeuk@kernel.org
-Cc: linux-f2fs-devel@lists.sourceforge.net,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 110DA52F62;
+	Mon, 25 Dec 2023 14:50:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 070CBC433C7;
+	Mon, 25 Dec 2023 14:50:43 +0000 (UTC)
+From: Huacai Chen <chenhuacai@loongson.cn>
+To: Huacai Chen <chenhuacai@kernel.org>
+Cc: loongarch@lists.linux.dev,
+	Xuefeng Li <lixuefeng@loongson.cn>,
+	Guo Ren <guoren@kernel.org>,
+	Xuerui Wang <kernel@xen0n.name>,
+	Jiaxun Yang <jiaxun.yang@flygoat.com>,
 	linux-kernel@vger.kernel.org,
-	Chao Yu <chao@kernel.org>
-Subject: [PATCH v2 6/6] f2fs: introduce FAULT_INCONSISTENCE
-Date: Mon, 25 Dec 2023 22:43:35 +0800
-Message-Id: <20231225144335.2548-1-chao@kernel.org>
-X-Mailer: git-send-email 2.40.1
+	loongson-kernel@lists.loongnix.cn,
+	Huacai Chen <chenhuacai@loongson.cn>
+Subject: [PATCH V2] LoongArch: Let cores_io_master cover the largest NR_CPUS
+Date: Mon, 25 Dec 2023 22:50:23 +0800
+Message-Id: <20231225145023.1505439-1-chenhuacai@loongson.cn>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,160 +42,74 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-We will encounter below inconsistent status when FAULT_BLKADDR type
-fault injection is on.
+Now loongson_system_configuration::cores_io_master only covers 64 cpus,
+if NR_CPUS > 64 there will be memory corruption. So let cores_io_master
+cover the largest NR_CPUS (256).
 
-Info: checkpoint state = d6 :  nat_bits crc fsck compacted_summary orphan_inodes sudden-power-off
-[ASSERT] (fsck_chk_inode_blk:1254)  --> ino: 0x1c100 has i_blocks: 000000c0, but has 191 blocks
-[FIX] (fsck_chk_inode_blk:1260)  --> [0x1c100] i_blocks=0x000000c0 -> 0xbf
-[FIX] (fsck_chk_inode_blk:1269)  --> [0x1c100] i_compr_blocks=0x00000026 -> 0x27
-[ASSERT] (fsck_chk_inode_blk:1254)  --> ino: 0x1cadb has i_blocks: 0000002f, but has 46 blocks
-[FIX] (fsck_chk_inode_blk:1260)  --> [0x1cadb] i_blocks=0x0000002f -> 0x2e
-[FIX] (fsck_chk_inode_blk:1269)  --> [0x1cadb] i_compr_blocks=0x00000011 -> 0x12
-[ASSERT] (fsck_chk_inode_blk:1254)  --> ino: 0x1c62c has i_blocks: 00000002, but has 1 blocks
-[FIX] (fsck_chk_inode_blk:1260)  --> [0x1c62c] i_blocks=0x00000002 -> 0x1
-
-After we inject fault into f2fs_is_valid_blkaddr() during truncation,
-a) it missed to increase @nr_free or @valid_blocks
-b) it can cause in blkaddr leak in truncated dnode
-Which may cause inconsistent status.
-
-This patch separates FAULT_INCONSISTENCE from FAULT_BLKADDR, so that
-we can:
-a) use FAULT_INCONSISTENCE in f2fs_truncate_data_blocks_range() to
-simulate inconsistent issue independently,
-b) FAULT_BLKADDR fault will not cause any inconsistent status, we can
-just use it to check error path handling in kernel side.
-
-Signed-off-by: Chao Yu <chao@kernel.org>
+Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
 ---
-v2:
-- make __f2fs_is_valid_blkaddr() void.
- Documentation/ABI/testing/sysfs-fs-f2fs |  1 +
- Documentation/filesystems/f2fs.rst      |  1 +
- fs/f2fs/checkpoint.c                    | 19 +++++++++++++++----
- fs/f2fs/f2fs.h                          |  3 +++
- fs/f2fs/file.c                          |  8 ++++++--
- fs/f2fs/super.c                         |  1 +
- 6 files changed, 27 insertions(+), 6 deletions(-)
+ arch/loongarch/include/asm/bootinfo.h | 6 ++++--
+ arch/loongarch/kernel/acpi.c          | 2 +-
+ arch/loongarch/kernel/smp.c           | 2 +-
+ 3 files changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/Documentation/ABI/testing/sysfs-fs-f2fs b/Documentation/ABI/testing/sysfs-fs-f2fs
-index 4f1d4e636d67..649aabac16c2 100644
---- a/Documentation/ABI/testing/sysfs-fs-f2fs
-+++ b/Documentation/ABI/testing/sysfs-fs-f2fs
-@@ -708,6 +708,7 @@ Description:	Support configuring fault injection type, should be
- 		FAULT_DQUOT_INIT         0x000010000
- 		FAULT_LOCK_OP            0x000020000
- 		FAULT_BLKADDR            0x000040000
-+		FAULT_INCONSISTENCE      0x000080000
- 		===================      ===========
+diff --git a/arch/loongarch/include/asm/bootinfo.h b/arch/loongarch/include/asm/bootinfo.h
+index c60796869b2b..6d5846dd075c 100644
+--- a/arch/loongarch/include/asm/bootinfo.h
++++ b/arch/loongarch/include/asm/bootinfo.h
+@@ -24,13 +24,15 @@ struct loongson_board_info {
+ 	const char *board_vendor;
+ };
  
- What:		/sys/fs/f2fs/<disk>/discard_io_aware_gran
-diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
-index d32c6209685d..5616fb8ae207 100644
---- a/Documentation/filesystems/f2fs.rst
-+++ b/Documentation/filesystems/f2fs.rst
-@@ -206,6 +206,7 @@ fault_type=%d		 Support configuring fault injection type, should be
- 			 FAULT_DQUOT_INIT	  0x000010000
- 			 FAULT_LOCK_OP		  0x000020000
- 			 FAULT_BLKADDR		  0x000040000
-+			 FAULT_INCONSISTENCE	  0x000080000
- 			 ===================	  ===========
- mode=%s			 Control block allocation mode which supports "adaptive"
- 			 and "lfs". In "lfs" mode, there should be no random
-diff --git a/fs/f2fs/checkpoint.c b/fs/f2fs/checkpoint.c
-index b0597a539fc5..84546f529cf0 100644
---- a/fs/f2fs/checkpoint.c
-+++ b/fs/f2fs/checkpoint.c
-@@ -170,12 +170,9 @@ static bool __is_bitmap_valid(struct f2fs_sb_info *sbi, block_t blkaddr,
- 	return exist;
- }
++#define NR_WORDS DIV_ROUND_UP(NR_CPUS, BITS_PER_LONG)
++
+ struct loongson_system_configuration {
+ 	int nr_cpus;
+ 	int nr_nodes;
+ 	int boot_cpu_id;
+ 	int cores_per_node;
+ 	int cores_per_package;
+-	unsigned long cores_io_master;
++	unsigned long cores_io_master[NR_WORDS];
+ 	unsigned long suspend_addr;
+ 	const char *cpuname;
+ };
+@@ -42,7 +44,7 @@ extern struct loongson_system_configuration loongson_sysconf;
  
--bool f2fs_is_valid_blkaddr(struct f2fs_sb_info *sbi,
-+static bool __f2fs_is_valid_blkaddr(struct f2fs_sb_info *sbi,
- 					block_t blkaddr, int type)
+ static inline bool io_master(int cpu)
  {
--	if (time_to_inject(sbi, FAULT_BLKADDR))
--		return false;
--
- 	switch (type) {
- 	case META_NAT:
- 		break;
-@@ -230,6 +227,20 @@ bool f2fs_is_valid_blkaddr(struct f2fs_sb_info *sbi,
- 	return true;
+-	return test_bit(cpu, &loongson_sysconf.cores_io_master);
++	return test_bit(cpu, loongson_sysconf.cores_io_master);
  }
  
-+bool f2fs_is_valid_blkaddr(struct f2fs_sb_info *sbi,
-+					block_t blkaddr, int type)
-+{
-+	if (time_to_inject(sbi, FAULT_BLKADDR))
-+		return false;
-+	return __f2fs_is_valid_blkaddr(sbi, blkaddr, type);
-+}
-+
-+bool f2fs_is_valid_blkaddr_raw(struct f2fs_sb_info *sbi,
-+					block_t blkaddr, int type)
-+{
-+	return __f2fs_is_valid_blkaddr(sbi, blkaddr, type);
-+}
-+
- /*
-  * Readahead CP/NAT/SIT/SSA/POR pages
-  */
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index 34b20700b5ec..3985296e64cb 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -61,6 +61,7 @@ enum {
- 	FAULT_DQUOT_INIT,
- 	FAULT_LOCK_OP,
- 	FAULT_BLKADDR,
-+	FAULT_INCONSISTENCE,
- 	FAULT_MAX,
- };
+ #endif /* _ASM_BOOTINFO_H */
+diff --git a/arch/loongarch/kernel/acpi.c b/arch/loongarch/kernel/acpi.c
+index 8e00a754e548..b6b097bbf866 100644
+--- a/arch/loongarch/kernel/acpi.c
++++ b/arch/loongarch/kernel/acpi.c
+@@ -119,7 +119,7 @@ acpi_parse_eio_master(union acpi_subtable_headers *header, const unsigned long e
+ 		return -EINVAL;
  
-@@ -3767,6 +3768,8 @@ struct page *f2fs_get_meta_page_retry(struct f2fs_sb_info *sbi, pgoff_t index);
- struct page *f2fs_get_tmp_page(struct f2fs_sb_info *sbi, pgoff_t index);
- bool f2fs_is_valid_blkaddr(struct f2fs_sb_info *sbi,
- 					block_t blkaddr, int type);
-+bool f2fs_is_valid_blkaddr_raw(struct f2fs_sb_info *sbi,
-+					block_t blkaddr, int type);
- int f2fs_ra_meta_pages(struct f2fs_sb_info *sbi, block_t start, int nrpages,
- 			int type, bool sync);
- void f2fs_ra_meta_pages_cond(struct f2fs_sb_info *sbi, pgoff_t index,
-diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-index 9f4e21b5916c..b5149f1f2a20 100644
---- a/fs/f2fs/file.c
-+++ b/fs/f2fs/file.c
-@@ -590,9 +590,13 @@ void f2fs_truncate_data_blocks_range(struct dnode_of_data *dn, int count)
- 		f2fs_set_data_blkaddr(dn, NULL_ADDR);
+ 	core = eiointc->node * CORES_PER_EIO_NODE;
+-	set_bit(core, &(loongson_sysconf.cores_io_master));
++	set_bit(core, loongson_sysconf.cores_io_master);
  
- 		if (__is_valid_data_blkaddr(blkaddr)) {
--			if (!f2fs_is_valid_blkaddr(sbi, blkaddr,
--					DATA_GENERIC_ENHANCE))
-+			if (time_to_inject(sbi, FAULT_INCONSISTENCE))
-+				continue;
-+			if (!f2fs_is_valid_blkaddr_raw(sbi, blkaddr,
-+						DATA_GENERIC_ENHANCE)) {
-+				f2fs_handle_error(sbi, ERROR_INVALID_BLKADDR);
- 				continue;
-+			}
- 			if (compressed_cluster)
- 				valid_blocks++;
- 		}
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index 206d03c82d96..9a5c5e06f766 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -62,6 +62,7 @@ const char *f2fs_fault_name[FAULT_MAX] = {
- 	[FAULT_DQUOT_INIT]	= "dquot initialize",
- 	[FAULT_LOCK_OP]		= "lock_op",
- 	[FAULT_BLKADDR]		= "invalid blkaddr",
-+	[FAULT_INCONSISTENCE]	= "inconsistence",
- };
+ 	return 0;
+ }
+diff --git a/arch/loongarch/kernel/smp.c b/arch/loongarch/kernel/smp.c
+index 5bca12d16e06..33e583303652 100644
+--- a/arch/loongarch/kernel/smp.c
++++ b/arch/loongarch/kernel/smp.c
+@@ -208,7 +208,7 @@ static void __init fdt_smp_setup(void)
+ 	}
  
- void f2fs_build_fault_attr(struct f2fs_sb_info *sbi, unsigned int rate,
+ 	loongson_sysconf.nr_cpus = num_processors;
+-	set_bit(0, &(loongson_sysconf.cores_io_master));
++	set_bit(0, loongson_sysconf.cores_io_master);
+ #endif
+ }
+ 
 -- 
-2.40.1
+2.39.3
 
 
