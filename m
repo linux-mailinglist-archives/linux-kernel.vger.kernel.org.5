@@ -1,129 +1,239 @@
-Return-Path: <linux-kernel+bounces-11076-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11078-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7D6781E10A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 14:56:06 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3EC3E81E10F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 14:59:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 54834B216B7
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 13:56:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 99A8EB216F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 13:58:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19DFE524D2;
-	Mon, 25 Dec 2023 13:55:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EFA7524D1;
+	Mon, 25 Dec 2023 13:58:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RevVVwKj"
+	dkim=pass (1024-bit key) header.d=subdimension.ro header.i=@subdimension.ro header.b="IurqDHOf"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.subdimension.ro (skycaves.subdimension.ro [172.104.132.142])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B302524AC;
-	Mon, 25 Dec 2023 13:55:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-6d099d316a8so3604420b3a.0;
-        Mon, 25 Dec 2023 05:55:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703512550; x=1704117350; darn=vger.kernel.org;
-        h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=DQDRirBfKKu4jOrue0tUkAqdRYM+XKPGLgDKcTkbvWA=;
-        b=RevVVwKj6DBQlntZIWTjcNYvlfwlqNwlPLT0GAz5ETfe8gJrWmZLVZiAIOoUhnneai
-         VUt5gIDuvEhTxXLwLfZtIDwmvuJWxLlCT4AmMuZM/ZHnkxxdIbvOrklh/tayBxN25SGA
-         I4yvRJYmDxi7SAVumUFG4Il4fXKlDpekeolCy7JaacP5SR3f/VEvS94A1df7cmTbcN7d
-         NV7qPgA11gkJ2n3aGsLl4p7gckgbyXHjPKZhgxAL+sNSEzI/JTdvAPXSQ0BGGHRi2Vif
-         HYLR1XoiGtIMXToLPcaSAWK60SHlF9Nm4QNQb8NBYfAX8MgzgzqSmFDYWohTUfBbaQRf
-         aWNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703512550; x=1704117350;
-        h=references:in-reply-to:message-id:date:subject:cc:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DQDRirBfKKu4jOrue0tUkAqdRYM+XKPGLgDKcTkbvWA=;
-        b=NJfBPOlLDa0PDw71MeyERFeXNal87cpZ7fC7egd4ZwvRR2Bu5uw2JdX0fi8tUAuRMz
-         D2X1lbtFVFQRY0qypiuL3YDHmAq6Zu/gV3ybj4siQ5TlzPex0R1+itcOl5cP7rIbOUQz
-         OenoCCEhMs7E0JFdVBTfK+hpKCTS7yaTRQIadZT+43jpwhaRGXCh2Hs0R5mVGDjmIKjQ
-         2gCqg2CbrIRxB9VH32+JHxa/PZDsYQPJ+dnPm49YXOzIeo4VCrtN3cMYfDTq1m0gBH/Z
-         NHtWouS5TQ6Bwoevc9LWcWTelF2Csf6OPoxLktBb2uvrTBaHJMX8WFh22QtQ/I3oxml6
-         6SPA==
-X-Gm-Message-State: AOJu0Yy+Pz8btCqXChioBW4Dvg3gayyyVA6IC0OmL7MUf2u423IGIALI
-	FKmsW9EK6ab1mijBYaLd7J4=
-X-Google-Smtp-Source: AGHT+IG59G1LSj7Se2+3+49YaCUFtV38BC2bYVSUV4Q/ViyW4rnvflyTan011DTVyVimmqJSzr+AJA==
-X-Received: by 2002:a05:6a00:2383:b0:6d9:c201:676b with SMTP id f3-20020a056a00238300b006d9c201676bmr820525pfc.24.1703512550263;
-        Mon, 25 Dec 2023 05:55:50 -0800 (PST)
-Received: from ruipeng-ThinkCentre-M730e-N010.company.local (014136220210.static.ctinets.com. [14.136.220.210])
-        by smtp.gmail.com with ESMTPSA id e8-20020aa78c48000000b006d9b66f3d07sm2300822pfd.95.2023.12.25.05.55.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Dec 2023 05:55:49 -0800 (PST)
-From: Ruipeng Qi <ruipengqi7@gmail.com>
-To: quic_mojha@quicinc.com
-Cc: agross@kernel.org,
-	alim.akhtar@samsung.com,
-	andersson@kernel.org,
-	bmasney@redhat.com,
-	conor+dt@kernel.org,
-	corbet@lwn.net,
-	gpiccoli@igalia.com,
-	keescook@chromium.org,
-	kernel@quicinc.com,
-	kgene@kernel.org,
-	konrad.dybcio@linaro.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-arm-msm@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	linux-hardening@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-mediatek@lists.infradead.org,
-	linux-remoteproc@vger.kernel.org,
-	linux-samsung-soc@vger.kernel.org,
-	mathieu.poirier@linaro.org,
-	matthias.bgg@gmail.com,
-	nm@ti.com,
-	robh+dt@kernel.org,
-	tony.luck@intel.com,
-	vigneshr@ti.com,
-	qiruipeng@lixiang.com
-Subject: RESEND: Re: [Patch v6 03/12] docs: qcom: Add qualcomm minidump guide
-Date: Mon, 25 Dec 2023 21:55:42 +0800
-Message-Id: <20231225135542.1789-1-ruipengqi7@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <1700864395-1479-4-git-send-email-quic_mojha@quicinc.com>
-References: <1700864395-1479-4-git-send-email-quic_mojha@quicinc.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20776524B5;
+	Mon, 25 Dec 2023 13:58:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=subdimension.ro
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=subdimension.ro
+Received: from sunspire (unknown [188.24.94.216])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by mail.subdimension.ro (Postfix) with ESMTPSA id 055ED28B50B;
+	Mon, 25 Dec 2023 13:58:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=subdimension.ro;
+	s=skycaves; t=1703512726;
+	bh=n+bNKbNXfb2/4bdVR7HNYVml4Ep7meCB7jriTPNkfqc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=IurqDHOfIfSdXBt+kMMWz+tt0arerRhzSNoRDCrwcdfVFdIwiNhSES/Svbx3bcTNP
+	 w6JA9qJGLhQCOaxt48zR9szieiq5Zvx3JIFmyJv4Qac0QPS7hsj/cl+r6SHCJH0pOw
+	 Ao5FWNxlR9hs/aGHqN/rGnX+Qic0+2EAtDzpyOu0=
+Date: Mon, 25 Dec 2023 15:58:44 +0200
+From: Petre Rodan <petre.rodan@subdimension.ro>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Andreas Klinger <ak@it-klinger.de>,
+	Jonathan Cameron <jic23@kernel.org>,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>
+Subject: Re: [PATCH v2 02/10] dt-bindings: iio: pressure:
+ honeywell,mprls0025pa.yaml add pressure-triplet
+Message-ID: <ZYmKlJRrhonht4Zx@sunspire>
+References: <20231224143500.10940-1-petre.rodan@subdimension.ro>
+ <20231224143500.10940-3-petre.rodan@subdimension.ro>
+ <49525adf-1540-4801-8cdf-be1c0fe640f6@linaro.org>
+ <ZYmCOVvgcElnxRuH@sunspire>
+ <503bc876-59d1-4fcb-b0b5-2dd88c62987c@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="8eqye/wz0y0EfH/9"
+Content-Disposition: inline
+In-Reply-To: <503bc876-59d1-4fcb-b0b5-2dd88c62987c@linaro.org>
 
-<+How a kernel client driver can register region with minidump
-<+------------------------------------------------------------
-<+
-<+Client driver can use ``qcom_minidump_region_register`` API's to register
-<+and ``qcom_minidump_region_unregister`` to unregister their region from
-<+minidump driver.
-<+
-<+Client needs to fill their region by filling ``qcom_minidump_region``
-<+structure object which consists of the region name, region's virtual
-<+and physical address and its size.
 
-Hi, Mukesh, wish you a good holiday :)
+--8eqye/wz0y0EfH/9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I have the following idea, please help me to assess whether this can be
-implemented or not. As we all know, most of the kernel objects are
-allocated by the slab sub-system.I wonder if we can dump all memory
-keeped by the slab sub-system? If so,  we got most of the kernel objects
-which will be helpful to fix problems when we run with system issues.
 
-How can we do this? From the description above, I think we should
-register one region for each slab,  for each slab will have some pages,
-and the memory between each slab is non-continuous. As we all
-know, there are millions of slabs in the system, so if we dump slabs
-in this way, it will introduce a heavy overhead.
+hello,
 
-I am not very familiar with qualcomm minidump, maybe my thought
-is wrong. Looking forward to your reply!
+On Mon, Dec 25, 2023 at 02:34:04PM +0100, Krzysztof Kozlowski wrote:
+> On 25/12/2023 14:23, Petre Rodan wrote:
+> > honeywell,transfer-function:
+> > [..]
+> > honeywell,pressure-triplet:
+> > [..]
+> > honeywell,pmin-pascal:
+> > [..]
+> > honeywell,pmax-pascal:
+> > [..]
+> >=20
+> > since the last 3 are tied together as we will see below.
+> > is there any reason you want this order to change?
+>=20
+> I just don't get why moving the code instead of adding new property next
+> to them.
 
-Best Regards
-Ruipeng
+as I also said in the comments and in my last reply I want the user to not =
+feel
+in any way obliged to fill in pmin-pascal, pmax-pascal.
+and since a user reads this file from top to bottom, the order in which the=
+se
+properties are shown to him is important, and it is the one above.
+
+> The order is often alphabetical.
+
+can we please make an exception?
+
+> >>> +  honeywell,pmin-pascal:
+> >>> +    description:
+> >>> +      Minimum pressure value the sensor can measure in pascal.
+> >>> +      To be specified only if honeywell,pressure-triplet is not set.
+> >>
+> >> The last sentence is redundant - schema should enforce that.
+> >=20
+> > when someone generates the dtbo files via
+> >=20
+> > cpp -nostdinc -I include -I ${LINUX_SRC}/include/ -I arch -undef -x ass=
+embler-with-cpp ${file}.dts "${BUILD_DIR}/${file}.dts.preprocessed"
+> > dtc -@ -I dts -O dtb -o "${BUILD_DIR}/${file}.dtbo" "${BUILD_DIR}/${fil=
+e}.dts.preprocessed"
+>=20
+> And how this command matters? DT overlays are checked, so error is printe=
+d.
+>=20
+> >=20
+> > the schema is not checked in any way.
+>=20
+> When I run `make` the schema is also not checked, so is it an argument
+> to add anything to the binding? No. Drop redundant text.
+>=20
+> > so unless people can be bothered to understand the yaml intricacies in =
+the
+> > bindings file, I feel they need to see that redundant information there=
+, see below.
+>=20
+>=20
+>=20
+> >=20
+> >>> +oneOf:
+> >>> +  - required:
+> >>> +      - honeywell,pmin-pascal
+> >>> +      - honeywell,pmax-pascal
+> >>> +  - required:
+> >>> +      - honeywell,pressure-triplet
+> >>> +
+> >>> +allOf:
+> >>> +  - if:
+> >>> +      required:
+> >>> +        - honeywell,pressure-triplet
+> >>> +    then:
+> >>> +      properties:
+> >>> +        honeywell,pmin-pascal: false
+> >>> +        honeywell,pmax-pascal: false
+> >>
+> >> This allOf is not needed.
+> >=20
+> > speaking for intricacies, if the allOf is removed, then a binding conta=
+ining
+> >=20
+> > honeywell,pmax-pascal =3D <840000>;
+> > honeywell,pressure-triplet =3D "0015PA";
+> >=20
+> > would be considered to be correct by the schema, but that would be the =
+incorrect
+> > result. so afaict allOf needs to stay, and so does the redundant text.
+>=20
+> Really? Did you test it?
+
+for more hours than I would have liked. the allOf was provided with kindnes=
+s by
+Conor in my first revision.
+
+testing it:
+ 1. invalid yaml with both honeywell,pmax-pascal and honeywell,pressure-tri=
+plet
+ defined passes the schema check if the allOf is removed:
+
+ # make DT_SCHEMA_FILES=3DDocumentation/devicetree/bindings/iio/pressure/ho=
+neywell,mprls0025pa.yaml  DT_CHECKER_FLAGS=3D-m dt_binding_check
+ # echo $?
+0
+
+ 2. the same invalid yaml but with the allOf not removed issues this output:
+
+ [..]/Documentation/devicetree/bindings/iio/pressure/honeywell,mprls0025pa.=
+example.dtb: pressure@18: honeywell,pmax-pascal: False schema does not allo=
+w [[84000]]
+         from schema $id: http://devicetree.org/schemas/iio/pressure/honeyw=
+ell,mprls0025pa.yaml#
+
+which is the expected behaviour. so AFAICT the allOf block is required, as =
+well
+as the redundant text for the humans that read the human-readable parts of =
+the
+bindings file.
+
+invalid yaml example used above:
+
+    #include <dt-bindings/gpio/gpio.h>
+    #include <dt-bindings/interrupt-controller/irq.h>
+    i2c {
+        #address-cells =3D <1>;
+        #size-cells =3D <0>;
+
+        pressure@18 {
+            compatible =3D "honeywell,mprls0025pa";
+            reg =3D <0x18>;
+            reset-gpios =3D <&gpio3 19 GPIO_ACTIVE_HIGH>;
+            interrupt-parent =3D <&gpio3>;
+            interrupts =3D <21 IRQ_TYPE_EDGE_RISING>;
+
+            honeywell,pmax-pascal =3D <84000>;
+            honeywell,pressure-triplet =3D "0025PA";
+            honeywell,transfer-function =3D <1>;
+            vdd-supply =3D <&vcc_3v3>;
+        };
+    };
+
+best regards,
+peter
+
+--8eqye/wz0y0EfH/9
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEE2Ap/wXYVGTXsPl+pzyaZmYROfzAFAmWJipQACgkQzyaZmYRO
+fzB7xQ/+P2RrKV2a9LIob6nXbDg842zpZXDQI2ctFUjpI+yy1HKlwoDaxo0Siccq
+zeikZ5CIlAC2tLTWUrHuH2iWvur2Aqp1HLDpAbXX/LI+itBSOGJ32GXf8yV2DlJ3
+YQlUQGBXKnEvu6kncDrQzjdVJlKgm/JxPx0tMqv/NXiuypyxh6by+DvTBih3/pyF
+LegHEdJbD8rk3cwrFY3TbU4I0xoIi/xnukh53RM8fcscsRoWxHxRwKvscI3XcLfU
+1LLiMbxjeYxmtltlD22CL3h6kjAp3FB102XpvZcsCuNQ3YZ9Gxl/c8J2Uso4i79z
+OSV73Q3PdXVidE+eX6e+3Sql5h8yjxn9efhGEAzO/2NE6d1WaXgzS04O7TelalKs
+WF6g4FXlkcFjEWbj61kHQ5eHA4z1hg5kRZCGC91uLIDJs06kHJpxy9Eb9H4aZJC+
+RuhsYdx4TqqUM7qQM+JrSm9edCR/6oGM3j/OxEZ7DaI+CjBUO85FAVtQZ6WSX62+
+mNXdGvuVUumH5Xskg7XlJ1usFBb8XYBul8TzrilIWaxVOGo9ohVlNCyFD4rlY2+T
+7bB/ZoBR8V0lvMEoqqnYK4wnQKnjEexXGMa/P5JFzb3NArJYGLF2XAUTuzLK2cyf
++yim3kYeIrjQi+kgUYAHzbFPgD2i2bpZoOM3mZdKYRS38U7MlVU=
+=pZxl
+-----END PGP SIGNATURE-----
+
+--8eqye/wz0y0EfH/9--
 
