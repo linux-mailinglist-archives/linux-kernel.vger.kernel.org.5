@@ -1,65 +1,64 @@
-Return-Path: <linux-kernel+bounces-11148-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11149-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD41E81E214
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 20:10:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94A2681E218
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 20:11:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 503F31F21E12
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 19:10:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B83881C21298
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 19:11:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C04D537FE;
-	Mon, 25 Dec 2023 19:09:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 199E253804;
+	Mon, 25 Dec 2023 19:11:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ZFBCugJb"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Jd1Zvezv"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34A58537EF
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 19:09:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7587537E7
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 19:11:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a2335d81693so682137566b.0
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 11:09:54 -0800 (PST)
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a2698eae0a9so439166266b.3
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 11:11:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703531393; x=1704136193; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
-         :from:content-language:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=BTiGJJJC0cES6MsB3xVVydw9CgvmShHu6CVakswdI1s=;
-        b=ZFBCugJbJWjnTiByqtNAaule6+pKrb2K0l45oWTA0/+UrtlKfENKgN4bD2cDRHX4ev
-         Elp7zZ9kwXSGI9zgtm6IwH3mfO68udSmSp3DUEjowBmG6o5BEV0HOJmzvrjcf+SikWyW
-         IxsYHMGcOgkSa1cVEsVlq/zLcNJo74NAWTYsS978gln5XXMShHyiN3HwqVe4SLCqBqLV
-         /TwFC81WGETkFltQ9eM4arp0MROdXy4GGw9FlFLTIdoTTZGWmQgffiM7r3qwhWN5kwk0
-         FNUmuOqv10UI2Qe41pmi+CQISMuMi95KkySEwGi3Qh5eki82oSuSigpyn/HHmydCHolo
-         korA==
+        d=linaro.org; s=google; t=1703531502; x=1704136302; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=PLWvaOdI91k0jaGTYbqVPsrgyBT98b+MelW6hQMIhsA=;
+        b=Jd1ZvezvLh2kxZV/m4QI6ixIE78uNNIayDU3Qj2+GRIO3uzdNx1XLzvKN85lpw0y5n
+         A5yExeY48b9rOYPNCtForOvwI5dq+1qJXZK4Eq4/nd/T04TvK6DIvk04eWYXptM68drM
+         ygknbRcN+geyuVlAc9mQMSoe2xvNNiO0DxDu6ynsGa8Ecegf58092jWQmCbn+c+PT4XN
+         qMVtpY6WYOoYGcEc3OTcvTXlcc8/czNeis/8V2wLH+bpw1NeMdB8TtsdfNZMHyLiuRj+
+         gi7yW6HVdUeJ7T2vipImQwhirQeVzgAg1KXZKMQ0SXcujz9vR0MlyinMqiNrLFDfG05V
+         nUqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703531393; x=1704136193;
-        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
-         :from:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=BTiGJJJC0cES6MsB3xVVydw9CgvmShHu6CVakswdI1s=;
-        b=M/WhJxbG+C8Xrj3fcP1lVgJ5ulJLHXHZAZSHFGcsf98ok1mL9wAIaRah9asiSFhBj+
-         2diDCY7XiOWnSGmuYX91eDiE3l1Orpd+uYapu1tP1mH5UTj4Y/M/NIqDoQI6Wf0IrDKI
-         Lni/fxium65osl9jThBeonmNhnA89RQxwR5f/w9nlBsivEdieT162gc16ApPuIDMABqJ
-         CwkS195Ss6e/RJuDxaxYBEtJanznbWpZVJk2+XpLIXliu+5majK6VehdU4GQzUecS3FF
-         WNbYKzNgGND/k2kQADmzok7DUN6FuHzEJUh4BoeRo690xZgHf9JJNiS8kvJ1xDgIVqbS
-         2UAQ==
-X-Gm-Message-State: AOJu0YyTYf2vHnKOJ77eAoWrlzk0ORr3LYDX16F5wE/MxafY7u6c3p2D
-	itpBtBx6aIIekVoVJ2//TYfCnDelWVgNcA==
-X-Google-Smtp-Source: AGHT+IGQYvBdGSxgNQm3Hqu4O/wa5rUElI4dKsYmgnihnnf0Jla9pZDUPfBxVK4TeImWbrATkAXyYQ==
-X-Received: by 2002:a17:906:1609:b0:a25:cc77:8f95 with SMTP id m9-20020a170906160900b00a25cc778f95mr6718979ejd.32.1703531393534;
-        Mon, 25 Dec 2023 11:09:53 -0800 (PST)
+        d=1e100.net; s=20230601; t=1703531502; x=1704136302;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=PLWvaOdI91k0jaGTYbqVPsrgyBT98b+MelW6hQMIhsA=;
+        b=el1Hf8/Ut6mx8QORrv0LcMCjyjG04Wkm5jsMFwAYeBV37tVZSBYunxRvuMx5hbZ5uC
+         vVp1AuMSi8PZO4YIwf1E/vz+VBcUizZ7wqEQ9ruEfFVqikW+JaFD7qjorUOrjvlibNA3
+         qe7HBNDtV0crRgFFuLdpbezUXyRVj7K04h0wjconUNmwsSf8R4W1Aj9r5X6CMFpQrcas
+         9L+6rxIwUtfKSzNgFrgQJqkFlWaE4UFtA+hA90u/cp3upGaB7nkB8XS2sMQoGyEJYmkr
+         RN18BhWBEhDwGjDyaq34E1VOCOeb0I2E7DipNjiMO8SN3i15MWVL+sc4MlRxeLw9aB/X
+         YeeQ==
+X-Gm-Message-State: AOJu0YxKMiWyDbjvuxCXxhNbss5x1RiLmbG/aZRBCzPq6vUWuaJNhM/d
+	5Tef3UrqI1E05gTKRCQ83v4zESWUQvZXDQ==
+X-Google-Smtp-Source: AGHT+IEVQO47DtYPs+ucxtsMpACAzOwLy/P3teVWBh3lu+FQ9U6IXtmdABjWBU+/dlO/4oJa262OTw==
+X-Received: by 2002:a17:906:7484:b0:a23:54d8:e6ea with SMTP id e4-20020a170906748400b00a2354d8e6eamr2760067ejl.37.1703531502297;
+        Mon, 25 Dec 2023 11:11:42 -0800 (PST)
 Received: from [192.168.0.22] ([78.10.206.178])
-        by smtp.gmail.com with ESMTPSA id u23-20020aa7d0d7000000b005533a9934b6sm6529379edo.54.2023.12.25.11.09.52
+        by smtp.gmail.com with ESMTPSA id dv1-20020a170906b80100b00a269357c2e7sm5023241ejb.36.2023.12.25.11.11.40
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Dec 2023 11:09:53 -0800 (PST)
-Message-ID: <cf5fd42f-6ca8-4109-a314-3ede9810a5ed@linaro.org>
-Date: Mon, 25 Dec 2023 20:09:51 +0100
+        Mon, 25 Dec 2023 11:11:41 -0800 (PST)
+Message-ID: <5cfa370d-4d56-42f8-9ee6-4c0c2943fc60@linaro.org>
+Date: Mon, 25 Dec 2023 20:11:40 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -67,10 +66,9 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 09/16] dt-bindings: imx6q-pcie: Clean up irrationality
- clocks check
+Subject: Re: [PATCH v6 10/16] dt-bindings: imx6q-pcie: restruct reg and
+ reg-name
 Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To: Frank Li <Frank.Li@nxp.com>
 Cc: bhelgaas@google.com, conor+dt@kernel.org, devicetree@vger.kernel.org,
  festevam@gmail.com, helgaas@kernel.org, hongxing.zhu@nxp.com,
@@ -81,8 +79,8 @@ Cc: bhelgaas@google.com, conor+dt@kernel.org, devicetree@vger.kernel.org,
  lpieralisi@kernel.org, manivannan.sadhasivam@linaro.org, robh@kernel.org,
  s.hauer@pengutronix.de, shawnguo@kernel.org
 References: <20231224183242.1675372-1-Frank.Li@nxp.com>
- <20231224183242.1675372-10-Frank.Li@nxp.com>
- <63d93850-e88b-4311-accb-e7fa9a89d44f@linaro.org>
+ <20231224183242.1675372-11-Frank.Li@nxp.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
  cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
@@ -127,33 +125,21 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <63d93850-e88b-4311-accb-e7fa9a89d44f@linaro.org>
+In-Reply-To: <20231224183242.1675372-11-Frank.Li@nxp.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 25/12/2023 20:05, Krzysztof Kozlowski wrote:
-> On 24/12/2023 19:32, Frank Li wrote:
->> There are clocks and clock-names restriction for difference compatible
->> string. So needn't irrationality check again for clock's miniItems and
->> maxItems.
->>
->> In fsl,imx6q-pcie-ep.yaml
+On 24/12/2023 19:32, Frank Li wrote:
+> snps,dw-pcie.yaml already have reg and reg-name information. Needn't
+> duplciate here.
 > 
-> It is enough to say that bindings referencing this file already define
-> these constraints for each of the variants, so the if:else: is redundant.
+> Add 'if' check for existed compatible string to restrict reg and reg-names.
+> This prepare to add new compatible string with difference reg-names sets.
 > 
-> Two lines instead of ~20.
-> 
->> 	...
->>
->> Acked-by: Rob Herring <robh@kernel.org>
-> 
-> How did you get it? Please point me to the lore link. This patch
-> appeared in v5 and there was no response from Rob, AFAIK.
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
 
-Ah, this patch was added at v4 and Rob acked that one. It's fine then,
-but you still could narrow the commit msg, if there is going to be a
-resend. Please write informative but concise messages.
+
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
 Best regards,
 Krzysztof
