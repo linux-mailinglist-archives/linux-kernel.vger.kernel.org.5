@@ -1,289 +1,140 @@
-Return-Path: <linux-kernel+bounces-10968-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10969-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BB0581DF66
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 10:12:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF88881DF67
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 10:13:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 92E67B21304
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 09:12:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 99AF3281B60
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 09:13:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79AF84C7D;
-	Mon, 25 Dec 2023 09:12:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="MzMIkVR3"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAF54443E;
+	Mon, 25 Dec 2023 09:13:48 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24F0C2565;
-	Mon, 25 Dec 2023 09:12:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703495543; x=1735031543;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=Pwuy8TEBIxmrqwiqEpHK70A188CdzpTkzOO738fHkPI=;
-  b=MzMIkVR3XZRF1SvW44lQ7LxGDePUWfQlrjpN6TcSU6hW96bguuMm+rto
-   SknXpykbfDCH81Hck8HsrEQKfhqopW7aK49cpWpDr7Wx4K42pvCzl2OSh
-   cCgkj20jc9Vu/voKByX+Y4vgBFR65khX3KXstEpkRrvZnK+ZkzobmsQlS
-   qg517ks1oopJ0mgtKY01JIW8V5GaJ+yDzpXkevowBiZ6F/Ib+244CDXF3
-   U44pRhpO90JqNiP9Phg0kpZKQJJTW/EtSSQP7BYEf9m3tYoddjO+8rRxm
-   LDc6nk4jXJ+D4ktUSkHDSh+nXCTWHZ+Oz8MNVhHiA2rEvd2+1384z7Bzz
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10934"; a="375769631"
-X-IronPort-AV: E=Sophos;i="6.04,302,1695711600"; 
-   d="scan'208";a="375769631"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Dec 2023 01:12:18 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10934"; a="777688990"
-X-IronPort-AV: E=Sophos;i="6.04,302,1695711600"; 
-   d="scan'208";a="777688990"
-Received: from zhaohaif-mobl.ccr.corp.intel.com (HELO [10.93.26.36]) ([10.93.26.36])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Dec 2023 01:12:15 -0800
-Message-ID: <be13ce7c-08d1-497c-aa80-e64c892f4ac2@linux.intel.com>
-Date: Mon, 25 Dec 2023 17:12:12 +0800
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95F90DDB9
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 09:13:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
+Received: from loongson.cn (unknown [10.20.42.173])
+	by gateway (Coremail) with SMTP id _____8BxbOnIR4llhWoEAA--.21828S3;
+	Mon, 25 Dec 2023 17:13:44 +0800 (CST)
+Received: from [10.20.42.173] (unknown [10.20.42.173])
+	by localhost.localdomain (Coremail) with SMTP id AQAAf8Dx6r3ER4llOJAJAA--.9412S3;
+	Mon, 25 Dec 2023 17:13:43 +0800 (CST)
+Subject: Re: [PATCH] LoongArch: Let cores_io_master cover the largest NR_CPUS
+To: loongson-kernel@lists.loongnix.cn, Huacai Chen <chenhuacai@kernel.org>
+Cc: loongarch@lists.linux.dev, Xuefeng Li <lixuefeng@loongson.cn>,
+ Guo Ren <guoren@kernel.org>, Xuerui Wang <kernel@xen0n.name>,
+ Jiaxun Yang <jiaxun.yang@flygoat.com>, linux-kernel@vger.kernel.org,
+ Huacai Chen <chenhuacai@loongson.cn>
+References: <20231225070002.1350705-1-chenhuacai@loongson.cn>
+From: maobibo <maobibo@loongson.cn>
+Message-ID: <3db5c086-db9b-cb3a-5521-44f18cb55c4a@loongson.cn>
+Date: Mon, 25 Dec 2023 17:13:26 +0800
+User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v6 2/4] iommu/vt-d: don's issue devTLB flush request
- when device is disconnected
-To: Bjorn Helgaas <helgaas@kernel.org>
-Cc: bhelgaas@google.com, baolu.lu@linux.intel.com, dwmw2@infradead.org,
- will@kernel.org, robin.murphy@arm.com, lukas@wunner.de,
- linux-pci@vger.kernel.org, iommu@lists.linux.dev,
- linux-kernel@vger.kernel.org
-References: <20231224224326.GA1412095@bhelgaas>
-From: Ethan Zhao <haifeng.zhao@linux.intel.com>
-In-Reply-To: <20231224224326.GA1412095@bhelgaas>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+In-Reply-To: <20231225070002.1350705-1-chenhuacai@loongson.cn>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:AQAAf8Dx6r3ER4llOJAJAA--.9412S3
+X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
+X-Coremail-Antispam: 1Uk129KBj93XoW7ArW3Cw18GFW5GF1kZrWrJFc_yoW5Jr47pr
+	ZrZFykWrZ5Wrn5JFWUt3s8ur4UAwnxGa12ga1293y8CFy7Xw1jqF10k3srXFnFya1rKFyF
+	qF9Y9an2ga1rJwbCm3ZEXasCq-sJn29KB7ZKAUJUUUUr529EdanIXcx71UUUUU7KY7ZEXa
+	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+	0xBIdaVrnRJUUUBFb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+	xVW8Jr0_Cr1UM2kKe7AKxVWUXVWUAwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
+	AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
+	XVWUAwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI4
+	8JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_
+	Jr0_Gr1l4IxYO2xFxVAFwI0_Jrv_JF1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8Gjc
+	xK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0
+	cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8V
+	AvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E
+	14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07jepB-UUUUU=
 
 
-On 12/25/2023 6:43 AM, Bjorn Helgaas wrote:
-> On Sun, Dec 24, 2023 at 12:06:55AM -0500, Ethan Zhao wrote:
->> For those endpoint devices connect to system via hotplug capable ports,
->> users could request a warm reset to the device by flapping device's link
->> through setting the slot's link control register, as pciehpt_ist() DLLSC
->> interrupt sequence response, pciehp will unload the device driver and
->> then power it off. thus cause an IOMMU devTLB flush request for device to
->> be sent and a long time completion/timeout waiting in interrupt context.
-> s/don's/don't/ (in subject)
-> s/pciehpt_ist/pciehp_ist/
->
-> IIUC you are referring to a specific PCIe transaction, so unless
-> there's another spec that defines "devTLB flush request", please use
-> the actual PCIe transaction name ("ATS Invalidate Request") as Lukas
-> suggested.
->
-> There's no point in using an informal name that we assume "all
-> iommu/PCIe guys could understand."  It's better to use a term that
-> anybody can find by searching the spec.
->
->> That would cause following continuous hard lockup warning and system hang
->>
->> [ 4211.433662] pcieport 0000:17:01.0: pciehp: Slot(108): Link Down
->> [ 4211.433664] pcieport 0000:17:01.0: pciehp: Slot(108): Card not present
->> [ 4223.822591] NMI watchdog: Watchdog detected hard LOCKUP on cpu 144
->> [ 4223.822622] CPU: 144 PID: 1422 Comm: irq/57-pciehp Kdump: loaded Tainted: G S
->>           OE    kernel version xxxx
->> [ 4223.822623] Hardware name: vendorname xxxx 666-106,
->> BIOS 01.01.02.03.01 05/15/2023
->> [ 4223.822623] RIP: 0010:qi_submit_sync+0x2c0/0x490
->> [ 4223.822624] Code: 48 be 00 00 00 00 00 08 00 00 49 85 74 24 20 0f 95 c1 48 8b
->>   57 10 83 c1 04 83 3c 1a 03 0f 84 a2 01 00 00 49 8b 04 24 8b 70 34 <40> f6 c6 1
->> 0 74 17 49 8b 04 24 8b 80 80 00 00 00 89 c2 d3 fa 41 39
->> [ 4223.822624] RSP: 0018:ffffc4f074f0bbb8 EFLAGS: 00000093
->> [ 4223.822625] RAX: ffffc4f040059000 RBX: 0000000000000014 RCX: 0000000000000005
->> [ 4223.822625] RDX: ffff9f3841315800 RSI: 0000000000000000 RDI: ffff9f38401a8340
->> [ 4223.822625] RBP: ffff9f38401a8340 R08: ffffc4f074f0bc00 R09: 0000000000000000
->> [ 4223.822626] R10: 0000000000000010 R11: 0000000000000018 R12: ffff9f384005e200
->> [ 4223.822626] R13: 0000000000000004 R14: 0000000000000046 R15: 0000000000000004
->> [ 4223.822626] FS:  0000000000000000(0000) GS:ffffa237ae400000(0000)
->> knlGS:0000000000000000
->> [ 4223.822627] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->> [ 4223.822627] CR2: 00007ffe86515d80 CR3: 000002fd3000a001 CR4: 0000000000770ee0
->> [ 4223.822627] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->> [ 4223.822628] DR3: 0000000000000000 DR6: 00000000fffe07f0 DR7: 0000000000000400
->> [ 4223.822628] PKRU: 55555554
->> [ 4223.822628] Call Trace:
->> [ 4223.822628]  qi_flush_dev_iotlb+0xb1/0xd0
->> [ 4223.822628]  __dmar_remove_one_dev_info+0x224/0x250
->> [ 4223.822629]  dmar_remove_one_dev_info+0x3e/0x50
->> [ 4223.822629]  intel_iommu_release_device+0x1f/0x30
->> [ 4223.822629]  iommu_release_device+0x33/0x60
->> [ 4223.822629]  iommu_bus_notifier+0x7f/0x90
->> [ 4223.822630]  blocking_notifier_call_chain+0x60/0x90
->> [ 4223.822630]  device_del+0x2e5/0x420
->> [ 4223.822630]  pci_remove_bus_device+0x70/0x110
->> [ 4223.822630]  pciehp_unconfigure_device+0x7c/0x130
->> [ 4223.822631]  pciehp_disable_slot+0x6b/0x100
->> [ 4223.822631]  pciehp_handle_presence_or_link_change+0xd8/0x320
->> [ 4223.822631]  pciehp_ist+0x176/0x180
->> [ 4223.822631]  ? irq_finalize_oneshot.part.50+0x110/0x110
->> [ 4223.822632]  irq_thread_fn+0x19/0x50
->> [ 4223.822632]  irq_thread+0x104/0x190
->> [ 4223.822632]  ? irq_forced_thread_fn+0x90/0x90
->> [ 4223.822632]  ? irq_thread_check_affinity+0xe0/0xe0
->> [ 4223.822633]  kthread+0x114/0x130
->> [ 4223.822633]  ? __kthread_cancel_work+0x40/0x40
->> [ 4223.822633]  ret_from_fork+0x1f/0x30
->> [ 4223.822633] Kernel panic - not syncing: Hard LOCKUP
->> [ 4223.822634] CPU: 144 PID: 1422 Comm: irq/57-pciehp Kdump: loaded Tainted: G S
->>           OE     kernel version xxxx
->> [ 4223.822634] Hardware name: vendorname xxxx 666-106,
->> BIOS 01.01.02.03.01 05/15/2023
->> [ 4223.822634] Call Trace:
->> [ 4223.822634]  <NMI>
->> [ 4223.822635]  dump_stack+0x6d/0x88
->> [ 4223.822635]  panic+0x101/0x2d0
->> [ 4223.822635]  ? ret_from_fork+0x11/0x30
->> [ 4223.822635]  nmi_panic.cold.14+0xc/0xc
->> [ 4223.822636]  watchdog_overflow_callback.cold.8+0x6d/0x81
->> [ 4223.822636]  __perf_event_overflow+0x4f/0xf0
->> [ 4223.822636]  handle_pmi_common+0x1ef/0x290
->> [ 4223.822636]  ? __set_pte_vaddr+0x28/0x40
->> [ 4223.822637]  ? flush_tlb_one_kernel+0xa/0x20
->> [ 4223.822637]  ? __native_set_fixmap+0x24/0x30
->> [ 4223.822637]  ? ghes_copy_tofrom_phys+0x70/0x100
->> [ 4223.822637]  ? __ghes_peek_estatus.isra.16+0x49/0xa0
->> [ 4223.822637]  intel_pmu_handle_irq+0xba/0x2b0
->> [ 4223.822638]  perf_event_nmi_handler+0x24/0x40
->> [ 4223.822638]  nmi_handle+0x4d/0xf0
->> [ 4223.822638]  default_do_nmi+0x49/0x100
->> [ 4223.822638]  exc_nmi+0x134/0x180
->> [ 4223.822639]  end_repeat_nmi+0x16/0x67
->> [ 4223.822639] RIP: 0010:qi_submit_sync+0x2c0/0x490
->> [ 4223.822639] Code: 48 be 00 00 00 00 00 08 00 00 49 85 74 24 20 0f 95 c1 48 8b
->>   57 10 83 c1 04 83 3c 1a 03 0f 84 a2 01 00 00 49 8b 04 24 8b 70 34 <40> f6 c6 10
->>   74 17 49 8b 04 24 8b 80 80 00 00 00 89 c2 d3 fa 41 39
->> [ 4223.822640] RSP: 0018:ffffc4f074f0bbb8 EFLAGS: 00000093
->> [ 4223.822640] RAX: ffffc4f040059000 RBX: 0000000000000014 RCX: 0000000000000005
->> [ 4223.822640] RDX: ffff9f3841315800 RSI: 0000000000000000 RDI: ffff9f38401a8340
->> [ 4223.822641] RBP: ffff9f38401a8340 R08: ffffc4f074f0bc00 R09: 0000000000000000
->> [ 4223.822641] R10: 0000000000000010 R11: 0000000000000018 R12: ffff9f384005e200
->> [ 4223.822641] R13: 0000000000000004 R14: 0000000000000046 R15: 0000000000000004
->> [ 4223.822641]  ? qi_submit_sync+0x2c0/0x490
->> [ 4223.822642]  ? qi_submit_sync+0x2c0/0x490
->> [ 4223.822642]  </NMI>
->> [ 4223.822642]  qi_flush_dev_iotlb+0xb1/0xd0
->> [ 4223.822642]  __dmar_remove_one_dev_info+0x224/0x250
->> [ 4223.822643]  dmar_remove_one_dev_info+0x3e/0x50
->> [ 4223.822643]  intel_iommu_release_device+0x1f/0x30
->> [ 4223.822643]  iommu_release_device+0x33/0x60
->> [ 4223.822643]  iommu_bus_notifier+0x7f/0x90
->> [ 4223.822644]  blocking_notifier_call_chain+0x60/0x90
->> [ 4223.822644]  device_del+0x2e5/0x420
->> [ 4223.822644]  pci_remove_bus_device+0x70/0x110
->> [ 4223.822644]  pciehp_unconfigure_device+0x7c/0x130
->> [ 4223.822644]  pciehp_disable_slot+0x6b/0x100
->> [ 4223.822645]  pciehp_handle_presence_or_link_change+0xd8/0x320
->> [ 4223.822645]  pciehp_ist+0x176/0x180
->> [ 4223.822645]  ? irq_finalize_oneshot.part.50+0x110/0x110
->> [ 4223.822645]  irq_thread_fn+0x19/0x50
->> [ 4223.822646]  irq_thread+0x104/0x190
->> [ 4223.822646]  ? irq_forced_thread_fn+0x90/0x90
->> [ 4223.822646]  ? irq_thread_check_affinity+0xe0/0xe0
->> [ 4223.822646]  kthread+0x114/0x130
->> [ 4223.822647]  ? __kthread_cancel_work+0x40/0x40
->> [ 4223.822647]  ret_from_fork+0x1f/0x30
->> [ 4223.822647] Kernel Offset: 0x6400000 from 0xffffffff81000000 (relocation
->> range: 0xffffffff80000000-0xffffffffbfffffff)
-> The timestamps don't help understand the problem, so you could remove
-> them so they aren't a distraction.
->
->> Fix it by checking the device's error_state in
->> devtlb_invalidation_with_pasid() to avoid sending meaningless devTLB flush
->> request to link down device that is set to pci_channel_io_perm_failure and
->> then powered off in
-> A pci_dev_is_disconnected() is racy in this context, so this by itself
-> doesn't look like a complete "fix".
->
->> pciehp_ist()
->>     pciehp_handle_presence_or_link_change()
->>       pciehp_disable_slot()
->>         remove_board()
->>           pciehp_unconfigure_device()
-> There are some interesting steps missing here between
-> pciehp_unconfigure_device() and devtlb_invalidation_with_pasid().
->
-> devtlb_invalidation_with_pasid() is Intel-specific.  ATS Invalidate
-> Requests are not Intel-specific, so all IOMMU drivers must have to
-> deal with the case of an ATS Invalidate Request where we never receive
-> a corresponding ATS Invalidate Completion.  Do other IOMMUs like AMD
-> and ARM have a similar issue?
->
->> For SAVE_REMOVAL unplug, link is alive when iommu releases devcie and
->> issues devTLB invalidate request, wouldn't trigger such issue.
->>
->> This patch works for all links of SURPPRISE_REMOVAL unplug operations.
-> s/devcie/device/
->
-> Writing "SAVE_REMOVAL" and "SURPPRISE_REMOVAL" in all caps with an
-> underscore makes them look like identifiers.  But neither appears in
-> the kernel source.  Write them as normal English words, e.g., "save
-> removal" instead (though I suspect you mean "safe removal"?).
->
-> s/surpprise/surprise/
->
-> It's not completely obvious that a fix that works for the safe removal
-> case also works for the surprise removal case.  Can you briefly
-> explain why it does?
->
->> Tested-by: Haorong Ye <yehaorong@bytedance.com>
->> Signed-off-by: Ethan Zhao <haifeng.zhao@linux.intel.com>
->> ---
->>   drivers/iommu/intel/pasid.c | 3 +++
->>   1 file changed, 3 insertions(+)
->>
->> diff --git a/drivers/iommu/intel/pasid.c b/drivers/iommu/intel/pasid.c
->> index 74e8e4c17e81..7dbee9931eb6 100644
->> --- a/drivers/iommu/intel/pasid.c
->> +++ b/drivers/iommu/intel/pasid.c
->> @@ -481,6 +481,9 @@ devtlb_invalidation_with_pasid(struct intel_iommu *iommu,
->>   	if (!info || !info->ats_enabled)
->>   		return;
->>   
->> +	if (pci_dev_is_disconnected(to_pci_dev(dev)))
->> +		return;
->> +
->>   	sid = info->bus << 8 | info->devfn;
->>   	qdep = info->ats_qdep;
->>   	pfsid = info->pfsid;
-> This goes on to call qi_submit_sync(), which contains a restart: loop.
-> I don't know the programming model there, but it looks possible that
-> qi_submit_sync() and qi_check_fault() might not handle the case of an
-> unreachable device correctly.  There should be a way to exit that
-> restart: loop in cases where the device doesn't respond at all.
 
-Current sychronous model isn't good to handle such case, so does
+On 2023/12/25 下午3:00, Huacai Chen wrote:
+> Now loongson_system_configuration::cores_io_master only covers 64 cpus,
+> if NR_CPUS > 64 there will be memory corruption. So let cores_io_master
+> cover the largest NR_CPUS (256).
+> 
+> Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
+> ---
+>   arch/loongarch/include/asm/bootinfo.h | 4 ++--
+>   arch/loongarch/kernel/acpi.c          | 2 +-
+>   arch/loongarch/kernel/smp.c           | 2 +-
+>   3 files changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/loongarch/include/asm/bootinfo.h b/arch/loongarch/include/asm/bootinfo.h
+> index c60796869b2b..32fd0319594a 100644
+> --- a/arch/loongarch/include/asm/bootinfo.h
+> +++ b/arch/loongarch/include/asm/bootinfo.h
+> @@ -30,7 +30,7 @@ struct loongson_system_configuration {
+>   	int boot_cpu_id;
+>   	int cores_per_node;
+>   	int cores_per_package;
+> -	unsigned long cores_io_master;
+> +	unsigned long cores_io_master[4];
+Can the hardcoded 4 be defined something like this?
+    DIV_ROUND_UP(CONFIG_NR_CPUS, sizeof(long))
 
-the CPU.  the vt-d hardware is integrated, if it is just broken, no response
+the others LGTM.
 
-at all, it will block all devices I/O attached to that iommu, then bring 
-down
+Regards
+Bibo Mao
+>   	unsigned long suspend_addr;
+>   	const char *cpuname;
+>   };
+> @@ -42,7 +42,7 @@ extern struct loongson_system_configuration loongson_sysconf;
+>   
+>   static inline bool io_master(int cpu)
+>   {
+> -	return test_bit(cpu, &loongson_sysconf.cores_io_master);
+> +	return test_bit(cpu, loongson_sysconf.cores_io_master);
+>   }
+>   
+>   #endif /* _ASM_BOOTINFO_H */
+> diff --git a/arch/loongarch/kernel/acpi.c b/arch/loongarch/kernel/acpi.c
+> index 8e00a754e548..b6b097bbf866 100644
+> --- a/arch/loongarch/kernel/acpi.c
+> +++ b/arch/loongarch/kernel/acpi.c
+> @@ -119,7 +119,7 @@ acpi_parse_eio_master(union acpi_subtable_headers *header, const unsigned long e
+>   		return -EINVAL;
+>   
+>   	core = eiointc->node * CORES_PER_EIO_NODE;
+> -	set_bit(core, &(loongson_sysconf.cores_io_master));
+> +	set_bit(core, loongson_sysconf.cores_io_master);
+>   
+>   	return 0;
+>   }
+> diff --git a/arch/loongarch/kernel/smp.c b/arch/loongarch/kernel/smp.c
+> index 9e33b5e36122..a16e3dbe9f09 100644
+> --- a/arch/loongarch/kernel/smp.c
+> +++ b/arch/loongarch/kernel/smp.c
+> @@ -208,7 +208,7 @@ static void __init fdt_smp_setup(void)
+>   	}
+>   
+>   	loongson_sysconf.nr_cpus = num_processors;
+> -	set_bit(0, &(loongson_sysconf.cores_io_master));
+> +	set_bit(0, loongson_sysconf.cores_io_master);
+>   #endif
+>   }
+>   
+> 
 
-the whole system. except individual iommu and its device tree could be
-
-hotplug capable.  asynchornouse programming module will work for it.
-
-my undestanding.
-
-
-Thanks,
-
-Ethan
-
->
-> Bjorn
->
 
