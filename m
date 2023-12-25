@@ -1,64 +1,64 @@
-Return-Path: <linux-kernel+bounces-11149-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11150-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94A2681E218
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 20:11:56 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE90181E21B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 20:13:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B83881C21298
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 19:11:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6F7F4B2112C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 19:13:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 199E253804;
-	Mon, 25 Dec 2023 19:11:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A684537F5;
+	Mon, 25 Dec 2023 19:13:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Jd1Zvezv"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="fWUSK8lL"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7587537E7
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 19:11:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84783537EB
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 19:13:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a2698eae0a9so439166266b.3
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 11:11:43 -0800 (PST)
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a26ed1e05c7so100899166b.2
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 11:13:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703531502; x=1704136302; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1703531617; x=1704136417; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=PLWvaOdI91k0jaGTYbqVPsrgyBT98b+MelW6hQMIhsA=;
-        b=Jd1ZvezvLh2kxZV/m4QI6ixIE78uNNIayDU3Qj2+GRIO3uzdNx1XLzvKN85lpw0y5n
-         A5yExeY48b9rOYPNCtForOvwI5dq+1qJXZK4Eq4/nd/T04TvK6DIvk04eWYXptM68drM
-         ygknbRcN+geyuVlAc9mQMSoe2xvNNiO0DxDu6ynsGa8Ecegf58092jWQmCbn+c+PT4XN
-         qMVtpY6WYOoYGcEc3OTcvTXlcc8/czNeis/8V2wLH+bpw1NeMdB8TtsdfNZMHyLiuRj+
-         gi7yW6HVdUeJ7T2vipImQwhirQeVzgAg1KXZKMQ0SXcujz9vR0MlyinMqiNrLFDfG05V
-         nUqw==
+        bh=d3mkj2mgFsDpJykJftCfL/7vhoDFhxFFThJBc59Nw+g=;
+        b=fWUSK8lLYSFnJ1D1rOYulrzo/r95m1AmgzFRNZ3I/MLhwiy/jtNOcmzwmNkyclo1WK
+         g6XL9apyehxAclTNm+8mDkPJL/pnyyf/NvqEerJUBoufs7DnPPOP55b9V6z7yJpAEJKS
+         RXswD2uJYrZcV8ITmG2co5YpKJyyFDWFRpdzqtfCcPYyty4GRjL/JppvAxDzK0niSbjT
+         ekeo3afxhmyB3um0r1Wliin1eqX+IPPyHSmG/DZwWkHHtEZiOdqvPhrlhgUacHVc+ReN
+         6rsiGtUQMiNPw8tZ/4305avc03IWn04/KoeLv5foYOfvROX/2zoZ+Gw+GmgU/n0fIHpU
+         h1PA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703531502; x=1704136302;
+        d=1e100.net; s=20230601; t=1703531617; x=1704136417;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=PLWvaOdI91k0jaGTYbqVPsrgyBT98b+MelW6hQMIhsA=;
-        b=el1Hf8/Ut6mx8QORrv0LcMCjyjG04Wkm5jsMFwAYeBV37tVZSBYunxRvuMx5hbZ5uC
-         vVp1AuMSi8PZO4YIwf1E/vz+VBcUizZ7wqEQ9ruEfFVqikW+JaFD7qjorUOrjvlibNA3
-         qe7HBNDtV0crRgFFuLdpbezUXyRVj7K04h0wjconUNmwsSf8R4W1Aj9r5X6CMFpQrcas
-         9L+6rxIwUtfKSzNgFrgQJqkFlWaE4UFtA+hA90u/cp3upGaB7nkB8XS2sMQoGyEJYmkr
-         RN18BhWBEhDwGjDyaq34E1VOCOeb0I2E7DipNjiMO8SN3i15MWVL+sc4MlRxeLw9aB/X
-         YeeQ==
-X-Gm-Message-State: AOJu0YxKMiWyDbjvuxCXxhNbss5x1RiLmbG/aZRBCzPq6vUWuaJNhM/d
-	5Tef3UrqI1E05gTKRCQ83v4zESWUQvZXDQ==
-X-Google-Smtp-Source: AGHT+IEVQO47DtYPs+ucxtsMpACAzOwLy/P3teVWBh3lu+FQ9U6IXtmdABjWBU+/dlO/4oJa262OTw==
-X-Received: by 2002:a17:906:7484:b0:a23:54d8:e6ea with SMTP id e4-20020a170906748400b00a2354d8e6eamr2760067ejl.37.1703531502297;
-        Mon, 25 Dec 2023 11:11:42 -0800 (PST)
+        bh=d3mkj2mgFsDpJykJftCfL/7vhoDFhxFFThJBc59Nw+g=;
+        b=GfIvHgJLCNwTlzLlxNcYLY51hrqJOQiUZKvlwffu7IpqMchzsDUnaAceH1hCvgZAbi
+         fE6OGrOpwC6u/EGGwzEkAIJZXOcBGtGaBMOExANqX2XLdamBqm3msApyTsnBaR0Ebyxv
+         oi7e7WEdxTKhSnRXhr4QgJ5dC9rIIzg+oDjO6UpBDTS6OHGGZxUAOIJOBwZzDZbMVH2P
+         H5KcTD+fVONN57A0BxAcEU83rs4I8bVmFsSicMcgXn4OiUkNVOuYAQr+gqbEQl0A8SO4
+         2z/w2MMvdF7yWeH5ApPxKvGOOjeilqryCWGplcTp9x8/hB1NWuqiC861BF/PZ+Iyem11
+         f1Sg==
+X-Gm-Message-State: AOJu0YzgqcEplfPxUogu7yLrP1dgW2bFMN8S/OELJnCqUu52vhHBXIEh
+	41Nq+mK4eV4f3egIss1s1X/5YZyLuoIa2Q==
+X-Google-Smtp-Source: AGHT+IGAbpbOxP77K18JV0ohbEPZP0bTv5HTHFxL4/Vxp6EOGIiNv+e/JhmBXRAs/QGqqILpEU0z+g==
+X-Received: by 2002:a50:9f4a:0:b0:54f:48ca:27ec with SMTP id b68-20020a509f4a000000b0054f48ca27ecmr3326098edf.97.1703531616697;
+        Mon, 25 Dec 2023 11:13:36 -0800 (PST)
 Received: from [192.168.0.22] ([78.10.206.178])
-        by smtp.gmail.com with ESMTPSA id dv1-20020a170906b80100b00a269357c2e7sm5023241ejb.36.2023.12.25.11.11.40
+        by smtp.gmail.com with ESMTPSA id da22-20020a056402177600b00554c92fc1b7sm2066997edb.24.2023.12.25.11.13.35
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Dec 2023 11:11:41 -0800 (PST)
-Message-ID: <5cfa370d-4d56-42f8-9ee6-4c0c2943fc60@linaro.org>
-Date: Mon, 25 Dec 2023 20:11:40 +0100
+        Mon, 25 Dec 2023 11:13:36 -0800 (PST)
+Message-ID: <c1fb5806-22b4-4c99-8718-66767bd641d8@linaro.org>
+Date: Mon, 25 Dec 2023 20:13:34 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,8 +66,8 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 10/16] dt-bindings: imx6q-pcie: restruct reg and
- reg-name
+Subject: Re: [PATCH v6 11/16] dt-bindings: imx6q-pcie: Add imx95 pcie
+ compatible string
 Content-Language: en-US
 To: Frank Li <Frank.Li@nxp.com>
 Cc: bhelgaas@google.com, conor+dt@kernel.org, devicetree@vger.kernel.org,
@@ -79,7 +79,7 @@ Cc: bhelgaas@google.com, conor+dt@kernel.org, devicetree@vger.kernel.org,
  lpieralisi@kernel.org, manivannan.sadhasivam@linaro.org, robh@kernel.org,
  s.hauer@pengutronix.de, shawnguo@kernel.org
 References: <20231224183242.1675372-1-Frank.Li@nxp.com>
- <20231224183242.1675372-11-Frank.Li@nxp.com>
+ <20231224183242.1675372-12-Frank.Li@nxp.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -125,21 +125,22 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231224183242.1675372-11-Frank.Li@nxp.com>
+In-Reply-To: <20231224183242.1675372-12-Frank.Li@nxp.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 On 24/12/2023 19:32, Frank Li wrote:
-> snps,dw-pcie.yaml already have reg and reg-name information. Needn't
-> duplciate here.
+> From: Richard Zhu <hongxing.zhu@nxp.com>
 > 
-> Add 'if' check for existed compatible string to restrict reg and reg-names.
-> This prepare to add new compatible string with difference reg-names sets.
+> Add i.MX95 PCIe "fsl,imx95-pcie" compatible string.
+> Add "atu" and "app" to reg-names.
 > 
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
 
+Where is your SoB?
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+I wanted to add Rb tag... but again this is still wrong. Please read the
+DCO and submitting patches.
 
 Best regards,
 Krzysztof
