@@ -1,255 +1,178 @@
-Return-Path: <linux-kernel+bounces-10893-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10890-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DF3F81DE22
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 05:55:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24E1081DE1D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 05:44:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 725DEB20E6C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 04:55:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A5BE61F2143C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 04:44:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAADE443E;
-	Mon, 25 Dec 2023 04:54:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Jozbum0Q"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DF67110D;
+	Mon, 25 Dec 2023 04:44:20 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 327DB29B4
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 04:54:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77FAFC433CC;
-	Mon, 25 Dec 2023 04:54:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703480097;
-	bh=6XpfAVFOAhuOEVj65LCeIoXPY0Gh1KiNb/Z3XmVwtL0=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Jozbum0Q/fdcDqQiB55TcCxgyo/ld5j3NiVIyavjUoZCjmDITUYvfSoktcEfqZDYm
-	 mkC0SQ4pQdcN/ov8EfaafmTTO/k/2HGyVDc/5pTkpdtHezaUNRwez/H9DX5kgQYTmM
-	 F+p4cBLepUCvQK+Xr95SD6HfEaB0S5n6KhAj3EkQoaE12Y2MkTv/Zsx91T/kccZdAb
-	 xQat64yxzEgNYd16DF2dUQPW2UHhBuUPyVhlysL49m6z0FPVZ8TcNRwBR9RRMP9d9k
-	 wuezVnDoaRokWyF/r27e2kVZy6KIOgqu5H+HF83G0BjnBA8QoLH3a94LfTcetypgy2
-	 ehU3rhFvFjLbw==
-From: Jisheng Zhang <jszhang@kernel.org>
-To: Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>
-Cc: linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Eric Biggers <ebiggers@kernel.org>,
-	Conor Dooley <conor.dooley@microchip.com>,
-	Qingfang DENG <dqfext@gmail.com>
-Subject: [PATCH v4 2/2] riscv: select DCACHE_WORD_ACCESS for efficient unaligned access HW
-Date: Mon, 25 Dec 2023 12:42:07 +0800
-Message-Id: <20231225044207.3821-3-jszhang@kernel.org>
-X-Mailer: git-send-email 2.40.0
-In-Reply-To: <20231225044207.3821-1-jszhang@kernel.org>
-References: <20231225044207.3821-1-jszhang@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C310EA6
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 04:44:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-35fe138e332so25290675ab.0
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Dec 2023 20:44:18 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703479457; x=1704084257;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=zHAHAys+JUJZvJw3AwM1+L/Jwh91xc407CsAuZW1dK4=;
+        b=cVapvYZM3rQENsvQZ0bFTW/KK8gMeTq+lgZAtc4siSqptxsadi1Lf2jwV54VQ/T8Zz
+         oWOLzN0l8XC0uQbUAh7E+cceo6CdQwp5SmjsfUYe+M3L7fBhxwzto7yV1jCn8RA03mv7
+         W0z0nxcarHx/FKQSyMZaiuoMYN5MNp2SHh2KAhtHk8U5/PebWCXiXgZscgvn+9y/t7P0
+         /imIs/FIshuJTKpzaIk2mbwHBuDIpjEL4AGMysyZ7kehWlAf/8Ce2x9sFDHe0Dt9hF28
+         ca8jS0Mm81gkP2NkUU9glwMn/mbP/XGPFhl4e7jvbpLVKPRniY922hIWueZO9xhdj4nI
+         Y/aQ==
+X-Gm-Message-State: AOJu0YyHP12Rj8lqB/5QPSJ1WMZt9BrTPoMtKfb7imnzjjofA6br8Luj
+	wjmnyUm1RwgVywzey4XN7AcvgwOCGnErHL6NytO26dCuDTml
+X-Google-Smtp-Source: AGHT+IGSKiHB+b5xavYA26vEqNBlSY9KQgLm84ifjVN+qAx5+aRCggqtsVminwlLB1La0DeG5bb6Bcg2sx9nyJLFXdwVY09Znv9a
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a92:c243:0:b0:35f:e976:3283 with SMTP id
+ k3-20020a92c243000000b0035fe9763283mr501174ilo.2.1703479457679; Sun, 24 Dec
+ 2023 20:44:17 -0800 (PST)
+Date: Sun, 24 Dec 2023 20:44:17 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f52642060d4e3750@google.com>
+Subject: [syzbot] [fs?] BUG: unable to handle kernel NULL pointer dereference
+ in do_pagemap_scan
+From: syzbot <syzbot+f9238a0a31f9b5603fef@syzkaller.appspotmail.com>
+To: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-DCACHE_WORD_ACCESS uses the word-at-a-time API for optimised string
-comparisons in the vfs layer.
+Hello,
 
-This patch implements support for load_unaligned_zeropad in much the
-same way as has been done for arm64.
+syzbot found the following issue on:
 
-Here is the test program and step:
+HEAD commit:    861deac3b092 Linux 6.7-rc7
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=12bf6e26e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=298e57794135adf0
+dashboard link: https://syzkaller.appspot.com/bug?extid=f9238a0a31f9b5603fef
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13f4fc81e80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15997e81e80000
 
- $ cat tt.c
- #include <sys/types.h>
- #include <sys/stat.h>
- #include <unistd.h>
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/b1f4e427f08b/disk-861deac3.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/81317757e796/vmlinux-861deac3.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/f9d2dcfac209/bzImage-861deac3.xz
 
- #define ITERATIONS 1000000
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+f9238a0a31f9b5603fef@syzkaller.appspotmail.com
 
- #define PATH "123456781234567812345678123456781"
+general protection fault, probably for non-canonical address 0xdffffc00000000fe: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x00000000000007f0-0x00000000000007f7]
+CPU: 0 PID: 5068 Comm: syz-executor316 Not tainted 6.7.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
+RIP: 0010:mm_has_notifiers include/linux/mmu_notifier.h:282 [inline]
+RIP: 0010:mmu_notifier_invalidate_range_start include/linux/mmu_notifier.h:455 [inline]
+RIP: 0010:do_pagemap_scan+0xa89/0xcd0 fs/proc/task_mmu.c:2438
+Code: 8d 41 b8 01 00 00 00 e8 c5 0b 57 ff 48 8b 5c 24 78 58 48 b8 00 00 00 00 00 fc ff df 48 8d bb f0 07 00 00 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 f8 01 00 00 48 83 bb f0 07 00 00 00 0f 85 1d 01
+RSP: 0018:ffffc9000425fcf0 EFLAGS: 00010212
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffffff8167148e
+RDX: 00000000000000fe RSI: ffffffff8accb1a0 RDI: 00000000000007f0
+RBP: 0000000020ffc000 R08: 0000000000000000 R09: fffffbfff23e37d2
+R10: ffffffff91f1be97 R11: 0000000000000000 R12: 000000000000230e
+R13: 0000000000000001 R14: 0000000000000000 R15: 0000000000000000
+FS:  00005555564df380(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000005fdeb8 CR3: 00000000740db000 CR4: 0000000000350ef0
+Call Trace:
+ <TASK>
+ do_pagemap_cmd+0x5e/0x80 fs/proc/task_mmu.c:2494
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:871 [inline]
+ __se_sys_ioctl fs/ioctl.c:857 [inline]
+ __x64_sys_ioctl+0x18f/0x210 fs/ioctl.c:857
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0x40/0x110 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+RIP: 0033:0x7f0993b4dbf9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 c1 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffe8cc5b718 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f0993b4dbf9
+RDX: 0000000020000180 RSI: 00000000c0606610 RDI: 0000000000000004
+RBP: 00007f0993bc05f0 R08: 00007ffe8cc5b3c4 R09: 0000000000000006
+R10: 0000000000000014 R11: 0000000000000246 R12: 0000000000000001
+R13: 431bde82d7b634db R14: 0000000000000001 R15: 0000000000000001
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:mm_has_notifiers include/linux/mmu_notifier.h:282 [inline]
+RIP: 0010:mmu_notifier_invalidate_range_start include/linux/mmu_notifier.h:455 [inline]
+RIP: 0010:do_pagemap_scan+0xa89/0xcd0 fs/proc/task_mmu.c:2438
+Code: 8d 41 b8 01 00 00 00 e8 c5 0b 57 ff 48 8b 5c 24 78 58 48 b8 00 00 00 00 00 fc ff df 48 8d bb f0 07 00 00 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 f8 01 00 00 48 83 bb f0 07 00 00 00 0f 85 1d 01
+RSP: 0018:ffffc9000425fcf0 EFLAGS: 00010212
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffffff8167148e
+RDX: 00000000000000fe RSI: ffffffff8accb1a0 RDI: 00000000000007f0
+RBP: 0000000020ffc000 R08: 0000000000000000 R09: fffffbfff23e37d2
+R10: ffffffff91f1be97 R11: 0000000000000000 R12: 000000000000230e
+R13: 0000000000000001 R14: 0000000000000000 R15: 0000000000000000
+FS:  00005555564df380(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f0993b80b00 CR3: 00000000740db000 CR4: 0000000000350ef0
+----------------
+Code disassembly (best guess):
+   0:	8d 41 b8             	lea    -0x48(%rcx),%eax
+   3:	01 00                	add    %eax,(%rax)
+   5:	00 00                	add    %al,(%rax)
+   7:	e8 c5 0b 57 ff       	call   0xff570bd1
+   c:	48 8b 5c 24 78       	mov    0x78(%rsp),%rbx
+  11:	58                   	pop    %rax
+  12:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  19:	fc ff df
+  1c:	48 8d bb f0 07 00 00 	lea    0x7f0(%rbx),%rdi
+  23:	48 89 fa             	mov    %rdi,%rdx
+  26:	48 c1 ea 03          	shr    $0x3,%rdx
+* 2a:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1) <-- trapping instruction
+  2e:	0f 85 f8 01 00 00    	jne    0x22c
+  34:	48 83 bb f0 07 00 00 	cmpq   $0x0,0x7f0(%rbx)
+  3b:	00
+  3c:	0f                   	.byte 0xf
+  3d:	85                   	.byte 0x85
+  3e:	1d                   	.byte 0x1d
+  3f:	01                   	.byte 0x1
 
- int main(void)
- {
-         unsigned long i;
-         struct stat buf;
 
-         for (i = 0; i < ITERATIONS; i++)
-                 stat(PATH, &buf);
-
-         return 0;
- }
-
- $ gcc -O2 tt.c
- $ touch 123456781234567812345678123456781
- $ time ./a.out
-
-Per my test on T-HEAD C910 platforms, the above test performance is
-improved by about 7.5%.
-
-Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
 ---
- arch/riscv/Kconfig                      |  1 +
- arch/riscv/include/asm/asm-extable.h    | 15 ++++++++++++
- arch/riscv/include/asm/word-at-a-time.h | 27 +++++++++++++++++++++
- arch/riscv/mm/extable.c                 | 31 +++++++++++++++++++++++++
- 4 files changed, 74 insertions(+)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index afcc5fdc16f7..e34863c5a8ed 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -654,6 +654,7 @@ config RISCV_MISALIGNED
- config RISCV_EFFICIENT_UNALIGNED_ACCESS
- 	bool "Assume the CPU supports fast unaligned memory accesses"
- 	depends on NONPORTABLE
-+	select DCACHE_WORD_ACCESS if MMU
- 	select HAVE_EFFICIENT_UNALIGNED_ACCESS
- 	help
- 	  Say Y here if you want the kernel to assume that the CPU supports
-diff --git a/arch/riscv/include/asm/asm-extable.h b/arch/riscv/include/asm/asm-extable.h
-index 00a96e7a9664..0c8bfd54fc4e 100644
---- a/arch/riscv/include/asm/asm-extable.h
-+++ b/arch/riscv/include/asm/asm-extable.h
-@@ -6,6 +6,7 @@
- #define EX_TYPE_FIXUP			1
- #define EX_TYPE_BPF			2
- #define EX_TYPE_UACCESS_ERR_ZERO	3
-+#define EX_TYPE_LOAD_UNALIGNED_ZEROPAD	4
- 
- #ifdef CONFIG_MMU
- 
-@@ -47,6 +48,11 @@
- #define EX_DATA_REG_ZERO_SHIFT	5
- #define EX_DATA_REG_ZERO	GENMASK(9, 5)
- 
-+#define EX_DATA_REG_DATA_SHIFT	0
-+#define EX_DATA_REG_DATA	GENMASK(4, 0)
-+#define EX_DATA_REG_ADDR_SHIFT	5
-+#define EX_DATA_REG_ADDR	GENMASK(9, 5)
-+
- #define EX_DATA_REG(reg, gpr)						\
- 	"((.L__gpr_num_" #gpr ") << " __stringify(EX_DATA_REG_##reg##_SHIFT) ")"
- 
-@@ -62,6 +68,15 @@
- #define _ASM_EXTABLE_UACCESS_ERR(insn, fixup, err)			\
- 	_ASM_EXTABLE_UACCESS_ERR_ZERO(insn, fixup, err, zero)
- 
-+#define _ASM_EXTABLE_LOAD_UNALIGNED_ZEROPAD(insn, fixup, data, addr)		\
-+	__DEFINE_ASM_GPR_NUMS							\
-+	__ASM_EXTABLE_RAW(#insn, #fixup,					\
-+			  __stringify(EX_TYPE_LOAD_UNALIGNED_ZEROPAD),		\
-+			  "("							\
-+			    EX_DATA_REG(DATA, data) " | "			\
-+			    EX_DATA_REG(ADDR, addr)				\
-+			  ")")
-+
- #endif /* __ASSEMBLY__ */
- 
- #else /* CONFIG_MMU */
-diff --git a/arch/riscv/include/asm/word-at-a-time.h b/arch/riscv/include/asm/word-at-a-time.h
-index 7c086ac6ecd4..f3f031e34191 100644
---- a/arch/riscv/include/asm/word-at-a-time.h
-+++ b/arch/riscv/include/asm/word-at-a-time.h
-@@ -9,6 +9,7 @@
- #define _ASM_RISCV_WORD_AT_A_TIME_H
- 
- 
-+#include <asm/asm-extable.h>
- #include <linux/kernel.h>
- 
- struct word_at_a_time {
-@@ -45,4 +46,30 @@ static inline unsigned long find_zero(unsigned long mask)
- /* The mask we created is directly usable as a bytemask */
- #define zero_bytemask(mask) (mask)
- 
-+#ifdef CONFIG_DCACHE_WORD_ACCESS
-+
-+/*
-+ * Load an unaligned word from kernel space.
-+ *
-+ * In the (very unlikely) case of the word being a page-crosser
-+ * and the next page not being mapped, take the exception and
-+ * return zeroes in the non-existing part.
-+ */
-+static inline unsigned long load_unaligned_zeropad(const void *addr)
-+{
-+	unsigned long ret;
-+
-+	/* Load word from unaligned pointer addr */
-+	asm(
-+	"1:	" REG_L " %0, %2\n"
-+	"2:\n"
-+	_ASM_EXTABLE_LOAD_UNALIGNED_ZEROPAD(1b, 2b, %0, %1)
-+	: "=&r" (ret)
-+	: "r" (addr), "m" (*(unsigned long *)addr));
-+
-+	return ret;
-+}
-+
-+#endif	/* CONFIG_DCACHE_WORD_ACCESS */
-+
- #endif /* _ASM_RISCV_WORD_AT_A_TIME_H */
-diff --git a/arch/riscv/mm/extable.c b/arch/riscv/mm/extable.c
-index 35484d830fd6..dd1530af3ef1 100644
---- a/arch/riscv/mm/extable.c
-+++ b/arch/riscv/mm/extable.c
-@@ -27,6 +27,14 @@ static bool ex_handler_fixup(const struct exception_table_entry *ex,
- 	return true;
- }
- 
-+static inline unsigned long regs_get_gpr(struct pt_regs *regs, unsigned int offset)
-+{
-+	if (unlikely(!offset || offset > MAX_REG_OFFSET))
-+		return 0;
-+
-+	return *(unsigned long *)((unsigned long)regs + offset);
-+}
-+
- static inline void regs_set_gpr(struct pt_regs *regs, unsigned int offset,
- 				unsigned long val)
- {
-@@ -50,6 +58,27 @@ static bool ex_handler_uaccess_err_zero(const struct exception_table_entry *ex,
- 	return true;
- }
- 
-+static bool
-+ex_handler_load_unaligned_zeropad(const struct exception_table_entry *ex,
-+				  struct pt_regs *regs)
-+{
-+	int reg_data = FIELD_GET(EX_DATA_REG_DATA, ex->data);
-+	int reg_addr = FIELD_GET(EX_DATA_REG_ADDR, ex->data);
-+	unsigned long data, addr, offset;
-+
-+	addr = regs_get_gpr(regs, reg_addr * sizeof(unsigned long));
-+
-+	offset = addr & 0x7UL;
-+	addr &= ~0x7UL;
-+
-+	data = *(unsigned long *)addr >> (offset * 8);
-+
-+	regs_set_gpr(regs, reg_data * sizeof(unsigned long), data);
-+
-+	regs->epc = get_ex_fixup(ex);
-+	return true;
-+}
-+
- bool fixup_exception(struct pt_regs *regs)
- {
- 	const struct exception_table_entry *ex;
-@@ -65,6 +94,8 @@ bool fixup_exception(struct pt_regs *regs)
- 		return ex_handler_bpf(ex, regs);
- 	case EX_TYPE_UACCESS_ERR_ZERO:
- 		return ex_handler_uaccess_err_zero(ex, regs);
-+	case EX_TYPE_LOAD_UNALIGNED_ZEROPAD:
-+		return ex_handler_load_unaligned_zeropad(ex, regs);
- 	}
- 
- 	BUG();
--- 
-2.40.0
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
