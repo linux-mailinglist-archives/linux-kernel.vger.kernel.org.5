@@ -1,117 +1,146 @@
-Return-Path: <linux-kernel+bounces-11166-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11167-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF47781E250
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 21:28:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 543B681E255
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 21:29:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E1C3A1C20F1A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 20:28:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E739E1F21E85
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 20:29:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BDD15381D;
-	Mon, 25 Dec 2023 20:28:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E25E5381B;
+	Mon, 25 Dec 2023 20:29:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=subdimension.ro header.i=@subdimension.ro header.b="XhBW5Cx8"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.subdimension.ro (skycaves.subdimension.ro [172.104.132.142])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B69253804
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 20:28:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7b7399e0707so564897239f.3
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 12:28:23 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703536102; x=1704140902;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5fRKrD7CHZyW03bk3aSpJq2vu0NdTFDfPVJs4+ApOJI=;
-        b=a7tFr3Uy04fTGbIr54ZqWtDC2gwn8njIZXseyaM610ez2abOfVsfuV8VdkjkIW9pVa
-         6RoCOgQ/AdZpkgEcUXdVpA+Z3hMz9GswzoG9X9DythgwnLkPb7MuOnxvsT37TEtZQuel
-         8tGmeiX5wNo3HuqP5/lNX2c2PSPn7dziRAFwYxdgm18rOArgMyDtmJPoS+FsPLCYFNN1
-         UTTTAnGWUZHXCc+eAB2EHCyABpm6KxwSsPCHg7LAh8QQNHdf3G6cvf//AK+UmrU+mF2A
-         VR4csA9qJIo+RScj0VCLNBpZ4he4wUQmXqsbXshxtEoA/rNUjhtV74qMfTdeyiL42i46
-         Y2KQ==
-X-Gm-Message-State: AOJu0Yy94aEx4Xa7vVFkXDojU/17voZ2XjfD5Nt6Fbxo3wquC0UHfLeQ
-	Ou/yGE/xrwVgju514yN8r+fEkOr+pXCWtyMo56vzGzodpbIT
-X-Google-Smtp-Source: AGHT+IFiqXWV6QzTYsZAA7yzqDNorN8tNKBhEZOjIolzPCnE/mnVZKGZhi0nDsMt8JGKHDqBb96ZdlJimsme/6rzcSsTOmCA+qfP
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8560B53E00;
+	Mon, 25 Dec 2023 20:29:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=subdimension.ro
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=subdimension.ro
+Received: from sunspire (unknown [188.24.94.216])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by mail.subdimension.ro (Postfix) with ESMTPSA id 5941128B50B;
+	Mon, 25 Dec 2023 20:29:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=subdimension.ro;
+	s=skycaves; t=1703536167;
+	bh=jhNrBsepGZrvs9ep/J+w+YrOSPNVglsMUP/CPJQFzT4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=XhBW5Cx8t8QwnJgFzN0Cj1mNC928Aeg0dPj0pakisf46UoOlShwEEt7MtL8zrtI3j
+	 iBGiFPTph8FoVG+IYhlNpIpLuvRSrB4Hh69HlMN0wqxtBoIX19upviF772vaAsuUv3
+	 eziyGLsetxGJk5SnFECa3m5xUcxJKRSvPycCfdr8=
+Date: Mon, 25 Dec 2023 22:29:26 +0200
+From: Petre Rodan <petre.rodan@subdimension.ro>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Andreas Klinger <ak@it-klinger.de>,
+	Jonathan Cameron <jic23@kernel.org>,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>
+Subject: Re: [PATCH v2 03/10] dt-bindings: iio: pressure:
+ honeywell,mprls0025pa.yaml add spi bus
+Message-ID: <ZYnmJjUJjYZHxfUM@sunspire>
+References: <20231224143500.10940-1-petre.rodan@subdimension.ro>
+ <20231224143500.10940-4-petre.rodan@subdimension.ro>
+ <b23a6b74-a568-4e11-8429-6344e10a9937@linaro.org>
+ <ZYmcNySur-ZQryWc@sunspire>
+ <1b54a167-1c90-46b8-8a7b-a21f5d4655e7@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1d0c:b0:35f:d4dc:1b1e with SMTP id
- i12-20020a056e021d0c00b0035fd4dc1b1emr1074185ila.5.1703536102687; Mon, 25 Dec
- 2023 12:28:22 -0800 (PST)
-Date: Mon, 25 Dec 2023 12:28:22 -0800
-In-Reply-To: <0000000000002d868805ec92cbf0@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000434c71060d5b6808@google.com>
-Subject: Re: [syzbot] [reiserfs?] KASAN: slab-out-of-bounds Read in
- search_by_key (2)
-From: syzbot <syzbot+b3b14fb9f8a14c5d0267@syzkaller.appspotmail.com>
-To: akpm@linux-foundation.org, axboe@kernel.dk, bvanassche@acm.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	reiserfs-devel@vger.kernel.org, song@kernel.org, 
-	syzkaller-bugs@googlegroups.com, yi.zhang@huawei.com
-Content-Type: text/plain; charset="UTF-8"
-
-syzbot has found a reproducer for the following issue on:
-
-HEAD commit:    861deac3b092 Linux 6.7-rc7
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=121f1609e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e0c7078a6b901aa3
-dashboard link: https://syzkaller.appspot.com/bug?extid=b3b14fb9f8a14c5d0267
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10557e81e80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14206fd6e80000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/0ea60ee8ed32/disk-861deac3.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/6d69fdc33021/vmlinux-861deac3.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/f0158750d452/bzImage-861deac3.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/445a7c3f980d/mount_0.gz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+b3b14fb9f8a14c5d0267@syzkaller.appspotmail.com
-
-REISERFS (device loop0): Created .reiserfs_priv - reserved for xattr storage.
-=====================================================
-BUG: KMSAN: uninit-value in comp_keys fs/reiserfs/stree.c:83 [inline]
-BUG: KMSAN: uninit-value in bin_search fs/reiserfs/stree.c:173 [inline]
-BUG: KMSAN: uninit-value in search_by_key+0x3293/0x6780 fs/reiserfs/stree.c:770
- comp_keys fs/reiserfs/stree.c:83 [inline]
- bin_search fs/reiserfs/stree.c:173 [inline]
- search_by_key+0x3293/0x6780 fs/reiserfs/stree.c:770
- reiserfs_delete_solid_item+0x4ec/0xe90 fs/reiserfs/stree.c:1419
- remove_save_link+0x2ed/0x420 fs/reiserfs/super.c:540
- reiserfs_truncate_file+0xd00/0x1b70 fs/reiserfs/inode.c:2314
- reiserfs_setattr+0x1b79/0x1ee0 fs/reiserfs/inode.c:3388
- notify_change+0x19fd/0x1af0 fs/attr.c:499
- do_truncate+0x22a/0x2a0 fs/open.c:66
- do_sys_ftruncate+0x81c/0xb30 fs/open.c:194
- __do_sys_ftruncate fs/open.c:205 [inline]
- __se_sys_ftruncate fs/open.c:203 [inline]
- __x64_sys_ftruncate+0x71/0xa0 fs/open.c:203
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0x44/0x110 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-
-Local variable cpu_key created at:
- reiserfs_delete_solid_item+0xbf/0xe90 fs/reiserfs/stree.c:1410
- remove_save_link+0x2ed/0x420 fs/reiserfs/super.c:540
-
-CPU: 0 PID: 5006 Comm: syz-executor429 Not tainted 6.7.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
-=====================================================
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="2af24PaiwPbcA0FS"
+Content-Disposition: inline
+In-Reply-To: <1b54a167-1c90-46b8-8a7b-a21f5d4655e7@linaro.org>
 
 
----
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+--2af24PaiwPbcA0FS
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, Dec 25, 2023 at 07:56:24PM +0100, Krzysztof Kozlowski wrote:
+> On 25/12/2023 16:13, Petre Rodan wrote:
+> >>> @@ -88,6 +88,9 @@ properties:
+> >>>        Maximum pressure value the sensor can measure in pascal.
+> >>>        To be specified only if honeywell,pressure-triplet is not set.
+> >>>
+> >>> +  spi-max-frequency:
+> >>> +    maximum: 800000
+> >>
+> >> So you miss allOf: with $ref to spi props.
+> >=20
+> > for simplicity's sake and for compatibility with the i2c devices alread=
+y in use,
+> > this driver does not have distinct 'compatible' properties for the i2c =
+and spi
+> > implementation.
+> > this is why I just defined spi-max-frequency, used it in the spi exampl=
+e, but
+> > not required it. just like in hsc030pa.yaml .
+> >=20
+> > without a differentiation in the 'compatible' string I don't see how yo=
+ur request
+> > can be implemented.
+>=20
+> You cannot have different compatibles. I did not propose it. I wrote
+> nothing about compatible. I wrote about missing $ref in top-level for
+> spi-peripheral-props. Where do you see anything about compatible?
+
+sorry, for one hot second I thought you want that property to be conditiona=
+lly
+defined, like
+
+allOf:
+  - $ref: /schemas/spi/spi-peripheral-props.yaml
+
+  - if:
+      properties:
+        compatible:
+          contains:
+            const: honeywell,foo-spi
+    then:
+      properties:
+        spi-max-frequency:
+          maximum: 800000
+      required:
+        - spi-max-frequency
+
+but I guess you only want the first two lines from here.
+
+happy holidays,
+peter
+
+--2af24PaiwPbcA0FS
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEE2Ap/wXYVGTXsPl+pzyaZmYROfzAFAmWJ5iEACgkQzyaZmYRO
+fzDdARAA2M3MPZmM2mQ2vxbYaO7I4LWYIAZXE8AR8WBD5W95ulhz9smCSG4OOBeq
+Y6QQmzOBz6UiotQa9gSwSXIUt/bU625TQ4aFIB+o0Cr5oAHJEQFxR3h8ZlGR9Dl5
+eD7W29Pryq1Ila5Bp+AZV2va1cVqo4AnfE4nl3z5kw8G0tKzISK2W4k+J0JE4Goy
+ak4/kH7OsKhzYeC4OZ8Tn5IMz9Qvg+frXvf8Zl+Q6XrRV0uJzJ+q/EyO57qz5775
+eUijBCxZpldg2WRWMYkDqfIUM/X60397c78NNKj29Fb35ZtQw9+hoLRi6f+Zxzdr
+bWRHUc1CmqhP6qS+scVEB39yanclLp1c6FPsIC/wQgyVI0t/ZkYaZ6W4UebqKFL4
+vxY0zXmo1dyPd/40mICn9KG6dqNAwk73/wF/JUv/TtxEb8W1Bj8VcbmuPR9n+Shx
+43tw22qgu54O5qukS7dGALJdSOivUAg4XlvuQsV7kPXwrya9QSjxEyvW8v8QmFPj
+AGRwpyJ17mfrwoGVJphi/9Q+ZEoEAkjjmqG8TVzUiFMWeuMDTZUd7atvFjoLX6l9
+nWBmko2CVBTleSvQgEiNjcDZM8sWsTcfLBaaO3tkjnLXSnZmKyxYdhGQIpdUK3lI
+tnZhycHQYm7nns+xTp/+C/ikvywTf8tmA8hQrWJ3QbEqqB6LYuo=
+=9FKe
+-----END PGP SIGNATURE-----
+
+--2af24PaiwPbcA0FS--
 
