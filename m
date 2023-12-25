@@ -1,81 +1,81 @@
-Return-Path: <linux-kernel+bounces-11113-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11115-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0C2381E170
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 16:42:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A55981E176
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 16:51:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 319A41F212BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 15:42:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9A8E41C21143
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 15:50:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F25A52F6D;
-	Mon, 25 Dec 2023 15:42:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="ArDZfHgm"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFFEA52F77;
+	Mon, 25 Dec 2023 15:50:49 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FC5E52F61
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 15:42:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=yfsKP9bIoO8NvpKIkLPbcIhRdzO+flqkLdSJDquLXy8=; b=ArDZfHgm9NpwhpmuBY0DyuZTCr
-	WXWDp+yexk2QHiIYRKXyILgsMsnGit+sw+bIMtRbyxEuoUv49jtE9FI8HTlMcXOLx+QVMzSA/eYrb
-	IvILvCEvaIYoS1NV5qR25qWofarizrqOydBNUAoLQkoMZ1T2AXJsk4tApgNxIaQFjboNLLNi6APj8
-	PMBB60TdoW7qDQHpy5ptZsaF3T+eQXILKoJkkeZxSGt//3KNplRhujzEsEsjDqTESXOdfsKZed4xm
-	EHo6GtVpwG5JXbDSNc0bfpYZ/DEQLo56+zdt2b96rjfDJeAyrt8WCDdos+FZCOCIHG3pYr72Hehu5
-	jRA+h5lw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1rHn5o-00GDb6-6W; Mon, 25 Dec 2023 15:42:12 +0000
-Date: Mon, 25 Dec 2023 15:42:12 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: Yu Zhao <yuzhao@google.com>
-Cc: Kairui Song <kasong@tencent.com>, linux-mm@kvack.org,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-kernel@vger.kernel.org,
-	Suren Baghdasaryan <surenb@google.com>
-Subject: Re: [PATCH 3/3] mm, lru_gen: try to prefetch next page when canning
- LRU
-Message-ID: <ZYmi1GEH0ai/2iGo@casper.infradead.org>
-References: <20231222102255.56993-1-ryncsn@gmail.com>
- <20231222102255.56993-4-ryncsn@gmail.com>
- <CAOUHufYrzw7dDbchNkrrXnSqpeYasnfPh6qFoMNgAmbK9GXNaQ@mail.gmail.com>
+Received: from zju.edu.cn (spam.zju.edu.cn [61.164.42.155])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E6EA52F62;
+	Mon, 25 Dec 2023 15:50:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
+Received: from alexious$zju.edu.cn ( [10.190.64.80] ) by
+ ajax-webmail-mail-app4 (Coremail) ; Mon, 25 Dec 2023 23:49:57 +0800
+ (GMT+08:00)
+Date: Mon, 25 Dec 2023 23:49:57 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From: alexious@zju.edu.cn
+To: "Simon Horman" <horms@kernel.org>
+Cc: "Chuck Lever" <chuck.lever@oracle.com>, 
+	"Jeff Layton" <jlayton@kernel.org>, "Neil Brown" <neilb@suse.de>, 
+	"Olga Kornievskaia" <kolga@netapp.com>, 
+	"Dai Ngo" <Dai.Ngo@oracle.com>, "Tom Talpey" <tom@talpey.com>, 
+	"Trond Myklebust" <trond.myklebust@hammerspace.com>, 
+	"Anna Schumaker" <anna@kernel.org>, 
+	"David S. Miller" <davem@davemloft.net>, 
+	"Eric Dumazet" <edumazet@google.com>, 
+	"Jakub Kicinski" <kuba@kernel.org>, 
+	"Paolo Abeni" <pabeni@redhat.com>, 
+	"J. Bruce Fields" <bfields@fieldses.org>, 
+	"Simo Sorce" <simo@redhat.com>, linux-nfs@vger.kernel.org, 
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: Re: [PATCH] SUNRPC: fix some memleaks in gssx_dec_option_array
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version 2023.2-cmXT5 build
+ 20230825(e13b6a3b) Copyright (c) 2002-2023 www.mailtech.cn
+ mispb-4df6dc2c-e274-4d1c-b502-72c5c3dfa9ce-zj.edu.cn
+In-Reply-To: <20231224212754.GB5962@kernel.org>
+References: <20231224082424.3539726-1-alexious@zju.edu.cn>
+ <20231224212754.GB5962@kernel.org>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAOUHufYrzw7dDbchNkrrXnSqpeYasnfPh6qFoMNgAmbK9GXNaQ@mail.gmail.com>
+Message-ID: <1996a76c.53ca7.18ca1ab27ca.Coremail.alexious@zju.edu.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID:cS_KCgDHhtSlpIll9EH9AA--.34923W
+X-CM-SenderInfo: qrsrjiarszq6lmxovvfxof0/1tbiAgEAAGWJUhgFnQADs+
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+	CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+	daVFxhVjvjDU=
 
-On Sun, Dec 24, 2023 at 11:41:31PM -0700, Yu Zhao wrote:
-> On Fri, Dec 22, 2023 at 3:24 AM Kairui Song <ryncsn@gmail.com> wrote:
-> >
-> > From: Kairui Song <kasong@tencent.com>
-> >
-> > Prefetch for inactive/active LRU have been long exiting, apply the same
-> > optimization for MGLRU.
-> 
-> I seriously doubt that prefetch helps in this case.
-> 
-> Willy, any thoughts on this? Thanks.
-
-It _might_ ... highly depends on microarchitecture.  My experience is
-that it offers more benefit on AMD than on Intel, but that experience
-is several generations out of date and it may just not be applicable to
-modern AMD.
-
-It's probably more effective on ARM Cortex A cores than on ARM Cortex X
-cores ... maybe we can get someone from Android (Suren?) to do some
-testing?
+Cgo+IAo+IE9uIFN1biwgRGVjIDI0LCAyMDIzIGF0IDA0OjI0OjIyUE0gKzA4MDAsIFpoaXBlbmcg
+THUgd3JvdGU6Cj4gPiBUaGUgY3JlZHMgYW5kIG9hLT5kYXRhIG5lZWQgdG8gYmUgZnJlZWQgaW4g
+dGhlIGVycm9yLWhhbmRsaW5nIHBhdGhzIGFmdGVyCj4gPiB0aGVyZSBhbGxvY2F0aW9uLiBTbyB0
+aGlzIHBhdGNoIGFkZCB0aGVzZSBkZWFsbG9jYXRpb25zIGluIHRoZQo+ID4gY29ycmVzcG9uZGlu
+ZyBwYXRocy4KPiA+IAo+ID4gRml4ZXM6IDFkNjU4MzM2YjA1ZiAoIlNVTlJQQzogQWRkIFJQQyBi
+YXNlZCB1cGNhbGwgbWVjaGFuaXNtIGZvciBSUENHU1MgYXV0aCIpCj4gPiBTaWduZWQtb2ZmLWJ5
+OiBaaGlwZW5nIEx1IDxhbGV4aW91c0B6anUuZWR1LmNuPgo+IAo+IC4uLgo+IAo+ID4gZGlmZiAt
+LWdpdCBhL25ldC9zdW5ycGMvYXV0aF9nc3MvZ3NzX3JwY194ZHIuYyBiL25ldC9zdW5ycGMvYXV0
+aF9nc3MvZ3NzX3JwY194ZHIuYwo+IAo+IC4uLgo+IAo+ID4gQEAgLTI2NSwyOSArMjY1LDQxIEBA
+IHN0YXRpYyBpbnQgZ3NzeF9kZWNfb3B0aW9uX2FycmF5KHN0cnVjdCB4ZHJfc3RyZWFtICp4ZHIs
+Cj4gPiAgCj4gPiAgCQkvKiBvcHRpb24gYnVmZmVyICovCj4gPiAgCQlwID0geGRyX2lubGluZV9k
+ZWNvZGUoeGRyLCA0KTsKPiA+IC0JCWlmICh1bmxpa2VseShwID09IE5VTEwpKQo+ID4gLQkJCXJl
+dHVybiAtRU5PU1BDOwo+ID4gKwkJaWYgKHVubGlrZWx5KHAgPT0gTlVMTCkpIHsKPiA+ICsJCQll
+cnIgPSAtRU5PU1BDCj4gCj4gSGkgWmhpcGVuZyBMdSwKPiAKPiB1bmZvcnR1bmF0ZWx5IHRoZSBs
+aW5lIGFib3ZlIGNhdXNlcyBhIGJ1aWxkIGZhaWx1cmUuCj4gCj4gLi4uCgpTb3JyeSBmb3IgbXkg
+bWlzdGFrZSwgSSdsbCBzZW5kIGEgdmVyc2lvbiAyIG9mIHRoaXMgcGF0Y2ggc29vbi4K
 
