@@ -1,148 +1,173 @@
-Return-Path: <linux-kernel+bounces-11155-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11156-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D31981E23A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 21:01:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 82A7781E23D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 21:08:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C59C71C20DCA
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 20:01:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 053841F21DD3
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 20:08:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1CCE53810;
-	Mon, 25 Dec 2023 20:01:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FD28537FE;
+	Mon, 25 Dec 2023 20:08:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=mrman314.tech header.i=@mrman314.tech header.b="2vh2F2sf"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="k8297Ulg"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx.mrman314.tech (unknown [135.0.77.242])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A05C537F8;
-	Mon, 25 Dec 2023 20:01:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mrman314.tech
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mrman314.tech
-Received: from [192.168.6.27] (unknown [160.32.192.137])
-	by mx.mrman314.tech (Postfix) with ESMTPSA id 4B4B82F4127F;
-	Mon, 25 Dec 2023 15:01:37 -0500 (EST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mrman314.tech;
-	s=default; t=1703534498;
-	bh=HGRyqV7DcGb8aHF62Jx1i+xG/Q9Evhw8BLp5rP7bfO0=;
-	h=Subject:From:To:Cc:Date;
-	b=2vh2F2sfJqNEWXSd18j7BLe0F6x98b7u+5bPmWnbMvDmyXMUCZjy5wQaJo9WJV+tb
-	 N+8rXNUZdc2HIzP/vXfAmuE+iLndseYEusCXAA8ucIakhKbYjPPhskQlHDElWNQeOs
-	 0BT0EnIlzxt+jAbvR0hVkn5lLy+/p/dqKwYZiivE=
-Message-ID: <77419ffacc5b4875e920e038332575a2a5bff29f.camel@mrman314.tech>
-Subject: [PATCH v3] Bluetooth: Fix Bluetooth for BCM4377 on T2 Intel MacBooks
-From: Felix Zhang <mrman@mrman314.tech>
-To: linux-bluetooth@vger.kernel.org
-Cc: stable@vger.kernel.org, marcan@marcan.st, bagasdotme@gmail.com, 
-	sven@svenpeter.dev, alyssa@rosenzweig.io, marcel@holtmann.org, 
-	johan.hedberg@gmail.com, luiz.dentz@gmail.com, orlandoch.dev@gmail.com, 
-	kekrby@gmail.com, admin@kodeit.net, j@jannau.net, gargaditya08@live.com, 
-	asahi@lists.linux.dev, linux-kernel@vger.kernel.org
-Date: Mon, 25 Dec 2023 15:01:33 -0500
-Autocrypt: addr=mrman@mrman314.tech; prefer-encrypt=mutual;
- keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.2 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26DD0537F8
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 20:08:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1703534894; x=1735070894;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=/LP5ybDOdUTuNnalFfi44IKdHSxwVGsj+3hEhbPVUoQ=;
+  b=k8297UlgFP5Ce9kdaBczZ98UEnIWCa4nWrXB5oC9DVtmZmFqFuPEmxFs
+   j2lJAZknafApj85D32fD6u6MnP8amhmXCKxcUY0dB7lOYllrMcI1Ev0Eb
+   lykurxarW1aIslzKrgBymMhl9KYhHagL4PN90qbQbfZctz6filNpP85Ho
+   BOAyWN6U8KE5PSCrBhxRd3SKpmzSQogHqdtiXklxR9/IAMKRUZwWnWj1B
+   aXLDhHyxAqLEJbAUdPxuPO0zhs/HlR6rCYdP1aOMgmaT8bJ5jXqoTfe4C
+   wGgk9lke34o8r+kL2L8fPZkSsXC0D1Gm+OB2pIzZOnHmazS4AycPgLeT6
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10934"; a="9828423"
+X-IronPort-AV: E=Sophos;i="6.04,304,1695711600"; 
+   d="scan'208";a="9828423"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Dec 2023 12:08:13 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10934"; a="1109209634"
+X-IronPort-AV: E=Sophos;i="6.04,304,1695711600"; 
+   d="scan'208";a="1109209634"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by fmsmga005.fm.intel.com with ESMTP; 25 Dec 2023 12:08:12 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rHrEc-000DeL-0i;
+	Mon, 25 Dec 2023 20:07:53 +0000
+Date: Tue, 26 Dec 2023 04:05:38 +0800
+From: kernel test robot <lkp@intel.com>
+To: Waiman Long <longman@redhat.com>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	Ingo Molnar <mingo@kernel.org>
+Subject: kernel/locking/qspinlock_paravirt.h:298:14: warning: variable
+ 'wait_early' set but not used
+Message-ID: <202312260422.f4pK3f9m-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Starting v6.5, Bluetooth does not work at all on my T2 MacBookAir9,1
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   861deac3b092f37b2c5e6871732f3e11486f7082
+commit: ad53fa10fa9e816067bbae7109845940f5e6df50 locking/qspinlock_stat: Introduce generic lockevent_*() counting APIs
+date:   4 years, 9 months ago
+config: x86_64-buildonly-randconfig-006-20230826 (https://download.01.org/0day-ci/archive/20231226/202312260422.f4pK3f9m-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231226/202312260422.f4pK3f9m-lkp@intel.com/reproduce)
 
-with the BCM4377 chip.  When I boot up the computer, go into
-bluetoothctl, and then try to run commands like scan on, show, list,
-it=C2=A0returns "No default controller available."  I have tried reloading
-the
-kernel module, in which the log outputs "{Added,Removed} hci0
-(unconfigured)."  With this patch, I am able to use Bluetooth as
-normal=C2=A0
-without any errors regarding hci0 being unconfigured.  However, an
-issue is still present where sometimes hci_bcm4377 will have to be
-reloaded in order to get bluetooth to work.  I believe this was still
-present before the previously mentioned commit.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312260422.f4pK3f9m-lkp@intel.com/
 
-Due to the bit HCI_QUIRK_USE_BDADDR_PROPERTY being always set in
-drivers/bluetooth/hci_bcm4377.c (line 2371), the chip would be left
-unconfigured on kernels compiled after commit 6945795bc81a
-("Bluetooth:=C2=A0
-fix use-bdaddr-property quirk") due to a change in its logic.  On the
-M1 Macs, the device would be configured in the devicetree.  However,
-that is not the case on T2 Macs.  Because the bluetooth adapter is
-left=C2=A0
-unconfigured, it is not usable in the operating system.  In order to
-circumvent this issue, a flag is added to prevent the bit from being
-set on the BCM4377, while setting it on the other devices.
+All warnings (new ones prefixed by >>):
 
-Because I do not have an M1 device to test this patch on, I am not sure
-whether the patch breaks anything for said devices.  I would be very
-grateful if anyone is willing to test this patch on their M1 device.
-
-I would also like to thank Kerem Karabay <kekrby@gmail.com> for
-assisting me with this patch.
-
-Fixes: 6945795bc81a ("Bluetooth: fix use-bdaddr-property quirk")
-Signed-off-by: Felix Zhang <mrman@mrman314.tech>
----
-v3:
-* Adjust the format to pass the CI (again).
----
- drivers/bluetooth/hci_bcm4377.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/bluetooth/hci_bcm4377.c
-b/drivers/bluetooth/hci_bcm4377.c
-index a61757835695..5c6fef1aa0f6 100644
---- a/drivers/bluetooth/hci_bcm4377.c
-+++ b/drivers/bluetooth/hci_bcm4377.c
-@@ -513,6 +513,7 @@ struct bcm4377_hw {
- 	unsigned long broken_ext_scan : 1;
- 	unsigned long broken_mws_transport_config : 1;
- 	unsigned long broken_le_coded : 1;
-+	unsigned long use_bdaddr_property : 1;
-=20
- 	int (*send_calibration)(struct bcm4377_data *bcm4377);
- 	int (*send_ptb)(struct bcm4377_data *bcm4377,
-@@ -2368,7 +2369,8 @@ static int bcm4377_probe(struct pci_dev *pdev,
-const struct pci_device_id *id)
- 	hdev->set_bdaddr =3D bcm4377_hci_set_bdaddr;
- 	hdev->setup =3D bcm4377_hci_setup;
-=20
--	set_bit(HCI_QUIRK_USE_BDADDR_PROPERTY, &hdev->quirks);
-+	if (bcm4377->hw->use_bdaddr_property)
-+		set_bit(HCI_QUIRK_USE_BDADDR_PROPERTY, &hdev->quirks);
- 	if (bcm4377->hw->broken_mws_transport_config)
- 		set_bit(HCI_QUIRK_BROKEN_MWS_TRANSPORT_CONFIG, &hdev-
->quirks);
- 	if (bcm4377->hw->broken_ext_scan)
-@@ -2465,6 +2467,7 @@ static const struct bcm4377_hw
-bcm4377_hw_variants[] =3D {
- 		.has_bar0_core2_window2 =3D true,
- 		.broken_mws_transport_config =3D true,
- 		.broken_le_coded =3D true,
-+		.use_bdaddr_property =3D true,
- 		.send_calibration =3D bcm4378_send_calibration,
- 		.send_ptb =3D bcm4378_send_ptb,
- 	},
-@@ -2479,6 +2482,7 @@ static const struct bcm4377_hw
-bcm4377_hw_variants[] =3D {
- 		.clear_pciecfg_subsystem_ctrl_bit19 =3D true,
- 		.broken_mws_transport_config =3D true,
- 		.broken_le_coded =3D true,
-+		.use_bdaddr_property =3D true,
- 		.send_calibration =3D bcm4387_send_calibration,
- 		.send_ptb =3D bcm4378_send_ptb,
- 	},
---=20
-2.43.0
+   In file included from kernel/locking/qspinlock.c:589:
+   kernel/locking/qspinlock_paravirt.h: In function 'pv_wait_node':
+>> kernel/locking/qspinlock_paravirt.h:298:14: warning: variable 'wait_early' set but not used [-Wunused-but-set-variable]
+     298 |         bool wait_early;
+         |              ^~~~~~~~~~
+   kernel/locking/qspinlock_paravirt.h: At top level:
+   kernel/locking/qspinlock_paravirt.h:493:1: warning: no previous prototype for '__pv_queued_spin_unlock_slowpath' [-Wmissing-prototypes]
+     493 | __pv_queued_spin_unlock_slowpath(struct qspinlock *lock, u8 locked)
+         | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
+vim +/wait_early +298 kernel/locking/qspinlock_paravirt.h
+
+a23db284fe0d18 Waiman Long    2015-04-24  287  
+a23db284fe0d18 Waiman Long    2015-04-24  288  /*
+a23db284fe0d18 Waiman Long    2015-04-24  289   * Wait for node->locked to become true, halt the vcpu after a short spin.
+75d2270280686b Waiman Long    2015-07-11  290   * pv_kick_node() is used to set _Q_SLOW_VAL and fill in hash table on its
+75d2270280686b Waiman Long    2015-07-11  291   * behalf.
+a23db284fe0d18 Waiman Long    2015-04-24  292   */
+cd0272fab78507 Waiman Long    2015-11-09  293  static void pv_wait_node(struct mcs_spinlock *node, struct mcs_spinlock *prev)
+a23db284fe0d18 Waiman Long    2015-04-24  294  {
+a23db284fe0d18 Waiman Long    2015-04-24  295  	struct pv_node *pn = (struct pv_node *)node;
+cd0272fab78507 Waiman Long    2015-11-09  296  	struct pv_node *pp = (struct pv_node *)prev;
+a23db284fe0d18 Waiman Long    2015-04-24  297  	int loop;
+cd0272fab78507 Waiman Long    2015-11-09 @298  	bool wait_early;
+a23db284fe0d18 Waiman Long    2015-04-24  299  
+08be8f63c40c03 Waiman Long    2016-05-31  300  	for (;;) {
+cd0272fab78507 Waiman Long    2015-11-09  301  		for (wait_early = false, loop = SPIN_THRESHOLD; loop; loop--) {
+a23db284fe0d18 Waiman Long    2015-04-24  302  			if (READ_ONCE(node->locked))
+a23db284fe0d18 Waiman Long    2015-04-24  303  				return;
+cd0272fab78507 Waiman Long    2015-11-09  304  			if (pv_wait_early(pp, loop)) {
+cd0272fab78507 Waiman Long    2015-11-09  305  				wait_early = true;
+cd0272fab78507 Waiman Long    2015-11-09  306  				break;
+cd0272fab78507 Waiman Long    2015-11-09  307  			}
+a23db284fe0d18 Waiman Long    2015-04-24  308  			cpu_relax();
+a23db284fe0d18 Waiman Long    2015-04-24  309  		}
+a23db284fe0d18 Waiman Long    2015-04-24  310  
+a23db284fe0d18 Waiman Long    2015-04-24  311  		/*
+a23db284fe0d18 Waiman Long    2015-04-24  312  		 * Order pn->state vs pn->locked thusly:
+a23db284fe0d18 Waiman Long    2015-04-24  313  		 *
+a23db284fe0d18 Waiman Long    2015-04-24  314  		 * [S] pn->state = vcpu_halted	  [S] next->locked = 1
+a23db284fe0d18 Waiman Long    2015-04-24  315  		 *     MB			      MB
+75d2270280686b Waiman Long    2015-07-11  316  		 * [L] pn->locked		[RmW] pn->state = vcpu_hashed
+a23db284fe0d18 Waiman Long    2015-04-24  317  		 *
+75d2270280686b Waiman Long    2015-07-11  318  		 * Matches the cmpxchg() from pv_kick_node().
+a23db284fe0d18 Waiman Long    2015-04-24  319  		 */
+b92b8b35a2e38b Peter Zijlstra 2015-05-12  320  		smp_store_mb(pn->state, vcpu_halted);
+a23db284fe0d18 Waiman Long    2015-04-24  321  
+45e898b735620f Waiman Long    2015-11-09  322  		if (!READ_ONCE(node->locked)) {
+ad53fa10fa9e81 Waiman Long    2019-04-04  323  			lockevent_inc(pv_wait_node);
+ad53fa10fa9e81 Waiman Long    2019-04-04  324  			lockevent_cond_inc(pv_wait_early, wait_early);
+a23db284fe0d18 Waiman Long    2015-04-24  325  			pv_wait(&pn->state, vcpu_halted);
+45e898b735620f Waiman Long    2015-11-09  326  		}
+a23db284fe0d18 Waiman Long    2015-04-24  327  
+a23db284fe0d18 Waiman Long    2015-04-24  328  		/*
+45e898b735620f Waiman Long    2015-11-09  329  		 * If pv_kick_node() changed us to vcpu_hashed, retain that
+1c4941fd53afb4 Waiman Long    2015-11-10  330  		 * value so that pv_wait_head_or_lock() knows to not also try
+1c4941fd53afb4 Waiman Long    2015-11-10  331  		 * to hash this lock.
+a23db284fe0d18 Waiman Long    2015-04-24  332  		 */
+75d2270280686b Waiman Long    2015-07-11  333  		cmpxchg(&pn->state, vcpu_halted, vcpu_running);
+a23db284fe0d18 Waiman Long    2015-04-24  334  
+a23db284fe0d18 Waiman Long    2015-04-24  335  		/*
+a23db284fe0d18 Waiman Long    2015-04-24  336  		 * If the locked flag is still not set after wakeup, it is a
+a23db284fe0d18 Waiman Long    2015-04-24  337  		 * spurious wakeup and the vCPU should wait again. However,
+a23db284fe0d18 Waiman Long    2015-04-24  338  		 * there is a pretty high overhead for CPU halting and kicking.
+a23db284fe0d18 Waiman Long    2015-04-24  339  		 * So it is better to spin for a while in the hope that the
+a23db284fe0d18 Waiman Long    2015-04-24  340  		 * MCS lock will be released soon.
+a23db284fe0d18 Waiman Long    2015-04-24  341  		 */
+ad53fa10fa9e81 Waiman Long    2019-04-04  342  		lockevent_cond_inc(pv_spurious_wakeup,
+ad53fa10fa9e81 Waiman Long    2019-04-04  343  				  !READ_ONCE(node->locked));
+a23db284fe0d18 Waiman Long    2015-04-24  344  	}
+75d2270280686b Waiman Long    2015-07-11  345  
+a23db284fe0d18 Waiman Long    2015-04-24  346  	/*
+a23db284fe0d18 Waiman Long    2015-04-24  347  	 * By now our node->locked should be 1 and our caller will not actually
+a23db284fe0d18 Waiman Long    2015-04-24  348  	 * spin-wait for it. We do however rely on our caller to do a
+a23db284fe0d18 Waiman Long    2015-04-24  349  	 * load-acquire for us.
+a23db284fe0d18 Waiman Long    2015-04-24  350  	 */
+a23db284fe0d18 Waiman Long    2015-04-24  351  }
+a23db284fe0d18 Waiman Long    2015-04-24  352  
+
+:::::: The code at line 298 was first introduced by commit
+:::::: cd0272fab785077c121aa91ec2401090965bbc37 locking/pvqspinlock: Queue node adaptive spinning
+
+:::::: TO: Waiman Long <Waiman.Long@hpe.com>
+:::::: CC: Ingo Molnar <mingo@kernel.org>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
