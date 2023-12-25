@@ -1,65 +1,64 @@
-Return-Path: <linux-kernel+bounces-11146-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11147-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A30381E20C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 19:56:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6316D81E211
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 20:06:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 72B04282314
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 18:56:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 15DDC282335
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 19:06:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3CB2537F8;
-	Mon, 25 Dec 2023 18:56:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2568537F1;
+	Mon, 25 Dec 2023 19:06:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ECN7E9CP"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="uevB2omZ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E01BC52F77
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 18:56:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD704537E9
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 19:05:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a1915034144so465122166b.0
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 10:56:27 -0800 (PST)
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a235e394758so400811066b.1
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 11:05:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703530586; x=1704135386; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=e0m2oYSxkojWokgkCEhU9gfgYOM8HLqvP29A/Xkklb8=;
-        b=ECN7E9CPmaTopcdFTCZTw7e770xcQbW9xCc/bAA6nMuGy+Q6ZlQkEbV0WQhWv4K8yE
-         Isi+HWbywGNtNLpp2TxUfrHYylSJ8ZTPg78UL3+DTxILZXiaR8nLaW5hKW8Hutq4OGTj
-         mqxssX+zMupcB1+WWTVYUTtzcY75ebe12eX4LNkbxUZsQE95X3ENzv2Hp3lofa/Tcpzw
-         44kpVvC3wk/jYuNHZM8cRk4pePRyTyv8xdTmS+gYzToK3zl/jKBgksEd36YadEEotk70
-         UItUifu94Qx/E1dCVVlGpv4maGOPcUtOIxh9xjlz2l8yEj7ZYo0vAwJ2ybzQaTdBLqNq
-         bktA==
+        d=linaro.org; s=google; t=1703531158; x=1704135958; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=kPhBbAdE7d6cKSPyf8U6dhUpO4g2tJuvPvD5da5ovzA=;
+        b=uevB2omZeUevwjxNklc6maJHRpQ77+XTQubtbYtP9xb4BmXhbb/fiDJXoy8DPeEicC
+         cBCb6vWK5nJ4scgC0JPvGvbS22NjvrCbtUSZlsiHe23Hbm0lrVJgidnMJPoqNvP8eaPp
+         YtA7Swtdl3wrJf5N+tjUCi6/EjdukpLpl22IyJpBhaFrqr+xABoXTASuWz9YBjoZLBUk
+         MrUQb8AEWB10ThZUyox4eBLEEViVHm3R/2LyFipYZargWSbqNA0WjurEAuiu9XKWOHVl
+         MUeWHfxft1E0+77uKxN5EYT9SQyI30KFtQH8EPPqMZnT/MTA5+6mnW0tS4w7s4Yv4prY
+         keMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703530586; x=1704135386;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=e0m2oYSxkojWokgkCEhU9gfgYOM8HLqvP29A/Xkklb8=;
-        b=lMZqlBe/sw5bXXJDhWnLI+EKQmFVI0jWVj+AVAZK98Fu0EAgVZKztPCAemEMq1ZgxE
-         RL0uvxIB7HCZMoiJhzFT2TDJFPDAwQFTHOOu4mfIoeTpJdYeALapdgP/Zp7X75QK1Nql
-         KuSnp1qnfiV4HoVz6e7xWSHbJSdAPsAL5uu4peKJXQIhCxMqW5bnMvGYnleE1/oJMEgi
-         cOm9L4UGfc8nWTPqrZNMRkzoeptn1IYFqBQVpr8SXMIwiy/FoGfRuzgb6g4GndzimL2/
-         BpEGEWgfjQXHIVQ5tioVatzxjizGP52G1ZBxp/9DRsIwsP7rXusaReyuK8Oms+o1Y74e
-         Lnww==
-X-Gm-Message-State: AOJu0YzSbLb8vdpzQjEG8EsOvFfnXZ7Z95biPSR/GDNEoPGDlKXkyGrj
-	UkzmTxoB7Xvl3hS8QgntgjDWrocuMJdFtg==
-X-Google-Smtp-Source: AGHT+IFmnuMByLlheyTomN+Gnxg9Qg5gNXvmIwB1Sb9hT7HCxikp2uSTzvtRpm5hq9p+iuMHbFF8rQ==
-X-Received: by 2002:a17:906:af90:b0:a26:884e:49f3 with SMTP id mj16-20020a170906af9000b00a26884e49f3mr2584418ejb.94.1703530586133;
-        Mon, 25 Dec 2023 10:56:26 -0800 (PST)
+        d=1e100.net; s=20230601; t=1703531158; x=1704135958;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=kPhBbAdE7d6cKSPyf8U6dhUpO4g2tJuvPvD5da5ovzA=;
+        b=FVsK6HrBPamzTPoiFzqGUlIVJOeq7vZmMy4dlgwm8UOfkpVtgyHADtOXtGGO9ctQcq
+         JQzIPFIxNb5lhpi4QLbbkW3St4Y3rzZreGhZ/yL/lwYuFxQGfx5FIVdrsJg+/Qpnpyef
+         BLbsOhI+doBapjpjreZrvq9VU/5TIDCJivdlhqWEhqucgtIYybvL8cSqlDwH9XnamiJX
+         gAN2SKZLUPWnDtYfrE2TZsm7g02cy+GYjaPv4x9OdwHyzqIYuL6Mz8nWo5tBq6BdtRwP
+         NzkJ7F9Yci+QVZR68/NZ66cCM8XeFT2osOGaCLZA5OKGaghpM0EEqlNnuEVjq2kF6mok
+         nCLg==
+X-Gm-Message-State: AOJu0YwkzHc5Cr2srdMnxGRt4eMrJB9snlMNoZbQA1BbnSoHI8qiYxIn
+	o3wJIMh5wVYJP+Vu3Ql+znPZFbZckdftDg==
+X-Google-Smtp-Source: AGHT+IFPqC8mWE+xw33Z7UPyeyxIObWtg6LvA27WxcLDKHMQTBc+nJXipDgIqtygM5TrafeFcJCGow==
+X-Received: by 2002:a17:906:154:b0:a26:d9b4:b310 with SMTP id 20-20020a170906015400b00a26d9b4b310mr957611ejh.144.1703531157913;
+        Mon, 25 Dec 2023 11:05:57 -0800 (PST)
 Received: from [192.168.0.22] ([78.10.206.178])
-        by smtp.gmail.com with ESMTPSA id l1-20020a170907914100b00a26ac037ff3sm4471949ejs.132.2023.12.25.10.56.24
+        by smtp.gmail.com with ESMTPSA id wl1-20020a170907310100b00a236378a43fsm5032996ejb.62.2023.12.25.11.05.56
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Dec 2023 10:56:25 -0800 (PST)
-Message-ID: <1b54a167-1c90-46b8-8a7b-a21f5d4655e7@linaro.org>
-Date: Mon, 25 Dec 2023 19:56:24 +0100
+        Mon, 25 Dec 2023 11:05:57 -0800 (PST)
+Message-ID: <63d93850-e88b-4311-accb-e7fa9a89d44f@linaro.org>
+Date: Mon, 25 Dec 2023 20:05:55 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -67,19 +66,20 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 03/10] dt-bindings: iio: pressure:
- honeywell,mprls0025pa.yaml add spi bus
-To: Petre Rodan <petre.rodan@subdimension.ro>
-Cc: linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, Andreas Klinger <ak@it-klinger.de>,
- Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-References: <20231224143500.10940-1-petre.rodan@subdimension.ro>
- <20231224143500.10940-4-petre.rodan@subdimension.ro>
- <b23a6b74-a568-4e11-8429-6344e10a9937@linaro.org> <ZYmcNySur-ZQryWc@sunspire>
+Subject: Re: [PATCH v6 09/16] dt-bindings: imx6q-pcie: Clean up irrationality
+ clocks check
 Content-Language: en-US
+To: Frank Li <Frank.Li@nxp.com>
+Cc: bhelgaas@google.com, conor+dt@kernel.org, devicetree@vger.kernel.org,
+ festevam@gmail.com, helgaas@kernel.org, hongxing.zhu@nxp.com,
+ imx@lists.linux.dev, kernel@pengutronix.de,
+ krzysztof.kozlowski+dt@linaro.org, kw@linux.com, l.stach@pengutronix.de,
+ linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
+ linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+ lpieralisi@kernel.org, manivannan.sadhasivam@linaro.org, robh@kernel.org,
+ s.hauer@pengutronix.de, shawnguo@kernel.org
+References: <20231224183242.1675372-1-Frank.Li@nxp.com>
+ <20231224183242.1675372-10-Frank.Li@nxp.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -125,40 +125,29 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <ZYmcNySur-ZQryWc@sunspire>
+In-Reply-To: <20231224183242.1675372-10-Frank.Li@nxp.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 25/12/2023 16:13, Petre Rodan wrote:
+On 24/12/2023 19:32, Frank Li wrote:
+> There are clocks and clock-names restriction for difference compatible
+> string. So needn't irrationality check again for clock's miniItems and
+> maxItems.
 > 
-> hello,
-> 
-> On Mon, Dec 25, 2023 at 01:59:43PM +0100, Krzysztof Kozlowski wrote:
->> On 24/12/2023 15:34, Petre Rodan wrote:
->>> Add spi based example.
->>>    There are many models with different pressure ranges available. The vendor
->>>    calls them "mpr series". All of them have the identical programming model and
->>> @@ -88,6 +88,9 @@ properties:
->>>        Maximum pressure value the sensor can measure in pascal.
->>>        To be specified only if honeywell,pressure-triplet is not set.
->>>
->>> +  spi-max-frequency:
->>> +    maximum: 800000
->>
->> So you miss allOf: with $ref to spi props.
-> 
-> for simplicity's sake and for compatibility with the i2c devices already in use,
-> this driver does not have distinct 'compatible' properties for the i2c and spi
-> implementation.
-> this is why I just defined spi-max-frequency, used it in the spi example, but
-> not required it. just like in hsc030pa.yaml .
-> 
-> without a differentiation in the 'compatible' string I don't see how your request
-> can be implemented.
+> In fsl,imx6q-pcie-ep.yaml
 
-You cannot have different compatibles. I did not propose it. I wrote
-nothing about compatible. I wrote about missing $ref in top-level for
-spi-peripheral-props. Where do you see anything about compatible?
+It is enough to say that bindings referencing this file already define
+these constraints for each of the variants, so the if:else: is redundant.
+
+Two lines instead of ~20.
+
+> 	...
+> 
+> Acked-by: Rob Herring <robh@kernel.org>
+
+How did you get it? Please point me to the lore link. This patch
+appeared in v5 and there was no response from Rob, AFAIK.
+
 
 Best regards,
 Krzysztof
