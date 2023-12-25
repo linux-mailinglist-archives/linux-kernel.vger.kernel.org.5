@@ -1,77 +1,129 @@
-Return-Path: <linux-kernel+bounces-10902-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10903-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECA9481DE99
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 07:24:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66F8181DE9A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 07:30:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 250C61C20AAF
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 06:24:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DF39DB20EBB
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 06:30:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D910139E;
-	Mon, 25 Dec 2023 06:24:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA91F15B9;
+	Mon, 25 Dec 2023 06:30:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="edZvnBr8"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="h682B12Q"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
+Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 268151106
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 06:24:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFBE2110E
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 06:30:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <3592af35-83c6-4941-a4fc-e8a5ff06218d@linux.dev>
+Message-ID: <135b3189-f459-4b57-9861-bb8acb999d91@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1703485458;
+	t=1703485805;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=XYyeA7lnwVX2F2rNMF4VNboxU63hQ2V7WPBxBA8y4Z4=;
-	b=edZvnBr8nHc/em2PYLG8ck+pIwqi+qej4mDEBr3WhQzxWNlNjmMr74gNQbDzuGsUrfOIK0
-	Un5MObPo4yurXNu3AE5p0apCz0k3RnPSxbTzDsdXeDyRwD5/VoF6cYUisxV14wtiR34EA9
-	a+2QtmxUnzM72tQurQFrRM6+ZOFZKys=
-Date: Mon, 25 Dec 2023 14:24:11 +0800
+	bh=mXkiPRdEVvfi9LIMu0a4pQRnrGa3opN+NyWjT9LajSI=;
+	b=h682B12QYqT/ZiBDMXBg7hxqm2zl3GqlcPYEpS6y3r1bGCN3rdgqF0yDtrO4pW4CUYWVXI
+	sTJy5rRK3CQjhtBukguGXtqnO65rzWMecb3dF6Bh7A7RdO4oHUmUtz51k8Yklj7jcfBANa
+	Xv5L0ZESaqeE7oGtj7aq7bWJxH5I2r4=
+Date: Mon, 25 Dec 2023 14:29:53 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [RFC PATCH v2 0/5] hugetlb: parallelize hugetlb page init on boot
-To: David Rientjes <rientjes@google.com>, Gang Li <ligang.bdlg@bytedance.com>
-Cc: Mike Kravetz <mike.kravetz@oracle.com>,
- David Hildenbrand <david@redhat.com>, Muchun Song <muchun.song@linux.dev>,
- Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org
-References: <20231208025240.4744-1-gang.li@linux.dev>
- <996ba32c-78f0-1807-5e64-af5841a820e7@google.com>
- <20231212230813.GB7043@monkey>
- <55c6c1f6-0792-61c3-86ed-4729d4a3fdf5@google.com>
- <46bc7aa3-4b08-4e5f-9563-485ee17e2785@bytedance.com>
- <4c6de257-ebb4-e9ad-4092-b81a8039aff4@google.com>
- <76becfc1-e609-e3e8-2966-4053143170b6@google.com>
-Content-Language: en-US
+Subject: Re: [PATCH 03/13] mm: Provide generic pmd_thp_or_huge()
+To: peterx@redhat.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Cc: Matthew Wilcox <willy@infradead.org>,
+ Christophe Leroy <christophe.leroy@csgroup.eu>,
+ Lorenzo Stoakes <lstoakes@gmail.com>, David Hildenbrand <david@redhat.com>,
+ Vlastimil Babka <vbabka@suse.cz>, Mike Kravetz <mike.kravetz@oracle.com>,
+ Mike Rapoport <rppt@kernel.org>, Christoph Hellwig <hch@infradead.org>,
+ John Hubbard <jhubbard@nvidia.com>, Andrew Jones <andrew.jones@linux.dev>,
+ linux-arm-kernel@lists.infradead.org, Michael Ellerman <mpe@ellerman.id.au>,
+ "Kirill A . Shutemov" <kirill@shutemov.name>, linuxppc-dev@lists.ozlabs.org,
+ Rik van Riel <riel@surriel.com>, linux-riscv@lists.infradead.org,
+ Yang Shi <shy828301@gmail.com>, James Houghton <jthoughton@google.com>,
+ "Aneesh Kumar K . V" <aneesh.kumar@kernel.org>,
+ Andrew Morton <akpm@linux-foundation.org>, Jason Gunthorpe <jgg@nvidia.com>,
+ Andrea Arcangeli <aarcange@redhat.com>,
+ Axel Rasmussen <axelrasmussen@google.com>
+References: <20231219075538.414708-1-peterx@redhat.com>
+ <20231219075538.414708-4-peterx@redhat.com>
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Gang Li <gang.li@linux.dev>
-In-Reply-To: <76becfc1-e609-e3e8-2966-4053143170b6@google.com>
+From: Muchun Song <muchun.song@linux.dev>
+In-Reply-To: <20231219075538.414708-4-peterx@redhat.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Migadu-Flow: FLOW_OUT
 
-On 2023/12/25 13:21, David Rientjes wrote:
-> With that, I compared "hugepagesz=1G hugepages=11776" before and after on
-> a 12TB host with eight NUMA nodes.
-> 
-> Compared to 77s of total initialization time before, with this series I
-> measured 18.3s.
-> 
-> Feel free to add this into the changelog once the initialization issues
-> are fixed up and I'm happy to ack it.
-> 
-> Thanks!
 
-Cool! Thank you ;)
+
+On 2023/12/19 15:55, peterx@redhat.com wrote:
+> From: Peter Xu <peterx@redhat.com>
+>
+> ARM defines pmd_thp_or_huge(), detecting either a THP or a huge PMD.  It
+> can be a helpful helper if we want to merge more THP and hugetlb code
+> paths.  Make it a generic default implementation, only exist when
+> CONFIG_MMU.  Arch can overwrite it by defining its own version.
+>
+> For example, ARM's pgtable-2level.h defines it to always return false.
+>
+> Keep the macro declared with all config, it should be optimized to a false
+> anyway if !THP && !HUGETLB.
+>
+> Signed-off-by: Peter Xu <peterx@redhat.com>
+> ---
+>   include/linux/pgtable.h | 4 ++++
+>   mm/gup.c                | 3 +--
+>   2 files changed, 5 insertions(+), 2 deletions(-)
+>
+> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+> index af7639c3b0a3..6f2fa1977b8a 100644
+> --- a/include/linux/pgtable.h
+> +++ b/include/linux/pgtable.h
+> @@ -1355,6 +1355,10 @@ static inline int pmd_write(pmd_t pmd)
+>   #endif /* pmd_write */
+>   #endif /* CONFIG_TRANSPARENT_HUGEPAGE */
+>   
+> +#ifndef pmd_thp_or_huge
+
+I think it may be the time to rename to pmd_thp_or_hugetlb,
+the "huge" is really confusing. thp is not huge? Actually,
+it is huge. It is better to make it more specific from now on, like
+"hugetlb".
+
+BTW, please cc me via the new email (muchun.song@linux.dev) next edition.
+
+Thanks.
+
+> +#define pmd_thp_or_huge(pmd)	(pmd_huge(pmd) || pmd_trans_huge(pmd))
+> +#endif
+> +
+>   #ifndef pud_write
+>   static inline int pud_write(pud_t pud)
+>   {
+> diff --git a/mm/gup.c b/mm/gup.c
+> index 0a5f0e91bfec..efc9847e58fb 100644
+> --- a/mm/gup.c
+> +++ b/mm/gup.c
+> @@ -3004,8 +3004,7 @@ static int gup_pmd_range(pud_t *pudp, pud_t pud, unsigned long addr, unsigned lo
+>   		if (!pmd_present(pmd))
+>   			return 0;
+>   
+> -		if (unlikely(pmd_trans_huge(pmd) || pmd_huge(pmd) ||
+> -			     pmd_devmap(pmd))) {
+> +		if (unlikely(pmd_thp_or_huge(pmd) || pmd_devmap(pmd))) {
+>   			/* See gup_pte_range() */
+>   			if (pmd_protnone(pmd))
+>   				return 0;
+
 
