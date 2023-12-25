@@ -1,73 +1,94 @@
-Return-Path: <linux-kernel+bounces-10848-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10850-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45C7181DD54
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 01:21:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 837EB81DD5D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 01:51:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CEBC71F21A88
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 00:21:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2234F1F2171A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 00:51:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84E9262D;
-	Mon, 25 Dec 2023 00:21:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15D5C7E9;
+	Mon, 25 Dec 2023 00:51:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="Q7qT8tVX"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A260361
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 00:21:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sntech.de
-Received: from i5e86193c.versanet.de ([94.134.25.60] helo=phil.fritz.box)
-	by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <heiko@sntech.de>)
-	id 1rHYiR-0007kx-Rn; Mon, 25 Dec 2023 01:21:07 +0100
-From: Heiko Stuebner <heiko@sntech.de>
-To: hjc@rock-chips.com,
-	Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc: Heiko Stuebner <heiko@sntech.de>,
-	linux-kernel@vger.kernel.org,
-	dri-devel@lists.freedesktop.org,
-	Abaci Robot <abaci@linux.alibaba.com>,
-	maarten.lankhorst@linux.intel.com,
-	daniel@ffwll.ch,
+Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.220])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BECEA62D;
+	Mon, 25 Dec 2023 00:51:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=PCPH+
+	8SVMJT5ORmwxUBbY5agPi3Em+ScLQ2lM/Hrli8=; b=Q7qT8tVXXsNOXNYVvnOtl
+	zigxPV+UiiPRrNL8wOWQ878n8ij0NIuG7s1Wyu/2gr2arDMO2JfCZ5bZ7LHUXEFE
+	opSawQ3jvAbLHrSYfBbyECFXkCu9BeicNbNoaGFRBMBThZcHOuoUYwxqqA2ZSHsV
+	R9LWJ3h4frT3fzwI8/Gdac=
+Received: from ProDesk.. (unknown [58.22.7.114])
+	by zwqz-smtp-mta-g2-1 (Coremail) with SMTP id _____wDXf_bx0YhlDExdGg--.45426S2;
+	Mon, 25 Dec 2023 08:51:01 +0800 (CST)
+From: Andy Yan <andyshrk@163.com>
+To: heiko@sntech.de
+Cc: krzysztof.kozlowski+dt@linaro.org,
+	robh+dt@kernel.org,
+	lasstp5011@gmail.com,
+	devicetree@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
-	tzimmermann@suse.de,
-	airlied@gmail.com,
-	andy.yan@rock-chips.com,
-	mripard@kernel.org,
-	linux-rockchip@lists.infradead.org
-Subject: Re: [PATCH] drm/rockchip: vop2: clean up some inconsistent indenting
-Date: Mon, 25 Dec 2023 01:21:05 +0100
-Message-Id: <170346364425.2455794.13619549678241145924.b4-ty@sntech.de>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231219062635.100718-1-jiapeng.chong@linux.alibaba.com>
-References: <20231219062635.100718-1-jiapeng.chong@linux.alibaba.com>
+	linux-kernel@vger.kernel.org,
+	linux-rockchip@lists.infradead.org,
+	zhangn1985@outlook.com,
+	Andy Yan <andyshrk@163.com>
+Subject: [PATCH v2] arm64: dts: rockchip: Fix led pinctrl of lubancat 1
+Date: Mon, 25 Dec 2023 08:50:55 +0800
+Message-Id: <20231225005055.3102743-1-andyshrk@163.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:_____wDXf_bx0YhlDExdGg--.45426S2
+X-Coremail-Antispam: 1Uf129KBjvdXoW7WryrXFyfKF4DKr1UCF4kWFg_yoWkArbEga
+	4Ig3W8AF4kJryFv34aya95W3sIk3sIk34rGa47AF1DKay3XrWUAFyrJay8Cw15G34Ikrs7
+	X3yDXF1kCa1Y9jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUvcSsGvfC2KfnxnUUI43ZEXa7xRMFApUUUUUU==
+X-CM-SenderInfo: 5dqg52xkunqiywtou0bp/xtbBEBdRXmVOBJ60+AAAs1
 
-On Tue, 19 Dec 2023 14:26:35 +0800, Jiapeng Chong wrote:
-> No functional modification involved.
-> 
-> drivers/gpu/drm/rockchip/rockchip_drm_vop2.c:1708 rk3588_calc_cru_cfg() warn: inconsistent indenting.
-> 
-> 
+According to the sch, the gpio control sys_led
+is GPIO0_C5.
 
-Applied, thanks!
+Fixes: 8d94da58de53 ("arm64: dts: rockchip: Add EmbedFire LubanCat 1")
+Reported-by: Zhang Ning <zhangn1985@outlook.com>
+Closes: https://lore.kernel.org/linux-rockchip/OS0P286MB06412D049D8BF7B063D41350CD95A@OS0P286MB0641.JPNP286.PROD.OUTLOOK.COM/T/#u
+Signed-off-by: Andy Yan <andyshrk@163.com>
 
-[1/1] drm/rockchip: vop2: clean up some inconsistent indenting
-      commit: f40e61eb538d35661d6dda1de92867954d776c4a
+---
 
-Best regards,
+Changes in v2:
+- remove "boot" in subject prefix
+- Add Zhang Ning full name in Reported-by
+
+ arch/arm64/boot/dts/rockchip/rk3566-lubancat-1.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/rockchip/rk3566-lubancat-1.dts b/arch/arm64/boot/dts/rockchip/rk3566-lubancat-1.dts
+index 1c6d83b47cd2..6ecdf5d28339 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3566-lubancat-1.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3566-lubancat-1.dts
+@@ -455,7 +455,7 @@ &pcie2x1 {
+ &pinctrl {
+ 	leds {
+ 		sys_led_pin: sys-status-led-pin {
+-			rockchip,pins = <0 RK_PC7 RK_FUNC_GPIO &pcfg_pull_none>;
++			rockchip,pins = <0 RK_PC5 RK_FUNC_GPIO &pcfg_pull_none>;
+ 		};
+ 	};
+ 
 -- 
-Heiko Stuebner <heiko@sntech.de>
+2.34.1
+
 
