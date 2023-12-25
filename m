@@ -1,90 +1,177 @@
-Return-Path: <linux-kernel+bounces-10864-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10865-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B80481DD8B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 03:16:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9237B81DD91
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 03:21:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4CCC11C214FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 02:16:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 215CA281BEF
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 02:21:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EBB123C9;
-	Mon, 25 Dec 2023 02:15:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01E25A54;
+	Mon, 25 Dec 2023 02:21:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="YTjyZL5U"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bQzofmeQ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECB0D1847;
-	Mon, 25 Dec 2023 02:15:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=BqXhKno8pYPsfyukWJPQeJvD6OExI6mZWih5zP3r+KE=; b=YTjyZL5UmR2ZtV36z+A75Dk767
-	jNfDcShrKuWXloZnAfP/6Fha18NGA0+Vf5PjgeiZybLWCwi1sDP0q1DmnyPT7+gSo57jQ+OMxiTVA
-	7VO9yCqF8+Ya4LuxUsU22ASRFhI8uFkY2Q3V04gJlheifhL1E7Xut/L4btL4plkdbYVK7algp7bCL
-	RbT0dlQHSEp00z4NHt9aLBQStpulqtM//gs+Uz6S/droCG+s/E79b1F1Q0l27glCAfC54XMz2P9n1
-	/bmfpA4bnC5H5beHEXT26TM0cwkkhOfnwDXb17tJwVySAZUfSG/kBTKCyiN4P5Y4ZV30LUA0AljkT
-	nusHTFvg==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-	id 1rHaVM-006WTq-25;
-	Mon, 25 Dec 2023 02:15:44 +0000
-Date: Mon, 25 Dec 2023 02:15:44 +0000
-From: Al Viro <viro@zeniv.linux.org.uk>
-To: Theodore Ts'o <tytso@mit.edu>
-Cc: Baokun Li <libaokun1@huawei.com>, Edward Adam Davis <eadavis@qq.com>,
-	syzbot+2c4a3b922a860084cc7f@syzkaller.appspotmail.com,
-	adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com, yangerkun <yangerkun@huawei.com>
-Subject: Re: [PATCH] ext4: fix WARNING in lock_two_nondirectories
-Message-ID: <20231225021544.GF1674809@ZenIV>
-References: <000000000000e17185060c8caaad@google.com>
- <tencent_DABB2333139E8D1BCF4B5D1B2725FABA9108@qq.com>
- <fb653ebf-0225-00b3-df05-6b685a727b41@huawei.com>
- <20231225021136.GC491196@mit.edu>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A1387F1;
+	Mon, 25 Dec 2023 02:21:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81BFFC433C8;
+	Mon, 25 Dec 2023 02:21:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703470879;
+	bh=uV/9bDfqdY3ZYOh2EW+ZpI9iEZqLw0XhMp6GAnVEYKc=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=bQzofmeQbLAUODrezsFJGfCroUm2mDiRs5Fz0vSmNZUT0abw2+NP4UYLW8TzFfd6i
+	 Uc1F04zgVw3zxYjeNFL2p12plv51f8dDlMzj/Pc9LbvDGORfXlB8/6nexJpR8b+uun
+	 KJ7eiqprpJ6WmZ4rb8saxMlwgLK8VQRyii6NPaS3yJ3TIfReC38/Jiann2/CVDIAup
+	 pLJ2xXRqGTt59H7jIKqI/0KpiCqxwKJ0ZeW8bKFs1tLKJpoRpyBmp3+4qGmZJPguyt
+	 s7pmOu6dJYnxqcCQf1+F5UGMYCMtIkOcIhcjo2m5+3Wt1+rBTzh9v47eWXG5Zzb7s+
+	 cFlU4LdyslXLQ==
+Date: Sun, 24 Dec 2023 20:21:17 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Ethan Zhao <haifeng.zhao@linux.intel.com>
+Cc: bhelgaas@google.com, baolu.lu@linux.intel.com, dwmw2@infradead.org,
+	will@kernel.org, robin.murphy@arm.com, lukas@wunner.de,
+	linux-pci@vger.kernel.org, iommu@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v6 2/4] iommu/vt-d: don's issue devTLB flush request
+ when device is disconnected
+Message-ID: <20231225022117.GA1416989@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231225021136.GC491196@mit.edu>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <d6dedb35-4d2c-49a6-9d5a-e7f573ef3787@linux.intel.com>
 
-On Sun, Dec 24, 2023 at 09:11:36PM -0500, Theodore Ts'o wrote:
-> On Mon, Dec 25, 2023 at 09:38:51AM +0800, Baokun Li wrote:
-> > Marking the boot loader inode as a bad inode here is useless,
-> > EXT4_IGET_BAD allows us to get a bad boot loader inode.
-> > In my opinion, it doesn't make sense to call lock_two_nondirectories()
-> > here to determine if the inode is a regular file or not, since the logic
-> > for dealing with non-regular files comes after the locking, so calling
-> > lock_two_inodes() directly here will suffice.
+On Mon, Dec 25, 2023 at 09:46:26AM +0800, Ethan Zhao wrote:
+> On 12/25/2023 6:43 AM, Bjorn Helgaas wrote:
+> > On Sun, Dec 24, 2023 at 12:06:55AM -0500, Ethan Zhao wrote:
+> > > ...
+> > > [ 4211.433662] pcieport 0000:17:01.0: pciehp: Slot(108): Link Down
+> > > [ 4211.433664] pcieport 0000:17:01.0: pciehp: Slot(108): Card not present
+> > > [ 4223.822591] NMI watchdog: Watchdog detected hard LOCKUP on cpu 144
+> > > ...
+> > > [ 4223.822647] Kernel Offset: 0x6400000 from 0xffffffff81000000 (relocation
+> > > range: 0xffffffff80000000-0xffffffffbfffffff)
+> >
+> > The timestamps don't help understand the problem, so you could remove
+> > them so they aren't a distraction.
 > 
-> This is all very silly, and why I consider this sort of thing pure
-> syzkaller noise.  It really doesn't protect against any real threat,
-> and it encourages people to put all sorts of random crud in kernel
-> code, all in the name of trying to shut up syzbot.
-> 
-> If we *are* going to care about shutting up syzkaller, the right
-> approach is to simply add a check in swap_inode_boot_loader() which
-> causes it to call ext4_error() and declare the file system corrupted
-> if the bootloader inode is not a regular file, and then return
-> -EFSCORRUPTED.
-> 
-> We don't need to add random hacks to ext4_iget(), or in other places...
+> Lukas said he see the qi_submit_sync takes up to 12 seconds to trigger the
+> watchdog.
 
-Just check the inode type before anything else and be done with that -
-if an in-core inode of a regular file manages to become a directory
-right under us, we have a much worse problem.
+OK, so the timestamps told us how long the watchdog tolerates.  I
+don't know how useful that is.  I suspect that's not a fixed interval
+(probably differs by watchdog and possibly user preference).
 
-IOW, the bug is real, but suggested patch is just plain wrong.
+> > > Fix it by checking the device's error_state in
+> > > devtlb_invalidation_with_pasid() to avoid sending meaningless devTLB flush
+> > > request to link down device that is set to pci_channel_io_perm_failure and
+> > > then powered off in
+> >
+> > A pci_dev_is_disconnected() is racy in this context, so this by itself
+> > doesn't look like a complete "fix".
+>
+> A quick workaround.
+
+Call it a "quick workaround" then, not a "fix".  I'm personally not
+usually interested in quick workarounds that are not actually fixes,
+but the IOMMU folks would be the ones to decide.
+
+Maybe this is more of an optimization?  If patch 4/4 is a real fix (in
+the sense that if you disable the watchdog, you would get correct
+results after a long timeout), maybe you could reorder the patches so
+4/4 comes first, and this one becomes an optimization on top of it?  I
+haven't worked though the whole path, so I don't know exactly how
+these patches work.
+
+> > > pciehp_ist()
+> > >     pciehp_handle_presence_or_link_change()
+> > >       pciehp_disable_slot()
+> > >         remove_board()
+> > >           pciehp_unconfigure_device()
+> > There are some interesting steps missing here between
+> > pciehp_unconfigure_device() and devtlb_invalidation_with_pasid().
+> > 
+> > devtlb_invalidation_with_pasid() is Intel-specific.  ATS Invalidate
+> > Requests are not Intel-specific, so all IOMMU drivers must have to
+> > deal with the case of an ATS Invalidate Request where we never receive
+> > a corresponding ATS Invalidate Completion.  Do other IOMMUs like AMD
+> > and ARM have a similar issue?
+>
+> So far fix it in Intel vt-d specific path.
+
+If the other IOMMU drivers are vulnerable, I guess they would like to
+fix this at the same time and in a similar way if possible.
+
+> > > For SAVE_REMOVAL unplug, link is alive when iommu releases devcie and
+> > > issues devTLB invalidate request, wouldn't trigger such issue.
+> > > 
+> > > This patch works for all links of SURPPRISE_REMOVAL unplug operations.
+
+> > It's not completely obvious that a fix that works for the safe removal
+> > case also works for the surprise removal case.  Can you briefly
+> > explain why it does?
+> 
+> As I explained to baolu.
+> 
+> For safe_removal, device wouldn't  be removed till the whole software
+> handling process done, so without this fix, it wouldn't trigger the lockup
+> issue, and in safe_removal path, device state isn't set to
+> pci_channel_io_perm_failure in pciehp_unconfigure_device() by checking
+> 'presence',  patch calling this pci_dev_is_disconnected() will return false
+> there, wouldn't break the function.  so it works.
+> 
+> For suprise_removal, device state is set to pci_channel_io_perm_failure in
+> pciehp_unconfigure_device(), means device already be in power-off/link-down
+> /removed state, callpci_dev_is_disconnected() hrere will return true to
+> break
+> 
+> the function not to send ATS invalidation request anymore, thus avoid the
+> further long time waiting trigger the hard lockup.
+
+s/safe_removal/safe removal/ (they are not a single word)
+s/suprise_removal/surprise removal/ (misspelled, also not a single word)
+
+> Do I make it clear enough ?
+
+Needs to be in the commit log, of course.
+
+> > > Tested-by: Haorong Ye <yehaorong@bytedance.com>
+> > > Signed-off-by: Ethan Zhao <haifeng.zhao@linux.intel.com>
+> > > ---
+> > >   drivers/iommu/intel/pasid.c | 3 +++
+> > >   1 file changed, 3 insertions(+)
+> > > 
+> > > diff --git a/drivers/iommu/intel/pasid.c b/drivers/iommu/intel/pasid.c
+> > > index 74e8e4c17e81..7dbee9931eb6 100644
+> > > --- a/drivers/iommu/intel/pasid.c
+> > > +++ b/drivers/iommu/intel/pasid.c
+> > > @@ -481,6 +481,9 @@ devtlb_invalidation_with_pasid(struct intel_iommu *iommu,
+> > >   	if (!info || !info->ats_enabled)
+> > >   		return;
+> > > +	if (pci_dev_is_disconnected(to_pci_dev(dev)))
+> > > +		return;
+> > > +
+> > >   	sid = info->bus << 8 | info->devfn;
+> > >   	qdep = info->ats_qdep;
+> > >   	pfsid = info->pfsid;
+> >
+> > This goes on to call qi_submit_sync(), which contains a restart: loop.
+> > I don't know the programming model there, but it looks possible that
+> > qi_submit_sync() and qi_check_fault() might not handle the case of an
+> > unreachable device correctly.  There should be a way to exit that
+> > restart: loop in cases where the device doesn't respond at all.
+> 
+> Yes, fix it in patch[4/4] to break it out when device is gone.
 
