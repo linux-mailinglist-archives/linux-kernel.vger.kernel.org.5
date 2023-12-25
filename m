@@ -1,181 +1,131 @@
-Return-Path: <linux-kernel+bounces-10944-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10946-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46E8B81DF01
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 09:06:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 525F581DF06
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 09:09:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F0B36281A40
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 08:06:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 05DA01F21DBA
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 08:09:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D99071877;
-	Mon, 25 Dec 2023 08:06:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A00720F7;
+	Mon, 25 Dec 2023 08:09:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="BuyfL0lv"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Wq2mzm4p"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2071.outbound.protection.outlook.com [40.107.20.71])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0120015B0;
-	Mon, 25 Dec 2023 08:06:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jHIFr0QMd8WJLs5iLLdZKoaLLm2i57oF4DoTJt9LpSPW6vuQwFJYXpAmDI3M56AquKqvgl5d2UXkeOLPBMsaDFItgNnYzpF0rcdMfZ9BFIZjnTzRlknp29CLVVHg8OfOS6TRRGTRqOMVRDty7wxPTe9/+E2ym8sf3yJ9qnG5nfbEZh+MVAux1vt/RTOxK0/WxE3yrH2FRA6rxTlw4RJkDsPCnHqWERQzRfXu5L14eKYOn4zMmijNg68C4IT0FQ8ZP4QEanUZ83DHDmSA+DhTWHWnruxg3ndltHARsVLF9PP8h0awruxyA0I6NtMd5gPKK7x4I+7Y4S0LbnpyB5gsvg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=X+eM8lvNvRlnae/G7ZMO0TDgODGjMvjnUOoYW8Odyog=;
- b=cdJl7UBkIA9h8/JeFg4SGLEX2R/FSxOe+9Lh1zhmaV/Msvh9/TSQSDN97HIuny1a7BlcxV6Ydkrl6qIPI4TAzOCLN6MiiTFcMTMoPhC0nYiX+80x2sSLlJ6Yz2V1jSJDyi1J53V3sQbnPyRJ/g5zMBioVdtoUdR7t6ZlwR294Xrmf6DLN6gUdi74BWz30bIdNVZ15q89tPso1blAw2UL5LIrSjilhcVS5drP0XX2+RS/m0Fclpy5qD6tTWO42olrWBjBSy1wBCHuL9oUq0UZy+CDGYTcYhlv8PC+SchYv3CDdRm6I9OSyT3RCu62swg5+8PDuIomSNgf28S03uwDUg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=X+eM8lvNvRlnae/G7ZMO0TDgODGjMvjnUOoYW8Odyog=;
- b=BuyfL0lvXtfxn3Lbr2/VEIBaEDefurii3WSH5cUJEuhMXUYtJ5jjGfo5Luu5CWc1c4xlO0g14I3na9F8u5poLudw+PcYsJzjKp+X15xHIT9CRUMpDmb0r74SAbWnTw4vYvwGM3hOdBpZwG/XWp+3fDqH2MvOSYbsiRkETW3t5Ls=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from DB9PR04MB9498.eurprd04.prod.outlook.com (2603:10a6:10:360::21)
- by DUZPR04MB9727.eurprd04.prod.outlook.com (2603:10a6:10:4b1::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7113.26; Mon, 25 Dec
- 2023 08:06:42 +0000
-Received: from DB9PR04MB9498.eurprd04.prod.outlook.com
- ([fe80::2a3c:9a90:b09f:293c]) by DB9PR04MB9498.eurprd04.prod.outlook.com
- ([fe80::2a3c:9a90:b09f:293c%3]) with mapi id 15.20.7113.026; Mon, 25 Dec 2023
- 08:06:42 +0000
-From: Chancel Liu <chancel.liu@nxp.com>
-To: shengjiu.wang@gmail.com,
-	Xiubo.Lee@gmail.com,
-	festevam@gmail.com,
-	nicoleotsuka@gmail.com,
-	lgirdwood@gmail.com,
-	broonie@kernel.org,
-	perex@perex.cz,
-	tiwai@suse.com,
-	alsa-devel@alsa-project.org,
-	linux-kernel@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-sound@vger.kernel.org
-Cc: Chancel Liu <chancel.liu@nxp.com>
-Subject: [PATCH] ASoC: fsl_rpmsg: Fix error handler with pm_runtime_enable
-Date: Mon, 25 Dec 2023 17:06:08 +0900
-Message-ID: <20231225080608.967953-1-chancel.liu@nxp.com>
-X-Mailer: git-send-email 2.42.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SGXP274CA0006.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b8::18)
- To DB9PR04MB9498.eurprd04.prod.outlook.com (2603:10a6:10:360::21)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E93601C14;
+	Mon, 25 Dec 2023 08:09:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1703491769; x=1735027769;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=2aChuv2hSCHAdNRDTEHx6SASmQDX/0FLKZ+/kzJ26Qo=;
+  b=Wq2mzm4pPXfRnp3qY1wpyHNxUEoSA6YQ2IWv5njvNG3B1XnIIVTkaZna
+   lM3ov/E1D8SXjgKyrDwSwIBuQkpuu7j2ePMnd9rc2uMuLuMkwAlqhgRWQ
+   uiwSaL6DLevdR9TJPmStNhDVjmwedsLhMZ9wqyHWeU++nYKb8phSCi78Z
+   Wj5y9t915fdKeB1gcixNTKrllsdBLVpfcYvmdegCq6WaYAeeSqm7eieY3
+   qEEBGYH8CBiIjopkvblGk62wz/tYv6WqmdM8Ex8hhdWF7c9mjQrk2YNp8
+   wkpBHn7xYm/n/3jxa8UFhaElmtDVbJ+F0M/bLIkgDu0serlZyg/+oupXY
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10934"; a="3107834"
+X-IronPort-AV: E=Sophos;i="6.04,302,1695711600"; 
+   d="scan'208";a="3107834"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Dec 2023 00:09:28 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,302,1695711600"; 
+   d="scan'208";a="19397032"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orviesa002.jf.intel.com with ESMTP; 25 Dec 2023 00:09:24 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rHg1Z-000D8v-1B;
+	Mon, 25 Dec 2023 08:09:21 +0000
+Date: Mon, 25 Dec 2023 16:09:19 +0800
+From: kernel test robot <lkp@intel.com>
+To: Aahil Awatramani <aahila@google.com>,
+	Mahesh Bandewar <maheshb@google.com>,
+	Jay Vosburgh <j.vosburgh@gmail.com>,
+	Andy Gospodarek <andy@greyhouse.net>,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev
+Subject: Re: [PATCH next] bonding: Extending LACP MUX State Machine to
+ include a Collecting State.
+Message-ID: <202312251524.jjgo5nFR-lkp@intel.com>
+References: <20231221023650.3208767-1-aahila@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DB9PR04MB9498:EE_|DUZPR04MB9727:EE_
-X-MS-Office365-Filtering-Correlation-Id: 44b992ed-ec12-463b-da4f-08dc05206e0e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	48a3mshOtRHLH2BvaCpxRmPwDs2UDTCpnalg2QG3sNNmhp17v6x8sNCWmv2xJ8XQWgWJHDnx986s0eVLTF3cy/9leE7XyebkiCzJhzPBOqILD9Epn7+SdXAHDq5wMaV1NRP33TgKiwgC8Bt2SihpyzbeCoNlp7fgT7xr3Mzeg/oMrPxbaPS9ikffQRP8/OCXWeY8s/2NnKu0H7CEBdMRQ7ekkHJpyO15IXPT56Ry0GtLH5pNjTvuGeCFbT38QKV8N7DAI26sB1AAIdWXFgvploHafPzQOgdY6/dbJE7og5qu8QVDfHYTkT8lh0lvcrWwjHw27sowyrOnn0PQVlDwGT4V+F74dKGOcBY2do3iTFz+by4tVgV/VdFxCl0//qeG0HCg2+HzFPfaAUP5jcTl/OYR4Jir4zQGGsGZtZ76vcPVdoLpqBDywp7bk4o8KR+Gkd2lYzl1FKL4epHPRN904Az7ztsQCH8/bw0PkmO72iuFg9K931jtBvVRwpaKsx1W1e3MG1XthefJBsggzK83ZZCJL/1iRqqGFYMiChXHYmt/F0pgUXxX+0xnMOGqotaC2Mj8jEJ2kwZX7FZcrHo7mNhf9xU9xqA5qt3ZaaKVXeIDKPr8B/7D/FJljsMOoNZE
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR04MB9498.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(396003)(39860400002)(376002)(136003)(366004)(230922051799003)(451199024)(64100799003)(1800799012)(186009)(86362001)(1076003)(2616005)(26005)(52116002)(6666004)(6512007)(6506007)(41300700001)(38100700002)(83380400001)(36756003)(44832011)(7416002)(6486002)(5660300002)(66946007)(38350700005)(8936002)(8676002)(4326008)(316002)(66556008)(921011)(66476007)(478600001)(2906002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?Tx742bQIOc3LOxc2k1K/VhsMLFbfAfJTlpqlNEr+ePLQ+jEgN+VNEk4y036B?=
- =?us-ascii?Q?dIFZrf5YBZc+gZIwiMzxllYUfWFM3kxTyY2WR2SvPQZG0H83ec2bp4fbNS2M?=
- =?us-ascii?Q?9Zzk8/Q9SG/ID6raOeJ0mFzGq4B3DE8znYtPM+EkI0+r70fdmXAkJ+VViO++?=
- =?us-ascii?Q?qvmaPpUWbhZ5X+POnE8pVNorinnt33ArfvzYdCgnWY2tFGA19pq1mUe8UUa0?=
- =?us-ascii?Q?s0wn0hNblAZwIJv/XTWr2hqgNR0+ANtjn+4qq9cfQVjNzpXpyAUTj0pGZU9K?=
- =?us-ascii?Q?a7mIFc7i8Iu5JN5LEtiNs28QdbhVwPPz9DGPSgNQ85pJn9OUpGsTcmpMQFJm?=
- =?us-ascii?Q?zjio1bW4D/rz5pKYJlDz0Q2Nqw8NyRzOwNRudfFShUiD6hNRfdCoZRVeF6P1?=
- =?us-ascii?Q?Q1t1hh+CEYefuZvNym34hkHZ367jh6Z8ppDyU7OkWYp5kenvnVIZYz9SJMdy?=
- =?us-ascii?Q?ayTdqPC/2E6V+xS2FwjGCIWi7oSlFJsQPhehR/B3kWShZ2nsYw9Yo1h/40mw?=
- =?us-ascii?Q?gCQhBjxtdVcQHD6oWqKJSN5hOlWVAH6Gl9dC7E7PIODO5EDTiVOntypcfF9l?=
- =?us-ascii?Q?s28nER4Dhw7wTD6zW6y9dP+ryAD6xreLZ56R5X2i99Xz8WfhUXQsRP9D7k7G?=
- =?us-ascii?Q?MIfrDYQVqEYjegxYTGAJjK3g9C+bkRkP8k6mOXPPFSFXPRTvDNwNxTAGKoo/?=
- =?us-ascii?Q?rEyXdDsfbMY4Sf2VErbVwe+1kSz4irIn+JHBcbtb2Z8LrX+HSlRUMnlHdExi?=
- =?us-ascii?Q?/7uTyGPZoti18UW0+pTyZedwKDNOtOnK2guTE5oNsLpO5EL8v1M9rxoRmMxa?=
- =?us-ascii?Q?Zzsbj/guKvChoAsSVdiXAbv29TkHPmLW4zMziv7JyAhVBJauBjBj4bp1bP9J?=
- =?us-ascii?Q?3a+Fj/jEhI+Z24pRHUACvQ0xdQqnd/OBfCZ3mPTnOQ8Yg5M2zTuRYJSOeAkj?=
- =?us-ascii?Q?Tk3twEyYbjVvv3vxq/Fs1tNid92Io7lVivDLHNa2qgJgtI3qNZfYvnCj992e?=
- =?us-ascii?Q?Y05n1A2tIU4hczEwAi/orDqVHbTgwaf1rTl2+eU4GuS0SwFNT3yhKK0/rBh7?=
- =?us-ascii?Q?tltNFXHR3QkzQbzO0KLPvc0b8reHSaBNd/1TfQEYBfGHXEoBtECjihXG9PMn?=
- =?us-ascii?Q?PAACTcrjWU++f5TQAaYFObyLLYsOeuFPQ0QYvScIyozU1YIoorpZibffAVX3?=
- =?us-ascii?Q?NC7hMon97Qp1TGq4CsgGcYPRsHc+3lxBIXSLbjjlQgGCfHfv5i88Uu3Yo1Zr?=
- =?us-ascii?Q?KkPW49mdJdtiZfa2IfmBl19p/QkNBXMXDm/Appgi1FX9m99gzomCyOoKGL7X?=
- =?us-ascii?Q?/WacUnfwyFXPznC861xGtK3S2u+/Y6aX5HS2gQ38DGtFN+DqNkmq94TCpXD4?=
- =?us-ascii?Q?36v5vF+fkn2NZmQ/tVEbFt+2Z2Qtlvp0+NhylQsgGMWZKmGSZ6k3hUkO5xE2?=
- =?us-ascii?Q?Bbyl5EI3gN8lWnkk3zpLYGXZ+f+Xo7Ax9NWfE8N/hAglRltc8BUhAAzYRYKu?=
- =?us-ascii?Q?RHrUrv83rOm0WzaGh92DHc/6m6qzXwNR+CjNuGGiVShH24LQnIQj4ec5aDio?=
- =?us-ascii?Q?8Q+OigL8E7H/WP77WIXYKJusaTPcY5T9zzcUHdJA?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 44b992ed-ec12-463b-da4f-08dc05206e0e
-X-MS-Exchange-CrossTenant-AuthSource: DB9PR04MB9498.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Dec 2023 08:06:42.4991
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Mb6plim/JhOOPycSyqHKc3KqSzNaH5A6Xl/yNZ9Jb6dobQma4jr6GwFbjHiNq7bMx407NVE10OCjWTQfpRUFxg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DUZPR04MB9727
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231221023650.3208767-1-aahila@google.com>
 
-There is error message when defer probe happens:
+Hi Aahil,
 
-fsl_rpmsg rpmsg_audio: Unbalanced pm_runtime_enable!
+kernel test robot noticed the following build warnings:
 
-Fix the error handler with pm_runtime_enable.
+[auto build test WARNING on next-20231222]
 
-Fixes: b73d9e6225e8 ("ASoC: fsl_rpmsg: Add CPU DAI driver for audio base on rpmsg")
-Signed-off-by: Chancel Liu <chancel.liu@nxp.com>
----
- sound/soc/fsl/fsl_rpmsg.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+url:    https://github.com/intel-lab-lkp/linux/commits/Aahil-Awatramani/bonding-Extending-LACP-MUX-State-Machine-to-include-a-Collecting-State/20231222-174732
+base:   next-20231222
+patch link:    https://lore.kernel.org/r/20231221023650.3208767-1-aahila%40google.com
+patch subject: [PATCH next] bonding: Extending LACP MUX State Machine to include a Collecting State.
+config: i386-allyesconfig (https://download.01.org/0day-ci/archive/20231225/202312251524.jjgo5nFR-lkp@intel.com/config)
+compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231225/202312251524.jjgo5nFR-lkp@intel.com/reproduce)
 
-diff --git a/sound/soc/fsl/fsl_rpmsg.c b/sound/soc/fsl/fsl_rpmsg.c
-index 5c5c04ce9db7..00852f174a69 100644
---- a/sound/soc/fsl/fsl_rpmsg.c
-+++ b/sound/soc/fsl/fsl_rpmsg.c
-@@ -238,7 +238,7 @@ static int fsl_rpmsg_probe(struct platform_device *pdev)
- 	ret = devm_snd_soc_register_component(&pdev->dev, &fsl_component,
- 					      &fsl_rpmsg_dai, 1);
- 	if (ret)
--		return ret;
-+		goto err_pm_disable;
- 
- 	rpmsg->card_pdev = platform_device_register_data(&pdev->dev,
- 							 "imx-audio-rpmsg",
-@@ -248,16 +248,22 @@ static int fsl_rpmsg_probe(struct platform_device *pdev)
- 	if (IS_ERR(rpmsg->card_pdev)) {
- 		dev_err(&pdev->dev, "failed to register rpmsg card\n");
- 		ret = PTR_ERR(rpmsg->card_pdev);
--		return ret;
-+		goto err_pm_disable;
- 	}
- 
- 	return 0;
-+
-+err_pm_disable:
-+	pm_runtime_disable(&pdev->dev);
-+	return ret;
- }
- 
- static void fsl_rpmsg_remove(struct platform_device *pdev)
- {
- 	struct fsl_rpmsg *rpmsg = platform_get_drvdata(pdev);
- 
-+	pm_runtime_disable(&pdev->dev);
-+
- 	if (rpmsg->card_pdev)
- 		platform_device_unregister(rpmsg->card_pdev);
- }
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312251524.jjgo5nFR-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> drivers/net/bonding/bond_3ad.c:2016: warning: Excess function parameter 'update_slave_arr' description in 'ad_enable_collecting'
+
+
+vim +2016 drivers/net/bonding/bond_3ad.c
+
+  2007	
+  2008	/**
+  2009	 * ad_enable_collecting - enable a port's receive
+  2010	 * @port: the port we're looking at
+  2011	 * @update_slave_arr: Does slave array need update?
+  2012	 *
+  2013	 * Enable @port if it's in an active aggregator
+  2014	 */
+  2015	static void ad_enable_collecting(struct port *port)
+> 2016	{
+  2017		if (port->aggregator->is_active) {
+  2018			struct slave *slave = port->slave;
+  2019	
+  2020			slave_dbg(slave->bond->dev, slave->dev,
+  2021				  "Enabling collecting on port %d (LAG %d)\n",
+  2022				  port->actor_port_number,
+  2023				  port->aggregator->aggregator_identifier);
+  2024			__enable_collecting_port(port);
+  2025		}
+  2026	}
+  2027	
+
 -- 
-2.42.0
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
