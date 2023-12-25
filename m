@@ -1,173 +1,113 @@
-Return-Path: <linux-kernel+bounces-11117-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11118-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2651481E182
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 17:05:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 807F881E185
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 17:07:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C5CC5281F55
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 16:05:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3E265282005
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 16:07:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65BA552F7A;
-	Mon, 25 Dec 2023 16:05:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E251952F73;
+	Mon, 25 Dec 2023 16:07:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b="Pc1ptCn6"
+	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="go7oppXX"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from sonic322-19.consmr.mail.gq1.yahoo.com (sonic322-19.consmr.mail.gq1.yahoo.com [98.137.70.82])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp-fw-52003.amazon.com (smtp-fw-52003.amazon.com [52.119.213.152])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F1AB50271
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 16:05:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=yahoo.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yahoo.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1703520335; bh=utkBGe9g/rXX1ee3dzx4d2PU7zoNuIal2sZjMURSdn8=; h=Date:From:To:Cc:In-Reply-To:References:Subject:From:Subject:Reply-To; b=Pc1ptCn6lB6sUPvtXwUa40cpm9Cc1FJ16CP40RBmsWiL5hncAOhVzb18BgjmBUF4WMF3uCV+gKDcMUBxzdbgsZcw+rc2VLdX+CUIiU3blfPUxaPD10e18RYClP1gOauE8HFSFGLBYrucuiDYkJAYjcGXSkFVM0p1R3Dv2YwKX3KLWGlL0grqtzdQz1LqVJYuNS+K95CbgRIFQdEEkQh3G5796k/WssxAHYDfWVy4/bJAnqxlM0R/MVI+OJBz6KUYVZzfrPNcN1vIe/iiRLN1WmczkVyWybblwNvertM0wopdU7B3uiDiucK0FKNH5yczdg2zADU808B+BwUTiFoiKw==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1703520335; bh=zVXwExR0fO8/nvgS8FcHpB/IeFgyvH8jsxYy3cB++LG=; h=X-Sonic-MF:Date:From:To:Subject:From:Subject; b=D3dnGcuK2S8NePc2TToj1CTSr+SHLIT0Q8yY4VgqNgKF738z06XbBymWac7qIdsiwz8WSsegHU0SCwWRhRqPqtXb1FBkKel+z4D94h8ps+aYiWY/3WaZtHeWpaqsN9sS/Ih1Q+AKpoJmMxh1J8H5UGP8+JmmdTlOEjsgVf437GMxe/Wz5rq0ra5rqn6QH/AVg8WkzJwo2SZcuI24J9BDsw5cFEd1GZxHsnGEJfITvHNe0RcRHrYuRq/3+loh9KOPqtctRzkqx+VN2Ab80FgD0zGEUsZQL1PqtGkk9tfB9PpYmyJL4f4l9o7qik3qd0ap6kyOYm8HBekDWtgeN2jc1A==
-X-YMail-OSG: 9RHHXYMVM1kr3VIz1_jN0AanDhY816EV1VcSLx2NtsRCDcqHcBFzCK7qfeSV_nD
- RIqzrBWgTBMCPNh9Cvw0LTcrS_YxghL9gHWs3AsIhYYNgXN57ZHLmSgAZTGpbS.mfVLWr7puFPPZ
- Df2OF91oT2TEtcQOekIpfDpXfeoBWhOtHzoQYVutJ6hN6Y0R7sponwXAQ52dpHCC.QTZGQ651p1d
- OZUt9iHv_3SSJwCw1QAm0ZSO5EKWhWGHLLaCRuTIGvxzyf5wNEs3XgX2i4VByKuL0l4aUBRAT9cT
- c8yLtRNpzYUdSkpqwTb01cval9Hsld9LdcANzDdrq8ADOPP9.a34DA.n3QRGJWxzU0eQKeGVP65m
- 9mncYzcQ8nsDhNRVmwLWeDZTCuCi0V92L8J4fDouVPjSRr2ODXV3YxuU26gAYnOmJuIht8w81sLa
- 6qAtCmh0XvVEs.Kot0nTxZBq0W2wHo1WZFtqTmTkMa5EC8ZyLvSb55kK8mNJVjauZoz790.HAN4B
- 2O4Djn78H.ORGTm1RJZiHRMCO9.e8X.FqTt4oJOfRuiz1FMee0lHft2O_j0aUnxeBhr1pujFfYIt
- 8dTWZhGDNdSXfIS7jCTen8Kd3QokiQQMJIJgg43RPkqqNnWZ.g4kC8nfaRVq5BjhrQRZ2xMWEZwC
- DJ68UmQZqT.Wf2VCRTIk_IhJJ3_Up3To78ZrYSJrvSj49lCmxaxt.mtwl7bsZTrl850q3MqahDuK
- 9jHL_.ImNarPTfmlZs6toDVHc96UDI7A0QMTgw3BKXXrRNEKZtl5JK46q5JVK2PYNRa6ptUN8nul
- 7RMBokmaJ3Jsne.XpLXBlrIDzp3eQ_jfhf_emxpjS8b0z8i2gvxyLmzEz0gWug7awCi7HRgd4aXy
- eaSEjPIuW069hhodpg5ZZTnVvm.Fli_AiGTMNEvIA57JI96cH85L7096C5X.8u1HDTacaqXGAPow
- iRgg5Z0aJJh6ucJV0Pir63xiJL6QWTtpkahd4gmXxVZFhS5KGaVZWR4F4TnALU_tSDERmLdAsv6b
- .ERHfAey_cfOMSGrcuShO7dv6M4_yAgVOqVNhmUe3ZHjWJ2zMoq3kMeCGFMbbgpCaYdqz7bgc4N.
- 7jRnOj6HZ4EF02MSdAQkUD7P46QeEifufJQKeDor_jBr4PVCs3LE7NTqE.1ChmuJu4i55Wj1w0wj
- BaG6aVHI2ckMcphn0c7BmWQT63grpZDGefcLYn5aZpy6XGHuvqyFuEdcYUzoxezXudUXKKTzjpZk
- WeIWkXF_jWvbHzTgl8F.X5YwV6WeB5H9yE1eD.R2QnEWHWsZg3oBacbWdpF96kOWWqOvyd.4far.
- 2F0iICh3.EHD0cyjc6P9cPnVGpO9mU7FVRbHAOmKDNBgREpssmT16fH4q.3tqmz4a61lXFw4pBGR
- xoyaNBcqynvGmkWQlFw882S4A3lGFw7Mjq2IC5aKogjJQfMgAsoIgjLATRHqj620LTbAJ8yW3mcs
- RS9wBZKIfkUP8.MnTpE4lrXMOm4zbqohzaAGA1YrOYfVvOH3MGbNmPLzHJQyl0rWhGlRKZ.oO8cS
- VKtknedoCinznpBSc531bpH92e.N5.qzcIGOKLxvGpWAWH1vgxRYvZKiGhuPQSbQGdpS0LCk_b4g
- 9zEjw9uO9OHptUNYAjK8PzDPf3Qe80z8VfG5WWOMX.VJboBY.onlh9XJWQTfvYHVb8Ys43xa.hOz
- .ZLSYZZOPdppyNpdTL9HxXQycJXv_owZjK_vflMeSguGTO545t7lcUyaFG1ZmKcFl4nBBOVrFZjq
- n4MAowmbXHZjau4VPfwapWPbJ2ekc.i_ca5UEuO6lrC8Tnm_WpwYsVhUrMjeQGXpVPgFgSgOD0.Y
- cMcdpQcwSdiw8tOLGBOCfPpe_gtfTHUGfq3Og8wV21y6MU93kH5jzYdghnqDqqRhS7GmnKe0JzLY
- 8zgK01e68A.m3aH0qj2g5bFDJD_5EUIzLEKbogBBLJsffnErXj1jE6bcEj_mHwmQ4UDEWCt2PbnJ
- httsIEohaLFL3_qdKPWz2yl3EGbhw6P7zV4IRib.OoHA6bdqg0Gt_CFMljHL3uchHLMOY6JdDlmY
- MfncYkeJA11j401rXzFcTtpbeW0aacpI8mnrTkKT6pgMvWUbV57Xmuv5xXCVVHnus7AHRRHr7JYy
- mS0Oo782_BpUuc.W4gJwQFerLpkh7TGWQkoOAkY0a4PGOv7seKhYb2xAHazhoqmFC69EHfC0D5LB
- SVN38SLxaPX9UjD3ArnK27RAdVrA-
-X-Sonic-MF: <chaosesqueteam@yahoo.com>
-X-Sonic-ID: f11ea5e4-fc69-4465-bc3b-c3066c3cc785
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic322.consmr.mail.gq1.yahoo.com with HTTP; Mon, 25 Dec 2023 16:05:35 +0000
-Date: Mon, 25 Dec 2023 16:05:29 +0000 (UTC)
-From: "chaosesqueteam@yahoo.com" <chaosesqueteam@yahoo.com>
-To: Jan Stary <hans@stare.cz>, "misc@openbsd.org" <misc@openbsd.org>, 
-	"tech@openbsd.org" <tech@openbsd.org>, 
-	"theo@openbsd.org" <theo@openbsd.org>
-Cc: "esr@thyrsus.com" <esr@thyrsus.com>, Richard Stallman <rms@gnu.org>, 
-	"misc@openbsd.org" <misc@openbsd.org>, 
-	"tech@openbsd.org" <tech@openbsd.org>, 
-	Aditya Pakki <pakki001@umn.edu>, 
-	Anna Schumaker <anna.schumaker@netapp.com>, 
-	"ansgar@debian.org" <ansgar@debian.org>, 
-	"blukashev@sempervictus.com" <blukashev@sempervictus.com>, 
-	Chuck Lever <chuck.lever@oracle.com>, 
-	Dave Wysochanski <dwysocha@redhat.com>, 
-	"David S. Miller" <davem@davemloft.net>, 
-	"editor@lwn.net" <editor@lwn.net>, 
-	"gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>, 
-	"J. Bruce Fields" <bfields@fieldses.org>, 
-	Jakub Kicinski <kuba@kernel.org>, Leon Romanovsky <leon@kernel.org>, 
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
-	Linux Networking <netdev@vger.kernel.org>, 
-	"linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>, 
-	"moglen@columbia.edu" <moglen@columbia.edu>, 
-	"skraw.ml@ithnet.com" <skraw.ml@ithnet.com>, 
-	"tcallawa@redhat.com" <tcallawa@redhat.com>, 
-	"torvalds@linuxfoundation.org" <torvalds@linuxfoundation.org>, 
-	"torvalds@osdl.org" <torvalds@osdl.org>, 
-	Trond Myklebust <trond.myklebust@hammerspace.com>, 
-	Bagas Sanjaya <bagasdotme@gmail.com>, 
-	Eric Dumazet <edumazet@google.com>, 
-	Julia Lawall <julia.lawall@inria.fr>, 
-	Paolo Abeni <pabeni@redhat.com>, Bruce Perens <bruce@perens.com>, 
-	"jon@elytron.openbsd.amsterdam" <jon@elytron.openbsd.amsterdam>, 
-	"netbsd-current-users@netbsd.org" <netbsd-current-users@netbsd.org>, 
-	"netbsd-users@netbsd.org" <netbsd-users@netbsd.org>, 
-	Polarian <polarian@polarian.dev>, 
-	Rudy Zijlstra <rudy@grumpydevil.homelinux.org>
-Message-ID: <688030322.4237856.1703520329380@mail.yahoo.com>
-In-Reply-To: <ZYln2W2kI2O_rpGv@www.stare.cz>
-References: <1392628657.4223133.1703501833006.ref@mail.yahoo.com> <1392628657.4223133.1703501833006@mail.yahoo.com> <ZYln2W2kI2O_rpGv@www.stare.cz>
-Subject: Re: Clarification: Project is Old. Project is fully opensource. Yes
- we code ourselves, want more contributors, not neophytes.
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E9FE52F61;
+	Mon, 25 Dec 2023 16:07:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1703520462; x=1735056462;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=qHYtE5J76pY6+pfStg0q/+w1NticYUAenhuLViOG8j0=;
+  b=go7oppXXAXdpj6B2mMPhsQbOoB3Z1T6BliySbtS5bU36kPes+W/guVwF
+   gTfh2IJSwN4znx33KtlUtsG5Jzsam9OKZNTr027RL3FrHaul9xX3ckCQQ
+   HOVH3c9oipsiceHha9nROPoXgNoAw97/GyvnsgGwHafBdYwi8W8K+VXlg
+   U=;
+X-IronPort-AV: E=Sophos;i="6.04,303,1695686400"; 
+   d="scan'208";a="627635697"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-iad-1d-m6i4x-b404fda3.us-east-1.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-52003.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Dec 2023 16:07:40 +0000
+Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (iad7-ws-svc-p70-lb3-vlan3.iad.amazon.com [10.32.235.38])
+	by email-inbound-relay-iad-1d-m6i4x-b404fda3.us-east-1.amazon.com (Postfix) with ESMTPS id 92C198071B;
+	Mon, 25 Dec 2023 16:07:36 +0000 (UTC)
+Received: from EX19MTAUWA002.ant.amazon.com [10.0.38.20:42133]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.6.144:2525] with esmtp (Farcaster)
+ id f49d12a5-aaa6-4630-a218-ea8017a839ed; Mon, 25 Dec 2023 16:07:35 +0000 (UTC)
+X-Farcaster-Flow-ID: f49d12a5-aaa6-4630-a218-ea8017a839ed
+Received: from EX19D020UWC004.ant.amazon.com (10.13.138.149) by
+ EX19MTAUWA002.ant.amazon.com (10.250.64.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Mon, 25 Dec 2023 16:07:35 +0000
+Received: from [0.0.0.0] (10.253.83.51) by EX19D020UWC004.ant.amazon.com
+ (10.13.138.149) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 25 Dec
+ 2023 16:07:32 +0000
+Message-ID: <363ca575-f01a-4d09-ae9d-b6249b3aedb3@amazon.com>
+Date: Mon, 25 Dec 2023 17:07:29 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Mailer: WebService/1.1.21952 YMailNorrin
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7] misc: Add Nitro Secure Module driver
+Content-Language: en-US
+To: "Michael S. Tsirkin" <mst@redhat.com>
+CC: <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>, "Arnd
+ Bergmann" <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Herbert Xu <herbert@gondor.apana.org.au>, Olivia Mackall
+	<olivia@selenic.com>, Petre Eftime <petre.eftime@gmail.com>, Erdem Meydanlli
+	<meydanli@amazon.nl>, Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+	David Woodhouse <dwmw@amazon.co.uk>, Jason Wang <jasowang@redhat.com>, "Xuan
+ Zhuo" <xuanzhuo@linux.alibaba.com>, Christophe JAILLET
+	<christophe.jaillet@wanadoo.fr>
+References: <20231011213522.51781-1-graf@amazon.com>
+ <20231225090044-mutt-send-email-mst@kernel.org>
+From: Alexander Graf <graf@amazon.com>
+In-Reply-To: <20231225090044-mutt-send-email-mst@kernel.org>
+X-ClientProxiedBy: EX19D032UWA004.ant.amazon.com (10.13.139.56) To
+ EX19D020UWC004.ant.amazon.com (10.13.138.149)
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Transfer-Encoding: base64
 
-No.
-Counter offer: Use your supposed brain, Jan, (a woman) and code Unreal binary map format loading into this opensource project:
-sf.net/p/chaosesqueanthology/tickets/2/
+SGV5IE1pY2hhZWwsCgpPbiAyNS4xMi4yMyAxNTowNiwgTWljaGFlbCBTLiBUc2lya2luIHdyb3Rl
+Ogo+IE9uIFdlZCwgT2N0IDExLCAyMDIzIGF0IDA5OjM1OjIyUE0gKzAwMDAsIEFsZXhhbmRlciBH
+cmFmIHdyb3RlOgo+PiBXaGVuIHJ1bm5pbmcgTGludXggaW5zaWRlIGEgTml0cm8gRW5jbGF2ZSwg
+dGhlIGh5cGVydmlzb3IgcHJvdmlkZXMgYQo+PiBzcGVjaWFsIHZpcnRpbyBkZXZpY2UgY2FsbGVk
+ICJOaXRybyBTZWN1cml0eSBNb2R1bGUiIChOU00pLiBUaGlzIGRldmljZQo+PiBoYXMgMyBtYWlu
+IGZ1bmN0aW9uczoKPj4KPj4gICAgMSkgUHJvdmlkZSBhdHRlc3RhdGlvbiByZXBvcnRzCj4+ICAg
+IDIpIE1vZGlmeSBQQ1Igc3RhdGUKPj4gICAgMykgUHJvdmlkZSBlbnRyb3B5Cj4+Cj4+IFRoaXMg
+cGF0Y2ggYWRkcyBhIGRyaXZlciBmb3IgTlNNIHRoYXQgZXhwb3NlcyBhIC9kZXYvbnNtIGRldmlj
+ZSBub2RlIHdoaWNoCj4+IHVzZXIgc3BhY2UgY2FuIGlzc3VlIGFuIGlvY3RsIG9uIHRoaXMgZGV2
+aWNlIHdpdGggcmF3IE5TTSBDQk9SIGZvcm1hdHRlZAo+PiBjb21tYW5kcyB0byByZXF1ZXN0IGF0
+dGVzdGF0aW9uIGRvY3VtZW50cywgaW5mbHVlbmNlIFBDUiBzdGF0ZXMsIHJlYWQKPj4gZW50cm9w
+eSBhbmQgZW51bWVyYXRlIHN0YXR1cyBvZiB0aGUgZGV2aWNlLiBJbiBhZGRpdGlvbiwgdGhlIGRy
+aXZlcgo+PiBpbXBsZW1lbnRzIGEgaHdybmcgYmFja2VuZC4KPj4KPj4gT3JpZ2luYWxseS1ieTog
+UGV0cmUgRWZ0aW1lIDxwZXRyZS5lZnRpbWVAZ21haWwuY29tPgo+PiBTaWduZWQtb2ZmLWJ5OiBB
+bGV4YW5kZXIgR3JhZiA8Z3JhZkBhbWF6b24uY29tPgo+IEFsZXggYXJlIHlvdSBnb2luZyB0byBw
+dWJsaXNoIHRoZSBzcGVjIHBhdGNoIGZvciB0aGlzIGRldmljZT8gIEltcG9ydGFudAo+IHNvIHdl
+IGRvbid0IG5lZWQgdG8gZ3Vlc3MgYXQgYmVoYXZpb3VyIHdoZW4gZS5nLiAgbWFraW5nIGNoYW5n
+ZXMgdG8KPiB2aXJ0aW8gQVBJcy4gIEFsc28sIHdoaWNoIHRyZWUgZG8geW91IHdhbnQgdGhpcyB0
+byBnbyB0aHJvdWdoPwoKClRoZSBzcGVjIHBhdGNoIGluY2x1ZGluZyBwaW5nIG1haWwgYXJlIHNp
+dHRpbmcgb24gdGhlIHZpcnRpby1jb21tZW50cyAKbWFpbGluZyBsaXN0IHNpbmNlIE9jdG9iZXIu
+IEkgaGF2ZW4ndCBzZWVuIGFueSByZXBseSB1bmZvcnR1bmF0ZWx5IDooCgpodHRwczovL2xvcmUu
+a2VybmVsLm9yZy92aXJ0aW8tY29tbWVudC8yMDIzMTAyNTIzNTM0NS4xNzc4OC0xLWdyYWZAYW1h
+em9uLmNvbS8KCkhhcHB5IHRvIHJlYWQgZmVlZGJhY2sgaWYgeW91IGhhdmUgYW55IDopLgoKVGhp
+cyBwYXRjaCBoZXJlIGlzIGFscmVhZHkgYXBwbGllZCBpbiBHcmVnJ3MgbWlzYyB0cmVlIHdoaWNo
+IEknbSBoYXBweSAKdG8gaGF2ZSBpdCB0cmlja2xlIHRvIExpbnVzIHRocm91Z2guCgoKQWxleAoK
+CgoKQW1hem9uIERldmVsb3BtZW50IENlbnRlciBHZXJtYW55IEdtYkgKS3JhdXNlbnN0ci4gMzgK
+MTAxMTcgQmVybGluCkdlc2NoYWVmdHNmdWVocnVuZzogQ2hyaXN0aWFuIFNjaGxhZWdlciwgSm9u
+YXRoYW4gV2Vpc3MKRWluZ2V0cmFnZW4gYW0gQW10c2dlcmljaHQgQ2hhcmxvdHRlbmJ1cmcgdW50
+ZXIgSFJCIDE0OTE3MyBCClNpdHo6IEJlcmxpbgpVc3QtSUQ6IERFIDI4OSAyMzcgODc5CgoK
 
-
-
-
-
-On Monday, December 25, 2023 at 06:30:36 AM EST, Jan Stary <hans@stare.cz> wrote: 
-
-
-
-
-
-Take your irelevant ramblings out of misc@
-
-On Dec 25 10:57:13, chaosesqueteam@yahoo.com wrote:
-> A posting by Polaris to this list put our Project (ChaosEsque Anthology) (note: NOT on g*th*b) in a False Light (maybe we'll sue him for the tort)
-> Suggesting, with malicious aforethought, knowingly false premises:
-> 1) that we weren't programmers
-> 2) that our Project hasn't even started and that we were "fishing" for opensource programmers.
-> 3) that we are 13
-> 4) that we materially support terrorists
-> 5) that we seek funding for our project
-> 6) that we don't know how to make a game.
-> 
-> We've been programming for decades. Recently we programmed in support into the 3d engine for other map formats.
-> THIS is what lead us to /ASK/ on lists we know OTHER opensource _C_ programmers congregate for help with even MORE map formats.
-> 
-> So see 1) we did some work on extra map formats. Then we did some more work on more map formats
-> And then we thought "hey, we'd like Unreal map format too, and hey look at all these project NOT IN C that sorta all work with abit of that format. WOULDN'T it be great if we could expand from our very small opensource programming TEAM to and actual T E A M...
-> 
-> So we asked.
-> 
-> Now, our project has been around for over a decade or so, and has lots of features; Polaris makes it seem that we're a brand new project; or even non existent; or some commercial concern just trying to get free work to make a buck. We've never made a buck. Never sought out monetary contributions. We want code.
-> 
-> But what do you people want now? Compliance with your /religion/ (women's rights).
-> Wasn't the case when I started in programming. But you people chased out any non-faggot-woman-worshiping man.
-> And we won't forget that.
-> "DURRR IF U DONT WORSHIP CUNTS YOU WILL __NEVER__ FIND CONTRIBUTORS" --t. white faggot.
-> 
-> Hey: If you ALL are enemies: then we will treat you as such.
-> Do you get that?
-> You are making an equivalence between OpenSourceProgrammer and WomanWorshipingFaggotWhiteMMAAALLLEEEE
-> If they are the same thing: as Polaris suggests, and the rest of you with your silent bans suggest: then they WILL be treated as such.
-> 
-> 3) We're not 13. Would be good to be; would have more energy to code new things.
-> 4) Afghans have the right to brutally torture and kill any white faggot that seeks to change their woman oppressing culture. (I see it more as a little girl appreciating culture and a woman ignoring culture: but I guess that would be the same to women)
-> And I mean _BRUTALLY_ TORTURE: so you fucking understand in your head that your FAGGOT white ways do not need to be in every culture of the globe. Killing you white scum is NOT terrorism. It's resistance to occupation by your garbage religion.
-> 
-> And we don't materially support anyone.
-> I prayed to YHWH years ago that Afghans would be free; that they would be able to marry cute little girls again without the courts you faggot scumbag white pieces of shit installed to persecute them
-> Prez came through and freed them as his first act.
-> 
-> 5) We've never sought funding
-> 
-> 6) We don't know how to parse Unreal binary map format. Game is allready made. Rifle is fine.
-> 
-> sf.net/p/chaosesqueanthology/tickets/2/
-> 
 
