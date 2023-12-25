@@ -1,159 +1,117 @@
-Return-Path: <linux-kernel+bounces-11165-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11166-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0EDBD81E24F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 21:27:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF47781E250
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 21:28:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B54961F21E50
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 20:27:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E1C3A1C20F1A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 20:28:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 536415381B;
-	Mon, 25 Dec 2023 20:27:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BDD15381D;
+	Mon, 25 Dec 2023 20:28:25 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 543A21B26E;
-	Mon, 25 Dec 2023 20:27:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=molgen.mpg.de
-Received: from [192.168.0.6] (ip5f5af7b1.dynamic.kabel-deutschland.de [95.90.247.177])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: pmenzel)
-	by mx.molgen.mpg.de (Postfix) with ESMTPSA id A9F2661E5FE01;
-	Mon, 25 Dec 2023 21:26:06 +0100 (CET)
-Message-ID: <b0d94116-1fa0-4c1f-8a3e-2919fd75b635@molgen.mpg.de>
-Date: Mon, 25 Dec 2023 21:26:05 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B69253804
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 20:28:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7b7399e0707so564897239f.3
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 12:28:23 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703536102; x=1704140902;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5fRKrD7CHZyW03bk3aSpJq2vu0NdTFDfPVJs4+ApOJI=;
+        b=a7tFr3Uy04fTGbIr54ZqWtDC2gwn8njIZXseyaM610ez2abOfVsfuV8VdkjkIW9pVa
+         6RoCOgQ/AdZpkgEcUXdVpA+Z3hMz9GswzoG9X9DythgwnLkPb7MuOnxvsT37TEtZQuel
+         8tGmeiX5wNo3HuqP5/lNX2c2PSPn7dziRAFwYxdgm18rOArgMyDtmJPoS+FsPLCYFNN1
+         UTTTAnGWUZHXCc+eAB2EHCyABpm6KxwSsPCHg7LAh8QQNHdf3G6cvf//AK+UmrU+mF2A
+         VR4csA9qJIo+RScj0VCLNBpZ4he4wUQmXqsbXshxtEoA/rNUjhtV74qMfTdeyiL42i46
+         Y2KQ==
+X-Gm-Message-State: AOJu0Yy94aEx4Xa7vVFkXDojU/17voZ2XjfD5Nt6Fbxo3wquC0UHfLeQ
+	Ou/yGE/xrwVgju514yN8r+fEkOr+pXCWtyMo56vzGzodpbIT
+X-Google-Smtp-Source: AGHT+IFiqXWV6QzTYsZAA7yzqDNorN8tNKBhEZOjIolzPCnE/mnVZKGZhi0nDsMt8JGKHDqBb96ZdlJimsme/6rzcSsTOmCA+qfP
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] Bluetooth: Fix Bluetooth for BCM4377 on T2 Intel
- MacBooks
-Content-Language: en-US
-To: Felix Zhang <mrman@mrman314.tech>
-Cc: linux-bluetooth@vger.kernel.org, stable@vger.kernel.org,
- Johan Hovold <johan+linaro@kernel.org>, marcan@marcan.st,
- bagasdotme@gmail.com, sven@svenpeter.dev, alyssa@rosenzweig.io,
- marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com,
- orlandoch.dev@gmail.com, kekrby@gmail.com, admin@kodeit.net, j@jannau.net,
- gargaditya08@live.com, asahi@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <77419ffacc5b4875e920e038332575a2a5bff29f.camel@mrman314.tech>
-From: Paul Menzel <pmenzel@molgen.mpg.de>
-In-Reply-To: <77419ffacc5b4875e920e038332575a2a5bff29f.camel@mrman314.tech>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6e02:1d0c:b0:35f:d4dc:1b1e with SMTP id
+ i12-20020a056e021d0c00b0035fd4dc1b1emr1074185ila.5.1703536102687; Mon, 25 Dec
+ 2023 12:28:22 -0800 (PST)
+Date: Mon, 25 Dec 2023 12:28:22 -0800
+In-Reply-To: <0000000000002d868805ec92cbf0@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000434c71060d5b6808@google.com>
+Subject: Re: [syzbot] [reiserfs?] KASAN: slab-out-of-bounds Read in
+ search_by_key (2)
+From: syzbot <syzbot+b3b14fb9f8a14c5d0267@syzkaller.appspotmail.com>
+To: akpm@linux-foundation.org, axboe@kernel.dk, bvanassche@acm.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	reiserfs-devel@vger.kernel.org, song@kernel.org, 
+	syzkaller-bugs@googlegroups.com, yi.zhang@huawei.com
+Content-Type: text/plain; charset="UTF-8"
 
-Dear Felix,
+syzbot has found a reproducer for the following issue on:
 
+HEAD commit:    861deac3b092 Linux 6.7-rc7
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=121f1609e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e0c7078a6b901aa3
+dashboard link: https://syzkaller.appspot.com/bug?extid=b3b14fb9f8a14c5d0267
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10557e81e80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14206fd6e80000
 
-Thank you very much for the patch. I am adding Johan to Cc field.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/0ea60ee8ed32/disk-861deac3.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/6d69fdc33021/vmlinux-861deac3.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/f0158750d452/bzImage-861deac3.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/445a7c3f980d/mount_0.gz
 
-Am 25.12.23 um 21:01 schrieb Felix Zhang:
-> Starting v6.5, Bluetooth does not work at all on my T2 MacBookAir9,1
-> 
-> with the BCM4377 chip.  When I boot up the computer, go into
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+b3b14fb9f8a14c5d0267@syzkaller.appspotmail.com
 
-Somehow a blank line snug in above.
+REISERFS (device loop0): Created .reiserfs_priv - reserved for xattr storage.
+=====================================================
+BUG: KMSAN: uninit-value in comp_keys fs/reiserfs/stree.c:83 [inline]
+BUG: KMSAN: uninit-value in bin_search fs/reiserfs/stree.c:173 [inline]
+BUG: KMSAN: uninit-value in search_by_key+0x3293/0x6780 fs/reiserfs/stree.c:770
+ comp_keys fs/reiserfs/stree.c:83 [inline]
+ bin_search fs/reiserfs/stree.c:173 [inline]
+ search_by_key+0x3293/0x6780 fs/reiserfs/stree.c:770
+ reiserfs_delete_solid_item+0x4ec/0xe90 fs/reiserfs/stree.c:1419
+ remove_save_link+0x2ed/0x420 fs/reiserfs/super.c:540
+ reiserfs_truncate_file+0xd00/0x1b70 fs/reiserfs/inode.c:2314
+ reiserfs_setattr+0x1b79/0x1ee0 fs/reiserfs/inode.c:3388
+ notify_change+0x19fd/0x1af0 fs/attr.c:499
+ do_truncate+0x22a/0x2a0 fs/open.c:66
+ do_sys_ftruncate+0x81c/0xb30 fs/open.c:194
+ __do_sys_ftruncate fs/open.c:205 [inline]
+ __se_sys_ftruncate fs/open.c:203 [inline]
+ __x64_sys_ftruncate+0x71/0xa0 fs/open.c:203
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0x44/0x110 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
 
-> bluetoothctl, and then try to run commands like scan on, show, list,
-> it returns "No default controller available."  I have tried reloading
-> the
+Local variable cpu_key created at:
+ reiserfs_delete_solid_item+0xbf/0xe90 fs/reiserfs/stree.c:1410
+ remove_save_link+0x2ed/0x420 fs/reiserfs/super.c:540
 
-It’d be great if you reflowed for 75 characters per line (also below).
-
-> kernel module, in which the log outputs "{Added,Removed} hci0
-> (unconfigured)."  With this patch, I am able to use Bluetooth as
-> normal
-> without any errors regarding hci0 being unconfigured.  However, an
-> issue is still present where sometimes hci_bcm4377 will have to be
-> reloaded in order to get bluetooth to work.  I believe this was still
-> present before the previously mentioned commit.
-> 
-> Due to the bit HCI_QUIRK_USE_BDADDR_PROPERTY being always set in
-> drivers/bluetooth/hci_bcm4377.c (line 2371), the chip would be left
-> unconfigured on kernels compiled after commit 6945795bc81a
-> ("Bluetooth:
-> fix use-bdaddr-property quirk") due to a change in its logic.  On the
-> M1 Macs, the device would be configured in the devicetree.  However,
-> that is not the case on T2 Macs.  Because the bluetooth adapter is
-> left
-> unconfigured, it is not usable in the operating system.  In order to
-> circumvent this issue, a flag is added to prevent the bit from being
-> set on the BCM4377, while setting it on the other devices.
-> 
-> Because I do not have an M1 device to test this patch on, I am not sure
-> whether the patch breaks anything for said devices.  I would be very
-> grateful if anyone is willing to test this patch on their M1 device.
-> 
-> I would also like to thank Kerem Karabay <kekrby@gmail.com> for
-> assisting me with this patch.
-> 
-> Fixes: 6945795bc81a ("Bluetooth: fix use-bdaddr-property quirk")
-> Signed-off-by: Felix Zhang <mrman@mrman314.tech>
-> ---
-> v3:
-> * Adjust the format to pass the CI (again).
-> ---
->   drivers/bluetooth/hci_bcm4377.c | 6 +++++-
->   1 file changed, 5 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/bluetooth/hci_bcm4377.c
-> b/drivers/bluetooth/hci_bcm4377.c
-> index a61757835695..5c6fef1aa0f6 100644
-> --- a/drivers/bluetooth/hci_bcm4377.c
-> +++ b/drivers/bluetooth/hci_bcm4377.c
-> @@ -513,6 +513,7 @@ struct bcm4377_hw {
->   	unsigned long broken_ext_scan : 1;
->   	unsigned long broken_mws_transport_config : 1;
->   	unsigned long broken_le_coded : 1;
-> +	unsigned long use_bdaddr_property : 1;
->   
->   	int (*send_calibration)(struct bcm4377_data *bcm4377);
->   	int (*send_ptb)(struct bcm4377_data *bcm4377,
-> @@ -2368,7 +2369,8 @@ static int bcm4377_probe(struct pci_dev *pdev,
-> const struct pci_device_id *id)
->   	hdev->set_bdaddr = bcm4377_hci_set_bdaddr;
->   	hdev->setup = bcm4377_hci_setup;
->   
-> -	set_bit(HCI_QUIRK_USE_BDADDR_PROPERTY, &hdev->quirks);
-> +	if (bcm4377->hw->use_bdaddr_property)
-> +		set_bit(HCI_QUIRK_USE_BDADDR_PROPERTY, &hdev->quirks);
->   	if (bcm4377->hw->broken_mws_transport_config)
->   		set_bit(HCI_QUIRK_BROKEN_MWS_TRANSPORT_CONFIG, &hdev-
->> quirks);
->   	if (bcm4377->hw->broken_ext_scan)
-> @@ -2465,6 +2467,7 @@ static const struct bcm4377_hw
-> bcm4377_hw_variants[] = {
->   		.has_bar0_core2_window2 = true,
->   		.broken_mws_transport_config = true,
->   		.broken_le_coded = true,
-> +		.use_bdaddr_property = true,
->   		.send_calibration = bcm4378_send_calibration,
->   		.send_ptb = bcm4378_send_ptb,
->   	},
-> @@ -2479,6 +2482,7 @@ static const struct bcm4377_hw
-> bcm4377_hw_variants[] = {
->   		.clear_pciecfg_subsystem_ctrl_bit19 = true,
->   		.broken_mws_transport_config = true,
->   		.broken_le_coded = true,
-> +		.use_bdaddr_property = true,
->   		.send_calibration = bcm4387_send_calibration,
->   		.send_ptb = bcm4378_send_ptb,
->   	},
-
-The diff looks good, and it works for you.
+CPU: 0 PID: 5006 Comm: syz-executor429 Not tainted 6.7.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
+=====================================================
 
 
-Kind regards,
-
-Paul
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
