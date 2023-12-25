@@ -1,190 +1,94 @@
-Return-Path: <linux-kernel+bounces-11170-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11171-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8646881E26E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 22:19:16 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4BA8381E27A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 22:35:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5D5201C20F81
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 21:19:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4BB9CB21695
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 21:35:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5FF353E18;
-	Mon, 25 Dec 2023 21:19:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D45553E30;
+	Mon, 25 Dec 2023 21:35:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HC9jJlMF"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lqqXi0IA"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ot1-f52.google.com (mail-ot1-f52.google.com [209.85.210.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3048253E04
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 21:19:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703539146; x=1735075146;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=huB9MMZ7tYRhi5UyF5AYs+8duVR45cwboZWmObxXF1Q=;
-  b=HC9jJlMFWxGXpzONa53obKI3jXq5o+ZcsABhR7/wFH9znugmr0jCghFG
-   U2IDkpw4lqwcwrXifM569jrHuHA6s6WHMC0QlOGfTnaQPBadkxAwSMt+d
-   ME8/zw+8ID4bsbkCwLt+k3HBj6+yRqPjNTUZzdKfWk+iscpxlBZOEcmf4
-   xyzSeqYQR3/9sN0bhYqI3Bt8dmYD35BeDIFutxATrKqew8CMl/a8++j1o
-   6yAnxxrRjwJmGQloScWNPL6GENoY/Cdb1ZUrcPB9zjZDTdI3YMRSLSFVm
-   zSVGzNOaDLS1EiULQPXw0A7FsQfbUcrrrnqLjWlXOocUyopaHCIISCrO8
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10934"; a="17868701"
-X-IronPort-AV: E=Sophos;i="6.04,304,1695711600"; 
-   d="scan'208";a="17868701"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Dec 2023 13:19:05 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,304,1695711600"; 
-   d="scan'208";a="12276679"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmviesa002.fm.intel.com with ESMTP; 25 Dec 2023 13:19:04 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rHsLl-000DgV-26;
-	Mon, 25 Dec 2023 21:19:01 +0000
-Date: Tue, 26 Dec 2023 05:18:23 +0800
-From: kernel test robot <lkp@intel.com>
-To: Eddie James <eajames@linux.ibm.com>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	Guenter Roeck <linux@roeck-us.net>
-Subject: drivers/hwmon/pmbus/ibm-cffps.c:184:60: warning: '%04X' directive
- output may be truncated writing between 4 and 8 bytes into a region of size
- 5
-Message-ID: <202312260533.FU092oo9-lkp@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33D6E524C7;
+	Mon, 25 Dec 2023 21:35:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f52.google.com with SMTP id 46e09a7af769-6dbd87b706aso601249a34.0;
+        Mon, 25 Dec 2023 13:35:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703540133; x=1704144933; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Vk3BrCUhkF8HNi8hqkxjkr1dZsGMp84ddJ6VAzsBSHI=;
+        b=lqqXi0IAgJ51KJw9d8Qsu7KCmXGSyP6cJ4y2ttk9IdKa97NR2pHY2CYdYoR7bWskFg
+         MchvYxhCubWB3uTYJAyxw71QWzRQ108EDae/7Pve3DVY/3CorOJyWJWWNJD5j1NJL2ov
+         GOtDMkj6LRw5wgIdQN/GqIi8Zxa8XbQCAAZk4LXhFhy7d9K+SkXuFZAgRo325v95B2y0
+         VAzP81D85ttRdo7/EQWtp+6tbKUOseFYd/DG37mlanTAlzV35RBzHvqx5RKkvnYUnvB/
+         b8P8CBcnWS+AvxGJ+fsfk5y5oibNGjMxJ8/LOOpgNGM77+C6tZHalcq1sczuVCsUO2JJ
+         83fg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703540133; x=1704144933;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Vk3BrCUhkF8HNi8hqkxjkr1dZsGMp84ddJ6VAzsBSHI=;
+        b=IBezbnbn1or/Ivft3+ebjtnEIsB0JqwoRXa07Pn9IY9LZAiiTR4LZSpEkqsmUQkydT
+         udGbcc9mfiB0IfL6L19F9Hz92QRVGosdf+ddYHDQfa0LDdhguzokFb+yvR8hpDHi8Ka3
+         Z8IJuFDZtACHxkjjNe4c6TuDP01xCoFkO4uaqrZhpAMCP1eg1WmoQA5ubOvM2oap78Ac
+         7lmIyoJDQWZ8Rq6SSIkjRPrO82a9e8HyPpDc0BF3LN99o88uCy8icvmk3f0X2MaviLuZ
+         bniR1bgr2cfvHEqKbOIWLzwkJHVPlDyywMuIc6L+hzc6J5tBUwGa+s37VuWmXob0uKU0
+         44cw==
+X-Gm-Message-State: AOJu0YyNkbAfbxRoDDiu7s11ThzUfH0fVEqneOlZMA130mVY4t1cyIDf
+	TkIz/TMvlq8aeVLiTZxBQ+yMLk/X1dO0uiqtq6Y=
+X-Google-Smtp-Source: AGHT+IF1ALMcZKnA4llsyBw7rVtGfnYUrZqqpeQaYHATEY6RAt9XEi5JjGL9mAun1x7rCUMA0cgxJM1hWmcGDvIbtRo=
+X-Received: by 2002:a05:6359:c1c:b0:174:ed0f:672e with SMTP id
+ gn28-20020a0563590c1c00b00174ed0f672emr2919571rwb.1.1703540132944; Mon, 25
+ Dec 2023 13:35:32 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+From: Askar Safin <safinaskar@gmail.com>
+Date: Tue, 26 Dec 2023 00:34:44 +0300
+Message-ID: <CAPnZJGCdr7pw80Pq38UacmxsbQAowmasPtFxQVCP+tm6Cj9pUg@mail.gmail.com>
+Subject: Re: Avoid unprivileged splice(file->)/(->socket) pipe exclusion
+To: =?UTF-8?Q?Ahelenia_Ziemia=C5=84ska?= <nabijaczleweli@nabijaczleweli.xyz>
+Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-man <linux-man@vger.kernel.org>, linux-s390@vger.kernel.org, 
+	linux-serial@vger.kernel.org, netdev@vger.kernel.org, 
+	virtualization@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   861deac3b092f37b2c5e6871732f3e11486f7082
-commit: 2f8a855efe8a6faf962c53af406e5ea4791b3877 pmbus: (ibm-cffps) Add support for version 2 of the PSU
-date:   4 years, 4 months ago
-config: x86_64-randconfig-x063-20230716 (https://download.01.org/0day-ci/archive/20231226/202312260533.FU092oo9-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231226/202312260533.FU092oo9-lkp@intel.com/reproduce)
+Hi, Ahelenia Ziemia=C5=84ska! Thanks a lot for all this splice-related hard=
+ work!
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312260533.FU092oo9-lkp@intel.com/
+In https://lore.kernel.org/lkml/CAHk-=3DwgG_2cmHgZwKjydi7=3DiimyHyN8aessnbM=
+9XQ9ufbaUz9g@mail.gmail.com/
+Linus said:
+> I have grown to pretty much hate
+> splice() over the years, just because it's been a constant source of
+> sorrow in so many ways.
 
-All warnings (new ones prefixed by >>):
+> It's just that it was never as lovely and as useful as it promised to
+> be. So I'd actually be more than happy to just say "let's decommission
+> splice entirely, just keeping the interfaces alive for backwards
+> compatibility"
 
-   drivers/hwmon/pmbus/ibm-cffps.c: In function 'ibm_cffps_debugfs_op':
-   drivers/hwmon/pmbus/ibm-cffps.c:171:60: warning: '%02X' directive output may be truncated writing between 2 and 8 bytes into a region of size 3 [-Wformat-truncation=]
-     171 |                                 snprintf(&data[i * 2], 3, "%02X", rc);
-         |                                                            ^~~~
-   drivers/hwmon/pmbus/ibm-cffps.c:171:59: note: directive argument in the range [0, 2147483647]
-     171 |                                 snprintf(&data[i * 2], 3, "%02X", rc);
-         |                                                           ^~~~~~
-   drivers/hwmon/pmbus/ibm-cffps.c:171:33: note: 'snprintf' output between 3 and 9 bytes into a destination of size 3
-     171 |                                 snprintf(&data[i * 2], 3, "%02X", rc);
-         |                                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->> drivers/hwmon/pmbus/ibm-cffps.c:184:60: warning: '%04X' directive output may be truncated writing between 4 and 8 bytes into a region of size 5 [-Wformat-truncation=]
-     184 |                                 snprintf(&data[i * 4], 5, "%04X", rc);
-         |                                                            ^~~~
-   drivers/hwmon/pmbus/ibm-cffps.c:184:59: note: directive argument in the range [0, 2147483647]
-     184 |                                 snprintf(&data[i * 4], 5, "%04X", rc);
-         |                                                           ^~~~~~
-   drivers/hwmon/pmbus/ibm-cffps.c:184:33: note: 'snprintf' output between 5 and 9 bytes into a destination of size 5
-     184 |                                 snprintf(&data[i * 4], 5, "%04X", rc);
-         |                                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+So probably we should do this as Linus suggested? I. e. fully remove
+splice by replacing it with trivial read-write?
 
-
-vim +184 drivers/hwmon/pmbus/ibm-cffps.c
-
-   129	
-   130	static ssize_t ibm_cffps_debugfs_op(struct file *file, char __user *buf,
-   131					    size_t count, loff_t *ppos)
-   132	{
-   133		u8 cmd;
-   134		int i, rc;
-   135		int *idxp = file->private_data;
-   136		int idx = *idxp;
-   137		struct ibm_cffps *psu = to_psu(idxp, idx);
-   138		char data[I2C_SMBUS_BLOCK_MAX] = { 0 };
-   139	
-   140		pmbus_set_page(psu->client, 0);
-   141	
-   142		switch (idx) {
-   143		case CFFPS_DEBUGFS_INPUT_HISTORY:
-   144			return ibm_cffps_read_input_history(psu, buf, count, ppos);
-   145		case CFFPS_DEBUGFS_FRU:
-   146			cmd = CFFPS_FRU_CMD;
-   147			break;
-   148		case CFFPS_DEBUGFS_PN:
-   149			cmd = CFFPS_PN_CMD;
-   150			break;
-   151		case CFFPS_DEBUGFS_SN:
-   152			cmd = CFFPS_SN_CMD;
-   153			break;
-   154		case CFFPS_DEBUGFS_CCIN:
-   155			rc = i2c_smbus_read_word_swapped(psu->client, CFFPS_CCIN_CMD);
-   156			if (rc < 0)
-   157				return rc;
-   158	
-   159			rc = snprintf(data, 5, "%04X", rc);
-   160			goto done;
-   161		case CFFPS_DEBUGFS_FW:
-   162			switch (psu->version) {
-   163			case cffps1:
-   164				for (i = 0; i < CFFPS1_FW_NUM_BYTES; ++i) {
-   165					rc = i2c_smbus_read_byte_data(psu->client,
-   166								      CFFPS_FW_CMD +
-   167									i);
-   168					if (rc < 0)
-   169						return rc;
-   170	
-   171					snprintf(&data[i * 2], 3, "%02X", rc);
-   172				}
-   173	
-   174				rc = i * 2;
-   175				break;
-   176			case cffps2:
-   177				for (i = 0; i < CFFPS2_FW_NUM_WORDS; ++i) {
-   178					rc = i2c_smbus_read_word_data(psu->client,
-   179								      CFFPS_FW_CMD +
-   180									i);
-   181					if (rc < 0)
-   182						return rc;
-   183	
- > 184					snprintf(&data[i * 4], 5, "%04X", rc);
-   185				}
-   186	
-   187				rc = i * 4;
-   188				break;
-   189			default:
-   190				return -EOPNOTSUPP;
-   191			}
-   192			goto done;
-   193		default:
-   194			return -EINVAL;
-   195		}
-   196	
-   197		rc = i2c_smbus_read_block_data(psu->client, cmd, data);
-   198		if (rc < 0)
-   199			return rc;
-   200	
-   201	done:
-   202		data[rc] = '\n';
-   203		rc += 2;
-   204	
-   205		return simple_read_from_buffer(buf, count, ppos, data, rc);
-   206	}
-   207	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+--=20
+Askar Safin
 
