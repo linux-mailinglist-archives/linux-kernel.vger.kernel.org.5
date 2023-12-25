@@ -1,169 +1,159 @@
-Return-Path: <linux-kernel+bounces-11164-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11165-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49DD281E24C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 21:24:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0EDBD81E24F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 21:27:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 06FC4281599
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 20:24:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B54961F21E50
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 20:27:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD10F54BFE;
-	Mon, 25 Dec 2023 20:23:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=darkphysics.net header.i=@darkphysics.net header.b="NRyAe3Xa"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 536415381B;
+	Mon, 25 Dec 2023 20:27:28 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02BBA54656
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 20:23:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=darkphysics.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=darkphysics.net
-Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-517ab9a4a13so3081234a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 12:23:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=darkphysics.net; s=google; t=1703535803; x=1704140603; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YY8Yj/DU7Ru4GTNDSXSvBwYAcH02TIn/sHGmgQuRGjQ=;
-        b=NRyAe3XarxgcwZFjHGxUqY2syzI2BbLRx0HBomOaEWtEq5Pn4KvVWS7r5gxU2vHzlE
-         tIgq+zjjEi0E0H52JCfW4De62b0vJFyOIatrEyPK3ilgm/40nf8kTkIcdQS0nmZpNZiP
-         NlrKkkOupfAhsnJCsbVspc2zFTI/IAircxDxrj7p3PRmeXhcwdOF5hkqGvgSPd0zjrqx
-         Fneq5keSVS6v9NP25AlwcYdtX8r1w9xqYKcWOUk5DpOAiEMsf8DuBBfEcAUnhfLyWWDw
-         oW96M3S1yrCCBgReFddNJynuEEQBxz4V/4D1/rbjBRtmCGMbnfApp2WtsX0phncsR2rB
-         DByw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703535803; x=1704140603;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YY8Yj/DU7Ru4GTNDSXSvBwYAcH02TIn/sHGmgQuRGjQ=;
-        b=hZUZsS0ZgZ8VC602p+ac+jTrQDGP3PEWM+d9AGG3u3LXOAkAS0mOAjU48OPi6bWpVU
-         z/XeCluOW2bHFs2Cc2Vl0YBpMJTrPo0chIzbBQvsJDOotlzdgO/+sOgk2UPJelsWgSe5
-         g83HGolfHJ4NwAXjOiFRRk+l9wJQsopumhJmgMTY+/XKajyYiDXyl5LBUNmUAdip/lpX
-         UoWp7h0FUwTWeO3ge+lgjPzyk4oiDcnelpkBmArfcRGVeG/1c0TkETrNYD96kISPtErD
-         BVHdDZlvpV+HYrjnHvTONS/x8mDNNDeG1j3wf8Hy3qW5+KvN9TlvSHz09W4IUraUcyH2
-         WZKw==
-X-Gm-Message-State: AOJu0Yx1aczDpYFF/nhMJ8pGCijJ2uWY2D7LZmjggL46sQKRCiKCamKM
-	Y35U4tN2lyPnWow+EeY6J4Fnw0HXI35FQQ==
-X-Google-Smtp-Source: AGHT+IGxHy/lP2tgU3DLHGT71bu/t8Q4GMnCMpTPBHGajLrEVlge7LrR8vjYqJuBYy2IMgfQz9JHkg==
-X-Received: by 2002:a17:902:680b:b0:1d4:638f:3ff6 with SMTP id h11-20020a170902680b00b001d4638f3ff6mr945916plk.66.1703535803407;
-        Mon, 25 Dec 2023 12:23:23 -0800 (PST)
-Received: from oatmeal.darkphysics (c-76-146-178-2.hsd1.wa.comcast.net. [76.146.178.2])
-        by smtp.gmail.com with ESMTPSA id l17-20020a17090aaa9100b0028be5732f01sm8741246pjq.0.2023.12.25.12.23.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Dec 2023 12:23:22 -0800 (PST)
-From: Tree Davies <tdavies@darkphysics.net>
-To: gregkh@linuxfoundation.org,
-	philipp.g.hortmann@gmail.com,
-	anjan@momi.ca
-Cc: linux-staging@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	Tree Davies <tdavies@darkphysics.net>
-Subject: [PATCH 6/6] Staging: rtl8192e: Rename variable OpMode
-Date: Mon, 25 Dec 2023 12:23:14 -0800
-Message-Id: <20231225202314.31869-7-tdavies@darkphysics.net>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231225202314.31869-1-tdavies@darkphysics.net>
-References: <20231225202314.31869-1-tdavies@darkphysics.net>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 543A21B26E;
+	Mon, 25 Dec 2023 20:27:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=molgen.mpg.de
+Received: from [192.168.0.6] (ip5f5af7b1.dynamic.kabel-deutschland.de [95.90.247.177])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: pmenzel)
+	by mx.molgen.mpg.de (Postfix) with ESMTPSA id A9F2661E5FE01;
+	Mon, 25 Dec 2023 21:26:06 +0100 (CET)
+Message-ID: <b0d94116-1fa0-4c1f-8a3e-2919fd75b635@molgen.mpg.de>
+Date: Mon, 25 Dec 2023 21:26:05 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] Bluetooth: Fix Bluetooth for BCM4377 on T2 Intel
+ MacBooks
+Content-Language: en-US
+To: Felix Zhang <mrman@mrman314.tech>
+Cc: linux-bluetooth@vger.kernel.org, stable@vger.kernel.org,
+ Johan Hovold <johan+linaro@kernel.org>, marcan@marcan.st,
+ bagasdotme@gmail.com, sven@svenpeter.dev, alyssa@rosenzweig.io,
+ marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com,
+ orlandoch.dev@gmail.com, kekrby@gmail.com, admin@kodeit.net, j@jannau.net,
+ gargaditya08@live.com, asahi@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <77419ffacc5b4875e920e038332575a2a5bff29f.camel@mrman314.tech>
+From: Paul Menzel <pmenzel@molgen.mpg.de>
+In-Reply-To: <77419ffacc5b4875e920e038332575a2a5bff29f.camel@mrman314.tech>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-Rename variable OpMode to op_mode to fix checkpatch
-warning Avoid CamelCase.
+Dear Felix,
 
-Signed-off-by: Tree Davies <tdavies@darkphysics.net>
----
- drivers/staging/rtl8192e/rtl8192e/r8192E_dev.c | 10 +++++-----
- drivers/staging/rtl8192e/rtllib.h              |  2 +-
- drivers/staging/rtl8192e/rtllib_softmac.c      |  8 ++++----
- 3 files changed, 10 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/staging/rtl8192e/rtl8192e/r8192E_dev.c b/drivers/staging/rtl8192e/rtl8192e/r8192E_dev.c
-index ed0c152c2477..c7a2eae2fdb9 100644
---- a/drivers/staging/rtl8192e/rtl8192e/r8192E_dev.c
-+++ b/drivers/staging/rtl8192e/rtl8192e/r8192E_dev.c
-@@ -51,12 +51,12 @@ void rtl92e_set_reg(struct net_device *dev, u8 variable, u8 *val)
- 
- 	case HW_VAR_MEDIA_STATUS:
- 	{
--		enum rt_op_mode OpMode = *((enum rt_op_mode *)(val));
-+		enum rt_op_mode op_mode = *((enum rt_op_mode *)(val));
- 		u8 btMsr = rtl92e_readb(dev, MSR);
- 
- 		btMsr &= 0xfc;
- 
--		switch (OpMode) {
-+		switch (op_mode) {
- 		case RT_OP_MODE_INFRASTRUCTURE:
- 			btMsr |= MSR_INFRA;
- 			break;
-@@ -1693,12 +1693,12 @@ void rtl92e_stop_adapter(struct net_device *dev, bool reset)
- {
- 	struct r8192_priv *priv = rtllib_priv(dev);
- 	int i;
--	u8	OpMode;
-+	u8	op_mode;
- 	u8	u1bTmp;
- 	u32	ulRegRead;
- 
--	OpMode = RT_OP_MODE_NO_LINK;
--	priv->rtllib->SetHwRegHandler(dev, HW_VAR_MEDIA_STATUS, &OpMode);
-+	op_mode = RT_OP_MODE_NO_LINK;
-+	priv->rtllib->SetHwRegHandler(dev, HW_VAR_MEDIA_STATUS, &op_mode);
- 
- 	if (!priv->rtllib->bSupportRemoteWakeUp) {
- 		u1bTmp = 0x0;
-diff --git a/drivers/staging/rtl8192e/rtllib.h b/drivers/staging/rtl8192e/rtllib.h
-index df72504e9695..4ce80239b8b3 100644
---- a/drivers/staging/rtl8192e/rtllib.h
-+++ b/drivers/staging/rtl8192e/rtllib.h
-@@ -1187,7 +1187,7 @@ struct rtllib_device {
- 	unsigned long status;
- 	u8	CntAfterLink;
- 
--	enum rt_op_mode OpMode;
-+	enum rt_op_mode op_mode;
- 
- 	/* The last AssocReq/Resp IEs */
- 	u8 *assocreq_ies, *assocresp_ies;
-diff --git a/drivers/staging/rtl8192e/rtllib_softmac.c b/drivers/staging/rtl8192e/rtllib_softmac.c
-index 66816155ff36..80e323030f5f 100644
---- a/drivers/staging/rtl8192e/rtllib_softmac.c
-+++ b/drivers/staging/rtl8192e/rtllib_softmac.c
-@@ -2245,7 +2245,7 @@ static void rtllib_MlmeDisassociateRequest(struct rtllib_device *rtllib,
- 					   u8 *asSta, u8 asRsn)
- {
- 	u8 i;
--	u8	OpMode;
-+	u8	op_mode;
- 
- 	RemovePeerTS(rtllib, asSta);
- 
-@@ -2254,10 +2254,10 @@ static void rtllib_MlmeDisassociateRequest(struct rtllib_device *rtllib,
- 
- 		for (i = 0; i < 6; i++)
- 			rtllib->current_network.bssid[i] = 0x22;
--		OpMode = RT_OP_MODE_NO_LINK;
--		rtllib->OpMode = RT_OP_MODE_NO_LINK;
-+		op_mode = RT_OP_MODE_NO_LINK;
-+		rtllib->op_mode = RT_OP_MODE_NO_LINK;
- 		rtllib->SetHwRegHandler(rtllib->dev, HW_VAR_MEDIA_STATUS,
--					(u8 *)(&OpMode));
-+					(u8 *)(&op_mode));
- 		rtllib_disassociate(rtllib);
- 
- 		rtllib->SetHwRegHandler(rtllib->dev, HW_VAR_BSSID,
--- 
-2.39.2
+Thank you very much for the patch. I am adding Johan to Cc field.
 
+Am 25.12.23 um 21:01 schrieb Felix Zhang:
+> Starting v6.5, Bluetooth does not work at all on my T2 MacBookAir9,1
+> 
+> with the BCM4377 chip.  When I boot up the computer, go into
+
+Somehow a blank line snug in above.
+
+> bluetoothctl, and then try to run commands like scan on, show, list,
+> it returns "No default controller available."  I have tried reloading
+> the
+
+It’d be great if you reflowed for 75 characters per line (also below).
+
+> kernel module, in which the log outputs "{Added,Removed} hci0
+> (unconfigured)."  With this patch, I am able to use Bluetooth as
+> normal
+> without any errors regarding hci0 being unconfigured.  However, an
+> issue is still present where sometimes hci_bcm4377 will have to be
+> reloaded in order to get bluetooth to work.  I believe this was still
+> present before the previously mentioned commit.
+> 
+> Due to the bit HCI_QUIRK_USE_BDADDR_PROPERTY being always set in
+> drivers/bluetooth/hci_bcm4377.c (line 2371), the chip would be left
+> unconfigured on kernels compiled after commit 6945795bc81a
+> ("Bluetooth:
+> fix use-bdaddr-property quirk") due to a change in its logic.  On the
+> M1 Macs, the device would be configured in the devicetree.  However,
+> that is not the case on T2 Macs.  Because the bluetooth adapter is
+> left
+> unconfigured, it is not usable in the operating system.  In order to
+> circumvent this issue, a flag is added to prevent the bit from being
+> set on the BCM4377, while setting it on the other devices.
+> 
+> Because I do not have an M1 device to test this patch on, I am not sure
+> whether the patch breaks anything for said devices.  I would be very
+> grateful if anyone is willing to test this patch on their M1 device.
+> 
+> I would also like to thank Kerem Karabay <kekrby@gmail.com> for
+> assisting me with this patch.
+> 
+> Fixes: 6945795bc81a ("Bluetooth: fix use-bdaddr-property quirk")
+> Signed-off-by: Felix Zhang <mrman@mrman314.tech>
+> ---
+> v3:
+> * Adjust the format to pass the CI (again).
+> ---
+>   drivers/bluetooth/hci_bcm4377.c | 6 +++++-
+>   1 file changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/bluetooth/hci_bcm4377.c
+> b/drivers/bluetooth/hci_bcm4377.c
+> index a61757835695..5c6fef1aa0f6 100644
+> --- a/drivers/bluetooth/hci_bcm4377.c
+> +++ b/drivers/bluetooth/hci_bcm4377.c
+> @@ -513,6 +513,7 @@ struct bcm4377_hw {
+>   	unsigned long broken_ext_scan : 1;
+>   	unsigned long broken_mws_transport_config : 1;
+>   	unsigned long broken_le_coded : 1;
+> +	unsigned long use_bdaddr_property : 1;
+>   
+>   	int (*send_calibration)(struct bcm4377_data *bcm4377);
+>   	int (*send_ptb)(struct bcm4377_data *bcm4377,
+> @@ -2368,7 +2369,8 @@ static int bcm4377_probe(struct pci_dev *pdev,
+> const struct pci_device_id *id)
+>   	hdev->set_bdaddr = bcm4377_hci_set_bdaddr;
+>   	hdev->setup = bcm4377_hci_setup;
+>   
+> -	set_bit(HCI_QUIRK_USE_BDADDR_PROPERTY, &hdev->quirks);
+> +	if (bcm4377->hw->use_bdaddr_property)
+> +		set_bit(HCI_QUIRK_USE_BDADDR_PROPERTY, &hdev->quirks);
+>   	if (bcm4377->hw->broken_mws_transport_config)
+>   		set_bit(HCI_QUIRK_BROKEN_MWS_TRANSPORT_CONFIG, &hdev-
+>> quirks);
+>   	if (bcm4377->hw->broken_ext_scan)
+> @@ -2465,6 +2467,7 @@ static const struct bcm4377_hw
+> bcm4377_hw_variants[] = {
+>   		.has_bar0_core2_window2 = true,
+>   		.broken_mws_transport_config = true,
+>   		.broken_le_coded = true,
+> +		.use_bdaddr_property = true,
+>   		.send_calibration = bcm4378_send_calibration,
+>   		.send_ptb = bcm4378_send_ptb,
+>   	},
+> @@ -2479,6 +2482,7 @@ static const struct bcm4377_hw
+> bcm4377_hw_variants[] = {
+>   		.clear_pciecfg_subsystem_ctrl_bit19 = true,
+>   		.broken_mws_transport_config = true,
+>   		.broken_le_coded = true,
+> +		.use_bdaddr_property = true,
+>   		.send_calibration = bcm4387_send_calibration,
+>   		.send_ptb = bcm4378_send_ptb,
+>   	},
+
+The diff looks good, and it works for you.
+
+
+Kind regards,
+
+Paul
 
