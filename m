@@ -1,179 +1,139 @@
-Return-Path: <linux-kernel+bounces-11330-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11343-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1FAA681E4AA
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 04:03:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C9DD381E4E0
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 05:48:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5D1A9282C50
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 03:03:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 756CE1C21C4E
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 04:48:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B05512B79;
-	Tue, 26 Dec 2023 03:03:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7ABCA4AF8E;
+	Tue, 26 Dec 2023 04:47:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="mz725qCh"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from Atcsqr.andestech.com (60-248-80-70.hinet-ip.hinet.net [60.248.80.70])
+Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F3C9F4F5;
-	Tue, 26 Dec 2023 03:03:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=andestech.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=andestech.com
-Received: from mail.andestech.com (ATCPCS16.andestech.com [10.0.1.222])
-	by Atcsqr.andestech.com with ESMTP id 3BQ301qO075346;
-	Tue, 26 Dec 2023 11:00:01 +0800 (+08)
-	(envelope-from peterlin@andestech.com)
-Received: from APC323 (10.0.12.98) by ATCPCS16.andestech.com (10.0.1.222) with
- Microsoft SMTP Server id 14.3.498.0; Tue, 26 Dec 2023 11:00:00 +0800
-Date: Tue, 26 Dec 2023 10:59:55 +0800
-From: Yu-Chien Peter Lin <peterlin@andestech.com>
-To: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-CC: <acme@kernel.org>, <adrian.hunter@intel.com>, <ajones@ventanamicro.com>,
-        <alexander.shishkin@linux.intel.com>, <andre.przywara@arm.com>,
-        <anup@brainfault.org>, <aou@eecs.berkeley.edu>,
-        <atishp@atishpatra.org>, <conor+dt@kernel.org>,
-        <conor.dooley@microchip.com>, <conor@kernel.org>,
-        <devicetree@vger.kernel.org>, <dminus@andestech.com>,
-        <evan@rivosinc.com>, <geert+renesas@glider.be>, <guoren@kernel.org>,
-        <heiko@sntech.de>, <irogers@google.com>, <jernej.skrabec@gmail.com>,
-        <jolsa@kernel.org>, <jszhang@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <linux-perf-users@vger.kernel.org>,
-        <linux-renesas-soc@vger.kernel.org>, <linux-riscv@lists.infradead.org>,
-        <linux-sunxi@lists.linux.dev>, <locus84@andestech.com>,
-        <magnus.damm@gmail.com>, <mark.rutland@arm.com>, <mingo@redhat.com>,
-        <n.shubin@yadro.com>, <namhyung@kernel.org>, <palmer@dabbelt.com>,
-        <paul.walmsley@sifive.com>, <peterz@infradead.org>,
-        <prabhakar.mahadev-lad.rj@bp.renesas.com>, <rdunlap@infradead.org>,
-        <robh+dt@kernel.org>, <samuel@sholland.org>,
-        <sunilvl@ventanamicro.com>, <tglx@linutronix.de>,
-        <tim609@andestech.com>, <uwu@icenowy.me>, <wens@csie.org>,
-        <will@kernel.org>, <ycliang@andestech.com>, <inochiama@outlook.com>,
-        <chao.wei@sophgo.com>, <unicorn_wang@outlook.com>, <wefu@redhat.com>
-Subject: Re: [PATCH v6 00/16] Support Andes PMU extension
-Message-ID: <ZYpBqwbI8vMwIpXH@APC323>
-References: <20231225103308.1557548-1-peterlin@andestech.com>
- <CA+V-a8t7g8ctPQrwdB9tgtmgtGfqQ-k2N-1sSwnjB-b1F71-AQ@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6820C4AF6F
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 04:47:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+Received: from epcas5p1.samsung.com (unknown [182.195.41.39])
+	by mailout2.samsung.com (KnoxPortal) with ESMTP id 20231226044740epoutp02e1f7b9dcd39004420a1cabf901309a92~kSE52vnyI2437124371epoutp02h
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 04:47:40 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20231226044740epoutp02e1f7b9dcd39004420a1cabf901309a92~kSE52vnyI2437124371epoutp02h
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1703566060;
+	bh=8j9DBsIc6l+XgLoTDdFdxqqRZv0GeLuIzUymupSBwQE=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=mz725qChESt9zUe1DOMc523fzWn9rvsH3TfMtxcWiE8/yKW3e9AFNaFwrsYat9vGa
+	 sI6RLFuTNcA0RxCkFcNP2jsNSvcxt99gNCFtnzlfaPvacYyaI1zhS2rqgiZdR06aTB
+	 T9tw2DCZ32XQ+lUyQpU1ussZsvwCICDZmGmpbYL4=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+	epcas5p4.samsung.com (KnoxPortal) with ESMTP id
+	20231226044740epcas5p4fa3bee302730f2219fbfd02335377720~kSE5grEvH1534115341epcas5p4K;
+	Tue, 26 Dec 2023 04:47:40 +0000 (GMT)
+Received: from epsmges5p1new.samsung.com (unknown [182.195.38.175]) by
+	epsnrtp3.localdomain (Postfix) with ESMTP id 4Szj1l2JkZz4x9Pp; Tue, 26 Dec
+	2023 04:47:39 +0000 (GMT)
+Received: from epcas5p3.samsung.com ( [182.195.41.41]) by
+	epsmges5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+	96.B6.09634.6EA5A856; Tue, 26 Dec 2023 13:47:34 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+	epcas5p1.samsung.com (KnoxPortal) with ESMTPA id
+	20231225024445epcas5p1d0525b9595544d8fe7b8ea60f5741b58~j8wS0_5EL0992509925epcas5p1w;
+	Mon, 25 Dec 2023 02:44:45 +0000 (GMT)
+Received: from epsmgmc1p1new.samsung.com (unknown [182.195.42.40]) by
+	epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+	20231225024445epsmtrp20ba3ca75bef93593fb6980bb7f9fb50c~j8wS0POCa2381923819epsmtrp2P;
+	Mon, 25 Dec 2023 02:44:45 +0000 (GMT)
+X-AuditID: b6c32a49-159fd700000025a2-e9-658a5ae6183e
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+	epsmgmc1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+	3C.70.07368.D9CE8856; Mon, 25 Dec 2023 11:44:45 +0900 (KST)
+Received: from localhost.localdomain (unknown [109.105.118.124]) by
+	epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+	20231225024443epsmtip1a437a46a9f4bb30d0f8ce26ee6a3ff31~j8wRRxBKL2539125391epsmtip1m;
+	Mon, 25 Dec 2023 02:44:43 +0000 (GMT)
+From: Xiaobing Li <xiaobing.li@samsung.com>
+To: axboe@kernel.dk
+Cc: asml.silence@gmail.com, linux-kernel@vger.kernel.org,
+	io-uring@vger.kernel.org, kun.dou@samsung.com, peiwei.li@samsung.com,
+	joshi.k@samsung.com, kundan.kumar@samsung.com, wenwen.chen@samsung.com,
+	ruyi.zhang@samsung.com, xiaobing.li@samsung.com
+Subject: Re: Re: [PATCH v5] io_uring: Statistics of the true utilization of
+ sq threads.
+Date: Sun, 24 Dec 2023 21:36:36 -0500
+Message-ID: <20231225023636.38530-1-xiaobing.li@samsung.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <c4c2de2e-b816-41eb-8646-8e57b7ed7913@kernel.dk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+V-a8t7g8ctPQrwdB9tgtmgtGfqQ-k2N-1sSwnjB-b1F71-AQ@mail.gmail.com>
-User-Agent: Mutt/2.2.12 (2023-09-09)
-X-DNSRBL: 
-X-SPAM-SOURCE-CHECK: pass
-X-MAIL:Atcsqr.andestech.com 3BQ301qO075346
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrCJsWRmVeSWpSXmKPExsWy7bCmpu6zqK5Ug5kfBCzmrNrGaLH6bj+b
+	xbvWcywWR/+/ZbP41X2X0WLrl6+sFpd3zWGzeLaX0+LL4e/sFmcnfGC1mLplB5NFR8tlRgce
+	j52z7rJ7XD5b6tG3ZRWjx+dNcgEsUdk2GamJKalFCql5yfkpmXnptkrewfHO8aZmBoa6hpYW
+	5koKeYm5qbZKLj4Bum6ZOUCHKSmUJeaUAoUCEouLlfTtbIryS0tSFTLyi0tslVILUnIKTAr0
+	ihNzi0vz0vXyUkusDA0MjEyBChOyM2YcnMBecIC14lHzLaYGxtUsXYycHBICJhJHt/9j6mLk
+	4hAS2M0oMXn3CzYI5xOjxJdj+xkhnG+MEuuOdrDCtPw//gYqsZdR4uqXmVAtXxkleq+0MoJU
+	sQloS1xf1wXWISIgLLG/o5UFpIhZ4C+jxISXv5lBEsICkRK7ew6xg9gsAqoSJxtuAF3CwcEr
+	YCOx4WQFxDZ5icU7loOVcwrYSrxb2A82k1dAUOLkzCdgTzAD1TRvnc0MMl9CoJVDonv7C2aI
+	ZheJKXO/Qn0qLPHq+BZ2CFtK4vO7vWwQdrHEkZ7vrBDNDYwS029fhSqylvh3ZQ8LyEHMApoS
+	63fpQ4RlJaaeWscEsZhPovf3EyaIOK/EjnkwtqrE6ksPofZKS7xu+A0V95B403KYBRJaExgl
+	WrdtY5zAqDALyUOzkDw0C2H1AkbmVYySqQXFuempxaYFhnmp5fB4Ts7P3cQITq5anjsY7z74
+	oHeIkYmD8RCjBAezkgivrGJHqhBvSmJlVWpRfnxRaU5q8SFGU2CAT2SWEk3OB6b3vJJ4QxNL
+	AxMzMzMTS2MzQyVx3tetc1OEBNITS1KzU1MLUotg+pg4OKUamDbulg0XS0/fkdSqc61+Y7Xi
+	2i+er1arXu/fKFPkdmB7dWyDmGmCNf9kwaUcKrlVpjPWeAUWzfdMeFTpXCcS9O6Fdt0v0/OC
+	6m8vNPZs9/Pctdzurk/JtCjBHcX61zPcVGaWicw+YCWp+Pc56wmbqafm/D+6u3eljczkeTof
+	uluz+BfNc2lT8Ixe+/fjVl7NkOlrjn1xqzuu2J664F/suxmdyUwLYzg/51YvTjgl+UpWJSBx
+	4vSkjIS1F3ZN612hJinCrfGW+euDP/dY2j+ZNZxadedyzO9fGWbtnD/U/vDsfl/Lf/Z40u7G
+	x5Ji61TjVB8u1/kQ8mGa/NQZBz+ELn/+5Inlmim505avKF3cL6bEUpyRaKjFXFScCABahZoC
+	NwQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrOLMWRmVeSWpSXmKPExsWy7bCSnO7cNx2pBqs3ylrMWbWN0WL13X42
+	i3et51gsjv5/y2bxq/suo8XWL19ZLS7vmsNm8Wwvp8WXw9/ZLc5O+MBqMXXLDiaLjpbLjA48
+	Hjtn3WX3uHy21KNvyypGj8+b5AJYorhsUlJzMstSi/TtErgyZhycwF5wgLXiUfMtpgbG1Sxd
+	jJwcEgImEv+Pv2HsYuTiEBLYzSjxrmkZaxcjB1BCWuLPn3KIGmGJlf+es0PUfGaUuN+6jhEk
+	wSagLXF9XRcriC0CVLS/oxVsKLNAJ5PE6896ILawQLjEunlX2UBsFgFViZMNN5hA5vMK2Ehs
+	OFkBMV9eYvGO5cwgNqeArcS7hf1gI4WASp7PusMEYvMKCEqcnPkEary8RPPW2cwTGAVmIUnN
+	QpJawMi0ilEytaA4Nz032bDAMC+1XK84Mbe4NC9dLzk/dxMjOOy1NHYw3pv/T+8QIxMH4yFG
+	CQ5mJRFeWcWOVCHelMTKqtSi/Pii0pzU4kOM0hwsSuK8hjNmpwgJpCeWpGanphakFsFkmTg4
+	pRqYlk4t4Dj3foqMb8lW5+epd+8wWKUf2fQgKPPOcZGUnjsxcbHdc9mz1oX87QnS8Hn8xmGJ
+	ydnLRZ6KSpJ7Uhed8YufIeX5Nl077eZKQQadz5YMO1ROSU+2ETd8lTH1/stwoyDd6kYJMes/
+	PHMYn7VzNN3S/iXY6exzyq5/z5moelWBqtdRfbHzRB9e8DtW+P3Pe4V9pt4lPx2KlORkixfw
+	9np9DDy6To67dX5khl7/Lj1blg1/+QIOmeR+lrkz33RaD/un9q/Lb/ZkZd1eInHe8G7BzlNt
+	Pzq3FW06mJMuqu7a9Vhif35znlL8tIC9v9crnrOSsCmeF3r0fDmr9SPu/laN3Q8txBMVtDZu
+	LlBiKc5INNRiLipOBAC0caDv6gIAAA==
+X-CMS-MailID: 20231225024445epcas5p1d0525b9595544d8fe7b8ea60f5741b58
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20231225024445epcas5p1d0525b9595544d8fe7b8ea60f5741b58
+References: <c4c2de2e-b816-41eb-8646-8e57b7ed7913@kernel.dk>
+	<CGME20231225024445epcas5p1d0525b9595544d8fe7b8ea60f5741b58@epcas5p1.samsung.com>
 
-Hi Prabhakar,
+On 12/22/23 07:31 AM, Jens Axboe wrote:
+> Yep that would work, just leave the stats calculation to the tool
+> querying it. Which is really how it should be.
+>
+>> In addition, on register opcode - generally it is used for resource like
+>> buffers, handles etc.. I am not sure how that can help here. If you have
+>> something in mind, could you please elaborate in more detail?
+>
+> It's also a bit of a dumping ground for any kind of out-of-band
+> mechanism, so it would work fine for something like this too. But since
+> we already have fdinfo and with your idea of just logging work and total
+> time, then we should probably just stick with that.
 
-On Mon, Dec 25, 2023 at 09:06:04PM +0000, Lad, Prabhakar wrote:
-> Hi Lin-san,
-> 
-> On Mon, Dec 25, 2023 at 10:37 AM Yu Chien Peter Lin
-> <peterlin@andestech.com> wrote:
-> >
-> > Hi All,
-> >
-> > This patch series introduces the Andes PMU extension, which serves
-> > the same purpose as Sscofpmf. To use FDT-based probing for hardware
-> > support of the PMU extensions, we first convert T-Head's PMU to CPU
-> > feature alternative, then add Andes PMU alternatives.
-> >
-> > Its non-standard local interrupt is assigned to bit 18 in the
-> > custom S-mode local interrupt enable/pending registers (slie/slip),
-> > while the interrupt cause is (256 + 18).
-> >
-> > Mainline OpenSBI has supported Andes PMU extension:
-> > - https://github.com/riscv-software-src/opensbi/tree/master
-> > Linux patches (based on v6.7-rc7) can be found on Andes Technology GitHub
-> > - https://github.com/andestech/linux/commits/andes-pmu-support-v6
-> >
-> > The PMU device tree node used on AX45MP:
-> > - https://github.com/riscv-software-src/opensbi/blob/master/docs/pmu_support.md#example-3
-> >
-> > Locus Wei-Han Chen (1):
-> >   riscv: andes: Support specifying symbolic firmware and hardware raw
-> >     events
-> >
-> > Yu Chien Peter Lin (15):
-> >   riscv: errata: Rename defines for Andes
-> >   irqchip/riscv-intc: Allow large non-standard interrupt number
-> >   irqchip/riscv-intc: Introduce Andes hart-level interrupt controller
-> >   dt-bindings: riscv: Add Andes interrupt controller compatible string
-> >   riscv: dts: renesas: r9a07g043f: Update compatible string to use Andes
-> >     INTC
-> >   perf: RISC-V: Eliminate redundant interrupt enable/disable operations
-> >   RISC-V: Move T-Head PMU to CPU feature alternative framework
-> >   perf: RISC-V: Introduce Andes PMU for perf event sampling
-> >   dt-bindings: riscv: Add T-Head PMU extension description
-> >   dt-bindings: riscv: Add Andes PMU extension description
-> >   riscv: dts: allwinner: Add T-Head PMU extension for sun20i-d1s
-> >   riscv: dts: sophgo: Add T-Head PMU extension for cv1800b
-> >   riscv: dts: sophgo: Add T-Head PMU extension for sg2042
-> >   riscv: dts: thead: Add T-Head PMU extension for th1520
-> >   riscv: dts: renesas: Add Andes PMU extension for r9a07g043f
-> >
-> The above patches dont apply cleanly on top of below branches. Can you
-> please rebase and re-send.
-
-Sure, will do.
-
-> https://git.kernel.org/pub/scm/linux/kernel/git/palmer/linux.git/log/?h=fixes
-> https://git.kernel.org/pub/scm/linux/kernel/git/palmer/linux.git/log/?h=for-next
-> https://git.kernel.org/pub/scm/linux/kernel/git/geert/renesas-devel.git/log/?h=renesas-dts-for-v6.8
-
-Thanks for the pointers.
-
-Best regards,
-Peter Lin
-
-> Cheers,
-> Prabhakar
-> 
-> >  .../devicetree/bindings/riscv/cpus.yaml       |   6 +-
-> >  .../devicetree/bindings/riscv/extensions.yaml |  13 ++
-> >  arch/riscv/Kconfig.errata                     |  13 --
-> >  arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi |   2 +-
-> >  arch/riscv/boot/dts/renesas/r9a07g043f.dtsi   |   4 +-
-> >  arch/riscv/boot/dts/sophgo/cv1800b.dtsi       |   2 +-
-> >  arch/riscv/boot/dts/sophgo/sg2042-cpus.dtsi   | 128 +++++++++---------
-> >  arch/riscv/boot/dts/thead/th1520.dtsi         |   8 +-
-> >  arch/riscv/errata/andes/errata.c              |  10 +-
-> >  arch/riscv/errata/thead/errata.c              |  19 ---
-> >  arch/riscv/include/asm/errata_list.h          |  19 +--
-> >  arch/riscv/include/asm/hwcap.h                |   2 +
-> >  arch/riscv/include/asm/vendorid_list.h        |   2 +-
-> >  arch/riscv/kernel/alternative.c               |   2 +-
-> >  arch/riscv/kernel/cpufeature.c                |   2 +
-> >  drivers/irqchip/irq-riscv-intc.c              |  89 ++++++++++--
-> >  drivers/perf/Kconfig                          |  27 ++++
-> >  drivers/perf/riscv_pmu_sbi.c                  |  47 +++++--
-> >  include/linux/soc/andes/irq.h                 |  18 +++
-> >  .../arch/riscv/andes/ax45/firmware.json       |  68 ++++++++++
-> >  .../arch/riscv/andes/ax45/instructions.json   | 127 +++++++++++++++++
-> >  .../arch/riscv/andes/ax45/memory.json         |  57 ++++++++
-> >  .../arch/riscv/andes/ax45/microarch.json      |  77 +++++++++++
-> >  tools/perf/pmu-events/arch/riscv/mapfile.csv  |   1 +
-> >  24 files changed, 592 insertions(+), 151 deletions(-)
-> >  create mode 100644 include/linux/soc/andes/irq.h
-> >  create mode 100644 tools/perf/pmu-events/arch/riscv/andes/ax45/firmware.json
-> >  create mode 100644 tools/perf/pmu-events/arch/riscv/andes/ax45/instructions.json
-> >  create mode 100644 tools/perf/pmu-events/arch/riscv/andes/ax45/memory.json
-> >  create mode 100644 tools/perf/pmu-events/arch/riscv/andes/ax45/microarch.json
-> >
-> > --
-> > 2.34.1
-> >
-> >
-> > _______________________________________________
-> > linux-riscv mailing list
-> > linux-riscv@lists.infradead.org
-> > http://lists.infradead.org/mailman/listinfo/linux-riscv
+Thanks for explained. I'll send out a v6.
 
