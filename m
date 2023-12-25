@@ -1,94 +1,190 @@
-Return-Path: <linux-kernel+bounces-10965-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10966-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E0AD81DF61
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 10:08:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA6EE81DF63
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 10:08:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 75E821C21798
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 09:08:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 85C23281E77
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 09:08:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB1224C67;
-	Mon, 25 Dec 2023 09:07:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D35C4A3B;
+	Mon, 25 Dec 2023 09:08:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="ZLYT1Rm2"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BFDD4C7B;
-	Mon, 25 Dec 2023 09:07:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
-Received: from loongson.cn (unknown [113.200.148.30])
-	by gateway (Coremail) with SMTP id _____8DxE_BjRollQWoEAA--.22002S3;
-	Mon, 25 Dec 2023 17:07:48 +0800 (CST)
-Received: from linux.localdomain (unknown [113.200.148.30])
-	by localhost.localdomain (Coremail) with SMTP id AQAAf8Bxbb5iRollt44JAA--.30202S2;
-	Mon, 25 Dec 2023 17:07:46 +0800 (CST)
-From: Tiezhu Yang <yangtiezhu@loongson.cn>
-To: Huacai Chen <chenhuacai@kernel.org>
-Cc: Hengqi Chen <hengqi.chen@gmail.com>,
-	loongarch@lists.linux.dev,
-	bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] MAINTAINERS: Add BPF JIT for LOONGARCH entry
-Date: Mon, 25 Dec 2023 17:07:30 +0800
-Message-ID: <20231225090730.6074-1-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.42.0
+Received: from mail-il1-f170.google.com (mail-il1-f170.google.com [209.85.166.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3AF720F7
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 09:08:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-il1-f170.google.com with SMTP id e9e14a558f8ab-35fa08df8afso18515175ab.3
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 01:08:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1703495298; x=1704100098; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5GaJDOeVX+a5k01RPdTA9Ji7XUnbBCMon+kA4ZX7Kl0=;
+        b=ZLYT1Rm2jpCGBx6ISrSiiJ8IXiZ3/cM0RTytiWJoRO4P63wM8gadzmoImLpANFxjZ9
+         B+1sxA/qDYB0eYIlVy/76/18rfRuo61+1jTvXMeeR8NfoRF255fRbFgQd7xzwIADn5zG
+         3VW479Ei934JMsSrCtIQccFCt3rDvY4Aal5bg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703495298; x=1704100098;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5GaJDOeVX+a5k01RPdTA9Ji7XUnbBCMon+kA4ZX7Kl0=;
+        b=kF1eWrNZiLUZiEmJ4SnigUSJnvi/SLbU3M45v3v6qp7sXnIVRAvnM3lGrZFh173AJu
+         dt1mVTCyyqrueg/zT8wL8lmG3hBXbAJnrzVLjgQmMcizXzB6SpGzqIsP+SULnL2pU4z2
+         UAVsmgeGccMygUgMCaxaeyPWo88l6MZjw4NoA50lr34BGUh0ro8GHgIIN7Mxk81WF7Ea
+         gmcnApwxVkGlSjqRSBHmMe4ERa7+O+um/oQdLh2A6PE4cfF6yY1rUXDB+yetcfauTRKE
+         MYJ/nP7AaDp81D/GDJcWM42Cs/oSobfAHWciw+GfItT94LZJTKE9xEOjLXTjFVsnDVCw
+         iPQg==
+X-Gm-Message-State: AOJu0YySf5JUzFrWGPAvUQY8T+z5ZIwwnMoVyrkwPY8ED1rUFcLAP67z
+	/gwScFg3KRr/tqNpPd7H0YVrRfBljT4c3eA1zKiQfWShGMqD
+X-Google-Smtp-Source: AGHT+IHHs+FFEAJ0LUOibcCM5Ef2h1iH5PS2ZU+74IFmDvaeMZ93K646IdSYB8bvUePKKxGDxwVMmj029urPxM7OhLc=
+X-Received: by 2002:a92:ca4c:0:b0:35f:efdc:f067 with SMTP id
+ q12-20020a92ca4c000000b0035fefdcf067mr6304522ilo.11.1703495297937; Mon, 25
+ Dec 2023 01:08:17 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:AQAAf8Bxbb5iRollt44JAA--.30202S2
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBj9xXoW7Wr1xKrWDAw1kXry3tr1kWFX_yoWfJrX_Kr
-	srJay7X3y8JF4akw40gasa9asxZw4xXFZa93ZFg39rJa4Utry8JrWqyasa9r1ruFZ3uFZ0
-	qan7JF9IkrW7uosvyTuYvTs0mTUanT9S1TB71UUUUUJqnTZGkaVYY2UrUUUUj1kv1TuYvT
-	s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
-	cSsGvfJTRUUUb3kYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
-	vaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-	w2x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-	W8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-	6r4UJVWxJr1ln4kS14v26r1Y6r17M2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12
-	xvs2x26I8E6xACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y
-	6r17McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64
-	vIr41l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_
-	Jrv_JF1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1V
-	AY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAI
-	cVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42
-	IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVj
-	vjDU0xZFpf9x07jjwZcUUUUU=
+References: <20231221135548.1.I10f326a9305d57ad32cee7f8d9c60518c8be20fb@changeid>
+ <CAEXTbpdUjCvLE+m3d1vSvsE2njRSk1Ou3bZZGEvD_7oYt4+k4Q@mail.gmail.com> <CAD=FV=WDb7y-9dRgb0D=VxVB6EjUkcOJ+9D0Mp0-vw6wuKUHEg@mail.gmail.com>
+In-Reply-To: <CAD=FV=WDb7y-9dRgb0D=VxVB6EjUkcOJ+9D0Mp0-vw6wuKUHEg@mail.gmail.com>
+From: Pin-yen Lin <treapking@chromium.org>
+Date: Mon, 25 Dec 2023 17:08:07 +0800
+Message-ID: <CAEXTbpdWPcc9==xb-_+2wY29aNdieLThmn_7JD4KV8U1LWgB2g@mail.gmail.com>
+Subject: Re: [PATCH] drm/bridge: parade-ps8640: Wait for HPD when doing an AUX transfer
+To: Doug Anderson <dianders@chromium.org>
+Cc: dri-devel@lists.freedesktop.org, hsinyi@chromium.org, 
+	Andrzej Hajda <andrzej.hajda@intel.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	David Airlie <airlied@gmail.com>, Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
+	Jernej Skrabec <jernej.skrabec@gmail.com>, Jonas Karlman <jonas@kwiboo.se>, 
+	Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+	Neil Armstrong <neil.armstrong@linaro.org>, Robert Foss <rfoss@kernel.org>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-After commit 5dc615520c4d ("LoongArch: Add BPF JIT support"),
-there is no BPF JIT for LOONGARCH entry, in order to maintain
-the current code and the new features timely, just add it.
+Hi,
 
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
- MAINTAINERS | 7 +++++++
- 1 file changed, 7 insertions(+)
+On Fri, Dec 22, 2023 at 11:34=E2=80=AFPM Doug Anderson <dianders@chromium.o=
+rg> wrote:
+>
+> Hi,
+>
+> On Fri, Dec 22, 2023 at 2:29=E2=80=AFAM Pin-yen Lin <treapking@chromium.o=
+rg> wrote:
+> >
+> > Hi Douglas,
+> >
+> > On Fri, Dec 22, 2023 at 5:56=E2=80=AFAM Douglas Anderson <dianders@chro=
+mium.org> wrote:
+> > >
+> > > Unlike what is claimed in commit f5aa7d46b0ee ("drm/bridge:
+> > > parade-ps8640: Provide wait_hpd_asserted() in struct drm_dp_aux"), if
+> > > someone manually tries to do an AUX transfer (like via `i2cdump ${bus=
+}
+> > > 0x50 i`) while the panel is off we don't just get a simple transfer
+> > > error. Instead, the whole ps8640 gets thrown for a loop and goes into
+> > > a bad state.
+> > >
+> > > Let's put the function to wait for the HPD (and the magical 50 ms
+> > > after first reset) back in when we're doing an AUX transfer. This
+> > > shouldn't actually make things much slower (assuming the panel is on)
+> > > because we should immediately poll and see the HPD high. Mostly this
+> > > is just an extra i2c transfer to the bridge.
+> > >
+> > > Fixes: f5aa7d46b0ee ("drm/bridge: parade-ps8640: Provide wait_hpd_ass=
+erted() in struct drm_dp_aux")
+> > > Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> > > ---
+> > >
+> > >  drivers/gpu/drm/bridge/parade-ps8640.c | 5 +++++
+> > >  1 file changed, 5 insertions(+)
+> > >
+> > > diff --git a/drivers/gpu/drm/bridge/parade-ps8640.c b/drivers/gpu/drm=
+/bridge/parade-ps8640.c
+> > > index 541e4f5afc4c..fb5e9ae9ad81 100644
+> > > --- a/drivers/gpu/drm/bridge/parade-ps8640.c
+> > > +++ b/drivers/gpu/drm/bridge/parade-ps8640.c
+> > > @@ -346,6 +346,11 @@ static ssize_t ps8640_aux_transfer(struct drm_dp=
+_aux *aux,
+> > >         int ret;
+> > >
+> > >         pm_runtime_get_sync(dev);
+> > > +       ret =3D _ps8640_wait_hpd_asserted(ps_bridge, 200 * 1000);
+> > > +       if (ret) {
+> > > +               pm_runtime_put_sync_suspend(dev);
+> > > +               return ret;
+> > > +       }
+> > >         ret =3D ps8640_aux_transfer_msg(aux, msg);
+> > >         pm_runtime_mark_last_busy(dev);
+> > >         pm_runtime_put_autosuspend(dev);
+> > > --
+> > > 2.43.0.472.g3155946c3a-goog
+> > >
+> >
+> > I think commit 9294914dd550 ("drm/bridge: parade-ps8640: Link device
+> > to ensure suspend/resume order")  is trying to address the same
+> > problem, but we see this issue here because the device link is missing
+> > DL_FLAG_PM_RUNTIME. I prefer to add DL_FLAG_PM_RUNTIME here so we
+> > don't need to add a _ps8640_wait_hpd_asserted() after every
+> > pm_runtime_get_*() call.
+>
+> I disagree. We've had several discussions on the lists about this
+> topic before, though since I'm technically on vacation right now I'm
+> not going to go look them up. In general "pm_runtime" is not
+> sufficient for powering up DRM components. While DRM components can
+> use pm_runtime themselves (as we are doing here), powering up another
+> DRM component by grabbing a pm_runtime reference isn't right. There is
+> a reason for the complexity of the DRM prepare/enable and all the
+> current debates about the right order to call components in prepare()
+> just demonstrates further that a simple pm_runtime reference isn't
+> enough.
+>
+> It can be noted that, with ${SUBJECT} patch we _aren't_ powering up
+> the panel. I actually tested two cases on sc7180-lazor. In one case I
+> just closed the lid, which powered off the panel, but the touchscreen
+> kept the panel power rail on. In this case with my patch I could still
+> read the panel EDID. I then hacked the touchscreen off. Now when I
+> closed the lid I'd get a timeout. This is different than if we tried
+> to get a pm_runtime reference to the panel.
+>
+Okay, thanks for the detailed explanation. Then, let's go with the
+approach in this patch. So,
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 7cef2d2ef8d7..3ba07b212d38 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -3651,6 +3651,13 @@ L:	bpf@vger.kernel.org
- S:	Supported
- F:	arch/arm64/net/
- 
-+BPF JIT for LOONGARCH
-+M:	Tiezhu Yang <yangtiezhu@loongson.cn>
-+R:	Hengqi Chen <hengqi.chen@gmail.com>
-+L:	bpf@vger.kernel.org
-+S:	Maintained
-+F:	arch/loongarch/net/
-+
- BPF JIT for MIPS (32-BIT AND 64-BIT)
- M:	Johan Almbladh <johan.almbladh@anyfinetworks.com>
- M:	Paul Burton <paulburton@kernel.org>
--- 
-2.42.0
+Tested-by: Pin-yen Lin <treapking@chromium.org>
+Reviewed-by: Pin-yen Lin <treapking@chromium.org>
 
+>
+> > As a side note, I've verified both this patch and DL_FLAG_PM_RUNTIME
+> > in our downstream v5.15 kernel and panel-edp driver. Both of them
+> > successfully wait for HPD asserted when the timeout used to happen,
+> > but the panel is black in that situation. That being said, this patch
+> > still brings us to a better state. Originally, panel_edp_resume()
+> > would return an error when the timeout occurs, so the panel-edp driver
+> > is stuck at an unexpected state. With this patch or
+> > DL_FLAG_PM_RUNTIME, the runtime PM callbacks won't fail and a system
+> > suspend/resume brings the panel back.
+>
+> OK. I'm going to shut off email for real this time while I enjoy some
+> time off. Hopefully the above convinces you. Otherwise I guess we can
+> continue to debate in mid-January.
+>
+> -Doug
+
+Happy holiday!
+
+Pin-yen
 
