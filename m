@@ -1,194 +1,142 @@
-Return-Path: <linux-kernel+bounces-10899-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10900-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD19381DE4E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 06:42:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD0A681DE8A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 07:13:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4EECB1F215BE
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 05:42:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5F68A1F213B3
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 06:13:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5D09F9D0;
-	Mon, 25 Dec 2023 05:41:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90CF015AF;
+	Mon, 25 Dec 2023 06:13:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="NU1/5+7N"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Vhqe498v"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 914EE443E;
-	Mon, 25 Dec 2023 05:41:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3BP5eLIU002555;
-	Sun, 24 Dec 2023 23:40:21 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1703482821;
-	bh=/cJuzaMwBV9bj1owzJ1BkwCP1ERmEL8XbnhumEog2aY=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=NU1/5+7NkV+Tnr0pFQOv3BY5XDp9UBTRWADPZVzrfCWL+PB72rZAO4u+UKchVtYaW
-	 lFx1TfgOUGWDNmqXphkEHjTHB22a64qv2iCncEwGNLIzx8XRuX+J0+dSxLrSoRol2m
-	 hyX5pjWduaeQtidtc9tsmc3FHQpWvW2n+2vrUgxU=
-Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
-	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3BP5eLom034343
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Sun, 24 Dec 2023 23:40:21 -0600
-Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Sun, 24
- Dec 2023 23:40:21 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Sun, 24 Dec 2023 23:40:21 -0600
-Received: from LT5CG31242FY.dhcp.ti.com ([10.250.160.240])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3BP5defg118972;
-	Sun, 24 Dec 2023 23:40:14 -0600
-From: Shenghao Ding <shenghao-ding@ti.com>
-To: <broonie@kernel.org>, <conor+dt@kernel.org>,
-        <krzysztof.kozlowski@linaro.org>
-CC: <robh+dt@kernel.org>, <andriy.shevchenko@linux.intel.com>,
-        <kevin-lu@ti.com>, <baojun.xu@ti.com>, <devicetree@vger.kernel.org>,
-        <lgirdwood@gmail.com>, <perex@perex.cz>,
-        <pierre-louis.bossart@linux.intel.com>, <13916275206@139.com>,
-        <linux-sound@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <liam.r.girdwood@intel.com>, <soyer@irl.hu>, <tiwai@suse.de>,
-        <peeyush@ti.com>, <navada@ti.com>,
-        Shenghao Ding <shenghao-ding@ti.com>
-Subject: [PATCH v3 5/5] ASoC: dt-bindings: Add tas2563 into ti,ta2781.yaml to enable DSP mode
-Date: Mon, 25 Dec 2023 13:39:31 +0800
-Message-ID: <20231225053932.1138-5-shenghao-ding@ti.com>
-X-Mailer: git-send-email 2.33.0.windows.2
-In-Reply-To: <20231225053932.1138-1-shenghao-ding@ti.com>
-References: <20231225053932.1138-1-shenghao-ding@ti.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CB451846;
+	Mon, 25 Dec 2023 06:13:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BP5xKoc008073;
+	Mon, 25 Dec 2023 06:13:23 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=N0UEdLDAQUomhdx40Nl1VF0nJCvYxde5CcvFj+y08kQ=; b=Vh
+	qe498vXsr/aOQ5X+JVPd8HqDVPgcXSr5xMvLeKOxQ1r3IZFM8F9KQBecptcIi1ka
+	UGpKz9koyIz34FisDxHudcYkUgt7C5Qb8YoOVcFJ3p66z1NoQQ+9pvArUsGwuyr9
+	0cjP7z++7zR2i9nNgPQMLE2GeneAF91ckRuCo2Fpp9PFvCUcBI141C7V+KeURw9E
+	NXQZz4303LaQOzGA4SGH3dx/MD8Qhx0OPBM65oFHJG2WkmC4Al4/WIyWmzCVQB1C
+	yVeGJfv2s0wWFBYFn4wRcLoM3ILeVjaeundGj7dF7heEidSgb0aGAe7iOr89qHDj
+	PVdF28u5T+KITqPm4U4g==
+Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v5raku13w-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 25 Dec 2023 06:13:23 +0000 (GMT)
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+	by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BP6DMkg003579
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 25 Dec 2023 06:13:22 GMT
+Received: from [10.239.132.150] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Sun, 24 Dec
+ 2023 22:13:17 -0800
+Message-ID: <52ee95c2-1118-4f44-85e0-862ac5f83257@quicinc.com>
+Date: Mon, 25 Dec 2023 14:13:14 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] pinctrl: Add lock to ensure the state atomization
+Content-Language: en-US
+To: Linus Walleij <linus.walleij@linaro.org>
+CC: <andersson@kernel.org>, <kernel@quicinc.com>, <linux-gpio@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>
+References: <20231212090611.950-1-quic_aiquny@quicinc.com>
+ <CACRpkdb6dkw58GwkqYXTDAQtdLazOLyp1CEjnkxDX2v=TDvvMw@mail.gmail.com>
+From: "Aiqun Yu (Maria)" <quic_aiquny@quicinc.com>
+In-Reply-To: <CACRpkdb6dkw58GwkqYXTDAQtdLazOLyp1CEjnkxDX2v=TDvvMw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 4cjNcax0jBjGDfAU6EmVVsuUhFJN9NjC
+X-Proofpoint-GUID: 4cjNcax0jBjGDfAU6EmVVsuUhFJN9NjC
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 spamscore=0
+ malwarescore=0 bulkscore=0 adultscore=0 mlxlogscore=674 clxscore=1011
+ phishscore=0 lowpriorityscore=0 priorityscore=1501 suspectscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2312250044
 
-Move tas2563 from tas2562.yaml to tas2781.yaml, because tas2563 only work
-in bypass-DSP mode with tas2562 driver. In oder to enable DSP mode for
-tas2563, it has been moved to tas2781 driver. As to the hardware part,
-such as register setting and DSP firmware, all these are stored in the
-binary firmware. What tas2781 drivder dooes is to parse the firmware and
-download them to the tas2781 or tas2563, then power on tas2781 or tas2563.
-So, tas2781 driver can be resued as tas2563 driver. Only attention will be
-paid to downloading corresponding firmware.
 
-Signed-off-by: Shenghao Ding <shenghao-ding@ti.com>
 
----
-Change in v3:
- - Add devicetree list and other list of necessary people and lists to CC
- - Express Compatibility in the bindings
- - Add more comments on why move tas2563 to tas2781 driver
- - Provide rationale in terms of bindings and hardware, not in terms of driver.
-   Or at least not only.
----
- .../devicetree/bindings/sound/ti,tas2781.yaml | 66 ++++++++++++++-----
- 1 file changed, 51 insertions(+), 15 deletions(-)
+On 12/20/2023 7:02 PM, Linus Walleij wrote:
+> Hi Maria,
+> 
+> On Tue, Dec 12, 2023 at 10:06 AM Maria Yu <quic_aiquny@quicinc.com> wrote:
+> 
+>> Currently pinctrl_select_state is an export symbol and don't have
+>> effective re-entrance protect design. During async probing of devices
+>> it's possible to end up in pinctrl_select_state() from multiple
+>> contexts simultaneously, so make it thread safe.
+>> More over, when the real racy happened, the system frequently have
+>> printk message like:
+>>    "not freeing pin xx (xxx) as part of deactivating group xxx - it is
+>> already used for some other setting".
+>> Finally the system crashed after the flood log.
+>> Add per pinctrl lock to ensure the old state and new state transition
+>> atomization.
+>> Also move dev error print message outside the region with interrupts
+>> disabled.
+>>
+>> Fixes: 4198a9b57106 ("pinctrl: avoid reload of p state in list iteration")
+>> Signed-off-by: Maria Yu <quic_aiquny@quicinc.com>
+> 
+> Overall this looks good!
+> 
+>> @@ -1262,9 +1263,12 @@ static void pinctrl_link_add(struct pinctrl_dev *pctldev,
+>>   static int pinctrl_commit_state(struct pinctrl *p, struct pinctrl_state *state)
+>>   {
+>>          struct pinctrl_setting *setting, *setting2;
+>> -       struct pinctrl_state *old_state = READ_ONCE(p->state);
+>> +       struct pinctrl_state *old_state;
+>>          int ret;
+>> +       unsigned long flags;
+>>
+>> +       spin_lock_irqsave(&p->lock, flags);
+> (...)
+>> +       spin_unlock_irqrestore(&p->lock, flags);
+> (...)
+>> +       spin_unlock_irqrestore(&p->lock, flags);
+> 
+> Is it possible to use a scoped guard for pinctrl_commit_state()?
+Good idea.
+I will address this in next patchset.
+> 
+> #include <linux/cleanup.h>
+> guard(spinlock_irqsave)(&p->lock);
+> 
+> It saves some code (and no need for flags) and avoid possible
+> bugs when people add new errorpaths to the code.
+> 
+> Yours,
+> Linus Walleij
 
-diff --git a/Documentation/devicetree/bindings/sound/ti,tas2781.yaml b/Documentation/devicetree/bindings/sound/ti,tas2781.yaml
-index a69e6c223308..bbe8e5f2c013 100644
---- a/Documentation/devicetree/bindings/sound/ti,tas2781.yaml
-+++ b/Documentation/devicetree/bindings/sound/ti,tas2781.yaml
-@@ -5,36 +5,72 @@
- $id: http://devicetree.org/schemas/sound/ti,tas2781.yaml#
- $schema: http://devicetree.org/meta-schemas/core.yaml#
- 
--title: Texas Instruments TAS2781 SmartAMP
-+title: Texas Instruments TAS2781/TAS2563 SmartAMP
- 
- maintainers:
-   - Shenghao Ding <shenghao-ding@ti.com>
- 
- description:
--  The TAS2781 is a mono, digital input Class-D audio amplifier
--  optimized for efficiently driving high peak power into small
--  loudspeakers. An integrated on-chip DSP supports Texas Instruments
--  Smart Amp speaker protection algorithm. The integrated speaker
--  voltage and current sense provides for real time
-+  The TAS2781/TAS2563 is a mono, digital input Class-D audio
-+  amplifier optimized for efficiently driving high peak power into
-+  small loudspeakers. An integrated on-chip DSP supports Texas
-+  Instruments Smart Amp speaker protection algorithm. The
-+  integrated speaker voltage and current sense provides for real time
-   monitoring of loudspeaker behavior.
- 
- allOf:
-   - $ref: dai-common.yaml#
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - ti,tas2781
-+    then:
-+      properties:
-+        reg:
-+          description:
-+            I2C address, in multiple AMP case, all the i2c address
-+            aggregate as one Audio Device to support multiple audio slots.
-+          maxItems: 8
-+          minItems: 1
-+          items:
-+            minimum: 0x38
-+            maximum: 0x3f
-+    else:
-+      properties:
-+        reg:
-+          description:
-+            I2C address, in multiple AMP case, all the i2c address
-+            aggregate as one Audio Device to support multiple audio slots.
-+          maxItems: 4
-+          minItems: 1
-+          items:
-+            minimum: 0x4c
-+            maximum: 0x4f
- 
- properties:
-   compatible:
-+    description: |
-+      ti,tas2781: 24-V Class-D Amplifier with Real Time Integrated Speaker
-+      Protection and Audio Processing, 16/20/24/32bit stereo I2S or
-+      multichannel TDM.
-+
-+      ti,tas2563: 6.1-W Boosted Class-D Audio Amplifier With Integrated
-+      DSP and IV Sense, 16/20/24/32bit stereo I2S or multichannel TDM.
-     enum:
-       - ti,tas2781
-+      - ti,tas2563
-+      # Tas781 driver can support both tas2563 and tas2781, because the
-+      # hardware part in the driver code, such as register setting and DSP
-+      # firmware, all these are stored in the binary firmware. What drivder
-+      # dooes is to parse the firmware and download it to the tas2781 or
-+      # tas2563, then control tas2781 or tas2563 to power on/off or switch
-+      # different dsp params. So, tas2781 driver can be resued as tas2563
-+      # driver. Only attention will be paid to downloading corresponding
-+      # firmware.
- 
--  reg:
--    description:
--      I2C address, in multiple tas2781s case, all the i2c address
--      aggregate as one Audio Device to support multiple audio slots.
--    maxItems: 8
--    minItems: 1
--    items:
--      minimum: 0x38
--      maximum: 0x3f
-+  reg: true
- 
-   reset-gpios:
-     maxItems: 1
 -- 
-2.34.1
-
+Thx and BRs,
+Aiqun(Maria) Yu
 
