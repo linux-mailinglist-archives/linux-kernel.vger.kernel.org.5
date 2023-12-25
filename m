@@ -1,155 +1,151 @@
-Return-Path: <linux-kernel+bounces-10879-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10880-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF4DA81DDE6
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 04:17:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 57AD781DDEB
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 04:18:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3A0051F214F5
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 03:17:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D6BB9B20E6F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 03:18:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 712D8ED3;
-	Mon, 25 Dec 2023 03:17:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8285BA56;
+	Mon, 25 Dec 2023 03:18:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="epAMNV5b"
+	dkim=pass (2048-bit key) header.d=windriver.com header.i=@windriver.com header.b="Oq7B2HaF"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2058.outbound.protection.outlook.com [40.107.8.58])
+Received: from mx0b-0064b401.pphosted.com (mx0b-0064b401.pphosted.com [205.220.178.238])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B57A7806;
-	Mon, 25 Dec 2023 03:17:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JzeeFpq5bTmVrtZV9KAvhzQzfD+ZF9rd+9NpNUcsfS8QixBjvSnMgw2R6U47y+ickXCNp1+0kzqEftvF0Ux0QMKWkRc9utr79gqVQLVWEH2p8W82hxBKOPSWvadUme/hCUs/L1wkw1EjHdoqtPaifAEjxqLnUU/9QTHZuzo4AT654YxEqYJrIE6zcDftsAXQN/JyuDv6kUjj79NGX0GXI7Htf/2Ww2xWJJ6zR4pQ7APMGdzYdWDHY2lJvpg19xfnO3Qh7eERyrJrEU6Lj18hxGl8+gobhF6zstuqc/r4BkmcaNTKY9i3tzV/0lnGoopMIegbiP59j02kXJb6/QmN0A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=kAYiLoS3yhsdU2ysDjxMtqHhU2Wef2hx2TnF/ofM1Q8=;
- b=JL+dxkXybCIERVn5w1kVEogNKaeLzMXRDUhrPPqz2pdFy/4vwHUmZPHnz90dKVsGMiBrvKa83aIQXtgR44YVYzSMCmpst7Hwd7s+iqzYnfaLJqkFNloWfvM3S3xulqJeOHRFvDcL1swRrlhlqunJPPhpjDIw7jszSNglmyjgTHvL2/iT5HoKhELbB0btVgF/FNZq53oAtXD62OS9lsD4U8cppMH/6R6f3hXlg4FNToFljeae+1egLs8KsJ3nSWf9YUTDY3pFrmZxmlwFu7mFWA2tiPqxPNM+DCV1Wh+iiS17LPS1RuVk5ZZsEhfSL0wQ/XBp84MBAD+c9KCQV7CXMw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kAYiLoS3yhsdU2ysDjxMtqHhU2Wef2hx2TnF/ofM1Q8=;
- b=epAMNV5bt/5kMR7l1LUeImt3yyunU326AwFnUQIXhD5JyqILOzfa68YKcfWOTHPck0QTdJ02xV9MGzuW8JPsDVrv9j3ep07KD0HfSh/O3MOrKB4HI4yc0dsgVXxOeA2Gxi6Zx1cAbQgdT4SSv7FvZeGMYXUenyVVk+VbLT6aGeI=
-Received: from DU0PR04MB9417.eurprd04.prod.outlook.com (2603:10a6:10:358::11)
- by DBAPR04MB7208.eurprd04.prod.outlook.com (2603:10a6:10:1a8::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7113.26; Mon, 25 Dec
- 2023 03:17:27 +0000
-Received: from DU0PR04MB9417.eurprd04.prod.outlook.com
- ([fe80::ff06:bbb2:c068:5fb3]) by DU0PR04MB9417.eurprd04.prod.outlook.com
- ([fe80::ff06:bbb2:c068:5fb3%7]) with mapi id 15.20.7113.026; Mon, 25 Dec 2023
- 03:17:27 +0000
-From: Peng Fan <peng.fan@nxp.com>
-To: Markus Elfring <Markus.Elfring@web.de>, Abel Vesa <abelvesa@kernel.org>,
-	Fabio Estevam <festevam@gmail.com>, Michael Turquette
-	<mturquette@baylibre.com>, Sascha Hauer <s.hauer@pengutronix.de>, Shawn Guo
-	<shawnguo@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
-	"kernel@pengutronix.de" <kernel@pengutronix.de>, dl-linux-imx
-	<linux-imx@nxp.com>, "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "kernel-janitors@vger.kernel.org"
-	<kernel-janitors@vger.kernel.org>
-CC: LKML <linux-kernel@vger.kernel.org>, "cocci@inria.fr" <cocci@inria.fr>
-Subject: RE: [PATCH 1/2] clk: imx: composite-8m: Less function calls in
- __imx8m_clk_hw_composite() after error detection
-Thread-Topic: [PATCH 1/2] clk: imx: composite-8m: Less function calls in
- __imx8m_clk_hw_composite() after error detection
-Thread-Index: AQHaNPTyfQAKUjgu9kuUiIRTgeUbsLC5V7lg
-Date: Mon, 25 Dec 2023 03:17:27 +0000
-Message-ID:
- <DU0PR04MB941778B838752475D39E562F8899A@DU0PR04MB9417.eurprd04.prod.outlook.com>
-References: <1d494176-2238-4430-bc26-4e4c78fe4ede@web.de>
- <147ca1e6-69f3-4586-b5b3-b69f9574a862@web.de>
-In-Reply-To: <147ca1e6-69f3-4586-b5b3-b69f9574a862@web.de>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DU0PR04MB9417:EE_|DBAPR04MB7208:EE_
-x-ms-office365-filtering-correlation-id: 9bebf8ec-1ba2-4df7-4bb7-08dc04f805d8
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- yWJv7fvxc8FbBudEuIlstcYTZt3HvnBNHUgWxEfoAPLqJFnKCwhkHoFplyu2OpgGx+oVn/AX29SlmLLfb3mz8ySE4fDgjCWQ2Mx5fhTgqzIKRZWQ3exZFjAI+QzvC1k8bayQlUqWAlBPREvox/XbyB5u2fwOJ51eVb1wHC8CHgSQ4hYdKksyvYfNK8jF9rsVvlmfZHUD7+bnhTxnw/mUWD1EpeN9zxBeNciPB41d6QbTYM44oxmzwc+m6kRQLIDqcBckp34HjLFOWDqFWuusNAKsaiveWKX+l5MdeEhK7Sq9Yu+Q9wEyWnMONr3JH8NDfRm0LFhfnIvXNw1+JNtXfpEteezZJTdgUtOSVKuqVUwcLgynrHLRaqu9PGS24Qs0HMMKGyr3tnu6WE0Qmk0Zdlhe11njKNiApQexoJHxM3CK9XffX8RC5UXWJD0XqulfiJp+0XD/jBXgzdOwq9wSiYTCpkbdDEfbsJomC1UPBlKp0BLOmM1oXXk6NXlHAp7dtmsL1A5kX4zrQK73n+Pvsc46cdVSSnVM4nT6B3uBlM4EXsDtSbizt7yBti5ACTq+ab40e4NmmtRJycPfmSbCJymrXQ9he9AlkKVPvKdZ461dwEzoMBZ8vv1D4XJSDetsKSqQl0s+H3cqsINRXm+RCQ==
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(39850400004)(376002)(346002)(366004)(230922051799003)(186009)(451199024)(64100799003)(1800799012)(71200400001)(4744005)(478600001)(2906002)(8676002)(8936002)(122000001)(5660300002)(44832011)(7416002)(7696005)(6506007)(9686003)(66446008)(64756008)(66476007)(66556008)(66946007)(55016003)(921011)(38070700009)(110136005)(4326008)(54906003)(316002)(76116006)(52536014)(33656002)(83380400001)(86362001)(26005)(41300700001)(38100700002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?SEd5ZW1TVXQ5RHdjS2taTkRkbHBuZHlkSThJRUFTZ3VUSWU5NWhvOW9RRFJM?=
- =?utf-8?B?U25laWNtWWZGbWxVMmdzV29WVVNEdHdqNnlHVXh5ak1RMjRCbXYzdytXOUd1?=
- =?utf-8?B?NGRuZWpPVzI4NjlIQUVuU2RSWkN1QkIwVWxtT0E3Mk1Ib0Q5Y0VrLzJscVZz?=
- =?utf-8?B?R1VvbGRBeUpGNjFFeVpIMDREVzdFOTlQMkJJcDBIY090djUxNDkydjdSWEJR?=
- =?utf-8?B?SXZlTkwxNk04OE5mZGhUWWE3ZGNJbHlNVnBId1BHb3ROYlZ4elpOQU1vNFdn?=
- =?utf-8?B?Wm1FcDFjMkFuaTVQeDhaY0pieldsbUdQc21naEUrUUtuQzVPUDN6WTBBVjRI?=
- =?utf-8?B?ZGJ2NGRYUFBCZEJ5N2RoRnRrVkVrcDFVN1ZvL0xpa1krWFZsNmxhTUIwa254?=
- =?utf-8?B?SVpOQlZtTDdMRlh4aUZnYVQyaVFQc0o5dFhIaXVmT3pqK2lERDVPOXdIYlB0?=
- =?utf-8?B?NjUwMFZGYitZRHBIVTEvQ1QrQW81RFJLb1hsMG1zb2lBQTNxNTVnOTdiYmk1?=
- =?utf-8?B?ekdzbUNramsweFZJSFFpcFdJSEFsc3hpbXhkdW9qdGQ0enZaNFo0QTZHVUVi?=
- =?utf-8?B?c3dvTGtYc1RVcndnUStiK2VCNFpLa1Eyc0FYVWVmMHphdmM3bGp5Qm1yeU9p?=
- =?utf-8?B?Qkh1YlNFY1JtVzVhRDlqVExNUUdmU1VneVBVYzVyVWd3VkFoN0VmNjExT01B?=
- =?utf-8?B?S0VJMmJ0eFUxU0tvZnkvNElueUhrNFhJcG5sdEJyUEpQdGk3MXExZUIzTyt6?=
- =?utf-8?B?Sy9MZ3RrYmdCT296bmtJTnRhNGdyaHV0Yk9YejFUNTRHOFRWMUpGSVN6MDR5?=
- =?utf-8?B?MFlZSzNIdzlSOEN5TXFHeXFXZGt2Zno2ZFFhU3RTWmtxcSt5empVMFdrQUJL?=
- =?utf-8?B?bHk0RTJKVUUzYnkyWnppSWg5N0xyczlxeHJGZC8yeHppT1JETVhNaW1pMU5o?=
- =?utf-8?B?YUpTZ0x6aWRhYU9GdEt5OFpmMzI4T3IvcUpXR3J3QzRHQVZ5SkczT1NzTTgy?=
- =?utf-8?B?WkdsNDJSdWo5Q3VyYmJmd3ZyM0pSbStBWG9qWVUwdXNrekhmWDlpTXg4Mjhy?=
- =?utf-8?B?NHluYnpLUFFnSUFheG1Pak1CVy91S0pMRWxsczRzTzdCSlcwY09HTW0rVnc5?=
- =?utf-8?B?blAxYUxtUFpOZ3NmWmg0V3BLSFBBUENLOTkrcmR2ZXcyd2NKNzVQQXNQWHA2?=
- =?utf-8?B?Z0xlTEI2a2hweXprTjBJQVlmRExpUklTR2p3UFJqRmZPVTNpelJNQnpmVlBR?=
- =?utf-8?B?OVQ0ZGtWUWFiNzBFc1F2NHMranRUNk8xSlJDOFBZYS90QVo3Z3B5dS9naTNW?=
- =?utf-8?B?KzVXR1U1TW9GUkdjS29YdUFNNXVTUU0wSzFFUUp6dWZMczBhaTRRNDd2R1ZQ?=
- =?utf-8?B?bGREMEQ4S3o5dkFCVlErMENYWkk1SUxaT3dLMGtQRDF4ejhud2tnaEo4b0lS?=
- =?utf-8?B?S1pjMWpNYlFnb1lQeDNEWVVQWDFqUVhCVERxL2RwcVU1RnBJeEVOVnJlM0k4?=
- =?utf-8?B?azhZV1pSTUh6cTVNKzJYNlUzVzZ0NHk0TUtWbmpIRVBudzNaem81b0QvbkZ0?=
- =?utf-8?B?K1pRbFNYRmg5WmZqTWxKK0lEYWJKL0VOTktUd0hSMVVLU1dVR0I1NUJrWWFx?=
- =?utf-8?B?M3RXcXF6ZytQYk8rZ25sTEg4T0ZJWVZySzlLWFRYR0dyTU1rckV0WXpNOHZo?=
- =?utf-8?B?QytNTVNibzM5aVR0R0RydHE5MTR6a2t5UnAwc29kU2FnRjhoYXNRQ1psZCtp?=
- =?utf-8?B?c1gxS1B6WFhBWCtqM3ZuQ3RxSlZGRFQwWGRNckRtRkUzdFA5cGhlWDQzZGhS?=
- =?utf-8?B?UW5ZTittazNvSzBxM1J2Qk9CY0FjYTBxcy92c0ljRUtKM21pYVMxNm52WVhp?=
- =?utf-8?B?ZmlRMFhxMWlua0VFMVA5dExsQWZydmh2TXZLSnRuK1RwaXFlb1BvVjNLSzh6?=
- =?utf-8?B?TnArQm1YdFVBUVdMc1hvcTREVXZkbjA2Y2h3Ti82NUdxZ1pOK3ZHcHU2czFF?=
- =?utf-8?B?RVA1bUpxR1JHWTArOEdWajhXenpZbzUrNTNISkRHN1NLNWZKZ1FtVnArbHFM?=
- =?utf-8?B?RHB1RUFlaFJLaitKcEx1U21WeGUzMEVTVllCZDBiVkM4UGN6OWhReWExWUQ2?=
- =?utf-8?Q?TxDc=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27B3D812
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 03:18:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=windriver.com
+Received: from pps.filterd (m0250811.ppops.net [127.0.0.1])
+	by mx0a-0064b401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BP3BR0l029746;
+	Mon, 25 Dec 2023 03:18:38 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=windriver.com;
+	 h=from:to:cc:subject:date:message-id:in-reply-to:references
+	:mime-version:content-transfer-encoding:content-type; s=
+	PPS06212021; bh=QRg48hyh/zPlqk0RFZeKCRb0YrCWvCns/Zy6ikrYLzs=; b=
+	Oq7B2HaF521WJ7cAzY+ufizj0Z1EEYkcSJh2xO68AljwoEvGL0WURTxcMokPKpQT
+	+mFVIwBo9dzEZ1+DRn7EzAvjmwqz/y+ehyYNhrCffQoWnXVY3FFiwtp3QS2SIj9e
+	BVLvmKZiRgLQ7ujjzFwSGxWQ50A8xzFmjBX/lBA4lJoj+iLdglMsRMKShMj9wsJQ
+	6/mpzDnefRpr/4vgQirH+4p9UPnK7usMPqUdCpbOscrwanVSnu4RQZNTPTUOw5B6
+	xd25wlc0yM7HLoz2gAiiWn7KXM1iNpB+X/Xg5jlJricIt0SwHqLG9DLWwmT1G9kM
+	FVumPABkRJjikqZr6/cNYg==
+Received: from ala-exchng02.corp.ad.wrs.com (ala-exchng02.wrs.com [147.11.82.254])
+	by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 3v5mrxsaw1-5
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+	Mon, 25 Dec 2023 03:18:37 +0000 (GMT)
+Received: from ala-exchng01.corp.ad.wrs.com (147.11.82.252) by
+ ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Sun, 24 Dec 2023 19:18:40 -0800
+Received: from pek-lpd-ccm6.wrs.com (147.11.136.210) by
+ ala-exchng01.corp.ad.wrs.com (147.11.82.252) with Microsoft SMTP Server id
+ 15.1.2507.35 via Frontend Transport; Sun, 24 Dec 2023 19:18:39 -0800
+From: Lizhi Xu <lizhi.xu@windriver.com>
+To: <syzbot+a3981d3c93cde53224be@syzkaller.appspotmail.com>
+CC: <syzkaller-bugs@googlegroups.com>, <linux-kernel@vger.kernel.org>
+Subject: Re: [syzbot] [reiserfs?] possible deadlock in __run_timers
+Date: Mon, 25 Dec 2023 11:18:35 +0800
+Message-ID: <20231225031835.3191503-1-lizhi.xu@windriver.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <000000000000b26907060cb9f1f5@google.com>
+References: <000000000000b26907060cb9f1f5@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DU0PR04MB9417.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9bebf8ec-1ba2-4df7-4bb7-08dc04f805d8
-X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Dec 2023 03:17:27.5632
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: VGKXEh9u3EVEAGOWY6Sdtyuq1KT0EU1ycSJK8fPXePirxCyTSewli85dyYAv2Q4lSZ3GYcNnZe/VN8rnEd6qRg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBAPR04MB7208
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: OkRV-R29Ga_vrERrZkK8xIFqAWZNvT0g
+X-Proofpoint-GUID: OkRV-R29Ga_vrERrZkK8xIFqAWZNvT0g
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-16_25,2023-11-16_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 spamscore=0
+ bulkscore=0 adultscore=0 malwarescore=0 clxscore=1015 lowpriorityscore=0
+ priorityscore=1501 impostorscore=0 suspectscore=0 mlxlogscore=785
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2312250021
 
-PiBTdWJqZWN0OiBbUEFUQ0ggMS8yXSBjbGs6IGlteDogY29tcG9zaXRlLThtOiBMZXNzIGZ1bmN0
-aW9uIGNhbGxzIGluDQo+IF9faW14OG1fY2xrX2h3X2NvbXBvc2l0ZSgpIGFmdGVyIGVycm9yIGRl
-dGVjdGlvbg0KPiANCj4gRnJvbTogTWFya3VzIEVsZnJpbmcgPGVsZnJpbmdAdXNlcnMuc291cmNl
-Zm9yZ2UubmV0Pg0KPiBEYXRlOiBGcmksIDIyIERlYyAyMDIzIDE2OjQ4OjI0ICswMTAwDQo+IA0K
-PiBUaGUgZnVuY3Rpb24g4oCca2ZyZWXigJ0gd2FzIGNhbGxlZCBpbiB1cCB0byB0aHJlZSBjYXNl
-cyBieSB0aGUgZnVuY3Rpb24NCj4g4oCcX19pbXg4bV9jbGtfaHdfY29tcG9zaXRl4oCdIGR1cmlu
-ZyBlcnJvciBoYW5kbGluZyBldmVuIGlmIHRoZSBwYXNzZWQNCj4gdmFyaWFibGVzIGNvbnRhaW5l
-ZCBhIG51bGwgcG9pbnRlci4NCj4gDQo+IEFkanVzdCBqdW1wIHRhcmdldHMgYWNjb3JkaW5nIHRv
-IHRoZSBMaW51eCBjb2Rpbmcgc3R5bGUgY29udmVudGlvbi4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6
-IE1hcmt1cyBFbGZyaW5nIDxlbGZyaW5nQHVzZXJzLnNvdXJjZWZvcmdlLm5ldD4NCg0KUmV2aWV3
-ZWQtYnk6IFBlbmcgRmFuIDxwZW5nLmZhbkBueHAuY29tPg0K
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 88035e5694a8
+
+diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+index 2989b57e154a..30427a1f961c 100644
+--- a/kernel/workqueue.c
++++ b/kernel/workqueue.c
+@@ -941,8 +941,12 @@ static void worker_enter_idle(struct worker *worker)
+ 	/* idle_list is LIFO */
+ 	list_add(&worker->entry, &pool->idle_list);
+ 
+-	if (too_many_workers(pool) && !timer_pending(&pool->idle_timer))
++	if (too_many_workers(pool) && !timer_pending(&pool->idle_timer)) {
++		unsigned long flags;
++		raw_spin_unlock_irqrestore(&pool->lock, flags);
+ 		mod_timer(&pool->idle_timer, jiffies + IDLE_WORKER_TIMEOUT);
++		raw_spin_lock_irqsave(&pool->lock, flags);
++	}
+ 
+ 	/* Sanity check nr_running. */
+ 	WARN_ON_ONCE(pool->nr_workers == pool->nr_idle && pool->nr_running);
+@@ -2164,6 +2168,7 @@ static struct worker *create_worker(struct worker_pool *pool)
+ 	struct worker *worker;
+ 	int id;
+ 	char id_buf[23];
++	unsigned long flags;
+ 
+ 	/* ID is needed to determine kthread name */
+ 	id = ida_alloc(&pool->worker_ida, GFP_KERNEL);
+@@ -2207,7 +2212,7 @@ static struct worker *create_worker(struct worker_pool *pool)
+ 	worker_attach_to_pool(worker, pool);
+ 
+ 	/* start the newly created worker */
+-	raw_spin_lock_irq(&pool->lock);
++	raw_spin_lock_irqsave(&pool->lock, flags);
+ 
+ 	worker->pool->nr_workers++;
+ 	worker_enter_idle(worker);
+@@ -2220,7 +2225,7 @@ static struct worker *create_worker(struct worker_pool *pool)
+ 	 */
+ 	wake_up_process(worker->task);
+ 
+-	raw_spin_unlock_irq(&pool->lock);
++	raw_spin_unlock_irqrestore(&pool->lock, flags);
+ 
+ 	return worker;
+ 
+@@ -2727,15 +2732,16 @@ static int worker_thread(void *__worker)
+ {
+ 	struct worker *worker = __worker;
+ 	struct worker_pool *pool = worker->pool;
++	unsigned long flags;
+ 
+ 	/* tell the scheduler that this is a workqueue worker */
+ 	set_pf_worker(true);
+ woke_up:
+-	raw_spin_lock_irq(&pool->lock);
++	raw_spin_lock_irqsave(&pool->lock, flags);
+ 
+ 	/* am I supposed to die? */
+ 	if (unlikely(worker->flags & WORKER_DIE)) {
+-		raw_spin_unlock_irq(&pool->lock);
++		raw_spin_unlock_irqsave(&pool->lock, flags);
+ 		set_pf_worker(false);
+ 
+ 		set_task_comm(worker->task, "kworker/dying");
+@@ -2792,7 +2798,7 @@ static int worker_thread(void *__worker)
+ 	 */
+ 	worker_enter_idle(worker);
+ 	__set_current_state(TASK_IDLE);
+-	raw_spin_unlock_irq(&pool->lock);
++	raw_spin_unlock_irqrestore(&pool->lock, flags);
+ 	schedule();
+ 	goto woke_up;
+ }
 
