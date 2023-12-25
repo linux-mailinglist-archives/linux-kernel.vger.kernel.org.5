@@ -1,113 +1,134 @@
-Return-Path: <linux-kernel+bounces-11118-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11119-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 807F881E185
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 17:07:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24A9881E18E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 17:10:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3E265282005
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 16:07:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D6A18281F33
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 16:10:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E251952F73;
-	Mon, 25 Dec 2023 16:07:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4DDA537E5;
+	Mon, 25 Dec 2023 16:09:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="go7oppXX"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="D9mqPlfT"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp-fw-52003.amazon.com (smtp-fw-52003.amazon.com [52.119.213.152])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E9FE52F61;
-	Mon, 25 Dec 2023 16:07:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1703520462; x=1735056462;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=qHYtE5J76pY6+pfStg0q/+w1NticYUAenhuLViOG8j0=;
-  b=go7oppXXAXdpj6B2mMPhsQbOoB3Z1T6BliySbtS5bU36kPes+W/guVwF
-   gTfh2IJSwN4znx33KtlUtsG5Jzsam9OKZNTr027RL3FrHaul9xX3ckCQQ
-   HOVH3c9oipsiceHha9nROPoXgNoAw97/GyvnsgGwHafBdYwi8W8K+VXlg
-   U=;
-X-IronPort-AV: E=Sophos;i="6.04,303,1695686400"; 
-   d="scan'208";a="627635697"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-iad-1d-m6i4x-b404fda3.us-east-1.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-52003.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Dec 2023 16:07:40 +0000
-Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (iad7-ws-svc-p70-lb3-vlan3.iad.amazon.com [10.32.235.38])
-	by email-inbound-relay-iad-1d-m6i4x-b404fda3.us-east-1.amazon.com (Postfix) with ESMTPS id 92C198071B;
-	Mon, 25 Dec 2023 16:07:36 +0000 (UTC)
-Received: from EX19MTAUWA002.ant.amazon.com [10.0.38.20:42133]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.6.144:2525] with esmtp (Farcaster)
- id f49d12a5-aaa6-4630-a218-ea8017a839ed; Mon, 25 Dec 2023 16:07:35 +0000 (UTC)
-X-Farcaster-Flow-ID: f49d12a5-aaa6-4630-a218-ea8017a839ed
-Received: from EX19D020UWC004.ant.amazon.com (10.13.138.149) by
- EX19MTAUWA002.ant.amazon.com (10.250.64.202) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Mon, 25 Dec 2023 16:07:35 +0000
-Received: from [0.0.0.0] (10.253.83.51) by EX19D020UWC004.ant.amazon.com
- (10.13.138.149) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 25 Dec
- 2023 16:07:32 +0000
-Message-ID: <363ca575-f01a-4d09-ae9d-b6249b3aedb3@amazon.com>
-Date: Mon, 25 Dec 2023 17:07:29 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C27852F61
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 16:09:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1703520585;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=VqafsTsLWFL6NUacBRAsGtc9kpoOdr+j/kVqdz2KGps=;
+	b=D9mqPlfTwYuNJi4B6KW9virIn25oAF6KJO1DPRjL3QgxGoYi/aZvQhQ6SxaAucfl1mfkTI
+	2BhAsqnTfOgOxR+qFBkoEO02/lLWZdSG4DtRAMJ7mE1KRUKAFVGeLstdjJ6VVrBdaG+4BT
+	HC6YfH4aB8ZfJIQTKQ076gm3A3IuBSk=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-616-hr5VO3hrOsaUJAYqxvVOsw-1; Mon, 25 Dec 2023 11:09:44 -0500
+X-MC-Unique: hr5VO3hrOsaUJAYqxvVOsw-1
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-40d5970422cso16405e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 08:09:44 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703520583; x=1704125383;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VqafsTsLWFL6NUacBRAsGtc9kpoOdr+j/kVqdz2KGps=;
+        b=oiyVSW4AFcr1NrMh52G7IbB04d0HYh1roorZ4gGARdO0iw4Q5kyWkYOaKOqMZaHQ/i
+         5vE3rVeVzlkQMkNxjsVem/5t3uQKstL8EEmYSeUAotX6msL5QnkXwq1DmHiD4W7XYtmA
+         OpuNiaZMGBdbEVUcXhEUwtxTa3JXuIJiHP28Bcf0miu7cpXsK1U+byVXvKh7+7OhDPNm
+         atUO6pY1Qgbi3jvQ0S2bFGnnHZ47LnU2FcaeDTmP3zsgTjkyzC2Nv1l4YhB1nyTVezKG
+         oS12f+EVnDOOR7cCq53PDx7X7+INycz5XLVL7LGP3GgZ6e7sJeBXXwCVC94lkW6D+sur
+         5AuQ==
+X-Gm-Message-State: AOJu0YxQiclyC7gtWMA7rbiqPFAuA4HLvZVoSoK1e/d/O5B5rDM91XzS
+	ghxULsW+KNhsd0CdiAQ3niz3IvyY6B5CzWy72bnDUZj4T/TbyDAfdTyX/4AiFsoJAfVb0HMvc0z
+	5vYxHj75tOcB0f2HU6oSRkbWH+U+qKUiL
+X-Received: by 2002:a05:600c:4587:b0:40c:33be:d193 with SMTP id r7-20020a05600c458700b0040c33bed193mr4060348wmo.78.1703520582985;
+        Mon, 25 Dec 2023 08:09:42 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHfGGCax+SlWX/roShT1Wqm6zJg2zHkXbA4PNy8JwUTudzLUljk5TaAwhoH/7jZ8kvUv2pY7Q==
+X-Received: by 2002:a05:600c:4587:b0:40c:33be:d193 with SMTP id r7-20020a05600c458700b0040c33bed193mr4060329wmo.78.1703520582646;
+        Mon, 25 Dec 2023 08:09:42 -0800 (PST)
+Received: from redhat.com ([2a06:c701:73ef:4100:2cf6:9475:f85:181e])
+        by smtp.gmail.com with ESMTPSA id f12-20020a05600c4e8c00b0040d3db8186fsm16769282wmq.5.2023.12.25.08.09.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Dec 2023 08:09:41 -0800 (PST)
+Date: Mon, 25 Dec 2023 11:09:37 -0500
+From: "Michael S. Tsirkin" <mst@redhat.com>
+To: Pasha Tatashin <pasha.tatashin@soleen.com>
+Cc: akpm@linux-foundation.org, alex.williamson@redhat.com,
+	alim.akhtar@samsung.com, alyssa@rosenzweig.io,
+	asahi@lists.linux.dev, baolu.lu@linux.intel.com,
+	bhelgaas@google.com, cgroups@vger.kernel.org, corbet@lwn.net,
+	david@redhat.com, dwmw2@infradead.org, hannes@cmpxchg.org,
+	heiko@sntech.de, iommu@lists.linux.dev, jasowang@redhat.com,
+	jernej.skrabec@gmail.com, jgg@ziepe.ca, jonathanh@nvidia.com,
+	joro@8bytes.org, kevin.tian@intel.com,
+	krzysztof.kozlowski@linaro.org, kvm@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org, linux-rockchip@lists.infradead.org,
+	linux-samsung-soc@vger.kernel.org, linux-sunxi@lists.linux.dev,
+	linux-tegra@vger.kernel.org, lizefan.x@bytedance.com,
+	marcan@marcan.st, mhiramat@kernel.org, m.szyprowski@samsung.com,
+	netdev@vger.kernel.org, paulmck@kernel.org, rdunlap@infradead.org,
+	robin.murphy@arm.com, samuel@sholland.org,
+	suravee.suthikulpanit@amd.com, sven@svenpeter.dev,
+	thierry.reding@gmail.com, tj@kernel.org, tomas.mudrunka@gmail.com,
+	vdumpa@nvidia.com, virtualization@lists.linux.dev, wens@csie.org,
+	will@kernel.org, yu-cheng.yu@intel.com
+Subject: Re: [PATCH 15/16] vhost-vdpa: account iommu allocations
+Message-ID: <20231225110930-mutt-send-email-mst@kernel.org>
+References: <20231128204938.1453583-1-pasha.tatashin@soleen.com>
+ <20231128204938.1453583-16-pasha.tatashin@soleen.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7] misc: Add Nitro Secure Module driver
-Content-Language: en-US
-To: "Michael S. Tsirkin" <mst@redhat.com>
-CC: <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>, "Arnd
- Bergmann" <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Herbert Xu <herbert@gondor.apana.org.au>, Olivia Mackall
-	<olivia@selenic.com>, Petre Eftime <petre.eftime@gmail.com>, Erdem Meydanlli
-	<meydanli@amazon.nl>, Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-	David Woodhouse <dwmw@amazon.co.uk>, Jason Wang <jasowang@redhat.com>, "Xuan
- Zhuo" <xuanzhuo@linux.alibaba.com>, Christophe JAILLET
-	<christophe.jaillet@wanadoo.fr>
-References: <20231011213522.51781-1-graf@amazon.com>
- <20231225090044-mutt-send-email-mst@kernel.org>
-From: Alexander Graf <graf@amazon.com>
-In-Reply-To: <20231225090044-mutt-send-email-mst@kernel.org>
-X-ClientProxiedBy: EX19D032UWA004.ant.amazon.com (10.13.139.56) To
- EX19D020UWC004.ant.amazon.com (10.13.138.149)
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231128204938.1453583-16-pasha.tatashin@soleen.com>
 
-SGV5IE1pY2hhZWwsCgpPbiAyNS4xMi4yMyAxNTowNiwgTWljaGFlbCBTLiBUc2lya2luIHdyb3Rl
-Ogo+IE9uIFdlZCwgT2N0IDExLCAyMDIzIGF0IDA5OjM1OjIyUE0gKzAwMDAsIEFsZXhhbmRlciBH
-cmFmIHdyb3RlOgo+PiBXaGVuIHJ1bm5pbmcgTGludXggaW5zaWRlIGEgTml0cm8gRW5jbGF2ZSwg
-dGhlIGh5cGVydmlzb3IgcHJvdmlkZXMgYQo+PiBzcGVjaWFsIHZpcnRpbyBkZXZpY2UgY2FsbGVk
-ICJOaXRybyBTZWN1cml0eSBNb2R1bGUiIChOU00pLiBUaGlzIGRldmljZQo+PiBoYXMgMyBtYWlu
-IGZ1bmN0aW9uczoKPj4KPj4gICAgMSkgUHJvdmlkZSBhdHRlc3RhdGlvbiByZXBvcnRzCj4+ICAg
-IDIpIE1vZGlmeSBQQ1Igc3RhdGUKPj4gICAgMykgUHJvdmlkZSBlbnRyb3B5Cj4+Cj4+IFRoaXMg
-cGF0Y2ggYWRkcyBhIGRyaXZlciBmb3IgTlNNIHRoYXQgZXhwb3NlcyBhIC9kZXYvbnNtIGRldmlj
-ZSBub2RlIHdoaWNoCj4+IHVzZXIgc3BhY2UgY2FuIGlzc3VlIGFuIGlvY3RsIG9uIHRoaXMgZGV2
-aWNlIHdpdGggcmF3IE5TTSBDQk9SIGZvcm1hdHRlZAo+PiBjb21tYW5kcyB0byByZXF1ZXN0IGF0
-dGVzdGF0aW9uIGRvY3VtZW50cywgaW5mbHVlbmNlIFBDUiBzdGF0ZXMsIHJlYWQKPj4gZW50cm9w
-eSBhbmQgZW51bWVyYXRlIHN0YXR1cyBvZiB0aGUgZGV2aWNlLiBJbiBhZGRpdGlvbiwgdGhlIGRy
-aXZlcgo+PiBpbXBsZW1lbnRzIGEgaHdybmcgYmFja2VuZC4KPj4KPj4gT3JpZ2luYWxseS1ieTog
-UGV0cmUgRWZ0aW1lIDxwZXRyZS5lZnRpbWVAZ21haWwuY29tPgo+PiBTaWduZWQtb2ZmLWJ5OiBB
-bGV4YW5kZXIgR3JhZiA8Z3JhZkBhbWF6b24uY29tPgo+IEFsZXggYXJlIHlvdSBnb2luZyB0byBw
-dWJsaXNoIHRoZSBzcGVjIHBhdGNoIGZvciB0aGlzIGRldmljZT8gIEltcG9ydGFudAo+IHNvIHdl
-IGRvbid0IG5lZWQgdG8gZ3Vlc3MgYXQgYmVoYXZpb3VyIHdoZW4gZS5nLiAgbWFraW5nIGNoYW5n
-ZXMgdG8KPiB2aXJ0aW8gQVBJcy4gIEFsc28sIHdoaWNoIHRyZWUgZG8geW91IHdhbnQgdGhpcyB0
-byBnbyB0aHJvdWdoPwoKClRoZSBzcGVjIHBhdGNoIGluY2x1ZGluZyBwaW5nIG1haWwgYXJlIHNp
-dHRpbmcgb24gdGhlIHZpcnRpby1jb21tZW50cyAKbWFpbGluZyBsaXN0IHNpbmNlIE9jdG9iZXIu
-IEkgaGF2ZW4ndCBzZWVuIGFueSByZXBseSB1bmZvcnR1bmF0ZWx5IDooCgpodHRwczovL2xvcmUu
-a2VybmVsLm9yZy92aXJ0aW8tY29tbWVudC8yMDIzMTAyNTIzNTM0NS4xNzc4OC0xLWdyYWZAYW1h
-em9uLmNvbS8KCkhhcHB5IHRvIHJlYWQgZmVlZGJhY2sgaWYgeW91IGhhdmUgYW55IDopLgoKVGhp
-cyBwYXRjaCBoZXJlIGlzIGFscmVhZHkgYXBwbGllZCBpbiBHcmVnJ3MgbWlzYyB0cmVlIHdoaWNo
-IEknbSBoYXBweSAKdG8gaGF2ZSBpdCB0cmlja2xlIHRvIExpbnVzIHRocm91Z2guCgoKQWxleAoK
-CgoKQW1hem9uIERldmVsb3BtZW50IENlbnRlciBHZXJtYW55IEdtYkgKS3JhdXNlbnN0ci4gMzgK
-MTAxMTcgQmVybGluCkdlc2NoYWVmdHNmdWVocnVuZzogQ2hyaXN0aWFuIFNjaGxhZWdlciwgSm9u
-YXRoYW4gV2Vpc3MKRWluZ2V0cmFnZW4gYW0gQW10c2dlcmljaHQgQ2hhcmxvdHRlbmJ1cmcgdW50
-ZXIgSFJCIDE0OTE3MyBCClNpdHo6IEJlcmxpbgpVc3QtSUQ6IERFIDI4OSAyMzcgODc5CgoK
+On Tue, Nov 28, 2023 at 08:49:37PM +0000, Pasha Tatashin wrote:
+> iommu allocations should be accounted in order to allow admins to
+> monitor and limit the amount of iommu memory.
+> 
+> Signed-off-by: Pasha Tatashin <pasha.tatashin@soleen.com>
+
+
+Acked-by: Michael S. Tsirkin <mst@redhat.com>
+
+
+> ---
+>  drivers/vhost/vdpa.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
+> index da7ec77cdaff..a51c69c078d9 100644
+> --- a/drivers/vhost/vdpa.c
+> +++ b/drivers/vhost/vdpa.c
+> @@ -968,7 +968,8 @@ static int vhost_vdpa_map(struct vhost_vdpa *v, struct vhost_iotlb *iotlb,
+>  			r = ops->set_map(vdpa, asid, iotlb);
+>  	} else {
+>  		r = iommu_map(v->domain, iova, pa, size,
+> -			      perm_to_iommu_flags(perm), GFP_KERNEL);
+> +			      perm_to_iommu_flags(perm),
+> +			      GFP_KERNEL_ACCOUNT);
+>  	}
+>  	if (r) {
+>  		vhost_iotlb_del_range(iotlb, iova, iova + size - 1);
+> -- 
+> 2.43.0.rc2.451.g8631bc7472-goog
 
 
