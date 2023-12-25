@@ -1,105 +1,78 @@
-Return-Path: <linux-kernel+bounces-10860-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10862-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D28581DD7A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 02:56:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2399C81DD82
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 03:08:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F05611F21C33
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 01:56:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 55E511C21551
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 02:08:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95A22806;
-	Mon, 25 Dec 2023 01:56:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 104341108;
+	Mon, 25 Dec 2023 02:08:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UsVRw5ph"
+	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="cpHNnWYd"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C197A654;
-	Mon, 25 Dec 2023 01:56:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703469385; x=1735005385;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=lJKBmsKSaf98v268MnuzYweQaXuBoMMN5q9WBA7B5FA=;
-  b=UsVRw5phpGbz5AtiqAZpdovaKYWADSoPiLE6PshFWeJ5XkX8AxAw4K/B
-   0Bs21TLfpDPuCvuRNkFxx9xKETonZLKMJUrWvuGnaUnEvejqh8DfGFbqQ
-   vrZq9pd6xeNk5j6pNG3cEOS3mR2zP05v5elNtdjdNDuhUJDv0mFhBo3Wp
-   UAAk2PRogWvu0zw4Qz9ivgfQuVpSmQQHli0zUcs6KfaIxdspnLS6bOtRY
-   mYoaE8+LFW+Ix3AuHtUx7G3rIKPAlWA3Iun+bGCJGRiuHFyBkW2XapdsY
-   uYM0db4TMyHdOxrcegqeoTg//96akU4QsV5ku5L/ARkhi2m4TPV8TcK7W
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10934"; a="3074620"
-X-IronPort-AV: E=Sophos;i="6.04,302,1695711600"; 
-   d="scan'208";a="3074620"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Dec 2023 17:56:24 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10934"; a="950875903"
-X-IronPort-AV: E=Sophos;i="6.04,302,1695711600"; 
-   d="scan'208";a="950875903"
-Received: from zhaohaif-mobl.ccr.corp.intel.com (HELO [10.93.26.36]) ([10.93.26.36])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Dec 2023 17:56:21 -0800
-Message-ID: <ad68bfe2-15e5-4d82-a7f4-ce78399fecd7@linux.intel.com>
-Date: Mon, 25 Dec 2023 09:56:18 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1877A3F;
+	Mon, 25 Dec 2023 02:08:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=qLSfK8xGb+CwMrv5+cInd/MERfnvryzHJSdWTD4BQdw=; b=cpHNnWYdyrhnmrYwlZaFDVgCQc
+	SFWVWQPdScdhxcnwx/TZc0H45T4vULzyH0YAdAlhQtUIygJAX6F3mHOJJnA/GZMSMrKfK96CH4ieC
+	nrjlY4fPjIOtOd8G+mkfIxQ7Bk5WVFDY4csqEIC3EgUBO9vr/tEKX7ubk3FcNj9xa4aNYicXENZq/
+	Uiu9oVRTTKiwop2PaesMPSJ+QgS8B7HY5NgTdMfQY4881yhPoDBO/Kx42z9kcNIJ/3iNoTmid9x8j
+	bO3Zo1LHcObEfaWerqMRxLdmFkfGhALv4UhRpBn5dlz9c+Jzgis+MXrVcShfJoP+uIIFa88gEGvQj
+	+oSu5ndQ==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
+	id 1rHaNm-006WCg-0G;
+	Mon, 25 Dec 2023 02:07:54 +0000
+Date: Mon, 25 Dec 2023 02:07:54 +0000
+From: Al Viro <viro@zeniv.linux.org.uk>
+To: Baokun Li <libaokun1@huawei.com>
+Cc: Edward Adam Davis <eadavis@qq.com>,
+	syzbot+2c4a3b922a860084cc7f@syzkaller.appspotmail.com,
+	adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com, tytso@mit.edu,
+	yangerkun <yangerkun@huawei.com>
+Subject: Re: [PATCH] ext4: fix WARNING in lock_two_nondirectories
+Message-ID: <20231225020754.GE1674809@ZenIV>
+References: <000000000000e17185060c8caaad@google.com>
+ <tencent_DABB2333139E8D1BCF4B5D1B2725FABA9108@qq.com>
+ <fb653ebf-0225-00b3-df05-6b685a727b41@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v6 2/4] iommu/vt-d: don's issue devTLB flush request
- when device is disconnected
-To: Lukas Wunner <lukas@wunner.de>
-Cc: bhelgaas@google.com, baolu.lu@linux.intel.com, dwmw2@infradead.org,
- will@kernel.org, robin.murphy@arm.com, linux-pci@vger.kernel.org,
- iommu@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <20231224050657.182022-1-haifeng.zhao@linux.intel.com>
- <20231224050657.182022-3-haifeng.zhao@linux.intel.com>
- <20231224103225.GA31197@wunner.de>
-From: Ethan Zhao <haifeng.zhao@linux.intel.com>
-In-Reply-To: <20231224103225.GA31197@wunner.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fb653ebf-0225-00b3-df05-6b685a727b41@huawei.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 
+On Mon, Dec 25, 2023 at 09:38:51AM +0800, Baokun Li wrote:
 
-On 12/24/2023 6:32 PM, Lukas Wunner wrote:
-> On Sun, Dec 24, 2023 at 12:06:55AM -0500, Ethan Zhao wrote:
->> --- a/drivers/iommu/intel/pasid.c
->> +++ b/drivers/iommu/intel/pasid.c
->> @@ -481,6 +481,9 @@ devtlb_invalidation_with_pasid(struct intel_iommu *iommu,
->>   	if (!info || !info->ats_enabled)
->>   		return;
->>   
->> +	if (pci_dev_is_disconnected(to_pci_dev(dev)))
->> +		return;
->> +
->>   	sid = info->bus << 8 | info->devfn;
->>   	qdep = info->ats_qdep;
->>   	pfsid = info->pfsid;
-> Do you even need this or is patch [4/4] sufficient?
-> Is there a benefit to the hunk above on top of patch [4/4]?
+> In my opinion, it doesn't make sense to call lock_two_nondirectories()
+> here to determine if the inode is a regular file or not, since the logic
+> for dealing with non-regular files comes after the locking, so calling
+> lock_two_inodes() directly here will suffice.
 
-this is enough for purely surprise_removal or safe_removal,
+No.  First of all, lock_two_inodes() is a mistake that is going to be
+removed in the coming cycle.
 
-it is better to not send "ATS invalidation request" than sent,
+What's more, why the hell do you need to lock *anything* to check the
+inode type?  Inode type never changes, period.
 
-then check device state later.
-
-
-Thanks,
-
-Ethan
-
-> Thanks,
->
-> Lukas
->
+Just take that check prior to lock_two_nondirectories() and be done with
+that.
 
