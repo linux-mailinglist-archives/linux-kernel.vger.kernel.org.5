@@ -1,157 +1,149 @@
-Return-Path: <linux-kernel+bounces-11123-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11124-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B60381E1A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 18:02:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F8D081E1B6
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 18:30:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 45A6F1C21108
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 17:02:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 743C51C2111B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 17:30:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53DC051C3A;
-	Mon, 25 Dec 2023 17:02:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="D1adtD7f"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D73E52F78;
+	Mon, 25 Dec 2023 17:30:29 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF6C838DD8
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 17:02:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1703523742;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TZZm8uBDiMjjsh2k0v+Ijtz0bQpTltXijl66KHAtGuw=;
-	b=D1adtD7fAoJ5Yb5T4/sGUzauw4JhASbTU1KKB/ZUXUdQczt8+/c20+wgDwA0/o0KbhkZm9
-	jIpP/ne2ItISIPaluzm4J7SZOoGDUjIKfbTi1P+I/lLhrPgnSdh94vQcMOnVYqpRSKZ7Px
-	dKpB//E1AsqNVIZQ1XmDlnoHR2SXnts=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-619-xQ192CZRO2qyf00h7XPP4A-1; Mon, 25 Dec 2023 12:02:21 -0500
-X-MC-Unique: xQ192CZRO2qyf00h7XPP4A-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-40d39bbe215so34821665e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 09:02:21 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B41A951C26
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 17:30:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7bae41ec8a3so38422139f.2
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 09:30:27 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703523740; x=1704128540;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TZZm8uBDiMjjsh2k0v+Ijtz0bQpTltXijl66KHAtGuw=;
-        b=cvF4tUt1oDBU+B5VXKbMmmpV/+HDOVwhG4JKFFrpZmXT9NlayfdmjNvw02B71xSb2j
-         kLeMvWG/4VFjlQ5KQfGVq+qSWnQbLg5t59/zrW17VkE35/bXXC5qT6TrfAWzvTRHPYSi
-         jYZDNoQtcjdO9DQdPhYwjt27SyCl4Id/XqehMyjDFqOtQG8ugFg6IW5g6M6YnsZUoAyr
-         Ct6O5fJMsvbW3LI2NaHCEgAiC0pwvsIzCCAe9gbjptYTxXylUOb3+tfI+AidWbug0+O0
-         jU/zXsQ4XNgxCPv52U5P06VbVkqlHc8xUfAT6jaPXEkk9cH32IklUc/Ia5nojCs6Z+cD
-         72rw==
-X-Gm-Message-State: AOJu0YxOmZPRpl2ggA0KpWjP1p/LO7uaLGUKnbf6SaB/XIzkXYx0OcOJ
-	YZMdDV69z99/Z4nHPLpNZPAHQ3SFqTJxr+BJIZ3GnkSdXqkJsDCRxXXFm5cKke2uLFpuU3M/EEr
-	gge7jhcxquF2JaY8+EKuyLYpI7JuDweCJ
-X-Received: by 2002:a05:600c:354c:b0:40d:3aff:e067 with SMTP id i12-20020a05600c354c00b0040d3affe067mr3630424wmq.20.1703523740277;
-        Mon, 25 Dec 2023 09:02:20 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFI7/aHwtUm1PRRr4I1Ip9nypv342ACCr/ubj0f4dRys2i9jMSSS3I0aQfMD0TtZ7OlYEvzzg==
-X-Received: by 2002:a05:600c:354c:b0:40d:3aff:e067 with SMTP id i12-20020a05600c354c00b0040d3affe067mr3630410wmq.20.1703523739857;
-        Mon, 25 Dec 2023 09:02:19 -0800 (PST)
-Received: from redhat.com ([2a06:c701:73ef:4100:2cf6:9475:f85:181e])
-        by smtp.gmail.com with ESMTPSA id n9-20020a05600c4f8900b0040d56075463sm4512840wmq.44.2023.12.25.09.02.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Dec 2023 09:02:19 -0800 (PST)
-Date: Mon, 25 Dec 2023 12:02:16 -0500
-From: "Michael S. Tsirkin" <mst@redhat.com>
-To: Alexander Graf <graf@amazon.com>
-Cc: linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-	Arnd Bergmann <arnd@arndb.de>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	Olivia Mackall <olivia@selenic.com>,
-	Petre Eftime <petre.eftime@gmail.com>,
-	Erdem Meydanlli <meydanli@amazon.nl>,
-	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-	David Woodhouse <dwmw@amazon.co.uk>,
-	Jason Wang <jasowang@redhat.com>,
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-	Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: Re: [PATCH v7] misc: Add Nitro Secure Module driver
-Message-ID: <20231225115827-mutt-send-email-mst@kernel.org>
-References: <20231011213522.51781-1-graf@amazon.com>
- <20231225090044-mutt-send-email-mst@kernel.org>
- <363ca575-f01a-4d09-ae9d-b6249b3aedb3@amazon.com>
+        d=1e100.net; s=20230601; t=1703525427; x=1704130227;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=eDEbyFX/uNJ6pNOP9ps3wA3oswpBwZ/XfGpRR61rov4=;
+        b=TFo2otHpq3/7w5Eummbgv3NQaQ0kxbp03XSm9QjQabnNBG/ahamHxnzhC3J39yXoYJ
+         8GQdPPCH4JteyH5lFmaJB+iRZIlrS+pBD3MCYdg7G1aVWiY4ZsmJvVM7d8EEyZNJp882
+         zXupInMUbzosqyBC7b95Wjqn85FlSvzMq8x1YEK37fduUc/3vb7D9acy6zebKe8N4tx6
+         /bqzrf+2fs8FCeMEHPcu2X2aRlJ7jTaNIrur+F/qu1xg0Qi1JvCogbZGXWZSpCHCozib
+         Li2mepKNPSMxd1Gw++CXL6aVPOTc3HoCOe22osZ0jkKP9KtJZ7tywOZiapgxcOOCeOpn
+         gnuw==
+X-Gm-Message-State: AOJu0YzSPxPuuF83UqJVSMdfgPgPeKNlHR3cVW4kT/KGCn7+RsiEb1xV
+	pgnzcRCGdzrY3Rtd1jUQ8GSprJ7P0H3Y0d5oa+IBZFjCpvyG
+X-Google-Smtp-Source: AGHT+IFwTo/+8gy+Oz0fJprtvcSjjIo2Py45r/qiX0KlgP+HNDvyBWaS9NoonUnchP7BP014ovlSq3Vg7QzKzISe6Xfxb7OIZHbM
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <363ca575-f01a-4d09-ae9d-b6249b3aedb3@amazon.com>
+X-Received: by 2002:a05:6638:2dd0:b0:46d:5a:a467 with SMTP id
+ gt16-20020a0566382dd000b0046d005aa467mr173464jab.4.1703525425507; Mon, 25 Dec
+ 2023 09:30:25 -0800 (PST)
+Date: Mon, 25 Dec 2023 09:30:25 -0800
+In-Reply-To: <00000000000027f81605ee31ab88@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000da757a060d58ebbe@google.com>
+Subject: Re: [syzbot] [reiserfs?] KMSAN: uninit-value in reiserfs_new_inode (2)
+From: syzbot <syzbot+6450929faa7a97cd42d1@syzkaller.appspotmail.com>
+To: brauner@kernel.org, damien.lemoal@opensource.wdc.com, 
+	edward.shishkin@gmail.com, glider@google.com, jack@suse.cz, 
+	jlayton@kernel.org, linuszeng@tencent.com, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, reiserfs-devel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com, willy@infradead.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Mon, Dec 25, 2023 at 05:07:29PM +0100, Alexander Graf wrote:
-> Hey Michael,
-> 
-> On 25.12.23 15:06, Michael S. Tsirkin wrote:
-> > On Wed, Oct 11, 2023 at 09:35:22PM +0000, Alexander Graf wrote:
-> > > When running Linux inside a Nitro Enclave, the hypervisor provides a
-> > > special virtio device called "Nitro Security Module" (NSM). This device
-> > > has 3 main functions:
-> > > 
-> > >    1) Provide attestation reports
-> > >    2) Modify PCR state
-> > >    3) Provide entropy
-> > > 
-> > > This patch adds a driver for NSM that exposes a /dev/nsm device node which
-> > > user space can issue an ioctl on this device with raw NSM CBOR formatted
-> > > commands to request attestation documents, influence PCR states, read
-> > > entropy and enumerate status of the device. In addition, the driver
-> > > implements a hwrng backend.
-> > > 
-> > > Originally-by: Petre Eftime <petre.eftime@gmail.com>
-> > > Signed-off-by: Alexander Graf <graf@amazon.com>
-> > Alex are you going to publish the spec patch for this device?  Important
-> > so we don't need to guess at behaviour when e.g.  making changes to
-> > virtio APIs.  Also, which tree do you want this to go through?
-> 
-> 
-> The spec patch including ping mail are sitting on the virtio-comments
-> mailing list since October. I haven't seen any reply unfortunately :(
-> 
-> https://lore.kernel.org/virtio-comment/20231025235345.17788-1-graf@amazon.com/
-> 
-> Happy to read feedback if you have any :).
+syzbot has found a reproducer for the following issue on:
 
-Oh I forgot.
-Now that I've read the driver, I actually have some :)
-I think there's an assumption that there's a request buffer
-and response buffer queued by the driver, and that
-the device always first consumes the request buffer
-followed by consuming the response buffer.
-If that is right then driver is ok but spec needs
-clarification, will note on virtio-comment.
+HEAD commit:    861deac3b092 Linux 6.7-rc7
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=12057ecee80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e0c7078a6b901aa3
+dashboard link: https://syzkaller.appspot.com/bug?extid=6450929faa7a97cd42d1
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14836ca1e80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=159e1e16e80000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/0ea60ee8ed32/disk-861deac3.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/6d69fdc33021/vmlinux-861deac3.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/f0158750d452/bzImage-861deac3.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/dcd887118b46/mount_0.gz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+6450929faa7a97cd42d1@syzkaller.appspotmail.com
+
+REISERFS warning (device loop0): vs-13060 reiserfs_update_sd_size: stat data of object [1 2 0x0 SD] (nlink == 1) not found (pos 2)
+REISERFS (device loop0): Created .reiserfs_priv - reserved for xattr storage.
+=====================================================
+BUG: KMSAN: uninit-value in reiserfs_new_inode+0x16cd/0x20f0 fs/reiserfs/inode.c:2044
+ reiserfs_new_inode+0x16cd/0x20f0 fs/reiserfs/inode.c:2044
+ reiserfs_create+0x674/0xcb0 fs/reiserfs/namei.c:666
+ xattr_create fs/reiserfs/xattr.c:70 [inline]
+ xattr_lookup+0x3ee/0x5e0 fs/reiserfs/xattr.c:413
+ reiserfs_xattr_set_handle+0xe7/0x21b0 fs/reiserfs/xattr.c:535
+ reiserfs_xattr_set+0x670/0x7f0 fs/reiserfs/xattr.c:635
+ trusted_set+0x112/0x190 fs/reiserfs/xattr_trusted.c:31
+ __vfs_setxattr+0x7aa/0x8b0 fs/xattr.c:201
+ __vfs_setxattr_noperm+0x24f/0xa30 fs/xattr.c:235
+ __vfs_setxattr_locked+0x441/0x480 fs/xattr.c:296
+ vfs_setxattr+0x294/0x650 fs/xattr.c:322
+ do_setxattr fs/xattr.c:630 [inline]
+ setxattr+0x45f/0x540 fs/xattr.c:653
+ path_setxattr+0x1f5/0x3c0 fs/xattr.c:672
+ __do_sys_setxattr fs/xattr.c:688 [inline]
+ __se_sys_setxattr fs/xattr.c:684 [inline]
+ __x64_sys_setxattr+0xf7/0x180 fs/xattr.c:684
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0x44/0x110 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+
+Uninit was created at:
+ __alloc_pages+0x9a4/0xe00 mm/page_alloc.c:4591
+ alloc_pages_mpol+0x62b/0x9d0 mm/mempolicy.c:2133
+ alloc_pages+0x1be/0x1e0 mm/mempolicy.c:2204
+ alloc_slab_page mm/slub.c:1870 [inline]
+ allocate_slab mm/slub.c:2017 [inline]
+ new_slab+0x421/0x1570 mm/slub.c:2070
+ ___slab_alloc+0x13db/0x33d0 mm/slub.c:3223
+ __slab_alloc mm/slub.c:3322 [inline]
+ __slab_alloc_node mm/slub.c:3375 [inline]
+ slab_alloc_node mm/slub.c:3468 [inline]
+ slab_alloc mm/slub.c:3486 [inline]
+ __kmem_cache_alloc_lru mm/slub.c:3493 [inline]
+ kmem_cache_alloc_lru+0x552/0x970 mm/slub.c:3509
+ alloc_inode_sb include/linux/fs.h:2937 [inline]
+ reiserfs_alloc_inode+0x62/0x150 fs/reiserfs/super.c:642
+ alloc_inode+0x83/0x440 fs/inode.c:261
+ iget5_locked+0xa9/0x210 fs/inode.c:1271
+ reiserfs_fill_super+0x2109/0x39d0 fs/reiserfs/super.c:2053
+ mount_bdev+0x3d7/0x560 fs/super.c:1650
+ get_super_block+0x4d/0x60 fs/reiserfs/super.c:2601
+ legacy_get_tree+0x110/0x290 fs/fs_context.c:662
+ vfs_get_tree+0xa5/0x520 fs/super.c:1771
+ do_new_mount+0x68d/0x1550 fs/namespace.c:3337
+ path_mount+0x73d/0x1f20 fs/namespace.c:3664
+ do_mount fs/namespace.c:3677 [inline]
+ __do_sys_mount fs/namespace.c:3886 [inline]
+ __se_sys_mount+0x725/0x810 fs/namespace.c:3863
+ __x64_sys_mount+0xe4/0x140 fs/namespace.c:3863
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0x44/0x110 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+
+CPU: 1 PID: 5006 Comm: syz-executor185 Not tainted 6.7.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
+=====================================================
 
 
-> This patch here is already applied in Greg's misc tree which I'm happy to
-> have it trickle to Linus through.
-> 
-> 
-> Alex
-> 
-> 
-> 
-> 
-> Amazon Development Center Germany GmbH
-> Krausenstr. 38
-> 10117 Berlin
-> Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
-> Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
-> Sitz: Berlin
-> Ust-ID: DE 289 237 879
-> 
-> 
-
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
