@@ -1,111 +1,133 @@
-Return-Path: <linux-kernel+bounces-10889-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10891-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9533581DE1A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 05:39:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 598CE81DE20
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 05:54:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 375DB2817C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 04:39:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D60CA1F21428
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 04:54:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CC5D10EE;
-	Mon, 25 Dec 2023 04:39:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09BEF10F1;
+	Mon, 25 Dec 2023 04:54:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JBcNPFWB"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Qrat2D9m"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-il1-f175.google.com (mail-il1-f175.google.com [209.85.166.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B80ECEA6
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 04:39:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f175.google.com with SMTP id e9e14a558f8ab-35fb0dcec7aso15979835ab.3
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Dec 2023 20:39:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703479182; x=1704083982; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=lfKyhVgY9bapo2txxnaDiDpV+zqhiz7hEGxnfpCVkzs=;
-        b=JBcNPFWB25EdNjJ+slJbbk10Ey9fPArXKaN7y8kwdw6JVmNY5Kp7O6zfsA7ZmqQ+gm
-         KsVmkGO1kItTOwBHp78JG1el3N3TnfhUxYt+wKsrqZUzxHxipLuWUXpoMlwVXGhAkZge
-         JXfrJi9DqYjrp9TltURM5vP7HZlNCrGJPgt+6m8uL9FUMyiqIzIt7qtUP55bw4Bhzsi4
-         wL8sLpz69T3YUBeh5iD2I8QHzUJly6iw/YxNCB5HWjd7vlxPgyK6JxFB6GivwK58M1pT
-         rNxlQnReN+nONiotmdqfzSGbv8wYAugEF9aN9ZjNOe8h4RfaS+ALWLmWEJFyNcQ3Jzd1
-         8H9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703479182; x=1704083982;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lfKyhVgY9bapo2txxnaDiDpV+zqhiz7hEGxnfpCVkzs=;
-        b=iC93gKlXI8zbleQ2bYWZPviAD27qvelaQQLdoRur7JDQmZyFTJnnq4im/6dGf6jmHQ
-         vLeWN6zucrMm0mF7l4MSeZ8D4nHpVEMV6nVTX7kebQAHC9BZOwxYgVpH2K4CgQWmKzxo
-         wgaw9cjLI8a96LtdVHcMI/5e5nz7M1SAkVeRvqWBPxm0YZ9ef7Jfv0gdtLfFpIMZwkim
-         NOWFgxIh3Pkgd7BcAr/BugxtMbvwd79MNbjzR4cOeA275ASEOm3ZHOTNJ0/zNi94f6/U
-         KUMBvsDvHcM33nYO0/sImH3c12vAcYsLihO3TaqIA2NQBLdZ2xRzcX6/SoxQimqbA7k0
-         1Isg==
-X-Gm-Message-State: AOJu0Yyq+anZe/5DUddJ+TQK1KDkVf28f9txoqRK5uV/rM/Rjgy2kGeM
-	prpzlu/nRSPCPEZRwpameVlVZnLOi50Bpw==
-X-Google-Smtp-Source: AGHT+IETa4bQ/LBMOoI9mGBUNrWu6SwVhE9XBVau1Q9J2zg8yBnHZ08v9jxDW6NZ8ZY/6gyQ3pnaQw==
-X-Received: by 2002:a05:6e02:1aa6:b0:35f:d9e4:9c7c with SMTP id l6-20020a056e021aa600b0035fd9e49c7cmr7564939ilv.62.1703479181681;
-        Sun, 24 Dec 2023 20:39:41 -0800 (PST)
-Received: from archie.me ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id n10-20020a1709026a8a00b001ab39cd875csm7299975plk.133.2023.12.24.20.39.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 Dec 2023 20:39:40 -0800 (PST)
-Received: by archie.me (Postfix, from userid 1000)
-	id A6B7E10207150; Mon, 25 Dec 2023 11:39:36 +0700 (WIB)
-Date: Mon, 25 Dec 2023 11:39:36 +0700
-From: Bagas Sanjaya <bagasdotme@gmail.com>
-To: Rudy Zijlstra <rudy@grumpydevil.homelinux.org>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: I can't get contributors for my C project. Can you help?
-Message-ID: <ZYkHiA6SIjfUpSWI@archie.me>
-References: <549578214.4148875.1703446908152.ref@mail.yahoo.com>
- <549578214.4148875.1703446908152@mail.yahoo.com>
- <e274b55d-9818-0919-fb90-bc6d0b522b0e@grumpydevil.homelinux.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E039EA6
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 04:54:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74E6BC433C7;
+	Mon, 25 Dec 2023 04:54:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703480091;
+	bh=UArUSyBZsPKxLkpUFilgpFD8aka1iX7bL7/0EeJ4W9s=;
+	h=From:To:Cc:Subject:Date:From;
+	b=Qrat2D9mqhj5ram8CGulN/a4AthJQBzq+uzfRUGEqVXSIEIdizPmerD1Gb9BqkX5j
+	 yOScpSvVveHperCPxKtZsxuFilvN/6urpCPsJfjdZTndKgpLv72pa3/9tTaDrfvutM
+	 Nzu5gTXzT+kiqck1CCNcUEqWq3AV+HIyWsp+2zID73GSrcNmCUeAH0iDwet5KQiJs+
+	 +77xdqrGRHyrPTZZt8KuNkIjRBj/ahjruXT35opTqY58rphamGKD+utB3Bm/EJlNUr
+	 OfW4KpJjZWz8zfl4rLRmu+uanCkWxztq3OKLNvol0FDa+ASb4dvwpiMThiFiPWizz6
+	 SPmxwG+W4/eNA==
+From: Jisheng Zhang <jszhang@kernel.org>
+To: Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>
+Cc: linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Eric Biggers <ebiggers@kernel.org>,
+	Conor Dooley <conor.dooley@microchip.com>,
+	Qingfang DENG <dqfext@gmail.com>
+Subject: [PATCH v4 0/2] riscv: enable EFFICIENT_UNALIGNED_ACCESS and DCACHE_WORD_ACCESS
+Date: Mon, 25 Dec 2023 12:42:05 +0800
+Message-Id: <20231225044207.3821-1-jszhang@kernel.org>
+X-Mailer: git-send-email 2.40.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="TQ8auetMcA807Zyj"
-Content-Disposition: inline
-In-Reply-To: <e274b55d-9818-0919-fb90-bc6d0b522b0e@grumpydevil.homelinux.org>
+Content-Transfer-Encoding: 8bit
+
+Some riscv implementations such as T-HEAD's C906, C908, C910 and C920
+support efficient unaligned access, for performance reason we want
+to enable HAVE_EFFICIENT_UNALIGNED_ACCESS on these platforms. To
+avoid performance regressions on non efficient unaligned access
+platforms, HAVE_EFFICIENT_UNALIGNED_ACCESS can't be globally selected.
+
+To solve this problem, runtime code patching based on the detected
+speed is a good solution. But that's not easy, it involves lots of
+work to modify vairous subsystems such as net, mm, lib and so on.
+This can be done step by step.
+
+So let's take an easier solution: add support to efficient unaligned
+access and hide the support under NONPORTABLE.
+
+patch1 introduces RISCV_EFFICIENT_UNALIGNED_ACCESS which depends on
+NONPORTABLE, if users know during config time that the kernel will be
+only run on those efficient unaligned access hw platforms, they can
+enable it. Obviously, generic unified kernel Image shouldn't enable it.
+
+patch2 adds support DCACHE_WORD_ACCESS when MMU and
+RISCV_EFFICIENT_UNALIGNED_ACCESS.
+
+Below test program and step shows how much performance can be improved:
+
+ $ cat tt.c
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <unistd.h>
+
+ #define ITERATIONS 1000000
+
+ #define PATH "123456781234567812345678123456781"
+
+ int main(void)
+ {
+         unsigned long i;
+         struct stat buf;
+
+         for (i = 0; i < ITERATIONS; i++)
+                 stat(PATH, &buf);
+
+         return 0;
+ }
+
+ $ gcc -O2 tt.c
+ $ touch 123456781234567812345678123456781
+ $ time ./a.out
+
+Per my test on T-HEAD C910 platforms, the above test performance is
+improved by about 7.5%.
+
+Since v3:
+  - adopt Eric's suggestions, such as better Kconfig help msg and so on.
+
+Since v2:
+  - Don't set "-mstrict-align" CFLAGS if HAVE_EFFICIENT_UNALIGNED_ACCESS
+  - collect Reviewed-by tag
+
+Since v1:
+  - fix typo in commit msg
+  - fix build error if NOMMU
 
 
---TQ8auetMcA807Zyj
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Jisheng Zhang (2):
+  riscv: introduce RISCV_EFFICIENT_UNALIGNED_ACCESS
+  riscv: select DCACHE_WORD_ACCESS for efficient unaligned access HW
 
-[trimming unneeded addresses]
+ arch/riscv/Kconfig                      | 14 +++++++++++
+ arch/riscv/Makefile                     |  2 ++
+ arch/riscv/include/asm/asm-extable.h    | 15 ++++++++++++
+ arch/riscv/include/asm/word-at-a-time.h | 27 +++++++++++++++++++++
+ arch/riscv/mm/extable.c                 | 31 +++++++++++++++++++++++++
+ 5 files changed, 89 insertions(+)
 
-On Sun, Dec 24, 2023 at 09:25:38PM +0100, Rudy Zijlstra wrote:
-> blacklisted. Long ago i needed to do that...
+-- 
+2.40.0
 
-Also done on my side (block the desperate spammer using Gmail interface).
-
-Ciao!
-
---=20
-An old man doll... just what I always wanted! - Clara
-
---TQ8auetMcA807Zyj
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZYkHhQAKCRD2uYlJVVFO
-oxxEAQCJmEyXvENCwPsGs/V4vgp1N/Q6imN6wKlMvGKaGdKCpAEA+UJ4QKKRz84M
-1pi6QL1tyMtepbvbpzf9omyScf7ynQs=
-=0Rkv
------END PGP SIGNATURE-----
-
---TQ8auetMcA807Zyj--
 
