@@ -1,172 +1,157 @@
-Return-Path: <linux-kernel+bounces-11122-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11123-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 238FA81E19A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 17:41:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B60381E1A8
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 18:02:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4A0B61C212A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 16:41:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 45A6F1C21108
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 17:02:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 887A61EB5B;
-	Mon, 25 Dec 2023 16:40:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53DC051C3A;
+	Mon, 25 Dec 2023 17:02:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Oz46Xtnx"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="D1adtD7f"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B4C11DFDA;
-	Mon, 25 Dec 2023 16:40:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2ccabfd9762so22417471fa.1;
-        Mon, 25 Dec 2023 08:40:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703522450; x=1704127250; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fyrs7Ll9Q+iAmpgy0m3tgYOMDYlC9HxJOdfyP/9chm8=;
-        b=Oz46XtnxUoLruKjO92nA4e7aj5lpEZc2C3RSIW/uSwBpbS3H3Lo9yq8lHamy2N1yGY
-         w61/fCXmvIY5hzkzjO3mxQ1GsoX0u6mEVLyzrgHcLCFrnCkSFolwzSnoJEiiX/hhfgT+
-         BERtI7RyWtGvHyTlS+TOVZlhOdM4fis7OFhpNaZuN0r1Dq/P1DCAd5gHuMTfGUGKU7Qo
-         XbPa1dVJv2SOPkj7yisC8Dbt1yHUArsg9xkQUVS2Cwjf3m6FJNoA3fXDq4FVlpOlveKN
-         D3bqaU9ILGfVxNS0Ng6zN0CLbx5wGKZboohCT425FPcWRJX8jyvY3KlAYQwrgqzT2PTg
-         CPBA==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF6C838DD8
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 17:02:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1703523742;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=TZZm8uBDiMjjsh2k0v+Ijtz0bQpTltXijl66KHAtGuw=;
+	b=D1adtD7fAoJ5Yb5T4/sGUzauw4JhASbTU1KKB/ZUXUdQczt8+/c20+wgDwA0/o0KbhkZm9
+	jIpP/ne2ItISIPaluzm4J7SZOoGDUjIKfbTi1P+I/lLhrPgnSdh94vQcMOnVYqpRSKZ7Px
+	dKpB//E1AsqNVIZQ1XmDlnoHR2SXnts=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-619-xQ192CZRO2qyf00h7XPP4A-1; Mon, 25 Dec 2023 12:02:21 -0500
+X-MC-Unique: xQ192CZRO2qyf00h7XPP4A-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-40d39bbe215so34821665e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 09:02:21 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703522450; x=1704127250;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fyrs7Ll9Q+iAmpgy0m3tgYOMDYlC9HxJOdfyP/9chm8=;
-        b=DmJzCmYOQfmXoTqIWF+HMy+nJA8VyD0vZzI0hpbRqlfxYTAcCl5TiMr+AmE3wJXviz
-         U+GlrURqeJQwRwSKH464E/fVVTUv0rGbuWFYvbeO9HG3GgMjSamaSchiVhB4O7DY8KxH
-         5/cBcrjWd46BxIOHZqxm1dYT9l5s1QWZtOaMLpY5B8SxySvB8ccdb6cTPb+7/a6Dv+vk
-         xqJKumlb9Yu7wTKABBCFg7NFzu6hPwcXu+zvHjqwh/DtTjjOg3LIqY+6YKsA0J6dZ/m9
-         OPN4U4Sp/aozYg/b7Dr6TPGbEo6RDJROY/mKWOYtvSBF71FR2GqX0+fSt2876S3Q0vQ/
-         8N8Q==
-X-Gm-Message-State: AOJu0YzEZty0BxYcKvtVo6SW6cvmpj9Ho+NUGMAdHxt+iTTJ8xXW35sz
-	CRPTUbHtICCPniuRrNZUurCYD5xI1CRR3dFqSvo=
-X-Google-Smtp-Source: AGHT+IEEhAZtmtduwuOGDbra3s0u0PIh9UM9Ey7Xgh800PGovD5L2RU6Qk1YDYxCcp5ownM2AxWmguWNYO2n212nc5M=
-X-Received: by 2002:a2e:8742:0:b0:2cc:7a8e:1846 with SMTP id
- q2-20020a2e8742000000b002cc7a8e1846mr3167817ljj.17.1703522449790; Mon, 25 Dec
- 2023 08:40:49 -0800 (PST)
+        d=1e100.net; s=20230601; t=1703523740; x=1704128540;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TZZm8uBDiMjjsh2k0v+Ijtz0bQpTltXijl66KHAtGuw=;
+        b=cvF4tUt1oDBU+B5VXKbMmmpV/+HDOVwhG4JKFFrpZmXT9NlayfdmjNvw02B71xSb2j
+         kLeMvWG/4VFjlQ5KQfGVq+qSWnQbLg5t59/zrW17VkE35/bXXC5qT6TrfAWzvTRHPYSi
+         jYZDNoQtcjdO9DQdPhYwjt27SyCl4Id/XqehMyjDFqOtQG8ugFg6IW5g6M6YnsZUoAyr
+         Ct6O5fJMsvbW3LI2NaHCEgAiC0pwvsIzCCAe9gbjptYTxXylUOb3+tfI+AidWbug0+O0
+         jU/zXsQ4XNgxCPv52U5P06VbVkqlHc8xUfAT6jaPXEkk9cH32IklUc/Ia5nojCs6Z+cD
+         72rw==
+X-Gm-Message-State: AOJu0YxOmZPRpl2ggA0KpWjP1p/LO7uaLGUKnbf6SaB/XIzkXYx0OcOJ
+	YZMdDV69z99/Z4nHPLpNZPAHQ3SFqTJxr+BJIZ3GnkSdXqkJsDCRxXXFm5cKke2uLFpuU3M/EEr
+	gge7jhcxquF2JaY8+EKuyLYpI7JuDweCJ
+X-Received: by 2002:a05:600c:354c:b0:40d:3aff:e067 with SMTP id i12-20020a05600c354c00b0040d3affe067mr3630424wmq.20.1703523740277;
+        Mon, 25 Dec 2023 09:02:20 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFI7/aHwtUm1PRRr4I1Ip9nypv342ACCr/ubj0f4dRys2i9jMSSS3I0aQfMD0TtZ7OlYEvzzg==
+X-Received: by 2002:a05:600c:354c:b0:40d:3aff:e067 with SMTP id i12-20020a05600c354c00b0040d3affe067mr3630410wmq.20.1703523739857;
+        Mon, 25 Dec 2023 09:02:19 -0800 (PST)
+Received: from redhat.com ([2a06:c701:73ef:4100:2cf6:9475:f85:181e])
+        by smtp.gmail.com with ESMTPSA id n9-20020a05600c4f8900b0040d56075463sm4512840wmq.44.2023.12.25.09.02.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Dec 2023 09:02:19 -0800 (PST)
+Date: Mon, 25 Dec 2023 12:02:16 -0500
+From: "Michael S. Tsirkin" <mst@redhat.com>
+To: Alexander Graf <graf@amazon.com>
+Cc: linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+	Arnd Bergmann <arnd@arndb.de>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	Olivia Mackall <olivia@selenic.com>,
+	Petre Eftime <petre.eftime@gmail.com>,
+	Erdem Meydanlli <meydanli@amazon.nl>,
+	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+	David Woodhouse <dwmw@amazon.co.uk>,
+	Jason Wang <jasowang@redhat.com>,
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+	Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: Re: [PATCH v7] misc: Add Nitro Secure Module driver
+Message-ID: <20231225115827-mutt-send-email-mst@kernel.org>
+References: <20231011213522.51781-1-graf@amazon.com>
+ <20231225090044-mutt-send-email-mst@kernel.org>
+ <363ca575-f01a-4d09-ae9d-b6249b3aedb3@amazon.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231224172128.271447-1-ojeda@kernel.org>
-In-Reply-To: <20231224172128.271447-1-ojeda@kernel.org>
-From: Vincenzo Palazzo <vincenzopalazzodev@gmail.com>
-Date: Mon, 25 Dec 2023 17:40:36 +0100
-Message-ID: <CAKy8djQQaR9WGv1gon49QBVGMZmg-9o75EDan0q4ohgKonnFpQ@mail.gmail.com>
-Subject: Re: [PATCH] rust: upgrade to Rust 1.75.0
-To: Miguel Ojeda <ojeda@kernel.org>
-Cc: Wedson Almeida Filho <wedsonaf@gmail.com>, Alex Gaynor <alex.gaynor@gmail.com>, 
-	Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
-	Alice Ryhl <aliceryhl@google.com>, rust-for-linux@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, patches@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <363ca575-f01a-4d09-ae9d-b6249b3aedb3@amazon.com>
 
-   Vincent.
+On Mon, Dec 25, 2023 at 05:07:29PM +0100, Alexander Graf wrote:
+> Hey Michael,
+> 
+> On 25.12.23 15:06, Michael S. Tsirkin wrote:
+> > On Wed, Oct 11, 2023 at 09:35:22PM +0000, Alexander Graf wrote:
+> > > When running Linux inside a Nitro Enclave, the hypervisor provides a
+> > > special virtio device called "Nitro Security Module" (NSM). This device
+> > > has 3 main functions:
+> > > 
+> > >    1) Provide attestation reports
+> > >    2) Modify PCR state
+> > >    3) Provide entropy
+> > > 
+> > > This patch adds a driver for NSM that exposes a /dev/nsm device node which
+> > > user space can issue an ioctl on this device with raw NSM CBOR formatted
+> > > commands to request attestation documents, influence PCR states, read
+> > > entropy and enumerate status of the device. In addition, the driver
+> > > implements a hwrng backend.
+> > > 
+> > > Originally-by: Petre Eftime <petre.eftime@gmail.com>
+> > > Signed-off-by: Alexander Graf <graf@amazon.com>
+> > Alex are you going to publish the spec patch for this device?  Important
+> > so we don't need to guess at behaviour when e.g.  making changes to
+> > virtio APIs.  Also, which tree do you want this to go through?
+> 
+> 
+> The spec patch including ping mail are sitting on the virtio-comments
+> mailing list since October. I haven't seen any reply unfortunately :(
+> 
+> https://lore.kernel.org/virtio-comment/20231025235345.17788-1-graf@amazon.com/
+> 
+> Happy to read feedback if you have any :).
 
-
-On Sun, Dec 24, 2023 at 6:22=E2=80=AFPM Miguel Ojeda <ojeda@kernel.org> wro=
-te:
->
-> This is the next upgrade to the Rust toolchain, from 1.74.1 to 1.75.0
-> (i.e. the latest) [1].
->
-> See the upgrade policy [2] and the comments on the first upgrade in
-> commit 3ed03f4da06e ("rust: upgrade to Rust 1.68.2").
->
-> # Unstable features
->
-> The `const_maybe_uninit_zeroed` unstable feature [3] was stabilized in
-> Rust 1.75.0, which we were using in the PHYLIB abstractions.
->
-> The only unstable features allowed to be used outside the `kernel` crate
-> are still `new_uninit,offset_of`, though other code to be upstreamed
-> may increase the list.
->
-> Please see [4] for details.
->
-> # Other improvements
->
-> Rust 1.75.0 stabilized `pointer_byte_offsets` [5] which we could
-> potentially use as an alternative for `ptr_metadata` in the future.
->
-> # Required changes
->
-> For this upgrade, no changes were required (i.e. on our side).
->
-> # `alloc` upgrade and reviewing
->
-> The vast majority of changes are due to our `alloc` fork being upgraded
-> at once.
->
-> There are two kinds of changes to be aware of: the ones coming from
-> upstream, which we should follow as closely as possible, and the updates
-> needed in our added fallible APIs to keep them matching the newer
-> infallible APIs coming from upstream.
->
-> Instead of taking a look at the diff of this patch, an alternative
-> approach is reviewing a diff of the changes between upstream `alloc` and
-> the kernel's. This allows to easily inspect the kernel additions only,
-> especially to check if the fallible methods we already have still match
-> the infallible ones in the new version coming from upstream.
->
-> Another approach is reviewing the changes introduced in the additions in
-> the kernel fork between the two versions. This is useful to spot
-> potentially unintended changes to our additions.
->
-> To apply these approaches, one may follow steps similar to the following
-> to generate a pair of patches that show the differences between upstream
-> Rust and the kernel (for the subset of `alloc` we use) before and after
-> applying this patch:
->
->     # Get the difference with respect to the old version.
->     git -C rust checkout $(linux/scripts/min-tool-version.sh rustc)
->     git -C linux ls-tree -r --name-only HEAD -- rust/alloc |
->         cut -d/ -f3- |
->         grep -Fv README.md |
->         xargs -IPATH cp rust/library/alloc/src/PATH linux/rust/alloc/PATH
->     git -C linux diff --patch-with-stat --summary -R > old.patch
->     git -C linux restore rust/alloc
->
->     # Apply this patch.
->     git -C linux am rust-upgrade.patch
->
->     # Get the difference with respect to the new version.
->     git -C rust checkout $(linux/scripts/min-tool-version.sh rustc)
->     git -C linux ls-tree -r --name-only HEAD -- rust/alloc |
->         cut -d/ -f3- |
->         grep -Fv README.md |
->         xargs -IPATH cp rust/library/alloc/src/PATH linux/rust/alloc/PATH
->     git -C linux diff --patch-with-stat --summary -R > new.patch
->     git -C linux restore rust/alloc
->
-> Now one may check the `new.patch` to take a look at the additions (first
-> approach) or at the difference between those two patches (second
-> approach). For the latter, a side-by-side tool is recommended.
->
-> Link: https://github.com/rust-lang/rust/blob/stable/RELEASES.md#version-1=
-750-2023-12-28 [1]
-> Link: https://rust-for-linux.com/rust-version-policy [2]
-> Link: https://github.com/rust-lang/rust/issues/91850 [3]
-> Link: https://github.com/Rust-for-Linux/linux/issues/2 [4]
-> Link: https://github.com/rust-lang/rust/issues/96283 [5]
-> Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
-> ---
+Oh I forgot.
+Now that I've read the driver, I actually have some :)
+I think there's an assumption that there's a request buffer
+and response buffer queued by the driver, and that
+the device always first consumes the request buffer
+followed by consuming the response buffer.
+If that is right then driver is ok but spec needs
+clarification, will note on virtio-comment.
 
 
-Reviewed-by: Vincenzo Palazzo <vincenzopalazzodev@gmail.com>
+> This patch here is already applied in Greg's misc tree which I'm happy to
+> have it trickle to Linus through.
+> 
+> 
+> Alex
+> 
+> 
+> 
+> 
+> Amazon Development Center Germany GmbH
+> Krausenstr. 38
+> 10117 Berlin
+> Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
+> Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
+> Sitz: Berlin
+> Ust-ID: DE 289 237 879
+> 
+> 
+
 
