@@ -1,371 +1,316 @@
-Return-Path: <linux-kernel+bounces-10942-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10935-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9877581DEF4
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 08:59:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 458CF81DEE6
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 08:56:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0E65A1F21E30
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 07:59:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B67B51F21D21
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 07:56:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F59A4417;
-	Mon, 25 Dec 2023 07:58:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3A2A23A8;
+	Mon, 25 Dec 2023 07:56:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="oGOsMrpd"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAED5DF54;
-	Mon, 25 Dec 2023 07:58:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
-Received: from mail.maildlp.com (unknown [172.19.88.214])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Sz9JM0qxGz1wpH5;
-	Mon, 25 Dec 2023 15:58:27 +0800 (CST)
-Received: from kwepemi500006.china.huawei.com (unknown [7.221.188.68])
-	by mail.maildlp.com (Postfix) with ESMTPS id 03EA61A019B;
-	Mon, 25 Dec 2023 15:58:32 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.2) by
- kwepemi500006.china.huawei.com (7.221.188.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 25 Dec 2023 15:57:17 +0800
-From: Junxian Huang <huangjunxian6@hisilicon.com>
-To: <jgg@ziepe.ca>, <leon@kernel.org>
-CC: <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
-	<linux-kernel@vger.kernel.org>, <huangjunxian6@hisilicon.com>
-Subject: [PATCH for-next 6/6] RDMA/hns: Simplify 'struct hns_roce_hem' allocation
-Date: Mon, 25 Dec 2023 15:53:30 +0800
-Message-ID: <20231225075330.4116470-7-huangjunxian6@hisilicon.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20231225075330.4116470-1-huangjunxian6@hisilicon.com>
-References: <20231225075330.4116470-1-huangjunxian6@hisilicon.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF10F15B9;
+	Mon, 25 Dec 2023 07:56:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1703490987; x=1735026987;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=ztD1+owzc5TzCOzkgrTNjFp4iDlX9X9XCZbpsHCrBxA=;
+  b=oGOsMrpdvoiCOGeezHwu+ZjOWcfOKzulEHHizFQQb7+zLbrhNLM6iEiV
+   Zk2Ba2dinNXHoLo16VbBqD85f4vv/Xml03pgcs9DhK+rf3nwKQW+uNMBr
+   r1jH1DQGWWj1CqI04ey8yEFbsoG6/TqgI+XZ5NteKHtguyRIFa1EgKEXn
+   v8M0s8CUkW+Dj+7XdbrD49dubZNjwKXW5kVEWAx1Z0YepSO9VT193RSZ9
+   bkik4Gta7Ig0qsgihe9+TAEnJGMk4fZF0zhimh+FrITOTaVJfnJNs2CAQ
+   U+WU1wpXNCdvtwE/WSx6D/BZFvnSgCaAGqAI6JWmXALuhyExWa7pA+h4H
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10934"; a="427439992"
+X-IronPort-AV: E=Sophos;i="6.04,302,1695711600"; 
+   d="scan'208";a="427439992"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Dec 2023 23:56:25 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,302,1695711600"; 
+   d="scan'208";a="19725986"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Dec 2023 23:56:17 -0800
+From: "Huang, Ying" <ying.huang@intel.com>
+To: Gregory Price <gourry.memverge@gmail.com>
+Cc: linux-mm@kvack.org,  linux-doc@vger.kernel.org,
+  linux-fsdevel@vger.kernel.org,  linux-kernel@vger.kernel.org,
+  linux-api@vger.kernel.org,  x86@kernel.org,  akpm@linux-foundation.org,
+  arnd@arndb.de,  tglx@linutronix.de,  luto@kernel.org,  mingo@redhat.com,
+  bp@alien8.de,  dave.hansen@linux.intel.com,  hpa@zytor.com,
+  mhocko@kernel.org,  tj@kernel.org,  gregory.price@memverge.com,
+  corbet@lwn.net,  rakie.kim@sk.com,  hyeongtak.ji@sk.com,
+  honggyu.kim@sk.com,  vtavarespetr@micron.com,  peterz@infradead.org,
+  jgroves@micron.com,  ravis.opensrc@micron.com,  sthanneeru@micron.com,
+  emirakhur@micron.com,  Hasan.Maruf@amd.com,  seungjun.ha@samsung.com,
+  Johannes Weiner <hannes@cmpxchg.org>,  Hasan Al Maruf
+ <hasanalmaruf@fb.com>,  Hao Wang <haowang3@fb.com>,  Dan Williams
+ <dan.j.williams@intel.com>,  Michal Hocko <mhocko@suse.com>,  Zhongkun He
+ <hezhongkun.hzk@bytedance.com>,  Frank van der Linden <fvdl@google.com>,
+  John Groves <john@jagalactic.com>,  Jonathan Cameron
+ <Jonathan.Cameron@Huawei.com>
+Subject: Re: [PATCH v5 00/11] mempolicy2, mbind2, and weighted interleave
+In-Reply-To: <20231223181101.1954-1-gregory.price@memverge.com> (Gregory
+	Price's message of "Sat, 23 Dec 2023 13:10:50 -0500")
+References: <20231223181101.1954-1-gregory.price@memverge.com>
+Date: Mon, 25 Dec 2023 15:54:18 +0800
+Message-ID: <87frzqg1jp.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemi500006.china.huawei.com (7.221.188.68)
+Content-Type: text/plain; charset=ascii
 
-From: Yunsheng Lin <linyunsheng@huawei.com>
+Gregory Price <gourry.memverge@gmail.com> writes:
 
-'struct hns_roce_hem' is used to refer to the last level of
-dma buffer managed by the hw, pointed by a single BA(base
-address) in the previous level of BT(base table), so the dma
-buffer in 'struct hns_roce_hem' must be contiguous.
+> Weighted interleave is a new interleave policy intended to make
+> use of a the new distributed-memory environment made available
+> by CXL.  The existing interleave mechanism does an even round-robin
+> distribution of memory across all nodes in a nodemask, while
+> weighted interleave can distribute memory across nodes according
+> the available bandwidth that that node provides.
+>
+> As tests below show, "default interleave" can cause major performance
+> degredation due to distribution not matching bandwidth available,
+> while "weighted interleave" can provide a performance increase.
+>
+> For example, the stream benchmark demonstrates that default interleave
+> is actively harmful, where weighted interleave is beneficial.
+>
+> Hardware: 1-socket 8 channel DDR5 + 1 CXL expander in PCIe x16
+> Default interleave : -78% (slower than DRAM)
+> Global weighting   : -6% to +4% (workload dependant)
+> Targeted weights   : +2.5% to +4% (consistently better than DRAM)
+>
+> If nothing else, this shows how awful round-robin interleave is.
 
-Right now the size of dma buffer in 'struct hns_roce_hem' is
-decided by mhop->buf_chunk_size in get_hem_table_config(),
-which ensure the mhop->buf_chunk_size is power of two of
-PAGE_SIZE, so there will be only one contiguous dma buffer
-allocated in hns_roce_alloc_hem(), which means hem->chunk_list
-and chunk->mem for linking multi dma buffers is unnecessary.
+I guess the performance of the default policy, local (fast memory)
+first, may be even better in some situation?  For example, before the
+bandwidth of DRAM is saturated?
 
-This patch removes the hem->chunk_list and chunk->mem and other
-related macro and function accordingly.
+I understand that you may want to limit the memory usage of the fast
+memory too.  But IMHO, that is another requirements.  That should be
+enforced by something like per-node memory limit.
 
-Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
-Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
----
- drivers/infiniband/hw/hns/hns_roce_hem.c   | 95 +++++-----------------
- drivers/infiniband/hw/hns/hns_roce_hem.h   | 56 +------------
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c |  9 +-
- 3 files changed, 24 insertions(+), 136 deletions(-)
+> Rather than implement yet another specific syscall to set one
+> particular field of a mempolicy, we chose to implement an extensible
+> mempolicy interface so that future extensions can be captured.
+>
+> To implement weighted interleave, we need an interface to set the
+> node weights along with a MPOL_WEIGHTED_INTERLEAVE. We implement a
+> a sysfs extension for "system global" weights which can be set by
+> a daemon or administrator, and new extensible syscalls (mempolicy2,
+> mbind2) which allow task-local weights to be set via user-software.
+>
+> The benefit of the sysfs extension is that MPOL_WEIGHTED_INTERLEAVE
+> can be used by the existing set_mempolicy and mbind via numactl.
+>
+> There are 3 "phases" in the patch set that could be considered
+> for separate merge candidates, but are presented here as a single
+> line as the goal is a fully functional MPOL_WEIGHTED_INTERLEAVE.
+>
+> 1) Implement MPOL_WEIGHTED_INTERLEAVE with a sysfs extension for
+>    setting system-global weights via sysfs.
+>    (Patches 1 & 2)
+>
+> 2) Refactor mempolicy creation mechanism to use an extensible arg
+>    struct `struct mempolicy_args` to promote code re-use between
+>    the original mempolicy/mbind interfaces and the new interfaces.
+>    (Patches 3-6)
+>
+> 3) Implementation of set_mempolicy2, get_mempolicy2, and mbind2,
+>    along with the addition of task-local weights so that per-task
+>    weights can be registered for MPOL_WEIGHTED_INTERLEAVE.
+>    (Patches 7-11)
+>
+> Included at the bottom of this cover letter is linux test project
+> tests for backward and forward compatibility, some sample software
+> which can be used for quick tests, as well as a numactl branch
+> which implements `numactl -w --interleave` for testing.
+>
+> = Performance summary =
+> (tests may have different configurations, see extended info below)
+> 1) MLC (W2) : +38% over DRAM. +264% over default interleave.
+>    MLC (W5) : +40% over DRAM. +226% over default interleave.
+> 2) Stream   : -6% to +4% over DRAM, +430% over default interleave.
+> 3) XSBench  : +19% over DRAM. +47% over default interleave.
+>
+> = LTP Testing Summary =
+> existing mempolicy & mbind tests: pass
+> mempolicy & mbind + weighted interleave (global weights): pass
+> mempolicy2 & mbind2 + weighted interleave (global weights): pass
+> mempolicy2 & mbind2 + weighted interleave (local weights): pass
+>
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hem.c b/drivers/infiniband/hw/hns/hns_roce_hem.c
-index c4ac06a33869..a4b3f19161dc 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hem.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hem.c
-@@ -249,61 +249,34 @@ int hns_roce_calc_hem_mhop(struct hns_roce_dev *hr_dev,
- }
- 
- static struct hns_roce_hem *hns_roce_alloc_hem(struct hns_roce_dev *hr_dev,
--					       int npages,
- 					       unsigned long hem_alloc_size,
- 					       gfp_t gfp_mask)
- {
--	struct hns_roce_hem_chunk *chunk = NULL;
- 	struct hns_roce_hem *hem;
--	struct scatterlist *mem;
- 	int order;
- 	void *buf;
- 
- 	WARN_ON(gfp_mask & __GFP_HIGHMEM);
- 
-+	order = get_order(hem_alloc_size);
-+	if (PAGE_SIZE << order != hem_alloc_size) {
-+		dev_err(hr_dev->dev, "invalid hem_alloc_size: %lu!\n",
-+			hem_alloc_size);
-+		return NULL;
-+	}
-+
- 	hem = kmalloc(sizeof(*hem),
- 		      gfp_mask & ~(__GFP_HIGHMEM | __GFP_NOWARN));
- 	if (!hem)
- 		return NULL;
- 
--	INIT_LIST_HEAD(&hem->chunk_list);
--
--	order = get_order(hem_alloc_size);
--
--	while (npages > 0) {
--		if (!chunk) {
--			chunk = kmalloc(sizeof(*chunk),
--				gfp_mask & ~(__GFP_HIGHMEM | __GFP_NOWARN));
--			if (!chunk)
--				goto fail;
--
--			sg_init_table(chunk->mem, HNS_ROCE_HEM_CHUNK_LEN);
--			chunk->npages = 0;
--			chunk->nsg = 0;
--			memset(chunk->buf, 0, sizeof(chunk->buf));
--			list_add_tail(&chunk->list, &hem->chunk_list);
--		}
-+	buf = dma_alloc_coherent(hr_dev->dev, hem_alloc_size,
-+				 &hem->dma, gfp_mask);
-+	if (!buf)
-+		goto fail;
- 
--		while (1 << order > npages)
--			--order;
--
--		/*
--		 * Alloc memory one time. If failed, don't alloc small block
--		 * memory, directly return fail.
--		 */
--		mem = &chunk->mem[chunk->npages];
--		buf = dma_alloc_coherent(hr_dev->dev, PAGE_SIZE << order,
--				&sg_dma_address(mem), gfp_mask);
--		if (!buf)
--			goto fail;
--
--		chunk->buf[chunk->npages] = buf;
--		sg_dma_len(mem) = PAGE_SIZE << order;
--
--		++chunk->npages;
--		++chunk->nsg;
--		npages -= 1 << order;
--	}
-+	hem->buf = buf;
-+	hem->size = hem_alloc_size;
- 
- 	return hem;
- 
-@@ -314,20 +287,10 @@ static struct hns_roce_hem *hns_roce_alloc_hem(struct hns_roce_dev *hr_dev,
- 
- void hns_roce_free_hem(struct hns_roce_dev *hr_dev, struct hns_roce_hem *hem)
- {
--	struct hns_roce_hem_chunk *chunk, *tmp;
--	int i;
--
- 	if (!hem)
- 		return;
- 
--	list_for_each_entry_safe(chunk, tmp, &hem->chunk_list, list) {
--		for (i = 0; i < chunk->npages; ++i)
--			dma_free_coherent(hr_dev->dev,
--				   sg_dma_len(&chunk->mem[i]),
--				   chunk->buf[i],
--				   sg_dma_address(&chunk->mem[i]));
--		kfree(chunk);
--	}
-+	dma_free_coherent(hr_dev->dev, hem->size, hem->buf, hem->dma);
- 
- 	kfree(hem);
- }
-@@ -415,7 +378,6 @@ static int alloc_mhop_hem(struct hns_roce_dev *hr_dev,
- {
- 	u32 bt_size = mhop->bt_chunk_size;
- 	struct device *dev = hr_dev->dev;
--	struct hns_roce_hem_iter iter;
- 	gfp_t flag;
- 	u64 bt_ba;
- 	u32 size;
-@@ -456,16 +418,15 @@ static int alloc_mhop_hem(struct hns_roce_dev *hr_dev,
- 	 */
- 	size = table->type < HEM_TYPE_MTT ? mhop->buf_chunk_size : bt_size;
- 	flag = GFP_KERNEL | __GFP_NOWARN;
--	table->hem[index->buf] = hns_roce_alloc_hem(hr_dev, size >> PAGE_SHIFT,
--						    size, flag);
-+	table->hem[index->buf] = hns_roce_alloc_hem(hr_dev, size, flag);
- 	if (!table->hem[index->buf]) {
- 		ret = -ENOMEM;
- 		goto err_alloc_hem;
- 	}
- 
- 	index->inited |= HEM_INDEX_BUF;
--	hns_roce_hem_first(table->hem[index->buf], &iter);
--	bt_ba = hns_roce_hem_addr(&iter);
-+	bt_ba = table->hem[index->buf]->dma;
-+
- 	if (table->type < HEM_TYPE_MTT) {
- 		if (mhop->hop_num == 2)
- 			*(table->bt_l1[index->l1] + mhop->l2_idx) = bt_ba;
-@@ -586,7 +547,6 @@ int hns_roce_table_get(struct hns_roce_dev *hr_dev,
- 	}
- 
- 	table->hem[i] = hns_roce_alloc_hem(hr_dev,
--				       table->table_chunk_size >> PAGE_SHIFT,
- 				       table->table_chunk_size,
- 				       GFP_KERNEL | __GFP_NOWARN);
- 	if (!table->hem[i]) {
-@@ -725,7 +685,6 @@ void *hns_roce_table_find(struct hns_roce_dev *hr_dev,
- 			  struct hns_roce_hem_table *table,
- 			  unsigned long obj, dma_addr_t *dma_handle)
- {
--	struct hns_roce_hem_chunk *chunk;
- 	struct hns_roce_hem_mhop mhop;
- 	struct hns_roce_hem *hem;
- 	unsigned long mhop_obj = obj;
-@@ -734,7 +693,6 @@ void *hns_roce_table_find(struct hns_roce_dev *hr_dev,
- 	int offset, dma_offset;
- 	void *addr = NULL;
- 	u32 hem_idx = 0;
--	int length;
- 	int i, j;
- 
- 	mutex_lock(&table->mutex);
-@@ -767,23 +725,8 @@ void *hns_roce_table_find(struct hns_roce_dev *hr_dev,
- 	if (!hem)
- 		goto out;
- 
--	list_for_each_entry(chunk, &hem->chunk_list, list) {
--		for (i = 0; i < chunk->npages; ++i) {
--			length = sg_dma_len(&chunk->mem[i]);
--			if (dma_handle && dma_offset >= 0) {
--				if (length > (u32)dma_offset)
--					*dma_handle = sg_dma_address(
--						&chunk->mem[i]) + dma_offset;
--				dma_offset -= length;
--			}
--
--			if (length > (u32)offset) {
--				addr = chunk->buf[i] + offset;
--				goto out;
--			}
--			offset -= length;
--		}
--	}
-+	*dma_handle = hem->dma + dma_offset;
-+	addr = hem->buf + offset;
- 
- out:
- 	mutex_unlock(&table->mutex);
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hem.h b/drivers/infiniband/hw/hns/hns_roce_hem.h
-index 7d23d3c51da4..6fb51db9682b 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hem.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_hem.h
-@@ -56,10 +56,6 @@ enum {
- 	HEM_TYPE_TRRL,
- };
- 
--#define HNS_ROCE_HEM_CHUNK_LEN	\
--	 ((256 - sizeof(struct list_head) - 2 * sizeof(int)) /	 \
--	 (sizeof(struct scatterlist) + sizeof(void *)))
--
- #define check_whether_bt_num_3(type, hop_num) \
- 	(type < HEM_TYPE_MTT && hop_num == 2)
- 
-@@ -72,25 +68,13 @@ enum {
- 	(type >= HEM_TYPE_MTT && hop_num == 1) || \
- 	(type >= HEM_TYPE_MTT && hop_num == HNS_ROCE_HOP_NUM_0))
- 
--struct hns_roce_hem_chunk {
--	struct list_head	 list;
--	int			 npages;
--	int			 nsg;
--	struct scatterlist	 mem[HNS_ROCE_HEM_CHUNK_LEN];
--	void			 *buf[HNS_ROCE_HEM_CHUNK_LEN];
--};
--
- struct hns_roce_hem {
--	struct list_head chunk_list;
-+	void *buf;
-+	dma_addr_t dma;
-+	unsigned long size;
- 	refcount_t refcount;
- };
- 
--struct hns_roce_hem_iter {
--	struct hns_roce_hem		 *hem;
--	struct hns_roce_hem_chunk	 *chunk;
--	int				 page_idx;
--};
--
- struct hns_roce_hem_mhop {
- 	u32	hop_num;
- 	u32	buf_chunk_size;
-@@ -133,38 +117,4 @@ void *hns_roce_hem_list_find_mtt(struct hns_roce_dev *hr_dev,
- 				 struct hns_roce_hem_list *hem_list,
- 				 int offset, int *mtt_cnt);
- 
--static inline void hns_roce_hem_first(struct hns_roce_hem *hem,
--				      struct hns_roce_hem_iter *iter)
--{
--	iter->hem = hem;
--	iter->chunk = list_empty(&hem->chunk_list) ? NULL :
--				 list_entry(hem->chunk_list.next,
--					    struct hns_roce_hem_chunk, list);
--	iter->page_idx = 0;
--}
--
--static inline int hns_roce_hem_last(struct hns_roce_hem_iter *iter)
--{
--	return !iter->chunk;
--}
--
--static inline void hns_roce_hem_next(struct hns_roce_hem_iter *iter)
--{
--	if (++iter->page_idx >= iter->chunk->nsg) {
--		if (iter->chunk->list.next == &iter->hem->chunk_list) {
--			iter->chunk = NULL;
--			return;
--		}
--
--		iter->chunk = list_entry(iter->chunk->list.next,
--					 struct hns_roce_hem_chunk, list);
--		iter->page_idx = 0;
--	}
--}
--
--static inline dma_addr_t hns_roce_hem_addr(struct hns_roce_hem_iter *iter)
--{
--	return sg_dma_address(&iter->chunk->mem[iter->page_idx]);
--}
--
- #endif /* _HNS_ROCE_HEM_H */
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index 94e9e6a237cf..de56dc6e3226 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -4058,7 +4058,6 @@ static int hns_roce_v2_set_hem(struct hns_roce_dev *hr_dev,
- 			       struct hns_roce_hem_table *table, int obj,
- 			       u32 step_idx)
- {
--	struct hns_roce_hem_iter iter;
- 	struct hns_roce_hem_mhop mhop;
- 	struct hns_roce_hem *hem;
- 	unsigned long mhop_obj = obj;
-@@ -4095,12 +4094,8 @@ static int hns_roce_v2_set_hem(struct hns_roce_dev *hr_dev,
- 
- 	if (check_whether_last_step(hop_num, step_idx)) {
- 		hem = table->hem[hem_idx];
--		for (hns_roce_hem_first(hem, &iter);
--		     !hns_roce_hem_last(&iter); hns_roce_hem_next(&iter)) {
--			bt_ba = hns_roce_hem_addr(&iter);
--			ret = set_hem_to_hw(hr_dev, obj, bt_ba, table->type,
--					    step_idx);
--		}
-+
-+		ret = set_hem_to_hw(hr_dev, obj, hem->dma, table->type, step_idx);
- 	} else {
- 		if (step_idx == 0)
- 			bt_ba = table->bt_l0_dma_addr[i];
--- 
-2.30.0
+[snip]
 
+> =====================================================================
+> (Patches 3-6) Refactoring mempolicy for code-reuse
+>
+> To avoid multiple paths of mempolicy creation, we should refactor the
+> existing code to enable the designed extensibility, and refactor
+> existing users to utilize the new interface (while retaining the
+> existing userland interface).
+>
+> This set of patches introduces a new mempolicy_args structure, which
+> is used to more fully describe a requested mempolicy - to include
+> existing and future extensions.
+>
+> /*
+>  * Describes settings of a mempolicy during set/get syscalls and
+>  * kernel internal calls to do_set_mempolicy()
+>  */
+> struct mempolicy_args {
+>     unsigned short mode;            /* policy mode */
+>     unsigned short mode_flags;      /* policy mode flags */
+>     int home_node;                  /* mbind: use MPOL_MF_HOME_NODE */
+>     nodemask_t *policy_nodes;       /* get/set/mbind */
+>     unsigned char *il_weights;      /* for mode MPOL_WEIGHTED_INTERLEAVE */
+> };
+
+According to
+
+https://www.geeksforgeeks.org/difference-between-argument-and-parameter-in-c-c-with-examples/
+
+it appears that "parameter" are better than "argument" for struct name
+here.  It appears that current kernel source supports this too.
+
+$ grep 'struct[\t ]\+[a-zA-Z0-9]\+_param' -r include/linux | wc -l
+411
+$ grep 'struct[\t ]\+[a-zA-Z0-9]\+_arg' -r include/linux | wc -l
+25
+
+> This arg structure will eventually be utilized by the following
+> interfaces:
+>     mpol_new() - new mempolicy creation
+>     do_get_mempolicy() - acquiring information about mempolicy
+>     do_set_mempolicy() - setting the task mempolicy
+>     do_mbind()         - setting a vma mempolicy
+>
+> do_get_mempolicy() is completely refactored to break it out into
+> separate functionality based on the flags provided by get_mempolicy(2)
+>     MPOL_F_MEMS_ALLOWED: acquires task->mems_allowed
+>     MPOL_F_ADDR: acquires information on vma policies
+>     MPOL_F_NODE: changes the output for the policy arg to node info
+>
+> We refactor the get_mempolicy syscall flatten the logic based on these
+> flags, and aloow for set_mempolicy2() to re-use the underlying logic.
+>
+> The result of this refactor, and the new mempolicy_args structure, is
+> that extensions like 'sys_set_mempolicy_home_node' can now be directly
+> integrated into the initial call to 'set_mempolicy2', and that more
+> complete information about a mempolicy can be returned with a single
+> call to 'get_mempolicy2', rather than multiple calls to 'get_mempolicy'
+>
+>
+> =====================================================================
+> (Patches 7-10) set_mempolicy2, get_mempolicy2, mbind2
+>
+> These interfaces are the 'extended' counterpart to their relatives.
+> They use the userland 'struct mpol_args' structure to communicate a
+> complete mempolicy configuration to the kernel.  This structure
+> looks very much like the kernel-internal 'struct mempolicy_args':
+>
+> struct mpol_args {
+>         /* Basic mempolicy settings */
+>         __u16 mode;
+>         __u16 mode_flags;
+>         __s32 home_node;
+>         __u64 pol_maxnodes;
+
+I understand that we want to avoid hole in struct.  But I still feel
+uncomfortable to use __u64 for a small.  But I don't have solution too.
+Anyone else has some idea?
+
+>         __aligned_u64 pol_nodes;
+>         __aligned_u64 *il_weights;      /* of size pol_maxnodes */
+
+Typo?  Should be,
+
+         __aligned_u64 il_weights;      /* of size pol_maxnodes */
+
+?
+
+Found this in some patch descriptions too.
+
+> };
+>
+> The basic mempolicy settings which are shared across all interfaces
+> are captured at the top of the structure, while extensions such as
+> 'policy_node' and 'addr' are collected beneath.
+>
+> The syscalls are uniform and defined as follows:
+>
+> long sys_mbind2(unsigned long addr, unsigned long len,
+>                 struct mpol_args *args, size_t usize,
+>                 unsigned long flags);
+>
+> long sys_get_mempolicy2(struct mpol_args *args, size_t size,
+>                         unsigned long addr, unsigned long flags);
+>
+> long sys_set_mempolicy2(struct mpol_args *args, size_t size,
+>                         unsigned long flags);
+>
+> The 'flags' argument for mbind2 is the same as 'mbind', except with
+> the addition of MPOL_MF_HOME_NODE to denote whether the 'home_node'
+> field should be utilized.
+>
+> The 'flags' argument for get_mempolicy2 allows for MPOL_F_ADDR to
+> allow operating on VMA policies, but MPOL_F_NODE and MPOL_F_MEMS_ALLOWED
+> behavior has been omitted, since get_mempolicy() provides this already.
+
+I still think that it's a good idea to make it possible to deprecate
+get_mempolicy().  How about use a union as follows?
+
+struct mpol_mems_allowed {
+         __u64 maxnodes;
+         __aligned_u64 nodemask;
+};
+
+union mpol_info {
+        struct mpol_args args;
+        struct mpol_mems_allowed mems_allowed;
+        __s32 node;
+};
+
+> The 'flags' argument is not used by 'set_mempolicy' at this time, but
+> may end up allowing the use of MPOL_MF_HOME_NODE if such functionality
+> is desired.
+>
+> The extensions can be summed up as follows:
+>
+> get_mempolicy2 extensions:
+>     - mode and mode flags are split into separate fields
+>     - MPOL_F_MEMS_ALLOWED and MPOL_F_NODE are not supported
+>
+> set_mempolicy2:
+>     - task-local interleave weights can be set via 'il_weights'
+>
+> mbind2:
+>     - home_node field sets policy home node w/ MPOL_MF_HOME_NODE
+>     - task-local interleave weights can be set via 'il_weights'
+>
+
+--
+Best Regards,
+Huang, Ying
+
+[snip]
 
