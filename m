@@ -1,121 +1,95 @@
-Return-Path: <linux-kernel+bounces-10870-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10869-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E20CF81DDA1
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 03:49:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4768081DDA0
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 03:47:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9C3CF2813C2
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 02:49:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D4152B2104B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 02:47:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3EF8A51;
-	Mon, 25 Dec 2023 02:49:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gu915Kgi"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53D35ED7;
+	Mon, 25 Dec 2023 02:47:09 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E457805
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 02:49:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703472544; x=1735008544;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=XvAvnMtEeu8/4YXReexVsLTnVFqbZ2J/iPfLSByHwQU=;
-  b=gu915KgiiyjtP8Q9Ov5LMGXtvh5sDRzb0sAEVP5IRUCtBp3Pc7qvV6OE
-   Xii15OOH0qZzCbOOQPmb79Cj9JvOXVhxiM8ft0bzHUqwnAcrffylRzDj7
-   A/dDl0co/W8W4DnkxjHgvvQ8crHd/W3wSjEpG05pc1ze7xjgWw5C4+mYa
-   KL77FcGrs5xX9PjAMapzxf0fRfAFpMVhsQclgrjlK9At0uEm6B1BkMHm6
-   GUJLhItq50hETZxj6pKik7QeFgWqMbh/D7CnBIY8Vpi/RLKVXDf89Ynap
-   /KzR76BY9eE7pdUFmZVdJ+G5ILS7BgS/B57PmsYaZ5HPkf6SzrISpR1DR
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10934"; a="381242190"
-X-IronPort-AV: E=Sophos;i="6.04,302,1695711600"; 
-   d="scan'208";a="381242190"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Dec 2023 18:49:04 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10934"; a="901090737"
-X-IronPort-AV: E=Sophos;i="6.04,302,1695711600"; 
-   d="scan'208";a="901090737"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga004.jf.intel.com with ESMTP; 24 Dec 2023 18:49:01 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rHb1X-000CrL-33;
-	Mon, 25 Dec 2023 02:49:00 +0000
-Date: Mon, 25 Dec 2023 10:46:06 +0800
-From: kernel test robot <lkp@intel.com>
-To: Ralph Campbell <rcampbell@nvidia.com>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	Ben Skeggs <bskeggs@redhat.com>
-Subject: drivers/gpu/drm/nouveau/nouveau_svm.c:829:13: warning: variable
- 'ret' set but not used
-Message-ID: <202312251018.JVE0C0kT-lkp@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 294AE365;
+	Mon, 25 Dec 2023 02:47:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.214])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Sz2Ng2jmJz1wpDM;
+	Mon, 25 Dec 2023 10:46:43 +0800 (CST)
+Received: from dggpeml500021.china.huawei.com (unknown [7.185.36.21])
+	by mail.maildlp.com (Postfix) with ESMTPS id 0F46B1A01A0;
+	Mon, 25 Dec 2023 10:46:48 +0800 (CST)
+Received: from [10.174.177.174] (10.174.177.174) by
+ dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 25 Dec 2023 10:46:35 +0800
+Message-ID: <36a7c036-c268-0627-cb2d-a737784da62e@huawei.com>
+Date: Mon, 25 Dec 2023 10:46:35 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.1.2
+Subject: Re: [PATCH] ext4: fix WARNING in lock_two_nondirectories
+Content-Language: en-US
+To: Theodore Ts'o <tytso@mit.edu>
+CC: Edward Adam Davis <eadavis@qq.com>,
+	<syzbot+2c4a3b922a860084cc7f@syzkaller.appspotmail.com>,
+	<adilger.kernel@dilger.ca>, <linux-ext4@vger.kernel.org>,
+	<linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<syzkaller-bugs@googlegroups.com>, yangerkun <yangerkun@huawei.com>, Baokun
+ Li <libaokun1@huawei.com>
+References: <000000000000e17185060c8caaad@google.com>
+ <tencent_DABB2333139E8D1BCF4B5D1B2725FABA9108@qq.com>
+ <fb653ebf-0225-00b3-df05-6b685a727b41@huawei.com>
+ <20231225021136.GC491196@mit.edu>
+From: Baokun Li <libaokun1@huawei.com>
+In-Reply-To: <20231225021136.GC491196@mit.edu>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpeml500021.china.huawei.com (7.185.36.21)
 
-Hi Ralph,
+On 2023/12/25 10:11, Theodore Ts'o wrote:
+> On Mon, Dec 25, 2023 at 09:38:51AM +0800, Baokun Li wrote:
+>> Marking the boot loader inode as a bad inode here is useless,
+>> EXT4_IGET_BAD allows us to get a bad boot loader inode.
+>> In my opinion, it doesn't make sense to call lock_two_nondirectories()
+>> here to determine if the inode is a regular file or not, since the logic
+>> for dealing with non-regular files comes after the locking, so calling
+>> lock_two_inodes() directly here will suffice.
+> This is all very silly, and why I consider this sort of thing pure
+> syzkaller noise.  It really doesn't protect against any real threat,
+> and it encourages people to put all sorts of random crud in kernel
+> code, all in the name of trying to shut up syzbot.
+Indeed, the warning is meaningless, but it is undeniable that if the
+user can easily trigger the warning, something is wrong with the code.
+> If we *are* going to care about shutting up syzkaller, the right
+> approach is to simply add a check in swap_inode_boot_loader() which
+> causes it to call ext4_error() and declare the file system corrupted
+> if the bootloader inode is not a regular file, and then return
+> -EFSCORRUPTED.
+>
+> We don't need to add random hacks to ext4_iget(), or in other places...
+>
+>     	      	     	    	     - Ted
+Without considering the case where the boot loader inode is
+uninitialized, I think this is fine and the logic to determine if the boot
+loader inode is initialized and to initialize it can be removed.
 
-FYI, the error/warning still remains.
-
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   861deac3b092f37b2c5e6871732f3e11486f7082
-commit: e3d8b08904694e9ccae5163d0bb7d35fa66e5bdc drm/nouveau/svm: map pages after migration
-date:   3 years, 7 months ago
-config: x86_64-allyesconfig (https://download.01.org/0day-ci/archive/20231225/202312251018.JVE0C0kT-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231225/202312251018.JVE0C0kT-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312251018.JVE0C0kT-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   drivers/gpu/drm/nouveau/nouveau_svm.c: In function 'nouveau_pfns_map':
->> drivers/gpu/drm/nouveau/nouveau_svm.c:829:13: warning: variable 'ret' set but not used [-Wunused-but-set-variable]
-     829 |         int ret;
-         |             ^~~
-
-
-vim +/ret +829 drivers/gpu/drm/nouveau/nouveau_svm.c
-
-   823	
-   824	void
-   825	nouveau_pfns_map(struct nouveau_svmm *svmm, struct mm_struct *mm,
-   826			 unsigned long addr, u64 *pfns, unsigned long npages)
-   827	{
-   828		struct nouveau_pfnmap_args *args = nouveau_pfns_to_args(pfns);
- > 829		int ret;
-   830	
-   831		args->p.addr = addr;
-   832		args->p.size = npages << PAGE_SHIFT;
-   833	
-   834		mutex_lock(&svmm->mutex);
-   835	
-   836		svmm->vmm->vmm.object.client->super = true;
-   837		ret = nvif_object_ioctl(&svmm->vmm->vmm.object, args, sizeof(*args) +
-   838					npages * sizeof(args->p.phys[0]), NULL);
-   839		svmm->vmm->vmm.object.client->super = false;
-   840	
-   841		mutex_unlock(&svmm->mutex);
-   842	}
-   843	
-
+Merry Christmas!
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+With Best Regards,
+Baokun Li
+.
 
