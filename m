@@ -1,190 +1,159 @@
-Return-Path: <linux-kernel+bounces-10966-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10967-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA6EE81DF63
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 10:08:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6654381DF64
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 10:09:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 85C23281E77
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 09:08:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 20890281CBC
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 09:09:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D35C4A3B;
-	Mon, 25 Dec 2023 09:08:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="ZLYT1Rm2"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7986B3D9C;
+	Mon, 25 Dec 2023 09:09:36 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-il1-f170.google.com (mail-il1-f170.google.com [209.85.166.170])
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3AF720F7
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 09:08:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-il1-f170.google.com with SMTP id e9e14a558f8ab-35fa08df8afso18515175ab.3
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 01:08:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1703495298; x=1704100098; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5GaJDOeVX+a5k01RPdTA9Ji7XUnbBCMon+kA4ZX7Kl0=;
-        b=ZLYT1Rm2jpCGBx6ISrSiiJ8IXiZ3/cM0RTytiWJoRO4P63wM8gadzmoImLpANFxjZ9
-         B+1sxA/qDYB0eYIlVy/76/18rfRuo61+1jTvXMeeR8NfoRF255fRbFgQd7xzwIADn5zG
-         3VW479Ei934JMsSrCtIQccFCt3rDvY4Aal5bg=
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 426DC1C32
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 09:09:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=grimberg.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-3367f8757d0so650288f8f.1
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 01:09:33 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703495298; x=1704100098;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5GaJDOeVX+a5k01RPdTA9Ji7XUnbBCMon+kA4ZX7Kl0=;
-        b=kF1eWrNZiLUZiEmJ4SnigUSJnvi/SLbU3M45v3v6qp7sXnIVRAvnM3lGrZFh173AJu
-         dt1mVTCyyqrueg/zT8wL8lmG3hBXbAJnrzVLjgQmMcizXzB6SpGzqIsP+SULnL2pU4z2
-         UAVsmgeGccMygUgMCaxaeyPWo88l6MZjw4NoA50lr34BGUh0ro8GHgIIN7Mxk81WF7Ea
-         gmcnApwxVkGlSjqRSBHmMe4ERa7+O+um/oQdLh2A6PE4cfF6yY1rUXDB+yetcfauTRKE
-         MYJ/nP7AaDp81D/GDJcWM42Cs/oSobfAHWciw+GfItT94LZJTKE9xEOjLXTjFVsnDVCw
-         iPQg==
-X-Gm-Message-State: AOJu0YySf5JUzFrWGPAvUQY8T+z5ZIwwnMoVyrkwPY8ED1rUFcLAP67z
-	/gwScFg3KRr/tqNpPd7H0YVrRfBljT4c3eA1zKiQfWShGMqD
-X-Google-Smtp-Source: AGHT+IHHs+FFEAJ0LUOibcCM5Ef2h1iH5PS2ZU+74IFmDvaeMZ93K646IdSYB8bvUePKKxGDxwVMmj029urPxM7OhLc=
-X-Received: by 2002:a92:ca4c:0:b0:35f:efdc:f067 with SMTP id
- q12-20020a92ca4c000000b0035fefdcf067mr6304522ilo.11.1703495297937; Mon, 25
- Dec 2023 01:08:17 -0800 (PST)
+        d=1e100.net; s=20230601; t=1703495372; x=1704100172;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CcqUZ4I1aXMWGhgVAAt6UYjQ5+a0myvwxtYCWAHuYPU=;
+        b=UPmzJAqoijEDxyHE6H/qFxPhT2egreIJa91vZXX6y2RQPS3KWCwYKE0x3wPvIpLnan
+         zPiO6Ot0u98lb5jqFwsvWuMWEu+kgS2swnpoUSVQkW2gJl447b2yQayDqPK4oa0/WqD9
+         fJbsbls2lIkTtgcKz2/TMEgbcir9dMAfLMBQfQjPt2ssvvhrazAnJZZNG+W3C3WkHmvm
+         OWP67d3ZULRg5RyyMW5ik+HlwtWZWusHJW/pzvVA6uS9DoV57nQYcXsRj3MCWxLhTjad
+         x5yx5n2MF+ZdDvYKDcjLwc+B/gLL3I8yZVRevUtZHVfFVj0XZ4QG8XQbp0vplDOQMGzF
+         /SBA==
+X-Gm-Message-State: AOJu0Ywf1aGtVB0EoNfF+N3sK/OuzkPzq8sxAiTS8RT0Vf1k9F0CXuUD
+	oWWS0ZyXdnaCosBksH3Z9eytBxAhQPw=
+X-Google-Smtp-Source: AGHT+IHf8ba6RyAQazIKGAMqpV46oxWzPnAE1NrIfBiVJB8heqammukE1L2fv01HnN9xn/CKqpKI4g==
+X-Received: by 2002:a05:600c:1d02:b0:40d:5547:11dd with SMTP id l2-20020a05600c1d0200b0040d554711ddmr2499665wms.1.1703495372205;
+        Mon, 25 Dec 2023 01:09:32 -0800 (PST)
+Received: from [192.168.64.172] (bzq-219-42-90.isdn.bezeqint.net. [62.219.42.90])
+        by smtp.gmail.com with ESMTPSA id o11-20020a05600c510b00b0040d3b0780d5sm16875603wms.30.2023.12.25.01.09.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Dec 2023 01:09:31 -0800 (PST)
+Message-ID: <d84dfede-8efd-4446-b273-03dbf6fcbc10@grimberg.me>
+Date: Mon, 25 Dec 2023 11:09:29 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231221135548.1.I10f326a9305d57ad32cee7f8d9c60518c8be20fb@changeid>
- <CAEXTbpdUjCvLE+m3d1vSvsE2njRSk1Ou3bZZGEvD_7oYt4+k4Q@mail.gmail.com> <CAD=FV=WDb7y-9dRgb0D=VxVB6EjUkcOJ+9D0Mp0-vw6wuKUHEg@mail.gmail.com>
-In-Reply-To: <CAD=FV=WDb7y-9dRgb0D=VxVB6EjUkcOJ+9D0Mp0-vw6wuKUHEg@mail.gmail.com>
-From: Pin-yen Lin <treapking@chromium.org>
-Date: Mon, 25 Dec 2023 17:08:07 +0800
-Message-ID: <CAEXTbpdWPcc9==xb-_+2wY29aNdieLThmn_7JD4KV8U1LWgB2g@mail.gmail.com>
-Subject: Re: [PATCH] drm/bridge: parade-ps8640: Wait for HPD when doing an AUX transfer
-To: Doug Anderson <dianders@chromium.org>
-Cc: dri-devel@lists.freedesktop.org, hsinyi@chromium.org, 
-	Andrzej Hajda <andrzej.hajda@intel.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	David Airlie <airlied@gmail.com>, Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
-	Jernej Skrabec <jernej.skrabec@gmail.com>, Jonas Karlman <jonas@kwiboo.se>, 
-	Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Neil Armstrong <neil.armstrong@linaro.org>, Robert Foss <rfoss@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC] nvme-tcp: fix a possible double-free after failed to send
+ request
+Content-Language: en-US
+To: zhangyanjun@cestc.cn, kbusch@kernel.org, axboe@kernel.dk, hch@lst.de
+Cc: linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20231222111225.72015-1-zhangyanjun@cestc.cn>
+From: Sagi Grimberg <sagi@grimberg.me>
+In-Reply-To: <20231222111225.72015-1-zhangyanjun@cestc.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi,
 
-On Fri, Dec 22, 2023 at 11:34=E2=80=AFPM Doug Anderson <dianders@chromium.o=
-rg> wrote:
->
-> Hi,
->
-> On Fri, Dec 22, 2023 at 2:29=E2=80=AFAM Pin-yen Lin <treapking@chromium.o=
-rg> wrote:
-> >
-> > Hi Douglas,
-> >
-> > On Fri, Dec 22, 2023 at 5:56=E2=80=AFAM Douglas Anderson <dianders@chro=
-mium.org> wrote:
-> > >
-> > > Unlike what is claimed in commit f5aa7d46b0ee ("drm/bridge:
-> > > parade-ps8640: Provide wait_hpd_asserted() in struct drm_dp_aux"), if
-> > > someone manually tries to do an AUX transfer (like via `i2cdump ${bus=
-}
-> > > 0x50 i`) while the panel is off we don't just get a simple transfer
-> > > error. Instead, the whole ps8640 gets thrown for a loop and goes into
-> > > a bad state.
-> > >
-> > > Let's put the function to wait for the HPD (and the magical 50 ms
-> > > after first reset) back in when we're doing an AUX transfer. This
-> > > shouldn't actually make things much slower (assuming the panel is on)
-> > > because we should immediately poll and see the HPD high. Mostly this
-> > > is just an extra i2c transfer to the bridge.
-> > >
-> > > Fixes: f5aa7d46b0ee ("drm/bridge: parade-ps8640: Provide wait_hpd_ass=
-erted() in struct drm_dp_aux")
-> > > Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> > > ---
-> > >
-> > >  drivers/gpu/drm/bridge/parade-ps8640.c | 5 +++++
-> > >  1 file changed, 5 insertions(+)
-> > >
-> > > diff --git a/drivers/gpu/drm/bridge/parade-ps8640.c b/drivers/gpu/drm=
-/bridge/parade-ps8640.c
-> > > index 541e4f5afc4c..fb5e9ae9ad81 100644
-> > > --- a/drivers/gpu/drm/bridge/parade-ps8640.c
-> > > +++ b/drivers/gpu/drm/bridge/parade-ps8640.c
-> > > @@ -346,6 +346,11 @@ static ssize_t ps8640_aux_transfer(struct drm_dp=
-_aux *aux,
-> > >         int ret;
-> > >
-> > >         pm_runtime_get_sync(dev);
-> > > +       ret =3D _ps8640_wait_hpd_asserted(ps_bridge, 200 * 1000);
-> > > +       if (ret) {
-> > > +               pm_runtime_put_sync_suspend(dev);
-> > > +               return ret;
-> > > +       }
-> > >         ret =3D ps8640_aux_transfer_msg(aux, msg);
-> > >         pm_runtime_mark_last_busy(dev);
-> > >         pm_runtime_put_autosuspend(dev);
-> > > --
-> > > 2.43.0.472.g3155946c3a-goog
-> > >
-> >
-> > I think commit 9294914dd550 ("drm/bridge: parade-ps8640: Link device
-> > to ensure suspend/resume order")  is trying to address the same
-> > problem, but we see this issue here because the device link is missing
-> > DL_FLAG_PM_RUNTIME. I prefer to add DL_FLAG_PM_RUNTIME here so we
-> > don't need to add a _ps8640_wait_hpd_asserted() after every
-> > pm_runtime_get_*() call.
->
-> I disagree. We've had several discussions on the lists about this
-> topic before, though since I'm technically on vacation right now I'm
-> not going to go look them up. In general "pm_runtime" is not
-> sufficient for powering up DRM components. While DRM components can
-> use pm_runtime themselves (as we are doing here), powering up another
-> DRM component by grabbing a pm_runtime reference isn't right. There is
-> a reason for the complexity of the DRM prepare/enable and all the
-> current debates about the right order to call components in prepare()
-> just demonstrates further that a simple pm_runtime reference isn't
-> enough.
->
-> It can be noted that, with ${SUBJECT} patch we _aren't_ powering up
-> the panel. I actually tested two cases on sc7180-lazor. In one case I
-> just closed the lid, which powered off the panel, but the touchscreen
-> kept the panel power rail on. In this case with my patch I could still
-> read the panel EDID. I then hacked the touchscreen off. Now when I
-> closed the lid I'd get a timeout. This is different than if we tried
-> to get a pm_runtime reference to the panel.
->
-Okay, thanks for the detailed explanation. Then, let's go with the
-approach in this patch. So,
 
-Tested-by: Pin-yen Lin <treapking@chromium.org>
-Reviewed-by: Pin-yen Lin <treapking@chromium.org>
+On 12/22/23 13:12, zhangyanjun@cestc.cn wrote:
+> From: Yanjun Zhang <zhangyanjun@cestc.cn>
+> 
+> In storage clusters constructed by nvme-tcp driver, we have encountered
+> the following crash on the host kernel severval times.
+> 
+> [248514.030873] nvme nvme1: failed to send request -13
+> [248514.035916] ------------[ cut here ]------------
+> [248514.035918] kernel BUG at mm/slub.c:379!
+> [248514.037647] invalid opcode: 0000 [#1] SMP NOPTI
+> [248514.039416] CPU: 0 PID: 9 Comm: kworker/0:1H Kdump: loaded Tainted: G S                5.15.67-6.cl9.x86_64 #1
+> [248514.041376] Hardware name: CECLOUD CeaStor 16114/BC13MBSBC, BIOS 1.37 02/24/2023
+> [248514.043433] Workqueue: nvme_tcp_wq nvme_tcp_io_work [nvme_tcp]
+> [248514.045576] RIP: 0010:__slab_free+0x16a/0x320
+> [248514.047751] Code: 24 20 e8 69 28 78 00 44 8b 44 24 0c 4c 8b 54 24 10 44 0f b6 5c 24 1b 0f b6 74 24 1c 48 89 04 24 4c 8b 4c 24 20 e9 28 ff ff ff <0f> 0b 41 f7 46 08 00 0d 21 00 75 a0 4d 85 ed 75 9b 80 4c 24 5b 80
+> [248514.052500] RSP: 0018:ff51b1a6c0273bf0 EFLAGS: 00010246
+> [248514.054798] RAX: ff2378e68268b800 RBX: 0000000080080004 RCX: ff2378e68268b000
+> [248514.057038] RDX: ff2378e68268b000 RSI: ffca59110c09a200 RDI: ff2378a480034d00
+> [248514.059245] RBP: ff51b1a6c0273c90 R08: 0000000000000001 R09: ffffffffc0901a0a
+> [248514.061386] R10: ff2378e68268b000 R11: ffffffff86e06000 R12: ffca59110c09a200
+> [248514.063423] R13: ff2378e68268b000 R14: ff2378a480034d00 R15: 0000000000000078
+> [248514.065428] FS:  0000000000000000(0000) GS:ff2378d32fe00000(0000) knlGS:0000000000000000
+> [248514.067456] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [248514.069531] CR2: 00007f4759e1c800 CR3: 0000001b5e5a6005 CR4: 0000000000771ef0
+> [248514.071706] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> [248514.073916] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> [248514.076130] PKRU: 55555554
+> [248514.078392] Call Trace:
+> [248514.080640]  <TASK>
+> [248514.082898]  ? sk_stream_alloc_skb+0x66/0x2e0
+> [248514.085231]  ? tcp_skb_entail+0x11d/0x130
+> [248514.087595]  ? tcp_build_frag+0xf0/0x390
+> [248514.089980]  ? nvme_complete_rq+0x1a/0x1f0 [nvme_core]
+> [248514.092433]  kfree+0x215/0x240
+> [248514.094918]  nvme_complete_rq+0x1a/0x1f0 [nvme_core]
+> [248514.097469]  nvme_tcp_recv_pdu+0x534/0x570 [nvme_tcp]
+> [248514.100070]  nvme_tcp_recv_skb+0x4f/0x23e [nvme_tcp]
+> [248514.102699]  ? nvme_tcp_recv_pdu+0x570/0x570 [nvme_tcp]
+> [248514.105317]  tcp_read_sock+0xa0/0x270
+> [248514.107958]  nvme_tcp_try_recv+0x65/0xa0 [nvme_tcp]
+> [248514.110666]  ? nvme_tcp_try_send+0x16b/0x200 [nvme_tcp]
+> [248514.113431]  nvme_tcp_io_work+0x4d/0xa0 [nvme_tcp]
+> [248514.116247]  process_one_work+0x1e8/0x390
+> [248514.119085]  worker_thread+0x53/0x3d0
+> [248514.121980]  ? process_one_work+0x390/0x390
+> [248514.124887]  kthread+0x124/0x150
+> [248514.127835]  ? set_kthread_struct+0x50/0x50
+> [248514.130836]  ret_from_fork+0x1f/0x30
+> [248514.133841]  </TASK>
+> 
+> By analyzing the vmcore, we know the direct cause is that the slab object
+> request->special_vec was freed twicely. According to the error message
+> "nvme nvme1: failed to send request -13" and nvme_tcp_request->state =
+> NVME_TCP_SEND_DATA, the pdu has been send by nvme_tcp_try_send_cmd_pdu.
 
->
-> > As a side note, I've verified both this patch and DL_FLAG_PM_RUNTIME
-> > in our downstream v5.15 kernel and panel-edp driver. Both of them
-> > successfully wait for HPD asserted when the timeout used to happen,
-> > but the panel is black in that situation. That being said, this patch
-> > still brings us to a better state. Originally, panel_edp_resume()
-> > would return an error when the timeout occurs, so the panel-edp driver
-> > is stuck at an unexpected state. With this patch or
-> > DL_FLAG_PM_RUNTIME, the runtime PM callbacks won't fail and a system
-> > suspend/resume brings the panel back.
->
-> OK. I'm going to shut off email for real this time while I enjoy some
-> time off. Hopefully the above convinces you. Otherwise I guess we can
-> continue to debate in mid-January.
->
-> -Doug
+So what exactly failed to send? incapsule date? Or h2cdata?
 
-Happy holiday!
+> And the nvme_tcp_fail_request would execute nvme_complete_rq after failed
+> to send data.
 
-Pin-yen
+That is correct.
+
+> Then the nvme_tcp_recv_pdu may receive the responding pdu
+
+Which PDU was that? Isn't the controller expecting request data?
+
+> and the nvme_tcp_process_nvme_cqe would complete the request again. To
+> avoid this slab object double-free issuse, we try to make the following
+> code modifications, can you give some suggestions, thanks!
+> 
+> Signed-off-by: Yanjun Zhang <zhangyanjun@cestc.cn>
+> ---
+>   drivers/nvme/host/tcp.c | 3 +++
+>   1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/nvme/host/tcp.c b/drivers/nvme/host/tcp.c
+> index 08805f027..84f724558 100644
+> --- a/drivers/nvme/host/tcp.c
+> +++ b/drivers/nvme/host/tcp.c
+> @@ -581,6 +581,9 @@ static int nvme_tcp_process_nvme_cqe(struct nvme_tcp_queue *queue,
+>   		return -EINVAL;
+>   	}
+>   
+> +	if (!blk_mq_request_started(rq))
+> +		return 0;
+
+First, I want to understand if this is a spurious completion, meaning is
+this suggesting a protection against a misbehaving controller? Or there
+was actually something that the host got wrong?
+
+Because this sort of check does not belong in the tcp driver.
 
