@@ -1,64 +1,65 @@
-Return-Path: <linux-kernel+bounces-11147-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11148-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6316D81E211
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 20:06:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD41E81E214
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 20:10:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 15DDC282335
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 19:06:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 503F31F21E12
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 19:10:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2568537F1;
-	Mon, 25 Dec 2023 19:06:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C04D537FE;
+	Mon, 25 Dec 2023 19:09:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="uevB2omZ"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ZFBCugJb"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD704537E9
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 19:05:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34A58537EF
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 19:09:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a235e394758so400811066b.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 11:05:59 -0800 (PST)
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a2335d81693so682137566b.0
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 11:09:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703531158; x=1704135958; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=kPhBbAdE7d6cKSPyf8U6dhUpO4g2tJuvPvD5da5ovzA=;
-        b=uevB2omZeUevwjxNklc6maJHRpQ77+XTQubtbYtP9xb4BmXhbb/fiDJXoy8DPeEicC
-         cBCb6vWK5nJ4scgC0JPvGvbS22NjvrCbtUSZlsiHe23Hbm0lrVJgidnMJPoqNvP8eaPp
-         YtA7Swtdl3wrJf5N+tjUCi6/EjdukpLpl22IyJpBhaFrqr+xABoXTASuWz9YBjoZLBUk
-         MrUQb8AEWB10ThZUyox4eBLEEViVHm3R/2LyFipYZargWSbqNA0WjurEAuiu9XKWOHVl
-         MUeWHfxft1E0+77uKxN5EYT9SQyI30KFtQH8EPPqMZnT/MTA5+6mnW0tS4w7s4Yv4prY
-         keMg==
+        d=linaro.org; s=google; t=1703531393; x=1704136193; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
+         :from:content-language:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=BTiGJJJC0cES6MsB3xVVydw9CgvmShHu6CVakswdI1s=;
+        b=ZFBCugJbJWjnTiByqtNAaule6+pKrb2K0l45oWTA0/+UrtlKfENKgN4bD2cDRHX4ev
+         Elp7zZ9kwXSGI9zgtm6IwH3mfO68udSmSp3DUEjowBmG6o5BEV0HOJmzvrjcf+SikWyW
+         IxsYHMGcOgkSa1cVEsVlq/zLcNJo74NAWTYsS978gln5XXMShHyiN3HwqVe4SLCqBqLV
+         /TwFC81WGETkFltQ9eM4arp0MROdXy4GGw9FlFLTIdoTTZGWmQgffiM7r3qwhWN5kwk0
+         FNUmuOqv10UI2Qe41pmi+CQISMuMi95KkySEwGi3Qh5eki82oSuSigpyn/HHmydCHolo
+         korA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703531158; x=1704135958;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=kPhBbAdE7d6cKSPyf8U6dhUpO4g2tJuvPvD5da5ovzA=;
-        b=FVsK6HrBPamzTPoiFzqGUlIVJOeq7vZmMy4dlgwm8UOfkpVtgyHADtOXtGGO9ctQcq
-         JQzIPFIxNb5lhpi4QLbbkW3St4Y3rzZreGhZ/yL/lwYuFxQGfx5FIVdrsJg+/Qpnpyef
-         BLbsOhI+doBapjpjreZrvq9VU/5TIDCJivdlhqWEhqucgtIYybvL8cSqlDwH9XnamiJX
-         gAN2SKZLUPWnDtYfrE2TZsm7g02cy+GYjaPv4x9OdwHyzqIYuL6Mz8nWo5tBq6BdtRwP
-         NzkJ7F9Yci+QVZR68/NZ66cCM8XeFT2osOGaCLZA5OKGaghpM0EEqlNnuEVjq2kF6mok
-         nCLg==
-X-Gm-Message-State: AOJu0YwkzHc5Cr2srdMnxGRt4eMrJB9snlMNoZbQA1BbnSoHI8qiYxIn
-	o3wJIMh5wVYJP+Vu3Ql+znPZFbZckdftDg==
-X-Google-Smtp-Source: AGHT+IFPqC8mWE+xw33Z7UPyeyxIObWtg6LvA27WxcLDKHMQTBc+nJXipDgIqtygM5TrafeFcJCGow==
-X-Received: by 2002:a17:906:154:b0:a26:d9b4:b310 with SMTP id 20-20020a170906015400b00a26d9b4b310mr957611ejh.144.1703531157913;
-        Mon, 25 Dec 2023 11:05:57 -0800 (PST)
+        d=1e100.net; s=20230601; t=1703531393; x=1704136193;
+        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
+         :from:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=BTiGJJJC0cES6MsB3xVVydw9CgvmShHu6CVakswdI1s=;
+        b=M/WhJxbG+C8Xrj3fcP1lVgJ5ulJLHXHZAZSHFGcsf98ok1mL9wAIaRah9asiSFhBj+
+         2diDCY7XiOWnSGmuYX91eDiE3l1Orpd+uYapu1tP1mH5UTj4Y/M/NIqDoQI6Wf0IrDKI
+         Lni/fxium65osl9jThBeonmNhnA89RQxwR5f/w9nlBsivEdieT162gc16ApPuIDMABqJ
+         CwkS195Ss6e/RJuDxaxYBEtJanznbWpZVJk2+XpLIXliu+5majK6VehdU4GQzUecS3FF
+         WNbYKzNgGND/k2kQADmzok7DUN6FuHzEJUh4BoeRo690xZgHf9JJNiS8kvJ1xDgIVqbS
+         2UAQ==
+X-Gm-Message-State: AOJu0YyTYf2vHnKOJ77eAoWrlzk0ORr3LYDX16F5wE/MxafY7u6c3p2D
+	itpBtBx6aIIekVoVJ2//TYfCnDelWVgNcA==
+X-Google-Smtp-Source: AGHT+IGQYvBdGSxgNQm3Hqu4O/wa5rUElI4dKsYmgnihnnf0Jla9pZDUPfBxVK4TeImWbrATkAXyYQ==
+X-Received: by 2002:a17:906:1609:b0:a25:cc77:8f95 with SMTP id m9-20020a170906160900b00a25cc778f95mr6718979ejd.32.1703531393534;
+        Mon, 25 Dec 2023 11:09:53 -0800 (PST)
 Received: from [192.168.0.22] ([78.10.206.178])
-        by smtp.gmail.com with ESMTPSA id wl1-20020a170907310100b00a236378a43fsm5032996ejb.62.2023.12.25.11.05.56
+        by smtp.gmail.com with ESMTPSA id u23-20020aa7d0d7000000b005533a9934b6sm6529379edo.54.2023.12.25.11.09.52
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Dec 2023 11:05:57 -0800 (PST)
-Message-ID: <63d93850-e88b-4311-accb-e7fa9a89d44f@linaro.org>
-Date: Mon, 25 Dec 2023 20:05:55 +0100
+        Mon, 25 Dec 2023 11:09:53 -0800 (PST)
+Message-ID: <cf5fd42f-6ca8-4109-a314-3ede9810a5ed@linaro.org>
+Date: Mon, 25 Dec 2023 20:09:51 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -69,6 +70,7 @@ User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH v6 09/16] dt-bindings: imx6q-pcie: Clean up irrationality
  clocks check
 Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To: Frank Li <Frank.Li@nxp.com>
 Cc: bhelgaas@google.com, conor+dt@kernel.org, devicetree@vger.kernel.org,
  festevam@gmail.com, helgaas@kernel.org, hongxing.zhu@nxp.com,
@@ -80,7 +82,7 @@ Cc: bhelgaas@google.com, conor+dt@kernel.org, devicetree@vger.kernel.org,
  s.hauer@pengutronix.de, shawnguo@kernel.org
 References: <20231224183242.1675372-1-Frank.Li@nxp.com>
  <20231224183242.1675372-10-Frank.Li@nxp.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+ <63d93850-e88b-4311-accb-e7fa9a89d44f@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
  cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
@@ -125,29 +127,33 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231224183242.1675372-10-Frank.Li@nxp.com>
+In-Reply-To: <63d93850-e88b-4311-accb-e7fa9a89d44f@linaro.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 24/12/2023 19:32, Frank Li wrote:
-> There are clocks and clock-names restriction for difference compatible
-> string. So needn't irrationality check again for clock's miniItems and
-> maxItems.
+On 25/12/2023 20:05, Krzysztof Kozlowski wrote:
+> On 24/12/2023 19:32, Frank Li wrote:
+>> There are clocks and clock-names restriction for difference compatible
+>> string. So needn't irrationality check again for clock's miniItems and
+>> maxItems.
+>>
+>> In fsl,imx6q-pcie-ep.yaml
 > 
-> In fsl,imx6q-pcie-ep.yaml
-
-It is enough to say that bindings referencing this file already define
-these constraints for each of the variants, so the if:else: is redundant.
-
-Two lines instead of ~20.
-
-> 	...
+> It is enough to say that bindings referencing this file already define
+> these constraints for each of the variants, so the if:else: is redundant.
 > 
-> Acked-by: Rob Herring <robh@kernel.org>
+> Two lines instead of ~20.
+> 
+>> 	...
+>>
+>> Acked-by: Rob Herring <robh@kernel.org>
+> 
+> How did you get it? Please point me to the lore link. This patch
+> appeared in v5 and there was no response from Rob, AFAIK.
 
-How did you get it? Please point me to the lore link. This patch
-appeared in v5 and there was no response from Rob, AFAIK.
-
+Ah, this patch was added at v4 and Rob acked that one. It's fine then,
+but you still could narrow the commit msg, if there is going to be a
+resend. Please write informative but concise messages.
 
 Best regards,
 Krzysztof
