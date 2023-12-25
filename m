@@ -1,45 +1,61 @@
-Return-Path: <linux-kernel+bounces-10986-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10981-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6370581DFB1
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 11:21:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AEF2981DF9D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 11:11:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 62A731C2190F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 10:21:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 481B32819F2
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 10:11:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A31F63159C;
-	Mon, 25 Dec 2023 10:21:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="li2DkUGV"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C85BF2F866;
+	Mon, 25 Dec 2023 10:11:39 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out28-66.mail.aliyun.com (out28-66.mail.aliyun.com [115.124.28.66])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0270E2E41A
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 10:21:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EECB5C433C8;
-	Mon, 25 Dec 2023 10:21:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703499709;
-	bh=i1SHljfWffchKYIbBiC+XAF1L/ESbbhX8W1UTDP5DLo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=li2DkUGVp9xq9yTJP0kHPw1M24XeclXEsWzag2D3ZMeVYn5LzYk51j+oGOdBtGisL
-	 bC6BZOszdWI1I1zAD1clav5bZppi6co2RoAz0joDC7LILXVoGU98L3YMlu558g+VBR
-	 we++UoZFECEmYGoUOmQ6gua+dQBNTfrh4M5PpWO8o9cPysnhOxiX4UhvuS0nNtBlls
-	 GyxQFaG1sm1Djec1ZSZQ+g4mFqfV364A1bQfqkAKfvbU8oM2jdCpHeE8TxweyE4uzL
-	 Lzz8NvqQqfRvz1tUhdqrlOW5SKUl4W4ulrkXcWk6QgN5W6aXKS5FUS4NObbnxq72Md
-	 Kxx1dZ2Wczkng==
-Date: Mon, 25 Dec 2023 18:09:11 +0800
-From: Jisheng Zhang <jszhang@kernel.org>
-To: Anton Blanchard <antonb@tenstorrent.com>
-Cc: paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu,
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] riscv: Improve exception and system call latency
-Message-ID: <ZYlUxxeEmvewNzyL@xhacker>
-References: <20231225040018.1660554-1-antonb@tenstorrent.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22BE510A32;
+	Mon, 25 Dec 2023 10:11:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sjterm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sjterm.com
+X-Alimail-AntiSpam:AC=CONTINUE;BC=0.07467577|-1;BR=01201311R751ec;CH=green;DM=|CONTINUE|false|;DS=SPAM|spam_ad|0.839325-0.000325292-0.160349;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047213;MF=fuyao@sjterm.com;NM=1;PH=DS;RN=16;RT=16;SR=0;TI=SMTPD_---.VsSYimv_1703499085;
+Received: from localhost(mailfrom:fuyao@sjterm.com fp:SMTPD_---.VsSYimv_1703499085)
+          by smtp.aliyun-inc.com;
+          Mon, 25 Dec 2023 18:11:25 +0800
+Date: Mon, 25 Dec 2023 18:11:24 +0800
+From: fuyao <fuyao@sjterm.com>
+To: Andre Przywara <andre.przywara@arm.com>
+Cc: fuyao <fuyao1697@cyg.com>, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>,
+	Alexandre TORGUE <alexandre.torgue@st.com>,
+	Enric Balletbo i Serra <eballetbo@gmail.com>,
+	Baruch Siach <baruch@tkos.co.il>,
+	Paul Barker <paul.barker@sancloud.com>, devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RESEND] ARM: dts: sun8i: r40: open the regulator aldo1
+Message-ID: <ZYlVTFrWkPaci92K@debian.cyg>
+Mail-Followup-To: Andre Przywara <andre.przywara@arm.com>,
+	fuyao <fuyao1697@cyg.com>, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>,
+	Alexandre TORGUE <alexandre.torgue@st.com>,
+	Enric Balletbo i Serra <eballetbo@gmail.com>,
+	Baruch Siach <baruch@tkos.co.il>,
+	Paul Barker <paul.barker@sancloud.com>, devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+References: <ZYKjYypuAx7gNuam@debian.cyg>
+ <20231220150400.0f32e2a5@donnerap.manchester.arm.com>
+ <ZYOhAQi7XeLUuAC9@debian.cyg>
+ <20231221103906.1830ef94@donnerap.manchester.arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -48,141 +64,109 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231225040018.1660554-1-antonb@tenstorrent.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231221103906.1830ef94@donnerap.manchester.arm.com>
+Organization: work_work_work
 
-On Sun, Dec 24, 2023 at 08:00:18PM -0800, Anton Blanchard wrote:
-> Many CPUs implement return address branch prediction as a stack. The
-> RISCV architecture refers to this as a return address stack (RAS). If
-> this gets corrupted then the CPU will mispredict at least one but
-> potentally many function returns.
+On Thu, Dec 21, 2023 at 10:39:06AM +0000, Andre Przywara wrote:
+> On Thu, 21 Dec 2023 10:20:49 +0800
+> fuyao <fuyao@sjterm.com> wrote:
 > 
-> There are two issues with the current RISCV exception code:
+> Hi,
 > 
-> - We are using the alternate link stack (x5/t0) for the indirect branch
->   which makes the hardware think this is a function return. This will
->   corrupt the RAS.
+> thanks for the reply!
 > 
-> - We modify the return address of handle_exception to point to
->   ret_from_exception. This will also corrupt the RAS.
+> > On Wed, Dec 20, 2023 at 03:04:00PM +0000, Andre Przywara wrote:
+> > > On Wed, 20 Dec 2023 16:18:43 +0800
+> > > fuyao <fuyao1697@cyg.com> wrote:
+> > > 
+> > > Hi,
+> > >   
+> > > > the aldo1 is connect regulator pin which power the TV.  
+> > > 
+> > > What do you mean with that? That ALDO1 is connected to VCC-TVOUT and/or
+> > > VCC-TVIN on the R40 SoC?  
+> > 
+> > The ALDO1 is connected to VCC-TVOUT on the R40 Soc.
 > 
-> Testing the null system call latency before and after the patch:
+> Ah, thanks for the confirmation.
 > 
-> Visionfive2 (StarFive JH7110 / U74)
-> baseline: 189.87 ns
-> patched:  176.76 ns
+> > > > The USB core use TV ref as reference Voltage.  
+> > > 
+> > > The USB core in the SoC? So pin VCC-USB, which requires 3.3V, the same
+> > > voltage as the TV pins?
+> > > Which means this doesn't really have much to do with TV, it's just that
+> > > USB and also "TV" are supplied by ALDO1?  
+> > 
+> > The internal USB PHY requires a reference voltage. It seems that in
+> > order to save costs, the reference voltage of the TVOUT module is used.
 > 
-> Lichee pi 4a (T-Head TH1520 / C910)
-> baseline: 666.58 ns
-> patched:  636.90 ns
+> Do you mean a USB *reference* voltage that is separate from the USB PHY
+> power supply voltage, so pin VCC-USB on the SoC? And that it is internally
+> connected to some TV-OUT related circuits? So that would apply to all
+> devices using the R40 SoC then?
+yes, The usb need a power from TV module insides.
 > 
-> Just over 7% on the U74 and just over 4% on the C910.
+> Or is it simply that the SoC pins VCC-TVOUT and VCC-USB are connected
+> together, on this SoM?
+no
+> Do you have access to some schematic? I couldn't find one online easily,
+> so cannot check this myself.
+> 
+It has up to https://file.io/VSUL4FDrapDY
+> Thanks,
+> Andre
+> 
+> > > > Signed-off-by: fuyao <fuyao1697@cyg.com>
+> > > > ---
+> > > >  arch/arm/boot/dts/allwinner/sun8i-r40-feta40i.dtsi | 7 +++++++
+> > > >  1 file changed, 7 insertions(+)
+> > > > 
+> > > > diff --git a/arch/arm/boot/dts/allwinner/sun8i-r40-feta40i.dtsi b/arch/arm/boot/dts/allwinner/sun8i-r40-feta40i.dtsi
+> > > > index 9f39b5a2bb35..8906170461df 100644
+> > > > --- a/arch/arm/boot/dts/allwinner/sun8i-r40-feta40i.dtsi
+> > > > +++ b/arch/arm/boot/dts/allwinner/sun8i-r40-feta40i.dtsi
+> > > > @@ -42,6 +42,13 @@ &pio {
+> > > >  	vcc-pg-supply = <&reg_dldo1>;
+> > > >  };
+> > > >  
+> > > > +&reg_aldo1 {
+> > > > +	regulator-always-on;  
+> > > 
+> > > So did USB never work before, with the DT as in mainline?
+> > >   
+> > 
+> > The USB can work, but is unstable. Occasionally disconnected because of
+> > the D+/D- electrical characteristics.
+> > 
+> > > For always-on regulators it would be good to see some rationale why this
+> > > cannot be referenced by its consumer. If it is really supplying the USB
+> > > core, that would be a reason, because we don't have a good way of
+> > > describing this.
+> > >   
+> > > > +	regulator-min-microvolt = <3300000>;
+> > > > +	regulator-max-microvolt = <3300000>;
+> > > > +	regulator-name = "vcc-aldo1";  
+> > > 
+> > > Regulators should be named after their users, so use something like:
+> > > 	regulator-name = "vcc-3v3-tv-usb";
+> > >   
+> > 
+> > thanks.
+> > 
+> > > That then also serves as documentation of why this is always on.
+> > > 
+> > > Cheers,
+> > > Andre
+> > >   
+> > > > +};
+> > > > +
+> > > >  &reg_aldo2 {
+> > > >  	regulator-always-on;
+> > > >  	regulator-min-microvolt = <1800000>;  
+> > >   
+> > 
 
-Nice improvement!
-
-> 
-> Signed-off-by: Anton Blanchard <antonb@tenstorrent.com>
-> ---
-> 
-> This introduces some complexity in the stackframe walk code. PowerPC
-> resolves the multiple exception exit paths issue by placing a value into
-> the exception stack frame (basically the word "REGS") that the stack frame
-> code can look for. Perhaps something to look at.
-> 
->  arch/riscv/kernel/entry.S      | 21 ++++++++++++++-------
->  arch/riscv/kernel/stacktrace.c | 14 +++++++++++++-
->  2 files changed, 27 insertions(+), 8 deletions(-)
-> 
-> diff --git a/arch/riscv/kernel/entry.S b/arch/riscv/kernel/entry.S
-> index 54ca4564a926..89af35edbf6c 100644
-> --- a/arch/riscv/kernel/entry.S
-> +++ b/arch/riscv/kernel/entry.S
-> @@ -84,7 +84,6 @@ SYM_CODE_START(handle_exception)
->  	scs_load_current_if_task_changed s5
->  
->  	move a0, sp /* pt_regs */
-> -	la ra, ret_from_exception
->  
->  	/*
->  	 * MSB of cause differentiates between
-> @@ -93,7 +92,10 @@ SYM_CODE_START(handle_exception)
->  	bge s4, zero, 1f
->  
->  	/* Handle interrupts */
-> -	tail do_irq
-> +	call do_irq
-> +.globl ret_from_irq_exception
-> +ret_from_irq_exception:
-> +	j ret_from_exception
->  1:
->  	/* Handle other exceptions */
->  	slli t0, s4, RISCV_LGPTR
-> @@ -101,11 +103,16 @@ SYM_CODE_START(handle_exception)
->  	la t2, excp_vect_table_end
->  	add t0, t1, t0
->  	/* Check if exception code lies within bounds */
-> -	bgeu t0, t2, 1f
-> -	REG_L t0, 0(t0)
-> -	jr t0
-> -1:
-> -	tail do_trap_unknown
-> +	bgeu t0, t2, 3f
-> +	REG_L t1, 0(t0)
-> +2:	jalr ra,t1
-
-can be simplified to
-	jalr t1
-
-with the above change,
-Reviewed-by: Jisheng Zhang <jszhang@kernel.org>
-
-> +.globl ret_from_other_exception
-> +ret_from_other_exception:
-> +	j ret_from_exception
-> +3:
-> +
-> +	la t1, do_trap_unknown
-> +	j 2b
->  SYM_CODE_END(handle_exception)
->  
->  /*
-> diff --git a/arch/riscv/kernel/stacktrace.c b/arch/riscv/kernel/stacktrace.c
-> index 64a9c093aef9..b9cd131bbc4c 100644
-> --- a/arch/riscv/kernel/stacktrace.c
-> +++ b/arch/riscv/kernel/stacktrace.c
-> @@ -17,6 +17,18 @@
->  #ifdef CONFIG_FRAME_POINTER
->  
->  extern asmlinkage void ret_from_exception(void);
-> +extern asmlinkage void ret_from_irq_exception(void);
-> +extern asmlinkage void ret_from_other_exception(void);
-> +
-> +static inline bool is_exception_frame(unsigned long pc)
-> +{
-> +	if ((pc == (unsigned long)ret_from_exception) ||
-> +	    (pc == (unsigned long)ret_from_irq_exception) ||
-> +	    (pc == (unsigned long)ret_from_other_exception))
-> +		return true;
-> +
-> +	return false;
-> +}
->  
->  void notrace walk_stackframe(struct task_struct *task, struct pt_regs *regs,
->  			     bool (*fn)(void *, unsigned long), void *arg)
-> @@ -62,7 +74,7 @@ void notrace walk_stackframe(struct task_struct *task, struct pt_regs *regs,
->  			fp = frame->fp;
->  			pc = ftrace_graph_ret_addr(current, NULL, frame->ra,
->  						   &frame->ra);
-> -			if (pc == (unsigned long)ret_from_exception) {
-> +			if (is_exception_frame(pc)) {
->  				if (unlikely(!__kernel_text_address(pc) || !fn(arg, pc)))
->  					break;
->  
-> -- 
-> 2.25.1
-> 
-> 
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+-- 
+fuyao [付尧]
 
