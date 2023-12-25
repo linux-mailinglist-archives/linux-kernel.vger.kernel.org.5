@@ -1,132 +1,119 @@
-Return-Path: <linux-kernel+bounces-10894-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10896-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1369C81DE2A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 06:21:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0264481DE47
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 06:41:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AF71A28188A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 05:21:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 331E41C206A4
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 05:41:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A08F7110B;
-	Mon, 25 Dec 2023 05:21:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5E6E1846;
+	Mon, 25 Dec 2023 05:41:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="dy7j46Xj"
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="DXxqZL2L"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-il1-f181.google.com (mail-il1-f181.google.com [209.85.166.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A577510EE
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 05:21:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-il1-f181.google.com with SMTP id e9e14a558f8ab-35ffc781b3bso106215ab.1
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Dec 2023 21:21:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1703481665; x=1704086465; darn=vger.kernel.org;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=JTMbzj7ozG/NFL0qtSoENzSfcq7X8aUmLe01ANOMZhU=;
-        b=dy7j46XjHpt3CNhwoBgx0rqRd7SMl1Ty4plfvMBeAjGrK4Z7qNMpkFTvFjf03Bxpfl
-         +zbomv7KyAYJ07U+Y6NO3SFuROPsrP/m/gYjXTGaLbhS/zZFba4kigW+kAtHi1Smv9Kp
-         R34CumOvVsle4XG/PYaSSR9F1K3nwJe2M96gzv2QrUmbSBqfQyaoM+H5NdyLaG2Rao/6
-         hjz+aFivyEArXWvQ5PUp3zkkHry+RZ9s9I6wfy1t1ACqlR2iiIOZWL6vbA7cG2c9IaPC
-         z03Uey52XdokI+934xV45ooJkj3/leD70nNIrXOWBvRqyqXAhFdR33O4wfk2UPwBFlZB
-         7TZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703481665; x=1704086465;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=JTMbzj7ozG/NFL0qtSoENzSfcq7X8aUmLe01ANOMZhU=;
-        b=ClJ5L3z/Z07W9C63a5lOEmNaNtCKVDP/mevZIDJuonDXVzgRzXLSQMONG5fl3jtu2N
-         4SLweXjlA+3OruUfCtgVQZabVGMtWXqgyeL5Csmu7OZu8W1p1drATAB5EuPgcvFUOpXa
-         xnCmoN2hg7RNv07s80plCk3Df2SIoniKTwBvOp71FZzoINkxewboCA01Jezb4y1ONgFb
-         STlqgCeia/eVCmeGn9+hM11+nRPRq7WnZVU+E2iCQfU8ITdzD28sSorzGK+8o0ICOiKY
-         mEHXC6d9dQrJZgmDvq8RY9x+MkoKY4NQj62I0Ubj7G/bs327tFBwFzZej3PNYU1TEEs0
-         OoyA==
-X-Gm-Message-State: AOJu0YyHT//tomo9Z2FUhYCEQr9RWF6AppWYwXzJt53pXrk8ru2g3Y9M
-	Zshkmksl3vrQHYToXDfb1zzZ0Fw5i5j7
-X-Google-Smtp-Source: AGHT+IGSKPMU74vf1sgsIw8ea8H5OTZUG/+a6Dc87BWf2D/h73XmwrsQjqU62nU/eoayj69tQUV2DA==
-X-Received: by 2002:a05:6e02:d0c:b0:35f:79b5:b980 with SMTP id g12-20020a056e020d0c00b0035f79b5b980mr370882ilj.27.1703481664705;
-        Sun, 24 Dec 2023 21:21:04 -0800 (PST)
-Received: from [2620:0:1008:15:1457:193a:aad7:2606] ([2620:0:1008:15:1457:193a:aad7:2606])
-        by smtp.gmail.com with ESMTPSA id n12-20020a17090ac68c00b0028ae54d988esm7634768pjt.48.2023.12.24.21.21.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 Dec 2023 21:21:03 -0800 (PST)
-Date: Sun, 24 Dec 2023 21:21:03 -0800 (PST)
-From: David Rientjes <rientjes@google.com>
-To: Gang Li <ligang.bdlg@bytedance.com>
-cc: Mike Kravetz <mike.kravetz@oracle.com>, Gang Li <gang.li@linux.dev>, 
-    David Hildenbrand <david@redhat.com>, Muchun Song <muchun.song@linux.dev>, 
-    Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org, 
-    linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v2 0/5] hugetlb: parallelize hugetlb page init on
- boot
-In-Reply-To: <4c6de257-ebb4-e9ad-4092-b81a8039aff4@google.com>
-Message-ID: <76becfc1-e609-e3e8-2966-4053143170b6@google.com>
-References: <20231208025240.4744-1-gang.li@linux.dev> <996ba32c-78f0-1807-5e64-af5841a820e7@google.com> <20231212230813.GB7043@monkey> <55c6c1f6-0792-61c3-86ed-4729d4a3fdf5@google.com> <46bc7aa3-4b08-4e5f-9563-485ee17e2785@bytedance.com>
- <4c6de257-ebb4-e9ad-4092-b81a8039aff4@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A76B110FE;
+	Mon, 25 Dec 2023 05:41:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3BP5dm4M040586;
+	Sun, 24 Dec 2023 23:39:48 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1703482788;
+	bh=lbV2Hq/3rS7COuxdm4zdcZSLkIVz4F3DtABgamkDASM=;
+	h=From:To:CC:Subject:Date;
+	b=DXxqZL2LD4LpQSLINhR/aN0S9P4UzSYsP4F6pzvlUq1oyoVhDsZ1OK1q1ZxWkiHPz
+	 N5LGPmxwEWZYU7IkC76e3zc1ygoj/5IpjJreWuG8SUJ5PppwN6UlkzI+X4GR8X3FkR
+	 MJIiqgasUjXIg7jUFwydMaURZjdXJPhPDDjbj7jE=
+Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
+	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3BP5dmSd020659
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Sun, 24 Dec 2023 23:39:48 -0600
+Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Sun, 24
+ Dec 2023 23:39:48 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Sun, 24 Dec 2023 23:39:47 -0600
+Received: from LT5CG31242FY.dhcp.ti.com ([10.250.160.240])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3BP5defc118972;
+	Sun, 24 Dec 2023 23:39:40 -0600
+From: Shenghao Ding <shenghao-ding@ti.com>
+To: <broonie@kernel.org>, <conor+dt@kernel.org>,
+        <krzysztof.kozlowski@linaro.org>
+CC: <robh+dt@kernel.org>, <andriy.shevchenko@linux.intel.com>,
+        <kevin-lu@ti.com>, <baojun.xu@ti.com>, <devicetree@vger.kernel.org>,
+        <lgirdwood@gmail.com>, <perex@perex.cz>,
+        <pierre-louis.bossart@linux.intel.com>, <13916275206@139.com>,
+        <linux-sound@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <liam.r.girdwood@intel.com>, <soyer@irl.hu>, <tiwai@suse.de>,
+        <peeyush@ti.com>, <navada@ti.com>,
+        Shenghao Ding <shenghao-ding@ti.com>
+Subject: [PATCH v3 1/5] ASoC: dt-bindings: move tas2563 from tas2562.yaml to tas2781.yaml
+Date: Mon, 25 Dec 2023 13:39:27 +0800
+Message-ID: <20231225053932.1138-1-shenghao-ding@ti.com>
+X-Mailer: git-send-email 2.33.0.windows.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Thu, 21 Dec 2023, David Rientjes wrote:
+Move tas2563 from tas2562.yaml to tas2781.yaml, because tas2563 only work
+in bypass-DSP mode with tas2562 driver. In oder to enable DSP mode for
+tas2563, it has been moved to tas2781 driver. As to the hardware part,
+such as register setting and DSP firmware, all these are stored in the
+binary firmware. What tas2781 drivder dooes is to parse the firmware and
+download them to the tas2781 or tas2563, then power on tas2781 or tas2563.
+So, tas2781 driver can be resued as tas2563 driver。 Only attention will
+be paid to downloading corresponding firmware.
 
-> > Hi,
-> > 
-> > On 2023/12/13 08:10, David Rientjes wrote:
-> > > On 6.6 I measured "hugepagesz=1G hugepages=11776" on as 12TB host to be
-> > > 77s this time around.
-> > 
-> > Thanks for your test! Is this the total kernel boot time, or just the
-> > hugetlb initialization time?
-> > 
-> 
-> Ah, sorry for not being specific.  It's just the hugetlb preallocation of 
-> 11776 1GB hugetlb pages, total boot takes a few more minutes.
-> 
+Signed-off-by: Shenghao Ding <shenghao-ding@ti.com>
 
-I had to apply this to get the patch series to compile on 6.7-rc7:
+---
+Change in v3:
+ - remove tas2563, which will be move to tas2781 driver
+ - Add more comments on why move tas2563 to tas2781 driver
+ - provide rationale in terms of bindings and hardware, not in terms of driver.
+   Or at least not only.
+---
+ Documentation/devicetree/bindings/sound/tas2562.yaml | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/kernel/padata.c b/kernel/padata.c
---- a/kernel/padata.c
-+++ b/kernel/padata.c
-@@ -485,7 +485,7 @@ void __init padata_do_multithreaded(struct padata_mt_job *job)
- 	struct padata_work my_work, *pw;
- 	struct padata_mt_job_state ps;
- 	LIST_HEAD(works);
--	int nworks, nid;
-+	int nworks, nid = 0;
+diff --git a/Documentation/devicetree/bindings/sound/tas2562.yaml b/Documentation/devicetree/bindings/sound/tas2562.yaml
+index f01c0dde0cf7..d28c102c0ce7 100644
+--- a/Documentation/devicetree/bindings/sound/tas2562.yaml
++++ b/Documentation/devicetree/bindings/sound/tas2562.yaml
+@@ -18,7 +18,6 @@ description: |
  
- 	if (job->size == 0)
- 		return;
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -3300,7 +3300,7 @@ int alloc_bootmem_huge_page(struct hstate *h, int nid)
- int __alloc_bootmem_huge_page(struct hstate *h, int nid)
- {
- 	struct huge_bootmem_page *m = NULL; /* initialize for clang */
--	int nr_nodes, node;
-+	int nr_nodes, node = NUMA_NO_NODE;
+   Specifications about the audio amplifier can be found at:
+     https://www.ti.com/lit/gpn/tas2562
+-    https://www.ti.com/lit/gpn/tas2563
+     https://www.ti.com/lit/gpn/tas2564
+     https://www.ti.com/lit/gpn/tas2110
  
- 	/* do node specific alloc */
- 	if (nid != NUMA_NO_NODE) {
+@@ -29,7 +28,6 @@ properties:
+   compatible:
+     enum:
+       - ti,tas2562
+-      - ti,tas2563
+       - ti,tas2564
+       - ti,tas2110
+ 
+-- 
+2.34.1
 
-With that, I compared "hugepagesz=1G hugepages=11776" before and after on 
-a 12TB host with eight NUMA nodes.
-
-Compared to 77s of total initialization time before, with this series I 
-measured 18.3s.
-
-Feel free to add this into the changelog once the initialization issues 
-are fixed up and I'm happy to ack it.
-
-Thanks!
 
