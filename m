@@ -1,149 +1,85 @@
-Return-Path: <linux-kernel+bounces-11124-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11125-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F8D081E1B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 18:30:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B394981E1B9
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 18:31:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 743C51C2111B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 17:30:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 41328282229
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 17:31:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D73E52F78;
-	Mon, 25 Dec 2023 17:30:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7FF752F86;
+	Mon, 25 Dec 2023 17:31:09 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B41A951C26
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 17:30:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F2B952F65
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 17:31:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7bae41ec8a3so38422139f.2
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 09:30:27 -0800 (PST)
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7b7fa6cba91so490812639f.1
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 09:31:08 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703525427; x=1704130227;
+        d=1e100.net; s=20230601; t=1703525467; x=1704130267;
         h=to:from:subject:message-id:in-reply-to:date:mime-version
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=eDEbyFX/uNJ6pNOP9ps3wA3oswpBwZ/XfGpRR61rov4=;
-        b=TFo2otHpq3/7w5Eummbgv3NQaQ0kxbp03XSm9QjQabnNBG/ahamHxnzhC3J39yXoYJ
-         8GQdPPCH4JteyH5lFmaJB+iRZIlrS+pBD3MCYdg7G1aVWiY4ZsmJvVM7d8EEyZNJp882
-         zXupInMUbzosqyBC7b95Wjqn85FlSvzMq8x1YEK37fduUc/3vb7D9acy6zebKe8N4tx6
-         /bqzrf+2fs8FCeMEHPcu2X2aRlJ7jTaNIrur+F/qu1xg0Qi1JvCogbZGXWZSpCHCozib
-         Li2mepKNPSMxd1Gw++CXL6aVPOTc3HoCOe22osZ0jkKP9KtJZ7tywOZiapgxcOOCeOpn
-         gnuw==
-X-Gm-Message-State: AOJu0YzSPxPuuF83UqJVSMdfgPgPeKNlHR3cVW4kT/KGCn7+RsiEb1xV
-	pgnzcRCGdzrY3Rtd1jUQ8GSprJ7P0H3Y0d5oa+IBZFjCpvyG
-X-Google-Smtp-Source: AGHT+IFwTo/+8gy+Oz0fJprtvcSjjIo2Py45r/qiX0KlgP+HNDvyBWaS9NoonUnchP7BP014ovlSq3Vg7QzKzISe6Xfxb7OIZHbM
+        bh=LFqI58q7VNYJmMslCgc+pTUxt4F8ra7+YSzIXJuw1CI=;
+        b=N2GylGeCe+DKNyebnR0aQGziL7x2dinq30Wr6JiB+8E3wVJFdYBsP+Qf3f3cy0rP8g
+         rMVIz9LfCHJEI3BwkYq8NHBv7AJHnURTTdVrAj3OEgDV0rwNaFim8Ev0sTtUTe/tTbV2
+         AO46sidcOY0WQdmRc3K8UHpPtntTBqTHfDdQpa6QK1K1X3srMHDXh0hxooiYlmOO6AsF
+         e300OCXCrjgBV6t/gaAV41n6rXjir7kVvV+l76BSKbCvz6N6ChzrKS35M6JMD2mD6bSr
+         +gdJ5/JRC0WROlnz6YsO2t7wXlhFMz60LZbAi7gXG+8IiuqhWTh3cIw4NJbPsxV+Y967
+         RYdQ==
+X-Gm-Message-State: AOJu0Yz/LxJTa7uKyfGBFJsERpxoQy1LP4+U/FYb5ltm9O0P2cqfSSjj
+	AGFvMU8S3xN6TLNsG67Ya/P5HFBGAgjBIZgZ0cIiY27rOzJX
+X-Google-Smtp-Source: AGHT+IG150p2eMqab1PfIi2zECmHDFBS0UnssC+uKVBgIAlE5EIKxdwzS9Wj1PI8eSGg+CAuQ8PyuEKXFEI4yjrkYGt1uF1mvnCE
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:2dd0:b0:46d:5a:a467 with SMTP id
- gt16-20020a0566382dd000b0046d005aa467mr173464jab.4.1703525425507; Mon, 25 Dec
- 2023 09:30:25 -0800 (PST)
-Date: Mon, 25 Dec 2023 09:30:25 -0800
-In-Reply-To: <00000000000027f81605ee31ab88@google.com>
+X-Received: by 2002:a92:c243:0:b0:35f:e976:3283 with SMTP id
+ k3-20020a92c243000000b0035fe9763283mr613348ilo.2.1703525467494; Mon, 25 Dec
+ 2023 09:31:07 -0800 (PST)
+Date: Mon, 25 Dec 2023 09:31:07 -0800
+In-Reply-To: <000000000000e8099a060cee1003@google.com>
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000da757a060d58ebbe@google.com>
-Subject: Re: [syzbot] [reiserfs?] KMSAN: uninit-value in reiserfs_new_inode (2)
-From: syzbot <syzbot+6450929faa7a97cd42d1@syzkaller.appspotmail.com>
-To: brauner@kernel.org, damien.lemoal@opensource.wdc.com, 
-	edward.shishkin@gmail.com, glider@google.com, jack@suse.cz, 
-	jlayton@kernel.org, linuszeng@tencent.com, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, reiserfs-devel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com, willy@infradead.org
+Message-ID: <0000000000005b23dc060d58ee7a@google.com>
+Subject: Re: [syzbot] [perf?] WARNING in perf_event_open
+From: syzbot <syzbot+07144c543a5c002c7305@syzkaller.appspotmail.com>
+To: acme@kernel.org, adrian.hunter@intel.com, 
+	alexander.shishkin@linux.intel.com, irogers@google.com, jolsa@kernel.org, 
+	linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org, 
+	mark.rutland@arm.com, mingo@redhat.com, namhyung@kernel.org, 
+	netdev@vger.kernel.org, peterz@infradead.org, syzkaller-bugs@googlegroups.com, 
+	xrivendell7@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 
-syzbot has found a reproducer for the following issue on:
+syzbot has bisected this issue to:
 
-HEAD commit:    861deac3b092 Linux 6.7-rc7
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=12057ecee80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e0c7078a6b901aa3
-dashboard link: https://syzkaller.appspot.com/bug?extid=6450929faa7a97cd42d1
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14836ca1e80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=159e1e16e80000
+commit 382c27f4ed28f803b1f1473ac2d8db0afc795a1b
+Author: Peter Zijlstra <peterz@infradead.org>
+Date:   Wed Nov 29 14:24:52 2023 +0000
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/0ea60ee8ed32/disk-861deac3.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/6d69fdc33021/vmlinux-861deac3.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/f0158750d452/bzImage-861deac3.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/dcd887118b46/mount_0.gz
+    perf: Fix perf_event_validate_size()
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+6450929faa7a97cd42d1@syzkaller.appspotmail.com
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=170e70cee80000
+start commit:   5abde6246522 bpf: Avoid unnecessary use of comma operator ..
+git tree:       bpf-next
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=148e70cee80000
+console output: https://syzkaller.appspot.com/x/log.txt?x=108e70cee80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=8f565e10f0b1e1fc
+dashboard link: https://syzkaller.appspot.com/bug?extid=07144c543a5c002c7305
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14857e81e80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1126ac36e80000
 
-REISERFS warning (device loop0): vs-13060 reiserfs_update_sd_size: stat data of object [1 2 0x0 SD] (nlink == 1) not found (pos 2)
-REISERFS (device loop0): Created .reiserfs_priv - reserved for xattr storage.
-=====================================================
-BUG: KMSAN: uninit-value in reiserfs_new_inode+0x16cd/0x20f0 fs/reiserfs/inode.c:2044
- reiserfs_new_inode+0x16cd/0x20f0 fs/reiserfs/inode.c:2044
- reiserfs_create+0x674/0xcb0 fs/reiserfs/namei.c:666
- xattr_create fs/reiserfs/xattr.c:70 [inline]
- xattr_lookup+0x3ee/0x5e0 fs/reiserfs/xattr.c:413
- reiserfs_xattr_set_handle+0xe7/0x21b0 fs/reiserfs/xattr.c:535
- reiserfs_xattr_set+0x670/0x7f0 fs/reiserfs/xattr.c:635
- trusted_set+0x112/0x190 fs/reiserfs/xattr_trusted.c:31
- __vfs_setxattr+0x7aa/0x8b0 fs/xattr.c:201
- __vfs_setxattr_noperm+0x24f/0xa30 fs/xattr.c:235
- __vfs_setxattr_locked+0x441/0x480 fs/xattr.c:296
- vfs_setxattr+0x294/0x650 fs/xattr.c:322
- do_setxattr fs/xattr.c:630 [inline]
- setxattr+0x45f/0x540 fs/xattr.c:653
- path_setxattr+0x1f5/0x3c0 fs/xattr.c:672
- __do_sys_setxattr fs/xattr.c:688 [inline]
- __se_sys_setxattr fs/xattr.c:684 [inline]
- __x64_sys_setxattr+0xf7/0x180 fs/xattr.c:684
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0x44/0x110 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
+Reported-by: syzbot+07144c543a5c002c7305@syzkaller.appspotmail.com
+Fixes: 382c27f4ed28 ("perf: Fix perf_event_validate_size()")
 
-Uninit was created at:
- __alloc_pages+0x9a4/0xe00 mm/page_alloc.c:4591
- alloc_pages_mpol+0x62b/0x9d0 mm/mempolicy.c:2133
- alloc_pages+0x1be/0x1e0 mm/mempolicy.c:2204
- alloc_slab_page mm/slub.c:1870 [inline]
- allocate_slab mm/slub.c:2017 [inline]
- new_slab+0x421/0x1570 mm/slub.c:2070
- ___slab_alloc+0x13db/0x33d0 mm/slub.c:3223
- __slab_alloc mm/slub.c:3322 [inline]
- __slab_alloc_node mm/slub.c:3375 [inline]
- slab_alloc_node mm/slub.c:3468 [inline]
- slab_alloc mm/slub.c:3486 [inline]
- __kmem_cache_alloc_lru mm/slub.c:3493 [inline]
- kmem_cache_alloc_lru+0x552/0x970 mm/slub.c:3509
- alloc_inode_sb include/linux/fs.h:2937 [inline]
- reiserfs_alloc_inode+0x62/0x150 fs/reiserfs/super.c:642
- alloc_inode+0x83/0x440 fs/inode.c:261
- iget5_locked+0xa9/0x210 fs/inode.c:1271
- reiserfs_fill_super+0x2109/0x39d0 fs/reiserfs/super.c:2053
- mount_bdev+0x3d7/0x560 fs/super.c:1650
- get_super_block+0x4d/0x60 fs/reiserfs/super.c:2601
- legacy_get_tree+0x110/0x290 fs/fs_context.c:662
- vfs_get_tree+0xa5/0x520 fs/super.c:1771
- do_new_mount+0x68d/0x1550 fs/namespace.c:3337
- path_mount+0x73d/0x1f20 fs/namespace.c:3664
- do_mount fs/namespace.c:3677 [inline]
- __do_sys_mount fs/namespace.c:3886 [inline]
- __se_sys_mount+0x725/0x810 fs/namespace.c:3863
- __x64_sys_mount+0xe4/0x140 fs/namespace.c:3863
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0x44/0x110 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-
-CPU: 1 PID: 5006 Comm: syz-executor185 Not tainted 6.7.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
-=====================================================
-
-
----
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
