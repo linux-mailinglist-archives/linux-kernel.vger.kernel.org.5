@@ -1,134 +1,166 @@
-Return-Path: <linux-kernel+bounces-11119-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11120-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 24A9881E18E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 17:10:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF8B581E193
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 17:17:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D6A18281F33
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 16:10:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F35371C20FBB
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 16:17:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4DDA537E5;
-	Mon, 25 Dec 2023 16:09:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6871552F84;
+	Mon, 25 Dec 2023 16:17:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="D9mqPlfT"
+	dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b="cITrekLU"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sonic305-20.consmr.mail.gq1.yahoo.com (sonic305-20.consmr.mail.gq1.yahoo.com [98.137.64.83])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C27852F61
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 16:09:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1703520585;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=VqafsTsLWFL6NUacBRAsGtc9kpoOdr+j/kVqdz2KGps=;
-	b=D9mqPlfTwYuNJi4B6KW9virIn25oAF6KJO1DPRjL3QgxGoYi/aZvQhQ6SxaAucfl1mfkTI
-	2BhAsqnTfOgOxR+qFBkoEO02/lLWZdSG4DtRAMJ7mE1KRUKAFVGeLstdjJ6VVrBdaG+4BT
-	HC6YfH4aB8ZfJIQTKQ076gm3A3IuBSk=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-616-hr5VO3hrOsaUJAYqxvVOsw-1; Mon, 25 Dec 2023 11:09:44 -0500
-X-MC-Unique: hr5VO3hrOsaUJAYqxvVOsw-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-40d5970422cso16405e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 08:09:44 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703520583; x=1704125383;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VqafsTsLWFL6NUacBRAsGtc9kpoOdr+j/kVqdz2KGps=;
-        b=oiyVSW4AFcr1NrMh52G7IbB04d0HYh1roorZ4gGARdO0iw4Q5kyWkYOaKOqMZaHQ/i
-         5vE3rVeVzlkQMkNxjsVem/5t3uQKstL8EEmYSeUAotX6msL5QnkXwq1DmHiD4W7XYtmA
-         OpuNiaZMGBdbEVUcXhEUwtxTa3JXuIJiHP28Bcf0miu7cpXsK1U+byVXvKh7+7OhDPNm
-         atUO6pY1Qgbi3jvQ0S2bFGnnHZ47LnU2FcaeDTmP3zsgTjkyzC2Nv1l4YhB1nyTVezKG
-         oS12f+EVnDOOR7cCq53PDx7X7+INycz5XLVL7LGP3GgZ6e7sJeBXXwCVC94lkW6D+sur
-         5AuQ==
-X-Gm-Message-State: AOJu0YxQiclyC7gtWMA7rbiqPFAuA4HLvZVoSoK1e/d/O5B5rDM91XzS
-	ghxULsW+KNhsd0CdiAQ3niz3IvyY6B5CzWy72bnDUZj4T/TbyDAfdTyX/4AiFsoJAfVb0HMvc0z
-	5vYxHj75tOcB0f2HU6oSRkbWH+U+qKUiL
-X-Received: by 2002:a05:600c:4587:b0:40c:33be:d193 with SMTP id r7-20020a05600c458700b0040c33bed193mr4060348wmo.78.1703520582985;
-        Mon, 25 Dec 2023 08:09:42 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHfGGCax+SlWX/roShT1Wqm6zJg2zHkXbA4PNy8JwUTudzLUljk5TaAwhoH/7jZ8kvUv2pY7Q==
-X-Received: by 2002:a05:600c:4587:b0:40c:33be:d193 with SMTP id r7-20020a05600c458700b0040c33bed193mr4060329wmo.78.1703520582646;
-        Mon, 25 Dec 2023 08:09:42 -0800 (PST)
-Received: from redhat.com ([2a06:c701:73ef:4100:2cf6:9475:f85:181e])
-        by smtp.gmail.com with ESMTPSA id f12-20020a05600c4e8c00b0040d3db8186fsm16769282wmq.5.2023.12.25.08.09.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Dec 2023 08:09:41 -0800 (PST)
-Date: Mon, 25 Dec 2023 11:09:37 -0500
-From: "Michael S. Tsirkin" <mst@redhat.com>
-To: Pasha Tatashin <pasha.tatashin@soleen.com>
-Cc: akpm@linux-foundation.org, alex.williamson@redhat.com,
-	alim.akhtar@samsung.com, alyssa@rosenzweig.io,
-	asahi@lists.linux.dev, baolu.lu@linux.intel.com,
-	bhelgaas@google.com, cgroups@vger.kernel.org, corbet@lwn.net,
-	david@redhat.com, dwmw2@infradead.org, hannes@cmpxchg.org,
-	heiko@sntech.de, iommu@lists.linux.dev, jasowang@redhat.com,
-	jernej.skrabec@gmail.com, jgg@ziepe.ca, jonathanh@nvidia.com,
-	joro@8bytes.org, kevin.tian@intel.com,
-	krzysztof.kozlowski@linaro.org, kvm@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org, linux-rockchip@lists.infradead.org,
-	linux-samsung-soc@vger.kernel.org, linux-sunxi@lists.linux.dev,
-	linux-tegra@vger.kernel.org, lizefan.x@bytedance.com,
-	marcan@marcan.st, mhiramat@kernel.org, m.szyprowski@samsung.com,
-	netdev@vger.kernel.org, paulmck@kernel.org, rdunlap@infradead.org,
-	robin.murphy@arm.com, samuel@sholland.org,
-	suravee.suthikulpanit@amd.com, sven@svenpeter.dev,
-	thierry.reding@gmail.com, tj@kernel.org, tomas.mudrunka@gmail.com,
-	vdumpa@nvidia.com, virtualization@lists.linux.dev, wens@csie.org,
-	will@kernel.org, yu-cheng.yu@intel.com
-Subject: Re: [PATCH 15/16] vhost-vdpa: account iommu allocations
-Message-ID: <20231225110930-mutt-send-email-mst@kernel.org>
-References: <20231128204938.1453583-1-pasha.tatashin@soleen.com>
- <20231128204938.1453583-16-pasha.tatashin@soleen.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 954A052F6D
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 16:17:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=yahoo.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yahoo.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1703521031; bh=b7oS2vPf5l0YuvHJ8ryWJgEKy/P1iTrjvk6flK5KjbA=; h=Date:From:To:Cc:Subject:References:From:Subject:Reply-To; b=cITrekLUdQ+3EUIQUOfiWooqmL15m+qXqJ6mTCinis4kV91yW/7qMvIcq0IjogChg/oRaOGlnehMUqim3U1CFxr62RG0+BzFwKKwVhUS+qD6BIC533vF6wjQa0wWnMw+bjB9XtZuy/p6T40/j8s+SkWlrbxdP3U2z1qgPILNcieF/IOHrAEQKknVseZldmybgGhDuboRcnHGPGfvYmyiQEYAYXYQhUj7uj0OZ2pubzGYdpqBjpzn05AqN8MZ6kaVTx0kC/FD5mukwkwfxdmv3RYTiAtKQtmQMNA62JXBgRKMH7UVUs99DC1T4xEbry2mXCknT89sXnYboaF3SoiWPw==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1703521031; bh=Bj5q7H9zY/QnbGfGbmc4UqE7a36AS8vkFwj2ONt38o1=; h=X-Sonic-MF:Date:From:To:Subject:From:Subject; b=D8tIxtl1AS4gajQtBHxT1ZB2nYUewEkYnqa2t34vog+0WEOOFsPSE7Vx5GRmYo5VhMxJVqVjVvsQZKWJFFfnFXG3Gyg16nz6iOWcJtUaxJMW44QVVYm8/wrxmFXl7kGS5VMOvSPaRNdMnFPNeeQ10Ms0BRYzwVa9kB4JcNnTJhhXBUmGARTPq6XwfsPZvmIwgBEH+lSiWUab89eth5iPvjKutnwgrw831SXwESG7fI+YJzG7pGZUEuqr98lidD8qPCChnDZcucm5TspjYshH4r47yzPnbqMABZS+5jEhzrZzH7ItNvdqexmeVsfItNPUbfzXMvrmnCzWycplfGWgoA==
+X-YMail-OSG: M2_0rK8VM1kkh4orrRbBQpWohCcXmhjECf6_GE7lPxkipgxpDT83vfcUsxZD5oq
+ WhRgfQffSK_mQiM0Lxniu_GjIPXMNUb9vVXEcaeNJvz6WOjpUxjOmw8jlZrWe1o7hqLIv0TctXhe
+ TwIMdHxtNLAisSmWuyKjCMjVdRut3TNeA_EJpjqXR6oTrhWziZBZmbnwOO1XyCtvbaPxPZUie.F0
+ gqvDUHimYFJXfYtMZJCNMKb595rXxaLl00_hpgBkz8dERR3dXDrP2a0H9SDnKmHqRzk0KZQ7l4yB
+ t2ZzyP4H7W1L76YVtSFjp4oR4tdEYtTN_iR9VR7FztzmgOygx1S0beGm_.p.95FnuNNa2d5odQz.
+ LMBTrUyqPmNy0knqHpblkvxWi0s_qCw.c3tRfao_yibVehAfnQt9EhVFY3rIBE95BCvxQtblQ9l5
+ D7mP6lbMS7uiwiUYRnxOajAxfxfA4QbzalVXfNLuMxoxvfAWY8mJpAlsPIC49..EGSnerGnh7_UA
+ CecBu4dW55aLb9EUMEQCwAuPoi02FcM8AnfOZarK3MgV9SBvOGCoYMNo9BDIfMt9g.FO.wRg3h6J
+ cIxBZbdnIvmhDOAhcbZuR997yUBCzVuF0v_n7sdPAJOYrreDqJFhMCH2XNdsIQLtYl0rUQGIn5W5
+ giALpeY.EIVseW9I87cSxiGVu8uWRFDSUk1DvIOuOh5zl6zsdIIL0b9gdyYxk4Q2PNRzPJl9N0EZ
+ MUn.Kefn46gd3vL0CeUwNcxFlHhH_JxGhfo3_PRIfl2zHERLN2a_Kk5eTZVSvPwYcRRbtqhj_sI_
+ jNY5DtIP3IH76A284uzSX4BBY8LBVbedO0DeU_Ks8gCVnpLN9Sh27ymhpjqouBJ9_nLQvRlfTUuY
+ TLdtU1TUwUoBLnoxlmb.9x76OwU1RK.2dISrpyHYzJVyjGawNbUseeSAKyu8yzN775K719bnEBl2
+ dWR4oznBPpNd8hu74BQ4OaCLFv.zxgSD_.nm8c9NpF639u1YAt3PPVLHiQNWLtqTAUXJTS8C687i
+ fG2oP2WXfjWWz6VQt2c37JPPpADAoETBHhHL_HN5RGJby4Ktk6eY9urIDAKNpvBZVfQRy0irZG5s
+ ecnTbs7.VvnKt0inkwa9PjmrkIWBVSauMdOgRdXiBxGn.iz_HER7ZgGhHRxPBF35Q6D7of7pG1wu
+ CtH.4beUZq1HcG_uEUM5Xv21yEvxbnuXAXWW7l4_t5ClRgwbRSc51WPbXdHAtXSj45rakitiyBmV
+ P2TWCle0PC.c_pjTFSk1LXgTIo3vqdsCj3q9vEgBx.KVgQBeeUdtsuyhBynbutUYSOQBntgOfxNQ
+ oNOFKNSh_bJAIwIwi9hChgMC4QT1NC.r1IzICDqW7tKpOdui9ctRqt1UgHOyqyQekQjlvvxHocsU
+ r_snrf_NDNiANPkPZLce8w3QN_pMFsOE4V1G6Wm5HIBoJTFpbNfwGOHVoWtPc0j2M8VUfAb_6gHj
+ ZUcvwTVLq7OBvqbraXgnUPxS3Bj6mtOH2tMw2hUTzn4vLxjsfz6k0Vpuguqa1Ar9pGhP.CffSkSI
+ 3Nbfo7HSk27ar8sb4y5MS0a_gTbrf0XAHwZ8IVu9P1JIf1FW5CrkcTcLp4CVa7uUjjNgfgV25Jxa
+ 6gcN4c.RlH8U1eQYSx4dD4.4yjftNnIDmv_0QxKWIkGLs9faN_.KCCjJ2YvmRoS_NTQnbxqt3V79
+ Be9geQ5xfzMyOR8dDhkqJlfpe8xRQdEAmMA6a3C6TMmRARboCRKod4K198QvCovtghBevY9Z.5KT
+ aQryf8ESG.WZrJdXwqG2D0AtkRLgPSCOCVR_6eXp32d4yquEP7W7HAbJn.1v1daJW2ni6qRTq2vT
+ 2W8habuv.5uqwHsa9vH8weQx3rTByHPSzMAhkbLs_VngW15K5I2SGvD4HnSpqps38RaoQURNLIK6
+ ecyWGBfMCtFksM4LXVs8TfJSdK7XyBB3C5u1cgVoa_UIQmU5B5Ar9dCS3gDsWpFnp4zzzW0fFAPl
+ O8WA08v0bi3qZ3FFAES3s0QhU2YG5fdmC9I1Fcu_nw3uJwfc_jlAGo.izofxb1WUt5GVEJd4dFHc
+ cY90hnQKlZhqZ8BH8fon4bBPwhE16aL2nm6a8vavWTMzF073gb7TlZ2F.dF0Lf8UY.7ExWdZ1bmZ
+ EpkKYv2.si4i4sPYTsI7bqqqqIqEa9vlIGaQPWnhfk086wP4JzFLJNPWRviOKHaEPeHWUam0Y0WZ
+ rOeehmrVc3duLoD29xo.vPPWh
+X-Sonic-MF: <chaosesqueteam@yahoo.com>
+X-Sonic-ID: d97e5afa-a11a-4c89-bc5a-99dc184621c5
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic305.consmr.mail.gq1.yahoo.com with HTTP; Mon, 25 Dec 2023 16:17:11 +0000
+Date: Mon, 25 Dec 2023 16:17:09 +0000 (UTC)
+From: "chaosesqueteam@yahoo.com" <chaosesqueteam@yahoo.com>
+To: Polarian <polarian@polarian.dev>, "theo@openbsd.org" <theo@openbsd.org>, 
+	Richard Stallman <rms@gnu.org>, 
+	"misc@openbsd.org" <misc@openbsd.org>, 
+	"tech@openbsd.org" <tech@openbsd.org>
+Cc: Aditya Pakki <pakki001@umn.edu>, 
+	Anna Schumaker <anna.schumaker@netapp.com>, 
+	"ansgar@debian.org" <ansgar@debian.org>, 
+	"blukashev@sempervictus.com" <blukashev@sempervictus.com>, 
+	Chuck Lever <chuck.lever@oracle.com>, 
+	Dave Wysochanski <dwysocha@redhat.com>, 
+	"David S. Miller" <davem@davemloft.net>, 
+	"editor@lwn.net" <editor@lwn.net>, 
+	"esr@thyrsus.com" <esr@thyrsus.com>, 
+	"gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>, 
+	"J. Bruce Fields" <bfields@fieldses.org>, 
+	Jakub Kicinski <kuba@kernel.org>, Leon Romanovsky <leon@kernel.org>, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
+	Linux Networking <netdev@vger.kernel.org>, 
+	"linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>, 
+	"moglen@columbia.edu" <moglen@columbia.edu>, 
+	"skraw.ml@ithnet.com" <skraw.ml@ithnet.com>, 
+	"tcallawa@redhat.com" <tcallawa@redhat.com>, 
+	"torvalds@linuxfoundation.org" <torvalds@linuxfoundation.org>, 
+	"torvalds@osdl.org" <torvalds@osdl.org>, 
+	Trond Myklebust <trond.myklebust@hammerspace.com>, 
+	Bagas Sanjaya <bagasdotme@gmail.com>, 
+	Eric Dumazet <edumazet@google.com>, 
+	Julia Lawall <julia.lawall@inria.fr>, 
+	Paolo Abeni <pabeni@redhat.com>, Bruce Perens <bruce@perens.com>, 
+	Jan Stary <hans@stare.cz>, 
+	"jon@elytron.openbsd.amsterdam" <jon@elytron.openbsd.amsterdam>, 
+	"netbsd-current-users@netbsd.org" <netbsd-current-users@netbsd.org>, 
+	"netbsd-users@netbsd.org" <netbsd-users@netbsd.org>, 
+	Rudy Zijlstra <rudy@grumpydevil.homelinux.org>, 
+	Wolfenstein Enemy Territory Fans <6469670767@groups.facebook.com>, 
+	ChaosEsque Team <chaosesqueteam@yahoo.com>
+Message-ID: <1149317171.4243163.1703521029010@mail.yahoo.com>
+Subject: Re: Why the mail filter?
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231128204938.1453583-16-pasha.tatashin@soleen.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+References: <1149317171.4243163.1703521029010.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.21952 YMailNorrin
 
-On Tue, Nov 28, 2023 at 08:49:37PM +0000, Pasha Tatashin wrote:
-> iommu allocations should be accounted in order to allow admins to
-> monitor and limit the amount of iommu memory.
-> 
-> Signed-off-by: Pasha Tatashin <pasha.tatashin@soleen.com>
+>I am normally against centralised control, but if you are unwilling to go away, then I have no choice.
+Ah, another dipshit white fuck who thinks there's no such things as "constructive eviction" or "constructive dismissal" 
+and he can claim one thing, but do another.
 
+"I'm normally against centralised control, except when it benifits me"
 
-Acked-by: Michael S. Tsirkin <mst@redhat.com>
+>but if you are unwilling to go away, then I have no choice.
+No one's infront of you, retarded white (pro-woman's rights) fuck.
+I never met you. Do you want me to show you what "not going away" is?
+Do you?
 
+>I would kindly ask you to stop spreading your hate towards me across
+every OpenBSD mailing list, and Linux mailing list, thank you!
+And I kindly asked my "fellow opensource C programmers" to assist me 
+in adding Unreal binary map format support to the aformentioned (previous emails)
+opensource project.
 
-> ---
->  drivers/vhost/vdpa.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
-> index da7ec77cdaff..a51c69c078d9 100644
-> --- a/drivers/vhost/vdpa.c
-> +++ b/drivers/vhost/vdpa.c
-> @@ -968,7 +968,8 @@ static int vhost_vdpa_map(struct vhost_vdpa *v, struct vhost_iotlb *iotlb,
->  			r = ops->set_map(vdpa, asid, iotlb);
->  	} else {
->  		r = iommu_map(v->domain, iova, pa, size,
-> -			      perm_to_iommu_flags(perm), GFP_KERNEL);
-> +			      perm_to_iommu_flags(perm),
-> +			      GFP_KERNEL_ACCOUNT);
->  	}
->  	if (r) {
->  		vhost_iotlb_del_range(iotlb, iova, iova + size - 1);
-> -- 
-> 2.43.0.rc2.451.g8631bc7472-goog
+But then you informed me that opensource was an exclusive Pro-woman's rights
+anti-child bride white faggot club and that I was NEVER going to find any 
+contributors because I was not a pro-woman's rights white faggot.
 
+You then called me 13, claimed I was looking for financial support for the project,
+put the project in a false light as if it was just starting out, etc etc etc.
+
+I may have been programming opensource longer than you; but because you
+have the "correct" white faggot beliefs (your religion) I'm "less experianced".
+Been programming for decades, dipshit fuck.
+
+Go here: sf.net/p/chaosesqueanthology/tickets/2/
+And program.
+
+Show us the code. Also go here: www.youtube.com/watch?v=9-BuCt5KReo
+
+---------------------------------------------------------------------------------------------------
+Polarian wrote:
+Hello,
+
+Seen as you won't go away I have forwarded the abuse to yahoo and
+firemail.cc, I wish you the best in life. I am normally against
+centralised control, but if you are unwilling to go away, then I have
+no choice.
+
+I would kindly ask you to stop spreading your hate towards me across
+every OpenBSD mailing list, and Linux mailing list, thank you!
+
+Can the mailing list admins please bounce both the firemail email and
+the yahoo email please.
+
+Take care,
+-- 
+Polarian
+GPG signature: 0770E5312238C760
+Website: https://polarian.dev
+JID/XMPP: polarian@icebound.dev
 
