@@ -1,160 +1,92 @@
-Return-Path: <linux-kernel+bounces-11037-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11038-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58F8681E074
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 13:31:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0CEA681E079
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 13:39:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 022C51F22092
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 12:31:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 85D77B20F66
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 12:39:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EED351C29;
-	Mon, 25 Dec 2023 12:31:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CF5151C42;
+	Mon, 25 Dec 2023 12:39:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BIL/6fzZ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from connect.vanmierlo.com (fieber.vanmierlo.com [84.243.197.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3250D1E481;
-	Mon, 25 Dec 2023 12:31:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=vanmierlo.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=vanmierlo.com
-X-Footer: dmFubWllcmxvLmNvbQ==
-Received: from roundcube.vanmierlo.com ([192.168.37.37])
-	(authenticated user m.brock@vanmierlo.com)
-	by connect.vanmierlo.com (Kerio Connect 10.0.2 patch 1) with ESMTPA;
-	Mon, 25 Dec 2023 13:31:16 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46D072574B;
+	Mon, 25 Dec 2023 12:39:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1d3e6c86868so29866815ad.1;
+        Mon, 25 Dec 2023 04:39:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703507955; x=1704112755; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=lt7y85wdBzW7T0fKOcTK5uAk2Vc6N/J05wAxgQgPaB8=;
+        b=BIL/6fzZcQPRY5VbtzQeHUKeyFBNz4ggikrbchwA8DYYaC+laENLsYJqIiP5DXQsyn
+         GMa8cLNJq1Aiq3Sz8LFUVLxuN5GymeICGI+X7guuNehaivfwpH2R35tQ41FrHx6zHre+
+         0w3UaxqYm3IJjP2QNzgNsZLwqfTJYalPmNOpN/TnBUjSBYzI8E525aNc14N+ZNxHPlbL
+         zXFdlmVeukXd40JFOZk7Ow9rqnqqoeRIn6oFLXBWvasbMjX75Mkw4ydKbJmyisqQIZdx
+         8Rp7D8iAD4zO2fKyu8CP3XL7QoKE4Hkq9IdzV6SUCwHyb4oOBML/6gRNeYWTrDdJvVAK
+         5Rlw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703507955; x=1704112755;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lt7y85wdBzW7T0fKOcTK5uAk2Vc6N/J05wAxgQgPaB8=;
+        b=iPAp9I669pW9c7yPHnvAUB2H2StEO9g0XfCltV9xUrPikoTKIjwiF468M9TOUYu1d+
+         Zd1hCdHOFuLEGlNmrwL6OqGOHXG1xkkQcdsOs09Olyzmmto3QPYvztSjwpia5YT+aYVI
+         XoFB9xgtCPxEnM/gfnLt3nj9AJXIg66mMshH/gX/1+DAt6ct9ISsJQ5FmLW6v/ksYvi1
+         QGEru2qDBtKgglMPyicPpIEHZjs0VpVd2IHFIbq4CAvIliQkHYOoNXQL3kO2V0e0i+hI
+         Ugr54qQTJfZuzDqR1KKUrQqWXykcVYSyIzXd/yfUUoOSdTzcbTR6REXlrBP+eN+syAvt
+         97Wg==
+X-Gm-Message-State: AOJu0YyRMsp0ZTH8yXroGLJCY1YMgHULrNmYcyuJF7eByxTIJjkrKjIU
+	9bsqjfz0RkMN6jZjm527LUM=
+X-Google-Smtp-Source: AGHT+IGgcUupcgnEjwe5cz+o7NA3nD2BSC5KshmWoyOnv/mTiHcnok1KfGIqVTNaAwtMz0IcUCKSog==
+X-Received: by 2002:a17:903:603:b0:1d3:c21b:db5a with SMTP id kg3-20020a170903060300b001d3c21bdb5amr5488895plb.34.1703507955502;
+        Mon, 25 Dec 2023 04:39:15 -0800 (PST)
+Received: from Laptop-X1 ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id j14-20020a170902da8e00b001d09c5424d4sm8059719plx.297.2023.12.25.04.39.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Dec 2023 04:39:14 -0800 (PST)
+Date: Mon, 25 Dec 2023 20:39:09 +0800
+From: Hangbin Liu <liuhangbin@gmail.com>
+To: Yujie Liu <yujie.liu@intel.com>
+Cc: netdev@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
+	David Ahern <dsahern@kernel.org>, linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org, lkp@intel.com,
+	kernel test robot <oliver.sang@intel.com>
+Subject: Re: [PATCH net-next] selftests/net: change the shebang of
+ unicast_extensions.sh to bash
+Message-ID: <ZYl37fnxGGop7VCs@Laptop-X1>
+References: <20231225072109.3835503-1-yujie.liu@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Date: Mon, 25 Dec 2023 13:31:16 +0100
-From: Maarten Brock <m.brock@vanmierlo.com>
-To: Lino Sanfilippo <l.sanfilippo@kunbus.com>
-Cc: gregkh@linuxfoundation.org, jirislaby@kernel.org,
- ilpo.jarvinen@linux.intel.com, u.kleine-koenig@pengutronix.de,
- shawnguo@kernel.org, s.hauer@pengutronix.de, mcoquelin.stm32@gmail.com,
- alexandre.torgue@foss.st.com, cniedermaier@dh-electronics.com,
- hugo@hugovil.com, linux-kernel@vger.kernel.org,
- linux-serial@vger.kernel.org, LinoSanfilippo@gmx.de, lukas@wunner.de,
- p.rosenberger@kunbus.com, stable@vger.kernel.org, Hugo Villeneuve
- <hvilleneuve@dimonoff.com>
-Subject: Re: [PATCH v6 1/7] serial: Do not hold the port lock when setting
- rx-during-tx GPIO
-In-Reply-To: <20231225113524.8800-2-l.sanfilippo@kunbus.com>
-References: <20231225113524.8800-1-l.sanfilippo@kunbus.com>
- <20231225113524.8800-2-l.sanfilippo@kunbus.com>
-Message-ID: <5177a7aef77a6b77a6e742a2fdd52a0e@vanmierlo.com>
-X-Sender: m.brock@vanmierlo.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231225072109.3835503-1-yujie.liu@intel.com>
 
-Lino Sanfilippo wrote on 2023-12-25 12:35:
-> diff --git a/drivers/tty/serial/serial_core.c 
-> b/drivers/tty/serial/serial_core.c
-> index f1348a509552..d155131f221d 100644
-> --- a/drivers/tty/serial/serial_core.c
-> +++ b/drivers/tty/serial/serial_core.c
-> @@ -1402,6 +1402,16 @@ static void uart_set_rs485_termination(struct
-> uart_port *port,
->  				 !!(rs485->flags & SER_RS485_TERMINATE_BUS));
->  }
-> 
-> +static void uart_set_rs485_rx_during_tx(struct uart_port *port,
-> +					const struct serial_rs485 *rs485)
-> +{
-> +	if (!(rs485->flags & SER_RS485_ENABLED))
-> +		return;
-> +
+On Mon, Dec 25, 2023 at 03:21:09PM +0800, Yujie Liu wrote:
+> The patch set [1] added a general lib.sh in net selftests, and converted
+> several test scripts to source the lib.sh.
 
-How about checking port->rs485_rx_during_tx_gpio here against NULL 
-instead of
-before every call?
+Oh, I didn't know dash doesn't support "source". Thanks for the fix.
+Would you please also help fix the pmtu.sh, which has the same issue?
 
-> +	gpiod_set_value_cansleep(port->rs485_rx_during_tx_gpio,
-> +				 !!(rs485->flags & SER_RS485_RX_DURING_TX));
-> +}
-> +
->  static int uart_rs485_config(struct uart_port *port)
->  {
->  	struct serial_rs485 *rs485 = &port->rs485;
-> @@ -1413,12 +1423,17 @@ static int uart_rs485_config(struct uart_port 
-> *port)
-> 
->  	uart_sanitize_serial_rs485(port, rs485);
->  	uart_set_rs485_termination(port, rs485);
-> +	uart_set_rs485_rx_during_tx(port, rs485);
-> 
->  	uart_port_lock_irqsave(port, &flags);
->  	ret = port->rs485_config(port, NULL, rs485);
->  	uart_port_unlock_irqrestore(port, flags);
-> -	if (ret)
-> +	if (ret) {
->  		memset(rs485, 0, sizeof(*rs485));
-> +		/* unset GPIOs */
-> +		gpiod_set_value_cansleep(port->rs485_term_gpio, 0);
-> +		gpiod_set_value_cansleep(port->rs485_rx_during_tx_gpio, 0);
-> +	}
-> 
->  	return ret;
->  }
-> @@ -1457,6 +1472,7 @@ static int uart_set_rs485_config(struct
-> tty_struct *tty, struct uart_port *port,
->  		return ret;
->  	uart_sanitize_serial_rs485(port, &rs485);
->  	uart_set_rs485_termination(port, &rs485);
-> +	uart_set_rs485_rx_during_tx(port, &rs485);
-> 
->  	uart_port_lock_irqsave(port, &flags);
->  	ret = port->rs485_config(port, &tty->termios, &rs485);
-> @@ -1468,8 +1484,14 @@ static int uart_set_rs485_config(struct
-> tty_struct *tty, struct uart_port *port,
->  			port->ops->set_mctrl(port, port->mctrl);
->  	}
->  	uart_port_unlock_irqrestore(port, flags);
-> -	if (ret)
-> +	if (ret) {
-> +		/* restore old GPIO settings */
-> +		gpiod_set_value_cansleep(port->rs485_term_gpio,
-> +			!!(port->rs485.flags & SER_RS485_TERMINATE_BUS));
-> +		gpiod_set_value_cansleep(port->rs485_rx_during_tx_gpio,
-> +			!!(port->rs485.flags & SER_RS485_RX_DURING_TX));
+BTW, you can change the "source ./lib.sh" to "source lib.sh" to consistent
+with other tests.
 
-This does not look like restoring.
-Further this looks suspiciously like duplicated code.
-
->  		return ret;
-> +	}
-> 
->  	if (copy_to_user(rs485_user, &port->rs485, sizeof(port->rs485)))
->  		return -EFAULT;
-> diff --git a/drivers/tty/serial/stm32-usart.c 
-> b/drivers/tty/serial/stm32-usart.c
-> index 3048620315d6..ec9a72a5bea9 100644
-> --- a/drivers/tty/serial/stm32-usart.c
-> +++ b/drivers/tty/serial/stm32-usart.c
-> @@ -226,10 +226,7 @@ static int stm32_usart_config_rs485(struct
-> uart_port *port, struct ktermios *ter
-> 
->  	stm32_usart_clr_bits(port, ofs->cr1, BIT(cfg->uart_enable_bit));
-> 
-> -	if (port->rs485_rx_during_tx_gpio)
-> -		gpiod_set_value_cansleep(port->rs485_rx_during_tx_gpio,
-> -					 !!(rs485conf->flags & SER_RS485_RX_DURING_TX));
-> -	else
-> +	if (!port->rs485_rx_during_tx_gpio)
-
-Should the ! be there?
-
->  		rs485conf->flags |= SER_RS485_RX_DURING_TX;
-> 
->  	if (rs485conf->flags & SER_RS485_ENABLED) {
-
-Kind Regards
-Maarten Brock
-
+Thanks
+Hangbin
 
