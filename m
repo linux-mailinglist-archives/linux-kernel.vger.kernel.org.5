@@ -1,337 +1,267 @@
-Return-Path: <linux-kernel+bounces-10915-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-10917-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23BDE81DEB7
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 07:58:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DFFC781DEBB
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 08:01:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 71800B20E6F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 06:58:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 567441F2155B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 07:01:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 892F515B0;
-	Mon, 25 Dec 2023 06:58:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A161C4C8E;
+	Mon, 25 Dec 2023 07:01:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="wwGhoFCp"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="T69GDhwH"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 210ED111B
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 06:58:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-40d3102d5d6so143245e9.0
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Dec 2023 22:58:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1703487517; x=1704092317; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0XpnMDmsH50s0lvPTiOZRWTMXCRnNPpXm9QclJ7i9l8=;
-        b=wwGhoFCpEvDvRzCz8nMonIFzIBveeD9G2ASmFuwxiaIzmp1p2+Sn8VsT4HiyEpbURr
-         5MSXJtQALqVejpMvL0PuzDf7a90rwyrVdxe4Jd/KvWaXMJhaPS7noBCU3Z9KwFUW7Hst
-         nqIzYd6m7QgI7+zKbVl1eCBD/kEpI6zclrfkTIRMyNos+pe0sojbGaCXChiTNoGS6cYa
-         ncDnmDLGUbx37qOun9X7/hp6HrRg/NlcntovoWZfvB1PZ9l1nGJdMCYP7MMOYpcpKx1p
-         yVq0A7yz/2iVB1QcI2QhUBJrcRE2hVTND4H3KCbm4Y86RSUYjRmH94IjM6lG6kZD9iTq
-         EetQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703487517; x=1704092317;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0XpnMDmsH50s0lvPTiOZRWTMXCRnNPpXm9QclJ7i9l8=;
-        b=nhZFvbpW2ZiOjT58xSbWKMolvRUPt0FCdjAe3v4p06o+4o/ULZQ4RW7gwh1zazwOfm
-         KCJhfWSmdzBDC0mzKQQzuFE9PYih6N3RtrAMLjEnUYv4VP1MyDIk1vjZb4IDWniN99SA
-         CcB9tjLggKex7A32s0WLS6QR+IxTGYmb04gZX7rEircrRW6kzjM6/IPFoh5hMKCzucUo
-         SmYEp3sPRa3G0dOmYzy4nh0DBIlVyAKv5gUtO91K1IrfKXx/T4jeEDsY6MtDB5MOVNPh
-         xNF16ocVXE6V5EPIYWw8M2eDKagyRvYXa1semgSfEFvvoPypDn6dlFWyCRFVn6uGeO8C
-         Gn2g==
-X-Gm-Message-State: AOJu0YxEZc+egHx2cGZ8sst+dyL+cbwN9yU/r70RZJkXEuBCG0/zQu1c
-	d67n3fqRypSoo2xLp9yOo2exGI4Osm7SDXxK0SbsOq8j2LCl
-X-Google-Smtp-Source: AGHT+IHycYngDkHH5FBpbNfgus3DgvUjPd0CH9Lblf3/orXmT7bqv23O4ueiovKcuWCCutI9NeQ3EHMhEM8cGmDAPcw=
-X-Received: by 2002:a05:600c:229a:b0:40d:400c:1b1f with SMTP id
- 26-20020a05600c229a00b0040d400c1b1fmr341589wmf.5.1703487517174; Sun, 24 Dec
- 2023 22:58:37 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B3154A28;
+	Mon, 25 Dec 2023 07:01:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1703487682; x=1735023682;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ZhK/9udaaE/o0MDMf8RxIqIuU0E8zzHRHiAakzMZ8Zs=;
+  b=T69GDhwH1PaucQmy4AUiDW7ScM4SmVTBPsoQG+h++/nz1MuNGNmN8g6A
+   UMPKjL4ffBQGCsC0Dcy51mrA3ymdXbbxBDPVqocNEGibSYdtc2R9QOnTA
+   j3cpkNxkh4CFUDyPhJ8lx0fXxEn10oN4nzepsqXfzdkYn3gB41LKXB2+r
+   v5BR+EkspDxUk90kzuDiz4qvfvwNggi+OspQCfTaAccL+pNCf1HT0w5oZ
+   yzAnb3X+annvQTSOJuYQP5ovX3nYHR+3M30i7jyxQcOotKPJE1PKqFwk2
+   8usenq8d1dEPFKEWdVUmXOWly9aDsU7CvyGyFNMOwkhzImtoEyvr5EHJe
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10934"; a="9669362"
+X-IronPort-AV: E=Sophos;i="6.04,302,1695711600"; 
+   d="scan'208";a="9669362"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Dec 2023 23:01:21 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10934"; a="753878539"
+X-IronPort-AV: E=Sophos;i="6.04,302,1695711600"; 
+   d="scan'208";a="753878539"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
+  by orsmga006.jf.intel.com with ESMTP; 24 Dec 2023 23:01:18 -0800
+Date: Mon, 25 Dec 2023 14:58:41 +0800
+From: Xu Yilun <yilun.xu@linux.intel.com>
+To: Marco Pagani <marpagan@redhat.com>
+Cc: Moritz Fischer <mdf@kernel.org>, Wu Hao <hao.wu@intel.com>,
+	Xu Yilun <yilun.xu@intel.com>, Tom Rix <trix@redhat.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	linux-kernel@vger.kernel.org, linux-fpga@vger.kernel.org
+Subject: Re: [RFC PATCH v3 1/2] fpga: add an owner field and use it to take
+ the low-level module's refcount
+Message-ID: <ZYkoIdrbqJ9w+EHg@yilunxu-OptiPlex-7050>
+References: <20231218202809.84253-1-marpagan@redhat.com>
+ <20231218202809.84253-2-marpagan@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231222102255.56993-1-ryncsn@gmail.com> <20231222102255.56993-3-ryncsn@gmail.com>
-In-Reply-To: <20231222102255.56993-3-ryncsn@gmail.com>
-From: Yu Zhao <yuzhao@google.com>
-Date: Sun, 24 Dec 2023 23:58:00 -0700
-Message-ID: <CAOUHufYOA-_MtFL-GoQouH0-KwQOLkh1RZKJ+90ADrhBfFeQsg@mail.gmail.com>
-Subject: Re: [PATCH 2/3] mm, lru_gen: move pages in bulk when aging
-To: Kairui Song <kasong@tencent.com>
-Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231218202809.84253-2-marpagan@redhat.com>
 
-On Fri, Dec 22, 2023 at 3:24=E2=80=AFAM Kairui Song <ryncsn@gmail.com> wrot=
-e:
->
-> From: Kairui Song <kasong@tencent.com>
->
-> Another overhead of aging is page moving. Actually, in most cases,
-> pages are being moved to the same gen after folio_inc_gen is called,
-> especially the protected pages.  So it's better to move them in bulk.
->
-> This also has a good effect on LRU ordering. Currently when MGLRU
-> ages, it walks the LRU backward, and the protected pages are moved to
-> the tail of newer gen one by one, which reverses the order of pages in
-> LRU. Moving them in batches can help keep their order, only in a small
-> scope though due to the scan limit of MAX_LRU_BATCH pages.
->
-> After this commit, we can see a performance gain:
->
-> Tested in a 4G memcg on a EPYC 7K62 with:
->
->   memcached -u nobody -m 16384 -s /tmp/memcached.socket \
->     -a 0766 -t 16 -B binary &
->
->   memtier_benchmark -S /tmp/memcached.socket \
->     -P memcache_binary -n allkeys \
->     --key-minimum=3D1 --key-maximum=3D16000000 -d 1024 \
->     --ratio=3D1:0 --key-pattern=3DP:P -c 2 -t 16 --pipeline 8 -x 6
->
-> Average result of 18 test runs:
->
-> Before:           44017.78 Ops/sec
-> After patch 1-2:  44810.01 Ops/sec (+1.8%)
+On Mon, Dec 18, 2023 at 09:28:08PM +0100, Marco Pagani wrote:
+> Add a module owner field to the fpga_manager_ops struct and use it to
+> take the low-level control module's refcount instead of relying on the
+> parent device's driver pointer. Low-level control modules should
+> statically set the owner field to THIS_MODULE. To detect when the owner
 
-Was it tested with CONFIG_DEBUG_LIST=3Dy?
+Don't be so strict, people could pass in any owner module they think it
+is correct.
 
-Also, the (44810.01-44687.08)/44687.08=3D0.0027 improvement also sounded
-like a noise to me.
+> module pointer becomes stale, set the mops pointer to null during
+> fpga_mgr_unregister() (called by the low-level module exit function) and
 
-> Signed-off-by: Kairui Song <kasong@tencent.com>
+No need the side note, people could call fpga_mgr_unregister() at any
+time they think it is correct.
+
+> test it before taking the module's refcount. Use a mutex to avoid a
+> crash that can happen if __fpga_mgr_get() gets suspended between testing
+> the mops pointer and taking the low-level refcount and then resumes when
+> the low-level module has already been freed.
+> 
+> Thanks to Xu Yilun for suggesting the locking pattern.
+
+I appreciate that but don't put it in changelog. A Suggested-by is
+appropriate.
+
+> 
+> Other changes: move put_device() from __fpga_mgr_get() to fpga_mgr_get()
+
+Opportunistically move put_device() ...
+
+The point is, try to imply the *Other* changes are simple and relative to
+the main change, or we should split the patch.
+
+Sorry but seeing the actual change, please split. The whole change is
+small and the put_device() part contributes 40% code ...
+
+Thanks,
+Yilun
+
+> and of_fpga_mgr_get() to improve code clarity.
+> 
+> Fixes: 654ba4cc0f3e ("fpga manager: ensure lifetime with of_fpga_mgr_get")
+> Signed-off-by: Marco Pagani <marpagan@redhat.com>
 > ---
->  mm/vmscan.c | 84 ++++++++++++++++++++++++++++++++++++++++++++---------
->  1 file changed, 71 insertions(+), 13 deletions(-)
->
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index e3b4797b9729..af1266129c1b 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -3102,9 +3102,46 @@ static int folio_update_gen(struct folio *folio, i=
-nt gen)
->   */
->  struct gen_update_batch {
->         int delta[MAX_NR_GENS];
-> +       struct folio *head, *tail;
+>  drivers/fpga/fpga-mgr.c       | 50 ++++++++++++++++++++++++-----------
+>  include/linux/fpga/fpga-mgr.h |  4 +++
+>  2 files changed, 38 insertions(+), 16 deletions(-)
+> 
+> diff --git a/drivers/fpga/fpga-mgr.c b/drivers/fpga/fpga-mgr.c
+> index 06651389c592..a32b7d40080d 100644
+> --- a/drivers/fpga/fpga-mgr.c
+> +++ b/drivers/fpga/fpga-mgr.c
+> @@ -664,20 +664,20 @@ static struct attribute *fpga_mgr_attrs[] = {
 >  };
->
-> -static void lru_gen_update_batch(struct lruvec *lruvec, bool type, int z=
-one,
-> +static void inline lru_gen_inc_bulk_finish(struct lru_gen_folio *lrugen,
-> +                                          int bulk_gen, bool type, int z=
-one,
-> +                                          struct gen_update_batch *batch=
-)
-> +{
-> +       if (!batch->head)
-> +               return;
-> +
-> +       list_bulk_move_tail(&lrugen->folios[bulk_gen][type][zone],
-> +                           &batch->head->lru,
-> +                           &batch->tail->lru);
-> +
-> +       batch->head =3D NULL;
-> +}
-> +
-> +/*
-> + * When aging, protected pages will go to the tail of the same higher
-> + * gen, so the can be moved in batches. Besides reduced overhead, this
-> + * also avoids changing their LRU order in a small scope.
-> + */
-> +static void inline lru_gen_try_inc_bulk(struct lru_gen_folio *lrugen, st=
-ruct folio *folio,
-> +                                       int bulk_gen, int gen, bool type,=
- int zone,
-> +                                       struct gen_update_batch *batch)
-> +{
-> +       /*
-> +        * If folio not moving to the bulk_gen, it's raced with promotion
-> +        * so it need to go to the head of another LRU.
-> +        */
-> +       if (bulk_gen !=3D gen)
-> +               list_move(&folio->lru, &lrugen->folios[gen][type][zone]);
-> +
-> +       if (!batch->head)
-> +               batch->tail =3D folio;
-> +
-> +       batch->head =3D folio;
-> +}
-> +
-> +static void lru_gen_update_batch(struct lruvec *lruvec, int bulk_gen, bo=
-ol type, int zone,
->                                  struct gen_update_batch *batch)
+>  ATTRIBUTE_GROUPS(fpga_mgr);
+>  
+> -static struct fpga_manager *__fpga_mgr_get(struct device *dev)
+> +static struct fpga_manager *__fpga_mgr_get(struct device *mgr_dev)
 >  {
->         int gen;
-> @@ -3112,6 +3149,8 @@ static void lru_gen_update_batch(struct lruvec *lru=
-vec, bool type, int zone,
->         struct lru_gen_folio *lrugen =3D &lruvec->lrugen;
->         enum lru_list lru =3D type ? LRU_INACTIVE_FILE : LRU_INACTIVE_ANO=
-N;
->
-> +       lru_gen_inc_bulk_finish(lrugen, bulk_gen, type, zone, batch);
+>  	struct fpga_manager *mgr;
+>  
+> -	mgr = to_fpga_manager(dev);
+> +	mgr = to_fpga_manager(mgr_dev);
+>  
+> -	if (!try_module_get(dev->parent->driver->owner))
+> -		goto err_dev;
+> +	mutex_lock(&mgr->mops_mutex);
+>  
+> -	return mgr;
+> +	if (!mgr->mops || !try_module_get(mgr->mops->owner))
+> +		mgr = ERR_PTR(-ENODEV);
+>  
+> -err_dev:
+> -	put_device(dev);
+> -	return ERR_PTR(-ENODEV);
+> +	mutex_unlock(&mgr->mops_mutex);
 > +
->         for (gen =3D 0; gen < MAX_NR_GENS; gen++) {
->                 int delta =3D batch->delta[gen];
->
-> @@ -3705,6 +3744,7 @@ static bool inc_min_seq(struct lruvec *lruvec, int =
-type, bool can_swap)
->         struct gen_update_batch batch =3D { };
->         struct lru_gen_folio *lrugen =3D &lruvec->lrugen;
->         int new_gen, old_gen =3D lru_gen_from_seq(lrugen->min_seq[type]);
-> +       int bulk_gen =3D (old_gen + 1) % MAX_NR_GENS;
->
->         if (type =3D=3D LRU_GEN_ANON && !can_swap)
->                 goto done;
-> @@ -3712,24 +3752,33 @@ static bool inc_min_seq(struct lruvec *lruvec, in=
-t type, bool can_swap)
->         /* prevent cold/hot inversion if force_scan is true */
->         for (zone =3D 0; zone < MAX_NR_ZONES; zone++) {
->                 struct list_head *head =3D &lrugen->folios[old_gen][type]=
-[zone];
-> +               struct folio *prev =3D NULL;
->
-> -               while (!list_empty(head)) {
-> -                       struct folio *folio =3D lru_to_folio(head);
-> +               if (!list_empty(head))
-> +                       prev =3D lru_to_folio(head);
->
-> +               while (prev) {
-> +                       struct folio *folio =3D prev;
->                         VM_WARN_ON_ONCE_FOLIO(folio_test_unevictable(foli=
-o), folio);
->                         VM_WARN_ON_ONCE_FOLIO(folio_test_active(folio), f=
-olio);
->                         VM_WARN_ON_ONCE_FOLIO(folio_is_file_lru(folio) !=
-=3D type, folio);
->                         VM_WARN_ON_ONCE_FOLIO(folio_zonenum(folio) !=3D z=
-one, folio);
->
-> +                       if (unlikely(list_is_first(&folio->lru, head)))
-> +                               prev =3D NULL;
-> +                       else
-> +                               prev =3D lru_to_folio(&folio->lru);
-> +
->                         new_gen =3D folio_inc_gen(lruvec, folio, false, &=
-batch);
-> -                       list_move_tail(&folio->lru, &lrugen->folios[new_g=
-en][type][zone]);
-> +                       lru_gen_try_inc_bulk(lrugen, folio, bulk_gen, new=
-_gen, type, zone, &batch);
->
->                         if (!--remaining) {
-> -                               lru_gen_update_batch(lruvec, type, zone, =
-&batch);
-> +                               lru_gen_update_batch(lruvec, bulk_gen, ty=
-pe, zone, &batch);
->                                 return false;
->                         }
->                 }
-> -               lru_gen_update_batch(lruvec, type, zone, &batch);
-> +
-> +               lru_gen_update_batch(lruvec, bulk_gen, type, zone, &batch=
-);
->         }
->  done:
->         reset_ctrl_pos(lruvec, type, true);
-> @@ -4240,7 +4289,7 @@ static int lru_gen_memcg_seg(struct lruvec *lruvec)
->   ***********************************************************************=
-*******/
->
->  static bool sort_folio(struct lruvec *lruvec, struct folio *folio, struc=
-t scan_control *sc,
-> -                      int tier_idx, struct gen_update_batch *batch)
-> +                      int tier_idx, int bulk_gen, struct gen_update_batc=
-h *batch)
+> +	return mgr;
+>  }
+>  
+>  static int fpga_mgr_dev_match(struct device *dev, const void *data)
+> @@ -693,12 +693,18 @@ static int fpga_mgr_dev_match(struct device *dev, const void *data)
+>   */
+>  struct fpga_manager *fpga_mgr_get(struct device *dev)
 >  {
->         bool success;
->         int gen =3D folio_lru_gen(folio);
-> @@ -4283,7 +4332,7 @@ static bool sort_folio(struct lruvec *lruvec, struc=
-t folio *folio, struct scan_c
->                 int hist =3D lru_hist_from_seq(lrugen->min_seq[type]);
->
->                 gen =3D folio_inc_gen(lruvec, folio, false, batch);
-> -               list_move_tail(&folio->lru, &lrugen->folios[gen][type][zo=
-ne]);
-> +               lru_gen_try_inc_bulk(lrugen, folio, bulk_gen, gen, type, =
-zone, batch);
->
->                 WRITE_ONCE(lrugen->protected[hist][type][tier - 1],
->                            lrugen->protected[hist][type][tier - 1] + delt=
-a);
-> @@ -4293,7 +4342,7 @@ static bool sort_folio(struct lruvec *lruvec, struc=
-t folio *folio, struct scan_c
->         /* ineligible */
->         if (zone > sc->reclaim_idx || skip_cma(folio, sc)) {
->                 gen =3D folio_inc_gen(lruvec, folio, false, batch);
-> -               list_move_tail(&folio->lru, &lrugen->folios[gen][type][zo=
-ne]);
-> +               lru_gen_try_inc_bulk(lrugen, folio, bulk_gen, gen, type, =
-zone, batch);
->                 return true;
->         }
->
-> @@ -4367,11 +4416,16 @@ static int scan_folios(struct lruvec *lruvec, str=
-uct scan_control *sc,
->                 LIST_HEAD(moved);
->                 int skipped_zone =3D 0;
->                 struct gen_update_batch batch =3D { };
-> +               int bulk_gen =3D (gen + 1) % MAX_NR_GENS;
->                 int zone =3D (sc->reclaim_idx + i) % MAX_NR_ZONES;
->                 struct list_head *head =3D &lrugen->folios[gen][type][zon=
-e];
-> +               struct folio *prev =3D NULL;
->
-> -               while (!list_empty(head)) {
-> -                       struct folio *folio =3D lru_to_folio(head);
-> +               if (!list_empty(head))
-> +                       prev =3D lru_to_folio(head);
+> -	struct device *mgr_dev = class_find_device(&fpga_mgr_class, NULL, dev,
+> -						   fpga_mgr_dev_match);
+> +	struct fpga_manager *mgr;
+> +	struct device *mgr_dev;
 > +
-> +               while (prev) {
-> +                       struct folio *folio =3D prev;
->                         int delta =3D folio_nr_pages(folio);
->
->                         VM_WARN_ON_ONCE_FOLIO(folio_test_unevictable(foli=
-o), folio);
-> @@ -4380,8 +4434,12 @@ static int scan_folios(struct lruvec *lruvec, stru=
-ct scan_control *sc,
->                         VM_WARN_ON_ONCE_FOLIO(folio_zonenum(folio) !=3D z=
-one, folio);
->
->                         scanned +=3D delta;
-> +                       if (unlikely(list_is_first(&folio->lru, head)))
-> +                               prev =3D NULL;
-> +                       else
-> +                               prev =3D lru_to_folio(&folio->lru);
->
-> -                       if (sort_folio(lruvec, folio, sc, tier, &batch))
-> +                       if (sort_folio(lruvec, folio, sc, tier, bulk_gen,=
- &batch))
->                                 sorted +=3D delta;
->                         else if (isolate_folio(lruvec, folio, sc)) {
->                                 list_add(&folio->lru, list);
-> @@ -4401,7 +4459,7 @@ static int scan_folios(struct lruvec *lruvec, struc=
-t scan_control *sc,
->                         skipped +=3D skipped_zone;
->                 }
->
-> -               lru_gen_update_batch(lruvec, type, zone, &batch);
-> +               lru_gen_update_batch(lruvec, bulk_gen, type, zone, &batch=
-);
->
->                 if (!remaining || isolated >=3D MIN_LRU_BATCH)
->                         break;
-> --
+> +	mgr_dev = class_find_device(&fpga_mgr_class, NULL, dev, fpga_mgr_dev_match);
+>  	if (!mgr_dev)
+>  		return ERR_PTR(-ENODEV);
+>  
+> -	return __fpga_mgr_get(mgr_dev);
+> +	mgr = __fpga_mgr_get(mgr_dev);
+> +	if (IS_ERR(mgr))
+> +		put_device(mgr_dev);
+> +
+> +	return mgr;
+>  }
+>  EXPORT_SYMBOL_GPL(fpga_mgr_get);
+>  
+> @@ -711,13 +717,18 @@ EXPORT_SYMBOL_GPL(fpga_mgr_get);
+>   */
+>  struct fpga_manager *of_fpga_mgr_get(struct device_node *node)
+>  {
+> -	struct device *dev;
+> +	struct fpga_manager *mgr;
+> +	struct device *mgr_dev;
+>  
+> -	dev = class_find_device_by_of_node(&fpga_mgr_class, node);
+> -	if (!dev)
+> +	mgr_dev = class_find_device_by_of_node(&fpga_mgr_class, node);
+> +	if (!mgr_dev)
+>  		return ERR_PTR(-ENODEV);
+>  
+> -	return __fpga_mgr_get(dev);
+> +	mgr = __fpga_mgr_get(mgr_dev);
+> +	if (IS_ERR(mgr))
+> +		put_device(mgr_dev);
+> +
+> +	return mgr;
+>  }
+>  EXPORT_SYMBOL_GPL(of_fpga_mgr_get);
+>  
+> @@ -727,7 +738,7 @@ EXPORT_SYMBOL_GPL(of_fpga_mgr_get);
+>   */
+>  void fpga_mgr_put(struct fpga_manager *mgr)
+>  {
+> -	module_put(mgr->dev.parent->driver->owner);
+> +	module_put(mgr->mops->owner);
+>  	put_device(&mgr->dev);
+>  }
+>  EXPORT_SYMBOL_GPL(fpga_mgr_put);
+> @@ -803,6 +814,7 @@ fpga_mgr_register_full(struct device *parent, const struct fpga_manager_info *in
+>  	}
+>  
+>  	mutex_init(&mgr->ref_mutex);
+> +	mutex_init(&mgr->mops_mutex);
+>  
+>  	mgr->name = info->name;
+>  	mgr->mops = info->mops;
+> @@ -888,6 +900,12 @@ void fpga_mgr_unregister(struct fpga_manager *mgr)
+>  	 */
+>  	fpga_mgr_fpga_remove(mgr);
+>  
+> +	mutex_lock(&mgr->mops_mutex);
+> +
+> +	mgr->mops = NULL;
+> +
+> +	mutex_unlock(&mgr->mops_mutex);
+> +
+>  	device_unregister(&mgr->dev);
+>  }
+>  EXPORT_SYMBOL_GPL(fpga_mgr_unregister);
+> diff --git a/include/linux/fpga/fpga-mgr.h b/include/linux/fpga/fpga-mgr.h
+> index 54f63459efd6..b4d9413cb444 100644
+> --- a/include/linux/fpga/fpga-mgr.h
+> +++ b/include/linux/fpga/fpga-mgr.h
+> @@ -162,6 +162,7 @@ struct fpga_manager_info {
+>   * @write_complete: set FPGA to operating state after writing is done
+>   * @fpga_remove: optional: Set FPGA into a specific state during driver remove
+>   * @groups: optional attribute groups.
+> + * @owner: owner module containing the ops.
+>   *
+>   * fpga_manager_ops are the low level functions implemented by a specific
+>   * fpga manager driver.  The optional ones are tested for NULL before being
+> @@ -184,6 +185,7 @@ struct fpga_manager_ops {
+>  			      struct fpga_image_info *info);
+>  	void (*fpga_remove)(struct fpga_manager *mgr);
+>  	const struct attribute_group **groups;
+> +	struct module *owner;
+>  };
+>  
+>  /* FPGA manager status: Partial/Full Reconfiguration errors */
+> @@ -201,6 +203,7 @@ struct fpga_manager_ops {
+>   * @state: state of fpga manager
+>   * @compat_id: FPGA manager id for compatibility check.
+>   * @mops: pointer to struct of fpga manager ops
+> + * @mops_mutex: protects mops from low-level module removal
+>   * @priv: low level driver private date
+>   */
+>  struct fpga_manager {
+> @@ -209,6 +212,7 @@ struct fpga_manager {
+>  	struct mutex ref_mutex;
+>  	enum fpga_mgr_states state;
+>  	struct fpga_compat_id *compat_id;
+> +	struct mutex mops_mutex;
+>  	const struct fpga_manager_ops *mops;
+>  	void *priv;
+>  };
+> -- 
 > 2.43.0
->
+> 
+> 
 
