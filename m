@@ -1,179 +1,182 @@
-Return-Path: <linux-kernel+bounces-11100-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11101-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12EFE81E143
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 16:12:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D66ED81E144
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 16:12:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2CB631C2109D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 15:12:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8C91E2816AA
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 15:12:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6833C524D9;
-	Mon, 25 Dec 2023 15:12:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFFA452F77;
+	Mon, 25 Dec 2023 15:12:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="icsBW66c"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="O9jJqXXQ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2076.outbound.protection.outlook.com [40.107.220.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B25E51C27
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 15:12:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703517121; x=1735053121;
-  h=date:from:to:cc:subject:message-id;
-  bh=KubMVrvh2W/iX19De3HYI93IZZAvuWqwFG1+ExiVGIM=;
-  b=icsBW66cILGiGruMhRzE8fxGolNAAZ0KpxEwwavRGDU8vRdR1mmIhlrw
-   0BUF0g4wIfWEExpKrTPmleAGz8cdns+NhHkM0Y8cz7kXIf4uSEJ2i05hF
-   DoOp3/K9I39BKYqIJ3O8pJfBrHWW/cZw42y+Yt1KEHcpHLly9nJlZPhES
-   WB6OsKowB7N0682uNx6ccnkjkImXvnGbY5735m80+IPqu42QXVtt+7oHY
-   NxSpTJASkwk/uvauRCB746T9Ucuwpuo4yFaYLPmYPyvr1qoUHlFjlRQxO
-   JBZS5psezmnHm/4Kd6tiuU1G13zN2oG2zyGouEsSEIvGRjNpDmiY/2UzA
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10934"; a="9693086"
-X-IronPort-AV: E=Sophos;i="6.04,303,1695711600"; 
-   d="scan'208";a="9693086"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Dec 2023 07:11:53 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,303,1695711600"; 
-   d="scan'208";a="19449794"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orviesa002.jf.intel.com with ESMTP; 25 Dec 2023 07:11:51 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rHmcO-000DMf-3C;
-	Mon, 25 Dec 2023 15:11:48 +0000
-Date: Mon, 25 Dec 2023 23:11:37 +0800
-From: kernel test robot <lkp@intel.com>
-To: "x86-ml" <x86@kernel.org>
-Cc: linux-kernel@vger.kernel.org
-Subject: [tip:master] BUILD SUCCESS
- 8b3f2a2af0f90c039e11a7261d952eda2355674c
-Message-ID: <202312252334.VwMnJa6s-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DD8652F61;
+	Mon, 25 Dec 2023 15:12:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Q0lpCGLxlPbgXVPtYXJ46TUUU5o2uqzXZF8r6TZ8aXu5m2koZDaD8OMp4InMrAzGVY274A+VX4T6c7VH7rcNgiy8L2tsR8g3O4gm/QMTN0P2oKbU7ZJTsFoRj6fcko/+o60Q0yzm1MVA6P0TKm/ZOxh7GnFR/qI2huJt+TIl4jIEfhqYFj8Js4x0iP8EAJV6J73NA0yaDJemX7UWoLU4bkJpizzXtC77WkmN0IiePGxwfoLhqXntwVy7XoUZwLKC3UlFMA+OhTHh3BRUdOT5++OTKD0niJaYFqy/9Mwd9iQ9XWYqIjhC9jOUwZZD+18l9zYaHCFlZ7HrbYKJdx/5+A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Fdyzga269TON7etIuAsUiwHiZpnBbeXdSusUYxZM3c0=;
+ b=mzg5Uhe6WG4G69aBYhQ35jTfxBSmhANRpOygBWmLU7Qwpopgr2Jxqxitf9jbQ4RUA+gHsz5GtLHWOD9auX5D14AvAJfB1PCy/u+vdwcHR6DrruOdvsr3xsYBTCa9PsMqH+5BBKCzaiK3OvSdb8gnq/Me378Ha7MbJQnYSQrzXWA5AWukEnj7L3mFXZE6AOYa+bP+7m00ma9dflX72KThpgp2kZnBgxv0+u5gkpVFJZliOLuomRxbLcNA69FohZTsO1FKyAsy3fEU3LhgAtXbIi8S2zzIJCHt4CD0XlVMJLU3CXiNowrK9fjjvNuQwNmezc/5Gy/deRgEFEx0xv7nDQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.118.233) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Fdyzga269TON7etIuAsUiwHiZpnBbeXdSusUYxZM3c0=;
+ b=O9jJqXXQ7zhvWEEq44+BhqOgFycWxe5tYo0pybBZl8wePj536j12EmyG2zEFN+fMImXPeDg1zAv2WpMmQ17Rb8QCBGDbbbe5q0HADakG8RYwePzYwwGZy6XUaWavL+6XU9DGIph7x2gNf7OV5gw+apQV2zwl5uLuw+LfC15pyaXkqVhF/A9wGqz9se4W3h2caMIaKl0ekhb+C18CXKeHYAtDXeAyjjMFHNkZl2H4xrJ5mlVQveVjnrUAAJgP9lRepzrktPDq2M/Rkhy9k1yukTN3vy0l+F28uMcYZzZtOspKYRj/X6XW4zNQtXBQ8eUA5ZWaFrJHUkOxe7vUQ9ygBg==
+Received: from SJ0PR03CA0215.namprd03.prod.outlook.com (2603:10b6:a03:39f::10)
+ by BL1PR12MB5350.namprd12.prod.outlook.com (2603:10b6:208:31d::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7113.26; Mon, 25 Dec
+ 2023 15:12:15 +0000
+Received: from SJ1PEPF00001CE8.namprd03.prod.outlook.com
+ (2603:10b6:a03:39f:cafe::dd) by SJ0PR03CA0215.outlook.office365.com
+ (2603:10b6:a03:39f::10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7113.27 via Frontend
+ Transport; Mon, 25 Dec 2023 15:12:14 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.118.233 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.118.233) by
+ SJ1PEPF00001CE8.mail.protection.outlook.com (10.167.242.24) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7135.14 via Frontend Transport; Mon, 25 Dec 2023 15:12:14 +0000
+Received: from drhqmail201.nvidia.com (10.126.190.180) by mail.nvidia.com
+ (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Mon, 25 Dec
+ 2023 07:12:06 -0800
+Received: from drhqmail203.nvidia.com (10.126.190.182) by
+ drhqmail201.nvidia.com (10.126.190.180) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.41; Mon, 25 Dec 2023 07:12:05 -0800
+Received: from c-237-113-220-225.mtl.labs.mlnx (10.127.8.12) by
+ mail.nvidia.com (10.126.190.182) with Microsoft SMTP Server id 15.2.986.41
+ via Frontend Transport; Mon, 25 Dec 2023 07:12:02 -0800
+From: Dragos Tatulea <dtatulea@nvidia.com>
+To: "Michael S . Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>,
+	Eugenio Perez Martin <eperezma@redhat.com>, Si-Wei Liu
+	<si-wei.liu@oracle.com>, Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky
+	<leon@kernel.org>, <virtualization@lists.linux-foundation.org>, Gal Pressman
+	<gal@nvidia.com>
+CC: Dragos Tatulea <dtatulea@nvidia.com>, <kvm@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, Parav Pandit <parav@nvidia.com>, Xuan Zhuo
+	<xuanzhuo@linux.alibaba.com>
+Subject: [PATCH vhost v5 0/8] vdpa/mlx5: Add support for resumable vqs
+Date: Mon, 25 Dec 2023 17:11:55 +0200
+Message-ID: <20231225151203.152687-1-dtatulea@nvidia.com>
+X-Mailer: git-send-email 2.42.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ1PEPF00001CE8:EE_|BL1PR12MB5350:EE_
+X-MS-Office365-Filtering-Correlation-Id: d72ebb84-b2fe-4cd5-f9fa-08dc055be061
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	4pbBqzytMsWCGxDa1vwI3V+cfUFdUPkvkQpbM20Mc/V9QzTvtimqfcXoG47nJNiQaElJAtSgiklKD8WtHROsF6dXxHHtV6tGTs2KFNkh1BMuiZZSVdQJGX/FOsfkzP/rFkOtVdMo9yjidpOiKU4k6QzKDJOvyafUB8IJSp0WelGPL4nZEkSo93vNjdxyi1BF4P3otG+nEdSIH+WUwuW4lEvTLyEkKNs1lg1tHtMcoBIcp9wplpQFZ0JU5+G1Ui648YnIa620y2HL2Ae9ZtIoE0XWe7EUM47BK3arqjIBPSy2HG+druj1W7XZtWka96ISs04Ju7o+IqWNP450ZUzjPaYR9j2+VC9NHM7QX+7RRhFwTXVgc0ZHTVuMhVag6/OXf1vHOFwiN0sFzoZIlshlKU087/qDyBGCu+q1ZBtfMYp3MqPVzxfvs0eUUiN5tYJvePtQ7oZb43IHIvlAtjXSTkn45elSmf/hnD/vvWEiApfGju8FweE2pxws3/GLJRhPNPFC8FssfZGHKCcxT2J9wd3SFFRxPHRolMP2I7ABnXPayWxa8U2NP4eCnQbk8Ma/ZNCZ0BULEm3SKlM5kufF5o7xtwnazBBI42PEJd0BCusT6FP1GMEOvkPB12AmsUX15Ygxj6nG2yoZmtl1PY8hlvTi0jJM3aLuj/eq6hcLDxXqCskZyb9pHTjVbD5dlgNXMMcP4dwZuNYfutJAoZQ2oARVmD3Sl/6ur2js7Yglkrp/plmAp/5vfeiHorZc8U0fn75Lc5eO702BNCSDSAngHFfPjh/h019FJCbe2y+b75Y=
+X-Forefront-Antispam-Report:
+	CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(136003)(346002)(376002)(396003)(39860400002)(230922051799003)(64100799003)(1800799012)(82310400011)(451199024)(186009)(36840700001)(46966006)(40470700004)(8676002)(8936002)(5660300002)(2906002)(4326008)(316002)(478600001)(966005)(6666004)(70206006)(70586007)(54906003)(110136005)(6636002)(41300700001)(36860700001)(47076005)(356005)(7636003)(40480700001)(82740400003)(40460700003)(26005)(2616005)(426003)(336012)(1076003)(36756003)(86362001)(83380400001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Dec 2023 15:12:14.4291
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: d72ebb84-b2fe-4cd5-f9fa-08dc055be061
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	SJ1PEPF00001CE8.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5350
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
-branch HEAD: 8b3f2a2af0f90c039e11a7261d952eda2355674c  Merge branch into tip/master: 'x86/tdx'
+Add support for resumable vqs in the mlx5_vdpa driver. This is a
+firmware feature that can be used for the following benefits:
+- Full device .suspend/.resume.
+- .set_map doesn't need to destroy and create new vqs anymore just to
+  update the map. When resumable vqs are supported it is enough to
+  suspend the vqs, set the new maps, and then resume the vqs.
 
-elapsed time: 1694m
+The first patch exposes relevant bits for the feature in mlx5_ifc.h.
+That means it needs to be applied to the mlx5-vhost tree [0] first. Once
+applied there, the change has to be pulled from mlx5-vhost into the
+vhost tree and only then the remaining patches can be applied. Same flow
+as the vq descriptor mappings patchset [1].
 
-configs tested: 98
-configs skipped: 0
+The second part adds support for selectively modifying vq parameters. This
+is needed to be able to use resumable vqs.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+The third part adds the actual support for resumable vqs.
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                   randconfig-001-20231225   gcc  
-arc                   randconfig-002-20231225   gcc  
-arm                              allmodconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                   randconfig-001-20231225   clang
-arm                   randconfig-002-20231225   clang
-arm                   randconfig-003-20231225   clang
-arm                   randconfig-004-20231225   clang
-arm64                 randconfig-001-20231225   clang
-arm64                 randconfig-002-20231225   clang
-arm64                 randconfig-003-20231225   clang
-arm64                 randconfig-004-20231225   clang
-csky                  randconfig-001-20231225   gcc  
-csky                  randconfig-002-20231225   gcc  
-hexagon               randconfig-001-20231225   clang
-hexagon               randconfig-002-20231225   clang
-i386                             allmodconfig   clang
-i386                              allnoconfig   clang
-i386                             allyesconfig   clang
-i386         buildonly-randconfig-001-20231225   clang
-i386         buildonly-randconfig-002-20231225   clang
-i386         buildonly-randconfig-003-20231225   clang
-i386         buildonly-randconfig-004-20231225   clang
-i386         buildonly-randconfig-005-20231225   clang
-i386         buildonly-randconfig-006-20231225   clang
-i386                                defconfig   gcc  
-i386                  randconfig-001-20231225   clang
-i386                  randconfig-002-20231225   clang
-i386                  randconfig-003-20231225   clang
-i386                  randconfig-004-20231225   clang
-i386                  randconfig-005-20231225   clang
-i386                  randconfig-006-20231225   clang
-i386                  randconfig-011-20231225   gcc  
-i386                  randconfig-012-20231225   gcc  
-i386                  randconfig-013-20231225   gcc  
-i386                  randconfig-014-20231225   gcc  
-i386                  randconfig-015-20231225   gcc  
-i386                  randconfig-016-20231225   gcc  
-loongarch             randconfig-001-20231225   gcc  
-loongarch             randconfig-002-20231225   gcc  
-nios2                 randconfig-001-20231225   gcc  
-nios2                 randconfig-002-20231225   gcc  
-openrisc                         allyesconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                randconfig-001-20231225   gcc  
-parisc                randconfig-002-20231225   gcc  
-powerpc                          allmodconfig   clang
-powerpc                          allyesconfig   clang
-powerpc               randconfig-001-20231225   clang
-powerpc               randconfig-002-20231225   clang
-powerpc               randconfig-003-20231225   clang
-powerpc64             randconfig-001-20231225   clang
-powerpc64             randconfig-002-20231225   clang
-powerpc64             randconfig-003-20231225   clang
-riscv                 randconfig-001-20231225   clang
-riscv                 randconfig-002-20231225   clang
-s390                             allmodconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                  randconfig-001-20231225   gcc  
-s390                  randconfig-002-20231225   gcc  
-sh                               allmodconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                    randconfig-001-20231225   gcc  
-sh                    randconfig-002-20231225   gcc  
-sparc                            allmodconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64               randconfig-001-20231225   gcc  
-sparc64               randconfig-002-20231225   gcc  
-um                               allmodconfig   clang
-um                               allyesconfig   clang
-um                    randconfig-001-20231225   clang
-um                    randconfig-002-20231225   clang
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   clang
-x86_64       buildonly-randconfig-001-20231225   clang
-x86_64       buildonly-randconfig-002-20231225   clang
-x86_64       buildonly-randconfig-003-20231225   clang
-x86_64       buildonly-randconfig-004-20231225   clang
-x86_64       buildonly-randconfig-005-20231225   clang
-x86_64       buildonly-randconfig-006-20231225   clang
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20231225   gcc  
-x86_64                randconfig-002-20231225   gcc  
-x86_64                randconfig-003-20231225   gcc  
-x86_64                randconfig-004-20231225   gcc  
-x86_64                randconfig-005-20231225   gcc  
-x86_64                randconfig-006-20231225   gcc  
-x86_64                randconfig-011-20231225   clang
-x86_64                          rhel-8.3-rust   clang
-xtensa                randconfig-001-20231225   gcc  
-xtensa                randconfig-002-20231225   gcc  
+The last part of the series introduces reference counting for mrs which
+is necessary to avoid freeing mkeys too early or leaking them.
+
+* Changes in v5:
+- Same as v2 with additional Acked-by tags. Based on review discussion
+  in this thread [0].
+
+* Changes in v4:
+- Added vdpa backend feature support for changing vq properties in
+  DRIVER_OK when device is suspended. Added support in the driver as
+  well.
+- Dropped Acked-by for the patches that had the tag mistakenly
+  added.
+
+* Changes in v3:
+- Faulty version. Please ignore.
+
+* Changes in v2:
+- Added mr refcounting patches.
+- Deleted unnecessary patch: "vdpa/mlx5: Split function into locked and
+  unlocked variants"
+- Small print improvement in "Introduce per vq and device resume"
+  patch.
+- Patch 1/7 has been applied to mlx5-vhost branch.
+
+[0] - https://lore.kernel.org/virtualization/4abd7d516a9e82ebf41b1ea98475341844186568.camel@nvidia.com/T/#mb0433c4f1705fc2cdaa7c926f352c26f6b54444d
+
+Dragos Tatulea (8):
+  vdpa/mlx5: Expose resumable vq capability
+  vdpa/mlx5: Allow modifying multiple vq fields in one modify command
+  vdpa/mlx5: Introduce per vq and device resume
+  vdpa/mlx5: Mark vq addrs for modification in hw vq
+  vdpa/mlx5: Mark vq state for modification in hw vq
+  vdpa/mlx5: Use vq suspend/resume during .set_map
+  vdpa/mlx5: Introduce reference counting to mrs
+  vdpa/mlx5: Add mkey leak detection
+
+ drivers/vdpa/mlx5/core/mlx5_vdpa.h |  10 +-
+ drivers/vdpa/mlx5/core/mr.c        |  69 ++++++++--
+ drivers/vdpa/mlx5/net/mlx5_vnet.c  | 209 ++++++++++++++++++++++++++---
+ include/linux/mlx5/mlx5_ifc.h      |   3 +-
+ include/linux/mlx5/mlx5_ifc_vdpa.h |   4 +
+ 5 files changed, 257 insertions(+), 38 deletions(-)
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.43.0
+
 
