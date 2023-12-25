@@ -1,250 +1,303 @@
-Return-Path: <linux-kernel+bounces-11040-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11041-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E88481E083
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 13:57:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2128A81E084
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 13:59:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 81BAE1C219A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 12:57:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 44CC81C2190E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Dec 2023 12:59:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 598DD51C4C;
-	Mon, 25 Dec 2023 12:57:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9CDE51C50;
+	Mon, 25 Dec 2023 12:59:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="arNMY6Vq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o8WFdtZf"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3F1550253
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 12:57:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a233bf14cafso446997766b.2
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Dec 2023 04:57:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703509062; x=1704113862; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=2836GHVSMxD4pEMsvcSkpc9zsaMTJx5V60Hbz6IE2rg=;
-        b=arNMY6VqQKbyw3/Pn8j3DMRnPjH8PDZpirBWyqzqBMsrPIRhqiNNuLH/x6LN5C3es+
-         B1Llyx8TBYqJzJTua1vloYE1ObVGAjswWINP9L2mhxj08RDH8GCRS6IgRTgDKA8MbWXL
-         tTYrDI/CscfUeDm+wSrgWGQWackf44OZvFjbJKcFjugROaKp+cRPSaOkZW1EVjED5MNv
-         iFPxOx4xpdETK7zVuIZiacPjSEOadWHaGJJ0D/N6lldcLQj8In8wbEAn9wfBU2Ews2Az
-         O4nR+Lric38hY7TH0EeM2Y+8mmkw+mzqPBh0EznyfOdBYlz4FiJJ0k1UEG+wb2mTuxyL
-         ckoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703509062; x=1704113862;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2836GHVSMxD4pEMsvcSkpc9zsaMTJx5V60Hbz6IE2rg=;
-        b=hAkdfsqYjGBED0xlmoTDalnsQBgRVkx2Tk+3Y3bTAHpxajQd2vtM05tCEmPV32mIVZ
-         l+D9VGNNUEsz0kS74BQUtZlV5Y4//szlYMNtjHcTwmgqXfechfCeaEXu7DqcMaCXZNsC
-         KWVeNu2RLF2RZRpA9Tjj7q+E+r7qM6m1h8qeH37FnQgF/MHO+SWNrUMnu/5+I3ENQPgQ
-         RtXmkMLvWjsX/l72E/2Wg2SY3iL11G86dmqiJt6nRbz1WRvHomp0bQVxdejK+WsON6Jz
-         Hl7553SdDJiLHFhuomc9XYga0cfNnjqDqMJtzEqb2BP/M8BDAvjKVxUGvGnlXhNDyRhK
-         UK9w==
-X-Gm-Message-State: AOJu0YzrDcusdU2SQ9cB3ATpP9fKYdqfqm+LgwnvtiS74EqQZipJdOGw
-	9tpN+nEEVbva1IZsHG8QaB4JDSAuina80Q==
-X-Google-Smtp-Source: AGHT+IF3g630AIr81g9cNDvz+AQCLGz/tKDwXjpQ2ROuD4l4fkq1lJln5pzdYNbmrAaSn/LXm9rvfw==
-X-Received: by 2002:a17:906:3406:b0:a23:55c6:8f23 with SMTP id c6-20020a170906340600b00a2355c68f23mr2401184ejb.129.1703509061911;
-        Mon, 25 Dec 2023 04:57:41 -0800 (PST)
-Received: from [192.168.0.22] ([78.10.206.178])
-        by smtp.gmail.com with ESMTPSA id ge24-20020a170907909800b00a1c7b20e9e6sm4808930ejb.32.2023.12.25.04.57.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Dec 2023 04:57:41 -0800 (PST)
-Message-ID: <49525adf-1540-4801-8cdf-be1c0fe640f6@linaro.org>
-Date: Mon, 25 Dec 2023 13:57:39 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2502D5026B;
+	Mon, 25 Dec 2023 12:59:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F704C433C8;
+	Mon, 25 Dec 2023 12:58:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703509143;
+	bh=me1g9HblztxsBmrb/PVT3corizKldTsjfk6ZS3LImJU=;
+	h=From:To:Cc:Subject:Date:From;
+	b=o8WFdtZfThKVy0nwqLvF+M+9jReTczDYnOZy1wL7TYO2xOSCSsDTYag/J5kWhC6V0
+	 1ZzAKPpdFPqECgte7cma56HFB7va2NyG7ER6zAUkqeQb4EeDjK9nSnACZFns1FXbEH
+	 EeVK8UdR+WfqU76dbmJZEnGlSOWkhC473p4SPZhGwdcNXdh0TtozdcttytPGkyIYU1
+	 A8UgAZhZz6k+E/3CQsvbS2Ay0/jes20HDZ0eA9Z2JTsrua9cXI9T1tj4F0etBcmrNs
+	 hSbcQvhkasfZmhXA1gxzqEx8MbrDQd6IIeqZlfiHIrzCWmtmzhz2E+bz/0X3/O+eVU
+	 IeHPfce/m1JCg==
+From: guoren@kernel.org
+To: paul.walmsley@sifive.com,
+	palmer@dabbelt.com,
+	guoren@kernel.org,
+	panqinglin2020@iscas.ac.cn,
+	bjorn@rivosinc.com,
+	conor.dooley@microchip.com,
+	leobras@redhat.com,
+	peterz@infradead.org,
+	anup@brainfault.org,
+	keescook@chromium.org,
+	wuwei2016@iscas.ac.cn,
+	xiaoguang.xing@sophgo.com,
+	chao.wei@sophgo.com,
+	unicorn_wang@outlook.com,
+	uwu@icenowy.me,
+	jszhang@kernel.org,
+	wefu@redhat.com,
+	atishp@atishpatra.org
+Cc: linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	kvm@vger.kernel.org,
+	virtualization@lists.linux-foundation.org,
+	Guo Ren <guoren@linux.alibaba.com>
+Subject: [PATCH V12 00/14] riscv: Add Native/Paravirt qspinlock support 
+Date: Mon, 25 Dec 2023 07:58:33 -0500
+Message-Id: <20231225125847.2778638-1-guoren@kernel.org>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 02/10] dt-bindings: iio: pressure:
- honeywell,mprls0025pa.yaml add pressure-triplet
-Content-Language: en-US
-To: Petre Rodan <petre.rodan@subdimension.ro>, linux-iio@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: Andreas Klinger <ak@it-klinger.de>, Jonathan Cameron <jic23@kernel.org>,
- Lars-Peter Clausen <lars@metafoo.de>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-References: <20231224143500.10940-1-petre.rodan@subdimension.ro>
- <20231224143500.10940-3-petre.rodan@subdimension.ro>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231224143500.10940-3-petre.rodan@subdimension.ro>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 24/12/2023 15:34, Petre Rodan wrote:
-> Change order of properties in order for the end user to de-prioritize
-> pmin-pascal and pmax-pascal which are superseded by pressure-triplet.
-> 
-> Add pressure-triplet property which automatically initializes
-> pmin-pascal and pmax-pascal inside the driver
-> 
-> Rework honeywell,pmXX-pascal requirements based on feedback from
-> Jonathan and Conor.
-> 
-> Signed-off-by: Petre Rodan <petre.rodan@subdimension.ro>
-> Signed-off-by: Andreas Klinger <ak@it-klinger.de>
-> ---
->  .../iio/pressure/honeywell,mprls0025pa.yaml   | 64 ++++++++++++++-----
->  1 file changed, 47 insertions(+), 17 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/iio/pressure/honeywell,mprls0025pa.yaml b/Documentation/devicetree/bindings/iio/pressure/honeywell,mprls0025pa.yaml
-> index 84ced4e5a7da..e4021306d187 100644
-> --- a/Documentation/devicetree/bindings/iio/pressure/honeywell,mprls0025pa.yaml
-> +++ b/Documentation/devicetree/bindings/iio/pressure/honeywell,mprls0025pa.yaml
-> @@ -19,14 +19,17 @@ description: |
->    calls them "mpr series". All of them have the identical programming model and
->    differ in the pressure range, unit and transfer function.
-> 
-> -  To support different models one need to specify the pressure range as well as
-> -  the transfer function. Pressure range needs to be converted from its unit to
-> +  To support different models one need to specify its pressure triplet as well
-> +  as the transfer function.
-> +
-> +  For custom models the pressure values can alternatively be specified manually.
-> +  The minimal range value stands for the minimum pressure and the maximum value
-> +  also for the maximum pressure with linear relation inside the range.
-> +  Pressure range needs to be converted from the datasheet specified unit to
->    pascal.
-> 
->    The transfer function defines the ranges of numerical values delivered by the
-> -  sensor. The minimal range value stands for the minimum pressure and the
-> -  maximum value also for the maximum pressure with linear relation inside the
-> -  range.
-> +  sensor.
-> 
->    Specifications about the devices can be found at:
->      https://prod-edam.honeywell.com/content/dam/honeywell-edam/sps/siot/en-us/
-> @@ -54,14 +57,6 @@ properties:
->        If not present the device is not reset during the probe.
->      maxItems: 1
-> 
-> -  honeywell,pmin-pascal:
-> -    description:
-> -      Minimum pressure value the sensor can measure in pascal.
-> -
-> -  honeywell,pmax-pascal:
-> -    description:
-> -      Maximum pressure value the sensor can measure in pascal.
-> -
->    honeywell,transfer-function:
->      description: |
->        Transfer function which defines the range of valid values delivered by the
-> @@ -72,17 +67,52 @@ properties:
->      enum: [1, 2, 3]
->      $ref: /schemas/types.yaml#/definitions/uint32
-> 
-> +  honeywell,pressure-triplet:
+From: Guo Ren <guoren@linux.alibaba.com>
 
-Why not putting it just before existing properties?
+patch[1 - 8]: Native   qspinlock
+patch[9 -14]: Paravirt qspinlock
 
-> +    description: |
-> +      Case-sensitive five character string that defines pressure range, unit
-> +      and type as part of the device nomenclature. In the unlikely case of a
-> +      custom chip, unset and provide pmin-pascal and pmax-pascal instead.
-> +    enum: [0001BA, 01.6BA, 02.5BA, 0060MG, 0100MG, 0160MG, 0250MG, 0400MG,
-> +           0600MG, 0001BG, 01.6BG, 02.5BG, 0100KA, 0160KA, 0250KA, 0006KG,
-> +           0010KG, 0016KG, 0025KG, 0040KG, 0060KG, 0100KG, 0160KG, 0250KG,
-> +           0015PA, 0025PA, 0030PA, 0001PG, 0005PG, 0015PG, 0030PG, 0300YG]
-> +    $ref: /schemas/types.yaml#/definitions/string
-> +
-> +  honeywell,pmin-pascal:
-> +    description:
-> +      Minimum pressure value the sensor can measure in pascal.
-> +      To be specified only if honeywell,pressure-triplet is not set.
+This series based on:
+ - v6.7-rc7
+ - Rework & improve riscv cmpxchg.h and atomic.h
+   https://lore.kernel.org/linux-riscv/20230810040349.92279-2-leobras@redhat.com/
 
-The last sentence is redundant - schema should enforce that.
+You can directly try it:
+https://github.com/guoren83/linux/tree/qspinlock_v12 
 
-> +
-> +  honeywell,pmax-pascal:
-> +    description:
-> +      Maximum pressure value the sensor can measure in pascal.
-> +      To be specified only if honeywell,pressure-triplet is not set.
-> +
->    vdd-supply:
->      description: provide VDD power to the sensor.
-> 
->  required:
->    - compatible
->    - reg
-> -  - honeywell,pmin-pascal
-> -  - honeywell,pmax-pascal
->    - honeywell,transfer-function
->    - vdd-supply
-> 
-> +oneOf:
-> +  - required:
-> +      - honeywell,pmin-pascal
-> +      - honeywell,pmax-pascal
-> +  - required:
-> +      - honeywell,pressure-triplet
-> +
-> +allOf:
-> +  - if:
-> +      required:
-> +        - honeywell,pressure-triplet
-> +    then:
-> +      properties:
-> +        honeywell,pmin-pascal: false
-> +        honeywell,pmax-pascal: false
+Native qspinlock
+================
 
-This allOf is not needed.
+This time we've proved the qspinlock on th1520 [1] & sg2042 [2], which
+gives stability and performance improvement. All T-HEAD processors have
+a strong LR/SC forward progress guarantee than the requirements of the
+ISA, which could satisfy the xchg_tail of native_qspinlock. Now,
+qspinlock has been run with us for more than 1 year, and we have enough
+confidence to enable it for all the T-HEAD processors. Of causes, we
+found a livelock problem with the qspinlock lock torture test from the
+CPU store merge buffer delay mechanism, which caused the queued spinlock
+becomes a dead ring and RCU warning to come out. We introduce a custom
+WRITE_ONCE to solve this, which will be fixed in the next generation of
+hardware.
 
-Best regards,
-Krzysztof
+We've tested the patch on SOPHGO sg2042 & th1520 and passed the stress
+test on Fedora & Ubuntu & OpenEuler ... Here is the performance
+comparison between qspinlock and ticket_lock on sg2042 (64 cores):
+
+sysbench test=threads threads=32 yields=100 lock=8 (+13.8%):
+  queued_spinlock 0.5109/0.00
+  ticket_spinlock 0.5814/0.00
+
+perf futex/hash (+6.7%):
+  queued_spinlock 1444393 operations/sec (+- 0.09%)
+  ticket_spinlock 1353215 operations/sec (+- 0.15%)
+
+perf futex/wake-parallel (+8.6%):
+  queued_spinlock (waking 1/64 threads) in 0.0253 ms (+-2.90%)
+  ticket_spinlock (waking 1/64 threads) in 0.0275 ms (+-3.12%)
+
+perf futex/requeue (+4.2%):
+  queued_spinlock Requeued 64 of 64 threads in 0.0785 ms (+-0.55%)
+  ticket_spinlock Requeued 64 of 64 threads in 0.0818 ms (+-4.12%)
+
+
+System Benchmarks (+6.4%)
+  queued_spinlock:
+    System Benchmarks Index Values               BASELINE       RESULT    INDEX
+    Dhrystone 2 using register variables         116700.0  628613745.4  53865.8
+    Double-Precision Whetstone                       55.0     182422.8  33167.8
+    Execl Throughput                                 43.0      13116.6   3050.4
+    File Copy 1024 bufsize 2000 maxblocks          3960.0    7762306.2  19601.8
+    File Copy 256 bufsize 500 maxblocks            1655.0    3417556.8  20649.9
+    File Copy 4096 bufsize 8000 maxblocks          5800.0    7427995.7  12806.9
+    Pipe Throughput                               12440.0   23058600.5  18535.9
+    Pipe-based Context Switching                   4000.0    2835617.7   7089.0
+    Process Creation                                126.0      12537.3    995.0
+    Shell Scripts (1 concurrent)                     42.4      57057.4  13456.9
+    Shell Scripts (8 concurrent)                      6.0       7367.1  12278.5
+    System Call Overhead                          15000.0   33308301.3  22205.5
+                                                                       ========
+    System Benchmarks Index Score                                       12426.1
+
+  ticket_spinlock:
+    System Benchmarks Index Values               BASELINE       RESULT    INDEX
+    Dhrystone 2 using register variables         116700.0  626541701.9  53688.2
+    Double-Precision Whetstone                       55.0     181921.0  33076.5
+    Execl Throughput                                 43.0      12625.1   2936.1
+    File Copy 1024 bufsize 2000 maxblocks          3960.0    6553792.9  16550.0
+    File Copy 256 bufsize 500 maxblocks            1655.0    3189231.6  19270.3
+    File Copy 4096 bufsize 8000 maxblocks          5800.0    7221277.0  12450.5
+    Pipe Throughput                               12440.0   20594018.7  16554.7
+    Pipe-based Context Switching                   4000.0    2571117.7   6427.8
+    Process Creation                                126.0      10798.4    857.0
+    Shell Scripts (1 concurrent)                     42.4      57227.5  13497.1
+    Shell Scripts (8 concurrent)                      6.0       7329.2  12215.3
+    System Call Overhead                          15000.0   30766778.4  20511.2
+                                                                       ========
+    System Benchmarks Index Score                                       11670.7
+
+The qspinlock has a significant improvement on SOPHGO SG2042 64
+cores platform than the ticket_lock.
+
+Paravirt qspinlock
+==================
+
+We implemented kvm_kick_cpu/kvm_wait_cpu and add tracepoints to observe
+the behaviors and introduce a new SBI extension SBI_EXT_PVLOCK.
+
+Changlog:
+V12:
+ - Remove force thead qspinlock with errata
+ - Separate Zicbop patch from this series
+ - Remove cpus >= 16 patch
+ - Cleanup rebase and move it on v6.7-rc7
+ - Reorder the coding struct with the last version's advice.
+
+V11:
+https://lore.kernel.org/linux-riscv/20230910082911.3378782-1-guoren@kernel.org/
+ - Based on Leonardo Bras's cmpxchg_small patches v5.
+ - Based on Guo Ren's Optimize arch_spin_value_unlocked patch v3.
+ - Remove abusing alternative framework and use jump_label instead.
+ - Introduce prefetch.w to improve T-HEAD processors' LR/SC forward
+   progress guarantee.
+ - Optimize qspinlock xchg_tail when NR_CPUS >= 16K.
+
+V10:
+https://lore.kernel.org/linux-riscv/20230802164701.192791-1-guoren@kernel.org/
+ - Using an alternative framework instead of static_key_branch in the
+   asm/spinlock.h.
+ - Fixup store merge buffer problem, which causes qspinlock lock
+   torture test livelock.
+ - Add paravirt qspinlock support, include KVM backend
+ - Add Compact NUMA-awared qspinlock support 
+
+V9:
+https://lore.kernel.org/linux-riscv/20220808071318.3335746-1-guoren@kernel.org/
+ - Cleanup generic ticket-lock code, (Using smp_mb__after_spinlock as
+   RCsc)
+ - Add qspinlock and combo-lock for riscv
+ - Add qspinlock to openrisc
+ - Use generic header in csky
+ - Optimize cmpxchg & atomic code
+
+V8:
+https://lore.kernel.org/linux-riscv/20220724122517.1019187-1-guoren@kernel.org/
+ - Coding convention ticket fixup
+ - Move combo spinlock into riscv and simply asm-generic/spinlock.h
+ - Fixup xchg16 with wrong return value
+ - Add csky qspinlock
+ - Add combo & qspinlock & ticket-lock comparison
+ - Clean up unnecessary riscv acquire and release definitions
+ - Enable ARCH_INLINE_READ*/WRITE*/SPIN* for riscv & csky
+
+V7:
+https://lore.kernel.org/linux-riscv/20220628081946.1999419-1-guoren@kernel.org/
+ - Add combo spinlock (ticket & queued) support
+ - Rename ticket_spinlock.h
+ - Remove unnecessary atomic_read in ticket_spin_value_unlocked  
+
+V6:
+https://lore.kernel.org/linux-riscv/20220621144920.2945595-1-guoren@kernel.org/
+ - Fixup Clang compile problem Reported-by: kernel test robot
+ - Cleanup asm-generic/spinlock.h
+ - Remove changelog in patch main comment part, suggested by
+   Conor.Dooley
+ - Remove "default y if NUMA" in Kconfig
+
+V5:
+https://lore.kernel.org/linux-riscv/20220620155404.1968739-1-guoren@kernel.org/
+ - Update comment with RISC-V forward guarantee feature.
+ - Back to V3 direction and optimize asm code.
+
+V4:
+https://lore.kernel.org/linux-riscv/1616868399-82848-4-git-send-email-guoren@kernel.org/
+ - Remove custom sub-word xchg implementation
+ - Add ARCH_USE_QUEUED_SPINLOCKS_XCHG32 in locking/qspinlock
+
+V3:
+https://lore.kernel.org/linux-riscv/1616658937-82063-1-git-send-email-guoren@kernel.org/
+ - Coding convention by Peter Zijlstra's advices
+
+V2:
+https://lore.kernel.org/linux-riscv/1606225437-22948-2-git-send-email-guoren@kernel.org/
+ - Coding convention in cmpxchg.h
+ - Re-implement short xchg
+ - Remove char & cmpxchg implementations
+
+V1:
+https://lore.kernel.org/linux-riscv/20190211043829.30096-1-michaeljclark@mac.com/
+ - Using cmpxchg loop to implement sub-word atomic
+
+Guo Ren (14):
+  asm-generic: ticket-lock: Reuse arch_spinlock_t of qspinlock
+  asm-generic: ticket-lock: Add separate ticket-lock.h
+  riscv: errata: Move errata vendor func-id into vendorid_list.h
+  riscv: qspinlock: errata: Add ERRATA_THEAD_WRITE_ONCE fixup
+  riscv: qspinlock: Add basic queued_spinlock support
+  riscv: qspinlock: Introduce combo spinlock
+  riscv: qspinlock: Add virt_spin_lock() support for VM guest
+  riscv: qspinlock: Force virt_spin_lock for KVM guests
+  RISC-V: paravirt: Add pvqspinlock KVM backend
+  RISC-V: paravirt: Add pvqspinlock frontend skeleton
+  RISC-V: paravirt: pvqspinlock: Add SBI implementation
+  RISC-V: paravirt: pvqspinlock: Add nopvspin kernel parameter
+  RISC-V: paravirt: pvqspinlock: Add kconfig entry
+  RISC-V: paravirt: pvqspinlock: Add trace point for pv_kick/wait
+
+ .../admin-guide/kernel-parameters.txt         |   8 +-
+ arch/riscv/Kconfig                            |  35 ++++++
+ arch/riscv/Kconfig.errata                     |  19 ++++
+ arch/riscv/errata/thead/errata.c              |  20 ++++
+ arch/riscv/include/asm/Kbuild                 |   3 +-
+ arch/riscv/include/asm/errata_list.h          |  18 ---
+ arch/riscv/include/asm/kvm_vcpu_sbi.h         |   1 +
+ arch/riscv/include/asm/qspinlock.h            |  35 ++++++
+ arch/riscv/include/asm/qspinlock_paravirt.h   |  29 +++++
+ arch/riscv/include/asm/rwonce.h               |  31 ++++++
+ arch/riscv/include/asm/sbi.h                  |  14 +++
+ arch/riscv/include/asm/spinlock.h             |  88 +++++++++++++++
+ arch/riscv/include/asm/vendorid_list.h        |  19 ++++
+ arch/riscv/include/uapi/asm/kvm.h             |   1 +
+ arch/riscv/kernel/Makefile                    |   1 +
+ arch/riscv/kernel/qspinlock_paravirt.c        |  83 ++++++++++++++
+ arch/riscv/kernel/sbi.c                       |   2 +-
+ arch/riscv/kernel/setup.c                     |  68 ++++++++++++
+ .../kernel/trace_events_filter_paravirt.h     |  60 ++++++++++
+ arch/riscv/kvm/Makefile                       |   1 +
+ arch/riscv/kvm/vcpu_sbi.c                     |   4 +
+ arch/riscv/kvm/vcpu_sbi_pvlock.c              |  57 ++++++++++
+ include/asm-generic/qspinlock.h               |   2 +
+ include/asm-generic/rwonce.h                  |   2 +
+ include/asm-generic/spinlock.h                |  87 +--------------
+ include/asm-generic/spinlock_types.h          |  12 +-
+ include/asm-generic/ticket_spinlock.h         | 105 ++++++++++++++++++
+ 27 files changed, 688 insertions(+), 117 deletions(-)
+ create mode 100644 arch/riscv/include/asm/qspinlock.h
+ create mode 100644 arch/riscv/include/asm/qspinlock_paravirt.h
+ create mode 100644 arch/riscv/include/asm/rwonce.h
+ create mode 100644 arch/riscv/include/asm/spinlock.h
+ create mode 100644 arch/riscv/kernel/qspinlock_paravirt.c
+ create mode 100644 arch/riscv/kernel/trace_events_filter_paravirt.h
+ create mode 100644 arch/riscv/kvm/vcpu_sbi_pvlock.c
+ create mode 100644 include/asm-generic/ticket_spinlock.h
+
+-- 
+2.40.1
 
 
