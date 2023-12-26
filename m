@@ -1,373 +1,486 @@
-Return-Path: <linux-kernel+bounces-11712-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11714-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9BDE81EA63
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 23:51:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E723381EA67
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 23:52:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5968A1F218A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 22:51:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 73DE91F21906
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 22:52:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 109185394;
-	Tue, 26 Dec 2023 22:51:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD9495681;
+	Tue, 26 Dec 2023 22:52:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="KsKHNPqD"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="liz/p8Ff"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FD6E5257
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 22:51:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1703631091;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=KAcZVWUdwxMgEguWO/ipgfFw4d2BOub4xvB7dxmq+gU=;
-	b=KsKHNPqDeqoEeAJoRpQZG4yWXxJWmQq2+AcxQm+Busl0tPEWJWU4/fqxWpQGGxTvf7k1vq
-	Szj8Tq6B+qN48kKlRbItk5DzB2dvWd++Mi863otmoP2s1LGT3V5Ep+WP0vnfQSNHeDW92e
-	DRyIKyGgCs+z/VAHI+ViGjP8HSLLhhw=
-From: andrey.konovalov@linux.dev
-To: Marco Elver <elver@google.com>,
-	Andrew Morton <akpm@linux-foundation.org>
-Cc: Andrey Konovalov <andreyknvl@gmail.com>,
-	Alexander Potapenko <glider@google.com>,
-	Dmitry Vyukov <dvyukov@google.com>,
-	Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-	kasan-dev@googlegroups.com,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	Andrey Konovalov <andreyknvl@google.com>
-Subject: [PATCH mm] kasan: stop leaking stack trace handles
-Date: Tue, 26 Dec 2023 23:51:21 +0100
-Message-Id: <20231226225121.235865-1-andrey.konovalov@linux.dev>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C89A1078A;
+	Tue, 26 Dec 2023 22:52:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BQMpCJr012323;
+	Tue, 26 Dec 2023 22:51:33 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=SYGUVY+UmaauR562PbcqjdKMb0wR6VSm6vagIVeqRGo=; b=li
+	z/p8FfzzRfplh/ewxt8MvcLOel1zueV87QuyR/WrgaucgKbFeS4hjP2qzT8YU+V0
+	LYdPFI9yXqDNWFvLJyQfku4MKxsjdUGDbCUGhLBG64Hkik1kx6cgd2EM2vYsJ96o
+	nGSwEWbu3QQdvzbzzkZ4ovzcjomIwOCCW08HbV0eiPjLHb782NcesnLbkthIsfTJ
+	1wnThGjH/Dcx0OoO+sRh74NLXGjBVleXKWTsDWvaMygPIHzq7J/dlm7RLHyuZfcA
+	1Uh4ZX1KOdPj1rb65yhlBE0IoZBVfAB7AVoL3x0OSpp5St/1uVhGyX754bzy3jCn
+	rn9WKJlmG+gXvsWSxYlw==
+Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v80kfrt6e-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 26 Dec 2023 22:51:32 +0000 (GMT)
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+	by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BQMpVep026218
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 26 Dec 2023 22:51:31 GMT
+Received: from [10.110.123.205] (10.80.80.8) by nasanex01b.na.qualcomm.com
+ (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 26 Dec
+ 2023 14:51:29 -0800
+Message-ID: <1eab96e0-fad1-437b-b8bc-77013e32f724@quicinc.com>
+Date: Tue, 26 Dec 2023 14:51:28 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/6] drm/panel: Add driver for BOE TH101MB31IG002-28A
+ panel
+Content-Language: en-US
+To: Manuel Traut <manut@mecka.net>,
+        Neil Armstrong
+	<neil.armstrong@linaro.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Maarten
+ Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard
+	<mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie
+	<airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring
+	<robh+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
+        Sandy Huang <hjc@rock-chips.com>, Mark Yao
+	<markyao0591@gmail.com>,
+        Diederik de Haas <didi.debian@cknow.org>,
+        Segfault
+	<awarnecke002@hotmail.com>,
+        Arnaud Ferraris <aferraris@debian.org>
+CC: <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-rockchip@lists.infradead.org>
+References: <20231222-pinetab2-v1-0-e148a7f61bd1@mecka.net>
+ <20231222-pinetab2-v1-2-e148a7f61bd1@mecka.net>
+From: Jessica Zhang <quic_jesszhan@quicinc.com>
+In-Reply-To: <20231222-pinetab2-v1-2-e148a7f61bd1@mecka.net>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: q5RlT8qdRJyWlDqxxTvLd5FKV_pP9hhc
+X-Proofpoint-GUID: q5RlT8qdRJyWlDqxxTvLd5FKV_pP9hhc
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 impostorscore=0
+ mlxlogscore=999 malwarescore=0 clxscore=1011 priorityscore=1501 mlxscore=0
+ spamscore=0 lowpriorityscore=0 adultscore=0 bulkscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2311290000
+ definitions=main-2312260174
 
-From: Andrey Konovalov <andreyknvl@google.com>
 
-Commit 773688a6cb24 ("kasan: use stack_depot_put for Generic mode") added
-support for stack trace eviction for Generic KASAN.
 
-However, that commit didn't evict stack traces when the object is not put
-into quarantine. As a result, some stack traces are never evicted from
-the stack depot.
+On 12/22/2023 3:05 AM, Manuel Traut wrote:
+> From: Segfault <awarnecke002@hotmail.com>
+> 
+> The BOE TH101MB31IG002-28A panel is a WXGA panel.
+> It is used in Pine64 Pinetab2 and PinetabV.
+> 
+> Signed-off-by: Segfault <awarnecke002@hotmail.com>
+> Signed-off-by: Manuel Traut <manut@mecka.net>
+> ---
+>   drivers/gpu/drm/panel/Kconfig                      |  11 +
+>   drivers/gpu/drm/panel/Makefile                     |   1 +
+>   .../gpu/drm/panel/panel-boe-th101mb31ig002-28a.c   | 307 +++++++++++++++++++++
+>   3 files changed, 319 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/panel/Kconfig b/drivers/gpu/drm/panel/Kconfig
+> index 99e14dc212ec..927ddd10e688 100644
+> --- a/drivers/gpu/drm/panel/Kconfig
+> +++ b/drivers/gpu/drm/panel/Kconfig
+> @@ -67,6 +67,17 @@ config DRM_PANEL_BOE_HIMAX8279D
+>   	  24 bit RGB per pixel. It provides a MIPI DSI interface to
+>   	  the host and has a built-in LED backlight.
+>   
+> +config DRM_PANEL_BOE_TH101MB31UIG002_28A
+> +	tristate "Boe TH101MB31UIG002-28A panel"
+> +	depends on OF
+> +	depends on DRM_MIPI_DSI
+> +	depends on BACKLIGHT_CLASS_DEVICE
+> +	help
+> +	  Say Y here if you want to enable support for Boe
+> +	  TH101MB31UIG002-28A TFT-LCD modules. The panel has a 800x1280
+> +	  resolution and uses 24 bit RGB per pixel. It provides a MIPI DSI
+> +	  interface to the host and has a built-in LED backlight.
+> +
+>   config DRM_PANEL_BOE_TV101WUM_NL6
+>   	tristate "BOE TV101WUM and AUO KD101N80 45NA 1200x1920 panel"
+>   	depends on OF
+> diff --git a/drivers/gpu/drm/panel/Makefile b/drivers/gpu/drm/panel/Makefile
+> index d10c3de51c6d..dd6e1ac9d0a2 100644
+> --- a/drivers/gpu/drm/panel/Makefile
+> +++ b/drivers/gpu/drm/panel/Makefile
+> @@ -5,6 +5,7 @@ obj-$(CONFIG_DRM_PANEL_ASUS_Z00T_TM5P5_NT35596) += panel-asus-z00t-tm5p5-n35596.
+>   obj-$(CONFIG_DRM_PANEL_AUO_A030JTN01) += panel-auo-a030jtn01.o
+>   obj-$(CONFIG_DRM_PANEL_BOE_BF060Y8M_AJ0) += panel-boe-bf060y8m-aj0.o
+>   obj-$(CONFIG_DRM_PANEL_BOE_HIMAX8279D) += panel-boe-himax8279d.o
+> +obj-$(CONFIG_DRM_PANEL_BOE_TH101MB31UIG002_28A) += panel-boe-th101mb31ig002-28a.o
+>   obj-$(CONFIG_DRM_PANEL_BOE_TV101WUM_NL6) += panel-boe-tv101wum-nl6.o
+>   obj-$(CONFIG_DRM_PANEL_DSI_CM) += panel-dsi-cm.o
+>   obj-$(CONFIG_DRM_PANEL_LVDS) += panel-lvds.o
+> diff --git a/drivers/gpu/drm/panel/panel-boe-th101mb31ig002-28a.c b/drivers/gpu/drm/panel/panel-boe-th101mb31ig002-28a.c
+> new file mode 100644
+> index 000000000000..ac1dc99a0300
+> --- /dev/null
+> +++ b/drivers/gpu/drm/panel/panel-boe-th101mb31ig002-28a.c
+> @@ -0,0 +1,307 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Copyright (c) 2023 Alexander Warnecke <awarnecke002@hotmail.com>
+> + * Copyright (c) 2023 Manuel Traut <manut@mecka.net>
+> + */
+> +
+> +#include <linux/delay.h>
+> +#include <linux/gpio/consumer.h>
+> +#include <linux/module.h>
+> +#include <linux/of.h>
+> +#include <linux/of_device.h>
+> +#include <linux/regulator/consumer.h>
+> +
+> +#include <drm/drm_connector.h>
+> +#include <drm/drm_mipi_dsi.h>
+> +#include <drm/drm_modes.h>
+> +#include <drm/drm_panel.h>
+> +
+> +struct boe_th101mb31ig002 {
+> +	struct drm_panel panel;
+> +	bool enabled;
+> +	bool prepared;
 
-In addition, with the "kasan: save mempool stack traces" series, the
-free stack traces for mempool objects are also not properly evicted from
-the stack depot.
+Hi Manuel,
 
-Fix both issues by:
+If I remember correctly, commit 
+d2aacaf07395bd798373cbec6af05fff4147aff3 should have introduced 
+prepared/enabled do the drm_panel struct.
 
-1. Evicting all stack traces when an object if freed if it was not put
-   into quarantine;
+Thanks,
 
-2. Always evicting an existing free stack trace when a new one is saved.
+Jessica Zhang
 
-Also do a few related clean-ups:
-
-- Do not zero out free track when initializing/invalidating free meta:
-  set a value in shadow memory instead;
-
-- Rename KASAN_SLAB_FREETRACK to KASAN_SLAB_FREE_META;
-
-- Drop the kasan_init_cache_meta function as it's not used by KASAN;
-
-- Add comments for the kasan_alloc_meta and kasan_free_meta structs.
-
-Fixes: 773688a6cb24 ("kasan: use stack_depot_put for Generic mode")
-Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-
----
-
-Andrew, please put this as a separate patch on top of all KASAN patches
-in mm.
----
- mm/kasan/common.c         | 27 +++++++++++++++---
- mm/kasan/generic.c        | 60 +++++++++++++++++++++++++++++++++------
- mm/kasan/kasan.h          | 25 ++++++++++++----
- mm/kasan/quarantine.c     | 20 +------------
- mm/kasan/report_generic.c |  6 ++--
- 5 files changed, 97 insertions(+), 41 deletions(-)
-
-diff --git a/mm/kasan/common.c b/mm/kasan/common.c
-index a486e9b1ac68..223af53d4338 100644
---- a/mm/kasan/common.c
-+++ b/mm/kasan/common.c
-@@ -255,14 +255,33 @@ static inline bool poison_slab_object(struct kmem_cache *cache, void *object,
- bool __kasan_slab_free(struct kmem_cache *cache, void *object,
- 				unsigned long ip, bool init)
- {
--	bool buggy_object;
--
- 	if (is_kfence_address(object))
- 		return false;
- 
--	buggy_object = poison_slab_object(cache, object, ip, init);
-+	/*
-+	 * If the object is buggy, do not let slab put the object onto the
-+	 * freelist. The object will thus never be allocated again and its
-+	 * metadata will never get released.
-+	 */
-+	if (poison_slab_object(cache, object, ip, init))
-+		return true;
-+
-+	/*
-+	 * If the object is put into quarantine, do not let slab put the object
-+	 * onto the freelist for now. The object's metadata is kept until the
-+	 * object gets evicted from quarantine.
-+	 */
-+	if (kasan_quarantine_put(cache, object))
-+		return true;
-+
-+	/*
-+	 * If the object is not put into quarantine, it will likely be quickly
-+	 * reallocated. Thus, release its metadata now.
-+	 */
-+	kasan_release_object_meta(cache, object);
- 
--	return buggy_object ? true : kasan_quarantine_put(cache, object);
-+	/* Let slab put the object onto the freelist. */
-+	return false;
- }
- 
- static inline bool check_page_allocation(void *ptr, unsigned long ip)
-diff --git a/mm/kasan/generic.c b/mm/kasan/generic.c
-index 0e77c43c559e..fc22ea1af775 100644
---- a/mm/kasan/generic.c
-+++ b/mm/kasan/generic.c
-@@ -480,10 +480,10 @@ struct kasan_free_meta *kasan_get_free_meta(struct kmem_cache *cache,
- void kasan_init_object_meta(struct kmem_cache *cache, const void *object)
- {
- 	struct kasan_alloc_meta *alloc_meta;
--	struct kasan_free_meta *free_meta;
- 
- 	alloc_meta = kasan_get_alloc_meta(cache, object);
- 	if (alloc_meta) {
-+		/* Zero out alloc meta to mark it as invalid. */
- 		__memset(alloc_meta, 0, sizeof(*alloc_meta));
- 
- 		/*
-@@ -495,9 +495,50 @@ void kasan_init_object_meta(struct kmem_cache *cache, const void *object)
- 		raw_spin_lock_init(&alloc_meta->aux_lock);
- 		kasan_enable_current();
- 	}
-+
-+	/*
-+	 * Explicitly marking free meta as invalid is not required: the shadow
-+	 * value for the first 8 bytes of a newly allocated object is not
-+	 * KASAN_SLAB_FREE_META.
-+	 */
-+}
-+
-+void release_alloc_meta(struct kasan_alloc_meta *meta)
-+{
-+	/* Evict the stack traces from stack depot. */
-+	stack_depot_put(meta->alloc_track.stack);
-+	stack_depot_put(meta->aux_stack[0]);
-+	stack_depot_put(meta->aux_stack[1]);
-+
-+	/* Zero out alloc meta to mark it as invalid. */
-+	__memset(meta, 0, sizeof(*meta));
-+}
-+
-+void release_free_meta(const void *object, struct kasan_free_meta *meta)
-+{
-+	/* Check if free meta is valid. */
-+	if (*(u8 *)kasan_mem_to_shadow(object) != KASAN_SLAB_FREE_META)
-+		return;
-+
-+	/* Evict the stack trace from the stack depot. */
-+	stack_depot_put(meta->free_track.stack);
-+
-+	/* Mark free meta as invalid. */
-+	*(u8 *)kasan_mem_to_shadow(object) = KASAN_SLAB_FREE;
-+}
-+
-+void kasan_release_object_meta(struct kmem_cache *cache, const void *object)
-+{
-+	struct kasan_alloc_meta *alloc_meta;
-+	struct kasan_free_meta *free_meta;
-+
-+	alloc_meta = kasan_get_alloc_meta(cache, object);
-+	if (alloc_meta)
-+		release_alloc_meta(alloc_meta);
-+
- 	free_meta = kasan_get_free_meta(cache, object);
- 	if (free_meta)
--		__memset(free_meta, 0, sizeof(*free_meta));
-+		release_free_meta(object, free_meta);
- }
- 
- size_t kasan_metadata_size(struct kmem_cache *cache, bool in_object)
-@@ -573,11 +614,8 @@ void kasan_save_alloc_info(struct kmem_cache *cache, void *object, gfp_t flags)
- 	if (!alloc_meta)
- 		return;
- 
--	/* Evict previous stack traces (might exist for krealloc). */
--	stack_depot_put(alloc_meta->alloc_track.stack);
--	stack_depot_put(alloc_meta->aux_stack[0]);
--	stack_depot_put(alloc_meta->aux_stack[1]);
--	__memset(alloc_meta, 0, sizeof(*alloc_meta));
-+	/* Evict previous stack traces (might exist for krealloc or mempool). */
-+	release_alloc_meta(alloc_meta);
- 
- 	kasan_save_track(&alloc_meta->alloc_track, flags);
- }
-@@ -590,7 +628,11 @@ void kasan_save_free_info(struct kmem_cache *cache, void *object)
- 	if (!free_meta)
- 		return;
- 
-+	/* Evict previous stack trace (might exist for mempool). */
-+	release_free_meta(object, free_meta);
-+
- 	kasan_save_track(&free_meta->free_track, 0);
--	/* The object was freed and has free track set. */
--	*(u8 *)kasan_mem_to_shadow(object) = KASAN_SLAB_FREETRACK;
-+
-+	/* Mark free meta as valid. */
-+	*(u8 *)kasan_mem_to_shadow(object) = KASAN_SLAB_FREE_META;
- }
-diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
-index 814e89523c64..645ae04539c9 100644
---- a/mm/kasan/kasan.h
-+++ b/mm/kasan/kasan.h
-@@ -156,7 +156,7 @@ static inline bool kasan_requires_meta(void)
- 
- #ifdef CONFIG_KASAN_GENERIC
- 
--#define KASAN_SLAB_FREETRACK	0xFA  /* freed slab object with free track */
-+#define KASAN_SLAB_FREE_META	0xFA  /* freed slab object with free meta */
- #define KASAN_GLOBAL_REDZONE	0xF9  /* redzone for global variable */
- 
- /* Stack redzone shadow values. Compiler ABI, do not change. */
-@@ -253,6 +253,15 @@ struct kasan_global {
- 
- #ifdef CONFIG_KASAN_GENERIC
- 
-+/*
-+ * Alloc meta contains the allocation-related information about a slab object.
-+ * Alloc meta is saved when an object is allocated and is kept until either the
-+ * object returns to the slab freelist (leaves quarantine for quarantined
-+ * objects or gets freed for the non-quarantined ones) or reallocated via
-+ * krealloc or through a mempool.
-+ * Alloc meta is stored inside of the object's redzone.
-+ * Alloc meta is considered valid whenever it contains non-zero data.
-+ */
- struct kasan_alloc_meta {
- 	struct kasan_track alloc_track;
- 	/* Free track is stored in kasan_free_meta. */
-@@ -278,8 +287,12 @@ struct qlist_node {
- #define KASAN_NO_FREE_META INT_MAX
- 
- /*
-- * Free meta is only used by Generic mode while the object is in quarantine.
-- * After that, slab allocator stores the freelist pointer in the object.
-+ * Free meta contains the freeing-related information about a slab object.
-+ * Free meta is only kept for quarantined objects and for mempool objects until
-+ * the object gets allocated again.
-+ * Free meta is stored within the object's memory.
-+ * Free meta is considered valid whenever the value of the shadow byte that
-+ * corresponds to the first 8 bytes of the object is KASAN_SLAB_FREE_META.
-  */
- struct kasan_free_meta {
- 	struct qlist_node quarantine_link;
-@@ -380,15 +393,15 @@ void kasan_report_invalid_free(void *object, unsigned long ip, enum kasan_report
- struct slab *kasan_addr_to_slab(const void *addr);
- 
- #ifdef CONFIG_KASAN_GENERIC
--void kasan_init_cache_meta(struct kmem_cache *cache, unsigned int *size);
--void kasan_init_object_meta(struct kmem_cache *cache, const void *object);
- struct kasan_alloc_meta *kasan_get_alloc_meta(struct kmem_cache *cache,
- 						const void *object);
- struct kasan_free_meta *kasan_get_free_meta(struct kmem_cache *cache,
- 						const void *object);
-+void kasan_init_object_meta(struct kmem_cache *cache, const void *object);
-+void kasan_release_object_meta(struct kmem_cache *cache, const void *object);
- #else
--static inline void kasan_init_cache_meta(struct kmem_cache *cache, unsigned int *size) { }
- static inline void kasan_init_object_meta(struct kmem_cache *cache, const void *object) { }
-+static inline void kasan_release_object_meta(struct kmem_cache *cache, const void *object) { }
- #endif
- 
- depot_stack_handle_t kasan_save_stack(gfp_t flags, depot_flags_t depot_flags);
-diff --git a/mm/kasan/quarantine.c b/mm/kasan/quarantine.c
-index 782e045da911..8afa77bc5d3b 100644
---- a/mm/kasan/quarantine.c
-+++ b/mm/kasan/quarantine.c
-@@ -143,22 +143,10 @@ static void *qlink_to_object(struct qlist_node *qlink, struct kmem_cache *cache)
- static void qlink_free(struct qlist_node *qlink, struct kmem_cache *cache)
- {
- 	void *object = qlink_to_object(qlink, cache);
--	struct kasan_alloc_meta *alloc_meta = kasan_get_alloc_meta(cache, object);
- 	struct kasan_free_meta *free_meta = kasan_get_free_meta(cache, object);
- 	unsigned long flags;
- 
--	if (alloc_meta) {
--		stack_depot_put(alloc_meta->alloc_track.stack);
--		stack_depot_put(alloc_meta->aux_stack[0]);
--		stack_depot_put(alloc_meta->aux_stack[1]);
--		__memset(alloc_meta, 0, sizeof(*alloc_meta));
--	}
--
--	if (free_meta &&
--	    *(u8 *)kasan_mem_to_shadow(object) == KASAN_SLAB_FREETRACK) {
--		stack_depot_put(free_meta->free_track.stack);
--		__memset(&free_meta->free_track, 0, sizeof(free_meta->free_track));
--	}
-+	kasan_release_object_meta(cache, object);
- 
- 	/*
- 	 * If init_on_free is enabled and KASAN's free metadata is stored in
-@@ -170,12 +158,6 @@ static void qlink_free(struct qlist_node *qlink, struct kmem_cache *cache)
- 	    cache->kasan_info.free_meta_offset == 0)
- 		memzero_explicit(free_meta, sizeof(*free_meta));
- 
--	/*
--	 * As the object now gets freed from the quarantine,
--	 * take note that its free track is no longer exists.
--	 */
--	*(u8 *)kasan_mem_to_shadow(object) = KASAN_SLAB_FREE;
--
- 	if (IS_ENABLED(CONFIG_SLAB))
- 		local_irq_save(flags);
- 
-diff --git a/mm/kasan/report_generic.c b/mm/kasan/report_generic.c
-index 99cbcd73cff7..f5b8e37b3805 100644
---- a/mm/kasan/report_generic.c
-+++ b/mm/kasan/report_generic.c
-@@ -110,7 +110,7 @@ static const char *get_shadow_bug_type(struct kasan_report_info *info)
- 		bug_type = "use-after-free";
- 		break;
- 	case KASAN_SLAB_FREE:
--	case KASAN_SLAB_FREETRACK:
-+	case KASAN_SLAB_FREE_META:
- 		bug_type = "slab-use-after-free";
- 		break;
- 	case KASAN_ALLOCA_LEFT:
-@@ -173,8 +173,8 @@ void kasan_complete_mode_report_info(struct kasan_report_info *info)
- 		memcpy(&info->alloc_track, &alloc_meta->alloc_track,
- 		       sizeof(info->alloc_track));
- 
--	if (*(u8 *)kasan_mem_to_shadow(info->object) == KASAN_SLAB_FREETRACK) {
--		/* Free meta must be present with KASAN_SLAB_FREETRACK. */
-+	if (*(u8 *)kasan_mem_to_shadow(info->object) == KASAN_SLAB_FREE_META) {
-+		/* Free meta must be present with KASAN_SLAB_FREE_META. */
- 		free_meta = kasan_get_free_meta(info->cache, info->object);
- 		memcpy(&info->free_track, &free_meta->free_track,
- 		       sizeof(info->free_track));
--- 
-2.25.1
-
+> +
+> +	struct mipi_dsi_device *dsi;
+> +
+> +	struct regulator *power;
+> +	struct gpio_desc *enable;
+> +	struct gpio_desc *reset;
+> +
+> +	enum drm_panel_orientation orientation;
+> +};
+> +
+> +static int boe_th101mb31ig002_disable(struct drm_panel *panel)
+> +{
+> +	struct boe_th101mb31ig002 *ctx = container_of(panel,
+> +						      struct boe_th101mb31ig002,
+> +						      panel);
+> +
+> +	if (!ctx->enabled)
+> +		return 0;
+> +
+> +	mipi_dsi_dcs_set_display_off(ctx->dsi);
+> +	msleep(120);
+> +	ctx->enabled = false;
+> +
+> +	return 0;
+> +}
+> +
+> +static int boe_th101mb31ig002_unprepare(struct drm_panel *panel)
+> +{
+> +	struct boe_th101mb31ig002 *ctx = container_of(panel,
+> +						      struct boe_th101mb31ig002,
+> +						      panel);
+> +
+> +	if (!ctx->prepared)
+> +		return 0;
+> +
+> +	mipi_dsi_dcs_enter_sleep_mode(ctx->dsi);
+> +	msleep(220);
+> +	gpiod_set_value_cansleep(ctx->reset, 1);
+> +	gpiod_set_value_cansleep(ctx->enable, 0);
+> +	regulator_disable(ctx->power);
+> +	ctx->prepared = false;
+> +
+> +	return 0;
+> +}
+> +
+> +static int boe_th101mb31ig002_prepare(struct drm_panel *panel)
+> +{
+> +	struct boe_th101mb31ig002 *ctx = container_of(panel,
+> +						      struct boe_th101mb31ig002,
+> +						      panel);
+> +	struct mipi_dsi_device *dsi = ctx->dsi;
+> +	int ret;
+> +
+> +	if (ctx->prepared)
+> +		return 0;
+> +
+> +	ret = regulator_enable(ctx->power);
+> +	if (ret) {
+> +		dev_err(&dsi->dev, "Failed to enable power supply: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	gpiod_set_value_cansleep(ctx->enable, 1);
+> +	msleep(120);
+> +	gpiod_direction_output(ctx->reset, 1);
+> +	msleep(120);
+> +	gpiod_direction_output(ctx->reset, 0);
+> +	msleep(120);
+> +
+> +	mipi_dsi_dcs_write_seq(dsi, 0xE0, 0xAB, 0xBA);
+> +	mipi_dsi_dcs_write_seq(dsi, 0xE1, 0xBA, 0xAB);
+> +	mipi_dsi_dcs_write_seq(dsi, 0xB1, 0x10, 0x01, 0x47, 0xFF);
+> +	mipi_dsi_dcs_write_seq(dsi, 0xB2, 0x0C, 0x14, 0x04, 0x50, 0x50, 0x14);
+> +	mipi_dsi_dcs_write_seq(dsi, 0xB3, 0x56, 0x53, 0x00);
+> +	mipi_dsi_dcs_write_seq(dsi, 0xB4, 0x33, 0x30, 0x04);
+> +	mipi_dsi_dcs_write_seq(dsi, 0xB6, 0xB0, 0x00, 0x00, 0x10, 0x00, 0x10,
+> +			       0x00);
+> +	mipi_dsi_dcs_write_seq(dsi, 0xB8, 0x05, 0x12, 0x29, 0x49, 0x48, 0x00,
+> +			       0x00);
+> +	mipi_dsi_dcs_write_seq(dsi, 0xB9, 0x7C, 0x65, 0x55, 0x49, 0x46, 0x36,
+> +			       0x3B, 0x24, 0x3D, 0x3C, 0x3D, 0x5C, 0x4C, 0x55,
+> +			       0x47, 0x46, 0x39, 0x26, 0x06, 0x7C, 0x65, 0x55,
+> +			       0x49, 0x46, 0x36, 0x3B, 0x24, 0x3D, 0x3C, 0x3D,
+> +			       0x5C, 0x4C, 0x55, 0x47, 0x46, 0x39, 0x26, 0x06);
+> +	mipi_dsi_dcs_write_seq(dsi, 0xC0, 0xFF, 0x87, 0x12, 0x34, 0x44, 0x44,
+> +			       0x44, 0x44, 0x98, 0x04, 0x98, 0x04, 0x0F, 0x00,
+> +			       0x00, 0xC1);
+> +	mipi_dsi_dcs_write_seq(dsi, 0xC1, 0x54, 0x94, 0x02, 0x85, 0x9F, 0x00,
+> +			       0x7F, 0x00, 0x54, 0x00);
+> +	mipi_dsi_dcs_write_seq(dsi, 0xC2, 0x17, 0x09, 0x08, 0x89, 0x08, 0x11,
+> +			       0x22, 0x20, 0x44, 0xFF, 0x18, 0x00);
+> +	mipi_dsi_dcs_write_seq(dsi, 0xC3, 0x86, 0x46, 0x05, 0x05, 0x1C, 0x1C,
+> +			       0x1D, 0x1D, 0x02, 0x1F, 0x1F, 0x1E, 0x1E, 0x0F,
+> +			       0x0F, 0x0D, 0x0D, 0x13, 0x13, 0x11, 0x11, 0x00);
+> +	mipi_dsi_dcs_write_seq(dsi, 0xC4, 0x07, 0x07, 0x04, 0x04, 0x1C, 0x1C,
+> +			       0x1D, 0x1D, 0x02, 0x1F, 0x1F, 0x1E, 0x1E, 0x0E,
+> +			       0x0E, 0x0C, 0x0C, 0x12, 0x12, 0x10, 0x10, 0x00);
+> +	mipi_dsi_dcs_write_seq(dsi, 0xC6, 0x2A, 0x2A);
+> +	mipi_dsi_dcs_write_seq(dsi, 0xC8, 0x21, 0x00, 0x31, 0x42, 0x34, 0x16);
+> +	mipi_dsi_dcs_write_seq(dsi, 0xCA, 0xCB, 0x43);
+> +	mipi_dsi_dcs_write_seq(dsi, 0xCD, 0x0E, 0x4B, 0x4B, 0x20, 0x19, 0x6B,
+> +			       0x06, 0xB3);
+> +	mipi_dsi_dcs_write_seq(dsi, 0xD2, 0xE3, 0x2B, 0x38, 0x00);
+> +	mipi_dsi_dcs_write_seq(dsi, 0xD4, 0x00, 0x01, 0x00, 0x0E, 0x04, 0x44,
+> +			       0x08, 0x10, 0x00, 0x00, 0x00);
+> +	mipi_dsi_dcs_write_seq(dsi, 0xE6, 0x80, 0x01, 0xFF, 0xFF, 0xFF, 0xFF,
+> +			       0xFF, 0xFF);
+> +	mipi_dsi_dcs_write_seq(dsi, 0xF0, 0x12, 0x03, 0x20, 0x00, 0xFF);
+> +	mipi_dsi_dcs_write_seq(dsi, 0xF3, 0x00);
+> +
+> +	mipi_dsi_dcs_exit_sleep_mode(dsi);
+> +	msleep(120);
+> +	ctx->prepared = true;
+> +
+> +	return 0;
+> +}
+> +
+> +static int boe_th101mb31ig002_enable(struct drm_panel *panel)
+> +{
+> +	struct boe_th101mb31ig002 *ctx = container_of(panel,
+> +						      struct boe_th101mb31ig002,
+> +						      panel);
+> +
+> +	if (ctx->enabled)
+> +		return 0;
+> +
+> +	mipi_dsi_dcs_set_display_on(ctx->dsi);
+> +	msleep(120);
+> +	ctx->enabled = true;
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct drm_display_mode boe_th101mb31ig002_default_mode = {
+> +	.clock		= 73500,
+> +	.hdisplay	= 800,
+> +	.hsync_start	= 800 + 64,
+> +	.hsync_end	= 800 + 64 + 16,
+> +	.htotal		= 800 + 64 + 16 + 64,
+> +	.vdisplay	= 1280,
+> +	.vsync_start	= 1280 + 2,
+> +	.vsync_end	= 1280 + 2 + 4,
+> +	.vtotal		= 1280 + 2 + 4 + 12,
+> +	.type = DRM_MODE_TYPE_DRIVER | DRM_MODE_TYPE_PREFERRED,
+> +};
+> +
+> +static int boe_th101mb31ig002_get_modes(struct drm_panel *panel,
+> +					struct drm_connector *connector)
+> +{
+> +	struct boe_th101mb31ig002 *ctx = container_of(panel,
+> +						      struct boe_th101mb31ig002,
+> +						      panel);
+> +	struct drm_display_mode *mode;
+> +
+> +	mode = drm_mode_duplicate(connector->dev,
+> +				  &boe_th101mb31ig002_default_mode);
+> +	if (!mode) {
+> +		dev_err(panel->dev, "Failed to add mode %ux%u@%u\n",
+> +			boe_th101mb31ig002_default_mode.hdisplay,
+> +			boe_th101mb31ig002_default_mode.vdisplay,
+> +			drm_mode_vrefresh(&boe_th101mb31ig002_default_mode));
+> +		return -ENOMEM;
+> +	}
+> +
+> +	drm_mode_set_name(mode);
+> +	drm_mode_probed_add(connector, mode);
+> +
+> +	connector->display_info.bpc = 8;
+> +	connector->display_info.width_mm = 216;
+> +	connector->display_info.height_mm = 135;
+> +
+> +	/*
+> +	 * TODO: Remove once all drm drivers call
+> +	 * drm_connector_set_orientation_from_panel()
+> +	 */
+> +	drm_connector_set_panel_orientation(connector, ctx->orientation);
+> +
+> +	return 1;
+> +}
+> +
+> +static enum drm_panel_orientation boe_th101mb31ig002_get_orientation(struct drm_panel *panel)
+> +{
+> +	struct boe_th101mb31ig002 *ctx = container_of(panel,
+> +						      struct boe_th101mb31ig002,
+> +						      panel);
+> +
+> +	return ctx->orientation;
+> +}
+> +
+> +static const struct drm_panel_funcs boe_th101mb31ig002_funcs = {
+> +	.disable = boe_th101mb31ig002_disable,
+> +	.unprepare = boe_th101mb31ig002_unprepare,
+> +	.prepare = boe_th101mb31ig002_prepare,
+> +	.enable = boe_th101mb31ig002_enable,
+> +	.get_modes = boe_th101mb31ig002_get_modes,
+> +	.get_orientation = boe_th101mb31ig002_get_orientation,
+> +};
+> +
+> +static int boe_th101mb31ig002_dsi_probe(struct mipi_dsi_device *dsi)
+> +{
+> +	struct boe_th101mb31ig002 *ctx;
+> +	int ret;
+> +
+> +	ctx = devm_kzalloc(&dsi->dev, sizeof(*ctx), GFP_KERNEL);
+> +	if (!ctx)
+> +		return -ENOMEM;
+> +
+> +	ctx->enabled = false;
+> +	ctx->prepared = false;
+> +
+> +	mipi_dsi_set_drvdata(dsi, ctx);
+> +	ctx->dsi = dsi;
+> +
+> +	drm_panel_init(&ctx->panel, &dsi->dev, &boe_th101mb31ig002_funcs,
+> +		       DRM_MODE_CONNECTOR_DSI);
+> +
+> +	ctx->power = devm_regulator_get(&dsi->dev, "power");
+> +	if (IS_ERR(ctx->power))
+> +		return dev_err_probe(&dsi->dev, PTR_ERR(ctx->power),
+> +				     "Failed to get power regulator\n");
+> +
+> +	ctx->enable = devm_gpiod_get(&dsi->dev, "enable", GPIOD_OUT_LOW);
+> +	if (IS_ERR(ctx->enable))
+> +		return dev_err_probe(&dsi->dev, PTR_ERR(ctx->enable),
+> +				     "Failed to get enable GPIO\n");
+> +
+> +	ctx->reset = devm_gpiod_get(&dsi->dev, "reset", GPIOD_OUT_HIGH);
+> +	if (IS_ERR(ctx->reset))
+> +		return dev_err_probe(&dsi->dev, PTR_ERR(ctx->reset),
+> +				     "Failed to get reset GPIO\n");
+> +
+> +	ret = of_drm_get_panel_orientation(dsi->dev.of_node,
+> +					   &ctx->orientation);
+> +	if (ret)
+> +		return dev_err_probe(&dsi->dev, ret,
+> +				     "Failed to get orientation\n");
+> +
+> +	ret = drm_panel_of_backlight(&ctx->panel);
+> +	if (ret)
+> +		return ret;
+> +
+> +	drm_panel_add(&ctx->panel);
+> +
+> +	dsi->lanes = 4;
+> +	dsi->format = MIPI_DSI_FMT_RGB888;
+> +	dsi->mode_flags = MIPI_DSI_MODE_VIDEO_BURST |
+> +			  MIPI_DSI_MODE_NO_EOT_PACKET |
+> +			  MIPI_DSI_MODE_LPM;
+> +
+> +	ret = mipi_dsi_attach(dsi);
+> +	if (ret < 0) {
+> +		drm_panel_remove(&ctx->panel);
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static void boe_th101mb31ig002_dsi_remove(struct mipi_dsi_device *dsi)
+> +{
+> +	struct boe_th101mb31ig002 *ctx = mipi_dsi_get_drvdata(dsi);
+> +
+> +	mipi_dsi_detach(dsi);
+> +	drm_panel_remove(&ctx->panel);
+> +}
+> +
+> +static const struct of_device_id boe_th101mb31ig002_of_match[] = {
+> +	{ .compatible = "boe,th101mb31ig002-28a", },
+> +	{ /* sentinel */ }
+> +};
+> +MODULE_DEVICE_TABLE(of, boe_th101mb31ig002_of_match);
+> +
+> +static struct mipi_dsi_driver boe_th101mb31ig002_driver = {
+> +	.driver = {
+> +		.name = "boe-th101mb31ig002-28a",
+> +		.of_match_table = boe_th101mb31ig002_of_match,
+> +	},
+> +	.probe = boe_th101mb31ig002_dsi_probe,
+> +	.remove = boe_th101mb31ig002_dsi_remove,
+> +};
+> +module_mipi_dsi_driver(boe_th101mb31ig002_driver);
+> +
+> +MODULE_AUTHOR("Alexander Warnecke <awarnecke002@hotmail.com>");
+> +MODULE_DESCRIPTION("BOE TH101MB31IG002-28A MIPI-DSI LCD panel");
+> +MODULE_LICENSE("GPL");
+> 
+> -- 
+> 2.43.0
+> 
 
