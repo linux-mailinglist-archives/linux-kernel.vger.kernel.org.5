@@ -1,162 +1,105 @@
-Return-Path: <linux-kernel+bounces-11432-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11433-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C753781E631
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 10:09:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6E3281E635
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 10:13:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3DF3DB2164F
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 09:09:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 033B31C21DB5
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 09:13:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 968CA4CE0B;
-	Tue, 26 Dec 2023 09:09:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D71034CE14;
+	Tue, 26 Dec 2023 09:13:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="poWV9COy"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IeE+81tO"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 520324CE09
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 09:09:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-55537c5389dso103602a12.3
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 01:09:42 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DEEF4CE09
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 09:13:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-28b82dc11e6so1534703a91.1
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 01:13:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703581780; x=1704186580; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=GyGRdRAu3dYMIwXl5IOePSjFp1rpAKZJa6fsJR5Bbcs=;
-        b=poWV9COyffT1AGQcSiZw0Cf4mU9WzMn8vJtBQCmP765e9VOzOYsezG5jkpfjn8Ce1V
-         C+vHwATr8b1GlawG6SbMNKr9E5FEOKJk/QLSJK/Yav5z+t3ast6gRl/2mQtH31VcESmO
-         uYwMDyL5iv5jfm2c13yiSqz5V0F71KZWnIqZYLRSIf5MUgAmoT4CaLip/BKjmSyYHyq7
-         Ekl31n8trA+ZHl3e4zufG4fiwNVEDL//BNA0kbYwSWLgswH1L7y+XUv7D/GofIbtlTl5
-         yjBBciYO0re5tK8Q/xEIjAZ6HSATsI9GcslHh544HY6w8vWpUBDfnhZSRugsT7ybvWVH
-         iNmg==
+        d=gmail.com; s=20230601; t=1703581987; x=1704186787; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oD5iK0F1iadCeZ+DhemgQrO1IM36iKgwfZ0udGFoLoc=;
+        b=IeE+81tOJAXZQhTdPWzk++po3nJuGIam5/eeImhtyxclYsrs7NOj2tSm5vNOB6wh0b
+         WV/BPPvboHICjgIDQ6D4r+ldET+9D6tBeim/ArX7GvKksHIxKjAGWB3YzlzmhzsOmz+y
+         OsHA9NOCAXSp+zB/lYd4gP5yHVU9m1D9823Qj5kJ2NN4BYhmQUCkgplYYMAoixE2lk8M
+         SPKEDGyQPrlptroaEMZPBobOlE5DyrxBmtBmgUW+lu7XMuKJ3FaUfF3LV4OpPmfLH2Wl
+         H467u03H9M5KB0CshYu95mYYOn8xBu8q6pb/ciYXB2MSLqgj+YZdSVbX1o1uXMw1F9dL
+         DQbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703581780; x=1704186580;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GyGRdRAu3dYMIwXl5IOePSjFp1rpAKZJa6fsJR5Bbcs=;
-        b=E51jFEgK9uFcW/fQRsQrBn93neagoBKLZJAGIxKnzaSLKWCX1mSFk4OoVA7OsorCWn
-         KgCzk1Frl7yGRt91U6AJ9vL37IOfq6dKsya+S7Xib+Olp2khUsGM77G6Fd9GD7kw+8UB
-         KsnxEYgum6Z6BxhmrvRUNpj9xjW2TmnX2CIjb/4SyPhNMtW69SqJd1QqbU0Jj//TfF+J
-         KYEnLvC9Qhg6/l6xBWTwqzmlF12riKU5nQ6MfdIynCwMCyOLoYO6VpZrMDVEoJH7/TTr
-         DmJv75HLf8HXC/BHsN6TohGYFqTF+VB4qwkEnPM1jrxKpJuNav+pVqzyUmErnXPjAilJ
-         2eMw==
-X-Gm-Message-State: AOJu0YyXgm1Ge4MXIrchD0gD5AikFazdWAkzRo09ceuYVpPmqmNpWjSv
-	IZ1kaEw/MgD3AV9DIAzHhsXDiNB5AErbCtX0r77uRpbsARg=
-X-Google-Smtp-Source: AGHT+IG/TqOmZcQ7vgdkc3GalsLUY6iEK/4DwNOywvsw5IpkUi17mp35v/fjSr56ZGpFtYb/j+SNsQ==
-X-Received: by 2002:a17:907:593:b0:a23:2db0:b341 with SMTP id vw19-20020a170907059300b00a232db0b341mr2501500ejb.132.1703581780545;
-        Tue, 26 Dec 2023 01:09:40 -0800 (PST)
-Received: from [192.168.0.22] ([78.10.206.178])
-        by smtp.gmail.com with ESMTPSA id u23-20020a170906109700b00a26af5717e9sm4679353eju.42.2023.12.26.01.09.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Dec 2023 01:09:40 -0800 (PST)
-Message-ID: <b415e6d7-d69f-4fc8-8b4f-13e942859ead@linaro.org>
-Date: Tue, 26 Dec 2023 10:09:39 +0100
+        d=1e100.net; s=20230601; t=1703581987; x=1704186787;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=oD5iK0F1iadCeZ+DhemgQrO1IM36iKgwfZ0udGFoLoc=;
+        b=bshO24K4mgqPy9qJsUVneUVza6nQUJRPCBbioHrKSwSYBkkMeAwfv5FHD2l9VVOd/I
+         wyxKni9yWrJVWyvIS/bQ2Fipxod5AVIj3zlz5kal5cuoQ8drdthRmZWuKUGYoyM6VZ64
+         gGKlQFjeEB045poNibBGNQYYeUXdi5wF21aW/GJRhWbPmSmfZiz4WY5Pz4oanjFNDJrP
+         AeqEq3za+E7ML5KsgBehkXkOC1bqRKHnBqbK+JSLMxAsLFXzphuQ/nKYqhYvlV44Hlfz
+         EE08AOBIw0tRa9sUnssPwVE14VGecSSPw+GwO+X5zKF3oNaDH1/tzZa7FzaBcrvh0MgV
+         /xgA==
+X-Gm-Message-State: AOJu0Yz2y1mPGB+6My9yB81UWl51tkxi9qf40iB+edo/LGywmVvelgSi
+	WtuJ8AVG/bBcI/W4punhRZRzx80R3FINYVreAfuMIQtb
+X-Google-Smtp-Source: AGHT+IHE5Nu1aJXsQOkL5IJUN/bUPiypBm80WjKb7XaFbAVTm3N6VCJ+mOf+NYGs25kqAiU+aSbPnlmU7JNgW+sQIwQ=
+X-Received: by 2002:a17:90b:2388:b0:28c:687c:299 with SMTP id
+ mr8-20020a17090b238800b0028c687c0299mr257230pjb.71.1703581987271; Tue, 26 Dec
+ 2023 01:13:07 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [v2 1/2] dt-bindings: HID: i2c-hid: elan: Introduce bindings for
- Ilitek ili2901
-Content-Language: en-US
-To: xiazhengqiao <xiazhengqiao@huaqin.corp-partner.google.com>,
- linux-input@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Cc: dmitry.torokhov@gmail.com, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, jikos@kernel.org,
- benjamin.tissoires@redhat.com, dianders@chromium.org
-References: <20231226023737.25618-1-xiazhengqiao@huaqin.corp-partner.google.com>
- <20231226023737.25618-2-xiazhengqiao@huaqin.corp-partner.google.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231226023737.25618-2-xiazhengqiao@huaqin.corp-partner.google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20231220072529.1036099-1-tj@kernel.org> <20231220072529.1036099-5-tj@kernel.org>
+In-Reply-To: <20231220072529.1036099-5-tj@kernel.org>
+From: Lai Jiangshan <jiangshanlai@gmail.com>
+Date: Tue, 26 Dec 2023 17:12:55 +0800
+Message-ID: <CAJhGHyC4Qj7t=Emd65556r_g0fUbf9LWEA-1OKuwaDFTz8O50g@mail.gmail.com>
+Subject: Re: [PATCH 04/10] workqueue: Move nr_active handling into helpers
+To: Tejun Heo <tj@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Naohiro.Aota@wdc.com, kernel-team@meta.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 26/12/2023 03:37, xiazhengqiao wrote:
-> Because ilitek, ili2901 needs to use reset to pull down the time for 10ms,
-> so we need to control the reset, use this drive control.
+On Wed, Dec 20, 2023 at 3:25=E2=80=AFPM Tejun Heo <tj@kernel.org> wrote:
 
-I don't see relation between commit msg and the patch itself. Perhaps
-you wanted to say you document new device which is different than elan one?
+> +static bool pwq_tryinc_nr_active(struct pool_workqueue *pwq)
+>  {
+> -       struct work_struct *work =3D list_first_entry(&pwq->inactive_work=
+s,
+> -                                                   struct work_struct, e=
+ntry);
+> +       struct workqueue_struct *wq =3D pwq->wq;
+> +       struct worker_pool *pool =3D pwq->pool;
+> +       bool obtained;
+>
+> -       pwq_activate_work(pwq, work);
+> +       lockdep_assert_held(&pool->lock);
+> +
+> +       obtained =3D pwq->nr_active < wq->max_active;
+
+It is better to use READ_ONCE(wq->max_active) here in case
+the compiler issues code to calculate "obtained" multi-time.
+
+Theoretically, READ_ONCE(wq->max_active) is recommended
+from the patch1 in pwq_dec_nr_in_flight() and __queue_work()
+since there is no wq->mutex for them.
 
 
-Please use standard email subjects, so with the PATCH keyword in the
-title. `git format-patch` helps here to create proper versioned patches.
-Another useful tool is b4. Skipping the PATCH keyword makes filtering of
-emails more difficult thus making the review process less convenient.
-
-A nit, subject: drop second/last, redundant "bindings for". The
-"dt-bindings" prefix is already stating that these are bindings.
-
-> 
-> Signed-off-by: xiazhengqiao <xiazhengqiao@huaqin.corp-partner.google.com>
-
-Your name still does not look like in other reply.
-
-> ---
->  Documentation/devicetree/bindings/input/elan,ekth6915.yaml | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-
-
-What supplies does the device have? Not the driver, the device as
-written in datasheet?
-
-Best regards,
-Krzysztof
-
+> +
+> +       if (obtained)
+> +               pwq->nr_active++;
+> +       return obtained;
+> +}
+> +
 
