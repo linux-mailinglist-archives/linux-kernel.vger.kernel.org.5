@@ -1,98 +1,100 @@
-Return-Path: <linux-kernel+bounces-11427-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11397-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 931D281E61E
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 10:02:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8315A81E59C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 08:22:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4FAEB282E8E
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 09:02:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B4F5B1C21CC7
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 07:22:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF8F74D58A;
-	Tue, 26 Dec 2023 09:02:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F06B74C61C;
+	Tue, 26 Dec 2023 07:22:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=semidrive-com.20200927.dkim.feishu.cn header.i=@semidrive-com.20200927.dkim.feishu.cn header.b="TXTGPZDj"
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="eT1wPAVg"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from lf-2-39.ptr.blmpb.com (lf-2-39.ptr.blmpb.com [101.36.218.39])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out203-205-251-59.mail.qq.com (out203-205-251-59.mail.qq.com [203.205.251.59])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52E534CB50
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 09:01:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=semidrive.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=semidrive.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- s=s1; d=semidrive-com.20200927.dkim.feishu.cn; t=1703567722;
-  h=from:subject:mime-version:from:date:message-id:subject:to:cc:
- reply-to:content-type:mime-version:in-reply-to:message-id;
- bh=vHeWsMfM12kuVaIVTOroSE1f22ig5Ahs9GSqrLGp8P8=;
- b=TXTGPZDjiEa6rva1LVYiPD8bqUM1aKr+mDf5bK1UqrE84gMYXY9GrjVbIr5JfJVtaCduO9
- 809Tvsg8ZenA3yKQWcx6/0jlMhWmegSjn0G4IGz3ybfe8V2Of9AhSDrBIksiCCo8MSEC2E
- Lmn/WyAtfw2oVGG0u10Ckgb7UXEfqfI9wWw7pAtrw8kmyaLUv1W0rnTil3dw4rI+Ee4Yuf
- pEbSfBDcTq/ZJmu2HRtbazdIjBHYHX8Lpf71AVJ8gB2Za+2JPbPKB7bqS0vzjq52eSZO8O
- Va80dgttR1k5IMMoGvPog6Af0/G/8pk45Md6wxhYFgHQXnaH1BOJ9w0xhld23Q==
-Cc: <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>, 
-	<yi.shao@semidrive.com>
-From: "yi.shao" <yi.shao@semidrive.com>
-Content-Transfer-Encoding: base64
-X-Mailer: git-send-email 2.7.4
-Content-Type: text/plain; charset=UTF-8
-Subject: [PATCH] dmaengine: virt-dma:fix vchan_dma_desc_free_list list_del corruption.
-Date: Tue, 26 Dec 2023 13:15:17 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBDCC4C3DD;
+	Tue, 26 Dec 2023 07:22:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1703575342; bh=wDSHVDigzFATqQyESr8XDuZAlMa8xKB4R2CE0qELoo8=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=eT1wPAVgM7R5seU2RlNax8gpAO/H214MJdWDJaSjyxhr6Zi0L7ZSVlqj7zA3YS8XS
+	 cnMy82iJFSqMVyji6QtixjgCznzvWImqWES92XPXM5r5KXMqY62K1oAIgu3X8tO4o+
+	 zqt5i4dstg3lLW2kTOng+5O8W8NcyagM59mU4z2U=
+Received: from pek-lxu-l1.wrs.com ([111.198.225.215])
+	by newxmesmtplogicsvrszb9-0.qq.com (NewEsmtp) with SMTP
+	id 40902CF1; Tue, 26 Dec 2023 15:16:09 +0800
+X-QQ-mid: xmsmtpt1703574969tmhlgnqaf
+Message-ID: <tencent_9EA7E746DE92DBC66049A62EDF6ED64CA706@qq.com>
+X-QQ-XMAILINFO: NKv2G1wnhDBnH0jOC261k90JCg//lbwJX/8/EDGnYlBvstu5hGpamjVET6kJWy
+	 YW5lVulxZv+VlJDUOaIWt0vtQ0hEigHgtdmkpfQtwYEW1KPWIjI1fMfL/b92ooqSSUFn+lKlq7Pq
+	 QZBizuEI7mVZoD9OeIFNGmHy9YBbUGGDtG6Xoyb+QIyUDnI3XoUr5o6nxRi2qeNoD+82nFRwguLZ
+	 zX4/XvBOLnBCLMqGYqm1PJw9g+a5DXWdP7M91MlPchL0kQQN1erk3mgtVfVdQVfEymLPZ9AS5Uwc
+	 YbZw8WwVNwFz8jWZmGTKDX/19h/YHydNvR+zC2h0TSOA5v9N0RlnBCkvZyMFr/YtLflAqIGVeOkr
+	 OFIkJJYnmtFNYTAohCLpanizs5eKxfgAespSyyXnDRuHGG4SlHV7wjNINj68bms+C+H3SFg1gMdb
+	 +ufIdQ3M3mTOjF1WNV/eM91Y5FPYv1ux0kYr8WRQQkpYT4QaF8bCbCEeg+olmHxsX38a+bl++jkB
+	 SuCTtAYD+FSvXRNxxpewFybcHKqGRKc6+9A5cZbWrFR16GUYj8kwCsMxA03S9JfFlHQZl0EBcRRI
+	 S2gsc1XkBWggP77AEnT4pSu8ArckIb21038GuUDgJarLPkjNIPVYxeghf0hhnt9xTNcu/PXDjJ57
+	 biYCuQDLOkfkEW7TchZfkp5YDG575tNDOA0GSva1HhH2KC+6885PN9iWsKJxUpzTKVFerwy5nHhS
+	 VEaBFZVbv0PAZZ5oQJ7t3cmJuzFlVTvhBt4YjnSxUaRzPiBqzMXddqz0HfRCSWxOP/avvVysRlys
+	 u13k6K8r6CgzOyakd3qa5yc25x6uGK4LgBSVubvArCSsyjccZz/1FgZIDwH/0CeudB8EeM7it9Ub
+	 eWKpvZ35t25FPank5bt54nP9meduanQhdWahGHpg8jR1jYUtYCQUQKDlwxFtMIdnrW6iYlXIrZ
+X-QQ-XMRINFO: NI4Ajvh11aEj8Xl/2s1/T8w=
+From: Edward Adam Davis <eadavis@qq.com>
+To: syzbot+b3b14fb9f8a14c5d0267@syzkaller.appspotmail.com
+Cc: akpm@linux-foundation.org,
+	axboe@kernel.dk,
+	bvanassche@acm.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	reiserfs-devel@vger.kernel.org,
+	song@kernel.org,
+	syzkaller-bugs@googlegroups.com,
+	yi.zhang@huawei.com
+Subject: [PATCH] reiserfs: fix uninit-value in comp_keys
+Date: Tue, 26 Dec 2023 15:16:09 +0800
+X-OQ-MSGID: <20231226071608.1262673-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <000000000000434c71060d5b6808@google.com>
+References: <000000000000434c71060d5b6808@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Message-Id: <1703567717-71861-1-git-send-email-yi.shao@semidrive.com>
-Received: from nj-bsvm040.semidrive.cc ([58.213.129.90]) by smtp.feishu.cn with ESMTPS; Tue, 26 Dec 2023 13:15:20 +0800
-To: <vkoul@kernel.org>
-X-Lms-Return-Path: <lba+2658a6169+221b41+vger.kernel.org+yi.shao@semidrive.com>
-X-Original-From: "yi.shao" <yi.shao@semidrive.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-VG8gcmVzb2x2ZSB0aGUgcmFjZSBwcm9ibGVtIHdoZW4gdGVybWluYXRpbmcgYSBjeWNsaWMgdHJh
-bnNmZXIsDQpkbWFlbmdpbmUgY2FsbHMgdmNoYW5fdGVybWluYXRlX3ZkZXNjKCkgZnJvbSB0aGUg
-RE1BIHRlcm1pbmF0ZV9hbGwNCmZ1bmN0aW9uLg0KDQpXaGVuIGNvbmZpZ3VyaW5nIHRoZSBDT05G
-SUdfREVCVUdfTElTVCBtYWNybywgaXQgZGV0ZWN0cyBhIGxpc3QNCmNvcnJ1cHRpb24gZXJyb3Ig
-aW4gdGhlIHZjaGFuX2RtYV9kZXNjX2ZyZWVfbGlzdCBmdW5jdGlvbiwgZGlzcGxheWluZw0KdGhl
-IGZvbGxvd2luZyBtZXNzYWdlOiAiWzU0Ljk2NDcwMl0gbGlzdF9kZWwgY29ycnVwdGlvbi4gcHJl
-di0+bmV4dA0Kc2hvdWxkIGJlIGZmZmZhMDAwMTM5NWEwYjgsIGJ1dCBpdCB3YXMgZmZmZmEwMDAx
-ODBhNzk1MCIuDQoNClRoaXMgZXJyb3Igb2NjdXJzIGJlY2F1c2UgdGhlIHZpcnRfZG1hX2Rlc2Mg
-cmVtYWlucyBpbiB0aGUNCnZjLT5kZXNjX2lzc3VlZCBsaXN0LlRvIHJlc29sdmUgdGhpcyBpc3N1
-ZSwgdGhlIHZjaGFuX3Rlcm1pbmF0ZV92ZGVzYw0KZnVuY3Rpb24gc2hvdWxkIHJlbW92ZSB0aGUg
-ZGVzY3JpcHRvciBmcm9tIHZjLT5kZXNjX2lzc3VlZCBhbmQgdGhlbg0KYWRkIGl0IHRvIHZjLT5k
-ZXNjX3Rlcm1pbmF0ZWQuDQoNClNpZ25lZC1vZmYtYnk6IHlpLnNoYW8gPHlpLnNoYW9Ac2VtaWRy
-aXZlLmNvbT4NCi0tLQ0KIGRyaXZlcnMvZG1hL3ZpcnQtZG1hLmggfCAxICsNCiAxIGZpbGUgY2hh
-bmdlZCwgMSBpbnNlcnRpb24oKykNCg0KZGlmZiAtLWdpdCBhL2RyaXZlcnMvZG1hL3ZpcnQtZG1h
-LmggYi9kcml2ZXJzL2RtYS92aXJ0LWRtYS5oDQppbmRleCBlOWY1MjUwLi5lZWU5N2QyIDEwMDY0
-NA0KLS0tIGEvZHJpdmVycy9kbWEvdmlydC1kbWEuaA0KKysrIGIvZHJpdmVycy9kbWEvdmlydC1k
-bWEuaA0KQEAgLTE0Niw2ICsxNDYsNyBAQCBzdGF0aWMgaW5saW5lIHZvaWQgdmNoYW5fdGVybWlu
-YXRlX3ZkZXNjKHN0cnVjdCB2aXJ0X2RtYV9kZXNjICp2ZCkNCiB7DQogCXN0cnVjdCB2aXJ0X2Rt
-YV9jaGFuICp2YyA9IHRvX3ZpcnRfY2hhbih2ZC0+dHguY2hhbik7DQogDQorCWxpc3RfZGVsKCZ2
-ZC0+bm9kZSk7DQogCWxpc3RfYWRkX3RhaWwoJnZkLT5ub2RlLCAmdmMtPmRlc2NfdGVybWluYXRl
-ZCk7DQogDQogCWlmICh2Yy0+Y3ljbGljID09IHZkKQ0KLS0gDQoyLjcuNA0K5rOo5oSP77ya5pys
-55S15a2Q6YKu5Lu25oiW5YW25Lu75L2V6ZmE5Lu25bGe5LqO5Y2X5Lqs6Iqv6amw5Y2K5a+85L2T
-56eR5oqA5pyJ6ZmQ5YWs5Y+45Y+K5YW25ZCE5YiG5a2Q5YWs5Y+477yI4oCc6Iqv6amw56eR5oqA
-4oCd77yJ5omA5pyJ44CC5pys55S15a2Q6YKu5Lu25oiW5Lu75L2V6ZmE5Lu25LuF5L6b5pS25Lu2
-5Lq65oiW5pS25Lu25a6e5L2T5L2/55So44CC5pys55S15a2Q6YKu5Lu25oiW5Lu75L2V6ZmE5Lu2
-5Y+v6IO95YyF5ZCr6Iqv6amw56eR5oqA55qE5py65a+G5L+h5oGv44CC56aB5q2i5Lu75L2V5pyq
-57uP5o6I5p2D5L2/55So44CB5aSN5Yi244CB5Lyg5pKt5oiW5Zug5L6d6LWW5pys55S15a2Q6YKu
-5Lu26ICM6YeH5Y+W5oiW5LiN6YeH5Y+W55qE5Lu75L2V5YW25LuW6KGM5Yqo44CC5aaC5p6c5oKo
-5LiN5piv5q2k55S15a2Q6YKu5Lu255qE6aKE5pyf5pS25Lu25Lq677yM6K+36YCa6L+H5Zue5aSN
-55S15a2Q6YKu5Lu26YCa55+l5Y+R5Lu25Lq677yM5bm25LuO5oKo55qE57O757uf5Lit5Yig6Zmk
-5q2k6YKu5Lu25ZKM5Lu75L2V6ZmE5Lu244CC6Z2e5bi45oSf6LCi44CCCkF0dGVudGlvbu+8mlRo
-aXMgZW1haWwgb3IgYW55IGF0dGFjaG1lbnRzIHRoZXJlb2YgYmVsb25nIHRvIE5hbmppbmcgU2Vt
-aWRyaXZlIFRlY2hub2xvZ3kgTHRkIGFuZCBlYWNoIG9mIGl0cyBhZmZpbGlhdGVzIGFuZCBzdWJz
-aWRpYXJpZXPvvIgiU2VtaURyaXZlIEdyb3VwIu+8iS5UaGlzIGVtYWlsIG9yIGFueSBhdHRhY2ht
-ZW50cyBhcmUgaW50ZW5kZWQgb25seSBmb3IgdXNlIGJ5IHRoZSBpbmRpdmlkdWFsIG9yIGVudGl0
-eSB0byB3aGljaCBpdCBpcyBhZGRyZXNzZWQuIFRoaXMgZW1haWwgb3IgYW55IGF0dGFjaG1lbnRz
-IG1heSBjb250YWluIGNvbmZpZGVudGlhbCBpbmZvcm1hdGlvbiBvZiBTZW1pRHJpdmUgR3JvdXAu
-IEFueSB1bmF1dGhvcml6ZWQgdXNlLCBjb3B5aW5nLCBkaXNzZW1pbmF0aW9uIG9yIGFueSBvdGhl
-ciBhY3Rpb24gdGFrZW4gb3Igb21pdHRlZCB0byBiZSB0YWtlbiBpbiByZWxpYW5jZSB1cG9uIHRo
-aXMgZW1haWwgaXMgcHJvaGliaXRlZC4gSWYgeW91IGFyZSBub3QgdGhlIGludGVuZGVkIHJlY2lw
-aWVudChzKSBvZiB0aGlzIGVtYWls77yMUGxlYXNlIG5vdGlmeSB0aGUgc2VuZGVyIGJ5IHJlcGx5
-IGUtbWFpbCBhbmQgZGVsZXRlIHRoZSBtZXNzYWdlIGFuZCBhbnkgYXR0YWNobWVudHMgZnJvbSB5
-b3VyIHN5c3RlbS4gVGhhbmsgeW91Lg==
+The cpu_key was not initialized in reiserfs_delete_solid_item(), which triggered
+this issue.
+
+Reported-and-tested-by: syzbot+b3b14fb9f8a14c5d0267@syzkaller.appspotmail.com
+Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+---
+ fs/reiserfs/stree.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/reiserfs/stree.c b/fs/reiserfs/stree.c
+index 2138ee7d271d..5faf702f8d15 100644
+--- a/fs/reiserfs/stree.c
++++ b/fs/reiserfs/stree.c
+@@ -1407,7 +1407,7 @@ void reiserfs_delete_solid_item(struct reiserfs_transaction_handle *th,
+ 	INITIALIZE_PATH(path);
+ 	int item_len = 0;
+ 	int tb_init = 0;
+-	struct cpu_key cpu_key;
++	struct cpu_key cpu_key = {};
+ 	int retval;
+ 	int quota_cut_bytes = 0;
+ 
+-- 
+2.43.0
+
 
