@@ -1,143 +1,127 @@
-Return-Path: <linux-kernel+bounces-11539-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11540-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 932E581E7DD
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 15:34:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C06C081E7DF
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 15:41:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A6A0C1C21E08
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 14:34:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2435C283049
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 14:41:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 564AD2230C;
-	Tue, 26 Dec 2023 14:34:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 074984E630;
+	Tue, 26 Dec 2023 14:41:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lrizIdsH"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YCaIFXxr"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C2C81E487;
-	Tue, 26 Dec 2023 14:34:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4BB4C433C8;
-	Tue, 26 Dec 2023 14:34:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50D641DFDB;
+	Tue, 26 Dec 2023 14:41:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E029FC433C9;
+	Tue, 26 Dec 2023 14:41:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703601245;
-	bh=cMKdaJ1jcRx8KAs7hSbmNJKzZX2VPA0PcqyRXDg1p9Y=;
-	h=From:To:Cc:Subject:Date:From;
-	b=lrizIdsHXpZQgoGJsMF+pXPd5CqZny3N+eeIzElP0exefiIJS7Zg8d50K9Gip0YEI
-	 l/oKG84bscELItWYWQ1gsalxQf1b4VS/7emUhjMh72ABkEorkdQ4oUjfVszjIJfzaC
-	 U68lfvgTdQKY4GA5gplw/Lr3davBLzNcymzsZW5xFPccvwFFwiRcsl+iE/OMi/rbrL
-	 T00LZXf3ZJa2SjmmV7HA57zvrZuDge7gRasCp11fH8TLeUquX4dsRxua4FSvBzVdmP
-	 WRkk+9mdLCrDvqDsMV29+E1Z4xZo+OAb+UccFc/uCpL+j61RmkSbG0fe6kriCRWIcB
-	 dvs+x6aQVnHzw==
-From: Masahiro Yamada <masahiroy@kernel.org>
-To: linux-kbuild@vger.kernel.org
-Cc: Ben Hutchings <ben@decadent.org.uk>,
-	Masahiro Yamada <masahiroy@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Nicolas Schier <nicolas@fjasle.eu>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] kbuild: deb-pkg: use build ID instead of debug link for dbg package
-Date: Tue, 26 Dec 2023 23:33:59 +0900
-Message-Id: <20231226143359.1438995-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.40.1
+	s=k20201202; t=1703601678;
+	bh=99Ww84La77nNm0zpCCzrDa5+kHxswmTCeN2+XPiGBnc=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=YCaIFXxrkI12vk+6omNA+lt3oBR3+FX4Crnh0s3qLXNFnmJe/haiBpEhfbBbmsSEK
+	 b+HMNETya1Ys3bHp5MwPCt1nChCEaOSNPkQ+wEDX/+x3Azkd+UJ5JuBgJsJQhpRbQ5
+	 Lp0jkMwJV5kzkiC/5MKI9SNRLfCgL+DDqjPVrM2Yqe6nsbOap+JVjEyqCunCWaa08G
+	 icJwG9dIO/k64K5tz7AK7q8CCQoE2s9+jF+FXF0sX9M7OplOHBpv8gfLND3ZwQtrVX
+	 25hidQz2DC4sMEp+unhSiEJ0Wsc2rtmWDQ30ALdcVJi0/HeUeX2ahc4h5P8o/raIXK
+	 CZltgYrSiTQKg==
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-5553f768149so146522a12.3;
+        Tue, 26 Dec 2023 06:41:18 -0800 (PST)
+X-Gm-Message-State: AOJu0YyEXYnT9RHY/Z1r6apfRNqL0OcKVYNsf2dakNR0ZFAX9P+6RtB2
+	HxSeAjvFPjFhjwV6xFA114tn94rKBRMCbKIhIAY=
+X-Google-Smtp-Source: AGHT+IEtl8+Lf10lZk7z0nJU4OIJkSw8ChVKPP/jEKIjSh/fpwGcpSGFzhw+qsAdQKWW7QIVBuc3B38p/g7ydh1iS24=
+X-Received: by 2002:a17:906:1083:b0:a23:6cb4:e627 with SMTP id
+ u3-20020a170906108300b00a236cb4e627mr3211287eju.96.1703601677285; Tue, 26 Dec
+ 2023 06:41:17 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20231225090730.6074-1-yangtiezhu@loongson.cn> <CAAhV-H4J6qRcC-nwJfVzoQYhOPKAMZmq=3xWuDpgdLrw4A2SPg@mail.gmail.com>
+ <e9f3c6c3-69f6-621c-92a2-9786f09fe3d6@loongson.cn>
+In-Reply-To: <e9f3c6c3-69f6-621c-92a2-9786f09fe3d6@loongson.cn>
+From: Huacai Chen <chenhuacai@kernel.org>
+Date: Tue, 26 Dec 2023 22:41:05 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H42nquHpBav_9Ys6AYCynX4WJ7geSATqE9NOC_if3HjSw@mail.gmail.com>
+Message-ID: <CAAhV-H42nquHpBav_9Ys6AYCynX4WJ7geSATqE9NOC_if3HjSw@mail.gmail.com>
+Subject: Re: [PATCH] MAINTAINERS: Add BPF JIT for LOONGARCH entry
+To: Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc: Hengqi Chen <hengqi.chen@gmail.com>, loongarch@lists.linux.dev, bpf@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-There are two ways of managing separate debug info files:
+On Tue, Dec 26, 2023 at 6:15=E2=80=AFPM Tiezhu Yang <yangtiezhu@loongson.cn=
+> wrote:
+>
+>
+>
+> On 12/26/2023 12:05 PM, Huacai Chen wrote:
+> > Also list the loongarch maillist? See the "KERNEL VIRTUAL MACHINE FOR
+> > MIPS (KVM/mips)" entry.
+>
+> I think it is not necessary, it is duplicate.
+>
+> Because this file is used for get_maintainer.pl, and arch/loongarch/net/
+> is a subdirectory of arch/loongarch, so when execute the command
+>
+>    ./scripts/get_maintainer.pl -f arch/loongarch/net/
+>
+> the outputs will include both bpf@ and loongarch@ maillists automatically=
+.
+OK, then I queued it for loongarch-next.
 
- [1] The executable contains the .gnu_debuglink section, which specifies
-     the name and the CRC of the separate debug info file.
+Huacai
 
- [2] The executable contains a build ID, and the corresponding debug info
-     file is placed in the .build-id directory.
-
-We could do both, but the former, which 'make deb-pkg' currently does,
-results in complicated installation steps because we need to manually
-strip the debug sections, create debug links, and re-sign the modules.
-Besides, it is not working with module compression.
-
-This commit abandons the approach [1], and instead opts for [2].
-
-Debian kernel commit de26137e2a9f ("Drop not needed extra step to add
-debug links") also stopped adding debug links.
-
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
-
- scripts/package/builddeb | 32 +++++++++++++-------------------
- 1 file changed, 13 insertions(+), 19 deletions(-)
-
-diff --git a/scripts/package/builddeb b/scripts/package/builddeb
-index 436d55a83ab0..cc8c7a807fcc 100755
---- a/scripts/package/builddeb
-+++ b/scripts/package/builddeb
-@@ -49,7 +49,7 @@ install_linux_image () {
- 		${MAKE} -f ${srctree}/Makefile INSTALL_DTBS_PATH="${pdir}/usr/lib/linux-image-${KERNELRELEASE}" dtbs_install
- 	fi
- 
--	${MAKE} -f ${srctree}/Makefile INSTALL_MOD_PATH="${pdir}" modules_install
-+	${MAKE} -f ${srctree}/Makefile INSTALL_MOD_PATH="${pdir}" INSTALL_MOD_STRIP=1 modules_install
- 	rm -f "${pdir}/lib/modules/${KERNELRELEASE}/build"
- 
- 	# Install the kernel
-@@ -110,25 +110,21 @@ install_linux_image () {
- 
- install_linux_image_dbg () {
- 	pdir=$1
--	image_pdir=$2
- 
- 	rm -rf ${pdir}
- 
--	for module in $(find ${image_pdir}/lib/modules/ -name *.ko -printf '%P\n'); do
--		module=lib/modules/${module}
--		mkdir -p $(dirname ${pdir}/usr/lib/debug/${module})
--		# only keep debug symbols in the debug file
--		${OBJCOPY} --only-keep-debug ${image_pdir}/${module} ${pdir}/usr/lib/debug/${module}
--		# strip original module from debug symbols
--		${OBJCOPY} --strip-debug ${image_pdir}/${module}
--		# then add a link to those
--		${OBJCOPY} --add-gnu-debuglink=${pdir}/usr/lib/debug/${module} ${image_pdir}/${module}
--	done
-+	# Parse modules.order directly because 'make modules_install' may sign,
-+	# compress modules, and then run unneeded depmod.
-+	while read -r mod; do
-+		mod="${mod%.o}.ko"
-+		dbg="${pdir}/usr/lib/debug/lib/modules/${KERNELRELEASE}/kernel/${mod}"
-+		buildid=$("${READELF}" -n "${mod}" | sed -n 's@^.*Build ID: \(..\)\(.*\)@\1/\2@p')
-+		link="${pdir}/usr/lib/debug/.build-id/${buildid}.debug"
- 
--	# re-sign stripped modules
--	if is_enabled CONFIG_MODULE_SIG_ALL; then
--		${MAKE} -f ${srctree}/Makefile INSTALL_MOD_PATH="${image_pdir}" modules_sign
--	fi
-+		mkdir -p "${dbg%/*}" "${link%/*}"
-+		"${OBJCOPY}" --only-keep-debug "${mod}" "${dbg}"
-+		ln -sf --relative "${dbg}" "${link}"
-+	done < modules.order
- 
- 	# Build debug package
- 	# Different tools want the image in different locations
-@@ -176,9 +172,7 @@ for package in ${packages_enabled}
- do
- 	case ${package} in
- 	*-dbg)
--		# This must be done after linux-image, that is, we expect the
--		# debug package appears after linux-image in debian/control.
--		install_linux_image_dbg debian/linux-image-dbg debian/linux-image;;
-+		install_linux_image_dbg debian/linux-image-dbg;;
- 	linux-image-*|user-mode-linux-*)
- 		install_linux_image debian/linux-image ${package};;
- 	linux-libc-dev)
--- 
-2.40.1
-
+>
+> Thanks,
+> Tiezhu
+>
+> > Huacai
+> >
+> > On Mon, Dec 25, 2023 at 5:08=E2=80=AFPM Tiezhu Yang <yangtiezhu@loongso=
+n.cn> wrote:
+> >>
+> >> After commit 5dc615520c4d ("LoongArch: Add BPF JIT support"),
+> >> there is no BPF JIT for LOONGARCH entry, in order to maintain
+> >> the current code and the new features timely, just add it.
+> >>
+> >> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> >> ---
+> >>  MAINTAINERS | 7 +++++++
+> >>  1 file changed, 7 insertions(+)
+> >>
+> >> diff --git a/MAINTAINERS b/MAINTAINERS
+> >> index 7cef2d2ef8d7..3ba07b212d38 100644
+> >> --- a/MAINTAINERS
+> >> +++ b/MAINTAINERS
+> >> @@ -3651,6 +3651,13 @@ L:       bpf@vger.kernel.org
+> >>  S:     Supported
+> >>  F:     arch/arm64/net/
+> >>
+> >> +BPF JIT for LOONGARCH
+> >> +M:     Tiezhu Yang <yangtiezhu@loongson.cn>
+> >> +R:     Hengqi Chen <hengqi.chen@gmail.com>
+> >> +L:     bpf@vger.kernel.org
+> >> +S:     Maintained
+> >> +F:     arch/loongarch/net/
+> >> +
+> >>  BPF JIT for MIPS (32-BIT AND 64-BIT)
+> >>  M:     Johan Almbladh <johan.almbladh@anyfinetworks.com>
+> >>  M:     Paul Burton <paulburton@kernel.org>
+> >> --
+> >> 2.42.0
+> >>
+> >>
+>
+>
 
