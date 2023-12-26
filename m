@@ -1,49 +1,75 @@
-Return-Path: <linux-kernel+bounces-11396-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11402-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C92EB81E599
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 08:21:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3482281E5B9
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 08:37:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 86661282D20
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 07:21:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DE1291F226CF
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 07:37:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFB244C61E;
-	Tue, 26 Dec 2023 07:21:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 322094C633;
+	Tue, 26 Dec 2023 07:37:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="AoLUqkTH"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from zg8tmtyylji0my4xnjqumte4.icoremail.net (zg8tmtyylji0my4xnjqumte4.icoremail.net [162.243.164.118])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD0B84C601;
-	Tue, 26 Dec 2023 07:21:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
-Received: from luzhipeng.223.5.5.5 (unknown [125.120.146.113])
-	by mail-app4 (Coremail) with SMTP id cS_KCgBnbDTHfoplfMIDAQ--.23882S2;
-	Tue, 26 Dec 2023 15:20:40 +0800 (CST)
-From: Zhipeng Lu <alexious@zju.edu.cn>
-To: alexious@zju.edu.cn
-Cc: Chuck Lever <chuck.lever@oracle.com>,
-	Jeff Layton <jlayton@kernel.org>,
-	Neil Brown <neilb@suse.de>,
-	Olga Kornievskaia <kolga@netapp.com>,
-	Dai Ngo <Dai.Ngo@oracle.com>,
-	Tom Talpey <tom@talpey.com>,
-	Trond Myklebust <trond.myklebust@hammerspace.com>,
-	Anna Schumaker <anna@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	"J. Bruce Fields" <bfields@fieldses.org>,
-	Simo Sorce <simo@redhat.com>,
-	linux-nfs@vger.kernel.org,
+Received: from out203-205-221-240.mail.qq.com (out203-205-221-240.mail.qq.com [203.205.221.240])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E51E24CB43;
+	Tue, 26 Dec 2023 07:37:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1703575928; bh=CiicMmIx0APWzq6sNOUP+NQF+kg54apWQ0fTN/fttXc=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=AoLUqkTHYSAge4AfA5cQbKzDTHtaStVQvfFIZWJ/nACwi98T0PqAvgox5obMsYcN8
+	 pJ22eST0TFKEwWMXzSxG9HRaUWDEpElegZUb2dm/CNzQIdb7msQdcks196dfrcCiD1
+	 6MbstCQwTaOv79YcpQNvLXq3OXwbAk/edQTd5eR8=
+Received: from pek-lxu-l1.wrs.com ([111.198.225.215])
+	by newxmesmtplogicsvrszb9-1.qq.com (NewEsmtp) with SMTP
+	id 64E8CC40; Tue, 26 Dec 2023 15:25:14 +0800
+X-QQ-mid: xmsmtpt1703575514tsxp5k6n6
+Message-ID: <tencent_7FC26D7C2FA56EF89584E89EEE52CD20790A@qq.com>
+X-QQ-XMAILINFO: NwU0tZNR0OQKsClGszGJVX9Rjo5blKzGqKDnOV5SkKMRy4VN9VhkjIu+mXbw8W
+	 FX+XSHxr2/SDVG691khsJHCKA56/nsS+QkgG6J2OcUzftNUwn4b9ejq/TMZNP80wBwqdrorNerwQ
+	 iFfHHmOrEOjvtw4lUfU6j4u5VoMAKMadlGveGt2tUxlZTodAY+WSin2vTIV3I5qWoNHI7U6ES2CO
+	 DGZk15Br/SYn8s9O/UMCfuxzGcFm3EwzGyR2J1cm0aCWqz/rfCB5+B5wZ2SJXzzLCLQTk+2zp32+
+	 tQaG9dBGsyikSJq+grCPeikeJdt6NkaKSr1IUkEkEXYhX87WHao1iMoyJlgsUG6/i2sBbuJ9jmwT
+	 g2wBbuSEE9HOeYChW3qe7peuzPuKOBENW0MHdtS1VtUBxt2pWmUYXzkQmQvVz2p0QmuSWdy/U0ig
+	 Okn8ql0rNwdwOAYBx+MZUoRk7fPOMejguUtks8OkmdYguNRyzGx7EUCZVPHBzd+iKg92R+oQH2pc
+	 YLrqkUAlAW0ueNizDulGsqvmsOGwCZ0q8QFKmKPCFCyLWGpBRuFTaip6LLdDmm9sQjV3IXULI5Vc
+	 GEEuM31DPVQQ/U1PoSefhjd/PckVLGyMlMfHjhYNKLNTbHWW7x3po8uc2pWwNnUC2xHTkCcsgMjN
+	 t0arJuflRZa3PANqr8r4JxUA3qhkrHUwBYedLLZMrB1iyCPbNxYRdodXEdBiJ+5gurPDBnek+/lf
+	 EBSzV3q688fNcOCHxMQarhwGjHTK89gnbCbGoPSK2nVFB5ywGNiXaQ0fiZ/+vGtZgF8ROcdX55pB
+	 X06ys8Dz7dzCQaj5mIRhW12YwFd5gDXPewwBsVI5zK1HfbxDkKHi0sAUfO5W1AG9KKa+y1ZWFPD6
+	 Y5h5tYm/h59AXtZ3ih8VRnZqqFgh97Hs50CTJ03zmNRCMhFh96d4Pkg8SF+7fs6KvJIvxsaSY+Hu
+	 CnNI9r7mJBz6PN4H6fzLhlrIRe9KrBH6ReCL2SY1RMwlf9uL1fLw==
+X-QQ-XMRINFO: Nq+8W0+stu50PRdwbJxPCL0=
+From: Edward Adam Davis <eadavis@qq.com>
+To: syzbot+07144c543a5c002c7305@syzkaller.appspotmail.com
+Cc: acme@kernel.org,
+	adrian.hunter@intel.com,
+	alexander.shishkin@linux.intel.com,
+	irogers@google.com,
+	jolsa@kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-perf-users@vger.kernel.org,
+	mark.rutland@arm.com,
+	mingo@redhat.com,
+	namhyung@kernel.org,
 	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] [v2] SUNRPC: fix some memleaks in gssx_dec_option_array
-Date: Tue, 26 Dec 2023 15:20:19 +0800
-Message-Id: <20231226072021.3550114-1-alexious@zju.edu.cn>
-X-Mailer: git-send-email 2.34.1
+	peterz@infradead.org,
+	syzkaller-bugs@googlegroups.com,
+	xrivendell7@gmail.com
+Subject: [PATCH] perf: fix WARNING in perf_event_open
+Date: Tue, 26 Dec 2023 15:25:15 +0800
+X-OQ-MSGID: <20231226072514.1272529-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <0000000000005b23dc060d58ee7a@google.com>
+References: <0000000000005b23dc060d58ee7a@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -51,103 +77,42 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cS_KCgBnbDTHfoplfMIDAQ--.23882S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7Ar48AFWkWw48uw43Cr4Uurg_yoW8ZryDpF
-	Z3Kr98CFn2qr1xJF1ayw4Fv3WYyFs5tFW7Wry2ka13Zw1fJr1F9w4vkryj9F12yrZ3uw1U
-	u3Wj9348uwn0y3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvG14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4U
-	JVW0owA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-	I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-	4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
-	n2kIc2xKxwCY02Avz4vE14v_GF4l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr
-	0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY
-	17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcV
-	C0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY
-	6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa
-	73UjIFyTuYvjfUY-BMDUUUU
-X-CM-SenderInfo: qrsrjiarszq6lmxovvfxof0/
 
-The creds and oa->data need to be freed in the error-handling paths after
-there allocation. So this patch add these deallocations in the
-corresponding paths.
+The new version of __perf_event_read_size() only has a read action and does not
+require a mutex, so the mutex assertion in the original loop is removed.
 
-Fixes: 1d658336b05f ("SUNRPC: Add RPC based upcall mechanism for RPCGSS auth")
-Signed-off-by: Zhipeng Lu <alexious@zju.edu.cn>
+Fixes: 382c27f4ed28 ("perf: Fix perf_event_validate_size()")
+Reported-and-tested-by: syzbot+07144c543a5c002c7305@syzkaller.appspotmail.com
+Signed-off-by: Edward Adam Davis <eadavis@qq.com>
 ---
-Changelog:
+ kernel/events/core.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-v2: correct some syntactic problems.
----
- net/sunrpc/auth_gss/gss_rpc_xdr.c | 28 ++++++++++++++++++++--------
- 1 file changed, 20 insertions(+), 8 deletions(-)
-
-diff --git a/net/sunrpc/auth_gss/gss_rpc_xdr.c b/net/sunrpc/auth_gss/gss_rpc_xdr.c
-index d79f12c2550a..c69f5abf696e 100644
---- a/net/sunrpc/auth_gss/gss_rpc_xdr.c
-+++ b/net/sunrpc/auth_gss/gss_rpc_xdr.c
-@@ -250,8 +250,8 @@ static int gssx_dec_option_array(struct xdr_stream *xdr,
- 
- 	creds = kzalloc(sizeof(struct svc_cred), GFP_KERNEL);
- 	if (!creds) {
--		kfree(oa->data);
--		return -ENOMEM;
-+		err = -ENOMEM;
-+		goto free_oa;
- 	}
- 
- 	oa->data[0].option.data = CREDS_VALUE;
-@@ -265,29 +265,41 @@ static int gssx_dec_option_array(struct xdr_stream *xdr,
- 
- 		/* option buffer */
- 		p = xdr_inline_decode(xdr, 4);
--		if (unlikely(p == NULL))
--			return -ENOSPC;
-+		if (unlikely(p == NULL)) {
-+			err = -ENOSPC;
-+			goto free_creds;
-+		}
- 
- 		length = be32_to_cpup(p);
- 		p = xdr_inline_decode(xdr, length);
--		if (unlikely(p == NULL))
--			return -ENOSPC;
-+		if (unlikely(p == NULL)) {
-+			err = -ENOSPC;
-+			goto free_creds;
-+		}
- 
- 		if (length == sizeof(CREDS_VALUE) &&
- 		    memcmp(p, CREDS_VALUE, sizeof(CREDS_VALUE)) == 0) {
- 			/* We have creds here. parse them */
- 			err = gssx_dec_linux_creds(xdr, creds);
- 			if (err)
--				return err;
-+				goto free_creds;
- 			oa->data[0].value.len = 1; /* presence */
- 		} else {
- 			/* consume uninteresting buffer */
- 			err = gssx_dec_buffer(xdr, &dummy);
- 			if (err)
--				return err;
-+				goto free_creds;
- 		}
- 	}
- 	return 0;
-+
-+free_creds:
-+	kfree(creds);
-+free_oa:
-+	kfree(oa->data);
-+	oa->data = NULL;
-+err:
-+	return err;
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index 9efd0d7775e7..e71e61b46416 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -1924,6 +1924,10 @@ static void perf_event__id_header_size(struct perf_event *event)
+ 	event->id_header_size = size;
  }
  
- static int gssx_dec_status(struct xdr_stream *xdr,
++#define read_for_each_sibling_event(sibling, event)		\
++	if ((event)->group_leader == (event))			\
++		list_for_each_entry((sibling), &(event)->sibling_list, sibling_list)
++
+ /*
+  * Check that adding an event to the group does not result in anybody
+  * overflowing the 64k event limit imposed by the output buffer.
+@@ -1957,7 +1961,7 @@ static bool perf_event_validate_size(struct perf_event *event)
+ 	if (event == group_leader)
+ 		return true;
+ 
+-	for_each_sibling_event(sibling, group_leader) {
++	read_for_each_sibling_event(sibling, group_leader) {
+ 		if (__perf_event_read_size(sibling->attr.read_format,
+ 					   group_leader->nr_siblings + 1) > 16*1024)
+ 			return false;
 -- 
-2.34.1
+2.43.0
 
 
