@@ -1,128 +1,157 @@
-Return-Path: <linux-kernel+bounces-11690-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11691-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD2B481EA10
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 21:54:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9654281EA13
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 22:02:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6EAA22832EA
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 20:54:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 27CCB1F21764
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 21:02:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02C3CF4F8;
-	Tue, 26 Dec 2023 20:54:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0192C4C90;
+	Tue, 26 Dec 2023 21:02:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="V7iy9utS"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HpqBw1eZ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F9CAEAF2;
-	Tue, 26 Dec 2023 20:54:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703624049; x=1735160049;
-  h=message-id:subject:from:to:cc:date:
-   content-transfer-encoding:mime-version;
-  bh=6vm3/1J8+0RlhGUApQzpmYZe5Ax8xA/w2zIHtPsoe6A=;
-  b=V7iy9utSXW+GsdVQwa6V9UgsJ7Xpz27eOFY6cG3CDkhNly2XTc/xd3Zq
-   gKM++pCtizEwYC1Z+5HoxcmcdFesucM3QUc0W8cj9k5oXQebEmYlq1SSy
-   5vuGWnjjZlquEEgbl9X5S6kGlenl0YCdu1oyGSLMr/S+8TWKIlwCqYORA
-   to/5/ZhJaJgGqaCdC2g7i0XLq/NTMINjzppQZ2E6UP3HFpvOkD4lrq+br
-   nuuyN3tq8LeI9KsfWdkwEyaYdNsALooC7UJ5NUpjaEjr1M3qQuyVn1Fby
-   YAXAlQIWuUEQ5wEAzUJO/9Zv8cXbUpNYAF3f+s6ZxLlfc8yWmglK8gmvA
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10935"; a="399168939"
-X-IronPort-AV: E=Sophos;i="6.04,307,1695711600"; 
-   d="scan'208";a="399168939"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Dec 2023 12:54:08 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,307,1695711600"; 
-   d="scan'208";a="20102656"
-Received: from smorga5x-mobl.amr.corp.intel.com ([10.212.113.189])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Dec 2023 12:53:27 -0800
-Message-ID: <00e3eea06f5dde61734a53af797b190692060aab.camel@linux.intel.com>
-Subject: [PATCH] crypto: iaa - Account for cpu-less numa nodes
-From: Tom Zanussi <tom.zanussi@linux.intel.com>
-To: herbert@gondor.apana.org.au, davem@davemloft.net, fenghua.yu@intel.com
-Cc: rex.zhang@intel.com, dave.jiang@intel.com, tony.luck@intel.com, 
-	linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org, 
-	dmaengine@vger.kernel.org
-Date: Tue, 26 Dec 2023 14:53:26 -0600
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49D0D4C6F
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 21:02:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9FA36C433C7;
+	Tue, 26 Dec 2023 21:02:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703624524;
+	bh=K0bo8nLzMp9puoOTzcakLFzOMnpwS+Kk1wV1MTjYTZY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=HpqBw1eZLSLnPCK7wTiVCaR+Of43NUVzd53hfhc4vgi477XgWpYMe1EFRNTug3ilx
+	 c/kf4fFjhhgquE7lztqo2TfdE9paBXnmWMguJRISHys/TeyBNFR2RptTB4pPN8LFbH
+	 /67aVhtG4mWWz4YvLqIp+CJYvSW7pJ/zMGu29WJk5KdGm57wnsh6hP/aYE4VwOcLFL
+	 A7hBdHIUcGViC8S/GuoE4gRWQHMIZzjZiedEo/4THULWAJnxAGLUIaP1kfX2iHz25K
+	 Cgcw3hphoh+kQirXlnXC9tvZMHZiaaz6co2meOFajqRWccLOEni0Kvu1Ug81ceR++L
+	 CvNX/DM5y8Jcw==
+Date: Tue, 26 Dec 2023 13:02:03 -0800
+From: Jaegeuk Kim <jaegeuk@kernel.org>
+To: Chao Yu <chao@kernel.org>
+Cc: linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/6] f2fs: compress: fix to guarantee persisting
+ compressed blocks by CP
+Message-ID: <ZYs_S0VLFFnV1g-3@google.com>
+References: <20231220135934.3471407-1-chao@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231220135934.3471407-1-chao@kernel.org>
 
-In some configurations e.g. systems with CXL, a numa node can have 0
-cpus and cpumask_nth() will return a cpu value that doesn't exist,
-which will result in an attempt to add an entry to the wq table at a
-bad index.
+On 12/20, Chao Yu wrote:
+> If data block in compressed cluster is not persisted with metadata
+> during checkpoint, after SPOR, the data may be corrupted, let's
+> guarantee to write compressed page by checkpoint.
+> 
+> Fixes: 4c8ff7095bef ("f2fs: support data compression")
+> Signed-off-by: Chao Yu <chao@kernel.org>
+> ---
+>  fs/f2fs/compress.c |  3 ++-
+>  fs/f2fs/data.c     | 12 +++++++++---
+>  fs/f2fs/f2fs.h     |  3 ++-
+>  3 files changed, 13 insertions(+), 5 deletions(-)
+> 
+> diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
+> index 5b076329e9bf..1122db8cc0b0 100644
+> --- a/fs/f2fs/compress.c
+> +++ b/fs/f2fs/compress.c
+> @@ -1442,6 +1442,7 @@ void f2fs_compress_write_end_io(struct bio *bio, struct page *page)
+>  	struct f2fs_sb_info *sbi = bio->bi_private;
+>  	struct compress_io_ctx *cic =
+>  			(struct compress_io_ctx *)page_private(page);
+> +	enum count_type type = WB_DATA_TYPE(page);
+>  	int i;
+>  
+>  	if (unlikely(bio->bi_status))
+> @@ -1449,7 +1450,7 @@ void f2fs_compress_write_end_io(struct bio *bio, struct page *page)
+>  
+>  	f2fs_compress_free_page(page);
+>  
+> -	dec_page_count(sbi, F2FS_WB_DATA);
+> +	dec_page_count(sbi, type);
+>  
+>  	if (atomic_dec_return(&cic->pending_pages))
+>  		return;
+> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+> index d28c97282e68..6c72a6e86ba8 100644
+> --- a/fs/f2fs/data.c
+> +++ b/fs/f2fs/data.c
+> @@ -48,7 +48,7 @@ void f2fs_destroy_bioset(void)
+>  	bioset_exit(&f2fs_bioset);
+>  }
+>  
+> -static bool __is_cp_guaranteed(struct page *page)
+> +bool f2fs_is_cp_guaranteed(struct page *page)
+>  {
+>  	struct address_space *mapping = page->mapping;
+>  	struct inode *inode;
+> @@ -66,7 +66,7 @@ static bool __is_cp_guaranteed(struct page *page)
+>  		return true;
+>  
+>  	if (f2fs_is_compressed_page(page))
+> -		return false;
+> +		return true;
+>  	if ((S_ISREG(inode->i_mode) && IS_NOQUOTA(inode)) ||
+>  			page_private_gcing(page))
+>  		return true;
+> @@ -1007,6 +1007,7 @@ void f2fs_submit_page_write(struct f2fs_io_info *fio)
+>  	enum page_type btype = PAGE_TYPE_OF_BIO(fio->type);
+>  	struct f2fs_bio_info *io = sbi->write_io[btype] + fio->temp;
+>  	struct page *bio_page;
+> +	enum count_type type;
+>  
+>  	f2fs_bug_on(sbi, is_read_io(fio->op));
+>  
+> @@ -1046,7 +1047,12 @@ void f2fs_submit_page_write(struct f2fs_io_info *fio)
+>  	/* set submitted = true as a return value */
+>  	fio->submitted = 1;
+>  
+> -	inc_page_count(sbi, WB_DATA_TYPE(bio_page));
+> +	type = WB_DATA_TYPE(bio_page);
+> +	/* override count type if page is compressed one */
+> +	if (fio->compressed_page)
+> +		type = WB_DATA_TYPE(fio->compressed_page);
 
-To fix this, when iterating the cpus for a node, skip any node that
-doesn't have cpus.
+Doesn't bio_page already point fio->compressed_page?
 
-Also, as a precaution, add a warning and bail if cpumask_nth() returns
-a nonexistent cpu.
-
-Reported-by: Zhang, Rex <rex.zhang@intel.com>
-Signed-off-by: Tom Zanussi <tom.zanussi@linux.intel.com>
----
- drivers/crypto/intel/iaa/iaa_crypto_main.c | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/crypto/intel/iaa/iaa_crypto_main.c b/drivers/crypto/in=
-tel/iaa/iaa_crypto_main.c
-index 5093361b0107..782157a74043 100644
---- a/drivers/crypto/intel/iaa/iaa_crypto_main.c
-+++ b/drivers/crypto/intel/iaa/iaa_crypto_main.c
-@@ -1017,12 +1017,17 @@ static void rebalance_wq_table(void)
- 		return;
- 	}
-=20
--	for_each_online_node(node) {
-+	for_each_node_with_cpus(node) {
- 		node_cpus =3D cpumask_of_node(node);
-=20
- 		for (cpu =3D 0; cpu < nr_cpus_per_node; cpu++) {
- 			int node_cpu =3D cpumask_nth(cpu, node_cpus);
-=20
-+			if (WARN_ON(node_cpu >=3D nr_cpu_ids)) {
-+				pr_debug("node_cpu %d doesn't exist!\n", node_cpu);
-+				return;
-+			}
-+
- 			if ((cpu % cpus_per_iaa) =3D=3D 0)
- 				iaa++;
-=20
-@@ -2095,10 +2100,13 @@ static struct idxd_device_driver iaa_crypto_driver =
-=3D {
- static int __init iaa_crypto_init_module(void)
- {
- 	int ret =3D 0;
-+	int node;
-=20
- 	nr_cpus =3D num_online_cpus();
--	nr_nodes =3D num_online_nodes();
--	nr_cpus_per_node =3D nr_cpus / nr_nodes;
-+	for_each_node_with_cpus(node)
-+		nr_nodes++;
-+	if (nr_nodes)
-+		nr_cpus_per_node =3D nr_cpus / nr_nodes;
-=20
- 	if (crypto_has_comp("deflate-generic", 0, 0))
- 		deflate_generic_tfm =3D crypto_alloc_comp("deflate-generic", 0, 0);
---=20
-2.34.1
-
-
+> +
+> +	inc_page_count(sbi, type);
+>  
+>  	if (io->bio &&
+>  	    (!io_is_mergeable(sbi, io->bio, io, fio, io->last_block_in_bio,
+> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+> index 76e9a8682e38..bcb3940ab5ba 100644
+> --- a/fs/f2fs/f2fs.h
+> +++ b/fs/f2fs/f2fs.h
+> @@ -1092,7 +1092,7 @@ struct f2fs_sm_info {
+>   * f2fs monitors the number of several block types such as on-writeback,
+>   * dirty dentry blocks, dirty node blocks, and dirty meta blocks.
+>   */
+> -#define WB_DATA_TYPE(p)	(__is_cp_guaranteed(p) ? F2FS_WB_CP_DATA : F2FS_WB_DATA)
+> +#define WB_DATA_TYPE(p)	(f2fs_is_cp_guaranteed(p) ? F2FS_WB_CP_DATA : F2FS_WB_DATA)
+>  enum count_type {
+>  	F2FS_DIRTY_DENTS,
+>  	F2FS_DIRTY_DATA,
+> @@ -3824,6 +3824,7 @@ void f2fs_init_ckpt_req_control(struct f2fs_sb_info *sbi);
+>   */
+>  int __init f2fs_init_bioset(void);
+>  void f2fs_destroy_bioset(void);
+> +bool f2fs_is_cp_guaranteed(struct page *page);
+>  int f2fs_init_bio_entry_cache(void);
+>  void f2fs_destroy_bio_entry_cache(void);
+>  void f2fs_submit_read_bio(struct f2fs_sb_info *sbi, struct bio *bio,
+> -- 
+> 2.40.1
 
