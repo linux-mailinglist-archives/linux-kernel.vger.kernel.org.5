@@ -1,36 +1,36 @@
-Return-Path: <linux-kernel+bounces-11364-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11365-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21F6C81E52B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 06:41:55 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7CCDB81E52E
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 06:42:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CC1B4282BD8
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 05:41:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CB701B21E78
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 05:42:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3310F4C3A9;
-	Tue, 26 Dec 2023 05:40:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0ECC84C3C1;
+	Tue, 26 Dec 2023 05:40:08 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
 	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23FE14D111;
-	Tue, 26 Dec 2023 05:39:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08F8E4D586;
+	Tue, 26 Dec 2023 05:40:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
-Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
+Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
 	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
-	by fd01.gateway.ufhost.com (Postfix) with ESMTP id 17B99804A;
-	Tue, 26 Dec 2023 13:39:56 +0800 (CST)
-Received: from EXMBX066.cuchost.com (172.16.7.66) by EXMBX166.cuchost.com
- (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 26 Dec
- 2023 13:39:55 +0800
+	(Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
+	by fd01.gateway.ufhost.com (Postfix) with ESMTP id B91358062;
+	Tue, 26 Dec 2023 13:40:02 +0800 (CST)
+Received: from EXMBX066.cuchost.com (172.16.7.66) by EXMBX165.cuchost.com
+ (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 26 Dec
+ 2023 13:40:02 +0800
 Received: from jsia-virtual-machine.localdomain (202.188.176.82) by
  EXMBX066.cuchost.com (172.16.6.66) with Microsoft SMTP Server (TLS) id
- 15.0.1497.42; Tue, 26 Dec 2023 13:39:50 +0800
+ 15.0.1497.42; Tue, 26 Dec 2023 13:39:56 +0800
 From: Sia Jee Heng <jeeheng.sia@starfivetech.com>
 To: <kernel@esmil.dk>, <conor@kernel.org>, <robh+dt@kernel.org>,
 	<krzysztof.kozlowski+dt@linaro.org>, <paul.walmsley@sifive.com>,
@@ -41,9 +41,9 @@ To: <kernel@esmil.dk>, <conor@kernel.org>, <robh+dt@kernel.org>,
 CC: <linux-riscv@lists.infradead.org>, <devicetree@vger.kernel.org>,
 	<linux-kernel@vger.kernel.org>, <linux-clk@vger.kernel.org>,
 	<jeeheng.sia@starfivetech.com>, <leyfoon.tan@starfivetech.com>
-Subject: [RFC 08/16] clk: starfive: Add JH8100 North-West clock generator driver
-Date: Tue, 26 Dec 2023 13:38:40 +0800
-Message-ID: <20231226053848.25089-9-jeeheng.sia@starfivetech.com>
+Subject: [RFC 09/16] dt-bindings: clock: Add StarFive JH8100 North-East clock and reset generator
+Date: Tue, 26 Dec 2023 13:38:41 +0800
+Message-ID: <20231226053848.25089-10-jeeheng.sia@starfivetech.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231226053848.25089-1-jeeheng.sia@starfivetech.com>
 References: <20231226053848.25089-1-jeeheng.sia@starfivetech.com>
@@ -59,321 +59,437 @@ X-ClientProxiedBy: EXCAS064.cuchost.com (172.16.6.24) To EXMBX066.cuchost.com
 X-YovoleRuleAgent: yovoleflag
 Content-Transfer-Encoding: quoted-printable
 
-Add support for JH8100 North-West (NWCRG) clock generator.
+Add bindings for the North-East clock and reset generator (NECRG) on
+JH8100 SoC.
 
 Signed-off-by: Sia Jee Heng <jeeheng.sia@starfivetech.com>
 Reviewed-by: Ley Foon Tan <leyfoon.tan@starfivetech.com>
 ---
- drivers/clk/starfive/Kconfig                  |   7 +
- drivers/clk/starfive/Makefile                 |   1 +
- drivers/clk/starfive/clk-starfive-jh8100-nw.c | 237 ++++++++++++++++++
- 3 files changed, 245 insertions(+)
- create mode 100644 drivers/clk/starfive/clk-starfive-jh8100-nw.c
+ .../bindings/clock/starfive,jh8100-necrg.yaml | 153 +++++++++++++++
+ .../dt-bindings/clock/starfive,jh8100-crg.h   | 177 ++++++++++++++++++
+ .../dt-bindings/reset/starfive,jh8100-crg.h   |  59 ++++++
+ 3 files changed, 389 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/clock/starfive,jh81=
+00-necrg.yaml
 
-diff --git a/drivers/clk/starfive/Kconfig b/drivers/clk/starfive/Kconfig
-index 1dddf1415360..6a15c45473ff 100644
---- a/drivers/clk/starfive/Kconfig
-+++ b/drivers/clk/starfive/Kconfig
-@@ -82,3 +82,10 @@ config CLK_STARFIVE_JH8100_SYS
- 	help
- 	  Say yes here to support the System clock controller on the StarFive J=
-H8100 SoC.
-=20
-+config CLK_STARFIVE_JH8100_NW
-+	bool "StarFive JH8100 North-West clock support"
-+	depends on CLK_STARFIVE_JH8100_SYS
-+	default ARCH_STARFIVE
-+	help
-+	  Say yes here to support the North-West clock controller on the StarFi=
-ve JH8100 SoC.
-+
-diff --git a/drivers/clk/starfive/Makefile b/drivers/clk/starfive/Makefil=
-e
-index af6903c4f987..2ba07d3398f0 100644
---- a/drivers/clk/starfive/Makefile
-+++ b/drivers/clk/starfive/Makefile
-@@ -12,3 +12,4 @@ obj-$(CONFIG_CLK_STARFIVE_JH7110_ISP)	+=3D clk-starfive=
--jh7110-isp.o
- obj-$(CONFIG_CLK_STARFIVE_JH7110_VOUT)	+=3D clk-starfive-jh7110-vout.o
-=20
- obj-$(CONFIG_CLK_STARFIVE_JH8100_SYS)	+=3D clk-starfive-jh8100-sys.o
-+obj-$(CONFIG_CLK_STARFIVE_JH8100_NW)	+=3D clk-starfive-jh8100-nw.o
-diff --git a/drivers/clk/starfive/clk-starfive-jh8100-nw.c b/drivers/clk/=
-starfive/clk-starfive-jh8100-nw.c
+diff --git a/Documentation/devicetree/bindings/clock/starfive,jh8100-necr=
+g.yaml b/Documentation/devicetree/bindings/clock/starfive,jh8100-necrg.ya=
+ml
 new file mode 100644
-index 000000000000..db97884245b7
+index 000000000000..f747b85fa457
 --- /dev/null
-+++ b/drivers/clk/starfive/clk-starfive-jh8100-nw.c
-@@ -0,0 +1,237 @@
-+// SPDX-License-Identifier: GPL-2.0
++++ b/Documentation/devicetree/bindings/clock/starfive,jh8100-necrg.yaml
+@@ -0,0 +1,153 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/clock/starfive,jh8100-necrg.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: StarFive JH8100 North-East Clock and Reset Generator
++
++maintainers:
++  - Sia Jee Heng <jeeheng.sia@starfivetech.com>
++
++properties:
++  compatible:
++    const: starfive,jh8100-necrg
++
++  reg:
++    maxItems: 1
++
++  clocks:
++    items:
++      - description: Main Oscillator (24 MHz)
++      - description: AXI_400 clock from SYSCRG
++      - description: VOUT_ROOT0 clock from SYSCRG
++      - description: VOUT_ROOT1 clock from SYSCRG
++      - description: USB_WRAP_480 clock from SYSCRG
++      - description: USB_WRAP_625 clock from SYSCRG
++      - description: USB_WRAP_240 clock from SYSCRG
++      - description: USB_WRAP_60 clock from SYSCRG
++      - description: USB_WRAP_156P25 clock from SYSCRG
++      - description: USB_WRAP_312P5 clock from SYSCRG
++      - description: USB_125M clock from SYSCRG
++      - description: GPIO_100 clock from NWCRG
++      - description: PERH_ROOT clock from SYSCRG
++      - description: Master clock from SYSCRG
++      - description: PERH_ROOT_PREOSC clock from SYSCRG
++      - description: AHB0 clock from SYSCRG
++      - description: APB_BUS_PER1 clock from SYSCRG
++      - description: APB_BUS PER2 clock from SYSCRG
++      - description: APB_BUS_PER3 clock from SYSCRG
++      - description: APB_BUS_PER5 clock from SYSCRG
++      - description: VENC_ROOT clock from SYSCRG
++      - description: SPI_CORE_100 clock from SYSCRG
++      - description: External global clock
++      - description: External USB3_TAP_TCK clock
++      - description: External USB1_TAP_TCK clock
++      - description: External USB2_TAP_TCK clock
++      - description: External TYPEC_TAP_TCK clock
++      - description: External SPI_IN0 clock
++      - description: External SPI_IN1 clock
++      - description: External I2STX_BCLK clock
++      - description: External I2STX_LRCK clock
++
++  clock-names:
++    items:
++      - const: osc
++      - const: axi_400
++      - const: vout_root0
++      - const: vout_root1
++      - const: usb_wrap_480
++      - const: usb_wrap_625
++      - const: usb_wrap_240
++      - const: usb_wrap_60
++      - const: usb_wrap_156p25
++      - const: usb_wrap_312p5
++      - const: usb_125m
++      - const: gpio_100
++      - const: perh_root
++      - const: mclk
++      - const: perh_root_preosc
++      - const: ahb0
++      - const: apb_bus_per1
++      - const: apb_bus_per2
++      - const: apb_bus_per3
++      - const: apb_bus_per5
++      - const: venc_root
++      - const: spi_core_100
++      - const: glb-ext-clk
++      - const: usb3-tap-tck-ext
++      - const: usb1-tap-tck-ext
++      - const: usb2-tap-tck-ext
++      - const: typec-tap-tck-ext
++      - const: spi-in0-ext
++      - const: spi-in1-ext
++      - const: i2stx-bclk-ext
++      - const: i2stx-lrck-ext
++
++  '#clock-cells':
++    const: 1
++    description:
++      See <dt-bindings/clock/starfive,jh8100-crg.h> for valid indices.
++
++  '#reset-cells':
++    const: 1
++    description:
++      See <dt-bindings/reset/starfive,jh8100-crg.h> for valid indices.
++
++required:
++  - compatible
++  - reg
++  - clocks
++  - clock-names
++  - '#clock-cells'
++  - '#reset-cells'
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/starfive,jh8100-crg.h>
++
++    clock-controller@12320000 {
++        compatible =3D "starfive,jh8100-necrg";
++        reg =3D <0x12320000 0x10000>;
++        clocks =3D <&osc>, <&syscrg JH8100_SYSCLK_AXI_400>,
++                 <&syscrg JH8100_SYSCLK_VOUT_ROOT0>,
++                 <&syscrg JH8100_SYSCLK_VOUT_ROOT1>,
++                 <&syscrg JH8100_SYSCLK_USB_WRAP_480>,
++                 <&syscrg JH8100_SYSCLK_USB_WRAP_625>,
++                 <&syscrg JH8100_SYSCLK_USB_WRAP_240>,
++                 <&syscrg JH8100_SYSCLK_USB_WRAP_60>,
++                 <&syscrg JH8100_SYSCLK_USB_WRAP_156P25>,
++                 <&syscrg JH8100_SYSCLK_USB_WRAP_312P5>,
++                 <&syscrg JH8100_SYSCLK_USB_125M>,
++                 <&nwcrg JH8100_NWCLK_GPIO_100>,
++                 <&syscrg JH8100_SYSCLK_PERH_ROOT>,
++                 <&syscrg JH8100_SYSCLK_MCLK>,
++                 <&syscrg JH8100_SYSCLK_PERH_ROOT_PREOSC>,
++                 <&syscrg JH8100_SYSCLK_AHB0>,
++                 <&syscrg JH8100_SYSCLK_APB_BUS_PER1>,
++                 <&syscrg JH8100_SYSCLK_APB_BUS_PER2>,
++                 <&syscrg JH8100_SYSCLK_APB_BUS_PER3>,
++                 <&syscrg JH8100_SYSCLK_APB_BUS_PER5>,
++                 <&syscrg JH8100_SYSCLK_VENC_ROOT>,
++                 <&syscrg JH8100_SYSCLK_SPI_CORE_100>,
++                 <&glb_ext_clk>, <&usb3_tap_tck_ext>,
++                 <&usb1_tap_tck_ext>, <&usb2_tap_tck_ext>,
++                 <&typec_tap_tck_ext>, <&spi_in0_ext>,
++                 <&spi_in1_ext>, <&i2stx_bclk_ext>,
++                 <&i2stx_lrck_ext>;
++        clock-names =3D "osc", "axi_400", "vout_root0", "vout_root1",
++                      "usb_wrap_480", "usb_wrap_625", "usb_wrap_240",
++                      "usb_wrap_60", "usb_wrap_156p25", "usb_wrap_312p5"=
+,
++                      "usb_125m", "gpio_100", "perh_root", "mclk",
++                      "perh_root_preosc", "ahb0", "apb_bus_per1",
++                      "apb_bus_per2", "apb_bus_per3", "apb_bus_per5",
++                      "venc_root", "spi_core_100", "glb-ext-clk",
++                      "usb3-tap-tck-ext", "usb1-tap-tck-ext",
++                      "usb2-tap-tck-ext", "typec-tap-tck-ext",
++                      "spi-in0-ext", "spi-in1-ext", "i2stx-bclk-ext",
++                      "i2stx-lrck-ext";
++        #clock-cells =3D <1>;
++        #reset-cells =3D <1>;
++    };
+diff --git a/include/dt-bindings/clock/starfive,jh8100-crg.h b/include/dt=
+-bindings/clock/starfive,jh8100-crg.h
+index 626173e14940..c37b42f3eacd 100644
+--- a/include/dt-bindings/clock/starfive,jh8100-crg.h
++++ b/include/dt-bindings/clock/starfive,jh8100-crg.h
+@@ -162,4 +162,181 @@
+ #define JH8100_NWCLK_UART5_ICG_EN					39
+ #define JH8100_NWCLK_UART6_ICG_EN					40
+=20
++/* NECRG clocks */
++#define JH8100_NECLK_FLEXNOC_DMASLV					0
++#define JH8100_NECLK_MAILBOX_APB					1
++#define JH8100_NECLK_SR5_TIMER0_APB					2
++#define JH8100_NECLK_SR5_TIMER0_CH0					3
++#define JH8100_NECLK_SR5_TIMER0_CH1					4
++#define JH8100_NECLK_SR5_TIMER0_CH2					5
++#define JH8100_NECLK_SR5_TIMER0_CH3					6
++#define JH8100_NECLK_SR5_TIMER1_APB					7
++#define JH8100_NECLK_SR5_TIMER1_CH0					8
++#define JH8100_NECLK_SR5_TIMER1_CH1					9
++#define JH8100_NECLK_SR5_TIMER1_CH2					10
++#define JH8100_NECLK_SR5_TIMER1_CH3					11
++#define JH8100_NECLK_USB3_CMN_SCAN_PLL					12
++#define JH8100_NECLK_USB3_CMN_SCAN_SER					13
++#define JH8100_NECLK_USB3_PIPE_IN_SCAN					14
++#define JH8100_NECLK_USB3_SCAN_PIPE					15
++#define JH8100_NECLK_USB3_SCAN_PSM					16
++#define JH8100_NECLK_USB3_SCAN_REF					17
++#define JH8100_NECLK_USB3_USB2_SCAN					18
++#define JH8100_NECLK_USB3_HSCLK						19
++#define JH8100_NECLK_USB3_HSSICLK					20
++#define JH8100_NECLK_USB3_SIECLK					21
++#define JH8100_NECLK_USB3_XCVR_SCAN_PLL					22
++#define JH8100_NECLK_USB3_XCVR_SCAN_SER					23
++#define JH8100_NECLK_USB3_TAP_TCK					24
++#define JH8100_NECLK_USB1_CMN_SCAN_PLL					25
++#define JH8100_NECLK_USB1_CMN_SCAN_SER					26
++#define JH8100_NECLK_USB1_PIPE_IN_SCAN					27
++#define JH8100_NECLK_USB1_SCAN_PIPE					28
++#define JH8100_NECLK_USB1_SCAN_PSM					29
++#define JH8100_NECLK_USB1_SCAN_REF					30
++#define JH8100_NECLK_USB1_USB2_SCAN					31
++#define JH8100_NECLK_USB1_HSCLK						32
++#define JH8100_NECLK_USB1_HSSICLK					33
++#define JH8100_NECLK_USB1_SIECLK					34
++#define JH8100_NECLK_USB1_XCVR_SCAN_PLL					35
++#define JH8100_NECLK_USB1_XCVR_SCAN_SER					36
++#define JH8100_NECLK_USB1_TAP_TCK					37
++#define JH8100_NECLK_USB2_CMN_SCAN_PLL					38
++#define JH8100_NECLK_USB2_CMN_SCAN_SER					39
++#define JH8100_NECLK_USB2_PIPE_IN_SCAN					40
++#define JH8100_NECLK_USB2_SCAN_PIPE					41
++#define JH8100_NECLK_USB2_SCAN_PSM					42
++#define JH8100_NECLK_USB2_SCAN_REF					43
++#define JH8100_NECLK_USB2_USB2_SCAN					44
++#define JH8100_NECLK_USB2_HSCLK						45
++#define JH8100_NECLK_USB2_HSSICLK					46
++#define JH8100_NECLK_USB2_SIECLK					47
++#define JH8100_NECLK_USB2_XCVR_SCAN_PLL					48
++#define JH8100_NECLK_USB2_XCVR_SCAN_SER					49
++#define JH8100_NECLK_USB2_TAP_TCK					50
++#define JH8100_NECLK_TYPEC_PIPE_DIV_SCAN				51
++#define JH8100_NECLK_TYPEC_CMN_SCAN_PLL					52
++#define JH8100_NECLK_TYPEC_CMN_SCAN_SER					53
++#define JH8100_NECLK_TYPEC_SCAN_PIPE					54
++#define JH8100_NECLK_TYPEC_SCAN_PSM					55
++#define JH8100_NECLK_TYPEC_SCAN_REF					56
++#define JH8100_NECLK_TYPEC_USB2_SCAN					57
++#define JH8100_NECLK_TYPEC_HSCLK					58
++#define JH8100_NECLK_TYPEC_HSSICLK					59
++#define JH8100_NECLK_TYPEC_SIECLK					60
++#define JH8100_NECLK_TYPEC_VID0						61
++#define JH8100_NECLK_TYPEC_VID1						62
++#define JH8100_NECLK_TYPEC_XCVR_SCAN_PLL0				63
++#define JH8100_NECLK_TYPEC_XCVR_SCAN_PLL1				64
++#define JH8100_NECLK_TYPEC_XCVR_SCAN_PLL2				65
++#define JH8100_NECLK_TYPEC_XCVR_SCAN_PLL3				66
++#define JH8100_NECLK_TYPEC_XCVR_SCAN_SER0				67
++#define JH8100_NECLK_TYPEC_XCVR_SCAN_SER1				68
++#define JH8100_NECLK_TYPEC_XCVR_SCAN_SER2				69
++#define JH8100_NECLK_TYPEC_XCVR_SCAN_SER3				70
++#define JH8100_NECLK_TYPEC_TAP_TCK					71
++#define JH8100_NECLK_VENC_AXI						72
++#define JH8100_NECLK_VC9000LE_AXI					73
++#define JH8100_NECLK_VC9000LE_APB					74
++#define JH8100_NECLK_VC9000LE_CORECLK					75
++#define JH8100_NECLK_INT_CTRL_APB					76
++#define JH8100_NECLK_PWM_8CH_APB					77
++#define JH8100_NECLK_WDT_APB						78
++#define JH8100_NECLK_WDT						79
++#define JH8100_NECLK_SPI0_APB						80
++#define JH8100_NECLK_SPI0_CORE						81
++#define JH8100_NECLK_SPI0_SCLK_IN					82
++#define JH8100_NECLK_SPI1_APB						83
++#define JH8100_NECLK_SPI1_CORE						84
++#define JH8100_NECLK_SPI1_SCLK_IN					85
++#define JH8100_NECLK_I2C0_APB						86
++#define JH8100_NECLK_I2C1_APB						87
++#define JH8100_NECLK_I2C2_APB						88
++#define JH8100_NECLK_I2C3_APB						89
++#define JH8100_NECLK_I2C4_APB						90
++#define JH8100_NECLK_I2C5_APB						91
++#define JH8100_NECLK_UART0_APB						92
++#define JH8100_NECLK_UART0_CORE						93
++#define JH8100_NECLK_UART1_CORE_PREOSC					94
++#define JH8100_NECLK_UART1_APB						95
++#define JH8100_NECLK_UART1_CORE						96
++#define JH8100_NECLK_UART2_CORE_PREOSC					97
++#define JH8100_NECLK_UART2_APB						98
++#define JH8100_NECLK_UART2_CORE						99
++#define JH8100_NECLK_UART3_CORE_PREOSC					100
++#define JH8100_NECLK_UART3_APB						101
++#define JH8100_NECLK_UART3_CORE						102
++#define JH8100_NECLK_UART4_CORE_PREOSC					103
++#define JH8100_NECLK_UART4_APB						104
++#define JH8100_NECLK_UART4_CORE						105
++#define JH8100_NECLK_I2S0_BCLK						106
++#define JH8100_NECLK_I2S0_LRCK						107
++#define JH8100_NECLK_I2S0_APB						108
++#define JH8100_NECLK_I2S0						109
++#define JH8100_NECLK_I2S0_N						110
++#define JH8100_NECLK_I2S0_BCLK_TX					111
++#define JH8100_NECLK_I2S0_LRCK_TX					112
++#define JH8100_NECLK_I2S0_BCLK_RX					113
++#define JH8100_NECLK_I2S0_LRCK_RX					114
++#define JH8100_NECLK_I2S1_BCLK						115
++#define JH8100_NECLK_I2S1_LRCK						116
++#define JH8100_NECLK_I2S1_APB						117
++#define JH8100_NECLK_I2S1						118
++#define JH8100_NECLK_I2S1_N						119
++#define JH8100_NECLK_I2S1_BCLK_TX					120
++#define JH8100_NECLK_I2S1_LRCK_TX					121
++#define JH8100_NECLK_I2S1_BCLK_RX					122
++#define JH8100_NECLK_I2S1_LRCK_RX					123
++#define JH8100_NECLK_I2S2_BCLK						124
++#define JH8100_NECLK_I2S2_LRCK						125
++#define JH8100_NECLK_I2S2_APB						126
++#define JH8100_NECLK_I2S2						127
++#define JH8100_NECLK_I2S2_N						128
++#define JH8100_NECLK_I2S2_BCLK_TX					129
++#define JH8100_NECLK_I2S2_LRCK_TX					130
++#define JH8100_NECLK_I2S2_BCLK_RX					131
++#define JH8100_NECLK_I2S2_LRCK_RX					132
++#define JH8100_NECLK_I2S3_BCLK						133
++#define JH8100_NECLK_I2S3_LRCK						134
++#define JH8100_NECLK_I2S0_STEREO_APB					135
++#define JH8100_NECLK_I2S0_STEREO					136
++#define JH8100_NECLK_I2S0_STEREO_N					137
++#define JH8100_NECLK_I2S0_STEREO_BCLK_TX				138
++#define JH8100_NECLK_I2S0_STEREO_LRCK_TX				139
++#define JH8100_NECLK_I2S0_STEREO_BCLK_RX_ICG				140
++#define JH8100_NECLK_I2S0_STEREO_LRCK_RX				141
++#define JH8100_NECLK_PDM_4MIC_DMIC					142
++#define JH8100_NECLK_PDM_4MIC_APB					143
++#define JH8100_NECLK_PDM_4MIC_SCAN					144
++#define JH8100_NECLK_CAN0_CTRL_PCLK					145
++#define JH8100_NECLK_CAN0_CTRL						146
++#define JH8100_NECLK_CAN0_CTRL_TIMER					147
++#define JH8100_NECLK_CAN1_CTRL_PCLK					148
++#define JH8100_NECLK_CAN1_CTRL						149
++#define JH8100_NECLK_CAN1_CTRL_TIMER					150
++#define JH8100_NECLK_SMBUS0_APB						151
++#define JH8100_NECLK_SMBUS0_CORE					152
++#define JH8100_NECLK_IOMUX_EAST_PCLK					153
++#define JH8100_NECLK_USB3_ICG_EN					154
++#define JH8100_NECLK_USB1_ICG_EN					155
++#define JH8100_NECLK_USB2_ICG_EN					156
++#define JH8100_NECLK_USBC_ICG_EN					157
++#define JH8100_NECLK_VENC_ICG_EN					158
++#define JH8100_NECLK_WDT0_ICG_EN					159
++#define JH8100_NECLK_SPI0_ICG_EN					160
++#define JH8100_NECLK_SPI1_ICG_EN					161
++#define JH8100_NECLK_UART0_ICG_EN					162
++#define JH8100_NECLK_UART1_ICG_EN					163
++#define JH8100_NECLK_UART2_ICG_EN					164
++#define JH8100_NECLK_UART3_ICG_EN					165
++#define JH8100_NECLK_UART4_ICG_EN					166
++#define JH8100_NECLK_I2S0_ICG_EN					167
++#define JH8100_NECLK_I2S1_ICG_EN					168
++#define JH8100_NECLK_I2S2_ICG_EN					169
++#define JH8100_NECLK_I2S_STEREO_ICG_EN					170
++#define JH8100_NECLK_PDM_4MIC_ICG_EN					171
++#define JH8100_NECLK_CAN0_ICG_EN					172
++#define JH8100_NECLK_CAN1_ICG_EN					173
++#define JH8100_NECLK_SMBUS0_ICG_EN					174
++
+ #endif /* __DT_BINDINGS_CLOCK_STARFIVE_JH8100_H__ */
+diff --git a/include/dt-bindings/reset/starfive,jh8100-crg.h b/include/dt=
+-bindings/reset/starfive,jh8100-crg.h
+index b25f6522f3d4..30a99c78341a 100644
+--- a/include/dt-bindings/reset/starfive,jh8100-crg.h
++++ b/include/dt-bindings/reset/starfive,jh8100-crg.h
+@@ -32,4 +32,63 @@
+ #define JH8100_NWRST_MERAK0_TVSENSOR				8
+ #define JH8100_NWRST_MERAK1_TVSENSOR				9
+=20
 +/*
-+ * StarFive JH8100 North-West Clock Driver
-+ *
-+ * Copyright (C) 2023 StarFive Technology Co., Ltd.
-+ *
-+ * Author: Jee Heng Sia <jeeheng.sia@starfivetech.com>
-+ *
++ * NECRG resets: assert0
++ */
++#define JH8100_NERST_PRESETN					0
++#define JH8100_NERST_USB3_APB					1
++#define JH8100_NERST_USB3_TORR_PHY				2
++#define JH8100_NERST_USB3_CONFIG				3
++#define JH8100_NERST_USB1_APB					4
++#define JH8100_NERST_USB1_TORRENT_PHY				5
++#define JH8100_NERST_USB1_CONFIG				6
++#define JH8100_NERST_USB2_APB					7
++#define JH8100_NERST_USB2_TORRENT_PHY				8
++#define JH8100_NERST_USB2_CONFIG				9
++#define JH8100_NERST_USBC_APB					10
++#define JH8100_NERST_USBC_CONFIG				11
++#define JH8100_NERST_VC9000LE					12
++#define JH8100_NERST_INT_CTRL_APB				13
++#define JH8100_NERST_PWM_8CH_APB				14
++#define JH8100_NERST_WDT0					15
++#define JH8100_NERST_SPI0					16
++#define JH8100_NERST_SPI1					17
++#define JH8100_NERST_I2C0					18
++#define JH8100_NERST_I2C1					19
++#define JH8100_NERST_I2C2					20
++#define JH8100_NERST_I2C3					21
++#define JH8100_NERST_I2C4					22
++#define JH8100_NERST_I2C5					23
++#define JH8100_NERST_UART0					24
++#define JH8100_NERST_UART1					25
++#define JH8100_NERST_UART2					26
++#define JH8100_NERST_UART3					27
++#define JH8100_NERST_UART4					28
++#define JH8100_NERST_MAILBOX_PRESETN				29
++#define JH8100_NERST_TIMER0_APB					30
++#define JH8100_NERST_TIMER0_CH0					31
++
++/*
++ * NECRG resets: assert1
 + */
 +
-+#include <linux/clk-provider.h>
-+#include <linux/init.h>
-+#include <linux/io.h>
-+#include <linux/platform_device.h>
-+#include <linux/slab.h>
++#define JH8100_NERST_TIMER0_CH1					32
++#define JH8100_NERST_TIMER0_CH2					33
++#define JH8100_NERST_TIMER0_CH3					34
++#define JH8100_NERST_TIMER1_APB					35
++#define JH8100_NERST_TIMER1_CH0					36
++#define JH8100_NERST_TIMER1_CH1					37
++#define JH8100_NERST_TIMER1_CH2					38
++#define JH8100_NERST_TIMER1_CH3					39
++#define JH8100_NERST_I2S0_RSTN_APB				40
++#define JH8100_NERST_I2S1_RSTN_APB				41
++#define JH8100_NERST_I2S2_RSTN_APB				42
++#define JH8100_NERST_I2S0_STEREO_APB				43
++#define JH8100_NERST_PDM					44
++#define JH8100_NERST_CAN0					45
++#define JH8100_NERST_CAN1					46
++#define JH8100_NERST_SMBUS0					47
++#define JH8100_NERST_SYS_IOMUX_E				48
++#define JH8100_NERST_DUBHE_TVSENSOR				49
 +
-+#include <dt-bindings/clock/starfive,jh8100-crg.h>
-+
-+#include "clk-starfive-jh8100.h"
-+
-+#define JH8100_NWCLK_NUM_CLKS				(JH8100_NWCLK_UART6_ICG_EN + 1)
-+
-+/* external clocks */
-+#define JH8100_NWCLK_OSC				(JH8100_NWCLK_NUM_CLKS + 0)
-+#define JH8100_NWCLK_APB_BUS				(JH8100_NWCLK_NUM_CLKS + 1)
-+#define JH8100_NWCLK_APB_BUS_PER4			(JH8100_NWCLK_NUM_CLKS + 2)
-+#define JH8100_NWCLK_SPI_CORE_100			(JH8100_NWCLK_NUM_CLKS + 3)
-+#define JH8100_NWCLK_ISP_2X				(JH8100_NWCLK_NUM_CLKS + 4)
-+#define JH8100_NWCLK_ISP__AXI				(JH8100_NWCLK_NUM_CLKS + 5)
-+#define JH8100_NWCLK_VOUT_ROOT0				(JH8100_NWCLK_NUM_CLKS + 6)
-+#define JH8100_NWCLK_VOUT_ROOT1				(JH8100_NWCLK_NUM_CLKS + 7)
-+#define JH8100_NWCLK_VOUT_SCAN__ATS			(JH8100_NWCLK_NUM_CLKS + 8)
-+#define JH8100_NWCLK_VOUT_DC__CORE			(JH8100_NWCLK_NUM_CLKS + 9)
-+#define JH8100_NWCLK_VOUT__AXI				(JH8100_NWCLK_NUM_CLKS + 10)
-+#define JH8100_NWCLK_AXI_400				(JH8100_NWCLK_NUM_CLKS + 11)
-+#define JH8100_NWCLK_DVP_EXT				(JH8100_NWCLK_NUM_CLKS + 12)
-+#define JH8100_NWCLK_ISP_DPHY_TAP_TCK_EXT		(JH8100_NWCLK_NUM_CLKS + 13)
-+#define JH8100_NWCLK_GLB_EXT				(JH8100_NWCLK_NUM_CLKS + 14)
-+#define JH8100_NWCLK_VOUT_MIPI_DPHY_TAP_TCK_EXT		(JH8100_NWCLK_NUM_CLKS =
-+ 15)
-+#define JH8100_NWCLK_VOUT_EDP_TAP_TCK_EXT		(JH8100_NWCLK_NUM_CLKS + 16)
-+#define JH8100_NWCLK_SPI_IN2_EXT			(JH8100_NWCLK_NUM_CLKS + 17)
-+#define JH8100_NWCLK_PERH_ROOT_PREOSC			(JH8100_NWCLK_NUM_CLKS + 18)
-+#define JH8100_NWCLK_AHB_VOUT				(JH8100_NWCLK_NUM_CLKS + 19)
-+#define JH8100_NWCLK_PLL5_OUT				(JH8100_NWCLK_NUM_CLKS + 20)
-+
-+static const struct starfive_clk_data jh8100_nwcrg_clk_data[] =3D {
-+	/* root */
-+	STARFIVE__DIV(JH8100_NWCLK_PLL5_DIV2, "pll5_div2", 2, JH8100_NWCLK_PLL5=
-_OUT),
-+	STARFIVE_GDIV(JH8100_NWCLK_GCLK5, "gclk5", CLK_IS_CRITICAL, 120, JH8100=
-_NWCLK_PLL5_DIV2),
-+	/* gpio */
-+	STARFIVE_GATE(JH8100_NWCLK_GPIO_100, "gpio_100", CLK_IS_CRITICAL, JH810=
-0_NWCLK_PLL5_OUT),
-+	STARFIVE_GATE(JH8100_NWCLK_GPIO_50, "gpio_50", CLK_IS_CRITICAL, JH8100_=
-NWCLK_PLL5_OUT),
-+	STARFIVE_GATE(JH8100_NWCLK_GPIO_150, "gpio_150", CLK_IS_CRITICAL, JH810=
-0_NWCLK_PLL5_OUT),
-+	STARFIVE_GDIV(JH8100_NWCLK_GPIO_60, "gpio_60", CLK_IS_CRITICAL, 30, JH8=
-100_NWCLK_PLL5_OUT),
-+	/* iomux */
-+	STARFIVE_GATE(JH8100_NWCLK_IOMUX_WEST_PCLK, "iomux_west_pclk", 0,
-+		      JH8100_NWCLK_APB_BUS_PER4),
-+	/* i2c */
-+	STARFIVE_GATE(JH8100_NWCLK_I2C6_APB, "i2c6_apb", 0, JH8100_NWCLK_APB_BU=
-S_PER4),
-+	STARFIVE_GATE(JH8100_NWCLK_I2C7_APB, "i2c7_apb", 0, JH8100_NWCLK_APB_BU=
-S_PER4),
-+	/* spi */
-+	STARFIVE_GATE(JH8100_NWCLK_SPI2_APB, "spi2_apb", 0, JH8100_NWCLK_APB_BU=
-S_PER4),
-+	STARFIVE_GATE(JH8100_NWCLK_SPI2_CORE, "spi2_core", 0, JH8100_NWCLK_SPI_=
-CORE_100),
-+	STARFIVE__MUX(JH8100_NWCLK_SPI2_SCLK_IN, "spi2_sclk_in", 2,
-+		      JH8100_NWCLK_SPI_IN2_EXT, JH8100_NWCLK_GPIO_100),
-+	/* smbus */
-+	STARFIVE_GATE(JH8100_NWCLK_SMBUS1_APB, "smbus1_apb", CLK_IGNORE_UNUSED,
-+		      JH8100_NWCLK_APB_BUS_PER4),
-+	STARFIVE_GDIV(JH8100_NWCLK_SMBUS1_CORE, "smbus1_core", CLK_IGNORE_UNUSE=
-D, 120,
-+		      JH8100_NWCLK_PERH_ROOT_PREOSC),
-+	/* isp */
-+	STARFIVE__MUX(JH8100_NWCLK_ISP_DVP, "isp_dvp", 2, JH8100_NWCLK_DVP_EXT,
-+		      JH8100_NWCLK_GPIO_150),
-+	STARFIVE_GATE(JH8100_NWCLK_ISP_CORE_2X, "isp_core_2x", 0, JH8100_NWCLK_=
-ISP_2X),
-+	STARFIVE_GATE(JH8100_NWCLK_ISP_AXI, "isp_axi_nw", 0, JH8100_NWCLK_ISP__=
-AXI),
-+	STARFIVE__MUX(JH8100_NWCLK_ISP_DPHY_TAP_TCK, "isp_dphy_tap_tck", 2,
-+		      JH8100_NWCLK_ISP_DPHY_TAP_TCK_EXT, JH8100_NWCLK_GLB_EXT),
-+	STARFIVE_GATE(JH8100_NWCLK_FLEXNOC_ISPSLV, "flexnoc_ispslv", 0, JH8100_=
-NWCLK_ISP__AXI),
-+	/* vout */
-+	STARFIVE_GATE(JH8100_NWCLK_VOUT_PIX0, "vout_pix0", CLK_IGNORE_UNUSED,
-+		      JH8100_NWCLK_VOUT_ROOT0),
-+	STARFIVE_GATE(JH8100_NWCLK_VOUT_PIX1, "vout_pix1", CLK_IGNORE_UNUSED,
-+		      JH8100_NWCLK_VOUT_ROOT1),
-+	STARFIVE_GATE(JH8100_NWCLK_VOUT_SCAN_ATS, "vout_scan_ats_nw",
-+		      CLK_IGNORE_UNUSED, JH8100_NWCLK_VOUT_SCAN__ATS),
-+	STARFIVE_GATE(JH8100_NWCLK_VOUT_DC_CORE, "vout_dc_core_nw",
-+		      CLK_IGNORE_UNUSED, JH8100_NWCLK_VOUT_DC__CORE),
-+	STARFIVE_GATE(JH8100_NWCLK_VOUT_APB, "vout_apb", CLK_IGNORE_UNUSED, JH8=
-100_NWCLK_APB_BUS),
-+	STARFIVE_GATE(JH8100_NWCLK_VOUT_DSI, "vout_dsi", CLK_IGNORE_UNUSED, JH8=
-100_NWCLK_AXI_400),
-+	STARFIVE_GATE(JH8100_NWCLK_VOUT_AHB, "vout_ahb", CLK_IGNORE_UNUSED, JH8=
-100_NWCLK_AHB_VOUT),
-+	STARFIVE_GATE(JH8100_NWCLK_VOUT_AXI, "vout_axi_nw", CLK_IGNORE_UNUSED,
-+		      JH8100_NWCLK_VOUT__AXI),
-+	STARFIVE__MUX(JH8100_NWCLK_VOUT_MIPI_DPHY_TAP_TCK, "vout_mipi_dphy_tap_=
-tck", 2,
-+		      JH8100_NWCLK_VOUT_MIPI_DPHY_TAP_TCK_EXT, JH8100_NWCLK_GLB_EXT),
-+	STARFIVE__MUX(JH8100_NWCLK_VOUT_EDP_PHY_TAP_TCK, "vout_edp_phy_tap_tck"=
-, 2,
-+		      JH8100_NWCLK_VOUT_EDP_TAP_TCK_EXT, JH8100_NWCLK_GLB_EXT),
-+	/* uart */
-+	STARFIVE__DIV(JH8100_NWCLK_UART5_CORE_PREOSC, "uart5_core_preosc", 1310=
-71,
-+		      JH8100_NWCLK_PERH_ROOT_PREOSC),
-+	STARFIVE_GATE(JH8100_NWCLK_UART5_APB, "uart5_apb", 0, JH8100_NWCLK_APB_=
-BUS_PER4),
-+	STARFIVE_GMUX(JH8100_NWCLK_UART5_CORE, "uart5_core", 0, 2,
-+		      JH8100_NWCLK_OSC, JH8100_NWCLK_UART5_CORE_PREOSC),
-+	STARFIVE__DIV(JH8100_NWCLK_UART6_CORE_PREOSC, "uart6_core_preosc", 1310=
-71,
-+		      JH8100_NWCLK_PERH_ROOT_PREOSC),
-+	STARFIVE_GATE(JH8100_NWCLK_UART6_APB, "uart6_apb", 0, JH8100_NWCLK_APB_=
-BUS_PER4),
-+	STARFIVE_GMUX(JH8100_NWCLK_UART6_CORE, "uart6_core", 0, 2,
-+		      JH8100_NWCLK_OSC, JH8100_NWCLK_UART6_CORE_PREOSC),
-+	/* icg_en */
-+	STARFIVE_GATE(JH8100_NWCLK_SPI2_ICG_EN, "spi2_en", 0, JH8100_NWCLK_APB_=
-BUS_PER4),
-+	STARFIVE_GATE(JH8100_NWCLK_SMBUS1_ICG_EN, "smbus1_en", 0, JH8100_NWCLK_=
-APB_BUS_PER4),
-+	STARFIVE_GATE(JH8100_NWCLK_ISP_ICG_EN, "isp_en", 0, JH8100_NWCLK_ISP__A=
-XI),
-+	STARFIVE_GATE(JH8100_NWCLK_VOUT_ICG_EN, "vout_en", 0, JH8100_NWCLK_VOUT=
-_ROOT0),
-+	STARFIVE_GATE(JH8100_NWCLK_UART5_ICG_EN, "uart5_en", 0, JH8100_NWCLK_AP=
-B_BUS_PER4),
-+	STARFIVE_GATE(JH8100_NWCLK_UART6_ICG_EN, "uart6_en", 0, JH8100_NWCLK_AP=
-B_BUS_PER4),
-+};
-+
-+struct clk_hw *jh8100_nwcrg_clk_get(struct of_phandle_args *clkspec, voi=
-d *data)
-+{
-+	struct starfive_clk_priv *priv =3D data;
-+	unsigned int idx =3D clkspec->args[0];
-+
-+	if (idx < JH8100_NWCLK_NUM_CLKS)
-+		return &priv->reg[idx].hw;
-+
-+	return ERR_PTR(-EINVAL);
-+}
-+
-+static int jh8100_nwcrg_probe(struct platform_device *pdev)
-+{
-+	struct starfive_clk_priv *priv;
-+	unsigned int idx;
-+	int ret;
-+
-+	priv =3D devm_kzalloc(&pdev->dev,
-+			    struct_size(priv, reg, JH8100_NWCLK_NUM_CLKS),
-+			    GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	spin_lock_init(&priv->rmw_lock);
-+	priv->dev =3D &pdev->dev;
-+	priv->base =3D devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(priv->base))
-+		return PTR_ERR(priv->base);
-+
-+	for (idx =3D 0; idx < JH8100_NWCLK_NUM_CLKS; idx++) {
-+		u32 max =3D jh8100_nwcrg_clk_data[idx].max;
-+		struct clk_parent_data parents[4] =3D {};
-+		struct clk_init_data init =3D {
-+			.name =3D jh8100_nwcrg_clk_data[idx].name,
-+			.ops =3D starfive_clk_ops(max),
-+			.parent_data =3D parents,
-+			.num_parents =3D
-+				((max & STARFIVE_CLK_MUX_MASK) >> STARFIVE_CLK_MUX_SHIFT) + 1,
-+			.flags =3D jh8100_nwcrg_clk_data[idx].flags,
-+		};
-+		struct starfive_clk *clk =3D &priv->reg[idx];
-+		unsigned int i;
-+
-+		for (i =3D 0; i < init.num_parents; i++) {
-+			unsigned int pidx =3D jh8100_nwcrg_clk_data[idx].parents[i];
-+
-+			if (pidx < JH8100_NWCLK_NUM_CLKS)
-+				parents[i].hw =3D &priv->reg[pidx].hw;
-+			else if (pidx =3D=3D JH8100_NWCLK_OSC)
-+				parents[i].fw_name =3D "osc";
-+			else if (pidx =3D=3D JH8100_NWCLK_APB_BUS)
-+				parents[i].fw_name =3D "apb_bus";
-+			else if (pidx =3D=3D JH8100_NWCLK_APB_BUS_PER4)
-+				parents[i].fw_name =3D "apb_bus_per4";
-+			else if (pidx =3D=3D JH8100_NWCLK_SPI_CORE_100)
-+				parents[i].fw_name =3D "spi_core_100";
-+			else if (pidx =3D=3D JH8100_NWCLK_ISP_2X)
-+				parents[i].fw_name =3D "isp_2x";
-+			else if (pidx =3D=3D JH8100_NWCLK_ISP__AXI)
-+				parents[i].fw_name =3D "isp_axi";
-+			else if (pidx =3D=3D JH8100_NWCLK_VOUT_ROOT0)
-+				parents[i].fw_name =3D "vout_root0";
-+			else if (pidx =3D=3D JH8100_NWCLK_VOUT_ROOT1)
-+				parents[i].fw_name =3D "vout_root1";
-+			else if (pidx =3D=3D JH8100_NWCLK_VOUT_SCAN__ATS)
-+				parents[i].fw_name =3D "vout_scan_ats";
-+			else if (pidx =3D=3D JH8100_NWCLK_VOUT_DC__CORE)
-+				parents[i].fw_name =3D "vout_dc_core";
-+			else if (pidx =3D=3D JH8100_NWCLK_VOUT__AXI)
-+				parents[i].fw_name =3D "vout_axi";
-+			else if (pidx =3D=3D JH8100_NWCLK_AXI_400)
-+				parents[i].fw_name =3D "axi_400";
-+			else if (pidx =3D=3D JH8100_NWCLK_DVP_EXT)
-+				parents[i].fw_name =3D "dvp-ext";
-+			else if (pidx =3D=3D JH8100_NWCLK_ISP_DPHY_TAP_TCK_EXT)
-+				parents[i].fw_name =3D "isp-dphy-tap-tck-ext";
-+			else if (pidx =3D=3D JH8100_NWCLK_GLB_EXT)
-+				parents[i].fw_name =3D "glb-ext-clk";
-+			else if (pidx =3D=3D JH8100_NWCLK_VOUT_MIPI_DPHY_TAP_TCK_EXT)
-+				parents[i].fw_name =3D "vout-mipi-dphy-tap-tck-ext";
-+			else if (pidx =3D=3D JH8100_NWCLK_VOUT_EDP_TAP_TCK_EXT)
-+				parents[i].fw_name =3D "vout-edp-tap-tck-ext";
-+			else if (pidx =3D=3D JH8100_NWCLK_SPI_IN2_EXT)
-+				parents[i].fw_name =3D "spi-in2-ext";
-+			else if (pidx =3D=3D JH8100_NWCLK_PERH_ROOT_PREOSC)
-+				parents[i].fw_name =3D "perh_root_preosc";
-+			else if (pidx =3D=3D JH8100_NWCLK_AHB_VOUT)
-+				parents[i].fw_name =3D "ahb0";
-+			else
-+				parents[i].fw_name =3D "pll5";
-+		}
-+
-+		clk->hw.init =3D &init;
-+		clk->idx =3D idx;
-+		clk->max_div =3D max & STARFIVE_CLK_DIV_MASK;
-+
-+		ret =3D devm_clk_hw_register(&pdev->dev, &clk->hw);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	ret =3D devm_of_clk_add_hw_provider(&pdev->dev, jh8100_nwcrg_clk_get, p=
-riv);
-+	if (ret)
-+		return ret;
-+
-+	return jh8100_reset_controller_register(priv, "rst-nw", 1);
-+}
-+
-+static const struct of_device_id jh8100_nwcrg_match[] =3D {
-+	{ .compatible =3D "starfive,jh8100-nwcrg" },
-+	{ /* sentinel */ }
-+};
-+
-+static struct platform_driver jh8100_nwcrg_driver =3D {
-+	.driver =3D {
-+		.name =3D "clk-starfive-jh8100-nw",
-+		.of_match_table =3D jh8100_nwcrg_match,
-+		.suppress_bind_attrs =3D true,
-+	},
-+};
-+builtin_platform_driver_probe(jh8100_nwcrg_driver, jh8100_nwcrg_probe);
+ #endif /* __DT_BINDINGS_RESET_STARFIVE_JH8100_H__ */
 --=20
 2.34.1
 
