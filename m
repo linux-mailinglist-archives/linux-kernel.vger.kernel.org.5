@@ -1,37 +1,38 @@
-Return-Path: <linux-kernel+bounces-11449-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11450-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 282C681E687
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 10:43:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DE9E81E68A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 10:43:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 586CB1C20FC4
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 09:43:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C6CF01F224F6
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 09:43:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 382404D132;
-	Tue, 26 Dec 2023 09:43:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46CA64D5BF;
+	Tue, 26 Dec 2023 09:43:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="eNa/a31B"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="dp8HSrzc"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
+Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F5DC4D582
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 09:43:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7989F4D5A5
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 09:43:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1703583788;
+	t=1703583796;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=JZxsk+Jzb07h2zuZtmSvZ0zyWEXPJHnNQin19esIT5o=;
-	b=eNa/a31B2+Tvl3x5TdZ+1l5iF9uhme41x+em/lthqENyNR5zztGqw/1yvZk7Lo5dNBiXb8
-	5h4JKBfpcTMd1EuzLCW8EzpZA9MMbPhkNvoVaTwBEyXRN6x/iNdAZSqcRthIpmsaN22JPD
-	TfMJWyMsCH4R8VybN845OZhdkVd+YEA=
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=diijefPyY+JAZzp1OGOF2cMFgVmbS72RFlbawZuCE1c=;
+	b=dp8HSrzcJ/Yz8WS07pSPfa5Q9frvRpO3tPNLUQv3Gis/rmb06edDTVOZvmdORsdtROE3vl
+	Wqi7xdYIoh8yCGykebcOal75r1hwZYkZrofv/+2PA72xQCtJYVRh5AnPkIepY8RTmeVbHA
+	3uk4sI/rvl5GS4P4S7xKfYKopFMuVjE=
 From: George Guo <dongtai.guo@linux.dev>
 To: horms@kernel.org,
 	pablo@netfilter.org,
@@ -46,9 +47,11 @@ Cc: netfilter-devel@vger.kernel.org,
 	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	George Guo <guodongtai@kylinos.cn>
-Subject: [PATCH 01/14] netfilter: cleanup enum nft_set_class
-Date: Tue, 26 Dec 2023 17:42:42 +0800
-Message-Id: <20231226094255.77911-1-dongtai.guo@linux.dev>
+Subject: [PATCH 02/14] netfilter: cleanup struct nft_set_elem
+Date: Tue, 26 Dec 2023 17:42:43 +0800
+Message-Id: <20231226094255.77911-2-dongtai.guo@linux.dev>
+In-Reply-To: <20231226094255.77911-1-dongtai.guo@linux.dev>
+References: <20231226094255.77911-1-dongtai.guo@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -60,31 +63,25 @@ X-Migadu-Flow: FLOW_OUT
 
 From: George Guo <guodongtai@kylinos.cn>
 
-Correct comments for nlpid, family, udlen and udata in struct nft_table,
-and afinfo is no longer a member of enum nft_set_class.
+Add comment for data in struct nft_set_elem.
 
 Signed-off-by: George Guo <guodongtai@kylinos.cn>
 ---
- include/net/netfilter/nf_tables.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ include/net/netfilter/nf_tables.h | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/include/net/netfilter/nf_tables.h b/include/net/netfilter/nf_tables.h
-index b157c5cafd14..18ec566cbc34 100644
+index 18ec566cbc34..82eda4c65ae4 100644
 --- a/include/net/netfilter/nf_tables.h
 +++ b/include/net/netfilter/nf_tables.h
-@@ -351,9 +351,9 @@ struct nft_set_desc {
- /**
-  *	enum nft_set_class - performance class
+@@ -282,6 +282,7 @@ struct nft_elem_priv { };
   *
-- *	@NFT_LOOKUP_O_1: constant, O(1)
-- *	@NFT_LOOKUP_O_LOG_N: logarithmic, O(log N)
-- *	@NFT_LOOKUP_O_N: linear, O(N)
-+ *	@NFT_SET_CLASS_O_1: constant, O(1)
-+ *	@NFT_SET_CLASS_O_LOG_N: logarithmic, O(log N)
-+ *	@NFT_SET_CLASS_O_N: linear, O(N)
+  *	@key: element key
+  *	@key_end: closing element key
++ *	@data: element data
+  *	@priv: element private data and extensions
   */
- enum nft_set_class {
- 	NFT_SET_CLASS_O_1,
+ struct nft_set_elem {
 -- 
 2.39.2
 
