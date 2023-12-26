@@ -1,52 +1,76 @@
-Return-Path: <linux-kernel+bounces-11535-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11536-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB5F081E7C8
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 14:54:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A66F81E7CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 15:04:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 895071F22998
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 13:54:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 080F51F22965
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 14:04:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8011050259;
-	Tue, 26 Dec 2023 13:53:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 690BA4F1E0;
+	Tue, 26 Dec 2023 14:03:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sgBVAgpa"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Z3lzIHBF"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D130B4EB5E;
-	Tue, 26 Dec 2023 13:53:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F16D5C433CA;
-	Tue, 26 Dec 2023 13:53:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703598785;
-	bh=Xd3RiHeuNxlRf7T5i6AVEz2ZQo7xF4C6gARQq5XvO3U=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=sgBVAgpa6Mx1oNF36hARX877uYe/EOtNlyhZoVHLngzwJVt6yp2RDtyng8vyZUCsW
-	 PTqrIWxpbVVeQgO4Oz/SnlroG04pZdSQ3BPOqNpBDJ5kTb71GMuT9cQXd+5P7+0+ap
-	 zHoAlPNpgIpv9PHUpizffQ09MQqNUbC9o7TlsgwB66ke/FmncOgMNxTUix4NF6Tjpe
-	 SnBDzugE8xAVvBWS84voRh6oAh0RW4B6PdgzJbapSVNkpikfsB8Oy+OhUVwgpsEkpJ
-	 7xRFDYEJE3B43+8Ps/VnYzYUcbcM6q/WZN4WWzPzMYI6al4Y+f2Yk4EtKkvx1ZeD/e
-	 jbYrym1T/OTcw==
-From: Masahiro Yamada <masahiroy@kernel.org>
-To: linux-kbuild@vger.kernel.org
-Cc: Ben Hutchings <ben@decadent.org.uk>,
-	Masahiro Yamada <masahiroy@kernel.org>,
-	Nicolas Schier <n.schier@avm.de>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Nicolas Schier <nicolas@fjasle.eu>,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B86E4EB42;
+	Tue, 26 Dec 2023 14:03:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6d9344f30caso2882226b3a.1;
+        Tue, 26 Dec 2023 06:03:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703599433; x=1704204233; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=hzyK4GUH3epLDlLs9OJt2/hFdq/tOmV0c5ajfbFFe8o=;
+        b=Z3lzIHBFGDTmK9pKzmLYirqWcAqXjpxytdcB497cyAJTCbtRcaU7VN9yzQBjHwNjoj
+         Z+YXL5j0uCaA18GDEqCYlF0uuEY6a1YyRFf+mxfpV3D2RLEWIA0ZIdwOPXV+g22ZDKGO
+         meRkwCWG1u1DzPZRunfrCYk5+ewnWXGaoufz82TXC9mcUs5xdMUjmmw5Jwi+GwKMbthH
+         xagN01BHYHQatSXrqTScaVmNIUQtJRwDocK0sJHzidSY3Zt7CnK+2tAo2hPIulpqw8qP
+         AVuYG8u60va8P/Rnadnaw0tIY9pE0FS7WVz8qOrgkk9w1vZjO3q+/bj+0q0eWlE3OpMt
+         3OkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703599433; x=1704204233;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=hzyK4GUH3epLDlLs9OJt2/hFdq/tOmV0c5ajfbFFe8o=;
+        b=F97GmOBVkPd3IU2Dhuj88KAJcCP2N8SDLysWIG5Rv29wjZBaA1MbtP1Uopa2p+ENvh
+         6KP2NttrWG4NZ6+3L0tA+lOIfBIY6LN6p0FEpw7G2s+e7qYGaMxYYysHzFPTjUN2IbjV
+         7oR9EBh0CajRsujpFI0PGxNJl+W9CX9v8iH9W5ENzrZ4Prz/2MIC28ztZdLdL0SrzcDc
+         uz6igeXAirhPf4ILMrGFJWr/Ci93ntnyUo+TKadMUcRwp7na/Rl6JqqMNNc9otXaCphm
+         pZyp4EkZESFjLca1T6JgeHra36AeUdiPbi8owIKfc452kr9ROQcAPTZ5wqYJzmOLoVcF
+         96NA==
+X-Gm-Message-State: AOJu0Yx0hLC5FIZ6ZPccjYNvDB9kFHAZEPmVs2gIjKp9f/tmaPEZyOPO
+	IsKSjPAitXyQLngDXpAMHvw3sBYXrm/MqQ==
+X-Google-Smtp-Source: AGHT+IHq/6l+nK5IA80YfhCQPhmZKKXTKHygRfwkNCWaCT3rMkgHPGk0vldghVLt4id+bkALjfxpKg==
+X-Received: by 2002:aa7:85c6:0:b0:6d9:b5cb:d773 with SMTP id z6-20020aa785c6000000b006d9b5cbd773mr4165318pfn.22.1703599433432;
+        Tue, 26 Dec 2023 06:03:53 -0800 (PST)
+Received: from code.. ([144.202.108.46])
+        by smtp.gmail.com with ESMTPSA id g6-20020a63f406000000b005c66e25497dsm9727724pgi.83.2023.12.26.06.03.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Dec 2023 06:03:53 -0800 (PST)
+From: Yuntao Wang <ytcoode@gmail.com>
+To: linux-efi@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 6/6] kbuild: deb-pkg: use more debhelper commands in builddeb
-Date: Tue, 26 Dec 2023 22:52:43 +0900
-Message-Id: <20231226135243.1393780-6-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20231226135243.1393780-1-masahiroy@kernel.org>
-References: <20231226135243.1393780-1-masahiroy@kernel.org>
+Cc: Ard Biesheuvel <ardb@kernel.org>,
+	"Borislav Petkov (AMD)" <bp@alien8.de>,
+	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+	Tom Lendacky <thomas.lendacky@amd.com>,
+	Ingo Molnar <mingo@kernel.org>,
+	Dionna Glaze <dionnaglaze@google.com>,
+	Nikolay Borisov <nik.borisov@suse.com>,
+	Yuntao Wang <ytcoode@gmail.com>
+Subject: [PATCH] x86/efistub: fix the missing KASLR_FLAG bit in boot_params->hdr.loadflags
+Date: Tue, 26 Dec 2023 22:02:50 +0800
+Message-ID: <20231226140250.224516-1-ytcoode@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -55,94 +79,37 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Commit 36862e14e316 ("kbuild: deb-pkg: use dh_listpackages to know
-enabled packages") started to require the debhelper tool suite.
+When KASLR is enabled, the KASLR_FLAG bit in boot_params->hdr.loadflags
+should be set to 1 to propagate KASLR status from compressed kernel to
+kernel, just as the choose_random_location() function does.
 
-Use more dh_* commands in create_package():
+Currently, when kernel is booted via efi stub, the KASLR_FLAG bit in
+boot_params->hdr.loadflags is not set, even though it should be. This
+causes some functions, such as kernel_randomize_memory(), not to execute
+as expected. Fix it.
 
- - dh_installdocs to install copyright
- - dh_installchangelogs to install changelog
- - dh_compress to compress changelog
- - dh_fixperms to replace the raw chmod command
- - dh_gencontrol to replace the raw dpkg-gencontrol command
- - dh_md5sums to record the md5sum of included files
- - dh_builddeb to replace the raw dpkg-deb command
-
-Set DEB_RULES_REQUIRES_ROOT to 'no' in case debian/rules is executed
-directly.
-
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-Reviewed-by: Nicolas Schier <n.schier@avm.de>
+Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
 ---
+ drivers/firmware/efi/libstub/x86-stub.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
- scripts/package/builddeb     | 23 ++++++++---------------
- scripts/package/debian/rules |  2 ++
- scripts/package/mkdebian     |  2 +-
- 3 files changed, 11 insertions(+), 16 deletions(-)
-
-diff --git a/scripts/package/builddeb b/scripts/package/builddeb
-index 2eb4910f0ef3..436d55a83ab0 100755
---- a/scripts/package/builddeb
-+++ b/scripts/package/builddeb
-@@ -26,23 +26,16 @@ if_enabled_echo() {
- 
- create_package() {
- 	local pname="$1" pdir="$2"
--	local dpkg_deb_opts
- 
--	mkdir -m 755 -p "$pdir/DEBIAN"
--	mkdir -p "$pdir/usr/share/doc/$pname"
--	cp debian/copyright "$pdir/usr/share/doc/$pname/"
--	cp debian/changelog "$pdir/usr/share/doc/$pname/changelog.Debian"
--	gzip -n -9 "$pdir/usr/share/doc/$pname/changelog.Debian"
--	sh -c "cd '$pdir'; find . -type f ! -path './DEBIAN/*' -printf '%P\0' \
--		| xargs -r0 md5sum > DEBIAN/md5sums"
-+	export DH_OPTIONS="-p${pname} -P${pdir}"
- 
--	# a+rX in case we are in a restrictive umask environment like 0077
--	# ug-s in case we build in a setuid/setgid directory
--	chmod -R go-w,a+rX,ug-s "$pdir"
--
--	# Create the package
--	dpkg-gencontrol -p$pname -P"$pdir"
--	dpkg-deb --root-owner-group ${KDEB_COMPRESS:+-Z$KDEB_COMPRESS} --build "$pdir" ..
-+	dh_installdocs
-+	dh_installchangelogs
-+	dh_compress
-+	dh_fixperms
-+	dh_gencontrol
-+	dh_md5sums
-+	dh_builddeb -- ${KDEB_COMPRESS:+-Z$KDEB_COMPRESS}
- }
- 
- install_linux_image () {
-diff --git a/scripts/package/debian/rules b/scripts/package/debian/rules
-index 36d51f60f98d..1f56938ea5d4 100755
---- a/scripts/package/debian/rules
-+++ b/scripts/package/debian/rules
-@@ -1,6 +1,8 @@
- #!/usr/bin/make -f
- # SPDX-License-Identifier: GPL-2.0-only
- 
-+export DEB_RULES_REQUIRES_ROOT := no
+diff --git a/drivers/firmware/efi/libstub/x86-stub.c b/drivers/firmware/efi/libstub/x86-stub.c
+index da9b7b8d0716..b0c68593ad40 100644
+--- a/drivers/firmware/efi/libstub/x86-stub.c
++++ b/drivers/firmware/efi/libstub/x86-stub.c
+@@ -787,7 +787,10 @@ static efi_status_t efi_decompress_kernel(unsigned long *kernel_entry)
+ 			efi_debug("AMI firmware v2.0 or older detected - disabling physical KASLR\n");
+ 			seed[0] = 0;
+ 		}
+-	}
 +
- include debian/rules.vars
++		boot_params_ptr->hdr.loadflags |= KASLR_FLAG;
++	} else
++		boot_params_ptr->hdr.loadflags &= ~KASLR_FLAG;
  
- ifneq (,$(filter-out parallel=1,$(filter parallel=%,$(DEB_BUILD_OPTIONS))))
-diff --git a/scripts/package/mkdebian b/scripts/package/mkdebian
-index 93a24712b9a1..070149c985fe 100755
---- a/scripts/package/mkdebian
-+++ b/scripts/package/mkdebian
-@@ -193,7 +193,7 @@ Section: kernel
- Priority: optional
- Maintainer: $maintainer
- Rules-Requires-Root: no
--Build-Depends: debhelper
-+Build-Depends: debhelper-compat (= 12)
- Build-Depends-Arch: bc, bison, cpio, flex, kmod, libelf-dev:native, libssl-dev:native, rsync
- Homepage: https://www.kernel.org/
- 
+ 	status = efi_random_alloc(alloc_size, CONFIG_PHYSICAL_ALIGN, &addr,
+ 				  seed[0], EFI_LOADER_CODE,
 -- 
-2.40.1
+2.43.0
 
 
