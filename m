@@ -1,141 +1,293 @@
-Return-Path: <linux-kernel+bounces-11511-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11512-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65EDE81E77A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 13:52:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A3B981E780
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 14:07:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8ADF21C21E76
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 12:52:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 81AFD1F2283A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 13:07:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1ABF64EB33;
-	Tue, 26 Dec 2023 12:51:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A771D4EB42;
+	Tue, 26 Dec 2023 13:07:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Bn9w1i8n"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="XtAyQ1Po"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31D9E4E631;
-	Tue, 26 Dec 2023 12:51:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6d099d316a8so4136750b3a.0;
-        Tue, 26 Dec 2023 04:51:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703595109; x=1704199909; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=8I6eOdWU4tKnR7IavMXk04RzDq/PuX82Y4y0SpAzUkk=;
-        b=Bn9w1i8nqDndcNqdMAJihuW4TqwDCcsfk7QyAVW5/o7XZaZpuF0bj35f7XyxbVJQK9
-         MLBM1IklObu2iZn1iw/0ltt7MgojcQ9ru68BiEeJBcH8BikCoDl2Y3teODLcilTra4bu
-         wIljksUbqzV0ZFvw4Sls4pyW40SaYptl7CyDzZ2jLgkpe3Ny8nCwmpMap2CMGSntWBuW
-         q1KVhqUiXWNrwwLFnKlJZN72QO+sChAd1+a2ShvSW352rGo/CgGxbzqN5zaRH5yrXdj3
-         G1LO5g1QsB2ZOVZ/bp0Ihx+DaxZy4OF5qAc7mHhI23mdRWDP2sw2ZmJD85v9gi5KZqBU
-         Srxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703595109; x=1704199909;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8I6eOdWU4tKnR7IavMXk04RzDq/PuX82Y4y0SpAzUkk=;
-        b=LxadtMwHfnFMVPuS8UTEUwyL1/sFMeN6Zy+2TIhXiYWFC31tYxEovn9yuNQ3C9Umuo
-         7igqCw6pOQ7q8KobeFMtoWPHrDvRi1RNO4aplLkYFUKggfXJZK3DWp+YSkbu023JjkQR
-         6q0i1UzoXrMdu0kKGY62/n4ItQuWUKinBG7xkz0bpNWansaM4L4Vvl8mVPaQygkUsKE+
-         dBMg2aBsRWjxWT8/2vtDkPrzilVvGkmjqsB+0bxH75HnVSZWSpfNI/bxNt03VoRTq+S3
-         qu/vyafMHXkfSeScXVmX4dnGk6rWu6iTHGkIIImeBwy2pBnljmnJJYu8RT9HroTRZYng
-         cf1g==
-X-Gm-Message-State: AOJu0YxyuAom01anorV5nIjbIAbWRyga6lQTMWqfnqty6TW0+6/1NIIi
-	7eRDvog77Y8qhE3YMmTMu4I=
-X-Google-Smtp-Source: AGHT+IEm6DwiwwbjMok5Hg2b2sDi1RmVsgcgt7KlVA48YtMdjivpc6UnEOvWham0wYyY5EgxS7Kf2g==
-X-Received: by 2002:a05:6a20:324b:b0:190:35f4:c515 with SMTP id hm11-20020a056a20324b00b0019035f4c515mr7495561pzc.12.1703595109295;
-        Tue, 26 Dec 2023 04:51:49 -0800 (PST)
-Received: from Laptop-X1 ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id fb35-20020a056a002da300b006d9bff075cfsm2726177pfb.33.2023.12.26.04.51.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Dec 2023 04:51:48 -0800 (PST)
-Date: Tue, 26 Dec 2023 20:51:43 +0800
-From: Hangbin Liu <liuhangbin@gmail.com>
-To: Yujie Liu <yujie.liu@intel.com>
-Cc: netdev@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
-	David Ahern <dsahern@kernel.org>, linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org, lkp@intel.com,
-	kernel test robot <oliver.sang@intel.com>
-Subject: Re: [PATCH net-next] selftests/net: change the shebang of
- unicast_extensions.sh to bash
-Message-ID: <ZYrMX5GTjxCzGeK-@Laptop-X1>
-References: <20231225072109.3835503-1-yujie.liu@intel.com>
- <ZYl37fnxGGop7VCs@Laptop-X1>
- <ZYqSJk9rMxGxLx8s@yujie-X299>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50F534EB25;
+	Tue, 26 Dec 2023 13:07:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BQCcuH7029953;
+	Tue, 26 Dec 2023 13:07:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=K52oU9sdEHfHjpAJMbid1q1OXehqpGxCjomXi00WJx0=; b=Xt
+	AyQ1PopUYsfM98GICWQksi8BOHRdGEyJTMt6AB+kZT6VTX3+aUqmuXrz3p0RNUB7
+	rzT5SreoJDW/ZUhXRhMOgMDpOChmp72DY2LuPVo9Ymu1MxXVbcSyb5pajW0wNdxB
+	JgadBg772arysdjiE5oQVlP5NxcYdo4o6AUShc1bjsiGJ1V4u2SQlg9EkxGIO0D7
+	DeEhYgqZut+n9KfIG8e+xgTf4lg2sbpW3BXuYsB4rgZbKs1eArRp3QfYGC2pyEsh
+	cIu9y9bwmUQlcIjbB7yPcWbYrtTIfrph1M3YkMjjxnqY2b44FiDYOBR9tkb5/QcT
+	X/Ds4dQk8KNG/heq2SWg==
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v7s8u8txa-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 26 Dec 2023 13:07:10 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BQD6sdf025095
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 26 Dec 2023 13:06:54 GMT
+Received: from [10.253.14.217] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 26 Dec
+ 2023 05:06:49 -0800
+Message-ID: <06ddbae8-1502-41fb-8cf8-9a3390dad557@quicinc.com>
+Date: Tue, 26 Dec 2023 21:06:47 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZYqSJk9rMxGxLx8s@yujie-X299>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 5/5] dt-bindings: net: ipq4019-mdio: Document ipq5332
+ platform
+Content-Language: en-US
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, <agross@kernel.org>,
+        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <andrew@lunn.ch>, <hkallweit1@gmail.com>, <linux@armlinux.org.uk>,
+        <robert.marko@sartura.hr>
+CC: <linux-arm-msm@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <quic_srichara@quicinc.com>
+References: <20231225084424.30986-1-quic_luoj@quicinc.com>
+ <20231225084424.30986-6-quic_luoj@quicinc.com>
+ <dee72ce8-b24e-467a-b265-1b965588807f@linaro.org>
+ <aeb364a3-6c05-4a1b-ba32-e687a89f20f8@quicinc.com>
+ <58dde1a7-ed4a-442c-bb5c-c3f6d926fb7e@linaro.org>
+From: Jie Luo <quic_luoj@quicinc.com>
+In-Reply-To: <58dde1a7-ed4a-442c-bb5c-c3f6d926fb7e@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: r7Uiofwueh85XjMga1MdmQ9fu_9vsegz
+X-Proofpoint-ORIG-GUID: r7Uiofwueh85XjMga1MdmQ9fu_9vsegz
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
+ priorityscore=1501 mlxlogscore=999 impostorscore=0 adultscore=0
+ clxscore=1015 mlxscore=0 phishscore=0 lowpriorityscore=0 malwarescore=0
+ suspectscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2312260100
 
-On Tue, Dec 26, 2023 at 04:43:18PM +0800, Yujie Liu wrote:
-> Hi Hangbin,
+
+
+On 12/26/2023 5:28 PM, Krzysztof Kozlowski wrote:
+> On 26/12/2023 08:25, Jie Luo wrote:
+>>>> -    description:
+>>>> -      the first Address and length of the register set for the MDIO controller.
+>>>> -      the second Address and length of the register for ethernet LDO, this second
+>>>> -      address range is only required by the platform IPQ50xx.
+>>>> +    maxItems: 5
+>>>> +    description: |
+>>>> +      The first address and length of the register set for the MDIO controller,
+>>>> +      the optional second address and length of the register is for CMN block,
+>>>> +      the optional third, fourth and fifth address and length of the register
+>>>> +      for Ethernet LDO, the optional Ethernet LDO address range is required by
+>>>
+>>> Wait, required? You said in in response to Rob these are not required!
+>>
+>> As for the response to Rob, i was saying the uniphy ahb and sys clocks
+>> are not needed on ipq9574.
+>> The LDO are needed on ipq5332 and ipq5018 currently.
 > 
-> On Mon, Dec 25, 2023 at 08:39:09PM +0800, Hangbin Liu wrote:
-> > On Mon, Dec 25, 2023 at 03:21:09PM +0800, Yujie Liu wrote:
-> > > The patch set [1] added a general lib.sh in net selftests, and converted
-> > > several test scripts to source the lib.sh.
-> > 
-> > Oh, I didn't know dash doesn't support "source". Thanks for the fix.
-> > Would you please also help fix the pmtu.sh, which has the same issue?
+> Clocks as well but:
 > 
-> It looks like pmtu.sh was not converted in patch set [1], so it doesn't
-> have "source lib.sh" yet. The cover letter of [1] mentions that the
-> whole process of conversion will be split into several parts. Not sure
-> if pmtu.sh will be converted in the subsequent parts soon? If so, would
-> you like to change the shebang of pmtu.sh when converting it later, or
-> change it together in this patch? Thanks.
+> "A driver can function without knowing about all these new registers and
+> ..."
 
-The pmtu.sh update is in this patch set.
-https://lore.kernel.org/all/20231219094856.1740079-1-liuhangbin@gmail.com/
-
-It would be good to fix these 2 tests together.
+This comments are for compatible string in V2, the MDIO drive configures
+the hardware according to the DTS property defined or not for the new
+added IPQ platforms(ipq5332 and ipq9574) support.
 
 > 
-> BTW, in addition to pmtu.sh, I noticed that there are several other
-> scripts in net selftests which have "/bin/sh" shebang:
+> Anyway, this should be list ("items:") with descriptions, instead of one
+> big description listing things.
 
-Yes, but the other tests don't use "source".
+Ok, will update to use the list descriptions, thanks.
 
 > 
-> linux/tools/testing/selftests/net$ grep -rF '#!/bin/sh'
-> openvswitch/openvswitch.sh:#!/bin/sh
-> in_netns.sh:#!/bin/sh
-> netdevice.sh:#!/bin/sh
-> test_bpf.sh:#!/bin/sh
-> test_blackhole_dev.sh:#!/bin/sh
-> vlan_hw_filter.sh:#!/bin/sh
-> run_netsocktests:#!/bin/sh
-> pmtu.sh:#!/bin/sh
-> bareudp.sh:#!/bin/sh
-> l2_tos_ttl_inherit.sh:#!/bin/sh
-> veth.sh:#!/bin/sh
-> ipv6_flowlabel.sh:#!/bin/sh
-> unicast_extensions.sh:#!/bin/sh
-> reuseport_addr_any.sh:#!/bin/sh
-> run_afpackettests:#!/bin/sh
-> ip_local_port_range.sh:#!/bin/sh
-> amt.sh:#!/bin/sh
-> udpgso.sh:#!/bin/sh
-> ip_defrag.sh:#!/bin/sh
-> rps_default_mask.sh:#!/bin/sh
 > 
-> > BTW, you can change the "source ./lib.sh" to "source lib.sh" to consistent
-> > with other tests.
+>>
+>>>
+>>>> +      the platform IPQ50xx/IPQ5332.
+>>>
+>>> So these are valid for all platforms or not? Looks not, but nothing
+>>> narrows the list for other boards.
+>>
+>> i add the limitation on the reg usage for the ipq5332 platform on the
+>> following part "if condition" of this patch, i will update the patch
+>> to narrow down for the other compatibles.
+>>
+>>>
+>>> Anyway, why do you add entries in the middle? LDO was the second, so it
+>>> cannot be now fifth.
+>>
+>> As Rob's suggestion, i move the cmn_blk to second location for
+>> simplifying the limitation description, i checked the upstream dts code,
+>> the LDO is not used currently, so we can move cmn_blk to the second
+>> location here.
 > 
-> Sure, will respin a v2 with this change added.
+> I cannot find his suggestion in the previous thread. Where did he
+> propose it?
 
-Thanks
-Hangbin
+Rob suggested this on the V2 as below.
+"
+Perhaps cmn_blk should come 2nd, so all the variants have the same entry
+indices. Then you can move this to the top level and just say 'minItems:
+4' here.
+"
+
+> 
+> ...
+> 
+>>>> +  qcom,cmn-ref-clock-frequency:
+>>>> +    $ref: /schemas/types.yaml#/definitions/uint32
+>>>> +    enum:
+>>>> +      - 25000000
+>>>> +      - 31250000
+>>>> +      - 40000000
+>>>> +      - 48000000
+>>>> +      - 50000000
+>>>> +      - 96000000
+>>>> +    default: 48000000
+>>>> +    description: |
+>>>> +      The reference clock source of CMN PLL block is selectable, the
+>>>> +      reference clock source can be from wifi module or the external
+>>>> +      xtal, the reference clock frequency 48MHZ can be from internal
+>>>> +      wifi or the external xtal, if absent, the internal 48MHZ is used,
+>>>> +      if the 48MHZ is specified, which means the external 48Mhz is used.
+>>>
+>>> This does not resolve mine and Conor's concerns from previous version.
+>>> External clocks are defined as clock inputs.
+>>
+>> No matter the external or internal reference clock, they are the clock
+>> source selection for CMN, there are only 48MHZ can be external or
+>> internal, other clocks have the different clock rate, so the internal
+>> 48MHZ reference clock can be implied when the
+>> "qcom,cmn-ref-clock-frequency" is not defined, which is suggested by
+>> Conor in the previous
+>> comments.
+> 
+> I don't think he proposed it, but maybe I missed some message (care to
+> point me to his message where he agreed on usage of
+> qcom,cmn-ref-clock-frequency?). I am pretty sure we both stayed on the
+> same page, that the presence of clocks defines choice of internal clock.
+> This property should go away.
+
+Sorry for this confusion.
+Rob said the internal reference source can be decided by the absence of
+the property combined with compatible string, because i said the
+internal 96MHZ is used on ipq5018 currently in the previous message.
+
+per double checked the current IPQ platforms, the internal 96MHZ is also
+possible on ipq9574, and the reference clock source should be kept as
+configurable instead of limited by the compatible string, maybe the
+different reference clock source is acquired in the future, even
+currently it is not used on the special platform for now.
+
+so i update the solution with a little bit of changes.
+
+> 
+> It is tiring to keep discussing this.
+> 
+>>
+>>>
+>>>> +
+>>>> +  clock-frequency:
+>>>> +    enum:
+>>>> +      - 390625
+>>>> +      - 781250
+>>>> +      - 1562500
+>>>> +      - 3125000
+>>>> +      - 6250000
+>>>> +      - 12500000
+>>>> +    default: 390625
+>>>> +    description: |
+>>>> +      The MDIO bus clock that must be output by the MDIO bus hardware,
+>>>> +      only the listed frequencies above can be supported, other frequency
+>>>> +      will cause malfunction. If absent, the default hardware value 0xff
+>>>> +      is used, which means the default MDIO clock frequency 390625HZ, The
+>>>> +      MDIO clock frequency is MDIO_SYS_CLK/(MDIO_CLK_DIV + 1), the SoC
+>>>> +      MDIO_SYS_CLK is fixed to 100MHZ, the MDIO_CLK_DIV is from MDIO control
+>>>> +      register, there is higher clock frequency requirement on the normal
+>>>> +      working case where the MDIO slave devices support high clock frequency.
+>>>>    
+>>>>    required:
+>>>>      - compatible
+>>>> @@ -59,8 +118,10 @@ allOf:
+>>>>              contains:
+>>>>                enum:
+>>>>                  - qcom,ipq5018-mdio
+>>>> +              - qcom,ipq5332-mdio
+>>>>                  - qcom,ipq6018-mdio
+>>>>                  - qcom,ipq8074-mdio
+>>>> +              - qcom,ipq9574-mdio
+>>>>        then:
+>>>>          required:
+>>>>            - clocks
+>>>> @@ -70,6 +131,20 @@ allOf:
+>>>>            clocks: false
+>>>>            clock-names: false
+>>>>    
+>>>> +  - if:
+>>>> +      properties:
+>>>> +        compatible:
+>>>> +          contains:
+>>>> +            enum:
+>>>> +              - qcom,ipq5332-mdio
+>>>> +    then:
+>>>> +      properties:
+>>>> +        clocks:
+>>>> +          minItems: 5
+>>>> +          maxItems: 5
+>>>> +        reg-names:
+>>>> +          minItems: 4
+>>>
+>>> Why all other variants now have 5 clocks and 5 reg entries? Nothing of
+>>> it is explained in the commit msg.
+>>
+>>   From the condition above, only "qcom,ipq5332-mdio" has 5 clocks (mdio +
+>> 4 uniphy clocks) and 4 regs (mdio + cmn_blk + 2 LDOs) as the cmn_blk is
+>> moved to the second location.
+>>
+>> how it can gives the 5 clocks and 5 regs for other variants here?
+> 
+> How? Just read the beginning of your patch. It clearly says everyone has
+> up to 5 reg entries and up to 5 clocks.
+
+Sorry for missing the limitation of the new added regs and clocks for
+other platforms, will update the patch to add the limitation usage of
+the reg and clocks on the other platform.
+
+Thanks!
+> 
+> 
+> 
+> Best regards,
+> Krzysztof
+> 
 
