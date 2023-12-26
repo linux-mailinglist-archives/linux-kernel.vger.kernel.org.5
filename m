@@ -1,100 +1,128 @@
-Return-Path: <linux-kernel+bounces-11689-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11690-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C52781EA0C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 21:50:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD2B481EA10
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 21:54:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E01591F22ACC
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 20:50:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6EAA22832EA
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 20:54:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C08B4C90;
-	Tue, 26 Dec 2023 20:50:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02C3CF4F8;
+	Tue, 26 Dec 2023 20:54:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Z00n1bGP"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="V7iy9utS"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 515E74C6F
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 20:50:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=sU/ZDwVMrGzv8b1xMxNd4+PSlPCz5hvDCFekATiKTC8=; b=Z00n1bGPPF4i3LvMg4bvxZqY0Q
-	GBwq/LGTAuBdPQRkkYPwIt2An9p10mciUA/gg9QmGshByIamlj5hzLm+jGfia0emLL+nkKOZXVhJj
-	lLKVpheFUndJJCE65mL3+9UMnVL7IVHi5CaFpQ39BGD1wSUNCNWOKUhflYsbHsbu40dXbFvYiJZsp
-	w3Y2LVaNaRci+MyWk8jtMPr0MKNsHR5aV81aVuan6ueNeUpVG6z9tH2pzYFtbOQ29YrkKc9XyfD0x
-	wxYNwxoXQObcZwT+/jSn8iEAYVFgoM3D08fA+PQ+cLFT86M7N+tTJByXzPyZuWAuNCAFSK/v1hn6e
-	pnHCqSMA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1rIEMs-00191a-5m; Tue, 26 Dec 2023 20:49:38 +0000
-Date: Tue, 26 Dec 2023 20:49:38 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: Hillf Danton <hdanton@sina.com>
-Cc: "Eric W. Biederman" <ebiederm@xmission.com>,
-	Maria Yu <quic_aiquny@quicinc.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] kernel: Introduce a write lock/unlock wrapper for
- tasklist_lock
-Message-ID: <ZYs8Yp/7TovnVMLC@casper.infradead.org>
-References: <20231213101745.4526-1-quic_aiquny@quicinc.com>
- <ZXnaNSrtaWbS2ivU@casper.infradead.org>
- <20231226104652.1491-1-hdanton@sina.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F9CAEAF2;
+	Tue, 26 Dec 2023 20:54:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1703624049; x=1735160049;
+  h=message-id:subject:from:to:cc:date:
+   content-transfer-encoding:mime-version;
+  bh=6vm3/1J8+0RlhGUApQzpmYZe5Ax8xA/w2zIHtPsoe6A=;
+  b=V7iy9utSXW+GsdVQwa6V9UgsJ7Xpz27eOFY6cG3CDkhNly2XTc/xd3Zq
+   gKM++pCtizEwYC1Z+5HoxcmcdFesucM3QUc0W8cj9k5oXQebEmYlq1SSy
+   5vuGWnjjZlquEEgbl9X5S6kGlenl0YCdu1oyGSLMr/S+8TWKIlwCqYORA
+   to/5/ZhJaJgGqaCdC2g7i0XLq/NTMINjzppQZ2E6UP3HFpvOkD4lrq+br
+   nuuyN3tq8LeI9KsfWdkwEyaYdNsALooC7UJ5NUpjaEjr1M3qQuyVn1Fby
+   YAXAlQIWuUEQ5wEAzUJO/9Zv8cXbUpNYAF3f+s6ZxLlfc8yWmglK8gmvA
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10935"; a="399168939"
+X-IronPort-AV: E=Sophos;i="6.04,307,1695711600"; 
+   d="scan'208";a="399168939"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Dec 2023 12:54:08 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,307,1695711600"; 
+   d="scan'208";a="20102656"
+Received: from smorga5x-mobl.amr.corp.intel.com ([10.212.113.189])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Dec 2023 12:53:27 -0800
+Message-ID: <00e3eea06f5dde61734a53af797b190692060aab.camel@linux.intel.com>
+Subject: [PATCH] crypto: iaa - Account for cpu-less numa nodes
+From: Tom Zanussi <tom.zanussi@linux.intel.com>
+To: herbert@gondor.apana.org.au, davem@davemloft.net, fenghua.yu@intel.com
+Cc: rex.zhang@intel.com, dave.jiang@intel.com, tony.luck@intel.com, 
+	linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org, 
+	dmaengine@vger.kernel.org
+Date: Tue, 26 Dec 2023 14:53:26 -0600
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231226104652.1491-1-hdanton@sina.com>
 
-On Tue, Dec 26, 2023 at 06:46:52PM +0800, Hillf Danton wrote:
-> On Wed, 13 Dec 2023 12:27:05 -0600 Eric W. Biederman <ebiederm@xmission.com>
-> > Matthew Wilcox <willy@infradead.org> writes:
-> > > On Wed, Dec 13, 2023 at 06:17:45PM +0800, Maria Yu wrote:
-> > >> +static inline void write_lock_tasklist_lock(void)
-> > >> +{
-> > >> +	while (1) {
-> > >> +		local_irq_disable();
-> > >> +		if (write_trylock(&tasklist_lock))
-> > >> +			break;
-> > >> +		local_irq_enable();
-> > >> +		cpu_relax();
-> > >
-> > > This is a bad implementation though.  You don't set the _QW_WAITING flag
-> > > so readers don't know that there's a pending writer.  Also, I've seen
-> > > cpu_relax() pessimise CPU behaviour; putting it into a low-power mode
-> > > that takes a while to wake up from.
-> > >
-> > > I think the right way to fix this is to pass a boolean flag to
-> > > queued_write_lock_slowpath() to let it know whether it can re-enable
-> > > interrupts while checking whether _QW_WAITING is set.
-> 
-> 	lock(&lock->wait_lock)
-> 	enable irq
-> 	int
-> 	lock(&lock->wait_lock)
-> 
-> You are adding chance for recursive locking.
+In some configurations e.g. systems with CXL, a numa node can have 0
+cpus and cpumask_nth() will return a cpu value that doesn't exist,
+which will result in an attempt to add an entry to the wq table at a
+bad index.
 
-Did you bother to read queued_read_lock_slowpath() before writing this
-email?
+To fix this, when iterating the cpus for a node, skip any node that
+doesn't have cpus.
 
-        if (unlikely(in_interrupt())) {
-                /*
-                 * Readers in interrupt context will get the lock immediately
-                 * if the writer is just waiting (not holding the lock yet),
-                 * so spin with ACQUIRE semantics until the lock is available
-                 * without waiting in the queue.
-                 */
-                atomic_cond_read_acquire(&lock->cnts, !(VAL & _QW_LOCKED));
-                return;
+Also, as a precaution, add a warning and bail if cpumask_nth() returns
+a nonexistent cpu.
+
+Reported-by: Zhang, Rex <rex.zhang@intel.com>
+Signed-off-by: Tom Zanussi <tom.zanussi@linux.intel.com>
+---
+ drivers/crypto/intel/iaa/iaa_crypto_main.c | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/crypto/intel/iaa/iaa_crypto_main.c b/drivers/crypto/in=
+tel/iaa/iaa_crypto_main.c
+index 5093361b0107..782157a74043 100644
+--- a/drivers/crypto/intel/iaa/iaa_crypto_main.c
++++ b/drivers/crypto/intel/iaa/iaa_crypto_main.c
+@@ -1017,12 +1017,17 @@ static void rebalance_wq_table(void)
+ 		return;
+ 	}
+=20
+-	for_each_online_node(node) {
++	for_each_node_with_cpus(node) {
+ 		node_cpus =3D cpumask_of_node(node);
+=20
+ 		for (cpu =3D 0; cpu < nr_cpus_per_node; cpu++) {
+ 			int node_cpu =3D cpumask_nth(cpu, node_cpus);
+=20
++			if (WARN_ON(node_cpu >=3D nr_cpu_ids)) {
++				pr_debug("node_cpu %d doesn't exist!\n", node_cpu);
++				return;
++			}
++
+ 			if ((cpu % cpus_per_iaa) =3D=3D 0)
+ 				iaa++;
+=20
+@@ -2095,10 +2100,13 @@ static struct idxd_device_driver iaa_crypto_driver =
+=3D {
+ static int __init iaa_crypto_init_module(void)
+ {
+ 	int ret =3D 0;
++	int node;
+=20
+ 	nr_cpus =3D num_online_cpus();
+-	nr_nodes =3D num_online_nodes();
+-	nr_cpus_per_node =3D nr_cpus / nr_nodes;
++	for_each_node_with_cpus(node)
++		nr_nodes++;
++	if (nr_nodes)
++		nr_cpus_per_node =3D nr_cpus / nr_nodes;
+=20
+ 	if (crypto_has_comp("deflate-generic", 0, 0))
+ 		deflate_generic_tfm =3D crypto_alloc_comp("deflate-generic", 0, 0);
+--=20
+2.34.1
+
 
 
