@@ -1,190 +1,226 @@
-Return-Path: <linux-kernel+bounces-11701-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11702-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 595BE81EA36
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 22:53:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45D2781EA3A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 23:00:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C53D11F22AA5
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 21:53:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E6D50281D2A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 22:00:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 766C55257;
-	Tue, 26 Dec 2023 21:53:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7C955255;
+	Tue, 26 Dec 2023 21:59:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="AOxQ1PhW"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V0qV7KFa"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from EUR02-DB5-obe.outbound.protection.outlook.com (mail-db5eur02on2065.outbound.protection.outlook.com [40.107.249.65])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f47.google.com (mail-qv1-f47.google.com [209.85.219.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B695B4C97;
-	Tue, 26 Dec 2023 21:53:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=knY7eByV+qE/JpxGJGI+DBeSi+gjbcdt0anba29qEt3bPB/eUmY6+xfjmwgmcncRbLj/Up9Ha5bn/hP4cjVFjfY8pUjo2PWBoE/2Pu/KVUAoOcgtJE3+Pc4cKagUGVRJgXPXD2lfnROwDTAmZbH4HXNEzYEHMELde1AnGWEaLbe+Cn9KrAI69vFGnnKaY04MP4PYUuuiGHF9pTZN+53ax5ZjpSB5rTs8UdRYc2wBtr+aezBefQeDI1ucgM02TaOeIW+pP1ZhDVzVuZr9277/wvVPiD7QFFrY5TVYfx7lYRWtiN38be7/R+OQ/waqx+yaBRPflq+RXTHnaUrj10thIQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=nRkjpilHyBczuICe00pATbVL+Nk5uadbcaNkU+p7M/w=;
- b=VAGVic5mXJexl6Fp9yU5QScC+4WHD7wpTES56rBb9e/6IQ6qv13koBLeVPu7rxTIY2fHBkHLp4sy0Li1K4CPUq85K3W1mDiVE4Z26rCOA7UtNXriGgZMIFy3WZcsFV2TK+CHtEMe2pht698T9YCnPucfYB0XCsQSPix0dWKTp3z7AaONFmVAwV7jkNFQ8Pa0iAAX+V9XvIWN9U44F7SMx49C5UpLRpcTlPPU0ZSnAfhTtLxcgzs6Ur/48v/kgg8jephRlfsmwcjoFUl3LWB+BYLkehxAPZePjxWdmg5IhtLiCRzoJwyq5MyolNQ0LB8ZAETXIISDu5s8EnYMn4ia9A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nRkjpilHyBczuICe00pATbVL+Nk5uadbcaNkU+p7M/w=;
- b=AOxQ1PhWK3QHBu1Ak63xI3/1Y7/Aum3P3hiShOAHBi65Co1+/6ExLunTMQX4/SJJ0UQ1sl1M3a2E+CMQ+JGwzAAJXeAvYbP4jWG8fYw5e3RpqJl99WoL0ylPM0WsXrS/f4Nzjv8Cu7TLvmW9mjbfO+RCdBkmBMsm2zB1kxa/arU=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from AM6PR04MB4838.eurprd04.prod.outlook.com (2603:10a6:20b:4::16)
- by AM9PR04MB8970.eurprd04.prod.outlook.com (2603:10a6:20b:409::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7135.18; Tue, 26 Dec
- 2023 21:53:12 +0000
-Received: from AM6PR04MB4838.eurprd04.prod.outlook.com
- ([fe80::95f5:5118:258f:ee40]) by AM6PR04MB4838.eurprd04.prod.outlook.com
- ([fe80::95f5:5118:258f:ee40%7]) with mapi id 15.20.7113.027; Tue, 26 Dec 2023
- 21:53:11 +0000
-Date: Tue, 26 Dec 2023 16:53:01 -0500
-From: Frank Li <Frank.li@nxp.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: bhelgaas@google.com, conor+dt@kernel.org, devicetree@vger.kernel.org,
-	festevam@gmail.com, helgaas@kernel.org, hongxing.zhu@nxp.com,
-	imx@lists.linux.dev, kernel@pengutronix.de,
-	krzysztof.kozlowski+dt@linaro.org, kw@linux.com,
-	l.stach@pengutronix.de, linux-arm-kernel@lists.infradead.org,
-	linux-imx@nxp.com, linux-kernel@vger.kernel.org,
-	linux-pci@vger.kernel.org, lpieralisi@kernel.org,
-	manivannan.sadhasivam@linaro.org, robh@kernel.org,
-	s.hauer@pengutronix.de, shawnguo@kernel.org
-Subject: Re: [PATCH v6 15/16] dt-bindings: imx6q-pcie: Add iMX95 pcie
- endpoint compatible string
-Message-ID: <ZYtLPQgMVUSNduLG@lizhi-Precision-Tower-5810>
-References: <20231224183242.1675372-1-Frank.Li@nxp.com>
- <20231224183242.1675372-16-Frank.Li@nxp.com>
- <6a61f325-a58b-4aa6-9a0a-7a3086f63829@linaro.org>
- <ZYr7Y+mJea6fChjS@lizhi-Precision-Tower-5810>
- <0233cf48-93cb-4f19-ad1d-e3e1835c1fef@linaro.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0233cf48-93cb-4f19-ad1d-e3e1835c1fef@linaro.org>
-X-ClientProxiedBy: BY5PR17CA0054.namprd17.prod.outlook.com
- (2603:10b6:a03:167::31) To AM6PR04MB4838.eurprd04.prod.outlook.com
- (2603:10a6:20b:4::16)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D004F5224;
+	Tue, 26 Dec 2023 21:59:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f47.google.com with SMTP id 6a1803df08f44-67f9f6163a1so24386206d6.1;
+        Tue, 26 Dec 2023 13:59:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703627989; x=1704232789; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OblgP4W4GkCiW7SIZrzViOqyCU7TP6eEbBjt7az5RUk=;
+        b=V0qV7KFacFQXxh47eLgVK87fsyA5iXWO8XqrhacXk4WUIWmNYwmOiNBF6/bDXkV6np
+         dovqDSFbdJtT7SJ2hiata+Lo4+vEfZCzNQzlLGIIIIczElIRFd6zltiq/1qbH2Ld9Twc
+         RGJ08zy5SaUsMPWJxFoLuScdra9DVDCrkEMS7bkK+WNgRdFGGY5+B/Smang8cqDmNBWA
+         mkG/ZikOioqabdR9iq8+yhW9ZQw3+PE/7NiKqHCmsBkvfVlIwMi7PWlohylsqBT1I36r
+         q3hfEJqm5Bpr6j8Dqr6Sutfh40S/cINxFJcxFEy19dhh9sKQc5AXORyh/x9QYv4eV2bV
+         5DtA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703627989; x=1704232789;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OblgP4W4GkCiW7SIZrzViOqyCU7TP6eEbBjt7az5RUk=;
+        b=ps+BTe79EqxLTjdMvkpSwYtnOAn4yYJ2zcT0tZfOtTdorAVSP7l72Watf36So3ijlR
+         rEpxvf+3HGGerQ8DDaDgnVfIL3iLWfLc0EnQsW52nS+vxYm8Rywmlr3NQlU9Bp9PG3GK
+         ROghrzVXnhJa9e8M5si4E0NhUpsCJ6WUm42re4sczuVLfrG+GoMB+a+ttNvjlaFkLYZB
+         76UH1au5K1bNqRhA838MGzfTW+iZyU0l3OTQIXfq4dskfhD76A5BFtPhaK8K3qVryuTd
+         eokGYx4hDRoQmHXy/4HtgBQ4LIdkVbidN4FvAvzJQPKlQzzfijbpGYYNnFZ5kzd3P84i
+         ixew==
+X-Gm-Message-State: AOJu0YxG+bqBWg8dsb5XL+Y2orwJjNpI1OXrCOgsv8fTVOcRHB+zhn8z
+	CPE8gVFPlbuGRbW7rj1SJxo=
+X-Google-Smtp-Source: AGHT+IFnxbmUjuRx5kdS4z+tLhtW7m/pldsFaDbutGy4OdxI6KHX/ryN2maUaEvQ1lcuePJX0YVqxg==
+X-Received: by 2002:a05:6214:14f4:b0:67f:a0a5:39f5 with SMTP id k20-20020a05621414f400b0067fa0a539f5mr6947083qvw.56.1703627988686;
+        Tue, 26 Dec 2023 13:59:48 -0800 (PST)
+Received: from localhost (48.230.85.34.bc.googleusercontent.com. [34.85.230.48])
+        by smtp.gmail.com with ESMTPSA id bj5-20020a05620a190500b0078118b6cd18sm4624088qkb.43.2023.12.26.13.59.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Dec 2023 13:59:48 -0800 (PST)
+Date: Tue, 26 Dec 2023 16:59:48 -0500
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To: Richard Gobert <richardbgobert@gmail.com>, 
+ davem@davemloft.net, 
+ dsahern@kernel.org, 
+ edumazet@google.com, 
+ kuba@kernel.org, 
+ pabeni@redhat.com, 
+ shuah@kernel.org, 
+ netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, 
+ linux-kselftest@vger.kernel.org
+Message-ID: <658b4cd4241c8_5c2a929499@willemb.c.googlers.com.notmuch>
+In-Reply-To: <32febbc9-e603-4400-addd-bdb97ce56c1d@gmail.com>
+References: <f4eff69d-3917-4c42-8c6b-d09597ac4437@gmail.com>
+ <32febbc9-e603-4400-addd-bdb97ce56c1d@gmail.com>
+Subject: Re: [PATCH net-next 2/3] net: gro: parse ipv6 ext headers without
+ frag0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM6PR04MB4838:EE_|AM9PR04MB8970:EE_
-X-MS-Office365-Filtering-Correlation-Id: d5fb11d4-910b-4c72-0ed8-08dc065d0dce
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	9/cG/8Vjx7u6vOkkPFdZtrZEZQG1es3whgOtYob+jHUxd+xM+Ysj5y8QUKo8vgs1kV/oYkmQN9tkrvOSV0jvqvq71Ckvna925czDctJCVl9sd2VV5P7pvpydirv1XjgLidLZ79TQwXkdldGR3t0xMN8oD0Uebf/wAja3gD4+qeru/0Ly4nDmUfQHw0lsobFqXJpCKAElYQGc5tUSj3UIezKpocmpEfOmG3Gzv+cHTjvLePm0FpFdGItMwmBGRgYeShIvpyMRFKf3r3Ix2krhbm6zJOY9RGuh6JcllIed1s0Q1LVo0OdwaRNgqLzcgljO+taIp111F239Ijw2B9XT9gugokPhtl29cZ/uWeYN+gEkngVQfwzjT2+fD/pvCyYJs21dY5Hl26KzjjgD5ud97UFj7PPx54U/oEGxsy/iB4Y9b5spBdscXyZyLRV5apUm/AgUBJkWDhq36/MKaT4bzk2+FgQaLgcAOaJ9brlLiuRsO/O9g85+pYutIshHoDLI9ZkCyFN8s/tqqrMfOC/Rmu/DDFWBASbQ9faBifKh2OXeBZGVZO29Q7T8XC+K4vmTGzFkoCzppxVLDTVSkdcHyJbgnrZTc1JIyAaJS3f0cPNgohVxLitk00O0DdzMWIxZ6Hkwi1Qv4jTJvZc/1FOCTg==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4838.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(39860400002)(136003)(366004)(396003)(376002)(346002)(230922051799003)(451199024)(64100799003)(186009)(1800799012)(6506007)(26005)(52116002)(53546011)(6666004)(6512007)(9686003)(5660300002)(7416002)(4326008)(8676002)(6486002)(33716001)(41300700001)(2906002)(8936002)(478600001)(316002)(6916009)(66476007)(66556008)(66946007)(86362001)(38100700002)(38350700005)(32563001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?woc8O5jnPg4uYGR90CExiUVNd4tBBXpGayxZ2qZ6OVhrUifC2PutXJMq7AY9?=
- =?us-ascii?Q?evHsd0ziC+UQ7uzzYJb51DOq7FdfAvU0FlS2PSyJFofGp+DgGUs2027fhVP4?=
- =?us-ascii?Q?WJpwWEAH3XTIK/aGPoyhXHIqk9e6WGb903nHDKg5f3O/Ppo5gq8ybWxo0vDD?=
- =?us-ascii?Q?sPtnYuV5W7KpuzCNLYoSTVuLXldaoztPKNbYNlYs41ettBTh7057GEofiTwc?=
- =?us-ascii?Q?vD7KQLKcgSSA0SbAYZLGs82Mr+nFc00jES29PS4AlsAJ143Bma9jyzIsgS6+?=
- =?us-ascii?Q?m1SLUktEh4Jwpx1Nxt7n8KANEN133MWxDzNF4Ejbrr9hjFiYOcFwpjzIE0z6?=
- =?us-ascii?Q?lBt+HmiJ5vkC3uK5j9utYzUfCUhm5Bn5lwrEmTd3RR8p4Zd51s5C7CsfRTYD?=
- =?us-ascii?Q?8PmsBeEG8X1pgJtipuaLzm7s+atClxOSY2J00l+mvPDMWeLwUJO8t9yEiEz2?=
- =?us-ascii?Q?fpvaLJFCH+uq1MO4uumc/F+lQo+GD3xOKIk2eQYPW50KZyEnn++8/JecBWK8?=
- =?us-ascii?Q?5Y98JwwxRgjL0EfwMgWO4uYJGOdVbBawv8EzmnePlZq/riHKFiDys5sg835x?=
- =?us-ascii?Q?dKzkh3LKmEkxbulC3N2jzyhqNOMkirXVQ5abltkj0r6nxzy5Xw7ydma3gxtA?=
- =?us-ascii?Q?46iTsTCWWrcaEg7huiFZKr/EiyBoFNaw5Ei6nQgFYfqUH6EAL3p2T3n2CwwI?=
- =?us-ascii?Q?CYwjN2YtAMLYWmuJyc+dZUSVJmlptInAxp36DiyhTYc2vgc9vXpDUnpqNnm2?=
- =?us-ascii?Q?TQixmkRXa1NkYC3J8SpDKkfj3l0Haaqc/+AxfBDAQ1uINRDLk81P+KAryACw?=
- =?us-ascii?Q?jWb05sxyEJT9s/ZzZnywNwko6NjJgMTR+IoQ+hIirocsURD+f+CiA6ODequM?=
- =?us-ascii?Q?jVJ1XqTPogd0CBIOvIDggWptcoXdPkmWuRFuvok3B3V4Khzhcdq7H/S1OefU?=
- =?us-ascii?Q?3dJlVbiWiFzdp5K/DmffGiwLuU+ROzBUrakJYj3aKRr6DzBbfhIUA7LmbDke?=
- =?us-ascii?Q?nC3LXeswVDYmU9S80tqOBLtyfW7HwZYBcSj5CCbbDgsj+C58Xqg9pTTNlRog?=
- =?us-ascii?Q?p+CxHLjwhfMyR4s19LAJmPhUmlXGYqVF7kmyqrxL/QBa15JxOwUf2/jKTgUu?=
- =?us-ascii?Q?GZ3XiNV4PLCEpb/VjTiC7yshmlhM69Rxjz7mmM+uRh7x7VMrflfojSlN5HeE?=
- =?us-ascii?Q?8RjFnCMBuoYajM1pU9mQPBaFDkR4v/jQhakYi2qFBFh5DRw2kJ2oBHwQOWmn?=
- =?us-ascii?Q?jDdhLW2SkfE7HBoD+5yp7MhZqJG0OFsWQsutklrFbp+eabR5tjSNhp0zK55T?=
- =?us-ascii?Q?WeBzhfYusptKotI7TFDiLc2uNF825eT0UQ8bleId8F8+fmhXIbzmpyoWhFMC?=
- =?us-ascii?Q?EnZeWs1Rbz3dy3fFSvjEfhdsgYtFiEUy1S/+5k4t9agIQx3UrqH9szASpUQm?=
- =?us-ascii?Q?JU+iGOf1U7jV+l4XxmplS4T7E20xJFUyhlzqw16tABJYmAMzA/0v5T4fBVpv?=
- =?us-ascii?Q?jxonVmV4PQRL4Qv3kegbKDqXe2I8lWRPYYgWQ741P1dRab+u2tFp3gYti9r+?=
- =?us-ascii?Q?INyxwuzb54hjlexKcqbI2lhLWAReNT+2F2JpmhbN?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d5fb11d4-910b-4c72-0ed8-08dc065d0dce
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4838.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Dec 2023 21:53:11.6453
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: KQ26DvlDpsAhBAc+qiclxQR1wWteRzIyg/sP2ojK3gCurprFEItF5va+wWzKbvDzkAarPZjk3ek/RVtVhJXB9g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR04MB8970
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, Dec 26, 2023 at 08:01:53PM +0100, Krzysztof Kozlowski wrote:
-> On 26/12/2023 17:12, Frank Li wrote:
-> > On Mon, Dec 25, 2023 at 08:16:17PM +0100, Krzysztof Kozlowski wrote:
-> >> On 24/12/2023 19:32, Frank Li wrote:
-> >>> Add i.MX95 PCIe "fsl,imx95-pcie-ep" compatible string.
-> >>> Add reg-name: "atu", "dbi2", "dma" and "app".
-> >>> Reuse PCI linux,pci-domain as controller id at endpoint.
-> >>>
-> >>> Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> >>> ---
-> >>>
-> >>
-> >> ...
-> >>
-> >>> +# reuse PCI linux,pci-domain as controller id at Endpoint
-> >>> +  - if:
-> >>> +      properties:
-> >>> +        compatible:
-> >>> +          enum:
-> >>> +            - fsl,imx95-pcie-ep
-> >>> +    then:
-> >>> +      properties:
-> >>> +        linux,pci-domain: true
-> >>
-> >> Same comment: why do you need? Don't ignore my feedback. You responded
-> >> you will fix it, but it is still here...
-> > 
-> > DTB_CHECK report error after I remove it. linux,pci-domain is only define
-> > in pci, not pci-ep.
+Richard Gobert wrote:
+> This commit utilizes a new helper function, ipv6_gro_pull_exthdrs, which
+> is used in ipv6_gro_receive to pull ipv6 ext headers instead of
+> ipv6_gso_pull_exthdrs. To use ipv6_gso_pull_exthdr, pskb_pull and
+> __skb_push must be used, and frag0 must be invalidated. This commit
+> removes unnecessary code around the call to ipv6_gso_pull_exthdrs and
+> enables the frag0 fast path in IPv6 packets with ext headers.
 > 
-> Ah, thank you, indeed.
+> Signed-off-by: Richard Gobert <richardbgobert@gmail.com>
+> ---
+>  net/ipv6/ip6_offload.c | 51 +++++++++++++++++++++++++++++++++---------
+>  1 file changed, 41 insertions(+), 10 deletions(-)
 > 
-> > 
-> > So I add comments about this. linux,pci-domain was resued ad controller id.
+> diff --git a/net/ipv6/ip6_offload.c b/net/ipv6/ip6_offload.c
+> index 0e0b5fed0995..a3b8d9127dbb 100644
+> --- a/net/ipv6/ip6_offload.c
+> +++ b/net/ipv6/ip6_offload.c
+> @@ -37,6 +37,40 @@
+>  		INDIRECT_CALL_L4(cb, f2, f1, head, skb);	\
+>  })
+>  
+> +static int ipv6_gro_pull_exthdrs(struct sk_buff *skb, int off, int proto)
+> +{
+> +	const struct net_offload *ops = NULL;
+> +	struct ipv6_opt_hdr *opth;
+> +
+> +	for (;;) {
+> +		int len;
+> +
+> +		ops = rcu_dereference(inet6_offloads[proto]);
+> +
+> +		if (unlikely(!ops))
+> +			break;
+> +
+> +		if (!(ops->flags & INET6_PROTO_GSO_EXTHDR))
+> +			break;
+> +
+> +		opth = skb_gro_header(skb, off + 8, off);
+
+When changing this code, it would be great to make it more self
+documenting. It's not entirely clear what that 8 is based on.
+sizeof(*opth) is only 2. Probably an optimization to handle the most
+common extension headers in a single pskb_may_pull? If so, this new
+code does not have that concern, so can just use sizeof(*opth). Or
+else add a const int likely_max_opt_hdr_len = 8 or so.
+
+
+> +		if (unlikely(!opth))
+> +			break;
+> +
+> +		len = ipv6_optlen(opth);
+> +
+> +		opth = skb_gro_header(skb, off + len, off);
+> +		if (unlikely(!opth))
+> +			break;
+> +		proto = opth->nexthdr;
+> +
+> +		off += len;
+> +	}
+> +
+> +	skb_gro_pull(skb, off - skb_network_offset(skb));
+> +	return proto;
+> +}
+> +
+>  static int ipv6_gso_pull_exthdrs(struct sk_buff *skb, int proto)
+>  {
+>  	const struct net_offload *ops = NULL;
+> @@ -203,28 +237,25 @@ INDIRECT_CALLABLE_SCOPE struct sk_buff *ipv6_gro_receive(struct list_head *head,
+>  		goto out;
+>  
+>  	skb_set_network_header(skb, off);
+> -	skb_gro_pull(skb, sizeof(*iph));
+> -	skb_set_transport_header(skb, skb_gro_offset(skb));
+>  
+> -	flush += ntohs(iph->payload_len) != skb_gro_len(skb);
+> +	flush += ntohs(iph->payload_len) != skb->len - hlen;
+>  
+>  	proto = iph->nexthdr;
+>  	ops = rcu_dereference(inet6_offloads[proto]);
+>  	if (!ops || !ops->callbacks.gro_receive) {
+> -		pskb_pull(skb, skb_gro_offset(skb));
+> -		skb_gro_frag0_invalidate(skb);
+> -		proto = ipv6_gso_pull_exthdrs(skb, proto);
+> -		skb_gro_pull(skb, -skb_transport_offset(skb));
+> -		skb_reset_transport_header(skb);
+> -		__skb_push(skb, skb_gro_offset(skb));
+> +		proto = ipv6_gro_pull_exthdrs(skb, hlen, proto);
+>  
+>  		ops = rcu_dereference(inet6_offloads[proto]);
+>  		if (!ops || !ops->callbacks.gro_receive)
+>  			goto out;
+>  
+> -		iph = ipv6_hdr(skb);
+> +		iph = skb_gro_network_header(skb);
+> +	} else {
+> +		skb_gro_pull(skb, sizeof(*iph));
+>  	}
+
+This code is non-obvious and has proven fragile (57ea52a8651). Changes
+are best as simple as they can be, with ample documentation. My
+attempt, as arrived at during review:
+
+The existing always pulls the IPv6 header and sets the transport
+offset initially. Then optionally again pulls any extension headers
+in ipv6_gso_pull_exthdrs and sets the transport offset again on
+return from that call.
+
+The new code adds a small optimization to only pull and set transport
+offset once.
+
+The existing code needs to set skb->data at the start of the first
+extension header before calling ipv6_gso_pull_exthdrs, and must
+disable the frag0 optimization because that function uses
+pskb_may_pull/pskb_pull instead of skb_gro_ helpers. It sets the
+GRO offset to the inner TCP header with skb_gro_pull and sets the
+transport header. Then returns skb->data to its position before
+this block.
+
+The new code is much simpler: it does not have to modify skb->data,
+as all operations are with skb_gro_ helpers.
+
+Aside from the small comment above, and suggestion to include
+something like this summary in the code and/or avoid the extra
+optimization,
+
+Reviewed-by: Willem de Bruijn <willemb@google.com>
+
+>  
+> +	skb_set_transport_header(skb, skb_gro_offset(skb));
+> +
+>  	NAPI_GRO_CB(skb)->proto = proto;
+>  
+>  	flush--;
+> -- 
+> 2.36.1
 > 
-> However maybe there is reason why it is not for endpoints. The
-> description is saying it is valid only for host bridge, so maybe it
-> should not be used for endpoint case?
 
-EP side, it is not PCI bus. So it is reasonable that linux,pci-doamin not
-in EP side.
 
-iMX6 host driver(and other some host controller drivers) already use it as
-"controller id". EP driver is mostly reused with host bridge drivers. I
-think needn't create new property such as "controller_id" for EP only.
-
-A comments should be enough for this case.
-
-Frank
-
-> > 
-> > If include pci.yaml, there are too much other properties was involved, but
-> > not used by pci-ep.
-> 
-> Best regards,
-> Krzysztof
-> 
 
