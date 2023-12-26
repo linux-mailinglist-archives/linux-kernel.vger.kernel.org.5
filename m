@@ -1,104 +1,82 @@
-Return-Path: <linux-kernel+bounces-11725-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11726-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E004781EACE
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 00:54:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C95381EAD1
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Dec 2023 00:56:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 94CFF1F2061D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 23:54:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BE8841C2143B
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 23:56:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F5A4F4E4;
-	Tue, 26 Dec 2023 23:54:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C040FF4E4;
+	Tue, 26 Dec 2023 23:56:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="mNlcdX7Y"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WDqRFliW"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 883F31078A;
-	Tue, 26 Dec 2023 23:54:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=HVJev5bn/SXmUllhi1fZYGckmmp1VVLDmEqAwl2Z208=; b=mNlcdX7YAzTroaH2aOGFi3ncxR
-	2pNVzBaD/QlHN+u5vcyz9kJsWseAFVvJP5qwfpYJojtLD66OSY2Hdxbv705YjapFqRt9x649dxUap
-	xmXLFccJ/U2UE3uG62d1IC6SlQSIu1tJuY9x19T9yNKI970Yt1H0l4mu4krvCTfg+Gr1Tz08eFp6t
-	ueFWeDf0saiU6NwIdKiYcLLBTGa6uGwZUvOLtTmBUJ0pxig+BimyaCGwZtR5W20M59Zkh6V4MUwsv
-	cr5PBKj3rAuFqFBJg7EQUi1SpzJFHMo/eGV0ZbkePXXw4/quDWjgFOd2XlTiIuqIk6lw3+2eL1nss
-	MQfvPDeg==;
-Received: from [50.53.46.231] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1rIHFC-00DgKc-0t;
-	Tue, 26 Dec 2023 23:53:54 +0000
-Message-ID: <12958640-e6c0-43d3-a710-48ba7873c8f5@infradead.org>
-Date: Tue, 26 Dec 2023 15:53:53 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 103555C9C;
+	Tue, 26 Dec 2023 23:56:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 152A4C433C7;
+	Tue, 26 Dec 2023 23:56:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703634964;
+	bh=eeVVPhs698tzJMKPnsN0mOMee+NQ/JOkzljbDzyuvrk=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=WDqRFliWt4+s1yPPXM6G//iGI15rQXGWKOoUX9AIRwNDaC0lerFygACxFF/fWG8UX
+	 7377qOSvMf1ojfixahrgoBVMCNh2axBW9diJLgSXOmFFD44/BywBakydLB+MWjHgL5
+	 mcyWv1sr9WIsGT3uxSd9hmIqw+qcct4UCnQBwBpYpTrN+pQXdRFE4E1CzvrFtBDQ5c
+	 z1GO4icvo2Y4Wo28r/5iCAASXkZWh7Oo2fCFahN5CR2C6yyLdMqVIzajysf6kA6N+s
+	 YjJ5KSiJlV6v4FEXtbo4KrkqAc2CI01/jvlM3wy0hUDYJjlpfDTvLEKMKDsU+FlOMr
+	 U1H3Z20ISE+RA==
+Date: Tue, 26 Dec 2023 17:56:02 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Sunil V L <sunilvl@ventanamicro.com>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-riscv@lists.infradead.org, linux-acpi@vger.kernel.org,
+	linux-pci@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
+	Albert Ou <aou@eecs.berkeley.edu>, Haibo Xu <haibo1.xu@intel.com>,
+	"Rafael J . Wysocki" <rafael@kernel.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Anup Patel <anup@brainfault.org>,
+	=?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+	Conor Dooley <conor.dooley@microchip.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Andrew Jones <ajones@ventanamicro.com>,
+	Will Deacon <will@kernel.org>, Len Brown <lenb@kernel.org>
+Subject: Re: [RFC PATCH v3 03/17] PCI: Make pci_create_root_bus() declare its
+ reliance on MSI domains
+Message-ID: <20231226235602.GA1483795@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] xprtrdma: removed unnecessary headers from verbs.c
-Content-Language: en-US
-To: Tanzir Hasan <tanzirh@google.com>
-Cc: Chuck Lever <chuck.lever@oracle.com>, Jeff Layton <jlayton@kernel.org>,
- Neil Brown <neilb@suse.de>, Olga Kornievskaia <kolga@netapp.com>,
- Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
- Trond Myklebust <trond.myklebust@hammerspace.com>,
- Anna Schumaker <anna@kernel.org>, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, linux-nfs@vger.kernel.org,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- Nick Desaulniers <nnn@google.com>, Al Viro <viro@zeniv.linux.org.uk>
-References: <20231226-verbs-v1-1-3a2cecf11afd@google.com>
- <fadeaa0b-e9d2-4467-97ad-63ba8f7d8646@infradead.org>
- <CAE-cH4rc6gWNcsgm243i=dXQhaAQsC4gEz15GEWZO4HB7Vki3A@mail.gmail.com>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <CAE-cH4rc6gWNcsgm243i=dXQhaAQsC4gEz15GEWZO4HB7Vki3A@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231219174526.2235150-4-sunilvl@ventanamicro.com>
 
-Hi Tanzir,
+On Tue, Dec 19, 2023 at 11:15:12PM +0530, Sunil V L wrote:
+> Similar to [1], declare this dependency for PCI probe in ACPI based
+> flow.
 
-On 12/26/23 15:35, Tanzir Hasan wrote:
-> On Tue, Dec 26, 2023 at 3:20 PM Randy Dunlap <rdunlap@infradead.org> wrote:
->>
->> Hi,
->>
->> On 12/26/23 13:23, Tanzir Hasan wrote:
->>> asm-generic/barrier.h and asm/bitops.h are already brought into the
->>> header and the file can still be built with their removal.
->>
->> Brought into which header?
-> Hi Randy,
+It would be better to refer to this as 9ec37efb8783 ("PCI/MSI: Make
+pci_host_common_probe() declare its reliance on MSI domains") instead
+of a link to the mailing list archives.
+
+The git SHA1 is part of the git repo, and git can tell us where that
+SHA1 is included.  The lore URL is external and doesn't say anything
+about what happened to the patch.
+
+> This is required especially for RISC-V platforms where MSI controller
+> can be absent.
 > 
-> Sorry for the poor explanation. I see that I left out the specific header.
-> The inclusion of linux/sunrpc/svc_rdma.h brings in linux/sunrpc/rpc_rdma.h
-> This brings in linux/bitops.h which is preferred over asm/bitops.h
-> 
->> Does this conflict with Rule #1 in Documentation/process/submit-checklist.rst ?
-> 
-> Yes, this conflicts with Rule #1. A better version of this patch would be to add
-> linux/bitops.h to this file directly. The main reason this patch
-> exists is to clear
-> out the asm-generic file since those are not preferred. I can do this by either
-> including just linux/bitops.h or including both linux/bitops.h and
-> asm/barrier.h.
-> Would the second approach conform better with Rule #1?
-
-Yes, it would IMO.
-
-Where can I find your current working list of what/how to #include?
-
-Thanks.
-
--- 
-#Randy
+> [1] - https://lore.kernel.org/all/20210330151145.997953-12-maz@kernel.org/
 
