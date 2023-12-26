@@ -1,50 +1,60 @@
-Return-Path: <linux-kernel+bounces-11216-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11217-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 701B981E34F
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 01:26:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id F0EA381E351
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 01:26:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 174382843AC
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 00:26:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8087B2848F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 00:26:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D70646B9A;
-	Tue, 26 Dec 2023 00:21:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9ECD149F7E;
+	Tue, 26 Dec 2023 00:21:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KQ+wHcwl"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ih1vZaQK"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB80D487A4;
-	Tue, 26 Dec 2023 00:21:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 683A1C433C7;
-	Tue, 26 Dec 2023 00:21:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB4B649F60;
+	Tue, 26 Dec 2023 00:21:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 639A5C433C8;
+	Tue, 26 Dec 2023 00:21:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703550078;
-	bh=RN9A5U2FKMTxKSCNjSOnUCXElpH8R0CU8ZqURoP3YPQ=;
+	s=k20201202; t=1703550082;
+	bh=+GtgwctsSurIQ/01WhZ181qisL9Yaoxr4yEZMorwp+s=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=KQ+wHcwlJfHzbcW3UxyPjWU7i1xJIV4KzVIjq9oTAzMUu4HkvG9yjPu68VVwbJP85
-	 0BUsKKmGBlY5jZd+FFvAPeZ7XuqIgRh8vwCIWuReDIBaHJ8K+owVTKVQAreP+eZLa2
-	 m3gbL4qtgSH1Opb/5SrEyFuwYaDLMmyfiqgPEyxDVJT3ix8Fv+7GVL+NZ8o46GidQY
-	 ux5FJAn2My1e1L5IeYgxM778YPVZzVo3WEvrLpXhj8Of+D2msXufd//8iTP7MPu7Pl
-	 pbJHtMoz7Sm70q3eQU3gNaf5b2yq6Zvq5jmFl5HNGZU6PCgLuocQu0aq9LawkedWT1
-	 IiQpSMH/pDtLQ==
+	b=ih1vZaQK+Q8lonXyLEdI/QxccuuhR4S7PhhtgBEN1s1cp7lVDHG1/m3CEnIDT2vnI
+	 sDfe/kYZmxahXrtbMIK/Pnu+zUHRipkzlp+KtTyWQ7P/LiiDhrBBUnp6iHzzT+0ar7
+	 6sbVf93LFr1K2epNTl7xFLnOpVOCKIg7PPrfR1mTy/PpY0ikreeFD+z1KJ59+E8jDn
+	 VDilW3ZFL85pkk4bcyCLJKfLm2r0GOXezkQpB+yDmJZbNGz2b4izuMh3Rzr8TFeki/
+	 CqAQzLDBh60Y5C1P7y32s00ifpBnGOGvrccG5ddIFfFPgKnwRl2919dFpBGtFt+ge9
+	 ksi9tKpw/sAEw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Mario Limonciello <mario.limonciello@amd.com>,
-	Kieran Levin <ktl@framework.net>,
-	Hans de Goede <hdegoede@redhat.com>,
-	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+Cc: Hans de Goede <hdegoede@redhat.com>,
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+	Mark Brown <broonie@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	Shyam-sundar.S-k@amd.com,
-	platform-driver-x86@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 23/39] platform/x86/amd/pmc: Disable keyboard wakeup on AMD Framework 13
-Date: Mon, 25 Dec 2023 19:19:13 -0500
-Message-ID: <20231226002021.4776-23-sashal@kernel.org>
+	cezary.rojewski@intel.com,
+	liam.r.girdwood@linux.intel.com,
+	peter.ujfalusi@linux.intel.com,
+	yung-chuan.liao@linux.intel.com,
+	ranjani.sridharan@linux.intel.com,
+	kai.vehmanen@linux.intel.com,
+	perex@perex.cz,
+	tiwai@suse.com,
+	andriy.shevchenko@linux.intel.com,
+	kuninori.morimoto.gx@renesas.com,
+	u.kleine-koenig@pengutronix.de,
+	alsa-devel@alsa-project.org,
+	linux-sound@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 24/39] ASoC: Intel: bytcr_rt5640: Add quirk for the Medion Lifetab S10346
+Date: Mon, 25 Dec 2023 19:19:14 -0500
+Message-ID: <20231226002021.4776-24-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231226002021.4776-1-sashal@kernel.org>
 References: <20231226002021.4776-1-sashal@kernel.org>
@@ -54,101 +64,51 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.8
 Content-Transfer-Encoding: 8bit
 
-From: Mario Limonciello <mario.limonciello@amd.com>
+From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit a55bdad5dfd1efd4ed9ffe518897a21ca8e4e193 ]
+[ Upstream commit 99c7bb44f5749373bc01b73af02b50b69bcbf43d ]
 
-The Laptop 13 (AMD Ryzen 7040Series) BIOS 03.03 has a workaround
-included in the EC firmware that will cause the EC to emit a "spurious"
-keypress during the resume from s0i3 [1].
+Add a quirk for the Medion Lifetab S10346, this BYTCR tablet has no CHAN
+package in its ACPI tables and uses SSP0-AIF1 rather then SSP0-AIF2 which
+is the default for BYTCR devices.
 
-This series of keypress events can be observed in the kernel log on
-resume.
-
-```
-atkbd serio0: Unknown key pressed (translated set 2, code 0x6b on isa0060/serio0).
-atkbd serio0: Use 'setkeycodes 6b <keycode>' to make it known.
-atkbd serio0: Unknown key released (translated set 2, code 0x6b on isa0060/serio0).
-atkbd serio0: Use 'setkeycodes 6b <keycode>' to make it known.
-```
-
-In some user flows this is harmless, but if a user has specifically
-suspended the laptop and then closed the lid it will cause the laptop
-to wakeup. The laptop wakes up because the ACPI SCI triggers when
-the lid is closed and when the kernel sees that IRQ1 is "also" active.
-The kernel can't distinguish from a real keyboard keypress and wakes the
-system.
-
-Add the model into the list of quirks to disable keyboard wakeup source.
-This is intentionally only matching the production BIOS version in hopes
-that a newer EC firmware included in a newer BIOS can avoid this behavior.
-
-Cc: Kieran Levin <ktl@framework.net>
-Link: https://github.com/FrameworkComputer/EmbeddedController/blob/lotus-zephyr/zephyr/program/lotus/azalea/src/power_sequence.c#L313 [1]
-Link: https://community.frame.work/t/amd-wont-sleep-properly/41755
-Link: https://community.frame.work/t/tracking-framework-amd-ryzen-7040-series-lid-wakeup-behavior-feedback/39128
-Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
-Link: https://lore.kernel.org/r/20231212045006.97581-5-mario.limonciello@amd.com
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://msgid.link/r/20231217213221.49424-1-hdegoede@redhat.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/platform/x86/amd/pmc/pmc-quirks.c | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+ sound/soc/intel/boards/bytcr_rt5640.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/drivers/platform/x86/amd/pmc/pmc-quirks.c b/drivers/platform/x86/amd/pmc/pmc-quirks.c
-index c32046dfa960e..b456370166b6b 100644
---- a/drivers/platform/x86/amd/pmc/pmc-quirks.c
-+++ b/drivers/platform/x86/amd/pmc/pmc-quirks.c
-@@ -16,12 +16,17 @@
- 
- struct quirk_entry {
- 	u32 s2idle_bug_mmio;
-+	bool spurious_8042;
- };
- 
- static struct quirk_entry quirk_s2idle_bug = {
- 	.s2idle_bug_mmio = 0xfed80380,
- };
- 
-+static struct quirk_entry quirk_spurious_8042 = {
-+	.spurious_8042 = true,
-+};
-+
- static const struct dmi_system_id fwbug_list[] = {
- 	{
- 		.ident = "L14 Gen2 AMD",
-@@ -193,6 +198,16 @@ static const struct dmi_system_id fwbug_list[] = {
- 			DMI_MATCH(DMI_PRODUCT_NAME, "HP Laptop 15s-eq2xxx"),
- 		}
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index 630784b6cb6d3..f184d23deaa0f 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -894,6 +894,18 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
+ 					BYT_RT5640_SSP0_AIF1 |
+ 					BYT_RT5640_MCLK_EN),
  	},
-+	/* https://community.frame.work/t/tracking-framework-amd-ryzen-7040-series-lid-wakeup-behavior-feedback/39128 */
 +	{
-+		.ident = "Framework Laptop 13 (Phoenix)",
-+		.driver_data = &quirk_spurious_8042,
++		/* Medion Lifetab S10346 */
 +		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Framework"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Laptop 13 (AMD Ryzen 7040Series)"),
-+			DMI_MATCH(DMI_BIOS_VERSION, "03.03"),
-+		}
++			DMI_MATCH(DMI_BOARD_VENDOR, "AMI Corporation"),
++			DMI_MATCH(DMI_BOARD_NAME, "Aptio CRB"),
++			/* Above strings are much too generic, also match on BIOS date */
++			DMI_MATCH(DMI_BIOS_DATE, "10/22/2015"),
++		},
++		.driver_data = (void *)(BYTCR_INPUT_DEFAULTS |
++					BYT_RT5640_SSP0_AIF1 |
++					BYT_RT5640_MCLK_EN),
 +	},
- 	{}
- };
- 
-@@ -245,4 +260,6 @@ void amd_pmc_quirks_init(struct amd_pmc_dev *dev)
- 	if (dev->quirks->s2idle_bug_mmio)
- 		pr_info("Using s2idle quirk to avoid %s platform firmware bug\n",
- 			dmi_id->ident);
-+	if (dev->quirks->spurious_8042)
-+		dev->disable_8042_wakeup = true;
- }
+ 	{	/* Mele PCG03 Mini PC */
+ 		.matches = {
+ 			DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "Mini PC"),
 -- 
 2.43.0
 
