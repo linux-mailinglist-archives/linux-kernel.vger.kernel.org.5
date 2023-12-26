@@ -1,59 +1,59 @@
-Return-Path: <linux-kernel+bounces-11650-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11651-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9BB081E96C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 20:27:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BD4681E96D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 20:28:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A5CA12832AC
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 19:27:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6E757B21D08
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 19:28:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB0821DA3D;
-	Tue, 26 Dec 2023 19:22:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EC3B1EB36;
+	Tue, 26 Dec 2023 19:22:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="StZuggUn"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="bHItEUsm"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-io1-f42.google.com (mail-io1-f42.google.com [209.85.166.42])
+Received: from mail-io1-f50.google.com (mail-io1-f50.google.com [209.85.166.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 042D31A5B6
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 19:22:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E63E51C2B3
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 19:22:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-io1-f42.google.com with SMTP id ca18e2360f4ac-7bb0a93b7c7so5138839f.2
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 11:22:21 -0800 (PST)
+Received: by mail-io1-f50.google.com with SMTP id ca18e2360f4ac-7ba8e33dd0cso199200339f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 11:22:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1703618541; x=1704223341; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1703618542; x=1704223342; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=hayCP5oXfqDKr07tFyakQH54fYrG+Ow3QZu0J2xcXzk=;
-        b=StZuggUnNz23lHyZFp6NWdfArrQBiAGQSLc2ZuHNMQ9vZwySx2fpfN9rh9h/CC0DFJ
-         m8bGWASmvPi30tdz8wssd87MY2gqQg7UAXiFozlqSrNqgkHZsZSFk7wS/ZsiDOXq0rsg
-         3Y0XzraEOjVxpT9tyMlCNnapSpdok+QTf340A=
+        bh=K6tsT/7sNyFm2KzBYrGyHG8VbifTdBXO1YqorM6Zb+w=;
+        b=bHItEUsmLdLELfxu2a7Vav32ZUZKFGm/r2pKp6NddrvcTDMD3tUiN6xgdz9R+y0EOG
+         9mKwOb6vsMh/rGTBpfcAa0V1Z1YVYUvUJd8ORvZJJazCURZhu+NpdsN4IRKwXRZ/wA2h
+         77xCpoxKFfUUdwBxSQe4jk7WoRyn2g8hWI6Zo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703618541; x=1704223341;
+        d=1e100.net; s=20230601; t=1703618542; x=1704223342;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=hayCP5oXfqDKr07tFyakQH54fYrG+Ow3QZu0J2xcXzk=;
-        b=VZ/P4kU7TDUBj3HoX167+I8nWNvdgJJcJagBpONFm4/bWVySFqrl2zSRyuUO+K0siX
-         ahe27u8/S1dyhCEhqR+7VgWE4Q40XUivFsoR9GiTVBUky9Ub+OxGUyZNQykDi1k3BL+H
-         fUAaN3JLpq/B1NwdX6EDuDkaRP/uhCWehtaGbnZMutTh3eVYiUCdJ9GO/rL2Cm9xTGQH
-         QDkJ3Swz3B7//zaSlO71HiXP4r47xkW2jzzZ2xLTDY37ASqyb8NHDf+pn0jGSwoys3II
-         3sg1MBIZK03tD82aORT0FSyVI0h45GkQcZGzqsaEbqtNROi//kUqBw7ORLwdty49HGxh
-         qaKw==
-X-Gm-Message-State: AOJu0YxN0sAtZL68mWwciIsuFSNgub4exmBKMtGN1dozVKjmtcJrZQBW
-	fL0oQl5ZpP3lzEbtmyzWyPQ0OhzJa5psblAuQo+zIwK3/Cjj
-X-Google-Smtp-Source: AGHT+IFlHRwPf/8jJo+Ae9mfDpUSRCg3GFEPLZrL7XWaov1wJ5hGOO4inSD1xWUk2IDucTfgcb2/6A==
-X-Received: by 2002:a6b:f008:0:b0:7b7:4c36:f295 with SMTP id w8-20020a6bf008000000b007b74c36f295mr9063772ioc.40.1703618541107;
+        bh=K6tsT/7sNyFm2KzBYrGyHG8VbifTdBXO1YqorM6Zb+w=;
+        b=NQSZym0Ox+lOFwcZsYEd4+Rp2ly61X0Jt73xCCu6wv9DNL5C/auAV06YVJkGz2Iumw
+         Ydrxkas3DnpZaoyGYee+T08w7yk3FwUOItC0qqcez/61R5ZzHaIA6A6af/hbcgHT3y3O
+         GS+T2pPyQaJu6iZ9lIF8SdInGcMm4BTV5wJBWklvB2UWkb4niiUEeVQefZsR0YBhHgES
+         KfME+hSKl8u/yutS8rExZvbkIgdI9A9R/qdlhS+xf5ZjNUjm8QAIcLXfk3HG8KnTAa5/
+         fvUp876GRmqvNRZ/xZI7n7FHeAOijI4XRyCmPwfXPPKm8LIjKog8V33jEyvxTrDJWwJB
+         kO6Q==
+X-Gm-Message-State: AOJu0YwaEVNLluhovCW5/bBn8REuEmBJq6KGEgWmN7IHiQIhB24CHfMS
+	XbiDwbsZWs0NDOZXE9m26paMecvHkEURkwh3BEQ0d8nJRSx5
+X-Google-Smtp-Source: AGHT+IERechMaC3iD6M6tDF0p2jDjZ84jAh0OVsFAvat03jaAmnhahDwtdIVJI6dxXkg63oXuGThoA==
+X-Received: by 2002:a05:6602:181a:b0:7ba:9ac4:3a49 with SMTP id t26-20020a056602181a00b007ba9ac43a49mr8155131ioh.17.1703618541957;
         Tue, 26 Dec 2023 11:22:21 -0800 (PST)
 Received: from markhas1.lan (71-218-50-136.hlrn.qwest.net. [71.218.50.136])
-        by smtp.gmail.com with ESMTPSA id gw3-20020a0566381ee300b0046b692e719esm3207609jab.150.2023.12.26.11.22.20
+        by smtp.gmail.com with ESMTPSA id gw3-20020a0566381ee300b0046b692e719esm3207609jab.150.2023.12.26.11.22.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Dec 2023 11:22:20 -0800 (PST)
+        Tue, 26 Dec 2023 11:22:21 -0800 (PST)
 From: Mark Hasemeyer <markhas@chromium.org>
 To: LKML <linux-kernel@vger.kernel.org>
 Cc: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
@@ -65,16 +65,15 @@ Cc: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
 	Raul Rangel <rrangel@chromium.org>,
 	Tzung-Bi Shih <tzungbi@kernel.org>,
 	Mark Hasemeyer <markhas@chromium.org>,
-	Sakari Ailus <sakari.ailus@linux.intel.com>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Daniel Scally <djrscally@gmail.com>,
+	David Gow <davidgow@google.com>,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+	Mark Brown <broonie@kernel.org>,
 	"Rafael J. Wysocki" <rafael@kernel.org>,
-	linux-acpi@vger.kernel.org
-Subject: [PATCH v3 22/24] device property: Update functions to use EXPORT_SYMBOL_GPL
-Date: Tue, 26 Dec 2023 12:21:26 -0700
-Message-ID: <20231226122113.v3.22.I186bc5737c5ac4c3a5a7a91e9ec75645e723ca7b@changeid>
+	Takashi Iwai <tiwai@suse.de>,
+	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+Subject: [PATCH v3 23/24] platform: Modify platform_get_irq_optional() to use resource
+Date: Tue, 26 Dec 2023 12:21:27 -0700
+Message-ID: <20231226122113.v3.23.Ife9ebad2bbfbab3a05e90040f344d750aa0aac7e@changeid>
 X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
 In-Reply-To: <20231226192149.1830592-1-markhas@chromium.org>
 References: <20231226192149.1830592-1-markhas@chromium.org>
@@ -86,63 +85,192 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Some of the exported functions use EXPORT_SYMBOL instead of
-EXPORT_SYMBOL_GPL and are inconsistent with the other exported functions
-in the module. The underlying APCI/OF struct fwnode_operations
-implementations are also exported via EXPORT_SYMBOL_GPL.
+Unify handling of ACPI, GPIO, devictree, and platform resource
+interrupts in platform_get_irq_optional(). Each of these subsystems
+provide their own APIs which provide IRQ information as a struct
+resource. This simplifies the logic of the function and allows callers
+to get more information about the IRQ by looking at the resource flags.
+For example, whether or not an IRQ is wake capable.
 
-Update them to use the EXPORT_SYMBOL_GPL macro.
-
-Suggested-by: Sakari Ailus <sakari.ailus@linux.intel.com>
 Signed-off-by: Mark Hasemeyer <markhas@chromium.org>
 ---
 
 Changes in v3:
--New patch
+-Remove PTR_ERR check
+-Move platform_res assignment
+-Check for irq == 0 to trigger WARN msg
+-Refactor error handling of acpi_dev_get_gpio_irq_resource() to be
+consistent with fwnode_irq_get_resource()
+-Remove extra blank lines
+-Initialize struct resource on stack
 
- drivers/base/property.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+Changes in v2:
+-irq->IRQ
+-Remove cast to struct resource
+-Conform to get_optional() function naming
+-Revert move of irq_get_irq_data()
+-Add NULL check on struct resource*
+-Use fwnode to retrieve IRQ for DT/ACPI
 
-diff --git a/drivers/base/property.c b/drivers/base/property.c
-index 441899171d19d..4f686516cac82 100644
---- a/drivers/base/property.c
-+++ b/drivers/base/property.c
-@@ -1044,7 +1044,7 @@ void __iomem *fwnode_iomap(struct fwnode_handle *fwnode, int index)
+ drivers/base/platform.c         | 70 ++++++++++++++++++++++-----------
+ include/linux/platform_device.h |  3 ++
+ 2 files changed, 51 insertions(+), 22 deletions(-)
+
+diff --git a/drivers/base/platform.c b/drivers/base/platform.c
+index 10c5779634182..bb6ece1303746 100644
+--- a/drivers/base/platform.c
++++ b/drivers/base/platform.c
+@@ -151,9 +151,11 @@ EXPORT_SYMBOL_GPL(devm_platform_ioremap_resource_byname);
+ #endif /* CONFIG_HAS_IOMEM */
+ 
+ /**
+- * platform_get_irq_optional - get an optional IRQ for a device
++ * platform_get_irq_resource_optional - get an optional IRQ for a device and
++ *					populate the resource struct
+  * @dev: platform device
+  * @num: IRQ number index
++ * @r: pointer to resource to populate with IRQ information.
+  *
+  * Gets an IRQ for a platform device. Device drivers should check the return
+  * value for errors so as to not pass a negative integer value to the
+@@ -162,39 +164,33 @@ EXPORT_SYMBOL_GPL(devm_platform_ioremap_resource_byname);
+  *
+  * For example::
+  *
+- *		int irq = platform_get_irq_optional(pdev, 0);
++ *		int irq = platform_get_irq_resource_optional(pdev, 0, &res);
+  *		if (irq < 0)
+  *			return irq;
+  *
+  * Return: non-zero IRQ number on success, negative error number on failure.
+  */
+-int platform_get_irq_optional(struct platform_device *dev, unsigned int num)
++int platform_get_irq_resource_optional(struct platform_device *dev,
++				       unsigned int num, struct resource *r)
  {
- 	return fwnode_call_ptr_op(fwnode, iomap, index);
+ 	int ret;
++
++	if (!r)
++		return -EINVAL;
+ #ifdef CONFIG_SPARC
+ 	/* sparc does not have irqs represented as IORESOURCE_IRQ resources */
+ 	if (!dev || num >= dev->archdata.num_irqs)
+ 		goto out_not_found;
+ 	ret = dev->archdata.irqs[num];
++	if (ret > 0)
++		*r = DEFINE_RES_IRQ(ret);
+ 	goto out;
+ #else
+ 	struct fwnode_handle *fwnode = dev_fwnode(&dev->dev);
+-	struct resource *r;
+-
+-	if (is_of_node(fwnode)) {
+-		ret = of_irq_get(to_of_node(fwnode), num);
+-		if (ret > 0 || ret == -EPROBE_DEFER)
+-			goto out;
+-	}
+ 
+-	r = platform_get_resource(dev, IORESOURCE_IRQ, num);
+-	if (is_acpi_device_node(fwnode)) {
+-		if (r && r->flags & IORESOURCE_DISABLED) {
+-			ret = acpi_irq_get(ACPI_HANDLE_FWNODE(fwnode), num, r);
+-			if (ret)
+-				goto out;
+-		}
+-	}
++	ret = fwnode_irq_get_resource(fwnode, num, r);
++	if (ret >= 0 || ret == -EPROBE_DEFER)
++		goto out;
+ 
+ 	/*
+ 	 * The resources may pass trigger flags to the irqs that need
+@@ -202,7 +198,9 @@ int platform_get_irq_optional(struct platform_device *dev, unsigned int num)
+ 	 * IORESOURCE_BITS correspond 1-to-1 to the IRQF_TRIGGER*
+ 	 * settings.
+ 	 */
+-	if (r && r->flags & IORESOURCE_BITS) {
++	struct resource *platform_res = platform_get_resource(dev, IORESOURCE_IRQ, num);
++
++	if (platform_res && platform_res->flags & IORESOURCE_BITS) {
+ 		struct irq_data *irqd;
+ 
+ 		irqd = irq_get_irq_data(r->start);
+@@ -211,7 +209,8 @@ int platform_get_irq_optional(struct platform_device *dev, unsigned int num)
+ 		irqd_set_trigger_type(irqd, r->flags & IORESOURCE_BITS);
+ 	}
+ 
+-	if (r) {
++	if (platform_res) {
++		*r = *platform_res;
+ 		ret = r->start;
+ 		goto out;
+ 	}
+@@ -224,7 +223,8 @@ int platform_get_irq_optional(struct platform_device *dev, unsigned int num)
+ 	 * allows a common code path across either kind of resource.
+ 	 */
+ 	if (num == 0 && is_acpi_device_node(fwnode)) {
+-		ret = acpi_dev_gpio_irq_get(to_acpi_device_node(fwnode), num);
++		ret = acpi_dev_get_gpio_irq_resource(to_acpi_device_node(fwnode), NULL, num, r);
++		ret = ret ?: r->start;
+ 		/* Our callers expect -ENXIO for missing IRQs. */
+ 		if (ret >= 0 || ret == -EPROBE_DEFER)
+ 			goto out;
+@@ -238,7 +238,7 @@ int platform_get_irq_optional(struct platform_device *dev, unsigned int num)
+ 		return -EINVAL;
+ 	return ret;
  }
--EXPORT_SYMBOL(fwnode_iomap);
-+EXPORT_SYMBOL_GPL(fwnode_iomap);
+-EXPORT_SYMBOL_GPL(platform_get_irq_optional);
++EXPORT_SYMBOL_GPL(platform_get_irq_resource_optional);
  
  /**
-  * fwnode_irq_get_resource - Get IRQ directly from a fwnode and populate
-@@ -1082,7 +1082,7 @@ int fwnode_irq_get(const struct fwnode_handle *fwnode, unsigned int index)
- 
- 	return fwnode_irq_get_resource(fwnode, index, &r);
+  * platform_get_irq - get an IRQ for a device
+@@ -270,6 +270,32 @@ int platform_get_irq(struct platform_device *dev, unsigned int num)
  }
--EXPORT_SYMBOL(fwnode_irq_get);
-+EXPORT_SYMBOL_GPL(fwnode_irq_get);
+ EXPORT_SYMBOL_GPL(platform_get_irq);
  
++/**
++ * platform_get_irq_optional - get an optional IRQ for a device
++ * @dev: platform device
++ * @num: IRQ number index
++ *
++ * Gets an IRQ for a platform device. Device drivers should check the return
++ * value for errors so as to not pass a negative integer value to the
++ * request_irq() APIs. This is the same as platform_get_irq(), except that it
++ * does not print an error message if an IRQ can not be obtained.
++ *
++ * For example::
++ *
++ *		int irq = platform_get_irq_optional(pdev, 0);
++ *		if (irq < 0)
++ *			return irq;
++ *
++ * Return: non-zero IRQ number on success, negative error number on failure.
++ */
++int platform_get_irq_optional(struct platform_device *dev, unsigned int num)
++{
++	struct resource r = {};
++
++	return platform_get_irq_resource_optional(dev, num, &r);
++}
++EXPORT_SYMBOL_GPL(platform_get_irq_optional);
++
  /**
-  * fwnode_irq_get_byname - Get IRQ from a fwnode using its name
-@@ -1110,7 +1110,7 @@ int fwnode_irq_get_byname(const struct fwnode_handle *fwnode, const char *name)
+  * platform_irq_count - Count the number of IRQs a platform device uses
+  * @dev: platform device
+diff --git a/include/linux/platform_device.h b/include/linux/platform_device.h
+index 7a41c72c19591..2117f817d9c9c 100644
+--- a/include/linux/platform_device.h
++++ b/include/linux/platform_device.h
+@@ -102,6 +102,9 @@ devm_platform_ioremap_resource_byname(struct platform_device *pdev,
  
- 	return fwnode_irq_get(fwnode, index);
- }
--EXPORT_SYMBOL(fwnode_irq_get_byname);
-+EXPORT_SYMBOL_GPL(fwnode_irq_get_byname);
- 
- /**
-  * fwnode_graph_get_next_endpoint - Get next endpoint firmware node
-@@ -1355,7 +1355,7 @@ int fwnode_graph_parse_endpoint(const struct fwnode_handle *fwnode,
- 
- 	return fwnode_call_int_op(fwnode, graph_parse_endpoint, endpoint);
- }
--EXPORT_SYMBOL(fwnode_graph_parse_endpoint);
-+EXPORT_SYMBOL_GPL(fwnode_graph_parse_endpoint);
- 
- const void *device_get_match_data(const struct device *dev)
- {
+ extern int platform_get_irq(struct platform_device *, unsigned int);
+ extern int platform_get_irq_optional(struct platform_device *, unsigned int);
++extern int platform_get_irq_resource_optional(struct platform_device *dev,
++					      unsigned int num,
++					      struct resource *r);
+ extern int platform_irq_count(struct platform_device *);
+ extern int devm_platform_get_irqs_affinity(struct platform_device *dev,
+ 					   struct irq_affinity *affd,
 -- 
 2.43.0.472.g3155946c3a-goog
 
