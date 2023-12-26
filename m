@@ -1,64 +1,64 @@
-Return-Path: <linux-kernel+bounces-11377-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11378-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 82B2C81E554
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 06:49:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6851881E556
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 06:49:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 11E981F2274E
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 05:49:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1EE2428101E
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 05:49:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 416A84BAAA;
-	Tue, 26 Dec 2023 05:49:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6E684C3C7;
+	Tue, 26 Dec 2023 05:49:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="W0DAspUY"
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="Dod7ILPh"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
+Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1F944C3C7
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 05:49:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FE5F4C602
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 05:49:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from epcas5p4.samsung.com (unknown [182.195.41.42])
-	by mailout2.samsung.com (KnoxPortal) with ESMTP id 20231226054918epoutp028bf2c1e1b9126da2c19498ec5b1dbcd1~kS6t6uHh41946119461epoutp028
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 05:49:18 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20231226054918epoutp028bf2c1e1b9126da2c19498ec5b1dbcd1~kS6t6uHh41946119461epoutp028
+Received: from epcas5p1.samsung.com (unknown [182.195.41.39])
+	by mailout4.samsung.com (KnoxPortal) with ESMTP id 20231226054927epoutp04a951fee0b54f6f3eed23d5bb8714cd07~kS62KlDrY0289802898epoutp04T
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 05:49:27 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20231226054927epoutp04a951fee0b54f6f3eed23d5bb8714cd07~kS62KlDrY0289802898epoutp04T
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1703569758;
-	bh=QGoy2nJdjcdnaul3wYhlPgWg9GOfx5HxXC9YSrGrIk8=;
+	s=mail20170921; t=1703569767;
+	bh=PjCrB9sJG92TMahmGFHOSLjyHXg8ofkCAJr5VA8kks8=;
 	h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-	b=W0DAspUYnubOOO0cM25bWsNdORoBnsbSELWS+1uaPDNTM3RZKGoTTltr4pn8fbuGM
-	 /XbJyfP7ycMURpEOlBxLG6R/ahe3F4scd0fFKF6JVYGnOQ9poOF1XXT2oSjRSY6xwO
-	 HkgoDMLeUvQmE/T7T3DvqxrEV1jxjW+3K0TChMCs=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-	epcas5p1.samsung.com (KnoxPortal) with ESMTP id
-	20231226054918epcas5p166498f7df1d23b4a67330267e13247ae~kS6tOJ8PC0916309163epcas5p1X;
-	Tue, 26 Dec 2023 05:49:18 +0000 (GMT)
-Received: from epsmges5p2new.samsung.com (unknown [182.195.38.180]) by
-	epsnrtp2.localdomain (Postfix) with ESMTP id 4SzkNr31jBz4x9Pv; Tue, 26 Dec
-	2023 05:49:16 +0000 (GMT)
-Received: from epcas5p2.samsung.com ( [182.195.41.40]) by
-	epsmges5p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
-	28.D5.10009.C596A856; Tue, 26 Dec 2023 14:49:16 +0900 (KST)
+	b=Dod7ILPhaSZHiR7+A4bj1Uvz4Dn9qHeWzZ3hvSisdtdGkgu49KRMl0Kh9OBMZrUGv
+	 7kgEiCAmHU45EFwlh46WsxdAaehB12NM7RV4agr496/lZ7YCmxX78d+Vu21n83fwWd
+	 G4IWELL+isv9I5slUyWSBzoSPT2MT9rWl91dPBPo=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+	epcas5p3.samsung.com (KnoxPortal) with ESMTP id
+	20231226054927epcas5p3fd20bc768b6c740c5ed833d4fed3e948~kS61iWhv61922019220epcas5p34;
+	Tue, 26 Dec 2023 05:49:27 +0000 (GMT)
+Received: from epsmges5p3new.samsung.com (unknown [182.195.38.179]) by
+	epsnrtp3.localdomain (Postfix) with ESMTP id 4SzkP12rm5z4x9Q8; Tue, 26 Dec
+	2023 05:49:25 +0000 (GMT)
+Received: from epcas5p4.samsung.com ( [182.195.41.42]) by
+	epsmges5p3new.samsung.com (Symantec Messaging Gateway) with SMTP id
+	20.12.09672.5696A856; Tue, 26 Dec 2023 14:49:25 +0900 (KST)
 Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
 	epcas5p4.samsung.com (KnoxPortal) with ESMTPA id
-	20231226054352epcas5p4ef0146716bc8d9b7c552e73fd8441318~kS19flDG70420304203epcas5p4f;
-	Tue, 26 Dec 2023 05:43:52 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+	20231226054502epcas5p4175bb019139535ed4216678c69604532~kS2-RJboZ0351103511epcas5p4A;
+	Tue, 26 Dec 2023 05:45:02 +0000 (GMT)
+Received: from epsmgms1p2new.samsung.com (unknown [182.195.42.42]) by
 	epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-	20231226054352epsmtrp17c4b5be6889da7c2e5d17c2b3f14fb22~kS19exPZR2744827448epsmtrp1F;
-	Tue, 26 Dec 2023 05:43:52 +0000 (GMT)
-X-AuditID: b6c32a4a-261fd70000002719-d6-658a695c2b95
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-	epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-	64.DA.08755.7186A856; Tue, 26 Dec 2023 14:43:51 +0900 (KST)
-Received: from FDSFTE308 (unknown [107.122.81.79]) by epsmtip2.samsung.com
+	20231226054502epsmtrp1ce3b5d78ebea8c831b1a48e31141862e~kS2-P3Fwp2782527825epsmtrp12;
+	Tue, 26 Dec 2023 05:45:02 +0000 (GMT)
+X-AuditID: b6c32a4b-39fff700000025c8-a1-658a6965cd1f
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+	epsmgms1p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
+	8D.30.08817.E586A856; Tue, 26 Dec 2023 14:45:02 +0900 (KST)
+Received: from FDSFTE308 (unknown [107.122.81.79]) by epsmtip1.samsung.com
 	(KnoxPortal) with ESMTPA id
-	20231226054350epsmtip268103a7a425efd4c97203b76eaf47c3b~kS177-Zt81877918779epsmtip2Y;
-	Tue, 26 Dec 2023 05:43:50 +0000 (GMT)
+	20231226054501epsmtip11d27d5185af80e3fa54671c7e7dad912~kS29uuR8N1689016890epsmtip1g;
+	Tue, 26 Dec 2023 05:45:00 +0000 (GMT)
 From: "Aakarsh Jain" <aakarsh.jain@samsung.com>
 To: "'Krzysztof Kozlowski'" <krzysztof.kozlowski@linaro.org>, "'Marek
  Szyprowski'" <m.szyprowski@samsung.com>, "'Andrzej Hajda'"
@@ -66,11 +66,11 @@ To: "'Krzysztof Kozlowski'" <krzysztof.kozlowski@linaro.org>, "'Marek
 Cc: <linux-fsd@tesla.coma>, <linux-samsung-soc@vger.kernel.org>, "'Smitha T
  Murthy'" <smithatmurthy@gmail.com>, <linux-arm-kernel@lists.infradead.org>,
 	<linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-In-Reply-To: <20231224-n-s5p-mfc-const-v1-5-a3b246470fe4@linaro.org>
-Subject: RE: [PATCH 05/15] media: s5p-mfc: constify s5p_mfc_buf_size
+In-Reply-To: <20231224-n-s5p-mfc-const-v1-6-a3b246470fe4@linaro.org>
+Subject: RE: [PATCH 06/15] media: s5p-mfc: constify s5p_mfc_variant
  structures
-Date: Tue, 26 Dec 2023 11:13:49 +0530
-Message-ID: <15d101da37be$818f7f70$84ae7e50$@samsung.com>
+Date: Tue, 26 Dec 2023 11:14:59 +0530
+Message-ID: <15d201da37be$abae6d20$030b4760$@samsung.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -79,53 +79,53 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQKOGlHY6WxiJqLoSx78067AznjgmAEkj0yKAmH/OB+vNxO3AA==
+Thread-Index: AQKOGlHY6WxiJqLoSx78067AznjgmAG+IMttAZIPrQOvOMcZAA==
 Content-Language: en-in
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrJJsWRmVeSWpSXmKPExsWy7bCmhm5MZleqwdJDohb3F39msdj7eiu7
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrBJsWRmVeSWpSXmKPExsWy7bCmlm5qZleqwaErIhb3F39msdj7eiu7
 	xabH11gtls0Osri8aw6bRc+GrawWM87vY7JYe+Quu8WyTX+YLFoal7A6cHnsnHWX3WPxnpdM
 	HptWdbJ53Lm2h81j85J6j74tqxg9/r5+xebxeZNcAEdUtk1GamJKapFCal5yfkpmXrqtkndw
 	vHO8qZmBoa6hpYW5kkJeYm6qrZKLT4CuW2YO0IlKCmWJOaVAoYDE4mIlfTubovzSklSFjPzi
-	Elul1IKUnAKTAr3ixNzi0rx0vbzUEitDAwMjU6DChOyMF983MResCa7Y29DF2sC43q2LkZND
-	QsBEom9zH3sXIxeHkMBuRolVLztZIJxPjBIb1h9ghHC+MUpc3dHIBtNyc0cjM0RiL6PEsn/T
-	mSCc54wS327MZgapYhPQl7h/qocVJCEicI5RYlv/FLAqZoGbjBLH3swEq+IUcJHoPfWLFcQW
-	FgiUmHjpAQuIzSKgKjHtzg6wfbwClhKvT1+GsgUlTs58AlbDLCAvsf3tHGaImxQkfj5dBjSH
-	A2ibk8TUR+oQJeISR3/2gJ0qIXCEQ6Jt+SMmiHoXicmXtzJC2MISr45vYYewpSRe9rdB2ckS
-	jxe9hJqfI7F+zxQWCNte4sCVOSwgu5gFNCXW79KHCMtKTD21jgliL59E7+8nUKt4JXbMg7HV
-	JObc+cEKYctIHF69lHECo9IsJJ/NQvLZLCQvzELYtoCRZRWjZGpBcW56arFpgVFeajk8ypPz
-	czcxgtOwltcOxocPPugdYmTiYDzEKMHBrCTCK6vYkSrEm5JYWZValB9fVJqTWnyI0RQY3BOZ
-	pUST84GZIK8k3tDE0sDEzMzMxNLYzFBJnPd169wUIYH0xJLU7NTUgtQimD4mDk6pBqa5p55l
-	TfYRSzjTa+7za9Px1JXrk08odSWcFNunuXG/5uoNi3eWb1Pu8Qq+a6OxP2q7zalPdsxVUor9
-	v+J12TxPvL+7rnU1512zhSXJf+d+OLIhUihSkfF2yGbpnu/7F21hvTVvf+6PoO1/b7mL/Kx8
-	v+hbiYLCDF5hoYxtWo++35vXZl54X6stQWfRQa38woNxxvkTGBckCjLci1I7ujr6SmHF4q1T
-	1YViLDfndbnxizZvPXy9l/fUjRuPL6S4VTx5zhv45HnA3n+brc82rQ/ivKLKKLBCX+vI7QnC
-	XOcYPrlKdPtNPfsjMUdjtuSCxsBl/9b8fbwn/efMTFOLY4+fbnFivVlQF6IRdWlRw53jSizF
-	GYmGWsxFxYkADo8gi0wEAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrIIsWRmVeSWpSXmKPExsWy7bCSvK54Rleqwdln5hb3F39msdj7eiu7
+	Elul1IKUnAKTAr3ixNzi0rx0vbzUEitDAwMjU6DChOyMz1PNC1pkK74damVsYHwu3sXIySEh
+	YCLxo+MPUxcjF4eQwG5GiRObrzNCOJ8YJTp33YDKfGOUOH5wHQtMy7Mlu9lBbCGBvYwSi1bz
+	QxQ9Z5RYvWEPWIJNQF/i/qkeVpCEiMA5Rolt/VPARjEL3GSUOPZmJjNIFaeAi8Tncz1sILaw
+	QIDEvzefwFawCKhKdE19xQpi8wpYSqz71M8CYQtKnJz5BMxmFpCX2P52DjPESQoSP58uA6sX
+	EXCS+Lj0OztEjbjE0Z89zCCLJQSOcEiseT6XDaLBRaJ3axM7hC0s8er4FihbSuJlfxuUnSzx
+	eNFLqAU5Euv3TIH6317iwJU5QDYH0AJNifW79CHCshJTT61jgtjLJ9H7+wkTRJxXYsc8GFtN
+	Ys6dH6wQtozE4dVLGScwKs1C8tosJK/NQvLCLIRtCxhZVjFKphYU56anFpsWGOellsNjPDk/
+	dxMjOAlree9gfPTgg94hRiYOxkOMEhzMSiK8soodqUK8KYmVValF+fFFpTmpxYcYTYHhPZFZ
+	SjQ5H5gH8kriDU0sDUzMzMxMLI3NDJXEeV+3zk0REkhPLEnNTk0tSC2C6WPi4JRqYLq7Plib
+	javKZuWiqPrM5V0cjV8v/W/jyIpV4uIxs5LX/zTrPF/aWnGjrcbCBk7xUXz3o1USf4W3ubrc
+	kJUOuNLTuc++9toKpgcvT/CceXqp5lbZtah72VFnFjXMf3S1Xv0rS1v1/8LWW7YbdsiLbH57
+	pH5f0ESdhrJzZ3w5KoqPBXHeF4jVu/b81YdZ75K6fEpNBT3j5S/Pnyv7b/3VtLWrf/AzfFg3
+	NYL5Td8xlVwObqWk3a61KZmON89lzl6fJRd2q9KXe6JAyqw9ejnzPzccLDs87XHjwyMT/RuN
+	nBJ33Tp9PClnSu55pz/lbX0sovms2i/OPd5WNFnwXM5+drPtV5f8tk4Jq0w3UHqxTomlOCPR
+	UIu5qDgRACYYzTtLBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrIIsWRmVeSWpSXmKPExsWy7bCSnG5cRleqwZy5Shb3F39msdj7eiu7
 	xabH11gtls0Osri8aw6bRc+GrawWM87vY7JYe+Quu8WyTX+YLFoal7A6cHnsnHWX3WPxnpdM
-	HptWdbJ53Lm2h81j85J6j74tqxg9/r5+xebxeZNcAEcUl01Kak5mWWqRvl0CV8aL75uYC9YE
-	V+xt6GJtYFzv1sXIySEhYCJxc0cjcxcjF4eQwG5GiTMfF7NBJGQk/rcdY4ewhSVW/nvODlH0
-	lFHi3oG3LCAJNgF9ifunelhBEiICFxgltuxZwAbiMAvcZ5To2rSdCaLlLKNES/8TZpAWTgEX
-	id5Tv1hBbGEBf4mLF1+D2SwCqhLT7uwA280rYCnx+vRlKFtQ4uTMJ2DrmAW0JXoftjJC2PIS
-	29/OYYa4T0Hi59NlQHM4gM5wkpj6SB2iRFzi6M8e5gmMwrOQTJqFZNIsJJNmIWlZwMiyilEy
-	taA4Nz232LDAMC+1XK84Mbe4NC9dLzk/dxMjOBa1NHcwbl/1Qe8QIxMH4yFGCQ5mJRFeWcWO
-	VCHelMTKqtSi/Pii0pzU4kOM0hwsSuK84i96U4QE0hNLUrNTUwtSi2CyTBycUg1MzddUn3xa
-	/ctvofytZZPvNzh9Dztj9t6DLZdB/dUUx19dp014v4sduCHy1vbpgq09Fg7hvw0S+UUO3m/m
-	aHwV1LI+olovvlvwkZ277swr1Tqfvc9MYv547m6Z675wQdlXTstX5b8Wi/6i0xV1osXn0mme
-	NQemM8RuSRPrX7L56/7dH/zeN25qmL338AYT8VXn6poXBi16U+tvsPzEqosys7uSFK7Py3EW
-	+G+gn2bw8bf37p2phuZa17u767c93OTq4cO450in47etxfs6zuYfa/X1FL8Rntq3lb3c7eSy
-	J+ZnlMT5D0dMizKVWGK6Uq2v4ATPVXfbaZ89fpl91XApODjv2M8H8WbGQac/TPBLUmIpzkg0
-	1GIuKk4EALBVtr80AwAA
-X-CMS-MailID: 20231226054352epcas5p4ef0146716bc8d9b7c552e73fd8441318
+	HptWdbJ53Lm2h81j85J6j74tqxg9/r5+xebxeZNcAEcUl01Kak5mWWqRvl0CV8bnqeYFLbIV
+	3w61MjYwPhfvYuTkkBAwkXi2ZDd7FyMXh5DAbkaJL8+OMEIkZCT+tx1jh7CFJVb+ew5V9JRR
+	4vq+bWwgCTYBfYn7p3pYQRIiAhcYJbbsWcAG4jAL3GeU6Nq0nQmi5SyjxOsZh5lAWjgFXCQ+
+	n+sBaxcW8JOY39PDAmKzCKhKdE19xQpi8wpYSqz71M8CYQtKnJz5BMxmFtCW6H3Yyghhy0ts
+	fzuHGeI+BYmfT5eB9YoIOEl8XPqdHaJGXOLozx7mCYzCs5CMmoVk1Cwko2YhaVnAyLKKUTK1
+	oDg3PbfYsMAoL7Vcrzgxt7g0L10vOT93EyM4FrW0djDuWfVB7xAjEwfjIUYJDmYlEV5ZxY5U
+	Id6UxMqq1KL8+KLSnNTiQ4zSHCxK4rzfXvemCAmkJ5akZqemFqQWwWSZODilGpjmZ1YvcTob
+	z7R//tqm+0+OHxTOZN6p6GyqaJP39Zi+ovSTtDVLN9fYifXX6kmY1l70P53RdENr9Ve3JxKJ
+	cTvtz8RmhTUYn7C4n3vDe4tuj93HXcXL1J8cTQkt737hcG32u0uFp5jCzrDdtA5cHKLyszc4
+	p+fjav/sxJ0edvL1WTZLVdf++v7U/EVr2d1HoZ63jMP3XX9tucc0Q0q0uS/lPoupxt9TB+P3
+	sXtKf5l0Kui6mI7jm7Dv1Q8yikP8Z7P7Sv4x2Cj8XXuKuebhNa+O7fsdnq+7+OyGjxd8TasZ
+	dlyf11/czqmjHKoc8ftsOD+v3Xwfyd+8D1dNyvnk12uweSv71q8Zj7yz7y0pklBiKc5INNRi
+	LipOBADfPUQ1NAMAAA==
+X-CMS-MailID: 20231226054502epcas5p4175bb019139535ed4216678c69604532
 X-Msg-Generator: CA
 Content-Type: text/plain; charset="utf-8"
 X-Sendblock-Type: REQ_APPROVE
 CMS-TYPE: 105P
 DLP-Filter: Pass
 X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20231224154441epcas5p3c802781d7e3fc305be11e19caee7b639
+X-CMS-RootMailID: 20231224154442epcas5p229ceb7d1000dd0949b89cded46d73bb7
 References: <20231224-n-s5p-mfc-const-v1-0-a3b246470fe4@linaro.org>
-	<CGME20231224154441epcas5p3c802781d7e3fc305be11e19caee7b639@epcas5p3.samsung.com>
-	<20231224-n-s5p-mfc-const-v1-5-a3b246470fe4@linaro.org>
+	<CGME20231224154442epcas5p229ceb7d1000dd0949b89cded46d73bb7@epcas5p2.samsung.com>
+	<20231224-n-s5p-mfc-const-v1-6-a3b246470fe4@linaro.org>
 
 
 
@@ -140,249 +140,89 @@ References: <20231224-n-s5p-mfc-const-v1-0-a3b246470fe4@linaro.org>
 > <smithatmurthy@gmail.com>; linux-arm-kernel@lists.infradead.org; linux-
 > media@vger.kernel.org; linux-kernel@vger.kernel.org; Krzysztof Kozlowski
 > <krzysztof.kozlowski@linaro.org>
-> Subject: [PATCH 05/15] media: s5p-mfc: constify s5p_mfc_buf_size
-> structures
+> Subject: [PATCH 06/15] media: s5p-mfc: constify s5p_mfc_variant structures
 > 
-> Static "s5p_mfc_buf_size*" structures are not modified by the driver, so
-> they can be made const for code safety.
+> Static "s5p_mfc_variant" structures are not modified by the driver, so they
+> can be made const for code safety.
 > 
 > Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 > ---
->  drivers/media/platform/samsung/s5p-mfc/s5p_mfc.c     | 20 ++++++++++---
-> -------
->  .../media/platform/samsung/s5p-mfc/s5p_mfc_cmd_v6.c  |  2 +-
-> .../media/platform/samsung/s5p-mfc/s5p_mfc_common.h  |  4 ++--
-> drivers/media/platform/samsung/s5p-mfc/s5p_mfc_dec.c |  2 +-
-> .../media/platform/samsung/s5p-mfc/s5p_mfc_opr_v5.c  |  6 +++---
-> .../media/platform/samsung/s5p-mfc/s5p_mfc_opr_v6.c  |  6 +++---
->  6 files changed, 20 insertions(+), 20 deletions(-)
+>  drivers/media/platform/samsung/s5p-mfc/s5p_mfc.c | 14 +++++++-------
+>  1 file changed, 7 insertions(+), 7 deletions(-)
 > 
 > diff --git a/drivers/media/platform/samsung/s5p-mfc/s5p_mfc.c
 > b/drivers/media/platform/samsung/s5p-mfc/s5p_mfc.c
-> index e30e54935d79..6af7b812c5df 100644
+> index 6af7b812c5df..5d10c1cb8b92 100644
 > --- a/drivers/media/platform/samsung/s5p-mfc/s5p_mfc.c
 > +++ b/drivers/media/platform/samsung/s5p-mfc/s5p_mfc.c
-> @@ -1516,14 +1516,14 @@ static const struct dev_pm_ops
-> s5p_mfc_pm_ops = {
->  	SET_SYSTEM_SLEEP_PM_OPS(s5p_mfc_suspend, s5p_mfc_resume)
-> };
-> 
-> -static struct s5p_mfc_buf_size_v5 mfc_buf_size_v5 = {
-> +static const struct s5p_mfc_buf_size_v5 mfc_buf_size_v5 = {
->  	.h264_ctx	= MFC_H264_CTX_BUF_SIZE,
->  	.non_h264_ctx	= MFC_CTX_BUF_SIZE,
->  	.dsc		= DESC_BUF_SIZE,
->  	.shm		= SHARED_BUF_SIZE,
->  };
-> 
-> -static struct s5p_mfc_buf_size buf_size_v5 = {
-> +static const struct s5p_mfc_buf_size buf_size_v5 = {
->  	.fw	= MAX_FW_SIZE,
->  	.cpb	= MAX_CPB_SIZE,
+> @@ -1529,7 +1529,7 @@ static const struct s5p_mfc_buf_size buf_size_v5 =
+> {
 >  	.priv	= &mfc_buf_size_v5,
-> @@ -1540,7 +1540,7 @@ static struct s5p_mfc_variant mfc_drvdata_v5 = {
->  	.use_clock_gating = true,
 >  };
 > 
-> -static struct s5p_mfc_buf_size_v6 mfc_buf_size_v6 = {
-> +static const struct s5p_mfc_buf_size_v6 mfc_buf_size_v6 = {
->  	.dev_ctx	= MFC_CTX_BUF_SIZE_V6,
->  	.h264_dec_ctx	= MFC_H264_DEC_CTX_BUF_SIZE_V6,
->  	.other_dec_ctx	= MFC_OTHER_DEC_CTX_BUF_SIZE_V6,
-> @@ -1548,7 +1548,7 @@ static struct s5p_mfc_buf_size_v6 mfc_buf_size_v6
-> = {
->  	.other_enc_ctx	= MFC_OTHER_ENC_CTX_BUF_SIZE_V6,
->  };
-> 
-> -static struct s5p_mfc_buf_size buf_size_v6 = {
-> +static const struct s5p_mfc_buf_size buf_size_v6 = {
->  	.fw	= MAX_FW_SIZE_V6,
->  	.cpb	= MAX_CPB_SIZE_V6,
+> -static struct s5p_mfc_variant mfc_drvdata_v5 = {
+> +static const struct s5p_mfc_variant mfc_drvdata_v5 = {
+>  	.version	= MFC_VERSION,
+>  	.version_bit	= MFC_V5_BIT,
+>  	.port_num	= MFC_NUM_PORTS,
+> @@ -1554,7 +1554,7 @@ static const struct s5p_mfc_buf_size buf_size_v6 =
+> {
 >  	.priv	= &mfc_buf_size_v6,
-> @@ -1569,7 +1569,7 @@ static struct s5p_mfc_variant mfc_drvdata_v6 = {
+>  };
+> 
+> -static struct s5p_mfc_variant mfc_drvdata_v6 = {
+> +static const struct s5p_mfc_variant mfc_drvdata_v6 = {
+>  	.version	= MFC_VERSION_V6,
+>  	.version_bit	= MFC_V6_BIT,
+>  	.port_num	= MFC_NUM_PORTS_V6,
+> @@ -1583,7 +1583,7 @@ static const struct s5p_mfc_buf_size buf_size_v7 =
+> {
+>  	.priv	= &mfc_buf_size_v7,
+>  };
+> 
+> -static struct s5p_mfc_variant mfc_drvdata_v7 = {
+> +static const struct s5p_mfc_variant mfc_drvdata_v7 = {
+>  	.version	= MFC_VERSION_V7,
+>  	.version_bit	= MFC_V7_BIT,
+>  	.port_num	= MFC_NUM_PORTS_V7,
+> @@ -1593,7 +1593,7 @@ static struct s5p_mfc_variant mfc_drvdata_v7 = {
 >  	.num_clocks	= 1,
 >  };
 > 
-> -static struct s5p_mfc_buf_size_v6 mfc_buf_size_v7 = {
-> +static const struct s5p_mfc_buf_size_v6 mfc_buf_size_v7 = {
->  	.dev_ctx	= MFC_CTX_BUF_SIZE_V7,
->  	.h264_dec_ctx	= MFC_H264_DEC_CTX_BUF_SIZE_V7,
->  	.other_dec_ctx	= MFC_OTHER_DEC_CTX_BUF_SIZE_V7,
-> @@ -1577,7 +1577,7 @@ static struct s5p_mfc_buf_size_v6 mfc_buf_size_v7
-> = {
->  	.other_enc_ctx	= MFC_OTHER_ENC_CTX_BUF_SIZE_V7,
->  };
-> 
-> -static struct s5p_mfc_buf_size buf_size_v7 = {
-> +static const struct s5p_mfc_buf_size buf_size_v7 = {
->  	.fw	= MAX_FW_SIZE_V7,
->  	.cpb	= MAX_CPB_SIZE_V7,
->  	.priv	= &mfc_buf_size_v7,
-> @@ -1603,7 +1603,7 @@ static struct s5p_mfc_variant mfc_drvdata_v7_3250
-> = {
->  	.num_clocks     = 2,
->  };
-> 
-> -static struct s5p_mfc_buf_size_v6 mfc_buf_size_v8 = {
-> +static const struct s5p_mfc_buf_size_v6 mfc_buf_size_v8 = {
->  	.dev_ctx	= MFC_CTX_BUF_SIZE_V8,
->  	.h264_dec_ctx	= MFC_H264_DEC_CTX_BUF_SIZE_V8,
->  	.other_dec_ctx	= MFC_OTHER_DEC_CTX_BUF_SIZE_V8,
-> @@ -1611,7 +1611,7 @@ static struct s5p_mfc_buf_size_v6 mfc_buf_size_v8
-> = {
->  	.other_enc_ctx	= MFC_OTHER_ENC_CTX_BUF_SIZE_V8,
->  };
-> 
-> -static struct s5p_mfc_buf_size buf_size_v8 = {
-> +static const struct s5p_mfc_buf_size buf_size_v8 = {
->  	.fw	= MAX_FW_SIZE_V8,
->  	.cpb	= MAX_CPB_SIZE_V8,
+> -static struct s5p_mfc_variant mfc_drvdata_v7_3250 = {
+> +static const struct s5p_mfc_variant mfc_drvdata_v7_3250 = {
+>  	.version        = MFC_VERSION_V7,
+>  	.version_bit    = MFC_V7_BIT,
+>  	.port_num       = MFC_NUM_PORTS_V7,
+> @@ -1617,7 +1617,7 @@ static const struct s5p_mfc_buf_size buf_size_v8 =
+> {
 >  	.priv	= &mfc_buf_size_v8,
-> @@ -1637,7 +1637,7 @@ static struct s5p_mfc_variant mfc_drvdata_v8_5433
+>  };
+> 
+> -static struct s5p_mfc_variant mfc_drvdata_v8 = {
+> +static const struct s5p_mfc_variant mfc_drvdata_v8 = {
+>  	.version	= MFC_VERSION_V8,
+>  	.version_bit	= MFC_V8_BIT,
+>  	.port_num	= MFC_NUM_PORTS_V8,
+> @@ -1627,7 +1627,7 @@ static struct s5p_mfc_variant mfc_drvdata_v8 = {
+>  	.num_clocks	= 1,
+>  };
+> 
+> -static struct s5p_mfc_variant mfc_drvdata_v8_5433 = {
+> +static const struct s5p_mfc_variant mfc_drvdata_v8_5433 = {
+>  	.version	= MFC_VERSION_V8,
+>  	.version_bit	= MFC_V8_BIT,
+>  	.port_num	= MFC_NUM_PORTS_V8,
+> @@ -1652,7 +1652,7 @@ static const struct s5p_mfc_buf_size buf_size_v10
 > = {
->  	.num_clocks	= 3,
->  };
-> 
-> -static struct s5p_mfc_buf_size_v6 mfc_buf_size_v10 = {
-> +static const struct s5p_mfc_buf_size_v6 mfc_buf_size_v10 = {
->  	.dev_ctx        = MFC_CTX_BUF_SIZE_V10,
->  	.h264_dec_ctx   = MFC_H264_DEC_CTX_BUF_SIZE_V10,
->  	.other_dec_ctx  = MFC_OTHER_DEC_CTX_BUF_SIZE_V10, @@ -
-> 1646,7 +1646,7 @@ static struct s5p_mfc_buf_size_v6 mfc_buf_size_v10 = {
->  	.other_enc_ctx  = MFC_OTHER_ENC_CTX_BUF_SIZE_V10,  };
-> 
-> -static struct s5p_mfc_buf_size buf_size_v10 = {
-> +static const struct s5p_mfc_buf_size buf_size_v10 = {
->  	.fw     = MAX_FW_SIZE_V10,
->  	.cpb    = MAX_CPB_SIZE_V10,
 >  	.priv   = &mfc_buf_size_v10,
-> diff --git a/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_cmd_v6.c
-> b/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_cmd_v6.c
-> index f8588e52dfc8..25c4719a5dd0 100644
-> --- a/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_cmd_v6.c
-> +++ b/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_cmd_v6.c
-> @@ -32,7 +32,7 @@ static int s5p_mfc_cmd_host2risc_v6(struct
-> s5p_mfc_dev *dev, int cmd,  static int s5p_mfc_sys_init_cmd_v6(struct
-> s5p_mfc_dev *dev)  {
->  	struct s5p_mfc_cmd_args h2r_args;
-> -	struct s5p_mfc_buf_size_v6 *buf_size = dev->variant->buf_size-
-> >priv;
-> +	const struct s5p_mfc_buf_size_v6 *buf_size =
-> +dev->variant->buf_size->priv;
->  	int ret;
-> 
->  	ret = s5p_mfc_hw_call(dev->mfc_ops, alloc_dev_context_buffer,
-> dev); diff --git a/drivers/media/platform/samsung/s5p-
-> mfc/s5p_mfc_common.h b/drivers/media/platform/samsung/s5p-
-> mfc/s5p_mfc_common.h
-> index f33a755327ef..6a47f3434c60 100644
-> --- a/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_common.h
-> +++ b/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_common.h
-> @@ -219,14 +219,14 @@ struct s5p_mfc_buf_size_v6 {  struct
-> s5p_mfc_buf_size {
->  	unsigned int fw;
->  	unsigned int cpb;
-> -	void *priv;
-> +	const void *priv;
 >  };
 > 
->  struct s5p_mfc_variant {
->  	unsigned int version;
->  	unsigned int port_num;
->  	u32 version_bit;
-> -	struct s5p_mfc_buf_size *buf_size;
-> +	const struct s5p_mfc_buf_size *buf_size;
->  	const char	*fw_name[MFC_FW_MAX_VERSIONS];
->  	const char	*clk_names[MFC_MAX_CLOCKS];
->  	int		num_clocks;
-> diff --git a/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_dec.c
-> b/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_dec.c
-> index 268ffe4da53c..4dbe8792ac3d 100644
-> --- a/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_dec.c
-> +++ b/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_dec.c
-> @@ -426,7 +426,7 @@ static int vidioc_s_fmt(struct file *file, void *priv,
-> struct v4l2_format *f)
->  	struct s5p_mfc_ctx *ctx = fh_to_ctx(priv);
->  	int ret = 0;
->  	struct v4l2_pix_format_mplane *pix_mp;
-> -	struct s5p_mfc_buf_size *buf_size = dev->variant->buf_size;
-> +	const struct s5p_mfc_buf_size *buf_size = dev->variant->buf_size;
-> 
->  	mfc_debug_enter();
->  	ret = vidioc_try_fmt(file, priv, f);
-> diff --git a/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_opr_v5.c
-> b/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_opr_v5.c
-> index 28a06dc343fd..13a3ff55e547 100644
-> --- a/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_opr_v5.c
-> +++ b/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_opr_v5.c
-> @@ -34,7 +34,7 @@
->  static int s5p_mfc_alloc_dec_temp_buffers_v5(struct s5p_mfc_ctx *ctx)  {
->  	struct s5p_mfc_dev *dev = ctx->dev;
-> -	struct s5p_mfc_buf_size_v5 *buf_size = dev->variant->buf_size-
-> >priv;
-> +	const struct s5p_mfc_buf_size_v5 *buf_size =
-> +dev->variant->buf_size->priv;
->  	int ret;
-> 
->  	ctx->dsc.size = buf_size->dsc;
-> @@ -200,7 +200,7 @@ static void s5p_mfc_release_codec_buffers_v5(struct
-> s5p_mfc_ctx *ctx)  static int s5p_mfc_alloc_instance_buffer_v5(struct
-> s5p_mfc_ctx *ctx)  {
->  	struct s5p_mfc_dev *dev = ctx->dev;
-> -	struct s5p_mfc_buf_size_v5 *buf_size = dev->variant->buf_size-
-> >priv;
-> +	const struct s5p_mfc_buf_size_v5 *buf_size =
-> +dev->variant->buf_size->priv;
->  	int ret;
-> 
->  	if (ctx->codec_mode == S5P_MFC_CODEC_H264_DEC || @@ -345,7
-> +345,7 @@ static void s5p_mfc_enc_calc_src_size_v5(struct s5p_mfc_ctx
-> *ctx)  static void s5p_mfc_set_dec_desc_buffer(struct s5p_mfc_ctx *ctx)  {
->  	struct s5p_mfc_dev *dev = ctx->dev;
-> -	struct s5p_mfc_buf_size_v5 *buf_size = dev->variant->buf_size-
-> >priv;
-> +	const struct s5p_mfc_buf_size_v5 *buf_size =
-> +dev->variant->buf_size->priv;
-> 
->  	mfc_write(dev, OFFSETA(ctx->dsc.dma),
-> S5P_FIMV_SI_CH0_DESC_ADR);
->  	mfc_write(dev, buf_size->dsc, S5P_FIMV_SI_CH0_DESC_SIZE); diff --
-> git a/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_opr_v6.c
-> b/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_opr_v6.c
-> index c0df5ac9fcff..70a62400908e 100644
-> --- a/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_opr_v6.c
-> +++ b/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_opr_v6.c
-> @@ -333,7 +333,7 @@ static void s5p_mfc_release_codec_buffers_v6(struct
-> s5p_mfc_ctx *ctx)  static int s5p_mfc_alloc_instance_buffer_v6(struct
-> s5p_mfc_ctx *ctx)  {
->  	struct s5p_mfc_dev *dev = ctx->dev;
-> -	struct s5p_mfc_buf_size_v6 *buf_size = dev->variant->buf_size-
-> >priv;
-> +	const struct s5p_mfc_buf_size_v6 *buf_size =
-> +dev->variant->buf_size->priv;
->  	int ret;
-> 
->  	mfc_debug_enter();
-> @@ -393,7 +393,7 @@ static void
-> s5p_mfc_release_instance_buffer_v6(struct s5p_mfc_ctx *ctx)
->  /* Allocate context buffers for SYS_INIT */  static int
-> s5p_mfc_alloc_dev_context_buffer_v6(struct s5p_mfc_dev *dev)  {
-> -	struct s5p_mfc_buf_size_v6 *buf_size = dev->variant->buf_size-
-> >priv;
-> +	const struct s5p_mfc_buf_size_v6 *buf_size =
-> +dev->variant->buf_size->priv;
->  	int ret;
-> 
->  	mfc_debug_enter();
-> @@ -493,7 +493,7 @@ static int s5p_mfc_set_dec_stream_buffer_v6(struct
-> s5p_mfc_ctx *ctx,  {
->  	struct s5p_mfc_dev *dev = ctx->dev;
->  	const struct s5p_mfc_regs *mfc_regs = dev->mfc_regs;
-> -	struct s5p_mfc_buf_size *buf_size = dev->variant->buf_size;
-> +	const struct s5p_mfc_buf_size *buf_size = dev->variant->buf_size;
-> 
->  	mfc_debug_enter();
->  	mfc_debug(2, "inst_no: %d, buf_addr: 0x%08x,\n"
+> -static struct s5p_mfc_variant mfc_drvdata_v10 = {
+> +static const struct s5p_mfc_variant mfc_drvdata_v10 = {
+>  	.version        = MFC_VERSION_V10,
+>  	.version_bit    = MFC_V10_BIT,
+>  	.port_num       = MFC_NUM_PORTS_V10,
 > 
 > --
 > 2.34.1
