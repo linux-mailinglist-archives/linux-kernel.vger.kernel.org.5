@@ -1,122 +1,107 @@
-Return-Path: <linux-kernel+bounces-11434-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11435-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F09A81E636
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 10:14:03 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8EB681E639
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 10:14:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C6BAEB21D85
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 09:14:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 56494B218D4
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 09:14:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D9804D110;
-	Tue, 26 Dec 2023 09:13:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F7804D10F;
+	Tue, 26 Dec 2023 09:14:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="akXipQlY"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="d8FZaENN"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32A044D109
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 09:13:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C3C24D109
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 09:14:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-28659348677so2727827a91.0
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 01:13:51 -0800 (PST)
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6d99980b2e0so2110772b3a.2
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 01:14:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703582031; x=1704186831; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1703582069; x=1704186869; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=g7QSJxelIZH4MlI/W09hKVF90XdVYg5Vx6AY6Oldr9I=;
-        b=akXipQlYhUqqLcIwJMgYsUCDMLgf+dad45YQBdgDTzY5iUZDKO6rZGG3CTemXbtNaU
-         pxIJo9Ej3Yplt7fjaIb7FTdcCU2JfjI1ILcHswGX/50TEBcIZ88wSICDeWhG/MkFFDSi
-         MiyNOGEHlYMGsdm1L3rG/ew+8X4MMqoEXiZQ91AN04scyQFXWIcPlkMmRJFWMD0a2q+p
-         iAA2UaiTb/ft6wuNCtGiEDbZonvB3V8/wFIBPkMMwKe6+bC1KsxtFjJ1gztdzWLhtllz
-         H+HpG2Na5nTuDFv9dT1zXYIQ8tykfw3Ek2ZIJ7vuJ9wtuYIBF4faKjtuA+rBYszxzE4s
-         hxEg==
+        bh=PqdNpUYpWfyG41yoNqreJFCO9R22bzGQt+dCXZqFMSE=;
+        b=d8FZaENNstOG/1yOK9cPPf0Q0WWiEooVIkcuWS0Jyc68vqYdPufhKKnYpPNdoKA/WW
+         fznjMgHmDVoVg5GfXynsk63n7HdyieFQ7IHDpC55du1zr+DnLhW1SZw8vYk5AEY2f3Vz
+         bkjY7bXAYa2AKv+6vcBctN2MMQ4hSMukUdk4OBcLEvzeCe7Px0OQmvy2URYtzrH4YSzF
+         UXwI4tzVcYSrH/w1sQVdTy4ti82geXICNHlPTaLiLr0smKDUdgQvskPDe9Rco2ClW2Mp
+         Q2J7NjHi+3e4CEk5wcg9FXFsmbEoj8CV/SYNe3s3jKLrhl6RZcd98SOTFuhKO24/h821
+         YfnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703582031; x=1704186831;
+        d=1e100.net; s=20230601; t=1703582069; x=1704186869;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=g7QSJxelIZH4MlI/W09hKVF90XdVYg5Vx6AY6Oldr9I=;
-        b=kGak4ALU2vnEqJ/GjjpM0reWSD5f01gTAjLTmaExOQ3vde1WiTp99BMP8e4Ja8FJwS
-         kvLpz+yjczVV1QAReuTgIHxOBqRV2Ya/M9hhgY9XsVb7h6vabwL3RVbepPavZQWUt5LB
-         c/nmlwnKDVjHnNXBzwQi9YUl0JZtHyKS7m9edflmvP3QdcTqAgIkFHh0HqmsMeaDjevq
-         Hb312RB2wBsP3b8wY+B+IJYDJ1+e+H2bRqUedqeh4ykCMaVdSShF6sRhWLv1IQYFcXs8
-         LWkoJcVcX09sm8aGj+Z+YhPjBpPNbL2Ko23t/dKU84QqLqlVK2zJNJzBdXEz9RiFP9Gw
-         R9yA==
-X-Gm-Message-State: AOJu0YwMLrOsPyX1OJkp+28jFwKiousIkV+QZU44advo2fwiuXb58JCv
-	pXX2IG6n4GX0UMH+iLNo7cUN/lL1TNYGpY19Ae8pgt5k
-X-Google-Smtp-Source: AGHT+IEOfcHJrcMXvoP0vdskNa7HcmS6SE9UpaTlMZqKQ1DzmGeIFGOVlo3Ms3z+tuh/iDsG1/spcsXJyG4xh1vyalk=
-X-Received: by 2002:a17:90b:1810:b0:28c:5ed:d50e with SMTP id
- lw16-20020a17090b181000b0028c05edd50emr7908412pjb.34.1703582031450; Tue, 26
- Dec 2023 01:13:51 -0800 (PST)
+        bh=PqdNpUYpWfyG41yoNqreJFCO9R22bzGQt+dCXZqFMSE=;
+        b=qf1i0I0o/hrrkQIPY1xGhxhhdBDSjOEW6FS0ZlNlAtVfeXY7nDUUi5AzoZM1bIOvL+
+         +fxpNYXTxoI0mkzn2+agj2KDf9DMj69kcb2xZ+lue0XVKXMV18Z+rUOiaOYCkd9x6Jdi
+         xHtJyVTSrsMVEx8zkfm4k/xXcxnHmejvB+j6Z6x33rm2zCScBUa+NApn4wetk0jCD2v7
+         hGDTV3wkzcJQXxunneg+r+5/l/hB3I7ytCFXlxddb/wXoPdQM0XKWl4Pirlq5t9b1Dyl
+         3MSXdThJUFpWccsdgN6p/zFWSY2NTDmjbaL7Vp6jSKdX4Kupi+dANG1CFgskLKCRObCP
+         OZmA==
+X-Gm-Message-State: AOJu0YzQPHNC0emSXw7PMtJqG69vEq9CaNpTfoSz+EWMthl71K+WSNUb
+	xoU7nV8Lu5uA47iOvO4IEKfjgj/c+TBrQUX3evg=
+X-Google-Smtp-Source: AGHT+IEVz4PUi+nalNDwcuPNoKbvgCp/JlvgutfRWGeBiEc0K+ijPr9LaqpFDCSQ62reZZ7cAxaRmv5XNLciBXVstec=
+X-Received: by 2002:a62:b41a:0:b0:6d9:c090:f836 with SMTP id
+ h26-20020a62b41a000000b006d9c090f836mr1896458pfn.50.1703582069590; Tue, 26
+ Dec 2023 01:14:29 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231220072529.1036099-1-tj@kernel.org> <20231220072529.1036099-2-tj@kernel.org>
-In-Reply-To: <20231220072529.1036099-2-tj@kernel.org>
+References: <20231220072529.1036099-1-tj@kernel.org> <20231220072529.1036099-9-tj@kernel.org>
+In-Reply-To: <20231220072529.1036099-9-tj@kernel.org>
 From: Lai Jiangshan <jiangshanlai@gmail.com>
-Date: Tue, 26 Dec 2023 17:13:40 +0800
-Message-ID: <CAJhGHyB-8hU7W9HV1ctD67Q9d9o+tmhesYqtBcMEmO1+taF=cw@mail.gmail.com>
-Subject: Re: [PATCH 01/10] workqueue: Move pwq->max_active to wq->max_active
+Date: Tue, 26 Dec 2023 17:14:18 +0800
+Message-ID: <CAJhGHyC_9JemZdv4Gp4XG7BqLc72bS1uM8xv9vpQtSsyhefZvQ@mail.gmail.com>
+Subject: Re: [PATCH 08/10] workqueue: Introduce struct wq_node_nr_active
 To: Tejun Heo <tj@kernel.org>
 Cc: linux-kernel@vger.kernel.org, Naohiro.Aota@wdc.com, kernel-team@meta.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Dec 20, 2023 at 3:25=E2=80=AFPM Tejun Heo <tj@kernel.org> wrote:
+On Wed, Dec 20, 2023 at 3:26=E2=80=AFPM Tejun Heo <tj@kernel.org> wrote:
 
-> +static void wq_adjust_max_active(struct workqueue_struct *wq)
-> +{
-> +       struct pool_workqueue *pwq;
-> +
-> +       lockdep_assert_held(&wq->mutex);
-> +
-> +       if ((wq->flags & WQ_FREEZABLE) && workqueue_freezing) {
-> +               wq->max_active =3D 0;
-> +               return;
+> @@ -1498,12 +1539,21 @@ static bool pwq_tryinc_nr_active(struct pool_work=
+queue *pwq)
+>  {
+>         struct workqueue_struct *wq =3D pwq->wq;
+>         struct worker_pool *pool =3D pwq->pool;
+> -       bool obtained;
+> +       struct wq_node_nr_active *nna =3D wq_node_nr_active(wq, pool->nod=
+e);
+> +       bool obtained =3D false;
+>
+>         lockdep_assert_held(&pool->lock);
+>
+> -       obtained =3D pwq->nr_active < wq->max_active;
+> +       if (!nna) {
+> +               /* per-cpu workqueue, pwq->nr_active is sufficient */
+> +               obtained =3D pwq->nr_active < wq->max_active;
+> +               goto out;
 > +       }
-> +
-> +       if (wq->max_active =3D=3D wq->saved_max_active)
-> +               return;
-> +
-> +       wq->max_active =3D wq->saved_max_active;
-> +
 
-If a work item gets queued now, it will get scheduled earlier than a
-previous queued one which is still in the inactive list.
-
-To solve it, I recommend adding wq->queue_max_active which will be
-updated after the following code and used only when queue_work().
-But it requires round-robin through PWQs the second time after
-wq->queue_max_active is updated to catch the new inactivated items.
-
-Or just keep pwq->max_active and will be
-updated after activating inactivated items and used only when queue_work().
+For unbound workqueue, it is not checked against wq->max_active anymore
+and it is increased unconditionally.  Is it by design?
 
 
-> +       for_each_pwq(pwq, wq) {
-> +               unsigned long flags;
 > +
-> +               /* this function can be called during early boot w/ irq d=
-isabled */
-> +               raw_spin_lock_irqsave(&pwq->pool->lock, flags);
-> +
-> +               while (!list_empty(&pwq->inactive_works) &&
-> +                      pwq->nr_active < wq->max_active)
-> +                       pwq_activate_first_inactive(pwq);
-> +
-> +               kick_pool(pwq->pool);
-> +
-> +               raw_spin_unlock_irqrestore(&pwq->pool->lock, flags);
-> +       }
-> +}
-> +
+> +       atomic_inc(&nna->count);
+> +       obtained =3D true;
+>
+> +out:
+>         if (obtained)
+>                 pwq->nr_active++;
+>         return obtained;
 
