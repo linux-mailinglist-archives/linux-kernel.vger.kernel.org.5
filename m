@@ -1,43 +1,43 @@
-Return-Path: <linux-kernel+bounces-11658-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11659-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3ED4C81E97E
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 20:44:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BD71B81E980
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 20:49:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C6FD8283450
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 19:44:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7689B2825FE
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 19:49:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B96823C9;
-	Tue, 26 Dec 2023 19:43:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B98782103;
+	Tue, 26 Dec 2023 19:49:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="fBOhzl+r"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="V6LlcVTW"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mout.web.de (mout.web.de [217.72.192.78])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFF6F5221;
-	Tue, 26 Dec 2023 19:43:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-	t=1703619819; x=1704224619; i=markus.elfring@web.de;
-	bh=kfUrqzz13/SvRJXYn0ERTOI/fh6ulUnX5zFEb1O64Js=;
-	h=X-UI-Sender-Class:Date:To:Cc:From:Subject;
-	b=fBOhzl+rNglrGfAE5U6T/gr7Mcos5BQiia4AiECPLcFxE5boaMpuyvWYg3qXNQo/
-	 adlFWcdh/FSb/vR2Lg86/GKHSvAeI0wB1SMZnRyzYwEjw8mm9+EF+uoYyCG5Lofj4
-	 fSA+bPafsWBoR2IAZMCUkko4/1aIarO7bKMcqt0NauJmCDebcE2coRytaIVfESeG1
-	 KIPMJ51KyTOtB+DUwHSoA5l1uFG/JQfX8Grt5PxKx6zmONmVYO5Bnlut13dYffHsC
-	 f+syDNPaKXK/iMN/bEy473NZsaJXd12tdW08Ik3jwGaNLwkaRLg/4vf2qb49tq105
-	 q5lVTJXlS4hLCVV/rw==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb106
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1MhFlo-1qn1SL0xuM-00eWrU; Tue, 26
- Dec 2023 20:43:39 +0100
-Message-ID: <5088a905-4f29-41d3-a96e-5b66aad551f1@web.de>
-Date: Tue, 26 Dec 2023 20:43:37 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79A701847
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 19:49:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=ltxuMlZ+kzMrrPIVGOVBbv3q97GGQmn2uNwiw82Dnkw=; b=V6LlcVTWVAYjZSAsOOdj6x+I+1
+	mGidUToj2wg3ebKpsXdNW34qYqNIxH77CgoRKyeo2kAo5ihhWE3Kg0Iu5tFQYG99bkraAHcXKxxvD
+	885NWv/GWxjRbcBtwvJ+nBAMSN6bbFuR27xFg1jRj/jRL6SeEv/0vVLdgi3GwsCWR6pPq0lMly58T
+	rOUp7Dk2+LH8tv5lR04UKuKKnTRru+7Ga9Dvpqb/iiD2lqpzzcHG3xEH2DkNVzAwIjBR+7LKpWU3g
+	ciX4Bfu4QgLbBjbDBHWBHxUgnDh5UbS1nSqbcy6maMPN8ctiKf4JGDesxVLI7D3G09YcjJh/o6mPz
+	I2AGz7Wg==;
+Received: from [50.53.46.231] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1rIDQx-00DSmS-1T;
+	Tue, 26 Dec 2023 19:49:47 +0000
+Message-ID: <0579ecd5-1335-4010-a32c-77dd4caf3411@infradead.org>
+Date: Tue, 26 Dec 2023 11:49:47 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -45,69 +45,51 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-To: linux-input@vger.kernel.org, kernel-janitors@vger.kernel.org,
- Dmitry Torokhov <dmitry.torokhov@gmail.com>,
- Henrik Rydberg <rydberg@bitmath.org>
-Content-Language: en-GB
-Cc: LKML <linux-kernel@vger.kernel.org>, cocci@inria.fr
-From: Markus Elfring <Markus.Elfring@web.de>
-Subject: [PATCH] Input: MT - Return directly after a failed kzalloc() in
- input_mt_init_slots()
+Subject: Re: [PATCH 4/4] drm/i915/perf: reconcile Excess struct member
+ kernel-doc warnings
+Content-Language: en-US
+To: Rodrigo Vivi <rodrigo.vivi@intel.com>
+Cc: linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+ intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
+References: <20231221032029.30942-1-rdunlap@infradead.org>
+ <20231221032029.30942-4-rdunlap@infradead.org> <ZYsH757tT6sdSjDI@intel.com>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <ZYsH757tT6sdSjDI@intel.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:a8q13dW4fWVw2Hjfg84VQkwXU+SMTB/VfKaMZFUi+rSbfT92EII
- 2KooLkW2Dt1N9cTE4m8DJ1HBbo4D5rqf0iDdRWR8KpJTnq59BWm8uAfCr2a/hZJHirCNjXJ
- 4l9HsAHIOoSz2pE9twVSlBijktomx1LJ3hXmLqLS8OoA7gXYLMDQVJwWKL97573cEZNpkMW
- RxqfNn9aqV3fQjdpHC7Cw==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:8pD2t0jv3V0=;6PXCgp1FFSxhp3Tffor/temmFSg
- 895atRLT+C3nCeMjM3n1oRHwvgFOcktzBWruWZEu5ZsGaxTbuyYtv2rGGKUslWmPgpexSpWL+
- wXULaZMfngAAw6HlTtXgX2N5PgaFtL8hImDr+fnVQYlQ4bArZqprAJXtrpUs5COQSHWfqlIva
- WVUP2Hlo+soijfzzP4Hxi2N6rZXmYYzQIpcHjVSuKcb//ryfLvy2dFeibU1YzAIR6OdRMWVIw
- PScT4n1dy7v+uoIjO2a78SPpJoAkmvKE1JkEPkaqunOmP+PJ3N5SpicZt172/MbIArELY5MB3
- Fxffx5qL8ripKt3ZHJ0NuqUlUR59TnNpeHEwW/NBIK34glXJ0KrIYPCkaxt5uvf2L0ZQXsn5B
- Tis9pVoqRq2nCMZKCEf/zikkeGZEG5pVPgmAyel3u9zK5UTQJGzbTNqGaUM+2VrU8k5/QgAaK
- O1veTuapZJuIYZY/J7GM1Sy3jVVDjfpp9LX9/6w8KZsxuQqgH/aSDOIVh3feJqPcm2Jse6RxD
- hBaK3Y0igDbFy82DRMlqZ+4Bsm0Ky7c3aIQEsz9xfVnAjr1i1Xj0ZvmW21RVlExwVYfjteYln
- DmbvanRgUBMVtAllhsVg45iKkkZDMX4EOtGd2Y3IetOoGMxxuuG7xeMCNShOEd01tWQ85vmv7
- bWRPB9vH5o2o6rsp0q56uXa5kpUaYRPIa2HGQtR3x5Ak7M+thOfifL9PXQyhvh4OaGwh903wH
- ePem5rBifH6vYxAzwSljTbLR/EmbhLaBPmqqdS7EG796xRTBswHFa6B07v91Q5vScFOZpOS5c
- Efd7dLd25gd4f8vambmPhJEErXnP5NdACQ+/a9LO97qNdgNhXmmFXij6tTAuybNdxbNkIF/tM
- XmyBK/Oln1d3IMon2CHHb9avCOFZWG7dXOIArCyAhV2ZUFTDSVXVVgiGYTF1+6ldsB3Tz7C6i
- uPK6oA==
+Content-Transfer-Encoding: 7bit
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Tue, 26 Dec 2023 20:36:09 +0100
 
-The kfree() function was called in one case by
-the input_mt_init_slots() function during error handling
-even if the passed variable contained a null pointer.
-This issue was detected by using the Coccinelle software.
 
-Thus return directly after a call of the function =E2=80=9Ckzalloc=E2=80=
-=9D failed
-at the beginning.
+On 12/26/23 09:05, Rodrigo Vivi wrote:
+> On Wed, Dec 20, 2023 at 07:20:29PM -0800, Randy Dunlap wrote:
+>> Document nested struct members with full names as described in
+>> Documentation/doc-guide/kernel-doc.rst.
+>>
+>> i915_perf_types.h:341: warning: Excess struct member 'ptr_lock' description in 'i915_perf_stream'
+>> i915_perf_types.h:341: warning: Excess struct member 'head' description in 'i915_perf_stream'
+>> i915_perf_types.h:341: warning: Excess struct member 'tail' description in 'i915_perf_stream'
+>> 3 warnings as Errors
+>>
+>> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+>> Cc: Jani Nikula <jani.nikula@linux.intel.com>
+>> Cc: Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
+>> Cc: Rodrigo Vivi <rodrigo.vivi@intel.com>
+>> Cc: Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
+>> Cc: intel-gfx@lists.freedesktop.org
+>> Cc: Jonathan Corbet <corbet@lwn.net>
+>> Cc: dri-devel@lists.freedesktop.org
+> 
+> 
+> for the series:
+> Reviewed-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
+> 
+> I'm afraid patchwork was down when you sent this out.
+> Could you please rebase and resend? Just to ensure
+> our CI doesn't complain and then we push it.
+> 
 
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
-=2D--
- drivers/input/input-mt.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Will do. Thanks.
 
-diff --git a/drivers/input/input-mt.c b/drivers/input/input-mt.c
-index 14b53dac1253..24064447d600 100644
-=2D-- a/drivers/input/input-mt.c
-+++ b/drivers/input/input-mt.c
-@@ -49,7 +49,7 @@ int input_mt_init_slots(struct input_dev *dev, unsigned =
-int num_slots,
-
- 	mt =3D kzalloc(struct_size(mt, slots, num_slots), GFP_KERNEL);
- 	if (!mt)
--		goto err_mem;
-+		return -ENOMEM;
-
- 	mt->num_slots =3D num_slots;
- 	mt->flags =3D flags;
-=2D-
-2.43.0
-
+-- 
+#Randy
 
