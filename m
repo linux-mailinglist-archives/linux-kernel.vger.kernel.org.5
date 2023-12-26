@@ -1,102 +1,90 @@
-Return-Path: <linux-kernel+bounces-11573-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11574-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C759281E85A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 17:25:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF60081E85E
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 17:28:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0E6A21C21F63
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 16:25:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A49301F229BC
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 16:28:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CC184F60C;
-	Tue, 26 Dec 2023 16:25:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DEA24F5E3;
+	Tue, 26 Dec 2023 16:28:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Nh0tXZa9"
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="yLETI7l4"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f45.google.com (mail-io1-f45.google.com [209.85.166.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B81B44F5EF;
-	Tue, 26 Dec 2023 16:24:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D974FC433C7;
-	Tue, 26 Dec 2023 16:24:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703607898;
-	bh=hhRnMsLC6POZSHAl85RZB1z8ggwSk2IZQuSs9Nv91wo=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=Nh0tXZa9pRyyE0rrGnldxUdlb5vATvUO7jMHbwBujWEaNKdKZNikUVC0dZlsr+pPY
-	 mPywS9y79fHNRl6m4YYI1O7y7mkDCRTcJZ/+WIil1KLmTQyqDxTWErmEbaRkA45wUf
-	 7sLvgC/RlQ/QvZWEzoknzObUQ7ex+i1riCoB5gpQ/Yi9lZfx8MMXPTL1L9EPVaShVq
-	 Hq9uCCWomru5wzJH66LOwx+xu8Y0v90qJ8zE6EmiDqVEaOq6jXh42IABWnUL1W4fdx
-	 M9gnt/SBmsKYpFD4mSbFlo2GaXtbC2MOiVuSJunJ/Qa/lFTh2QUC9jZgSGWXx5YvMs
-	 1dChYEy4+FU3A==
-Date: Tue, 26 Dec 2023 16:24:50 +0000
-From: Jonathan Cameron <jic23@kernel.org>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: cy_huang@richtek.com, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Lars-Peter Clausen <lars@metafoo.de>, Rob Herring <robh+dt@kernel.org>, Uwe
- =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?= <u.kleine-koenig@pengutronix.de>,
- linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] dt-bindings: iio: adc: rtq6056: add support for the
- whole RTQ6056 family
-Message-ID: <20231226162450.5437810a@jic23-huawei>
-In-Reply-To: <9715ed9d-7edf-430c-808c-00e7748bc59a@linaro.org>
-References: <1703562468-29052-1-git-send-email-cy_huang@richtek.com>
-	<1703562468-29052-2-git-send-email-cy_huang@richtek.com>
-	<9715ed9d-7edf-430c-808c-00e7748bc59a@linaro.org>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B7AE4F5FA
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 16:27:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+Received: by mail-io1-f45.google.com with SMTP id ca18e2360f4ac-7bb06f56fe9so1201139f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 08:27:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1703608078; x=1704212878; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=xOMGLbsQ9RzM9b4GH1sZi3XCxnyOtKMyWm93wPrQ9NQ=;
+        b=yLETI7l4PsCDRf5Kn58dk884r6RxFXdB6JdQwSDmbPwtHCnPXR6qtJHbJlz05xStRT
+         /1aU/boBhS0nS1Oc1ZCkVH60u2Yxr4WK5b74wQChUeBbC9rxXIUaHRsOamnDFnbP0PVZ
+         I1SxokhleyqbeyKyrXcLfV1cEOToa+uT3eKMYGnKFTaW4Lg7GQin9ZJQYxhpyBldnL+I
+         uPUyK4jfNTy8ypegxFkDXDe9vWiWcs2YfgJvIrPYg+Vl/XH4FfSG2r0KJtc4oQutk39k
+         0mHK6XfHTfkcItmD/ei9SbXtvCEutER63O4etdtDociYvbeyfxeMaXx6Si86uDhHpXPb
+         BjVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703608078; x=1704212878;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=xOMGLbsQ9RzM9b4GH1sZi3XCxnyOtKMyWm93wPrQ9NQ=;
+        b=eBmawjpa+rv0vMBli7U4tE/Bj7u4tplszkEU9c5yfygOkGDXAqoCW7QWHDtdirwA55
+         VxSqgMBeJpcIflteuHBXIDTEwIJV4VJZ9iV45K01ctGT8aL3IT+r+CoFrV8EQB6vK9YO
+         Cppd80OSfEdrMIzUzuDfkiJZf3U2U1QYs2t6HpC5cEji8fulJw4j0PNkl2LYIpwOz14K
+         rCG6lkpO9eiYysbkzlQvVNw/iH+aIQfYDWN/K0Fep72ywWiduRA2PL5Iiwl4Vrdum9SP
+         FrqflS6R5j6JWWqnL7wL00MLgrB1QVTZ/USdNFXNp6/sbWlJr0JT5gZYrKG1levDABli
+         Qx8w==
+X-Gm-Message-State: AOJu0YwzOIYru/934cIFhL5jdCF6ZqH6PaObDvawx8ipQhjCbsxfDbHZ
+	MTGMX6ozYrwy602D29U59YRZ5831j6CGyA==
+X-Google-Smtp-Source: AGHT+IEgyg08vkH3r2LNXz77+SvWCKLe1kl8w+wmTxYI0Q2Y3xIjVmbHXTPWx58lZLUgNU4waXN8yQ==
+X-Received: by 2002:a6b:6a04:0:b0:7ba:ccbb:7515 with SMTP id x4-20020a6b6a04000000b007baccbb7515mr4749377iog.2.1703608078311;
+        Tue, 26 Dec 2023 08:27:58 -0800 (PST)
+Received: from [192.168.1.116] ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id x6-20020a056638034600b0046b6f096e3bsm3092448jap.134.2023.12.26.08.27.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Dec 2023 08:27:57 -0800 (PST)
+Message-ID: <4a9913bb-41b0-43c2-b7b7-22472e954a12@kernel.dk>
+Date: Tue, 26 Dec 2023 09:27:57 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] block: Fix a memory leak in bdev_open_by_dev()
+Content-Language: en-US
+To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+ Jan Kara <jack@suse.cz>, Christian Brauner <brauner@kernel.org>
+Cc: linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+ linux-block@vger.kernel.org
+References: <8eaec334781e695810aaa383b55de00ca4ab1352.1703439383.git.christophe.jaillet@wanadoo.fr>
+From: Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <8eaec334781e695810aaa383b55de00ca4ab1352.1703439383.git.christophe.jaillet@wanadoo.fr>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On Tue, 26 Dec 2023 10:18:47 +0100
-Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
+On 12/24/23 10:36 AM, Christophe JAILLET wrote:
+> If we early exit here, 'handle' needs to be freed, or some memory leaks.
 
-> On 26/12/2023 04:47, cy_huang@richtek.com wrote:
-> > From: ChiYuan Huang <cy_huang@richtek.com>
-> > 
-> > Add compatible support for RTQ6053 and RTQ6059.
-> > 
-> > Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
-> > ---
-> >  .../devicetree/bindings/iio/adc/richtek,rtq6056.yaml         | 5 ++++-
-> >  1 file changed, 4 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/iio/adc/richtek,rtq6056.yaml b/Documentation/devicetree/bindings/iio/adc/richtek,rtq6056.yaml
-> > index 88e008629ea8..d1e1f36d1972 100644
-> > --- a/Documentation/devicetree/bindings/iio/adc/richtek,rtq6056.yaml
-> > +++ b/Documentation/devicetree/bindings/iio/adc/richtek,rtq6056.yaml
-> > @@ -25,7 +25,10 @@ description: |
-> >  
-> >  properties:
-> >    compatible:
-> > -    const: richtek,rtq6056
-> > +    enum:
-> > +      - richtek,rtq6053
-> > +      - richtek,rtq6056  
-> 
-> Aren't these devices compatible? Your driver change says they are, so
-> express compatibility with list here (and oneOf).
+Reviewed-by: Jens Axboe <axboe@kernel.dk>
 
-I'm not seeing this thread on lore.kernel.org or in my local email. 
-Perhaps something went wrong?
+-- 
+Jens Axboe
 
-Jonathan
-
-
-> 
-> 
-> Best regards,
-> Krzysztof
-> 
 
 
