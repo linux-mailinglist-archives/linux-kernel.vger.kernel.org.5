@@ -1,222 +1,228 @@
-Return-Path: <linux-kernel+bounces-11350-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11351-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E7DD81E4FC
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 06:25:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E4B681E4FF
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 06:25:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BC55E1F22651
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 05:25:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DFAF51F225C1
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 05:25:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCC0B4B14F;
-	Tue, 26 Dec 2023 05:24:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 703FE4BA81;
+	Tue, 26 Dec 2023 05:24:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="SVERsrp4";
-	dkim=pass (1024-bit key) header.d=mediateko365.onmicrosoft.com header.i=@mediateko365.onmicrosoft.com header.b="GvjhYsAB"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="n1meGHlE"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA18D4AF96;
-	Tue, 26 Dec 2023 05:24:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
-X-UUID: 120dee36a3af11eeba30773df0976c77-20231226
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-	h=MIME-Version:Content-Transfer-Encoding:Content-ID:Content-Type:In-Reply-To:References:Message-ID:Date:Subject:CC:To:From; bh=2sPG/uVtLoig4VKgOGBJ7f2yNA7fwnTddyMl4QAIBgU=;
-	b=SVERsrp4Nvh+69T2oQfvHlkEatGA4oaTwI8XJQl8WCCjIok6I6ZRpqLF2S8FRqh++bcfarH5nNw6bnW7jblfSXPlUlbd7PIENU/SI/zY2qYGYvfY5etGt3wQNnOFfBZHZbRAWvCLPXaXH/9wZBJNjec/B7dTQEvLNQkFktJCVWA=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.35,REQID:9e4b0abb-f0c2-437a-883b-b7eb5bfbe629,IP:0,U
-	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-	release,TS:0
-X-CID-META: VersionHash:5d391d7,CLOUDID:a8007d2e-1ab8-4133-9780-81938111c800,B
-	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-	RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
-	DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR
-X-UUID: 120dee36a3af11eeba30773df0976c77-20231226
-Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw02.mediatek.com
-	(envelope-from <ck.hu@mediatek.com>)
-	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 2021448960; Tue, 26 Dec 2023 13:24:41 +0800
-Received: from mtkmbs10n1.mediatek.inc (172.21.101.34) by
- mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Tue, 26 Dec 2023 13:24:39 +0800
-Received: from APC01-TYZ-obe.outbound.protection.outlook.com (172.21.101.237)
- by mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Tue, 26 Dec 2023 13:24:39 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hWx7p2nR4OT/eQoJzxZWhVhmjA/OgAI5q6NyV8S0frluvio8/twBtVrBzx9fB+ZkSL16LfSns2uE/ZkWDRQkI4Fk8e8xsK4NodozPgtd48xNI/Y9qYDGWcgU/RDEBe3LkZwlsqHyb5Mc/qOqMhSE/DO31CoiXeqNDv5CFi0i87ik3WwQC6MI+5UN4ZS2q5joDr10E+GUvyBkj+ynWD+IBRmUCIk9lXId/B9/s0GSjIk4IJB/ShqrwSri9cT5scmYxDUKGV2VxdamQ1leGhK089JAi3PCaJdvkRh71wpzCKz+oyTcZPSDpMg38qXXLN2WKn06n2/p26XDL4vJUDTK3w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=2sPG/uVtLoig4VKgOGBJ7f2yNA7fwnTddyMl4QAIBgU=;
- b=WAaqtwvV68ShAf5wzSMJexL1ifqYmO18M2ic6+k9sVyG3WOzozsCL0/7PLpaUoWEXcvPyGt9i9VZCaHRTGbBlbCthwixfZwwDFV25CpDW0auf5MIsbHucXrWgkdNbkF2mgAdhAB7SXqceYs3dHoAw2yZZAiPftoyKhYl8mebDJZS4J0EgR2qcR55KtsU9L8sE/o1Fds1TyzbMZuvR3BG27ZBPeoyvaOfx/cXZh9A8J2rtsLT+QC6+TxSfl9UZdqaa1qoeooAXJrNBf1B/bqXeXhMXi6DPPU0kTGWuyqO6Yl77VOLKxeb0In1UkTcDDfIkb/gYj/X+1fruKRwyF8teA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mediatek.com; dmarc=pass action=none header.from=mediatek.com;
- dkim=pass header.d=mediatek.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mediateko365.onmicrosoft.com; s=selector2-mediateko365-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2sPG/uVtLoig4VKgOGBJ7f2yNA7fwnTddyMl4QAIBgU=;
- b=GvjhYsABCwf4DPM5E6og8yOfokf26GpXSh8v2Dl6aIT/W9idXxCODAClqknYoMVg5476Z7tVxuywuN2vVSRN8ipEkS96LzSdgi+VA1kG+alKXjJX/lxU/8m/2YlQZhejCzuIl/KnD2OgTXwft8WjSFjbSAnY/IsffoTCsdQggrs=
-Received: from TYZPR03MB6624.apcprd03.prod.outlook.com (2603:1096:400:1f4::13)
- by OSQPR03MB8457.apcprd03.prod.outlook.com (2603:1096:604:274::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7113.27; Tue, 26 Dec
- 2023 05:24:37 +0000
-Received: from TYZPR03MB6624.apcprd03.prod.outlook.com
- ([fe80::eb43:57cb:edfd:3762]) by TYZPR03MB6624.apcprd03.prod.outlook.com
- ([fe80::eb43:57cb:edfd:3762%7]) with mapi id 15.20.7113.027; Tue, 26 Dec 2023
- 05:24:37 +0000
-From: =?utf-8?B?Q0sgSHUgKOiDoeS/iuWFiSk=?= <ck.hu@mediatek.com>
-To: "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-	=?utf-8?B?SmFzb24tSkggTGluICjmnpfnnb/npaUp?= <Jason-JH.Lin@mediatek.com>,
-	"chunkuang.hu@kernel.org" <chunkuang.hu@kernel.org>, "conor+dt@kernel.org"
-	<conor+dt@kernel.org>, "robh+dt@kernel.org" <robh+dt@kernel.org>,
-	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
-	"angelogioacchino.delregno@collabora.com"
-	<angelogioacchino.delregno@collabora.com>
-CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
-	=?utf-8?B?U2luZ28gQ2hhbmcgKOW8teiIiOWciyk=?= <Singo.Chang@mediatek.com>,
-	=?utf-8?B?Sm9obnNvbiBXYW5nICjnjovogZbpkasp?= <Johnson.Wang@mediatek.com>,
-	"linaro-mm-sig@lists.linaro.org" <linaro-mm-sig@lists.linaro.org>,
-	"linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-	=?utf-8?B?SmFzb24tY2ggQ2hlbiAo6Zmz5bu66LGqKQ==?=
-	<Jason-ch.Chen@mediatek.com>, =?utf-8?B?U2hhd24gU3VuZyAo5a6L5a2d6KyZKQ==?=
-	<Shawn.Sung@mediatek.com>, =?utf-8?B?TmFuY3kgTGluICjmnpfmrKPonqIp?=
-	<Nancy.Lin@mediatek.com>, "jkardatzke@google.com" <jkardatzke@google.com>,
-	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-	Project_Global_Chrome_Upstream_Group
-	<Project_Global_Chrome_Upstream_Group@mediatek.com>,
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v3 06/11] drm/mediatek: Add get_sec_port interface to
- mtk_ddp_comp
-Thread-Topic: [PATCH v3 06/11] drm/mediatek: Add get_sec_port interface to
- mtk_ddp_comp
-Thread-Index: AQHaNc4i7cI6v2Po60+LN2zyqBzlMrC7DAUA
-Date: Tue, 26 Dec 2023 05:24:37 +0000
-Message-ID: <4165d71dd9d0043346ca57d1a556f21639885d18.camel@mediatek.com>
-References: <20231223182932.27683-1-jason-jh.lin@mediatek.com>
-	 <20231223182932.27683-7-jason-jh.lin@mediatek.com>
-In-Reply-To: <20231223182932.27683-7-jason-jh.lin@mediatek.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=mediatek.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: TYZPR03MB6624:EE_|OSQPR03MB8457:EE_
-x-ms-office365-filtering-correlation-id: 940600d5-8c94-4dac-6d4d-08dc05d2f3e8
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: W22+lDPTDVpg/E+uAAcO+5xfZDBTO+G5Bl+B/BA7NU9ySc0LnnetzX9v+a1c7kfkqQJOWXudlr1S5GGyBSUsjjjFBZbM5ldVawNBPPoUA4usH07dNmyR759RJSMKPeOioqZ0f2OP4FRN0F2yWXC8io11Q3x+kI7rd12Ek2/cLyk3B2n9umlUbgceLKsewx9RkMksgHvu70mfLCA7Eo+GemGRv2mErIi5r196NnMNEnUtNsVoeKll0VbMMacFWyG0502IfOcAifTLDSJTqLnbBdjJ2I34sK8mdn9Txd1wx9fK/JCNgI/Ch0Cb9pbY4WKnryY6GxgA2fO65eSzpgxstGYfLPclHfiHTttQMLR4EYrzjYUr1pIY0a2Fwl8F/pGuJfTSrGa7NmlrIbU61uvRM3caH6nhbfACCKhHoZCpxcMVMXWaeHSpl+UpL74mleEpg8vWZrUdvIu2bb04KlC4mP/kGwjc7U0ePDYU3CulnHcqYSzcLPIaoSmmersxPDCR9caB/yci7l0amhGnSaaqYO3LO39Z46iFsqwpEjxqJ6u7sd3gw4SR7z8oxNOAGUu50i09BB8KoGAGywOnqyixRXNBBZosYbnJrjmkQE0JNdG6mn1aZjFMhuHCs3QlJx6KcmS3qDlHoHlasRNs083/Vjyu0Xqhd2ONNjDDDhJ6HjQ=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYZPR03MB6624.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(39860400002)(346002)(396003)(136003)(366004)(230922051799003)(1800799012)(451199024)(64100799003)(186009)(85182001)(36756003)(71200400001)(6512007)(6506007)(76116006)(66946007)(66556008)(66476007)(66446008)(64756008)(6486002)(86362001)(38070700009)(38100700002)(26005)(122000001)(83380400001)(2616005)(41300700001)(2906002)(5660300002)(4001150100001)(8936002)(7416002)(8676002)(478600001)(316002)(54906003)(4326008)(110136005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?ZFBoNzJiSzhtUEFEalk1aUhTdHhQOUNQazlKZFVObDRxeWROOS9QUDMrMGNx?=
- =?utf-8?B?a29NVHRPR2luSEI4V01ZVld6aEhtN2QvY2R3Z2JYSi9qQnd6SWpFV3RlY0U0?=
- =?utf-8?B?NGRKOFlHc0lUZnM3dWN2Nm1ieVNNK0lNMi9LaUxPcmJoa2hseXZlclQ2OXJF?=
- =?utf-8?B?MkpSeWJMam9VQmt0bmduYW5HSlJ3Q3pGdWR2SkZ0d1UwL2dvYnBiZFp3Q1Z3?=
- =?utf-8?B?RUtnSzVXRG1TTkw2bE9xaVFJRVZWUWVrUUF1WFd2aGhoZkJVb01YWVF4Z044?=
- =?utf-8?B?R1lwZ0FpQmphNGZwajRDSjlSTHBaZ05hcHB3RkQvUUQ5blcvZnYzRHNNS1BX?=
- =?utf-8?B?NXZmbGFoNUNCYURiQXY2YW5nZGI0eWN2THFtS2R6eFNURStUaTVmY0d4QW5i?=
- =?utf-8?B?QzFvVS9ic2xIOHE1cHJtWlM3aWdDZWY0TmdHMzJUYXNuSXVvMVg3VWZTWHYv?=
- =?utf-8?B?QnpGZ21ZdU5OS3UyZktvbEtCL3l3OURKYzlnd2sreEhtWG1lK3NCZ0tqVUxu?=
- =?utf-8?B?VHFLZEFpcjc5VVYyN05IajJoYU9zUUNHZGRWOTMyM2M1ZWRzNVIvd29WajBw?=
- =?utf-8?B?ZnVYQzlHeWVSbEhqZ0Qzb1Y2Rkh1VjVjU3l1czRSWkNuaFE4bXFJbzRlQ1hQ?=
- =?utf-8?B?VVJmbkV0UnFFMjJGMjBOUHpTcVJzZEZqZHZGVGFrUlJUMFl3eVZFWklFWDRH?=
- =?utf-8?B?UmxKSXk5R2E3VjllU0hlSlFFT1lPbDMzeTQzVXRxNjVWUm4zWVhocU9qRGN1?=
- =?utf-8?B?UDdCdDM0ZDg2QlUwN1N1NittMG1kRkZwc3NYVE5QMzdRY290WURUOXlpZmlU?=
- =?utf-8?B?NXNPVzllNnZ3ZWV3OVlPK0ZwN0d2M0FVNVBXU2VNb2JLZEU5VkN1T3VXZTQx?=
- =?utf-8?B?QXdUeW5JM3ZHWlBxY3F4NWNnRmRRbE1LNGJYQzRaejdubUhoeUsydnVxZGN6?=
- =?utf-8?B?KzFzQXRMcWxWWFBmQkk4RkR4OXhqVGR6TWlsRElnWjVZOTg3V2YzWHlRUnFM?=
- =?utf-8?B?SWJCKzVCU1FHMEs3V3VmM0FTRjlNa3dDdU9hb3dVT1l1VFF1enBXNCtZNHhI?=
- =?utf-8?B?L2tiYmo2eUxWM1VVVE42ZHpzRVpMdG5TeXlMd0dsYzVWaTBDaU9LUFpWMng2?=
- =?utf-8?B?RWRQTDNyWjFYM3U1eHdjVEhXdkNyVGxUanZMSEZaQXBpZnc0WXRuNlkrdUl6?=
- =?utf-8?B?REdMSG0vd202NXF0RlE2WWlYUnpybEdEdVgxQy81OExOSWFzYmVTZzI2L0hP?=
- =?utf-8?B?WmlibHJ0Qno5T3l2UmwyMzlnRzR5QXFmTGEvMFhvRndvQW1WR0pnaFh1Q2JJ?=
- =?utf-8?B?SzBBamlPWVozVGIrdWxTQWRwQStUcTNIeXVBY3kxRHl4aUZEbFE0YmpiY0d2?=
- =?utf-8?B?NWNLbGtmUVY5bmxqWFBCVnlvQURuNWdRWkNtWWk4N3cxeGdDa2VyQXpsb2Yv?=
- =?utf-8?B?d0xIZFdMaythcmkvMWhjSGZmQ3c1RDZYem9GSVZqRnFCcTN6ejhqYXo1RUtl?=
- =?utf-8?B?NkxnYnZydFBOUWxVYVpEYUpzcURNMS9paEp2RjdnaHhlaFowNkZtdmFHVk9I?=
- =?utf-8?B?N1NBbTFMZHA5ajAzaUN0eTllbHhJOERDWHNtQjV1Y213TkZsM2xKdGlDRXBw?=
- =?utf-8?B?OFRjYWQ4dnBQV0dDaTc3emxadVg2VHlJVEMyUE02eEpUTG9LdFo2ME9qZ2RO?=
- =?utf-8?B?TEsrdmh1MFhUNTFmVklqY3ZLdkErc04ydUlNWVJTeUllMlJVWXB2b1BHRk5U?=
- =?utf-8?B?RzJDclRSUUVNbm8wdS9aQUZLSXlsUDkzckZxWnF5bmVkVnR5VEgzU1dvNXg3?=
- =?utf-8?B?TG94Tkw4Sm1LMTY1V005aGovZGJsRFg1UW12dEJxOTYwc0pyMVlHSG41eDdj?=
- =?utf-8?B?MW52MG5WRjVJay9nSXc2UFZsMHQ3ZEs3LzJCTmlJQTh4dGpqeUNaQnZZbjJ3?=
- =?utf-8?B?djJtUTFFZWtlQ2lqeW5sWW44V2NiSkEvZjJ4bHJBWUZadUxUVjBkRDd6blg3?=
- =?utf-8?B?WWhCS2FHRDlOdktWUnV0YkJNUEE4eitITHZXdWdNWkNqcFhidGRpVklzN1hE?=
- =?utf-8?B?Z0lrZVdhZWJzTVRjMGZ4dzEzRWpzTUtqSW9DbkdBOWFkUENsLy9CR2ZxUDgy?=
- =?utf-8?Q?53qr8KlYTGGMT27knrpap0IiM?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <7F1E7273D9128545AAAADF00FB4CE1CD@apcprd03.prod.outlook.com>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 102CB4B5C5;
+	Tue, 26 Dec 2023 05:24:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BQ4x1vh023783;
+	Tue, 26 Dec 2023 05:24:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=AyqDWWihAa1zlhpr5k42krhHmxZ0myDPF3QTT8zp9NU=; b=n1
+	meGHlEsCsluHafGFtTwuvJMifnQNJa8FEsvtlJ8nlefSur5otdGfcwQnk9YH7uVD
+	cWUzKu4U3nQRYtuCN/l3EywoLHKNv78k/Yhg7KWJd4PmQSs5Tpqeys8F1Y8rbaK4
+	LZMFDUO38onxuVPhChmsSRY2dWYqjB5eVs12vF0KKWXNj7p5NWoZhxoq0aUm77kw
+	2ZGlaDybLcS104jnB5+a9fBLzryvHO7U/w6tPNNELA2Ilgz89ZVXCVNE6fhfD2tc
+	JX6vfiJBK/xMmaRgln8/ZGQRzbo0rPyx99ivZXxCIXxrglrs0GUwNUtKX1zRg3Iy
+	o8GgF5p2p1ax/1wimwuw==
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v7gd98pbw-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 26 Dec 2023 05:24:47 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BQ5OkDR027920
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 26 Dec 2023 05:24:46 GMT
+Received: from [10.216.25.18] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 25 Dec
+ 2023 21:24:43 -0800
+Message-ID: <43ff1971-aeb1-21e1-4700-9ee84cd5aede@quicinc.com>
+Date: Tue, 26 Dec 2023 10:54:38 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TYZPR03MB6624.apcprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 940600d5-8c94-4dac-6d4d-08dc05d2f3e8
-X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Dec 2023 05:24:37.2915
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a7687ede-7a6b-4ef6-bace-642f677fbe31
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: +I1ei5jdK+OfjCPEjH9sKRZcrH05Th44R4/7LP8QGtOeo5CfjKjaelHk1tuWJ95OKMHxXHg8A5Xbr/y3VF2P6Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: OSQPR03MB8457
-X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-AS-Result: No-10--12.354500-8.000000
-X-TMASE-MatchedRID: 7ySqCuYCpfg6yy6RAAEPcya1MaKuob8PC/ExpXrHizxcKZwALwMGs48L
-	9E3YVK3KmSouTgBPZUccqoDU4VZ+l+WMRWp11p3rMSjlkes0Ka8RvEpVd3vS1d9RlPzeVuQQMG4
-	kjAsJeaCH2vPYF3S6b3gscjoXnCecXHEPHmpuRH3SBVVc2BozSlkMvWAuahr8+gD2vYtOFhgqtq
-	5d3cxkNWpLYSIdl6JxMGox0uFlJtY4rASHKeGnZjMzNOM655RPGUxbCUG9YTo=
-X-TM-AS-User-Approved-Sender: No
-X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10--12.354500-8.000000
-X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-SNTS-SMTP:
-	3BD89BAE811C7A0F58B9103D3123C7574C12C64BE0EEDE2986D3B2D16CA8EF5F2000:8
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Subject: Re: [PATCH v2 1/2] usb: dwc3: host: Set XHCI_SG_TRB_CACHE_SIZE_QUIRK
+Content-Language: en-US
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC: Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Mathias Nyman
+	<mathias.nyman@intel.com>,
+        <linux-kernel@vger.kernel.org>, <linux-usb@vger.kernel.org>,
+        <stable@vger.kernel.org>
+References: <20231212112521.3774610-1-quic_prashk@quicinc.com>
+ <20231212112521.3774610-2-quic_prashk@quicinc.com>
+ <2023121518-uncharted-riddance-7c58@gregkh>
+ <849d0ea9-d4f7-c568-968c-88835f64fadf@quicinc.com>
+ <2023122212-stellar-handlebar-2f70@gregkh>
+From: Prashanth K <quic_prashk@quicinc.com>
+In-Reply-To: <2023122212-stellar-handlebar-2f70@gregkh>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: X-atXzeIR_zyOLS9sZHi_nMTKlRz2t-U
+X-Proofpoint-GUID: X-atXzeIR_zyOLS9sZHi_nMTKlRz2t-U
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ lowpriorityscore=0 adultscore=0 priorityscore=1501 clxscore=1011
+ bulkscore=0 phishscore=0 mlxscore=0 mlxlogscore=999 malwarescore=0
+ impostorscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2311290000 definitions=main-2312260037
 
-T24gU3VuLCAyMDIzLTEyLTI0IGF0IDAyOjI5ICswODAwLCBKYXNvbi1KSC5MaW4gd3JvdGU6DQo+
-IEFkZCBnZXRfc2VjX3BvcnQgaW50ZXJmYWNlIHRvIGRkcF9jb21wIHRvIGdldCB0aGUgc2VjdXJl
-IHBvcnQNCj4gc2V0dGluZ3MNCj4gZnJvbSBvdmwgYW5kIG92bF9hZGFwdG9yLg0KPiBUaGVuIG1l
-ZGlhdGVrLWRybSB3aWxsIHVzZSBzZWN1cmUgY21kcSBkcml2ZXIgdG8gY29uZmlndXJlIERSQU0N
-Cj4gYWNjZXNzDQo+IHBlcm1pc3Npb24gaW4gc2VjdXJlIHdvcmxkIGJ5IHRoZWlyIHNlY3VyZSBw
-b3J0IHNldHRpbmdzLg0KPiANCj4gU2lnbmVkLW9mZi1ieTogSmFzb24tSkguTGluIDxqYXNvbi1q
-aC5saW5AbWVkaWF0ZWsuY29tPg0KPiAtLS0NCg0KVE9ETzogZHJvcCB0aGlzIHBhdGNoLg0KDQoN
-ClJlZ2FyZHMsDQpDSw0KDQo+ICBkcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2RybV9kZHBf
-Y29tcC5oIHwgOSArKysrKysrKysNCj4gIDEgZmlsZSBjaGFuZ2VkLCA5IGluc2VydGlvbnMoKykN
-Cj4gDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2RybV9kZHBf
-Y29tcC5oDQo+IGIvZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19kcm1fZGRwX2NvbXAuaA0K
-PiBpbmRleCBiNWEwNWNhM2EzODUuLjFlNmExMjBhMTAzZCAxMDA2NDQNCj4gLS0tIGEvZHJpdmVy
-cy9ncHUvZHJtL21lZGlhdGVrL210a19kcm1fZGRwX2NvbXAuaA0KPiArKysgYi9kcml2ZXJzL2dw
-dS9kcm0vbWVkaWF0ZWsvbXRrX2RybV9kZHBfY29tcC5oDQo+IEBAIC04NCw2ICs4NCw3IEBAIHN0
-cnVjdCBtdGtfZGRwX2NvbXBfZnVuY3Mgew0KPiAgCXZvaWQgKCphZGQpKHN0cnVjdCBkZXZpY2Ug
-KmRldiwgc3RydWN0IG10a19tdXRleCAqbXV0ZXgpOw0KPiAgCXZvaWQgKCpyZW1vdmUpKHN0cnVj
-dCBkZXZpY2UgKmRldiwgc3RydWN0IG10a19tdXRleCAqbXV0ZXgpOw0KPiAgCXVuc2lnbmVkIGlu
-dCAoKmVuY29kZXJfaW5kZXgpKHN0cnVjdCBkZXZpY2UgKmRldik7DQo+ICsJdTY0ICgqZ2V0X3Nl
-Y19wb3J0KShzdHJ1Y3QgbXRrX2RkcF9jb21wICpjb21wLCB1bnNpZ25lZCBpbnQNCj4gaWR4KTsN
-Cj4gIH07DQo+ICANCj4gIHN0cnVjdCBtdGtfZGRwX2NvbXAgew0KPiBAQCAtMTk5LDYgKzIwMCwx
-NCBAQCBzdGF0aWMgaW5saW5lIHVuc2lnbmVkIGludA0KPiBtdGtfZGRwX2dhbW1hX2dldF9sdXRf
-c2l6ZShzdHJ1Y3QgbXRrX2RkcF9jb21wICpjb21wKQ0KPiAgCXJldHVybiAwOw0KPiAgfQ0KPiAg
-DQo+ICtzdGF0aWMgaW5saW5lIHU2NCBtdGtfZGRwX2NvbXBfbGF5ZXJfZ2V0X3NlY19wb3J0KHN0
-cnVjdA0KPiBtdGtfZGRwX2NvbXAgKmNvbXAsDQo+ICsJCQkJCQkgIHVuc2lnbmVkIGludCBpZHgp
-DQo+ICt7DQo+ICsJaWYgKGNvbXAtPmZ1bmNzICYmIGNvbXAtPmZ1bmNzLT5nZXRfc2VjX3BvcnQp
-DQo+ICsJCXJldHVybiBjb21wLT5mdW5jcy0+Z2V0X3NlY19wb3J0KGNvbXAsIGlkeCk7DQo+ICsJ
-cmV0dXJuIDA7DQo+ICt9DQo+ICsNCj4gIHN0YXRpYyBpbmxpbmUgdm9pZCBtdGtfZGRwX2dhbW1h
-X3NldChzdHJ1Y3QgbXRrX2RkcF9jb21wICpjb21wLA0KPiAgCQkJCSAgICAgc3RydWN0IGRybV9j
-cnRjX3N0YXRlICpzdGF0ZSkNCj4gIHsNCg==
+
+
+On 22-12-23 11:40 am, Greg Kroah-Hartman wrote:
+> On Fri, Dec 22, 2023 at 11:29:01AM +0530, Prashanth K wrote:
+>> On 15-12-23 06:12 pm, Greg Kroah-Hartman wrote:
+>>> On Tue, Dec 12, 2023 at 04:55:20PM +0530, Prashanth K wrote:
+>>>> Upstream commit bac1ec551434 ("usb: xhci: Set quirk for
+>>>> XHCI_SG_TRB_CACHE_SIZE_QUIRK") introduced a new quirk in XHCI
+>>>> which fixes XHC timeout, which was seen on synopsys XHCs while
+>>>> using SG buffers. But the support for this quirk isn't present
+>>>> in the DWC3 layer.
+>>>>
+>>>> We will encounter this XHCI timeout/hung issue if we run iperf
+>>>> loopback tests using RTL8156 ethernet adaptor on DWC3 targets
+>>>> with scatter-gather enabled. This gets resolved after enabling
+>>>> the XHCI_SG_TRB_CACHE_SIZE_QUIRK. This patch enables it using
+>>>> the xhci device property since its needed for DWC3 controller.
+>>>>
+>>>> In Synopsys DWC3 databook,
+>>>> Table 9-3: xHCI Debug Capability Limitations
+>>>> Chained TRBs greater than TRB cache size: The debug capability
+>>>> driver must not create a multi-TRB TD that describes smaller
+>>>> than a 1K packet that spreads across 8 or more TRBs on either
+>>>> the IN TR or the OUT TR.
+>>>>
+>>>> Cc: <stable@vger.kernel.org>
+>>>> Signed-off-by: Prashanth K <quic_prashk@quicinc.com>
+>>>
+>>> What commit id does this fix?
+>>>
+>> This doesn't fix any commit as such, but adds the support for
+>> XHCI_SG_TRB_CACHE_SIZE_QUIRK (which is present in XHCI layer) to DWC3 layer.
+> 
+> So this is a new feature?
+> 
+> How does this fit into the stable kernel rules?
+
+This isn't a new feature. To give some background, upstream commit 
+bac1ec551434 ("usb: xhci: Set quirk for XHCI_SG_TRB_CACHE_SIZE_QUIRK")
+added a XHCI quirk which converts SG lists to CMA buffers/URBS if 
+certain conditions aren't met. But they never enabled this xhci quirk
+since no issues were hit at that time. So, the support for the above 
+mentioned quirk is added from 5.11 kernel onwards, but was never enabled 
+anywhere.
+
+ From commit bac1ec551434 : "We discovered this issue with devices on 
+other platforms but have not yet come across any device that triggers 
+this on Linux. But it could be a real problem now or in the future. All 
+it takes is N number of small chained TRBs. And other instances of the 
+Synopsys IP may have smaller values for the TRB_CACHE_SIZE which would 
+exacerbate the problem."
+
+For more info: 
+https://lore.kernel.org/all/20201208092912.1773650-3-mathias.nyman@linux.intel.com/
+
+> 
+>> I have CC'ed stable kernel for this to be back-ported to older kernels
+>> (#5.11).
+> 
+> Why that specific kernel version and newer?  Why not list it as
+> documented?
+
+I mentioned 5.11 because commit bac1ec551434 ("usb: xhci: Set quirk for 
+XHCI_SG_TRB_CACHE_SIZE_QUIRK") is present from 5.11.
+> 
+>>>
+>>>> ---
+>>>>    drivers/usb/dwc3/host.c | 2 ++
+>>>>    1 file changed, 2 insertions(+)
+>>>>
+>>>> diff --git a/drivers/usb/dwc3/host.c b/drivers/usb/dwc3/host.c
+>>>> index 61f57fe5bb78..31a496233d87 100644
+>>>> --- a/drivers/usb/dwc3/host.c
+>>>> +++ b/drivers/usb/dwc3/host.c
+>>>> @@ -89,6 +89,8 @@ int dwc3_host_init(struct dwc3 *dwc)
+>>>>    	memset(props, 0, sizeof(struct property_entry) * ARRAY_SIZE(props));
+>>>> +	props[prop_idx++] = PROPERTY_ENTRY_BOOL("xhci-sg-trb-cache-size-quirk");
+>>>
+>>> And this is ok if the entry is not present?
+>>>
+>> We are intending to use this quirk for all the dwc3 based devices since the
+>> DWC3 XHC needs it.
+> 
+> So you do not have this quirk yet in the kernel tree?  We can't take
+> code without any in-tree users.
+
+This is a 2 patch series, patch 1/2 sets a property from dwc3 layer. And 
+patch 2 enables XHCI quirk based on the property set from DWC3.
+> 
+>> If the entry is not present then we will hit stall if
+>> certain conditions aren't met (have mentioned the condition in commit text).
+> 
+> When will the quirk be added?  To what platforms?
+
+I guess there is some sort of confusion here, sorry for that.
+
+Earlier Tejas Joglekar from synopsys pushed a patch in XHCI layer which 
+converts certain SG lists to CMA buffers if some pre-requisites aren't 
+met. And this operation is done if an xhci->quirk is set 
+(XHCI_SG_TRB_CACHE_SIZE_QUIRK - BIT39)
+
+- 
+https://lore.kernel.org/all/20201208092912.1773650-2-mathias.nyman@linux.intel.com/
+
+- 
+https://lore.kernel.org/all/20201208092912.1773650-3-mathias.nyman@linux.intel.com/
+
+But here the option to enable this quirk was done using XHCI priv data
+
+diff --git a/drivers/usb/host/xhci-plat.c b/drivers/usb/host/xhci-plat.c
+index aa2d35f98200..4d34f6005381 100644
+--- a/drivers/usb/host/xhci-plat.c
++++ b/drivers/usb/host/xhci-plat.c
+@@ -333,6 +333,9 @@ static int xhci_plat_probe(struct platform_device *pdev)
+  	if (priv && (priv->quirks & XHCI_SKIP_PHY_INIT))
+  		hcd->skip_phy_initialization = 1;
+
++	if (priv && (priv->quirks & XHCI_SG_TRB_CACHE_SIZE_QUIRK))
++		xhci->quirks |= XHCI_SG_TRB_CACHE_SIZE_QUIRK;
++
+  	ret = usb_add_hcd(hcd, irq, IRQF_SHARED);
+  	if (ret)
+  		goto disable_usb_phy;
+
+
+And this XHCI quirk (XHCI_SG_TRB_CACHE_SIZE_QUIRK) needs to be enabled 
+for DWC3 controllers. There are 2 ways to do it. One way is by directly 
+accessing XHCI private data from DWC3 layer (dwc3/host.c) which is not 
+cleaner approach.
+
+So I'm reusing the device_create_managed_software_node() which is 
+present in dwc3/host.c to add a quirk to XHCI node, and enable 
+XHCI_SG_TRB_CACHE_SIZE_QUIRK based on property set from DWC3 layer.
+
+Thanks,
+Prashanth K
 
