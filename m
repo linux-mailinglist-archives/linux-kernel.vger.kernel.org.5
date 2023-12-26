@@ -1,181 +1,164 @@
-Return-Path: <linux-kernel+bounces-11493-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11494-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5CECD81E72D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 12:45:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB63081E73C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 13:09:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 18ACA282CE6
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 11:45:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6F1BD1F223CF
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 12:09:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1526F4E1DB;
-	Tue, 26 Dec 2023 11:45:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 192954E61D;
+	Tue, 26 Dec 2023 12:09:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="CFIunnvB"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5C934E1BB;
-	Tue, 26 Dec 2023 11:45:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=realtek.com
-X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 3BQBjNCP1456029, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
-	by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 3BQBjNCP1456029
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 26 Dec 2023 19:45:24 +0800
-Received: from RTEXMBS03.realtek.com.tw (172.21.6.96) by
- RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2375.32; Tue, 26 Dec 2023 19:45:23 +0800
-Received: from localhost.localhost (172.21.132.123) by
- RTEXMBS03.realtek.com.tw (172.21.6.96) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Tue, 26 Dec 2023 19:45:22 +0800
-From: <max.chou@realtek.com>
-To: <marcel@holtmann.org>
-CC: <johan.hedberg@gmail.com>, <luiz.dentz@gmail.com>,
-        <linux-bluetooth@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <alex_lu@realsil.com.cn>, <hildawu@realtek.com>,
-        <karenhsu@realtek.com>, <max.chou@realtek.com>
-Subject: [PATCH v2] Bluetooth: btrtl: Add the support for RTL8852BT/RTL8852BE-VT
-Date: Tue, 26 Dec 2023 19:45:17 +0800
-Message-ID: <20231226114518.5395-1-max.chou@realtek.com>
-X-Mailer: git-send-email 2.34.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB6E44E603;
+	Tue, 26 Dec 2023 12:09:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+	s=mail; t=1703592572;
+	bh=MBNVPTuPe5RQdDMZSU+PMsj2GQT1HD2VDl2L9fGdf+I=;
+	h=From:Date:Subject:To:Cc:From;
+	b=CFIunnvBOMZRp7rDzNobSGjsI69fb6XgLdzeWRdW0p2bo7CYt12l1nN+6Ov/ZaW3c
+	 BSY5wS2sMOTgBs4vV6NfjGiBU4usMfB0Q3MKCppJl51ibV/O3dAktjSGad3q+ZetGK
+	 pBhYzGNoTGanORzXKfJ3yIDR8rAxNcVRAfBmyAQY=
+From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Date: Tue, 26 Dec 2023 13:08:48 +0100
+Subject: [PATCH] sysctl: treewide: constify ctl_table_root::permissions
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: RTEXH36506.realtek.com.tw (172.21.6.27) To
- RTEXMBS03.realtek.com.tw (172.21.6.96)
-X-KSE-ServerInfo: RTEXMBS03.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
+Message-Id: <20231226-sysctl-const-permissions-v1-1-5cd3c91f6299@weissschuh.net>
+X-B4-Tracking: v=1; b=H4sIAE/CimUC/x3MMQqAMAxA0atIZgM1ggWvIg7SRg1oK42IIt7d6
+ viH929QTsIKbXFD4kNUYshRlQW4eQgTo/jcQIbqiqhBvdTtC7oYdMeN0yr6GUVv3egNDbapLWS
+ +JR7l/Ndd/zwvn2WHgGoAAAA=
+To: Luis Chamberlain <mcgrof@kernel.org>, Kees Cook <keescook@chromium.org>, 
+ Joel Granados <j.granados@samsung.com>, 
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
+Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+ netdev@vger.kernel.org, 
+ =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1703592571; l=3312;
+ i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
+ bh=MBNVPTuPe5RQdDMZSU+PMsj2GQT1HD2VDl2L9fGdf+I=;
+ b=4ugtZbdhdABoeRlJxXJ6gBFOcTeWMMONsnR+0vV3WvahrjEEIoaPiOO7QRl3tKj4kUJpIv47i
+ lBDbq/STFKeCqzbvSRF6t7ex7YQacpwxu7Vvm1nVkW/6/MpOWfcAm8E
+X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
+ pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
 
-From: Max Chou <max.chou@realtek.com>
+The permissions callback is not supposed to modify the ctl_table.
+Enforce this expectation via the typesystem.
 
-Add the support for RTL8852BT/RTL8852BE-VT BT controller on USB interface.
-The necessary firmware will be submitted to linux-firmware project.
+The patch was created with the following coccinelle script:
 
-The device info from /sys/kernel/debug/usb/devices as below.
+  virtual patch
+  virtual context
+  virtual report
 
-T:  Bus=02 Lev=02 Prnt=02 Port=05 Cnt=01 Dev#=  8 Spd=12   MxCh= 0
-D:  Ver= 1.00 Cls=e0(wlcon) Sub=01 Prot=01 MxPS=64 #Cfgs=  1
-P:  Vendor=0bda ProdID=8520 Rev= 0.00
-S:  Manufacturer=Realtek
-S:  Product=Bluetooth Radio
-S:  SerialNumber=00e04c000001
-C:* #Ifs= 2 Cfg#= 1 Atr=e0 MxPwr=500mA
-I:* If#= 0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=81(I) Atr=03(Int.) MxPS=  16 Ivl=1ms
-E:  Ad=02(O) Atr=02(Bulk) MxPS=  64 Ivl=0ms
-E:  Ad=82(I) Atr=02(Bulk) MxPS=  64 Ivl=0ms
-I:* If#= 1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=03(O) Atr=01(Isoc) MxPS=   0 Ivl=1ms
-E:  Ad=83(I) Atr=01(Isoc) MxPS=   0 Ivl=1ms
-I:  If#= 1 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=03(O) Atr=01(Isoc) MxPS=   9 Ivl=1ms
-E:  Ad=83(I) Atr=01(Isoc) MxPS=   9 Ivl=1ms
-I:  If#= 1 Alt= 2 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  17 Ivl=1ms
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  17 Ivl=1ms
-I:  If#= 1 Alt= 3 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  25 Ivl=1ms
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  25 Ivl=1ms
-I:  If#= 1 Alt= 4 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  33 Ivl=1ms
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  33 Ivl=1ms
-I:  If#= 1 Alt= 5 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  49 Ivl=1ms
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  49 Ivl=1ms
+  @@
+  identifier func, head, ctl;
+  @@
 
-Signed-off-by: Max Chou <max.chou@realtek.com>
+  int func(
+    struct ctl_table_header *head,
+  - struct ctl_table *ctl)
+  + const struct ctl_table *ctl)
+  { ... }
+
+(insert_entry() from fs/proc/proc_sysctl.c is a false-positive)
+
+This change also is a step to put "struct ctl_table" into .rodata
+throughout the kernel.
+
+Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
 ---
-changes in v2:
- - Add the USB ID for RTL8852BT/RTL8852BE-VT
----
- drivers/bluetooth/btrtl.c | 14 ++++++++++++++
- drivers/bluetooth/btusb.c |  3 +++
- 2 files changed, 17 insertions(+)
+The patch is meant to be merged via the sysctl tree.
 
-diff --git a/drivers/bluetooth/btrtl.c b/drivers/bluetooth/btrtl.c
-index 277d039ecbb4..cc50de69e8dc 100644
---- a/drivers/bluetooth/btrtl.c
-+++ b/drivers/bluetooth/btrtl.c
-@@ -69,6 +69,7 @@ enum btrtl_chip_id {
- 	CHIP_ID_8852B = 20,
- 	CHIP_ID_8852C = 25,
- 	CHIP_ID_8851B = 36,
-+	CHIP_ID_8852BT = 47,
+This change was originally part of the sysctl-const series [0].
+To slim down that series and reduce the message load on other
+maintainers to a minimumble, submit this patch on its own.
+
+[0] https://lore.kernel.org/lkml/20231204-const-sysctl-v2-2-7a5060b11447@weissschuh.net/
+---
+ include/linux/sysctl.h | 2 +-
+ ipc/ipc_sysctl.c       | 2 +-
+ kernel/ucount.c        | 2 +-
+ net/sysctl_net.c       | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/include/linux/sysctl.h b/include/linux/sysctl.h
+index 26a38161c28f..8ec2d742c3b4 100644
+--- a/include/linux/sysctl.h
++++ b/include/linux/sysctl.h
+@@ -207,7 +207,7 @@ struct ctl_table_root {
+ 	void (*set_ownership)(struct ctl_table_header *head,
+ 			      struct ctl_table *table,
+ 			      kuid_t *uid, kgid_t *gid);
+-	int (*permissions)(struct ctl_table_header *head, struct ctl_table *table);
++	int (*permissions)(struct ctl_table_header *head, const struct ctl_table *table);
  };
  
- struct id_table {
-@@ -307,6 +308,15 @@ static const struct id_table ic_id_table[] = {
- 	  .fw_name  = "rtl_bt/rtl8851bu_fw",
- 	  .cfg_name = "rtl_bt/rtl8851bu_config",
- 	  .hw_info  = "rtl8851bu" },
-+
-+	/* 8852BT/8852BE-VT */
-+	{ IC_INFO(RTL_ROM_LMP_8852A, 0x87, 0xc, HCI_USB),
-+	  .config_needed = false,
-+	  .has_rom_version = true,
-+	  .has_msft_ext = true,
-+	  .fw_name  = "rtl_bt/rtl8852btu_fw",
-+	  .cfg_name = "rtl_bt/rtl8852btu_config",
-+	  .hw_info  = "rtl8852btu" },
- 	};
+ /* struct ctl_path describes where in the hierarchy a table is added */
+diff --git a/ipc/ipc_sysctl.c b/ipc/ipc_sysctl.c
+index 8c62e443f78b..b087787f608f 100644
+--- a/ipc/ipc_sysctl.c
++++ b/ipc/ipc_sysctl.c
+@@ -190,7 +190,7 @@ static int set_is_seen(struct ctl_table_set *set)
+ 	return &current->nsproxy->ipc_ns->ipc_set == set;
+ }
  
- static const struct id_table *btrtl_match_ic(u16 lmp_subver, u16 hci_rev,
-@@ -645,6 +655,7 @@ static int rtlbt_parse_firmware(struct hci_dev *hdev,
- 		{ RTL_ROM_LMP_8852A, 20 },	/* 8852B */
- 		{ RTL_ROM_LMP_8852A, 25 },	/* 8852C */
- 		{ RTL_ROM_LMP_8851B, 36 },	/* 8851B */
-+		{ RTL_ROM_LMP_8852A, 47 },	/* 8852BT */
- 	};
+-static int ipc_permissions(struct ctl_table_header *head, struct ctl_table *table)
++static int ipc_permissions(struct ctl_table_header *head, const struct ctl_table *table)
+ {
+ 	int mode = table->mode;
  
- 	if (btrtl_dev->fw_len <= 8)
-@@ -1275,6 +1286,7 @@ void btrtl_set_quirks(struct hci_dev *hdev, struct btrtl_device_info *btrtl_dev)
- 	case CHIP_ID_8852B:
- 	case CHIP_ID_8852C:
- 	case CHIP_ID_8851B:
-+	case CHIP_ID_8852BT:
- 		set_bit(HCI_QUIRK_VALID_LE_STATES, &hdev->quirks);
- 		set_bit(HCI_QUIRK_WIDEBAND_SPEECH_SUPPORTED, &hdev->quirks);
+diff --git a/kernel/ucount.c b/kernel/ucount.c
+index 4aa6166cb856..90300840256b 100644
+--- a/kernel/ucount.c
++++ b/kernel/ucount.c
+@@ -38,7 +38,7 @@ static int set_is_seen(struct ctl_table_set *set)
+ }
  
-@@ -1505,6 +1517,8 @@ MODULE_FIRMWARE("rtl_bt/rtl8852bs_fw.bin");
- MODULE_FIRMWARE("rtl_bt/rtl8852bs_config.bin");
- MODULE_FIRMWARE("rtl_bt/rtl8852bu_fw.bin");
- MODULE_FIRMWARE("rtl_bt/rtl8852bu_config.bin");
-+MODULE_FIRMWARE("rtl_bt/rtl8852btu_fw.bin");
-+MODULE_FIRMWARE("rtl_bt/rtl8852btu_config.bin");
- MODULE_FIRMWARE("rtl_bt/rtl8852cu_fw.bin");
- MODULE_FIRMWARE("rtl_bt/rtl8852cu_fw_v2.bin");
- MODULE_FIRMWARE("rtl_bt/rtl8852cu_config.bin");
-diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-index 7835170b1d66..a0a317bac095 100644
---- a/drivers/bluetooth/btusb.c
-+++ b/drivers/bluetooth/btusb.c
-@@ -553,6 +553,9 @@ static const struct usb_device_id quirks_table[] = {
- 	{ USB_DEVICE(0x13d3, 0x3572), .driver_info = BTUSB_REALTEK |
- 						     BTUSB_WIDEBAND_SPEECH },
+ static int set_permissions(struct ctl_table_header *head,
+-				  struct ctl_table *table)
++			   const struct ctl_table *table)
+ {
+ 	struct user_namespace *user_ns =
+ 		container_of(head->set, struct user_namespace, set);
+diff --git a/net/sysctl_net.c b/net/sysctl_net.c
+index 051ed5f6fc93..ba9a49de9600 100644
+--- a/net/sysctl_net.c
++++ b/net/sysctl_net.c
+@@ -40,7 +40,7 @@ static int is_seen(struct ctl_table_set *set)
  
-+	/* Realtek 8852BT/8852BE-VT Bluetooth devices */
-+	{ USB_DEVICE(0x0bda, 0x8520), .driver_info = BTUSB_REALTEK |
-+						     BTUSB_WIDEBAND_SPEECH },
- 	/* Realtek Bluetooth devices */
- 	{ USB_VENDOR_AND_INTERFACE_INFO(0x0bda, 0xe0, 0x01, 0x01),
- 	  .driver_info = BTUSB_REALTEK },
+ /* Return standard mode bits for table entry. */
+ static int net_ctl_permissions(struct ctl_table_header *head,
+-			       struct ctl_table *table)
++			       const struct ctl_table *table)
+ {
+ 	struct net *net = container_of(head->set, struct net, sysctls);
+ 
+
+---
+base-commit: de2ee5e9405e12600c81e39837362800cee433a2
+change-id: 20231226-sysctl-const-permissions-d7cfd02a7637
+
+Best regards,
 -- 
-2.34.1
+Thomas Weißschuh <linux@weissschuh.net>
 
 
