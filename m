@@ -1,53 +1,47 @@
-Return-Path: <linux-kernel+bounces-11553-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11554-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FE9881E824
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 16:45:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9007381E826
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 16:52:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 896A81C21608
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 15:45:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7F5601C2140B
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 15:52:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B3E24F21F;
-	Tue, 26 Dec 2023 15:45:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8C5A4F5E1;
+	Tue, 26 Dec 2023 15:52:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HcbwyvX0"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rUUa26yc"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C04BC4F207;
-	Tue, 26 Dec 2023 15:45:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19656C433C8;
-	Tue, 26 Dec 2023 15:45:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7D2E4F207;
+	Tue, 26 Dec 2023 15:52:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62EFDC433C7;
+	Tue, 26 Dec 2023 15:52:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703605519;
-	bh=NhmamG9+fHayVcbk79Rh5B4IaSWcmsGnW4aUZA8zJyU=;
+	s=k20201202; t=1703605930;
+	bh=jzVP4Y4JhZWGkkFHmLQvr5y6pdDNLeWEKoXU+39nmKE=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=HcbwyvX0vsblx50SKZKV3SZKdVVYSi+MKE8TeMyF8gCLIzzcIjW1FkEqYr1G6X9NI
-	 DcmgAISjZGRszhQY9EXn+Hr74NNhV8eeLLdJkMIulAycK7btcah2yzVKqGKDEojqYv
-	 qGLE0wbhXY/NGDyiOsQh/Kk14pjYKlK4auEZRU6LeLE+1r3isiApFStPNwChYZpgLD
-	 D/Jxhcp15msfSE17epvZadmpJkFCNL/g9r4FfUBlCG0YLx67YQsxy/hFRnMxoXsrMM
-	 4vrfi444ZPgXJEZ3skv+e/flB2t7Az0SKjgqmUGtmMtayKj6w6EQnvuMKMDajkIuGI
-	 LFETtXEXjyzkw==
-Date: Tue, 26 Dec 2023 15:45:09 +0000
+	b=rUUa26ycei86jgk4JYf9+fzt63DO9IASM8HD11qwPTDtEI5PPbEUGQI/+6jDgNNLn
+	 92rGDw5BpS24yJLn0LKDozuhRJyVmeLNLQne+bvfQpP/KzN2OakDUYKdTv4H729iZR
+	 C1q8J2JFgCi1x6SpEPnrTT6BlXsSg2dxp/QWNbw6BW8Xy0SN5ufIdZQhJh6fD/ouE4
+	 /UpgBO63hpY7PveeLlSOuaDffn60gFlAq0/iKMka2qA/ShRTmtCHrnmgcQf8NfAAwi
+	 7X17/PjspuptqQvbECK+TAOmGtwWWHzGaECJvFZj03YaPctI2QQWu8i63TOyN5fMoT
+	 fIDOFLI7QlfpA==
+Date: Tue, 26 Dec 2023 15:51:57 +0000
 From: Jonathan Cameron <jic23@kernel.org>
-To: Marcelo Schmitt <marcelo.schmitt1@gmail.com>
-Cc: Marcelo Schmitt <marcelo.schmitt@analog.com>, apw@canonical.com,
- joe@perches.com, dwaipayanray1@gmail.com, lukas.bulwahn@gmail.com,
- paul.cercueil@analog.com, Michael.Hennerich@analog.com, lars@metafoo.de,
- robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- dan.carpenter@linaro.org, dlechner@baylibre.com, linux-iio@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 11/11] MAINTAINERS: Add MAINTAINERS entry for AD7091R
-Message-ID: <20231226154509.450c5e40@jic23-huawei>
-In-Reply-To: <ZYWFwVzQN4vU7FdG@debian-BULLSEYE-live-builder-AMD64>
-References: <cover.1703013352.git.marcelo.schmitt1@gmail.com>
-	<4247e653354f8eb362264189db24c612d5e4e131.1703013352.git.marcelo.schmitt1@gmail.com>
-	<20231221165947.6c64b2c5@jic23-huawei>
-	<ZYWFwVzQN4vU7FdG@debian-BULLSEYE-live-builder-AMD64>
+To: Justin Stitt <justinstitt@google.com>
+Cc: Lars-Peter Clausen <lars@metafoo.de>, Stephen Boyd
+ <swboyd@chromium.org>, linux-iio@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v4] iio: sx9324: avoid copying property strings
+Message-ID: <20231226155157.6f49b6f9@jic23-huawei>
+In-Reply-To: <20231219-strncpy-drivers-iio-proximity-sx9324-c-v4-1-d49ed29ee952@google.com>
+References: <20231219-strncpy-drivers-iio-proximity-sx9324-c-v4-1-d49ed29ee952@google.com>
 X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -58,74 +52,187 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Fri, 22 Dec 2023 09:49:05 -0300
-Marcelo Schmitt <marcelo.schmitt1@gmail.com> wrote:
+On Tue, 19 Dec 2023 21:34:15 +0000
+Justin Stitt <justinstitt@google.com> wrote:
 
-> On 12/21, Jonathan Cameron wrote:
-> > On Tue, 19 Dec 2023 17:32:59 -0300
-> > Marcelo Schmitt <marcelo.schmitt@analog.com> wrote:
-> >   
-> > > The driver for AD7091R was added in
-> > > ca693001: iio: adc: Add support for AD7091R5 ADC
-> > > but no MAINTAINERS file entry was added for it since then.
-> > > Add a proper MAINTAINERS file entry for the AD7091R driver.
-> > > 
-> > > Signed-off-by: Marcelo Schmitt <marcelo.schmitt@analog.com>  
-> > Hi Marcelo
-> > 
-> > The series looks good to me now. However timing is a bit against
-> > us because I won't squeeze in another pull request (unless the
-> > kernel release is delayed for some and Linus strong hints at that
-> > this weekend).
-> > 
-> > What I'll probably do with this series is pull out the first 2 patches
-> > as fixes to go in either at the back end of the merge window or just
-> > after, then pick the rest of the patches up for 6.9.
-> > 
-> > If I seem to have lost track of them in about the 2nd week of January,
-> > feel free to poke me. 
-> >   
-> okay, sounds good.
-Seems that Linus has confirmed he'll do an rc8. So I might get a final
-pull request in.  So with that in mind I've picked this whole series up.
+> We're doing some needless string copies when trying to assign the proper
+> `prop` string. We can make `prop` a const char* and simply assign to
+> string literals.
+> 
+> For the case where a format string is used, let's extract the parsing
+> logic out into sx9324_parse_phase_prop(). We no longer need to create
+> copies or allocate new memory.
+> 
+> sx9324_parse_phase_prop() will simply return the default def value if it
+> fails.
+> 
+> This also cleans up some deprecated strncpy() uses [1].
+> 
+> Furthermore, let's clean up this code further by removing some unused
+> defines:
+> |  #define SX9324_PIN_DEF "semtech,ph0-pin"
+> |  #define SX9324_RESOLUTION_DEF "semtech,ph01-resolution"
+> |  #define SX9324_PROXRAW_DEF "semtech,ph01-proxraw-strength"
+> 
+> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+> Link: https://github.com/KSPP/linux/issues/90
+> Cc: linux-hardening@vger.kernel.org
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
+This clashes with a patch from Andy Shevchenko 
+iio: proximity: sx9324: Switch to device_property_match_property_string()
+https://lore.kernel.org/all/20230808162800.61651-7-andriy.shevchenko@linux.intel.com/
 
-Applied to the togreg branch of iio.git and pushed out as testing for
-0-day to take a quick look at it.
+Would you mind rebasing on top of that (it should be in linux-next
+or my togreg branch of iio.git).
 
-Thanks,
+Might be easier to rebase on rc1 once it's available in about 3.5 weeks time.
 
 Jonathan
 
-> Also, will do the change to ABI doc in a separate patch so this set doesn't get
-> blocked by the mistakes I will make on the ABI patch. :)
+> ---
+> Changes in v4:
+> - use u8 return type (thanks Stephen)
+> - remove unused defines (thanks Stephen et al.)
+> - tweaks to sx9324_parse_phase_prop related to defaults (thanks Stephen)
+> - Link to v3: https://lore.kernel.org/r/20231212-strncpy-drivers-iio-proximity-sx9324-c-v3-1-b8ae12fc8a5d@google.com
 > 
-> Thanks,
-> Marcelo
+> Changes in v3:
+> - extract logic into sx9324_parse_phase_prop() and use string literals
+>   (thanks Stephen)
+> - rebase onto mainline bee0e7762ad2c602
+> - Link to v2: https://lore.kernel.org/r/20231026-strncpy-drivers-iio-proximity-sx9324-c-v2-1-cee6e5db700c@google.com
 > 
-> > Jonathan  
-> > > ---
-> > >  MAINTAINERS | 8 ++++++++
-> > >  1 file changed, 8 insertions(+)
-> > > 
-> > > diff --git a/MAINTAINERS b/MAINTAINERS
-> > > index 4eddc4212f2b..3473cfbac826 100644
-> > > --- a/MAINTAINERS
-> > > +++ b/MAINTAINERS
-> > > @@ -1126,6 +1126,14 @@ F:	Documentation/ABI/testing/sysfs-bus-iio-adc-ad4130
-> > >  F:	Documentation/devicetree/bindings/iio/adc/adi,ad4130.yaml
-> > >  F:	drivers/iio/adc/ad4130.c
-> > >  
-> > > +ANALOG DEVICES INC AD7091R DRIVER
-> > > +M:	Marcelo Schmitt <marcelo.schmitt@analog.com>
-> > > +L:	linux-iio@vger.kernel.org
-> > > +S:	Supported
-> > > +W:	http://ez.analog.com/community/linux-device-drivers
-> > > +F:	Documentation/devicetree/bindings/iio/adc/adi,ad7091r*
-> > > +F:	drivers/iio/adc/drivers/iio/adc/ad7091r*
-> > > +
-> > >  ANALOG DEVICES INC AD7192 DRIVER
-> > >  M:	Alexandru Tachici <alexandru.tachici@analog.com>
-> > >  L:	linux-iio@vger.kernel.org  
-> >   
+> Changes in v2:
+> - make prop a const char* and do simple assignments (thanks Jonathan)
+> - rebase onto 3a568e3a961ba330
+> - Link to v1: https://lore.kernel.org/r/20230921-strncpy-drivers-iio-proximity-sx9324-c-v1-1-4e8d28fd1e7c@google.com
+> ---
+> ---
+>  drivers/iio/proximity/sx9324.c | 70 ++++++++++++++++++++++++------------------
+>  1 file changed, 40 insertions(+), 30 deletions(-)
+> 
+> diff --git a/drivers/iio/proximity/sx9324.c b/drivers/iio/proximity/sx9324.c
+> index 438f9c9aba6e..3daad7167c63 100644
+> --- a/drivers/iio/proximity/sx9324.c
+> +++ b/drivers/iio/proximity/sx9324.c
+> @@ -873,6 +873,29 @@ static int sx9324_init_compensation(struct iio_dev *indio_dev)
+>  					20000, 2000000);
+>  }
+>  
+> +static u8 sx9324_parse_phase_prop(struct device *dev,
+> +				  struct sx_common_reg_default *reg_def,
+> +				  const char *prop)
+> +{
+> +	unsigned int pin_defs[SX9324_NUM_PINS];
+> +	int count, ret, pin;
+> +	u32 raw = 0;
+> +
+> +	count = device_property_count_u32(dev, prop);
+> +	if (count != ARRAY_SIZE(pin_defs))
+> +		return reg_def->def;
+> +	ret = device_property_read_u32_array(dev, prop, pin_defs,
+> +					     ARRAY_SIZE(pin_defs));
+> +	if (ret)
+> +		return reg_def->def;
+> +
+> +	for (pin = 0; pin < SX9324_NUM_PINS; pin++)
+> +		raw |= (pin_defs[pin] << (2 * pin)) &
+> +		       SX9324_REG_AFE_PH0_PIN_MASK(pin);
+> +
+> +	return raw;
+> +}
+> +
+>  static const struct sx_common_reg_default *
+>  sx9324_get_default_reg(struct device *dev, int idx,
+>  		       struct sx_common_reg_default *reg_def)
+> @@ -881,38 +904,29 @@ sx9324_get_default_reg(struct device *dev, int idx,
+>  		"highest" };
+>  	static const char * const sx9324_csidle[] = { "hi-z", "hi-z", "gnd",
+>  		"vdd" };
+> -#define SX9324_PIN_DEF "semtech,ph0-pin"
+> -#define SX9324_RESOLUTION_DEF "semtech,ph01-resolution"
+> -#define SX9324_PROXRAW_DEF "semtech,ph01-proxraw-strength"
+> -	unsigned int pin_defs[SX9324_NUM_PINS];
+> -	char prop[] = SX9324_PROXRAW_DEF;
+>  	u32 start = 0, raw = 0, pos = 0;
+> -	int ret, count, ph, pin;
+> -	const char *res;
+> +	const char *prop, *res;
+> +	int ret;
+>  
+>  	memcpy(reg_def, &sx9324_default_regs[idx], sizeof(*reg_def));
+>  
+>  	sx_common_get_raw_register_config(dev, reg_def);
+>  	switch (reg_def->reg) {
+>  	case SX9324_REG_AFE_PH0:
+> +		reg_def->def = sx9324_parse_phase_prop(dev, reg_def,
+> +						       "semtech,ph0-pin");
+> +		break;
+>  	case SX9324_REG_AFE_PH1:
+> +		reg_def->def = sx9324_parse_phase_prop(dev, reg_def,
+> +						       "semtech,ph1-pin");
+> +		break;
+>  	case SX9324_REG_AFE_PH2:
+> +		reg_def->def = sx9324_parse_phase_prop(dev, reg_def,
+> +						       "semtech,ph2-pin");
+> +		break;
+>  	case SX9324_REG_AFE_PH3:
+> -		ph = reg_def->reg - SX9324_REG_AFE_PH0;
+> -		snprintf(prop, ARRAY_SIZE(prop), "semtech,ph%d-pin", ph);
+> -
+> -		count = device_property_count_u32(dev, prop);
+> -		if (count != ARRAY_SIZE(pin_defs))
+> -			break;
+> -		ret = device_property_read_u32_array(dev, prop, pin_defs,
+> -						     ARRAY_SIZE(pin_defs));
+> -		if (ret)
+> -			break;
+> -
+> -		for (pin = 0; pin < SX9324_NUM_PINS; pin++)
+> -			raw |= (pin_defs[pin] << (2 * pin)) &
+> -			       SX9324_REG_AFE_PH0_PIN_MASK(pin);
+> -		reg_def->def = raw;
+> +		reg_def->def = sx9324_parse_phase_prop(dev, reg_def,
+> +						       "semtech,ph3-pin");
+>  		break;
+>  	case SX9324_REG_AFE_CTRL0:
+>  		ret = device_property_read_string(dev,
+> @@ -937,11 +951,9 @@ sx9324_get_default_reg(struct device *dev, int idx,
+>  	case SX9324_REG_AFE_CTRL4:
+>  	case SX9324_REG_AFE_CTRL7:
+>  		if (reg_def->reg == SX9324_REG_AFE_CTRL4)
+> -			strncpy(prop, "semtech,ph01-resolution",
+> -				ARRAY_SIZE(prop));
+> +			prop = "semtech,ph01-resolution";
+>  		else
+> -			strncpy(prop, "semtech,ph23-resolution",
+> -				ARRAY_SIZE(prop));
+> +			prop = "semtech,ph23-resolution";
+>  
+>  		ret = device_property_read_u32(dev, prop, &raw);
+>  		if (ret)
+> @@ -1012,11 +1024,9 @@ sx9324_get_default_reg(struct device *dev, int idx,
+>  	case SX9324_REG_PROX_CTRL0:
+>  	case SX9324_REG_PROX_CTRL1:
+>  		if (reg_def->reg == SX9324_REG_PROX_CTRL0)
+> -			strncpy(prop, "semtech,ph01-proxraw-strength",
+> -				ARRAY_SIZE(prop));
+> +			prop = "semtech,ph01-proxraw-strength";
+>  		else
+> -			strncpy(prop, "semtech,ph23-proxraw-strength",
+> -				ARRAY_SIZE(prop));
+> +			prop = "semtech,ph23-proxraw-strength";
+>  		ret = device_property_read_u32(dev, prop, &raw);
+>  		if (ret)
+>  			break;
+> 
+> ---
+> base-commit: bee0e7762ad2c6025b9f5245c040fcc36ef2bde8
+> change-id: 20230921-strncpy-drivers-iio-proximity-sx9324-c-8c3437676039
+> 
+> Best regards,
+> --
+> Justin Stitt <justinstitt@google.com>
+> 
 
 
