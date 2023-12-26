@@ -1,99 +1,127 @@
-Return-Path: <linux-kernel+bounces-11551-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11552-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D82581E81A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 16:39:10 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BAEF81E81E
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 16:40:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D06311C21ECE
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 15:39:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9B164B21BBA
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 15:40:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE5CF4F215;
-	Tue, 26 Dec 2023 15:39:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E4634F217;
+	Tue, 26 Dec 2023 15:40:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="NJUcXDWt"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kYfuZXYE"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 413B64F207
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 15:39:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1703605140;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wV/f9f0in7gn4gktkxuOHq7lnBTOjC718N9fK7Gr2Iw=;
-	b=NJUcXDWtzZk/5joPmmoSG3Jg4IEqRHrVKvwHAxbynLmkJ0YLqZeYYecp84BI6m7CFR+fTu
-	m4YW8w1OUnP9gQWWz9yj/cGXhB9gziG8m5ZQ7gxqf39MjemDnkJQU+PP22zabu9qrareix
-	7XrgLpPvBp6AUngKLvkaLZ6BXztY0dU=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-689-sixYqUSePx-65616kU37Mg-1; Tue, 26 Dec 2023 10:38:58 -0500
-X-MC-Unique: sixYqUSePx-65616kU37Mg-1
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-40d597040c9so6720335e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 07:38:58 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703605137; x=1704209937;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFB954CB53;
+	Tue, 26 Dec 2023 15:40:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2ccbc328744so16608901fa.3;
+        Tue, 26 Dec 2023 07:40:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703605220; x=1704210020; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=wV/f9f0in7gn4gktkxuOHq7lnBTOjC718N9fK7Gr2Iw=;
-        b=QZyNxsyXu2YKAL5+ntI3K3Qk2BGsnnU8zhkviiW8u30T9K3whL+tEynVYt1SHTAKd6
-         whQHkm9qIrhFaOpD/6EK8udKInsEvR0smQEsA6eO7GcegGbLn4GAgKERgJFSjvuoQLSe
-         a8msHG4FPZAY31P1jTe3DBz906+XZnLrLx9ayQhE7z0NHe9smiXuk1vuWEXKtkxazZLh
-         EONHF4PoznQhQidVyBFeuRV1uU2nSzXDo/B8gb/LYxNY8lDqkik4yYMeDtE9dmmHq4U7
-         KRs3q7phxcfYBDeCdKiSYJ1T+XnFErfK7lNLhm0zpd0/kai9049oy54VY2kpDMCwWeZT
-         wUHQ==
-X-Gm-Message-State: AOJu0Yw4NfXcpfTm3lJn9hHxU18CUX/zXlWolQCjsGYDhXWyLPRpZvmq
-	yNRJKqe5G639DWtj/QJM2ktBh+aqgIETostZWv4PF8wow01O7oDb3ZczoYsuHe5k6RLydx6pEyI
-	wDx8P/WZGvGitrZNuU9W8+8vW4VLAjl41
-X-Received: by 2002:a05:600c:5405:b0:40d:2d25:b8ee with SMTP id he5-20020a05600c540500b0040d2d25b8eemr2051624wmb.171.1703605137304;
-        Tue, 26 Dec 2023 07:38:57 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IF95K6/sVk5zmbFYd7DofTvHL9+lGHyoYvlXR0NoGkiR28DSEG18rrqgMucy+nDqg7Ulg/sXg==
-X-Received: by 2002:a05:600c:5405:b0:40d:2d25:b8ee with SMTP id he5-20020a05600c540500b0040d2d25b8eemr2051613wmb.171.1703605136846;
-        Tue, 26 Dec 2023 07:38:56 -0800 (PST)
-Received: from redhat.com ([2.55.177.189])
-        by smtp.gmail.com with ESMTPSA id l20-20020a05600c4f1400b003feae747ff2sm14254261wmq.35.2023.12.26.07.38.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Dec 2023 07:38:56 -0800 (PST)
-Date: Tue, 26 Dec 2023 10:38:52 -0500
-From: "Michael S. Tsirkin" <mst@redhat.com>
-To: Li Feng <fengli@smartx.com>
-Cc: Jens Axboe <axboe@kernel.dk>, Jason Wang <jasowang@redhat.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Stefan Hajnoczi <stefanha@redhat.com>,
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-	"open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
-	linux-kernel <linux-kernel@vger.kernel.org>,
-	"open list:VIRTIO BLOCK AND SCSI DRIVERS" <virtualization@lists.linux.dev>
-Subject: Re: [PATCH] virtio_blk: set the default scheduler to none
-Message-ID: <20231226103743-mutt-send-email-mst@kernel.org>
-References: <20231207043118.118158-1-fengli@smartx.com>
- <20231225092010-mutt-send-email-mst@kernel.org>
- <AB23804D-FF38-47B8-ADC6-C0A19B7083CC@smartx.com>
+        bh=hj/YtDE1HieIgLU8cZsELqjG+tdptAzgf1YDfH1SyI4=;
+        b=kYfuZXYEHNA+XSRh2Za+JPKRmB6XVW/bzjpOjhdCJe3Gb/YevzBPiLFRzIeYec0+NQ
+         WgRWA7MsazVUVpbb92r1FQymocldXZJwk6T5f/wPpB6XHj/tuuqpI2n1Qr+dHcLl0U60
+         sTL4nhzkKecqarQGp9RMYHmPb3fZ5/lsYghc/IPljqZ2bhidb8Ok8ZtPrj6IcfC44ogk
+         iWli8Lm1Meu5RPe+chTDXRZpVnAnFXEJYO0GJoRQHwqEkS6pSBGkKgDIM/78T7zwE8yf
+         ARGwDFKBdoq6lIQkSYfuvnIkyXtvG8qlu++2YsIaGddLZqjQ0B5+vK5S/WfDYoPele/e
+         AUMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703605220; x=1704210020;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hj/YtDE1HieIgLU8cZsELqjG+tdptAzgf1YDfH1SyI4=;
+        b=Wt4JFnYFDK8Yf/oNx1rxrUwdZ3Cr2iCpjnF8w7O3LgyKCU5QghgqOawJI5kFBySGTt
+         QPcsLxjCS+SFbAZQYypmiu3QTWZh42RCrYsif8LZM16v++RJnwWM3j3GQtWv/qxLonxl
+         ZeZMcrHL+OWhA5+KBYp0zwDWUSDluguQSJxutGcyQ6TyiG4qqeILd+bbRK4Wmb+IuDll
+         42rkAMl3BWTmoXDOKlwvbQOQbdQd8h2m1POtGMieya+V0k7NG/w1Zsp3kFUDfJl9hCZ0
+         ykW2bZcTe60T/nKy24a59SjOuSAJtKKTEqK3a+yWtg/mMXKN+5Rsog3VfgMw79gs1N6i
+         LA4Q==
+X-Gm-Message-State: AOJu0YyQd+wlp7O9TlvIVD8k92evixSIEXsQXrR60nwJUQ75YDOcSQZu
+	ixNisayi9rmTLLWDJ2Z7g5RBcL3Oy1iiURNqG+o=
+X-Google-Smtp-Source: AGHT+IFRkHdO3Hqh1Cbn+WDhR36HIa2PUTdp5MdJW+XCSIjdm3f+ctzkQ7ICDiF7editnU8K9tHuRzoynXsQg6HIujM=
+X-Received: by 2002:a2e:9f0c:0:b0:2cc:60bf:b2fb with SMTP id
+ u12-20020a2e9f0c000000b002cc60bfb2fbmr2835720ljk.104.1703605219446; Tue, 26
+ Dec 2023 07:40:19 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <AB23804D-FF38-47B8-ADC6-C0A19B7083CC@smartx.com>
+References: <20231226060818.2446327-1-clancy_shang@163.com>
+In-Reply-To: <20231226060818.2446327-1-clancy_shang@163.com>
+From: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Date: Tue, 26 Dec 2023 10:40:07 -0500
+Message-ID: <CABBYNZJQFD_=VcFZxK=AugixVMgc=Zw4WPgQn+ax28cNGWBGUQ@mail.gmail.com>
+Subject: Re: [PATCH] Bluetooth: hci_sync: fix hogp device suspend bug
+To: clancy_shang@163.com
+Cc: marcel@holtmann.org, johan.hedberg@gmail.com, 
+	linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	zhongjun.yu@quectel.com, Clancy Shang <clancy.shang@quectel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 26, 2023 at 05:01:40PM +0800, Li Feng wrote:
-> I don't have ideas right now to answer Christoph/Paolo's question.
+Hi Clancy,
 
-Paolo did some testing on this thread and posted some concerns.
-Do you disagree with his analysis?
+On Tue, Dec 26, 2023 at 1:09=E2=80=AFAM <clancy_shang@163.com> wrote:
+>
+> From: Clancy Shang <clancy.shang@quectel.com>
+>
+> when Bluetooth enters suspend, and disconnects everything with the
+> disconnect reason code of 0x15, the hogp device could not into sleep
+> and continued advertising. when use the disconnect reason code of 0x13,
+> the hogp device going into sleep succeeded.
+>
+> Signed-off-by: Clancy Shang <clancy.shang@quectel.com>
+> ---
+>  net/bluetooth/hci_sync.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/net/bluetooth/hci_sync.c b/net/bluetooth/hci_sync.c
+> index d85a7091a116..16b5420c32d0 100644
+> --- a/net/bluetooth/hci_sync.c
+> +++ b/net/bluetooth/hci_sync.c
+> @@ -5927,7 +5927,7 @@ int hci_suspend_sync(struct hci_dev *hdev)
+>
+>         if (hci_conn_count(hdev)) {
+>                 /* Soft disconnect everything (power off) */
+> -               err =3D hci_disconnect_all_sync(hdev, HCI_ERROR_REMOTE_PO=
+WER_OFF);
+> +               err =3D hci_disconnect_all_sync(hdev, HCI_ERROR_REMOTE_US=
+ER_TERM);
 
--- 
-MST
+So the device interpretes that it can reconnect on power off but not
+on user termination error? And you think changing the error would make
+this interoperate any better? Afaik user termination can be generated
+by various reasons, including the non-clean termination ones, while
+power off error is quite clear on the reason, so instead of using a
+more generic error you probably should contact the device manufacturer
+and have it fix this problem and until then Id probably disable wakeup
+support since it doesn't behave properly when receiving
+HCI_ERROR_REMOTE_POWER_OFF.
 
+>                 if (err) {
+>                         /* Set state to BT_RUNNING so resume doesn't noti=
+fy */
+>                         hdev->suspend_state =3D BT_RUNNING;
+> --
+> 2.25.1
+>
+>
+
+
+--=20
+Luiz Augusto von Dentz
 
