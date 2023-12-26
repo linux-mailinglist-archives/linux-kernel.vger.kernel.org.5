@@ -1,61 +1,57 @@
-Return-Path: <linux-kernel+bounces-11218-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11219-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C172F81E353
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 01:27:07 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id EBF8681E355
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 01:27:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8AC581C21588
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 00:27:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8E714B22A16
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 00:27:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75A9B4A994;
-	Tue, 26 Dec 2023 00:21:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 085944B14B;
+	Tue, 26 Dec 2023 00:21:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WFziaKiF"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZmJxmkuG"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4617137B;
-	Tue, 26 Dec 2023 00:21:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7004BC433C8;
-	Tue, 26 Dec 2023 00:21:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56B6E33D2;
+	Tue, 26 Dec 2023 00:21:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C268C433C8;
+	Tue, 26 Dec 2023 00:21:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703550086;
-	bh=jwVZ6REd/ZS5qU5T1yRiv9rc5NjMMrDhehnwVqOzzRQ=;
+	s=k20201202; t=1703550091;
+	bh=jog9nS0uv+xwpPiAn0kvrS0WR9oTMesTEpz2VrT/ZHk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=WFziaKiFTctvM3dNvvfRX/9n9niXWymL4/ldV3AW0xtKJXq2xyRSRsziuBeA5ZHYz
-	 mDdFRRzq6cYhjYcx7yMGLFcl5Mh+94w0TFZvUO/TouCfvUAwCp+Lqr3nT0LrDX7c8N
-	 AUqYNbiH/XLuq+cGOSW0lVex1/94NjWbQbaqD694O7bpChg5laMcEk8cTod2ki473W
-	 SI8ACM2lCDsY4vratr1ooN8jUP3c9QUEnoa+RDtmkxCfdyD+Vt3qjiA1caG4NJp7u8
-	 HjkkWpRXzmKsfts4FXCeBUhd7MTkzJhOuFSYtydpActHpt75aZb/IvxUaBXAT9mH02
-	 981HqCMk98aVQ==
+	b=ZmJxmkuGg60U1ZQFr8XhbMq8RzWJbozbR6n6EDcj6AO41Uqj3TpfabX1zQUxOih5y
+	 IuFpg7tBndzjDCb3uGrVW17858TCyOHH8L+e5QM2tqM9Kt8zSANINO4TvxUlRBepWE
+	 LvyFsMOIhOPNWI4un+aLo2wGJowo+Qep2GDHjTkfJbRyTzIP3FhDc7xU4BwoVBBfls
+	 flbZIwHd2wlzex8c6V+TEmmbmk6xhdFbIWaFRcE7gtCorcgFeD/1Dwtelft0aK0Qbl
+	 ZAgeszW9Q/YRi/rkn+1Ig2FkTNeVYf9acb1GEubujgCp8IukyU9oV0PY8+GKWyLVgR
+	 Zx4Cap9GIQuAQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Hans de Goede <hdegoede@redhat.com>,
-	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-	Mark Brown <broonie@kernel.org>,
+Cc: Stefan Binding <sbinding@opensource.cirrus.com>,
+	Takashi Iwai <tiwai@suse.de>,
 	Sasha Levin <sashal@kernel.org>,
-	cezary.rojewski@intel.com,
-	liam.r.girdwood@linux.intel.com,
-	peter.ujfalusi@linux.intel.com,
-	yung-chuan.liao@linux.intel.com,
-	ranjani.sridharan@linux.intel.com,
-	kai.vehmanen@linux.intel.com,
 	perex@perex.cz,
 	tiwai@suse.com,
-	nicolas.ferre@microchip.com,
-	kuninori.morimoto.gx@renesas.com,
-	u.kleine-koenig@pengutronix.de,
-	andriy.shevchenko@linux.intel.com,
-	alsa-devel@alsa-project.org,
+	kailang@realtek.com,
+	luke@ljones.dev,
+	andy.chi@canonical.com,
+	shenghao-ding@ti.com,
+	ruinairas1992@gmail.com,
+	l.guzenko@web.de,
+	yangyuchi66@gmail.com,
+	vitalyr@opensource.cirrus.com,
 	linux-sound@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 25/39] ASoC: Intel: bytcr_rt5640: Add new swapped-speakers quirk
-Date: Mon, 25 Dec 2023 19:19:15 -0500
-Message-ID: <20231226002021.4776-25-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.6 26/39] ALSA: hda/realtek: Add quirks for ASUS Zenbook 2022 Models
+Date: Mon, 25 Dec 2023 19:19:16 -0500
+Message-ID: <20231226002021.4776-26-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231226002021.4776-1-sashal@kernel.org>
 References: <20231226002021.4776-1-sashal@kernel.org>
@@ -70,102 +66,49 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.8
 Content-Transfer-Encoding: 8bit
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Stefan Binding <sbinding@opensource.cirrus.com>
 
-[ Upstream commit b1b6131bca35a55a69fadc39d51577968fa2ee97 ]
+[ Upstream commit 51d976079976c800ef19ed1b542602fcf63f0edb ]
 
-Some BYTCR x86 tablets with a rt5640 codec have the left and right channels
-of their speakers swapped.
+These models use 2xCS35L41amps with HDA using SPI and I2C.
+Models use internal and external boost.
+All models require DSD support to be added inside
+cs35l41_hda_property.c
 
-Add a new BYT_RT5640_SWAPPED_SPEAKERS quirk for this which sets
-cfg-spk:swapped in the components string to let userspace know
-about the swapping so that the UCM profile can configure the mixer
-to correct this.
-
-Enable this new quirk on the Medion Lifetab S10346 which has its
-speakers swapped.
-
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://msgid.link/r/20231217213221.49424-2-hdegoede@redhat.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
+Link: https://lore.kernel.org/r/20231218151221.388745-6-sbinding@opensource.cirrus.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/intel/boards/bytcr_rt5640.c | 19 +++++++++++++------
- 1 file changed, 13 insertions(+), 6 deletions(-)
+ sound/pci/hda/patch_realtek.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index f184d23deaa0f..6b631a608ae8f 100644
---- a/sound/soc/intel/boards/bytcr_rt5640.c
-+++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -83,6 +83,7 @@ enum {
- #define BYT_RT5640_HSMIC2_ON_IN1	BIT(27)
- #define BYT_RT5640_JD_HP_ELITEP_1000G2	BIT(28)
- #define BYT_RT5640_USE_AMCR0F28		BIT(29)
-+#define BYT_RT5640_SWAPPED_SPEAKERS	BIT(30)
- 
- #define BYTCR_INPUT_DEFAULTS				\
- 	(BYT_RT5640_IN3_MAP |				\
-@@ -157,6 +158,8 @@ static void log_quirks(struct device *dev)
- 		dev_info(dev, "quirk MONO_SPEAKER enabled\n");
- 	if (byt_rt5640_quirk & BYT_RT5640_NO_SPEAKERS)
- 		dev_info(dev, "quirk NO_SPEAKERS enabled\n");
-+	if (byt_rt5640_quirk & BYT_RT5640_SWAPPED_SPEAKERS)
-+		dev_info(dev, "quirk SWAPPED_SPEAKERS enabled\n");
- 	if (byt_rt5640_quirk & BYT_RT5640_LINEOUT)
- 		dev_info(dev, "quirk LINEOUT enabled\n");
- 	if (byt_rt5640_quirk & BYT_RT5640_LINEOUT_AS_HP2)
-@@ -903,6 +906,7 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
- 			DMI_MATCH(DMI_BIOS_DATE, "10/22/2015"),
- 		},
- 		.driver_data = (void *)(BYTCR_INPUT_DEFAULTS |
-+					BYT_RT5640_SWAPPED_SPEAKERS |
- 					BYT_RT5640_SSP0_AIF1 |
- 					BYT_RT5640_MCLK_EN),
- 	},
-@@ -1631,11 +1635,11 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
- 	const char *platform_name;
- 	struct acpi_device *adev;
- 	struct device *codec_dev;
-+	const char *cfg_spk;
- 	bool sof_parent;
- 	int ret_val = 0;
- 	int dai_index = 0;
--	int i, cfg_spk;
--	int aif;
-+	int i, aif;
- 
- 	is_bytcr = false;
- 	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-@@ -1795,13 +1799,16 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
- 	}
- 
- 	if (byt_rt5640_quirk & BYT_RT5640_NO_SPEAKERS) {
--		cfg_spk = 0;
-+		cfg_spk = "0";
- 		spk_type = "none";
- 	} else if (byt_rt5640_quirk & BYT_RT5640_MONO_SPEAKER) {
--		cfg_spk = 1;
-+		cfg_spk = "1";
- 		spk_type = "mono";
-+	} else if (byt_rt5640_quirk & BYT_RT5640_SWAPPED_SPEAKERS) {
-+		cfg_spk = "swapped";
-+		spk_type = "swapped";
- 	} else {
--		cfg_spk = 2;
-+		cfg_spk = "2";
- 		spk_type = "stereo";
- 	}
- 
-@@ -1816,7 +1823,7 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
- 		headset2_string = " cfg-hs2:in1";
- 
- 	snprintf(byt_rt5640_components, sizeof(byt_rt5640_components),
--		 "cfg-spk:%d cfg-mic:%s aif:%d%s%s", cfg_spk,
-+		 "cfg-spk:%s cfg-mic:%s aif:%d%s%s", cfg_spk,
- 		 map_name[BYT_RT5640_MAP(byt_rt5640_quirk)], aif,
- 		 lineout_string, headset2_string);
- 	byt_rt5640_card.components = byt_rt5640_components;
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 2590879f0a84b..7706f7dbd8bbb 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -9903,17 +9903,20 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1043, 0x1d1f, "ASUS ROG Strix G17 2023 (G713PV)", ALC287_FIXUP_CS35L41_I2C_2),
+ 	SND_PCI_QUIRK(0x1043, 0x1d42, "ASUS Zephyrus G14 2022", ALC289_FIXUP_ASUS_GA401),
+ 	SND_PCI_QUIRK(0x1043, 0x1d4e, "ASUS TM420", ALC256_FIXUP_ASUS_HPE),
++	SND_PCI_QUIRK(0x1043, 0x1da2, "ASUS UP6502ZA/ZD", ALC245_FIXUP_CS35L41_SPI_2),
+ 	SND_PCI_QUIRK(0x1043, 0x1e02, "ASUS UX3402ZA", ALC245_FIXUP_CS35L41_SPI_2),
+ 	SND_PCI_QUIRK(0x1043, 0x16a3, "ASUS UX3402VA", ALC245_FIXUP_CS35L41_SPI_2),
+ 	SND_PCI_QUIRK(0x1043, 0x1f62, "ASUS UX7602ZM", ALC245_FIXUP_CS35L41_SPI_2),
+ 	SND_PCI_QUIRK(0x1043, 0x1e11, "ASUS Zephyrus G15", ALC289_FIXUP_ASUS_GA502),
+-	SND_PCI_QUIRK(0x1043, 0x1e12, "ASUS UM3402", ALC287_FIXUP_CS35L41_I2C_2),
++	SND_PCI_QUIRK(0x1043, 0x1e12, "ASUS UM6702RA/RC", ALC287_FIXUP_CS35L41_I2C_2),
+ 	SND_PCI_QUIRK(0x1043, 0x1e51, "ASUS Zephyrus M15", ALC294_FIXUP_ASUS_GU502_PINS),
+ 	SND_PCI_QUIRK(0x1043, 0x1e5e, "ASUS ROG Strix G513", ALC294_FIXUP_ASUS_G513_PINS),
+ 	SND_PCI_QUIRK(0x1043, 0x1e8e, "ASUS Zephyrus G15", ALC289_FIXUP_ASUS_GA401),
++	SND_PCI_QUIRK(0x1043, 0x1ee2, "ASUS UM3402", ALC287_FIXUP_CS35L41_I2C_2),
+ 	SND_PCI_QUIRK(0x1043, 0x1c52, "ASUS Zephyrus G15 2022", ALC289_FIXUP_ASUS_GA401),
+ 	SND_PCI_QUIRK(0x1043, 0x1f11, "ASUS Zephyrus G14", ALC289_FIXUP_ASUS_GA401),
+ 	SND_PCI_QUIRK(0x1043, 0x1f12, "ASUS UM5302", ALC287_FIXUP_CS35L41_I2C_2),
++	SND_PCI_QUIRK(0x1043, 0x1f62, "ASUS UX7602ZM", ALC245_FIXUP_CS35L41_SPI_2),
+ 	SND_PCI_QUIRK(0x1043, 0x1f92, "ASUS ROG Flow X16", ALC289_FIXUP_ASUS_GA401),
+ 	SND_PCI_QUIRK(0x1043, 0x3030, "ASUS ZN270IE", ALC256_FIXUP_ASUS_AIO_GPIO2),
+ 	SND_PCI_QUIRK(0x1043, 0x3a20, "ASUS G614JZR", ALC245_FIXUP_CS35L41_SPI_2),
 -- 
 2.43.0
 
