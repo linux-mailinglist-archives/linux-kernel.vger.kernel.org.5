@@ -1,114 +1,91 @@
-Return-Path: <linux-kernel+bounces-11448-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11449-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C76C81E682
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 10:42:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 282C681E687
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 10:43:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AF3E91C21DB8
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 09:42:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 586CB1C20FC4
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 09:43:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 735354D127;
-	Tue, 26 Dec 2023 09:42:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 382404D132;
+	Tue, 26 Dec 2023 09:43:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sBY+/xTU"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="eNa/a31B"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0F244D102;
-	Tue, 26 Dec 2023 09:42:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0AE1EC433C7;
-	Tue, 26 Dec 2023 09:42:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703583742;
-	bh=Tsmg+MnN4G6iohoVCMTbtuf++BSfs/xm9Czu/0qaSKI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=sBY+/xTUXxm9VeY9c5lBhJweeyQVDX7DKjV7HvlP5iWYwZmcmyv4/PqPMhfz3oaHF
-	 NXV0/2SSXT++xN7EyODtQ/v5gjMxq9SGkKOGqNa+sR18nuTJnYdDr9D/yoWYvmFzHp
-	 2RWPLqMGs/Gja7Xrdtu3sjL6Nk0xr+iWuWjciLzgBbTEjDO/zlZEZ/ReiFRmN5MwdK
-	 Fif2mImrslkJdIVitjWYf7nSl2gzT2OMF8oDANvlt1Jdo7z+GQSBc/GOob0wmyNgK5
-	 5NbAaLCK55jrZKZe0+uLClHcqs+6JCeljwVhHp7cLMVuIGsSOyVLOITer8VmPIqmCZ
-	 vXzXf/IEaUcAg==
-Date: Tue, 26 Dec 2023 11:42:18 +0200
-From: Leon Romanovsky <leon@kernel.org>
-To: Junxian Huang <huangjunxian6@hisilicon.com>
-Cc: jgg@ziepe.ca, linux-rdma@vger.kernel.org, linuxarm@huawei.com,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH for-next 4/6] RDMA/hns: Support flexible pagesize
-Message-ID: <20231226094218.GA17182@unreal>
-References: <20231225075330.4116470-1-huangjunxian6@hisilicon.com>
- <20231225075330.4116470-5-huangjunxian6@hisilicon.com>
- <20231226085202.GA13350@unreal>
- <fbd65691-b0a2-0963-96fc-7e09a66cd203@hisilicon.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F5DC4D582
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 09:43:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1703583788;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=JZxsk+Jzb07h2zuZtmSvZ0zyWEXPJHnNQin19esIT5o=;
+	b=eNa/a31B2+Tvl3x5TdZ+1l5iF9uhme41x+em/lthqENyNR5zztGqw/1yvZk7Lo5dNBiXb8
+	5h4JKBfpcTMd1EuzLCW8EzpZA9MMbPhkNvoVaTwBEyXRN6x/iNdAZSqcRthIpmsaN22JPD
+	TfMJWyMsCH4R8VybN845OZhdkVd+YEA=
+From: George Guo <dongtai.guo@linux.dev>
+To: horms@kernel.org,
+	pablo@netfilter.org,
+	kadlec@netfilter.org,
+	fw@strlen.de,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com
+Cc: netfilter-devel@vger.kernel.org,
+	coreteam@netfilter.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	George Guo <guodongtai@kylinos.cn>
+Subject: [PATCH 01/14] netfilter: cleanup enum nft_set_class
+Date: Tue, 26 Dec 2023 17:42:42 +0800
+Message-Id: <20231226094255.77911-1-dongtai.guo@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fbd65691-b0a2-0963-96fc-7e09a66cd203@hisilicon.com>
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, Dec 26, 2023 at 05:16:33PM +0800, Junxian Huang wrote:
-> 
-> 
-> On 2023/12/26 16:52, Leon Romanovsky wrote:
-> > On Mon, Dec 25, 2023 at 03:53:28PM +0800, Junxian Huang wrote:
-> >> From: Chengchang Tang <tangchengchang@huawei.com>
-> >>
-> >> In the current implementation, a fixed page size is used to
-> >> configure the PBL, which is not flexible enough and is not
-> >> conducive to the performance of the HW.
-> >>
-> >> Signed-off-by: Chengchang Tang <tangchengchang@huawei.com>
-> >> Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
-> >> ---
-> >>  drivers/infiniband/hw/hns/hns_roce_alloc.c  |   6 -
-> >>  drivers/infiniband/hw/hns/hns_roce_device.h |   9 ++
-> >>  drivers/infiniband/hw/hns/hns_roce_mr.c     | 168 +++++++++++++++-----
-> >>  3 files changed, 139 insertions(+), 44 deletions(-)
-> > 
-> > I'm wonder if the ib_umem_find_best_pgsz() API should be used instead.
-> > What is missing there?
-> > 
-> > Thanks
-> 
-> Actually this API is used for umem.
-> For kmem, we add hns_roce_find_buf_best_pgsz() to do a similar job.
+From: George Guo <guodongtai@kylinos.cn>
 
-Thanks, let's give a chance to Jason to provide his feedback. I have a
-strong feeling that this code duplicates something in the kernel.
+Correct comments for nlpid, family, udlen and udata in struct nft_table,
+and afinfo is no longer a member of enum nft_set_class.
 
-Thanks
+Signed-off-by: George Guo <guodongtai@kylinos.cn>
+---
+ include/net/netfilter/nf_tables.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-> 
-> +static int get_best_page_shift(struct hns_roce_dev *hr_dev,
-> +			       struct hns_roce_mtr *mtr,
-> +			       struct hns_roce_buf_attr *buf_attr)
-> +{
-> +	unsigned int page_sz;
-> +
-> +	if (!buf_attr->adaptive || buf_attr->type != MTR_PBL)
-> +		return 0;
-> +
-> +	if (mtr->umem)
-> +		page_sz = ib_umem_find_best_pgsz(mtr->umem,
-> +						 hr_dev->caps.page_size_cap,
-> +						 buf_attr->iova);
-> +	else
-> +		page_sz = hns_roce_find_buf_best_pgsz(hr_dev, mtr->kmem);
-> +
-> +	if (!page_sz)
-> +		return -EINVAL;
-> +
-> +	buf_attr->page_shift = order_base_2(page_sz);
-> +	return 0;
-> +}
-> 
-> Thanks,
-> Junxian
+diff --git a/include/net/netfilter/nf_tables.h b/include/net/netfilter/nf_tables.h
+index b157c5cafd14..18ec566cbc34 100644
+--- a/include/net/netfilter/nf_tables.h
++++ b/include/net/netfilter/nf_tables.h
+@@ -351,9 +351,9 @@ struct nft_set_desc {
+ /**
+  *	enum nft_set_class - performance class
+  *
+- *	@NFT_LOOKUP_O_1: constant, O(1)
+- *	@NFT_LOOKUP_O_LOG_N: logarithmic, O(log N)
+- *	@NFT_LOOKUP_O_N: linear, O(N)
++ *	@NFT_SET_CLASS_O_1: constant, O(1)
++ *	@NFT_SET_CLASS_O_LOG_N: logarithmic, O(log N)
++ *	@NFT_SET_CLASS_O_N: linear, O(N)
+  */
+ enum nft_set_class {
+ 	NFT_SET_CLASS_O_1,
+-- 
+2.39.2
+
 
