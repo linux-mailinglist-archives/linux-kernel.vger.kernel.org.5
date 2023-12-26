@@ -1,226 +1,133 @@
-Return-Path: <linux-kernel+bounces-11702-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11703-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45D2781EA3A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 23:00:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 66CA581EA3E
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 23:04:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E6D50281D2A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 22:00:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1E16F283133
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 22:04:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7C955255;
-	Tue, 26 Dec 2023 21:59:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7B855258;
+	Tue, 26 Dec 2023 22:04:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V0qV7KFa"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="B6nIaN5P"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-qv1-f47.google.com (mail-qv1-f47.google.com [209.85.219.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D004F5224;
-	Tue, 26 Dec 2023 21:59:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f47.google.com with SMTP id 6a1803df08f44-67f9f6163a1so24386206d6.1;
-        Tue, 26 Dec 2023 13:59:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703627989; x=1704232789; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OblgP4W4GkCiW7SIZrzViOqyCU7TP6eEbBjt7az5RUk=;
-        b=V0qV7KFacFQXxh47eLgVK87fsyA5iXWO8XqrhacXk4WUIWmNYwmOiNBF6/bDXkV6np
-         dovqDSFbdJtT7SJ2hiata+Lo4+vEfZCzNQzlLGIIIIczElIRFd6zltiq/1qbH2Ld9Twc
-         RGJ08zy5SaUsMPWJxFoLuScdra9DVDCrkEMS7bkK+WNgRdFGGY5+B/Smang8cqDmNBWA
-         mkG/ZikOioqabdR9iq8+yhW9ZQw3+PE/7NiKqHCmsBkvfVlIwMi7PWlohylsqBT1I36r
-         q3hfEJqm5Bpr6j8Dqr6Sutfh40S/cINxFJcxFEy19dhh9sKQc5AXORyh/x9QYv4eV2bV
-         5DtA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703627989; x=1704232789;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OblgP4W4GkCiW7SIZrzViOqyCU7TP6eEbBjt7az5RUk=;
-        b=ps+BTe79EqxLTjdMvkpSwYtnOAn4yYJ2zcT0tZfOtTdorAVSP7l72Watf36So3ijlR
-         rEpxvf+3HGGerQ8DDaDgnVfIL3iLWfLc0EnQsW52nS+vxYm8Rywmlr3NQlU9Bp9PG3GK
-         ROghrzVXnhJa9e8M5si4E0NhUpsCJ6WUm42re4sczuVLfrG+GoMB+a+ttNvjlaFkLYZB
-         76UH1au5K1bNqRhA838MGzfTW+iZyU0l3OTQIXfq4dskfhD76A5BFtPhaK8K3qVryuTd
-         eokGYx4hDRoQmHXy/4HtgBQ4LIdkVbidN4FvAvzJQPKlQzzfijbpGYYNnFZ5kzd3P84i
-         ixew==
-X-Gm-Message-State: AOJu0YxG+bqBWg8dsb5XL+Y2orwJjNpI1OXrCOgsv8fTVOcRHB+zhn8z
-	CPE8gVFPlbuGRbW7rj1SJxo=
-X-Google-Smtp-Source: AGHT+IFnxbmUjuRx5kdS4z+tLhtW7m/pldsFaDbutGy4OdxI6KHX/ryN2maUaEvQ1lcuePJX0YVqxg==
-X-Received: by 2002:a05:6214:14f4:b0:67f:a0a5:39f5 with SMTP id k20-20020a05621414f400b0067fa0a539f5mr6947083qvw.56.1703627988686;
-        Tue, 26 Dec 2023 13:59:48 -0800 (PST)
-Received: from localhost (48.230.85.34.bc.googleusercontent.com. [34.85.230.48])
-        by smtp.gmail.com with ESMTPSA id bj5-20020a05620a190500b0078118b6cd18sm4624088qkb.43.2023.12.26.13.59.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Dec 2023 13:59:48 -0800 (PST)
-Date: Tue, 26 Dec 2023 16:59:48 -0500
-From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To: Richard Gobert <richardbgobert@gmail.com>, 
- davem@davemloft.net, 
- dsahern@kernel.org, 
- edumazet@google.com, 
- kuba@kernel.org, 
- pabeni@redhat.com, 
- shuah@kernel.org, 
- netdev@vger.kernel.org, 
- linux-kernel@vger.kernel.org, 
- linux-kselftest@vger.kernel.org
-Message-ID: <658b4cd4241c8_5c2a929499@willemb.c.googlers.com.notmuch>
-In-Reply-To: <32febbc9-e603-4400-addd-bdb97ce56c1d@gmail.com>
-References: <f4eff69d-3917-4c42-8c6b-d09597ac4437@gmail.com>
- <32febbc9-e603-4400-addd-bdb97ce56c1d@gmail.com>
-Subject: Re: [PATCH net-next 2/3] net: gro: parse ipv6 ext headers without
- frag0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3357E5226;
+	Tue, 26 Dec 2023 22:04:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1703628251; x=1735164251;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:content-transfer-encoding:mime-version;
+  bh=I9zkG0D8DsELGnzC//5KXTVJFDnTFMkoRzDTPM21iP0=;
+  b=B6nIaN5P/ymQtRkY6SXefLdfLQ0QBm55o2OfnL+mqNf9El4FyPzFeLv2
+   w+GmMicFwTJG6uXlLmhLyjCm2yPqO6d3YTXPHAI6jsWplmJ7TUJ4k8AkR
+   pyvoGADYe8zZey7B8c7L0oZUrh2It75C9RIxO8ljWQdXEa2OR9+ilGQ3l
+   o6iR9Byg8QJIYD+PUJcWpINOrEqndyJtkuAcq8TS+6moRa/FzBWpZWFUN
+   wLyniVxX8iqXw2PfucQHnAF1morrZr9j+QlWfywq6DyJoLC8V3n89ozlD
+   tvoDtCY8skmzQ5BnA22q/M9GBQEO8vk7LoDDb/b8ng7toD/Hts8ACRyPu
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10935"; a="396116661"
+X-IronPort-AV: E=Sophos;i="6.04,307,1695711600"; 
+   d="scan'208";a="396116661"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Dec 2023 14:04:10 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10935"; a="754275163"
+X-IronPort-AV: E=Sophos;i="6.04,307,1695711600"; 
+   d="scan'208";a="754275163"
+Received: from smorga5x-mobl.amr.corp.intel.com ([10.212.113.189])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Dec 2023 14:04:08 -0800
+Message-ID: <62ec89d8633a9a6814d502eb0a9d44714659d06a.camel@linux.intel.com>
+Subject: Re: [PATCH] crypto: iaa - Account for cpu-less numa nodes
+From: Tom Zanussi <tom.zanussi@linux.intel.com>
+To: Randy Dunlap <rdunlap@infradead.org>, herbert@gondor.apana.org.au, 
+	davem@davemloft.net, fenghua.yu@intel.com
+Cc: rex.zhang@intel.com, dave.jiang@intel.com, tony.luck@intel.com, 
+	linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org, 
+	dmaengine@vger.kernel.org
+Date: Tue, 26 Dec 2023 16:04:07 -0600
+In-Reply-To: <ba080e23-18b1-4ab5-baa8-62bc09a98e38@infradead.org>
+References: <00e3eea06f5dde61734a53af797b190692060aab.camel@linux.intel.com>
+	 <ba080e23-18b1-4ab5-baa8-62bc09a98e38@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
 
-Richard Gobert wrote:
-> This commit utilizes a new helper function, ipv6_gro_pull_exthdrs, which
-> is used in ipv6_gro_receive to pull ipv6 ext headers instead of
-> ipv6_gso_pull_exthdrs. To use ipv6_gso_pull_exthdr, pskb_pull and
-> __skb_push must be used, and frag0 must be invalidated. This commit
-> removes unnecessary code around the call to ipv6_gso_pull_exthdrs and
-> enables the frag0 fast path in IPv6 packets with ext headers.
-> 
-> Signed-off-by: Richard Gobert <richardbgobert@gmail.com>
-> ---
->  net/ipv6/ip6_offload.c | 51 +++++++++++++++++++++++++++++++++---------
->  1 file changed, 41 insertions(+), 10 deletions(-)
-> 
-> diff --git a/net/ipv6/ip6_offload.c b/net/ipv6/ip6_offload.c
-> index 0e0b5fed0995..a3b8d9127dbb 100644
-> --- a/net/ipv6/ip6_offload.c
-> +++ b/net/ipv6/ip6_offload.c
-> @@ -37,6 +37,40 @@
->  		INDIRECT_CALL_L4(cb, f2, f1, head, skb);	\
->  })
->  
-> +static int ipv6_gro_pull_exthdrs(struct sk_buff *skb, int off, int proto)
-> +{
-> +	const struct net_offload *ops = NULL;
-> +	struct ipv6_opt_hdr *opth;
-> +
-> +	for (;;) {
-> +		int len;
-> +
-> +		ops = rcu_dereference(inet6_offloads[proto]);
-> +
-> +		if (unlikely(!ops))
-> +			break;
-> +
-> +		if (!(ops->flags & INET6_PROTO_GSO_EXTHDR))
-> +			break;
-> +
-> +		opth = skb_gro_header(skb, off + 8, off);
-
-When changing this code, it would be great to make it more self
-documenting. It's not entirely clear what that 8 is based on.
-sizeof(*opth) is only 2. Probably an optimization to handle the most
-common extension headers in a single pskb_may_pull? If so, this new
-code does not have that concern, so can just use sizeof(*opth). Or
-else add a const int likely_max_opt_hdr_len = 8 or so.
-
-
-> +		if (unlikely(!opth))
-> +			break;
-> +
-> +		len = ipv6_optlen(opth);
-> +
-> +		opth = skb_gro_header(skb, off + len, off);
-> +		if (unlikely(!opth))
-> +			break;
-> +		proto = opth->nexthdr;
-> +
-> +		off += len;
-> +	}
-> +
-> +	skb_gro_pull(skb, off - skb_network_offset(skb));
-> +	return proto;
-> +}
-> +
->  static int ipv6_gso_pull_exthdrs(struct sk_buff *skb, int proto)
->  {
->  	const struct net_offload *ops = NULL;
-> @@ -203,28 +237,25 @@ INDIRECT_CALLABLE_SCOPE struct sk_buff *ipv6_gro_receive(struct list_head *head,
->  		goto out;
->  
->  	skb_set_network_header(skb, off);
-> -	skb_gro_pull(skb, sizeof(*iph));
-> -	skb_set_transport_header(skb, skb_gro_offset(skb));
->  
-> -	flush += ntohs(iph->payload_len) != skb_gro_len(skb);
-> +	flush += ntohs(iph->payload_len) != skb->len - hlen;
->  
->  	proto = iph->nexthdr;
->  	ops = rcu_dereference(inet6_offloads[proto]);
->  	if (!ops || !ops->callbacks.gro_receive) {
-> -		pskb_pull(skb, skb_gro_offset(skb));
-> -		skb_gro_frag0_invalidate(skb);
-> -		proto = ipv6_gso_pull_exthdrs(skb, proto);
-> -		skb_gro_pull(skb, -skb_transport_offset(skb));
-> -		skb_reset_transport_header(skb);
-> -		__skb_push(skb, skb_gro_offset(skb));
-> +		proto = ipv6_gro_pull_exthdrs(skb, hlen, proto);
->  
->  		ops = rcu_dereference(inet6_offloads[proto]);
->  		if (!ops || !ops->callbacks.gro_receive)
->  			goto out;
->  
-> -		iph = ipv6_hdr(skb);
-> +		iph = skb_gro_network_header(skb);
-> +	} else {
-> +		skb_gro_pull(skb, sizeof(*iph));
->  	}
-
-This code is non-obvious and has proven fragile (57ea52a8651). Changes
-are best as simple as they can be, with ample documentation. My
-attempt, as arrived at during review:
-
-The existing always pulls the IPv6 header and sets the transport
-offset initially. Then optionally again pulls any extension headers
-in ipv6_gso_pull_exthdrs and sets the transport offset again on
-return from that call.
-
-The new code adds a small optimization to only pull and set transport
-offset once.
-
-The existing code needs to set skb->data at the start of the first
-extension header before calling ipv6_gso_pull_exthdrs, and must
-disable the frag0 optimization because that function uses
-pskb_may_pull/pskb_pull instead of skb_gro_ helpers. It sets the
-GRO offset to the inner TCP header with skb_gro_pull and sets the
-transport header. Then returns skb->data to its position before
-this block.
-
-The new code is much simpler: it does not have to modify skb->data,
-as all operations are with skb_gro_ helpers.
-
-Aside from the small comment above, and suggestion to include
-something like this summary in the code and/or avoid the extra
-optimization,
-
-Reviewed-by: Willem de Bruijn <willemb@google.com>
-
->  
-> +	skb_set_transport_header(skb, skb_gro_offset(skb));
-> +
->  	NAPI_GRO_CB(skb)->proto = proto;
->  
->  	flush--;
-> -- 
-> 2.36.1
-> 
-
+SGkgUmFuZHksCgpPbiBUdWUsIDIwMjMtMTItMjYgYXQgMTM6MDkgLTA4MDAsIFJhbmR5IER1bmxh
+cCB3cm90ZToKPiBIaS0tCj4gCj4gT24gMTIvMjYvMjMgMTI6NTMsIFRvbSBaYW51c3NpIHdyb3Rl
+Ogo+ID4gSW4gc29tZSBjb25maWd1cmF0aW9ucyBlLmcuIHN5c3RlbXMgd2l0aCBDWEwsIGEgbnVt
+YSBub2RlIGNhbiBoYXZlCj4gPiAwCj4gPiBjcHVzIGFuZCBjcHVtYXNrX250aCgpIHdpbGwgcmV0
+dXJuIGEgY3B1IHZhbHVlIHRoYXQgZG9lc24ndCBleGlzdCwKPiA+IHdoaWNoIHdpbGwgcmVzdWx0
+IGluIGFuIGF0dGVtcHQgdG8gYWRkIGFuIGVudHJ5IHRvIHRoZSB3cSB0YWJsZSBhdAo+ID4gYQo+
+ID4gYmFkIGluZGV4Lgo+ID4gCj4gPiBUbyBmaXggdGhpcywgd2hlbiBpdGVyYXRpbmcgdGhlIGNw
+dXMgZm9yIGEgbm9kZSwgc2tpcCBhbnkgbm9kZSB0aGF0Cj4gPiBkb2Vzbid0IGhhdmUgY3B1cy4K
+PiA+IAo+ID4gQWxzbywgYXMgYSBwcmVjYXV0aW9uLCBhZGQgYSB3YXJuaW5nIGFuZCBiYWlsIGlm
+IGNwdW1hc2tfbnRoKCkKPiA+IHJldHVybnMKPiA+IGEgbm9uZXhpc3RlbnQgY3B1Lgo+ID4gCj4g
+PiBSZXBvcnRlZC1ieTogWmhhbmcsIFJleCA8cmV4LnpoYW5nQGludGVsLmNvbT4KPiA+IFNpZ25l
+ZC1vZmYtYnk6IFRvbSBaYW51c3NpIDx0b20uemFudXNzaUBsaW51eC5pbnRlbC5jb20+Cj4gPiAt
+LS0KPiA+IMKgZHJpdmVycy9jcnlwdG8vaW50ZWwvaWFhL2lhYV9jcnlwdG9fbWFpbi5jIHwgMTQg
+KysrKysrKysrKystLS0KPiA+IMKgMSBmaWxlIGNoYW5nZWQsIDExIGluc2VydGlvbnMoKyksIDMg
+ZGVsZXRpb25zKC0pCj4gPiAKPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2NyeXB0by9pbnRlbC9p
+YWEvaWFhX2NyeXB0b19tYWluLmMKPiA+IGIvZHJpdmVycy9jcnlwdG8vaW50ZWwvaWFhL2lhYV9j
+cnlwdG9fbWFpbi5jCj4gPiBpbmRleCA1MDkzMzYxYjAxMDcuLjc4MjE1N2E3NDA0MyAxMDA2NDQK
+PiA+IC0tLSBhL2RyaXZlcnMvY3J5cHRvL2ludGVsL2lhYS9pYWFfY3J5cHRvX21haW4uYwo+ID4g
+KysrIGIvZHJpdmVycy9jcnlwdG8vaW50ZWwvaWFhL2lhYV9jcnlwdG9fbWFpbi5jCj4gPiBAQCAt
+MTAxNywxMiArMTAxNywxNyBAQCBzdGF0aWMgdm9pZCByZWJhbGFuY2Vfd3FfdGFibGUodm9pZCkK
+PiA+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgcmV0dXJuOwo+ID4gwqDCoMKgwqDC
+oMKgwqDCoH0KPiA+IMKgCj4gPiAtwqDCoMKgwqDCoMKgwqBmb3JfZWFjaF9vbmxpbmVfbm9kZShu
+b2RlKSB7Cj4gPiArwqDCoMKgwqDCoMKgwqBmb3JfZWFjaF9ub2RlX3dpdGhfY3B1cyhub2RlKSB7
+Cj4gPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoG5vZGVfY3B1cyA9IGNwdW1hc2tf
+b2Zfbm9kZShub2RlKTsKPiA+IMKgCj4gPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oGZvciAoY3B1ID0gMDsgY3B1IDwgbnJfY3B1c19wZXJfbm9kZTsgY3B1KyspIHsKPiA+IMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGludCBub2RlX2NwdSA9
+IGNwdW1hc2tfbnRoKGNwdSwgbm9kZV9jcHVzKTsKPiA+IMKgCj4gPiArwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGlmIChXQVJOX09OKG5vZGVfY3B1ID49IG5y
+X2NwdV9pZHMpKSB7Cj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBwcl9kZWJ1Zygibm9kZV9jcHUgJWQgZG9lc24ndAo+ID4g
+ZXhpc3QhXG4iLCBub2RlX2NwdSk7Cj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqByZXR1cm47Cj4gPiArwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoH0KPiA+ICsKPiA+IMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGlmICgoY3B1ICUgY3B1c19wZXJf
+aWFhKSA9PSAwKQo+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoGlhYSsrOwo+ID4gwqAKPiA+IEBAIC0yMDk1LDEwICsyMTAw
+LDEzIEBAIHN0YXRpYyBzdHJ1Y3QgaWR4ZF9kZXZpY2VfZHJpdmVyCj4gPiBpYWFfY3J5cHRvX2Ry
+aXZlciA9IHsKPiA+IMKgc3RhdGljIGludCBfX2luaXQgaWFhX2NyeXB0b19pbml0X21vZHVsZSh2
+b2lkKQo+ID4gwqB7Cj4gPiDCoMKgwqDCoMKgwqDCoMKgaW50IHJldCA9IDA7Cj4gPiArwqDCoMKg
+wqDCoMKgwqBpbnQgbm9kZTsKPiA+IMKgCj4gPiDCoMKgwqDCoMKgwqDCoMKgbnJfY3B1cyA9IG51
+bV9vbmxpbmVfY3B1cygpOwo+ID4gLcKgwqDCoMKgwqDCoMKgbnJfbm9kZXMgPSBudW1fb25saW5l
+X25vZGVzKCk7Cj4gPiAtwqDCoMKgwqDCoMKgwqBucl9jcHVzX3Blcl9ub2RlID0gbnJfY3B1cyAv
+IG5yX25vZGVzOwo+ID4gK8KgwqDCoMKgwqDCoMKgZm9yX2VhY2hfbm9kZV93aXRoX2NwdXMobm9k
+ZSkKPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBucl9ub2RlcysrOwo+ID4gK8Kg
+wqDCoMKgwqDCoMKgaWYgKG5yX25vZGVzKQo+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoG5yX2NwdXNfcGVyX25vZGUgPSBucl9jcHVzIC8gbnJfbm9kZXM7Cj4gCj4gSWYgbnJfbm9k
+ZXMgPT0gMCwgbnJfY3B1c19wZXJfbm9kZSBpcyBub3QgaW5pdGlhbGl6ZWQgaGVyZS4KPiBJcyBp
+dCBpbml0aWFsaXplZCBzb21ld2hlcmUgZWxzZSwgb3IganVzdCBub3QgdXNlZCBpZiBucl9ub2Rl
+cyBpcyAwPwo+IAoKbnJfY3B1c19wZXJfbm9kZSBpcyBpbml0aWFsaXplZCB0byAwIGVsc2V3aGVy
+ZSAoYXMgYSBzdGF0aWMgZ2xvYmFsKS4KCkl0IHNlZW1zIHRvIG1lIG5yX25vZGVzIHNob3VsZCBh
+bHdheXMgYmUgYXQgbGVhc3QgMS4gIEZyb20gbXkgdGVzdGluZwp3aXRoICFDT05GSUdfTlVNQSwg
+bnJfbm9kZXMgaXMgc2V0IHRvIDEgaW4gdGhhdCBjYXNlOyBub3Qgc3VyZSBob3cgeW91CmNhbiBn
+ZXQgYWN0dWFsbHkgZ2V0IG5yX25vZGVzID09IDAgaWYgeW91IGhhdmUgYW55IGNwdXMgd29ya2lu
+Zy4gIFRoZQpjaGVjayBpcyB0aGVyZSB0byBhdm9pZCBkaXZpZGluZyBieSAwIGJ1dCBtYXliZSB0
+aGUgcmlnaHQgdGhpbmcgdG8gaXMKQlVHX09OKCFucl9ub2RlcykgYW5kIHJldHVybiBhbiBlcnJv
+ciwgYW5kIHJlbW92ZSB0aGF0IGNoZWNrLi4uCgpUaGFua3MsCgpUb20KCj4gPiDCoAo+ID4gwqDC
+oMKgwqDCoMKgwqDCoGlmIChjcnlwdG9faGFzX2NvbXAoImRlZmxhdGUtZ2VuZXJpYyIsIDAsIDAp
+KQo+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBkZWZsYXRlX2dlbmVyaWNfdGZt
+ID0gY3J5cHRvX2FsbG9jX2NvbXAoImRlZmxhdGUtCj4gPiBnZW5lcmljIiwgMCwgMCk7Cj4gCgot
+LSAKVG9tIFphbnVzc2kgPHRvbS56YW51c3NpQGxpbnV4LmludGVsLmNvbT4K
 
 
