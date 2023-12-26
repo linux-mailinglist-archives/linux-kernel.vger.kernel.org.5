@@ -1,322 +1,190 @@
-Return-Path: <linux-kernel+bounces-11700-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-11701-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8CA2081EA32
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 22:47:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 595BE81EA36
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 22:53:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 443A2282898
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 21:47:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C53D11F22AA5
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Dec 2023 21:53:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E45FBF4E4;
-	Tue, 26 Dec 2023 21:47:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 766C55257;
+	Tue, 26 Dec 2023 21:53:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HlyJonp/"
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="AOxQ1PhW"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from EUR02-DB5-obe.outbound.protection.outlook.com (mail-db5eur02on2065.outbound.protection.outlook.com [40.107.249.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22B08EAF2
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Dec 2023 21:47:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72FEDC433C8;
-	Tue, 26 Dec 2023 21:47:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703627270;
-	bh=zHRernGcxTCpGlVhEeURT8xMzdnXnggLNW5FMF7dkY8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=HlyJonp/D/MBuInR3byy4cUiUDKgXM0tmL4JK2wOqgyA06w4upxffOotD0+uOOKBV
-	 htE6S6v5EXW18+QN6xHQVgX3Hl5FGH5Sqkz4UpSK9RoAkE/BCNqOG7YSlO5ojVxXQe
-	 QjXPCoGf3yvV2l7nAiyoTrF4pMtWbeMgBQX7dxb+t6t1VW3/pMTwKqOwkFab91O8t6
-	 vxZczCRCAdKPAy/AY9II3ZbAEx1z2DOUn48qpZbR3716yofQKz4xeBt7dNaEHHy1Ig
-	 ohP1DeOo6EHz4m2tKpsrDBsabufnFA6RvSYMsEGP/TxqYMexrkgXLPUpSV/Rv0vVFJ
-	 5cr/MnRy7kbSA==
-Date: Tue, 26 Dec 2023 13:47:48 -0800
-From: Jaegeuk Kim <jaegeuk@kernel.org>
-To: Yonggil Song <yonggil.song@samsung.com>
-Cc: "chao@kernel.org" <chao@kernel.org>,
-	"linux-f2fs-devel@lists.sourceforge.net" <linux-f2fs-devel@lists.sourceforge.net>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	Seokhwan Kim <sukka.kim@samsung.com>,
-	Daejun Park <daejun7.park@samsung.com>,
-	Siwoo Jung <siu.jung@samsung.com>
-Subject: Re: [PATCH v3] f2fs: New victim selection for GC
-Message-ID: <ZYtKBKQtGS7lfBJG@google.com>
-References: <CGME20231221055630epcms2p25ae1ac5e4509d5c8ba7f338b51592e53@epcms2p2>
- <20231221055630epcms2p25ae1ac5e4509d5c8ba7f338b51592e53@epcms2p2>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B695B4C97;
+	Tue, 26 Dec 2023 21:53:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=knY7eByV+qE/JpxGJGI+DBeSi+gjbcdt0anba29qEt3bPB/eUmY6+xfjmwgmcncRbLj/Up9Ha5bn/hP4cjVFjfY8pUjo2PWBoE/2Pu/KVUAoOcgtJE3+Pc4cKagUGVRJgXPXD2lfnROwDTAmZbH4HXNEzYEHMELde1AnGWEaLbe+Cn9KrAI69vFGnnKaY04MP4PYUuuiGHF9pTZN+53ax5ZjpSB5rTs8UdRYc2wBtr+aezBefQeDI1ucgM02TaOeIW+pP1ZhDVzVuZr9277/wvVPiD7QFFrY5TVYfx7lYRWtiN38be7/R+OQ/waqx+yaBRPflq+RXTHnaUrj10thIQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=nRkjpilHyBczuICe00pATbVL+Nk5uadbcaNkU+p7M/w=;
+ b=VAGVic5mXJexl6Fp9yU5QScC+4WHD7wpTES56rBb9e/6IQ6qv13koBLeVPu7rxTIY2fHBkHLp4sy0Li1K4CPUq85K3W1mDiVE4Z26rCOA7UtNXriGgZMIFy3WZcsFV2TK+CHtEMe2pht698T9YCnPucfYB0XCsQSPix0dWKTp3z7AaONFmVAwV7jkNFQ8Pa0iAAX+V9XvIWN9U44F7SMx49C5UpLRpcTlPPU0ZSnAfhTtLxcgzs6Ur/48v/kgg8jephRlfsmwcjoFUl3LWB+BYLkehxAPZePjxWdmg5IhtLiCRzoJwyq5MyolNQ0LB8ZAETXIISDu5s8EnYMn4ia9A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nRkjpilHyBczuICe00pATbVL+Nk5uadbcaNkU+p7M/w=;
+ b=AOxQ1PhWK3QHBu1Ak63xI3/1Y7/Aum3P3hiShOAHBi65Co1+/6ExLunTMQX4/SJJ0UQ1sl1M3a2E+CMQ+JGwzAAJXeAvYbP4jWG8fYw5e3RpqJl99WoL0ylPM0WsXrS/f4Nzjv8Cu7TLvmW9mjbfO+RCdBkmBMsm2zB1kxa/arU=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from AM6PR04MB4838.eurprd04.prod.outlook.com (2603:10a6:20b:4::16)
+ by AM9PR04MB8970.eurprd04.prod.outlook.com (2603:10a6:20b:409::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7135.18; Tue, 26 Dec
+ 2023 21:53:12 +0000
+Received: from AM6PR04MB4838.eurprd04.prod.outlook.com
+ ([fe80::95f5:5118:258f:ee40]) by AM6PR04MB4838.eurprd04.prod.outlook.com
+ ([fe80::95f5:5118:258f:ee40%7]) with mapi id 15.20.7113.027; Tue, 26 Dec 2023
+ 21:53:11 +0000
+Date: Tue, 26 Dec 2023 16:53:01 -0500
+From: Frank Li <Frank.li@nxp.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: bhelgaas@google.com, conor+dt@kernel.org, devicetree@vger.kernel.org,
+	festevam@gmail.com, helgaas@kernel.org, hongxing.zhu@nxp.com,
+	imx@lists.linux.dev, kernel@pengutronix.de,
+	krzysztof.kozlowski+dt@linaro.org, kw@linux.com,
+	l.stach@pengutronix.de, linux-arm-kernel@lists.infradead.org,
+	linux-imx@nxp.com, linux-kernel@vger.kernel.org,
+	linux-pci@vger.kernel.org, lpieralisi@kernel.org,
+	manivannan.sadhasivam@linaro.org, robh@kernel.org,
+	s.hauer@pengutronix.de, shawnguo@kernel.org
+Subject: Re: [PATCH v6 15/16] dt-bindings: imx6q-pcie: Add iMX95 pcie
+ endpoint compatible string
+Message-ID: <ZYtLPQgMVUSNduLG@lizhi-Precision-Tower-5810>
+References: <20231224183242.1675372-1-Frank.Li@nxp.com>
+ <20231224183242.1675372-16-Frank.Li@nxp.com>
+ <6a61f325-a58b-4aa6-9a0a-7a3086f63829@linaro.org>
+ <ZYr7Y+mJea6fChjS@lizhi-Precision-Tower-5810>
+ <0233cf48-93cb-4f19-ad1d-e3e1835c1fef@linaro.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0233cf48-93cb-4f19-ad1d-e3e1835c1fef@linaro.org>
+X-ClientProxiedBy: BY5PR17CA0054.namprd17.prod.outlook.com
+ (2603:10b6:a03:167::31) To AM6PR04MB4838.eurprd04.prod.outlook.com
+ (2603:10a6:20b:4::16)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231221055630epcms2p25ae1ac5e4509d5c8ba7f338b51592e53@epcms2p2>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM6PR04MB4838:EE_|AM9PR04MB8970:EE_
+X-MS-Office365-Filtering-Correlation-Id: d5fb11d4-910b-4c72-0ed8-08dc065d0dce
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	9/cG/8Vjx7u6vOkkPFdZtrZEZQG1es3whgOtYob+jHUxd+xM+Ysj5y8QUKo8vgs1kV/oYkmQN9tkrvOSV0jvqvq71Ckvna925czDctJCVl9sd2VV5P7pvpydirv1XjgLidLZ79TQwXkdldGR3t0xMN8oD0Uebf/wAja3gD4+qeru/0Ly4nDmUfQHw0lsobFqXJpCKAElYQGc5tUSj3UIezKpocmpEfOmG3Gzv+cHTjvLePm0FpFdGItMwmBGRgYeShIvpyMRFKf3r3Ix2krhbm6zJOY9RGuh6JcllIed1s0Q1LVo0OdwaRNgqLzcgljO+taIp111F239Ijw2B9XT9gugokPhtl29cZ/uWeYN+gEkngVQfwzjT2+fD/pvCyYJs21dY5Hl26KzjjgD5ud97UFj7PPx54U/oEGxsy/iB4Y9b5spBdscXyZyLRV5apUm/AgUBJkWDhq36/MKaT4bzk2+FgQaLgcAOaJ9brlLiuRsO/O9g85+pYutIshHoDLI9ZkCyFN8s/tqqrMfOC/Rmu/DDFWBASbQ9faBifKh2OXeBZGVZO29Q7T8XC+K4vmTGzFkoCzppxVLDTVSkdcHyJbgnrZTc1JIyAaJS3f0cPNgohVxLitk00O0DdzMWIxZ6Hkwi1Qv4jTJvZc/1FOCTg==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4838.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(39860400002)(136003)(366004)(396003)(376002)(346002)(230922051799003)(451199024)(64100799003)(186009)(1800799012)(6506007)(26005)(52116002)(53546011)(6666004)(6512007)(9686003)(5660300002)(7416002)(4326008)(8676002)(6486002)(33716001)(41300700001)(2906002)(8936002)(478600001)(316002)(6916009)(66476007)(66556008)(66946007)(86362001)(38100700002)(38350700005)(32563001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?woc8O5jnPg4uYGR90CExiUVNd4tBBXpGayxZ2qZ6OVhrUifC2PutXJMq7AY9?=
+ =?us-ascii?Q?evHsd0ziC+UQ7uzzYJb51DOq7FdfAvU0FlS2PSyJFofGp+DgGUs2027fhVP4?=
+ =?us-ascii?Q?WJpwWEAH3XTIK/aGPoyhXHIqk9e6WGb903nHDKg5f3O/Ppo5gq8ybWxo0vDD?=
+ =?us-ascii?Q?sPtnYuV5W7KpuzCNLYoSTVuLXldaoztPKNbYNlYs41ettBTh7057GEofiTwc?=
+ =?us-ascii?Q?vD7KQLKcgSSA0SbAYZLGs82Mr+nFc00jES29PS4AlsAJ143Bma9jyzIsgS6+?=
+ =?us-ascii?Q?m1SLUktEh4Jwpx1Nxt7n8KANEN133MWxDzNF4Ejbrr9hjFiYOcFwpjzIE0z6?=
+ =?us-ascii?Q?lBt+HmiJ5vkC3uK5j9utYzUfCUhm5Bn5lwrEmTd3RR8p4Zd51s5C7CsfRTYD?=
+ =?us-ascii?Q?8PmsBeEG8X1pgJtipuaLzm7s+atClxOSY2J00l+mvPDMWeLwUJO8t9yEiEz2?=
+ =?us-ascii?Q?fpvaLJFCH+uq1MO4uumc/F+lQo+GD3xOKIk2eQYPW50KZyEnn++8/JecBWK8?=
+ =?us-ascii?Q?5Y98JwwxRgjL0EfwMgWO4uYJGOdVbBawv8EzmnePlZq/riHKFiDys5sg835x?=
+ =?us-ascii?Q?dKzkh3LKmEkxbulC3N2jzyhqNOMkirXVQ5abltkj0r6nxzy5Xw7ydma3gxtA?=
+ =?us-ascii?Q?46iTsTCWWrcaEg7huiFZKr/EiyBoFNaw5Ei6nQgFYfqUH6EAL3p2T3n2CwwI?=
+ =?us-ascii?Q?CYwjN2YtAMLYWmuJyc+dZUSVJmlptInAxp36DiyhTYc2vgc9vXpDUnpqNnm2?=
+ =?us-ascii?Q?TQixmkRXa1NkYC3J8SpDKkfj3l0Haaqc/+AxfBDAQ1uINRDLk81P+KAryACw?=
+ =?us-ascii?Q?jWb05sxyEJT9s/ZzZnywNwko6NjJgMTR+IoQ+hIirocsURD+f+CiA6ODequM?=
+ =?us-ascii?Q?jVJ1XqTPogd0CBIOvIDggWptcoXdPkmWuRFuvok3B3V4Khzhcdq7H/S1OefU?=
+ =?us-ascii?Q?3dJlVbiWiFzdp5K/DmffGiwLuU+ROzBUrakJYj3aKRr6DzBbfhIUA7LmbDke?=
+ =?us-ascii?Q?nC3LXeswVDYmU9S80tqOBLtyfW7HwZYBcSj5CCbbDgsj+C58Xqg9pTTNlRog?=
+ =?us-ascii?Q?p+CxHLjwhfMyR4s19LAJmPhUmlXGYqVF7kmyqrxL/QBa15JxOwUf2/jKTgUu?=
+ =?us-ascii?Q?GZ3XiNV4PLCEpb/VjTiC7yshmlhM69Rxjz7mmM+uRh7x7VMrflfojSlN5HeE?=
+ =?us-ascii?Q?8RjFnCMBuoYajM1pU9mQPBaFDkR4v/jQhakYi2qFBFh5DRw2kJ2oBHwQOWmn?=
+ =?us-ascii?Q?jDdhLW2SkfE7HBoD+5yp7MhZqJG0OFsWQsutklrFbp+eabR5tjSNhp0zK55T?=
+ =?us-ascii?Q?WeBzhfYusptKotI7TFDiLc2uNF825eT0UQ8bleId8F8+fmhXIbzmpyoWhFMC?=
+ =?us-ascii?Q?EnZeWs1Rbz3dy3fFSvjEfhdsgYtFiEUy1S/+5k4t9agIQx3UrqH9szASpUQm?=
+ =?us-ascii?Q?JU+iGOf1U7jV+l4XxmplS4T7E20xJFUyhlzqw16tABJYmAMzA/0v5T4fBVpv?=
+ =?us-ascii?Q?jxonVmV4PQRL4Qv3kegbKDqXe2I8lWRPYYgWQ741P1dRab+u2tFp3gYti9r+?=
+ =?us-ascii?Q?INyxwuzb54hjlexKcqbI2lhLWAReNT+2F2JpmhbN?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d5fb11d4-910b-4c72-0ed8-08dc065d0dce
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4838.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Dec 2023 21:53:11.6453
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: KQ26DvlDpsAhBAc+qiclxQR1wWteRzIyg/sP2ojK3gCurprFEItF5va+wWzKbvDzkAarPZjk3ek/RVtVhJXB9g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR04MB8970
 
-On 12/21, Yonggil Song wrote:
-> Overview
-> ========
+On Tue, Dec 26, 2023 at 08:01:53PM +0100, Krzysztof Kozlowski wrote:
+> On 26/12/2023 17:12, Frank Li wrote:
+> > On Mon, Dec 25, 2023 at 08:16:17PM +0100, Krzysztof Kozlowski wrote:
+> >> On 24/12/2023 19:32, Frank Li wrote:
+> >>> Add i.MX95 PCIe "fsl,imx95-pcie-ep" compatible string.
+> >>> Add reg-name: "atu", "dbi2", "dma" and "app".
+> >>> Reuse PCI linux,pci-domain as controller id at endpoint.
+> >>>
+> >>> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> >>> ---
+> >>>
+> >>
+> >> ...
+> >>
+> >>> +# reuse PCI linux,pci-domain as controller id at Endpoint
+> >>> +  - if:
+> >>> +      properties:
+> >>> +        compatible:
+> >>> +          enum:
+> >>> +            - fsl,imx95-pcie-ep
+> >>> +    then:
+> >>> +      properties:
+> >>> +        linux,pci-domain: true
+> >>
+> >> Same comment: why do you need? Don't ignore my feedback. You responded
+> >> you will fix it, but it is still here...
+> > 
+> > DTB_CHECK report error after I remove it. linux,pci-domain is only define
+> > in pci, not pci-ep.
 > 
-> This patch introduces a new way to preference data sections when selecting
-> GC victims. Migration of data blocks causes invalidation of node blocks.
-> Therefore, in situations where GC is frequent, selecting data blocks as
-> victims can reduce unnecessary block migration by invalidating node blocks.
-> For exceptional situations where free sections are insufficient, node blocks
-> are selected as victims instead of data blocks to get extra free sections.
+> Ah, thank you, indeed.
 > 
-> Problem
-> =======
+> > 
+> > So I add comments about this. linux,pci-domain was resued ad controller id.
 > 
-> If the total amount of nodes is larger than the size of one section, nodes
-> occupy multiple sections, and node victims are often selected because the
-> gc cost is lowered by data block migration in GC. Since moving the data
-> section causes frequent node victim selection, victim threshing occurs in
-> the node section. This results in an increase in WAF.
-> 
-> Experiment
-> ==========
-> 
-> Test environment is as follows.
-> 
->         System info
->           - 3.6GHz, 16 core CPU
->           - 36GiB Memory
->         Device info
->           - a conventional null_blk with 228MiB
->           - a sequential null_blk with 4068 zones of 8MiB
->         Format
->           - mkfs.f2fs <conv null_blk> -c <seq null_blk> -m -Z 8 -o 3.89
->         Mount
->           - mount <conv null_blk> <mount point>
->         Fio script
-> 	  - fio --rw=randwrite --bs=4k --ba=4k --filesize=31187m --norandommap --overwrite=1 --name=job1 --filename=./mnt/sustain --io_size=128g
-> 	WAF calculation
-> 	  - (IOs on conv. null_blk + IOs on seq. null_blk) / random write IOs
-> 
-> Conclusion
-> ==========
-> 
-> This experiment showed that the WAF was reduced by 29% (18.75 -> 13.3) when
-> the data section was selected first when selecting GC victims. This was
-> achieved by reducing the migration of the node blocks by 69.4%
-> (253,131,743 blks -> 77,463,278 blks). It is possible to achieve low WAF
-> performance with the GC victim selection method in environments where the
-> section size is relatively small.
-> 
-> Signed-off-by: Yonggil Song <yonggil.song@samsung.com>
-> ---
->  fs/f2fs/f2fs.h |   1 +
->  fs/f2fs/gc.c   | 102 +++++++++++++++++++++++++++++++++++++++----------
->  fs/f2fs/gc.h   |   6 +++
->  3 files changed, 88 insertions(+), 21 deletions(-)
-> 
-> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-> index 9043cedfa12b..578d57f6022f 100644
-> --- a/fs/f2fs/f2fs.h
-> +++ b/fs/f2fs/f2fs.h
-> @@ -1649,6 +1649,7 @@ struct f2fs_sb_info {
->  	struct f2fs_mount_info mount_opt;	/* mount options */
->  
->  	/* for cleaning operations */
-> +	bool need_node_clean;			/* need to clean dirty nodes */
+> However maybe there is reason why it is not for endpoints. The
+> description is saying it is valid only for host bridge, so maybe it
+> should not be used for endpoint case?
 
-	bool require_node_gc;
+EP side, it is not PCI bus. So it is reasonable that linux,pci-doamin not
+in EP side.
 
->  	struct f2fs_rwsem gc_lock;		/*
->  						 * semaphore for GC, avoid
->  						 * race between GC and GC or CP
-> diff --git a/fs/f2fs/gc.c b/fs/f2fs/gc.c
-> index f550cdeaa663..da963765e087 100644
-> --- a/fs/f2fs/gc.c
-> +++ b/fs/f2fs/gc.c
-> @@ -341,6 +341,14 @@ static unsigned int get_cb_cost(struct f2fs_sb_info *sbi, unsigned int segno)
->  	unsigned int i;
->  	unsigned int usable_segs_per_sec = f2fs_usable_segs_in_sec(sbi, segno);
->  
-> +	/*
-> +	 * When BG_GC selects victims based on age, it prevents node victims
-> +	 * from being selected. This is because node blocks can be invalidated
-> +	 * by moving data blocks.
-> +	 */
-> +	if (is_skip(sbi, segno))
-> +		return UINT_MAX;
-> +
->  	for (i = 0; i < usable_segs_per_sec; i++)
->  		mtime += get_seg_entry(sbi, start + i)->mtime;
->  	vblocks = get_valid_blocks(sbi, segno, true);
-> @@ -369,10 +377,27 @@ static inline unsigned int get_gc_cost(struct f2fs_sb_info *sbi,
->  		return get_seg_entry(sbi, segno)->ckpt_valid_blocks;
->  
->  	/* alloc_mode == LFS */
-> -	if (p->gc_mode == GC_GREEDY)
-> -		return get_valid_blocks(sbi, segno, true);
-> -	else if (p->gc_mode == GC_CB)
-> +	if (p->gc_mode == GC_GREEDY) {
-> +		unsigned int weight = 0;
-> +		unsigned int no_need = sbi->need_node_clean ? 0 : 1;
-> +		bool is_node =
-> +			IS_NODESEG(get_seg_entry(sbi, segno)->type);
-> +
-> +		/*
-> +		 * If the data block that the node block pointed to is GCed,
-> +		 * the node block is invalidated. For this reason, we add a
-> +		 * weight to cost of node victims to give priority to data
-> +		 * victims during the gc process. However, in a situation
-> +		 * where we run out of free sections, we remove the weight
-> +		 * because we need to clean up node blocks.
-> +		 */
-> +		weight = is_node ?
-> +			no_need * (sbi->blocks_per_seg * sbi->segs_per_sec) : 0;
+iMX6 host driver(and other some host controller drivers) already use it as
+"controller id". EP driver is mostly reused with host bridge drivers. I
+think needn't create new property such as "controller_id" for EP only.
 
-		unsigned int cost = get_valid_blocks(sbi, segno, true);
+A comments should be enough for this case.
 
-		if (__skip_node_gc())
-			return cost + (sbi->segs_per_sec << sbi->log_blocks_per_seg);
-		return cost;
+Frank
 
-> +
-> +		return (get_valid_blocks(sbi, segno, true) + weight);
-> +	} else if (p->gc_mode == GC_CB) {
->  		return get_cb_cost(sbi, segno);
-> +	}
->  
->  	f2fs_bug_on(sbi, 1);
->  	return 0;
-> @@ -557,6 +582,14 @@ static void atgc_lookup_victim(struct f2fs_sb_info *sbi,
->  	if (ve->mtime >= max_mtime || ve->mtime < min_mtime)
->  		goto skip;
->  
-> +	/*
-> +	 * When BG_GC selects victims based on age, it prevents node victims
-> +	 * from being selected. This is because node blocks can be invalidated
-> +	 * by moving data blocks.
-> +	 */
-> +	if (is_skip(sbi, ve->segno))
-> +		goto skip;
-> +
->  	/* age = 10000 * x% * 60 */
->  	age = div64_u64(accu * (max_mtime - ve->mtime), total_time) *
->  								age_weight;
-> @@ -913,7 +946,22 @@ int f2fs_get_victim(struct f2fs_sb_info *sbi, unsigned int *result,
->  		goto retry;
->  	}
->  
-> +
->  	if (p.min_segno != NULL_SEGNO) {
-> +		if (sbi->need_node_clean &&
-> +		    IS_DATASEG(get_seg_entry(sbi, p.min_segno)->type)) {
-> +			 /*
-> +			  * We need to clean node sections. but, data victim
-> +			  * cost is the lowest. If free sections are enough,
-> +			  * stop cleaning node victim. If not, it goes on
-> +			  * by GCing data victims.
-> +			  */
-> +			if (has_enough_free_secs(sbi, prefree_segments(sbi), 0)) {
-> +				sbi->need_node_clean = false;
-> +				p.min_segno = NULL_SEGNO;
-> +				goto out;
-> +			}
-> +		}
->  got_it:
->  		*result = (p.min_segno / p.ofs_unit) * p.ofs_unit;
->  got_result:
-> @@ -1830,8 +1878,27 @@ int f2fs_gc(struct f2fs_sb_info *sbi, struct f2fs_gc_control *gc_control)
->  		goto stop;
->  	}
->  
-> +	__get_secs_required(sbi, NULL, &upper_secs, NULL);
-> +
-> +	/*
-> +	 * Write checkpoint to reclaim prefree segments.
-> +	 * We need more three extra sections for writer's data/node/dentry.
-> +	 */
-> +	if (free_sections(sbi) <= upper_secs + NR_GC_CHECKPOINT_SECS) {
-> +		sbi->need_node_clean = true;
-> +
-> +		if (prefree_segments(sbi)) {
-> +			stat_inc_cp_call_count(sbi, TOTAL_CALL);
-> +			ret = f2fs_write_checkpoint(sbi, &cpc);
-> +			if (ret)
-> +				goto stop;
-> +			/* Reset due to checkpoint */
-> +			sec_freed = 0;
-> +		}
-> +	}
-> +
->  	/* Let's run FG_GC, if we don't have enough space. */
-> -	if (has_not_enough_free_secs(sbi, 0, 0)) {
-> +	if (gc_type == BG_GC && has_not_enough_free_secs(sbi, 0, 0)) {
->  		gc_type = FG_GC;
->  
->  		/*
-> @@ -1882,7 +1949,13 @@ int f2fs_gc(struct f2fs_sb_info *sbi, struct f2fs_gc_control *gc_control)
->  			if (!gc_control->no_bg_gc &&
->  			    total_sec_freed < gc_control->nr_free_secs)
->  				goto go_gc_more;
-> -			goto stop;
-> +			/*
-> +			 * If need_node_clean flag is set even though there
-> +			 * are enough free sections, node cleaning will
-> +			 * continue.
-> +			 */
-> +			if (!sbi->need_node_clean)
-> +				goto stop;
->  		}
->  		if (sbi->skipped_gc_rwsem)
->  			skipped_round++;
-> @@ -1897,21 +1970,6 @@ int f2fs_gc(struct f2fs_sb_info *sbi, struct f2fs_gc_control *gc_control)
->  		goto stop;
->  	}
->  
-> -	__get_secs_required(sbi, NULL, &upper_secs, NULL);
-> -
-> -	/*
-> -	 * Write checkpoint to reclaim prefree segments.
-> -	 * We need more three extra sections for writer's data/node/dentry.
-> -	 */
-> -	if (free_sections(sbi) <= upper_secs + NR_GC_CHECKPOINT_SECS &&
-> -				prefree_segments(sbi)) {
-> -		stat_inc_cp_call_count(sbi, TOTAL_CALL);
-> -		ret = f2fs_write_checkpoint(sbi, &cpc);
-> -		if (ret)
-> -			goto stop;
-> -		/* Reset due to checkpoint */
-> -		sec_freed = 0;
-> -	}
->  go_gc_more:
->  	segno = NULL_SEGNO;
->  	goto gc_more;
-> @@ -1920,8 +1978,10 @@ int f2fs_gc(struct f2fs_sb_info *sbi, struct f2fs_gc_control *gc_control)
->  	SIT_I(sbi)->last_victim[ALLOC_NEXT] = 0;
->  	SIT_I(sbi)->last_victim[FLUSH_DEVICE] = gc_control->victim_segno;
->  
-> -	if (gc_type == FG_GC)
-> +	if (gc_type == FG_GC) {
->  		f2fs_unpin_all_sections(sbi, true);
-> +		sbi->need_node_clean = false;
-> +	}
->  
->  	trace_f2fs_gc_end(sbi->sb, ret, total_freed, total_sec_freed,
->  				get_pages(sbi, F2FS_DIRTY_NODES),
-> diff --git a/fs/f2fs/gc.h b/fs/f2fs/gc.h
-> index 28a00942802c..b0af7c086b66 100644
-> --- a/fs/f2fs/gc.h
-> +++ b/fs/f2fs/gc.h
-> @@ -166,3 +166,9 @@ static inline bool has_enough_invalid_blocks(struct f2fs_sb_info *sbi)
->  		free_user_blocks(sbi) <
->  			limit_free_user_blocks(invalid_user_blocks));
->  }
-> +
-> +static inline bool is_skip(struct f2fs_sb_info *sbi, unsigned int segno)
-
-It looks quite hard to understand what is_skip means. What about __skip_node_gc()?
-
-> +{
-> +	return (IS_NODESEG(get_seg_entry(sbi, segno)->type) &&
-> +		!sbi->need_node_clean);
-> +}
-> -- 
-> 2.34.1
+> > 
+> > If include pci.yaml, there are too much other properties was involved, but
+> > not used by pci-ep.
+> 
+> Best regards,
+> Krzysztof
+> 
 
